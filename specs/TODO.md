@@ -27,18 +27,28 @@ technical_debt:
 
 ## Recommended Order
 
-### Metalogic Refactoring Track
+### Active Work
 
-**Discrete completion** (tasks 9-15, 23, 28 completed):
-1. **22** → plan (researched)
-2. **24** → implement (depends: 22) — removes 3 axioms, final cleanup
+- **29** → implementing (reflexive G/H semantics — in progress, 7-phase plan)
+- **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
-**Dense completion** (tasks 16-17, 27, 30, 31 completed):
-1. **18** → implement (blocked on dependencies, now unblocked)
+### Completeness Pipeline
 
-**Cleanup**:
-1. **19** → implement (ready now) | **997** → complete [parallel]
-2. **20** → implement (depends: 18) | **21** → plan (depends: 18)
+**Dense completion** (deps 17, 27, 30, 31 all completed 2026-03-21):
+1. **18** → resume implementation at phase 5 (all blockers resolved, update status)
+2. **20** → implement (depends: 18) | **25** → implement (depends: 18) [parallel]
+
+**Discrete completion** (deps 9-15, 23, 28 all completed 2026-03-21):
+1. **22** → implement (planned, has 5-phase plan)
+2. **24** → implement (depends: 22 only — 23 completed) — removes 3 axioms, final cleanup
+
+**Axiom elimination**:
+1. **26** → implement (planned, likely superseded if 29 completes — reflexive semantics eliminates canonicalR_irreflexive_axiom)
+
+### Post-Completeness Cleanup
+
+1. **19** → implement (ready now, dep 15 completed)
+2. **21** → plan (depends: 18)
 
 ### Independent Tasks
 
@@ -47,33 +57,31 @@ technical_debt:
 3. **992** → plan (researched)
 4. **953** → plan (researched)
 5. **949** → plan (researched)
-6. **619** → plan (researched)
+6. **619** → plan (researched, meta)
 7. **999** → research (not started)
 8. **998** → research (not started)
 9. **993** → research (not started)
-10. **988** → blocked (likely superseded by 16-18)
+10. **988** → blocked (likely superseded by 18)
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
 
 ---
 
-
-
 ### 29. Switch TM metalogic to reflexive G/H semantics
-- **Effort**: 12 hours
-- **Status**: [PLANNED]
+- **Effort**: 17-18 hours (revised up from 12)
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
-  - [01_team-research.md](029_switch_to_reflexive_gh_semantics/reports/01_team-research.md)
-  - [02_historical-issues-analysis.md](029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md)
-- **Plan**: [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md)
+  - [01_team-research.md](029_switch_to_reflexive_gh_semantics/reports/01_team-research.md) — Wave 1: axiom analysis (1 of 2 teammates)
+  - [02_historical-issues-analysis.md](029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md) — Historical issues (all resolved/surmountable)
+  - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
+- **Plan**: [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (7 phases, needs revision per Wave 2 findings)
 
 **Description**: Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md.
 
 ---
-
 
 ### 26. Remove or justify canonicalR_irreflexive_axiom
 - **Effort**: 2-8 hours (depends on path chosen)
@@ -198,16 +206,16 @@ technical_debt:
 ---
 
 ### 8. Establish genuine truth_at completeness theorems for TM logic
-- **Effort**: 12-20 hours
-- **Status**: [RESEARCHED]
-- **Language**: lean4
-- **Dependencies**: Task #1007
-- **Research**:
+ **Effort**: 12-20 hours
+ **Status**: [RESEARCHED]
+ **Language**: lean4
+ **Dependencies**: Task #1007
+ **Research**:
   - [01_completeness-architecture.md](008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
   - [02_completeness-blockers.md](008_genuine_truth_at_completeness/reports/02_completeness-blockers.md)
   - [03_team-research.md](008_genuine_truth_at_completeness/reports/03_team-research.md)
   - [04_team-research.md](008_genuine_truth_at_completeness/reports/04_team-research.md)
-- **Plan**: [03_revised-completeness-plan.md](008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
+ **Plan**: [03_revised-completeness-plan.md](008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
 
 **Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
 
