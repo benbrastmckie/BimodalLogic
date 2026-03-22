@@ -98,8 +98,8 @@ technical_debt:
 ---
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
-- **Effort**: 17-18 hours (revised up from 12)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 12-16 hours (revised: IRR removal approach)
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -111,10 +111,11 @@ technical_debt:
   - [08_team-research.md](029_switch_to_reflexive_gh_semantics/reports/08_team-research.md) — Wave 4: CanonicalTask-centric reframing, fresh G-atom approach confirmed
   - [09_team-research.md](029_switch_to_reflexive_gh_semantics/reports/09_team-research.md) — Wave 5: substitution lemma identified as key blocker for Phase 5
 - **Plan**:
-  - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: 6 phases with substitution lemma prerequisite, 10h (supersedes v3)
-  - [03_fresh-g-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md) — v3: Fresh G-atom approach (superseded)
-  - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: 9 phases, blocked at Phase 5 (superseded)
-  - [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (superseded)
+  - [05_irr-removal-approach.md](029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md) — v5: IRR removal approach, 8 phases, 12-16h (current)
+  - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: superseded (IRR case misdirected)
+  - [03_fresh-g-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md) — v3: superseded
+  - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: superseded
+  - [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1: superseded
 
 **Description**: Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md.
 
