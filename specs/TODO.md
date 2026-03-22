@@ -91,6 +91,7 @@ technical_debt:
   - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
   - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
   - [07_team-research.md](029_switch_to_reflexive_gh_semantics/reports/07_team-research.md) — Wave 3: blocker resolution (canonicalR_antisymmetric FALSE, Option D recommended)
+  - [08_team-research.md](029_switch_to_reflexive_gh_semantics/reports/08_team-research.md) — Wave 4: CanonicalTask-centric reframing, fresh G-atom approach confirmed
 - **Plan**:
   - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: 9 phases, 17-18h (incorporates Wave 2 research)
   - [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (superseded)

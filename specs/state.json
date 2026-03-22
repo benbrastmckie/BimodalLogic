@@ -23,11 +23,11 @@
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T21:31:52Z",
-      "last_updated": "2026-03-22T19:14:48Z",
+      "last_updated": "2026-03-22T19:25:28Z",
       "dependencies": [],
       "description": "Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md",
-      "session_id": "sess_1774206350_6c640c",
-      "researched": "2026-03-22T19:14:48Z",
+      "session_id": "sess_1774207227_9888a6",
+      "researched": "2026-03-22T19:25:28Z",
       "artifacts": [
         {
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/01_team-research.md",
@@ -98,6 +98,21 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/07_teammate-b-findings.md",
           "type": "research",
           "summary": "Teammate B: deprecation unsafe, all paths need MCS-distinctness"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/reports/08_team-research.md",
+          "type": "research",
+          "summary": "Wave 4: CanonicalTask-centric blocker resolution — fresh G-atom approach confirmed"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/reports/08_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Teammate A: CanonicalTask theory — three-place relation sidesteps reflexivity debate"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/reports/08_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Teammate B: blocker re-analysis — antisymmetry is wrong question, fresh G-atom is correct path"
         }
       ],
       "planned": "2026-03-22T08:16:00Z",
