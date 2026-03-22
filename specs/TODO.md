@@ -70,7 +70,7 @@ technical_debt:
 
 ### 33. Expand design-choices section with comprehensive reflexive vs irreflexive semantics analysis
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: formal
 - **Research**:
   - [01_team-research.md](033_expand_design_choices_reflexive_analysis/reports/01_team-research.md) — Team synthesis (4 teammates)
@@ -79,6 +79,7 @@ technical_debt:
   - [01_teammate-c-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-c-findings.md) — Algebraic perspective (interior operators)
   - [01_teammate-d-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-d-findings.md) — Codebase and vault archive analysis
 - **Plan**: [01_design-choices-expansion.md](033_expand_design_choices_reflexive_analysis/plans/01_design-choices-expansion.md) — 5 phases, 5h
+- **Summary**: [01_design-choices-summary.md](033_expand_design_choices_reflexive_analysis/summaries/01_design-choices-summary.md)
 
 **Description**: Expand sec:design-choices in 06-notes.typ with deeper analysis of reflexive vs irreflexive semantics for G/H. Include: (1) expressive power differences, (2) frame constraints (serial, density, discreteness), (3) representation theorem challenges for irreflexive vs collapsed logic for reflexive, (4) algebraic perspective (G, H, Box as interior operators). Research codebase, archived projects in vault, and past research to distill comprehensive content for additional sections as needed.
 

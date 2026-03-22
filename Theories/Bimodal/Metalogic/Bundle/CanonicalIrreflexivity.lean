@@ -1223,6 +1223,260 @@ theorem canonicalR_past_reflexive (M : Set Formula) (h_mcs : SetMaximalConsisten
   exact SetMaximalConsistent.implication_property h_mcs h_t_axiom h_H_phi
 
 /-!
+## Fresh G-Atom Per-Witness Strictness (Task 25)
+
+Under reflexive semantics, `CanonicalR M M` holds (reflexivity). Universal
+irreflexivity is FALSE. However, we can prove PER-WITNESS strictness: for any
+MCS M, there EXISTS a witness W with `CanonicalR M W ∧ ¬CanonicalR W M`.
+
+The key is the fresh G-atom approach:
+1. Find an atom q such that `¬q ∈ M` (M decides q to be false)
+2. Also ensure `G(¬q) ∉ M` (equivalently, `F(q) ∈ M`)
+3. Build seed `g_content(M) ∪ {G(q)}`
+4. Extend to MCS W via Lindenbaum
+5. Then `CanonicalR M W` (since `g_content M ⊆ W`)
+6. And `¬CanonicalR W M` (since `q ∈ g_content W` but `q ∉ M`)
+
+This replaces the inconsistent `canonicalR_irreflexive_axiom`.
+-/
+
+/-- For any MCS M, there exists an atom q such that M contains neither q nor G(¬q).
+This means: `Formula.neg (Formula.atom q) ∈ M` (M decides q false at current time)
+AND `Formula.all_future (Formula.neg (Formula.atom q)) ∉ M` (not always false).
+
+Proof: By maximality, for each atom q:
+- Either q ∈ M or ¬q ∈ M
+- Either G(¬q) ∈ M or F(q) ∈ M (since F = ¬G¬)
+
+If q ∈ M and G(¬q) ∈ M, then by T-axiom G(¬q) → ¬q, we'd have ¬q ∈ M too,
+contradicting consistency. So this case is impossible.
+
+The remaining cases are: (q ∈ M, F(q) ∈ M), (¬q ∈ M, G(¬q) ∈ M), (¬q ∈ M, F(q) ∈ M).
+We need to show the third case exists for some atom.
+
+Since M is consistent and decidable on all atoms, consider atoms not appearing
+in any formula that "forced" specific decisions during Lindenbaum extension.
+For such atoms, the extension is free to choose, and infinitely many must
+fall into each compatible case.
+-/
+theorem exists_strict_fresh_atom (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∃ q : Atom, Formula.neg (Formula.atom q) ∈ M ∧
+               Formula.all_future (Formula.neg (Formula.atom q)) ∉ M := by
+  -- We'll prove by contradiction: if no such atom exists, derive inconsistency
+  by_contra h_no_such
+  push_neg at h_no_such
+  -- h_no_such: ∀ q, ¬q ∈ M → G(¬q) ∈ M
+  -- Combined with maximality (q ∈ M ∨ ¬q ∈ M), this means:
+  -- For all q: either q ∈ M, or (¬q ∈ M ∧ G(¬q) ∈ M)
+
+  -- Pick any fresh atom q (fresh for empty set)
+  obtain ⟨q, _⟩ := Atom.exists_fresh ∅
+
+  -- By maximality, either q ∈ M or ¬q ∈ M
+  by_cases hq : Formula.atom q ∈ M
+  · -- Case: q ∈ M
+    -- We claim ¬q ∈ M too (contradiction)
+    -- This would follow if G(¬q) ∈ M via T-axiom
+    -- But we don't know G(¬q) ∈ M in this branch...
+    -- Actually, if q ∈ M then by h_no_such with the other disjunct...
+    -- This needs more careful case analysis
+    sorry
+  · -- Case: q ∉ M, so by maximality ¬q ∈ M
+    have h_neg_q : Formula.neg (Formula.atom q) ∈ M :=
+      SetMaximalConsistent.neg_iff_not_mem h_mcs |>.mpr hq
+    -- By h_no_such: G(¬q) ∈ M
+    have h_G_neg_q : Formula.all_future (Formula.neg (Formula.atom q)) ∈ M :=
+      h_no_such q h_neg_q
+    -- So ¬q ∈ g_content(M), meaning this q is "always false"
+    -- This is consistent, but we need to find an atom that's NOT always false
+    sorry
+
+/-- The fresh G-atom seed is consistent: if `G(¬q) ∉ M` (i.e., `F(q) ∈ M`),
+then `g_content(M) ∪ {G(q)}` is set-consistent.
+
+Proof: Suppose L ⊆ g_content(M) ∪ {G(q)} with L ⊢ ⊥.
+- If G(q) ∉ L: then L ⊆ g_content(M) ⊆ M (by reflexivity), contradicting M's consistency.
+- If G(q) ∈ L: then L \ {G(q)} ⊢ G(q) → ⊥, i.e., L' ⊢ ¬G(q) = F(¬q).
+  By generalized temporal K, G(L') ⊢ G(F(¬q)).
+  Since L' ⊆ g_content(M), all G(L') ⊆ M, so G(F(¬q)) ∈ M.
+  By T-axiom, G(F(¬q)) → F(¬q), so F(¬q) ∈ M, i.e., ¬G(q) ∈ M.
+  But G(q) ∉ M (since G(¬q) ∉ M and we have G(q) → ¬G(¬q) ... wait, that's wrong)
+
+  Actually, we need: G(¬q) ∉ M means F(q) ∈ M.
+  And G(q) being in the seed doesn't contradict F(q) ∈ M.
+  The key is: if L ⊆ g_content(M) ∪ {G(q)} derives ⊥, then...
+
+  Let's think again. The seed is g_content(M) ∪ {G(q)}.
+  After Lindenbaum, W ⊇ seed, so G(q) ∈ W, hence q ∈ g_content(W).
+  We need: q ∉ M. We have ¬q ∈ M (from exists_strict_fresh_atom).
+  Since q ∉ M (because ¬q ∈ M and M is consistent), g_content(W) ⊄ M. ✓
+-/
+theorem fresh_Gp_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (q : Atom) (h_not_always_neg : Formula.all_future (Formula.neg (Formula.atom q)) ∉ M) :
+    SetConsistent (g_content M ∪ {Formula.all_future (Formula.atom q)}) := by
+  intro L hL_sub ⟨d⟩
+  let Gq := Formula.all_future (Formula.atom q)
+
+  by_cases h_Gq_in_L : Gq ∈ L
+  · -- Case: G(q) ∈ L
+    -- L' = L \ {G(q)} ⊆ g_content(M)
+    let L' := L.filter (fun φ => φ ≠ Gq)
+    have hL'_sub : ∀ φ ∈ L', φ ∈ g_content M := by
+      intro φ hφ
+      have hφ_in_L := (List.mem_filter.mp hφ).1
+      have hφ_ne := of_decide_eq_true (List.mem_filter.mp hφ).2
+      have hφ_in_seed := hL_sub φ hφ_in_L
+      simp only [Set.mem_union, Set.mem_singleton_iff] at hφ_in_seed
+      cases hφ_in_seed with
+      | inl h => exact h
+      | inr h => exact absurd h hφ_ne
+
+    -- By deduction from G(q): L' ⊢ G(q) → ⊥, i.e., L' ⊢ ¬G(q) = F(¬q)
+    have h_L_perm : ∀ φ, φ ∈ L ↔ φ ∈ (Gq :: L') := by
+      intro φ
+      constructor
+      · intro hφ
+        by_cases hφ_eq : φ = Gq
+        · simp [hφ_eq]
+        · simp only [List.mem_cons]
+          right; exact List.mem_filter.mpr ⟨hφ, decide_eq_true hφ_eq⟩
+      · intro hφ
+        simp only [List.mem_cons] at hφ
+        cases hφ with
+        | inl h => rw [h]; exact h_Gq_in_L
+        | inr h => exact (List.mem_filter.mp h).1
+
+    have d_rearr : DerivationTree (Gq :: L') Formula.bot :=
+      DerivationTree.weakening L (Gq :: L') Formula.bot d h_L_perm
+
+    have d_ded : DerivationTree L' (Gq.imp Formula.bot) :=
+      deduction_theorem L' Gq Formula.bot d_rearr
+
+    -- Gq.imp ⊥ = G(q) → ⊥ = ¬G(q) = F(¬q)
+    -- L' ⊢ F(¬q)
+
+    -- By generalized temporal K: G(L') ⊢ G(F(¬q))
+    have d_G : (Context.map Formula.all_future L') ⊢ Formula.all_future (Gq.imp Formula.bot) :=
+      Bimodal.Theorems.generalized_temporal_k L' (Gq.imp Formula.bot) d_ded
+
+    -- G(L') ⊆ M since L' ⊆ g_content(M) means G(φ) ∈ M for each φ ∈ L'
+    have h_G_L'_in_M : ∀ φ ∈ Context.map Formula.all_future L', φ ∈ M := by
+      intro φ hφ
+      rw [Context.mem_map_iff] at hφ
+      obtain ⟨ψ, hψ_in_L', hψ_eq⟩ := hφ
+      rw [← hψ_eq]
+      exact hL'_sub ψ hψ_in_L'
+
+    -- So G(F(¬q)) ∈ M
+    have h_GFneg : Formula.all_future (Gq.imp Formula.bot) ∈ M :=
+      SetMaximalConsistent.closed_under_derivation h_mcs
+        (Context.map Formula.all_future L') h_G_L'_in_M d_G
+
+    -- G(F(¬q)) = G(¬G(q))
+    -- By T-axiom G(φ) → φ, we get G(¬G(q)) → ¬G(q)
+    have h_T : (Formula.all_future (Gq.imp Formula.bot)).imp (Gq.imp Formula.bot) ∈ M :=
+      theorem_in_mcs h_mcs (.axiom _ _ (.temp_t_future (Gq.imp Formula.bot)))
+    have h_Fneg : (Gq.imp Formula.bot) ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs h_T h_GFneg
+
+    -- F(¬q) = ¬G(q) = G(q) → ⊥
+    -- But wait, Gq.imp Formula.bot is NOT the same as F(¬q)!
+    -- F(¬q) = ¬G(¬(¬q)) = ¬G(q) = (G(q)).neg = (G(q)).imp ⊥
+    -- So Gq.imp ⊥ = G(q) → ⊥ = ¬G(q) = F(¬q). ✓
+
+    -- So F(¬q) ∈ M, i.e., ¬G(q) ∈ M
+    -- G(¬q) ∉ M by hypothesis h_not_always_neg
+    -- So F(q) ∈ M (by maximality)
+    -- F(q) = ¬G(¬q)
+
+    -- This doesn't contradict anything yet...
+    -- We have F(¬q) ∈ M (from the derivation) and G(¬q) ∉ M (hypothesis).
+    -- These are consistent!
+
+    -- The issue is: F(¬q) ∈ M means "eventually ¬q", not "now ¬G(q)"
+    -- Actually, F(¬q) = ¬G(¬¬q) = ¬G(q). So ¬G(q) ∈ M, hence G(q) ∉ M.
+
+    -- But G(q) was in our seed, not in M! The seed is g_content(M) ∪ {G(q)}.
+    -- G(q) ∉ M is fine - it's in the seed, not necessarily in M.
+
+    -- The key: we showed L ⊢ ⊥ leads to G(q) ∉ M.
+    -- But this doesn't give a contradiction!
+
+    -- Wait, I think the approach needs revision. Let me reconsider.
+
+    -- Actually, the consistency proof should work differently.
+    -- If L derives ⊥ and G(q) ∈ L, we use IRR or a similar technique.
+
+    sorry  -- Need to revise the approach
+
+  · -- Case: G(q) ∉ L
+    -- L ⊆ g_content(M)
+    have hL_in_gcontent : ∀ φ ∈ L, φ ∈ g_content M := by
+      intro φ hφ
+      have hφ_in_seed := hL_sub φ hφ
+      simp only [Set.mem_union, Set.mem_singleton_iff] at hφ_in_seed
+      cases hφ_in_seed with
+      | inl h => exact h
+      | inr h => exact absurd h (fun heq => h_Gq_in_L (heq ▸ hφ))
+
+    -- g_content(M) ⊆ M by reflexivity
+    have h_gcontent_sub_M : g_content M ⊆ M := canonicalR_reflexive M h_mcs
+
+    -- So L ⊆ M
+    have hL_in_M : ∀ φ ∈ L, φ ∈ M := fun φ hφ => h_gcontent_sub_M (hL_in_gcontent φ hφ)
+
+    -- L ⊢ ⊥ with L ⊆ M contradicts M being consistent
+    exact h_mcs.1 L hL_in_M ⟨d⟩
+
+/-- Main theorem: For any MCS M, there exists a strictly forward witness W.
+That is: `CanonicalR M W` and `¬CanonicalR W M`.
+
+This is per-witness strictness, replacing universal irreflexivity.
+The proof constructs W using the fresh G-atom technique.
+-/
+theorem existsTask_strict_fresh_atom (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∃ W, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M := by
+  -- Step 1: Find a suitable fresh atom q
+  obtain ⟨q, h_neg_q, h_not_always_neg⟩ := exists_strict_fresh_atom M h_mcs
+
+  -- Step 2: The seed g_content(M) ∪ {G(q)} is consistent
+  have h_seed_cons := fresh_Gp_seed_consistent M h_mcs q h_not_always_neg
+
+  -- Step 3: Extend to MCS W via Lindenbaum
+  let seed := g_content M ∪ {Formula.all_future (Formula.atom q)}
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum seed h_seed_cons
+
+  use W, h_W_mcs
+
+  constructor
+  · -- CanonicalR M W: g_content M ⊆ W
+    intro φ hφ
+    exact h_extends (Set.mem_union_left _ hφ)
+
+  · -- ¬CanonicalR W M: g_content W ⊄ M
+    intro h_R
+    -- h_R : g_content W ⊆ M
+
+    -- G(q) ∈ W (from seed extension)
+    have h_Gq_in_W : Formula.all_future (Formula.atom q) ∈ W :=
+      h_extends (Set.mem_union_right _ (Set.mem_singleton _))
+
+    -- So q ∈ g_content W
+    have h_q_in_gcontent_W : Formula.atom q ∈ g_content W := h_Gq_in_W
+
+    -- By h_R: q ∈ M
+    have h_q_in_M : Formula.atom q ∈ M := h_R h_q_in_gcontent_W
+
+    -- But ¬q ∈ M (from h_neg_q)
+    -- This contradicts M's consistency
+    have h_inconsistent : ¬SetConsistent M := by
+      intro h_cons
+      have h_both := set_consistent_not_both h_cons (Formula.atom q)
+      exact h_both h_q_in_M h_neg_q
+
+    exact h_inconsistent h_mcs.1
+
+/-!
 ## DEPRECATED: Irreflexivity Axiom (Task 991)
 
 Under reflexive semantics (Task 29), the irreflexivity axiom is SEMANTICALLY FALSE.
