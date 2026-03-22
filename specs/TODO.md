@@ -70,8 +70,13 @@ technical_debt:
 
 ### 33. Expand design-choices section with comprehensive reflexive vs irreflexive semantics analysis
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: formal
+- **Reports**:
+  - [01_teammate-a-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-a-findings.md)
+  - [01_teammate-b-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-b-findings.md)
+  - [01_teammate-c-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-c-findings.md)
+  - [01_teammate-d-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-d-findings.md)
 
 **Description**: Expand sec:design-choices in 06-notes.typ with deeper analysis of reflexive vs irreflexive semantics for G/H. Include: (1) expressive power differences, (2) frame constraints (serial, density, discreteness), (3) representation theorem challenges for irreflexive vs collapsed logic for reflexive, (4) algebraic perspective (G, H, Box as interior operators). Research codebase, archived projects in vault, and past research to distill comprehensive content for additional sections as needed.
 
@@ -134,7 +139,7 @@ technical_debt:
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
 - **Effort**: 12-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
