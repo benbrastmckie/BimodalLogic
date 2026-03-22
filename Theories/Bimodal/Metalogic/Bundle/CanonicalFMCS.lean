@@ -202,10 +202,23 @@ This construction satisfies all FMCS requirements:
 noncomputable def canonicalMCSBFMCS : FMCS CanonicalMCS where
   mcs := canonicalMCS_mcs
   is_mcs := canonicalMCS_is_mcs
-  forward_G := fun w₁ w₂ phi h_lt h_G =>
-    canonicalMCS_forward_G w₁ w₂ phi h_lt h_G
-  backward_H := fun w₁ w₂ phi h_lt h_H =>
-    canonicalMCS_backward_H w₁ w₂ phi h_lt h_H
+  forward_G := fun w₁ w₂ phi h_le h_G => by
+    rcases h_le with rfl | h_R
+    · -- w₁ = w₂: use T-axiom (G phi → phi) via MCS closure
+      exact SetMaximalConsistent.implication_property (canonicalMCS_is_mcs w₁)
+        (theorem_in_mcs (canonicalMCS_is_mcs w₁) (.axiom _ _ (.temp_t_future phi))) h_G
+    · -- CanonicalR w₁.world w₂.world: use canonical_forward_G directly
+      exact canonical_forward_G w₁.world w₂.world h_R phi h_G
+  backward_H := fun w₁ w₂ phi h_le h_H => by
+    -- backward_H signature: w₂ ≤ w₁ (i.e., w₂ = w₁ ∨ CanonicalR w₂.world w₁.world)
+    rcases h_le with rfl | h_R
+    · -- w₂ = w₁: use T-axiom (H phi → phi) via MCS closure
+      exact SetMaximalConsistent.implication_property (canonicalMCS_is_mcs w₂)
+        (theorem_in_mcs (canonicalMCS_is_mcs w₂) (.axiom _ _ (.temp_t_past phi))) h_H
+    · -- CanonicalR w₂.world w₁.world: use canonical_backward_H
+      have h_R_past : CanonicalR_past w₁.world w₂.world :=
+        g_content_subset_implies_h_content_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_R
+      exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
 /-!
 ## Zero Instance for CanonicalMCS

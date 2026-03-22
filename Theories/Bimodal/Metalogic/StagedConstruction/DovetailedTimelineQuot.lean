@@ -604,10 +604,20 @@ Temporal coherence follows from the linking lemma.
 noncomputable def dovetailedTimelineQuotFMCS : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof) where
   mcs := dovetailedTimelineQuotMCS root_mcs root_mcs_proof
   is_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof
-  forward_G := fun t t' phi h_lt h_G =>
-    dovetailedTimelineQuot_forward_G root_mcs root_mcs_proof t t' phi h_lt h_G
-  backward_H := fun t t' phi h_lt h_H =>
-    dovetailedTimelineQuot_backward_H root_mcs root_mcs_proof t t' phi h_lt h_H
+  forward_G := fun t t' phi h_le h_G => by
+    rcases eq_or_lt_of_le h_le with rfl | h_lt
+    · exact SetMaximalConsistent.implication_property
+        (dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t)
+        (theorem_in_mcs (dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t)
+          (.axiom _ _ (.temp_t_future phi))) h_G
+    · exact dovetailedTimelineQuot_forward_G root_mcs root_mcs_proof t t' phi h_lt h_G
+  backward_H := fun t t' phi h_le h_H => by
+    rcases eq_or_lt_of_le h_le with rfl | h_lt
+    · exact SetMaximalConsistent.implication_property
+        (dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t')
+        (theorem_in_mcs (dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t')
+          (.axiom _ _ (.temp_t_past phi))) h_H
+    · exact dovetailedTimelineQuot_backward_H root_mcs root_mcs_proof t t' phi h_lt h_H
 
 /-!
 ## Phase 4: Forward F and Backward P Coherence

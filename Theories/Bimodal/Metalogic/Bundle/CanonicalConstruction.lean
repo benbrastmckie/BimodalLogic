@@ -430,15 +430,12 @@ theorem box_persistent
     theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
   have h_H_box : (Formula.box φ).all_past ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t) h_past_tf h_box
-  -- Step 3: Case split on s vs t (three cases for irreflexive semantics)
-  rcases lt_trichotomy t s with h_lt | h_eq | h_gt
-  · -- s > t: use forward_G (strict)
-    exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
-  · -- s = t: trivial from h_box
-    rw [← h_eq]
-    exact h_box
-  · -- s < t: use backward_H (strict)
-    exact fam.backward_H t s (Formula.box φ) h_gt h_H_box
+  -- Step 3: Case split on s vs t
+  rcases le_or_lt t s with h_le | h_gt
+  · -- t ≤ s: use forward_G
+    exact fam.forward_G t s (Formula.box φ) h_le h_G_box
+  · -- s < t: use backward_H
+    exact fam.backward_H t s (Formula.box φ) (le_of_lt h_gt) h_H_box
 
 /-!
 ## Phase 2-5: The Direct TruthLemma
@@ -590,56 +587,44 @@ theorem canonical_truth_lemma
       -- By modal_backward: box psi in MCS
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
   | all_future psi ih =>
-    -- G case: G psi in MCS <-> forall s > t, truth tau s psi
-    -- Note: Strict semantics (t < s) per Task 991
+    -- G case: Under reflexive semantics, G quantifies over s ≥ t
     simp only [truth_at]
     constructor
-    · -- Forward: G psi in MCS -> forall s > t, truth tau s psi
+    · -- Forward: G psi in MCS -> forall s ≥ t, truth tau s psi
       intro h_G s hts
-      -- Strict semantics: hts : t < s, use forward_G directly
       have h_psi_mcs : psi ∈ fam.mcs s := fam.forward_G t s psi hts h_G
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s > t, truth tau s psi -> G psi in MCS
+    · -- Backward: forall s ≥ t, truth tau s psi -> G psi in MCS
       intro h_all
-      -- Extract forward_F and backward_P for this family from h_tc
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily Int := {
         toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      -- By IH backward: psi in fam.mcs s for all s > t
       have h_all_mcs : ∀ s : Int, t < s → psi ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s hts)
-      -- Apply temporal_backward_G
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
       exact temporal_backward_G tcf t psi h_all_mcs
   | all_past psi ih =>
-    -- H case: H psi in MCS <-> forall s < t, truth tau s psi
-    -- Note: Strict semantics (s < t) per Task 991
+    -- H case: Under reflexive semantics, H quantifies over s ≤ t
     simp only [truth_at]
     constructor
-    · -- Forward: H psi in MCS -> forall s < t, truth tau s psi
+    · -- Forward: H psi in MCS -> forall s ≤ t, truth tau s psi
       intro h_H s hst
-      -- Strict semantics: hst : s < t, use backward_H directly
       have h_psi_mcs : psi ∈ fam.mcs s := fam.backward_H t s psi hst h_H
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s < t, truth tau s psi -> H psi in MCS
+    · -- Backward: forall s ≤ t, truth tau s psi -> H psi in MCS
       intro h_all
-      -- Extract forward_F and backward_P for this family from h_tc
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily Int := {
         toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      -- By IH backward: psi in fam.mcs s for all s < t
       have h_all_mcs : ∀ s : Int, s < t → psi ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s hst)
-      -- Apply temporal_backward_H
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
       exact temporal_backward_H tcf t psi h_all_mcs
 
 /-!
@@ -752,12 +737,10 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         exact (ih fam' hfam' t).mpr (h_all_σ (to_history fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
   | all_future ψ ih =>
-    -- G case: same as canonical_truth_lemma (temporal cases are Omega-independent)
-    -- Note: Strict semantics (t < s) per Task 991
+    -- G case: Under reflexive semantics, G quantifies over s ≥ t
     simp only [truth_at]
     constructor
     · intro h_G s hts
-      -- Strict semantics: hts : t < s, use forward_G directly
       have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
       exact (ih fam hfam s).mp h_psi_mcs
     · intro h_all
@@ -769,15 +752,13 @@ theorem shifted_truth_lemma (B : BFMCS Int)
       }
       have h_all_mcs : ∀ s : Int, t < s → ψ ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s hts)
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
       exact temporal_backward_G tcf t ψ h_all_mcs
   | all_past ψ ih =>
-    -- H case: same as canonical_truth_lemma (temporal cases are Omega-independent)
-    -- Note: Strict semantics (s < t) per Task 991
+    -- H case: Under reflexive semantics, H quantifies over s ≤ t
     simp only [truth_at]
     constructor
     · intro h_H s hst
-      -- Strict semantics: hst : s < t, use backward_H directly
       have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
       exact (ih fam hfam s).mp h_psi_mcs
     · intro h_all
@@ -789,7 +770,7 @@ theorem shifted_truth_lemma (B : BFMCS Int)
       }
       have h_all_mcs : ∀ s : Int, s < t → ψ ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s hst)
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
       exact temporal_backward_H tcf t ψ h_all_mcs
 
 end Bimodal.Metalogic.Bundle.Canonical

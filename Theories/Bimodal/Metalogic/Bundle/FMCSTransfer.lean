@@ -194,8 +194,18 @@ coherence from the canonical construction.
 noncomputable def transferredFMCS (T : FMCSTransfer D) : FMCS D where
   mcs := transferredMCS T
   is_mcs := transferredMCS_is_mcs T
-  forward_G := transferred_forward_G T
-  backward_H := transferred_backward_H T
+  forward_G := fun d₁ d₂ phi h_le h_G => by
+    rcases eq_or_lt_of_le h_le with rfl | h_lt
+    · -- d₁ = d₂: use T-axiom
+      exact SetMaximalConsistent.implication_property (transferredMCS_is_mcs T d₁)
+        (theorem_in_mcs (transferredMCS_is_mcs T d₁) (.axiom _ _ (.temp_t_future phi))) h_G
+    · exact transferred_forward_G T d₁ d₂ phi h_lt h_G
+  backward_H := fun d₁ d₂ phi h_le h_H => by
+    rcases eq_or_lt_of_le h_le with rfl | h_lt
+    · -- d₁ = d₂: use T-axiom
+      exact SetMaximalConsistent.implication_property (transferredMCS_is_mcs T d₁)
+        (theorem_in_mcs (transferredMCS_is_mcs T d₁) (.axiom _ _ (.temp_t_past phi))) h_H
+    · exact transferred_backward_H T d₁ d₂ phi h_lt h_H
 
 /-!
 ## Forward F and Backward P Transfer (Phase 3-4)

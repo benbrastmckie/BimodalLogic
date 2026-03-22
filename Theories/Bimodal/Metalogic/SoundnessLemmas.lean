@@ -261,9 +261,9 @@ theorem swap_axiom_t4_valid (φ : Formula) :
        (Formula.all_future (Formula.all_future φ))).swap_past_future := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_past_swap r h_r_lt_t u h_u_lt_r
-  have h_u_lt_t : u < t := lt_trans h_u_lt_r h_r_lt_t
-  exact h_past_swap u h_u_lt_t
+  intro h_past_swap r h_r_le_t u h_u_le_r
+  have h_u_le_t : u ≤ t := le_trans h_u_le_r h_r_le_t
+  exact h_past_swap u h_u_le_t
 
 /--
 Temporal A axiom (TA) swaps to a valid formula: `φ -> F(sometime_past φ)` swaps to
@@ -276,8 +276,8 @@ theorem swap_axiom_ta_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_past_future, Formula.sometime_past]
-  intro h_swap_φ s h_s_lt_t h_all_not_future
-  exact h_all_not_future t h_s_lt_t h_swap_φ
+  intro h_swap_φ s h_s_le_t h_all_not_future
+  exact h_all_not_future t h_s_le_t h_swap_φ
 
 /--
 Temporal L axiom (TL) swaps to a valid formula: `always φ -> FPφ` swaps to `always(swap φ) -> P(F(swap φ))`.
@@ -301,34 +301,27 @@ theorem swap_axiom_tl_valid (φ : Formula) :
     is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_past_future := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_always s h_s_lt_t u h_s_lt_u
+  intro h_always s h_s_le_t u h_s_le_u
   -- h_always encodes (swap) always: G(X) ∧ (X ∧ H(X)) where X = swap φ
-  -- Under strict semantics: h_past : ∀ s < t, X s, h_now : X t, h_fut : ∀ s > t, X s
-  -- We need X at u where s < t and s < u. Use lt_trichotomy on u vs t.
-  rcases lt_trichotomy u t with h_lt | h_eq | h_gt
-  · -- Case: u < t, use H(X) (past component)
+  -- Under reflexive semantics: h_past : ∀ s ≤ t, X s, h_now : X t, h_fut : ∀ s ≥ t, X s
+  -- We need X at u where s ≤ t and s ≤ u.
+  -- Under reflexive semantics, always gives φ at ALL times, so any u works.
+  -- We just need to extract from the always structure.
+  rcases le_or_lt u t with h_le | h_gt
+  · -- Case: u ≤ t, use H(X) (past component, includes present)
     apply Classical.byContradiction
     intro h_neg
     apply h_always
     intro _h_fut h_conj
     apply h_conj
     intro _h_now h_past
-    exact h_neg (h_past u h_lt)
-  · -- Case: u = t, use the present component
-    subst h_eq
-    apply Classical.byContradiction
-    intro h_neg
-    apply h_always
-    intro _h_fut h_conj
-    apply h_conj
-    intro h_now _h_past
-    exact h_neg h_now
+    exact h_neg (h_past u h_le)
   · -- Case: u > t, use G(X) (future component)
     apply Classical.byContradiction
     intro h_neg
     apply h_always
     intro h_fut _h_conj
-    exact h_neg (h_fut u h_gt)
+    exact h_neg (h_fut u (le_of_lt h_gt))
 
 /--
 Modal-Future axiom (MF) swaps to a valid formula: `box φ -> box Fφ` swaps to `box(swap φ) -> box P(swap φ)`.
@@ -343,7 +336,7 @@ theorem swap_axiom_mf_valid (φ : Formula) :
     is_valid D ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_past_future := by
   intro F M Omega h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_box_swap σ h_σ_mem s h_s_lt_t
+  intro h_box_swap σ h_σ_mem s h_s_le_t
   have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_past_future).mp h_at_shifted
 
@@ -360,7 +353,7 @@ theorem swap_axiom_tf_valid (φ : Formula) :
     is_valid D ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_past_future := by
   intro F M Omega h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_box_swap s h_s_lt_t σ h_σ_mem
+  intro h_box_swap s h_s_le_t σ h_σ_mem
   have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_past_future).mp h_at_shifted
 
@@ -411,14 +404,14 @@ Temporal K rule preserves swap validity.
 If `φ.swap` is valid, then `(Fφ).swap = P(φ.swap)` is valid.
 
 **Proof**: If `φ.swap` is true at all tuples, then for any (F, M, Omega, h_sc, τ, h_mem, t),
-at all times s < t, `φ.swap` is true at (M, τ, s). This is exactly `P(φ.swap)`.
+at all times s ≤ t, `φ.swap` is true at (M, τ, s). This is exactly `P(φ.swap)`.
 -/
 theorem temporal_k_preserves_swap_valid (φ : Formula)
     (h : is_valid D φ.swap_past_future) :
     is_valid D (Formula.all_future φ).swap_past_future := by
   intro F M Omega h_sc τ h_mem t
   simp only [Formula.swap_temporal, truth_at]
-  intro s _h_s_lt_t
+  intro s _h_s_le_t
   exact h F M Omega h_sc τ h_mem s
 
 /--
@@ -507,23 +500,23 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | temp_linearity ψ χ =>
     -- The swap of the future-linearity axiom is the past-linearity axiom
     -- P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)
-    -- With strict <, use trichotomy on witnesses
+    -- With reflexive ≤, use trichotomy on witnesses
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_future,
                Formula.some_past, Formula.neg, truth_at]
     intro h_conj
-    -- Extract P(phi) and P(psi) witnesses using classical logic
-    have h_P_phi : (∀ s, s < t → truth_at M Omega τ s ψ.swap_temporal → False) → False :=
+    -- Extract P(phi) and P(psi) witnesses using classical logic (reflexive semantics)
+    have h_P_phi : (∀ s, s ≤ t → truth_at M Omega τ s ψ.swap_temporal → False) → False :=
       Classical.byContradiction (fun h_not =>
         h_conj (fun h1 _ => h_not (fun h_all => h1 (fun s hs h_phi => h_all s hs h_phi))))
-    have h_P_psi : (∀ s, s < t → truth_at M Omega τ s χ.swap_temporal → False) → False :=
+    have h_P_psi : (∀ s, s ≤ t → truth_at M Omega τ s χ.swap_temporal → False) → False :=
       Classical.byContradiction (fun h_not =>
         h_conj (fun _ h2 => h_not (fun h_all => h2 (fun s hs h_psi => h_all s hs h_psi))))
     -- Extract existential witnesses
-    have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal := by
+    have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ.swap_temporal := by
       by_contra h_no; push_neg at h_no
       exact h_P_phi (fun s hs h_phi => h_no s hs h_phi)
-    have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, s < t ∧ truth_at M Omega τ s χ.swap_temporal := by
+    have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s χ.swap_temporal := by
       by_contra h_no; push_neg at h_no
       exact h_P_psi (fun s hs h_psi => h_no s hs h_psi)
     rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
@@ -535,7 +528,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       intro h_imp
       apply h_imp
       · intro h_no_past_phi
-        exact h_no_past_phi s1 h_lt h_phi_s1
+        exact h_no_past_phi s1 (le_of_lt h_lt) h_phi_s1
       · exact h_psi_s2
     · -- s1 = s2: P(ψ.swap ∧ χ.swap) witness at s1
       subst h_eq
@@ -551,54 +544,60 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       apply h_not_middle
       intro h_all_neg_second
       exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_P_psi =>
-        h_neg_P_psi s2 h_gt h_psi_s2))
+        h_neg_P_psi s2 (le_of_lt h_gt) h_psi_s2))
   | density ψ =>
-    -- swap(GGφ → Gφ) = HHφ → Hφ (Sahlqvist form under strict semantics)
-    -- Proof: If HHφ at t (∀r < t, ∀s < r, φ(s)), then Hφ at t (∀s < t, φ(s)).
-    -- For any s < t, by density ∃r with s < r < t. From HHφ: Hφ at r means ∀u < r, φ(u).
-    -- Since s < r, φ(s).
+    -- swap(GGφ → Gφ) = HHφ → Hφ (trivially valid under reflexive semantics)
+    -- Proof: If HHφ at t (∀r ≤ t, ∀s ≤ r, φ(s)), then Hφ at t (∀s ≤ t, φ(s)).
+    -- For any s ≤ t, take r = s in HHφ to get ∀u ≤ s, φ(u). Since s ≤ s, φ(s).
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro h_HH s hst
-    -- h_HH : ∀ r < t, ∀ u < r, φ.swap(u)
-    -- hst : s < t
+    -- h_HH : ∀ r ≤ t, ∀ u ≤ r, φ.swap(u)
+    -- hst : s ≤ t
     -- Need: φ.swap(s)
-    -- By DenselyOrdered, ∃ r with s < r < t
-    obtain ⟨r, hsr, hrt⟩ := @DenselyOrdered.dense D _ _ s t hst
-    -- From h_HH at r: ∀ u < r, φ.swap(u). Since s < r, φ.swap(s).
-    exact h_HH r hrt s hsr
+    -- Take r = s: from h_HH at s, ∀ u ≤ s, φ.swap(u). Since s ≤ s, φ.swap(s).
+    exact h_HH s hst s le_rfl
   | discreteness_forward _ =>
     -- discreteness_forward is not dense-compatible, eliminated by h_dc
     exact absurd h_dc id
   | seriality_future ψ =>
-    -- swap(Gψ → Fψ) = Hψ → Pψ (Sahlqvist form under strict semantics)
-    -- Proof: If Hψ at t (∀s < t, ψ(s)), then Pψ at t (∃s < t, ψ(s)).
-    -- This requires NoMinOrder to ensure ∃s < t exists. But h_dc doesn't provide this.
-    -- However, DenselyOrdered + Nontrivial implies NoMinOrder (from the signature).
+    -- swap(Gψ → Fψ) = Hψ → Pψ (trivially valid under reflexive semantics via T-axiom)
+    -- Proof: If Hψ at t (∀s ≤ t, ψ(s)), then Pψ at t (∃s ≤ t, ψ(s)).
+    -- Take s = t: ψ(t) from Hψ via T-axiom, and t ≤ t by reflexivity.
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.some_past, Formula.neg, truth_at]
     intro h_H h_all_neg
-    -- h_H : ∀ s < t, ψ.swap(s)
-    -- h_all_neg : ∀ s < t, ¬ψ.swap(s)
-    -- Need: contradiction. Get a witness s < t from Nontrivial + DenselyOrdered.
-    -- Nontrivial D gives NoMinOrder D (with linear order), so ∃s < t.
-    have h_nomin : NoMinOrder D := inferInstance
-    obtain ⟨s, hst⟩ := h_nomin.exists_lt t
-    exact h_all_neg s hst (h_H s hst)
+    -- h_H : ∀ s ≤ t, ψ.swap(s)
+    -- h_all_neg : ∀ s ≤ t, ¬ψ.swap(s)
+    -- Use t itself as witness: t ≤ t by reflexivity
+    exact h_all_neg t le_rfl (h_H t le_rfl)
   | seriality_past ψ =>
-    -- swap(Hψ → Pψ) = Gψ → Fψ (Sahlqvist form under strict semantics)
-    -- Proof: If Gψ at t (∀s > t, ψ(s)), then Fψ at t (∃s > t, ψ(s)).
-    -- This requires NoMaxOrder to ensure ∃s > t exists.
+    -- swap(Hψ → Pψ) = Gψ → Fψ (trivially valid under reflexive semantics via T-axiom)
+    -- Proof: If Gψ at t (∀s ≥ t, ψ(s)), then Fψ at t (∃s ≥ t, ψ(s)).
+    -- Take s = t: ψ(t) from Gψ via T-axiom, and t ≥ t by reflexivity.
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.some_future, Formula.neg, truth_at]
     intro h_G h_all_neg
-    -- h_G : ∀ s > t, ψ.swap(s)
-    -- h_all_neg : ∀ s > t, ¬ψ.swap(s)
-    -- Need: contradiction. Get a witness s > t from Nontrivial + DenselyOrdered.
-    -- Nontrivial D gives NoMaxOrder D (with linear order), so ∃s > t.
-    have h_nomax : NoMaxOrder D := inferInstance
-    obtain ⟨s, hts⟩ := h_nomax.exists_gt t
-    exact h_all_neg s hts (h_G s hts)
+    -- h_G : ∀ s ≥ t, ψ.swap(s)
+    -- h_all_neg : ∀ s ≥ t, ¬ψ.swap(s)
+    -- Use t itself as witness: t ≥ t by reflexivity
+    exact h_all_neg t le_rfl (h_G t le_rfl)
+  | temp_t_future ψ =>
+    -- swap(Gψ → ψ) = Hψ → ψ (T-axiom for past, trivially valid)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H
+    -- h_H : ∀ s ≤ t, ψ.swap(s)
+    -- Need: ψ.swap(t). By reflexivity t ≤ t, h_H gives ψ.swap(t).
+    exact h_H t le_rfl
+  | temp_t_past ψ =>
+    -- swap(Hψ → ψ) = Gψ → ψ (T-axiom for future, trivially valid)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_G
+    -- h_G : ∀ s ≥ t, ψ.swap(s)
+    -- Need: ψ.swap(t). By reflexivity t ≥ t, h_G gives ψ.swap(t).
+    exact h_G t le_rfl
 
 /-! ## Axiom Validity (Local)
 
@@ -699,16 +698,16 @@ private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
   intro h_future_imp h_future_phi s hts
   exact h_future_imp s hts (h_future_phi s hts)
 
-/-- Temporal 4 axiom is locally valid. -/
+/-- Temporal 4 axiom is locally valid (reflexive semantics). -/
 private theorem axiom_temp_4_valid (φ : Formula) :
     is_valid D ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_future s hts r hsr
-  have htr : t < r := lt_trans hts hsr
+  have htr : t ≤ r := le_trans hts hsr
   exact h_future r htr
 
-/-- Helper for temporal A axiom. -/
+/-- Helper for temporal A axiom (reflexive semantics). -/
 private theorem axiom_temp_a_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.sometime_past)) := by
   intro F M Omega _h_sc τ _h_mem t
@@ -721,29 +720,28 @@ private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → Fal
   ⟨Classical.byContradiction (fun hP => h (fun p _ => hP p)),
    Classical.byContradiction (fun hQ => h (fun _ q => hQ q))⟩
 
-/-- Temporal L axiom is locally valid. -/
+/-- Temporal L axiom is locally valid (reflexive semantics). -/
 private theorem axiom_temp_l_valid (φ : Formula) :
     is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.always, Formula.and, Formula.neg, truth_at]
   intro h_always s _hts r hrs
-  -- Under strict semantics, always encodes: (∀ u < t, φ(u)) ∧ ((φ(t) → (∀ v > t, φ(v)) → ⊥) → ⊥)
+  -- Under reflexive semantics, always encodes: (∀ u ≤ t, φ(u)) ∧ ((φ(t) → (∀ v ≥ t, φ(v)) → ⊥) → ⊥)
   -- This simplifies to: φ holds at all times
   have h1 :
-    (∀ (u : D), u < t → truth_at M Omega τ u φ) ∧
+    (∀ (u : D), u ≤ t → truth_at M Omega τ u φ) ∧
     ((truth_at M Omega τ t φ →
-      (∀ (v : D), t < v → truth_at M Omega τ v φ) → False) → False) :=
+      (∀ (v : D), t ≤ v → truth_at M Omega τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : D), t < v → truth_at M Omega τ v φ) :=
+  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : D), t ≤ v → truth_at M Omega τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
-  -- With strict semantics and conjunction, we have φ at all times
-  -- r < s and s > t, so by trichotomy: r < t, r = t, or r > t
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · exact h_past r h_lt
-  · subst h_eq; exact h_now
-  · exact h_future r h_gt
+  -- With reflexive semantics, we have φ at all times (past including now, future including now)
+  -- r ≤ s and s ≥ t. Either r ≤ t (use past) or r > t (use future)
+  rcases le_or_lt r t with h_le | h_gt
+  · exact h_past r h_le
+  · exact h_future r (le_of_lt h_gt)
 
 /-- Modal-Future axiom is locally valid. -/
 private theorem axiom_modal_future_valid (φ : Formula) :
@@ -763,12 +761,12 @@ private theorem axiom_temp_future_valid (φ : Formula) :
   have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
 
-/-- Temporal linearity axiom is locally valid.
+/-- Temporal linearity axiom is locally valid (reflexive semantics).
 
 `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`
 
 The proof uses linearity of D (the `lt_trichotomy` from `LinearOrder`). Given witnesses
-s1 > t for φ and s2 > t for ψ, either s1 < s2 (take r = s1, giving F(φ ∧ F(ψ))),
+s1 ≥ t for φ and s2 ≥ t for ψ, either s1 < s2 (take r = s1, giving F(φ ∧ F(ψ))),
 s1 = s2 (giving F(φ ∧ ψ)), or s2 < s1 (take r = s2, giving F(F(φ) ∧ ψ)).
 -/
 private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
@@ -781,11 +779,11 @@ private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
   intro h_conj
   -- Extract both F-witnesses using classical logic
   have ⟨h_F_phi, h_F_psi⟩ := and_of_not_imp_not h_conj
-  -- Extract existential witnesses (using < due to strict semantics)
-  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+  -- Extract existential witnesses (using ≤ due to reflexive semantics)
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ := by
     by_contra h_no; push_neg at h_no
     exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
-  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
     by_contra h_no; push_neg at h_no
     exact h_F_psi (fun s hs h_psi => h_no s hs h_psi)
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
@@ -796,7 +794,7 @@ private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
     apply h_neg_second
     intro h_all_neg_second
     exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_F_psi =>
-      h_neg_F_psi s2 h_lt h_psi_s2))
+      h_neg_F_psi s2 (le_of_lt h_lt) h_psi_s2))
   · -- s1 = s2: provide first disjunct F(φ ∧ ψ)
     subst h_eq
     intro h_neg_first
@@ -809,22 +807,20 @@ private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
     intro _
     intro h_all_neg_third
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
-      (fun h_neg_F_phi => h_neg_F_phi s1 h_gt h_phi_s1) h_psi_s2)
+      (fun h_neg_F_phi => h_neg_F_phi s1 (le_of_lt h_gt) h_phi_s1) h_psi_s2)
 
 /-- Density axiom (DN) is locally valid on dense orders: `GGφ → Gφ` (Sahlqvist form).
-Under strict semantics, uses density to find intermediate witness. -/
+Under reflexive semantics, trivially valid by taking r = s. -/
 private theorem axiom_density_valid [DenselyOrdered D] (φ : Formula) :
     is_valid D (φ.all_future.all_future.imp φ.all_future) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_GG s hts
-  -- h_GG : ∀ r > t, ∀ u > r, φ(u)
-  -- hts : t < s
+  -- h_GG : ∀ r ≥ t, ∀ u ≥ r, φ(u)
+  -- hts : t ≤ s
   -- Goal: φ(s)
-  -- By density, ∃ r with t < r < s
-  obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense D _ _ t s hts
-  -- From h_GG at r: ∀ u > r, φ(u). Since s > r, φ(s).
-  exact h_GG r htr s hrs
+  -- Take r = s: from h_GG at s, ∀ u ≥ s, φ(u). Since s ≥ s, φ(s).
+  exact h_GG s hts s le_rfl
 
 /-- All dense-compatible axioms are locally valid on dense orders. -/
 private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Formula} (h : Axiom φ)
@@ -849,27 +845,35 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | density ψ => exact axiom_density_valid ψ
   | discreteness_forward _ => exact absurd h_dc id
   | seriality_future ψ =>
-    -- Under strict semantics, Gψ → Fψ requires NoMaxOrder (which DenselyOrdered + Nontrivial provides)
+    -- Under reflexive semantics, Gψ → Fψ is trivially valid via T-axiom
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_future, Formula.neg, truth_at]
     intro h_G h_all_neg
-    -- h_G : ∀ s > t, ψ(s)
-    -- h_all_neg : ∀ s > t, ¬ψ(s)
-    -- DenselyOrdered + Nontrivial implies NoMaxOrder
-    have h_nomax : NoMaxOrder D := inferInstance
-    obtain ⟨s, hts⟩ := h_nomax.exists_gt t
-    exact h_all_neg s hts (h_G s hts)
+    -- h_G : ∀ s ≥ t, ψ(s)
+    -- h_all_neg : ∀ s ≥ t, ¬ψ(s)
+    -- Use t itself as witness: t ≥ t by reflexivity
+    exact h_all_neg t le_rfl (h_G t le_rfl)
   | seriality_past ψ =>
-    -- Under strict semantics, Hψ → Pψ requires NoMinOrder (which DenselyOrdered + Nontrivial provides)
+    -- Under reflexive semantics, Hψ → Pψ is trivially valid via T-axiom
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_past, Formula.neg, truth_at]
     intro h_H h_all_neg
-    -- h_H : ∀ s < t, ψ(s)
-    -- h_all_neg : ∀ s < t, ¬ψ(s)
-    -- DenselyOrdered + Nontrivial implies NoMinOrder
-    have h_nomin : NoMinOrder D := inferInstance
-    obtain ⟨s, hst⟩ := h_nomin.exists_lt t
-    exact h_all_neg s hst (h_H s hst)
+    -- h_H : ∀ s ≤ t, ψ(s)
+    -- h_all_neg : ∀ s ≤ t, ¬ψ(s)
+    -- Use t itself as witness: t ≤ t by reflexivity
+    exact h_all_neg t le_rfl (h_H t le_rfl)
+  | temp_t_future ψ =>
+    -- T-axiom future: Gψ → ψ (trivially valid by reflexivity)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_G
+    exact h_G t le_rfl
+  | temp_t_past ψ =>
+    -- T-axiom past: Hψ → ψ (trivially valid by reflexivity)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_H
+    exact h_H t le_rfl
 
 /-! ## Rule Preservation for Local Validity
 

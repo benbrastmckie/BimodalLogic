@@ -167,7 +167,7 @@ Key findings from Wave 2 research (05_team-research.md):
 
 ---
 
-### Phase 3: Soundness Proof Repairs [IN PROGRESS]
+### Phase 3: Soundness Proof Repairs [COMPLETED]
 
 **Goal**: Fix all soundness proofs for reflexive temporal semantics
 

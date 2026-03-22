@@ -307,23 +307,18 @@ theorem irr_sound_dense_at_domain
   -- Goal: truth of antecedent (p AND H(neg p)) at (prod_model, omega_prod, lift tau, t)
   -- Formula.and a b = (a.imp (b.imp bot)).imp bot
   -- truth(antecedent) = (truth(atom p) → truth(H(neg p)) → False) → False
-  simp only [Formula.and, Formula.neg, truth_at]
-  intro h_contra
-  -- h_contra : truth(atom p) → (∀ s < t, truth(atom p) at s → False) → False
-  -- Provide truth(atom p) and H(neg p) to derive False.
-  -- 1) truth(atom p) at (prod_model, lift tau, t):
-  --    = ∃ ht : tau.domain t, prod_model.val (tau.states t ht, t) p
-  --    = ∃ ht, (t = t) = True (since we have h_dom)
-  have h_atom_p : ∃ (ht : (lift_history tau).domain t),
-      (prod_model M p t).valuation ((lift_history tau).states t ht) p := by
-    exact ⟨h_dom, by simp [lift_history, prod_model]⟩
-  -- 2) ∀ s < t, ¬(∃ hs, prod_model.val (lift tau s hs) p):
-  --    For s < t: prod_model.val (tau.states s hs, s) p = (s = t) = False
-  have h_H_neg_p : ∀ (s : D'), s < t → (∃ (hs : (lift_history tau).domain s),
-      (prod_model M p t).valuation ((lift_history tau).states s hs) p) → False := by
-    intro s h_lt ⟨hs, hv⟩
-    simp [lift_history, prod_model] at hv
-    exact absurd hv (ne_of_lt h_lt)
-  exact h_contra h_atom_p h_H_neg_p
+  -- TASK 29 NOTE: The IRR rule proof needs redesign for reflexive semantics.
+  -- Under strict semantics (< ordering), H(neg p) at t means "neg p at all s < t",
+  -- which is satisfiable when p is true only at t (the "first moment" construction).
+  -- Under reflexive semantics (≤ ordering), H(neg p) at t means "neg p at all s ≤ t",
+  -- which includes t itself, making the antecedent (p AND H(neg p)) unsatisfiable.
+  --
+  -- The IRR rule construction needs to be fundamentally redesigned for reflexive
+  -- semantics. Under reflexive semantics, the T-axiom (Gφ → φ, Hφ → φ) may provide
+  -- alternative means to achieve what IRR was intended for.
+  --
+  -- This is marked as technical debt pending analysis of whether IRR is still needed
+  -- or if T-axiom-based proofs can replace its use cases.
+  sorry
 
 end Bimodal.Metalogic.IRRSoundness

@@ -613,10 +613,26 @@ so the temporal order is total.
 noncomputable def chainFMCS (flag : Flag CanonicalMCS) : FMCS (ChainFMCSDomain flag) where
   mcs := chainFMCS_mcs flag
   is_mcs := chainFMCS_is_mcs flag
-  forward_G := fun w₁ w₂ phi h_le h_G =>
-    chainFMCS_forward_G flag w₁ w₂ phi h_le h_G
-  backward_H := fun w₁ w₂ phi h_le h_H =>
-    chainFMCS_backward_H flag w₁ w₂ phi h_le h_H
+  forward_G := fun w₁ w₂ phi h_le h_G => by
+    -- h_le : w₁ ≤ w₂ (Subtype ≤), unfolds to w₁.val ≤ w₂.val
+    -- which is w₁.val = w₂.val ∨ CanonicalR w₁.val.world w₂.val.world
+    rcases (show w₁.val = w₂.val ∨ CanonicalR w₁.val.world w₂.val.world from h_le) with h_eq | h_R
+    · -- Equal: use T-axiom
+      have : w₁ = w₂ := Subtype.ext h_eq
+      subst this
+      exact SetMaximalConsistent.implication_property (chainFMCS_is_mcs flag w₁)
+        (theorem_in_mcs (chainFMCS_is_mcs flag w₁) (.axiom _ _ (.temp_t_future phi))) h_G
+    · exact canonical_forward_G w₁.val.world w₂.val.world h_R phi h_G
+  backward_H := fun w₁ w₂ phi h_le h_H => by
+    rcases (show w₂.val = w₁.val ∨ CanonicalR w₂.val.world w₁.val.world from h_le) with h_eq | h_R
+    · have : w₂ = w₁ := Subtype.ext h_eq
+      subst this
+      exact SetMaximalConsistent.implication_property (chainFMCS_is_mcs flag w₂)
+        (theorem_in_mcs (chainFMCS_is_mcs flag w₂) (.axiom _ _ (.temp_t_past phi))) h_H
+    · have h_R_past : CanonicalR_past w₁.val.world w₂.val.world :=
+        g_content_subset_implies_h_content_reverse w₂.val.world w₁.val.world
+          w₂.val.is_mcs w₁.val.is_mcs h_R
+      exact canonical_backward_H w₁.val.world w₂.val.world h_R_past phi h_H
 
 /-!
 ## Existence: Every CanonicalMCS Element is in Some Flag

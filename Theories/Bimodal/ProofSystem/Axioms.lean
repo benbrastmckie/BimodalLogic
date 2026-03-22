@@ -3,13 +3,13 @@ import Bimodal.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 19 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 21 axiom schemata for bimodal logic TM (Tense and Modality).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 19 axiom constructors organized into three categories:
-  - **Base axioms** (15): Valid on all linear orders (no special frame conditions)
+- 21 axiom constructors organized into three categories:
+  - **Base axioms** (17): Valid on all linear orders (no special frame conditions)
   - **Dense extension** (1): `density` - requires DenselyOrdered
   - **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` - require SuccOrder/NoMaxOrder/NoMinOrder
 
@@ -17,7 +17,7 @@ This module defines the 19 axiom schemata for bimodal logic TM (Tense and Modali
 
 - Base: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`, `modal_b`,
   `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
-  `modal_future`, `temp_future`, `temp_linearity`
+  `temp_t_future`, `temp_t_past`, `modal_future`, `temp_future`, `temp_linearity`
 - Dense: `density`
 - Discrete: `discreteness_forward`, `seriality_future`, `seriality_past`
 
@@ -46,10 +46,11 @@ The TM logic includes:
 - **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
 - **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
 
-**Note**: Under strict semantics (Task 991), the T-axioms (Gφ → φ, Hφ → φ) are
-NOT valid and are NOT included. Strict semantics quantifies over s > t, so the
-present is excluded from temporal quantification. This simplifies the canonical
-model construction by making irreflexivity definitional.
+**Note**: Under reflexive semantics (Task 29), the T-axioms (Gφ → φ, Hφ → φ) ARE
+valid and ARE included as `temp_t_future` and `temp_t_past`. Reflexive semantics
+quantifies over s ≥ t, so the present is INCLUDED in temporal quantification.
+This simplifies the canonical model construction by making reflexivity definitional
+and eliminating the need for the canonicalR_irreflexive axiom.
 ### Modal-Temporal Interaction Axioms
 - **MF** (Modal-Future): `□φ → □Fφ` - necessary truths remain necessary in future
 - **TF** (Temporal-Future): `□φ → F□φ` - necessary truths were/will-be necessary
@@ -275,6 +276,34 @@ inductive Axiom : Formula → Type where
   | temp_l (φ : Formula) : Axiom (φ.always.imp (Formula.all_future (Formula.all_past φ)))
 
   /--
+  Temporal T axiom (future): `Gφ → φ` (reflexivity of future).
+
+  What holds at all future times (including now) holds at the present.
+  This axiom is valid because reflexive semantics uses ≤ (not <), so t ≤ t.
+
+  **Task 29**: This axiom was added when switching from strict to reflexive
+  temporal semantics. Under reflexive semantics, Gφ at t means "φ at all s ≥ t",
+  which includes t itself. Hence Gφ → φ is valid by taking s = t.
+
+  Semantically: `Gφ` at t means ∀s ≥ t, φ(s). Since t ≥ t (reflexivity), φ(t).
+  -/
+  | temp_t_future (φ : Formula) : Axiom (φ.all_future.imp φ)
+
+  /--
+  Temporal T axiom (past): `Hφ → φ` (reflexivity of past).
+
+  What holds at all past times (including now) holds at the present.
+  This axiom is valid because reflexive semantics uses ≤ (not <), so t ≤ t.
+
+  **Task 29**: This axiom was added when switching from strict to reflexive
+  temporal semantics. Under reflexive semantics, Hφ at t means "φ at all s ≤ t",
+  which includes t itself. Hence Hφ → φ is valid by taking s = t.
+
+  Semantically: `Hφ` at t means ∀s ≤ t, φ(s). Since t ≤ t (reflexivity), φ(t).
+  -/
+  | temp_t_past (φ : Formula) : Axiom (φ.all_past.imp φ)
+
+  /--
   Modal-Future axiom: `□φ → □Fφ` (modal-future interaction).
 
   Necessary truths remain necessary in the future.
@@ -488,6 +517,8 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.temp_4 _ => .Base
   | Axiom.temp_a _ => .Base
   | Axiom.temp_l _ => .Base
+  | Axiom.temp_t_future _ => .Base
+  | Axiom.temp_t_past _ => .Base
   | Axiom.modal_future _ => .Base
   | Axiom.temp_future _ => .Base
   | Axiom.temp_linearity _ _ => .Base

@@ -151,15 +151,12 @@ theorem parametric_box_persistent
     theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
   have h_H_box : (Formula.box φ).all_past ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t) h_past_tf h_box
-  -- Step 3: Case split on s vs t (three cases for irreflexive semantics)
-  rcases lt_trichotomy t s with h_lt | h_eq | h_gt
-  · -- s > t: use forward_G (strict)
-    exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
-  · -- s = t: trivial from h_box
-    rw [← h_eq]
-    exact h_box
-  · -- s < t: use backward_H (strict)
-    exact fam.backward_H t s (Formula.box φ) h_gt h_H_box
+  -- Step 3: Case split on s vs t
+  rcases le_or_lt t s with h_le | h_gt
+  · -- t ≤ s: use forward_G
+    exact fam.forward_G t s (Formula.box φ) h_le h_G_box
+  · -- s < t: use backward_H
+    exact fam.backward_H t s (Formula.box φ) (le_of_lt h_gt) h_H_box
 
 /-!
 ## The Parametric Canonical Truth Lemma
@@ -272,14 +269,14 @@ theorem parametric_canonical_truth_lemma
       -- By modal_backward: box psi in MCS
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
   | all_future psi ih =>
-    -- G case: Under strict semantics (Task 991), G quantifies over s > t
+    -- G case: Under reflexive semantics, G quantifies over s ≥ t
     simp only [truth_at]
     constructor
-    · -- Forward: G psi in MCS -> forall s > t, truth tau s psi
+    · -- Forward: G psi in MCS -> forall s ≥ t, truth tau s psi
       intro h_G s hts
       have h_psi_mcs : psi ∈ fam.mcs s := fam.forward_G t s psi hts h_G
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s > t, truth tau s psi -> G psi in MCS
+    · -- Backward: forall s ≥ t, truth tau s psi -> G psi in MCS
       intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       let tcf : TemporalCoherentFamily D := {
@@ -289,17 +286,17 @@ theorem parametric_canonical_truth_lemma
       }
       have h_all_mcs : ∀ s : D, t < s → psi ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s hts)
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
       exact temporal_backward_G tcf t psi h_all_mcs
   | all_past psi ih =>
-    -- H case: Under strict semantics (Task 991), H quantifies over s < t
+    -- H case: Under reflexive semantics, H quantifies over s ≤ t
     simp only [truth_at]
     constructor
-    · -- Forward: H psi in MCS -> forall s < t, truth tau s psi
+    · -- Forward: H psi in MCS -> forall s ≤ t, truth tau s psi
       intro h_H s hst
       have h_psi_mcs : psi ∈ fam.mcs s := fam.backward_H t s psi hst h_H
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s < t, truth tau s psi -> H psi in MCS
+    · -- Backward: forall s ≤ t, truth tau s psi -> H psi in MCS
       intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       let tcf : TemporalCoherentFamily D := {
@@ -309,7 +306,7 @@ theorem parametric_canonical_truth_lemma
       }
       have h_all_mcs : ∀ s : D, s < t → psi ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s hst)
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
       exact temporal_backward_H tcf t psi h_all_mcs
 
 /-!
@@ -419,14 +416,14 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         exact (ih fam' hfam' t).mpr (h_all_σ (parametric_to_history fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
   | all_future ψ ih =>
-    -- G case: Under strict semantics (Task 991), G quantifies over s > t
+    -- G case: Under reflexive semantics, G quantifies over s ≥ t
     simp only [truth_at]
     constructor
-    · -- Forward: G ψ ∈ fam.mcs t → ∀ s > t, truth_at ... s ψ
+    · -- Forward: G ψ ∈ fam.mcs t → ∀ s ≥ t, truth_at ... s ψ
       intro h_G s hts
       have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: (∀ s > t, truth_at ... s ψ) → G ψ ∈ fam.mcs t
+    · -- Backward: (∀ s ≥ t, truth_at ... s ψ) → G ψ ∈ fam.mcs t
       intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       let tcf : TemporalCoherentFamily D := {
@@ -436,17 +433,17 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       }
       have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s hts)
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
       exact temporal_backward_G tcf t ψ h_all_mcs
   | all_past ψ ih =>
-    -- H case: Under strict semantics (Task 991), H quantifies over s < t
+    -- H case: Under reflexive semantics, H quantifies over s ≤ t
     simp only [truth_at]
     constructor
-    · -- Forward: H ψ ∈ fam.mcs t → ∀ s < t, truth_at ... s ψ
+    · -- Forward: H ψ ∈ fam.mcs t → ∀ s ≤ t, truth_at ... s ψ
       intro h_H s hst
       have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: (∀ s < t, truth_at ... s ψ) → H ψ ∈ fam.mcs t
+    · -- Backward: (∀ s ≤ t, truth_at ... s ψ) → H ψ ∈ fam.mcs t
       intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       let tcf : TemporalCoherentFamily D := {
@@ -456,7 +453,7 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       }
       have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s hst)
+        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
       exact temporal_backward_H tcf t ψ h_all_mcs
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma
