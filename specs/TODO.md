@@ -1,5 +1,5 @@
 ---
-next_project_number: 33
+next_project_number: 34
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -68,6 +68,15 @@ technical_debt:
 
 ---
 
+### 33. Expand design-choices section with comprehensive reflexive vs irreflexive semantics analysis
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: formal
+
+**Description**: Expand sec:design-choices in 06-notes.typ with deeper analysis of reflexive vs irreflexive semantics for G/H. Include: (1) expressive power differences, (2) frame constraints (serial, density, discreteness), (3) representation theorem challenges for irreflexive vs collapsed logic for reflexive, (4) algebraic perspective (G, H, Box as interior operators). Research codebase, archived projects in vault, and past research to distill comprehensive content for additional sections as needed.
+
+---
+
 ### 32. Document strict vs reflexive semantics comparison in Typst
 - **Effort**: 1-2 hours
 - **Status**: [COMPLETED]
@@ -123,13 +132,13 @@ technical_debt:
 
 ---
 
-### 25. Rename CanonicalR to ExistsTask and refactor usage
-- **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
+- **Effort**: 12-20 hours
+- **Status**: [RESEARCHING]
 - **Language**: lean4
-- **Dependencies**: Task 18
+- **Dependencies**: none
 
-**Description**: After task 18 adds ExistsTask alias for CanonicalR, replace all CanonicalR references with ExistsTask throughout the codebase. Search for uses that would benefit from directly using CanonicalTask (from which ExistsTask is derived) and update them appropriately. Update documentation to reflect the new naming.
+**Description**: Systematically shift the proof architecture from CanonicalR to CanonicalTask/Succ as primary abstractions. Rename CanonicalR to ExistsTask but minimize its use — prefer reasoning in terms of Succ (for immediate succession) and CanonicalTask (for n-step reachability) directly. ExistsTask should only appear where the existential quantification over duration is genuinely needed. Audit all 63 files referencing CanonicalR: categorize each use as (1) naturally Succ, (2) naturally CanonicalTask, or (3) genuinely ExistsTask. Restate definitions, theorems, and proof obligations in the most natural abstraction. This subsumes task 29 Phases 5-6 (canonicalR_irreflexive removal) and task 18 (ExistsTask alias).
 
 ---
 

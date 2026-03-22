@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 33,
+      "project_name": "expand_design_choices_reflexive_analysis",
+      "status": "not_started",
+      "language": "formal",
+      "created": "2026-03-22T20:41:27Z",
+      "last_updated": "2026-03-22T20:41:27Z"
+    },
+    {
       "project_number": 32,
       "project_name": "document_strict_vs_reflexive_semantics",
       "status": "completed",
@@ -116,14 +124,13 @@
     {
       "project_number": 25,
       "project_name": "rename_canonicalr_to_existstask",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T19:24:52Z",
-      "last_updated": "2026-03-21T19:24:52Z",
-      "dependencies": [
-        18
-      ],
-      "description": "After task 18 adds ExistsTask alias for CanonicalR, replace all CanonicalR references with ExistsTask throughout the codebase. Search for uses that would benefit from directly using CanonicalTask (from which ExistsTask is derived) and update them appropriately. Update documentation to reflect the new naming."
+      "last_updated": "2026-03-22T20:39:02Z",
+      "dependencies": [],
+      "description": "Systematically shift the proof architecture from CanonicalR to CanonicalTask/Succ as primary abstractions. Rename CanonicalR to ExistsTask but minimize its use — prefer reasoning in terms of Succ (for immediate succession) and CanonicalTask (for n-step reachability) directly. ExistsTask should only appear where the existential quantification over duration is genuinely needed. Audit all 63 files referencing CanonicalR: categorize each use as (1) naturally Succ, (2) naturally CanonicalTask, or (3) genuinely ExistsTask. Restate definitions, theorems, and proof obligations in the most natural abstraction. This subsumes task 29 Phases 5-6 (canonicalR_irreflexive removal) and task 18 (ExistsTask alias).",
+      "session_id": "sess_1774211930_e8cd3e"
     },
     {
       "project_number": 22,
@@ -1059,7 +1066,7 @@
       "planned": "2026-03-21T21:02:08Z"
     }
   ],
-  "next_project_number": 33,
+  "next_project_number": 34,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
