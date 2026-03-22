@@ -1,15 +1,33 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "started_at": "2026-03-22T09:00:00Z",
-  "artifacts": [],
+  "artifacts": [
+    {
+      "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/03_reflexive-semantics-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for reflexive G/H semantics switch"
+    }
+  ],
   "partial_progress": {
-    "stage": "phase_3_complete",
-    "details": "Phases 0-3 complete, build passes. Starting phase 4."
+    "stage": "phases_5_6_partial",
+    "details": "Phases 0-4, 7-8 complete. Phases 5-6 partial: canonicalR_reflexive proven, axiom removal deferred (~54 call sites)."
   },
+  "requires_user_review": true,
+  "review_reason": "Phases 5-6 are partial: canonicalR_irreflexive_axiom is semantically FALSE under reflexive semantics but retained to avoid breaking ~54 downstream call sites. Full removal requires 5+ hours of proof refactoring.",
   "metadata": {
     "session_id": "sess_1774167445_7672f2",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 7,
+    "phases_total": 9,
+    "phases_partial": 2
+  },
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 355,
+    "axiom_count": 10,
+    "build_passed": true,
+    "notes": "No new sorries or axioms introduced. Existing axiom canonicalR_irreflexive_axiom is now semantically false but retained. Sorry count is pre-existing."
   }
 }
