@@ -77,6 +77,7 @@ technical_debt:
   - [01_team-research.md](029_switch_to_reflexive_gh_semantics/reports/01_team-research.md) — Wave 1: axiom analysis (1 of 2 teammates)
   - [02_historical-issues-analysis.md](029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md) — Historical issues (all resolved/surmountable)
   - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
+  - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
 - **Plan**: [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (7 phases, needs revision per Wave 2 findings)
 
 **Description**: Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md.
