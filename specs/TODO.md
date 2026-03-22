@@ -99,7 +99,7 @@ technical_debt:
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: 12-16 hours (revised: IRR removal approach)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:

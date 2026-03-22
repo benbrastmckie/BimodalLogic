@@ -138,13 +138,6 @@ noncomputable def substDerivation : {Gamma : ExtContext} → {phi : ExtFormula} 
   | _, _, ExtDerivationTree.temporal_duality phi d =>
     substFormula_swap_temporal phi ▸
       ExtDerivationTree.temporal_duality _ (substDerivation d)
-  | _, _, ExtDerivationTree.irr (Sum.inl s) phi h_fresh d =>
-    ExtDerivationTree.irr (Sum.inl s) (substFormula phi)
-      (inl_not_in_substFormula_atoms h_fresh) (substDerivation d)
-  | _, _, ExtDerivationTree.irr (Sum.inr ()) phi h_fresh d =>
-    -- p = freshAtom: substFormula phi = phi, so reconstruct IRR unchanged
-    (substFormula_preserves_qfree phi h_fresh).symm ▸
-      ExtDerivationTree.irr (Sum.inr ()) phi h_fresh d
   | _, _, ExtDerivationTree.weakening _Gamma _Delta _phi d h =>
     ExtDerivationTree.weakening _ _ _ (substDerivation d) (map_substFormula_subset h)
 
@@ -348,8 +341,6 @@ private noncomputable def collectDerivInl :
   | _, _, ExtDerivationTree.necessitation φ d => collectInl φ ∪ collectDerivInl d
   | _, _, ExtDerivationTree.temporal_necessitation φ d => collectInl φ ∪ collectDerivInl d
   | _, _, ExtDerivationTree.temporal_duality φ d => collectInl φ ∪ collectDerivInl d
-  | _, _, ExtDerivationTree.irr p φ _ d =>
-    (match p with | Sum.inl s => {s} | Sum.inr () => ∅) ∪ collectInl φ ∪ collectDerivInl d
   | _, _, ExtDerivationTree.weakening _ Δ φ d _ =>
     collectInl φ ∪ collectDerivInl d ∪ Δ.foldl (fun acc ψ => acc ∪ collectInl ψ) ∅
 
@@ -376,11 +367,6 @@ private theorem collectDerivInl_sub_tdual {φ : ExtFormula} {d : ExtDerivationTr
     collectDerivInl d ⊆ collectDerivInl (ExtDerivationTree.temporal_duality φ d) := by
   intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
-private theorem collectDerivInl_sub_irr {p : ExtAtom} {φ : ExtFormula} {h : p ∉ φ.atoms}
-    {d : ExtDerivationTree [] ((ExtFormula.and (ExtFormula.atom p)
-      (ExtFormula.all_past (ExtFormula.neg (ExtFormula.atom p)))).imp φ)} :
-    collectDerivInl d ⊆ collectDerivInl (ExtDerivationTree.irr p φ h d) := by
-  intro x hx; simp only [collectDerivInl, Finset.mem_union]; tauto
 
 private theorem collectDerivInl_sub_weak {Γ Δ : ExtContext} {φ : ExtFormula}
     {d : ExtDerivationTree Γ φ} {h : Γ ⊆ Δ} :
@@ -560,26 +546,6 @@ private noncomputable def liftDerivationWith (s : String) :
       intro h; apply h_fr; exact collectDerivInl_sub_tdual h
     exact liftFormula_swap_temporal s φ ▸
       DerivationTree.temporal_duality _ (liftDerivationWith s d h_fr_d)
-  | _, _, ExtDerivationTree.irr (Sum.inl t) φ h_atom d, h_fr => by
-    have h_fr_d : s ∉ collectDerivInl d := by
-      intro h; apply h_fr; exact collectDerivInl_sub_irr h
-    have h_ne : t ≠ s := by
-      intro heq; apply h_fr
-      simp only [collectDerivInl, Finset.mem_union]
-      left; left; exact Finset.mem_singleton.mpr heq.symm
-    exact DerivationTree.irr t (liftFormula s φ) (liftFormula_fresh h_atom h_ne)
-      (liftDerivationWith s d h_fr_d)
-  | _, _, ExtDerivationTree.irr (Sum.inr ()) φ h_atom d, h_fr => by
-    have h_fr_d : s ∉ collectDerivInl d := by
-      intro h; apply h_fr; exact collectDerivInl_sub_irr h
-    -- s ∉ collectInl phi (from h_fr and the fact that collectInl phi ⊆ collectDerivInl parent)
-    have h_s_not_in_phi : Sum.inl s ∉ φ.atoms := by
-      intro h_in; apply h_fr
-      simp only [collectDerivInl, Finset.mem_union]
-      left; right; exact inl_mem_implies_collectInl h_in
-    exact DerivationTree.irr s (liftFormula s φ)
-      (liftFormula_fresh_for_replacement h_s_not_in_phi h_atom)
-      (liftDerivationWith s d h_fr_d)
   | _, _, ExtDerivationTree.weakening Γ Δ φ d h_sub, h_fr => by
     have h_fr_d : s ∉ collectDerivInl d := by
       intro h; apply h_fr; exact collectDerivInl_sub_weak h

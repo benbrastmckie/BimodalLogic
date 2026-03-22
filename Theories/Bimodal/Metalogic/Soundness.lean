@@ -1,7 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.SoundnessLemmas
-import Bimodal.Metalogic.IRRSoundness
 
 /-!
 # Soundness - Soundness Theorem for TM Logic
@@ -601,9 +600,6 @@ theorem soundness (Γ : Context) (φ : Formula) :
     -- The ih gives validity of φ' at (τ, t), need validity of swap(φ') at (τ, t)
     -- This follows from axiom_swap_valid in SoundnessLemmas but requires DenselyOrdered/Nontrivial
     sorry -- See SoundnessLemmas.axiom_swap_valid for the component proofs
-  | irr p φ' h_fresh _ ih =>
-    -- IRR rule soundness: see IRRSoundness.lean
-    sorry -- Full proof uses product frame construction
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
@@ -668,24 +664,6 @@ theorem soundness_dense_valid {phi : Formula}
     -- Use derivable_implies_swap_valid which gives is_valid, then convert
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
     exact SoundnessLemmas.derivable_implies_swap_valid d' h_dc F M Omega h_sc tau h_mem t
-  | .irr p psi' h_fresh d' =>
-    -- valid_dense (premise.imp psi') → valid_dense psi'
-    have h_premise : valid_dense (((Formula.atom p).and (Formula.atom p).neg.all_past).imp psi') :=
-      soundness_dense_valid d' h_dc
-    -- Introduce model parameters to apply irr_sound_dense_at_domain
-    intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
-    -- Case split on domain membership
-    by_cases h_dom : tau.domain t
-    · -- Domain case: apply irr_sound_dense_at_domain directly
-      exact IRRSoundness.irr_sound_dense_at_domain h_fresh h_premise h_sc h_mem h_dom
-    · -- Non-domain case: semantic limitation
-      -- At non-domain times, atoms are False by definition:
-      --   truth_at M Omega tau t (Formula.atom q) = ∃ ht : tau.domain t, ...
-      -- which is False when ¬tau.domain t.
-      --
-      -- For canonical models (domain = Set.univ), this case is vacuous.
-      -- The general non-domain case requires structural analysis of psi'.
-      sorry
   | .weakening Gamma' _ _ d' h_sub =>
     -- Since d : DerivationTree [] phi and Gamma' ⊆ [], we have Gamma' = []
     have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
@@ -793,12 +771,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     -- Use derivable_implies_swap_valid from SoundnessLemmas
     -- h_dc : (temporal_duality φ' d').isDenseCompatible = d'.isDenseCompatible
     exact SoundnessLemmas.derivable_implies_swap_valid d' h_dc F M Omega h_sc τ h_mem t
-  | irr p φ' h_fresh d' ih =>
-    -- The IRR rule derives φ' from (p ∧ H¬p) → φ' where p is fresh in φ'.
-    -- d' : ⊢ (p ∧ H¬p) → φ' from empty context.
-    -- Use soundness_dense_valid to get valid_dense φ', then instantiate.
-    have h_valid : valid_dense φ' := soundness_dense_valid (DerivationTree.irr p φ' h_fresh d') h_dc
-    exact h_valid D F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 

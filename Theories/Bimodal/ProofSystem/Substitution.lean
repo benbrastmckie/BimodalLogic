@@ -363,27 +363,6 @@ def derivation_subst (q r : Atom) : {Γ : Context} → {φ : Formula} →
     simp only [List.map_nil] at d'
     rw [swap_temporal_subst]
     exact DerivationTree.temporal_duality (ψ.subst q r) d'
-  | _, φ, DerivationTree.irr p _ h_fresh d => by
-    -- IRR rule: from ⊢ (p ∧ H(¬p)) → φ where p ∉ φ.atoms, infer ⊢ φ
-    -- After substitution: need ⊢ φ.subst q r
-    -- We have d : ⊢ (p ∧ H(¬p)) → φ
-    -- After substitution: ⊢ ((p ∧ H(¬p)).subst q r) → (φ.subst q r)
-    -- = ⊢ (p'.subst q r ∧ H(¬(p'.subst q r))) → (φ.subst q r)
-    -- where p' = if p = q then r else p
-    --
-    -- For IRR to apply to the substituted formula, we need:
-    -- - p'.subst q r ∉ (φ.subst q r).atoms
-    -- This is subtle; let's think about cases:
-    -- - If p = q: then p becomes r, and we need r ∉ (φ.subst q r).atoms
-    --   But φ.subst q r replaces q with r, so r appears wherever q appeared.
-    --   Since q ∉ φ.atoms (from h_fresh, assuming p = q means q ∉ φ.atoms),
-    --   r might not be in (φ.subst q r).atoms unless r was already there.
-    -- - If p ≠ q: then p stays p, and we need p ∉ (φ.subst q r).atoms
-    --   Since p ∉ φ.atoms and substitution only changes q to r,
-    --   p ∉ (φ.subst q r).atoms holds if p ≠ r.
-    --
-    -- This case is complex. For now, use sorry.
-    sorry
   | Γ, φ, DerivationTree.weakening Γ' _ _ d h => by
     have d' := derivation_subst q r d
     apply DerivationTree.weakening (Context.subst q r Γ') _ _ d'

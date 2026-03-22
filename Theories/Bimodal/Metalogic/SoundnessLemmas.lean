@@ -958,9 +958,6 @@ theorem derivable_valid_and_swap_valid [DenselyOrdered D] [Nontrivial D]
     constructor
     · exact h_swap
     · simp only [Formula.swap_past_future_involution]; exact h_valid
-  | .irr p ψ' h_fresh d' =>
-    -- IRR case: to be addressed in separate task
-    sorry
   | .weakening Γ' _ _ d' h_sub =>
     -- Since d : DerivationTree [] φ, and weakening gives Δ = [], we have Γ' ⊆ []
     -- Therefore Γ' = [] and d' : DerivationTree Γ' φ where Γ' = []

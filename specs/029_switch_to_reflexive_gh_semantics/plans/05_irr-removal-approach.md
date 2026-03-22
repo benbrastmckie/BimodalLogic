@@ -79,7 +79,7 @@ The `Substitution.lean` file created in v4 partial implementation is **simplifie
 
 ## Implementation Phases
 
-### Phase 1: Remove IRR from Proof System [NOT STARTED]
+### Phase 1: Remove IRR from Proof System [COMPLETED]
 
 **Goal**: Delete the IRR constructor and all pattern match arms. This is mechanical and eliminates 5 sorries.
 
@@ -114,7 +114,7 @@ The `Substitution.lean` file created in v4 partial implementation is **simplifie
 
 ---
 
-### Phase 2: Remove IRR from Conservative Extension [NOT STARTED]
+### Phase 2: Remove IRR from Conservative Extension [COMPLETED]
 
 **Goal**: Remove IRR from the extended proof system used for conservative extension proofs.
 
@@ -142,7 +142,7 @@ The `Substitution.lean` file created in v4 partial implementation is **simplifie
 
 ---
 
-### Phase 3: Delete Obsolete Files [NOT STARTED]
+### Phase 3: Delete Obsolete Files [PARTIAL]
 
 **Goal**: Remove files that exist solely to support IRR.
 

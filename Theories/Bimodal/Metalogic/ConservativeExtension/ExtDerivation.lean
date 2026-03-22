@@ -97,12 +97,6 @@ inductive ExtDerivationTree : ExtContext → ExtFormula → Type where
       (d : ExtDerivationTree [] φ) : ExtDerivationTree [] (ExtFormula.all_future φ)
   | temporal_duality (φ : ExtFormula)
       (d : ExtDerivationTree [] φ) : ExtDerivationTree [] φ.swap_temporal
-  | irr (p : ExtAtom) (φ : ExtFormula)
-      (h_fresh : p ∉ φ.atoms)
-      (d : ExtDerivationTree []
-        ((ExtFormula.and (ExtFormula.atom p)
-          (ExtFormula.all_past (ExtFormula.neg (ExtFormula.atom p)))).imp φ)) :
-      ExtDerivationTree [] φ
   | weakening (Γ Δ : ExtContext) (φ : ExtFormula)
       (d : ExtDerivationTree Γ φ)
       (h : Γ ⊆ Δ) : ExtDerivationTree Δ φ
@@ -172,10 +166,6 @@ noncomputable def embedDerivation : {Γ : List Formula} → {φ : Formula} →
   | _, _, DerivationTree.temporal_duality φ' d =>
     embedFormula_swap_temporal φ' ▸
       ExtDerivationTree.temporal_duality _ (embedDerivation d)
-  | _, _, DerivationTree.irr p φ' h_fresh d =>
-    ExtDerivationTree.irr (embedAtom p) (embedFormula φ')
-      ((embedAtom_mem_embedFormula_atoms_iff p φ').not.mpr h_fresh)
-      (embedDerivation d)
   | _, _, DerivationTree.weakening _Γ _Δ _φ d h =>
     ExtDerivationTree.weakening _ _ _ (embedDerivation d) (map_embedFormula_subset h)
 
