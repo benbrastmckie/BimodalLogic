@@ -20,13 +20,13 @@
     {
       "project_number": 29,
       "project_name": "switch_to_reflexive_gh_semantics",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T21:31:52Z",
-      "last_updated": "2026-03-22T19:25:28Z",
+      "last_updated": "2026-03-22T20:29:56Z",
       "dependencies": [],
       "description": "Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md",
-      "session_id": "sess_1774207227_9888a6",
+      "session_id": "sess_1774211160_1b5b72",
       "researched": "2026-03-22T19:25:28Z",
       "artifacts": [
         {
@@ -38,11 +38,6 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md",
           "type": "research",
           "summary": "Historical issues analysis: reflexive vs strict G/H semantics"
-        },
-        {
-          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan for switching TM metalogic to reflexive G/H semantics"
         },
         {
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/05_teammate-a-findings.md",
@@ -68,11 +63,6 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md",
           "type": "research",
           "summary": "Theoretical analysis: reflexive vs strict semantics, frame definability, recommendation"
-        },
-        {
-          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md",
-          "type": "plan",
-          "summary": "Revised 9-phase implementation plan (17-18h) incorporating team research findings"
         },
         {
           "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/03_reflexive-semantics-summary.md",
@@ -113,9 +103,14 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/08_teammate-b-findings.md",
           "type": "research",
           "summary": "Teammate B: blocker re-analysis — antisymmetry is wrong question, fresh G-atom is correct path"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md",
+          "type": "plan",
+          "summary": "v3: Fresh G-atom approach for completing Phases 5-6 (8-12h remaining)"
         }
       ],
-      "planned": "2026-03-22T08:16:00Z",
+      "planned": "2026-03-22T20:29:56Z",
       "started": "2026-03-21T22:36:09Z"
     },
     {
