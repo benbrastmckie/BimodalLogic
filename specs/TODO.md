@@ -1,5 +1,5 @@
 ---
-next_project_number: 32
+next_project_number: 33
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -68,9 +68,18 @@ technical_debt:
 
 ---
 
+### 32. Document strict vs reflexive semantics comparison in Typst
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: typst
+
+**Description**: Study the task 29 research reports (05_team-research.md, 06_theoretical-analysis.md) to create a chapter or section in Theories/Bimodal/typst/ documenting the choice between strict and reflexive semantics, explaining the relative advantages of each.
+
+---
+
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: 17-18 hours (revised up from 12)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
