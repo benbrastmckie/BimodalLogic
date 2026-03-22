@@ -76,6 +76,11 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/03_reflexive-semantics-summary.md",
           "type": "summary",
           "summary": "Partial implementation summary: 7/9 phases complete, reflexive semantics core change done, axiom removal deferred"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/04_phases-5-6-status.md",
+          "type": "summary",
+          "summary": "Status report: Phases 5-6 blocked on canonicalR_antisymmetric proof strategy"
         }
       ],
       "planned": "2026-03-22T08:16:00Z",
