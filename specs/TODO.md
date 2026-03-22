@@ -29,7 +29,7 @@ technical_debt:
 
 ### Active Work
 
-- **29** → [RESEARCHED] (reflexive G/H semantics — Phase 5 plan confirmed correct, substitution lemma identified as key blocker)
+- **29** → [PLANNED] (reflexive G/H semantics — v4 plan with substitution lemma, 6 phases, 10h)
 - **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
 ### Completeness Pipeline
@@ -109,8 +109,10 @@ technical_debt:
   - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
   - [07_team-research.md](029_switch_to_reflexive_gh_semantics/reports/07_team-research.md) — Wave 3: blocker resolution (canonicalR_antisymmetric FALSE, Option D recommended)
   - [08_team-research.md](029_switch_to_reflexive_gh_semantics/reports/08_team-research.md) — Wave 4: CanonicalTask-centric reframing, fresh G-atom approach confirmed
+  - [09_team-research.md](029_switch_to_reflexive_gh_semantics/reports/09_team-research.md) — Wave 5: substitution lemma identified as key blocker for Phase 5
 - **Plan**:
-  - [03_fresh-g-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md) — v3: Fresh G-atom approach, 8-12h remaining (supersedes v2)
+  - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: 6 phases with substitution lemma prerequisite, 10h (supersedes v3)
+  - [03_fresh-g-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md) — v3: Fresh G-atom approach (superseded)
   - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: 9 phases, blocked at Phase 5 (superseded)
   - [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (superseded)
 
