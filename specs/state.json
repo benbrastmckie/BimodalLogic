@@ -165,6 +165,11 @@
           "path": "specs/025_rename_canonicalr_to_existstask/handoffs/02_implementation-progress.md",
           "type": "handoff",
           "summary": "Phase 1 partial progress: 3 sorries remaining"
+        },
+        {
+          "path": "specs/025_rename_canonicalr_to_existstask/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Blocker analysis: Task 25 vs Task 29 overlap, recommended restructuring"
         }
       ],
       "planned": "2026-03-22T20:54:00Z",
