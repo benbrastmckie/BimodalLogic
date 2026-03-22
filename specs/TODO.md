@@ -29,7 +29,7 @@ technical_debt:
 
 ### Active Work
 
-- **29** → implementing (reflexive G/H semantics — in progress, 7-phase plan)
+- **29** → implement (reflexive G/H semantics — planned, 9-phase revised plan, 17-18h)
 - **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
 ### Completeness Pipeline
@@ -43,7 +43,7 @@ technical_debt:
 2. **24** → implement (depends: 22 only — 23 completed) — removes 3 axioms, final cleanup
 
 **Axiom elimination**:
-1. **26** → implement (planned, likely superseded if 29 completes — reflexive semantics eliminates canonicalR_irreflexive_axiom)
+1. **26** → superseded (research confirms Task 29 Phase 5 subsumes Task 26 entirely)
 
 ### Post-Completeness Cleanup
 
@@ -70,7 +70,7 @@ technical_debt:
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: 17-18 hours (revised up from 12)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -78,7 +78,9 @@ technical_debt:
   - [02_historical-issues-analysis.md](029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md) — Historical issues (all resolved/surmountable)
   - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
   - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
-- **Plan**: [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (7 phases, needs revision per Wave 2 findings)
+- **Plan**:
+  - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: 9 phases, 17-18h (incorporates Wave 2 research)
+  - [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (superseded)
 
 **Description**: Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md.
 
