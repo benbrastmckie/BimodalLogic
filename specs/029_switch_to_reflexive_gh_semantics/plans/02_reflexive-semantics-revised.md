@@ -273,7 +273,7 @@ Key findings from Wave 2 research (05_team-research.md):
 
 ---
 
-### Phase 6: Additional Axiom Conversion [NOT STARTED]
+### Phase 6: Additional Axiom Conversion [PARTIAL]
 
 **Goal**: Convert provable axioms to theorems; document remaining axioms
 
@@ -318,7 +318,7 @@ Key findings from Wave 2 research (05_team-research.md):
 
 ---
 
-### Phase 7: Frame Class Simplification [NOT STARTED]
+### Phase 7: Frame Class Simplification [COMPLETED]
 
 **Goal**: Simplify frame class architecture to reflect the collapse
 

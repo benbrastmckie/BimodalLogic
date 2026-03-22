@@ -16,37 +16,45 @@ soundness/completeness results.
 The TM (Tense and Modality) bimodal logic has three variants based on
 frame conditions:
 
-### TM Base (16 axioms)
+### TM Base (18 axioms)
 
 The core logic valid on all linear orders. No special frame conditions required.
 
 **Axioms**: prop_k, prop_s, ex_falso, peirce, modal_t, modal_4, modal_b,
 modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_a, temp_l,
-modal_future, temp_future, temp_linearity
+temp_t_future, temp_t_past, modal_future, temp_future, temp_linearity
 
-**Frame Condition**: Linear temporal order (strict: s > t for future)
+**Frame Condition**: Linear temporal order (reflexive: s >= t for future)
 
-**Note (Task 991)**: Under strict temporal semantics, the T-axioms temp_t_future
-and temp_t_past have been removed. These were valid only under reflexive semantics
-where G quantified over s >= t.
+**Note (Task 29)**: Under reflexive semantics, the T-axioms temp_t_future (Gφ → φ)
+and temp_t_past (Hφ → φ) are valid and included in the base logic.
 
-### TM Dense (Base + 1 axiom = 17 axioms)
+### TM Dense (Base + 1 axiom = 19 axioms)
 
 Extension for densely ordered temporal domains.
 
-**Additional Axiom**: density (DN) = `Fφ → FFφ`
+**Additional Axiom**: density (DN) = `GGφ → Gφ`
 
-**Frame Condition**: `DenselyOrdered D` - between any two distinct times
-exists another time.
+**Note (Task 29 - Reflexive Semantics)**: Under reflexive semantics, DN is trivially
+valid on all transitive linear orders (take r = s in ∀r ≥ t, ∀q ≥ r to get ∀q ≥ s).
+The three-variant distinction is now degenerate.
 
-### TM Discrete (Base + 3 axioms = 19 axioms)
+**Frame Condition**: `DenselyOrdered D` (formally required but axiom is trivially valid)
+
+### TM Discrete (Base + 3 axioms = 21 axioms)
 
 Extension for discretely ordered temporal domains.
 
 **Additional Axioms**:
 - discreteness_forward (DF) = `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)`
-- seriality_future (SF) = `F(¬⊥)`
-- seriality_past (SP) = `P(¬⊥)`
+- seriality_future (SF) = `Gφ → Fφ`
+- seriality_past (SP) = `Hφ → Pφ`
+
+**Note (Task 29 - Reflexive Semantics)**: Under reflexive semantics, all three
+extension axioms are trivially valid via the T-axiom:
+- DF: F(Hφ) at t is witnessed by t itself (t ≥ t)
+- SF: Gφ → φ (T-axiom) and φ witnesses Fφ (t ≥ t)
+- SP: Hφ → φ (T-axiom) and φ witnesses Pφ (t ≤ t)
 
 **Frame Condition**: `SuccOrder D`, `PredOrder D`, `NoMaxOrder D`, `NoMinOrder D`
 
@@ -190,9 +198,9 @@ theorem discreteness_forward_is_discrete (φ : Formula) :
     (Axiom.discreteness_forward φ).frameClass = .Discrete := rfl
 
 /-- Seriality axioms have frame class Discrete. -/
-theorem seriality_is_discrete :
-    (Axiom.seriality_future).frameClass = .Discrete ∧
-    (Axiom.seriality_past).frameClass = .Discrete :=
+theorem seriality_is_discrete (φ : Formula) :
+    (Axiom.seriality_future φ).frameClass = .Discrete ∧
+    (Axiom.seriality_past φ).frameClass = .Discrete :=
   ⟨rfl, rfl⟩
 
 end Bimodal.LogicVariants
