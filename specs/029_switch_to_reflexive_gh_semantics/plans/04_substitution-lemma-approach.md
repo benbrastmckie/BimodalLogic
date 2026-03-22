@@ -78,7 +78,7 @@ From report 05 (Task 25 overlap):
 
 ---
 
-### Phase 5.0: Derivation Substitution Lemma [NOT STARTED]
+### Phase 5.0: Derivation Substitution Lemma [PARTIAL]
 
 **Goal**: Prove the core lemma that enables all fresh G-atom arguments
 
