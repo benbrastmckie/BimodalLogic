@@ -221,7 +221,7 @@ Key findings from Wave 2 research (05_team-research.md):
 
 ---
 
-### Phase 5: Axiom Removal and Downstream Repair [PARTIAL]
+### Phase 5: Axiom Removal and Downstream Repair [BLOCKED]
 
 **Goal**: Remove `canonicalR_irreflexive_axiom` and fix all ~35 downstream call sites
 
@@ -273,7 +273,7 @@ Key findings from Wave 2 research (05_team-research.md):
 
 ---
 
-### Phase 6: Additional Axiom Conversion [PARTIAL]
+### Phase 6: Additional Axiom Conversion [BLOCKED]
 
 **Goal**: Convert provable axioms to theorems; document remaining axioms
 

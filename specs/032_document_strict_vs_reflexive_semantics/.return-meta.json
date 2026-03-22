@@ -1,20 +1,38 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "agent": "typst-implementation-agent",
+  "session_id": "sess_1774206358_90da36",
+  "task_number": 32,
+  "summary": "Created Design Choices section in 06-notes.typ documenting strict vs reflexive temporal semantics for G/H operators. Added two definition boxes, comparison table (6 properties), three remark boxes (Historical Context, Frame Definability, Rationale for TM), and cross-references to 02-semantics.typ and 04-metalogic.typ. All cross-references resolve; compilation succeeds.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/032_document_strict_vs_reflexive_semantics/plans/01_semantics-documentation.md",
-      "summary": "3-phase implementation plan for documenting strict vs reflexive temporal semantics"
+      "path": "specs/032_document_strict_vs_reflexive_semantics/summaries/01_semantics-documentation-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting all changes and verification results"
+    },
+    {
+      "path": "Theories/Bimodal/typst/chapters/06-notes.typ",
+      "type": "modified",
+      "summary": "Added Design Choices section with strict vs reflexive semantics documentation"
+    },
+    {
+      "path": "Theories/Bimodal/typst/chapters/02-semantics.typ",
+      "type": "modified",
+      "summary": "Added <sec:truth> label for cross-referencing"
+    },
+    {
+      "path": "Theories/Bimodal/typst/chapters/04-metalogic.typ",
+      "type": "modified",
+      "summary": "Updated footnote to reference @sec:design-choices"
+    },
+    {
+      "path": "Theories/Bimodal/typst/BimodalReference.pdf",
+      "type": "output",
+      "summary": "Compiled PDF with new Design Choices section"
     }
   ],
-  "next_steps": "Run /implement 32 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774169901_b47211",
-    "agent_type": "planner-agent",
-    "duration_seconds": 120,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 2.0
+    "phases_completed": 3,
+    "phases_total": 3
   }
 }
