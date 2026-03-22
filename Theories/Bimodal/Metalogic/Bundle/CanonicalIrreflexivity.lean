@@ -1282,8 +1282,10 @@ theorem exists_strict_fresh_atom (M : Set Formula) (h_mcs : SetMaximalConsistent
     -- This needs more careful case analysis
     sorry
   · -- Case: q ∉ M, so by maximality ¬q ∈ M
-    have h_neg_q : Formula.neg (Formula.atom q) ∈ M :=
-      SetMaximalConsistent.neg_iff_not_mem h_mcs |>.mpr hq
+    have h_neg_q : Formula.neg (Formula.atom q) ∈ M := by
+      cases SetMaximalConsistent.negation_complete h_mcs (Formula.atom q) with
+      | inl h => exact absurd h hq
+      | inr h => exact h
     -- By h_no_such: G(¬q) ∈ M
     have h_G_neg_q : Formula.all_future (Formula.neg (Formula.atom q)) ∈ M :=
       h_no_such q h_neg_q
@@ -1332,22 +1334,15 @@ theorem fresh_Gp_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent
       | inr h => exact absurd h hφ_ne
 
     -- By deduction from G(q): L' ⊢ G(q) → ⊥, i.e., L' ⊢ ¬G(q) = F(¬q)
-    have h_L_perm : ∀ φ, φ ∈ L ↔ φ ∈ (Gq :: L') := by
-      intro φ
-      constructor
-      · intro hφ
-        by_cases hφ_eq : φ = Gq
-        · simp [hφ_eq]
-        · simp only [List.mem_cons]
-          right; exact List.mem_filter.mpr ⟨hφ, decide_eq_true hφ_eq⟩
-      · intro hφ
-        simp only [List.mem_cons] at hφ
-        cases hφ with
-        | inl h => rw [h]; exact h_Gq_in_L
-        | inr h => exact (List.mem_filter.mp h).1
+    have h_L_sub_perm : L ⊆ (Gq :: L') := by
+      intro φ hφ
+      by_cases hφ_eq : φ = Gq
+      · simp [hφ_eq]
+      · simp only [List.mem_cons]
+        right; exact List.mem_filter.mpr ⟨hφ, decide_eq_true hφ_eq⟩
 
     have d_rearr : DerivationTree (Gq :: L') Formula.bot :=
-      DerivationTree.weakening L (Gq :: L') Formula.bot d h_L_perm
+      DerivationTree.weakening L (Gq :: L') Formula.bot d h_L_sub_perm
 
     have d_ded : DerivationTree L' (Gq.imp Formula.bot) :=
       deduction_theorem L' Gq Formula.bot d_rearr
@@ -1417,7 +1412,10 @@ theorem fresh_Gp_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent
       simp only [Set.mem_union, Set.mem_singleton_iff] at hφ_in_seed
       cases hφ_in_seed with
       | inl h => exact h
-      | inr h => exact absurd h (fun heq => h_Gq_in_L (heq ▸ hφ))
+      | inr h =>
+        -- h : φ = Gq, but Gq ∉ L and φ ∈ L, contradiction
+        subst h
+        exact absurd hφ h_Gq_in_L
 
     -- g_content(M) ⊆ M by reflexivity
     have h_gcontent_sub_M : g_content M ⊆ M := canonicalR_reflexive M h_mcs

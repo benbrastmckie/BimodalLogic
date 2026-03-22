@@ -155,6 +155,16 @@
           "path": "specs/025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for CanonicalR to ExistsTask refactor"
+        },
+        {
+          "path": "specs/025_rename_canonicalr_to_existstask/handoffs/01_phase1-analysis.md",
+          "type": "handoff",
+          "summary": "Phase 1 analysis: fresh G-atom approach"
+        },
+        {
+          "path": "specs/025_rename_canonicalr_to_existstask/handoffs/02_implementation-progress.md",
+          "type": "handoff",
+          "summary": "Phase 1 partial progress: 3 sorries remaining"
         }
       ],
       "planned": "2026-03-22T20:54:00Z",
