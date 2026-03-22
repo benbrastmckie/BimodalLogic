@@ -1,7 +1,7 @@
 # Implementation Plan: Task #33
 
 - **Task**: 33 - Expand design-choices section with comprehensive reflexive vs irreflexive semantics analysis
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None (research completed)
 - **Research Inputs**: specs/033_expand_design_choices_reflexive_analysis/reports/01_team-research.md
@@ -49,7 +49,7 @@ The team research report (01_team-research.md) provides all source material:
 
 ## Implementation Phases
 
-### Phase 1: Update Semantic Definitions [NOT STARTED]
+### Phase 1: Update Semantic Definitions [COMPLETED]
 
 **Goal**: Convert existing definitions from "strict (current)" to "reflexive (current)" and update the comparison table.
 
@@ -72,7 +72,7 @@ The team research report (01_team-research.md) provides all source material:
 
 ---
 
-### Phase 2: Add Algebraic Classification Section [NOT STARTED]
+### Phase 2: Add Algebraic Classification Section [COMPLETED]
 
 **Goal**: Add new subsection covering interior operators, McKinsey-Tarski, and Jonsson-Tarski correspondence.
 
@@ -96,7 +96,7 @@ The team research report (01_team-research.md) provides all source material:
 
 ---
 
-### Phase 3: Add Expressive Power Section [NOT STARTED]
+### Phase 3: Add Expressive Power Section [COMPLETED]
 
 **Goal**: Add new subsection on frame definability, collapse under reflexive semantics, and inter-definability.
 
@@ -120,7 +120,7 @@ The team research report (01_team-research.md) provides all source material:
 
 ---
 
-### Phase 4: Add Representation Theorem Section [NOT STARTED]
+### Phase 4: Add Representation Theorem Section [COMPLETED]
 
 **Goal**: Add new subsection on canonical model differences, IRR rule, and completeness architecture.
 
@@ -144,7 +144,7 @@ The team research report (01_team-research.md) provides all source material:
 
 ---
 
-### Phase 5: Expand Historical Context and Design Rationale [NOT STARTED]
+### Phase 5: Expand Historical Context and Design Rationale [COMPLETED]
 
 **Goal**: Expand existing remarks into full subsections with historical context and explicit design rationale.
 
