@@ -195,7 +195,7 @@ Key findings from Wave 2 research (05_team-research.md):
 
 ---
 
-### Phase 4: Truth Lemma Adjustment [NOT STARTED]
+### Phase 4: Truth Lemma Adjustment [COMPLETED]
 
 **Goal**: Update truth lemma for reflexive G/H semantics
 
