@@ -142,7 +142,7 @@ The `Substitution.lean` file created in v4 partial implementation is **simplifie
 
 ---
 
-### Phase 3: Delete Obsolete Files [PARTIAL]
+### Phase 3: Delete Obsolete Files [COMPLETED]
 
 **Goal**: Remove files that exist solely to support IRR.
 
@@ -168,7 +168,7 @@ The `Substitution.lean` file created in v4 partial implementation is **simplifie
 
 ---
 
-### Phase 4: Complete Per-Witness Strictness [NOT STARTED]
+### Phase 4: Complete Per-Witness Strictness [IN PROGRESS]
 
 **Goal**: Prove the fresh G-atom theorems that replace universal irreflexivity.
 
