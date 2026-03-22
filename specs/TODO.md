@@ -29,7 +29,7 @@ technical_debt:
 
 ### Active Work
 
-- **29** → implement (reflexive G/H semantics — planned, 9-phase revised plan, 17-18h)
+- **29** → [RESEARCHED] (reflexive G/H semantics — Phase 5 plan confirmed correct, substitution lemma identified as key blocker)
 - **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
 ### Completeness Pipeline
