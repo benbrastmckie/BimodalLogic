@@ -1,0 +1,62 @@
+{
+  "status": "completed",
+  "agent": "typst-research-agent",
+  "session_id": "sess_1774168874_bcb521",
+  "task_number": 32,
+  "completed_at": "2026-03-22T00:00:00Z",
+  "report_path": "specs/032_document_strict_vs_reflexive_semantics/reports/01_typst-structure-research.md",
+  "findings": {
+    "recommended_placement": "New subsection '== Design Choices' in 06-notes.typ (after line 34)",
+    "content_structure": [
+      "Opening paragraph framing the choice",
+      "Definition box: Strict Temporal Semantics (Current)",
+      "Definition box: Reflexive Temporal Semantics",
+      "Comparison table (6 properties)",
+      "Remark: Historical Context (Prior, CTL, S4)",
+      "Remark: Frame Definability (modal definability limitations)",
+      "Remark: Rationale for TM (current implementation justification)"
+    ],
+    "typst_environments": {
+      "definition": "For formal semantic definitions (2 boxes)",
+      "remark": "For commentary (3 boxes)",
+      "figure_table": "For comparison table"
+    },
+    "integration_requirements": [
+      "Add label <sec:truth> to 02-semantics.typ Truth Conditions section",
+      "Update 04-metalogic.typ footnote (line 154) to reference new section",
+      "No new imports required - existing template.typ provides all environments"
+    ],
+    "estimated_length": "80-100 lines of Typst code",
+    "key_content_points": [
+      "T-axiom valid under reflexive, invalid under strict",
+      "Seriality/density trivial under reflexive, require frame properties under strict",
+      "Frame class separation preserved only under strict",
+      "Irreflexivity is not modally definable (Blackburn, de Rijke, Venema)",
+      "TM currently uses strict; Task 29 investigates switch to reflexive"
+    ]
+  },
+  "alternatives_considered": [
+    {
+      "option": "Subsection in 02-semantics.typ",
+      "rejected_because": "Disrupts formal definition flow"
+    },
+    {
+      "option": "New chapter 07-design-choices.typ",
+      "rejected_because": "Too much overhead for single topic"
+    }
+  ],
+  "files_analyzed": [
+    "Theories/Bimodal/typst/BimodalReference.typ",
+    "Theories/Bimodal/typst/chapters/02-semantics.typ",
+    "Theories/Bimodal/typst/chapters/06-notes.typ",
+    "Theories/Bimodal/typst/template.typ",
+    "Theories/Bimodal/typst/notation/bimodal-notation.typ",
+    "Theories/Bimodal/typst/chapters/00-introduction.typ",
+    "Theories/Bimodal/typst/chapters/03-proof-theory.typ",
+    "Theories/Bimodal/typst/chapters/04-metalogic.typ"
+  ],
+  "prior_research_incorporated": [
+    "specs/029_switch_to_reflexive_gh_semantics/reports/05_team-research.md",
+    "specs/029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md"
+  ]
+}

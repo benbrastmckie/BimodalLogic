@@ -69,9 +69,10 @@ technical_debt:
 ---
 
 ### 32. Document strict vs reflexive semantics comparison in Typst
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 1-2 hours
+- **Status**: [RESEARCHED]
 - **Language**: typst
+- **Research**: [01_typst-structure-research.md](032_document_strict_vs_reflexive_semantics/reports/01_typst-structure-research.md) — Placement, structure, sample code
 
 **Description**: Study the task 29 research reports (05_team-research.md, 06_theoretical-analysis.md) to create a chapter or section in Theories/Bimodal/typst/ documenting the choice between strict and reflexive semantics, explaining the relative advantages of each.
 
