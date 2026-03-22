@@ -621,3 +621,25 @@
 [2026-03-21T15:29:26-07:00] Notification sent: Tab 2
 [2026-03-21T15:29:32-07:00] Cooldown active: 6s < 10s - skipping notification
 [2026-03-21T15:30:03-07:00] Notification sent: Tab 5
+[2026-03-21T15:31:20-07:00] Notification sent: Tab 4
+[2026-03-21T15:34:35-07:00] Notification sent: Tab 2
+[2026-03-21T15:34:43-07:00] Cooldown active: 8s < 10s - skipping notification
+[2026-03-21T15:35:36-07:00] Notification sent: Tab 5
+[2026-03-21T15:36:03-07:00] Notification sent: Tab 1
+[2026-03-21T15:36:38-07:00] Notification sent: Tab 5
+[2026-03-21T15:36:48-07:00] Notification sent: Tab 1
+[2026-03-21T15:39:14-07:00] Notification sent: Tab 1
+[2026-03-21T15:40:15-07:00] Notification sent: Tab 1
+[2026-03-21T15:43:54-07:00] Notification sent: Tab 1
+[2026-03-21T15:44:56-07:00] Notification sent: Tab 1
+[2026-03-21T15:50:42-07:00] Notification sent: Tab 2
+[2026-03-21T15:50:53-07:00] Notification sent: Tab 2
+[2026-03-21T15:51:21-07:00] Notification sent: Tab 5
+[2026-03-21T15:51:55-07:00] Notification sent: Tab 2
+[2026-03-21T15:52:23-07:00] Notification sent: Tab 5
+[2026-03-21T15:59:02-07:00] Notification sent: Tab 1
+[2026-03-21T16:00:04-07:00] Notification sent: Tab 1
+[2026-03-21T16:10:09-07:00] Notification sent: Tab 5
+[2026-03-21T16:11:11-07:00] Notification sent: Tab 5
+[2026-03-21T16:12:16-07:00] Notification sent: Tab 2
+[2026-03-21T16:13:18-07:00] Notification sent: Tab 2

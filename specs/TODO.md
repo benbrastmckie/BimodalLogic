@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-19T23:50:22Z
 task_counts:
-  active: 8
-  completed: 696
+  active: 21
+  completed: 709
   in_progress: 1
-  not_started: 4
+  not_started: 7
   abandoned: 47
-  total: 752
+  total: 778
 technical_debt:
   sorry_count: 16
   sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
@@ -29,14 +29,14 @@ technical_debt:
 
 ### Metalogic Refactoring Track
 
-**Discrete sorry elimination** (tasks 9-15 completed):
-1. **22** → research | **23** → plan [parallel, 22 researching, 23 researched]
-2. **24** → implement (depends: 22, 23) — removes 3 axioms, final cleanup
+**Discrete completion** (tasks 9-15, 23, 28 completed):
+1. **22** → plan (researched)
+2. **24** → implement (depends: 22) — removes 3 axioms, final cleanup
 
-**Dense completion** (tasks 16-17 completed):
-1. **18** → implement (ready now)
+**Dense completion** (tasks 16-17, 27, 30, 31 completed):
+1. **18** → implement (blocked on dependencies, now unblocked)
 
-**Cleanup** (after discrete + dense):
+**Cleanup**:
 1. **19** → implement (ready now) | **997** → complete [parallel]
 2. **20** → implement (depends: 18) | **21** → plan (depends: 18)
 
@@ -58,36 +58,7 @@ technical_debt:
 
 ---
 
-### 31. Wire dense truth lemma instantiation
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Summary**: Closed TimelineQuotCompleteness sorry via dense truth lemma instantiation; 0 new sorries
-- **Language**: lean4
-- **Dependencies**: Task 30
-- **Parent Task**: #18
-- **Research**: [14_spawn-analysis.md](018_dense_representation_theorem_completion/reports/14_spawn-analysis.md)
-- **Plan**: [01_truth-lemma-instantiation.md](031_wire_dense_truth_lemma_instantiation/plans/01_truth-lemma-instantiation.md)
 
-**Description**: Instantiate parametric_shifted_truth_lemma at D = DovetailedTimelineQuot and close the sorry in timelineQuot_not_valid_of_neg_consistent at TimelineQuotCompleteness.lean:127. Use the temporally coherent BFMCS from task 30, construct ParametricCanonicalTaskModel and ShiftClosedParametricCanonicalOmega, then connect root MCS membership to semantic falsity to close dense_completeness_theorem.
-
----
-
-### 30. Build temporally coherent dense BFMCS
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Summary**: BFMCS with proven temporal coherence; modal_backward sorry (known limitation)
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: #18
-- **Research**: [14_spawn-analysis.md](018_dense_representation_theorem_completion/reports/14_spawn-analysis.md)
-- **Plan**: [01_bfmcs-temporal-coherence.md](030_build_temporally_coherent_dense_bfmcs/plans/01_bfmcs-temporal-coherence.md)
-- **Summary Artifact**: [01_implementation-summary.md](030_build_temporally_coherent_dense_bfmcs/summaries/01_implementation-summary.md)
-
-**Description**: Create a complete BFMCS structure with proven temporally_coherent field. Define dovetailedTimelineQuotBFMCS as a proper BFMCS structure with families indexed by DovetailedTimelineQuot. Prove dovetailedTimelineQuotBFMCS_temporally_coherent by lifting existing dovetailedFMCS_forward_F and dovetailedFMCS_backward_P proofs. Use DirectMultiFamilyBFMCS pattern from discrete case.
-
----
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: 12 hours
@@ -103,32 +74,6 @@ technical_debt:
 
 ---
 
-### 28. Correct W=D conflation in BFMCS domain architecture
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Language**: lean4
-- **Dependencies**: Task 22
-- **Research**:
-  - [01_teammate-a-findings.md](028_correct_bfmcs_domain_conflation/reports/01_teammate-a-findings.md) — Audit of 4 W=D conflation sites; confirms CanonicalMCS domain wrong for non-base logics; prescribes TimelineQuot for dense and Succ-chain bypass for discrete completeness
-  - [01_teammate-b-findings.md](028_correct_bfmcs_domain_conflation/reports/01_teammate-b-findings.md) — Mathematical foundations: W/D distinction, DenselyOrdered/SuccOrder mutual exclusion, cross-family modal coherence, alternative architectural patterns
-  - [01_team-research.md](028_correct_bfmcs_domain_conflation/reports/01_team-research.md) — Synthesized findings: 4 conflation sites, prescribed architecture (D=TimelineQuot dense, D=ℤ discrete)
-  - [02_blocker-analysis.md](028_correct_bfmcs_domain_conflation/reports/02_blocker-analysis.md) — Phase 5 blocker analysis: S5 correct but Succ-chain bypass viable, 4 axioms remaining
-  - [03_single-family-critique.md](028_correct_bfmcs_domain_conflation/reports/03_single-family-critique.md) — Critical analysis confirms single-family IS sufficient; formula-specific, not universal model
-  - [04_bimodal-box-semantics.md](028_correct_bfmcs_domain_conflation/reports/04_bimodal-box-semantics.md) — Bimodal Box analysis: concern is about degenerate singletons, multi-family BFMCS is sound
-  - [05_modal-coherence-solutions.md](028_correct_bfmcs_domain_conflation/reports/05_modal-coherence-solutions.md) — Initial analysis (superseded by 05_s5 report below)
-  - [05_s5-modal-coherence-analysis.md](028_correct_bfmcs_domain_conflation/reports/05_s5-modal-coherence-analysis.md) — Critical correction: TM IS S5 (has modal_5_collapse); sorries blocked by saturation gap at t!=0, not missing axiom
-- **Plan**:
-  - [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — v1: 8-phase plan (PARTIAL, Phase 5 S5-blocked)
-  - [02_succ-chain-completion.md](028_correct_bfmcs_domain_conflation/plans/02_succ-chain-completion.md) — v2: 4-phase plan (superseded by v3)
-  - [03_succ-chain-discrete-completeness.md](028_correct_bfmcs_domain_conflation/plans/03_succ-chain-discrete-completeness.md) — v3: 4-phase plan with corrected S5 understanding (4 hours)
-- **Summary**:
-  - [01_bfmcs-domain-correction-summary.md](028_correct_bfmcs_domain_conflation/summaries/01_bfmcs-domain-correction-summary.md) — PARTIAL: Phase 5 blocked (S5 requirement), Succ-chain bypass documented
-  - [01_succ-chain-discrete-summary.md](028_correct_bfmcs_domain_conflation/summaries/01_succ-chain-discrete-summary.md) — COMPLETED: All 4 phases done, 3 semantic axioms, backward P coherence proven
-
-**Description**: Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis.
-
----
 
 ### 26. Remove or justify canonicalR_irreflexive_axiom
 - **Effort**: 2-8 hours (depends on path chosen)
@@ -162,19 +107,6 @@ technical_debt:
 
 ---
 
-### 27. Unify DenseTimeline and DovetailedTimeline constructions
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Research**: [01_timeline-unification.md](027_unify_densetimeline_dovetailedtimeline/reports/01_timeline-unification.md)
-- **Plan**: [01_timeline-unification-plan.md](027_unify_densetimeline_dovetailedtimeline/plans/01_timeline-unification-plan.md)
-- **Summary**: [01_implementation-summary.md](027_unify_densetimeline_dovetailedtimeline/summaries/01_implementation-summary.md)
-- **Language**: lean4
-- **Blocks**: Task 18 (phase 3)
-
-**Description**: Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type.
-
----
 
 ### 22. Direct multi-family bundle construction
 - **Effort**: 4-6 hours
@@ -191,24 +123,6 @@ technical_debt:
 
 ---
 
-### 23. F/P temporal witness chain construction
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Summary**: Phase 2 completed: eliminated succ_chain_backward_P_axiom. SuccChainFMCS is sorry-free with 3 semantic axioms. All 4 phases done.
-- **Language**: lean4
-- **Dependencies**: Task 15
-- **Research**:
-  - [01_temporal-witness-research.md](023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md)
-  - [02_team-research.md](023_fp_temporal_witness_chain/reports/02_team-research.md) - Succ-based approach analysis
-  - [08_team-research.md](023_fp_temporal_witness_chain/reports/08_team-research.md) - ARCHITECTURE CORRECTION: Succ-based IS viable
-  - [09_blocker-analysis.md](023_fp_temporal_witness_chain/reports/09_blocker-analysis.md) - BFMCS bypass recommendation (S5 vs T4)
-- **Plan**: [04_bypass-bfmcs.md](023_fp_temporal_witness_chain/plans/04_bypass-bfmcs.md) - Bypass BFMCS using TaskFrame+WorldHistory (v4)
-- **Summary**: [01_no-axioms-resolution.md](023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md) - Documents fundamental limitation (SUPERSEDED)
-
-**Description**: Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(¬φ) killing F(φ) obligations. Eliminates 4 dovetailing sorries: intFMCS_forward_F (IntBFMCS.lean:1199), intFMCS_forward_F_enriched two cases (IntBFMCS.lean:1175,1177), intFMCS_backward_P (IntBFMCS.lean:1213). Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches with Int-compatible index type.
-
----
 
 ### 24. Discrete axiom removal and documentation cleanup
 - **Effort**: 2-3 hours
@@ -280,171 +194,6 @@ technical_debt:
 - **Summary**: [03_implementation-summary.md](018_dense_representation_theorem_completion/summaries/03_implementation-summary.md) — Phases 1-2 complete (v3), plan revised for phases 3-5
 
 **Description**: Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.
-
----
-
-### 17. Build BFMCS over TimelineQuot for dense completeness
-- **Effort**: 6-10 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Completed**: 2026-03-21
-- **Dependencies**: Task 16
-- **Research (task 6)**:
-  - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §2.2 — dense staged timeline construction (stages 1–6), how density frame condition enables intermediate witnesses
-  - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §4 stage 2 (dense), §5.1 — BFMCS construction strategy over TimelineQuot, temporal coherence proof obligations, placement of Lindenbaum witnesses via Cantor rationals
-- **Research**: [01_bfmcs-dense-research.md](017_bfmcs_over_timeline_quot_dense/reports/01_bfmcs-dense-research.md)
-- **Plan**: [01_implementation-plan.md](017_bfmcs_over_timeline_quot_dense/plans/01_implementation-plan.md)
-- **Summary**: [01_implementation-summary.md](017_bfmcs_over_timeline_quot_dense/summaries/01_implementation-summary.md)
-
-**Description**: Construct a temporally complete BFMCS bundle with families indexed by TimelineQuot satisfying both modal_backward (requires multiple families; timelineQuotSingletonBFMCS fails here) and temporal coherence (forward_F, backward_P). Uses timelineQuotFMCS from TimelineQuotCanonical.lean as base family. The DenseTask relation provides a natural framework: witnesses from canonical_forward_F are placed at Cantor-assigned rationals. This is the hardest task in the dense track and the key blocker for task 988.
-
----
-
-### 16. Define DenseTask relation via Cantor isomorphism
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Completed**: 2026-03-21
-- **Dependencies**: none (independent of discrete track)
-- **Files**: DurationTransfer.lean (canonicalTaskRel), CantorApplication.lean (isomorphism), DenseTaskRelation.lean
-- **Research (task 6)**:
-  - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §2.3–2.5 — DenseTask definition via Cantor isomorphism, TaskFrame axiom proofs, density interpolation theorem
-  - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §2.3, §3.2 — DenseTask as bridge between syntax and semantics, role in dense representation pipeline
-- **Research**: [01_dense-task-research.md](016_define_dense_task_relation/reports/01_dense-task-research.md)
-- **Plan**: [01_implementation-plan.md](016_define_dense_task_relation/plans/01_implementation-plan.md)
-- **Summary**: [01_implementation-summary.md](016_define_dense_task_relation/summaries/01_implementation-summary.md)
-
-**Description**: Define DenseTask(u,q,v) ↔ e(tv)-e(tu)=q using the Cantor isomorphism TimelineQuot≃oℚ and the existing canonicalTaskRel (w+d=w') from DurationTransfer.lean. Verify TaskFrame ℚ axioms (trivial from group properties). Prove density interpolation theorem: any positive-duration task has arbitrary rational subdivision. Replaces duration-coarse parametric_canonical_task_rel for the dense case and directly instantiates TaskFrame ℚ with DenselyOrdered.
-
----
-
-### 15. Complete discrete representation theorem and remove Icc finite axiom
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Summary**: Replaced unprovable singleton BFMCS modal_backward with MCS-level saturation approach. Created ClosedFlagIntBFMCS bridge infrastructure. discrete_representation_unconditional restored with documented structural sorries.
-- **Language**: lean4
-- **Dependencies**: Tasks 13, 14
-- **Research**:
-  - [01_discrete-rep-research.md](015_discrete_representation_theorem_axiom_removal/reports/01_discrete-rep-research.md)
-  - [02_teammate-a-findings.md](015_discrete_representation_theorem_axiom_removal/reports/02_teammate-a-findings.md)
-  - [02_teammate-b-findings.md](015_discrete_representation_theorem_axiom_removal/reports/02_teammate-b-findings.md)
-  - [03_team-research-synthesis.md](015_discrete_representation_theorem_axiom_removal/reports/03_team-research-synthesis.md)
-  - [04_domain-semantics-research.md](015_discrete_representation_theorem_axiom_removal/reports/04_domain-semantics-research.md)
-- **Plan**: [03_domain-correct-plan.md](015_discrete_representation_theorem_axiom_removal/plans/03_domain-correct-plan.md) (v3, domain-correct approach)
-- **Research (task 6)**:
-  - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §3.3, §5.2 — how CanonicalTask resolves the SuccOrder blocker (Task 974), full pipeline for discrete representation theorem
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §7 — old vs new pipeline comparison, what is bypassed, §8 risk assessment
-
-**Description**: Wire the Succ-chain FMCS and CanonicalTask-based TaskFrame ℤ into the unconditional discrete representation theorem: valid_discrete φ → ⊢_discrete φ. Instantiate parametric truth lemma with D=ℤ and the Succ-chain task relation. Once sorry-free, remove discrete_Icc_finite_axiom (DiscreteTimeline.lean:316) and the two axioms discreteImmediateSuccSeed_consistent_axiom and discreteImmediateSucc_covers_axiom from DiscreteSuccSeed.lean. Reduces axiom_count from 3 to 1.
-
----
-
-### 14. Build Succ-chain FMCS and discrete TaskFrame ℤ instantiation
-- **Effort**: 5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Summary**: Implemented Succ-chain FMCS family over Int with forward/backward chains, proved all 4 coherence properties (G/H/F/P), instantiated CanonicalTaskTaskFrame, and constructed WorldHistory with respects_task.
-- **Language**: lean4
-- **Dependencies**: Tasks 11, 12
-- **Files**: New DiscreteSuccFMCS.lean, update DiscreteInstantiation.lean
-- **Research**: [01_succ-fmcs-research.md](014_succ_chain_fmcs_and_taskframe_int/reports/01_succ-fmcs-research.md)
-- **Plan**: [01_succ-fmcs-plan.md](014_succ_chain_fmcs_and_taskframe_int/plans/01_succ-fmcs-plan.md)
-- **Implementation Summary**: [01_succ-fmcs-summary.md](014_succ_chain_fmcs_and_taskframe_int/summaries/01_succ-fmcs-summary.md)
-- **Research (task 6)**:
-  - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §4 stages 2–4, §6 discrete table — how the Succ-chain FMCS fits the BFMCS pipeline, WorldHistory respects_task condition
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §7.2, §8 phase 4 — bypass pipeline diagram and implementation steps 11–13
-
-**Description**: Construct a time-indexed FMCS family over ℤ from Succ-chains: enumerate forward/backward via successor/predecessor existence to build fam:ℤ→MCS satisfying FMCS coherence (forward_G, backward_H, forward_F, backward_P). Instantiate DiscreteCanonicalTaskFrame using CanonicalTask as task_rel (replacing duration-coarse parametric_canonical_task_rel for the discrete case). Verify WorldHistory respects_task condition via Succ-chain propagation.
-
----
-
-### 13. Prove CanonicalR recovery from CanonicalTask
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Language**: lean4
-- **Dependencies**: Tasks 11, 12
-- **Files**: New CanonicalRecovery.lean or extend CanonicalTask.lean
-- **Research**: [01_canonicalr-recovery-analysis.md](013_canonical_r_recovery_from_canonical_task/reports/01_canonicalr-recovery-analysis.md)
-- **Plan**: [01_canonicalr-recovery-plan.md](013_canonical_r_recovery_from_canonical_task/plans/01_canonicalr-recovery-plan.md)
-- **Background (task 6)**:
-  - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.8 — recovery proposition, forward/backward directions, note on difficulty of backward direction
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §6 — recovery proof strategy using temp_4 and F-nesting depth bounds
-
-**Description**: Prove CanonicalR(u,v) ↔ ∃n≥1, CanonicalTask(u,n,v). Forward direction: CanonicalTask implies CanonicalR by g_content transitivity through Succ-chains via temp_4. Backward direction: CanonicalR implies some CanonicalTask using successor existence and F-nesting depth bounds. Also prove existing lemmas (canonical_forward_G, canonical_forward_F) from new definitions as backward-compatibility layer for downstream code.
-
----
-
-### 12. Prove Succ-based successor and predecessor existence under discrete axioms
-- **Effort**: 6-10 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Summary**: Proved successor_exists and predecessor_exists theorems using deferral seed construction with 3 justified axioms for seed consistency
-- **Language**: lean4
-- **Dependencies**: Task 10
-- **Files**: Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean
-- **Research**:
-  - [01_succ-existence-research.md](012_succ_successor_predecessor_existence/reports/01_succ-existence-research.md) — deferral seed construction, DF consistency, symmetric predecessor existence
-  - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.7 — successor existence proof sketch, deferral seed, use of DF and Lindenbaum
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §5 — detailed deferral seed construction, consistency argument, comparison with DiscreteSuccSeed blocking-formula approach, fallback strategy
-- **Plan**: [01_succ-existence-plan.md](012_succ_successor_predecessor_existence/plans/01_succ-existence-plan.md)
-- **Implementation**: [01_succ-existence-summary.md](012_succ_successor_predecessor_existence/summaries/01_succ-existence-summary.md)
-
-**Description**: Prove that under discrete axioms (base+DF+seriality), for any MCS u with F⊤∈u, there exists MCS v with Succ(u,v). Constructs deferral seed g_content(u)∪{φ∨Fφ|Fφ∈u}, proves consistency via DF (analogous to forward_temporal_witness_seed_consistent but with disjunctive deferrals), extends by Lindenbaum. Symmetric predecessor existence via DB. Critical proof: the deferral seed consistency argument is the crux that replaces discrete_Icc_finite_axiom. Fallback: axiomatize successor existence (weaker and more transparent than the current interval-finiteness axiom).
-
----
-
-### 11. Define CanonicalTask inductive three-place relation and prove TaskFrame axioms
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Language**: lean4
-- **Dependencies**: Task 10
-- **Files**: New CanonicalTask.lean
-- **Research**: [01_canonical-task-research.md](011_define_canonical_task_relation/reports/01_canonical-task-research.md)
-- **Plan**: [01_canonical-task-plan.md](011_define_canonical_task_relation/plans/01_canonical-task-plan.md)
-- **Summary**: [01_canonical-task-summary.md](011_define_canonical_task_relation/summaries/01_canonical-task-summary.md)
-- **Research (task 6)**:
-  - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.4–2.5, §4 — inductive definition, proof of all three TaskFrame axioms, bounded witness corollary
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §4 — Lean encoding with Fin chains, comparison with parametric_canonical_task_rel
-
-**Description**: Define CanonicalTask(u,n,v) inductively from Succ: u=v for n=0, ∃w,Succ(u,w)∧CanonicalTask(w,n,v) for n≥1, converse for n<0. Prove the three TaskFrame axioms: nullity identity (n=0 ↔ u=v), forward compositionality (chain concatenation, induction on first argument), and converse (definitional flip). Also prove the bounded witness corollary: F^nφ∈u ∧ F^(n+1)φ∉u implies ∃v with CanonicalTask(u,k,v) ∧ φ∈v for some 1≤k≤n.
-
----
-
-### 10. Define Succ relation and prove basic properties
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Language**: lean4
-- **Dependencies**: Task 9
-- **Files**: New SuccRelation.lean in Theories/Bimodal/Metalogic/Bundle/
-- **Research**: [01_succ-relation-research.md](010_define_succ_relation/reports/01_succ-relation-research.md)
-- **Plan**: [01_succ-relation-plan.md](010_define_succ_relation/plans/01_succ-relation-plan.md)
-- **Background (task 6)**:
-  - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.2–2.3, §2.6 — Succ definition, G/F-persistence conditions, single-step forcing theorem with full proof
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §2–3 — Lean spelling of Succ, relationship to CanonicalR, single-step forcing proof steps
-
-**Description**: Define Succ(u,v) := g_content(u)⊆v ∧ f_content(u)⊆v∪f_content(v) in new SuccRelation.lean. Prove: (1) Succ implies CanonicalR (projection to G-persistence condition), (2) g/h duality for Succ pairs using existing g_content_subset_implies_h_content_reverse, (3) the single-step forcing theorem: Fφ∈u ∧ FFφ∉u ∧ Succ(u,v) → φ∈v. The single-step forcing theorem is the key insight connecting F-nesting depth to witness distance in discrete models.
-
----
-
-### 9. Add f_content and p_content existential temporal extractors
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-21
-- **Language**: lean4
-- **Dependencies**: none
-- **Files**: Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean
-- **Research**:
-  - [01_temporal-extractors.md](009_add_existential_temporal_extractors/reports/01_temporal-extractors.md)
-- **Plan**: [01_temporal-extractors-plan.md](009_add_existential_temporal_extractors/plans/01_temporal-extractors-plan.md)
-- **Background (task 6)**:
-  - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.1 — defines f_content, p_content, their role alongside g/h content
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §2.1 — Lean definitions and the four-extractor table
-
-**Description**: Add f_content(M):={φ|Fφ∈M} and p_content(M):={φ|Pφ∈M} to TemporalContent.lean, complementing the existing g_content (universal future) and h_content (universal past). Prove basic duality lemmas: relationship between f_content and g_content via MCS negation completeness (Fφ=¬G¬φ), and symmetrically for p_content/h_content. These two extractors are the foundation for the Succ relation (discrete track, tasks 10-15) and DenseTask relation (dense track, tasks 16-18).
 
 ---
 
