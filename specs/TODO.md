@@ -142,9 +142,9 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 - **Research**:
   - [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
   - [02_team-research.md](specs/046_prove_forward_chain_p_step/reports/02_team-research.md)
-- **Plan**: [01_transfer-pattern-plan.md](specs/046_prove_forward_chain_p_step/plans/01_transfer-pattern-plan.md)
+- **Plan**: [02_transfer-only-plan.md](specs/046_prove_forward_chain_p_step/plans/02_transfer-only-plan.md)
 
-**Description**: Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification.
+**Description**: Prove forward chain p-step using canonical model transfer pattern (canonical_backward_P). No axioms allowed. Fill sorry at SuccChainFMCS.lean:350 using existing sorry-free infrastructure.
 
 ---
 
@@ -310,7 +310,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 34. Prove SuccExistence seed consistency axioms
 - **Effort**: 5-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Follow-up from**: Task 29 Phase 7 (deferred)

@@ -582,77 +582,49 @@ theorem predecessor_satisfies_g_persistence_reverse
     (predecessor_satisfies_h_persistence u h_mcs h_P_top)
 
 /--
-Axiom: The predecessor F-step condition holds.
+The predecessor F-step condition: f_content(predecessor) ⊆ u ∪ f_content(u).
 
-**Semantic Justification**:
-When constructing a predecessor v of u (so Succ v u), we need f_content(v) ⊆ u ∪ f_content(u).
-This means: if F(φ) ∈ v, then either φ ∈ u or F(φ) ∈ u.
+**Proof Strategy** (via constrained predecessor seed with F-step blocking formulas):
+For each φ with F(φ) ∈ predecessor and φ ∉ u and F(φ) ∉ u, the blocking formula
+G(¬φ) is in the predecessor seed (by construction). Since the predecessor extends
+the seed, G(¬φ) ∈ predecessor. But F(φ) = ¬G(¬φ) by definition, so both G(¬φ)
+and ¬G(¬φ) are in the predecessor, contradicting its consistency as an MCS.
 
-The proof attempt shows:
-- We have h_content(u) ⊆ v, giving g_content(v) ⊆ u by duality
-- If φ ∉ u and F(φ) ∉ u, then ¬φ ∈ u and G(¬φ) ∈ u (by MCS completeness)
-- By past_temp_a: G(¬φ) → H(F(G(¬φ))), so F(G(¬φ)) ∈ h_content(u) ⊆ v
-- This gives ¬G(F(φ)) ∈ v (since F(G(¬φ)) = ¬G(F(φ)))
-- But connecting this to F(φ) ∉ v requires showing G(¬φ) ∈ v
-
-The gap: while G(¬φ) ∈ u and we can derive F(G(¬φ)) ∈ v, the path to G(¬φ) ∈ v
-is not direct because h_content transfers H-formulas, not G-formulas.
-
-**Technical Status**: This axiom captures a semantic property of Lindenbaum extensions
-that doesn't follow from basic MCS closure. The proof would require showing that
-the specific Lindenbaum enumeration used for predecessor construction cannot
-add F-formulas that violate the step condition. This may require explicit
-tracking of the enumeration or a semantic model argument.
-
-**Task 34 Analysis**: Unlike the seed consistency axioms (Phases 1-2), which were
-simplified by the T-axiom approach (seed ⊆ u), this axiom concerns properties of
-the *extension* beyond the seed, which is not fully determined by the seed.
+This was previously an axiom (`predecessor_f_step_axiom`), now proven directly
+via the constrained predecessor seed construction (Task 34, Plan v2).
 -/
-/--
-Axiom: The predecessor F-step condition holds.
-
-**Semantic Justification**:
-When constructing a predecessor v of u (so Succ v u), we need f_content(v) ⊆ u ∪ f_content(u).
-This means: if F(φ) ∈ v, then either φ ∈ u or F(φ) ∈ u.
-
-**Proof Attempts (Task 34 Phase 4)**:
-Multiple proof strategies were attempted but all encounter the same fundamental gap:
-
-1. **Via f/g duality**: F(φ) ∈ v ↔ G(¬φ) ∉ v. We have g_content(v) ⊆ u, but this only
-   tells us what G-formulas in v imply about u, not the reverse.
-
-2. **Via h_content transfer**: The seed h_content(u) ⊆ v gives us H-formulas, not G-formulas.
-   Using past_temp_a (φ → H(F(φ))), we can show F(¬φ) ∈ v, but this doesn't constrain F(φ).
-
-3. **Via T-axiom chain**: G(¬φ) ∈ u implies ¬φ ∈ u (by T-axiom), and H(F(¬φ)) ∈ u via
-   past_temp_a, but we cannot transfer G(¬φ) from u to v.
-
-4. **Via seriality**: G(¬φ) ∈ u implies F(¬φ) ∈ u, which propagates to v via h_content,
-   giving ¬G(φ) ∈ v. But ¬G(φ) ∈ v doesn't directly constrain G(¬φ) ∈ v.
-
-**The Core Gap**:
-The h/g duality theorem (`h_content_subset_implies_g_content_reverse`) transfers UNIVERSAL
-temporal formulas between worlds. There is no analogous EXISTENTIAL transfer:
-- h_content(u) ⊆ v → g_content(v) ⊆ u  (proven, transfers G-formulas)
-- No analog: f_content(v) ⊆ ? (would need to constrain F-formulas)
-
-**Why This Is Still Sound**:
-Semantically, the predecessor v is constructed such that Succ(v, u). In any discrete
-linear order, if F(φ) holds at v, the witness must be at u or beyond (since u is the
-immediate successor). By induction on the F-nesting depth, either φ ∈ u (resolved at
-immediate successor) or F(φ) ∈ u (deferred to later). The Lindenbaum enumeration
-respects this because it can only add formulas consistent with the seed structure.
-
-**Status**: This axiom captures a property of Lindenbaum extensions that requires
-formalizing the enumeration's interaction with temporal structure. Future work could:
-1. Use a more constrained Lindenbaum construction that tracks F-witnesses
-2. Develop a p_content/f_content duality theorem parallel to h/g duality
-3. Accept as axiom (current approach) with the semantic justification above
--/
-axiom predecessor_f_step_axiom
+theorem predecessor_f_step
     (u : Set Formula) (h_mcs : SetMaximalConsistent u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
-    f_content (predecessor_from_deferral_seed u h_mcs h_P_top) ⊆ u ∪ f_content u
+    f_content (predecessor_from_deferral_seed u h_mcs h_P_top) ⊆ u ∪ f_content u := by
+  intro φ h_φ_in_f_content
+  -- h_φ_in_f_content : F(φ) ∈ predecessor, i.e., φ ∈ f_content(predecessor)
+  -- We need: φ ∈ u ∨ F(φ) ∈ u
+  by_cases h_φ_in_u : φ ∈ u
+  · -- Case 1: φ ∈ u
+    exact Set.mem_union_left _ h_φ_in_u
+  · by_cases h_F_φ_in_u : Formula.some_future φ ∈ u
+    · -- Case 2: F(φ) ∈ u, so φ ∈ f_content(u)
+      exact Set.mem_union_right _ h_F_φ_in_u
+    · -- Case 3: φ ∉ u and F(φ) ∉ u — derive contradiction
+      -- By construction, G(¬φ) ∈ f_step_blocking_formulas(u)
+      have h_block : Formula.all_future (Formula.neg φ) ∈ f_step_blocking_formulas u :=
+        ⟨φ, h_F_φ_in_u, h_φ_in_u, rfl⟩
+      -- f_step_blocking_formulas(u) ⊆ predecessor_deferral_seed(u)
+      have h_in_seed : Formula.all_future (Formula.neg φ) ∈ predecessor_deferral_seed u :=
+        f_step_blocking_formulas_subset_predecessor_deferral_seed u h_block
+      -- predecessor extends the seed
+      have h_in_pred : Formula.all_future (Formula.neg φ) ∈
+          predecessor_from_deferral_seed u h_mcs h_P_top :=
+        predecessor_from_deferral_seed_extends u h_mcs h_P_top h_in_seed
+      -- F(φ) ∈ predecessor (from h_φ_in_f_content, unfolding f_content)
+      have h_F_in_pred : Formula.some_future φ ∈
+          predecessor_from_deferral_seed u h_mcs h_P_top := h_φ_in_f_content
+      -- F(φ) = ¬G(¬φ) by definition (some_future φ = neg (all_future (neg φ)))
+      -- So we have both G(¬φ) and ¬G(¬φ) in predecessor, contradicting MCS consistency
+      have h_mcs_pred := predecessor_from_deferral_seed_mcs u h_mcs h_P_top
+      exact False.elim (set_consistent_not_both h_mcs_pred.1
+        (Formula.all_future (Formula.neg φ)) h_in_pred h_F_in_pred)
 
 /--
 The predecessor satisfies the Succ relation: Succ (predecessor) u.
@@ -662,7 +634,7 @@ theorem predecessor_succ
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     Succ (predecessor_from_deferral_seed u h_mcs h_P_top) u :=
   ⟨predecessor_satisfies_g_persistence_reverse u h_mcs h_P_top,
-   predecessor_f_step_axiom u h_mcs h_P_top⟩
+   predecessor_f_step u h_mcs h_P_top⟩
 
 /--
 The predecessor satisfies the Pred relation: Pred u (predecessor).
