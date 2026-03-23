@@ -99,7 +99,8 @@ technical_debt:
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: 6-10 hours remaining (revised: MCS-decided atom approach)
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
+- **Blocker**: Plan v7 MCS-decided atom pattern fails for pathological MCS where G(¬q) ∈ M for all atoms. See [30_mcs-decided-blocker-analysis.md](029_switch_to_reflexive_gh_semantics/reports/30_mcs-decided-blocker-analysis.md)
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:

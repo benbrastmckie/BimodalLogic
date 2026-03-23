@@ -84,7 +84,7 @@ The pathological MCS (G(¬q) ∈ M for all atoms q) is real but NOT a blocker:
 
 ## Implementation Phases
 
-### Phase 5A-bis: Add MCS-Decided Atom Infrastructure [NOT STARTED]
+### Phase 5A-bis: Add MCS-Decided Atom Infrastructure [BLOCKED]
 
 **Goal**: Add the lemmas needed for the MCS-decided atom pattern.
 
