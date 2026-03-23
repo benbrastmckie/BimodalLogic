@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T23:40:41Z",
+      "last_updated": "2026-03-23T23:44:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -775,11 +775,16 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/15_team-research.md",
           "type": "research",
           "summary": "Team research (2 teammates): Option C (modify chain construction with boundary_resolution_set) is the only viable approach. Options A/B cannot overcome MCS maximality gap."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/09_boundary-resolution-seed.md",
+          "type": "plan",
+          "summary": "5-phase plan: add boundary_resolution_set to seed, prove consistency, simplify restricted_single_step_forcing"
         }
       ],
       "session_id": "sess_1774308893_ccb0e7",
       "researched": "2026-03-23T23:40:41Z",
-      "planned": "2026-03-23T23:11:37Z",
+      "planned": "2026-03-23T23:44:00Z",
       "started": "2026-03-23T17:51:37Z",
       "blocker_reason": "Plan v8 blocked: h_GF_not hypothesis insufficient. Negation completeness allows F(psi) via FG(neg_psi) path. Options: (A) add GF ∉ dc, (B) direct bounded_witness with lexicographic termination, (C) modify chain construction."
     },
