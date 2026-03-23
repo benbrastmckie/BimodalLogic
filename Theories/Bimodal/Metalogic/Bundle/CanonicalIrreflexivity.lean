@@ -5,6 +5,7 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Theorems.Propositional
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.ProofSystem.Substitution
 import Mathlib.Data.Finset.Union
 
 /-!
@@ -666,41 +667,41 @@ theorem fresh_for_g_content_some_decided_false (M : Set Formula) (h_mcs : SetMax
   -- Formalization deferred.
   sorry
 
-/-- For any MCS M, there exists an atom q such that M contains neither q nor G(¬q).
-This means: `Formula.neg (Formula.atom q) ∈ M` (M decides q false at current time)
-AND `Formula.all_future (Formula.neg (Formula.atom q)) ∉ M` (not always false).
+/-- For any MCS M, there exists an atom q that is fresh for g_content(M) and decided false.
+This gives us:
+1. `fresh_for_set q (g_content M)` - q doesn't appear in any formula of g_content(M)
+2. `Formula.neg (Formula.atom q) ∈ M` - M decides q false
+3. `Formula.all_future (Formula.neg (Formula.atom q)) ∉ M` - G(¬q) ∉ M (follows from freshness)
 
 Proof: Use fresh_for_g_content_some_decided_false to get q fresh for g_content(M)
 with ¬q ∈ M. Then by fresh_for_g_content_implies_not_always_neg, G(¬q) ∉ M.
 -/
 theorem exists_strict_fresh_atom (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ q : Atom, Formula.neg (Formula.atom q) ∈ M ∧
+    ∃ q : Atom, fresh_for_set q (g_content M) ∧
+               Formula.neg (Formula.atom q) ∈ M ∧
                Formula.all_future (Formula.neg (Formula.atom q)) ∉ M := by
   obtain ⟨q, h_fresh, h_neg_q⟩ := fresh_for_g_content_some_decided_false M h_mcs
-  exact ⟨q, h_neg_q, fresh_for_g_content_implies_not_always_neg M q h_fresh⟩
+  exact ⟨q, h_fresh, h_neg_q, fresh_for_g_content_implies_not_always_neg M q h_fresh⟩
 
-/-- The fresh G-atom seed is consistent: if `G(¬q) ∉ M` (i.e., `F(q) ∈ M`),
-then `g_content(M) ∪ {G(q)}` is set-consistent.
+/-- The fresh G-atom seed is consistent when q is fresh for g_content(M).
 
 Proof: Suppose L ⊆ g_content(M) ∪ {G(q)} with L ⊢ ⊥.
 - If G(q) ∉ L: then L ⊆ g_content(M) ⊆ M (by reflexivity), contradicting M's consistency.
-- If G(q) ∈ L: then L \ {G(q)} ⊢ G(q) → ⊥, i.e., L' ⊢ ¬G(q) = F(¬q).
-  By generalized temporal K, G(L') ⊢ G(F(¬q)).
-  Since L' ⊆ g_content(M), all G(L') ⊆ M, so G(F(¬q)) ∈ M.
-  By T-axiom, G(F(¬q)) → F(¬q), so F(¬q) ∈ M, i.e., ¬G(q) ∈ M.
-  But G(q) ∉ M (since G(¬q) ∉ M and we have G(q) → ¬G(¬q) ... wait, that's wrong)
+- If G(q) ∈ L: then L \ {G(q)} ⊢ ¬G(q) by deduction theorem.
+  Let L' = L \ {G(q)} ⊆ g_content(M).
+  Since q is fresh for g_content(M), q doesn't appear in any formula of L'.
+  By substitution (derivation_subst), L' ⊢ ¬G(r) for any atom r.
+  In particular, pick r appearing in some formula of L' (or pick any r if L' is empty).
+  Then ¬G(r) ∈ M (since L' ⊆ g_content(M) ⊆ M and M is closed under derivation).
+  But wait - if L' = [] (empty), then [] ⊢ ¬G(q), meaning ¬G(q) is a theorem.
+  This would mean G(q) is unsatisfiable, which is false (G(q) is satisfiable).
+  Contradiction!
 
-  Actually, we need: G(¬q) ∉ M means F(q) ∈ M.
-  And G(q) being in the seed doesn't contradict F(q) ∈ M.
-  The key is: if L ⊆ g_content(M) ∪ {G(q)} derives ⊥, then...
-
-  Let's think again. The seed is g_content(M) ∪ {G(q)}.
-  After Lindenbaum, W ⊇ seed, so G(q) ∈ W, hence q ∈ g_content(W).
-  We need: q ∉ M. We have ¬q ∈ M (from exists_strict_fresh_atom).
-  Since q ∉ M (because ¬q ∈ M and M is consistent), g_content(W) ⊄ M. ✓
+  If L' ≠ [], the substitution argument still works: L' derives ¬G(r) for all r,
+  but L' ⊆ M means L' is consistent, so the derivation must be vacuous.
 -/
 theorem fresh_Gp_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (q : Atom) (h_not_always_neg : Formula.all_future (Formula.neg (Formula.atom q)) ∉ M) :
+    (q : Atom) (h_fresh : fresh_for_set q (g_content M)) :
     SetConsistent (g_content M ∪ {Formula.all_future (Formula.atom q)}) := by
   intro L hL_sub ⟨d⟩
   let Gq := Formula.all_future (Formula.atom q)
@@ -760,35 +761,105 @@ theorem fresh_Gp_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent
     have h_Fneg : (Gq.imp Formula.bot) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs h_T h_GFneg
 
-    -- F(¬q) = ¬G(q) = G(q) → ⊥
-    -- But wait, Gq.imp Formula.bot is NOT the same as F(¬q)!
-    -- F(¬q) = ¬G(¬(¬q)) = ¬G(q) = (G(q)).neg = (G(q)).imp ⊥
-    -- So Gq.imp ⊥ = G(q) → ⊥ = ¬G(q) = F(¬q). ✓
+    -- KEY PROOF: Use that q is fresh for L' (since L' ⊆ g_content(M) and q is fresh for g_content(M))
+    -- This means the derivation L' ⊢ ¬G(q) is "parametric" in q.
+    -- By substitution, L' ⊢ ¬G(r) for any atom r.
+    -- So M contains ¬G(r) for all r (since L' ⊆ M and M is closed under derivation).
+    -- In particular, ¬G(q) ∈ M for our q.
 
-    -- So F(¬q) ∈ M, i.e., ¬G(q) ∈ M
-    -- G(¬q) ∉ M by hypothesis h_not_always_neg
-    -- So F(q) ∈ M (by maximality)
-    -- F(q) = ¬G(¬q)
+    -- Step 1: Show q ∉ atoms_of_context L'
+    have h_q_fresh_L' : q ∉ atoms_of_context L' := by
+      rw [mem_atoms_of_context_iff]
+      push_neg
+      intro ψ hψ_in_L'
+      have hψ_in_g : ψ ∈ g_content M := hL'_sub ψ hψ_in_L'
+      rw [fresh_for_set_iff] at h_fresh
+      exact h_fresh ψ hψ_in_g
 
-    -- This doesn't contradict anything yet...
-    -- We have F(¬q) ∈ M (from the derivation) and G(¬q) ∉ M (hypothesis).
-    -- These are consistent!
+    -- Step 2: By substitution, L' ⊢ (¬G(q))[r/q] = ¬G(r) for any r
+    -- We substitute q with q itself in the derivation - but the key is we COULD substitute
+    -- with any atom r, getting L' ⊢ ¬G(r).
 
-    -- The issue is: F(¬q) ∈ M means "eventually ¬q", not "now ¬G(q)"
-    -- Actually, F(¬q) = ¬G(¬¬q) = ¬G(q). So ¬G(q) ∈ M, hence G(q) ∉ M.
+    -- Step 3: The formula d_ded derives is Gq.imp Formula.bot = G(q) → ⊥ = ¬G(q)
+    -- This formula has atoms = {q} (q appears in G(q))
 
-    -- But G(q) was in our seed, not in M! The seed is g_content(M) ∪ {G(q)}.
-    -- G(q) ∉ M is fine - it's in the seed, not necessarily in M.
+    -- Step 4: Since q ∉ atoms_of_context(L'), by substituting q with ANY other atom r,
+    -- we get L' ⊢ ¬G(r). Taking r to be an atom with G(atom r) ∈ M gives a contradiction.
 
-    -- The key: we showed L ⊢ ⊥ leads to G(q) ∉ M.
-    -- But this doesn't give a contradiction!
+    -- Actually, let's use a simpler approach: derive a contradiction from L' ⊆ M.
+    -- Since L' ⊆ g_content(M) ⊆ M, and L' ⊢ ¬G(q), we have ¬G(q) ∈ M (by MCS closure).
 
-    -- Wait, I think the approach needs revision. Let me reconsider.
+    -- Now use substitution with a fresh r: L' ⊢ ¬G(r) for all r (since q ∉ L' atoms).
+    -- So ¬G(r) ∈ M for all r, meaning G(r) ∉ M for all atoms r (since M is consistent).
+    -- In particular, G(atom r) ∉ M for all r, so atom(r) ∉ g_content(M) for all r.
 
-    -- Actually, the consistency proof should work differently.
-    -- If L derives ⊥ and G(q) ∈ L, we use IRR or a similar technique.
+    -- But L' ⊆ g_content(M) and L' is non-empty (or we're in the L' = [] case).
+    -- If L' ≠ [], then some ψ ∈ L' ⊆ g_content(M). If ψ is atomic, contradiction!
+    -- If ψ is non-atomic, it still has atoms, so atoms(g_content(M)) ≠ ∅.
+    -- But we showed atom(r) ∉ g_content(M) for all r... hmm, that means atoms_of_set(g_content(M)) might be non-empty from non-atomic formulas.
 
-    sorry  -- Need to revise the approach
+    -- SIMPLER: If L' = [], then [] ⊢ ¬G(q), meaning ¬G(q) is a theorem.
+    -- But ¬G(q) = F(¬q) is NOT a theorem (there are models where q is always true).
+    -- Use soundness to derive a contradiction.
+
+    -- For L' ≠ [], the atoms in L' don't include q, so by substitution we can derive ¬G(r) for any r.
+    -- But this just shows ¬G(r) ∈ M for all r, which is consistent (it means no atom is always true).
+
+    -- The real key: We have h_Fneg : (Gq.imp Formula.bot) ∈ M, i.e., ¬G(q) ∈ M.
+    -- Combined with h_fresh, q ∈ atoms(¬G(q)) = {q}, and ¬G(q) ∈ M.
+    -- But fresh_for_set says q ∉ atoms_of_set(g_content(M)).
+    -- Is ¬G(q) ∈ g_content(M)? That would require G(¬G(q)) ∈ M.
+
+    -- By 4-axiom: G(φ) → G(G(φ)). If G(¬G(q)) ∈ M, then ¬G(q) ∈ g_content(M).
+    -- But we only have ¬G(q) ∈ M, not G(¬G(q)) ∈ M.
+
+    -- Alternative: Use that we showed ¬G(r) ∈ M for ALL r (by substitution).
+    -- Pick r to be fresh for g_content(M) (which exists by exists_fresh_for_g_content... wait, that's sorried).
+    -- Actually, we already have q fresh for g_content(M)!
+
+    -- The key insight: from L' ⊢ ¬G(q) with q fresh, by substitution L' ⊢ ¬G(r) for all r.
+    -- In particular, L' ⊢ ¬G(s) where s is ANY atom appearing in some ψ ∈ g_content(M).
+    -- But G(ψ) ∈ M for ψ ∈ g_content(M). If s ∈ ψ.atoms... hmm, G(ψ) ≠ G(s).
+
+    -- Let me try: take r = q in the substitution (trivial, gives back the same derivation).
+    -- The point is L' ⊢ ¬G(q) and ¬G(q) ∈ M (by h_Fneg).
+    -- Now, ¬G(q).atoms = {q}, so q ∈ atoms_of_set(M). This is expected (M decides all atoms).
+    -- The constraint is q is fresh for g_content(M), not for M.
+
+    -- EUREKA: The proof needs a different approach!
+    -- Use that L' ⊢ ¬G(q) means g_content(M) derives ¬G(q).
+    -- By generalized K: G(g_content(M)) ⊢ G(¬G(q)).
+    -- G(g_content(M)) ⊆ M (since for each φ ∈ g_content(M), G(φ) ∈ M by definition).
+    -- Wait, we already did this above and got h_GFneg : G(¬G(q)) ∈ M.
+
+    -- From G(¬G(q)) ∈ M, by T-axiom, ¬G(q) ∈ M (we got h_Fneg).
+    -- We need a contradiction.
+
+    -- The issue is: having ¬G(q) ∈ M doesn't directly contradict q being fresh for g_content(M).
+    -- ¬G(q) ∈ M ≠ ¬G(q) ∈ g_content(M).
+
+    -- But wait! We have G(¬G(q)) ∈ M (h_GFneg). So ¬G(q) ∈ g_content(M) (by definition).
+    -- And ¬G(q) has atom q in it. So q ∈ atoms_of_set(g_content(M)).
+    -- This contradicts h_fresh : fresh_for_set q (g_content M)!
+
+    -- The atoms of ¬G(q) = (G(q)).imp ⊥ = all_future(atom q).imp bot
+    -- Gq = all_future(atom q), so Gq.atoms = (atom q).atoms = {q}
+    -- (Gq.imp ⊥).atoms = Gq.atoms ∪ ⊥.atoms = {q} ∪ ∅ = {q}
+    have h_atoms_neg_Gq : q ∈ (Gq.imp Formula.bot).atoms := by
+      -- Unfold Gq and simplify
+      show q ∈ ((Formula.atom q).all_future.imp Formula.bot).atoms
+      simp only [Formula.atoms, Finset.mem_union, Finset.mem_singleton]
+      left; trivial
+
+    -- G(¬G(q)) ∈ M means ¬G(q) ∈ g_content(M)
+    have h_neg_Gq_in_g : (Gq.imp Formula.bot) ∈ g_content M := h_GFneg
+
+    -- So q ∈ atoms_of_set(g_content(M))
+    have h_q_in_atoms_g : q ∈ atoms_of_set (g_content M) :=
+      ⟨Gq.imp Formula.bot, h_neg_Gq_in_g, h_atoms_neg_Gq⟩
+
+    -- This contradicts freshness
+    exact h_fresh h_q_in_atoms_g
 
   · -- Case: G(q) ∉ L
     -- L ⊆ g_content(M)
@@ -821,10 +892,10 @@ The proof constructs W using the fresh G-atom technique.
 theorem existsTask_strict_fresh_atom (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ∃ W, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M := by
   -- Step 1: Find a suitable fresh atom q
-  obtain ⟨q, h_neg_q, h_not_always_neg⟩ := exists_strict_fresh_atom M h_mcs
+  obtain ⟨q, h_fresh, h_neg_q, _h_not_always_neg⟩ := exists_strict_fresh_atom M h_mcs
 
   -- Step 2: The seed g_content(M) ∪ {G(q)} is consistent
-  have h_seed_cons := fresh_Gp_seed_consistent M h_mcs q h_not_always_neg
+  have h_seed_cons := fresh_Gp_seed_consistent M h_mcs q h_fresh
 
   -- Step 3: Extend to MCS W via Lindenbaum
   let seed := g_content M ∪ {Formula.all_future (Formula.atom q)}
