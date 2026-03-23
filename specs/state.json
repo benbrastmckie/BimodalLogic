@@ -1254,9 +1254,20 @@
       "session_id": "sess_1774126671_9ca427",
       "researched": "2026-03-21T20:50:40Z",
       "planned": "2026-03-21T21:02:08Z"
+    },
+    {
+      "project_number": 34,
+      "project_name": "prove_succ_seed_consistency_axioms",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-23T03:48:09Z",
+      "last_updated": "2026-03-23T03:48:09Z",
+      "dependencies": [],
+      "description": "Prove or remove the 3 SuccExistence axioms deferred from task 29 Phase 7: successor_deferral_seed_consistent_axiom, predecessor_deferral_seed_consistent_axiom, and predecessor_f_step_axiom (all in Bundle/SuccExistence.lean). These seed consistency axioms assert that deferral seeds are satisfiable, which should follow from T-axiom under reflexive semantics. Also un-supersede task 26 (canonicalR_irreflexive_axiom was NOT deleted by task 29 and still contradicts proven canonicalR_reflexive).",
+      "artifacts": []
     }
   ],
-  "next_project_number": 34,
+  "next_project_number": 35,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

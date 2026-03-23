@@ -1,5 +1,5 @@
 ---
-next_project_number: 34
+next_project_number: 35
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -29,10 +29,10 @@ technical_debt:
 
 ### Active Work
 
+- **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 - **29** → [COMPLETED] (reflexive G/H semantics — v8 preorder acceptance approach)
   - **Summary**: Two-layer architecture: Layer 1 (basic completeness) axiom-free, Layer 2 (Cantor isomorphism) uses irreflexivity axiom
   - **Completed**: 2026-03-22
-- **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
 ### Completeness Pipeline
 
@@ -44,8 +44,10 @@ technical_debt:
 1. **22** → implement (planned, has 5-phase plan)
 2. **24** → implement (depends: 22 only — 23 completed) — removes 3 axioms, final cleanup
 
-**Axiom elimination**:
-1. **26** → superseded (research confirms Task 29 Phase 5 subsumes Task 26 entirely)
+### Axiom Elimination
+
+1. **26** → research (NOT superseded — task 29 preserved the axiom; canonicalR_irreflexive_axiom now contradicts proven canonicalR_reflexive)
+2. **34** → research (prove 3 SuccExistence seed axioms deferred from task 29 Phase 7)
 
 ### Post-Completeness Cleanup
 
@@ -67,6 +69,17 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 34. Prove SuccExistence seed consistency axioms
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: none
+- **Follow-up from**: Task 29 Phase 7 (deferred)
+
+**Description**: Prove or remove the 3 axioms in `Bundle/SuccExistence.lean` that were deferred from task 29 Phase 7: (1) `successor_deferral_seed_consistent_axiom` (line 266) — asserts successor deferral seed is consistent, (2) `predecessor_deferral_seed_consistent_axiom` (line 311) — symmetric predecessor version, (3) `predecessor_f_step_axiom` (line 516) — F-step condition for predecessor construction. Under reflexive semantics with T-axiom available, these seed consistency claims may be provable syntactically. The seeds contain `g_content(u) ∪ {φ ∨ F(φ) | F(φ) ∈ u}` (successor) or `h_content(u) ∪ {φ ∨ P(φ) | P(φ) ∈ u}` (predecessor). The deferral disjunctions `φ ∨ F(φ)` are tautological consequences of `F(φ)`, and the g_content formulas are jointly consistent by MCS properties. Research whether T-axiom (`G(φ) → φ`) provides enough to close these proofs. Note: discrete seed axioms (`discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) are covered by task 24.
 
 ---
 
@@ -101,8 +114,9 @@ technical_debt:
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: ~10 hours remaining (v8: preorder acceptance approach)
-- **Status**: [PLANNED]
-- **Blocker**: ~~Plan v7 MCS-decided atom pattern fails for pathological MCS~~ Resolved: preorder acceptance recommended
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-22
+- **Summary**: Two-layer architecture: Layer 1 (basic completeness) axiom-free, Layer 2 (Cantor isomorphism) uses irreflexivity axiom. Deferred: axiom deletion (task 26), seed axiom proofs (task 34)
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
