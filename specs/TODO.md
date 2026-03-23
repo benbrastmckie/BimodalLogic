@@ -98,14 +98,15 @@ technical_debt:
 ---
 
 ### 35. Prove remaining sorries and axioms in Succ-chain completeness pipeline
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Depends On**: Task 34 (non-blocking)
 - **Research**:
   - [01_team-research.md](035_prove_succ_chain_remaining_sorries/reports/01_team-research.md) — Team synthesis (2 teammates)
   - [01_teammate-a-findings.md](035_prove_succ_chain_remaining_sorries/reports/01_teammate-a-findings.md) — Item-by-item analysis
   - [01_teammate-b-findings.md](035_prove_succ_chain_remaining_sorries/reports/01_teammate-b-findings.md) — Patterns and prior art
+- **Plan**: [01_prove-sorries-plan.md](035_prove_succ_chain_remaining_sorries/plans/01_prove-sorries-plan.md)
 
 **Description**: Prove remaining sorries and axioms in Succ-chain completeness pipeline. After task 997 (Succ-chain base completeness) and excluding task 34 (SuccExistence axioms), 7 items remain: (1) SuccChainFMCS axioms: f_nesting_boundary, p_nesting_boundary (provable via well-founded induction on formula depth), succ_chain_fam_p_step (provable via induction on chain structure). (2) New sorries from task 997: Box backward direction in SuccChainTruth.lean:254 (not used in completeness but needed for full bidirectional truth lemma), structural contraction in SuccChainCompleteness.lean:109 (provable by induction). (3) P-direction inherited sorries: backward_witness in CanonicalTaskRelation.lean:785, succ_propagates_P_not in SuccRelation.lean:497. All items are provable — no architectural blockers. Depends on task 34 (non-blocking: task 34 reduces axiom count but these items are independent).
 
