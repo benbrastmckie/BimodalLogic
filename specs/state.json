@@ -1013,7 +1013,7 @@
     {
       "project_number": 46,
       "project_name": "prove_forward_chain_p_step",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "description": "Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification. Verification: lake build succeeds, no sorries in succ_chain_fam_p_step, succ_chain_backward_P compiles.",
       "effort": "2-3 hours",
@@ -1033,6 +1033,11 @@
           "path": "specs/046_prove_forward_chain_p_step/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates: Option A viable (transfer pattern), Option C impossible (Lindenbaum circularity)"
+        },
+        {
+          "type": "plan",
+          "path": "specs/046_prove_forward_chain_p_step/plans/01_transfer-pattern-plan.md",
+          "summary": "4-phase implementation plan using canonical model transfer pattern with axiom fallback"
         }
       ],
       "session_id": "sess_1774279626_974f60",
