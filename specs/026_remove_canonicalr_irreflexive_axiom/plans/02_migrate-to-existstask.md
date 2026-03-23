@@ -174,7 +174,7 @@ The user renamed `CanonicalR` to `ExistsTask` as the primary definition:
 
 ---
 
-### Phase 5: Remove Deprecation (Optional) [NOT STARTED]
+### Phase 5: Remove Deprecation (Optional) [COMPLETED]
 
 **Goal**: After full migration, optionally remove deprecated aliases.
 
