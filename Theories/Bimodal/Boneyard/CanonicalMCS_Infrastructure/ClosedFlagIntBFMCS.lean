@@ -1,3 +1,12 @@
+/-!
+# Archived: ClosedFlagIntBFMCS.lean
+**Archived**: 2026-03-23
+**Reason**: Superseded by DirectMultiFamilyBFMCS; depends on CanonicalMCS closed flags
+**Technique Value**: Int-indexed BFMCS bridging pattern is legitimate
+**Original Purpose**: Bridge MCS-level saturation to Int-indexed BFMCS
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.ModallyCoherentBFMCS
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Algebraic.IntBFMCS

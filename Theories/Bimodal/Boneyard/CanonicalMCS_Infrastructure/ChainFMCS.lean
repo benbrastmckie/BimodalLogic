@@ -1,3 +1,12 @@
+/-!
+# Archived: ChainFMCS.lean
+**Archived**: 2026-03-23
+**Reason**: Built on D=CanonicalMCS pattern which conflates duration domain with MCS space
+**Technique Value**: Chain FMCS construction is legitimate; pattern could be reimplemented with proper D/W separation
+**Original Purpose**: Chain FMCS over CanonicalMCS flags for temporal coherence
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.FMCS

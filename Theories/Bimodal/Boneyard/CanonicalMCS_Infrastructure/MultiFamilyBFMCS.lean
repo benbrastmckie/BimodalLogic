@@ -1,3 +1,12 @@
+/-!
+# Archived: MultiFamilyBFMCS.lean
+**Archived**: 2026-03-23
+**Reason**: Built on D=CanonicalMCS which conflates W with D; contains dead-end modal_backward sorry
+**Technique Value**: Multi-family BFMCS approach is legitimate but needs proper D/W separation
+**Original Purpose**: Dense algebraic completeness via multi-family bundles
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Algebraic.SaturatedChain
 import Bimodal.Metalogic.Bundle.ChainFMCS
 import Bimodal.Metalogic.Bundle.BFMCS

@@ -1,3 +1,12 @@
+/-!
+# Archived: ModalWitnessData.lean
+**Archived**: 2026-03-23
+**Reason**: Uses CanonicalMCS; modal witness data structure built on confused foundation
+**Technique Value**: Witness data pattern is legitimate for tracking Diamond obligations
+**Original Purpose**: Link Diamond formulas to witness MCS for modal saturation
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.ChainFMCS
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.CanonicalFMCS

@@ -9,7 +9,7 @@ This module defines the `FMCS` (Family of Maximal Consistent Sets) structure
 that assigns a maximal consistent set (MCS) to each time point in D, with temporal
 coherence conditions ensuring proper formula propagation.
 
-## FMCS Indexing Type (Task 1009)
+## FMCS Indexing Type (Task 1009, Updated Task 41)
 
 The type parameter `D` in `FMCS D` is the **indexing type** for the family. For
 proper temporal model construction, `D` should be a temporal domain such as:
@@ -17,24 +17,18 @@ proper temporal model construction, `D` should be a temporal domain such as:
 - `TimelineQuot` or `Rat` for dense time (Cantor domain)
 - Any type with `AddCommGroup + LinearOrder` for duration arithmetic
 
-**Proof-Theoretic Special Case**: The construction `FMCS CanonicalMCS` (in
-CanonicalFMCS.lean) uses all maximal consistent sets as the indexing type.
-This creates a "degenerate" family where `mcs(w) = w.world` (identity mapping).
-This construction:
-- Is mathematically valid and sorry-free
-- Trivializes forward_F and backward_P witness obligations
-- Serves the TruthLemma proof but is NOT a standard temporal model
-- Has only Preorder structure (not the LinearOrder needed for TaskFrame semantics)
+**Correct Approach**: The SuccChain construction (SuccChainFMCS.lean) uses D=Int
+with proper temporal coherence. This is the canonical implementation for discrete
+completeness.
 
-**Key Distinction**:
-- `FMCS CanonicalMCS`: Indexing type with Preorder only (proof-theoretic)
-- `TaskFrame D`: Temporal domain with AddCommGroup + LinearOrder (semantic)
+**Archived Pattern** (Task 41): The D=CanonicalMCS pattern (former CanonicalFMCS.lean)
+has been removed. It was architecturally confused: using all MCS as the indexing type
+created an identity mapping `mcs(w) = w.world` that trivialized F/P witness obligations
+rather than proving them. The infrastructure was moved to Boneyard/CanonicalMCS_Infrastructure/.
 
-**WARNING: W=D Conflation Error** (Task 15): Some deprecated constructions
-set `WorldState := D`, conflating world states (MCS) with time indices. This
-is architecturally incorrect: world states describe WHAT is true; time indices
-describe WHEN. See Boneyard/Domain/ for deprecated examples and avoid this
-pattern in new code.
+**WARNING: W=D Conflation Error** (Tasks 15, 41): Never conflate world states (MCS)
+with time indices. World states describe WHAT is true; time indices describe WHEN.
+D must be a proper timeline type (Int, Rat, TimelineQuot), not CanonicalMCS.
 
 ## Terminology (Task 928)
 

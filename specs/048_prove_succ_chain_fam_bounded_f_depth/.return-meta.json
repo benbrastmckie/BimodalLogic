@@ -1,0 +1,21 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/04_restricted-blocking.md",
+      "summary": "5-phase implementation plan v4 using restricted P-step blocking definition"
+    }
+  ],
+  "next_steps": "Run /implement 48 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1774294230_d6db03",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5,
+    "plan_version": 4
+  }
+}

@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Bundle.CanonicalConstruction
 import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Bundle.CanonicalFMCS
+-- REMOVED (Task 41): import Bimodal.Metalogic.Bundle.CanonicalFMCS
+-- CanonicalFMCS uses D=CanonicalMCS confused pattern; deleted
 import Bimodal.Semantics.Validity
 
 /-!

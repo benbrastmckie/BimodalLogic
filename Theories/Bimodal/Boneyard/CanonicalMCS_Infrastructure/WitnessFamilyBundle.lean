@@ -1,3 +1,12 @@
+/-!
+# Archived: WitnessFamilyBundle.lean
+**Archived**: 2026-03-23
+**Reason**: Built on D=CanonicalMCS diamonds; depends on CanonicalMCS infrastructure
+**Technique Value**: Multi-family witness construction pattern is legitimate
+**Original Purpose**: Track modal obligations and witnesses in multi-family BFMCS
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.ChainFMCS
 import Bimodal.Metalogic.Bundle.ModalWitnessData
 import Bimodal.Metalogic.Bundle.ModalSaturation

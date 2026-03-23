@@ -1,3 +1,12 @@
+/-!
+# Archived: ModallyCoherentBFMCS.lean
+**Archived**: 2026-03-23
+**Reason**: Uses CanonicalMCS as domain; singleton BFMCS modal_backward is unprovable
+**Technique Value**: Multi-family saturation approach is legitimate but needs proper W/D separation
+**Original Purpose**: Modally saturated BFMCS over CanonicalMCS domain
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.ClosedFlagBundle
 import Bimodal.Metalogic.Bundle.ModalSaturation

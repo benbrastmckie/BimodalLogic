@@ -1,3 +1,12 @@
+/-!
+# Archived: SaturatedBFMCSConstruction.lean
+**Archived**: 2026-03-23
+**Reason**: Uses CanonicalMCS as base; modal saturation technique is valid but built on confused foundation
+**Technique Value**: Modal saturation construction pattern is legitimate
+**Original Purpose**: Construct modally saturated BFMCS from closed Flag bundle
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.ClosedFlagBundle
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.BFMCS

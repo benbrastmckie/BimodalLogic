@@ -1,3 +1,12 @@
+/-!
+# Archived: DiscreteInstantiation.lean
+**Archived**: 2026-03-23
+**Reason**: Uses ClosedFlagIntBFMCS which depends on D=CanonicalMCS infrastructure
+**Technique Value**: D=Int instantiation pattern is correct; needs SuccChain-based BFMCS
+**Original Purpose**: Discrete instantiation of D-parametric representation theorem
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 -- REMOVED (Task 15): import Bimodal.Metalogic.Bundle.SuccChainBFMCS
 -- The singleton BFMCS approach has an unprovable modal_backward sorry.

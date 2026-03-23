@@ -3,7 +3,8 @@ import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.BaseCompleteness
 import Bimodal.Metalogic.DenseCompleteness
 import Bimodal.Metalogic.DiscreteCompleteness
-import Bimodal.Metalogic.Bundle.CanonicalFMCS
+-- REMOVED (Task 41): import Bimodal.Metalogic.Bundle.CanonicalFMCS
+-- CanonicalFMCS uses D=CanonicalMCS confused pattern; deleted
 
 /-!
 # Logic Variants - TM Base, Dense, and Discrete
@@ -147,18 +148,11 @@ theorem base_truth_lemma_export
       truth_at CanonicalTaskModel (CanonicalOmega B) (to_history fam) t φ :=
   BaseCompleteness.base_truth_lemma B h_tc fam hfam t φ
 
-/-- Dense completeness components are all proven (Cantor isomorphism, FMCS construction). -/
-theorem dense_components_export
-    (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs) :
-    (Nonempty (StagedConstruction.TimelineQuot root_mcs root_mcs_proof ≃o Rat)) ∧
-    (∀ Gamma : List Formula, ContextConsistent Gamma →
-      ∃ (fam : FMCS CanonicalMCS) (root : CanonicalMCS),
-        (∀ gamma ∈ Gamma, gamma ∈ fam.mcs root) ∧
-        (∀ t : CanonicalMCS, ∀ ψ : Formula,
-          Formula.some_future ψ ∈ fam.mcs t → ∃ s : CanonicalMCS, t ≤ s ∧ ψ ∈ fam.mcs s) ∧
-        (∀ t : CanonicalMCS, ∀ ψ : Formula,
-          Formula.some_past ψ ∈ fam.mcs t → ∃ s : CanonicalMCS, s ≤ t ∧ ψ ∈ fam.mcs s)) :=
-  DenseCompleteness.dense_components_proven root_mcs root_mcs_proof
+-- REMOVED (Task 41): dense_components_export
+-- This function referenced DenseCompleteness.dense_components_proven which used
+-- the D=CanonicalMCS pattern (FMCS CanonicalMCS, StagedConstruction.TimelineQuot).
+-- The entire CanonicalMCS infrastructure has been archived to Boneyard.
+-- See SuccChainFMCS for the correct D=Int approach to dense completeness.
 
 /-!
 ## FrameClass Characterization

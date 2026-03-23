@@ -9,9 +9,12 @@ import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Algebraic.DenseInstantiation
-import Bimodal.Metalogic.Algebraic.DiscreteInstantiation
--- Completeness theorem (Task 987)
-import Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
+-- REMOVED (Task 41): import Bimodal.Metalogic.Algebraic.DiscreteInstantiation
+-- DiscreteInstantiation moved to Boneyard/CanonicalMCS_Infrastructure/
+-- Reason: Uses ClosedFlagIntBFMCS which depends on D=CanonicalMCS infrastructure
+-- REMOVED (Task 41): import Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
+-- AlgebraicBaseCompleteness moved to Boneyard/CanonicalMCS_Infrastructure/
+-- Reason: Uses D=CanonicalMCS confused infrastructure
 
 /-!
 # Algebraic Representation Theorem
@@ -35,8 +38,8 @@ Algebraic/
 ├── ParametricTruthLemma.lean     # D-parametric truth lemma
 ├── ParametricRepresentation.lean # D-parametric representation theorem
 ├── DenseInstantiation.lean       # D = Rat instantiation
-├── DiscreteInstantiation.lean    # D = Int instantiation
-└── AlgebraicBaseCompleteness.lean # Closed completeness theorem (Task 987)
+├── DiscreteInstantiation.lean    # ARCHIVED to Boneyard (Task 41)
+└── AlgebraicBaseCompleteness.lean # ARCHIVED to Boneyard (Task 41)
 ```
 
 ## Mathematical Overview
@@ -93,7 +96,7 @@ open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricRepresentation
 open Bimodal.Metalogic.Algebraic.DenseInstantiation
-open Bimodal.Metalogic.Algebraic.DiscreteInstantiation
-open Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
+-- REMOVED (Task 41): open Bimodal.Metalogic.Algebraic.DiscreteInstantiation
+-- REMOVED (Task 41): open Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
 
 end Bimodal.Metalogic.Algebraic

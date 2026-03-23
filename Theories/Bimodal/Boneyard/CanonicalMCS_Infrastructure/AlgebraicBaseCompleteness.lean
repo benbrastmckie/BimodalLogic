@@ -1,3 +1,12 @@
+/-!
+# Archived: AlgebraicBaseCompleteness.lean
+**Archived**: 2026-03-23
+**Reason**: Uses CanonicalFMCS and DirectMultiFamilyBFMCS which are built on D=CanonicalMCS confusion
+**Technique Value**: Contrapositive completeness proof structure is sound
+**Original Purpose**: Algebraic base completeness theorem via parametric representation
+**See Also**: SuccChainCompleteness.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation

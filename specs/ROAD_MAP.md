@@ -1099,6 +1099,37 @@ Never conflate W and D even if it seems to simplify construction. W must encode 
 
 ---
 
+### Dead End: D = CanonicalMCS Pattern
+
+**Status**: ABANDONED
+**Tried**: 2025-12-01 to 2026-03-23
+**Related Tasks**: Task 41, Task 956
+
+*Rationale*: The D=CanonicalMCS pattern instantiates the FMCS type parameter D (timeline/duration type) with CanonicalMCS (the type of ALL maximal consistent sets). This creates an identity mapping `mcs(w) = w.world` that trivializes F/P witness obligations instead of proving them.
+
+**What We Tried**:
+The pattern appears in `CanonicalFMCS.lean` and propagates to FMCSTransfer, ChainFMCS, and 10+ dependent files. The crown jewel `temporal_coherent_family_exists_CanonicalMCS` is sorry-free but only because every MCS is trivially in the domain.
+
+**Why It's Confused**:
+1. **D should be a timeline type**: Int, Rat, or TimelineQuot with AddCommGroup + LinearOrder
+2. **CanonicalMCS is the space of world states**: It should be W, not D
+3. **Conflates temporal position with possible world**: D indexes time; W indexes worlds
+4. **Trivializes rather than proves**: F/P witnesses exist by construction, not proof
+5. **Never consumed**: The sorry-free theorem is never actually used by any completeness proof
+
+**Evidence**:
+- [03_removal-analysis.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/03_removal-analysis.md) - Full analysis
+- SuccChainCompleteness.lean - Correct D=Int approach (never references CanonicalMCS)
+
+**Lesson**:
+D and W must be distinct: D indexes temporal positions; W indexes possible worlds (MCSs). Collapsing them creates elegant proofs of nothing.
+
+**Related**: See "Dead End: W = D Canonical Construction" for the dual confusion.
+
+**Superseded By**: SuccChain completeness path (D=Int, W=MCS, properly separated)
+
+---
+
 ### Dead End: Forward-Only Truth Lemma for Completeness
 
 **Status**: ABANDONED

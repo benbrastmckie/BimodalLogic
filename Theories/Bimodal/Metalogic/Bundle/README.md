@@ -149,7 +149,8 @@ import Bimodal.Metalogic.Bundle.CanonicalConstruction
 ```lean
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.FMCS
-import Bimodal.Metalogic.Bundle.CanonicalFMCS
+-- REMOVED (Task 41): import Bimodal.Metalogic.Bundle.CanonicalFMCS
+-- Use SuccChainFMCS for D=Int approach instead
 
 -- For working with BFMCS structures directly
 ```

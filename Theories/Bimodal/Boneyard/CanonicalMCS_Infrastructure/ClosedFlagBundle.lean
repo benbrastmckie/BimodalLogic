@@ -1,3 +1,12 @@
+/-!
+# Archived: ClosedFlagBundle.lean
+**Archived**: 2026-03-23
+**Reason**: Superseded by DirectMultiFamilyBFMCS; built on CanonicalMCS pattern
+**Technique Value**: Closed flag set construction is legitimate for modal saturation
+**Original Purpose**: Construct witness-closed flag sets for BFMCS
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.WitnessFamilyBundle
 import Mathlib.Order.Zorn
 

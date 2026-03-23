@@ -1,3 +1,12 @@
+/-!
+# Archived: DirectMultiFamilyBFMCS.lean
+**Archived**: 2026-03-23
+**Reason**: Contains 3 architecturally unprovable sorries from W=D conflation; blocked per Task 28
+**Technique Value**: Direct family indexing pattern is legitimate but needs proper D/W separation
+**Original Purpose**: BFMCS Int indexed by discreteClosedMCS members
+**See Also**: SuccChainFMCS.lean for the correct D=Int approach
+-/
+
 import Bimodal.Metalogic.Bundle.ModallyCoherentBFMCS
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.ClosedFlagIntBFMCS
