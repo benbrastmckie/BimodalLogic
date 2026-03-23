@@ -151,7 +151,7 @@ theorem quot_same_class_same_mcs (n : Nat)
     cases h_qp' with
     | inl h_eq => exact h_eq.symm
     | inr h_R_qp =>
-      -- Both CanonicalR directions hold, contradicting irreflexivity
+      -- Both ExistsTask directions hold, contradicting irreflexivity
       have h_trans := canonicalR_transitive p.1.mcs q.1.mcs p.1.mcs p.1.is_mcs h_R_pq h_R_qp
       exact absurd h_trans (Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs)
 
@@ -440,9 +440,9 @@ noncomputable def immediateSuccPoint (M : Set Formula) (h_mcs : SetMaximalConsis
   is_mcs := discreteImmediateSucc_mcs M h_mcs
   introduced_at := 0  -- Placeholder stage; actual stage determined by staged build
 
-/-- The immediate successor point has CanonicalR from the source MCS. -/
+/-- The immediate successor point has ExistsTask from the source MCS. -/
 theorem immediateSuccPoint_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    CanonicalR M (immediateSuccPoint M h_mcs).mcs :=
+    ExistsTask M (immediateSuccPoint M h_mcs).mcs :=
   discreteImmediateSucc_canonicalR M h_mcs
 
 /-- The immediate successor point covers M (no intermediate).
@@ -452,8 +452,8 @@ discreteImmediateSucc W, there is NO intermediate K strictly between them.
 -/
 theorem immediateSuccPoint_covers (M K : Set Formula)
     (h_M : SetMaximalConsistent M) (h_K : SetMaximalConsistent K)
-    (h_MK : CanonicalR M K)
-    (h_KW : CanonicalR K (immediateSuccPoint M h_M).mcs) :
+    (h_MK : ExistsTask M K)
+    (h_KW : ExistsTask K (immediateSuccPoint M h_M).mcs) :
     K = M ∨ K = (immediateSuccPoint M h_M).mcs :=
   discreteImmediateSucc_covers M K h_M h_K h_MK h_KW
 
@@ -476,7 +476,7 @@ include blocking formulas. As a result:
    formulas for immediate successors.
 
 3. **Use well-founded minimal successor** (Approach 2 from research-006): Define
-   `succ(M) := min { K | CanonicalR M K ∧ K ≠ M }` using `WellFounded.min`.
+   `succ(M) := min { K | ExistsTask M K ∧ K ≠ M }` using `WellFounded.min`.
 
 For now, Phase 2 defines the infrastructure for stage embeddings and documents the
 covering property requirement. The actual implementation of immediate successors
@@ -488,7 +488,7 @@ requires one of the above resolutions.
 - `stage_embed_elem`: Embedding of stage elements (order-preserving, injective)
 - `stage_embed`: Quotient-level embedding
 - `immediateSuccPoint`: Helper to create successor MCS with blocking formulas
-- `immediateSuccPoint_canonicalR`: CanonicalR from M to its immediate successor
+- `immediateSuccPoint_canonicalR`: ExistsTask from M to its immediate successor
 - `immediateSuccPoint_covers`: Covering property from blocking formulas
 
 **BLOCKED**:

@@ -27,7 +27,7 @@ the duration domain (D). Using CanonicalMCS as BFMCS indexing type creates a
 degenerate identity mapping mcs(w) = w.world with no meaningful structure.
 
 **Correct Domain Assignment**:
-- W (World States): CanonicalMCS — provides modal accessibility via CanonicalR
+- W (World States): CanonicalMCS — provides modal accessibility via ExistsTask
 - D (Duration/Time): TimelineQuot — provides AddCommGroup + DenselyOrdered structure
 - BFMCS families: Should be indexed by TimelineQuot (time points)
 
@@ -116,7 +116,7 @@ holds because:
 
 However, we need the witness MCS to be PART OF the same FMCS structure. This is
 where the TimelineQuot construction helps: the timeline already contains all MCSs
-reachable from the root via CanonicalR chains.
+reachable from the root via ExistsTask chains.
 
 ## Alternative Approach: Single Saturated Family
 
@@ -276,7 +276,7 @@ Forward F coherence for TimelineQuotFMCS: if F(φ) ∈ timelineQuotMCS(t), then
 
 **Proof Strategy**:
 1. F(φ) ∈ timelineQuotMCS(t) gives an MCS M at t containing F(φ)
-2. By `canonical_forward_F`: ∃ witness W with CanonicalR(M, W) ∧ φ ∈ W
+2. By `canonical_forward_F`: ∃ witness W with ExistsTask(M, W) ∧ φ ∈ W
 3. By `forward_witness_at_stage`: W is in the staged build (hence in TimelineQuot)
 4. By `canonicalR_implies_timelineQuot_le` + irreflexivity: t < s strictly
 -/
@@ -338,7 +338,7 @@ theorem timelineQuotFMCS_forward_F
     -- But density_points come from earlier stages. Need to trace back to stagedBuild membership.
 
     -- Simpler approach: use staged_timeline_has_future which already handles this
-    -- dense_timeline_has_future gives a witness q with CanonicalR(p.mcs, q.mcs) and q in timeline
+    -- dense_timeline_has_future gives a witness q with ExistsTask(p.mcs, q.mcs) and q in timeline
     -- But this doesn't give phi ∈ q.mcs
 
     -- Let's use the staged construction directly. p.1 must come from some evenStage
@@ -380,17 +380,17 @@ theorem timelineQuotFMCS_forward_F
         have h_lt : toAntisymmetrization (· ≤ ·) p < s := by
           rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
           constructor
-          · -- p ≤ q (via CanonicalR)
+          · -- p ≤ q (via ExistsTask)
             exact Or.inr h_R
           · -- ¬(q ≤ p)
             intro h_qp
             cases h_qp with
             | inl h_eq =>
-              -- q.mcs = p.1.mcs contradicts CanonicalR irreflexivity
-              have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq ▸ h_R
+              -- q.mcs = p.1.mcs contradicts ExistsTask irreflexivity
+              have h_R_self : ExistsTask p.1.mcs p.1.mcs := h_eq ▸ h_R
               exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
             | inr h_R_qp =>
-              -- CanonicalR(q.mcs, p.1.mcs) + CanonicalR(p.1.mcs, q.mcs) gives CanonicalR(p.1.mcs, p.1.mcs)
+              -- ExistsTask(q.mcs, p.1.mcs) + ExistsTask(p.1.mcs, q.mcs) gives ExistsTask(p.1.mcs, p.1.mcs)
               have h_R_self := canonicalR_transitive p.1.mcs q.mcs p.1.mcs p.1.is_mcs h_R h_R_qp
               exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
 
@@ -442,7 +442,7 @@ theorem timelineQuotFMCS_forward_F
         -- The dense timeline has_future property guarantees a future witness.
         -- That witness must contain phi because of how MCSs are constructed.
 
-        -- Actually, dense_timeline_has_future gives CanonicalR but not phi membership.
+        -- Actually, dense_timeline_has_future gives ExistsTask but not phi membership.
         -- Let's use canonical_forward_F directly and show the witness is in the timeline.
 
         -- Key realization: canonical_forward_F constructs a witness W using Lindenbaum.
@@ -480,12 +480,12 @@ theorem timelineQuotFMCS_forward_F
         -- This doesn't give G(phi) ∈ M.
 
         -- So the witness W for F(psi) may not contain phi directly.
-        -- But W has F(phi) ∈ W (by CanonicalR: F(phi) ∈ M implies F(F(phi)) ∈ M by density,
+        -- But W has F(phi) ∈ W (by ExistsTask: F(phi) ∈ M implies F(F(phi)) ∈ M by density,
         -- and G(F(phi)) ∈ M... wait, that's not how it works either).
 
-        -- Let me reconsider. CanonicalR(M, W) means g_content(M) ⊆ W.
+        -- Let me reconsider. ExistsTask(M, W) means g_content(M) ⊆ W.
         -- If G(alpha) ∈ M, then alpha ∈ W.
-        -- F(phi) ∈ M is NOT G-shaped, so it doesn't transfer via CanonicalR.
+        -- F(phi) ∈ M is NOT G-shaped, so it doesn't transfer via ExistsTask.
 
         -- The insight: W is an MCS containing g_content(M). W also contains psi (target).
         -- But F(phi) being in M doesn't guarantee F(phi) or phi is in W.
@@ -494,21 +494,21 @@ theorem timelineQuotFMCS_forward_F
         -- We NEED the witness specifically for F(phi).
 
         -- The actual proof: We use mcs_has_large_F_formula to get F(psi) with encoding k' >= m/2.
-        -- The witness W for F(psi) is in the timeline and has CanonicalR(M, W).
+        -- The witness W for F(psi) is in the timeline and has ExistsTask(M, W).
         -- Now, from W, we can chain: if F(phi) ∈ M, then F(F(phi)) ∈ M by density,
-        -- so F(phi) ∈ W (since CanonicalR transfers G-content, and... hmm).
+        -- so F(phi) ∈ W (since ExistsTask transfers G-content, and... hmm).
 
         -- Actually: If F(phi) ∈ M, then by density axiom F → FF, we have F(F(phi)) ∈ M.
         -- F(F(phi)) = ¬G(¬F(phi)).
         -- Still not G-shaped.
 
-        -- What DOES transfer via CanonicalR:
+        -- What DOES transfer via ExistsTask:
         -- If G(alpha) ∈ M, then alpha ∈ W.
         -- So if G(phi) ∈ M, then phi ∈ W.
         -- But we have F(phi) ∈ M, not G(phi) ∈ M.
 
         -- Key realization: G(phi) may or may not be in M.
-        -- If G(phi) ∈ M, then all CanonicalR-successors W have phi ∈ W.
+        -- If G(phi) ∈ M, then all ExistsTask-successors W have phi ∈ W.
         -- If G(phi) ∉ M, then ¬G(phi) ∈ M, i.e., F(¬phi) ∈ M.
         -- But we have F(phi) ∈ M and F(¬phi) ∈ M is consistent (witnesses at different futures).
 
@@ -522,10 +522,10 @@ theorem timelineQuotFMCS_forward_F
         -- If m is odd, say m = 2j+1, p.1 was added as density intermediate or F/P witness.
 
         -- The source point q that generated p.1 as witness was in stagedBuild at stage < m.
-        -- q also had F(phi) ∈ q.mcs? Not necessarily, since CanonicalR goes forward
+        -- q also had F(phi) ∈ q.mcs? Not necessarily, since ExistsTask goes forward
         -- (g_content transfers, not specific F-formulas).
 
-        -- Actually wait: if p.1 was added as a FORWARD witness for q, then CanonicalR(q.mcs, p.1.mcs).
+        -- Actually wait: if p.1 was added as a FORWARD witness for q, then ExistsTask(q.mcs, p.1.mcs).
         -- Then g_content(q.mcs) ⊆ p.1.mcs.
         -- If G(phi) ∈ q.mcs, then phi ∈ p.1.mcs (not just F(phi)!).
 
@@ -534,7 +534,7 @@ theorem timelineQuotFMCS_forward_F
 
         -- Let me try yet another approach.
         -- Use that the timeline is dense and has no max.
-        -- dense_timeline_has_future gives a witness r with CanonicalR(p.1.mcs, r.mcs).
+        -- dense_timeline_has_future gives a witness r with ExistsTask(p.1.mcs, r.mcs).
         -- r is constructed via the seriality infrastructure, which processes F-formulas.
 
         -- Looking at dense_timeline_has_future in DenseTimeline.lean:
@@ -553,8 +553,8 @@ theorem timelineQuotFMCS_forward_F
 
         -- The fix: Show that the witness chain continues indefinitely.
         -- If F(phi) ∈ p.1.mcs and p.1 was added at stage m > 2k+1, then p.1 came from
-        -- some source q at stage m-1 with CanonicalR(q.mcs, p.1.mcs) (forward) or
-        -- CanonicalR(p.1.mcs, q.mcs) (backward).
+        -- some source q at stage m-1 with ExistsTask(q.mcs, p.1.mcs) (forward) or
+        -- ExistsTask(p.1.mcs, q.mcs) (backward).
         -- Trace back to find when F(phi) was first introduced...
 
         -- This is getting very complex. Let me use a different approach:
@@ -604,11 +604,11 @@ theorem timelineQuotFMCS_forward_F
         -- Let me try the following argument:
         -- By MCS richness, ∃ psi with encoding k' >= m/2 and F(psi) ∈ p.1.mcs.
         -- The witness W for F(psi) is in the timeline (at stage 2k'+1 <= m+1).
-        -- Now, W has CanonicalR(p.1.mcs, W) and psi ∈ W.
+        -- Now, W has ExistsTask(p.1.mcs, W) and psi ∈ W.
         -- From W, we can use canonical_forward_F for F(phi) ∈ W.
         -- But wait, do we have F(phi) ∈ W?
 
-        -- F(phi) ∈ p.1.mcs, and CanonicalR(p.1.mcs, W), so G-content transfers.
+        -- F(phi) ∈ p.1.mcs, and ExistsTask(p.1.mcs, W), so G-content transfers.
         -- g_content(p.1.mcs) ⊆ W.
         -- F(phi) = ¬G(¬phi), so F(phi) ∈ p.1.mcs means G(¬phi) ∉ p.1.mcs.
         -- This doesn't give F(phi) ∈ W directly.
@@ -626,7 +626,7 @@ theorem timelineQuotFMCS_forward_F
 
         -- So F(phi) ∈ M means ¬G(¬phi) ∈ M, which means G(¬phi) ∉ M.
 
-        -- CanonicalR(M, W) is defined as g_content(M) ⊆ W.
+        -- ExistsTask(M, W) is defined as g_content(M) ⊆ W.
         -- g_content(M) = {alpha | G(alpha) ∈ M}.
 
         -- So if G(alpha) ∈ M, then alpha ∈ W.
@@ -658,7 +658,7 @@ theorem timelineQuotFMCS_forward_F
         -- And by contrapositive of G_F duality: ¬G(phi) ↔ F(¬phi).
 
         -- Actually, let's use the 4 axiom for time: G(phi) → G(G(phi)).
-        -- This gives: if G(phi) ∈ M and W is CanonicalR-successor, then G(phi) ∈ W.
+        -- This gives: if G(phi) ∈ M and W is ExistsTask-successor, then G(phi) ∈ W.
         -- Because G(G(phi)) ∈ M by 4, so G(phi) ∈ g_content(M) ⊆ W.
 
         -- But we have F(phi), not G(phi).
@@ -684,7 +684,7 @@ theorem timelineQuotFMCS_forward_F
         -- But that requires m <= 2k which we don't have.
 
         -- ALTERNATIVE APPROACH: Use the fact that the dense timeline is built from
-        -- an MCS M₀ (root_mcs). Every MCS in the timeline is CanonicalR-reachable from M₀.
+        -- an MCS M₀ (root_mcs). Every MCS in the timeline is ExistsTask-reachable from M₀.
         -- W from canonical_forward_F may not be reachable from M₀!
 
         -- This confirms the gap: canonical_forward_F gives an arbitrary witness,
@@ -698,7 +698,7 @@ theorem timelineQuotFMCS_forward_F
         sorry
 
     · -- p.1 is a density point with future q already in the timeline
-      -- q has CanonicalR(p.1.mcs, q.mcs) but not necessarily phi ∈ q.mcs
+      -- q has ExistsTask(p.1.mcs, q.mcs) but not necessarily phi ∈ q.mcs
       -- This case also requires showing phi eventually appears
       sorry
 

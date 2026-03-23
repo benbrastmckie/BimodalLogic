@@ -23,8 +23,8 @@ dense linear order of MCSs from a root MCS M₀. The construction alternates bet
 ## Linearity
 
 The linearity of the staged timeline follows from the `temp_linearity` axiom:
-any two MCSs that are both CanonicalR-reachable from a common predecessor (or
-both CanonicalR-predecessors of a common successor) are CanonicalR-comparable.
+any two MCSs that are both ExistsTask-reachable from a common predecessor (or
+both ExistsTask-predecessors of a common successor) are ExistsTask-comparable.
 Since all points in the staged construction are bidirectionally reachable from
 the root M₀, they are all pairwise comparable.
 
@@ -67,7 +67,7 @@ noncomputable def decodeFormulaStaged (k : Nat) : Option Formula :=
 ## Linearity Lemmas
 
 These are the key structural lemmas from the temp_linearity axiom.
-They establish that CanonicalR-accessible MCSs are comparable.
+They establish that ExistsTask-accessible MCSs are comparable.
 
 Replicated from BidirectionalReachable.lean (Boneyard) to avoid importing
 that module's heavy dependencies (Completeness.lean).
@@ -96,11 +96,11 @@ lemma SetMaximalConsistent.F_linearity (M : Set Formula) (h_mcs : SetMaximalCons
     · exact Or.inr (Or.inr h)
 
 /--
-If phi ∈ M' and CanonicalR M M', then F(phi) ∈ M.
+If phi ∈ M' and ExistsTask M M', then F(phi) ∈ M.
 -/
 lemma canonical_F_of_mem_successor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask M M') (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_future phi ∈ M := by
   by_contra h_not_F
   have h_neg_F : Formula.neg (Formula.some_future phi) ∈ M := by
@@ -116,13 +116,13 @@ lemma canonical_F_of_mem_successor (M M' : Set Formula)
   exact set_consistent_not_both h_mcs'.1 phi h_phi h_neg_phi_M'
 
 /--
-If phi ∈ M' and CanonicalR M' M, then P(phi) ∈ M.
+If phi ∈ M' and ExistsTask M' M, then P(phi) ∈ M.
 -/
 lemma canonical_P_of_mem_predecessor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M' M) (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask M' M) (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_past phi ∈ M := by
-  have h_R_past : CanonicalR_past M M' :=
+  have h_R_past : ExistsTask_past M M' :=
     g_content_subset_implies_h_content_reverse M' M h_mcs' h_mcs h_R
   by_contra h_not_P
   have h_neg_P : Formula.neg (Formula.some_past phi) ∈ M := by
@@ -171,8 +171,8 @@ lemma SetMaximalConsistent.P_linearity (M : Set Formula) (h_mcs : SetMaximalCons
     · exact Or.inr (Or.inr h3)
 
 /--
-Linearity of forward-reachable elements: If CanonicalR M M1 and CanonicalR M M2,
-then M1 and M2 are CanonicalR-comparable (or equal).
+Linearity of forward-reachable elements: If ExistsTask M M1 and ExistsTask M M2,
+then M1 and M2 are ExistsTask-comparable (or equal).
 
 Key structural property from the temp_linearity axiom. Uses the gamma enrichment
 trick: when M1 ≠ M2, include a distinguishing formula gamma in the compound
@@ -182,15 +182,15 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs1 : SetMaximalConsistent M1)
     (h_mcs2 : SetMaximalConsistent M2)
-    (h_R1 : CanonicalR M M1) (h_R2 : CanonicalR M M2) :
-    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
-  by_cases h_12 : CanonicalR M1 M2
+    (h_R1 : ExistsTask M M1) (h_R2 : ExistsTask M M2) :
+    ExistsTask M1 M2 ∨ ExistsTask M2 M1 ∨ M1 = M2 := by
+  by_cases h_12 : ExistsTask M1 M2
   · exact Or.inl h_12
   · right
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    -- NOT(CanonicalR M1 M2): exists alpha with G(alpha) ∈ M1 and alpha ∉ M2
+    -- NOT(ExistsTask M1 M2): exists alpha with G(alpha) ∈ M1 and alpha ∉ M2
     simp only [ExistsTask_def, Set.not_subset] at h_12
     obtain ⟨alpha, h_alpha_G1, h_alpha_not2⟩ := h_12
     have h_G_alpha_M1 : Formula.all_future alpha ∈ M1 := h_alpha_G1
@@ -198,7 +198,7 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
       rcases SetMaximalConsistent.negation_complete h_mcs2 alpha with h | h
       · exact absurd h h_alpha_not2
       · exact h
-    -- NOT(CanonicalR M2 M1): exists beta with G(beta) ∈ M2 and beta ∉ M1
+    -- NOT(ExistsTask M2 M1): exists beta with G(beta) ∈ M2 and beta ∉ M1
     have h_not_sub_21 : ¬(g_content M2 ⊆ M1) := h_not_21
     rw [Set.not_subset] at h_not_sub_21
     obtain ⟨beta, h_beta_G2, h_beta_not1⟩ := h_not_sub_21
@@ -276,8 +276,8 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
       exact set_consistent_not_both h_W'_mcs.1 beta h_beta_W' h_neg_beta_W'
 
 /--
-Linearity of backward-reachable elements: If CanonicalR M1 M and CanonicalR M2 M,
-then M1 and M2 are CanonicalR-comparable (or equal).
+Linearity of backward-reachable elements: If ExistsTask M1 M and ExistsTask M2 M,
+then M1 and M2 are ExistsTask-comparable (or equal).
 
 This is the backward (past) analog of `canonical_forward_reachable_linear`.
 -/
@@ -285,15 +285,15 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs1 : SetMaximalConsistent M1)
     (h_mcs2 : SetMaximalConsistent M2)
-    (h_R1 : CanonicalR M1 M) (h_R2 : CanonicalR M2 M) :
-    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
-  by_cases h_12 : CanonicalR M1 M2
+    (h_R1 : ExistsTask M1 M) (h_R2 : ExistsTask M2 M) :
+    ExistsTask M1 M2 ∨ ExistsTask M2 M1 ∨ M1 = M2 := by
+  by_cases h_12 : ExistsTask M1 M2
   · exact Or.inl h_12
   · right
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    -- Use duality: ¬(CanonicalR M1 M2) → ¬(h_content(M2) ⊆ M1)
+    -- Use duality: ¬(ExistsTask M1 M2) → ¬(h_content(M2) ⊆ M1)
     have h_not_H21 : ¬(h_content M2 ⊆ M1) := by
       intro h_HC
       exact h_12 (h_content_subset_implies_g_content_reverse M2 M1 h_mcs2 h_mcs1 h_HC)
@@ -304,7 +304,7 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
       rcases SetMaximalConsistent.negation_complete h_mcs1 alpha with h | h
       · exact absurd h h_alpha_not1
       · exact h
-    -- NOT(CanonicalR M2 M1): exists beta with H(beta) ∈ M1 and beta ∉ M2
+    -- NOT(ExistsTask M2 M1): exists beta with H(beta) ∈ M1 and beta ∉ M2
     have h_not_H12 : ¬(h_content M1 ⊆ M2) := by
       intro h_HC
       exact h_not_21 (h_content_subset_implies_g_content_reverse M1 M2 h_mcs1 h_mcs2 h_HC)
@@ -384,37 +384,37 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
 /-!
 ## Comparability Step Lemmas
 
-These lemmas allow us to extend comparability across one CanonicalR step,
+These lemmas allow us to extend comparability across one ExistsTask step,
 enabling inductive proofs of comparability for the full staged construction.
 -/
 
 /--
-If W1 is comparable with W2, and CanonicalR W2 W3 (forward step), then W1 is comparable with W3.
+If W1 is comparable with W2, and ExistsTask W2 W3 (forward step), then W1 is comparable with W3.
 -/
 theorem comparability_step_forward
     (W1 W2 W3 : Set Formula)
     (h_mcs1 : SetMaximalConsistent W1)
     (h_mcs2 : SetMaximalConsistent W2)
     (h_mcs3 : SetMaximalConsistent W3)
-    (h_comp : CanonicalR W1 W2 ∨ CanonicalR W2 W1 ∨ W1 = W2)
-    (h_R23 : CanonicalR W2 W3) :
-    CanonicalR W1 W3 ∨ CanonicalR W3 W1 ∨ W1 = W3 := by
+    (h_comp : ExistsTask W1 W2 ∨ ExistsTask W2 W1 ∨ W1 = W2)
+    (h_R23 : ExistsTask W2 W3) :
+    ExistsTask W1 W3 ∨ ExistsTask W3 W1 ∨ W1 = W3 := by
   rcases h_comp with h_12 | h_21 | h_eq
   · exact Or.inl (canonicalR_transitive W1 W2 W3 h_mcs1 h_12 h_R23)
   · exact canonical_forward_reachable_linear W2 W1 W3 h_mcs2 h_mcs1 h_mcs3 h_21 h_R23
   · subst h_eq; exact Or.inl h_R23
 
 /--
-If W1 is comparable with W2, and CanonicalR W3 W2 (backward step), then W1 is comparable with W3.
+If W1 is comparable with W2, and ExistsTask W3 W2 (backward step), then W1 is comparable with W3.
 -/
 theorem comparability_step_backward
     (W1 W2 W3 : Set Formula)
     (h_mcs1 : SetMaximalConsistent W1)
     (h_mcs2 : SetMaximalConsistent W2)
     (h_mcs3 : SetMaximalConsistent W3)
-    (h_comp : CanonicalR W1 W2 ∨ CanonicalR W2 W1 ∨ W1 = W2)
-    (h_R32 : CanonicalR W3 W2) :
-    CanonicalR W1 W3 ∨ CanonicalR W3 W1 ∨ W1 = W3 := by
+    (h_comp : ExistsTask W1 W2 ∨ ExistsTask W2 W1 ∨ W1 = W2)
+    (h_R32 : ExistsTask W3 W2) :
+    ExistsTask W1 W3 ∨ ExistsTask W3 W1 ∨ W1 = W3 := by
   rcases h_comp with h_12 | h_21 | h_eq
   · exact canonical_backward_reachable_linear W2 W1 W3 h_mcs2 h_mcs1 h_mcs3 h_12 h_R32
   · exact Or.inr (Or.inl (canonicalR_transitive W3 W2 W1 h_mcs3 h_R32 h_21))
@@ -427,10 +427,10 @@ Bridge between MCS-level comparability and StagedPoint-level ordering.
 -/
 
 /--
-If two MCSs are CanonicalR-comparable (or equal), then their StagedPoints are le-comparable.
+If two MCSs are ExistsTask-comparable (or equal), then their StagedPoints are le-comparable.
 -/
 theorem stagedPoint_le_of_mcs_comparable (a b : StagedPoint)
-    (h_comp : CanonicalR a.mcs b.mcs ∨ CanonicalR b.mcs a.mcs ∨ a.mcs = b.mcs) :
+    (h_comp : ExistsTask a.mcs b.mcs ∨ ExistsTask b.mcs a.mcs ∨ a.mcs = b.mcs) :
     StagedPoint.le a b ∨ StagedPoint.le b a := by
   rcases h_comp with h_ab | h_ba | h_eq
   · exact Or.inl (Or.inr h_ab)
@@ -484,17 +484,17 @@ The forward witness is comparable with all existing points that are
 comparable with the source point.
 
 If W1.mcs is comparable with p.mcs, and W2 = forwardWitness(p, phi),
-then W1 is comparable with W2. This is because CanonicalR p.mcs W2.mcs,
+then W1 is comparable with W2. This is because ExistsTask p.mcs W2.mcs,
 and we can apply comparability_step_forward.
 -/
 theorem forwardWitness_comparable_with
     (p : StagedPoint) (phi : Formula)
     (h_F : Formula.some_future phi ∈ p.mcs) (stage : Stage)
     (other : StagedPoint)
-    (h_comp : CanonicalR other.mcs p.mcs ∨ CanonicalR p.mcs other.mcs ∨ other.mcs = p.mcs) :
+    (h_comp : ExistsTask other.mcs p.mcs ∨ ExistsTask p.mcs other.mcs ∨ other.mcs = p.mcs) :
     StagedPoint.le other (processForwardObligation p phi h_F stage) ∨
     StagedPoint.le (processForwardObligation p phi h_F stage) other := by
-  have h_R : CanonicalR p.mcs (processForwardObligation p phi h_F stage).mcs :=
+  have h_R : ExistsTask p.mcs (processForwardObligation p phi h_F stage).mcs :=
     forwardWitnessPoint_canonicalR
   have h_mcs_w := (processForwardObligation p phi h_F stage).is_mcs
   have h_comp' := comparability_step_forward other.mcs p.mcs
@@ -510,10 +510,10 @@ theorem backwardWitness_comparable_with
     (p : StagedPoint) (phi : Formula)
     (h_P : Formula.some_past phi ∈ p.mcs) (stage : Stage)
     (other : StagedPoint)
-    (h_comp : CanonicalR other.mcs p.mcs ∨ CanonicalR p.mcs other.mcs ∨ other.mcs = p.mcs) :
+    (h_comp : ExistsTask other.mcs p.mcs ∨ ExistsTask p.mcs other.mcs ∨ other.mcs = p.mcs) :
     StagedPoint.le other (processBackwardObligation p phi h_P stage) ∨
     StagedPoint.le (processBackwardObligation p phi h_P stage) other := by
-  have h_R : CanonicalR (processBackwardObligation p phi h_P stage).mcs p.mcs :=
+  have h_R : ExistsTask (processBackwardObligation p phi h_P stage).mcs p.mcs :=
     backwardWitnessPoint_canonicalR
   have h_mcs_w := (processBackwardObligation p phi h_P stage).is_mcs
   have h_comp' := comparability_step_backward other.mcs p.mcs
@@ -528,11 +528,11 @@ These bridge the gap between MCS-level properties and StagedPoint-level properti
 needed for the staged construction invariants.
 -/
 
-/-- Forward witness has CanonicalR from source to witness. -/
+/-- Forward witness has ExistsTask from source to witness. -/
 theorem processForwardObligation_canonicalR
     (p : StagedPoint) (phi : Formula)
     (h_F : Formula.some_future phi ∈ p.mcs) (stage : Stage) :
-    CanonicalR p.mcs (processForwardObligation p phi h_F stage).mcs :=
+    ExistsTask p.mcs (processForwardObligation p phi h_F stage).mcs :=
   forwardWitnessPoint_canonicalR
 
 /-- Forward witness contains the target formula phi. -/
@@ -542,11 +542,11 @@ theorem processForwardObligation_contains_phi
     phi ∈ (processForwardObligation p phi h_F stage).mcs :=
   forwardWitnessPoint_contains_phi
 
-/-- Backward witness has CanonicalR from witness to source. -/
+/-- Backward witness has ExistsTask from witness to source. -/
 theorem processBackwardObligation_canonicalR
     (p : StagedPoint) (phi : Formula)
     (h_P : Formula.some_past phi ∈ p.mcs) (stage : Stage) :
-    CanonicalR (processBackwardObligation p phi h_P stage).mcs p.mcs :=
+    ExistsTask (processBackwardObligation p phi h_P stage).mcs p.mcs :=
   backwardWitnessPoint_canonicalR
 
 /-- Backward witness contains the target formula phi. -/
@@ -567,14 +567,14 @@ for the odd-stage density insertion.
 theorem density_intermediate_exists
     (p : StagedPoint) (phi : Formula)
     (h_F : Formula.some_future phi ∈ p.mcs) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR p.mcs W ∧
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask p.mcs W ∧
       Formula.some_future phi ∈ W :=
   density_witness_exists p.mcs p.is_mcs phi h_F
 
 /-!
 ## Key Invariant: Root Comparability
 
-All points added to the staged construction are CanonicalR-comparable with the root.
+All points added to the staged construction are ExistsTask-comparable with the root.
 This is established by induction: the root is comparable with itself, and each
 new witness (forward or backward from a comparable point) is also comparable.
 -/
@@ -583,9 +583,9 @@ new witness (forward or backward from a comparable point) is also comparable.
 The root is comparable with itself.
 -/
 theorem root_comparable_self :
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs
       (rootPoint root_mcs root_mcs_proof).mcs ∨
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs
       (rootPoint root_mcs root_mcs_proof).mcs ∨
     (rootPoint root_mcs root_mcs_proof).mcs = (rootPoint root_mcs root_mcs_proof).mcs :=
   Or.inr (Or.inr rfl)
@@ -598,12 +598,12 @@ theorem forward_witness_comparable_with_root
     (p : StagedPoint) (phi : Formula)
     (h_F : Formula.some_future phi ∈ p.mcs)
     (stage : Stage)
-    (h_p_comp_root : CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
-                     CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    (h_p_comp_root : ExistsTask (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+                     ExistsTask p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
                      (rootPoint root_mcs root_mcs_proof).mcs = p.mcs) :
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs
       (processForwardObligation p phi h_F stage).mcs ∨
-    CanonicalR (processForwardObligation p phi h_F stage).mcs
+    ExistsTask (processForwardObligation p phi h_F stage).mcs
       (rootPoint root_mcs root_mcs_proof).mcs ∨
     (rootPoint root_mcs root_mcs_proof).mcs =
       (processForwardObligation p phi h_F stage).mcs :=
@@ -621,12 +621,12 @@ theorem backward_witness_comparable_with_root
     (p : StagedPoint) (phi : Formula)
     (h_P : Formula.some_past phi ∈ p.mcs)
     (stage : Stage)
-    (h_p_comp_root : CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
-                     CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    (h_p_comp_root : ExistsTask (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+                     ExistsTask p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
                      (rootPoint root_mcs root_mcs_proof).mcs = p.mcs) :
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs
       (processBackwardObligation p phi h_P stage).mcs ∨
-    CanonicalR (processBackwardObligation p phi h_P stage).mcs
+    ExistsTask (processBackwardObligation p phi h_P stage).mcs
       (rootPoint root_mcs root_mcs_proof).mcs ∨
     (rootPoint root_mcs root_mcs_proof).mcs =
       (processBackwardObligation p phi h_P stage).mcs :=
@@ -686,7 +686,7 @@ noncomputable def evenStage
 
 The odd stage inserts density intermediates. For each point p in the current set
 with F(phi) ∈ p.mcs (for the k-th formula), we add a density witness W with
-CanonicalR(p, W) and F(phi) ∈ W. This ensures that between p and any eventual
+ExistsTask(p, W) and F(phi) ∈ W. This ensures that between p and any eventual
 phi-witness, there will be an intermediate.
 
 Rather than finding "successive pairs" (which requires sorting), we use the density
@@ -705,7 +705,7 @@ noncomputable def densityWitnessMCS
 theorem densityWitnessMCS_spec
     (p : StagedPoint) (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs) :
     SetMaximalConsistent (densityWitnessMCS p phi h_F) ∧
-    CanonicalR p.mcs (densityWitnessMCS p phi h_F) ∧
+    ExistsTask p.mcs (densityWitnessMCS p phi h_F) ∧
     Formula.some_future phi ∈ (densityWitnessMCS p phi h_F) :=
   Classical.choose_spec (density_intermediate_exists p phi h_F)
 
@@ -722,7 +722,7 @@ noncomputable def densityWitnessPoint
 theorem densityWitnessPoint_canonicalR
     (p : StagedPoint) (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs)
     (stage : Stage) :
-    CanonicalR p.mcs (densityWitnessPoint p phi h_F stage).mcs :=
+    ExistsTask p.mcs (densityWitnessPoint p phi h_F stage).mcs :=
   (densityWitnessMCS_spec p phi h_F).2.1
 
 /--
@@ -817,7 +817,7 @@ theorem stagedBuild_monotone (n : Nat) :
 
 Every stage of the staged build is linearly ordered. The key insight is that
 every new witness added is comparable with all existing points (because it's
-CanonicalR-reachable from an existing point, and all existing points are
+ExistsTask-reachable from an existing point, and all existing points are
 mutually comparable by induction).
 
 We prove this by induction on the stage, using the comparability lemmas from
@@ -827,8 +827,8 @@ the linearity infrastructure above.
 /-- All points in the staged build are MCS-comparable with the root. -/
 theorem stagedBuild_all_comparable_with_root (n : Nat)
     (p : StagedPoint) (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
-    CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+    ExistsTask p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
     (rootPoint root_mcs root_mcs_proof).mcs = p.mcs := by
   induction n generalizing p with
   | zero =>
@@ -892,7 +892,7 @@ theorem stagedBuild_all_comparable_with_root (n : Nat)
               rw [Finset.mem_singleton] at hp_density
               rw [hp_density]
               -- Now goal is about densityWitnessPoint q phi h_F (n+1)
-              -- It has CanonicalR q.mcs (densityWitnessPoint ...).mcs
+              -- It has ExistsTask q.mcs (densityWitnessPoint ...).mcs
               have h_R := densityWitnessPoint_canonicalR q phi h_F (n + 1)
               exact comparability_step_forward
                 (rootPoint root_mcs root_mcs_proof).mcs q.mcs
@@ -922,8 +922,8 @@ theorem stagedBuild_linear (n : Nat) :
         a.is_mcs root_mcs_proof b.is_mcs
         (Or.inr (Or.inl h_aR)) h_Rb
       exact stagedPoint_le_of_mcs_comparable a b this
-    · -- h_beq : root.mcs = b.mcs, h_aR : CanonicalR root.mcs a.mcs
-      -- After rewriting: CanonicalR b.mcs a.mcs, so b ≤ a
+    · -- h_beq : root.mcs = b.mcs, h_aR : ExistsTask root.mcs a.mcs
+      -- After rewriting: ExistsTask b.mcs a.mcs, so b ≤ a
       exact Or.inr (Or.inr (h_beq ▸ h_aR))
   · rcases h_b_comp with h_bR | h_Rb | h_beq
     · -- a backward from root, b forward from root
@@ -937,14 +937,14 @@ theorem stagedBuild_linear (n : Nat) :
         (rootPoint root_mcs root_mcs_proof).mcs a.mcs b.mcs
         root_mcs_proof a.is_mcs b.is_mcs h_Ra h_Rb
       exact stagedPoint_le_of_mcs_comparable a b this
-    · -- h_beq : root.mcs = b.mcs, h_Ra : CanonicalR a.mcs root.mcs
-      -- After rewriting: CanonicalR a.mcs b.mcs, so a ≤ b
+    · -- h_beq : root.mcs = b.mcs, h_Ra : ExistsTask a.mcs root.mcs
+      -- After rewriting: ExistsTask a.mcs b.mcs, so a ≤ b
       exact Or.inl (Or.inr (h_beq ▸ h_Ra))
   · rcases h_b_comp with h_bR | h_Rb | h_beq
-    · -- h_aeq : root.mcs = a.mcs, h_bR : CanonicalR root.mcs b.mcs
-      -- Need: a.le b ∨ b.le a, i.e., (a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs) ∨ ...
+    · -- h_aeq : root.mcs = a.mcs, h_bR : ExistsTask root.mcs b.mcs
+      -- Need: a.le b ∨ b.le a, i.e., (a.mcs = b.mcs ∨ ExistsTask a.mcs b.mcs) ∨ ...
       exact Or.inl (Or.inr (h_aeq ▸ h_bR))
-    · -- h_aeq : root.mcs = a.mcs, h_Rb : CanonicalR b.mcs root.mcs
+    · -- h_aeq : root.mcs = a.mcs, h_Rb : ExistsTask b.mcs root.mcs
       exact Or.inr (Or.inr (h_aeq ▸ h_Rb))
     · -- h_aeq : root.mcs = a.mcs, h_beq : root.mcs = b.mcs
       exact Or.inl (Or.inl (h_aeq.symm.trans h_beq))
@@ -1041,8 +1041,8 @@ theorem discreteStagedBuild_monotone_le (m n : Nat) (h : m ≤ n) :
 /-- All points in the discrete staged build are MCS-comparable with the root. -/
 theorem discreteStagedBuild_all_comparable_with_root (n : Nat)
     (p : StagedPoint) (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
-    CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+    ExistsTask p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
     (rootPoint root_mcs root_mcs_proof).mcs = p.mcs := by
   induction n generalizing p with
   | zero =>

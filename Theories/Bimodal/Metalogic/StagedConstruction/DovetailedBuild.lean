@@ -91,16 +91,16 @@ def toStagedPoint (dp : DovetailedPoint) : StagedPoint where
 /-!
 ## Ordering on DovetailedPoints
 
-The order is induced by CanonicalR on the underlying MCSs.
+The order is induced by ExistsTask on the underlying MCSs.
 -/
 
-/-- Strict ordering: a < b iff CanonicalR a.mcs b.mcs and NOT CanonicalR b.mcs a.mcs. -/
+/-- Strict ordering: a < b iff ExistsTask a.mcs b.mcs and NOT ExistsTask b.mcs a.mcs. -/
 def DovetailedPoint.lt (a b : DovetailedPoint) : Prop :=
-  CanonicalR a.mcs b.mcs ∧ ¬CanonicalR b.mcs a.mcs
+  ExistsTask a.mcs b.mcs ∧ ¬ExistsTask b.mcs a.mcs
 
-/-- Non-strict ordering: a ≤ b iff a.mcs = b.mcs OR CanonicalR a.mcs b.mcs. -/
+/-- Non-strict ordering: a ≤ b iff a.mcs = b.mcs OR ExistsTask a.mcs b.mcs. -/
 def DovetailedPoint.le (a b : DovetailedPoint) : Prop :=
-  a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs
+  a.mcs = b.mcs ∨ ExistsTask a.mcs b.mcs
 
 /-- Two DovetailedPoints are equivalent if their underlying MCSs are equal. -/
 def DovetailedPoint.equiv (a b : DovetailedPoint) : Prop :=
@@ -125,7 +125,7 @@ theorem DovetailedPoint.le_trans (a b c : DovetailedPoint)
 -/
 
 theorem dovetailedPoint_le_of_mcs_comparable (a b : DovetailedPoint)
-    (h_comp : CanonicalR a.mcs b.mcs ∨ CanonicalR b.mcs a.mcs ∨ a.mcs = b.mcs) :
+    (h_comp : ExistsTask a.mcs b.mcs ∨ ExistsTask b.mcs a.mcs ∨ a.mcs = b.mcs) :
     DovetailedPoint.le a b ∨ DovetailedPoint.le b a := by
   rcases h_comp with h_ab | h_ba | h_eq
   · exact Or.inl (Or.inr h_ab)
@@ -559,16 +559,16 @@ theorem forwardWitness_comparable_with_root_dovetailed
     (point : DovetailedPoint)
     (phi : Formula)
     (h_F : Formula.some_future phi ∈ point.mcs)
-    (h_comp : CanonicalR (rootDovetailedPoint root_mcs root_mcs_proof).mcs point.mcs ∨
-              CanonicalR point.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
+    (h_comp : ExistsTask (rootDovetailedPoint root_mcs root_mcs_proof).mcs point.mcs ∨
+              ExistsTask point.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
               (rootDovetailedPoint root_mcs root_mcs_proof).mcs = point.mcs) :
-    CanonicalR (rootDovetailedPoint root_mcs root_mcs_proof).mcs
+    ExistsTask (rootDovetailedPoint root_mcs root_mcs_proof).mcs
       (executeForwardStep point.mcs point.is_mcs phi h_F) ∨
-    CanonicalR (executeForwardStep point.mcs point.is_mcs phi h_F)
+    ExistsTask (executeForwardStep point.mcs point.is_mcs phi h_F)
       (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
     (rootDovetailedPoint root_mcs root_mcs_proof).mcs =
       (executeForwardStep point.mcs point.is_mcs phi h_F) := by
-  have h_R : CanonicalR point.mcs (executeForwardStep point.mcs point.is_mcs phi h_F) :=
+  have h_R : ExistsTask point.mcs (executeForwardStep point.mcs point.is_mcs phi h_F) :=
     executeForwardStep_canonicalR (h_mcs := point.is_mcs) (h_F := h_F)
   have h_mcs_w : SetMaximalConsistent (executeForwardStep point.mcs point.is_mcs phi h_F) :=
     executeForwardStep_mcs (h_mcs := point.is_mcs) (h_F := h_F)
@@ -582,16 +582,16 @@ theorem backwardWitness_comparable_with_root_dovetailed
     (point : DovetailedPoint)
     (phi : Formula)
     (h_P : Formula.some_past phi ∈ point.mcs)
-    (h_comp : CanonicalR (rootDovetailedPoint root_mcs root_mcs_proof).mcs point.mcs ∨
-              CanonicalR point.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
+    (h_comp : ExistsTask (rootDovetailedPoint root_mcs root_mcs_proof).mcs point.mcs ∨
+              ExistsTask point.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
               (rootDovetailedPoint root_mcs root_mcs_proof).mcs = point.mcs) :
-    CanonicalR (rootDovetailedPoint root_mcs root_mcs_proof).mcs
+    ExistsTask (rootDovetailedPoint root_mcs root_mcs_proof).mcs
       (executeBackwardStep point.mcs point.is_mcs phi h_P) ∨
-    CanonicalR (executeBackwardStep point.mcs point.is_mcs phi h_P)
+    ExistsTask (executeBackwardStep point.mcs point.is_mcs phi h_P)
       (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
     (rootDovetailedPoint root_mcs root_mcs_proof).mcs =
       (executeBackwardStep point.mcs point.is_mcs phi h_P) := by
-  have h_R : CanonicalR (executeBackwardStep point.mcs point.is_mcs phi h_P) point.mcs :=
+  have h_R : ExistsTask (executeBackwardStep point.mcs point.is_mcs phi h_P) point.mcs :=
     executeBackwardStep_canonicalR (h_mcs := point.is_mcs) (h_P := h_P)
   have h_mcs_w : SetMaximalConsistent (executeBackwardStep point.mcs point.is_mcs phi h_P) :=
     executeBackwardStep_mcs (h_mcs := point.is_mcs) (h_P := h_P)
@@ -605,16 +605,16 @@ theorem densityWitness_comparable_with_root_dovetailed
     (point : DovetailedPoint)
     (phi : Formula)
     (h_F : Formula.some_future phi ∈ point.mcs)
-    (h_comp : CanonicalR (rootDovetailedPoint root_mcs root_mcs_proof).mcs point.mcs ∨
-              CanonicalR point.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
+    (h_comp : ExistsTask (rootDovetailedPoint root_mcs root_mcs_proof).mcs point.mcs ∨
+              ExistsTask point.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
               (rootDovetailedPoint root_mcs root_mcs_proof).mcs = point.mcs) :
     let witness := Classical.choose (density_witness_exists point.mcs point.is_mcs phi h_F)
-    CanonicalR (rootDovetailedPoint root_mcs root_mcs_proof).mcs witness ∨
-    CanonicalR witness (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
+    ExistsTask (rootDovetailedPoint root_mcs root_mcs_proof).mcs witness ∨
+    ExistsTask witness (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
     (rootDovetailedPoint root_mcs root_mcs_proof).mcs = witness := by
   let witness := Classical.choose (density_witness_exists point.mcs point.is_mcs phi h_F)
   let witness_spec := Classical.choose_spec (density_witness_exists point.mcs point.is_mcs phi h_F)
-  have h_R : CanonicalR point.mcs witness := witness_spec.2.1
+  have h_R : ExistsTask point.mcs witness := witness_spec.2.1
   have h_mcs_w : SetMaximalConsistent witness := witness_spec.1
   exact comparability_step_forward
     (rootDovetailedPoint root_mcs root_mcs_proof).mcs point.mcs witness
@@ -623,7 +623,7 @@ theorem densityWitness_comparable_with_root_dovetailed
 /-!
 ## Linearity of Dovetailed Build
 
-All points in the dovetailed build are MCS-comparable (via CanonicalR).
+All points in the dovetailed build are MCS-comparable (via ExistsTask).
 This follows from the fact that all points are comparable with the root,
 and comparability is transitive via the temp_linearity axiom.
 -/
@@ -631,8 +631,8 @@ and comparability is transitive via the temp_linearity axiom.
 /-- All points in the dovetailed build are MCS-comparable with the root. -/
 theorem dovetailedBuildState_all_comparable_with_root (n : Nat)
     (p : DovetailedPoint) (hp : p ∈ (dovetailedBuildState root_mcs root_mcs_proof n).points) :
-    CanonicalR (rootDovetailedPoint root_mcs root_mcs_proof).mcs p.mcs ∨
-    CanonicalR p.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
+    ExistsTask (rootDovetailedPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+    ExistsTask p.mcs (rootDovetailedPoint root_mcs root_mcs_proof).mcs ∨
     (rootDovetailedPoint root_mcs root_mcs_proof).mcs = p.mcs := by
   induction n generalizing p with
   | zero =>
@@ -721,7 +721,7 @@ theorem dovetailedBuildState_mcs_comparable (n : Nat)
     (a b : DovetailedPoint)
     (ha : a ∈ (dovetailedBuildState root_mcs root_mcs_proof n).points)
     (hb : b ∈ (dovetailedBuildState root_mcs root_mcs_proof n).points) :
-    CanonicalR a.mcs b.mcs ∨ CanonicalR b.mcs a.mcs ∨ a.mcs = b.mcs := by
+    ExistsTask a.mcs b.mcs ∨ ExistsTask b.mcs a.mcs ∨ a.mcs = b.mcs := by
   have h_a_root := dovetailedBuildState_all_comparable_with_root root_mcs root_mcs_proof n a ha
   have h_b_root := dovetailedBuildState_all_comparable_with_root root_mcs root_mcs_proof n b hb
   rcases h_a_root with h_Ra | h_aR | h_aeq
@@ -785,12 +785,12 @@ noncomputable def forwardWitnessDovetailed (point : DovetailedPoint) (phi : Form
   entry_stage := stage
   point_index := 0  -- Placeholder, actual index assigned by addPoint
 
-/-- When F(phi) is in point.mcs, processForwardObligationDovetailed adds a witness with CanonicalR. -/
+/-- When F(phi) is in point.mcs, processForwardObligationDovetailed adds a witness with ExistsTask. -/
 theorem processForwardObligationDovetailed_adds_witness
     (state : DovetailedBuildState) (point : DovetailedPoint) (phi : Formula) (stage : Nat)
     (h_F : Formula.some_future phi ∈ point.mcs) :
     ∃ w ∈ (processForwardObligationDovetailed state point phi stage).points,
-      CanonicalR point.mcs w.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask point.mcs w.mcs ∧ phi ∈ w.mcs := by
   simp only [processForwardObligationDovetailed, dif_pos h_F, addPoint]
   use DovetailedPoint.mk (executeForwardStep point.mcs point.is_mcs phi h_F)
     executeForwardStep_mcs stage state.next_index
@@ -800,7 +800,7 @@ theorem processForwardObligationDovetailed_adds_witness
            executeForwardStep_contains_phi (h_mcs := point.is_mcs) (h_F := h_F)⟩
 
 /-- At step pair(p_idx, f_enc), if p_idx is valid and f decodes to phi with F(phi) in point.mcs,
-    then a witness with CanonicalR is added. -/
+    then a witness with ExistsTask is added. -/
 theorem dovetailedStep_adds_witness_when_processed
     (state : DovetailedBuildState) (step : Nat) (point : DovetailedPoint) (phi : Formula)
     (h_obl_point : (obligationAtStep step).point_index = point.point_index)
@@ -808,7 +808,7 @@ theorem dovetailedStep_adds_witness_when_processed
     (h_lookup : getPointAt state point.point_index = some point)
     (h_F : Formula.some_future phi ∈ point.mcs) :
     ∃ w ∈ (dovetailedStep state step).points,
-      CanonicalR point.mcs w.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask point.mcs w.mcs ∧ phi ∈ w.mcs := by
   simp only [dovetailedStep]
   simp only [h_obl_point, h_lookup, h_obl_phi]
   -- processObligationsDovetailed adds the forward witness

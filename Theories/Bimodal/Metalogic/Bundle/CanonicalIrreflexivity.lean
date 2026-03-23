@@ -20,14 +20,14 @@ import Mathlib.Data.Finset.Union
 ### Semantic Foundation
 
 Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the T-axiom
-`G(φ) → φ` is valid. This immediately gives `CanonicalR M M` for all MCS M,
+`G(φ) → φ` is valid. This immediately gives `ExistsTask M M` for all MCS M,
 since `g_content(M) ⊆ M` follows from T-axiom closure.
 
 ### Two-Layer Architecture
 
 **Layer 1 (Basic Completeness)**: Uses reflexive preorder structure.
-- `canonicalR_reflexive`: CanonicalR M M holds for all MCS M
-- `canonicalR_past_reflexive`: CanonicalR_past M M holds for all MCS M
+- `canonicalR_reflexive`: ExistsTask M M holds for all MCS M
+- `canonicalR_past_reflexive`: ExistsTask_past M M holds for all MCS M
 - All completeness proofs are axiom-free
 
 **Layer 2 (Order-Theoretic Enhancements)**: Uses deprecated axiom.
@@ -41,7 +41,7 @@ When strictness (M ≠ W) is needed for witness constructions:
 1. Identify formula φ that distinguishes W from M
 2. Show G(φ) ∈ W (so φ ∈ g_content(W))
 3. Show φ ∉ M
-4. Apply `strict_of_formula_in_g_content_not_in_source` to get ¬CanonicalR W M
+4. Apply `strict_of_formula_in_g_content_not_in_source` to get ¬ExistsTask W M
 
 This pattern replaces universal irreflexivity with per-construction proofs.
 
@@ -141,12 +141,12 @@ theorem exists_fresh_for_finset (S : Finset Formula) :
   exact Finset.mem_biUnion.mpr ⟨φ, hφ, h⟩
 
 /-!
-## Reflexive Semantics (Task 29): CanonicalR Reflexivity
+## Reflexive Semantics (Task 29): ExistsTask Reflexivity
 
 Under reflexive semantics (G/H quantify over s >= t / s <= t), the canonical
-accessibility relation is REFLEXIVE: `CanonicalR M M` holds for all MCS M.
+accessibility relation is REFLEXIVE: `ExistsTask M M` holds for all MCS M.
 
-Proof: `CanonicalR M M` means `g_content(M) ⊆ M`, i.e., for all phi,
+Proof: `ExistsTask M M` means `g_content(M) ⊆ M`, i.e., for all phi,
 `G(phi) ∈ M → phi ∈ M`. This follows from the T-axiom `G(phi) → phi`
 which is derivable under reflexive semantics, and MCS closure under derivation.
 -/
@@ -184,18 +184,18 @@ abbrev canonicalR_past_reflexive := existsTask_past_reflexive
 /-!
 ## Per-Construction Strictness Infrastructure (Task 29)
 
-Under reflexive semantics, CanonicalR is a PREORDER (reflexive + transitive).
+Under reflexive semantics, ExistsTask is a PREORDER (reflexive + transitive).
 Universal irreflexivity is FALSE, and antisymmetry also FAILS.
 
-Instead of proving `¬CanonicalR M M` universally, we prove **per-construction
+Instead of proving `¬ExistsTask M M` universally, we prove **per-construction
 strictness**: at each call site where a witness W is constructed from M, we
-prove `¬CanonicalR W M` from the specific formula that distinguishes W from M.
+prove `¬ExistsTask W M` from the specific formula that distinguishes W from M.
 
 The key pattern:
 1. Construct witness W with some formula φ ∈ W
 2. Ensure G(φ) ∈ W (so φ ∈ g_content(W))
 3. Show φ ∉ M
-4. Then ¬CanonicalR W M (since g_content(W) ⊄ M)
+4. Then ¬ExistsTask W M (since g_content(W) ⊄ M)
 
 The following infrastructure supports this pattern.
 -/
@@ -304,9 +304,9 @@ for any MCS M. This follows from the irreflexivity axiom for ExistsTask.
 ### Forward Direction (n > 0)
 
 A forward chain CanonicalTask_forward M n M with n ≥ 1 implies ExistsTask M M:
-- Each Succ step gives a CanonicalR (via Succ_implies_CanonicalR)
-- CanonicalR is transitive (via existsTask_transitive) when first world is MCS
-- Composing all steps gives CanonicalR M M = ExistsTask M M
+- Each Succ step gives a ExistsTask (via Succ_implies_CanonicalR)
+- ExistsTask is transitive (via existsTask_transitive) when first world is MCS
+- Composing all steps gives ExistsTask M M = ExistsTask M M
 
 ### Backward Direction (n < 0)
 
@@ -314,10 +314,10 @@ A backward chain CanonicalTask_backward M |n| M with |n| ≥ 1 works symmetrical
 via the converse theorem: CanonicalTask M n M ↔ CanonicalTask M (-n) M.
 -/
 
-/-- Forward chain from MCS u implies CanonicalR (identity or proper).
+/-- Forward chain from MCS u implies ExistsTask (identity or proper).
 
-For a forward chain starting from MCS u, we can derive CanonicalR by composing
-individual Succ steps via transitivity. Each Succ step gives CanonicalR by
+For a forward chain starting from MCS u, we can derive ExistsTask by composing
+individual Succ steps via transitivity. Each Succ step gives ExistsTask by
 Succ_implies_CanonicalR, and we compose using existsTask_transitive which
 only requires the first world (u) to be MCS.
 
@@ -327,7 +327,7 @@ theorem canonicalTask_forward_implies_canonicalR_or_eq
     {u v : Set Formula} {n : Nat}
     (h_mcs_u : SetMaximalConsistent u)
     (h_task : CanonicalTask_forward u n v) :
-    u = v ∨ CanonicalR u v := by
+    u = v ∨ ExistsTask u v := by
   induction n generalizing u v with
   | zero =>
     -- n = 0 means u = v by CanonicalTask_forward_zero
@@ -336,13 +336,13 @@ theorem canonicalTask_forward_implies_canonicalR_or_eq
   | succ k ih =>
     -- Extract the first Succ step using step_inv
     obtain ⟨w, h_succ, h_chain⟩ := CanonicalTask_forward.step_inv h_task
-    have h_R_uw : CanonicalR u w := Succ_implies_CanonicalR u w h_succ
+    have h_R_uw : ExistsTask u w := Succ_implies_CanonicalR u w h_succ
     -- For the remaining chain from w to v, we need MCS of w
     -- But wait - we only have MCS of u. We can still conclude:
-    -- Either w = v (and we have CanonicalR u v = h_R_uw)
+    -- Either w = v (and we have ExistsTask u v = h_R_uw)
     -- Or k ≥ 1 and we need to compose (but this requires MCS w)
     -- Actually, we can proceed differently: the chain from w to v
-    -- gives us CanonicalR w v (if k ≥ 1) or w = v (if k = 0)
+    -- gives us ExistsTask w v (if k ≥ 1) or w = v (if k = 0)
     -- In either case, transitivity from u gives us what we need
     cases k with
     | zero =>
@@ -353,30 +353,30 @@ theorem canonicalTask_forward_implies_canonicalR_or_eq
     | succ j =>
       -- k = j + 1, chain from w to v has length ≥ 1
       -- This requires MCS of w for transitivity, which we don't have directly
-      -- However, we know Succ preserves the structure - each Succ step gives CanonicalR
+      -- However, we know Succ preserves the structure - each Succ step gives ExistsTask
       -- We can use the single-step lemma repeatedly
       -- Actually, let's just extract the full chain and compose
       obtain ⟨w', h_succ', h_chain'⟩ := CanonicalTask_forward.step_inv h_chain
-      have h_R_ww' : CanonicalR w w' := Succ_implies_CanonicalR w w' h_succ'
-      -- Now we have CanonicalR u w and CanonicalR w w' and chain from w' to v
+      have h_R_ww' : ExistsTask w w' := Succ_implies_CanonicalR w w' h_succ'
+      -- Now we have ExistsTask u w and ExistsTask w w' and chain from w' to v
       -- Compose u to w' first (needs MCS u)
-      have h_R_uw' : CanonicalR u w' := existsTask_transitive u w w' h_mcs_u h_R_uw h_R_ww'
+      have h_R_uw' : ExistsTask u w' := existsTask_transitive u w w' h_mcs_u h_R_uw h_R_ww'
       -- Continue with the remaining chain from w' to v
       -- This is getting complicated - let's use a simpler approach
       -- Just recurse on the full chain length
       right
-      -- Actually, for any chain of length ≥ 1, the first step gives CanonicalR u w
+      -- Actually, for any chain of length ≥ 1, the first step gives ExistsTask u w
       -- and we can compose all subsequent steps via transitivity
       -- The key is that transitivity only needs MCS of the FIRST world (u)
       -- So we can compose: u -> w -> w' -> ... -> v
       -- At each step, we use existsTask_transitive with MCS u
       -- Let's prove this by strong induction on chain length
       -- For now, use a direct proof for the general case
-      -- Every forward chain of length ≥ 1 from MCS u gives CanonicalR u v
-      -- because each Succ gives CanonicalR and we compose via transitivity
+      -- Every forward chain of length ≥ 1 from MCS u gives ExistsTask u v
+      -- because each Succ gives ExistsTask and we compose via transitivity
       -- The composition only requires MCS of the base (u)
       have h_base : ∀ m : Nat, ∀ x y : Set Formula,
-          CanonicalTask_forward x m y → CanonicalR u x → CanonicalR u y := by
+          CanonicalTask_forward x m y → ExistsTask u x → ExistsTask u y := by
         intro m
         induction m with
         | zero =>
@@ -387,22 +387,22 @@ theorem canonicalTask_forward_implies_canonicalR_or_eq
         | succ p ih_p =>
           intro x y h_fwd h_ux
           obtain ⟨z, h_succ_xz, h_chain_zy⟩ := CanonicalTask_forward.step_inv h_fwd
-          have h_xz : CanonicalR x z := Succ_implies_CanonicalR x z h_succ_xz
-          have h_uz : CanonicalR u z := existsTask_transitive u x z h_mcs_u h_ux h_xz
+          have h_xz : ExistsTask x z := Succ_implies_CanonicalR x z h_succ_xz
+          have h_uz : ExistsTask u z := existsTask_transitive u x z h_mcs_u h_ux h_xz
           exact ih_p z y h_chain_zy h_uz
       exact h_base j w' v h_chain' h_R_uw'
 
-/-- Forward chain of positive length from MCS u implies CanonicalR.
+/-- Forward chain of positive length from MCS u implies ExistsTask.
 
 This is the key lemma for CanonicalTask irreflexivity: any forward chain
-of length ≥ 1 starting from MCS gives CanonicalR, even if it returns to
+of length ≥ 1 starting from MCS gives ExistsTask, even if it returns to
 the starting world. -/
 theorem canonicalTask_forward_pos_implies_canonicalR
     {u v : Set Formula} {n : Nat}
     (h_mcs_u : SetMaximalConsistent u)
     (h_pos : n ≥ 1)
     (h_task : CanonicalTask_forward u n v) :
-    CanonicalR u v := by
+    ExistsTask u v := by
   rcases canonicalTask_forward_implies_canonicalR_or_eq h_mcs_u h_task with rfl | h_R
   · -- u = v case: the chain loops back
     -- n ≥ 1 means n = k + 1 for some k
@@ -410,7 +410,7 @@ theorem canonicalTask_forward_pos_implies_canonicalR
     obtain ⟨k, rfl⟩ := h_n
     -- Extract first step: Succ u w for some w
     obtain ⟨w, h_succ, h_chain⟩ := CanonicalTask_forward.step_inv h_task
-    have h_R_uw : CanonicalR u w := Succ_implies_CanonicalR u w h_succ
+    have h_R_uw : ExistsTask u w := Succ_implies_CanonicalR u w h_succ
     -- Chain from w back to u (since u = v)
     -- If k = 0, then w = u directly
     cases k with
@@ -422,7 +422,7 @@ theorem canonicalTask_forward_pos_implies_canonicalR
       -- k ≥ 1, so chain from w to u has positive length
       -- Use the helper lemma to compose
       have h_base : ∀ m : Nat, ∀ x y : Set Formula,
-          CanonicalTask_forward x m y → CanonicalR u x → CanonicalR u y := by
+          CanonicalTask_forward x m y → ExistsTask u x → ExistsTask u y := by
         intro m
         induction m with
         | zero =>
@@ -433,8 +433,8 @@ theorem canonicalTask_forward_pos_implies_canonicalR
         | succ p ih_p =>
           intro x y h_fwd h_ux
           obtain ⟨z, h_succ_xz, h_chain_zy⟩ := CanonicalTask_forward.step_inv h_fwd
-          have h_xz : CanonicalR x z := Succ_implies_CanonicalR x z h_succ_xz
-          have h_uz : CanonicalR u z := existsTask_transitive u x z h_mcs_u h_ux h_xz
+          have h_xz : ExistsTask x z := Succ_implies_CanonicalR x z h_succ_xz
+          have h_uz : ExistsTask u z := existsTask_transitive u x z h_mcs_u h_ux h_xz
           exact ih_p z y h_chain_zy h_uz
       exact h_base (j + 1) w u h_chain h_R_uw
   · exact h_R
@@ -443,8 +443,8 @@ theorem canonicalTask_forward_pos_implies_canonicalR
 
 If n > 0, then ¬CanonicalTask M n M for any MCS M. This follows from:
 1. CanonicalTask M n M with n > 0 means CanonicalTask_forward M n M
-2. Forward chain of length ≥ 1 implies CanonicalR M M (via Succ composition)
-3. The irreflexivity axiom gives ¬CanonicalR M M = ¬ExistsTask M M
+2. Forward chain of length ≥ 1 implies ExistsTask M M (via Succ composition)
+3. The irreflexivity axiom gives ¬ExistsTask M M = ¬ExistsTask M M
 
 **Semantic Note**: This theorem only applies under STRICT semantics (Layer 2).
 Under reflexive semantics (Task 29), ExistsTask is reflexive, not irreflexive,
@@ -461,9 +461,9 @@ theorem canonicalTask_irreflexive_pos (M : Set Formula) (n : Int)
     have h_k_pos : k ≥ 1 := Nat.one_le_iff_ne_zero.mpr (Int.ofNat_ne_zero.mp (ne_of_gt h_pos_k))
     -- CanonicalTask M k M = CanonicalTask_forward M k M
     have h_forward : CanonicalTask_forward M k M := (CanonicalTask_of_nat M M k).mp h_task
-    -- Forward chain implies CanonicalR M M
-    have h_R : CanonicalR M M := canonicalTask_forward_pos_implies_canonicalR h_mcs h_k_pos h_forward
-    -- But CanonicalR M M contradicts irreflexivity axiom
+    -- Forward chain implies ExistsTask M M
+    have h_R : ExistsTask M M := canonicalTask_forward_pos_implies_canonicalR h_mcs h_k_pos h_forward
+    -- But ExistsTask M M contradicts irreflexivity axiom
     exact existsTask_irreflexive_axiom M h_mcs h_R
 
 /-- CanonicalTask irreflexivity for negative durations.

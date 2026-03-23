@@ -21,7 +21,7 @@ family replaces the MCS at the seed time with the witness MCS while preserving t
 structure elsewhere. The key is that:
 
 1. The witness MCS is consistent with the temporal structure
-2. CanonicalR relationships are maintained for forward_G/backward_H
+2. ExistsTask relationships are maintained for forward_G/backward_H
 
 ## Construction Strategy
 

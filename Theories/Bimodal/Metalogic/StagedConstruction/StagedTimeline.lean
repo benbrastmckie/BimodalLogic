@@ -89,9 +89,9 @@ structure StagedPoint where
 /-!
 ## Ordering on StagedPoints
 
-The order on StagedPoints is induced by the canonical temporal relation CanonicalR
+The order on StagedPoints is induced by the canonical temporal relation ExistsTask
 on the underlying MCSs. Two points are related iff their underlying MCSs are
-related by CanonicalR.
+related by ExistsTask.
 
 Since the staged construction maintains linearity at each stage (by construction),
 the ordering is a total preorder. Two StagedPoints with the same underlying MCS
@@ -99,18 +99,18 @@ the ordering is a total preorder. Two StagedPoints with the same underlying MCS
 -/
 
 /--
-The strict ordering on StagedPoints: `a < b` iff `CanonicalR a.mcs b.mcs` and
-NOT `CanonicalR b.mcs a.mcs` (strictly forward in canonical time).
+The strict ordering on StagedPoints: `a < b` iff `ExistsTask a.mcs b.mcs` and
+NOT `ExistsTask b.mcs a.mcs` (strictly forward in canonical time).
 -/
 def StagedPoint.lt (a b : StagedPoint) : Prop :=
-  CanonicalR a.mcs b.mcs ∧ ¬CanonicalR b.mcs a.mcs
+  ExistsTask a.mcs b.mcs ∧ ¬ExistsTask b.mcs a.mcs
 
 /--
 The non-strict ordering on StagedPoints: `a ≤ b` iff `a.mcs = b.mcs` or
-`CanonicalR a.mcs b.mcs`.
+`ExistsTask a.mcs b.mcs`.
 -/
 def StagedPoint.le (a b : StagedPoint) : Prop :=
-  a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs
+  a.mcs = b.mcs ∨ ExistsTask a.mcs b.mcs
 
 /--
 Two StagedPoints are equivalent if their underlying MCSs are equal.
@@ -125,7 +125,7 @@ theorem StagedPoint.le_trans (a b c : StagedPoint)
     (hab : StagedPoint.le a b) (hbc : StagedPoint.le b c) :
     StagedPoint.le a c := by
   rcases hab with h_eq_ab | hab
-  · -- a.mcs = b.mcs, so CanonicalR a.mcs c.mcs ↔ CanonicalR b.mcs c.mcs
+  · -- a.mcs = b.mcs, so ExistsTask a.mcs c.mcs ↔ ExistsTask b.mcs c.mcs
     rcases hbc with h_eq_bc | hbc
     · exact Or.inl (h_eq_ab.trans h_eq_bc)
     · exact Or.inr (h_eq_ab ▸ hbc)
@@ -134,7 +134,7 @@ theorem StagedPoint.le_trans (a b c : StagedPoint)
     · exact Or.inr (canonicalR_transitive a.mcs b.mcs c.mcs a.is_mcs hab hbc)
 
 /-!
-Note: Under irreflexive semantics, mutual CanonicalR (a.mcs, b.mcs and b.mcs, a.mcs)
+Note: Under irreflexive semantics, mutual ExistsTask (a.mcs, b.mcs and b.mcs, a.mcs)
 does NOT imply a.mcs = b.mcs. Two MCSs can agree on all G-formulas (g_content) while
 differing on base formulas. Antisymmetry is ensured by the staged construction itself,
 which maintains strict ordering between distinct MCSs. See `StagedTimeline.strict_between_distinct`.

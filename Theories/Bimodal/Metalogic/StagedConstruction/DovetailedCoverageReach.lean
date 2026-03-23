@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.StagedConstruction.DovetailedCoverage
 
 /-!
-# CanonicalR Reachability and Coverage
+# ExistsTask Reachability and Coverage
 
 This module defines `CanonicalR_chain` for tracking reachability from the root MCS.
 The coverage theorem and forward_F_via_coverage are NOT yet proven due to a fundamental
@@ -9,7 +9,7 @@ termination issue with the density-based recursion.
 
 ## Key Definitions
 
-- `CanonicalR_chain root W n`: W is reachable from root via n steps of CanonicalR
+- `CanonicalR_chain root W n`: W is reachable from root via n steps of ExistsTask
 - `CanonicalR_reachable root W`: W is reachable from root via some chain
 
 ## Status
@@ -54,25 +54,25 @@ attribute [local instance] Classical.propDecidable
 variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)
 
 /-!
-## CanonicalR Chain Definition
+## ExistsTask Chain Definition
 
-A chain of CanonicalR steps from root_mcs to target, indexed by length.
+A chain of ExistsTask steps from root_mcs to target, indexed by length.
 -/
 
-/-- A chain of CanonicalR steps from root to target of length n.
+/-- A chain of ExistsTask steps from root to target of length n.
 
 This is the key structure for induction on chain length rather than formula depth.
 - `base`: The root is reachable from itself in 0 steps
-- `step`: If M is reachable in n steps and CanonicalR M W, then W is reachable in n+1 steps
+- `step`: If M is reachable in n steps and ExistsTask M W, then W is reachable in n+1 steps
 -/
 inductive CanonicalR_chain (root : Set Formula) : Set Formula → Nat → Prop where
   | base : CanonicalR_chain root root 0
   | step {M W : Set Formula} {n : Nat} :
       CanonicalR_chain root M n →
-      CanonicalR M W →
+      ExistsTask M W →
       CanonicalR_chain root W (n + 1)
 
-/-- W is CanonicalR-reachable from root if there exists a chain of some length. -/
+/-- W is ExistsTask-reachable from root if there exists a chain of some length. -/
 def CanonicalR_reachable (root W : Set Formula) : Prop :=
   ∃ n, CanonicalR_chain root W n
 
@@ -80,9 +80,9 @@ def CanonicalR_reachable (root W : Set Formula) : Prop :=
 theorem reachable_root (root : Set Formula) : CanonicalR_reachable root root :=
   ⟨0, CanonicalR_chain.base⟩
 
-/-- If M is reachable and CanonicalR M W, then W is reachable. -/
+/-- If M is reachable and ExistsTask M W, then W is reachable. -/
 theorem reachable_step {root M W : Set Formula}
-    (h_reach : CanonicalR_reachable root M) (h_R : CanonicalR M W) :
+    (h_reach : CanonicalR_reachable root M) (h_R : ExistsTask M W) :
     CanonicalR_reachable root W := by
   obtain ⟨n, h_chain⟩ := h_reach
   exact ⟨n + 1, CanonicalR_chain.step h_chain h_R⟩
@@ -99,20 +99,20 @@ theorem root_in_timeline :
 For completeness, we also define backward chains for past formulas.
 -/
 
-/-- A chain of CanonicalR steps TOWARD target (backward direction).
+/-- A chain of ExistsTask steps TOWARD target (backward direction).
 Used for P-formula witnesses. -/
 inductive CanonicalR_chain_backward (root : Set Formula) : Set Formula → Nat → Prop where
   | base : CanonicalR_chain_backward root root 0
   | step {M W : Set Formula} {n : Nat} :
       CanonicalR_chain_backward root M n →
-      CanonicalR W M →  -- Note: reversed direction from forward chain
+      ExistsTask W M →  -- Note: reversed direction from forward chain
       CanonicalR_chain_backward root W (n + 1)
 
 /-!
 ## Forward F Coverage via Dovetailed Construction
 
 The key coverage theorem: for any point p in the dovetailed timeline with F(phi) ∈ p.mcs,
-there exists a witness w in the timeline with phi ∈ w.mcs and CanonicalR p.mcs w.mcs.
+there exists a witness w in the timeline with phi ∈ w.mcs and ExistsTask p.mcs w.mcs.
 
 This is the main result needed for temporal coherence (forward_F property).
 -/
@@ -130,7 +130,7 @@ theorem forward_F_via_coverage
     (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
     (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs) :
     ∃ w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
-      CanonicalR p.mcs w.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask p.mcs w.mcs ∧ phi ∈ w.mcs := by
   -- p is in the timeline at some stage n
   obtain ⟨n, hn⟩ := hp
   simp only [dovetailedBuild, List.mem_toFinset] at hn
@@ -207,7 +207,7 @@ theorem backward_P_via_coverage
     (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
     (phi : Formula) (h_P : Formula.some_past phi ∈ p.mcs) :
     ∃ w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
-      CanonicalR w.mcs p.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask w.mcs p.mcs ∧ phi ∈ w.mcs := by
   -- Symmetric to forward_F_via_coverage
   obtain ⟨n, hn⟩ := hp
   simp only [dovetailedBuild, List.mem_toFinset] at hn

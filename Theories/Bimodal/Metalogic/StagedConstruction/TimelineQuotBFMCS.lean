@@ -167,12 +167,12 @@ The key insight is that these properties follow from the CanonicalMCS structure.
 /--
 Forward G coherence is inherited from canonical structure.
 
-If G phi is in an MCS M and CanonicalR M N, then phi is in N.
-This follows from the definition of CanonicalR (g_content(M) ⊆ N).
+If G phi is in an MCS M and ExistsTask M N, then phi is in N.
+This follows from the definition of ExistsTask (g_content(M) ⊆ N).
 -/
 theorem witnessFMCS_forward_G_helper
     (M N : CanonicalMCS)
-    (h_R : CanonicalR M.world N.world)
+    (h_R : ExistsTask M.world N.world)
     (phi : Formula)
     (h_G : Formula.all_future phi ∈ M.world) :
     phi ∈ N.world :=
@@ -181,18 +181,18 @@ theorem witnessFMCS_forward_G_helper
 /--
 Backward H coherence is inherited from canonical structure.
 
-If H phi is in an MCS N and CanonicalR M N, then phi is in M.
+If H phi is in an MCS N and ExistsTask M N, then phi is in M.
 This follows from the duality of g_content and h_content.
 -/
 theorem witnessFMCS_backward_H_helper
     (M N : CanonicalMCS)
-    (h_R : CanonicalR M.world N.world)
+    (h_R : ExistsTask M.world N.world)
     (phi : Formula)
     (h_H : Formula.all_past phi ∈ N.world) :
     phi ∈ M.world := by
-  -- CanonicalR M N means g_content(M) ⊆ N
+  -- ExistsTask M N means g_content(M) ⊆ N
   -- By duality: h_content(N) ⊆ M
-  have h_R_past : CanonicalR_past N.world M.world :=
+  have h_R_past : ExistsTask_past N.world M.world :=
     g_content_subset_implies_h_content_reverse M.world N.world M.is_mcs N.is_mcs h_R
   exact canonical_backward_H N.world M.world h_R_past phi h_H
 
@@ -367,7 +367,7 @@ This uses the Lindenbaum construction to find a witness MCS.
 theorem canonicalMCSBFMCS_forward_F
     (M : CanonicalMCS) (phi : Formula)
     (h_F : Formula.some_future phi ∈ M.world) :
-    ∃ W : CanonicalMCS, CanonicalR M.world W.world ∧ phi ∈ W.world := by
+    ∃ W : CanonicalMCS, ExistsTask M.world W.world ∧ phi ∈ W.world := by
   -- F(phi) in M means exists accessible W with phi
   -- The witness is constructed via Lindenbaum extension of {phi} ∪ g_content(M)
   obtain ⟨W_set, h_W_mcs, h_R, h_phi⟩ := canonical_forward_F M.world M.is_mcs phi h_F
@@ -382,18 +382,18 @@ This uses the Lindenbaum construction with h_content.
 theorem canonicalMCSBFMCS_backward_P
     (M : CanonicalMCS) (phi : Formula)
     (h_P : Formula.some_past phi ∈ M.world) :
-    ∃ W : CanonicalMCS, CanonicalR W.world M.world ∧ phi ∈ W.world := by
-  -- P(phi) in M means exists W < M (CanonicalR W M) with phi
-  -- CanonicalR_past M W means h_content(M) ⊆ W, which is equivalent to CanonicalR W M
+    ∃ W : CanonicalMCS, ExistsTask W.world M.world ∧ phi ∈ W.world := by
+  -- P(phi) in M means exists W < M (ExistsTask W M) with phi
+  -- ExistsTask_past M W means h_content(M) ⊆ W, which is equivalent to ExistsTask W M
   -- for the past direction
   obtain ⟨W_set, h_W_mcs, h_R_past, h_phi⟩ := canonical_backward_P M.world M.is_mcs phi h_P
   let W : CanonicalMCS := ⟨W_set, h_W_mcs⟩
-  -- CanonicalR_past M W means h_content(M) ⊆ W
-  -- We need to show CanonicalR W.world M.world, i.e., g_content(W) ⊆ M
+  -- ExistsTask_past M W means h_content(M) ⊆ W
+  -- We need to show ExistsTask W.world M.world, i.e., g_content(W) ⊆ M
   -- This follows from h_content/g_content duality
   -- h_content_subset_implies_g_content_reverse: h_content M ⊆ M' implies g_content M' ⊆ M
   -- Here: h_R_past : h_content M.world ⊆ W_set, so g_content W_set ⊆ M.world
-  have h_R : CanonicalR W.world M.world :=
+  have h_R : ExistsTask W.world M.world :=
     h_content_subset_implies_g_content_reverse M.world W_set M.is_mcs h_W_mcs h_R_past
   exact ⟨W, h_R, h_phi⟩
 
@@ -420,7 +420,7 @@ theorem closedFlags_forward_F_witness
     (_h_M : ∃ flag ∈ timelineQuotClosedFlags root_mcs root_mcs_proof, M ∈ flag)
     (phi : Formula)
     (h_F : Formula.some_future phi ∈ M.world) :
-    ∃ W : CanonicalMCS, CanonicalR M.world W.world ∧ phi ∈ W.world :=
+    ∃ W : CanonicalMCS, ExistsTask M.world W.world ∧ phi ∈ W.world :=
   canonicalMCSBFMCS_forward_F M phi h_F
 
 /--
@@ -433,7 +433,7 @@ theorem closedFlags_backward_P_witness
     (_h_M : ∃ flag ∈ timelineQuotClosedFlags root_mcs root_mcs_proof, M ∈ flag)
     (phi : Formula)
     (h_P : Formula.some_past phi ∈ M.world) :
-    ∃ W : CanonicalMCS, CanonicalR W.world M.world ∧ phi ∈ W.world :=
+    ∃ W : CanonicalMCS, ExistsTask W.world M.world ∧ phi ∈ W.world :=
   canonicalMCSBFMCS_backward_P M phi h_P
 
 /-!

@@ -34,7 +34,7 @@ is bridged by transfer theorems (see `StagedConstruction/Completeness.lean`).
 ## Overview
 
 Given a root MCS `M₀`, we construct a FMCS where:
-- The domain is `CanonicalMCS` (all maximal consistent sets, with CanonicalR Preorder)
+- The domain is `CanonicalMCS` (all maximal consistent sets, with ExistsTask Preorder)
 - Each element `w` maps directly to `w.world` (the MCS itself)
 - `forward_G` follows from `canonical_forward_G` and the Preorder definition
 - `backward_H` follows from `g_content_subset_implies_h_content_reverse` duality
@@ -47,7 +47,7 @@ The v5 plan originally proposed using CanonicalReachable (future-reachable from 
 This works for forward_F (future witnesses are future-reachable by transitivity),
 but FAILS for backward_P because:
 - `canonical_backward_P` gives witness W with `h_content(w.world) ⊆ W`
-- For W to be in CanonicalReachable, we need `CanonicalR M₀ W` (= `g_content(M₀) ⊆ W`)
+- For W to be in CanonicalReachable, we need `ExistsTask M₀ W` (= `g_content(M₀) ⊆ W`)
 - There is no TM axiom that derives `g_content(M₀) ⊆ W` from the available hypotheses
 - The G and H modalities are independent; `G(phi) ∈ M₀` does NOT imply `H(phi) ∈ w.world`
 
@@ -60,7 +60,7 @@ The all-MCS approach sidesteps this entirely:
 
 The FMCS and TemporalCoherentFamily only require `[Preorder D]`, not totality.
 The completeness chain (TruthLemma, Completeness) does NOT use totality, IsTotal,
-or LinearOrder. So using the non-total CanonicalR Preorder on all MCSes is sound.
+or LinearOrder. So using the non-total ExistsTask Preorder on all MCSes is sound.
 
 The CanonicalReachable/CanonicalQuotient constructions and their totality (IsTotal)
 have been archived to Boneyard (task 933) as they are not used by any active code.
@@ -80,7 +80,7 @@ open Bimodal.ProofSystem
 /-!
 ## CanonicalMCS: The Type of All Maximal Consistent Sets
 
-This type wraps all MCSes with a CanonicalR-based Preorder. Unlike CanonicalReachable,
+This type wraps all MCSes with a ExistsTask-based Preorder. Unlike CanonicalReachable,
 it includes ALL MCSes, not just those future-reachable from a root. This ensures both
 forward and backward witnesses are always in the domain.
 -/
@@ -90,7 +90,7 @@ A maximal consistent set, used as a domain element for the canonical FMCS.
 
 This is a structure (not an abbrev for Subtype) to avoid diamond instance conflicts:
 `Set Formula` has `LE` (subset), so `Subtype (Set Formula)` would inherit `Subtype.instLE`
-(where `a ≤ b := a.val ⊆ b.val`). Our Preorder uses `CanonicalR` (where `a ≤ b :=
+(where `a ≤ b := a.val ⊆ b.val`). Our Preorder uses `ExistsTask` (where `a ≤ b :=
 g_content(a.val) ⊆ b.val`), which is different. Using a structure avoids the conflict.
 -/
 structure CanonicalMCS where
@@ -100,18 +100,18 @@ structure CanonicalMCS where
   is_mcs : SetMaximalConsistent world
 
 /--
-Preorder on CanonicalMCS via the reflexive closure of CanonicalR.
+Preorder on CanonicalMCS via the reflexive closure of ExistsTask.
 
-`a ≤ b` iff `a = b ∨ CanonicalR a.world b.world`.
+`a ≤ b` iff `a = b ∨ ExistsTask a.world b.world`.
 
-With irreflexive semantics, CanonicalR is NOT reflexive (no T-axiom). The reflexive
+With irreflexive semantics, ExistsTask is NOT reflexive (no T-axiom). The reflexive
 closure gives a proper Preorder. The strict order `<` derived from this Preorder
-implies `CanonicalR`, which is what FMCS coherence conditions need.
+implies `ExistsTask`, which is what FMCS coherence conditions need.
 
 Note: this Preorder is NOT total in general.
 -/
 noncomputable instance : Preorder CanonicalMCS where
-  le a b := a = b ∨ CanonicalR a.world b.world
+  le a b := a = b ∨ ExistsTask a.world b.world
   le_refl a := Or.inl rfl
   le_trans a b c hab hbc := by
     rcases hab with rfl | hab
@@ -121,20 +121,20 @@ noncomputable instance : Preorder CanonicalMCS where
       · exact Or.inr (canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc)
 
 /--
-CanonicalR implies ≤: If `CanonicalR a.world b.world` then `a ≤ b`.
+ExistsTask implies ≤: If `ExistsTask a.world b.world` then `a ≤ b`.
 Convenience lemma for converting strict canonical relation to Preorder.
 -/
-theorem CanonicalMCS.le_of_canonicalR (a b : CanonicalMCS) (h : CanonicalR a.world b.world) :
+theorem CanonicalMCS.le_of_canonicalR (a b : CanonicalMCS) (h : ExistsTask a.world b.world) :
     a ≤ b :=
   Or.inr h
 
 /--
-If `a < b` in the Preorder on CanonicalMCS, then `CanonicalR a.world b.world`.
+If `a < b` in the Preorder on CanonicalMCS, then `ExistsTask a.world b.world`.
 
-The strict order from the reflexive closure Preorder implies the underlying CanonicalR.
+The strict order from the reflexive closure Preorder implies the underlying ExistsTask.
 -/
 theorem CanonicalMCS.canonicalR_of_lt (a b : CanonicalMCS) (h : a < b) :
-    CanonicalR a.world b.world := by
+    ExistsTask a.world b.world := by
   rcases h.1 with rfl | h_R
   · -- Case a = b: contradicts a < a (irreflexivity of <)
     exact absurd (Or.inl rfl : a ≤ a) h.2
@@ -165,7 +165,7 @@ theorem canonicalMCS_is_mcs (w : CanonicalMCS) :
 /--
 Forward G coherence: if `w₁ < w₂` and `G phi ∈ mcs w₁`, then `phi ∈ mcs w₂`.
 
-Proof: `w₁ < w₂` implies `CanonicalR w₁.world w₂.world` (by Preorder definition).
+Proof: `w₁ < w₂` implies `ExistsTask w₁.world w₂.world` (by Preorder definition).
 Apply `canonical_forward_G`.
 -/
 theorem canonicalMCS_forward_G
@@ -178,7 +178,7 @@ theorem canonicalMCS_forward_G
 Backward H coherence: if `w₂ < w₁` and `H phi ∈ mcs w₁`, then `phi ∈ mcs w₂`.
 
 Proof (using g_content/h_content duality):
-1. `w₂ < w₁` implies `CanonicalR w₂.world w₁.world`
+1. `w₂ < w₁` implies `ExistsTask w₂.world w₁.world`
 2. By duality: `h_content(w₁.world) ⊆ w₂.world`
 3. Apply `canonical_backward_H`
 -/
@@ -186,8 +186,8 @@ theorem canonicalMCS_backward_H
     (w₁ w₂ : CanonicalMCS) (phi : Formula)
     (h_lt : w₂ < w₁) (h_H : Formula.all_past phi ∈ canonicalMCS_mcs w₁) :
     phi ∈ canonicalMCS_mcs w₂ := by
-  have h_R : CanonicalR w₂.world w₁.world := CanonicalMCS.canonicalR_of_lt w₂ w₁ h_lt
-  have h_R_past : CanonicalR_past w₁.world w₂.world :=
+  have h_R : ExistsTask w₂.world w₁.world := CanonicalMCS.canonicalR_of_lt w₂ w₁ h_lt
+  have h_R_past : ExistsTask_past w₁.world w₂.world :=
     g_content_subset_implies_h_content_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_R
   exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
@@ -196,7 +196,7 @@ The canonical FMCS on all MCSes: a family of MCS indexed by CanonicalMCS.
 
 This construction satisfies all FMCS requirements:
 - Each element maps to its own MCS (identity mapping)
-- Forward G coherence via CanonicalR
+- Forward G coherence via ExistsTask
 - Backward H coherence via g_content/h_content duality
 -/
 noncomputable def canonicalMCSBFMCS : FMCS CanonicalMCS where
@@ -207,16 +207,16 @@ noncomputable def canonicalMCSBFMCS : FMCS CanonicalMCS where
     · -- w₁ = w₂: use T-axiom (G phi → phi) via MCS closure
       exact SetMaximalConsistent.implication_property (canonicalMCS_is_mcs w₁)
         (theorem_in_mcs (canonicalMCS_is_mcs w₁) (.axiom _ _ (.temp_t_future phi))) h_G
-    · -- CanonicalR w₁.world w₂.world: use canonical_forward_G directly
+    · -- ExistsTask w₁.world w₂.world: use canonical_forward_G directly
       exact canonical_forward_G w₁.world w₂.world h_R phi h_G
   backward_H := fun w₁ w₂ phi h_le h_H => by
-    -- backward_H signature: w₂ ≤ w₁ (i.e., w₂ = w₁ ∨ CanonicalR w₂.world w₁.world)
+    -- backward_H signature: w₂ ≤ w₁ (i.e., w₂ = w₁ ∨ ExistsTask w₂.world w₁.world)
     rcases h_le with rfl | h_R
     · -- w₂ = w₁: use T-axiom (H phi → phi) via MCS closure
       exact SetMaximalConsistent.implication_property (canonicalMCS_is_mcs w₂)
         (theorem_in_mcs (canonicalMCS_is_mcs w₂) (.axiom _ _ (.temp_t_past phi))) h_H
-    · -- CanonicalR w₂.world w₁.world: use canonical_backward_H
-      have h_R_past : CanonicalR_past w₁.world w₂.world :=
+    · -- ExistsTask w₂.world w₁.world: use canonical_backward_H
+      have h_R_past : ExistsTask_past w₁.world w₂.world :=
         g_content_subset_implies_h_content_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_R
       exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
@@ -275,9 +275,9 @@ theorem canonicalMCS_backward_P
   obtain ⟨W, h_W_mcs, h_R_past, h_phi_W⟩ := canonical_backward_P w.world w.is_mcs phi h_P
   -- W is an MCS, so it's a CanonicalMCS element (no reachability needed!)
   let s : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
-  -- s ≤ w means CanonicalR s.world w.world = CanonicalR W w.world
+  -- s ≤ w means ExistsTask s.world w.world = ExistsTask W w.world
   -- This follows from h_content_subset_implies_g_content_reverse applied to h_R_past
-  have h_R : CanonicalR W w.world :=
+  have h_R : ExistsTask W w.world :=
     h_content_subset_implies_g_content_reverse w.world W w.is_mcs h_W_mcs h_R_past
   exact ⟨s, CanonicalMCS.le_of_canonicalR s w h_R, h_phi_W⟩
 

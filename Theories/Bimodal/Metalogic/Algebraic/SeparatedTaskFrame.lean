@@ -62,7 +62,7 @@ The separated canonical TaskFrame: D = TimelineQuot, W = ALL MCSs.
 This achieves the W/D separation where:
 - D provides the dense linear order required for validity
 - W provides access to ALL MCSs as world states (for witness availability)
-- The task_rel uses CanonicalR between MCSs (independent of D's specific structure)
+- The task_rel uses ExistsTask between MCSs (independent of D's specific structure)
 
 Note: The typeclass instances for TimelineQuot (AddCommGroup, IsOrderedAddMonoid)
 are provided via local attributes above.
@@ -89,15 +89,15 @@ theorem separatedCanonicalTaskFrame_WorldState :
 /-!
 ## Task Relation Properties
 
-The task relation is parametric_canonical_task_rel, which uses CanonicalR.
+The task relation is parametric_canonical_task_rel, which uses ExistsTask.
 -/
 
 /--
 The task relation of the separated TaskFrame.
 
-For d > 0: CanonicalR M.val N.val (forward accessibility)
+For d > 0: ExistsTask M.val N.val (forward accessibility)
 For d = 0: M = N (identity)
-For d < 0: CanonicalR N.val M.val (backward accessibility)
+For d < 0: ExistsTask N.val M.val (backward accessibility)
 -/
 theorem separatedCanonicalTaskFrame_task_rel :
     (SeparatedCanonicalTaskFrame root_mcs root_mcs_proof).task_rel =

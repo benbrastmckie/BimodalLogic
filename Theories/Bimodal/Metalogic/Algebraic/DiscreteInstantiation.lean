@@ -78,7 +78,7 @@ The discrete canonical TaskFrame: the parametric canonical TaskFrame with D = In
 This TaskFrame has:
 - WorldState = ParametricCanonicalWorldState (MCS-based world states)
 - D = Int (discrete integers)
-- task_rel = parametric_canonical_task_rel (uses CanonicalR)
+- task_rel = parametric_canonical_task_rel (uses ExistsTask)
 
 The frame satisfies all TaskFrame axioms (nullity_identity, forward_comp, converse)
 by the parametric construction.

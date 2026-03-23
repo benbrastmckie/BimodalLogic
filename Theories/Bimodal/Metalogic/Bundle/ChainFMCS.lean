@@ -16,9 +16,9 @@ with temporal coherence. The key results are:
 1. **BoxContent definitions and properties** (MCSBoxContent, Boxg_content)
 2. **Modal witness seed consistency**: {psi} ∪ BoxContent(M) is consistent when
    Diamond(psi) ∈ M (essential for witness family construction)
-3. **Diamond persistence through CanonicalR**: Diamond(psi) propagates through
+3. **Diamond persistence through ExistsTask**: Diamond(psi) propagates through
    the temporal ordering (using S5 axiom 5 + MF axiom)
-4. **BoxContent propagation**: BoxContent(M) ⊆ BoxContent(M') when CanonicalR M M'
+4. **BoxContent propagation**: BoxContent(M) ⊆ BoxContent(M') when ExistsTask M M'
 
 These results are prerequisites for any approach to constructing a fully saturated
 BFMCS (chain-based, embedding-based, or direct CanonicalMCS-based).
@@ -99,16 +99,16 @@ lemma neg_box_in_boxcontent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   exact SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs phi h_neg_box
 
 /--
-BoxContent propagates through CanonicalR: if CanonicalR M M', then
+BoxContent propagates through ExistsTask: if ExistsTask M M', then
 BoxContent(M) ⊆ BoxContent(M').
 
 **Proof**: If Box phi ∈ M, by `temp_future` (Box phi → G(Box phi)),
-G(Box phi) ∈ M. So Box phi ∈ g_content(M). Since CanonicalR M M'
+G(Box phi) ∈ M. So Box phi ∈ g_content(M). Since ExistsTask M M'
 means g_content(M) ⊆ M', we get Box phi ∈ M'. Hence phi ∈ BoxContent(M').
 -/
 theorem MCSBoxContent_subset_of_CanonicalR (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') :
+    (h_R : ExistsTask M M') :
     MCSBoxContent M ⊆ MCSBoxContent M' := by
   intro phi h_box
   simp only [MCSBoxContent, Set.mem_setOf_eq] at h_box ⊢
@@ -119,7 +119,7 @@ theorem MCSBoxContent_subset_of_CanonicalR (M M' : Set Formula)
   have h_G_box : Formula.all_future (Formula.box phi) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_tf) h_box
   -- G(Box phi) ∈ M means Box phi ∈ g_content(M)
-  -- CanonicalR M M' means g_content(M) ⊆ M'
+  -- ExistsTask M M' means g_content(M) ⊆ M'
   -- So Box phi ∈ M'
   exact h_R h_G_box
 
@@ -247,8 +247,8 @@ lemma Boxh_content_subset_h_content (M : Set Formula) (h_mcs : SetMaximalConsist
 BoxGRelation defines one-step modal-temporal accessibility:
   BoxGRelation M N := Boxg_content M ⊆ N
 
-This is weaker than CanonicalR (which requires g_content M ⊆ N), since
-Boxg_content ⊆ g_content. CanonicalR implies BoxGRelation but not vice versa.
+This is weaker than ExistsTask (which requires g_content M ⊆ N), since
+Boxg_content ⊆ g_content. ExistsTask implies BoxGRelation but not vice versa.
 -/
 
 /--
@@ -261,14 +261,14 @@ def BoxGRelation (M N : Set Formula) : Prop :=
   Boxg_content M ⊆ N
 
 /--
-CanonicalR implies BoxGRelation: the temporal accessibility is stronger
+ExistsTask implies BoxGRelation: the temporal accessibility is stronger
 than the modal-temporal accessibility.
 
-Since Boxg_content(M) ⊆ g_content(M), if g_content(M) ⊆ N (CanonicalR),
+Since Boxg_content(M) ⊆ g_content(M), if g_content(M) ⊆ N (ExistsTask),
 then Boxg_content(M) ⊆ N (BoxGRelation).
 -/
 theorem CanonicalR_implies_BoxGRelation (M N : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    CanonicalR M N → BoxGRelation M N := by
+    ExistsTask M N → BoxGRelation M N := by
   intro h_R
   exact Set.Subset.trans (Boxg_content_subset_g_content M h_mcs) h_R
 
@@ -383,15 +383,15 @@ theorem modal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
     exact h_mcs.1 L h_L_in_M ⟨d⟩
 
 /-!
-## Diamond Persistence Through CanonicalR
+## Diamond Persistence Through ExistsTask
 
-In S5 + temporal logic, Diamond(psi) membership is preserved by CanonicalR
+In S5 + temporal logic, Diamond(psi) membership is preserved by ExistsTask
 in both directions. This is because:
 - Axiom 5 (negative introspection): neg(Box phi) → Box(neg(Box phi))
 - MF axiom (temp_future): Box phi → G(Box phi)
 
 These combine to show that neg(Box(neg psi)) → G(neg(Box(neg psi))) ∈ M,
-so Diamond(psi) propagates to all CanonicalR-successors.
+so Diamond(psi) propagates to all ExistsTask-successors.
 -/
 
 /--
@@ -464,23 +464,23 @@ theorem diamond_in_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_impl) h_G_box_diamond
 
 /--
-Diamond(psi) persists through CanonicalR: if Diamond(psi) ∈ M and CanonicalR M M',
+Diamond(psi) persists through ExistsTask: if Diamond(psi) ∈ M and ExistsTask M M',
 then Diamond(psi) ∈ M'.
 
 This follows from `diamond_in_g_content`: Diamond(psi) ∈ g_content(M), and
-CanonicalR M M' means g_content(M) ⊆ M'.
+ExistsTask M M' means g_content(M) ⊆ M'.
 -/
 theorem diamond_persistent_forward (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') (psi : Formula) (h_diamond : psi.diamond ∈ M) :
+    (h_R : ExistsTask M M') (psi : Formula) (h_diamond : psi.diamond ∈ M) :
     psi.diamond ∈ M' :=
   h_R (diamond_in_g_content M h_mcs psi h_diamond)
 
 /--
-Diamond(psi) persists backward through CanonicalR: if Diamond(psi) ∈ M and
-CanonicalR M' M (i.e., M' ≤ M in the preorder), then Diamond(psi) ∈ M'.
+Diamond(psi) persists backward through ExistsTask: if Diamond(psi) ∈ M and
+ExistsTask M' M (i.e., M' ≤ M in the preorder), then Diamond(psi) ∈ M'.
 
-This uses the h_content duality: CanonicalR M' M means g_content(M') ⊆ M,
+This uses the h_content duality: ExistsTask M' M means g_content(M') ⊆ M,
 which by duality implies h_content(M) ⊆ M'. We show Diamond(psi) ∈ h_content(M)
 by proving H(Diamond(psi)) ∈ M, using the derived lemma `box_to_past`
 (⊢ Box phi → H phi) applied after axiom 5.
@@ -493,7 +493,7 @@ by proving H(Diamond(psi)) ∈ M, using the derived lemma `box_to_past`
 -/
 theorem diamond_persistent_backward (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M' M) (psi : Formula) (h_diamond : psi.diamond ∈ M) :
+    (h_R : ExistsTask M' M) (psi : Formula) (h_diamond : psi.diamond ∈ M) :
     psi.diamond ∈ M' := by
   -- Diamond(psi) = neg(Box(neg psi))
   have h_eq : psi.diamond = Formula.neg (Formula.box (Formula.neg psi)) := rfl
@@ -509,7 +509,7 @@ theorem diamond_persistent_backward (M M' : Set Formula)
   have h_H_diamond : Formula.all_past (Formula.neg (Formula.box (Formula.neg psi))) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_bp) h_box_diamond
   -- Step 3: neg(Box(neg psi)) ∈ h_content(M), so by duality it's in M'
-  have h_R_past : CanonicalR_past M M' :=
+  have h_R_past : ExistsTask_past M M' :=
     g_content_subset_implies_h_content_reverse M' M h_mcs' h_mcs h_R
   exact h_R_past h_H_diamond
 
@@ -523,7 +523,7 @@ a total order and natural temporal structure.
 ### Key Properties
 
 - **Pairwise comparability**: Any two elements in a Flag satisfy `a ≤ b ∨ b ≤ a`
-- **Forward G**: From `CanonicalR` definition (g_content subset)
+- **Forward G**: From `ExistsTask` definition (g_content subset)
 - **Backward H**: From g_content/h_content duality
 - **Existence**: Every CanonicalMCS is in some Flag (Zorn's lemma via `Flag.exists_mem`)
 
@@ -569,9 +569,9 @@ Forward G coherence for chain-based FMCS.
 
 If `w₁ < w₂` in the chain and `G phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
 
-Proof: `w₁ < w₂` implies `CanonicalR w₁.val.world w₂.val.world` (via canonicalR_of_lt),
+Proof: `w₁ < w₂` implies `ExistsTask w₁.val.world w₂.val.world` (via canonicalR_of_lt),
 and `G phi ∈ mcs(w₁)` means `phi ∈ g_content(w₁.val.world)`. Since
-`CanonicalR = g_content(·) ⊆ ·`, we get `phi ∈ w₂.val.world = mcs(w₂)`.
+`ExistsTask = g_content(·) ⊆ ·`, we get `phi ∈ w₂.val.world = mcs(w₂)`.
 -/
 theorem chainFMCS_forward_G (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag) (phi : Formula)
@@ -584,7 +584,7 @@ Backward H coherence for chain-based FMCS.
 
 If `w₂ < w₁` in the chain and `H phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
 
-Proof: By g_content/h_content duality, `CanonicalR w₂.val.world w₁.val.world`
+Proof: By g_content/h_content duality, `ExistsTask w₂.val.world w₁.val.world`
 implies `h_content(w₁.val.world) ⊆ w₂.val.world`. Since `H phi ∈ mcs(w₁)`
 means `phi ∈ h_content(w₁.val.world)`, we get `phi ∈ w₂.val.world = mcs(w₂)`.
 -/
@@ -592,8 +592,8 @@ theorem chainFMCS_backward_H (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag) (phi : Formula)
     (h_lt : w₂ < w₁) (h_H : Formula.all_past phi ∈ chainFMCS_mcs flag w₁) :
     phi ∈ chainFMCS_mcs flag w₂ := by
-  have h_R : CanonicalR w₂.val.world w₁.val.world := CanonicalMCS.canonicalR_of_lt w₂.val w₁.val h_lt
-  have h_R_past : CanonicalR_past w₁.val.world w₂.val.world :=
+  have h_R : ExistsTask w₂.val.world w₁.val.world := CanonicalMCS.canonicalR_of_lt w₂.val w₁.val h_lt
+  have h_R_past : ExistsTask_past w₁.val.world w₂.val.world :=
     g_content_subset_implies_h_content_reverse w₂.val.world w₁.val.world
       w₂.val.is_mcs w₁.val.is_mcs h_R
   exact canonical_backward_H w₁.val.world w₂.val.world h_R_past phi h_H
@@ -604,7 +604,7 @@ maximal chain (Flag) in CanonicalMCS.
 
 This family satisfies all FMCS requirements:
 - Each element maps to its own MCS (identity mapping)
-- Forward G coherence via CanonicalR
+- Forward G coherence via ExistsTask
 - Backward H coherence via g_content/h_content duality
 
 Within this chain, any two elements are comparable (`chainFMCS_pairwise_comparable`),
@@ -615,8 +615,8 @@ noncomputable def chainFMCS (flag : Flag CanonicalMCS) : FMCS (ChainFMCSDomain f
   is_mcs := chainFMCS_is_mcs flag
   forward_G := fun w₁ w₂ phi h_le h_G => by
     -- h_le : w₁ ≤ w₂ (Subtype ≤), unfolds to w₁.val ≤ w₂.val
-    -- which is w₁.val = w₂.val ∨ CanonicalR w₁.val.world w₂.val.world
-    rcases (show w₁.val = w₂.val ∨ CanonicalR w₁.val.world w₂.val.world from h_le) with h_eq | h_R
+    -- which is w₁.val = w₂.val ∨ ExistsTask w₁.val.world w₂.val.world
+    rcases (show w₁.val = w₂.val ∨ ExistsTask w₁.val.world w₂.val.world from h_le) with h_eq | h_R
     · -- Equal: use T-axiom
       have : w₁ = w₂ := Subtype.ext h_eq
       subst this
@@ -624,12 +624,12 @@ noncomputable def chainFMCS (flag : Flag CanonicalMCS) : FMCS (ChainFMCSDomain f
         (theorem_in_mcs (chainFMCS_is_mcs flag w₁) (.axiom _ _ (.temp_t_future phi))) h_G
     · exact canonical_forward_G w₁.val.world w₂.val.world h_R phi h_G
   backward_H := fun w₁ w₂ phi h_le h_H => by
-    rcases (show w₂.val = w₁.val ∨ CanonicalR w₂.val.world w₁.val.world from h_le) with h_eq | h_R
+    rcases (show w₂.val = w₁.val ∨ ExistsTask w₂.val.world w₁.val.world from h_le) with h_eq | h_R
     · have : w₂ = w₁ := Subtype.ext h_eq
       subst this
       exact SetMaximalConsistent.implication_property (chainFMCS_is_mcs flag w₂)
         (theorem_in_mcs (chainFMCS_is_mcs flag w₂) (.axiom _ _ (.temp_t_past phi))) h_H
-    · have h_R_past : CanonicalR_past w₁.val.world w₂.val.world :=
+    · have h_R_past : ExistsTask_past w₁.val.world w₂.val.world :=
         g_content_subset_implies_h_content_reverse w₂.val.world w₁.val.world
           w₂.val.is_mcs w₁.val.is_mcs h_R
       exact canonical_backward_H w₁.val.world w₂.val.world h_R_past phi h_H
@@ -699,18 +699,18 @@ theorem chainFMCS_backward_P_in_CanonicalMCS (flag : Flag CanonicalMCS)
 BoxContent propagation within a chain: if `w₁ ≤ w₂` in the chain,
 then `MCSBoxContent(mcs(w₁)) ⊆ MCSBoxContent(mcs(w₂))`.
 
-This follows from `MCSBoxContent_subset_of_CanonicalR` for the CanonicalR case,
+This follows from `MCSBoxContent_subset_of_CanonicalR` for the ExistsTask case,
 and reflexivity for the equality case.
 -/
 theorem chainFMCS_boxcontent_propagation (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag)
     (h_le : w₁ ≤ w₂) :
     MCSBoxContent (chainFMCS_mcs flag w₁) ⊆ MCSBoxContent (chainFMCS_mcs flag w₂) := by
-  -- w₁ ≤ w₂ means w₁.val = w₂.val ∨ CanonicalR w₁.val.world w₂.val.world
+  -- w₁ ≤ w₂ means w₁.val = w₂.val ∨ ExistsTask w₁.val.world w₂.val.world
   rcases h_le with h_eq | h_R
   · -- Case: w₁.val = w₂.val, so MCS are equal
     simp only [chainFMCS_mcs, h_eq, Set.Subset.rfl]
-  · -- Case: CanonicalR
+  · -- Case: ExistsTask
     exact MCSBoxContent_subset_of_CanonicalR w₁.val.world w₂.val.world
       w₁.val.is_mcs w₂.val.is_mcs h_R
 
@@ -730,7 +730,7 @@ theorem chainFMCS_diamond_persistent_forward (flag : Flag CanonicalMCS)
   · -- Case: w₁.val = w₂.val
     simp only [chainFMCS_mcs, h_eq] at h_diamond ⊢
     exact h_diamond
-  · -- Case: CanonicalR
+  · -- Case: ExistsTask
     exact diamond_persistent_forward w₁.val.world w₂.val.world
       w₁.val.is_mcs w₂.val.is_mcs h_R psi h_diamond
 
@@ -743,7 +743,7 @@ theorem chainFMCS_diamond_persistent_backward (flag : Flag CanonicalMCS)
   · -- Case: w₁.val = w₂.val
     simp only [chainFMCS_mcs, h_eq] at h_diamond ⊢
     exact h_diamond
-  · -- Case: CanonicalR
+  · -- Case: ExistsTask
     exact diamond_persistent_backward w₂.val.world w₁.val.world
       w₂.val.is_mcs w₁.val.is_mcs h_R psi h_diamond
 

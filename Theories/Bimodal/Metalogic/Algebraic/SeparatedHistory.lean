@@ -74,7 +74,7 @@ over SeparatedCanonicalTaskFrame because:
 
 1. The domain is full (every time t : TimelineQuot is in domain)
 2. The states map t to (timelineQuotMCS t, is_mcs proof) as a ParametricCanonicalWorldState
-3. The respects_task follows from forward_G of the FMCS (using CanonicalR)
+3. The respects_task follows from forward_G of the FMCS (using ExistsTask)
 
 However, we need to adapt the conversion since ParametricCanonicalTaskFrame
 uses parametric_canonical_task_rel which checks sign of duration.
@@ -86,7 +86,7 @@ Convert separatedFMCS to a WorldHistory over SeparatedCanonicalTaskFrame.
 The history has:
 - domain = full (every time in TimelineQuot is in domain)
 - states(t) = (timelineQuotMCS t, is_mcs proof) wrapped as ParametricCanonicalWorldState
-- respects_task = from forward_G coherence via CanonicalR linkage
+- respects_task = from forward_G coherence via ExistsTask linkage
 
 Note: This is morally similar to parametric_to_history but specialized to
 the separated frame where we know the specific structure of timelineQuotFMCS.
@@ -99,20 +99,20 @@ noncomputable def separatedHistory :
   respects_task := fun s t _ _ hst => by
     -- Need: task_rel (states s) (t - s) (states t)
     -- task_rel = parametric_canonical_task_rel
-    -- For d = t - s >= 0 (since s <= t), need CanonicalR or equality
+    -- For d = t - s >= 0 (since s <= t), need ExistsTask or equality
     show parametric_canonical_task_rel _ _ _
     unfold parametric_canonical_task_rel
     by_cases h_pos : t - s > 0
-    · -- t - s > 0: need CanonicalR
+    · -- t - s > 0: need ExistsTask
       rw [if_pos h_pos]
-      -- Use the linking lemma: s < t implies CanonicalR
+      -- Use the linking lemma: s < t implies ExistsTask
       have h_lt : s < t := by
         by_contra h_nlt
         have h_le' : t ≤ s := le_of_not_lt h_nlt
         have h_eq : s = t := le_antisymm hst h_le'
         subst h_eq
         simp at h_pos
-      -- timelineQuot_lt_implies_canonicalR gives us the CanonicalR
+      -- timelineQuot_lt_implies_canonicalR gives us the ExistsTask
       have h_R := timelineQuot_lt_implies_canonicalR root_mcs root_mcs_proof s t h_lt
       -- Now we need to show the WorldState values have the same underlying MCS
       simp only [timelineQuotToWorldState, timelineQuotToWorldState_val]

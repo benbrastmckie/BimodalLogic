@@ -52,7 +52,7 @@ M and the constructed successor would have to satisfy contradictory constraints.
 ## Key Properties
 
 1. **Consistency**: `discreteImmediateSuccSeed M` is consistent when M is serial MCS (axiom)
-2. **Forward Witness**: `CanonicalR M (discreteImmediateSucc M)`
+2. **Forward Witness**: `ExistsTask M (discreteImmediateSucc M)`
 3. **Covering**: No MCS K exists strictly between M and `discreteImmediateSucc M`
 
 ## References
@@ -125,7 +125,7 @@ strict intermediates.
 /-- The discrete immediate successor seed: `g_content(M) ∪ blockingFormulas(M)`.
 
 This seed is designed so that its Lindenbaum extension is:
-1. A forward CanonicalR-successor of M (due to g_content)
+1. A forward ExistsTask-successor of M (due to g_content)
 2. An immediate successor with no intermediates (due to blocking formulas) -/
 def discreteImmediateSuccSeed (M : Set Formula) : Set Formula :=
   g_content M ∪ blockingFormulas M
@@ -289,7 +289,7 @@ preserve formula structure (g_content(M) ⊈ M under strict semantics).
 The proof strategy (documented in specs/991_temporal_algebraic_representation/reports/08)
 uses seriality to show that the seed is satisfiable:
 1. Seriality guarantees M has strict successors
-2. Any strict successor satisfies g_content(M) by definition of CanonicalR
+2. Any strict successor satisfies g_content(M) by definition of ExistsTask
 3. Blocking formulas are disjunctions derivable from elements of M
 4. Therefore the seed is satisfiable, hence consistent
 
@@ -337,7 +337,7 @@ theorem discreteImmediateSuccSeed_consistent (M : Set Formula) (h_mcs : SetMaxim
     --
     -- The mathematically correct proof uses the seriality argument:
     -- 1. Seriality guarantees M has strict successors
-    -- 2. Any strict successor satisfies g_content(M) by definition of CanonicalR
+    -- 2. Any strict successor satisfies g_content(M) by definition of ExistsTask
     -- 3. Blocking formulas are disjunctions derivable from elements of M
     -- 4. Therefore the seed is satisfiable, hence consistent
     --
@@ -381,10 +381,10 @@ theorem g_content_subset_discreteImmediateSucc (M : Set Formula) (h_mcs : SetMax
 
 /-- M sees its discrete immediate successor in the canonical frame.
 
-CanonicalR M W means g_content(M) ⊆ W, which holds because the successor
+ExistsTask M W means g_content(M) ⊆ W, which holds because the successor
 extends the seed which contains g_content(M). -/
 theorem discreteImmediateSucc_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    CanonicalR M (discreteImmediateSucc M h_mcs) :=
+    ExistsTask M (discreteImmediateSucc M h_mcs) :=
   g_content_subset_discreteImmediateSucc M h_mcs
 
 /-- Blocking formulas are contained in the discrete immediate successor. -/
@@ -414,8 +414,8 @@ formula construction in tense logic completeness proofs.
 
 **Mathematical Justification** (Segerberg/Verbrugge):
 The blocking formulas ¬ψ ∨ ¬G(ψ) ensure that any MCS K with:
-- CanonicalR M K (g_content(M) ⊆ K)
-- CanonicalR K W (g_content(K) ⊆ W)
+- ExistsTask M K (g_content(M) ⊆ K)
+- ExistsTask K W (g_content(K) ⊆ W)
 
 must satisfy K = M or K = W. The blocking formulas eliminate the possibility
 of "intermediate" MCSes by constraining the structure of any such K.
@@ -431,15 +431,15 @@ axiom discreteImmediateSucc_covers_axiom
     (M K : Set Formula)
     (h_M : SetMaximalConsistent M)
     (h_K : SetMaximalConsistent K)
-    (h_MK : CanonicalR M K)
-    (h_KW : CanonicalR K (discreteImmediateSucc M h_M)) :
+    (h_MK : ExistsTask M K)
+    (h_KW : ExistsTask K (discreteImmediateSucc M h_M)) :
     K = M ∨ K = discreteImmediateSucc M h_M
 
 /-- Covering property: No MCS exists strictly between M and its discrete immediate successor.
 
 Given M and K as MCSes with:
-- CanonicalR M K (K is a successor of M)
-- CanonicalR K (discreteImmediateSucc M) (K is a predecessor of the discrete successor)
+- ExistsTask M K (K is a successor of M)
+- ExistsTask K (discreteImmediateSucc M) (K is a predecessor of the discrete successor)
 
 Then K equals either M or the discrete immediate successor.
 
@@ -450,8 +450,8 @@ theorem discreteImmediateSucc_covers
     (M K : Set Formula)
     (h_M : SetMaximalConsistent M)
     (h_K : SetMaximalConsistent K)
-    (h_MK : CanonicalR M K)
-    (h_KW : CanonicalR K (discreteImmediateSucc M h_M)) :
+    (h_MK : ExistsTask M K)
+    (h_KW : ExistsTask K (discreteImmediateSucc M h_M)) :
     K = M ∨ K = discreteImmediateSucc M h_M :=
   discreteImmediateSucc_covers_axiom M K h_M h_K h_MK h_KW
 

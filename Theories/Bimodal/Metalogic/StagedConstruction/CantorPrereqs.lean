@@ -564,7 +564,7 @@ theorem forward_witness_at_stage
     (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint,
       q ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1) ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   have hp_2k : p ∈ stagedBuild root_mcs root_mcs_proof (2 * k) :=
     (StagedTimeline.monotone_le (buildStagedTimeline root_mcs root_mcs_proof) h_n_le) hp
   let w := processForwardObligation p phi h_F (2 * k + 1)
@@ -602,7 +602,7 @@ theorem backward_witness_at_stage
     (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint,
       q ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1) ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   have hp_2k : p ∈ stagedBuild root_mcs root_mcs_proof (2 * k) :=
     (StagedTimeline.monotone_le (buildStagedTimeline root_mcs root_mcs_proof) h_n_le) hp
   let w := processBackwardObligation p phi h_P (2 * k + 1)
@@ -639,7 +639,7 @@ theorem forward_witness_at_stage_with_phi
     (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint,
       q ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1) ∧
-      CanonicalR p.mcs q.mcs ∧
+      ExistsTask p.mcs q.mcs ∧
       phi ∈ q.mcs := by
   have hp_2k : p ∈ stagedBuild root_mcs root_mcs_proof (2 * k) :=
     (StagedTimeline.monotone_le (buildStagedTimeline root_mcs root_mcs_proof) h_n_le) hp
@@ -678,7 +678,7 @@ theorem backward_witness_at_stage_with_phi
     (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint,
       q ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1) ∧
-      CanonicalR q.mcs p.mcs ∧
+      ExistsTask q.mcs p.mcs ∧
       phi ∈ q.mcs := by
   have hp_2k : p ∈ stagedBuild root_mcs root_mcs_proof (2 * k) :=
     (StagedTimeline.monotone_le (buildStagedTimeline root_mcs root_mcs_proof) h_n_le) hp
@@ -814,12 +814,12 @@ theorem encoding_sufficiency (N : Nat) :
 ## NoMaxOrder and NoMinOrder
 -/
 
-/-- Every point in the staged timeline has a CanonicalR-successor in the timeline. -/
+/-- Every point in the staged timeline has a ExistsTask-successor in the timeline. -/
 theorem staged_has_future
     (p : StagedPoint) (n : Nat)
     (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint, q ∈ (buildStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   have h_serial := stagedPoint_has_seriality_future p
   obtain ⟨m, hm⟩ := encoding_sufficiency ((n + 1) / 2)
   set phi_m := iteratedFuture m (Formula.some_future (Formula.neg Formula.bot)) with phi_m_def
@@ -919,12 +919,12 @@ theorem encoding_sufficiency_past (N : Nat) :
   simp [Fintype.card_fin] at h_le
   omega
 
-/-- Every point in the staged timeline has a CanonicalR-predecessor in the timeline. -/
+/-- Every point in the staged timeline has a ExistsTask-predecessor in the timeline. -/
 theorem staged_has_past
     (p : StagedPoint) (n : Nat)
     (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint, q ∈ (buildStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   have h_serial := stagedPoint_has_seriality_past p
   -- Mirror of staged_has_future using past-versions of each lemma.
   obtain ⟨m, hm⟩ := encoding_sufficiency_past ((n + 1) / 2)
@@ -956,19 +956,19 @@ theorem staged_timeline_nonempty :
 Every point in the union has a strict successor and predecessor.
 -/
 
-/-- Every point in the timeline union has a CanonicalR-successor in the union. -/
+/-- Every point in the timeline union has a ExistsTask-successor in the union. -/
 theorem staged_timeline_has_future
     (p : StagedPoint) (hp : p ∈ (buildStagedTimeline root_mcs root_mcs_proof).union) :
     ∃ q : StagedPoint, q ∈ (buildStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   obtain ⟨n, hn⟩ := hp
   exact staged_has_future root_mcs root_mcs_proof p n hn
 
-/-- Every point in the timeline union has a CanonicalR-predecessor in the union. -/
+/-- Every point in the timeline union has a ExistsTask-predecessor in the union. -/
 theorem staged_timeline_has_past
     (p : StagedPoint) (hp : p ∈ (buildStagedTimeline root_mcs root_mcs_proof).union) :
     ∃ q : StagedPoint, q ∈ (buildStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   obtain ⟨n, hn⟩ := hp
   exact staged_has_past root_mcs root_mcs_proof p n hn
 
@@ -1015,7 +1015,7 @@ theorem discrete_forward_witness_at_stage
     (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint,
       q ∈ discreteStagedBuild root_mcs root_mcs_proof (k + 1) ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   have hp_k : p ∈ discreteStagedBuild root_mcs root_mcs_proof k :=
     discreteStagedBuild_monotone_le root_mcs root_mcs_proof n k h_n_le hp
   let w := processForwardObligation p phi h_F (k + 1)
@@ -1046,7 +1046,7 @@ theorem discrete_backward_witness_at_stage
     (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint,
       q ∈ discreteStagedBuild root_mcs root_mcs_proof (k + 1) ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   have hp_k : p ∈ discreteStagedBuild root_mcs root_mcs_proof k :=
     discreteStagedBuild_monotone_le root_mcs root_mcs_proof n k h_n_le hp
   let w := processBackwardObligation p phi h_P (k + 1)
@@ -1067,7 +1067,7 @@ theorem discrete_backward_witness_at_stage
   right
   rw [dif_pos h_P, Finset.mem_singleton]
 
-/-- Every point in the discrete staged build has a CanonicalR-successor.
+/-- Every point in the discrete staged build has a ExistsTask-successor.
 
 **DN-Free Proof**: Uses MCS richness (mcs_has_large_F_formula) instead of density.
 
@@ -1083,7 +1083,7 @@ theorem discrete_staged_has_future
     (p : StagedPoint) (n : Nat)
     (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint, q ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   -- By MCS richness: there exists phi with encoding >= n and F(phi) in p.mcs
   obtain ⟨phi, h_enc_ge, h_F_phi⟩ := SetMaximalConsistent.mcs_has_large_F_formula p.mcs p.is_mcs n
   set k := @Encodable.encode Formula formulaEncodableStaged phi with k_def
@@ -1096,7 +1096,7 @@ theorem discrete_staged_has_future
     p phi k h_decode h_F_phi n h_n_le_k hp
   exact ⟨q, ⟨k + 1, hq_mem⟩, hq_R⟩
 
-/-- Every point in the discrete staged build has a CanonicalR-predecessor.
+/-- Every point in the discrete staged build has a ExistsTask-predecessor.
 
 **DN-Free Proof**: Uses MCS richness (mcs_has_large_P_formula) instead of density.
 
@@ -1112,7 +1112,7 @@ theorem discrete_staged_has_past
     (p : StagedPoint) (n : Nat)
     (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint, q ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   -- By MCS richness: there exists phi with encoding >= n and P(phi) in p.mcs
   obtain ⟨phi, h_enc_ge, h_P_phi⟩ := SetMaximalConsistent.mcs_has_large_P_formula p.mcs p.is_mcs n
   set k := @Encodable.encode Formula formulaEncodableStaged phi with k_def
@@ -1134,19 +1134,19 @@ theorem discrete_staged_timeline_nonempty :
     Set.Nonempty (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union :=
   (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union_nonempty
 
-/-- Every point in the discrete timeline union has a CanonicalR-successor. -/
+/-- Every point in the discrete timeline union has a ExistsTask-successor. -/
 theorem discrete_staged_timeline_has_future
     (p : StagedPoint) (hp : p ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union) :
     ∃ q : StagedPoint, q ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   obtain ⟨n, hn⟩ := hp
   exact discrete_staged_has_future root_mcs root_mcs_proof p n hn
 
-/-- Every point in the discrete timeline union has a CanonicalR-predecessor. -/
+/-- Every point in the discrete timeline union has a ExistsTask-predecessor. -/
 theorem discrete_staged_timeline_has_past
     (p : StagedPoint) (hp : p ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union) :
     ∃ q : StagedPoint, q ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   obtain ⟨n, hn⟩ := hp
   exact discrete_staged_has_past root_mcs root_mcs_proof p n hn
 

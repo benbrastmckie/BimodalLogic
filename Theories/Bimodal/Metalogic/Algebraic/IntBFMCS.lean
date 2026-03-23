@@ -52,7 +52,7 @@ we could transfer the F/P witnesses. This fails because:
 ## The Chain Construction
 
 Given root MCS M0 at time 0:
-- For t > 0: Build forward chain using g_content extension (CanonicalR-related)
+- For t > 0: Build forward chain using g_content extension (ExistsTask-related)
 - For t < 0: Build backward chain using h_content extension
 
 The forward_F and backward_P witnesses come from canonical_forward_F/canonical_backward_P,
@@ -153,32 +153,32 @@ These use Lindenbaum extension of g_content/h_content.
 -/
 
 /--
-Given an MCS M, produce a successor MCS M' with CanonicalR M M'.
+Given an MCS M, produce a successor MCS M' with ExistsTask M M'.
 
 The successor is the Lindenbaum extension of g_content(M).
 Since g_content(M) is consistent (proven in DiscreteSuccSeed), Lindenbaum gives an MCS.
-CanonicalR M M' = (g_content M ⊆ M') holds by construction.
+ExistsTask M M' = (g_content M ⊆ M') holds by construction.
 -/
 noncomputable def successorMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ CanonicalR M M' := by
+    Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ ExistsTask M M' := by
   have h_cons : SetConsistent (g_content M) :=
     Bimodal.Metalogic.StagedConstruction.g_content_consistent M h_mcs
   choose W h_extends h_W_mcs using set_lindenbaum (g_content M) h_cons
   exact ⟨W, h_W_mcs, h_extends⟩
 
 /--
-Given an MCS M, produce a predecessor MCS M' with CanonicalR M' M.
+Given an MCS M, produce a predecessor MCS M' with ExistsTask M' M.
 
 The predecessor is the Lindenbaum extension of h_content(M).
-The CanonicalR relation M' -> M follows from h_content/g_content duality.
+The ExistsTask relation M' -> M follows from h_content/g_content duality.
 -/
 noncomputable def predecessorMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ CanonicalR M' M := by
+    Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ ExistsTask M' M := by
   have h_cons : SetConsistent (h_content M) := h_content_consistent M h_mcs
   choose W h_extends h_W_mcs using set_lindenbaum (h_content M) h_cons
-  -- Need: CanonicalR W M, i.e., g_content W ⊆ M
+  -- Need: ExistsTask W M, i.e., g_content W ⊆ M
   -- From h_content M ⊆ W, by duality: g_content W ⊆ M
-  have h_R : CanonicalR W M :=
+  have h_R : ExistsTask W M :=
     h_content_subset_implies_g_content_reverse M W h_mcs h_W_mcs h_extends
   exact ⟨W, h_W_mcs, h_R⟩
 
@@ -224,36 +224,36 @@ theorem intChainMCS_is_mcs (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
   · exact (negChain M0 h_mcs0 ((-t).toNat)).2
 
 /-!
-## CanonicalR Chain Properties
+## ExistsTask Chain Properties
 
-Show that consecutive elements in the chain are CanonicalR-related.
+Show that consecutive elements in the chain are ExistsTask-related.
 -/
 
-/-- CanonicalR holds for consecutive positive chain elements. -/
+/-- ExistsTask holds for consecutive positive chain elements. -/
 theorem posChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (n : Nat) :
-    CanonicalR (posChain M0 h_mcs0 n).1 (posChain M0 h_mcs0 (n + 1)).1 := by
+    ExistsTask (posChain M0 h_mcs0 n).1 (posChain M0 h_mcs0 (n + 1)).1 := by
   -- Unfold the definition: posChain (n+1) = ⟨succ.1, succ.2.1⟩ where succ = successorMCS prev.1 prev.2
-  -- successorMCS returns ⟨M', h_mcs', h_R⟩ where h_R : CanonicalR prev.1 M'
+  -- successorMCS returns ⟨M', h_mcs', h_R⟩ where h_R : ExistsTask prev.1 M'
   -- So posChain (n+1).1 = successorMCS(posChain n).1
-  -- And we need CanonicalR (posChain n).1 (posChain (n+1)).1
-  -- = CanonicalR (posChain n).1 (successorMCS ...).1
+  -- And we need ExistsTask (posChain n).1 (posChain (n+1)).1
+  -- = ExistsTask (posChain n).1 (successorMCS ...).1
   -- which is exactly successorMCS(...).2.2
-  show CanonicalR (posChain M0 h_mcs0 n).1
+  show ExistsTask (posChain M0 h_mcs0 n).1
        (successorMCS (posChain M0 h_mcs0 n).1 (posChain M0 h_mcs0 n).2).1
   exact (successorMCS (posChain M0 h_mcs0 n).1 (posChain M0 h_mcs0 n).2).2.2
 
-/-- CanonicalR holds for consecutive negative chain elements (going backward). -/
+/-- ExistsTask holds for consecutive negative chain elements (going backward). -/
 theorem negChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (n : Nat) :
-    CanonicalR (negChain M0 h_mcs0 (n + 1)).1 (negChain M0 h_mcs0 n).1 := by
-  show CanonicalR
+    ExistsTask (negChain M0 h_mcs0 (n + 1)).1 (negChain M0 h_mcs0 n).1 := by
+  show ExistsTask
        (predecessorMCS (negChain M0 h_mcs0 n).1 (negChain M0 h_mcs0 n).2).1
        (negChain M0 h_mcs0 n).1
   exact (predecessorMCS (negChain M0 h_mcs0 n).1 (negChain M0 h_mcs0 n).2).2.2
 
-/-- CanonicalR holds between adjacent elements of the Int chain.
-For any t, CanonicalR (intChainMCS t) (intChainMCS (t+1)) holds. -/
+/-- ExistsTask holds between adjacent elements of the Int chain.
+For any t, ExistsTask (intChainMCS t) (intChainMCS (t+1)) holds. -/
 theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (t : Int) :
-    CanonicalR (intChainMCS M0 h_mcs0 t) (intChainMCS M0 h_mcs0 (t + 1)) := by
+    ExistsTask (intChainMCS M0 h_mcs0 t) (intChainMCS M0 h_mcs0 (t + 1)) := by
   -- Three cases: t < 0, t = 0, t > 0
   -- When t >= 0: both sides use posChain, so posChain_canonicalR applies
   -- When t < -1: both sides use negChain, need to relate negChain indices
@@ -263,7 +263,7 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
     subst h0
     simp only [intChainMCS, Int.add_zero]
     simp only [gt_iff_lt, Int.lt_irrefl, ↓reduceDIte, Int.zero_lt_one]
-    -- Now we have CanonicalR M0 (posChain M0 h_mcs0 1).1
+    -- Now we have ExistsTask M0 (posChain M0 h_mcs0 1).1
     -- Since posChain 0 = ⟨M0, h_mcs0⟩, we need posChain_canonicalR 0
     have h := posChain_canonicalR M0 h_mcs0 0
     simp only [posChain, Nat.add_eq, Nat.add_zero] at h
@@ -281,7 +281,7 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
     · -- Case t < 0 (since t ≠ 0 and not t > 0)
       have hneg : t < 0 := by omega
       by_cases h1 : t = -1
-      · -- Subcase t = -1: need CanonicalR (negChain 1) M0
+      · -- Subcase t = -1: need ExistsTask (negChain 1) M0
         subst h1
         have h_sum : (-1 : Int) + 1 = 0 := by omega
         rw [h_sum]
@@ -303,9 +303,9 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
         simp only [intChainMCS, h0, ↓reduceDIte, hngt, hngt1, hne1]
         -- intChainMCS t = negChain (-t).toNat
         -- intChainMCS (t+1) = negChain (-(t+1)).toNat
-        -- Need: CanonicalR (negChain (-t).toNat).1 (negChain (-(t+1)).toNat).1
+        -- Need: ExistsTask (negChain (-t).toNat).1 (negChain (-(t+1)).toNat).1
         -- Note: -(t+1) = -t - 1, so (-(t+1)).toNat = (-t).toNat - 1
-        -- And negChain_canonicalR says: CanonicalR (negChain (n+1)) (negChain n)
+        -- And negChain_canonicalR says: ExistsTask (negChain (n+1)) (negChain n)
         have h_idx_eq : (-(t+1)).toNat + 1 = (-t).toNat := by omega
         rw [← h_idx_eq]
         exact negChain_canonicalR M0 h_mcs0 (-(t+1)).toNat
@@ -313,27 +313,27 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
 /-!
 ## Forward G and Backward H Coherence
 
-G and H coherence follow from CanonicalR transitivity along the chain.
+G and H coherence follow from ExistsTask transitivity along the chain.
 -/
 
 /--
-CanonicalR propagates G-formulas: if CanonicalR M M' and G(phi) ∈ M, then phi ∈ M'.
+ExistsTask propagates G-formulas: if ExistsTask M M' and G(phi) ∈ M, then phi ∈ M'.
 
-This follows directly from the definition: CanonicalR M M' = g_content(M) ⊆ M',
+This follows directly from the definition: ExistsTask M M' = g_content(M) ⊆ M',
 and G(phi) ∈ M means phi ∈ g_content(M), so phi ∈ M'.
 -/
 theorem canonicalR_propagates_G (M M' : Set Formula)
-    (h_R : CanonicalR M M') (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
+    (h_R : ExistsTask M M') (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
     phi ∈ M' :=
   h_R h_G
 
 /--
-CanonicalR propagates G-formulas to the target (G(phi) ∈ M and CanonicalR M M' implies G(phi) ∈ M').
+ExistsTask propagates G-formulas to the target (G(phi) ∈ M and ExistsTask M M' implies G(phi) ∈ M').
 
 This uses the temporal 4 axiom: G(phi) → G(G(phi)).
 -/
 theorem canonicalR_propagates_GG (M M' : Set Formula)
-    (h_mcs : SetMaximalConsistent M) (h_R : CanonicalR M M') (phi : Formula)
+    (h_mcs : SetMaximalConsistent M) (h_R : ExistsTask M M') (phi : Formula)
     (h_G : Formula.all_future phi ∈ M) :
     Formula.all_future phi ∈ M' := by
   -- By temporal 4: G(phi) → G(G(phi))
@@ -393,7 +393,7 @@ theorem intChain_forward_G (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
   -- Strategy:
   -- 1. G(phi) ∈ mcs(t) and t < t'
   -- 2. By intChain_G_propagates, G(phi) ∈ mcs(t' - 1)
-  -- 3. By CanonicalR from (t' - 1) to t', phi ∈ mcs(t')
+  -- 3. By ExistsTask from (t' - 1) to t', phi ∈ mcs(t')
   have h_le : t ≤ t' - 1 := by omega
   have h_G_pred := intChain_G_propagates M0 h_mcs0 t (t' - 1) phi h_le h_G
   have h_R := intChain_canonicalR M0 h_mcs0 (t' - 1)
@@ -403,12 +403,12 @@ theorem intChain_forward_G (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     h_R phi h_G_pred
 
 /--
-CanonicalR_past holds between adjacent elements going backward.
-For any t, CanonicalR_past (intChainMCS (t+1)) (intChainMCS t) holds.
+ExistsTask_past holds between adjacent elements going backward.
+For any t, ExistsTask_past (intChainMCS (t+1)) (intChainMCS t) holds.
 This is derived from intChain_canonicalR via duality.
 -/
 theorem intChain_canonicalR_past (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (t : Int) :
-    CanonicalR_past (intChainMCS M0 h_mcs0 (t + 1)) (intChainMCS M0 h_mcs0 t) := by
+    ExistsTask_past (intChainMCS M0 h_mcs0 (t + 1)) (intChainMCS M0 h_mcs0 t) := by
   have h_R := intChain_canonicalR M0 h_mcs0 t
   have h_mcs_t := intChainMCS_is_mcs M0 h_mcs0 t
   have h_mcs_t1 := intChainMCS_is_mcs M0 h_mcs0 (t + 1)
@@ -416,23 +416,23 @@ theorem intChain_canonicalR_past (M0 : Set Formula) (h_mcs0 : SetMaximalConsiste
     h_mcs_t h_mcs_t1 h_R
 
 /--
-CanonicalR_past propagates H-formulas: if CanonicalR_past M M' and H(phi) ∈ M, then phi ∈ M'.
+ExistsTask_past propagates H-formulas: if ExistsTask_past M M' and H(phi) ∈ M, then phi ∈ M'.
 
-This follows directly from the definition: CanonicalR_past M M' = h_content(M) ⊆ M',
+This follows directly from the definition: ExistsTask_past M M' = h_content(M) ⊆ M',
 and H(phi) ∈ M means phi ∈ h_content(M), so phi ∈ M'.
 -/
 theorem canonicalR_past_propagates_H (M M' : Set Formula)
-    (h_R : CanonicalR_past M M') (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
+    (h_R : ExistsTask_past M M') (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
     phi ∈ M' :=
   h_R h_H
 
 /--
-CanonicalR_past propagates H-formulas to the target (H(phi) ∈ M and CanonicalR_past M M' implies H(phi) ∈ M').
+ExistsTask_past propagates H-formulas to the target (H(phi) ∈ M and ExistsTask_past M M' implies H(phi) ∈ M').
 
 This uses the temporal 4 axiom for H: H(phi) → H(H(phi)).
 -/
 theorem canonicalR_past_propagates_HH (M M' : Set Formula)
-    (h_mcs : SetMaximalConsistent M) (h_R : CanonicalR_past M M') (phi : Formula)
+    (h_mcs : SetMaximalConsistent M) (h_R : ExistsTask_past M M') (phi : Formula)
     (h_H : Formula.all_past phi ∈ M) :
     Formula.all_past phi ∈ M' := by
   -- By temporal 4 for H: H(phi) → H(H(phi))
@@ -490,7 +490,7 @@ theorem intChain_backward_H (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
   -- Strategy:
   -- 1. H(phi) ∈ mcs(t) and t' < t
   -- 2. By intChain_H_propagates, H(phi) ∈ mcs(t' + 1)
-  -- 3. By CanonicalR_past from (t' + 1) to t', phi ∈ mcs(t')
+  -- 3. By ExistsTask_past from (t' + 1) to t', phi ∈ mcs(t')
   have h_le : t' + 1 ≤ t := by omega
   have h_H_succ := intChain_H_propagates M0 h_mcs0 t (t' + 1) phi h_le h_H
   have h_R := intChain_canonicalR_past M0 h_mcs0 t'
@@ -522,7 +522,7 @@ Actually, the key insight: our chain construction using g_content extension
 DOES include all relevant witnesses. Here's why:
 
 If F(psi) ∈ M at some time t, then:
-1. canonical_forward_F gives witness W with CanonicalR M W and psi ∈ W
+1. canonical_forward_F gives witness W with ExistsTask M W and psi ∈ W
 2. The witness W is constructed via Lindenbaum of {psi} ∪ g_content(M)
 3. Our successorMCS at t gives M' = Lindenbaum of g_content(M)
 4. Both W and M' extend g_content(M), so they're "compatible"
@@ -664,7 +664,7 @@ The enriched chain state tracks:
 - MCS assignment for each Int position (partial function)
 - The next available future position for F-witnesses
 - The next available past position for P-witnesses
-- CanonicalR relations between adjacent assigned positions
+- ExistsTask relations between adjacent assigned positions
 
 For simplicity, we start with the basic chain as the "skeleton" and show that
 all witnesses from canonical_forward_F/canonical_backward_P are already
@@ -676,10 +676,10 @@ accounted for by the existing chain structure.
 
 The key insight for proving forward_F is that given F(phi) in mcs(t), we don't
 need the SPECIFIC witness from canonical_forward_F to appear in our chain.
-We just need SOME MCS M' at position s > t with phi in M' and CanonicalR mcs(t) M'.
+We just need SOME MCS M' at position s > t with phi in M' and ExistsTask mcs(t) M'.
 
-Since our chain satisfies CanonicalR mcs(t) mcs(t+1) for all t, and
-CanonicalR propagates G-formulas via Temporal 4, the question is whether
+Since our chain satisfies ExistsTask mcs(t) mcs(t+1) for all t, and
+ExistsTask propagates G-formulas via Temporal 4, the question is whether
 phi necessarily ends up in some future MCS.
 
 Actually, this is exactly what fails: generic Lindenbaum extension of g_content
@@ -692,11 +692,11 @@ a dovetailing strategy that prioritizes witness obligations.
 ### Simplified Approach: Redefine Chain Using Canonical Witnesses
 
 Instead of the complex dovetailing, we take a simpler approach:
-1. Keep the basic chain structure with CanonicalR between adjacent elements
+1. Keep the basic chain structure with ExistsTask between adjacent elements
 2. For forward_F: observe that canonical_forward_F gives witness W with
-   CanonicalR mcs(t) W and phi in W
-3. The key: W has CanonicalR relationship with mcs(t), and our chain has
-   CanonicalR mcs(t) mcs(t+1), so W is "comparable" to mcs(t+1) by linearity
+   ExistsTask mcs(t) W and phi in W
+3. The key: W has ExistsTask relationship with mcs(t), and our chain has
+   ExistsTask mcs(t) mcs(t+1), so W is "comparable" to mcs(t+1) by linearity
 
 This doesn't directly place phi in the chain. The true fix requires the
 enriched construction below.
@@ -706,7 +706,7 @@ enriched construction below.
 ### Direct Proof Strategy
 
 Given F(phi) at position t:
-1. canonical_forward_F gives witness W with CanonicalR mcs(t) W and phi in W
+1. canonical_forward_F gives witness W with ExistsTask mcs(t) W and phi in W
 2. W is SOME MCS (not necessarily in our chain)
 3. We need to show phi appears in our chain at some s > t
 
@@ -725,7 +725,7 @@ This ensures every F obligation is eventually witnessed.
     Uses Classical.choose to extract the witness from the existential. -/
 noncomputable def forwardWitnessMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
-    Σ' (W : Set Formula), SetMaximalConsistent W ∧ CanonicalR M W ∧ phi ∈ W :=
+    Σ' (W : Set Formula), SetMaximalConsistent W ∧ ExistsTask M W ∧ phi ∈ W :=
   let W := Classical.choose (canonical_forward_F M h_mcs phi h_F)
   let h_spec := Classical.choose_spec (canonical_forward_F M h_mcs phi h_F)
   ⟨W, h_spec.1, h_spec.2.1, h_spec.2.2⟩
@@ -736,10 +736,10 @@ theorem forwardWitnessMCS_contains_phi (M : Set Formula) (h_mcs : SetMaximalCons
     phi ∈ (forwardWitnessMCS M h_mcs phi h_F).1 :=
   (forwardWitnessMCS M h_mcs phi h_F).2.2.2
 
-/-- The witness MCS has CanonicalR relation with the source. -/
+/-- The witness MCS has ExistsTask relation with the source. -/
 theorem forwardWitnessMCS_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
-    CanonicalR M (forwardWitnessMCS M h_mcs phi h_F).1 :=
+    ExistsTask M (forwardWitnessMCS M h_mcs phi h_F).1 :=
   (forwardWitnessMCS M h_mcs phi h_F).2.2.1
 
 /-- The witness MCS is maximal consistent. -/
@@ -756,7 +756,7 @@ attribute [local instance] Classical.propDecidable
     Uses classical decidability for the F membership check. -/
 noncomputable def enrichedSuccessorMCS
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (step : Nat) : Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ CanonicalR M M' :=
+    (step : Nat) : Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ ExistsTask M M' :=
   if h_some : (decodeFormula (Nat.unpair step).2).isSome then
     if h_F : Formula.some_future ((decodeFormula (Nat.unpair step).2).get h_some) ∈ M then
       let wit := forwardWitnessMCS M h_mcs ((decodeFormula (Nat.unpair step).2).get h_some) h_F
@@ -767,19 +767,19 @@ noncomputable def enrichedSuccessorMCS
     successorMCS M h_mcs
 
 /-- Get the witness MCS for P(phi) from canonical_backward_P.
-    Returns (W, is_mcs, CanonicalR W M, phi ∈ W).
+    Returns (W, is_mcs, ExistsTask W M, phi ∈ W).
     Uses Classical.choose to extract the witness from the existential. -/
 noncomputable def backwardWitnessMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
-    Σ' (W : Set Formula), SetMaximalConsistent W ∧ CanonicalR W M ∧ phi ∈ W :=
+    Σ' (W : Set Formula), SetMaximalConsistent W ∧ ExistsTask W M ∧ phi ∈ W :=
   let W := Classical.choose (canonical_backward_P M h_mcs phi h_P)
   let h_spec := Classical.choose_spec (canonical_backward_P M h_mcs phi h_P)
   let h_W_mcs := h_spec.1
   let h_R_past := h_spec.2.1
   let h_phi := h_spec.2.2
-  -- CanonicalR_past M W means h_content M ⊆ W
-  -- We need CanonicalR W M means g_content W ⊆ M
-  let h_R : CanonicalR W M := h_content_subset_implies_g_content_reverse M W h_mcs h_W_mcs h_R_past
+  -- ExistsTask_past M W means h_content M ⊆ W
+  -- We need ExistsTask W M means g_content W ⊆ M
+  let h_R : ExistsTask W M := h_content_subset_implies_g_content_reverse M W h_mcs h_W_mcs h_R_past
   ⟨W, h_W_mcs, h_R, h_phi⟩
 
 /-- The backward witness MCS contains phi. -/
@@ -788,10 +788,10 @@ theorem backwardWitnessMCS_contains_phi (M : Set Formula) (h_mcs : SetMaximalCon
     phi ∈ (backwardWitnessMCS M h_mcs phi h_P).1 :=
   (backwardWitnessMCS M h_mcs phi h_P).2.2.2
 
-/-- The backward witness MCS has CanonicalR relation with the target. -/
+/-- The backward witness MCS has ExistsTask relation with the target. -/
 theorem backwardWitnessMCS_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
-    CanonicalR (backwardWitnessMCS M h_mcs phi h_P).1 M :=
+    ExistsTask (backwardWitnessMCS M h_mcs phi h_P).1 M :=
   (backwardWitnessMCS M h_mcs phi h_P).2.2.1
 
 /-- Enriched predecessor that uses canonical_backward_P witness when processing
@@ -800,7 +800,7 @@ theorem backwardWitnessMCS_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsi
     NOTE: Uses same if-pattern as enrichedSuccessorMCS for consistent handling. -/
 noncomputable def enrichedPredecessorMCS
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (step : Nat) : Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ CanonicalR M' M :=
+    (step : Nat) : Σ' (M' : Set Formula), SetMaximalConsistent M' ∧ ExistsTask M' M :=
   if h_some : (decodeFormula (Nat.unpair step).2).isSome then
     if h_P : Formula.some_past ((decodeFormula (Nat.unpair step).2).get h_some) ∈ M then
       let wit := backwardWitnessMCS M h_mcs ((decodeFormula (Nat.unpair step).2).get h_some) h_P
@@ -853,24 +853,24 @@ theorem enrichedIntChainMCS_is_mcs (M0 : Set Formula) (h_mcs0 : SetMaximalConsis
   · exact (enrichedPosChain M0 h_mcs0 t.toNat).2
   · exact (enrichedNegChain M0 h_mcs0 ((-t).toNat)).2
 
-/-- CanonicalR holds for consecutive enriched positive chain elements. -/
+/-- ExistsTask holds for consecutive enriched positive chain elements. -/
 theorem enrichedPosChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (n : Nat) :
-    CanonicalR (enrichedPosChain M0 h_mcs0 n).1 (enrichedPosChain M0 h_mcs0 (n + 1)).1 := by
-  show CanonicalR (enrichedPosChain M0 h_mcs0 n).1
+    ExistsTask (enrichedPosChain M0 h_mcs0 n).1 (enrichedPosChain M0 h_mcs0 (n + 1)).1 := by
+  show ExistsTask (enrichedPosChain M0 h_mcs0 n).1
        (enrichedSuccessorMCS (enrichedPosChain M0 h_mcs0 n).1 (enrichedPosChain M0 h_mcs0 n).2 n).1
   exact (enrichedSuccessorMCS (enrichedPosChain M0 h_mcs0 n).1 (enrichedPosChain M0 h_mcs0 n).2 n).2.2
 
-/-- CanonicalR holds for consecutive enriched negative chain elements (going backward). -/
+/-- ExistsTask holds for consecutive enriched negative chain elements (going backward). -/
 theorem enrichedNegChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (n : Nat) :
-    CanonicalR (enrichedNegChain M0 h_mcs0 (n + 1)).1 (enrichedNegChain M0 h_mcs0 n).1 := by
-  show CanonicalR
+    ExistsTask (enrichedNegChain M0 h_mcs0 (n + 1)).1 (enrichedNegChain M0 h_mcs0 n).1 := by
+  show ExistsTask
        (enrichedPredecessorMCS (enrichedNegChain M0 h_mcs0 n).1 (enrichedNegChain M0 h_mcs0 n).2 n).1
        (enrichedNegChain M0 h_mcs0 n).1
   exact (enrichedPredecessorMCS (enrichedNegChain M0 h_mcs0 n).1 (enrichedNegChain M0 h_mcs0 n).2 n).2.2
 
-/-- CanonicalR holds between adjacent elements of the enriched Int chain. -/
+/-- ExistsTask holds between adjacent elements of the enriched Int chain. -/
 theorem enrichedIntChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (t : Int) :
-    CanonicalR (enrichedIntChainMCS M0 h_mcs0 t) (enrichedIntChainMCS M0 h_mcs0 (t + 1)) := by
+    ExistsTask (enrichedIntChainMCS M0 h_mcs0 t) (enrichedIntChainMCS M0 h_mcs0 (t + 1)) := by
   by_cases h0 : t = 0
   · subst h0
     simp only [enrichedIntChainMCS, Int.add_zero]
@@ -913,7 +913,7 @@ theorem enrichedIntChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsi
 /-!
 ### G and H Propagation for Enriched Chain
 
-These follow the same pattern as the basic chain since CanonicalR holds.
+These follow the same pattern as the basic chain since ExistsTask holds.
 -/
 
 /-- G(phi) propagates forward along the enriched chain. -/
@@ -963,9 +963,9 @@ theorem enrichedIntChain_forward_G (M0 : Set Formula) (h_mcs0 : SetMaximalConsis
   exact canonicalR_propagates_G (enrichedIntChainMCS M0 h_mcs0 (t' - 1))
     (enrichedIntChainMCS M0 h_mcs0 t') h_R phi h_G_pred
 
-/-- CanonicalR_past holds between adjacent enriched chain elements going backward. -/
+/-- ExistsTask_past holds between adjacent enriched chain elements going backward. -/
 theorem enrichedIntChain_canonicalR_past (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (t : Int) :
-    CanonicalR_past (enrichedIntChainMCS M0 h_mcs0 (t + 1)) (enrichedIntChainMCS M0 h_mcs0 t) := by
+    ExistsTask_past (enrichedIntChainMCS M0 h_mcs0 (t + 1)) (enrichedIntChainMCS M0 h_mcs0 t) := by
   have h_R := enrichedIntChain_canonicalR M0 h_mcs0 t
   have h_mcs_t := enrichedIntChainMCS_is_mcs M0 h_mcs0 t
   have h_mcs_t1 := enrichedIntChainMCS_is_mcs M0 h_mcs0 (t + 1)
@@ -1127,7 +1127,7 @@ theorem enrichedIntFMCS_forward_F (M0 : Set Formula) (h_mcs0 : SetMaximalConsist
     -- connect the chain position where F(phi) appears with the step where phi is decoded.
 
     -- REVISED APPROACH: We use the fact that canonical_forward_F gives a witness
-    -- that is CanonicalR-related to the source. The enriched chain at position t+1
+    -- that is ExistsTask-related to the source. The enriched chain at position t+1
     -- MAY be this witness (if the step parameter encodes phi), or may be different.
 
     -- The correct approach is to observe that SOMEWHERE in the positive chain,

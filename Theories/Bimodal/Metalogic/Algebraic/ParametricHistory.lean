@@ -55,7 +55,7 @@ Convert an FMCS to a WorldHistory in the parametric canonical TaskFrame.
 Key property: domain = True eliminates all domain-related complexity.
 
 **respects_task proof**: For s <= t, the duration d = t - s >= 0.
-- If d > 0 (i.e., s < t): need CanonicalR (mcs s) (mcs t), which follows from forward_G.
+- If d > 0 (i.e., s < t): need ExistsTask (mcs s) (mcs t), which follows from forward_G.
 - If d = 0 (i.e., s = t): need states s = states t, which holds since s = t.
 - d < 0 is impossible since s <= t implies t - s >= 0.
 -/
@@ -68,7 +68,7 @@ def parametric_to_history (fam : FMCS D) : WorldHistory (ParametricCanonicalTask
     show parametric_canonical_task_rel _ _ _
     unfold parametric_canonical_task_rel
     by_cases h_pos : t - s > 0
-    · -- t - s > 0: need CanonicalR (fam.mcs s) (fam.mcs t)
+    · -- t - s > 0: need ExistsTask (fam.mcs s) (fam.mcs t)
       rw [if_pos h_pos]
       intro phi h_G_phi
       -- t - s > 0 and s <= t, so s < t

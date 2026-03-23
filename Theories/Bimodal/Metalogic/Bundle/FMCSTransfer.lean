@@ -215,26 +215,26 @@ to the target domain D.
 -/
 
 /--
-CanonicalR implies strict < in the CanonicalMCS Preorder.
+ExistsTask implies strict < in the CanonicalMCS Preorder.
 
-Since the Preorder is defined as `a ≤ b := a = b ∨ CanonicalR a.world b.world`,
-having `CanonicalR a.world b.world` gives `a ≤ b`. Combined with irreflexivity
-of CanonicalR (which implies a ≠ b), we get `a < b`.
+Since the Preorder is defined as `a ≤ b := a = b ∨ ExistsTask a.world b.world`,
+having `ExistsTask a.world b.world` gives `a ≤ b`. Combined with irreflexivity
+of ExistsTask (which implies a ≠ b), we get `a < b`.
 -/
-theorem CanonicalMCS.lt_of_canonicalR (a b : CanonicalMCS) (h : CanonicalR a.world b.world) :
+theorem CanonicalMCS.lt_of_canonicalR (a b : CanonicalMCS) (h : ExistsTask a.world b.world) :
     a < b := by
   constructor
-  · -- a ≤ b from CanonicalR
+  · -- a ≤ b from ExistsTask
     exact CanonicalMCS.le_of_canonicalR a b h
-  · -- ¬(b ≤ a): if b ≤ a, then either b = a or CanonicalR b.world a.world
+  · -- ¬(b ≤ a): if b ≤ a, then either b = a or ExistsTask b.world a.world
     intro h_le
     rcases h_le with rfl | h_R_ba
-    · -- Case b = a: CanonicalR a.world a.world contradicts irreflexivity
+    · -- Case b = a: ExistsTask a.world a.world contradicts irreflexivity
       -- Note: after rfl, both a and b refer to the same thing, but b is the name in scope
       exact canonicalR_irreflexive b.world b.is_mcs h
-    · -- Case CanonicalR b.world a.world: combined with CanonicalR a.world b.world,
+    · -- Case ExistsTask b.world a.world: combined with ExistsTask a.world b.world,
       -- this would give a cycle. We can derive a contradiction from transitivity
-      -- and irreflexivity: CanonicalR a b and CanonicalR b a gives CanonicalR a a
+      -- and irreflexivity: ExistsTask a b and ExistsTask b a gives ExistsTask a a
       have h_aa := canonicalR_transitive a.world b.world a.world a.is_mcs h h_R_ba
       exact canonicalR_irreflexive a.world a.is_mcs h_aa
 
@@ -243,9 +243,9 @@ Forward F transfer: F(phi) at d implies witness s > d with phi at s.
 
 **Proof Strategy**:
 1. F(phi) ∈ transferredMCS T d means F(phi) ∈ canonicalMCS_mcs (T.retract d)
-2. By canonical_forward_F, get witness W with CanonicalR (retract d).world W and phi ∈ W
+2. By canonical_forward_F, get witness W with ExistsTask (retract d).world W and phi ∈ W
 3. Create w : CanonicalMCS from W
-4. CanonicalR implies retract d < w strictly (by lt_of_canonicalR)
+4. ExistsTask implies retract d < w strictly (by lt_of_canonicalR)
 5. Take s := T.embed w
 6. d < s by embed_witness_gt
 7. phi ∈ transferredMCS T s = canonicalMCS_mcs (T.retract (T.embed w)) = canonicalMCS_mcs w = W
@@ -261,7 +261,7 @@ theorem transfer_forward_F (T : FMCSTransfer D) (d : D) (phi : Formula)
     canonical_forward_F (T.retract d).world (T.retract d).is_mcs phi h_F
   -- Step 3: Create CanonicalMCS element from W
   let w : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
-  -- Step 4: CanonicalR implies strict order
+  -- Step 4: ExistsTask implies strict order
   have h_lt_w : T.retract d < w := CanonicalMCS.lt_of_canonicalR (T.retract d) w h_R
   -- Step 5: Define witness s := T.embed w
   use T.embed w
@@ -276,16 +276,16 @@ theorem transfer_forward_F (T : FMCSTransfer D) (d : D) (phi : Formula)
     exact h_phi_W
 
 /--
-CanonicalR_past implies strict < in the reverse direction.
+ExistsTask_past implies strict < in the reverse direction.
 
-If CanonicalR_past a.world b.world (meaning h_content(a) ⊆ b), then by the
-g_content/h_content duality, we have CanonicalR b.world a.world, which gives b < a.
+If ExistsTask_past a.world b.world (meaning h_content(a) ⊆ b), then by the
+g_content/h_content duality, we have ExistsTask b.world a.world, which gives b < a.
 -/
-theorem CanonicalMCS.lt_of_canonicalR_past (a b : CanonicalMCS) (h : CanonicalR_past a.world b.world) :
+theorem CanonicalMCS.lt_of_canonicalR_past (a b : CanonicalMCS) (h : ExistsTask_past a.world b.world) :
     b < a := by
-  -- CanonicalR_past a b means h_content(a) ⊆ b
-  -- By h_content_subset_implies_g_content_reverse, this gives CanonicalR b a
-  have h_R : CanonicalR b.world a.world :=
+  -- ExistsTask_past a b means h_content(a) ⊆ b
+  -- By h_content_subset_implies_g_content_reverse, this gives ExistsTask b a
+  have h_R : ExistsTask b.world a.world :=
     h_content_subset_implies_g_content_reverse a.world b.world a.is_mcs b.is_mcs h
   exact CanonicalMCS.lt_of_canonicalR b a h_R
 
@@ -294,9 +294,9 @@ Backward P transfer: P(phi) at d implies witness s < d with phi at s.
 
 **Proof Strategy** (symmetric to forward_F):
 1. P(phi) ∈ transferredMCS T d means P(phi) ∈ canonicalMCS_mcs (T.retract d)
-2. By canonical_backward_P, get witness W with CanonicalR_past (retract d).world W and phi ∈ W
+2. By canonical_backward_P, get witness W with ExistsTask_past (retract d).world W and phi ∈ W
 3. Create w : CanonicalMCS from W
-4. CanonicalR_past implies w < retract d strictly (by lt_of_canonicalR_past)
+4. ExistsTask_past implies w < retract d strictly (by lt_of_canonicalR_past)
 5. Take s := T.embed w
 6. s < d by embed_witness_lt
 7. phi ∈ transferredMCS T s = canonicalMCS_mcs (T.retract (T.embed w)) = canonicalMCS_mcs w = W
@@ -312,7 +312,7 @@ theorem transfer_backward_P (T : FMCSTransfer D) (d : D) (phi : Formula)
     canonical_backward_P (T.retract d).world (T.retract d).is_mcs phi h_P
   -- Step 3: Create CanonicalMCS element from W
   let w : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
-  -- Step 4: CanonicalR_past implies strict order (w < retract d)
+  -- Step 4: ExistsTask_past implies strict order (w < retract d)
   have h_lt_w : w < T.retract d := CanonicalMCS.lt_of_canonicalR_past (T.retract d) w h_R_past
   -- Step 5: Define witness s := T.embed w
   use T.embed w

@@ -8,7 +8,7 @@ import Bimodal.Metalogic.Core.MCSProperties
 
 This module defines the Succ (immediate successor) relation for discrete temporal frames.
 Succ(u,v) captures when v is the "next" state after u, requiring both G-persistence
-(same as CanonicalR) and F-step (F-obligations resolve or defer).
+(same as ExistsTask) and F-step (F-obligations resolve or defer).
 
 ## Main Definitions
 
@@ -51,7 +51,7 @@ open Bimodal.Metalogic.Core
 Immediate successor relation: u sees v as its next state.
 
 **Condition (1)**: G-persistence - all universal future commitments propagate.
-This is exactly the CanonicalR relation: `g_content u ⊆ v`.
+This is exactly the ExistsTask relation: `g_content u ⊆ v`.
 
 **Condition (2)**: F-step - existential obligations are resolved or deferred.
 For each φ with Fφ ∈ u, either φ ∈ v (resolved) or Fφ ∈ v (deferred).
@@ -76,17 +76,17 @@ Every formula in f_content(u) is either in v directly (resolved) or in f_content
 theorem Succ.f_step {u v : Set Formula} (h : Succ u v) : f_content u ⊆ v ∪ f_content v := h.2
 
 /-!
-## Relationship to CanonicalR
+## Relationship to ExistsTask
 -/
 
 /--
-Succ implies CanonicalR: The first condition of Succ is exactly CanonicalR.
+Succ implies ExistsTask: The first condition of Succ is exactly ExistsTask.
 
 This is trivial by projection: Succ condition (1) is `g_content u ⊆ v`,
-which is the definition of `CanonicalR u v`.
+which is the definition of `ExistsTask u v`.
 -/
 theorem Succ_implies_CanonicalR (u v : Set Formula) (h : Succ u v) :
-    CanonicalR u v := h.1
+    ExistsTask u v := h.1
 
 /-!
 ## g/h Duality for Succ

@@ -120,7 +120,7 @@ The dense canonical TaskFrame: the parametric canonical TaskFrame with D = Dovet
 This TaskFrame has:
 - WorldState = ParametricCanonicalWorldState (MCS-based world states)
 - D = DovetailedTimelineQuot root_mcs root_mcs_proof (dense rationals)
-- task_rel = parametric_canonical_task_rel (uses CanonicalR)
+- task_rel = parametric_canonical_task_rel (uses ExistsTask)
 
 The frame satisfies all TaskFrame axioms by the parametric construction.
 -/

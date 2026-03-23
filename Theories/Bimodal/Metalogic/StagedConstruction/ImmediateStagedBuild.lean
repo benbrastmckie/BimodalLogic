@@ -66,11 +66,11 @@ noncomputable def immediateForwardWitnessPoint
   is_mcs := discreteImmediateSucc_mcs M h_mcs
   introduced_at := stage
 
-/-- The immediate forward witness has CanonicalR from source. -/
+/-- The immediate forward witness has ExistsTask from source. -/
 theorem immediateForwardWitnessPoint_canonicalR
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (stage : Stage) :
-    CanonicalR M (immediateForwardWitnessPoint M h_mcs stage).mcs :=
+    ExistsTask M (immediateForwardWitnessPoint M h_mcs stage).mcs :=
   discreteImmediateSucc_canonicalR M h_mcs
 
 /-- The immediate forward witness covers - no intermediate K exists.
@@ -79,8 +79,8 @@ This is the KEY property that enables axiom elimination. -/
 theorem immediateForwardWitnessPoint_covers
     (M K : Set Formula) (h_M : SetMaximalConsistent M) (h_K : SetMaximalConsistent K)
     (stage : Stage)
-    (h_MK : CanonicalR M K)
-    (h_KW : CanonicalR K (immediateForwardWitnessPoint M h_M stage).mcs) :
+    (h_MK : ExistsTask M K)
+    (h_KW : ExistsTask K (immediateForwardWitnessPoint M h_M stage).mcs) :
     K = M ∨ K = (immediateForwardWitnessPoint M h_M stage).mcs :=
   discreteImmediateSucc_covers M K h_M h_K h_MK h_KW
 
@@ -101,18 +101,18 @@ noncomputable def processImmediateForwardObligation
     (p : StagedPoint) (stage : Stage) : StagedPoint :=
   immediateForwardWitnessPoint p.mcs p.is_mcs stage
 
-/-- The immediate forward obligation creates a CanonicalR successor. -/
+/-- The immediate forward obligation creates a ExistsTask successor. -/
 theorem processImmediateForwardObligation_canonicalR
     (p : StagedPoint) (stage : Stage) :
-    CanonicalR p.mcs (processImmediateForwardObligation p stage).mcs :=
+    ExistsTask p.mcs (processImmediateForwardObligation p stage).mcs :=
   immediateForwardWitnessPoint_canonicalR p.mcs p.is_mcs stage
 
 /-- The immediate forward obligation witness covers (no intermediates). -/
 theorem processImmediateForwardObligation_covers
     (p : StagedPoint) (K : Set Formula) (h_K : SetMaximalConsistent K)
     (stage : Stage)
-    (h_MK : CanonicalR p.mcs K)
-    (h_KW : CanonicalR K (processImmediateForwardObligation p stage).mcs) :
+    (h_MK : ExistsTask p.mcs K)
+    (h_KW : ExistsTask K (processImmediateForwardObligation p stage).mcs) :
     K = p.mcs ∨ K = (processImmediateForwardObligation p stage).mcs :=
   immediateForwardWitnessPoint_covers p.mcs K p.is_mcs h_K stage h_MK h_KW
 
@@ -191,8 +191,8 @@ All points are comparable with the root, hence with each other.
 /-- All points in the immediate staged build are comparable with the root. -/
 theorem discreteStagedBuildImmediate_all_comparable_with_root (n : Nat)
     (p : StagedPoint) (hp : p ∈ discreteStagedBuildImmediate root_mcs root_mcs_proof n) :
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
-    CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+    ExistsTask p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
     (rootPoint root_mcs root_mcs_proof).mcs = p.mcs := by
   induction n generalizing p with
   | zero =>
@@ -213,7 +213,7 @@ theorem discreteStagedBuildImmediate_all_comparable_with_root (n : Nat)
         have h_q_comp := ih q hq_mem
         rw [← hp_eq]
         -- p = processImmediateForwardObligation q (n+1)
-        -- has CanonicalR q.mcs p.mcs
+        -- has ExistsTask q.mcs p.mcs
         have h_R := processImmediateForwardObligation_canonicalR q (n + 1)
         exact comparability_step_forward
           (rootPoint root_mcs root_mcs_proof).mcs q.mcs
@@ -267,9 +267,9 @@ immediate successor at stage n+1.
 theorem has_immediate_successor_at_next_stage (n : Nat) (p : StagedPoint)
     (hp : p ∈ discreteStagedBuildImmediate root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint, q ∈ discreteStagedBuildImmediate root_mcs root_mcs_proof (n + 1) ∧
-      CanonicalR p.mcs q.mcs ∧
+      ExistsTask p.mcs q.mcs ∧
       (∀ K : Set Formula, SetMaximalConsistent K →
-        CanonicalR p.mcs K → CanonicalR K q.mcs → K = p.mcs ∨ K = q.mcs) := by
+        ExistsTask p.mcs K → ExistsTask K q.mcs → K = p.mcs ∨ K = q.mcs) := by
   use processImmediateForwardObligation p (n + 1)
   constructor
   · -- Show it's in stage n+1
@@ -279,7 +279,7 @@ theorem has_immediate_successor_at_next_stage (n : Nat) (p : StagedPoint)
     rw [Finset.mem_image]
     exact ⟨p, hp, rfl⟩
   constructor
-  · -- CanonicalR
+  · -- ExistsTask
     exact processImmediateForwardObligation_canonicalR p (n + 1)
   · -- Covering
     intro K h_K h_pK h_Kq
@@ -295,15 +295,15 @@ This is the KEY property that enables LocallyFiniteOrder.
 /-- The immediate successor at the next stage covers - no intermediate exists.
 
 This is trivial from the blocking formula construction: the successor W is
-built with blocking formulas that force any K satisfying CanonicalR M K and
-CanonicalR K W to equal M or W. -/
+built with blocking formulas that force any K satisfying ExistsTask M K and
+ExistsTask K W to equal M or W. -/
 theorem covering_at_stage (n : Nat) (M W : StagedPoint)
     (hM : M ∈ discreteStagedBuildImmediate root_mcs root_mcs_proof n)
     (hW : W = processImmediateForwardObligation M (n + 1))
     (K : StagedPoint)
     (hK_mem : K ∈ discreteStagedBuildImmediate root_mcs root_mcs_proof (n + 1))
-    (h_MK : CanonicalR M.mcs K.mcs)
-    (h_KW : CanonicalR K.mcs W.mcs) :
+    (h_MK : ExistsTask M.mcs K.mcs)
+    (h_KW : ExistsTask K.mcs W.mcs) :
     K.mcs = M.mcs ∨ K.mcs = W.mcs := by
   rw [hW] at h_KW ⊢
   exact processImmediateForwardObligation_covers M K.mcs K.is_mcs (n + 1) h_MK h_KW

@@ -227,7 +227,7 @@ theorem point_in_build_before_process_step {n : Nat} {p : DovetailedPoint}
   exact h_mem_at_large
 
 /-- The main coverage lemma: at step pair(p.point_index, k), if p is in build and F(phi) is in p.mcs
-    where phi has encoding k, then a forward witness with CanonicalR is added. -/
+    where phi has encoding k, then a forward witness with ExistsTask is added. -/
 theorem witness_at_large_step
     (p : DovetailedPoint) (n : Nat)
     (hp : p ∈ (dovetailedBuildState root_mcs root_mcs_proof n).points)
@@ -235,7 +235,7 @@ theorem witness_at_large_step
     (k : Nat) (h_dec : decodeFormulaStaged k = some phi)
     (h_large : Nat.pair p.point_index k > n) :
     ∃ w ∈ (dovetailedBuildState root_mcs root_mcs_proof (Nat.pair p.point_index k)).points,
-      CanonicalR p.mcs w.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask p.mcs w.mcs ∧ phi ∈ w.mcs := by
   -- At step pair(p.point_index, k), we process obligation (p.point_index, k)
   let process_step := Nat.pair p.point_index k
   -- dovetailedBuildState process_step = dovetailedStep (dovetailedBuildState (process_step - 1)) process_step
@@ -272,14 +272,14 @@ theorem witness_at_large_step
 ## Combined Coverage: Density + Large Step
 
 The final coverage theorem: for any point p in the timeline with F(phi) in p.mcs,
-there exists a witness with CanonicalR in the timeline.
+there exists a witness with ExistsTask in the timeline.
 -/
 
 /-- For any point p in the dovetailed timeline at step n, we can find a formula psi
     and encoding k such that:
     1. F(psi) ∈ p.mcs (by density from F(neg bot))
     2. pair(p.point_index, k) > n (so p exists when processed)
-    3. A witness with CanonicalR is added -/
+    3. A witness with ExistsTask is added -/
 theorem density_large_step_exists
     (p : DovetailedPoint) (n : Nat)
     (hp : p ∈ (dovetailedBuildState root_mcs root_mcs_proof n).points) :
@@ -313,13 +313,13 @@ theorem density_large_step_exists
     omega
   exact ⟨psi, k, h_F_psi, h_dec, h_pair_large⟩
 
-/-- Every point in the dovetailed timeline has a CanonicalR-future that is also in the timeline.
+/-- Every point in the dovetailed timeline has a ExistsTask-future that is also in the timeline.
     This is the key theorem for NoMaxOrder on the dovetailed timeline. -/
 theorem dovetailedTimeline_has_future
     (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof) :
     ∃ q : DovetailedPoint,
       q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   obtain ⟨n, hn⟩ := hp
   simp only [dovetailedBuild, List.mem_toFinset] at hn
   -- Find psi, k with F(psi) in p.mcs and pair(p.point_index, k) > n
@@ -429,7 +429,7 @@ theorem processBackwardObligationDovetailed_adds_witness
     (state : DovetailedBuildState) (point : DovetailedPoint) (phi : Formula) (stage : Nat)
     (h_P : Formula.some_past phi ∈ point.mcs) :
     ∃ w ∈ (processBackwardObligationDovetailed state point phi stage).points,
-      CanonicalR w.mcs point.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask w.mcs point.mcs ∧ phi ∈ w.mcs := by
   simp only [processBackwardObligationDovetailed, dif_pos h_P, addPoint]
   refine ⟨DovetailedPoint.mk (executeBackwardStep point.mcs point.is_mcs phi h_P)
     executeBackwardStep_mcs stage state.next_index, ?_, ?_, ?_⟩
@@ -438,7 +438,7 @@ theorem processBackwardObligationDovetailed_adds_witness
   · exact executeBackwardStep_contains_phi (h_mcs := point.is_mcs) (h_P := h_P)
 
 /-- At step pair(p_idx, f_enc), if p_idx is valid and f decodes to phi with P(phi) in point.mcs,
-    then a backward witness with CanonicalR is added. -/
+    then a backward witness with ExistsTask is added. -/
 theorem dovetailedStep_adds_backward_witness_when_processed
     (state : DovetailedBuildState) (step : Nat) (point : DovetailedPoint) (phi : Formula)
     (h_obl_point : (obligationAtStep step).point_index = point.point_index)
@@ -446,7 +446,7 @@ theorem dovetailedStep_adds_backward_witness_when_processed
     (h_lookup : getPointAt state point.point_index = some point)
     (h_P : Formula.some_past phi ∈ point.mcs) :
     ∃ w ∈ (dovetailedStep state step).points,
-      CanonicalR w.mcs point.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask w.mcs point.mcs ∧ phi ∈ w.mcs := by
   simp only [dovetailedStep]
   simp only [h_obl_point, h_lookup, h_obl_phi]
   unfold processObligationsDovetailed
@@ -467,7 +467,7 @@ theorem backward_witness_at_large_step
     (k : Nat) (h_dec : decodeFormulaStaged k = some phi)
     (h_large : Nat.pair p.point_index k > n) :
     ∃ w ∈ (dovetailedBuildState root_mcs root_mcs_proof (Nat.pair p.point_index k)).points,
-      CanonicalR w.mcs p.mcs ∧ phi ∈ w.mcs := by
+      ExistsTask w.mcs p.mcs ∧ phi ∈ w.mcs := by
   let process_step := Nat.pair p.point_index k
   have h_step_eq : dovetailedBuildState root_mcs root_mcs_proof process_step =
     dovetailedStep (dovetailedBuildState root_mcs root_mcs_proof (process_step - 1)) process_step := by
@@ -518,13 +518,13 @@ theorem density_large_step_exists_past
     omega
   exact ⟨psi, k, h_P_psi, h_dec, h_pair_large⟩
 
-/-- Every point in the dovetailed timeline has a CanonicalR-past that is also in the timeline.
+/-- Every point in the dovetailed timeline has a ExistsTask-past that is also in the timeline.
     This is the key theorem for NoMinOrder on the dovetailed timeline. -/
 theorem dovetailedTimeline_has_past
     (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof) :
     ∃ q : DovetailedPoint,
       q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   obtain ⟨n, hn⟩ := hp
   simp only [dovetailedBuild, List.mem_toFinset] at hn
   obtain ⟨psi, k, h_P_psi, h_dec, h_large⟩ := density_large_step_exists_past root_mcs root_mcs_proof p n hn

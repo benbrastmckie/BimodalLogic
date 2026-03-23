@@ -75,22 +75,22 @@ noncomputable def executeBackwardStep (M : Set Formula) (h_mcs : SetMaximalConsi
     (past_temporal_witness_seed_consistent M h_mcs φ h_P)
 
 /-!
-## CanonicalR Properties for Witnesses
+## ExistsTask Properties for Witnesses
 -/
 
 theorem executeForwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {φ : Formula} {h_F : Formula.some_future φ ∈ M} :
-    CanonicalR M (executeForwardStep M h_mcs φ h_F) :=
+    ExistsTask M (executeForwardStep M h_mcs φ h_F) :=
   fun _ h_ψ => lindenbaumMCS_set_extends _ _ (g_content_subset_forward_temporal_witness_seed M φ h_ψ)
 
 theorem executeBackwardStep_canonicalR_past {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {φ : Formula} {h_P : Formula.some_past φ ∈ M} :
-    CanonicalR_past M (executeBackwardStep M h_mcs φ h_P) :=
+    ExistsTask_past M (executeBackwardStep M h_mcs φ h_P) :=
   fun _ h_ψ => lindenbaumMCS_set_extends _ _ (h_content_subset_past_temporal_witness_seed M φ h_ψ)
 
 theorem executeBackwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {φ : Formula} {h_P : Formula.some_past φ ∈ M} :
-    CanonicalR (executeBackwardStep M h_mcs φ h_P) M :=
+    ExistsTask (executeBackwardStep M h_mcs φ h_P) M :=
   h_content_subset_implies_g_content_reverse M _ h_mcs
     (lindenbaumMCS_set_is_mcs _ _)
     (executeBackwardStep_canonicalR_past (h_mcs := h_mcs) (h_P := h_P))
@@ -225,11 +225,11 @@ noncomputable instance : Countable (ConstructiveFragment M₀ h_mcs₀) := by
   exact Subtype.ext (ConstructiveReachable.encode_determines h₁.some h₂.some h_eq)
 
 /-!
-## Total Preorder via CanonicalR + temp_linearity
+## Total Preorder via ExistsTask + temp_linearity
 -/
 
 noncomputable instance : Preorder (ConstructiveFragment M₀ h_mcs₀) where
-  le a b := a.val = b.val ∨ CanonicalR a.val b.val
+  le a b := a.val = b.val ∨ ExistsTask a.val b.val
   le_refl a := Or.inl rfl
   le_trans a b c hab hbc := by
     rcases hab with h_eq_ab | hab
@@ -246,7 +246,7 @@ noncomputable instance : Preorder (ConstructiveFragment M₀ h_mcs₀) where
 
 lemma canonical_F_of_mem_successor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask M M') (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_future phi ∈ M := by
   by_contra h_not_F
   have h_neg_F : Formula.neg (Formula.some_future phi) ∈ M := by
@@ -259,9 +259,9 @@ lemma canonical_F_of_mem_successor (M M' : Set Formula)
 
 lemma canonical_P_of_mem_predecessor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M' M) (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask M' M) (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_past phi ∈ M := by
-  have h_R_past : CanonicalR_past M M' :=
+  have h_R_past : ExistsTask_past M M' :=
     g_content_subset_implies_h_content_reverse M' M h_mcs' h_mcs h_R
   by_contra h_not_P
   have h_neg_P : Formula.neg (Formula.some_past phi) ∈ M := by
@@ -297,9 +297,9 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs1 : SetMaximalConsistent M1)
     (h_mcs2 : SetMaximalConsistent M2)
-    (h_R1 : CanonicalR M M1) (h_R2 : CanonicalR M M2) :
-    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
-  by_cases h_12 : CanonicalR M1 M2
+    (h_R1 : ExistsTask M M1) (h_R2 : ExistsTask M M2) :
+    ExistsTask M1 M2 ∨ ExistsTask M2 M1 ∨ M1 = M2 := by
+  by_cases h_12 : ExistsTask M1 M2
   · exact Or.inl h_12
   · right
     by_contra h_neg
@@ -395,9 +395,9 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs1 : SetMaximalConsistent M1)
     (h_mcs2 : SetMaximalConsistent M2)
-    (h_R1 : CanonicalR M1 M) (h_R2 : CanonicalR M2 M) :
-    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
-  by_cases h_12 : CanonicalR M1 M2
+    (h_R1 : ExistsTask M1 M) (h_R2 : ExistsTask M2 M) :
+    ExistsTask M1 M2 ∨ ExistsTask M2 M1 ∨ M1 = M2 := by
+  by_cases h_12 : ExistsTask M1 M2
   · exact Or.inl h_12
   · right
     by_contra h_neg
@@ -477,9 +477,9 @@ private lemma comparable_step_forward
     (h_mcs1 : SetMaximalConsistent W₁)
     (h_mcs2 : SetMaximalConsistent W₂)
     (h_mcs3 : SetMaximalConsistent W₃)
-    (h_comp : CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂)
-    (h_R23 : CanonicalR W₂ W₃) :
-    CanonicalR W₁ W₃ ∨ CanonicalR W₃ W₁ ∨ W₁ = W₃ := by
+    (h_comp : ExistsTask W₁ W₂ ∨ ExistsTask W₂ W₁ ∨ W₁ = W₂)
+    (h_R23 : ExistsTask W₂ W₃) :
+    ExistsTask W₁ W₃ ∨ ExistsTask W₃ W₁ ∨ W₁ = W₃ := by
   rcases h_comp with h_12 | h_21 | h_eq
   · exact Or.inl (canonicalR_transitive W₁ W₂ W₃ h_mcs1 h_12 h_R23)
   · exact canonical_forward_reachable_linear W₂ W₁ W₃ h_mcs2 h_mcs1 h_mcs3 h_21 h_R23
@@ -490,9 +490,9 @@ private lemma comparable_step_backward
     (h_mcs1 : SetMaximalConsistent W₁)
     (h_mcs2 : SetMaximalConsistent W₂)
     (h_mcs3 : SetMaximalConsistent W₃)
-    (h_comp : CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂)
-    (h_R32 : CanonicalR W₃ W₂) :
-    CanonicalR W₁ W₃ ∨ CanonicalR W₃ W₁ ∨ W₁ = W₃ := by
+    (h_comp : ExistsTask W₁ W₂ ∨ ExistsTask W₂ W₁ ∨ W₁ = W₂)
+    (h_R32 : ExistsTask W₃ W₂) :
+    ExistsTask W₁ W₃ ∨ ExistsTask W₃ W₁ ∨ W₁ = W₃ := by
   rcases h_comp with h_12 | h_21 | h_eq
   · exact canonical_backward_reachable_linear W₂ W₁ W₃ h_mcs2 h_mcs1 h_mcs3 h_12 h_R32
   · exact Or.inr (Or.inl (canonicalR_transitive W₃ W₂ W₁ h_mcs3 h_R32 h_21))
@@ -500,10 +500,10 @@ private lemma comparable_step_backward
 
 private theorem comparable_with_reachable
     (W₁ : Set Formula) (h_mcs1 : SetMaximalConsistent W₁)
-    (h_comp_root : CanonicalR W₁ M₀ ∨ CanonicalR M₀ W₁ ∨ W₁ = M₀)
+    (h_comp_root : ExistsTask W₁ M₀ ∨ ExistsTask M₀ W₁ ∨ W₁ = M₀)
     (W₂ : Set Formula)
     (h_reach : ConstructiveReachable M₀ h_mcs₀ W₂) :
-    CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂ := by
+    ExistsTask W₁ W₂ ∨ ExistsTask W₂ W₁ ∨ W₁ = W₂ := by
   induction h_reach with
   | root => exact h_comp_root
   | forward_witness M φ _ h_mcs h_F ih =>
@@ -517,11 +517,11 @@ private theorem comparable_with_reachable
 
 theorem constructive_totally_ordered
     (a b : ConstructiveFragment M₀ h_mcs₀) :
-    CanonicalR a.val b.val ∨ CanonicalR b.val a.val ∨ a.val = b.val := by
+    ExistsTask a.val b.val ∨ ExistsTask b.val a.val ∨ a.val = b.val := by
   obtain ⟨ha⟩ := a.property
   obtain ⟨hb⟩ := b.property
   have h_a_comp := comparable_with_reachable M₀ h_mcs₀ (Or.inr (Or.inr rfl)) a.val ha
-  have h_comp_root : CanonicalR a.val M₀ ∨ CanonicalR M₀ a.val ∨ a.val = M₀ := by
+  have h_comp_root : ExistsTask a.val M₀ ∨ ExistsTask M₀ a.val ∨ a.val = M₀ := by
     rcases h_a_comp with h1 | h2 | h3
     · exact Or.inr (Or.inl h1)
     · exact Or.inl h2

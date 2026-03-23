@@ -13,12 +13,12 @@ which insert intermediate points between successive pairs to ensure density.
 
 The key results are:
 
-1. `distinguishing_formula_exists`: If ¬CanonicalR(M', M), there exists a
+1. `distinguishing_formula_exists`: If ¬ExistsTask(M', M), there exists a
    formula that distinguishes M from M'.
 
-2. `intermediate_from_density`: Given CanonicalR(M, M') and a formula phi
+2. `intermediate_from_density`: Given ExistsTask(M, M') and a formula phi
    with F(phi) ∈ M and phi ∈ M', the density axiom provides an intermediate
-   witness W with CanonicalR(M, W) and F(phi) ∈ W.
+   witness W with ExistsTask(M, W) and F(phi) ∈ W.
 
 ## Approach
 
@@ -45,25 +45,25 @@ open Bimodal.ProofSystem
 /-!
 ## Distinguishing Formula Existence
 
-If two MCSs M, M' satisfy CanonicalR(M, M') but NOT CanonicalR(M', M),
+If two MCSs M, M' satisfy ExistsTask(M, M') but NOT ExistsTask(M', M),
 then there exists a formula that distinguishes them: some formula is in
 g_content(M') but not in M.
 -/
 
 /--
-If ¬CanonicalR(M', M), then there exists beta such that G(beta) ∈ M'
+If ¬ExistsTask(M', M), then there exists beta such that G(beta) ∈ M'
 and beta ∉ M. This is the distinguishing formula.
 
-Proof: ¬CanonicalR(M', M) means g_content(M') ⊄ M, i.e., there exists
+Proof: ¬ExistsTask(M', M) means g_content(M') ⊄ M, i.e., there exists
 beta ∈ g_content(M') with beta ∉ M. By definition of g_content, G(beta) ∈ M'.
 -/
 theorem distinguishing_formula_exists
     {M M' : Set Formula}
     (_h_mcs : SetMaximalConsistent M)
     (_h_mcs' : SetMaximalConsistent M')
-    (h_not_R' : ¬CanonicalR M' M) :
+    (h_not_R' : ¬ExistsTask M' M) :
     ∃ beta : Formula, Formula.all_future beta ∈ M' ∧ beta ∉ M := by
-  -- ¬CanonicalR(M', M) means g_content(M') ⊄ M
+  -- ¬ExistsTask(M', M) means g_content(M') ⊄ M
   -- i.e., ∃ beta ∈ g_content(M'), beta ∉ M
   simp only [ExistsTask_def, Set.not_subset] at h_not_R'
   obtain ⟨beta, h_beta_G, h_beta_not_M⟩ := h_not_R'
@@ -149,7 +149,7 @@ theorem not_G_implies_F_neg
 
 When Case A holds (G(beta) ∉ M), we have F(¬beta) ∈ M, and the forward
 witness W = Lindenbaum({¬beta} ∪ g_content(M)) satisfies:
-- CanonicalR(M, W)
+- ExistsTask(M, W)
 - ¬beta ∈ W (and therefore beta ∉ W, since W is consistent)
 -/
 
@@ -175,7 +175,7 @@ theorem caseA_forward_witness_not_contains_beta
 For the staged construction, the density axiom provides the key mechanism
 for inserting intermediates. Given M with F(phi) ∈ M:
 
-1. density_of_canonicalR gives W with CanonicalR(M, W) and F(phi) ∈ W
+1. density_of_canonicalR gives W with ExistsTask(M, W) and F(phi) ∈ W
 2. This W is between M and the eventual phi-witness
 
 The density axiom F(phi) → F(F(phi)) ensures we can always find an
@@ -183,10 +183,10 @@ intermediate point that still has the F-obligation pending.
 -/
 
 /--
-Given CanonicalR(M, M') and a distinguishing formula phi with
+Given ExistsTask(M, M') and a distinguishing formula phi with
 F(phi) ∈ M and phi ∈ M', the density axiom provides an intermediate
 witness W with:
-- CanonicalR(M, W)
+- ExistsTask(M, W)
 - F(phi) ∈ W (obligation preserved)
 - W can see M' (since it still has F(phi), and M' has phi)
 
@@ -195,7 +195,7 @@ This is the key mechanism for odd-stage density insertion.
 theorem density_intermediate
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧
       Formula.some_future phi ∈ W :=
   density_of_canonicalR M h_mcs phi h_F
 
@@ -211,7 +211,7 @@ Every MCS has a strict canonical future successor (from seriality F(¬⊥)).
 This is the key property for NoMaxOrder in the staged timeline.
 -/
 theorem SetMaximalConsistent.has_strict_future (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W := by
   exact SetMaximalConsistent.has_canonical_successor M h_mcs
 
 /--
@@ -219,9 +219,9 @@ Every MCS has a strict canonical past predecessor (from seriality P(¬⊥)).
 This is the key property for NoMinOrder in the staged timeline.
 -/
 theorem SetMaximalConsistent.has_strict_past (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR W M := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask W M := by
   obtain ⟨W, h_W_mcs, h_R_past⟩ := SetMaximalConsistent.has_canonical_predecessor M h_mcs
-  -- Convert CanonicalR_past to CanonicalR in the reverse direction
+  -- Convert ExistsTask_past to ExistsTask in the reverse direction
   exact ⟨W, h_W_mcs, h_content_subset_implies_g_content_reverse M W h_mcs h_W_mcs h_R_past⟩
 
 end Bimodal.Metalogic.StagedConstruction

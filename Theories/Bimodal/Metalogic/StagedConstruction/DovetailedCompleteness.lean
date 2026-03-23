@@ -55,20 +55,20 @@ variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mc
 
 The dovetailed timeline can be used to construct an FMCS where:
 - Each point's MCS is a member of the family
-- CanonicalR between MCSs gives the timeline order
+- ExistsTask between MCSs gives the timeline order
 - has_future/has_past provide seriality
 -/
 
-/-- The dovetailed timeline satisfies forward seriality: every point has a CanonicalR-future. -/
+/-- The dovetailed timeline satisfies forward seriality: every point has a ExistsTask-future. -/
 theorem dovetailed_forward_serial
     (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof) :
-    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof, CanonicalR p.mcs q.mcs :=
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof, ExistsTask p.mcs q.mcs :=
   dovetailedTimeline_has_future root_mcs root_mcs_proof p hp
 
-/-- The dovetailed timeline satisfies backward seriality: every point has a CanonicalR-past. -/
+/-- The dovetailed timeline satisfies backward seriality: every point has a ExistsTask-past. -/
 theorem dovetailed_backward_serial
     (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof) :
-    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof, CanonicalR q.mcs p.mcs :=
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof, ExistsTask q.mcs p.mcs :=
   dovetailedTimeline_has_past root_mcs root_mcs_proof p hp
 
 /-!
@@ -85,7 +85,7 @@ The dovetailed construction provides the same timeline as the staged constructio
 captures the dovetailed timeline's structure.
 
 The key connection is that both constructions produce the same family of MCSs
-reachable from the root via CanonicalR chains.
+reachable from the root via ExistsTask chains.
 -/
 
 /--

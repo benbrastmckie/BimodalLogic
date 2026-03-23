@@ -134,7 +134,7 @@ yields a TaskFrame with the appropriate duration group.
 The construction depends on one axiom with high mathematical confidence:
 
 - **`canonicalR_irreflexive`** (in `Canonical/CanonicalIrreflexivityAxiom.lean`):
-  `¬CanonicalR M M` for all MCSs M. Standard in the literature (Goldblatt 1992,
+  `¬ExistsTask M M` for all MCSs M. Standard in the literature (Goldblatt 1992,
   BdRV 2001), blocked only by String atom freshness. Resolution: change atom type.
 
 From this axiom, NoMaxOrder, NoMinOrder, and DenselyOrdered are proved (not sorry'd).
@@ -163,7 +163,7 @@ with D = TimelineQuot (the quotient of the dense timeline).
 
 /--
 The dense canonical timeline type: quotient of the density-enriched
-staged timeline by mutual CanonicalR-accessibility.
+staged timeline by mutual ExistsTask-accessibility.
 
 This is the type T in the pipeline `T ≃o ℚ → AddCommGroup T → TaskFrame T`.
 -/

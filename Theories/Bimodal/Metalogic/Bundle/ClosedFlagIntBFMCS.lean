@@ -30,14 +30,14 @@ to connect this to Int-indexed families while maintaining domain separation.
 1. **ClosedFlagFMCS_Int**: Int-indexed FMCS where each `mcs t` is in `discreteClosedMCS M0`
 2. **Modal coherence**: Follows from `discreteMCS_modal_backward` because all MCS
    in any family are within the modally saturated `discreteClosedMCS M0` set
-3. **Temporal coherence (G/H)**: Proven via chain construction with CanonicalR
+3. **Temporal coherence (G/H)**: Proven via chain construction with ExistsTask
 4. **Temporal coherence (F/P)**: Sorries remain (dovetailing gap - documented)
 
 ## Key Construction
 
 We build families within `discreteClosedMCS M0` by:
 1. Starting at M0 (which is in the closed set by `root_in_discreteClosedMCS`)
-2. Using CanonicalR successors/predecessors that stay within the closed set
+2. Using ExistsTask successors/predecessors that stay within the closed set
    (or accepting this as a constraint on family membership)
 
 ## References

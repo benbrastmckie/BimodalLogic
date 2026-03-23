@@ -89,7 +89,7 @@ The key construction for Zorn's lemma: given a chain C with an F-obligation at w
 we can "enrich" C by adding the Lindenbaum witness for that obligation.
 
 The witness from `canonical_forward_F` satisfies:
-- It has CanonicalR w.world witness.world, so w < witness in the preorder
+- It has ExistsTask w.world witness.world, so w < witness in the preorder
 - It contains phi
 
 If C is a chain (totally ordered), we need the witness to be comparable with all
@@ -102,7 +102,7 @@ Adding a single F-witness to a chain that is already total on the existing eleme
 Given:
 - C is a chain (pairwise comparable)
 - w ∈ C with F(phi) ∈ w.world
-- witness is the Lindenbaum MCS with CanonicalR w.world witness.world and phi ∈ witness.world
+- witness is the Lindenbaum MCS with ExistsTask w.world witness.world and phi ∈ witness.world
 
 The enriched chain C' = C ∪ {witness} is a chain if witness is comparable with all of C.
 This holds when all elements of C are comparable to w (since witness > w and C is a chain).
@@ -267,7 +267,7 @@ must be ≤-comparable with ALL flag elements. Since Flags are maximal chains,
 a witness w is in the flag iff it's comparable with all flag elements.
 
 **When is a Lindenbaum witness comparable?**
-The witness W for F(phi) at M satisfies `CanonicalR M.world W`, so M < {W}.
+The witness W for F(phi) at M satisfies `ExistsTask M.world W`, so M < {W}.
 For W to be in the same flag as M, we need W comparable with all other flag elements.
 
 This is NOT automatically true. Different F-obligations may require witnesses
@@ -338,42 +338,42 @@ for Cantor's theorem: DenselyOrdered, NoMinOrder, NoMaxOrder.
 These properties come from:
 - **Seriality**: Every MCS contains F(neg bot) and P(neg bot), providing successors/predecessors
 - **Density Frame Condition**: Between any strictly ordered pair, an intermediate exists
-- **Irreflexivity**: CanonicalR is irreflexive, so witnesses are strictly ordered
+- **Irreflexivity**: ExistsTask is irreflexive, so witnesses are strictly ordered
 -/
 
 open Bimodal.Metalogic.Canonical
 open Bimodal.Metalogic.StagedConstruction
 
 /--
-Every CanonicalMCS element has a CanonicalR-successor in CanonicalMCS.
+Every CanonicalMCS element has a ExistsTask-successor in CanonicalMCS.
 
 This follows from seriality: F(neg bot) is in every MCS, and `canonical_forward_F`
-provides a witness MCS W with CanonicalR M.world W.
+provides a witness MCS W with ExistsTask M.world W.
 -/
 theorem canonicalMCS_has_future (M : CanonicalMCS) :
     ∃ N : CanonicalMCS, M < N := by
   -- M.world contains F(neg bot) by seriality
   have h_serial : Formula.some_future (Formula.neg Formula.bot) ∈ M.world :=
     SetMaximalConsistent.contains_seriality_future M.world M.is_mcs
-  -- Get witness directly from canonical_forward_F (gives CanonicalR without Or wrapper)
+  -- Get witness directly from canonical_forward_F (gives ExistsTask without Or wrapper)
   obtain ⟨W, h_W_mcs, h_R, _h_phi⟩ := canonical_forward_F M.world M.is_mcs (Formula.neg Formula.bot) h_serial
   -- Construct N from the witness
   let N : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
-  -- Show M < N using CanonicalR and irreflexivity
+  -- Show M < N using ExistsTask and irreflexivity
   refine ⟨N, Or.inr h_R, ?_⟩
   intro h_NM
   rcases h_NM with h_eq | h_R'
-  · -- N = M: then W = N.world = M.world, so CanonicalR M.world M.world
+  · -- N = M: then W = N.world = M.world, so ExistsTask M.world M.world
     have h_N_world : N.world = W := rfl
     have h_eq_world : M.world = N.world := congrArg CanonicalMCS.world h_eq.symm
     rw [h_eq_world, h_N_world] at h_R
     exact Canonical.canonicalR_irreflexive W h_W_mcs h_R
-  · -- CanonicalR N.world M.world = CanonicalR W M.world
+  · -- ExistsTask N.world M.world = ExistsTask W M.world
     have h_MM := canonicalR_transitive M.world W M.world M.is_mcs h_R h_R'
     exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_MM
 
 /--
-Every CanonicalMCS element has a CanonicalR-predecessor in CanonicalMCS.
+Every CanonicalMCS element has a ExistsTask-predecessor in CanonicalMCS.
 
 Symmetric to `canonicalMCS_has_future` using past seriality.
 -/
@@ -382,32 +382,32 @@ theorem canonicalMCS_has_past (M : CanonicalMCS) :
   -- M.world contains P(neg bot) by seriality
   have h_serial : Formula.some_past (Formula.neg Formula.bot) ∈ M.world :=
     SetMaximalConsistent.contains_seriality_past M.world M.is_mcs
-  -- Get witness directly from canonical_backward_P (gives CanonicalR_past without Or wrapper)
+  -- Get witness directly from canonical_backward_P (gives ExistsTask_past without Or wrapper)
   obtain ⟨W, h_W_mcs, h_R_past, _h_phi⟩ := canonical_backward_P M.world M.is_mcs (Formula.neg Formula.bot) h_serial
   -- Construct N from the witness
   let N : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
-  -- The h_R_past : CanonicalR_past M.world W = h_content M.world ⊆ W
-  -- We need CanonicalR W M.world for N < M
+  -- The h_R_past : ExistsTask_past M.world W = h_content M.world ⊆ W
+  -- We need ExistsTask W M.world for N < M
   -- Use h_content_subset_implies_g_content_reverse
-  have h_R : CanonicalR W M.world :=
+  have h_R : ExistsTask W M.world :=
     h_content_subset_implies_g_content_reverse M.world W M.is_mcs h_W_mcs h_R_past
-  -- Show N < M using CanonicalR and irreflexivity
+  -- Show N < M using ExistsTask and irreflexivity
   refine ⟨N, Or.inr h_R, ?_⟩
   intro h_MN
   rcases h_MN with h_eq | h_R'
-  · -- M = N: then M.world = N.world = W, so CanonicalR W W = CanonicalR M.world M.world
+  · -- M = N: then M.world = N.world = W, so ExistsTask W W = ExistsTask M.world M.world
     have h_eq_world : M.world = W := congrArg CanonicalMCS.world h_eq
     rw [← h_eq_world] at h_R
     exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_R
-  · -- CanonicalR M.world N.world = CanonicalR M.world W
+  · -- ExistsTask M.world N.world = ExistsTask M.world W
     have h_WW := canonicalR_transitive W M.world W h_W_mcs h_R h_R'
     exact Canonical.canonicalR_irreflexive W h_W_mcs h_WW
 
 /--
 Between any strictly ordered pair in CanonicalMCS, there exists an intermediate.
 
-This uses the density frame condition: if CanonicalR M N and NOT CanonicalR N M,
-then there exists W with CanonicalR M W and CanonicalR W N.
+This uses the density frame condition: if ExistsTask M N and NOT ExistsTask N M,
+then there exists W with ExistsTask M W and ExistsTask W N.
 -/
 theorem canonicalMCS_has_intermediate (M N : CanonicalMCS)
     (h_lt : M < N) :
@@ -415,8 +415,8 @@ theorem canonicalMCS_has_intermediate (M N : CanonicalMCS)
   -- M < N means M <= N and NOT N <= M
   have h_le := h_lt.1
   have h_not_le := h_lt.2
-  -- Extract CanonicalR M.world N.world from M <= N
-  have h_R : CanonicalR M.world N.world := by
+  -- Extract ExistsTask M.world N.world from M <= N
+  have h_R : ExistsTask M.world N.world := by
     rcases h_le with h_eq | h_R
     · -- M = N contradicts M < N
       exfalso
@@ -424,8 +424,8 @@ theorem canonicalMCS_has_intermediate (M N : CanonicalMCS)
       rw [h_eq]
       exact Or.inl rfl
     · exact h_R
-  -- NOT N <= M means NOT (N = M or CanonicalR N.world M.world)
-  have h_not_R' : ¬CanonicalR N.world M.world := by
+  -- NOT N <= M means NOT (N = M or ExistsTask N.world M.world)
+  have h_not_R' : ¬ExistsTask N.world M.world := by
     intro h_R'
     exact h_not_le (Or.inr h_R')
   -- Apply density frame condition
@@ -439,12 +439,12 @@ theorem canonicalMCS_has_intermediate (M N : CanonicalMCS)
     · exact Or.inr h_MW
     · intro h_WM
       rcases h_WM with h_eq | h_R_WM
-      · -- W = M: then W_set = W.world = M.world, so CanonicalR M.world M.world
+      · -- W = M: then W_set = W.world = M.world, so ExistsTask M.world M.world
         have h_W_world : W.world = M.world := congrArg CanonicalMCS.world h_eq
         simp only [W] at h_W_world
         rw [h_W_world] at h_MW
         exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_MW
-      · -- CanonicalR W_set M.world: transitivity gives CanonicalR M.world M.world
+      · -- ExistsTask W_set M.world: transitivity gives ExistsTask M.world M.world
         have h_MM := canonicalR_transitive M.world W_set M.world M.is_mcs h_MW h_R_WM
         exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_MM
   · -- W < N: W <= N and NOT N <= W
@@ -452,12 +452,12 @@ theorem canonicalMCS_has_intermediate (M N : CanonicalMCS)
     · exact Or.inr h_WN
     · intro h_NW
       rcases h_NW with h_eq | h_R_NW
-      · -- N = W: then W_set = W.world = N.world, so CanonicalR W_set W_set
+      · -- N = W: then W_set = W.world = N.world, so ExistsTask W_set W_set
         have h_W_world : W.world = N.world := congrArg CanonicalMCS.world h_eq.symm
         simp only [W] at h_W_world
         rw [← h_W_world] at h_WN
         exact Canonical.canonicalR_irreflexive W_set h_W_mcs h_WN
-      · -- CanonicalR N.world W_set: combined with CanonicalR W_set N.world
+      · -- ExistsTask N.world W_set: combined with ExistsTask W_set N.world
         have h_NN := canonicalR_transitive N.world W_set N.world N.is_mcs h_R_NW h_WN
         exact Canonical.canonicalR_irreflexive N.world N.is_mcs h_NN
 

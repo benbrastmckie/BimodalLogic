@@ -20,8 +20,8 @@ functions and their properties, adapted for use in the staged timeline.
 
 ## Key Properties
 
-- Forward witness: CanonicalR(M, W), psi ∈ W, W is MCS
-- Backward witness: CanonicalR(W, M), psi ∈ W, W is MCS
+- Forward witness: ExistsTask(M, W), psi ∈ W, W is MCS
+- Backward witness: ExistsTask(W, M), psi ∈ W, W is MCS
 
 ## Strictness Note
 
@@ -34,7 +34,7 @@ See research-034 for detailed analysis.
 
 - Task 956 plan v014: Phase 2
 - WitnessSeed.lean: Consistency proofs
-- CanonicalFrame.lean: CanonicalR, canonical_forward_F, canonical_backward_P
+- CanonicalFrame.lean: ExistsTask, canonical_forward_F, canonical_backward_P
 - CanonicalTimeline.lean: Seriality and density
 -/
 
@@ -73,22 +73,22 @@ noncomputable def executeBackwardStep (M : Set Formula) (h_mcs : SetMaximalConsi
     (past_temporal_witness_seed_consistent M h_mcs phi h_P)
 
 /-!
-## CanonicalR Properties
+## ExistsTask Properties
 -/
 
 theorem executeForwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_F : Formula.some_future phi ∈ M} :
-    CanonicalR M (executeForwardStep M h_mcs phi h_F) :=
+    ExistsTask M (executeForwardStep M h_mcs phi h_F) :=
   fun _ h_psi => lindenbaumMCS_set_extends _ _ (g_content_subset_forward_temporal_witness_seed M phi h_psi)
 
 theorem executeBackwardStep_canonicalR_past {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_P : Formula.some_past phi ∈ M} :
-    CanonicalR_past M (executeBackwardStep M h_mcs phi h_P) :=
+    ExistsTask_past M (executeBackwardStep M h_mcs phi h_P) :=
   fun _ h_psi => lindenbaumMCS_set_extends _ _ (h_content_subset_past_temporal_witness_seed M phi h_psi)
 
 theorem executeBackwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_P : Formula.some_past phi ∈ M} :
-    CanonicalR (executeBackwardStep M h_mcs phi h_P) M :=
+    ExistsTask (executeBackwardStep M h_mcs phi h_P) M :=
   h_content_subset_implies_g_content_reverse M _ h_mcs
     (lindenbaumMCS_set_is_mcs _ _)
     (executeBackwardStep_canonicalR_past (h_mcs := h_mcs) (h_P := h_P))
@@ -162,7 +162,7 @@ theorem forwardWitnessPoint_canonicalR
     {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_F : Formula.some_future phi ∈ M}
     {stage : Stage} :
-    CanonicalR M (forwardWitnessPoint M h_mcs phi h_F stage).mcs :=
+    ExistsTask M (forwardWitnessPoint M h_mcs phi h_F stage).mcs :=
   executeForwardStep_canonicalR (h_mcs := h_mcs) (h_F := h_F)
 
 /--
@@ -172,7 +172,7 @@ theorem backwardWitnessPoint_canonicalR
     {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_P : Formula.some_past phi ∈ M}
     {stage : Stage} :
-    CanonicalR (backwardWitnessPoint M h_mcs phi h_P stage).mcs M :=
+    ExistsTask (backwardWitnessPoint M h_mcs phi h_P stage).mcs M :=
   executeBackwardStep_canonicalR (h_mcs := h_mcs) (h_P := h_P)
 
 /--
@@ -223,13 +223,13 @@ The density axiom F(psi) → F(F(psi)) provides intermediate witnesses.
 -/
 
 /--
-Given F(psi) ∈ M, there exists W with CanonicalR(M, W) and F(psi) ∈ W.
+Given F(psi) ∈ M, there exists W with ExistsTask(M, W) and F(psi) ∈ W.
 This is the key property for odd-stage density insertion.
 -/
 theorem density_witness_exists
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧
       Formula.some_future psi ∈ W :=
   density_of_canonicalR M h_mcs psi h_F
 

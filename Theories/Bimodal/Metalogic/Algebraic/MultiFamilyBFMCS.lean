@@ -107,7 +107,7 @@ Instead of building separate FMCS per Flag and dealing with domain heterogeneity
 we build a single BFMCS over CanonicalMCS where the domain is ALL canonical MCS.
 
 The key insight: CanonicalMCS already has all the structure we need:
-- Preorder via reflexive closure of CanonicalR
+- Preorder via reflexive closure of ExistsTask
 - F/P witnesses exist (via Lindenbaum)
 - Modal coherence via BoxContent propagation
 
@@ -120,7 +120,7 @@ contain multiple FMCS over the same domain.
 
 The CanonicalMCS domain already provides:
 - Each element w maps to w.world (an MCS)
-- Forward_G via CanonicalR
+- Forward_G via ExistsTask
 - Backward_H via g_content/h_content duality
 
 We use the existing `canonicalMCSBFMCS` as the base FMCS.
@@ -395,7 +395,7 @@ noncomputable def modal_witness_mcs (M : Set Formula) (h_mcs : SetMaximalConsist
 ### Phase 2 Preparation: Modal Coherence via BoxContent
 
 The modal coherence proofs will use:
-1. `MCSBoxContent_subset_of_CanonicalR`: BoxContent propagates through CanonicalR
+1. `MCSBoxContent_subset_of_CanonicalR`: BoxContent propagates through ExistsTask
 2. S5 T-axiom: Box phi -> phi
 3. S5 axiom 4: Box phi -> Box(Box phi)
 4. S5 axiom 5: neg(Box phi) -> Box(neg(Box phi))
@@ -404,13 +404,13 @@ These ensure that BoxContent is consistent across the bundle.
 -/
 
 /--
-BoxContent membership is preserved when going from one MCS to another via CanonicalR.
+BoxContent membership is preserved when going from one MCS to another via ExistsTask.
 
-If CanonicalR M N (i.e., g_content(M) ⊆ N), then BoxContent(M) ⊆ BoxContent(N).
+If ExistsTask M N (i.e., g_content(M) ⊆ N), then BoxContent(M) ⊆ BoxContent(N).
 This follows directly from `MCSBoxContent_subset_of_CanonicalR`.
 -/
 theorem boxcontent_preserved_by_canonicalR (M N : CanonicalMCS)
-    (h_R : CanonicalR M.world N.world) :
+    (h_R : ExistsTask M.world N.world) :
     MCSBoxContent M.world ⊆ MCSBoxContent N.world :=
   MCSBoxContent_subset_of_CanonicalR M.world N.world M.is_mcs N.is_mcs h_R
 

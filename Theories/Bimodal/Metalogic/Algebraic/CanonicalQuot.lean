@@ -11,7 +11,7 @@ a linear order structure suitable for the Cantor isomorphism to Rat.
 ## Overview
 
 The approach follows the semantics architecture from research-003:
-1. **CanonicalMCS**: All maximal consistent sets with a preorder via CanonicalR
+1. **CanonicalMCS**: All maximal consistent sets with a preorder via ExistsTask
 2. **CanonicalQuot**: Antisymmetrization quotient that collapses mutually ≤-related MCS
 3. **Order Properties**: LinearOrder, Countable, DenselyOrdered, NoMinOrder, NoMaxOrder
 
@@ -45,12 +45,12 @@ open Bimodal.Metalogic.Bundle
 For CanonicalMCS to quotient to a LinearOrder, its preorder must be total.
 We establish totality using the structure of maximal consistent sets.
 
-Note: The current Preorder on CanonicalMCS uses the reflexive closure of CanonicalR:
-`a ≤ b := a = b ∨ CanonicalR a.world b.world`
+Note: The current Preorder on CanonicalMCS uses the reflexive closure of ExistsTask:
+`a ≤ b := a = b ∨ ExistsTask a.world b.world`
 
 This is NOT total in general. For totality, we need a different approach.
 We use the fact that for any two MCS M, N, we can compare their g_content:
-either g_content(M) ⊆ N (so M ≤ N via CanonicalR), or g_content(N) ⊆ M (so N ≤ M),
+either g_content(M) ⊆ N (so M ≤ N via ExistsTask), or g_content(N) ⊆ M (so N ≤ M),
 or there exists some G-formula in one but not the other.
 
 Actually, let's examine this more carefully with lean_goal.
@@ -60,14 +60,14 @@ Actually, let's examine this more carefully with lean_goal.
 -- by examining what we can derive from the axioms.
 
 /-!
-## Alternative Approach: Use CanonicalR as the relation
+## Alternative Approach: Use ExistsTask as the relation
 
-Instead of the reflexive closure, we can use CanonicalR directly as a preorder
+Instead of the reflexive closure, we can use ExistsTask directly as a preorder
 on CanonicalMCS. This requires proving:
-1. Reflexivity: CanonicalR M M (follows from G phi ∈ M implies phi ∈ M via T-axiom...
-   but TM logic is IRREFLEXIVE! So CanonicalR is NOT reflexive.)
+1. Reflexivity: ExistsTask M M (follows from G phi ∈ M implies phi ∈ M via T-axiom...
+   but TM logic is IRREFLEXIVE! So ExistsTask is NOT reflexive.)
 
-So CanonicalR is a strict order, not a preorder. The reflexive closure gives a preorder.
+So ExistsTask is a strict order, not a preorder. The reflexive closure gives a preorder.
 But the reflexive closure is not total.
 
 Let's try a different approach: work with the STRUCTURE of MCS to establish

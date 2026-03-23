@@ -35,10 +35,10 @@ then Order.succ x exists and is the least element > x. This is exactly the
 
 ## Key Lemma: Coverness from DF
 
-The core technical result is: if M R N (CanonicalR) and there is no W with
+The core technical result is: if M R N (ExistsTask) and there is no W with
 M R W R N (no strict intermediate), then [N] = succ([M]) in the quotient.
 
-The discreteness axiom DF provides this: given CanonicalR(M, N), if
+The discreteness axiom DF provides this: given ExistsTask(M, N), if
 `Hφ ∈ N` for some φ, then either `φ ∈ M` (so M and N agree on φ) or
 there exists a "gap" that DF fills. The absence of density intermediates
 (since DN is not in the axiom system) means the successor is immediate.
@@ -144,7 +144,7 @@ instance : NoMaxOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
     induction a using Antisymmetrization.ind with
     | _ p =>
       obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_future root_mcs root_mcs_proof p.1 p.2
-      have h_strict : ¬CanonicalR q.mcs p.1.mcs :=
+      have h_strict : ¬ExistsTask q.mcs p.1.mcs :=
         Canonical.canonicalR_strict p.1.mcs q.mcs p.1.is_mcs q.is_mcs hq_R
       let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
       use toAntisymmetrization (· ≤ ·) q'
@@ -166,7 +166,7 @@ instance : NoMinOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
     induction a using Antisymmetrization.ind with
     | _ p =>
       obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_past root_mcs root_mcs_proof p.1 p.2
-      have h_strict : ¬CanonicalR p.1.mcs q.mcs :=
+      have h_strict : ¬ExistsTask p.1.mcs q.mcs :=
         Canonical.canonicalR_strict q.mcs p.1.mcs q.is_mcs p.1.is_mcs hq_R
       let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
       use toAntisymmetrization (· ≤ ·) q'
@@ -220,7 +220,7 @@ covering property from DF has proven to be a deep mathematical challenge.
 
 ### The Covering Property
 
-An MCS W *covers* M if CanonicalR M W and there is no MCS K strictly between them.
+An MCS W *covers* M if ExistsTask M W and there is no MCS K strictly between them.
 This is equivalent to W being the immediate successor of M in the quotient order.
 
 ### Why This Is Hard
@@ -350,7 +350,7 @@ the successor `Order.succ t` exists and is the least element > t:
 ### Canonical Model Interpretation
 
 Given [M] in the quotient, DF ensures that any seriality witness N (with
-CanonicalR(M, N)) is either:
+ExistsTask(M, N)) is either:
 (a) The immediate successor of M (no strict intermediate), or
 (b) Not minimal among strict successors, in which case DF iteratively
     finds the immediate successor.
@@ -384,7 +384,7 @@ close to another from above — there is always an immediate successor.
 **Proof sketch** (to be formalized):
 1. Suppose for contradiction that `succFn a = a` (GLB equals `a`)
 2. This means the set `{x | a < x}` is "dense above `a`"
-3. But DF ensures immediate successors exist: if `CanonicalR M N`, then
+3. But DF ensures immediate successors exist: if `ExistsTask M N`, then
    either `N` is the immediate successor of `M`, or there exists an
    intermediate `W` with `M < W < N`
 4. The discreteness axiom rules out the second case when `N` is the successor

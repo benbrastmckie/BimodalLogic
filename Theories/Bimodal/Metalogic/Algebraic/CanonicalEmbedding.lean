@@ -151,13 +151,13 @@ theorem ratFMCS_forward_F (q : ℚ) (phi : Formula)
   -- Actually, we need forward_F for TimelineQuot, not just has_future
   -- The staged timeline has F-witnesses, but we need to connect this to timelineQuotMCS
 
-  -- Use canonical_forward_F: F φ ∈ M implies ∃ W with CanonicalR M W ∧ φ ∈ W
+  -- Use canonical_forward_F: F φ ∈ M implies ∃ W with ExistsTask M W ∧ φ ∈ W
   have h_MCS := timelineQuotMCS_is_mcs root_mcs root_mcs_proof t
   obtain ⟨W, h_W_mcs, h_R, h_phi_W⟩ :=
     canonical_forward_F (timelineQuotMCS root_mcs root_mcs_proof t) h_MCS phi h_F_MCS
 
   -- W is an MCS. We need to show W is in the dense timeline (i.e., comes from some TimelineQuot element)
-  -- This is the key step: the dense timeline contains all CanonicalR-reachable MCSs from root
+  -- This is the key step: the dense timeline contains all ExistsTask-reachable MCSs from root
 
   -- The dense timeline is built from root_mcs. The witness W from canonical_forward_F
   -- is constructed via Lindenbaum from {phi} ∪ g_content(t.mcs).

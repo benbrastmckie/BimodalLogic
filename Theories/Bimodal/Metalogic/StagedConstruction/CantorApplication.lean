@@ -36,7 +36,7 @@ For now, this module retains the axiom dependency and is documented as an enhanc
 
 The dense timeline (from DenseTimeline.lean) is a countable, dense, linearly
 preordered set without endpoints. The Antisymmetrization (quotient by mutual
-CanonicalR) gives a proper LinearOrder. Cantor's uniqueness theorem then
+ExistsTask) gives a proper LinearOrder. Cantor's uniqueness theorem then
 provides an order isomorphism T ≃o Q.
 
 ## Key Types and Theorems
@@ -79,7 +79,7 @@ def DenseTimelineElem : Type :=
 /-!
 ## Preorder on Dense Timeline Elements
 
-The preorder uses StagedPoint.le: a ≤ b iff a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs.
+The preorder uses StagedPoint.le: a ≤ b iff a.mcs = b.mcs ∨ ExistsTask a.mcs b.mcs.
 -/
 
 /-- Preorder instance for dense timeline elements. -/
@@ -142,8 +142,8 @@ instance : Countable (TimelineQuot root_mcs root_mcs_proof) := by
 /-- The timeline quotient has no maximum element.
 
 Uses `canonicalR_irreflexive` axiom: seriality gives a forward witness N via
-`canonical_forward_F`, and irreflexivity ensures `¬CanonicalR(N, M)` (since
-mutual accessibility + T4 composition gives `CanonicalR(M, M)`, contradicting
+`canonical_forward_F`, and irreflexivity ensures `¬ExistsTask(N, M)` (since
+mutual accessibility + T4 composition gives `ExistsTask(M, M)`, contradicting
 the axiom). So `[M] < [N]` strictly in the quotient.
 -/
 instance : NoMaxOrder (TimelineQuot root_mcs root_mcs_proof) where
@@ -152,8 +152,8 @@ instance : NoMaxOrder (TimelineQuot root_mcs root_mcs_proof) where
     induction a using Antisymmetrization.ind with
     | _ p =>
       obtain ⟨q, hq_mem, hq_R⟩ := dense_timeline_has_future root_mcs root_mcs_proof p.1 p.2
-      -- By irreflexivity axiom: CanonicalR(p.mcs, q.mcs) implies ¬CanonicalR(q.mcs, p.mcs)
-      have h_strict : ¬CanonicalR q.mcs p.1.mcs :=
+      -- By irreflexivity axiom: ExistsTask(p.mcs, q.mcs) implies ¬ExistsTask(q.mcs, p.mcs)
+      have h_strict : ¬ExistsTask q.mcs p.1.mcs :=
         canonicalR_strict p.1.mcs q.mcs p.1.is_mcs q.is_mcs hq_R
       let q' : DenseTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
       use toAntisymmetrization (· ≤ ·) q'
@@ -176,8 +176,8 @@ instance : NoMinOrder (TimelineQuot root_mcs root_mcs_proof) where
     induction a using Antisymmetrization.ind with
     | _ p =>
       obtain ⟨q, hq_mem, hq_R⟩ := dense_timeline_has_past root_mcs root_mcs_proof p.1 p.2
-      -- By irreflexivity axiom: CanonicalR(q.mcs, p.mcs) implies ¬CanonicalR(p.mcs, q.mcs)
-      have h_strict : ¬CanonicalR p.1.mcs q.mcs :=
+      -- By irreflexivity axiom: ExistsTask(q.mcs, p.mcs) implies ¬ExistsTask(p.mcs, q.mcs)
+      have h_strict : ¬ExistsTask p.1.mcs q.mcs :=
         canonicalR_strict q.mcs p.1.mcs q.is_mcs p.1.is_mcs hq_R
       let q' : DenseTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
       use toAntisymmetrization (· ≤ ·) q'
@@ -192,9 +192,9 @@ instance : NoMinOrder (TimelineQuot root_mcs root_mcs_proof) where
 /-- The timeline quotient is densely ordered.
 
 Uses `canonicalR_irreflexive` axiom: the non-strict density frame condition
-gives an intermediate W with `CanonicalR(M, W) ∧ CanonicalR(W, N)`. Irreflexivity
-ensures both are strict: mutual accessibility would give `CanonicalR(M, M)` or
-`CanonicalR(N, N)` by T4 composition, contradicting the axiom.
+gives an intermediate W with `ExistsTask(M, W) ∧ ExistsTask(W, N)`. Irreflexivity
+ensures both are strict: mutual accessibility would give `ExistsTask(M, M)` or
+`ExistsTask(N, N)` by T4 composition, contradicting the axiom.
 -/
 instance : DenselyOrdered (TimelineQuot root_mcs root_mcs_proof) where
   dense := by
@@ -208,20 +208,20 @@ instance : DenselyOrdered (TimelineQuot root_mcs root_mcs_proof) where
         simp only [StagedPoint.le] at h_not_le
         push_neg at h_not_le
         obtain ⟨h_neq, h_not_R⟩ := h_not_le
-        have h_R : CanonicalR p.1.mcs q.1.mcs := by
+        have h_R : ExistsTask p.1.mcs q.1.mcs := by
           simp only [StagedPoint.le] at h_le
           cases h_le with
           | inl h_eq => exact absurd h_eq.symm h_neq
           | inr h_R => exact h_R
-        -- Non-strict density: get intermediate c with CanonicalR(p, c) ∧ CanonicalR(c, q)
+        -- Non-strict density: get intermediate c with ExistsTask(p, c) ∧ ExistsTask(c, q)
         obtain ⟨c, hc_mem, hc_R_p, hc_R_q⟩ :=
           dense_timeline_has_intermediate root_mcs root_mcs_proof p.1 q.1 p.2 q.2 h_R h_not_R
         let c' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c, hc_mem⟩
         use toAntisymmetrization (· ≤ ·) c'
         -- By irreflexivity: both orderings are strict
-        have h_strict_pc : ¬CanonicalR c.mcs p.1.mcs :=
+        have h_strict_pc : ¬ExistsTask c.mcs p.1.mcs :=
           canonicalR_strict p.1.mcs c.mcs p.1.is_mcs c.is_mcs hc_R_p
-        have h_strict_qc : ¬CanonicalR q.1.mcs c.mcs :=
+        have h_strict_qc : ¬ExistsTask q.1.mcs c.mcs :=
           canonicalR_strict c.mcs q.1.mcs c.is_mcs q.1.is_mcs hc_R_q
         constructor
         · -- p < c in quotient

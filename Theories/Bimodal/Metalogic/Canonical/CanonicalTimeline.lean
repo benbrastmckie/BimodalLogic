@@ -16,7 +16,7 @@ construction.
 ## Overview
 
 The canonical timeline is the bidirectional closure of a root MCS M₀ under the canonical
-temporal relations CanonicalR (future) and CanonicalR_past (past). Every MCS in the
+temporal relations ExistsTask (future) and ExistsTask_past (past). Every MCS in the
 timeline is reachable from M₀ by a finite chain of forward/backward temporal steps.
 
 ## Properties to Prove
@@ -45,15 +45,15 @@ open Bimodal.ProofSystem
 ## Canonical Timeline Definition
 
 The canonical timeline is the set of all MCS bidirectionally reachable from a root MCS M₀.
-Bidirectional reachability uses the transitive closure of CanonicalR ∪ CanonicalR_past.
+Bidirectional reachability uses the transitive closure of ExistsTask ∪ ExistsTask_past.
 -/
 
 /--
 Bidirectional canonical relation: either future or past canonical relation.
-`BidirectionalR M M'` holds if either `CanonicalR M M'` or `CanonicalR_past M M'`.
+`BidirectionalR M M'` holds if either `ExistsTask M M'` or `ExistsTask_past M M'`.
 -/
 def BidirectionalR (M M' : Set Formula) : Prop :=
-  CanonicalR M M' ∨ CanonicalR_past M M'
+  ExistsTask M M' ∨ ExistsTask_past M M'
 
 /--
 The canonical timeline rooted at M₀: all MCS reachable from M₀ by
@@ -131,10 +131,10 @@ theorem SetMaximalConsistent.contains_seriality_past (M : Set Formula) (h_mcs : 
 Every MCS has a strict canonical future successor.
 
 From `F(¬⊥) ∈ M` and `canonical_forward_F`, there exists MCS W with
-`CanonicalR M W` and `¬⊥ ∈ W`.
+`ExistsTask M W` and `¬⊥ ∈ W`.
 -/
 theorem SetMaximalConsistent.has_canonical_successor (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W := by
   have h_F := SetMaximalConsistent.contains_seriality_future M h_mcs
   obtain ⟨W, h_W_mcs, h_R, _⟩ := canonical_forward_F M h_mcs _ h_F
   exact ⟨W, h_W_mcs, h_R⟩
@@ -143,10 +143,10 @@ theorem SetMaximalConsistent.has_canonical_successor (M : Set Formula) (h_mcs : 
 Every MCS has a strict canonical past predecessor.
 
 From `P(¬⊥) ∈ M` and `canonical_backward_P`, there exists MCS W with
-`CanonicalR_past M W` and `¬⊥ ∈ W`.
+`ExistsTask_past M W` and `¬⊥ ∈ W`.
 -/
 theorem SetMaximalConsistent.has_canonical_predecessor (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR_past M W := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask_past M W := by
   have h_P := SetMaximalConsistent.contains_seriality_past M h_mcs
   obtain ⟨W, h_W_mcs, h_R_past, _⟩ := canonical_backward_P M h_mcs _ h_P
   exact ⟨W, h_W_mcs, h_R_past⟩
@@ -159,8 +159,8 @@ between any two related MCS, there exists an intermediate one.
 -/
 
 /--
-Density of CanonicalR: if `F(φ) ∈ M` and `M` is MCS, then there exists an
-intermediate MCS W with `CanonicalR M W` and `F(φ) ∈ W`.
+Density of ExistsTask: if `F(φ) ∈ M` and `M` is MCS, then there exists an
+intermediate MCS W with `ExistsTask M W` and `F(φ) ∈ W`.
 
 Under strict semantics (Task 991), the density axiom is `GGφ → Gφ` (Sahlqvist form).
 The existential form `Fφ → FFφ` is derivable from it:
@@ -169,11 +169,11 @@ The existential form `Fφ → FFφ` is derivable from it:
 
 The proof uses:
 1. `F(φ) ∈ M` implies `F(F(φ)) ∈ M` by the dual density
-2. `F(F(φ)) ∈ M` means there exists W with `CanonicalR M W` and `F(φ) ∈ W`
+2. `F(F(φ)) ∈ M` means there exists W with `ExistsTask M W` and `F(φ) ∈ W`
 -/
 theorem density_of_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_F : Formula.some_future φ ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧
       Formula.some_future φ ∈ W := by
   -- The density axiom is now GGψ → Gψ, not Fφ → FFφ.
   -- Fφ → FFφ is equivalent to ¬GG¬φ → ¬G¬φ, which is the contrapositive of GGψ → Gψ for ψ = ¬φ.

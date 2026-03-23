@@ -15,7 +15,7 @@ density_frame_condition intermediates for all strictly ordered pairs at each sta
 
 ## Key Theorems
 
-- `dense_timeline_has_intermediate`: the enriched timeline has CanonicalR-intermediates
+- `dense_timeline_has_intermediate`: the enriched timeline has ExistsTask-intermediates
 - `dense_timeline_countable`, `dense_timeline_nonempty`, etc.: other Cantor prereqs
 - `dense_timeline_has_future`, `dense_timeline_has_past`: no endpoints
 
@@ -45,23 +45,23 @@ variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mc
 
 /-- Extract the intermediate MCS from density_frame_condition.
     When the source a.mcs is reflexive, uses the strict variant that guarantees
-    ¬CanonicalR(b.mcs, W), ensuring the intermediate is not equivalent to the target. -/
+    ¬ExistsTask(b.mcs, W), ensuring the intermediate is not equivalent to the target. -/
 noncomputable def densityIntermediateMCS
     (a b : StagedPoint)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs) : Set Formula :=
-  if h_refl : CanonicalR a.mcs a.mcs then
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs) : Set Formula :=
+  if h_refl : ExistsTask a.mcs a.mcs then
     (density_frame_condition_reflexive_source a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R h_refl).choose
   else
     (density_frame_condition a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R).choose
 
 theorem densityIntermediateMCS_spec
     (a b : StagedPoint)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs) :
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs) :
     SetMaximalConsistent (densityIntermediateMCS a b h_R h_not_R) ∧
-    CanonicalR a.mcs (densityIntermediateMCS a b h_R h_not_R) ∧
-    CanonicalR (densityIntermediateMCS a b h_R h_not_R) b.mcs := by
+    ExistsTask a.mcs (densityIntermediateMCS a b h_R h_not_R) ∧
+    ExistsTask (densityIntermediateMCS a b h_R h_not_R) b.mcs := by
   simp only [densityIntermediateMCS]
   split
   · -- Reflexive case: use density_frame_condition_reflexive_source
@@ -72,22 +72,22 @@ theorem densityIntermediateMCS_spec
     exact (density_frame_condition a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R).choose_spec
 
 /-- When the source is reflexive, the density intermediate is strict from the target:
-    ¬CanonicalR(b.mcs, intermediate). This guarantees the intermediate is not
+    ¬ExistsTask(b.mcs, intermediate). This guarantees the intermediate is not
     equivalent to b in the quotient. -/
 theorem densityIntermediateMCS_strict_from_target
     (a b : StagedPoint)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs)
-    (h_refl : CanonicalR a.mcs a.mcs) :
-    ¬CanonicalR b.mcs (densityIntermediateMCS a b h_R h_not_R) := by
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs)
+    (h_refl : ExistsTask a.mcs a.mcs) :
+    ¬ExistsTask b.mcs (densityIntermediateMCS a b h_R h_not_R) := by
   simp only [densityIntermediateMCS, dif_pos h_refl]
   exact (density_frame_condition_reflexive_source a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R h_refl).choose_spec.2.2.2
 
 /-- Create a StagedPoint from a density intermediate. -/
 noncomputable def densityIntermediatePoint
     (a b : StagedPoint)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs)
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs)
     (stage : Stage) : StagedPoint where
   mcs := densityIntermediateMCS a b h_R h_not_R
   is_mcs := (densityIntermediateMCS_spec a b h_R h_not_R).1
@@ -95,29 +95,29 @@ noncomputable def densityIntermediatePoint
 
 theorem densityIntermediatePoint_canonicalR_left
     (a b : StagedPoint)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs)
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs)
     (stage : Stage) :
-    CanonicalR a.mcs (densityIntermediatePoint a b h_R h_not_R stage).mcs :=
+    ExistsTask a.mcs (densityIntermediatePoint a b h_R h_not_R stage).mcs :=
   (densityIntermediateMCS_spec a b h_R h_not_R).2.1
 
 theorem densityIntermediatePoint_canonicalR_right
     (a b : StagedPoint)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs)
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs)
     (stage : Stage) :
-    CanonicalR (densityIntermediatePoint a b h_R h_not_R stage).mcs b.mcs :=
+    ExistsTask (densityIntermediatePoint a b h_R h_not_R stage).mcs b.mcs :=
   (densityIntermediateMCS_spec a b h_R h_not_R).2.2
 
 /-- When the source is reflexive, the density intermediate point is strict from target b:
-    ¬CanonicalR(b.mcs, c.mcs) where c is the intermediate. -/
+    ¬ExistsTask(b.mcs, c.mcs) where c is the intermediate. -/
 theorem densityIntermediatePoint_strict_from_target
     (a b : StagedPoint)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs)
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs)
     (stage : Stage)
-    (h_refl : CanonicalR a.mcs a.mcs) :
-    ¬CanonicalR b.mcs (densityIntermediatePoint a b h_R h_not_R stage).mcs :=
+    (h_refl : ExistsTask a.mcs a.mcs) :
+    ¬ExistsTask b.mcs (densityIntermediatePoint a b h_R h_not_R stage).mcs :=
   densityIntermediateMCS_strict_from_target a b h_R h_not_R h_refl
 
 /-!
@@ -129,7 +129,7 @@ noncomputable def densityWitnessesForSet
     (S : Finset StagedPoint) (stage : Stage) : Finset StagedPoint :=
   S.biUnion fun a =>
     S.biUnion fun b =>
-      if h : CanonicalR a.mcs b.mcs ∧ ¬CanonicalR b.mcs a.mcs then
+      if h : ExistsTask a.mcs b.mcs ∧ ¬ExistsTask b.mcs a.mcs then
         {densityIntermediatePoint a b h.1 h.2 stage}
       else ∅
 
@@ -188,13 +188,13 @@ theorem base_union_subset_dense :
 /-!
 ## Linearity of Dense Timeline
 
-Linearity follows from the fact that all points are CanonicalR-reachable from the root,
+Linearity follows from the fact that all points are ExistsTask-reachable from the root,
 combined with the linearity axiom (temp_linearity) which ensures forward/backward
 reachable points are comparable.
 -/
 
 /--
-All points in the dense stage are CanonicalR-comparable with the root.
+All points in the dense stage are ExistsTask-comparable with the root.
 
 **Proof strategy**: Induction on stage number `n`:
 - Base case (n=0): Points come from stagedBuild or densityWitnesses; use
@@ -204,8 +204,8 @@ All points in the dense stage are CanonicalR-comparable with the root.
 -/
 theorem denseStage_all_comparable_with_root (n : Nat)
     (p : StagedPoint) (hp : p ∈ denseStage root_mcs root_mcs_proof n) :
-    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
-    CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    ExistsTask (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+    ExistsTask p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
     (rootPoint root_mcs root_mcs_proof).mcs = p.mcs := by
   induction n generalizing p with
   | zero =>
@@ -250,8 +250,8 @@ theorem denseStage_all_comparable_with_root (n : Nat)
         rw [h_dite]
         have h_R_ap := densityIntermediatePoint_canonicalR_left a b h_cond.1 h_cond.2 (n + 1)
         rw [Finset.mem_union] at ha_mem
-        have h_root_a : CanonicalR (rootPoint root_mcs root_mcs_proof).mcs a.mcs ∨
-            CanonicalR a.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+        have h_root_a : ExistsTask (rootPoint root_mcs root_mcs_proof).mcs a.mcs ∨
+            ExistsTask a.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
             (rootPoint root_mcs root_mcs_proof).mcs = a.mcs := by
           rcases ha_mem with h_base | h_prev
           · exact stagedBuild_all_comparable_with_root root_mcs root_mcs_proof (n + 1) a h_base
@@ -267,23 +267,23 @@ theorem denseStage_all_comparable_with_root (n : Nat)
 theorem denseStage_mcs_comparable (n : Nat)
     (a b : StagedPoint) (ha : a ∈ denseStage root_mcs root_mcs_proof n)
     (hb : b ∈ denseStage root_mcs root_mcs_proof n) :
-    CanonicalR a.mcs b.mcs ∨ CanonicalR b.mcs a.mcs ∨ a.mcs = b.mcs := by
+    ExistsTask a.mcs b.mcs ∨ ExistsTask b.mcs a.mcs ∨ a.mcs = b.mcs := by
   have h_root_a := denseStage_all_comparable_with_root root_mcs root_mcs_proof n a ha
   have h_root_b := denseStage_all_comparable_with_root root_mcs root_mcs_proof n b hb
   rcases h_root_a with h_Ra | h_aR | h_eq_a
-  · -- CanonicalR(root, a)
+  · -- ExistsTask(root, a)
     rcases h_root_b with h_Rb | h_bR | h_eq_b
     · exact canonical_forward_reachable_linear root_mcs a.mcs b.mcs root_mcs_proof a.is_mcs b.is_mcs h_Ra h_Rb
     · exact comparability_step_backward a.mcs root_mcs b.mcs a.is_mcs root_mcs_proof b.is_mcs
         (Or.inr (Or.inl h_Ra)) h_bR
-    · -- root.mcs = b.mcs: CanonicalR(root, a) = CanonicalR(b, a) after transport
+    · -- root.mcs = b.mcs: ExistsTask(root, a) = ExistsTask(b, a) after transport
       exact Or.inr (Or.inl (h_eq_b ▸ h_Ra))
-  · -- CanonicalR(a, root)
+  · -- ExistsTask(a, root)
     rcases h_root_b with h_Rb | h_bR | h_eq_b
     · exact comparability_step_forward a.mcs root_mcs b.mcs a.is_mcs root_mcs_proof b.is_mcs
         (Or.inl h_aR) h_Rb
     · exact canonical_backward_reachable_linear root_mcs a.mcs b.mcs root_mcs_proof a.is_mcs b.is_mcs h_aR h_bR
-    · -- root.mcs = b.mcs: CanonicalR(a, root) = CanonicalR(a, b) after transport
+    · -- root.mcs = b.mcs: ExistsTask(a, root) = ExistsTask(a, b) after transport
       exact Or.inl (h_eq_b ▸ h_aR)
   · -- root.mcs = a.mcs
     rcases h_root_b with h_Rb | h_bR | h_eq_b
@@ -301,7 +301,7 @@ theorem denseTimeline_mcs_comparable
     (a b : StagedPoint)
     (ha : a ∈ denseTimelineUnion root_mcs root_mcs_proof)
     (hb : b ∈ denseTimelineUnion root_mcs root_mcs_proof) :
-    CanonicalR a.mcs b.mcs ∨ CanonicalR b.mcs a.mcs ∨ a.mcs = b.mcs := by
+    ExistsTask a.mcs b.mcs ∨ ExistsTask b.mcs a.mcs ∨ a.mcs = b.mcs := by
   obtain ⟨n, hn⟩ := ha
   obtain ⟨m, hm⟩ := hb
   exact denseStage_mcs_comparable root_mcs root_mcs_proof (max n m) a b
@@ -325,10 +325,10 @@ theorem dense_timeline_has_intermediate
     (a b : StagedPoint)
     (ha : a ∈ denseTimelineUnion root_mcs root_mcs_proof)
     (hb : b ∈ denseTimelineUnion root_mcs root_mcs_proof)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs) :
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs) :
     ∃ c : StagedPoint, c ∈ denseTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR a.mcs c.mcs ∧ CanonicalR c.mcs b.mcs := by
+      ExistsTask a.mcs c.mcs ∧ ExistsTask c.mcs b.mcs := by
   obtain ⟨n, hn⟩ := ha
   obtain ⟨m, hm⟩ := hb
   set N := max n m
@@ -354,17 +354,17 @@ theorem dense_timeline_has_intermediate
   · exact densityIntermediatePoint_canonicalR_right a b h_R h_not_R (N + 1)
 
 /-- When the source is reflexive, the intermediate from dense_timeline_has_intermediate
-    is strict from the target: ¬CanonicalR(b.mcs, c.mcs). This is the key property
+    is strict from the target: ¬ExistsTask(b.mcs, c.mcs). This is the key property
     for proving DenselyOrdered at the quotient level. -/
 theorem dense_timeline_has_strict_intermediate
     (a b : StagedPoint)
     (ha : a ∈ denseTimelineUnion root_mcs root_mcs_proof)
     (hb : b ∈ denseTimelineUnion root_mcs root_mcs_proof)
-    (h_R : CanonicalR a.mcs b.mcs)
-    (h_not_R : ¬CanonicalR b.mcs a.mcs)
-    (h_refl : CanonicalR a.mcs a.mcs) :
+    (h_R : ExistsTask a.mcs b.mcs)
+    (h_not_R : ¬ExistsTask b.mcs a.mcs)
+    (h_refl : ExistsTask a.mcs a.mcs) :
     ∃ c : StagedPoint, c ∈ denseTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR a.mcs c.mcs ∧ CanonicalR c.mcs b.mcs ∧ ¬CanonicalR b.mcs c.mcs := by
+      ExistsTask a.mcs c.mcs ∧ ExistsTask c.mcs b.mcs ∧ ¬ExistsTask b.mcs c.mcs := by
   obtain ⟨n, hn⟩ := ha
   obtain ⟨m, hm⟩ := hb
   set N := max n m
@@ -394,18 +394,18 @@ theorem dense_timeline_has_strict_intermediate
 ## Origin tracking for dense timeline points
 
 Every point in the dense timeline is either from the base timeline or is a
-density intermediate. For density intermediates, we know CanonicalR relationships
+density intermediate. For density intermediates, we know ExistsTask relationships
 with the source points. This tracking enables the NoMaxOrder/NoMinOrder proofs.
 -/
 
 /-- Every point in the dense timeline either comes from the base timeline
-    or has a known CanonicalR-future in the dense timeline (the "right endpoint"
+    or has a known ExistsTask-future in the dense timeline (the "right endpoint"
     of the density pair that created it). -/
 theorem dense_point_has_future_witness (n : Nat)
     (p : StagedPoint) (hp : p ∈ denseStage root_mcs root_mcs_proof n) :
     (∃ m, p ∈ stagedBuild root_mcs root_mcs_proof m) ∨
     (∃ q : StagedPoint, q ∈ denseTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR p.mcs q.mcs) := by
+      ExistsTask p.mcs q.mcs) := by
   induction n generalizing p with
   | zero =>
     simp only [denseStage] at hp
@@ -421,7 +421,7 @@ theorem dense_point_has_future_witness (n : Nat)
       · rename_i h_cond
         rw [Finset.mem_singleton] at h_dite
         subst h_dite
-        -- p = densityIntermediatePoint a b ..., CanonicalR(p.mcs, b.mcs)
+        -- p = densityIntermediatePoint a b ..., ExistsTask(p.mcs, b.mcs)
         exact Or.inr ⟨b, ⟨0, stagedBuild_subset_denseStage root_mcs root_mcs_proof 0 hb_mem⟩,
           densityIntermediatePoint_canonicalR_right a b h_cond.1 h_cond.2 0⟩
       · simp at h_dite
@@ -452,12 +452,12 @@ theorem dense_point_has_future_witness (n : Nat)
           densityIntermediatePoint_canonicalR_right a b h_cond.1 h_cond.2 (n + 1)⟩
       · simp at h_dite
 
-/-- Symmetric: every density point also has a CanonicalR-predecessor. -/
+/-- Symmetric: every density point also has a ExistsTask-predecessor. -/
 theorem dense_point_has_past_witness (n : Nat)
     (p : StagedPoint) (hp : p ∈ denseStage root_mcs root_mcs_proof n) :
     (∃ m, p ∈ stagedBuild root_mcs root_mcs_proof m) ∨
     (∃ q : StagedPoint, q ∈ denseTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR q.mcs p.mcs) := by
+      ExistsTask q.mcs p.mcs) := by
   induction n generalizing p with
   | zero =>
     simp only [denseStage] at hp
@@ -514,7 +514,7 @@ theorem dense_timeline_nonempty :
 theorem dense_timeline_has_future
     (p : StagedPoint) (hp : p ∈ denseTimelineUnion root_mcs root_mcs_proof) :
     ∃ q : StagedPoint, q ∈ denseTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR p.mcs q.mcs := by
+      ExistsTask p.mcs q.mcs := by
   obtain ⟨n, hn⟩ := hp
   rcases dense_point_has_future_witness root_mcs root_mcs_proof n p hn with ⟨m, hm⟩ | ⟨q, hq⟩
   · -- p is a base point: use staged_timeline_has_future
@@ -526,7 +526,7 @@ theorem dense_timeline_has_future
 theorem dense_timeline_has_past
     (p : StagedPoint) (hp : p ∈ denseTimelineUnion root_mcs root_mcs_proof) :
     ∃ q : StagedPoint, q ∈ denseTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR q.mcs p.mcs := by
+      ExistsTask q.mcs p.mcs := by
   obtain ⟨n, hn⟩ := hp
   rcases dense_point_has_past_witness root_mcs root_mcs_proof n p hn with ⟨m, hm⟩ | ⟨q, hq⟩
   · -- p is a base point: use staged_timeline_has_past

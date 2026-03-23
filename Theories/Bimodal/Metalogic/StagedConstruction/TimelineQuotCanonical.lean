@@ -27,7 +27,7 @@ The key insight from research-005 is that D (time domain) and WorldState
 ## Key Results
 
 - `timelineQuot_lt_implies_canonicalR`: The core linking lemma connecting
-  TimelineQuot ordering to CanonicalR accessibility
+  TimelineQuot ordering to ExistsTask accessibility
 - `timelineQuotFMCS`: FMCS structure over TimelineQuot
 - `timelineQuotBFMCS`: BFMCS bundle for countermodel construction
 
@@ -61,7 +61,7 @@ noncomputable instance denseTimelineElemIsPreorder :
 /-!
 ## Phase 1: Core Linking Lemma
 
-The central bridge between TimelineQuot ordering and CanonicalR accessibility.
+The central bridge between TimelineQuot ordering and ExistsTask accessibility.
 -/
 
 /--
@@ -69,10 +69,10 @@ Key helper: If two DenseTimelineElems are mutually ≤ (i.e., in the same equiva
 then their underlying MCSs are equal.
 
 **Proof**: Mutual ≤ means both StagedPoint.le directions hold.
-- StagedPoint.le p q means: p.mcs = q.mcs ∨ CanonicalR p.mcs q.mcs
-- StagedPoint.le q p means: q.mcs = p.mcs ∨ CanonicalR q.mcs p.mcs
+- StagedPoint.le p q means: p.mcs = q.mcs ∨ ExistsTask p.mcs q.mcs
+- StagedPoint.le q p means: q.mcs = p.mcs ∨ ExistsTask q.mcs p.mcs
 
-If both are CanonicalR, then by transitivity we get CanonicalR p.mcs p.mcs,
+If both are ExistsTask, then by transitivity we get ExistsTask p.mcs p.mcs,
 contradicting canonicalR_irreflexive. So at least one must be equality.
 -/
 theorem denseTimelineElem_mutual_le_implies_mcs_eq
@@ -89,27 +89,27 @@ theorem denseTimelineElem_mutual_le_implies_mcs_eq
     cases h_qp' with
     | inl h_eq => exact h_eq.symm
     | inr h_R_qp =>
-      -- Both are CanonicalR: CanonicalR p.mcs q.mcs and CanonicalR q.mcs p.mcs
-      -- By transitivity: CanonicalR p.mcs p.mcs
+      -- Both are ExistsTask: ExistsTask p.mcs q.mcs and ExistsTask q.mcs p.mcs
+      -- By transitivity: ExistsTask p.mcs p.mcs
       have h_trans := canonicalR_transitive p.1.mcs q.1.mcs p.1.mcs p.1.is_mcs h_R_pq h_R_qp
       -- This contradicts irreflexivity
       exact absurd h_trans (Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs)
 
 /--
-**Core Linking Lemma**: If t < t' in TimelineQuot, then CanonicalR between their underlying MCSs.
+**Core Linking Lemma**: If t < t' in TimelineQuot, then ExistsTask between their underlying MCSs.
 
 **Proof Idea**:
 - t < t' in TimelineQuot means: for representatives p, q, we have p ≤ q and ¬(q ≤ p)
-- StagedPoint.le p q means: p.mcs = q.mcs or CanonicalR p.mcs q.mcs
+- StagedPoint.le p q means: p.mcs = q.mcs or ExistsTask p.mcs q.mcs
 - The equality case is excluded by ¬(q ≤ p), which requires p.mcs ≠ q.mcs
-- Therefore CanonicalR p.mcs q.mcs
+- Therefore ExistsTask p.mcs q.mcs
 
 The key insight is that representatives from the SAME equivalence class have the same MCS
 (by denseTimelineElem_mutual_le_implies_mcs_eq), so timelineQuotMCS is well-defined on the quotient.
 -/
 theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot root_mcs root_mcs_proof)
     (h : t < t') :
-    CanonicalR (timelineQuotMCS root_mcs root_mcs_proof t)
+    ExistsTask (timelineQuotMCS root_mcs root_mcs_proof t)
                (timelineQuotMCS root_mcs root_mcs_proof t') := by
   -- Inject the IsPreorder instance for use in this proof
   haveI : IsPreorder (DenseTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
@@ -126,17 +126,17 @@ theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot root_mcs root_mc
       -- h_not_le : ¬(q ≤ p)
       have h_le' : StagedPoint.le p.1 q.1 := h_le
       have h_not_le' : ¬StagedPoint.le q.1 p.1 := h_not_le
-      -- StagedPoint.le is: a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs
+      -- StagedPoint.le is: a.mcs = b.mcs ∨ ExistsTask a.mcs b.mcs
       simp only [StagedPoint.le] at h_le' h_not_le'
       push_neg at h_not_le'
-      -- h_le' : p.1.mcs = q.1.mcs ∨ CanonicalR p.1.mcs q.1.mcs
-      -- h_not_le' : q.1.mcs ≠ p.1.mcs ∧ ¬CanonicalR q.1.mcs p.1.mcs
+      -- h_le' : p.1.mcs = q.1.mcs ∨ ExistsTask p.1.mcs q.1.mcs
+      -- h_not_le' : q.1.mcs ≠ p.1.mcs ∧ ¬ExistsTask q.1.mcs p.1.mcs
       cases h_le' with
       | inl h_eq =>
         -- p.1.mcs = q.1.mcs contradicts h_not_le'.1 (q.1.mcs ≠ p.1.mcs)
         exact absurd h_eq.symm h_not_le'.1
       | inr h_R =>
-        -- We have CanonicalR p.1.mcs q.1.mcs
+        -- We have ExistsTask p.1.mcs q.1.mcs
         -- Now we need to connect this to timelineQuotMCS t and timelineQuotMCS t'
         -- timelineQuotMCS extracts via ofAntisymmetrization, which gives SOME representative
         -- The key is that all representatives of the same class have the same MCS
@@ -148,7 +148,7 @@ theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot root_mcs root_mc
         -- For now, we observe that the extracted MCS is still p.1.mcs and q.1.mcs
         -- because any representative in the same class has the same MCS
 
-        -- Need to show: CanonicalR
+        -- Need to show: ExistsTask
         --   (ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)).1.mcs
         --   (ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)).1.mcs
 
@@ -158,7 +158,7 @@ theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot root_mcs root_mc
         -- This means AntisymmRel rep_p p, i.e., rep_p ≤ p ∧ p ≤ rep_p
         -- By denseTimelineElem_mutual_le_implies_mcs_eq, rep_p.1.mcs = p.1.mcs
         -- Similarly rep_q.1.mcs = q.1.mcs
-        -- Therefore goal becomes CanonicalR p.1.mcs q.1.mcs, which is h_R
+        -- Therefore goal becomes ExistsTask p.1.mcs q.1.mcs, which is h_R
 
         let rep_p := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
         let rep_q := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)
@@ -202,13 +202,13 @@ theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot root_mcs root_mc
         exact h_R
 
 /--
-Converse direction: CanonicalR implies ≤ in TimelineQuot.
+Converse direction: ExistsTask implies ≤ in TimelineQuot.
 
 This is used to show the FMCS coherence conditions.
 -/
 theorem canonicalR_implies_timelineQuot_le
     (t t' : TimelineQuot root_mcs root_mcs_proof)
-    (h : CanonicalR (timelineQuotMCS root_mcs root_mcs_proof t)
+    (h : ExistsTask (timelineQuotMCS root_mcs root_mcs_proof t)
                     (timelineQuotMCS root_mcs root_mcs_proof t')) :
     t ≤ t' := by
   -- Inject the IsPreorder instance for use in this proof
@@ -252,8 +252,8 @@ theorem canonicalR_implies_timelineQuot_le
       have h_mcs_q : rep_q.1.mcs = q.1.mcs :=
         denseTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep_q q
           h_rep_q_equiv.1 h_rep_q_equiv.2
-      -- h : CanonicalR rep_p.1.mcs rep_q.1.mcs
-      -- After substitution: CanonicalR p.1.mcs q.1.mcs
+      -- h : ExistsTask rep_p.1.mcs rep_q.1.mcs
+      -- After substitution: ExistsTask p.1.mcs q.1.mcs
       rw [h_mcs_p, h_mcs_q] at h
       exact Or.inr h
 
@@ -287,12 +287,12 @@ theorem timelineQuot_backward_H
     (h_lt : t' < t)
     (h_H : Formula.all_past phi ∈ timelineQuotMCS root_mcs root_mcs_proof t) :
     phi ∈ timelineQuotMCS root_mcs root_mcs_proof t' := by
-  -- t' < t implies CanonicalR between their MCSs
+  -- t' < t implies ExistsTask between their MCSs
   have h_R := timelineQuot_lt_implies_canonicalR root_mcs root_mcs_proof t' t h_lt
-  -- CanonicalR t'.mcs t.mcs implies h_content(t.mcs) ⊆ t'.mcs (duality)
+  -- ExistsTask t'.mcs t.mcs implies h_content(t.mcs) ⊆ t'.mcs (duality)
   have h_t'_mcs := timelineQuotMCS_is_mcs root_mcs root_mcs_proof t'
   have h_t_mcs := timelineQuotMCS_is_mcs root_mcs root_mcs_proof t
-  have h_R_past : CanonicalR_past
+  have h_R_past : ExistsTask_past
       (timelineQuotMCS root_mcs root_mcs_proof t)
       (timelineQuotMCS root_mcs root_mcs_proof t') :=
     g_content_subset_implies_h_content_reverse
@@ -334,12 +334,12 @@ The W/D-separated TaskFrame for dense completeness over TimelineQuot.
 
 - **WorldState** = `ParametricCanonicalWorldState` (MCSs as subtypes)
 - **D** = `TimelineQuot` (syntactically-derived dense timeline)
-- **task_rel** = `parametric_canonical_task_rel` (uses CanonicalR)
+- **task_rel** = `parametric_canonical_task_rel` (uses ExistsTask)
 
 This is the correct architecture for dense completeness:
 - W (world states) = ALL maximal consistent sets (D-independent)
 - D (duration domain) = TimelineQuot (emerges from density axiom via Cantor)
-- task_rel uses CanonicalR between MCSs, not W = D translation
+- task_rel uses ExistsTask between MCSs, not W = D translation
 
 The TaskFrame axioms are proven sorry-free in `ParametricCanonical.lean`.
 The Cantor isomorphism (TimelineQuot ≃o Q) provides the algebraic structure.
@@ -364,7 +364,7 @@ theorem timelineQuotParametricTaskFrame_worldState :
     ParametricCanonicalWorldState := rfl
 
 /--
-The task relation is `parametric_canonical_task_rel`, which uses CanonicalR.
+The task relation is `parametric_canonical_task_rel`, which uses ExistsTask.
 
 This confirms the task relation is a genuine accessibility relation between MCSs,
 not the degenerate W = D translation (w + d = w').

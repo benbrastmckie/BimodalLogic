@@ -13,18 +13,18 @@ bimodal completeness (Task 922). Instead of building a linear chain of MCSes
 canonical frame where:
 
 - **Worlds** = all maximal consistent sets (MCSes)
-- **Future relation** `CanonicalR M M'` iff `g_content M ⊆ M'`
-- **Past relation** `CanonicalR_past M M'` iff `h_content M ⊆ M'`
+- **Future relation** `ExistsTask M M'` iff `g_content M ⊆ M'`
+- **Past relation** `ExistsTask_past M M'` iff `h_content M ⊆ M'`
 
 In this frame, `forward_F` and `backward_P` become trivial because each
 F-obligation gets its own independently-constructed witness MCS via Lindenbaum.
 
 ## Key Results
 
-- `canonical_forward_F`: F(psi) in M implies exists MCS W with psi in W and CanonicalR M W
-- `canonical_backward_P`: P(psi) in M implies exists MCS W with psi in W and CanonicalR_past M W
-- `canonical_forward_G`: G(phi) in M and CanonicalR M M' implies phi in M'
-- `canonical_backward_H`: H(phi) in M and CanonicalR_past M M' implies phi in M'
+- `canonical_forward_F`: F(psi) in M implies exists MCS W with psi in W and ExistsTask M W
+- `canonical_backward_P`: P(psi) in M implies exists MCS W with psi in W and ExistsTask_past M W
+- `canonical_forward_G`: G(phi) in M and ExistsTask M M' implies phi in M'
+- `canonical_backward_H`: H(phi) in M and ExistsTask_past M M' implies phi in M'
 
 ## Design
 
@@ -93,27 +93,27 @@ abbrev CanonicalR_past := ExistsTask_past
 /-!
 ## Forward G and Backward H (Trivial by Definition)
 
-These properties follow directly from the definition of CanonicalR/CanonicalR_past.
+These properties follow directly from the definition of ExistsTask/ExistsTask_past.
 -/
 
 /--
-G-forward property: If `G phi ∈ M` and `CanonicalR M M'`, then `phi ∈ M'`.
+G-forward property: If `G phi ∈ M` and `ExistsTask M M'`, then `phi ∈ M'`.
 
-This is trivial: `G phi ∈ M` means `phi ∈ g_content M`, and `CanonicalR M M'`
+This is trivial: `G phi ∈ M` means `phi ∈ g_content M`, and `ExistsTask M M'`
 means `g_content M ⊆ M'`, so `phi ∈ M'`.
 -/
 theorem canonical_forward_G (M M' : Set Formula)
-    (h_R : CanonicalR M M') (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
+    (h_R : ExistsTask M M') (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
     phi ∈ M' := by
   exact h_R h_G
 
 /--
-H-backward property: If `H phi ∈ M` and `CanonicalR_past M M'`, then `phi ∈ M'`.
+H-backward property: If `H phi ∈ M` and `ExistsTask_past M M'`, then `phi ∈ M'`.
 
 Symmetric to canonical_forward_G using h_content.
 -/
 theorem canonical_backward_H (M M' : Set Formula)
-    (h_R : CanonicalR_past M M') (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
+    (h_R : ExistsTask_past M M') (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
     phi ∈ M' := by
   exact h_R h_H
 
@@ -128,19 +128,19 @@ The proof uses:
 1. `forward_temporal_witness_seed_consistent`: `F(psi) ∈ M` implies `{psi} ∪ g_content(M)` is consistent
 2. `set_lindenbaum`: Any consistent set can be extended to an MCS
 3. The resulting MCS contains `psi` (from the seed) and `g_content(M)` (from the seed)
-4. Therefore `CanonicalR M W` holds and `psi ∈ W`
+4. Therefore `ExistsTask M W` holds and `psi ∈ W`
 -/
 
 /--
 F-forward property: If `F(psi) ∈ M` and `M` is MCS, then there exists an MCS `W`
-such that `CanonicalR M W` and `psi ∈ W`.
+such that `ExistsTask M W` and `psi ∈ W`.
 
 This is the property that all 12 chain-based approaches failed to prove.
 In the canonical frame, it is trivial.
 -/
 theorem canonical_forward_F (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧ psi ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧ psi ∈ W := by
   -- Step 1: {psi} ∪ g_content(M) is consistent
   have h_seed_cons : SetConsistent (forward_temporal_witness_seed M psi) :=
     forward_temporal_witness_seed_consistent M h_mcs psi h_F
@@ -149,7 +149,7 @@ theorem canonical_forward_F (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   -- Step 3: W is the witness
   use W, h_W_mcs
   constructor
-  · -- CanonicalR M W: g_content M ⊆ W
+  · -- ExistsTask M W: g_content M ⊆ W
     -- g_content M ⊆ forward_temporal_witness_seed M psi ⊆ W
     exact Set.Subset.trans (g_content_subset_forward_temporal_witness_seed M psi) h_extends
   · -- psi ∈ W: psi ∈ forward_temporal_witness_seed M psi ⊆ W
@@ -163,13 +163,13 @@ Same as forward_F but for the past direction.
 
 /--
 P-backward property: If `P(psi) ∈ M` and `M` is MCS, then there exists an MCS `W`
-such that `CanonicalR_past M W` and `psi ∈ W`.
+such that `ExistsTask_past M W` and `psi ∈ W`.
 
 This is the past-symmetric version of canonical_forward_F.
 -/
 theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR_past M W ∧ psi ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask_past M W ∧ psi ∈ W := by
   -- Step 1: {psi} ∪ h_content(M) is consistent
   have h_seed_cons : SetConsistent (past_temporal_witness_seed M psi) :=
     past_temporal_witness_seed_consistent M h_mcs psi h_P
@@ -178,7 +178,7 @@ theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   -- Step 3: W is the witness
   use W, h_W_mcs
   constructor
-  · -- CanonicalR_past M W: h_content M ⊆ W
+  · -- ExistsTask_past M W: h_content M ⊆ W
     -- h_content M ⊆ past_temporal_witness_seed M psi ⊆ W
     exact Set.Subset.trans (h_content_subset_past_temporal_witness_seed M psi) h_extends
   · -- psi ∈ W: psi ∈ past_temporal_witness_seed M psi ⊆ W

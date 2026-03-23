@@ -88,7 +88,7 @@ By Cantor's theorem, D ≃o Q.
 
 This is the canonical model domain: a countable, dense, linear order without endpoints.
 Each element of D represents an equivalence class of staged MCSs under mutual
-CanonicalR accessibility.
+ExistsTask accessibility.
 -/
 abbrev D : Type := TimelineQuot root_mcs root_mcs_proof
 
@@ -173,7 +173,7 @@ Re-export the Cantor isomorphism for external use.
 
 By Cantor's uniqueness theorem, any countable dense linear order without endpoints
 is order-isomorphic to the rationals. This isomorphism is the key result connecting
-the syntactic construction (MCSs and CanonicalR) to the semantic model (Q-indexed timeline).
+the syntactic construction (MCSs and ExistsTask) to the semantic model (Q-indexed timeline).
 -/
 theorem cantor_isomorphism :
     Nonempty (D root_mcs root_mcs_proof ≃o Rat) :=
