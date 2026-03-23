@@ -1,5 +1,5 @@
 ---
-next_project_number: 40
+next_project_number: 41
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -66,6 +66,16 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 40. Add p-step condition to Succ relation or prove successor_satisfies_p_step
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Depends On**: Task 35 (partial)
+
+**Description**: Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).
 
 ---
 
