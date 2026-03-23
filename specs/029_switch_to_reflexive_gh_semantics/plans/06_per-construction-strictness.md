@@ -1,8 +1,8 @@
 # Implementation Plan: Task #29 (v6 - Per-Construction Strictness)
 
 - **Task**: 29 - switch_to_reflexive_gh_semantics
-- **Status**: [IN PROGRESS]
-- **Effort**: 8-12 hours remaining
+- **Status**: [PARTIAL] (Phases 4, 5A complete; 5B-8 remaining)
+- **Effort**: 6-10 hours remaining (5B/5C ~4h, Phase 6 ~0.5h, Phase 7-8 ~3h)
 - **Dependencies**: None (self-contained refactoring)
 - **Research Inputs**:
   - specs/029_switch_to_reflexive_gh_semantics/reports/12_team-research.md (order-theoretic foundations)
@@ -77,7 +77,7 @@ Phase 4 key theorem `fresh_Gp_seed_consistent` is PROVEN. The infrastructure is 
 
 ## Implementation Phases
 
-### Phase 4: Clean Up Flawed Theorems [NOT STARTED]
+### Phase 4: Clean Up Flawed Theorems [COMPLETED]
 
 **Goal**: Remove cardinality-based theorems that are provably false.
 
@@ -100,7 +100,7 @@ Phase 4 key theorem `fresh_Gp_seed_consistent` is PROVEN. The infrastructure is 
 
 ---
 
-### Phase 5A: Introduce Per-Construction Strictness Infrastructure [NOT STARTED]
+### Phase 5A: Introduce Per-Construction Strictness Infrastructure [COMPLETED]
 
 **Goal**: Create the lemma that enables per-site strictness proofs.
 

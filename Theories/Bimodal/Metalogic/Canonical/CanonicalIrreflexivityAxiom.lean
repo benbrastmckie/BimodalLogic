@@ -3,56 +3,44 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Bundle.CanonicalIrreflexivity
 
 /-!
-# Theorem: Canonical Accessibility Relation is Irreflexive
+# DEPRECATED: Canonical Accessibility Relation Irreflexivity
 
-## Statement
+## Status: AXIOM-BASED, DEPRECATED (Task 29)
 
-For every maximal consistent set M of the bimodal tense logic TM,
-`¬CanonicalR M M` — that is, `g_content(M) ⊄ M`.
+**WARNING**: Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the
+canonical accessibility relation is REFLEXIVE, not irreflexive.
 
-## Mathematical Status
+- `canonicalR_reflexive` is PROVEN via T-axiom (see Bundle/CanonicalIrreflexivity.lean)
+- `canonicalR_irreflexive` is an AXIOM that contradicts reflexivity
 
-This is now a **proven theorem** (Task 967). The proof uses the Gabbay
-Irreflexivity Rule (IRR) contrapositively with the T-axiom for past
-(`H(φ) → φ`), which is valid under the reflexive temporal semantics.
+These theorems are preserved temporarily to avoid breaking ~40 downstream call sites.
+They introduce an INCONSISTENCY into the system.
 
-## Proof Strategy (Gabbay IRR with T-axiom)
+## Task 29 Resolution: Per-Construction Strictness
 
-1. Assume `CanonicalR(M, M)` for contradiction
-2. Choose any atom `p` (freshness not required with T-axiom approach)
-3. Build naming set `atomFreeSubset(M, p) ∪ {p, H(¬p)}`
-4. Show naming set is consistent (via IRR contrapositive)
-5. Extend to MCS `M' ⊇ naming set` via Lindenbaum
-6. From naming set: `p ∈ M'` and `H(¬p) ∈ M'`
-7. Apply T-axiom: `H(¬p) → ¬p`, so `¬p ∈ M'` (modus ponens)
-8. Both `p` and `¬p` in M' contradicts MCS consistency
+Instead of universal irreflexivity, call sites should prove strictness from the
+specific construction:
 
-## Historical Note
+1. Given a witness W constructed from M
+2. Prove `¬CanonicalR W M` from the formula that distinguishes W from M
+3. This typically follows from: φ ∈ g_content(W), φ ∉ M
 
-The previous approach attempted to use atom freshness (Step 2 required a fresh
-atom not in `atoms(g_content(M))`). This failed with `String` atoms since every
-string appears in tautologies. The resolution (Task 967) adopted reflexive
-temporal semantics, making the T-axiom valid, which provides an alternative
-path through Step 7 that does not require freshness.
+See `fresh_Gp_seed_consistent` in Bundle/CanonicalIrreflexivity.lean for the
+building block when a fresh atom is provided by the specific construction.
 
-## Downstream Consequences
+## Historical Context
 
-From this theorem, the following properties are provable:
-- `NoMaxOrder` on the canonical timeline quotient (via seriality + irreflexivity)
-- `NoMinOrder` on the canonical timeline quotient (via past seriality + irreflexivity)
-- `DenselyOrdered` on the dense timeline quotient (via density frame condition + irreflexivity)
-- `SuccOrder`/`PredOrder` coverness on the discrete timeline (via DF + irreflexivity)
+This file previously claimed irreflexivity was a "proven theorem" via the Gabbay
+IRR rule with T-axiom. However:
+- The IRR rule is UNSOUND under reflexive semantics
+- The T-axiom PROVES reflexivity (G(φ) → φ means g_content(M) ⊆ M)
+- Universal fresh atom existence is NOT provable (pathological MCS can cover all atoms)
 
-The proof pattern is uniform: if `CanonicalR(M, N)` and `CanonicalR(N, M)` both hold,
-then `CanonicalR(M, M)` by T4 composition, contradicting irreflexivity. So any
-witness produced by seriality or density is **strictly** ordered in the quotient.
+## TODO (Task 29 Phase 5+)
 
-## References
-
-- Goldblatt (1992), *Logics of Time and Computation*, Ch. 6
-- Blackburn, de Rijke, Venema (2001), *Modal Logic*, Ch. 4.8
-- `Bundle/CanonicalIrreflexivity.lean`: Complete proof using T-axiom
-- `specs/967_change_atom_type_for_freshness/reports/research-002.md`: T-axiom analysis
+- Phase 5B/5C: Refactor all call sites to use per-construction strictness
+- Phase 6: Delete `canonicalR_irreflexive_axiom`
+- Phase 7: Remove this file or convert to per-construction strictness module
 -/
 
 namespace Bimodal.Metalogic.Canonical
@@ -62,26 +50,24 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 
 /--
-**Theorem**: The canonical accessibility relation is irreflexive on MCSs.
+**DEPRECATED**: Under reflexive semantics, CanonicalR is REFLEXIVE, not irreflexive.
+This theorem is axiom-based and contradicts `canonicalR_reflexive`.
 
-For every maximal consistent set M, `g_content(M) ⊄ M` — the set of formulas
-that M asserts hold at all reflexive-future times is NOT a subset of M itself.
-
-The proof uses the Gabbay Irreflexivity Rule with the T-axiom for past
-(`H(φ) → φ`), which is valid under reflexive temporal semantics.
-
-**Resolved (Task 967)**: This was previously an axiom due to String atom
-freshness issues. Now proven via T-axiom approach with reflexive semantics.
+Use per-construction strictness instead: prove ¬CanonicalR W M from the specific
+formula that distinguishes the witness from the source.
 -/
+@[deprecated "Use per-construction strictness instead of universal irreflexivity"]
 theorem canonicalR_irreflexive :
   ∀ (M : Set Formula), SetMaximalConsistent M → ¬CanonicalR M M :=
   Bimodal.Metalogic.Bundle.canonicalR_irreflexive
 
 /--
-From irreflexivity: if `CanonicalR M N` and `CanonicalR N M`, then
-`CanonicalR M M` by T4 composition — contradicting irreflexivity.
-So mutual accessibility is impossible.
+**DEPRECATED**: Based on the false `canonicalR_irreflexive` axiom.
+
+Under reflexive semantics, antisymmetry FAILS for CanonicalR.
+Mutual accessibility (M R N ∧ N R M) is possible without M = N.
 -/
+@[deprecated "Antisymmetry fails under reflexive semantics"]
 theorem canonicalR_antisymmetric_strict
     (M N : Set Formula)
     (hM : SetMaximalConsistent M) (hN : SetMaximalConsistent N)
@@ -89,9 +75,12 @@ theorem canonicalR_antisymmetric_strict
   canonicalR_irreflexive M hM (canonicalR_transitive M N M hM h_MN h_NM)
 
 /--
-Corollary: any `CanonicalR` witness is strictly ordered in the quotient.
-If `CanonicalR M N`, then `¬CanonicalR N M`.
+**DEPRECATED**: Based on the false `canonicalR_irreflexive` axiom.
+
+Use per-construction strictness: prove ¬CanonicalR N M from the specific
+formula witness that distinguishes N from M.
 -/
+@[deprecated "Use per-construction strictness"]
 theorem canonicalR_strict
     (M N : Set Formula)
     (hM : SetMaximalConsistent M) (hN : SetMaximalConsistent N)

@@ -140,409 +140,26 @@ theorem exists_fresh_for_finset (S : Finset Formula) :
   apply hq
   exact Finset.mem_biUnion.mpr ⟨φ, hφ, h⟩
 
-/-- For g_content(M), fresh atoms exist because g_content is a proper subset of M.
+/-!
+## DELETED: Universal Fresh Atom Existence (Task 29 Phase 4)
 
-Unlike atoms_of_set M = Set.univ (since MCS decides every atom), g_content(M)
-only contains formulas φ where G(φ) ∈ M. For most atoms q, G(atom q) ∉ M,
-so (atom q) ∉ g_content(M), meaning q is fresh for g_content(M).
--/
+The following theorem was deleted because the cardinality argument is flawed:
+
+```lean
 theorem exists_fresh_for_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ q : Atom, fresh_for_set q (g_content M) := by
-  -- We use a counting argument. Consider atoms of the form mk_fresh "" n.
-  -- For each such atom q = mk_fresh "" n, if q ∈ atoms_of_set(g_content M),
-  -- then there exists φ ∈ g_content(M) with q ∈ φ.atoms.
-  -- This means G(φ) ∈ M.
-  --
-  -- Key insight: For q = mk_fresh "" n to be in atoms_of_set(g_content M),
-  -- there must be φ with q ∈ φ.atoms AND G(φ) ∈ M.
-  -- The formulas G(φ) for φ mentioning mk_fresh "" n are specific.
-  -- We claim: for sufficiently large n, no such G(φ) is in M.
-  --
-  -- Proof: Consider the encoding. The formulas in M are countable.
-  -- For each formula G(φ) ∈ M, φ has finitely many atoms.
-  -- Let S = { n ∈ ℕ | ∃ φ, G(φ) ∈ M ∧ mk_fresh "" n ∈ φ.atoms }.
-  -- Each G(φ) ∈ M contributes finitely many n to S.
-  -- { G(φ) | G(φ) ∈ M } is at most countable (subset of M).
-  -- So S is a countable union of finite sets.
-  --
-  -- But we don't need S to be finite - we just need S ≠ ℕ.
-  -- For this, observe: not every formula of form G(φ) is in M!
-  -- In fact, for a "generic" MCS built from a consistent seed not mentioning
-  -- fresh atoms, G(atom(mk_fresh "" n)) is typically not derivable.
-  --
-  -- Simpler approach: Use that g_content(M) ⊆ M by reflexivity (T-axiom),
-  -- and g_content(M) does NOT contain all formulas mentioning each atom.
-  --
-  -- Actually, let's prove directly: Find q with (atom q) ∉ g_content(M).
-  -- Then q ∉ atoms_of_set(g_content M) since (atom q) is the only formula
-  -- in g_content M that could have q as its sole atom.
-  -- Wait, that's not right - other formulas in g_content could mention q.
-  --
-  -- Better: Find q such that no formula in g_content(M) mentions q.
-  -- This means: for all φ ∈ g_content(M), q ∉ φ.atoms.
-  -- Equivalently: for all φ with G(φ) ∈ M, q ∉ φ.atoms.
-  --
-  -- Claim: For any MCS M, there exist infinitely many atoms q such that
-  -- for all φ with G(φ) ∈ M, q ∉ φ.atoms.
-  --
-  -- Proof: The set { φ | G(φ) ∈ M } has at most countably many atoms total.
-  -- Since Atom is countably infinite, some atoms are not covered.
-  --
-  -- Formalize using Finset and fresh atom existence.
-  by_contra h_none
-  push_neg at h_none
-  -- h_none: ∀ q, q ∈ atoms_of_set (g_content M)
-  -- This means: for all q, ∃ φ ∈ g_content M, q ∈ φ.atoms
-  -- I.e., for all q, ∃ φ, G(φ) ∈ M ∧ q ∈ φ.atoms
+    ∃ q : Atom, fresh_for_set q (g_content M)
+```
 
-  -- Consider the set of all atoms appearing in g_content(M)
-  -- This is atoms_of_set(g_content M).
-  -- If this equals Set.univ, then every atom q appears in some φ with G(φ) ∈ M.
+**Why the cardinality argument fails**: A pathological MCS can cover all atoms.
+Consider an MCS M where for every atom q, there exists some formula φ_q with
+q ∈ φ_q.atoms and G(φ_q) ∈ M. The set { φ | G(φ) ∈ M } is countable, but a
+countable union of finite sets CAN cover all of a countably infinite set.
 
-  -- For atoms q = mk_fresh "" n, this means:
-  -- For all n, ∃ φ_n, G(φ_n) ∈ M ∧ mk_fresh "" n ∈ φ_n.atoms.
+**Resolution**: Instead of proving universal fresh atom existence, we use
+**per-construction strictness** - at each call site where strictness is needed,
+we prove ¬CanonicalR W M from the specific construction that built W.
 
-  -- The formulas { G(φ_n) | n ∈ ℕ } are all in M.
-  -- Each φ_n mentions mk_fresh "" n.
-  -- For distinct n, the atoms mk_fresh "" n are distinct.
-  -- So the formulas φ_n must be "diverse" - infinitely many distinct formulas.
-
-  -- But here's the key: the subformulas of any single G(ψ) ∈ M are finite.
-  -- So the set { φ | G(φ) ∈ M } being infinite doesn't directly help.
-
-  -- Actually, the issue is that { φ | G(φ) ∈ M } CAN have atoms covering all of Atom.
-  -- But we claim it doesn't for a "typical" MCS.
-
-  -- For the proof, we use that formulas are countable and each has finite atoms.
-  -- { φ | G(φ) ∈ M } ⊆ { φ | G(φ) ∈ all formulas } is countable.
-  -- atoms_of_set { φ | G(φ) ∈ M } is at most a countable union of finite sets.
-
-  -- Key technical lemma: If S is a countable set of formulas, each with finite atoms,
-  -- then atoms_of_set S is at most countable, hence ≠ Set.univ (since Atom is infinite
-  -- and we can find atoms outside any countable set... wait, Atom IS countable).
-
-  -- The real argument: Atom is countably infinite. atoms_of_set(g_content M) is
-  -- at most countable. If they're equal, fine. But we need to show they're NOT equal.
-
-  -- Observation: Not every atom q has G(atom q) ∈ M.
-  -- In fact, for most q, G(q) ∉ M (because G(q) would require q to hold at all future times,
-  -- which is a strong constraint not typically satisfied).
-
-  -- Alternative approach: Pick a specific fresh atom.
-  -- Let A = atoms_of_set (g_content M).
-  -- Choose q ∉ A using Atom.exists_fresh (if A were finite... but A may be infinite).
-
-  -- For infinite A: We need a different approach.
-  -- Since g_content M ⊆ M and M is "generated" from a seed by Lindenbaum,
-  -- g_content M is also "generated" in some sense.
-
-  -- SIMPLE ARGUMENT: Use seriality.
-  -- By seriality, F(⊤) ∈ M, i.e., ¬G(⊥) ∈ M.
-  -- So G(⊥) ∉ M, meaning ⊥ ∉ g_content(M).
-  -- But ⊥ has no atoms, so this doesn't help directly.
-
-  -- Use the 4 axiom: G(φ) → G(G(φ)).
-  -- If G(φ) ∈ M, then G(G(φ)) ∈ M, so G(φ) ∈ g_content(M).
-  -- So g_content(M) contains all G-formulas that are in M.
-  -- But it also contains non-G formulas φ where G(φ) ∈ M.
-
-  -- Key: For atom q, (atom q) ∈ g_content(M) iff G(atom q) ∈ M.
-  -- G(atom q) says "q is always true in all futures".
-  -- For a "generic" MCS, most atoms are not "always true".
-
-  -- We claim: There exists q with G(atom q) ∉ M.
-  -- Proof: Suppose for contradiction that for all q, G(atom q) ∈ M.
-  -- Then by T-axiom, (atom q) ∈ M for all q.
-  -- This means M contains all atoms.
-  -- But M also contains ¬(atom q) for some q (by consistency? no, maximality says either/or).
-  -- So M cannot contain both (atom q) and ¬(atom q).
-  -- Thus for some q, (atom q) ∉ M, hence ¬(atom q) ∈ M.
-  -- If G(atom q) ∈ M (our assumption), then (atom q) ∈ M by T-axiom.
-  -- Contradiction!
-
-  -- So there exists q with G(atom q) ∉ M.
-  -- Does this mean q is fresh for g_content(M)? Not directly - other formulas could mention q.
-
-  -- Better: Find q with G(φ) ∉ M for ALL φ mentioning q.
-  -- This is stronger. If G(φ) ∉ M for all φ with q ∈ φ.atoms, then φ ∉ g_content(M)
-  -- for all such φ, so q ∉ atoms_of_set(g_content M).
-
-  -- Claim: For any MCS M, there exists q such that for all φ with q ∈ φ.atoms, G(φ) ∉ M.
-  -- Equivalently: the set { G(φ) | q ∈ φ.atoms } ∩ M = ∅.
-
-  -- This is plausible because { G(φ) | q ∈ φ.atoms } is "about q" and for fresh q,
-  -- M shouldn't have strong opinions.
-
-  -- Formal proof: Use substitution.
-  -- If G(φ) ∈ M where q ∈ φ.atoms, then by substitution with r for q,
-  -- G(φ[r/q]) ∈ M for any r (if substitution preserves membership... which it doesn't directly).
-
-  -- Actually, substitution gives a DERIVATION G(φ) ⊢ G(φ[r/q])? No, that's not right either.
-
-  -- Let me try a direct argument.
-  -- Use Atom.exists_fresh on a finite overapproximation.
-
-  -- Consider the set S = { φ | G(φ) ∈ M }.
-  -- Pick any finite subset S' ⊆ S.
-  -- By exists_fresh_for_finset, there exists q fresh for S'.
-  -- If we could extend this to all of S, we'd be done.
-
-  -- For countable S: Enumerate S = {φ_0, φ_1, ...}.
-  -- Let A_n = φ_n.atoms.
-  -- atoms_of_set S = ⋃_n A_n.
-  -- We need to show this is not all of Atom.
-
-  -- Key: Use that Atom is infinite and atoms_of_set S is "sparse".
-  -- Specifically, consider { mk_fresh "" n | n ∈ ℕ }.
-  -- For each φ ∈ S, φ.atoms contains only finitely many of these.
-  -- So { n | mk_fresh "" n ∈ atoms_of_set S } = ⋃_{φ ∈ S} { n | mk_fresh "" n ∈ φ.atoms }.
-  -- Each set in the union is finite (φ.atoms is finite, mk_fresh "" is injective).
-  -- If S is countable, this is a countable union of finite sets.
-  -- This CAN be all of ℕ (e.g., if φ_n mentions mk_fresh "" n).
-
-  -- But here's the key: The formulas G(φ) ∈ M are not arbitrary!
-  -- They come from the MCS structure. The formulas mentioning mk_fresh "" n for large n
-  -- are "exotic" and unlikely to have their G-versions in M.
-
-  -- For a concrete MCS M built from seed { atom (mk_base "p") }, the Lindenbaum
-  -- extension adds formulas but doesn't necessarily add G(φ) for φ mentioning fresh atoms.
-
-  -- PRAGMATIC APPROACH: Just sorry this for now and focus on the main theorem.
-  -- The intuition is correct; the formalization is complex.
-  sorry
-
-/-!
-## Atom-Free Subset and Naming Set
--/
-
-/-- The atom-free subset of M with respect to p: formulas in M not mentioning p. -/
-def atomFreeSubset (M : Set Formula) (p : Atom) : Set Formula :=
-  {φ ∈ M | p ∉ φ.atoms}
-
-/-- The naming set for the irreflexivity proof:
-p-free formulas of M plus the "fresh marker" atom p and its past negation. -/
-def namingSet (M : Set Formula) (p : Atom) : Set Formula :=
-  atomFreeSubset M p ∪ {Formula.atom p, Formula.all_past (Formula.neg (Formula.atom p))}
-
-/-- atomFreeSubset is a subset of M. -/
-theorem atomFreeSubset_subset (M : Set Formula) (p : Atom) :
-    atomFreeSubset M p ⊆ M := by
-  intro φ hφ
-  exact hφ.1
-
-/-- Atoms of imp: if p ∉ φ.atoms and p ∉ ψ.atoms then p ∉ (φ.imp ψ).atoms -/
-theorem atoms_imp_not_mem {p : Atom} {φ ψ : Formula}
-    (h1 : p ∉ φ.atoms) (h2 : p ∉ ψ.atoms) : p ∉ (φ.imp ψ).atoms := by
-  simp only [Formula.atoms, Finset.mem_union]
-  push_neg
-  exact ⟨h1, h2⟩
-
-/-- bot has no atoms. -/
-theorem atoms_bot_empty : (Formula.bot).atoms = ∅ := rfl
-
-/-- p is not in bot.atoms -/
-theorem not_mem_atoms_bot (p : Atom) : p ∉ (Formula.bot).atoms := by
-  simp [atoms_bot_empty]
-
-/-!
-## Fresh atom for finite sets of formulas
-
-For any finite set of formulas, there exists an atom not appearing
-in any of their atoms. This leverages the `Atom.exists_fresh` property.
--/
-
-/-- For any finite list of formulas, there exists an atom not in any of their atoms.
-This follows from `Atom.exists_fresh` applied to the union of all atoms. -/
-theorem exists_fresh_for_finite_list (L : List Formula) :
-    ∃ p : Atom, ∀ φ ∈ L, p ∉ φ.atoms := by
-  -- Collect all atoms from L into one Finset
-  let all_atoms := L.foldr (fun φ acc => φ.atoms ∪ acc) ∅
-  obtain ⟨p, hp⟩ := Atom.exists_fresh all_atoms
-  use p
-  intro φ hφ
-  intro h_mem
-  apply hp
-  -- p ∈ φ.atoms and φ ∈ L, so p ∈ all_atoms
-  induction L with
-  | nil => exact False.elim (List.not_mem_nil hφ)
-  | cons hd tl ih =>
-    -- all_atoms = hd.atoms ∪ (foldr ... tl)
-    have hp' : p ∉ hd.atoms ∧ p ∉ List.foldr (fun φ acc => φ.atoms ∪ acc) ∅ tl := by
-      -- hp : p ∉ all_atoms where all_atoms = hd.atoms ∪ (foldr ... tl)
-      change p ∉ hd.atoms ∪ List.foldr (fun φ acc => φ.atoms ∪ acc) ∅ tl at hp
-      simp only [Finset.mem_union, not_or] at hp
-      exact hp
-    cases List.mem_cons.mp hφ with
-    | inl h =>
-      -- φ = hd, so p ∈ φ.atoms = p ∈ hd.atoms
-      rw [h] at h_mem
-      exact absurd h_mem hp'.1
-    | inr h =>
-      -- φ ∈ tl
-      exact absurd (ih hp'.2 h) hp'.2
-
-/-!
-## Naming Set Consistency (via IRR Contrapositive)
-
-The core lemma: the naming set is set-consistent. Uses IRR contrapositively:
-if the naming set were inconsistent, then a finite subset derives ⊥, and by
-applying the deduction theorem and IRR, we derive a theorem that contradicts
-M being consistent.
--/
-
-/-- Helper: atoms of iterated implication φ₁ → φ₂ → ... → φₙ → ψ
-are contained in the union of all atoms. -/
-theorem atoms_iterated_imp_subset (L : List Formula) (ψ : Formula) :
-    ∀ s ∈ (L.foldr Formula.imp ψ).atoms,
-    s ∈ (L.foldr (fun φ acc => φ.atoms ∪ acc) ψ.atoms) := by
-  induction L with
-  | nil => intro s hs; exact hs
-  | cons hd tl ih =>
-    intro s hs
-    simp only [List.foldr, Formula.atoms, Finset.mem_union] at hs ⊢
-    cases hs with
-    | inl h => left; exact h
-    | inr h =>
-      right
-      exact ih s h
-
-/-- If p is not in atoms of any formula in L and p ∉ ψ.atoms,
-then p ∉ (L.foldr Formula.imp ψ).atoms -/
-theorem not_mem_atoms_iterated_imp {p : Atom} {L : List Formula} {ψ : Formula}
-    (hL : ∀ φ ∈ L, p ∉ φ.atoms) (hψ : p ∉ ψ.atoms) :
-    p ∉ (L.foldr Formula.imp ψ).atoms := by
-  induction L with
-  | nil =>
-    simp only [List.foldr]
-    exact hψ
-  | cons hd tl ih =>
-    simp only [List.foldr, Formula.atoms, Finset.mem_union, not_or]
-    constructor
-    · exact hL hd List.mem_cons_self
-    · exact ih (fun φ hφ => hL φ (List.mem_cons_of_mem _ hφ))
-
-/-- Helper: given a derivation `L ⊢ ψ`, produce `⊢ L.reverse.foldr Formula.imp ψ`.
-Note: This reverses the list order because deduction theorem peels from head. -/
-def iterated_deduction_aux (L : List Formula) (ψ : Formula)
-    (d : DerivationTree L ψ) : DerivationTree [] (L.reverse.foldr Formula.imp ψ) := by
-  induction L generalizing ψ with
-  | nil =>
-    simp only [List.reverse_nil, List.foldr]
-    exact d
-  | cons hd tl ih =>
-    simp only [List.reverse_cons, List.foldr_append, List.foldr]
-    have d_ded := deduction_theorem tl hd ψ d
-    exact ih (hd.imp ψ) d_ded
-
-/-- From a derivation L ⊢ ψ, derive [] ⊢ L.foldr Formula.imp ψ
-by iterated deduction theorem. Uses the reversed list internally. -/
-def iterated_deduction (L : List Formula) (ψ : Formula)
-    (d : DerivationTree L ψ) : DerivationTree [] (L.foldr Formula.imp ψ) := by
-  -- Key: L.foldr = L.reverse.reverse.foldr = ... but that doesn't help directly.
-  -- Alternative: exchange derivation from L to L.reverse, then use aux
-  have d_rev : DerivationTree L.reverse ψ := by
-    apply DerivationTree.weakening L L.reverse ψ d
-    intro φ hφ
-    exact List.mem_reverse.mpr hφ
-  have h_result := iterated_deduction_aux L.reverse ψ d_rev
-  simp only [List.reverse_reverse] at h_result
-  exact h_result
-
-/-- Helper for iterated_imp_in_mcs using reversed list order. -/
-theorem iterated_imp_in_mcs_aux {S : Set Formula} (h_mcs : SetMaximalConsistent S)
-    (L : List Formula) (ψ : Formula)
-    (h_thm : DerivationTree [] (L.reverse.foldr Formula.imp ψ))
-    (h_sub : ∀ φ ∈ L, φ ∈ S) : ψ ∈ S := by
-  induction L generalizing ψ with
-  | nil =>
-    simp only [List.reverse_nil, List.foldr] at h_thm
-    exact theorem_in_mcs h_mcs h_thm
-  | cons hd tl ih =>
-    simp only [List.reverse_cons, List.foldr_append, List.foldr] at h_thm
-    -- h_thm : [] ⊢ tl.reverse.foldr Formula.imp (hd.imp ψ)
-    -- By IH: hd.imp ψ ∈ S
-    have h_imp_in_S : (hd.imp ψ) ∈ S := ih (hd.imp ψ) h_thm
-      (fun φ hφ => h_sub φ (List.mem_cons_of_mem _ hφ))
-    -- hd ∈ S (from h_sub)
-    have h_hd_in_S : hd ∈ S := h_sub hd List.mem_cons_self
-    -- By modus ponens in MCS: ψ ∈ S
-    exact SetMaximalConsistent.implication_property h_mcs h_imp_in_S h_hd_in_S
-
-/-- From [] ⊢ L.foldr Formula.imp ψ and all elements of L in MCS S,
-derive ψ ∈ S. -/
-theorem iterated_imp_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent S)
-    (L : List Formula) (ψ : Formula)
-    (h_thm : DerivationTree [] (L.foldr Formula.imp ψ))
-    (h_sub : ∀ φ ∈ L, φ ∈ S) : ψ ∈ S := by
-  -- L.foldr = L.reverse.reverse.foldr
-  have h_thm' : DerivationTree [] (L.reverse.reverse.foldr Formula.imp ψ) := by
-    simp only [List.reverse_reverse]
-    exact h_thm
-  have h_sub' : ∀ φ ∈ L.reverse, φ ∈ S := by
-    intro φ hφ
-    exact h_sub φ (List.mem_reverse.mp hφ)
-  exact iterated_imp_in_mcs_aux h_mcs L.reverse ψ h_thm' h_sub'
-
-/-- The naming set is set-consistent. This is the core IRR-contrapositive argument.
-
-If M is an MCS with g_content M ⊆ M, then for any atom p, the set
-`atomFreeSubset M p ∪ {atom p, H(neg(atom p))}` is set-consistent.
-
-Proof: Suppose for contradiction that some finite L ⊆ naming set is inconsistent.
-Separate L into L_af (from atomFreeSubset, all p-free) and L_nm (from {atom p, H(¬p)}).
-By deduction theorem for L_nm elements, and then iterated deduction for L_af:
-  `⊢ (atom p ∧ H(¬p)) → (L_af.foldr (·.imp ·) ⊥)`
-Since L_af consists of p-free formulas, the conclusion χ = L_af.foldr ... ⊥ is p-free.
-By IRR: `⊢ χ`. But χ ∈ M (as theorem) and all L_af elements are in M, so ⊥ ∈ M.
-Contradiction with M being consistent.
-
-**NOTE (Task 29)**: This theorem cannot be proven without the IRR rule, which is
-unsound under reflexive semantics. Under reflexive semantics, CanonicalR M M
-is TRUE (proven by `canonicalR_reflexive`), so the hypothesis `h_R : CanonicalR M M`
-is always satisfiable, and this theorem's conclusion is still needed for the
-original irreflexivity proof structure. However, since we're transitioning to
-reflexive semantics where irreflexivity is FALSE, this theorem is no longer needed.
-
-This is sorried temporarily during the IRR removal refactor (Phase 1).
--/
-theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (h_R : CanonicalR M M) (p : Atom) :
-    SetConsistent (namingSet M p) := by
-  -- Original proof used IRR rule which is now removed
-  sorry
-
-/-! ## Remaining proof body removed during IRR removal (Task 29 Phase 1)
-
-The original proof body (approximately 900 lines) has been removed because it
-relied on the IRR inference rule which is unsound under reflexive semantics.
-
-Under reflexive semantics:
-- `canonicalR_reflexive` is TRUE (proven via T-axiom)
-- `canonicalR_irreflexive` is FALSE (contradicts reflexivity)
-
-The naming_set_consistent theorem was part of the irreflexivity proof machinery
-and is no longer needed for the reflexive semantics approach.
-
-See specs/029_switch_to_reflexive_gh_semantics/ for migration details.
--/
-
--- NOTE: Original code from here to "g_content M ⊆ M'" section was removed.
--- The following placeholder ends where the proof body used to end:
--- Original line ~1182: "exact h_mcs.1 L hL_in_M ⟨d⟩"
-/-!
-## g_content M ⊆ M' (CanonicalR preservation)
-
-When M' extends the naming set, we need g_content M ⊆ M'.
-For p-free formulas in g_content M, this is direct.
-For formulas mentioning p: they are theorems (and hence in M') or
-they are atom p (which is in M').
--/
-
--- Note: The g_content ⊆ M' argument is not needed for the main theorem below,
--- which uses the naming set construction directly.
-
-/-!
-## Main Theorem: CanonicalR Irreflexivity
+See: specs/029_switch_to_reflexive_gh_semantics/reports/12_team-research.md
 -/
 
 /-!
@@ -618,70 +235,25 @@ theorem fresh_for_g_content_implies_not_always_neg (M : Set Formula) (q : Atom)
   -- This contradicts freshness
   exact h_fresh h_q_in_atoms
 
-/-- If q is fresh for g_content(M), then (atom q) ∉ M (hence ¬(atom q) ∈ M by maximality).
+/-!
+## DELETED: Universal Fresh Atom Theorems (Task 29 Phase 4)
 
-Proof: If (atom q) ∈ M, then by T-axiom applied to G(atom q) → (atom q)... wait, that's backwards.
-Actually, we use: if (atom q) ∈ M, then either G(atom q) ∈ M or F(¬(atom q)) ∈ M.
-If G(atom q) ∈ M, then (atom q) ∈ g_content(M), so q ∈ atoms_of_set(g_content M), contradiction.
-So F(¬(atom q)) ∈ M, which is fine but doesn't give (atom q) ∉ M.
+The following theorems were deleted because they depend on the flawed
+`exists_fresh_for_g_content`:
 
-Alternative: freshness for g_content doesn't directly imply (atom q) ∉ M.
-We need a different approach: use that for fresh q, either q ∈ M or ¬q ∈ M,
-and if q ∈ M then (by some argument) we get a contradiction.
-
-Actually, for a fresh q for g_content(M):
-- Case q ∈ M: Then by 4-axiom, if G(q) ∈ M, we'd have q ∈ g_content(M), contradiction.
-  But G(q) might not be in M! So q ∈ M doesn't directly contradict freshness.
-- Case ¬q ∈ M: This is what we want.
-
-The issue is that freshness for g_content(M) doesn't force q ∉ M.
-However, we can use a cardinality argument: since most atoms are fresh for g_content,
-and M decides each atom, at least one fresh atom must be decided false.
--/
+```lean
 theorem fresh_for_g_content_some_decided_false (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ q : Atom, fresh_for_set q (g_content M) ∧ Formula.neg (Formula.atom q) ∈ M := by
-  -- We use exists_fresh_for_g_content and the fact that for fresh q,
-  -- either q ∈ M or ¬q ∈ M. If we can find one with ¬q ∈ M, we're done.
-  --
-  -- Key observation: If q is fresh for g_content(M) and q ∈ M, then G(q) ∉ M
-  -- (otherwise q ∈ g_content(M) contradicting freshness). So q ∈ M but G(q) ∉ M.
-  -- This means F(¬q) ∈ M by maximality.
-  --
-  -- We need ¬q ∈ M. Consider: if for ALL fresh q, q ∈ M, then... we'd have
-  -- all fresh atoms true at M. But there are infinitely many fresh atoms,
-  -- and M can have infinitely many atoms true. No direct contradiction.
-  --
-  -- Alternative: Use that there are infinitely many fresh atoms for g_content(M).
-  -- M decides each one either true or false. By pigeonhole, infinitely many
-  -- are decided the same way. In particular, some fresh atom is decided false.
-  --
-  -- Simpler: Just pick two distinct fresh atoms q, r. By maximality:
-  -- - Either q ∈ M or ¬q ∈ M
-  -- - Either r ∈ M or ¬r ∈ M
-  -- At least one of q, r, ¬q, ¬r... well, we need at least one fresh with ¬ ∈ M.
-  --
-  -- Actually, the simplest proof: Use that atoms_of_set(g_content M) is a proper subset.
-  -- Pick q fresh. If q ∈ M, pick another fresh r ≠ q. Keep going...
-  -- Eventually some fresh atom must have its negation in M.
-  --
-  -- Formalization deferred.
-  sorry
+    ∃ q : Atom, fresh_for_set q (g_content M) ∧ Formula.neg (Formula.atom q) ∈ M
 
-/-- For any MCS M, there exists an atom q that is fresh for g_content(M) and decided false.
-This gives us:
-1. `fresh_for_set q (g_content M)` - q doesn't appear in any formula of g_content(M)
-2. `Formula.neg (Formula.atom q) ∈ M` - M decides q false
-3. `Formula.all_future (Formula.neg (Formula.atom q)) ∉ M` - G(¬q) ∉ M (follows from freshness)
-
-Proof: Use fresh_for_g_content_some_decided_false to get q fresh for g_content(M)
-with ¬q ∈ M. Then by fresh_for_g_content_implies_not_always_neg, G(¬q) ∉ M.
--/
 theorem exists_strict_fresh_atom (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ∃ q : Atom, fresh_for_set q (g_content M) ∧
                Formula.neg (Formula.atom q) ∈ M ∧
-               Formula.all_future (Formula.neg (Formula.atom q)) ∉ M := by
-  obtain ⟨q, h_fresh, h_neg_q⟩ := fresh_for_g_content_some_decided_false M h_mcs
-  exact ⟨q, h_fresh, h_neg_q, fresh_for_g_content_implies_not_always_neg M q h_fresh⟩
+               Formula.all_future (Formula.neg (Formula.atom q)) ∉ M
+```
+
+**Resolution**: Use per-construction strictness at call sites instead.
+See `fresh_Gp_seed_consistent` below for the proven building block.
+-/
 
 /-- The fresh G-atom seed is consistent when q is fresh for g_content(M).
 
@@ -883,53 +455,91 @@ theorem fresh_Gp_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent
     -- L ⊢ ⊥ with L ⊆ M contradicts M being consistent
     exact h_mcs.1 L hL_in_M ⟨d⟩
 
-/-- Main theorem: For any MCS M, there exists a strictly forward witness W.
-That is: `CanonicalR M W` and `¬CanonicalR W M`.
+/-!
+## Per-Construction Strictness Infrastructure (Task 29 Phase 5A)
 
-This is per-witness strictness, replacing universal irreflexivity.
-The proof constructs W using the fresh G-atom technique.
+Under reflexive semantics, CanonicalR is a PREORDER (reflexive + transitive).
+Universal irreflexivity is FALSE, and antisymmetry also FAILS.
+
+Instead of proving `¬CanonicalR M M` universally, we prove **per-construction
+strictness**: at each call site where a witness W is constructed from M, we
+prove `¬CanonicalR W M` from the specific formula that distinguishes W from M.
+
+The key pattern:
+1. Construct witness W with some formula φ ∈ W
+2. Ensure G(φ) ∈ W (so φ ∈ g_content(W))
+3. Show φ ∉ M
+4. Then ¬CanonicalR W M (since g_content(W) ⊄ M)
+
+The following infrastructure supports this pattern.
 -/
+
+/-- When we have CanonicalR M N (forward accessibility) and explicit proof that
+¬CanonicalR N M (backward non-accessibility), we can conclude M < N in the
+preorder structure.
+
+This is the core lemma for per-construction strictness: construct the witness,
+prove forward accessibility, then prove backward non-accessibility from the
+specific formula that distinguishes the witness from the source. -/
+theorem lt_of_canonicalR_and_not_reverse {M N : Set Formula}
+    (h_M_mcs : SetMaximalConsistent M) (h_N_mcs : SetMaximalConsistent N)
+    (h_fwd : CanonicalR M N)
+    (h_not_bwd : ¬CanonicalR N M) :
+    M ≠ N := by
+  intro h_eq
+  rw [h_eq] at h_not_bwd
+  exact h_not_bwd (canonicalR_reflexive N h_N_mcs)
+
+/-- When witness W contains a formula φ in its g_content (i.e., G(φ) ∈ W) that is
+NOT in source M, then ¬CanonicalR W M.
+
+This is the workhorse lemma for per-construction strictness. At each call site:
+1. Identify the formula φ that distinguishes W from M
+2. Show G(φ) ∈ W (so φ ∈ g_content(W))
+3. Show φ ∉ M
+4. Apply this lemma to get ¬CanonicalR W M -/
+theorem strict_of_formula_in_g_content_not_in_source {M W : Set Formula} {φ : Formula}
+    (h_φ_in_g_W : φ ∈ g_content W)  -- i.e., G(φ) ∈ W
+    (h_φ_not_M : φ ∉ M) :
+    ¬CanonicalR W M := by
+  intro h_R
+  -- h_R : g_content(W) ⊆ M
+  have h_φ_in_M : φ ∈ M := h_R h_φ_in_g_W
+  exact h_φ_not_M h_φ_in_M
+
+/-- Variant: when φ ∈ W and G(φ) ∈ W (which is typical for witness constructions
+that include both φ and G(φ) in the seed), and φ ∉ M, then ¬CanonicalR W M. -/
+theorem strict_of_formula_with_G_not_in_source {M W : Set Formula} {φ : Formula}
+    (h_Gφ_in_W : Formula.all_future φ ∈ W)  -- G(φ) ∈ W
+    (h_φ_not_M : φ ∉ M) :
+    ¬CanonicalR W M :=
+  strict_of_formula_in_g_content_not_in_source h_Gφ_in_W h_φ_not_M
+
+/-!
+## DELETED: existsTask_strict_fresh_atom (Task 29 Phase 4)
+
+The following theorem was deleted because it depends on `exists_strict_fresh_atom`
+which depends on the flawed `exists_fresh_for_g_content`:
+
+```lean
 theorem existsTask_strict_fresh_atom (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ∃ W, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M := by
-  -- Step 1: Find a suitable fresh atom q
-  obtain ⟨q, h_fresh, h_neg_q, _h_not_always_neg⟩ := exists_strict_fresh_atom M h_mcs
+    ∃ W, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M
+```
 
-  -- Step 2: The seed g_content(M) ∪ {G(q)} is consistent
-  have h_seed_cons := fresh_Gp_seed_consistent M h_mcs q h_fresh
+**Resolution**: This theorem demonstrated the PATTERN for per-witness strictness:
+1. Find fresh q for g_content(M) with ¬q ∈ M
+2. Build seed g_content(M) ∪ {G(q)}
+3. Extend to MCS W
+4. CanonicalR M W (by construction)
+5. ¬CanonicalR W M (because q ∈ g_content(W) but q ∉ M)
 
-  -- Step 3: Extend to MCS W via Lindenbaum
-  let seed := g_content M ∪ {Formula.all_future (Formula.atom q)}
-  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum seed h_seed_cons
+This pattern IS correct but cannot be proven universally (fresh atom existence fails).
+Instead, at each call site we prove strictness from the construction-specific formula
+that distinguishes the witness from the source.
 
-  use W, h_W_mcs
-
-  constructor
-  · -- CanonicalR M W: g_content M ⊆ W
-    intro φ hφ
-    exact h_extends (Set.mem_union_left _ hφ)
-
-  · -- ¬CanonicalR W M: g_content W ⊄ M
-    intro h_R
-    -- h_R : g_content W ⊆ M
-
-    -- G(q) ∈ W (from seed extension)
-    have h_Gq_in_W : Formula.all_future (Formula.atom q) ∈ W :=
-      h_extends (Set.mem_union_right _ (Set.mem_singleton _))
-
-    -- So q ∈ g_content W
-    have h_q_in_gcontent_W : Formula.atom q ∈ g_content W := h_Gq_in_W
-
-    -- By h_R: q ∈ M
-    have h_q_in_M : Formula.atom q ∈ M := h_R h_q_in_gcontent_W
-
-    -- But ¬q ∈ M (from h_neg_q)
-    -- This contradicts M's consistency
-    have h_inconsistent : ¬SetConsistent M := by
-      intro h_cons
-      have h_both := set_consistent_not_both h_cons (Formula.atom q)
-      exact h_both h_q_in_M h_neg_q
-
-    exact h_inconsistent h_mcs.1
+See `fresh_Gp_seed_consistent` for the proven building block that works when
+a fresh atom IS provided by the specific construction.
+-/
 
 /-!
 ## DEPRECATED: Irreflexivity Axiom (Task 991)
