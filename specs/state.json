@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T19:36:30Z",
+      "last_updated": "2026-03-23T20:56:11Z",
       "artifacts": [
         {
           "type": "research",
@@ -710,10 +710,15 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/04_restricted-blocking-summary.md",
           "type": "summary",
           "summary": "Partial implementation v4: Phases 1-4 complete (restricted blocking, successor construction). Phase 5 partial (chain not built)."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/07_team-research.md",
+          "type": "research",
+          "summary": "Team research (2 teammates): fuel-based well-founded recursion for persistence case"
         }
       ],
-      "session_id": "sess_1774294560_4531d2",
-      "researched": "2026-03-23T19:27:10Z",
+      "session_id": "sess_1774298996_dd353b",
+      "researched": "2026-03-23T20:56:11Z",
       "planned": "2026-03-23T19:33:30Z",
       "started": "2026-03-23T17:51:37Z",
       "blocker_reason": "Original theorems mathematically unprovable as stated. Provable RestrictedMCS versions added but require chain construction refactoring."
