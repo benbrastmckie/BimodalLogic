@@ -146,12 +146,12 @@ lemma P_implies_G_P_P (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_P
 
 /-!
-## Linearity and CanonicalR Properties
+## Linearity and ExistsTask Properties
 
 The temp_linearity axiom (`F(phi) ∧ F(psi) → F(phi ∧ psi) ∨ F(phi ∧ F(psi)) ∨ F(F(phi) ∧ psi)`)
 provides key structural properties of the canonical frame.
 
-These lemmas connect the axiom to CanonicalR comparability.
+These lemmas connect the axiom to ExistsTask comparability.
 -/
 
 /--
@@ -198,15 +198,15 @@ This is the canonical model analog of the modal existence lemma.
 -/
 
 /--
-Canonical existence lemma: if CanonicalR M M' and phi in M', then F(phi) in M.
+Canonical existence lemma: if ExistsTask M M' and phi in M', then F(phi) in M.
 
 **Proof by contraposition**: if F(phi) not in M, then G(neg phi) in M (by MCS
 completeness and the fact that neg(F(phi)) = G(neg phi) up to double negation).
-Then neg phi in M' (by CanonicalR propagation). But phi in M' -- contradiction.
+Then neg phi in M' (by ExistsTask propagation). But phi in M' -- contradiction.
 -/
 lemma canonical_F_of_mem_successor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask M M') (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_future phi ∈ M := by
   -- By contradiction: suppose F(phi) ∉ M
   by_contra h_not_F
@@ -224,12 +224,12 @@ lemma canonical_F_of_mem_successor (M M' : Set Formula)
   exact set_consistent_not_both h_mcs'.1 phi h_phi h_neg_phi
 
 /--
-Canonical existence lemma (past version): if CanonicalR_past M M' and phi in M',
+Canonical existence lemma (past version): if ExistsTask_past M M' and phi in M',
 then P(phi) in M.
 -/
 lemma canonical_P_of_mem_past_successor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR_past M M') (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask_past M M') (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_past phi ∈ M := by
   by_contra h_not_P
   have h_neg_P : Formula.neg (Formula.some_past phi) ∈ M := by
@@ -253,16 +253,16 @@ into Int.
 -/
 
 /--
-Linearity of CanonicalR on R-successors of a common root.
+Linearity of ExistsTask on R-successors of a common root.
 
-If M sees both M1 and M2 (CanonicalR M M1 and CanonicalR M M2), then
-M1 and M2 are comparable: either CanonicalR M1 M2 or CanonicalR M2 M1 or M1 = M2.
+If M sees both M1 and M2 (ExistsTask M M1 and ExistsTask M M2), then
+M1 and M2 are comparable: either ExistsTask M1 M2 or ExistsTask M2 M1 or M1 = M2.
 
 **Proof Strategy**: Compound-formula linearity with cross-propagation.
 
-Assume NOT(CanonicalR M1 M2) and NOT(CanonicalR M2 M1). Extract witnesses:
-- alpha: G(alpha) in M1, neg(alpha) in M2 (from NOT CanonicalR M1 M2)
-- beta: G(beta) in M2, neg(beta) in M1 (from NOT CanonicalR M2 M1)
+Assume NOT(ExistsTask M1 M2) and NOT(ExistsTask M2 M1). Extract witnesses:
+- alpha: G(alpha) in M1, neg(alpha) in M2 (from NOT ExistsTask M1 M2)
+- beta: G(beta) in M2, neg(beta) in M1 (from NOT ExistsTask M2 M1)
 
 Construct compound formulas:
 - phi_c = G(alpha) AND neg(beta) (in M1, hence F(phi_c) in M)
@@ -274,14 +274,14 @@ Apply `mcs_F_linearity` with phi_c and psi_c. All three cases yield contradictio
 and neg(alpha) at same world. Contradiction.
 
 **Case 2**: F(phi_c AND F(psi_c)) -- outer world has G(alpha), inner world has neg(alpha).
-G(alpha) propagates via CanonicalR to inner world, giving alpha AND neg(alpha). Contradiction.
+G(alpha) propagates via ExistsTask to inner world, giving alpha AND neg(alpha). Contradiction.
 
 **Case 3**: F(F(phi_c) AND psi_c) -- outer world has G(beta), inner world has neg(beta).
-G(beta) propagates via CanonicalR to inner world, giving beta AND neg(beta). Contradiction.
+G(beta) propagates via ExistsTask to inner world, giving beta AND neg(beta). Contradiction.
 
 The key insight is using BOTH non-comparability witnesses simultaneously in compound
 formulas, ensuring that in Cases 2 and 3, the G-formula from one component propagates
-through CanonicalR to contradict the neg-formula from the other component.
+through ExistsTask to contradict the neg-formula from the other component.
 
 **References**:
 - Goldblatt 1992, Logics of Time and Computation (canonical frame linearity)
@@ -291,18 +291,18 @@ theorem canonical_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs1 : SetMaximalConsistent M1)
     (h_mcs2 : SetMaximalConsistent M2)
-    (h_R1 : CanonicalR M M1) (h_R2 : CanonicalR M M2) :
-    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
-  -- By classical case analysis: either CanonicalR M1 M2 holds, or it doesn't.
-  by_cases h_12 : CanonicalR M1 M2
+    (h_R1 : ExistsTask M M1) (h_R2 : ExistsTask M M2) :
+    ExistsTask M1 M2 ∨ ExistsTask M2 M1 ∨ M1 = M2 := by
+  -- By classical case analysis: either ExistsTask M1 M2 holds, or it doesn't.
+  by_cases h_12 : ExistsTask M1 M2
   · exact Or.inl h_12
-  · -- NOT(CanonicalR M1 M2): there exists alpha with G(alpha) in M1 and alpha not in M2.
-    -- We show CanonicalR M2 M1 by contradiction.
+  · -- NOT(ExistsTask M1 M2): there exists alpha with G(alpha) in M1 and alpha not in M2.
+    -- We show ExistsTask M2 M1 by contradiction.
     right
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    -- NOT(CanonicalR M1 M2): GContent M1 ⊄ M2
+    -- NOT(ExistsTask M1 M2): GContent M1 ⊄ M2
     -- Unfold: exists alpha, G(alpha) in M1 and alpha not in M2
     have h_not_sub_12 : ¬(GContent M1 ⊆ M2) := h_12
     rw [Set.not_subset] at h_not_sub_12
@@ -314,7 +314,7 @@ theorem canonical_reachable_linear (M M1 M2 : Set Formula)
       rcases set_mcs_negation_complete h_mcs2 alpha with h | h
       · exact absurd h h_alpha_not2
       · exact h
-    -- NOT(CanonicalR M2 M1): GContent M2 ⊄ M1
+    -- NOT(ExistsTask M2 M1): GContent M2 ⊄ M1
     have h_not_sub_21 : ¬(GContent M2 ⊆ M1) := h_not_21
     rw [Set.not_subset] at h_not_sub_21
     obtain ⟨beta, h_beta_G2, h_beta_not1⟩ := h_not_sub_21

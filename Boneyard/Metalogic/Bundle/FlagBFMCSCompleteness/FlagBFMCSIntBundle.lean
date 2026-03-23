@@ -164,12 +164,12 @@ The construction below is blocked due to a fundamental architectural issue:
 
 **The Problem**: FMCS requires `forward_G` and `backward_H` to hold for ALL times s, t.
 However, the integer ordering `s < t` does NOT correspond to the CanonicalMCS ordering
-`CanonicalR M_s.world M_t.world`. The global enumeration `enum_mcs` is injective but
+`ExistsTask M_s.world M_t.world`. The global enumeration `enum_mcs` is injective but
 NOT order-preserving.
 
 **Why Order-Preservation Fails**:
 1. `enum_mcs` uses `Encodable.encode` which produces arbitrary natural numbers
-2. The CanonicalMCS Preorder uses `CanonicalR` (g_content inclusion)
+2. The CanonicalMCS Preorder uses `ExistsTask` (g_content inclusion)
 3. These orderings are completely unrelated
 
 **Attempted Solutions**:
@@ -199,11 +199,11 @@ noncomputable def fmcs_from_flag (F : Flag CanonicalMCS) (root : CanonicalMCS) :
   mcs := mcs_at_time F root
   is_mcs := mcs_at_time_is_mcs F root
   forward_G := fun s t φ h_lt h_G => by
-    -- BLOCKED: Cannot prove because integer s < t does NOT imply CanonicalR between
+    -- BLOCKED: Cannot prove because integer s < t does NOT imply ExistsTask between
     -- the corresponding MCSs. The enumeration is injective but not order-preserving.
     --
     -- Cases:
-    -- 1. Both s, t in Flag image: Need CanonicalR M_s M_t, but only have s < t (integers)
+    -- 1. Both s, t in Flag image: Need ExistsTask M_s M_t, but only have s < t (integers)
     -- 2. s in image, t not: Need φ ∈ root, but G(φ) ∈ M_s doesn't imply this
     -- 3. s not in image, t in image: Need φ ∈ M_t, but G(φ) ∈ root doesn't imply this
     -- 4. Neither in image: Both map to root, so need G(φ) ∈ root → φ ∈ root, which

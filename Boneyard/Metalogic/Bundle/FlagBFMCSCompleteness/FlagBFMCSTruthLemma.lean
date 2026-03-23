@@ -89,27 +89,27 @@ the CanonicalMCS ordering, enabling cross-Flag temporal satisfaction.
 G-content propagates through CanonicalMCS ordering:
 If G(phi) is in M.world and M < M', then phi is in M'.world.
 
-This follows from: M < M' implies CanonicalR M.world M'.world,
+This follows from: M < M' implies ExistsTask M.world M'.world,
 which means g_content(M.world) ⊆ M'.world. Since G(phi) ∈ M.world
 means phi ∈ g_content(M.world), we get phi ∈ M'.world.
 -/
 theorem g_content_propagation (M M' : CanonicalMCS) (φ : Formula)
     (h_G : φ.all_future ∈ M.world) (h_lt : M < M') : φ ∈ M'.world := by
-  have h_R : CanonicalR M.world M'.world := CanonicalMCS.canonicalR_of_lt M M' h_lt
+  have h_R : ExistsTask M.world M'.world := CanonicalMCS.canonicalR_of_lt M M' h_lt
   exact canonical_forward_G M.world M'.world h_R φ h_G
 
 /--
 H-content propagates through CanonicalMCS ordering (backwards):
 If H(phi) is in M.world and M' < M, then phi is in M'.world.
 
-This follows from: M' < M implies CanonicalR M'.world M.world,
+This follows from: M' < M implies ExistsTask M'.world M.world,
 and by g_content/h_content duality, h_content(M.world) ⊆ M'.world.
 Since H(phi) ∈ M.world means phi ∈ h_content(M.world), we get phi ∈ M'.world.
 -/
 theorem h_content_propagation (M M' : CanonicalMCS) (φ : Formula)
     (h_H : φ.all_past ∈ M.world) (h_lt : M' < M) : φ ∈ M'.world := by
-  have h_R : CanonicalR M'.world M.world := CanonicalMCS.canonicalR_of_lt M' M h_lt
-  have h_R_past : CanonicalR_past M.world M'.world :=
+  have h_R : ExistsTask M'.world M.world := CanonicalMCS.canonicalR_of_lt M' M h_lt
+  have h_R_past : ExistsTask_past M.world M'.world :=
     g_content_subset_implies_h_content_reverse M'.world M.world M'.is_mcs M.is_mcs h_R
   exact canonical_backward_H M.world M'.world h_R_past φ h_H
 

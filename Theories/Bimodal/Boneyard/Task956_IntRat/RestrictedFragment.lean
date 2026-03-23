@@ -54,7 +54,7 @@ theorem canonicalFWorld_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 
 theorem canonicalFWorld_R (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_F : Formula.some_future φ ∈ M) :
-    CanonicalR M (canonicalFWorld M h_mcs φ h_F) :=
+    ExistsTask M (canonicalFWorld M h_mcs φ h_F) :=
   (canonical_forward_F M h_mcs φ h_F).choose_spec.2.1
 
 theorem canonicalFWorld_mem (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -77,7 +77,7 @@ theorem canonicalPWorld_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 
 theorem canonicalPWorld_Rpast (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_P : Formula.some_past φ ∈ M) :
-    CanonicalR_past M (canonicalPWorld M h_mcs φ h_P) :=
+    ExistsTask_past M (canonicalPWorld M h_mcs φ h_P) :=
   (canonical_backward_P M h_mcs φ h_P).choose_spec.2.1
 
 theorem canonicalPWorld_mem (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -166,7 +166,7 @@ theorem forward_F_stays_in_restricted_fragment
     (a : RestrictedFragment M₀ h_mcs₀)
     (φ : Formula) (h_F : Formula.some_future φ ∈ a.world) :
     ∃ (s : RestrictedFragment M₀ h_mcs₀),
-      CanonicalR a.world s.world ∧ φ ∈ s.world :=
+      ExistsTask a.world s.world ∧ φ ∈ s.world :=
   ⟨⟨canonicalFWorld a.world a.is_mcs φ h_F,
     canonicalFWorld_mcs a.world a.is_mcs φ h_F,
     WitnessReachable.forward_step a.reachable φ h_F⟩,
@@ -177,7 +177,7 @@ theorem backward_P_stays_in_restricted_fragment
     (a : RestrictedFragment M₀ h_mcs₀)
     (φ : Formula) (h_P : Formula.some_past φ ∈ a.world) :
     ∃ (s : RestrictedFragment M₀ h_mcs₀),
-      CanonicalR_past a.world s.world ∧ φ ∈ s.world :=
+      ExistsTask_past a.world s.world ∧ φ ∈ s.world :=
   ⟨⟨canonicalPWorld a.world a.is_mcs φ h_P,
     canonicalPWorld_mcs a.world a.is_mcs φ h_P,
     WitnessReachable.backward_step a.reachable φ h_P⟩,
@@ -189,7 +189,7 @@ theorem backward_P_stays_in_restricted_fragment
 -/
 
 noncomputable instance : Preorder (RestrictedFragment M₀ h_mcs₀) where
-  le a b := a = b ∨ CanonicalR a.world b.world
+  le a b := a = b ∨ ExistsTask a.world b.world
   le_refl a := Or.inl rfl
   le_trans a b c hab hbc := by
     rcases hab with rfl | hab
@@ -200,19 +200,19 @@ noncomputable instance : Preorder (RestrictedFragment M₀ h_mcs₀) where
 
 theorem RestrictedFragment.le_of_canonicalR
     (a b : RestrictedFragment M₀ h_mcs₀)
-    (h : CanonicalR a.world b.world) : a ≤ b :=
+    (h : ExistsTask a.world b.world) : a ≤ b :=
   Or.inr h
 
 theorem RestrictedFragment.canonicalR_of_lt
     (a b : RestrictedFragment M₀ h_mcs₀) (h : a < b) :
-    CanonicalR a.world b.world := by
+    ExistsTask a.world b.world := by
   rcases h.1 with rfl | h_R
   · exact absurd (Or.inl rfl : a ≤ a) h.2
   · exact h_R
 
 theorem restricted_totally_ordered
     (a b : RestrictedFragment M₀ h_mcs₀) :
-    CanonicalR a.world b.world ∨ CanonicalR b.world a.world ∨ a.world = b.world :=
+    ExistsTask a.world b.world ∨ ExistsTask b.world a.world ∨ a.world = b.world :=
   bidirectional_totally_ordered a.toBidirectionalFragment b.toBidirectionalFragment
 
 theorem restricted_le_total
@@ -403,17 +403,17 @@ This gives strict successors and predecessors via canonical witnesses.
 -/
 
 /--
-Helper: If `CanonicalR a.world s.world` and `GContent(a) ⊄ a.world`,
+Helper: If `ExistsTask a.world s.world` and `GContent(a) ⊄ a.world`,
 then `s` is strictly greater than `a` in the preorder (not just `≤`).
 
 When `GContent(a) ⊄ a.world`, there exists `ψ` with `G(ψ) ∈ a.world` and `ψ ∉ a.world`.
-By temp_4, `G(G(ψ)) ∈ a.world`, so `G(ψ) ∈ s.world` (via CanonicalR).
-If `CanonicalR s a`, then `ψ ∈ a.world` (from `G(ψ) ∈ GContent(s) ⊆ a`), contradiction.
-If `s = a`, then `CanonicalR a a` means `GContent(a) ⊆ a`, contradicting hypothesis.
+By temp_4, `G(G(ψ)) ∈ a.world`, so `G(ψ) ∈ s.world` (via ExistsTask).
+If `ExistsTask s a`, then `ψ ∈ a.world` (from `G(ψ) ∈ GContent(s) ⊆ a`), contradiction.
+If `s = a`, then `ExistsTask a a` means `GContent(a) ⊆ a`, contradicting hypothesis.
 -/
 private theorem no_max_helper_irrefl
     (a s : RestrictedFragment M₀ h_mcs₀)
-    (h_R : CanonicalR a.world s.world)
+    (h_R : ExistsTask a.world s.world)
     (h_not_refl : ¬(GContent a.world ⊆ a.world))
     : ¬(s ≤ a) := by
   have h_exists := Set.not_subset.mp h_not_refl
@@ -463,20 +463,20 @@ noncomputable instance instNoMaxOrderRestrictedQuotient :
             ⟨Or.inr h_R_as, no_max_helper_irrefl a s h_R_as h_refl⟩⟩
 
 /--
-Past-direction helper: If `CanonicalR_past a.world s.world` and `HContent(a) ⊄ a.world`,
+Past-direction helper: If `ExistsTask_past a.world s.world` and `HContent(a) ⊄ a.world`,
 then `a` is strictly greater than `s` in the preorder.
 
 When `HContent(a) ⊄ a.world`, there exists `ψ` with `H(ψ) ∈ a.world` and `ψ ∉ a.world`.
 By temp_4_past, `H(H(ψ)) ∈ a.world`, so `H(ψ) ∈ HContent(a) ⊆ s.world`.
-By duality (CanonicalR_past a s implies CanonicalR via HContent_subset_implies_GContent_reverse):
+By duality (ExistsTask_past a s implies ExistsTask via HContent_subset_implies_GContent_reverse):
 `GContent(s) ⊆ a`. So `s ≤ a`.
-If `a = s`: `CanonicalR_past a a` means `HContent(a) ⊆ a`, contradicting hypothesis.
-If `CanonicalR a s` (GContent(a) ⊆ s): by GContent_subset_implies_HContent_reverse,
+If `a = s`: `ExistsTask_past a a` means `HContent(a) ⊆ a`, contradicting hypothesis.
+If `ExistsTask a s` (GContent(a) ⊆ s): by GContent_subset_implies_HContent_reverse,
 `HContent(s) ⊆ a`. H(ψ) ∈ s gives `ψ ∈ HContent(s) ⊆ a`, contradicting `ψ ∉ a`.
 -/
 private theorem no_min_helper_irrefl
     (a s : RestrictedFragment M₀ h_mcs₀)
-    (h_Rpast : CanonicalR_past a.world s.world)
+    (h_Rpast : ExistsTask_past a.world s.world)
     (h_not_refl : ¬(HContent a.world ⊆ a.world))
     : s ≤ a ∧ ¬(a ≤ s) := by
   have h_exists := Set.not_subset.mp h_not_refl
@@ -486,8 +486,8 @@ private theorem no_min_helper_irrefl
   have h_HHψ_a : (Formula.all_past ψ).all_past ∈ a.world :=
     set_mcs_all_past_all_past a.is_mcs h_Hψ_a
   have h_Hψ_s : Formula.all_past ψ ∈ s.world := h_Rpast h_HHψ_a
-  -- By duality: CanonicalR_past a s gives CanonicalR s a (GContent(s) ⊆ a)
-  have h_R_sa : CanonicalR s.world a.world :=
+  -- By duality: ExistsTask_past a s gives ExistsTask s a (GContent(s) ⊆ a)
+  have h_R_sa : ExistsTask s.world a.world :=
     HContent_subset_implies_GContent_reverse a.world s.world a.is_mcs s.is_mcs h_Rpast
   constructor
   · -- s ≤ a
@@ -497,7 +497,7 @@ private theorem no_min_helper_irrefl
     rcases h_le with rfl | h_R_as
     · -- a = s: HContent(a) ⊆ a contradicts h_not_refl
       exact h_not_refl h_Rpast
-    · -- CanonicalR a s (GContent(a) ⊆ s):
+    · -- ExistsTask a s (GContent(a) ⊆ s):
       -- By GContent_subset_implies_HContent_reverse: HContent(s) ⊆ a
       have h_Hcont_s_sub_a : HContent s.world ⊆ a.world :=
         GContent_subset_implies_HContent_reverse a.world s.world a.is_mcs s.is_mcs h_R_as

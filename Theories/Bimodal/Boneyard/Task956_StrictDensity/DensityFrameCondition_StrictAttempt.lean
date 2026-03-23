@@ -22,10 +22,10 @@ portions of DensityFrameCondition.lean and proper import setup.
 ## Strict Density Frame Condition
 
 The density_frame_condition theorem provides an intermediate W with
-CanonicalR(M, W) ∧ CanonicalR(W, M'). For the Cantor application, we need
-the STRICT version: W is strictly between M and M' in the CanonicalR ordering.
+ExistsTask(M, W) ∧ ExistsTask(W, M'). For the Cantor application, we need
+the STRICT version: W is strictly between M and M' in the ExistsTask ordering.
 
-The key insight is that when NOT CanonicalR(M', M) (which is our hypothesis),
+The key insight is that when NOT ExistsTask(M', M) (which is our hypothesis),
 Case A witnesses are automatically strict because they come from the double-density
 construction which produces a fresh MCS.
 -/
@@ -33,21 +33,21 @@ construction which produces a fresh MCS.
 /--
 When density_frame_condition fires via Case A (the double-density trick), the
 intermediate W satisfies the STRICT ordering property: M < W < M' in the sense
-that CanonicalR(M, W) ∧ CanonicalR(W, M') ∧ ¬CanonicalR(W, M) ∧ ¬CanonicalR(M', W).
+that ExistsTask(M, W) ∧ ExistsTask(W, M') ∧ ¬ExistsTask(W, M) ∧ ¬ExistsTask(M', W).
 
 The proof analyzes the Case A construction:
-- W is either V (when CanonicalR(V, M')) or W₁ (when V = M')
+- W is either V (when ExistsTask(V, M')) or W₁ (when V = M')
 - In both cases, we use the formula membership to show non-accessibility
 -/
 theorem density_frame_condition_strict
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M) :
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   -- Get the distinguishing formula
   obtain ⟨delta, h_G_delta_M', h_delta_not_M⟩ :=
     distinguishing_formula_exists h_mcs h_mcs' h_not_R'
@@ -55,7 +55,7 @@ theorem density_frame_condition_strict
   by_cases h_G_delta_M : Formula.all_future delta ∈ M
   · -- Case B: G(delta) ∈ M
     -- Sub-case on reflexivity of M'
-    by_cases h_R'_self : CanonicalR M' M'
+    by_cases h_R'_self : ExistsTask M' M'
     · -- Sub-case B1: M' is reflexive
       -- KEY INSIGHT: G(neg(delta)) ∉ M by caseB_G_neg_not_in_M.
       -- By MCS negation completeness: ¬G(¬delta) ∈ M, i.e., F(delta) ∈ M!
@@ -66,22 +66,22 @@ theorem density_frame_condition_strict
       -- - delta ∉ M (distinguishing formula)
       --
       -- Construct V from F(delta) in M. Then:
-      -- - CanonicalR(M, V) (from forward witness)
+      -- - ExistsTask(M, V) (from forward witness)
       -- - delta ∈ V (from forward witness)
-      -- - CanonicalR(V, M') (by linearity - to be shown)
-      -- - ¬CanonicalR(V, M) (delta ∈ GContent(V)? or other argument)
-      -- - ¬CanonicalR(M', V) (delta ∈ M', ¬delta... no, we have delta ∈ V)
+      -- - ExistsTask(V, M') (by linearity - to be shown)
+      -- - ¬ExistsTask(V, M) (delta ∈ GContent(V)? or other argument)
+      -- - ¬ExistsTask(M', V) (delta ∈ M', ¬delta... no, we have delta ∈ V)
       --
-      -- Wait, we need ¬CanonicalR(M', V), but delta ∈ M' and delta ∈ V, so
+      -- Wait, we need ¬ExistsTask(M', V), but delta ∈ M' and delta ∈ V, so
       -- GContent(M') containing delta means delta ∈ V which holds. No contradiction.
       --
       -- The strict condition requires something else. Let me think again.
       --
-      -- For ¬CanonicalR(M', V): need phi with G(phi) ∈ M' and phi ∉ V.
-      -- For ¬CanonicalR(V, M): need psi with G(psi) ∈ V and psi ∉ M.
+      -- For ¬ExistsTask(M', V): need phi with G(phi) ∈ M' and phi ∉ V.
+      -- For ¬ExistsTask(V, M): need psi with G(psi) ∈ V and psi ∉ M.
       --
       -- Key: if G(delta) ∈ V, then delta ∈ GContent(V). Since delta ∉ M,
-      -- we'd have GContent(V) ⊄ M, hence ¬CanonicalR(V, M).
+      -- we'd have GContent(V) ⊄ M, hence ¬ExistsTask(V, M).
       --
       -- So we need G(delta) ∈ V. V is forward witness from F(delta) in M.
       -- V = Lindenbaum({delta} ∪ GContent(M)).
@@ -97,13 +97,13 @@ theorem density_frame_condition_strict
       -- So G(delta) ∈ GContent(M), hence G(delta) ∈ V!
       --
       -- So we have G(delta) ∈ V, therefore delta ∈ GContent(V).
-      -- Since delta ∉ M, GContent(V) ⊄ M, hence ¬CanonicalR(V, M)!
+      -- Since delta ∉ M, GContent(V) ⊄ M, hence ¬ExistsTask(V, M)!
       --
-      -- For ¬CanonicalR(M', V): we need phi with G(phi) ∈ M' and phi ∉ V.
-      -- This is trickier. If CanonicalR(M', V), then GContent(M') ⊆ V.
+      -- For ¬ExistsTask(M', V): we need phi with G(phi) ∈ M' and phi ∉ V.
+      -- This is trickier. If ExistsTask(M', V), then GContent(M') ⊆ V.
       --
-      -- Claim: V and M' are in the same equivalence class if both CanonicalR(V, M')
-      -- and CanonicalR(M', V). But we want STRICT between.
+      -- Claim: V and M' are in the same equivalence class if both ExistsTask(V, M')
+      -- and ExistsTask(M', V). But we want STRICT between.
       --
       -- Let's check linearity first to see where V sits.
       have h_G_neg_not_M : Formula.all_future (Formula.neg delta) ∉ M :=
@@ -114,7 +114,7 @@ theorem density_frame_condition_strict
         cases set_mcs_negation_complete h_mcs (Formula.all_future (Formula.neg delta)) with
         | inl h => exact absurd h h_G_neg_not_M
         | inr h => exact h
-      -- Forward witness: get V with CanonicalR(M, V) and delta ∈ V
+      -- Forward witness: get V with ExistsTask(M, V) and delta ∈ V
       obtain ⟨V, h_V_mcs, h_R_MV, h_delta_V⟩ :=
         canonical_forward_F M h_mcs delta h_F_delta
       -- G(delta) ∈ M, so by Temporal 4: G(G(delta)) ∈ M
@@ -124,44 +124,44 @@ theorem density_frame_condition_strict
         set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_G_delta_M
       -- G(delta) ∈ GContent(M), so G(delta) ∈ V (V extends GContent(M))
       have h_G_delta_V : Formula.all_future delta ∈ V := h_R_MV h_GG_delta_M
-      -- delta ∈ GContent(V), and delta ∉ M, so ¬CanonicalR(V, M)
-      have h_not_VM : ¬CanonicalR V M := by
+      -- delta ∈ GContent(V), and delta ∉ M, so ¬ExistsTask(V, M)
+      have h_not_VM : ¬ExistsTask V M := by
         intro h_VM
         have h_delta_M : delta ∈ M := h_VM h_G_delta_V
         exact h_delta_not_M h_delta_M
-      -- Now we need to show CanonicalR(V, M') and ¬CanonicalR(M', V)
-      -- By linearity: CanonicalR(V, M') or CanonicalR(M', V) or V = M'
+      -- Now we need to show ExistsTask(V, M') and ¬ExistsTask(M', V)
+      -- By linearity: ExistsTask(V, M') or ExistsTask(M', V) or V = M'
       have h_lin := canonical_forward_reachable_linear M V M' h_mcs h_V_mcs h_mcs' h_R_MV h_R
       rcases h_lin with h_VM' | h_M'V | h_eq
-      · -- CanonicalR(V, M'): V is intermediate
-        -- Need to show ¬CanonicalR(M', V)
-        -- If CanonicalR(M', V), then GContent(M') ⊆ V.
+      · -- ExistsTask(V, M'): V is intermediate
+        -- Need to show ¬ExistsTask(M', V)
+        -- If ExistsTask(M', V), then GContent(M') ⊆ V.
         -- Since M' is reflexive, delta ∈ GContent(M') (G(delta) ∈ M').
         -- So delta ∈ V, which we already know. No contradiction yet.
         --
         -- Alternative: find gamma with G(gamma) ∈ M' and gamma ∉ V.
         -- This requires V to be "strictly less" than M' in some sense.
         --
-        -- Key observation: if CanonicalR(M', V), combined with CanonicalR(V, M'),
+        -- Key observation: if ExistsTask(M', V), combined with ExistsTask(V, M'),
         -- we have M' ~ V in the quotient. Then GContent(M') = GContent(V) (up to equiv).
         -- But we've shown G(delta) ∈ V and delta ∈ GContent(V).
-        -- If CanonicalR(M', V) and M' reflexive, M' should also have...
+        -- If ExistsTask(M', V) and M' reflexive, M' should also have...
         --
-        -- Actually, the issue is subtle. Let me try: assume CanonicalR(M', V).
+        -- Actually, the issue is subtle. Let me try: assume ExistsTask(M', V).
         -- Then GContent(M') ⊆ V. M' is reflexive, so GContent(M') ⊆ M'.
-        -- Combined with CanonicalR(V, M') means GContent(V) ⊆ M'.
+        -- Combined with ExistsTask(V, M') means GContent(V) ⊆ M'.
         -- So GContent(M') ⊆ V and GContent(V) ⊆ M'.
         --
         -- Now, we have delta ∈ GContent(V) (from G(delta) ∈ V).
-        -- If CanonicalR(M', V), then delta ∈... wait, delta ∈ GContent(M') iff G(delta) ∈ M',
-        -- which is true. So delta ∈ GContent(M'). If CanonicalR(M', V), delta ∈ V. Consistent.
+        -- If ExistsTask(M', V), then delta ∈... wait, delta ∈ GContent(M') iff G(delta) ∈ M',
+        -- which is true. So delta ∈ GContent(M'). If ExistsTask(M', V), delta ∈ V. Consistent.
         --
         -- We need to find something that distinguishes M' from V.
         -- V = Lindenbaum({delta} ∪ GContent(M)). The key is that V might NOT contain
         -- all of M' because V was built from M's GContent, not M'.
         --
-        -- Since ¬CanonicalR(M', M), there's a gap. Can we leverage that?
-        -- ¬CanonicalR(M', M) means GContent(M') ⊄ M. We already have delta witnessing this.
+        -- Since ¬ExistsTask(M', M), there's a gap. Can we leverage that?
+        -- ¬ExistsTask(M', M) means GContent(M') ⊄ M. We already have delta witnessing this.
         -- But delta ∈ V, so delta doesn't help distinguish V from M'.
         --
         -- We need gamma with G(gamma) ∈ M' and gamma ∉ V.
@@ -169,19 +169,19 @@ theorem density_frame_condition_strict
         -- For gamma ∉ V, we need gamma not in Lindenbaum({delta} ∪ GContent(M)).
         --
         -- Claim: ¬delta ∉ V (since delta ∈ V and V consistent).
-        -- If G(¬delta) ∈ M', then ¬delta ∈ GContent(M'). If CanonicalR(M', V),
+        -- If G(¬delta) ∈ M', then ¬delta ∈ GContent(M'). If ExistsTask(M', V),
         -- ¬delta ∈ V. But V has delta, contradiction! So G(¬delta) ∉ M'.
         --
-        -- Hmm, this doesn't directly give ¬CanonicalR(M', V).
+        -- Hmm, this doesn't directly give ¬ExistsTask(M', V).
         --
-        -- Let me try proof by contradiction. Assume CanonicalR(M', V).
+        -- Let me try proof by contradiction. Assume ExistsTask(M', V).
         -- Then GContent(M') ⊆ V.
         -- Since V has delta and ¬delta would make V inconsistent,
         -- we need GContent(M') to not force ¬delta into V.
         -- G(¬delta) ∈ M' would put ¬delta ∈ GContent(M') ⊆ V. Contradiction with V consistent.
-        -- So we need to show G(¬delta) ∈ M' if CanonicalR(M', V) held... but that's not automatic.
+        -- So we need to show G(¬delta) ∈ M' if ExistsTask(M', V) held... but that's not automatic.
         --
-        -- Actually, the situation might be that CanonicalR(M', V) CAN hold in some cases.
+        -- Actually, the situation might be that ExistsTask(M', V) CAN hold in some cases.
         -- The quotient construction allows M' ~ V. But for the strict density, we need
         -- a V that's strictly between.
         --
@@ -192,24 +192,24 @@ theorem density_frame_condition_strict
         -- In Case A, we use the double-density trick which might give stricter control.
         --
         -- Case split on whether M' sees V
-        by_cases h_M'_sees_V : CanonicalR M' V
+        by_cases h_M'_sees_V : ExistsTask M' V
         · -- V ~ M' (mutual accessibility), V is NOT strictly between M and M'
           -- In this case, V is in the same equivalence class as M'.
           -- We need a different witness.
           -- Use the irreflexive_mcs_has_strict_future on M (since M is NOT reflexive in Case B)
-          have h_M_not_refl : ¬CanonicalR M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
+          have h_M_not_refl : ¬ExistsTask M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
           obtain ⟨W, h_W_mcs, h_R_MW, h_not_WM⟩ := irreflexive_mcs_has_strict_future M h_mcs h_M_not_refl
           -- Check W's relation to M' via linearity
           have h_lin_W := canonical_forward_reachable_linear M W M' h_mcs h_W_mcs h_mcs' h_R_MW h_R
           rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
           · -- W sees M': check if M' sees W back
-            by_cases h_M'_W_back : CanonicalR M' W
+            by_cases h_M'_W_back : ExistsTask M' W
             · -- W ~ M' as well, still not strict from M' side
               -- Case split on G(neg(delta)) ∈ M' to find contradiction
               cases set_mcs_negation_complete h_mcs' (Formula.all_future (Formula.neg delta)) with
               | inl h_G_neg_delta_M' =>
                 -- G(neg(delta)) ∈ M', so neg(delta) ∈ GContent(M')
-                -- If CanonicalR M' W (h_M'_W_back), then neg(delta) ∈ W
+                -- If ExistsTask M' W (h_M'_W_back), then neg(delta) ∈ W
                 have h_neg_delta_W : Formula.neg delta ∈ W := h_M'_W_back h_G_neg_delta_M'
                 -- G(delta) ∈ GContent(M) ⊆ W (via h_R_MW and T4)
                 have h_G_delta_in_W : Formula.all_future delta ∈ W := h_R_MW h_GG_delta_M
@@ -218,7 +218,7 @@ theorem density_frame_condition_strict
                 -- For any phi in GContent(W): G(phi) ∈ W
                 -- By T4: G(G(phi)) ∈ W, so G(phi) ∈ GContent(W) ⊆ M' (h_WM')
                 -- phi ∈ GContent(M') ⊆ W (h_M'_W_back), so phi ∈ W
-                have h_W_refl : CanonicalR W W := fun phi h_phi_GContent_W => by
+                have h_W_refl : ExistsTask W W := fun phi h_phi_GContent_W => by
                   have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
                     DerivationTree.axiom [] _ (Axiom.temp_4 phi)
                   have h_GG_phi_W : Formula.all_future (Formula.all_future phi) ∈ W :=
@@ -247,26 +247,26 @@ theorem density_frame_condition_strict
                 -- If W were reflexive, phi ∈ W. Then phi ∈ GContent(W) ⊆ M (by h_WM... wait h_not_WM)
                 -- Actually, h_not_WM means GContent(W) ⊄ M, so there's chi with G(chi) ∈ W, chi ∉ M
                 -- We already have G(phi) ∈ W and phi ∉ M!
-                -- So phi witnesses ¬CanonicalR W M, which is h_not_WM. Good.
-                -- For ¬CanonicalR M' W: need xi with G(xi) ∈ M', xi ∉ W
+                -- So phi witnesses ¬ExistsTask W M, which is h_not_WM. Good.
+                -- For ¬ExistsTask M' W: need xi with G(xi) ∈ M', xi ∉ W
                 -- Since W ~ M' (h_M'_W_back and h_WM'), we need to find xi not in W
                 -- W is built with GContent(M) seeds. phi ∈ GContent(M).
-                -- Since h_M'_W_back : CanonicalR M' W, GContent(M') ⊆ W
+                -- Since h_M'_W_back : ExistsTask M' W, GContent(M') ⊆ W
                 -- The key: we need to escape W ~ M'. Use phi.
                 -- phi ∈ GContent(W) (since G(phi) ∈ W)
-                -- If CanonicalR W M' and CanonicalR M' W, then W ~ M'
+                -- If ExistsTask W M' and ExistsTask M' W, then W ~ M'
                 -- phi ∈ GContent(W) ⊆ M' (by h_WM')
                 have h_phi_M' : phi ∈ M' := h_WM' h_G_phi_W
                 -- phi ∈ M' but phi ∉ M (h_phi_not_M)
                 -- So GContent(M') contains phi but M doesn't have phi
                 -- This means... we need a fresh witness
                 -- Actually, W already doesn't see M (h_not_WM). Just need M' to not see W.
-                -- But we HAVE h_M'_W_back : CanonicalR M' W!
+                -- But we HAVE h_M'_W_back : ExistsTask M' W!
                 -- So W is NOT a strict intermediate. Need a different W.
                 -- Use V instead? V was the original forward witness.
-                -- h_not_VM : ¬CanonicalR V M ✓
-                -- Need: ¬CanonicalR M' V
-                -- But we're in branch h_M'_sees_V : CanonicalR M' V, so V ~ M' as well
+                -- h_not_VM : ¬ExistsTask V M ✓
+                -- Need: ¬ExistsTask M' V
+                -- But we're in branch h_M'_sees_V : ExistsTask M' V, so V ~ M' as well
                 -- Both V and W are in M''s equivalence class
                 -- Need to escape M''s cluster entirely
                 -- Use phi to build a new witness that avoids M' seeing it
@@ -281,12 +281,12 @@ theorem density_frame_condition_strict
                 by_cases h_G_chi_M : Formula.all_future chi ∈ M
                 · -- G(chi) ∈ M: chi ∈ GContent(M) ⊆ W (by h_R_MW)
                   -- chi ∈ GContent(W) ⊆ M' (by h_WM')... that's just h_G_chi_M'
-                  -- chi ∈ W but chi ∉ M. Use chi to show ¬CanonicalR W M (already have h_not_WM)
-                  -- For ¬CanonicalR M' W: need tau with G(tau) ∈ M', tau ∉ W
+                  -- chi ∈ W but chi ∉ M. Use chi to show ¬ExistsTask W M (already have h_not_WM)
+                  -- For ¬ExistsTask M' W: need tau with G(tau) ∈ M', tau ∉ W
                   -- W contains GContent(M), but M' might have formulas outside W
                   -- Since M' ~ W (h_M'_W_back and h_WM'), GContent(M') ⊆ W and GContent(W) ⊆ M'
-                  -- So all G-formulas of M' are in W. ¬CanonicalR M' W would fail.
-                  -- This means W ~ M' and we cannot have ¬CanonicalR M' W in this sub-case
+                  -- So all G-formulas of M' are in W. ¬ExistsTask M' W would fail.
+                  -- This means W ~ M' and we cannot have ¬ExistsTask M' W in this sub-case
                   -- So W is NOT a strict intermediate. Need different construction.
                   -- Try: apply density between M and W (since M < W)
                   -- But this creates the same situation recursively
@@ -294,14 +294,14 @@ theorem density_frame_condition_strict
                   -- Need to use the iteration approach
                   exact strict_density_M_reflexive M M' h_mcs h_mcs' h_R h_not_R' (by
                     -- Need to show M is reflexive
-                    -- But we have h_M_not_refl : ¬CanonicalR M M!
+                    -- But we have h_M_not_refl : ¬ExistsTask M M!
                     -- This case doesn't apply to strict_density_M_reflexive
                     -- We're in a different situation: M is NOT reflexive
                     -- Let me reconsider...
                     exfalso
                     exact h_M_not_refl h_G_delta_M
-                    -- Wait, h_G_delta_M : G(delta) ∈ M, but this doesn't mean CanonicalR M M
-                    -- Actually, need to derive CanonicalR M M from the hypotheses
+                    -- Wait, h_G_delta_M : G(delta) ∈ M, but this doesn't mean ExistsTask M M
+                    -- Actually, need to derive ExistsTask M M from the hypotheses
                     -- h_M_not_refl says GContent(M) ⊄ M
                     -- We have G(phi) ∈ M, phi ∉ M, which confirms h_M_not_refl
                     -- So M is indeed not reflexive. Use irreflexive_mcs_has_strict_future?
@@ -313,16 +313,16 @@ theorem density_frame_condition_strict
                     density_of_canonicalR M h_mcs (Formula.neg chi) h_F_neg_chi
                   obtain ⟨Y, h_Y_mcs, h_R_Y₁Y, h_neg_chi_Y⟩ :=
                     canonical_forward_F Y₁ h_Y₁_mcs (Formula.neg chi) h_F_neg_Y₁
-                  have h_R_MY : CanonicalR M Y := canonicalR_transitive M Y₁ Y h_mcs h_R_MY₁ h_R_Y₁Y
+                  have h_R_MY : ExistsTask M Y := canonicalR_transitive M Y₁ Y h_mcs h_R_MY₁ h_R_Y₁Y
                   -- Check Y's relation to M'
                   have h_lin_Y := canonical_forward_reachable_linear M Y M' h_mcs h_Y_mcs h_mcs' h_R_MY h_R
                   rcases h_lin_Y with h_YM' | h_M'Y | h_Y_eq_M'
-                  · -- CanonicalR Y M'
-                    have h_not_M'Y : ¬CanonicalR M' Y := by
+                  · -- ExistsTask Y M'
+                    have h_not_M'Y : ¬ExistsTask M' Y := by
                       intro h_M'Y_contra
                       have h_chi_Y : chi ∈ Y := h_M'Y_contra h_G_chi_M'
                       exact set_consistent_not_both h_Y_mcs.1 chi h_chi_Y h_neg_chi_Y
-                    by_cases h_YM : CanonicalR Y M
+                    by_cases h_YM : ExistsTask Y M
                     · -- Y ~ M: use strict_density_M_reflexive (but M is not reflexive!)
                       -- Actually, h_YM says Y sees M back, but M is not reflexive
                       -- This gives: GContent(Y) ⊆ M, and chi.neg ∈ Y, so chi.neg ∈ GContent(Y)?
@@ -342,13 +342,13 @@ theorem density_frame_condition_strict
                       exact h_phi_not_M h_phi_M_via_Y
                     · -- Y doesn't see M: Y is strict!
                       exact ⟨Y, h_Y_mcs, h_R_MY, h_YM', h_YM, h_not_M'Y⟩
-                  · -- CanonicalR M' Y: contradiction
+                  · -- ExistsTask M' Y: contradiction
                     exfalso
                     have h_chi_Y : chi ∈ Y := h_M'Y h_G_chi_M'
                     exact set_consistent_not_both h_Y_mcs.1 chi h_chi_Y h_neg_chi_Y
                   · -- Y = M'
                     rw [h_Y_eq_M'] at h_R_Y₁Y
-                    have h_not_M'Y₁ : ¬CanonicalR M' Y₁ := by
+                    have h_not_M'Y₁ : ¬ExistsTask M' Y₁ := by
                       intro h_M'Y₁
                       have h_T4_chi : [] ⊢ (Formula.all_future chi).imp (Formula.all_future (Formula.all_future chi)) :=
                         DerivationTree.axiom [] _ (Axiom.temp_4 chi)
@@ -358,7 +358,7 @@ theorem density_frame_condition_strict
                       have h_chi_M' : chi ∈ M' := h_R_Y₁Y h_G_chi_Y₁
                       have h_neg_chi_M' : chi.neg ∈ M' := h_Y_eq_M' ▸ h_neg_chi_Y
                       exact set_consistent_not_both h_mcs'.1 chi h_chi_M' h_neg_chi_M'
-                    by_cases h_Y₁M : CanonicalR Y₁ M
+                    by_cases h_Y₁M : ExistsTask Y₁ M
                     · -- Y₁ ~ M: same contradiction as Y ~ M case
                       exfalso
                       have h_G_phi_Y₁ : Formula.all_future phi ∈ Y₁ := h_R_MY₁ h_GG_phi_M
@@ -366,93 +366,93 @@ theorem density_frame_condition_strict
                       exact h_phi_not_M h_phi_M_via_Y₁
                     · -- Y₁ is strict!
                       exact ⟨Y₁, h_Y₁_mcs, h_R_MY₁, h_R_Y₁Y, h_Y₁M, h_not_M'Y₁⟩
-            · -- ¬CanonicalR M' W: W is a strict intermediate!
+            · -- ¬ExistsTask M' W: W is a strict intermediate!
               exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
           · -- M' sees W: W is above M', not an intermediate
             sorry
           · -- W = M': W is exactly M', same as V
             sorry
-        · -- ¬CanonicalR M' V: V is a strict intermediate!
+        · -- ¬ExistsTask M' V: V is a strict intermediate!
           exact ⟨V, h_V_mcs, h_R_MV, h_VM', h_not_VM, h_M'_sees_V⟩
-      · -- CanonicalR(M', V): delta ∈ GContent(M') ⊆ V, but delta ∈ V already. Consistent.
+      · -- ExistsTask(M', V): delta ∈ GContent(M') ⊆ V, but delta ∈ V already. Consistent.
         -- This case means M' sees V. But V also has delta from construction.
         -- We have:
-        -- - CanonicalR(M, V) - V is forward from M
-        -- - CanonicalR(M', V) - M' sees V
-        -- - ¬CanonicalR(V, M) - V doesn't see back to M
+        -- - ExistsTask(M, V) - V is forward from M
+        -- - ExistsTask(M', V) - M' sees V
+        -- - ¬ExistsTask(V, M) - V doesn't see back to M
         --
-        -- In terms of the quotient: [M] ≤ [V] (CanonicalR(M, V)) and [M'] ≤ [V] (CanonicalR(M', V)).
-        -- Also [M] ≤ [M'] (CanonicalR(M, M')).
-        -- And [M] < [V] (since ¬CanonicalR(V, M)).
+        -- In terms of the quotient: [M] ≤ [V] (ExistsTask(M, V)) and [M'] ≤ [V] (ExistsTask(M', V)).
+        -- Also [M] ≤ [M'] (ExistsTask(M, M')).
+        -- And [M] < [V] (since ¬ExistsTask(V, M)).
         --
         -- By linearity of ≤: either [M'] ≤ [M] or [M] ≤ [M'].
-        -- We have ¬CanonicalR(M', M), so... wait, that doesn't directly give [M'] > [M].
-        -- ¬CanonicalR(M', M) means GContent(M') ⊄ M, but quotient ≤ is about existence of witness.
+        -- We have ¬ExistsTask(M', M), so... wait, that doesn't directly give [M'] > [M].
+        -- ¬ExistsTask(M', M) means GContent(M') ⊄ M, but quotient ≤ is about existence of witness.
         --
-        -- Actually, the quotient order is: [M] ≤ [M'] iff CanonicalR(M, M') ∨ [M] = [M'].
-        -- [M] < [M'] iff CanonicalR(M, M') ∧ ¬CanonicalR(M', M).
+        -- Actually, the quotient order is: [M] ≤ [M'] iff ExistsTask(M, M') ∨ [M] = [M'].
+        -- [M] < [M'] iff ExistsTask(M, M') ∧ ¬ExistsTask(M', M).
         --
-        -- We have CanonicalR(M, M') and ¬CanonicalR(M', M), so [M] < [M'].
+        -- We have ExistsTask(M, M') and ¬ExistsTask(M', M), so [M] < [M'].
         --
-        -- Now, if CanonicalR(M', V) and CanonicalR(M, V):
+        -- Now, if ExistsTask(M', V) and ExistsTask(M, V):
         -- [M'] ≤ [V] and [M] ≤ [V].
-        -- If also CanonicalR(V, M'), then [V] = [M'].
-        -- If CanonicalR(V, M), then [V] = [M]. But ¬CanonicalR(V, M), so [V] ≠ [M].
+        -- If also ExistsTask(V, M'), then [V] = [M'].
+        -- If ExistsTask(V, M), then [V] = [M]. But ¬ExistsTask(V, M), so [V] ≠ [M].
         --
         -- We need V to be strictly between M and M'.
-        -- [M] < [V] (from ¬CanonicalR(V, M)) and [V] < [M'] (need CanonicalR(V, M') ∧ ¬CanonicalR(M', V)).
-        -- But in this branch, we have CanonicalR(M', V), which means [M'] ≤ [V].
-        -- Combined with CanonicalR(M, M') → CanonicalR(M, V) (transitivity? not directly).
+        -- [M] < [V] (from ¬ExistsTask(V, M)) and [V] < [M'] (need ExistsTask(V, M') ∧ ¬ExistsTask(M', V)).
+        -- But in this branch, we have ExistsTask(M', V), which means [M'] ≤ [V].
+        -- Combined with ExistsTask(M, M') → ExistsTask(M, V) (transitivity? not directly).
         --
-        -- Hmm, we have CanonicalR(M, V) already.
+        -- Hmm, we have ExistsTask(M, V) already.
         --
-        -- In this branch (h_M'V): CanonicalR(M', V) holds.
+        -- In this branch (h_M'V): ExistsTask(M', V) holds.
         -- For V to be strictly between M and M' in the quotient:
         -- [M] < [V] < [M'].
-        -- But CanonicalR(M', V) means [M'] ≤ [V], so [V] ≥ [M'], not [V] < [M'].
+        -- But ExistsTask(M', V) means [M'] ≤ [V], so [V] ≥ [M'], not [V] < [M'].
         --
         -- This means V is NOT strictly between M and M'. V is "above or equal to" M'.
         -- So V is not the right witness in this branch.
         --
         -- We need a different approach: find W that's strictly between.
         -- One option: use density_frame_condition on M and V (if [M] < [V]).
-        -- But that requires CanonicalR(M, V) and ¬CanonicalR(V, M), which we have!
+        -- But that requires ExistsTask(M, V) and ¬ExistsTask(V, M), which we have!
         -- So we can recurse: find W' strictly between M and V, then W' is between M and M' too.
         --
         -- This is the iteration approach!
         -- The measure that decreases: V is "closer" to M than M' was? Not obvious.
         --
-        -- Alternative: In this branch, since CanonicalR(M', V), V has all of GContent(M').
+        -- Alternative: In this branch, since ExistsTask(M', V), V has all of GContent(M').
         -- But V was built from GContent(M). So GContent(M') ⊆ GContent(V) ⊆ ... ?
         --
         -- Actually, the canonical relation is transitive, so:
-        -- CanonicalR(M, V) and CanonicalR(M', V) and CanonicalR(M, M')
+        -- ExistsTask(M, V) and ExistsTask(M', V) and ExistsTask(M, M')
         -- This doesn't directly help.
         --
-        -- Let me try: since [M] < [M'] and [M'] ≤ [V] (CanonicalR(M', V)),
+        -- Let me try: since [M] < [M'] and [M'] ≤ [V] (ExistsTask(M', V)),
         -- we have [M] < [V] (transitivity in the quotient order).
-        -- And ¬CanonicalR(V, M) confirms [V] ≠ [M].
+        -- And ¬ExistsTask(V, M) confirms [V] ≠ [M].
         --
         -- But we need [V] strictly between [M] and [M'], which requires [V] < [M'].
-        -- CanonicalR(M', V) means [M'] ≤ [V], so [V] ≥ [M'], contradiction with [V] < [M'].
+        -- ExistsTask(M', V) means [M'] ≤ [V], so [V] ≥ [M'], contradiction with [V] < [M'].
         --
         -- So in this branch, V is NOT the right witness. We need iteration.
         --
         -- V is above M' (M' sees V), so V is NOT the right witness.
         -- Use irreflexive_mcs_has_strict_future on M to get a different witness.
-        have h_M_not_refl : ¬CanonicalR M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
+        have h_M_not_refl : ¬ExistsTask M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
         obtain ⟨W, h_W_mcs, h_R_MW, h_not_WM⟩ := irreflexive_mcs_has_strict_future M h_mcs h_M_not_refl
         -- Check W's relation to M'
         have h_lin_W := canonical_forward_reachable_linear M W M' h_mcs h_W_mcs h_mcs' h_R_MW h_R
         rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
         · -- W sees M': check if M' sees W back
-          by_cases h_M'_W_back : CanonicalR M' W
+          by_cases h_M'_W_back : ExistsTask M' W
           · -- W ~ M': Case split on G(neg(delta)) in M'
             cases set_mcs_negation_complete h_mcs' (Formula.all_future (Formula.neg delta)) with
             | inl h_G_neg_delta_M' =>
               have h_neg_delta_W : Formula.neg delta ∈ W := h_M'_W_back h_G_neg_delta_M'
               have h_G_delta_in_W : Formula.all_future delta ∈ W := h_R_MW h_GG_delta_M
-              have h_W_refl : CanonicalR W W := fun phi h_phi_GContent_W => by
+              have h_W_refl : ExistsTask W W := fun phi h_phi_GContent_W => by
                 have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
                   DerivationTree.axiom [] _ (Axiom.temp_4 phi)
                 have h_GG_phi_W : Formula.all_future (Formula.all_future phi) ∈ W :=
@@ -465,7 +465,7 @@ theorem density_frame_condition_strict
             | inr h_F_delta_M' =>
               -- F(delta) in M': requires iteration
               sorry
-          · -- ¬CanonicalR M' W: W is strict intermediate!
+          · -- ¬ExistsTask M' W: W is strict intermediate!
             exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
         · -- M' sees W: W above M', need iteration
           sorry
@@ -475,8 +475,8 @@ theorem density_frame_condition_strict
         -- If V = M', then the forward witness from F(delta) in M landed at M'.
         -- This means M' is exactly Lindenbaum({delta} ∪ GContent(M)).
         -- We have:
-        -- - CanonicalR(M, M') (given)
-        -- - ¬CanonicalR(M', M) (given, distinguishing formula)
+        -- - ExistsTask(M, M') (given)
+        -- - ¬ExistsTask(M', M) (given, distinguishing formula)
         -- - delta ∈ M' (from forward witness)
         -- - G(delta) ∈ M (Case B)
         -- - M' reflexive (Case B1)
@@ -484,7 +484,7 @@ theorem density_frame_condition_strict
         -- We need a strict intermediate between M and M'.
         --
         -- Try: apply density to M and M' using the existing density_frame_condition.
-        -- The result W satisfies CanonicalR(M, W) and CanonicalR(W, M').
+        -- The result W satisfies ExistsTask(M, W) and ExistsTask(W, M').
         -- Case B1 gives W = M'. But since V = M' is the forward witness from F(delta),
         -- maybe this iteration doesn't help.
         --
@@ -495,20 +495,20 @@ theorem density_frame_condition_strict
         -- Then analyze W's relationship with M'.
         --
         -- M is not reflexive in Case B
-        have h_M_not_refl : ¬CanonicalR M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
+        have h_M_not_refl : ¬ExistsTask M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
         -- Get strict future from M
         obtain ⟨W, h_W_mcs, h_R_MW, h_not_WM⟩ := irreflexive_mcs_has_strict_future M h_mcs h_M_not_refl
         -- Use linearity to get W's relation to M'
         have h_lin_W := canonical_forward_reachable_linear M W M' h_mcs h_W_mcs h_mcs' h_R_MW h_R
         rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
-        · -- CanonicalR W M': check if W is strict from M' side
-          by_cases h_M'_W_back : CanonicalR M' W
+        · -- ExistsTask W M': check if W is strict from M' side
+          by_cases h_M'_W_back : ExistsTask M' W
           · -- M' sees W - Case split on G(neg(delta)) in M'
             cases set_mcs_negation_complete h_mcs' (Formula.all_future (Formula.neg delta)) with
             | inl h_G_neg_delta_M' =>
               have h_neg_delta_W : Formula.neg delta ∈ W := h_M'_W_back h_G_neg_delta_M'
               have h_G_delta_in_W : Formula.all_future delta ∈ W := h_R_MW h_GG_delta_M
-              have h_W_refl : CanonicalR W W := fun phi h_phi_GContent_W => by
+              have h_W_refl : ExistsTask W W := fun phi h_phi_GContent_W => by
                 have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
                   DerivationTree.axiom [] _ (Axiom.temp_4 phi)
                 have h_GG_phi_W : Formula.all_future (Formula.all_future phi) ∈ W :=
@@ -521,15 +521,15 @@ theorem density_frame_condition_strict
             | inr h_F_delta_M' =>
               -- F(delta) in M': requires iteration
               sorry
-          · -- ¬CanonicalR M' W: W is strict intermediate!
+          · -- ¬ExistsTask M' W: W is strict intermediate!
             exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
-        · -- CanonicalR M' W: W is above M' in quotient
+        · -- ExistsTask M' W: W is above M' in quotient
           -- Need iteration to find intermediate between M and M'
           sorry
         · -- W = M': This means the seriality witness from M landed at M'.
           -- Combined with h_eq (V = M'), we have W = V = M'.
-          -- But we have h_not_WM (¬CanonicalR W M) and h_not_VM (¬CanonicalR V M).
-          -- Since W = M', we have ¬CanonicalR M' M, which is h_not_R'. Consistent.
+          -- But we have h_not_WM (¬ExistsTask W M) and h_not_VM (¬ExistsTask V M).
+          -- Since W = M', we have ¬ExistsTask M' M, which is h_not_R'. Consistent.
           -- We still need a strict intermediate between M and M'.
           -- This case requires iteration or a different formula.
           sorry
@@ -549,15 +549,15 @@ theorem density_frame_condition_strict
         density_of_canonicalR M h_mcs (Formula.neg gamma) h_F_neg_gamma
       obtain ⟨V, h_V_mcs, h_R_W₁V, h_neg_gamma_V⟩ :=
         canonical_forward_F W₁ h_W₁_mcs (Formula.neg gamma) h_F_neg_W₁
-      have h_R_MV : CanonicalR M V := canonicalR_transitive M W₁ V h_mcs h_R_MW₁ h_R_W₁V
+      have h_R_MV : ExistsTask M V := canonicalR_transitive M W₁ V h_mcs h_R_MW₁ h_R_W₁V
       have h_lin := canonical_forward_reachable_linear M V M' h_mcs h_V_mcs h_mcs' h_R_MV h_R
       rcases h_lin with h_VM' | h_M'V | h_eq
-      · -- V is intermediate: CanonicalR(V, M')
-        -- Need to prove strictness: ¬CanonicalR(V, M) ∧ ¬CanonicalR(M', V)
+      · -- V is intermediate: ExistsTask(V, M')
+        -- Need to prove strictness: ¬ExistsTask(V, M) ∧ ¬ExistsTask(M', V)
         refine ⟨V, h_V_mcs, h_R_MV, h_VM', ?_, ?_⟩
-        · -- ¬CanonicalR(V, M): Show GContent(V) ⊄ M
+        · -- ¬ExistsTask(V, M): Show GContent(V) ⊄ M
           -- Case split on M's reflexivity
-          by_cases h_M_refl : CanonicalR M M
+          by_cases h_M_refl : ExistsTask M M
           · -- M is reflexive - but this contradicts h_G_delta_M and h_delta_not_M!
             -- If M is reflexive, then GContent(M) ⊆ M.
             -- h_G_delta_M says G(delta) ∈ M, so delta ∈ GContent(M).
@@ -566,7 +566,7 @@ theorem density_frame_condition_strict
             have h_delta_in_M : delta ∈ M := h_M_refl h_G_delta_M
             exact h_delta_not_M h_delta_in_M
           · -- M is NOT reflexive: use irreflexivity witness
-            -- From ¬CanonicalR M M, get psi with G(psi) ∈ M and psi ∉ M
+            -- From ¬ExistsTask M M, get psi with G(psi) ∈ M and psi ∉ M
             simp only [ExistsTask_def, Set.not_subset] at h_M_refl
             obtain ⟨psi, h_psi_GContent, h_psi_not_M⟩ := h_M_refl
             -- By Temporal 4: G(G(psi)) ∈ M, so G(psi) ∈ GContent(M) ⊆ W₁
@@ -581,25 +581,25 @@ theorem density_frame_condition_strict
               set_mcs_implication_property h_W₁_mcs (theorem_in_mcs h_W₁_mcs h_T4) h_G_psi_W₁
             -- G(psi) ∈ GContent(W₁) ⊆ V
             have h_G_psi_V : Formula.all_future psi ∈ V := h_R_W₁V h_GG_psi_W₁
-            -- Now: G(psi) ∈ V and psi ∉ M. This witnesses ¬CanonicalR V M.
+            -- Now: G(psi) ∈ V and psi ∉ M. This witnesses ¬ExistsTask V M.
             simp only [ExistsTask_def, Set.not_subset]
             exact ⟨psi, h_G_psi_V, h_psi_not_M⟩
-        · -- ¬CanonicalR(M', V): Show GContent(M') ⊄ V
+        · -- ¬ExistsTask(M', V): Show GContent(M') ⊄ V
           -- G(gamma) ∈ M' so gamma ∈ GContent(M')
-          -- If CanonicalR(M', V), gamma ∈ V
+          -- If ExistsTask(M', V), gamma ∈ V
           -- But neg(gamma) ∈ V, contradiction with V consistent
           intro h_M'V_converse
           have h_gamma_V : gamma ∈ V := h_M'V_converse h_G_gamma_M'
           exact set_consistent_not_both h_V_mcs.1 gamma h_gamma_V h_neg_gamma_V
-      · -- CanonicalR(M', V): gamma in GContent(M') ⊆ V, but neg(gamma) in V. Contradiction.
+      · -- ExistsTask(M', V): gamma in GContent(M') ⊆ V, but neg(gamma) in V. Contradiction.
         exfalso
         have h_gamma_V : gamma ∈ V := h_M'V h_G_gamma_M'
         exact set_consistent_not_both h_V_mcs.1 gamma h_gamma_V h_neg_gamma_V
       · -- V = M': use W₁ instead
         rw [h_eq] at h_R_W₁V
         refine ⟨W₁, h_W₁_mcs, h_R_MW₁, h_R_W₁V, ?_, ?_⟩
-        · -- ¬CanonicalR(W₁, M)
-          by_cases h_M_refl : CanonicalR M M
+        · -- ¬ExistsTask(W₁, M)
+          by_cases h_M_refl : ExistsTask M M
           · -- M reflexive - but this contradicts Case B setup!
             -- In Case B: G(delta) ∈ M and delta ∉ M.
             -- If M reflexive, delta ∈ GContent(M) ⊆ M. Contradiction!
@@ -616,31 +616,31 @@ theorem density_frame_condition_strict
             have h_G_psi_W₁ : Formula.all_future psi ∈ W₁ := h_R_MW₁ h_GG_psi_M
             simp only [ExistsTask_def, Set.not_subset]
             exact ⟨psi, h_G_psi_W₁, h_psi_not_M⟩
-        · -- ¬CanonicalR(M', W₁)
-          -- V = M' and CanonicalR(W₁, V) = CanonicalR(W₁, M')
+        · -- ¬ExistsTask(M', W₁)
+          -- V = M' and ExistsTask(W₁, V) = ExistsTask(W₁, M')
           -- W₁ has F(neg(gamma)) ∈ W₁
-          -- If CanonicalR(M', W₁), then GContent(M') ⊆ W₁
+          -- If ExistsTask(M', W₁), then GContent(M') ⊆ W₁
           -- gamma ∈ GContent(M') so gamma ∈ W₁
           -- Get forward witness from W₁ for neg(gamma), lands at V = M'
           -- So neg(gamma) ∈ M'. If gamma ∈ W₁ (from M' -> W₁), then
           -- we need neg(gamma) ∈ W₁ which we don't have directly.
-          -- However, since CanonicalR(W₁, M') and neg(gamma) ∈ M' (from V = M'),
-          -- and if CanonicalR(M', W₁), gamma ∈ W₁, we get:
+          -- However, since ExistsTask(W₁, M') and neg(gamma) ∈ M' (from V = M'),
+          -- and if ExistsTask(M', W₁), gamma ∈ W₁, we get:
           -- gamma ∈ W₁ and forward from W₁ gives neg(gamma) - contradiction via linearity?
           -- Actually: if M' ~ W₁, they're equivalent. gamma ∈ M' from GContent.
           -- But gamma ∉ M' (h_gamma_not_M')!
           intro h_M'_W₁
           have h_gamma_W₁ : gamma ∈ W₁ := h_M'_W₁ h_G_gamma_M'
-          -- If CanonicalR(W₁, M'), then gamma ∈ GContent(W₁) would go to M'...
+          -- If ExistsTask(W₁, M'), then gamma ∈ GContent(W₁) would go to M'...
           -- Actually, h_gamma_W₁ is gamma ∈ W₁, not G(gamma) ∈ W₁.
-          -- We have CanonicalR(W₁, M') (h_R_W₁V after rewrite).
+          -- We have ExistsTask(W₁, M') (h_R_W₁V after rewrite).
           -- If gamma ∈ GContent(W₁), then gamma ∈ M'.
           -- We have gamma ∉ M'. So gamma ∉ GContent(W₁).
           -- But having gamma ∈ W₁ and gamma ∉ GContent(W₁) is consistent (G(gamma) ∉ W₁).
           -- Need different approach: use neg(gamma) from V = M'.
           have h_neg_gamma_M' : gamma.neg ∈ M' := by rw [← h_eq]; exact h_neg_gamma_V
           -- Both gamma ∈ W₁ and neg(gamma) ∈ M'. If W₁ ~ M':
-          -- CanonicalR(W₁, M') and CanonicalR(M', W₁) means GContent(W₁) ⊆ M' and GContent(M') ⊆ W₁.
+          -- ExistsTask(W₁, M') and ExistsTask(M', W₁) means GContent(W₁) ⊆ M' and GContent(M') ⊆ W₁.
           -- If G(gamma) ∈ W₁, gamma ∈ GContent(W₁) ⊆ M'. But gamma ∉ M'. So G(gamma) ∉ W₁.
           -- If G(gamma) ∈ M' (we have this), gamma ∈ GContent(M') ⊆ W₁. So gamma ∈ W₁ ✓ (consistent).
           -- If G(neg(gamma)) ∈ M', neg(gamma) ∈ GContent(M') ⊆ W₁.
@@ -668,7 +668,7 @@ theorem density_frame_condition_strict
             -- Actually, we have gamma ∈ W₁ and neg(gamma) ∈ M'.
             -- If W₁ = M', then both gamma and neg(gamma) in M', contradiction.
             -- But W₁ ≠ M' generally.
-            -- If CanonicalR(M', W₁), we have GContent(M') ⊆ W₁.
+            -- If ExistsTask(M', W₁), we have GContent(M') ⊆ W₁.
             -- gamma ∈ GContent(M') (since G(gamma) ∈ M'), so gamma ∈ W₁ ✓.
             -- neg(gamma) ∈ M' but neg(gamma) ∉ GContent(M') (since G(neg(gamma)) ∉ M' in this case).
             -- So we can't get neg(gamma) ∈ W₁ from GContent.
@@ -684,7 +684,7 @@ theorem density_frame_condition_strict
             -- M' not reflexive means GContent(M') ⊄ M'.
             -- gamma ∈ GContent(M') and gamma ∉ M' (h_gamma_not_M') - yes!
             -- So M' is not reflexive.
-            -- If CanonicalR(M', W₁) and CanonicalR(W₁, M'):
+            -- If ExistsTask(M', W₁) and ExistsTask(W₁, M'):
             -- M' ~ W₁. But M' not reflexive means GContent(M') ⊄ M'.
             -- If M' ~ W₁, then GContent(M') ⊆ W₁ and GContent(W₁) ⊆ M'.
             -- gamma ∈ GContent(M') ⊆ W₁ ✓.
@@ -715,17 +715,17 @@ theorem density_frame_condition_strict
       density_of_canonicalR M h_mcs (Formula.neg delta) h_F_neg_delta
     obtain ⟨V, h_V_mcs, h_R_W₁V, h_neg_delta_V⟩ :=
       canonical_forward_F W₁ h_W₁_mcs (Formula.neg delta) h_F_neg_W₁
-    have h_R_MV : CanonicalR M V := canonicalR_transitive M W₁ V h_mcs h_R_MW₁ h_R_W₁V
+    have h_R_MV : ExistsTask M V := canonicalR_transitive M W₁ V h_mcs h_R_MW₁ h_R_W₁V
     have h_lin := canonical_forward_reachable_linear M V M' h_mcs h_V_mcs h_mcs' h_R_MV h_R
     rcases h_lin with h_VM' | h_M'V | h_eq
-    · -- V is intermediate with CanonicalR(V, M')
+    · -- V is intermediate with ExistsTask(V, M')
       -- Case split on whether V is strict from M side
       -- This replaces the problematic `intro h_VM; ...; sorry` pattern
-      by_cases h_VM : CanonicalR V M
+      by_cases h_VM : ExistsTask V M
       case pos =>
         -- V ~ M case: V and M are in the same equivalence class
-        -- Case split on CanonicalR M' V
-        by_cases h_M'_V : CanonicalR M' V
+        -- Case split on ExistsTask M' V
+        by_cases h_M'_V : ExistsTask M' V
         · -- pos: M' sees V, and V sees M (h_VM), so M' sees M via Temporal 4
           exfalso
           apply h_not_R'
@@ -739,7 +739,7 @@ theorem density_frame_condition_strict
         · -- neg: M' does NOT see V, but V sees M
           -- V still sees M (h_VM), so V is NOT strict from M side
           -- Case split on M's reflexivity
-          by_cases h_M_refl : CanonicalR M M
+          by_cases h_M_refl : ExistsTask M M
           · -- M is reflexive. V ~ M (h_VM, h_R_MV) and M' doesn't see V (h_M'_V).
             -- Extract distinguishing formula from h_M'_V
             simp only [ExistsTask_def, Set.not_subset] at h_M'_V
@@ -757,19 +757,19 @@ theorem density_frame_condition_strict
                 density_of_canonicalR M h_mcs (Formula.neg psi) h_F_neg_psi
               obtain ⟨U, h_U_mcs, h_R_U₁U, h_neg_psi_U⟩ :=
                 canonical_forward_F U₁ h_U₁_mcs (Formula.neg psi) h_F_neg_U₁
-              have h_R_MU : CanonicalR M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
+              have h_R_MU : ExistsTask M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
               -- U has neg(psi), and M' has G(psi)
               -- Check U's relation to M'
               have h_lin_U := canonical_forward_reachable_linear M U M' h_mcs h_U_mcs h_mcs' h_R_MU h_R
               rcases h_lin_U with h_UM' | h_M'U | h_U_eq_M'
-              · -- CanonicalR U M': U is between M and M'
-                -- Check strictness: G(psi) ∈ M' and neg(psi) ∈ U give ¬CanonicalR M' U
-                have h_not_M'U : ¬CanonicalR M' U := by
+              · -- ExistsTask U M': U is between M and M'
+                -- Check strictness: G(psi) ∈ M' and neg(psi) ∈ U give ¬ExistsTask M' U
+                have h_not_M'U : ¬ExistsTask M' U := by
                   intro h_M'U_contra
                   have h_psi_U : psi ∈ U := h_M'U_contra h_G_psi_M'
                   exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
-                -- For ¬CanonicalR U M: M is reflexive, so need to check
-                by_cases h_UM : CanonicalR U M
+                -- For ¬ExistsTask U M: M is reflexive, so need to check
+                by_cases h_UM : ExistsTask U M
                 · -- U ~ M means U is in M's reflexive cluster
                   -- Extract distinguishing formula from h_not_M'U
                   simp only [ExistsTask_def, Set.not_subset] at h_not_M'U
@@ -779,7 +779,7 @@ theorem density_frame_condition_strict
                   -- chi ∉ U and U reflexive means G(chi) ∉ U
                   have h_G_chi_not_U : Formula.all_future chi ∉ U := by
                     intro h_G_chi_U
-                    have h_U_refl : CanonicalR U U := fun phi h_phi_GContent_U => by
+                    have h_U_refl : ExistsTask U U := fun phi h_phi_GContent_U => by
                       have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) := DerivationTree.axiom [] _ (Axiom.temp_4 phi)
                       have h_GG_phi_U : Formula.all_future (Formula.all_future phi) ∈ U := set_mcs_implication_property h_U_mcs (theorem_in_mcs h_U_mcs h_T4) h_phi_GContent_U
                       have h_G_phi_M : Formula.all_future phi ∈ M := h_UM h_GG_phi_U
@@ -798,16 +798,16 @@ theorem density_frame_condition_strict
                   -- Construct witnesses
                   obtain ⟨Z₁, h_Z₁_mcs, h_R_MZ₁, h_F_neg_Z₁⟩ := density_of_canonicalR M h_mcs (Formula.neg chi) h_F_neg_chi
                   obtain ⟨Z, h_Z_mcs, h_R_Z₁Z, h_neg_chi_Z⟩ := canonical_forward_F Z₁ h_Z₁_mcs (Formula.neg chi) h_F_neg_Z₁
-                  have h_R_MZ : CanonicalR M Z := canonicalR_transitive M Z₁ Z h_mcs h_R_MZ₁ h_R_Z₁Z
+                  have h_R_MZ : ExistsTask M Z := canonicalR_transitive M Z₁ Z h_mcs h_R_MZ₁ h_R_Z₁Z
                   -- Check Z's relation to M'
                   have h_lin_Z := canonical_forward_reachable_linear M Z M' h_mcs h_Z_mcs h_mcs' h_R_MZ h_R
                   rcases h_lin_Z with h_ZM' | h_M'Z | h_Z_eq_M'
-                  · -- CanonicalR Z M'
-                    have h_not_M'Z : ¬CanonicalR M' Z := by
+                  · -- ExistsTask Z M'
+                    have h_not_M'Z : ¬ExistsTask M' Z := by
                       intro h_M'Z_contra
                       have h_chi_Z : chi ∈ Z := h_M'Z_contra h_G_chi_M'
                       exact set_consistent_not_both h_Z_mcs.1 chi h_chi_Z h_neg_chi_Z
-                    by_cases h_ZM : CanonicalR Z M
+                    by_cases h_ZM : ExistsTask Z M
                     · -- Z ~ M: requires well-founded iteration (4th level)
                       -- Termination guaranteed by finite formula consumption.
                       -- Resolution: use strict_intermediate_exists_aux or move
@@ -815,13 +815,13 @@ theorem density_frame_condition_strict
                       sorry
                     · -- Z is strict!
                       exact ⟨Z, h_Z_mcs, h_R_MZ, h_ZM', h_ZM, h_not_M'Z⟩
-                  · -- CanonicalR M' Z: contradiction
+                  · -- ExistsTask M' Z: contradiction
                     exfalso
                     have h_chi_Z : chi ∈ Z := h_M'Z h_G_chi_M'
                     exact set_consistent_not_both h_Z_mcs.1 chi h_chi_Z h_neg_chi_Z
                   · -- Z = M'
                     rw [h_Z_eq_M'] at h_R_Z₁Z
-                    have h_not_M'Z₁ : ¬CanonicalR M' Z₁ := by
+                    have h_not_M'Z₁ : ¬ExistsTask M' Z₁ := by
                       intro h_M'Z₁
                       have h_T4_chi : [] ⊢ (Formula.all_future chi).imp (Formula.all_future (Formula.all_future chi)) := DerivationTree.axiom [] _ (Axiom.temp_4 chi)
                       have h_GG_chi_M' : Formula.all_future (Formula.all_future chi) ∈ M' := set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_chi) h_G_chi_M'
@@ -829,21 +829,21 @@ theorem density_frame_condition_strict
                       have h_chi_M' : chi ∈ M' := h_R_Z₁Z h_G_chi_Z₁
                       have h_neg_chi_M' : chi.neg ∈ M' := h_Z_eq_M' ▸ h_neg_chi_Z
                       exact set_consistent_not_both h_mcs'.1 chi h_chi_M' h_neg_chi_M'
-                    by_cases h_Z₁M : CanonicalR Z₁ M
+                    by_cases h_Z₁M : ExistsTask Z₁ M
                     · -- Z₁ ~ M: requires well-founded iteration (3rd level)
                       sorry
                     · -- Z₁ is strict!
                       exact ⟨Z₁, h_Z₁_mcs, h_R_MZ₁, h_R_Z₁Z, h_Z₁M, h_not_M'Z₁⟩
-                · -- ¬CanonicalR U M: U is strict!
+                · -- ¬ExistsTask U M: U is strict!
                   exact ⟨U, h_U_mcs, h_R_MU, h_UM', h_UM, h_not_M'U⟩
-              · -- CanonicalR M' U: psi ∈ GContent(M') ⊆ U contradicts neg(psi) ∈ U
+              · -- ExistsTask M' U: psi ∈ GContent(M') ⊆ U contradicts neg(psi) ∈ U
                 exfalso
                 have h_psi_U : psi ∈ U := h_M'U h_G_psi_M'
                 exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
               · -- U = M': Use U₁ as intermediate
                 rw [h_U_eq_M'] at h_R_U₁U
                 -- U₁ sees M' (= U), check strictness
-                have h_not_M'U₁ : ¬CanonicalR M' U₁ := by
+                have h_not_M'U₁ : ¬ExistsTask M' U₁ := by
                   intro h_M'U₁
                   -- G(psi) ∈ M', by T4, G(G(psi)) ∈ M'
                   have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
@@ -858,14 +858,14 @@ theorem density_frame_condition_strict
                   have h_neg_psi_M' : psi.neg ∈ M' := h_U_eq_M' ▸ h_neg_psi_U
                   -- psi ∈ M' and neg(psi) ∈ M'. Contradiction!
                   exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
-                by_cases h_U₁M : CanonicalR U₁ M
+                by_cases h_U₁M : ExistsTask U₁ M
                 · -- U₁ ~ M: iteration needed
                   sorry
-                · -- ¬CanonicalR U₁ M: U₁ is strict!
+                · -- ¬ExistsTask U₁ M: U₁ is strict!
                   exact ⟨U₁, h_U₁_mcs, h_R_MU₁, h_R_U₁U, h_U₁M, h_not_M'U₁⟩
           · -- M is NOT reflexive. Use the key lemma.
-            -- Any forward witness W from M with CanonicalR M W satisfies ¬CanonicalR W M.
-            -- V is such a witness (h_R_MV). So ¬CanonicalR V M.
+            -- Any forward witness W from M with ExistsTask M W satisfies ¬ExistsTask W M.
+            -- V is such a witness (h_R_MV). So ¬ExistsTask V M.
             -- This contradicts h_VM!
             exfalso
             simp only [ExistsTask_def, Set.not_subset] at h_M_refl
@@ -882,17 +882,17 @@ theorem density_frame_condition_strict
             have h_phi_M : phi ∈ M := h_VM h_G_phi_V
             exact h_phi_not_M h_phi_M
       case neg =>
-        -- V is strict from M side: ¬CanonicalR V M
+        -- V is strict from M side: ¬ExistsTask V M
         -- Now V is a valid strict intermediate candidate
         refine ⟨V, h_V_mcs, h_R_MV, h_VM', h_VM, ?_⟩
-        -- ¬CanonicalR(M', V): Show GContent(M') ⊄ V
+        -- ¬ExistsTask(M', V): Show GContent(M') ⊄ V
         -- G(delta) ∈ M' so delta ∈ GContent(M')
-        -- If CanonicalR(M', V), delta ∈ V
+        -- If ExistsTask(M', V), delta ∈ V
         -- But neg(delta) ∈ V, contradiction with V consistent
         intro h_M'V_converse
         have h_delta_V : delta ∈ V := h_M'V_converse h_G_delta_M'
         exact set_consistent_not_both h_V_mcs.1 delta h_delta_V h_neg_delta_V
-    · -- CanonicalR(M', V): delta in GContent(M') ⊆ V, but neg(delta) in V. Contradiction.
+    · -- ExistsTask(M', V): delta in GContent(M') ⊆ V, but neg(delta) in V. Contradiction.
       exfalso
       have h_delta_V : delta ∈ V := h_M'V h_G_delta_M'
       exact set_consistent_not_both h_V_mcs.1 delta h_delta_V h_neg_delta_V
@@ -900,11 +900,11 @@ theorem density_frame_condition_strict
       rw [h_eq] at h_R_W₁V
       -- Case split: is W₁ strict from M side?
       -- This replaces the problematic `intro h_W₁M; ...; sorry` pattern
-      by_cases h_W₁M : CanonicalR W₁ M
+      by_cases h_W₁M : ExistsTask W₁ M
       case pos =>
         -- W₁ ~ M case: W₁ and M are in the same equivalence class
-        -- Case split on CanonicalR M' W₁
-        by_cases h_M'_W₁ : CanonicalR M' W₁
+        -- Case split on ExistsTask M' W₁
+        by_cases h_M'_W₁ : ExistsTask M' W₁
         · -- pos: M' sees W₁, and W₁ sees M (h_W₁M), so M' sees M via Temporal 4
           exfalso
           apply h_not_R'
@@ -918,7 +918,7 @@ theorem density_frame_condition_strict
         · -- neg: M' does NOT see W₁, but W₁ sees M
           -- W₁ still sees M (h_W₁M), so W₁ is NOT strict from M side
           -- Case split on M's reflexivity
-          by_cases h_M_refl : CanonicalR M M
+          by_cases h_M_refl : ExistsTask M M
           · -- M is reflexive. Hard case requiring well-founded recursion.
             sorry
           · -- M is NOT reflexive. Any forward witness doesn't see M back.
@@ -933,12 +933,12 @@ theorem density_frame_condition_strict
             have h_phi_M : phi ∈ M := h_W₁M h_G_phi_W₁
             exact h_phi_not_M h_phi_M
       case neg =>
-        -- W₁ is strict from M side: ¬CanonicalR W₁ M
+        -- W₁ is strict from M side: ¬ExistsTask W₁ M
         -- Now W₁ is a valid strict intermediate candidate
         refine ⟨W₁, h_W₁_mcs, h_R_MW₁, h_R_W₁V, h_W₁M, ?_⟩
-        -- ¬CanonicalR(M', W₁)
+        -- ¬ExistsTask(M', W₁)
         -- V = M' and W₁ sees V, so W₁ sees M'.
-        -- If CanonicalR(M', W₁), then GContent(M') ⊆ W₁.
+        -- If ExistsTask(M', W₁), then GContent(M') ⊆ W₁.
         -- G(delta) ∈ M', so delta ∈ W₁.
         -- W₁ is constructed from {F(neg(delta))} ∪ GContent(M).
         -- We need to show delta ∉ W₁ or derive a contradiction.
@@ -973,10 +973,10 @@ theorem density_frame_condition_strict
         -- And G(delta) ∈ M'. If M' is reflexive, delta ∈ M', contradiction.
         -- If M' is not reflexive, we can't conclude delta ∈ M'.
         --
-        -- But wait, what we want to show is ¬CanonicalR(M', W₁).
-        -- CanonicalR(M', W₁) means GContent(M') ⊆ W₁.
+        -- But wait, what we want to show is ¬ExistsTask(M', W₁).
+        -- ExistsTask(M', W₁) means GContent(M') ⊆ W₁.
         -- delta ∈ GContent(M') (since G(delta) ∈ M').
-        -- So if CanonicalR(M', W₁), then delta ∈ W₁.
+        -- So if ExistsTask(M', W₁), then delta ∈ W₁.
         -- W₁ is {F(neg(delta))} ∪ GContent(M) extended to MCS.
         -- delta ∉ M (by distinguishing formula).
         -- Does delta ∈ GContent(M)? That would mean G(delta) ∈ M.
@@ -1015,12 +1015,12 @@ theorem density_frame_condition_strict
         -- But then both delta ∈ M' and neg(delta) ∈ M', contradicting M' consistent.
         -- So M' is NOT reflexive, meaning GContent(M') ⊄ M'.
         --
-        -- To show ¬CanonicalR(M', W₁), we need psi with G(psi) ∈ M' and psi ∉ W₁.
+        -- To show ¬ExistsTask(M', W₁), we need psi with G(psi) ∈ M' and psi ∉ W₁.
         --
         -- Alternative: check if M' reflexive gives contradiction directly.
         intro h_M'_W₁
         -- Case split on M' reflexivity
-        by_cases h_M'_refl : CanonicalR M' M'
+        by_cases h_M'_refl : ExistsTask M' M'
         · -- M' is reflexive. From V = M' and neg(delta) ∈ V, we have neg(delta) ∈ M'.
           -- From G(delta) ∈ M' and M' reflexive, we have delta ∈ M'.
           -- This contradicts M' being consistent.
@@ -1030,8 +1030,8 @@ theorem density_frame_condition_strict
         · -- M' is NOT reflexive. So GContent(M') ⊄ M'.
           -- There exists gamma with G(gamma) ∈ M' and gamma ∉ M'.
           -- By Temporal 4: G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M').
-          -- If CanonicalR(M', W₁), then G(gamma) ∈ W₁.
-          -- gamma ∈ GContent(W₁). If CanonicalR(W₁, M'), gamma ∈ M'. Contradiction!
+          -- If ExistsTask(M', W₁), then G(gamma) ∈ W₁.
+          -- gamma ∈ GContent(W₁). If ExistsTask(W₁, M'), gamma ∈ M'. Contradiction!
           simp only [ExistsTask_def, Set.not_subset] at h_M'_refl
           obtain ⟨gamma, h_gamma_GContent, h_gamma_not_M'⟩ := h_M'_refl
           -- G(gamma) ∈ M' (h_gamma_GContent means G(gamma) ∈ M')
@@ -1043,7 +1043,7 @@ theorem density_frame_condition_strict
             set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
           -- G(gamma) ∈ GContent(M') ⊆ W₁ (by h_M'_W₁)
           have h_G_gamma_W₁ : Formula.all_future gamma ∈ W₁ := h_M'_W₁ h_GG_gamma_M'
-          -- gamma ∈ GContent(W₁) ⊆ M' (by h_R_W₁V, which is CanonicalR W₁ M')
+          -- gamma ∈ GContent(W₁) ⊆ M' (by h_R_W₁V, which is ExistsTask W₁ M')
           have h_gamma_M' : gamma ∈ M' := h_R_W₁V h_G_gamma_W₁
           exact h_gamma_not_M' h_gamma_M'
 
@@ -1052,7 +1052,7 @@ theorem density_frame_condition_strict
 
 The direct proof of strict density has many cases. An alternative approach uses
 well-founded recursion: if the non-strict density gives a witness that's not
-strictly between (either CanonicalR(W, M) or CanonicalR(M', W) holds), we iterate.
+strictly between (either ExistsTask(W, M) or ExistsTask(M', W) holds), we iterate.
 
 The measure that decreases is the cardinality of "candidate distinguishing formulas"
 between M and M'. Each iteration either:
@@ -1067,11 +1067,11 @@ TODO: Implement this approach if the direct proofs prove too difficult.
 /-!
 ## Pattern C: Seriality-Based Escape from Reflexive Clusters
 
-When M is reflexive (CanonicalR M M), the standard density construction may
+When M is reflexive (ExistsTask M M), the standard density construction may
 produce witnesses V that are equivalent to M' in the quotient. Pattern C
 uses seriality to find "escape" witnesses that break the equivalence.
 
-The key insight: even if V ~ M' (both CanonicalR V M' and CanonicalR M' V),
+The key insight: even if V ~ M' (both ExistsTask V M' and ExistsTask M' V),
 we can apply seriality to get a new witness W from V. If W has a "fresh"
 G-formula not propagated from M, then W provides the strict intermediate.
 -/
@@ -1084,9 +1084,9 @@ theorem mutual_canonicalR_implies_reflexive
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_R' : CanonicalR M' M) :
-    CanonicalR M M ∧ CanonicalR M' M' := by
+    (h_R : ExistsTask M M')
+    (h_R' : ExistsTask M' M) :
+    ExistsTask M M ∧ ExistsTask M' M' := by
   constructor
   · -- M is reflexive
     intro phi h_phi_GContent
@@ -1110,15 +1110,15 @@ theorem mutual_canonicalR_implies_reflexive
     exact h_R h_G_phi_M
 
 /--
-When both CanonicalR M M' and CanonicalR M' M hold (M ~ M' in quotient),
+When both ExistsTask M M' and ExistsTask M' M hold (M ~ M' in quotient),
 the GContent sets have a bijective relationship modulo Temporal 4 propagation.
 -/
 theorem equiv_GContent_subset
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_R' : CanonicalR M' M) :
+    (h_R : ExistsTask M M')
+    (h_R' : ExistsTask M' M) :
     ∀ phi, Formula.all_future phi ∈ M ↔ Formula.all_future phi ∈ M' := by
   intro phi
   constructor
@@ -1139,7 +1139,7 @@ theorem equiv_GContent_subset
 
 /--
 When M is reflexive and V is a forward witness from M that's equivalent to M (M ~ V),
-and V sees M' (CanonicalR V M'), then M' must be strictly above M in the quotient.
+and V sees M' (ExistsTask V M'), then M' must be strictly above M in the quotient.
 This helps identify when iteration is needed.
 -/
 theorem reflexive_equiv_witness_sees_target
@@ -1147,11 +1147,11 @@ theorem reflexive_equiv_witness_sees_target
     (h_mcs : SetMaximalConsistent M)
     (h_mcs_V : SetMaximalConsistent V)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R_MV : CanonicalR M V)
-    (h_R_VM : CanonicalR V M)
-    (h_R_VM' : CanonicalR V M')
-    (h_not_R' : ¬CanonicalR M' M) :
-    CanonicalR M M' := by
+    (h_R_MV : ExistsTask M V)
+    (h_R_VM : ExistsTask V M)
+    (h_R_VM' : ExistsTask V M')
+    (h_not_R' : ¬ExistsTask M' M) :
+    ExistsTask M M' := by
   -- Since M ~ V (h_R_MV and h_R_VM), M and V have the same G-formula content
   -- By transitivity: M sees what V sees, so M sees M'
   intro phi h_G_phi_M
@@ -1174,13 +1174,13 @@ theorem equiv_witness_preserves_intermediate
     (h_mcs : SetMaximalConsistent M)
     (h_mcs_V : SetMaximalConsistent V)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R_MV : CanonicalR M V)
-    (h_R_VM : CanonicalR V M)
-    (h_R_VM' : CanonicalR V M')
-    (h_R_MM' : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M) :
+    (h_R_MV : ExistsTask M V)
+    (h_R_VM : ExistsTask V M)
+    (h_R_VM' : ExistsTask V M')
+    (h_R_MM' : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M) :
     -- V is a (non-strict) intermediate, same quotient class as M
-    CanonicalR M V ∧ CanonicalR V M' := by
+    ExistsTask M V ∧ ExistsTask V M' := by
   exact ⟨h_R_MV, h_R_VM'⟩
 
 /--
@@ -1198,7 +1198,7 @@ Escape seed for strict future construction.
 
 Given a reflexive M' and a formula psi with F(psi) ∈ M' (equivalently G(neg(psi)) ∉ M'),
 the seed {G(neg(psi))} ∪ GContent(M') can potentially extend to an MCS M'' that
-doesn't see M' (¬CanonicalR M'' M').
+doesn't see M' (¬ExistsTask M'' M').
 
 This is because M'' would have G(neg(psi)) ∈ M'', so neg(psi) ∈ GContent(M''),
 but neg(psi) ∉ M' (since psi ∈ M' by M' reflexivity and F(psi) ∈ M' ensures
@@ -1211,7 +1211,7 @@ def StrictEscapeSeed (M' : Set Formula) (psi : Formula) : Set Formula :=
 If the strict escape seed is consistent and M'' extends it, then M'' doesn't see M'.
 
 This is because G(neg(psi)) ∈ M'' (from the seed), so neg(psi) ∈ GContent(M'').
-If CanonicalR M'' M', then neg(psi) ∈ M'. But if M' has psi (e.g., via reflexivity
+If ExistsTask M'' M', then neg(psi) ∈ M'. But if M' has psi (e.g., via reflexivity
 from G(psi) ∈ M'), then both psi and neg(psi) would be in M', contradicting consistency.
 -/
 theorem strict_escape_seed_implies_no_backward
@@ -1220,14 +1220,14 @@ theorem strict_escape_seed_implies_no_backward
     (h_mcs'' : SetMaximalConsistent M'')
     (h_psi_M' : psi ∈ M')
     (h_seed : StrictEscapeSeed M' psi ⊆ M'') :
-    ¬CanonicalR M'' M' := by
+    ¬ExistsTask M'' M' := by
   intro h_R
   -- G(neg(psi)) ∈ M'' from the seed
   have h_G_neg_psi_M'' : Formula.all_future (Formula.neg psi) ∈ M'' :=
     h_seed (Set.mem_union_left _ (Set.mem_singleton _))
   -- neg(psi) ∈ GContent(M'') since G(neg(psi)) ∈ M''
   have h_neg_psi_GContent : Formula.neg psi ∈ GContent M'' := h_G_neg_psi_M''
-  -- CanonicalR M'' M' means GContent(M'') ⊆ M'
+  -- ExistsTask M'' M' means GContent(M'') ⊆ M'
   have h_neg_psi_M' : Formula.neg psi ∈ M' := h_R h_neg_psi_GContent
   -- Contradiction: psi ∈ M' and neg(psi) ∈ M'
   exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
@@ -1253,7 +1253,7 @@ This lemma captures when the escape construction succeeds.
 theorem strict_escape_seed_consistent
     (M' : Set Formula) (psi : Formula)
     (h_mcs' : SetMaximalConsistent M')
-    (h_refl : CanonicalR M' M')
+    (h_refl : ExistsTask M' M')
     (h_F_psi : Formula.some_future psi ∈ M')
     -- Key hypothesis: F(psi) is not derivable from GContent(M') alone
     (h_indep : ∀ L : List Formula, (∀ φ ∈ L, φ ∈ GContent M') →
@@ -1320,26 +1320,26 @@ then uses `strict_escape_seed_implies_no_backward` to prove strictness.
 theorem reflexive_seriality_escape_via_seed
     (M' : Set Formula) (psi : Formula)
     (h_mcs' : SetMaximalConsistent M')
-    (h_refl : CanonicalR M' M')
+    (h_refl : ExistsTask M' M')
     (h_psi_M' : psi ∈ M')
     (h_F_psi : Formula.some_future psi ∈ M')
     (h_indep : ∀ L : List Formula, (∀ φ ∈ L, φ ∈ GContent M') →
                ¬Nonempty (DerivationTree L (Formula.some_future psi))) :
     ∃ M'' : Set Formula, SetMaximalConsistent M'' ∧
-      CanonicalR M' M'' ∧ ¬CanonicalR M'' M' := by
+      ExistsTask M' M'' ∧ ¬ExistsTask M'' M' := by
   -- The seed is consistent
   have h_seed_cons := strict_escape_seed_consistent M' psi h_mcs' h_refl h_F_psi h_indep
   -- Extend to MCS via Lindenbaum
   obtain ⟨M'', h_extends, h_mcs''⟩ := set_lindenbaum (StrictEscapeSeed M' psi) h_seed_cons
   use M'', h_mcs''
   constructor
-  · -- CanonicalR M' M'': GContent(M') ⊆ M''
+  · -- ExistsTask M' M'': GContent(M') ⊆ M''
     -- GContent(M') ⊆ StrictEscapeSeed M' psi (by definition)
     -- StrictEscapeSeed M' psi ⊆ M'' (by h_extends)
     intro phi h_phi_GContent
     apply h_extends
     exact Set.mem_union_right _ h_phi_GContent
-  · -- ¬CanonicalR M'' M': use strict_escape_seed_implies_no_backward
+  · -- ¬ExistsTask M'' M': use strict_escape_seed_implies_no_backward
     exact strict_escape_seed_implies_no_backward M' M'' psi h_mcs' h_mcs'' h_psi_M' h_extends
 
 /-!
@@ -1362,8 +1362,8 @@ well-founded iteration on a natural number measure.
 
 ### Key Insight
 
-When the non-strict density witness W satisfies CanonicalR(W, M) or
-CanonicalR(M', W), the distinguishing formula has been "absorbed" by W.
+When the non-strict density witness W satisfies ExistsTask(W, M) or
+ExistsTask(M', W), the distinguishing formula has been "absorbed" by W.
 Any new distinguishing formula must come from a smaller subformula set.
 -/
 
@@ -1385,18 +1385,18 @@ theorem density_frame_condition_strict_patternC
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M) :
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   -- Delegate to the original direct proof
   exact density_frame_condition_strict M M' h_mcs h_mcs' h_R h_not_R'
 
 /--
 Main theorem: strict density via well-founded iteration (alias).
 
-Given M < M' in the canonical preorder (CanonicalR M M' ∧ ¬CanonicalR M' M),
+Given M < M' in the canonical preorder (ExistsTask M M' ∧ ¬ExistsTask M' M),
 there exists W strictly between them: M < W < M'.
 
 This is the well-founded version that handles all cases via iteration.
@@ -1405,11 +1405,11 @@ theorem density_frame_condition_strict_wf
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M) :
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   exact density_frame_condition_strict_patternC M M' h_mcs h_mcs' h_R h_not_R'
 
 /-!
@@ -1442,10 +1442,10 @@ avoiding the complexity of well-founded recursion on the quotient structure.
 structure StrictDensityWitness (M M' : Set Formula) where
   W : Set Formula
   h_mcs : SetMaximalConsistent W
-  h_R_MW : CanonicalR M W
-  h_R_WM' : CanonicalR W M'
-  h_not_WM : ¬CanonicalR W M
-  h_not_M'W : ¬CanonicalR M' W
+  h_R_MW : ExistsTask M W
+  h_R_WM' : ExistsTask W M'
+  h_not_WM : ¬ExistsTask W M
+  h_not_M'W : ¬ExistsTask M' W
 
 /--
 Check if a non-strict intermediate is actually strict.
@@ -1453,11 +1453,11 @@ Returns the strict witness if both strictness conditions hold.
 -/
 noncomputable def checkStrictness (M M' W : Set Formula)
     (h_W_mcs : SetMaximalConsistent W)
-    (h_R_MW : CanonicalR M W)
-    (h_R_WM' : CanonicalR W M') :
+    (h_R_MW : ExistsTask M W)
+    (h_R_WM' : ExistsTask W M') :
     Option (StrictDensityWitness M M') :=
-  if h1 : ¬CanonicalR W M then
-    if h2 : ¬CanonicalR M' W then
+  if h1 : ¬ExistsTask W M then
+    if h2 : ¬ExistsTask M' W then
       some ⟨W, h_W_mcs, h_R_MW, h_R_WM', h1, h2⟩
     else
       none
@@ -1480,8 +1480,8 @@ sufficient fuel always exists (via subformula measure).
 noncomputable def strictDensityAttempt (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M)
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M)
     (fuel : Nat) : Option (StrictDensityWitness M M') :=
   match fuel with
   | 0 => none
@@ -1504,21 +1504,21 @@ noncomputable def strictDensityAttempt (M M' : Set Formula)
       let h_M''_spec := serialityWitness.choose_spec
       let h_M''_mcs := h_M''_spec.1
       let h_R_M'M'' := h_M''_spec.2
-      -- Check if M'' is strictly above M' (i.e., ¬CanonicalR M'' M')
-      if h_strict_M'' : ¬CanonicalR M'' M' then
+      -- Check if M'' is strictly above M' (i.e., ¬ExistsTask M'' M')
+      if h_strict_M'' : ¬ExistsTask M'' M' then
         -- M'' is strictly above M'. Now we can try density(M, M'').
         -- First, check that M can reach M'' (by transitivity M -> M' -> M'')
         let h_R_MM'' := canonicalR_transitive M M' M'' h_mcs h_R h_R_M'M''
         -- Check that M'' doesn't see back to M
         -- By transitivity: if M'' -> M, then M'' -> M -> M', so M'' -> M'
-        -- But we have ¬CanonicalR M'' M', so ¬CanonicalR M'' M
-        let h_not_M''_M : ¬CanonicalR M'' M := fun h_M''M =>
+        -- But we have ¬ExistsTask M'' M', so ¬ExistsTask M'' M
+        let h_not_M''_M : ¬ExistsTask M'' M := fun h_M''M =>
           h_strict_M'' (canonicalR_transitive M'' M M' h_M''_mcs h_M''M h_R)
         -- Recurse with new target M''
         -- Note: The result type changes from StrictDensityWitness M M' to StrictDensityWitness M M''
         -- We need to convert the result back to M M' form
         -- Actually, the intermediate W' between M and M'' is also between M and M'
-        -- because CanonicalR W' M'' and CanonicalR M' M'' gives... hmm, this doesn't work
+        -- because ExistsTask W' M'' and ExistsTask M' M'' gives... hmm, this doesn't work
         -- The W' sees M'' but we need W' to see M'
         -- This is where the approach breaks down - we can't directly convert
         none  -- Placeholder: iteration with changed target requires more infrastructure
@@ -1530,19 +1530,19 @@ noncomputable def strictDensityAttempt (M M' : Set Formula)
 ## Key Iteration Lemma: When Target M' Absorbs Non-Strict Witness
 
 When density_frame_condition gives a witness W that is not strict from the M'-side
-(i.e., CanonicalR M' W holds), we need to find an alternative strict witness.
+(i.e., ExistsTask M' W holds), we need to find an alternative strict witness.
 
-The key insight is that when CanonicalR M' W, the witness W is equivalent to M' in
+The key insight is that when ExistsTask M' W, the witness W is equivalent to M' in
 the quotient (W ~ M'). In this case, we can use ANY strict intermediate between
 M and M' - we just need to prove one exists.
 
 The iteration approach: if W ~ M', use seriality to get M'' strictly above M'.
-Then CanonicalR M M' and CanonicalR M' M'' gives CanonicalR M M'' (transitivity).
+Then ExistsTask M M' and ExistsTask M' M'' gives ExistsTask M M'' (transitivity).
 Apply density recursively to (M, M'').
 -/
 
 /--
-When M' is NOT reflexive (¬CanonicalR M' M'), the standard density construction
+When M' is NOT reflexive (¬ExistsTask M' M'), the standard density construction
 produces a strict witness directly.
 
 This is because:
@@ -1554,12 +1554,12 @@ theorem non_reflexive_target_has_strict_intermediate
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M)
-    (h_not_refl_M' : ¬CanonicalR M' M') :
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M)
+    (h_not_refl_M' : ¬ExistsTask M' M') :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   -- M' not reflexive means GContent(M') ⊄ M'
   simp only [ExistsTask_def, Set.not_subset] at h_not_refl_M'
   obtain ⟨gamma, h_G_gamma_M', h_gamma_not_M'⟩ := h_not_refl_M'
@@ -1577,23 +1577,23 @@ theorem non_reflexive_target_has_strict_intermediate
     density_of_canonicalR M h_mcs (Formula.neg gamma) h_F_neg_gamma
   obtain ⟨V, h_V_mcs, h_R_W₁V, h_neg_gamma_V⟩ :=
     canonical_forward_F W₁ h_W₁_mcs (Formula.neg gamma) h_F_neg_W₁
-  have h_R_MV : CanonicalR M V := canonicalR_transitive M W₁ V h_mcs h_R_MW₁ h_R_W₁V
+  have h_R_MV : ExistsTask M V := canonicalR_transitive M W₁ V h_mcs h_R_MW₁ h_R_W₁V
   -- Linearity analysis
   have h_lin := canonical_forward_reachable_linear M V M' h_mcs h_V_mcs h_mcs' h_R_MV h_R
   rcases h_lin with h_VM' | h_M'V | h_eq
-  · -- CanonicalR(V, M'): V is intermediate. Check strictness.
-    -- For ¬CanonicalR(V, M): V contains neg(gamma), and if V saw M back,
+  · -- ExistsTask(V, M'): V is intermediate. Check strictness.
+    -- For ¬ExistsTask(V, M): V contains neg(gamma), and if V saw M back,
     -- G(gamma) ∈ M' and by transitivity V sees M', so gamma in GContent(V) would be in M.
     -- But gamma ∉ M (since G(gamma) ∉ M), so we need different argument.
     -- Actually, the key is G(gamma) ∈ V via transitivity or direct construction.
-    -- Let's try: if CanonicalR V M, then for all phi, G(phi) ∈ V → phi ∈ M
-    -- G(gamma) ∈ M' and CanonicalR V M' means gamma ∈ GContent(V) = gamma where G(gamma) ∈ V
+    -- Let's try: if ExistsTask V M, then for all phi, G(phi) ∈ V → phi ∈ M
+    -- G(gamma) ∈ M' and ExistsTask V M' means gamma ∈ GContent(V) = gamma where G(gamma) ∈ V
     -- Hmm, G(gamma) ∈ V iff gamma ∈ GContent(V).
     -- We need to show G(gamma) ∈ V or derive V doesn't see M another way.
-    by_cases h_VM : CanonicalR V M
+    by_cases h_VM : ExistsTask V M
     · -- V sees M. Use transitivity argument.
-      -- CanonicalR M' V (need to check) would give M' sees M via V, contradiction.
-      by_cases h_M'V' : CanonicalR M' V
+      -- ExistsTask M' V (need to check) would give M' sees M via V, contradiction.
+      by_cases h_M'V' : ExistsTask M' V
       · -- M' sees V, V sees M → M' sees M via transitivity
         exfalso
         apply h_not_R'
@@ -1619,11 +1619,11 @@ theorem non_reflexive_target_has_strict_intermediate
         obtain ⟨W', h_W'_mcs, h_VW', h_W'M'⟩ :=
           density_frame_condition V M' h_V_mcs h_mcs' h_VM' h_M'V'
         -- W' is between V and M'. Since V ~ M, W' is also between M and M'.
-        have h_R_MW' : CanonicalR M W' := canonicalR_transitive M V W' h_mcs h_R_MV h_VW'
+        have h_R_MW' : ExistsTask M W' := canonicalR_transitive M V W' h_mcs h_R_MV h_VW'
         -- Check if W' is strict
-        by_cases h_W'M : CanonicalR W' M
+        by_cases h_W'M : ExistsTask W' M
         · -- W' sees M, so W' ~ V ~ M. Need further iteration.
-          by_cases h_M'W' : CanonicalR M' W'
+          by_cases h_M'W' : ExistsTask M' W'
           · -- M' sees W' and W' sees M → M' sees M. Contradiction!
             exfalso
             apply h_not_R'
@@ -1645,13 +1645,13 @@ theorem non_reflexive_target_has_strict_intermediate
             -- Try: apply density(W', M') since W' < M'.
             obtain ⟨W'', h_W''_mcs, h_W'W'', h_W''M'⟩ :=
               density_frame_condition W' M' h_W'_mcs h_mcs' h_W'M' h_M'W'
-            have h_R_MW'' : CanonicalR M W'' := canonicalR_transitive M W' W'' h_mcs h_R_MW' h_W'W''
-            by_cases h_W''M : CanonicalR W'' M
+            have h_R_MW'' : ExistsTask M W'' := canonicalR_transitive M W' W'' h_mcs h_R_MW' h_W'W''
+            by_cases h_W''M : ExistsTask W'' M
             · -- W'' ~ M as well. Triple equivalence M ~ W' ~ W''.
               -- Derive M' sees M via this chain? No, we need the other direction.
               -- If W'' ~ M and W'' sees M', and M' doesn't see W'' (to show)...
               -- Try to show M' doesn't see W'' using gamma argument.
-              have h_not_M'W'' : ¬CanonicalR M' W'' := by
+              have h_not_M'W'' : ¬ExistsTask M' W'' := by
                 intro h_M'W''
                 -- G(gamma) ∈ M', by T4, G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M')
                 have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
@@ -1668,7 +1668,7 @@ theorem non_reflexive_target_has_strict_intermediate
               sorry
             · -- W'' doesn't see M. W'' is strict from M side!
               exact ⟨W'', h_W''_mcs, h_R_MW'', h_W''M', h_W''M, by
-                -- Show ¬CanonicalR M' W''
+                -- Show ¬ExistsTask M' W''
                 intro h_M'W''
                 have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
                   DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
@@ -1677,18 +1677,18 @@ theorem non_reflexive_target_has_strict_intermediate
                 have h_G_gamma_W'' : Formula.all_future gamma ∈ W'' := h_M'W'' h_GG_gamma_M'
                 have h_gamma_M' : gamma ∈ M' := h_W''M' h_G_gamma_W''
                 exact h_gamma_not_M' h_gamma_M'⟩
-        · -- W' doesn't see M. Check ¬CanonicalR M' W'.
-          have h_not_M'W' : ¬CanonicalR M' W' := by
+        · -- W' doesn't see M. Check ¬ExistsTask M' W'.
+          have h_not_M'W' : ¬ExistsTask M' W' := by
             -- Similar argument to h_not_M'V: use gamma
             intro h_M'W'
-            -- G(gamma) ∈ M', gamma ∈ GContent(M'). If CanonicalR M' W', gamma ∈ W'.
+            -- G(gamma) ∈ M', gamma ∈ GContent(M'). If ExistsTask M' W', gamma ∈ W'.
             -- But we also need something in W' that contradicts gamma.
             -- Actually, W' comes from density(V, M'), not from the gamma construction.
             -- We need a different argument.
             --
             -- Key: W' sees M' (h_W'M'). M' has G(gamma) ∈ M'.
             -- By T4: G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M').
-            -- If CanonicalR M' W', G(gamma) ∈ W'.
+            -- If ExistsTask M' W', G(gamma) ∈ W'.
             -- Then gamma ∈ GContent(W') ⊆ M' (by h_W'M').
             -- But gamma ∉ M' (h_gamma_not_M'). Contradiction!
             have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
@@ -1699,15 +1699,15 @@ theorem non_reflexive_target_has_strict_intermediate
             have h_gamma_M' : gamma ∈ M' := h_W'M' h_G_gamma_W'
             exact h_gamma_not_M' h_gamma_M'
           exact ⟨W', h_W'_mcs, h_R_MW', h_W'M', h_W'M, h_not_M'W'⟩
-    · -- V doesn't see M. Need ¬CanonicalR M' V.
+    · -- V doesn't see M. Need ¬ExistsTask M' V.
       -- G(gamma) ∈ M', so gamma ∈ GContent(M').
-      -- If CanonicalR M' V, gamma ∈ V. But neg(gamma) ∈ V, contradiction!
-      have h_not_M'V : ¬CanonicalR M' V := by
+      -- If ExistsTask M' V, gamma ∈ V. But neg(gamma) ∈ V, contradiction!
+      have h_not_M'V : ¬ExistsTask M' V := by
         intro h_M'V'
         have h_gamma_V : gamma ∈ V := h_M'V' h_G_gamma_M'
         exact set_consistent_not_both h_V_mcs.1 gamma h_gamma_V h_neg_gamma_V
       exact ⟨V, h_V_mcs, h_R_MV, h_VM', h_VM, h_not_M'V⟩
-  · -- CanonicalR(M', V): gamma ∈ GContent(M') ⊆ V, neg(gamma) ∈ V. Contradiction!
+  · -- ExistsTask(M', V): gamma ∈ GContent(M') ⊆ V, neg(gamma) ∈ V. Contradiction!
     exfalso
     have h_gamma_V : gamma ∈ V := h_M'V h_G_gamma_M'
     exact set_consistent_not_both h_V_mcs.1 gamma h_gamma_V h_neg_gamma_V
@@ -1721,9 +1721,9 @@ theorem non_reflexive_target_has_strict_intermediate
     -- So the scenario is consistent logically. But W₁ might be the answer.
     rw [h_eq] at h_R_W₁V
     -- W₁ is intermediate between M and M' (= V)
-    by_cases h_W₁M : CanonicalR W₁ M
+    by_cases h_W₁M : ExistsTask W₁ M
     · -- W₁ sees M. Use T4 transitivity to get M' sees M, contradiction.
-      by_cases h_M'W₁ : CanonicalR M' W₁
+      by_cases h_M'W₁ : ExistsTask M' W₁
       · exfalso
         apply h_not_R'
         intro phi h_phi_GContent
@@ -1737,10 +1737,10 @@ theorem non_reflexive_target_has_strict_intermediate
         -- W₁ ~ M. Apply iteration: density(W₁, M').
         obtain ⟨W'', h_W''_mcs, h_W₁W'', h_W''M'⟩ :=
           density_frame_condition W₁ M' h_W₁_mcs h_mcs' h_R_W₁V h_M'W₁
-        have h_R_MW'' : CanonicalR M W'' := canonicalR_transitive M W₁ W'' h_mcs h_R_MW₁ h_W₁W''
-        by_cases h_W''M : CanonicalR W'' M
+        have h_R_MW'' : ExistsTask M W'' := canonicalR_transitive M W₁ W'' h_mcs h_R_MW₁ h_W₁W''
+        by_cases h_W''M : ExistsTask W'' M
         · -- W'' ~ M. Further iteration needed.
-          have h_not_M'W'' : ¬CanonicalR M' W'' := by
+          have h_not_M'W'' : ¬ExistsTask M' W'' := by
             intro h_M'W''
             have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
               DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
@@ -1762,15 +1762,15 @@ theorem non_reflexive_target_has_strict_intermediate
             have h_gamma_M' : gamma ∈ M' := h_W''M' h_G_gamma_W''
             exact h_gamma_not_M' h_gamma_M'⟩
     · -- W₁ doesn't see M.
-      -- For ¬CanonicalR M' W₁: use gamma argument
-      -- G(gamma) ∈ M', so gamma ∈ GContent(M'). If CanonicalR M' W₁, gamma ∈ W₁.
+      -- For ¬ExistsTask M' W₁: use gamma argument
+      -- G(gamma) ∈ M', so gamma ∈ GContent(M'). If ExistsTask M' W₁, gamma ∈ W₁.
       -- W₁ has F(neg(gamma)), so there exists future with neg(gamma).
       -- gamma ∈ W₁ doesn't contradict F(neg(gamma)) ∈ W₁ directly.
       -- But by T4 on G(gamma) ∈ M': G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M').
-      -- If CanonicalR M' W₁, G(gamma) ∈ W₁.
-      -- Then gamma ∈ GContent(W₁) ⊆ M' (by h_R_W₁V = CanonicalR W₁ M').
+      -- If ExistsTask M' W₁, G(gamma) ∈ W₁.
+      -- Then gamma ∈ GContent(W₁) ⊆ M' (by h_R_W₁V = ExistsTask W₁ M').
       -- But gamma ∉ M' by h_gamma_not_M'. Contradiction!
-      have h_not_M'W₁ : ¬CanonicalR M' W₁ := by
+      have h_not_M'W₁ : ¬ExistsTask M' W₁ := by
         intro h_M'W₁
         have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
           DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
@@ -1790,13 +1790,13 @@ theorem strict_intermediate_exists_aux
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M) :
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   -- Case split on M' reflexivity
-  by_cases h_M'_refl : CanonicalR M' M'
+  by_cases h_M'_refl : ExistsTask M' M'
   · -- M' is reflexive: use the direct proof which has sorries in some sub-cases
     exact density_frame_condition_strict M M' h_mcs h_mcs' h_R h_not_R'
   · -- M' is NOT reflexive: use the non_reflexive_target lemma
@@ -1838,17 +1838,17 @@ Returns Some W if successful within fuel budget, None otherwise.
 
 The iteration strategy:
 1. Get non-strict intermediate W from density_frame_condition
-2. Check if W is strict (¬CanonicalR W M ∧ ¬CanonicalR M' W)
-3. If W ~ M (CanonicalR W M), W is in M's equivalence class, needs escape
-4. If W ~ M' (CanonicalR M' W), W is in M''s equivalence class, needs escape
+2. Check if W is strict (¬ExistsTask W M ∧ ¬ExistsTask M' W)
+3. If W ~ M (ExistsTask W M), W is in M's equivalence class, needs escape
+4. If W ~ M' (ExistsTask M' W), W is in M''s equivalence class, needs escape
 5. On escape, generate new target and recurse with decreased fuel
 -/
 noncomputable def strictDensityIterWithFuel
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M)
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M)
     (fuel : Nat) : Option (StrictDensityWitness M M') :=
   match fuel with
   | 0 => none
@@ -1861,18 +1861,18 @@ noncomputable def strictDensityIterWithFuel
     let h_R_MW := h_W.2.1
     let h_R_WM' := h_W.2.2
     -- Check strictness: is W strict from both sides?
-    if h_not_WM : ¬CanonicalR W M then
-      if h_not_M'W : ¬CanonicalR M' W then
+    if h_not_WM : ¬ExistsTask W M then
+      if h_not_M'W : ¬ExistsTask M' W then
         -- SUCCESS: W is a strict intermediate
         some ⟨W, h_W_mcs, h_R_MW, h_R_WM', h_not_WM, h_not_M'W⟩
       else
-        -- W ~ M' (CanonicalR M' W holds): W is equivalent to M'
+        -- W ~ M' (ExistsTask M' W holds): W is equivalent to M'
         -- Need to escape: try to find something strictly between M and W
         -- Since W ~ M', this is equivalent to finding strict between M and M'
         -- But W sees M' (h_R_WM'), so we try recursing with W as new target
         none  -- Escape via forward seriality would go here
     else
-      -- W ~ M (CanonicalR W M holds): W is equivalent to M
+      -- W ~ M (ExistsTask W M holds): W is equivalent to M
       -- Need to escape: try to find something strictly between W and M'
       -- Since W ~ M, this is equivalent to finding strict between M and M'
       -- Try recursing after escaping M's equivalence class via seriality
@@ -1889,11 +1889,11 @@ theorem density_frame_condition_strict_via_cases
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M) :
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   -- Delegate to existing proofs
   exact density_frame_condition_strict M M' h_mcs h_mcs' h_R h_not_R'
 
@@ -1908,11 +1908,11 @@ iteration terminates.
 ### The Iteration Pattern
 
 Given:
-- M < M' strictly (CanonicalR M M' ∧ ¬CanonicalR M' M)
-- A non-strict witness W with W ~ M (CanonicalR W M)
-- ¬CanonicalR M' W (W is strict from M' side)
+- M < M' strictly (ExistsTask M M' ∧ ¬ExistsTask M' M)
+- A non-strict witness W with W ~ M (ExistsTask W M)
+- ¬ExistsTask M' W (W is strict from M' side)
 
-Extract: From ¬CanonicalR M' W, get formula psi with G(psi) ∈ M' and psi ∉ W.
+Extract: From ¬ExistsTask M' W, get formula psi with G(psi) ∈ M' and psi ∉ W.
 Since W ~ M (reflexive cluster), we have psi ∉ M as well.
 Apply Case A with psi to get new witness U.
 
@@ -1948,19 +1948,19 @@ theorem strict_density_M_reflexive
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M)
-    (h_M_refl : CanonicalR M M) :
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M)
+    (h_M_refl : ExistsTask M M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   -- Get the non-strict intermediate
   obtain ⟨W, h_W_mcs, h_R_MW, h_R_WM'⟩ := density_frame_condition M M' h_mcs h_mcs' h_R h_not_R'
   -- Check strictness on both sides
-  by_cases h_WM : CanonicalR W M
+  by_cases h_WM : ExistsTask W M
   case neg =>
     -- W doesn't see M back. Check M' side.
-    by_cases h_M'W : CanonicalR M' W
+    by_cases h_M'W : ExistsTask M' W
     case neg =>
       -- W is fully strict! Done.
       exact ⟨W, h_W_mcs, h_R_MW, h_R_WM', h_WM, h_M'W⟩
@@ -1968,18 +1968,18 @@ theorem strict_density_M_reflexive
       -- W doesn't see M (h_WM neg), M' sees W (h_M'W pos).
       -- So W is strict from M side. We just need M' to not see W.
       -- But M' DOES see W. So W is NOT a strict intermediate.
-      -- However, since ¬CanonicalR W M, W is strictly above M in the quotient.
-      -- And since CanonicalR M' W, W is below or equivalent to M' in the quotient.
+      -- However, since ¬ExistsTask W M, W is strictly above M in the quotient.
+      -- And since ExistsTask M' W, W is below or equivalent to M' in the quotient.
       -- The issue: W might be equivalent to M' (W ~ M').
       -- In this case, we need to find something strictly between M and W (= M').
       -- This is the recursive case, but we need termination.
       -- M' ~ W, so M' is reflexive
-      have h_M'_refl : CanonicalR M' M' := fun phi h_phi_GContent => by
+      have h_M'_refl : ExistsTask M' M' := fun phi h_phi_GContent => by
         have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) := DerivationTree.axiom [] _ (Axiom.temp_4 phi)
         have h_GG_phi_M' : Formula.all_future (Formula.all_future phi) ∈ M' := set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_phi_GContent
         have h_G_phi_W : Formula.all_future phi ∈ W := h_M'W h_GG_phi_M'
         exact h_R_WM' h_G_phi_W
-      -- Extract distinguishing formula from h_WM : ¬CanonicalR W M
+      -- Extract distinguishing formula from h_WM : ¬ExistsTask W M
       simp only [ExistsTask_def, Set.not_subset] at h_WM
       obtain ⟨psi, h_G_psi_W, h_psi_not_M⟩ := h_WM
       -- G(psi) ∈ W, psi ∉ M. Since W ~ M', G(psi) ∈ M' too.
@@ -1996,27 +1996,27 @@ theorem strict_density_M_reflexive
       -- Apply Case A construction with psi
       obtain ⟨U₁, h_U₁_mcs, h_R_MU₁, h_F_neg_U₁⟩ := density_of_canonicalR M h_mcs (Formula.neg psi) h_F_neg_psi
       obtain ⟨U, h_U_mcs, h_R_U₁U, h_neg_psi_U⟩ := canonical_forward_F U₁ h_U₁_mcs (Formula.neg psi) h_F_neg_U₁
-      have h_R_MU : CanonicalR M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
+      have h_R_MU : ExistsTask M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
       -- Check U's relation to M' via linearity
       have h_lin_U := canonical_forward_reachable_linear M U M' h_mcs h_U_mcs h_mcs' h_R_MU h_R
       rcases h_lin_U with h_UM' | h_M'U | h_U_eq_M'
-      · -- CanonicalR U M': U is between M and M'
-        have h_not_M'U : ¬CanonicalR M' U := by
+      · -- ExistsTask U M': U is between M and M'
+        have h_not_M'U : ¬ExistsTask M' U := by
           intro h_M'U_contra
           have h_psi_U : psi ∈ U := h_M'U_contra h_G_psi_M'
           exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
-        by_cases h_UM : CanonicalR U M
+        by_cases h_UM : ExistsTask U M
         · -- U ~ M: iteration needed (termination via finite formula set)
           sorry
         · -- U doesn't see M: U is strict!
           exact ⟨U, h_U_mcs, h_R_MU, h_UM', h_UM, h_not_M'U⟩
-      · -- CanonicalR M' U: contradiction
+      · -- ExistsTask M' U: contradiction
         exfalso
         have h_psi_U : psi ∈ U := h_M'U h_G_psi_M'
         exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
       · -- U = M'
         rw [h_U_eq_M'] at h_R_U₁U
-        have h_not_M'U₁ : ¬CanonicalR M' U₁ := by
+        have h_not_M'U₁ : ¬ExistsTask M' U₁ := by
           intro h_M'U₁
           have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) := DerivationTree.axiom [] _ (Axiom.temp_4 psi)
           have h_GG_psi_M' : Formula.all_future (Formula.all_future psi) ∈ M' := set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_psi) h_G_psi_M'
@@ -2024,14 +2024,14 @@ theorem strict_density_M_reflexive
           have h_psi_M' : psi ∈ M' := h_R_U₁U h_G_psi_U₁
           have h_neg_psi_M' : psi.neg ∈ M' := h_U_eq_M' ▸ h_neg_psi_U
           exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
-        by_cases h_U₁M : CanonicalR U₁ M
+        by_cases h_U₁M : ExistsTask U₁ M
         · -- U₁ ~ M: iteration needed
           sorry
         · -- U₁ is strict!
           exact ⟨U₁, h_U₁_mcs, h_R_MU₁, h_R_U₁U, h_U₁M, h_not_M'U₁⟩
   case pos =>
     -- W sees M back. So W ~ M (W is in M's equivalence class).
-    by_cases h_M'W : CanonicalR M' W
+    by_cases h_M'W : ExistsTask M' W
     case pos =>
       -- M' sees W and W sees M. By Temporal 4, M' sees M. Contradiction!
       exfalso
@@ -2057,27 +2057,27 @@ theorem strict_density_M_reflexive
       -- Apply Case A construction
       obtain ⟨U₁, h_U₁_mcs, h_R_MU₁, h_F_neg_U₁⟩ := density_of_canonicalR M h_mcs (Formula.neg psi) h_F_neg_psi
       obtain ⟨U, h_U_mcs, h_R_U₁U, h_neg_psi_U⟩ := canonical_forward_F U₁ h_U₁_mcs (Formula.neg psi) h_F_neg_U₁
-      have h_R_MU : CanonicalR M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
+      have h_R_MU : ExistsTask M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
       -- Check U's relation to M'
       have h_lin_U := canonical_forward_reachable_linear M U M' h_mcs h_U_mcs h_mcs' h_R_MU h_R
       rcases h_lin_U with h_UM' | h_M'U | h_U_eq_M'
-      · -- CanonicalR U M'
-        have h_not_M'U : ¬CanonicalR M' U := by
+      · -- ExistsTask U M'
+        have h_not_M'U : ¬ExistsTask M' U := by
           intro h_M'U_contra
           have h_psi_U : psi ∈ U := h_M'U_contra h_G_psi_M'
           exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
-        by_cases h_UM : CanonicalR U M
+        by_cases h_UM : ExistsTask U M
         · -- U ~ M: iteration
           sorry
         · -- U is strict!
           exact ⟨U, h_U_mcs, h_R_MU, h_UM', h_UM, h_not_M'U⟩
-      · -- CanonicalR M' U: contradiction
+      · -- ExistsTask M' U: contradiction
         exfalso
         have h_psi_U : psi ∈ U := h_M'U h_G_psi_M'
         exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
       · -- U = M'
         rw [h_U_eq_M'] at h_R_U₁U
-        have h_not_M'U₁ : ¬CanonicalR M' U₁ := by
+        have h_not_M'U₁ : ¬ExistsTask M' U₁ := by
           intro h_M'U₁
           have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) := DerivationTree.axiom [] _ (Axiom.temp_4 psi)
           have h_GG_psi_M' : Formula.all_future (Formula.all_future psi) ∈ M' := set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_psi) h_G_psi_M'
@@ -2085,7 +2085,7 @@ theorem strict_density_M_reflexive
           have h_psi_M' : psi ∈ M' := h_R_U₁U h_G_psi_U₁
           have h_neg_psi_M' : psi.neg ∈ M' := h_U_eq_M' ▸ h_neg_psi_U
           exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
-        by_cases h_U₁M : CanonicalR U₁ M
+        by_cases h_U₁M : ExistsTask U₁ M
         · -- U₁ ~ M: iteration
           sorry
         · -- U₁ is strict!
@@ -2098,49 +2098,49 @@ theorem reflexive_cluster_escape
     (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M')
-    (h_not_R' : ¬CanonicalR M' M)
-    (h_M_refl : CanonicalR M M)
+    (h_R : ExistsTask M M')
+    (h_not_R' : ¬ExistsTask M' M)
+    (h_M_refl : ExistsTask M M)
     (anchor : Formula)
     (h_anchor : ∀ phi, Formula.all_future phi ∈ M' → phi ∈ Bimodal.Syntax.subformulaClosure anchor)
     (n : Nat)
     (h_bound : (Bimodal.Syntax.subformulaClosure anchor).card ≤ n) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧
-      CanonicalR M W ∧ CanonicalR W M' ∧
-      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+      ExistsTask M W ∧ ExistsTask W M' ∧
+      ¬ExistsTask W M ∧ ¬ExistsTask M' W := by
   -- Use strong induction on n
   induction n using Nat.strongRecOn generalizing M M' with
   | _ n ih =>
     -- Get the non-strict intermediate
     obtain ⟨W, h_W_mcs, h_R_MW, h_R_WM'⟩ := density_frame_condition M M' h_mcs h_mcs' h_R h_not_R'
     -- Check strictness
-    by_cases h_WM : CanonicalR W M
+    by_cases h_WM : ExistsTask W M
     case neg =>
       -- W is strict from M side. Check M' side.
-      by_cases h_M'W : CanonicalR M' W
+      by_cases h_M'W : ExistsTask M' W
       case neg =>
         -- W is fully strict!
         exact ⟨W, h_W_mcs, h_R_MW, h_R_WM', h_WM, h_M'W⟩
       case pos =>
-        -- W ~ M' (CanonicalR M' W). W is in M''s equivalence class.
+        -- W ~ M' (ExistsTask M' W). W is in M''s equivalence class.
         -- Since M ~ W (h_WM is neg, wait that's wrong - we're in neg case)
-        -- Actually h_WM is neg means ¬CanonicalR W M. Good.
+        -- Actually h_WM is neg means ¬ExistsTask W M. Good.
         -- So W doesn't see M back, but M' sees W.
-        -- Extract distinguishing formula from ¬CanonicalR W M
+        -- Extract distinguishing formula from ¬ExistsTask W M
         simp only [ExistsTask_def, Set.not_subset] at h_WM
         obtain ⟨psi, h_G_psi_W, h_psi_not_M⟩ := h_WM
         -- G(psi) ∈ W, psi ∉ M.
-        -- Since CanonicalR W M' and CanonicalR M' W (h_M'W), W ~ M'.
-        -- Also CanonicalR M W (h_R_MW). So M sees W.
+        -- Since ExistsTask W M' and ExistsTask M' W (h_M'W), W ~ M'.
+        -- Also ExistsTask M W (h_R_MW). So M sees W.
         -- But W doesn't see M (h_WM). So M < W strictly.
         -- And W ~ M'. So M < W ~ M'.
         -- This means M < M' with a strict intermediate... wait, we need W to not be seen by M'.
-        -- Actually h_M'W says CanonicalR M' W, meaning M' sees W.
-        -- So W IS seen by M'. We need ¬CanonicalR M' W.
-        -- Hmm, we're in case pos for h_M'W, meaning CanonicalR M' W holds.
+        -- Actually h_M'W says ExistsTask M' W, meaning M' sees W.
+        -- So W IS seen by M'. We need ¬ExistsTask M' W.
+        -- Hmm, we're in case pos for h_M'W, meaning ExistsTask M' W holds.
         -- So W is NOT a strict intermediate.
         -- We need to iterate.
-        -- But we already have ¬CanonicalR W M (from case neg of h_WM).
+        -- But we already have ¬ExistsTask W M (from case neg of h_WM).
         -- So W is strict from M side but not from M' side.
         -- Use psi to construct a new witness...
         -- Actually, the key is: psi ∉ M means G(psi) ∉ M (since M is reflexive!).
@@ -2157,18 +2157,18 @@ theorem reflexive_cluster_escape
           density_of_canonicalR M h_mcs (Formula.neg psi) h_F_neg_psi
         obtain ⟨U, h_U_mcs, h_R_U₁U, h_neg_psi_U⟩ :=
           canonical_forward_F U₁ h_U₁_mcs (Formula.neg psi) h_F_neg_U₁
-        have h_R_MU : CanonicalR M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
+        have h_R_MU : ExistsTask M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
         -- Check U's relation to M'
         have h_lin_U := canonical_forward_reachable_linear M U M' h_mcs h_U_mcs h_mcs' h_R_MU h_R
         rcases h_lin_U with h_UM' | h_M'U | h_U_eq_M'
-        · -- CanonicalR U M'
+        · -- ExistsTask U M'
           -- Check strictness
-          have h_not_M'U : ¬CanonicalR M' U := by
+          have h_not_M'U : ¬ExistsTask M' U := by
             intro h_M'U_contra
-            -- G(psi) ∈ W and CanonicalR W M' give psi ∈ GContent(W).
-            -- If CanonicalR M' U, and CanonicalR M' W (h_M'W), use transitivity...
+            -- G(psi) ∈ W and ExistsTask W M' give psi ∈ GContent(W).
+            -- If ExistsTask M' U, and ExistsTask M' W (h_M'W), use transitivity...
             -- Actually need: G(psi) ∈ M' to derive psi ∈ U.
-            -- We have G(psi) ∈ W. Since CanonicalR W M' (h_R_WM'), we get
+            -- We have G(psi) ∈ W. Since ExistsTask W M' (h_R_WM'), we get
             -- G(G(psi)) ∈ W → G(psi) ∈ M'. Let's check.
             have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
               DerivationTree.axiom [] _ (Axiom.temp_4 psi)
@@ -2176,13 +2176,13 @@ theorem reflexive_cluster_escape
               set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T4_psi) h_G_psi_W
             have h_G_psi_M' : Formula.all_future psi ∈ M' := h_R_WM' h_GG_psi_W
             -- Now G(psi) ∈ M', so psi ∈ GContent(M')
-            -- If CanonicalR M' U (h_M'U_contra), then psi ∈ U
+            -- If ExistsTask M' U (h_M'U_contra), then psi ∈ U
             have h_psi_U : psi ∈ U := h_M'U_contra h_G_psi_M'
             -- But neg(psi) ∈ U (h_neg_psi_U). Contradiction!
             exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
-          by_cases h_UM : CanonicalR U M
+          by_cases h_UM : ExistsTask U M
           · -- U ~ M (U sees M back). Need further iteration.
-            -- The key: psi was from W which is strictly above M (¬CanonicalR W M).
+            -- The key: psi was from W which is strictly above M (¬ExistsTask W M).
             -- The iteration consumes formulas from a finite set.
             -- For now, we need the recursion with smaller measure.
             -- Use ih with smaller bound... but how?
@@ -2194,11 +2194,11 @@ theorem reflexive_cluster_escape
             -- "unconsumed" distinguishing formulas.
             -- For now, mark as sorry - this is the core iteration case
             sorry
-          · -- ¬CanonicalR U M: U is strict!
+          · -- ¬ExistsTask U M: U is strict!
             exact ⟨U, h_U_mcs, h_R_MU, h_UM', h_UM, h_not_M'U⟩
-        · -- CanonicalR M' U: neg(psi) ∈ U and psi from GContent(M') gives contradiction
+        · -- ExistsTask M' U: neg(psi) ∈ U and psi from GContent(M') gives contradiction
           exfalso
-          -- Need: psi ∈ GContent(M'). We have G(psi) ∈ W and CanonicalR W M'.
+          -- Need: psi ∈ GContent(M'). We have G(psi) ∈ W and ExistsTask W M'.
           have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
             DerivationTree.axiom [] _ (Axiom.temp_4 psi)
           have h_GG_psi_W : Formula.all_future (Formula.all_future psi) ∈ W :=
@@ -2209,7 +2209,7 @@ theorem reflexive_cluster_escape
         · -- U = M'
           rw [h_U_eq_M'] at h_R_U₁U
           -- U₁ is intermediate between M and M'
-          have h_not_M'U₁ : ¬CanonicalR M' U₁ := by
+          have h_not_M'U₁ : ¬ExistsTask M' U₁ := by
             intro h_M'U₁
             -- Similar argument
             have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
@@ -2223,15 +2223,15 @@ theorem reflexive_cluster_escape
             have h_psi_M' : psi ∈ M' := h_R_U₁U h_G_psi_U₁
             have h_neg_psi_M' : psi.neg ∈ M' := h_U_eq_M' ▸ h_neg_psi_U
             exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
-          by_cases h_U₁M : CanonicalR U₁ M
+          by_cases h_U₁M : ExistsTask U₁ M
           · -- U₁ ~ M: iteration needed
             sorry
-          · -- ¬CanonicalR U₁ M: U₁ is strict!
+          · -- ¬ExistsTask U₁ M: U₁ is strict!
             exact ⟨U₁, h_U₁_mcs, h_R_MU₁, h_R_U₁U, h_U₁M, h_not_M'U₁⟩
     case pos =>
-      -- W ~ M (CanonicalR W M). W is in M's equivalence class.
-      -- Extract distinguishing formula from ¬CanonicalR M' W (to be established)
-      by_cases h_M'W : CanonicalR M' W
+      -- W ~ M (ExistsTask W M). W is in M's equivalence class.
+      -- Extract distinguishing formula from ¬ExistsTask M' W (to be established)
+      by_cases h_M'W : ExistsTask M' W
       case pos =>
         -- M' sees W and W sees M. By transitivity (via T4), M' would see M.
         -- This contradicts h_not_R'.
@@ -2245,17 +2245,17 @@ theorem reflexive_cluster_escape
         have h_G_phi_W : Formula.all_future phi ∈ W := h_M'W h_GG_phi_M'
         exact h_WM h_G_phi_W
       case neg =>
-        -- ¬CanonicalR M' W. W is strict from M' side.
+        -- ¬ExistsTask M' W. W is strict from M' side.
         -- But W sees M (h_WM). W is not strict from M side.
-        -- Extract distinguishing formula from ¬CanonicalR M' W
+        -- Extract distinguishing formula from ¬ExistsTask M' W
         simp only [ExistsTask_def, Set.not_subset] at h_M'W
         obtain ⟨psi, h_G_psi_M', h_psi_not_W⟩ := h_M'W
         -- G(psi) ∈ M', psi ∉ W.
         -- Since W ~ M (h_WM and h_R_MW), we have GContent(W) = GContent(M) modulo T4.
         -- If psi ∉ W and M is reflexive (h_M_refl), check if psi ∈ M.
-        -- If psi ∈ M and GContent(M) ⊆ W (h_R_MW... wait, h_R_MW is CanonicalR M W).
-        -- Actually, h_WM is CanonicalR W M, meaning GContent(W) ⊆ M.
-        -- h_R_MW is CanonicalR M W, meaning GContent(M) ⊆ W.
+        -- If psi ∈ M and GContent(M) ⊆ W (h_R_MW... wait, h_R_MW is ExistsTask M W).
+        -- Actually, h_WM is ExistsTask W M, meaning GContent(W) ⊆ M.
+        -- h_R_MW is ExistsTask M W, meaning GContent(M) ⊆ W.
         -- So psi ∈ GContent(M) → psi ∈ W. But psi ∉ W. So psi ∉ GContent(M).
         -- psi ∉ GContent(M) means G(psi) ∉ M.
         have h_G_psi_not_M : Formula.all_future psi ∉ M := by
@@ -2270,27 +2270,27 @@ theorem reflexive_cluster_escape
           density_of_canonicalR M h_mcs (Formula.neg psi) h_F_neg_psi
         obtain ⟨U, h_U_mcs, h_R_U₁U, h_neg_psi_U⟩ :=
           canonical_forward_F U₁ h_U₁_mcs (Formula.neg psi) h_F_neg_U₁
-        have h_R_MU : CanonicalR M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
+        have h_R_MU : ExistsTask M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
         -- Check U's relation to M'
         have h_lin_U := canonical_forward_reachable_linear M U M' h_mcs h_U_mcs h_mcs' h_R_MU h_R
         rcases h_lin_U with h_UM' | h_M'U | h_U_eq_M'
-        · -- CanonicalR U M'
-          have h_not_M'U : ¬CanonicalR M' U := by
+        · -- ExistsTask U M'
+          have h_not_M'U : ¬ExistsTask M' U := by
             intro h_M'U_contra
             have h_psi_U : psi ∈ U := h_M'U_contra h_G_psi_M'
             exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
-          by_cases h_UM : CanonicalR U M
+          by_cases h_UM : ExistsTask U M
           · -- U ~ M: iteration needed
             sorry
-          · -- ¬CanonicalR U M: U is strict!
+          · -- ¬ExistsTask U M: U is strict!
             exact ⟨U, h_U_mcs, h_R_MU, h_UM', h_UM, h_not_M'U⟩
-        · -- CanonicalR M' U: contradiction
+        · -- ExistsTask M' U: contradiction
           exfalso
           have h_psi_U : psi ∈ U := h_M'U h_G_psi_M'
           exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
         · -- U = M'
           rw [h_U_eq_M'] at h_R_U₁U
-          have h_not_M'U₁ : ¬CanonicalR M' U₁ := by
+          have h_not_M'U₁ : ¬ExistsTask M' U₁ := by
             intro h_M'U₁
             have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
               DerivationTree.axiom [] _ (Axiom.temp_4 psi)
@@ -2300,10 +2300,10 @@ theorem reflexive_cluster_escape
             have h_psi_M' : psi ∈ M' := h_R_U₁U h_G_psi_U₁
             have h_neg_psi_M' : psi.neg ∈ M' := h_U_eq_M' ▸ h_neg_psi_U
             exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
-          by_cases h_U₁M : CanonicalR U₁ M
+          by_cases h_U₁M : ExistsTask U₁ M
           · -- U₁ ~ M: iteration needed
             sorry
-          · -- ¬CanonicalR U₁ M: U₁ is strict!
+          · -- ¬ExistsTask U₁ M: U₁ is strict!
             exact ⟨U₁, h_U₁_mcs, h_R_MU₁, h_R_U₁U, h_U₁M, h_not_M'U₁⟩
 
 end Bimodal.Metalogic.StagedConstruction

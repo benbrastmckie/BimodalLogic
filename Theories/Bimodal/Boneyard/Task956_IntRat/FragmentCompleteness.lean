@@ -98,7 +98,7 @@ theorem P_persistence_in_fragment
     · exact h_yes
     · exfalso; exact h_not_P h_neg
   -- H(¬φ) ∈ v.world and s ≤ v means ¬φ ∈ s.world (backward_H direction)
-  -- s ≤ v means CanonicalR s.world v.world, i.e., GContent(s) ⊆ v.world
+  -- s ≤ v means ExistsTask s.world v.world, i.e., GContent(s) ⊆ v.world
   -- We need HContent(v) ⊆ s: this follows from s ≤ v by duality
   have h_H_sub : HContent v.world ⊆ s.world :=
     GContent_subset_implies_HContent_reverse s.world v.world s.is_mcs v.is_mcs h_sv

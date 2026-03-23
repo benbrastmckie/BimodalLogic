@@ -50,7 +50,7 @@ variable {M₀ : Set Formula} {h_mcs₀ : SetMaximalConsistent M₀}
 ## Phase D/E: FMCS on BidirectionalFragment
 
 The fragment FMCS maps each element to its own world. Forward_G and backward_H
-follow from CanonicalR properties. Forward_F and backward_P follow from
+follow from ExistsTask properties. Forward_F and backward_P follow from
 the fragment's closure properties (forward_F_stays_in_fragment, backward_P_stays_in_fragment).
 
 This gives us a COMPLETE sorry-free FMCS at the BidirectionalFragment level.
@@ -65,7 +65,7 @@ The key advantage is that forward_F and backward_P hold trivially from the
 fragment's closure properties.
 
 **Properties (all sorry-free)**:
-- `forward_G`: from CanonicalR = GContent subset
+- `forward_G`: from ExistsTask = GContent subset
 - `backward_H`: from HContent/GContent duality
 - `forward_F`: from `forward_F_stays_in_fragment`
 - `backward_P`: from `backward_P_stays_in_fragment`
@@ -75,10 +75,10 @@ noncomputable def fragmentFMCS :
   mcs := fun w => w.world
   is_mcs := fun w => w.is_mcs
   forward_G := fun w₁ w₂ _ h_le h_G =>
-    -- CanonicalR w₁.world w₂.world means GContent(w₁) ⊆ w₂, so G(φ) ∈ w₁ → φ ∈ w₂
+    -- ExistsTask w₁.world w₂.world means GContent(w₁) ⊆ w₂, so G(φ) ∈ w₁ → φ ∈ w₂
     h_le h_G
   backward_H := fun w₁ w₂ _ h_le h_H =>
-    -- CanonicalR w₂.world w₁.world → HContent(w₁) ⊆ w₂ (by duality)
+    -- ExistsTask w₂.world w₁.world → HContent(w₁) ⊆ w₂ (by duality)
     (GContent_subset_implies_HContent_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_le) h_H
 
 /--
@@ -108,7 +108,7 @@ theorem fragmentFMCS_backward_P
     ∃ s : BidirectionalFragment M₀ h_mcs₀,
       s ≤ w ∧ φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs s := by
   obtain ⟨s, h_R_past, h_phi⟩ := backward_P_stays_in_fragment w φ h_P
-  have h_R : CanonicalR s.world w.world :=
+  have h_R : ExistsTask s.world w.world :=
     HContent_subset_implies_GContent_reverse w.world s.world w.is_mcs s.is_mcs h_R_past
   exact ⟨s, h_R, h_phi⟩
 
@@ -128,21 +128,21 @@ theorem fragmentFMCS_temporally_coherent :
 ## Witness Seed Consistency
 
 This crucial lemma enables the Int-chain construction. When a witness `W` exists
-in the fragment with `CanonicalR M W` and `φ ∈ W`, the seed `{φ} ∪ GContent(M)`
+in the fragment with `ExistsTask M W` and `φ ∈ W`, the seed `{φ} ∪ GContent(M)`
 is consistent. This is because `W` contains both `φ` and `GContent(M)`.
 -/
 
 /--
-If `CanonicalR M W` and `φ ∈ W`, then `{φ} ∪ GContent(M)` is consistent.
+If `ExistsTask M W` and `φ ∈ W`, then `{φ} ∪ GContent(M)` is consistent.
 
 **Proof**: Every formula in the seed is in `W` (an MCS):
 - `φ ∈ W` by hypothesis
-- `GContent(M) ⊆ W` by `CanonicalR M W`
+- `GContent(M) ⊆ W` by `ExistsTask M W`
 Since `W` is consistent, any finite subset derives only derivable conclusions.
 -/
 theorem witness_seed_consistent (M W : Set Formula)
     (h_mcs_W : SetMaximalConsistent W)
-    (h_R : CanonicalR M W)
+    (h_R : ExistsTask M W)
     (φ : Formula) (h_phi : φ ∈ W) :
     SetConsistent ({φ} ∪ GContent M) := by
   intro L hL_sub ⟨d⟩
@@ -166,7 +166,7 @@ all necessary F/P witnesses.
 
 When `F(φ) ∈ w.world` for a fragment element `w`, the enriched seed
 `{φ} ∪ GContent(w.world)` is consistent. This is because
-`forward_F_stays_in_fragment` gives a witness `W` with `CanonicalR w W`
+`forward_F_stays_in_fragment` gives a witness `W` with `ExistsTask w W`
 and `φ ∈ W`, so `W ⊇ {φ} ∪ GContent(w.world)` and `W` is consistent.
 
 This resolves the F-persistence problem that blocked the DovetailingChain.
@@ -175,7 +175,7 @@ This resolves the F-persistence problem that blocked the DovetailingChain.
 /--
 GContent of a fragment element is consistent.
 By seriality, `F(¬⊥) ∈ w.world` (it's an axiom), so by `forward_F_stays_in_fragment`
-there exists a successor `s` with `CanonicalR w s` and `¬⊥ ∈ s`. Since `CanonicalR w s`
+there exists a successor `s` with `ExistsTask w s` and `¬⊥ ∈ s`. Since `ExistsTask w s`
 means `GContent(w) ⊆ s.world`, and `s` is an MCS (hence consistent), `GContent(w)` is consistent.
 -/
 lemma GContent_consistent_of_fragment
@@ -184,9 +184,9 @@ lemma GContent_consistent_of_fragment
   -- seriality_future is an axiom: F(¬⊥) ∈ w.world
   have h_serial := theorem_in_mcs w.is_mcs
     (DerivationTree.axiom [] _ Axiom.seriality_future)
-  -- Get successor s with CanonicalR w s
+  -- Get successor s with ExistsTask w s
   obtain ⟨s, h_R, _⟩ := forward_F_stays_in_fragment w _ h_serial
-  -- GContent(w) ⊆ s.world by definition of CanonicalR
+  -- GContent(w) ⊆ s.world by definition of ExistsTask
   intro L hL_sub ⟨d⟩
   have h_L_in_s : ∀ x ∈ L, x ∈ s.world := by
     intro x hx
@@ -198,7 +198,7 @@ When `F(φ) ∈ w.world`, the enriched seed `{φ} ∪ GContent(w.world)` is cons
 
 This is the KEY lemma that resolves the F-persistence problem.
 The BidirectionalFragment's closure property (`forward_F_stays_in_fragment`)
-provides a witness MCS `W` with `CanonicalR w W` and `φ ∈ W`. Since `W` contains
+provides a witness MCS `W` with `ExistsTask w W` and `φ ∈ W`. Since `W` contains
 both `φ` and `GContent(w.world)`, the seed is consistent.
 -/
 theorem enriched_seed_consistent_from_F
@@ -211,8 +211,8 @@ theorem enriched_seed_consistent_from_F
 /--
 HContent of a fragment element is consistent.
 By seriality, `P(¬⊥) ∈ w.world` (it's an axiom), so by `backward_P_stays_in_fragment`
-there exists a predecessor `s` with `CanonicalR_past w s` and `¬⊥ ∈ s`. Since
-`CanonicalR_past w s` means `HContent(w) ⊆ s.world`, and `s` is an MCS (hence consistent),
+there exists a predecessor `s` with `ExistsTask_past w s` and `¬⊥ ∈ s`. Since
+`ExistsTask_past w s` means `HContent(w) ⊆ s.world`, and `s` is an MCS (hence consistent),
 `HContent(w)` is consistent.
 -/
 lemma HContent_consistent_of_fragment
@@ -221,9 +221,9 @@ lemma HContent_consistent_of_fragment
   -- seriality_past is an axiom: P(¬⊥) ∈ w.world
   have h_serial := theorem_in_mcs w.is_mcs
     (DerivationTree.axiom [] _ Axiom.seriality_past)
-  -- Get predecessor s with CanonicalR_past w s
+  -- Get predecessor s with ExistsTask_past w s
   obtain ⟨s, h_R_past, _⟩ := backward_P_stays_in_fragment w _ h_serial
-  -- HContent(w) ⊆ s.world by definition of CanonicalR_past
+  -- HContent(w) ⊆ s.world by definition of ExistsTask_past
   intro L hL_sub ⟨d⟩
   have h_L_in_s : ∀ x ∈ L, x ∈ s.world := by
     intro x hx
@@ -240,7 +240,7 @@ theorem enriched_seed_consistent_from_P
     (φ : Formula) (h_P : Formula.some_past φ ∈ w.world) :
     SetConsistent ({φ} ∪ HContent w.world) := by
   obtain ⟨s, h_R_past, h_phi⟩ := backward_P_stays_in_fragment w φ h_P
-  -- s has CanonicalR_past w.world s.world (HContent(w) ⊆ s) and φ ∈ s.world
+  -- s has ExistsTask_past w.world s.world (HContent(w) ⊆ s) and φ ∈ s.world
   -- So {φ} ∪ HContent(w.world) ⊆ s.world (consistent)
   intro L hL_sub ⟨d⟩
   have h_L_in_s : ∀ x ∈ L, x ∈ s.world := by
@@ -254,7 +254,7 @@ theorem enriched_seed_consistent_from_P
 
 /--
 Build a GContent-successor in the fragment.
-Given `w` in the fragment, produce `w'` with `CanonicalR w w'` and `w'` in the fragment.
+Given `w` in the fragment, produce `w'` with `ExistsTask w w'` and `w'` in the fragment.
 -/
 noncomputable def fragmentGSucc (w : BidirectionalFragment M₀ h_mcs₀) :
     BidirectionalFragment M₀ h_mcs₀ :=
@@ -268,14 +268,14 @@ noncomputable def fragmentGSucc (w : BidirectionalFragment M₀ h_mcs₀) :
 -/
 lemma fragmentGSucc_le (w : BidirectionalFragment M₀ h_mcs₀) :
     w ≤ fragmentGSucc w := by
-  show CanonicalR w.world (fragmentGSucc w).world
+  show ExistsTask w.world (fragmentGSucc w).world
   intro φ h_G
   exact lindenbaumMCS_set_extends _ (GContent_consistent_of_fragment w) h_G
 
 /--
 Build an enriched successor in the fragment that contains a witness formula.
 Given `w` in the fragment and `F(φ) ∈ w.world`, produce `w'` with
-`CanonicalR w w'`, `φ ∈ w'`, and `w'` in the fragment.
+`ExistsTask w w'`, `φ ∈ w'`, and `w'` in the fragment.
 -/
 noncomputable def fragmentFSucc
     (w : BidirectionalFragment M₀ h_mcs₀)
@@ -306,7 +306,7 @@ lemma fragmentFSucc_le
     (w : BidirectionalFragment M₀ h_mcs₀)
     (φ : Formula) (h_F : Formula.some_future φ ∈ w.world) :
     w ≤ fragmentFSucc w φ h_F := by
-  show CanonicalR w.world (fragmentFSucc w φ h_F).world
+  show ExistsTask w.world (fragmentFSucc w φ h_F).world
   intro ψ h_G
   exact lindenbaumMCS_set_extends _ (enriched_seed_consistent_from_F w φ h_F)
     (Set.mem_union_right _ h_G)
@@ -439,7 +439,7 @@ lemma diamondWitnessMCS_contains_BoxContent (M : Set Formula) (h_mcs : SetMaxima
 /-!
 ## GContent/HContent Equality for Preorder-Equivalent Elements
 
-If `a ≤ b` and `b ≤ a` (i.e., `CanonicalR` in both directions), then
+If `a ≤ b` and `b ≤ a` (i.e., `ExistsTask` in both directions), then
 `GContent(a.world) = GContent(b.world)` and `HContent(a.world) = HContent(b.world)`.
 This follows from the temporal 4-axiom: `G(phi) → G(G(phi))` (and its past analog).
 
@@ -535,12 +535,12 @@ theorem fragmentGSucc_eq_of_preorder_equiv
 ## HContent Predecessor in the Fragment
 
 The backward analog of `fragmentGSucc`: given `w` in the fragment, produce
-a predecessor `w'` with `CanonicalR w'.world w.world` (i.e., HContent(w) ⊆ w').
+a predecessor `w'` with `ExistsTask w'.world w.world` (i.e., HContent(w) ⊆ w').
 -/
 
 /--
 Build an HContent-predecessor in the fragment.
-Given `w` in the fragment, produce `w'` with `CanonicalR w'.world w.world`
+Given `w` in the fragment, produce `w'` with `ExistsTask w'.world w.world`
 and `w'` in the fragment.
 -/
 noncomputable def fragmentHPred (w : BidirectionalFragment M₀ h_mcs₀) :
@@ -555,11 +555,11 @@ noncomputable def fragmentHPred (w : BidirectionalFragment M₀ h_mcs₀) :
       (fun _ h_H => lindenbaumMCS_set_extends _ (HContent_consistent_of_fragment w) h_H))
 
 /--
-`fragmentHPred w ≤ w` in the preorder (i.e., CanonicalR (fragmentHPred w).world w.world).
+`fragmentHPred w ≤ w` in the preorder (i.e., ExistsTask (fragmentHPred w).world w.world).
 -/
 lemma fragmentHPred_le (w : BidirectionalFragment M₀ h_mcs₀) :
     fragmentHPred w ≤ w := by
-  show CanonicalR (fragmentHPred w).world w.world
+  show ExistsTask (fragmentHPred w).world w.world
   exact HContent_subset_implies_GContent_reverse w.world
     (lindenbaumMCS_set (HContent w.world) (HContent_consistent_of_fragment w))
     w.is_mcs

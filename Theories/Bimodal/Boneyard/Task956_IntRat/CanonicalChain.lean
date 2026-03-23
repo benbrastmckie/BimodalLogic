@@ -10,19 +10,19 @@ import Bimodal.Syntax.Formula
 # Canonical Chain: Z-Indexed Chain Through CanonicalMCS
 
 This module constructs a Z-indexed chain of maximal consistent sets (MCSes) through
-CanonicalMCS, with CanonicalR ordering between consecutive elements. This is the
+CanonicalMCS, with ExistsTask ordering between consecutive elements. This is the
 foundational data structure for the antisymmetrization approach to sorry-free
 completeness (Task 951).
 
 ## Overview
 
 A `CanonicalChain` is a function `Int -> CanonicalMCS` together with proofs that
-consecutive elements are CanonicalR-related:
-- For non-negative n: `CanonicalR chain(n) chain(n+1)` (GContent inclusion forward)
-- For negative n: `CanonicalR chain(n) chain(n+1)` (same -- the chain is monotone)
+consecutive elements are ExistsTask-related:
+- For non-negative n: `ExistsTask chain(n) chain(n+1)` (GContent inclusion forward)
+- For negative n: `ExistsTask chain(n) chain(n+1)` (same -- the chain is monotone)
 
-The ordering invariant ensures that `CanonicalR chain(s) chain(t)` for all `s <= t`,
-by transitivity of CanonicalR.
+The ordering invariant ensures that `ExistsTask chain(s) chain(t)` for all `s <= t`,
+by transitivity of ExistsTask.
 
 ## Construction Method
 
@@ -40,7 +40,7 @@ Int-indexed DovetailingChain approach.
 The ordering between consecutive elements follows from the seed construction:
 - `GContent(chain(n)) ⊆ {phi_n} ∪ GContent(chain(n)) ⊆ chain(n+1)` (by Lindenbaum extension)
 - For backward: `HContent(chain(-n)) ⊆ {psi_n} ∪ HContent(chain(-n)) ⊆ chain(-n-1)`,
-  which gives `CanonicalR chain(-n-1) chain(-n)` by HContent/GContent duality
+  which gives `ExistsTask chain(-n-1) chain(-n)` by HContent/GContent duality
 
 ## References
 
@@ -62,25 +62,25 @@ A Z-indexed chain through CanonicalMCS with consecutive-element ordering.
 -/
 
 /--
-A Z-indexed chain through CanonicalMCS with the CanonicalR ordering invariant.
+A Z-indexed chain through CanonicalMCS with the ExistsTask ordering invariant.
 
 The chain maps each integer to a CanonicalMCS element, and consecutive elements
-are CanonicalR-related (i.e., GContent of the earlier element is included in the
+are ExistsTask-related (i.e., GContent of the earlier element is included in the
 later element).
 
 **Fields**:
 - `chain`: The function mapping integers to CanonicalMCS elements
-- `ordered`: For all n, `CanonicalR chain(n).world chain(n+1).world`
+- `ordered`: For all n, `ExistsTask chain(n).world chain(n+1).world`
   (i.e., `GContent(chain(n).world) ⊆ chain(n+1).world`)
 
-The `ordered` property gives us a monotone chain: for s <= t, `CanonicalR chain(s) chain(t)`
-follows from transitivity of CanonicalR (proven in CanonicalFrame.lean).
+The `ordered` property gives us a monotone chain: for s <= t, `ExistsTask chain(s) chain(t)`
+follows from transitivity of ExistsTask (proven in CanonicalFrame.lean).
 -/
 structure CanonicalChain where
   /-- The chain function mapping integers to CanonicalMCS elements -/
   chain : Int → CanonicalMCS
-  /-- Consecutive ordering: CanonicalR between adjacent elements -/
-  ordered : ∀ n : Int, CanonicalR (chain n).world (chain (n + 1)).world
+  /-- Consecutive ordering: ExistsTask between adjacent elements -/
+  ordered : ∀ n : Int, ExistsTask (chain n).world (chain (n + 1)).world
 
 /-!
 ## Basic Properties of CanonicalChain
@@ -89,13 +89,13 @@ structure CanonicalChain where
 variable (C : CanonicalChain)
 
 /--
-The chain is monotone: for s <= t, `CanonicalR chain(s).world chain(t).world`.
+The chain is monotone: for s <= t, `ExistsTask chain(s).world chain(t).world`.
 
 This follows from the consecutive ordering property by induction on the
-distance t - s, using transitivity of CanonicalR.
+distance t - s, using transitivity of ExistsTask.
 -/
 theorem CanonicalChain.monotone (s t : Int) (h : s ≤ t) :
-    CanonicalR (C.chain s).world (C.chain t).world := by
+    ExistsTask (C.chain s).world (C.chain t).world := by
   -- We prove by induction on the natural number (t - s)
   obtain ⟨d, hd⟩ : ∃ d : Nat, t = s + d := by
     exact ⟨(t - s).toNat, by omega⟩
@@ -115,7 +115,7 @@ theorem CanonicalChain.monotone (s t : Int) (h : s ≤ t) :
 Extract the GContent inclusion from monotonicity (forward direction).
 
 If s <= t, then `GContent(chain(s).world) ⊆ chain(t).world`.
-This is just the unfolding of `CanonicalR`.
+This is just the unfolding of `ExistsTask`.
 -/
 theorem CanonicalChain.GContent_inclusion (s t : Int) (h : s ≤ t) :
     GContent (C.chain s).world ⊆ (C.chain t).world :=
@@ -201,10 +201,10 @@ noncomputable def forwardChainStep (root : CanonicalMCS) : Nat → CanonicalMCS
     { world := W, is_mcs := lindenbaumMCS_set_is_mcs (GContent prev.world) h_cons }
 
 /--
-Forward chain step preserves CanonicalR: `CanonicalR (step n).world (step (n+1)).world`.
+Forward chain step preserves ExistsTask: `ExistsTask (step n).world (step (n+1)).world`.
 -/
 theorem forwardChainStep_ordered (root : CanonicalMCS) (n : Nat) :
-    CanonicalR (forwardChainStep root n).world (forwardChainStep root (n + 1)).world := by
+    ExistsTask (forwardChainStep root n).world (forwardChainStep root (n + 1)).world := by
   simp only [forwardChainStep]
   -- Need: GContent(prev.world) ⊆ W where W = lindenbaumMCS_set(GContent(prev.world))
   -- This follows from lindenbaumMCS_set_extends
@@ -246,15 +246,15 @@ theorem backwardChainStep_HContent_inclusion (root : CanonicalMCS) (n : Nat) :
   exact lindenbaumMCS_set_extends (HContent (backwardChainStep root n).world) _
 
 /--
-Backward chain step preserves CanonicalR in the correct direction:
-`CanonicalR (backwardChainStep root (n+1)).world (backwardChainStep root n).world`.
+Backward chain step preserves ExistsTask in the correct direction:
+`ExistsTask (backwardChainStep root (n+1)).world (backwardChainStep root n).world`.
 
 This follows from HContent/GContent duality:
 - By construction, `HContent(step n) ⊆ step(n+1)` (from seed inclusion)
 - By duality, `GContent(step(n+1)) ⊆ step(n)` (from `HContent_subset_implies_GContent_reverse`)
 -/
 theorem backwardChainStep_ordered (root : CanonicalMCS) (n : Nat) :
-    CanonicalR (backwardChainStep root (n + 1)).world (backwardChainStep root n).world := by
+    ExistsTask (backwardChainStep root (n + 1)).world (backwardChainStep root n).world := by
   -- HContent(backwardChainStep root n) ⊆ backwardChainStep root (n+1)
   have h_H_incl := backwardChainStep_HContent_inclusion root n
   -- By duality: GContent(backwardChainStep root (n+1)) ⊆ backwardChainStep root n
@@ -308,10 +308,10 @@ theorem buildChainFn_neg (root : CanonicalMCS) (n : Int) (h : n < 0) :
   simp [buildChainFn, show ¬(n ≥ 0) from by omega]
 
 /--
-Key ordering lemma: consecutive elements of the combined chain are CanonicalR-related.
+Key ordering lemma: consecutive elements of the combined chain are ExistsTask-related.
 
 This is the main proof obligation for Phase 1. We need to show that for every n,
-`CanonicalR (buildChainFn root n).world (buildChainFn root (n+1)).world`.
+`ExistsTask (buildChainFn root n).world (buildChainFn root (n+1)).world`.
 
 The proof splits into three cases:
 1. `n >= 0`: Both in forward chain. Use `forwardChainStep_ordered`.
@@ -320,7 +320,7 @@ The proof splits into three cases:
 3. `n < -1`: Both in backward chain. Use `backwardChainStep_ordered`.
 -/
 theorem buildChainFn_ordered (root : CanonicalMCS) (n : Int) :
-    CanonicalR (buildChainFn root n).world (buildChainFn root (n + 1)).world := by
+    ExistsTask (buildChainFn root n).world (buildChainFn root (n + 1)).world := by
   by_cases h0 : n ≥ 0
   · -- Case 1: n >= 0, so n and n+1 are both in forward chain
     have h1 : n + 1 ≥ 0 := by omega
@@ -332,22 +332,22 @@ theorem buildChainFn_ordered (root : CanonicalMCS) (n : Int) :
     by_cases h1 : n = -1
     · -- Case 2: n = -1, transition from backwardChainStep 1 to root (= forwardChainStep 0)
       subst h1
-      show CanonicalR (buildChainFn root (-1)).world (buildChainFn root 0).world
+      show ExistsTask (buildChainFn root (-1)).world (buildChainFn root 0).world
       rw [buildChainFn_neg root (-1) (by omega), buildChainFn_zero root]
       simp
-      -- Need: CanonicalR (backwardChainStep root 1).world root.world
+      -- Need: ExistsTask (backwardChainStep root 1).world root.world
       -- This is backwardChainStep_ordered root 0
       exact backwardChainStep_ordered root 0
     · -- Case 3: n < -1, so n and n+1 are both in backward chain
       have hn : n < -1 := by omega
       have hn1 : n + 1 < 0 := by omega
       rw [buildChainFn_neg root n (by omega), buildChainFn_neg root (n + 1) hn1]
-      -- Need: CanonicalR (backwardChainStep root (-n).toNat).world
+      -- Need: ExistsTask (backwardChainStep root (-n).toNat).world
       --                   (backwardChainStep root (-(n+1)).toNat).world
       -- Since n < -1, we have -n >= 2, so (-n).toNat = (-(n+1)).toNat + 1
       have h_eq : (-n).toNat = (-(n + 1)).toNat + 1 := by omega
       rw [h_eq]
-      -- Need: CanonicalR (backwardChainStep root ((-(n+1)).toNat + 1)).world
+      -- Need: ExistsTask (backwardChainStep root ((-(n+1)).toNat + 1)).world
       --                   (backwardChainStep root (-(n+1)).toNat).world
       exact backwardChainStep_ordered root (-(n + 1)).toNat
 
@@ -376,21 +376,21 @@ These lemmas restate the ordering in more familiar forms matching the plan's
 -/
 
 /--
-Forward ordering: for all n >= 0, `CanonicalR chain(n) chain(n+1)`.
+Forward ordering: for all n >= 0, `ExistsTask chain(n) chain(n+1)`.
 
 This is a special case of the general `ordered` property.
 -/
 theorem CanonicalChain.chain_ordered_forward (n : Nat) :
-    CanonicalR (C.chain n).world (C.chain (↑n + 1)).world :=
+    ExistsTask (C.chain n).world (C.chain (↑n + 1)).world :=
   C.ordered n
 
 /--
-Backward ordering: for all n >= 0, `CanonicalR chain(-n-1) chain(-n)`.
+Backward ordering: for all n >= 0, `ExistsTask chain(-n-1) chain(-n)`.
 
 This restates the ordering property in the backward direction.
 -/
 theorem CanonicalChain.chain_ordered_backward (n : Nat) :
-    CanonicalR (C.chain (-(↑n + 1))).world (C.chain (-↑n)).world := by
+    ExistsTask (C.chain (-(↑n + 1))).world (C.chain (-↑n)).world := by
   have : (-↑n : Int) = -(↑n + 1) + 1 := by omega
   rw [this]
   exact C.ordered (-(↑n + 1))
@@ -400,7 +400,7 @@ theorem CanonicalChain.chain_ordered_backward (n : Nat) :
 
 The CanonicalChain FMCS is compatible with the existing CanonicalMCS infrastructure:
 each chain element IS a CanonicalMCS, so the Preorder instance and all existing
-lemmas about CanonicalR apply directly.
+lemmas about ExistsTask apply directly.
 -/
 
 /--
@@ -452,7 +452,7 @@ This section implements:
 3. **Enriched chain construction**: Forward/backward chain steps that include witness
    formulas in the Lindenbaum seed when the corresponding F/P obligation is alive
    at the CURRENT position
-4. **Ordering proofs**: CanonicalR ordering preserved by enriched steps
+4. **Ordering proofs**: ExistsTask ordering preserved by enriched steps
 5. **Witness placement**: When F(phi)/P(phi) is alive and phi is decoded, it appears
    in the next chain element
 
@@ -624,14 +624,14 @@ noncomputable def enrichedForwardStep (root : CanonicalMCS) : Nat → CanonicalM
           is_mcs := lindenbaumMCS_set_is_mcs (GContent prev.world) h_cons }
 
 /--
-The enriched forward chain preserves CanonicalR ordering.
+The enriched forward chain preserves ExistsTask ordering.
 
-CanonicalR (enrichedForwardStep root n).world (enrichedForwardStep root (n+1)).world
+ExistsTask (enrichedForwardStep root n).world (enrichedForwardStep root (n+1)).world
 holds because in all cases, GContent(chain(n)) is included in the seed, and
 the Lindenbaum extension of the seed contains the seed.
 -/
 theorem enrichedForwardStep_ordered (root : CanonicalMCS) (n : Nat) :
-    CanonicalR (enrichedForwardStep root n).world (enrichedForwardStep root (n + 1)).world := by
+    ExistsTask (enrichedForwardStep root n).world (enrichedForwardStep root (n + 1)).world := by
   show GContent (enrichedForwardStep root n).world ⊆ (enrichedForwardStep root (n + 1)).world
   simp only [enrichedForwardStep]
   split
@@ -726,13 +726,13 @@ theorem enrichedBackwardStep_HContent_inclusion (root : CanonicalMCS) (n : Nat) 
       apply lindenbaumMCS_set_extends
 
 /--
-The enriched backward chain preserves CanonicalR in the correct direction:
-CanonicalR (enrichedBackwardStep root (n+1)).world (enrichedBackwardStep root n).world.
+The enriched backward chain preserves ExistsTask in the correct direction:
+ExistsTask (enrichedBackwardStep root (n+1)).world (enrichedBackwardStep root n).world.
 
 This follows from HContent/GContent duality, same as the conservative chain.
 -/
 theorem enrichedBackwardStep_ordered (root : CanonicalMCS) (n : Nat) :
-    CanonicalR (enrichedBackwardStep root (n + 1)).world (enrichedBackwardStep root n).world := by
+    ExistsTask (enrichedBackwardStep root (n + 1)).world (enrichedBackwardStep root n).world := by
   exact HContent_subset_implies_GContent_reverse
     (enrichedBackwardStep root n).world
     (enrichedBackwardStep root (n + 1)).world
@@ -794,12 +794,12 @@ theorem buildEnrichedChainFn_neg (root : CanonicalMCS) (n : Int) (h : n < 0) :
   simp [buildEnrichedChainFn, show ¬(n ≥ 0) from by omega]
 
 /--
-Key ordering lemma for the enriched chain: consecutive elements are CanonicalR-related.
+Key ordering lemma for the enriched chain: consecutive elements are ExistsTask-related.
 
 Same structure as buildChainFn_ordered but using enriched chain steps.
 -/
 theorem buildEnrichedChainFn_ordered (root : CanonicalMCS) (n : Int) :
-    CanonicalR (buildEnrichedChainFn root n).world (buildEnrichedChainFn root (n + 1)).world := by
+    ExistsTask (buildEnrichedChainFn root n).world (buildEnrichedChainFn root (n + 1)).world := by
   by_cases h0 : n ≥ 0
   · -- Case 1: n >= 0
     have h1 : n + 1 ≥ 0 := by omega
@@ -810,7 +810,7 @@ theorem buildEnrichedChainFn_ordered (root : CanonicalMCS) (n : Int) :
   · push_neg at h0
     by_cases h1 : n = -1
     · subst h1
-      show CanonicalR (buildEnrichedChainFn root (-1)).world (buildEnrichedChainFn root 0).world
+      show ExistsTask (buildEnrichedChainFn root (-1)).world (buildEnrichedChainFn root 0).world
       rw [buildEnrichedChainFn_neg root (-1) (by omega), buildEnrichedChainFn_zero root]
       simp
       exact enrichedBackwardStep_ordered root 0

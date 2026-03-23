@@ -9,21 +9,21 @@ import Mathlib.Order.Antisymmetrization
 
 This module defines the bidirectional reachable fragment of the canonical frame from a root MCS.
 Unlike the Boneyard's CanonicalReachable (one-directional, future-only), this captures MCSes
-reachable by following CanonicalR edges in either direction (forward or backward).
+reachable by following ExistsTask edges in either direction (forward or backward).
 
 ## Overview
 
 Given a root MCS `M₀`, the **bidirectional reachable fragment** consists of all MCSes `M`
-that can be reached from `M₀` by a finite sequence of CanonicalR or CanonicalR⁻¹ edges.
-This is the reflexive-transitive-symmetric closure of CanonicalR from `M₀`.
+that can be reached from `M₀` by a finite sequence of ExistsTask or ExistsTask⁻¹ edges.
+This is the reflexive-transitive-symmetric closure of ExistsTask from `M₀`.
 
 ## Key Property: Fragment Contains F/P Witnesses
 
 The critical advantage over the one-directional fragment:
 - If `W` is in the bidirectional fragment and `F(φ) ∈ W`, the witness from `canonical_forward_F`
-  is also in the fragment (one CanonicalR step forward)
+  is also in the fragment (one ExistsTask step forward)
 - If `W` is in the bidirectional fragment and `P(φ) ∈ W`, the witness from `canonical_backward_P`
-  is also in the fragment (one CanonicalR step backward)
+  is also in the fragment (one ExistsTask step backward)
 
 This enables transfer of forward_F and backward_P from CanonicalMCS level to the fragment.
 
@@ -51,13 +51,13 @@ open Bimodal.ProofSystem
 -/
 
 /--
-A bidirectional edge between two MCSes: either CanonicalR or CanonicalR_past.
+A bidirectional edge between two MCSes: either ExistsTask or ExistsTask_past.
 
 This captures one step of reachability in either the future or past direction.
 -/
 inductive BidirectionalEdge (M₁ M₂ : Set Formula) : Prop where
-  | forward : CanonicalR M₁ M₂ → BidirectionalEdge M₁ M₂
-  | backward : CanonicalR M₂ M₁ → BidirectionalEdge M₁ M₂
+  | forward : ExistsTask M₁ M₂ → BidirectionalEdge M₁ M₂
+  | backward : ExistsTask M₂ M₁ → BidirectionalEdge M₁ M₂
 
 /--
 BidirectionalEdge is symmetric.
@@ -75,7 +75,7 @@ theorem BidirectionalEdge.symm {M₁ M₂ : Set Formula}
 /--
 `BidirectionalReachable M₀ h₀ M h` holds when `M` can be reached from `M₀` by a finite
 sequence of bidirectional edges, where all intermediate points are maximal consistent sets.
-This is the reflexive-transitive-symmetric closure of CanonicalR from `M₀`, enriched
+This is the reflexive-transitive-symmetric closure of ExistsTask from `M₀`, enriched
 with MCS proofs at every step.
 
 The MCS tracking is essential for the totality proof (Phase B), where linearity lemmas
@@ -93,7 +93,7 @@ Alternative constructor: reach by taking a backward step.
 -/
 theorem BidirectionalReachable.step_backward {M₀ M₁ M₂ : Set Formula}
     {h₀ : SetMaximalConsistent M₀} {h₁ : SetMaximalConsistent M₁} {h₂ : SetMaximalConsistent M₂}
-    (h_reach : BidirectionalReachable M₀ h₀ M₁ h₁) (h_R : CanonicalR M₂ M₁) :
+    (h_reach : BidirectionalReachable M₀ h₀ M₁ h₁) (h_R : ExistsTask M₂ M₁) :
     BidirectionalReachable M₀ h₀ M₂ h₂ :=
   BidirectionalReachable.step h_reach (BidirectionalEdge.backward h_R)
 
@@ -102,7 +102,7 @@ Alternative constructor: reach by taking a forward step.
 -/
 theorem BidirectionalReachable.step_forward {M₀ M₁ M₂ : Set Formula}
     {h₀ : SetMaximalConsistent M₀} {h₁ : SetMaximalConsistent M₁} {h₂ : SetMaximalConsistent M₂}
-    (h_reach : BidirectionalReachable M₀ h₀ M₁ h₁) (h_R : CanonicalR M₁ M₂) :
+    (h_reach : BidirectionalReachable M₀ h₀ M₁ h₁) (h_R : ExistsTask M₁ M₂) :
     BidirectionalReachable M₀ h₀ M₂ h₂ :=
   BidirectionalReachable.step h_reach (BidirectionalEdge.forward h_R)
 
@@ -114,7 +114,7 @@ variable {M₀ : Set Formula} {h_mcs₀ : SetMaximalConsistent M₀}
 
 /--
 A bidirectionally reachable MCS from root `M₀`: a set of formulas that is MCS
-and can be reached from `M₀` by forward or backward CanonicalR edges.
+and can be reached from `M₀` by forward or backward ExistsTask edges.
 -/
 structure BidirectionalFragment (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀) where
   /-- The underlying set of formulas -/
@@ -148,31 +148,31 @@ instance : Nonempty (BidirectionalFragment M₀ h_mcs₀) :=
 /-!
 ## Fragment Closure Properties
 
-The key properties: taking CanonicalR or CanonicalR⁻¹ steps from an element
+The key properties: taking ExistsTask or ExistsTask⁻¹ steps from an element
 of the fragment stays within the fragment.
 -/
 
 /--
-Forward closure: If `W` is in the bidirectional fragment and `CanonicalR W W'`,
+Forward closure: If `W` is in the bidirectional fragment and `ExistsTask W W'`,
 then `W'` is also in the bidirectional fragment.
 -/
 def BidirectionalFragment.forward_closed
     (a : BidirectionalFragment M₀ h_mcs₀)
     (W' : Set Formula) (h_mcs' : SetMaximalConsistent W')
-    (h_R : CanonicalR a.world W') :
+    (h_R : ExistsTask a.world W') :
     BidirectionalFragment M₀ h_mcs₀ where
   world := W'
   is_mcs := h_mcs'
   reachable := a.reachable.step_forward h_R
 
 /--
-Backward closure: If `W` is in the bidirectional fragment and `CanonicalR W' W`,
+Backward closure: If `W` is in the bidirectional fragment and `ExistsTask W' W`,
 then `W'` is also in the bidirectional fragment.
 -/
 def BidirectionalFragment.backward_closed
     (a : BidirectionalFragment M₀ h_mcs₀)
     (W' : Set Formula) (h_mcs' : SetMaximalConsistent W')
-    (h_R : CanonicalR W' a.world) :
+    (h_R : ExistsTask W' a.world) :
     BidirectionalFragment M₀ h_mcs₀ where
   world := W'
   is_mcs := h_mcs'
@@ -189,14 +189,14 @@ If `W` is in the bidirectional fragment and `F(φ) ∈ W`, then the witness MCS 
 `canonical_forward_F` is also in the bidirectional fragment.
 
 This uses:
-1. `canonical_forward_F` gives witness `W'` with `CanonicalR W W'` and `φ ∈ W'`
-2. Forward closure: `CanonicalR W W'` with `W` in fragment implies `W'` in fragment
+1. `canonical_forward_F` gives witness `W'` with `ExistsTask W W'` and `φ ∈ W'`
+2. Forward closure: `ExistsTask W W'` with `W` in fragment implies `W'` in fragment
 -/
 theorem forward_F_stays_in_fragment
     (a : BidirectionalFragment M₀ h_mcs₀)
     (φ : Formula) (h_F : Formula.some_future φ ∈ a.world) :
     ∃ (s : BidirectionalFragment M₀ h_mcs₀),
-      CanonicalR a.world s.world ∧ φ ∈ s.world := by
+      ExistsTask a.world s.world ∧ φ ∈ s.world := by
   -- Get witness from canonical_forward_F at CanonicalMCS level
   obtain ⟨W', h_mcs', h_R, h_phi⟩ := canonical_forward_F a.world a.is_mcs φ h_F
   -- W' is in the fragment by forward closure
@@ -208,20 +208,20 @@ If `W` is in the bidirectional fragment and `P(φ) ∈ W`, then the witness MCS 
 `canonical_backward_P` is also in the bidirectional fragment.
 
 This uses:
-1. `canonical_backward_P` gives witness `W'` with `CanonicalR_past W W'` and `φ ∈ W'`
-2. We convert `CanonicalR_past` to `CanonicalR` direction for fragment closure
+1. `canonical_backward_P` gives witness `W'` with `ExistsTask_past W W'` and `φ ∈ W'`
+2. We convert `ExistsTask_past` to `ExistsTask` direction for fragment closure
 -/
 theorem backward_P_stays_in_fragment
     (a : BidirectionalFragment M₀ h_mcs₀)
     (φ : Formula) (h_P : Formula.some_past φ ∈ a.world) :
     ∃ (s : BidirectionalFragment M₀ h_mcs₀),
-      CanonicalR_past a.world s.world ∧ φ ∈ s.world := by
+      ExistsTask_past a.world s.world ∧ φ ∈ s.world := by
   -- Get witness from canonical_backward_P at CanonicalMCS level
   obtain ⟨W', h_mcs', h_R_past, h_phi⟩ := canonical_backward_P a.world a.is_mcs φ h_P
-  -- Convert CanonicalR_past to CanonicalR for backward closure
-  -- CanonicalR_past a.world W' means HContent(a.world) ⊆ W'
-  -- We need CanonicalR W' a.world for backward_closed, which means GContent(W') ⊆ a.world
-  have h_R : CanonicalR W' a.world :=
+  -- Convert ExistsTask_past to ExistsTask for backward closure
+  -- ExistsTask_past a.world W' means HContent(a.world) ⊆ W'
+  -- We need ExistsTask W' a.world for backward_closed, which means GContent(W') ⊆ a.world
+  have h_R : ExistsTask W' a.world :=
     HContent_subset_implies_GContent_reverse a.world W' a.is_mcs h_mcs' h_R_past
   -- W' is in the fragment by backward closure
   let s := a.backward_closed W' h_mcs' h_R
@@ -251,20 +251,20 @@ theorem BidirectionalFragment.toCanonicalMCS_world (a : BidirectionalFragment M�
     a.toCanonicalMCS.world = a.world := rfl
 
 /-!
-## CanonicalR Preorder on the Bidirectional Fragment
+## ExistsTask Preorder on the Bidirectional Fragment
 
-The fragment inherits a Preorder from CanonicalR. We also have comparability
+The fragment inherits a Preorder from ExistsTask. We also have comparability
 of elements via the linearity property.
 -/
 
 /--
-Preorder on BidirectionalFragment via the reflexive closure of CanonicalR.
+Preorder on BidirectionalFragment via the reflexive closure of ExistsTask.
 
-With irreflexive semantics, CanonicalR is NOT reflexive. The reflexive closure
-gives a proper Preorder. The strict order `<` implies `CanonicalR`.
+With irreflexive semantics, ExistsTask is NOT reflexive. The reflexive closure
+gives a proper Preorder. The strict order `<` implies `ExistsTask`.
 -/
 noncomputable instance : Preorder (BidirectionalFragment M₀ h_mcs₀) where
-  le a b := a = b ∨ CanonicalR a.world b.world
+  le a b := a = b ∨ ExistsTask a.world b.world
   le_refl a := Or.inl rfl
   le_trans a b c hab hbc := by
     rcases hab with rfl | hab
@@ -274,19 +274,19 @@ noncomputable instance : Preorder (BidirectionalFragment M₀ h_mcs₀) where
       · exact Or.inr (canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc)
 
 /--
-CanonicalR implies ≤ in BidirectionalFragment.
+ExistsTask implies ≤ in BidirectionalFragment.
 -/
 theorem BidirectionalFragment.le_of_canonicalR
     (a b : BidirectionalFragment M₀ h_mcs₀)
-    (h : CanonicalR a.world b.world) : a ≤ b :=
+    (h : ExistsTask a.world b.world) : a ≤ b :=
   Or.inr h
 
 /--
-If `a < b` in BidirectionalFragment, then `CanonicalR a.world b.world`.
+If `a < b` in BidirectionalFragment, then `ExistsTask a.world b.world`.
 -/
 theorem BidirectionalFragment.canonicalR_of_lt
     (a b : BidirectionalFragment M₀ h_mcs₀) (h : a < b) :
-    CanonicalR a.world b.world := by
+    ExistsTask a.world b.world := by
   rcases h.1 with rfl | h_R
   · exact absurd (Or.inl rfl : a ≤ a) h.2
   · exact h_R
@@ -295,7 +295,7 @@ theorem BidirectionalFragment.canonicalR_of_lt
 ## Phase B: Linearity Infrastructure
 
 The temp_linearity axiom ensures that elements reachable from a common ancestor
-are CanonicalR-comparable. We adapt the infrastructure from CanonicalEmbedding.lean
+are ExistsTask-comparable. We adapt the infrastructure from CanonicalEmbedding.lean
 (now in Boneyard) to prove totality within the bidirectional fragment.
 -/
 
@@ -336,19 +336,19 @@ lemma mcs_F_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     · exact Or.inr (Or.inr h3)
 
 /--
-If `phi ∈ M'` and `CanonicalR M M'`, then `F(phi) ∈ M`.
+If `phi ∈ M'` and `ExistsTask M M'`, then `F(phi) ∈ M`.
 
 This is the F-introduction rule: if phi holds in a future-accessible MCS,
 then F(phi) holds in the current MCS.
 
 **Proof**: We show ¬F(phi) ∈ M leads to contradiction.
 F(phi) = ¬G(¬phi), so ¬F(phi) = ¬¬G(¬phi). By double negation elimination,
-this gives G(¬phi) ∈ M. Then CanonicalR M M' gives ¬phi ∈ M'.
+this gives G(¬phi) ∈ M. Then ExistsTask M M' gives ¬phi ∈ M'.
 But phi ∈ M' by hypothesis, contradicting MCS consistency.
 -/
 lemma canonical_F_of_mem_successor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask M M') (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_future phi ∈ M := by
   -- F(phi) = ¬G(¬phi). By MCS negation completeness, either F(phi) ∈ M or ¬F(phi) ∈ M
   by_contra h_not_F
@@ -364,14 +364,14 @@ lemma canonical_F_of_mem_successor (M M' : Set Formula)
   rw [h_neg_F_eq] at h_neg_F
   have h_G_neg : Formula.all_future (Formula.neg phi) ∈ M :=
     mcs_double_neg_elim h_mcs _ h_neg_F
-  -- By CanonicalR M M' and G(¬phi) ∈ M, we have ¬phi ∈ GContent(M) ⊆ M'
+  -- By ExistsTask M M' and G(¬phi) ∈ M, we have ¬phi ∈ GContent(M) ⊆ M'
   have h_neg_phi_M' : Formula.neg phi ∈ M' := h_R h_G_neg
   -- Contradiction: phi and ¬phi both in MCS M'
   exact set_consistent_not_both h_mcs'.1 phi h_phi h_neg_phi_M'
 
 /--
-Linearity of forward-reachable elements: If M₁ and M₂ are both CanonicalR-reachable
-from M, then M₁ and M₂ are CanonicalR-comparable.
+Linearity of forward-reachable elements: If M₁ and M₂ are both ExistsTask-reachable
+from M, then M₁ and M₂ are ExistsTask-comparable.
 
 This is the key structural property from the temp_linearity axiom.
 
@@ -381,16 +381,16 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs1 : SetMaximalConsistent M1)
     (h_mcs2 : SetMaximalConsistent M2)
-    (h_R1 : CanonicalR M M1) (h_R2 : CanonicalR M M2) :
-    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
+    (h_R1 : ExistsTask M M1) (h_R2 : ExistsTask M M2) :
+    ExistsTask M1 M2 ∨ ExistsTask M2 M1 ∨ M1 = M2 := by
   -- By classical case analysis
-  by_cases h_12 : CanonicalR M1 M2
+  by_cases h_12 : ExistsTask M1 M2
   · exact Or.inl h_12
   · right
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    -- NOT(CanonicalR M1 M2): exists alpha with G(alpha) ∈ M1 and alpha ∉ M2
+    -- NOT(ExistsTask M1 M2): exists alpha with G(alpha) ∈ M1 and alpha ∉ M2
     have h_not_sub_12 : ¬(GContent M1 ⊆ M2) := h_12
     rw [Set.not_subset] at h_not_sub_12
     obtain ⟨alpha, h_alpha_G1, h_alpha_not2⟩ := h_not_sub_12
@@ -399,7 +399,7 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
       rcases set_mcs_negation_complete h_mcs2 alpha with h | h
       · exact absurd h h_alpha_not2
       · exact h
-    -- NOT(CanonicalR M2 M1): exists beta with G(beta) ∈ M2 and beta ∉ M1
+    -- NOT(ExistsTask M2 M1): exists beta with G(beta) ∈ M2 and beta ∉ M1
     have h_not_sub_21 : ¬(GContent M2 ⊆ M1) := h_not_21
     rw [Set.not_subset] at h_not_sub_21
     obtain ⟨beta, h_beta_G2, h_beta_not1⟩ := h_not_sub_21
@@ -538,12 +538,12 @@ lemma mcs_P_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     · exact Or.inr (Or.inr h3)
 
 /--
-If `phi ∈ M'` and `CanonicalR M' M`, then `P(phi) ∈ M`.
+If `phi ∈ M'` and `ExistsTask M' M`, then `P(phi) ∈ M`.
 
 This is the P-introduction rule: if phi holds in a past-accessible MCS
-(i.e., a predecessor via CanonicalR), then P(phi) holds in the current MCS.
+(i.e., a predecessor via ExistsTask), then P(phi) holds in the current MCS.
 
-**Proof**: By duality, CanonicalR M' M implies HContent(M) ⊆ M'.
+**Proof**: By duality, ExistsTask M' M implies HContent(M) ⊆ M'.
 Then the proof mirrors canonical_F_of_mem_successor but using H/P instead of G/F.
 
 We show ¬P(phi) ∈ M leads to contradiction.
@@ -553,10 +553,10 @@ But phi ∈ M' by hypothesis, contradicting MCS consistency.
 -/
 lemma canonical_P_of_mem_predecessor (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M' M) (phi : Formula) (h_phi : phi ∈ M') :
+    (h_R : ExistsTask M' M) (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_past phi ∈ M := by
-  -- CanonicalR M' M means GContent(M') ⊆ M. By duality: HContent(M) ⊆ M'.
-  have h_R_past : CanonicalR_past M M' :=
+  -- ExistsTask M' M means GContent(M') ⊆ M. By duality: HContent(M) ⊆ M'.
+  have h_R_past : ExistsTask_past M M' :=
     GContent_subset_implies_HContent_reverse M' M h_mcs' h_mcs h_R
   -- By MCS negation completeness, either P(phi) ∈ M or ¬P(phi) ∈ M
   by_contra h_not_P
@@ -571,37 +571,37 @@ lemma canonical_P_of_mem_predecessor (M M' : Set Formula)
   rw [h_neg_P_eq] at h_neg_P
   have h_H_neg : Formula.all_past (Formula.neg phi) ∈ M :=
     mcs_double_neg_elim h_mcs _ h_neg_P
-  -- By CanonicalR_past M M' (= HContent(M) ⊆ M') and H(¬phi) ∈ M, we have ¬phi ∈ M'
+  -- By ExistsTask_past M M' (= HContent(M) ⊆ M') and H(¬phi) ∈ M, we have ¬phi ∈ M'
   have h_neg_phi_M' : Formula.neg phi ∈ M' := h_R_past h_H_neg
   -- Contradiction: phi and ¬phi both in MCS M'
   exact set_consistent_not_both h_mcs'.1 phi h_phi h_neg_phi_M'
 
 /--
-Linearity of backward-reachable elements: If M₁ and M₂ are both CanonicalR-predecessors
-of M (i.e., CanonicalR M₁ M and CanonicalR M₂ M), then M₁ and M₂ are CanonicalR-comparable.
+Linearity of backward-reachable elements: If M₁ and M₂ are both ExistsTask-predecessors
+of M (i.e., ExistsTask M₁ M and ExistsTask M₂ M), then M₁ and M₂ are ExistsTask-comparable.
 
 This is the backward (past) analog of `canonical_forward_reachable_linear`.
 
 **Proof**: By contradiction using mcs_P_linearity on compound formulas with H operators.
-We use the duality: ¬(CanonicalR M₁ M₂) ↔ ¬(HContent(M₂) ⊆ M₁) via the
+We use the duality: ¬(ExistsTask M₁ M₂) ↔ ¬(HContent(M₂) ⊆ M₁) via the
 GContent/HContent duality for MCSes.
 -/
 theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
     (h_mcs1 : SetMaximalConsistent M1)
     (h_mcs2 : SetMaximalConsistent M2)
-    (h_R1 : CanonicalR M1 M) (h_R2 : CanonicalR M2 M) :
-    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
-  by_cases h_12 : CanonicalR M1 M2
+    (h_R1 : ExistsTask M1 M) (h_R2 : ExistsTask M2 M) :
+    ExistsTask M1 M2 ∨ ExistsTask M2 M1 ∨ M1 = M2 := by
+  by_cases h_12 : ExistsTask M1 M2
   · exact Or.inl h_12
   · right
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    -- Use duality: ¬(CanonicalR M1 M2) ↔ ¬(HContent(M2) ⊆ M1)
-    -- CanonicalR M1 M2 = GContent(M1) ⊆ M2
+    -- Use duality: ¬(ExistsTask M1 M2) ↔ ¬(HContent(M2) ⊆ M1)
+    -- ExistsTask M1 M2 = GContent(M1) ⊆ M2
     -- By duality (for MCSes): GContent(M1) ⊆ M2 ↔ HContent(M2) ⊆ M1
-    -- NOT(CanonicalR M1 M2): ∃ alpha, H(alpha) ∈ M2, alpha ∉ M1
+    -- NOT(ExistsTask M1 M2): ∃ alpha, H(alpha) ∈ M2, alpha ∉ M1
     have h_not_H21 : ¬(HContent M2 ⊆ M1) := by
       intro h_HC
       exact h_12 (HContent_subset_implies_GContent_reverse M2 M1 h_mcs2 h_mcs1 h_HC)
@@ -612,7 +612,7 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
       rcases set_mcs_negation_complete h_mcs1 alpha with h | h
       · exact absurd h h_alpha_not1
       · exact h
-    -- NOT(CanonicalR M2 M1): ∃ beta, H(beta) ∈ M1, beta ∉ M2
+    -- NOT(ExistsTask M2 M1): ∃ beta, H(beta) ∈ M1, beta ∉ M2
     have h_not_H12 : ¬(HContent M1 ⊆ M2) := by
       intro h_HC
       exact h_not_21 (HContent_subset_implies_GContent_reverse M1 M2 h_mcs1 h_mcs2 h_HC)
@@ -696,43 +696,43 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
 /-!
 ## Bidirectional Totality
 
-The main theorem: all elements of the bidirectional fragment are CanonicalR-comparable.
+The main theorem: all elements of the bidirectional fragment are ExistsTask-comparable.
 
 Since `BidirectionalReachable` now carries MCS proofs at every intermediate step,
 we can induct directly and use the linearity lemmas (which require MCS properties).
 -/
 
 /--
-Transitivity step for comparability with a forward CanonicalR edge.
+Transitivity step for comparability with a forward ExistsTask edge.
 
-If W₁ is comparable with W₂, and CanonicalR W₂ W₃, then W₁ is comparable with W₃.
+If W₁ is comparable with W₂, and ExistsTask W₂ W₃, then W₁ is comparable with W₃.
 -/
 private lemma comparable_step_forward
     (W₁ W₂ W₃ : Set Formula)
     (h_mcs1 : SetMaximalConsistent W₁)
     (h_mcs2 : SetMaximalConsistent W₂)
     (h_mcs3 : SetMaximalConsistent W₃)
-    (h_comp : CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂)
-    (h_R23 : CanonicalR W₂ W₃) :
-    CanonicalR W₁ W₃ ∨ CanonicalR W₃ W₁ ∨ W₁ = W₃ := by
+    (h_comp : ExistsTask W₁ W₂ ∨ ExistsTask W₂ W₁ ∨ W₁ = W₂)
+    (h_R23 : ExistsTask W₂ W₃) :
+    ExistsTask W₁ W₃ ∨ ExistsTask W₃ W₁ ∨ W₁ = W₃ := by
   rcases h_comp with h_12 | h_21 | h_eq
   · exact Or.inl (canonicalR_transitive W₁ W₂ W₃ h_mcs1 h_12 h_R23)
   · exact canonical_forward_reachable_linear W₂ W₁ W₃ h_mcs2 h_mcs1 h_mcs3 h_21 h_R23
   · subst h_eq; exact Or.inl h_R23
 
 /--
-Transitivity step for comparability with a backward CanonicalR edge.
+Transitivity step for comparability with a backward ExistsTask edge.
 
-If W₁ is comparable with W₂, and CanonicalR W₃ W₂ (backward edge), then W₁ is comparable with W₃.
+If W₁ is comparable with W₂, and ExistsTask W₃ W₂ (backward edge), then W₁ is comparable with W₃.
 -/
 private lemma comparable_step_backward
     (W₁ W₂ W₃ : Set Formula)
     (h_mcs1 : SetMaximalConsistent W₁)
     (h_mcs2 : SetMaximalConsistent W₂)
     (h_mcs3 : SetMaximalConsistent W₃)
-    (h_comp : CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂)
-    (h_R32 : CanonicalR W₃ W₂) :
-    CanonicalR W₁ W₃ ∨ CanonicalR W₃ W₁ ∨ W₁ = W₃ := by
+    (h_comp : ExistsTask W₁ W₂ ∨ ExistsTask W₂ W₁ ∨ W₁ = W₂)
+    (h_R32 : ExistsTask W₃ W₂) :
+    ExistsTask W₁ W₃ ∨ ExistsTask W₃ W₁ ∨ W₁ = W₃ := by
   rcases h_comp with h_12 | h_21 | h_eq
   · exact canonical_backward_reachable_linear W₂ W₁ W₃ h_mcs2 h_mcs1 h_mcs3 h_12 h_R32
   · exact Or.inr (Or.inl (canonicalR_transitive W₃ W₂ W₁ h_mcs3 h_R32 h_21))
@@ -749,10 +749,10 @@ intermediate step, enabling the use of linearity lemmas.
 private theorem comparable_with_reachable
     {M₀ : Set Formula} {h₀ : SetMaximalConsistent M₀}
     (W₁ : Set Formula) (h_mcs1 : SetMaximalConsistent W₁)
-    (h_comp_root : CanonicalR W₁ M₀ ∨ CanonicalR M₀ W₁ ∨ W₁ = M₀)
+    (h_comp_root : ExistsTask W₁ M₀ ∨ ExistsTask M₀ W₁ ∨ W₁ = M₀)
     (W₂ : Set Formula) (h₂ : SetMaximalConsistent W₂)
     (h_reach : BidirectionalReachable M₀ h₀ W₂ h₂) :
-    CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂ := by
+    ExistsTask W₁ W₂ ∨ ExistsTask W₂ W₁ ∨ W₁ = W₂ := by
   induction h_reach with
   | refl => exact h_comp_root
   | @step M₁ M₂ h_mcs_M1 h_mcs_M2 h_reach' h_edge ih =>
@@ -767,13 +767,13 @@ Every element of the bidirectional fragment is comparable with the root M₀.
 -/
 theorem comparable_with_root
     (a : BidirectionalFragment M₀ h_mcs₀) :
-    CanonicalR M₀ a.world ∨ CanonicalR a.world M₀ ∨ M₀ = a.world := by
+    ExistsTask M₀ a.world ∨ ExistsTask a.world M₀ ∨ M₀ = a.world := by
   exact comparable_with_reachable M₀ h_mcs₀ (Or.inr (Or.inr rfl)) a.world a.is_mcs a.reachable
 
 /--
-Bidirectional totality: any two elements of the bidirectional fragment are CanonicalR-comparable.
+Bidirectional totality: any two elements of the bidirectional fragment are ExistsTask-comparable.
 
-∀ a b ∈ BidirectionalFragment M₀, CanonicalR a.world b.world ∨ CanonicalR b.world a.world ∨ a.world = b.world
+∀ a b ∈ BidirectionalFragment M₀, ExistsTask a.world b.world ∨ ExistsTask b.world a.world ∨ a.world = b.world
 
 **Proof**: In two steps:
 1. Show `a.world` is comparable with `M₀` (via `comparable_with_root`)
@@ -782,11 +782,11 @@ Bidirectional totality: any two elements of the bidirectional fragment are Canon
 -/
 theorem bidirectional_totally_ordered
     (a b : BidirectionalFragment M₀ h_mcs₀) :
-    CanonicalR a.world b.world ∨ CanonicalR b.world a.world ∨ a.world = b.world := by
+    ExistsTask a.world b.world ∨ ExistsTask b.world a.world ∨ a.world = b.world := by
   -- Step 1: a.world is comparable with M₀
   have h_a_comp := comparable_with_root a
   -- Flip to get M₀ comparable with a.world in the right form
-  have h_comp_root : CanonicalR a.world M₀ ∨ CanonicalR M₀ a.world ∨ a.world = M₀ := by
+  have h_comp_root : ExistsTask a.world M₀ ∨ ExistsTask M₀ a.world ∨ a.world = M₀ := by
     rcases h_a_comp with h1 | h2 | h3
     · exact Or.inr (Or.inl h1)
     · exact Or.inl h2
@@ -826,7 +826,7 @@ noncomputable instance : IsTotal (BidirectionalFragment M₀ h_mcs₀) (· ≤ �
 /--
 The Antisymmetrization quotient of the bidirectional fragment by the preorder.
 
-Two fragment elements are identified if they are ≤-equivalent (CanonicalR in both directions).
+Two fragment elements are identified if they are ≤-equivalent (ExistsTask in both directions).
 This quotient has a canonical `PartialOrder` from Mathlib's `Antisymmetrization`.
 -/
 abbrev BidirectionalQuotient (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀) :=
@@ -869,9 +869,9 @@ theorem BidirectionalFragment.toQuotient_le
 ## Summary
 
 This module establishes:
-1. `BidirectionalReachable M₀ M` - reflexive-transitive-symmetric closure of CanonicalR
+1. `BidirectionalReachable M₀ M` - reflexive-transitive-symmetric closure of ExistsTask
 2. `BidirectionalFragment M₀ h_mcs₀` - the type of MCSes bidirectionally reachable from M₀
-3. Forward and backward closure: taking CanonicalR edges stays in the fragment
+3. Forward and backward closure: taking ExistsTask edges stays in the fragment
 4. `forward_F_stays_in_fragment`: F-witnesses are in the fragment
 5. `backward_P_stays_in_fragment`: P-witnesses are in the fragment
 6. `mcs_F_linearity`: Linearity axiom application in MCS context

@@ -54,7 +54,7 @@ theorem canonicalReachableBFMCS_backward_H
     (w₁ w₂ : CanonicalReachable M₀ h_mcs₀) (phi : Formula)
     (h_le : w₂ ≤ w₁) (h_H : Formula.all_past phi ∈ canonicalReachableBFMCS_mcs w₁) :
     phi ∈ canonicalReachableBFMCS_mcs w₂ := by
-  have h_R_past : CanonicalR_past w₁.world w₂.world :=
+  have h_R_past : ExistsTask_past w₁.world w₂.world :=
     GContent_subset_implies_HContent_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_le
   exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
@@ -74,7 +74,7 @@ theorem canonicalReachableBFMCS_forward_F
     (h_F : Formula.some_future phi ∈ canonicalReachableBFMCS_mcs w) :
     ∃ s : CanonicalReachable M₀ h_mcs₀, w ≤ s ∧ phi ∈ canonicalReachableBFMCS_mcs s := by
   obtain ⟨W, h_W_mcs, h_R, h_phi_W⟩ := canonical_forward_F w.world w.is_mcs phi h_F
-  have h_W_reachable : CanonicalR M₀ W :=
+  have h_W_reachable : ExistsTask M₀ W :=
     canonicalR_transitive M₀ w.world W h_mcs₀ w.reachable h_R
   let s : CanonicalReachable M₀ h_mcs₀ := ⟨W, h_W_mcs, h_W_reachable⟩
   exact ⟨s, h_R, h_phi_W⟩

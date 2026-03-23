@@ -150,7 +150,7 @@ The user renamed `CanonicalR` to `ExistsTask` as the primary definition:
 
 ---
 
-### Phase 4: Migrate Boneyard Files [NOT STARTED]
+### Phase 4: Migrate Boneyard Files [COMPLETED]
 
 **Goal**: Update Boneyard files for consistency.
 

@@ -54,7 +54,7 @@ Families:
 
 ## Key Results
 
-- `MCSBoxContent_eq_of_CanonicalR`: BoxContent preserved along CanonicalR
+- `MCSBoxContent_eq_of_CanonicalR`: BoxContent preserved along ExistsTask
 - `MCSBoxContent_eq_of_superset`: BoxContent equality for superset MCSes
 - `chainBundleBFMCS`: The chain-bundle BFMCS construction
 - `chainBundleBFMCS_modally_saturated`: Modal saturation of the chain-bundle
@@ -75,15 +75,15 @@ open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
 /-!
-## BoxContent Equality Along CanonicalR
+## BoxContent Equality Along ExistsTask
 -/
 
 /--
-BoxContent is preserved in the reverse direction along CanonicalR.
+BoxContent is preserved in the reverse direction along ExistsTask.
 -/
 theorem MCSBoxContent_reverse_of_CanonicalR (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') :
+    (h_R : ExistsTask M M') :
     MCSBoxContent M' ⊆ MCSBoxContent M := by
   intro phi h_box'
   simp only [MCSBoxContent, Set.mem_setOf_eq] at h_box' ⊢
@@ -104,11 +104,11 @@ theorem MCSBoxContent_reverse_of_CanonicalR (M M' : Set Formula)
   exact set_consistent_not_both h_mcs'.1 (Formula.box phi) h_box' h_neg_box_M'
 
 /--
-BoxContent is exactly preserved along CanonicalR.
+BoxContent is exactly preserved along ExistsTask.
 -/
 theorem MCSBoxContent_eq_of_CanonicalR (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') :
+    (h_R : ExistsTask M M') :
     MCSBoxContent M = MCSBoxContent M' := by
   ext phi
   constructor
@@ -162,10 +162,10 @@ structure CanonicalBC (BC : Set Formula) where
   bc_eq : MCSBoxContent world = BC
 
 /--
-Preorder on CanonicalBC via CanonicalR.
+Preorder on CanonicalBC via ExistsTask.
 -/
 noncomputable instance (BC : Set Formula) : Preorder (CanonicalBC BC) where
-  le a b := CanonicalR a.world b.world
+  le a b := ExistsTask a.world b.world
   le_refl a := canonicalR_reflexive a.world a.is_mcs
   le_trans a b c hab hbc := canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc
 
@@ -182,7 +182,7 @@ noncomputable def canonicalBCBFMCS (BC : Set Formula) : FMCS (CanonicalBC BC) wh
   forward_G := fun w₁ w₂ phi h_le h_G =>
     canonical_forward_G w₁.world w₂.world h_le phi h_G
   backward_H := fun w₁ w₂ phi h_le h_H => by
-    have h_R_past : CanonicalR_past w₁.world w₂.world :=
+    have h_R_past : ExistsTask_past w₁.world w₂.world :=
       GContent_subset_implies_HContent_reverse w₂.world w₁.world
         w₂.is_mcs w₁.is_mcs h_le
     exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
@@ -208,7 +208,7 @@ theorem canonicalBC_backward_P (BC : Set Formula)
     (h_P : Formula.some_past phi ∈ (canonicalBCBFMCS BC).mcs w) :
     ∃ s : CanonicalBC BC, s ≤ w ∧ phi ∈ (canonicalBCBFMCS BC).mcs s := by
   obtain ⟨W, h_W_mcs, h_R_past, h_phi_W⟩ := canonical_backward_P w.world w.is_mcs phi h_P
-  have h_R : CanonicalR W w.world :=
+  have h_R : ExistsTask W w.world :=
     HContent_subset_implies_GContent_reverse w.world W w.is_mcs h_W_mcs h_R_past
   have h_bc_W : MCSBoxContent W = BC := by
     have h_bc_eq := MCSBoxContent_eq_of_CanonicalR W w.world h_W_mcs w.is_mcs h_R

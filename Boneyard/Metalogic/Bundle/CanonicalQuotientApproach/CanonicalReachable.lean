@@ -31,8 +31,8 @@ and establishes key structural properties for the canonical quotient completenes
 ## Overview
 
 Given a root MCS `M₀`, the **future-reachable fragment** consists of all MCSes `M`
-such that `CanonicalR M₀ M` (i.e., `GContent(M₀) ⊆ M`). By `canonical_reachable_linear`,
-any two elements in this fragment are comparable under CanonicalR, forming a total preorder.
+such that `ExistsTask M₀ M` (i.e., `GContent(M₀) ⊆ M`). By `canonical_reachable_linear`,
+any two elements in this fragment are comparable under ExistsTask, forming a total preorder.
 
 ## Main Definitions
 
@@ -41,10 +41,10 @@ any two elements in this fragment are comparable under CanonicalR, forming a tot
 ## Main Results
 
 - `Nonempty (CanonicalReachable M₀ h_mcs₀)` : The root is in the reachable fragment
-- `canonical_reachable_comparable` : Any two elements are CanonicalR-comparable
+- `canonical_reachable_comparable` : Any two elements are ExistsTask-comparable
 - `canonical_forward_F_strict` : F(phi) with phi absent gives a distinct successor
 - `canonical_backward_P_strict` : P(phi) with phi absent gives a distinct predecessor
-- `gcontent_eq_of_mutual_R` : Mutually CanonicalR-related MCSes share the same GContent
+- `gcontent_eq_of_mutual_R` : Mutually ExistsTask-related MCSes share the same GContent
 - `canonical_F_neg_from_not_G` : neg(G(phi)) in MCS gives F(neg(phi))
 - `canonical_F_from_not_G_neg` : G(neg(phi)) absent from MCS gives F(phi)
 
@@ -74,7 +74,7 @@ structure CanonicalReachable (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsiste
   /-- The world is a maximal consistent set -/
   is_mcs : SetMaximalConsistent world
   /-- The world is future-reachable from M₀ -/
-  reachable : CanonicalR M₀ world
+  reachable : ExistsTask M₀ world
 
 variable {M₀ : Set Formula} {h_mcs₀ : SetMaximalConsistent M₀}
 
@@ -86,7 +86,7 @@ theorem CanonicalReachable.ext {a b : CanonicalReachable M₀ h_mcs₀}
   cases a; cases b; simp only [mk.injEq]; exact h
 
 /--
-The root M₀ is in the reachable fragment (by reflexivity of CanonicalR for MCSes).
+The root M₀ is in the reachable fragment (by reflexivity of ExistsTask for MCSes).
 -/
 def CanonicalReachable.root : CanonicalReachable M₀ h_mcs₀ where
   world := M₀
@@ -99,32 +99,32 @@ instance : Nonempty (CanonicalReachable M₀ h_mcs₀) :=
 /-!
 ## Comparability of Reachable Elements
 
-Any two elements of the reachable fragment are CanonicalR-comparable (from the root).
+Any two elements of the reachable fragment are ExistsTask-comparable (from the root).
 -/
 
 /--
-Any two elements of the future-reachable fragment from M₀ are comparable under CanonicalR.
+Any two elements of the future-reachable fragment from M₀ are comparable under ExistsTask.
 -/
 theorem canonical_reachable_comparable (a b : CanonicalReachable M₀ h_mcs₀) :
-    CanonicalR a.world b.world ∨ CanonicalR b.world a.world ∨ a.world = b.world :=
+    ExistsTask a.world b.world ∨ ExistsTask b.world a.world ∨ a.world = b.world :=
   canonical_reachable_linear M₀ a.world b.world h_mcs₀ a.is_mcs b.is_mcs a.reachable b.reachable
 
 /-!
-## GContent Properties for Mutual CanonicalR
+## GContent Properties for Mutual ExistsTask
 
-When two MCSes are mutually CanonicalR-related, they share the same GContent.
+When two MCSes are mutually ExistsTask-related, they share the same GContent.
 This uses the Temporal 4 axiom (G(phi) → G(G(phi))).
 -/
 
 /--
-If CanonicalR M₁ M₂ and CanonicalR M₂ M₁, then GContent(M₁) = GContent(M₂).
+If ExistsTask M₁ M₂ and ExistsTask M₂ M₁, then GContent(M₁) = GContent(M₂).
 
 Proof: By temp_4 (G(phi) → G(G(phi))). If G(phi) ∈ M₁, then G(G(phi)) ∈ M₁ (by temp_4),
 so G(phi) ∈ GContent(M₁) ⊆ M₂, giving G(phi) ∈ M₂. Symmetrically in reverse.
 -/
 theorem gcontent_eq_of_mutual_R (M₁ M₂ : Set Formula)
     (h_mcs₁ : SetMaximalConsistent M₁) (h_mcs₂ : SetMaximalConsistent M₂)
-    (h₁₂ : CanonicalR M₁ M₂) (h₂₁ : CanonicalR M₂ M₁) :
+    (h₁₂ : ExistsTask M₁ M₂) (h₂₁ : ExistsTask M₂ M₁) :
     GContent M₁ = GContent M₂ := by
   ext phi
   constructor
@@ -152,7 +152,7 @@ we have W ≠ M.
 -/
 theorem canonical_forward_F_strict (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) (h_not : phi ∉ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧ phi ∈ W ∧ W ≠ M := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧ phi ∈ W ∧ W ≠ M := by
   obtain ⟨W, h_W_mcs, h_R, h_phi_W⟩ := canonical_forward_F M h_mcs phi h_F
   exact ⟨W, h_W_mcs, h_R, h_phi_W, fun h_eq => h_not (h_eq ▸ h_phi_W)⟩
 
@@ -161,7 +161,7 @@ If P(phi) ∈ M and phi ∉ M, then the canonical_backward_P witness W is distin
 -/
 theorem canonical_backward_P_strict (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) (h_not : phi ∉ M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR_past M W ∧ phi ∈ W ∧ W ≠ M := by
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask_past M W ∧ phi ∈ W ∧ W ≠ M := by
   obtain ⟨W, h_W_mcs, h_R, h_phi_W⟩ := canonical_backward_P M h_mcs phi h_P
   exact ⟨W, h_W_mcs, h_R, h_phi_W, fun h_eq => h_not (h_eq ▸ h_phi_W)⟩
 
@@ -216,7 +216,7 @@ theorem canonical_G_or_F_neg (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 /-!
 ## Forward_G Propagation Helpers
 
-Lemmas about how G-formulas propagate through CanonicalR transitions,
+Lemmas about how G-formulas propagate through ExistsTask transitions,
 and how this interacts with the FMCS forward_G property.
 -/
 
@@ -240,14 +240,14 @@ theorem forward_F_via_G (fam : FMCS Int) (t : Int) (phi : Formula)
 /-!
 ## Reachable Fragment Transitivity
 
-If W is reachable from M₀ and W' is a CanonicalR-successor of W, then W' is reachable.
+If W is reachable from M₀ and W' is a ExistsTask-successor of W, then W' is reachable.
 -/
 
 /--
-CanonicalR-successors of reachable MCSes are reachable.
+ExistsTask-successors of reachable MCSes are reachable.
 -/
 def CanonicalReachable.successor (a : CanonicalReachable M₀ h_mcs₀)
-    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_R : CanonicalR a.world W) :
+    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_R : ExistsTask a.world W) :
     CanonicalReachable M₀ h_mcs₀ where
   world := W
   is_mcs := h_W_mcs

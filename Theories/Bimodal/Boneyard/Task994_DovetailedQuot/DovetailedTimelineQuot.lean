@@ -72,7 +72,7 @@ def DovetailedTimelineElem : Type :=
 /-!
 ## Preorder on Dovetailed Timeline Elements
 
-The preorder uses DovetailedPoint.le: a ≤ b iff a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs.
+The preorder uses DovetailedPoint.le: a ≤ b iff a.mcs = b.mcs ∨ ExistsTask a.mcs b.mcs.
 -/
 
 /-- Preorder instance for dovetailed timeline elements. -/
@@ -138,14 +138,14 @@ instance instNoMaxOrderDovetailedTimelineQuot : NoMaxOrder (DovetailedTimelineQu
     induction a using Antisymmetrization.ind with
     | _ p =>
       obtain ⟨q, hq_mem, hq_R⟩ := dovetailedTimeline_has_future root_mcs root_mcs_proof p.1 p.2
-      -- By irreflexivity axiom: CanonicalR(p.mcs, q.mcs) implies ¬CanonicalR(q.mcs, p.mcs)
-      have h_strict : ¬CanonicalR q.mcs p.1.mcs :=
+      -- By irreflexivity axiom: ExistsTask(p.mcs, q.mcs) implies ¬ExistsTask(q.mcs, p.mcs)
+      have h_strict : ¬ExistsTask q.mcs p.1.mcs :=
         canonicalR_strict p.1.mcs q.mcs p.1.is_mcs q.is_mcs hq_R
       let q' : DovetailedTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
       use toAntisymmetrization (· ≤ ·) q'
       rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
       constructor
-      · -- p ≤ q: p.mcs = q.mcs ∨ CanonicalR p.mcs q.mcs
+      · -- p ≤ q: p.mcs = q.mcs ∨ ExistsTask p.mcs q.mcs
         show DovetailedPoint.le p.1 q
         simp only [DovetailedPoint.le]
         exact Or.inr hq_R
@@ -168,14 +168,14 @@ instance instNoMinOrderDovetailedTimelineQuot : NoMinOrder (DovetailedTimelineQu
     induction a using Antisymmetrization.ind with
     | _ p =>
       obtain ⟨q, hq_mem, hq_R⟩ := dovetailedTimeline_has_past root_mcs root_mcs_proof p.1 p.2
-      -- By irreflexivity axiom: CanonicalR(q.mcs, p.mcs) implies ¬CanonicalR(p.mcs, q.mcs)
-      have h_strict : ¬CanonicalR p.1.mcs q.mcs :=
+      -- By irreflexivity axiom: ExistsTask(q.mcs, p.mcs) implies ¬ExistsTask(p.mcs, q.mcs)
+      have h_strict : ¬ExistsTask p.1.mcs q.mcs :=
         canonicalR_strict q.mcs p.1.mcs q.is_mcs p.1.is_mcs hq_R
       let q' : DovetailedTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
       use toAntisymmetrization (· ≤ ·) q'
       rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
       constructor
-      · -- q ≤ p: q.mcs = p.mcs ∨ CanonicalR q.mcs p.mcs
+      · -- q ≤ p: q.mcs = p.mcs ∨ ExistsTask q.mcs p.mcs
         show DovetailedPoint.le q p.1
         simp only [DovetailedPoint.le]
         exact Or.inr hq_R
@@ -196,18 +196,18 @@ theorem dovetailedTimeline_has_intermediate
     (p q : DovetailedPoint)
     (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
     (hq : q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
-    (h_R : CanonicalR p.mcs q.mcs)
-    (h_not_R : ¬CanonicalR q.mcs p.mcs) :
+    (h_R : ExistsTask p.mcs q.mcs)
+    (h_not_R : ¬ExistsTask q.mcs p.mcs) :
     ∃ c : DovetailedPoint,
       c ∈ dovetailedTimelineUnion root_mcs root_mcs_proof ∧
-      CanonicalR p.mcs c.mcs ∧
-      CanonicalR c.mcs q.mcs := by
+      ExistsTask p.mcs c.mcs ∧
+      ExistsTask c.mcs q.mcs := by
   -- Use density_frame_condition to get the intermediate MCS directly
   obtain ⟨W, hW_mcs, hW_R_from_p, hW_R_to_q⟩ :=
     density_frame_condition p.mcs q.mcs p.is_mcs q.is_mcs h_R h_not_R
   -- Now we need to show W corresponds to a DovetailedPoint in the timeline
   -- The key insight: W is reachable from p.mcs via one density step
-  -- Since all MCSs reachable from root via CanonicalR chains are eventually
+  -- Since all MCSs reachable from root via ExistsTask chains are eventually
   -- in the dovetailed timeline, W must be in the timeline
   --
   -- Technical approach: We use the fact that the dovetailed construction processes
@@ -228,7 +228,7 @@ theorem dovetailedTimeline_has_intermediate
   -- The density witness for psi is added at step pair(p.point_index, k)
   -- This is in the timeline union
   let step := Nat.pair p.point_index k
-  -- processDensityDovetailed adds a witness with CanonicalR from p
+  -- processDensityDovetailed adds a witness with ExistsTask from p
   -- The witness W from density_frame_condition may not be EXACTLY the one added,
   -- but the construction guarantees SOME intermediate is added
   --
@@ -240,15 +240,15 @@ theorem dovetailedTimeline_has_intermediate
   -- This is complex because density_witness_exists and density_frame_condition use
   -- different formulas.
   --
-  -- Alternative approach: Use the fact that all CanonicalR-comparable MCSs are
+  -- Alternative approach: Use the fact that all ExistsTask-comparable MCSs are
   -- in the dovetailed timeline by the enumeration completeness.
   --
   -- For the Cantor application, we can use a simpler construction:
   -- The dovetailed build adds density witnesses via processDensityDovetailed.
-  -- For p with F(psi) in p.mcs, a witness W with CanonicalR p.mcs W is added.
+  -- For p with F(psi) in p.mcs, a witness W with ExistsTask p.mcs W is added.
   -- By the density_frame_condition, some W exists strictly between p and q.
   -- The dovetailed timeline eventually contains W (or MCS-equivalent) because:
-  -- 1. W is a "forward witness" type MCS (reachable from root via CanonicalR)
+  -- 1. W is a "forward witness" type MCS (reachable from root via ExistsTask)
   -- 2. The dovetailing enumerates all such points
   --
   -- PENDING: This requires a more sophisticated proof connecting
@@ -272,7 +272,7 @@ theorem dovetailedTimeline_has_intermediate
   -- and p has F(psi) in p.mcs, so the density witness is added
   --
   -- For now, we show existence by construction tracking
-  -- The gap is showing CanonicalR density_mcs q.mcs
+  -- The gap is showing ExistsTask density_mcs q.mcs
   -- This doesn't automatically hold - density_mcs is between p and its forward witness,
   -- not necessarily between p and arbitrary q > p
   --
@@ -316,7 +316,7 @@ instance instDenselyOrderedDovetailedTimelineQuot :
         simp only [DovetailedPoint.le] at h_not_le'
         push_neg at h_not_le'
         obtain ⟨h_neq, h_not_R⟩ := h_not_le'
-        have h_R : CanonicalR p.1.mcs q.1.mcs := by
+        have h_R : ExistsTask p.1.mcs q.1.mcs := by
           simp only [DovetailedPoint.le] at h_le'
           cases h_le' with
           | inl h_eq => exact absurd h_eq.symm h_neq
@@ -329,9 +329,9 @@ instance instDenselyOrderedDovetailedTimelineQuot :
         use toAntisymmetrization (· ≤ ·) c'
 
         -- By irreflexivity: both orderings are strict
-        have h_strict_pc : ¬CanonicalR c.mcs p.1.mcs :=
+        have h_strict_pc : ¬ExistsTask c.mcs p.1.mcs :=
           canonicalR_strict p.1.mcs c.mcs p.1.is_mcs c.is_mcs hc_R_p
-        have h_strict_qc : ¬CanonicalR q.1.mcs c.mcs :=
+        have h_strict_qc : ¬ExistsTask q.1.mcs c.mcs :=
           canonicalR_strict c.mcs q.1.mcs c.is_mcs q.1.is_mcs hc_R_q
 
         constructor
@@ -398,7 +398,7 @@ theorem dovetailedTimelineElem_mutual_le_implies_mcs_eq
     cases h_qp' with
     | inl h_eq => exact h_eq.symm
     | inr h_R_qp =>
-      -- Both are CanonicalR: contradiction via transitivity + irreflexivity
+      -- Both are ExistsTask: contradiction via transitivity + irreflexivity
       have h_trans := canonicalR_transitive p.1.mcs q.1.mcs p.1.mcs p.1.is_mcs h_R_pq h_R_qp
       exact absurd h_trans (Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs)
 
@@ -487,18 +487,18 @@ the truth lemma and completeness.
 open Bimodal.Metalogic.Bundle
 
 /--
-**Core Linking Lemma**: If t < t' in DovetailedTimelineQuot, then CanonicalR between their underlying MCSs.
+**Core Linking Lemma**: If t < t' in DovetailedTimelineQuot, then ExistsTask between their underlying MCSs.
 
 **Proof Idea**:
 - t < t' in DovetailedTimelineQuot means: for representatives p, q, we have p ≤ q and ¬(q ≤ p)
-- DovetailedPoint.le p q means: p.mcs = q.mcs or CanonicalR p.mcs q.mcs
+- DovetailedPoint.le p q means: p.mcs = q.mcs or ExistsTask p.mcs q.mcs
 - The equality case is excluded by ¬(q ≤ p), which requires p.mcs ≠ q.mcs
-- Therefore CanonicalR p.mcs q.mcs
+- Therefore ExistsTask p.mcs q.mcs
 -/
 theorem dovetailedTimelineQuot_lt_implies_canonicalR
     (t t' : DovetailedTimelineQuot root_mcs root_mcs_proof)
     (h : t < t') :
-    CanonicalR (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+    ExistsTask (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
                (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t') := by
   -- Inject the IsPreorder instance for use in this proof
   haveI : IsPreorder (DovetailedTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
@@ -518,7 +518,7 @@ theorem dovetailedTimelineQuot_lt_implies_canonicalR
       | inl h_eq =>
         exact absurd h_eq.symm h_not_le'.1
       | inr h_R =>
-        -- We have CanonicalR p.1.mcs q.1.mcs
+        -- We have ExistsTask p.1.mcs q.1.mcs
         -- Now connect to dovetailedTimelineQuotMCS
         simp only [dovetailedTimelineQuotMCS]
         let rep_p := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
@@ -583,7 +583,7 @@ theorem dovetailedTimelineQuot_backward_H
   have h_R := dovetailedTimelineQuot_lt_implies_canonicalR root_mcs root_mcs_proof t' t h_lt
   have h_t'_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t'
   have h_t_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t
-  have h_R_past : CanonicalR_past
+  have h_R_past : ExistsTask_past
       (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
       (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t') :=
     g_content_subset_implies_h_content_reverse
@@ -637,7 +637,7 @@ theorem iteratedFuture_add (m n : Nat) (psi : Formula) :
 /--
 **Forward F witness via well-founded recursion on stage**:
 
-Given `F(psi) ∈ p.mcs`, find `q` with `CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs`.
+Given `F(psi) ∈ p.mcs`, find `q` with `ExistsTask p.mcs q.mcs ∧ psi ∈ q.mcs`.
 
 The key insight: even though the formula depth can INCREASE via density,
 the construction eventually terminates because:
@@ -654,7 +654,7 @@ theorem forward_F_core (p : DovetailedPoint)
     (psi : Formula)
     (h_F : Formula.some_future psi ∈ p.mcs) :
     ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
-      CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs := by
+      ExistsTask p.mcs q.mcs ∧ psi ∈ q.mcs := by
   -- Get stage n where p is in build
   obtain ⟨n, hn⟩ := hp
   simp only [dovetailedBuild, List.mem_toFinset] at hn
@@ -782,11 +782,11 @@ theorem forward_F_core (p : DovetailedPoint)
       -- Define: termination_by (sizeOf psi) or something similar.
       --
       -- But actually, looking at the goal more carefully:
-      -- We want: ∃ q, CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs
-      -- We have: F(iteratedFuture j' psi) ∈ w.mcs, CanonicalR p.mcs w.mcs
+      -- We want: ∃ q, ExistsTask p.mcs q.mcs ∧ psi ∈ q.mcs
+      -- We have: F(iteratedFuture j' psi) ∈ w.mcs, ExistsTask p.mcs w.mcs
       --
-      -- If we can find q' with CanonicalR w.mcs q'.mcs ∧ iteratedFuture j' psi ∈ q'.mcs,
-      -- then by transitivity CanonicalR p.mcs q'.mcs.
+      -- If we can find q' with ExistsTask w.mcs q'.mcs ∧ iteratedFuture j' psi ∈ q'.mcs,
+      -- then by transitivity ExistsTask p.mcs q'.mcs.
       -- Then from q' we need to get to psi.
       --
       -- This IS the same problem, but with formula (iteratedFuture j' psi) instead of psi.
@@ -806,7 +806,7 @@ theorem forward_F_core (p : DovetailedPoint)
       sorry
 
 /--
-**Chain lemma**: If F^(i+1)(phi) ∈ p.mcs, then ∃ q in timeline with CanonicalR p.mcs q.mcs and phi ∈ q.mcs.
+**Chain lemma**: If F^(i+1)(phi) ∈ p.mcs, then ∃ q in timeline with ExistsTask p.mcs q.mcs and phi ∈ q.mcs.
 
 Proof by strong induction on i.
 -/
@@ -815,7 +815,7 @@ theorem forward_F_chain_witness (i : Nat) (p : DovetailedPoint)
     (phi : Formula)
     (h_F_iter : iteratedFuture (i + 1) phi ∈ p.mcs) :
     ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
-      CanonicalR p.mcs q.mcs ∧ phi ∈ q.mcs := by
+      ExistsTask p.mcs q.mcs ∧ phi ∈ q.mcs := by
   -- Strong induction on i
   induction i using Nat.strong_induction_on generalizing p with
   | _ i ih =>
@@ -944,7 +944,7 @@ theorem forward_F_chain_witness (i : Nat) (p : DovetailedPoint)
         simp only [iteratedFuture] at hw_phi
         have h_ih := ih i' (Nat.lt_succ_self i') w h_w_in_union hw_phi
         obtain ⟨q, hq_mem, hq_R, hq_phi⟩ := h_ih
-        -- Chain: CanonicalR p.mcs w.mcs, CanonicalR w.mcs q.mcs
+        -- Chain: ExistsTask p.mcs w.mcs, ExistsTask w.mcs q.mcs
         have h_trans := canonicalR_transitive p.mcs w.mcs q.mcs p.is_mcs hw_R hq_R
         exact ⟨q, hq_mem, h_trans, hq_phi⟩
     | succ j' =>
@@ -966,7 +966,7 @@ theorem backward_P_chain_witness (i : Nat) (p : DovetailedPoint)
     (phi : Formula)
     (h_P_iter : iteratedPast (i + 1) phi ∈ p.mcs) :
     ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
-      CanonicalR q.mcs p.mcs ∧ phi ∈ q.mcs := by
+      ExistsTask q.mcs p.mcs ∧ phi ∈ q.mcs := by
   -- Symmetric structure to forward_F_chain_witness
   induction i using Nat.strong_induction_on generalizing p with
   | _ i ih =>
@@ -1029,7 +1029,7 @@ theorem backward_P_chain_witness (i : Nat) (p : DovetailedPoint)
 
 /--
 **Key auxiliary lemma for forward_F**: If F(phi) ∈ p.mcs and p is in the timeline,
-then there exists q in the timeline with CanonicalR p.mcs q.mcs and phi ∈ q.mcs.
+then there exists q in the timeline with ExistsTask p.mcs q.mcs and phi ∈ q.mcs.
 
 This is a wrapper around forward_F_chain_witness with i = 0.
 F(phi) = iteratedFuture 1 phi = F(iteratedFuture 0 phi), which matches the signature.
@@ -1039,7 +1039,7 @@ theorem forward_F_witness_in_timeline (p : DovetailedPoint)
     (phi : Formula)
     (h_F : Formula.some_future phi ∈ p.mcs) :
     ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
-      CanonicalR p.mcs q.mcs ∧ phi ∈ q.mcs :=
+      ExistsTask p.mcs q.mcs ∧ phi ∈ q.mcs :=
   -- F(phi) = iteratedFuture 1 phi = F(iteratedFuture 0 phi)
   -- forward_F_chain_witness with i = 0 requires iteratedFuture (0+1) phi = F(phi) ∈ p.mcs
   forward_F_chain_witness root_mcs root_mcs_proof 0 p hp phi h_F
@@ -1052,7 +1052,7 @@ theorem backward_P_witness_in_timeline (p : DovetailedPoint)
     (phi : Formula)
     (h_P : Formula.some_past phi ∈ p.mcs) :
     ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
-      CanonicalR q.mcs p.mcs ∧ phi ∈ q.mcs :=
+      ExistsTask q.mcs p.mcs ∧ phi ∈ q.mcs :=
   backward_P_chain_witness root_mcs root_mcs_proof 0 p hp phi h_P
 
 /--
@@ -1062,11 +1062,11 @@ Forward F coherence: if F(φ) ∈ dovetailedTimelineQuotMCS(t), then
 **Proof Strategy**:
 1. F(φ) in MCS at t gives a representative DovetailedPoint p with F(φ) in p.mcs
 2. Use density_large_step_exists to find (psi, k) with large encoding
-3. witness_at_large_step gives a witness w with CanonicalR and psi ∈ w.mcs
+3. witness_at_large_step gives a witness w with ExistsTask and psi ∈ w.mcs
 4. For the specific F(phi), we need to apply the same argument with phi's encoding
 
 Actually, we need to track phi specifically. The dovetailedTimeline_has_future
-gives CanonicalR but discards phi membership. Let's use witness_at_large_step directly.
+gives ExistsTask but discards phi membership. Let's use witness_at_large_step directly.
 -/
 theorem dovetailedTimelineQuotFMCS_forward_F
     (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
@@ -1140,7 +1140,7 @@ theorem dovetailedTimelineQuotFMCS_forward_F
       have h_lt : toAntisymmetrization (· ≤ ·) p < s := by
         rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
         constructor
-        · -- p ≤ w (via CanonicalR)
+        · -- p ≤ w (via ExistsTask)
           show DovetailedPoint.le p.1 w
           simp only [DovetailedPoint.le]
           exact Or.inr hw_R
@@ -1149,7 +1149,7 @@ theorem dovetailedTimelineQuotFMCS_forward_F
           simp only [DovetailedPoint.le] at h_wp
           cases h_wp with
           | inl h_eq =>
-            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq ▸ hw_R
+            have h_R_self : ExistsTask p.1.mcs p.1.mcs := h_eq ▸ hw_R
             exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
           | inr h_R_wp =>
             have h_R_self := canonicalR_transitive p.1.mcs w.mcs p.1.mcs p.1.is_mcs hw_R h_R_wp
@@ -1194,7 +1194,7 @@ theorem dovetailedTimelineQuotFMCS_forward_F
           simp only [DovetailedPoint.le] at h_wp
           cases h_wp with
           | inl h_eq =>
-            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq ▸ hw_R
+            have h_R_self : ExistsTask p.1.mcs p.1.mcs := h_eq ▸ hw_R
             exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
           | inr h_R_wp =>
             have h_R_self := canonicalR_transitive p.1.mcs w.mcs p.1.mcs p.1.is_mcs hw_R h_R_wp
@@ -1279,7 +1279,7 @@ theorem dovetailedTimelineQuotFMCS_backward_P
           simp only [DovetailedPoint.le] at h_pw
           cases h_pw with
           | inl h_eq =>
-            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq.symm ▸ hw_R
+            have h_R_self : ExistsTask p.1.mcs p.1.mcs := h_eq.symm ▸ hw_R
             exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
           | inr h_R_pw =>
             have h_R_self := canonicalR_transitive w.mcs p.1.mcs w.mcs w.is_mcs hw_R h_R_pw
@@ -1320,7 +1320,7 @@ theorem dovetailedTimelineQuotFMCS_backward_P
           simp only [DovetailedPoint.le] at h_pw
           cases h_pw with
           | inl h_eq =>
-            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq.symm ▸ hw_R
+            have h_R_self : ExistsTask p.1.mcs p.1.mcs := h_eq.symm ▸ hw_R
             exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
           | inr h_R_pw =>
             have h_R_self := canonicalR_transitive w.mcs p.1.mcs w.mcs w.is_mcs hw_R h_R_pw

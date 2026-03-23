@@ -33,12 +33,12 @@ obtaining a LinearOrder suitable for FMCS Int construction.
 ## Overview
 
 Given a root MCS `M₀`, the reachable fragment `CanonicalReachable M₀ h_mcs₀` forms a total
-preorder under `CanonicalR`. The Antisymmetrization quotient identifies mutually CanonicalR-related
+preorder under `ExistsTask`. The Antisymmetrization quotient identifies mutually ExistsTask-related
 MCSes (which share the same GContent by `gcontent_eq_of_mutual_R`), yielding a `LinearOrder`.
 
 ## Main Definitions
 
-- `Preorder (CanonicalReachable M₀ h_mcs₀)` - via CanonicalR (reflexive + transitive)
+- `Preorder (CanonicalReachable M₀ h_mcs₀)` - via ExistsTask (reflexive + transitive)
 - `IsTotal` - from `canonical_reachable_comparable`
 - `CanonicalQuotient M₀ h_mcs₀` - the Antisymmetrization quotient type
 - `LinearOrder (CanonicalQuotient M₀ h_mcs₀)` - automatic from Mathlib
@@ -48,7 +48,7 @@ MCSes (which share the same GContent by `gcontent_eq_of_mutual_R`), yielding a `
 - `Nonempty (CanonicalQuotient M₀ h_mcs₀)` - lifted from root element
 - `quotient_eq_of_mutual_R` - mutually R-related elements are identified
 - `quotient_gcontent_eq` - equivalence class members share GContent
-- `CanonicalQuotient.le_implies_canonicalR` - ordering implies CanonicalR between representatives
+- `CanonicalQuotient.le_implies_canonicalR` - ordering implies ExistsTask between representatives
 
 ## References
 
@@ -68,23 +68,23 @@ variable {M₀ : Set Formula} {h_mcs₀ : SetMaximalConsistent M₀}
 /-!
 ## Preorder Instance on CanonicalReachable
 
-The canonical future relation CanonicalR defines a preorder on the reachable fragment:
+The canonical future relation ExistsTask defines a preorder on the reachable fragment:
 - Reflexivity: `canonicalR_reflexive` (via T-axiom)
 - Transitivity: `canonicalR_transitive` (via Temporal 4 axiom)
 -/
 
 /--
-Preorder on the reachable fragment via CanonicalR.
+Preorder on the reachable fragment via ExistsTask.
 
-`a ≤ b` iff `CanonicalR a.world b.world` iff `GContent(a.world) ⊆ b.world`.
+`a ≤ b` iff `ExistsTask a.world b.world` iff `GContent(a.world) ⊆ b.world`.
 -/
 noncomputable instance : Preorder (CanonicalReachable M₀ h_mcs₀) where
-  le a b := CanonicalR a.world b.world
+  le a b := ExistsTask a.world b.world
   le_refl a := canonicalR_reflexive a.world a.is_mcs
   le_trans a b c hab hbc := canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc
 
 /--
-Explicit `IsPreorder` instance for the CanonicalR-based ordering.
+Explicit `IsPreorder` instance for the ExistsTask-based ordering.
 
 This is derivable from `Preorder` but must be stated explicitly due to elaboration
 timing issues with `toAntisymmetrization` instance resolution.
@@ -95,7 +95,7 @@ noncomputable instance : IsPreorder (CanonicalReachable M₀ h_mcs₀) (· ≤ �
 The preorder is total: any two reachable MCSes are comparable.
 
 This follows from `canonical_reachable_comparable`, which provides the disjunction
-`CanonicalR a b ∨ CanonicalR b a ∨ a.world = b.world`. The third case collapses
+`ExistsTask a b ∨ ExistsTask b a ∨ a.world = b.world`. The third case collapses
 to the first via extensional equality and reflexivity.
 -/
 noncomputable instance : IsTotal (CanonicalReachable M₀ h_mcs₀) (· ≤ ·) where
@@ -127,16 +127,16 @@ noncomputable instance : Std.Total (α := CanonicalReachable M₀ h_mcs₀) (· 
 ## The Canonical Quotient
 
 The Antisymmetrization quotient identifies elements `a, b` when both `a ≤ b` and `b ≤ a`.
-For CanonicalR: `AntisymmRel (· ≤ ·) a b ↔ CanonicalR a.world b.world ∧ CanonicalR b.world a.world`.
+For ExistsTask: `AntisymmRel (· ≤ ·) a b ↔ ExistsTask a.world b.world ∧ ExistsTask b.world a.world`.
 
-This is exactly "mutually CanonicalR-related", which by `gcontent_eq_of_mutual_R` means
+This is exactly "mutually ExistsTask-related", which by `gcontent_eq_of_mutual_R` means
 the identified MCSes share the same GContent.
 -/
 
 /--
-The canonical quotient: Antisymmetrization of the reachable fragment by the CanonicalR preorder.
+The canonical quotient: Antisymmetrization of the reachable fragment by the ExistsTask preorder.
 
-This quotient collapses mutually CanonicalR-related MCSes into single equivalence classes.
+This quotient collapses mutually ExistsTask-related MCSes into single equivalence classes.
 The resulting type carries a `LinearOrder` (from Mathlib's Antisymmetrization + IsTotal).
 -/
 abbrev CanonicalQuotient (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀) :=
@@ -188,16 +188,16 @@ theorem CanonicalQuotient.repr_is_mcs (q : CanonicalQuotient M₀ h_mcs₀) :
   q.repr.is_mcs
 
 /--
-The representative is CanonicalR-reachable from M₀.
+The representative is ExistsTask-reachable from M₀.
 -/
 theorem CanonicalQuotient.repr_reachable (q : CanonicalQuotient M₀ h_mcs₀) :
-    CanonicalR M₀ q.repr.world :=
+    ExistsTask M₀ q.repr.world :=
   q.repr.reachable
 
 /-!
-## Ordering and CanonicalR Correspondence
+## Ordering and ExistsTask Correspondence
 
-The quotient ordering corresponds to CanonicalR between representatives.
+The quotient ordering corresponds to ExistsTask between representatives.
 Mathlib's `toAntisymmetrization_le_toAntisymmetrization_iff` and
 `ofAntisymmetrization_le_ofAntisymmetrization_iff` provide the key interface.
 -/
@@ -210,10 +210,10 @@ theorem CanonicalQuotient.repr_le_iff (q₁ q₂ : CanonicalQuotient M₀ h_mcs�
   ofAntisymmetrization_le_ofAntisymmetrization_iff.symm
 
 /--
-If `q₁ ≤ q₂` in the quotient, then CanonicalR holds between their representatives.
+If `q₁ ≤ q₂` in the quotient, then ExistsTask holds between their representatives.
 -/
 theorem CanonicalQuotient.le_implies_canonicalR (q₁ q₂ : CanonicalQuotient M₀ h_mcs₀) (h : q₁ ≤ q₂) :
-    CanonicalR q₁.repr.world q₂.repr.world := by
+    ExistsTask q₁.repr.world q₂.repr.world := by
   rwa [CanonicalQuotient.repr_le_iff] at h
 
 /--
@@ -244,20 +244,20 @@ Elements identified by the quotient share GContent and agree on all G-formulas a
 -/
 
 /--
-Mutually CanonicalR-related reachable MCSes map to the same quotient element.
+Mutually ExistsTask-related reachable MCSes map to the same quotient element.
 
 This captures the fundamental property that the quotient identifies exactly the
 mutually R-related elements.
 -/
 theorem quotient_eq_of_mutual_R (a b : CanonicalReachable M₀ h_mcs₀)
-    (h_ab : CanonicalR a.world b.world) (h_ba : CanonicalR b.world a.world) :
+    (h_ab : ExistsTask a.world b.world) (h_ba : ExistsTask b.world a.world) :
     CanonicalQuotient.mk a = CanonicalQuotient.mk b :=
   Quotient.sound ⟨h_ab, h_ba⟩
 
 /--
 Members of the same equivalence class share GContent.
 
-Since `GContent M = {phi | G(phi) ∈ M}`, this means mutually CanonicalR-related MCSes
+Since `GContent M = {phi | G(phi) ∈ M}`, this means mutually ExistsTask-related MCSes
 agree on all G-formulas (and hence all F-formulas, since `F(phi) = neg(G(neg(phi)))`).
 -/
 theorem quotient_gcontent_eq (a b : CanonicalReachable M₀ h_mcs₀)
@@ -267,26 +267,26 @@ theorem quotient_gcontent_eq (a b : CanonicalReachable M₀ h_mcs₀)
   exact gcontent_eq_of_mutual_R a.world b.world a.is_mcs b.is_mcs h_rel.1 h_rel.2
 
 /-!
-## CanonicalR Successor Lifting
+## ExistsTask Successor Lifting
 
-Lemmas for lifting CanonicalR successors to the quotient ordering.
+Lemmas for lifting ExistsTask successors to the quotient ordering.
 -/
 
 /--
-A CanonicalR-successor of a reachable MCS maps to a quotient element that is at least as large.
+A ExistsTask-successor of a reachable MCS maps to a quotient element that is at least as large.
 -/
 theorem canonicalR_successor_quotient_le (a : CanonicalReachable M₀ h_mcs₀)
-    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_R : CanonicalR a.world W) :
+    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_R : ExistsTask a.world W) :
     CanonicalQuotient.mk a ≤ CanonicalQuotient.mk (a.successor W h_W_mcs h_R) := by
   rw [CanonicalQuotient.mk_le_mk]
   exact h_R
 
 /--
-A CanonicalR-successor that is NOT mutually related maps to a strictly greater quotient element.
+A ExistsTask-successor that is NOT mutually related maps to a strictly greater quotient element.
 -/
 theorem canonicalR_successor_quotient_lt (a : CanonicalReachable M₀ h_mcs₀)
-    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_R : CanonicalR a.world W)
-    (h_not_reverse : ¬CanonicalR W a.world) :
+    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_R : ExistsTask a.world W)
+    (h_not_reverse : ¬ExistsTask W a.world) :
     CanonicalQuotient.mk a < CanonicalQuotient.mk (a.successor W h_W_mcs h_R) := by
   rw [CanonicalQuotient.mk_lt_mk]
   exact ⟨h_R, fun h_le => h_not_reverse h_le⟩

@@ -371,7 +371,7 @@ noncomputable def shiftedFlagWorldHistory (F : Flag CanonicalMCS) (center : Chai
     show parametric_canonical_task_rel _ _ _
     unfold parametric_canonical_task_rel
     by_cases h_pos : t - s > 0
-    · -- t - s > 0, so s < t. Need CanonicalR between the MCSs.
+    · -- t - s > 0, so s < t. Need ExistsTask between the MCSs.
       rw [if_pos h_pos]
       -- Get the chain elements
       let ws := shifted_flag_retract F center s hs
@@ -388,10 +388,10 @@ noncomputable def shiftedFlagWorldHistory (F : Flag CanonicalMCS) (center : Chai
       -- Apply canonicalR_of_lt
       -- shiftedWorldState returns ⟨shiftedMCS ..., ...⟩
       -- shiftedMCS = chainFMCS_mcs F (shifted_flag_retract ...)
-      -- We need CanonicalR between the underlying MCS sets
+      -- We need ExistsTask between the underlying MCS sets
       simp only [shiftedWorldState, shiftedMCS]
       -- The MCS at ws.val.world and wt.val.world
-      show CanonicalR (chainFMCS_mcs F ws) (chainFMCS_mcs F wt)
+      show ExistsTask (chainFMCS_mcs F ws) (chainFMCS_mcs F wt)
       simp only [chainFMCS_mcs]
       exact CanonicalMCS.canonicalR_of_lt ws.val wt.val h_chain_lt
     · -- t - s ≤ 0, but s ≤ t means t - s ≥ 0, so t - s = 0, meaning s = t

@@ -47,22 +47,22 @@ variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mc
 /-!
 ## Phase 3.1: Core Linking Lemma
 
-The central bridge between DovetailedTimelineQuot ordering and CanonicalR accessibility.
+The central bridge between DovetailedTimelineQuot ordering and ExistsTask accessibility.
 -/
 
 /--
-**Core Linking Lemma**: If t < t' in DovetailedTimelineQuot, then CanonicalR between their MCSs.
+**Core Linking Lemma**: If t < t' in DovetailedTimelineQuot, then ExistsTask between their MCSs.
 
 **Proof Idea**:
 - t < t' means: for representatives p, q, we have p ≤ q and ¬(q ≤ p)
-- DovetailedPoint.le p q means: p.mcs = q.mcs or CanonicalR p.mcs q.mcs
+- DovetailedPoint.le p q means: p.mcs = q.mcs or ExistsTask p.mcs q.mcs
 - The equality case is excluded by ¬(q ≤ p)
-- Therefore CanonicalR p.mcs q.mcs
+- Therefore ExistsTask p.mcs q.mcs
 -/
 theorem dovetailedTimelineQuot_lt_implies_canonicalR
     (t t' : DovetailedTimelineQuot root_mcs root_mcs_proof)
     (h : t < t') :
-    CanonicalR (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+    ExistsTask (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
                (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t') := by
   -- Inject the IsPreorder instance for use in this proof
   haveI : IsPreorder (DovetailedTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
@@ -79,17 +79,17 @@ theorem dovetailedTimelineQuot_lt_implies_canonicalR
       -- h_not_le : ¬(q ≤ p)
       have h_le' : DovetailedPoint.le p.1 q.1 := h_le
       have h_not_le' : ¬DovetailedPoint.le q.1 p.1 := h_not_le
-      -- DovetailedPoint.le is: a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs
+      -- DovetailedPoint.le is: a.mcs = b.mcs ∨ ExistsTask a.mcs b.mcs
       simp only [DovetailedPoint.le] at h_le' h_not_le'
       push_neg at h_not_le'
-      -- h_le' : p.1.mcs = q.1.mcs ∨ CanonicalR p.1.mcs q.1.mcs
-      -- h_not_le' : q.1.mcs ≠ p.1.mcs ∧ ¬CanonicalR q.1.mcs p.1.mcs
+      -- h_le' : p.1.mcs = q.1.mcs ∨ ExistsTask p.1.mcs q.1.mcs
+      -- h_not_le' : q.1.mcs ≠ p.1.mcs ∧ ¬ExistsTask q.1.mcs p.1.mcs
       cases h_le' with
       | inl h_eq =>
         -- p.1.mcs = q.1.mcs contradicts h_not_le'.1 (q.1.mcs ≠ p.1.mcs)
         exact absurd h_eq.symm h_not_le'.1
       | inr h_R =>
-        -- We have CanonicalR p.1.mcs q.1.mcs
+        -- We have ExistsTask p.1.mcs q.1.mcs
         -- Now connect to dovetailedTimelineQuotMCS
         simp only [dovetailedTimelineQuotMCS]
 
@@ -127,11 +127,11 @@ theorem dovetailedTimelineQuot_lt_implies_canonicalR
         exact h_R
 
 /--
-Converse direction: CanonicalR implies ≤ in DovetailedTimelineQuot.
+Converse direction: ExistsTask implies ≤ in DovetailedTimelineQuot.
 -/
 theorem canonicalR_implies_dovetailedTimelineQuot_le
     (t t' : DovetailedTimelineQuot root_mcs root_mcs_proof)
-    (h : CanonicalR (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+    (h : ExistsTask (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
                     (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t')) :
     t ≤ t' := by
   haveI : IsPreorder (DovetailedTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
@@ -209,7 +209,7 @@ theorem dovetailedTimelineQuot_backward_H
   have h_R := dovetailedTimelineQuot_lt_implies_canonicalR root_mcs root_mcs_proof t' t h_lt
   have h_t'_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t'
   have h_t_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t
-  have h_R_past : CanonicalR_past
+  have h_R_past : ExistsTask_past
       (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
       (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t') :=
     g_content_subset_implies_h_content_reverse
