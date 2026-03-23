@@ -131,11 +131,12 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 45. Research modified successor seed for CanonicalTask p-step
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 40
 - **Research**: [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
+- **Plan**: [01_research-plan.md](specs/045_research_modified_successor_seed/plans/01_research-plan.md)
 
 **Description**: Research how to modify the successor seed construction to satisfy p-step, focusing specifically on the CanonicalTask relation (not ExistsTask Kripke semantics). Key questions: Can futureDeferralDisjunctionsForP be defined? Can temp_a constrain P-formulas in Lindenbaum extension? Can h_content_reverse derive p-step constraints?
 
