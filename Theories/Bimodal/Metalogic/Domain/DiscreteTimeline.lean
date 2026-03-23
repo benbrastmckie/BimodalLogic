@@ -122,12 +122,15 @@ instance : Nonempty (DiscreteTimelineQuot root_mcs root_mcs_proof) := by
   exact ⟨toAntisymmetrization (· ≤ ·) ⟨p, hp⟩⟩
 
 /-!
-## NoMaxOrder and NoMinOrder (Resolved via Axiom)
+## NoMaxOrder and NoMinOrder (Axiom-Dependent)
 
-These use the `canonicalR_irreflexive` axiom from
-`Canonical/CanonicalIrreflexivityAxiom.lean`. Seriality gives forward/backward
-witnesses, and irreflexivity ensures they are strictly ordered in the quotient
-(same pattern as the dense case in `CantorApplication.lean`).
+**Status (Task 29)**: These instances depend on the `canonicalR_irreflexive` axiom,
+which CONTRADICTS `canonicalR_reflexive`. This is an order-theoretic enhancement,
+not required for basic completeness.
+
+The instances use seriality for forward/backward witnesses, and irreflexivity
+to ensure strictness in the quotient. See `CantorApplication.lean` for the
+analogous dense case pattern.
 -/
 
 /-- NoMaxOrder on the discrete timeline quotient.

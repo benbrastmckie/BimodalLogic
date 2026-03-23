@@ -15,6 +15,20 @@ This module defines `DovetailedTimelineQuot` as the antisymmetrization of the do
 timeline, directly leveraging the sorry-free `dovetailedTimeline_has_future/past` from
 DovetailedCoverage.lean.
 
+## Status: ORDER-THEORETIC ENHANCEMENT (Task 29)
+
+**This module is an ORDER-THEORETIC ENHANCEMENT, not required for basic completeness.**
+
+Under reflexive G/H semantics, the canonical frame is a reflexive transitive preorder.
+Basic completeness works with this preorder structure. The dovetailed timeline quotient
+provides an alternative construction that is order-isomorphic to ℚ.
+
+### Axiom Dependency
+
+The Cantor prerequisites (`NoMaxOrder`, `NoMinOrder`, `DenselyOrdered`) are proved
+from the `canonicalR_irreflexive` axiom, which CONTRADICTS `canonicalR_reflexive`.
+This introduces an inconsistency for the order-theoretic properties only.
+
 ## Overview
 
 The dovetailed construction (DovetailedBuild.lean) builds a countable, linearly preordered
@@ -27,21 +41,12 @@ LinearOrder. Cantor's uniqueness theorem then provides an order isomorphism with
 - `DovetailedTimelineQuot`: Antisymmetrization of the timeline (has LinearOrder)
 - `dovetailedTimelineQuot_iso_rat`: Nonempty (DovetailedTimelineQuot ≃o Q)
 
-## Cantor Prerequisites
-
-The three Cantor prerequisites (NoMaxOrder, NoMinOrder, DenselyOrdered) are proven using:
-- `dovetailedTimeline_has_future` for NoMaxOrder
-- `dovetailedTimeline_has_past` for NoMinOrder
-- Density from the dovetailed construction for DenselyOrdered
-
-All proofs use the `canonicalR_irreflexive` axiom to ensure strictness.
-
 ## References
 
+- Task 29: Reflexive G/H semantics transition
 - Task 988: Dense algebraic completeness
 - DovetailedCoverage.lean: Coverage lemmas (has_future/has_past)
 - DovetailedBuild.lean: Core dovetailed construction
-- CantorApplication.lean: Pattern for Cantor isomorphism
 -/
 
 namespace Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuot

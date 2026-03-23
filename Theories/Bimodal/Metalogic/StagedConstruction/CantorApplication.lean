@@ -12,6 +12,26 @@ import Mathlib.Algebra.Order.Field.Basic
 This module applies Cantor's theorem (`Order.iso_of_countable_dense`) to the
 dense staged timeline to establish an order isomorphism with the rationals Q.
 
+## Status: ORDER-THEORETIC ENHANCEMENT (Task 29)
+
+**This module is an ORDER-THEORETIC ENHANCEMENT, not required for basic completeness.**
+
+Under reflexive G/H semantics, the canonical frame is a reflexive transitive preorder.
+Basic completeness works with this preorder structure. The Cantor isomorphism provides
+an additional characterization of the canonical timeline as order-isomorphic to ℚ.
+
+### Axiom Dependency
+
+The Cantor prerequisites (`NoMaxOrder`, `NoMinOrder`, `DenselyOrdered`) are proved
+from the `canonicalR_irreflexive` axiom, which CONTRADICTS `canonicalR_reflexive`.
+This introduces an inconsistency for the order-theoretic properties only.
+
+**Resolution Path**: Either:
+1. Accept that Cantor isomorphism requires the irreflexivity axiom (as a semantic assumption)
+2. Prove per-construction strictness for density witnesses (more complex)
+
+For now, this module retains the axiom dependency and is documented as an enhancement.
+
 ## Overview
 
 The dense timeline (from DenseTimeline.lean) is a countable, dense, linearly
@@ -25,27 +45,12 @@ provides an order isomorphism T ≃o Q.
 - `TimelineQuot`: antisymmetrization of the timeline (has LinearOrder)
 - `cantor_iso`: Nonempty (TimelineQuot ≃o ℚ)
 
-## Resolved via Axiom: Reflexive MCS Irreflexivity
-
-The three Cantor prerequisites (`NoMaxOrder`, `NoMinOrder`, `DenselyOrdered`) are
-proved from the `canonicalR_irreflexive` axiom in `Canonical/CanonicalIrreflexivityAxiom.lean`.
-
-The axiom states `¬CanonicalR M M` for all MCSs M. This is a standard result in the
-modal logic literature (Goldblatt 1992, BdRV 2001), provable when the atom type supports
-freshness. With `String` atoms, the proof is blocked — see the axiom file for the full
-analysis and resolution path (change atom type to support freshness).
-
-From irreflexivity, the proof pattern is uniform: if `CanonicalR(M, N)` is a seriality
-or density witness, then `¬CanonicalR(N, M)` (since mutual accessibility + T4 gives
-`CanonicalR(M, M)`, contradicting irreflexivity). So all witnesses are strict.
-
 ## References
 
+- Task 29: Reflexive G/H semantics transition
 - Task 956, plan v015: Phase 6
-- Task 960: Duration Group Construction analysis
 - Mathlib `Order.iso_of_countable_dense`: Cantor's uniqueness theorem
 - Mathlib `Antisymmetrization`: quotient construction for preorders
-- `Canonical/CanonicalIrreflexivityAxiom.lean`: Irreflexivity axiom resolving the obstacle
 -/
 
 namespace Bimodal.Metalogic.StagedConstruction

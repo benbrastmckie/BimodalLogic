@@ -4,6 +4,24 @@ This directory implements the **Bundle of Maximal Consistent Sets (BFMCS)** appr
 proving completeness of TM bimodal logic. This is a Henkin-style completeness proof that
 resolves the modal completeness obstruction present in traditional canonical model approaches.
 
+## Reflexive G/H Semantics (Task 29)
+
+Under reflexive semantics, G and H quantify over `s >= t` and `s <= t` respectively
+(including the current time). The canonical accessibility relation is a **reflexive
+transitive preorder**.
+
+### Two-Layer Architecture
+
+**Layer 1 (This Module)**: Uses reflexive preorder structure.
+- All BFMCS completeness infrastructure is axiom-free
+- CanonicalConstruction, CanonicalFMCS, TruthLemma proven without axioms
+- `canonicalR_reflexive` proven via T-axiom
+
+**Layer 2 (Order-Theoretic)**: Uses irreflexivity axiom (separate module).
+- CanonicalIrreflexivity.lean preserves `canonicalR_irreflexive` axiom
+- Used only for NoMaxOrder, NoMinOrder, DenselyOrdered instances
+- Not required for basic completeness
+
 ## Key Insight
 
 Completeness is an **existential** statement:
@@ -162,4 +180,4 @@ import Bimodal.Metalogic.Bundle.CanonicalFMCS
 
 ---
 
-*Last updated: 2026-03-16*
+*Last updated: 2026-03-22 (Task 29 v8)*

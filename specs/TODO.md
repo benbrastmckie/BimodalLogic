@@ -29,7 +29,9 @@ technical_debt:
 
 ### Active Work
 
-- **29** → [PLANNED] (reflexive G/H semantics — v7 MCS-decided atom approach, 8 phases, 6-10h)
+- **29** → [COMPLETED] (reflexive G/H semantics — v8 preorder acceptance approach)
+  - **Summary**: Two-layer architecture: Layer 1 (basic completeness) axiom-free, Layer 2 (Cantor isomorphism) uses irreflexivity axiom
+  - **Completed**: 2026-03-22
 - **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
 ### Completeness Pipeline

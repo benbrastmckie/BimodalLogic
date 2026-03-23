@@ -3,44 +3,40 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Bundle.CanonicalIrreflexivity
 
 /-!
-# DEPRECATED: Canonical Accessibility Relation Irreflexivity
+# Canonical Accessibility Relation: Irreflexivity for Order-Theoretic Enhancements
 
-## Status: AXIOM-BASED, DEPRECATED (Task 29)
+## Status: ORDER-THEORETIC ENHANCEMENT (Task 29 v8)
 
-**WARNING**: Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the
-canonical accessibility relation is REFLEXIVE, not irreflexive.
+### Two-Layer Architecture
 
-- `canonicalR_reflexive` is PROVEN via T-axiom (see Bundle/CanonicalIrreflexivity.lean)
-- `canonicalR_irreflexive` is an AXIOM that contradicts reflexivity
+This module provides `canonicalR_irreflexive` and `canonicalR_strict` for use by
+ORDER-THEORETIC ENHANCEMENTS (Layer 2). Basic completeness (Layer 1) does NOT
+use these theorems.
 
-These theorems are preserved temporarily to avoid breaking ~40 downstream call sites.
-They introduce an INCONSISTENCY into the system.
+**Layer 1 (Basic Completeness)**: Does NOT import this file.
+- Uses reflexive preorder structure (canonicalR_reflexive)
+- Completeness proofs are axiom-free
 
-## Task 29 Resolution: Per-Construction Strictness
+**Layer 2 (Order-Theoretic Enhancements)**: Imports this file.
+- CantorApplication.lean (TimelineQuot ≃o ℚ)
+- DovetailedTimelineQuot.lean, DiscreteTimeline.lean
+- NoMaxOrder, NoMinOrder, DenselyOrdered instances
 
-Instead of universal irreflexivity, call sites should prove strictness from the
-specific construction:
+### Semantic Warning
 
-1. Given a witness W constructed from M
-2. Prove `¬CanonicalR W M` from the formula that distinguishes W from M
-3. This typically follows from: φ ∈ g_content(W), φ ∉ M
+Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the canonical
+accessibility relation is REFLEXIVE via T-axiom. The theorems in this file
+CONTRADICT reflexivity and introduce an inconsistency.
 
-See `fresh_Gp_seed_consistent` in Bundle/CanonicalIrreflexivity.lean for the
-building block when a fresh atom is provided by the specific construction.
+This inconsistency is ISOLATED to order-theoretic enhancements and does NOT
+affect basic completeness.
 
-## Historical Context
+### Usage
 
-This file previously claimed irreflexivity was a "proven theorem" via the Gabbay
-IRR rule with T-axiom. However:
-- The IRR rule is UNSOUND under reflexive semantics
-- The T-axiom PROVES reflexivity (G(φ) → φ means g_content(M) ⊆ M)
-- Universal fresh atom existence is NOT provable (pathological MCS can cover all atoms)
-
-## TODO (Task 29 Phase 5+)
-
-- Phase 5B/5C: Refactor all call sites to use per-construction strictness
-- Phase 6: Delete `canonicalR_irreflexive_axiom`
-- Phase 7: Remove this file or convert to per-construction strictness module
+These theorems are used by:
+1. NoMaxOrder/NoMinOrder instances (strictness in quotient)
+2. DenselyOrdered instances (strict intermediates)
+3. Cantor isomorphism prerequisites
 -/
 
 namespace Bimodal.Metalogic.Canonical

@@ -41,13 +41,13 @@
     {
       "project_number": 29,
       "project_name": "switch_to_reflexive_gh_semantics",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T21:31:52Z",
-      "last_updated": "2026-03-23T03:23:45Z",
+      "last_updated": "2026-03-23T03:38:05Z",
       "dependencies": [],
       "description": "Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md",
-      "session_id": "sess_1774430520_e7f8a9",
+      "session_id": "sess_1774236308_1a174a",
       "researched": "2026-03-23T03:17:34Z",
       "artifacts": [
         {
@@ -269,10 +269,17 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/plans/08_preorder-acceptance-approach.md",
           "type": "plan",
           "summary": "v8: preorder acceptance approach — 8 phases, 10h (current)"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/12_preorder-acceptance-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: two-layer architecture for reflexive G/H semantics"
         }
       ],
       "planned": "2026-03-23T03:23:45Z",
-      "started": "2026-03-21T22:36:09Z"
+      "started": "2026-03-21T22:36:09Z",
+      "completed": "2026-03-23T03:38:05Z",
+      "completion_summary": "Established two-layer architecture for reflexive G/H semantics. Layer 1 (basic completeness) uses reflexive preorder, is axiom-free. Layer 2 (order-theoretic enhancements) preserves irreflexivity axiom for Cantor isomorphism."
     },
     {
       "project_number": 25,

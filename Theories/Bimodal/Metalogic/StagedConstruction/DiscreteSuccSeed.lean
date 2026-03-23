@@ -15,6 +15,22 @@ literature (Segerberg/Verbrugge) to define immediate successors with blocking
 formulas. The key insight is that covering holds by construction when the
 successor is built from a seed that includes blocking formulas.
 
+## Status: ORDER-THEORETIC ENHANCEMENT (Task 29 v8)
+
+**This module is an ORDER-THEORETIC ENHANCEMENT, not required for basic completeness.**
+
+Under reflexive G/H semantics, the canonical frame is a reflexive transitive preorder.
+Basic completeness works with this preorder structure. The discrete immediate successor
+construction provides SuccOrder/PredOrder for the discrete timeline (DiscreteTimelineQuot ≃o ℤ).
+
+### Axiom Dependencies
+
+This module uses the `discreteImmediateSuccSeed_consistent_axiom`, which asserts that
+the discrete immediate successor seed is consistent. This axiom is needed because:
+1. The seed includes blocking formulas `¬ψ ∨ ¬G(ψ)`
+2. These blocking formulas are not derivable from g_content(M) alone
+3. The consistency proof requires showing the seed is satisfiable
+
 ## The Problem
 
 The standard forward witness seed `{psi} ∪ g_content(M)` does not guarantee
@@ -35,16 +51,16 @@ M and the constructed successor would have to satisfy contradictory constraints.
 
 ## Key Properties
 
-1. **Consistency**: `discreteImmediateSuccSeed M` is consistent when M is serial MCS
+1. **Consistency**: `discreteImmediateSuccSeed M` is consistent when M is serial MCS (axiom)
 2. **Forward Witness**: `CanonicalR M (discreteImmediateSucc M)`
 3. **Covering**: No MCS K exists strictly between M and `discreteImmediateSucc M`
 
 ## References
 
+- Task 29: Reflexive G/H semantics transition
 - Task 981: Remove axiom technical debt from task 979
 - Verbrugge et al., "Completeness by construction for tense logics of linear time"
 - Segerberg (1970): Original constructive method for tense logic
-- specs/981_*/reports/research-002.md: Team research identifying this approach
 -/
 
 namespace Bimodal.Metalogic.StagedConstruction

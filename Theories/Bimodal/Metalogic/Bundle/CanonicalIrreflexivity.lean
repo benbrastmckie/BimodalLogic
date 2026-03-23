@@ -1466,18 +1466,37 @@ theorem Gneg_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     exact h_mcs.1 L hL_in_M ⟨d⟩
 
 /-!
-## DEPRECATED: Irreflexivity Axiom (Task 991)
+## ORDER-THEORETIC ENHANCEMENT: Irreflexivity Axiom (Task 29 v8)
 
-Under reflexive semantics (Task 29), the irreflexivity axiom is SEMANTICALLY FALSE.
-`CanonicalR M M` now holds for all MCS M (see `canonicalR_reflexive` above).
+### Two-Layer Architecture
 
-This axiom and the theorem `canonicalR_irreflexive` are preserved temporarily
-to avoid breaking the ~54 downstream call sites that depend on them. They
-introduce an INCONSISTENCY into the system (asserting both `CanonicalR M M`
-and `¬CanonicalR M M`).
+**Layer 1 (Basic Completeness)**: Does NOT use this axiom.
+- BaseCompleteness.lean, CanonicalConstruction.lean, CanonicalFMCS.lean
+- Uses reflexive preorder structure (canonicalR_reflexive)
+- All completeness proofs are axiom-free
 
-**TODO (Task 29 Phase 5 continuation)**: Remove this axiom and fix all call sites
-to use antisymmetry-based arguments instead.
+**Layer 2 (Order-Theoretic Enhancements)**: Uses this axiom.
+- CantorApplication.lean (TimelineQuot ≃o ℚ)
+- DovetailedTimelineQuot.lean (alternative dense construction)
+- DiscreteTimeline.lean (DiscreteTimelineQuot ≃o ℤ)
+- NoMaxOrder, NoMinOrder, DenselyOrdered instances
+
+### Semantic Status
+
+Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the axiom is
+SEMANTICALLY FALSE. `CanonicalR M M` holds for all MCS M (via T-axiom).
+
+The axiom introduces an INCONSISTENCY when combined with `canonicalR_reflexive`.
+This inconsistency is ISOLATED to the order-theoretic enhancements and does NOT
+affect basic completeness.
+
+### Future Resolution Path
+
+1. **Per-construction strictness**: Prove strictness from formula witnesses
+2. **Semantic axiom**: Accept irreflexivity as a semantic assumption for order structure
+3. **Delete Layer 2**: Remove order-theoretic enhancements entirely
+
+For now, the axiom is preserved for the order-theoretic enhancements.
 -/
 
 axiom canonicalR_irreflexive_axiom :

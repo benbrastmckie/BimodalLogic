@@ -64,13 +64,19 @@ open Bimodal.ProofSystem
 The dense completeness theorem concerns formulas valid over all models
 with dense temporal domain D (satisfying `DenselyOrdered D`).
 
-The canonical model uses D = TimelineQuot, which has:
-- LinearOrder (from Antisymmetrization)
-- Countable (quotient of countable set)
-- NoMaxOrder (from dense timeline + irreflexivity)
-- NoMinOrder (from dense timeline + irreflexivity)
-- DenselyOrdered (from density frame condition + irreflexivity)
-- D ≃o Q (Cantor's theorem)
+### Two-Layer Architecture (Task 29)
+
+**Layer 1 (Basic Completeness)**: Uses reflexive preorder structure.
+- Canonical frame is reflexive transitive preorder
+- Truth lemma, FMCS construction are axiom-free
+
+**Layer 2 (Order-Theoretic Enhancements)**: Uses irreflexivity axiom.
+- TimelineQuot has: LinearOrder, Countable, NoMaxOrder, NoMinOrder, DenselyOrdered
+- NoMaxOrder/NoMinOrder/DenselyOrdered depend on `canonicalR_irreflexive` axiom
+- D ≃o ℚ (Cantor's theorem)
+
+The Cantor isomorphism is an ORDER-THEORETIC ENHANCEMENT. Basic completeness
+does NOT require it and works with the reflexive preorder structure.
 -/
 
 variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)

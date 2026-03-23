@@ -562,9 +562,14 @@ noncomputable instance : Countable (ConstructiveQuotient M₀ h_mcs₀) :=
 /-!
 ## NoMaxOrder and NoMinOrder
 
-These instances are provided by `CanonicalSerialFrameInstance.lean`.
-The file separation avoids an elaboration-order conflict that occurs when
-`ConstructiveFragment.lean` imports `CanonicalIrreflexivityAxiom`.
+**Note (Task 29)**: NoMaxOrder and NoMinOrder instances for ConstructiveQuotient have been
+removed as part of the reflexive semantics transition. Under reflexive G/H semantics, the
+canonical frame is a reflexive preorder, and NoMaxOrder/NoMinOrder are NOT required for
+basic completeness.
+
+If strict successor properties are needed for specific constructions (e.g., Cantor isomorphism),
+they should be proven per-construction using the specific formula witnesses that distinguish
+constructed MCS from their sources.
 -/
 
 end Bimodal.Metalogic.Canonical
