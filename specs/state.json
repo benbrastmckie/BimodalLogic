@@ -103,7 +103,7 @@
     {
       "project_number": 40,
       "project_name": "succ_p_step_forward_chain",
-      "status": "researched",
+      "status": "completed",
       "language": "lean4",
       "description": "Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).",
       "depends_on": [
@@ -112,7 +112,7 @@
         46
       ],
       "created": "2026-03-23T05:47:47Z",
-      "last_updated": "2026-03-23T18:53:37Z",
+      "last_updated": "2026-03-23T18:54:29Z",
       "session_id": "sess_1774291858_10f75c",
       "researched": "2026-03-23T18:53:37Z",
       "artifacts": [
@@ -139,7 +139,9 @@
       ],
       "planned": "2026-03-23T07:24:34Z",
       "started": "2026-03-23T07:38:03Z",
-      "blocked_reason": "Proof requires new axiom (successor_p_step_axiom) which is prohibited by plan constraints. Structural asymmetry: successor seed lacks pastDeferralDisjunctions that predecessor seed has."
+      "blocked_reason": "Proof requires new axiom (successor_p_step_axiom) which is prohibited by plan constraints. Structural asymmetry: successor seed lacks pastDeferralDisjunctions that predecessor seed has.",
+      "completed": "2026-03-23T18:54:29Z",
+      "completion_summary": "Goal achieved by child tasks 50+51. successor_p_step theorem proven from constrained successor seed (Approach B). Sorry at SuccChainFMCS.lean:350 filled. Zero axioms introduced."
     },
     {
       "project_number": 39,
@@ -219,7 +221,7 @@
     {
       "project_number": 35,
       "project_name": "prove_succ_chain_remaining_sorries",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "description": "Prove remaining sorries and axioms in Succ-chain completeness pipeline. After task 997 (Succ-chain base completeness) and excluding task 34 (SuccExistence axioms), 7 items remain: (1) SuccChainFMCS axioms: f_nesting_boundary, p_nesting_boundary (provable via well-founded induction on formula depth), succ_chain_fam_p_step (provable via induction on chain structure). (2) New sorries from task 997: Box backward direction in SuccChainTruth.lean:254 (not used in completeness but needed for full bidirectional truth lemma), structural contraction in SuccChainCompleteness.lean:109 (provable by induction). (3) P-direction inherited sorries: backward_witness in CanonicalTaskRelation.lean:785, succ_propagates_P_not in SuccRelation.lean:497. All items are provable — no architectural blockers. Depends on task 34 (non-blocking: task 34 reduces axiom count but these items are independent).",
       "depends_on": [
@@ -227,7 +229,7 @@
         40
       ],
       "created": "2026-03-23T04:52:40Z",
-      "last_updated": "2026-03-23T05:25:06Z",
+      "last_updated": "2026-03-23T13:13:00Z",
       "session_id": "sess_1774256500_a8c3f1",
       "researched": "2026-03-23T05:11:55Z",
       "artifacts": [
@@ -253,7 +255,8 @@
         }
       ],
       "planned": "2026-03-23T05:23:24Z",
-      "started": "2026-03-23T05:25:06Z"
+      "started": "2026-03-23T05:25:06Z",
+      "completion_summary": "All 4 phases completed: (1) contraction via DerivationTree.weakening, (2) single_step_forcing_past with explicit p_step parameter, (3) backward_witness via induction mirroring bounded_witness, (4) succ_chain_fam_p_step proven using forward_chain_p_step from constrained successor infrastructure (tasks 50+51)."
     },
     {
       "project_number": 25,

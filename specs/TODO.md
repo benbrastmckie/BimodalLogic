@@ -52,10 +52,10 @@ Phase A              Phase B              Phase C
 
 3. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
 
-**Needs reassessment (P-step sorry already filled by tasks 50+51):**
+**Completed (P-step sorry filled by tasks 50+51):**
 
-4. **40** → blocked, but core goal (succ_chain_fam_p_step sorry) already resolved
-5. **35** → implementing, but succ_chain_fam_p_step already filled — reassess remaining items
+4. **35** → COMPLETED (all 4 phases done; Phase 4 resolved by 50+51)
+5. **40** → blocked, but core goal (succ_chain_fam_p_step sorry) already resolved — reassess
 
 **Phase D — Verification:**
 
@@ -132,7 +132,7 @@ Phase A              Phase B              Phase C
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -273,10 +273,10 @@ Phase A              Phase B              Phase C
 
 ### 40. Add p-step condition to Succ relation or prove successor_satisfies_p_step
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Depends On**: Task 35 (partial), Task 45, Task 46
-- **Previous Block**: Proof required axiom — now resolved by tasks 50+51
+- **Resolution**: Superseded by tasks 50+51 (constrained successor seed approach)
 - **Spawned**: Task 45 (research), Task 46 (implementation)
 - **Research**:
   - [01_team-research.md](specs/040_succ_p_step_forward_chain/reports/01_team-research.md)
@@ -330,15 +330,16 @@ Phase A              Phase B              Phase C
 
 ### 35. Prove remaining sorries and axioms in Succ-chain completeness pipeline
 - **Effort**: 4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-23
+- **Summary**: All 4 phases completed: contraction via DerivationTree.weakening, single_step_forcing_past with explicit p_step parameter, backward_witness via induction, succ_chain_fam_p_step proven using forward_chain_p_step from constrained successor (tasks 50+51).
 - **Language**: lean4
 - **Depends On**: Task 34 (non-blocking), Task 40 (blocks Phase 4)
 - **Research**:
   - [01_team-research.md](035_prove_succ_chain_remaining_sorries/reports/01_team-research.md) — Team synthesis (2 teammates)
-  - [01_teammate-a-findings.md](035_prove_succ_chain_remaining_sorries/reports/01_teammate-a-findings.md) — Item-by-item analysis
-  - [01_teammate-b-findings.md](035_prove_succ_chain_remaining_sorries/reports/01_teammate-b-findings.md) — Patterns and prior art
+  - [02_reassessment.md](035_prove_succ_chain_remaining_sorries/reports/02_reassessment.md) — Reassessment confirming completion
 - **Plan**: [01_prove-sorries-plan.md](035_prove_succ_chain_remaining_sorries/plans/01_prove-sorries-plan.md)
-- **Summary**: [01_implementation-summary.md](035_prove_succ_chain_remaining_sorries/summaries/01_implementation-summary.md) — Partial (3/4 phases)
+- **Summary**: [01_implementation-summary.md](035_prove_succ_chain_remaining_sorries/summaries/01_implementation-summary.md)
 
 **Description**: Prove remaining sorries and axioms in Succ-chain completeness pipeline. After task 997 (Succ-chain base completeness) and excluding task 34 (SuccExistence axioms), 7 items remain: (1) SuccChainFMCS axioms: f_nesting_boundary, p_nesting_boundary (provable via well-founded induction on formula depth), succ_chain_fam_p_step (provable via induction on chain structure). (2) New sorries from task 997: Box backward direction in SuccChainTruth.lean:254 (not used in completeness but needed for full bidirectional truth lemma), structural contraction in SuccChainCompleteness.lean:109 (provable by induction). (3) P-direction inherited sorries: backward_witness in CanonicalTaskRelation.lean:785, succ_propagates_P_not in SuccRelation.lean:497. All items are provable — no architectural blockers. Depends on task 34 (non-blocking: task 34 reduces axiom count but these items are independent).
 
