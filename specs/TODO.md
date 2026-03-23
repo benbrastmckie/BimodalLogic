@@ -27,40 +27,68 @@ technical_debt:
 
 ## Recommended Order
 
-### 1. Completeness Pipeline (highest priority)
+*Updated 2026-03-22 after task 997 (base completeness) completed*
 
-**Discrete** (deps 9-15, 23, 28 all completed 2026-03-21):
-1. **22** → implement (planned, has 5-phase plan)
-2. **24** → implement (depends: 22) — removes 3 axioms, final cleanup
+### 1. Succ-chain Pipeline (base completeness — active)
 
-**Dense** (deps 17, 27, 30, 31 all completed 2026-03-21):
-1. **18** → resume implementation at phase 5 (all blockers resolved)
-2. **20** → implement (depends: 18) — parametric canonical audit
+**Base completeness is done** (task 997). The remaining work is eliminating axioms/sorries:
 
-### 2. Refactoring
+1. **40** → research (NEW: prove successor_satisfies_p_step — unblocks forward chain p_step)
+2. **35** → resume after 40 (partial: 3/4 phases done, Phase 4 blocked on 40)
+3. **36** → research (prove f_nesting_boundary axiom via Fischer-Ladner closure)
+4. **37** → implement after 36 (prove p_nesting_boundary — mirrors 36)
+5. **38** → implement (prove Box backward truth lemma — not used in completeness, lower priority)
 
-1. **25** → implement (v2 plan: pure rename, 3 phases, 8h — ready now)
-2. **19** → implement (deprecate old discrete pipeline, ready now)
-3. **21** → plan (depends: 18)
+**Axioms remaining** (6 in Bundle/): 3 seed consistency (task 34), f_nesting_boundary (task 36), p_nesting_boundary (task 37), predecessor_f_step_axiom (may be superseded by 40 approach).
 
-### 3. Axiom Elimination
+### 2. Axiom Elimination (high priority)
 
-1. **26** → revise plan (NOT superseded — task 29 preserved canonicalR_irreflexive_axiom, which now contradicts proven canonicalR_reflexive)
-2. **34** → research (prove 3 SuccExistence seed axioms, deferred from task 29)
+1. **34** → research (3 SuccExistence seed axioms — independent, high value)
+2. **26** → revise plan (remove canonicalR_irreflexive_axiom — now contradicts canonicalR_reflexive)
 
-### 4. Independent Tasks
+### 3. Dense Pipeline (blocked)
 
-1. **8** → plan (researched) — genuine truth_at completeness
-2. **6** → plan (researched) — canonical TaskFrame completeness
-3. **992** → plan (researched) — STSA representation
-4. **953** → plan (researched) — bilateral proof system
-5. **949** → plan (researched) — update Demo.lean
-6. **619** → plan (researched, meta) — skill migration
-7. **999** → research — derive F→FF from density
-8. **998** → research — FMP redesign
-9. **993** → research — stability operator
-10. **988** → blocked (likely superseded by 18)
-11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
+1. **18** → blocked on Phase 5 (DenseTimeline/DovetailedTimeline bridge gap)
+2. **20** → depends on 18 (parametric canonical audit)
+
+**Note**: Task 18 has been stuck for days. Consider: (a) deeper research on the specific blocker, or (b) deferring until base pipeline is cleaner.
+
+### 4. Discrete Pipeline (low priority now)
+
+1. **22** → status unclear (researched, had partial implementation)
+2. **24** → depends on 22 (cleanup)
+
+**Note**: Discrete pipeline was superseded by Succ-chain approach (task 997). Tasks 22, 24 may be **obsolete** if base completeness via Succ-chain is sufficient.
+
+### 5. Refactoring
+
+1. **25** → COMPLETED (archive next /todo run)
+2. **19** → implement (deprecate old discrete pipeline — depends on 22/24 status)
+3. **21** → plan (tech debt cleanup, depends on 18)
+
+### 6. Consider Abandoning
+
+These tasks may be **superseded** or **low value**:
+
+1. **988** → ABANDON? (dense algebraic completeness — superseded by task 18 approach)
+2. **989** → ABANDON? (discrete algebraic completeness — superseded by task 997/Succ-chain)
+3. **22** → ABANDON? (direct multi-family bundle — may be obsolete after task 997)
+4. **24** → ABANDON? (discrete axiom removal — depends on 22)
+5. **993** → DEFER (stability operator — nice-to-have, not critical path)
+6. **998** → DEFER (FMP redesign — separate concern from completeness)
+7. **999** → DEFER (derive F→FF — theoretical interest, not blocking)
+
+### 7. Independent Tasks (backlog)
+
+These are researched and ready but not critical path:
+
+1. **8** → plan (genuine truth_at completeness)
+2. **6** → plan (canonical TaskFrame completeness)
+3. **992** → plan (STSA representation)
+4. **953** → plan (bilateral proof system)
+5. **949** → plan (update Demo.lean — cosmetic)
+6. **619** → plan (skill migration — meta, low priority)
+7. **39** → planning (preorder semantics study — recently researched)
 
 ## Tasks
 
