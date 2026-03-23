@@ -1,7 +1,7 @@
 # Implementation Plan: Task #40 (v2)
 
 - **Task**: 40 - succ_p_step_forward_chain
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 2-3 hours (exploratory)
 - **Dependencies**: None
 - **Research Inputs**: specs/040_succ_p_step_forward_chain/reports/01_team-research.md
@@ -62,7 +62,7 @@ This may require proving a contrapositive or using additional frame properties.
 
 ## Implementation Phases
 
-### Phase 1: Investigate temp_a-Based Proof [IN PROGRESS]
+### Phase 1: Investigate temp_a-Based Proof [COMPLETED]
 
 **Goal**: Determine if `temp_a` and related infrastructure can prove successor p-step
 
@@ -112,7 +112,7 @@ This may require proving a contrapositive or using additional frame properties.
 
 ---
 
-### Phase 3: Block or Document (Contingency) [NOT STARTED]
+### Phase 3: Block or Document (Contingency) [COMPLETED]
 
 **Goal**: If no proof exists, document and recommend blocking
 
