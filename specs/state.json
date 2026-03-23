@@ -69,7 +69,7 @@
         35
       ],
       "created": "2026-03-23T05:47:47Z",
-      "last_updated": "2026-03-23T06:29:34Z",
+      "last_updated": "2026-03-23T07:24:34Z",
       "session_id": "sess_1774247203_5feac8",
       "researched": "2026-03-23T06:13:00Z",
       "artifacts": [
@@ -79,12 +79,12 @@
           "summary": "Team research with 2 teammates"
         },
         {
-          "path": "specs/040_succ_p_step_forward_chain/plans/01_successor-p-step-axiom.md",
+          "path": "specs/040_succ_p_step_forward_chain/plans/02_proof-based-approach.md",
           "type": "plan",
-          "summary": "4-phase plan: add axiom, add forward_chain_p_step, fill sorry, verify"
+          "summary": "v2: proof-based approach (no axioms)"
         }
       ],
-      "planned": "2026-03-23T06:29:34Z"
+      "planned": "2026-03-23T07:24:34Z"
     },
     {
       "project_number": 39,
