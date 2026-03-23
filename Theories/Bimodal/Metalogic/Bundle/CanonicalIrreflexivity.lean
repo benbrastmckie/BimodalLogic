@@ -149,29 +149,35 @@ Proof: `CanonicalR M M` means `g_content(M) ⊆ M`, i.e., for all phi,
 which is derivable under reflexive semantics, and MCS closure under derivation.
 -/
 
-/-- CanonicalR is reflexive under reflexive semantics: for any MCS M, `CanonicalR M M`.
+/-- ExistsTask is reflexive under reflexive semantics: for any MCS M, `ExistsTask M M`.
 
 Proof: The T-axiom `temp_t_future` gives `G phi → phi` as a derivable theorem.
 Since M is an MCS, it is closed under modus ponens with derivable theorems.
-Thus `G phi ∈ M → phi ∈ M`, which is exactly `g_content(M) ⊆ M = CanonicalR M M`. -/
-theorem canonicalR_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    CanonicalR M M := by
+Thus `G phi ∈ M → phi ∈ M`, which is exactly `g_content(M) ⊆ M = ExistsTask M M`. -/
+theorem existsTask_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ExistsTask M M := by
   intro phi h_G_phi
   -- G(phi) ∈ M and T-axiom gives G(phi) → phi in M
   have h_t_axiom : (Formula.all_future phi |>.imp phi) ∈ M :=
     theorem_in_mcs h_mcs (.axiom _ _ (.temp_t_future phi))
   exact SetMaximalConsistent.implication_property h_mcs h_t_axiom h_G_phi
 
-/-- CanonicalR_past is reflexive under reflexive semantics: for any MCS M, `CanonicalR_past M M`.
+/-- Backward compatibility alias. -/
+abbrev canonicalR_reflexive := existsTask_reflexive
+
+/-- ExistsTask_past is reflexive under reflexive semantics: for any MCS M, `ExistsTask_past M M`.
 
 Proof: The T-axiom `temp_t_past` gives `H phi → phi` as a derivable theorem.
-Since M is an MCS, `H phi ∈ M → phi ∈ M`, which is `h_content(M) ⊆ M = CanonicalR_past M M`. -/
-theorem canonicalR_past_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    CanonicalR_past M M := by
+Since M is an MCS, `H phi ∈ M → phi ∈ M`, which is `h_content(M) ⊆ M = ExistsTask_past M M`. -/
+theorem existsTask_past_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ExistsTask_past M M := by
   intro phi h_H_phi
   have h_t_axiom : (Formula.all_past phi |>.imp phi) ∈ M :=
     theorem_in_mcs h_mcs (.axiom _ _ (.temp_t_past phi))
   exact SetMaximalConsistent.implication_property h_mcs h_t_axiom h_H_phi
+
+/-- Backward compatibility alias. -/
+abbrev canonicalR_past_reflexive := existsTask_past_reflexive
 
 /-!
 ## Per-Construction Strictness Infrastructure (Task 29)
@@ -192,45 +198,48 @@ The key pattern:
 The following infrastructure supports this pattern.
 -/
 
-/-- When we have CanonicalR M N (forward accessibility) and explicit proof that
-¬CanonicalR N M (backward non-accessibility), we can conclude M < N in the
+/-- When we have ExistsTask M N (forward accessibility) and explicit proof that
+¬ExistsTask N M (backward non-accessibility), we can conclude M < N in the
 preorder structure.
 
 This is the core lemma for per-construction strictness: construct the witness,
 prove forward accessibility, then prove backward non-accessibility from the
 specific formula that distinguishes the witness from the source. -/
-theorem lt_of_canonicalR_and_not_reverse {M N : Set Formula}
+theorem lt_of_existsTask_and_not_reverse {M N : Set Formula}
     (h_M_mcs : SetMaximalConsistent M) (h_N_mcs : SetMaximalConsistent N)
-    (h_fwd : CanonicalR M N)
-    (h_not_bwd : ¬CanonicalR N M) :
+    (h_fwd : ExistsTask M N)
+    (h_not_bwd : ¬ExistsTask N M) :
     M ≠ N := by
   intro h_eq
   rw [h_eq] at h_not_bwd
-  exact h_not_bwd (canonicalR_reflexive N h_N_mcs)
+  exact h_not_bwd (existsTask_reflexive N h_N_mcs)
+
+/-- Backward compatibility alias. -/
+abbrev lt_of_canonicalR_and_not_reverse := @lt_of_existsTask_and_not_reverse
 
 /-- When witness W contains a formula φ in its g_content (i.e., G(φ) ∈ W) that is
-NOT in source M, then ¬CanonicalR W M.
+NOT in source M, then ¬ExistsTask W M.
 
 This is the workhorse lemma for per-construction strictness. At each call site:
 1. Identify the formula φ that distinguishes W from M
 2. Show G(φ) ∈ W (so φ ∈ g_content(W))
 3. Show φ ∉ M
-4. Apply this lemma to get ¬CanonicalR W M -/
+4. Apply this lemma to get ¬ExistsTask W M -/
 theorem strict_of_formula_in_g_content_not_in_source {M W : Set Formula} {φ : Formula}
     (h_φ_in_g_W : φ ∈ g_content W)  -- i.e., G(φ) ∈ W
     (h_φ_not_M : φ ∉ M) :
-    ¬CanonicalR W M := by
+    ¬ExistsTask W M := by
   intro h_R
   -- h_R : g_content(W) ⊆ M
   have h_φ_in_M : φ ∈ M := h_R h_φ_in_g_W
   exact h_φ_not_M h_φ_in_M
 
 /-- Variant: when φ ∈ W and G(φ) ∈ W (which is typical for witness constructions
-that include both φ and G(φ) in the seed), and φ ∉ M, then ¬CanonicalR W M. -/
+that include both φ and G(φ) in the seed), and φ ∉ M, then ¬ExistsTask W M. -/
 theorem strict_of_formula_with_G_not_in_source {M W : Set Formula} {φ : Formula}
     (h_Gφ_in_W : Formula.all_future φ ∈ W)  -- G(φ) ∈ W
     (h_φ_not_M : φ ∉ M) :
-    ¬CanonicalR W M :=
+    ¬ExistsTask W M :=
   strict_of_formula_in_g_content_not_in_source h_Gφ_in_W h_φ_not_M
 
 /-!
@@ -240,7 +249,7 @@ theorem strict_of_formula_with_G_not_in_source {M W : Set Formula} {φ : Formula
 
 **Layer 1 (Basic Completeness)**: Does NOT use this axiom.
 - BaseCompleteness.lean, CanonicalConstruction.lean, CanonicalFMCS.lean
-- Uses reflexive preorder structure (canonicalR_reflexive)
+- Uses reflexive preorder structure (existsTask_reflexive)
 - All completeness proofs are axiom-free
 
 **Layer 2 (Order-Theoretic Enhancements)**: Uses this axiom.
@@ -252,9 +261,9 @@ theorem strict_of_formula_with_G_not_in_source {M W : Set Formula} {φ : Formula
 ### Semantic Status
 
 Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the axiom is
-SEMANTICALLY FALSE. `CanonicalR M M` holds for all MCS M (via T-axiom).
+SEMANTICALLY FALSE. `ExistsTask M M` holds for all MCS M (via T-axiom).
 
-The axiom introduces an INCONSISTENCY when combined with `canonicalR_reflexive`.
+The axiom introduces an INCONSISTENCY when combined with `existsTask_reflexive`.
 This inconsistency is ISOLATED to the order-theoretic enhancements and does NOT
 affect basic completeness.
 
@@ -267,16 +276,22 @@ affect basic completeness.
 For now, the axiom is preserved for the order-theoretic enhancements.
 -/
 
-axiom canonicalR_irreflexive_axiom :
-    ∀ (M : Set Formula), SetMaximalConsistent M → ¬CanonicalR M M
+axiom existsTask_irreflexive_axiom :
+    ∀ (M : Set Formula), SetMaximalConsistent M → ¬ExistsTask M M
 
-@[deprecated "Under reflexive semantics (Task 29), CanonicalR is reflexive, not irreflexive. Use canonicalR_reflexive instead."]
-theorem canonicalR_irreflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ¬CanonicalR M M :=
-  canonicalR_irreflexive_axiom M h_mcs
+/-- Backward compatibility alias for the axiom. -/
+abbrev canonicalR_irreflexive_axiom := existsTask_irreflexive_axiom
 
-#check canonicalR_reflexive -- Proven theorem (reflexive semantics)
-#check canonicalR_irreflexive -- Deprecated axiom-based theorem
+@[deprecated "Under reflexive semantics (Task 29), ExistsTask is reflexive, not irreflexive. Use existsTask_reflexive instead."]
+theorem existsTask_irreflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ¬ExistsTask M M :=
+  existsTask_irreflexive_axiom M h_mcs
+
+/-- Backward compatibility alias. -/
+abbrev canonicalR_irreflexive := existsTask_irreflexive
+
+#check existsTask_reflexive -- Proven theorem (reflexive semantics)
+#check existsTask_irreflexive -- Deprecated axiom-based theorem
 
 end
 

@@ -59,17 +59,34 @@ H-formulas of M are satisfied at M'.
 Canonical future relation: `M` sees `M'` in the future iff `g_content M ⊆ M'`.
 
 Equivalently: for all phi, if `G phi ∈ M` then `phi ∈ M'`.
+
+The name `ExistsTask` reflects the semantic interpretation: there exists a temporal
+task (F-obligation) connecting M to M'. This is derived from the CanonicalTask
+relation in the staged construction where `CanonicalTask M n M'` witnesses n steps
+of F-chaining from M to M'.
 -/
-def CanonicalR (M M' : Set Formula) : Prop :=
+def ExistsTask (M M' : Set Formula) : Prop :=
   g_content M ⊆ M'
+
+/-- Unfolding lemma for ExistsTask. -/
+@[simp] lemma ExistsTask_def {M M' : Set Formula} : ExistsTask M M' = (g_content M ⊆ M') := rfl
+
+/-- Backward compatibility alias for ExistsTask. -/
+abbrev CanonicalR := ExistsTask
 
 /--
 Canonical past relation: `M` sees `M'` in the past iff `h_content M ⊆ M'`.
 
 Equivalently: for all phi, if `H phi ∈ M` then `phi ∈ M'`.
 -/
-def CanonicalR_past (M M' : Set Formula) : Prop :=
+def ExistsTask_past (M M' : Set Formula) : Prop :=
   h_content M ⊆ M'
+
+/-- Unfolding lemma for ExistsTask_past. -/
+@[simp] lemma ExistsTask_past_def {M M' : Set Formula} : ExistsTask_past M M' = (h_content M ⊆ M') := rfl
+
+/-- Backward compatibility alias for ExistsTask_past. -/
+abbrev CanonicalR_past := ExistsTask_past
 
 /-!
 ## Forward G and Backward H (Trivial by Definition)
@@ -172,17 +189,17 @@ The canonical relations are transitive using the Temporal 4 axiom (G phi -> GG p
 -/
 
 /--
-CanonicalR is transitive: If `CanonicalR M M'` and `CanonicalR M' M''`, then `CanonicalR M M''`.
+ExistsTask is transitive: If `ExistsTask M M'` and `ExistsTask M' M''`, then `ExistsTask M M''`.
 
 Proof: If `G phi ∈ M`, by Temporal 4 `G phi -> GG phi`, so `GG phi ∈ M`, thus `G phi ∈ g_content M ⊆ M'`.
 But wait - we need: `G phi ∈ M` implies `phi ∈ M''`.
 From `G phi ∈ M` and Temp 4, `G(G phi) ∈ M`. So `G phi ∈ g_content M ⊆ M'`.
 Then `phi ∈ g_content M' ⊆ M''`.
 -/
-theorem canonicalR_transitive (M M' M'' : Set Formula)
+theorem existsTask_transitive (M M' M'' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
-    (h_R1 : CanonicalR M M') (h_R2 : CanonicalR M' M'') :
-    CanonicalR M M'' := by
+    (h_R1 : ExistsTask M M') (h_R2 : ExistsTask M' M'') :
+    ExistsTask M M'' := by
   intro phi h_G_phi
   -- phi ∈ g_content M means G phi ∈ M
   -- By Temporal 4: ⊢ G phi → G(G phi), so G(G phi) ∈ M
@@ -194,6 +211,9 @@ theorem canonicalR_transitive (M M' M'' : Set Formula)
   have h_G_in_M' : Formula.all_future phi ∈ M' := h_R1 h_GG
   -- phi ∈ g_content M', and g_content M' ⊆ M'' by h_R2
   exact h_R2 h_G_in_M'
+
+/-- Backward compatibility alias. -/
+abbrev canonicalR_transitive := existsTask_transitive
 
 /--
 h_content chain transitivity: If `h_content V ⊆ N` and `h_content N ⊆ M`, then `h_content V ⊆ M`.
@@ -219,30 +239,5 @@ theorem h_content_chain_transitive (M N V : Set Formula)
   have h_Hphi_in_N := hNV h_HH_in_V
   -- phi ∈ h_content N, and h_content N ⊆ M, so phi ∈ M
   exact hMN h_Hphi_in_N
-
-/-!
-## ExistsTask Alias
-
-The canonical relation `CanonicalR` represents temporal accessibility: M sees M' in the
-future iff `g_content M ⊆ M'`. In the semantics literature, this is sometimes called
-the "ExistsTask" relation, as it encodes when there EXISTS a task (temporal obligation)
-connecting two MCSes.
-
-This alias is provided for documentation clarity and to connect with the CanonicalTask
-infrastructure in the staged construction.
--/
-
-/--
-ExistsTask: Alias for CanonicalR.
-
-The name reflects the semantic interpretation: `ExistsTask M M'` means there exists
-a temporal task (F-obligation) connecting M to M'. Specifically:
-- Every G phi in M holds at M'
-- Equivalently: g_content(M) ⊆ M'
-
-This is derived from the CanonicalTask relation in the staged construction where
-`CanonicalTask M n M'` witnesses n steps of F-chaining from M to M'.
--/
-abbrev ExistsTask := CanonicalR
 
 end Bimodal.Metalogic.Bundle

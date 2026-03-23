@@ -65,7 +65,7 @@ theorem distinguishing_formula_exists
     ∃ beta : Formula, Formula.all_future beta ∈ M' ∧ beta ∉ M := by
   -- ¬CanonicalR(M', M) means g_content(M') ⊄ M
   -- i.e., ∃ beta ∈ g_content(M'), beta ∉ M
-  rw [CanonicalR, Set.not_subset] at h_not_R'
+  simp only [ExistsTask_def, Set.not_subset] at h_not_R'
   obtain ⟨beta, h_beta_G, h_beta_not_M⟩ := h_not_R'
   -- beta ∈ g_content(M') means G(beta) ∈ M'
   exact ⟨beta, h_beta_G, h_beta_not_M⟩

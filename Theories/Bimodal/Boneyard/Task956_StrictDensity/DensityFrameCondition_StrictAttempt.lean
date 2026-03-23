@@ -234,7 +234,7 @@ theorem density_frame_condition_strict
                 -- F(delta) ∈ M' means G(neg(delta)) ∉ M'
                 -- M is NOT reflexive (h_M_not_refl), so there exists phi with G(phi) ∈ M, phi ∉ M
                 -- Use this phi to escape W ~ M' cluster
-                rw [CanonicalR, Set.not_subset] at h_M_not_refl
+                simp only [ExistsTask_def, Set.not_subset] at h_M_not_refl
                 obtain ⟨phi, h_G_phi_M, h_phi_not_M⟩ := h_M_not_refl
                 -- G(phi) ∈ M, so G(G(phi)) ∈ M by Temporal 4
                 have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
@@ -274,7 +274,7 @@ theorem density_frame_condition_strict
                 -- Actually, G(phi) ∈ M doesn't give F(neg(phi)) directly
                 -- We need something else
                 -- Key: M' doesn't see M (h_not_R'). Extract chi from that.
-                rw [CanonicalR, Set.not_subset] at h_not_R'
+                simp only [ExistsTask_def, Set.not_subset] at h_not_R'
                 obtain ⟨chi, h_G_chi_M', h_chi_not_M⟩ := h_not_R'
                 -- G(chi) ∈ M', chi ∉ M
                 -- If G(chi) ∈ M:
@@ -535,7 +535,7 @@ theorem density_frame_condition_strict
           sorry
     · -- Sub-case B2: M' is not reflexive
       -- This reduces to Case A with a different formula
-      rw [CanonicalR, Set.not_subset] at h_R'_self
+      simp only [ExistsTask_def, Set.not_subset] at h_R'_self
       obtain ⟨gamma, h_gamma_GContent, h_gamma_not_M'⟩ := h_R'_self
       have h_G_gamma_M' : Formula.all_future gamma ∈ M' := h_gamma_GContent
       have h_G_gamma_not_M : Formula.all_future gamma ∉ M := by
@@ -567,7 +567,7 @@ theorem density_frame_condition_strict
             exact h_delta_not_M h_delta_in_M
           · -- M is NOT reflexive: use irreflexivity witness
             -- From ¬CanonicalR M M, get psi with G(psi) ∈ M and psi ∉ M
-            rw [CanonicalR, Set.not_subset] at h_M_refl
+            simp only [ExistsTask_def, Set.not_subset] at h_M_refl
             obtain ⟨psi, h_psi_GContent, h_psi_not_M⟩ := h_M_refl
             -- By Temporal 4: G(G(psi)) ∈ M, so G(psi) ∈ GContent(M) ⊆ W₁
             have h_T4 : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
@@ -582,7 +582,7 @@ theorem density_frame_condition_strict
             -- G(psi) ∈ GContent(W₁) ⊆ V
             have h_G_psi_V : Formula.all_future psi ∈ V := h_R_W₁V h_GG_psi_W₁
             -- Now: G(psi) ∈ V and psi ∉ M. This witnesses ¬CanonicalR V M.
-            rw [CanonicalR, Set.not_subset]
+            simp only [ExistsTask_def, Set.not_subset]
             exact ⟨psi, h_G_psi_V, h_psi_not_M⟩
         · -- ¬CanonicalR(M', V): Show GContent(M') ⊄ V
           -- G(gamma) ∈ M' so gamma ∈ GContent(M')
@@ -607,14 +607,14 @@ theorem density_frame_condition_strict
             have h_delta_in_M : delta ∈ M := h_M_refl h_G_delta_M
             exact h_delta_not_M h_delta_in_M
           · -- M not reflexive - use irreflexivity witness
-            rw [CanonicalR, Set.not_subset] at h_M_refl
+            simp only [ExistsTask_def, Set.not_subset] at h_M_refl
             obtain ⟨psi, h_psi_GContent, h_psi_not_M⟩ := h_M_refl
             have h_T4 : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
               DerivationTree.axiom [] _ (Axiom.temp_4 psi)
             have h_GG_psi_M : Formula.all_future (Formula.all_future psi) ∈ M :=
               set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_psi_GContent
             have h_G_psi_W₁ : Formula.all_future psi ∈ W₁ := h_R_MW₁ h_GG_psi_M
-            rw [CanonicalR, Set.not_subset]
+            simp only [ExistsTask_def, Set.not_subset]
             exact ⟨psi, h_G_psi_W₁, h_psi_not_M⟩
         · -- ¬CanonicalR(M', W₁)
           -- V = M' and CanonicalR(W₁, V) = CanonicalR(W₁, M')
@@ -742,7 +742,7 @@ theorem density_frame_condition_strict
           by_cases h_M_refl : CanonicalR M M
           · -- M is reflexive. V ~ M (h_VM, h_R_MV) and M' doesn't see V (h_M'_V).
             -- Extract distinguishing formula from h_M'_V
-            rw [CanonicalR, Set.not_subset] at h_M'_V
+            simp only [ExistsTask_def, Set.not_subset] at h_M'_V
             obtain ⟨psi, h_G_psi_M', h_psi_not_V⟩ := h_M'_V
             -- Case split on G(psi) ∈ M
             by_cases h_G_psi_M : Formula.all_future psi ∈ M
@@ -772,7 +772,7 @@ theorem density_frame_condition_strict
                 by_cases h_UM : CanonicalR U M
                 · -- U ~ M means U is in M's reflexive cluster
                   -- Extract distinguishing formula from h_not_M'U
-                  rw [CanonicalR, Set.not_subset] at h_not_M'U
+                  simp only [ExistsTask_def, Set.not_subset] at h_not_M'U
                   obtain ⟨chi, h_G_chi_M', h_chi_not_U⟩ := h_not_M'U
                   -- G(chi) ∈ M', chi ∉ U
                   -- Since U ~ M (h_UM and h_R_MU), and U is reflexive:
@@ -868,7 +868,7 @@ theorem density_frame_condition_strict
             -- V is such a witness (h_R_MV). So ¬CanonicalR V M.
             -- This contradicts h_VM!
             exfalso
-            rw [CanonicalR, Set.not_subset] at h_M_refl
+            simp only [ExistsTask_def, Set.not_subset] at h_M_refl
             obtain ⟨phi, h_phi_GContent_M, h_phi_not_M⟩ := h_M_refl
             -- phi ∈ GContent(M) means G(phi) ∈ M
             -- By T4: G(phi) → G(G(phi)), so G(G(phi)) ∈ M
@@ -923,7 +923,7 @@ theorem density_frame_condition_strict
             sorry
           · -- M is NOT reflexive. Any forward witness doesn't see M back.
             exfalso
-            rw [CanonicalR, Set.not_subset] at h_M_refl
+            simp only [ExistsTask_def, Set.not_subset] at h_M_refl
             obtain ⟨phi, h_phi_GContent_M, h_phi_not_M⟩ := h_M_refl
             have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
               DerivationTree.axiom [] _ (Axiom.temp_4 phi)
@@ -1032,7 +1032,7 @@ theorem density_frame_condition_strict
           -- By Temporal 4: G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M').
           -- If CanonicalR(M', W₁), then G(gamma) ∈ W₁.
           -- gamma ∈ GContent(W₁). If CanonicalR(W₁, M'), gamma ∈ M'. Contradiction!
-          rw [CanonicalR, Set.not_subset] at h_M'_refl
+          simp only [ExistsTask_def, Set.not_subset] at h_M'_refl
           obtain ⟨gamma, h_gamma_GContent, h_gamma_not_M'⟩ := h_M'_refl
           -- G(gamma) ∈ M' (h_gamma_GContent means G(gamma) ∈ M')
           have h_G_gamma_M' : Formula.all_future gamma ∈ M' := h_gamma_GContent
@@ -1561,7 +1561,7 @@ theorem non_reflexive_target_has_strict_intermediate
       CanonicalR M W ∧ CanonicalR W M' ∧
       ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
   -- M' not reflexive means GContent(M') ⊄ M'
-  rw [CanonicalR, Set.not_subset] at h_not_refl_M'
+  simp only [ExistsTask_def, Set.not_subset] at h_not_refl_M'
   obtain ⟨gamma, h_G_gamma_M', h_gamma_not_M'⟩ := h_not_refl_M'
   -- G(gamma) ∈ M', gamma ∉ M'
   -- By Case B2 analysis: if G(gamma) ∈ M, then gamma ∈ GContent(M) ⊆ M', contradiction
@@ -1980,7 +1980,7 @@ theorem strict_density_M_reflexive
         have h_G_phi_W : Formula.all_future phi ∈ W := h_M'W h_GG_phi_M'
         exact h_R_WM' h_G_phi_W
       -- Extract distinguishing formula from h_WM : ¬CanonicalR W M
-      rw [CanonicalR, Set.not_subset] at h_WM
+      simp only [ExistsTask_def, Set.not_subset] at h_WM
       obtain ⟨psi, h_G_psi_W, h_psi_not_M⟩ := h_WM
       -- G(psi) ∈ W, psi ∉ M. Since W ~ M', G(psi) ∈ M' too.
       have h_G_psi_M' : Formula.all_future psi ∈ M' := by
@@ -2046,7 +2046,7 @@ theorem strict_density_M_reflexive
     case neg =>
       -- W ~ M (h_WM and h_R_MW), M' doesn't see W (h_M'W).
       -- Extract distinguishing formula from h_M'W
-      rw [CanonicalR, Set.not_subset] at h_M'W
+      simp only [ExistsTask_def, Set.not_subset] at h_M'W
       obtain ⟨psi, h_G_psi_M', h_psi_not_W⟩ := h_M'W
       -- G(psi) ∈ M', psi ∉ W. Key: if G(psi) ∈ M, then psi ∈ GContent(M) ⊆ W (h_R_MW). Contradiction.
       have h_G_psi_not_M : Formula.all_future psi ∉ M := by
@@ -2127,7 +2127,7 @@ theorem reflexive_cluster_escape
         -- Actually h_WM is neg means ¬CanonicalR W M. Good.
         -- So W doesn't see M back, but M' sees W.
         -- Extract distinguishing formula from ¬CanonicalR W M
-        rw [CanonicalR, Set.not_subset] at h_WM
+        simp only [ExistsTask_def, Set.not_subset] at h_WM
         obtain ⟨psi, h_G_psi_W, h_psi_not_M⟩ := h_WM
         -- G(psi) ∈ W, psi ∉ M.
         -- Since CanonicalR W M' and CanonicalR M' W (h_M'W), W ~ M'.
@@ -2248,7 +2248,7 @@ theorem reflexive_cluster_escape
         -- ¬CanonicalR M' W. W is strict from M' side.
         -- But W sees M (h_WM). W is not strict from M side.
         -- Extract distinguishing formula from ¬CanonicalR M' W
-        rw [CanonicalR, Set.not_subset] at h_M'W
+        simp only [ExistsTask_def, Set.not_subset] at h_M'W
         obtain ⟨psi, h_G_psi_M', h_psi_not_W⟩ := h_M'W
         -- G(psi) ∈ M', psi ∉ W.
         -- Since W ~ M (h_WM and h_R_MW), we have GContent(W) = GContent(M) modulo T4.

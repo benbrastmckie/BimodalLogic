@@ -305,7 +305,7 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    rw [CanonicalR, Set.not_subset] at h_12
+    simp only [ExistsTask_def, Set.not_subset] at h_12
     obtain ⟨alpha, h_alpha_G1, h_alpha_not2⟩ := h_12
     have h_neg_alpha_M2 : Formula.neg alpha ∈ M2 := by
       cases SetMaximalConsistent.negation_complete h_mcs2 alpha with

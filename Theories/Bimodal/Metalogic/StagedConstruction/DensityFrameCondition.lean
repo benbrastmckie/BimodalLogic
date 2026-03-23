@@ -215,7 +215,7 @@ theorem density_frame_condition
       exact ⟨M', h_mcs', h_R, h_R'_self⟩
     · -- Sub-case B2: CanonicalR(M', M') does not hold.
       -- ¬(g_content(M') ⊆ M'), so ∃ gamma with G(gamma) ∈ M' and gamma ∉ M'.
-      rw [CanonicalR, Set.not_subset] at h_R'_self
+      simp only [ExistsTask_def, Set.not_subset] at h_R'_self
       obtain ⟨gamma, h_gamma_GContent, h_gamma_not_M'⟩ := h_R'_self
       -- gamma ∈ g_content(M') means G(gamma) ∈ M'
       have h_G_gamma_M' : Formula.all_future gamma ∈ M' := h_gamma_GContent
@@ -261,7 +261,7 @@ theorem irreflexive_SetMaximalConsistent.has_strict_future
   obtain ⟨W, h_W_mcs, h_R_MW⟩ := SetMaximalConsistent.has_strict_future M h_mcs
   refine ⟨W, h_W_mcs, h_R_MW, ?_⟩
   -- Show ¬CanonicalR W M using the irreflexivity witness
-  rw [CanonicalR, Set.not_subset] at h_not_refl ⊢
+  simp only [ExistsTask_def, Set.not_subset] at h_not_refl ⊢
   obtain ⟨phi, h_phi_GContent, h_phi_not_M⟩ := h_not_refl
   -- phi ∈ g_content(M), so G(phi) ∈ M
   -- By Temporal 4: G(phi) → G(G(phi)), so G(G(phi)) ∈ M

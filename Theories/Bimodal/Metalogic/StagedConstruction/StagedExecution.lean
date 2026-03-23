@@ -191,7 +191,7 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
     -- NOT(CanonicalR M1 M2): exists alpha with G(alpha) ∈ M1 and alpha ∉ M2
-    rw [CanonicalR, Set.not_subset] at h_12
+    simp only [ExistsTask_def, Set.not_subset] at h_12
     obtain ⟨alpha, h_alpha_G1, h_alpha_not2⟩ := h_12
     have h_G_alpha_M1 : Formula.all_future alpha ∈ M1 := h_alpha_G1
     have h_neg_alpha_M2 : Formula.neg alpha ∈ M2 := by
