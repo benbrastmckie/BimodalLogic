@@ -1026,7 +1026,9 @@
       "effort": "2-3 hours",
       "parent_task": 40,
       "depends_on": [
-        45
+        45,
+        50,
+        51
       ],
       "created": "2026-03-23T07:59:08Z",
       "last_updated": "2026-03-23T16:20:43Z",
@@ -1095,7 +1097,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -1104,14 +1106,15 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T08:01:38Z",
+      "last_updated": "2026-03-23T17:30:16Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
         }
-      ]
+      ],
+      "session_id": "sess_1774286992_e47cca"
     },
     {
       "project_number": 49,
@@ -1133,9 +1136,49 @@
           "summary": "Spawn analysis from parent task"
         }
       ]
+    },
+    {
+      "project_number": 50,
+      "project_name": "implement_constrained_successor_seed_for_p_step",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Implement the symmetric counterpart to task 34s constrained predecessor seed. Define p_step_blocking_formulas(u) = {H(neg phi) | P(phi) not in u and phi not in u} in SuccExistence.lean. Define constrained_successor_seed(u) = g_content(u) union deferralDisjunctions(u) union p_step_blocking_formulas(u). Prove p_step_blocking_formulas_subset_u, constrained_successor_seed_consistent, and successor_p_step theorem. Update successor construction to use constrained seed.",
+      "effort": "3-4 hours",
+      "parent_task": 46,
+      "dependencies": [],
+      "created": "2026-03-23T17:30:27Z",
+      "last_updated": "2026-03-23T17:30:27Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/046_prove_forward_chain_p_step/reports/03_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
+    },
+    {
+      "project_number": 51,
+      "project_name": "fill_forward_chain_p_step_sorry_using_constrained_successor_seed",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Using the constrained successor seed infrastructure from task 50, fill the sorry at SuccChainFMCS.lean:350 for the forward chain P-step case. Apply successor_p_step theorem to prove p_content(forward_chain(k+1)) subset forward_chain(k) union p_content(forward_chain(k)). Fill the sorry in succ_chain_fam_p_step for the ofNat case.",
+      "effort": "1-2 hours",
+      "parent_task": 46,
+      "dependencies": [
+        50
+      ],
+      "created": "2026-03-23T17:30:27Z",
+      "last_updated": "2026-03-23T17:30:27Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/046_prove_forward_chain_p_step/reports/03_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
     }
   ],
-  "next_project_number": 50,
+  "next_project_number": 52,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

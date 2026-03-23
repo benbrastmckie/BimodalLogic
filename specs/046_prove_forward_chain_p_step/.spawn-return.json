@@ -1,0 +1,24 @@
+{
+  "new_tasks": [
+    {
+      "index": 0,
+      "title": "Implement constrained successor seed for P-step",
+      "description": "Implement the symmetric counterpart to task 34's constrained predecessor seed. Define p_step_blocking_formulas(u) = {H(neg phi) | P(phi) not in u and phi not in u} in SuccExistence.lean. Define constrained_successor_seed(u) = g_content(u) union deferralDisjunctions(u) union p_step_blocking_formulas(u). Prove p_step_blocking_formulas_subset_u using: P(phi) not in u implies neg P(phi) in u, and neg P(phi) = neg neg H(neg phi) = H(neg phi) by definition and MCS double negation elimination. Prove constrained_successor_seed_consistent using subset-implies-consistent pattern. Prove successor_p_step theorem: f_content(successor) subset u union f_content(u) AND p_content(successor) subset u union p_content(u). Update successor construction to use constrained seed. Verification: lake build succeeds, no new axioms, successor_p_step compiles.",
+      "effort": "3-4 hours",
+      "language": "lean4",
+      "dependencies": []
+    },
+    {
+      "index": 1,
+      "title": "Fill forward chain P-step sorry using constrained successor seed",
+      "description": "Using the constrained successor seed infrastructure from task 1, fill the sorry at SuccChainFMCS.lean:350 for the forward chain P-step case. The forward_chain construction must use constrained_successor_seed (verify or update if needed). Apply successor_p_step theorem to prove p_content(forward_chain(k+1)) subset forward_chain(k) union p_content(forward_chain(k)). Fill the sorry in succ_chain_fam_p_step for the ofNat case. Verification: lake build succeeds, no sorries in succ_chain_fam_p_step, succ_chain_backward_P compiles without errors.",
+      "effort": "1-2 hours",
+      "language": "lean4",
+      "dependencies": [0]
+    }
+  ],
+  "dependency_order": [0, 1],
+  "parent_task_number": 46,
+  "analysis_summary": "Forward chain P-step is blocked because successor_deferral_seed lacks P-step blocking formulas. Solution: implement constrained successor seed (symmetric to task 34's constrained predecessor seed) with p_step_blocking_formulas = {H(neg phi) | P(phi) not in u and phi not in u}.",
+  "report_path": "specs/046_prove_forward_chain_p_step/reports/03_spawn-analysis.md"
+}
