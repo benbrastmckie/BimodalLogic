@@ -2,7 +2,7 @@
 
 **Task 39**: Study preorder semantics conformance with Task Semantics specifications
 **Date**: 2026-03-23
-**Team**: 1 teammate (Teammate A; Teammate B did not execute)
+**Team**: 2 teammates (Teammate A: primary TaskFrame axiom analysis; Teammate B: G-atom analysis and alternative approaches)
 
 ---
 
@@ -62,14 +62,31 @@ The FMCS (Layer 1) is used internally during the proof, but the final completene
 
 ---
 
+## G-Atom Analysis (Teammate B Findings)
+
+The "fresh G-atom proofs" refer to the classical technique for proving `¬CanonicalR M M` under strict G/H semantics (s > t). This proof was blocked in Lean by the `Atom` type infrastructure ("String atom freshness") and was axiomatized as `canonicalR_irreflexive_axiom`.
+
+Task 29 resolved this by switching to reflexive semantics (s ≥ t), making `CanonicalR M M` provable via T-axioms. The axiom `canonicalR_irreflexive_axiom` is now semantically false under the current semantics, but is isolated to Layer 2 (order-theoretic enhancements: CantorApplication, DiscreteTimeline, DovetailedTimelineQuot). It is deprecated and inconsistent with `canonicalR_reflexive`, but the inconsistency is contained by module structure.
+
+**Per-construction strictness** (`strict_of_formula_in_g_content_not_in_source` in `CanonicalIrreflexivity.lean`) is the intended replacement: at each witness construction site, prove `¬CanonicalR W M` from the specific distinguishing formula, rather than using universal irreflexivity.
+
+### Alternative Approaches Identified
+
+1. **Per-construction strictness** — Replace the axiom at each Layer 2 call site. Infrastructure exists; needs application at each staged construction step.
+2. **SuccChain track** (already implemented) — `TaskFrame Int` provides LinearOrder conformance without touching CanonicalR.
+3. **ParametricCanonicalTaskFrame** (algebraic track) — The recommended successor to deprecated `denseCanonicalTaskFrame`; uses separated W (MCS worlds) and D (timeline durations).
+
+---
+
 ## Remaining Formal Gaps
 
 Two sorries remain in the SuccChain track:
 
 | Location | Sorry | Impact on Completeness |
 |----------|-------|----------------------|
-| `CanonicalTaskRelation.lean` | `backward_witness` | Does not block forward completeness |
-| `SuccChainTruth.lean` | Box backward direction | Not used in `succ_chain_completeness` |
+| `CanonicalTaskRelation.lean` | `backward_witness` | Does not block forward completeness (Task 35) |
+| `SuccChainTruth.lean` | Box backward direction | Not used in `succ_chain_completeness` (Task 38) |
+| `SuccChainFMCS.lean:350` | `succ_chain_fam_p_step` forward case | Blocks full discrete completeness (Task 40) |
 
 The forward truth direction (`succ_chain_truth_forward`) is sorry-free and sufficient for `succ_chain_completeness`.
 

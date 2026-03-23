@@ -84,8 +84,9 @@ technical_debt:
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Reports**:
-  - [01_teammate-a-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-a-findings.md) — Primary mathematical analysis
-  - [02_team-synthesis.md](039_study_preorder_semantics_conformance/reports/02_team-synthesis.md) — Team synthesis
+  - [01_teammate-a-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-a-findings.md) — Primary TaskFrame axiom analysis
+  - [01_teammate-b-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-b-findings.md) — G-atom analysis and alternative approaches
+  - [02_team-synthesis.md](039_study_preorder_semantics_conformance/reports/02_team-synthesis.md) — Team synthesis (updated with both teammates)
 
 **Description**: Study the implications of the preorder semantics which has been accepted to avoid the fresh G-atom proofs in order to determine whether the result still conforms to the specifications required by the Task Semantics.
 
@@ -123,7 +124,7 @@ technical_debt:
 - **Effort**: 4 hours
 - **Status**: [IMPLEMENTING]
 - **Language**: lean4
-- **Depends On**: Task 34 (non-blocking)
+- **Depends On**: Task 34 (non-blocking), Task 40 (blocks Phase 4)
 - **Research**:
   - [01_team-research.md](035_prove_succ_chain_remaining_sorries/reports/01_team-research.md) — Team synthesis (2 teammates)
   - [01_teammate-a-findings.md](035_prove_succ_chain_remaining_sorries/reports/01_teammate-a-findings.md) — Item-by-item analysis
