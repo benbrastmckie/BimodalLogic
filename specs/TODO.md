@@ -168,7 +168,8 @@ technical_debt:
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
 - **Effort**: 9.5-10.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-22
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -179,6 +180,7 @@ technical_debt:
   - [03_updated-scope-rename.md](025_rename_canonicalr_to_existstask/plans/03_updated-scope-rename.md) — v3: updated scope (1811 usages, 63 files) (current)
   - [02_preorder-compatible-rename.md](025_rename_canonicalr_to_existstask/plans/02_preorder-compatible-rename.md) — v2: superseded
   - [01_implementation-plan.md](025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md) — v1: superseded (blocked on fresh G-atom proofs)
+- **Summary**: [01_rename-summary.md](025_rename_canonicalr_to_existstask/summaries/01_rename-summary.md) — Renamed CanonicalR to ExistsTask with backward compat aliases. Reduced CanonicalIrreflexivity.lean from 1515 to 298 lines.
 
 **Description**: Rename CanonicalR to ExistsTask and retire Gabbay infrastructure. v2 plan drops Phases 1-2 (per-witness strictness proofs blocked by same mathematical issue as task 29 — pathological MCS where G(¬q) ∈ M for all atoms). Preserves Task 29's two-layer architecture. Axiom removal is Task 26's scope.
 

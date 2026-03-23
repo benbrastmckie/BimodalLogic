@@ -93,10 +93,10 @@
     {
       "project_number": 25,
       "project_name": "rename_canonicalr_to_existstask",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T19:24:52Z",
-      "last_updated": "2026-03-23T05:42:15Z",
+      "last_updated": "2026-03-23T05:52:57Z",
       "dependencies": [],
       "description": "Systematically shift the proof architecture from CanonicalR to CanonicalTask/Succ as primary abstractions. Rename CanonicalR to ExistsTask but minimize its use — prefer reasoning in terms of Succ (for immediate succession) and CanonicalTask (for n-step reachability) directly. ExistsTask should only appear where the existential quantification over duration is genuinely needed. Audit all 63 files referencing CanonicalR: categorize each use as (1) naturally Succ, (2) naturally CanonicalTask, or (3) genuinely ExistsTask. Restate definitions, theorems, and proof obligations in the most natural abstraction. This subsumes task 29 Phases 5-6 (canonicalR_irreflexive removal) and task 18 (ExistsTask alias).",
       "session_id": "sess_1774244511_91d71d",
@@ -131,10 +131,17 @@
           "path": "specs/025_rename_canonicalr_to_existstask/plans/03_updated-scope-rename.md",
           "type": "plan",
           "summary": "v3: updated scope (1811 usages, 63 files, 9.5-10.5h)"
+        },
+        {
+          "path": "specs/025_rename_canonicalr_to_existstask/summaries/01_rename-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: renamed CanonicalR to ExistsTask, reduced CanonicalIrreflexivity.lean"
         }
       ],
       "planned": "2026-03-23T05:40:46Z",
-      "started": "2026-03-22T20:57:13Z"
+      "started": "2026-03-22T20:57:13Z",
+      "completed": "2026-03-23T05:52:57Z",
+      "completion_summary": "Renamed CanonicalR to ExistsTask with backward compat aliases. Reduced CanonicalIrreflexivity.lean from 1515 to 298 lines. Build passes."
     },
     {
       "project_number": 22,
