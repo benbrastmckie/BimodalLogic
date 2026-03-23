@@ -1,119 +1,15 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-22T15:30:00Z",
-  "resumed_at": "2026-03-22T10:30:00Z",
-  "completed_at": "2026-03-22T12:00:00Z",
-  "artifacts": [
-    {
-      "path": "Theories/Bimodal/ProofSystem/Derivation.lean",
-      "description": "Removed IRR constructor from DerivationTree"
-    },
-    {
-      "path": "Theories/Bimodal/ProofSystem/Substitution.lean",
-      "description": "Removed IRR case from derivation_subst (eliminated 1 sorry)"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/Soundness.lean",
-      "description": "Removed IRR cases and IRRSoundness import"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/SoundnessLemmas.lean",
-      "description": "Removed IRR case (eliminated 1 sorry)"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean",
-      "description": "Removed IRR case"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean",
-      "description": "Removed IRR cases from usedFormulas"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/ConservativeExtension/ExtDerivation.lean",
-      "description": "Removed IRR constructor from ExtDerivationTree"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/ConservativeExtension/Lifting.lean",
-      "description": "Removed IRR cases from substDerivation and liftDerivationWith"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean",
-      "description": "Completed fresh_Gp_seed_consistent proof. 3 sorries remain: exists_fresh_for_g_content, fresh_for_g_content_some_decided_false, naming_set_consistent (legacy)."
-    },
-    {
-      "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/06_irr-removal-partial.md",
-      "description": "Implementation summary for completed phases"
-    },
-    {
-      "path": "specs/029_switch_to_reflexive_gh_semantics/handoffs/01_phase4-analysis.md",
-      "description": "Phase 4 analysis and proof strategy handoff"
-    },
-    {
-      "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/07_phase4-5-analysis.md",
-      "description": "Phase 4-5 analysis - Phase 5 blocked on architectural decision"
-    },
-    {
-      "path": "specs/029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md",
-      "description": "Updated plan with Phase 4 PARTIAL, Phase 5 BLOCKED status"
-    }
-  ],
-  "partial_progress": {
-    "stage": "phase_5_blocked",
-    "details": "Phase 4 key theorem fresh_Gp_seed_consistent PROVEN. Phase 5 BLOCKED: discovered that call site refactoring requires architectural decision on order structure (Preorder vs PartialOrder quotient). The issue is that canonicalR_irreflexive is used to derive strictness via lt_of_canonicalR, which is FALSE under reflexive semantics.",
-    "phases_completed": ["1", "2", "3"],
-    "phases_partial": ["4"],
-    "phases_blocked": ["5"],
-    "phases_not_started": ["6", "7", "8"],
-    "files_deleted": [
-      "Theories/Bimodal/Metalogic/IRRSoundness.lean",
-      "Theories/Bimodal/Metalogic/Bundle/DirectIrreflexivity.lean"
-    ],
-    "blocking_issue": {
-      "summary": "Phase 5 requires replacing lt_of_canonicalR with per-witness strictness, but ~30 call sites assume CanonicalR implies strict order",
-      "options": [
-        "Option 1: Change Preorder to PartialOrder quotient",
-        "Option 2: Weaken TemporalCoherentFamily.forward_F to use non-strict inequality",
-        "Option 3: Add explicit strictness predicates to witness constructions"
-      ],
-      "recommendation": "Option 3 with selective fix - use existsTask_strict_fresh_atom for completeness proofs"
-    },
-    "key_insights": [
-      "fresh_Gp_seed_consistent Case 1: if L' ⊢ ¬G(q), then G(¬G(q)) ∈ M via generalized K + T-axiom",
-      "G(¬G(q)) ∈ M means ¬G(q) ∈ g_content(M), contradicting q's freshness",
-      "lt_of_canonicalR is FALSE under reflexive semantics when M = N",
-      "Even M ≠ N doesn't ensure strictness: CanonicalR M N ∧ CanonicalR N M is possible",
-      "Per-witness strictness works via fresh G-atom construction"
-    ],
-    "remaining_sorries_in_file": [
-      "exists_fresh_for_g_content (line 312): needs cardinality argument",
-      "fresh_for_g_content_some_decided_false (line 668): depends on above",
-      "naming_set_consistent (line 512): legacy, unused"
-    ]
-  },
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": "3 in CanonicalIrreflexivity.lean (1 legacy)",
-    "axiom_count": 19,
-    "build_passed": true,
-    "notes": "Build passes (1044 jobs). Key theorem fresh_Gp_seed_consistent proven. Phase 5 blocked pending architectural decision."
-  },
-  "requires_user_review": true,
-  "review_reason": "Phase 5 (call site refactoring) is BLOCKED. Requires decision on order structure: (1) quotient to PartialOrder, (2) weaken coherence conditions, or (3) add explicit strictness predicates. Recommend Option 3 for minimal disruption.",
+  "status": "researched",
+  "started_at": "2026-03-22T00:00:00Z",
+  "artifacts": [{
+    "path": "specs/029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md",
+    "type": "research",
+    "summary": "Analyzed whether removing unboundedness axioms would eliminate strict successor needs. Finding: No - seriality axioms are trivially valid under reflexive semantics (use t itself as witness), but strict successors are needed for ORDER STRUCTURE (NoMaxOrder/NoMinOrder) not axiom soundness. Recommends continuing with per-construction strictness via canonicalR_irreflexive."
+  }],
   "metadata": {
-    "session_id": "sess_1774229628_25c345",
-    "previous_session": "sess_1774228656_6826e2",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1774231309_7c0478",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "baseline": {
-      "sorry_count": 466,
-      "axiom_count": 19
-    },
-    "analysis_this_session": [
-      "Examined Phase 5 call sites (~30 uses of canonicalR_irreflexive)",
-      "Discovered lt_of_canonicalR is unsound under reflexive semantics",
-      "Identified CanonicalMCS Preorder lacks antisymmetry",
-      "Documented three options for resolution"
-    ]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }
