@@ -700,6 +700,11 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/06_team-research.md",
           "type": "research",
           "summary": "Team research: theorem is false as stated, recommended restricted p_step_blocking"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/04_restricted-blocking.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan v4 using restricted P-step blocking definition"
         }
       ],
       "session_id": "sess_1774294230_d6db03",

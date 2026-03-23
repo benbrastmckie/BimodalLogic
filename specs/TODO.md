@@ -97,7 +97,7 @@ Phase A              Phase B              Phase C
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -106,10 +106,12 @@ Phase A              Phase B              Phase C
   - [01_bounded-f-depth.md](048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md)
   - [02_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/02_team-research.md)
   - [03_blocker-analysis.md](048_prove_succ_chain_fam_bounded_f_depth/reports/03_blocker-analysis.md)
+  - [06_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/06_team-research.md)
 - **Plan**:
   - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
   - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)
   - [03_restricted-p-step.md](048_prove_succ_chain_fam_bounded_f_depth/plans/03_restricted-p-step.md)
+  - [04_restricted-blocking.md](048_prove_succ_chain_fam_bounded_f_depth/plans/04_restricted-blocking.md)
 - **Summary**:
   - [01_restricted-succ-chain-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md)
   - [02_augmented-closure-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/02_augmented-closure-summary.md)
