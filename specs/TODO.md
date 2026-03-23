@@ -97,7 +97,7 @@ Phase A              Phase B              Phase C
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -109,7 +109,10 @@ Phase A              Phase B              Phase C
 - **Plan**:
   - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
   - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)
-- **Summary**: [01_restricted-succ-chain-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md)
+  - [03_restricted-p-step.md](048_prove_succ_chain_fam_bounded_f_depth/plans/03_restricted-p-step.md)
+- **Summary**:
+  - [01_restricted-succ-chain-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md)
+  - [02_augmented-closure-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/02_augmented-closure-summary.md)
 
 **Description**: Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.
 
@@ -148,7 +151,7 @@ Phase A              Phase B              Phase C
 
 ### 41. Eliminate D=CanonicalMCS pattern systematically
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Research**:
   - [01_team-research.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/01_team-research.md)
