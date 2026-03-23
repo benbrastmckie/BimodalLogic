@@ -63,15 +63,15 @@
     {
       "project_number": 40,
       "project_name": "succ_p_step_forward_chain",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).",
       "depends_on": [
         35
       ],
       "created": "2026-03-23T05:47:47Z",
-      "last_updated": "2026-03-23T07:24:34Z",
-      "session_id": "sess_1774247203_5feac8",
+      "last_updated": "2026-03-23T07:38:03Z",
+      "session_id": "sess_1774251460_21e5db",
       "researched": "2026-03-23T06:13:00Z",
       "artifacts": [
         {
@@ -85,7 +85,8 @@
           "summary": "v2: proof-based approach (no axioms)"
         }
       ],
-      "planned": "2026-03-23T07:24:34Z"
+      "planned": "2026-03-23T07:24:34Z",
+      "started": "2026-03-23T07:38:03Z"
     },
     {
       "project_number": 39,
@@ -872,10 +873,10 @@
     {
       "project_number": 34,
       "project_name": "prove_succ_seed_consistency_axioms",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-23T03:48:09Z",
-      "last_updated": "2026-03-23T07:36:59Z",
+      "last_updated": "2026-03-23T07:39:05Z",
       "dependencies": [],
       "description": "Prove or remove the 3 SuccExistence axioms deferred from task 29 Phase 7: successor_deferral_seed_consistent_axiom, predecessor_deferral_seed_consistent_axiom, and predecessor_f_step_axiom (all in Bundle/SuccExistence.lean). These seed consistency axioms assert that deferral seeds are satisfiable, which should follow from T-axiom under reflexive semantics. Also un-supersede task 26 (canonicalR_irreflexive_axiom was NOT deleted by task 29 and still contradicts proven canonicalR_reflexive).",
       "artifacts": [
@@ -883,10 +884,16 @@
           "path": "specs/034_prove_succ_seed_consistency_axioms/reports/01_seed-consistency-research.md",
           "type": "research_report",
           "summary": "Analysis of 3 axioms: seed consistency axioms (1-2) likely provable via WitnessSeed pattern; F-step axiom (3) requires more analysis"
+        },
+        {
+          "path": "specs/034_prove_succ_seed_consistency_axioms/plans/01_seed-axiom-elimination.md",
+          "type": "plan",
+          "summary": "4-phase plan to prove/eliminate 3 axioms in SuccExistence.lean"
         }
       ],
       "session_id": "sess_1774251405_d47311",
-      "researched": "2026-03-23T07:22:06Z"
+      "researched": "2026-03-23T07:22:06Z",
+      "planned": "2026-03-23T07:39:05Z"
     }
   ],
   "next_project_number": 44,
