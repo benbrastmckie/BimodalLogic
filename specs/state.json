@@ -6,6 +6,18 @@
   },
   "active_projects": [
     {
+      "project_number": 35,
+      "project_name": "prove_succ_chain_remaining_sorries",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Prove remaining sorries and axioms in Succ-chain completeness pipeline. After task 997 (Succ-chain base completeness) and excluding task 34 (SuccExistence axioms), 7 items remain: (1) SuccChainFMCS axioms: f_nesting_boundary, p_nesting_boundary (provable via well-founded induction on formula depth), succ_chain_fam_p_step (provable via induction on chain structure). (2) New sorries from task 997: Box backward direction in SuccChainTruth.lean:254 (not used in completeness but needed for full bidirectional truth lemma), structural contraction in SuccChainCompleteness.lean:109 (provable by induction). (3) P-direction inherited sorries: backward_witness in CanonicalTaskRelation.lean:785, succ_propagates_P_not in SuccRelation.lean:497. All items are provable — no architectural blockers. Depends on task 34 (non-blocking: task 34 reduces axiom count but these items are independent).",
+      "depends_on": [
+        34
+      ],
+      "created": "2026-03-23T04:52:40Z",
+      "last_updated": "2026-03-23T04:52:40Z"
+    },
+    {
       "project_number": 33,
       "project_name": "expand_design_choices_reflexive_analysis",
       "status": "completed",
@@ -1284,7 +1296,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 35,
+  "next_project_number": 36,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

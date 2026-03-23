@@ -1,5 +1,5 @@
 ---
-next_project_number: 35
+next_project_number: 36
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -66,6 +66,16 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 35. Prove remaining sorries and axioms in Succ-chain completeness pipeline
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Depends On**: Task 34 (non-blocking)
+
+**Description**: Prove remaining sorries and axioms in Succ-chain completeness pipeline. After task 997 (Succ-chain base completeness) and excluding task 34 (SuccExistence axioms), 7 items remain: (1) SuccChainFMCS axioms: f_nesting_boundary, p_nesting_boundary (provable via well-founded induction on formula depth), succ_chain_fam_p_step (provable via induction on chain structure). (2) New sorries from task 997: Box backward direction in SuccChainTruth.lean:254 (not used in completeness but needed for full bidirectional truth lemma), structural contraction in SuccChainCompleteness.lean:109 (provable by induction). (3) P-direction inherited sorries: backward_witness in CanonicalTaskRelation.lean:785, succ_propagates_P_not in SuccRelation.lean:497. All items are provable — no architectural blockers. Depends on task 34 (non-blocking: task 34 reduces axiom count but these items are independent).
 
 ---
 
