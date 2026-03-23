@@ -86,17 +86,22 @@
     {
       "project_number": 41,
       "project_name": "eliminate_d_equals_canonicalmcs_pattern",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-23T06:33:59Z",
-      "last_updated": "2026-03-23T18:53:10Z",
+      "last_updated": "2026-03-23T18:56:00Z",
       "session_id": "sess_1774291962_5b1a82",
-      "researched": "2026-03-23T06:41:54Z",
+      "researched": "2026-03-23T18:56:00Z",
       "artifacts": [
         {
           "path": "specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates"
+        },
+        {
+          "path": "specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/02_deep-research.md",
+          "type": "research",
+          "summary": "Deep analysis of D=CanonicalMCS pattern: confirms it is load-bearing for sorry-free completeness path, cannot be simply removed. Recommends coexistence model."
         }
       ]
     },
