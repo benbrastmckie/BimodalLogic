@@ -1,15 +1,39 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "started_at": "2026-03-23T12:00:00Z",
-  "artifacts": [],
+  "completed_at": "2026-03-23T13:30:00Z",
+  "artifacts": [
+    {
+      "path": "specs/036_prove_f_nesting_boundary/summaries/01_f-nesting-summary.md",
+      "type": "summary",
+      "summary": "Converted f_nesting_boundary and p_nesting_boundary axioms to theorems with localized sorries in helper lemmas"
+    }
+  ],
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 3,
+    "axiom_count": 0,
+    "build_passed": true,
+    "notes": "2 sorries are new (f_nesting_is_bounded, p_nesting_is_bounded), 1 is pre-existing (succ_chain_fam_p_step). Axioms successfully eliminated but boundedness proofs require model-theoretic reasoning."
+  },
+  "requires_user_review": true,
+  "review_reason": "Axioms converted to theorems but 2 new sorries introduced in helper lemmas. The boundedness proofs require model-theoretic reasoning (FMP or frame-specific properties) not available in current infrastructure.",
   "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+    "phases_completed": ["Phase 1: Helper Lemmas", "Phase 3: f_nesting_boundary theorem", "Phase 4: p_nesting_boundary theorem", "Phase 5: Validation"],
+    "phases_partial": ["Phase 2: Existence Lemma"],
+    "remaining_work": "Prove f_nesting_is_bounded and p_nesting_is_bounded without sorries. Requires connecting to FMP infrastructure or proving bounded F-depth for succ_chain_fam construction."
   },
   "metadata": {
+    "phases_completed": 4,
+    "phases_total": 5,
     "session_id": "sess_1774251638_ec8b07",
     "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "files_modified": [
+      "Theories/Bimodal/Metalogic/Bundle/CanonicalTaskRelation.lean",
+      "Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean",
+      "Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean"
+    ],
+    "axioms_eliminated": ["f_nesting_boundary", "p_nesting_boundary"],
+    "new_sorries": ["f_nesting_is_bounded", "p_nesting_is_bounded"]
   }
 }

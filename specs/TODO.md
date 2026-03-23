@@ -82,7 +82,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 44. Prove backward sorry and make irreflexivity derivable
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Parent**: Task 26 (phases 6-7 skipped)

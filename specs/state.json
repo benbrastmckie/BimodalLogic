@@ -8,13 +8,13 @@
     {
       "project_number": 44,
       "project_name": "prove_backward_sorry_irreflexivity",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-23T07:39:53Z",
-      "last_updated": "2026-03-23T07:50:30Z",
+      "last_updated": "2026-03-23T07:53:30Z",
       "dependencies": [],
       "parent_task": 26,
-      "session_id": "sess_1774251668_2adf49",
+      "session_id": "sess_1774252397_257b24",
       "researched": "2026-03-23T07:50:30Z",
       "artifacts": [
         {
@@ -155,7 +155,7 @@
       "language": "lean4",
       "description": "Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.",
       "created": "2026-03-23T05:16:00Z",
-      "last_updated": "2026-03-23T07:41:01Z",
+      "last_updated": "2026-03-23T07:54:20Z",
       "session_id": "sess_1774251638_ec8b07",
       "researched": "2026-03-23T07:23:02Z",
       "artifacts": [
@@ -168,6 +168,11 @@
           "path": "specs/036_prove_f_nesting_boundary/plans/01_f-nesting-implementation.md",
           "type": "plan",
           "summary": "5-phase implementation plan to eliminate f_nesting_boundary and p_nesting_boundary axioms via iter_F complexity lemmas and Nat.find extraction"
+        },
+        {
+          "path": "specs/036_prove_f_nesting_boundary/summaries/01_f-nesting-summary.md",
+          "type": "summary",
+          "summary": "Converted f_nesting_boundary and p_nesting_boundary axioms to theorems with localized sorries in helper lemmas"
         }
       ],
       "planned": "2026-03-23T07:39:30Z",

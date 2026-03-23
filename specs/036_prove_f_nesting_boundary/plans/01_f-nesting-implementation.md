@@ -1,7 +1,7 @@
 # Implementation Plan: Prove f_nesting_boundary Axiom
 
 - **Task**: 36 - Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 5 hours
 - **Dependencies**: None - existing infrastructure sufficient
 - **Research Inputs**: specs/036_prove_f_nesting_boundary/reports/01_f-nesting-research.md
@@ -68,7 +68,7 @@ Key findings from the research report integrated into this plan:
 
 ---
 
-### Phase 2: Existence Lemma via Classical Logic [IN PROGRESS]
+### Phase 2: Existence Lemma via Classical Logic [PARTIAL]
 
 **Goal**: Prove that some F-iteration must leave any MCS, using the best available approach.
 
@@ -89,7 +89,7 @@ Key findings from the research report integrated into this plan:
 
 ---
 
-### Phase 3: Main Theorem f_nesting_boundary [NOT STARTED]
+### Phase 3: Main Theorem f_nesting_boundary [COMPLETED]
 
 **Goal**: Replace axiom with proven theorem using Phase 1-2 infrastructure.
 
@@ -116,7 +116,7 @@ Key findings from the research report integrated into this plan:
 
 ---
 
-### Phase 4: Symmetric Proof for p_nesting_boundary [NOT STARTED]
+### Phase 4: Symmetric Proof for p_nesting_boundary [COMPLETED]
 
 **Goal**: Eliminate p_nesting_boundary axiom using the same pattern.
 
@@ -140,7 +140,7 @@ Key findings from the research report integrated into this plan:
 
 ---
 
-### Phase 5: Validation and Cleanup [NOT STARTED]
+### Phase 5: Validation and Cleanup [COMPLETED]
 
 **Goal**: Ensure axiom elimination is complete and project integrity maintained.
 

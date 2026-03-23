@@ -662,6 +662,52 @@ Helper lemma: iter_P (k+1) is P applied to iter_P k.
 lemma iter_P_succ_eq (k : Nat) (phi : Formula) :
     iter_P (k + 1) phi = Formula.some_past (iter_P k phi) := rfl
 
+/-!
+## iter_P Complexity and Injectivity
+
+Helper lemmas establishing that iter_P produces distinct formulas with
+strictly increasing complexity. Symmetric to iter_F lemmas.
+-/
+
+/-- Complexity of some_past: P(phi) adds 5 to complexity.
+
+`some_past phi = phi.neg.all_past.neg` where `neg x = x.imp bot`, so:
+- `complexity (some_past phi) = 2 + 1 + 2 + complexity phi = 5 + complexity phi`
+-/
+lemma some_past_complexity (phi : Formula) :
+    Formula.complexity (Formula.some_past phi) = 5 + Formula.complexity phi := by
+  simp only [Formula.some_past, Formula.neg, Formula.complexity]
+  omega
+
+/-- Complexity of iter_P: each P-application adds 5 to complexity.
+
+`complexity (iter_P n phi) = 5 * n + complexity phi`
+-/
+lemma iter_P_complexity (n : Nat) (phi : Formula) :
+    Formula.complexity (iter_P n phi) = 5 * n + Formula.complexity phi := by
+  induction n with
+  | zero => simp [iter_P_zero]
+  | succ k ih =>
+    simp only [iter_P_succ, some_past_complexity, ih]
+    omega
+
+/-- iter_P strictly increases complexity for positive iterations. -/
+lemma iter_P_complexity_strictly_increasing (n : Nat) (phi : Formula) :
+    Formula.complexity (iter_P (n + 1) phi) > Formula.complexity (iter_P n phi) := by
+  simp only [iter_P_complexity]
+  omega
+
+/-- iter_P is injective: distinct iteration depths give distinct formulas. -/
+lemma iter_P_injective (phi : Formula) (m n : Nat) (h : iter_P m phi = iter_P n phi) : m = n := by
+  have h_cmplx : Formula.complexity (iter_P m phi) = Formula.complexity (iter_P n phi) :=
+    congrArg Formula.complexity h
+  simp only [iter_P_complexity] at h_cmplx
+  omega
+
+/-- iter_P 1 equals some_past. -/
+lemma iter_P_one_eq_some_past (phi : Formula) :
+    iter_P 1 phi = Formula.some_past phi := rfl
+
 /--
 A backward chain with MCS witnesses and P-step property at each step.
 This version carries the MCS proofs and P-step property for all worlds in the chain.
