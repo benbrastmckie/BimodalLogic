@@ -29,12 +29,12 @@
     {
       "project_number": 39,
       "project_name": "study_preorder_semantics_conformance",
-      "status": "planned",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-23T05:40:43Z",
-      "last_updated": "2026-03-23T06:13:16Z",
-      "session_id": "sess_1774246217_86eba0",
-      "researched": "2026-03-23T06:09:01Z",
+      "last_updated": "2026-03-23T06:23:15Z",
+      "session_id": "sess_1774246740_11ad75",
+      "researched": "2026-03-23T06:23:15Z",
       "artifacts": [
         {
           "path": "specs/039_study_preorder_semantics_conformance/reports/03_parametric-taskframe-research.md",
@@ -45,6 +45,11 @@
           "path": "specs/039_study_preorder_semantics_conformance/plans/01_conformance-validation-plan.md",
           "type": "plan",
           "summary": "4-phase documentation and validation plan for TaskFrame conformance"
+        },
+        {
+          "path": "specs/039_study_preorder_semantics_conformance/reports/04_unification-implementation-research.md",
+          "type": "research",
+          "summary": "Analysis of two-layer architecture unification and implementation roadmap"
         }
       ],
       "planned": "2026-03-23T06:13:16Z"
