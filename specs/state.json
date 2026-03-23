@@ -964,6 +964,11 @@
           "path": "specs/034_prove_succ_seed_consistency_axioms/reports/02_team-research.md",
           "type": "research_report",
           "summary": "Team research (3 teammates): predecessor_f_step_axiom blocker analysis - unprovable, Alternative 3B (nesting boundary bypass) recommended"
+        },
+        {
+          "path": "specs/034_prove_succ_seed_consistency_axioms/reports/03_team-research.md",
+          "type": "research_report",
+          "summary": "Team research round 2 (3 teammates): Constrained predecessor seed eliminates axiom — complete proof sketch"
         }
       ],
       "session_id": "sess_1774278730_1c9a0d",
@@ -1008,7 +1013,7 @@
     {
       "project_number": 46,
       "project_name": "prove_forward_chain_p_step",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "description": "Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification. Verification: lake build succeeds, no sorries in succ_chain_fam_p_step, succ_chain_backward_P compiles.",
       "effort": "2-3 hours",
@@ -1017,7 +1022,7 @@
         45
       ],
       "created": "2026-03-23T07:59:08Z",
-      "last_updated": "2026-03-23T15:26:06Z",
+      "last_updated": "2026-03-23T15:27:18Z",
       "artifacts": [
         {
           "type": "research",
@@ -1030,7 +1035,7 @@
           "summary": "Team research with 2 teammates: Option A viable (transfer pattern), Option C impossible (Lindenbaum circularity)"
         }
       ],
-      "session_id": "sess_1774278944_d22b73",
+      "session_id": "sess_1774279626_974f60",
       "researched": "2026-03-23T15:26:06Z"
     },
     {
