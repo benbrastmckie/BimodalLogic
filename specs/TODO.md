@@ -1,5 +1,5 @@
 ---
-next_project_number: 38
+next_project_number: 39
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -66,6 +66,15 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 38. Prove Box backward direction in succ_chain_truth_lemma
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Prove Box backward direction in succ_chain_truth_lemma (SuccChainTruth.lean:254). The sorry states: given psi true at all histories in singleton Omega, derive Box(psi) in MCS. Since psi in MCS does NOT imply Box(psi) in MCS for arbitrary MCS, this cannot be proven with the current singleton-Omega model. Requires either: (1) extending to a multi-history BFMCS model where Box is semantically grounded, (2) refactoring the truth lemma to break the forward/backward mutual dependence in the imp case (line 210 uses backward IH via .mpr), or (3) proving a restricted version sufficient for completeness. This sorry is structurally load-bearing — it contaminates succ_chain_truth_forward and the completeness theorem via sorry propagation through the biconditional induction.
 
 ---
 

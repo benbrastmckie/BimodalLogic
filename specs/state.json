@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 38,
+      "project_name": "prove_box_backward_truth_lemma",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Prove Box backward direction in succ_chain_truth_lemma (SuccChainTruth.lean:254). The sorry states: given psi true at all histories in singleton Omega, derive Box(psi) in MCS. Since psi in MCS does NOT imply Box(psi) in MCS for arbitrary MCS, this cannot be proven with the current singleton-Omega model. Requires either: (1) extending to a multi-history BFMCS model where Box is semantically grounded, (2) refactoring the truth lemma to break the forward/backward mutual dependence in the imp case (line 210 uses backward IH via .mpr), or (3) proving a restricted version sufficient for completeness. This sorry is structurally load-bearing — it contaminates succ_chain_truth_forward and the completeness theorem via sorry propagation through the biconditional induction.",
+      "created": "2026-03-23T05:20:00Z",
+      "last_updated": "2026-03-23T05:20:00Z"
+    },
+    {
       "project_number": 36,
       "project_name": "prove_f_nesting_boundary",
       "status": "not_started",
@@ -1326,7 +1335,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 38,
+  "next_project_number": 39,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
