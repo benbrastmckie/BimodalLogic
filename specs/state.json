@@ -8,10 +8,10 @@
     {
       "project_number": 44,
       "project_name": "prove_backward_sorry_irreflexivity",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-23T07:39:53Z",
-      "last_updated": "2026-03-23T07:53:30Z",
+      "last_updated": "2026-03-23T07:56:16Z",
       "dependencies": [],
       "parent_task": 26,
       "session_id": "sess_1774252397_257b24",
@@ -21,8 +21,14 @@
           "path": "specs/044_prove_backward_sorry_irreflexivity/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates: backward sorry unprovable, reframe as axiom deletion"
+        },
+        {
+          "path": "specs/044_prove_backward_sorry_irreflexivity/plans/01_delete-irreflexivity-axiom.md",
+          "type": "plan",
+          "summary": "5-phase plan to delete existsTask_irreflexive_axiom and deprecated dependents"
         }
-      ]
+      ],
+      "planned": "2026-03-23T07:56:16Z"
     },
     {
       "project_number": 43,

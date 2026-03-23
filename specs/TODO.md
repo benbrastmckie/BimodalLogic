@@ -82,7 +82,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 44. Prove backward sorry and make irreflexivity derivable
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Parent**: Task 26 (phases 6-7 skipped)
@@ -90,6 +90,7 @@ All groups in Phase 1 are independent and can run in parallel.
   - [01_teammate-a-findings.md](specs/044_prove_backward_sorry_irreflexivity/reports/01_teammate-a-findings.md) — Primary approach: backward sorry likely unprovable, irreflexivity impossible under reflexive semantics
   - [02_teammate-b-findings.md](specs/044_prove_backward_sorry_irreflexivity/reports/02_teammate-b-findings.md) — Alternative approaches: per-construction strictness exists, Layer 2 deletion recommended
   - [01_team-research.md](specs/044_prove_backward_sorry_irreflexivity/reports/01_team-research.md) — Synthesis: reframe as delete existsTask_irreflexive_axiom and Layer 2 dependents
+- **Plan**: [01_delete-irreflexivity-axiom.md](specs/044_prove_backward_sorry_irreflexivity/plans/01_delete-irreflexivity-axiom.md) — 5-phase plan: delete axiom + deprecated theorems
 
 **Description**: Complete the optional phases 6-7 from task 26. Phase 6: Prove `ExistsTask M N → ∃ n >= 1, CanonicalTask M n N` in CanonicalRecovery.lean (the backward sorry). This requires analyzing the Lindenbaum witness construction and proving witnesses satisfy the F-step condition. Phase 7: Once backward sorry is filled, derive ExistsTask irreflexivity from canonicalTask_irreflexive, completing the dual derivation. High effort, exploratory work.
 
