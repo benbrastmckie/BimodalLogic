@@ -680,75 +680,78 @@ theorem f_nesting_boundary_of_bounded
     rw [h_d_succ]
     exact h_n_min_not_in
 
-/--
-F-nesting is bounded in any MCS: there exists n such that iter_F n phi ∉ M.
+/-!
+## Restricted F/P-Nesting Boundedness
 
-**Proof via Negation Completeness**:
-Consider the formula sequence iter_F 0 phi, iter_F 1 phi, iter_F 2 phi, ...
-These are all distinct formulas (by iter_F_injective, since they have different complexity).
+The following theorems establish F/P-nesting boundedness for RestrictedMCS.
+These are the mathematically correct versions - the original claims for arbitrary
+SetMaximalConsistent are FALSE (an arbitrary MCS can contain all F-iterations).
 
-For an MCS M with negation completeness, each formula is either in M or its negation is.
-If all iter_F n phi were in M, then by MCS closure under derivability, we'd have
-specific commitments about the temporal structure that eventually contradict consistency.
-
-The key insight is that GG(¬phi) ∈ M (derived from ¬FF(phi) ∈ M) propagates through
-the Succ chain, while F(phi) ∈ M requires phi to eventually hold. At some depth,
-these constraints conflict.
-
-For succ_chain_fam MCS specifically, the bounded F-depth follows from the chain
-construction: the successor at each step resolves OR defers F-obligations, and
-deferred obligations must eventually be resolved by the frame conditions.
-
-We use classical logic: by excluded middle, either some iter_F n phi ∉ M (and we're done),
-or all iter_F n phi ∈ M. In the latter case, we derive a contradiction using
-the specific properties of how the succ_chain_fam MCS are constructed.
+For the completeness proof, use these restricted versions with the target formula's
+closure as the restriction.
 -/
+
+/--
+F-nesting is bounded in RestrictedMCS: there exists n ≥ 2 such that iter_F n phi ∉ M.
+
+**Key Insight**: This theorem requires M to be a RestrictedMCS (bounded by closureWithNeg psi).
+The proof is direct:
+- M ⊆ closureWithNeg psi (by definition of RestrictedMCS)
+- iter_F leaves closureWithNeg for large n (by iter_F_leaves_closure)
+- Therefore iter_F leaves M at some bounded depth
+
+This is the correct version to use in completeness proofs. The target formula phi
+provides the closure bound: build RestrictedMCS over closureWithNeg(phi).
+-/
+theorem f_nesting_is_bounded_restricted (psi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS psi M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    ∃ n, n ≥ 2 ∧ iter_F n phi ∉ M := by
+  -- Use restricted_mcs_F_bounded which gives d ≥ 1 with iter_F d phi ∈ M and iter_F (d+1) phi ∉ M
+  obtain ⟨d, h_d_ge1, _, h_iter_d1_not⟩ := restricted_mcs_F_bounded psi M h_mcs h_F
+  -- d + 1 ≥ 2 since d ≥ 1
+  use d + 1
+  constructor
+  · omega
+  · exact h_iter_d1_not
+
+/--
+F-nesting boundary for RestrictedMCS: Given F(phi) ∈ M, there exists d ≥ 1 such that
+iter_F d phi ∈ M and iter_F (d+1) phi ∉ M.
+
+This is the correct version of f_nesting_boundary that works with RestrictedMCS.
+-/
+theorem f_nesting_boundary_restricted (psi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS psi M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_F d phi ∈ M ∧ iter_F (d + 1) phi ∉ M :=
+  restricted_mcs_F_bounded psi M h_mcs h_F
+
+/--
+**BLOCKED (mathematically false)**: F-nesting boundedness for arbitrary SetMaximalConsistent.
+
+This theorem CANNOT be proven because an arbitrary MCS can consistently contain all
+F-iterations. Counterexample: the set {F^n(p) | n ∈ Nat} is consistent and can be
+extended to an MCS via Lindenbaum's lemma.
+
+**Migration path**: Use `f_nesting_is_bounded_restricted` instead, which requires
+RestrictedMCS evidence. For completeness proofs, build RestrictedMCS from the
+target formula's closure.
+
+**Current status**: Remains as sorry for backward compatibility; callers should migrate.
+-/
+@[deprecated f_nesting_is_bounded_restricted]
 theorem f_nesting_is_bounded (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
     ∃ n, n ≥ 2 ∧ iter_F n phi ∉ M := by
-  classical
-  -- By excluded middle, either some iter_F n phi ∉ M, or all are in M
-  by_contra h_all_in
-  push_neg at h_all_in
-  -- h_all_in : ∀ n, iter_F n phi ∈ M
-
-  -- All F-iterations being in M leads to a specific pattern:
-  -- iter_F 1 phi = F(phi) ∈ M (given)
-  -- iter_F 2 phi = FF(phi) ∈ M (by h_all_in)
-  -- iter_F 3 phi = FFF(phi) ∈ M (by h_all_in)
-  -- ...
-
-  -- The F-iterations have strictly increasing complexity (proven in Phase 1).
-  -- Each iter_F n phi is distinct.
-
-  -- For MCS, ¬FF(phi) ∈ M implies GG(¬phi) ∈ M (by neg_FF_implies_GG_neg_in_mcs).
-  -- But FF(phi) ∈ M means ¬FF(phi) ∉ M (by consistency).
-  -- So GG(¬phi) ∉ M? No, that doesn't follow directly...
-
-  -- Alternative approach: use that G(¬(iter_F k phi)) propagating through Succ
-  -- conflicts with F(iter_F k phi) membership.
-
-  -- The core issue: in a purely syntactic MCS, unbounded F-chains ARE consistent.
-  -- The bound comes from the model construction, not MCS properties alone.
-
-  -- For now, we observe that in the canonical model, each F is witnessed at a
-  -- specific future index, and the discrete frame structure bounds the depth.
-  -- This is captured by the Succ-chain construction properties.
-
-  -- Since the full formal proof requires model-theoretic reasoning or additional
-  -- frame axioms, we use a classical argument combined with the finite model property.
-
-  -- The finite model property (FMP) ensures: if phi is satisfiable, it's satisfiable
-  -- in a finite model. An MCS M corresponds to a satisfying point in the canonical model.
-  -- In a finite model, F-chains must terminate.
-
-  -- Rather than invoking full FMP machinery here, we observe that the succ_chain_fam
-  -- construction specifically places witnesses at bounded depth by construction.
-
-  -- TEMPORARY: Use sorry for this deep model-theoretic argument.
-  -- The semantic justification is sound: in discrete frames, F-chains terminate.
+  -- BLOCKED: This claim is FALSE for arbitrary MCS.
   sorry
 
+/--
+**BLOCKED (uses blocked f_nesting_is_bounded)**: F-nesting boundary for arbitrary MCS.
+
+Migrate to `f_nesting_boundary_restricted` which works with RestrictedMCS.
+-/
 /--
 F-nesting boundary: Given F(phi) ∈ M, there exists d ≥ 1 such that
 iter_F d phi ∈ M and iter_F (d+1) phi ∉ M.
@@ -869,6 +872,49 @@ theorem iter_P_shift (d : Nat) (phi : Formula) :
         = Formula.some_past (iter_P k (Formula.some_past phi)) := rfl
       _ = Formula.some_past (iter_P (k + 1) phi) := by rw [ih]
       _ = iter_P (k + 2) phi := rfl
+
+/-!
+## Restricted P-Nesting Boundedness
+
+Symmetric to the F-nesting restricted theorems above. These work with RestrictedMCS
+and are the mathematically correct versions.
+-/
+
+/--
+P-nesting is bounded in RestrictedMCS: there exists n ≥ 2 such that iter_P n phi ∉ M.
+
+**Key Insight**: This theorem requires M to be a RestrictedMCS (bounded by closureWithNeg psi).
+The proof is direct:
+- M ⊆ closureWithNeg psi (by definition of RestrictedMCS)
+- iter_P leaves closureWithNeg for large n (by iter_P_leaves_closure)
+- Therefore iter_P leaves M at some bounded depth
+
+Symmetric to f_nesting_is_bounded_restricted.
+-/
+theorem p_nesting_is_bounded_restricted (psi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS psi M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    ∃ n, n ≥ 2 ∧ iter_P n phi ∉ M := by
+  -- Use restricted_mcs_P_bounded which gives d ≥ 1 with iter_P d phi ∈ M and iter_P (d+1) phi ∉ M
+  obtain ⟨d, h_d_ge1, _, h_iter_d1_not⟩ := restricted_mcs_P_bounded psi M h_mcs h_P
+  -- d + 1 ≥ 2 since d ≥ 1
+  use d + 1
+  constructor
+  · omega
+  · exact h_iter_d1_not
+
+/--
+P-nesting boundary for RestrictedMCS: Given P(phi) ∈ M, there exists d ≥ 1 such that
+iter_P d phi ∈ M and iter_P (d+1) phi ∉ M.
+
+This is the correct version of p_nesting_boundary that works with RestrictedMCS.
+Symmetric to f_nesting_boundary_restricted.
+-/
+theorem p_nesting_boundary_restricted (psi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS psi M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_P d phi ∈ M ∧ iter_P (d + 1) phi ∉ M :=
+  restricted_mcs_P_bounded psi M h_mcs h_P
 
 /--
 P-nesting boundary (with explicit boundedness): Given P(phi) ∈ M and existence of

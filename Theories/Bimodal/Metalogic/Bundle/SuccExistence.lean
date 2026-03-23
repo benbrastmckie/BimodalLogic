@@ -125,6 +125,236 @@ lemma deferralDisjunction_eq (φ : Formula) :
   rfl
 
 /-!
+## Constrained Successor Seed (with P-Step Blocking)
+
+The constrained successor seed extends the basic successor deferral seed with
+P-step blocking formulas. This construction guarantees the P-step property:
+p_content(successor) ⊆ u ∪ p_content(u).
+
+This is symmetric to the constrained predecessor seed (which adds F-step blocking).
+-/
+
+/--
+The constrained successor seed: `g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas(u)`.
+
+This seed is designed so that its Lindenbaum extension satisfies:
+1. Succ u v (G-persistence + F-step from the basic deferral seed)
+2. P-step: p_content(v) ⊆ u ∪ p_content(u) (from P-step blocking formulas)
+
+The P-step blocking prevents "bad" P-formulas from appearing in the successor:
+if P(φ) ∉ u and φ ∉ u, then H(¬φ) is in the seed, which prevents P(φ) in the successor.
+-/
+def constrained_successor_seed (u : Set Formula) : Set Formula :=
+  g_content u ∪ deferralDisjunctions u ∪ p_step_blocking_formulas u
+
+/-- Membership in constrained successor seed. -/
+lemma mem_constrained_successor_seed_iff (u : Set Formula) (ψ : Formula) :
+    ψ ∈ constrained_successor_seed u ↔
+    ψ ∈ g_content u ∨ ψ ∈ deferralDisjunctions u ∨ ψ ∈ p_step_blocking_formulas u := by
+  simp only [constrained_successor_seed, Set.mem_union, or_assoc]
+
+/-- g_content is a subset of the constrained successor seed. -/
+lemma g_content_subset_constrained_successor_seed (u : Set Formula) :
+    g_content u ⊆ constrained_successor_seed u :=
+  Set.subset_union_left.trans Set.subset_union_left
+
+/-- Deferral disjunctions are a subset of the constrained successor seed. -/
+lemma deferralDisjunctions_subset_constrained_successor_seed (u : Set Formula) :
+    deferralDisjunctions u ⊆ constrained_successor_seed u :=
+  Set.subset_union_right.trans Set.subset_union_left
+
+/-- P-step blocking formulas are a subset of the constrained successor seed. -/
+lemma p_step_blocking_formulas_subset_constrained_successor_seed (u : Set Formula) :
+    p_step_blocking_formulas u ⊆ constrained_successor_seed u :=
+  Set.subset_union_right
+
+/--
+The constrained successor seed is consistent.
+
+**Proof Strategy**:
+The seed is `g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas(u)`.
+
+We show each component is a subset of u:
+1. g_content(u) ⊆ u: By T-axiom G(φ) → φ and MCS closure
+2. deferralDisjunctions(u) ⊆ u: Each φ ∨ F(φ) where F(φ) ∈ u is derivable from F(φ)
+3. p_step_blocking_formulas(u) ⊆ u: By `p_step_blocking_formulas_subset_u`
+
+Therefore constrained_successor_seed(u) ⊆ u. Since u is consistent (MCS),
+any subset of u is consistent, so the seed is consistent.
+
+This extends `successor_deferral_seed_consistent` with the P-step blocking guarantee.
+-/
+theorem constrained_successor_seed_consistent (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    SetConsistent (constrained_successor_seed u) := by
+  -- Show that constrained_successor_seed u ⊆ u
+  -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
+
+  -- Step 1: g_content(u) ⊆ u via T-axiom (Gφ → φ)
+  have h_g_content_in_u : g_content u ⊆ u := by
+    intro χ h_gc
+    have h_T : [] ⊢ (Formula.all_future χ).imp χ :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_future χ)
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_gc
+
+  -- Step 2: deferralDisjunctions(u) ⊆ u
+  have h_deferrals_in_u : deferralDisjunctions u ⊆ u := by
+    intro χ h_dd
+    rw [mem_deferralDisjunctions_iff] at h_dd
+    obtain ⟨ψ, h_F_ψ, h_χ_eq⟩ := h_dd
+    rw [h_χ_eq]
+    have h_imp : [Formula.some_future ψ] ⊢ deferralDisjunction ψ :=
+      deferral_disjunction_from_F ψ
+    have h_imp' : [] ⊢ (Formula.some_future ψ).imp (deferralDisjunction ψ) :=
+      deduction_theorem [] (Formula.some_future ψ) (deferralDisjunction ψ) h_imp
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_imp') h_F_ψ
+
+  -- Step 3: p_step_blocking_formulas(u) ⊆ u (already proven)
+  have h_blocking_in_u : p_step_blocking_formulas u ⊆ u :=
+    p_step_blocking_formulas_subset_u u h_mcs
+
+  -- Step 4: Combine to show constrained_successor_seed u ⊆ u
+  have h_seed_subset_u : constrained_successor_seed u ⊆ u := by
+    intro χ h_χ_in_seed
+    rw [mem_constrained_successor_seed_iff] at h_χ_in_seed
+    rcases h_χ_in_seed with h_gc | h_dd | h_block
+    · exact h_g_content_in_u h_gc
+    · exact h_deferrals_in_u h_dd
+    · exact h_blocking_in_u h_block
+
+  -- Step 5: Conclude consistency
+  intro L hL_sub ⟨d⟩
+  have h_L_subset_u : ∀ χ ∈ L, χ ∈ u := fun χ h => h_seed_subset_u (hL_sub χ h)
+  exact h_mcs.1 L h_L_subset_u ⟨d⟩
+
+/-!
+## Constrained Successor Construction
+
+The constrained successor is the Lindenbaum extension of the constrained successor seed.
+It satisfies both Succ u v and the P-step property: p_content(v) ⊆ u ∪ p_content(u).
+-/
+
+/--
+The constrained successor of u: Lindenbaum extension of `constrained_successor_seed u`.
+
+This is the MCS that satisfies:
+1. Succ u v (G-persistence + F-step)
+2. p_content(v) ⊆ u ∪ p_content(u) (P-step guarantee from blocking formulas)
+-/
+noncomputable def constrained_successor_from_seed
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    Set Formula :=
+  lindenbaumMCS_set (constrained_successor_seed u)
+    (constrained_successor_seed_consistent u h_mcs h_F_top)
+
+/--
+The constrained successor is an MCS.
+-/
+theorem constrained_successor_from_seed_mcs
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    SetMaximalConsistent (constrained_successor_from_seed u h_mcs h_F_top) :=
+  lindenbaumMCS_set_is_mcs _ _
+
+/--
+The constrained successor extends the seed.
+-/
+theorem constrained_successor_from_seed_extends
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    constrained_successor_seed u ⊆ constrained_successor_from_seed u h_mcs h_F_top :=
+  lindenbaumMCS_set_extends _ _
+
+/--
+G-persistence for constrained successor: g_content(u) ⊆ constrained_successor.
+-/
+theorem constrained_successor_satisfies_g_persistence
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    g_content u ⊆ constrained_successor_from_seed u h_mcs h_F_top :=
+  Set.Subset.trans (g_content_subset_constrained_successor_seed u)
+    (constrained_successor_from_seed_extends u h_mcs h_F_top)
+
+/--
+F-step for constrained successor: f_content(u) ⊆ successor ∪ f_content(successor).
+-/
+theorem constrained_successor_satisfies_f_step
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    f_content u ⊆ (constrained_successor_from_seed u h_mcs h_F_top) ∪
+                   f_content (constrained_successor_from_seed u h_mcs h_F_top) := by
+  intro φ h_φ_in_f_content
+  have h_F_φ : Formula.some_future φ ∈ u := h_φ_in_f_content
+  have h_disj_in_seed : deferralDisjunction φ ∈ constrained_successor_seed u :=
+    deferralDisjunctions_subset_constrained_successor_seed u
+      (deferralDisjunction_mem_of_F_mem u φ h_F_φ)
+  have h_disj_in_succ : deferralDisjunction φ ∈ constrained_successor_from_seed u h_mcs h_F_top :=
+    constrained_successor_from_seed_extends u h_mcs h_F_top h_disj_in_seed
+  rw [deferralDisjunction_eq] at h_disj_in_succ
+  have h_mcs_succ := constrained_successor_from_seed_mcs u h_mcs h_F_top
+  rcases SetMaximalConsistent.disjunction_elim h_mcs_succ h_disj_in_succ with h_φ | h_F_φ_succ
+  · exact Set.mem_union_left _ h_φ
+  · exact Set.mem_union_right _ h_F_φ_succ
+
+/--
+The constrained successor satisfies the Succ relation.
+-/
+theorem constrained_successor_succ
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    Succ u (constrained_successor_from_seed u h_mcs h_F_top) :=
+  ⟨constrained_successor_satisfies_g_persistence u h_mcs h_F_top,
+   constrained_successor_satisfies_f_step u h_mcs h_F_top⟩
+
+/--
+The constrained successor P-step property:
+`p_content(constrained_successor) ⊆ u ∪ p_content(u)`.
+
+**Proof Strategy** (symmetric to `predecessor_f_step`):
+For each φ with P(φ) ∈ constrained_successor and φ ∉ u and P(φ) ∉ u:
+1. By construction, H(¬φ) ∈ p_step_blocking_formulas(u)
+2. Since the seed ⊆ constrained_successor, H(¬φ) ∈ constrained_successor
+3. But P(φ) = ¬H(¬φ) by definition (some_past φ = neg (all_past (neg φ)))
+4. So both H(¬φ) and ¬H(¬φ) are in constrained_successor, contradicting MCS consistency
+
+This is the key theorem that makes the forward chain satisfy P-step coherence.
+-/
+theorem successor_p_step
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    p_content (constrained_successor_from_seed u h_mcs h_F_top) ⊆ u ∪ p_content u := by
+  intro φ h_φ_in_p_content
+  -- h_φ_in_p_content : P(φ) ∈ constrained_successor, i.e., φ ∈ p_content(constrained_successor)
+  -- We need: φ ∈ u ∨ P(φ) ∈ u
+  by_cases h_φ_in_u : φ ∈ u
+  · -- Case 1: φ ∈ u
+    exact Set.mem_union_left _ h_φ_in_u
+  · by_cases h_P_φ_in_u : Formula.some_past φ ∈ u
+    · -- Case 2: P(φ) ∈ u, so φ ∈ p_content(u)
+      exact Set.mem_union_right _ h_P_φ_in_u
+    · -- Case 3: φ ∉ u and P(φ) ∉ u — derive contradiction
+      -- By construction, H(¬φ) ∈ p_step_blocking_formulas(u)
+      have h_block : Formula.all_past (Formula.neg φ) ∈ p_step_blocking_formulas u :=
+        ⟨φ, h_P_φ_in_u, h_φ_in_u, rfl⟩
+      -- p_step_blocking_formulas(u) ⊆ constrained_successor_seed(u)
+      have h_in_seed : Formula.all_past (Formula.neg φ) ∈ constrained_successor_seed u :=
+        p_step_blocking_formulas_subset_constrained_successor_seed u h_block
+      -- constrained_successor extends the seed
+      have h_in_succ : Formula.all_past (Formula.neg φ) ∈
+          constrained_successor_from_seed u h_mcs h_F_top :=
+        constrained_successor_from_seed_extends u h_mcs h_F_top h_in_seed
+      -- P(φ) ∈ constrained_successor (from h_φ_in_p_content, unfolding p_content)
+      have h_P_in_succ : Formula.some_past φ ∈
+          constrained_successor_from_seed u h_mcs h_F_top := h_φ_in_p_content
+      -- P(φ) = ¬H(¬φ) by definition (some_past φ = neg (all_past (neg φ)))
+      -- So we have both H(¬φ) and ¬H(¬φ) in constrained_successor, contradicting MCS consistency
+      have h_mcs_succ := constrained_successor_from_seed_mcs u h_mcs h_F_top
+      exact False.elim (set_consistent_not_both h_mcs_succ.1
+        (Formula.all_past (Formula.neg φ)) h_in_succ h_P_in_succ)
+
+/-!
 ## Phase 1: Predecessor Deferral Seed Definition
 
 The predecessor deferral seed is symmetric to the successor seed:
@@ -162,6 +392,50 @@ double negation elimination.
 def f_step_blocking_formulas (u : Set Formula) : Set Formula :=
   {ψ | ∃ φ : Formula, Formula.some_future φ ∉ u ∧ φ ∉ u ∧
     ψ = Formula.all_future (Formula.neg φ)}
+
+/--
+The set of P-step blocking formulas for the successor seed.
+
+For each formula φ where both P(φ) ∉ u and φ ∉ u, we add H(¬φ) to the seed.
+Since P(φ) = ¬H(¬φ) by definition, having H(¬φ) in the successor prevents
+P(φ) from appearing (as that would contradict MCS consistency).
+
+**Key property**: Every blocking formula H(¬φ) is already in u, because
+P(φ) ∉ u implies ¬P(φ) ∈ u, i.e., ¬¬H(¬φ) ∈ u, hence H(¬φ) ∈ u by
+double negation elimination.
+
+This is symmetric to `f_step_blocking_formulas` for the predecessor construction.
+-/
+def p_step_blocking_formulas (u : Set Formula) : Set Formula :=
+  {ψ | ∃ φ : Formula, Formula.some_past φ ∉ u ∧ φ ∉ u ∧
+    ψ = Formula.all_past (Formula.neg φ)}
+
+/-- Membership in P-step blocking formulas. -/
+lemma mem_p_step_blocking_formulas_iff (u : Set Formula) (ψ : Formula) :
+    ψ ∈ p_step_blocking_formulas u ↔
+    ∃ φ : Formula, Formula.some_past φ ∉ u ∧ φ ∉ u ∧ ψ = Formula.all_past (Formula.neg φ) := by
+  rfl
+
+/--
+Every P-step blocking formula H(¬φ) is already in u.
+
+**Proof**: If P(φ) ∉ u, then by MCS negation completeness, ¬P(φ) ∈ u.
+Since P(φ) = ¬H(¬φ) by definition, ¬P(φ) = ¬¬H(¬φ).
+By MCS double negation elimination, H(¬φ) ∈ u.
+
+This is symmetric to the proof of `f_step_blocking_formulas ⊆ u` in the
+predecessor construction (lines 472-480).
+-/
+theorem p_step_blocking_formulas_subset_u (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u) :
+    p_step_blocking_formulas u ⊆ u := by
+  intro χ h_block
+  obtain ⟨φ, h_P_not, _, rfl⟩ := h_block
+  -- P(φ) ∉ u means ¬H(¬φ) ∉ u. By negation completeness, ¬¬H(¬φ) ∈ u.
+  -- By double negation elimination: H(¬φ) ∈ u.
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past φ) with h_in | h_neg_in
+  · exact absurd h_in h_P_not
+  · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
 
 /--
 The predecessor deferral seed with F-step blocking formulas:

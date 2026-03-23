@@ -51,7 +51,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 **Phase 2 — Parallel (each depends on one Phase 1 task):**
 
 4. **48** → implement after 47 (prove succ_chain_fam MCS have bounded F-depth)
-5. **50** → implement (constrained successor seed for P-step — unblocks 46)
+5. **50** → completed (constrained successor seed for P-step — unblocks 46)
 6. **51** → implement after 50 (fill forward chain P-step sorry)
 7. **46** → unblocked after 50+51 (forward chain P-step)
 
@@ -110,7 +110,9 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 50. Implement constrained successor seed for P-step
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-23
+- **Summary**: Implemented constrained successor seed with P-step blocking formulas. Proved successor_p_step theorem. Eliminated sorry in succ_chain_fam_p_step. Zero sorries, zero new axioms.
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 46
@@ -118,6 +120,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
   - [03_spawn-analysis.md](046_prove_forward_chain_p_step/reports/03_spawn-analysis.md)
   - [02_research.md](050_implement_constrained_successor_seed_for_p_step/reports/02_research.md)
 - **Plan**: [01_constrained-successor-seed.md](050_implement_constrained_successor_seed_for_p_step/plans/01_constrained-successor-seed.md)
+- **Implementation Summary**: [01_implementation-summary.md](050_implement_constrained_successor_seed_for_p_step/summaries/01_implementation-summary.md)
 
 **Description**: Implement the symmetric counterpart to task 34's constrained predecessor seed. Define p_step_blocking_formulas(u) = {H(neg phi) | P(phi) not in u and phi not in u} in SuccExistence.lean. Define constrained_successor_seed(u) = g_content(u) union deferralDisjunctions(u) union p_step_blocking_formulas(u). Prove p_step_blocking_formulas_subset_u, constrained_successor_seed_consistent, and successor_p_step theorem. Update successor construction to use constrained seed.
 
@@ -137,7 +140,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
