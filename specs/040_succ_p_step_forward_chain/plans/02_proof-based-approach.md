@@ -62,7 +62,7 @@ This may require proving a contrapositive or using additional frame properties.
 
 ## Implementation Phases
 
-### Phase 1: Investigate temp_a-Based Proof [NOT STARTED]
+### Phase 1: Investigate temp_a-Based Proof [IN PROGRESS]
 
 **Goal**: Determine if `temp_a` and related infrastructure can prove successor p-step
 

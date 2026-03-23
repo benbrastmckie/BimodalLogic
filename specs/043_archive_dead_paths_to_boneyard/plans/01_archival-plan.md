@@ -48,7 +48,7 @@ Key findings from the research report:
 
 ## Implementation Phases
 
-### Phase 1: Create Boneyard Structure and Archive Core StagedConstruction [NOT STARTED]
+### Phase 1: Create Boneyard Structure and Archive Core StagedConstruction [COMPLETED]
 
 **Goal**: Establish Boneyard directory structure and move the core StagedConstruction files that have no external dependents.
 
@@ -74,7 +74,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 2: Archive Domain and Canonical Files [NOT STARTED]
+### Phase 2: Archive Domain and Canonical Files [COMPLETED]
 
 **Goal**: Move Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean, Domain/CanonicalDomain.lean, and Canonical/CanonicalTimeline.lean to Boneyard.
 
@@ -99,7 +99,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 3: Update Core Import Files [NOT STARTED]
+### Phase 3: Update Core Import Files [IN PROGRESS]
 
 **Goal**: Update Metalogic.lean and FrameConditions/Completeness.lean to remove dead path imports.
 
