@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 44,
+      "project_name": "prove_backward_sorry_irreflexivity",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-23T07:39:53Z",
+      "last_updated": "2026-03-23T07:39:53Z",
+      "dependencies": [],
+      "parent_task": 26
+    },
+    {
       "project_number": 43,
       "project_name": "archive_dead_paths_to_boneyard",
       "status": "implementing",
@@ -902,7 +912,7 @@
       "planned": "2026-03-23T07:39:05Z"
     }
   ],
-  "next_project_number": 44,
+  "next_project_number": 45,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

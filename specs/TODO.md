@@ -1,5 +1,5 @@
 ---
-next_project_number: 44
+next_project_number: 45
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -77,6 +77,17 @@ All groups in Phase 1 are independent and can run in parallel.
 7. **619** → defer (skill migration — meta, low priority)
 
 ## Tasks
+
+---
+
+### 44. Prove backward sorry and make irreflexivity derivable
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: none
+- **Parent**: Task 26 (phases 6-7 skipped)
+
+**Description**: Complete the optional phases 6-7 from task 26. Phase 6: Prove `ExistsTask M N → ∃ n >= 1, CanonicalTask M n N` in CanonicalRecovery.lean (the backward sorry). This requires analyzing the Lindenbaum witness construction and proving witnesses satisfy the F-step condition. Phase 7: Once backward sorry is filled, derive ExistsTask irreflexivity from canonicalTask_irreflexive, completing the dual derivation. High effort, exploratory work.
 
 ---
 
