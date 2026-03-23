@@ -168,7 +168,7 @@ The `Substitution.lean` file created in v4 partial implementation is **simplifie
 
 ---
 
-### Phase 4: Complete Per-Witness Strictness [IN PROGRESS]
+### Phase 4: Complete Per-Witness Strictness [PARTIAL]
 
 **Goal**: Prove the fresh G-atom theorems that replace universal irreflexivity.
 
@@ -214,13 +214,35 @@ This phase completes the partially-implemented work in `CanonicalIrreflexivity.l
 
 ---
 
-### Phase 5: Refactor Call Sites [NOT STARTED]
+### Phase 5: Refactor Call Sites [BLOCKED]
 
 **Goal**: Replace all uses of `canonicalR_irreflexive` with per-witness strictness arguments.
 
-**Effort**: 4-6 hours
+**Effort**: 4-6 hours (estimate now: 8-12 hours due to deeper issues)
 
-This is the bulk refactoring phase. Each call site needs individual analysis.
+**STATUS**: BLOCKED - Requires architectural decision on order structure.
+
+**Issue Discovered**: The call sites don't just use `canonicalR_irreflexive` for standalone contradiction.
+They use it to derive STRICTNESS from `CanonicalR M N` via:
+```lean
+theorem lt_of_canonicalR (M N : CanonicalMCS) (h : CanonicalR M.world N.world) : M < N
+```
+
+Under reflexive semantics:
+- `CanonicalR M M` is TRUE (by T-axiom)
+- `M < M` is FALSE (irreflexivity of <)
+- So `lt_of_canonicalR` is UNSOUND when M = N
+
+**Deeper Problem**: Even when M ≠ N, we might have `CanonicalR M N ∧ CanonicalR N M` (mutual relation),
+which gives `M ≤ N ∧ N ≤ M`, hence `¬(M < N)` and `¬(N < M)`.
+
+**Options**:
+1. **Change Preorder to PartialOrder**: Define `M = N ↔ CanonicalR M N ∧ CanonicalR N M` as quotient
+2. **Weaken TemporalCoherentFamily**: Change forward_F to use `t ≤ s` instead of `t < s`
+3. **Add strictness predicates**: Have witness constructions prove `¬CanonicalR W M` explicitly
+
+**Recommended**: Option 3 with selective fix. The per-witness strictness theorem provides exactly
+what's needed for completeness proofs. Other uses can be audited individually.
 
 **Pattern**: Most sites use the pattern:
 ```lean
@@ -229,8 +251,8 @@ have h : ¬CanonicalR M M := canonicalR_irreflexive M hM
 -- Use h to derive contradiction from CanonicalR M M
 
 -- New (per-witness strictness):
--- Use the specific construction's witness to show non-equality
--- Or use the constructed W from canonicalR_strict_successor
+-- For completeness: use existsTask_strict_fresh_atom which gives ¬CanonicalR W M
+-- For antisymmetry: may need quotient approach or additional hypotheses
 ```
 
 **Tasks by file**:
