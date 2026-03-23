@@ -1,5 +1,5 @@
 ---
-next_project_number: 36
+next_project_number: 38
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -66,6 +66,25 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 37. Prove p_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Depends On**: Task 36
+
+**Description**: Prove p_nesting_boundary axiom (SuccChainFMCS.lean:695) via temporal filtration or Fischer-Ladner closure. Symmetric to f_nesting_boundary: given P(phi) in MCS M, there exists d >= 1 such that iter_P d phi in M but iter_P (d+1) phi not in M. Once f_nesting_boundary (task 36) is proven, this follows by F/P duality with minimal additional work. Depends on task 36 infrastructure.
+
+---
+
+### 36. Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
 
 ---
 
