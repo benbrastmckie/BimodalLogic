@@ -1,15 +1,15 @@
 ---
-next_project_number: 42
+next_project_number: 43
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-19T23:50:22Z
 task_counts:
-  active: 18
+  active: 12
   completed: 713
   in_progress: 1
-  not_started: 7
-  abandoned: 47
+  not_started: 4
+  abandoned: 54
   total: 778
 technical_debt:
   sorry_count: 16
@@ -163,18 +163,6 @@ These are researched and ready but not critical path:
 
 ---
 
-### 38. Prove Box backward direction in succ_chain_truth_lemma
-- **Effort**: 8 hours
-- **Status**: [BLOCKED]
-- **Language**: lean4
-- **Research**: [01_team-research.md](specs/038_prove_box_backward_truth_lemma/reports/01_team-research.md)
-- **Plan**: [01_multi-family-bfmcs-migration.md](specs/038_prove_box_backward_truth_lemma/plans/01_multi-family-bfmcs-migration.md)
-- **Summary**: [01_implementation-summary.md](specs/038_prove_box_backward_truth_lemma/summaries/01_implementation-summary.md)
-- **Blocked**: W=D conflation - MCS-level saturation does not transfer to time-indexed BFMCS modal_backward at t!=0
-
-**Description**: Prove Box backward direction in succ_chain_truth_lemma (SuccChainTruth.lean:254). The sorry states: given psi true at all histories in singleton Omega, derive Box(psi) in MCS. Since psi in MCS does NOT imply Box(psi) in MCS for arbitrary MCS, this cannot be proven with the current singleton-Omega model. Requires either: (1) extending to a multi-history BFMCS model where Box is semantically grounded, (2) refactoring the truth lemma to break the forward/backward mutual dependence in the imp case (line 210 uses backward IH via .mpr), or (3) proving a restricted version sufficient for completeness. This sorry is structurally load-bearing — it contaminates succ_chain_truth_forward and the completeness theorem via sorry propagation through the biconditional induction.
-
----
 
 ### 37. Prove p_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
 - **Effort**: TBD
@@ -264,30 +252,6 @@ These are researched and ready but not critical path:
 
 ---
 
-
-### 22. Direct multi-family bundle construction
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
-- **Language**: lean4
-- **Dependencies**: Task 15
-- **Research**:
-  - [01_multi-family-research.md](022_direct_multi_family_bundle/reports/01_multi-family-research.md)
-  - [02_naming-conventions.md](022_direct_multi_family_bundle/reports/02_naming-conventions.md)
-  - [03_implementation-review.md](022_direct_multi_family_bundle/reports/03_implementation-review.md)
-- **Plan**: [01_direct-bundle-plan.md](022_direct_multi_family_bundle/plans/01_direct-bundle-plan.md)
-
-**Description**: Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries: (1) modal_forward cross-family transfer (ClosedFlagIntBFMCS.lean:187), (2) modal_backward coverage gap (ClosedFlagIntBFMCS.lean:135), (3) chain membership for t!=0 (ClosedFlagIntBFMCS.lean:267). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer. The key insight: if families cover all of discreteClosedMCS, then "true in all families" = "true in all closed-set MCS", resolving the coverage gap.
-
----
-
-
-### 24. Discrete axiom removal and documentation cleanup
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Language**: lean4
-- **Dependencies**: Tasks 22, 23
-
-**Description**: Final cleanup gated on sorry-free discrete_representation_unconditional. (1) Remove 3 axioms: discrete_Icc_finite_axiom (DiscreteTimeline.lean:316), discreteImmediateSuccSeed_consistent_axiom (DiscreteSuccSeed.lean:284), discreteImmediateSucc_covers_axiom (DiscreteSuccSeed.lean:414). (2) Fix stale docstrings in AlgebraicBaseCompleteness.lean referencing IntFMCSTransfer.lean (lines 100, 127, 140, 259). (3) Remove dead code: singleFamilyBFMCS and construct_bfmcs_from_mcs (AlgebraicBaseCompleteness.lean lines 96-141). (4) Update Bundle/README.md: add ClosedFlagIntBFMCS.lean and ModallyCoherentBFMCS.lean to architecture table, fix stale 0-sorries claim, update Future Work item 3, update timestamp. (5) Update TODO.md metadata (sorry_count, axiom_count). Subsumes relevant items from task 21 scope.
 
 ---
 
@@ -399,14 +363,6 @@ These are researched and ready but not critical path:
 
 **Description**: Replace the internal `satisfies_at` relation in FlagBFMCS completeness with the official `truth_at` from the semantic layer. Construct a canonical TaskFrame directly from FlagBFMCS data: (1) canonical world states from CanonicalMCS, (2) duration domain D parametrically from Flag chain positions, (3) task relation R from CanonicalR, (4) WorldHistory instances from Flags (each Flag maps durations to world states), (5) canonical TaskFrame and TaskModel, (6) truth lemma for truth_at directly, (7) completeness theorem using canonical `valid`. Supersedes validity bridge approach in task 997.
 
-### 999. Derive F(phi) → FF(phi) from density axiom
-- **Effort**: TBD (estimated 2-4 hours)
-- **Status**: [NOT STARTED]
-- **Language**: lean
-
-**Description**: Prove the derivation of `F(φ) → FF(φ)` from the density axiom `GGψ → Gψ`. Two files have the same sorry with the same mathematical gap: (1) `derive_F_to_FF` in `StagedConstruction/CantorPrereqs.lean` (line 111) — needs a `DerivationTree` for `F(φ) → FF(φ)`; (2) `density_of_canonicalR` in `Canonical/CanonicalTimeline.lean` (line 183) — needs the same derivation to find an intermediate `CanonicalR` witness. The density axiom is `GGψ → Gψ` (universal form). The existential dual `F(φ) → FF(φ)` follows via contrapositive: `Fφ = ¬G¬φ`, `FFφ = ¬G¬Fφ = ¬GG¬φ`, so `Fφ → FFφ` is `¬G¬φ → ¬GG¬φ`, the contrapositive of `GGψ → Gψ` for `ψ = ¬φ`. The derivation chains through double-negation and temporal K-distribution. Both sorries are marked `TODO (Task 991)`. Fixing them completes the staged construction pipeline for density proofs.
-
----
 
 ### 998. Redesign FMP filtration for strict temporal semantics
 - **Effort**: TBD (estimated 4-8 hours)
@@ -417,14 +373,6 @@ These are researched and ready but not critical path:
 
 ---
 
-### 993. Add stability operator to bimodal formula language
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Language**: lean
-
-**Description**: Add the stability operator (box-dot) to the bimodal formula language. The stability operator quantifies over histories passing through the same world state at a given time: (box-dot)phi at (alpha, t) holds iff phi holds at (beta, t) for all beta in Omega with beta(t) = alpha(t). Requires: (1) extend Formula inductive type with stability constructor, (2) define semantics in TaskModel, (3) add S5(box-dot) axiom schemas (T, 4, B, K), (4) prove box implies box-dot (absorption), (5) prove box-dot commutes with box but NOT with G/H. Per research-002 Section 6: box-dot and G have no valid interaction axioms due to genuine branching.
-
----
 
 ### 992. Implement Shift-Closed Tense S5 Algebra representation theorem
 - **Effort**: TBD
@@ -436,31 +384,6 @@ These are researched and ready but not critical path:
 
 ---
 
-### 989. Discrete algebraic completeness
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
-- **Blocked on**: Task 995 (FMCS domain transfer lemma), Task 974 (SuccOrder instance)
-- **Language**: lean
-
-**Description**: Prove discrete algebraic completeness using D = Int. Requires: (1) FMCS domain transfer from CanonicalMCS to Int (task 995), (2) proving DF and DP axioms are valid in `DiscreteCanonicalTaskFrame Int` (the parametric canonical TaskFrame instantiated at Int), (3) SuccOrder instance on DiscreteTimelineQuot (task 974, archived), (4) wiring `discrete_representation_conditional` to obtain `valid_discrete φ → ⊢_discrete φ`. Note: `DiscreteInstantiation.lean` uses live parametric infrastructure (`ParametricCanonicalTaskFrame Int`), not the deprecated `DiscreteTimeline.discreteCanonicalTaskFrame`.
-
----
-
-### 988. Dense algebraic completeness
-- **Effort**: 8 hours (multi-family BFMCS)
-- **Status**: [RESEARCHING]
-- **Language**: lean
-- **Dependencies**: Task #1002, Task #1003
-- **Research**: [13_dense-completeness-synthesis.md](988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md) (synthesis), [12_teammate-a-findings.md](988_dense_algebraic_completeness/reports/12_teammate-a-findings.md), [12_teammate-b-findings.md](988_dense_algebraic_completeness/reports/12_teammate-b-findings.md)
-- **Plan**: [12_multi-family-bfmcs-bundle.md](988_dense_algebraic_completeness/plans/12_multi-family-bfmcs-bundle.md) (v12: Multi-family BFMCS bundle)
-- **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
-- **Summary**: [05_v10-implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/05_v10-implementation-summary.md) (v10 blocked)
-
-**Status note (2026-03-19)**: Plans v4-v10 all blocked. Synthesis report 13 identifies two independent blockers: (1) forward_F chain witness termination, (2) modal_backward multi-family requirement. **Recommended approach**: Zorn saturated chain via ChainFMCS infrastructure - builds saturation by construction, avoids TimelineQuot termination gap. Next: create plan v11.
-
-**Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
-
----
 
 ### 953. Refactor proof system to bilateral system
 - **Effort**: 55-90 hours

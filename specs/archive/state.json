@@ -1,6 +1,295 @@
 {
   "completed_projects": [
     {
+      "project_number": 999,
+      "project_name": "derive_f_to_ff_from_density_axiom",
+      "status": "abandoned",
+      "language": "lean4",
+      "created": "2026-03-19T17:05:50Z",
+      "last_updated": "2026-03-19T17:05:50Z",
+      "description": "Prove the derivation of F(phi) -> FF(phi) from the density axiom GGpsi -> Gpsi. Two files have the same sorry with the same mathematical gap: (1) derive_F_to_FF in StagedConstruction/CantorPrereqs.lean (line 111) — needs a DerivationTree for F(phi) -> FF(phi); (2) density_of_canonicalR in Canonical/CanonicalTimeline.lean (line 183) — needs the same derivation to find an intermediate CanonicalR witness. The density axiom is GGpsi -> Gpsi (universal form). The existential dual F(phi) -> FF(phi) is equivalent via contrapositive: F(phi) is ~G(~phi), FF(phi) is ~G(~F(phi)) = ~GG(~phi), so F(phi) -> FF(phi) is ~G(~phi) -> ~GG(~phi), which is the contrapositive of GGpsi -> Gpsi for psi = ~phi. The derivation requires chaining through double-negation and temporal K-distribution. Both sorries are marked TODO (Task 991). Fixing them completes the staged construction pipeline for density proofs and removes the dependency on unproven density helpers.",
+      "abandoned": "2026-03-23T07:04:41Z"
+    },
+    {
+      "project_number": 993,
+      "project_name": "add_stability_operator",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-03-18T20:28:35Z",
+      "last_updated": "2026-03-18T20:28:35Z",
+      "description": "Add the stability operator (box-dot) to the bimodal formula language. The stability operator quantifies over histories passing through the same world state at a given time: (box-dot)phi at (alpha, t) holds iff phi holds at (beta, t) for all beta in Omega with beta(t) = alpha(t). Requires: (1) extend Formula inductive type with stability constructor, (2) define semantics in TaskModel, (3) add S5(box-dot) axiom schemas (T, 4, B, K), (4) prove box implies box-dot (absorption), (5) prove box-dot commutes with box but NOT with G/H. Per research-002 Section 6: box-dot and G have no valid interaction axioms due to genuine branching.",
+      "abandoned": "2026-03-23T07:04:41Z"
+    },
+    {
+      "project_number": 38,
+      "project_name": "prove_box_backward_truth_lemma",
+      "status": "abandoned",
+      "language": "lean4",
+      "description": "Prove Box backward direction in succ_chain_truth_lemma (SuccChainTruth.lean:254). The sorry states: given psi true at all histories in singleton Omega, derive Box(psi) in MCS. Since psi in MCS does NOT imply Box(psi) in MCS for arbitrary MCS, this cannot be proven with the current singleton-Omega model. Requires either: (1) extending to a multi-history BFMCS model where Box is semantically grounded, (2) refactoring the truth lemma to break the forward/backward mutual dependence in the imp case (line 210 uses backward IH via .mpr), or (3) proving a restricted version sufficient for completeness. This sorry is structurally load-bearing — it contaminates succ_chain_truth_forward and the completeness theorem via sorry propagation through the biconditional induction.",
+      "created": "2026-03-23T05:20:00Z",
+      "last_updated": "2026-03-23T06:42:10Z",
+      "session_id": "sess_1774247694_0af93a",
+      "researched": "2026-03-23T06:13:04Z",
+      "artifacts": [
+        {
+          "path": "specs/038_prove_box_backward_truth_lemma/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 2 teammates"
+        },
+        {
+          "path": "specs/038_prove_box_backward_truth_lemma/plans/01_multi-family-bfmcs-migration.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for migrating SuccChain to multi-family BFMCS with modal saturation"
+        },
+        {
+          "path": "specs/038_prove_box_backward_truth_lemma/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Analysis confirming architectural impossibility of eliminating the sorry"
+        }
+      ],
+      "planned": "2026-03-23T06:31:28Z",
+      "started": "2026-03-23T06:35:11Z",
+      "blocked_reason": "W=D conflation: MCS-level saturation does not transfer to time-indexed BFMCS modal_backward at t!=0",
+      "abandoned": "2026-03-23T07:04:41Z"
+    },
+    {
+      "project_number": 24,
+      "project_name": "discrete_axiom_removal_cleanup",
+      "status": "abandoned",
+      "language": "lean4",
+      "created": "2026-03-21T19:16:01Z",
+      "last_updated": "2026-03-21T19:16:01Z",
+      "dependencies": [
+        22,
+        23
+      ],
+      "description": "Final cleanup gated on sorry-free discrete_representation_unconditional. (1) Remove 3 axioms: discrete_Icc_finite_axiom (DiscreteTimeline.lean:316), discreteImmediateSuccSeed_consistent_axiom (DiscreteSuccSeed.lean:284), discreteImmediateSucc_covers_axiom (DiscreteSuccSeed.lean:414). (2) Fix stale docstrings in AlgebraicBaseCompleteness.lean referencing IntFMCSTransfer.lean (lines 100, 127, 140, 259). (3) Remove dead code: singleFamilyBFMCS and construct_bfmcs_from_mcs (lines 96-141). (4) Update Bundle/README.md: add ClosedFlagIntBFMCS.lean and ModallyCoherentBFMCS.lean to architecture table, fix stale 0-sorries claim, update Future Work item 3, update timestamp. (5) Update TODO.md metadata (sorry_count, axiom_count).",
+      "abandoned": "2026-03-23T07:04:41Z"
+    },
+    {
+      "project_number": 22,
+      "project_name": "direct_multi_family_bundle",
+      "status": "abandoned",
+      "language": "lean4",
+      "created": "2026-03-21T19:16:01Z",
+      "last_updated": "2026-03-21T19:58:43Z",
+      "dependencies": [
+        15
+      ],
+      "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer.",
+      "session_id": "sess_1774122768_262dc8",
+      "researched": "2026-03-21T19:25:25Z",
+      "artifacts": [
+        {
+          "path": "specs/022_direct_multi_family_bundle/reports/01_multi-family-research.md",
+          "type": "research_report",
+          "summary": "Analysis of 3 coverage sorries in ClosedFlagIntBFMCS bridge pattern; proposes direct multi-family construction where families = discreteClosedMCS members, eliminating modal coverage sorries while F/P sorries remain as documented blockers"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/reports/02_naming-conventions.md",
+          "type": "research_report",
+          "summary": "Naming convention analysis from reports 17-20: distinguishes MCS (world states) from D (time indices), proposes variable naming guidelines, identifies W=D conflation anti-pattern"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/plans/01_direct-bundle-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for direct multi-family BFMCS construction"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/DirectMultiFamilyBFMCS.lean",
+          "type": "lean_module",
+          "summary": "Direct multi-family BFMCS construction indexed by discreteClosedMCS members"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting completed work and remaining sorries"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/reports/03_implementation-review.md",
+          "type": "research_report",
+          "summary": "Mathematical analysis of BFMCS Int architecture; identifies cross-family modal_forward as fundamentally impossible; recommends CanonicalMCS domain for sorry-free completion"
+        }
+      ],
+      "planned": "2026-03-21T19:38:43Z",
+      "started": "2026-03-21T19:40:14Z",
+      "abandoned": "2026-03-23T07:04:41Z"
+    },
+    {
+      "project_number": 989,
+      "project_name": "discrete_algebraic_completeness",
+      "status": "abandoned",
+      "blocked_on": "Task 995 (FMCS domain transfer) + Task 974 (SuccOrder instance)",
+      "language": "lean",
+      "created": "2026-03-17T02:43:07Z",
+      "last_updated": "2026-03-19T00:00:00Z",
+      "description": "Prove discrete algebraic completeness using D = Int. Requires: (1) FMCS domain transfer from CanonicalMCS to Int (task 995), (2) proving DF and DP axioms are valid in DiscreteCanonicalTaskFrame Int (the parametric canonical TaskFrame instantiated at Int), (3) SuccOrder instance on DiscreteTimelineQuot (task 974, archived), (4) wiring discrete_representation_conditional to obtain valid_discrete φ → ⊢_discrete φ.",
+      "artifacts": [],
+      "abandoned": "2026-03-23T07:04:41Z"
+    },
+    {
+      "project_number": 988,
+      "project_name": "dense_algebraic_completeness",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-03-17T02:43:07Z",
+      "last_updated": "2026-03-19T19:19:26Z",
+      "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
+      "artifacts": [
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/research-001.md",
+          "type": "research",
+          "summary": "Analyzed D-parametric infrastructure for dense algebraic completeness with D=Rat. Core gap: construct_bfmcs function. Recommended: embed CanonicalMCS into Rat via Cantor theorem."
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/research-002.md",
+          "type": "research",
+          "summary": "Deep blocker analysis: TimelineQuot designed for order properties not temporal coherence. Recommends Option B: CanonicalMCS quotient via Antisymmetrization + Cantor isomorphism."
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md",
+          "type": "handoff",
+          "summary": "Architectural blocker analysis: TimelineQuot transfer cannot prove temporal coherence"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/research-003.md",
+          "type": "research",
+          "summary": "Semantics architecture analysis: W-D distinction, WorldHistory structure, CanonicalQuot path"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md",
+          "type": "summary",
+          "summary": "Blocked: plan architectural issues - CanonicalMCS lacks totality and countability"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/research-004.md",
+          "type": "research",
+          "summary": "Blocker analysis + W/D architecture. Recommends Option C: separated W/D with TimelineQuot for D"
+        },
+        {
+          "type": "research",
+          "path": "specs/988_dense_algebraic_completeness/reports/research-005.md",
+          "summary": "Analysis of forward_F witness placement blocker with recommendation for multi-family W/D separation approach"
+        },
+        {
+          "type": "summary",
+          "path": "specs/988_dense_algebraic_completeness/summaries/02_implementation-summary.md",
+          "summary": "Detailed analysis of blocking issue in multi-family W/D separation approach"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/summaries/03_sorry-analysis-summary.md",
+          "type": "summary",
+          "summary": "Analysis of 4 ClosureSaturation sorries - forward_F/backward_P need dovetailing, modal_backward needs multi-family BFMCS"
+        },
+        {
+          "type": "research",
+          "path": "specs/988_dense_algebraic_completeness/reports/07_post-982-resolution.md",
+          "summary": "Post-982 resolution: direct TimelineQuot truth lemma approach, avoids BFMCS modal_backward issue"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/08_bridge-elimination-analysis.md",
+          "type": "research",
+          "summary": "Analysis of bridge-free approaches to dense algebraic completeness, recommending DovetailedTimelineQuot path"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/StagedConstruction/DovetailedTimelineQuot.lean",
+          "type": "implementation",
+          "summary": "DovetailedTimelineQuot with Cantor prerequisites (1 sorry in density intermediate)"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/StagedConstruction/DovetailedFMCS.lean",
+          "type": "implementation",
+          "summary": "FMCS construction over DovetailedTimelineQuot (sorry-free)"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/handoffs/02_density-gap-analysis.md",
+          "type": "handoff",
+          "summary": "Analysis of density gap: dovetailed construction lacks pair-wise density"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/summaries/04_architectural-gap-analysis.md",
+          "type": "summary",
+          "summary": "Detailed analysis of why plan v9 TimelineQuot-DovetailedCoverage bridge cannot be implemented - architectural gap between DenseTimeline and DovetailedBuild constructions"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/09_fmcs-transfer-unblock.md",
+          "type": "research",
+          "summary": "Analysis of how FMCSTransfer from Task 995 relates to dense algebraic completeness; identifies that direct instantiation for D=Rat is blocked but recommends DovetailedCoverage bridges instead"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/10_dovetailed-timelinequot-bridge.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for dense algebraic completeness via TimelineQuot forward_F connection (v10)"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/summaries/05_v10-implementation-summary.md",
+          "type": "summary",
+          "summary": "Plan v10 Phase 1 blocked: chain witness lemmas need j>0 case proved"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/12_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Analysis of forward_F chain witness blocker: j=0 proven, j>0 sorry. Recommends total-depth induction fix (Option 4)."
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/12_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Alternative approaches survey: 5 options ranked. Recommends Zorn saturated chain via ChainFMCS infrastructure."
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md",
+          "type": "research",
+          "summary": "Synthesis: Two blockers (forward_F termination, modal_backward). Recommends Zorn saturated chain approach avoiding TimelineQuot gap."
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/11_zorn-saturated-chain.md",
+          "type": "plan",
+          "summary": "4-phase Zorn saturated chain implementation plan for dense algebraic completeness"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Algebraic/SaturatedChain.lean",
+          "type": "implementation",
+          "summary": "Saturated chain definitions and proofs - sorry-free (saturation predicates, density properties)"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/summaries/14_partial-implementation-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation summary: phases 1-2 complete, phases 3-4 blocked on witness-in-flag issue"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/15_blocker-resolution.md",
+          "type": "research",
+          "summary": "Blocker resolution analysis - recommends multi-family BFMCS bundle approach"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/12_multi-family-bfmcs-bundle.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for dense algebraic completeness via multi-family BFMCS bundle approach"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Algebraic/MultiFamilyBFMCS.lean",
+          "type": "implementation",
+          "summary": "Multi-family BFMCS infrastructure with Phase 1 complete, Phase 2 blocked on modal_backward"
+        }
+      ],
+      "session_id": "sess_1773947942_bb4af4",
+      "researched": "2026-03-19T18:55:50Z",
+      "planned": "2026-03-19T19:00:50Z",
+      "recommendation": "Zorn saturated chain approach: use ChainFMCS infrastructure + Zorn to build saturated Flag containing forward_F witnesses by construction. Avoids TimelineQuot termination gap. Est. 10-12h.",
+      "started": "2026-03-19T18:26:51Z",
+      "partial_progress": {
+        "phases_completed": 1,
+        "phases_total": 4,
+        "blocking_issue": "modal_backward requires semantic reasoning not available in syntactic MCS theory",
+        "recommendation": "True multi-family bundle with distinct witnesses per family, or alternative completeness approach"
+      },
+      "dependencies": [
+        2,
+        3
+      ],
+      "abandoned": "2026-03-23T07:04:41Z"
+    },
+    {
       "project_number": 997,
       "project_name": "wire_algebraic_base_completeness",
       "status": "completed",
