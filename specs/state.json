@@ -1024,14 +1024,14 @@
     {
       "project_number": 47,
       "project_name": "prove_iter_f_leaves_closure",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "description": "Prove that for any formula phi, the iterated F-application iter_F n phi eventually leaves the subformula closure. Define or compute the maximum F-nesting depth in closureWithNeg(phi), then prove that iter_F (max_depth + 1) phi is NOT in closureWithNeg(phi). This provides the foundation for proving boundedness: in any RestrictedMCS over phi, the sequence iter_F 1 phi, iter_F 2 phi, ... must eventually exit the closure.",
       "effort": "2-3 hours",
       "parent_task": 36,
       "dependencies": [],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T08:11:16Z",
+      "last_updated": "2026-03-23T08:22:24Z",
       "artifacts": [
         {
           "type": "research",
@@ -1042,11 +1042,18 @@
           "path": "specs/047_prove_iter_f_leaves_closure/plans/01_closure-depth-bound.md",
           "type": "plan",
           "summary": "4-phase implementation plan for proving iter_F leaves closureWithNeg"
+        },
+        {
+          "path": "specs/047_prove_iter_f_leaves_closure/summaries/01_closure-depth-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for iter_F leaves closure proof"
         }
       ],
       "session_id": "sess_1774253452_4411a0",
       "planned": "2026-03-23T08:08:58Z",
-      "started": "2026-03-23T08:11:16Z"
+      "started": "2026-03-23T08:11:16Z",
+      "completed": "2026-03-23T08:22:24Z",
+      "completion_summary": "Proved iter_F leaves closureWithNeg at bounded depth. Defined f_nesting_depth, max_F_depth_in_closure. Proved iter_F_not_mem_closureWithNeg, restricted_mcs_iter_F_bound, restricted_mcs_F_bounded. Foundation for task 48 (succ_chain_fam bounded F-depth)."
     },
     {
       "project_number": 48,

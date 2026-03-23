@@ -45,7 +45,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 **Phase 1 — Parallel (no dependencies):**
 
 1. **34** → implementing (prove 3 SuccExistence seed consistency axioms — axioms 1-3)
-2. **47** → implementing (prove iter_F leaves subformula closure at bounded depth — foundation for 36)
+2. **47** → completed (prove iter_F leaves subformula closure at bounded depth — foundation for 36)
 3. **45** → plan, then implement (research modified successor seed for CanonicalTask p-step — foundation for 40)
 
 **Phase 2 — Parallel (each depends on one Phase 1 task):**

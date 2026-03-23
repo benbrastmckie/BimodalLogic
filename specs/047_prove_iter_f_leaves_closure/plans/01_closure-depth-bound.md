@@ -1,7 +1,7 @@
 # Implementation Plan: Prove iter_F Leaves Closure
 
 - **Task**: 47 - prove_iter_f_leaves_closure
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (existing infrastructure is sufficient)
 - **Research Inputs**: specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md
@@ -108,7 +108,7 @@ Key findings from the parent task 36 spawn analysis:
 
 ---
 
-### Phase 4: RestrictedMCS Application [IN PROGRESS]
+### Phase 4: RestrictedMCS Application [COMPLETED]
 
 **Goal**: Connect closure bounds to RestrictedMCS membership to enable Task 48.
 
