@@ -88,36 +88,6 @@ Phase A              Phase B              Phase C
 
 ---
 
-### 51. Fill forward chain P-step sorry using constrained successor seed
-- **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
-- **Language**: lean4
-- **Dependencies**: Task 50
-- **Parent Task**: 46
-- **Research**: [03_spawn-analysis.md](046_prove_forward_chain_p_step/reports/03_spawn-analysis.md)
-
-**Description**: Using the constrained successor seed infrastructure from task 50, fill the sorry at SuccChainFMCS.lean:350 for the forward chain P-step case. Apply successor_p_step theorem to prove p_content(forward_chain(k+1)) subset forward_chain(k) union p_content(forward_chain(k)). Fill the sorry in succ_chain_fam_p_step for the ofNat case.
-
----
-
-### 50. Implement constrained successor seed for P-step
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Summary**: Implemented constrained successor seed with P-step blocking formulas. Proved successor_p_step theorem. Eliminated sorry in succ_chain_fam_p_step. Zero sorries, zero new axioms.
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: 46
-- **Research**:
-  - [03_spawn-analysis.md](046_prove_forward_chain_p_step/reports/03_spawn-analysis.md)
-  - [02_research.md](050_implement_constrained_successor_seed_for_p_step/reports/02_research.md)
-- **Plan**: [01_constrained-successor-seed.md](050_implement_constrained_successor_seed_for_p_step/plans/01_constrained-successor-seed.md)
-- **Implementation Summary**: [01_implementation-summary.md](050_implement_constrained_successor_seed_for_p_step/summaries/01_implementation-summary.md)
-
-**Description**: Implement the symmetric counterpart to task 34's constrained predecessor seed. Define p_step_blocking_formulas(u) = {H(neg phi) | P(phi) not in u and phi not in u} in SuccExistence.lean. Define constrained_successor_seed(u) = g_content(u) union deferralDisjunctions(u) union p_step_blocking_formulas(u). Prove p_step_blocking_formulas_subset_u, constrained_successor_seed_consistent, and successor_p_step theorem. Update successor construction to use constrained seed.
-
----
-
 ### 49. FMP-based boundedness proof (fallback)
 - **Effort**: 6-8 hours
 - **Status**: [RESEARCHED]
@@ -132,7 +102,7 @@ Phase A              Phase B              Phase C
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -140,93 +110,13 @@ Phase A              Phase B              Phase C
   - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
   - [01_bounded-f-depth.md](048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md)
   - [02_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/02_team-research.md)
+  - [03_blocker-analysis.md](048_prove_succ_chain_fam_bounded_f_depth/reports/03_blocker-analysis.md)
 - **Plan**:
   - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
   - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)
 - **Summary**: [01_restricted-succ-chain-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md)
 
 **Description**: Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.
-
----
-
-### 47. Prove iter_F leaves subformula closure at bounded depth
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Summary**: Proved iter_F leaves closureWithNeg at bounded depth. Defined f_nesting_depth, max_F_depth_in_closure. Proved iter_F_not_mem_closureWithNeg, restricted_mcs_iter_F_bound, restricted_mcs_F_bounded. Foundation for task 48 (succ_chain_fam bounded F-depth).
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: 36
-- **Research**: [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
-- **Plan**: [01_closure-depth-bound.md](047_prove_iter_f_leaves_closure/plans/01_closure-depth-bound.md)
-
-**Description**: Prove that for any formula phi, the iterated F-application iter_F n phi eventually leaves the subformula closure. Define or compute the maximum F-nesting depth in closureWithNeg(phi), then prove that iter_F (max_depth + 1) phi is NOT in closureWithNeg(phi). This provides the foundation for proving boundedness: in any RestrictedMCS over phi, the sequence iter_F 1 phi, iter_F 2 phi, ... must eventually exit the closure.
-
----
-
-### 46. Prove forward chain p-step from research findings
-- **Effort**: 2-3 hours
-- **Status**: [BLOCKED]
-- **Started**: 2026-03-23
-- **Language**: lean4
-- **Dependencies**: Task 45, Task 50, Task 51
-- **Parent Task**: 40
-- **Blocker**: Forward chain P-step cannot be proven without additional infrastructure (forward chain construction lacks pastDeferralDisjunctions). Spawned tasks 50-51 to resolve.
-- **Research**:
-  - [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
-  - [02_team-research.md](specs/046_prove_forward_chain_p_step/reports/02_team-research.md)
-- **Plan**: [02_transfer-only-plan.md](specs/046_prove_forward_chain_p_step/plans/02_transfer-only-plan.md)
-- **Summary**: [01_implementation-summary.md](specs/046_prove_forward_chain_p_step/summaries/01_implementation-summary.md)
-
-**Description**: Prove forward chain p-step using canonical model transfer pattern (canonical_backward_P). No axioms allowed. Fill sorry at SuccChainFMCS.lean:350 using existing sorry-free infrastructure.
-
----
-
-### 45. Research modified successor seed for CanonicalTask p-step
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Summary**: No clean structural solution exists. Epistemic asymmetry prevents constraining P-formulas in successor. Recommend reformulating completeness to avoid forward p-step, or accept minimal axiom.
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: 40
-- **Research**:
-  - [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
-  - [01_modified-succ-seed-research.md](specs/045_research_modified_successor_seed/reports/01_modified-succ-seed-research.md)
-- **Plan**: [01_research-plan.md](specs/045_research_modified_successor_seed/plans/01_research-plan.md)
-
-**Description**: Research how to modify the successor seed construction to satisfy p-step, focusing specifically on the CanonicalTask relation (not ExistsTask Kripke semantics). Key questions: Can futureDeferralDisjunctionsForP be defined? Can temp_a constrain P-formulas in Lindenbaum extension? Can h_content_reverse derive p-step constraints?
-
----
-
-### 44. Prove backward sorry and make irreflexivity derivable
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Dependencies**: none
-- **Parent**: Task 26 (phases 6-7 skipped)
-- **Research**:
-  - [01_teammate-a-findings.md](specs/044_prove_backward_sorry_irreflexivity/reports/01_teammate-a-findings.md) — Primary approach: backward sorry likely unprovable, irreflexivity impossible under reflexive semantics
-  - [02_teammate-b-findings.md](specs/044_prove_backward_sorry_irreflexivity/reports/02_teammate-b-findings.md) — Alternative approaches: per-construction strictness exists, Layer 2 deletion recommended
-  - [01_team-research.md](specs/044_prove_backward_sorry_irreflexivity/reports/01_team-research.md) — Synthesis: reframe as delete existsTask_irreflexive_axiom and Layer 2 dependents
-- **Plan**: [01_delete-irreflexivity-axiom.md](specs/044_prove_backward_sorry_irreflexivity/plans/01_delete-irreflexivity-axiom.md) — 5-phase plan: delete axiom + deprecated theorems
-- **Summary**: [01_implementation-summary.md](specs/044_prove_backward_sorry_irreflexivity/summaries/01_implementation-summary.md) — Deleted existsTask_irreflexive_axiom and 6 deprecated theorems (~260 lines). Axiom count reduced by 1. Original scope mathematically impossible under reflexive semantics.
-
-**Description**: Complete the optional phases 6-7 from task 26. Phase 6: Prove `ExistsTask M N → ∃ n >= 1, CanonicalTask M n N` in CanonicalRecovery.lean (the backward sorry). This requires analyzing the Lindenbaum witness construction and proving witnesses satisfy the F-step condition. Phase 7: Once backward sorry is filled, derive ExistsTask irreflexivity from canonicalTask_irreflexive, completing the dual derivation. High effort, exploratory work.
-
----
-
-### 43. Archive StagedConstruction and DiscreteTimeline paths to Boneyard
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Summary**: Archived 40 files to Boneyard, eliminated axioms 7-9. Axiom count 9→6.
-- **Research**: [01_archival-analysis.md](specs/043_archive_dead_paths_to_boneyard/reports/01_archival-analysis.md)
-- **Plan**: [01_archival-plan.md](specs/043_archive_dead_paths_to_boneyard/plans/01_archival-plan.md)
-- **Implementation**: [01_archival-summary.md](specs/043_archive_dead_paths_to_boneyard/summaries/01_archival-summary.md)
-- **Language**: lean4
-
-**Description**: Archive superseded code paths to Boneyard to eliminate axioms 7-9. Move StagedConstruction/ directory, Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), and Canonical/CanonicalTimeline.lean to Boneyard. These carry 3 axioms (`discrete_Icc_finite_axiom`, `discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) and several sorries, all superseded by the SuccChain completeness approach. Update imports and verify `lake build` passes.
 
 ---
 
@@ -273,24 +163,6 @@ Phase A              Phase B              Phase C
 
 ---
 
-### 40. Add p-step condition to Succ relation or prove successor_satisfies_p_step
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Depends On**: Task 35 (partial), Task 45, Task 46
-- **Resolution**: Superseded by tasks 50+51 (constrained successor seed approach)
-- **Spawned**: Task 45 (research), Task 46 (implementation)
-- **Research**:
-  - [01_team-research.md](specs/040_succ_p_step_forward_chain/reports/01_team-research.md)
-  - [03_reassessment.md](specs/040_succ_p_step_forward_chain/reports/03_reassessment.md) — Goal achieved by child tasks
-- **Plan**: [02_proof-based-approach.md](specs/040_succ_p_step_forward_chain/plans/02_proof-based-approach.md)
-- **Analysis**: [01_impossibility-analysis.md](specs/040_succ_p_step_forward_chain/summaries/01_impossibility-analysis.md)
-- **Spawn Analysis**: [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
-
-**Description**: Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).
-
----
-
 ### 39. Study preorder semantics conformance with Task Semantics specifications
 - **Effort**: 3h
 - **Status**: [RESEARCHED]
@@ -327,49 +199,6 @@ Phase A              Phase B              Phase C
 - **Dependencies**: Task 47, Task 48, Task 49
 
 **Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:615) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
-
----
-
-### 35. Prove remaining sorries and axioms in Succ-chain completeness pipeline
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Summary**: All 4 phases completed: contraction via DerivationTree.weakening, single_step_forcing_past with explicit p_step parameter, backward_witness via induction, succ_chain_fam_p_step proven using forward_chain_p_step from constrained successor (tasks 50+51).
-- **Language**: lean4
-- **Depends On**: Task 34 (non-blocking), Task 40 (blocks Phase 4)
-- **Research**:
-  - [01_team-research.md](035_prove_succ_chain_remaining_sorries/reports/01_team-research.md) — Team synthesis (2 teammates)
-  - [02_reassessment.md](035_prove_succ_chain_remaining_sorries/reports/02_reassessment.md) — Reassessment confirming completion
-- **Plan**: [01_prove-sorries-plan.md](035_prove_succ_chain_remaining_sorries/plans/01_prove-sorries-plan.md)
-- **Summary**: [01_implementation-summary.md](035_prove_succ_chain_remaining_sorries/summaries/01_implementation-summary.md)
-
-**Description**: Prove remaining sorries and axioms in Succ-chain completeness pipeline. After task 997 (Succ-chain base completeness) and excluding task 34 (SuccExistence axioms), 7 items remain: (1) SuccChainFMCS axioms: f_nesting_boundary, p_nesting_boundary (provable via well-founded induction on formula depth), succ_chain_fam_p_step (provable via induction on chain structure). (2) New sorries from task 997: Box backward direction in SuccChainTruth.lean:254 (not used in completeness but needed for full bidirectional truth lemma), structural contraction in SuccChainCompleteness.lean:109 (provable by induction). (3) P-direction inherited sorries: backward_witness in CanonicalTaskRelation.lean:785, succ_propagates_P_not in SuccRelation.lean:497. All items are provable — no architectural blockers. Depends on task 34 (non-blocking: task 34 reduces axiom count but these items are independent).
-
----
-
-### 34. Prove SuccExistence seed consistency axioms
-- **Effort**: 5-10 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Summary**: Eliminated predecessor_f_step_axiom via constrained predecessor seed with F-step blocking formulas. Zero axioms remain in SuccExistence.lean.
-- **Language**: lean4
-- **Dependencies**: none
-- **Follow-up from**: Task 29 Phase 7 (deferred)
-- **Research**:
-  - [01_seed-consistency-research.md](034_prove_succ_seed_consistency_axioms/reports/01_seed-consistency-research.md)
-  - [02_team-research.md](034_prove_succ_seed_consistency_axioms/reports/02_team-research.md) — Team synthesis (3 teammates): blocker analysis
-  - [02_teammate-a-findings.md](034_prove_succ_seed_consistency_axioms/reports/02_teammate-a-findings.md) — Provability analysis
-  - [02_teammate-b-findings.md](034_prove_succ_seed_consistency_axioms/reports/02_teammate-b-findings.md) — Alternative constructions
-  - [02_teammate-c-findings.md](034_prove_succ_seed_consistency_axioms/reports/02_teammate-c-findings.md) — Semantic necessity
-  - [03_team-research.md](034_prove_succ_seed_consistency_axioms/reports/03_team-research.md) — Team round 2: constrained seed solution
-  - [03_teammate-a-findings.md](034_prove_succ_seed_consistency_axioms/reports/03_teammate-a-findings.md) — Alt 3B ruled out
-  - [03_teammate-b-findings.md](034_prove_succ_seed_consistency_axioms/reports/03_teammate-b-findings.md) — Constrained Lindenbaum analysis
-  - [03_teammate-c-findings.md](034_prove_succ_seed_consistency_axioms/reports/03_teammate-c-findings.md) — Bidirectional construction (recommended)
-- **Plan**:
-  - [01_seed-axiom-elimination.md](034_prove_succ_seed_consistency_axioms/plans/01_seed-axiom-elimination.md) — v1 (Phase 4 blocked)
-  - [02_constrained-seed-approach.md](034_prove_succ_seed_consistency_axioms/plans/02_constrained-seed-approach.md) — v2 (constrained seed solution)
-
-**Description**: Prove or remove the 3 axioms in `Bundle/SuccExistence.lean` that were deferred from task 29 Phase 7: (1) `successor_deferral_seed_consistent_axiom` (line 266) — asserts successor deferral seed is consistent, (2) `predecessor_deferral_seed_consistent_axiom` (line 311) — symmetric predecessor version, (3) `predecessor_f_step_axiom` (line 516) — F-step condition for predecessor construction. Under reflexive semantics with T-axiom available, these seed consistency claims may be provable syntactically. The seeds contain `g_content(u) ∪ {φ ∨ F(φ) | F(φ) ∈ u}` (successor) or `h_content(u) ∪ {φ ∨ P(φ) | P(φ) ∈ u}` (predecessor). The deferral disjunctions `φ ∨ F(φ)` are tautological consequences of `F(φ)`, and the g_content formulas are jointly consistent by MCS properties. Research whether T-axiom (`G(φ) → φ`) provides enough to close these proofs. Note: discrete seed axioms (`discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) are covered by task 24.
 
 ---
 
