@@ -8,23 +8,29 @@
     {
       "project_number": 40,
       "project_name": "succ_p_step_forward_chain",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).",
       "depends_on": [
         35
       ],
       "created": "2026-03-23T05:47:47Z",
-      "last_updated": "2026-03-23T06:13:00Z",
-      "session_id": "sess_1774245524_af7e72",
+      "last_updated": "2026-03-23T06:29:34Z",
+      "session_id": "sess_1774247203_5feac8",
       "researched": "2026-03-23T06:13:00Z",
       "artifacts": [
         {
           "path": "specs/040_succ_p_step_forward_chain/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates"
+        },
+        {
+          "path": "specs/040_succ_p_step_forward_chain/plans/01_successor-p-step-axiom.md",
+          "type": "plan",
+          "summary": "4-phase plan: add axiom, add forward_chain_p_step, fill sorry, verify"
         }
-      ]
+      ],
+      "planned": "2026-03-23T06:29:34Z"
     },
     {
       "project_number": 39,
@@ -57,12 +63,12 @@
     {
       "project_number": 38,
       "project_name": "prove_box_backward_truth_lemma",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "description": "Prove Box backward direction in succ_chain_truth_lemma (SuccChainTruth.lean:254). The sorry states: given psi true at all histories in singleton Omega, derive Box(psi) in MCS. Since psi in MCS does NOT imply Box(psi) in MCS for arbitrary MCS, this cannot be proven with the current singleton-Omega model. Requires either: (1) extending to a multi-history BFMCS model where Box is semantically grounded, (2) refactoring the truth lemma to break the forward/backward mutual dependence in the imp case (line 210 uses backward IH via .mpr), or (3) proving a restricted version sufficient for completeness. This sorry is structurally load-bearing — it contaminates succ_chain_truth_forward and the completeness theorem via sorry propagation through the biconditional induction.",
       "created": "2026-03-23T05:20:00Z",
-      "last_updated": "2026-03-23T06:13:04Z",
-      "session_id": "sess_1774245580_9330ce",
+      "last_updated": "2026-03-23T06:28:44Z",
+      "session_id": "sess_1774247304_3ad07b",
       "researched": "2026-03-23T06:13:04Z",
       "artifacts": [
         {
