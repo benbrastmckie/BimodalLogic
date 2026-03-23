@@ -8,12 +8,12 @@
     {
       "project_number": 43,
       "project_name": "archive_dead_paths_to_boneyard",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "description": "Archive StagedConstruction/ and DiscreteTimeline paths to Boneyard to eliminate axioms 7-9. These paths are superseded by the SuccChain completeness approach and carry 3 axioms (discrete_Icc_finite_axiom, discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom) plus several sorries. Move to Boneyard: StagedConstruction/ directory (DiscreteSuccSeed.lean, DovetailedBuild.lean, StagedExecution.lean, DovetailedTimelineQuot.lean, Completeness.lean, TimelineQuotCompleteness.lean), Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), Canonical/CanonicalTimeline.lean. Update imports in any files that reference these modules. Verify lake build passes after archival.",
       "created": "2026-03-23T07:08:08Z",
-      "last_updated": "2026-03-23T07:20:20Z",
-      "session_id": "sess_1774249837_ba0417",
+      "last_updated": "2026-03-23T07:21:33Z",
+      "session_id": "sess_1774250478_1f564b",
       "researched": "2026-03-23T07:20:20Z"
     },
     {
@@ -848,14 +848,21 @@
     {
       "project_number": 34,
       "project_name": "prove_succ_seed_consistency_axioms",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-23T03:48:09Z",
-      "last_updated": "2026-03-23T07:18:06Z",
+      "last_updated": "2026-03-23T07:22:06Z",
       "dependencies": [],
       "description": "Prove or remove the 3 SuccExistence axioms deferred from task 29 Phase 7: successor_deferral_seed_consistent_axiom, predecessor_deferral_seed_consistent_axiom, and predecessor_f_step_axiom (all in Bundle/SuccExistence.lean). These seed consistency axioms assert that deferral seeds are satisfiable, which should follow from T-axiom under reflexive semantics. Also un-supersede task 26 (canonicalR_irreflexive_axiom was NOT deleted by task 29 and still contradicts proven canonicalR_reflexive).",
-      "artifacts": [],
-      "session_id": "sess_1774250274_6670c6"
+      "artifacts": [
+        {
+          "path": "specs/034_prove_succ_seed_consistency_axioms/reports/01_seed-consistency-research.md",
+          "type": "research_report",
+          "summary": "Analysis of 3 axioms: seed consistency axioms (1-2) likely provable via WitnessSeed pattern; F-step axiom (3) requires more analysis"
+        }
+      ],
+      "session_id": "sess_1774250274_6670c6",
+      "researched": "2026-03-23T07:22:06Z"
     }
   ],
   "next_project_number": 44,
