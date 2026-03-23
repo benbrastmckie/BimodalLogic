@@ -233,6 +233,17 @@ Key findings from `06_team-research.md`:
   - The "persistence" case (inr branch) has sorry - requires well-founded recursion on combined measure
   - Mathematical argument is valid (documented in comments), but formal proof needs infrastructure
 
+**2026-03-23 Update (Session sess_1774298091_fcd47e)**:
+- SIMPLIFIED: `restricted_forward_chain_iter_F_witness` (~line 2195-2261)
+  - Consolidated the complex branching structure into a cleaner proof
+  - The "depth decrease" case (inl branch) remains fully proven
+  - The "persistence" case (inr branch) is documented with a single sorry at line 2261
+  - Key mathematical insight documented: F-boundedness + negation completeness bounds persistence
+  - The theorem is only used with d = 1 in `restricted_forward_chain_forward_F`
+- STATUS: Phase remains PARTIAL due to the persistence case sorry
+  - Mathematical validity confirmed
+  - Formal proof requires well-founded recursion infrastructure (future task)
+
 **Goal**: Build the restricted chain and remove deprecated sorries.
 
 **Tasks**:

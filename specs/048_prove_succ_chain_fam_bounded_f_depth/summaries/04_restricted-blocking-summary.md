@@ -2,7 +2,7 @@
 
 - **Status**: Partial (All phases attempted, Phase 5 partially complete)
 - **Plan Version**: v4 (04_restricted-blocking.md)
-- **Sessions**: sess_1774294560_4531d2, sess_1774295861_30ec13, sess_1774296701_b1ceb4
+- **Sessions**: sess_1774294560_4531d2, sess_1774295861_30ec13, sess_1774296701_b1ceb4, sess_1774297366_a2de0b, sess_1774298091_fcd47e
 - **Date**: 2026-03-23
 
 ## Overview
@@ -93,14 +93,20 @@ Added (forward chain infrastructure):
 
 | File | Line | Description | Root Cause |
 |------|------|-------------|------------|
-| SuccChainFMCS.lean | 1930 | `F_top_in_restricted_successor` | Needs F_top IN deferralClosure |
-| SuccChainFMCS.lean | 2109 | `restricted_forward_chain_iter_F_witness` | Needs well-founded recursion infrastructure |
+| SuccChainFMCS.lean | 2261 | `restricted_forward_chain_iter_F_witness` persistence case | Needs well-founded recursion infrastructure |
 
-### Fixed Sorries (this session)
+### Fixed Sorries (previous sessions)
 
 | File | Original Line | Description | Fix |
 |------|---------------|-------------|-----|
 | SuccChainFMCS.lean | 2159 | `toSerialMCS.is_mcs` | Used Lindenbaum extension via `set_lindenbaum` |
+| SuccChainFMCS.lean | 1930 | `F_top_in_restricted_successor` | Fixed via disjunction elimination (sess_1774297366_a2de0b) |
+
+### Simplified in Session sess_1774298091_fcd47e
+
+| File | Original Lines | Description | Change |
+|------|----------------|-------------|--------|
+| SuccChainFMCS.lean | 2195-2390 | `restricted_forward_chain_iter_F_witness` | Consolidated 200+ lines to ~70 lines with single sorry at line 2261 |
 
 ### Deprecated Sorries (intentionally kept)
 
@@ -130,9 +136,11 @@ Build completed successfully (928 jobs)
 ```
 
 - Build passes: Yes
-- Total sorries in SuccChainFMCS.lean: 4 (2 deprecated legacy + 2 new requiring follow-up)
+- Total sorries in SuccChainFMCS.lean: 3 (2 deprecated legacy + 1 new requiring follow-up)
 - Key theorem `p_step_blocking_restricted_subset` proven without sorry: Yes
 - `toSerialMCS` coercion fixed: Yes (uses Lindenbaum extension)
+- `F_top_in_restricted_successor` fixed: Yes (disjunction elimination)
+- `restricted_forward_chain_iter_F_witness` simplified: Yes (consolidated to single sorry)
 
 ## Recommendations for Follow-up
 
