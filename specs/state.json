@@ -718,10 +718,10 @@
     {
       "project_number": 997,
       "project_name": "wire_algebraic_base_completeness",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-19T17:05:00Z",
-      "last_updated": "2026-03-23T04:26:01Z",
+      "last_updated": "2026-03-23T04:28:52Z",
       "depends_on": [
         995
       ],
@@ -755,11 +755,6 @@
           "summary": "Validity definition unification analysis - found ONE canonical valid, gap is satisfies_at bridge"
         },
         {
-          "path": "specs/997_wire_algebraic_base_completeness/plans/02_validity-bridge-plan.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan to bridge FlagBFMCS satisfaction to canonical validity via Int-embedding"
-        },
-        {
           "path": "specs/997_wire_algebraic_base_completeness/summaries/02_validity-bridge-summary.md",
           "type": "summary",
           "summary": "Implementation summary documenting the bridge gap and recommendations"
@@ -773,9 +768,14 @@
           "path": "specs/997_wire_algebraic_base_completeness/reports/05_team-research.md",
           "type": "research",
           "summary": "Synthesized team research: Succ-chain bypass for base completeness, CanonicalTask over CanonicalR, aligned with reflexive refactor"
+        },
+        {
+          "path": "specs/997_wire_algebraic_base_completeness/plans/03_succ-chain-completeness.md",
+          "type": "plan",
+          "summary": "Succ-chain completeness plan (v3) - bypasses BFMCS, uses CanonicalTask"
         }
       ],
-      "planned": "2026-03-20T01:00:46Z",
+      "planned": "2026-03-23T04:28:52Z",
       "started": "2026-03-20T01:19:59Z"
     },
     {
