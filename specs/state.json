@@ -1170,6 +1170,11 @@
           "path": "specs/050_implement_constrained_successor_seed_for_p_step/reports/02_research.md",
           "type": "research",
           "summary": "Verified mathematical approach: P-step blocking formulas symmetric to task 34, all infrastructure exists, zero-debt compliant"
+        },
+        {
+          "path": "specs/050_implement_constrained_successor_seed_for_p_step/plans/01_constrained-successor-seed.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for constrained successor seed with P-step blocking formulas"
         }
       ],
       "session_id": "sess_1774287993_d9a639",
