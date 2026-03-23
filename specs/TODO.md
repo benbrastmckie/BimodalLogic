@@ -42,7 +42,7 @@ technical_debt:
 
 ### 2. Refactoring
 
-1. **25** → revise plan (Phases 1-2 blocked by same math issue as task 29 — fresh atom fails for pathological MCS. Phases 3-4 rename CanonicalR→ExistsTask, ready now)
+1. **25** → implement (v2 plan: pure rename, 3 phases, 8h — ready now)
 2. **19** → implement (deprecate old discrete pipeline, ready now)
 3. **21** → plan (depends: 18)
 
@@ -157,14 +157,17 @@ technical_debt:
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
 - **Effort**: 12-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
   - [01_team-research.md](025_rename_canonicalr_to_existstask/reports/01_team-research.md) — Audit + architecture + irreflexivity (3 teammates)
-- **Plan**: [01_implementation-plan.md](025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md)
+  - [05_team-research.md](025_rename_canonicalr_to_existstask/reports/05_team-research.md) — Blocker analysis (task 25 vs 29 overlap)
+- **Plan**:
+  - [02_preorder-compatible-rename.md](025_rename_canonicalr_to_existstask/plans/02_preorder-compatible-rename.md) — v2: drops blocked Phases 1-2, pure refactor (current)
+  - [01_implementation-plan.md](025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md) — v1: superseded (blocked on fresh G-atom proofs)
 
-**Description**: Systematically shift the proof architecture from CanonicalR to CanonicalTask/Succ as primary abstractions. Rename CanonicalR to ExistsTask but minimize its use — prefer reasoning in terms of Succ (for immediate succession) and CanonicalTask (for n-step reachability) directly. ExistsTask should only appear where the existential quantification over duration is genuinely needed. Audit all 63 files referencing CanonicalR: categorize each use as (1) naturally Succ, (2) naturally CanonicalTask, or (3) genuinely ExistsTask. Restate definitions, theorems, and proof obligations in the most natural abstraction. This subsumes task 29 Phases 5-6 (canonicalR_irreflexive removal) and task 18 (ExistsTask alias).
+**Description**: Rename CanonicalR to ExistsTask and retire Gabbay infrastructure. v2 plan drops Phases 1-2 (per-witness strictness proofs blocked by same mathematical issue as task 29 — pathological MCS where G(¬q) ∈ M for all atoms). Preserves Task 29's two-layer architecture. Axiom removal is Task 26's scope.
 
 ---
 
