@@ -171,11 +171,12 @@ All groups in Phase 1 are independent and can run in parallel.
 ---
 
 ### 36. Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 4-7 hours
+- **Status**: [RESEARCHED]
 - **Language**: lean4
+- **Research**: [01_f-nesting-research.md](036_prove_f_nesting_boundary/reports/01_f-nesting-research.md)
 
-**Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
+**Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:615) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
 
 ---
 

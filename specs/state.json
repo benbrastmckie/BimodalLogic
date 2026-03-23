@@ -109,12 +109,20 @@
     {
       "project_number": 36,
       "project_name": "prove_f_nesting_boundary",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "description": "Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.",
       "created": "2026-03-23T05:16:00Z",
-      "last_updated": "2026-03-23T07:18:37Z",
-      "session_id": "sess_1774250305_63dbfe"
+      "last_updated": "2026-03-23T07:23:02Z",
+      "session_id": "sess_1774250305_63dbfe",
+      "researched": "2026-03-23T07:23:02Z",
+      "artifacts": [
+        {
+          "path": "specs/036_prove_f_nesting_boundary/reports/01_f-nesting-research.md",
+          "type": "research_report",
+          "summary": "Analyzed f_nesting_boundary axiom. Key finding: proof requires showing F-iterations eventually leave MCS via Nat.find with classical existence proof."
+        }
+      ]
     },
     {
       "project_number": 37,

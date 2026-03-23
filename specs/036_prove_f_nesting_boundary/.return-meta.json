@@ -1,0 +1,14 @@
+{
+  "status": "researched",
+  "artifacts": [{
+    "path": "specs/036_prove_f_nesting_boundary/reports/01_f-nesting-research.md",
+    "type": "research_report",
+    "summary": "Analyzed f_nesting_boundary axiom (SuccChainFMCS.lean:615). Found that proof requires showing F-iterations must eventually leave MCS. Key strategy: use Nat.find with classical existence proof. Helper lemmas needed: iter_F_complexity, iter_F_injective. May need to specialize to succ_chain_fam MCS if general MCS approach insufficient. Estimated 1 implementation phase. p_nesting_boundary follows by symmetry."
+  }],
+  "metadata": {
+    "session_id": "sess_1774250305_63dbfe",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
