@@ -41,10 +41,10 @@
     {
       "project_number": 29,
       "project_name": "switch_to_reflexive_gh_semantics",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T21:31:52Z",
-      "last_updated": "2026-03-23T02:05:55Z",
+      "last_updated": "2026-03-23T02:09:31Z",
       "dependencies": [],
       "description": "Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md",
       "session_id": "sess_1774231309_7c0478",
@@ -126,11 +126,6 @@
           "summary": "Teammate B: blocker re-analysis — antisymmetry is wrong question, fresh G-atom is correct path"
         },
         {
-          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md",
-          "type": "plan",
-          "summary": "v3: Fresh G-atom approach for completing Phases 5-6 (8-12h remaining)"
-        },
-        {
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/09_team-research.md",
           "type": "research",
           "summary": "Team research: CanonicalTask/Succ plan improvement analysis (2 teammates)"
@@ -144,11 +139,6 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/09_teammate-b-findings.md",
           "type": "research",
           "summary": "Teammate B: Succ analysis — no strictness shortcut, substitution lemma needed"
-        },
-        {
-          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan (v4) incorporating substitution lemma as prerequisite infrastructure"
         },
         {
           "path": "specs/029_switch_to_reflexive_gh_semantics/handoffs/01_phase-5.0-progress.md",
@@ -174,11 +164,6 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/20_teammate-c-findings.md",
           "type": "research",
           "summary": "Teammate C: IRR unsoundness proof, correct axiomatization, plan v4 reassessment"
-        },
-        {
-          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md",
-          "type": "plan",
-          "summary": "v5: IRR removal approach — 8 phases, remove unsound IRR rule, restore consistency"
         },
         {
           "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/06_irr-removal-partial.md",
@@ -219,9 +204,14 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md",
           "type": "research",
           "summary": "Analyzed whether removing unboundedness axioms would eliminate strict successor needs. Finding: No - seriality axioms are trivially valid under reflexive semantics (use t itself as witness), but strict successors are needed for ORDER STRUCTURE not axiom soundness. Recommends per-construction strictness via canonicalR_irreflexive."
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/06_per-construction-strictness.md",
+          "type": "plan",
+          "summary": "v6: Per-construction strictness approach - bypass universal fresh atom, prove ¬CanonicalR W M at each call site"
         }
       ],
-      "planned": "2026-03-22T22:43:33Z",
+      "planned": "2026-03-23T02:09:31Z",
       "started": "2026-03-21T22:36:09Z"
     },
     {

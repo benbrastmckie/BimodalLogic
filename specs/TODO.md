@@ -29,7 +29,7 @@ technical_debt:
 
 ### Active Work
 
-- **29** → [PLANNED] (reflexive G/H semantics — v4 plan with substitution lemma, 6 phases, 10h)
+- **29** → [PLANNED] (reflexive G/H semantics — v6 per-construction strictness, 8 phases, 8-12h)
 - **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
 ### Completeness Pipeline
@@ -98,20 +98,21 @@ technical_debt:
 ---
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
-- **Effort**: 12-16 hours (revised: IRR removal approach)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 8-12 hours remaining (revised: per-construction strictness)
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
-  - [01_team-research.md](029_switch_to_reflexive_gh_semantics/reports/01_team-research.md) — Wave 1: axiom analysis (1 of 2 teammates)
-  - [02_historical-issues-analysis.md](029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md) — Historical issues (all resolved/surmountable)
-  - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
-  - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
-  - [07_team-research.md](029_switch_to_reflexive_gh_semantics/reports/07_team-research.md) — Wave 3: blocker resolution (canonicalR_antisymmetric FALSE, Option D recommended)
-  - [08_team-research.md](029_switch_to_reflexive_gh_semantics/reports/08_team-research.md) — Wave 4: CanonicalTask-centric reframing, fresh G-atom approach confirmed
+  - [12_team-research.md](029_switch_to_reflexive_gh_semantics/reports/12_team-research.md) — Wave 6: order-theoretic foundations, antisymmetry fails, fresh atom cardinality flawed
+  - [13_unbounded-axiom-analysis.md](029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md) — Unbounded axiom analysis: seriality trivially valid, strict successor for order structure
   - [09_team-research.md](029_switch_to_reflexive_gh_semantics/reports/09_team-research.md) — Wave 5: substitution lemma identified as key blocker for Phase 5
+  - [08_team-research.md](029_switch_to_reflexive_gh_semantics/reports/08_team-research.md) — Wave 4: CanonicalTask-centric reframing, fresh G-atom approach confirmed
+  - [07_team-research.md](029_switch_to_reflexive_gh_semantics/reports/07_team-research.md) — Wave 3: blocker resolution (canonicalR_antisymmetric FALSE, Option D recommended)
+  - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
+  - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
 - **Plan**:
-  - [05_irr-removal-approach.md](029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md) — v5: IRR removal approach, 8 phases, 12-16h (current)
+  - [06_per-construction-strictness.md](029_switch_to_reflexive_gh_semantics/plans/06_per-construction-strictness.md) — v6: Per-construction strictness, bypass universal fresh atom, 8 phases, 8-12h (current)
+  - [05_irr-removal-approach.md](029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md) — v5: superseded (blocked on fresh atom existence)
   - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: superseded (IRR case misdirected)
   - [03_fresh-g-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md) — v3: superseded
   - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: superseded
