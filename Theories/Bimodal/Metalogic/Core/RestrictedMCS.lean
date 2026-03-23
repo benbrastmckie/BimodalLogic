@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.SubformulaClosure
 import Mathlib.Data.Finset.Basic
 import Mathlib.Order.Zorn
+import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 
 /-!
 # Restricted MCS Construction for Multi-Family BFMCS

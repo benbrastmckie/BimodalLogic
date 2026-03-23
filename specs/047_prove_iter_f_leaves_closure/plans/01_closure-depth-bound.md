@@ -45,7 +45,7 @@ Key findings from the parent task 36 spawn analysis:
 
 ## Implementation Phases
 
-### Phase 1: F-Nesting Depth Definition [NOT STARTED]
+### Phase 1: F-Nesting Depth Definition [COMPLETED]
 
 **Goal**: Define the maximum F-nesting depth of formulas in closureWithNeg(phi).
 
@@ -66,7 +66,7 @@ Key findings from the parent task 36 spawn analysis:
 
 ---
 
-### Phase 2: Closure Membership via F-Depth [NOT STARTED]
+### Phase 2: Closure Membership via F-Depth [COMPLETED]
 
 **Goal**: Prove that iter_F increases F-nesting depth beyond any fixed closure bound.
 
@@ -86,7 +86,7 @@ Key findings from the parent task 36 spawn analysis:
 
 ---
 
-### Phase 3: Main Theorem iter_F Leaves Closure [NOT STARTED]
+### Phase 3: Main Theorem iter_F Leaves Closure [COMPLETED]
 
 **Goal**: Prove the main result that iter_F eventually produces formulas outside closureWithNeg.
 
@@ -108,7 +108,7 @@ Key findings from the parent task 36 spawn analysis:
 
 ---
 
-### Phase 4: RestrictedMCS Application [NOT STARTED]
+### Phase 4: RestrictedMCS Application [IN PROGRESS]
 
 **Goal**: Connect closure bounds to RestrictedMCS membership to enable Task 48.
 

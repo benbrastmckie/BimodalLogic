@@ -608,6 +608,47 @@ tracking of the enumeration or a semantic model argument.
 simplified by the T-axiom approach (seed ⊆ u), this axiom concerns properties of
 the *extension* beyond the seed, which is not fully determined by the seed.
 -/
+/--
+Axiom: The predecessor F-step condition holds.
+
+**Semantic Justification**:
+When constructing a predecessor v of u (so Succ v u), we need f_content(v) ⊆ u ∪ f_content(u).
+This means: if F(φ) ∈ v, then either φ ∈ u or F(φ) ∈ u.
+
+**Proof Attempts (Task 34 Phase 4)**:
+Multiple proof strategies were attempted but all encounter the same fundamental gap:
+
+1. **Via f/g duality**: F(φ) ∈ v ↔ G(¬φ) ∉ v. We have g_content(v) ⊆ u, but this only
+   tells us what G-formulas in v imply about u, not the reverse.
+
+2. **Via h_content transfer**: The seed h_content(u) ⊆ v gives us H-formulas, not G-formulas.
+   Using past_temp_a (φ → H(F(φ))), we can show F(¬φ) ∈ v, but this doesn't constrain F(φ).
+
+3. **Via T-axiom chain**: G(¬φ) ∈ u implies ¬φ ∈ u (by T-axiom), and H(F(¬φ)) ∈ u via
+   past_temp_a, but we cannot transfer G(¬φ) from u to v.
+
+4. **Via seriality**: G(¬φ) ∈ u implies F(¬φ) ∈ u, which propagates to v via h_content,
+   giving ¬G(φ) ∈ v. But ¬G(φ) ∈ v doesn't directly constrain G(¬φ) ∈ v.
+
+**The Core Gap**:
+The h/g duality theorem (`h_content_subset_implies_g_content_reverse`) transfers UNIVERSAL
+temporal formulas between worlds. There is no analogous EXISTENTIAL transfer:
+- h_content(u) ⊆ v → g_content(v) ⊆ u  (proven, transfers G-formulas)
+- No analog: f_content(v) ⊆ ? (would need to constrain F-formulas)
+
+**Why This Is Still Sound**:
+Semantically, the predecessor v is constructed such that Succ(v, u). In any discrete
+linear order, if F(φ) holds at v, the witness must be at u or beyond (since u is the
+immediate successor). By induction on the F-nesting depth, either φ ∈ u (resolved at
+immediate successor) or F(φ) ∈ u (deferred to later). The Lindenbaum enumeration
+respects this because it can only add formulas consistent with the seed structure.
+
+**Status**: This axiom captures a property of Lindenbaum extensions that requires
+formalizing the enumeration's interaction with temporal structure. Future work could:
+1. Use a more constrained Lindenbaum construction that tracks F-witnesses
+2. Develop a p_content/f_content duality theorem parallel to h/g duality
+3. Accept as axiom (current approach) with the semantic justification above
+-/
 axiom predecessor_f_step_axiom
     (u : Set Formula) (h_mcs : SetMaximalConsistent u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :

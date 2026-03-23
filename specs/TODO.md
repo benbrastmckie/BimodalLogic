@@ -27,38 +27,52 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-23 after task 42 research: axiom elimination audit and 7 tasks abandoned*
+*Updated 2026-03-23. Reflexive semantics confirmed as best path to completeness. Tasks 25, 26, 43, 44 completed.*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path. Task 42 is the umbrella.
 
 ### 1. Axiom Elimination — Critical Path (task 42 umbrella)
 
-All groups in Phase 1 are independent and can run in parallel.
+```
+Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
+    34 ─────────────────────────────────────────────────────────────────────→
+    47 ──────────────→ 48 ──────────────→ 36 ──────────────→ 37
+    45 ──────────────→ 46 ──────────────→ 40 ──────────────→ 35 (Phase 4)
+                                                                    │
+                                                              Phase 5: verify
+```
 
-**Phase 1 — Parallel:**
+**Phase 1 — Parallel (no dependencies):**
 
-1. **43** → implement (archive StagedConstruction + DiscreteTimeline to Boneyard — eliminates axioms 7-9)
-2. **26** → implement (delete inconsistent `existsTask_irreflexive_axiom` — contradicts proven `existsTask_reflexive`)
-3. **34** → research (prove 3 SuccExistence seed consistency axioms via deduction theorem — axioms 1-2, and predecessor_f_step axiom 3)
-4. **36** → research (prove `f_nesting_boundary` via Fischer-Ladner closure — axiom 4)
-5. **40** → revise plan, then implement (prove successor p_step WITHOUT adding axiom — restructure seed)
+1. **34** → implementing (prove 3 SuccExistence seed consistency axioms — axioms 1-3)
+2. **47** → implementing (prove iter_F leaves subformula closure at bounded depth — foundation for 36)
+3. **45** → plan, then implement (research modified successor seed for CanonicalTask p-step — foundation for 40)
 
-**Phase 2 — Sequential (depends on Phase 1):**
+**Phase 2 — Parallel (each depends on one Phase 1 task):**
 
-6. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
-7. **35** → resume Phase 4 after 40 (fill `succ_chain_fam_p_step` sorry — the only completeness-path sorry)
+4. **48** → implement after 47 (prove succ_chain_fam MCS have bounded F-depth)
+5. **46** → implement after 45 (prove forward chain p-step from research findings)
 
-**Phase 3 — Verification:**
+**Phase 3 — Parallel (each depends on one Phase 2 chain):**
 
-8. `lean_verify` on completeness theorems — confirm zero custom axioms
-9. Update TODO.md axiom_count to 0
+6. **36** → implement after 47+48 (prove `f_nesting_boundary` — axiom 4; task 49 is fallback if 48 fails)
+7. **40** → implement after 45+46 (prove successor p_step — fills SuccChainFMCS.lean:350 sorry)
+
+**Phase 4 — Parallel (each depends on one Phase 3 task):**
+
+8. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
+9. **35** → resume Phase 4 after 40 (fill `succ_chain_fam_p_step` — the only completeness-path sorry)
+
+**Phase 5 — Verification:**
+
+10. `lean_verify` on completeness theorems — confirm zero custom axioms
+11. Update TODO.md axiom_count to 0
 
 ### 2. Post-Axiom Cleanup
 
-1. **25** → COMPLETED (archive next `/todo` run)
-2. **41** → plan (eliminate D=CanonicalMCS pattern — separate concern, after axiom cleanup)
-3. **21** → defer (tech debt cleanup — depends on 18)
-4. **19** → defer (deprecate old discrete pipeline — low priority after archival)
+1. **41** → plan (eliminate D=CanonicalMCS pattern — separate concern, after axiom cleanup)
+2. **21** → defer (tech debt cleanup — depends on 18)
+3. **19** → defer (deprecate old discrete pipeline — low priority after archival)
 
 ### 3. Deferred — Not Critical Path
 
@@ -131,11 +145,15 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 45. Research modified successor seed for CanonicalTask p-step
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-23
+- **Summary**: No clean structural solution exists. Epistemic asymmetry prevents constraining P-formulas in successor. Recommend reformulating completeness to avoid forward p-step, or accept minimal axiom.
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 40
-- **Research**: [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
+- **Research**:
+  - [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
+  - [01_modified-succ-seed-research.md](specs/045_research_modified_successor_seed/reports/01_modified-succ-seed-research.md)
 - **Plan**: [01_research-plan.md](specs/045_research_modified_successor_seed/plans/01_research-plan.md)
 
 **Description**: Research how to modify the successor seed construction to satisfy p-step, focusing specifically on the CanonicalTask relation (not ExistsTask Kripke semantics). Key questions: Can futureDeferralDisjunctionsForP be defined? Can temp_a constrain P-formulas in Lindenbaum extension? Can h_content_reverse derive p-step constraints?

@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Bundle.SuccRelation
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Syntax.SubformulaClosure
 
 /-!
 # CanonicalTask Relation for Discrete Temporal Frames
@@ -123,6 +124,68 @@ lemma iter_F_injective (phi : Formula) (m n : Nat) (h : iter_F m phi = iter_F n 
 /-- iter_F 1 equals some_future. -/
 lemma iter_F_one_eq_some_future (phi : Formula) :
     iter_F 1 phi = Formula.some_future phi := rfl
+
+/-!
+## iter_F and F-Nesting Depth
+
+These lemmas connect iter_F with the f_nesting_depth measure from SubformulaClosure,
+enabling proofs that iter_F eventually leaves closureWithNeg.
+-/
+
+/-- F-nesting depth of iter_F n phi is n + f_nesting_depth phi.
+
+This is the key lemma connecting iter_F iteration count to f_nesting_depth.
+Since f_nesting_depth counts consecutive outermost F applications, and iter_F
+applies F n times at the outermost level, the depth increases by n.
+-/
+lemma iter_F_f_nesting_depth (n : Nat) (phi : Formula) :
+    Bimodal.Syntax.f_nesting_depth (iter_F n phi) = n + Bimodal.Syntax.f_nesting_depth phi := by
+  induction n with
+  | zero => simp only [iter_F_zero, Nat.zero_add]
+  | succ k ih =>
+    simp only [iter_F_succ, Bimodal.Syntax.f_nesting_depth_some_future, ih]
+    omega
+
+/-- The bound on n for iter_F to leave closureWithNeg.
+
+If n > max_F_depth_in_closure(phi), then iter_F n phi is not in closureWithNeg(phi).
+We define closure_F_bound as max_F_depth + 1 to get the first n that leaves the closure.
+-/
+def closure_F_bound (phi : Formula) : Nat :=
+  Bimodal.Syntax.max_F_depth_in_closure phi + 1
+
+/-- iter_F exceeds the max F-depth bound for large n.
+
+If n >= closure_F_bound(phi), then the f_nesting_depth of iter_F n phi
+exceeds max_F_depth_in_closure(phi).
+-/
+lemma iter_F_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_F_bound phi) :
+    Bimodal.Syntax.f_nesting_depth (iter_F n phi) > Bimodal.Syntax.max_F_depth_in_closure phi := by
+  rw [iter_F_f_nesting_depth]
+  unfold closure_F_bound at h
+  have h_depth_nonneg : Bimodal.Syntax.f_nesting_depth phi ≥ 0 := Nat.zero_le _
+  omega
+
+/-- **Main Theorem**: iter_F n phi is not in closureWithNeg(phi) for large enough n.
+
+This is the key result establishing that iter_F eventually leaves any fixed closure.
+The proof uses f_nesting_depth: if iter_F n phi were in closureWithNeg(phi),
+its f_nesting_depth would be bounded by max_F_depth_in_closure(phi), but
+iter_F increases depth beyond that bound.
+-/
+theorem iter_F_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closure_F_bound phi) :
+    iter_F n phi ∉ Bimodal.Syntax.closureWithNeg phi := by
+  intro h_mem
+  have h_depth_bound : Bimodal.Syntax.f_nesting_depth (iter_F n phi) ≤
+      Bimodal.Syntax.max_F_depth_in_closure phi :=
+    Bimodal.Syntax.f_depth_le_max h_mem
+  have h_exceeds := iter_F_exceeds_max_depth phi n h
+  omega
+
+/-- Explicit form: iter_F at the bound leaves closureWithNeg. -/
+theorem iter_F_leaves_closure (phi : Formula) :
+    iter_F (closure_F_bound phi) phi ∉ Bimodal.Syntax.closureWithNeg phi :=
+  iter_F_not_mem_closureWithNeg phi (closure_F_bound phi) (Nat.le_refl _)
 
 /-!
 ## Forward Chain Definition

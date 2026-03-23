@@ -116,7 +116,7 @@ The research report identified:
 
 ---
 
-### Phase 4: Prove F-step Axiom [IN PROGRESS]
+### Phase 4: Prove F-step Axiom [BLOCKED]
 
 **Goal**: Replace `predecessor_f_step_axiom` with a proven theorem
 

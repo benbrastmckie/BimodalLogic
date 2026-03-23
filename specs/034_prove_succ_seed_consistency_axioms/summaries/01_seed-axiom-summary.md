@@ -1,86 +1,73 @@
-# Implementation Summary: Seed Axiom Elimination (Task 34)
+# Implementation Summary: Prove Seed Consistency Axioms
 
-## Status: PARTIAL
+- **Task**: 34 - prove_succ_seed_consistency_axioms
+- **Status**: PARTIAL (3 of 4 phases completed)
+- **Session**: sess_1774253311_6b489f
 
-Successfully eliminated 2 of 3 axioms. Third axiom documented with detailed technical analysis explaining the blocker.
+## Summary
 
-## Axioms Addressed
+Successfully eliminated 2 of 3 axioms in SuccExistence.lean. The third axiom (`predecessor_f_step_axiom`) remains as an axiom with enhanced documentation after exhaustive proof attempts demonstrated a fundamental gap in the available infrastructure.
 
-### 1. successor_deferral_seed_consistent_axiom [ELIMINATED]
-- **Location**: `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean` line 246
-- **Original**: `axiom successor_deferral_seed_consistent_axiom`
-- **Resolution**: Converted to `theorem` with proof
-- **Proof Strategy**: Under reflexive semantics with T-axiom (Gφ → φ):
-  1. g_content(u) ⊆ u (T-axiom)
-  2. deferralDisjunctions(u) ⊆ u (via MCS implication property on F(ψ) → (ψ ∨ F(ψ)))
-  3. Therefore successor_deferral_seed u ⊆ u
-  4. Since u is MCS, any subset is consistent
+## Phase Results
 
-### 2. predecessor_deferral_seed_consistent_axiom [ELIMINATED]
-- **Location**: `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean` line 334
-- **Original**: `axiom predecessor_deferral_seed_consistent_axiom`
-- **Resolution**: Converted to `theorem` with proof
-- **Proof Strategy**: Temporal dual of successor case using T-axiom (Hφ → φ):
-  1. h_content(u) ⊆ u (T-axiom for past)
-  2. pastDeferralDisjunctions(u) ⊆ u (via MCS implication property on P(ψ) → (ψ ∨ P(ψ)))
-  3. Therefore predecessor_deferral_seed u ⊆ u
+### Phase 1: Prove Successor Seed Consistency [COMPLETED]
+- Replaced `successor_deferral_seed_consistent_axiom` with proven theorem
+- Proof strategy: Show `successor_deferral_seed u ⊆ u` using T-axiom (Gφ → φ, Hφ → φ)
+- Key insight: Under reflexive semantics, g_content(u) ⊆ u and deferralDisjunctions(u) ⊆ u
 
-### 3. predecessor_f_step_axiom [REMAINS - BLOCKED]
-- **Location**: `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean` line 611
-- **Status**: Documented with detailed technical analysis
-- **Blocker**: The axiom concerns properties of the Lindenbaum *extension* beyond the seed.
+### Phase 2: Prove Predecessor Seed Consistency [COMPLETED]
+- Replaced `predecessor_deferral_seed_consistent_axiom` with proven theorem
+- Symmetric proof using h_content and past deferral disjunctions
+- Both seed consistency theorems now proven from MCS properties + T-axiom
 
-**Technical Analysis**:
-- Goal: Show f_content(v) ⊆ u ∪ f_content(u) where v = predecessor_from_deferral_seed
-- Key Lemmas Available:
-  - h_content(u) ⊆ v (by seed extension)
-  - g_content(v) ⊆ u (by h_content_subset_implies_g_content_reverse)
-  - past_temp_a: φ → H(F(φ))
-  - 4-axiom: G(φ) → G(G(φ))
+### Phase 3: Analyze F-step Property [COMPLETED]
+- Documented proof strategy for predecessor_f_step_axiom
+- Identified the h/g duality theorem as the key tool
+- Determined that f/p duality (analog to h/g) does not exist
 
-**Why Blocked**:
-Unlike seed consistency (where seed ⊆ u), this concerns *extension* properties:
-- The Lindenbaum process adds formulas beyond the seed
-- Which F-formulas get added depends on enumeration
-- Need: if F(φ) added to v, then φ ∈ u or F(φ) ∈ u
-- This requires showing certain F-formulas are *inconsistent* with seed + u constraints
-- The duality lemmas transfer H-content to G-content, but not G-content to G-content
+### Phase 4: Prove F-step Axiom [BLOCKED]
+- **Attempted proof strategies**:
+  1. f/g duality approach: F(φ) ∈ v ↔ G(¬φ) ∉ v, but g_content(v) ⊆ u doesn't help
+  2. h_content transfer: past_temp_a gives F(¬φ) ∈ v, not constraining F(φ)
+  3. T-axiom chain: G(¬φ) ∈ u doesn't transfer to predecessor
+  4. seriality: F(¬φ) propagates but doesn't constrain F(φ)
 
-**Possible Future Approaches**:
-1. Explicit Lindenbaum enumeration tracking
-2. Semantic model argument encoding
-3. Additional infrastructure for modal-temporal interactions
+- **Core gap identified**: The h/g duality transfers universal formulas, but there is no
+  existential analog (p/f duality) to constrain F-formulas in the predecessor
+
+- **Resolution**: Enhanced axiom documentation with semantic justification
+
+## Artifacts Modified
+
+- `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean`
+  - Lines ~261-305: `successor_deferral_seed_consistent_axiom` → proven theorem
+  - Lines ~349-404: `predecessor_deferral_seed_consistent_axiom` → proven theorem
+  - Lines ~584-648: `predecessor_f_step_axiom` → remains axiom with enhanced docs
 
 ## Verification
 
-- **Build Status**: `lake build` succeeds with no new errors
-- **Sorry Count**: 0 in SuccExistence.lean (unchanged from before - none introduced)
-- **Axiom Count**: Reduced from 3 to 1 in SuccExistence.lean
+- `lake build` passes with no new errors
+- No sorries introduced (axiom remains as axiom, not sorry)
+- No new axioms introduced beyond the pre-existing one
 
-## Files Modified
+## Axiom Status
 
-- `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean`:
-  - Lines 246-306: Replaced `successor_deferral_seed_consistent_axiom` with proven theorem
-  - Lines 334-396: Replaced `predecessor_deferral_seed_consistent_axiom` with proven theorem
-  - Lines 584-610: Updated documentation for remaining `predecessor_f_step_axiom`
+| Axiom | Before | After |
+|-------|--------|-------|
+| `successor_deferral_seed_consistent_axiom` | axiom | theorem (proven) |
+| `predecessor_deferral_seed_consistent_axiom` | axiom | theorem (proven) |
+| `predecessor_f_step_axiom` | axiom | axiom (enhanced docs) |
 
-## Phase Completion
+## Future Work
 
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1 | Prove successor_deferral_seed_consistent_axiom | COMPLETED |
-| 2 | Prove predecessor_deferral_seed_consistent_axiom | COMPLETED |
-| 3 | Analyze F-step Property | COMPLETED |
-| 4 | Prove predecessor_f_step_axiom | BLOCKED |
+To eliminate `predecessor_f_step_axiom`, the codebase would need:
+1. A p_content/f_content duality theorem (parallel to h_content/g_content)
+2. A more constrained Lindenbaum construction that tracks F-witnesses
+3. Or acceptance as a semantic axiom about discrete temporal frames
 
-## Key Insight
+## Dependencies Satisfied
 
-The T-axiom approach (proving seed ⊆ u) works for seed consistency axioms because:
-- Under reflexive semantics, G(φ) → φ and H(φ) → φ are valid
-- This means g_content and h_content are subsets of the MCS itself
-- Combined with derivability of deferral disjunctions, the entire seed ⊆ u
-
-The F-step axiom is fundamentally different because:
-- It concerns the *extension* behavior (Lindenbaum process)
-- Not what's IN the seed, but what's ADDED to it
-- The Lindenbaum process is non-deterministic (depends on formula enumeration)
+The elimination of the two seed consistency axioms reduces the axiom count for the
+discrete completeness theorem while maintaining correctness. The remaining axiom
+captures a genuine property of Lindenbaum extensions that requires deeper temporal
+reasoning infrastructure to prove.
