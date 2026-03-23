@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Bundle.SuccRelation
 import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.TemporalContent
+import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Completeness
 import Bimodal.Theorems.GeneralizedNecessitation
@@ -148,14 +149,31 @@ def pastDeferralDisjunctions (u : Set Formula) : Set Formula :=
   {ψ | ∃ φ : Formula, Formula.some_past φ ∈ u ∧ ψ = pastDeferralDisjunction φ}
 
 /--
-The predecessor deferral seed: `h_content(u) ∪ pastDeferralDisjunctions(u)`.
+The set of F-step blocking formulas for the predecessor seed.
+
+For each formula φ where both F(φ) ∉ u and φ ∉ u, we add G(¬φ) to the seed.
+Since F(φ) = ¬G(¬φ) by definition, having G(¬φ) in the predecessor prevents
+F(φ) from appearing (as that would contradict MCS consistency).
+
+**Key property**: Every blocking formula G(¬φ) is already in u, because
+F(φ) ∉ u implies ¬F(φ) ∈ u, i.e., ¬¬G(¬φ) ∈ u, hence G(¬φ) ∈ u by
+double negation elimination.
+-/
+def f_step_blocking_formulas (u : Set Formula) : Set Formula :=
+  {ψ | ∃ φ : Formula, Formula.some_future φ ∉ u ∧ φ ∉ u ∧
+    ψ = Formula.all_future (Formula.neg φ)}
+
+/--
+The predecessor deferral seed with F-step blocking formulas:
+`h_content(u) ∪ pastDeferralDisjunctions(u) ∪ f_step_blocking_formulas(u)`.
 
 This seed is designed so that its Lindenbaum extension v satisfies Succ v u:
 1. H-persistence: h_content(u) ⊆ v
-2. P-step: p_content(u) ⊆ v ∪ p_content(v)
+2. P-step: p_content(u) ⊆ v ∪ p_content(v) (from past deferral disjunctions)
+3. F-step: f_content(v) ⊆ u ∪ f_content(u) (from blocking formulas)
 -/
 def predecessor_deferral_seed (u : Set Formula) : Set Formula :=
-  h_content u ∪ pastDeferralDisjunctions u
+  h_content u ∪ pastDeferralDisjunctions u ∪ f_step_blocking_formulas u
 
 /-!
 ### Membership Lemmas for Predecessor Seed
@@ -176,18 +194,23 @@ lemma pastDeferralDisjunction_mem_of_P_mem (u : Set Formula) (φ : Formula)
 /-- h_content is a subset of the predecessor deferral seed. -/
 lemma h_content_subset_predecessor_deferral_seed (u : Set Formula) :
     h_content u ⊆ predecessor_deferral_seed u :=
-  Set.subset_union_left
+  Set.subset_union_left.trans Set.subset_union_left
 
 /-- Past deferral disjunctions are a subset of the predecessor deferral seed. -/
 lemma pastDeferralDisjunctions_subset_predecessor_deferral_seed (u : Set Formula) :
     pastDeferralDisjunctions u ⊆ predecessor_deferral_seed u :=
+  Set.subset_union_right.trans Set.subset_union_left
+
+/-- F-step blocking formulas are a subset of the predecessor deferral seed. -/
+lemma f_step_blocking_formulas_subset_predecessor_deferral_seed (u : Set Formula) :
+    f_step_blocking_formulas u ⊆ predecessor_deferral_seed u :=
   Set.subset_union_right
 
-/-- Membership in predecessor deferral seed: either from h_content or past deferral disjunctions. -/
+/-- Membership in predecessor deferral seed: from h_content, past deferrals, or blocking formulas. -/
 lemma mem_predecessor_deferral_seed_iff (u : Set Formula) (ψ : Formula) :
     ψ ∈ predecessor_deferral_seed u ↔
-    ψ ∈ h_content u ∨ ψ ∈ pastDeferralDisjunctions u := by
-  simp only [predecessor_deferral_seed, Set.mem_union]
+    ψ ∈ h_content u ∨ ψ ∈ pastDeferralDisjunctions u ∨ ψ ∈ f_step_blocking_formulas u := by
+  simp only [predecessor_deferral_seed, Set.mem_union, or_assoc]
 
 /-- Unfolding pastDeferralDisjunction definition. -/
 lemma pastDeferralDisjunction_eq (φ : Formula) :
@@ -379,13 +402,24 @@ theorem predecessor_deferral_seed_consistent_axiom (u : Set Formula)
       deduction_theorem [] (Formula.some_past ψ) (pastDeferralDisjunction ψ) h_imp
     exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_imp') h_P_ψ
 
+  -- Step 2b: f_step_blocking_formulas(u) ⊆ u
+  have h_blocking_in_u : f_step_blocking_formulas u ⊆ u := by
+    intro χ h_block
+    obtain ⟨φ, h_F_not, _, rfl⟩ := h_block
+    -- F(φ) ∉ u means ¬G(¬φ) ∉ u. By negation completeness, ¬¬G(¬φ) ∈ u.
+    -- By double negation elimination: G(¬φ) ∈ u.
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_future φ) with h_in | h_neg_in
+    · exact absurd h_in h_F_not
+    · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
+
   -- Step 3: Combine to show predecessor_deferral_seed u ⊆ u
   have h_seed_subset_u : predecessor_deferral_seed u ⊆ u := by
     intro χ h_χ_in_seed
     rw [mem_predecessor_deferral_seed_iff] at h_χ_in_seed
-    rcases h_χ_in_seed with h_hc | h_dd
+    rcases h_χ_in_seed with h_hc | h_dd | h_block
     · exact h_h_content_in_u h_hc
     · exact h_deferrals_in_u h_dd
+    · exact h_blocking_in_u h_block
 
   -- Step 4: Conclude consistency
   -- Any L ⊆ seed ⊆ u with L ⊢ ⊥ contradicts MCS consistency of u

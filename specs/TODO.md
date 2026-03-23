@@ -135,7 +135,8 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 46. Prove forward chain p-step from research findings
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
+- **Started**: 2026-03-23
 - **Language**: lean4
 - **Dependencies**: Task 45
 - **Parent Task**: 40
@@ -310,7 +311,9 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 34. Prove SuccExistence seed consistency axioms
 - **Effort**: 5-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-23
+- **Summary**: Eliminated predecessor_f_step_axiom via constrained predecessor seed with F-step blocking formulas. Zero axioms remain in SuccExistence.lean.
 - **Language**: lean4
 - **Dependencies**: none
 - **Follow-up from**: Task 29 Phase 7 (deferred)
