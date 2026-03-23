@@ -938,10 +938,10 @@
     {
       "project_number": 34,
       "project_name": "prove_succ_seed_consistency_axioms",
-      "status": "researching",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-23T03:48:09Z",
-      "last_updated": "2026-03-23T15:12:28Z",
+      "last_updated": "2026-03-23T15:33:11Z",
       "dependencies": [],
       "description": "Prove or remove the 3 SuccExistence axioms deferred from task 29 Phase 7: successor_deferral_seed_consistent_axiom, predecessor_deferral_seed_consistent_axiom, and predecessor_f_step_axiom (all in Bundle/SuccExistence.lean). These seed consistency axioms assert that deferral seeds are satisfiable, which should follow from T-axiom under reflexive semantics. Also un-supersede task 26 (canonicalR_irreflexive_axiom was NOT deleted by task 29 and still contradicts proven canonicalR_reflexive).",
       "artifacts": [
@@ -949,11 +949,6 @@
           "path": "specs/034_prove_succ_seed_consistency_axioms/reports/01_seed-consistency-research.md",
           "type": "research_report",
           "summary": "Analysis of 3 axioms: seed consistency axioms (1-2) likely provable via WitnessSeed pattern; F-step axiom (3) requires more analysis"
-        },
-        {
-          "path": "specs/034_prove_succ_seed_consistency_axioms/plans/01_seed-axiom-elimination.md",
-          "type": "plan",
-          "summary": "4-phase plan to prove/eliminate 3 axioms in SuccExistence.lean"
         },
         {
           "path": "specs/034_prove_succ_seed_consistency_axioms/summaries/01_seed-axiom-summary.md",
@@ -969,11 +964,16 @@
           "path": "specs/034_prove_succ_seed_consistency_axioms/reports/03_team-research.md",
           "type": "research_report",
           "summary": "Team research round 2 (3 teammates): Constrained predecessor seed eliminates axiom — complete proof sketch"
+        },
+        {
+          "path": "specs/034_prove_succ_seed_consistency_axioms/plans/02_constrained-seed-approach.md",
+          "type": "plan",
+          "summary": "v2: Constrained predecessor seed approach"
         }
       ],
       "session_id": "sess_1774278730_1c9a0d",
       "researched": "2026-03-23T07:22:06Z",
-      "planned": "2026-03-23T07:39:05Z",
+      "planned": "2026-03-23T15:33:11Z",
       "started": "2026-03-23T07:40:37Z"
     },
     {

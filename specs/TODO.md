@@ -309,8 +309,8 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 ---
 
 ### 34. Prove SuccExistence seed consistency axioms
-- **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 5-10 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Follow-up from**: Task 29 Phase 7 (deferred)
@@ -324,7 +324,9 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
   - [03_teammate-a-findings.md](034_prove_succ_seed_consistency_axioms/reports/03_teammate-a-findings.md) — Alt 3B ruled out
   - [03_teammate-b-findings.md](034_prove_succ_seed_consistency_axioms/reports/03_teammate-b-findings.md) — Constrained Lindenbaum analysis
   - [03_teammate-c-findings.md](034_prove_succ_seed_consistency_axioms/reports/03_teammate-c-findings.md) — Bidirectional construction (recommended)
-- **Plan**: [01_seed-axiom-elimination.md](034_prove_succ_seed_consistency_axioms/plans/01_seed-axiom-elimination.md)
+- **Plan**:
+  - [01_seed-axiom-elimination.md](034_prove_succ_seed_consistency_axioms/plans/01_seed-axiom-elimination.md) — v1 (Phase 4 blocked)
+  - [02_constrained-seed-approach.md](034_prove_succ_seed_consistency_axioms/plans/02_constrained-seed-approach.md) — v2 (constrained seed solution)
 
 **Description**: Prove or remove the 3 axioms in `Bundle/SuccExistence.lean` that were deferred from task 29 Phase 7: (1) `successor_deferral_seed_consistent_axiom` (line 266) — asserts successor deferral seed is consistent, (2) `predecessor_deferral_seed_consistent_axiom` (line 311) — symmetric predecessor version, (3) `predecessor_f_step_axiom` (line 516) — F-step condition for predecessor construction. Under reflexive semantics with T-axiom available, these seed consistency claims may be provable syntactically. The seeds contain `g_content(u) ∪ {φ ∨ F(φ) | F(φ) ∈ u}` (successor) or `h_content(u) ∪ {φ ∨ P(φ) | P(φ) ∈ u}` (predecessor). The deferral disjunctions `φ ∨ F(φ)` are tautological consequences of `F(φ)`, and the g_content formulas are jointly consistent by MCS properties. Research whether T-axiom (`G(φ) → φ`) provides enough to close these proofs. Note: discrete seed axioms (`discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) are covered by task 24.
 
