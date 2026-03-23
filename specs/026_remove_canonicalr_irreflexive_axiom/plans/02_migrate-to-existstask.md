@@ -95,7 +95,7 @@ The user renamed `CanonicalR` to `ExistsTask` as the primary definition:
 
 ---
 
-### Phase 2: Add Deprecation Warnings [NOT STARTED]
+### Phase 2: Add Deprecation Warnings [COMPLETED]
 
 **Goal**: Mark CanonicalR and CanonicalR_past as deprecated.
 
