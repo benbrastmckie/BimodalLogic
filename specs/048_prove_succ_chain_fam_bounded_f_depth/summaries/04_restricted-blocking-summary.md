@@ -1,8 +1,8 @@
 # Implementation Summary: Task #48 (v4) - Restricted Blocking
 
-- **Status**: Partial (Phases 1-4 complete, Phase 5 partial)
+- **Status**: Partial (All phases attempted, Phase 5 partially complete)
 - **Plan Version**: v4 (04_restricted-blocking.md)
-- **Session**: sess_1774294560_4531d2
+- **Sessions**: sess_1774294560_4531d2, sess_1774295861_30ec13
 - **Date**: 2026-03-23
 
 ## Overview
@@ -68,35 +68,69 @@ Added:
 
 ### Phase 5: Chain Construction (PARTIAL)
 
-The restricted successor construction is complete. The chain construction itself (building sequences of restricted successors) was not completed in this session but the foundation is in place.
+**File**: `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean`
 
-## Remaining Work
+Added (forward chain infrastructure):
+- `DeferralRestrictedSerialMCS` - Serial MCS structure with F_top and P_top
+- `RestrictedForwardChainElement` - Forward chain element bundle
+- `restricted_forward_chain` - Forward chain construction
+- `restricted_forward_chain_is_drm` - Chain elements are DeferralRestrictedMCS
+- `restricted_forward_chain_has_F_top` - F_top membership
+- `restricted_forward_chain_succ` - Adjacent elements satisfy Succ
+- `restricted_forward_chain_p_step` - P-step property
+- `restricted_forward_chain_F_bounded` - F-nesting bound
+- `restricted_forward_chain_canonicalTask_forward_from` - Chain for witnesses
+- `restricted_forward_chain_F_step_witness` - Single-step F witness
 
-1. Define `restricted_forward_chain` using `constrained_successor_restricted`
-2. Define `restricted_backward_chain` for P-direction
-3. Define `restricted_succ_chain_fam` combining forward and backward
-4. Prove F/P-nesting coherence using the bounded depth theorems
-5. Add coercion from restricted chain to standard chain type
+**Not completed** (requires additional infrastructure):
+- `constrained_predecessor_restricted` - Symmetric predecessor construction
+- `restricted_backward_chain` - Backward chain for P-direction
+- `restricted_succ_chain_fam` - Combined Int-indexed chain
 
-## Sorries Remaining in Modified Files
+## Sorries in Modified Files
+
+### New Sorries (requiring follow-up)
+
+| File | Line | Description | Root Cause |
+|------|------|-------------|------------|
+| SuccChainFMCS.lean | 1930 | `F_top_in_restricted_successor` | Needs F_top IN deferralClosure |
+| SuccChainFMCS.lean | 2104 | `restricted_forward_chain_forward_F` | Needs restricted bounded_witness |
+| SuccChainFMCS.lean | 2159 | `toSerialMCS.is_mcs` | Coercion to full MCS |
+
+### Deprecated Sorries (intentionally kept)
 
 | File | Line | Description | Status |
 |------|------|-------------|--------|
-| SuccChainFMCS.lean | 736 | `f_nesting_is_bounded` | Deprecated (mathematically FALSE) |
-| SuccChainFMCS.lean | 971 | `p_nesting_is_bounded` | Deprecated (mathematically FALSE) |
-| RestrictedMCS.lean | 1124 | `p_step_blocking_for_deferral_restricted` else branch | Superseded by `p_step_blocking_restricted_subset` |
+| SuccChainFMCS.lean | 736 | `f_nesting_is_bounded` | Mathematically FALSE for arbitrary MCS |
+| SuccChainFMCS.lean | 971 | `p_nesting_is_bounded` | Mathematically FALSE for arbitrary MCS |
+| RestrictedMCS.lean | 1124 | `p_step_blocking_for_deferral_restricted` else branch | Superseded by restricted version |
 
-The deprecated sorries are for theorems that are mathematically false for arbitrary MCS. The migration path is to use the `_restricted` versions which work with RestrictedMCS.
+## Technical Insights
+
+1. **F_top propagation challenge**: For F_top to propagate through restricted successors, we need F_top IN deferralClosure(phi). Solutions:
+   - Ensure phi includes seriality formulas in its closure
+   - Prove disjunction elimination for DeferralRestrictedMCS with deferral disjunctions
+
+2. **bounded_witness requires MCS**: The existing `bounded_witness` uses `SetMaximalConsistent` for negation completeness. A DeferralRestrictedMCS variant needs:
+   - Restricted negation completeness for formulas in closure
+   - Proof that F-iterations stay in closure until they exit
+
+3. **Backward chain needs symmetric infrastructure**: The P-direction chain requires `constrained_predecessor_restricted` mirroring the successor construction.
 
 ## Verification
 
+```bash
+$ lake build Bimodal.Metalogic.Bundle.SuccChainFMCS
+Build completed successfully (739 jobs)
+```
+
 - Build passes: Yes
-- No new sorries in new code: Yes (all sorries are in deprecated or superseded code)
+- Total sorries: 5 (2 deprecated legacy + 3 new requiring follow-up)
 - Key theorem `p_step_blocking_restricted_subset` proven without sorry: Yes
 
-## Next Steps
+## Recommendations for Follow-up
 
-To complete Task 48, a follow-up implementation should:
-1. Complete Phase 5 by building the restricted chain construction
-2. Wire up the coherence proofs
-3. Potentially deprecate or remove the old `p_step_blocking_for_deferral_restricted` theorem
+1. **Closure seriality**: Modify deferralClosure construction to always include F_top and P_top
+2. **Restricted bounded_witness**: Create a variant of bounded_witness for DeferralRestrictedMCS
+3. **Backward chain**: Build constrained_predecessor_restricted symmetric to the successor
+4. **Full chain**: Combine forward/backward into restricted_succ_chain_fam
