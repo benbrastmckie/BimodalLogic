@@ -26,11 +26,11 @@
     {
       "project_number": 41,
       "project_name": "eliminate_d_equals_canonicalmcs_pattern",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-23T06:33:59Z",
-      "last_updated": "2026-03-23T19:20:45Z",
-      "session_id": "sess_1774293538_c87007",
+      "last_updated": "2026-03-23T19:23:21Z",
+      "session_id": "sess_1774293770_9891ef",
       "researched": "2026-03-23T18:56:00Z",
       "artifacts": [
         {
@@ -64,7 +64,8 @@
           "summary": "6-phase tiered removal: DELETE confused files, BONEYARD valuable ones, update ROAD_MAP.md dead ends (5-6h)"
         }
       ],
-      "planned": "2026-03-23T19:20:45Z"
+      "planned": "2026-03-23T19:20:45Z",
+      "started": "2026-03-23T19:23:21Z"
     },
     {
       "project_number": 39,
@@ -638,7 +639,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -647,7 +648,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T19:04:20Z",
+      "last_updated": "2026-03-23T19:27:10Z",
       "artifacts": [
         {
           "type": "research",
@@ -688,10 +689,15 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/03_restricted-p-step.md",
           "type": "plan",
           "summary": "3-phase plan: restricted P-step blocking, constrained successor update, chain coherence"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/06_team-research.md",
+          "type": "research",
+          "summary": "Team research: theorem is false as stated, recommended restricted p_step_blocking"
         }
       ],
-      "session_id": "sess_1774292635_420bd0",
-      "researched": "2026-03-23T18:13:54Z",
+      "session_id": "sess_1774293750_5cd3b5",
+      "researched": "2026-03-23T19:27:10Z",
       "planned": "2026-03-23T19:03:07Z",
       "started": "2026-03-23T17:51:37Z",
       "blocker_reason": "Original theorems mathematically unprovable as stated. Provable RestrictedMCS versions added but require chain construction refactoring."
