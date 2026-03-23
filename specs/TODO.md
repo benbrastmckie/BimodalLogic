@@ -139,15 +139,15 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 ---
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
-- **Effort**: 4-6 hours
-- **Status**: [BLOCKED]
-- **Blocker**: Original theorems mathematically unprovable for arbitrary MCS. Provable RestrictedMCS versions added but require chain construction refactoring.
+- **Effort**: 6-9 hours
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
 - **Research**:
   - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
   - [01_bounded-f-depth.md](048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md)
+  - [02_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/02_team-research.md)
 - **Plan**: [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
 - **Summary**: [01_restricted-succ-chain-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md)
 
