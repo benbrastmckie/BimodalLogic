@@ -110,7 +110,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 50. Implement constrained successor seed for P-step
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 46
@@ -134,11 +134,13 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
-- **Research**: [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+- **Research**:
+  - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+  - [01_bounded-f-depth.md](048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md)
 
 **Description**: Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.
 

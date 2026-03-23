@@ -1097,7 +1097,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -1106,15 +1106,21 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T17:30:16Z",
+      "last_updated": "2026-03-23T17:35:39Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md",
+          "type": "research",
+          "summary": "Identified mathematical unsoundness. Recommended refactoring to use RestrictedMCS."
         }
       ],
-      "session_id": "sess_1774286992_e47cca"
+      "session_id": "sess_1774286992_e47cca",
+      "researched": "2026-03-23T17:35:39Z"
     },
     {
       "project_number": 49,
@@ -1140,21 +1146,22 @@
     {
       "project_number": 50,
       "project_name": "implement_constrained_successor_seed_for_p_step",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "description": "Implement the symmetric counterpart to task 34s constrained predecessor seed. Define p_step_blocking_formulas(u) = {H(neg phi) | P(phi) not in u and phi not in u} in SuccExistence.lean. Define constrained_successor_seed(u) = g_content(u) union deferralDisjunctions(u) union p_step_blocking_formulas(u). Prove p_step_blocking_formulas_subset_u, constrained_successor_seed_consistent, and successor_p_step theorem. Update successor construction to use constrained seed.",
       "effort": "3-4 hours",
       "parent_task": 46,
       "dependencies": [],
       "created": "2026-03-23T17:30:27Z",
-      "last_updated": "2026-03-23T17:30:27Z",
+      "last_updated": "2026-03-23T17:33:52Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/046_prove_forward_chain_p_step/reports/03_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
         }
-      ]
+      ],
+      "session_id": "sess_1774287219_7d888d"
     },
     {
       "project_number": 51,
