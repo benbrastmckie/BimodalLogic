@@ -1,22 +1,22 @@
 ---
-next_project_number: 47
+next_project_number: 52
 repository_health:
   overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-03-19T23:50:22Z
+  last_assessed: 2026-03-23T13:20:00Z
 task_counts:
-  active: 12
-  completed: 713
+  active: 18
+  completed: 725
   in_progress: 1
   not_started: 4
   abandoned: 54
-  total: 778
+  total: 790
 technical_debt:
   sorry_count: 16
   sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
   publication_path_sorries: 0
-  axiom_count: 9
-  axiom_count_note: "CORRECTED: 7 production (successor/predecessor_deferral_seed_consistent, predecessor_f_step, f/p_nesting_boundary, existsTask_irreflexive, discrete_Icc_finite) + 2 StagedConstruction (discreteImmediateSuccSeed_consistent, discreteImmediateSucc_covers). Task 42 tracks elimination."
+  axiom_count: 2
+  axiom_count_note: "f_nesting_boundary, p_nesting_boundary (tasks 36, 37). Task 42 tracks elimination."
   build_errors: 0
   status: excellent
 ---
@@ -27,7 +27,7 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-23. Completed: 25, 26, 34, 43, 44, 45, 46, 47, 50, 51. Tasks 40, 35 need reassessment (P-step sorry already filled by 50+51).*
+*Updated 2026-03-23. Archived 12 tasks (25, 26, 34, 35, 40, 43, 44, 45, 46, 47, 50, 51). Axiom count reduced 9→2.*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path. Task 42 is the umbrella.
 
@@ -52,15 +52,10 @@ Phase A              Phase B              Phase C
 
 3. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
 
-**Completed (P-step sorry filled by tasks 50+51):**
-
-4. **35** → COMPLETED (all 4 phases done; Phase 4 resolved by 50+51)
-5. **40** → blocked, but core goal (succ_chain_fam_p_step sorry) already resolved — reassess
-
 **Phase D — Verification:**
 
-6. `lean_verify` on completeness theorems — confirm zero custom axioms
-7. Update TODO.md axiom_count to 0
+4. `lean_verify` on completeness theorems — confirm zero custom axioms
+5. Update TODO.md axiom_count to 0
 
 ### 2. Post-Axiom Cleanup
 
@@ -199,55 +194,6 @@ Phase A              Phase B              Phase C
 - **Dependencies**: Task 47, Task 48, Task 49
 
 **Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:615) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
-
----
-
-### 26. Remove or justify canonicalR_irreflexive_axiom
-- **Effort**: 2-8 hours (depends on path chosen)
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Language**: lean4
-- **Dependencies**: none
-- **Research**:
-  - [01_teammate-a-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-a-findings.md) — CanonicalTask vs CanonicalR irreflexivity analysis
-  - [01_teammate-b-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-b-findings.md) — complete usage map (16 sites, 6 files)
-  - [01_teammate-c-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-c-findings.md) — modal logic theoretical analysis
-  - [02_synthesis.md](026_remove_canonicalr_irreflexive_axiom/reports/02_synthesis.md) — synthesized findings and 3 viable paths
-  - [03_team-research.md](026_remove_canonicalr_irreflexive_axiom/reports/03_team-research.md) — modal non-definability, IRR rule, completeness (3 teammates)
-  - [04_team-research.md](026_remove_canonicalr_irreflexive_axiom/reports/04_team-research.md) — IRR without T-axiom, reflexive semantics implications (3 teammates)
-  - [05_team-research.md](026_remove_canonicalr_irreflexive_axiom/reports/05_team-research.md) — CanonicalTask vs CanonicalR reframing (3 teammates)
-  - [18_teammate-a-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/18_teammate-a-findings.md) — CanonicalTask as central relation: negative duration verified, irreflexivity reformulation
-  - [18_teammate-b-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/18_teammate-b-findings.md) — 69-file usage map, 4-phase refactoring strategy, backward sorry as critical blocker
-  - [18_team-research.md](026_remove_canonicalr_irreflexive_axiom/reports/18_team-research.md) — Wave 6 synthesis: CanonicalTask as native TaskFrame concept, irreflexivity reformulation path
-- **Plan**:
-  - [02_migrate-to-existstask.md](026_remove_canonicalr_irreflexive_axiom/plans/02_migrate-to-existstask.md) — v2: migrate to ExistsTask (CanonicalR now alias) (current)
-  - [01_eliminate-canonicalr.md](026_remove_canonicalr_irreflexive_axiom/plans/01_eliminate-canonicalr.md) — v1: superseded (assumed CanonicalR would remain primary)
-- **Summary**: [01_migrate-existstask-summary.md](026_remove_canonicalr_irreflexive_axiom/summaries/01_migrate-existstask-summary.md) — Migrated 67 files from CanonicalR to ExistsTask. Derived canonicalTask_irreflexive. Eliminated 266 deprecation warnings.
-
-**Description**: Investigate removal of `canonicalR_irreflexive_axiom` (CanonicalIrreflexivity.lean:1212). Research conclusively shows CanonicalTask refactoring does NOT help — `¬CanonicalTask(u,1,u)` reduces exactly to `¬CanonicalR(u,u)` because the f_content condition in Succ is trivially satisfied on the diagonal. All 16 usage sites across 6 active files (SaturatedChain 8, FMCSTransfer 2, CanonicalSerialFrameInstance 2+2, TimelineQuotCanonical 1, ClosureSaturation 2, IncrementalTimeline 1) require CanonicalR-level irreflexivity. Three viable paths: **(A)** Prove via reflexive T-axiom — `CanonicalIrreflexivity.lean` contains 1170 lines of complete proof infrastructure from Task 967 that works under reflexive semantics; check if temporal T-axiom `H(φ)→φ` is available. **(B)** Add Gabbay IRR inference rule to proof system (high effort but principled). **(C)** Accept axiom with fixed documentation — `CanonicalIrreflexivityAxiom.lean` falsely claims "proven theorem (Task 967)" but actual implementation is a Lean axiom since Task 991's strict semantics revert. Fix this inconsistency regardless of path chosen.
-
----
-
-### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
-- **Effort**: 9.5-10.5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-22
-- **Language**: lean4
-- **Dependencies**: none
-- **Research**:
-  - [01_team-research.md](025_rename_canonicalr_to_existstask/reports/01_team-research.md) — Audit + architecture + irreflexivity (3 teammates)
-  - [05_team-research.md](025_rename_canonicalr_to_existstask/reports/05_team-research.md) — Blocker analysis (task 25 vs 29 overlap)
-  - [06_task29-impact-analysis.md](025_rename_canonicalr_to_existstask/reports/06_task29-impact-analysis.md) — Post-task-29 plan review
-- **Plan**:
-  - [03_updated-scope-rename.md](025_rename_canonicalr_to_existstask/plans/03_updated-scope-rename.md) — v3: updated scope (1811 usages, 63 files) (current)
-  - [02_preorder-compatible-rename.md](025_rename_canonicalr_to_existstask/plans/02_preorder-compatible-rename.md) — v2: superseded
-  - [01_implementation-plan.md](025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md) — v1: superseded (blocked on fresh G-atom proofs)
-- **Summary**: [01_rename-summary.md](025_rename_canonicalr_to_existstask/summaries/01_rename-summary.md) — Renamed CanonicalR to ExistsTask with backward compat aliases. Reduced CanonicalIrreflexivity.lean from 1515 to 298 lines.
-
-**Description**: Rename CanonicalR to ExistsTask and retire Gabbay infrastructure. v2 plan drops Phases 1-2 (per-witness strictness proofs blocked by same mathematical issue as task 29 — pathological MCS where G(¬q) ∈ M for all atoms). Preserves Task 29's two-layer architecture. Axiom removal is Task 26's scope.
-
----
-
 
 ---
 
