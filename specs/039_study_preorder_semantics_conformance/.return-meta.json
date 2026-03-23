@@ -1,43 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-22T10:00:00Z",
-  "completed_at": "2026-03-22T10:30:00Z",
-  "summary": "ParametricCanonicalTaskFrame provides elegant W/D separation: W = all MCSs (D-independent), D = parameter (Int/Rat/TimelineQuot). This unifies the two-layer architecture correctly by keeping world-states (semantic content) distinct from durations (temporal structure). The construction is uniform in D, sorry-free for TaskFrame axioms, and is the recommended replacement for the deprecated W=D approach.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/039_study_preorder_semantics_conformance/reports/03_parametric-taskframe-research.md",
-      "summary": "Research on ParametricCanonicalTaskFrame and W/D separation architecture"
+      "type": "plan",
+      "path": "specs/039_study_preorder_semantics_conformance/plans/01_conformance-validation-plan.md",
+      "summary": "4-phase documentation and validation plan for TaskFrame conformance"
     }
   ],
-  "findings": {
-    "main_insight": "W/D separation is the key: WorldState W contains ALL MCSs (D-independent), Duration D is a parameter (any ordered abelian group). This avoids the W=D conflation error that blocked earlier approaches.",
-    "key_definitions": [
-      "ParametricCanonicalTaskFrame D : TaskFrame D (from ParametricCanonical.lean)",
-      "ParametricCanonicalWorldState : Type := { M : Set Formula // SetMaximalConsistent M }",
-      "parametric_canonical_task_rel : Uses CanonicalR for temporal coherence"
-    ],
-    "architecture": {
-      "layer1": "FMCS CanonicalMCS (Preorder only) - for TruthLemma",
-      "layer2": "ParametricCanonicalTaskFrame D (TaskFrame) - for Completeness",
-      "bridge": "parametric_to_history and ParametricCanonicalOmega"
-    },
-    "recommendation": "Always use ParametricCanonicalTaskFrame with explicit W/D separation. The two-layer architecture is intentional and mathematically sound."
-  },
+  "next_steps": "Run /implement 39 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774245907_103ed8",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774246217_86eba0",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "files_read": [
-      "Theories/Bimodal/Metalogic/Algebraic/ParametricCanonical.lean",
-      "Theories/Bimodal/Metalogic/Algebraic/SeparatedTaskFrame.lean",
-      "Theories/Bimodal/Metalogic/Algebraic/ParametricHistory.lean",
-      "Theories/Bimodal/Metalogic/Algebraic/ParametricTruthLemma.lean",
-      "Theories/Bimodal/Metalogic/Algebraic/AlgebraicBaseCompleteness.lean",
-      "Theories/Bimodal/Metalogic/Domain/CanonicalDomain.lean",
-      "Theories/Bimodal/Semantics/TaskFrame.lean",
-      "Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3
   }
 }

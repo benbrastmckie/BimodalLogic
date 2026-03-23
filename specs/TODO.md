@@ -106,9 +106,10 @@ These are researched and ready but not critical path:
 ---
 
 ### 39. Study preorder semantics conformance with Task Semantics specifications
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 3h
+- **Status**: [PLANNED]
 - **Language**: lean4
+- **Plan**: [01_conformance-validation-plan.md](039_study_preorder_semantics_conformance/plans/01_conformance-validation-plan.md)
 - **Reports**:
   - [01_teammate-a-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-a-findings.md) — Primary TaskFrame axiom analysis
   - [01_teammate-b-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-b-findings.md) — G-atom analysis and alternative approaches
