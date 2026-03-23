@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 39,
+      "project_name": "study_preorder_semantics_conformance",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-23T05:40:43Z",
+      "last_updated": "2026-03-23T05:40:43Z"
+    },
+    {
       "project_number": 38,
       "project_name": "prove_box_backward_truth_lemma",
       "status": "not_started",
@@ -342,13 +350,13 @@
     {
       "project_number": 25,
       "project_name": "rename_canonicalr_to_existstask",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T19:24:52Z",
-      "last_updated": "2026-03-23T05:27:18Z",
+      "last_updated": "2026-03-23T05:40:46Z",
       "dependencies": [],
       "description": "Systematically shift the proof architecture from CanonicalR to CanonicalTask/Succ as primary abstractions. Rename CanonicalR to ExistsTask but minimize its use — prefer reasoning in terms of Succ (for immediate succession) and CanonicalTask (for n-step reachability) directly. ExistsTask should only appear where the existential quantification over duration is genuinely needed. Audit all 63 files referencing CanonicalR: categorize each use as (1) naturally Succ, (2) naturally CanonicalTask, or (3) genuinely ExistsTask. Restate definitions, theorems, and proof obligations in the most natural abstraction. This subsumes task 29 Phases 5-6 (canonicalR_irreflexive removal) and task 18 (ExistsTask alias).",
-      "session_id": "sess_1774243373_9f1bd6",
+      "session_id": "sess_1774244266_238753",
       "researched": "2026-03-23T05:27:18Z",
       "artifacts": [
         {
@@ -372,17 +380,17 @@
           "summary": "Blocker analysis: Task 25 vs Task 29 overlap, recommended restructuring"
         },
         {
-          "path": "specs/025_rename_canonicalr_to_existstask/plans/02_preorder-compatible-rename.md",
-          "type": "plan",
-          "summary": "v2: preorder-compatible rename (drops blocked Phases 1-2)"
-        },
-        {
           "path": "specs/025_rename_canonicalr_to_existstask/reports/06_task29-impact-analysis.md",
           "type": "research",
           "summary": "Post-task-29 plan review: usage count update, time estimate revision"
+        },
+        {
+          "path": "specs/025_rename_canonicalr_to_existstask/plans/03_updated-scope-rename.md",
+          "type": "plan",
+          "summary": "v3: updated scope (1811 usages, 63 files, 9.5-10.5h)"
         }
       ],
-      "planned": "2026-03-23T03:55:47Z",
+      "planned": "2026-03-23T05:40:46Z",
       "started": "2026-03-22T20:57:13Z"
     },
     {
@@ -1347,7 +1355,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 39,
+  "next_project_number": 40,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -601,6 +601,15 @@ lemma iter_P_succ (n : Nat) (phi : Formula) :
     iter_P (n + 1) phi = Formula.some_past (iter_P n phi) := rfl
 
 /--
+Helper: iter_P k (P(φ)) = iter_P (k+1) φ = P(iter_P k φ).
+-/
+lemma iter_P_some_past (k : Nat) (phi : Formula) :
+    iter_P k (Formula.some_past phi) = iter_P (k + 1) phi := by
+  induction k with
+  | zero => rfl
+  | succ n ih => simp only [iter_P_succ, ih]
+
+/--
 Helper lemma: iter_P (k+1) is P applied to iter_P k.
 -/
 lemma iter_P_succ_eq (k : Nat) (phi : Formula) :
@@ -689,6 +698,55 @@ lemma succ_propagates_P_not
   exact H_neg_implies_not_P u h_mcs_u psi h_H_neg_in_u
 
 /--
+Helper: P^{n+2}(φ) ∉ v propagates back through a chain of length n to give PP(φ) ∉ w.
+
+If we have a backward chain of n steps from w to v, and P^{n+2}(φ) ∉ v, then PP(φ) ∉ w.
+
+The proof uses succ_propagates_P_not at each step:
+- At v: P^{n+2}(φ) ∉ v
+- After 1 step: P^{n+1}(φ) ∉ w_{n-1} (via succ_propagates_P_not with ψ = P^n(φ))
+- ...
+- After n steps (at w): P²(φ) ∉ w
+
+This is used in the backward_witness proof.
+-/
+theorem chain_propagates_PP_not
+    (w v : Set Formula) (phi : Formula) (n : Nat)
+    (h_chain : CanonicalTask_backward_MCS_P w n v)
+    (h_Pn2_not : iter_P (n + 2) phi ∉ v) :
+    Formula.some_past (Formula.some_past phi) ∉ w := by
+  induction h_chain generalizing phi with
+  | base h_mcs =>
+    -- n = 0, w = v
+    -- iter_P (0 + 2) phi = PP(phi) ∉ v = w (by definition)
+    exact h_Pn2_not
+  | @step u' w' v' n' h_mcs_u h_mcs_w' h_succ h_p_step h_chain' ih =>
+    -- Chain structure: u' (the "w" in our goal) -> w' -> ... -> v'
+    -- Chain length is n' + 1 where n' is the length of h_chain'
+    -- We need PP(phi) ∉ u'
+    -- h_Pn2_not is: iter_P ((n' + 1) + 2) phi ∉ v' = iter_P (n' + 3) phi ∉ v'
+
+    -- Strategy: Apply IH to P(phi) to get PP(P(phi)) ∉ w'
+    -- Then use succ_propagates_P_not to get PP(phi) ∉ u'
+
+    -- IH applied to P(phi): need iter_P (n' + 2) (P(phi)) ∉ v'
+    -- iter_P (n' + 2) (P(phi)) = iter_P (n' + 3) phi by iter_P_some_past
+    -- h_Pn2_not is: iter_P (n' + 1 + 2) phi ∉ v' = iter_P (n' + 3) phi ∉ v'
+    have h_ih_input : iter_P (n' + 2) (Formula.some_past phi) ∉ v' := by
+      rw [iter_P_some_past]
+      -- Need: iter_P (n' + 2 + 1) phi ∉ v'
+      -- Have: iter_P (n' + 1 + 2) phi ∉ v'
+      convert h_Pn2_not using 2 <;> omega
+
+    -- IH gives: PP(P(phi)) ∉ w'
+    have h_PPP_not_w' : (Formula.some_past phi).some_past.some_past ∉ w' := ih (Formula.some_past phi) h_ih_input
+
+    -- Now use succ_propagates_P_not to get PP(phi) ∉ u'
+    -- succ_propagates_P_not: PP(psi) ∉ w' ∧ Succ u' w' → P(psi) ∉ u'
+    -- Take psi = P(phi), then PP(P(phi)) ∉ w' → P(P(phi)) ∉ u'
+    exact succ_propagates_P_not u' w' h_mcs_u h_mcs_w' h_succ (Formula.some_past phi) h_PPP_not_w'
+
+/--
 **Backward Witness Corollary**: If P^n(φ) ∈ v, P^(n+1)(φ) ∉ v, and CanonicalTask_backward_MCS_P u n v,
 then φ ∈ u.
 
@@ -724,7 +782,7 @@ theorem backward_witness
     (h_Pn1_not : iter_P (n + 1) phi ∉ v)
     (h_task : CanonicalTask_backward_MCS_P u n v) :
     phi ∈ u := by
-  induction n generalizing u v with
+  induction n generalizing u v phi with
   | zero =>
     -- n = 0: iter_P 0 φ = φ ∈ v, and u = v
     cases h_task with
@@ -735,53 +793,32 @@ theorem backward_witness
     -- iter_P (k+2) φ = P(P(iter_P k φ)) ∉ v
     obtain ⟨w, h_mcs_u, h_mcs_w, h_succ, h_p_step, h_chain⟩ := CanonicalTask_backward_MCS_P.step_inv h_task
 
-    -- We need to show: iter_P k φ ∈ w (to apply IH)
-    -- and iter_P (k+1) φ ∉ w (for the IH premise)
+    -- The key insight: apply IH with (iter_P 1 phi) = P(phi) as the formula.
+    -- Then iter_P k (P(phi)) = iter_P (k+1) phi ∈ v (h_Pn)
+    -- And iter_P (k+1) (P(phi)) = iter_P (k+2) phi ∉ v (h_Pn1_not)
+    -- And the chain from w to v has length k.
+    -- IH gives: P(phi) ∈ w
 
-    -- From P-step: p_content(v) ⊆ w ∪ p_content(w) (this is wrong direction)
-    -- Actually h_p_step is: p_content(w) ⊆ u ∪ p_content(u)
-    -- But we need to go from v to w.
+    -- Use iter_P_some_past lemma
+    have h_iter_eq : iter_P k (Formula.some_past phi) = iter_P (k + 1) phi := iter_P_some_past k phi
+    have h_iter_eq2 : iter_P (k + 1) (Formula.some_past phi) = iter_P (k + 2) phi := iter_P_some_past (k + 1) phi
 
-    -- The chain CanonicalTask_backward_MCS_P w k v tells us w is k steps "forward" from v
-    -- in the backward direction.
+    -- Apply IH to P(phi) to get P(phi) ∈ w
+    have h_P_phi_in_w : Formula.some_past phi ∈ w := by
+      apply ih w v (Formula.some_past phi)
+      · rw [h_iter_eq]; exact h_Pn
+      · rw [h_iter_eq2]; exact h_Pn1_not
+      · exact h_chain
 
-    -- Wait, I need to reconsider the chain direction.
-    -- CanonicalTask_backward_MCS_P u n v means u is n backward steps from v.
-    -- For step: we have u, w, v with Succ u w (u is predecessor of w) and chain from w to v.
-    -- So u -> w -> ... -> v where -> is Succ.
+    -- Now use single_step_forcing_past to get phi ∈ u
+    -- We have: P(phi) ∈ w, Succ u w, h_p_step
+    -- We need: PP(phi) ∉ w
 
-    -- The P-step h_p_step is: p_content(w) ⊆ u ∪ p_content(u)
-    -- We have P(iter_P k φ) = iter_P (k+1) φ ∈ v
-    -- We need iter_P k φ ∈ w for the IH.
+    -- Use chain_propagates_PP_not to get PP(phi) ∉ w from iter_P (k+2) phi ∉ v
+    have h_PP_not_w : Formula.some_past (Formula.some_past phi) ∉ w :=
+      chain_propagates_PP_not w v phi k h_chain h_Pn1_not
 
-    -- Hmm, I think the direction is wrong. Let me reconsider.
-    -- CanonicalTask_backward_MCS_P.step says: we have Succ u w, P-step(u,w), and chain w k v.
-    -- This means: u is predecessor of w (Succ u w), and w is k backward steps from v.
-    -- So: u (predecessor of w) <- w <- ... <- v (in Succ direction: v -> ... -> w -> u)
-
-    -- For backward P: P(φ) ∈ v means φ at some past world.
-    -- Going backward from v, we hit w after some steps, then u.
-
-    -- The problem is: P-step gives p_content(w) ⊆ u ∪ p_content(u).
-    -- This says: if P(ψ) ∈ w, then ψ ∈ u or P(ψ) ∈ u.
-    -- But we have P(iter_P k φ) ∈ v, not w.
-
-    -- I need to think about this more carefully. The backward chain should propagate P-obligations backward.
-    -- At each step, if P(ψ) is in the current world and PP(ψ) is not, then ψ must be in the predecessor.
-
-    -- Let me use the P-step property of the chain. At each level:
-    -- v has P(iter_P k φ) = iter_P (k+1) φ
-    -- v has ¬PP(iter_P k φ) = ¬iter_P (k+2) φ
-    --
-    -- Going backward from v:
-    -- The element one step before v (let's call it w_{k-1}) has P(iter_P (k-1) φ) ∈ w_{k-1} and ¬PP(...) ∈ w_{k-1}
-    -- Wait, this doesn't quite work either.
-
-    -- Let me try a different approach: define the chain from v going backward.
-    -- Actually, maybe the chain definition is wrong for this purpose.
-
-    -- Let me use a simpler approach: prove by directly showing phi propagates.
-    -- For now, I'll use sorry and come back to this.
-    sorry
+    -- Now apply single_step_forcing_past
+    exact single_step_forcing_past u w h_mcs_u h_mcs_w phi h_P_phi_in_w h_PP_not_w h_succ h_p_step
 
 end Bimodal.Metalogic.Bundle

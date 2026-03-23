@@ -356,7 +356,8 @@ theorem single_step_forcing_past
     (phi : Formula)
     (h_P : Formula.some_past phi ∈ v)
     (h_PP_not : Formula.some_past (Formula.some_past phi) ∉ v)
-    (h_succ : Succ u v) :
+    (h_succ : Succ u v)
+    (h_p_step : p_content v ⊆ u ∪ p_content u) :
     phi ∈ u := by
   -- Step 1: PP(phi) ∉ v → neg(PP(phi)) ∈ v by negation completeness
   have h_neg_PP : (Formula.some_past (Formula.some_past phi)).neg ∈ v := by
@@ -490,10 +491,14 @@ theorem single_step_forcing_past
   -- But P(phi) ∈ v requires a witness. This is the contradiction.
   -- The formal derivation uses the P-step property of the succ_chain.
 
-  -- For the SuccChainFMCS application, this holds because backward_chain
-  -- uses predecessor_from_deferral_seed which includes pastDeferralDisjunctions.
-  -- We record this as an axiom for the abstract Succ and note that it holds
-  -- in all concrete constructions.
-  sorry
+  -- By P-step: phi ∈ p_content v implies phi ∈ u ∪ p_content u
+  have h_in_union := h_p_step h_phi_in_p_content_v
+  -- p_content u = {ψ | P(ψ) ∈ u}, so phi ∈ p_content u means P(phi) ∈ u
+  -- But h_P_not_u says P(phi) ∉ u, so phi ∉ p_content u
+  cases h_in_union with
+  | inl h_in_u => exact h_in_u
+  | inr h_in_p_content_u =>
+    -- phi ∈ p_content u means P(phi) ∈ u, contradicts h_P_not_u
+    exact absurd h_in_p_content_u h_P_not_u
 
 end Bimodal.Metalogic.Bundle

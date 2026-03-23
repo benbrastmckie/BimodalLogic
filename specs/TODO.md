@@ -199,8 +199,8 @@ technical_debt:
 ---
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
-- **Effort**: 12-16 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 9.5-10.5 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -208,7 +208,8 @@ technical_debt:
   - [05_team-research.md](025_rename_canonicalr_to_existstask/reports/05_team-research.md) — Blocker analysis (task 25 vs 29 overlap)
   - [06_task29-impact-analysis.md](025_rename_canonicalr_to_existstask/reports/06_task29-impact-analysis.md) — Post-task-29 plan review
 - **Plan**:
-  - [02_preorder-compatible-rename.md](025_rename_canonicalr_to_existstask/plans/02_preorder-compatible-rename.md) — v2: drops blocked Phases 1-2, pure refactor (current)
+  - [03_updated-scope-rename.md](025_rename_canonicalr_to_existstask/plans/03_updated-scope-rename.md) — v3: updated scope (1811 usages, 63 files) (current)
+  - [02_preorder-compatible-rename.md](025_rename_canonicalr_to_existstask/plans/02_preorder-compatible-rename.md) — v2: superseded
   - [01_implementation-plan.md](025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md) — v1: superseded (blocked on fresh G-atom proofs)
 
 **Description**: Rename CanonicalR to ExistsTask and retire Gabbay infrastructure. v2 plan drops Phases 1-2 (per-witness strictness proofs blocked by same mathematical issue as task 29 — pathological MCS where G(¬q) ∈ M for all atoms). Preserves Task 29's two-layer architecture. Axiom removal is Task 26's scope.

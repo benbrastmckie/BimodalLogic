@@ -328,13 +328,43 @@ For forward_chain elements, this follows from the temporal duality:
 - By duality, P-obligations must be satisfiable backward
 - The succ_chain is symmetric with respect to temporal direction
 
-**Note**: This axiom could be derived from additional infrastructure proving
-P-step for all Succ pairs in the canonical model. For now, we state it as an
-axiom specific to succ_chain_fam since the semantic justification is sound.
+**Note**: For backward chain elements (n < -1), this follows from `backward_chain_p_step`.
+For forward chain elements (n >= 0), this requires proving that the successor construction
+satisfies P-step, which follows from temporal duality but requires additional infrastructure.
+The boundary case (n = -1) requires showing P-step from backward_chain 1 to M0.world.
+
+For now, we prove the backward cases and leave forward cases as admitted pending
+the `successor_satisfies_p_step` infrastructure.
 -/
-axiom succ_chain_fam_p_step (M0 : SerialMCS) (n : Int) :
+theorem succ_chain_fam_p_step (M0 : SerialMCS) (n : Int) :
     p_content (succ_chain_fam M0 (n + 1)) ⊆
-    (succ_chain_fam M0 n) ∪ p_content (succ_chain_fam M0 n)
+    (succ_chain_fam M0 n) ∪ p_content (succ_chain_fam M0 n) := by
+  intro φ h_φ
+  cases n with
+  | ofNat k =>
+    -- n >= 0: succ_chain_fam (n+1) = forward_chain (k+1)
+    -- This requires successor_satisfies_p_step which is not yet proven
+    simp only [succ_chain_fam] at h_φ ⊢
+    -- Forward chain P-step: p_content(forward_chain (k+1)) ⊆ forward_chain k ∪ p_content(forward_chain k)
+    -- This follows from temporal duality but requires additional infrastructure
+    sorry
+  | negSucc k =>
+    cases k with
+    | zero =>
+      -- n = -1: succ_chain_fam 0 = M0.world, succ_chain_fam (-1) = backward_chain 1
+      -- P-step: p_content(M0.world) ⊆ backward_chain 1 ∪ p_content(backward_chain 1)
+      -- Note: M0.world = backward_chain 0, so this is backward_chain_p_step M0 0
+      simp only [succ_chain_fam] at h_φ ⊢
+      have h_eq : forward_chain M0 0 = backward_chain M0 0 := by
+        simp only [forward_chain, backward_chain]
+      rw [h_eq] at h_φ ⊢
+      exact backward_chain_p_step M0 0 h_φ
+    | succ k' =>
+      -- n = -(k'+2): succ_chain_fam (n+1) = backward_chain (k'+1)
+      -- succ_chain_fam n = backward_chain (k'+2)
+      -- P-step: p_content(backward_chain (k'+1)) ⊆ backward_chain (k'+2) ∪ p_content(backward_chain (k'+2))
+      simp only [succ_chain_fam] at h_φ ⊢
+      exact backward_chain_p_step M0 (k' + 1) h_φ
 
 /-!
 ## FMCS Coherence Properties

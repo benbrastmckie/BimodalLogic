@@ -104,9 +104,11 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
     -- Then we can use weakening to get L ⊢ bot from [φ.neg] ⊢ bot... no, wrong direction!
     --
     -- The correct structural property: if L ⊢ bot and all elements of L are the same ψ,
-    -- then [ψ] ⊢ bot. This is contraction, provable by induction on derivation height.
-    -- For now, we use sorry for this structural lemma.
-    sorry
+    -- then [ψ] ⊢ bot. This follows from weakening since L ⊆ [φ.neg] as sets.
+    apply DerivationTree.weakening L [φ.neg] Formula.bot d_bot
+    intro x hx
+    simp only [List.mem_singleton]
+    exact Set.mem_singleton_iff.mp (h_L_sub x hx)
   exact h_ctx_cons ⟨h_from_singleton⟩
 
 /-!

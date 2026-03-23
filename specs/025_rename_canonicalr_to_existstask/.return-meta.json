@@ -1,25 +1,19 @@
 {
-  "status": "research_complete",
-  "started_at": "2026-03-22T12:00:00Z",
-  "completed_at": "2026-03-22T12:30:00Z",
+  "status": "planned",
   "artifacts": [
-    "specs/025_rename_canonicalr_to_existstask/reports/06_task29-impact-analysis.md"
+    {
+      "type": "plan",
+      "path": "specs/025_rename_canonicalr_to_existstask/plans/03_updated-scope-rename.md",
+      "summary": "v3: updated scope (1811 usages, 63 files, 9.5-10.5h)"
+    }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Research complete - plan remains valid with timing adjustments"
-  },
+  "next_steps": "Run /implement 25 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774243373_9f1bd6",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774244266_238753",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "key_findings": {
-    "usage_count": 1811,
-    "file_count": 63,
-    "plan_valid": true,
-    "time_estimate_change": "6-8h -> 9.5-10.5h",
-    "task35_independent": true
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 10
   }
 }
