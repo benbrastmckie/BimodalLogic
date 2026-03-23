@@ -6,6 +6,7 @@ import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Completeness
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Syntax.SubformulaClosure
 
 /-!
 # Succ Successor and Predecessor Existence
@@ -169,6 +170,122 @@ theorem p_step_blocking_formulas_subset_u (u : Set Formula)
   rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past φ) with h_in | h_neg_in
   · exact absurd h_in h_P_not
   · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
+
+/-!
+## Restricted P-Step Blocking Formulas
+
+The unrestricted `p_step_blocking_formulas` works for arbitrary MCS, but when working
+with `DeferralRestrictedMCS` (sets restricted to `deferralClosure phi`), the unrestricted
+version is FALSE as stated. See RestrictedMCS.lean lines 1060-1124 for the counterexample:
+if `P(psi)` is NOT in `deferralClosure`, then `H(¬psi)` is also NOT in `deferralClosure`,
+so the blocking formula cannot be in the restricted MCS.
+
+The fix is to only block formulas where `P(chi)` is in `deferralClosure`. This is sound
+because the Lindenbaum extension in the restricted construction only adds formulas from
+`deferralClosure` anyway, so `P(chi)` where `P(chi) ∉ deferralClosure` cannot appear
+in the successor.
+
+Team research report 06_team-research.md confirms this solution with HIGH confidence.
+-/
+
+/--
+P-step blocking formulas restricted to the deferral closure.
+
+Only blocks `P(chi)` where `P(chi)` could actually appear in the successor,
+i.e., where `P(chi) ∈ deferralClosure phi`.
+
+This is the mathematically correct definition for `DeferralRestrictedMCS`.
+The unrestricted version `p_step_blocking_formulas` is false for this case
+(see research report 06_team-research.md for counterexample).
+-/
+def p_step_blocking_formulas_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
+  {ψ | ∃ χ : Formula, Formula.some_past χ ∈ deferralClosure phi ∧
+                       Formula.some_past χ ∉ u ∧
+                       χ ∉ u ∧
+                       ψ = Formula.all_past (Formula.neg χ)}
+
+/-- Membership in restricted P-step blocking formulas. -/
+lemma mem_p_step_blocking_formulas_restricted_iff (phi : Formula) (u : Set Formula) (ψ : Formula) :
+    ψ ∈ p_step_blocking_formulas_restricted phi u ↔
+    ∃ χ : Formula, Formula.some_past χ ∈ deferralClosure phi ∧
+                   Formula.some_past χ ∉ u ∧
+                   χ ∉ u ∧
+                   ψ = Formula.all_past (Formula.neg χ) := by
+  rfl
+
+/--
+Restricted P-step blocking formulas are a subset of deferralClosure.
+
+**Proof**: If `P(chi) ∈ deferralClosure phi`, then `H(¬chi) ∈ deferralClosure phi`.
+
+This follows from the structure of deferralClosure: if `P(chi) ∈ closureWithNeg`,
+then either `P(chi)` is in `subformulaClosure` (so `H(¬chi)` is a subformula of `P(chi)`),
+or `P(chi) = g.neg` for some `g` in `subformulaClosure`. In the second case,
+`g = H(¬chi)` (since `P(chi) = ¬H(¬chi)` by definition), so `H(¬chi) ∈ subformulaClosure`.
+-/
+theorem p_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : Set Formula) :
+    p_step_blocking_formulas_restricted phi u ⊆ (deferralClosure phi : Set Formula) := by
+  intro ψ hψ
+  rw [mem_p_step_blocking_formulas_restricted_iff] at hψ
+  obtain ⟨χ, h_P_in_dc, _, _, rfl⟩ := hψ
+  -- P(χ) ∈ deferralClosure implies H(¬χ) ∈ deferralClosure
+  -- First, P(χ) ∈ deferralClosure means P(χ) ∈ closureWithNeg (since closureWithNeg ⊆ deferralClosure)
+  have h_P_in_cwn := some_past_in_deferralClosure_is_in_closureWithNeg phi χ h_P_in_dc
+  -- P(χ) in closureWithNeg means P(χ) in subformulaClosure OR P(χ) = g.neg for g in subformulaClosure
+  unfold closureWithNeg at h_P_in_cwn
+  simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
+  rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
+  · -- P(χ) in subformulaClosure, so H(¬χ) = subformula of P(χ)
+    apply closureWithNeg_subset_deferralClosure
+    apply subformulaClosure_subset_closureWithNeg
+    exact closure_imp_left phi _ _ h_sub
+  · -- P(χ) = g.neg for g in subformulaClosure
+    -- g.neg = P(χ) = neg(H(neg χ)) implies g = H(neg χ)
+    unfold Formula.some_past Formula.neg at h_g_neg_eq
+    have h_eq : g = Formula.all_past (Formula.neg χ) := by cases h_g_neg_eq; rfl
+    rw [h_eq] at h_g_sub
+    exact closureWithNeg_subset_deferralClosure phi
+      (subformulaClosure_subset_closureWithNeg phi h_g_sub)
+
+/-!
+## Restricted Constrained Successor Seed
+
+The restricted constrained successor seed uses `p_step_blocking_formulas_restricted`
+instead of `p_step_blocking_formulas`. This ensures all seed formulas stay within
+`deferralClosure phi`, which is necessary for the `DeferralRestrictedMCS` construction.
+-/
+
+/--
+The restricted constrained successor seed:
+`g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas_restricted(phi, u)`.
+
+This is the correct seed for constructing successors of `DeferralRestrictedMCS`.
+Unlike the unrestricted `constrained_successor_seed`, this seed stays within
+`deferralClosure phi`, ensuring the Lindenbaum extension can be restricted.
+-/
+def constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
+  g_content u ∪ deferralDisjunctions u ∪ p_step_blocking_formulas_restricted phi u
+
+/-- Membership in restricted constrained successor seed. -/
+lemma mem_constrained_successor_seed_restricted_iff (phi : Formula) (u : Set Formula) (ψ : Formula) :
+    ψ ∈ constrained_successor_seed_restricted phi u ↔
+    ψ ∈ g_content u ∨ ψ ∈ deferralDisjunctions u ∨ ψ ∈ p_step_blocking_formulas_restricted phi u := by
+  simp only [constrained_successor_seed_restricted, Set.mem_union, or_assoc]
+
+/-- g_content is a subset of the restricted constrained successor seed. -/
+lemma g_content_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
+    g_content u ⊆ constrained_successor_seed_restricted phi u :=
+  Set.subset_union_left.trans Set.subset_union_left
+
+/-- Deferral disjunctions are a subset of the restricted constrained successor seed. -/
+lemma deferralDisjunctions_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
+    deferralDisjunctions u ⊆ constrained_successor_seed_restricted phi u :=
+  Set.subset_union_right.trans Set.subset_union_left
+
+/-- Restricted P-step blocking formulas are a subset of the restricted seed. -/
+lemma p_step_blocking_restricted_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
+    p_step_blocking_formulas_restricted phi u ⊆ constrained_successor_seed_restricted phi u :=
+  Set.subset_union_right
 
 /-!
 ## Constrained Successor Seed (with P-Step Blocking)

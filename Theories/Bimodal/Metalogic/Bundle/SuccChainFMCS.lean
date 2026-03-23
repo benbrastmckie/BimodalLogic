@@ -48,6 +48,7 @@ namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
+open Bimodal.ProofSystem
 
 /-!
 ## Seriality Definitions
@@ -1303,5 +1304,476 @@ theorem predecessor_deferral_seed_subset_deferralClosure (phi : Formula) (u : Se
   · exact h_content_subset_deferralClosure phi u h_u h_hc
   · exact pastDeferralDisjunctions_subset_deferralClosure phi u h_u h_pd
   · exact f_step_blocking_subset_deferralClosure phi u h_u h_mcs h_block
+
+/-!
+## Restricted Constrained Successor Seed Properties
+
+The restricted successor seed uses `p_step_blocking_formulas_restricted` which only
+considers blocking formulas where `P(chi)` is in `deferralClosure`. This makes the
+subset property valid for `DeferralRestrictedMCS` (which is not a full MCS).
+-/
+
+/--
+The restricted constrained successor seed stays in deferralClosure.
+
+Unlike the unrestricted `constrained_successor_seed_subset_deferralClosure`, this
+theorem does NOT require u to be a full MCS - it works for `DeferralRestrictedMCS`.
+This is the key property that enables the restricted chain construction.
+-/
+theorem constrained_successor_seed_restricted_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    constrained_successor_seed_restricted phi u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro psi h_seed
+  rw [mem_constrained_successor_seed_restricted_iff] at h_seed
+  rcases h_seed with h_gc | h_dd | h_block
+  · exact g_content_subset_deferralClosure phi u h_u h_gc
+  · exact deferralDisjunctions_subset_deferralClosure phi u h_u h_dd
+  · exact p_step_blocking_restricted_subset_deferralClosure phi u h_block
+
+/--
+g_content(u) ⊆ u when u is a DeferralRestrictedMCS.
+
+This uses the T-axiom (G(φ) → φ) and the maximality of DeferralRestrictedMCS within
+deferralClosure. The key insight is that if G(chi) ∈ u ⊆ deferralClosure, then
+chi ∈ deferralClosure (by `deferralClosure_all_future`), and by maximality of u,
+chi ∈ u (otherwise we could derive a contradiction using the T-axiom).
+-/
+theorem g_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
+    g_content u ⊆ u := by
+  intro chi h_gc
+  -- h_gc: G(chi) ∈ u
+  have h_G_chi : Formula.all_future chi ∈ u := h_gc
+  -- G(chi) ∈ u ⊆ deferralClosure implies chi ∈ deferralClosure
+  have h_G_in_dc := h_mcs.1.1 h_G_chi
+  have h_chi_in_dc := Bimodal.Syntax.deferralClosure_all_future phi chi h_G_in_dc
+  -- By maximality: either chi ∈ u or insert chi u is inconsistent
+  by_contra h_not_in
+  have h_insert_incons := h_mcs.2 chi h_chi_in_dc h_not_in
+  -- insert chi u inconsistent means: ∃ L ⊆ insert chi u, L ⊢ ⊥
+  unfold SetConsistent at h_insert_incons
+  push_neg at h_insert_incons
+  obtain ⟨L, h_L_sub, h_L_incons⟩ := h_insert_incons
+  obtain ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L_incons
+  -- Filter L to get L' = L \ {chi}, so L' ⊆ u
+  let L' := L.filter (· ≠ chi)
+  have h_L'_in_u : ∀ ψ ∈ L', ψ ∈ u := by
+    intro ψ hψ
+    have hψ' := List.mem_filter.mp hψ
+    have hψne : ψ ≠ chi := by simpa using hψ'.2
+    specialize h_L_sub ψ hψ'.1
+    simp [Set.mem_insert_iff] at h_L_sub
+    rcases h_L_sub with rfl | h_in
+    · exact absurd rfl hψne
+    · exact h_in
+  have h_L_sub' : L ⊆ chi :: L' := by
+    intro ψ hψ
+    by_cases hψchi : ψ = chi
+    · simp [hψchi]
+    · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by simpa using hψchi⟩)
+  -- From L ⊢ ⊥, get chi :: L' ⊢ ⊥ by weakening
+  have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+  -- By deduction theorem: L' ⊢ chi → ⊥ = neg chi
+  have d_neg_chi : L' ⊢ Formula.neg chi :=
+    Bimodal.Metalogic.Core.deduction_theorem L' chi Formula.bot d_bot'
+  -- We have T-axiom: G(chi) → chi
+  have h_T : [] ⊢ (Formula.all_future chi).imp chi :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_future chi)
+  -- L' ∪ {G(chi)} ⊢ chi via T-axiom
+  let L'' := Formula.all_future chi :: L'
+  have h_L''_G : Formula.all_future chi ∈ L'' := @List.mem_cons_self _ (Formula.all_future chi) L'
+  have d_T' : L'' ⊢ (Formula.all_future chi).imp chi :=
+    DerivationTree.weakening [] L'' _ h_T (List.nil_subset L'')
+  have d_chi : L'' ⊢ chi := DerivationTree.modus_ponens L'' _ _ d_T' (DerivationTree.assumption _ _ h_L''_G)
+  -- L'' ⊢ neg chi (weakening from L' ⊢ neg chi)
+  have d_neg_chi' : L'' ⊢ Formula.neg chi :=
+    DerivationTree.weakening L' L'' _ d_neg_chi (List.subset_cons_of_subset _ (List.Subset.refl L'))
+  -- L'' ⊢ ⊥ from chi and neg chi
+  have d_bot'' := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_chi d_neg_chi'
+  -- But L'' ⊆ u (G(chi) ∈ u and L' ⊆ u), contradicting consistency of u
+  have h_L''_in_u : ∀ ψ ∈ L'', ψ ∈ u := by
+    intro ψ hψ
+    simp only [L'', List.mem_cons] at hψ
+    rcases hψ with rfl | h_L'
+    · exact h_G_chi
+    · exact h_L'_in_u ψ h_L'
+  exact h_mcs.1.2 L'' h_L''_in_u ⟨d_bot''⟩
+
+/--
+deferralDisjunctions(u) ⊆ u when u is a DeferralRestrictedMCS.
+
+Each deferral disjunction χ ∨ F(χ) where F(χ) ∈ u is derivable from F(χ) via
+disjunction introduction. By the same maximality argument as g_content, if
+the disjunction is in deferralClosure (which it is, by `deferral_of_F_in_closure`),
+then it must be in u.
+-/
+theorem deferralDisjunctions_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
+    deferralDisjunctions u ⊆ u := by
+  intro psi h_dd
+  obtain ⟨chi, h_F_chi, rfl⟩ := h_dd
+  -- F(chi) ∈ u ⊆ deferralClosure
+  have h_F_in_dc := h_mcs.1.1 h_F_chi
+  -- F(chi) ∈ deferralClosure implies chi ∨ F(chi) ∈ deferralClosure
+  have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi h_F_in_dc
+  have h_disj_in_dc := Bimodal.Syntax.deferral_of_F_in_closure phi chi h_F_in_cwn
+  -- By maximality: either chi ∨ F(chi) ∈ u or insert is inconsistent
+  by_contra h_not_in
+  have h_insert_incons := h_mcs.2 (deferralDisjunction chi) h_disj_in_dc h_not_in
+  unfold SetConsistent at h_insert_incons
+  push_neg at h_insert_incons
+  obtain ⟨L, h_L_sub, h_L_incons⟩ := h_insert_incons
+  obtain ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L_incons
+  let L' := L.filter (· ≠ deferralDisjunction chi)
+  have h_L'_in_u : ∀ ψ ∈ L', ψ ∈ u := by
+    intro ψ hψ
+    have hψ' := List.mem_filter.mp hψ
+    have hψne : ψ ≠ deferralDisjunction chi := by simpa using hψ'.2
+    specialize h_L_sub ψ hψ'.1
+    simp [Set.mem_insert_iff] at h_L_sub
+    rcases h_L_sub with rfl | h_in
+    · exact absurd rfl hψne
+    · exact h_in
+  have h_L_sub' : L ⊆ deferralDisjunction chi :: L' := by
+    intro ψ hψ
+    by_cases hψd : ψ = deferralDisjunction chi
+    · simp [hψd]
+    · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by simpa using hψd⟩)
+  have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+  have d_neg_disj : L' ⊢ Formula.neg (deferralDisjunction chi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L' (deferralDisjunction chi) Formula.bot d_bot'
+  -- F(chi) → (chi ∨ F(chi)) is derivable
+  have h_imp : [Formula.some_future chi] ⊢ deferralDisjunction chi := deferral_disjunction_from_F chi
+  have h_imp' : [] ⊢ (Formula.some_future chi).imp (deferralDisjunction chi) :=
+    Bimodal.Metalogic.Core.deduction_theorem [] (Formula.some_future chi) (deferralDisjunction chi) h_imp
+  -- L' ∪ {F(chi)} ⊢ chi ∨ F(chi)
+  let L'' := Formula.some_future chi :: L'
+  have d_imp'' : L'' ⊢ (Formula.some_future chi).imp (deferralDisjunction chi) :=
+    DerivationTree.weakening [] L'' _ h_imp' (List.nil_subset L'')
+  have h_L''_F : Formula.some_future chi ∈ L'' := @List.mem_cons_self _ (Formula.some_future chi) L'
+  have d_disj : L'' ⊢ deferralDisjunction chi :=
+    DerivationTree.modus_ponens L'' _ _ d_imp'' (DerivationTree.assumption _ _ h_L''_F)
+  have d_neg_disj' : L'' ⊢ Formula.neg (deferralDisjunction chi) :=
+    DerivationTree.weakening L' L'' _ d_neg_disj (List.subset_cons_of_subset _ (List.Subset.refl L'))
+  have d_bot'' := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_disj d_neg_disj'
+  have h_L''_in_u : ∀ ψ ∈ L'', ψ ∈ u := by
+    intro ψ hψ
+    simp only [L'', List.mem_cons] at hψ
+    rcases hψ with rfl | h_L'
+    · exact h_F_chi
+    · exact h_L'_in_u ψ h_L'
+  exact h_mcs.1.2 L'' h_L''_in_u ⟨d_bot''⟩
+
+/--
+The restricted constrained successor seed is consistent when u is a DeferralRestrictedMCS.
+
+**Proof Strategy**:
+The seed is `g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas_restricted(phi, u)`.
+
+We show each component is a subset of u:
+1. g_content(u) ⊆ u: By `g_content_subset_deferral_restricted_mcs`
+2. deferralDisjunctions(u) ⊆ u: By `deferralDisjunctions_subset_deferral_restricted_mcs`
+3. p_step_blocking_formulas_restricted(phi, u) ⊆ u: By `p_step_blocking_restricted_subset`
+
+Therefore constrained_successor_seed_restricted(phi, u) ⊆ u. Since u is consistent (DeferralRestrictedMCS),
+any subset of u is consistent, so the seed is consistent.
+-/
+theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    SetConsistent (constrained_successor_seed_restricted phi u) := by
+  -- We show seed ⊆ u, then use that u is consistent
+  have h_seed_subset_u : constrained_successor_seed_restricted phi u ⊆ u := by
+    intro psi h_seed
+    rw [mem_constrained_successor_seed_restricted_iff] at h_seed
+    rcases h_seed with h_gc | h_dd | h_block
+    · -- g_content case
+      exact g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc
+    · -- deferralDisjunctions case
+      exact deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd
+    · -- p_step_blocking_restricted case
+      exact Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block
+  -- Any finite subset of seed is a finite subset of u, which is consistent
+  intro L h_L
+  exact h_mcs.1.2 L (fun ψ hψ => h_seed_subset_u (h_L ψ hψ))
+
+/-!
+## Phase 4: Restricted Constrained Successor Construction
+
+Build the actual successor from DeferralRestrictedMCS by:
+1. Taking the restricted seed (within deferralClosure)
+2. Extending via deferral-restricted Lindenbaum to get DeferralRestrictedMCS
+3. Proving Succ and P-step properties
+-/
+
+/--
+The restricted constrained successor: Lindenbaum extension of the restricted seed
+within deferralClosure.
+
+This construction maintains the DeferralRestrictedMCS property and satisfies Succ.
+Returns a Set Formula (the actual successor world).
+-/
+noncomputable def constrained_successor_restricted (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    Set Formula :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (constrained_successor_seed_restricted phi u)
+    (constrained_successor_seed_restricted_subset_deferralClosure phi u h_mcs.1.1)
+    (constrained_successor_seed_restricted_consistent phi u h_mcs h_F_top)).choose
+
+/-- The restricted successor extends the restricted seed. -/
+theorem constrained_successor_restricted_extends (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    constrained_successor_seed_restricted phi u ⊆
+    constrained_successor_restricted phi u h_mcs h_F_top :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (constrained_successor_seed_restricted phi u)
+    (constrained_successor_seed_restricted_subset_deferralClosure phi u h_mcs.1.1)
+    (constrained_successor_seed_restricted_consistent phi u h_mcs h_F_top)).choose_spec.1
+
+/-- The restricted successor is a DeferralRestrictedMCS. -/
+theorem constrained_successor_restricted_is_mcs (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    Bimodal.Metalogic.Core.DeferralRestrictedMCS phi
+    (constrained_successor_restricted phi u h_mcs h_F_top) :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (constrained_successor_seed_restricted phi u)
+    (constrained_successor_seed_restricted_subset_deferralClosure phi u h_mcs.1.1)
+    (constrained_successor_seed_restricted_consistent phi u h_mcs h_F_top)).choose_spec.2
+
+/--
+G-persistence for restricted successor: g_content(u) ⊆ restricted_successor.
+
+The G-persistence property is inherited from the seed structure.
+-/
+theorem constrained_successor_restricted_g_persistence (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    g_content u ⊆ constrained_successor_restricted phi u h_mcs h_F_top :=
+  Set.Subset.trans
+    (g_content_subset_constrained_successor_seed_restricted phi u)
+    (constrained_successor_restricted_extends phi u h_mcs h_F_top)
+
+/--
+F-step for restricted successor: f_content(u) ⊆ v ∪ f_content(v).
+
+Each F-obligation in u is either resolved at v or deferred.
+-/
+theorem constrained_successor_restricted_f_step (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    f_content u ⊆ (constrained_successor_restricted phi u h_mcs h_F_top) ∪
+                   f_content (constrained_successor_restricted phi u h_mcs h_F_top) := by
+  intro ψ h_ψ
+  -- h_ψ : F(ψ) ∈ u, so ψ ∈ f_content(u)
+  have h_F_ψ : Formula.some_future ψ ∈ u := h_ψ
+  -- The deferral disjunction ψ ∨ F(ψ) is in the seed
+  have h_disj_in_seed : deferralDisjunction ψ ∈ constrained_successor_seed_restricted phi u :=
+    deferralDisjunctions_subset_constrained_successor_seed_restricted phi u
+      ⟨ψ, h_F_ψ, rfl⟩
+  -- Hence in the successor
+  have h_disj_in_succ : deferralDisjunction ψ ∈
+      constrained_successor_restricted phi u h_mcs h_F_top :=
+    constrained_successor_restricted_extends phi u h_mcs h_F_top h_disj_in_seed
+  -- By DeferralRestrictedMCS "disjunction" property (one of the disjuncts must be in)
+  -- Since the successor is a DeferralRestrictedMCS, either ψ or F(ψ) is in the successor
+  let v := constrained_successor_restricted phi u h_mcs h_F_top
+  have h_v_mcs := constrained_successor_restricted_is_mcs phi u h_mcs h_F_top
+  -- ψ ∨ F(ψ) is an or-formula. We need the disjunction elimination property.
+  -- The key is that since v is a DeferralRestrictedMCS and ψ ∨ F(ψ) ∈ v,
+  -- and ψ ∨ F(ψ) ∈ deferralClosure (since v ⊆ deferralClosure), we have
+  -- either ψ ∈ v or F(ψ) ∈ v.
+  -- This uses maximality within deferralClosure.
+  have h_disj_in_dc : deferralDisjunction ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+    h_v_mcs.1.1 h_disj_in_succ
+  -- The or-formula case: check if ψ or F(ψ) must be in v
+  -- Using a standard MCS-like argument for maximality within closure
+  unfold deferralDisjunction at h_disj_in_succ
+  -- We use the fact that for DeferralRestrictedMCS, if an or-formula is in,
+  -- at least one disjunct must be in (otherwise inserting either would be consistent)
+  by_cases h_ψ_in : ψ ∈ v
+  · exact Set.mem_union_left _ h_ψ_in
+  · -- ψ ∉ v. If F(ψ) ∉ v, then we can derive a contradiction.
+    by_cases h_F_ψ_in : Formula.some_future ψ ∈ v
+    · exact Set.mem_union_right _ h_F_ψ_in
+    · -- Both ψ ∉ v and F(ψ) ∉ v, but ψ ∨ F(ψ) ∈ v - contradiction for a DeferralRestrictedMCS
+      -- This case should be impossible by maximality: inserting ψ or F(ψ) should be inconsistent
+      -- But if both could be inserted consistently, then so could the original or-formula
+      -- which it already is. So one of them must be in.
+      -- Actually, we need to check if ψ and F(ψ) are even in deferralClosure.
+      -- ψ ∨ F(ψ) ∈ deferralClosure, so... let's see.
+      -- If ψ ∈ deferralClosure, then by maximality either ψ ∈ v or insert ψ v is inconsistent.
+      -- If insert ψ v is inconsistent, we can use that v ⊢ ψ ∨ F(ψ) and insert ψ leads to ⊥.
+      -- This gives us v ⊢ ¬ψ. Combined with v ⊢ ψ ∨ F(ψ) and propositional logic, v ⊢ F(ψ).
+      -- By maximality of v within deferralClosure, if F(ψ) ∈ deferralClosure, then F(ψ) ∈ v.
+      -- The detailed proof requires knowing that ψ and F(ψ) are in deferralClosure.
+      -- From F(ψ) ∈ u ⊆ deferralClosure, we have F(ψ) ∈ deferralClosure.
+      -- And ψ ∨ F(ψ) ∈ deferralClosure, so...
+      -- Actually the deferral disjunction construction ensures both are in deferralClosure.
+      have h_F_ψ_in_dc : Formula.some_future ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+        h_mcs.1.1 h_F_ψ
+      -- Check if ψ is in deferralClosure: F(ψ) ∈ deferralClosure => F(ψ) ∈ closureWithNeg
+      -- => ψ ∈ subformulaClosure => ψ ∈ closureWithNeg ⊆ deferralClosure
+      have h_F_ψ_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi ψ h_F_ψ_in_dc
+      have h_ψ_in_sub := Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi ψ h_F_ψ_in_cwn
+      have h_ψ_in_dc : ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+        Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_ψ_in_sub)
+      -- Now by maximality: either ψ ∈ v or insert ψ v is inconsistent
+      have h_insert_ψ_incons := h_v_mcs.2 ψ h_ψ_in_dc h_ψ_in
+      -- insert ψ v is inconsistent, so there exists L ⊆ v such that L ∪ {ψ} ⊢ ⊥
+      unfold SetConsistent at h_insert_ψ_incons
+      push_neg at h_insert_ψ_incons
+      obtain ⟨L, h_L_sub, h_L_incons⟩ := h_insert_ψ_incons
+      obtain ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L_incons
+      -- Similarly for F(ψ)
+      have h_insert_F_incons := h_v_mcs.2 (Formula.some_future ψ) h_F_ψ_in_dc h_F_ψ_in
+      unfold SetConsistent at h_insert_F_incons
+      push_neg at h_insert_F_incons
+      obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_insert_F_incons
+      obtain ⟨d_bot'⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L'_incons
+      -- From L ∪ {ψ} ⊢ ⊥, get L ⊢ ¬ψ by deduction theorem
+      let L_filt := L.filter (· ≠ ψ)
+      have h_L_filt_in_v : ∀ χ ∈ L_filt, χ ∈ v := by
+        intro χ hχ
+        have hχ' := List.mem_filter.mp hχ
+        have hχne : χ ≠ ψ := by simpa using hχ'.2
+        specialize h_L_sub χ hχ'.1
+        simp [Set.mem_insert_iff] at h_L_sub
+        rcases h_L_sub with rfl | h_in
+        · exact absurd rfl hχne
+        · exact h_in
+      have h_L_sub' : L ⊆ ψ :: L_filt := by
+        intro χ hχ
+        by_cases hχψ : χ = ψ
+        · simp [hχψ]
+        · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa using hχψ⟩)
+      have d_bot1 := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+      have d_neg_ψ : L_filt ⊢ Formula.neg ψ :=
+        Bimodal.Metalogic.Core.deduction_theorem L_filt ψ Formula.bot d_bot1
+      -- From L' ∪ {F(ψ)} ⊢ ⊥, get L' ⊢ ¬F(ψ) by deduction theorem
+      let L'_filt := L'.filter (· ≠ Formula.some_future ψ)
+      have h_L'_filt_in_v : ∀ χ ∈ L'_filt, χ ∈ v := by
+        intro χ hχ
+        have hχ' := List.mem_filter.mp hχ
+        have hχne : χ ≠ Formula.some_future ψ := by simpa using hχ'.2
+        specialize h_L'_sub χ hχ'.1
+        simp [Set.mem_insert_iff] at h_L'_sub
+        rcases h_L'_sub with rfl | h_in
+        · exact absurd rfl hχne
+        · exact h_in
+      have h_L'_sub' : L' ⊆ Formula.some_future ψ :: L'_filt := by
+        intro χ hχ
+        by_cases hχF : χ = Formula.some_future ψ
+        · simp [hχF]
+        · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa using hχF⟩)
+      have d_bot2 := DerivationTree.weakening L' _ Formula.bot d_bot' h_L'_sub'
+      have d_neg_F : L'_filt ⊢ Formula.neg (Formula.some_future ψ) :=
+        Bimodal.Metalogic.Core.deduction_theorem L'_filt (Formula.some_future ψ) Formula.bot d_bot2
+      -- ψ ∨ F(ψ) ∈ v, so combined with ¬ψ and ¬F(ψ), we get ⊥
+      -- The combination needs: (ψ ∨ F(ψ)) ∧ ¬ψ ∧ ¬F(ψ) → ⊥
+      -- This is a standard propositional tautology
+      -- Let Γ = L_filt ++ L'_filt ++ [ψ ∨ F(ψ)]
+      let Γ := L_filt ++ L'_filt ++ [Formula.or ψ (Formula.some_future ψ)]
+      have h_Γ_in_v : ∀ χ ∈ Γ, χ ∈ v := by
+        intro χ hχ
+        simp only [Γ, List.mem_append, List.mem_singleton] at hχ
+        rcases hχ with (h1 | h2) | h3
+        · exact h_L_filt_in_v χ h1
+        · exact h_L'_filt_in_v χ h2
+        · rw [h3]; exact h_disj_in_succ
+      -- Now derive ⊥ from Γ using propositional logic
+      -- Γ = L_filt ++ L'_filt ++ [or ψ (F ψ)]
+      -- So L_filt ⊆ L_filt ++ L'_filt ⊆ Γ
+      have h_L_filt_sub_Γ : L_filt ⊆ Γ := by
+        intro χ hχ
+        simp only [Γ, List.mem_append, List.mem_singleton]
+        left; left; exact hχ
+      have d_neg_ψ' : Γ ⊢ Formula.neg ψ :=
+        DerivationTree.weakening L_filt Γ _ d_neg_ψ h_L_filt_sub_Γ
+      have h_L'_filt_sub_Γ : L'_filt ⊆ Γ := by
+        intro χ hχ
+        simp only [Γ, List.mem_append, List.mem_singleton]
+        left; right; exact hχ
+      have d_neg_F' : Γ ⊢ Formula.neg (Formula.some_future ψ) :=
+        DerivationTree.weakening L'_filt Γ _ d_neg_F h_L'_filt_sub_Γ
+      have h_or_in_Γ : Formula.or ψ (Formula.some_future ψ) ∈ Γ :=
+        List.mem_append_right _ (List.mem_singleton_self _)
+      have d_or : Γ ⊢ Formula.or ψ (Formula.some_future ψ) :=
+        DerivationTree.assumption Γ _ h_or_in_Γ
+      -- Use disjunctive syllogism: (ψ ∨ F(ψ)) ∧ ¬ψ → F(ψ)
+      -- Then F(ψ) ∧ ¬F(ψ) → ⊥
+      -- We derive ⊥ from the disjunction and both negations.
+      -- Standard propositional logic derivation:
+      -- 1. From ψ ∨ F(ψ) and ¬ψ and ¬F(ψ):
+      -- 2. By case elimination: if ψ then ⊥ (from ψ and ¬ψ), if F(ψ) then ⊥ (from F(ψ) and ¬F(ψ))
+      -- 3. Both cases lead to ⊥, so ⊥
+      -- This requires a derivation of: (A ∨ B) → ¬A → ¬B → ⊥
+      -- Using modus ponens with A ∨ B and the derived implication:
+      -- (A → ⊥) → (B → ⊥) → (A ∨ B) → ⊥
+      -- We have: d_neg_ψ' : Γ ⊢ ψ → ⊥  (since ¬ψ = ψ → ⊥)
+      -- We have: d_neg_F' : Γ ⊢ F(ψ) → ⊥  (since ¬F(ψ) = F(ψ) → ⊥)
+      -- We have: d_or : Γ ⊢ ψ ∨ F(ψ)
+      -- By or-elimination theorem: Γ ⊢ ⊥
+      have d_bot3 : Γ ⊢ Formula.bot :=
+        Bimodal.Theorems.Propositional.or_elim_neg_neg Γ ψ (Formula.some_future ψ)
+          d_or d_neg_ψ' d_neg_F'
+      exact False.elim (h_v_mcs.1.2 Γ h_Γ_in_v ⟨d_bot3⟩)
+
+/--
+The restricted successor satisfies the Succ relation: Succ u v.
+-/
+theorem constrained_successor_restricted_succ (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    Succ u (constrained_successor_restricted phi u h_mcs h_F_top) :=
+  ⟨constrained_successor_restricted_g_persistence phi u h_mcs h_F_top,
+   constrained_successor_restricted_f_step phi u h_mcs h_F_top⟩
+
+/--
+P-step for restricted successor: p_content(v) ⊆ u ∪ p_content(u).
+
+This is the key property that uses the restricted P-step blocking formulas.
+If P(chi) appears in the successor v and chi ∉ u and P(chi) ∉ u, then:
+1. P(chi) ∈ v ⊆ deferralClosure implies P(chi) ∈ deferralClosure
+2. By restricted blocking definition, H(neg chi) ∈ p_step_blocking_formulas_restricted
+3. H(neg chi) ∈ seed ⊆ v
+4. But P(chi) = neg(H(neg chi)) ∈ v contradicts MCS consistency with H(neg chi) ∈ v
+-/
+theorem constrained_successor_restricted_p_step (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    p_content (constrained_successor_restricted phi u h_mcs h_F_top) ⊆ u ∪ p_content u := by
+  intro chi h_chi_in_p_content
+  -- h_chi_in_p_content : P(chi) ∈ v, so chi ∈ p_content(v)
+  let v := constrained_successor_restricted phi u h_mcs h_F_top
+  have h_v_mcs := constrained_successor_restricted_is_mcs phi u h_mcs h_F_top
+  have h_P_chi_in_v : Formula.some_past chi ∈ v := h_chi_in_p_content
+  -- We need: chi ∈ u ∨ P(chi) ∈ u
+  by_cases h_chi_in_u : chi ∈ u
+  · exact Set.mem_union_left _ h_chi_in_u
+  · by_cases h_P_chi_in_u : Formula.some_past chi ∈ u
+    · exact Set.mem_union_right _ h_P_chi_in_u
+    · -- chi ∉ u and P(chi) ∉ u — derive contradiction
+      -- P(chi) ∈ v ⊆ deferralClosure implies P(chi) ∈ deferralClosure
+      have h_P_chi_in_dc : Formula.some_past chi ∈
+          (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+        h_v_mcs.1.1 h_P_chi_in_v
+      -- By restricted blocking definition, H(neg chi) is in the restricted blocking set
+      have h_block : Formula.all_past (Formula.neg chi) ∈
+          p_step_blocking_formulas_restricted phi u :=
+        ⟨chi, h_P_chi_in_dc, h_P_chi_in_u, h_chi_in_u, rfl⟩
+      -- H(neg chi) ∈ seed ⊆ v
+      have h_in_seed : Formula.all_past (Formula.neg chi) ∈
+          constrained_successor_seed_restricted phi u :=
+        p_step_blocking_restricted_subset_constrained_successor_seed_restricted phi u h_block
+      have h_H_in_v : Formula.all_past (Formula.neg chi) ∈ v :=
+        constrained_successor_restricted_extends phi u h_mcs h_F_top h_in_seed
+      -- But P(chi) = neg(H(neg chi)) ∈ v contradicts consistency with H(neg chi) ∈ v
+      exact False.elim (Bimodal.Metalogic.Core.set_consistent_not_both h_v_mcs.1.2
+        (Formula.all_past (Formula.neg chi)) h_H_in_v h_P_chi_in_v)
 
 end Bimodal.Metalogic.Bundle

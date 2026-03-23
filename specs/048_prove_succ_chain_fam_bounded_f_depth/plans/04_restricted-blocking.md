@@ -64,7 +64,7 @@ Key findings from `06_team-research.md`:
 
 ## Implementation Phases
 
-### Phase 1: Define Restricted P-Step Blocking [NOT STARTED]
+### Phase 1: Define Restricted P-Step Blocking [COMPLETED]
 
 **Goal**: Create the mathematically correct restricted blocking definition.
 
@@ -100,7 +100,7 @@ Key findings from `06_team-research.md`:
 
 ---
 
-### Phase 2: Prove Restricted Blocking Subset Theorem [NOT STARTED]
+### Phase 2: Prove Restricted Blocking Subset Theorem [COMPLETED]
 
 **Goal**: Prove the restricted blocking formulas stay in the MCS.
 
@@ -134,7 +134,7 @@ Key findings from `06_team-research.md`:
 
 ---
 
-### Phase 3: Update Constrained Successor Seed [NOT STARTED]
+### Phase 3: Update Constrained Successor Seed [COMPLETED]
 
 **Goal**: Use restricted blocking in the successor seed construction.
 
@@ -172,7 +172,7 @@ Key findings from `06_team-research.md`:
 
 ---
 
-### Phase 4: Prove P-Step Property for Restricted Construction [NOT STARTED]
+### Phase 4: Prove P-Step Property for Restricted Construction [COMPLETED]
 
 **Goal**: Prove the restricted construction satisfies the P-step relation.
 
@@ -222,7 +222,7 @@ Key findings from `06_team-research.md`:
 
 ---
 
-### Phase 5: Update Chain Construction and Remove Sorries [NOT STARTED]
+### Phase 5: Update Chain Construction and Remove Sorries [PARTIAL]
 
 **Goal**: Build the restricted chain and remove deprecated sorries.
 

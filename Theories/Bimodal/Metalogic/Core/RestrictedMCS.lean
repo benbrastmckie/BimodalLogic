@@ -1123,6 +1123,122 @@ theorem p_step_blocking_for_deferral_restricted (phi : Formula) (u : Set Formula
     -- For the implementation, we'll proceed with sorry here and note it.
     sorry
 
+/--
+P-step blocking formulas (restricted) are subset of u for DeferralRestrictedMCS.
+
+This is the corrected version of `p_step_blocking_for_deferral_restricted` that uses
+the restricted definition `p_step_blocking_formulas_restricted`, which only considers
+formulas where `P(psi)` is in `deferralClosure`.
+
+This is exactly the "Case 1" proof from the original attempt - the case where
+`P(psi) ∈ deferralClosure`. The "Case 2" where `P(psi) ∉ deferralClosure`
+is now excluded by the definition of `p_step_blocking_formulas_restricted`.
+
+See research report 06_team-research.md for the counterexample showing why
+the unrestricted version fails.
+-/
+theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
+    (h_mcs : DeferralRestrictedMCS phi u) :
+    Bimodal.Metalogic.Bundle.p_step_blocking_formulas_restricted phi u ⊆ u := by
+  intro chi h_block
+  rw [Bimodal.Metalogic.Bundle.mem_p_step_blocking_formulas_restricted_iff] at h_block
+  obtain ⟨psi, h_P_in_dc, h_P_not_in, _, rfl⟩ := h_block
+  -- Goal: H(neg psi) = Formula.all_past (Formula.neg psi) ∈ u
+  -- This is the same proof as Case 1 in p_step_blocking_for_deferral_restricted,
+  -- but now we don't need by_cases because h_P_in_dc is given by the restricted definition.
+
+  -- P(psi) in deferralClosure => P(psi) in closureWithNeg
+  have h_P_in_cwn := some_past_in_deferralClosure_is_in_closureWithNeg phi psi h_P_in_dc
+  -- Extract: psi in subformulaClosure (from the inner structure)
+  have h_psi_in_sub := some_past_in_closureWithNeg_inner_in_subformulaClosure phi psi h_P_in_cwn
+  -- Get H(neg psi) in deferralClosure
+  have h_H_in_dc : Formula.all_past (Formula.neg psi) ∈ deferralClosure phi := by
+    unfold closureWithNeg at h_P_in_cwn
+    simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
+    rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
+    · -- P(psi) in subformulaClosure, so H(neg psi) = subformula of P(psi)
+      apply closureWithNeg_subset_deferralClosure
+      apply subformulaClosure_subset_closureWithNeg
+      exact closure_imp_left phi _ _ h_sub
+    · -- P(psi) = g.neg for g in subformulaClosure
+      -- g.neg = P(psi) = neg(H(neg psi)) implies g = H(neg psi)
+      unfold Formula.some_past Formula.neg at h_g_neg_eq
+      have h_eq : g = Formula.all_past (Formula.neg psi) := by cases h_g_neg_eq; rfl
+      rw [h_eq] at h_g_sub
+      exact closureWithNeg_subset_deferralClosure phi
+        (subformulaClosure_subset_closureWithNeg phi h_g_sub)
+  -- Now use maximality: P(psi) not in u, P(psi) in deferralClosure => insert inconsistent
+  have h_insert_incons := h_mcs.2 (Formula.some_past psi) h_P_in_dc h_P_not_in
+  -- Extract: from inconsistency, Γ ⊆ u derives neg(P(psi))
+  unfold SetConsistent at h_insert_incons
+  push_neg at h_insert_incons
+  obtain ⟨L, h_L_sub, h_L_incons⟩ := h_insert_incons
+  obtain ⟨d_bot⟩ := inconsistent_derives_bot h_L_incons
+  let Γ := L.filter (· ≠ Formula.some_past psi)
+  have h_Γ_in_u : ∀ χ ∈ Γ, χ ∈ u := by
+    intro χ hχ
+    have hχ' := List.mem_filter.mp hχ
+    have hχne : χ ≠ Formula.some_past psi := by simpa using hχ'.2
+    specialize h_L_sub χ hχ'.1
+    simp [Set.mem_insert_iff] at h_L_sub
+    rcases h_L_sub with rfl | h_in
+    · exact absurd rfl hχne
+    · exact h_in
+  have h_L_sub' : L ⊆ Formula.some_past psi :: Γ := by
+    intro χ hχ
+    by_cases hχp : χ = Formula.some_past psi
+    · simp [hχp]
+    · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa using hχp⟩)
+  have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+  have d_neg_P : Γ ⊢ Formula.neg (Formula.some_past psi) :=
+    deduction_theorem Γ (Formula.some_past psi) Formula.bot d_bot'
+  -- neg(P(psi)) = neg(neg(H(neg psi))) derivable from Γ ⊆ u
+  -- We need: H(neg psi) in u, given that Γ ⊢ neg(neg(H(neg psi))) and H(neg psi) in deferralClosure
+  by_contra h_H_not_in
+  -- H(neg psi) not in u, but in deferralClosure => insert inconsistent
+  have h_H_insert_incons := h_mcs.2 _ h_H_in_dc h_H_not_in
+  unfold SetConsistent at h_H_insert_incons
+  push_neg at h_H_insert_incons
+  obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_H_insert_incons
+  obtain ⟨d_bot''⟩ := inconsistent_derives_bot h_L'_incons
+  let Δ := L'.filter (· ≠ Formula.all_past (Formula.neg psi))
+  have h_Δ_in_u : ∀ χ ∈ Δ, χ ∈ u := by
+    intro χ hχ
+    have hχ' := List.mem_filter.mp hχ
+    have hχne : χ ≠ Formula.all_past (Formula.neg psi) := by simpa using hχ'.2
+    specialize h_L'_sub χ hχ'.1
+    simp [Set.mem_insert_iff] at h_L'_sub
+    rcases h_L'_sub with rfl | h_in
+    · exact absurd rfl hχne
+    · exact h_in
+  have h_L'_sub' : L' ⊆ Formula.all_past (Formula.neg psi) :: Δ := by
+    intro χ hχ
+    by_cases hχH : χ = Formula.all_past (Formula.neg psi)
+    · simp [hχH]
+    · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa using hχH⟩)
+  have d_bot''' := DerivationTree.weakening L' _ Formula.bot d_bot'' h_L'_sub'
+  have d_neg_H : Δ ⊢ Formula.neg (Formula.all_past (Formula.neg psi)) :=
+    deduction_theorem Δ _ Formula.bot d_bot'''
+  -- Now we have: Γ ⊢ neg(neg(H(neg psi))) and Δ ⊢ neg(H(neg psi))
+  -- Combine to get contradiction (since both Γ, Δ ⊆ u and u is consistent)
+  have h_eq : Formula.neg (Formula.some_past psi) =
+      Formula.neg (Formula.neg (Formula.all_past (Formula.neg psi))) := by
+    unfold Formula.some_past Formula.neg; rfl
+  rw [h_eq] at d_neg_P
+  let ΓΔ := Γ ++ Δ
+  have h_ΓΔ_in_u : ∀ χ ∈ ΓΔ, χ ∈ u := by
+    intro χ hχ
+    simp only [ΓΔ, List.mem_append] at hχ
+    rcases hχ with hχΓ | hχΔ
+    · exact h_Γ_in_u χ hχΓ
+    · exact h_Δ_in_u χ hχΔ
+  have d_neg_neg_H' : ΓΔ ⊢ Formula.neg (Formula.neg (Formula.all_past (Formula.neg psi))) :=
+    DerivationTree.weakening Γ ΓΔ _ d_neg_P (List.subset_append_left Γ Δ)
+  have d_neg_H' : ΓΔ ⊢ Formula.neg (Formula.all_past (Formula.neg psi)) :=
+    DerivationTree.weakening Δ ΓΔ _ d_neg_H (List.subset_append_right Γ Δ)
+  have d_bot_final := derives_bot_from_phi_neg_phi d_neg_H' d_neg_neg_H'
+  exact h_mcs.1.2 ΓΔ h_ΓΔ_in_u ⟨d_bot_final⟩
+
 /-!
 ## iter_F/P Boundedness in DeferralRestrictedMCS
 
