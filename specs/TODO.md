@@ -107,6 +107,7 @@ Phase A              Phase B              Phase C
   - [02_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/02_team-research.md)
   - [03_blocker-analysis.md](048_prove_succ_chain_fam_bounded_f_depth/reports/03_blocker-analysis.md)
   - [06_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/06_team-research.md)
+  - [08_lexicographic-wf.md](048_prove_succ_chain_fam_bounded_f_depth/reports/08_lexicographic-wf.md)
 - **Plan**:
   - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
   - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)

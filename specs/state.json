@@ -725,6 +725,11 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/05_fuel-recursion-partial.md",
           "type": "summary",
           "summary": "Partial implementation v5: fuel-based helper added with sorry in inr.succ case. Blocker: fuel bound invariant cannot be maintained."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/08_lexicographic-wf.md",
+          "type": "research",
+          "summary": "Research on correct approach: use restricted_bounded_witness pattern instead of fuel counting. Key insight: F-step boundary propagates through Succ."
         }
       ],
       "session_id": "sess_1774299931_82834f",
