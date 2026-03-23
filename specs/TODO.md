@@ -263,7 +263,7 @@ Phase A              Phase B              Phase C
 
 ### 41. Eliminate D=CanonicalMCS pattern systematically
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Research**: [01_team-research.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/01_team-research.md)
 
@@ -273,12 +273,14 @@ Phase A              Phase B              Phase C
 
 ### 40. Add p-step condition to Succ relation or prove successor_satisfies_p_step
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Depends On**: Task 35 (partial), Task 45, Task 46
-- **Blocked**: Proof requires `successor_p_step_axiom` (prohibited by constraints) — reassessing
+- **Previous Block**: Proof required axiom — now resolved by tasks 50+51
 - **Spawned**: Task 45 (research), Task 46 (implementation)
-- **Research**: [01_team-research.md](specs/040_succ_p_step_forward_chain/reports/01_team-research.md)
+- **Research**:
+  - [01_team-research.md](specs/040_succ_p_step_forward_chain/reports/01_team-research.md)
+  - [03_reassessment.md](specs/040_succ_p_step_forward_chain/reports/03_reassessment.md) — Goal achieved by child tasks
 - **Plan**: [02_proof-based-approach.md](specs/040_succ_p_step_forward_chain/plans/02_proof-based-approach.md)
 - **Analysis**: [01_impossibility-analysis.md](specs/040_succ_p_step_forward_chain/summaries/01_impossibility-analysis.md)
 - **Spawn Analysis**: [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
