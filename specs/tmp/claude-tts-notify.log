@@ -959,3 +959,5 @@
 [2026-03-23T12:04:44-07:00] Cooldown active: 8s < 10s - skipping notification
 [2026-03-23T12:14:21-07:00] Notification sent: Tab 4
 [2026-03-23T12:15:43-07:00] Notification sent: Tab 5
+[2026-03-23T12:17:41-07:00] Notification sent: Tab 4
+[2026-03-23T12:20:59-07:00] Notification sent: Tab 3
