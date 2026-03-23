@@ -1198,7 +1198,7 @@
     {
       "project_number": 51,
       "project_name": "fill_forward_chain_p_step_sorry_using_constrained_successor_seed",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "description": "Using the constrained successor seed infrastructure from task 50, fill the sorry at SuccChainFMCS.lean:350 for the forward chain P-step case. Apply successor_p_step theorem to prove p_content(forward_chain(k+1)) subset forward_chain(k) union p_content(forward_chain(k)). Fill the sorry in succ_chain_fam_p_step for the ofNat case.",
       "effort": "1-2 hours",
@@ -1207,15 +1207,21 @@
         50
       ],
       "created": "2026-03-23T17:30:27Z",
-      "last_updated": "2026-03-23T18:01:43Z",
+      "last_updated": "2026-03-23T18:04:53Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/046_prove_forward_chain_p_step/reports/03_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "type": "research",
+          "path": "specs/051_fill_forward_chain_p_step_sorry_using_constrained_successor_seed/reports/01_p-step-proof-strategy.md",
+          "summary": "P-step proof strategy: use constrained_successor_from_seed in forward chain"
         }
       ],
-      "session_id": "sess_1774288872_9cfa6c"
+      "session_id": "sess_1774288872_9cfa6c",
+      "researched": "2026-03-23T18:04:53Z"
     }
   ],
   "next_project_number": 52,
