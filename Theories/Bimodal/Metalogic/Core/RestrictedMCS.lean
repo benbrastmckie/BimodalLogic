@@ -991,16 +991,17 @@ theorem p_step_blocking_for_deferral_restricted (phi : Formula) (u : Set Formula
     have h_Γ_in_u : ∀ χ ∈ Γ, χ ∈ u := by
       intro χ hχ
       have hχ' := List.mem_filter.mp hχ
+      have hχne : χ ≠ Formula.some_past psi := by simpa using hχ'.2
       specialize h_L_sub χ hχ'.1
       simp [Set.mem_insert_iff] at h_L_sub
       rcases h_L_sub with rfl | h_in
-      · exact absurd rfl (by simpa using hχ'.2)
+      · exact absurd rfl hχne
       · exact h_in
     have h_L_sub' : L ⊆ Formula.some_past psi :: Γ := by
       intro χ hχ
       by_cases hχp : χ = Formula.some_past psi
       · simp [hχp]
-      · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa⟩)
+      · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa using hχp⟩)
     have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
     have d_neg_P : Γ ⊢ Formula.neg (Formula.some_past psi) :=
       deduction_theorem Γ (Formula.some_past psi) Formula.bot d_bot'
@@ -1021,16 +1022,17 @@ theorem p_step_blocking_for_deferral_restricted (phi : Formula) (u : Set Formula
     have h_Δ_in_u : ∀ χ ∈ Δ, χ ∈ u := by
       intro χ hχ
       have hχ' := List.mem_filter.mp hχ
+      have hχne : χ ≠ Formula.all_past (Formula.neg psi) := by simpa using hχ'.2
       specialize h_L'_sub χ hχ'.1
       simp [Set.mem_insert_iff] at h_L'_sub
       rcases h_L'_sub with rfl | h_in
-      · exact absurd rfl (by simpa using hχ'.2)
+      · exact absurd rfl hχne
       · exact h_in
     have h_L'_sub' : L' ⊆ Formula.all_past (Formula.neg psi) :: Δ := by
       intro χ hχ
       by_cases hχH : χ = Formula.all_past (Formula.neg psi)
       · simp [hχH]
-      · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa⟩)
+      · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hχ, by simpa using hχH⟩)
     have d_bot''' := DerivationTree.weakening L' _ Formula.bot d_bot'' h_L'_sub'
     have d_neg_H : Δ ⊢ Formula.neg (Formula.all_past (Formula.neg psi)) :=
       deduction_theorem Δ _ Formula.bot d_bot'''
@@ -1053,7 +1055,7 @@ theorem p_step_blocking_for_deferral_restricted (phi : Formula) (u : Set Formula
       DerivationTree.weakening Γ ΓΔ _ d_neg_P (List.subset_append_left Γ Δ)
     have d_neg_H' : ΓΔ ⊢ Formula.neg (Formula.all_past (Formula.neg psi)) :=
       DerivationTree.weakening Δ ΓΔ _ d_neg_H (List.subset_append_right Γ Δ)
-    have d_bot_final := derives_bot_from_phi_neg_phi d_neg_neg_H' d_neg_H'
+    have d_bot_final := derives_bot_from_phi_neg_phi d_neg_H' d_neg_neg_H'
     exact h_mcs.1.2 ΓΔ h_ΓΔ_in_u ⟨d_bot_final⟩
   · -- Case: P(psi) NOT in deferralClosure phi
     -- Since u ⊆ deferralClosure phi, P(psi) not in u is automatic.

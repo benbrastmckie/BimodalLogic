@@ -1,7 +1,7 @@
 # Implementation Plan: Task #48 (v3)
 
 - **Task**: 48 - prove_succ_chain_fam_bounded_f_depth
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 4 hours
 - **Dependencies**: Task 47 (completed)
 - **Research Inputs**:
@@ -64,7 +64,7 @@ Replace blocked phases 4-6 with a 3-phase approach using restricted P-step:
 
 ## Implementation Phases
 
-### Phase 1: Prove Restricted P-Step Blocking [IN PROGRESS]
+### Phase 1: Prove Restricted P-Step Blocking [PARTIAL]
 
 **Goal**: Prove that `p_step_blocking_formulas u ⊆ u` for `DeferralRestrictedMCS`.
 

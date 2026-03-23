@@ -29,8 +29,8 @@
       "status": "planned",
       "language": "lean4",
       "created": "2026-03-23T06:33:59Z",
-      "last_updated": "2026-03-23T19:17:14Z",
-      "session_id": "sess_1774293360_90feb9",
+      "last_updated": "2026-03-23T19:20:45Z",
+      "session_id": "sess_1774293538_c87007",
       "researched": "2026-03-23T18:56:00Z",
       "artifacts": [
         {
@@ -57,9 +57,14 @@
           "path": "specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/02_removal-strategy.md",
           "type": "plan",
           "summary": "5-phase removal strategy: delete 8-10 dead files, clean imports, delete CanonicalFMCS.lean (6-8h, no dependencies)"
+        },
+        {
+          "path": "specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/03_tiered-removal.md",
+          "type": "plan",
+          "summary": "6-phase tiered removal: DELETE confused files, BONEYARD valuable ones, update ROAD_MAP.md dead ends (5-6h)"
         }
       ],
-      "planned": "2026-03-23T19:17:14Z"
+      "planned": "2026-03-23T19:20:45Z"
     },
     {
       "project_number": 39,
