@@ -98,8 +98,8 @@ technical_debt:
 ---
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
-- **Effort**: 6-10 hours remaining (revised: preorder acceptance approach)
-- **Status**: [RESEARCHED]
+- **Effort**: ~10 hours remaining (v8: preorder acceptance approach)
+- **Status**: [PLANNED]
 - **Blocker**: ~~Plan v7 MCS-decided atom pattern fails for pathological MCS~~ Resolved: preorder acceptance recommended
 - **Language**: lean4
 - **Dependencies**: none
@@ -109,7 +109,8 @@ technical_debt:
   - [12_team-research.md](029_switch_to_reflexive_gh_semantics/reports/12_team-research.md) — Wave 6: order-theoretic foundations, antisymmetry fails
   - [13_unbounded-axiom-analysis.md](029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md) — Seriality trivially valid, strict successor for order structure
 - **Plan**:
-  - [07_mcs-decided-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/07_mcs-decided-atom-approach.md) — v7: MCS-decided atom approach, no fresh atoms needed, 8 phases, 6-10h (current)
+  - [08_preorder-acceptance-approach.md](029_switch_to_reflexive_gh_semantics/plans/08_preorder-acceptance-approach.md) — v8: preorder acceptance, two-layer architecture, 8 phases, 10h (current)
+  - [07_mcs-decided-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/07_mcs-decided-atom-approach.md) — v7: superseded (MCS-decided pattern fails for pathological MCS)
   - [06_per-construction-strictness.md](029_switch_to_reflexive_gh_semantics/plans/06_per-construction-strictness.md) — v6: superseded (blocked on fresh atom existence)
   - [05_irr-removal-approach.md](029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md) — v5: superseded
   - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: superseded
