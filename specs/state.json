@@ -6,12 +6,30 @@
   },
   "active_projects": [
     {
-      "project_number": 41,
-      "project_name": "eliminate_d_equals_canonicalmcs_pattern",
+      "project_number": 42,
+      "project_name": "eliminate_all_axioms",
       "status": "not_started",
       "language": "lean4",
+      "description": "Eliminate ALL 9 custom Lean axioms from the codebase. Axioms were introduced as shortcuts and snowballed. The TODO.md axiom_count (3) is massively undercounted — actual count is 9 (7 production, 2 StagedConstruction). Production path axioms flowing into succ_chain_truth_lemma: (1) successor_deferral_seed_consistent_axiom, (2) predecessor_deferral_seed_consistent_axiom, (3) predecessor_f_step_axiom, (4) f_nesting_boundary, (5) p_nesting_boundary. Additional: (6) existsTask_irreflexive_axiom (dense completeness), (7) discrete_Icc_finite_axiom (DiscreteTimeline). StagedConstruction: (8) discreteImmediateSuccSeed_consistent_axiom, (9) discreteImmediateSucc_covers_axiom. Each axiom must be replaced with a proper proof or the dependent code restructured to avoid needing the property. Task 40 plan must be revised to NOT add another axiom. Priority order: seed consistency axioms first (most fundamental), then step axioms, then nesting boundaries, then irreflexivity.",
+      "created": "2026-03-23T06:40:21Z",
+      "last_updated": "2026-03-23T06:40:21Z"
+    },
+    {
+      "project_number": 41,
+      "project_name": "eliminate_d_equals_canonicalmcs_pattern",
+      "status": "researched",
+      "language": "lean4",
       "created": "2026-03-23T06:33:59Z",
-      "last_updated": "2026-03-23T06:33:59Z"
+      "last_updated": "2026-03-23T06:41:54Z",
+      "session_id": "sess_1774247714_c0ff1d",
+      "researched": "2026-03-23T06:41:54Z",
+      "artifacts": [
+        {
+          "path": "specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 2 teammates"
+        }
+      ]
     },
     {
       "project_number": 40,
@@ -71,12 +89,12 @@
     {
       "project_number": 38,
       "project_name": "prove_box_backward_truth_lemma",
-      "status": "planned",
+      "status": "blocked",
       "language": "lean4",
       "description": "Prove Box backward direction in succ_chain_truth_lemma (SuccChainTruth.lean:254). The sorry states: given psi true at all histories in singleton Omega, derive Box(psi) in MCS. Since psi in MCS does NOT imply Box(psi) in MCS for arbitrary MCS, this cannot be proven with the current singleton-Omega model. Requires either: (1) extending to a multi-history BFMCS model where Box is semantically grounded, (2) refactoring the truth lemma to break the forward/backward mutual dependence in the imp case (line 210 uses backward IH via .mpr), or (3) proving a restricted version sufficient for completeness. This sorry is structurally load-bearing — it contaminates succ_chain_truth_forward and the completeness theorem via sorry propagation through the biconditional induction.",
       "created": "2026-03-23T05:20:00Z",
-      "last_updated": "2026-03-23T06:31:28Z",
-      "session_id": "sess_1774247304_3ad07b",
+      "last_updated": "2026-03-23T06:42:10Z",
+      "session_id": "sess_1774247694_0af93a",
       "researched": "2026-03-23T06:13:04Z",
       "artifacts": [
         {
@@ -88,9 +106,16 @@
           "path": "specs/038_prove_box_backward_truth_lemma/plans/01_multi-family-bfmcs-migration.md",
           "type": "plan",
           "summary": "5-phase implementation plan for migrating SuccChain to multi-family BFMCS with modal saturation"
+        },
+        {
+          "path": "specs/038_prove_box_backward_truth_lemma/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Analysis confirming architectural impossibility of eliminating the sorry"
         }
       ],
-      "planned": "2026-03-23T06:31:28Z"
+      "planned": "2026-03-23T06:31:28Z",
+      "started": "2026-03-23T06:35:11Z",
+      "blocked_reason": "W=D conflation: MCS-level saturation does not transfer to time-indexed BFMCS modal_backward at t!=0"
     },
     {
       "project_number": 36,
@@ -1092,7 +1117,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 42,
+  "next_project_number": 43,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

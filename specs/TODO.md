@@ -15,8 +15,8 @@ technical_debt:
   sorry_count: 16
   sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
   publication_path_sorries: 0
-  axiom_count: 3
-  axiom_count_note: "canonicalR_irreflexive_axiom (justified per task 991), discrete_Icc_finite_axiom (documented debt from task 979), discreteImmediateSuccSeed_consistent_axiom (justified per task 991)"
+  axiom_count: 9
+  axiom_count_note: "CORRECTED: 7 production (successor/predecessor_deferral_seed_consistent, predecessor_f_step, f/p_nesting_boundary, existsTask_irreflexive, discrete_Icc_finite) + 2 StagedConstruction (discreteImmediateSuccSeed_consistent, discreteImmediateSucc_covers). Task 42 tracks elimination."
   build_errors: 0
   status: excellent
 ---
@@ -94,10 +94,37 @@ These are researched and ready but not critical path:
 
 ---
 
-### 41. Eliminate D=CanonicalMCS pattern systematically
-- **Effort**: TBD
+### 42. Eliminate ALL custom axioms from the codebase
+- **Effort**: 20-40 hours
 - **Status**: [NOT STARTED]
 - **Language**: lean4
+
+**Description**: Eliminate ALL 9 custom Lean `axiom` declarations. TODO.md axiom_count claimed 3 — actual count is 9 (7 production path, 2 StagedConstruction). No axioms should ever be accepted as shortcuts.
+
+**Production path axioms (in succ_chain_truth_lemma)**:
+1. `successor_deferral_seed_consistent_axiom` (SuccExistence.lean:266)
+2. `predecessor_deferral_seed_consistent_axiom` (SuccExistence.lean:311)
+3. `predecessor_f_step_axiom` (SuccExistence.lean:516)
+4. `f_nesting_boundary` (SuccChainFMCS.lean:615)
+5. `p_nesting_boundary` (SuccChainFMCS.lean:727)
+
+**Additional production axioms**:
+6. `existsTask_irreflexive_axiom` (CanonicalIrreflexivity.lean:279)
+7. `discrete_Icc_finite_axiom` (DiscreteTimeline.lean:319)
+
+**StagedConstruction axioms**:
+8. `discreteImmediateSuccSeed_consistent_axiom` (DiscreteSuccSeed.lean:300)
+9. `discreteImmediateSucc_covers_axiom` (DiscreteSuccSeed.lean:430)
+
+**Impact**: Task 40 plan must be revised — it recommends adding a 10th axiom (`successor_p_step_axiom`), which contradicts the no-axiom policy. Existing tasks 34, 36, 37 also involve axiom-adjacent work and should be coordinated.
+
+---
+
+### 41. Eliminate D=CanonicalMCS pattern systematically
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Research**: [01_team-research.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/01_team-research.md)
 
 **Description**: Remove the architectural error where the FMCS type parameter D (timeline/duration type) is instantiated with CanonicalMCS (the type of all maximal consistent sets). FMCS model world histories as functions D → W obeying temporal coherence constraints; D should be a timeline type (Int, Rat, TimelineQuot) and W should be world states (MCS). The D=CanonicalMCS pattern conflates these, creating an identity mapping `mcs(w) = w.world` that trivializes F/P witness obligations rather than proving them properly. This pattern is load-bearing across 13+ files: CanonicalFMCS.lean, FMCSDef.lean, ModallyCoherentBFMCS.lean, AlgebraicBaseCompleteness.lean, BaseCompleteness.lean, StagedConstruction/Completeness.lean, TimelineQuotBFMCS.lean, DovetailedTimelineQuotBFMCS.lean, ClosureSaturation.lean, CanonicalConstruction.lean, TemporalCoherence.lean, ChainFMCS.lean, ModalSaturation.lean. The critical sorry-free theorem `temporal_coherent_family_exists_CanonicalMCS` depends entirely on this conflation. Requires constructing proper FMCS with D=Int (or similar timeline type) where F/P witnesses are genuinely proven within the chain construction.
 
@@ -133,7 +160,7 @@ These are researched and ready but not critical path:
 
 ### 38. Prove Box backward direction in succ_chain_truth_lemma
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Research**: [01_team-research.md](specs/038_prove_box_backward_truth_lemma/reports/01_team-research.md)
 - **Plan**: [01_multi-family-bfmcs-migration.md](specs/038_prove_box_backward_truth_lemma/plans/01_multi-family-bfmcs-migration.md)
