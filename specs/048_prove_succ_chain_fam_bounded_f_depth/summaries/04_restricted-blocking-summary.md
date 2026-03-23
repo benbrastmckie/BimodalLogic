@@ -2,7 +2,7 @@
 
 - **Status**: Partial (All phases attempted, Phase 5 partially complete)
 - **Plan Version**: v4 (04_restricted-blocking.md)
-- **Sessions**: sess_1774294560_4531d2, sess_1774295861_30ec13
+- **Sessions**: sess_1774294560_4531d2, sess_1774295861_30ec13, sess_1774296701_b1ceb4
 - **Date**: 2026-03-23
 
 ## Overview
@@ -94,8 +94,13 @@ Added (forward chain infrastructure):
 | File | Line | Description | Root Cause |
 |------|------|-------------|------------|
 | SuccChainFMCS.lean | 1930 | `F_top_in_restricted_successor` | Needs F_top IN deferralClosure |
-| SuccChainFMCS.lean | 2104 | `restricted_forward_chain_forward_F` | Needs restricted bounded_witness |
-| SuccChainFMCS.lean | 2159 | `toSerialMCS.is_mcs` | Coercion to full MCS |
+| SuccChainFMCS.lean | 2109 | `restricted_forward_chain_iter_F_witness` | Needs well-founded recursion infrastructure |
+
+### Fixed Sorries (this session)
+
+| File | Original Line | Description | Fix |
+|------|---------------|-------------|-----|
+| SuccChainFMCS.lean | 2159 | `toSerialMCS.is_mcs` | Used Lindenbaum extension via `set_lindenbaum` |
 
 ### Deprecated Sorries (intentionally kept)
 
@@ -120,13 +125,14 @@ Added (forward chain infrastructure):
 ## Verification
 
 ```bash
-$ lake build Bimodal.Metalogic.Bundle.SuccChainFMCS
-Build completed successfully (739 jobs)
+$ lake build
+Build completed successfully (928 jobs)
 ```
 
 - Build passes: Yes
-- Total sorries: 5 (2 deprecated legacy + 3 new requiring follow-up)
+- Total sorries in SuccChainFMCS.lean: 4 (2 deprecated legacy + 2 new requiring follow-up)
 - Key theorem `p_step_blocking_restricted_subset` proven without sorry: Yes
+- `toSerialMCS` coercion fixed: Yes (uses Lindenbaum extension)
 
 ## Recommendations for Follow-up
 

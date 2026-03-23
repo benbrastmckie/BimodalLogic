@@ -2068,40 +2068,55 @@ theorem restricted_forward_chain_F_step_witness (phi : Formula)
   exact h_or
 
 /--
-Forward F coherence for restricted chain: If F(psi) is at position n, then psi is at some m > n.
+Helper: If iter_F d psi ∈ chain(k) for some d >= 1, then psi ∈ chain(k + d') for some d'.
 
-**Proof Strategy**:
-The F-step property gives us: F(psi) ∈ chain(n) implies psi ∈ chain(n+1) OR F(psi) ∈ chain(n+1).
-By the F-nesting bound (deferral_restricted_mcs_F_bounded), this chain of "or" choices must
-eventually resolve to psi ∈ chain(n+d) for some bounded d.
+**Proof outline** (requires well-founded recursion):
+1. F-step gives: F(chi) ∈ chain(k) implies chi ∈ chain(k+1) OR F(chi) ∈ chain(k+1)
+2. If chi ∈ chain(k+1), recurse with smaller F-depth
+3. If F(chi) ∈ chain(k+1), the formula stays the same but we move forward in chain
 
-This proof uses sorry pending the development of restricted bounded_witness infrastructure.
-The mathematical argument is sound - it follows the same pattern as succ_chain_forward_F
-but uses DeferralRestrictedMCS bounds instead of SetMaximalConsistent bounds.
+The termination argument uses the fact that chain elements are in deferralClosure phi,
+which has bounded F-depth D = max_F_depth_in_closure phi. Each time we stay at the same
+F-depth, we move forward in the chain. Since the formula can only persist for finitely
+many steps (bounded by D), we must eventually decrease the F-depth.
+
+The proper implementation requires well-founded recursion on the measure:
+  (D - position_in_chain_since_last_depth_decrease, f_nesting_depth)
+
+For now, this is marked sorry pending the development of that infrastructure.
 -/
+private theorem restricted_forward_chain_iter_F_witness (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k d : Nat) (psi : Formula)
+    (h_d_ge : d ≥ 1)
+    (h_iter : iter_F d psi ∈ restricted_forward_chain phi M0 k) :
+    ∃ m : Nat, k < m ∧ psi ∈ restricted_forward_chain phi M0 m := by
+  -- The proof by simple structural induction doesn't work because the "inr" case
+  -- (where F(chi) persists) doesn't decrease d.
+  --
+  -- The mathematical argument IS valid:
+  -- - iter_F d psi ∈ chain(k) ⊆ deferralClosure phi
+  -- - f_nesting_depth(iter_F d psi) = d <= max_F_depth_in_closure phi = D
+  -- - At each step, F-step gives either depth-1 formula or same formula
+  -- - If we stay at same depth d times, we've moved d steps forward
+  -- - But then iter_F d psi ∈ chain(k+d), and iter_F (d+1) psi would need to be
+  --   in chain(k+d-1) by the deferral disjunction, but iter_F (d+1) psi has depth d+1 > D
+  --   so it's not in deferralClosure, contradiction.
+  --
+  -- Therefore, after at most D steps, we must hit the "inl" case and decrease depth.
+  -- After at most D*d steps total, we reach psi.
+  --
+  -- This requires a more sophisticated termination proof. Mark as sorry for now.
+  sorry
+
 theorem restricted_forward_chain_forward_F (phi : Formula)
     (M0 : DeferralRestrictedSerialMCS phi) (n : Nat) (psi : Formula)
     (h_F : Formula.some_future psi ∈ restricted_forward_chain phi M0 n) :
     ∃ m : Nat, n < m ∧ psi ∈ restricted_forward_chain phi M0 m := by
-  -- The F-nesting bound gives us the depth d where iter_F d psi ∈ chain(n) but iter_F (d+1) psi ∉ chain(n)
-  obtain ⟨d, h_d_ge, h_iter_d, h_iter_d1_not⟩ :=
-    restricted_forward_chain_F_bounded phi M0 n psi h_F
-  -- By repeated F-step applications, psi reaches chain(n+d)
-  -- This requires a bounded_witness variant for DeferralRestrictedMCS
-  -- The key properties needed:
-  -- 1. F-step: f_content(chain(k)) ⊆ chain(k+1) ∪ f_content(chain(k+1))
-  -- 2. For DeferralRestrictedMCS, if F(F(ψ)) ∉ chain(k), we can propagate "F(ψ) ∉ chain(k+1)"
-  --    using the restricted negation completeness (for formulas in closure)
-  --
-  -- The mathematical argument is the same as bounded_witness, but requires
-  -- DeferralRestrictedMCS-specific negation completeness lemmas.
-  --
-  -- For now, mark as sorry - the bound exists and the structure is correct.
-  -- A complete proof would require:
-  -- 1. Proving DeferralRestrictedMCS has disjunction elimination for formulas in closure
-  -- 2. Showing iter_F iterations stay in closure until they exit
-  -- 3. Adapting bounded_witness to use these properties
-  sorry
+  -- F(psi) = iter_F 1 psi ∈ chain(n)
+  have h_iter1 : iter_F 1 psi ∈ restricted_forward_chain phi M0 n := by
+    simp only [iter_F_succ, iter_F_zero]
+    exact h_F
+  exact restricted_forward_chain_iter_F_witness phi M0 n 1 psi (Nat.le_refl 1) h_iter1
 
 /-!
 ## Backward Chain Construction (P-direction)
@@ -2137,28 +2152,66 @@ the restricted chain types to standard chain types.
 -/
 
 /--
+Extend a DeferralRestrictedSerialMCS to a full MCS using Lindenbaum's lemma.
+
+The extension preserves F_top and P_top membership since the original set is a subset
+of the extension.
+-/
+noncomputable def DeferralRestrictedSerialMCS.extendToMCS {phi : Formula}
+    (M : DeferralRestrictedSerialMCS phi) : Set Formula :=
+  (Bimodal.Metalogic.Core.set_lindenbaum M.world
+    (Bimodal.Metalogic.Core.deferral_restricted_mcs_is_consistent M.is_drm)).choose
+
+/--
+The extension is a SetMaximalConsistent.
+-/
+theorem DeferralRestrictedSerialMCS.extendToMCS_is_mcs {phi : Formula}
+    (M : DeferralRestrictedSerialMCS phi) :
+    SetMaximalConsistent (M.extendToMCS) :=
+  (Bimodal.Metalogic.Core.set_lindenbaum M.world
+    (Bimodal.Metalogic.Core.deferral_restricted_mcs_is_consistent M.is_drm)).choose_spec.2
+
+/--
+The extension contains the original world.
+-/
+theorem DeferralRestrictedSerialMCS.extendToMCS_extends {phi : Formula}
+    (M : DeferralRestrictedSerialMCS phi) :
+    M.world ⊆ M.extendToMCS :=
+  (Bimodal.Metalogic.Core.set_lindenbaum M.world
+    (Bimodal.Metalogic.Core.deferral_restricted_mcs_is_consistent M.is_drm)).choose_spec.1
+
+/--
+F_top is in the extension.
+-/
+theorem DeferralRestrictedSerialMCS.extendToMCS_has_F_top {phi : Formula}
+    (M : DeferralRestrictedSerialMCS phi) :
+    F_top ∈ M.extendToMCS :=
+  M.extendToMCS_extends M.has_F_top
+
+/--
+P_top is in the extension.
+-/
+theorem DeferralRestrictedSerialMCS.extendToMCS_has_P_top {phi : Formula}
+    (M : DeferralRestrictedSerialMCS phi) :
+    P_top ∈ M.extendToMCS :=
+  M.extendToMCS_extends M.has_P_top
+
+/--
 Convert a DeferralRestrictedSerialMCS to a SerialMCS.
 
-The underlying set is consistent (stronger: it's a DeferralRestrictedMCS), and contains
-F_top and P_top by definition.
+This uses Lindenbaum's lemma to extend the underlying DeferralRestrictedMCS to a full
+SetMaximalConsistent set. The extension preserves F_top and P_top membership since
+the original set is a subset of the extension.
+
+**Note**: The resulting SerialMCS.world may be different from M.world - it's the
+Lindenbaum extension, not the original set.
 -/
 noncomputable def DeferralRestrictedSerialMCS.toSerialMCS {phi : Formula}
     (M : DeferralRestrictedSerialMCS phi) : SerialMCS where
-  world := M.world
-  is_mcs := by
-    -- We need SetMaximalConsistent, but we only have DeferralRestrictedMCS.
-    -- DeferralRestrictedMCS is "maximal within deferralClosure", not globally maximal.
-    -- For the coercion to work, we need to extend to a full MCS.
-    -- This requires Lindenbaum's lemma on the consistent set M.world.
-    -- Since M.world is consistent, it can be extended to an MCS.
-    -- However, this extension might not preserve the deferralClosure restriction.
-    --
-    -- For now, we use sorry. The proper fix is to either:
-    -- 1. Not require this coercion (work entirely with DeferralRestrictedMCS)
-    -- 2. Prove that F_top/P_top membership is preserved through Lindenbaum extension
-    sorry
-  has_F_top := M.has_F_top
-  has_P_top := M.has_P_top
+  world := M.extendToMCS
+  is_mcs := M.extendToMCS_is_mcs
+  has_F_top := M.extendToMCS_has_F_top
+  has_P_top := M.extendToMCS_has_P_top
 
 /-!
 ## Summary: Task 48 Phase 5 Status
@@ -2170,27 +2223,28 @@ noncomputable def DeferralRestrictedSerialMCS.toSerialMCS {phi : Formula}
 4. `restricted_forward_chain_succ` (Succ relation between adjacent elements)
 5. `restricted_forward_chain_p_step` (P-step property)
 6. `restricted_forward_chain_F_bounded` (F-nesting boundedness)
-7. `restricted_forward_chain_canonicalTask_forward_MCS_from` (chain for bounded_witness)
-8. `restricted_forward_chain_forward_F` (forward F coherence)
+7. `restricted_forward_chain_canonicalTask_forward_from` (chain for bounded_witness)
+8. `restricted_forward_chain_forward_F` (forward F coherence - uses helper with sorry)
+9. `DeferralRestrictedSerialMCS.toSerialMCS` (coercion to SerialMCS via Lindenbaum extension)
+10. `DeferralRestrictedSerialMCS.extendToMCS_*` (extension properties)
 
-**Sorries remaining**:
-1. `F_top_in_restricted_successor` - Requires proving F_top propagates through
-   constrained_successor_restricted. The fix is to either:
-   - Ensure phi includes seriality formulas in its deferralClosure
-   - Prove disjunction elimination for DeferralRestrictedMCS with deferral disjunctions
-
-2. `DeferralRestrictedSerialMCS.toSerialMCS.is_mcs` - Requires extending
-   DeferralRestrictedMCS to full SetMaximalConsistent, which may not preserve closure.
+**Sorries remaining** (2 new, 2 deprecated):
+1. `F_top_in_restricted_successor` - Requires F_top IN deferralClosure(phi). The fix is to either:
+   - Ensure phi includes seriality formulas (e.g., use phi AND F_top AND P_top)
+   - Augment deferralClosure to always include seriality formulas
+2. `restricted_forward_chain_iter_F_witness` - Requires well-founded recursion on
+   (max_F_depth - position, f_nesting_depth) measure. The mathematical argument is valid.
 
 **TODO for follow-up**:
 1. `constrained_predecessor_restricted` construction (symmetric to successor)
 2. `restricted_backward_chain` using the predecessor construction
 3. `restricted_succ_chain_fam` combining forward and backward chains
 4. Full P-nesting coherence proofs
+5. Closure augmentation to include seriality formulas
 
 **Deprecated (kept for backward compatibility)**:
-- `f_nesting_is_bounded` - Use `f_nesting_is_bounded_restricted` or `restricted_forward_chain_F_bounded`
-- `p_nesting_is_bounded` - Use `p_nesting_is_bounded_restricted`
+- `f_nesting_is_bounded` - Mathematically FALSE for arbitrary MCS
+- `p_nesting_is_bounded` - Mathematically FALSE for arbitrary MCS
 -/
 
 end Bimodal.Metalogic.Bundle
