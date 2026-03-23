@@ -1,5 +1,5 @@
 ---
-next_project_number: 41
+next_project_number: 42
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -91,6 +91,15 @@ These are researched and ready but not critical path:
 7. **39** → planning (preorder semantics study — recently researched)
 
 ## Tasks
+
+---
+
+### 41. Eliminate D=CanonicalMCS pattern systematically
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Remove the architectural error where the FMCS type parameter D (timeline/duration type) is instantiated with CanonicalMCS (the type of all maximal consistent sets). FMCS model world histories as functions D → W obeying temporal coherence constraints; D should be a timeline type (Int, Rat, TimelineQuot) and W should be world states (MCS). The D=CanonicalMCS pattern conflates these, creating an identity mapping `mcs(w) = w.world` that trivializes F/P witness obligations rather than proving them properly. This pattern is load-bearing across 13+ files: CanonicalFMCS.lean, FMCSDef.lean, ModallyCoherentBFMCS.lean, AlgebraicBaseCompleteness.lean, BaseCompleteness.lean, StagedConstruction/Completeness.lean, TimelineQuotBFMCS.lean, DovetailedTimelineQuotBFMCS.lean, ClosureSaturation.lean, CanonicalConstruction.lean, TemporalCoherence.lean, ChainFMCS.lean, ModalSaturation.lean. The critical sorry-free theorem `temporal_coherent_family_exists_CanonicalMCS` depends entirely on this conflation. Requires constructing proper FMCS with D=Int (or similar timeline type) where F/P witnesses are genuinely proven within the chain construction.
 
 ---
 
