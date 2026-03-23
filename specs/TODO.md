@@ -105,12 +105,13 @@ All groups in Phase 1 are independent and can run in parallel.
 ---
 
 ### 47. Prove iter_F leaves subformula closure at bounded depth
-- **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 36
 - **Research**: [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+- **Plan**: [01_closure-depth-bound.md](047_prove_iter_f_leaves_closure/plans/01_closure-depth-bound.md)
 
 **Description**: Prove that for any formula phi, the iterated F-application iter_F n phi eventually leaves the subformula closure. Define or compute the maximum F-nesting depth in closureWithNeg(phi), then prove that iter_F (max_depth + 1) phi is NOT in closureWithNeg(phi). This provides the foundation for proving boundedness: in any RestrictedMCS over phi, the sequence iter_F 1 phi, iter_F 2 phi, ... must eventually exit the closure.
 
@@ -130,7 +131,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 45. Research modified successor seed for CanonicalTask p-step
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 40
