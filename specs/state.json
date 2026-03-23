@@ -7,10 +7,10 @@
   "active_projects": [
     {
       "project_number": 42,
-      "project_name": "eliminate_all_axioms",
+      "project_name": "eliminate_all_axioms_architectural_redesign",
       "status": "not_started",
       "language": "lean4",
-      "description": "Eliminate ALL 9 custom Lean axioms from the codebase. Axioms were introduced as shortcuts and snowballed. The TODO.md axiom_count (3) is massively undercounted — actual count is 9 (7 production, 2 StagedConstruction). Production path axioms flowing into succ_chain_truth_lemma: (1) successor_deferral_seed_consistent_axiom, (2) predecessor_deferral_seed_consistent_axiom, (3) predecessor_f_step_axiom, (4) f_nesting_boundary, (5) p_nesting_boundary. Additional: (6) existsTask_irreflexive_axiom (dense completeness), (7) discrete_Icc_finite_axiom (DiscreteTimeline). StagedConstruction: (8) discreteImmediateSuccSeed_consistent_axiom, (9) discreteImmediateSucc_covers_axiom. Each axiom must be replaced with a proper proof or the dependent code restructured to avoid needing the property. Task 40 plan must be revised to NOT add another axiom. Priority order: seed consistency axioms first (most fundamental), then step axioms, then nesting boundaries, then irreflexivity.",
+      "description": "Investigate why each of the 9 custom Lean axiom declarations exists, determine the proof strategy or architectural change needed to eliminate it, and execute the removal. Architectural restructuring (e.g., changing seed constructions, redesigning the Succ relation, restructuring the chain construction) is explicitly permitted. Goal: zero custom axioms. Production path (5): successor/predecessor_deferral_seed_consistent_axiom, predecessor_f_step_axiom, f/p_nesting_boundary. Additional production (2): existsTask_irreflexive_axiom, discrete_Icc_finite_axiom. StagedConstruction (2): discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom. Task 40 plan must be revised (recommends adding 10th axiom). Tasks 34, 36, 37 should be subsumed or coordinated.",
       "created": "2026-03-23T06:40:21Z",
       "last_updated": "2026-03-23T06:40:21Z"
     },

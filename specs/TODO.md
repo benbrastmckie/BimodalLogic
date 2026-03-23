@@ -94,29 +94,33 @@ These are researched and ready but not critical path:
 
 ---
 
-### 42. Eliminate ALL custom axioms from the codebase
+### 42. Investigate and eliminate ALL custom axioms — architectural redesign permitted
 - **Effort**: 20-40 hours
 - **Status**: [NOT STARTED]
 - **Language**: lean4
 
-**Description**: Eliminate ALL 9 custom Lean `axiom` declarations. TODO.md axiom_count claimed 3 — actual count is 9 (7 production path, 2 StagedConstruction). No axioms should ever be accepted as shortcuts.
+**Description**: Investigate why each of the 9 custom Lean `axiom` declarations exists, determine the proof strategy or architectural change needed to eliminate it, and execute the removal. Architectural restructuring (e.g., changing seed constructions, redesigning the Succ relation, restructuring the chain construction) is explicitly permitted if it enables proper proofs. The goal is zero custom axioms — `#print axioms` on completeness theorems should show only `propext`, `Classical.choice`, `Quot.sound`, and Lean compiler axioms.
 
-**Production path axioms (in succ_chain_truth_lemma)**:
-1. `successor_deferral_seed_consistent_axiom` (SuccExistence.lean:266)
-2. `predecessor_deferral_seed_consistent_axiom` (SuccExistence.lean:311)
-3. `predecessor_f_step_axiom` (SuccExistence.lean:516)
-4. `f_nesting_boundary` (SuccChainFMCS.lean:615)
-5. `p_nesting_boundary` (SuccChainFMCS.lean:727)
+**Axiom inventory** (verified via `lean_verify`):
 
-**Additional production axioms**:
-6. `existsTask_irreflexive_axiom` (CanonicalIrreflexivity.lean:279)
-7. `discrete_Icc_finite_axiom` (DiscreteTimeline.lean:319)
+*Production path — flow into `succ_chain_truth_lemma`:*
+1. `successor_deferral_seed_consistent_axiom` (SuccExistence.lean:266) — asserts the successor seed is consistent
+2. `predecessor_deferral_seed_consistent_axiom` (SuccExistence.lean:311) — asserts the predecessor seed is consistent
+3. `predecessor_f_step_axiom` (SuccExistence.lean:516) — f-step for predecessor (dual of what task 40 wants for successor)
+4. `f_nesting_boundary` (SuccChainFMCS.lean:615) — F-nesting terminates in MCS
+5. `p_nesting_boundary` (SuccChainFMCS.lean:727) — P-nesting terminates in MCS
 
-**StagedConstruction axioms**:
+*Additional production:*
+6. `existsTask_irreflexive_axiom` (CanonicalIrreflexivity.lean:279) — flows into `dense_completeness_fc`
+7. `discrete_Icc_finite_axiom` (DiscreteTimeline.lean:319) — discrete timeline intervals are finite
+
+*StagedConstruction (discrete pipeline):*
 8. `discreteImmediateSuccSeed_consistent_axiom` (DiscreteSuccSeed.lean:300)
 9. `discreteImmediateSucc_covers_axiom` (DiscreteSuccSeed.lean:430)
 
-**Impact**: Task 40 plan must be revised — it recommends adding a 10th axiom (`successor_p_step_axiom`), which contradicts the no-axiom policy. Existing tasks 34, 36, 37 also involve axiom-adjacent work and should be coordinated.
+**Investigation questions per axiom**: (a) What property does it assert? (b) Why wasn't it proven originally? (c) Can it be proven from existing infrastructure? (d) If not, what architectural change would make it provable? (e) Can the dependent code be restructured to not need this property at all?
+
+**Coordination**: Task 40 plan must be revised (recommends adding 10th axiom). Tasks 34, 36, 37 target individual axioms and should be subsumed or coordinated.
 
 ---
 
