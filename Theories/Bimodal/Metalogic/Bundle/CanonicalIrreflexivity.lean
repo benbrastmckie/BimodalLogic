@@ -11,45 +11,41 @@ import Bimodal.ProofSystem.Substitution
 import Mathlib.Data.Finset.Union
 
 /-!
-# Canonical Frame Accessibility: Reflexive Semantics (Task 29 Complete)
+# Canonical Frame Accessibility: Reflexive Semantics
 
-## STATUS: REFLEXIVE SEMANTICS (T-axiom approach)
+## STATUS: AXIOM-FREE (Task 44 Complete)
 
 **This module establishes reflexivity of the canonical accessibility relation.**
 
 ### Semantic Foundation
 
-Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the T-axiom
-`G(φ) → φ` is valid. This immediately gives `ExistsTask M M` for all MCS M,
-since `g_content(M) ⊆ M` follows from T-axiom closure.
+Under reflexive semantics (G/H quantify over s >= t / s <= t), the T-axiom
+`G(phi) -> phi` is valid. This immediately gives `ExistsTask M M` for all MCS M,
+since `g_content(M) subseteq M` follows from T-axiom closure.
 
-### Two-Layer Architecture
+### Key Theorems
 
-**Layer 1 (Basic Completeness)**: Uses reflexive preorder structure.
-- `canonicalR_reflexive`: ExistsTask M M holds for all MCS M
-- `canonicalR_past_reflexive`: ExistsTask_past M M holds for all MCS M
-- All completeness proofs are axiom-free
-
-**Layer 2 (Order-Theoretic Enhancements)**: Uses deprecated axiom.
-- `canonicalR_irreflexive_axiom`: Legacy axiom for order structure
-- Used by: CantorApplication, DovetailedTimelineQuot, DiscreteTimeline
-- Status: DEPRECATED - introduces inconsistency with Layer 1
+- `existsTask_reflexive`: ExistsTask M M holds for all MCS M (via T-axiom)
+- `existsTask_past_reflexive`: ExistsTask_past M M holds for all MCS M
+- All proofs are axiom-free
 
 ### Per-Construction Strictness Pattern
 
-When strictness (M ≠ W) is needed for witness constructions:
-1. Identify formula φ that distinguishes W from M
-2. Show G(φ) ∈ W (so φ ∈ g_content(W))
-3. Show φ ∉ M
-4. Apply `strict_of_formula_in_g_content_not_in_source` to get ¬ExistsTask W M
+When strictness (M != W) is needed for witness constructions:
+1. Identify formula phi that distinguishes W from M
+2. Show G(phi) in W (so phi in g_content(W))
+3. Show phi not in M
+4. Apply `strict_of_formula_in_g_content_not_in_source` to get not ExistsTask W M
 
-This pattern replaces universal irreflexivity with per-construction proofs.
+This pattern provides local strictness proofs without requiring universal
+irreflexivity (which is false under reflexive semantics).
 
 ### References
 
 - Goldblatt, R. (1992). Logics of Time and Computation. CSLI Lecture Notes.
 - Blackburn, P., de Rijke, M., Venema, Y. (2001). Modal Logic. Chapter 5.
 - Task 29: Switch to reflexive G/H semantics
+- Task 44: Delete inconsistent irreflexivity axiom
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -243,264 +239,6 @@ theorem strict_of_formula_with_G_not_in_source {M W : Set Formula} {φ : Formula
     (h_φ_not_M : φ ∉ M) :
     ¬ExistsTask W M :=
   strict_of_formula_in_g_content_not_in_source h_Gφ_in_W h_φ_not_M
-
-/-!
-## ORDER-THEORETIC ENHANCEMENT: Irreflexivity Axiom (Task 29 v8)
-
-### Two-Layer Architecture
-
-**Layer 1 (Basic Completeness)**: Does NOT use this axiom.
-- BaseCompleteness.lean, CanonicalConstruction.lean, CanonicalFMCS.lean
-- Uses reflexive preorder structure (existsTask_reflexive)
-- All completeness proofs are axiom-free
-
-**Layer 2 (Order-Theoretic Enhancements)**: Uses this axiom.
-- CantorApplication.lean (TimelineQuot ≃o ℚ)
-- DovetailedTimelineQuot.lean (alternative dense construction)
-- DiscreteTimeline.lean (DiscreteTimelineQuot ≃o ℤ)
-- NoMaxOrder, NoMinOrder, DenselyOrdered instances
-
-### Semantic Status
-
-Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the axiom is
-SEMANTICALLY FALSE. `ExistsTask M M` holds for all MCS M (via T-axiom).
-
-The axiom introduces an INCONSISTENCY when combined with `existsTask_reflexive`.
-This inconsistency is ISOLATED to the order-theoretic enhancements and does NOT
-affect basic completeness.
-
-### Future Resolution Path
-
-1. **Per-construction strictness**: Prove strictness from formula witnesses
-2. **Semantic axiom**: Accept irreflexivity as a semantic assumption for order structure
-3. **Delete Layer 2**: Remove order-theoretic enhancements entirely
-
-For now, the axiom is preserved for the order-theoretic enhancements.
--/
-
-axiom existsTask_irreflexive_axiom :
-    ∀ (M : Set Formula), SetMaximalConsistent M → ¬ExistsTask M M
-
-/-- Backward compatibility alias for the axiom. -/
-abbrev canonicalR_irreflexive_axiom := existsTask_irreflexive_axiom
-
-@[deprecated "Under reflexive semantics (Task 29), ExistsTask is reflexive, not irreflexive. Use existsTask_reflexive instead."]
-theorem existsTask_irreflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ¬ExistsTask M M :=
-  existsTask_irreflexive_axiom M h_mcs
-
-/-- Backward compatibility alias. -/
-abbrev canonicalR_irreflexive := existsTask_irreflexive
-
-#check existsTask_reflexive -- Proven theorem (reflexive semantics)
-#check existsTask_irreflexive -- Deprecated axiom-based theorem
-
-/-!
-## CanonicalTask Irreflexivity (Derived from Axiom)
-
-Under strict semantics (Layer 2), CanonicalTask M n M with n ≠ 0 is impossible
-for any MCS M. This follows from the irreflexivity axiom for ExistsTask.
-
-### Forward Direction (n > 0)
-
-A forward chain CanonicalTask_forward M n M with n ≥ 1 implies ExistsTask M M:
-- Each Succ step gives a ExistsTask (via Succ_implies_CanonicalR)
-- ExistsTask is transitive (via existsTask_transitive) when first world is MCS
-- Composing all steps gives ExistsTask M M = ExistsTask M M
-
-### Backward Direction (n < 0)
-
-A backward chain CanonicalTask_backward M |n| M with |n| ≥ 1 works symmetrically
-via the converse theorem: CanonicalTask M n M ↔ CanonicalTask M (-n) M.
--/
-
-/-- Forward chain from MCS u implies ExistsTask (identity or proper).
-
-For a forward chain starting from MCS u, we can derive ExistsTask by composing
-individual Succ steps via transitivity. Each Succ step gives ExistsTask by
-Succ_implies_CanonicalR, and we compose using existsTask_transitive which
-only requires the first world (u) to be MCS.
-
-Note: The IH for the step case needs MCS of the intermediate world w, but
-we can avoid this by directly using the step_inv extraction pattern. -/
-theorem canonicalTask_forward_implies_canonicalR_or_eq
-    {u v : Set Formula} {n : Nat}
-    (h_mcs_u : SetMaximalConsistent u)
-    (h_task : CanonicalTask_forward u n v) :
-    u = v ∨ ExistsTask u v := by
-  induction n generalizing u v with
-  | zero =>
-    -- n = 0 means u = v by CanonicalTask_forward_zero
-    left
-    exact (CanonicalTask_forward_zero u v).mp h_task
-  | succ k ih =>
-    -- Extract the first Succ step using step_inv
-    obtain ⟨w, h_succ, h_chain⟩ := CanonicalTask_forward.step_inv h_task
-    have h_R_uw : ExistsTask u w := Succ_implies_CanonicalR u w h_succ
-    -- For the remaining chain from w to v, we need MCS of w
-    -- But wait - we only have MCS of u. We can still conclude:
-    -- Either w = v (and we have ExistsTask u v = h_R_uw)
-    -- Or k ≥ 1 and we need to compose (but this requires MCS w)
-    -- Actually, we can proceed differently: the chain from w to v
-    -- gives us ExistsTask w v (if k ≥ 1) or w = v (if k = 0)
-    -- In either case, transitivity from u gives us what we need
-    cases k with
-    | zero =>
-      -- k = 0 means w = v
-      have h_wv : w = v := (CanonicalTask_forward_zero w v).mp h_chain
-      subst h_wv
-      exact Or.inr h_R_uw
-    | succ j =>
-      -- k = j + 1, chain from w to v has length ≥ 1
-      -- This requires MCS of w for transitivity, which we don't have directly
-      -- However, we know Succ preserves the structure - each Succ step gives ExistsTask
-      -- We can use the single-step lemma repeatedly
-      -- Actually, let's just extract the full chain and compose
-      obtain ⟨w', h_succ', h_chain'⟩ := CanonicalTask_forward.step_inv h_chain
-      have h_R_ww' : ExistsTask w w' := Succ_implies_CanonicalR w w' h_succ'
-      -- Now we have ExistsTask u w and ExistsTask w w' and chain from w' to v
-      -- Compose u to w' first (needs MCS u)
-      have h_R_uw' : ExistsTask u w' := existsTask_transitive u w w' h_mcs_u h_R_uw h_R_ww'
-      -- Continue with the remaining chain from w' to v
-      -- This is getting complicated - let's use a simpler approach
-      -- Just recurse on the full chain length
-      right
-      -- Actually, for any chain of length ≥ 1, the first step gives ExistsTask u w
-      -- and we can compose all subsequent steps via transitivity
-      -- The key is that transitivity only needs MCS of the FIRST world (u)
-      -- So we can compose: u -> w -> w' -> ... -> v
-      -- At each step, we use existsTask_transitive with MCS u
-      -- Let's prove this by strong induction on chain length
-      -- For now, use a direct proof for the general case
-      -- Every forward chain of length ≥ 1 from MCS u gives ExistsTask u v
-      -- because each Succ gives ExistsTask and we compose via transitivity
-      -- The composition only requires MCS of the base (u)
-      have h_base : ∀ m : Nat, ∀ x y : Set Formula,
-          CanonicalTask_forward x m y → ExistsTask u x → ExistsTask u y := by
-        intro m
-        induction m with
-        | zero =>
-          intro x y h_fwd h_ux
-          have h_eq : x = y := (CanonicalTask_forward_zero x y).mp h_fwd
-          subst h_eq
-          exact h_ux
-        | succ p ih_p =>
-          intro x y h_fwd h_ux
-          obtain ⟨z, h_succ_xz, h_chain_zy⟩ := CanonicalTask_forward.step_inv h_fwd
-          have h_xz : ExistsTask x z := Succ_implies_CanonicalR x z h_succ_xz
-          have h_uz : ExistsTask u z := existsTask_transitive u x z h_mcs_u h_ux h_xz
-          exact ih_p z y h_chain_zy h_uz
-      exact h_base j w' v h_chain' h_R_uw'
-
-/-- Forward chain of positive length from MCS u implies ExistsTask.
-
-This is the key lemma for CanonicalTask irreflexivity: any forward chain
-of length ≥ 1 starting from MCS gives ExistsTask, even if it returns to
-the starting world. -/
-theorem canonicalTask_forward_pos_implies_canonicalR
-    {u v : Set Formula} {n : Nat}
-    (h_mcs_u : SetMaximalConsistent u)
-    (h_pos : n ≥ 1)
-    (h_task : CanonicalTask_forward u n v) :
-    ExistsTask u v := by
-  rcases canonicalTask_forward_implies_canonicalR_or_eq h_mcs_u h_task with rfl | h_R
-  · -- u = v case: the chain loops back
-    -- n ≥ 1 means n = k + 1 for some k
-    have h_n : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
-    obtain ⟨k, rfl⟩ := h_n
-    -- Extract first step: Succ u w for some w
-    obtain ⟨w, h_succ, h_chain⟩ := CanonicalTask_forward.step_inv h_task
-    have h_R_uw : ExistsTask u w := Succ_implies_CanonicalR u w h_succ
-    -- Chain from w back to u (since u = v)
-    -- If k = 0, then w = u directly
-    cases k with
-    | zero =>
-      have h_wu : w = u := (CanonicalTask_forward_zero w u).mp h_chain
-      subst h_wu
-      exact h_R_uw
-    | succ j =>
-      -- k ≥ 1, so chain from w to u has positive length
-      -- Use the helper lemma to compose
-      have h_base : ∀ m : Nat, ∀ x y : Set Formula,
-          CanonicalTask_forward x m y → ExistsTask u x → ExistsTask u y := by
-        intro m
-        induction m with
-        | zero =>
-          intro x y h_fwd h_ux
-          have h_eq : x = y := (CanonicalTask_forward_zero x y).mp h_fwd
-          subst h_eq
-          exact h_ux
-        | succ p ih_p =>
-          intro x y h_fwd h_ux
-          obtain ⟨z, h_succ_xz, h_chain_zy⟩ := CanonicalTask_forward.step_inv h_fwd
-          have h_xz : ExistsTask x z := Succ_implies_CanonicalR x z h_succ_xz
-          have h_uz : ExistsTask u z := existsTask_transitive u x z h_mcs_u h_ux h_xz
-          exact ih_p z y h_chain_zy h_uz
-      exact h_base (j + 1) w u h_chain h_R_uw
-  · exact h_R
-
-/-- CanonicalTask irreflexivity for positive durations.
-
-If n > 0, then ¬CanonicalTask M n M for any MCS M. This follows from:
-1. CanonicalTask M n M with n > 0 means CanonicalTask_forward M n M
-2. Forward chain of length ≥ 1 implies ExistsTask M M (via Succ composition)
-3. The irreflexivity axiom gives ¬ExistsTask M M = ¬ExistsTask M M
-
-**Semantic Note**: This theorem only applies under STRICT semantics (Layer 2).
-Under reflexive semantics (Task 29), ExistsTask is reflexive, not irreflexive,
-so this theorem is INCONSISTENT with existsTask_reflexive. -/
-@[deprecated "Under reflexive semantics (Task 29), ExistsTask is reflexive. This theorem uses the deprecated irreflexivity axiom."]
-theorem canonicalTask_irreflexive_pos (M : Set Formula) (n : Int)
-    (h_mcs : SetMaximalConsistent M) (h_pos : 0 < n) :
-    ¬CanonicalTask M n M := by
-  intro h_task
-  -- n > 0 means n = Int.ofNat k for some k ≥ 1
-  match n, h_pos with
-  | Int.ofNat k, h_pos_k =>
-    -- k ≥ 1 since Int.ofNat k > 0
-    have h_k_pos : k ≥ 1 := Nat.one_le_iff_ne_zero.mpr (Int.ofNat_ne_zero.mp (ne_of_gt h_pos_k))
-    -- CanonicalTask M k M = CanonicalTask_forward M k M
-    have h_forward : CanonicalTask_forward M k M := (CanonicalTask_of_nat M M k).mp h_task
-    -- Forward chain implies ExistsTask M M
-    have h_R : ExistsTask M M := canonicalTask_forward_pos_implies_canonicalR h_mcs h_k_pos h_forward
-    -- But ExistsTask M M contradicts irreflexivity axiom
-    exact existsTask_irreflexive_axiom M h_mcs h_R
-
-/-- CanonicalTask irreflexivity for negative durations.
-
-If n < 0, then ¬CanonicalTask M n M for any MCS M. This follows from the
-converse theorem: CanonicalTask M n M ↔ CanonicalTask M (-n) M, combined
-with the positive case.
-
-**Semantic Note**: This theorem only applies under STRICT semantics (Layer 2). -/
-@[deprecated "Under reflexive semantics (Task 29), ExistsTask is reflexive. This theorem uses the deprecated irreflexivity axiom."]
-theorem canonicalTask_irreflexive_neg (M : Set Formula) (n : Int)
-    (h_mcs : SetMaximalConsistent M) (h_neg : n < 0) :
-    ¬CanonicalTask M n M := by
-  intro h_task
-  -- Use converse: CanonicalTask M n M ↔ CanonicalTask M (-n) M
-  have h_converse : CanonicalTask M (-n) M := (CanonicalTask_converse M M n).mp h_task
-  -- -n > 0 since n < 0
-  have h_pos : 0 < -n := by omega
-  -- Apply positive case
-  exact canonicalTask_irreflexive_pos M (-n) h_mcs h_pos h_converse
-
-/-- CanonicalTask irreflexivity for any non-zero duration.
-
-If n ≠ 0, then ¬CanonicalTask M n M for any MCS M. Combines positive and
-negative cases.
-
-**Semantic Note**: This theorem only applies under STRICT semantics (Layer 2).
-Under reflexive semantics (Task 29), ExistsTask is reflexive, so this theorem
-is INCONSISTENT with the reflexive theory. Use with caution. -/
-@[deprecated "Under reflexive semantics (Task 29), ExistsTask is reflexive. This theorem uses the deprecated irreflexivity axiom."]
-theorem canonicalTask_irreflexive (M : Set Formula) (n : Int)
-    (h_mcs : SetMaximalConsistent M) (h_nonzero : n ≠ 0) :
-    ¬CanonicalTask M n M := by
-  rcases lt_trichotomy n 0 with h_neg | h_zero | h_pos
-  · exact canonicalTask_irreflexive_neg M n h_mcs h_neg
-  · exact absurd h_zero h_nonzero
-  · exact canonicalTask_irreflexive_pos M n h_mcs h_pos
 
 end
 

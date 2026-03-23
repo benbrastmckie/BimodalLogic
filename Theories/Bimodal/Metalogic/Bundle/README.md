@@ -10,17 +10,13 @@ Under reflexive semantics, G and H quantify over `s >= t` and `s <= t` respectiv
 (including the current time). The canonical accessibility relation is a **reflexive
 transitive preorder**.
 
-### Two-Layer Architecture
+### Axiom-Free Reflexive Semantics
 
-**Layer 1 (This Module)**: Uses reflexive preorder structure.
 - All BFMCS completeness infrastructure is axiom-free
 - CanonicalConstruction, CanonicalFMCS, TruthLemma proven without axioms
-- `canonicalR_reflexive` proven via T-axiom
-
-**Layer 2 (Order-Theoretic)**: Uses irreflexivity axiom (separate module).
-- CanonicalIrreflexivity.lean preserves `canonicalR_irreflexive` axiom
-- Used only for NoMaxOrder, NoMinOrder, DenselyOrdered instances
-- Not required for basic completeness
+- `canonicalR_reflexive` proven via T-axiom (reflexive preorder)
+- Per-construction strictness pattern for local irreflexivity proofs
+- Task 44: Removed inconsistent `existsTask_irreflexive_axiom`
 
 ## Key Insight
 
@@ -180,4 +176,4 @@ import Bimodal.Metalogic.Bundle.CanonicalFMCS
 
 ---
 
-*Last updated: 2026-03-22 (Task 29 v8)*
+*Last updated: 2026-03-23 (Task 44 - axiom removal)*
