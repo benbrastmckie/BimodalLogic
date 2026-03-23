@@ -56,7 +56,7 @@ From `07_team-research.md`:
 
 ## Implementation Phases
 
-### Phase 1: Define Fuel-Based Helper Theorem [NOT STARTED]
+### Phase 1: Define Fuel-Based Helper Theorem [PARTIAL]
 
 **Goal**: Create the fuel-parameterized version of the witness theorem.
 

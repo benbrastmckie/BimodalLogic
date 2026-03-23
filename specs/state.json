@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T21:03:09Z",
+      "last_updated": "2026-03-23T21:05:58Z",
       "artifacts": [
         {
           "type": "research",
@@ -720,9 +720,14 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/05_fuel-recursion.md",
           "type": "plan",
           "summary": "4-phase implementation plan for fuel-based well-founded recursion solution"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/05_fuel-recursion-partial.md",
+          "type": "summary",
+          "summary": "Partial implementation v5: fuel-based helper added with sorry in inr.succ case. Blocker: fuel bound invariant cannot be maintained."
         }
       ],
-      "session_id": "sess_1774299553_4062b2",
+      "session_id": "sess_1774299931_82834f",
       "researched": "2026-03-23T20:56:11Z",
       "planned": "2026-03-23T21:03:09Z",
       "started": "2026-03-23T17:51:37Z",
