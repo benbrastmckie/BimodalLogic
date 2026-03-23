@@ -8,11 +8,12 @@
     {
       "project_number": 43,
       "project_name": "archive_dead_paths_to_boneyard",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "description": "Archive StagedConstruction/ and DiscreteTimeline paths to Boneyard to eliminate axioms 7-9. These paths are superseded by the SuccChain completeness approach and carry 3 axioms (discrete_Icc_finite_axiom, discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom) plus several sorries. Move to Boneyard: StagedConstruction/ directory (DiscreteSuccSeed.lean, DovetailedBuild.lean, StagedExecution.lean, DovetailedTimelineQuot.lean, Completeness.lean, TimelineQuotCompleteness.lean), Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), Canonical/CanonicalTimeline.lean. Update imports in any files that reference these modules. Verify lake build passes after archival.",
       "created": "2026-03-23T07:08:08Z",
-      "last_updated": "2026-03-23T07:08:08Z"
+      "last_updated": "2026-03-23T07:10:55Z",
+      "session_id": "sess_1774249837_ba0417"
     },
     {
       "project_number": 42,
@@ -107,11 +108,12 @@
     {
       "project_number": 36,
       "project_name": "prove_f_nesting_boundary",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "description": "Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.",
       "created": "2026-03-23T05:16:00Z",
-      "last_updated": "2026-03-23T05:16:00Z"
+      "last_updated": "2026-03-23T07:18:37Z",
+      "session_id": "sess_1774250305_63dbfe"
     },
     {
       "project_number": 37,
@@ -712,7 +714,7 @@
       "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T21:02:08Z",
+      "last_updated": "2026-03-23T07:18:21Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -832,25 +834,26 @@
           "summary": "Wave 6 synthesis: CanonicalTask as central relation"
         },
         {
-          "path": "specs/026_remove_canonicalr_irreflexive_axiom/plans/01_eliminate-canonicalr.md",
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/plans/02_migrate-to-existstask.md",
           "type": "plan",
-          "summary": "8-phase implementation plan for eliminating CanonicalR as primary concept"
+          "summary": "Revised plan: migrate to ExistsTask (CanonicalR now alias)"
         }
       ],
       "session_id": "sess_1774126671_9ca427",
       "researched": "2026-03-21T20:50:40Z",
-      "planned": "2026-03-21T21:02:08Z"
+      "planned": "2026-03-23T07:18:21Z"
     },
     {
       "project_number": 34,
       "project_name": "prove_succ_seed_consistency_axioms",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-23T03:48:09Z",
-      "last_updated": "2026-03-23T03:48:09Z",
+      "last_updated": "2026-03-23T07:18:06Z",
       "dependencies": [],
       "description": "Prove or remove the 3 SuccExistence axioms deferred from task 29 Phase 7: successor_deferral_seed_consistent_axiom, predecessor_deferral_seed_consistent_axiom, and predecessor_f_step_axiom (all in Bundle/SuccExistence.lean). These seed consistency axioms assert that deferral seeds are satisfiable, which should follow from T-axiom under reflexive semantics. Also un-supersede task 26 (canonicalR_irreflexive_axiom was NOT deleted by task 29 and still contradicts proven canonicalR_reflexive).",
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1774250274_6670c6"
     }
   ],
   "next_project_number": 44,
