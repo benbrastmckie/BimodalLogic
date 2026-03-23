@@ -71,8 +71,10 @@ technical_debt:
 
 ### 39. Study preorder semantics conformance with Task Semantics specifications
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
+- **Reports**:
+  - [01_teammate-a-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-a-findings.md) — Primary mathematical analysis
 
 **Description**: Study the implications of the preorder semantics which has been accepted to avoid the fresh G-atom proofs in order to determine whether the result still conforms to the specifications required by the Task Semantics.
 

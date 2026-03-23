@@ -8,10 +8,10 @@
     {
       "project_number": 39,
       "project_name": "study_preorder_semantics_conformance",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-23T05:40:43Z",
-      "last_updated": "2026-03-23T05:42:48Z",
+      "last_updated": "2026-03-23T05:50:00Z",
       "session_id": "sess_1774244542_1cb630"
     },
     {
