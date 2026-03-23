@@ -1,5 +1,5 @@
 ---
-next_project_number: 39
+next_project_number: 40
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -66,6 +66,15 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 39. Study preorder semantics conformance with Task Semantics specifications
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Study the implications of the preorder semantics which has been accepted to avoid the fresh G-atom proofs in order to determine whether the result still conforms to the specifications required by the Task Semantics.
 
 ---
 
