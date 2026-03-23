@@ -288,6 +288,65 @@ lemma p_step_blocking_restricted_subset_constrained_successor_seed_restricted (p
   Set.subset_union_right
 
 /-!
+## Boundary Resolution Set
+
+When constructing successors for DeferralRestrictedMCS chains, there is a boundary case
+where F(chi) is in the chain but FF(chi) is NOT in deferralClosure. In this case, the
+standard negation completeness argument fails because we cannot derive neg(FF(chi)) to
+get GG(neg chi) into the chain.
+
+The solution is to add chi directly to the seed when this boundary condition holds.
+This forces chi into the successor, resolving the F-obligation immediately rather than
+trying to prove it cannot be deferred.
+-/
+
+/--
+Formulas that must be resolved at the boundary.
+
+When F(chi) ∈ u, FF(chi) ∉ deferralClosure(phi), and GF(chi) ∉ u, we add chi to the seed.
+This ensures chi ∈ successor, resolving the F-obligation for F(chi).
+
+The conditions are:
+- F(chi) ∈ u: There is an F-obligation for chi
+- FF(chi) ∉ deferralClosure: We're at the F-depth boundary, can't defer further
+- GF(chi) ∉ u: The g_content path won't inject F(chi) into successor
+
+When all three hold, adding chi to the seed forces chi ∈ successor.
+-/
+def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
+  {chi | Formula.some_future chi ∈ u ∧
+         Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
+         Formula.all_future (Formula.some_future chi) ∉ u}
+
+/-- Membership in boundary_resolution_set. -/
+lemma mem_boundary_resolution_set_iff (phi : Formula) (u : Set Formula) (chi : Formula) :
+    chi ∈ boundary_resolution_set phi u ↔
+    Formula.some_future chi ∈ u ∧
+    Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
+    Formula.all_future (Formula.some_future chi) ∉ u := by
+  rfl
+
+/--
+boundary_resolution_set is a subset of deferralClosure.
+
+If chi ∈ boundary_resolution_set, then F(chi) ∈ u ⊆ deferralClosure.
+Since F(chi) ∈ deferralClosure, chi ∈ subformulaClosure ⊆ closureWithNeg ⊆ deferralClosure.
+-/
+theorem boundary_resolution_set_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (deferralClosure phi : Set Formula)) :
+    boundary_resolution_set phi u ⊆ (deferralClosure phi : Set Formula) := by
+  intro chi h_chi
+  obtain ⟨h_F_in_u, _, _⟩ := h_chi
+  -- F(chi) ∈ u ⊆ deferralClosure
+  have h_F_in_dc := h_u h_F_in_u
+  -- F(chi) ∈ deferralClosure => F(chi) ∈ closureWithNeg
+  have h_F_in_cwn := some_future_in_deferralClosure_is_in_closureWithNeg phi chi h_F_in_dc
+  -- F(chi) ∈ closureWithNeg => chi ∈ subformulaClosure
+  have h_chi_in_sub := some_future_in_closureWithNeg_inner_in_subformulaClosure phi chi h_F_in_cwn
+  -- chi ∈ subformulaClosure => chi ∈ closureWithNeg => chi ∈ deferralClosure
+  exact closureWithNeg_subset_deferralClosure phi (subformulaClosure_subset_closureWithNeg phi h_chi_in_sub)
+
+/-!
 ## Constrained Successor Seed (with P-Step Blocking)
 
 The constrained successor seed extends the basic successor deferral seed with

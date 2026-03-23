@@ -48,7 +48,7 @@ This makes `restricted_single_step_forcing` trivial: chi ∈ seed ⊆ chain(k+1)
 
 ## Implementation Phases
 
-### Phase 1: Define boundary_resolution_set [NOT STARTED]
+### Phase 1: Define boundary_resolution_set [COMPLETED]
 
 **Goal**: Add the boundary resolution set definition.
 
@@ -75,7 +75,7 @@ def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
 
 ---
 
-### Phase 2: Prove consistency of augmented seed [NOT STARTED]
+### Phase 2: Prove consistency of augmented seed [PARTIAL]
 
 **Goal**: Prove `old_seed ∪ boundary_resolution_set` is consistent.
 
