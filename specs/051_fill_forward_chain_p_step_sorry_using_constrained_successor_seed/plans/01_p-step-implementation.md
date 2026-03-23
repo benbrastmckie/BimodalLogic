@@ -47,7 +47,7 @@ Key findings from research report:
 
 ## Implementation Phases
 
-### Phase 1: Modify Forward Chain Construction [NOT STARTED]
+### Phase 1: Modify Forward Chain Construction [COMPLETED]
 
 **Goal**: Replace `successor_from_deferral_seed` with `constrained_successor_from_seed` in `ForwardChainElement.next`
 
@@ -69,7 +69,7 @@ Key findings from research report:
 
 ---
 
-### Phase 2: Add Forward Chain P-Step Theorem and Fill Sorry [NOT STARTED]
+### Phase 2: Add Forward Chain P-Step Theorem and Fill Sorry [IN PROGRESS]
 
 **Goal**: Add `forward_chain_p_step` helper theorem and use it to fill the sorry
 

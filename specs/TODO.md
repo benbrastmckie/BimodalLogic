@@ -139,8 +139,8 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 ---
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
-- **Effort**: 6-9 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -148,7 +148,9 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
   - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
   - [01_bounded-f-depth.md](048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md)
   - [02_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/02_team-research.md)
-- **Plan**: [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
+- **Plan**:
+  - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
+  - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)
 - **Summary**: [01_restricted-succ-chain-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md)
 
 **Description**: Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.

@@ -1097,7 +1097,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -1106,7 +1106,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T18:13:54Z",
+      "last_updated": "2026-03-23T18:19:01Z",
       "artifacts": [
         {
           "type": "research",
@@ -1119,11 +1119,6 @@
           "summary": "Identified mathematical unsoundness. Recommended refactoring to use RestrictedMCS."
         },
         {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan to refactor succ_chain_fam using RestrictedMCS for mathematically sound F/P boundedness"
-        },
-        {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md",
           "type": "summary",
           "summary": "Partial implementation: added provable restricted versions, original sorries remain (theorems mathematically unprovable as stated)"
@@ -1132,11 +1127,16 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research (2 teammates): augmented closure approach for RestrictedMCS chain construction"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan for augmented deferral closure approach"
         }
       ],
-      "session_id": "sess_1774289228_d767ac",
+      "session_id": "sess_1774289725_222897",
       "researched": "2026-03-23T18:13:54Z",
-      "planned": "2026-03-23T17:49:32Z",
+      "planned": "2026-03-23T18:19:01Z",
       "started": "2026-03-23T17:51:37Z",
       "blocker_reason": "Original theorems mathematically unprovable as stated. Provable RestrictedMCS versions added but require chain construction refactoring."
     },

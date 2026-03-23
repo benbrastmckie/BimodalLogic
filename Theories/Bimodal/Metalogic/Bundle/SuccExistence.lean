@@ -125,6 +125,52 @@ lemma deferralDisjunction_eq (φ : Formula) :
   rfl
 
 /-!
+## P-Step Blocking Formulas (for Constrained Successor)
+
+The P-step blocking formulas are needed by the constrained successor seed.
+These must be defined before constrained_successor_seed.
+-/
+
+/--
+The set of P-step blocking formulas for the successor seed.
+
+For each formula φ where both P(φ) ∉ u and φ ∉ u, we add H(¬φ) to the seed.
+Since P(φ) = ¬H(¬φ) by definition, having H(¬φ) in the successor prevents
+P(φ) from appearing (as that would contradict MCS consistency).
+
+**Key property**: Every blocking formula H(¬φ) is already in u, because
+P(φ) ∉ u implies ¬P(φ) ∈ u, i.e., ¬¬H(¬φ) ∈ u, hence H(¬φ) ∈ u by
+double negation elimination.
+-/
+def p_step_blocking_formulas (u : Set Formula) : Set Formula :=
+  {ψ | ∃ φ : Formula, Formula.some_past φ ∉ u ∧ φ ∉ u ∧
+    ψ = Formula.all_past (Formula.neg φ)}
+
+/-- Membership in P-step blocking formulas. -/
+lemma mem_p_step_blocking_formulas_iff (u : Set Formula) (ψ : Formula) :
+    ψ ∈ p_step_blocking_formulas u ↔
+    ∃ φ : Formula, Formula.some_past φ ∉ u ∧ φ ∉ u ∧ ψ = Formula.all_past (Formula.neg φ) := by
+  rfl
+
+/--
+Every P-step blocking formula H(¬φ) is already in u.
+
+**Proof**: If P(φ) ∉ u, then by MCS negation completeness, ¬P(φ) ∈ u.
+Since P(φ) = ¬H(¬φ) by definition, ¬P(φ) = ¬¬H(¬φ).
+By MCS double negation elimination, H(¬φ) ∈ u.
+-/
+theorem p_step_blocking_formulas_subset_u (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u) :
+    p_step_blocking_formulas u ⊆ u := by
+  intro χ h_block
+  obtain ⟨φ, h_P_not, _, rfl⟩ := h_block
+  -- P(φ) ∉ u means ¬H(¬φ) ∉ u. By negation completeness, ¬¬H(¬φ) ∈ u.
+  -- By double negation elimination: H(¬φ) ∈ u.
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past φ) with h_in | h_neg_in
+  · exact absurd h_in h_P_not
+  · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
+
+/-!
 ## Constrained Successor Seed (with P-Step Blocking)
 
 The constrained successor seed extends the basic successor deferral seed with
@@ -167,6 +213,16 @@ lemma deferralDisjunctions_subset_constrained_successor_seed (u : Set Formula) :
 lemma p_step_blocking_formulas_subset_constrained_successor_seed (u : Set Formula) :
     p_step_blocking_formulas u ⊆ constrained_successor_seed u :=
   Set.subset_union_right
+
+/--
+A deferral disjunction φ ∨ F(φ) is derivable from F(φ).
+
+This is trivial: F(φ) → (φ ∨ F(φ)) by disjunction introduction (right).
+-/
+def deferral_disjunction_from_F (φ : Formula) :
+    [Formula.some_future φ] ⊢ deferralDisjunction φ := by
+  unfold deferralDisjunction
+  exact Bimodal.Theorems.Propositional.rdi φ (Formula.some_future φ)
 
 /--
 The constrained successor seed is consistent.
@@ -394,50 +450,6 @@ def f_step_blocking_formulas (u : Set Formula) : Set Formula :=
     ψ = Formula.all_future (Formula.neg φ)}
 
 /--
-The set of P-step blocking formulas for the successor seed.
-
-For each formula φ where both P(φ) ∉ u and φ ∉ u, we add H(¬φ) to the seed.
-Since P(φ) = ¬H(¬φ) by definition, having H(¬φ) in the successor prevents
-P(φ) from appearing (as that would contradict MCS consistency).
-
-**Key property**: Every blocking formula H(¬φ) is already in u, because
-P(φ) ∉ u implies ¬P(φ) ∈ u, i.e., ¬¬H(¬φ) ∈ u, hence H(¬φ) ∈ u by
-double negation elimination.
-
-This is symmetric to `f_step_blocking_formulas` for the predecessor construction.
--/
-def p_step_blocking_formulas (u : Set Formula) : Set Formula :=
-  {ψ | ∃ φ : Formula, Formula.some_past φ ∉ u ∧ φ ∉ u ∧
-    ψ = Formula.all_past (Formula.neg φ)}
-
-/-- Membership in P-step blocking formulas. -/
-lemma mem_p_step_blocking_formulas_iff (u : Set Formula) (ψ : Formula) :
-    ψ ∈ p_step_blocking_formulas u ↔
-    ∃ φ : Formula, Formula.some_past φ ∉ u ∧ φ ∉ u ∧ ψ = Formula.all_past (Formula.neg φ) := by
-  rfl
-
-/--
-Every P-step blocking formula H(¬φ) is already in u.
-
-**Proof**: If P(φ) ∉ u, then by MCS negation completeness, ¬P(φ) ∈ u.
-Since P(φ) = ¬H(¬φ) by definition, ¬P(φ) = ¬¬H(¬φ).
-By MCS double negation elimination, H(¬φ) ∈ u.
-
-This is symmetric to the proof of `f_step_blocking_formulas ⊆ u` in the
-predecessor construction (lines 472-480).
--/
-theorem p_step_blocking_formulas_subset_u (u : Set Formula)
-    (h_mcs : SetMaximalConsistent u) :
-    p_step_blocking_formulas u ⊆ u := by
-  intro χ h_block
-  obtain ⟨φ, h_P_not, _, rfl⟩ := h_block
-  -- P(φ) ∉ u means ¬H(¬φ) ∉ u. By negation completeness, ¬¬H(¬φ) ∈ u.
-  -- By double negation elimination: H(¬φ) ∈ u.
-  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past φ) with h_in | h_neg_in
-  · exact absurd h_in h_P_not
-  · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
-
-/--
 The predecessor deferral seed with F-step blocking formulas:
 `h_content(u) ∪ pastDeferralDisjunctions(u) ∪ f_step_blocking_formulas(u)`.
 
@@ -529,16 +541,6 @@ g_content plus deferral disjunctions are jointly satisfiable at some successor s
 
 We use an axiom with documented semantic justification, consistent with existing patterns.
 -/
-
-/--
-A deferral disjunction φ ∨ F(φ) is derivable from F(φ).
-
-This is trivial: F(φ) → (φ ∨ F(φ)) by disjunction introduction (right).
--/
-def deferral_disjunction_from_F (φ : Formula) :
-    [Formula.some_future φ] ⊢ deferralDisjunction φ := by
-  unfold deferralDisjunction
-  exact Bimodal.Theorems.Propositional.rdi φ (Formula.some_future φ)
 
 /--
 The successor deferral seed is consistent.

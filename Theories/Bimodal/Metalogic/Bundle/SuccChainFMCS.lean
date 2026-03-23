@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Bundle.SuccExistence
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.TemporalCoherence
+import Bimodal.Metalogic.Core.RestrictedMCS
 
 /-!
 # Succ-Chain FMCS Construction
@@ -154,15 +155,19 @@ theorem F_top_propagates (M M' : Set Formula)
   -- F_top is a theorem, and theorems are in every MCS
   SetMaximalConsistent.contains_F_top h_mcs'
 
-/-- Build the next forward chain element from the current one -/
+/-- Build the next forward chain element from the current one.
+
+Uses `constrained_successor_from_seed` instead of `successor_from_deferral_seed`
+to ensure the P-step property: p_content(successor) ⊆ u ∪ p_content(u).
+-/
 noncomputable def ForwardChainElement.next (e : ForwardChainElement) : ForwardChainElement where
-  world := successor_from_deferral_seed e.world e.is_mcs e.has_F_top
-  is_mcs := successor_from_deferral_seed_mcs e.world e.is_mcs e.has_F_top
+  world := constrained_successor_from_seed e.world e.is_mcs e.has_F_top
+  is_mcs := constrained_successor_from_seed_mcs e.world e.is_mcs e.has_F_top
   has_F_top :=
     F_top_propagates e.world _
       e.is_mcs
-      (successor_from_deferral_seed_mcs e.world e.is_mcs e.has_F_top)
-      (successor_succ e.world e.is_mcs e.has_F_top)
+      (constrained_successor_from_seed_mcs e.world e.is_mcs e.has_F_top)
+      (constrained_successor_succ e.world e.is_mcs e.has_F_top)
       e.has_F_top
 
 /-- Build forward chain element at index n -/
@@ -191,9 +196,20 @@ theorem forward_chain_zero (M0 : SerialMCS) : forward_chain M0 0 = M0.world := r
 /-- Adjacent forward chain elements satisfy Succ -/
 theorem forward_chain_succ (M0 : SerialMCS) (n : Nat) :
     Succ (forward_chain M0 n) (forward_chain M0 (n + 1)) :=
-  successor_succ (forward_chain M0 n)
+  constrained_successor_succ (forward_chain M0 n)
     (forward_chain_mcs M0 n)
     (forward_chain_has_F_top M0 n)
+
+/-- P-step property for forward chain: p_content of index k+1 flows back to index k.
+    p_content(forward_chain M0 (k+1)) ⊆ forward_chain M0 k ∪ p_content(forward_chain M0 k)
+
+    This follows from successor_p_step since forward_chain (k+1) is built as the
+    constrained successor of forward_chain k.
+-/
+theorem forward_chain_p_step (M0 : SerialMCS) (k : Nat) :
+    p_content (forward_chain M0 (k + 1)) ⊆
+    forward_chain M0 k ∪ p_content (forward_chain M0 k) :=
+  successor_p_step (forward_chain M0 k) (forward_chain_mcs M0 k) (forward_chain_has_F_top M0 k)
 
 /-!
 ## Backward Chain Construction
@@ -703,12 +719,12 @@ The proof is direct:
 This is the correct version to use in completeness proofs. The target formula phi
 provides the closure bound: build RestrictedMCS over closureWithNeg(phi).
 -/
-theorem f_nesting_is_bounded_restricted (psi : Formula) (M : Set Formula)
-    (h_mcs : RestrictedMCS psi M)
-    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+theorem f_nesting_is_bounded_restricted (phi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS phi M)
+    (h_F : Formula.some_future phi ∈ M) :
     ∃ n, n ≥ 2 ∧ iter_F n phi ∉ M := by
   -- Use restricted_mcs_F_bounded which gives d ≥ 1 with iter_F d phi ∈ M and iter_F (d+1) phi ∉ M
-  obtain ⟨d, h_d_ge1, _, h_iter_d1_not⟩ := restricted_mcs_F_bounded psi M h_mcs h_F
+  obtain ⟨d, h_d_ge1, _, h_iter_d1_not⟩ := restricted_mcs_F_bounded phi M h_mcs h_F
   -- d + 1 ≥ 2 since d ≥ 1
   use d + 1
   constructor
@@ -721,11 +737,11 @@ iter_F d phi ∈ M and iter_F (d+1) phi ∉ M.
 
 This is the correct version of f_nesting_boundary that works with RestrictedMCS.
 -/
-theorem f_nesting_boundary_restricted (psi : Formula) (M : Set Formula)
-    (h_mcs : RestrictedMCS psi M)
-    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+theorem f_nesting_boundary_restricted (phi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS phi M)
+    (h_F : Formula.some_future phi ∈ M) :
     ∃ d : Nat, d ≥ 1 ∧ iter_F d phi ∈ M ∧ iter_F (d + 1) phi ∉ M :=
-  restricted_mcs_F_bounded psi M h_mcs h_F
+  restricted_mcs_F_bounded phi M h_mcs h_F
 
 /--
 **BLOCKED (mathematically false)**: F-nesting boundedness for arbitrary SetMaximalConsistent.
@@ -751,8 +767,7 @@ theorem f_nesting_is_bounded (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 **BLOCKED (uses blocked f_nesting_is_bounded)**: F-nesting boundary for arbitrary MCS.
 
 Migrate to `f_nesting_boundary_restricted` which works with RestrictedMCS.
--/
-/--
+
 F-nesting boundary: Given F(phi) ∈ M, there exists d ≥ 1 such that
 iter_F d phi ∈ M and iter_F (d+1) phi ∉ M.
 
@@ -891,12 +906,12 @@ The proof is direct:
 
 Symmetric to f_nesting_is_bounded_restricted.
 -/
-theorem p_nesting_is_bounded_restricted (psi : Formula) (M : Set Formula)
-    (h_mcs : RestrictedMCS psi M)
-    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+theorem p_nesting_is_bounded_restricted (phi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS phi M)
+    (h_P : Formula.some_past phi ∈ M) :
     ∃ n, n ≥ 2 ∧ iter_P n phi ∉ M := by
   -- Use restricted_mcs_P_bounded which gives d ≥ 1 with iter_P d phi ∈ M and iter_P (d+1) phi ∉ M
-  obtain ⟨d, h_d_ge1, _, h_iter_d1_not⟩ := restricted_mcs_P_bounded psi M h_mcs h_P
+  obtain ⟨d, h_d_ge1, _, h_iter_d1_not⟩ := restricted_mcs_P_bounded phi M h_mcs h_P
   -- d + 1 ≥ 2 since d ≥ 1
   use d + 1
   constructor
@@ -910,11 +925,11 @@ iter_P d phi ∈ M and iter_P (d+1) phi ∉ M.
 This is the correct version of p_nesting_boundary that works with RestrictedMCS.
 Symmetric to f_nesting_boundary_restricted.
 -/
-theorem p_nesting_boundary_restricted (psi : Formula) (M : Set Formula)
-    (h_mcs : RestrictedMCS psi M)
-    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+theorem p_nesting_boundary_restricted (phi : Formula) (M : Set Formula)
+    (h_mcs : RestrictedMCS phi M)
+    (h_P : Formula.some_past phi ∈ M) :
     ∃ d : Nat, d ≥ 1 ∧ iter_P d phi ∈ M ∧ iter_P (d + 1) phi ∉ M :=
-  restricted_mcs_P_bounded psi M h_mcs h_P
+  restricted_mcs_P_bounded phi M h_mcs h_P
 
 /--
 P-nesting boundary (with explicit boundedness): Given P(phi) ∈ M and existence of
