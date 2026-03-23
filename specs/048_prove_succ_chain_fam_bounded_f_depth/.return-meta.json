@@ -1,25 +1,19 @@
 {
-  "status": "research_done",
-  "started_at": "2026-03-23T10:00:00Z",
-  "completed_at": "2026-03-23T10:45:00Z",
+  "status": "planned",
   "artifacts": [
-    "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md"
+    {
+      "type": "plan",
+      "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md",
+      "summary": "4-phase implementation plan to refactor succ_chain_fam using RestrictedMCS for mathematically sound F/P boundedness"
+    }
   ],
-  "partial_progress": {
-    "stage": "research_complete",
-    "details": "Identified mathematical unsoundness in current approach. Recommended refactoring to use RestrictedMCS."
-  },
-  "findings": {
-    "issue": "f_nesting_is_bounded claims F-boundedness for arbitrary MCS, but this is mathematically false",
-    "task_47_provides": "restricted_mcs_F_bounded proves boundedness only for RestrictedMCS (MCS bounded by closureWithNeg)",
-    "root_cause": "Arbitrary MCS can contain F(phi), FF(phi), FFF(phi), ... without inconsistency",
-    "recommended_approach": "Refactor succ_chain_fam to use RestrictedMCS with target formula closure",
-    "alternative": "Mark task BLOCKED - the completeness theorem remains semantically justified by frame conditions"
-  },
+  "next_steps": "Run /implement 48 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774286992_e47cca",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774287998_12c5c7",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 4,
+    "estimated_hours": 7
   }
 }

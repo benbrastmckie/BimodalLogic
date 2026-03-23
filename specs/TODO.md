@@ -110,13 +110,14 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 50. Implement constrained successor seed for P-step
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 46
 - **Research**:
   - [03_spawn-analysis.md](046_prove_forward_chain_p_step/reports/03_spawn-analysis.md)
   - [02_research.md](050_implement_constrained_successor_seed_for_p_step/reports/02_research.md)
+- **Plan**: [01_constrained-successor-seed.md](050_implement_constrained_successor_seed_for_p_step/plans/01_constrained-successor-seed.md)
 
 **Description**: Implement the symmetric counterpart to task 34's constrained predecessor seed. Define p_step_blocking_formulas(u) = {H(neg phi) | P(phi) not in u and phi not in u} in SuccExistence.lean. Define constrained_successor_seed(u) = g_content(u) union deferralDisjunctions(u) union p_step_blocking_formulas(u). Prove p_step_blocking_formulas_subset_u, constrained_successor_seed_consistent, and successor_p_step theorem. Update successor construction to use constrained seed.
 
@@ -136,13 +137,14 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
 - **Research**:
   - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
   - [01_bounded-f-depth.md](048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md)
+- **Plan**: [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
 
 **Description**: Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.
 

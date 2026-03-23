@@ -876,3 +876,45 @@
 [2026-03-23T01:10:17-07:00] Notification sent: Tab 5
 [2026-03-23T01:10:26-07:00] Cooldown active: 9s < 10s - skipping notification
 [2026-03-23T01:11:00-07:00] Notification sent: Tab 2
+[2026-03-23T01:17:10-07:00] Notification sent: Tab 4
+[2026-03-23T01:17:35-07:00] Notification sent: Tab 2
+[2026-03-23T01:18:12-07:00] Notification sent: Tab 4
+[2026-03-23T01:18:36-07:00] Notification sent: Tab 2
+[2026-03-23T01:23:12-07:00] Notification sent: Tab 3
+[2026-03-23T01:24:14-07:00] Notification sent: Tab 3
+[2026-03-23T08:13:15-07:00] Notification sent: Tab 2
+[2026-03-23T08:13:27-07:00] Notification sent: Tab 4
+[2026-03-23T08:14:17-07:00] Notification sent: Tab 2
+[2026-03-23T08:14:28-07:00] Notification sent: Tab 4
+[2026-03-23T08:15:47-07:00] Notification sent: Tab 2
+[2026-03-23T08:15:54-07:00] Cooldown active: 7s < 10s - skipping notification
+[2026-03-23T08:16:30-07:00] Notification sent: Tab 4
+[2026-03-23T08:17:07-07:00] Notification sent: Tab 3
+[2026-03-23T08:17:32-07:00] Notification sent: Tab 4
+[2026-03-23T08:18:09-07:00] Notification sent: Tab 3
+[2026-03-23T08:18:45-07:00] Notification sent: Tab 2
+[2026-03-23T08:19:47-07:00] Notification sent: Tab 2
+[2026-03-23T08:25:59-07:00] Notification sent: Tab 2
+[2026-03-23T08:26:47-07:00] Notification sent: Tab 3
+[2026-03-23T08:26:58-07:00] Notification sent: Tab 3
+[2026-03-23T08:27:01-07:00] Cooldown active: 3s < 10s - skipping notification
+[2026-03-23T08:28:34-07:00] Notification sent: Tab 2
+[2026-03-23T08:28:39-07:00] Cooldown active: 5s < 10s - skipping notification
+[2026-03-23T08:30:49-07:00] Notification sent: Tab 3
+[2026-03-23T08:31:02-07:00] Notification sent: Tab 2
+[2026-03-23T08:33:11-07:00] Notification sent: Tab 3
+[2026-03-23T08:33:51-07:00] Notification sent: Tab 2
+[2026-03-23T08:35:22-07:00] Notification sent: Tab 3
+[2026-03-23T08:47:06-07:00] Notification sent: Tab 3
+[2026-03-23T08:47:17-07:00] Notification sent: Tab 3
+[2026-03-23T08:47:26-07:00] Cooldown active: 9s < 10s - skipping notification
+[2026-03-23T08:48:26-07:00] Notification sent: Tab 3
+[2026-03-23T08:57:48-07:00] Notification sent: Tab 2
+[2026-03-23T08:58:50-07:00] Notification sent: Tab 2
+[2026-03-23T09:22:00-07:00] Notification sent: Tab 2
+[2026-03-23T09:23:01-07:00] Notification sent: Tab 2
+[2026-03-23T10:31:41-07:00] Notification sent: Tab 2
+[2026-03-23T10:36:10-07:00] Notification sent: Tab 3
+[2026-03-23T10:37:12-07:00] Notification sent: Tab 3
+[2026-03-23T10:37:42-07:00] Notification sent: Tab 2
+[2026-03-23T10:38:43-07:00] Notification sent: Tab 2
