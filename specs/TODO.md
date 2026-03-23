@@ -27,44 +27,41 @@ technical_debt:
 
 ## Recommended Order
 
-### Active Work
+### 1. Completeness Pipeline (highest priority)
 
-- **997** → implementing (base completeness wiring — stalled since 2026-03-20)
-- **29** → [COMPLETED] (reflexive G/H semantics — v8 preorder acceptance approach)
-  - **Summary**: Two-layer architecture: Layer 1 (basic completeness) axiom-free, Layer 2 (Cantor isomorphism) uses irreflexivity axiom
-  - **Completed**: 2026-03-22
+**Base**:
+1. **997** → unblock (base completeness wiring — stalled since 2026-03-20)
 
-### Completeness Pipeline
-
-**Dense completion** (deps 17, 27, 30, 31 all completed 2026-03-21):
-1. **18** → resume implementation at phase 5 (all blockers resolved, update status)
-2. **20** → implement (depends: 18) | **25** → implement (depends: 18) [parallel]
-
-**Discrete completion** (deps 9-15, 23, 28 all completed 2026-03-21):
+**Discrete** (deps 9-15, 23, 28 all completed 2026-03-21):
 1. **22** → implement (planned, has 5-phase plan)
-2. **24** → implement (depends: 22 only — 23 completed) — removes 3 axioms, final cleanup
+2. **24** → implement (depends: 22) — removes 3 axioms, final cleanup
 
-### Axiom Elimination
+**Dense** (deps 17, 27, 30, 31 all completed 2026-03-21):
+1. **18** → resume implementation at phase 5 (all blockers resolved)
+2. **20** → implement (depends: 18) — parametric canonical audit
 
-1. **26** → research (NOT superseded — task 29 preserved the axiom; canonicalR_irreflexive_axiom now contradicts proven canonicalR_reflexive)
-2. **34** → research (prove 3 SuccExistence seed axioms deferred from task 29 Phase 7)
+### 2. Refactoring
 
-### Post-Completeness Cleanup
+1. **25** → revise plan (Phases 1-2 blocked by same math issue as task 29 — fresh atom fails for pathological MCS. Phases 3-4 rename CanonicalR→ExistsTask, ready now)
+2. **19** → implement (deprecate old discrete pipeline, ready now)
+3. **21** → plan (depends: 18)
 
-1. **19** → implement (ready now, dep 15 completed)
-2. **21** → plan (depends: 18)
+### 3. Axiom Elimination
 
-### Independent Tasks
+1. **26** → revise plan (NOT superseded — task 29 preserved canonicalR_irreflexive_axiom, which now contradicts proven canonicalR_reflexive)
+2. **34** → research (prove 3 SuccExistence seed axioms, deferred from task 29)
 
-1. **8** → plan (researched)
-2. **6** → plan (researched)
-3. **992** → plan (researched)
-4. **953** → plan (researched)
-5. **949** → plan (researched)
-6. **619** → plan (researched, meta)
-7. **999** → research (not started)
-8. **998** → research (not started)
-9. **993** → research (not started)
+### 4. Independent Tasks
+
+1. **8** → plan (researched) — genuine truth_at completeness
+2. **6** → plan (researched) — canonical TaskFrame completeness
+3. **992** → plan (researched) — STSA representation
+4. **953** → plan (researched) — bilateral proof system
+5. **949** → plan (researched) — update Demo.lean
+6. **619** → plan (researched, meta) — skill migration
+7. **999** → research — derive F→FF from density
+8. **998** → research — FMP redesign
+9. **993** → research — stability operator
 10. **988** → blocked (likely superseded by 18)
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
