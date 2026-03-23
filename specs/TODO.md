@@ -110,11 +110,13 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 50. Implement constrained successor seed for P-step
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: 46
-- **Research**: [03_spawn-analysis.md](046_prove_forward_chain_p_step/reports/03_spawn-analysis.md)
+- **Research**:
+  - [03_spawn-analysis.md](046_prove_forward_chain_p_step/reports/03_spawn-analysis.md)
+  - [02_research.md](050_implement_constrained_successor_seed_for_p_step/reports/02_research.md)
 
 **Description**: Implement the symmetric counterpart to task 34's constrained predecessor seed. Define p_step_blocking_formulas(u) = {H(neg phi) | P(phi) not in u and phi not in u} in SuccExistence.lean. Define constrained_successor_seed(u) = g_content(u) union deferralDisjunctions(u) union p_step_blocking_formulas(u). Prove p_step_blocking_formulas_subset_u, constrained_successor_seed_consistent, and successor_p_step theorem. Update successor construction to use constrained seed.
 
