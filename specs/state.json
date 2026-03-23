@@ -214,6 +214,11 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/08_per-construction-summary.md",
           "type": "summary",
           "summary": "Partial implementation: Phases 4-5A complete. Deleted flawed cardinality theorems, added per-construction strictness infrastructure. Phases 5B-8 remaining (~33 call sites)."
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/09_phase5b-blocker-analysis.md",
+          "type": "summary",
+          "summary": "Blocker analysis: Phase 5B blocked on mathematical limitation — per-construction strictness requires fresh atom existence which is unprovable for pathological MCS."
         }
       ],
       "planned": "2026-03-23T02:09:31Z",

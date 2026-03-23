@@ -146,7 +146,26 @@ Phase 4 key theorem `fresh_Gp_seed_consistent` is PROVEN. The infrastructure is 
 
 ---
 
-### Phase 5B: Refactor Frame Condition Sites [NOT STARTED]
+### Phase 5B: Refactor Frame Condition Sites [BLOCKED]
+
+**BLOCKER ANALYSIS (Session sess_1774232803_b6632b)**:
+
+The per-construction strictness approach hits a fundamental mathematical limitation:
+
+1. **Seriality construction cannot provide strictness**: The seriality witness `executeForwardStep M h_mcs (¬⊥) h_F` constructs N ⊇ g_content(M) ∪ {¬⊥}. But ¬⊥ ∈ M (it's a tautology), so there's no formula that distinguishes N from M.
+
+2. **Fresh atom existence is unprovable**: The cardinality argument in `exists_fresh_for_g_content` was deleted because a pathological MCS can have `atoms_of_set(g_content M) = Set.univ`. Without a fresh atom, we cannot construct a seed that guarantees strictness.
+
+3. **Antisymmetry fails**: Under reflexive semantics, `CanonicalR M N ∧ CanonicalR N M` does NOT imply M = N. This breaks the `canonicalR_strict` theorem.
+
+**RESOLUTION OPTIONS**:
+
+A. **Add semantic axiom**: `∀ M : MCS, atoms_of_set(g_content M) ≠ Set.univ` (excludes pathological MCS)
+B. **Thread seed tracking**: Major refactoring to track finite seeds through MCS construction
+C. **Accept limitation**: Keep axiom-based proofs with deprecation warnings; document for future work
+D. **Weaken forward_F**: Use s ≥ t instead of s > t (requires downstream refactoring)
+
+**CURRENT STATUS**: Using Option C - the `canonicalR_irreflexive_axiom` remains in place with deprecation warnings. The ~33 call sites continue to use it. Phase 6 (delete axiom) is BLOCKED until this is resolved.
 
 **Goal**: Fix NoMaxOrder and NoMinOrder instances using per-construction strictness.
 
@@ -196,7 +215,9 @@ This file has the most call sites. Pattern:
 
 ---
 
-### Phase 5C: Refactor Remaining Call Sites [NOT STARTED]
+### Phase 5C: Refactor Remaining Call Sites [BLOCKED]
+
+**Depends on**: Phase 5B resolution. Same fundamental blockers apply.
 
 **Goal**: Fix non-frame-condition uses of `canonicalR_irreflexive`.
 
@@ -238,7 +259,9 @@ This file has the most call sites. Pattern:
 
 ---
 
-### Phase 6: Delete Axiom and Restore Consistency [NOT STARTED]
+### Phase 6: Delete Axiom and Restore Consistency [BLOCKED]
+
+**Depends on**: Phases 5B/5C completion. Cannot delete axiom while call sites depend on it.
 
 **Goal**: Remove the deprecated axiom.
 
@@ -262,6 +285,8 @@ This file has the most call sites. Pattern:
 
 ### Phase 7: Update Documentation [NOT STARTED]
 
+**Note**: This phase can proceed independently of the Phase 5B/5C blocker.
+
 **Goal**: Align documentation with reflexive semantics.
 
 **Effort**: 1-2 hours
@@ -282,6 +307,8 @@ This file has the most call sites. Pattern:
 ---
 
 ### Phase 8: T-Axiom Proofs for Remaining Axioms [NOT STARTED]
+
+**Note**: This phase can proceed independently of the Phase 5B/5C blocker.
 
 **Goal**: Prove consistency axioms using T-axiom where possible.
 

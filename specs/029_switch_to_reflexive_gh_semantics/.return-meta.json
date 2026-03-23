@@ -1,7 +1,7 @@
 {
   "status": "partial",
-  "started_at": "2026-03-22T10:00:00Z",
-  "completed_at": "2026-03-22T12:30:00Z",
+  "started_at": "2026-03-22T14:00:00Z",
+  "completed_at": "2026-03-22T15:45:00Z",
   "artifacts": [
     {
       "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/08_per-construction-summary.md",
@@ -9,32 +9,72 @@
       "summary": "Implementation summary for Phases 4-5A of per-construction strictness approach"
     },
     {
+      "path": "specs/029_switch_to_reflexive_gh_semantics/summaries/09_phase5b-blocker-analysis.md",
+      "type": "summary",
+      "summary": "Blocker analysis for Phase 5B - fundamental mathematical limitation identified"
+    },
+    {
       "path": "Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean",
       "type": "modified",
-      "summary": "Deleted flawed theorems, added per-construction strictness infrastructure"
+      "summary": "Per-construction strictness infrastructure (Phases 4-5A)"
     },
     {
       "path": "Theories/Bimodal/Metalogic/Canonical/CanonicalIrreflexivityAxiom.lean",
       "type": "modified",
       "summary": "Updated documentation with deprecation warnings"
+    },
+    {
+      "path": "specs/029_switch_to_reflexive_gh_semantics/plans/06_per-construction-strictness.md",
+      "type": "modified",
+      "summary": "Updated phase markers to [BLOCKED] with detailed analysis"
     }
   ],
   "partial_progress": {
     "phases_completed": ["4", "5A"],
-    "phases_remaining": ["5B", "5C", "6", "7", "8"],
-    "details": "Phase 4 deleted flawed cardinality theorems. Phase 5A added per-construction strictness infrastructure. Remaining phases require refactoring ~33 call sites."
+    "phases_blocked": ["5B", "5C", "6"],
+    "phases_remaining": ["7", "8"],
+    "stage": "blocked",
+    "details": "Phase 5B blocked on fundamental mathematical limitation: cannot prove per-construction strictness without fresh atom existence, which is unprovable for pathological MCS. See summary 09 for full analysis."
   },
   "verification": {
     "verification_passed": true,
-    "sorry_count": 0,
-    "axiom_count": 1,
+    "sorry_count": 456,
+    "axiom_count": 10,
     "build_passed": true,
-    "notes": "CanonicalIrreflexivity.lean has 0 sorries (deleted flawed ones), 1 axiom (deprecated, to be deleted in Phase 6)"
+    "notes": "Build passes. Axiom canonicalR_irreflexive_axiom remains (cannot be deleted while call sites depend on it). Sorry count at baseline level."
   },
   "requires_user_review": true,
-  "review_reason": "Phases 5B-8 require substantial refactoring of ~33 call sites to use per-construction strictness instead of the deprecated canonicalR_irreflexive axiom",
+  "review_reason": "Phases 5B-6 are fundamentally BLOCKED due to mathematical limitation (fresh atom existence unprovable). Options: (A) add semantic axiom excluding pathological MCS, (B) major refactoring for seed tracking, (C) accept limitation and keep deprecated axiom.",
+  "blocker": {
+    "type": "mathematical_limitation",
+    "description": "Per-construction strictness requires finding a distinguishing formula for each witness construction. For seriality-based constructions (NoMaxOrder/NoMinOrder), no such formula exists. Fresh atom existence is unprovable (pathological MCS covers all atoms).",
+    "resolution_options": [
+      {
+        "id": "A",
+        "name": "Semantic axiom",
+        "description": "Add axiom: atoms_of_set(g_content M) ≠ Set.univ",
+        "effort": "low",
+        "tradeoff": "Adds new axiom"
+      },
+      {
+        "id": "B",
+        "name": "Seed tracking",
+        "description": "Thread finite seed information through MCS construction",
+        "effort": "very_high",
+        "tradeoff": "Mathematically rigorous but major refactoring"
+      },
+      {
+        "id": "C",
+        "name": "Accept limitation",
+        "description": "Keep deprecated axiom with warnings",
+        "effort": "none",
+        "tradeoff": "Inconsistency remains in system"
+      }
+    ],
+    "recommended": "C"
+  },
   "metadata": {
-    "session_id": "sess_1774231958_590a28",
+    "session_id": "sess_1774232803_b6632b",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
