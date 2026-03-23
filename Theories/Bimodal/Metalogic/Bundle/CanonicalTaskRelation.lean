@@ -78,6 +78,53 @@ lemma iter_F_succ (n : Nat) (phi : Formula) :
     iter_F (n + 1) phi = Formula.some_future (iter_F n phi) := rfl
 
 /-!
+## iter_F Complexity and Injectivity
+
+Helper lemmas establishing that iter_F produces distinct formulas with
+strictly increasing complexity. These are used to prove f_nesting_boundary.
+-/
+
+/-- Complexity of some_future: F(phi) adds 5 to complexity.
+
+`some_future phi = phi.neg.all_future.neg` where `neg x = x.imp bot`, so:
+- `complexity (some_future phi) = 2 + 1 + 2 + complexity phi = 5 + complexity phi`
+-/
+lemma some_future_complexity (phi : Formula) :
+    Formula.complexity (Formula.some_future phi) = 5 + Formula.complexity phi := by
+  simp only [Formula.some_future, Formula.neg, Formula.complexity]
+  omega
+
+/-- Complexity of iter_F: each F-application adds 5 to complexity.
+
+`complexity (iter_F n phi) = 5 * n + complexity phi`
+-/
+lemma iter_F_complexity (n : Nat) (phi : Formula) :
+    Formula.complexity (iter_F n phi) = 5 * n + Formula.complexity phi := by
+  induction n with
+  | zero => simp [iter_F_zero]
+  | succ k ih =>
+    simp only [iter_F_succ, some_future_complexity, ih]
+    omega
+
+/-- iter_F strictly increases complexity for positive iterations. -/
+lemma iter_F_complexity_strictly_increasing (n : Nat) (phi : Formula) :
+    Formula.complexity (iter_F (n + 1) phi) > Formula.complexity (iter_F n phi) := by
+  simp only [iter_F_complexity]
+  omega
+
+/-- iter_F is injective: distinct iteration depths give distinct formulas. -/
+lemma iter_F_injective (phi : Formula) (m n : Nat) (h : iter_F m phi = iter_F n phi) : m = n := by
+  -- Proof by complexity: if iter_F m phi = iter_F n phi, then their complexities are equal
+  have h_cmplx : Formula.complexity (iter_F m phi) = Formula.complexity (iter_F n phi) :=
+    congrArg Formula.complexity h
+  simp only [iter_F_complexity] at h_cmplx
+  omega
+
+/-- iter_F 1 equals some_future. -/
+lemma iter_F_one_eq_some_future (phi : Formula) :
+    iter_F 1 phi = Formula.some_future phi := rfl
+
+/-!
 ## Forward Chain Definition
 
 `CanonicalTask_forward u n v` means "v is reachable from u in exactly n forward Succ steps".

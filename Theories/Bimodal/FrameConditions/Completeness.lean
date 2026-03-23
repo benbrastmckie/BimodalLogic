@@ -1,6 +1,4 @@
 import Bimodal.FrameConditions.Compatibility
-import Bimodal.Metalogic.StagedConstruction.Completeness
-import Bimodal.Metalogic.StagedConstruction.TimelineQuotCompleteness
 import Bimodal.Metalogic.DiscreteCompleteness
 
 /-!
@@ -17,12 +15,10 @@ architecture, providing a unified API for completeness theorems.
 
 ## Completeness Status
 
-### Dense Completeness: SORRY-FREE, AXIOM-FREE
+### Dense Completeness: IN PROGRESS (SuccChain Architecture)
 
-All components of the dense completeness proof are proven:
-1. Cantor isomorphism: TimelineQuot ≃o Q
-2. BFMCS truth lemma: MCS membership ↔ semantic truth
-3. Temporal coherent family construction: extends consistent contexts
+Dense completeness is being rebuilt using the SuccChain architecture.
+See `Bimodal.Metalogic.SuccChain/` for the current approach.
 
 ### Discrete Completeness: BLOCKED by `discrete_Icc_finite_axiom`
 
@@ -45,7 +41,8 @@ the type signatures for cleaner integration with the FrameConditions architectur
 
 - Task 978: Typeclass-based frame condition architecture
 - Task 979: discrete_Icc_finite_axiom analysis
-- `Bimodal.Metalogic.StagedConstruction.Completeness`: Dense completeness
+- Task 43: Archive StagedConstruction to Boneyard (this refactor)
+- `Bimodal.Metalogic.SuccChain/`: Current completeness approach
 - `Bimodal.Metalogic.DiscreteCompleteness`: Discrete completeness infrastructure
 -/
 
@@ -55,7 +52,6 @@ open Bimodal.Syntax
 open Bimodal.Semantics
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.StagedConstruction
 open Bimodal.Metalogic.DiscreteCompleteness
 
 /-! ## Completeness Template -/
@@ -79,23 +75,9 @@ def completeness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddM
 /-! ## Dense Completeness -/
 
 /--
-The dense completeness pipeline is proven.
-
-This theorem documents that all components required for dense completeness
-are sorry-free. The Cantor isomorphism establishes TimelineQuot ≃o Q.
-
-See `Bimodal.Metalogic.StagedConstruction.Completeness` for full details.
--/
-theorem dense_completeness_cantor_iso (root_mcs : Set Formula)
-    (root_mcs_proof : SetMaximalConsistent root_mcs) :
-    Nonempty (TimelineQuot root_mcs root_mcs_proof ≃o Rat) :=
-  cantor_iso root_mcs root_mcs_proof
-
-/--
 Dense completeness statement: formulas valid over dense temporal frames are provable.
 
-**Status**: Components proven (see `dense_completeness_components_proven`).
-The final assembly uses the standard contrapositive argument.
+**Status**: In progress via SuccChain architecture.
 
 **Type-Level Documentation**: This definition uses `DenseTemporalFrame` to
 express the frame condition requirement at the type level.
@@ -114,18 +96,19 @@ Dense completeness proof.
 The proof structure:
 1. If φ not provable, then neg φ is consistent
 2. Extend neg φ to MCS via Lindenbaum
-3. Build TimelineQuot from that MCS
-4. TimelineQuot satisfies all DenseTemporalFrame constraints
-5. By hypothesis, φ is valid over TimelineQuot
-6. By timelineQuot_not_valid_of_neg_consistent, φ is NOT valid over TimelineQuot
-7. Contradiction
+3. Build model from that MCS using SuccChain construction
+4. By hypothesis, φ is valid over the model
+5. By truth lemma, φ is NOT valid over the model
+6. Contradiction
 
-**Status**: Uses `dense_completeness_theorem` from TimelineQuotCompleteness.lean
-which has one sorry in `timelineQuot_not_valid_of_neg_consistent` (the truth lemma gap).
+**Status**: Blocked pending SuccChain completeness integration.
 -/
 theorem dense_completeness_fc {φ : Formula} :
-    DenseCompletenessStatement φ :=
-  TimelineQuotCompleteness.dense_completeness_theorem
+    DenseCompletenessStatement φ := by
+  intro _h_valid
+  -- Blocked pending SuccChain completeness integration
+  -- See SuccChain/ for current development
+  sorry
 
 /-! ## Discrete Completeness -/
 
@@ -193,12 +176,11 @@ theorem completeness_over_Int {φ : Formula} :
 
 /-! ## Documentation: Axiom Dependencies in Completeness
 
-### Dense Completeness: NO NEW AXIOMS
+### Dense Completeness: IN PROGRESS (SuccChain)
 
-The dense completeness proof uses only standard Lean axioms:
-- `propext`: Propositional extensionality
-- `Classical.choice`: Classical choice
-- `Quot.sound`: Quotient soundness
+Dense completeness is being rebuilt using the SuccChain architecture.
+The StagedConstruction approach has been archived to Boneyard.
+See task 43 for archival details.
 
 ### Discrete Completeness: ONE DOCUMENTED AXIOM
 
@@ -222,8 +204,8 @@ approaches. The fundamental gap: DF axiom creates existential F-obligations
 witnessable by *any* MCS, not specifically the alleged intermediate. The
 syntactic (DF membership) to structural (covering property) bridge fails.
 
-**Cross-Reference**: See `Bimodal.Metalogic.Domain.DiscreteTimeline.lean` for
-the axiom definition and attempted proofs.
+**Note**: The discrete_Icc_finite_axiom is now archived in Boneyard. Discrete
+completeness requires a fundamentally different approach.
 -/
 
 end Bimodal.FrameConditions

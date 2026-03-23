@@ -12,7 +12,7 @@ This directory contains the StagedConstruction/ approach to modal completeness p
 
 Three axioms are archived here (no longer loaded in active builds):
 
-1. **discrete_Icc_finite_axiom** (DiscreteSuccSeed.lean)
+1. **discrete_Icc_finite_axiom** (Domain/DiscreteTimeline.lean)
 2. **discreteImmediateSuccSeed_consistent_axiom** (DiscreteSuccSeed.lean)
 3. **discreteImmediateSucc_covers_axiom** (DiscreteSuccSeed.lean)
 
@@ -23,9 +23,12 @@ These axioms attempted to formalize discrete timeline properties but conflated W
 
 ## File Count
 
-- 29 .lean files
-- Domain/ subdirectory (for archived Domain/*.lean files)
-- Canonical/ subdirectory (for archived Canonical/*.lean files)
+**Total**: 40 .lean files archived
+
+- 29 .lean files in root StagedConstruction/
+- Domain/ subdirectory: 3 files (DiscreteTimeline.lean, DurationTransfer.lean, CanonicalDomain.lean)
+- Canonical/ subdirectory: 2 files (CanonicalTimeline.lean, ConstructiveFragment.lean)
+- Algebraic/ subdirectory: 6 files (DenseInstantiation.lean, SeparatedTaskFrame.lean, SeparatedHistory.lean, IntBFMCS.lean, SaturatedChain.lean, CanonicalEmbedding.lean)
 
 ## Key Files
 

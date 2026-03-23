@@ -82,7 +82,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 44. Prove backward sorry and make irreflexivity derivable
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Parent**: Task 26 (phases 6-7 skipped)
@@ -93,9 +93,12 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 43. Archive StagedConstruction and DiscreteTimeline paths to Boneyard
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-23
+- **Summary**: Archived 40 files to Boneyard, eliminated axioms 7-9. Axiom count 9→6.
 - **Research**: [01_archival-analysis.md](specs/043_archive_dead_paths_to_boneyard/reports/01_archival-analysis.md)
 - **Plan**: [01_archival-plan.md](specs/043_archive_dead_paths_to_boneyard/plans/01_archival-plan.md)
+- **Implementation**: [01_archival-summary.md](specs/043_archive_dead_paths_to_boneyard/summaries/01_archival-summary.md)
 - **Language**: lean4
 
 **Description**: Archive superseded code paths to Boneyard to eliminate axioms 7-9. Move StagedConstruction/ directory, Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), and Canonical/CanonicalTimeline.lean to Boneyard. These carry 3 axioms (`discrete_Icc_finite_axiom`, `discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) and several sorries, all superseded by the SuccChain completeness approach. Update imports and verify `lake build` passes.
@@ -184,7 +187,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 36. Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
 - **Effort**: 5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Research**: [01_f-nesting-research.md](036_prove_f_nesting_boundary/reports/01_f-nesting-research.md)
 - **Plan**: [01_f-nesting-implementation.md](036_prove_f_nesting_boundary/plans/01_f-nesting-implementation.md)
@@ -211,7 +214,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 34. Prove SuccExistence seed consistency axioms
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Follow-up from**: Task 29 Phase 7 (deferred)

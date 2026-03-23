@@ -1,4 +1,3 @@
-import Bimodal.Metalogic.StagedConstruction.Completeness
 import Bimodal.Metalogic.Bundle.CanonicalConstruction
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
@@ -13,23 +12,27 @@ is provable using base axioms plus the density axiom DN.
 
 ## Main Results
 
-- `dense_completeness_components_proven`: All individual components are sorry-free
-- `completeness_dense_statement`: The completeness theorem statement (documented, not fully wired)
+- `canonical_truth_lemma_int`: Truth lemma for Int-based canonical construction
+- `shifted_truth_lemma_int`: Shifted truth lemma for shift-closed Omega
+
+## Current Status: SuccChain Architecture
+
+Dense completeness is being rebuilt using the SuccChain architecture.
+The StagedConstruction approach has been archived to Boneyard (task 43).
+
+See `Bimodal.Metalogic.SuccChain/` for the current approach.
 
 ## Infrastructure Status
 
-All individual components of the dense completeness pipeline are proven sorry-free:
+The following infrastructure components are proven sorry-free:
 
-1. **Cantor Isomorphism** (`StagedConstruction/CantorApplication.lean`):
-   `TimelineQuot ≃o ℚ` - the canonical time domain is isomorphic to rationals
-
-2. **Truth Lemma** (`Bundle/CanonicalConstruction.lean`):
+1. **Truth Lemma** (`Bundle/CanonicalConstruction.lean`):
    MCS membership ↔ semantic truth at canonical model
 
-3. **Temporal Coherent FMCS** (`Bundle/CanonicalFMCS.lean`):
+2. **Temporal Coherent FMCS** (`Bundle/CanonicalFMCS.lean`):
    Any consistent context extends to a temporally coherent family
 
-4. **Shifted Truth Lemma** (`Bundle/CanonicalConstruction.lean`):
+3. **Shifted Truth Lemma** (`Bundle/CanonicalConstruction.lean`):
    Truth lemma extends to shift-closed Omega
 
 ## Domain Mismatch (Tasks 977, 1006 Analysis)
@@ -37,51 +40,25 @@ All individual components of the dense completeness pipeline are proven sorry-fr
 The full wiring of the dense completeness theorem requires connecting:
 
 - **CanonicalMCS indexing**: Used by BFMCS for proof-theoretic trivial F/P witnesses
-- **TimelineQuot domain**: The Cantor-isomorphic domain (D ≃o ℚ) with DenselyOrdered
+- **Domain D**: A domain with DenselyOrdered for dense completeness
 - **ParametricCanonicalTaskFrame D**: Requires `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`
 
 The gap is that the truth lemma is proven for `D = Int` (or CanonicalMCS), while
 the `valid_dense` definition quantifies over all `D` with `DenselyOrdered D`.
 
-### Task 1006 v6 Analysis: Fundamental Blockers
+### SuccChain Resolution
 
-**Blocker 1**: Linear chain constructions cannot satisfy forward_F/backward_P.
-F-formulas do not persist through generic Lindenbaum extensions. When building
-position n+1 from n, Lindenbaum extension can introduce G(~phi), which kills
-F(phi) = ~G(~phi). This blocks IntBFMCS (sorries at lines 1175, 1177, 1199, 1213).
-
-**Blocker 2**: FlagBFMCS uses `satisfies_at` (internal), not `truth_at` (semantic layer).
-The bridge from FlagBFMCS completeness (sorry-free) to `valid` (uses truth_at) requires
-embedding FlagBFMCS into ParametricCanonicalTaskFrame. This has sorries:
-- FlagBFMCSRatBundle.lean:364 - Convexity (shifted domain not convex in Rat)
-- FlagBFMCSRatBundle.lean:438 - Shifted truth lemma
-
-**Blocker 3**: CanonicalMCS has Preorder but NOT AddCommGroup/LinearOrder.
-The ParametricCanonicalTaskFrame requires these typeclasses. CanonicalMCS (all MCSs)
-is a non-linear Preorder, cannot be embedded into an AddCommGroup.
-
-### Working Infrastructure (Sorry-Free)
-
-1. **CanonicalFMCS.lean**: FMCS CanonicalMCS with forward_F/backward_P proven
-2. **FlagBFMCS pipeline**: completeness via `satisfies_at` (internal)
-3. **ParametricCanonical/History/TruthLemma**: D-polymorphic truth lemma (needs BFMCS D)
-4. **CantorApplication.lean**: TimelineQuot ≃o Rat
-
-### Resolution Paths (Future Work)
-
-1. **Direct TimelineQuot FMCS**: Build FMCS with D = TimelineQuot directly
-2. **Transfer Theorem**: Prove equivalence between CanonicalMCS truth and TimelineQuot semantics
-3. **Semantic Quotient**: Show CanonicalMCS/TimelineQuot quotient preserves truth
-4. **FlagBFMCS Bridge**: Prove convexity and truth lemma for shifted FlagBFMCS histories
-
-These are beyond the scope of Task 977/1006 and flagged for future work.
+The SuccChain architecture addresses this gap by:
+1. Building timelines on dedicated domain type D (not conflating with MCSs)
+2. Using successor chain construction for density properties
+3. Properly separating algebraic structure from semantic interpretation
 
 ## References
 
+- Task 43: Archive StagedConstruction to Boneyard
 - Task 956: Duration Group Construction from Pure Syntax
-- Task 967: T-axiom irreflexivity proof
 - Task 977: Current organization task
-- `StagedConstruction/Completeness.lean`: Component proofs
+- `SuccChain/`: Successor chain completeness (active development)
 - `Bundle/CanonicalConstruction.lean`: Truth lemma infrastructure
 -/
 
@@ -91,7 +68,6 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic.StagedConstruction
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Bundle.Canonical
 
@@ -115,59 +91,30 @@ where `⊢_dense φ` means derivable using base axioms plus the density axiom DN
 1. Assume φ is not derivable in the dense proof system
 2. Then [φ.neg] is consistent (otherwise φ would be derivable)
 3. By Lindenbaum: extend [φ.neg] to MCS S₀
-4. By temporal_coherent_family_exists: build FMCS over CanonicalMCS
-5. By Cantor isomorphism: CanonicalMCS ≃o ℚ (hence DenselyOrdered)
+4. By SuccChain construction: build FMCS over domain D
+5. By SuccChain density: D is DenselyOrdered
 6. By truth lemma: φ.neg true at evaluation point in canonical model
 7. Contradiction: valid_dense φ but φ false at some point in a dense model
 
-### Gap (Steps 5-7)
+### Current Status
 
-The gap is wiring step 5 to step 6: the truth lemma is proven for `D = Int`
-(in `canonical_truth_lemma`), but we need it for `D = TimelineQuot` (which
-is DenselyOrdered). The canonical construction hardcodes Int.
+The SuccChain architecture is being developed to complete this proof.
+See `Bimodal.Metalogic.SuccChain/` for current progress.
 -/
-
-/--
-Re-export: All components of the dense completeness pipeline are proven.
-
-This theorem witnesses that the individual pieces exist:
-1. Cantor isomorphism TimelineQuot ≃o ℚ
-2. Temporal coherent FMCS construction
-3. F-witness and P-witness properties
-
-The final wiring is blocked by the CanonicalMCS/TimelineQuot domain mismatch.
-See module documentation for resolution paths.
--/
-theorem dense_components_proven
-    (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs) :
-    (Nonempty (TimelineQuot root_mcs root_mcs_proof ≃o Rat)) ∧
-    (∀ Gamma : List Formula, ContextConsistent Gamma →
-      ∃ (fam : FMCS CanonicalMCS) (root : CanonicalMCS),
-        (∀ gamma ∈ Gamma, gamma ∈ fam.mcs root) ∧
-        (∀ t : CanonicalMCS, ∀ φ : Formula,
-          Formula.some_future φ ∈ fam.mcs t → ∃ s : CanonicalMCS, t ≤ s ∧ φ ∈ fam.mcs s) ∧
-        (∀ t : CanonicalMCS, ∀ φ : Formula,
-          Formula.some_past φ ∈ fam.mcs t → ∃ s : CanonicalMCS, s ≤ t ∧ φ ∈ fam.mcs s)) :=
-  dense_completeness_components_proven root_mcs root_mcs_proof
 
 /-!
 ## Int-Based Completeness Infrastructure
 
 The existing canonical construction uses `D = Int`, which is NOT densely ordered.
 However, the infrastructure demonstrates the proof technique works. For dense
-completeness, we need either:
-
-1. A domain transfer theorem showing Int results extend to ℚ/TimelineQuot
-2. A parallel construction with D = ℚ (which IS densely ordered)
-
-The shifted truth lemma in CanonicalConstruction.lean provides the template.
+completeness, we need the SuccChain construction which builds a dense domain.
 -/
 
 /--
 Re-export: The canonical truth lemma for Int-based BFMCS.
 
-This is the proven truth lemma infrastructure that would need to be adapted
-for TimelineQuot to complete the dense completeness wiring.
+This is the proven truth lemma infrastructure that demonstrates the technique.
+The SuccChain architecture extends this to dense domains.
 -/
 theorem canonical_truth_lemma_int
     (B : BFMCS Int) (h_tc : B.temporally_coherent)
@@ -191,34 +138,30 @@ theorem shifted_truth_lemma_int
   shifted_truth_lemma B h_tc φ fam hfam t
 
 /-!
-## Future Work: Full Dense Completeness
+## Future Work: Full Dense Completeness via SuccChain
 
-To complete the dense completeness theorem, the following is needed:
+The SuccChain architecture is being developed to complete dense completeness:
 
-### Option 1: TimelineQuot FMCS Construction
+### SuccChain Construction
 
-Build the FMCS construction directly over TimelineQuot:
-- Define `FMCS TimelineQuot` with appropriate temporal coherence
-- Prove truth lemma for `D = TimelineQuot`
-- This would give a dense domain directly
+Build the timeline construction directly over a dense domain:
+- Define successor chain construction on dedicated domain D
+- Prove D has DenselyOrdered, NoMaxOrder, NoMinOrder
+- Build FMCS over D with appropriate temporal coherence
+- Prove truth lemma for the SuccChain construction
 
-### Option 2: Domain Transfer Theorem
+### Key Property: W/D Separation
 
-Prove that truth in the Int-based canonical model implies truth in any
-dense model satisfying the same MCS constraints:
-- Transfer theorem: If φ true at (M, Ω_Int, τ, t) then φ true at (M', Ω_ℚ, τ', t')
-  for corresponding canonical structures over ℚ
+The SuccChain approach correctly separates:
+- W = MCSs (worlds for modal semantics)
+- D = Timeline domain (ordered points for temporal semantics)
 
-### Option 3: Quotient Construction
+This avoids the conflation that blocked the StagedConstruction approach.
 
-Show that quotienting the Int-based construction by some equivalence
-yields a DenselyOrdered domain while preserving truth:
-- Define equivalence on Int canonical model
-- Show quotient is DenselyOrdered
-- Prove truth descends to quotient
+### References
 
-All three options require significant infrastructure development and are
-flagged for Task 978 (typeclass-based frame condition modularity).
+- `Bimodal.Metalogic.SuccChain/` - Active development
+- Task 43 research report - Analysis of StagedConstruction blockers
 -/
 
 end Bimodal.Metalogic.DenseCompleteness

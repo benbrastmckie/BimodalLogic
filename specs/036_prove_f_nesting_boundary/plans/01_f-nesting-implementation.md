@@ -46,7 +46,7 @@ Key findings from the research report integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: Helper Lemmas for iter_F [NOT STARTED]
+### Phase 1: Helper Lemmas for iter_F [COMPLETED]
 
 **Goal**: Establish fundamental properties of iter_F that enable the main proof.
 
@@ -68,7 +68,7 @@ Key findings from the research report integrated into this plan:
 
 ---
 
-### Phase 2: Existence Lemma via Classical Logic [NOT STARTED]
+### Phase 2: Existence Lemma via Classical Logic [IN PROGRESS]
 
 **Goal**: Prove that some F-iteration must leave any MCS, using the best available approach.
 

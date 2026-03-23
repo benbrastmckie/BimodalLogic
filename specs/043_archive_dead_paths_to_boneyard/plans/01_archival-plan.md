@@ -99,7 +99,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 3: Update Core Import Files [IN PROGRESS]
+### Phase 3: Update Core Import Files [COMPLETED]
 
 **Goal**: Update Metalogic.lean and FrameConditions/Completeness.lean to remove dead path imports.
 
@@ -124,7 +124,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 4: Update or Archive Algebraic Files [NOT STARTED]
+### Phase 4: Update or Archive Algebraic Files [COMPLETED]
 
 **Goal**: Update Algebraic/*.lean files that import from dead paths, or archive them if they depend solely on dead paths.
 
@@ -153,7 +153,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 5: Update Remaining Files and Final Verification [NOT STARTED]
+### Phase 5: Update Remaining Files and Final Verification [COMPLETED]
 
 **Goal**: Update Canonical/ConstructiveFragment.lean and any remaining files, then verify complete build.
 
