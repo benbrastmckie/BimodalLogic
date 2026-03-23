@@ -64,7 +64,7 @@ Replace blocked phases 4-6 with a 3-phase approach using restricted P-step:
 
 ## Implementation Phases
 
-### Phase 1: Prove Restricted P-Step Blocking [NOT STARTED]
+### Phase 1: Prove Restricted P-Step Blocking [IN PROGRESS]
 
 **Goal**: Prove that `p_step_blocking_formulas u ⊆ u` for `DeferralRestrictedMCS`.
 

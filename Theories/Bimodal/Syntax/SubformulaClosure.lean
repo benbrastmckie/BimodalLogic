@@ -308,6 +308,74 @@ theorem closure_all_future (phi psi : Formula)
   simp only [List.mem_toFinset] at h ⊢
   exact Formula.mem_subformulas_of_all_future h
 
+/--
+If P(chi) is in closureWithNeg phi, then chi is in subformulaClosure phi.
+
+P(chi) = neg(H(neg chi)) = (H(neg chi)).imp bot.
+If P(chi) is in subformulaClosure, we extract chi via closure_imp_left and closure_all_past.
+If P(chi) = psi.neg for psi in subformulaClosure, then psi = H(neg chi), so we extract chi similarly.
+-/
+theorem some_past_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formula)
+    (h : Formula.some_past chi ∈ closureWithNeg phi) :
+    chi ∈ subformulaClosure phi := by
+  unfold closureWithNeg at h
+  simp only [Finset.mem_union, Finset.mem_image] at h
+  rcases h with h_sub | ⟨psi, h_psi_sub, h_psi_neg_eq⟩
+  · -- Case: P(chi) in subformulaClosure phi
+    -- P(chi) = neg(H(neg chi)) = (H(neg chi)).imp bot
+    -- Immediate subformula: H(neg chi)
+    have h_H_neg : Formula.all_past (Formula.neg chi) ∈ subformulaClosure phi :=
+      closure_imp_left phi _ _ h_sub
+    -- Inner of H: neg chi
+    have h_neg_chi : Formula.neg chi ∈ subformulaClosure phi :=
+      closure_all_past phi _ h_H_neg
+    -- neg chi = chi.imp bot, so chi is a subformula
+    exact closure_imp_left phi _ _ h_neg_chi
+  · -- Case: P(chi) = psi.neg for some psi in subformulaClosure phi
+    -- P(chi) = neg(H(neg chi)), so psi.neg = neg(H(neg chi))
+    -- This means psi = H(neg chi) (syntactically, since neg is injective)
+    -- Note: psi.neg = Formula.imp psi Formula.bot
+    -- neg(H(neg chi)) = Formula.imp (H(neg chi)) Formula.bot
+    -- So psi = H(neg chi)
+    unfold Formula.some_past Formula.neg at h_psi_neg_eq
+    -- h_psi_neg_eq : psi.imp bot = (chi.imp bot).all_past.imp bot
+    -- Extract psi = (chi.imp bot).all_past = chi.neg.all_past
+    have h_eq : psi = Formula.all_past (Formula.neg chi) := by
+      cases h_psi_neg_eq; rfl
+    rw [h_eq] at h_psi_sub
+    -- Now psi = H(neg chi) in subformulaClosure phi
+    have h_neg_chi : Formula.neg chi ∈ subformulaClosure phi :=
+      closure_all_past phi _ h_psi_sub
+    exact closure_imp_left phi _ _ h_neg_chi
+
+/--
+If F(chi) is in closureWithNeg phi, then chi is in subformulaClosure phi.
+
+Symmetric to some_past_in_closureWithNeg_inner_in_subformulaClosure.
+F(chi) = neg(G(neg chi)) = (G(neg chi)).imp bot.
+-/
+theorem some_future_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formula)
+    (h : Formula.some_future chi ∈ closureWithNeg phi) :
+    chi ∈ subformulaClosure phi := by
+  unfold closureWithNeg at h
+  simp only [Finset.mem_union, Finset.mem_image] at h
+  rcases h with h_sub | ⟨psi, h_psi_sub, h_psi_neg_eq⟩
+  · -- Case: F(chi) in subformulaClosure phi
+    -- F(chi) = neg(G(neg chi)) = (G(neg chi)).imp bot
+    have h_G_neg : Formula.all_future (Formula.neg chi) ∈ subformulaClosure phi :=
+      closure_imp_left phi _ _ h_sub
+    have h_neg_chi : Formula.neg chi ∈ subformulaClosure phi :=
+      closure_all_future phi _ h_G_neg
+    exact closure_imp_left phi _ _ h_neg_chi
+  · -- Case: F(chi) = psi.neg for some psi in subformulaClosure phi
+    unfold Formula.some_future Formula.neg at h_psi_neg_eq
+    have h_eq : psi = Formula.all_future (Formula.neg chi) := by
+      cases h_psi_neg_eq; rfl
+    rw [h_eq] at h_psi_sub
+    have h_neg_chi : Formula.neg chi ∈ subformulaClosure phi :=
+      closure_all_future phi _ h_psi_sub
+    exact closure_imp_left phi _ _ h_neg_chi
+
 /-!
 ## F-Nesting Depth
 

@@ -97,7 +97,7 @@ Phase A              Phase B              Phase C
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -150,13 +150,16 @@ Phase A              Phase B              Phase C
 ---
 
 ### 41. Eliminate D=CanonicalMCS pattern systematically
-- **Effort**: TBD
+- **Effort**: 6-8 hours
 - **Status**: [PLANNED]
 - **Language**: lean4
 - **Research**:
   - [01_team-research.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/01_team-research.md)
   - [02_deep-research.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/02_deep-research.md)
-- **Plan**: [01_coexistence-strategy.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/01_coexistence-strategy.md)
+  - [03_removal-analysis.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/03_removal-analysis.md)
+- **Plan**:
+  - [01_coexistence-strategy.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/01_coexistence-strategy.md) (superseded)
+  - [02_removal-strategy.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/02_removal-strategy.md) (current)
 
 **Description**: Remove the architectural error where the FMCS type parameter D (timeline/duration type) is instantiated with CanonicalMCS (the type of all maximal consistent sets). FMCS model world histories as functions D → W obeying temporal coherence constraints; D should be a timeline type (Int, Rat, TimelineQuot) and W should be world states (MCS). The D=CanonicalMCS pattern conflates these, creating an identity mapping `mcs(w) = w.world` that trivializes F/P witness obligations rather than proving them properly. This pattern is load-bearing across 13+ files: CanonicalFMCS.lean, FMCSDef.lean, ModallyCoherentBFMCS.lean, AlgebraicBaseCompleteness.lean, BaseCompleteness.lean, StagedConstruction/Completeness.lean, TimelineQuotBFMCS.lean, DovetailedTimelineQuotBFMCS.lean, ClosureSaturation.lean, CanonicalConstruction.lean, TemporalCoherence.lean, ChainFMCS.lean, ModalSaturation.lean. The critical sorry-free theorem `temporal_coherent_family_exists_CanonicalMCS` depends entirely on this conflation. Requires constructing proper FMCS with D=Int (or similar timeline type) where F/P witnesses are genuinely proven within the chain construction.
 

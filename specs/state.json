@@ -29,8 +29,8 @@
       "status": "planned",
       "language": "lean4",
       "created": "2026-03-23T06:33:59Z",
-      "last_updated": "2026-03-23T19:03:25Z",
-      "session_id": "sess_1774292429_86ce89",
+      "last_updated": "2026-03-23T19:17:14Z",
+      "session_id": "sess_1774293360_90feb9",
       "researched": "2026-03-23T18:56:00Z",
       "artifacts": [
         {
@@ -52,9 +52,14 @@
           "path": "specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/03_removal-analysis.md",
           "type": "research",
           "summary": "Removal analysis: D=CanonicalMCS is dead infrastructure, SuccChain never uses it. 8-10 files to delete."
+        },
+        {
+          "path": "specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/02_removal-strategy.md",
+          "type": "plan",
+          "summary": "5-phase removal strategy: delete 8-10 dead files, clean imports, delete CanonicalFMCS.lean (6-8h, no dependencies)"
         }
       ],
-      "planned": "2026-03-23T19:03:25Z"
+      "planned": "2026-03-23T19:17:14Z"
     },
     {
       "project_number": 39,
