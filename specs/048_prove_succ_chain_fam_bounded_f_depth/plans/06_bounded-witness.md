@@ -59,7 +59,7 @@ The existing `restricted_forward_chain_F_bounded` provides the boundary. We need
 
 ## Implementation Phases
 
-### Phase 1: Prove restricted_single_step_forcing [NOT STARTED]
+### Phase 1: Prove restricted_single_step_forcing [PARTIAL]
 
 **Goal**: Prove that if F(psi) is in chain(k) and FF(psi) is NOT in chain(k), then psi is in chain(k+1).
 
@@ -93,7 +93,7 @@ The existing `restricted_forward_chain_F_bounded` provides the boundary. We need
 
 ---
 
-### Phase 2: Prove restricted_succ_propagates_F_not [NOT STARTED]
+### Phase 2: Prove restricted_succ_propagates_F_not [PARTIAL]
 
 **Goal**: Prove that if FF(psi) is NOT in chain(k), then F(psi) is NOT in chain(k+1).
 
@@ -126,7 +126,7 @@ The existing `restricted_forward_chain_F_bounded` provides the boundary. We need
 
 ---
 
-### Phase 3: Prove restricted_bounded_witness [NOT STARTED]
+### Phase 3: Prove restricted_bounded_witness [COMPLETED]
 
 **Goal**: Prove the bounded witness lemma for restricted chains.
 
@@ -163,7 +163,7 @@ The existing `restricted_forward_chain_F_bounded` provides the boundary. We need
 
 ---
 
-### Phase 4: Update Entry Point and Remove Sorry [NOT STARTED]
+### Phase 4: Update Entry Point and Remove Sorry [COMPLETED]
 
 **Goal**: Replace the sorry in `restricted_forward_chain_iter_F_witness` with the bounded witness approach.
 
@@ -196,7 +196,7 @@ The existing `restricted_forward_chain_F_bounded` provides the boundary. We need
 
 ---
 
-### Phase 5: Documentation and Cleanup [NOT STARTED]
+### Phase 5: Documentation and Cleanup [COMPLETED]
 
 **Goal**: Update documentation and verify sorry reduction.
 
