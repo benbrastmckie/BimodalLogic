@@ -1,5 +1,5 @@
 ---
-next_project_number: 43
+next_project_number: 44
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -27,70 +27,65 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-22 after task 997 (base completeness) completed*
+*Updated 2026-03-23 after task 42 research: axiom elimination audit and 7 tasks abandoned*
 
-### 1. Succ-chain Pipeline (base completeness — active)
+**Goal**: Zero custom axioms, zero sorries on the completeness path. Task 42 is the umbrella.
 
-**Base completeness is done** (task 997). The remaining work is eliminating axioms/sorries:
+### 1. Axiom Elimination — Critical Path (task 42 umbrella)
 
-1. **40** → research (NEW: prove successor_satisfies_p_step — unblocks forward chain p_step)
-2. **35** → resume after 40 (partial: 3/4 phases done, Phase 4 blocked on 40)
-3. **36** → research (prove f_nesting_boundary axiom via Fischer-Ladner closure)
-4. **37** → implement after 36 (prove p_nesting_boundary — mirrors 36)
-5. **38** → implement (prove Box backward truth lemma — not used in completeness, lower priority)
+All groups in Phase 1 are independent and can run in parallel.
 
-**Axioms remaining** (6 in Bundle/): 3 seed consistency (task 34), f_nesting_boundary (task 36), p_nesting_boundary (task 37), predecessor_f_step_axiom (may be superseded by 40 approach).
+**Phase 1 — Parallel:**
 
-### 2. Axiom Elimination (high priority)
+1. **43** → implement (archive StagedConstruction + DiscreteTimeline to Boneyard — eliminates axioms 7-9)
+2. **26** → implement (delete inconsistent `existsTask_irreflexive_axiom` — contradicts proven `existsTask_reflexive`)
+3. **34** → research (prove 3 SuccExistence seed consistency axioms via deduction theorem — axioms 1-2, and predecessor_f_step axiom 3)
+4. **36** → research (prove `f_nesting_boundary` via Fischer-Ladner closure — axiom 4)
+5. **40** → revise plan, then implement (prove successor p_step WITHOUT adding axiom — restructure seed)
 
-1. **34** → research (3 SuccExistence seed axioms — independent, high value)
-2. **26** → revise plan (remove canonicalR_irreflexive_axiom — now contradicts canonicalR_reflexive)
+**Phase 2 — Sequential (depends on Phase 1):**
 
-### 3. Dense Pipeline (blocked)
+6. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
+7. **35** → resume Phase 4 after 40 (fill `succ_chain_fam_p_step` sorry — the only completeness-path sorry)
 
-1. **18** → blocked on Phase 5 (DenseTimeline/DovetailedTimeline bridge gap)
+**Phase 3 — Verification:**
+
+8. `lean_verify` on completeness theorems — confirm zero custom axioms
+9. Update TODO.md axiom_count to 0
+
+### 2. Post-Axiom Cleanup
+
+1. **25** → COMPLETED (archive next `/todo` run)
+2. **41** → plan (eliminate D=CanonicalMCS pattern — separate concern, after axiom cleanup)
+3. **21** → defer (tech debt cleanup — depends on 18)
+4. **19** → defer (deprecate old discrete pipeline — low priority after archival)
+
+### 3. Deferred — Not Critical Path
+
+1. **18** → blocked (dense representation theorem — stuck, defer until base is clean)
 2. **20** → depends on 18 (parametric canonical audit)
+3. **998** → defer (FMP redesign — separate concern)
 
-**Note**: Task 18 has been stuck for days. Consider: (a) deeper research on the specific blocker, or (b) deferring until base pipeline is cleaner.
+### 4. Backlog (researched, not urgent)
 
-### 4. Discrete Pipeline (low priority now)
-
-1. **22** → status unclear (researched, had partial implementation)
-2. **24** → depends on 22 (cleanup)
-
-**Note**: Discrete pipeline was superseded by Succ-chain approach (task 997). Tasks 22, 24 may be **obsolete** if base completeness via Succ-chain is sufficient.
-
-### 5. Refactoring
-
-1. **25** → COMPLETED (archive next /todo run)
-2. **19** → implement (deprecate old discrete pipeline — depends on 22/24 status)
-3. **21** → plan (tech debt cleanup, depends on 18)
-
-### 6. Consider Abandoning
-
-These tasks may be **superseded** or **low value**:
-
-1. **988** → ABANDON? (dense algebraic completeness — superseded by task 18 approach)
-2. **989** → ABANDON? (discrete algebraic completeness — superseded by task 997/Succ-chain)
-3. **22** → ABANDON? (direct multi-family bundle — may be obsolete after task 997)
-4. **24** → ABANDON? (discrete axiom removal — depends on 22)
-5. **993** → DEFER (stability operator — nice-to-have, not critical path)
-6. **998** → DEFER (FMP redesign — separate concern from completeness)
-7. **999** → DEFER (derive F→FF — theoretical interest, not blocking)
-
-### 7. Independent Tasks (backlog)
-
-These are researched and ready but not critical path:
-
-1. **8** → plan (genuine truth_at completeness)
-2. **6** → plan (canonical TaskFrame completeness)
-3. **992** → plan (STSA representation)
-4. **953** → plan (bilateral proof system)
-5. **949** → plan (update Demo.lean — cosmetic)
-6. **619** → plan (skill migration — meta, low priority)
-7. **39** → planning (preorder semantics study — recently researched)
+1. **8** → plan (genuine truth_at completeness — publication quality, high investment)
+2. **6** → plan (canonical TaskFrame completeness — publication quality)
+3. **39** → defer (preorder semantics study — theoretical)
+4. **992** → defer (STSA representation)
+5. **953** → defer (bilateral proof system — 55-90h)
+6. **949** → defer (update Demo.lean — cosmetic)
+7. **619** → defer (skill migration — meta, low priority)
 
 ## Tasks
+
+---
+
+### 43. Archive StagedConstruction and DiscreteTimeline paths to Boneyard
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Archive superseded code paths to Boneyard to eliminate axioms 7-9. Move StagedConstruction/ directory, Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), and Canonical/CanonicalTimeline.lean to Boneyard. These carry 3 axioms (`discrete_Icc_finite_axiom`, `discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) and several sorries, all superseded by the SuccChain completeness approach. Update imports and verify `lake build` passes.
 
 ---
 
