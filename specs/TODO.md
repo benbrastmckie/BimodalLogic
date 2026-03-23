@@ -97,7 +97,7 @@ Phase A              Phase B              Phase C
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [PARTIAL]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -109,6 +109,7 @@ Phase A              Phase B              Phase C
   - [06_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/06_team-research.md)
   - [08_lexicographic-wf.md](048_prove_succ_chain_fam_bounded_f_depth/reports/08_lexicographic-wf.md)
   - [09_boundary-case.md](048_prove_succ_chain_fam_bounded_f_depth/reports/09_boundary-case.md)
+  - [10_g-content-path.md](048_prove_succ_chain_fam_bounded_f_depth/reports/10_g-content-path.md)
 - **Plan**:
   - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
   - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)
