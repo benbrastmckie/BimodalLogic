@@ -82,7 +82,8 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 43. Archive StagedConstruction and DiscreteTimeline paths to Boneyard
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Research**: [01_archival-analysis.md](specs/043_archive_dead_paths_to_boneyard/reports/01_archival-analysis.md)
 - **Language**: lean4
 
 **Description**: Archive superseded code paths to Boneyard to eliminate axioms 7-9. Move StagedConstruction/ directory, Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), and Canonical/CanonicalTimeline.lean to Boneyard. These carry 3 axioms (`discrete_Icc_finite_axiom`, `discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) and several sorries, all superseded by the SuccChain completeness approach. Update imports and verify `lake build` passes.
@@ -171,7 +172,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 36. Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 
 **Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
@@ -207,7 +208,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 26. Remove or justify canonicalR_irreflexive_axiom
 - **Effort**: 2-8 hours (depends on path chosen)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:

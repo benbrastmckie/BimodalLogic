@@ -8,12 +8,13 @@
     {
       "project_number": 43,
       "project_name": "archive_dead_paths_to_boneyard",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "description": "Archive StagedConstruction/ and DiscreteTimeline paths to Boneyard to eliminate axioms 7-9. These paths are superseded by the SuccChain completeness approach and carry 3 axioms (discrete_Icc_finite_axiom, discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom) plus several sorries. Move to Boneyard: StagedConstruction/ directory (DiscreteSuccSeed.lean, DovetailedBuild.lean, StagedExecution.lean, DovetailedTimelineQuot.lean, Completeness.lean, TimelineQuotCompleteness.lean), Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), Canonical/CanonicalTimeline.lean. Update imports in any files that reference these modules. Verify lake build passes after archival.",
       "created": "2026-03-23T07:08:08Z",
-      "last_updated": "2026-03-23T07:10:55Z",
-      "session_id": "sess_1774249837_ba0417"
+      "last_updated": "2026-03-23T07:20:20Z",
+      "session_id": "sess_1774249837_ba0417",
+      "researched": "2026-03-23T07:20:20Z"
     },
     {
       "project_number": 42,
@@ -711,10 +712,10 @@
     {
       "project_number": 26,
       "project_name": "remove_canonicalr_irreflexive_axiom",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-23T07:18:21Z",
+      "last_updated": "2026-03-23T07:19:43Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -839,9 +840,10 @@
           "summary": "Revised plan: migrate to ExistsTask (CanonicalR now alias)"
         }
       ],
-      "session_id": "sess_1774126671_9ca427",
+      "session_id": "sess_1774250355_ceb2dc",
       "researched": "2026-03-21T20:50:40Z",
-      "planned": "2026-03-23T07:18:21Z"
+      "planned": "2026-03-23T07:18:21Z",
+      "started": "2026-03-23T07:19:43Z"
     },
     {
       "project_number": 34,

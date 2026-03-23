@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-23T12:00:00Z",
+  "completed_at": "2026-03-23T12:15:00Z",
+  "artifacts": [{
+    "path": "specs/043_archive_dead_paths_to_boneyard/reports/01_archival-analysis.md",
+    "type": "research_report",
+    "summary": "Complete archival analysis: 32 files (29 StagedConstruction + 3 Domain/Canonical), 3 axioms to eliminate, 45+ sorries, 12 files requiring import updates"
+  }],
+  "partial_progress": {
+    "stage": "complete",
+    "details": "Research complete - identified all targets, dependencies, and impact"
+  },
+  "metadata": {
+    "session_id": "sess_1774249837_ba0417",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
