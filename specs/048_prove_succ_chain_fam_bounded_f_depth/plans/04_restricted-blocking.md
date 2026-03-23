@@ -224,6 +224,15 @@ Key findings from `06_team-research.md`:
 
 ### Phase 5: Update Chain Construction and Remove Sorries [PARTIAL]
 
+**2026-03-23 Update (Session sess_1774297366_a2de0b)**:
+- FIXED: `F_top_in_restricted_successor` (~line 1822-2055) - Proof complete, no sorry
+  - Used disjunction elimination argument mirroring `constrained_successor_restricted_f_step`
+  - Key insight: F_top is a theorem, so any consistent set must contain it if F_top is in deferralClosure
+- PARTIAL: `restricted_forward_chain_iter_F_witness` (~line 2213-2260)
+  - The "depth decrease" case (inl branch) is fully proven using strong induction
+  - The "persistence" case (inr branch) has sorry - requires well-founded recursion on combined measure
+  - Mathematical argument is valid (documented in comments), but formal proof needs infrastructure
+
 **Goal**: Build the restricted chain and remove deprecated sorries.
 
 **Tasks**:
