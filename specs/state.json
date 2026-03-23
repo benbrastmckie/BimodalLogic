@@ -740,6 +740,11 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/06_bounded-witness-summary.md",
           "type": "summary",
           "summary": "Partial v6: bounded witness approach implemented. 2 new sorries for boundary case (FF not in deferralClosure)."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/09_boundary-case.md",
+          "type": "research",
+          "summary": "Research on boundary case: F(psi) at closure boundary. Recommended Option C - direct proof with closure depth tracking."
         }
       ],
       "session_id": "sess_1774303276_f36a36",
