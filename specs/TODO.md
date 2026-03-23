@@ -99,7 +99,7 @@ technical_debt:
 
 ### 35. Prove remaining sorries and axioms in Succ-chain completeness pipeline
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Depends On**: Task 34 (non-blocking)
 - **Research**:
@@ -200,12 +200,13 @@ technical_debt:
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
   - [01_team-research.md](025_rename_canonicalr_to_existstask/reports/01_team-research.md) — Audit + architecture + irreflexivity (3 teammates)
   - [05_team-research.md](025_rename_canonicalr_to_existstask/reports/05_team-research.md) — Blocker analysis (task 25 vs 29 overlap)
+  - [06_task29-impact-analysis.md](025_rename_canonicalr_to_existstask/reports/06_task29-impact-analysis.md) — Post-task-29 plan review
 - **Plan**:
   - [02_preorder-compatible-rename.md](025_rename_canonicalr_to_existstask/plans/02_preorder-compatible-rename.md) — v2: drops blocked Phases 1-2, pure refactor (current)
   - [01_implementation-plan.md](025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md) — v1: superseded (blocked on fresh G-atom proofs)
