@@ -82,8 +82,9 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 43. Archive StagedConstruction and DiscreteTimeline paths to Boneyard
 - **Effort**: 2-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Research**: [01_archival-analysis.md](specs/043_archive_dead_paths_to_boneyard/reports/01_archival-analysis.md)
+- **Plan**: [01_archival-plan.md](specs/043_archive_dead_paths_to_boneyard/plans/01_archival-plan.md)
 - **Language**: lean4
 
 **Description**: Archive superseded code paths to Boneyard to eliminate axioms 7-9. Move StagedConstruction/ directory, Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), and Canonical/CanonicalTimeline.lean to Boneyard. These carry 3 axioms (`discrete_Icc_finite_axiom`, `discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) and several sorries, all superseded by the SuccChain completeness approach. Update imports and verify `lake build` passes.

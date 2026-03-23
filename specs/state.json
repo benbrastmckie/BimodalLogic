@@ -8,13 +8,21 @@
     {
       "project_number": 43,
       "project_name": "archive_dead_paths_to_boneyard",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "description": "Archive StagedConstruction/ and DiscreteTimeline paths to Boneyard to eliminate axioms 7-9. These paths are superseded by the SuccChain completeness approach and carry 3 axioms (discrete_Icc_finite_axiom, discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom) plus several sorries. Move to Boneyard: StagedConstruction/ directory (DiscreteSuccSeed.lean, DovetailedBuild.lean, StagedExecution.lean, DovetailedTimelineQuot.lean, Completeness.lean, TimelineQuotCompleteness.lean), Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), Canonical/CanonicalTimeline.lean. Update imports in any files that reference these modules. Verify lake build passes after archival.",
       "created": "2026-03-23T07:08:08Z",
-      "last_updated": "2026-03-23T07:21:33Z",
+      "last_updated": "2026-03-23T07:23:47Z",
       "session_id": "sess_1774250478_1f564b",
-      "researched": "2026-03-23T07:20:20Z"
+      "researched": "2026-03-23T07:20:20Z",
+      "planned": "2026-03-23T07:23:47Z",
+      "artifacts": [
+        {
+          "path": "specs/043_archive_dead_paths_to_boneyard/plans/01_archival-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for archiving 32+ dead path files, eliminating axioms 7-9"
+        }
+      ]
     },
     {
       "project_number": 42,
