@@ -71,7 +71,7 @@ technical_debt:
 
 ### 39. Study preorder semantics conformance with Task Semantics specifications
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 
 **Description**: Study the implications of the preorder semantics which has been accepted to avoid the fresh G-atom proofs in order to determine whether the result still conforms to the specifications required by the Task Semantics.
@@ -116,6 +116,7 @@ technical_debt:
   - [01_teammate-a-findings.md](035_prove_succ_chain_remaining_sorries/reports/01_teammate-a-findings.md) — Item-by-item analysis
   - [01_teammate-b-findings.md](035_prove_succ_chain_remaining_sorries/reports/01_teammate-b-findings.md) — Patterns and prior art
 - **Plan**: [01_prove-sorries-plan.md](035_prove_succ_chain_remaining_sorries/plans/01_prove-sorries-plan.md)
+- **Summary**: [01_implementation-summary.md](035_prove_succ_chain_remaining_sorries/summaries/01_implementation-summary.md) — Partial (3/4 phases)
 
 **Description**: Prove remaining sorries and axioms in Succ-chain completeness pipeline. After task 997 (Succ-chain base completeness) and excluding task 34 (SuccExistence axioms), 7 items remain: (1) SuccChainFMCS axioms: f_nesting_boundary, p_nesting_boundary (provable via well-founded induction on formula depth), succ_chain_fam_p_step (provable via induction on chain structure). (2) New sorries from task 997: Box backward direction in SuccChainTruth.lean:254 (not used in completeness but needed for full bidirectional truth lemma), structural contraction in SuccChainCompleteness.lean:109 (provable by induction). (3) P-direction inherited sorries: backward_witness in CanonicalTaskRelation.lean:785, succ_propagates_P_not in SuccRelation.lean:497. All items are provable — no architectural blockers. Depends on task 34 (non-blocking: task 34 reduces axiom count but these items are independent).
 
@@ -209,7 +210,7 @@ technical_debt:
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
 - **Effort**: 9.5-10.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:

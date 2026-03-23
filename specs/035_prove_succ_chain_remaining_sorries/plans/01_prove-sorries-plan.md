@@ -1,7 +1,7 @@
 # Implementation Plan: Task #35
 
 - **Task**: 35 - prove_succ_chain_remaining_sorries
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4 hours
 - **Dependencies**: Task 997 (Succ-chain base completeness) - COMPLETED
 - **Research Inputs**: specs/035_prove_succ_chain_remaining_sorries/reports/01_team-research.md
@@ -125,7 +125,7 @@ Key findings from team research:
 
 ---
 
-### Phase 4: succ_chain_fam_p_step theorem [IN PROGRESS]
+### Phase 4: succ_chain_fam_p_step theorem [PARTIAL]
 
 **Goal**: Convert axiom succ_chain_fam_p_step (SuccChainFMCS.lean:335) to theorem
 

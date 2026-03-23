@@ -353,11 +353,13 @@ theorem succ_chain_fam_p_step (M0 : SerialMCS) (n : Int) :
     | zero =>
       -- n = -1: succ_chain_fam 0 = M0.world, succ_chain_fam (-1) = backward_chain 1
       -- P-step: p_content(M0.world) ⊆ backward_chain 1 ∪ p_content(backward_chain 1)
-      -- Note: M0.world = backward_chain 0, so this is backward_chain_p_step M0 0
-      simp only [succ_chain_fam] at h_φ ⊢
-      have h_eq : forward_chain M0 0 = backward_chain M0 0 := by
-        simp only [forward_chain, backward_chain]
-      rw [h_eq] at h_φ ⊢
+      -- Note: M0.world = backward_chain 0 = forward_chain 0, so this is backward_chain_p_step M0 0
+      show φ ∈ backward_chain M0 1 ∪ p_content (backward_chain M0 1)
+      have h : Int.negSucc 0 + 1 = (0 : Int) := by native_decide
+      simp only [h] at h_φ
+      simp only [succ_chain_fam] at h_φ
+      have h_eq : forward_chain M0 0 = backward_chain M0 0 := rfl
+      rw [h_eq] at h_φ
       exact backward_chain_p_step M0 0 h_φ
     | succ k' =>
       -- n = -(k'+2): succ_chain_fam (n+1) = backward_chain (k'+1)
