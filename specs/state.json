@@ -938,10 +938,10 @@
     {
       "project_number": 34,
       "project_name": "prove_succ_seed_consistency_axioms",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-23T03:48:09Z",
-      "last_updated": "2026-03-23T07:40:37Z",
+      "last_updated": "2026-03-23T15:12:28Z",
       "dependencies": [],
       "description": "Prove or remove the 3 SuccExistence axioms deferred from task 29 Phase 7: successor_deferral_seed_consistent_axiom, predecessor_deferral_seed_consistent_axiom, and predecessor_f_step_axiom (all in Bundle/SuccExistence.lean). These seed consistency axioms assert that deferral seeds are satisfiable, which should follow from T-axiom under reflexive semantics. Also un-supersede task 26 (canonicalR_irreflexive_axiom was NOT deleted by task 29 and still contradicts proven canonicalR_reflexive).",
       "artifacts": [
@@ -959,9 +959,14 @@
           "path": "specs/034_prove_succ_seed_consistency_axioms/summaries/01_seed-axiom-summary.md",
           "type": "summary",
           "summary": "Partial: 2/3 axioms eliminated; Phase 4 blocked on Lindenbaum extension complexity"
+        },
+        {
+          "path": "specs/034_prove_succ_seed_consistency_axioms/reports/02_team-research.md",
+          "type": "research_report",
+          "summary": "Team research (3 teammates): predecessor_f_step_axiom blocker analysis - unprovable, Alternative 3B (nesting boundary bypass) recommended"
         }
       ],
-      "session_id": "sess_1774251611_8bbcdd",
+      "session_id": "sess_1774278730_1c9a0d",
       "researched": "2026-03-23T07:22:06Z",
       "planned": "2026-03-23T07:39:05Z",
       "started": "2026-03-23T07:40:37Z"
@@ -1003,7 +1008,7 @@
     {
       "project_number": 46,
       "project_name": "prove_forward_chain_p_step",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "description": "Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification. Verification: lake build succeeds, no sorries in succ_chain_fam_p_step, succ_chain_backward_P compiles.",
       "effort": "2-3 hours",
@@ -1012,14 +1017,15 @@
         45
       ],
       "created": "2026-03-23T07:59:08Z",
-      "last_updated": "2026-03-23T07:59:08Z",
+      "last_updated": "2026-03-23T15:16:00Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
         }
-      ]
+      ],
+      "session_id": "sess_1774278944_d22b73"
     },
     {
       "project_number": 47,
