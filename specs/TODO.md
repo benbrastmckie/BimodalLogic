@@ -98,12 +98,13 @@ technical_debt:
 ---
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
-- **Effort**: 6-10 hours remaining (revised: MCS-decided atom approach)
-- **Status**: [BLOCKED]
-- **Blocker**: Plan v7 MCS-decided atom pattern fails for pathological MCS where G(¬q) ∈ M for all atoms. See [30_mcs-decided-blocker-analysis.md](029_switch_to_reflexive_gh_semantics/reports/30_mcs-decided-blocker-analysis.md)
+- **Effort**: 6-10 hours remaining (revised: preorder acceptance approach)
+- **Status**: [RESEARCHED]
+- **Blocker**: ~~Plan v7 MCS-decided atom pattern fails for pathological MCS~~ Resolved: preorder acceptance recommended
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
+  - [31_team-research.md](029_switch_to_reflexive_gh_semantics/reports/31_team-research.md) — Wave 8: blocker resolution — preorder acceptance, two-layer architecture
   - [29_team-research.md](029_switch_to_reflexive_gh_semantics/reports/29_team-research.md) — Wave 7: root cause (conceptual error), MCS-decided atom solution
   - [12_team-research.md](029_switch_to_reflexive_gh_semantics/reports/12_team-research.md) — Wave 6: order-theoretic foundations, antisymmetry fails
   - [13_unbounded-axiom-analysis.md](029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md) — Seriality trivially valid, strict successor for order structure
