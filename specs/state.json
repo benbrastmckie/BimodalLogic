@@ -103,7 +103,7 @@
     {
       "project_number": 40,
       "project_name": "succ_p_step_forward_chain",
-      "status": "blocked",
+      "status": "researching",
       "language": "lean4",
       "description": "Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).",
       "depends_on": [
@@ -112,8 +112,8 @@
         46
       ],
       "created": "2026-03-23T05:47:47Z",
-      "last_updated": "2026-03-23T07:49:32Z",
-      "session_id": "sess_1774251460_21e5db",
+      "last_updated": "2026-03-23T18:51:25Z",
+      "session_id": "sess_1774291858_10f75c",
       "researched": "2026-03-23T06:13:00Z",
       "artifacts": [
         {
@@ -1020,7 +1020,7 @@
     {
       "project_number": 46,
       "project_name": "prove_forward_chain_p_step",
-      "status": "researched",
+      "status": "completed",
       "language": "lean4",
       "description": "Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification. Verification: lake build succeeds, no sorries in succ_chain_fam_p_step, succ_chain_backward_P compiles.",
       "effort": "2-3 hours",
@@ -1031,7 +1031,7 @@
         51
       ],
       "created": "2026-03-23T07:59:08Z",
-      "last_updated": "2026-03-23T18:37:49Z",
+      "last_updated": "2026-03-23T18:40:19Z",
       "artifacts": [
         {
           "type": "research",
@@ -1062,7 +1062,9 @@
       "session_id": "sess_1774290294_28abb2",
       "researched": "2026-03-23T18:37:49Z",
       "planned": "2026-03-23T15:46:24Z",
-      "started": "2026-03-23T15:51:24Z"
+      "started": "2026-03-23T15:51:24Z",
+      "completed": "2026-03-23T18:40:19Z",
+      "completion_summary": "All goals achieved via spawned tasks 50-51: forward_chain_p_step proven at SuccChainFMCS.lean:209, succ_chain_fam_p_step sorry filled, lake build passes (927 jobs), no new axioms introduced."
     },
     {
       "project_number": 47,
@@ -1136,6 +1138,11 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md",
           "type": "plan",
           "summary": "7-phase implementation plan for augmented deferral closure approach"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/02_augmented-closure-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: phases 0-3 complete (deferralClosure, depth bounds, DeferralRestrictedMCS). Phase 4 partial (seed subset lemmas). Phases 5-6 blocked by architectural tension."
         }
       ],
       "session_id": "sess_1774290049_0ef106",

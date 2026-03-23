@@ -652,4 +652,371 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     rw [h_eq]
     exact h_min_not
 
+/-!
+## Deferral-Restricted MCS
+
+MCS restricted to deferralClosure(phi) instead of closureWithNeg(phi).
+The deferralClosure includes the deferral disjunctions needed by the
+successor seed construction while preserving the same F/P-depth bounds.
+-/
+
+/--
+A set is deferral-restricted if all its elements are in deferralClosure phi.
+-/
+def DeferralRestricted (phi : Formula) (S : Set Formula) : Prop :=
+  S ⊆ (deferralClosure phi : Set Formula)
+
+/--
+A deferral-restricted set that is also set-consistent.
+-/
+def DeferralRestrictedConsistent (phi : Formula) (S : Set Formula) : Prop :=
+  DeferralRestricted phi S ∧ SetConsistent S
+
+/--
+Maximal consistent within the deferral closure: cannot be extended within
+deferralClosure while remaining consistent.
+-/
+def DeferralRestrictedMCS (phi : Formula) (S : Set Formula) : Prop :=
+  DeferralRestrictedConsistent phi S ∧
+  ∀ psi ∈ deferralClosure phi, psi ∉ S → ¬SetConsistent (insert psi S)
+
+/--
+A deferral restricted MCS is deferral-restricted.
+-/
+theorem deferral_restricted_mcs_is_restricted {phi : Formula} {S : Set Formula}
+    (h : DeferralRestrictedMCS phi S) : DeferralRestricted phi S :=
+  h.1.1
+
+/--
+A deferral restricted MCS is set-consistent.
+-/
+theorem deferral_restricted_mcs_is_consistent {phi : Formula} {S : Set Formula}
+    (h : DeferralRestrictedMCS phi S) : SetConsistent S :=
+  h.1.2
+
+/--
+Chain union lemma: The union of a chain of deferral-restricted consistent sets
+is deferral-restricted consistent.
+-/
+theorem deferral_restricted_consistent_chain_union {phi : Formula} {C : Set (Set Formula)}
+    (hchain : IsChain (· ⊆ ·) C) (hCne : C.Nonempty)
+    (hcons : ∀ S ∈ C, DeferralRestrictedConsistent phi S) :
+    DeferralRestrictedConsistent phi (⋃₀ C) := by
+  constructor
+  · intro psi h_mem
+    obtain ⟨S, hS, hpsi⟩ := Set.mem_sUnion.mp h_mem
+    exact (hcons S hS).1 hpsi
+  · apply consistent_chain_union hchain hCne
+    intro S hS
+    exact (hcons S hS).2
+
+/--
+Deferral-Restricted Lindenbaum's Lemma: Every deferral-restricted consistent set can be
+extended to a deferral-restricted maximal consistent set.
+-/
+theorem deferral_restricted_lindenbaum (phi : Formula) (S : Set Formula)
+    (h_restricted : DeferralRestricted phi S) (h_cons : SetConsistent S) :
+    ∃ M : Set Formula, S ⊆ M ∧ DeferralRestrictedMCS phi M := by
+  -- Define the collection of deferral-restricted consistent supersets
+  let RCS := {T | S ⊆ T ∧ DeferralRestrictedConsistent phi T}
+  -- Show RCS satisfies the chain condition for Zorn's lemma
+  have hchain : ∀ C ⊆ RCS, IsChain (· ⊆ ·) C → C.Nonempty →
+      ∃ ub ∈ RCS, ∀ T ∈ C, T ⊆ ub := by
+    intro C hCsub hCchain hCne
+    use ⋃₀ C
+    constructor
+    · constructor
+      · obtain ⟨T, hT⟩ := hCne
+        exact Set.Subset.trans (hCsub hT).1 (Set.subset_sUnion_of_mem hT)
+      · apply deferral_restricted_consistent_chain_union hCchain hCne
+        intro T hT
+        exact (hCsub hT).2
+    · intro T hT
+      exact Set.subset_sUnion_of_mem hT
+  have h_S_rc : DeferralRestrictedConsistent phi S := ⟨h_restricted, h_cons⟩
+  have hSmem : S ∈ RCS := ⟨Set.Subset.refl S, h_S_rc⟩
+  obtain ⟨M, hSM, hmax⟩ := zorn_subset_nonempty RCS hchain S hSmem
+  have hMmem := hmax.prop
+  obtain ⟨_, hMrc⟩ := hMmem
+  use M
+  constructor
+  · exact hSM
+  · constructor
+    · exact hMrc
+    · intro psi h_psi_clos h_psi_not_M hcons_insert
+      have h_insert_restricted : DeferralRestricted phi (insert psi M) := by
+        intro chi h_mem
+        cases Set.mem_insert_iff.mp h_mem with
+        | inl h_eq => exact h_eq ▸ h_psi_clos
+        | inr h_in_M => exact hMrc.1 h_in_M
+      have h_insert_mem : insert psi M ∈ RCS := by
+        constructor
+        · exact Set.Subset.trans hSM (Set.subset_insert psi M)
+        · exact ⟨h_insert_restricted, hcons_insert⟩
+      have h_le : M ⊆ insert psi M := Set.subset_insert psi M
+      have h_subset : insert psi M ⊆ M := hmax.le_of_ge h_insert_mem h_le
+      exact h_psi_not_M (h_subset (Set.mem_insert psi M))
+
+/-!
+## Negation Completeness for DeferralRestrictedMCS
+
+For formulas in the subformula closure (which is within deferralClosure),
+deferral-restricted MCS has negation completeness.
+-/
+
+/--
+For psi in subformulaClosure phi, either psi or psi.neg is in any DeferralRestrictedMCS.
+
+This is the key property that allows us to treat DeferralRestrictedMCS as
+"morally" an MCS within the closure. For formulas in the original subformula
+closure, we still get the full MCS behavior.
+-/
+theorem deferral_restricted_mcs_negation_complete {phi : Formula} {S : Set Formula}
+    (h_mcs : DeferralRestrictedMCS phi S) (psi : Formula)
+    (h_psi_clos : psi ∈ subformulaClosure phi) :
+    psi ∈ S ∨ psi.neg ∈ S := by
+  by_cases h : psi ∈ S
+  · left; exact h
+  · right
+    -- Both psi and psi.neg are in deferralClosure
+    have h_psi_dc : psi ∈ deferralClosure phi :=
+      closureWithNeg_subset_deferralClosure phi
+        (subformulaClosure_subset_closureWithNeg phi h_psi_clos)
+    have h_neg_dc : psi.neg ∈ deferralClosure phi :=
+      closureWithNeg_subset_deferralClosure phi
+        (neg_mem_closureWithNeg phi psi h_psi_clos)
+    -- By maximality: since psi ∉ S and psi ∈ deferralClosure, insert psi S is inconsistent
+    have h_incons := h_mcs.2 psi h_psi_dc h
+    by_contra h_neg_not
+    -- Same proof structure as restricted_mcs_negation_complete
+    unfold SetConsistent at h_incons
+    push_neg at h_incons
+    obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
+    have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
+    obtain ⟨d_bot⟩ := h_bot
+    let Γ := L.filter (· ≠ psi)
+    have h_Γ_in_S : ∀ χ ∈ Γ, χ ∈ S := by
+      intro χ hχ
+      have hχ' := List.mem_filter.mp hχ
+      have hχne : χ ≠ psi := by simpa using hχ'.2
+      specialize h_L_sub χ hχ'.1
+      simp [Set.mem_insert_iff] at h_L_sub
+      rcases h_L_sub with rfl | h_in_S
+      · exact absurd rfl hχne
+      · exact h_in_S
+    have h_L_sub_psiGamma : L ⊆ psi :: Γ := by
+      intro χ hχ
+      by_cases hχpsi : χ = psi
+      · simp [hχpsi]
+      · simp only [List.mem_cons]
+        right
+        exact List.mem_filter.mpr ⟨hχ, by simpa⟩
+    have d_bot' : DerivationTree (psi :: Γ) Formula.bot :=
+      DerivationTree.weakening L (psi :: Γ) Formula.bot d_bot h_L_sub_psiGamma
+    have d_neg : DerivationTree Γ psi.neg := deduction_theorem Γ psi Formula.bot d_bot'
+    have h_incons_neg := h_mcs.2 psi.neg h_neg_dc h_neg_not
+    unfold SetConsistent at h_incons_neg
+    push_neg at h_incons_neg
+    obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons_neg
+    have h_bot'' : Nonempty (DerivationTree L' Formula.bot) := inconsistent_derives_bot h_L'_incons
+    obtain ⟨d_bot''⟩ := h_bot''
+    let Δ := L'.filter (· ≠ psi.neg)
+    have h_Δ_in_S : ∀ χ ∈ Δ, χ ∈ S := by
+      intro χ hχ
+      have hχ' := List.mem_filter.mp hχ
+      have hχne : χ ≠ psi.neg := by simpa using hχ'.2
+      specialize h_L'_sub χ hχ'.1
+      simp [Set.mem_insert_iff] at h_L'_sub
+      rcases h_L'_sub with rfl | h_in_S
+      · exact absurd rfl hχne
+      · exact h_in_S
+    have h_L'_sub_psiΔ : L' ⊆ psi.neg :: Δ := by
+      intro χ hχ
+      by_cases hχpsi : χ = psi.neg
+      · simp [hχpsi]
+      · simp only [List.mem_cons]
+        right
+        exact List.mem_filter.mpr ⟨hχ, by simpa⟩
+    have d_bot''' : DerivationTree (psi.neg :: Δ) Formula.bot :=
+      DerivationTree.weakening L' (psi.neg :: Δ) Formula.bot d_bot'' h_L'_sub_psiΔ
+    have d_neg_neg : DerivationTree Δ psi.neg.neg :=
+      deduction_theorem Δ psi.neg Formula.bot d_bot'''
+    let ΓΔ := Γ ++ Δ
+    have h_ΓΔ_in_S : ∀ χ ∈ ΓΔ, χ ∈ S := by
+      intro χ hχ
+      simp only [ΓΔ, List.mem_append] at hχ
+      rcases hχ with hχΓ | hχΔ
+      · exact h_Γ_in_S χ hχΓ
+      · exact h_Δ_in_S χ hχΔ
+    have d_neg' : DerivationTree ΓΔ psi.neg :=
+      DerivationTree.weakening Γ ΓΔ _ d_neg (List.subset_append_left Γ Δ)
+    have d_neg_neg' : DerivationTree ΓΔ psi.neg.neg :=
+      DerivationTree.weakening Δ ΓΔ _ d_neg_neg (List.subset_append_right Γ Δ)
+    have d_bot_final : DerivationTree ΓΔ Formula.bot :=
+      derives_bot_from_phi_neg_phi d_neg' d_neg_neg'
+    exact h_mcs.1.2 ΓΔ h_ΓΔ_in_S ⟨d_bot_final⟩
+
+/-!
+## iter_F/P Boundedness in DeferralRestrictedMCS
+
+These reuse the same bounds as for RestrictedMCS, since deferralClosure
+has the same max F/P-depth as closureWithNeg (proven in SubformulaClosure.lean).
+-/
+
+/--
+iter_F n phi is not in deferralClosure(phi) for large enough n.
+
+Uses the fact that deferralClosure has the same max F-depth as closureWithNeg.
+-/
+theorem iter_F_not_mem_deferralClosure (phi : Formula) (n : Nat) (h : n ≥ closure_F_bound phi) :
+    iter_F n phi ∉ (deferralClosure phi : Set Formula) := by
+  intro h_mem
+  have h_depth_bound : f_nesting_depth (iter_F n phi) ≤
+      (deferralClosure phi).sup f_nesting_depth :=
+    Finset.le_sup h_mem
+  rw [max_F_depth_deferralClosure_eq] at h_depth_bound
+  have h_exceeds := iter_F_exceeds_max_depth phi n h
+  omega
+
+/--
+In any DeferralRestrictedMCS M over phi, there exists n such that iter_F n phi is not in M.
+-/
+theorem deferral_restricted_mcs_iter_F_bound (phi : Formula) (M : Set Formula)
+    (h_mcs : DeferralRestrictedMCS phi M) :
+    ∃ n : Nat, iter_F n phi ∉ M := by
+  use closure_F_bound phi
+  intro h_mem
+  exact iter_F_not_mem_deferralClosure phi (closure_F_bound phi) (Nat.le_refl _)
+    (deferral_restricted_mcs_is_restricted h_mcs h_mem)
+
+/--
+If F(phi) is in a DeferralRestrictedMCS M, then there exists d >= 1 such that:
+- iter_F d phi is in M (the last F-iteration that's still in M)
+- iter_F (d + 1) phi is not in M (the first F-iteration that left M)
+-/
+theorem deferral_restricted_mcs_F_bounded (phi psi : Formula) (M : Set Formula)
+    (h_mcs : DeferralRestrictedMCS phi M)
+    (h_F_in : Formula.some_future psi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_F d psi ∈ M ∧ iter_F (d + 1) psi ∉ M := by
+  -- iter_F 1 psi = F(psi) ∈ M
+  have h_one_in : iter_F 1 psi ∈ M := by
+    simp only [iter_F_one_eq_some_future]
+    exact h_F_in
+  -- iter_F at the bound is not in M (since M ⊆ deferralClosure)
+  -- But we need the bound for psi, not phi. Since F(psi) ∈ M ⊆ deferralClosure phi,
+  -- iter_F n psi has f_nesting_depth = n + f_nesting_depth(psi).
+  -- For psi: we need n such that iter_F n psi ∉ M.
+  -- Since M ⊆ deferralClosure phi, it suffices that iter_F n psi ∉ deferralClosure phi.
+  -- f_nesting_depth(iter_F n psi) = n + f_nesting_depth(psi)
+  -- This exceeds max_F_depth_in_closure phi when n > max_F_depth_in_closure phi - f_nesting_depth(psi)
+  -- So closure_F_bound phi = max_F_depth_in_closure phi + 1 works.
+  let exit_bound := closure_F_bound phi
+  have h_exit_bound_not : iter_F exit_bound psi ∉ M := by
+    intro h_mem
+    have h_in_dc := deferral_restricted_mcs_is_restricted h_mcs h_mem
+    have h_depth_bound : f_nesting_depth (iter_F exit_bound psi) ≤
+        (deferralClosure phi).sup f_nesting_depth :=
+      Finset.le_sup h_in_dc
+    rw [max_F_depth_deferralClosure_eq] at h_depth_bound
+    rw [iter_F_f_nesting_depth] at h_depth_bound
+    unfold exit_bound closure_F_bound at h_depth_bound
+    omega
+  have h_exit_ge1 : exit_bound ≥ 1 := by
+    unfold exit_bound closure_F_bound
+    omega
+  have h_exit_ge2 : exit_bound ≥ 2 := by
+    by_contra h
+    push_neg at h
+    have h_eq : exit_bound = 1 := by omega
+    rw [h_eq] at h_exit_bound_not
+    exact h_exit_bound_not h_one_in
+  let S : Set Nat := { n | n ≥ 2 ∧ iter_F n psi ∉ M }
+  have h_S_nonempty : S.Nonempty := ⟨exit_bound, h_exit_ge2, h_exit_bound_not⟩
+  have h_wf : WellFounded (· < · : Nat → Nat → Prop) := Nat.lt_wfRel.wf
+  obtain ⟨min_n, h_min_mem, h_min_least⟩ := WellFounded.has_min h_wf S h_S_nonempty
+  obtain ⟨h_min_ge2, h_min_not⟩ := h_min_mem
+  use min_n - 1
+  constructor
+  · omega
+  constructor
+  · by_contra h_not_in
+    have h_pred_lt : min_n - 1 < min_n := by omega
+    by_cases h_pred_ge2 : min_n - 1 ≥ 2
+    · exact h_min_least (min_n - 1) ⟨h_pred_ge2, h_not_in⟩ h_pred_lt
+    · have h_pred_eq1 : min_n - 1 = 1 := by omega
+      rw [h_pred_eq1] at h_not_in
+      exact h_not_in h_one_in
+  · have h_eq : min_n - 1 + 1 = min_n := by omega
+    rw [h_eq]
+    exact h_min_not
+
+/--
+iter_P n phi is not in deferralClosure(phi) for large enough n.
+
+Uses the fact that deferralClosure has the same max P-depth as closureWithNeg.
+-/
+theorem iter_P_not_mem_deferralClosure (phi : Formula) (n : Nat) (h : n ≥ closure_P_bound phi) :
+    iter_P n phi ∉ (deferralClosure phi : Set Formula) := by
+  intro h_mem
+  have h_depth_bound : p_nesting_depth (iter_P n phi) ≤
+      (deferralClosure phi).sup p_nesting_depth :=
+    Finset.le_sup h_mem
+  rw [max_P_depth_deferralClosure_eq] at h_depth_bound
+  have h_exceeds := iter_P_exceeds_max_depth phi n h
+  omega
+
+/--
+If P(phi) is in a DeferralRestrictedMCS M, then there exists d >= 1 such that:
+- iter_P d phi is in M (the last P-iteration that's still in M)
+- iter_P (d + 1) phi is not in M (the first P-iteration that left M)
+
+Symmetric to deferral_restricted_mcs_F_bounded.
+-/
+theorem deferral_restricted_mcs_P_bounded (phi psi : Formula) (M : Set Formula)
+    (h_mcs : DeferralRestrictedMCS phi M)
+    (h_P_in : Formula.some_past psi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_P d psi ∈ M ∧ iter_P (d + 1) psi ∉ M := by
+  have h_one_in : iter_P 1 psi ∈ M := by
+    simp only [iter_P_one_eq_some_past]
+    exact h_P_in
+  let exit_bound := closure_P_bound phi
+  have h_exit_bound_not : iter_P exit_bound psi ∉ M := by
+    intro h_mem
+    have h_in_dc := deferral_restricted_mcs_is_restricted h_mcs h_mem
+    have h_depth_bound : p_nesting_depth (iter_P exit_bound psi) ≤
+        (deferralClosure phi).sup p_nesting_depth :=
+      Finset.le_sup h_in_dc
+    rw [max_P_depth_deferralClosure_eq] at h_depth_bound
+    rw [iter_P_p_nesting_depth] at h_depth_bound
+    unfold exit_bound closure_P_bound at h_depth_bound
+    omega
+  have h_exit_ge1 : exit_bound ≥ 1 := by
+    unfold exit_bound closure_P_bound
+    omega
+  have h_exit_ge2 : exit_bound ≥ 2 := by
+    by_contra h
+    push_neg at h
+    have h_eq : exit_bound = 1 := by omega
+    rw [h_eq] at h_exit_bound_not
+    exact h_exit_bound_not h_one_in
+  let S : Set Nat := { n | n ≥ 2 ∧ iter_P n psi ∉ M }
+  have h_S_nonempty : S.Nonempty := ⟨exit_bound, h_exit_ge2, h_exit_bound_not⟩
+  have h_wf : WellFounded (· < · : Nat → Nat → Prop) := Nat.lt_wfRel.wf
+  obtain ⟨min_n, h_min_mem, h_min_least⟩ := WellFounded.has_min h_wf S h_S_nonempty
+  obtain ⟨h_min_ge2, h_min_not⟩ := h_min_mem
+  use min_n - 1
+  constructor
+  · omega
+  constructor
+  · by_contra h_not_in
+    have h_pred_lt : min_n - 1 < min_n := by omega
+    by_cases h_pred_ge2 : min_n - 1 ≥ 2
+    · exact h_min_least (min_n - 1) ⟨h_pred_ge2, h_not_in⟩ h_pred_lt
+    · have h_pred_eq1 : min_n - 1 = 1 := by omega
+      rw [h_pred_eq1] at h_not_in
+      exact h_not_in h_one_in
+  · have h_eq : min_n - 1 + 1 = min_n := by omega
+    rw [h_eq]
+    exact h_min_not
+
 end Bimodal.Metalogic.Core

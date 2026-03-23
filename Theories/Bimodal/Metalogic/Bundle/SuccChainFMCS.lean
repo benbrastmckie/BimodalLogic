@@ -1158,4 +1158,150 @@ noncomputable def SuccChainTemporalCoherent (M0 : SerialMCS) : TemporalCoherentF
   forward_F := succ_chain_forward_F M0
   backward_P := succ_chain_backward_P M0
 
+/-!
+## Deferral-Restricted Seed Subset Lemmas
+
+These lemmas show that the successor/predecessor deferral seeds stay within
+deferralClosure when the source MCS is a full MCS within deferralClosure.
+
+These are used by the restricted chain construction (planned for future phases).
+-/
+
+/--
+g_content of a set within deferralClosure stays in deferralClosure.
+
+If G(chi) ∈ u ⊆ deferralClosure phi, then G(chi) ∈ closureWithNeg (since G is not
+a disjunction), so chi ∈ subformulaClosure ⊆ closureWithNeg ⊆ deferralClosure.
+-/
+theorem g_content_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    g_content u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro chi h_gc
+  have h_G_in_u : Formula.all_future chi ∈ u := h_gc
+  exact Bimodal.Syntax.deferralClosure_all_future phi chi (h_u h_G_in_u)
+
+/--
+deferralDisjunctions of a set within deferralClosure stays in deferralClosure.
+
+If F(chi) ∈ u ⊆ deferralClosure, then F(chi) ∈ closureWithNeg (since F has
+positive nesting depth), so chi ∨ F(chi) ∈ deferralClosure by construction.
+-/
+theorem deferralDisjunctions_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    deferralDisjunctions u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro psi h_dd
+  obtain ⟨chi, h_F_chi, rfl⟩ := h_dd
+  have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi (h_u h_F_chi)
+  exact Bimodal.Syntax.deferral_of_F_in_closure phi chi h_F_in_cwn
+
+/--
+h_content of a set within deferralClosure stays in deferralClosure.
+-/
+theorem h_content_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    h_content u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro chi h_hc
+  exact Bimodal.Syntax.deferralClosure_all_past phi chi (h_u h_hc)
+
+/--
+pastDeferralDisjunctions of a set within deferralClosure stays in deferralClosure.
+-/
+theorem pastDeferralDisjunctions_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    pastDeferralDisjunctions u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro psi h_pd
+  obtain ⟨chi, h_P_chi, rfl⟩ := h_pd
+  have h_P_in_cwn := Bimodal.Syntax.some_past_in_deferralClosure_is_in_closureWithNeg phi chi (h_u h_P_chi)
+  exact Bimodal.Syntax.deferral_of_P_in_closure phi chi h_P_in_cwn
+
+/--
+The successor deferral seed of a set within deferralClosure stays in deferralClosure.
+Note: this is for the basic seed (without p_step_blocking).
+-/
+theorem successor_deferral_seed_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    successor_deferral_seed u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro psi h_seed
+  rw [mem_successor_deferral_seed_iff] at h_seed
+  rcases h_seed with h_gc | h_dd
+  · exact g_content_subset_deferralClosure phi u h_u h_gc
+  · exact deferralDisjunctions_subset_deferralClosure phi u h_u h_dd
+
+/--
+The predecessor deferral seed (basic, without f_step_blocking) of a set within
+deferralClosure stays in deferralClosure.
+-/
+theorem predecessor_basic_seed_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    (h_content u ∪ pastDeferralDisjunctions u) ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro psi h_seed
+  simp only [Set.mem_union] at h_seed
+  rcases h_seed with h_hc | h_pd
+  · exact h_content_subset_deferralClosure phi u h_u h_hc
+  · exact pastDeferralDisjunctions_subset_deferralClosure phi u h_u h_pd
+
+/--
+p_step_blocking_formulas of a full MCS within deferralClosure stays in deferralClosure.
+Key: p_step_blocking_formulas(u) ⊆ u (when u is a full MCS), and u ⊆ deferralClosure.
+-/
+theorem p_step_blocking_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula))
+    (h_mcs : SetMaximalConsistent u) :
+    p_step_blocking_formulas u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+  Set.Subset.trans (p_step_blocking_formulas_subset_u u h_mcs) h_u
+
+/--
+Every F-step blocking formula G(neg phi) is already in u (when u is a full MCS).
+Symmetric to p_step_blocking_formulas_subset_u.
+-/
+theorem f_step_blocking_formulas_subset_u (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u) :
+    f_step_blocking_formulas u ⊆ u := by
+  intro chi h_block
+  obtain ⟨phi, h_F_not, _, rfl⟩ := h_block
+  -- F(phi) ∉ u. By MCS negation completeness, neg(F(phi)) ∈ u.
+  -- neg(F(phi)) = neg(neg(G(neg phi))). By double negation elimination: G(neg phi) ∈ u.
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_future phi) with h_in | h_neg_in
+  · exact absurd h_in h_F_not
+  · exact SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_in
+
+/--
+f_step_blocking_formulas of a full MCS within deferralClosure stays in deferralClosure.
+-/
+theorem f_step_blocking_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula))
+    (h_mcs : SetMaximalConsistent u) :
+    f_step_blocking_formulas u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+  Set.Subset.trans (f_step_blocking_formulas_subset_u u h_mcs) h_u
+
+/--
+The constrained successor seed of a full MCS within deferralClosure stays in deferralClosure.
+Note: requires full MCS for p_step_blocking subset proof.
+-/
+theorem constrained_successor_seed_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula))
+    (h_mcs : SetMaximalConsistent u) :
+    constrained_successor_seed u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro psi h_seed
+  rw [mem_constrained_successor_seed_iff] at h_seed
+  rcases h_seed with h_gc | h_dd | h_block
+  · exact g_content_subset_deferralClosure phi u h_u h_gc
+  · exact deferralDisjunctions_subset_deferralClosure phi u h_u h_dd
+  · exact p_step_blocking_subset_deferralClosure phi u h_u h_mcs h_block
+
+/--
+The predecessor deferral seed of a full MCS within deferralClosure stays in deferralClosure.
+Note: requires full MCS for f_step_blocking subset proof.
+-/
+theorem predecessor_deferral_seed_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    (h_u : u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula))
+    (h_mcs : SetMaximalConsistent u) :
+    predecessor_deferral_seed u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro psi h_seed
+  simp only [predecessor_deferral_seed, Set.mem_union] at h_seed
+  rcases h_seed with (h_hc | h_pd) | h_block
+  · exact h_content_subset_deferralClosure phi u h_u h_hc
+  · exact pastDeferralDisjunctions_subset_deferralClosure phi u h_u h_pd
+  · exact f_step_blocking_subset_deferralClosure phi u h_u h_mcs h_block
+
 end Bimodal.Metalogic.Bundle

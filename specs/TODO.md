@@ -27,48 +27,40 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-23. Reflexive semantics confirmed as best path to completeness. Tasks 25, 26, 43, 44 completed.*
+*Updated 2026-03-23. Completed: 25, 26, 34, 43, 44, 45, 46, 47, 50, 51. Tasks 40, 35 need reassessment (P-step sorry already filled by 50+51).*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path. Task 42 is the umbrella.
 
 ### 1. Axiom Elimination — Critical Path (task 42 umbrella)
 
 ```
-Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
-    34 ─────────────────────────────────────────────────────────────────────→
-    47 ──────────────→ 48 ──────────────→ 36 ──────────────→ 37
-    45 ──────────────→ 46 ──────────────→ 40 ──────────────→ 35 (Phase 4)
-                                                                    │
-                                                              Phase 5: verify
+Phase A              Phase B              Phase C
+    48 ──────────────→ 36 ──────────────→ 37
+                                                │
+                                          Phase D: verify
 ```
 
-**Phase 1 — Parallel (no dependencies):**
+**Phase A — No dependencies:**
 
-1. **34** → implementing (prove 3 SuccExistence seed consistency axioms — axioms 1-3)
-2. **47** → completed (prove iter_F leaves subformula closure at bounded depth — foundation for 36)
-3. **45** → plan, then implement (research modified successor seed for CanonicalTask p-step — foundation for 40)
+1. **48** → implement (prove succ_chain_fam MCS have bounded F-depth)
 
-**Phase 2 — Parallel (each depends on one Phase 1 task):**
+**Phase B — Depends on 48:**
 
-4. **48** → implement after 47 (prove succ_chain_fam MCS have bounded F-depth)
-5. **50** → completed (constrained successor seed for P-step — unblocks 46)
-6. **51** → implement after 50 (fill forward chain P-step sorry)
-7. **46** → unblocked after 50+51 (forward chain P-step)
+2. **36** → implement after 48 (prove `f_nesting_boundary` — axiom 4; task 49 is fallback if 48 fails)
 
-**Phase 3 — Parallel (each depends on one Phase 2 chain):**
+**Phase C — Depends on 36:**
 
-8. **36** → implement after 47+48 (prove `f_nesting_boundary` — axiom 4; task 49 is fallback if 48 fails)
-9. **40** → implement after 45+46 (prove successor p_step — fills SuccChainFMCS.lean:350 sorry)
+3. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
 
-**Phase 4 — Parallel (each depends on one Phase 3 task):**
+**Needs reassessment (P-step sorry already filled by tasks 50+51):**
 
-8. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
-9. **35** → resume Phase 4 after 40 (fill `succ_chain_fam_p_step` — the only completeness-path sorry)
+4. **40** → blocked, but core goal (succ_chain_fam_p_step sorry) already resolved
+5. **35** → implementing, but succ_chain_fam_p_step already filled — reassess remaining items
 
-**Phase 5 — Verification:**
+**Phase D — Verification:**
 
-10. `lean_verify` on completeness theorems — confirm zero custom axioms
-11. Update TODO.md axiom_count to 0
+6. `lean_verify` on completeness theorems — confirm zero custom axioms
+7. Update TODO.md axiom_count to 0
 
 ### 2. Post-Axiom Cleanup
 
@@ -140,7 +132,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -281,10 +273,10 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 40. Add p-step condition to Succ relation or prove successor_satisfies_p_step
 - **Effort**: 4-8 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Depends On**: Task 35 (partial), Task 45, Task 46
-- **Blocked**: Proof requires `successor_p_step_axiom` (prohibited by constraints)
+- **Blocked**: Proof requires `successor_p_step_axiom` (prohibited by constraints) — reassessing
 - **Spawned**: Task 45 (research), Task 46 (implementation)
 - **Research**: [01_team-research.md](specs/040_succ_p_step_forward_chain/reports/01_team-research.md)
 - **Plan**: [02_proof-based-approach.md](specs/040_succ_p_step_forward_chain/plans/02_proof-based-approach.md)

@@ -60,7 +60,7 @@ From `01_restricted-succ-chain-summary.md`:
 
 ## Implementation Phases
 
-### Phase 0: Verify Closure Question and Analyze Deferral Seed [NOT STARTED]
+### Phase 0: Verify Closure Question and Analyze Deferral Seed [COMPLETED]
 
 **Goal**: Confirm the closure question answer and understand exactly which formulas the deferral seed introduces.
 
@@ -86,7 +86,7 @@ From `01_restricted-succ-chain-summary.md`:
 
 ---
 
-### Phase 1: Define Deferral Closure [NOT STARTED]
+### Phase 1: Define Deferral Closure [COMPLETED]
 
 **Goal**: Create `deferralClosure` type that extends `closureWithNeg` with deferral disjunctions.
 
@@ -128,7 +128,7 @@ From `01_restricted-succ-chain-summary.md`:
 
 ---
 
-### Phase 2: Prove F/P-Depth Bounding for Deferral Closure [NOT STARTED]
+### Phase 2: Prove F/P-Depth Bounding for Deferral Closure [COMPLETED]
 
 **Goal**: Prove that F/P-nesting depth is still bounded in `deferralClosure`.
 
@@ -169,7 +169,7 @@ From `01_restricted-succ-chain-summary.md`:
 
 ---
 
-### Phase 3: Define RestrictedMCS over Deferral Closure [NOT STARTED]
+### Phase 3: Define RestrictedMCS over Deferral Closure [COMPLETED]
 
 **Goal**: Create `DeferralRestrictedMCS` type and prove restricted Lindenbaum produces it.
 
@@ -207,7 +207,7 @@ From `01_restricted-succ-chain-summary.md`:
 
 ---
 
-### Phase 4: Define Restricted Chain Builders [NOT STARTED]
+### Phase 4: Define Restricted Chain Builders [PARTIAL]
 
 **Goal**: Create forward/backward chain builders that produce `DeferralRestrictedMCS` elements.
 
