@@ -1,5 +1,5 @@
 ---
-next_project_number: 45
+next_project_number: 47
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -80,9 +80,33 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ---
 
+### 46. Prove forward chain p-step from research findings
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task 45
+- **Parent Task**: 40
+- **Research**: [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
+
+**Description**: Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification.
+
+---
+
+### 45. Research modified successor seed for CanonicalTask p-step
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: 40
+- **Research**: [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
+
+**Description**: Research how to modify the successor seed construction to satisfy p-step, focusing specifically on the CanonicalTask relation (not ExistsTask Kripke semantics). Key questions: Can futureDeferralDisjunctionsForP be defined? Can temp_a constrain P-formulas in Lindenbaum extension? Can h_content_reverse derive p-step constraints?
+
+---
+
 ### 44. Prove backward sorry and make irreflexivity derivable
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Parent**: Task 26 (phases 6-7 skipped)
@@ -155,11 +179,13 @@ All groups in Phase 1 are independent and can run in parallel.
 - **Effort**: 4-8 hours
 - **Status**: [BLOCKED]
 - **Language**: lean4
-- **Depends On**: Task 35 (partial)
+- **Depends On**: Task 35 (partial), Task 45, Task 46
 - **Blocked**: Proof requires `successor_p_step_axiom` (prohibited by constraints)
+- **Spawned**: Task 45 (research), Task 46 (implementation)
 - **Research**: [01_team-research.md](specs/040_succ_p_step_forward_chain/reports/01_team-research.md)
 - **Plan**: [02_proof-based-approach.md](specs/040_succ_p_step_forward_chain/plans/02_proof-based-approach.md)
 - **Analysis**: [01_impossibility-analysis.md](specs/040_succ_p_step_forward_chain/summaries/01_impossibility-analysis.md)
+- **Spawn Analysis**: [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
 
 **Description**: Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).
 
@@ -194,7 +220,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 36. Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
 - **Effort**: 5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean4
 - **Research**: [01_f-nesting-research.md](036_prove_f_nesting_boundary/reports/01_f-nesting-research.md)
 - **Plan**: [01_f-nesting-implementation.md](036_prove_f_nesting_boundary/plans/01_f-nesting-implementation.md)

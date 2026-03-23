@@ -332,22 +332,66 @@ def past_deferral_disjunction_from_P (φ : Formula) :
   exact Bimodal.Theorems.Propositional.rdi φ (Formula.some_past φ)
 
 /--
-Axiom: The predecessor deferral seed is consistent.
+The predecessor deferral seed is consistent.
 
-**Semantic Justification**:
-Symmetric to `successor_deferral_seed_consistent_axiom`, using:
-- h_content instead of g_content
-- P instead of F
-- DP (backward discreteness, derivable from DF) instead of DF
-- P(⊤) ∈ u instead of F(⊤) ∈ u
+**Proof Strategy** (using T-axiom under reflexive semantics):
+The seed is `h_content(u) ∪ {φ ∨ P(φ) | P(φ) ∈ u}`.
 
-The seed `h_content(u) ∪ {φ ∨ P(φ) | P(φ) ∈ u}` is satisfiable at any immediate
-predecessor of u in a discrete frame.
+Under reflexive semantics, the T-axiom `Hφ → φ` (temp_t_past) is valid. This gives us:
+1. h_content(u) ⊆ u: If H(χ) ∈ u, then χ ∈ u by T-axiom and MCS closure
+2. Each past deferral disjunction φ ∨ P(φ) where P(φ) ∈ u is IN u, because:
+   - P(φ) → (φ ∨ P(φ)) is derivable (by right disjunction introduction)
+   - By MCS implication property, P(φ) ∈ u implies φ ∨ P(φ) ∈ u
+
+Therefore predecessor_deferral_seed u ⊆ u. Since u is consistent (MCS),
+any subset of u is consistent, so the seed is consistent.
+
+This is the temporal dual of `successor_deferral_seed_consistent_axiom`.
 -/
-axiom predecessor_deferral_seed_consistent_axiom (u : Set Formula)
+theorem predecessor_deferral_seed_consistent_axiom (u : Set Formula)
     (h_mcs : SetMaximalConsistent u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
-    SetConsistent (predecessor_deferral_seed u)
+    SetConsistent (predecessor_deferral_seed u) := by
+  -- Show that predecessor_deferral_seed u ⊆ u
+  -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
+
+  -- Step 1: h_content(u) ⊆ u via T-axiom (Hφ → φ)
+  have h_h_content_in_u : h_content u ⊆ u := by
+    intro χ h_hc
+    -- χ ∈ h_content(u) means H(χ) ∈ u
+    -- By T-axiom: H(χ) → χ is derivable
+    -- By MCS closure: χ ∈ u
+    have h_T : [] ⊢ (Formula.all_past χ).imp χ :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_past χ)
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_hc
+
+  -- Step 2: pastDeferralDisjunctions(u) ⊆ u
+  -- Each ψ ∨ P(ψ) where P(ψ) ∈ u is in u by MCS implication property
+  have h_deferrals_in_u : pastDeferralDisjunctions u ⊆ u := by
+    intro χ h_dd
+    rw [mem_pastDeferralDisjunctions_iff] at h_dd
+    obtain ⟨ψ, h_P_ψ, h_χ_eq⟩ := h_dd
+    rw [h_χ_eq]
+    -- P(ψ) ∈ u, and P(ψ) → (ψ ∨ P(ψ)) is derivable
+    have h_imp : [Formula.some_past ψ] ⊢ pastDeferralDisjunction ψ :=
+      past_deferral_disjunction_from_P ψ
+    have h_imp' : [] ⊢ (Formula.some_past ψ).imp (pastDeferralDisjunction ψ) :=
+      deduction_theorem [] (Formula.some_past ψ) (pastDeferralDisjunction ψ) h_imp
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_imp') h_P_ψ
+
+  -- Step 3: Combine to show predecessor_deferral_seed u ⊆ u
+  have h_seed_subset_u : predecessor_deferral_seed u ⊆ u := by
+    intro χ h_χ_in_seed
+    rw [mem_predecessor_deferral_seed_iff] at h_χ_in_seed
+    rcases h_χ_in_seed with h_hc | h_dd
+    · exact h_h_content_in_u h_hc
+    · exact h_deferrals_in_u h_dd
+
+  -- Step 4: Conclude consistency
+  -- Any L ⊆ seed ⊆ u with L ⊢ ⊥ contradicts MCS consistency of u
+  intro L hL_sub ⟨d⟩
+  have h_L_subset_u : ∀ χ ∈ L, χ ∈ u := fun χ h => h_seed_subset_u (hL_sub χ h)
+  exact h_mcs.1 L h_L_subset_u ⟨d⟩
 
 /--
 The predecessor deferral seed is consistent.
@@ -541,13 +585,28 @@ theorem predecessor_satisfies_g_persistence_reverse
 Axiom: The predecessor F-step condition holds.
 
 **Semantic Justification**:
-When constructing a predecessor v of u (so Succ v u), the F-obligations of v
-must resolve or defer to u. The seed construction ensures this because:
-1. The past deferral disjunctions constrain v's P-obligations
-2. By temporal duality, this constrains v's F-obligations relative to u
-3. Seriality (P(⊤) ∈ u) ensures u has predecessors where this holds
+When constructing a predecessor v of u (so Succ v u), we need f_content(v) ⊆ u ∪ f_content(u).
+This means: if F(φ) ∈ v, then either φ ∈ u or F(φ) ∈ u.
 
-This is a specialized property that complements the seed consistency axiom.
+The proof attempt shows:
+- We have h_content(u) ⊆ v, giving g_content(v) ⊆ u by duality
+- If φ ∉ u and F(φ) ∉ u, then ¬φ ∈ u and G(¬φ) ∈ u (by MCS completeness)
+- By past_temp_a: G(¬φ) → H(F(G(¬φ))), so F(G(¬φ)) ∈ h_content(u) ⊆ v
+- This gives ¬G(F(φ)) ∈ v (since F(G(¬φ)) = ¬G(F(φ)))
+- But connecting this to F(φ) ∉ v requires showing G(¬φ) ∈ v
+
+The gap: while G(¬φ) ∈ u and we can derive F(G(¬φ)) ∈ v, the path to G(¬φ) ∈ v
+is not direct because h_content transfers H-formulas, not G-formulas.
+
+**Technical Status**: This axiom captures a semantic property of Lindenbaum extensions
+that doesn't follow from basic MCS closure. The proof would require showing that
+the specific Lindenbaum enumeration used for predecessor construction cannot
+add F-formulas that violate the step condition. This may require explicit
+tracking of the enumeration or a semantic model argument.
+
+**Task 34 Analysis**: Unlike the seed consistency axioms (Phases 1-2), which were
+simplified by the T-axiom approach (seed ⊆ u), this axiom concerns properties of
+the *extension* beyond the seed, which is not fully determined by the seed.
 -/
 axiom predecessor_f_step_axiom
     (u : Set Formula) (h_mcs : SetMaximalConsistent u)

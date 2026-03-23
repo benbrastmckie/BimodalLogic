@@ -8,13 +8,13 @@
     {
       "project_number": 44,
       "project_name": "prove_backward_sorry_irreflexivity",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-23T07:39:53Z",
-      "last_updated": "2026-03-23T07:56:16Z",
+      "last_updated": "2026-03-23T07:59:33Z",
       "dependencies": [],
       "parent_task": 26,
-      "session_id": "sess_1774252397_257b24",
+      "session_id": "sess_1774252747_ca19c0",
       "researched": "2026-03-23T07:50:30Z",
       "artifacts": [
         {
@@ -28,7 +28,8 @@
           "summary": "5-phase plan to delete existsTask_irreflexive_axiom and deprecated dependents"
         }
       ],
-      "planned": "2026-03-23T07:56:16Z"
+      "planned": "2026-03-23T07:56:16Z",
+      "started": "2026-03-23T07:59:33Z"
     },
     {
       "project_number": 43,
@@ -99,7 +100,9 @@
       "language": "lean4",
       "description": "Add h-persistence and p-step conditions to the Succ definition, or prove successor_satisfies_p_step from the deferral seed structure. Currently Succ is defined with only 2 conditions: (1) g_content u ⊆ v (g-persistence) and (2) f_content u ⊆ v ∪ f_content v (f-step). The missing conditions are: (3) h_content v ⊆ u (h-persistence backward) and (4) p_content v ⊆ u ∪ p_content u (p-step). The predecessor construction already satisfies p-step via predecessor_satisfies_p_step (SuccExistence.lean:573), but the successor construction does not explicitly guarantee it. This blocks the forward chain case in succ_chain_fam_p_step (SuccChainFMCS.lean:350). Two approaches: (A) Extend Succ to a 4-condition relation and thread the new conditions through all existing Succ proofs, or (B) prove successor_satisfies_p_step directly from the successor_deferral_seed structure in SuccExistence.lean. Approach B is preferred if possible since it is less invasive. Key files: SuccRelation.lean (Succ definition at line 60), SuccExistence.lean (successor/predecessor constructions), SuccChainFMCS.lean (the blocked sorry at line 350), CanonicalTaskRelation.lean (Succ usage).",
       "depends_on": [
-        35
+        35,
+        45,
+        46
       ],
       "created": "2026-03-23T05:47:47Z",
       "last_updated": "2026-03-23T07:49:32Z",
@@ -157,12 +160,12 @@
     {
       "project_number": 36,
       "project_name": "prove_f_nesting_boundary",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean4",
       "description": "Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.",
       "created": "2026-03-23T05:16:00Z",
-      "last_updated": "2026-03-23T07:54:20Z",
-      "session_id": "sess_1774251638_ec8b07",
+      "last_updated": "2026-03-23T07:58:15Z",
+      "session_id": "sess_1774252681_44af5d",
       "researched": "2026-03-23T07:23:02Z",
       "artifacts": [
         {
@@ -939,15 +942,60 @@
           "path": "specs/034_prove_succ_seed_consistency_axioms/plans/01_seed-axiom-elimination.md",
           "type": "plan",
           "summary": "4-phase plan to prove/eliminate 3 axioms in SuccExistence.lean"
+        },
+        {
+          "path": "specs/034_prove_succ_seed_consistency_axioms/summaries/01_seed-axiom-summary.md",
+          "type": "summary",
+          "summary": "Partial: 2/3 axioms eliminated; Phase 4 blocked on Lindenbaum extension complexity"
         }
       ],
       "session_id": "sess_1774251611_8bbcdd",
       "researched": "2026-03-23T07:22:06Z",
       "planned": "2026-03-23T07:39:05Z",
       "started": "2026-03-23T07:40:37Z"
+    },
+    {
+      "project_number": 45,
+      "project_name": "research_modified_successor_seed",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Research how to modify the successor seed construction to satisfy p-step, focusing specifically on the CanonicalTask relation (not ExistsTask Kripke semantics). The goal is to determine if a clean structural solution exists. Key questions: Can futureDeferralDisjunctionsForP be defined? Can temp_a constrain P-formulas in Lindenbaum extension? Is there a semantic argument for p-step? Can h_content_reverse derive p-step constraints? Files: SuccExistence.lean lines 50-120, WitnessSeed.lean, Axioms.lean, CanonicalTaskRelation.lean lines 718-726.",
+      "effort": "2-3 hours",
+      "parent_task": 40,
+      "depends_on": [],
+      "created": "2026-03-23T07:59:01Z",
+      "last_updated": "2026-03-23T07:59:01Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
+    },
+    {
+      "project_number": 46,
+      "project_name": "prove_forward_chain_p_step",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification. Verification: lake build succeeds, no sorries in succ_chain_fam_p_step, succ_chain_backward_P compiles.",
+      "effort": "2-3 hours",
+      "parent_task": 40,
+      "depends_on": [
+        45
+      ],
+      "created": "2026-03-23T07:59:08Z",
+      "last_updated": "2026-03-23T07:59:08Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
     }
   ],
-  "next_project_number": 45,
+  "next_project_number": 47,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
