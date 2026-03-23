@@ -1020,7 +1020,7 @@
     {
       "project_number": 46,
       "project_name": "prove_forward_chain_p_step",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean4",
       "description": "Based on research findings from task 45, implement the proof that forward chain pairs satisfy p-step, filling the sorry at SuccChainFMCS.lean:350. If structural proof path found: add helper lemmas to WitnessSeed.lean, prove forward_chain_p_step theorem, fill the sorry. If minimal axiom recommended: add axiom to SuccExistence.lean with semantic justification. Verification: lake build succeeds, no sorries in succ_chain_fam_p_step, succ_chain_backward_P compiles.",
       "effort": "2-3 hours",
@@ -1031,7 +1031,7 @@
         51
       ],
       "created": "2026-03-23T07:59:08Z",
-      "last_updated": "2026-03-23T16:20:43Z",
+      "last_updated": "2026-03-23T18:37:49Z",
       "artifacts": [
         {
           "type": "research",
@@ -1052,13 +1052,17 @@
           "path": "specs/046_prove_forward_chain_p_step/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "BLOCKED: Forward chain P-step cannot be proven without additional infrastructure (missing pastDeferralDisjunctions in forward seed)"
+        },
+        {
+          "path": "specs/046_prove_forward_chain_p_step/reports/04_post-completion-analysis.md",
+          "type": "research",
+          "summary": "Post-completion analysis: task 46 fully resolved by tasks 50+51, recommend EXPANDED status"
         }
       ],
-      "session_id": "sess_1774281063_fe38fc",
-      "researched": "2026-03-23T15:26:06Z",
+      "session_id": "sess_1774290294_28abb2",
+      "researched": "2026-03-23T18:37:49Z",
       "planned": "2026-03-23T15:46:24Z",
-      "started": "2026-03-23T15:51:24Z",
-      "blocker_reason": "Forward chain P-step cannot be proven without additional infrastructure. The forward chain construction does not include pastDeferralDisjunctions. Resolution options: (1) add past analog of temp_a axiom, (2) modify forward chain to include P-blocking formulas, (3) use full CanonicalMCS domain."
+      "started": "2026-03-23T15:51:24Z"
     },
     {
       "project_number": 47,
