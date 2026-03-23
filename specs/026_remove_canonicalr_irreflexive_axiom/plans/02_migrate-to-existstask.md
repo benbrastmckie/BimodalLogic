@@ -61,7 +61,7 @@ The user renamed `CanonicalR` to `ExistsTask` as the primary definition:
 
 ## Implementation Phases
 
-### Phase 1: Derive canonicalTask_irreflexive [NOT STARTED]
+### Phase 1: Derive canonicalTask_irreflexive [COMPLETED]
 
 **Goal**: Add derived irreflexivity theorem for CanonicalTask.
 
