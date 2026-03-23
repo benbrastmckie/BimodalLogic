@@ -342,12 +342,40 @@ theorem succ_chain_fam_p_step (M0 : SerialMCS) (n : Int) :
   intro φ h_φ
   cases n with
   | ofNat k =>
-    -- n >= 0: succ_chain_fam (n+1) = forward_chain (k+1)
-    -- This requires successor_satisfies_p_step which is not yet proven
+    -- n >= 0: forward chain case (k+1 -> k)
+    -- P-step: p_content(forward_chain M0 (k+1)) ⊆ forward_chain M0 k ∪ p_content(forward_chain M0 k)
     simp only [succ_chain_fam] at h_φ ⊢
-    -- Forward chain P-step: p_content(forward_chain (k+1)) ⊆ forward_chain k ∪ p_content(forward_chain k)
-    -- This follows from temporal duality but requires additional infrastructure
-    sorry
+    -- h_φ : φ ∈ p_content (forward_chain M0 (k + 1)), i.e., P(φ) ∈ forward_chain(k+1)
+    -- Goal: φ ∈ forward_chain M0 k ∨ P(φ) ∈ forward_chain M0 k
+
+    have h_mcs_u : SetMaximalConsistent (forward_chain M0 k) := forward_chain_mcs M0 k
+    have h_mcs_v : SetMaximalConsistent (forward_chain M0 (k + 1)) := forward_chain_mcs M0 (k + 1)
+    have h_P_in_v : Formula.some_past φ ∈ forward_chain M0 (k + 1) := h_φ
+
+    -- Try: φ ∈ u or P(φ) ∈ u
+    by_cases h_φ_in_u : φ ∈ forward_chain M0 k
+    · exact Set.mem_union_left _ h_φ_in_u
+    · by_cases h_P_in_u : Formula.some_past φ ∈ forward_chain M0 k
+      · exact Set.mem_union_right _ h_P_in_u
+      · -- BLOCKER: φ ∉ u and P(φ) ∉ u, but P(φ) ∈ v
+        -- Analysis shows this configuration IS possible in the forward chain:
+        -- The forward chain construction does NOT include pastDeferralDisjunctions.
+        -- Therefore, P-step is NOT guaranteed by the construction.
+        --
+        -- Counter-example scenario:
+        -- Let u have H(¬φ) ∈ u (so P(φ) ∉ u and φ ∉ u by temp_t_past).
+        -- The successor v = successor_from_deferral_seed(u) can have:
+        -- - φ ∈ v (not blocked since g_content(u) doesn't constrain φ directly)
+        -- - P(φ) ∈ v (follows from φ ∈ v by reflexive P)
+        -- This violates P-step but is consistent with Succ(u, v).
+        --
+        -- Resolution requires EITHER:
+        -- 1. Adding past analog of temp_a: φ → H(F(φ))
+        -- 2. Modifying forward chain to include P-deferral seeds
+        -- 3. Using a different construction (e.g., FMCSTransfer with full CanonicalMCS)
+        --
+        -- See task 46 research report for detailed analysis.
+        sorry
   | negSucc k =>
     cases k with
     | zero =>

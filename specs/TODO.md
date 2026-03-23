@@ -51,7 +51,7 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 **Phase 2 — Parallel (each depends on one Phase 1 task):**
 
 4. **48** → implement after 47 (prove succ_chain_fam MCS have bounded F-depth)
-5. **46** → implement after 45 (prove forward chain p-step from research findings)
+5. **46** → blocked (forward chain P-step cannot be proven - missing pastDeferralDisjunctions)
 
 **Phase 3 — Parallel (each depends on one Phase 2 chain):**
 
@@ -135,15 +135,17 @@ Phase 1 (parallel)     Phase 2 (parallel)     Phase 3 (parallel)     Phase 4
 
 ### 46. Prove forward chain p-step from research findings
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Started**: 2026-03-23
 - **Language**: lean4
 - **Dependencies**: Task 45
 - **Parent Task**: 40
+- **Blocker**: Forward chain P-step cannot be proven without additional infrastructure (forward chain construction lacks pastDeferralDisjunctions). Resolution options: (1) add past analog of temp_a axiom, (2) modify forward chain to include P-blocking formulas, (3) use full CanonicalMCS domain.
 - **Research**:
   - [02_spawn-analysis.md](specs/040_succ_p_step_forward_chain/reports/02_spawn-analysis.md)
   - [02_team-research.md](specs/046_prove_forward_chain_p_step/reports/02_team-research.md)
 - **Plan**: [02_transfer-only-plan.md](specs/046_prove_forward_chain_p_step/plans/02_transfer-only-plan.md)
+- **Summary**: [01_implementation-summary.md](specs/046_prove_forward_chain_p_step/summaries/01_implementation-summary.md)
 
 **Description**: Prove forward chain p-step using canonical model transfer pattern (canonical_backward_P). No axioms allowed. Fill sorry at SuccChainFMCS.lean:350 using existing sorry-free infrastructure.
 
