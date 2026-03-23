@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "planned",
+      "status": "partial",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T22:26:39Z",
+      "last_updated": "2026-03-23T22:52:51Z",
       "artifacts": [
         {
           "type": "research",
@@ -750,13 +750,18 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/07_boundary-resolution.md",
           "type": "plan",
           "summary": "4-phase plan: resolve boundary case sorries by showing deferral impossible at boundary"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/handoffs/01_boundary-analysis.md",
+          "type": "handoff",
+          "summary": "Boundary case analysis and G-content path issue identification"
         }
       ],
-      "session_id": "sess_1774303276_f36a36",
+      "session_id": "sess_1774305257_ac078f",
       "researched": "2026-03-23T20:56:11Z",
       "planned": "2026-03-23T22:26:39Z",
       "started": "2026-03-23T17:51:37Z",
-      "blocker_reason": "Original theorems mathematically unprovable as stated. Provable RestrictedMCS versions added but require chain construction refactoring."
+      "blocker_reason": "Build broken - SuccChainFMCS.lean has unknown identifiers. Boundary case analysis complete but cannot implement without fixing build."
     },
     {
       "project_number": 49,

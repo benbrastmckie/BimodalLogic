@@ -49,7 +49,7 @@ We prove a helper lemma that at the boundary, `F(psi)` must eventually resolve t
 
 ## Implementation Phases
 
-### Phase 1: Analyze the Succ F-step behavior at boundary [NOT STARTED]
+### Phase 1: Analyze the Succ F-step behavior at boundary [COMPLETED]
 
 **Goal**: Understand exactly what F-step tells us when FF(psi) ∉ deferralClosure.
 
@@ -76,7 +76,7 @@ lemma boundary_F_not_in_f_content
 
 ---
 
-### Phase 2: Fix restricted_succ_propagates_F_not boundary case [NOT STARTED]
+### Phase 2: Fix restricted_succ_propagates_F_not boundary case [BLOCKED]
 
 **Goal**: Remove the sorry when FF(psi) ∉ deferralClosure.
 
