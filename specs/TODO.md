@@ -29,7 +29,7 @@ technical_debt:
 
 ### Active Work
 
-- **29** → [PLANNED] (reflexive G/H semantics — v6 per-construction strictness, 8 phases, 8-12h)
+- **29** → [PLANNED] (reflexive G/H semantics — v7 MCS-decided atom approach, 8 phases, 6-10h)
 - **997** → implementing (base completeness wiring — stalled since 2026-03-20)
 
 ### Completeness Pipeline
@@ -98,25 +98,20 @@ technical_debt:
 ---
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
-- **Effort**: 8-12 hours remaining (revised: per-construction strictness)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 6-10 hours remaining (revised: MCS-decided atom approach)
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
-  - [12_team-research.md](029_switch_to_reflexive_gh_semantics/reports/12_team-research.md) — Wave 6: order-theoretic foundations, antisymmetry fails, fresh atom cardinality flawed
-  - [13_unbounded-axiom-analysis.md](029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md) — Unbounded axiom analysis: seriality trivially valid, strict successor for order structure
-  - [09_team-research.md](029_switch_to_reflexive_gh_semantics/reports/09_team-research.md) — Wave 5: substitution lemma identified as key blocker for Phase 5
-  - [08_team-research.md](029_switch_to_reflexive_gh_semantics/reports/08_team-research.md) — Wave 4: CanonicalTask-centric reframing, fresh G-atom approach confirmed
-  - [07_team-research.md](029_switch_to_reflexive_gh_semantics/reports/07_team-research.md) — Wave 3: blocker resolution (canonicalR_antisymmetric FALSE, Option D recommended)
-  - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
-  - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
+  - [29_team-research.md](029_switch_to_reflexive_gh_semantics/reports/29_team-research.md) — Wave 7: root cause (conceptual error), MCS-decided atom solution
+  - [12_team-research.md](029_switch_to_reflexive_gh_semantics/reports/12_team-research.md) — Wave 6: order-theoretic foundations, antisymmetry fails
+  - [13_unbounded-axiom-analysis.md](029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md) — Seriality trivially valid, strict successor for order structure
 - **Plan**:
-  - [06_per-construction-strictness.md](029_switch_to_reflexive_gh_semantics/plans/06_per-construction-strictness.md) — v6: Per-construction strictness, bypass universal fresh atom, 8 phases, 8-12h (current)
-  - [05_irr-removal-approach.md](029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md) — v5: superseded (blocked on fresh atom existence)
-  - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: superseded (IRR case misdirected)
+  - [07_mcs-decided-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/07_mcs-decided-atom-approach.md) — v7: MCS-decided atom approach, no fresh atoms needed, 8 phases, 6-10h (current)
+  - [06_per-construction-strictness.md](029_switch_to_reflexive_gh_semantics/plans/06_per-construction-strictness.md) — v6: superseded (blocked on fresh atom existence)
+  - [05_irr-removal-approach.md](029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md) — v5: superseded
+  - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: superseded
   - [03_fresh-g-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md) — v3: superseded
-  - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: superseded
-  - [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1: superseded
 
 **Description**: Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md.
 
