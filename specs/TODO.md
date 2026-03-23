@@ -96,7 +96,8 @@ These are researched and ready but not critical path:
 
 ### 42. Investigate and eliminate ALL custom axioms — architectural redesign permitted
 - **Effort**: 20-40 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [01_team-research.md](specs/042_eliminate_all_axioms_architectural_redesign/reports/01_team-research.md)
 - **Language**: lean4
 
 **Description**: Investigate why each of the 9 custom Lean `axiom` declarations exists, determine the proof strategy or architectural change needed to eliminate it, and execute the removal. Architectural restructuring (e.g., changing seed constructions, redesigning the Succ relation, restructuring the chain construction) is explicitly permitted if it enables proper proofs. The goal is zero custom axioms — `#print axioms` on completeness theorems should show only `propext`, `Classical.choice`, `Quot.sound`, and Lean compiler axioms.

@@ -8,11 +8,20 @@
     {
       "project_number": 42,
       "project_name": "eliminate_all_axioms_architectural_redesign",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "description": "Investigate why each of the 9 custom Lean axiom declarations exists, determine the proof strategy or architectural change needed to eliminate it, and execute the removal. Architectural restructuring (e.g., changing seed constructions, redesigning the Succ relation, restructuring the chain construction) is explicitly permitted. Goal: zero custom axioms. Production path (5): successor/predecessor_deferral_seed_consistent_axiom, predecessor_f_step_axiom, f/p_nesting_boundary. Additional production (2): existsTask_irreflexive_axiom, discrete_Icc_finite_axiom. StagedConstruction (2): discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom. Task 40 plan must be revised (recommends adding 10th axiom). Tasks 34, 36, 37 should be subsumed or coordinated.",
       "created": "2026-03-23T06:40:21Z",
-      "last_updated": "2026-03-23T06:40:21Z"
+      "last_updated": "2026-03-23T07:02:52Z",
+      "session_id": "sess_1774248615_4dd171",
+      "researched": "2026-03-23T07:02:52Z",
+      "artifacts": [
+        {
+          "path": "specs/042_eliminate_all_axioms_architectural_redesign/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research: 9 axioms audited, critical path defined, 7 tasks to abandon"
+        }
+      ]
     },
     {
       "project_number": 41,
