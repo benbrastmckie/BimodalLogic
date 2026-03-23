@@ -80,6 +80,42 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ---
 
+### 49. FMP-based boundedness proof (fallback)
+- **Effort**: 6-8 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task 48
+- **Parent Task**: 36
+- **Research**: [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+
+**Description**: FALLBACK TASK: Only pursue if Task 48 encounters fundamental obstacles. Connect succ_chain_fam to FMP infrastructure to prove boundedness via Finite Model Property. Use existing FMP infrastructure in Theories/Bimodal/Metalogic/Decidability/FMP/ including ClosureMCS, FiniteModel, Filtration, and TruthPreservation theorems.
+
+---
+
+### 48. Prove succ_chain_fam MCS have bounded F-depth
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task 47
+- **Parent Task**: 36
+- **Research**: [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+
+**Description**: Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.
+
+---
+
+### 47. Prove iter_F leaves subformula closure at bounded depth
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: 36
+- **Research**: [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+
+**Description**: Prove that for any formula phi, the iterated F-application iter_F n phi eventually leaves the subformula closure. Define or compute the maximum F-nesting depth in closureWithNeg(phi), then prove that iter_F (max_depth + 1) phi is NOT in closureWithNeg(phi). This provides the foundation for proving boundedness: in any RestrictedMCS over phi, the sequence iter_F 1 phi, iter_F 2 phi, ... must eventually exit the closure.
+
+---
+
 ### 46. Prove forward chain p-step from research findings
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
@@ -224,6 +260,7 @@ All groups in Phase 1 are independent and can run in parallel.
 - **Language**: lean4
 - **Research**: [01_f-nesting-research.md](036_prove_f_nesting_boundary/reports/01_f-nesting-research.md)
 - **Plan**: [01_f-nesting-implementation.md](036_prove_f_nesting_boundary/plans/01_f-nesting-implementation.md)
+- **Dependencies**: Task 47, Task 48, Task 49
 
 **Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:615) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
 

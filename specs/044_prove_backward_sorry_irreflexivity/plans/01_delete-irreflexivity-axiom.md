@@ -56,7 +56,7 @@ Key findings from `01_team-research.md`:
 
 ## Implementation Phases
 
-### Phase 1: Dependency Audit [NOT STARTED]
+### Phase 1: Dependency Audit [COMPLETED]
 
 **Goal**: Confirm no active code depends on the axiom or deprecated theorems
 
@@ -79,7 +79,7 @@ Key findings from `01_team-research.md`:
 
 ---
 
-### Phase 2: Delete Axiom and Deprecated Theorems [NOT STARTED]
+### Phase 2: Delete Axiom and Deprecated Theorems [IN PROGRESS]
 
 **Goal**: Remove the inconsistent axiom and all theorems derived from it
 

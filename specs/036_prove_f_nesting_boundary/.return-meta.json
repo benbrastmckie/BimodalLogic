@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-03-23T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, analyzing blocker for f_nesting_boundary"
-  },
+  "artifacts": [
+    {
+      "type": "spawn_analysis",
+      "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
+      "summary": "Blocker analysis with 3 proposed tasks"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1774252681_44af5d",
     "agent_type": "spawn-agent",
+    "duration_seconds": 180,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "spawn", "skill-spawn", "spawn-agent"]
-  }
+    "delegation_path": ["orchestrator", "spawn", "skill-spawn", "spawn-agent"],
+    "proposed_task_count": 3
+  },
+  "next_steps": "Skill postflight will create tasks from .spawn-return.json"
 }

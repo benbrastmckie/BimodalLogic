@@ -185,7 +185,12 @@
         }
       ],
       "planned": "2026-03-23T07:39:30Z",
-      "started": "2026-03-23T07:41:01Z"
+      "started": "2026-03-23T07:41:01Z",
+      "dependencies": [
+        47,
+        48,
+        49
+      ]
     },
     {
       "project_number": 37,
@@ -993,9 +998,70 @@
           "summary": "Spawn analysis from parent task"
         }
       ]
+    },
+    {
+      "project_number": 47,
+      "project_name": "prove_iter_f_leaves_closure",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Prove that for any formula phi, the iterated F-application iter_F n phi eventually leaves the subformula closure. Define or compute the maximum F-nesting depth in closureWithNeg(phi), then prove that iter_F (max_depth + 1) phi is NOT in closureWithNeg(phi). This provides the foundation for proving boundedness: in any RestrictedMCS over phi, the sequence iter_F 1 phi, iter_F 2 phi, ... must eventually exit the closure.",
+      "effort": "2-3 hours",
+      "parent_task": 36,
+      "dependencies": [],
+      "created": "2026-03-23T08:01:38Z",
+      "last_updated": "2026-03-23T08:01:38Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
+    },
+    {
+      "project_number": 48,
+      "project_name": "prove_succ_chain_fam_bounded_f_depth",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
+      "effort": "4-6 hours",
+      "parent_task": 36,
+      "dependencies": [
+        47
+      ],
+      "created": "2026-03-23T08:01:38Z",
+      "last_updated": "2026-03-23T08:01:38Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
+    },
+    {
+      "project_number": 49,
+      "project_name": "fmp_based_boundedness_proof_fallback",
+      "status": "researched",
+      "language": "lean4",
+      "description": "FALLBACK TASK: Only pursue if Task 48 encounters fundamental obstacles. Connect succ_chain_fam to FMP infrastructure to prove boundedness via Finite Model Property. Use existing FMP infrastructure in Theories/Bimodal/Metalogic/Decidability/FMP/ including ClosureMCS, FiniteModel, Filtration, and TruthPreservation theorems.",
+      "effort": "6-8 hours",
+      "parent_task": 36,
+      "dependencies": [
+        48
+      ],
+      "created": "2026-03-23T08:01:38Z",
+      "last_updated": "2026-03-23T08:01:38Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
     }
   ],
-  "next_project_number": 47,
+  "next_project_number": 50,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
