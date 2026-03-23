@@ -58,7 +58,14 @@
       "created": "2026-03-23T05:20:00Z",
       "last_updated": "2026-03-23T06:13:04Z",
       "session_id": "sess_1774245580_9330ce",
-      "researched": "2026-03-23T06:13:04Z"
+      "researched": "2026-03-23T06:13:04Z",
+      "artifacts": [
+        {
+          "path": "specs/038_prove_box_backward_truth_lemma/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 2 teammates"
+        }
+      ]
     },
     {
       "project_number": 36,
