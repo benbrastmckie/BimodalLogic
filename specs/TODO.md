@@ -82,7 +82,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 43. Archive StagedConstruction and DiscreteTimeline paths to Boneyard
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**: [01_archival-analysis.md](specs/043_archive_dead_paths_to_boneyard/reports/01_archival-analysis.md)
 - **Plan**: [01_archival-plan.md](specs/043_archive_dead_paths_to_boneyard/plans/01_archival-plan.md)
 - **Language**: lean4
@@ -173,7 +173,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 36. Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
 - **Effort**: 4-7 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Research**: [01_f-nesting-research.md](036_prove_f_nesting_boundary/reports/01_f-nesting-research.md)
 
@@ -199,7 +199,7 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 34. Prove SuccExistence seed consistency axioms
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Follow-up from**: Task 29 Phase 7 (deferred)
@@ -211,7 +211,8 @@ All groups in Phase 1 are independent and can run in parallel.
 
 ### 26. Remove or justify canonicalR_irreflexive_axiom
 - **Effort**: 2-8 hours (depends on path chosen)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-23
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -228,6 +229,7 @@ All groups in Phase 1 are independent and can run in parallel.
 - **Plan**:
   - [02_migrate-to-existstask.md](026_remove_canonicalr_irreflexive_axiom/plans/02_migrate-to-existstask.md) — v2: migrate to ExistsTask (CanonicalR now alias) (current)
   - [01_eliminate-canonicalr.md](026_remove_canonicalr_irreflexive_axiom/plans/01_eliminate-canonicalr.md) — v1: superseded (assumed CanonicalR would remain primary)
+- **Summary**: [01_migrate-existstask-summary.md](026_remove_canonicalr_irreflexive_axiom/summaries/01_migrate-existstask-summary.md) — Migrated 67 files from CanonicalR to ExistsTask. Derived canonicalTask_irreflexive. Eliminated 266 deprecation warnings.
 
 **Description**: Investigate removal of `canonicalR_irreflexive_axiom` (CanonicalIrreflexivity.lean:1212). Research conclusively shows CanonicalTask refactoring does NOT help — `¬CanonicalTask(u,1,u)` reduces exactly to `¬CanonicalR(u,u)` because the f_content condition in Succ is trivially satisfied on the diagonal. All 16 usage sites across 6 active files (SaturatedChain 8, FMCSTransfer 2, CanonicalSerialFrameInstance 2+2, TimelineQuotCanonical 1, ClosureSaturation 2, IncrementalTimeline 1) require CanonicalR-level irreflexivity. Three viable paths: **(A)** Prove via reflexive T-axiom — `CanonicalIrreflexivity.lean` contains 1170 lines of complete proof infrastructure from Task 967 that works under reflexive semantics; check if temporal T-axiom `H(φ)→φ` is available. **(B)** Add Gabbay IRR inference rule to proof system (high effort but principled). **(C)** Accept axiom with fixed documentation — `CanonicalIrreflexivityAxiom.lean` falsely claims "proven theorem (Task 967)" but actual implementation is a Lean axiom since Task 991's strict semantics revert. Fix this inconsistency regardless of path chosen.
 

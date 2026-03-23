@@ -8,12 +8,12 @@
     {
       "project_number": 43,
       "project_name": "archive_dead_paths_to_boneyard",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Archive StagedConstruction/ and DiscreteTimeline paths to Boneyard to eliminate axioms 7-9. These paths are superseded by the SuccChain completeness approach and carry 3 axioms (discrete_Icc_finite_axiom, discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom) plus several sorries. Move to Boneyard: StagedConstruction/ directory (DiscreteSuccSeed.lean, DovetailedBuild.lean, StagedExecution.lean, DovetailedTimelineQuot.lean, Completeness.lean, TimelineQuotCompleteness.lean), Domain/DiscreteTimeline.lean, Domain/DurationTransfer.lean (W=D conflation), Canonical/CanonicalTimeline.lean. Update imports in any files that reference these modules. Verify lake build passes after archival.",
       "created": "2026-03-23T07:08:08Z",
-      "last_updated": "2026-03-23T07:23:47Z",
-      "session_id": "sess_1774250478_1f564b",
+      "last_updated": "2026-03-23T07:37:07Z",
+      "session_id": "sess_1774251396_ba64e2",
       "researched": "2026-03-23T07:20:20Z",
       "planned": "2026-03-23T07:23:47Z",
       "artifacts": [
@@ -22,7 +22,8 @@
           "type": "plan",
           "summary": "5-phase implementation plan for archiving 32+ dead path files, eliminating axioms 7-9"
         }
-      ]
+      ],
+      "started": "2026-03-23T07:37:07Z"
     },
     {
       "project_number": 42,
@@ -117,12 +118,12 @@
     {
       "project_number": 36,
       "project_name": "prove_f_nesting_boundary",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "description": "Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.",
       "created": "2026-03-23T05:16:00Z",
-      "last_updated": "2026-03-23T07:23:02Z",
-      "session_id": "sess_1774250305_63dbfe",
+      "last_updated": "2026-03-23T07:37:29Z",
+      "session_id": "sess_1774251433_9bdb91",
       "researched": "2026-03-23T07:23:02Z",
       "artifacts": [
         {
@@ -728,10 +729,10 @@
     {
       "project_number": 26,
       "project_name": "remove_canonicalr_irreflexive_axiom",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-23T07:19:43Z",
+      "last_updated": "2026-03-23T07:36:48Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -854,20 +855,27 @@
           "path": "specs/026_remove_canonicalr_irreflexive_axiom/plans/02_migrate-to-existstask.md",
           "type": "plan",
           "summary": "Revised plan: migrate to ExistsTask (CanonicalR now alias)"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/summaries/01_migrate-existstask-summary.md",
+          "type": "summary",
+          "summary": "Migrated 67 files from CanonicalR to ExistsTask. Derived canonicalTask_irreflexive theorem. Eliminated 266 deprecation warnings. Build passes, no new sorries."
         }
       ],
       "session_id": "sess_1774250355_ceb2dc",
       "researched": "2026-03-21T20:50:40Z",
       "planned": "2026-03-23T07:18:21Z",
-      "started": "2026-03-23T07:19:43Z"
+      "started": "2026-03-23T07:19:43Z",
+      "completed": "2026-03-23T07:36:48Z",
+      "completion_summary": "Migrated 67 files from CanonicalR to ExistsTask. Derived canonicalTask_irreflexive theorem. Eliminated 266 deprecation warnings. Build passes, no new sorries."
     },
     {
       "project_number": 34,
       "project_name": "prove_succ_seed_consistency_axioms",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-23T03:48:09Z",
-      "last_updated": "2026-03-23T07:22:06Z",
+      "last_updated": "2026-03-23T07:36:59Z",
       "dependencies": [],
       "description": "Prove or remove the 3 SuccExistence axioms deferred from task 29 Phase 7: successor_deferral_seed_consistent_axiom, predecessor_deferral_seed_consistent_axiom, and predecessor_f_step_axiom (all in Bundle/SuccExistence.lean). These seed consistency axioms assert that deferral seeds are satisfiable, which should follow from T-axiom under reflexive semantics. Also un-supersede task 26 (canonicalR_irreflexive_axiom was NOT deleted by task 29 and still contradicts proven canonicalR_reflexive).",
       "artifacts": [
@@ -877,7 +885,7 @@
           "summary": "Analysis of 3 axioms: seed consistency axioms (1-2) likely provable via WitnessSeed pattern; F-step axiom (3) requires more analysis"
         }
       ],
-      "session_id": "sess_1774250274_6670c6",
+      "session_id": "sess_1774251405_d47311",
       "researched": "2026-03-23T07:22:06Z"
     }
   ],
