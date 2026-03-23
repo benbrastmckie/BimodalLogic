@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-19T23:50:22Z
 task_counts:
-  active: 21
-  completed: 709
+  active: 18
+  completed: 713
   in_progress: 1
   not_started: 7
   abandoned: 47
@@ -28,9 +28,6 @@ technical_debt:
 ## Recommended Order
 
 ### 1. Completeness Pipeline (highest priority)
-
-**Base**:
-1. **997** → unblock (base completeness wiring — stalled since 2026-03-20)
 
 **Discrete** (deps 9-15, 23, 28 all completed 2026-03-21):
 1. **22** → implement (planned, has 5-phase plan)
@@ -144,59 +141,6 @@ technical_debt:
 - **Follow-up from**: Task 29 Phase 7 (deferred)
 
 **Description**: Prove or remove the 3 axioms in `Bundle/SuccExistence.lean` that were deferred from task 29 Phase 7: (1) `successor_deferral_seed_consistent_axiom` (line 266) — asserts successor deferral seed is consistent, (2) `predecessor_deferral_seed_consistent_axiom` (line 311) — symmetric predecessor version, (3) `predecessor_f_step_axiom` (line 516) — F-step condition for predecessor construction. Under reflexive semantics with T-axiom available, these seed consistency claims may be provable syntactically. The seeds contain `g_content(u) ∪ {φ ∨ F(φ) | F(φ) ∈ u}` (successor) or `h_content(u) ∪ {φ ∨ P(φ) | P(φ) ∈ u}` (predecessor). The deferral disjunctions `φ ∨ F(φ)` are tautological consequences of `F(φ)`, and the g_content formulas are jointly consistent by MCS properties. Research whether T-axiom (`G(φ) → φ`) provides enough to close these proofs. Note: discrete seed axioms (`discreteImmediateSuccSeed_consistent_axiom`, `discreteImmediateSucc_covers_axiom`) are covered by task 24.
-
----
-
-### 33. Expand design-choices section with comprehensive reflexive vs irreflexive semantics analysis
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: formal
-- **Research**:
-  - [01_team-research.md](033_expand_design_choices_reflexive_analysis/reports/01_team-research.md) — Team synthesis (4 teammates)
-  - [01_teammate-a-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-a-findings.md) — Expressive power, frame constraints
-  - [01_teammate-b-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-b-findings.md) — Representation theorem challenges
-  - [01_teammate-c-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-c-findings.md) — Algebraic perspective (interior operators)
-  - [01_teammate-d-findings.md](033_expand_design_choices_reflexive_analysis/reports/01_teammate-d-findings.md) — Codebase and vault archive analysis
-- **Plan**: [01_design-choices-expansion.md](033_expand_design_choices_reflexive_analysis/plans/01_design-choices-expansion.md) — 5 phases, 5h
-- **Summary**: [01_design-choices-summary.md](033_expand_design_choices_reflexive_analysis/summaries/01_design-choices-summary.md)
-
-**Description**: Expand sec:design-choices in 06-notes.typ with deeper analysis of reflexive vs irreflexive semantics for G/H. Include: (1) expressive power differences, (2) frame constraints (serial, density, discreteness), (3) representation theorem challenges for irreflexive vs collapsed logic for reflexive, (4) algebraic perspective (G, H, Box as interior operators). Research codebase, archived projects in vault, and past research to distill comprehensive content for additional sections as needed.
-
----
-
-### 32. Document strict vs reflexive semantics comparison in Typst
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: typst
-- **Research**: [01_typst-structure-research.md](032_document_strict_vs_reflexive_semantics/reports/01_typst-structure-research.md) — Placement, structure, sample code
-- **Plan**: [01_semantics-documentation.md](032_document_strict_vs_reflexive_semantics/plans/01_semantics-documentation.md) — 3 phases, 2h
-- **Summary**: [01_semantics-documentation-summary.md](032_document_strict_vs_reflexive_semantics/summaries/01_semantics-documentation-summary.md)
-
-**Description**: Study the task 29 research reports (05_team-research.md, 06_theoretical-analysis.md) to create a chapter or section in Theories/Bimodal/typst/ documenting the choice between strict and reflexive semantics, explaining the relative advantages of each.
-
----
-
-### 29. Switch TM metalogic to reflexive G/H semantics
-- **Effort**: ~10 hours remaining (v8: preorder acceptance approach)
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-22
-- **Summary**: Two-layer architecture: Layer 1 (basic completeness) axiom-free, Layer 2 (Cantor isomorphism) uses irreflexivity axiom. Deferred: axiom deletion (task 26), seed axiom proofs (task 34)
-- **Language**: lean4
-- **Dependencies**: none
-- **Research**:
-  - [31_team-research.md](029_switch_to_reflexive_gh_semantics/reports/31_team-research.md) — Wave 8: blocker resolution — preorder acceptance, two-layer architecture
-  - [29_team-research.md](029_switch_to_reflexive_gh_semantics/reports/29_team-research.md) — Wave 7: root cause (conceptual error), MCS-decided atom solution
-  - [12_team-research.md](029_switch_to_reflexive_gh_semantics/reports/12_team-research.md) — Wave 6: order-theoretic foundations, antisymmetry fails
-  - [13_unbounded-axiom-analysis.md](029_switch_to_reflexive_gh_semantics/reports/13_unbounded-axiom-analysis.md) — Seriality trivially valid, strict successor for order structure
-- **Plan**:
-  - [08_preorder-acceptance-approach.md](029_switch_to_reflexive_gh_semantics/plans/08_preorder-acceptance-approach.md) — v8: preorder acceptance, two-layer architecture, 8 phases, 10h (current)
-  - [07_mcs-decided-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/07_mcs-decided-atom-approach.md) — v7: superseded (MCS-decided pattern fails for pathological MCS)
-  - [06_per-construction-strictness.md](029_switch_to_reflexive_gh_semantics/plans/06_per-construction-strictness.md) — v6: superseded (blocked on fresh atom existence)
-  - [05_irr-removal-approach.md](029_switch_to_reflexive_gh_semantics/plans/05_irr-removal-approach.md) — v5: superseded
-  - [04_substitution-lemma-approach.md](029_switch_to_reflexive_gh_semantics/plans/04_substitution-lemma-approach.md) — v4: superseded
-  - [03_fresh-g-atom-approach.md](029_switch_to_reflexive_gh_semantics/plans/03_fresh-g-atom-approach.md) — v3: superseded
-
-**Description**: Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md.
 
 ---
 
@@ -390,24 +334,6 @@ technical_debt:
 - **Language**: lean4
 
 **Description**: Redesign the FMP (Finite Model Property) filtration for strict temporal semantics. The 2 sorry'd theorems in `Decidability/FMP/TruthPreservation.lean` — `mcs_all_future_closure` (line 263) and `mcs_all_past_closure` (line 281) — are deprecated because the temporal T-axiom (`Gφ → φ`) is NOT valid under strict semantics. `filtration_all_future_forward` and `filtration_all_past_forward` depend on them. The FMP module is separate from the main decidability pipeline (`decide` is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: `mcs_finite_model_property` in `FMP.lean` does NOT directly use these sorry'd lemmas, so the impact is localized to `filtration_all_future_forward`/`backward`.
-
----
-
-### 997. Wire algebraic base completeness using FMCS domain transfer
-- **Effort**: TBD (estimated 2-4 hours)
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-22
-- **Language**: lean4
-- **Depends On**: Task 34 (non-blocking)
-- **Summary**: Succ-chain base completeness theorem implemented. Creates truth lemma and completeness theorem via CanonicalTask, bypassing BFMCS.
-- **Research**:
-  - [01_wire-base-completeness.md](997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md)
-  - [02_post-flagbfmcs-analysis.md](997_wire_algebraic_base_completeness/reports/02_post-flagbfmcs-analysis.md)
-  - [03_validity-unification.md](997_wire_algebraic_base_completeness/reports/03_validity-unification.md)
-  - [05_team-research.md](997_wire_algebraic_base_completeness/reports/05_team-research.md)
-- **Plan**: [03_succ-chain-completeness.md](997_wire_algebraic_base_completeness/plans/03_succ-chain-completeness.md)
-
-**Description**: Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding `CanonicalMCS → Int`, fill the 2 sorries in `AlgebraicBaseCompleteness.lean` (lines 104, 155) to prove `valid φ → ⊢ φ` for base TM logic. The file already has the right structure: `construct_bfmcs_int` (via CanonicalMCS transfer) feeds `parametric_algebraic_representation_conditional` with `D = Int`. This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).
 
 ---
 
