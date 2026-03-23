@@ -721,7 +721,7 @@
       "status": "implementing",
       "language": "lean4",
       "created": "2026-03-19T17:05:00Z",
-      "last_updated": "2026-03-20T01:29:01Z",
+      "last_updated": "2026-03-23T04:26:01Z",
       "depends_on": [
         995
       ],
@@ -768,6 +768,11 @@
           "path": "specs/997_wire_algebraic_base_completeness/reports/04_mid-implementation-review.md",
           "type": "research",
           "summary": "Mid-implementation review: algebraic_base_completeness theorem is proof-complete at top level, but inherits 5 sorries from BFMCS construction. Sorries are architecturally constrained (W=D conflation, no full S5 in TM). Options: mark complete with documentation, or pivot to Succ-chain bypass approach."
+        },
+        {
+          "path": "specs/997_wire_algebraic_base_completeness/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Synthesized team research: Succ-chain bypass for base completeness, CanonicalTask over CanonicalR, aligned with reflexive refactor"
         }
       ],
       "planned": "2026-03-20T01:00:46Z",

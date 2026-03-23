@@ -1,14 +1,45 @@
 {
   "status": "researched",
-  "artifacts": [{
-    "path": "specs/997_wire_algebraic_base_completeness/reports/04_mid-implementation-review.md",
-    "type": "research",
-    "summary": "Mid-implementation review: algebraic_base_completeness theorem is proof-complete at top level, but inherits 5 sorries from BFMCS construction. Sorries are architecturally constrained (W=D conflation, no full S5 in TM). Options: mark complete with documentation, or pivot to Succ-chain bypass approach."
-  }],
+  "summary": "Team research completed: Succ-chain bypass is the correct approach for zero-debt completeness. BFMCS is architecturally blocked. CanonicalTask infrastructure is mature with sorry-free TaskFrame and WorldHistory.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/997_wire_algebraic_base_completeness/reports/05_team-research.md",
+      "summary": "Synthesized team research: Succ-chain bypass approach for base completeness, CanonicalTask over CanonicalR, aligned with reflexive refactor"
+    }
+  ],
+  "team_execution": {
+    "enabled": true,
+    "wave_count": 1,
+    "teammates_spawned": 2,
+    "teammates_completed": 2,
+    "teammates_failed": 0,
+    "degraded_to_single": false
+  },
+  "teammate_results": [
+    {
+      "name": "teammate-a",
+      "angle": "CanonicalTask Succ-chain approach",
+      "status": "completed",
+      "confidence": "high",
+      "artifact": "specs/997_wire_algebraic_base_completeness/reports/05_teammate-a-findings.md"
+    },
+    {
+      "name": "teammate-b",
+      "angle": "Mathematical foundations",
+      "status": "completed",
+      "confidence": "high",
+      "artifact": "specs/997_wire_algebraic_base_completeness/reports/05_teammate-b-findings.md"
+    }
+  ],
+  "synthesis": {
+    "conflicts_found": 0,
+    "conflicts_resolved": 0,
+    "gaps_identified": 4,
+    "wave_2_triggered": false
+  },
   "metadata": {
-    "session_id": "sess_1774238450_f392cc",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "session_id": "sess_1774238975_1de1fa",
+    "agent_type": "skill-team-research"
   }
 }
