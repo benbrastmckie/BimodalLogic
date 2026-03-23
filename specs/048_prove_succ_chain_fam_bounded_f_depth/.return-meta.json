@@ -1,21 +1,30 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-23T00:00:00Z",
+  "status": "blocked",
+  "started_at": "2026-03-23T10:00:00Z",
+  "completed_at": "2026-03-23T12:00:00Z",
   "artifacts": [
-    {
-      "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/10_g-content-path.md",
-      "type": "research",
-      "summary": "G-content path analysis: confirmed GF(psi) can be in deferralClosure when FF(psi) is not. restricted_succ_propagates_F_not is FALSE as stated. Recommends Option D (strengthen hypotheses) as fix."
-    }
+    "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/08_g-content-fix-summary.md"
   ],
   "partial_progress": {
-    "stage": "report_written",
-    "details": "Research complete. Report covers all 5 questions with concrete counterexample and 4 fix strategies."
+    "stage": "phase_1_blocked",
+    "details": "Added primed theorems but discovered they are not provable with h_GF_not alone. Negation completeness path allows F(psi) to enter chain(k+1) even when GF(psi) ∉ chain(k) but GF(psi) ∈ dc."
   },
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 7,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_output": "Build completed successfully (928 jobs)."
+  },
+  "requires_user_review": true,
+  "review_reason": "Plan v8 approach is blocked. Primed theorems have sorries (7 total, up from 4). Need to choose alternative approach: (A) further strengthen hypotheses with GF ∉ dc, (B) direct bounded_witness with lexicographic termination, or (C) modify chain construction.",
   "metadata": {
-    "session_id": "sess_1774306569_1740b3",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774307545_c7ec7f",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 0,
+    "phases_total": 4,
+    "blocking_issue": "h_GF_not hypothesis insufficient to block all F(psi) paths into chain(k+1)"
   }
 }

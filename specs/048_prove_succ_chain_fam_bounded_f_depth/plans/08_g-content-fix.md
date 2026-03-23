@@ -53,7 +53,7 @@ Concrete counterexample: `phi = G(F(p))` has `GF(p) ∈ dc` but `FF(p) ∉ dc`.
 
 ## Implementation Phases
 
-### Phase 1: Define g_depth and prove boundedness [NOT STARTED]
+### Phase 1: Define g_depth and prove boundedness [BLOCKED]
 
 **Goal**: Define a "G-depth" measure for formulas in deferralClosure.
 

@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "planned",
+      "status": "partial",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T23:11:37Z",
+      "last_updated": "2026-03-23T23:31:25Z",
       "artifacts": [
         {
           "type": "research",
@@ -765,13 +765,18 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/08_g-content-fix.md",
           "type": "plan",
           "summary": "4-phase plan: g_depth measure, strengthen theorems with GF hypothesis, lexicographic bounded_witness, update callers"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/08_g-content-fix-summary.md",
+          "type": "summary",
+          "summary": "BLOCKED: h_GF_not insufficient. Negation completeness path allows F(psi) via FG(neg_psi). Options: strengthen to GF ∉ dc, direct lexicographic bounded_witness, or modify chain construction."
         }
       ],
-      "session_id": "sess_1774306569_1740b3",
+      "session_id": "sess_1774307545_c7ec7f",
       "researched": "2026-03-23T23:07:44Z",
       "planned": "2026-03-23T23:11:37Z",
       "started": "2026-03-23T17:51:37Z",
-      "blocker_reason": "Build broken - SuccChainFMCS.lean has unknown identifiers. Boundary case analysis complete but cannot implement without fixing build."
+      "blocker_reason": "Plan v8 blocked: h_GF_not hypothesis insufficient. Negation completeness allows F(psi) via FG(neg_psi) path. Options: (A) add GF ∉ dc, (B) direct bounded_witness with lexicographic termination, (C) modify chain construction."
     },
     {
       "project_number": 49,
