@@ -771,6 +771,69 @@ lemma iter_P_injective (phi : Formula) (m n : Nat) (h : iter_P m phi = iter_P n 
 lemma iter_P_one_eq_some_past (phi : Formula) :
     iter_P 1 phi = Formula.some_past phi := rfl
 
+/-!
+## iter_P and P-Nesting Depth
+
+These lemmas connect iter_P with the p_nesting_depth measure from SubformulaClosure,
+enabling proofs that iter_P eventually leaves closureWithNeg.
+Symmetric to the iter_F and f_nesting_depth lemmas.
+-/
+
+/-- P-nesting depth of iter_P n phi is n + p_nesting_depth phi.
+
+This is the key lemma connecting iter_P iteration count to p_nesting_depth.
+Since p_nesting_depth counts consecutive outermost P applications, and iter_P
+applies P n times at the outermost level, the depth increases by n.
+-/
+lemma iter_P_p_nesting_depth (n : Nat) (phi : Formula) :
+    Bimodal.Syntax.p_nesting_depth (iter_P n phi) = n + Bimodal.Syntax.p_nesting_depth phi := by
+  induction n with
+  | zero => simp only [iter_P_zero, Nat.zero_add]
+  | succ k ih =>
+    simp only [iter_P_succ, Bimodal.Syntax.p_nesting_depth_some_past, ih]
+    omega
+
+/-- The bound on n for iter_P to leave closureWithNeg.
+
+If n > max_P_depth_in_closure(phi), then iter_P n phi is not in closureWithNeg(phi).
+We define closure_P_bound as max_P_depth + 1 to get the first n that leaves the closure.
+-/
+def closure_P_bound (phi : Formula) : Nat :=
+  Bimodal.Syntax.max_P_depth_in_closure phi + 1
+
+/-- iter_P exceeds the max P-depth bound for large n.
+
+If n >= closure_P_bound(phi), then the p_nesting_depth of iter_P n phi
+exceeds max_P_depth_in_closure(phi).
+-/
+lemma iter_P_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_P_bound phi) :
+    Bimodal.Syntax.p_nesting_depth (iter_P n phi) > Bimodal.Syntax.max_P_depth_in_closure phi := by
+  rw [iter_P_p_nesting_depth]
+  unfold closure_P_bound at h
+  have h_depth_nonneg : Bimodal.Syntax.p_nesting_depth phi ≥ 0 := Nat.zero_le _
+  omega
+
+/-- **Main Theorem**: iter_P n phi is not in closureWithNeg(phi) for large enough n.
+
+This is the key result establishing that iter_P eventually leaves any fixed closure.
+The proof uses p_nesting_depth: if iter_P n phi were in closureWithNeg(phi),
+its p_nesting_depth would be bounded by max_P_depth_in_closure(phi), but
+iter_P increases depth beyond that bound.
+-/
+theorem iter_P_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closure_P_bound phi) :
+    iter_P n phi ∉ Bimodal.Syntax.closureWithNeg phi := by
+  intro h_mem
+  have h_depth_bound : Bimodal.Syntax.p_nesting_depth (iter_P n phi) ≤
+      Bimodal.Syntax.max_P_depth_in_closure phi :=
+    Bimodal.Syntax.p_depth_le_max h_mem
+  have h_exceeds := iter_P_exceeds_max_depth phi n h
+  omega
+
+/-- Explicit form: iter_P at the bound leaves closureWithNeg. -/
+theorem iter_P_leaves_closure (phi : Formula) :
+    iter_P (closure_P_bound phi) phi ∉ Bimodal.Syntax.closureWithNeg phi :=
+  iter_P_not_mem_closureWithNeg phi (closure_P_bound phi) (Nat.le_refl _)
+
 /--
 A backward chain with MCS witnesses and P-step property at each step.
 This version carries the MCS proofs and P-step property for all worlds in the chain.

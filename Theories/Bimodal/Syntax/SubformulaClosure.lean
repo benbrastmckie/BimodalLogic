@@ -388,4 +388,85 @@ theorem f_depth_le_max {phi psi : Formula} (h : psi ∈ closureWithNeg phi) :
     f_nesting_depth psi ≤ max_F_depth_in_closure phi := by
   exact Finset.le_sup h
 
+/-!
+## P-Nesting Depth
+
+The P-nesting depth counts how many P (some_past) operators wrap a formula.
+This is the key measure for proving that iter_P eventually leaves closureWithNeg.
+Symmetric to F-nesting depth.
+-/
+
+/--
+Count the P-nesting depth at the outermost level of a formula.
+
+`p_nesting_depth (P(P(P(phi)))) = 3`
+`p_nesting_depth (phi) = 0` when phi is not a P-formula
+
+Note: This counts the outermost consecutive P-operators only.
+P(phi.and P(psi)) has p_nesting_depth 1, not 2.
+
+The P operator is `some_past φ = φ.neg.all_past.neg`
+  = `(φ.imp bot).all_past.imp bot`
+  = `Formula.imp (Formula.all_past (Formula.imp φ Formula.bot)) Formula.bot`
+-/
+def p_nesting_depth : Formula → Nat
+  | .imp (.all_past (.imp inner .bot)) .bot => 1 + p_nesting_depth inner
+  | _ => 0
+
+/-- p_nesting_depth is always non-negative (trivially true for Nat). -/
+theorem p_nesting_depth_nonneg (phi : Formula) : p_nesting_depth phi ≥ 0 := Nat.zero_le _
+
+/-- The some_past (P) operator matches our pattern. -/
+theorem some_past_unfold (psi : Formula) :
+    Formula.some_past psi = Formula.imp (Formula.all_past (Formula.imp psi Formula.bot)) Formula.bot := by
+  simp only [Formula.some_past, Formula.neg]
+
+/-- P-nesting depth of P(psi) is 1 + depth of psi. -/
+theorem p_nesting_depth_some_past (psi : Formula) :
+    p_nesting_depth (Formula.some_past psi) = 1 + p_nesting_depth psi := by
+  simp only [Formula.some_past, Formula.neg, p_nesting_depth]
+
+/-- Atoms have P-nesting depth 0. -/
+@[simp]
+theorem p_nesting_depth_atom (a : Bimodal.Syntax.Atom) : p_nesting_depth (.atom a) = 0 := rfl
+
+/-- Bot has P-nesting depth 0. -/
+@[simp]
+theorem p_nesting_depth_bot : p_nesting_depth .bot = 0 := rfl
+
+/-- Box formulas have P-nesting depth 0 (P is not Box). -/
+@[simp]
+theorem p_nesting_depth_box (psi : Formula) : p_nesting_depth (.box psi) = 0 := rfl
+
+/-- all_future formulas have P-nesting depth 0. -/
+@[simp]
+theorem p_nesting_depth_all_future (psi : Formula) : p_nesting_depth (.all_future psi) = 0 := rfl
+
+/-- all_past formulas have P-nesting depth 0 (P = neg ∘ all_past ∘ neg, not raw all_past). -/
+@[simp]
+theorem p_nesting_depth_all_past (psi : Formula) : p_nesting_depth (.all_past psi) = 0 := rfl
+
+/-!
+## Maximum P-Depth in Closure
+
+The maximum P-nesting depth over all formulas in closureWithNeg(phi).
+This provides the bound for when iter_P leaves the closure.
+-/
+
+/--
+Maximum P-nesting depth of any formula in closureWithNeg(phi).
+
+Since closureWithNeg is a Finset, this is well-defined via Finset.sup.
+We use Nat.zero as the default for empty sets (though closureWithNeg is never empty).
+-/
+def max_P_depth_in_closure (phi : Formula) : Nat :=
+  (closureWithNeg phi).sup p_nesting_depth
+
+/--
+Every element of closureWithNeg has P-depth at most max_P_depth_in_closure.
+-/
+theorem p_depth_le_max {phi psi : Formula} (h : psi ∈ closureWithNeg phi) :
+    p_nesting_depth psi ≤ max_P_depth_in_closure phi := by
+  exact Finset.le_sup h
+
 end Bimodal.Syntax

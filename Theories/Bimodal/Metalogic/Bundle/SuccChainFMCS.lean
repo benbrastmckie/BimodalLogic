@@ -966,18 +966,21 @@ theorem p_nesting_boundary_of_bounded
     exact h_n_min_not_in
 
 /--
-P-nesting is bounded in any MCS: there exists n ≥ 2 such that iter_P n phi ∉ M.
+**BLOCKED (mathematically false)**: P-nesting boundedness for arbitrary SetMaximalConsistent.
 
-Symmetric to f_nesting_is_bounded.
+This theorem CANNOT be proven because an arbitrary MCS can consistently contain all
+P-iterations. Symmetric to f_nesting_is_bounded.
+
+**Migration path**: Use `p_nesting_is_bounded_restricted` instead, which requires
+RestrictedMCS evidence.
+
+**Current status**: Remains as sorry for backward compatibility; callers should migrate.
 -/
+@[deprecated p_nesting_is_bounded_restricted]
 theorem p_nesting_is_bounded (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
     ∃ n, n ≥ 2 ∧ iter_P n phi ∉ M := by
-  classical
-  by_contra h_all_in
-  push_neg at h_all_in
-  -- The same semantic justification applies as for f_nesting_is_bounded:
-  -- In discrete frames, P-chains must terminate.
+  -- BLOCKED: This claim is FALSE for arbitrary MCS.
   sorry
 
 /--
