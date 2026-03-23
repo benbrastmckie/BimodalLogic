@@ -1,24 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-23T12:00:00Z",
+  "status": "planned",
   "artifacts": [
-    "specs/051_fill_forward_chain_p_step_sorry_using_constrained_successor_seed/reports/01_p-step-proof-strategy.md"
+    {
+      "type": "plan",
+      "path": "specs/051_fill_forward_chain_p_step_sorry_using_constrained_successor_seed/plans/01_p-step-implementation.md",
+      "summary": "3-phase implementation plan for filling P-step sorry using constrained successor"
+    }
   ],
-  "partial_progress": {
-    "stage": "research_complete",
-    "details": "Analysis complete. Forward chain must use constrained_successor_from_seed to enable P-step proof."
-  },
+  "next_steps": "Run /implement 51 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774288872_9cfa6c",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774289151_bb59ab",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "findings": {
-    "approach": "Modify forward chain construction to use constrained_successor_from_seed",
-    "key_theorem": "successor_p_step at SuccExistence.lean:324-355",
-    "files_to_modify": ["Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean"],
-    "zero_debt_compliant": true,
-    "risk_level": "low"
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 3,
+    "estimated_hours": 1.5
   }
 }
