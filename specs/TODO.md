@@ -154,7 +154,7 @@ Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass S
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
