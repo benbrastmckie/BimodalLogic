@@ -147,7 +147,7 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 55. Prove SuccChain temporal coherence directly
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 48
 - **Research**:
