@@ -159,6 +159,7 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
   - [03_team-research.md](055_prove_succchain_temporal_coherence_directly/reports/03_team-research.md)
   - [03_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-a-findings.md)
   - [03_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-b-findings.md)
+  - [04_resolving-chain-detailed.md](055_prove_succchain_temporal_coherence_directly/reports/04_resolving-chain-detailed.md)
 - **Plan**:
   - [01_temporal-coherence-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/01_temporal-coherence-implementation.md) (superseded)
   - [02_algebraic-temporal-coherence.md](055_prove_succchain_temporal_coherence_directly/plans/02_algebraic-temporal-coherence.md)
