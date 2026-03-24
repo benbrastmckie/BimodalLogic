@@ -145,6 +145,7 @@ Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass S
   - [03_team-research.md](049_fmp_based_boundedness_proof_fallback/reports/03_team-research.md)
   - [03_teammate-a-findings.md](049_fmp_based_boundedness_proof_fallback/reports/03_teammate-a-findings.md)
   - [03_teammate-b-findings.md](049_fmp_based_boundedness_proof_fallback/reports/03_teammate-b-findings.md)
+  - [04_fmp-implementation-details.md](049_fmp_based_boundedness_proof_fallback/reports/04_fmp-implementation-details.md)
 
 **Description**: FALLBACK TASK: Only pursue if Task 48 encounters fundamental obstacles. Connect succ_chain_fam to FMP infrastructure to prove boundedness via Finite Model Property. Use existing FMP infrastructure in Theories/Bimodal/Metalogic/Decidability/FMP/ including ClosureMCS, FiniteModel, Filtration, and TruthPreservation theorems.
 
@@ -152,7 +153,7 @@ Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass S
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36

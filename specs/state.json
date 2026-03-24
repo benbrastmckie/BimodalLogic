@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T16:55:10Z",
+      "last_updated": "2026-03-24T17:00:15Z",
       "artifacts": [
         {
           "type": "research",
@@ -807,7 +807,7 @@
           "summary": "6-phase implementation plan for algebraic STSA bypass approach"
         }
       ],
-      "session_id": "sess_1774371100_a6816e",
+      "session_id": "sess_1774371589_a1a03e",
       "researched": "2026-03-24T06:54:32Z",
       "planned": "2026-03-24T16:55:10Z",
       "started": "2026-03-24T00:53:25Z"
@@ -824,7 +824,7 @@
         48
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T06:57:36Z",
+      "last_updated": "2026-03-24T17:04:09Z",
       "artifacts": [
         {
           "type": "research",
@@ -850,10 +850,15 @@
           "type": "research",
           "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/03_teammate-b-findings.md",
           "summary": "Teammate B: FMP approach and equivalence"
+        },
+        {
+          "type": "research",
+          "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/04_fmp-implementation-details.md",
+          "summary": "Detailed FMP implementation plan with proof sketches"
         }
       ],
-      "session_id": "sess_1774335050_c8fe9d",
-      "researched": "2026-03-24T06:57:36Z"
+      "session_id": "sess_1774371563_cc7d2b",
+      "researched": "2026-03-24T17:04:09Z"
     },
     {
       "project_number": 53,
