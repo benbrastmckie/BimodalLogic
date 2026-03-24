@@ -1,5 +1,5 @@
 ---
-next_project_number: 56
+next_project_number: 62
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -96,6 +96,66 @@ Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass S
 6. **619** → defer (skill migration — meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 61. EXPERIMENTAL: Eliminate BFMCS bundle machinery
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: None (independent exploration)
+
+**Description**: EXPERIMENTAL: Develop an alternative completeness proof that eliminates BFMCS bundle machinery entirely. Define canonical model with box-class equivalence for modal accessibility directly on worlds (MCS, time) pairs, not families. Use box_theory_witness_exists for the Box truth lemma without bundle quantification. Develop independently until proven to work, then consider replacing existing infrastructure. "Believe it when I see it" approach.
+
+---
+
+### 60. Remove discrete_Icc_finite_axiom
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 59
+
+**Description**: Eliminate the custom axiom discrete_Icc_finite_axiom (FrameConditions/Completeness.lean line 187). Either prove the finiteness of DiscreteTimelineQuot intervals directly, or restructure the discrete completeness proof to avoid needing it. Research-heavy task.
+
+---
+
+### 59. Prove frame-specific soundness axioms
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 58
+
+**Description**: Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.
+
+---
+
+### 58. Wire completeness to FrameConditions
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 55
+
+**Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
+
+---
+
+### 57. Clean up UltrafilterChain.lean
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 56
+
+**Description**: Remove ~150 lines of unused Phase 1 ultrafilter relations (R_G, R_Box, etc.) never referenced by the actual box-class construction. Remove ~280 lines of verbose exploratory comments in box_class_witness_consistent. Consider renaming file to BoxClassBFMCS.lean to match what it actually does.
+
+---
+
+### 56. Clean up SuccChainFMCS.lean dead code
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 55
+
+**Description**: Remove ~2500 lines of dead code from SuccChainFMCS.lean. Delete deprecated approaches: restricted_succ_propagates_F_not variants (9 sorries, proven FALSE), single_step_forcing attempts, f_nesting_is_bounded/p_nesting_is_bounded (deprecated), fuel-based and boundary-resolution approaches. Also remove p_step_blocking_for_deferral_restricted in RestrictedMCS.lean.
 
 ---
 

@@ -6,6 +6,82 @@
   },
   "active_projects": [
     {
+      "project_number": 61,
+      "project_name": "experiment_eliminate_bfmcs_bundles",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "EXPERIMENTAL: Develop an alternative completeness proof that eliminates BFMCS bundle machinery entirely. Define canonical model with box-class equivalence for modal accessibility directly on worlds (MCS, time) pairs, not families. Use box_theory_witness_exists for the Box truth lemma without bundle quantification. Develop independently until proven to work, then consider replacing existing infrastructure. Believe it when I see it approach.",
+      "effort": "6-10 hours",
+      "dependencies": [],
+      "created": "2026-03-24T19:43:30Z",
+      "last_updated": "2026-03-24T19:43:30Z"
+    },
+    {
+      "project_number": 60,
+      "project_name": "remove_discrete_icc_finite_axiom",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Eliminate the custom axiom discrete_Icc_finite_axiom (FrameConditions/Completeness.lean line 187). Either prove the finiteness of DiscreteTimelineQuot intervals directly, or restructure the discrete completeness proof to avoid needing it. Research-heavy task.",
+      "effort": "4-6 hours",
+      "dependencies": [
+        59
+      ],
+      "created": "2026-03-24T19:43:21Z",
+      "last_updated": "2026-03-24T19:43:21Z"
+    },
+    {
+      "project_number": 59,
+      "project_name": "prove_frame_specific_soundness_axioms",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.",
+      "effort": "3-5 hours",
+      "dependencies": [
+        58
+      ],
+      "created": "2026-03-24T19:43:14Z",
+      "last_updated": "2026-03-24T19:43:14Z"
+    },
+    {
+      "project_number": 58,
+      "project_name": "wire_completeness_to_frame_conditions",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
+      "effort": "3-5 hours",
+      "dependencies": [
+        55
+      ],
+      "created": "2026-03-24T19:43:07Z",
+      "last_updated": "2026-03-24T19:43:07Z"
+    },
+    {
+      "project_number": 57,
+      "project_name": "clean_up_ultrafilter_chain_lean",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Clean up UltrafilterChain.lean: remove ~150 lines of unused Phase 1 ultrafilter relations (R_G, R_Box, R_G_refl, R_G_trans, R_Box_refl, R_Box_euclidean, R_Box_symm, R_Box_trans) that are never referenced by the actual box-class construction. Remove ~280 lines of verbose exploratory comments in box_class_witness_consistent. Consider renaming file to BoxClassBFMCS.lean to match what it actually does.",
+      "effort": "1-2 hours",
+      "dependencies": [
+        56
+      ],
+      "created": "2026-03-24T19:43:00Z",
+      "last_updated": "2026-03-24T19:43:00Z"
+    },
+    {
+      "project_number": 56,
+      "project_name": "clean_up_succchain_fmcs_dead_code",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Remove ~2500 lines of dead code from SuccChainFMCS.lean. Delete deprecated approaches: restricted_succ_propagates_F_not variants (9 sorries, proven FALSE), single_step_forcing attempts, f_nesting_is_bounded/p_nesting_is_bounded (deprecated), fuel-based and boundary-resolution approaches. Also remove p_step_blocking_for_deferral_restricted in RestrictedMCS.lean.",
+      "effort": "2-3 hours",
+      "dependencies": [
+        55
+      ],
+      "created": "2026-03-24T19:42:51Z",
+      "last_updated": "2026-03-24T19:42:51Z"
+    },
+    {
       "project_number": 55,
       "project_name": "prove_succchain_temporal_coherence_directly",
       "status": "not_started",
@@ -978,7 +1054,7 @@
       ]
     }
   ],
-  "next_project_number": 56,
+  "next_project_number": 62,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
