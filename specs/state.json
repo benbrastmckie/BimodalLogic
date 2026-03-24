@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T00:42:02Z",
+      "last_updated": "2026-03-24T00:50:59Z",
       "artifacts": [
         {
           "type": "research",
@@ -677,11 +677,6 @@
           "summary": "Team research (2 teammates): augmented closure approach for RestrictedMCS chain construction"
         },
         {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan for augmented deferral closure approach"
-        },
-        {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/02_augmented-closure-summary.md",
           "type": "summary",
           "summary": "Partial implementation: phases 0-3 complete (deferralClosure, depth bounds, DeferralRestrictedMCS). Phase 4 partial (seed subset lemmas). Phases 5-6 blocked by architectural tension."
@@ -692,19 +687,9 @@
           "summary": "Blocker analysis: Path 2 (restricted MCS properties) viable. p_step_blocking uses closure formulas where negation completeness holds."
         },
         {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/03_restricted-p-step.md",
-          "type": "plan",
-          "summary": "3-phase plan: restricted P-step blocking, constrained successor update, chain coherence"
-        },
-        {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/06_team-research.md",
           "type": "research",
           "summary": "Team research: theorem is false as stated, recommended restricted p_step_blocking"
-        },
-        {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/04_restricted-blocking.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan v4 using restricted P-step blocking definition"
         },
         {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/04_restricted-blocking-summary.md",
@@ -717,11 +702,6 @@
           "summary": "Team research (2 teammates): fuel-based well-founded recursion for persistence case"
         },
         {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/05_fuel-recursion.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for fuel-based well-founded recursion solution"
-        },
-        {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/05_fuel-recursion-partial.md",
           "type": "summary",
           "summary": "Partial implementation v5: fuel-based helper added with sorry in inr.succ case. Blocker: fuel bound invariant cannot be maintained."
@@ -730,11 +710,6 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/08_lexicographic-wf.md",
           "type": "research",
           "summary": "Research on correct approach: use restricted_bounded_witness pattern instead of fuel counting. Key insight: F-step boundary propagates through Succ."
-        },
-        {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/06_bounded-witness.md",
-          "type": "plan",
-          "summary": "5-phase plan: restricted bounded witness approach"
         },
         {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/06_bounded-witness-summary.md",
@@ -747,11 +722,6 @@
           "summary": "Research on boundary case: F(psi) at closure boundary. Recommended Option C - direct proof with closure depth tracking."
         },
         {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/07_boundary-resolution.md",
-          "type": "plan",
-          "summary": "4-phase plan: resolve boundary case sorries by showing deferral impossible at boundary"
-        },
-        {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/handoffs/01_boundary-analysis.md",
           "type": "handoff",
           "summary": "Boundary case analysis and G-content path issue identification"
@@ -760,11 +730,6 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/10_g-content-path.md",
           "type": "research",
           "summary": "G-content path analysis: confirmed GF(psi) can be in deferralClosure when FF(psi) is not. restricted_succ_propagates_F_not is FALSE as stated. Recommends Option D (strengthen hypotheses) as fix."
-        },
-        {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/08_g-content-fix.md",
-          "type": "plan",
-          "summary": "4-phase plan: g_depth measure, strengthen theorems with GF hypothesis, lexicographic bounded_witness, update callers"
         },
         {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/08_g-content-fix-summary.md",
@@ -777,19 +742,9 @@
           "summary": "Team research (2 teammates): Option C (modify chain construction with boundary_resolution_set) is the only viable approach. Options A/B cannot overcome MCS maximality gap."
         },
         {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/09_boundary-resolution-seed.md",
-          "type": "plan",
-          "summary": "5-phase plan: add boundary_resolution_set to seed, prove consistency, simplify restricted_single_step_forcing"
-        },
-        {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/16_derivability-blocker.md",
           "type": "research",
           "summary": "Derivability blocker analysis: chi.neg can be in u while satisfying boundary conditions. Recommended: restrict boundary_resolution_set to require chi in u (Option A)."
-        },
-        {
-          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/10_chi-in-u-restriction.md",
-          "type": "plan",
-          "summary": "5-phase plan: restrict boundary_resolution_set to chi in u, complete consistency proof trivially"
         },
         {
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/10_chi-in-u-restriction-summary.md",
@@ -800,11 +755,16 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/19_team-research.md",
           "type": "research",
           "summary": "Team research (2 teammates): root cause analysis and solution evaluation. Lindenbaum extension or lexicographic bounded witness recommended."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/11_lindenbaum-extension.md",
+          "type": "plan",
+          "summary": "5-phase Lindenbaum extension plan to remove 5 boundary case sorries"
         }
       ],
-      "session_id": "sess_1774312603_c9d90e",
+      "session_id": "sess_1774313273_bb6ec6",
       "researched": "2026-03-24T00:42:02Z",
-      "planned": "2026-03-24T00:08:35Z",
+      "planned": "2026-03-24T00:50:59Z",
       "started": "2026-03-23T17:51:37Z"
     },
     {
