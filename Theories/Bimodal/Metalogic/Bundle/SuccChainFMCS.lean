@@ -2352,233 +2352,12 @@ theorem restricted_single_step_forcing (phi : Formula)
       (Formula.some_future psi) h_FF_in_cwn
     -- FF(psi) is of form some_future(some_future psi), which is not a neg
     -- So FF(psi) ∈ closureWithNeg => FF(psi) ∈ subformulaClosure
-    have h_FF_in_sub : Formula.some_future (Formula.some_future psi) ∈ subformulaClosure phi := by
-      unfold closureWithNeg at h_FF_in_cwn
-      simp only [Finset.coe_union, Finset.coe_image, Set.mem_union, Set.mem_image] at h_FF_in_cwn
-      cases h_FF_in_cwn with
-      | inl h => exact h
-      | inr h =>
-        obtain ⟨chi, _, h_eq⟩ := h
-        -- FF(psi) = chi.neg is impossible since some_future is not neg
-        cases h_eq
-
-    -- Now apply deferral_restricted_mcs_negation_complete
-    have h_neg_complete := deferral_restricted_mcs_negation_complete h_drm_u
-      (Formula.some_future (Formula.some_future psi)) h_FF_in_sub
-    cases h_neg_complete with
-    | inl h_in => exact absurd h_in h_FF_not
-    | inr h_neg =>
-      -- neg(FF(psi)) ∈ chain(k) => GG(neg(psi)) ∈ chain(k)
-      -- Use neg_FF_implies_GG_neg_in_mcs - but we need full MCS, not restricted
-      -- For restricted MCS, we can still derive this since it's a propositional consequence
-      -- Actually, we need to be more careful. Let's use the derivation directly.
-      -- neg(FF(psi)) is syntactically GG(neg psi).neg.neg, and DNE applies.
-      -- The key helper from SuccRelation.lean works if the set derives things.
-
-      -- We have neg(FF(psi)) ∈ u. Since u is consistent and closed under derivation
-      -- for formulas in deferralClosure, and GG(neg psi) is derivable from neg(FF psi),
-      -- we need GG(neg psi) ∈ deferralClosure.
-
-      -- Check: G(neg psi) = all_future(neg psi).
-      -- neg psi ∈ closureWithNeg (since psi ∈ subformulaClosure)
-      have h_neg_psi_in_cwn : psi.neg ∈ closureWithNeg phi :=
-        neg_mem_closureWithNeg phi psi h_psi_in_sub
-
-      -- G(neg psi) = all_future(psi.neg). If all_future(psi.neg) ∈ deferralClosure...
-      -- We need to check if GG(neg psi) ∈ deferralClosure.
-      -- Since F(psi) ∈ subformulaClosure, neg(F psi) = G(neg psi) ∈ closureWithNeg.
-      have h_G_neg_in_cwn : Formula.all_future psi.neg ∈ closureWithNeg phi := by
-        -- F(psi) ∈ subformulaClosure, so neg(F psi) ∈ closureWithNeg
-        -- But neg(F psi) = G(neg psi) by definition
-        have : (Formula.some_future psi).neg = Formula.all_future psi.neg := rfl
-        exact neg_mem_closureWithNeg phi (Formula.some_future psi) h_Fpsi_in_sub
-
-      -- G(neg psi) ∈ closureWithNeg => G(neg psi) ∈ deferralClosure
-      have h_G_neg_in_dc : Formula.all_future psi.neg ∈ (deferralClosure phi : Set Formula) :=
-        closureWithNeg_subset_deferralClosure phi h_G_neg_in_cwn
-
-      -- Similarly, GG(neg psi) ∈ deferralClosure if G(neg psi) ∈ subformulaClosure
-      -- G(neg psi) ∈ closureWithNeg. Is G(neg psi) in subformulaClosure?
-      -- Since FF(psi) ∈ subformulaClosure, neg(FF psi) = GG(neg psi) should be in closureWithNeg.
-      have h_GG_neg_in_cwn : Formula.all_future (Formula.all_future psi.neg) ∈ closureWithNeg phi := by
-        have : (Formula.some_future (Formula.some_future psi)).neg =
-               Formula.all_future (Formula.all_future psi.neg) := rfl
-        exact neg_mem_closureWithNeg phi (Formula.some_future (Formula.some_future psi)) h_FF_in_sub
-
-      have h_GG_neg_in_dc : Formula.all_future (Formula.all_future psi.neg) ∈
-          (deferralClosure phi : Set Formula) :=
-        closureWithNeg_subset_deferralClosure phi h_GG_neg_in_cwn
-
-      -- Now we can derive GG(neg psi) from neg(FF psi) using DNE inside G
-      -- The key is that DeferralRestrictedMCS is closed under derivation for formulas in closure
-      have h_GG_neg_in_u : Formula.all_future (Formula.all_future psi.neg) ∈ u := by
-        -- neg(FF(psi)) ∈ u, and neg(FF psi) = (GG(neg psi)).neg.neg
-        -- DNE: ⊢ X.neg.neg → X, so (GG neg psi).neg.neg → GG neg psi is provable
-        -- h_neg : neg(FF psi) = (some_future (some_future psi)).neg ∈ u
-        -- Since some_future X = (all_future X.neg).neg, we have:
-        -- some_future (some_future psi) = (all_future (some_future psi).neg).neg
-        --                               = (all_future (all_future psi.neg.neg).neg).neg
-        -- Actually let's compute more carefully:
-        -- F psi = neg(G(neg psi)) = (all_future psi.neg).neg
-        -- FF psi = neg(G(neg(F psi))) = neg(G(neg(neg(G(neg psi)))))
-        --        = neg(G((G(neg psi)).neg.neg))
-        -- neg(FF psi) = G((G(neg psi)).neg.neg)
-        --             = all_future ((all_future psi.neg).neg.neg)
-        -- By DNE inside G: ⊢ G(X.neg.neg) → G(X)
-        -- So: all_future ((all_future psi.neg).neg.neg) → all_future (all_future psi.neg)
-        -- i.e., neg(FF psi) → GG(neg psi) is provable
-
-        -- Use the existing lemma from SuccRelation.lean if it works with our derivation closure
-        -- Actually, deferral_restricted_mcs_double_neg_elim handles double negation
-        -- We have: neg(FF psi) ∈ u, which is G((G neg psi).neg.neg) ∈ u
-        -- We need GG(neg psi) ∈ u
-
-        -- Actually, let's use that restricted MCS is closed under provable implications
-        -- when the conclusion is in deferralClosure.
-        -- We need: u derives GG(neg psi) from neg(FF psi), and GG(neg psi) ∈ deferralClosure
-        have h_deriv : [] ⊢ (Formula.some_future (Formula.some_future psi)).neg.imp
-                           (Formula.all_future (Formula.all_future psi.neg)) := by
-          -- neg(FF psi) → GG(neg psi) is provable by DNE manipulation
-          -- This follows from neg_FF_implies_GG_neg_in_mcs proof structure
-          -- Let's use Theorems here
-          -- Actually, the proof in neg_FF_implies_GG_neg_in_mcs shows:
-          -- Step A: Apply DNE to get inner double negation eliminated
-          -- Step B: Use H_dne (G_dne) to eliminate outer double negation
-          -- We need to adapt this to an implication
-
-          -- neg(FF psi) = neg(neg(G(neg(F psi)))) = neg(neg(G(neg(neg(G neg psi)))))
-          --             = G((G neg psi).neg.neg)
-          -- By prop logic: G((G neg psi).neg.neg) → G((G neg psi).neg.neg) is trivial
-          -- We need: G((G neg psi).neg.neg) → G(G neg psi)
-          -- This follows from: ⊢ X.neg.neg → X (DNE)
-          -- And: ⊢ G(A → B) → (G A → G B) (K axiom for G)
-          -- And: ⊢ (A → B) → G(A → B) (necessitation)
-          -- So: ⊢ G(X.neg.neg → X) → (G(X.neg.neg) → G(X))
-          -- And: ⊢ G(X.neg.neg → X) by necessitation of DNE
-          -- Therefore: ⊢ G(X.neg.neg) → G(X)
-
-          -- With X = G neg psi:
-          -- ⊢ G((G neg psi).neg.neg) → G(G neg psi)
-          -- i.e., ⊢ neg(FF psi) → GG(neg psi)
-          have h_dne : [] ⊢ (Formula.all_future psi.neg).neg.neg.imp (Formula.all_future psi.neg) :=
-            Bimodal.Theorems.Propositional.double_negation _
-          have h_nec : [] ⊢ ((Formula.all_future psi.neg).neg.neg.imp
-                             (Formula.all_future psi.neg)).all_future :=
-            Bimodal.Theorems.future_necessitation _ h_dne
-          have h_K : [] ⊢ ((Formula.all_future psi.neg).neg.neg.imp
-                           (Formula.all_future psi.neg)).all_future.imp
-                          ((Formula.all_future psi.neg).neg.neg.all_future.imp
-                           (Formula.all_future psi.neg).all_future) :=
-            Bimodal.Theorems.future_k_dist _ _
-          exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_K h_nec
-
-        -- Now use derivation closure property of DeferralRestrictedMCS
-        -- If GG(neg psi) is not in u, then by maximality, inserting it would be inconsistent.
-        -- But neg(FF psi) ∈ u and neg(FF psi) → GG(neg psi), so u ∪ {GG(neg psi)} is consistent.
-        -- Contradiction.
-        by_contra h_GG_not_in
-        have h_incons := h_drm_u.2 (Formula.all_future (Formula.all_future psi.neg))
-          h_GG_neg_in_dc h_GG_not_in
-        unfold SetConsistent at h_incons
-        push_neg at h_incons
-        obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
-        -- L ∪ {GG neg psi} ⊢ ⊥
-        have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
-        obtain ⟨d_bot⟩ := h_bot
-        -- Extract Gamma = L without GG neg psi
-        let GG_neg := Formula.all_future (Formula.all_future psi.neg)
-        let Γ := L.filter (· ≠ GG_neg)
-        have h_Γ_in_u : ∀ χ ∈ Γ, χ ∈ u := by
-          intro χ hχ
-          have hχ' := List.mem_filter.mp hχ
-          have hχne : χ ≠ GG_neg := by simpa using hχ'.2
-          specialize h_L_sub χ hχ'.1
-          simp [Set.mem_insert_iff] at h_L_sub
-          rcases h_L_sub with rfl | h_in_u
-          · exact absurd rfl hχne
-          · exact h_in_u
-        have h_L_sub_GGGamma : L ⊆ GG_neg :: Γ := by
-          intro χ hχ
-          by_cases hχGG : χ = GG_neg
-          · simp [hχGG]
-          · simp only [List.mem_cons]
-            right
-            exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-        -- Weaken: (GG_neg :: Gamma) derives bot
-        have d_bot' : DerivationTree (GG_neg :: Γ) Formula.bot :=
-          DerivationTree.weakening L (GG_neg :: Γ) Formula.bot d_bot h_L_sub_GGGamma
-        -- By deduction: Gamma derives neg(GG_neg)
-        have d_neg_GG : DerivationTree Γ GG_neg.neg :=
-          deduction_theorem Γ GG_neg Formula.bot d_bot'
-        -- We have neg(FF psi) ∈ u and neg(FF psi) → GG neg psi
-        -- So from Γ ∪ {neg(FF psi)}, we can derive both GG neg psi and neg(GG neg psi) → ⊥
-        -- neg(FF psi) is syntactically...
-        let neg_FF := (Formula.some_future (Formula.some_future psi)).neg
-        -- h_neg : neg_FF ∈ u
-        -- We need neg_FF ∈ Γ or can add it
-        -- Actually, let's use modus ponens: from h_deriv and h_neg
-        -- Build a contradiction in u
-        -- Gamma ⊆ u, neg_FF ∈ u
-        -- From Gamma, we derive neg(GG_neg)
-        -- From neg_FF, using h_deriv, we derive GG_neg
-        -- So from Gamma ∪ {neg_FF}, we derive both GG_neg and neg(GG_neg) → ⊥
-
-        -- Build: neg_FF :: Gamma derives GG_neg
-        have h_neg_FF_in_context : neg_FF ∈ (neg_FF :: Γ) := List.mem_cons_self _ _
-        have d_neg_FF_ax : DerivationTree (neg_FF :: Γ) neg_FF :=
-          DerivationTree.assumption (neg_FF :: Γ) neg_FF h_neg_FF_in_context
-        have d_deriv_w : DerivationTree (neg_FF :: Γ) (neg_FF.imp GG_neg) :=
-          DerivationTree.weakening [] (neg_FF :: Γ) (neg_FF.imp GG_neg)
-            h_deriv (List.nil_subset _)
-        have d_GG : DerivationTree (neg_FF :: Γ) GG_neg :=
-          DerivationTree.modus_ponens (neg_FF :: Γ) neg_FF GG_neg d_deriv_w d_neg_FF_ax
-
-        -- Also, neg_FF :: Gamma derives neg(GG_neg) by weakening d_neg_GG
-        have d_neg_GG_w : DerivationTree (neg_FF :: Γ) GG_neg.neg :=
-          DerivationTree.weakening Γ (neg_FF :: Γ) GG_neg.neg d_neg_GG (List.subset_cons_of_subset _ (List.Subset.refl _))
-
-        -- From A and neg A, derive bot
-        have d_bot_final : DerivationTree (neg_FF :: Γ) Formula.bot :=
-          DerivationTree.neg_elim (neg_FF :: Γ) GG_neg d_GG d_neg_GG_w
-
-        -- neg_FF :: Gamma ⊆ u
-        have h_neg_FF_Γ_in_u : ∀ χ ∈ (neg_FF :: Γ), χ ∈ u := by
-          intro χ hχ
-          simp only [List.mem_cons] at hχ
-          rcases hχ with rfl | hχ'
-          · exact h_neg
-          · exact h_Γ_in_u χ hχ'
-
-        -- This contradicts consistency of u
-        exact h_drm_u.1.2 (neg_FF :: Γ) h_neg_FF_Γ_in_u ⟨d_bot_final⟩
-
-      -- GG(neg psi) ∈ u means G(neg psi) ∈ g_content(u)
-      have h_G_neg_in_g : Formula.all_future psi.neg ∈ g_content u := h_GG_neg_in_u
-
-      -- By G-persistence (Succ property): G(neg psi) ∈ v
-      have h_G_neg_in_v : Formula.all_future psi.neg ∈ v := h_succ.1 h_G_neg_in_g
-
-      -- G(neg psi) ∈ v means F(psi) ∉ v (by G_neg_implies_not_F)
-      -- But we need v to be consistent. It is, since it's a DeferralRestrictedMCS.
-      have h_drm_v := restricted_forward_chain_is_drm phi M0 (k + 1)
-      have h_F_not_v : Formula.some_future psi ∉ v := by
-        -- G(neg psi) and F(psi) are contradictory: F psi = neg(G neg psi)
-        -- If both were in v, then G(neg psi) and neg(G neg psi) would be in v
-        -- contradicting consistency
-        intro h_F_v
-        have h_cons := h_drm_v.1.2
-        have h_neg_G : (Formula.all_future psi.neg).neg ∈ v := h_F_v
-        exact set_consistent_not_both h_cons (Formula.all_future psi.neg) h_G_neg_in_v h_neg_G
-
-      -- psi ∈ f_content(u), so by F-step: psi ∈ v ∨ psi ∈ f_content(v)
-      have h_psi_in_f_content_u : psi ∈ f_content u := h_F
-      have h_union : psi ∈ v ∪ f_content v := h_succ.2 h_psi_in_f_content_u
-
-      -- Since F(psi) ∉ v, we have psi ∉ f_content(v)
-      rcases Set.mem_or_mem_of_mem_union h_union with h_in_v | h_in_f_v
-      · exact h_in_v
-      · -- h_in_f_v : psi ∈ f_content v means F(psi) ∈ v
-        exact absurd h_in_f_v h_F_not_v
+    -- FF(psi) ∈ deferralClosure, negation completeness gives FF(psi) ∈ u ∨ neg(FF psi) ∈ u.
+    -- Since FF(psi) ∉ u, neg(FF psi) ∈ u. Deriving the conclusion requires the modal
+    -- duality neg(F psi) ↔ G(neg psi) as a proof-system theorem, not definitional equality.
+    -- Formula.neg is φ.imp bot, so some_future and all_future are NOT syntactic duals.
+    -- TODO: Prove via the proof system (temporal_necessitation + temp_k_dist + DNE)
+    sorry
 
   · -- Case 1: FF(psi) ∉ deferralClosure(phi)
     -- Since v ⊆ deferralClosure(phi), FF(psi) cannot be in v
@@ -3226,124 +3005,11 @@ theorem restricted_succ_propagates_F_not (phi : Formula)
     -- FF(psi) ∈ deferralClosure => FF(psi) ∈ closureWithNeg (F-formulas in dc are in cwn)
     have h_FF_in_cwn := some_future_in_deferralClosure_is_in_closureWithNeg phi
       (Formula.some_future psi) h_FF_dc
-    -- FF(psi) ∈ closureWithNeg and is not a neg formula => FF(psi) ∈ subformulaClosure
-    have h_FF_in_sub : Formula.some_future (Formula.some_future psi) ∈ subformulaClosure phi := by
-      unfold closureWithNeg at h_FF_in_cwn
-      simp only [Finset.coe_union, Finset.coe_image, Set.mem_union, Set.mem_image] at h_FF_in_cwn
-      cases h_FF_in_cwn with
-      | inl h => exact h
-      | inr h =>
-        obtain ⟨chi, _, h_eq⟩ := h
-        -- FF(psi) = chi.neg is impossible since some_future is not neg
-        cases h_eq
-
-    -- By negation completeness: FF(psi) ∈ u ∨ neg(FF(psi)) ∈ u
-    have h_neg_complete := deferral_restricted_mcs_negation_complete h_drm_u
-      (Formula.some_future (Formula.some_future psi)) h_FF_in_sub
-    cases h_neg_complete with
-    | inl h_in => exact absurd h_in h_FF_not
-    | inr h_neg =>
-      -- neg(FF(psi)) ∈ u => GG(neg(psi)) ∈ u (by derivation)
-      -- F(psi) ∈ subformulaClosure (since FF(psi) ∈ subformulaClosure)
-      have h_Fpsi_in_sub := some_future_in_closureWithNeg_inner_in_subformulaClosure phi
-        (Formula.some_future psi) h_FF_in_cwn
-      have h_psi_in_sub := some_future_in_closureWithNeg_inner_in_subformulaClosure phi psi
-        (some_future_in_deferralClosure_is_in_closureWithNeg phi psi
-          (closureWithNeg_subset_deferralClosure phi
-            (subformulaClosure_subset_closureWithNeg phi h_Fpsi_in_sub)))
-
-      -- Get membership facts for closure
-      have h_neg_psi_in_cwn : psi.neg ∈ closureWithNeg phi :=
-        neg_mem_closureWithNeg phi psi h_psi_in_sub
-      have h_G_neg_in_cwn : Formula.all_future psi.neg ∈ closureWithNeg phi :=
-        neg_mem_closureWithNeg phi (Formula.some_future psi) h_Fpsi_in_sub
-      have h_GG_neg_in_cwn : Formula.all_future (Formula.all_future psi.neg) ∈ closureWithNeg phi :=
-        neg_mem_closureWithNeg phi (Formula.some_future (Formula.some_future psi)) h_FF_in_sub
-      have h_GG_neg_in_dc : Formula.all_future (Formula.all_future psi.neg) ∈
-          (deferralClosure phi : Set Formula) :=
-        closureWithNeg_subset_deferralClosure phi h_GG_neg_in_cwn
-
-      -- Derive GG(neg psi) from neg(FF psi) using the same technique as single_step_forcing
-      have h_GG_neg_in_u : Formula.all_future (Formula.all_future psi.neg) ∈ u := by
-        -- Build the derivation neg(FF psi) → GG(neg psi)
-        have h_deriv : [] ⊢ (Formula.some_future (Formula.some_future psi)).neg.imp
-                           (Formula.all_future (Formula.all_future psi.neg)) := by
-          have h_dne : [] ⊢ (Formula.all_future psi.neg).neg.neg.imp (Formula.all_future psi.neg) :=
-            Bimodal.Theorems.Propositional.double_negation _
-          have h_nec : [] ⊢ ((Formula.all_future psi.neg).neg.neg.imp
-                             (Formula.all_future psi.neg)).all_future :=
-            Bimodal.Theorems.future_necessitation _ h_dne
-          have h_K : [] ⊢ ((Formula.all_future psi.neg).neg.neg.imp
-                           (Formula.all_future psi.neg)).all_future.imp
-                          ((Formula.all_future psi.neg).neg.neg.all_future.imp
-                           (Formula.all_future psi.neg).all_future) :=
-            Bimodal.Theorems.future_k_dist _ _
-          exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_K h_nec
-
-        -- Apply derivation closure (same pattern as in single_step_forcing)
-        by_contra h_GG_not_in
-        have h_incons := h_drm_u.2 (Formula.all_future (Formula.all_future psi.neg))
-          h_GG_neg_in_dc h_GG_not_in
-        unfold SetConsistent at h_incons
-        push_neg at h_incons
-        obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
-        have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
-        obtain ⟨d_bot⟩ := h_bot
-        let GG_neg := Formula.all_future (Formula.all_future psi.neg)
-        let Γ := L.filter (· ≠ GG_neg)
-        have h_Γ_in_u : ∀ χ ∈ Γ, χ ∈ u := by
-          intro χ hχ
-          have hχ' := List.mem_filter.mp hχ
-          have hχne : χ ≠ GG_neg := by simpa using hχ'.2
-          specialize h_L_sub χ hχ'.1
-          simp [Set.mem_insert_iff] at h_L_sub
-          rcases h_L_sub with rfl | h_in_u
-          · exact absurd rfl hχne
-          · exact h_in_u
-        have h_L_sub_GGGamma : L ⊆ GG_neg :: Γ := by
-          intro χ hχ
-          by_cases hχGG : χ = GG_neg
-          · simp [hχGG]
-          · simp only [List.mem_cons]
-            right
-            exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-        have d_bot' : DerivationTree (GG_neg :: Γ) Formula.bot :=
-          DerivationTree.weakening L (GG_neg :: Γ) Formula.bot d_bot h_L_sub_GGGamma
-        have d_neg_GG : DerivationTree Γ GG_neg.neg :=
-          deduction_theorem Γ GG_neg Formula.bot d_bot'
-        let neg_FF := (Formula.some_future (Formula.some_future psi)).neg
-        have h_neg_FF_in_context : neg_FF ∈ (neg_FF :: Γ) := List.mem_cons_self _ _
-        have d_neg_FF_ax : DerivationTree (neg_FF :: Γ) neg_FF :=
-          DerivationTree.assumption (neg_FF :: Γ) neg_FF h_neg_FF_in_context
-        have d_deriv_w : DerivationTree (neg_FF :: Γ) (neg_FF.imp GG_neg) :=
-          DerivationTree.weakening [] (neg_FF :: Γ) (neg_FF.imp GG_neg)
-            h_deriv (List.nil_subset _)
-        have d_GG : DerivationTree (neg_FF :: Γ) GG_neg :=
-          DerivationTree.modus_ponens (neg_FF :: Γ) neg_FF GG_neg d_deriv_w d_neg_FF_ax
-        have d_neg_GG_w : DerivationTree (neg_FF :: Γ) GG_neg.neg :=
-          DerivationTree.weakening Γ (neg_FF :: Γ) GG_neg.neg d_neg_GG
-            (List.subset_cons_of_subset _ (List.Subset.refl _))
-        have d_bot_final : DerivationTree (neg_FF :: Γ) Formula.bot :=
-          DerivationTree.neg_elim (neg_FF :: Γ) GG_neg d_GG d_neg_GG_w
-        have h_neg_FF_Γ_in_u : ∀ χ ∈ (neg_FF :: Γ), χ ∈ u := by
-          intro χ hχ
-          simp only [List.mem_cons] at hχ
-          rcases hχ with rfl | hχ'
-          · exact h_neg
-          · exact h_Γ_in_u χ hχ'
-        exact h_drm_u.1.2 (neg_FF :: Γ) h_neg_FF_Γ_in_u ⟨d_bot_final⟩
-
-      -- GG(neg psi) ∈ u => G(neg psi) ∈ g_content(u)
-      have h_G_neg_in_g : Formula.all_future psi.neg ∈ g_content u := h_GG_neg_in_u
-
-      -- By G-persistence: G(neg psi) ∈ v
-      have h_G_neg_in_v : Formula.all_future psi.neg ∈ v := h_succ.1 h_G_neg_in_g
-
-      -- G(neg psi) ∈ v => F(psi) ∉ v (by consistency)
-      intro h_F_in_v
-      have h_cons := h_drm_v.1.2
-      have h_neg_G : (Formula.all_future psi.neg).neg ∈ v := h_F_in_v
-      exact set_consistent_not_both h_cons (Formula.all_future psi.neg) h_G_neg_in_v h_neg_G
+    -- Same modal duality issue: some_future X = X.neg.all_future.neg, which IS an imp formula,
+    -- so cases h_eq on chi.neg = FF(psi) doesn't close the neg case.
+    -- The entire branch needs the neg(FF psi) → GG(neg psi) derivation.
+    -- TODO: Prove via the proof system
+    sorry
 
   · -- Case: FF(psi) ∉ deferralClosure
     -- This means F(psi) ∉ deferralClosure OR F(psi) is at the boundary
@@ -3424,110 +3090,11 @@ theorem restricted_succ_propagates_F_not' (phi : Formula)
     -- Case analysis on FF(psi) ∈ deferralClosure
     by_cases h_FF_dc : Formula.some_future (Formula.some_future psi) ∈ (deferralClosure phi : Set Formula)
     · -- FF(psi) ∈ deferralClosure
-      -- Use the original proof from restricted_succ_propagates_F_not (the non-sorry case)
-      have h_drm_u := restricted_forward_chain_is_drm phi M0 k
-      have h_FF_in_cwn := some_future_in_deferralClosure_is_in_closureWithNeg phi
-        (Formula.some_future psi) h_FF_dc
-      have h_FF_in_sub : Formula.some_future (Formula.some_future psi) ∈ subformulaClosure phi := by
-        unfold closureWithNeg at h_FF_in_cwn
-        simp only [Finset.coe_union, Finset.coe_image, Set.mem_union, Set.mem_image] at h_FF_in_cwn
-        cases h_FF_in_cwn with
-        | inl h => exact h
-        | inr h =>
-          obtain ⟨chi, _, h_eq⟩ := h
-          cases h_eq
-
-      have h_neg_complete := deferral_restricted_mcs_negation_complete h_drm_u
-        (Formula.some_future (Formula.some_future psi)) h_FF_in_sub
-      cases h_neg_complete with
-      | inl h_in => exact absurd h_in h_FF_not
-      | inr h_neg =>
-        -- neg(FF(psi)) ∈ u => GG(neg(psi)) ∈ u (derivable)
-        have h_Fpsi_in_sub := some_future_in_closureWithNeg_inner_in_subformulaClosure phi
-          (Formula.some_future psi) h_FF_in_cwn
-        have h_psi_in_sub := some_future_in_closureWithNeg_inner_in_subformulaClosure phi psi
-          (some_future_in_deferralClosure_is_in_closureWithNeg phi psi
-            (closureWithNeg_subset_deferralClosure phi
-              (subformulaClosure_subset_closureWithNeg phi h_Fpsi_in_sub)))
-
-        have h_GG_neg_in_cwn : Formula.all_future (Formula.all_future psi.neg) ∈ closureWithNeg phi :=
-          neg_mem_closureWithNeg phi (Formula.some_future (Formula.some_future psi)) h_FF_in_sub
-
-        have h_GG_neg_in_dc : Formula.all_future (Formula.all_future psi.neg) ∈
-            (deferralClosure phi : Set Formula) :=
-          closureWithNeg_subset_deferralClosure phi h_GG_neg_in_cwn
-
-        have h_GG_neg_in_u : Formula.all_future (Formula.all_future psi.neg) ∈ u := by
-          have h_deriv : [] ⊢ (Formula.some_future (Formula.some_future psi)).neg.imp
-                             (Formula.all_future (Formula.all_future psi.neg)) := by
-            have h_dne : [] ⊢ (Formula.all_future psi.neg).neg.neg.imp (Formula.all_future psi.neg) :=
-              Bimodal.Theorems.Propositional.double_negation _
-            have h_nec : [] ⊢ ((Formula.all_future psi.neg).neg.neg.imp
-                               (Formula.all_future psi.neg)).all_future :=
-              Bimodal.Theorems.future_necessitation _ h_dne
-            have h_K : [] ⊢ ((Formula.all_future psi.neg).neg.neg.imp
-                             (Formula.all_future psi.neg)).all_future.imp
-                            ((Formula.all_future psi.neg).neg.neg.all_future.imp
-                             (Formula.all_future psi.neg).all_future) :=
-              Bimodal.Theorems.future_k_dist _ _
-            exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_K h_nec
-
-          by_contra h_GG_not_in
-          have h_incons := h_drm_u.2 (Formula.all_future (Formula.all_future psi.neg))
-            h_GG_neg_in_dc h_GG_not_in
-          unfold SetConsistent at h_incons
-          push_neg at h_incons
-          obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
-          have h_bot : Nonempty (DerivationTree L Formula.bot) := inconsistent_derives_bot h_L_incons
-          obtain ⟨d_bot⟩ := h_bot
-          let GG_neg := Formula.all_future (Formula.all_future psi.neg)
-          let Γ := L.filter (· ≠ GG_neg)
-          have h_Γ_in_u : ∀ χ ∈ Γ, χ ∈ u := by
-            intro χ hχ
-            have hχ' := List.mem_filter.mp hχ
-            have hχne : χ ≠ GG_neg := by simpa using hχ'.2
-            specialize h_L_sub χ hχ'.1
-            simp [Set.mem_insert_iff] at h_L_sub
-            rcases h_L_sub with rfl | h_in_u
-            · exact absurd rfl hχne
-            · exact h_in_u
-          have h_L_sub_GGGamma : L ⊆ GG_neg :: Γ := by
-            intro χ hχ
-            by_cases hχGG : χ = GG_neg
-            · simp [hχGG]
-            · simp only [List.mem_cons]
-              right
-              exact List.mem_filter.mpr ⟨hχ, by simpa⟩
-          have d_bot' : DerivationTree (GG_neg :: Γ) Formula.bot :=
-            DerivationTree.weakening L (GG_neg :: Γ) Formula.bot d_bot h_L_sub_GGGamma
-          have d_neg_GG : DerivationTree Γ GG_neg.neg :=
-            deduction_theorem Γ GG_neg Formula.bot d_bot'
-          let neg_FF := (Formula.some_future (Formula.some_future psi)).neg
-          have h_neg_FF_in_context : neg_FF ∈ (neg_FF :: Γ) := List.mem_cons_self _ _
-          have d_neg_FF_ax : DerivationTree (neg_FF :: Γ) neg_FF :=
-            DerivationTree.assumption (neg_FF :: Γ) neg_FF h_neg_FF_in_context
-          have d_deriv_w : DerivationTree (neg_FF :: Γ) (neg_FF.imp GG_neg) :=
-            DerivationTree.weakening [] (neg_FF :: Γ) (neg_FF.imp GG_neg)
-              h_deriv (List.nil_subset _)
-          have d_GG : DerivationTree (neg_FF :: Γ) GG_neg :=
-            DerivationTree.modus_ponens (neg_FF :: Γ) neg_FF GG_neg d_deriv_w d_neg_FF_ax
-          have d_neg_GG_w : DerivationTree (neg_FF :: Γ) GG_neg.neg :=
-            DerivationTree.weakening Γ (neg_FF :: Γ) GG_neg.neg d_neg_GG
-              (List.subset_cons_of_subset _ (List.Subset.refl _))
-          have d_bot_final : DerivationTree (neg_FF :: Γ) Formula.bot :=
-            DerivationTree.neg_elim (neg_FF :: Γ) GG_neg d_GG d_neg_GG_w
-          have h_neg_FF_Γ_in_u : ∀ χ ∈ (neg_FF :: Γ), χ ∈ u := by
-            intro χ hχ
-            simp only [List.mem_cons] at hχ
-            rcases hχ with rfl | hχ'
-            · exact h_neg
-            · exact h_Γ_in_u χ hχ'
-          exact h_drm_u.1.2 (neg_FF :: Γ) h_neg_FF_Γ_in_u ⟨d_bot_final⟩
-
-        have h_G_neg_in_g : Formula.all_future psi.neg ∈ g_content u := h_GG_neg_in_u
-        have h_G_neg_in_v : Formula.all_future psi.neg ∈ v := h_succ.1 h_G_neg_in_g
-        have h_neg_G : (Formula.all_future psi.neg).neg ∈ v := h_F_in_v
-        exact set_consistent_not_both h_drm_v.1.2 (Formula.all_future psi.neg) h_G_neg_in_v h_neg_G
+      -- Same modal duality issue: some_future X = X.neg.all_future.neg (an imp formula),
+      -- so the inr case of closureWithNeg membership is reachable.
+      -- The entire derivation block requires neg(FF psi) → GG(neg psi) as a theorem.
+      -- TODO: Prove via the proof system
+      sorry
 
     · -- FF(psi) ∉ deferralClosure
       -- Then FF(psi) ∉ v (since v ⊆ deferralClosure)
@@ -3768,10 +3335,10 @@ theorem restricted_succ_propagates_F_not' (phi : Formula)
 
           -- GF(psi) ∈ deferralClosure => GF(psi) ∈ closureWithNeg
           -- => GF(psi) ∈ subformulaClosure (since GF is not a neg formula)
-          have h_GF_in_cwn := Bimodal.Syntax.closureWithNeg_subset_deferralClosure_inv h_GF_dc
+          have h_GF_in_cwn := all_future_in_deferralClosure_is_in_closureWithNeg phi (Formula.some_future psi) h_GF_dc
           have h_GF_in_sub : Formula.all_future (Formula.some_future psi) ∈ subformulaClosure phi := by
             unfold closureWithNeg at h_GF_in_cwn
-            simp only [Finset.coe_union, Finset.coe_image, Set.mem_union, Set.mem_image] at h_GF_in_cwn
+            simp only [Finset.mem_union, Finset.mem_image] at h_GF_in_cwn
             cases h_GF_in_cwn with
             | inl h => exact h
             | inr h =>
@@ -4453,18 +4020,15 @@ theorem restricted_bounded_witness (phi : Formula)
         -- d' = 0: iter_F 0 psi = psi ∈ chain(k+1)
         simp only [iter_F_zero] at h_iter_d'_in_k1
         -- k + (0 + 1) = k + 1
-        simp only [Nat.zero_add, Nat.add_comm k 1]
-        exact h_iter_d'_in_k1
+        convert h_iter_d'_in_k1 using 1
       | succ d'' =>
         -- d' = d'' + 1 >= 1
-        have h_d'_ge : d' ≥ 1 := Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero d'')
-        have h_ih := ih d' (Nat.lt_succ_self d') (k + 1) h_d'_ge h_iter_d'_in_k1 h_iter_d1_not_k1
-        -- h_ih : psi ∈ chain(k + 1 + d')
-        -- We need: psi ∈ chain(k + (d' + 1))
-        -- k + 1 + d' = k + (d' + 1) by omega
-        have h_eq : k + 1 + d' = k + (d' + 1) := by omega
-        rw [← h_eq]
-        exact h_ih
+        have h_d'_ge : d'' + 1 ≥ 1 := by omega
+        have h_ih := ih (d'' + 1) (by omega) (k + 1) h_d'_ge h_iter_d'_in_k1 h_iter_d1_not_k1
+        -- h_ih : psi ∈ chain(k + 1 + (d'' + 1))
+        -- We need: psi ∈ chain(k + (d'' + 1 + 1))
+        convert h_ih using 2
+        omega
 
 /--
 Helper: F(psi) in the restricted chain at position k implies psi or F(psi) is in position k+1.
@@ -4524,9 +4088,8 @@ private theorem restricted_forward_chain_iter_F_witness (phi : Formula)
   -- Simpler: use iter_F_implies_F to get F(psi') for some psi' in the chain
   have h_some_F : Formula.some_future (iter_F (d - 1) psi) ∈ restricted_forward_chain phi M0 k := by
     have h_eq : iter_F d psi = Formula.some_future (iter_F (d - 1) psi) := by
-      have h_d_pos : d ≥ 1 := h_d_ge
-      have h_d_eq : d = (d - 1) + 1 := by omega
-      rw [h_d_eq, iter_F_succ]
+      obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+      simp [iter_F_succ]
     rw [← h_eq]
     exact h_iter
 
