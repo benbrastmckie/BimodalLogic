@@ -1,7 +1,7 @@
 # Implementation Plan: Task #48 (v10)
 
 - **Task**: 48 - prove_succ_chain_fam_bounded_f_depth
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 2-3 hours
 - **Dependencies**: Research report 16 (derivability blocker analysis)
 - **Research Inputs**:
@@ -60,7 +60,7 @@ So **chi.neg cannot propagate via g_content** when F(chi) ∈ u. The successor C
 
 ## Implementation Phases
 
-### Phase 1: Modify boundary_resolution_set definition [NOT STARTED]
+### Phase 1: Modify boundary_resolution_set definition [COMPLETED]
 
 **Goal**: Add `chi ∈ u` requirement to boundary_resolution_set.
 
@@ -93,7 +93,7 @@ def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
 
 ---
 
-### Phase 2: Complete augmented_seed_consistent [NOT STARTED]
+### Phase 2: Complete augmented_seed_consistent [COMPLETED]
 
 **Goal**: Remove the sorry in augmented_seed_consistent using trivial subset argument.
 
@@ -125,7 +125,19 @@ theorem augmented_seed_consistent (phi : Formula) (u : DeferralRestrictedSerialM
 
 ---
 
-### Phase 3: Update v2 construction and Succ proof [NOT STARTED]
+### Phase 3: Update v2 construction and Succ proof [BLOCKED]
+
+**BLOCKED**: Pre-existing build errors in SuccChainFMCS.lean prevent proceeding. Missing identifiers include:
+- `Bimodal.Theorems.future_necessitation`
+- `Bimodal.Theorems.future_k_dist`
+- `Bimodal.ProofSystem.DerivationTree.neg_elim`
+- `Bimodal.Syntax.closureWithNeg_subset_deferralClosure_inv`
+
+These errors are unrelated to the boundary_resolution_set changes and predate this task.
+
+---
+
+### Phase 3 (Original): Update v2 construction and Succ proof [BLOCKED]
 
 **Goal**: Complete the v2 chain construction from Phase 3 of v9.
 
@@ -141,7 +153,7 @@ theorem augmented_seed_consistent (phi : Formula) (u : DeferralRestrictedSerialM
 
 ---
 
-### Phase 4: Simplify restricted_single_step_forcing [NOT STARTED]
+### Phase 4: Simplify restricted_single_step_forcing [BLOCKED]
 
 **Goal**: Complete Phase 4 from v9 — use boundary_resolution_set to remove sorry.
 
@@ -192,7 +204,7 @@ If it resolves to F(psi): F(psi) ∈ chain(k+1). Then at step k+1, F(psi) needs 
 
 ---
 
-### Phase 5: Update downstream and verify [NOT STARTED]
+### Phase 5: Update downstream and verify [BLOCKED]
 
 **Goal**: Complete all remaining work and verify.
 

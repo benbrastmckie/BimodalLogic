@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T00:08:35Z",
+      "last_updated": "2026-03-24T00:25:59Z",
       "artifacts": [
         {
           "type": "research",
@@ -790,13 +790,17 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/10_chi-in-u-restriction.md",
           "type": "plan",
           "summary": "5-phase plan: restrict boundary_resolution_set to chi in u, complete consistency proof trivially"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/10_chi-in-u-restriction-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation v10: Phases 1-2 complete (boundary_resolution_set modified, augmented_seed_consistent completed). Phases 3-5 blocked by pre-existing build errors."
         }
       ],
-      "session_id": "sess_1774310298_3c1a2d",
+      "session_id": "sess_1774311080_d1bf29",
       "researched": "2026-03-24T00:05:01Z",
       "planned": "2026-03-24T00:08:35Z",
-      "started": "2026-03-23T17:51:37Z",
-      "blocker_reason": "Phase 2 blocked: consistency proof requires showing chi.neg not derivable from old_seed (not just not IN old_seed). Key lemmas for membership done, derivability argument needs deeper analysis."
+      "started": "2026-03-23T17:51:37Z"
     },
     {
       "project_number": 49,
