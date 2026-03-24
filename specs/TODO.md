@@ -38,7 +38,7 @@ technical_debt:
  └→ 56 → 57 (cleanup, parallel to 58)
 ```
 
-1. **55** [NOT STARTED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
+1. **55** [RESEARCHED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
 2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
 3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -147,7 +147,7 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 55. Prove SuccChain temporal coherence directly
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 48
 - **Research**:
@@ -156,6 +156,9 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
   - [02_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/02_teammate-a-findings.md)
   - [02_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/02_teammate-b-findings.md)
   - [02_teammate-c-findings.md](055_prove_succchain_temporal_coherence_directly/reports/02_teammate-c-findings.md)
+  - [03_team-research.md](055_prove_succchain_temporal_coherence_directly/reports/03_team-research.md)
+  - [03_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-a-findings.md)
+  - [03_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-b-findings.md)
 - **Plan**:
   - [01_temporal-coherence-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/01_temporal-coherence-implementation.md) (superseded)
   - [02_algebraic-temporal-coherence.md](055_prove_succchain_temporal_coherence_directly/plans/02_algebraic-temporal-coherence.md)
