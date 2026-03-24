@@ -27,73 +27,59 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-23. Incorporates ROADMAP.md analysis, Class A/B sorry classification, and algebraic perspective from merge.*
+*Updated 2026-03-24. Task 48 completed via box-class BFMCS construction. New critical path bypasses f_nesting_is_bounded entirely.*
 
-**Goal**: Zero custom axioms, zero sorries on the completeness path. Task 42 is the umbrella. See [ROADMAP.md](/ROADMAP.md) for architectural context.
+**Goal**: Zero custom axioms, zero sorries on the completeness path.
 
-### 1. Axiom Elimination — Critical Path (task 42 umbrella)
+### 1. Critical Path — Sorry-Free Completeness
 
 ```
-Phase A                    Phase B              Phase C              Phase D
-    48 → 53 ──────────→ 36 ──────────────→ 37 ──────────→ 54 (wire completeness)
-     │                                                      │
-     └── 49 (fallback)                                Phase E: verify
+55 → 58 → 59 → 60
+ └→ 56 → 57 (cleanup, parallel to 58)
 ```
 
-**Phase A — Bounded F-depth (Class B sorries):**
+1. **55** [NOT STARTED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
+2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
+3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
+4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
-Task 48's Class A sorries (modal duality via DNE) are **resolved**. Remaining 7 sorries are Class B: intermediate lemmas `restricted_single_step_forcing` and `restricted_succ_propagates_F_not` are **FALSE as stated** (MCS extension nondeterminism at closure boundary). Requires restructuring.
+### 2. Code Cleanup (after task 55)
 
-1. **48** → replan (13 plan versions exhausted single-step forcing; needs v14 with direct induction)
-2. **53** → research + plan + implement (direct bounded_witness via f_step disjunction tracking — the concrete restructuring)
-3. **49** → fallback (FMP-based approach if 53 fails — uses filtration, avoids deferralClosure entirely)
+1. **56** [NOT STARTED] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
+2. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
-**Phase B — Depends on 48/53:**
+### 3. Superseded Tasks (candidates for abandonment)
 
-4. **36** → implement after 53 (prove `f_nesting_boundary` — axiom 4)
+These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
-**Phase C — Depends on 36:**
+- **36** [BLOCKED] — Prove f_nesting_boundary (superseded by 55)
+- **37** [NOT STARTED] — Prove p_nesting_boundary (superseded by 55)
+- **53** [RESEARCHED] — Direct bounded_witness induction (superseded by 55)
+- **49** [PLANNED] — FMP-based fallback (superseded by 55)
+- **54** [NOT STARTED] — Wire completeness (replaced by 58)
+- **42** [RESEARCHED] — Axiom elimination umbrella (subsumed by 55-60)
 
-5. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
+### 4. Experimental
 
-**Phase D — Wire completeness:**
+- **61** [NOT STARTED] — Eliminate BFMCS bundles entirely (independent, explore later)
+- **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 
-6. **54** → implement after 37 (wire SuccChainCompleteness → FrameConditions/Completeness, resolve 9 wiring sorries)
+### 5. Deferred
 
-**Phase E — Verification:**
+- **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
+- **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
+- **21** [PLANNED] — Tech debt cleanup (depends on 18)
+- **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
+- **998** [NOT STARTED] — FMP redesign for strict temporal (separate concern)
 
-7. `lean_verify` on completeness theorems — confirm zero custom axioms
-8. Update TODO.md axiom_count to 0
+### 6. Backlog
 
-### 2. Post-Axiom Cleanup
-
-1. **41** ✓ [COMPLETED] (eliminate D=CanonicalMCS pattern — done 2026-03-23)
-2. **21** → defer (tech debt cleanup — depends on 18; fold CanonicalR alias cleanup per ROADMAP)
-3. **19** → defer (deprecate old discrete pipeline — low priority after archival)
-
-### 3. Algebraic Alternative (parallel investigation)
-
-Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass SuccChain entirely:
-
-1. **992** → elevate to medium priority (STSA temporal shift automorphism — 4-6h, independent of critical path)
-   - Formalizes Lindenbaum algebra temporal shift
-   - Could provide `construct_bfmcs` via Stone-space unraveling instead of chain construction
-   - If successful, makes SuccChain sorries irrelevant
-
-### 4. Deferred — Not Critical Path
-
-1. **18** → blocked (dense representation theorem — 4 localized sorries, defer until base is clean)
-2. **20** → depends on 18 (parametric canonical audit)
-3. **998** → defer (FMP redesign — separate concern)
-
-### 5. Backlog (researched, not urgent)
-
-1. **8** → plan (genuine truth_at completeness — publication quality, 12-20h)
-2. **6** → plan (canonical TaskFrame completeness — may be superseded by task 8)
-3. **39** → defer (preorder semantics study — theoretical)
-4. **953** → defer (bilateral proof system — 55-90h)
-5. **949** → defer (update Demo.lean — cosmetic)
-6. **619** → defer (skill migration — meta, blocked on GitHub #16803)
+- **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
+- **6** [RESEARCHED] — Canonical TaskFrame completeness (may be superseded by 8)
+- **39** [RESEARCHED] — Preorder semantics study (theoretical)
+- **953** [RESEARCHED] — Bilateral proof system (55-90h)
+- **949** [RESEARCHED] — Update Demo.lean (cosmetic)
+- **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
 
