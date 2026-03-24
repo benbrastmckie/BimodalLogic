@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T06:46:32Z",
+      "last_updated": "2026-03-24T06:54:32Z",
       "artifacts": [
         {
           "type": "research",
@@ -795,17 +795,22 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/29_team-research.md",
           "type": "research",
           "summary": "Team research (2 teammates): seed modification + algebraic bypass analysis. Recommends time-boxed seed modification first, algebraic STSA fallback."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/30_algebraic-stsa-path.md",
+          "type": "research",
+          "summary": "Algebraic bypass design: sigma on quotient, STSA structure, construct_bfmcs via Jonsson-Tarski"
         }
       ],
-      "session_id": "sess_1774333345_98d055",
-      "researched": "2026-03-24T06:46:32Z",
+      "session_id": "sess_1774334952_6cf8ec",
+      "researched": "2026-03-24T06:54:32Z",
       "planned": "2026-03-24T03:12:19Z",
       "started": "2026-03-24T00:53:25Z"
     },
     {
       "project_number": 49,
       "project_name": "fmp_based_boundedness_proof_fallback",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "description": "FALLBACK TASK: Only pursue if Task 48 encounters fundamental obstacles. Connect succ_chain_fam to FMP infrastructure to prove boundedness via Finite Model Property. Use existing FMP infrastructure in Theories/Bimodal/Metalogic/Decidability/FMP/ including ClosureMCS, FiniteModel, Filtration, and TruthPreservation theorems.",
       "effort": "6-8 hours",
@@ -814,7 +819,7 @@
         48
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T06:29:26Z",
+      "last_updated": "2026-03-24T06:51:11Z",
       "artifacts": [
         {
           "type": "research",
@@ -827,7 +832,7 @@
           "summary": "Analysis of FMP vs algebraic representation theorem approaches"
         }
       ],
-      "session_id": "sess_1774333486_8a8a3a",
+      "session_id": "sess_1774335050_c8fe9d",
       "researched": "2026-03-24T06:29:26Z"
     },
     {
