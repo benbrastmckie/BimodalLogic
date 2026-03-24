@@ -54,6 +54,9 @@ backups/
 opencode.json
 
 # Development artifacts
-specs/
+specs/archive/
+specs/vault/
+specs/tmp/
+specs/**/.*
 benchmarks/
 indent.log
