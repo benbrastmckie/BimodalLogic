@@ -23,7 +23,6 @@ formula from the original language, enabling the standard Goldblatt/BdRV naming 
 
 ## References
 
-- Task 958 research-005.md: Conservative extension implementation guide
 - Goldblatt 1992, Logics of Time and Computation
 -/
 

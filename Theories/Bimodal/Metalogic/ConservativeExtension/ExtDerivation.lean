@@ -19,7 +19,6 @@ to an extended derivation, preserving the proof structure.
 
 ## References
 
-- Task 958 research-005.md: Conservative extension implementation guide
 -/
 
 namespace Bimodal.Metalogic.ConservativeExtension

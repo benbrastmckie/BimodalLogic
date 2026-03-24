@@ -5,7 +5,7 @@ import Bimodal.Semantics.TaskFrame
 # CanonicalTask TaskFrame Instantiation
 
 This module instantiates the TaskFrame structure using the CanonicalTask relation
-from Task 11 (CanonicalTaskRelation.lean). The TaskFrame uses:
+from CanonicalTaskRelation.lean. The TaskFrame uses:
 - WorldState := Set Formula (MCS states)
 - task_rel := CanonicalTask
 - Time type := Int
@@ -21,9 +21,9 @@ the corresponding CanonicalTask theorems proven in CanonicalTaskRelation.lean.
 
 ## References
 
-- Task 11: CanonicalTaskRelation.lean - CanonicalTask definition and axioms
-- Task 14: SuccChainFMCS.lean - FMCS family construction
-- Bimodal.Semantics.TaskFrame - TaskFrame structure definition
+- `CanonicalTaskRelation.lean`: CanonicalTask definition and axioms
+- `SuccChainFMCS.lean`: FMCS family construction
+- Bimodal.Semantics.TaskFrame: TaskFrame structure definition
 -/
 
 namespace Bimodal.Metalogic.Bundle

@@ -1,7 +1,6 @@
 import Bimodal.Metalogic.Bundle.CanonicalConstruction
 import Bimodal.Metalogic.Bundle.BFMCS
--- REMOVED (Task 41): import Bimodal.Metalogic.Bundle.CanonicalFMCS
--- CanonicalFMCS uses D=CanonicalMCS confused pattern; deleted
+
 import Bimodal.Semantics.Validity
 
 /-!
@@ -19,7 +18,7 @@ is provable using base axioms plus the density axiom DN.
 ## Current Status: SuccChain Architecture
 
 Dense completeness is being rebuilt using the SuccChain architecture.
-The StagedConstruction approach has been archived to Boneyard (task 43).
+The StagedConstruction approach has been archived.
 
 See `Bimodal.Metalogic.SuccChain/` for the current approach.
 
@@ -36,7 +35,7 @@ The following infrastructure components are proven sorry-free:
 3. **Shifted Truth Lemma** (`Bundle/CanonicalConstruction.lean`):
    Truth lemma extends to shift-closed Omega
 
-## Domain Mismatch (Tasks 977, 1006 Analysis)
+## Domain Mismatch
 
 The full wiring of the dense completeness theorem requires connecting:
 
@@ -56,9 +55,6 @@ The SuccChain architecture addresses this gap by:
 
 ## References
 
-- Task 43: Archive StagedConstruction to Boneyard
-- Task 956: Duration Group Construction from Pure Syntax
-- Task 977: Current organization task
 - `SuccChain/`: Successor chain completeness (active development)
 - `Bundle/CanonicalConstruction.lean`: Truth lemma infrastructure
 -/
@@ -162,7 +158,7 @@ This avoids the conflation that blocked the StagedConstruction approach.
 ### References
 
 - `Bimodal.Metalogic.SuccChain/` - Active development
-- Task 43 research report - Analysis of StagedConstruction blockers
+- StagedConstruction analysis - Analysis of blockers
 -/
 
 end Bimodal.Metalogic.DenseCompleteness

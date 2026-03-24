@@ -10,7 +10,7 @@ import Bimodal.Theorems.GeneralizedNecessitation
 
 This module contains the core temporal coherence definitions and backward lemmas
 needed for the truth lemma. Extracted from TemporalCoherentConstruction.lean
-as part of publication cleanup (Task 970).
+as part of publication cleanup.
 
 ## Main Definitions
 
@@ -30,8 +30,7 @@ The backward lemmas are proven by contraposition:
 
 ## References
 
-- Task 857: Original implementation of temporal backward properties
-- Task 970: Extraction from deprecated TemporalCoherentConstruction.lean
+- Extracted from deprecated TemporalCoherentConstruction.lean
 -/
 
 namespace Bimodal.Metalogic.Bundle

@@ -568,17 +568,17 @@ example : DerivationTree [] ((Formula.atom "p").all_future.imp (Formula.atom "p"
   exact Axiom.temp_4 _
 
 /-- Test 93: temp_a_tactic basic application -/
-example (p : Formula) : DerivationTree [] (p.imp p.sometime_past.all_future) := by
+example (p : Formula) : DerivationTree [] (p.imp p.some_past.all_future) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 
 /-- Test 94: temp_a_tactic with compound formula -/
-example (p q : Formula) : DerivationTree [] ((p.imp q).imp (p.imp q).sometime_past.all_future) := by
+example (p q : Formula) : DerivationTree [] ((p.imp q).imp (p.imp q).some_past.all_future) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 
 /-- Test 95: temp_a_tactic with atom -/
-example : DerivationTree [] ((Formula.atom "p").imp (Formula.atom "p").sometime_past.all_future) := by
+example : DerivationTree [] ((Formula.atom "p").imp (Formula.atom "p").some_past.all_future) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 
@@ -612,7 +612,7 @@ example (p : Formula) : DerivationTree [] (p.all_future.imp p.all_future.all_fut
   exact Axiom.temp_4 _
 
 /-- Test 100: temporal_search depth 2 on temp_a -/
-example (p : Formula) : DerivationTree [] (p.imp p.sometime_past.all_future) := by
+example (p : Formula) : DerivationTree [] (p.imp p.some_past.all_future) := by
   apply DerivationTree.axiom
   exact Axiom.temp_a _
 

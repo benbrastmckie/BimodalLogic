@@ -1,6 +1,4 @@
 import Bimodal.Metalogic.Bundle.CanonicalConstruction
--- REMOVED (Task 41): import Bimodal.Metalogic.Bundle.CanonicalFMCS
--- CanonicalFMCS uses D=CanonicalMCS confused pattern; deleted
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Semantics.Validity
 import Bimodal.ProofSystem.Derivation
@@ -24,7 +22,7 @@ Any linearly ordered abelian group D works; we choose Int because:
 2. The Int-based canonical construction is well-tested
 3. Int is concrete and avoids universe issues
 
-**Key Architectural Insight** (Task 990): For base TM logic, D CANNOT be derived
+**Key Architectural Insight**: For base TM logic, D CANNOT be derived
 from syntax. The base axioms provide insufficient order-theoretic structure to
 apply Cantor's theorem or any other characterization. This is in contrast to
 dense TM logic where the density axiom DN enables the D-from-syntax construction.
@@ -37,7 +35,7 @@ dense TM logic where the density axiom DN enables the D-from-syntax construction
 
 ### For the Closed Completeness Theorem
 
-See `AlgebraicBaseCompleteness.lean` (task 987) which wires these components
+See `AlgebraicBaseCompleteness.lean` which wires these components
 to prove `valid phi -> Nonempty (DerivationTree [] phi)`.
 
 ## Main Results
@@ -77,7 +75,7 @@ The canonical construction uses `D = Int`, providing:
 2. **Shifted Truth Lemma** (`shifted_truth_lemma`): For shift-closed Omega
 3. **Temporal Coherent FMCS** (`temporal_coherent_family_exists_CanonicalMCS`)
 
-### Domain Selection (Task 990 Architecture)
+### Domain Selection
 
 | Extension | D | Why |
 |-----------|---|-----|
@@ -92,8 +90,6 @@ there EXISTS a model falsifying them). The Int model provides this witness.
 
 ## References
 
-- Task 990: D-parametric architecture decision
-- Task 977: Current organization task
 - `Algebraic/ParametricRepresentation.lean`: Abstract D-parametric representation theorem
 - `Bundle/CanonicalConstruction.lean`: Truth lemma infrastructure
 - `DenseCompleteness.lean`: Dense completeness (parallel structure)

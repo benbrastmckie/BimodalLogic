@@ -49,7 +49,7 @@ No cycle! Truth.lean doesn't import Soundness or SoundnessLemmas.
 - MF and TF axioms use `time_shift_preserves_truth` for local time transport
 - TL axiom uses classical logic for conjunction extraction from negation encoding
 
-## Omega Parameterization (Task 912)
+## Omega Parameterization
 
 All local validity definitions and soundness lemmas quantify over shift-closed Omega.
 This enables the temporal_duality case in Soundness.lean to use these lemmas at
@@ -60,8 +60,6 @@ soundness theorem to go through.
 
 * [Truth.lean](../Semantics/Truth.lean) - Pure semantic definitions
 * [Soundness.lean](Soundness.lean) - Soundness theorem using these lemmas
-* Task 213 research report - Circular dependency analysis
-* Task 219 implementation plan - Module hierarchy restructuring
 -/
 
 namespace Bimodal.Metalogic.SoundnessLemmas
@@ -78,10 +76,10 @@ This is a monomorphic definition (fixed to explicit type parameter D) to avoid
 universe level mismatch errors.
 Per research report Option A: Make D explicit to allow type inference at call sites.
 
-**Note**: With the new semantics (Task #454), validity quantifies over ALL times,
+**Note**: Validity quantifies over ALL times,
 not just times in the history's domain.
 
-**Omega Parameterization (Task 912)**: Quantifies over all shift-closed Omega sets
+**Omega Parameterization**: Quantifies over all shift-closed Omega sets
 and histories in Omega, matching the global `valid` definition in Validity.lean.
 -/
 private def is_valid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (φ : Formula) : Prop :=
@@ -114,7 +112,7 @@ of the involution property φ.swap.swap = φ via substitution.
 theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     (Omega : Set (WorldHistory F))
     (τ : WorldHistory F) (t : D) (φ : Formula) :
-    truth_at M Omega τ t φ.swap_past_future.swap_past_future ↔ truth_at M Omega τ t φ := by
+    truth_at M Omega τ t φ.swap_temporal.swap_temporal ↔ truth_at M Omega τ t φ := by
   induction φ generalizing τ t with
   | atom p =>
     -- Atom case: swap doesn't change atoms
@@ -159,7 +157,7 @@ The theorem `is_valid_swap_involution` as originally stated is **UNPROVABLE**.
 
 **Original claim**: `is_valid D φ.swap -> is_valid D φ`
 
-**Why it's false**: The `swap_past_future` operation exchanges `all_past` <-> `all_future`,
+**Why it's false**: The `swap_temporal` operation exchanges `all_past` <-> `all_future`,
 which quantify over different time ranges (past s<t vs future s>t). These are not
 equivalent in general temporal models.
 
@@ -172,7 +170,7 @@ but φ = all_past(atom "p") is not valid.
 - `all_future φ` quantified over s > t (strict future times)
 - Swapping exchanged these ranges, which were not equivalent in arbitrary models
 
-**Note**: With the CURRENT reflexive semantics (Task #658), temporal operators use `<=`:
+**Note**: With the CURRENT reflexive semantics, temporal operators use `<=`:
 - `all_past φ` quantifies over s <= t (now and past)
 - `all_future φ` quantifies over s <= t (now and future)
 - The T-axioms (Gφ -> φ, Hφ -> φ) are now trivially valid via `le_refl`
@@ -180,8 +178,8 @@ but φ = all_past(atom "p") is not valid.
 **The theorem IS true for derivable formulas** (see `derivable_valid_swap_involution` at end of file),
 because the temporal_duality inference rule guarantees swap preservation for provable formulas.
 
-**Research**: See task 213 research report for detailed semantic analysis and proof of
-unprovability. This finding resolves 10.7 hours of blocked work across tasks 184, 193, 209, 213.
+**Research**: See research report for detailed semantic analysis and proof of
+unprovability.
 
 **Lesson learned**: Always verify semantic validity before attempting formal proof.
 Syntactic properties (derivations) and semantic properties (validity) have different
@@ -208,11 +206,11 @@ Modal T axiom (MT) is self-dual under swap: `box φ -> φ` swaps to `box(swap φ
 Since `box(swap φ) -> swap φ` is still an instance of MT (just with swapped subformula),
 and MT is valid, this is immediate.
 
-**Proof**: The swapped form is `(box φ.swap_past_future).imp φ.swap_past_future`.
+**Proof**: The swapped form is `(box φ.swap_temporal).imp φ.swap_temporal`.
 At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t) specifically.
 -/
 theorem swap_axiom_mt_valid (φ : Formula) :
-    is_valid D ((Formula.box φ).imp φ).swap_past_future := by
+    is_valid D ((Formula.box φ).imp φ).swap_temporal := by
   intro F M Omega _h_sc τ h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap_φ
@@ -227,7 +225,7 @@ This is still M4, just applied to swapped formula.
 holds at all histories in Omega at t (trivially, as this is a global property).
 -/
 theorem swap_axiom_m4_valid (φ : Formula) :
-    is_valid D ((Formula.box φ).imp (Formula.box (Formula.box φ))).swap_past_future := by
+    is_valid D ((Formula.box φ).imp (Formula.box (Formula.box φ))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap_φ σ h_σ_mem ρ h_ρ_mem
@@ -242,7 +240,7 @@ This is still MB, just applied to swapped formula.
 The diamond means "there exists some history in Omega where it holds". We have τ witnessing this.
 -/
 theorem swap_axiom_mb_valid (φ : Formula) :
-    is_valid D (φ.imp (Formula.box φ.diamond)).swap_past_future := by
+    is_valid D (φ.imp (Formula.box φ.diamond)).swap_temporal := by
   intro F M Omega _h_sc τ h_mem t
   simp only [Formula.swap_temporal, Formula.diamond, Formula.neg]
   simp only [truth_at]
@@ -258,7 +256,7 @@ swap φ held at all past times. This is valid by transitivity of the past operat
 theorem swap_axiom_t4_valid (φ : Formula) :
     is_valid D
       ((Formula.all_future φ).imp
-       (Formula.all_future (Formula.all_future φ))).swap_past_future := by
+       (Formula.all_future (Formula.all_future φ))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro h_past_swap r h_r_le_t u h_u_le_r
@@ -266,23 +264,23 @@ theorem swap_axiom_t4_valid (φ : Formula) :
   exact h_past_swap u h_u_le_t
 
 /--
-Temporal A axiom (TA) swaps to a valid formula: `φ -> F(sometime_past φ)` swaps to
-`swap φ -> P(sometime_future (swap φ))`.
+Temporal A axiom (TA) swaps to a valid formula: `φ -> F(some_past φ)` swaps to
+`swap φ -> P(some_future (swap φ))`.
 
 The swapped form states: if swap φ holds now, then at all past times, there existed
 a future time when swap φ held. This is valid because "now" is in the future of all past times.
 -/
 theorem swap_axiom_ta_valid (φ : Formula) :
-    is_valid D (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
+    is_valid D (φ.imp (Formula.all_future φ.some_past)).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.swap_past_future, Formula.sometime_past]
+  simp only [Formula.swap_temporal, Formula.some_past]
   intro h_swap_φ s h_s_le_t h_all_not_future
   exact h_all_not_future t h_s_le_t h_swap_φ
 
 /--
 Temporal L axiom (TL) swaps to a valid formula: `always φ -> FPφ` swaps to `always(swap φ) -> P(F(swap φ))`.
 
-Note: always is self-dual: φ.always.swap_past_future = φ.swap_past_future.always
+Note: always is self-dual: φ.always.swap_temporal = φ.swap_temporal.always
 because always = Pφ & φ & Fφ, and swap exchanges P and F.
 
 The swapped form states: if swap φ holds at all times, then at all past times s < t,
@@ -298,7 +296,7 @@ Each case uses classical logic (`Classical.byContradiction`) to extract truth fr
 double-negation encoding of conjunction.
 -/
 theorem swap_axiom_tl_valid (φ : Formula) :
-    is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_past_future := by
+    is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro h_always s h_s_le_t u h_s_le_u
@@ -333,12 +331,12 @@ in Omega at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s <
 Uses `ShiftClosed Omega` to ensure shifted histories remain in Omega.
 -/
 theorem swap_axiom_mf_valid (φ : Formula) :
-    is_valid D ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_past_future := by
+    is_valid D ((Formula.box φ).imp (Formula.box (Formula.all_future φ))).swap_temporal := by
   intro F M Omega h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap σ h_σ_mem s h_s_le_t
   have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_past_future).mp h_at_shifted
+  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_temporal).mp h_at_shifted
 
 /--
 Temporal-Future axiom (TF) swaps to a valid formula: `box φ -> F box φ` swaps to `box(swap φ) -> P box(swap φ)`.
@@ -350,12 +348,12 @@ swap φ holds at all histories in Omega at time s.
 Uses `ShiftClosed Omega` to ensure shifted histories remain in Omega.
 -/
 theorem swap_axiom_tf_valid (φ : Formula) :
-    is_valid D ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_past_future := by
+    is_valid D ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_temporal := by
   intro F M Omega h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro h_box_swap s h_s_le_t σ h_σ_mem
   have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_past_future).mp h_at_shifted
+  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_temporal).mp h_at_shifted
 
 /-! ## Rule Preservation (Phase 3)
 
@@ -375,9 +373,9 @@ If `(φ -> ψ).swap` and `φ.swap` are both valid, then `ψ.swap` is valid.
 applied to the swapped formulas.
 -/
 theorem mp_preserves_swap_valid (φ ψ : Formula)
-    (h_imp : is_valid D (φ.imp ψ).swap_past_future)
-    (h_phi : is_valid D φ.swap_past_future) :
-    is_valid D ψ.swap_past_future := by
+    (h_imp : is_valid D (φ.imp ψ).swap_temporal)
+    (h_phi : is_valid D φ.swap_temporal) :
+    is_valid D ψ.swap_temporal := by
   intro F M Omega h_sc τ h_mem t
   simp only [Formula.swap_temporal] at h_imp h_phi ⊢
   exact h_imp F M Omega h_sc τ h_mem t (h_phi F M Omega h_sc τ h_mem t)
@@ -391,8 +389,8 @@ If `φ.swap` is valid, then `(box φ).swap = box(φ.swap)` is valid.
 at all histories σ in Omega at time t, `φ.swap` is true at (M, σ, t). This is exactly `box(φ.swap)`.
 -/
 theorem modal_k_preserves_swap_valid (φ : Formula)
-    (h : is_valid D φ.swap_past_future) :
-    is_valid D (Formula.box φ).swap_past_future := by
+    (h : is_valid D φ.swap_temporal) :
+    is_valid D (Formula.box φ).swap_temporal := by
   intro F M Omega h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro σ h_σ_mem
@@ -407,8 +405,8 @@ If `φ.swap` is valid, then `(Fφ).swap = P(φ.swap)` is valid.
 at all times s ≤ t, `φ.swap` is true at (M, τ, s). This is exactly `P(φ.swap)`.
 -/
 theorem temporal_k_preserves_swap_valid (φ : Formula)
-    (h : is_valid D φ.swap_past_future) :
-    is_valid D (Formula.all_future φ).swap_past_future := by
+    (h : is_valid D φ.swap_temporal) :
+    is_valid D (Formula.all_future φ).swap_temporal := by
   intro F M Omega h_sc τ h_mem t
   simp only [Formula.swap_temporal, truth_at]
   intro s _h_s_le_t
@@ -421,8 +419,8 @@ For the temporal duality rule, we only consider derivations from empty context.
 Weakening from [] to [] is trivial.
 -/
 theorem weakening_preserves_swap_valid (φ : Formula)
-    (h : is_valid D φ.swap_past_future) :
-    is_valid D φ.swap_past_future := h
+    (h : is_valid D φ.swap_temporal) :
+    is_valid D φ.swap_temporal := h
 
 /-! ## Axiom Swap Validity Master Theorem (Phase 4 - Partial)
 
@@ -439,7 +437,7 @@ The proof handles each axiom case:
 -/
 
 theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontrivial D]
-    (h_dc : h.isDenseCompatible) : is_valid D φ.swap_past_future := by
+    (h_dc : h.isDenseCompatible) : is_valid D φ.swap_temporal := by
   cases h with
   | prop_k ψ χ ρ =>
     intro F M Omega _h_sc τ _h_mem t
@@ -474,9 +472,9 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro h_peirce
-    by_cases h : truth_at M Omega τ t ψ.swap_past_future
+    by_cases h : truth_at M Omega τ t ψ.swap_temporal
     · exact h
-    · have h_imp : truth_at M Omega τ t (ψ.swap_past_future.imp χ.swap_past_future) := by
+    · have h_imp : truth_at M Omega τ t (ψ.swap_temporal.imp χ.swap_temporal) := by
         unfold truth_at
         intro h_psi
         exfalso
@@ -709,7 +707,7 @@ private theorem axiom_temp_4_valid (φ : Formula) :
 
 /-- Helper for temporal A axiom (reflexive semantics). -/
 private theorem axiom_temp_a_valid (φ : Formula) :
-    is_valid D (φ.imp (Formula.all_future φ.sometime_past)) := by
+    is_valid D (φ.imp (Formula.all_future φ.some_past)) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_phi s hts h_all_neg
@@ -938,7 +936,7 @@ This resolves the mutual recursion by proving both goals in a single pass.
 -/
 theorem derivable_valid_and_swap_valid [DenselyOrdered D] [Nontrivial D]
     {φ : Formula} (d : DerivationTree [] φ) (h_dc : d.isDenseCompatible) :
-    is_valid D φ ∧ is_valid D φ.swap_past_future := by
+    is_valid D φ ∧ is_valid D φ.swap_temporal := by
   match d with
   | .axiom _ _ h_ax => exact ⟨axiom_locally_valid h_ax h_dc, axiom_swap_valid _ h_ax h_dc⟩
   | .assumption _ _ h_mem => exact absurd h_mem (Syntax.Context.not_mem_nil _)
@@ -957,7 +955,7 @@ theorem derivable_valid_and_swap_valid [DenselyOrdered D] [Nontrivial D]
     obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d' h_dc
     constructor
     · exact h_swap
-    · simp only [Formula.swap_past_future_involution]; exact h_valid
+    · simp only [Formula.swap_temporal_involution]; exact h_valid
   | .weakening Γ' _ _ d' h_sub =>
     -- Since d : DerivationTree [] φ, and weakening gives Δ = [], we have Γ' ⊆ []
     -- Therefore Γ' = [] and d' : DerivationTree Γ' φ where Γ' = []
@@ -994,7 +992,7 @@ theorem derivable_locally_valid [DenselyOrdered D] [Nontrivial D]
 This is the theorem needed for the temporal_duality case in soundness_dense. -/
 theorem derivable_implies_swap_valid [DenselyOrdered D] [Nontrivial D]
     {φ : Formula} (d : DerivationTree [] φ) (h_dc : d.isDenseCompatible) :
-    is_valid D φ.swap_past_future :=
+    is_valid D φ.swap_temporal :=
   (derivable_valid_and_swap_valid d h_dc).2
 
 end Bimodal.Metalogic.SoundnessLemmas

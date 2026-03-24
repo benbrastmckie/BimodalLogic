@@ -251,8 +251,8 @@ private noncomputable def deduction_with_mem (Γ' : Context) (A φ : Formula)
       simp at hA
 
   | DerivationTree.temporal_duality ψ h_deriv =>
-      -- Temporal duality has type: DerivationTree [] (Formula.swap_past_future ψ)
-      -- So Γ' = [] and φ = Formula.swap_past_future ψ
+      -- Temporal duality has type: DerivationTree [] (Formula.swap_temporal ψ)
+      -- So Γ' = [] and φ = Formula.swap_temporal ψ
       -- But hA : A ∈ [] is false
       simp at hA
 

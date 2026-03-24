@@ -218,8 +218,8 @@ example (φ : Formula) : ⊢ (φ.box.diamond.imp φ.box) :=
 /--
 Test: Temporal A axiom is derivable.
 -/
-example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.sometime_past)) :=
-  DerivationTree.axiom [] (φ.imp (Formula.all_future φ.sometime_past)) (Axiom.temp_a φ)
+example (φ : Formula) : ⊢ (φ.imp (Formula.all_future φ.some_past)) :=
+  DerivationTree.axiom [] (φ.imp (Formula.all_future φ.some_past)) (Axiom.temp_a φ)
 
 /--
 Test: Temporal L axiom is derivable.

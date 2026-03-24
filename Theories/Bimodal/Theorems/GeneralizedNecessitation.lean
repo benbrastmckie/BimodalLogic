@@ -29,10 +29,6 @@ All theorems in this module are now fully proven derived theorems.
 
 ## References
 
-* [Task 44 Plan](
-  specs/071_inference_rule_refactoring_necessitation/plans/
-  001-inference-rule-refactoring-plan.md)
-* [Task 693](specs/693_implement_generalized_past_k_theorem/) - Added past variants
 -/
 
 namespace Bimodal.Theorems

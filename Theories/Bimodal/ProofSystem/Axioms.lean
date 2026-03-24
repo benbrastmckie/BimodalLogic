@@ -46,7 +46,7 @@ The TM logic includes:
 - **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
 - **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
 
-**Note**: Under reflexive semantics (Task 29), the T-axioms (Gφ → φ, Hφ → φ) ARE
+**Note**: Under reflexive semantics, the T-axioms (Gφ → φ, Hφ → φ) ARE
 valid and ARE included as `temp_t_future` and `temp_t_past`. Reflexive semantics
 quantifies over s ≥ t, so the present is INCLUDED in temporal quantification.
 This simplifies the canonical model construction by making reflexivity definitional
@@ -83,7 +83,7 @@ The axioms are organized into three categories based on frame conditions:
 - **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` -
   valid on discrete ordered frames with SuccOrder/NoMaxOrder/NoMinOrder
 
-**Note (Task 991)**: Under strict temporal semantics (G/H quantify over s > t / s < t),
+**Note**: Under strict temporal semantics (G/H quantify over s > t / s < t),
 the T-axioms (Gφ → φ, Hφ → φ) are NOT valid and NOT included. This simplifies the
 canonical model by making irreflexivity definitional.
 
@@ -248,14 +248,14 @@ inductive Axiom : Formula → Type where
     Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
 
   /--
-  Temporal A axiom: `φ → F(sometime_past φ)` (temporal connectedness).
+  Temporal A axiom: `φ → F(some_past φ)` (temporal connectedness).
 
   If something is true now, at all future times there exists a past time where it was true.
   Semantically: if φ at t, then for all s > t, there exists r < s where φ at r (namely, t).
 
-  Note: Uses existential `sometime_past` (¬P¬φ) not universal `past` (Pφ).
+  Note: Uses existential `some_past` (¬P¬φ) not universal `past` (Pφ).
   -/
-  | temp_a (φ : Formula) : Axiom (φ.imp (Formula.all_future φ.sometime_past))
+  | temp_a (φ : Formula) : Axiom (φ.imp (Formula.all_future φ.some_past))
 
   /--
   Temporal L axiom: `△φ → F(Pφ)` (temporal introspection).
@@ -281,7 +281,7 @@ inductive Axiom : Formula → Type where
   What holds at all future times (including now) holds at the present.
   This axiom is valid because reflexive semantics uses ≤ (not <), so t ≤ t.
 
-  **Task 29**: This axiom was added when switching from strict to reflexive
+  This axiom was added when switching from strict to reflexive
   temporal semantics. Under reflexive semantics, Gφ at t means "φ at all s ≥ t",
   which includes t itself. Hence Gφ → φ is valid by taking s = t.
 
@@ -295,7 +295,7 @@ inductive Axiom : Formula → Type where
   What holds at all past times (including now) holds at the present.
   This axiom is valid because reflexive semantics uses ≤ (not <), so t ≤ t.
 
-  **Task 29**: This axiom was added when switching from strict to reflexive
+  This axiom was added when switching from strict to reflexive
   temporal semantics. Under reflexive semantics, Hφ at t means "φ at all s ≤ t",
   which includes t itself. Hence Hφ → φ is valid by taking s = t.
 
@@ -329,7 +329,7 @@ inductive Axiom : Formula → Type where
   (first disjunct), s1 ≤ s2 (second disjunct), or s2 ≤ s1 (third disjunct).
   This trichotomy holds because D is linearly ordered.
 
-  **Technical Debt (Task 922)**: This axiom extends the TM system to enforce
+  **Technical Debt**: This axiom extends the TM system to enforce
   linearity of the temporal order. It is sound for linear integer time (the
   intended semantics) but was not part of the original axiom set. It is required
   for the canonical quotient completeness proof because the original TM axioms
@@ -340,7 +340,6 @@ inductive Axiom : Formula → Type where
   **References**:
   - Goldblatt 1992, *Logics of Time and Computation* (Kt.Li axiomatization)
   - Blackburn, de Rijke, Venema 2001, *Modal Logic* (frame correspondence)
-  - Task 922 research-001.md, research-002.md (linearity analysis)
   -/
   | temp_linearity (φ ψ : Formula) :
       Axiom (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
@@ -366,7 +365,7 @@ inductive Axiom : Formula → Type where
   **Sahlqvist form**: This formulation is Sahlqvist (boxed antecedent, positive
   consequent), giving automatic canonicity and frame correspondence.
 
-  **Note (Task 991)**: The dual existential form `Fφ → FFφ` is also valid on
+  **Note**: The dual existential form `Fφ → FFφ` is also valid on
   dense orders (and equivalent), but we prefer the Sahlqvist universal form
   for canonical completeness.
 
@@ -416,7 +415,7 @@ inductive Axiom : Formula → Type where
   **Sahlqvist form**: This formulation is Sahlqvist (boxed antecedent, positive
   consequent), giving automatic canonicity and frame correspondence.
 
-  **Note (Task 991)**: The simpler `F⊤` is also equivalent but we prefer
+  **Note**: The simpler `F⊤` is also equivalent but we prefer
   the Sahlqvist form for canonical completeness.
 
   **References**:
@@ -443,7 +442,7 @@ inductive Axiom : Formula → Type where
   **Sahlqvist form**: This formulation is Sahlqvist (boxed antecedent, positive
   consequent), giving automatic canonicity and frame correspondence.
 
-  **Note (Task 991)**: The simpler `P⊤` is also equivalent but we prefer
+  **Note**: The simpler `P⊤` is also equivalent but we prefer
   the Sahlqvist form for canonical completeness.
 
   **References**:
@@ -473,7 +472,7 @@ The classification determines which axioms can be used in completeness proofs:
 Note: Mixing Dense and Discrete axioms yields an inconsistent logic
 (no frame can be both densely ordered and have immediate successors).
 
-**DEPRECATION NOTICE** (Task 978):
+**DEPRECATION NOTICE**:
 This enum-based classification is superseded by the typeclass architecture
 in `Bimodal.FrameConditions`. For new code, prefer:
 - `LinearTemporalFrame`: replaces FrameClass.Base

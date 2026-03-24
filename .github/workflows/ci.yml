@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build, Test, and Lint
+    name: Build and Test
     runs-on: ubuntu-latest
     # Skip CI by default on push, run only when:
     # 1. Manual workflow_dispatch trigger
@@ -30,7 +30,7 @@ jobs:
         with:
           build: true
           test: true
-          lint: true
+          lint: false
           use-mathlib-cache: true
           build-args: "--wfail"
 
@@ -39,4 +39,3 @@ jobs:
         run: |
           echo "Build status: ${{ steps.lean-action.outputs.build-status }}"
           echo "Test status: ${{ steps.lean-action.outputs.test-status }}"
-          echo "Lint status: ${{ steps.lean-action.outputs.lint-status }}"

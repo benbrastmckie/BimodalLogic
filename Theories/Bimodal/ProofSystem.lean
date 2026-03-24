@@ -40,7 +40,7 @@ trees with 7 inference rules.
 | modus_ponens | Γ ⊢ φ → ψ, Γ ⊢ φ | Γ ⊢ ψ |
 | necessitation | ⊢ φ | ⊢ □φ |
 | temporal_necessitation | ⊢ φ | ⊢ Fφ |
-| temporal_duality | ⊢ φ | ⊢ swap_past_future φ |
+| temporal_duality | ⊢ φ | ⊢ swap_temporal φ |
 | weakening | Γ ⊢ φ, Γ ⊆ Δ | Δ ⊢ φ |
 
 ## Usage

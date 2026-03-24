@@ -153,9 +153,9 @@ example (φ : Formula) : [] ⊨ ((φ.all_future).imp (φ.all_future.all_future))
 /--
 Test 12: Temporal A axiom is valid.
 
-Verifies that `φ → F(sometime_past φ)` is valid via soundness.
+Verifies that `φ → F(some_past φ)` is valid via soundness.
 -/
-example (φ : Formula) : [] ⊨ (φ.imp (Formula.all_future φ.sometime_past)) := by
+example (φ : Formula) : [] ⊨ (φ.imp (Formula.all_future φ.some_past)) := by
   let deriv := DerivationTree.axiom [] _ (Axiom.temp_a φ)
   exact soundness [] _ deriv
 
@@ -550,10 +550,10 @@ example : [] ⊨ ((Formula.atom "p").imp ((Formula.atom "p").diamond.box)) := by
 /--
 Test 39: Temporal A soundness with concrete formula.
 
-Verify p → F(sometime_past p) is sound.
+Verify p → F(some_past p) is sound.
 -/
 example : [] ⊨ ((Formula.atom "p").imp 
-             (Formula.all_future (Formula.atom "p").sometime_past)) := by
+             (Formula.all_future (Formula.atom "p").some_past)) := by
   let deriv := DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom "p"))
   exact soundness [] _ deriv
 

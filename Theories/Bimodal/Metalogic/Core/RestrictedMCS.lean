@@ -39,10 +39,6 @@ This construction:
 2. Is designed to integrate with the Bundle BFMCS construction
 3. Uses Finset operations for termination reasoning
 
-## References
-
-- Research report: specs/827_complete_multi_family_bmcs_construction/reports/research-002.md
-- Implementation plan: specs/827_complete_multi_family_bmcs_construction/plans/implementation-002.md
 -/
 
 namespace Bimodal.Metalogic.Core

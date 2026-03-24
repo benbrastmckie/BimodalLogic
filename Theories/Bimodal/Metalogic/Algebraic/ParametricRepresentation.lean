@@ -80,9 +80,6 @@ which is done in the instantiation modules.
 
 ## References
 
-- Research: specs/990_representation_theorem_duration_design/reports/02_synthesis.md (Task 990)
-- Research: specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md
-- Plan: specs/985_lindenbaum_tarski_representation_theorem/plans/implementation-001.md
 - Auxiliary: Theories/Bimodal/Metalogic/StagedConstruction/DFromCantor.lean
 -/
 

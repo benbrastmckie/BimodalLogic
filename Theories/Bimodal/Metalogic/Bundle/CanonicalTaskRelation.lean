@@ -7,7 +7,7 @@ import Bimodal.Syntax.SubformulaClosure
 # CanonicalTask Relation for Discrete Temporal Frames
 
 This module defines the CanonicalTask relation, an integer-indexed relation built
-inductively from the Succ relation (Task 10). CanonicalTask(u, n, v) captures
+inductively from the Succ relation. CanonicalTask(u, n, v) captures
 "v is reachable from u in exactly n steps" where positive n means forward steps
 and negative n means backward steps.
 
@@ -40,8 +40,7 @@ and enables cleaner proofs of individual directions.
 
 ## References
 
-- Task 10 (Succ relation): SuccRelation.lean
-- Task 11 research report: 01_canonical-task-research.md
+- `SuccRelation.lean`: Succ relation
 - Goldblatt 1992, Logics of Time and Computation
 -/
 

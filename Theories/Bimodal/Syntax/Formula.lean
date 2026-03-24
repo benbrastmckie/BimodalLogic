@@ -376,15 +376,6 @@ Note: G (always in future) is our `all_future`, and F (sometime future) is this 
 def some_future (φ : Formula) : Formula := φ.neg.all_future.neg
 
 
-/-- Alias for backward compatibility during refactoring.
-    Use `some_past` instead.
--/
-abbrev sometime_past := some_past
-
-/-- Alias for backward compatibility during refactoring.
-    Use `some_future` instead.
--/
-abbrev sometime_future := some_future
 
 /--
 Swap temporal operators (past ↔ future) in a formula.
@@ -404,8 +395,6 @@ def swap_temporal : Formula → Formula
   | all_past φ => all_future φ.swap_temporal
   | all_future φ => all_past φ.swap_temporal
 
-/-- Alias for backward compatibility during refactoring. -/
-abbrev swap_past_future := swap_temporal
 
 /--
 Theorem: swap_temporal is an involution (applying it twice gives identity).
@@ -422,10 +411,6 @@ theorem swap_temporal_involution (φ : Formula) :
   | all_past _ ih => simp [swap_temporal, ih]
   | all_future _ ih => simp [swap_temporal, ih]
 
-/-- Alias for backward compatibility. -/
-@[simp]
-theorem swap_past_future_involution (φ : Formula) :
-  φ.swap_past_future.swap_past_future = φ := swap_temporal_involution φ
 
 /--
 Temporal swap distributes over diamond: `swap(◇φ) = ◇(swap φ)`.

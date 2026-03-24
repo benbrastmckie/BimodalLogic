@@ -21,7 +21,6 @@ are preserved under atom substitution when the substituted atom is fresh.
 
 ## References
 
-- Task 29: Reflexive GH semantics
 - Standard proof theory: substitution lemma for Hilbert calculi
 -/
 

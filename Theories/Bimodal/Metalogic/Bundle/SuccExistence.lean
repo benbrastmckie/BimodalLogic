@@ -37,8 +37,7 @@ The **predecessor deferral seed** is symmetric using h_content and P.
 
 ## References
 
-- Task 10 (SuccRelation.lean): Succ definition and basic properties
-- Task 12 research report: 01_succ-existence-research.md
+- `SuccRelation.lean`: Succ definition and basic properties
 - Goldblatt 1992, Logics of Time and Computation
 -/
 
@@ -1075,7 +1074,7 @@ the seed, G(¬φ) ∈ predecessor. But F(φ) = ¬G(¬φ) by definition, so both 
 and ¬G(¬φ) are in the predecessor, contradicting its consistency as an MCS.
 
 This was previously an axiom (`predecessor_f_step_axiom`), now proven directly
-via the constrained predecessor seed construction (Task 34, Plan v2).
+via the constrained predecessor seed construction.
 -/
 theorem predecessor_f_step
     (u : Set Formula) (h_mcs : SetMaximalConsistent u)

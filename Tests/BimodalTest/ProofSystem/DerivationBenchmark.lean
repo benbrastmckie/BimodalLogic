@@ -193,7 +193,7 @@ def mkTemporalNecessitation : DerivationTree [] (Formula.all_future ((Formula.bo
   DerivationTree.temporal_necessitation _ mkModalT
 
 /-- Temporal duality on Temporal 4 -/
-def mkTemporalDuality : DerivationTree [] ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p))).swap_past_future :=
+def mkTemporalDuality : DerivationTree [] ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p))).swap_temporal :=
   DerivationTree.temporal_duality _ mkTemp4
 
 /-- Double necessitation: □□(Modal T) -/

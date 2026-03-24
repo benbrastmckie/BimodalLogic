@@ -34,10 +34,6 @@ enables termination of the iterative saturation process.
 This module bridges the existing `Bimodal.Syntax.Subformulas` (List-based)
 with the specific needs of the multi-family BFMCS construction.
 
-## References
-
-- Research report: specs/827_complete_multi_family_bmcs_construction/reports/research-002.md
-- Implementation plan: specs/827_complete_multi_family_bmcs_construction/plans/implementation-002.md
 -/
 
 namespace Bimodal.Syntax

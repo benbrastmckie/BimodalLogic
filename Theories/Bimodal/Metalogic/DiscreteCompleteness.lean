@@ -1,6 +1,4 @@
 import Bimodal.Metalogic.Bundle.CanonicalConstruction
--- REMOVED (Task 41): import Bimodal.Metalogic.Bundle.CanonicalFMCS
--- CanonicalFMCS uses D=CanonicalMCS confused pattern; deleted
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.DiscreteSoundness
 import Bimodal.Semantics.Validity
@@ -39,11 +37,11 @@ The backward discreteness axiom DP is DERIVABLE from DF via temporal duality.
 3. **Temporal Coherent FMCS** (`CanonicalFMCS.lean`):
    Any consistent context extends to temporal coherent family
 
-### Task 974 Dependencies (Blocked Components)
+### Blocked Components
 
 The discrete completeness requires SuccOrder/PredOrder instances for the
 canonical discrete timeline. These are proven in `DiscreteTimeline.lean` but
-currently have sorries awaiting Task 974:
+currently have sorries awaiting resolution:
 
 1. **SuccOrder DiscreteTimelineQuot**: Immediate successor operation
 2. **PredOrder DiscreteTimelineQuot**: Immediate predecessor operation
@@ -63,13 +61,11 @@ Unlike dense completeness (which needs `D ≃o ℚ`), discrete completeness need
 - `NoMaxOrder D` and `NoMinOrder D`
 - `IsSuccArchimedean D`
 
-When task 974 completes, DiscreteTimelineQuot will satisfy all these properties,
+When the SuccOrder/PredOrder proofs are complete, DiscreteTimelineQuot will satisfy all these properties,
 enabling the ℤ isomorphism via Mathlib's `orderIsoIntOfLinearSuccPredArch`.
 
 ## References
 
-- Task 974: Prove SuccOrder/PredOrder for discrete timeline
-- Task 977: Current organization task
 - `DiscreteTimeline.lean`: Discrete timeline construction (with sorries)
 - `DiscreteSoundness.lean`: Discrete soundness (proven)
 -/
@@ -114,7 +110,7 @@ where `⊢_discrete φ` means derivable using base axioms plus DF, SF, SP.
 Step 4 requires SuccOrder/PredOrder for DiscreteTimelineQuot.
 Step 5 uses Mathlib's `orderIsoIntOfLinearSuccPredArch`.
 
-Both are blocked by task 974 sorries in DiscreteTimeline.lean.
+Both are blocked by sorries in DiscreteTimeline.lean.
 -/
 
 /-!
@@ -155,7 +151,7 @@ is the quotient of the staged timeline construction with no density intermediate
 This quotient IS discretely ordered when DF is in the axiom system.
 
 The Int-based truth lemma below can be used as a template, but the actual discrete
-completeness proof requires the DiscreteTimelineQuot domain (blocked by task 974).
+completeness proof requires the DiscreteTimelineQuot domain (blocked by SuccOrder/PredOrder sorries).
 -/
 
 /--
@@ -171,9 +167,9 @@ theorem discrete_base_truth_lemma
   canonical_truth_lemma B h_tc fam hfam t φ
 
 /-!
-## Task 974 Dependency Documentation
+## SuccOrder/PredOrder Dependency Documentation
 
-The following components are needed from task 974 to complete the discrete
+The following components are needed to complete the discrete
 completeness theorem. Until these are resolved, the full theorem cannot be
 stated without sorries.
 
@@ -209,10 +205,10 @@ structure of the staged timeline construction.
 
 For now, Int-based completeness infrastructure is available and proven.
 The discrete-specific domain construction (DiscreteTimelineQuot ≃o ℤ) awaits
-task 974. Applications that need discrete completeness can either:
+SuccOrder/PredOrder proofs. Applications that need discrete completeness can either:
 
 1. Use Int directly (which has discrete structure)
-2. Wait for task 974 completion
+2. Wait for SuccOrder/PredOrder completion
 -/
 
 /-!

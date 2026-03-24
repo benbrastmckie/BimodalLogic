@@ -157,8 +157,6 @@ import Bimodal.Metalogic.Bundle.FMCS
 
 ## References
 
-- Research report: `specs/812_canonical_model_completeness/reports/research-007.md`
-- Implementation plan: `specs/812_canonical_model_completeness/plans/implementation-003.md`
 - Task 809 archival: Archived previous 30-sorry Representation to `Boneyard/Metalogic_v5/`
 
 ## Related Documentation

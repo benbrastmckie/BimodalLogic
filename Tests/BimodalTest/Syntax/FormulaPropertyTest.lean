@@ -294,15 +294,15 @@ Test: Biconditional expansion (100 test cases).
 /--
 Property: Sometime-past is dual to all-past.
 
-sometime_past φ = ¬(all_past ¬φ)
+some_past φ = ¬(all_past ¬φ)
 -/
-example : Testable (∀ φ : Formula, φ.sometime_past = φ.neg.all_past.neg) := by
+example : Testable (∀ φ : Formula, φ.some_past = φ.neg.all_past.neg) := by
   infer_instance
 
 /--
 Test: Sometime-past duality (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.sometime_past = φ.neg.all_past.neg) {
+#eval Testable.check (∀ φ : Formula, φ.some_past = φ.neg.all_past.neg) {
   numInst := 100,
   maxSize := 50
 }
@@ -310,15 +310,15 @@ Test: Sometime-past duality (100 test cases).
 /--
 Property: Sometime-future is dual to all-future.
 
-sometime_future φ = ¬(all_future ¬φ)
+some_future φ = ¬(all_future ¬φ)
 -/
-example : Testable (∀ φ : Formula, φ.sometime_future = φ.neg.all_future.neg) := by
+example : Testable (∀ φ : Formula, φ.some_future = φ.neg.all_future.neg) := by
   infer_instance
 
 /--
 Test: Sometime-future duality (100 test cases).
 -/
-#eval Testable.check (∀ φ : Formula, φ.sometime_future = φ.neg.all_future.neg) {
+#eval Testable.check (∀ φ : Formula, φ.some_future = φ.neg.all_future.neg) {
   numInst := 100,
   maxSize := 50
 }

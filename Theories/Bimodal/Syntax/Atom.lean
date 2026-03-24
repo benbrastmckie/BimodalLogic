@@ -35,7 +35,6 @@ finitely many atoms in `GContent(M)`, we can find a fresh atom not mentioned.
 
 ## References
 
-- Task 964: Resolve atom type freshness debt
 - Goldblatt (1992), Logics of Time and Computation
 - Blackburn, de Rijke, Venema (2001), Modal Logic
 -/

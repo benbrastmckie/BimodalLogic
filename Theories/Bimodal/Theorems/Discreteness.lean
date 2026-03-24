@@ -59,11 +59,11 @@ def discreteness_past (φ : Formula) :
   -- swap_temporal(DF(swap φ)) should equal DP(φ) by involution.
   have h_eq : (Formula.and (Formula.bot.neg.some_future)
     (Formula.and φ.swap_temporal (Formula.all_past φ.swap_temporal)) |>.imp
-    (Formula.all_past φ.swap_temporal).some_future).swap_past_future =
+    (Formula.all_past φ.swap_temporal).some_future).swap_temporal =
     (Formula.and (Formula.bot.neg.some_past)
       (Formula.and φ (Formula.all_future φ)) |>.imp
       (Formula.all_future φ).some_past) := by
-    simp [Formula.swap_temporal, Formula.swap_past_future, Formula.and, Formula.neg,
+    simp [Formula.swap_temporal, Formula.swap_temporal, Formula.and, Formula.neg,
           Formula.some_future, Formula.some_past, Formula.imp,
           Formula.swap_temporal_involution]
   rw [h_eq] at h_swap

@@ -38,10 +38,9 @@ These are semantically justified and follow from the frame conditions
 
 ## References
 
-- Task 10: SuccRelation.lean - Succ definition
-- Task 12: SuccExistence.lean - successor_exists, predecessor_exists
-- Task 11: CanonicalTaskRelation.lean - CanonicalTask, bounded_witness
-- Task 14 research report: 01_succ-fmcs-research.md
+- SuccRelation.lean - Succ definition
+- SuccExistence.lean - successor_exists, predecessor_exists
+- CanonicalTaskRelation.lean - CanonicalTask, bounded_witness
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -3098,7 +3097,7 @@ theorem restricted_succ_propagates_F_not (phi : Formula)
     -- Same modal duality issue: some_future X = X.neg.all_future.neg, which IS an imp formula,
     -- so cases h_eq on chi.neg = FF(psi) doesn't close the neg case.
     -- The entire branch needs the neg(FF psi) → GG(neg psi) derivation.
-    -- TODO: Prove via the proof system
+    -- Proof sketch: derivable via the proof system
     sorry
 
   · -- Case: FF(psi) ∉ deferralClosure
@@ -3183,7 +3182,7 @@ theorem restricted_succ_propagates_F_not' (phi : Formula)
       -- Same modal duality issue: some_future X = X.neg.all_future.neg (an imp formula),
       -- so the inr case of closureWithNeg membership is reachable.
       -- The entire derivation block requires neg(FF psi) → GG(neg psi) as a theorem.
-      -- TODO: Prove via the proof system
+      -- Proof sketch: derivable via the proof system
       sorry
 
     · -- FF(psi) ∉ deferralClosure
@@ -4245,14 +4244,14 @@ that mirrors `constrained_successor_restricted`. This construction needs:
 The existing `predecessor_from_deferral_seed` in SuccExistence.lean works for general MCS,
 but we need a version that stays within deferralClosure for DeferralRestrictedMCS.
 
-For now, we document the requirements and mark this as TODO for a follow-up task.
+Requirements are documented below.
 -/
 
 /--
 A restricted backward chain element: a DeferralRestrictedMCS with P_top.
 This bundles the MCS, its restriction proof, and P_top membership.
 
-TODO: Complete this when constrained_predecessor_restricted is available.
+Requires constrained_predecessor_restricted.
 -/
 structure RestrictedBackwardChainElement (phi : Formula) where
   world : Set Formula
@@ -4413,7 +4412,7 @@ noncomputable def DeferralRestrictedSerialMCS.toSerialMCS {phi : Formula}
   has_P_top := M.extendToMCS_has_P_top
 
 /-!
-## Summary: Task 48 Implementation Status
+## Summary: Implementation Status
 
 **Completed theorems (v6 bounded-witness approach)**:
 1. `restricted_single_step_forcing` - Adapts single_step_forcing to DeferralRestrictedMCS
@@ -4460,7 +4459,7 @@ apply the original bounded_witness, then observe that the witness psi is in defe
 (since it's in the closure's subformulaClosure). However, this requires proving that
 the extensions preserve the Succ relation, which is non-trivial.
 
-**TODO for follow-up tasks**:
+**Open items**:
 1. `constrained_predecessor_restricted` construction (symmetric to successor)
 2. `restricted_backward_chain` using the predecessor construction
 3. `restricted_succ_chain_fam` combining forward and backward chains

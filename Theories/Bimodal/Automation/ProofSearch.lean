@@ -119,7 +119,7 @@ The `HeuristicWeights` structure controls search behavior:
 
 Where b = branching factor, d = depth of shallowest solution.
 
-## Benchmark Results (Task 176)
+## Benchmark Results
 
 | Category | IDDFS | BestFirst | Winner |
 |----------|-------|-----------|--------|
@@ -133,7 +133,7 @@ modus ponens or assumption lookup in larger contexts.
 
 ## Implementation Status
 
-**Implemented** (task 176 complete):
+**Implemented**:
 - ✓ Bounded DFS with heuristics and caching
 - ✓ Iterative deepening DFS (IDDFS) with completeness guarantees
 - ✓ Best-first search with priority queue
@@ -146,7 +146,7 @@ modus ponens or assumption lookup in larger contexts.
 - ✓ Comprehensive benchmark suite
 
 **Future Work**:
-- Proof term construction (blocked by Axiom Prop vs Type issue, task 315)
+- Proof term construction (blocked by Axiom Prop vs Type issue)
 - Adaptive strategy selection based on goal analysis
 
 ## Example Usage
@@ -198,7 +198,7 @@ abbrev SearchResult (_ : Context) (_ : Formula) := Bool
 Proof search result with actual derivation tree.
 
 Returns `Option (DerivationTree Γ φ)` where `some d` means proof found.
-This is the proof-constructing variant enabled by the Axiom : Type refactor (task 260).
+This is the proof-constructing variant enabled by the Axiom : Type refactor.
 -/
 abbrev SearchResultWithProof (Γ : Context) (φ : Formula) := Option (DerivationTree Γ φ)
 
@@ -484,7 +484,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- temp_a: φ → F(Pφ) where P = sometime_past = ¬H¬φ = (φ.neg.all_past).neg
+      -- temp_a: φ → F(Pφ) where P = some_past = ¬H¬φ = (φ.neg.all_past).neg
       <|> (match lhs, rhs with
            | phi, .all_future (.imp (.all_past (.imp phi' .bot)) .bot) =>
                if phi = phi' then
@@ -1169,7 +1169,7 @@ Search strategy configuration.
 inductive SearchStrategy where
   | BoundedDFS (depth : Nat)
   | IDDFS (maxDepth : Nat)
-  | BestFirst (maxExpansions : Nat)  -- Priority queue search (task 176)
+  | BestFirst (maxExpansions : Nat)  -- Priority queue search
   deriving Repr
 
 /--
@@ -1209,7 +1209,7 @@ def search (Γ : Context) (φ : Formula)
   | .IDDFS maxDepth =>
       iddfs_search Γ φ maxDepth visitLimit weights
   | .BestFirst maxExpansions =>
-      -- Best-first search with priority queue (task 176)
+      -- Best-first search with priority queue
       bestFirst_search Γ φ maxExpansions weights PatternDatabase.empty
 
 /--

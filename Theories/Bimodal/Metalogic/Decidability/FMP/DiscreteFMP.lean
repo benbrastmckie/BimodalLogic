@@ -19,7 +19,7 @@ filtration works regardless of the frame's discreteness property.
 ## Dependencies
 
 The full semantic connection between discrete validity and finite models
-depends on Task 981 (removing the discrete axiom technical debt). The
+depends on removing the discrete axiom technical debt. The
 MCS-based construction here is independent of that work.
 
 ## References
@@ -85,7 +85,7 @@ For now, we record that the FMP construction works regardless of discreteness,
 and the full semantic connection (valid_discrete → truth in finite model)
 would require:
 1. The canonical model construction for discrete frames
-2. Task 981 completion (axiom-free discrete infrastructure)
+2. Axiom-free discrete infrastructure completion
 -/
 
 /--
@@ -110,8 +110,8 @@ proof-theoretic level. The discreteness condition only matters when
 connecting to semantic validity, which is handled separately by
 the completeness theorem infrastructure.
 
-**Task 981 Dependency Note**: Full discrete FMP with semantic connection
-will benefit from Task 981's axiom-free discrete infrastructure.
+**Dependency Note**: Full discrete FMP with semantic connection
+will benefit from axiom-free discrete infrastructure.
 -/
 
 end Bimodal.Metalogic.Decidability.FMP

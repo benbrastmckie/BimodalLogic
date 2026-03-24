@@ -25,7 +25,7 @@ Since adjacent chain elements satisfy Succ, the CanonicalTask relation
 
 ## References
 
-- Task 14: SuccChainFMCS.lean, SuccChainTaskFrame.lean
+- `SuccChainFMCS.lean`, `SuccChainTaskFrame.lean`
 - Bimodal.Semantics.WorldHistory
 -/
 

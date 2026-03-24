@@ -34,7 +34,7 @@ This completeness theorem depends on:
 - One sorry in SuccChainTruth (Box backward - not used in completeness)
 
 All axioms are semantically justified by frame conditions (NoMaxOrder, NoMinOrder, reflexive G/H).
-Task 34 targets proving the SuccExistence axioms.
+The remaining work targets proving the SuccExistence axioms.
 
 ## References
 

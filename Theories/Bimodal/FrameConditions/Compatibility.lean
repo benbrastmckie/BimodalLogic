@@ -36,7 +36,6 @@ Total: 19 axioms (2 T-axioms removed under strict semantics)
 
 ## References
 
-- Task 978: Typeclass-based frame condition architecture
 - `Bimodal.ProofSystem.Axioms`: Axiom definitions and frame class enum
 -/
 

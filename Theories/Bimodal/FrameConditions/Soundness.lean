@@ -28,7 +28,6 @@ All 21 axioms are covered:
 
 ## References
 
-- Task 978: Typeclass-based frame condition architecture
 - `Bimodal.Metalogic.Soundness`: Existing soundness proofs
 -/
 

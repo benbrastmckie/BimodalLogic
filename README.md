@@ -45,17 +45,11 @@ The task relation satisfies nullity (reflexive at each time) and compositionalit
 
 ---
 
-## The Logos Connection
-
-Bimodal logic is a fragment of the **Logos**, a formal language of thought designed to enable AI systems to reason with mathematical certainty. The Logos provides verified synthetic reasoning data of arbitrary complexity through an extensible system of proof theory and semantics. This repository focuses specifically on the bimodal fragment, which is of independent interest due to its completeness and decidability. For more about the Logos project, see [logos-labs.ai](https://logos-labs.ai/).
-
----
-
 ## Installation
 
 ### Requirements
 
-- LEAN 4 v4.14.0 or later
+- LEAN 4 v4.27.0-rc1 or later
 - Lake (included with LEAN 4)
 - Git for version control
 - ~5GB disk space (for Mathlib cache)
@@ -111,7 +105,6 @@ ProofChecker/
       docs/            # Theory-specific documentation
   Tests/               # Test suites
   docs/                # Project documentation
-  specs/               # Task artifacts and planning
 ```
 
 ---
@@ -228,6 +221,6 @@ lake test
 ### Directory Convention
 
 - **PascalCase**: LEAN source directories (`Theories/`, `Tests/`)
-- **lowercase**: Non-code directories (`docs/`, `scripts/`, `specs/`)
+- **lowercase**: Non-code directories (`docs/`)
 
 See [Contributing Guide](docs/development/CONTRIBUTING.md) for details.

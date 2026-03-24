@@ -59,8 +59,6 @@ instance built into the construction.
 
 ## References
 
-- Task 977: FrameClass enum introduction
-- Task 978: Typeclass-based frame condition architecture
 - Mathlib: `DenselyOrdered`, `SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder`
 -/
 
@@ -142,7 +140,7 @@ This captures the frame conditions for the discreteness axioms:
 - `IsSuccArchimedean D`: Successor iteration reaches all greater elements
 
 **Technical Debt**: The completeness proof for discrete frames relies on
-`discrete_Icc_finite_axiom` (task 979 outcome), which asserts finiteness of
+`discrete_Icc_finite_axiom`, which asserts finiteness of
 closed intervals. This axiom is documented technical debt.
 -/
 class DiscreteTemporalFrame (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]

@@ -11,16 +11,15 @@ import Bimodal.Theorems.Propositional
 This module provides modal and temporal MCS properties for the completeness
 theorem of TM (Tense and Modality) bimodal logic.
 
-## Refactoring Notes (Task 798)
+## Refactoring Notes
 
 This file has been refactored from a monolithic ~3720 lines to ~680 lines by:
 
 1. **Core Extraction**: SetConsistency definitions, Lindenbaum lemma, and basic MCS
-   properties moved to `Core/MaximalConsistent.lean` (re-exported from Boneyard v2)
+   properties moved to `Core/MaximalConsistent.lean`
    and `Core/MCSProperties.lean`
 
-2. **Boneyard Archive**: Duration-based canonical model infrastructure (~2300 lines)
-   archived to `Boneyard/Metalogic_v4/Completeness/MonolithicCompleteness.lean`
+2. **Archived**: Duration-based canonical model infrastructure (~2300 lines)
 
 3. **Retained Content**: This file keeps:
    - Modal closure properties (box_closure, box_box)
@@ -45,7 +44,7 @@ Defined here:
 ## References
 
 * Modal Logic, Blackburn et al., Chapter 4 (Canonical Models)
-* See `Boneyard/Metalogic_v4/Completeness/` for archived Duration construction
+* Modal Logic, Blackburn et al., Chapter 4
 -/
 
 namespace Bimodal.Metalogic
@@ -362,7 +361,7 @@ theorem SetMaximalConsistent.box_box {S : Set Formula} {φ : Formula}
   have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
   exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
 
--- Duplicate theorems removed in Task 970 Phase 5:
+-- Duplicate theorems removed (canonical versions in MCSProperties.lean):
 -- - SetMaximalConsistent.all_future_all_future: canonical version in MCSProperties.lean
 -- - temp_4_past: canonical version in MCSProperties.lean
 -- - SetMaximalConsistent.all_past_all_past: canonical version in MCSProperties.lean
@@ -520,10 +519,10 @@ theorem SetMaximalConsistent.diamond_box_duality {S : Set Formula} {φ : Formula
 ### Saturation Lemmas
 
 Modal saturation (forward direction) is proven below. Full saturation theorems
-requiring canonical frame and history constructions have been archived to Boneyard.
+requiring canonical frame and history constructions have been archived.
 -/
 
--- SetMaximalConsistent.modal_saturation_forward removed in Task 970 (thin alias for SetMaximalConsistent.box_closure)
--- CanonicalWorldState was removed in Task 928 Phase 6 (duplicate of CanonicalMCS in CanonicalFMCS.lean)
+-- SetMaximalConsistent.modal_saturation_forward removed (thin alias for SetMaximalConsistent.box_closure)
+-- CanonicalWorldState was removed (duplicate of CanonicalMCS in CanonicalFMCS.lean)
 
 end Bimodal.Metalogic

@@ -9,7 +9,7 @@ This module defines the `FMCS` (Family of Maximal Consistent Sets) structure
 that assigns a maximal consistent set (MCS) to each time point in D, with temporal
 coherence conditions ensuring proper formula propagation.
 
-## FMCS Indexing Type (Task 1009, Updated Task 41)
+## FMCS Indexing Type
 
 The type parameter `D` in `FMCS D` is the **indexing type** for the family. For
 proper temporal model construction, `D` should be a temporal domain such as:
@@ -21,16 +21,16 @@ proper temporal model construction, `D` should be a temporal domain such as:
 with proper temporal coherence. This is the canonical implementation for discrete
 completeness.
 
-**Archived Pattern** (Task 41): The D=CanonicalMCS pattern (former CanonicalFMCS.lean)
+**Archived Pattern**: The D=CanonicalMCS pattern (former CanonicalFMCS.lean)
 has been removed. It was architecturally confused: using all MCS as the indexing type
 created an identity mapping `mcs(w) = w.world` that trivialized F/P witness obligations
-rather than proving them. The infrastructure was moved to Boneyard/CanonicalMCS_Infrastructure/.
+rather than proving them.
 
-**WARNING: W=D Conflation Error** (Tasks 15, 41): Never conflate world states (MCS)
+**WARNING: W=D Conflation Error**: Never conflate world states (MCS)
 with time indices. World states describe WHAT is true; time indices describe WHEN.
 D must be a proper timeline type (Int, Rat, TimelineQuot), not CanonicalMCS.
 
-## Terminology (Task 928)
+## Terminology
 
 - **FMCS**: A SINGLE time-indexed family of MCS (Family of MCS)
 - **BFMCS**: A BUNDLE (set) of FMCS families with modal coherence
@@ -50,7 +50,7 @@ MCS connected to adjacent times via temporal coherence conditions.
 - `forward_G`: G formulas at t propagate to all times t' >= t (including t itself via T-axiom)
 - `backward_H`: H formulas at t propagate to all times t' <= t (including t itself via T-axiom)
 
-## Design Note (Task 843)
+## Design Note
 
 The structure previously included `forward_H` and `backward_G` fields. These were
 removed because:
@@ -62,8 +62,6 @@ removed because:
 
 ## References
 
-- Research report: specs/812_canonical_model_completeness/reports/research-007.md
-- Original: Bimodal.Boneyard.Metalogic_v5.Representation.FMCS
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -92,9 +90,9 @@ A family of maximal consistent sets indexed by time, with temporal coherence.
 **Key Properties**:
 - The coherence conditions use REFLEXIVE inequalities (<= not <)
 - This matches TM's temporal operator semantics with T-axioms
-- Reflexivity enables Preorder generalization (Task 922)
+- Reflexivity enables Preorder generalization
 
-**Terminology (Task 928)**:
+**Terminology**:
 - FMCS = Family of MCS (single family)
 - BFMCS = Bundle of FMCSs (collection of families)
 -/
@@ -122,7 +120,7 @@ structure FMCS where
 
 variable {D : Type*} [Preorder D]
 
--- Unused convenience definitions removed in Task 970:
+-- Unused convenience definitions removed:
 -- FMCS.at, FMCS.consistent, FMCS.maximal, FMCS.forward_G_chain, FMCS.backward_H_chain,
 -- FMCS.GG_to_G, FMCS.HH_to_H, FMCS.theorem_mem, FMCS.G_implies_future_phi,
 -- FMCS.H_implies_past_phi, IsConstantFamily
