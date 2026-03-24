@@ -185,3 +185,129 @@ These are frame condition soundness lemmas — likely straightforward once the f
 ### Defer (2 tasks)
 1. **Task 953** — Bilateral refactor (post-publication)
 2. **Task 992** — STSA algebra (theoretical extension)
+
+---
+
+## 6. CanonicalR Traces — Cleanup Status
+
+`CanonicalR` has been **functionally replaced** by `ExistsTask` (defined as `g_content M ⊆ M'`), but deprecated aliases remain in active code.
+
+### What Remains
+
+| File | Artifact | Type |
+|------|----------|------|
+| `Bundle/CanonicalFrame.lean:76` | `abbrev CanonicalR := ExistsTask` | Deprecated alias |
+| `Bundle/CanonicalFrame.lean:91` | `abbrev CanonicalR_past := ExistsTask_past` | Deprecated alias |
+| `Bundle/CanonicalFrame.lean:218` | `canonicalR_transitive` | Name alias for `existsTask_transitive` |
+| `Bundle/CanonicalIrreflexivity.lean:164` | `canonicalR_reflexive` | Name alias for `existsTask_reflexive` |
+| `Bundle/CanonicalIrreflexivity.lean:178` | `canonicalR_past_reflexive` | Name alias for `existsTask_past_reflexive` |
+| `Bundle/CanonicalConstruction.lean:67,176,195` | References to `canonicalR_transitive` | Uses lowercase alias |
+| `Metalogic/Metalogic.lean:15` | Doc string mentions `canonicalR_reflexive` | Documentation |
+| `Canonical/README.md:29` | Doc mentions CanonicalR | Documentation |
+| `Metalogic/Representation.lean:26` | Mentions `CanonicalRIrreflexive` axiom | Archived context |
+
+### Assessment
+
+No active proof depends on `CanonicalR` directly — all proofs use `ExistsTask`. However, the deprecated aliases create confusion and should be cleaned up. The lowercase aliases (`canonicalR_transitive`, etc.) are used by name in `CanonicalConstruction.lean` and `ParametricCanonical.lean`, requiring a rename pass.
+
+### Recommendation
+
+**Fold into Task 21 (technical debt cleanup)** with sub-steps:
+1. Replace `canonicalR_transitive` → `existsTask_transitive` in CanonicalConstruction.lean and ParametricCanonical.lean
+2. Delete the 5 deprecated `abbrev`/alias definitions
+3. Update documentation references
+4. Estimated effort: <1 hour
+
+---
+
+## 7. Algebraic & Category-Theoretic Gap Analysis
+
+### 7.1 What Exists (Sorry-Free)
+
+The **Lindenbaum-Tarski algebraic infrastructure** is complete and sorry-free:
+
+| Component | File | Status |
+|-----------|------|--------|
+| Lindenbaum quotient `Formula / ProvEquiv` | `Algebraic/LindenbaumQuotient.lean` | Sorry-free |
+| `BooleanAlgebra` instance on `LindenbaumAlg` | `Algebraic/BooleanStructure.lean` | Sorry-free |
+| Box as interior operator (deflationary, monotone, idempotent) | `Algebraic/InteriorOperators.lean` | Sorry-free |
+| G, H as monotone operators | `Algebraic/InteriorOperators.lean` | Sorry-free |
+| Ultrafilter-MCS bijection | `Algebraic/UltrafilterMCS.lean` | Sorry-free |
+| Basic algebraic representation (consistent → satisfiable) | `Algebraic/AlgebraicRepresentation.lean` | Sorry-free |
+| D-parametric canonical TaskFrame | `Algebraic/ParametricCanonical.lean` | Sorry-free |
+| D-parametric truth lemma | `Algebraic/ParametricTruthLemma.lean` | Sorry-free |
+| D-parametric world histories | `Algebraic/ParametricHistory.lean` | Sorry-free |
+| Conditional representation theorem | `Algebraic/ParametricRepresentation.lean` | 1 sorry (needs `construct_bfmcs`) |
+
+### 7.2 What's Designed but Not Formalized
+
+**The STSA (Shift-Closed Tense S5 Algebra) — Task 992** is fully designed in `specs/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md` but has zero Lean formalization:
+
+| Component | Description | Est. Effort |
+|-----------|-------------|-------------|
+| **STSA structure definition** | `(A, □, G, H, σ)` with S5 + tense + interaction axioms | ~100 lines |
+| **Temporal duality `σ`** | Lift `swap_temporal` involution to `LindenbaumAlg ≃ LindenbaumAlg` | ~30 lines |
+| **STSA instance for LindenbaumAlg** | Wire existing Boolean algebra + operators + σ | ~50 lines |
+| **Galois connections `P* ⊣ G*` and `F* ⊣ H*`** | Adjunctions from Lindenbaum algebra structure | ~80 lines |
+| **Jónsson-Tarski relational representation** | Canonical relations from operators: `R_□`, `R_G`, `R_H` | ~120 lines |
+
+### 7.3 Categorical Gaps (Not Yet Explored)
+
+These are **entirely unexplored** in the codebase — no research, no specs, no code:
+
+| Gap | Description | Significance |
+|-----|-------------|--------------|
+| **Cmplx ⊣ Can adjunction** | Complex algebra functor (Frame → Algebra) and Canonical frame functor (Algebra → Frame) form a dual adjunction | Would give the representation theorem as a unit of adjunction — the cleanest possible formulation |
+| **Stone duality for TM-frames** | Extend Stone duality (Boolean algebras ≃ Stone spaces) to account for □, G, H operators | Standard route to descriptive frames; connects to topology |
+| **Goldblatt-Thomason characterization** | Which classes of frames are definable by TM axioms? | Characterizes the expressive power of TM logic |
+| **Canonical extensions** (Gehrke-Jónsson) | Extend STSA to its canonical extension for abstract completeness | Eliminates need for explicit MCS construction |
+| **Functorial semantics** | TM-models as functors from a syntactic category | Would unify semantic approaches |
+| **Coalgebraic perspective** | TM-frames as coalgebras for an endofunctor on Set | Alternative to relational semantics |
+
+### 7.4 Algebraic Dead Ends (Permanently Closed)
+
+| Approach | Why Abandoned | Archive Location |
+|----------|---------------|------------------|
+| D = CanonicalMCS conflation | Type mismatch: MCS has `Preorder`, D needs `AddCommGroup` | Task 41 cleanup (completed) |
+| Task 988: Dense algebraic completeness | Built on D=CanonicalMCS anti-pattern | `specs/archive/` |
+| Task 989: Discrete algebraic completeness | Superseded by succ-chain approach | `specs/archive/` |
+| Syntax-based D construction | Replaced by parametric approach (D as external parameter) | Various Boneyard files |
+
+### 7.5 Revised Recommendation for Task 992 (STSA)
+
+Given the concern about insufficient algebraic exploration, Task 992 warrants **elevation from DEFERRED to MEDIUM priority**. The STSA formalization would:
+
+1. **Consolidate** the existing sorry-free algebraic infrastructure into a unified algebraic framework
+2. **Surface** whether the Galois connections `P* ⊣ G*` and `F* ⊣ H*` can simplify the completeness proof
+3. **Enable** categorical representation (Cmplx ⊣ Can) as an alternative to the current MCS-based construction
+4. **Connect** to the broader literature (Bezhanishvili-Carai MS4.t algebras, von Karger temporal algebra)
+
+**Proposed new task** (or sub-task of 992): Formalize the STSA structure + instance (~200 lines, ~4-6 hours). This is independent of the axiom elimination pipeline and can be done in parallel.
+
+### 7.6 Specific Algebraic Holes in the Completeness Pipeline
+
+The current completeness pipeline is **relational** (MCS + canonical relations + truth lemma). An **algebraic** completeness pipeline would look different:
+
+```
+Current:  MCS → CanonicalR (ExistsTask) → FMCS → BFMCS → TaskFrame → truth_at
+                                          ^^^^^^^^^^^^^^^^
+                                          This is where the sorries live
+
+Algebraic: LindenbaumAlg → STSA instance → Jónsson-Tarski rep → Complex algebra embedding
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                            This path is unexplored in Lean
+```
+
+The algebraic path could potentially **bypass** the BFMCS construction sorries entirely, because Jónsson-Tarski representation works at the algebraic level without needing explicit chain construction. However, it requires the STSA formalization as a prerequisite.
+
+### 7.7 Summary of Algebraic Recommendations
+
+| Action | Priority | Effort | Impact |
+|--------|----------|--------|--------|
+| Formalize STSA structure + LindenbaumAlg instance | MEDIUM | 4-6 hrs | Unifies algebraic infrastructure |
+| Formalize temporal duality σ on quotient | MEDIUM | 1-2 hrs | Enables STSA, simplifies proofs |
+| Formalize Galois connections P* ⊣ G*, F* ⊣ H* | MEDIUM | 3-4 hrs | May simplify completeness |
+| Explore Jónsson-Tarski representation as alternative completeness path | LOW-MEDIUM | 8-12 hrs | Could bypass BFMCS sorries |
+| Clean up CanonicalR deprecated aliases | LOW | <1 hr | Hygiene, fold into Task 21 |
+| Categorical functor formalization (Cmplx, Can) | LOW | 10-15 hrs | Theoretical elegance |
+| Stone duality / canonical extensions | FUTURE | 20+ hrs | Post-publication research |
