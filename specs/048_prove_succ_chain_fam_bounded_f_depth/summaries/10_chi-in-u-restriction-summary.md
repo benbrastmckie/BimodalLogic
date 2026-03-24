@@ -1,110 +1,117 @@
-# Implementation Summary: Task #48 (v10) - Partial
+# Implementation Summary: Task #48 (v10)
 
 **Task**: 48 - prove_succ_chain_fam_bounded_f_depth
-**Plan Version**: 10 (chi-in-u-restriction)
-**Status**: PARTIAL (Phases 1-2 complete, Phases 3-5 blocked by pre-existing errors)
-**Session**: sess_1774311080_d1bf29
+**Plan Version**: v10 (chi-in-u-restriction)
+**Date**: 2026-03-23
+**Session**: sess_1774312144_672b4e
+**Status**: PARTIAL
 
-## Completed Work
+## Overview
 
-### Phase 1: Modify boundary_resolution_set definition [COMPLETED]
+This implementation attempted to complete the boundary_resolution_set approach for task 48. Phases 1-2 were completed in a prior session. This session investigated Phases 3-5 and found that the boundary case proofs require a different strategy than planned.
 
-Modified the `boundary_resolution_set` definition in `SuccExistence.lean` to add `chi ∈ u` as the first condition:
+## Phases Completed
 
-**Before**:
-```lean
-def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
-  {chi | Formula.some_future chi ∈ u ∧
-         Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
-         Formula.all_future (Formula.some_future chi) ∉ u}
-```
+### Phase 1: Modify boundary_resolution_set definition [COMPLETED - Prior Session]
 
-**After**:
-```lean
-def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
-  {chi | chi ∈ u ∧
-         Formula.some_future chi ∈ u ∧
-         Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
-         Formula.all_future (Formula.some_future chi) ∉ u}
-```
+- Added `chi in u` requirement to boundary_resolution_set
+- Definition now requires all four conditions: chi in u, F(chi) in u, FF(chi) not in dc, GF(chi) not in u
+- Location: SuccExistence.lean lines 318-322
 
-Also updated:
-- `mem_boundary_resolution_set_iff` lemma
-- `boundary_resolution_set_subset_deferralClosure` theorem (simplified proof)
+### Phase 2: Complete augmented_seed_consistent [COMPLETED - Prior Session]
 
-### Phase 2: Complete augmented_seed_consistent [COMPLETED]
+- Proof completed via subset argument: augmented_seed subset u, u is consistent
+- Location: SuccChainFMCS.lean lines 1566-1589
 
-Replaced the incomplete proof of `augmented_seed_consistent` with a simple subset argument:
+### Phase 3: Update v2 construction and Succ proof [PARTIAL]
 
-**Key insight**: With `chi ∈ u` in the boundary_resolution_set definition:
-1. `constrained_successor_seed_restricted ⊆ u` (already proven)
-2. `boundary_resolution_set ⊆ u` (trivially follows from `chi ∈ u` condition)
-3. Therefore `augmented_seed ⊆ u`, and u is consistent
+- The v2 construction approach was abandoned
+- Investigation revealed the existing construction is sufficient
+- Boundary case proofs require different strategy than originally planned
 
-**New proof** (26 lines vs ~400 lines of incomplete reasoning):
-```lean
-theorem augmented_seed_consistent ... := by
-  have h_augmented_subset_u : ... ⊆ u := by
-    intro x hx
-    cases hx with
-    | inl h_in_seed => -- seed ⊆ u (existing proof)
-    | inr h_in_brs =>
-      rw [mem_boundary_resolution_set_iff] at h_in_brs
-      exact h_in_brs.1  -- chi ∈ u
-  intro L h_L_sub
-  exact h_mcs.1.2 L (fun ψ hψ => h_augmented_subset_u (h_L_sub ψ hψ))
-```
+### Phase 4: Simplify restricted_single_step_forcing [PARTIAL]
 
-## Blocked Work
+- The boundary_resolution_set approach only helps when `psi in chain(k)`
+- `restricted_single_step_forcing` does not have `psi in chain(k)` as hypothesis
+- Sorries remain for FF(psi) not in dc cases
 
-### Phases 3-5 [BLOCKED]
+### Phase 5: Update downstream and verify [PARTIAL]
 
-Pre-existing build errors in `SuccChainFMCS.lean` prevent completing Phases 3-5. These errors are unrelated to the boundary_resolution_set changes:
+- Build passes successfully
+- 7 sorries remain in SuccChainFMCS.lean (5 boundary + 2 deprecated)
+- Plan expected 2 sorries (deprecated only)
 
-**Missing identifiers** (29 errors total):
-- `Bimodal.Theorems.future_necessitation`
-- `Bimodal.Theorems.future_k_dist`
-- `Bimodal.ProofSystem.DerivationTree.neg_elim`
-- `Bimodal.Syntax.closureWithNeg_subset_deferralClosure_inv`
+## Current State
 
-**Other errors**:
-- Type mismatches
-- Invalid alternative names in case analysis
-- simp making no progress
-- Unsolved goals
+### Build Status
+- `lake build`: PASSES (928 jobs)
+- No new errors introduced
 
-## Verification Results
+### Sorry Count in SuccChainFMCS.lean (7 total)
+| Line | Location | Type |
+|------|----------|------|
+| 736 | f_nesting_is_bounded | Deprecated |
+| 971 | p_nesting_is_bounded | Deprecated |
+| 3201 | restricted_single_step_forcing | Boundary: FF not in dc |
+| 3360 | restricted_succ_propagates_F_not | Boundary: F in dc, FF not in dc |
+| 4108 | restricted_succ_propagates_F_not' | Edge: GF in dc but not in chain |
+| 4336 | restricted_succ_propagates_F_not' | Edge: GF not in dc |
+| 4348 | restricted_succ_propagates_F_not' | Edge: F not in u |
 
-| Metric | Value |
-|--------|-------|
-| Build passes | No (29 pre-existing errors) |
-| Sorry count | 7 (was 8, removed 1) |
-| Deprecated sorries | 2 (lines 736, 971) |
-| New sorries | 0 |
-| Axiom count | 0 |
+### Key Theorems Status
 
-## Files Modified
+| Theorem | Status | Notes |
+|---------|--------|-------|
+| augmented_seed_consistent | COMPLETE | Uses chi in u restriction |
+| boundary_resolution_set | MODIFIED | Added chi in u condition |
+| restricted_single_step_forcing | PARTIAL | Sorry for FF not in dc |
+| restricted_succ_propagates_F_not | PARTIAL | Sorry for boundary case |
+| restricted_succ_propagates_F_not' | PARTIAL | Sorries for edge cases |
+| restricted_bounded_witness | COMPLETE* | Uses sorry-containing lemmas |
+| restricted_forward_chain_forward_F | COMPLETE* | Uses bounded_witness |
 
-1. `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean`
-   - Modified `boundary_resolution_set` definition
-   - Updated `mem_boundary_resolution_set_iff`
-   - Simplified `boundary_resolution_set_subset_deferralClosure`
+*These theorems have complete proof structure but rely on lemmas with sorries.
 
-2. `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean`
-   - Replaced `augmented_seed_consistent` proof (removed sorry)
-   - Fixed `Nat.eq_or_gt_of_le` -> `by_cases` (pre-existing Mathlib compatibility issue)
+## Blocker Analysis
 
-## Recommendations
+The remaining sorries represent a genuine mathematical challenge:
 
-1. **Fix pre-existing errors**: A separate task should address the missing identifiers and type mismatches in SuccChainFMCS.lean before Phases 3-5 can proceed.
+1. **The f_content path**: When FF(psi) not in dc, we cannot use negation completeness to derive GG(neg psi), which is needed to block F(psi) from entering the successor.
 
-2. **The core design is sound**: The `chi ∈ u` restriction makes `augmented_seed_consistent` trivial and doesn't break the boundary resolution logic because:
-   - When `chi ∈ u`, adding chi to the seed is safe
-   - When `chi.neg ∈ u`, the deferral disjunction mechanism handles it via F(chi)
+2. **The g_content path**: Even when f_content is blocked, GF(psi) in chain(k) can inject F(psi) via g_persistence.
 
-3. **Remaining sorries**: The 5 non-deprecated sorries are in:
-   - `restricted_succ_propagates_F_not_boundary` (line 3201)
-   - `restricted_succ_propagates_F_not_boundary'` (line 3360)
-   - `restricted_bounded_witness` (lines 4108, 4336, 4348)
+3. **Primed versions**: Adding h_GF_not hypothesis blocks both paths but creates new edge cases when GF(psi) is in dc but not in chain(k).
 
-   These would be addressed in Phases 3-5 once the build errors are fixed.
+4. **The mathematical insight**: The bounded_witness induction should handle these cases because the F-depth eventually decreases, but proving this requires tracking additional information (G-depth or lexicographic termination).
+
+## Recommendations for Follow-up
+
+### Option 1: Lexicographic Termination (Recommended)
+Modify restricted_bounded_witness to use lexicographic induction on (f_depth, g_depth, k), where:
+- f_depth = F-nesting depth (current d)
+- g_depth = G-nesting depth of the obligation
+- k = chain position
+
+This should handle all cases where the current approach has sorries.
+
+### Option 2: Semantic Argument
+Prove consistency of augmented_seed by showing it has a model, using the successor witnessing F(chi).
+
+### Option 3: Accept Current State
+The bounded_witness theorem "works" at the type level and the sorries are in edge cases. For practical purposes, this may be acceptable.
+
+## Files Modified (This Session)
+
+- `specs/048_prove_succ_chain_fam_bounded_f_depth/plans/10_chi-in-u-restriction.md` - Updated phase status markers
+- `specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/10_chi-in-u-restriction-summary.md` - This summary
+
+## Files Modified (Prior Session)
+
+- `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean` - boundary_resolution_set definition
+- `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` - augmented_seed_consistent proof
+
+## Artifacts
+
+- Plan: specs/048_prove_succ_chain_fam_bounded_f_depth/plans/10_chi-in-u-restriction.md
+- Summary: specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/10_chi-in-u-restriction-summary.md
+- Research: specs/048_prove_succ_chain_fam_bounded_f_depth/reports/16_derivability-blocker.md

@@ -125,9 +125,9 @@ theorem augmented_seed_consistent (phi : Formula) (u : DeferralRestrictedSerialM
 
 ---
 
-### Phase 3: Update v2 construction and Succ proof [BLOCKED]
+### Phase 3: Update v2 construction and Succ proof [PARTIAL]
 
-**BLOCKED**: Pre-existing build errors in SuccChainFMCS.lean prevent proceeding. Missing identifiers include:
+**NOTE**: The v2 construction approach was abandoned. Investigation revealed the existing construction is sufficient, but the boundary case proofs (FF(psi) ∉ dc) require a different strategy than originally planned.
 - `Bimodal.Theorems.future_necessitation`
 - `Bimodal.Theorems.future_k_dist`
 - `Bimodal.ProofSystem.DerivationTree.neg_elim`
@@ -153,9 +153,11 @@ These errors are unrelated to the boundary_resolution_set changes and predate th
 
 ---
 
-### Phase 4: Simplify restricted_single_step_forcing [BLOCKED]
+### Phase 4: Simplify restricted_single_step_forcing [PARTIAL]
 
 **Goal**: Complete Phase 4 from v9 — use boundary_resolution_set to remove sorry.
+
+**Actual outcome**: The boundary_resolution_set approach only helps when `psi ∈ chain(k)`, but `restricted_single_step_forcing` does not have this as a hypothesis. The sorry remains for the `FF(psi) ∉ dc` case.
 
 **Proof for boundary case**:
 ```lean
@@ -204,9 +206,11 @@ If it resolves to F(psi): F(psi) ∈ chain(k+1). Then at step k+1, F(psi) needs 
 
 ---
 
-### Phase 5: Update downstream and verify [BLOCKED]
+### Phase 5: Update downstream and verify [PARTIAL]
 
 **Goal**: Complete all remaining work and verify.
+
+**Actual outcome**: Build passes. 7 sorries remain (5 boundary cases + 2 deprecated).
 
 **Tasks**:
 - [ ] Update bounded_witness to use v2 theorems
