@@ -1402,4 +1402,206 @@ theorem deferral_restricted_mcs_P_bounded (phi psi : Formula) (M : Set Formula)
     rw [h_eq]
     exact h_min_not
 
+/-!
+## DeferralRestrictedMCS Closure Under Derivation
+
+These lemmas establish that DeferralRestrictedMCS is closed under derivation
+for formulas within deferralClosure. This enables proving modal duality lemmas
+like `neg_FF_implies_GG_neg` for restricted MCS.
+-/
+
+/--
+DeferralRestrictedMCS is closed under derivation for formulas in deferralClosure.
+
+If L ⊆ M, L ⊢ φ, and φ ∈ deferralClosure, then φ ∈ M.
+
+This is the DRM version of `SetMaximalConsistent.closed_under_derivation`.
+The key insight is that DRM maximality within deferralClosure is sufficient:
+if φ ∈ deferralClosure and φ ∉ M, then insert φ M is inconsistent,
+which contradicts L ⊢ φ when L ⊆ M.
+-/
+theorem drm_closed_under_derivation {phi : Formula} {M : Set Formula}
+    (h_mcs : DeferralRestrictedMCS phi M) {ψ : Formula}
+    (L : List Formula) (h_sub : ∀ χ ∈ L, χ ∈ M)
+    (h_deriv : DerivationTree L ψ)
+    (h_ψ_dc : ψ ∈ deferralClosure phi) : ψ ∈ M := by
+  by_contra h_not_mem
+  -- By DRM maximality, insert ψ M is inconsistent
+  have h_incons : ¬SetConsistent (insert ψ M) := h_mcs.2 ψ h_ψ_dc h_not_mem
+  unfold SetConsistent at h_incons
+  push_neg at h_incons
+  obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons
+  -- L' ⊆ insert ψ M and L' is inconsistent
+  by_cases h_psi_in_L' : ψ ∈ L'
+  · -- ψ ∈ L'. Use exchange to put ψ first, then deduction theorem.
+    have ⟨d_bot⟩ : Nonempty (DerivationTree L' Formula.bot) := by
+      unfold Consistent at h_L'_incons
+      push_neg at h_L'_incons
+      exact h_L'_incons
+    let L'_filt := L'.filter (fun y => decide (y ≠ ψ))
+    have h_perm := cons_filter_neq_perm h_psi_in_L'
+    have d_bot_reord : DerivationTree (ψ :: L'_filt) Formula.bot :=
+      derivation_exchange d_bot (fun x => (h_perm x).symm)
+    have d_neg_psi : DerivationTree L'_filt (Formula.neg ψ) :=
+      deduction_theorem L'_filt ψ Formula.bot d_bot_reord
+    -- L'_filt ⊆ M
+    have h_filt_sub : ∀ χ ∈ L'_filt, χ ∈ M := by
+      intro χ hχ
+      have hχ' := List.mem_filter.mp hχ
+      have hχne : χ ≠ ψ := by simpa using hχ'.2
+      have := h_L'_sub χ hχ'.1
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq hχne
+      | inr h_in_M => exact h_in_M
+    -- Combine: L ∪ L'_filt derives ψ and ¬ψ, hence ⊥
+    let LL' := L ++ L'_filt
+    have h_LL'_sub : ∀ χ ∈ LL', χ ∈ M := by
+      intro χ hχ
+      simp only [LL', List.mem_append] at hχ
+      cases hχ with
+      | inl hL => exact h_sub χ hL
+      | inr hL' => exact h_filt_sub χ hL'
+    have d_psi' : DerivationTree LL' ψ :=
+      DerivationTree.weakening L LL' ψ h_deriv (List.subset_append_left L L'_filt)
+    have d_neg_psi' : DerivationTree LL' (Formula.neg ψ) :=
+      DerivationTree.weakening L'_filt LL' _ d_neg_psi (List.subset_append_right L L'_filt)
+    have d_bot_final : DerivationTree LL' Formula.bot :=
+      derives_bot_from_phi_neg_phi d_psi' d_neg_psi'
+    exact h_mcs.1.2 LL' h_LL'_sub ⟨d_bot_final⟩
+  · -- ψ ∉ L', so L' ⊆ M
+    have h_L'_in_M : ∀ χ ∈ L', χ ∈ M := by
+      intro χ h_mem
+      have := h_L'_sub χ h_mem
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq (fun h' => h_psi_in_L' (h' ▸ h_mem))
+      | inr h_in_M => exact h_in_M
+    -- L' ⊆ M and L' is inconsistent contradicts M consistent
+    unfold Consistent at h_L'_incons
+    push_neg at h_L'_incons
+    exact h_mcs.1.2 L' h_L'_in_M h_L'_incons
+
+/--
+DeferralRestrictedMCS implication property: modus ponens is reflected in membership
+when the conclusion is in deferralClosure.
+
+If (φ → ψ) ∈ M and φ ∈ M and ψ ∈ deferralClosure, then ψ ∈ M.
+-/
+theorem drm_implication_property {phi : Formula} {M : Set Formula}
+    (h_mcs : DeferralRestrictedMCS phi M) {ψ χ : Formula}
+    (h_imp : (ψ.imp χ) ∈ M) (h_psi : ψ ∈ M)
+    (h_χ_dc : χ ∈ deferralClosure phi) : χ ∈ M := by
+  have h_sub : ∀ ξ ∈ [ψ, ψ.imp χ], ξ ∈ M := by
+    intro ξ h_mem
+    simp only [List.mem_cons, List.mem_nil_iff, or_false] at h_mem
+    cases h_mem with
+    | inl h_eq => exact h_eq ▸ h_psi
+    | inr h_eq => exact h_eq ▸ h_imp
+  have h_deriv : DerivationTree [ψ, ψ.imp χ] χ := by
+    have h_assume_psi : [ψ, ψ.imp χ] ⊢ ψ :=
+      DerivationTree.assumption [ψ, ψ.imp χ] ψ (by simp)
+    have h_assume_imp : [ψ, ψ.imp χ] ⊢ ψ.imp χ :=
+      DerivationTree.assumption [ψ, ψ.imp χ] (ψ.imp χ) (by simp)
+    exact DerivationTree.modus_ponens [ψ, ψ.imp χ] ψ χ h_assume_imp h_assume_psi
+  exact drm_closed_under_derivation h_mcs [ψ, ψ.imp χ] h_sub h_deriv h_χ_dc
+
+/--
+Theorems that are in deferralClosure are in any DeferralRestrictedMCS.
+
+This is the DRM version of `theorem_in_mcs`. If ⊢ ψ and ψ ∈ deferralClosure, then ψ ∈ M.
+-/
+theorem theorem_in_drm {phi : Formula} {M : Set Formula}
+    (h_mcs : DeferralRestrictedMCS phi M) {ψ : Formula}
+    (h_thm : [] ⊢ ψ)
+    (h_ψ_dc : ψ ∈ deferralClosure phi) : ψ ∈ M := by
+  have h_sub : ∀ χ ∈ ([] : List Formula), χ ∈ M := by
+    intro χ h
+    simp only [List.mem_nil_iff] at h
+  exact drm_closed_under_derivation h_mcs [] h_sub h_thm h_ψ_dc
+
+/--
+neg(FF(phi)) in DeferralRestrictedMCS implies GG(neg(phi)) in DeferralRestrictedMCS,
+provided all intermediate formulas are in deferralClosure.
+
+This is the DRM version of `neg_FF_implies_GG_neg_in_mcs`. The key insight is that
+the derivation only uses DNE and modal K distribution, which are provable in the
+proof system. When all intermediate formulas are in deferralClosure, the DRM's
+closure under derivation applies.
+
+**Formula Structure**:
+- neg(FF(psi)) has structure: `psi.neg.all_future.neg.neg.all_future.neg.neg`
+- We want: `psi.neg.all_future.all_future` = GG(neg psi)
+
+**Intermediate formulas** (must be in deferralClosure for this to work):
+- `psi.neg.all_future.neg.neg.all_future` = G(G(neg psi).neg.neg)
+- `psi.neg.all_future.all_future` = GG(neg psi)
+-/
+theorem neg_FF_implies_GG_neg_in_drm {phi : Formula} {M : Set Formula}
+    (h_mcs : DeferralRestrictedMCS phi M) (psi : Formula)
+    (h_neg_FF : (Formula.some_future (Formula.some_future psi)).neg ∈ M)
+    (h_intermediate_dc : (psi.neg.all_future.neg).neg.all_future ∈ deferralClosure phi)
+    (h_GG_dc : psi.neg.all_future.all_future ∈ deferralClosure phi) :
+    Formula.all_future (Formula.all_future psi.neg) ∈ M := by
+  -- Step A: Apply DNE to get G(G(neg(psi)).neg.neg) ∈ M
+  -- Directly derive: [neg(FF(psi))] ⊢ G(G(neg(psi)).neg.neg)
+  have h_inner : (psi.neg.all_future.neg).neg.all_future ∈ M := by
+    -- Build derivation: [h_neg_FF_formula] ⊢ h_intermediate_formula
+    let premise := (psi.neg.all_future.neg).neg.all_future.neg.neg
+    let conclusion := (psi.neg.all_future.neg).neg.all_future
+    have h_dne : [] ⊢ premise.imp conclusion :=
+      Bimodal.Theorems.Propositional.double_negation conclusion
+    -- Weaken to context with premise
+    have h_dne' : [premise] ⊢ premise.imp conclusion :=
+      DerivationTree.weakening [] [premise] _ h_dne (List.nil_subset _)
+    have h_assume : [premise] ⊢ premise :=
+      DerivationTree.assumption [premise] premise (List.mem_singleton.mpr rfl)
+    have h_deriv : [premise] ⊢ conclusion :=
+      DerivationTree.modus_ponens [premise] premise conclusion h_dne' h_assume
+    -- h_neg_FF has exactly the type of premise
+    have h_sub : ∀ χ ∈ [premise], χ ∈ M := by
+      intro χ hχ
+      simp only [List.mem_singleton] at hχ
+      exact hχ ▸ h_neg_FF
+    exact drm_closed_under_derivation h_mcs [premise] h_sub h_deriv h_intermediate_dc
+
+  -- Step B: Apply G(DNE) to get GG(neg(psi)) ∈ M
+  -- Derive: [G(G(neg psi).neg.neg)] ⊢ GG(neg psi)
+  have h_G_dne : [] ⊢ (psi.neg.all_future.neg).neg.all_future.imp (psi.neg.all_future.all_future) := by
+    have h_dne_inner : [] ⊢ (psi.neg.all_future).neg.neg.imp (psi.neg.all_future) :=
+      Bimodal.Theorems.Propositional.double_negation _
+    have h_nec : [] ⊢ ((psi.neg.all_future).neg.neg.imp (psi.neg.all_future)).all_future :=
+      Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne_inner
+    have h_k : [] ⊢ ((psi.neg.all_future).neg.neg.imp (psi.neg.all_future)).all_future.imp
+                    ((psi.neg.all_future).neg.neg.all_future.imp (psi.neg.all_future).all_future) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_k_dist _ _)
+    exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_k h_nec
+
+  let premise2 := (psi.neg.all_future.neg).neg.all_future
+  let conclusion2 := psi.neg.all_future.all_future
+  have h_deriv2 : [premise2] ⊢ conclusion2 := by
+    have h_imp' : [premise2] ⊢ premise2.imp conclusion2 :=
+      DerivationTree.weakening [] [premise2] _ h_G_dne (List.nil_subset _)
+    have h_assume2 : [premise2] ⊢ premise2 :=
+      DerivationTree.assumption [premise2] premise2 (List.mem_singleton.mpr rfl)
+    exact DerivationTree.modus_ponens [premise2] premise2 conclusion2 h_imp' h_assume2
+  have h_sub2 : ∀ χ ∈ [premise2], χ ∈ M := by
+    intro χ hχ
+    simp only [List.mem_singleton] at hχ
+    exact hχ ▸ h_inner
+  exact drm_closed_under_derivation h_mcs [premise2] h_sub2 h_deriv2 h_GG_dc
+
+/--
+G(neg phi) in DeferralRestrictedMCS implies F(phi) not in DeferralRestrictedMCS.
+
+This is the DRM version of `G_neg_implies_not_F`. The proof only uses consistency,
+which DRM satisfies.
+-/
+theorem drm_G_neg_implies_not_F {phi : Formula} {M : Set Formula}
+    (h_mcs : DeferralRestrictedMCS phi M) (psi : Formula)
+    (h_G_neg : Formula.all_future psi.neg ∈ M) :
+    Formula.some_future psi ∉ M := by
+  intro h_F
+  have h_eq : Formula.some_future psi = (Formula.all_future psi.neg).neg := rfl
+  rw [h_eq] at h_F
+  exact set_consistent_not_both h_mcs.1.2 (Formula.all_future psi.neg) h_G_neg h_F
+
 end Bimodal.Metalogic.Core

@@ -53,7 +53,7 @@ From reports/22_team-research.md:
 
 ## Implementation Phases
 
-### Phase 1: Prove DRM Negation Completeness [NOT STARTED]
+### Phase 1: Prove DRM Negation Completeness [COMPLETED]
 
 **Goal**: Prove the key lemma that enables closing the critical sorries
 
@@ -83,7 +83,7 @@ lemma drm_negation_complete_within_dc (phi psi : Formula)
 
 ---
 
-### Phase 2: Fix Critical Sorries [NOT STARTED]
+### Phase 2: Fix Critical Sorries [BLOCKED]
 
 **Goal**: Replace sorries at lines 2360 and 3012 with proofs using the new lemma
 
