@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T06:00:29Z",
+      "last_updated": "2026-03-24T06:22:50Z",
       "artifacts": [
         {
           "type": "research",
@@ -792,7 +792,7 @@
           "summary": "Synthesis: Class A resolved, Class B requires bounded_witness restructuring. Intermediate lemmas FALSE. Recommends direct induction approach (plan v14) or FMP fallback."
         }
       ],
-      "session_id": "sess_1774322001_a110f4",
+      "session_id": "sess_1774333345_98d055",
       "researched": "2026-03-24T03:07:18Z",
       "planned": "2026-03-24T03:12:19Z",
       "started": "2026-03-24T00:53:25Z"
@@ -809,14 +809,21 @@
         48
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-23T08:01:38Z",
+      "last_updated": "2026-03-24T06:29:26Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "type": "research",
+          "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/02_algebraic-vs-fmp-analysis.md",
+          "summary": "Analysis of FMP vs algebraic representation theorem approaches"
         }
-      ]
+      ],
+      "session_id": "sess_1774333486_8a8a3a",
+      "researched": "2026-03-24T06:29:26Z"
     },
     {
       "project_number": 53,

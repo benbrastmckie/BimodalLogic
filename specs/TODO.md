@@ -139,7 +139,9 @@ Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass S
 - **Language**: lean4
 - **Dependencies**: Task 48
 - **Parent Task**: 36
-- **Research**: [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+- **Research**:
+  - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
+  - [02_algebraic-vs-fmp-analysis.md](049_fmp_based_boundedness_proof_fallback/reports/02_algebraic-vs-fmp-analysis.md)
 
 **Description**: FALLBACK TASK: Only pursue if Task 48 encounters fundamental obstacles. Connect succ_chain_fam to FMP infrastructure to prove boundedness via Finite Model Property. Use existing FMP infrastructure in Theories/Bimodal/Metalogic/Decidability/FMP/ including ClosureMCS, FiniteModel, Filtration, and TruthPreservation theorems.
 
