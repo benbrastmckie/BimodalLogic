@@ -1,7 +1,10 @@
 import Bimodal.Metalogic.Algebraic.TenseS5Algebra
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
+import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.ModalSaturation
+import Bimodal.Metalogic.Bundle.SuccChainFMCS
 import Bimodal.Theorems.Perpetuity
 
 /-!
@@ -222,567 +225,1004 @@ theorem R_Box_trans {U V W : Ultrafilter LindenbaumAlg}
   R_Box_euclidean (R_Box_symm h_UV) h_VW
 
 /-!
-## Phase 2: Finite Inconsistency Argument
+## Phase 2: Box-Class BFMCS Construction
 
-The key lemma: if F(a) is in ultrafilter U, then there exists a successor
-ultrafilter V with R_G(U, V) and a ∈ V.
+Rather than building the BFMCS through ultrafilter chains (which requires complex
+filter extension lemmas), we use the MCS-level SuccChain infrastructure directly.
 
-The proof uses the finite inconsistency argument:
-1. Define G_preimage(U) = {b | G(b) ∈ U}
-2. Show G_preimage(U) ∪ {a} is consistent when F(a) ∈ U
-3. Extend to an ultrafilter V, which satisfies R_G(U, V) and a ∈ V
+### Key Components:
+1. `SuccChainFMCS` / `SuccChainTemporalCoherent` - sorry-free FMCS with temporal coherence
+2. `parametric_box_persistent` - Box formulas are constant along any FMCS chain
+3. `saturated_modal_backward` - modal_backward from modal saturation
+4. Box-class witness consistency - the mathematical core
+
+### Construction Strategy:
+Given MCS M0, build a BFMCS as follows:
+- The bundle contains all shifted SuccChainFMCS from MCSes with the same box-content as M0
+- Modal forward follows from box-content agreement + box persistence
+- Modal saturation follows from the box-class witness existence lemma
+- Modal backward follows from saturated_modal_backward
+- Temporal coherence follows from SuccChainTemporalCoherent
+-/
+
+/-!
+### Box Content and Box Class
+
+The box content of an MCS determines which Box-formulas it contains.
+Two MCSes in the same "box class" agree on all Box-formulas.
 -/
 
 /--
-The G-preimage of an ultrafilter: elements whose G is in U.
+The box content of an MCS: the set of inner formulas phi where Box(phi) is in the MCS.
 -/
-def G_preimage (U : Ultrafilter LindenbaumAlg) : Set LindenbaumAlg :=
-  { b | STSA.G b ∈ U }
+def box_content (M : Set Formula) : Set Formula :=
+  { phi | Formula.box phi ∈ M }
 
 /--
-The G-preimage contains ⊤ because G(⊤) = ⊤ is in every ultrafilter.
+Two MCSes agree on box content iff they contain the same Box-formulas.
 -/
-theorem G_preimage_top (U : Ultrafilter LindenbaumAlg) : ⊤ ∈ G_preimage U := by
-  unfold G_preimage
-  simp only [Set.mem_setOf_eq]
-  -- G(⊤) ≥ ⊤ in any STSA (since G is monotone and from a ≤ ⊤ we get G(a) ≤ G(⊤))
-  -- Actually, G(⊤) = ⊤ in the quotient
-  have h_le : (⊤ : LindenbaumAlg) ≤ STSA.G (⊤ : LindenbaumAlg) := by
-    -- ⊤ = [⊥ → ⊥], G(⊤) = [G(⊥ → ⊥)]
-    -- Need: (⊥ → ⊥) → G(⊥ → ⊥)
-    -- This is temp_necessitation applied to (⊥ → ⊥)
-    show top_quot ≤ G_quot top_quot
-    unfold top_quot
-    show Derives (Formula.bot.imp Formula.bot) (Formula.all_future (Formula.bot.imp Formula.bot))
-    -- From ⊢ ⊥ → ⊥, by temporal_necessitation get ⊢ G(⊥ → ⊥)
-    -- Then use identity φ → G(φ) with φ = (⊥ → ⊥)
-    -- Actually we need (⊥ → ⊥) → G(⊥ → ⊥), not just ⊢ G(⊥ → ⊥)
-    -- Use the fact that temp_t_future gives G(φ) → φ, and we need the opposite
-    -- Actually, from ⊢ φ, we can derive ⊢ ψ → φ for any ψ by prop_s.
-    have h_theorem : [] ⊢ Formula.all_future (Formula.bot.imp Formula.bot) :=
-      DerivationTree.temporal_necessitation (Formula.bot.imp Formula.bot)
-        (Bimodal.Theorems.Combinators.identity Formula.bot)
-    exact ⟨DerivationTree.modus_ponens [] _ _
-      (DerivationTree.axiom [] _ (Axiom.prop_s _ _)) h_theorem⟩
-  exact U.mem_of_le U.top_mem h_le
+def box_class_agree (M W : Set Formula) : Prop :=
+  ∀ phi : Formula, Formula.box phi ∈ M ↔ Formula.box phi ∈ W
+
+theorem box_class_agree_refl (M : Set Formula) : box_class_agree M M :=
+  fun _ => Iff.rfl
+
+theorem box_class_agree_symm {M W : Set Formula} (h : box_class_agree M W) :
+    box_class_agree W M :=
+  fun phi => (h phi).symm
+
+/-!
+### Shifted FMCS
+
+A shifted FMCS moves the time origin by an integer offset.
+This is needed so that witness chains can place their base MCS at any time point.
+-/
 
 /--
-The G-preimage does not contain ⊥ because G(⊥) ≤ ⊥.
+Shift an FMCS by offset k: the new family maps time t to the original family at t - k.
 -/
-theorem G_preimage_bot_not_mem (U : Ultrafilter LindenbaumAlg) : ⊥ ∉ G_preimage U := by
-  unfold G_preimage
-  simp only [Set.mem_setOf_eq]
-  intro h_Gbot_in
-  -- G(⊥) ≤ ⊥ by deflationary property (G_monotone applied to ⊥ ≤ ⊤ doesn't help directly)
-  -- Actually G is deflationary via temp_t_future: G(a) → a, so G(⊥) → ⊥
-  -- This means G(⊥) ≤ ⊥
-  have h_le : STSA.G (⊥ : LindenbaumAlg) ≤ (⊥ : LindenbaumAlg) := by
-    show G_quot (⊥ : LindenbaumAlg) ≤ (⊥ : LindenbaumAlg)
-    show G_quot bot_quot ≤ bot_quot
-    unfold bot_quot
-    show Derives (Formula.all_future Formula.bot) Formula.bot
-    exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)⟩
-  have h_bot_in : (⊥ : LindenbaumAlg) ∈ U := U.mem_of_le h_Gbot_in h_le
-  exact U.bot_not_mem h_bot_in
+noncomputable def shifted_fmcs (f : FMCS Int) (k : Int) : FMCS Int where
+  mcs := fun t => f.mcs (t - k)
+  is_mcs := fun t => f.is_mcs (t - k)
+  forward_G := fun t t' phi h_le h_G => f.forward_G (t - k) (t' - k) phi (by omega) h_G
+  backward_H := fun t t' phi h_le h_H => f.backward_H (t - k) (t' - k) phi (by omega) h_H
 
 /--
-The G-preimage is upward closed.
+The shifted FMCS at the offset equals the original FMCS at 0.
 -/
-theorem G_preimage_mem_of_le (U : Ultrafilter LindenbaumAlg)
-    {a b : LindenbaumAlg} (ha : a ∈ G_preimage U) (h_le : a ≤ b) :
-    b ∈ G_preimage U := by
-  unfold G_preimage at *
-  simp only [Set.mem_setOf_eq] at *
-  -- G is monotone: a ≤ b implies G(a) ≤ G(b)
-  have h_G_le : STSA.G a ≤ STSA.G b := STSA.G_monotone a b h_le
-  exact U.mem_of_le ha h_G_le
+theorem shifted_fmcs_at_offset (f : FMCS Int) (k : Int) :
+    (shifted_fmcs f k).mcs k = f.mcs 0 := by
+  unfold shifted_fmcs
+  simp
 
 /--
-The G-preimage is closed under finite meets.
+Temporal coherence is preserved by shifting.
 -/
-theorem G_preimage_inf_mem (U : Ultrafilter LindenbaumAlg)
-    {a b : LindenbaumAlg} (ha : a ∈ G_preimage U) (hb : b ∈ G_preimage U) :
-    a ⊓ b ∈ G_preimage U := by
-  unfold G_preimage at *
-  simp only [Set.mem_setOf_eq] at *
-  -- Need G(a ⊓ b) ∈ U
-  -- We have G(a) ∈ U and G(b) ∈ U, so G(a) ⊓ G(b) ∈ U
-  -- And G(a) ⊓ G(b) ≤ G(a ⊓ b) by K-distribution for G
-  have h_inf_in : STSA.G a ⊓ STSA.G b ∈ U := U.inf_mem ha hb
-  -- G(a) ⊓ G(b) ≤ G(a ⊓ b) by K-distribution
-  have h_le : STSA.G a ⊓ STSA.G b ≤ STSA.G (a ⊓ b) := by
-    induction a using Quotient.ind with
-    | _ φ =>
-      induction b using Quotient.ind with
-      | _ ψ =>
-        -- Need: G(φ) ⊓ G(ψ) ≤ G(φ ⊓ ψ), i.e., G(φ) ∧ G(ψ) → G(φ ∧ ψ)
-        show G_quot (toQuot φ) ⊓ G_quot (toQuot ψ) ≤ G_quot (toQuot φ ⊓ toQuot ψ)
-        show and_quot (G_quot (toQuot φ)) (G_quot (toQuot ψ)) ≤ G_quot (and_quot (toQuot φ) (toQuot ψ))
-        show Derives (Formula.and φ.all_future ψ.all_future) (Formula.all_future (φ.and ψ))
-        unfold Derives
-        -- Build derivation from conjunction to G(conjunction)
-        -- Work in context [G(φ) ∧ G(ψ)] and derive G(φ ∧ ψ)
-        let conj := φ.all_future.and ψ.all_future
-        -- Step 1: ⊢ φ → (ψ → φ ∧ ψ)
-        have h_pair : [] ⊢ φ.imp (ψ.imp (φ.and ψ)) := Bimodal.Theorems.Combinators.pairing φ ψ
-        -- Step 2: ⊢ G(φ → (ψ → φ ∧ ψ))
-        have h_G_pair : [] ⊢ (φ.imp (ψ.imp (φ.and ψ))).all_future :=
-          DerivationTree.temporal_necessitation _ h_pair
-        -- Step 3: K-distribution
-        have h_K1 : [] ⊢ (φ.imp (ψ.imp (φ.and ψ))).all_future.imp (φ.all_future.imp (ψ.imp (φ.and ψ)).all_future) :=
-          DerivationTree.axiom [] _ (Axiom.temp_k_dist φ (ψ.imp (φ.and ψ)))
-        have h_K2 : [] ⊢ (ψ.imp (φ.and ψ)).all_future.imp (ψ.all_future.imp (φ.and ψ).all_future) :=
-          DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ (φ.and ψ))
-        -- Step 4: ⊢ G(φ) → G(ψ → φ∧ψ)
-        have h_step1 : [] ⊢ φ.all_future.imp (ψ.imp (φ.and ψ)).all_future :=
-          DerivationTree.modus_ponens [] _ _ h_K1 h_G_pair
-        -- Work in context [conj]
-        have h_ctx : [conj] ⊢ (φ.and ψ).all_future := by
-          -- Get G(φ) ∧ G(ψ) from assumption
-          have h_conj_in : [conj] ⊢ conj := DerivationTree.assumption [conj] conj (by simp)
-          -- Extract G(φ) using left conjunction elimination
-          have h_lce : [] ⊢ conj.imp φ.all_future := Bimodal.Theorems.Propositional.lce_imp φ.all_future ψ.all_future
-          have h_lce_w : [conj] ⊢ conj.imp φ.all_future := DerivationTree.weakening [] [conj] _ h_lce (by intro; simp)
-          have h_Gφ : [conj] ⊢ φ.all_future := DerivationTree.modus_ponens [conj] _ _ h_lce_w h_conj_in
-          -- Extract G(ψ)
-          have h_rce : [] ⊢ conj.imp ψ.all_future := Bimodal.Theorems.Propositional.rce_imp φ.all_future ψ.all_future
-          have h_rce_w : [conj] ⊢ conj.imp ψ.all_future := DerivationTree.weakening [] [conj] _ h_rce (by intro; simp)
-          have h_Gψ : [conj] ⊢ ψ.all_future := DerivationTree.modus_ponens [conj] _ _ h_rce_w h_conj_in
-          -- Apply chain: G(φ) → G(ψ → φ∧ψ) → G(φ∧ψ)
-          have h_step1_w : [conj] ⊢ φ.all_future.imp (ψ.imp (φ.and ψ)).all_future :=
-            DerivationTree.weakening [] [conj] _ h_step1 (by intro; simp)
-          have h_G_inner : [conj] ⊢ (ψ.imp (φ.and ψ)).all_future :=
-            DerivationTree.modus_ponens [conj] _ _ h_step1_w h_Gφ
-          have h_K2_w : [conj] ⊢ (ψ.imp (φ.and ψ)).all_future.imp (ψ.all_future.imp (φ.and ψ).all_future) :=
-            DerivationTree.weakening [] [conj] _ h_K2 (by intro; simp)
-          have h_arrow : [conj] ⊢ ψ.all_future.imp (φ.and ψ).all_future :=
-            DerivationTree.modus_ponens [conj] _ _ h_K2_w h_G_inner
-          exact DerivationTree.modus_ponens [conj] _ _ h_arrow h_Gψ
-        exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] conj (φ.and ψ).all_future h_ctx⟩
-  exact U.mem_of_le h_inf_in h_le
+theorem shifted_temporal_forward_F (f : FMCS Int)
+    (h_fwd : ∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ f.mcs t →
+      ∃ s : Int, t < s ∧ φ ∈ f.mcs s)
+    (k : Int) (t : Int) (φ : Formula)
+    (h_F : Formula.some_future φ ∈ (shifted_fmcs f k).mcs t) :
+    ∃ s : Int, t < s ∧ φ ∈ (shifted_fmcs f k).mcs s := by
+  unfold shifted_fmcs at h_F ⊢
+  simp only at h_F ⊢
+  obtain ⟨s, h_lt, h_phi⟩ := h_fwd (t - k) φ h_F
+  exact ⟨s + k, by omega, by ring_nf; exact h_phi⟩
+
+theorem shifted_temporal_backward_P (f : FMCS Int)
+    (h_bwd : ∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ f.mcs t →
+      ∃ s : Int, s < t ∧ φ ∈ f.mcs s)
+    (k : Int) (t : Int) (φ : Formula)
+    (h_P : Formula.some_past φ ∈ (shifted_fmcs f k).mcs t) :
+    ∃ s : Int, s < t ∧ φ ∈ (shifted_fmcs f k).mcs s := by
+  unfold shifted_fmcs at h_P ⊢
+  simp only at h_P ⊢
+  obtain ⟨s, h_lt, h_phi⟩ := h_bwd (t - k) φ h_P
+  exact ⟨s + k, by omega, by ring_nf; exact h_phi⟩
+
+/-!
+### Box Persistence in SuccChain
+
+Box-formulas are constant along any FMCS (using parametric_box_persistent).
+For SuccChainFMCS specifically, this means box_content is the same at all times.
+-/
 
 /--
-F(a) in ultrafilter U is equivalent to (G(aᶜ))ᶜ ∈ U.
-
-F(a) = ¬G(¬a) in the logic, which corresponds to (G(aᶜ))ᶜ in the algebra.
+Box formulas are constant along a SuccChainFMCS: Box(phi) at time 0 iff Box(phi) at time t.
 -/
-noncomputable def F_elem (a : LindenbaumAlg) : LindenbaumAlg := (STSA.G (aᶜ))ᶜ
-
-/--
-F(a) ∈ U is equivalent to G(aᶜ) ∉ U.
--/
-theorem F_elem_mem_iff_G_compl_not_mem (U : Ultrafilter LindenbaumAlg) (a : LindenbaumAlg) :
-    F_elem a ∈ U ↔ STSA.G (aᶜ) ∉ U := by
-  unfold F_elem
+theorem succ_chain_box_persistent (M0 : SerialMCS) (phi : Formula) (t : Int) :
+    Formula.box phi ∈ (SuccChainFMCS M0).mcs 0 ↔
+    Formula.box phi ∈ (SuccChainFMCS M0).mcs t := by
   constructor
-  · intro h_F_in h_G_in
-    exact U.compl_not (STSA.G (aᶜ)) h_G_in h_F_in
-  · intro h_G_notin
-    cases U.compl_or (STSA.G (aᶜ)) with
-    | inl h => exact absurd h h_G_notin
-    | inr h => exact h
+  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi 0 t h
+  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi t 0 h
 
 /--
-**The Finite Inconsistency Lemma**
-
-If F(a) ∈ U (i.e., G(aᶜ) ∉ U), then G_preimage(U) ∪ {a} is "filter-consistent",
-meaning the intersection of any finite subset with {a} does not imply ⊥.
-
-More precisely: G_preimage(U) ∪ {a} generates a proper filter.
+Box formulas are constant in shifted SuccChainFMCS.
 -/
-theorem G_preimage_union_singleton_consistent (U : Ultrafilter LindenbaumAlg)
-    (a : LindenbaumAlg) (h_F : F_elem a ∈ U) :
-    ∀ b ∈ G_preimage U, a ⊓ b ≠ ⊥ := by
-  intro b hb h_eq
-  -- From a ⊓ b = ⊥, we get b ≤ aᶜ (disjoint elements)
-  have h_b_le_ac : b ≤ aᶜ := by
-    calc b = b ⊓ ⊤ := by simp
-      _ = b ⊓ (a ⊔ aᶜ) := by simp
-      _ = (b ⊓ a) ⊔ (b ⊓ aᶜ) := by rw [inf_sup_left]
-      _ = (a ⊓ b) ⊔ (b ⊓ aᶜ) := by rw [inf_comm]
-      _ = ⊥ ⊔ (b ⊓ aᶜ) := by rw [h_eq]
-      _ = b ⊓ aᶜ := by simp
-      _ ≤ aᶜ := inf_le_right
-
-  -- From b ≤ aᶜ and G monotone: G(b) ≤ G(aᶜ)
-  have h_Gb_le_Gac : STSA.G b ≤ STSA.G (aᶜ) := STSA.G_monotone b (aᶜ) h_b_le_ac
-
-  -- From hb: G(b) ∈ U
-  unfold G_preimage at hb
-  simp only [Set.mem_setOf_eq] at hb
-  -- So G(aᶜ) ∈ U by upward closure
-  have h_Gac_in : STSA.G (aᶜ) ∈ U := U.mem_of_le hb h_Gb_le_Gac
-
-  -- But from h_F: F_elem a = (G(aᶜ))ᶜ ∈ U
-  -- So G(aᶜ) ∉ U
-  have h_Gac_notin : STSA.G (aᶜ) ∉ U := (F_elem_mem_iff_G_compl_not_mem U a).mp h_F
-
-  exact h_Gac_notin h_Gac_in
-
-/--
-**Temporal Successor Existence**
-
-If F(a) ∈ U, then there exists an ultrafilter V such that:
-1. R_G(U, V) - V is a temporal successor of U
-2. a ∈ V
-
-This is the key lemma that enables building ultrafilter chains.
--/
-theorem temporal_successor_exists (U : Ultrafilter LindenbaumAlg)
-    (a : LindenbaumAlg) (h_F : F_elem a ∈ U) :
-    ∃ V : Ultrafilter LindenbaumAlg, R_G U V ∧ a ∈ V := by
-  -- We need to extend G_preimage(U) ∪ {a} to an ultrafilter
-  -- First, show that the filter generated by G_preimage(U) ∪ {a} is proper
-
-  -- The key is to use that G_preimage(U) is already almost a filter
-  -- (it has ⊤, is upward closed, closed under finite meets)
-  -- Adding {a} and ensuring consistency via G_preimage_union_singleton_consistent
-
-  -- Strategy: Define V's carrier as all b such that there exists c ∈ G_preimage(U)
-  -- with a ⊓ c ≤ b. This is the filter generated by G_preimage(U) ∪ {a}.
-
-  -- Actually, we need to use Zorn's lemma or the ultrafilter lemma.
-  -- The ultrafilter lemma says: any proper filter extends to an ultrafilter.
-
-  -- Let's define the filter generated by G_preimage(U) ∪ {a}
-  let S := G_preimage U ∪ {a}
-
-  -- We need to construct an ultrafilter containing S.
-  -- The standard approach is to use that the filter generated by S is proper,
-  -- then apply the ultrafilter lemma.
-
-  -- For now, let's use a direct construction via Classical.choose
-  -- on the filter extension.
-
-  -- The filter generated by S: all b ≥ ⋀(finite subset of S)
-  -- Since G_preimage U is upward closed and closed under finite meets,
-  -- and a ⊓ b ≠ ⊥ for any b ∈ G_preimage U (by G_preimage_union_singleton_consistent),
-  -- the filter generated is proper.
-
-  -- We'll construct this by showing the filter basis is proper
-  -- and then use Classical reasoning to extend.
-
-  -- For a simpler approach, let's directly define V using the
-  -- principal ultrafilter construction, but that won't work since
-  -- we're not in a complete Boolean algebra context.
-
-  -- The cleanest approach: use Zorn on the set of proper filters containing S.
-
-  -- For now, let's use sorry and come back to complete the ultrafilter extension.
-  -- The mathematical argument is sound; the Lean encoding is technical.
-
-  -- Actually, let's try a different approach using the existing mcsToUltrafilter
-  -- correspondence. We can:
-  -- 1. Convert U to an MCS M via ultrafilterToSet
-  -- 2. Use MCS properties to find a successor MCS M' with φ ∈ M' (where a = [φ])
-  -- 3. Convert M' back to ultrafilter V via mcsToUltrafilter
-
-  -- Step 1: Convert U to MCS
-  let M := ultrafilterToSet U
-  have h_M_mcs : SetMaximalConsistent M := ultrafilterToSet_mcs U
-
-  -- The formula a corresponds to some φ in the quotient
-  -- F(a) ∈ U means F(φ) ∈ M for the representative φ
-
-  -- This is getting complex. Let's use a simpler direct construction.
-
-  -- Direct construction: Define V's carrier as the set of b such that
-  -- ¬(aᶜ ⊔ bᶜ ∈ U), which is equivalent to ¬(a ⊓ b = ⊥ in filter sense)
-
-  -- Actually, the standard ultrafilter extension uses:
-  -- V = {b | ∀ c ∈ G_preimage(U), a ⊓ c ≤ b → true}...
-  -- This is still complex.
-
-  -- Let's use the following observation:
-  -- Define V's carrier = {b | aᶜ ⊔ G(b)ᶜ ∉ U}
-  -- This is {b | ¬(aᶜ ∈ U ∨ G(b)ᶜ ∈ U)} which simplifies based on ultrafilter properties.
-
-  -- Hmm, let's try yet another approach: show that aᶜ ∉ G_preimage(U)
-  -- and use that G_preimage(U) ∪ {a} can be extended.
-
-  have h_ac_notin_Gpre : aᶜ ∉ G_preimage U := by
-    intro h_ac_in
-    -- If aᶜ ∈ G_preimage U, then G(aᶜ) ∈ U
-    unfold G_preimage at h_ac_in
-    simp only [Set.mem_setOf_eq] at h_ac_in
-    -- But F(a) = (G(aᶜ))ᶜ ∈ U means G(aᶜ) ∉ U
-    have h_Gac_notin := (F_elem_mem_iff_G_compl_not_mem U a).mp h_F
-    exact h_Gac_notin h_ac_in
-
-  -- Now we need to construct an ultrafilter V with:
-  -- 1. G_preimage(U) ⊆ V (gives R_G(U, V))
-  -- 2. a ∈ V
-
-  -- Since aᶜ ∉ G_preimage(U) and G_preimage(U) is a filter-like set,
-  -- we can extend G_preimage(U) ∪ {a} to an ultrafilter.
-
-  -- For the construction, we'll use the fact that the Boolean algebra
-  -- is atomless (being the Lindenbaum algebra of a consistent theory),
-  -- but that's not directly helpful.
-
-  -- Let's use the ultrafilter lemma directly.
-  -- The ultrafilter lemma: Any proper filter on a Boolean algebra extends to an ultrafilter.
-
-  -- Define the filter F generated by G_preimage(U) ∪ {a}:
-  -- F = {b | ∃ c₁...cₙ ∈ G_preimage(U), a ⊓ c₁ ⊓ ... ⊓ cₙ ≤ b}
-
-  -- F is proper iff ⊥ ∉ F iff ∀ finite c₁...cₙ ∈ G_preimage(U), a ⊓ c₁ ⊓ ... ⊓ cₙ ≠ ⊥
-
-  -- We can prove this by induction using G_preimage_union_singleton_consistent
-  -- and G_preimage_inf_mem.
-
-  -- For now, let's proceed with the construction assuming we can extend.
-  -- The ultrafilter lemma is available in Mathlib for specific contexts.
-
-  -- Actually, let's directly construct V as follows:
-  -- V.carrier = {b | ∃ c ∈ G_preimage(U), a ⊓ c ≤ b}
-
-  -- No wait, this is a filter, not an ultrafilter.
-
-  -- The cleanest solution: use the MCS correspondence and the existing
-  -- MCS extension infrastructure.
-
-  -- Convert the problem to MCS space:
-  -- U corresponds to MCS M = ultrafilterToSet U
-  -- a = [φ] for some formula φ
-  -- F(a) ∈ U means F(φ) ∈ M (some_future φ ∈ M)
-
-  -- By TemporalCoherentFamily.forward_F (if we had a suitable family),
-  -- we'd get a witness. But we're constructing the family now.
-
-  -- Let's use the MCS-based approach more directly.
-
-  -- For any formula φ, if some_future φ ∈ M (where M = ultrafilterToSet U),
-  -- we want to find an MCS M' with φ ∈ M' and the G-formulas from M persist.
-
-  -- This is the classical Henkin construction for temporal logic.
-
-  -- For simplicity, let's use sorry here and note that the proof requires
-  -- the ultrafilter extension lemma (BPI/ultrafilter lemma).
-
-  sorry
+theorem shifted_succ_chain_box_persistent (M0 : SerialMCS) (k : Int)
+    (phi : Formula) (t : Int) :
+    Formula.box phi ∈ (shifted_fmcs (SuccChainFMCS M0) k).mcs k ↔
+    Formula.box phi ∈ (shifted_fmcs (SuccChainFMCS M0) k).mcs t := by
+  unfold shifted_fmcs
+  simp only
+  constructor
+  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi (k - k) (t - k) h
+  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi (t - k) (k - k) h
 
 /-!
-## Phase 3: Int-Indexed Chain Construction
+### Box-Class Witness Consistency
 
-Given `temporal_successor_exists`, we can build Int-indexed chains of ultrafilters.
+The mathematical core: if Diamond(psi) is in an MCS M, then {psi} ∪ box_content(M)
+is consistent. This uses the S5 axiom (negative introspection) to reduce all
+hypotheses to Box-formulas, then applies necessitation and K-distribution.
 -/
 
 /--
-An Int-indexed chain of ultrafilters with R_G connectivity between adjacent points.
+If Diamond(psi) is in an MCS M, then {psi} ∪ box_content(M) is consistent.
+
+This is the key lemma for modal saturation. The proof uses:
+1. Suppose {psi} ∪ box_content(M) is inconsistent
+2. Then exists a1,...,an with Box(ai) in M and {psi, a1,...,an} derives bot
+3. By deduction theorem: derives a1 -> ... -> an -> neg(psi)
+4. By necessitation: derives Box(a1 -> ... -> an -> neg(psi))
+5. By K-distribution (n times): Box(a1) -> ... -> Box(an) -> Box(neg(psi))
+6. Since all Box(ai) in M: Box(neg(psi)) in M
+7. But Diamond(psi) = neg(Box(neg(psi))) in M: contradiction
 -/
-structure Chain where
-  /-- The ultrafilter at each integer position -/
-  uf : Int → Ultrafilter LindenbaumAlg
-  /-- Adjacent points are R_G-connected (forward) -/
-  forward_connected : ∀ n : Int, R_G (uf n) (uf (n + 1))
+theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_diamond : Formula.diamond psi ∈ M) :
+    SetConsistent ({psi} ∪ box_content M) := by
+  -- SetConsistent means: for every finite list L ⊆ S, L does not derive bot
+  intro L h_L_sub ⟨d⟩
+  -- L is a list of formulas from {psi} ∪ box_content(M)
+  -- d : L ⊢ bot
+
+  -- Every element of L is either psi or some ai with Box(ai) ∈ M
+  -- We can weaken to a derivation from [psi] ++ [a1, ..., an] where Box(ai) ∈ M
+
+  -- Strategy: use deduction theorem to move all assumptions into the theorem,
+  -- then apply necessitation and K-distribution.
+
+  -- First, move all hypotheses out via repeated deduction theorem:
+  -- From L ⊢ bot, by weakening to include all of L in a single context,
+  -- we can derive: [] ⊢ l1 → l2 → ... → ln → bot = neg(l1 ∧ ... ∧ ln)
+
+  -- Actually, the key insight is simpler. We use:
+  -- 1. L ⊆ {psi} ∪ box_content(M) means every li is psi or in box_content(M)
+  -- 2. For li in box_content(M), Box(li) ∈ M, so by T axiom, li ∈ M
+  -- 3. For li = psi, we handle separately
+
+  -- Case: psi ∉ L. Then L ⊆ box_content(M), and every li has Box(li) ∈ M.
+  -- By T axiom: li ∈ M. So L ⊆ M. But M is consistent: L ⊆ M and L ⊢ bot
+  -- contradicts MCS consistency.
+
+  -- Case: psi ∈ L. Let L' = L without psi occurrences. Then all l ∈ L' have
+  -- Box(l) ∈ M, so l ∈ M (by T). And L' ∪ {psi} ⊢ bot (by weakening from L).
+
+  -- By repeated deduction theorem on L':
+  -- [psi] ⊢ l1 → l2 → ... → bot  (removing L' elements one by one)
+  -- Then [] ⊢ psi → (l1 → l2 → ... → bot)
+  -- i.e., [] ⊢ neg(psi) assuming L' derives bot with psi
+
+  -- Actually let's work more directly. Since L ⊢ bot:
+  -- By weakening, M_list ++ [psi] ⊢ bot where M_list consists of elements of M
+  -- (because for x ∈ L ∩ box_content(M), Box(x) ∈ M so x ∈ M by T)
+
+  -- Hmm, but psi might appear multiple times. Let me use a cleaner approach.
+
+  -- Simplest approach: show that L ⊆ M ∪ {psi}, and then get M_full ⊢ bot
+  -- where M_full contains all of M plus psi.
+
+  -- Actually, the cleanest approach is:
+  -- 1. From L ⊢ bot, derive [] ⊢ (conjunction of L) → bot
+  -- 2. The conjunction of L elements is a conjunction of psi and ai where Box(ai) ∈ M
+  -- 3. Apply necessitation and K to get Box(neg(psi)) ∈ M
+
+  -- Let me use the direct list-based approach from the MCS consistency proof.
+
+  -- All elements of L either equal psi or have their Box in M
+  -- For elements with Box in M, they are also in M (by T axiom)
+  have h_T := fun (phi : Formula) (h_box : Formula.box phi ∈ M) =>
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_t phi))) h_box
+
+  -- Split L into psi-part and box_content part
+  -- Weaken L to M-context by replacing box_content elements with their M-membership
+  -- The key: every element of L is in M ∪ {psi}
+  have h_L_in_M_or_psi : ∀ x ∈ L, x ∈ M ∨ x = psi := by
+    intro x hx
+    have hx_in_S := h_L_sub x hx
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hx_in_S
+    rcases hx_in_S with h_psi | h_bc
+    · right; exact h_psi
+    · left
+      -- x ∈ box_content M means Box(x) ∈ M, so x ∈ M by T
+      exact h_T x h_bc
+
+  -- Now we have L ⊢ bot and every element of L is in M ∪ {psi}
+  -- Weaken the derivation to work from the context M ∪ {psi}
+  -- Since M is consistent, adding psi might make it inconsistent
+  -- But we'll show this leads to Box(neg(psi)) ∈ M, contradicting Diamond(psi) ∈ M
+
+  -- Approach: weaken L to (insert psi M)-list
+  -- L ⊢ bot, and L ⊆ insert psi M
+  -- So insert psi M is SetConsistent → False? No, SetConsistent uses finite subsets.
+  -- Actually L IS a finite subset of insert psi M.
+  -- So ¬SetConsistent (insert psi M).
+
+  have h_not_cons : ¬SetConsistent (insert psi M) := by
+    intro h_cons
+    have h_L_sub' : ∀ x ∈ L, x ∈ insert psi M := by
+      intro x hx
+      rcases h_L_in_M_or_psi x hx with h_M | h_psi
+      · exact Set.mem_insert_of_mem psi h_M
+      · rw [h_psi]; exact Set.mem_insert psi M
+    exact h_cons L h_L_sub' ⟨d⟩
+
+  -- Since M is MCS and insert psi M is inconsistent,
+  -- by MCS maximality: psi ∉ M implies ¬SetConsistent (insert psi M)
+  -- Conversely: if psi ∈ M, then insert psi M = M, which is consistent.
+
+  -- So psi ∉ M (otherwise insert psi M = M which is consistent)
+  have h_psi_notin : psi ∉ M := by
+    intro h_in
+    have h_eq : insert psi M = M := Set.insert_eq_of_mem h_in
+    rw [h_eq] at h_not_cons
+    exact h_not_cons h_mcs.1
+
+  -- By MCS negation completeness: neg(psi) ∈ M
+  have h_neg_psi : Formula.neg psi ∈ M := by
+    rcases SetMaximalConsistent.negation_complete h_mcs psi with h | h
+    · exact absurd h h_psi_notin
+    · exact h
+
+  -- By MCS maximality: psi ∉ M implies ¬SetConsistent(insert psi M)
+  -- We already have this: h_not_cons
+  -- From ¬SetConsistent(insert psi M), there's a finite list L' ⊆ insert psi M with L' ⊢ bot
+  -- Using the deduction theorem approach:
+
+  -- Since insert psi M is inconsistent, ∃ L' ⊆ insert psi M, L' ⊢ bot
+  -- Remove psi from L' to get L'' ⊆ M with L'' ⊢ psi → bot = neg(psi)
+  -- But neg(psi) ∈ M already, and M is consistent. This doesn't directly give Box.
+
+  -- Let me use the direct S5 argument instead.
+  -- We have neg(psi) ∈ M. Can we get Box(neg(psi)) ∈ M?
+  -- Not directly from neg(psi) ∈ M. We need a different approach.
+
+  -- Going back to the original argument:
+  -- From L ⊢ bot where L ⊆ {psi} ∪ box_content(M):
+  -- Separate psi from the rest: let L' = L \ {psi}
+  -- Then L' ⊆ box_content(M), i.e., ∀ x ∈ L', Box(x) ∈ M
+  -- And L' ++ [psi, ..., psi] ⊢ bot (some copies of psi from L)
+  -- By weakening: L' ++ [psi] ⊢ bot (since duplicate psi adds nothing)
+  -- By deduction theorem: L' ⊢ neg(psi) = psi → bot
+
+  -- Now L' ⊢ neg(psi) where ∀ x ∈ L', Box(x) ∈ M.
+  -- Weaken to the full list [a1,...,an] where ai = elements of L' (with Box(ai) ∈ M):
+  -- [] ⊢ a1 → a2 → ... → an → neg(psi)  (by repeated deduction theorem)
+
+  -- Apply necessitation: [] ⊢ Box(a1 → a2 → ... → an → neg(psi))
+  -- Apply K-distribution n times:
+  -- [] ⊢ Box(a1) → Box(a2) → ... → Box(an) → Box(neg(psi))
+
+  -- Since Box(ai) ∈ M for all i, by MCS modus ponens: Box(neg(psi)) ∈ M
+  -- But Diamond(psi) = neg(Box(neg(psi))) ∈ M: contradiction with MCS consistency.
+
+  -- The full argument requires careful handling of the list operations.
+  -- Let's use the fact that M is MCS and work with the MCS-level inconsistency.
+
+  -- From h_not_cons, insert psi M is inconsistent.
+  -- From h_mcs.2: for any phi ∉ M, insert phi M is inconsistent.
+  -- This is exactly what h_psi_notin + h_mcs.2 gives us.
+
+  -- Now: since neg(psi) ∈ M, can we derive Box(neg(psi))?
+  -- In general no. But we can use the S5-specific argument.
+
+  -- The actual argument: L ⊢ bot, L ⊆ {psi} ∪ box_content(M).
+  -- We need to show this leads to Box(neg(psi)) ∈ M.
+
+  -- Approach using the MCS-level proof:
+  -- We'll construct a derivation [] ⊢ Box(neg(psi)) using:
+  -- 1. From L ⊢ bot, extract [] ⊢ a1 → ... → an → neg(psi) where Box(ai) ∈ M
+  -- 2. By necessitation and K: [] ⊢ Box(a1) → ... → Box(an) → Box(neg(psi))
+  -- 3. Since Box(ai) ∈ M: Box(neg(psi)) ∈ M
+
+  -- However, constructing this in Lean requires manipulating DerivationTree for
+  -- arbitrary-length lists. This is technically involved but mathematically straightforward.
+
+  -- For now, we'll use a simpler argument that avoids list manipulation:
+  -- We directly show the contradiction using diamond_excludes_box_neg from ModalSaturation.
+
+  -- diamond_excludes_box_neg: Diamond(psi) ∈ M → Box(neg(psi)) ∉ M
+  have h_box_neg_notin : Formula.box (Formula.neg psi) ∉ M :=
+    diamond_excludes_box_neg h_mcs psi h_diamond
+
+  -- We need Box(neg(psi)) ∈ M for the contradiction.
+  -- The inconsistency of {psi} ∪ box_content(M) means:
+  -- exists L ⊆ {psi} ∪ box_content(M) with L ⊢ bot.
+  -- We have this: L, d.
+
+  -- Key insight: we prove this by induction on the derivation,
+  -- but that's complex. Instead, use the finitary MCS argument:
+
+  -- Since L ⊢ bot and all non-psi elements of L are in M (via T axiom on Box),
+  -- we can weaken to [psi] ++ M_list ⊢ bot where M_list ⊆ M.
+  -- By deduction: M_list ⊢ neg(psi).
+  -- Since M_list ⊆ M and M is an MCS: neg(psi) ∈ M.
+  -- But this only gives neg(psi) ∈ M, not Box(neg(psi)) ∈ M.
+
+  -- The S5-specific step: we need to lift from formulas to Box-formulas.
+  -- The derivation L ⊢ bot where L ⊆ {psi} ∪ box_content(M) means:
+  -- There exist a1,...,an with Box(ai) ∈ M such that {psi, a1,...,an} ⊢ bot.
+  -- This means ⊢ a1 → ... → an → neg(psi) (after repeated deduction theorem).
+  -- By necessitation: ⊢ Box(a1 → ... → an → neg(psi))
+  -- By K-distribution: ⊢ Box(a1) → ... → Box(an) → Box(neg(psi))
+  -- Since Box(ai) ∈ M: Box(neg(psi)) ∈ M.
+
+  -- We formalize this using an auxiliary lemma that handles the K-distribution chain.
+
+  -- Step 1: Extract the box_content elements from L
+  -- Weaken d to work with elements that are all in M or equal to psi
+  -- Then apply the deduction theorem for psi to get M_list ⊢ neg(psi)
+
+  -- For the formalization, we use the list-based approach.
+  -- Filter L into psi-copies and box_content elements.
+  let L_no_psi := L.filter (· ≠ psi)
+
+  -- All elements of L_no_psi are in box_content(M)
+  have h_L_no_psi_bc : ∀ x ∈ L_no_psi, x ∈ box_content M := by
+    intro x hx
+    have hx_L := List.mem_of_mem_filter hx
+    have hx_ne : x ≠ psi := by
+      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
+      exact hx.2
+    have := h_L_sub x hx_L
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with h | h
+    · rw [h] at hx_ne; exact absurd rfl hx_ne
+    · exact h
+
+  -- Step 2: Weaken the derivation. L ⊢ bot can be weakened to (psi :: L_no_psi) ⊢ bot
+  -- because L_no_psi ⊆ L (modulo psi which we add back)
+  -- Actually, we need to weaken from L to a list containing psi and the L_no_psi elements.
+  -- Since L ⊆ {psi} ∪ set_of(L_no_psi ++ [psi]), we can weaken.
+
+  -- Simplification: just use the fact that L ⊆ insert psi M gives insert psi M inconsistent,
+  -- then use the MCS property to derive Box(neg(psi)) ∈ M through the S5 argument.
+
+  -- The S5 argument at the MCS level:
+  -- insert psi M is inconsistent → neg(psi) can be derived from M
+  -- → ¬SetConsistent (insert psi M)
+  -- → by maximality applied to (neg (neg psi)): if neg(neg(psi)) ∉ M then contradiction...
+  -- This is going in circles.
+
+  -- Let me use the DIRECT finitary argument.
+  -- We have d : DerivationTree L Formula.bot
+  -- We know every x ∈ L is in M ∪ {psi} (h_L_in_M_or_psi)
+  -- Weaken d to derive from M ∪ {psi}:
+
+  -- Weaken to [psi] ++ M_elems where M_elems are the non-psi elements of L, all in M.
+  -- Then apply deduction theorem for psi: M_elems ⊢ neg(psi).
+  -- Then [] ⊢ m1 → ... → mk → neg(psi) by repeated deduction.
+  -- By necessitation: ⊢ Box(m1 → ... → mk → neg(psi))
+  -- The mi are in M. But are Box(mi) in M? Only if mi ∈ box_content(M),
+  -- meaning Box(mi) ∈ M. For mi ∈ box_content(M), yes. For mi = some arbitrary
+  -- element of M, Box(mi) might not be in M.
+
+  -- AH - here's the key: the elements of L that are in M came from box_content(M).
+  -- They are ai where Box(ai) ∈ M. We used T axiom to put ai in M.
+  -- But for the K-distribution argument, we need Box(ai) ∈ M, which we have!
+
+  -- So: L = [psi, a1, ..., an] where Box(ai) ∈ M.
+  -- L ⊢ bot.
+  -- By repeated deduction: ⊢ psi → a1 → ... → an → bot = a1 → ... → an → neg(psi)
+  -- Wait, the order matters for deduction theorem.
+
+  -- Actually: L ⊢ bot. After deduction theorem removing psi:
+  -- L \ {psi} ⊢ neg(psi). Where L \ {psi} ⊆ box_content(M).
+  -- After repeated deduction on L \ {psi} = [a1,...,an]:
+  -- ⊢ a1 → a2 → ... → an → neg(psi)
+  -- By necessitation: ⊢ Box(a1 → ... → an → neg(psi))
+  -- By K (n times): ⊢ Box(a1) → Box(a2) → ... → Box(an) → Box(neg(psi))
+  -- Since Box(ai) ∈ M: Box(neg(psi)) ∈ M.
+  -- Contradiction with Diamond(psi) = neg(Box(neg(psi))) ∈ M.
+
+  -- The challenge is formalizing the "repeated deduction theorem" and
+  -- "K-distribution n times" for arbitrary n. Let me use a helper lemma.
+
+  -- Helper: if ⊢ A → B and Box(A) ∈ M, then Box(B) ∈ M.
+  -- Proof: By necessitation: ⊢ Box(A → B). By K: ⊢ Box(A) → Box(B).
+  -- Since Box(A) ∈ M: Box(B) ∈ M.
+
+  -- So we need: ⊢ a1 → (a2 → ... → (an → neg(psi))...)
+  -- Then: Box(a1) ∈ M → Box(a2 → ... → neg(psi)) ∈ M (by helper)
+  -- Then: Box(a2) ∈ M → Box(a3 → ... → neg(psi)) ∈ M (by helper on unboxed inner)
+  -- Wait, this doesn't quite work because Box distributes as Box(A→B) → (Box(A) → Box(B))
+
+  -- Let me use the standard "Box-lift" lemma:
+  -- If ⊢ A → B, then ⊢ Box(A) → Box(B)
+  -- Proof: Necessitate A → B, then apply K.
+
+  -- And the iterated version:
+  -- If ⊢ a1 → a2 → ... → an → C, then ⊢ Box(a1) → Box(a2) → ... → Box(an) → Box(C)
+  -- Proof by induction on n using the above.
+
+  -- For the formalization, we use List.foldl or induction on the list.
+  -- This is the "box_lift_chain" lemma.
+
+  -- Rather than formalizing the full iterated version (which requires complex list
+  -- manipulation), we use a key simplification:
+
+  -- From L ⊢ bot where L ⊆ {psi} ∪ box_content(M), we weaken L to M:
+  -- Every non-psi element ai of L has Box(ai) ∈ M, so ai ∈ M (by T).
+  -- So L ⊆ M ∪ {psi}. We already know insert psi M is inconsistent (h_not_cons).
+  -- By MCS maximality: neg(psi) ∈ M (h_neg_psi).
+
+  -- Now the key question: can we get Box(neg(psi)) ∈ M from this specific structure?
+
+  -- The answer is YES, using a more refined argument:
+  -- h_not_cons tells us insert psi M is inconsistent.
+  -- There exists a finite L' ⊆ insert psi M with L' ⊢ bot.
+  -- Take L' minimal. Then psi ∈ L' (otherwise L' ⊆ M and M inconsistent).
+  -- Remove psi: L'' = L' \ [psi]. L'' ⊆ M. [psi] ++ L'' ⊢ bot.
+  -- By deduction: L'' ⊢ neg(psi). By repeated deduction: ⊢ l1 → ... → lk → neg(psi).
+
+  -- Here l1,...,lk are elements of M. But we can't necessitate unless they are theorems.
+  -- The issue: l1,...,lk are arbitrary elements of M, not box_content elements.
+
+  -- BUT wait: in our specific case, L ⊆ {psi} ∪ box_content(M), not L ⊆ {psi} ∪ M.
+  -- So the non-psi elements of L are in box_content(M), meaning Box(li) ∈ M.
+
+  -- So the refined argument IS: L'' (non-psi part of L) ⊆ box_content(M).
+  -- ⊢ l1 → l2 → ... → lk → neg(psi) where Box(li) ∈ M.
+  -- Necessitate and distribute K:
+  -- ⊢ Box(l1) → Box(l2) → ... → Box(lk) → Box(neg(psi))
+  -- Since Box(li) ∈ M: Box(neg(psi)) ∈ M. Contradiction.
+
+  -- Let me now formalize this properly using induction on the list.
+
+  -- First, let's establish that we can extract a derivation from non-psi elements.
+  -- We have d : L ⊢ bot and L ⊆ {psi} ∪ box_content(M).
+  -- Weaken to (psi :: L_no_psi) ⊢ bot.
+
+  -- Actually, L might have psi in any position. We can weaken from L to any
+  -- superlist. The key fact: L ⊆ psi :: L_no_psi (as sets).
+  -- Wait, we need the opposite: weaken FROM L TO a smaller/different context.
+  -- Weakening goes: if L ⊆ L' then L ⊢ bot implies L' ⊢ bot.
+  -- So we need L ⊆ (psi :: L_no_psi).
+
+  -- This is true: every element of L is either psi (in head) or in L_no_psi (by filter).
+  -- Actually L_no_psi = L.filter (· ≠ psi) so L ⊆ [psi] ++ L_no_psi.
+
+  have h_L_sub_psi_Lnp : ∀ x ∈ L, x ∈ psi :: L_no_psi := by
+    intro x hx
+    by_cases h_eq : x = psi
+    · rw [h_eq]; exact List.mem_cons_self psi L_no_psi
+    · exact List.mem_cons_of_mem psi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+
+  -- Weaken: psi :: L_no_psi ⊢ bot
+  have d_weak : DerivationTree (psi :: L_no_psi) Formula.bot :=
+    DerivationTree.weakening L (psi :: L_no_psi) Formula.bot d h_L_sub_psi_Lnp
+
+  -- Deduction theorem: L_no_psi ⊢ neg(psi) = psi → bot
+  have d_neg_psi : DerivationTree L_no_psi (Formula.neg psi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L_no_psi psi Formula.bot d_weak
+
+  -- Now we need: ⊢ l1 → l2 → ... → lk → neg(psi) by repeated deduction,
+  -- then necessitate and K-distribute.
+
+  -- We prove: Box(neg(psi)) ∈ M by induction on L_no_psi.
+  -- The invariant: if ctx ⊢ neg(psi) and ∀ x ∈ ctx, Box(x) ∈ M, then Box(neg(psi)) ∈ M.
+
+  -- This is the "box_lift_from_context" lemma.
+  suffices h : ∀ (ctx : List Formula) (phi : Formula),
+      DerivationTree ctx phi → (∀ x ∈ ctx, Formula.box x ∈ M) → Formula.box phi ∈ M by
+    exact h_box_neg_notin (h L_no_psi (Formula.neg psi) d_neg_psi
+      (fun x hx => h_L_no_psi_bc x hx))
+
+  -- Prove the box_lift_from_context by induction on the context length
+  intro ctx phi d_ctx h_ctx_box
+  induction ctx generalizing phi with
+  | nil =>
+    -- Empty context: d_ctx is a theorem ([] ⊢ phi)
+    -- By necessitation: ⊢ Box(phi). So Box(phi) ∈ M.
+    have d_box : DerivationTree [] (Formula.box phi) := DerivationTree.necessitation phi d_ctx
+    exact theorem_in_mcs h_mcs d_box
+  | cons a rest ih =>
+    -- Context is a :: rest.
+    -- d_ctx : (a :: rest) ⊢ phi
+    -- By deduction theorem: rest ⊢ a → phi
+    have d_imp : DerivationTree rest (a.imp phi) :=
+      Bimodal.Metalogic.Core.deduction_theorem rest a phi d_ctx
+    -- By induction hypothesis (since all elements of rest have their Box in M):
+    -- Box(a → phi) ∈ M
+    have h_rest_box : ∀ x ∈ rest, Formula.box x ∈ M :=
+      fun x hx => h_ctx_box x (List.mem_cons_of_mem a hx)
+    have h_box_imp : Formula.box (a.imp phi) ∈ M := ih (a.imp phi) d_imp h_rest_box
+    -- Box(a) ∈ M (from h_ctx_box)
+    have h_box_a : Formula.box a ∈ M := h_ctx_box a (List.mem_cons_self a rest)
+    -- K-distribution: Box(a → phi) → (Box(a) → Box(phi))
+    have h_K : [] ⊢ (Formula.box (a.imp phi)).imp ((Formula.box a).imp (Formula.box phi)) :=
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist a phi)
+    -- Box(a → phi) ∈ M and K ∈ M give Box(a) → Box(phi) ∈ M
+    have h_imp_in_M : (Formula.box a).imp (Formula.box phi) ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_K) h_box_imp
+    -- Box(a) ∈ M and (Box(a) → Box(phi)) ∈ M give Box(phi) ∈ M
+    exact SetMaximalConsistent.implication_property h_mcs h_imp_in_M h_box_a
+
+/-!
+### Box-Class Witness Existence
+
+From box_class_witness_consistent, we extend to a full MCS in the same box class.
+-/
+
+/-!
+### Strengthened Box-Class Witness
+
+We strengthen the seed to include Box-formulas directly, along with
+neg(Box) formulas for non-box elements, ensuring full box-class agreement.
+-/
 
 /--
-If chain c is connected, then R_G is transitive along the chain.
+The "box theory" of an MCS: the set of Box-formulas and their negations that are in M.
+This is {Box(a) | Box(a) ∈ M} ∪ {neg(Box(a)) | Box(a) ∉ M}.
 -/
-theorem Chain.R_G_le {c : Chain} {m n : Int} (h : m ≤ n) : R_G (c.uf m) (c.uf n) := by
-  -- Prove by induction on n - m
-  obtain ⟨k, hk⟩ := Int.eq_ofNat_of_zero_le (Int.sub_nonneg.mpr h)
-  induction k generalizing m n with
-  | zero =>
-    have h_eq : m = n := by omega
+def box_theory (M : Set Formula) : Set Formula :=
+  { f | (∃ a, f = Formula.box a ∧ Formula.box a ∈ M) ∨
+        (∃ a, f = Formula.neg (Formula.box a) ∧ Formula.box a ∉ M) }
+
+/--
+All elements of box_theory(M) are in M (when M is an MCS).
+-/
+theorem box_theory_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    box_theory M ⊆ M := by
+  intro f hf
+  simp only [box_theory, Set.mem_setOf_eq] at hf
+  rcases hf with ⟨a, rfl, ha⟩ | ⟨a, rfl, ha⟩
+  · exact ha
+  · -- Box(a) ∉ M, so neg(Box(a)) ∈ M by negation completeness
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box a) with h | h
+    · exact absurd h ha
+    · exact h
+
+/--
+The strengthened consistency lemma: {psi} ∪ box_theory(M) is consistent
+when Diamond(psi) is in M.
+
+The proof uses S5 negative introspection to convert all hypotheses to Box-formulas.
+-/
+theorem box_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_diamond : Formula.diamond psi ∈ M) :
+    SetConsistent ({psi} ∪ box_theory M) := by
+  -- The key: box_theory(M) ⊆ M, and {psi} ∪ M might be inconsistent,
+  -- but {psi} ∪ box_theory(M) is a SUBSET of {psi} ∪ M, so this doesn't help directly.
+
+  -- We use the S5 argument. Suppose {psi} ∪ box_theory(M) is inconsistent.
+  -- Then ∃ L ⊆ {psi} ∪ box_theory(M) with L ⊢ bot.
+  intro L h_L_sub ⟨d⟩
+
+  -- Every element of L is either psi, some Box(a) with Box(a) ∈ M,
+  -- or some neg(Box(a)) with Box(a) ∉ M.
+  -- In the latter case, by S5 axiom 5: neg(Box(a)) → Box(neg(Box(a)))
+  -- So Box(neg(Box(a))) ∈ M.
+
+  -- Strategy: show all elements of L are in M, then use MCS consistency.
+  -- box_theory(M) ⊆ M (by box_theory_subset_mcs), so L ⊆ {psi} ∪ M = insert psi M.
+  have h_bt_sub := box_theory_subset_mcs M h_mcs
+  have h_L_in_M_or_psi : ∀ x ∈ L, x ∈ insert psi M := by
+    intro x hx
+    have := h_L_sub x hx
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with h | h
+    · exact Set.mem_insert_iff.mpr (Or.inl h)
+    · exact Set.mem_insert_of_mem psi (h_bt_sub h)
+
+  -- Now the argument parallels box_class_witness_consistent but with box_theory.
+
+  -- We need all non-psi elements to have their Box in M.
+  -- For Box(a) ∈ box_theory: Box(Box(a)) ∈ M (by axiom 4: Box(a) → Box(Box(a)))
+  -- For neg(Box(a)) ∈ box_theory: Box(neg(Box(a))) ∈ M (by axiom 5)
+
+  -- So ALL non-psi elements of L from box_theory have their Box in M!
+
+  -- Extract box-boxing property
+  have h_box_of_bt : ∀ x ∈ box_theory M, Formula.box x ∈ M := by
+    intro x hx
+    simp only [box_theory, Set.mem_setOf_eq] at hx
+    rcases hx with ⟨a, rfl, ha⟩ | ⟨a, rfl, ha⟩
+    · -- x = Box(a), Box(a) ∈ M. Need Box(Box(a)) ∈ M.
+      -- By axiom 4: Box(a) → Box(Box(a))
+      have h_4 : [] ⊢ (Formula.box a).imp (Formula.box (Formula.box a)) :=
+        DerivationTree.axiom [] _ (Axiom.modal_4 a)
+      exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_4) ha
+    · -- x = neg(Box(a)), Box(a) ∉ M. Need Box(neg(Box(a))) ∈ M.
+      -- By S5 axiom 5 (negative introspection): neg(Box(a)) → Box(neg(Box(a)))
+      have h_neg_box : (Formula.box a).neg ∈ M := by
+        rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box a) with h | h
+        · exact absurd h ha
+        · exact h
+      exact SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs a h_neg_box
+
+  -- Now use the same box_lift_from_context argument as before.
+  -- Filter L into psi-part and box_theory part
+  let L_no_psi := L.filter (· ≠ psi)
+
+  have h_L_no_psi_bt : ∀ x ∈ L_no_psi, x ∈ box_theory M := by
+    intro x hx
+    have hx_L := List.mem_of_mem_filter hx
+    have hx_ne : x ≠ psi := by
+      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
+      exact hx.2
+    have := h_L_sub x hx_L
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with h | h
+    · rw [h] at hx_ne; exact absurd rfl hx_ne
+    · exact h
+
+  have h_L_sub_psi_Lnp : ∀ x ∈ L, x ∈ psi :: L_no_psi := by
+    intro x hx
+    by_cases h_eq : x = psi
+    · rw [h_eq]; exact List.mem_cons_self psi L_no_psi
+    · exact List.mem_cons_of_mem psi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+
+  have d_weak : DerivationTree (psi :: L_no_psi) Formula.bot :=
+    DerivationTree.weakening L (psi :: L_no_psi) Formula.bot d h_L_sub_psi_Lnp
+
+  have d_neg_psi : DerivationTree L_no_psi (Formula.neg psi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L_no_psi psi Formula.bot d_weak
+
+  -- All elements of L_no_psi are in box_theory(M), so their Box is in M
+  have h_L_no_psi_box : ∀ x ∈ L_no_psi, Formula.box x ∈ M :=
+    fun x hx => h_box_of_bt x (h_L_no_psi_bt x hx)
+
+  -- Box-lift: from L_no_psi ⊢ neg(psi) and all Box(x) ∈ M for x ∈ L_no_psi,
+  -- derive Box(neg(psi)) ∈ M.
+  have h_box_neg_psi : Formula.box (Formula.neg psi) ∈ M := by
+    -- Induction on context (same as box_lift_from_context from above)
+    suffices h : ∀ (ctx : List Formula) (phi : Formula),
+        DerivationTree ctx phi → (∀ x ∈ ctx, Formula.box x ∈ M) → Formula.box phi ∈ M by
+      exact h L_no_psi (Formula.neg psi) d_neg_psi h_L_no_psi_box
+    intro ctx phi d_ctx h_ctx_box
+    induction ctx generalizing phi with
+    | nil =>
+      exact theorem_in_mcs h_mcs (DerivationTree.necessitation phi d_ctx)
+    | cons a rest ih =>
+      have d_imp := Bimodal.Metalogic.Core.deduction_theorem rest a phi d_ctx
+      have h_rest_box := fun x hx => h_ctx_box x (List.mem_cons_of_mem a hx)
+      have h_box_imp := ih (a.imp phi) d_imp h_rest_box
+      have h_box_a := h_ctx_box a (List.mem_cons_self a rest)
+      have h_K := DerivationTree.axiom [] _ (Axiom.modal_k_dist a phi)
+      have h_imp_in_M := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_K) h_box_imp
+      exact SetMaximalConsistent.implication_property h_mcs h_imp_in_M h_box_a
+
+  -- But Diamond(psi) = neg(Box(neg(psi))) ∈ M
+  exact diamond_excludes_box_neg h_mcs psi h_diamond h_box_neg_psi
+
+/--
+If Diamond(psi) is in MCS M, there exists MCS W with psi in W and same box theory.
+-/
+theorem box_theory_witness_exists (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_diamond : Formula.diamond psi ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ psi ∈ W ∧ box_class_agree M W := by
+  have h_cons := box_theory_witness_consistent M h_mcs psi h_diamond
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum ({psi} ∪ box_theory M) h_cons
+  use W, h_W_mcs
+  constructor
+  · exact h_extends (Set.mem_union_left _ (Set.mem_singleton psi))
+  · intro phi
+    constructor
+    · -- Box(phi) ∈ M → Box(phi) ∈ W
+      intro h_box
+      -- Box(phi) is in box_theory(M), so in the seed, so in W
+      have : Formula.box phi ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inl ⟨phi, rfl, h_box⟩
+      exact h_extends (Set.mem_union_right _ this)
+    · -- Box(phi) ∈ W → Box(phi) ∈ M
+      intro h_box_W
+      -- neg(Box(phi)) ∈ box_theory(M) if Box(phi) ∉ M
+      by_contra h_not_in_M
+      have : Formula.neg (Formula.box phi) ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inr ⟨phi, rfl, h_not_in_M⟩
+      have h_neg_in_W : Formula.neg (Formula.box phi) ∈ W :=
+        h_extends (Set.mem_union_right _ this)
+      -- Box(phi) ∈ W and neg(Box(phi)) ∈ W contradicts W being MCS
+      exact set_consistent_not_both h_W_mcs.1 (Formula.box phi) h_box_W h_neg_in_W
+
+/-!
+### Phase 3: Box-Class Bundle Construction
+
+Build a BFMCS from the box-class of an MCS using shifted SuccChainFMCS.
+-/
+
+/--
+The bundle families: all shifted SuccChainFMCS from MCSes with the same box theory.
+-/
+noncomputable def boxClassFamilies (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    Set (FMCS Int) :=
+  { f | ∃ (W : Set Formula) (h_W : SetMaximalConsistent W) (k : Int),
+    box_class_agree M0 W ∧
+    f = shifted_fmcs (SuccChainFMCS (MCS_to_SerialMCS W h_W)) k }
+
+/--
+The bundle is nonempty (contains the eval chain from M0 at offset 0).
+-/
+theorem boxClassFamilies_nonempty (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    (boxClassFamilies M0 h_mcs).Nonempty := by
+  use SuccChainFMCS (MCS_to_SerialMCS M0 h_mcs)
+  simp only [boxClassFamilies, Set.mem_setOf_eq]
+  exact ⟨M0, h_mcs, 0, box_class_agree_refl M0, by
+    unfold shifted_fmcs; congr; ext t; simp⟩
+
+/--
+The eval family (unshifted chain from M0) is in the bundle.
+-/
+theorem eval_family_mem_boxClassFamilies (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    SuccChainFMCS (MCS_to_SerialMCS M0 h_mcs) ∈ boxClassFamilies M0 h_mcs := by
+  simp only [boxClassFamilies, Set.mem_setOf_eq]
+  exact ⟨M0, h_mcs, 0, box_class_agree_refl M0, by
+    unfold shifted_fmcs; congr; ext t; simp⟩
+
+/-!
+### Phase 4: Modal Coherence Proofs
+
+Prove modal_forward, modal saturation, and temporal coherence for the bundle.
+-/
+
+/--
+Modal forward: Box(phi) in any family's MCS at time t implies phi in ALL families' MCSes at t.
+
+Proof: Box(phi) in fam.mcs(t) → Box(phi) in fam.mcs(0-shifted-base) (by persistence)
+→ Box(phi) in base MCS W → Box(phi) in M0 (by box class) → Box(phi) in any W'
+→ Box(phi) in fam'.mcs(t) (by persistence) → phi in fam'.mcs(t) (by T).
+-/
+theorem boxClassFamilies_modal_forward (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ boxClassFamilies M0 h_mcs)
+    (phi : Formula) (t : Int) (h_box : Formula.box phi ∈ fam.mcs t)
+    (fam' : FMCS Int) (hfam' : fam' ∈ boxClassFamilies M0 h_mcs) :
+    phi ∈ fam'.mcs t := by
+  -- Extract fam's components
+  obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+  -- Extract fam's components
+  obtain ⟨W', h_W', k', h_agree', rfl⟩ := hfam'
+
+  -- Box(phi) in shifted_fmcs at t = Box(phi) in SuccChainFMCS at (t - k)
+  unfold shifted_fmcs at h_box ⊢
+  simp only at h_box ⊢
+
+  -- Box(phi) is persistent: in SuccChainFMCS(W) at (t-k) → at 0
+  have h_box_0 : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 :=
+    parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi (t - k) 0 h_box
+
+  -- SuccChainFMCS(W).mcs 0 = W (the base MCS)
+  have h_mcs_0 : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
+    unfold SuccChainFMCS MCS_to_SerialMCS
+    exact succ_chain_fam_zero _
+
+  -- Box(phi) ∈ W
+  rw [h_mcs_0] at h_box_0
+
+  -- Box(phi) ∈ M0 (by box class agreement: M0 ↔ W)
+  have h_box_M0 : Formula.box phi ∈ M0 := (h_agree phi).mpr h_box_0
+
+  -- Box(phi) ∈ W' (by box class agreement: M0 ↔ W')
+  have h_box_W' : Formula.box phi ∈ W' := (h_agree' phi).mp h_box_M0
+
+  -- SuccChainFMCS(W').mcs 0 = W'
+  have h_mcs_0' : (SuccChainFMCS (MCS_to_SerialMCS W' h_W')).mcs 0 = W' := by
+    unfold SuccChainFMCS MCS_to_SerialMCS
+    exact succ_chain_fam_zero _
+
+  -- Box(phi) ∈ SuccChainFMCS(W').mcs 0
+  have h_box_0' : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W' h_W')).mcs 0 := by
+    rw [h_mcs_0']; exact h_box_W'
+
+  -- Box(phi) ∈ SuccChainFMCS(W').mcs (t - k') (by persistence)
+  have h_box_t' : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W' h_W')).mcs (t - k') :=
+    parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W' h_W')) phi 0 (t - k') h_box_0'
+
+  -- phi ∈ SuccChainFMCS(W').mcs (t - k') by T axiom
+  have h_mcs_t' := (SuccChainFMCS (MCS_to_SerialMCS W' h_W')).is_mcs (t - k')
+  have h_T : [] ⊢ (Formula.box phi).imp phi := DerivationTree.axiom [] _ (Axiom.modal_t phi)
+  exact SetMaximalConsistent.implication_property h_mcs_t' (theorem_in_mcs h_mcs_t' h_T) h_box_t'
+
+/--
+Box-formulas at any time t in any family in the bundle agree with M0.
+-/
+theorem boxClassFamilies_box_agree (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ boxClassFamilies M0 h_mcs)
+    (phi : Formula) (t : Int) :
+    Formula.box phi ∈ fam.mcs t ↔ Formula.box phi ∈ M0 := by
+  obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+  unfold shifted_fmcs
+  simp only
+  constructor
+  · intro h =>
+    have h0 := parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi (t - k) 0 h
+    have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
+      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+    rw [h_eq] at h0
+    exact (h_agree phi).mpr h0
+  · intro h =>
+    have h_W := (h_agree phi).mp h
+    have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
+      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+    have h0 : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 := by
+      rw [h_eq]; exact h_W
+    exact parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi 0 (t - k) h0
+
+/--
+Modal backward: if phi is in ALL families' MCSes at time t, then Box(phi) is in fam.mcs(t).
+
+Proof by contraposition using box_theory_witness_exists:
+1. If Box(phi) not in fam.mcs(t), then neg(Box(phi)) in fam.mcs(t)
+2. By box-class agreement: neg(Box(phi)) in M0 (since neg(Box) is a box-theory formula)
+3. Diamond(neg(phi)) in M0 (derived from neg(Box(phi)) via double negation)
+4. By witness existence: exists W' with neg(phi) in W' and box_class_agree(M0, W')
+5. The shifted chain from W' at time t is in the bundle
+6. neg(phi) is in that chain's MCS at time t
+7. But phi is in ALL families, contradiction
+-/
+theorem boxClassFamilies_modal_backward (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ boxClassFamilies M0 h_mcs)
+    (phi : Formula) (t : Int)
+    (h_all : ∀ fam' ∈ boxClassFamilies M0 h_mcs, phi ∈ fam'.mcs t) :
+    Formula.box phi ∈ fam.mcs t := by
+  -- By contradiction
+  by_contra h_not_box
+
+  -- Step 1: neg(Box(phi)) in fam.mcs(t)
+  obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+  unfold shifted_fmcs at h_not_box ⊢
+  simp only at h_not_box ⊢
+  have h_mcs_t := (SuccChainFMCS (MCS_to_SerialMCS W h_W)).is_mcs (t - k)
+  have h_neg_box : Formula.neg (Formula.box phi) ∈
+      (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs (t - k) := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_t (Formula.box phi) with h | h
+    · exact absurd h h_not_box
+    · exact h
+
+  -- Step 2: neg(Box(phi)) in M0 (via box-class)
+  -- neg(Box(phi)) = (Box phi).neg
+  -- Box(phi) not in fam.mcs(t), so Box(phi) not in W (by box persistence)
+  have h_box_not_W : Formula.box phi ∉ W := by
+    intro h_in_W
+    have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
+      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+    have h0 : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 := by
+      rw [h_eq]; exact h_in_W
+    exact h_not_box (parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi 0 (t - k) h0)
+
+  -- Box(phi) not in M0 (by box class)
+  have h_box_not_M0 : Formula.box phi ∉ M0 := by
+    intro h; exact h_box_not_W ((h_agree phi).mp h)
+
+  -- neg(Box(phi)) in M0
+  have h_neg_box_M0 : (Formula.box phi).neg ∈ M0 := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box phi) with h | h
+    · exact absurd h h_box_not_M0
+    · exact h
+
+  -- Step 3: Diamond(neg(phi)) in M0
+  -- neg(Box(phi)) = neg(Box(phi))
+  -- By Box DNE contraposition: neg(Box(phi)) implies neg(Box(neg(neg(phi)))) = Diamond(neg(phi))
+  -- Actually: Diamond(neg(phi)) = neg(Box(neg(neg(phi)))) = neg(Box(phi)) composed with DNE
+  -- But Diamond(A) = A.neg.box.neg = neg(Box(neg(A)))
+  -- So Diamond(neg(phi)) = neg(Box(neg(neg(phi))))
+  -- And neg(Box(phi)) is what we have.
+  -- We need: neg(Box(phi)) implies Diamond(neg(phi))
+  -- i.e., neg(Box(phi)) implies neg(Box(neg(neg(phi))))
+  -- By contraposition of Box(neg(neg(phi))) -> Box(phi) (which is box_dne_theorem)
+  have h_diamond_neg : (Formula.neg phi).diamond ∈ M0 := by
+    -- Diamond(neg phi) = neg(Box(neg(neg phi)))
+    -- = (neg phi).neg.box.neg
+    -- We have neg(Box phi) in M0
+    -- Need neg(Box(neg(neg phi))) in M0
+    -- By box_dne_theorem: Box(neg(neg phi)) -> Box(phi)
+    -- Contrapositive: neg(Box(phi)) -> neg(Box(neg(neg phi)))
+    have h_bde := box_dne_theorem phi
+    have h_contra := SetMaximalConsistent.contrapositive h_mcs h_bde h_neg_box_M0
+    -- h_contra : (Formula.box (Formula.neg (Formula.neg phi))).neg ∈ M0
+    -- Diamond(neg phi) = (neg phi).diamond = (neg phi).neg.box.neg
+    --                   = phi.box.neg... no wait
+    -- (neg phi).diamond = ((neg phi).neg).box.neg = (phi.neg.neg).box.neg... no
+    -- Formula.diamond A = A.neg.box.neg = neg(Box(neg A))
+    -- So (neg phi).diamond = ((neg phi).neg).box.neg = ...
+    -- (neg phi).neg = Formula.neg (Formula.neg phi) = phi → ⊥ → ⊥... syntactically
+    -- Actually: (Formula.neg phi).diamond = (Formula.neg phi).neg.box.neg
+    --         = Formula.neg (Formula.box (Formula.neg (Formula.neg phi)))
+    -- This is exactly what h_contra gives us!
+    have h_eq : (Formula.neg phi).diamond =
+                Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) := rfl
     rw [h_eq]
-    exact R_G_refl (c.uf n)
-  | succ k ih =>
-    have h_lt : m < n := by omega
-    have h_prev : m ≤ n - 1 := by omega
-    have h_eq : n = (n - 1) + 1 := by omega
-    conv_rhs => rw [h_eq]
-    have h_ih : R_G (c.uf m) (c.uf (n - 1)) := ih h_prev (by omega)
-    exact R_G_trans h_ih (c.forward_connected (n - 1))
+    exact h_contra
+
+  -- Step 4: By witness existence, get W' with neg(phi) in W' and same box class
+  obtain ⟨W', h_W'_mcs, h_neg_phi_W', h_agree'⟩ :=
+    box_theory_witness_exists M0 h_mcs (Formula.neg phi) h_diamond_neg
+
+  -- Step 5: Build shifted chain from W' at time t
+  let witness_fam := shifted_fmcs (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)) t
+
+  -- This family is in the bundle
+  have h_witness_in : witness_fam ∈ boxClassFamilies M0 h_mcs := by
+    simp only [boxClassFamilies, Set.mem_setOf_eq]
+    exact ⟨W', h_W'_mcs, t, h_agree', rfl⟩
+
+  -- Step 6: neg(phi) is in witness_fam.mcs(t)
+  have h_neg_phi_at_t : Formula.neg phi ∈ witness_fam.mcs t := by
+    unfold_let witness_fam
+    unfold shifted_fmcs
+    simp only
+    -- (t - t) = 0, so mcs 0 = W'
+    have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)).mcs (t - t) =
+                (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)).mcs 0 := by ring_nf
+    rw [h_eq]
+    have h_mcs0 : (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)).mcs 0 = W' := by
+      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+    rw [h_mcs0]
+    exact h_neg_phi_W'
+
+  -- Step 7: phi is in ALL families at time t, including witness_fam
+  have h_phi_at_t : phi ∈ witness_fam.mcs t := h_all witness_fam h_witness_in
+
+  -- Step 8: Contradiction
+  have h_mcs_witness := witness_fam.is_mcs t
+  exact set_consistent_not_both h_mcs_witness.1 phi h_phi_at_t h_neg_phi_at_t
 
 /--
-Build a chain starting from a given ultrafilter at position 0.
-
-This requires `temporal_successor_exists` to construct successors.
-For the backward direction, we use a similar argument with H instead of G.
+Temporal coherence: all families in the bundle satisfy forward_F and backward_P.
 -/
-noncomputable def buildChain (U₀ : Ultrafilter LindenbaumAlg) : Chain := by
-  -- For now, use sorry since we need temporal_successor_exists
-  -- and the backward construction
-  exact { uf := fun _ => U₀, forward_connected := fun _ => R_G_refl U₀ }
-  -- NOTE: This is a placeholder. The actual construction requires:
-  -- 1. Forward: use temporal_successor_exists repeatedly
-  -- 2. Backward: use a dual argument with H operator
+theorem boxClassFamilies_temporally_coherent (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    ∀ fam ∈ boxClassFamilies M0 h_mcs,
+      (∀ t φ, Formula.some_future φ ∈ fam.mcs t → ∃ s, t < s ∧ φ ∈ fam.mcs s) ∧
+      (∀ t φ, Formula.some_past φ ∈ fam.mcs t → ∃ s, s < t ∧ φ ∈ fam.mcs s) := by
+  intro fam hfam
+  obtain ⟨W, h_W, k, _, rfl⟩ := hfam
+  let tcf := SuccChainTemporalCoherent (MCS_to_SerialMCS W h_W)
+  constructor
+  · exact shifted_temporal_forward_F (SuccChainFMCS (MCS_to_SerialMCS W h_W))
+      tcf.forward_F k
+  · exact shifted_temporal_backward_P (SuccChainFMCS (MCS_to_SerialMCS W h_W))
+      tcf.backward_P k
 
 /-!
-## Phase 4: FMCS and BFMCS Construction
+### Phase 5: construct_bfmcs
 
-Convert ultrafilter chain to FMCS, then build BFMCS by modal saturation.
+Wire everything together into the signature required by ParametricRepresentation.
 -/
 
 /--
-Convert an ultrafilter to an MCS using the bijection.
--/
-noncomputable def chainToMCS (c : Chain) (t : Int) : Set Formula :=
-  ultrafilterToSet (c.uf t)
-
-/--
-Each point in the chain gives an MCS.
--/
-theorem chainToMCS_is_mcs (c : Chain) (t : Int) :
-    SetMaximalConsistent (chainToMCS c t) :=
-  ultrafilterToSet_mcs (c.uf t)
-
-/--
-G-formulas propagate forward in the chain.
--/
-theorem chainToMCS_forward_G (c : Chain) (t t' : Int) (φ : Formula)
-    (h_le : t ≤ t') (h_G : Formula.all_future φ ∈ chainToMCS c t) :
-    φ ∈ chainToMCS c t' := by
-  -- G(φ) ∈ M(t) means [G(φ)] ∈ U(t), i.e., G_quot([φ]) ∈ U(t)
-  -- By R_G connectivity: R_G(U(t), U(t')) gives [φ] ∈ U(t')
-  -- So φ ∈ M(t')
-  unfold chainToMCS at *
-  unfold ultrafilterToSet at *
-  simp only [Set.mem_setOf_eq] at *
-  -- h_G : toQuot φ.all_future ∈ (c.uf t).carrier
-  -- Need: toQuot φ ∈ (c.uf t').carrier
-  have h_RG : R_G (c.uf t) (c.uf t') := Chain.R_G_le h_le
-  unfold R_G at h_RG
-  -- G_quot (toQuot φ) = toQuot (φ.all_future)
-  have h_eq : STSA.G (toQuot φ) = toQuot φ.all_future := rfl
-  rw [← h_eq] at h_G
-  exact h_RG (toQuot φ) h_G
-
-/--
-H-formulas propagate backward in the chain (requires dual construction).
--/
-theorem chainToMCS_backward_H (c : Chain) (t t' : Int) (φ : Formula)
-    (h_le : t' ≤ t) (h_H : Formula.all_past φ ∈ chainToMCS c t) :
-    φ ∈ chainToMCS c t' := by
-  -- This requires the backward construction using H operator
-  -- For now, sorry
-  sorry
-
-/--
-Convert a chain to an FMCS.
--/
-noncomputable def chainToFMCS (c : Chain) : FMCS Int where
-  mcs := chainToMCS c
-  is_mcs := chainToMCS_is_mcs c
-  forward_G := chainToMCS_forward_G c
-  backward_H := chainToMCS_backward_H c
-
-/-!
-## Phase 5: Temporal Coherence
-
-The chain construction with F-witnesses ensures temporal coherence.
--/
-
-/--
-Forward F coherence: if F(φ) ∈ mcs(t), there exists s > t with φ ∈ mcs(s).
-
-This follows from the construction using `temporal_successor_exists`.
--/
-theorem chainToFMCS_forward_F (c : Chain) (t : Int) (φ : Formula)
-    (h_F : Formula.some_future φ ∈ (chainToFMCS c).mcs t) :
-    ∃ s : Int, t < s ∧ φ ∈ (chainToFMCS c).mcs s := by
-  -- F(φ) ∈ mcs(t) means (G(¬φ))^c ∈ U(t), i.e., F_elem([φ]) ∈ U(t)
-  -- By temporal_successor_exists: there exists V with R_G(U(t), V) and [φ] ∈ V
-  -- In the chain construction, V = U(t+1) (or some s > t)
-  -- For the placeholder chain (constant), this doesn't hold
-  -- Real proof requires the proper chain construction
-  sorry
-
-/--
-Backward P coherence: if P(φ) ∈ mcs(t), there exists s < t with φ ∈ mcs(s).
--/
-theorem chainToFMCS_backward_P (c : Chain) (t : Int) (φ : Formula)
-    (h_P : Formula.some_past φ ∈ (chainToFMCS c).mcs t) :
-    ∃ s : Int, s < t ∧ φ ∈ (chainToFMCS c).mcs s := by
-  sorry
-
-/-!
-## Phase 6: BFMCS and construct_bfmcs
-
-Build the full BFMCS with modal saturation.
--/
-
-/--
-The BFMCS constructed from a chain with modal saturation.
-
-For S5, all ultrafilters in the same R_Box equivalence class see the same
-box-formulas. The modal saturation collects all R_Box-equivalent chains.
--/
-noncomputable def chainToBFMCS (c : Chain) : BFMCS Int := by
-  -- For simplicity, use a singleton bundle (works for completeness)
-  -- Modal coherence follows from S5 properties of box
-  exact {
-    families := {chainToFMCS c}
-    nonempty := ⟨chainToFMCS c, Set.mem_singleton _⟩
-    modal_forward := by
-      intro fam hfam φ t h_box fam' hfam'
-      simp only [Set.mem_singleton_iff] at hfam hfam'
-      subst hfam hfam'
-      -- □φ ∈ mcs(t) implies φ ∈ mcs(t) by T-axiom closure
-      have h_mcs := (chainToFMCS c).is_mcs t
-      -- Use modal_t axiom: □φ → φ
-      have h_t : [] ⊢ (Formula.box φ).imp φ := DerivationTree.axiom [] _ (Axiom.modal_t φ)
-      exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_t) h_box
-    modal_backward := by
-      intro fam hfam φ t h_all
-      simp only [Set.mem_singleton_iff] at hfam
-      subst hfam
-      -- If φ ∈ mcs(t) for all families (just one), need □φ ∈ mcs(t)
-      -- This requires that we can derive □φ from φ being in all accessible worlds
-      -- For a singleton bundle, this requires additional S5 reasoning
-      sorry
-    eval_family := chainToFMCS c
-    eval_family_mem := Set.mem_singleton _
-  }
-
-/--
-The signature required by ParametricRepresentation.
+The main construction: given an MCS M, produce a temporally coherent BFMCS containing M.
 -/
 noncomputable def construct_bfmcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent)
        (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),
        M = fam.mcs t := by
-  -- 1. Convert M to ultrafilter
-  let U := mcsToUltrafilter ⟨M, h_mcs⟩
-  -- 2. Build chain from U at position 0
-  let c := buildChain U
-  -- 3. Build BFMCS
-  let B := chainToBFMCS c
-  -- 4. Show temporal coherence (requires F/P witness properties)
+  -- Build the BFMCS
+  let B : BFMCS Int := {
+    families := boxClassFamilies M h_mcs
+    nonempty := boxClassFamilies_nonempty M h_mcs
+    modal_forward := boxClassFamilies_modal_forward M h_mcs
+    modal_backward := boxClassFamilies_modal_backward M h_mcs
+    eval_family := SuccChainFMCS (MCS_to_SerialMCS M h_mcs)
+    eval_family_mem := eval_family_mem_boxClassFamilies M h_mcs
+  }
+  -- Temporal coherence
   have h_tc : B.temporally_coherent := by
     intro fam hfam
-    -- B.families = {chainToFMCS c}, so fam = chainToFMCS c
-    have h_eq : fam = chainToFMCS c := Set.mem_singleton_iff.mp hfam
-    subst h_eq
-    constructor
-    · -- forward_F
-      intro t φ h_F
-      exact chainToFMCS_forward_F c t φ h_F
-    · -- backward_P
-      intro t φ h_P
-      exact chainToFMCS_backward_P c t φ h_P
-  -- 5. Return the sigma type
-  use B, h_tc, chainToFMCS c, Set.mem_singleton _, 0
-  -- Need: M = (chainToFMCS c).mcs 0
-  -- The bijection gives us ultrafilterToSet (mcsToUltrafilter ⟨M, h_mcs⟩) = M
-  have h_bij : ultrafilterToSet (mcsToUltrafilter ⟨M, h_mcs⟩) = M := by
-    ext φ
-    unfold ultrafilterToSet mcsToUltrafilter mcsToSet
-    simp only [Set.mem_setOf_eq]
-    constructor
-    · intro ⟨ψ, h_ψ_in, h_eq⟩
-      have h_le : toQuot ψ ≤ toQuot φ := by rw [← h_eq]
-      obtain ⟨d_imp⟩ := (h_le : Derives ψ φ)
-      exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs d_imp) h_ψ_in
-    · intro h_φ_in
-      exact ⟨φ, h_φ_in, rfl⟩
-  -- With placeholder buildChain, c.uf 0 = U
-  -- So we need M = ultrafilterToSet U, which is h_bij.symm
-  show M = ultrafilterToSet (c.uf 0)
-  -- c = buildChain U, so c.uf 0 = U = mcsToUltrafilter ⟨M, h_mcs⟩
-  simp only [c]
-  exact h_bij.symm
+    exact boxClassFamilies_temporally_coherent M h_mcs fam hfam
+  -- The eval family
+  let fam := SuccChainFMCS (MCS_to_SerialMCS M h_mcs)
+  have hfam : fam ∈ B.families := eval_family_mem_boxClassFamilies M h_mcs
+  -- M = fam.mcs 0
+  have h_eq : M = fam.mcs 0 := by
+    unfold_let fam
+    unfold SuccChainFMCS MCS_to_SerialMCS
+    exact (succ_chain_fam_zero _).symm
+  exact ⟨B, h_tc, fam, hfam, 0, h_eq⟩
 
 end Bimodal.Metalogic.Algebraic.UltrafilterChain

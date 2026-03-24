@@ -169,9 +169,7 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past := by
   -- swap_temporal(G(swap_temporal φ) → GG(swap_temporal φ))
   -- = H(swap_temporal (swap_temporal φ)) → HH(swap_temporal (swap_temporal φ))
   -- = Hφ → HHφ by involution
-  simp [Formula.swap_temporal] at h2
-  rw [φ_eq] at h2
-  simp at h2
+  simp [Formula.swap_temporal, Formula.swap_temporal_involution] at h2
   exact h2
 
 /--
@@ -198,9 +196,7 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past.all_past := by
     DerivationTree.temporal_duality _ future_chain
 
   -- Step 4: Simplify to get Hφ → HHHφ using involution
-  simp [Formula.swap_temporal] at past_chain
-  rw [φ_eq] at past_chain
-  simp at past_chain
+  simp [Formula.swap_temporal, Formula.swap_temporal_involution] at past_chain
   exact past_chain
 
 /--
@@ -237,9 +233,7 @@ example : (∀ φ : Formula, ⊢ φ.all_future.imp φ.all_future.all_future) →
   have h_swap : ⊢ (φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h_future
   -- Simplify to past version using involution
-  simp [Formula.swap_temporal] at h_swap
-  rw [φ_eq] at h_swap
-  simp at h_swap
+  simp [Formula.swap_temporal, Formula.swap_temporal_involution] at h_swap
   exact h_swap
 
 /-!
@@ -454,9 +448,7 @@ example (φ : Formula) : ⊢ φ.all_past.imp φ.all_past.all_past := by
   have h2 : ⊢ (φ.swap_temporal.all_future.imp φ.swap_temporal.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h
   -- Simplify using involution
-  simp [Formula.swap_temporal] at h2
-  rw [φ_eq] at h2
-  simp at h2
+  simp [Formula.swap_temporal, Formula.swap_temporal_involution] at h2
   exact h2
 
 /-!

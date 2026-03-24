@@ -2416,14 +2416,17 @@ theorem restricted_single_step_forcing (phi : Formula)
         exact drm_closed_under_derivation h_drm_u [premise] h_sublist h_deriv h_intermediate_dc
       · -- Case B: FF(psi) = g.neg for g ∈ subformulaClosure
         -- We have g = G(F(psi).neg) ∈ subformulaClosure directly
+        -- After cases, g is replaced by the specific formula
         unfold Formula.some_future Formula.neg at h_g_eq
         cases h_g_eq
-        -- By negation completeness on g: g ∈ u ∨ g.neg ∈ u
-        have h_g_or := deferral_restricted_mcs_negation_complete h_drm_u g h_g_sub
+        -- The target formula is psi.neg.all_future.neg.neg.all_future
+        let target := (Formula.neg (Formula.neg (Formula.all_future (Formula.neg psi)))).all_future
+        -- By negation completeness on target: target ∈ u ∨ target.neg ∈ u
+        have h_g_or := deferral_restricted_mcs_negation_complete h_drm_u target h_g_sub
         cases h_g_or with
         | inl h_g_in => exact h_g_in
         | inr h_g_neg =>
-          -- g.neg = FF(psi) ∈ u, but h_FF_not says FF(psi) ∉ u
+          -- target.neg = FF(psi) ∈ u, but h_FF_not says FF(psi) ∉ u
           exfalso
           exact h_FF_not h_g_neg
 
