@@ -87,7 +87,7 @@ Plan v1 attempted to fix boundary sorries in `DeferralRestrictedMCS` by proving 
 
 ---
 
-### Phase 2: Extend to MCS Witnesses [NOT STARTED]
+### Phase 2: Extend to MCS Witnesses [COMPLETED]
 
 **Goal**: Use Lindenbaum's lemma to extend consistent sets to full MCS witnesses for temporal accessibility.
 
@@ -116,7 +116,7 @@ Plan v1 attempted to fix boundary sorries in `DeferralRestrictedMCS` by proving 
 
 ---
 
-### Phase 3: Rewire succ_chain_forward_F and backward_P [NOT STARTED]
+### Phase 3: Rewire succ_chain_forward_F and backward_P [BLOCKED]
 
 **Goal**: Replace the sorry-dependent `succ_chain_forward_F` with a proof using temporal theory witnesses.
 
@@ -156,7 +156,7 @@ Plan v1 attempted to fix boundary sorries in `DeferralRestrictedMCS` by proving 
 
 ---
 
-### Phase 4: Cleanup and Deprecation [NOT STARTED]
+### Phase 4: Cleanup and Deprecation [NOT STARTED] (blocked by Phase 3)
 
 **Goal**: Remove false/deprecated theorems and clean up the codebase.
 
