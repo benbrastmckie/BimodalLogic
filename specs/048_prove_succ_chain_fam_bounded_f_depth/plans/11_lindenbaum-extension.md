@@ -55,7 +55,7 @@ Key findings from team research report 19:
 
 ## Implementation Phases
 
-### Phase 1: Prove Succ Lifts to Extensions [NOT STARTED]
+### Phase 1: Prove Succ Lifts to Extensions [BLOCKED]
 
 **Goal**: Show that if `Succ(chain(k), chain(k+1))` for restricted MCS, then `Succ(ext(chain(k)), ext(chain(k+1)))` for full MCS extensions.
 

@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T00:50:59Z",
+      "last_updated": "2026-03-24T01:02:53Z",
       "artifacts": [
         {
           "type": "research",
@@ -762,10 +762,10 @@
           "summary": "5-phase Lindenbaum extension plan to remove 5 boundary case sorries"
         }
       ],
-      "session_id": "sess_1774313273_bb6ec6",
+      "session_id": "sess_1774313590_7adbd7",
       "researched": "2026-03-24T00:42:02Z",
       "planned": "2026-03-24T00:50:59Z",
-      "started": "2026-03-23T17:51:37Z"
+      "started": "2026-03-24T00:53:25Z"
     },
     {
       "project_number": 49,

@@ -4405,7 +4405,7 @@ theorem restricted_bounded_witness (phi : Formula)
     psi ∈ restricted_forward_chain phi M0 (k + d) := by
   -- Strong induction on d
   induction d using Nat.strong_induction_on generalizing k with
-  | ind d ih =>
+  | h d ih =>
     cases d with
     | zero =>
       -- d = 0 contradicts h_d_ge
@@ -4432,11 +4432,20 @@ theorem restricted_bounded_witness (phi : Formula)
       have h_iter_d'_in_k1 : iter_F d' psi ∈ restricted_forward_chain phi M0 (k + 1) :=
         restricted_single_step_forcing phi M0 k (iter_F d' psi) h_F_iter_d' h_FF_iter_d'_not
 
-      -- By restricted_succ_propagates_F_not: iter_F (d'+1) psi ∉ chain(k+1)
+      -- By restricted_succ_propagates_F_not or trivial argument: iter_F (d'+1) psi ∉ chain(k+1)
       have h_iter_d1_not_k1 : iter_F (d' + 1) psi ∉ restricted_forward_chain phi M0 (k + 1) := by
         have h_eq : iter_F (d' + 1) psi = Formula.some_future (iter_F d' psi) := iter_F_succ d' psi
         rw [h_eq]
-        exact restricted_succ_propagates_F_not phi M0 k (iter_F d' psi) h_FF_iter_d'_not
+        -- Case split: is F(iter_F d' psi) in deferralClosure?
+        by_cases h_Fd1_dc : Formula.some_future (iter_F d' psi) ∈ (deferralClosure phi : Set Formula)
+        · -- F(iter_F d' psi) ∈ deferralClosure
+          -- Use restricted_succ_propagates_F_not (this case has the sorry for boundary)
+          exact restricted_succ_propagates_F_not phi M0 k (iter_F d' psi) h_FF_iter_d'_not
+        · -- F(iter_F d' psi) ∉ deferralClosure
+          -- Then F(iter_F d' psi) ∉ chain(k+1) trivially since chain ⊆ dc
+          intro h_in
+          have h_in_dc := (restricted_forward_chain_is_drm phi M0 (k + 1)).1.1 h_in
+          exact h_Fd1_dc h_in_dc
 
       -- Now apply inductive hypothesis
       cases d' with
@@ -4648,6 +4657,90 @@ theorem DeferralRestrictedSerialMCS.extendToMCS_has_P_top {phi : Formula}
     (M : DeferralRestrictedSerialMCS phi) :
     P_top ∈ M.extendToMCS :=
   M.extendToMCS_extends M.has_P_top
+
+/-!
+## Transfer-Back Property for Lindenbaum Extension
+
+The key property for the Lindenbaum extension approach: formulas in deferralClosure
+that are in the extension must also be in the original restricted MCS.
+
+This follows from the maximality property of DeferralRestrictedMCS:
+if psi ∈ deferralClosure and psi ∉ M, then insert psi M is inconsistent.
+But ext(M) ⊇ M ∪ {psi} is consistent, so psi ∉ M leads to contradiction.
+-/
+
+/--
+Transfer-back property: If psi is in the deferral closure AND in the Lindenbaum
+extension, then psi is in the original restricted MCS.
+
+This is the key lemma that enables using bounded_witness on extensions and
+transferring the result back to the restricted chain.
+
+**Proof**: By contradiction using DeferralRestrictedMCS maximality.
+- Suppose psi ∈ deferralClosure and psi ∈ ext(M) but psi ∉ M.world.
+- By DeferralRestrictedMCS maximality: psi ∉ M.world implies insert psi M.world is inconsistent.
+- But ext(M) ⊇ M.world ∪ {psi} (since M.world ⊆ ext(M) and psi ∈ ext(M)).
+- And ext(M) is consistent (it's an MCS).
+- Contradiction: insert psi M.world cannot be inconsistent.
+-/
+theorem DeferralRestrictedSerialMCS.extendToMCS_transfer_back {phi : Formula}
+    (M : DeferralRestrictedSerialMCS phi) (psi : Formula)
+    (h_in_dc : psi ∈ (deferralClosure phi : Set Formula))
+    (h_in_ext : psi ∈ M.extendToMCS) :
+    psi ∈ M.world := by
+  by_contra h_not_in_M
+  -- By DeferralRestrictedMCS maximality: psi ∉ M.world implies insert psi M.world is inconsistent
+  have h_incons : ¬SetConsistent (insert psi M.world) :=
+    M.is_drm.2 psi h_in_dc h_not_in_M
+  -- But ext(M) ⊇ insert psi M.world
+  have h_subset : insert psi M.world ⊆ M.extendToMCS := by
+    intro chi h_chi
+    cases Set.mem_insert_iff.mp h_chi with
+    | inl h_eq => exact h_eq ▸ h_in_ext
+    | inr h_in_M => exact M.extendToMCS_extends h_in_M
+  -- And ext(M) is consistent
+  have h_cons_ext : SetConsistent M.extendToMCS := M.extendToMCS_is_mcs.1
+  -- Subset of consistent set is consistent
+  have h_cons_insert : SetConsistent (insert psi M.world) := by
+    intro L h_L_in_insert
+    apply h_cons_ext L
+    intro chi h_chi_in_L
+    exact h_subset (h_L_in_insert chi h_chi_in_L)
+  exact h_incons h_cons_insert
+
+/--
+Transfer-back for restricted forward chain elements: If psi is in deferralClosure
+and in ANY consistent superset of chain(k), then psi is in chain(k).
+
+This is the core transfer-back lemma using DeferralRestrictedMCS maximality directly.
+-/
+theorem restricted_forward_chain_transfer_back (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (psi : Formula)
+    (h_in_dc : psi ∈ (deferralClosure phi : Set Formula))
+    (T : Set Formula)
+    (h_superset : restricted_forward_chain phi M0 k ⊆ T)
+    (h_T_cons : SetConsistent T)
+    (h_psi_in_T : psi ∈ T) :
+    psi ∈ restricted_forward_chain phi M0 k := by
+  -- Use DeferralRestrictedMCS maximality
+  by_contra h_not_in
+  have h_drm := restricted_forward_chain_is_drm phi M0 k
+  -- By maximality: if psi ∈ dc and psi ∉ chain(k), then insert psi chain(k) is inconsistent
+  have h_incons : ¬SetConsistent (insert psi (restricted_forward_chain phi M0 k)) :=
+    h_drm.2 psi h_in_dc h_not_in
+  -- But insert psi chain(k) ⊆ T
+  have h_sub : insert psi (restricted_forward_chain phi M0 k) ⊆ T := by
+    intro chi h_chi
+    cases Set.mem_insert_iff.mp h_chi with
+    | inl h_eq => exact h_eq ▸ h_psi_in_T
+    | inr h_in => exact h_superset h_in
+  -- And T is consistent
+  have h_ins_cons : SetConsistent (insert psi (restricted_forward_chain phi M0 k)) := by
+    intro L h_L
+    apply h_T_cons L
+    intro chi h_chi_in_L
+    exact h_sub (h_L chi h_chi_in_L)
+  exact h_incons h_ins_cons
 
 /--
 Convert a DeferralRestrictedSerialMCS to a SerialMCS.
