@@ -821,7 +821,7 @@
     {
       "project_number": 52,
       "project_name": "direct_bounded_witness_induction",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "description": "Restructure restricted_bounded_witness to prove directly by induction on deferralClosure finiteness, tracking f_step disjunction instead of single-step forcing. Delete false intermediate lemmas (restricted_single_step_forcing, restricted_succ_propagates_F_not). Use lexicographic termination on (F-nesting depth, dc size).",
       "effort": "4-6 hours",
@@ -830,8 +830,16 @@
         48
       ],
       "created": "2026-03-24T06:00:44Z",
-      "last_updated": "2026-03-24T06:00:44Z",
-      "artifacts": []
+      "last_updated": "2026-03-24T06:10:01Z",
+      "artifacts": [
+        {
+          "path": "specs/052_direct_bounded_witness_induction/reports/01_bounded-witness-restructuring.md",
+          "type": "research",
+          "summary": "Analysis: intermediate lemmas FALSE, f_step disjunction alone insufficient. Recommends modifying seed construction to force boundary resolution. 5 theorems to delete, Class A proof preserved."
+        }
+      ],
+      "session_id": "sess_1774332139_02e91c",
+      "researched": "2026-03-24T06:10:01Z"
     },
     {
       "project_number": 53,

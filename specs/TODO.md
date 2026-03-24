@@ -111,10 +111,11 @@ Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass S
 
 ### 52. Direct bounded_witness via f_step disjunction tracking
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 48
 - **Parent Task**: 48
+- **Research**: [01_bounded-witness-restructuring.md](052_direct_bounded_witness_induction/reports/01_bounded-witness-restructuring.md)
 
 **Description**: Restructure `restricted_bounded_witness` to prove directly by induction on deferralClosure finiteness, tracking the f_step disjunction `psi in v OR F(psi) in v` instead of trying to eliminate it at each step (which is FALSE). Delete false intermediate lemmas (`restricted_single_step_forcing`, `restricted_succ_propagates_F_not` and primed variants). Use lexicographic termination measure `(F-nesting depth, dc size)`. The f_step guarantees progress at each step (either resolve or defer), and dc finiteness guarantees termination. Preserve the Class A proof (lines 2354-2449) as optimized base case for FF(psi) in deferralClosure.
 
