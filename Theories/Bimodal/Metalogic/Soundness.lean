@@ -50,7 +50,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - Classical logic helpers for conjunction extraction (TL)
 - Derivation-indexed induction for temporal duality soundness
 
-**Omega Parameterization (Task 912)**:
+**Omega Parameterization**:
 Validity and semantic consequence now quantify over shift-closed Omega sets.
 All soundness proofs use the `ShiftClosed Omega` hypothesis where previously
 `Set.univ_shift_closed` was used. This enables completeness proofs to provide
@@ -188,13 +188,13 @@ theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.al
   intro h_future s hts r hsr
   exact h_future r (le_trans hts hsr)
 
-/-- Temporal A axiom is valid: `⊨ φ → G(sometime_past φ)`.
+/-- Temporal A axiom is valid: `⊨ φ → G(some_past φ)`.
 Under reflexive semantics: if φ at t, then for all s >= t, there exists r <= s with φ(r) (namely, t). -/
-theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometime_past)) := by
+theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.some_past)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_phi s hts
-  simp only [Formula.sometime_past, Formula.some_past, Formula.neg, truth_at]
+  simp only [Formula.some_past, Formula.some_past, Formula.neg, truth_at]
   intro h_all_neg
   -- h_all_neg : ∀ r ≤ s, ¬φ(r). But t ≤ s (from hts) and φ(t) (from h_phi).
   exact h_all_neg t hts h_phi
@@ -767,7 +767,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     -- For theorems (empty context), the ih gives truth at any (τ, s)
     exact ih h_dc τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- d' : ⊢ φ', and the goal is truth_at M Omega τ t φ'.swap_past_future
+    -- d' : ⊢ φ', and the goal is truth_at M Omega τ t φ'.swap_temporal
     -- Use derivable_implies_swap_valid from SoundnessLemmas
     -- h_dc : (temporal_duality φ' d').isDenseCompatible = d'.isDenseCompatible
     exact SoundnessLemmas.derivable_implies_swap_valid d' h_dc F M Omega h_sc τ h_mem t

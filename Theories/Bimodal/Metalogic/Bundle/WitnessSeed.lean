@@ -26,7 +26,7 @@ reverse, and vice versa).
 - `g_content_subset_implies_h_content_reverse`: g_content(M) ⊆ M' implies h_content(M') ⊆ M
 - `h_content_subset_implies_g_content_reverse`: h_content(M) ⊆ M' implies g_content(M') ⊆ M
 
-## Design Note (Task 956)
+## Design Note
 
 These proofs work with irreflexive temporal semantics (G/H use strict `<`).
 The seed consistency proofs do NOT use the T-axiom (`G phi → phi`). Instead,
@@ -311,12 +311,12 @@ which are still valid with irreflexive semantics.
 Derived from temp_a via temporal duality. -/
 noncomputable def past_temp_a (psi : Formula) :
     [] ⊢ psi.imp psi.some_future.all_past := by
-  have h_ta := DerivationTree.axiom [] _ (Axiom.temp_a psi.swap_past_future)
+  have h_ta := DerivationTree.axiom [] _ (Axiom.temp_a psi.swap_temporal)
   have h_dual := DerivationTree.temporal_duality _ h_ta
-  have h_eq : (psi.swap_past_future.imp psi.swap_past_future.sometime_past.all_future).swap_past_future
+  have h_eq : (psi.swap_temporal.imp psi.swap_temporal.some_past.all_future).swap_temporal
     = psi.imp psi.some_future.all_past := by
-    simp [Formula.swap_temporal, Formula.neg, Formula.sometime_past, Formula.some_past,
-          Formula.some_future, Formula.swap_past_future, Formula.swap_past_future_involution]
+    simp [Formula.swap_temporal, Formula.neg, Formula.some_past, Formula.some_past,
+          Formula.some_future, Formula.swap_temporal, Formula.swap_temporal_involution]
   rw [h_eq] at h_dual; exact h_dual
 
 /-- If g_content(M) ⊆ M', then h_content(M') ⊆ M.
@@ -331,11 +331,11 @@ theorem g_content_subset_implies_h_content_reverse
     rcases SetMaximalConsistent.negation_complete h_mcs phi with h | h
     · exact absurd h h_not_phi
     · exact h
-  have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.all_future (Formula.neg phi).sometime_past) :=
+  have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.all_future (Formula.neg phi).some_past) :=
     DerivationTree.axiom [] _ (Axiom.temp_a (Formula.neg phi))
-  have h_G_P_neg : Formula.all_future (Formula.neg phi).sometime_past ∈ M :=
+  have h_G_P_neg : Formula.all_future (Formula.neg phi).some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
-  have h_P_neg_M' : (Formula.neg phi).sometime_past ∈ M' := h_GC h_G_P_neg
+  have h_P_neg_M' : (Formula.neg phi).some_past ∈ M' := h_GC h_G_P_neg
   have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
   have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).all_past :=
     Bimodal.Theorems.past_necessitation _ h_dni
@@ -345,7 +345,7 @@ theorem g_content_subset_implies_h_content_reverse
     DerivationTree.modus_ponens [] _ _ h_pk h_H_dni
   have h_H_nn : phi.neg.neg.all_past ∈ M' :=
     SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_H_imp) h_H_phi_in_M'
-  have h_eq : (Formula.neg phi).sometime_past = Formula.neg (phi.neg.neg.all_past) := rfl
+  have h_eq : (Formula.neg phi).some_past = Formula.neg (phi.neg.neg.all_past) := rfl
   rw [h_eq] at h_P_neg_M'
   exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_past) h_H_nn h_P_neg_M'
 

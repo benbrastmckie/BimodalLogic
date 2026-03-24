@@ -35,7 +35,6 @@ generalized to arbitrary D instead of hardcoded Int.
 
 ## References
 
-- Research: specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md
 - Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean
 -/
 

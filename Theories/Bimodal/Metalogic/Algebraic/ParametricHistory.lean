@@ -28,7 +28,6 @@ Since domain = True for all times, we sidestep domain-related complexity.
 ## References
 
 - Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean (to_history)
-- Research: specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md
 -/
 
 namespace Bimodal.Metalogic.Algebraic.ParametricHistory

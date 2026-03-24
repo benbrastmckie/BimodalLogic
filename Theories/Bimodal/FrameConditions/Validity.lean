@@ -33,7 +33,6 @@ version allows:
 
 ## References
 
-- Task 978: Typeclass-based frame condition architecture
 - `Bimodal.Semantics.Validity`: Original validity definitions
 -/
 

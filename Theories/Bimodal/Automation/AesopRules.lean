@@ -7,7 +7,7 @@ import Bimodal.Theorems.GeneralizedNecessitation
 /-!
 # Aesop Rules for TM Logic
 
-**DEPRECATION NOTICE (Task 513)**: As of 2026-01-17, the `tm_auto` tactic no longer
+**DEPRECATION NOTICE**: As of 2026-01-17, the `tm_auto` tactic no longer
 uses Aesop. It now delegates to `modal_search` to avoid proof reconstruction issues
 with DerivationTree. This module is preserved for:
 1. Potential future Aesop integration experiments
@@ -50,7 +50,6 @@ example : ⊢ (□p → p) := by
 
 * [TACTIC_DEVELOPMENT.md](../../../docs/ProjectInfo/TACTIC_DEVELOPMENT.md)
 * [Axioms.lean](../ProofSystem/Axioms.lean)
-* [Task 513](../../../../specs/513_address_tm_auto_proof_reconstruction_issues/)
 -/
 
 namespace Bimodal.Automation
@@ -105,7 +104,7 @@ def axiom_temp_4 (Γ : Context) (φ : Formula) :
 /-- Temporal A axiom as direct derivation. -/
 @[aesop safe apply]
 def axiom_temp_a (Γ : Context) (φ : Formula) :
-    DerivationTree Γ (φ.imp (Formula.all_future φ.sometime_past)) :=
+    DerivationTree Γ (φ.imp (Formula.all_future φ.some_past)) :=
   DerivationTree.axiom Γ _ (Axiom.temp_a φ)
 
 /-!
@@ -169,17 +168,17 @@ def temp_4_forward {Γ : Context} {φ : Formula} :
     (Formula.all_future (Formula.all_future φ)) ax d
 
 /--
-Forward chaining for Temporal A axiom: `φ → F(sometime_past φ)`.
+Forward chaining for Temporal A axiom: `φ → F(some_past φ)`.
 
-If we have `φ` derivable, we can derive `F(sometime_past φ)` using temporal A axiom
+If we have `φ` derivable, we can derive `F(some_past φ)` using temporal A axiom
 and modus ponens.
 -/
 @[aesop safe forward]
 def temp_a_forward {Γ : Context} {φ : Formula} :
-    DerivationTree Γ φ → DerivationTree Γ (Formula.all_future φ.sometime_past) := by
+    DerivationTree Γ φ → DerivationTree Γ (Formula.all_future φ.some_past) := by
   intro d
-  have ax := DerivationTree.axiom Γ (φ.imp (Formula.all_future φ.sometime_past)) (Axiom.temp_a φ)
-  exact DerivationTree.modus_ponens Γ φ (Formula.all_future φ.sometime_past) ax d
+  have ax := DerivationTree.axiom Γ (φ.imp (Formula.all_future φ.some_past)) (Axiom.temp_a φ)
+  exact DerivationTree.modus_ponens Γ φ (Formula.all_future φ.some_past) ax d
 
 /--
 Forward chaining for Propositional K axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`.
@@ -276,11 +275,11 @@ Normalize sometimes operator to primitive disjunction.
 def normalize_sometimes := @Formula.sometimes
 
 /--
-Normalize sometime_past operator to primitive negation.
+Normalize some_past operator to primitive negation.
 
-`sometime_past φ` unfolds to `¬P¬φ`.
+`some_past φ` unfolds to `¬P¬φ`.
 -/
 @[aesop norm unfold]
-def normalize_sometime_past := @Formula.sometime_past
+def normalize_some_past := @Formula.some_past
 
 end Bimodal.Automation

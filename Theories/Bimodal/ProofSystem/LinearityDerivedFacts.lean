@@ -36,7 +36,7 @@ and psi be true only at 1b. Then F(phi) and F(psi) hold at 0, but:
 - F(phi and F(psi)) fails (at 1a, F(psi) fails since psi is not at 1a or later)
 - F(F(phi) and psi) fails (at 1b, F(phi) fails since phi is not at 1b or later)
 
-## Resolution: temp_linearity Axiom (Task 922)
+## Resolution: temp_linearity Axiom
 
 The `temp_linearity` axiom was added to the Axiom inductive type to enforce linearity
 of the temporal order. This is sound for the intended linear integer time semantics
@@ -56,8 +56,6 @@ This is handled automatically by `DerivationTree.temporal_duality`.
 
 ## References
 
-- Task 922 research-001.md: Meta-analysis identifying linearity gap
-- Task 922 research-002.md: Detailed linearity analysis, revised confidence
 - Goldblatt 1992, *Logics of Time and Computation*
 - Blackburn, de Rijke, Venema 2001, *Modal Logic*
 -/

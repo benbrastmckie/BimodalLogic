@@ -14,11 +14,11 @@ canonical model construction.
 
 ## Contents
 
-- `MaximalConsistent.lean`: MCS theory (re-exported from Boneyard with additions)
+- `MaximalConsistent.lean`: MCS theory (re-exported from earlier versions with additions)
 - `DeductionTheorem.lean`: Deduction theorem infrastructure
 - `MCSProperties.lean`: Essential MCS lemmas for Representation layer
 
 ## Dependencies
 
-Imports from Boneyard/Metalogic_v2/Core for proven MCS theory.
+Imports from earlier versions/Metalogic_v2/Core for proven MCS theory.
 -/

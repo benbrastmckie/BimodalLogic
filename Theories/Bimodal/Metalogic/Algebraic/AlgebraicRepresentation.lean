@@ -19,7 +19,7 @@ developed in the previous modules.
 
 ## Status
 
-Phase 6 of Task 700. Contains sorries pending earlier phases.
+Phase 6 of the algebraic representation theorem. Contains sorries pending earlier phases.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.AlgebraicRepresentation

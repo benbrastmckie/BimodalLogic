@@ -51,7 +51,7 @@ open Bimodal.Theorems.ModalS5
 -/
 
 /--
-Task 38: S4-Diamond-Box-Conjunction - `⊢ (◇A ∧ □B) → ◇(A ∧ □B)`.
+S4-Diamond-Box-Conjunction - `⊢ (◇A ∧ □B) → ◇(A ∧ □B)`.
 
 In S4, if A is possible and B is necessary, then A ∧ □B is possible.
 
@@ -141,7 +141,7 @@ noncomputable def s4_diamond_box_conj (A B : Formula) :
   exact DerivationTree.modus_ponens [] _ _ step2 lce_conj
 
 /--
-Task 39: S4-Box-Diamond-Box - `⊢ □A → □(◇□A)`.
+S4-Box-Diamond-Box - `⊢ □A → □(◇□A)`.
 
 In S4, necessity implies the necessity of its own possibility being necessary.
 
@@ -164,7 +164,7 @@ def s4_box_diamond_box (A : Formula) : ⊢ A.box.imp ((A.box.diamond).box) := by
   exact modal_b_inst
 
 /--
-Task 40: S4-Diamond-Box-Diamond Equivalence - `⊢ ◇(□(◇A)) ↔ ◇A`.
+S4-Diamond-Box-Diamond Equivalence - `⊢ ◇(□(◇A)) ↔ ◇A`.
 
 In S4, nested diamond-box-diamond collapses to simple diamond.
 
@@ -297,7 +297,7 @@ def s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.dia
   exact result
 
 /--
-Task 41: S5-Diamond-Conjunction-Diamond - `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)`.
+S5-Diamond-Conjunction-Diamond - `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)`.
 
 In S5, diamond distributes over conjunction with nested diamond.
 

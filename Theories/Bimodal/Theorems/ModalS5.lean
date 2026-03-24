@@ -91,7 +91,7 @@ not just locally true. See `k_dist_diamond` at line ~316 for the fully proven ve
 -/
 
 /--
-Task 30: T-Box-Diamond - `⊢ □A → ◇A`.
+T-Box-Diamond - `⊢ □A → ◇A`.
 
 Necessity implies possibility (T axiom consequence).
 
@@ -171,7 +171,7 @@ def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
   exact DerivationTree.modus_ponens [] _ _ step2 comp1
 
 /--
-Task 34: Box-Disjunction Introduction - `⊢ (□A ∨ □B) → □(A ∨ B)`.
+Box-Disjunction Introduction - `⊢ (□A ∨ □B) → □(A ∨ B)`.
 
 If either A or B is necessary, then their disjunction is necessary.
 
@@ -237,7 +237,7 @@ noncomputable def box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.
   exact imp_trans neg_box_case step1
 
 /--
-Task 35: Box-Contraposition - `⊢ □(A → B) → □(¬B → ¬A)`.
+Box-Contraposition - `⊢ □(A → B) → □(¬B → ¬A)`.
 
 Box preserves contraposition.
 
@@ -386,7 +386,7 @@ noncomputable def box_iff_intro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)
   exact Propositional.iff_intro A.box B.box box_ab box_ba
 
 /--
-Task 36: T-Box-Consistency - `⊢ ¬□(A ∧ ¬A)`.
+T-Box-Consistency - `⊢ ¬□(A ∧ ¬A)`.
 
 Contradiction cannot be necessary.
 
@@ -486,7 +486,7 @@ Biconditional (if and only if): `A ↔ B := (A → B) ∧ (B → A)`.
 def iff (A B : Formula) : Formula := (A.imp B).and (B.imp A)
 
 /--
-Task 31: Box-Conjunction Biconditional - `⊢ □(A ∧ B) ↔ (□A ∧ □B)`.
+Box-Conjunction Biconditional - `⊢ □(A ∧ B) ↔ (□A ∧ □B)`.
 
 Box distributes over conjunction in both directions.
 
@@ -588,7 +588,7 @@ noncomputable def box_conj_iff (A B : Formula) : ⊢ iff (A.and B).box (A.box.an
   exact Propositional.iff_intro (A.and B).box (A.box.and B.box) forward backward
 
 /--
-Task 32: Diamond-Disjunction Biconditional - `⊢ ◇(A ∨ B) ↔ (◇A ∨ ◇B)`.
+Diamond-Disjunction Biconditional - `⊢ ◇(A ∨ B) ↔ (◇A ∨ ◇B)`.
 
 Diamond distributes over disjunction in both directions (dual of box_conj_iff).
 
@@ -774,7 +774,7 @@ noncomputable def diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A
 -/
 
 /--
-Task 33: S5-Diamond-Box Collapse - `⊢ ◇□A ↔ □A`.
+S5-Diamond-Box Collapse - `⊢ ◇□A ↔ □A`.
 
 In S5, if necessary-A is possible, then A is necessary (and vice versa).
 This is the characteristic S5 property showing the collapse of nested modalities.
@@ -835,15 +835,15 @@ def s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   exact result
 
 /--
-Task 37: S5-Diamond-Box-to-Truth - `⊢ ◇□A → A`.
+S5-Diamond-Box-to-Truth - `⊢ ◇□A → A`.
 
 In S5, if necessarily-A is possible, then A is true.
 
 **Proof Strategy**: Compose s5_diamond_box with modal_t.
 
-**Dependencies**: Task 33 (s5_diamond_box)
+**Dependencies**: s5_diamond_box
 
-**Status**: Blocked on Task 33 forward direction
+**Status**: Blocked on s5_diamond_box forward direction
 -/
 def s5_diamond_box_to_truth (A : Formula) : ⊢ (A.box.diamond).imp A := by
   -- ◇□A → □A (from modal_5_collapse)

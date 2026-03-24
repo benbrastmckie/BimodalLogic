@@ -22,9 +22,6 @@ by provable equivalence.
 - `ProvEquiv` is a congruence for all logical operations
 - Quotient lifts are well-defined
 
-## References
-
-- Research report: specs/700_research_algebraic_representation_theorem_proof/reports/research-002.md
 -/
 
 namespace Bimodal.Metalogic.Algebraic.LindenbaumQuotient

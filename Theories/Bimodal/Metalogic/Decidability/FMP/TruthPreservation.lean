@@ -247,7 +247,7 @@ These properties establish how temporal operators behave in closure MCS.
 /--
 All-future reflexivity for closure MCS: Gψ ∈ S implies ψ ∈ S.
 
-**DEPRECATED (Task 991)**: Under strict temporal semantics, the T-axiom (Gφ → φ) is
+**DEPRECATED**: Under strict temporal semantics, the T-axiom (Gφ → φ) is
 NOT valid, so this theorem does not hold. The FMP proof strategy needs redesign
 to avoid relying on reflexive semantics.
 
@@ -265,7 +265,7 @@ theorem mcs_all_future_closure {phi : Formula} {S : ClosureMCSBundle phi}
 /--
 All-past reflexivity for closure MCS: Hψ ∈ S implies ψ ∈ S.
 
-**DEPRECATED (Task 991)**: Under strict temporal semantics, the T-axiom for past
+**DEPRECATED**: Under strict temporal semantics, the T-axiom for past
 (Hφ → φ) is NOT valid, so this theorem does not hold. The FMP proof strategy needs
 redesign to avoid relying on reflexive semantics.
 

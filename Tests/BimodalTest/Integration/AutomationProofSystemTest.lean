@@ -89,10 +89,10 @@ example : ⊢ ((Formula.atom "p").all_future.imp
 /--
 Test 5: tm_auto solves Temporal A axiom.
 
-The tm_auto tactic should automatically derive p → F(sometime_past p).
+The tm_auto tactic should automatically derive p → F(some_past p).
 -/
 example : ⊢ ((Formula.atom "p").imp 
-             (Formula.all_future (Formula.atom "p").sometime_past)) := by
+             (Formula.all_future (Formula.atom "p").some_past)) := by
   tm_auto
 
 /--
@@ -187,7 +187,7 @@ Test 15: apply_axiom works for Temporal A.
 The apply_axiom macro should apply the Temporal A axiom.
 -/
 example : ⊢ ((Formula.atom "p").imp 
-             (Formula.all_future (Formula.atom "p").sometime_past)) := by
+             (Formula.all_future (Formula.atom "p").some_past)) := by
   apply_axiom
   exact Axiom.temp_a (Formula.atom "p")
 
@@ -274,7 +274,7 @@ Test 24: temp_a_tactic applies Temporal A axiom.
 
 The temp_a_tactic should automatically apply the Temporal A axiom.
 -/
-example (p : Formula) : ⊢ (p.imp (p.sometime_past.all_future)) := by
+example (p : Formula) : ⊢ (p.imp (p.some_past.all_future)) := by
   temp_a_tactic
 
 /--
@@ -375,8 +375,8 @@ Test 34: temp_a_tactic produces sound derivations.
 
 Specific tactic applications should be valid via soundness.
 -/
-example (p : Formula) : [] ⊨ (p.imp (p.sometime_past.all_future)) := by
-  have deriv : ⊢ (p.imp (p.sometime_past.all_future)) := by temp_a_tactic
+example (p : Formula) : [] ⊨ (p.imp (p.some_past.all_future)) := by
+  have deriv : ⊢ (p.imp (p.some_past.all_future)) := by temp_a_tactic
   exact soundness [] _ deriv
 
 /--
@@ -489,7 +489,7 @@ Test 45: Aesop forward rule for Temporal A.
 
 The temp_a_forward rule should work with tm_auto.
 -/
-example (φ : Formula) : [φ] ⊢ (Formula.all_future φ.sometime_past) := by
+example (φ : Formula) : [φ] ⊢ (Formula.all_future φ.some_past) := by
   tm_auto
 
 /--

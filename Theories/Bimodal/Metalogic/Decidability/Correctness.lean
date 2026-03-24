@@ -12,7 +12,7 @@ This module proves properties of the tableau decision procedure.
 - `validity_decidable`: Validity is classically decidable
 - `decide_result_exclusive`: Decision results are mutually exclusive
 
-## Implementation Notes (Task 956)
+## Implementation Notes
 
 With irreflexive temporal semantics, the universal soundness theorem
 `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` no longer holds because the derivation system

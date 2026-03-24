@@ -21,7 +21,7 @@ Interior operators satisfy:
 
 ## Status
 
-Under strict temporal semantics (Task 991), G and H are NOT interior operators:
+Under strict temporal semantics, G and H are NOT interior operators:
 - The T-axiom `Gφ → φ` is not valid when G quantifies over s > t (strict future)
 - The T-axiom `Hφ → φ` is not valid when H quantifies over s < t (strict past)
 
@@ -31,7 +31,7 @@ the modal T-axiom `□φ → φ` is still valid (modal accessibility is reflexiv
 ## Historical Note
 
 This module previously included `G_interior` and `H_interior` instances
-under reflexive temporal semantics (Task 967). Under strict semantics,
+under reflexive temporal semantics. Under strict semantics,
 only monotonicity (G_monotone, H_monotone) remains valid.
 -/
 
@@ -164,14 +164,14 @@ def box_interior : InteriorOp LindenbaumAlg where
 /-!
 ## Note on G and H Under Strict Semantics
 
-Under strict temporal semantics (Task 991), G and H are NOT interior operators
+Under strict temporal semantics, G and H are NOT interior operators
 because they fail the deflationary property:
 
 - `Gφ → φ` is not valid when G quantifies over s > t (strict future)
 - `Hφ → φ` is not valid when H quantifies over s < t (strict past)
 
 The T-axioms `temp_t_future` and `temp_t_past` have been removed from the
-proof system as part of the Task 991 refactoring.
+proof system as part of the strict semantics refactoring.
 
 Mathematically, this is expected: under strict semantics, "always in the future"
 does not imply "now", and "always in the past" does not imply "now".

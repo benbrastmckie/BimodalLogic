@@ -30,9 +30,9 @@ we prove the TruthLemma directly at the `truth_at` level, eliminating the interm
 - `CanonicalTaskModel`: TaskModel with valuation = MCS membership
 - `to_history`: Convert FMCS to WorldHistory
 - `CanonicalOmega`: Set of world-histories from bundle families
-- `ShiftClosedCanonicalOmega`: Shift-closed enlargement of CanonicalOmega (Task 968)
-- `box_persistent`: Box phi at time t implies Box phi at all times (Task 968)
-- `shifted_truth_lemma`: Truth lemma for shift-closed Omega (Task 968)
+- `ShiftClosedCanonicalOmega`: Shift-closed enlargement of CanonicalOmega
+- `box_persistent`: Box phi at time t implies Box phi at all times
+- `shifted_truth_lemma`: Truth lemma for shift-closed Omega
 
 ## Task Relation Design
 
@@ -90,19 +90,17 @@ theorem shifted_truth_lemma
     truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t phi
 ```
 
-## Shift-Closure Infrastructure (Task 968)
+## Shift-Closure Infrastructure
 
 The `shifted_truth_lemma` extends the canonical truth lemma to work with a shift-closed
 Omega, which is required for connecting to standard validity definitions. The key insight
 is that `box_persistent` (Box phi persists to all times via the TF axiom) enables the
 box case to handle time-shifted histories via `time_shift_preserves_truth`.
 
-Port from: `Boneyard/IntRepresentation/Representation.lean`
+Ported from earlier Int-indexed representation.
 
 ## References
 
-- Task 945: Design canonical model construction for TruthLemma
-- Task 968: Port shift-closure pattern to CanonicalConstruction
 - research-005.md: Step-by-step construction, D=Z
 - research-006.md: Direct TruthLemma, bmcs_truth_at redundancy
 -/
@@ -134,12 +132,12 @@ The task relation captures temporal coherence between MCSs along trajectories:
 - **d = 0**: `M = N` — zero displacement means same world-state
 - **d < 0**: `ExistsTask N.val M.val` — backward direction uses converse relationship
 
-**Design rationale (Task 966/969)**: WorldState and D are fundamentally different types.
+**Design rationale**: WorldState and D are fundamentally different types.
 WorldStates (MCS pairs) form a vast unstructured space. D (Int) carries the
 group structure. Histories pull totally ordered trajectories through the space
 of worlds — the total order lives in D, not in WorldState.
 
-The key insight from task 966 research: instead of making `d < 0 → False`, we
+The key insight: instead of making `d < 0 → False`, we
 use `d < 0 → ExistsTask N.val M.val`. This allows us to prove the converse axiom
 (`task_rel M d N ↔ task_rel N (-d) M`) because:
 - If d > 0: LHS = ExistsTask M N, RHS (with -d < 0) = ExistsTask M N ✓
@@ -251,7 +249,7 @@ Histories are trajectories through the unstructured space of MCSs, with the
 total order on D inducing sequential ordering on each trajectory. The task_rel
 constrains these trajectories to follow ExistsTask-chains in the forward direction.
 
-**Axiomatization (Task 969)**:
+**Axiomatization**:
 - nullity_identity: d = 0 ↔ M = N (zero duration iff identical states)
 - forward_comp: non-negative durations compose via ExistsTask transitivity
 - converse: task_rel M d N ↔ task_rel N (-d) M (temporal symmetry)
@@ -327,7 +325,7 @@ histories AND all their time-shifts, making it shift-closed by construction.
 This is needed so that the completeness proof can provide an Omega satisfying
 the ShiftClosed condition required by `valid`.
 
-**Port from**: Boneyard/IntRepresentation/Representation.lean (lines 180-220)
+**Port from**: earlier Int-indexed representation (lines 180-220)
 -/
 
 /-- The shift-closed canonical Omega: all time-shifts of canonical histories.
@@ -389,21 +387,21 @@ theorem canonicalOmega_subset_shiftClosed (B : BFMCS Int) :
 The key lemma for the shifted truth lemma: Box phi at any time t implies
 Box phi at ALL times, using the TF axiom and its temporal dual.
 
-**Port from**: Boneyard/IntRepresentation/Representation.lean (lines 232-275)
+**Port from**: earlier Int-indexed representation (lines 232-275)
 -/
 
 /-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality.
 TF is `(Box phi).imp (Box phi).all_future`. Applying temporal duality to
-TF for `swap_past_future phi` yields `(Box phi).imp (Box phi).all_past`. -/
+TF for `swap_temporal phi` yields `(Box phi).imp (Box phi).all_past`. -/
 private def past_tf_deriv (φ : Formula) :
     Bimodal.ProofSystem.DerivationTree [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
   have h_tf_swap := Bimodal.ProofSystem.DerivationTree.axiom [] _
-    (Bimodal.ProofSystem.Axiom.temp_future (Formula.swap_past_future φ))
+    (Bimodal.ProofSystem.Axiom.temp_future (Formula.swap_temporal φ))
   have h_dual := Bimodal.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
-  have h_eq : Formula.swap_past_future ((Formula.box (Formula.swap_past_future φ)).imp
-      (Formula.box (Formula.swap_past_future φ)).all_future) =
+  have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
+      (Formula.box (Formula.swap_temporal φ)).all_future) =
     (Formula.box φ).imp (Formula.box φ).all_past := by
-    simp [Formula.swap_past_future, Formula.swap_temporal]
+    simp [Formula.swap_temporal, Formula.swap_temporal]
   rw [h_eq] at h_dual
   exact h_dual
 
@@ -638,7 +636,7 @@ The proof follows the same structure as `canonical_truth_lemma` but handles
 the box case differently, using `box_persistent` and `time_shift_preserves_truth`
 to handle shifted canonical histories.
 
-**Port from**: Boneyard/IntRepresentation/Representation.lean (lines 438-553)
+**Port from**: earlier Int-indexed representation (lines 438-553)
 -/
 
 /--

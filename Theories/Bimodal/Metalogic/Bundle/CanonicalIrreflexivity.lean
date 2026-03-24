@@ -13,7 +13,7 @@ import Mathlib.Data.Finset.Union
 /-!
 # Canonical Frame Accessibility: Reflexive Semantics
 
-## STATUS: AXIOM-FREE (Task 44 Complete)
+## STATUS: AXIOM-FREE
 
 **This module establishes reflexivity of the canonical accessibility relation.**
 
@@ -44,8 +44,6 @@ irreflexivity (which is false under reflexive semantics).
 
 - Goldblatt, R. (1992). Logics of Time and Computation. CSLI Lecture Notes.
 - Blackburn, P., de Rijke, M., Venema, Y. (2001). Modal Logic. Chapter 5.
-- Task 29: Switch to reflexive G/H semantics
-- Task 44: Delete inconsistent irreflexivity axiom
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -137,7 +135,7 @@ theorem exists_fresh_for_finset (S : Finset Formula) :
   exact Finset.mem_biUnion.mpr ⟨φ, hφ, h⟩
 
 /-!
-## Reflexive Semantics (Task 29): ExistsTask Reflexivity
+## Reflexive Semantics: ExistsTask Reflexivity
 
 Under reflexive semantics (G/H quantify over s >= t / s <= t), the canonical
 accessibility relation is REFLEXIVE: `ExistsTask M M` holds for all MCS M.
@@ -178,7 +176,7 @@ theorem existsTask_past_reflexive (M : Set Formula) (h_mcs : SetMaximalConsisten
 abbrev canonicalR_past_reflexive := existsTask_past_reflexive
 
 /-!
-## Per-Construction Strictness Infrastructure (Task 29)
+## Per-Construction Strictness Infrastructure
 
 Under reflexive semantics, ExistsTask is a PREORDER (reflexive + transitive).
 Universal irreflexivity is FALSE, and antisymmetry also FAILS.

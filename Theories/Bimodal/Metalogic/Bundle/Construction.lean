@@ -17,11 +17,6 @@ This module provides primitive building blocks for BFMCS construction:
 
 ## History
 
-- Task 812: Original single-family construction
-- Task 905: Removed FALSE axiom singleFamily_modal_backward_axiom
-- Task 912: Removed dead code (`construct_bmcs`, `construct_bmcs_from_set`)
-- Task 932: Archived `singleFamilyBFMCS` to Boneyard (sorry-backed, deprecated)
-
 ## References
 
 - Modal saturation theory: Bimodal.Metalogic.Bundle.ModalSaturation
@@ -68,7 +63,7 @@ This satisfies all temporal coherence conditions trivially.
 -/
 
 /-!
-## REMOVED: constantBFMCS (Task 956)
+## REMOVED: constantBFMCS
 
 With irreflexive semantics, a constant family `t ↦ M` no longer satisfies `forward_G`:
 - `forward_G` requires: `Gφ ∈ M` and `t < t'` implies `φ ∈ M`
@@ -80,12 +75,12 @@ the MCS at different times are related by the canonical temporal relation.
 -/
 
 /-!
-## REMOVED: singleFamilyBFMCS (Task 932)
+## REMOVED: singleFamilyBFMCS
 
-The following were archived to Boneyard/Metalogic_v7/Bundle/SingleFamilyBFMCS.lean:
+The following were previously archived:
 - singleFamilyBFMCS (sorry in modal_backward)
 - singleFamilyBFMCS_eval_family_eq
-- singleFamily_modal_backward_axiom (already removed in task 905)
+- singleFamily_modal_backward_axiom (already removed)
 
 WHY: Single-family modal backward (phi in MCS -> Box phi in MCS) is NOT provable
 from first principles and the FALSE axiom was already removed. The sorry-backed
@@ -95,7 +90,7 @@ The active completeness chain uses construct_saturated_bfmcs_int from
 TemporalCoherentConstruction.lean, which uses multi-family modal saturation.
 
 DO NOT reintroduce single-family BFMCS constructions.
-See specs/932_*/reports/ for analysis.
+See archived analysis for details.
 -/
 
 /-!
@@ -161,7 +156,7 @@ lemma lindenbaumMCS_set_is_mcs (S : Set Formula) (h_cons : SetConsistent S) :
 ## Context Derivability Utilities
 
 These definitions and lemmas support the completeness chain. They were originally
-in `Completeness.lean` and relocated here in Task 948 to allow `Representation.lean`
+in `Completeness.lean` and relocated here to allow `Representation.lean`
 to avoid importing the archived `Completeness.lean`.
 -/
 
@@ -250,21 +245,15 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
 
 This module provides:
 - `ContextConsistent`: Consistency predicate for list contexts
-- `ContextDerivable`: Context derivability predicate (Task 948)
-- `not_derivable_implies_neg_consistent`: Non-derivability implies neg consistency (Task 948)
-- `context_not_derivable_implies_extended_consistent`: Context extension consistency (Task 948)
+- `ContextDerivable`: Context derivability predicate
+- `not_derivable_implies_neg_consistent`: Non-derivability implies neg consistency
+- `context_not_derivable_implies_extended_consistent`: Context extension consistency
 - `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge
 - `constantBFMCS`: Constant-time MCS family (temporal coherence via T-axioms)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
 
 **Sorry Status**: ZERO sorries in this module.
-(singleFamilyBFMCS with its sorry was archived to Boneyard in task 932.)
-
-**History (tasks 905, 912, 932, 948)**:
-- Task 905: Removed FALSE axiom singleFamily_modal_backward_axiom
-- Task 912: Removed dead code (construct_bmcs, construct_bmcs_from_set)
-- Task 932: Archived singleFamilyBFMCS to Boneyard (sorry-backed, deprecated)
-- Task 948: Relocated ContextDerivable and consistency lemmas from Completeness.lean
+(singleFamilyBFMCS with its sorry was previously archived.)
 -/
 
 end Bimodal.Metalogic.Bundle

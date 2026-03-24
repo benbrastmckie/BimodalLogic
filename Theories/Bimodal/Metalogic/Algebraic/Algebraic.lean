@@ -3,18 +3,11 @@ import Bimodal.Metalogic.Algebraic.BooleanStructure
 import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
--- D-parametric modules (Task 985)
+-- D-parametric modules
 import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
-import Bimodal.Metalogic.Algebraic.DenseInstantiation
--- REMOVED (Task 41): import Bimodal.Metalogic.Algebraic.DiscreteInstantiation
--- DiscreteInstantiation moved to Boneyard/CanonicalMCS_Infrastructure/
--- Reason: Uses ClosedFlagIntBFMCS which depends on D=CanonicalMCS infrastructure
--- REMOVED (Task 41): import Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
--- AlgebraicBaseCompleteness moved to Boneyard/CanonicalMCS_Infrastructure/
--- Reason: Uses D=CanonicalMCS confused infrastructure
 
 /-!
 # Algebraic Representation Theorem
@@ -32,14 +25,12 @@ Algebraic/
 ├── UltrafilterMCS.lean       # Bijection: ultrafilters ↔ MCS
 ├── AlgebraicRepresentation.lean  # Main theorem (original formulation)
 │
-│   D-Parametric Extension (Task 985)
+│   D-Parametric Extension
 ├── ParametricCanonical.lean      # D-parametric TaskFrame
 ├── ParametricHistory.lean        # D-parametric history conversion
 ├── ParametricTruthLemma.lean     # D-parametric truth lemma
 ├── ParametricRepresentation.lean # D-parametric representation theorem
-├── DenseInstantiation.lean       # D = Rat instantiation
-├── DiscreteInstantiation.lean    # ARCHIVED to Boneyard (Task 41)
-└── AlgebraicBaseCompleteness.lean # ARCHIVED to Boneyard (Task 41)
+└── ParametricRepresentation.lean # D-parametric representation theorem
 ```
 
 ## Mathematical Overview
@@ -78,7 +69,7 @@ The algebraic approach proceeds as follows:
 
 ## Status
 
-Task 700 implementation.
+Algebraic representation theorem implementation.
 -/
 
 namespace Bimodal.Metalogic.Algebraic
@@ -90,13 +81,10 @@ open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
 open Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
 
--- D-parametric modules (Task 985)
+-- D-parametric modules
 open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricRepresentation
-open Bimodal.Metalogic.Algebraic.DenseInstantiation
--- REMOVED (Task 41): open Bimodal.Metalogic.Algebraic.DiscreteInstantiation
--- REMOVED (Task 41): open Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
 
 end Bimodal.Metalogic.Algebraic

@@ -3,7 +3,6 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Core.DeductionTheorem
--- import Bimodal.Metalogic.Representation  -- ARCHIVED: hardcoded D=Int (see Boneyard/IntRepresentation/)
 import Bimodal.Metalogic.Decidability
 
 /-!
@@ -56,8 +55,8 @@ open Bimodal.Theorems.Perpetuity
 Combines soundness and completeness to show derivability equals validity.
 
 **Proof debt**: The completeness direction (valid → provable) is pending rebuild
-on the D-from-syntax pipeline. The Int-indexed proof was archived to
-`Boneyard/IntRepresentation/Representation.lean`. The soundness direction is sorry-free.
+on the D-from-syntax pipeline. The previous Int-indexed proof was archived as it
+hardcoded `D = Int`. The soundness direction is sorry-free.
 -/
 theorem main_provable_iff_valid (φ : Formula) : Nonempty (⊢ φ) ↔ valid φ := by
   constructor
@@ -66,7 +65,7 @@ theorem main_provable_iff_valid (φ : Formula) : Nonempty (⊢ φ) ↔ valid φ 
     exact soundness [] φ h_deriv D F M Omega h_sc τ h_mem t (by simp)
   · intro h_valid
     -- PROOF DEBT: standard_weak_completeness archived (hardcoded D=Int).
-    -- Will be rebuilt on D-from-syntax pipeline (Task 960).
+    -- Will be rebuilt on D-from-syntax pipeline.
     sorry
 
 /-!
@@ -164,8 +163,8 @@ Uses well-founded recursion on derivation structure. -/
 
 `standard_weak_completeness φ : (∀ w, ...) → (⊢ φ)`
 
-ARCHIVED: Previously proven via Int-indexed canonical model (Boneyard/IntRepresentation/).
-To be rebuilt on D-from-syntax pipeline (Task 960). -/
+ARCHIVED: Previously proven via Int-indexed canonical model (now archived).
+To be rebuilt on D-from-syntax pipeline. -/
 -- #check @standard_weak_completeness  -- ARCHIVED
 
 /-! **Main Theorem**: Derivability equals validity.

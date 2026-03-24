@@ -34,7 +34,6 @@ each F-obligation is either satisfied at the next state or properly deferred.
 
 ## References
 
-- Task 10 research report: 01_succ-relation-research.md
 - Goldblatt 1992, Logics of Time and Computation
 -/
 

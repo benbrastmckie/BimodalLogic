@@ -33,10 +33,6 @@ The key insight is that modal saturation is a SUFFICIENT condition for modal_bac
 Rather than constructing a saturated BFMCS from scratch, we define the saturation
 predicate and prove that any BFMCS satisfying it has the modal_backward property.
 
-## References
-
-- Research report: specs/827_complete_multi_family_bmcs_construction/reports/research-001.md
-- Implementation plan: specs/827_complete_multi_family_bmcs_construction/plans/implementation-001.md
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -190,9 +186,9 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
     exact h_mcs.1 [Formula.bot] h_sub ⟨h_deriv⟩
 
 /-!
-## REMOVED: Constant Witness Family Definitions (Task 932)
+## REMOVED: Constant Witness Family Definitions
 
-The following definitions were archived to Boneyard/Metalogic_v7/Bundle/ConstantWitnessFamily_ModalSaturation.lean:
+The following definitions were archived to archive/Metalogic_v7/Bundle/ConstantWitnessFamily_ModalSaturation.lean:
 - extendToMCS, extendToMCS_contains, extendToMCS_is_mcs
 - constantWitnessFamily
 - constantWitnessFamily_mcs_eq
@@ -205,7 +201,7 @@ because temporal saturation (F(psi)->psi within a single MCS) is impossible.
 Counterexample: {F(psi), neg(psi)} is consistent but violates F(psi)->psi.
 
 DO NOT reintroduce constant witness families for modal saturation.
-See specs/932_*/reports/ for detailed analysis.
+See archive for detailed analysis.
 -/
 
 /-!

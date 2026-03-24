@@ -33,7 +33,7 @@ Core.MaximalConsistent depends on:
 ## History
 
 Originally developed in Metalogic_v2, consolidated into active Core module
-as part of task 950 (boneyard archive).
+as part of the boneyard archive.
 -/
 
 namespace Bimodal.Metalogic.Core

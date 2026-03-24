@@ -41,11 +41,4 @@ Or import specific modules:
 import Bimodal.Syntax.Formula
 import Bimodal.ProofSystem.Axioms
 ```
-
-## Backwards Compatibility
-
-For backwards compatibility with existing code using `Logos.Core`:
-```lean
-import Logos.Core  -- Re-exports Bimodal
-```
 -/

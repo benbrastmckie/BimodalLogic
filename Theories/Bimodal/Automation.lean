@@ -61,7 +61,7 @@ example (p q : Formula) : [p, p.imp q] ⊢ q := by
 - `propositional_search`: Disables modal/temporal K, use for purely propositional goals
 - `tm_auto`: Alias for `modal_search` (recommended for general use)
 
-## Implementation (Task 315)
+## Implementation
 
 The proof search tactics work at the meta-level in TacticM, bypassing the Axiom Prop vs Type
 issue by constructing proof terms directly via `mkAppM` rather than returning proof witnesses.

@@ -24,7 +24,7 @@ The derivation tree includes 7 inference rules:
 3. **modus_ponens**: If `Γ ⊢ φ → ψ` and `Γ ⊢ φ` then `Γ ⊢ ψ`
 4. **necessitation**: If `⊢ φ` then `⊢ □φ` (standard modal necessitation)
 5. **temporal_necessitation**: If `⊢ φ` then `⊢ Fφ` (standard temporal necessitation)
-6. **temporal_duality**: If `⊢ φ` then `⊢ swap_past_future φ`
+6. **temporal_duality**: If `⊢ φ` then `⊢ swap_temporal φ`
 7. **weakening**: If `Γ ⊢ φ` and `Γ ⊆ Δ` then `Δ ⊢ φ`
 
 ## Implementation Notes
@@ -129,12 +129,12 @@ inductive DerivationTree : Context → Formula → Type where
   /--
   Temporal duality rule: Swapping past and future in theorems.
 
-  If `⊢ φ` (derivable from empty context), then `⊢ swap_past_future φ`.
+  If `⊢ φ` (derivable from empty context), then `⊢ swap_temporal φ`.
 
   This rule only applies to theorems (proofs from no assumptions).
   -/
   | temporal_duality (φ : Formula)
-      (d : DerivationTree [] φ) : DerivationTree [] φ.swap_past_future
+      (d : DerivationTree [] φ) : DerivationTree [] φ.swap_temporal
 
   /--
   Weakening rule: Adding unused assumptions.

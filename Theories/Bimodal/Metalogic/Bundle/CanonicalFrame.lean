@@ -8,7 +8,7 @@ import Bimodal.Syntax.Formula
 # Canonical Frame for Bimodal Completeness
 
 This module defines the canonical frame for the Canonical Quotient approach to
-bimodal completeness (Task 922). Instead of building a linear chain of MCSes
+bimodal completeness. Instead of building a linear chain of MCSes
 (which fails due to the "linear chain topology constraint"), we define the
 canonical frame where:
 
@@ -37,8 +37,6 @@ WitnessSeed.lean) guarantees `{psi} ∪ g_content(M)` is consistent, and
 
 ## References
 
-- Task 922 research-001.md: Strategy study identifying Canonical Quotient approach
-- Task 922 research-002.md: Cross-pollination analysis confirming approach
 - Goldblatt 1992, Logics of Time and Computation (canonical model for tense logics)
 -/
 

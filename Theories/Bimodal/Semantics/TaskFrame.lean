@@ -84,7 +84,7 @@ executing a task of duration `x` can result in world state `u`.
 **Paper Alignment**: Matches JPL paper def:frame (line 1835) exactly with
 `D = ⟨D, +, ≤⟩` as a totally ordered abelian group.
 
-**Axiomatization Notes (Task 966/969)**:
+**Axiomatization Notes**:
 The original axiomatization used universal compositionality, which is algebraically
 impossible for non-deterministic relations with mixed signs. This axiomatization
 uses forward_comp (restricted to 0 ≤ x, 0 ≤ y) plus converse, which is equivalent

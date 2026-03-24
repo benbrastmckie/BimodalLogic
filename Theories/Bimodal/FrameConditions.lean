@@ -49,6 +49,4 @@ example [DiscreteTemporalFrame D] : soundness_discrete D := ...
 
 ## References
 
-- Task 977: FrameClass enum introduction
-- Task 978: Typeclass-based frame condition architecture
 -/

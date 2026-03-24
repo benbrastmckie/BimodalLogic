@@ -22,11 +22,11 @@ See `Bimodal.Metalogic.SuccChain/` for the current approach.
 
 ### Discrete Completeness: BLOCKED by `discrete_Icc_finite_axiom`
 
-The discrete completeness proof depends on `discrete_Icc_finite_axiom` (task 979).
+The discrete completeness proof depends on `discrete_Icc_finite_axiom`.
 This axiom asserts finiteness of closed intervals in the discrete timeline quotient.
 
 **Technical Debt Status**: Per proof-debt-policy.md, this axiom is documented
-technical debt. Task 979 confirmed the covering lemma gap is fundamental:
+technical debt. Analysis confirmed the covering lemma gap is fundamental:
 - DF axiom creates existential F-obligations witnessable by any MCS
 - The syntactic-to-structural gap cannot be bridged
 - User will return to address this debt in a future task
@@ -39,9 +39,6 @@ the type signatures for cleaner integration with the FrameConditions architectur
 
 ## References
 
-- Task 978: Typeclass-based frame condition architecture
-- Task 979: discrete_Icc_finite_axiom analysis
-- Task 43: Archive StagedConstruction to Boneyard (this refactor)
 - `Bimodal.Metalogic.SuccChain/`: Current completeness approach
 - `Bimodal.Metalogic.DiscreteCompleteness`: Discrete completeness infrastructure
 -/
@@ -130,7 +127,7 @@ theorem discrete_soundness_proven {φ : Formula} (ax : Axiom φ) (h_dc : ax.isDi
 /--
 Discrete completeness statement: formulas valid over discrete temporal frames are provable.
 
-**Status**: BLOCKED by `discrete_Icc_finite_axiom` (task 979 documented debt).
+**Status**: BLOCKED by `discrete_Icc_finite_axiom` (documented debt).
 -/
 def DiscreteCompletenessStatement (φ : Formula) : Prop :=
   (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -143,8 +140,6 @@ def DiscreteCompletenessStatement (φ : Formula) : Prop :=
 Discrete completeness proof (blocked by discrete_Icc_finite_axiom).
 
 **Technical Debt Reference**:
-- Origin: Task 974 Phase 7b escape valve
-- Analysis: Task 979 research-001 through research-005.md
 - Root cause: DF axiom creates existential obligations witnessable by any MCS
 - Resolution: Future task after FrameConditions refactor complete
 -/
@@ -152,7 +147,7 @@ theorem discrete_completeness_fc {φ : Formula} :
     DiscreteCompletenessStatement φ := by
   intro _h_valid
   -- Blocked by discrete_Icc_finite_axiom dependency
-  -- See DiscreteCompleteness.lean and task 979 for details
+  -- See DiscreteCompleteness.lean for details
   sorry
 
 /-! ## Completeness over Int -/
@@ -179,8 +174,8 @@ theorem completeness_over_Int {φ : Formula} :
 ### Dense Completeness: IN PROGRESS (SuccChain)
 
 Dense completeness is being rebuilt using the SuccChain architecture.
-The StagedConstruction approach has been archived to Boneyard.
-See task 43 for archival details.
+The StagedConstruction approach has been archived.
+See proof-debt-policy.md for archival details.
 
 ### Discrete Completeness: ONE DOCUMENTED AXIOM
 
@@ -199,12 +194,12 @@ axiom discrete_Icc_finite_axiom
 any point strictly between `a` and `Order.succ a` is empty. This depends on
 showing that the interval `[a, succ a]` is finite (contains exactly 2 points).
 
-**Why it can't be proven**: Task 979 research exhaustively explored all
+**Why it can't be proven**: Research exhaustively explored all
 approaches. The fundamental gap: DF axiom creates existential F-obligations
 witnessable by *any* MCS, not specifically the alleged intermediate. The
 syntactic (DF membership) to structural (covering property) bridge fails.
 
-**Note**: The discrete_Icc_finite_axiom is now archived in Boneyard. Discrete
+**Note**: The discrete_Icc_finite_axiom has been archived. Discrete
 completeness requires a fundamentally different approach.
 -/
 

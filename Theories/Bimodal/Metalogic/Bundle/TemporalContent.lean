@@ -41,7 +41,7 @@ g_content of an MCS: the set of all formulas phi where G phi appears in the MCS.
 appear in g_content(M) unless G(psi) is also in M. This means F-formulas do NOT
 persist through g_content seeds in chain constructions. Resolution of F-obligations
 requires a non-linear construction (e.g., omega-squared) rather than relying on
-linear g_content propagation. See DovetailingChain.lean and Task 916 research for details.
+linear g_content propagation. See DovetailingChain.lean for details.
 -/
 def g_content (M : Set Formula) : Set Formula :=
   {phi | Formula.all_future phi ∈ M}

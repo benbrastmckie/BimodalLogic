@@ -22,7 +22,7 @@ with linear temporal logic.
 - `Bimodal.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete) and 7 inference rules
 - `Bimodal.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
 - `Bimodal.Metalogic`: Soundness theorem, completeness infrastructure, and tableau decision procedure
-- `Bimodal.FrameConditions`: Typeclass-based frame condition architecture (Task 978)
+- `Bimodal.FrameConditions`: Typeclass-based frame condition architecture
   - `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`, `DiscreteTemporalFrame`
   - Parameterized validity, soundness, and completeness
   - Axiom compatibility typeclasses

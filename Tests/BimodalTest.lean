@@ -7,17 +7,6 @@ import BimodalTest.ProofSystem.DerivationPropertyTest
 import BimodalTest.Semantics.TruthTest
 import BimodalTest.Semantics.TaskFrameTest
 import BimodalTest.Semantics.SemanticPropertyTest
--- Old Metalogic tests removed (Task 618) - using Metalogic_v2 tests only
-import BimodalTest.Metalogic_v2.CoreTest
-import BimodalTest.Metalogic_v2.CorePropertyTest
-import BimodalTest.Metalogic_v2.SoundnessTest
-import BimodalTest.Metalogic_v2.SoundnessPropertyTest
-import BimodalTest.Metalogic_v2.RepresentationTest
-import BimodalTest.Metalogic_v2.CompletenessTest
-import BimodalTest.Metalogic_v2.FMPTest
-import BimodalTest.Metalogic_v2.ContextProvabilityTest
-import BimodalTest.Metalogic_v2.TruthLemmaPropertyTest
-import BimodalTest.Metalogic_v2.CanonicalModelPropertyTest
 import BimodalTest.Theorems.PropositionalTest
 import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test
@@ -34,7 +23,6 @@ import BimodalTest.Integration.AutomationProofSystemTest
 import BimodalTest.Integration.ComplexDerivationTest
 import BimodalTest.Integration.TemporalIntegrationTest
 import BimodalTest.Integration.BimodalIntegrationTest
-import BimodalTest.Integration.Metalogic_v2IntegrationTest
 import BimodalTest.Property.Generators
 import BimodalTest.Property
 
@@ -60,7 +48,6 @@ Tests mirror the Bimodal library structure:
 
 ```bash
 lake build BimodalTest    # Build test library
-lake exe test             # Run test executable
 ```
 -/
 

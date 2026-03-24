@@ -23,7 +23,6 @@ step can be preserved without modification.
 
 ## References
 
-- Task 958 research-006.md: Substitution-based conservative extension
 - Goldblatt 1992, Logics of Time and Computation
 -/
 

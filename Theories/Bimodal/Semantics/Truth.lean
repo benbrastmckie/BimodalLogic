@@ -7,14 +7,14 @@ import Bimodal.Syntax.Formula
 
 This module defines truth evaluation for TM formulas in task models.
 
-**Reflexive Temporal Semantics**: As of Task #29, temporal operators G (all_future)
+**Reflexive Temporal Semantics**: Temporal operators G (all_future)
 and H (all_past) use REFLEXIVE semantics (≤ instead of <), meaning "now and all
 future/past times". This makes the T-axioms (Gφ → φ, Hφ → φ) valid, simplifies
 completeness proofs by eliminating irreflexivity/antisymmetry concerns, and aligns
 with standard modal logic literature where G and H are reflexive operators.
 
-**Historical Note**: Task #991 previously used strict semantics (<) which required
-an axiom for canonicalR irreflexivity. Task #29 reverted to reflexive semantics
+**Historical Note**: A previous version used strict semantics (<) which required
+an axiom for canonicalR irreflexivity. The current version uses reflexive semantics
 to eliminate this axiom and simplify the metalogic.
 
 ## Paper Specification Reference
@@ -62,7 +62,7 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
 
 Bridge theorems connecting the proof system to semantics (temporal duality infrastructure)
 have been moved to `Metalogic/SoundnessLemmas.lean` to resolve circular dependencies.
-See task 219 for details on the module hierarchy restructuring.
+See SoundnessLemmas.lean for details on the module hierarchy restructuring.
 
 ## Implementation Notes
 

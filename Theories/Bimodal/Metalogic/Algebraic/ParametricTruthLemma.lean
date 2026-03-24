@@ -34,7 +34,6 @@ to arbitrary D. The key cases are:
 ## References
 
 - Existing: Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean
-- Research: specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md
 -/
 
 namespace Bimodal.Metalogic.Algebraic.ParametricTruthLemma
@@ -119,12 +118,12 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 private def past_tf_deriv (φ : Formula) :
     Bimodal.ProofSystem.DerivationTree [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
   have h_tf_swap := Bimodal.ProofSystem.DerivationTree.axiom [] _
-    (Bimodal.ProofSystem.Axiom.temp_future (Formula.swap_past_future φ))
+    (Bimodal.ProofSystem.Axiom.temp_future (Formula.swap_temporal φ))
   have h_dual := Bimodal.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
-  have h_eq : Formula.swap_past_future ((Formula.box (Formula.swap_past_future φ)).imp
-      (Formula.box (Formula.swap_past_future φ)).all_future) =
+  have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
+      (Formula.box (Formula.swap_temporal φ)).all_future) =
     (Formula.box φ).imp (Formula.box φ).all_past := by
-    simp [Formula.swap_past_future, Formula.swap_temporal]
+    simp [Formula.swap_temporal, Formula.swap_temporal]
   rw [h_eq] at h_dual
   exact h_dual
 

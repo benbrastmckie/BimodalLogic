@@ -247,7 +247,7 @@ formula, returns `none`.
 
 ## Usage
 Used by temporal elimination tactics to access the inner formula when applying
-rules like temporal 4 (`Fφ → FFφ`) or temporal A (`φ → F(sometime_past φ)`).
+rules like temporal 4 (`Fφ → FFφ`) or temporal A (`φ → F(some_past φ)`).
 
 ## Example
 ```lean
@@ -515,17 +515,17 @@ elab "temp_4_tactic" : tactic => do
     throwError "temp_4_tactic: goal must be derivability relation, got {goalType}"
 
 /--
-`temp_a_tactic` applies the temporal A axiom `φ → F(sometime_past φ)`.
+`temp_a_tactic` applies the temporal A axiom `φ → F(some_past φ)`.
 
 Automatically applies the axiom when the goal matches the pattern.
 
 **Example**:
 ```lean
-example (p : Formula) : DerivationTree [] (p.imp (p.sometime_past.all_future)) := by
+example (p : Formula) : DerivationTree [] (p.imp (p.some_past.all_future)) := by
   temp_a_tactic
 ```
 
-**Implementation**: Uses `elab` with nested formula destructuring for `sometime_past`.
+**Implementation**: Uses `elab` with nested formula destructuring for `some_past`.
 -/
 elab "temp_a_tactic" : tactic => do
   let goal ← getMainGoal
@@ -558,7 +558,7 @@ elab "temp_a_tactic" : tactic => do
 ## Phase 1: Proof Search Tactics (modal_search, temporal_search)
 
 Bounded depth-first recursive proof search for modal and temporal formulas.
-This implements Phase 1 of Task 315 (Axiom Prop vs Type blocker resolution).
+This implements the Axiom Prop vs Type blocker resolution.
 
 **Design**: The tactic works at the meta-level in TacticM monad, avoiding the
 Prop vs Type issue by directly constructing proof terms via Lean's elaboration.
@@ -1063,7 +1063,7 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 6. Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
 
 **Implementation Note**: This tactic works at the meta-level in TacticM,
-avoiding the Axiom Prop vs Type issue (Task 315) by constructing proof
+avoiding the Axiom Prop vs Type issue by constructing proof
 terms directly via `mkAppM` rather than returning proof witnesses.
 -/
 

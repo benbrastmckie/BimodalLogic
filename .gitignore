@@ -46,3 +46,14 @@ backups/
 
 # Claude Code
 .claude/output/
+
+# AI tooling configuration
+.mcp.json
+.opencode/
+.memory/
+opencode.json
+
+# Development artifacts
+specs/
+benchmarks/
+indent.log

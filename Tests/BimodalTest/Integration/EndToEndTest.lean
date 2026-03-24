@@ -1,4 +1,4 @@
-import Logos
+import Bimodal
 
 /-!
 # End-to-End Integration Tests

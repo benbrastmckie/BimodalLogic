@@ -10,7 +10,7 @@ A BFMCS is a bundle of indexed MCS families (FMCS instances) with modal
 coherence conditions. This enables a Henkin-style completeness proof where box
 quantifies over bundled histories rather than all histories.
 
-## Terminology (Task 928)
+## Terminology
 
 - **MCS**: A single maximal consistent set
 - **FMCS**: A SINGLE time-indexed family of MCS (Family of MCS)
@@ -39,10 +39,6 @@ From the modal coherence conditions, we derive S5-like properties:
 - **Symmetry**: Implicit (all families see all families equally)
 - **Transitivity**: Trivial (one-step accessibility)
 
-## References
-
-- Research report: specs/812_canonical_model_completeness/reports/research-007.md
-- Implementation plan: specs/812_canonical_model_completeness/plans/implementation-003.md
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -167,7 +163,7 @@ theorem BFMCS.transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.famili
     Formula.box φ ∈ fam.mcs t :=
   B.reflexivity fam hfam (Formula.box φ) t h
 
--- Unused accessors removed in Task 970: BFMCS.mcs_at, BFMCS.is_mcs
+-- Unused accessors removed: BFMCS.mcs_at, BFMCS.is_mcs
 -- These were thin wrappers around FMCS fields that were never used.
 
 /-- The MCS at any family and time is consistent (used by BFMCS.diamond_witness) -/
@@ -225,7 +221,7 @@ theorem BFMCS.diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.fam
   -- But neg (Box neg phi) is also in fam.mcs t, contradicting consistency
   exact set_consistent_not_both (B.consistent fam hfam t) (Formula.box (Formula.neg φ)) h_box_neg h_diamond
 
--- Unused derived lemmas removed in Task 970:
+-- Unused derived lemmas removed:
 -- BFMCS.box_from_universal, BFMCS.phi_from_box, BFMCS.box_iff_universal
 -- These were never used in any proofs.
 

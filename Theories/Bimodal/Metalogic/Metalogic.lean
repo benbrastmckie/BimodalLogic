@@ -8,7 +8,7 @@ import Bimodal.Metalogic.Decidability
 This module provides the metalogical foundations for bimodal logic TM:
 soundness, completeness, and decidability.
 
-## Reflexive G/H Semantics (Task 29)
+## Reflexive G/H Semantics
 
 Under reflexive semantics, G and H quantify over `s ≥ t` and `s ≤ t` respectively
 (including the current time). This makes the canonical accessibility relation
@@ -26,9 +26,9 @@ REFLEXIVE: `canonicalR_reflexive` is proven via T-axiom.
 
 The completeness proof uses the SuccChain architecture:
 
-1. **SuccChain/**: Successor chain construction for dense completeness
+1. **Bundle/SuccChain***: Successor chain construction for completeness
 2. **Bundle/**: BFMCS infrastructure with truth lemma
-3. **FrameConditions/**: Frame condition proofs
+3. **Completeness/**: Completeness theorem wiring
 
 ## Axiom Dependencies
 
@@ -39,21 +39,45 @@ Standard Lean axioms only on publication path:
 
 ```
 Metalogic/
-├── Core/                    # MCS theory, deduction theorem
-├── Bundle/                  # BFMCS infrastructure
-│   ├── TruthLemma.lean         # Truth lemma
-│   ├── CanonicalConstruction.lean  # Shifted truth lemma
-│   ├── CanonicalFMCS.lean      # Temporal coherent families
-│   └── CanonicalIrreflexivity.lean  # Reflexive/irreflexive theorems
-├── SuccChain/               # Successor chain completeness (active)
-├── FrameConditions/         # Frame condition proofs
-├── Decidability/            # Tableau decision procedure
-├── Soundness.lean           # Soundness theorem
-└── BaseCompleteness.lean    # Base completeness interface
+├── Core/                        # MCS theory, deduction theorem
+│   ├── MaximalConsistent.lean       # MCS definition and construction
+│   ├── MCSProperties.lean           # MCS properties
+│   ├── DeductionTheorem.lean        # Deduction theorem
+│   └── RestrictedMCS.lean           # Restricted MCS
+├── Bundle/                      # BFMCS infrastructure
+│   ├── FMCS.lean                    # FMCS definition
+│   ├── FMCSDef.lean                 # FMCS helpers
+│   ├── BFMCS.lean                   # Bundled FMCS
+│   ├── Construction.lean            # Bundle construction
+│   ├── CanonicalConstruction.lean   # Shifted truth lemma
+│   ├── CanonicalFrame.lean          # Canonical frame
+│   ├── CanonicalTaskRelation.lean   # Canonical task relation
+│   ├── CanonicalIrreflexivity.lean  # Reflexive/irreflexive theorems
+│   ├── TemporalCoherence.lean       # Temporal coherence
+│   ├── TemporalContent.lean         # Temporal content
+│   ├── ModalSaturation.lean         # Modal saturation
+│   ├── WitnessSeed.lean             # Witness seeds
+│   ├── SuccRelation.lean            # Successor relation
+│   ├── SuccExistence.lean           # Successor existence
+│   ├── SuccChainFMCS.lean           # SuccChain FMCS construction
+│   ├── SuccChainTaskFrame.lean      # SuccChain task frame
+│   ├── SuccChainTruth.lean          # SuccChain truth lemma
+│   └── SuccChainWorldHistory.lean   # SuccChain world/history
+├── Algebraic/                   # Algebraic completeness approach
+├── Completeness/                # Completeness theorem
+│   └── SuccChainCompleteness.lean   # SuccChain completeness wiring
+├── ConservativeExtension/       # Conservative extension results
+├── Decidability/                # Tableau decision procedure
+│   ├── FMP/                         # Finite model property
+│   └── ...                          # Tableau, saturation, etc.
+├── Soundness.lean               # Soundness theorem
+├── SoundnessLemmas.lean         # Soundness helper lemmas
+├── DenseSoundness.lean          # Dense soundness
+├── DiscreteSoundness.lean       # Discrete soundness
+├── BaseCompleteness.lean        # Base completeness interface
+├── DenseCompleteness.lean       # Dense completeness
+├── DiscreteCompleteness.lean    # Discrete completeness
+├── Representation.lean          # Representation results
+└── Decidability.lean            # Decidability interface
 ```
-
-## References
-
-- Task 29: Reflexive G/H semantics transition
-- Task 43: Archive dead paths (StagedConstruction -> Boneyard)
 -/

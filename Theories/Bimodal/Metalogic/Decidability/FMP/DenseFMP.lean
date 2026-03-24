@@ -19,8 +19,8 @@ is finite, it correctly captures the truth of temporal formulas.
 
 ## Notes
 
-The discrete FMP case (see DiscreteFMP.lean) depends on Task 981 for
-axiom-free discrete infrastructure. Dense FMP can proceed independently.
+The discrete FMP case (see DiscreteFMP.lean) depends on axiom-free
+discrete infrastructure. Dense FMP can proceed independently.
 
 ## References
 
