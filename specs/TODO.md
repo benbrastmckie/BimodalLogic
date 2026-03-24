@@ -1,20 +1,20 @@
 ---
-next_project_number: 52
+next_project_number: 54
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-23T13:20:00Z
 task_counts:
-  active: 18
+  active: 20
   completed: 725
-  in_progress: 1
-  not_started: 4
+  in_progress: 0
+  not_started: 6
   abandoned: 54
-  total: 790
+  total: 792
 technical_debt:
-  sorry_count: 16
-  sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
-  publication_path_sorries: 0
+  sorry_count: 98
+  sorry_count_note: "Per ROADMAP.md: 24 SuccChain (critical), 16 examples, 16 perpetuity, 9 completeness wiring, 5 soundness, 4 FMP, 4 RestrictedMCS, 20 infra"
+  publication_path_sorries: 24
   axiom_count: 2
   axiom_count_note: "f_nesting_boundary, p_nesting_boundary (tasks 36, 37). Task 42 tracks elimination."
   build_errors: 0
@@ -27,59 +27,96 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-23. Archived 12 tasks (25, 26, 34, 35, 40, 43, 44, 45, 46, 47, 50, 51). Axiom count reduced 9→2.*
+*Updated 2026-03-23. Incorporates ROADMAP.md analysis, Class A/B sorry classification, and algebraic perspective from merge.*
 
-**Goal**: Zero custom axioms, zero sorries on the completeness path. Task 42 is the umbrella.
+**Goal**: Zero custom axioms, zero sorries on the completeness path. Task 42 is the umbrella. See [ROADMAP.md](/ROADMAP.md) for architectural context.
 
 ### 1. Axiom Elimination — Critical Path (task 42 umbrella)
 
 ```
-Phase A              Phase B              Phase C
-    48 ──────────────→ 36 ──────────────→ 37
-                                                │
-                                          Phase D: verify
+Phase A                    Phase B              Phase C              Phase D
+    48 → 52 ──────────→ 36 ──────────────→ 37 ──────────→ 53 (wire completeness)
+     │                                                      │
+     └── 49 (fallback)                                Phase E: verify
 ```
 
-**Phase A — No dependencies:**
+**Phase A — Bounded F-depth (Class B sorries):**
 
-1. **48** → implement (prove succ_chain_fam MCS have bounded F-depth)
+Task 48's Class A sorries (modal duality via DNE) are **resolved**. Remaining 7 sorries are Class B: intermediate lemmas `restricted_single_step_forcing` and `restricted_succ_propagates_F_not` are **FALSE as stated** (MCS extension nondeterminism at closure boundary). Requires restructuring.
 
-**Phase B — Depends on 48:**
+1. **48** → replan (13 plan versions exhausted single-step forcing; needs v14 with direct induction)
+2. **52** → research + plan + implement (direct bounded_witness via f_step disjunction tracking — the concrete restructuring)
+3. **49** → fallback (FMP-based approach if 52 fails — uses filtration, avoids deferralClosure entirely)
 
-2. **36** → implement after 48 (prove `f_nesting_boundary` — axiom 4; task 49 is fallback if 48 fails)
+**Phase B — Depends on 48/52:**
+
+4. **36** → implement after 52 (prove `f_nesting_boundary` — axiom 4)
 
 **Phase C — Depends on 36:**
 
-3. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
+5. **37** → implement after 36 (prove `p_nesting_boundary` — axiom 5, mirrors 36)
 
-**Phase D — Verification:**
+**Phase D — Wire completeness:**
 
-4. `lean_verify` on completeness theorems — confirm zero custom axioms
-5. Update TODO.md axiom_count to 0
+6. **53** → implement after 37 (wire SuccChainCompleteness → FrameConditions/Completeness, resolve 9 wiring sorries)
+
+**Phase E — Verification:**
+
+7. `lean_verify` on completeness theorems — confirm zero custom axioms
+8. Update TODO.md axiom_count to 0
 
 ### 2. Post-Axiom Cleanup
 
-1. **41** → plan (eliminate D=CanonicalMCS pattern — separate concern, after axiom cleanup)
-2. **21** → defer (tech debt cleanup — depends on 18)
+1. **41** ✓ [COMPLETED] (eliminate D=CanonicalMCS pattern — done 2026-03-23)
+2. **21** → defer (tech debt cleanup — depends on 18; fold CanonicalR alias cleanup per ROADMAP)
 3. **19** → defer (deprecate old discrete pipeline — low priority after archival)
 
-### 3. Deferred — Not Critical Path
+### 3. Algebraic Alternative (parallel investigation)
 
-1. **18** → blocked (dense representation theorem — stuck, defer until base is clean)
+Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass SuccChain entirely:
+
+1. **992** → elevate to medium priority (STSA temporal shift automorphism — 4-6h, independent of critical path)
+   - Formalizes Lindenbaum algebra temporal shift
+   - Could provide `construct_bfmcs` via Stone-space unraveling instead of chain construction
+   - If successful, makes SuccChain sorries irrelevant
+
+### 4. Deferred — Not Critical Path
+
+1. **18** → blocked (dense representation theorem — 4 localized sorries, defer until base is clean)
 2. **20** → depends on 18 (parametric canonical audit)
 3. **998** → defer (FMP redesign — separate concern)
 
-### 4. Backlog (researched, not urgent)
+### 5. Backlog (researched, not urgent)
 
-1. **8** → plan (genuine truth_at completeness — publication quality, high investment)
-2. **6** → plan (canonical TaskFrame completeness — publication quality)
+1. **8** → plan (genuine truth_at completeness — publication quality, 12-20h)
+2. **6** → plan (canonical TaskFrame completeness — may be superseded by task 8)
 3. **39** → defer (preorder semantics study — theoretical)
-4. **992** → defer (STSA representation)
-5. **953** → defer (bilateral proof system — 55-90h)
-6. **949** → defer (update Demo.lean — cosmetic)
-7. **619** → defer (skill migration — meta, low priority)
+4. **953** → defer (bilateral proof system — 55-90h)
+5. **949** → defer (update Demo.lean — cosmetic)
+6. **619** → defer (skill migration — meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 53. Wire completeness after axiom elimination
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Tasks 36, 37
+
+**Description**: After axiom elimination (48→36→37), wire SuccChainCompleteness through FrameConditions/Completeness to achieve sorry-free completeness path. Connect construct_bfmcs callback to algebraic ParametricRepresentation pipeline. Resolve 9 completeness wiring sorries blocked by SuccChain.
+
+---
+
+### 52. Direct bounded_witness via f_step disjunction tracking
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 48
+- **Parent Task**: 48
+
+**Description**: Restructure `restricted_bounded_witness` to prove directly by induction on deferralClosure finiteness, tracking the f_step disjunction `psi in v OR F(psi) in v` instead of trying to eliminate it at each step (which is FALSE). Delete false intermediate lemmas (`restricted_single_step_forcing`, `restricted_succ_propagates_F_not` and primed variants). Use lexicographic termination measure `(F-nesting depth, dc size)`. The f_step guarantees progress at each step (either resolve or defer), and dc finiteness guarantees termination. Preserve the Class A proof (lines 2354-2449) as optimized base case for FF(psi) in deferralClosure.
 
 ---
 
@@ -97,7 +134,7 @@ Phase A              Phase B              Phase C
 
 ### 48. Prove succ_chain_fam MCS have bounded F-depth
 - **Effort**: 8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 47
 - **Parent Task**: 36
@@ -112,6 +149,7 @@ Phase A              Phase B              Phase C
   - [10_g-content-path.md](048_prove_succ_chain_fam_bounded_f_depth/reports/10_g-content-path.md)
   - [15_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/15_team-research.md)
   - [16_derivability-blocker.md](048_prove_succ_chain_fam_bounded_f_depth/reports/16_derivability-blocker.md)
+  - [26_roadmap-synthesis.md](048_prove_succ_chain_fam_bounded_f_depth/reports/26_roadmap-synthesis.md)
 - **Plan**:
   - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
   - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)

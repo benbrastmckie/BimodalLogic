@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T03:13:49Z",
+      "last_updated": "2026-03-24T06:00:29Z",
       "artifacts": [
         {
           "type": "research",
@@ -785,6 +785,11 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/14_weaken-bounded-witness-summary.md",
           "type": "summary",
           "summary": "Partial v13: Phase 1 complete, Phase 2 partial. FF(psi) in deferralClosure case proven. FF(psi) not in deferralClosure case requires theorem statement change."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/26_roadmap-synthesis.md",
+          "type": "research",
+          "summary": "Synthesis: Class A resolved, Class B requires bounded_witness restructuring. Intermediate lemmas FALSE. Recommends direct induction approach (plan v14) or FMP fallback."
         }
       ],
       "session_id": "sess_1774322001_a110f4",
@@ -812,9 +817,39 @@
           "summary": "Spawn analysis from parent task"
         }
       ]
+    },
+    {
+      "project_number": 52,
+      "project_name": "direct_bounded_witness_induction",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Restructure restricted_bounded_witness to prove directly by induction on deferralClosure finiteness, tracking f_step disjunction instead of single-step forcing. Delete false intermediate lemmas (restricted_single_step_forcing, restricted_succ_propagates_F_not). Use lexicographic termination on (F-nesting depth, dc size).",
+      "effort": "4-6 hours",
+      "parent_task": 48,
+      "dependencies": [
+        48
+      ],
+      "created": "2026-03-24T06:00:44Z",
+      "last_updated": "2026-03-24T06:00:44Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 53,
+      "project_name": "wire_completeness_after_axiom_elimination",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "After axiom elimination (48->36->37), wire SuccChainCompleteness through FrameConditions/Completeness to achieve sorry-free completeness path. Connect construct_bfmcs callback to algebraic ParametricRepresentation pipeline. Resolve 9 completeness wiring sorries.",
+      "effort": "6-8 hours",
+      "dependencies": [
+        36,
+        37
+      ],
+      "created": "2026-03-24T06:00:44Z",
+      "last_updated": "2026-03-24T06:00:44Z",
+      "artifacts": []
     }
   ],
-  "next_project_number": 52,
+  "next_project_number": 54,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
