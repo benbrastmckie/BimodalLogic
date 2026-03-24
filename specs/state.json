@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T02:37:24Z",
+      "last_updated": "2026-03-24T03:07:18Z",
       "artifacts": [
         {
           "type": "research",
@@ -770,10 +770,15 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/13_drm-negation-summary.md",
           "type": "summary",
           "summary": "Partial v12: Phase 1 complete (5 helper lemmas). Phase 2 blocked: closureWithNeg not closed under negation."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/25_team-research.md",
+          "type": "research",
+          "summary": "Team research (2 teammates): closureWithNeg NOT closed under negation, recommends combined Approach B+D (weaken theorem + case split)"
         }
       ],
-      "session_id": "sess_1774319809_429196",
-      "researched": "2026-03-24T02:05:47Z",
+      "session_id": "sess_1774320915_0d81a8",
+      "researched": "2026-03-24T03:07:18Z",
       "planned": "2026-03-24T02:35:21Z",
       "started": "2026-03-24T00:53:25Z"
     },
