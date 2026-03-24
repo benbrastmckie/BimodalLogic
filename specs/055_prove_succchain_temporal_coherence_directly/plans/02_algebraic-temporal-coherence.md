@@ -54,7 +54,7 @@ Plan v1 attempted to fix boundary sorries in `DeferralRestrictedMCS` by proving 
 
 ## Implementation Phases
 
-### Phase 1: Define Temporal Theory and Prove Witness Consistency [NOT STARTED]
+### Phase 1: Define Temporal Theory and Prove Witness Consistency [COMPLETED]
 
 **Goal**: Define `G_theory(M)` analogous to `box_theory(M)` and prove `{phi} union G_theory(M)` is consistent when `F(phi) in M`.
 

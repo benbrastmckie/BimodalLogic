@@ -933,6 +933,495 @@ theorem box_theory_witness_exists (M : Set Formula) (h_mcs : SetMaximalConsisten
       exact set_consistent_not_both h_W_mcs.1 (Formula.box phi) h_box_W h_neg_in_W
 
 /-!
+### Temporal Theory and Witness Consistency
+
+Define G_theory (the "temporal theory" of an MCS) and prove witness consistency:
+if F(phi) ∈ M (MCS), then {phi} ∪ G_theory(M) ∪ box_theory(M) is consistent.
+
+This is the temporal analog of box_theory_witness_consistent, using:
+- temp_4: G(a) → G(G(a)) for G-lifting G_theory elements
+- temp_future: Box(a) → G(Box(a)) for G-lifting box_theory elements
+- temp_k_dist + temporal_necessitation for the G-lift induction
+
+Unlike box_theory which has negative introspection (S5 axiom 5), the temporal
+logic lacks neg(G(a)) → G(neg(G(a))). So we use only positive G-formulas
+in G_theory, which is sufficient for the witness consistency proof.
+-/
+
+/--
+The "G theory" of an MCS: the set of formulas whose G is in M.
+G_theory(M) = {G(a) | G(a) ∈ M}
+
+This contains the G-WRAPPED formulas, not the inner formulas.
+Using G-wrapped formulas enables the G-lift argument via temp_4.
+
+Note: Unlike box_theory which includes both positive and negative parts
+(using S5 axiom 5), G_theory only has the positive part because the
+temporal logic lacks negative introspection for G.
+-/
+def G_theory (M : Set Formula) : Set Formula :=
+  { f | ∃ a, f = Formula.all_future a ∧ Formula.all_future a ∈ M }
+
+/--
+All elements of G_theory(M) are in M (trivially, since they ARE M's G-formulas).
+-/
+theorem G_theory_subset_mcs (M : Set Formula) :
+    G_theory M ⊆ M := by
+  intro f hf
+  simp only [G_theory, Set.mem_setOf_eq] at hf
+  obtain ⟨a, rfl, ha⟩ := hf
+  exact ha
+
+/--
+Every element of G_theory(M) can be G-lifted: G(G(a)) ∈ M when G(a) ∈ M.
+This uses temp_4: G(a) → G(G(a)).
+-/
+theorem G_of_G_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ G_theory M, Formula.all_future x ∈ M := by
+  intro x hx
+  simp only [G_theory, Set.mem_setOf_eq] at hx
+  obtain ⟨a, rfl, ha⟩ := hx
+  -- Need G(G(a)) ∈ M. By temp_4: G(a) → G(G(a))
+  have h_4 : [] ⊢ (Formula.all_future a).imp (Formula.all_future (Formula.all_future a)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 a)
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_4) ha
+
+/--
+Every element of box_theory(M) can be G-lifted: G(f) ∈ M for f ∈ box_theory(M).
+
+- For Box(a) ∈ M: G(Box(a)) ∈ M by temp_future (Box(a) → G(Box(a)))
+- For neg(Box(a)) with Box(a) ∉ M: neg(Box(a)) ∈ M (negation completeness),
+  then Box(neg(Box(a))) ∈ M (S5 axiom 5), then G(Box(neg(Box(a)))) ∈ M (temp_future),
+  then G(neg(Box(a))) ∈ M (by G distributing over Box-T: G(Box(x)) → G(x)).
+-/
+theorem G_of_box_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ box_theory M, Formula.all_future x ∈ M := by
+  intro x hx
+  simp only [box_theory, Set.mem_setOf_eq] at hx
+  rcases hx with ⟨a, rfl, ha⟩ | ⟨a, rfl, ha⟩
+  · -- x = Box(a), Box(a) ∈ M. Need G(Box(a)) ∈ M.
+    -- By temp_future: Box(a) → G(Box(a))
+    have h_tf : [] ⊢ (Formula.box a).imp (Formula.all_future (Formula.box a)) :=
+      DerivationTree.axiom [] _ (Axiom.temp_future a)
+    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_tf) ha
+  · -- x = neg(Box(a)), Box(a) ∉ M. Need G(neg(Box(a))) ∈ M.
+    -- Step 1: neg(Box(a)) ∈ M (negation completeness)
+    have h_neg_box : (Formula.box a).neg ∈ M := by
+      rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box a) with h | h
+      · exact absurd h ha
+      · exact h
+    -- Step 2: Box(neg(Box(a))) ∈ M (S5 axiom 5: neg(Box(a)) → Box(neg(Box(a))))
+    have h_box_neg_box : Formula.box ((Formula.box a).neg) ∈ M :=
+      SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs a h_neg_box
+    -- Step 3: G(Box(neg(Box(a)))) ∈ M (temp_future)
+    have h_tf : [] ⊢ (Formula.box ((Formula.box a).neg)).imp
+        (Formula.all_future (Formula.box ((Formula.box a).neg))) :=
+      DerivationTree.axiom [] _ (Axiom.temp_future ((Formula.box a).neg))
+    have h_G_box : Formula.all_future (Formula.box ((Formula.box a).neg)) ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_tf) h_box_neg_box
+    -- Step 4: G(neg(Box(a))) ∈ M via G(Box(x)) → G(x)
+    -- Box(x) → x is modal_t. G(Box(x) → x) by temporal necessitation.
+    -- G(Box(x) → x) → (G(Box(x)) → G(x)) by temp_k_dist.
+    -- So [] ⊢ G(Box(x)).imp G(x). Then use implication_property.
+    have h_box_t : [] ⊢ (Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg) :=
+      DerivationTree.axiom [] _ (Axiom.modal_t ((Formula.box a).neg))
+    -- G(Box(x) → x) by temporal necessitation
+    have h_G_box_t : [] ⊢ Formula.all_future ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) :=
+      DerivationTree.temporal_necessitation _ h_box_t
+    -- G(A → B) → (G(A) → G(B)) by temp_k_dist
+    have h_k : [] ⊢ (Formula.all_future ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg))).imp
+        ((Formula.all_future (Formula.box ((Formula.box a).neg))).imp
+         (Formula.all_future ((Formula.box a).neg))) :=
+      DerivationTree.axiom [] _ (Axiom.temp_k_dist (Formula.box ((Formula.box a).neg)) ((Formula.box a).neg))
+    -- Combine via modus ponens: [] ⊢ G(Box(x)).imp G(x)
+    have h_G_imp : [] ⊢ (Formula.all_future (Formula.box ((Formula.box a).neg))).imp
+        (Formula.all_future ((Formula.box a).neg)) :=
+      DerivationTree.modus_ponens [] _ _ h_k h_G_box_t
+    -- Apply implication_property with h_G_box to get G(neg(Box(a))) ∈ M
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_G_imp) h_G_box
+
+/--
+The combined seed for temporal-modal witnesses: G_theory ∪ box_theory.
+-/
+def temporal_box_seed (M : Set Formula) : Set Formula :=
+  G_theory M ∪ box_theory M
+
+/--
+Every element of the combined seed can be G-lifted.
+-/
+theorem G_of_temporal_box_seed (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ temporal_box_seed M, Formula.all_future x ∈ M := by
+  intro x hx
+  simp only [temporal_box_seed, Set.mem_union] at hx
+  rcases hx with h | h
+  · exact G_of_G_theory M h_mcs x h
+  · exact G_of_box_theory M h_mcs x h
+
+/--
+The G-lift lemma for temporal theory: from a derivation using elements of
+temporal_box_seed(M), derive the G-lift is in M.
+
+If ctx ⊢ phi and all elements of ctx have their G in M, then G(phi) ∈ M.
+-/
+theorem G_lift_from_context (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ctx : List Formula) (phi : Formula)
+    (h_deriv : DerivationTree ctx phi)
+    (h_ctx_G : ∀ x ∈ ctx, Formula.all_future x ∈ M) :
+    Formula.all_future phi ∈ M := by
+  induction ctx generalizing phi with
+  | nil =>
+    exact theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation phi h_deriv)
+  | cons a rest ih =>
+    have d_imp := Bimodal.Metalogic.Core.deduction_theorem rest a phi h_deriv
+    have h_rest_G := fun x hx => h_ctx_G x (List.mem_cons_of_mem a hx)
+    have h_G_imp := ih (a.imp phi) d_imp h_rest_G
+    have h_G_a := h_ctx_G a (List.mem_cons_self a rest)
+    have h_K := DerivationTree.axiom [] _ (Axiom.temp_k_dist a phi)
+    have h_imp_in_M := SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_K) h_G_imp
+    exact SetMaximalConsistent.implication_property h_mcs h_imp_in_M h_G_a
+
+/--
+F(phi) ∈ M excludes G(neg(phi)) from M.
+
+Since F(phi) = neg(G(neg(phi))), having both F(phi) and G(neg(phi)) in M
+would violate MCS consistency.
+-/
+theorem some_future_excludes_all_future_neg {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    Formula.all_future (Formula.neg phi) ∉ M := by
+  intro h_G
+  -- F(phi) = neg(G(neg(phi))) = phi.neg.all_future.neg
+  -- So F(phi) and G(neg(phi)) = phi.neg.all_future
+  -- F(phi) = (phi.neg.all_future).neg
+  have h_eq : Formula.some_future phi = Formula.neg (Formula.all_future (Formula.neg phi)) := rfl
+  rw [h_eq] at h_F
+  exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg phi)) h_G h_F
+
+/--
+The temporal theory witness consistency lemma:
+If F(phi) ∈ M (MCS), then {phi} ∪ G_theory(M) ∪ box_theory(M) is consistent.
+
+**Proof**: Suppose inconsistent. Then finite L ⊆ {phi} ∪ G_theory(M) ∪ box_theory(M)
+with L ⊢ bot. By deduction theorem: L_rest ⊢ neg(phi) where
+L_rest ⊆ G_theory(M) ∪ box_theory(M). By G_lift_from_context: G(neg(phi)) ∈ M.
+But F(phi) = neg(G(neg(phi))) ∈ M, contradiction.
+-/
+theorem temporal_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    SetConsistent ({phi} ∪ temporal_box_seed M) := by
+  intro L h_L_sub ⟨d⟩
+  -- Filter L into phi-part and seed part
+  let L_no_phi := L.filter (· ≠ phi)
+
+  have h_L_no_phi_seed : ∀ x ∈ L_no_phi, x ∈ temporal_box_seed M := by
+    intro x hx
+    have hx_L := List.mem_of_mem_filter hx
+    have hx_ne : x ≠ phi := by
+      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
+      exact hx.2
+    have := h_L_sub x hx_L
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with h | h
+    · rw [h] at hx_ne; exact absurd rfl hx_ne
+    · exact h
+
+  have h_L_sub_phi_Lnp : ∀ x ∈ L, x ∈ phi :: L_no_phi := by
+    intro x hx
+    by_cases h_eq : x = phi
+    · rw [h_eq]; exact List.mem_cons_self phi L_no_phi
+    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+
+  have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
+    DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
+
+  have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+
+  -- All elements of L_no_phi are in temporal_box_seed(M), so their G is in M
+  have h_L_no_phi_G : ∀ x ∈ L_no_phi, Formula.all_future x ∈ M :=
+    fun x hx => G_of_temporal_box_seed M h_mcs x (h_L_no_phi_seed x hx)
+
+  -- G-lift: from L_no_phi ⊢ neg(phi) and all G(x) ∈ M for x ∈ L_no_phi,
+  -- derive G(neg(phi)) ∈ M.
+  have h_G_neg_phi : Formula.all_future (Formula.neg phi) ∈ M :=
+    G_lift_from_context M h_mcs L_no_phi (Formula.neg phi) d_neg_phi h_L_no_phi_G
+
+  -- But F(phi) = neg(G(neg(phi))) ∈ M
+  exact some_future_excludes_all_future_neg h_mcs phi h_F h_G_neg_phi
+
+/--
+If F(phi) ∈ M (MCS), there exists MCS W with phi ∈ W,
+G_theory agreement (G(a) ∈ M → G(a) ∈ W), and box_class_agree(M, W).
+-/
+theorem temporal_theory_witness_exists (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ phi ∈ W ∧
+      (∀ a, Formula.all_future a ∈ M → Formula.all_future a ∈ W) ∧
+      box_class_agree M W := by
+  have h_cons := temporal_theory_witness_consistent M h_mcs phi h_F
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum ({phi} ∪ temporal_box_seed M) h_cons
+  use W, h_W_mcs
+  refine ⟨?_, ?_, ?_⟩
+  · -- phi ∈ W
+    exact h_extends (Set.mem_union_left _ (Set.mem_singleton phi))
+  · -- G_theory agreement: G(a) ∈ M → G(a) ∈ W
+    intro a ha
+    have : Formula.all_future a ∈ G_theory M := by
+      simp only [G_theory, Set.mem_setOf_eq]
+      exact ⟨a, rfl, ha⟩
+    exact h_extends (Set.mem_union_right _ (Set.mem_union_left _ this))
+  · -- box_class_agree M W (same as in box_theory_witness_exists)
+    intro psi
+    constructor
+    · intro h_box
+      have : Formula.box psi ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inl ⟨psi, rfl, h_box⟩
+      exact h_extends (Set.mem_union_right _ (Set.mem_union_right _ this))
+    · intro h_box_W
+      by_contra h_not_in_M
+      have : Formula.neg (Formula.box psi) ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inr ⟨psi, rfl, h_not_in_M⟩
+      have h_neg_in_W : Formula.neg (Formula.box psi) ∈ W :=
+        h_extends (Set.mem_union_right _ (Set.mem_union_right _ this))
+      exact set_consistent_not_both h_W_mcs.1 (Formula.box psi) h_box_W h_neg_in_W
+
+/-!
+### H_theory and Past Direction Witness
+
+Symmetric to G_theory for the past direction. If P(phi) ∈ M (MCS), then
+{phi} ∪ H_theory(M) ∪ box_theory(M) is consistent.
+-/
+
+/--
+The "H theory" of an MCS: the set of formulas whose H is in M.
+H_theory(M) = {H(a) | H(a) ∈ M}
+-/
+def H_theory (M : Set Formula) : Set Formula :=
+  { f | ∃ a, f = Formula.all_past a ∧ Formula.all_past a ∈ M }
+
+/--
+All elements of H_theory(M) are in M.
+-/
+theorem H_theory_subset_mcs (M : Set Formula) :
+    H_theory M ⊆ M := by
+  intro f hf
+  simp only [H_theory, Set.mem_setOf_eq] at hf
+  obtain ⟨a, rfl, ha⟩ := hf
+  exact ha
+
+/--
+P(phi) ∈ M excludes H(neg(phi)) from M.
+-/
+theorem some_past_excludes_all_past_neg {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    Formula.all_past (Formula.neg phi) ∉ M := by
+  intro h_H
+  have h_eq : Formula.some_past phi = Formula.neg (Formula.all_past (Formula.neg phi)) := rfl
+  rw [h_eq] at h_P
+  exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg phi)) h_H h_P
+
+/--
+The combined seed for past-direction witnesses: H_theory ∪ box_theory.
+-/
+def past_temporal_box_seed (M : Set Formula) : Set Formula :=
+  H_theory M ∪ box_theory M
+
+/--
+Past temp_4: H(a) → H(H(a)), derived via temporal duality from temp_4.
+-/
+private noncomputable def past_temp_4 (a : Formula) :
+    [] ⊢ (Formula.all_past a).imp (Formula.all_past (Formula.all_past a)) := by
+  have h_4 := DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.swap_temporal a))
+  have h_dual := DerivationTree.temporal_duality _ h_4
+  simp [Formula.swap_temporal, Formula.swap_temporal_involution] at h_dual
+  exact h_dual
+
+/--
+Past temp_future: Box(a) → H(Box(a)), derived via temporal duality from temp_future.
+-/
+private noncomputable def past_temp_future (a : Formula) :
+    [] ⊢ (Formula.box a).imp (Formula.all_past (Formula.box a)) := by
+  have h_tf := DerivationTree.axiom [] _ (Axiom.temp_future (Formula.swap_temporal a))
+  have h_dual := DerivationTree.temporal_duality _ h_tf
+  simp [Formula.swap_temporal, Formula.swap_temporal_involution] at h_dual
+  exact h_dual
+
+/--
+Every element of H_theory(M) can be H-lifted: H(H(a)) ∈ M when H(a) ∈ M.
+-/
+theorem H_of_H_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ H_theory M, Formula.all_past x ∈ M := by
+  intro x hx
+  simp only [H_theory, Set.mem_setOf_eq] at hx
+  obtain ⟨a, rfl, ha⟩ := hx
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (past_temp_4 a)) ha
+
+/--
+Every element of box_theory(M) can be H-lifted: H(f) ∈ M for f ∈ box_theory(M).
+
+Symmetric to G_of_box_theory, using past_temp_future and past K-distribution.
+-/
+theorem H_of_box_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ box_theory M, Formula.all_past x ∈ M := by
+  intro x hx
+  simp only [box_theory, Set.mem_setOf_eq] at hx
+  rcases hx with ⟨a, rfl, ha⟩ | ⟨a, rfl, ha⟩
+  · -- x = Box(a), Box(a) ∈ M. Need H(Box(a)) ∈ M.
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (past_temp_future a)) ha
+  · -- x = neg(Box(a)), Box(a) ∉ M. Need H(neg(Box(a))) ∈ M.
+    have h_neg_box : (Formula.box a).neg ∈ M := by
+      rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box a) with h | h
+      · exact absurd h ha
+      · exact h
+    have h_box_neg_box : Formula.box ((Formula.box a).neg) ∈ M :=
+      SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs a h_neg_box
+    -- H(Box(neg(Box(a)))) ∈ M by past_temp_future
+    have h_H_box : Formula.all_past (Formula.box ((Formula.box a).neg)) ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs (past_temp_future ((Formula.box a).neg))) h_box_neg_box
+    -- H(neg(Box(a))) ∈ M via H(Box(x)) → H(x)
+    -- Box(x) → x is modal_t. H(Box(x) → x) by past necessitation (temporal duality).
+    -- H(Box(x) → x) → (H(Box(x)) → H(x)) by past K-distribution.
+    have h_box_t : [] ⊢ (Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg) :=
+      DerivationTree.axiom [] _ (Axiom.modal_t ((Formula.box a).neg))
+    -- H(Box(x) → x) via past necessitation (temporal duality of temporal necessitation)
+    have h_H_box_t_deriv : [(Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)] ⊢
+        Formula.all_past ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) := by
+      exact Bimodal.Theorems.generalized_past_k
+        [(Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)]
+        _ (DerivationTree.assumption _ _ (by simp))
+    -- Actually use the empty context version
+    have h_H_box_t : [] ⊢ Formula.all_past ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) := by
+      have h_mapped : (Context.map Formula.all_past []) ⊢ ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)).all_past :=
+        Bimodal.Theorems.generalized_past_k [] _ h_box_t
+      simp [Context.map] at h_mapped
+      exact h_mapped
+    -- past K-distribution: H(A → B) → (H(A) → H(B))
+    have h_pk := Bimodal.Theorems.past_k_dist (Formula.box ((Formula.box a).neg)) ((Formula.box a).neg)
+    -- Combine: H(Box(neg(Box(a)))) → H(neg(Box(a)))
+    have h_H_imp : [] ⊢ (Formula.all_past (Formula.box ((Formula.box a).neg))).imp
+        (Formula.all_past ((Formula.box a).neg)) :=
+      DerivationTree.modus_ponens [] _ _ h_pk h_H_box_t
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_H_imp) h_H_box
+
+/--
+Every element of the past combined seed can be H-lifted.
+-/
+theorem H_of_past_temporal_box_seed (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ past_temporal_box_seed M, Formula.all_past x ∈ M := by
+  intro x hx
+  simp only [past_temporal_box_seed, Set.mem_union] at hx
+  rcases hx with h | h
+  · exact H_of_H_theory M h_mcs x h
+  · exact H_of_box_theory M h_mcs x h
+
+/--
+The H-lift lemma: from ctx ⊢ phi and all H(x) ∈ M for x ∈ ctx, derive H(phi) ∈ M.
+Symmetric to G_lift_from_context.
+-/
+theorem H_lift_from_context (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ctx : List Formula) (phi : Formula)
+    (h_deriv : DerivationTree ctx phi)
+    (h_ctx_H : ∀ x ∈ ctx, Formula.all_past x ∈ M) :
+    Formula.all_past phi ∈ M := by
+  -- Use generalized_past_k: Γ ⊢ φ implies H[Γ] ⊢ H(φ)
+  have h_H_deriv := Bimodal.Theorems.generalized_past_k ctx phi h_deriv
+  -- H[ctx] ⊢ H(phi). Need all H[ctx] elements in M, then H(phi) ∈ M.
+  have h_H_ctx_in_M : ∀ x ∈ Context.map Formula.all_past ctx, x ∈ M := by
+    intro x hx
+    simp [Context.map, List.mem_map] at hx
+    obtain ⟨y, hy_mem, rfl⟩ := hx
+    exact h_ctx_H y hy_mem
+  exact SetMaximalConsistent.closed_under_derivation h_mcs
+    (Context.map Formula.all_past ctx) h_H_ctx_in_M h_H_deriv
+
+/--
+The past temporal theory witness consistency:
+If P(phi) ∈ M (MCS), then {phi} ∪ H_theory(M) ∪ box_theory(M) is consistent.
+
+The proof is symmetric to temporal_theory_witness_consistent, using H-lift.
+-/
+theorem past_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    SetConsistent ({phi} ∪ past_temporal_box_seed M) := by
+  intro L h_L_sub ⟨d⟩
+  let L_no_phi := L.filter (· ≠ phi)
+
+  have h_L_no_phi_seed : ∀ x ∈ L_no_phi, x ∈ past_temporal_box_seed M := by
+    intro x hx
+    have hx_L := List.mem_of_mem_filter hx
+    have hx_ne : x ≠ phi := by
+      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
+      exact hx.2
+    have := h_L_sub x hx_L
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with h | h
+    · rw [h] at hx_ne; exact absurd rfl hx_ne
+    · exact h
+
+  have h_L_sub_phi_Lnp : ∀ x ∈ L, x ∈ phi :: L_no_phi := by
+    intro x hx
+    by_cases h_eq : x = phi
+    · rw [h_eq]; exact List.mem_cons_self phi L_no_phi
+    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+
+  have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
+    DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
+
+  have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+
+  have h_L_no_phi_H : ∀ x ∈ L_no_phi, Formula.all_past x ∈ M :=
+    fun x hx => H_of_past_temporal_box_seed M h_mcs x (h_L_no_phi_seed x hx)
+
+  have h_H_neg_phi : Formula.all_past (Formula.neg phi) ∈ M :=
+    H_lift_from_context M h_mcs L_no_phi (Formula.neg phi) d_neg_phi h_L_no_phi_H
+
+  exact some_past_excludes_all_past_neg h_mcs phi h_P h_H_neg_phi
+
+/--
+If P(phi) ∈ M (MCS), there exists MCS W with phi ∈ W,
+H_theory agreement (H(a) ∈ M → H(a) ∈ W), and box_class_agree(M, W).
+-/
+theorem past_theory_witness_exists (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ phi ∈ W ∧
+      (∀ a, Formula.all_past a ∈ M → Formula.all_past a ∈ W) ∧
+      box_class_agree M W := by
+  have h_cons := past_theory_witness_consistent M h_mcs phi h_P
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum ({phi} ∪ past_temporal_box_seed M) h_cons
+  use W, h_W_mcs
+  refine ⟨?_, ?_, ?_⟩
+  · exact h_extends (Set.mem_union_left _ (Set.mem_singleton phi))
+  · intro a ha
+    have : Formula.all_past a ∈ H_theory M := by
+      simp only [H_theory, Set.mem_setOf_eq]
+      exact ⟨a, rfl, ha⟩
+    exact h_extends (Set.mem_union_right _ (Set.mem_union_left _ this))
+  · intro psi
+    constructor
+    · intro h_box
+      have : Formula.box psi ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inl ⟨psi, rfl, h_box⟩
+      exact h_extends (Set.mem_union_right _ (Set.mem_union_right _ this))
+    · intro h_box_W
+      by_contra h_not_in_M
+      have : Formula.neg (Formula.box psi) ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inr ⟨psi, rfl, h_not_in_M⟩
+      have h_neg_in_W : Formula.neg (Formula.box psi) ∈ W :=
+        h_extends (Set.mem_union_right _ (Set.mem_union_right _ this))
+      exact set_consistent_not_both h_W_mcs.1 (Formula.box psi) h_box_W h_neg_in_W
+
+/-!
 ### Phase 3: Box-Class Bundle Construction
 
 Build a BFMCS from the box-class of an MCS using shifted SuccChainFMCS.
@@ -1198,6 +1687,7 @@ Wire everything together into the signature required by ParametricRepresentation
 /--
 The main construction: given an MCS M, produce a temporally coherent BFMCS containing M.
 -/
+set_option maxHeartbeats 800000 in
 noncomputable def construct_bfmcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent)
        (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),
