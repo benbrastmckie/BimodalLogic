@@ -172,6 +172,7 @@ Per ROADMAP algebraic gap analysis, the sorry-free algebraic path could bypass S
   - [16_derivability-blocker.md](048_prove_succ_chain_fam_bounded_f_depth/reports/16_derivability-blocker.md)
   - [26_roadmap-synthesis.md](048_prove_succ_chain_fam_bounded_f_depth/reports/26_roadmap-synthesis.md)
   - [33_teammate-b-findings.md](048_prove_succ_chain_fam_bounded_f_depth/reports/33_teammate-b-findings.md)
+  - [33_teammate-c-findings.md](048_prove_succ_chain_fam_bounded_f_depth/reports/33_teammate-c-findings.md)
 - **Plan**:
   - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
   - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)
