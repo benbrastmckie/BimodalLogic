@@ -2352,12 +2352,102 @@ theorem restricted_single_step_forcing (phi : Formula)
       (Formula.some_future psi) h_FF_in_cwn
     -- FF(psi) is of form some_future(some_future psi), which is not a neg
     -- So FF(psi) ∈ closureWithNeg => FF(psi) ∈ subformulaClosure
-    -- FF(psi) ∈ deferralClosure, negation completeness gives FF(psi) ∈ u ∨ neg(FF psi) ∈ u.
-    -- Since FF(psi) ∉ u, neg(FF psi) ∈ u. Deriving the conclusion requires the modal
-    -- duality neg(F psi) ↔ G(neg psi) as a proof-system theorem, not definitional equality.
-    -- Formula.neg is φ.imp bot, so some_future and all_future are NOT syntactic duals.
-    -- TODO: Prove via the proof system (temporal_necessitation + temp_k_dist + DNE)
-    sorry
+    -- FF(psi) ∈ deferralClosure and FF(psi) ∉ u
+    -- Strategy: Get G(F(psi).neg) ∈ u, then use g_persistence to get F(psi).neg ∈ v,
+    -- which blocks F(psi) from being in v, forcing psi ∈ v by f_step.
+
+    -- Key insight: FF(psi) ∈ closureWithNeg means either:
+    -- A) FF(psi) ∈ subformulaClosure, or
+    -- B) FF(psi) = g.neg for some g ∈ subformulaClosure
+    --
+    -- In case A: FF(psi) ∈ subformulaClosure implies G(F(psi).neg) ∈ subformulaClosure
+    --            (since G(F(psi).neg) is the left part of FF(psi) = G(F(psi).neg).neg)
+    --            By negation completeness on FF(psi), we get neg(FF(psi)) ∈ u
+    --            Then derive G(F(psi).neg) ∈ u via DNE
+    --
+    -- In case B: g = G(F(psi).neg) ∈ subformulaClosure
+    --            By negation completeness on g: g ∈ u ∨ g.neg ∈ u
+    --            Since g.neg = FF(psi) ∉ u, we have g ∈ u directly
+
+    -- First, establish that G(F(psi).neg) ∈ subformulaClosure in both cases
+    have h_intermediate : (psi.neg.all_future.neg).neg.all_future ∈ subformulaClosure phi := by
+      unfold closureWithNeg at h_FF_in_cwn
+      simp only [Finset.mem_union, Finset.mem_image] at h_FF_in_cwn
+      rcases h_FF_in_cwn with h_sub | ⟨g, h_g_sub, h_g_eq⟩
+      · -- Case A: FF(psi) ∈ subformulaClosure
+        exact closure_imp_left phi _ _ h_sub
+      · -- Case B: FF(psi) = g.neg for g ∈ subformulaClosure
+        -- g.neg = FF(psi) means g = inner part of FF(psi)
+        unfold Formula.some_future Formula.neg at h_g_eq
+        cases h_g_eq
+        exact h_g_sub
+
+    have h_intermediate_dc : (psi.neg.all_future.neg).neg.all_future ∈ deferralClosure phi :=
+      closureWithNeg_subset_deferralClosure phi (subformulaClosure_subset_closureWithNeg phi h_intermediate)
+
+    -- Now get G(F(psi).neg) ∈ u by case analysis on closureWithNeg membership
+    have h_G_F_neg : (psi.neg.all_future.neg).neg.all_future ∈ u := by
+      unfold closureWithNeg at h_FF_in_cwn
+      simp only [Finset.mem_union, Finset.mem_image] at h_FF_in_cwn
+      rcases h_FF_in_cwn with h_sub | ⟨g, h_g_sub, h_g_eq⟩
+      · -- Case A: FF(psi) ∈ subformulaClosure
+        -- Use negation completeness: FF(psi) ∈ u ∨ neg(FF(psi)) ∈ u
+        -- Since FF(psi) ∉ u, we have neg(FF(psi)) ∈ u
+        have h_neg_FF_or := deferral_restricted_mcs_negation_complete h_drm_u
+          (Formula.some_future (Formula.some_future psi)) h_sub
+        have h_neg_FF : (Formula.some_future (Formula.some_future psi)).neg ∈ u := by
+          cases h_neg_FF_or with
+          | inl h_in => exact absurd h_in h_FF_not
+          | inr h_neg => exact h_neg
+        -- Derive G(F(psi).neg) from neg(FF(psi)) using DNE
+        let premise := (psi.neg.all_future.neg).neg.all_future.neg.neg
+        let conclusion := (psi.neg.all_future.neg).neg.all_future
+        have h_dne : [] ⊢ premise.imp conclusion :=
+          Bimodal.Theorems.Propositional.double_negation conclusion
+        have h_dne' : [premise] ⊢ premise.imp conclusion :=
+          DerivationTree.weakening [] [premise] _ h_dne (List.nil_subset _)
+        have h_assume : [premise] ⊢ premise :=
+          DerivationTree.assumption [premise] premise (List.mem_singleton.mpr rfl)
+        have h_deriv : [premise] ⊢ conclusion :=
+          DerivationTree.modus_ponens [premise] premise conclusion h_dne' h_assume
+        have h_sublist : ∀ χ ∈ [premise], χ ∈ u := by
+          intro χ hχ
+          simp only [List.mem_singleton] at hχ
+          exact hχ ▸ h_neg_FF
+        exact drm_closed_under_derivation h_drm_u [premise] h_sublist h_deriv h_intermediate_dc
+      · -- Case B: FF(psi) = g.neg for g ∈ subformulaClosure
+        -- We have g = G(F(psi).neg) ∈ subformulaClosure directly
+        unfold Formula.some_future Formula.neg at h_g_eq
+        cases h_g_eq
+        -- By negation completeness on g: g ∈ u ∨ g.neg ∈ u
+        have h_g_or := deferral_restricted_mcs_negation_complete h_drm_u g h_g_sub
+        cases h_g_or with
+        | inl h_g_in => exact h_g_in
+        | inr h_g_neg =>
+          -- g.neg = FF(psi) ∈ u, but h_FF_not says FF(psi) ∉ u
+          exfalso
+          exact h_FF_not h_g_neg
+
+    -- G(F(psi).neg) ∈ u means F(psi).neg ∈ g_content(u)
+    have h_F_neg_in_g : (psi.neg.all_future.neg).neg ∈ g_content u := h_G_F_neg
+
+    -- By g_persistence, F(psi).neg ∈ v
+    have h_F_neg_in_v : (Formula.some_future psi).neg ∈ v := h_succ.1 h_F_neg_in_g
+
+    -- By DRM consistency, F(psi) ∉ v
+    have h_drm_v := restricted_forward_chain_is_drm phi M0 (k + 1)
+    have h_F_not_v : Formula.some_future psi ∉ v := by
+      intro h_F_in_v
+      exact set_consistent_not_both h_drm_v.1.2 (Formula.some_future psi) h_F_in_v h_F_neg_in_v
+
+    -- By f_step, psi ∈ v ∨ F(psi) ∈ v
+    have h_psi_in_f_content_u : psi ∈ f_content u := h_F
+    have h_union : psi ∈ v ∪ f_content v := h_succ.2 h_psi_in_f_content_u
+
+    -- Since F(psi) ∉ v, we have psi ∈ v
+    rcases Set.mem_or_mem_of_mem_union h_union with h_in_v | h_in_f_v
+    · exact h_in_v
+    · exact absurd h_in_f_v h_F_not_v
 
   · -- Case 1: FF(psi) ∉ deferralClosure(phi)
     -- Since v ⊆ deferralClosure(phi), FF(psi) cannot be in v

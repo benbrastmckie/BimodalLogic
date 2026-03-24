@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T03:12:19Z",
+      "last_updated": "2026-03-24T03:13:49Z",
       "artifacts": [
         {
           "type": "research",
@@ -780,9 +780,14 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/13_weaken-bounded-witness.md",
           "type": "plan",
           "summary": "5-phase plan (v13): weaken bounded_witness with h_all_in_dc hypothesis"
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/summaries/14_weaken-bounded-witness-summary.md",
+          "type": "summary",
+          "summary": "Partial v13: Phase 1 complete, Phase 2 partial. FF(psi) in deferralClosure case proven. FF(psi) not in deferralClosure case requires theorem statement change."
         }
       ],
-      "session_id": "sess_1774321733_be2daf",
+      "session_id": "sess_1774322001_a110f4",
       "researched": "2026-03-24T03:07:18Z",
       "planned": "2026-03-24T03:12:19Z",
       "started": "2026-03-24T00:53:25Z"

@@ -54,7 +54,7 @@ The recommended approach (Combined B+D from research) weakens the theorem by add
 
 ## Implementation Phases
 
-### Phase 1: Caller Analysis and Hypothesis Design [NOT STARTED]
+### Phase 1: Caller Analysis and Hypothesis Design [COMPLETED]
 
 **Goal**: Verify that callers can provide `h_all_in_dc` hypothesis and design the exact signature change.
 
@@ -78,7 +78,7 @@ The recommended approach (Combined B+D from research) weakens the theorem by add
 
 ---
 
-### Phase 2: Modify restricted_single_step_forcing [NOT STARTED]
+### Phase 2: Modify restricted_single_step_forcing [PARTIAL]
 
 **Goal**: Add hypothesis and complete the proof for the `FF(psi) in deferralClosure` case.
 
