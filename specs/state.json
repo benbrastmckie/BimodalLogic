@@ -645,7 +645,7 @@
     {
       "project_number": 48,
       "project_name": "prove_succ_chain_fam_bounded_f_depth",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.",
       "effort": "4-6 hours",
@@ -654,7 +654,7 @@
         47
       ],
       "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T17:46:48Z",
+      "last_updated": "2026-03-24T18:06:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -825,11 +825,16 @@
           "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/reports/33_team-research.md",
           "type": "research",
           "summary": "Team research (3 teammates): Jónsson-Tarski ultrafilter chain is the correct approach. SuccChain fundamentally flawed. ~300-400 LOC implementation needed."
+        },
+        {
+          "path": "specs/048_prove_succ_chain_fam_bounded_f_depth/plans/15_ultrafilter-chain.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for Jonsson-Tarski ultrafilter chain construction"
         }
       ],
-      "session_id": "sess_1774373882_c5de08",
+      "session_id": "sess_1774374716_e1eb19",
       "researched": "2026-03-24T17:46:48Z",
-      "planned": "2026-03-24T16:55:10Z",
+      "planned": "2026-03-24T18:06:00Z",
       "started": "2026-03-24T00:53:25Z"
     },
     {
