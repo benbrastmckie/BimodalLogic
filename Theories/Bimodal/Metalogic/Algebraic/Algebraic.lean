@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Algebraic.BooleanStructure
 import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+import Bimodal.Metalogic.Algebraic.TenseS5Algebra
 -- D-parametric modules
 import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
@@ -80,6 +81,7 @@ open Bimodal.Metalogic.Algebraic.BooleanStructure
 open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
 open Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+open Bimodal.Metalogic.Algebraic.TenseS5Algebra
 
 -- D-parametric modules
 open Bimodal.Metalogic.Algebraic.ParametricCanonical

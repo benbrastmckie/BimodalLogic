@@ -334,4 +334,107 @@ Bottom element of the Lindenbaum algebra: the class of ⊥.
 -/
 def bot_quot : LindenbaumAlg := toQuot Formula.bot
 
+/-!
+## Temporal Duality (sigma)
+
+We lift the `swap_temporal` operation to the quotient, establishing temporal duality
+on the Lindenbaum algebra. This is essential for the STSA (Shift-closed Tense S5 Algebra) structure.
+-/
+
+/--
+Derivability respects swap_temporal: if `⊢ φ → ψ`, then `⊢ swap_temporal(φ) → swap_temporal(ψ)`.
+
+This follows from the temporal_duality inference rule.
+-/
+theorem swap_temporal_derives {φ ψ : Formula} (h : Derives φ ψ) :
+    Derives φ.swap_temporal ψ.swap_temporal := by
+  unfold Derives at *
+  obtain ⟨d⟩ := h
+  have d_swap : DerivationTree [] (φ.imp ψ).swap_temporal :=
+    DerivationTree.temporal_duality (φ.imp ψ) d
+  simp only [Formula.swap_temporal] at d_swap
+  exact ⟨d_swap⟩
+
+/--
+Provable equivalence respects swap_temporal: `φ ≈ₚ ψ → swap_temporal(φ) ≈ₚ swap_temporal(ψ)`.
+-/
+theorem provEquiv_swap_temporal_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
+    φ.swap_temporal ≈ₚ ψ.swap_temporal :=
+  ⟨swap_temporal_derives h.1, swap_temporal_derives h.2⟩
+
+/--
+Lifted temporal duality (sigma) on the Lindenbaum algebra.
+
+This swaps G (all_future) and H (all_past) operators throughout a formula,
+implementing the temporal duality principle.
+-/
+def sigma_quot : LindenbaumAlg → LindenbaumAlg :=
+  Quotient.lift (fun φ => toQuot φ.swap_temporal)
+    (fun _ _ h => Quotient.sound (provEquiv_swap_temporal_congr h))
+
+/--
+Sigma is an involution: applying it twice gives the identity.
+-/
+theorem sigma_quot_involution (a : LindenbaumAlg) : sigma_quot (sigma_quot a) = a := by
+  induction a using Quotient.ind
+  rename_i φ
+  show toQuot (φ.swap_temporal.swap_temporal) = toQuot φ
+  rw [Formula.swap_temporal_involution]
+
+/--
+Sigma respects negation: `σ(¬a) = ¬σ(a)`.
+-/
+theorem sigma_quot_neg (a : LindenbaumAlg) :
+    sigma_quot (neg_quot a) = neg_quot (sigma_quot a) := by
+  induction a using Quotient.ind
+  rename_i φ
+  show toQuot (φ.neg.swap_temporal) = neg_quot (toQuot (φ.swap_temporal))
+  simp only [Formula.neg, Formula.swap_temporal]
+  rfl
+
+/--
+Sigma respects disjunction: `σ(a ∨ b) = σ(a) ∨ σ(b)`.
+-/
+theorem sigma_quot_sup (a b : LindenbaumAlg) :
+    sigma_quot (or_quot a b) = or_quot (sigma_quot a) (sigma_quot b) := by
+  induction a using Quotient.ind
+  induction b using Quotient.ind
+  rename_i φ ψ
+  show toQuot ((φ.or ψ).swap_temporal) = or_quot (toQuot φ.swap_temporal) (toQuot ψ.swap_temporal)
+  simp only [Formula.or, Formula.neg, Formula.swap_temporal]
+  rfl
+
+/--
+Sigma swaps G and H: `σ(G a) = H(σ a)`.
+-/
+theorem sigma_quot_G_H (a : LindenbaumAlg) :
+    sigma_quot (G_quot a) = H_quot (sigma_quot a) := by
+  induction a using Quotient.ind
+  rename_i φ
+  show toQuot (φ.all_future.swap_temporal) = H_quot (toQuot φ.swap_temporal)
+  simp only [Formula.swap_temporal]
+  rfl
+
+/--
+Sigma swaps H and G: `σ(H a) = G(σ a)`.
+-/
+theorem sigma_quot_H_G (a : LindenbaumAlg) :
+    sigma_quot (H_quot a) = G_quot (sigma_quot a) := by
+  induction a using Quotient.ind
+  rename_i φ
+  show toQuot (φ.all_past.swap_temporal) = G_quot (toQuot φ.swap_temporal)
+  simp only [Formula.swap_temporal]
+  rfl
+
+/--
+Sigma commutes with box: `σ(□a) = □(σ a)`.
+-/
+theorem sigma_quot_box (a : LindenbaumAlg) :
+    sigma_quot (box_quot a) = box_quot (sigma_quot a) := by
+  induction a using Quotient.ind
+  rename_i φ
+  show toQuot (φ.box.swap_temporal) = box_quot (toQuot φ.swap_temporal)
+  simp only [Formula.swap_temporal]
+  rfl
+
 end Bimodal.Metalogic.Algebraic.LindenbaumQuotient
