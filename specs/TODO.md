@@ -167,7 +167,8 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
   - [01_temporal-coherence-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/01_temporal-coherence-implementation.md) (superseded)
   - [02_algebraic-temporal-coherence.md](055_prove_succchain_temporal_coherence_directly/plans/02_algebraic-temporal-coherence.md) (superseded)
   - [03_resolving-chain-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/03_resolving-chain-implementation.md) (superseded)
-  - [04_simplified-resolving-chain.md](055_prove_succchain_temporal_coherence_directly/plans/04_simplified-resolving-chain.md)
+  - [04_simplified-resolving-chain.md](055_prove_succchain_temporal_coherence_directly/plans/04_simplified-resolving-chain.md) (superseded)
+  - [05_canonical-construction-integration.md](055_prove_succchain_temporal_coherence_directly/plans/05_canonical-construction-integration.md)
 
 **Description**: Prove SuccChain temporal coherence directly, bypassing f_nesting_is_bounded. The current sorry chain is: f_nesting_is_bounded (FALSE for arbitrary MCS) → f_nesting_boundary → succ_chain_forward_F → SuccChainTemporalCoherent → construct_bfmcs. Replace with a direct argument: the SuccChain construction resolves F-obligations step-by-step via Succ, so if F(phi) is at time k, phi must appear at some k+d by the enumeration/fairness of obligation resolution. Mirror for P. This eliminates the last sorry on the completeness path. Supersedes the approach in tasks 36, 37, 53.
 
