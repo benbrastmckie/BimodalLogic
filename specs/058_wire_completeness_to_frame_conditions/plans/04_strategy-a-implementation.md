@@ -46,7 +46,13 @@ Implement the ultrafilter F-witness approach (Strategy A) to construct a sorry-f
 
 ## Implementation Phases
 
-### Phase 1: F-Witness Existence [NOT STARTED]
+### Phase 1: F-Witness Existence [BLOCKED]
+
+**Status Update**: Analysis complete. The F-witness (`temporal_theory_witness_exists`) already exists and is sorry-free, but it provides witnesses in DIFFERENT MCSes, not within the same FMCS chain. For temporal coherence within boxClassFamilies, we need within-family coherence which the current MCS-level witness doesn't provide.
+
+**Recommended Pivot**: Use restricted chain approach with phi-specific deferralClosure. See handoffs/01_phase1-analysis-handoff.md for details.
+
+**Original Plan** (blocked):
 
 **Goal**: Prove that if F(psi) is in ultrafilter U, there exists an R_G-successor V containing psi.
 
