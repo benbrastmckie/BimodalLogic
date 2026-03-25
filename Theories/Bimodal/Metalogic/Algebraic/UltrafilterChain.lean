@@ -39,6 +39,7 @@ open Bimodal.Metalogic.Algebraic.BooleanStructure
 open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.TenseS5Algebra
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
+open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 
@@ -307,7 +308,7 @@ theorem shifted_temporal_forward_F (f : FMCS Int)
   unfold shifted_fmcs at h_F ⊢
   simp only at h_F ⊢
   obtain ⟨s, h_lt, h_phi⟩ := h_fwd (t - k) φ h_F
-  exact ⟨s + k, by omega, by ring_nf; exact h_phi⟩
+  exact ⟨s + k, by omega, by simp only [Int.add_sub_cancel]; exact h_phi⟩
 
 theorem shifted_temporal_backward_P (f : FMCS Int)
     (h_bwd : ∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ f.mcs t →
@@ -318,7 +319,7 @@ theorem shifted_temporal_backward_P (f : FMCS Int)
   unfold shifted_fmcs at h_P ⊢
   simp only at h_P ⊢
   obtain ⟨s, h_lt, h_phi⟩ := h_bwd (t - k) φ h_P
-  exact ⟨s + k, by omega, by ring_nf; exact h_phi⟩
+  exact ⟨s + k, by omega, by simp only [Int.add_sub_cancel]; exact h_phi⟩
 
 /-!
 ### Box Persistence in SuccChain
@@ -334,8 +335,8 @@ theorem succ_chain_box_persistent (M0 : SerialMCS) (phi : Formula) (t : Int) :
     Formula.box phi ∈ (SuccChainFMCS M0).mcs 0 ↔
     Formula.box phi ∈ (SuccChainFMCS M0).mcs t := by
   constructor
-  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi 0 t h
-  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi t 0 h
+  · intro h; exact parametric_box_persistent (SuccChainFMCS M0) phi 0 t h
+  · intro h; exact parametric_box_persistent (SuccChainFMCS M0) phi t 0 h
 
 /--
 Box formulas are constant in shifted SuccChainFMCS.
@@ -347,8 +348,8 @@ theorem shifted_succ_chain_box_persistent (M0 : SerialMCS) (k : Int)
   unfold shifted_fmcs
   simp only
   constructor
-  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi (k - k) (t - k) h
-  · intro h => exact parametric_box_persistent (SuccChainFMCS M0) phi (t - k) (k - k) h
+  · intro h; exact parametric_box_persistent (SuccChainFMCS M0) phi (k - k) (t - k) h
+  · intro h; exact parametric_box_persistent (SuccChainFMCS M0) phi (t - k) (k - k) h
 
 /-!
 ### Box-Class Witness Consistency
@@ -574,9 +575,7 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
   have h_L_no_psi_bc : ∀ x ∈ L_no_psi, x ∈ box_content M := by
     intro x hx
     have hx_L := List.mem_of_mem_filter hx
-    have hx_ne : x ≠ psi := by
-      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
-      exact hx.2
+    have hx_ne : x ≠ psi := of_decide_eq_true (List.mem_filter.mp hx).2
     have := h_L_sub x hx_L
     simp only [Set.mem_union, Set.mem_singleton_iff] at this
     rcases this with h | h
@@ -698,8 +697,8 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
   have h_L_sub_psi_Lnp : ∀ x ∈ L, x ∈ psi :: L_no_psi := by
     intro x hx
     by_cases h_eq : x = psi
-    · rw [h_eq]; exact List.mem_cons_self psi L_no_psi
-    · exact List.mem_cons_of_mem psi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+    · rw [h_eq]; exact .head _
+    · exact List.mem_cons_of_mem psi (List.mem_filter.mpr ⟨hx, decide_eq_true h_eq⟩)
 
   -- Weaken: psi :: L_no_psi ⊢ bot
   have d_weak : DerivationTree (psi :: L_no_psi) Formula.bot :=
@@ -741,7 +740,7 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
       fun x hx => h_ctx_box x (List.mem_cons_of_mem a hx)
     have h_box_imp : Formula.box (a.imp phi) ∈ M := ih (a.imp phi) d_imp h_rest_box
     -- Box(a) ∈ M (from h_ctx_box)
-    have h_box_a : Formula.box a ∈ M := h_ctx_box a (List.mem_cons_self a rest)
+    have h_box_a : Formula.box a ∈ M := h_ctx_box a (.head _)
     -- K-distribution: Box(a → phi) → (Box(a) → Box(phi))
     have h_K : [] ⊢ (Formula.box (a.imp phi)).imp ((Formula.box a).imp (Formula.box phi)) :=
       DerivationTree.axiom [] _ (Axiom.modal_k_dist a phi)
@@ -851,9 +850,7 @@ theorem box_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_L_no_psi_bt : ∀ x ∈ L_no_psi, x ∈ box_theory M := by
     intro x hx
     have hx_L := List.mem_of_mem_filter hx
-    have hx_ne : x ≠ psi := by
-      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
-      exact hx.2
+    have hx_ne : x ≠ psi := of_decide_eq_true (List.mem_filter.mp hx).2
     have := h_L_sub x hx_L
     simp only [Set.mem_union, Set.mem_singleton_iff] at this
     rcases this with h | h
@@ -863,8 +860,8 @@ theorem box_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_L_sub_psi_Lnp : ∀ x ∈ L, x ∈ psi :: L_no_psi := by
     intro x hx
     by_cases h_eq : x = psi
-    · rw [h_eq]; exact List.mem_cons_self psi L_no_psi
-    · exact List.mem_cons_of_mem psi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+    · rw [h_eq]; exact .head _
+    · exact List.mem_cons_of_mem psi (List.mem_filter.mpr ⟨hx, decide_eq_true h_eq⟩)
 
   have d_weak : DerivationTree (psi :: L_no_psi) Formula.bot :=
     DerivationTree.weakening L (psi :: L_no_psi) Formula.bot d h_L_sub_psi_Lnp
@@ -891,7 +888,7 @@ theorem box_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
       have d_imp := Bimodal.Metalogic.Core.deduction_theorem rest a phi d_ctx
       have h_rest_box := fun x hx => h_ctx_box x (List.mem_cons_of_mem a hx)
       have h_box_imp := ih (a.imp phi) d_imp h_rest_box
-      have h_box_a := h_ctx_box a (List.mem_cons_self a rest)
+      have h_box_a := h_ctx_box a (.head _)
       have h_K := DerivationTree.axiom [] _ (Axiom.modal_k_dist a phi)
       have h_imp_in_M := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_K) h_box_imp
@@ -1076,7 +1073,7 @@ theorem G_lift_from_context (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     have d_imp := Bimodal.Metalogic.Core.deduction_theorem rest a phi h_deriv
     have h_rest_G := fun x hx => h_ctx_G x (List.mem_cons_of_mem a hx)
     have h_G_imp := ih (a.imp phi) d_imp h_rest_G
-    have h_G_a := h_ctx_G a (List.mem_cons_self a rest)
+    have h_G_a := h_ctx_G a (.head _)
     have h_K := DerivationTree.axiom [] _ (Axiom.temp_k_dist a phi)
     have h_imp_in_M := SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_K) h_G_imp
@@ -1118,9 +1115,7 @@ theorem temporal_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximal
   have h_L_no_phi_seed : ∀ x ∈ L_no_phi, x ∈ temporal_box_seed M := by
     intro x hx
     have hx_L := List.mem_of_mem_filter hx
-    have hx_ne : x ≠ phi := by
-      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
-      exact hx.2
+    have hx_ne : x ≠ phi := of_decide_eq_true (List.mem_filter.mp hx).2
     have := h_L_sub x hx_L
     simp only [Set.mem_union, Set.mem_singleton_iff] at this
     rcases this with h | h
@@ -1130,8 +1125,8 @@ theorem temporal_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximal
   have h_L_sub_phi_Lnp : ∀ x ∈ L, x ∈ phi :: L_no_phi := by
     intro x hx
     by_cases h_eq : x = phi
-    · rw [h_eq]; exact List.mem_cons_self phi L_no_phi
-    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+    · rw [h_eq]; exact .head _
+    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, decide_eq_true h_eq⟩)
 
   have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
     DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
@@ -1295,7 +1290,7 @@ theorem H_of_box_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
         Formula.all_past ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) := by
       exact Bimodal.Theorems.generalized_past_k
         [(Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)]
-        _ (DerivationTree.assumption _ _ (by simp))
+        _ (DerivationTree.assumption _ _ (List.Mem.head _))
     -- Actually use the empty context version
     have h_H_box_t : [] ⊢ Formula.all_past ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) := by
       have h_mapped : (Context.map Formula.all_past []) ⊢ ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)).all_past :=
@@ -1357,9 +1352,7 @@ theorem past_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalCons
   have h_L_no_phi_seed : ∀ x ∈ L_no_phi, x ∈ past_temporal_box_seed M := by
     intro x hx
     have hx_L := List.mem_of_mem_filter hx
-    have hx_ne : x ≠ phi := by
-      simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
-      exact hx.2
+    have hx_ne : x ≠ phi := of_decide_eq_true (List.mem_filter.mp hx).2
     have := h_L_sub x hx_L
     simp only [Set.mem_union, Set.mem_singleton_iff] at this
     rcases this with h | h
@@ -1369,8 +1362,8 @@ theorem past_theory_witness_consistent (M : Set Formula) (h_mcs : SetMaximalCons
   have h_L_sub_phi_Lnp : ∀ x ∈ L, x ∈ phi :: L_no_phi := by
     intro x hx
     by_cases h_eq : x = phi
-    · rw [h_eq]; exact List.mem_cons_self phi L_no_phi
-    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, h_eq⟩)
+    · rw [h_eq]; exact .head _
+    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, decide_eq_true h_eq⟩)
 
   have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
     DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
@@ -1436,22 +1429,27 @@ P-step components to satisfy the full Succ relation.
 /--
 The resolving successor seed forces a specific formula phi into the successor.
 
-Given MCS M with F(phi) ∈ M, this seed is designed to:
+Given MCS M with F(phi) ∈ M, this minimal seed is sufficient because:
 1. Force phi ∈ W (from singleton)
 2. Preserve G-theory (from temporal_box_seed)
 3. Preserve box-class (from temporal_box_seed)
-4. Satisfy F-step for other formulas (from deferralDisjunctions)
-5. Satisfy P-step backward (from p_step_blocking_formulas)
+
+The per-obligation architecture doesn't need F-step for other formulas or P-step.
+The minimal seed `{phi} ∪ temporal_box_seed M` has trivial consistency via
+`temporal_theory_witness_consistent`.
+
+**Note**: This replaces the extended seed approach which failed due to
+deferralDisjunctions not being G-liftable (see reports/10_team-research.md).
 -/
 def resolving_successor_seed (M : Set Formula) (phi : Formula) : Set Formula :=
-  {phi} ∪ temporal_box_seed M ∪ deferralDisjunctions M ∪ p_step_blocking_formulas M
+  {phi} ∪ temporal_box_seed M
 
 /--
-The resolving seed extends the temporal_box_seed.
+The resolving seed extends the temporal_box_seed (trivially true for minimal seed).
 -/
 theorem resolving_seed_extends_temporal_box_seed (M : Set Formula) (phi : Formula) :
     temporal_box_seed M ⊆ resolving_successor_seed M phi :=
-  Set.subset_union_of_subset_left (Set.subset_union_right) _
+  Set.subset_union_right
 
 /--
 The resolving seed contains the target formula.
@@ -1459,7 +1457,7 @@ The resolving seed contains the target formula.
 theorem resolving_seed_contains_phi (M : Set Formula) (phi : Formula) :
     phi ∈ resolving_successor_seed M phi := by
   simp only [resolving_successor_seed, Set.mem_union, Set.mem_singleton_iff]
-  left; left; left; rfl
+  left; trivial
 
 /--
 The temporal_box_seed is a subset of M (elements are derivable from M).
@@ -1470,115 +1468,43 @@ theorem temporal_box_seed_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsis
   simp only [temporal_box_seed, Set.mem_union] at hx
   rcases hx with h | h
   · exact G_theory_subset_mcs M h
-  · exact box_theory_subset_mcs M h
+  · exact box_theory_subset_mcs M h_mcs h
 
 /--
-The resolving seed (excluding phi) is a subset of M.
-
-This is key for the consistency proof: all components except {phi} are in M.
+The resolving seed (excluding phi) is temporal_box_seed M which is a subset of M.
+Simplified from the extended seed version.
 -/
 theorem resolving_seed_minus_phi_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) :
-    temporal_box_seed M ∪ deferralDisjunctions M ∪ p_step_blocking_formulas M ⊆ M := by
-  intro x hx
-  simp only [Set.mem_union] at hx
-  rcases hx with h | h | h
-  · exact temporal_box_seed_subset_mcs M h_mcs h
-  · exact deferralDisjunctions_subset_mcs M h_mcs h
-  · exact p_step_blocking_formulas_subset_u M h_mcs h
+    temporal_box_seed M ⊆ M :=
+  temporal_box_seed_subset_mcs M h_mcs
 
 /--
 The full resolving seed is a subset of {phi} ∪ M.
+Simplified for the minimal seed `{phi} ∪ temporal_box_seed M`.
 -/
 theorem resolving_seed_subset_phi_union_M (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) :
     resolving_successor_seed M phi ⊆ {phi} ∪ M := by
   intro x hx
   simp only [resolving_successor_seed, Set.mem_union, Set.mem_singleton_iff] at hx
-  rcases hx with h | h | h | h
+  rcases hx with h | h
   · left; exact h
   · right; exact temporal_box_seed_subset_mcs M h_mcs h
-  · right; exact deferralDisjunctions_subset_mcs M h_mcs h
-  · right; exact p_step_blocking_formulas_subset_u M h_mcs h
 
 /--
 The resolving successor seed is consistent when F(phi) ∈ M.
 
-**Proof Strategy**:
-The key insight is that all elements of the seed except {phi} are in M.
-If the seed were inconsistent, we could derive bot from a finite subset L.
-If phi ∉ L, then L ⊆ M, contradicting M's consistency.
-If phi ∈ L, then by deduction L \ {phi} ⊢ neg(phi), and since L \ {phi} ⊆ M,
-we get neg(phi) ∈ M by MCS closure. Combined with F(phi) ∈ M, this leads
-to a contradiction via the G-lift argument from temporal_theory_witness_consistent.
+**Proof**: Since the minimal seed is exactly `{phi} ∪ temporal_box_seed M`, this follows
+directly from `temporal_theory_witness_consistent`.
 
-The full proof requires careful handling of the interaction between G-liftable
-elements (temporal_box_seed) and M-elements (deferralDisjunctions, p_step_blocking).
+This replaces the complex G-lift argument from the extended seed approach that was
+blocked by deferralDisjunctions not being G-liftable.
 -/
 theorem resolving_successor_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
-    SetConsistent (resolving_successor_seed M phi) := by
-  intro L h_L_sub ⟨d⟩
-  -- Check if phi is used in the derivation
-  by_cases h_phi_in_L : phi ∈ L
-  · -- Case: phi ∈ L - need G-lift argument
-    -- All elements except phi are in M
-    let L_no_phi := L.filter (· ≠ phi)
-    have h_L_no_phi_in_M : ∀ x ∈ L_no_phi, x ∈ M := by
-      intro x hx
-      have hx_L := List.mem_of_mem_filter hx
-      have hx_ne : x ≠ phi := by
-        simp only [List.mem_filter, ne_eq, decide_eq_true_eq] at hx
-        exact hx.2
-      have hx_in_seed := h_L_sub x hx_L
-      simp only [resolving_successor_seed, Set.mem_union, Set.mem_singleton_iff] at hx_in_seed
-      rcases hx_in_seed with h | h | h | h
-      · exact absurd h hx_ne
-      · exact temporal_box_seed_subset_mcs M h_mcs h
-      · exact deferralDisjunctions_subset_mcs M h_mcs h
-      · exact p_step_blocking_formulas_subset_u M h_mcs h
-    -- Derive neg(phi) from L_no_phi
-    have h_L_sub_phi_Lnp : ∀ x ∈ L, x ∈ phi :: L_no_phi := by
-      intro x hx
-      by_cases h_eq : x = phi
-      · rw [h_eq]; exact List.mem_cons_self phi L_no_phi
-      · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, h_eq⟩)
-    have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
-      DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
-    have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
-      Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
-    -- neg(phi) ∈ M by MCS closure
-    have h_neg_phi_in_M : Formula.neg phi ∈ M :=
-      SetMaximalConsistent.closed_under_derivation h_mcs L_no_phi h_L_no_phi_in_M d_neg_phi
-    -- Now use the G-lift argument: filter to temporal_box_seed elements
-    let L_temporal := L_no_phi.filter (· ∈ temporal_box_seed M)
-    have h_L_temporal_G : ∀ x ∈ L_temporal, Formula.all_future x ∈ M := by
-      intro x hx
-      have hx_in_temporal : x ∈ temporal_box_seed M := by
-        simp only [List.mem_filter, decide_eq_true_eq] at hx
-        exact hx.2
-      exact G_of_temporal_box_seed M h_mcs x hx_in_temporal
-    -- The full G-lift argument requires showing G(neg(phi)) ∈ M
-    -- which contradicts F(phi) = neg(G(neg(phi))) ∈ M.
-    -- This requires additional infrastructure for handling the M-elements in the derivation.
-    -- The temporal_theory_witness_consistent proof structure can be adapted here.
-    -- For now, we note that this follows from the mathematical analysis.
-    exact absurd h_neg_phi_in_M (by
-      -- The contradiction arises because the G-lift of the temporal_box_seed part
-      -- combined with the M-elements leads to G(neg(phi)) ∈ M.
-      -- Full proof requires derivation restructuring infrastructure.
-      sorry)
-  · -- Case: phi ∉ L - direct contradiction from M's consistency
-    have h_L_in_M : ∀ x ∈ L, x ∈ M := by
-      intro x hx
-      have hx_in_seed := h_L_sub x hx
-      simp only [resolving_successor_seed, Set.mem_union, Set.mem_singleton_iff] at hx_in_seed
-      rcases hx_in_seed with h | h | h | h
-      · exact absurd h (by intro h_eq; rw [h_eq] at hx; exact h_phi_in_L hx)
-      · exact temporal_box_seed_subset_mcs M h_mcs h
-      · exact deferralDisjunctions_subset_mcs M h_mcs h
-      · exact p_step_blocking_formulas_subset_u M h_mcs h
-    exact h_mcs.1 L h_L_in_M ⟨d⟩
+    SetConsistent (resolving_successor_seed M phi) :=
+  temporal_theory_witness_consistent M h_mcs phi h_F
 
 /-!
 ### Phase 2: Resolving Successor Satisfies Required Properties
@@ -1613,63 +1539,13 @@ theorem temporal_witness_g_persistence (M : Set Formula) (h_mcs : SetMaximalCons
   -- By MCS closure: a ∈ W
   exact SetMaximalConsistent.implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_Ga_W
 
-/--
-F-step for target phi: phi ∈ W (trivially satisfied by construction).
+/-!
+**Deleted theorems (per task 55 plan v4)**:
+- `temporal_witness_f_step_phi`: Trivial (phi ∈ W := h_phi_W), not used anywhere.
+- `temporal_witness_f_step_general`: Mathematically FALSE - arbitrary witness W can have
+  neg(psi) ∈ W AND G(neg(psi)) ∈ W, so F-step is not guaranteed for all formulas.
+  The per-obligation approach only needs phi ∈ W (target resolution), not full F-step.
 -/
-theorem temporal_witness_f_step_phi (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (phi : Formula) (h_F : Formula.some_future phi ∈ M)
-    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_phi_W : phi ∈ W) :
-    phi ∈ W := h_phi_W
-
-/--
-F-step for other formulas: For any psi with F(psi) ∈ M, either psi ∈ W or F(psi) ∈ W.
-
-This follows because W is an MCS (negation complete), so either:
-- psi ∈ W (resolved), OR
-- neg(psi) ∈ W, which means either F(psi) ∈ W or G(neg(psi)) ∈ W
-
-Since W is an MCS, for any formula A, either A ∈ W or (A.neg) ∈ W.
-So for the disjunction (psi ∨ F(psi)):
-- If psi ∈ W: done (F-step satisfied with psi resolved)
-- If psi ∉ W: then neg(psi) ∈ W. Now either F(psi) ∈ W or neg(F(psi)) = G(neg(psi)) ∈ W.
-  - If F(psi) ∈ W: done (F-step satisfied with deferral)
-  - If G(neg(psi)) ∈ W: the F-obligation is still deferred.
--/
-theorem temporal_witness_f_step_general (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) :
-    f_content M ⊆ W ∪ f_content W := by
-  intro psi h_fc
-  -- psi ∈ f_content M means F(psi) ∈ M
-  have h_F_psi : Formula.some_future psi ∈ M := h_fc
-  -- W is MCS, so either psi ∈ W or neg(psi) ∈ W
-  rcases SetMaximalConsistent.negation_complete h_W_mcs psi with h_psi_W | h_neg_psi_W
-  · -- Case: psi ∈ W
-    left; exact h_psi_W
-  · -- Case: neg(psi) ∈ W
-    -- Either F(psi) ∈ W or G(neg(psi)) ∈ W
-    rcases SetMaximalConsistent.negation_complete h_W_mcs (Formula.some_future psi) with h_F_psi_W | h_G_neg_psi_W
-    · -- F(psi) ∈ W: psi ∈ f_content W
-      right; exact h_F_psi_W
-    · -- G(neg(psi)) ∈ W (since neg(F(psi)) = G(neg(psi)))
-      -- This means F(psi) is "blocked" in W. The F-step is still satisfied
-      -- because either psi ∈ W or F(psi) ∈ W - but we're in the neg(psi) case
-      -- and neg(F(psi)) case, so neither holds...
-      -- Actually this means psi ∉ W and F(psi) ∉ W, which violates F-step!
-      -- The F-step condition says: f_content M ⊆ W ∪ f_content W
-      -- i.e., for F(psi) ∈ M, need psi ∈ W OR F(psi) ∈ W
-      -- Here we have neg(psi) ∈ W and neg(F(psi)) = G(neg(psi)) ∈ W
-      -- This means psi ∉ W and F(psi) ∉ W.
-      -- So F-step is NOT satisfied for arbitrary witnesses!
-
-      -- The resolution: temporal_theory_witness_exists doesn't guarantee F-step
-      -- for all formulas - only for the target phi. The G-agreement doesn't
-      -- prevent G(neg(psi)) from being in W.
-
-      -- For the per-obligation approach, we don't need full F-step.
-      -- We just need phi to be in W.
-
-      -- Mark as needing further analysis
-      right; exact sorry
 
 /-!
 ### Phase 3: Box-Class Bundle Construction
@@ -1693,8 +1569,10 @@ theorem boxClassFamilies_nonempty (M0 : Set Formula) (h_mcs : SetMaximalConsiste
     (boxClassFamilies M0 h_mcs).Nonempty := by
   use SuccChainFMCS (MCS_to_SerialMCS M0 h_mcs)
   simp only [boxClassFamilies, Set.mem_setOf_eq]
-  exact ⟨M0, h_mcs, 0, box_class_agree_refl M0, by
-    unfold shifted_fmcs; congr; ext t; simp⟩
+  refine ⟨M0, h_mcs, 0, box_class_agree_refl M0, ?_⟩
+  unfold shifted_fmcs
+  cases (SuccChainFMCS (MCS_to_SerialMCS M0 h_mcs))
+  simp only [Int.sub_zero]
 
 /--
 The eval family (unshifted chain from M0) is in the bundle.
@@ -1702,8 +1580,10 @@ The eval family (unshifted chain from M0) is in the bundle.
 theorem eval_family_mem_boxClassFamilies (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
     SuccChainFMCS (MCS_to_SerialMCS M0 h_mcs) ∈ boxClassFamilies M0 h_mcs := by
   simp only [boxClassFamilies, Set.mem_setOf_eq]
-  exact ⟨M0, h_mcs, 0, box_class_agree_refl M0, by
-    unfold shifted_fmcs; congr; ext t; simp⟩
+  refine ⟨M0, h_mcs, 0, box_class_agree_refl M0, ?_⟩
+  unfold shifted_fmcs
+  cases (SuccChainFMCS (MCS_to_SerialMCS M0 h_mcs))
+  simp only [Int.sub_zero]
 
 /-!
 ### Phase 4: Modal Coherence Proofs
@@ -1779,18 +1659,18 @@ theorem boxClassFamilies_box_agree (M0 : Set Formula) (h_mcs : SetMaximalConsist
   unfold shifted_fmcs
   simp only
   constructor
-  · intro h =>
+  · intro h
     have h0 := parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi (t - k) 0 h
     have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
       unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
     rw [h_eq] at h0
     exact (h_agree phi).mpr h0
-  · intro h =>
-    have h_W := (h_agree phi).mp h
+  · intro h
+    have h_W' := (h_agree phi).mp h
     have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
       unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
     have h0 : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 := by
-      rw [h_eq]; exact h_W
+      rw [h_eq]; exact h_W'
     exact parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi 0 (t - k) h0
 
 /--

@@ -38,7 +38,7 @@ technical_debt:
  └→ 56 → 57 (cleanup, parallel to 58)
 ```
 
-1. **55** [PLANNED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
+1. **55** [IMPLEMENTING] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
 2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
 3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #55 (Revised v4)
 
 - **Task**: 55 - Prove SuccChain Temporal Coherence Directly
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL] (Phases 1-2 complete, Phases 3-4 blocked by pre-existing errors)
 - **Effort**: 3 hours (reduced from 5 hours due to simplifications)
 - **Dependencies**: None (supersedes tasks 36, 37, 53)
 - **Research Inputs**: reports/04_resolving-chain-detailed.md, reports/10_team-research.md
@@ -58,7 +58,23 @@ Plan v3 attempted to extend the seed with deferralDisjunctions and p_step_blocki
 
 ## Implementation Phases
 
-### Phase 1: Simplify Resolving Seed and Consistency [NOT STARTED]
+### Phase 1: Simplify Resolving Seed and Consistency [PARTIAL]
+
+**Status**: Phase 1 code changes complete. Fixed most pre-existing syntax errors (29 -> 10).
+Remaining errors are deep logical issues in other theorems (not in Phase 1 region).
+
+**Changes Made**:
+- Simplified `resolving_successor_seed` to minimal `{phi} ∪ temporal_box_seed M`
+- Replaced complex `resolving_successor_seed_consistent` with direct delegation to `temporal_theory_witness_consistent`
+- Simplified helper lemmas to match minimal seed
+- Fixed pre-existing List.mem_filter syntax issues (of_decide_eq_true, decide_eq_true)
+- Fixed pre-existing List.mem_cons_self syntax issues (.head _)
+- Added missing namespace open (ParametricTruthLemma)
+
+**Remaining pre-existing errors** (not in Phase 1 region):
+- Lines 1291, 1672, 1686: Logical errors in H-lift proofs
+- Lines 1715, 1721: Type mismatches in boxClassFamilies proofs
+- Lines 1826, 1869, 1892-1893: Issues in construct_bfmcs
 
 **Goal**: Reduce the resolving seed to minimal form with trivial consistency proof.
 
@@ -98,7 +114,7 @@ Plan v3 attempted to extend the seed with deferralDisjunctions and p_step_blocki
 
 ---
 
-### Phase 2: Delete False Theorem and Unused Code [NOT STARTED]
+### Phase 2: Delete False Theorem and Unused Code [COMPLETED]
 
 **Goal**: Remove mathematically false theorem and clean up Phase 1-2 artifacts from v3.
 
@@ -126,7 +142,7 @@ Plan v3 attempted to extend the seed with deferralDisjunctions and p_step_blocki
 
 ---
 
-### Phase 3: Prove boxClassFamilies_temporally_coherent via Per-Obligation [NOT STARTED]
+### Phase 3: Prove boxClassFamilies_temporally_coherent via Per-Obligation [BLOCKED]
 
 **Goal**: Replace the sorry-dependent proof with direct per-obligation argument.
 
@@ -208,7 +224,7 @@ Leave `boxClassFamilies_temporally_coherent` delegating to `SuccChainTemporalCoh
 
 ---
 
-### Phase 4: Cleanup and Deprecation [NOT STARTED]
+### Phase 4: Cleanup and Deprecation [BLOCKED]
 
 **Goal**: Mark false theorems as deprecated and document the approach.
 
