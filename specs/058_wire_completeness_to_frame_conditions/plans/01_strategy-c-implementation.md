@@ -46,7 +46,7 @@ Eliminate the 3 sorries in `FrameConditions/Completeness.lean` (`dense_completen
 
 ## Implementation Phases
 
-### Phase 1: Fix Forward F-Coherence (restricted_bounded_witness) [NOT STARTED]
+### Phase 1: Fix Forward F-Coherence (restricted_bounded_witness) [PARTIAL]
 
 **Goal**: Make `restricted_forward_chain_forward_F` sorry-free by implementing the missing `restricted_bounded_witness` lemma.
 

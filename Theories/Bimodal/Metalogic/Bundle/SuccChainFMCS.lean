@@ -2134,8 +2134,6 @@ hence their F-subformulas are in subformulaClosure.
 so negation completeness applies.
 -/
 
-
-
 /--
 Helper: F(psi) in the restricted chain at position k implies psi or F(psi) is in position k+1.
 
@@ -2153,6 +2151,118 @@ theorem restricted_forward_chain_F_step_witness (phi : Formula)
   have h_or := h_f_step h_psi_in_f
   simp only [Set.mem_union] at h_or
   exact h_or
+
+/--
+Bounded witness lemma: Given `iter_F d theta ∈ chain(k)` with boundary at d
+(i.e., `iter_F (d+1) theta ∉ chain(k)`), prove `theta ∈ chain(m)` for some `m > k`.
+
+The proof works by strong induction on d. At each step:
+1. Apply F_step_witness to get: `iter_F (d-1) theta ∈ chain(k+1)` OR `iter_F d theta ∈ chain(k+1)`
+2. If the left case holds and d=1, we're done (theta ∈ chain(k+1))
+3. If the left case holds and d>1, recursively find where iter_F (d-1) theta resolves
+4. If the right case holds (depth preserved), use F_bounded at k+1 for fresh boundary and recurse
+
+The key insight is that F-nesting is bounded by deferralClosure depth. Since deferralClosure(phi)
+is finite, the maximum F-depth for theta is bounded. Each step either decreases depth (termination
+by d) or maintains depth at a later position. The proof terminates because d strictly decreases
+when we make progress on unwinding.
+-/
+theorem restricted_bounded_witness (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (theta : Formula) (d : Nat)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
+    (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
+    ∃ m : Nat, m > k ∧ theta ∈ restricted_forward_chain phi M0 m := by
+  -- Strong induction on d
+  induction d generalizing k with
+  | zero =>
+    -- Contradiction: d ≥ 1 but d = 0
+    omega
+  | succ n ih =>
+    -- d = n + 1. We have: iter_F (n+1) theta = F(iter_F n theta) ∈ chain(k)
+    -- And: iter_F (n+2) theta ∉ chain(k)
+    simp only [iter_F_succ] at h_iter_in
+    -- By F_step_witness: iter_F n theta ∈ chain(k+1) OR F(iter_F n theta) ∈ chain(k+1)
+    have h_or := restricted_forward_chain_F_step_witness phi M0 k (iter_F n theta) h_iter_in
+    rcases h_or with h_resolved | h_deferred
+    · -- Case 1: iter_F n theta ∈ chain(k+1) (F-nesting decreased)
+      by_cases hn : n = 0
+      · -- n = 0: theta ∈ chain(k+1), and k+1 > k
+        subst hn
+        simp only [iter_F_zero] at h_resolved
+        exact ⟨k + 1, by omega, h_resolved⟩
+      · -- n ≥ 1: need to continue unwinding
+        have h_n_ge : n ≥ 1 := Nat.one_le_iff_ne_zero.mpr hn
+        -- iter_F n theta = F(iter_F (n-1) theta) ∈ chain(k+1)
+        have h_F_in_k1 : Formula.some_future (iter_F (n - 1) theta) ∈ restricted_forward_chain phi M0 (k + 1) := by
+          have h_eq : iter_F n theta = Formula.some_future (iter_F (n - 1) theta) := by
+            obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+            simp [iter_F_succ]
+          rw [h_eq] at h_resolved
+          exact h_resolved
+        -- Get fresh boundary at k+1 via F_bounded
+        obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+          restricted_forward_chain_F_bounded phi M0 (k + 1) (iter_F (n - 1) theta) h_F_in_k1
+        -- Apply IH recursively to iter_F (n-1) theta at k+1 with boundary d'
+        obtain ⟨m, h_m_gt, h_in_m⟩ := ih (k + 1) h_d'_ge h_d'_in h_d'_not
+        -- h_in_m : iter_F (n-1) theta ∈ chain(m) with m > k+1
+        -- Now iter_F (n-1) theta ∈ chain(m) with n-1 ≥ 0
+        by_cases hn1 : n - 1 = 0
+        · -- n-1 = 0 means n = 1, so theta ∈ chain(m)
+          simp only [hn1, iter_F_zero] at h_in_m
+          exact ⟨m, by omega, h_in_m⟩
+        · -- n-1 ≥ 1: continue unwinding from position m
+          have h_n1_ge : n - 1 ≥ 1 := Nat.one_le_iff_ne_zero.mpr hn1
+          -- iter_F (n-1) theta ∈ chain(m) with n-1 ≥ 1
+          -- This means F(iter_F (n-2) theta) ∈ chain(m)
+          have h_F_in_m : Formula.some_future (iter_F (n - 2) theta) ∈ restricted_forward_chain phi M0 m := by
+            have h_eq : iter_F (n - 1) theta = Formula.some_future (iter_F (n - 2) theta) := by
+              obtain ⟨m', rfl⟩ : ∃ m', n - 1 = m' + 1 := ⟨n - 2, by omega⟩
+              simp [iter_F_succ]
+            rw [h_eq] at h_in_m
+            exact h_in_m
+          -- Get boundary at m
+          obtain ⟨d'', h_d''_ge, h_d''_in, h_d''_not⟩ :=
+            restricted_forward_chain_F_bounded phi M0 m (iter_F (n - 2) theta) h_F_in_m
+          -- Apply IH with n-2 (which is < n-1 < n)
+          have h_lt : n - 2 < n - 1 := by omega
+          -- Actually we need a different approach - the recursion doesn't fit the simple pattern
+          -- Let me use well-founded recursion on the formula's F-depth instead
+          -- For now, use recursive call to the full theorem on iter_F (n-1) theta
+          -- which has F-nesting n-1 < n+1
+          sorry
+
+    · -- Case 2: F(iter_F n theta) ∈ chain(k+1) (depth preserved/deferred)
+      have h_succ_in : iter_F (n + 1) theta ∈ restricted_forward_chain phi M0 (k + 1) := by
+        simp only [iter_F_succ]
+        exact h_deferred
+      -- Get boundary at chain(k+1)
+      have h_F_in : Formula.some_future (iter_F n theta) ∈ restricted_forward_chain phi M0 (k + 1) := h_deferred
+      obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+        restricted_forward_chain_F_bounded phi M0 (k + 1) (iter_F n theta) h_F_in
+      -- Apply IH to iter_F n theta at k+1 with boundary d'
+      obtain ⟨m, h_m_gt, h_in_m⟩ := ih (k + 1) h_d'_ge h_d'_in h_d'_not
+      -- h_in_m : iter_F n theta ∈ chain(m) with m > k+1
+      -- Now need to continue unwinding iter_F n theta
+      by_cases hn : n = 0
+      · -- n = 0: theta ∈ chain(m), and m > k+1 > k
+        subst hn
+        simp only [iter_F_zero] at h_in_m
+        exact ⟨m, by omega, h_in_m⟩
+      · -- n ≥ 1: continue unwinding from m
+        have h_n_ge : n ≥ 1 := Nat.one_le_iff_ne_zero.mpr hn
+        have h_F_in_m : Formula.some_future (iter_F (n - 1) theta) ∈ restricted_forward_chain phi M0 m := by
+          have h_eq : iter_F n theta = Formula.some_future (iter_F (n - 1) theta) := by
+            obtain ⟨m', rfl⟩ : ∃ m', n = m' + 1 := ⟨n - 1, by omega⟩
+            simp [iter_F_succ]
+          rw [h_eq] at h_in_m
+          exact h_in_m
+        obtain ⟨d'', h_d''_ge, h_d''_in, h_d''_not⟩ :=
+          restricted_forward_chain_F_bounded phi M0 m (iter_F (n - 1) theta) h_F_in_m
+        -- Need to recurse on iter_F (n-1) theta with the new boundary
+        -- This is getting complex - the recursion structure needs adjustment
+        sorry
+termination_by d
 
 /--
 Helper: If iter_F d psi ∈ chain(k) for some d >= 1, then psi ∈ chain(k + d') for some d'.
@@ -2210,31 +2320,27 @@ private theorem restricted_forward_chain_iter_F_witness (phi : Formula)
   -- iter_F d_max (iter_F (d-1) psi) ∈ chain(k)
   -- iter_F (d_max + 1) (iter_F (d-1) psi) ∉ chain(k)
   -- By bounded_witness on iter_F (d-1) psi with depth d_max:
-  -- iter_F (d-1) psi ∈ chain(k + d_max)
+  -- ∃ m > k, iter_F (d-1) psi ∈ chain(m)
 
-  have h_result := restricted_bounded_witness phi M0 k (iter_F (d - 1) psi) d_max
+  obtain ⟨m', h_m'_gt, h_result⟩ := restricted_bounded_witness phi M0 k (iter_F (d - 1) psi) d_max
     h_d_max_ge h_d_max_in h_d_max_not
-  -- h_result : iter_F (d-1) psi ∈ chain(k + d_max)
+  -- h_result : iter_F (d-1) psi ∈ chain(m') with m' > k
 
-  -- We want to show: psi ∈ chain(k + d_max + (d-1))
-  -- If d = 1, then iter_F 0 psi = psi ∈ chain(k + d_max), so m = k + d_max, and k < k + d_max (since d_max >= 1).
-  -- If d > 1, then iter_F (d-1) psi ∈ chain(k + d_max) with d-1 >= 1.
-  --   We can recursively apply this theorem. But for simplicity, let's iterate.
+  -- If d = 1, then iter_F 0 psi = psi ∈ chain(m'), and m' > k.
+  -- If d > 1, then iter_F (d-1) psi ∈ chain(m') with d-1 >= 1, recursively apply.
 
-  -- Base case d = 1
   by_cases h_eq : d = 1
   · -- d = 1
     subst h_eq
     simp only [Nat.sub_self, iter_F_zero] at h_result
-    -- h_result : psi ∈ chain(k + d_max)
-    exact ⟨k + d_max, by omega, h_result⟩
+    -- h_result : psi ∈ chain(m')
+    exact ⟨m', h_m'_gt, h_result⟩
   · -- d > 1, so d - 1 >= 1
-    have h_gt : d > 1 := by omega
     have h_d_minus_1_ge : d - 1 ≥ 1 := by omega
-    -- Recurse with d - 1 at position k + d_max
+    -- Recurse with d - 1 at position m'
     obtain ⟨m, h_m_gt, h_psi_in_m⟩ :=
-      restricted_forward_chain_iter_F_witness phi M0 (k + d_max) (d - 1) psi h_d_minus_1_ge h_result
-    -- h_m_gt : k + d_max < m
+      restricted_forward_chain_iter_F_witness phi M0 m' (d - 1) psi h_d_minus_1_ge h_result
+    -- h_m_gt : m' < m
     -- h_psi_in_m : psi ∈ chain(m)
     exact ⟨m, by omega, h_psi_in_m⟩
 termination_by d
