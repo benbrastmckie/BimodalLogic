@@ -92,9 +92,9 @@
         48
       ],
       "created": "2026-03-24T19:42:07Z",
-      "last_updated": "2026-03-25T02:59:05Z",
-      "session_id": "sess_1774407108_74b56a",
-      "researched": "2026-03-25T02:59:05Z",
+      "last_updated": "2026-03-25T03:38:17Z",
+      "session_id": "sess_1774408665_28fbb4",
+      "researched": "2026-03-25T03:38:17Z",
       "planned": "2026-03-25T02:21:47Z",
       "started": "2026-03-24T21:29:24Z",
       "artifacts": [
@@ -126,6 +126,11 @@
           "path": "specs/055_prove_succchain_temporal_coherence_directly/reports/01_axiom-dependency-trace.md",
           "type": "research",
           "summary": "Axiom dependency trace: sorry chain is NOT inert, affects completeness via succ_chain_truth_forward"
+        },
+        {
+          "path": "specs/055_prove_succchain_temporal_coherence_directly/reports/20_team-research.md",
+          "type": "research",
+          "summary": "Deep mathematical analysis: forward direction requirements + canonical vs SuccChain paths (2 teammates)"
         }
       ]
     },
