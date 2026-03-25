@@ -77,6 +77,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/plans/02_revised-strategy-c.md",
           "type": "plan",
           "summary": "Revised 5-phase plan: seed modification approach (v2)"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/04_termination-strategy.md",
+          "type": "research",
+          "summary": "Termination strategy: fix boundary_resolution_set definition"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
