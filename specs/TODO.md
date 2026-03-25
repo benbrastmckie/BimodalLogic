@@ -1,5 +1,5 @@
 ---
-next_project_number: 64
+next_project_number: 65
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -12,11 +12,11 @@ task_counts:
   abandoned: 54
   total: 792
 technical_debt:
-  sorry_count: 98
-  sorry_count_note: "Per ROADMAP.md: 24 SuccChain (critical), 16 examples, 16 perpetuity, 9 completeness wiring, 5 soundness, 4 FMP, 4 RestrictedMCS, 20 infra"
-  publication_path_sorries: 24
-  axiom_count: 2
-  axiom_count_note: "f_nesting_boundary, p_nesting_boundary (tasks 36, 37). Task 42 tracks elimination."
+  sorry_count: 25
+  sorry_count_note: "Audited 2026-03-25: 12 examples/exercises, 5 soundness, 3 completeness wiring, 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc"
+  publication_path_sorries: 9
+  axiom_count: 1
+  axiom_count_note: "discrete_Icc_finite_axiom (task 60). f_nesting_boundary/p_nesting_boundary eliminated in task 56."
   build_errors: 0
   status: excellent
 ---
@@ -45,12 +45,16 @@ technical_debt:
 
 1. **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
-### 3. Experimental
+### 3. Research
+
+- **64** [RESEARCHED] — Critical path review: algebraic analysis of completeness obstacles
+
+### 4. Experimental
 
 - **61** [NOT STARTED] — Eliminate BFMCS bundles entirely (independent, explore later)
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 
-### 4. Deferred
+### 5. Deferred
 
 - **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
 - **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
@@ -58,7 +62,7 @@ technical_debt:
 - **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
 - **998** [NOT STARTED] — FMP redesign for strict temporal (separate concern)
 
-### 5. Backlog
+### 6. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
 - **6** [RESEARCHED] — Canonical TaskFrame completeness (may be superseded by 8)
@@ -70,6 +74,31 @@ technical_debt:
 ## Tasks
 
 ---
+
+---
+
+### 64. Critical path review: algebraic analysis of completeness obstacles
+- **Effort**: Research task (complete)
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Research**: [01_critical-path-analysis.md](064_critical_path_review/reports/01_critical-path-analysis.md)
+
+**Description**: Multi-agent review of the critical path tasks (58-60) for accuracy, identification of gaps, and algebraic strategy analysis. Key findings:
+
+**Sorry inventory correction**: Actual sorry count is 25 (not 98 per ROADMAP). SuccChain sorries (24) removed in task 56. Perpetuity bridge (16) all proven. Publication-path sorries: 9 (tasks 58+59 only). The ROADMAP Class A/B distinction is moot — the SuccChain approach was abandoned.
+
+**TODO.md accuracy**: Task descriptions are accurate on locations and content. Task 59 is incorrectly marked as dependent on 58 — it's parallelizable. Task 58's description understates the obstacle: the real blocker is temporal coherence construction, not wiring.
+
+**Central obstacle**: `construct_bfmcs` requires `B.temporally_coherent` proof. The deprecated implementation depends on the false `f_nesting_is_bounded`. The entire 5,300-line sorry-free algebraic path reduces to this single callback.
+
+**Algebraic resolution strategies identified**:
+- **(A) Zorn on R_G-chains**: Maximal chains through R_□-class exist; challenge is matching order type of D.
+- **(B) Temporal shift automorphism**: Define τ on Lindenbaum algebra; FMCS = {τᵗ(U)}. Challenge: G is not invertible.
+- **(C) Restricted chain + σ-duality** (recommended): Forward chain is sorry-free; use σ-duality for backward chain; dovetail into FMCS over ℤ. Shortest path leveraging existing infrastructure.
+
+**STSA status**: Typeclass and LindenbaumAlg instance are fully sorry-free (TenseS5Algebra.lean, 350 lines). The STSA representation theorem (task 992) is a reorganization of existing code, not on critical path but provides the elegant algebraic framing.
+
+**Custom axiom inventory**: Only `discrete_Icc_finite_axiom` remains (task 60). The `f_nesting_boundary` and `p_nesting_boundary` axioms were eliminated in task 56.
 
 ---
 
