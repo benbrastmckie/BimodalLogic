@@ -37,7 +37,7 @@ technical_debt:
 58 → 59 → 60
 ```
 
-1. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — Strategy A: Zorn on R_G-chains
+1. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — Strategy A: ultrafilter F-witness
 2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -144,6 +144,7 @@ technical_debt:
   - [02_team-research.md](058_wire_completeness_to_frame_conditions/reports/02_team-research.md)
   - [03_ultrafilter-chain-verification.md](058_wire_completeness_to_frame_conditions/reports/03_ultrafilter-chain-verification.md)
   - [05_elegant-approach-analysis.md](058_wire_completeness_to_frame_conditions/reports/05_elegant-approach-analysis.md) — Strategy A recommended
+  - [06_team-research.md](058_wire_completeness_to_frame_conditions/reports/06_team-research.md) — Task relation algebraic analysis (2 teammates)
 - **Plan**: [02_revised-strategy-c.md](058_wire_completeness_to_frame_conditions/plans/02_revised-strategy-c.md) (superseded)
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
