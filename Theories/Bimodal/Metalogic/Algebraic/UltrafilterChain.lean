@@ -1805,7 +1805,7 @@ at position n.
 
 See Task #55 research reports for detailed analysis.
 -/
-@[deprecated "Use restricted chain construction for temporally coherent families"]
+@[deprecated "Use restricted chain construction for temporally coherent families" (since := "2026-03-24")]
 theorem boxClassFamilies_temporally_coherent (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
     ∀ fam ∈ boxClassFamilies M0 h_mcs,
       (∀ t φ, Formula.some_future φ ∈ fam.mcs t → ∃ s, t < s ∧ φ ∈ fam.mcs s) ∧

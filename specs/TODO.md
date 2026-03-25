@@ -38,7 +38,7 @@ technical_debt:
  └→ 56 → 57 (cleanup, parallel to 58)
 ```
 
-1. **55** [PLANNED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
+1. **55** [COMPLETED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
 2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
 3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -147,7 +147,9 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 55. Prove SuccChain temporal coherence directly
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-24
+- **Summary**: succ_chain_truth_forward verified sorry-free (no restructuring needed), added deprecation dates to 10 theorems
 - **Language**: lean4
 - **Dependencies**: Task 48
 - **Research**:

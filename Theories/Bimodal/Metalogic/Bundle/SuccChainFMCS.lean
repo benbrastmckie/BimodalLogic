@@ -749,7 +749,7 @@ target formula's closure.
 
 **Current status**: Remains as sorry for backward compatibility; callers should migrate.
 -/
-@[deprecated f_nesting_is_bounded_restricted]
+@[deprecated f_nesting_is_bounded_restricted (since := "2026-03-24")]
 theorem f_nesting_is_bounded (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
     ∃ n, n ≥ 2 ∧ iter_F n phi ∉ M := by
@@ -778,7 +778,7 @@ frame with unbounded future. This is the counterexample that breaks the theorem.
 The proof combines f_nesting_is_bounded (existence of some n with iter_F n phi ∉ M)
 with f_nesting_boundary_of_bounded (extracting the boundary via Nat.find).
 -/
-@[deprecated f_nesting_boundary_restricted]
+@[deprecated f_nesting_boundary_restricted (since := "2026-03-24")]
 theorem f_nesting_boundary
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
@@ -846,7 +846,7 @@ target formula's closure.
 
 For negative indices, we step forward to 0 or beyond and apply the positive case.
 -/
-@[deprecated restricted_forward_chain_forward_F]
+@[deprecated "Use restricted chain forward_F when implemented" (since := "2026-03-24")]
 theorem succ_chain_forward_F (M0 : SerialMCS) (n : Int) (phi : Formula)
     (h_F : Formula.some_future phi ∈ succ_chain_fam M0 n) :
     ∃ m : Int, n < m ∧ phi ∈ succ_chain_fam M0 m := by
@@ -1001,7 +1001,7 @@ RestrictedMCS evidence.
 
 **Current status**: Remains as sorry for backward compatibility; callers should migrate.
 -/
-@[deprecated p_nesting_is_bounded_restricted]
+@[deprecated p_nesting_is_bounded_restricted (since := "2026-03-24")]
 theorem p_nesting_is_bounded (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
     ∃ n, n ≥ 2 ∧ iter_P n phi ∉ M := by
@@ -1018,7 +1018,7 @@ iter_P d phi ∈ M and iter_P (d+1) phi ∉ M.
 
 Symmetric to f_nesting_boundary for the past direction.
 -/
-@[deprecated p_nesting_boundary_restricted]
+@[deprecated p_nesting_boundary_restricted (since := "2026-03-24")]
 theorem p_nesting_boundary
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
@@ -1133,7 +1133,7 @@ implemented (symmetric to restricted_forward_chain_forward_F).
 3. Build CanonicalTask_backward_MCS_P chain of length d going backward from n
 4. Apply backward_witness to get phi at succ_chain_fam M0 (n - d)
 -/
-@[deprecated "Use restricted chain backward_P when implemented"]
+@[deprecated "Use restricted chain backward_P when implemented" (since := "2026-03-24")]
 theorem succ_chain_backward_P (M0 : SerialMCS) (n : Int) (phi : Formula)
     (h_P : Formula.some_past phi ∈ succ_chain_fam M0 n) :
     ∃ m : Int, m < n ∧ phi ∈ succ_chain_fam M0 m := by
@@ -1221,7 +1221,7 @@ and the backward direction of `succ_chain_truth_lemma`.
 **Migration path**: Use restricted chain-based temporal coherence when implemented, or
 use the canonical construction which has sorry-free `canonical_forward_F`.
 -/
-@[deprecated "Use restricted chain or canonical construction"]
+@[deprecated "Use restricted chain or canonical construction" (since := "2026-03-24")]
 noncomputable def SuccChainTemporalCoherent (M0 : SerialMCS) : TemporalCoherentFamily Int where
   toFMCS := SuccChainFMCS M0
   forward_F := succ_chain_forward_F M0

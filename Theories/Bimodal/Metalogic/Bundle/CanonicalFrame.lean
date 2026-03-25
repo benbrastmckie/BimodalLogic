@@ -70,7 +70,7 @@ def ExistsTask (M M' : Set Formula) : Prop :=
 @[simp] lemma ExistsTask_def {M M' : Set Formula} : ExistsTask M M' = (g_content M ⊆ M') := rfl
 
 /-- Backward compatibility alias for ExistsTask. -/
-@[deprecated ExistsTask "Use ExistsTask instead. CanonicalR is being phased out."]
+@[deprecated ExistsTask "Use ExistsTask instead. CanonicalR is being phased out." (since := "2026-03-24")]
 abbrev CanonicalR := ExistsTask
 
 /--
@@ -85,7 +85,7 @@ def ExistsTask_past (M M' : Set Formula) : Prop :=
 @[simp] lemma ExistsTask_past_def {M M' : Set Formula} : ExistsTask_past M M' = (h_content M ⊆ M') := rfl
 
 /-- Backward compatibility alias for ExistsTask_past. -/
-@[deprecated ExistsTask_past "Use ExistsTask_past instead. CanonicalR_past is being phased out."]
+@[deprecated ExistsTask_past "Use ExistsTask_past instead. CanonicalR_past is being phased out." (since := "2026-03-24")]
 abbrev CanonicalR_past := ExistsTask_past
 
 /-!
