@@ -36,6 +36,28 @@ deep temporal logic reasoning:
 These are semantically justified and follow from the frame conditions
 (NoMaxOrder, NoMinOrder) and the F-step/P-step properties of Succ.
 
+## Known Limitations (Task #55)
+
+The `succ_chain_forward_F` and `succ_chain_backward_P` theorems depend on
+`f_nesting_is_bounded` and `p_nesting_is_bounded`, which are **mathematically
+FALSE** for arbitrary MCS. An MCS can contain {F^n(p) | n ∈ Nat} and still be
+consistent - the formula nesting is unbounded.
+
+**Status**: The deprecated theorems use sorry. The restricted versions
+(`f_nesting_is_bounded_restricted`, etc.) work correctly for RestrictedMCS.
+
+**Path Forward** (three options):
+1. **Fair-scheduling chain**: Construct a different chain that enumerates and
+   forces each F-obligation in turn, rather than deterministically choosing
+   successors. This is the standard completeness technique.
+2. **Bundle-level coherence**: Weaken temporal coherence to say phi appears
+   in SOME family at SOME future time, rather than the SAME family. This
+   requires propagating the change through BFMCS and truth evaluation.
+3. **Restricted completeness**: Build the completeness proof using RestrictedMCS
+   from the target formula's closure, where boundedness IS provable.
+
+See `reports/10_team-research.md` for detailed analysis.
+
 ## References
 
 - SuccRelation.lean - Succ definition
@@ -742,16 +764,21 @@ Migrate to `f_nesting_boundary_restricted` which works with RestrictedMCS.
 F-nesting boundary: Given F(phi) ∈ M, there exists d ≥ 1 such that
 iter_F d phi ∈ M and iter_F (d+1) phi ∉ M.
 
-**Semantic Justification**:
+**Semantic Justification** (INCORRECT - see below):
 The sequence F(phi), FF(phi), FFF(phi), ... must eventually leave M because:
 1. M is consistent (no formula and its negation are both in M)
 2. For each formula psi, either psi ∈ M or neg(psi) ∈ M (negation completeness)
 3. If all F^n(phi) ∈ M for all n, the frame would need infinitely many future
    worlds to satisfy all these commitments, violating finite satisfiability.
 
+**Why the justification is wrong**: Point 3 assumes finite satisfiability, but
+an MCS can contain {F^n(p) | n ∈ Nat} and still be satisfiable in an infinite
+frame with unbounded future. This is the counterexample that breaks the theorem.
+
 The proof combines f_nesting_is_bounded (existence of some n with iter_F n phi ∉ M)
 with f_nesting_boundary_of_bounded (extracting the boundary via Nat.find).
 -/
+@[deprecated f_nesting_boundary_restricted]
 theorem f_nesting_boundary
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
@@ -970,11 +997,16 @@ theorem p_nesting_is_bounded (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   sorry
 
 /--
+**BLOCKED (uses blocked p_nesting_is_bounded)**: P-nesting boundary for arbitrary MCS.
+
+Migrate to `p_nesting_boundary_restricted` which works with RestrictedMCS.
+
 P-nesting boundary: Given P(phi) ∈ M, there exists d ≥ 1 such that
 iter_P d phi ∈ M and iter_P (d+1) phi ∉ M.
 
 Symmetric to f_nesting_boundary for the past direction.
 -/
+@[deprecated p_nesting_boundary_restricted]
 theorem p_nesting_boundary
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :

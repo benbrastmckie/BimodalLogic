@@ -224,7 +224,7 @@ Leave `boxClassFamilies_temporally_coherent` delegating to `SuccChainTemporalCoh
 
 ---
 
-### Phase 4: Cleanup and Deprecation [BLOCKED]
+### Phase 4: Cleanup and Deprecation [COMPLETED]
 
 **Goal**: Mark false theorems as deprecated and document the approach.
 

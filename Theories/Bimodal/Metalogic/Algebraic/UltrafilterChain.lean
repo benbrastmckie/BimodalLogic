@@ -1285,13 +1285,7 @@ theorem H_of_box_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     -- H(Box(x) → x) → (H(Box(x)) → H(x)) by past K-distribution.
     have h_box_t : [] ⊢ (Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg) :=
       DerivationTree.axiom [] _ (Axiom.modal_t ((Formula.box a).neg))
-    -- H(Box(x) → x) via past necessitation (temporal duality of temporal necessitation)
-    have h_H_box_t_deriv : [(Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)] ⊢
-        Formula.all_past ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) := by
-      exact Bimodal.Theorems.generalized_past_k
-        [(Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)]
-        _ (DerivationTree.assumption _ _ (List.Mem.head _))
-    -- Actually use the empty context version
+    -- H(Box(x) → x) via past necessitation (empty context version)
     have h_H_box_t : [] ⊢ Formula.all_past ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)) := by
       have h_mapped : (Context.map Formula.all_past []) ⊢ ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg)).all_past :=
         Bimodal.Theorems.generalized_past_k [] _ h_box_t
@@ -1617,9 +1611,7 @@ theorem boxClassFamilies_modal_forward (M0 : Set Formula) (h_mcs : SetMaximalCon
     parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi (t - k) 0 h_box
 
   -- SuccChainFMCS(W).mcs 0 = W (the base MCS)
-  have h_mcs_0 : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
-    unfold SuccChainFMCS MCS_to_SerialMCS
-    exact succ_chain_fam_zero _
+  have h_mcs_0 : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := rfl
 
   -- Box(phi) ∈ W
   rw [h_mcs_0] at h_box_0
@@ -1631,9 +1623,7 @@ theorem boxClassFamilies_modal_forward (M0 : Set Formula) (h_mcs : SetMaximalCon
   have h_box_W' : Formula.box phi ∈ W' := (h_agree' phi).mp h_box_M0
 
   -- SuccChainFMCS(W').mcs 0 = W'
-  have h_mcs_0' : (SuccChainFMCS (MCS_to_SerialMCS W' h_W')).mcs 0 = W' := by
-    unfold SuccChainFMCS MCS_to_SerialMCS
-    exact succ_chain_fam_zero _
+  have h_mcs_0' : (SuccChainFMCS (MCS_to_SerialMCS W' h_W')).mcs 0 = W' := rfl
 
   -- Box(phi) ∈ SuccChainFMCS(W').mcs 0
   have h_box_0' : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W' h_W')).mcs 0 := by
@@ -1662,13 +1652,13 @@ theorem boxClassFamilies_box_agree (M0 : Set Formula) (h_mcs : SetMaximalConsist
   · intro h
     have h0 := parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi (t - k) 0 h
     have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
-      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+      unfold SuccChainFMCS MCS_to_SerialMCS; rfl
     rw [h_eq] at h0
     exact (h_agree phi).mpr h0
   · intro h
     have h_W' := (h_agree phi).mp h
     have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
-      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+      unfold SuccChainFMCS MCS_to_SerialMCS; rfl
     have h0 : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 := by
       rw [h_eq]; exact h_W'
     exact parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi 0 (t - k) h0
@@ -1695,8 +1685,7 @@ theorem boxClassFamilies_modal_backward (M0 : Set Formula) (h_mcs : SetMaximalCo
 
   -- Step 1: neg(Box(phi)) in fam.mcs(t)
   obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
-  unfold shifted_fmcs at h_not_box ⊢
-  simp only at h_not_box ⊢
+  simp only [shifted_fmcs] at h_not_box
   have h_mcs_t := (SuccChainFMCS (MCS_to_SerialMCS W h_W)).is_mcs (t - k)
   have h_neg_box : Formula.neg (Formula.box phi) ∈
       (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs (t - k) := by
@@ -1710,7 +1699,7 @@ theorem boxClassFamilies_modal_backward (M0 : Set Formula) (h_mcs : SetMaximalCo
   have h_box_not_W : Formula.box phi ∉ W := by
     intro h_in_W
     have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := by
-      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+      unfold SuccChainFMCS MCS_to_SerialMCS; rfl
     have h0 : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 := by
       rw [h_eq]; exact h_in_W
     exact h_not_box (parametric_box_persistent (SuccChainFMCS (MCS_to_SerialMCS W h_W)) phi 0 (t - k) h0)
@@ -1773,15 +1762,15 @@ theorem boxClassFamilies_modal_backward (M0 : Set Formula) (h_mcs : SetMaximalCo
 
   -- Step 6: neg(phi) is in witness_fam.mcs(t)
   have h_neg_phi_at_t : Formula.neg phi ∈ witness_fam.mcs t := by
-    unfold_let witness_fam
+    show Formula.neg phi ∈ (shifted_fmcs (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)) t).mcs t
     unfold shifted_fmcs
     simp only
     -- (t - t) = 0, so mcs 0 = W'
     have h_eq : (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)).mcs (t - t) =
-                (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)).mcs 0 := by ring_nf
+                (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)).mcs 0 := by simp only [Int.sub_self]
     rw [h_eq]
     have h_mcs0 : (SuccChainFMCS (MCS_to_SerialMCS W' h_W'_mcs)).mcs 0 = W' := by
-      unfold SuccChainFMCS MCS_to_SerialMCS; exact succ_chain_fam_zero _
+      unfold SuccChainFMCS MCS_to_SerialMCS; rfl
     rw [h_mcs0]
     exact h_neg_phi_W'
 
@@ -1814,10 +1803,10 @@ theorem boxClassFamilies_temporally_coherent (M0 : Set Formula) (h_mcs : SetMaxi
 Wire everything together into the signature required by ParametricRepresentation.
 -/
 
+set_option maxHeartbeats 800000 in
 /--
 The main construction: given an MCS M, produce a temporally coherent BFMCS containing M.
 -/
-set_option maxHeartbeats 800000 in
 noncomputable def construct_bfmcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent)
        (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),
@@ -1840,9 +1829,8 @@ noncomputable def construct_bfmcs (M : Set Formula) (h_mcs : SetMaximalConsisten
   have hfam : fam ∈ B.families := eval_family_mem_boxClassFamilies M h_mcs
   -- M = fam.mcs 0
   have h_eq : M = fam.mcs 0 := by
-    unfold_let fam
-    unfold SuccChainFMCS MCS_to_SerialMCS
-    exact (succ_chain_fam_zero _).symm
+    show M = (SuccChainFMCS (MCS_to_SerialMCS M h_mcs)).mcs 0
+    unfold SuccChainFMCS MCS_to_SerialMCS; rfl
   exact ⟨B, h_tc, fam, hfam, 0, h_eq⟩
 
 end Bimodal.Metalogic.Algebraic.UltrafilterChain
