@@ -37,7 +37,7 @@ technical_debt:
 58 → 59 → 60
 ```
 
-1. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — BLOCKED by temporal coherence
+1. **58** [PLANNED] — Wire completeness to FrameConditions (3 sorries) — Strategy C: Restricted Chain + Dovetailing
 2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -47,7 +47,7 @@ technical_debt:
 
 ### 3. Research
 
-- **64** [RESEARCHED] — Critical path review: algebraic analysis of completeness obstacles
+- **64** [COMPLETED] — Critical path review: algebraic analysis of completeness obstacles
 
 ### 4. Experimental
 
@@ -79,7 +79,7 @@ technical_debt:
 
 ### 64. Critical path review: algebraic analysis of completeness obstacles
 - **Effort**: Research task (complete)
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Research**:
   - [01_critical-path-analysis.md](064_critical_path_review/reports/01_critical-path-analysis.md)
@@ -135,11 +135,15 @@ technical_debt:
 ---
 
 ### 58. Wire completeness to FrameConditions
-- **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
-- **Research**: [01_completeness-wiring-analysis.md](058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md)
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 55
+- **Research**:
+  - [01_completeness-wiring-analysis.md](058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md)
+  - [02_team-research.md](058_wire_completeness_to_frame_conditions/reports/02_team-research.md)
+  - [03_ultrafilter-chain-verification.md](058_wire_completeness_to_frame_conditions/reports/03_ultrafilter-chain-verification.md)
+- **Plan**: [01_strategy-c-implementation.md](058_wire_completeness_to_frame_conditions/plans/01_strategy-c-implementation.md)
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
 
