@@ -44,7 +44,7 @@ technical_debt:
 
 ### 2. Code Cleanup (parallel to critical path)
 
-1. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
+1. **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
 ### 3. Experimental
 
@@ -177,8 +177,9 @@ The key insight: BFMCS bundles ALL families agreeing on box-content with M0, so 
 
 ### 57. Clean up UltrafilterChain.lean
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
+- **Research**: [01_cleanup-analysis.md](057_clean_up_ultrafilter_chain_lean/reports/01_cleanup-analysis.md)
 
 **Description**: Remove ~150 lines of unused Phase 1 ultrafilter relations (R_G, R_Box, etc.) never referenced by the actual box-class construction. Remove ~280 lines of verbose exploratory comments in box_class_witness_consistent. Consider renaming file to BoxClassBFMCS.lean to match what it actually does.
 
