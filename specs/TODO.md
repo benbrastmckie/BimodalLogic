@@ -81,7 +81,9 @@ technical_debt:
 - **Effort**: Research task (complete)
 - **Status**: [RESEARCHED]
 - **Language**: lean4
-- **Research**: [01_critical-path-analysis.md](064_critical_path_review/reports/01_critical-path-analysis.md)
+- **Research**:
+  - [01_critical-path-analysis.md](064_critical_path_review/reports/01_critical-path-analysis.md)
+  - [02_team-research.md](064_critical_path_review/reports/02_team-research.md)
 
 **Description**: Multi-agent review of the critical path tasks (58-60) for accuracy, identification of gaps, and algebraic strategy analysis. Key findings:
 
