@@ -71,7 +71,7 @@
     {
       "project_number": 56,
       "project_name": "clean_up_succchain_fmcs_dead_code",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "description": "Remove ~2500 lines of dead code from SuccChainFMCS.lean. Delete deprecated approaches: restricted_succ_propagates_F_not variants (9 sorries, proven FALSE), single_step_forcing attempts, f_nesting_is_bounded/p_nesting_is_bounded (deprecated), fuel-based and boundary-resolution approaches. Also remove p_step_blocking_for_deferral_restricted in RestrictedMCS.lean.",
       "effort": "2-3 hours",
@@ -79,7 +79,16 @@
         55
       ],
       "created": "2026-03-24T19:42:51Z",
-      "last_updated": "2026-03-24T19:42:51Z"
+      "last_updated": "2026-03-25T04:56:03Z",
+      "session_id": "sess_1774414292_8dc702",
+      "researched": "2026-03-25T04:56:03Z",
+      "artifacts": [
+        {
+          "path": "specs/056_clean_up_succchain_fmcs_dead_code/reports/01_dead-code-inventory.md",
+          "type": "research_report",
+          "summary": "Complete dead code inventory with 14 items totaling ~2034 lines across SuccChainFMCS.lean and RestrictedMCS.lean"
+        }
+      ]
     },
     {
       "project_number": 55,
@@ -1103,14 +1112,15 @@
     {
       "project_number": 62,
       "project_name": "resolve_succ_chain_truth_backward_sorry",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "description": "Resolve backward Box sorry in succ_chain_truth_lemma (SuccChainTruth.lean:254) and correct misleading documentation",
       "created": "2026-03-25T04:49:02Z",
-      "last_updated": "2026-03-25T04:49:02Z",
+      "last_updated": "2026-03-25T04:51:02Z",
       "dependencies": [
         55
-      ]
+      ],
+      "session_id": "sess_1774414248_6d7f52"
     }
   ],
   "next_project_number": 63,
