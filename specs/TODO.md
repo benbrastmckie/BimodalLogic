@@ -27,24 +27,22 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-24. Task 48 completed via box-class BFMCS construction. New critical path bypasses f_nesting_is_bounded entirely.*
+*Updated 2026-03-25. Tasks 48, 55, 56 completed. SuccChain temporal coherence proved, 2258 lines of dead code removed.*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-55 → 62 → 58 → 59 → 60
- └→ 56 → 57 (cleanup, parallel to 62)
+62 → 58 → 59 → 60
 ```
 
-1. **55** [COMPLETED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
-2. **62** [IMPLEMENTING] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
-3. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
-4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
-5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **62** [COMPLETED] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
+2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
+3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
+4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
-### 2. Code Cleanup
+### 2. Code Cleanup (parallel to critical path)
 
 1. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
@@ -87,11 +85,15 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 62. Resolve backward Box sorry in succ_chain_truth_lemma and correct documentation
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-24
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**: [01_sorry-dependency-analysis.md](062_resolve_succ_chain_truth_backward_sorry/reports/01_sorry-dependency-analysis.md)
 - **Plan**: [01_box-sorry-resolution.md](062_resolve_succ_chain_truth_backward_sorry/plans/01_box-sorry-resolution.md)
+- **Summary**: [01_box-sorry-summary.md](062_resolve_succ_chain_truth_backward_sorry/summaries/01_box-sorry-summary.md)
+
+**Completion Summary**: Corrected misleading documentation about succ_chain_truth_forward being sorry-free. Added comprehensive explanation of why Box backward is mathematically unprovable in singleton-Omega architecture.
 
 **Description**: The backward Box case in `succ_chain_truth_lemma` (SuccChainTruth.lean:254) contains a sorry with a misleading comment: "Box backward not needed for completeness." This is wrong — the backward direction is structurally entangled with the forward proof (the Imp forward case calls `(ih t).mpr` on sub-formulas). Task 55 added documentation reinforcing this incorrect claim.
 
