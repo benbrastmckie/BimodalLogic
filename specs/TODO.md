@@ -39,14 +39,14 @@ technical_debt:
 ```
 
 1. **55** [COMPLETED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
-2. **62** [RESEARCHING] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
+2. **62** [RESEARCHED] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
 3. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. Code Cleanup (after task 55)
 
-1. **56** [RESEARCHED] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
+1. **56** [PLANNING] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
 2. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
 ### 3. Superseded Tasks (candidates for abandonment)
@@ -88,9 +88,10 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 62. Resolve backward Box sorry in succ_chain_truth_lemma and correct documentation
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 55
+- **Research**: [01_sorry-dependency-analysis.md](062_resolve_succ_chain_truth_backward_sorry/reports/01_sorry-dependency-analysis.md)
 
 **Description**: The backward Box case in `succ_chain_truth_lemma` (SuccChainTruth.lean:254) contains a sorry with a misleading comment: "Box backward not needed for completeness." This is wrong — the backward direction is structurally entangled with the forward proof (the Imp forward case calls `(ih t).mpr` on sub-formulas). Task 55 added documentation reinforcing this incorrect claim.
 
@@ -165,7 +166,7 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 56. Clean up SuccChainFMCS.lean dead code
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**: [01_dead-code-inventory.md](specs/056_clean_up_succchain_fmcs_dead_code/reports/01_dead-code-inventory.md)
