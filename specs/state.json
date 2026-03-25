@@ -6,46 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 63,
-      "project_name": "prove_box_backward_via_bfmcs",
-      "status": "completed",
-      "language": "lean4",
-      "description": "Prove Box backward via BFMCS modal saturation and eliminate singleton-Omega dead end. Use boxClassFamilies approach from UltrafilterChain.lean to establish sorry-free Box backward direction. Update all comments to mark singleton-Omega as a mathematical dead end.",
-      "dependencies": [
-        62
-      ],
-      "created": "2026-03-25T05:23:36Z",
-      "last_updated": "2026-03-25T05:55:59Z",
-      "session_id": "sess_1774417759_efbbcd",
-      "researched": "2026-03-25T05:30:50Z",
-      "artifacts": [
-        {
-          "path": "specs/063_prove_box_backward_via_bfmcs/reports/01_team-research.md",
-          "type": "research",
-          "summary": "Team research with 2 teammates"
-        },
-        {
-          "path": "specs/063_prove_box_backward_via_bfmcs/reports/02_team-research.md",
-          "type": "research",
-          "summary": "Deep math research: S5 vs S4, per-obligation architecture"
-        },
-        {
-          "path": "specs/063_prove_box_backward_via_bfmcs/plans/01_bfmcs-modal-completeness.md",
-          "type": "plan",
-          "summary": "5-phase BFMCS modal completeness implementation"
-        },
-        {
-          "path": "specs/063_prove_box_backward_via_bfmcs/summaries/01_implementation-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary - modal completeness already complete"
-        }
-      ],
-      "planned": "2026-03-25T05:47:24Z",
-      "started": "2026-03-25T05:49:41Z",
-      "completed": "2026-03-25T05:55:59Z",
-      "completion_summary": "Modal completeness (Box forward/backward) was already fully wired. boxClassFamilies_modal_backward is used by construct_bfmcs and parametric_canonical_truth_lemma. Documentation updated to clarify the singleton-Omega dead end and BFMCS solution."
-    },
-    {
       "project_number": 61,
       "project_name": "experiment_eliminate_bfmcs_bundles",
       "status": "not_started",
@@ -647,41 +607,6 @@
       "session_id": "sess_1774121152_2f49cc",
       "researched": "2026-03-21T19:21:35Z",
       "planned": "2026-03-21T19:28:53Z"
-    },
-    {
-      "project_number": 62,
-      "project_name": "resolve_succ_chain_truth_backward_sorry",
-      "status": "completed",
-      "language": "lean4",
-      "description": "Resolve backward Box sorry in succ_chain_truth_lemma (SuccChainTruth.lean:254) and correct misleading documentation",
-      "created": "2026-03-25T04:49:02Z",
-      "last_updated": "2026-03-25T05:19:37Z",
-      "dependencies": [
-        55
-      ],
-      "session_id": "sess_1774415448_f2d8a2",
-      "researched": "2026-03-25T04:58:44Z",
-      "artifacts": [
-        {
-          "path": "specs/062_resolve_succ_chain_truth_backward_sorry/reports/01_sorry-dependency-analysis.md",
-          "type": "research",
-          "summary": "Confirmed lean_verify bug, traced sorry dependency chain, identified documentation errors"
-        },
-        {
-          "path": "specs/062_resolve_succ_chain_truth_backward_sorry/plans/01_box-sorry-resolution.md",
-          "type": "plan",
-          "summary": "4-phase plan: documentation correction, algebraic analysis, resolution strategy, verification"
-        },
-        {
-          "path": "specs/062_resolve_succ_chain_truth_backward_sorry/summaries/01_box-sorry-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting documentation corrections and algebraic analysis"
-        }
-      ],
-      "planned": "2026-03-25T05:08:55Z",
-      "started": "2026-03-25T05:11:11Z",
-      "completed": "2026-03-25T05:19:37Z",
-      "completion_summary": "Corrected misleading documentation about succ_chain_truth_forward being sorry-free. Added comprehensive explanation of why Box backward is mathematically unprovable in singleton-Omega architecture."
     }
   ],
   "next_project_number": 64,

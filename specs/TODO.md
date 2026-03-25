@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-23T13:20:00Z
 task_counts:
-  active: 20
-  completed: 725
+  active: 18
+  completed: 727
   in_progress: 0
   not_started: 6
   abandoned: 54
@@ -27,20 +27,19 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-03-25. Task 62 completed (documentation corrections). Task 63 created for BFMCS Box backward proof.*
+*Updated 2026-03-24. Tasks 62, 63 archived (Box backward, documentation corrections).*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-63 → 58 → 59 → 60
+58 → 59 → 60
 ```
 
-1. **63** [COMPLETED] — Prove Box backward via BFMCS modal saturation; eliminate singleton-Omega dead end
-2. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — BLOCKED by temporal coherence
-3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
-4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — BLOCKED by temporal coherence
+2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
+3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. Code Cleanup (parallel to critical path)
 
@@ -71,66 +70,6 @@ technical_debt:
 ## Tasks
 
 ---
-
-### 63. Prove Box backward via BFMCS modal saturation and eliminate singleton-Omega dead end
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-24
-- **Language**: lean4
-- **Dependencies**: Task 62
-- **Research**:
-  - [01_team-research.md](063_prove_box_backward_via_bfmcs/reports/01_team-research.md)
-  - [01_teammate-a-findings.md](063_prove_box_backward_via_bfmcs/reports/01_teammate-a-findings.md)
-  - [01_teammate-b-findings.md](063_prove_box_backward_via_bfmcs/reports/01_teammate-b-findings.md)
-  - [02_team-research.md](063_prove_box_backward_via_bfmcs/reports/02_team-research.md) — deep modal-temporal-algebraic analysis
-  - [02_teammate-a-findings.md](063_prove_box_backward_via_bfmcs/reports/02_teammate-a-findings.md)
-  - [02_teammate-b-findings.md](063_prove_box_backward_via_bfmcs/reports/02_teammate-b-findings.md)
-- **Plan**: [01_bfmcs-modal-completeness.md](063_prove_box_backward_via_bfmcs/plans/01_bfmcs-modal-completeness.md)
-- **Summary**: [01_implementation-summary.md](063_prove_box_backward_via_bfmcs/summaries/01_implementation-summary.md)
-
-**Completion Summary**: Modal completeness (Box forward/backward) was already fully wired. boxClassFamilies_modal_backward is used by construct_bfmcs and parametric_canonical_truth_lemma. Documentation updated to clarify the singleton-Omega dead end and BFMCS solution.
-
-**Description**: Use the boxClassFamilies approach from UltrafilterChain.lean to establish a sorry-free Box backward direction. The singleton-Omega architecture is a mathematical dead end because it lacks witness families needed for modal saturation. This task will:
-
-1. Implement Box backward proof using BFMCS modal saturation (boxClassFamilies_modal_backward pattern)
-2. Update SuccChainTruth.lean comments to explicitly mark singleton-Omega as a dead end that should never be considered
-3. Update ROADMAP.md to document that singleton-Omega is not a viable path
-4. Ensure the completeness proof uses the BFMCS path exclusively for Box cases
-
-The key insight: BFMCS bundles ALL families agreeing on box-content with M0, so when Box phi fails, Diamond(neg phi) is in M0, and box_theory_witness_exists provides a witness family W' with neg phi. This witness is IN the bundle, enabling the backward proof by contradiction.
-
----
-
-### 62. Resolve backward Box sorry in succ_chain_truth_lemma and correct documentation
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-24
-- **Language**: lean4
-- **Dependencies**: Task 55
-- **Research**: [01_sorry-dependency-analysis.md](062_resolve_succ_chain_truth_backward_sorry/reports/01_sorry-dependency-analysis.md)
-- **Plan**: [01_box-sorry-resolution.md](062_resolve_succ_chain_truth_backward_sorry/plans/01_box-sorry-resolution.md)
-- **Summary**: [01_box-sorry-summary.md](062_resolve_succ_chain_truth_backward_sorry/summaries/01_box-sorry-summary.md)
-
-**Completion Summary**: Corrected misleading documentation about succ_chain_truth_forward being sorry-free. Added comprehensive explanation of why Box backward is mathematically unprovable in singleton-Omega architecture.
-
-**Description**: The backward Box case in `succ_chain_truth_lemma` (SuccChainTruth.lean:254) contains a sorry with a misleading comment: "Box backward not needed for completeness." This is wrong — the backward direction is structurally entangled with the forward proof (the Imp forward case calls `(ih t).mpr` on sub-formulas). Task 55 added documentation reinforcing this incorrect claim.
-
-**Investigation findings**:
-- `succ_chain_truth_forward` extracts `.mp` from `succ_chain_truth_lemma` (line 310)
-- The Imp forward case at line 240-243 uses backward IH: `(ih t).mp h_psi_mcs` — but the induction produces both directions simultaneously
-- Backward G/H cases (lines 264-286) depend on `SuccChainTemporalCoherent` (deprecated as mathematically impossible)
-- `lean_verify` reports BOTH `succ_chain_truth_lemma` and `succ_chain_truth_forward` as sorry-free despite the explicit sorry at line 254 — this discrepancy itself needs investigation
-
-**Work items**:
-1. Investigate `lean_verify` discrepancy: why does it report sorry-free for a theorem containing `sorry`?
-2. Determine if `succ_chain_truth_lemma` (the biconditional) can be replaced by a forward-only proof that doesn't require backward cases at all — if so, remove the biconditional
-3. If removal is not possible (likely, due to Imp case needing backward IH on sub-formulas), then:
-   a. Correct all comments in SuccChainTruth.lean that claim backward direction is ignorable
-   b. Remove/correct the task 55 documentation (lines 288-305) that reinforces the false claim
-   c. Document the backward Box sorry as a genuine gap requiring resolution
-   d. Document backward G/H dependency on `SuccChainTemporalCoherent` as a genuine gap
-   e. Update ROAD_MAP.md to reflect that the backward direction CANNOT be ignored
-   f. Update TODO.md technical debt counts if needed
 
 ---
 
