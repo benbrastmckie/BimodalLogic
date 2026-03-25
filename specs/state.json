@@ -15,7 +15,7 @@
         62
       ],
       "created": "2026-03-25T05:23:36Z",
-      "last_updated": "2026-03-25T05:30:50Z",
+      "last_updated": "2026-03-25T05:40:46Z",
       "session_id": "sess_1774416291_9b9e37",
       "researched": "2026-03-25T05:30:50Z",
       "artifacts": [
@@ -23,6 +23,11 @@
           "path": "specs/063_prove_box_backward_via_bfmcs/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates"
+        },
+        {
+          "path": "specs/063_prove_box_backward_via_bfmcs/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Deep math research: S5 vs S4, per-obligation architecture"
         }
       ]
     },

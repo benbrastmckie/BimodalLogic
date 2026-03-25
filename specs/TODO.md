@@ -25,7 +25,7 @@ technical_debt:
 
 <!-- Vault transition: 2026-03-20 - Archived to specs/vault/01-vault/ -->
 
-## Recommended Order
+## Task Order
 
 *Updated 2026-03-25. Task 62 completed (documentation corrections). Task 63 created for BFMCS Box backward proof.*
 
@@ -81,6 +81,9 @@ technical_debt:
   - [01_team-research.md](063_prove_box_backward_via_bfmcs/reports/01_team-research.md)
   - [01_teammate-a-findings.md](063_prove_box_backward_via_bfmcs/reports/01_teammate-a-findings.md)
   - [01_teammate-b-findings.md](063_prove_box_backward_via_bfmcs/reports/01_teammate-b-findings.md)
+  - [02_team-research.md](063_prove_box_backward_via_bfmcs/reports/02_team-research.md) — deep modal-temporal-algebraic analysis
+  - [02_teammate-a-findings.md](063_prove_box_backward_via_bfmcs/reports/02_teammate-a-findings.md)
+  - [02_teammate-b-findings.md](063_prove_box_backward_via_bfmcs/reports/02_teammate-b-findings.md)
 
 **Description**: Use the boxClassFamilies approach from UltrafilterChain.lean to establish a sorry-free Box backward direction. The singleton-Omega architecture is a mathematical dead end because it lacks witness families needed for modal saturation. This task will:
 
