@@ -92,9 +92,9 @@
         48
       ],
       "created": "2026-03-24T19:42:07Z",
-      "last_updated": "2026-03-25T02:49:29Z",
-      "session_id": "sess_1774406528_15e8e2",
-      "researched": "2026-03-25T02:49:29Z",
+      "last_updated": "2026-03-25T02:59:05Z",
+      "session_id": "sess_1774407108_74b56a",
+      "researched": "2026-03-25T02:59:05Z",
       "planned": "2026-03-25T02:21:47Z",
       "started": "2026-03-24T21:29:24Z",
       "artifacts": [
@@ -121,6 +121,11 @@
           "path": "specs/055_prove_succchain_temporal_coherence_directly/reports/16_team-research.md",
           "type": "research",
           "summary": "Deep root cause analysis: sorry chain is in dead code (2 teammates)"
+        },
+        {
+          "path": "specs/055_prove_succchain_temporal_coherence_directly/reports/01_axiom-dependency-trace.md",
+          "type": "research",
+          "summary": "Axiom dependency trace: sorry chain is NOT inert, affects completeness via succ_chain_truth_forward"
         }
       ]
     },
