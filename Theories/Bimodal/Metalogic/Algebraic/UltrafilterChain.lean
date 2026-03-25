@@ -1782,8 +1782,30 @@ theorem boxClassFamilies_modal_backward (M0 : Set Formula) (h_mcs : SetMaximalCo
   exact set_consistent_not_both h_mcs_witness.1 phi h_phi_at_t h_neg_phi_at_t
 
 /--
+**BLOCKED (depends on SuccChainTemporalCoherent which has mathematically FALSE dependencies)**
+
 Temporal coherence: all families in the bundle satisfy forward_F and backward_P.
+
+This theorem uses `SuccChainTemporalCoherent` which depends on `succ_chain_forward_F`
+and `succ_chain_backward_P`, both of which use the mathematically false
+`f_nesting_is_bounded` and `p_nesting_is_bounded`.
+
+**Impact**: `construct_bfmcs` which uses this theorem has a sorry through the sorry chain.
+However, for completeness purposes, the forward direction of the truth lemma does NOT
+require temporal coherence - only the backward direction does.
+
+**Migration path**: For completeness, use `succ_chain_completeness` which only needs
+the forward truth direction. For full truth lemma, use restricted chain construction
+with `restricted_forward_chain_forward_F`.
+
+**Mathematical Status**: The underlying `f_nesting_is_bounded` claim is FALSE for
+arbitrary MCS. An MCS can consistently contain {F^n(p) | n in Nat}. This is satisfiable
+on the integers with successor semantics: point 0 satisfies all F^n(p) by having p
+at position n.
+
+See Task #55 research reports for detailed analysis.
 -/
+@[deprecated "Use restricted chain construction for temporally coherent families"]
 theorem boxClassFamilies_temporally_coherent (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
     ∀ fam ∈ boxClassFamilies M0 h_mcs,
       (∀ t φ, Formula.some_future φ ∈ fam.mcs t → ∃ s, t < s ∧ φ ∈ fam.mcs s) ∧
@@ -1805,8 +1827,29 @@ Wire everything together into the signature required by ParametricRepresentation
 
 set_option maxHeartbeats 800000 in
 /--
+**BLOCKED (temporal coherence depends on mathematically FALSE theorems)**
+
 The main construction: given an MCS M, produce a temporally coherent BFMCS containing M.
+
+**WARNING**: This function uses `boxClassFamilies_temporally_coherent` which depends on
+the mathematically false `f_nesting_is_bounded`. The temporal coherence proof has a sorry.
+
+**Axiom dependency**: `#print axioms construct_bfmcs` shows `sorryAx` due to:
+- `boxClassFamilies_temporally_coherent` -> `SuccChainTemporalCoherent`
+- -> `succ_chain_forward_F` -> `f_nesting_boundary` -> `f_nesting_is_bounded` (FALSE)
+
+**For completeness proofs**: Use `succ_chain_completeness` instead, which only requires
+the forward direction of the truth lemma and does NOT depend on temporal coherence.
+Alternatively, use `parametric_algebraic_representation_conditional` with a restricted
+chain-based construction.
+
+**Mathematical status**: The issue is that `f_nesting_is_bounded` claims every MCS has
+bounded F-nesting. This is FALSE: {F^n(p) | n in Nat} is finitely consistent and extends
+to an MCS with unbounded F-nesting.
+
+See Task #55 research reports for complete analysis.
 -/
+@[deprecated "Use succ_chain_completeness or restricted chain construction"]
 noncomputable def construct_bfmcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent)
        (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),

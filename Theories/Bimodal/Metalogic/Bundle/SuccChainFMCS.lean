@@ -825,16 +825,28 @@ theorem succ_chain_forward_F_neg (M0 : SerialMCS) (k : Nat) (phi : Formula)
     omega
   · exact h_phi_at_end
 
-/-- Forward F coherence: If F(phi) in mcs(n), then exists m > n with phi in mcs(m).
+/--
+**BLOCKED (depends on f_nesting_boundary which is mathematically FALSE)**
 
-**Proof Strategy**:
-1. F(phi) ∈ mcs(n) means F(phi) ∈ forward_chain M0 n (for n ≥ 0)
-2. Use f_nesting_boundary to find d ≥ 1 with iter_F d phi ∈ M and iter_F (d+1) phi ∉ M
+Forward F coherence: If F(phi) in mcs(n), then exists m > n with phi in mcs(m).
+
+This theorem uses `f_nesting_boundary` which depends on the mathematically false
+`f_nesting_is_bounded`. For arbitrary MCS, F-nesting is NOT bounded: an MCS can
+consistently contain {F^n(p) | n in Nat}.
+
+**Migration path**: Use `restricted_forward_chain_forward_F` which works with
+DeferralRestrictedMCS. For completeness proofs, build RestrictedMCS from the
+target formula's closure.
+
+**Proof Strategy** (if f_nesting_boundary were true):
+1. F(phi) in mcs(n) means F(phi) in forward_chain M0 n (for n >= 0)
+2. Use f_nesting_boundary to find d >= 1 with iter_F d phi in M and iter_F (d+1) phi not in M
 3. Build CanonicalTask_forward_MCS chain of length d from forward_chain M0 k
 4. Apply bounded_witness to get phi in forward_chain M0 (k + d)
 
 For negative indices, we step forward to 0 or beyond and apply the positive case.
 -/
+@[deprecated restricted_forward_chain_forward_F]
 theorem succ_chain_forward_F (M0 : SerialMCS) (n : Int) (phi : Formula)
     (h_F : Formula.some_future phi ∈ succ_chain_fam M0 n) :
     ∃ m : Int, n < m ∧ phi ∈ succ_chain_fam M0 m := by
@@ -1104,14 +1116,24 @@ theorem succ_chain_canonicalTask_backward_MCS_P_from (M0 : SerialMCS) (start : I
     convert CanonicalTask_backward_MCS_P.step h_mcs_u h_mcs_w h_succ h_p_step h_chain using 2
 
 /--
-Backward P coherence: If P(phi) ∈ mcs(n), then exists m < n with phi ∈ mcs(m).
+**BLOCKED (depends on p_nesting_boundary which is mathematically FALSE)**
 
-**Proof Strategy** (symmetric to forward F):
-1. P(phi) ∈ mcs(n) at succ_chain_fam M0 n
-2. Use p_nesting_boundary to find d ≥ 1 with iter_P d phi ∈ M and iter_P (d+1) phi ∉ M
+Backward P coherence: If P(phi) in mcs(n), then exists m < n with phi in mcs(m).
+
+This theorem uses `p_nesting_boundary` which depends on the mathematically false
+`p_nesting_is_bounded`. For arbitrary MCS, P-nesting is NOT bounded: an MCS can
+consistently contain {P^n(p) | n in Nat}.
+
+**Migration path**: Use the corresponding restricted chain backward_P when
+implemented (symmetric to restricted_forward_chain_forward_F).
+
+**Proof Strategy** (symmetric to forward F, if p_nesting_boundary were true):
+1. P(phi) in mcs(n) at succ_chain_fam M0 n
+2. Use p_nesting_boundary to find d >= 1 with iter_P d phi in M and iter_P (d+1) phi not in M
 3. Build CanonicalTask_backward_MCS_P chain of length d going backward from n
 4. Apply backward_witness to get phi at succ_chain_fam M0 (n - d)
 -/
+@[deprecated "Use restricted chain backward_P when implemented"]
 theorem succ_chain_backward_P (M0 : SerialMCS) (n : Int) (phi : Formula)
     (h_P : Formula.some_past phi ∈ succ_chain_fam M0 n) :
     ∃ m : Int, m < n ∧ phi ∈ succ_chain_fam M0 m := by
@@ -1184,7 +1206,22 @@ noncomputable def SuccChainFMCS (M0 : SerialMCS) : FMCS Int where
   forward_G := succ_chain_forward_G_le M0
   backward_H := succ_chain_backward_H_le M0
 
-/-- The Succ-chain family as a TemporalCoherentFamily -/
+/--
+**BLOCKED (depends on succ_chain_forward_F and succ_chain_backward_P which are mathematically FALSE)**
+
+The Succ-chain family as a TemporalCoherentFamily.
+
+This definition uses `succ_chain_forward_F` and `succ_chain_backward_P` which depend
+on the mathematically false `f_nesting_is_bounded` and `p_nesting_is_bounded`.
+
+**Impact**: Any theorem using `SuccChainTemporalCoherent` inherits the sorry through
+the sorry chain. This includes `boxClassFamilies_temporally_coherent` in UltrafilterChain.lean
+and the backward direction of `succ_chain_truth_lemma`.
+
+**Migration path**: Use restricted chain-based temporal coherence when implemented, or
+use the canonical construction which has sorry-free `canonical_forward_F`.
+-/
+@[deprecated "Use restricted chain or canonical construction"]
 noncomputable def SuccChainTemporalCoherent (M0 : SerialMCS) : TemporalCoherentFamily Int where
   toFMCS := SuccChainFMCS M0
   forward_F := succ_chain_forward_F M0
