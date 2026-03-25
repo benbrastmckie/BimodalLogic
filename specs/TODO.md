@@ -46,7 +46,7 @@ technical_debt:
 
 ### 2. Code Cleanup (after task 55)
 
-1. **56** [PLANNING] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
+1. **56** [PLANNED] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
 2. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
 ### 3. Superseded Tasks (candidates for abandonment)
@@ -166,10 +166,11 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 56. Clean up SuccChainFMCS.lean dead code
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**: [01_dead-code-inventory.md](specs/056_clean_up_succchain_fmcs_dead_code/reports/01_dead-code-inventory.md)
+- **Plan**: [01_dead-code-removal.md](specs/056_clean_up_succchain_fmcs_dead_code/plans/01_dead-code-removal.md)
 
 **Description**: Remove ~2500 lines of dead code from SuccChainFMCS.lean. Delete deprecated approaches: restricted_succ_propagates_F_not variants (9 sorries, proven FALSE), single_step_forcing attempts, f_nesting_is_bounded/p_nesting_is_bounded (deprecated), fuel-based and boundary-resolution approaches. Also remove p_step_blocking_for_deferral_restricted in RestrictedMCS.lean.
 
