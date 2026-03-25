@@ -6,6 +6,18 @@
   },
   "active_projects": [
     {
+      "project_number": 63,
+      "project_name": "prove_box_backward_via_bfmcs",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Prove Box backward via BFMCS modal saturation and eliminate singleton-Omega dead end. Use boxClassFamilies approach from UltrafilterChain.lean to establish sorry-free Box backward direction. Update all comments to mark singleton-Omega as a mathematical dead end.",
+      "dependencies": [
+        62
+      ],
+      "created": "2026-03-25T05:23:36Z",
+      "last_updated": "2026-03-25T05:23:36Z"
+    },
+    {
       "project_number": 61,
       "project_name": "experiment_eliminate_bfmcs_bundles",
       "status": "not_started",
@@ -783,7 +795,7 @@
       "completion_summary": "Corrected misleading documentation about succ_chain_truth_forward being sorry-free. Added comprehensive explanation of why Box backward is mathematically unprovable in singleton-Omega architecture."
     }
   ],
-  "next_project_number": 63,
+  "next_project_number": 64,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 62
+next_project_number: 64
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -34,13 +34,14 @@ technical_debt:
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-62 → 58 → 59 → 60
+62 → 63 → 58 → 59 → 60
 ```
 
 1. **62** [COMPLETED] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
-2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
-3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
-4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+2. **63** [NOT STARTED] — Prove Box backward via BFMCS modal saturation; eliminate singleton-Omega dead end
+3. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
+4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
+5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. Code Cleanup (parallel to critical path)
 
@@ -80,6 +81,23 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 63. Prove Box backward via BFMCS modal saturation and eliminate singleton-Omega dead end
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 62
+
+**Description**: Use the boxClassFamilies approach from UltrafilterChain.lean to establish a sorry-free Box backward direction. The singleton-Omega architecture is a mathematical dead end because it lacks witness families needed for modal saturation. This task will:
+
+1. Implement Box backward proof using BFMCS modal saturation (boxClassFamilies_modal_backward pattern)
+2. Update SuccChainTruth.lean comments to explicitly mark singleton-Omega as a dead end that should never be considered
+3. Update ROADMAP.md to document that singleton-Omega is not a viable path
+4. Ensure the completeness proof uses the BFMCS path exclusively for Box cases
+
+The key insight: BFMCS bundles ALL families agreeing on box-content with M0, so when Box phi fails, Diamond(neg phi) is in M0, and box_theory_witness_exists provides a witness family W' with neg phi. This witness is IN the bundle, enabling the backward proof by contradiction.
 
 ---
 
