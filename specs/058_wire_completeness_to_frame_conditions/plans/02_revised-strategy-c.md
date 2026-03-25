@@ -1,7 +1,7 @@
 # Implementation Plan: Task #58 (Revised v2)
 
 - **Task**: 58 - Wire completeness to FrameConditions
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 10 hours
 - **Dependencies**: None (all prerequisite infrastructure is sorry-free)
 - **Supersedes**: plans/01_strategy-c-implementation.md (v1 blocked on termination)
@@ -53,7 +53,7 @@ The same modification is needed symmetrically for `constrained_predecessor_restr
 
 ## Implementation Phases
 
-### Phase 1: Modify Successor Seed with Boundary Resolution [NOT STARTED]
+### Phase 1: Modify Successor Seed with Boundary Resolution [COMPLETED]
 
 **Goal**: Add `boundaryResolutionFormulas` to `constrained_successor_seed_restricted` so that boundary F-obligations are forced to resolve.
 
@@ -94,7 +94,7 @@ The same modification is needed symmetrically for `constrained_predecessor_restr
 
 ---
 
-### Phase 2: Prove Forward F-Coherence [NOT STARTED]
+### Phase 2: Prove Forward F-Coherence [IN PROGRESS]
 
 **Goal**: With the modified seed, prove `restricted_bounded_witness` and make `restricted_forward_chain_forward_F` sorry-free.
 

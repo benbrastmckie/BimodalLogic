@@ -247,46 +247,6 @@ theorem p_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
       (subformulaClosure_subset_closureWithNeg phi h_g_sub)
 
 /-!
-## Restricted Constrained Successor Seed
-
-The restricted constrained successor seed uses `p_step_blocking_formulas_restricted`
-instead of `p_step_blocking_formulas`. This ensures all seed formulas stay within
-`deferralClosure phi`, which is necessary for the `DeferralRestrictedMCS` construction.
--/
-
-/--
-The restricted constrained successor seed:
-`g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas_restricted(phi, u)`.
-
-This is the correct seed for constructing successors of `DeferralRestrictedMCS`.
-Unlike the unrestricted `constrained_successor_seed`, this seed stays within
-`deferralClosure phi`, ensuring the Lindenbaum extension can be restricted.
--/
-def constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
-  g_content u ∪ deferralDisjunctions u ∪ p_step_blocking_formulas_restricted phi u
-
-/-- Membership in restricted constrained successor seed. -/
-lemma mem_constrained_successor_seed_restricted_iff (phi : Formula) (u : Set Formula) (ψ : Formula) :
-    ψ ∈ constrained_successor_seed_restricted phi u ↔
-    ψ ∈ g_content u ∨ ψ ∈ deferralDisjunctions u ∨ ψ ∈ p_step_blocking_formulas_restricted phi u := by
-  simp only [constrained_successor_seed_restricted, Set.mem_union, or_assoc]
-
-/-- g_content is a subset of the restricted constrained successor seed. -/
-lemma g_content_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
-    g_content u ⊆ constrained_successor_seed_restricted phi u :=
-  Set.subset_union_left.trans Set.subset_union_left
-
-/-- Deferral disjunctions are a subset of the restricted constrained successor seed. -/
-lemma deferralDisjunctions_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
-    deferralDisjunctions u ⊆ constrained_successor_seed_restricted phi u :=
-  Set.subset_union_right.trans Set.subset_union_left
-
-/-- Restricted P-step blocking formulas are a subset of the restricted seed. -/
-lemma p_step_blocking_restricted_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
-    p_step_blocking_formulas_restricted phi u ⊆ constrained_successor_seed_restricted phi u :=
-  Set.subset_union_right
-
-/-!
 ## Boundary Resolution Set
 
 When constructing successors for DeferralRestrictedMCS chains, there is a boundary case
@@ -297,51 +257,102 @@ get GG(neg chi) into the chain.
 The solution is to add chi directly to the seed when this boundary condition holds.
 This forces chi into the successor, resolving the F-obligation immediately rather than
 trying to prove it cannot be deferred.
+
+**Design Note**: The chi ∈ u condition ensures augmented_seed ⊆ u, making consistency
+trivial. When chi ∉ u but F(chi) ∈ u, forcing chi into the successor requires a different
+mechanism (the f_step disjunction plus maximality of the Lindenbaum extension will
+eventually include chi when it's compatible).
 -/
 
 /--
 Formulas that must be resolved at the boundary.
 
-When chi ∈ u, F(chi) ∈ u, FF(chi) ∉ deferralClosure(phi), and GF(chi) ∉ u, we add chi to the seed.
+When chi ∈ u, F(chi) ∈ u, and FF(chi) ∉ deferralClosure(phi), we add chi to the seed.
 This ensures chi ∈ successor, resolving the F-obligation for F(chi).
 
 The conditions are:
 - chi ∈ u: chi is already in the current MCS (makes consistency trivial)
 - F(chi) ∈ u: There is an F-obligation for chi
 - FF(chi) ∉ deferralClosure: We're at the F-depth boundary, can't defer further
-- GF(chi) ∉ u: The g_content path won't inject F(chi) into successor
 
-When all four hold, adding chi to the seed forces chi ∈ successor.
+When all conditions hold, adding chi to the seed forces chi ∈ successor.
 The chi ∈ u requirement ensures augmented_seed ⊆ u, making consistency trivial.
 -/
 def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
   {chi | chi ∈ u ∧
          Formula.some_future chi ∈ u ∧
-         Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
-         Formula.all_future (Formula.some_future chi) ∉ u}
+         Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula)}
 
 /-- Membership in boundary_resolution_set. -/
 lemma mem_boundary_resolution_set_iff (phi : Formula) (u : Set Formula) (chi : Formula) :
     chi ∈ boundary_resolution_set phi u ↔
     chi ∈ u ∧
     Formula.some_future chi ∈ u ∧
-    Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
-    Formula.all_future (Formula.some_future chi) ∉ u := by
+    Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) := by
   rfl
 
 /--
 boundary_resolution_set is a subset of deferralClosure.
 
-If chi ∈ boundary_resolution_set, then F(chi) ∈ u ⊆ deferralClosure.
-Since F(chi) ∈ deferralClosure, chi ∈ subformulaClosure ⊆ closureWithNeg ⊆ deferralClosure.
+If chi ∈ boundary_resolution_set, then chi ∈ u ⊆ deferralClosure.
 -/
 theorem boundary_resolution_set_subset_deferralClosure (phi : Formula) (u : Set Formula)
     (h_u : u ⊆ (deferralClosure phi : Set Formula)) :
     boundary_resolution_set phi u ⊆ (deferralClosure phi : Set Formula) := by
   intro chi h_chi
-  obtain ⟨h_chi_in_u, h_F_in_u, _, _⟩ := h_chi
-  -- chi ∈ u ⊆ deferralClosure (simpler proof using new chi ∈ u condition)
+  obtain ⟨h_chi_in_u, _, _⟩ := h_chi
   exact h_u h_chi_in_u
+
+/-!
+## Restricted Constrained Successor Seed
+
+The restricted constrained successor seed uses `p_step_blocking_formulas_restricted`
+instead of `p_step_blocking_formulas`. This ensures all seed formulas stay within
+`deferralClosure phi`, which is necessary for the `DeferralRestrictedMCS` construction.
+-/
+
+/--
+The restricted constrained successor seed:
+`g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas_restricted(phi, u) ∪ boundary_resolution_set(phi, u)`.
+
+This is the correct seed for constructing successors of `DeferralRestrictedMCS`.
+Unlike the unrestricted `constrained_successor_seed`, this seed stays within
+`deferralClosure phi`, ensuring the Lindenbaum extension can be restricted.
+
+**Key Change (v2)**: The seed now includes `boundary_resolution_set`. This forces
+resolution of F-obligations at the boundary (where FF(psi) ∉ deferralClosure).
+Without this, the deferral disjunction allows infinite deferral, making the
+termination proof in `restricted_bounded_witness` unprovable.
+-/
+def constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
+  g_content u ∪ deferralDisjunctions u ∪ p_step_blocking_formulas_restricted phi u ∪ boundary_resolution_set phi u
+
+/-- Membership in restricted constrained successor seed. -/
+lemma mem_constrained_successor_seed_restricted_iff (phi : Formula) (u : Set Formula) (ψ : Formula) :
+    ψ ∈ constrained_successor_seed_restricted phi u ↔
+    ψ ∈ g_content u ∨ ψ ∈ deferralDisjunctions u ∨ ψ ∈ p_step_blocking_formulas_restricted phi u ∨
+    ψ ∈ boundary_resolution_set phi u := by
+  simp only [constrained_successor_seed_restricted, Set.mem_union, or_assoc]
+
+/-- g_content is a subset of the restricted constrained successor seed. -/
+lemma g_content_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
+    g_content u ⊆ constrained_successor_seed_restricted phi u :=
+  Set.subset_union_left.trans (Set.subset_union_left.trans Set.subset_union_left)
+
+/-- Deferral disjunctions are a subset of the restricted constrained successor seed. -/
+lemma deferralDisjunctions_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
+    deferralDisjunctions u ⊆ constrained_successor_seed_restricted phi u :=
+  Set.subset_union_right.trans (Set.subset_union_left.trans Set.subset_union_left)
+
+/-- Restricted P-step blocking formulas are a subset of the restricted seed. -/
+lemma p_step_blocking_restricted_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
+    p_step_blocking_formulas_restricted phi u ⊆ constrained_successor_seed_restricted phi u :=
+  Set.subset_union_right.trans Set.subset_union_left
+
+/-- Boundary resolution set is a subset of the restricted constrained successor seed. -/
+lemma boundary_resolution_set_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
+    boundary_resolution_set phi u ⊆ constrained_successor_seed_restricted phi u :=
+  Set.subset_union_right
 
 /-!
 ## Constrained Successor Seed (with P-Step Blocking)
