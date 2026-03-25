@@ -38,7 +38,7 @@ technical_debt:
  └→ 56 → 57 (cleanup, parallel to 58)
 ```
 
-1. **55** [IMPLEMENTING] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
+1. **55** [PLANNED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
 2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
 3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -160,10 +160,14 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
   - [03_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-a-findings.md)
   - [03_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-b-findings.md)
   - [04_resolving-chain-detailed.md](055_prove_succchain_temporal_coherence_directly/reports/04_resolving-chain-detailed.md)
+  - [10_team-research.md](055_prove_succchain_temporal_coherence_directly/reports/10_team-research.md)
+  - [10_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/10_teammate-a-findings.md)
+  - [10_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/10_teammate-b-findings.md)
 - **Plan**:
   - [01_temporal-coherence-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/01_temporal-coherence-implementation.md) (superseded)
   - [02_algebraic-temporal-coherence.md](055_prove_succchain_temporal_coherence_directly/plans/02_algebraic-temporal-coherence.md) (superseded)
-  - [03_resolving-chain-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/03_resolving-chain-implementation.md)
+  - [03_resolving-chain-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/03_resolving-chain-implementation.md) (superseded)
+  - [04_simplified-resolving-chain.md](055_prove_succchain_temporal_coherence_directly/plans/04_simplified-resolving-chain.md)
 
 **Description**: Prove SuccChain temporal coherence directly, bypassing f_nesting_is_bounded. The current sorry chain is: f_nesting_is_bounded (FALSE for arbitrary MCS) → f_nesting_boundary → succ_chain_forward_F → SuccChainTemporalCoherent → construct_bfmcs. Replace with a direct argument: the SuccChain construction resolves F-obligations step-by-step via Succ, so if F(phi) is at time k, phi must appear at some k+d by the enumeration/fairness of obligation resolution. Mirror for P. This eliminates the last sorry on the completeness path. Supersedes the approach in tasks 36, 37, 53.
 
