@@ -47,7 +47,7 @@ technical_debt:
 
 ### 3. Research
 
-- **64** [COMPLETED] — Critical path review: algebraic analysis of completeness obstacles
+- **64** [RESEARCHED] — Critical path review: algebraic analysis of completeness obstacles
 
 ### 4. Experimental
 
@@ -78,8 +78,8 @@ technical_debt:
 ---
 
 ### 64. Critical path review: algebraic analysis of completeness obstacles
-- **Effort**: Research task (complete)
-- **Status**: [COMPLETED]
+- **Effort**: Research task
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Research**:
   - [01_critical-path-analysis.md](064_critical_path_review/reports/01_critical-path-analysis.md)
