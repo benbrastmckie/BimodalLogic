@@ -54,7 +54,7 @@ Plan v2's phase 3 was blocked because the temporal witness W from `temporal_theo
 
 ## Implementation Phases
 
-### Phase 1: Define Resolving Successor Seed and Prove Consistency [NOT STARTED]
+### Phase 1: Define Resolving Successor Seed and Prove Consistency [PARTIAL]
 
 **Goal**: Define the resolving seed that forces a specific phi and prove it is consistent when `F(phi) ∈ M`.
 
@@ -81,7 +81,7 @@ Plan v2's phase 3 was blocked because the temporal witness W from `temporal_theo
 
 ---
 
-### Phase 2: Prove Resolving Successor Satisfies Succ Relation [NOT STARTED]
+### Phase 2: Prove Resolving Successor Satisfies Succ Relation [PARTIAL]
 
 **Goal**: Show that a Lindenbaum extension of the resolving seed satisfies the full Succ relation.
 
