@@ -38,7 +38,7 @@ technical_debt:
 ```
 
 1. **63** [COMPLETED] — Prove Box backward via BFMCS modal saturation; eliminate singleton-Omega dead end
-2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
+2. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — BLOCKED by temporal coherence
 3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -166,7 +166,8 @@ The key insight: BFMCS bundles ALL families agreeing on box-content with M0, so 
 
 ### 58. Wire completeness to FrameConditions
 - **Effort**: 3-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [01_completeness-wiring-analysis.md](058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md)
 - **Language**: lean4
 - **Dependencies**: Task 55
 
