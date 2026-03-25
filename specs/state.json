@@ -71,7 +71,7 @@
     {
       "project_number": 56,
       "project_name": "clean_up_succchain_fmcs_dead_code",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "description": "Remove ~2500 lines of dead code from SuccChainFMCS.lean. Delete deprecated approaches: restricted_succ_propagates_F_not variants (9 sorries, proven FALSE), single_step_forcing attempts, f_nesting_is_bounded/p_nesting_is_bounded (deprecated), fuel-based and boundary-resolution approaches. Also remove p_step_blocking_for_deferral_restricted in RestrictedMCS.lean.",
       "effort": "2-3 hours",
@@ -79,7 +79,7 @@
         55
       ],
       "created": "2026-03-24T19:42:51Z",
-      "last_updated": "2026-03-25T05:03:47Z",
+      "last_updated": "2026-03-25T05:11:14Z",
       "session_id": "sess_1774415004_20c962",
       "researched": "2026-03-25T04:56:03Z",
       "artifacts": [
@@ -92,10 +92,17 @@
           "path": "specs/056_clean_up_succchain_fmcs_dead_code/plans/01_dead-code-removal.md",
           "type": "plan",
           "summary": "4-phase plan to remove ~2034 lines of dead code from SuccChainFMCS.lean and RestrictedMCS.lean"
+        },
+        {
+          "path": "specs/056_clean_up_succchain_fmcs_dead_code/summaries/01_dead-code-removal-summary.md",
+          "type": "summary",
+          "summary": "Removed 2258 lines of dead code from SuccChainFMCS.lean and RestrictedMCS.lean"
         }
       ],
       "planned": "2026-03-25T04:59:42Z",
-      "started": "2026-03-25T05:03:47Z"
+      "started": "2026-03-25T05:03:47Z",
+      "completed": "2026-03-25T05:11:14Z",
+      "completion_summary": "Removed 2258 lines of dead code from SuccChainFMCS.lean and RestrictedMCS.lean"
     },
     {
       "project_number": 55,
@@ -1119,15 +1126,15 @@
     {
       "project_number": 62,
       "project_name": "resolve_succ_chain_truth_backward_sorry",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Resolve backward Box sorry in succ_chain_truth_lemma (SuccChainTruth.lean:254) and correct misleading documentation",
       "created": "2026-03-25T04:49:02Z",
-      "last_updated": "2026-03-25T05:08:55Z",
+      "last_updated": "2026-03-25T05:11:11Z",
       "dependencies": [
         55
       ],
-      "session_id": "sess_1774415105_b8e3b8",
+      "session_id": "sess_1774415448_f2d8a2",
       "researched": "2026-03-25T04:58:44Z",
       "artifacts": [
         {
@@ -1141,7 +1148,8 @@
           "summary": "4-phase plan: documentation correction, algebraic analysis, resolution strategy, verification"
         }
       ],
-      "planned": "2026-03-25T05:08:55Z"
+      "planned": "2026-03-25T05:08:55Z",
+      "started": "2026-03-25T05:11:11Z"
     }
   ],
   "next_project_number": 63,

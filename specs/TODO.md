@@ -39,14 +39,14 @@ technical_debt:
 ```
 
 1. **55** [COMPLETED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
-2. **62** [PLANNED] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
+2. **62** [IMPLEMENTING] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
 3. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. Code Cleanup (after task 55)
 
-1. **56** [IMPLEMENTING] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
+1. **56** [COMPLETED] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
 2. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
 ### 3. Superseded Tasks (candidates for abandonment)
@@ -88,7 +88,7 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 62. Resolve backward Box sorry in succ_chain_truth_lemma and correct documentation
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**: [01_sorry-dependency-analysis.md](062_resolve_succ_chain_truth_backward_sorry/reports/01_sorry-dependency-analysis.md)
@@ -167,11 +167,14 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 56. Clean up SuccChainFMCS.lean dead code
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-25
+- **Summary**: Removed 2258 lines of dead code from SuccChainFMCS.lean and RestrictedMCS.lean
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**: [01_dead-code-inventory.md](specs/056_clean_up_succchain_fmcs_dead_code/reports/01_dead-code-inventory.md)
 - **Plan**: [01_dead-code-removal.md](specs/056_clean_up_succchain_fmcs_dead_code/plans/01_dead-code-removal.md)
+- **Summary Report**: [01_dead-code-removal-summary.md](specs/056_clean_up_succchain_fmcs_dead_code/summaries/01_dead-code-removal-summary.md)
 
 **Description**: Remove ~2500 lines of dead code from SuccChainFMCS.lean. Delete deprecated approaches: restricted_succ_propagates_F_not variants (9 sorries, proven FALSE), single_step_forcing attempts, f_nesting_is_bounded/p_nesting_is_bounded (deprecated), fuel-based and boundary-resolution approaches. Also remove p_step_blocking_for_deferral_restricted in RestrictedMCS.lean.
 
