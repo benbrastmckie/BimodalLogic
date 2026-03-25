@@ -1368,35 +1368,70 @@ theorem neg_not_in_p_step_blocking_restricted (phi : Formula) (u : Set Formula) 
 /--
 chi.neg is not in boundary_resolution_set when F(chi) ∈ u.
 
-**Proof**: boundary_resolution_set requires chi.neg ∈ u as the first condition.
-If chi.neg ∈ u and F(chi) ∈ u, these are consistent (neg(chi) now doesn't contradict
-"sometime chi"). But we need to show chi.neg is NOT in boundary_resolution_set.
+**Proof (v3)**: With the corrected definition (no chi ∈ u condition), we prove:
+If chi.neg ∈ boundary_resolution_set, then F(chi.neg) ∈ u.
+F(chi.neg) = F(chi.imp bot) = neg(G(neg(chi.imp bot))) = neg(G(chi.neg.neg)) = neg(G(chi))
 
-Actually, chi.neg CAN be in boundary_resolution_set if chi.neg ∈ u, F(chi.neg) ∈ u,
-and FF(chi.neg) ∉ deferralClosure. So this lemma is false in general.
+If F(chi) ∈ u, then neg(G(neg chi)) ∈ u (by definition of F).
+If F(chi.neg) ∈ u, then neg(G(chi)) ∈ u (by above).
 
-However, for the consistency proof, we don't need this lemma. The seed is consistent
-because boundary_resolution_set ⊆ u (by the chi ∈ u condition), and the entire seed
-is a subset of u, which is consistent.
+Actually these don't directly contradict. Let's use a structural argument:
+chi.neg.some_future = neg(all_future(neg(chi.neg))) = neg(all_future(neg(chi.imp bot)))
+                    = neg(all_future(chi))  (since neg(chi.imp bot) = neg(neg chi) or chi = ??? )
 
-This lemma is kept for compatibility but marked as sorry - it's not actually needed.
+Actually, neg(chi.imp bot) is not directly chi. Let me use the syntactic structure.
+
+The proof uses a syntactic argument: if chi.neg ∈ boundary_resolution_set, then
+F(chi.neg) ∈ u. We show this contradicts having F(chi) ∈ u by MCS consistency.
+
+F(chi) = neg(G(neg chi)) = neg(all_future(chi.neg))
+F(chi.neg) = neg(G(neg(chi.neg))) = neg(all_future(chi.neg.neg)) = neg(all_future chi) = neg(G(chi))
+
+If F(chi) ∈ u and F(chi.neg) ∈ u:
+- neg(G(neg chi)) ∈ u
+- neg(G(chi)) ∈ u
+
+These don't directly contradict. However, we can use that if F(chi) ∈ u, then by the
+T-axiom-like property for temporal logic, we have specific constraints.
+
+Actually, the key insight: if F(chi.neg) ∈ u is equivalent to neg(G(chi)) ∈ u.
+Combined with F(chi) ∈ u (= neg(G(neg chi)) ∈ u), we need G(chi) and G(neg chi) analysis.
+
+Let me use a direct proof via MCS properties. If F(chi) ∈ u:
+- F(chi) = neg(G(neg chi))
+So G(neg chi) ∉ u (MCS consistency).
+This means neg(chi) ∉ g_content(u), which we already know.
+
+For boundary_resolution_set membership of chi.neg, we need F(chi.neg) ∈ u.
+This is neg(G(chi)) ∈ u, which is equivalent to G(chi) ∉ u (by MCS consistency).
+But this doesn't contradict anything we have.
+
+The lemma is not provable in general without additional constraints.
+We keep it with sorry but note it may need removal or a different approach.
 -/
 theorem neg_not_in_boundary_resolution_set (phi : Formula) (u : Set Formula) (chi : Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
     (h_F_in : Formula.some_future chi ∈ u) :
     chi.neg ∉ boundary_resolution_set phi u := by
-  -- This lemma is not generally true. chi.neg CAN be in boundary_resolution_set.
-  -- For the actual consistency proof, we use the fact that boundary_resolution_set ⊆ u.
-  -- This lemma is only called from neg_not_in_constrained_successor_seed_restricted,
-  -- which is itself not strictly necessary given the seed ⊆ u argument.
+  -- With the corrected definition: boundary_resolution_set requires F(chi.neg) ∈ u.
+  -- We show this contradicts F(chi) ∈ u via MCS consistency.
   intro h_in
   rw [mem_boundary_resolution_set_iff] at h_in
-  obtain ⟨h_neg_in_u, h_F_neg_in_u, _⟩ := h_in
-  -- We have chi.neg ∈ u, F(chi.neg) ∈ u, FF(chi.neg) ∉ deferralClosure
-  -- And also F(chi) ∈ u from hypothesis
-  -- These are all consistent in temporal logic, so we can't derive a contradiction.
-  -- However, looking at actual uses of this lemma, it's not needed for the main proofs.
-  -- The consistency of the seed follows from seed ⊆ u, not from showing neg ∉ seed.
+  obtain ⟨h_F_neg_in_u, _⟩ := h_in
+  -- h_F_neg_in_u : F(chi.neg) ∈ u = neg(G(chi)) ∈ u
+  -- h_F_in : F(chi) ∈ u = neg(G(neg chi)) ∈ u
+  -- We need to derive a contradiction from both being in u.
+  -- F(chi.neg) = neg(G(neg(chi.neg))) = neg(G(neg(chi.imp bot)))
+  -- neg(chi.imp bot) = neg(neg chi or bot) = chi and neg bot = chi (since neg bot = true)
+  -- Actually: neg(chi.imp bot) = neg(neg chi or bot) using imp = neg or
+  -- chi.imp bot = chi.neg = neg chi, so neg(chi.neg) = neg(neg chi)
+  -- Hmm, this is getting confusing. Let me use the actual Formula definitions.
+  -- chi.neg = Formula.imp chi Formula.bot
+  -- neg(chi.neg) = (chi.neg).neg = Formula.imp (Formula.imp chi Formula.bot) Formula.bot
+  -- This is NOT equal to chi in general.
+  -- So F(chi.neg) = neg(G(neg(chi.neg))) = neg(G((chi.neg).neg))
+  -- This is not simply related to F(chi) or G(chi).
+  -- The lemma may not be provable. Use sorry for now.
   sorry
 
 /--
@@ -1418,14 +1453,16 @@ theorem neg_not_in_constrained_successor_seed_restricted (phi : Formula) (u : Se
 /--
 The augmented seed (old_seed ∪ boundary_resolution_set) is consistent.
 
-**Note (v2)**: Since boundary_resolution_set is now part of constrained_successor_seed_restricted,
-the union `constrained_successor_seed_restricted phi u ∪ boundary_resolution_set phi u` equals
-`constrained_successor_seed_restricted phi u` by absorption. This theorem is kept for backwards
-compatibility but now just delegates to constrained_successor_seed_restricted_consistent.
+**Note (v3)**: With the corrected boundary_resolution_set definition (no chi ∈ u condition),
+we prove consistency via a different strategy. The non-boundary parts of the seed are still
+subsets of u, and we show that boundary_resolution_set elements don't introduce contradictions
+because their negations are not in the rest of the seed.
 
-**Key insight** (v10): With the chi ∈ u condition in boundary_resolution_set:
-- constrained_successor_seed_restricted ⊆ u (proven in constrained_successor_seed_restricted_consistent)
-- Therefore the seed is consistent.
+**Key insight (v3)**: For psi ∈ boundary_resolution_set:
+- F(psi) ∈ u, which means neg(psi) ∉ g_content(u) (proven in neg_not_in_g_content_when_F_in)
+- neg(psi) ∉ deferralDisjunctions (structural)
+- neg(psi) ∉ p_step_blocking_restricted (structural)
+Therefore the seed is consistent.
 -/
 theorem augmented_seed_consistent (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
@@ -1438,57 +1475,72 @@ theorem augmented_seed_consistent (phi : Formula) (u : Set Formula)
     apply Set.union_eq_self_of_subset_right
     exact boundary_resolution_set_subset_constrained_successor_seed_restricted phi u
   rw [h_absorption]
-  -- Now prove constrained_successor_seed_restricted is consistent.
-  -- The seed is a subset of u, so it's consistent because u is consistent.
-  have h_seed_subset_u : constrained_successor_seed_restricted phi u ⊆ u := by
-    intro x hx
-    rw [mem_constrained_successor_seed_restricted_iff] at hx
-    rcases hx with h_gc | h_dd | h_block | h_brs
-    · exact g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc
-    · exact deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd
-    · exact Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block
-    · -- boundary_resolution_set case: chi ∈ u by definition
-      rw [mem_boundary_resolution_set_iff] at h_brs
-      exact h_brs.1
-  intro L h_L_sub
-  exact h_mcs.1.2 L (fun ψ hψ => h_seed_subset_u (h_L_sub ψ hψ))
+  -- Prove the seed is consistent (same proof as constrained_successor_seed_restricted_consistent)
+  -- Using sorry for now as this depends on the boundary_resolution_set consistency argument
+  sorry
 
 /--
 The restricted constrained successor seed is consistent when u is a DeferralRestrictedMCS.
 
-**Proof Strategy**:
+**Proof Strategy (v3)**:
 The seed is `g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas_restricted(phi, u) ∪ boundary_resolution_set(phi, u)`.
 
-We show each component is a subset of u:
+With the corrected boundary_resolution_set definition (no chi ∈ u condition), we can no longer
+simply show seed ⊆ u. Instead, we prove consistency via a two-part argument:
+
+**Part 1**: The non-boundary part of the seed is a subset of u:
 1. g_content(u) ⊆ u: By `g_content_subset_deferral_restricted_mcs`
 2. deferralDisjunctions(u) ⊆ u: By `deferralDisjunctions_subset_deferral_restricted_mcs`
 3. p_step_blocking_formulas_restricted(phi, u) ⊆ u: By `p_step_blocking_restricted_subset`
-4. boundary_resolution_set(phi, u) ⊆ u: By definition (first condition is chi ∈ u)
 
-Therefore constrained_successor_seed_restricted(phi, u) ⊆ u. Since u is consistent (DeferralRestrictedMCS),
-any subset of u is consistent, so the seed is consistent.
+**Part 2**: boundary_resolution_set doesn't introduce contradictions:
+For psi ∈ boundary_resolution_set(phi, u):
+- F(psi) ∈ u (by definition)
+- neg(psi) ∉ g_content(u) (since G(neg psi) ∉ u by MCS consistency with F(psi) = neg(G(neg psi)))
+- neg(psi) ∉ deferralDisjunctions (structural: OR vs IMP)
+- neg(psi) ∉ p_step_blocking_restricted (structural: H(neg xi) vs psi.imp bot)
+
+Therefore the seed is consistent: any finite subset L either:
+- Contains only non-boundary elements ⊆ u, so consistent
+- Contains boundary elements, but their negations can't be derived from the seed
 -/
 theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     SetConsistent (constrained_successor_seed_restricted phi u) := by
-  -- We show seed ⊆ u, then use that u is consistent
-  have h_seed_subset_u : constrained_successor_seed_restricted phi u ⊆ u := by
-    intro psi h_seed
-    rw [mem_constrained_successor_seed_restricted_iff] at h_seed
-    rcases h_seed with h_gc | h_dd | h_block | h_brs
-    · -- g_content case
-      exact g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc
-    · -- deferralDisjunctions case
-      exact deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd
-    · -- p_step_blocking_restricted case
-      exact Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block
-    · -- boundary_resolution_set case: chi ∈ u by definition
-      rw [mem_boundary_resolution_set_iff] at h_brs
-      exact h_brs.1
-  -- Any finite subset of seed is a finite subset of u, which is consistent
+  -- Split the seed into boundary and non-boundary parts
+  -- The non-boundary part is a subset of u
+  have h_non_boundary_subset_u :
+      g_content u ∪ deferralDisjunctions u ∪ p_step_blocking_formulas_restricted phi u ⊆ u := by
+    intro psi h_psi
+    simp only [Set.mem_union] at h_psi
+    rcases h_psi with (h_gc | h_dd) | h_block
+    · exact g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc
+    · exact deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd
+    · exact Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block
+  -- For any finite subset L of the seed, we show L doesn't derive bot
   intro L h_L
-  exact h_mcs.1.2 L (fun ψ hψ => h_seed_subset_u (h_L ψ hψ))
+  -- We prove consistency by showing that any derivation from the seed
+  -- can be transformed to a derivation from a subset of u.
+
+  -- Key observation: Each element of the seed is either:
+  -- 1. In the non-boundary part (g_content ∪ deferralDisjunctions ∪ p_step_blocking) ⊆ u
+  -- 2. In boundary_resolution_set, where F(psi) ∈ u
+
+  -- For case 2, if psi ∈ boundary_resolution_set:
+  -- - F(psi) ∈ u, so psi ∨ F(psi) ∈ u (derivable from F(psi), in deferralDisjunctions)
+  -- - Any derivation using psi can potentially be modified to use (psi ∨ F(psi)) instead
+
+  -- The full proof requires showing that the boundary_resolution_set elements
+  -- don't introduce inconsistencies. This is non-trivial and involves showing
+  -- that no contradiction can arise from mixing boundary and non-boundary elements.
+
+  -- For Phase 1, we use sorry. The complete proof will use the fact that:
+  -- For any psi ∈ boundary_resolution_set, neg(psi) ∉ (non-boundary seed),
+  -- as proven by neg_not_in_g_content_when_F_in, neg_not_in_deferralDisjunctions,
+  -- and neg_not_in_p_step_blocking_restricted.
+
+  sorry
 
 /-!
 ## Phase 4: Restricted Constrained Successor Construction

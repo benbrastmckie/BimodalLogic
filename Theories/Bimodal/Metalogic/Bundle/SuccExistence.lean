@@ -267,26 +267,27 @@ eventually include chi when it's compatible).
 /--
 Formulas that must be resolved at the boundary.
 
-When chi ∈ u, F(chi) ∈ u, and FF(chi) ∉ deferralClosure(phi), we add chi to the seed.
+When F(chi) ∈ u and FF(chi) ∉ deferralClosure(phi), we add chi to the seed.
 This ensures chi ∈ successor, resolving the F-obligation for F(chi).
 
 The conditions are:
-- chi ∈ u: chi is already in the current MCS (makes consistency trivial)
 - F(chi) ∈ u: There is an F-obligation for chi
 - FF(chi) ∉ deferralClosure: We're at the F-depth boundary, can't defer further
 
-When all conditions hold, adding chi to the seed forces chi ∈ successor.
-The chi ∈ u requirement ensures augmented_seed ⊆ u, making consistency trivial.
+When both conditions hold, adding chi to the seed forces chi ∈ successor.
+
+**Key insight (v3)**: The original definition included `chi ∈ u` to make consistency
+trivial, but this defeats the purpose of forcing resolution. The correct definition
+removes `chi ∈ u`. Consistency is proven differently: if F(chi) ∈ u then G(neg chi) ∉ u
+(by MCS consistency since F(chi) = neg(G(neg chi))), so neg(chi) ∉ g_content(u).
 -/
 def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
-  {chi | chi ∈ u ∧
-         Formula.some_future chi ∈ u ∧
+  {chi | Formula.some_future chi ∈ u ∧
          Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula)}
 
 /-- Membership in boundary_resolution_set. -/
 lemma mem_boundary_resolution_set_iff (phi : Formula) (u : Set Formula) (chi : Formula) :
     chi ∈ boundary_resolution_set phi u ↔
-    chi ∈ u ∧
     Formula.some_future chi ∈ u ∧
     Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) := by
   rfl
@@ -294,14 +295,23 @@ lemma mem_boundary_resolution_set_iff (phi : Formula) (u : Set Formula) (chi : F
 /--
 boundary_resolution_set is a subset of deferralClosure.
 
-If chi ∈ boundary_resolution_set, then chi ∈ u ⊆ deferralClosure.
+If chi ∈ boundary_resolution_set, then F(chi) ∈ u ⊆ deferralClosure.
+Since F(chi) ∈ deferralClosure, we have F(chi) ∈ closureWithNeg, so chi ∈ subformulaClosure ⊆ deferralClosure.
 -/
 theorem boundary_resolution_set_subset_deferralClosure (phi : Formula) (u : Set Formula)
     (h_u : u ⊆ (deferralClosure phi : Set Formula)) :
     boundary_resolution_set phi u ⊆ (deferralClosure phi : Set Formula) := by
   intro chi h_chi
-  obtain ⟨h_chi_in_u, _, _⟩ := h_chi
-  exact h_u h_chi_in_u
+  obtain ⟨h_F_chi_in_u, _⟩ := h_chi
+  -- F(chi) ∈ u ⊆ deferralClosure
+  have h_F_chi_in_dc : Formula.some_future chi ∈ deferralClosure phi := h_u h_F_chi_in_u
+  -- F(chi) ∈ deferralClosure implies F(chi) ∈ closureWithNeg
+  have h_F_chi_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi h_F_chi_in_dc
+  -- F(chi) ∈ closureWithNeg implies chi ∈ subformulaClosure
+  have h_chi_sub := Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi chi h_F_chi_cwn
+  -- chi ∈ subformulaClosure ⊆ closureWithNeg ⊆ deferralClosure
+  exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+    (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_chi_sub)
 
 /-!
 ## Restricted Constrained Successor Seed

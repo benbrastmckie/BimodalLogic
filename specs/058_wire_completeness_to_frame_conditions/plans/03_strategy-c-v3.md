@@ -1,7 +1,7 @@
 # Implementation Plan: Task #58 (Revised v3)
 
 - **Task**: 58 - Wire completeness to FrameConditions
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 8 hours
 - **Dependencies**: None (all prerequisite infrastructure is sorry-free)
 - **Supersedes**: plans/02_revised-strategy-c.md (v2 had incorrect boundary_resolution_set definition)
@@ -64,7 +64,7 @@ With this fix, termination becomes trivial: depth decreases by 1 in all cases.
 
 ## Implementation Phases
 
-### Phase 1: Fix boundary_resolution_set Definition [NOT STARTED]
+### Phase 1: Fix boundary_resolution_set Definition [PARTIAL]
 
 **Goal**: Correct the `boundary_resolution_set` definition by removing the `chi in u` condition, then prove consistency of the modified seed.
 
