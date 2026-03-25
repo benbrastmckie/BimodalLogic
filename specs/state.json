@@ -53,7 +53,7 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-25T23:34:25Z",
+      "last_updated": "2026-03-25T23:59:45Z",
       "session_id": "sess_1774479337_c37b92",
       "researched": "2026-03-25T17:50:52Z",
       "planned": "2026-03-25T18:38:38Z",
@@ -112,6 +112,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/11_team-research.md",
           "type": "research",
           "summary": "Team research: G-theory propagation gap analysis (3 teammates)"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/15_team-research.md",
+          "type": "research",
+          "summary": "Team research wave 2: GH-intersection detail, vault review, category theory (3 teammates)"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
