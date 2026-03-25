@@ -34,14 +34,15 @@ technical_debt:
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-55 → 58 → 59 → 60
- └→ 56 → 57 (cleanup, parallel to 58)
+55 → 62 → 58 → 59 → 60
+ └→ 56 → 57 (cleanup, parallel to 62)
 ```
 
 1. **55** [COMPLETED] — Prove SuccChain temporal coherence directly (bypasses f_nesting_is_bounded)
-2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
-3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
-4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+2. **62** [NOT STARTED] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
+3. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
+4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
+5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. Code Cleanup (after task 55)
 
@@ -82,6 +83,33 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 62. Resolve backward Box sorry in succ_chain_truth_lemma and correct documentation
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 55
+
+**Description**: The backward Box case in `succ_chain_truth_lemma` (SuccChainTruth.lean:254) contains a sorry with a misleading comment: "Box backward not needed for completeness." This is wrong — the backward direction is structurally entangled with the forward proof (the Imp forward case calls `(ih t).mpr` on sub-formulas). Task 55 added documentation reinforcing this incorrect claim.
+
+**Investigation findings**:
+- `succ_chain_truth_forward` extracts `.mp` from `succ_chain_truth_lemma` (line 310)
+- The Imp forward case at line 240-243 uses backward IH: `(ih t).mp h_psi_mcs` — but the induction produces both directions simultaneously
+- Backward G/H cases (lines 264-286) depend on `SuccChainTemporalCoherent` (deprecated as mathematically impossible)
+- `lean_verify` reports BOTH `succ_chain_truth_lemma` and `succ_chain_truth_forward` as sorry-free despite the explicit sorry at line 254 — this discrepancy itself needs investigation
+
+**Work items**:
+1. Investigate `lean_verify` discrepancy: why does it report sorry-free for a theorem containing `sorry`?
+2. Determine if `succ_chain_truth_lemma` (the biconditional) can be replaced by a forward-only proof that doesn't require backward cases at all — if so, remove the biconditional
+3. If removal is not possible (likely, due to Imp case needing backward IH on sub-formulas), then:
+   a. Correct all comments in SuccChainTruth.lean that claim backward direction is ignorable
+   b. Remove/correct the task 55 documentation (lines 288-305) that reinforces the false claim
+   c. Document the backward Box sorry as a genuine gap requiring resolution
+   d. Document backward G/H dependency on `SuccChainTemporalCoherent` as a genuine gap
+   e. Update ROAD_MAP.md to reflect that the backward direction CANNOT be ignored
+   f. Update TODO.md technical debt counts if needed
 
 ---
 
