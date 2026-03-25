@@ -104,6 +104,25 @@ LindenbaumQuotient → BooleanStructure → InteriorOperators
 
 The gap is `construct_bfmcs`: given MCS M₀, produce a temporally coherent BFMCS.
 
+#### Modal Completeness (Box Forward/Backward) — SOLVED
+
+The **modal direction is complete**. `boxClassFamilies_modal_backward` (UltrafilterChain.lean:1678)
+proves modal backward for the `boxClassFamilies` bundle construction. This theorem is sorry-free
+and uses the contraposition argument:
+
+1. If Box(phi) not in MCS, then Diamond(neg phi) in M0
+2. `box_theory_witness_exists` provides W' with neg(phi) in W' and same box-class
+3. The shifted chain from W' is in the bundle
+4. If phi were in ALL families, it would be in W', contradiction
+
+The `parametric_canonical_truth_lemma` (ParametricTruthLemma.lean:170) uses `B.modal_backward`
+at line 269, which is populated by `boxClassFamilies_modal_backward` when constructing
+via `construct_bfmcs`.
+
+**Status**: Modal completeness (Box case) has no sorries. The remaining challenge is
+**temporal coherence** (G/H backward), which requires the SuccChain or per-obligation
+witness architecture work described above.
+
 **Algebraic insight**: The SuccChain approach tries to build the FMCS by explicit
 forward/backward enumeration. The algebraic approach could instead:
 

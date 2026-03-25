@@ -1,7 +1,7 @@
 # Implementation Plan: Task #63 - BFMCS Modal Completeness
 
 - **Task**: 63 - prove_box_backward_via_bfmcs
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4-6 hours
 - **Dependencies**: Task 62 (completed)
 - **Research Inputs**: specs/063_prove_box_backward_via_bfmcs/reports/02_team-research.md
@@ -47,16 +47,23 @@ Key findings from team research (02_team-research.md):
 
 ## Implementation Phases
 
-### Phase 1: Analyze Current Truth Lemma Structure [NOT STARTED]
+### Phase 1: Analyze Current Truth Lemma Structure [COMPLETED]
 
 **Goal**: Understand the current Box case in ParametricTruthLemma and identify exact insertion points.
 
 **Tasks**:
-- [ ] Read ParametricTruthLemma.lean lines 170-310 (truth lemma structure)
-- [ ] Identify the Box forward case (should use modal_forward or similar)
-- [ ] Identify the Box backward case (may have sorry or stub)
-- [ ] Document the current signature of `boxClassFamilies_modal_backward`
-- [ ] Map type parameters: D-parametric vs Int-based in UltrafilterChain
+- [x] Read ParametricTruthLemma.lean lines 170-310 (truth lemma structure)
+- [x] Identify the Box forward case (uses B.modal_forward at line 256)
+- [x] Identify the Box backward case (uses B.modal_backward at line 269 - ALREADY WIRED)
+- [x] Document the current signature of `boxClassFamilies_modal_backward`
+- [x] Map type parameters: D-parametric vs Int-based in UltrafilterChain
+
+**Findings**:
+- The Box backward case in `parametric_canonical_truth_lemma` (line 269) is ALREADY complete
+- `B.modal_backward` is used directly, which works for any BFMCS regardless of D
+- `boxClassFamilies_modal_backward` (UltrafilterChain.lean:1678) is sorry-free
+- `construct_bfmcs` (line 1862) uses `boxClassFamilies_modal_backward` to populate the field
+- The wiring is complete - no code changes needed for modal completeness
 
 **Timing**: 30 minutes
 
@@ -70,91 +77,78 @@ Key findings from team research (02_team-research.md):
 
 ---
 
-### Phase 2: Create BFMCS Construction from MCS [NOT STARTED]
+### Phase 2: Create BFMCS Construction from MCS [COMPLETED]
 
 **Goal**: Create `bfmcs_from_mcs` that wraps an MCS in the boxClassFamilies bundle structure.
 
 **Tasks**:
-- [ ] Define `bfmcs_from_mcs` in a new section of UltrafilterChain.lean or ParametricTruthLemma.lean
-- [ ] Prove the MCS is in its own boxClassFamilies bundle
-- [ ] Prove `bfmcs_from_mcs_membership`: the original MCS is a member of the BFMCS at time 0
-- [ ] Verify `lake build` passes
+- [x] Define `bfmcs_from_mcs` in UltrafilterChain.lean - ALREADY EXISTS as `construct_bfmcs`
+- [x] Prove the MCS is in its own boxClassFamilies bundle - `eval_family_mem_boxClassFamilies`
+- [x] Prove `bfmcs_from_mcs_membership`: the original MCS is a member at time 0 - line 1874-1876
+- [x] Verify `lake build` passes
 
-**Timing**: 1.5 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` - add bfmcs_from_mcs section
-
-**Verification**:
-- `bfmcs_from_mcs M h_mcs` returns a BFMCS containing M
-- `lake build` passes without errors
+**Findings**:
+- `construct_bfmcs` (line 1852-1877) already does exactly this
+- It returns `Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent) (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int), M = fam.mcs t`
+- The BFMCS's `modal_backward` field is populated by `boxClassFamilies_modal_backward` (line 1862)
+- Note: `construct_bfmcs` is marked @[deprecated] due to temporal coherence sorries (a separate issue)
+- The modal direction (Box forward/backward) is sorry-free
 
 ---
 
-### Phase 3: Wire Modal Backward into Truth Lemma [NOT STARTED]
+### Phase 3: Wire Modal Backward into Truth Lemma [COMPLETED]
 
 **Goal**: Connect `boxClassFamilies_modal_backward` to the Box backward case in the truth lemma.
 
 **Tasks**:
-- [ ] Add import of UltrafilterChain to ParametricTruthLemma if needed
-- [ ] In the Box backward case, apply `boxClassFamilies_modal_backward`
-- [ ] Handle any type coercions between D-parametric and Int
-- [ ] Remove any sorry in the Box backward case
-- [ ] Verify the full truth lemma now has sorry-free Box case
+- [x] Add import of UltrafilterChain to ParametricTruthLemma if needed - Not needed, uses BFMCS abstraction
+- [x] In the Box backward case, apply `boxClassFamilies_modal_backward` - ALREADY DONE via B.modal_backward
+- [x] Handle any type coercions between D-parametric and Int - Not needed, D-parametric works
+- [x] Remove any sorry in the Box backward case - No sorry exists
+- [x] Verify the full truth lemma now has sorry-free Box case - Confirmed via lean_goal
 
-**Timing**: 1.5 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Algebraic/ParametricTruthLemma.lean` - Box backward case
-
-**Verification**:
-- `lake build` passes
-- Box case in truth lemma has no sorry
-- `#check parametric_canonical_truth_lemma` shows no sorry warnings for Box
+**Findings**:
+- `parametric_canonical_truth_lemma` (line 170) uses `B.modal_backward` at line 269
+- This is the BFMCS field populated by `boxClassFamilies_modal_backward` when using `boxClassFamilies`
+- The D-parametric abstraction means no Int-specific handling is needed
+- Both truth lemmas (`parametric_canonical_truth_lemma` and `parametric_shifted_truth_lemma`) are sorry-free for Box
 
 ---
 
-### Phase 4: Document Singleton-Omega Dead End [NOT STARTED]
+### Phase 4: Document Singleton-Omega Dead End [COMPLETED]
 
 **Goal**: Update SuccChainTruth.lean comments to clearly document why the singleton-Omega approach is mathematically impossible.
 
 **Tasks**:
-- [ ] Expand comment block at SuccChainTruth.lean:254 with full explanation
-- [ ] Add docstring to the sorry section explaining the S5 negative introspection gap
-- [ ] Reference the boxClassFamilies solution as the correct path
-- [ ] Add note about per-obligation architecture for temporal (future work)
+- [x] Expand comment block at SuccChainTruth.lean:254 with full explanation
+- [x] Add docstring to the sorry section explaining the S5 negative introspection gap
+- [x] Reference the boxClassFamilies solution as the correct path
+- [x] Add note about per-obligation architecture for temporal (future work)
 
-**Timing**: 30 minutes
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/SuccChainTruth.lean:254` - expand documentation
-
-**Verification**:
-- Comments clearly explain why singleton-Omega fails
-- Reference to BFMCS solution is clear
+**Completed Changes**:
+- Added "PROVEN THEOREM REFERENCE" section with specific theorem and line references
+- Added "STATUS" line confirming modal completeness is solved in BFMCS path
+- Updated module docstring with BFMCS Solution note
+- Updated path reference to `Algebraic/UltrafilterChain.lean` for clarity
+- `lake build` passes (927 jobs)
 
 ---
 
-### Phase 5: Update ROADMAP and Final Verification [NOT STARTED]
+### Phase 5: Update ROADMAP and Final Verification [COMPLETED]
 
 **Goal**: Document progress and verify the implementation is complete.
 
 **Tasks**:
-- [ ] Run `lake build` and verify no new sorries introduced
-- [ ] Check that `boxClassFamilies_modal_backward` is correctly wired
-- [ ] Update ROADMAP.md if it exists with modal completeness status
-- [ ] Create follow-up task description for temporal per-obligation architecture
+- [x] Run `lake build` and verify no new sorries introduced
+- [x] Check that `boxClassFamilies_modal_backward` is correctly wired
+- [x] Update ROADMAP.md if it exists with modal completeness status
+- [x] Create follow-up task description for temporal per-obligation architecture
 
-**Timing**: 30 minutes
-
-**Files to check**:
-- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean`
-- `Theories/Bimodal/Metalogic/Algebraic/ParametricTruthLemma.lean`
-
-**Verification**:
-- `lake build` passes
-- No regressions in existing proofs
-- Modal completeness path is clear
+**Completed Changes**:
+- Added "Modal Completeness (Box Forward/Backward) — SOLVED" section to ROADMAP.md
+- Documented the contraposition proof strategy used in `boxClassFamilies_modal_backward`
+- Clarified that temporal coherence (G/H backward) is the remaining challenge
+- `lake build` passes with 927 jobs, no regressions
 
 ## Testing and Validation
 

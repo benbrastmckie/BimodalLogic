@@ -38,6 +38,10 @@ arbitrary MCS content without modal saturation.
 `sorryAx` because the forward Imp case structurally requires the backward direction.
 For sorry-free completeness, use `semantic_weak_completeness` or the algebraic path.
 
+**BFMCS Solution**: The `boxClassFamilies_modal_backward` theorem (UltrafilterChain.lean)
+proves modal backward for the bundled construction. The singleton-Omega approach here
+is intentionally left with a sorry to document WHY bundling is mathematically necessary.
+
 ## References
 
 - ParametricTruthLemma.lean: Pattern for truth lemma proof
@@ -270,8 +274,8 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
       combined with K and T gives S5, but these don't yield (psi -> Box psi) for
       arbitrary psi in a single MCS.
 
-      THE BFMCS SOLUTION (UltrafilterChain.lean):
-      -------------------------------------------
+      THE BFMCS SOLUTION (Algebraic/UltrafilterChain.lean):
+      -----------------------------------------------------
       The BFMCS approach bundles ALL families agreeing on box-content with M0.
       Modal backward works by contraposition:
       1. If Box phi is not in MCS, then Diamond(neg phi) is in M0
@@ -281,6 +285,19 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
 
       The key is: the BFMCS bundle contains witness families that falsify phi when
       Box phi fails. Singleton Omega has NO such witnesses.
+
+      PROVEN THEOREM REFERENCE:
+      -------------------------
+      `boxClassFamilies_modal_backward` (UltrafilterChain.lean:1678) proves modal backward
+      for the `boxClassFamilies` construction. This theorem is sorry-free and is used by
+      `construct_bfmcs` to build a BFMCS with working modal coherence.
+
+      The parametric truth lemma (`parametric_canonical_truth_lemma` in
+      ParametricTruthLemma.lean:170) uses `B.modal_backward` which is populated by
+      `boxClassFamilies_modal_backward` when the BFMCS is constructed via `construct_bfmcs`.
+
+      STATUS: Modal completeness (Box forward/backward) is SOLVED in the BFMCS path.
+      This singleton-Omega sorry remains as documentation of why bundling is necessary.
 
       IMPACT ON COMPLETENESS:
       -----------------------
