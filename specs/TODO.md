@@ -44,10 +44,9 @@ technical_debt:
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
-### 2. Code Cleanup (after task 55)
+### 2. Code Cleanup
 
-1. **56** [COMPLETED] — Remove ~2500 lines of dead code from SuccChainFMCS.lean
-2. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
+1. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
 ### 3. Superseded Tasks (candidates for abandonment)
 
@@ -159,55 +158,8 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 - **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
 - **Language**: lean4
-- **Dependencies**: Task 56
 
 **Description**: Remove ~150 lines of unused Phase 1 ultrafilter relations (R_G, R_Box, etc.) never referenced by the actual box-class construction. Remove ~280 lines of verbose exploratory comments in box_class_witness_consistent. Consider renaming file to BoxClassBFMCS.lean to match what it actually does.
-
----
-
-### 56. Clean up SuccChainFMCS.lean dead code
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-25
-- **Summary**: Removed 2258 lines of dead code from SuccChainFMCS.lean and RestrictedMCS.lean
-- **Language**: lean4
-- **Dependencies**: Task 55
-- **Research**: [01_dead-code-inventory.md](specs/056_clean_up_succchain_fmcs_dead_code/reports/01_dead-code-inventory.md)
-- **Plan**: [01_dead-code-removal.md](specs/056_clean_up_succchain_fmcs_dead_code/plans/01_dead-code-removal.md)
-- **Summary Report**: [01_dead-code-removal-summary.md](specs/056_clean_up_succchain_fmcs_dead_code/summaries/01_dead-code-removal-summary.md)
-
-**Description**: Remove ~2500 lines of dead code from SuccChainFMCS.lean. Delete deprecated approaches: restricted_succ_propagates_F_not variants (9 sorries, proven FALSE), single_step_forcing attempts, f_nesting_is_bounded/p_nesting_is_bounded (deprecated), fuel-based and boundary-resolution approaches. Also remove p_step_blocking_for_deferral_restricted in RestrictedMCS.lean.
-
----
-
-### 55. Prove SuccChain temporal coherence directly
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-24
-- **Summary**: succ_chain_truth_forward verified sorry-free (no restructuring needed), added deprecation dates to 10 theorems
-- **Language**: lean4
-- **Dependencies**: Task 48
-- **Research**:
-  - [01_temporal-coherence-direct.md](055_prove_succchain_temporal_coherence_directly/reports/01_temporal-coherence-direct.md)
-  - [02_team-research.md](055_prove_succchain_temporal_coherence_directly/reports/02_team-research.md)
-  - [02_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/02_teammate-a-findings.md)
-  - [02_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/02_teammate-b-findings.md)
-  - [02_teammate-c-findings.md](055_prove_succchain_temporal_coherence_directly/reports/02_teammate-c-findings.md)
-  - [03_team-research.md](055_prove_succchain_temporal_coherence_directly/reports/03_team-research.md)
-  - [03_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-a-findings.md)
-  - [03_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/03_teammate-b-findings.md)
-  - [04_resolving-chain-detailed.md](055_prove_succchain_temporal_coherence_directly/reports/04_resolving-chain-detailed.md)
-  - [10_team-research.md](055_prove_succchain_temporal_coherence_directly/reports/10_team-research.md)
-  - [10_teammate-a-findings.md](055_prove_succchain_temporal_coherence_directly/reports/10_teammate-a-findings.md)
-  - [10_teammate-b-findings.md](055_prove_succchain_temporal_coherence_directly/reports/10_teammate-b-findings.md)
-- **Plan**:
-  - [01_temporal-coherence-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/01_temporal-coherence-implementation.md) (superseded)
-  - [02_algebraic-temporal-coherence.md](055_prove_succchain_temporal_coherence_directly/plans/02_algebraic-temporal-coherence.md) (superseded)
-  - [03_resolving-chain-implementation.md](055_prove_succchain_temporal_coherence_directly/plans/03_resolving-chain-implementation.md) (superseded)
-  - [04_simplified-resolving-chain.md](055_prove_succchain_temporal_coherence_directly/plans/04_simplified-resolving-chain.md) (superseded)
-  - [05_canonical-construction-integration.md](055_prove_succchain_temporal_coherence_directly/plans/05_canonical-construction-integration.md)
-
-**Description**: Prove SuccChain temporal coherence directly, bypassing f_nesting_is_bounded. The current sorry chain is: f_nesting_is_bounded (FALSE for arbitrary MCS) → f_nesting_boundary → succ_chain_forward_F → SuccChainTemporalCoherent → construct_bfmcs. Replace with a direct argument: the SuccChain construction resolves F-obligations step-by-step via Succ, so if F(phi) is at time k, phi must appear at some k+d by the enumeration/fairness of obligation resolution. Mirror for P. This eliminates the last sorry on the completeness path. Supersedes the approach in tasks 36, 37, 53.
 
 ---
 
@@ -218,18 +170,6 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 - **Dependencies**: Tasks 36, 37
 
 **Description**: After axiom elimination (48→36→37), wire SuccChainCompleteness through FrameConditions/Completeness to achieve sorry-free completeness path. Connect construct_bfmcs callback to algebraic ParametricRepresentation pipeline. Resolve 9 completeness wiring sorries blocked by SuccChain.
-
----
-
-### 52. Comprehensive task review and roadmap report
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-24
-- **Language**: general
-- **Research**: [01_comprehensive-review.md](052_task_review_and_roadmap_report/reports/01_comprehensive-review.md)
-- **Summary**: Audited 18 active tasks, cataloged 98 sorries, identified 5-phase execution roadmap, elevated STSA to medium priority. Consolidated into [ROADMAP.md](/ROADMAP.md).
-
-**Description**: Comprehensive task review, sorry inventory, CanonicalR trace audit, and algebraic gap analysis. Produced ROADMAP.md with completeness gap architecture, Class A/B sorry classification, and algebraic perspective.
 
 ---
 
@@ -264,54 +204,6 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ---
 
-### 48. Prove succ_chain_fam MCS have bounded F-depth
-- **Effort**: 8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-24
-- **Summary**: Resolved all sorries via MCS-level box-class bundle construction. Key: box_theory_witness_consistent (S5 neg introspection + K-distribution) and boxClassFamilies_modal_backward (contrapositive witness). construct_bfmcs wired to ParametricRepresentation.
-- **Language**: lean4
-- **Dependencies**: Task 47
-- **Parent Task**: 36
-- **Plan**:
-  - [14_algebraic-stsa.md](048_prove_succ_chain_fam_bounded_f_depth/plans/14_algebraic-stsa.md)
-  - [15_ultrafilter-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/15_ultrafilter-chain.md)
-- **Research**:
-  - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
-  - [01_bounded-f-depth.md](048_prove_succ_chain_fam_bounded_f_depth/reports/01_bounded-f-depth.md)
-  - [02_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/02_team-research.md)
-  - [03_blocker-analysis.md](048_prove_succ_chain_fam_bounded_f_depth/reports/03_blocker-analysis.md)
-  - [06_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/06_team-research.md)
-  - [08_lexicographic-wf.md](048_prove_succ_chain_fam_bounded_f_depth/reports/08_lexicographic-wf.md)
-  - [09_boundary-case.md](048_prove_succ_chain_fam_bounded_f_depth/reports/09_boundary-case.md)
-  - [10_g-content-path.md](048_prove_succ_chain_fam_bounded_f_depth/reports/10_g-content-path.md)
-  - [15_team-research.md](048_prove_succ_chain_fam_bounded_f_depth/reports/15_team-research.md)
-  - [16_derivability-blocker.md](048_prove_succ_chain_fam_bounded_f_depth/reports/16_derivability-blocker.md)
-  - [26_roadmap-synthesis.md](048_prove_succ_chain_fam_bounded_f_depth/reports/26_roadmap-synthesis.md)
-  - [33_teammate-b-findings.md](048_prove_succ_chain_fam_bounded_f_depth/reports/33_teammate-b-findings.md)
-  - [33_teammate-c-findings.md](048_prove_succ_chain_fam_bounded_f_depth/reports/33_teammate-c-findings.md)
-- **Plan**:
-  - [01_restricted-succ-chain.md](048_prove_succ_chain_fam_bounded_f_depth/plans/01_restricted-succ-chain.md)
-  - [02_augmented-closure.md](048_prove_succ_chain_fam_bounded_f_depth/plans/02_augmented-closure.md)
-  - [03_restricted-p-step.md](048_prove_succ_chain_fam_bounded_f_depth/plans/03_restricted-p-step.md)
-  - [04_restricted-blocking.md](048_prove_succ_chain_fam_bounded_f_depth/plans/04_restricted-blocking.md)
-  - [05_fuel-recursion.md](048_prove_succ_chain_fam_bounded_f_depth/plans/05_fuel-recursion.md)
-  - [06_bounded-witness.md](048_prove_succ_chain_fam_bounded_f_depth/plans/06_bounded-witness.md)
-  - [07_boundary-resolution.md](048_prove_succ_chain_fam_bounded_f_depth/plans/07_boundary-resolution.md)
-  - [08_g-content-fix.md](048_prove_succ_chain_fam_bounded_f_depth/plans/08_g-content-fix.md)
-  - [09_boundary-resolution-seed.md](048_prove_succ_chain_fam_bounded_f_depth/plans/09_boundary-resolution-seed.md)
-  - [10_chi-in-u-restriction.md](048_prove_succ_chain_fam_bounded_f_depth/plans/10_chi-in-u-restriction.md)
-  - [12_drm-negation-completeness.md](048_prove_succ_chain_fam_bounded_f_depth/plans/12_drm-negation-completeness.md)
-  - [13_weaken-bounded-witness.md](048_prove_succ_chain_fam_bounded_f_depth/plans/13_weaken-bounded-witness.md)
-- **Summary**:
-  - [01_restricted-succ-chain-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/01_restricted-succ-chain-summary.md)
-  - [02_augmented-closure-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/02_augmented-closure-summary.md)
-  - [05_fuel-recursion-partial.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/05_fuel-recursion-partial.md)
-  - [06_bounded-witness-summary.md](048_prove_succ_chain_fam_bounded_f_depth/summaries/06_bounded-witness-summary.md)
-
-**Description**: Prove that the specific MCS in succ_chain_fam construction have bounded F-iteration depth. Show that the construction places F-witnesses at bounded depth, formalize that if F(phi) in M_n then the witness is at a bounded distance in the chain. Use closure depth bound from Task 47 to replace the sorry in f_nesting_is_bounded and p_nesting_is_bounded.
-
----
-
 ### 42. Investigate and eliminate ALL custom axioms — architectural redesign permitted
 - **Effort**: 20-40 hours
 - **Status**: [RESEARCHED]
@@ -340,25 +232,6 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 **Investigation questions per axiom**: (a) What property does it assert? (b) Why wasn't it proven originally? (c) Can it be proven from existing infrastructure? (d) If not, what architectural change would make it provable? (e) Can the dependent code be restructured to not need this property at all?
 
 **Coordination**: Task 40 plan must be revised (recommends adding 10th axiom). Tasks 34, 36, 37 target individual axioms and should be subsumed or coordinated.
-
----
-
-### 41. Eliminate D=CanonicalMCS pattern systematically
-- **Effort**: 5-6 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-23
-- **Language**: lean4
-- **Research**:
-  - [01_team-research.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/01_team-research.md)
-  - [02_deep-research.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/02_deep-research.md)
-  - [03_removal-analysis.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/reports/03_removal-analysis.md)
-- **Plan**:
-  - [01_coexistence-strategy.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/01_coexistence-strategy.md) (superseded)
-  - [02_removal-strategy.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/02_removal-strategy.md) (superseded)
-  - [03_tiered-removal.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/plans/03_tiered-removal.md) (executed)
-- **Summary**: [01_tiered-removal-summary.md](specs/041_eliminate_d_equals_canonicalmcs_pattern/summaries/01_tiered-removal-summary.md)
-
-**Description**: Remove the architectural error where the FMCS type parameter D (timeline/duration type) is instantiated with CanonicalMCS (the type of all maximal consistent sets). FMCS model world histories as functions D → W obeying temporal coherence constraints; D should be a timeline type (Int, Rat, TimelineQuot) and W should be world states (MCS). The D=CanonicalMCS pattern conflates these, creating an identity mapping `mcs(w) = w.world` that trivializes F/P witness obligations rather than proving them properly. This pattern is load-bearing across 13+ files: CanonicalFMCS.lean, FMCSDef.lean, ModallyCoherentBFMCS.lean, AlgebraicBaseCompleteness.lean, BaseCompleteness.lean, StagedConstruction/Completeness.lean, TimelineQuotBFMCS.lean, DovetailedTimelineQuotBFMCS.lean, ClosureSaturation.lean, CanonicalConstruction.lean, TemporalCoherence.lean, ChainFMCS.lean, ModalSaturation.lean. The critical sorry-free theorem `temporal_coherent_family_exists_CanonicalMCS` depends entirely on this conflation. Requires constructing proper FMCS with D=Int (or similar timeline type) where F/P witnesses are genuinely proven within the chain construction.
 
 ---
 

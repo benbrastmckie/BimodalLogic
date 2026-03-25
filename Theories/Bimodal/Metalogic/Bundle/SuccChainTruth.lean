@@ -32,7 +32,11 @@ requires the backward direction (psi true -> psi in MCS).
 
 **Note on Box Backward**: The backward direction for Box in a singleton-Omega model
 requires that psi in MCS implies Box psi in MCS. This is NOT generally true for
-arbitrary MCS content. However, for COMPLETENESS we only need the FORWARD direction.
+arbitrary MCS content without modal saturation.
+
+**Sorry Status**: Both `succ_chain_truth_lemma` and `succ_chain_truth_forward` depend on
+`sorryAx` because the forward Imp case structurally requires the backward direction.
+For sorry-free completeness, use `semantic_weak_completeness` or the algebraic path.
 
 ## References
 
@@ -248,10 +252,46 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
         simp only [succ_chain_omega, Set.mem_singleton_iff]
       have h_psi_true := h_all (succ_chain_history M0) h_in_omega
       have h_psi_mcs : psi ∈ succ_chain_fam M0 t := (ih t).mpr h_psi_true
-      -- For singleton Omega: psi in MCS does NOT imply Box psi in MCS in general.
-      -- However, for COMPLETENESS we only need the forward direction.
-      -- Mark as sorry with documentation.
-      sorry -- Box backward not needed for completeness; requires modal coherence (BFMCS)
+      /-
+      MATHEMATICALLY UNPROVABLE IN SINGLETON-OMEGA
+
+      The goal is: psi in MCS -> Box psi in MCS
+      This does NOT hold for arbitrary MCS content without modal saturation.
+
+      WHY THIS IS UNPROVABLE:
+      ----------------------
+      In S5, Box phi means "phi holds at ALL accessible worlds". For a singleton Omega,
+      "all accessible" means just the one world/history. But MCS membership for Box
+      requires the S5 necessitation property: if psi is valid in the model, then Box psi
+      is derivable. This is NOT the same as "psi being in one MCS".
+
+      Consider: MCS M could contain psi but not Box psi. The T-axiom (Box phi -> phi)
+      doesn't give us (phi -> Box phi). The 5-axiom (Diamond phi -> Box Diamond phi)
+      combined with K and T gives S5, but these don't yield (psi -> Box psi) for
+      arbitrary psi in a single MCS.
+
+      THE BFMCS SOLUTION (UltrafilterChain.lean):
+      -------------------------------------------
+      The BFMCS approach bundles ALL families agreeing on box-content with M0.
+      Modal backward works by contraposition:
+      1. If Box phi is not in MCS, then Diamond(neg phi) is in M0
+      2. box_theory_witness_exists provides W' with neg phi in W' and same box-class
+      3. The shifted chain from W' is IN the bundle
+      4. If phi were in ALL families, it would be in W', contradicting neg phi in W'
+
+      The key is: the BFMCS bundle contains witness families that falsify phi when
+      Box phi fails. Singleton Omega has NO such witnesses.
+
+      IMPACT ON COMPLETENESS:
+      -----------------------
+      This sorry propagates to succ_chain_truth_forward because the forward Imp case
+      uses (ih_psi t).mpr - the backward direction on sub-formulas.
+
+      For sorry-free completeness, use:
+      - semantic_weak_completeness (FMP/SemanticCanonicalModel.lean)
+      - The algebraic path (Algebraic/ParametricRepresentation.lean)
+      -/
+      sorry
   | all_future psi ih =>
     -- G: forward_G for forward direction, backward via temporal_backward_G
     simp only [truth_at]
@@ -291,18 +331,19 @@ Forward truth lemma: MCS membership implies semantic truth.
 This is the key direction needed for completeness.
 
 **Axiom Status** (verified 2026-03-24):
-- This theorem is **sorry-free**: `#print axioms succ_chain_truth_forward` shows no `sorryAx`
-- Although it extracts `.mp` from `succ_chain_truth_lemma` (which has sorries in backward cases),
-  Lean's axiom tracking correctly identifies that the forward direction is independent
+- This theorem depends on `sorryAx` via the Box backward case in `succ_chain_truth_lemma`
+- The forward direction requires the backward direction structurally: the Imp case uses
+  `(ih_psi t).mpr` to convert truth to MCS membership for sub-formulas
 
-**Why Forward is Sorry-Free**:
-- Forward atom/bot/imp/box/G/H cases use sorry-free helper lemmas
-- The Imp case uses backward IH on sub-formulas, but backward for atom/bot/imp is sorry-free
-- Sorry only enters via backward G/H (which use `SuccChainTemporalCoherent`)
-- Forward G uses `succ_chain_forward_G_le` (sorry-free)
-- Forward H uses `succ_chain_backward_H_le` (sorry-free)
+**Why Sorry is Required**:
+- The Imp forward case needs backward IH: "if psi is true, then psi is in MCS"
+- Backward for Box (line 254) is unprovable in singleton-Omega: `psi in MCS` does NOT
+  imply `Box psi in MCS` without modal saturation
+- For sorry-free completeness, use `semantic_weak_completeness` (FMP/SemanticCanonicalModel.lean)
+  or the algebraic path (Algebraic/ParametricRepresentation.lean)
 
-For completeness proofs, this forward direction is sufficient.
+**Note**: The BFMCS approach (UltrafilterChain.lean) CAN prove Box backward via modal saturation,
+but the SuccChain singleton-Omega construction fundamentally cannot.
 -/
 theorem succ_chain_truth_forward (M0 : SerialMCS) (phi : Formula) (t : Int) :
     phi ∈ succ_chain_fam M0 t →

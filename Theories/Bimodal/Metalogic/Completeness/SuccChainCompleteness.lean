@@ -27,14 +27,14 @@ The contrapositive gives: valid φ → provable φ
 
 ## Axiom Dependency
 
-This completeness theorem depends on:
-- Axioms from SuccChainFMCS (f_nesting_boundary, p_nesting_boundary, succ_chain_fam_p_step)
-- Axioms from SuccExistence (successor/predecessor deferral seed consistency)
-- One sorry in CanonicalTaskRelation (backward_witness)
-- One sorry in SuccChainTruth (Box backward - not used in completeness)
+This completeness theorem depends on `sorryAx` via:
+- `succ_chain_truth_forward` depends on Box backward sorry in `succ_chain_truth_lemma`
+  (the forward Imp case structurally requires the backward direction)
+- Additional axioms from SuccChainFMCS, SuccExistence, CanonicalTaskRelation
 
-All axioms are semantically justified by frame conditions (NoMaxOrder, NoMinOrder, reflexive G/H).
-The remaining work targets proving the SuccExistence axioms.
+**Note**: The Box backward case is unprovable in singleton-Omega without modal saturation.
+For sorry-free completeness, use `semantic_weak_completeness` (FMP/SemanticCanonicalModel.lean)
+or the algebraic path (Algebraic/ParametricRepresentation.lean).
 
 ## References
 
