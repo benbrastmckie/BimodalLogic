@@ -27,43 +27,31 @@ technical_debt:
 
 ## Recommended Order
 
-*Updated 2026-03-25. Tasks 48, 55, 56 completed. SuccChain temporal coherence proved, 2258 lines of dead code removed.*
+*Updated 2026-03-25. Task 62 completed (documentation corrections). Task 63 created for BFMCS Box backward proof.*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-62 → 63 → 58 → 59 → 60
+63 → 58 → 59 → 60
 ```
 
-1. **62** [COMPLETED] — Resolve backward Box sorry in succ_chain_truth_lemma; correct documentation
-2. **63** [NOT STARTED] — Prove Box backward via BFMCS modal saturation; eliminate singleton-Omega dead end
-3. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
-4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
-5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **63** [RESEARCHING] — Prove Box backward via BFMCS modal saturation; eliminate singleton-Omega dead end
+2. **58** [NOT STARTED] — Wire completeness to FrameConditions (3 sorries)
+3. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
+4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. Code Cleanup (parallel to critical path)
 
 1. **57** [NOT STARTED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 
-### 3. Superseded Tasks (candidates for abandonment)
-
-These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
-
-- **36** [BLOCKED] — Prove f_nesting_boundary (superseded by 55)
-- **37** [NOT STARTED] — Prove p_nesting_boundary (superseded by 55)
-- **53** [RESEARCHED] — Direct bounded_witness induction (superseded by 55)
-- **49** [PLANNED] — FMP-based fallback (superseded by 55)
-- **54** [NOT STARTED] — Wire completeness (replaced by 58)
-- **42** [RESEARCHED] — Axiom elimination umbrella (subsumed by 55-60)
-
-### 4. Experimental
+### 3. Experimental
 
 - **61** [NOT STARTED] — Eliminate BFMCS bundles entirely (independent, explore later)
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 
-### 5. Deferred
+### 4. Deferred
 
 - **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
 - **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
@@ -71,7 +59,7 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 - **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
 - **998** [NOT STARTED] — FMP redesign for strict temporal (separate concern)
 
-### 6. Backlog
+### 5. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
 - **6** [RESEARCHED] — Canonical TaskFrame completeness (may be superseded by 8)
@@ -86,7 +74,7 @@ These were attempts to prove f_nesting_is_bounded, now bypassed by task 55:
 
 ### 63. Prove Box backward via BFMCS modal saturation and eliminate singleton-Omega dead end
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Task 62
 
@@ -183,78 +171,6 @@ The key insight: BFMCS bundles ALL families agreeing on box-content with M0, so 
 
 ---
 
-### 54. Wire completeness after axiom elimination
-- **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
-- **Language**: lean4
-- **Dependencies**: Tasks 36, 37
-
-**Description**: After axiom elimination (48→36→37), wire SuccChainCompleteness through FrameConditions/Completeness to achieve sorry-free completeness path. Connect construct_bfmcs callback to algebraic ParametricRepresentation pipeline. Resolve 9 completeness wiring sorries blocked by SuccChain.
-
----
-
-### 53. Direct bounded_witness via f_step disjunction tracking
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
-- **Language**: lean4
-- **Dependencies**: Task 48
-- **Parent Task**: 48
-- **Research**: [01_bounded-witness-restructuring.md](053_direct_bounded_witness_induction/reports/01_bounded-witness-restructuring.md)
-
-**Description**: Restructure `restricted_bounded_witness` to prove directly by induction on deferralClosure finiteness, tracking the f_step disjunction `psi in v OR F(psi) in v` instead of trying to eliminate it at each step (which is FALSE). Delete false intermediate lemmas (`restricted_single_step_forcing`, `restricted_succ_propagates_F_not` and primed variants). Use lexicographic termination measure `(F-nesting depth, dc size)`. The f_step guarantees progress at each step (either resolve or defer), and dc finiteness guarantees termination. Preserve the Class A proof (lines 2354-2449) as optimized base case for FF(psi) in deferralClosure.
-
----
-
-### 49. FMP-based boundedness proof (fallback)
-- **Effort**: 6-8 hours
-- **Status**: [PLANNED]
-- **Language**: lean4
-- **Dependencies**: Task 48
-- **Parent Task**: 36
-- **Research**:
-  - [02_spawn-analysis.md](036_prove_f_nesting_boundary/reports/02_spawn-analysis.md)
-  - [02_algebraic-vs-fmp-analysis.md](049_fmp_based_boundedness_proof_fallback/reports/02_algebraic-vs-fmp-analysis.md)
-  - [03_team-research.md](049_fmp_based_boundedness_proof_fallback/reports/03_team-research.md)
-  - [03_teammate-a-findings.md](049_fmp_based_boundedness_proof_fallback/reports/03_teammate-a-findings.md)
-  - [03_teammate-b-findings.md](049_fmp_based_boundedness_proof_fallback/reports/03_teammate-b-findings.md)
-  - [04_fmp-implementation-details.md](049_fmp_based_boundedness_proof_fallback/reports/04_fmp-implementation-details.md)
-- **Plan**: [01_fmp-completeness-plan.md](049_fmp_based_boundedness_proof_fallback/plans/01_fmp-completeness-plan.md)
-
-**Description**: FALLBACK TASK: Only pursue if Task 48 encounters fundamental obstacles. Connect succ_chain_fam to FMP infrastructure to prove boundedness via Finite Model Property. Use existing FMP infrastructure in Theories/Bimodal/Metalogic/Decidability/FMP/ including ClosureMCS, FiniteModel, Filtration, and TruthPreservation theorems.
-
----
-
-### 42. Investigate and eliminate ALL custom axioms — architectural redesign permitted
-- **Effort**: 20-40 hours
-- **Status**: [RESEARCHED]
-- **Research**: [01_team-research.md](specs/042_eliminate_all_axioms_architectural_redesign/reports/01_team-research.md)
-- **Language**: lean4
-
-**Description**: Investigate why each of the 9 custom Lean `axiom` declarations exists, determine the proof strategy or architectural change needed to eliminate it, and execute the removal. Architectural restructuring (e.g., changing seed constructions, redesigning the Succ relation, restructuring the chain construction) is explicitly permitted if it enables proper proofs. The goal is zero custom axioms — `#print axioms` on completeness theorems should show only `propext`, `Classical.choice`, `Quot.sound`, and Lean compiler axioms.
-
-**Axiom inventory** (verified via `lean_verify`):
-
-*Production path — flow into `succ_chain_truth_lemma`:*
-1. `successor_deferral_seed_consistent_axiom` (SuccExistence.lean:266) — asserts the successor seed is consistent
-2. `predecessor_deferral_seed_consistent_axiom` (SuccExistence.lean:311) — asserts the predecessor seed is consistent
-3. `predecessor_f_step_axiom` (SuccExistence.lean:516) — f-step for predecessor (dual of what task 40 wants for successor)
-4. `f_nesting_boundary` (SuccChainFMCS.lean:615) — F-nesting terminates in MCS
-5. `p_nesting_boundary` (SuccChainFMCS.lean:727) — P-nesting terminates in MCS
-
-*Additional production:*
-6. `existsTask_irreflexive_axiom` (CanonicalIrreflexivity.lean:279) — flows into `dense_completeness_fc`
-7. `discrete_Icc_finite_axiom` (DiscreteTimeline.lean:319) — discrete timeline intervals are finite
-
-*StagedConstruction (discrete pipeline):*
-8. `discreteImmediateSuccSeed_consistent_axiom` (DiscreteSuccSeed.lean:300)
-9. `discreteImmediateSucc_covers_axiom` (DiscreteSuccSeed.lean:430)
-
-**Investigation questions per axiom**: (a) What property does it assert? (b) Why wasn't it proven originally? (c) Can it be proven from existing infrastructure? (d) If not, what architectural change would make it provable? (e) Can the dependent code be restructured to not need this property at all?
-
-**Coordination**: Task 40 plan must be revised (recommends adding 10th axiom). Tasks 34, 36, 37 target individual axioms and should be subsumed or coordinated.
-
----
-
 ### 39. Study preorder semantics conformance with Task Semantics specifications
 - **Effort**: 3h
 - **Status**: [RESEARCHED]
@@ -268,29 +184,6 @@ The key insight: BFMCS bundles ALL families agreeing on box-content with M0, so 
   - [04_unification-implementation-research.md](039_study_preorder_semantics_conformance/reports/04_unification-implementation-research.md) — Two-layer unification analysis and implementation roadmap
 
 **Description**: Study the implications of the preorder semantics which has been accepted to avoid the fresh G-atom proofs in order to determine whether the result still conforms to the specifications required by the Task Semantics.
-
----
-
-
-### 37. Prove p_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
-- **Language**: lean4
-- **Depends On**: Task 36
-
-**Description**: Prove p_nesting_boundary axiom (SuccChainFMCS.lean:695) via temporal filtration or Fischer-Ladner closure. Symmetric to f_nesting_boundary: given P(phi) in MCS M, there exists d >= 1 such that iter_P d phi in M but iter_P (d+1) phi not in M. Once f_nesting_boundary (task 36) is proven, this follows by F/P duality with minimal additional work. Depends on task 36 infrastructure.
-
----
-
-### 36. Prove f_nesting_boundary axiom via temporal filtration or Fischer-Ladner closure
-- **Effort**: 5 hours
-- **Status**: [BLOCKED]
-- **Language**: lean4
-- **Research**: [01_f-nesting-research.md](036_prove_f_nesting_boundary/reports/01_f-nesting-research.md)
-- **Plan**: [01_f-nesting-implementation.md](036_prove_f_nesting_boundary/plans/01_f-nesting-implementation.md)
-- **Dependencies**: Task 47, Task 48, Task 49
-
-**Description**: Prove f_nesting_boundary axiom (SuccChainFMCS.lean:615) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.
 
 ---
 

@@ -8,14 +8,15 @@
     {
       "project_number": 63,
       "project_name": "prove_box_backward_via_bfmcs",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "description": "Prove Box backward via BFMCS modal saturation and eliminate singleton-Omega dead end. Use boxClassFamilies approach from UltrafilterChain.lean to establish sorry-free Box backward direction. Update all comments to mark singleton-Omega as a mathematical dead end.",
       "dependencies": [
         62
       ],
       "created": "2026-03-25T05:23:36Z",
-      "last_updated": "2026-03-25T05:23:36Z"
+      "last_updated": "2026-03-25T05:25:26Z",
+      "session_id": "sess_1774416291_9b9e37"
     },
     {
       "project_number": 61,
@@ -81,24 +82,6 @@
       "last_updated": "2026-03-24T19:43:00Z"
     },
     {
-      "project_number": 42,
-      "project_name": "eliminate_all_axioms_architectural_redesign",
-      "status": "researched",
-      "language": "lean4",
-      "description": "Investigate why each of the 9 custom Lean axiom declarations exists, determine the proof strategy or architectural change needed to eliminate it, and execute the removal. Architectural restructuring (e.g., changing seed constructions, redesigning the Succ relation, restructuring the chain construction) is explicitly permitted. Goal: zero custom axioms. Production path (5): successor/predecessor_deferral_seed_consistent_axiom, predecessor_f_step_axiom, f/p_nesting_boundary. Additional production (2): existsTask_irreflexive_axiom, discrete_Icc_finite_axiom. StagedConstruction (2): discreteImmediateSuccSeed_consistent_axiom, discreteImmediateSucc_covers_axiom. Task 40 plan must be revised (recommends adding 10th axiom). Tasks 34, 36, 37 should be subsumed or coordinated.",
-      "created": "2026-03-23T06:40:21Z",
-      "last_updated": "2026-03-23T07:02:52Z",
-      "session_id": "sess_1774248615_4dd171",
-      "researched": "2026-03-23T07:02:52Z",
-      "artifacts": [
-        {
-          "path": "specs/042_eliminate_all_axioms_architectural_redesign/reports/01_team-research.md",
-          "type": "research",
-          "summary": "Team research: 9 axioms audited, critical path defined, 7 tasks to abandon"
-        }
-      ]
-    },
-    {
       "project_number": 39,
       "project_name": "study_preorder_semantics_conformance",
       "status": "researched",
@@ -125,53 +108,6 @@
         }
       ],
       "planned": "2026-03-23T06:13:16Z"
-    },
-    {
-      "project_number": 36,
-      "project_name": "prove_f_nesting_boundary",
-      "status": "blocked",
-      "language": "lean4",
-      "description": "Prove f_nesting_boundary axiom (SuccChainFMCS.lean:583) via temporal filtration or Fischer-Ladner closure. The axiom states: given F(phi) in MCS M, there exists d >= 1 such that iter_F d phi in M but iter_F (d+1) phi not in M. Requires showing F-chains in consistent MCS must terminate. Standard proof uses Fischer-Ladner closure finiteness — the closure of any formula is finite, so the F-iteration sequence must eventually leave M. This eliminates the axiom entirely.",
-      "created": "2026-03-23T05:16:00Z",
-      "last_updated": "2026-03-23T07:58:15Z",
-      "session_id": "sess_1774252681_44af5d",
-      "researched": "2026-03-23T07:23:02Z",
-      "artifacts": [
-        {
-          "path": "specs/036_prove_f_nesting_boundary/reports/01_f-nesting-research.md",
-          "type": "research_report",
-          "summary": "Analyzed f_nesting_boundary axiom. Key finding: proof requires showing F-iterations eventually leave MCS via Nat.find with classical existence proof."
-        },
-        {
-          "path": "specs/036_prove_f_nesting_boundary/plans/01_f-nesting-implementation.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan to eliminate f_nesting_boundary and p_nesting_boundary axioms via iter_F complexity lemmas and Nat.find extraction"
-        },
-        {
-          "path": "specs/036_prove_f_nesting_boundary/summaries/01_f-nesting-summary.md",
-          "type": "summary",
-          "summary": "Converted f_nesting_boundary and p_nesting_boundary axioms to theorems with localized sorries in helper lemmas"
-        }
-      ],
-      "planned": "2026-03-23T07:39:30Z",
-      "started": "2026-03-23T07:41:01Z",
-      "dependencies": [
-        47,
-        48,
-        49
-      ]
-    },
-    {
-      "project_number": 37,
-      "project_name": "prove_p_nesting_boundary",
-      "status": "not_started",
-      "language": "lean4",
-      "description": "Prove p_nesting_boundary axiom (SuccChainFMCS.lean:695) via temporal filtration or Fischer-Ladner closure. Symmetric to f_nesting_boundary: given P(phi) in MCS M, there exists d >= 1 such that iter_P d phi in M but iter_P (d+1) phi not in M. Once f_nesting_boundary (task 36) is proven, this follows by F/P duality with minimal additional work. Depends on task 36 infrastructure.",
-      "depends_on": [
-        36
-      ],
-      "created": "2026-03-23T05:16:00Z",
-      "last_updated": "2026-03-23T05:16:00Z"
     },
     {
       "project_number": 18,
@@ -666,98 +602,6 @@
       "session_id": "sess_1774121152_2f49cc",
       "researched": "2026-03-21T19:21:35Z",
       "planned": "2026-03-21T19:28:53Z"
-    },
-    {
-      "project_number": 49,
-      "project_name": "fmp_based_boundedness_proof_fallback",
-      "status": "planned",
-      "language": "lean4",
-      "description": "FALLBACK TASK: Only pursue if Task 48 encounters fundamental obstacles. Connect succ_chain_fam to FMP infrastructure to prove boundedness via Finite Model Property. Use existing FMP infrastructure in Theories/Bimodal/Metalogic/Decidability/FMP/ including ClosureMCS, FiniteModel, Filtration, and TruthPreservation theorems.",
-      "effort": "6-8 hours",
-      "parent_task": 36,
-      "dependencies": [
-        48
-      ],
-      "created": "2026-03-23T08:01:38Z",
-      "last_updated": "2026-03-24T17:45:50Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/036_prove_f_nesting_boundary/reports/02_spawn-analysis.md",
-          "summary": "Spawn analysis from parent task"
-        },
-        {
-          "type": "research",
-          "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/02_algebraic-vs-fmp-analysis.md",
-          "summary": "Analysis of FMP vs algebraic representation theorem approaches"
-        },
-        {
-          "type": "research",
-          "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/03_team-research.md",
-          "summary": "Team research: dual completeness paths and equivalence"
-        },
-        {
-          "type": "research",
-          "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/03_teammate-a-findings.md",
-          "summary": "Teammate A: algebraic representation analysis"
-        },
-        {
-          "type": "research",
-          "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/03_teammate-b-findings.md",
-          "summary": "Teammate B: FMP approach and equivalence"
-        },
-        {
-          "type": "research",
-          "path": "specs/049_fmp_based_boundedness_proof_fallback/reports/04_fmp-implementation-details.md",
-          "summary": "Detailed FMP implementation plan with proof sketches"
-        },
-        {
-          "type": "plan",
-          "path": "specs/049_fmp_based_boundedness_proof_fallback/plans/01_fmp-completeness-plan.md",
-          "summary": "5-phase FMP completeness implementation plan"
-        }
-      ],
-      "session_id": "sess_1774374197_a52eac",
-      "researched": "2026-03-24T17:04:09Z",
-      "planned": "2026-03-24T17:45:50Z"
-    },
-    {
-      "project_number": 53,
-      "project_name": "direct_bounded_witness_induction",
-      "status": "researched",
-      "language": "lean4",
-      "description": "Restructure restricted_bounded_witness to prove directly by induction on deferralClosure finiteness, tracking f_step disjunction instead of single-step forcing. Delete false intermediate lemmas (restricted_single_step_forcing, restricted_succ_propagates_F_not). Use lexicographic termination on (F-nesting depth, dc size).",
-      "effort": "4-6 hours",
-      "parent_task": 48,
-      "dependencies": [
-        48
-      ],
-      "created": "2026-03-24T06:00:44Z",
-      "last_updated": "2026-03-24T06:10:01Z",
-      "artifacts": [
-        {
-          "path": "specs/052_direct_bounded_witness_induction/reports/01_bounded-witness-restructuring.md",
-          "type": "research",
-          "summary": "Analysis: intermediate lemmas FALSE, f_step disjunction alone insufficient. Recommends modifying seed construction to force boundary resolution. 5 theorems to delete, Class A proof preserved."
-        }
-      ],
-      "session_id": "sess_1774332139_02e91c",
-      "researched": "2026-03-24T06:10:01Z"
-    },
-    {
-      "project_number": 54,
-      "project_name": "wire_completeness_after_axiom_elimination",
-      "status": "not_started",
-      "language": "lean4",
-      "description": "After axiom elimination (48->36->37), wire SuccChainCompleteness through FrameConditions/Completeness to achieve sorry-free completeness path. Connect construct_bfmcs callback to algebraic ParametricRepresentation pipeline. Resolve 9 completeness wiring sorries.",
-      "effort": "6-8 hours",
-      "dependencies": [
-        36,
-        37
-      ],
-      "created": "2026-03-24T06:00:44Z",
-      "last_updated": "2026-03-24T06:00:44Z",
-      "artifacts": []
     },
     {
       "project_number": 62,
