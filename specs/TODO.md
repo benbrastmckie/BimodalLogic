@@ -37,7 +37,7 @@ technical_debt:
 58 → 59 → 60
 ```
 
-1. **58** [IMPLEMENTING] — Wire completeness to FrameConditions (3 sorries) — Strategy C v2: Seed Modification + Dovetailing
+1. **58** [PLANNED] — Wire completeness to FrameConditions (3 sorries) — Strategy C v3: Fix boundary_resolution_set
 2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
