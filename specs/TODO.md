@@ -85,7 +85,7 @@ technical_debt:
   - [01_spawn-analysis.md](065_build_taskmodel_from_restricted_construction/reports/01_spawn-analysis.md)
   - [02_team-research.md](065_build_taskmodel_from_restricted_construction/reports/02_team-research.md)
   - [03_team-research.md](065_build_taskmodel_from_restricted_construction/reports/03_team-research.md)
-- **Plan**: [01_implementation-plan.md](065_build_taskmodel_from_restricted_construction/plans/01_implementation-plan.md)
+- **Plan**: [02_revised-plan.md](065_build_taskmodel_from_restricted_construction/plans/02_revised-plan.md)
 
 **Description**: Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.
 

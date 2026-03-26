@@ -763,7 +763,7 @@
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-26T21:40:11Z",
-      "last_updated": "2026-03-26T22:22:52Z",
+      "last_updated": "2026-03-26T22:26:59Z",
       "artifacts": [
         {
           "type": "research",
@@ -781,14 +781,14 @@
           "summary": "Team research v2: Bundle construction analysis, G/Box distinction"
         },
         {
-          "path": "specs/065_build_taskmodel_from_restricted_construction/plans/01_implementation-plan.md",
+          "path": "specs/065_build_taskmodel_from_restricted_construction/plans/02_revised-plan.md",
           "type": "plan",
-          "summary": "3-phase implementation plan with decision gate for coherence verification"
+          "summary": "Revised 2-phase plan (removed blocked Bundle-Level Truth Lemma approach)"
         }
       ],
       "session_id": "sess_1774563564_3087fc",
       "researched": "2026-03-26T22:00:56Z",
-      "planned": "2026-03-26T22:22:52Z"
+      "planned": "2026-03-26T22:26:59Z"
     },
     {
       "project_number": 66,
