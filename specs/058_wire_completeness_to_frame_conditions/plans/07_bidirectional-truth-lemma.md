@@ -10,6 +10,8 @@
 - **Type**: lean4
 - **Lean Intent**: true
 
+/research 58 --team --math "Building on the last reports, it is important to maintain strict adherence to the definitions given in the official semantics. Check that this has been maintained. Also, even more important is to take the critical warning in /home/benjamin/Projects/ProofChecker/specs/058_wire_completeness_to_frame_conditions/plans/07_bidirectional-truth-lemma.md to heart. Conduct further researcht to clarify the mathematically correct path forwards, making no compromises."
+
 ## CRITICAL WARNING: Forward-Only Truth Lemma Is Insufficient
 
 > **WARNING**: Prior research (report 17) incorrectly concluded that "completeness only needs the

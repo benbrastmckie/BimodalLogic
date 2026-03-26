@@ -53,9 +53,9 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T17:46:16Z",
-      "session_id": "sess_1774546432_d23eb0",
-      "researched": "2026-03-26T17:46:16Z",
+      "last_updated": "2026-03-26T18:13:16Z",
+      "session_id": "sess_1774547973_caf33a",
+      "researched": "2026-03-26T18:13:16Z",
       "planned": "2026-03-26T17:06:05Z",
       "artifacts": [
         {
@@ -157,6 +157,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/40_team-research.md",
           "type": "research",
           "summary": "Team research: model-theoretic glue analysis - all 4 teammates converge on bundle-level path (4 teammates)"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/45_team-research.md",
+          "type": "research",
+          "summary": "Team research: semantics correction + family-level temporal coherence gap identified (4 teammates)"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
