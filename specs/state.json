@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -53,10 +53,10 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T00:11:11Z",
-      "session_id": "sess_1774483533_9fa1da",
+      "last_updated": "2026-03-26T00:17:11Z",
+      "session_id": "sess_1774484004_bb7f3a",
       "researched": "2026-03-26T00:11:11Z",
-      "planned": "2026-03-25T18:38:38Z",
+      "planned": "2026-03-26T00:17:11Z",
       "artifacts": [
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md",
@@ -89,19 +89,9 @@
           "summary": "Team research: Task relation algebraic analysis (2 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/plans/04_strategy-a-implementation.md",
-          "type": "plan",
-          "summary": "Strategy A: ultrafilter F-witness approach (5 phases)"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/handoffs/01_phase1-analysis-handoff.md",
           "type": "handoff",
           "summary": "Phase 1 analysis: Strategy A blocked - pivot to restricted chain approach recommended"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/plans/05_omega-enumeration.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan for omega-enumeration BFMCS architecture"
         },
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/summaries/05_omega-enumeration-partial.md",
@@ -122,6 +112,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/16_mathematical-strategy.md",
           "type": "research",
           "summary": "Bundle-level temporal coherence strategy for eliminating completeness sorries"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/plans/06_bundle-coherence.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for bundle-level temporal coherence"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
