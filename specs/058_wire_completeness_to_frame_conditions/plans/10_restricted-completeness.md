@@ -93,7 +93,7 @@ structure RestrictedTemporallyCoherentFamily (phi : Formula) where
 
 ---
 
-### Phase 2: Restricted Bidirectional Truth Lemma [NOT STARTED]
+### Phase 2: Restricted Bidirectional Truth Lemma [PARTIAL]
 
 **Goal**: Prove bidirectional truth lemma for RestrictedTemporallyCoherentFamily.
 

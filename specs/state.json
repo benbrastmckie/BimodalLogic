@@ -53,8 +53,8 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T18:49:34Z",
-      "session_id": "sess_1774550931_752d50",
+      "last_updated": "2026-03-26T19:34:10Z",
+      "session_id": "sess_1774552842_e97593",
       "researched": "2026-03-26T18:32:08Z",
       "planned": "2026-03-26T18:39:20Z",
       "artifacts": [
@@ -167,6 +167,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/plans/10_restricted-completeness.md",
           "type": "plan",
           "summary": "4-phase implementation plan for restricted completeness path"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/11_restricted-completeness-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: Phase 2 framework created with 5 sorries in RestrictedTruthLemma.lean"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
