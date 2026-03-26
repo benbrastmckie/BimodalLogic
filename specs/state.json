@@ -53,10 +53,10 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T15:02:35Z",
+      "last_updated": "2026-03-26T15:11:34Z",
       "session_id": "sess_1774485353_66b16a",
       "researched": "2026-03-26T00:44:07Z",
-      "planned": "2026-03-26T15:02:35Z",
+      "planned": "2026-03-26T15:11:34Z",
       "artifacts": [
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md",
@@ -124,9 +124,9 @@
           "summary": "Team research wave 3: forward-only truth lemma strategy (3 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/plans/07_bidirectional-truth-lemma.md",
+          "path": "specs/058_wire_completeness_to_frame_conditions/plans/08_corrected-truth-lemma.md",
           "type": "plan",
-          "summary": "Bidirectional truth lemma - investigates cross-family F transfer"
+          "summary": "Corrected truth lemma analysis: G backward needs same-family forward_F"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
