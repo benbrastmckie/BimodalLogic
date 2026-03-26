@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -53,8 +53,8 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T18:39:20Z",
-      "session_id": "sess_1774550106_fb46d2",
+      "last_updated": "2026-03-26T18:49:34Z",
+      "session_id": "sess_1774550931_752d50",
       "researched": "2026-03-26T18:32:08Z",
       "planned": "2026-03-26T18:39:20Z",
       "artifacts": [
