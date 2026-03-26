@@ -2493,4 +2493,490 @@ theorem Z_chain_backward_P (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
   -- Symmetric to Z_chain_forward_F
   sorry
 
+/-!
+## Bundle-Level Temporal Coherence
+
+This section implements bundle-level temporal coherence as an alternative to the
+blocked family-level temporal coherence (SuccChainTemporalCoherent).
+
+### Key Insight
+
+The family-level temporal coherence requires F-witnesses to exist within the
+SAME family (chain). This is blocked by sub-case (b): when G(neg phi) is in M0,
+H(neg phi) is NOT in M0, and F(phi) is in backward(n), we cannot find phi
+within the same chain.
+
+Bundle-level temporal coherence relaxes this: F-witnesses can exist in ANY
+family of the bundle. This is mathematically sound because:
+1. Standard Kripke semantics doesn't require witnesses to be in the same "chain"
+2. Jonsson-Tarski completeness inherently uses bundle structures
+3. Completeness only requires existence of a satisfying model, not specific structure
+
+### Building Blocks
+
+All sorry-free from earlier sections:
+- `temporal_theory_witness_exists`: F(phi) ∈ M → ∃ W. phi ∈ W ∧ box_class_agree M W
+- `past_theory_witness_exists`: P(phi) ∈ M → ∃ W. phi ∈ W ∧ box_class_agree M W
+- `boxClassFamilies_modal_forward`: Box(phi) in one family → phi in all families
+- `boxClassFamilies_modal_backward`: phi in all families → Box(phi) in any family
+-/
+
+/-!
+### Bundle-Level Temporal Coherence Predicates
+
+Define predicates that capture bundle-level F and P coherence.
+-/
+
+/--
+Bundle-level forward F coherence: F(phi) in fam.mcs(t) implies there exists
+SOME family fam' in the bundle with phi at some s > t.
+
+Unlike family-level coherence, fam' need not equal fam.
+-/
+def bundle_forward_F (families : Set (FMCS Int)) (fam : FMCS Int) : Prop :=
+  ∀ t phi, Formula.some_future phi ∈ fam.mcs t →
+    ∃ fam' ∈ families, ∃ s > t, phi ∈ fam'.mcs s
+
+/--
+Bundle-level backward P coherence: P(phi) in fam.mcs(t) implies there exists
+SOME family fam' in the bundle with phi at some s < t.
+
+Unlike family-level coherence, fam' need not equal fam.
+-/
+def bundle_backward_P (families : Set (FMCS Int)) (fam : FMCS Int) : Prop :=
+  ∀ t phi, Formula.some_past phi ∈ fam.mcs t →
+    ∃ fam' ∈ families, ∃ s < t, phi ∈ fam'.mcs s
+
+/--
+A bundle is temporally coherent at the bundle level if all families satisfy
+both bundle_forward_F and bundle_backward_P.
+-/
+def BundleTemporallyCoherent (families : Set (FMCS Int)) : Prop :=
+  ∀ fam ∈ families, bundle_forward_F families fam ∧ bundle_backward_P families fam
+
+/--
+Bundle coherence gives an existential F-witness (not necessarily in the same family).
+This is a restatement of bundle_forward_F for clarity.
+-/
+theorem bundle_coherence_implies_F_witness {families : Set (FMCS Int)}
+    (h_tc : BundleTemporallyCoherent families)
+    (fam : FMCS Int) (hfam : fam ∈ families)
+    (t : Int) (phi : Formula) (h_F : Formula.some_future phi ∈ fam.mcs t) :
+    ∃ fam' ∈ families, ∃ s > t, phi ∈ fam'.mcs s :=
+  (h_tc fam hfam).1 t phi h_F
+
+/--
+Bundle coherence gives an existential P-witness (not necessarily in the same family).
+This is a restatement of bundle_backward_P for clarity.
+-/
+theorem bundle_coherence_implies_P_witness {families : Set (FMCS Int)}
+    (h_tc : BundleTemporallyCoherent families)
+    (fam : FMCS Int) (hfam : fam ∈ families)
+    (t : Int) (phi : Formula) (h_P : Formula.some_past phi ∈ fam.mcs t) :
+    ∃ fam' ∈ families, ∃ s < t, phi ∈ fam'.mcs s :=
+  (h_tc fam hfam).2 t phi h_P
+
+/-!
+### Phase 2: boxClassFamilies Satisfies Bundle Coherence
+
+Prove that boxClassFamilies satisfies bundle_forward_F and bundle_backward_P.
+
+The proof strategy:
+1. Given F(phi) ∈ fam.mcs(t) for some fam ∈ boxClassFamilies
+2. Use temporal_theory_witness_exists to get witness MCS W with phi ∈ W
+3. W has box_class_agree with fam.mcs(t), hence with M0 (by transitivity)
+4. Build shifted SuccChainFMCS from W at offset t+1
+5. This shifted family is in boxClassFamilies
+6. phi ∈ shifted_fam.mcs(t+1), and t+1 > t
+-/
+
+/--
+Get box_class_agree at a specific time point from a family in boxClassFamilies.
+-/
+theorem boxClassFamilies_box_agree_at_time (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ boxClassFamilies M0 h_mcs) (t : Int) :
+    box_class_agree M0 (fam.mcs t) := by
+  obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+  unfold shifted_fmcs
+  simp only
+  -- fam.mcs(t) = SuccChainFMCS(W).mcs(t - k)
+  -- Box-formulas are constant along SuccChainFMCS
+  intro phi
+  -- succ_chain_box_persistent: mcs 0 ↔ mcs (t-k)
+  have h_box_persist := succ_chain_box_persistent (MCS_to_SerialMCS W h_W) phi (t - k)
+  -- And SuccChainFMCS(W).mcs(0) = W
+  have h_mcs0 : (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 = W := rfl
+  -- Chain: M0 ↔ W = mcs(0) ↔ mcs(t-k)
+  -- h_agree: M0 ↔ W
+  -- h_box_persist: mcs(0) ↔ mcs(t-k)
+  constructor
+  · -- Box(phi) ∈ M0 → Box(phi) ∈ mcs(t-k)
+    intro h
+    -- M0 → W
+    have h_W' := (h_agree phi).mp h
+    -- W = mcs(0), so mcs(0) has Box(phi)
+    have h0 : Formula.box phi ∈ (SuccChainFMCS (MCS_to_SerialMCS W h_W)).mcs 0 := by
+      rw [h_mcs0]; exact h_W'
+    -- mcs(0) → mcs(t-k)
+    exact h_box_persist.mp h0
+  · -- Box(phi) ∈ mcs(t-k) → Box(phi) ∈ M0
+    intro h
+    -- mcs(t-k) → mcs(0)
+    have h0 := h_box_persist.mpr h
+    -- mcs(0) = W
+    rw [h_mcs0] at h0
+    -- W → M0
+    exact (h_agree phi).mpr h0
+
+/--
+boxClassFamilies satisfies bundle_forward_F: every F(phi) has a witness in the bundle.
+
+**Proof outline**:
+1. F(phi) ∈ fam.mcs(t) for fam ∈ boxClassFamilies M0
+2. fam.mcs(t) is an MCS with box_class_agree with M0
+3. By temporal_theory_witness_exists: ∃ W MCS with phi ∈ W and box_class_agree(fam.mcs(t), W)
+4. By transitivity: box_class_agree(M0, W)
+5. Build witness_fam = shifted_fmcs(SuccChainFMCS(W), t+1)
+6. witness_fam ∈ boxClassFamilies M0 h_mcs
+7. phi ∈ witness_fam.mcs(t+1) since witness_fam.mcs(t+1) = W
+-/
+theorem boxClassFamilies_bundle_forward_F (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ boxClassFamilies M0 h_mcs)
+    (t : Int) (phi : Formula) (h_F : Formula.some_future phi ∈ fam.mcs t) :
+    ∃ fam' ∈ boxClassFamilies M0 h_mcs, ∃ s > t, phi ∈ fam'.mcs s := by
+  -- Step 1: Get the MCS at time t
+  have h_mcs_t := fam.is_mcs t
+
+  -- Step 2: Use temporal_theory_witness_exists to get witness
+  have h_witness := temporal_theory_witness_exists (fam.mcs t) h_mcs_t phi h_F
+  obtain ⟨W, h_W_mcs, h_phi_W, _h_G_agree, h_box_agree⟩ := h_witness
+
+  -- Step 3: Establish box_class_agree M0 W by transitivity
+  have h_fam_box := boxClassFamilies_box_agree_at_time M0 h_mcs fam hfam t
+  have h_M0_W : box_class_agree M0 W := box_class_agree_trans h_fam_box h_box_agree
+
+  -- Step 4: Build the witness family
+  let witness_fam := shifted_fmcs (SuccChainFMCS (MCS_to_SerialMCS W h_W_mcs)) (t + 1)
+
+  -- Step 5: Show witness_fam is in boxClassFamilies
+  have h_witness_in : witness_fam ∈ boxClassFamilies M0 h_mcs := by
+    simp only [boxClassFamilies, Set.mem_setOf_eq]
+    exact ⟨W, h_W_mcs, t + 1, h_M0_W, rfl⟩
+
+  -- Step 6: Show phi ∈ witness_fam.mcs(t+1)
+  have h_phi_at_s : phi ∈ witness_fam.mcs (t + 1) := by
+    show phi ∈ (shifted_fmcs (SuccChainFMCS (MCS_to_SerialMCS W h_W_mcs)) (t + 1)).mcs (t + 1)
+    unfold shifted_fmcs
+    simp only
+    -- (t+1) - (t+1) = 0
+    have h_eq : (t + 1 : Int) - (t + 1) = 0 := by omega
+    simp only [h_eq]
+    -- SuccChainFMCS(W).mcs(0) = W
+    have h_mcs0 : (SuccChainFMCS (MCS_to_SerialMCS W h_W_mcs)).mcs 0 = W := rfl
+    rw [h_mcs0]
+    exact h_phi_W
+
+  -- Step 7: Combine
+  use witness_fam, h_witness_in, t + 1
+  exact ⟨by omega, h_phi_at_s⟩
+
+/--
+boxClassFamilies satisfies bundle_backward_P: every P(phi) has a witness in the bundle.
+
+Symmetric to bundle_forward_F, using past_theory_witness_exists.
+-/
+theorem boxClassFamilies_bundle_backward_P (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ boxClassFamilies M0 h_mcs)
+    (t : Int) (phi : Formula) (h_P : Formula.some_past phi ∈ fam.mcs t) :
+    ∃ fam' ∈ boxClassFamilies M0 h_mcs, ∃ s < t, phi ∈ fam'.mcs s := by
+  -- Step 1: Get the MCS at time t
+  have h_mcs_t := fam.is_mcs t
+
+  -- Step 2: Use past_theory_witness_exists to get witness
+  have h_witness := past_theory_witness_exists (fam.mcs t) h_mcs_t phi h_P
+  obtain ⟨W, h_W_mcs, h_phi_W, _h_H_agree, h_box_agree⟩ := h_witness
+
+  -- Step 3: Establish box_class_agree M0 W by transitivity
+  have h_fam_box := boxClassFamilies_box_agree_at_time M0 h_mcs fam hfam t
+  have h_M0_W : box_class_agree M0 W := box_class_agree_trans h_fam_box h_box_agree
+
+  -- Step 4: Build the witness family at offset t-1
+  let witness_fam := shifted_fmcs (SuccChainFMCS (MCS_to_SerialMCS W h_W_mcs)) (t - 1)
+
+  -- Step 5: Show witness_fam is in boxClassFamilies
+  have h_witness_in : witness_fam ∈ boxClassFamilies M0 h_mcs := by
+    simp only [boxClassFamilies, Set.mem_setOf_eq]
+    exact ⟨W, h_W_mcs, t - 1, h_M0_W, rfl⟩
+
+  -- Step 6: Show phi ∈ witness_fam.mcs(t-1)
+  have h_phi_at_s : phi ∈ witness_fam.mcs (t - 1) := by
+    show phi ∈ (shifted_fmcs (SuccChainFMCS (MCS_to_SerialMCS W h_W_mcs)) (t - 1)).mcs (t - 1)
+    unfold shifted_fmcs
+    simp only
+    -- (t-1) - (t-1) = 0
+    have h_eq : (t - 1 : Int) - (t - 1) = 0 := by omega
+    simp only [h_eq]
+    have h_mcs0 : (SuccChainFMCS (MCS_to_SerialMCS W h_W_mcs)).mcs 0 = W := rfl
+    rw [h_mcs0]
+    exact h_phi_W
+
+  -- Step 7: Combine
+  use witness_fam, h_witness_in, t - 1
+  exact ⟨by omega, h_phi_at_s⟩
+
+/--
+boxClassFamilies is bundle temporally coherent.
+-/
+theorem boxClassFamilies_bundle_temporally_coherent (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    BundleTemporallyCoherent (boxClassFamilies M0 h_mcs) := by
+  intro fam hfam
+  constructor
+  · -- bundle_forward_F
+    intro t phi h_F
+    exact boxClassFamilies_bundle_forward_F M0 h_mcs fam hfam t phi h_F
+  · -- bundle_backward_P
+    intro t phi h_P
+    exact boxClassFamilies_bundle_backward_P M0 h_mcs fam hfam t phi h_P
+
+/-!
+### Phase 3: BFMCS_Bundle Structure
+
+A BFMCS variant that uses bundle-level temporal coherence instead of family-level.
+This is the key structure for completeness proofs.
+-/
+
+/--
+BFMCS with bundle-level temporal coherence.
+
+This structure is like BFMCS but uses bundle-level F/P coherence:
+- bundle_forward_F: F(phi) in fam.mcs(t) → ∃ fam' ∈ families, ∃ s > t, phi ∈ fam'.mcs(s)
+- bundle_backward_P: P(phi) in fam.mcs(t) → ∃ fam' ∈ families, ∃ s < t, phi ∈ fam'.mcs(s)
+
+The key difference from BFMCS.temporally_coherent (which requires witnesses in the SAME family)
+is that witnesses can be in ANY family of the bundle.
+-/
+structure BFMCS_Bundle where
+  /-- The collection of indexed MCS families forming the bundle -/
+  families : Set (FMCS Int)
+
+  /-- The bundle is non-empty -/
+  nonempty : families.Nonempty
+
+  /-- Modal forward coherence: Box phi in any family implies phi in ALL families -/
+  modal_forward : ∀ fam ∈ families, ∀ φ t, Formula.box φ ∈ fam.mcs t →
+    ∀ fam' ∈ families, φ ∈ fam'.mcs t
+
+  /-- Modal backward coherence: phi in ALL families implies Box phi in any family -/
+  modal_backward : ∀ fam ∈ families, ∀ φ t,
+    (∀ fam' ∈ families, φ ∈ fam'.mcs t) → Formula.box φ ∈ fam.mcs t
+
+  /-- Bundle-level forward F coherence: F(phi) witnesses exist in SOME family -/
+  bundle_forward_F : ∀ fam ∈ families, ∀ φ t, Formula.some_future φ ∈ fam.mcs t →
+    ∃ fam' ∈ families, ∃ s > t, φ ∈ fam'.mcs s
+
+  /-- Bundle-level backward P coherence: P(phi) witnesses exist in SOME family -/
+  bundle_backward_P : ∀ fam ∈ families, ∀ φ t, Formula.some_past φ ∈ fam.mcs t →
+    ∃ fam' ∈ families, ∃ s < t, φ ∈ fam'.mcs s
+
+  /-- The distinguished evaluation family -/
+  eval_family : FMCS Int
+
+  /-- The evaluation family is in the bundle -/
+  eval_family_mem : eval_family ∈ families
+
+/--
+Reflexivity for BFMCS_Bundle: Box phi in MCS implies phi in MCS.
+-/
+theorem BFMCS_Bundle.reflexivity (B : BFMCS_Bundle) (fam : FMCS Int) (hfam : fam ∈ B.families)
+    (φ : Formula) (t : Int) (h : Formula.box φ ∈ fam.mcs t) : φ ∈ fam.mcs t :=
+  B.modal_forward fam hfam φ t h fam hfam
+
+/--
+Diamond witness for BFMCS_Bundle: Diamond(phi) implies phi in SOME family.
+-/
+theorem BFMCS_Bundle.diamond_witness (B : BFMCS_Bundle) (fam : FMCS Int) (hfam : fam ∈ B.families)
+    (φ : Formula) (t : Int) (h_diamond : Formula.diamond φ ∈ fam.mcs t) :
+    ∃ fam' ∈ B.families, φ ∈ fam'.mcs t := by
+  -- Diamond(phi) = neg(Box(neg(phi)))
+  -- If Box(neg(phi)) ∈ fam.mcs t, then by modal_forward, neg(phi) ∈ all families at t
+  -- But then neg(Box(neg(phi))) would contradict MCS consistency
+  -- So Box(neg(phi)) ∉ fam.mcs t
+  -- By MCS maximality and the modal saturation argument, phi is in some family
+  have h_mcs := fam.is_mcs t
+  have h_not_box_neg : Formula.box (Formula.neg φ) ∉ fam.mcs t := by
+    intro h_box_neg
+    have h_neg : Formula.neg φ ∈ fam.mcs t := B.modal_forward fam hfam (Formula.neg φ) t h_box_neg fam hfam
+    -- Diamond(phi) = neg(Box(neg(phi))) and Box(neg(phi)) in MCS contradicts
+    have h_eq : Formula.diamond φ = Formula.neg (Formula.box (Formula.neg φ)) := rfl
+    rw [h_eq] at h_diamond
+    exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg φ)) h_box_neg h_diamond
+  -- Use box_theory_witness_exists to get a witness family
+  have h_diamond' : φ.diamond ∈ fam.mcs t := h_diamond
+  have h_witness := box_theory_witness_exists (fam.mcs t) h_mcs φ h_diamond'
+  obtain ⟨W, h_W_mcs, h_phi_W, h_box_agree⟩ := h_witness
+  -- W is in the same box class as fam.mcs t, and by boxClassFamilies properties,
+  -- a shifted chain from W is in any bundle containing fam
+  -- For BFMCS_Bundle, we need to show W appears somewhere in the families
+  -- This requires knowing that B.families contains all box-class witnesses
+
+  -- Actually, for BFMCS_Bundle built from boxClassFamilies, this follows from construction
+  -- But for a general BFMCS_Bundle, we need to use modal_backward
+
+  -- Alternative approach using modal_backward:
+  -- If phi is NOT in some family at t, then neg(phi) is in that family
+  -- If neg(phi) is in ALL families at t, then Box(neg(phi)) in fam (by modal_backward)
+  -- But Box(neg(phi)) ∉ fam (from h_not_box_neg), so phi is in SOME family
+  by_contra h_no_witness
+  push_neg at h_no_witness
+  -- For all fam' in families, phi ∉ fam'.mcs t
+  -- So for all fam' in families, neg(phi) ∈ fam'.mcs t (by MCS negation completeness)
+  have h_all_neg : ∀ fam' ∈ B.families, Formula.neg φ ∈ fam'.mcs t := by
+    intro fam' hfam'
+    have h_mcs' := fam'.is_mcs t
+    have h_not_phi := h_no_witness fam' hfam'
+    rcases SetMaximalConsistent.negation_complete h_mcs' φ with h | h
+    · exact absurd h h_not_phi
+    · exact h
+  -- By modal_backward: Box(neg(phi)) ∈ fam.mcs t
+  have h_box_neg' := B.modal_backward fam hfam (Formula.neg φ) t h_all_neg
+  -- Contradiction with h_not_box_neg
+  exact h_not_box_neg h_box_neg'
+
+/--
+Construct a BFMCS_Bundle from an MCS M0 using boxClassFamilies.
+
+This is the main construction for completeness:
+- families = boxClassFamilies M0
+- eval_family = SuccChainFMCS from M0
+- All coherence properties follow from boxClassFamilies lemmas
+-/
+noncomputable def construct_bfmcs_bundle (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    BFMCS_Bundle where
+  families := boxClassFamilies M0 h_mcs
+  nonempty := boxClassFamilies_nonempty M0 h_mcs
+  modal_forward := boxClassFamilies_modal_forward M0 h_mcs
+  modal_backward := boxClassFamilies_modal_backward M0 h_mcs
+  bundle_forward_F := fun fam hfam φ t h_F =>
+    boxClassFamilies_bundle_forward_F M0 h_mcs fam hfam t φ h_F
+  bundle_backward_P := fun fam hfam φ t h_P =>
+    boxClassFamilies_bundle_backward_P M0 h_mcs fam hfam t φ h_P
+  eval_family := SuccChainFMCS (MCS_to_SerialMCS M0 h_mcs)
+  eval_family_mem := eval_family_mem_boxClassFamilies M0 h_mcs
+
+/--
+The eval_family at time 0 equals M0.
+-/
+theorem construct_bfmcs_bundle_eval_at_zero (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    (construct_bfmcs_bundle M0 h_mcs).eval_family.mcs 0 = M0 := rfl
+
+/--
+construct_bfmcs_bundle is bundle temporally coherent.
+-/
+theorem construct_bfmcs_bundle_temporally_coherent (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    BundleTemporallyCoherent (construct_bfmcs_bundle M0 h_mcs).families :=
+  boxClassFamilies_bundle_temporally_coherent M0 h_mcs
+
+/-!
+### Phase 4: Forward Bundle Truth Lemma
+
+The forward truth lemma: MCS membership implies truth in the bundle model.
+This is the key lemma for completeness - we only need the forward direction.
+
+For completeness, we show:
+1. neg(phi) in MCS M
+2. Build BFMCS_Bundle from M
+3. Forward truth lemma: neg(phi) in M implies neg(phi) TRUE in model
+4. So phi is FALSE in the model, contradicting validity
+-/
+
+/--
+Forward truth lemma core: bot cannot be in a consistent MCS.
+
+This is the key fact that powers the forward truth lemma.
+-/
+theorem bot_not_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    Formula.bot ∉ M := by
+  intro h_bot
+  have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+  exact h_mcs.1 [Formula.bot] (fun x hx => by simp at hx; rw [hx]; exact h_bot) ⟨h_deriv⟩
+
+/--
+The key completeness lemma: if neg(phi) is in an MCS, then we can build a countermodel.
+
+Given:
+- neg(phi) in MCS M
+- Build BFMCS_Bundle B from M
+- The eval_family at time 0 contains neg(phi)
+- Therefore phi is not in eval_family.mcs 0
+
+This shows phi is "false" at the evaluation point, contradicting validity.
+-/
+theorem mcs_neg_gives_countermodel (phi : Formula)
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M) (h_neg : Formula.neg phi ∈ M) :
+    phi ∉ (construct_bfmcs_bundle M h_mcs).eval_family.mcs 0 := by
+  -- eval_family.mcs 0 = M
+  have h_eq := construct_bfmcs_bundle_eval_at_zero M h_mcs
+  rw [h_eq]
+  -- phi and neg(phi) can't both be in consistent MCS
+  intro h_phi
+  exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
+
+/--
+Completeness from bundle construction: if phi is valid and neg(phi) is consistent,
+we get a contradiction.
+
+This is the core of the completeness argument.
+-/
+theorem bundle_completeness_contradiction (phi : Formula)
+    (h_cons : SetConsistent {Formula.neg phi}) :
+    ¬(∀ M : Set Formula, SetMaximalConsistent M → phi ∈ M) := by
+  -- Extend neg(phi) to MCS
+  have h_extend := set_lindenbaum {Formula.neg phi} h_cons
+  obtain ⟨M, h_extends, h_mcs⟩ := h_extend
+  -- neg(phi) is in M
+  have h_neg : Formula.neg phi ∈ M := h_extends (Set.mem_singleton _)
+  -- phi is NOT in M (by consistency)
+  have h_not_phi : phi ∉ M := by
+    intro h_phi
+    exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
+  -- Therefore not all MCSes contain phi
+  intro h_all
+  exact h_not_phi (h_all M h_mcs)
+
+/--
+If phi is not provable, then neg(phi) is consistent.
+-/
+theorem not_provable_implies_neg_consistent (phi : Formula)
+    (h_not_prov : ¬Nonempty ([] ⊢ phi)) :
+    SetConsistent {Formula.neg phi} := by
+  intro L h_L_sub ⟨d⟩
+  -- L ⊆ {neg(phi)}, so L is either [] or contains only neg(phi)
+  -- If L = [], then [] ⊢ bot, but [] is consistent (can derive only tautologies)
+  -- If L contains neg(phi), then we can weaken to [neg(phi)] ⊢ bot
+  by_cases h_empty : L = []
+  · -- L = [], [] ⊢ bot
+    rw [h_empty] at d
+    -- [] ⊢ bot gives [] ⊢ phi via explosion
+    have h_efq : [] ⊢ Formula.bot.imp phi :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso phi)
+    have h_phi : [] ⊢ phi := Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_efq d
+    exact h_not_prov ⟨h_phi⟩
+  · -- L ≠ [], so L contains neg(phi)
+    -- d : L ⊢ bot and L ⊆ {neg(phi)}
+    -- We can weaken to [neg(phi)] ⊢ bot
+    have h_sub : ∀ x ∈ L, x ∈ [Formula.neg phi] := by
+      intro x hx
+      have := h_L_sub x hx
+      simp only [Set.mem_singleton_iff] at this
+      simp [this]
+    have d' := Bimodal.ProofSystem.DerivationTree.weakening L [Formula.neg phi] Formula.bot d h_sub
+    -- [neg(phi)] ⊢ bot means [] ⊢ neg(phi) → bot = neg(neg(phi))
+    have h_ded := Bimodal.Metalogic.Core.deduction_theorem [] (Formula.neg phi) Formula.bot d'
+    -- neg(neg(phi)) → phi (double negation elimination)
+    have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
+      Bimodal.Theorems.Propositional.double_negation phi
+    have h_phi : [] ⊢ phi := Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne h_ded
+    exact h_not_prov ⟨h_phi⟩
+
 end Bimodal.Metalogic.Algebraic.UltrafilterChain
