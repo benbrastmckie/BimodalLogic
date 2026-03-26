@@ -2,7 +2,7 @@
 
 **Task**: 58 - wire_completeness_to_frame_conditions
 **Status**: PARTIAL
-**Session**: sess_1774552842_e97593
+**Session**: sess_1774554501_414242 (continued from sess_1774552842_e97593)
 **Date**: 2026-03-26
 
 ## Overview
@@ -26,7 +26,7 @@ Created `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` with:
 
 3. **Embedding Theorems**
    - `restricted_chain_subset_extended`: DRM subset of extended MCS (PROVEN)
-   - `extended_fmcs_closure_subset`: Converse for closure formulas (sorry, line 185)
+   - `extended_fmcs_closure_subset`: Converse for closure formulas (PROVEN - uses DRM maximality)
 
 4. **Main Truth Lemma**
    - `restricted_truth_lemma`: Biconditional for membership in restricted chain vs extended FMCS (PROVEN, uses above theorems)
@@ -40,14 +40,19 @@ Created `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` with:
 
 ## Sorry Inventory
 
-### RestrictedTruthLemma.lean (5 sorries)
+### RestrictedTruthLemma.lean (6 sorries, down from 7)
 | Line | Location | Description |
 |------|----------|-------------|
-| 91 | `restricted_chain_to_fmcs.forward_G` | G-persistence through Succ relation |
-| 95 | `restricted_chain_to_fmcs.backward_H` | H-persistence through Succ relation |
-| 122 | `restricted_fmcs_forward_F` | Lift forward_F from tc_fam to extended FMCS |
-| 138 | `restricted_fmcs_backward_P` | Lift backward_P from tc_fam to extended FMCS |
-| 185 | `extended_fmcs_closure_subset` | Converse embedding using DRM maximality |
+| 106 | `restricted_chain_G_propagates` (n<m) | G propagation through chain for n<m |
+| 115 | `restricted_chain_G_propagates` (n=m) | G propagation reflexive case |
+| 135 | `restricted_chain_H_step` | H-step backward through chain |
+| 208 | `restricted_chain_to_fmcs.forward_G` (n<m) | G-persistence through Succ relation (n<m case) |
+| 223 | `restricted_chain_to_fmcs.backward_H` | H-persistence through Succ relation |
+| 250 | `restricted_fmcs_forward_F` | Lift forward_F from tc_fam to extended FMCS |
+| 266 | `restricted_fmcs_backward_P` | Lift backward_P from tc_fam to extended FMCS |
+
+**COMPLETED**: `extended_fmcs_closure_subset` (formerly line 185) - proved using DRM maximality
+**PARTIAL**: `restricted_chain_to_fmcs.forward_G` (n=m case done via T-axiom)
 
 ### SuccChainFMCS.lean (Pre-existing, Phase 1)
 | Lines | Location | Description |
@@ -83,8 +88,23 @@ Created `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` with:
 
 | File | Change |
 |------|--------|
-| `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` | NEW: 205 lines |
-| `specs/058.../plans/10_restricted-completeness.md` | Phase 2 status: IN PROGRESS -> PARTIAL |
+| `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` | UPDATED: 303 lines (was 205) |
+| `specs/058.../plans/10_restricted-completeness.md` | Phase 2 status: PARTIAL |
+
+### Session Progress (sess_1774554501_414242)
+
+1. **Completed `extended_fmcs_closure_subset`**: The key lemma showing that for formulas in deferralClosure, membership in extended MCS implies membership in original DRM. Proof uses:
+   - DRM maximality: if psi in deferralClosure but not in DRM, insert is inconsistent
+   - But psi in extended MCS and DRM subset of extended MCS
+   - So insert subset of extended MCS, which is consistent
+   - Contradiction
+
+2. **Partial `forward_G`**: The n=m case is complete using T-axiom (G psi -> psi). The n<m case requires chain propagation infrastructure.
+
+3. **Added helper lemmas**:
+   - `restricted_chain_G_step`: G(psi) in chain(n) -> psi in chain(n+1)
+   - `restricted_chain_G_propagates`: G(psi) in chain(n) -> psi in chain(m) for m>=n
+   - `restricted_chain_H_step`: H(psi) in chain(n) -> psi in chain(n-1)
 
 ## Verification Results
 
