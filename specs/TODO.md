@@ -165,21 +165,14 @@ technical_debt:
 ---
 
 ### 58. Wire completeness to FrameConditions
-- **Effort**: 12 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 4-6 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
-- **Dependencies**: Task 55, Task 65, Task 66
+- **Dependencies**: Task 55
 - **Research**:
-  - [01_completeness-wiring-analysis.md](058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md)
-  - [02_team-research.md](058_wire_completeness_to_frame_conditions/reports/02_team-research.md)
-  - [03_ultrafilter-chain-verification.md](058_wire_completeness_to_frame_conditions/reports/03_ultrafilter-chain-verification.md)
-  - [05_elegant-approach-analysis.md](058_wire_completeness_to_frame_conditions/reports/05_elegant-approach-analysis.md) — Strategy A recommended
-  - [06_team-research.md](058_wire_completeness_to_frame_conditions/reports/06_team-research.md) — Task relation algebraic analysis (2 teammates)
-  - [60_teammate-a-findings.md](058_wire_completeness_to_frame_conditions/reports/60_teammate-a-findings.md) — Survey of all attempted approaches: 9 approaches, 5 dead ends, omega-enumeration for restricted case is remaining path
-- **Plan**:
-  - [04_strategy-a-implementation.md](058_wire_completeness_to_frame_conditions/plans/04_strategy-a-implementation.md) — BLOCKED
-  - [05_omega-enumeration.md](058_wire_completeness_to_frame_conditions/plans/05_omega-enumeration.md) — superseded
-  - [09_deferral-restricted-task.md](058_wire_completeness_to_frame_conditions/plans/09_deferral-restricted-task.md) — CURRENT
+  - [60_team-research.md](058_wire_completeness_to_frame_conditions/reports/60_team-research.md) — Wave 60: Comprehensive review after 60 waves
+  - [60_teammate-a-findings.md](058_wire_completeness_to_frame_conditions/reports/60_teammate-a-findings.md) — Survey of all attempted approaches: 9 approaches, 5 dead ends
+- **Plan**: [12_restricted-truth-lemma-path.md](058_wire_completeness_to_frame_conditions/plans/12_restricted-truth-lemma-path.md) — v12: Fix RestrictedTruthLemma.lean sorries, build TaskModel, wire to completeness
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
 

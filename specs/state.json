@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,10 +54,10 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T23:15:00Z",
+      "last_updated": "2026-03-26T23:12:26Z",
       "session_id": "sess_1774566166_fb7902",
       "researched": "2026-03-26T23:15:00Z",
-      "planned": "2026-03-26T20:39:59Z",
+      "planned": "2026-03-26T23:12:26Z",
       "artifacts": [
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md",
@@ -175,11 +175,6 @@
           "summary": "Team research: cross-chain witness propagation analysis - propagation-to-0 recommended (3 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/plans/11_propagation-to-zero.md",
-          "type": "plan",
-          "summary": "Revised plan v11: propagation-to-0 approach for cross-chain witness propagation"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/summaries/12_propagation-to-zero-summary.md",
           "type": "summary",
           "summary": "Phases 1-3 complete: cross-chain witness resolved, algebraic path sorry-free. Phase 4 partial: model-theoretic glue remains."
@@ -193,6 +188,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_team-research.md",
           "type": "research",
           "summary": "Wave 60: Comprehensive review - omega-enumeration doesn't exist, fix RestrictedTruthLemma.lean instead"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/plans/12_restricted-truth-lemma-path.md",
+          "type": "plan",
+          "summary": "v12: Restricted truth lemma path (supersedes omega-enumeration)"
         }
       ],
       "started": "2026-03-26T20:51:11Z"
