@@ -53,9 +53,9 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T15:29:58Z",
-      "session_id": "sess_1774538396_8c6327",
-      "researched": "2026-03-26T15:29:58Z",
+      "last_updated": "2026-03-26T15:42:01Z",
+      "session_id": "sess_1774539418_a21f30",
+      "researched": "2026-03-26T15:42:01Z",
       "planned": "2026-03-26T15:11:34Z",
       "artifacts": [
         {
@@ -132,6 +132,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/18_team-research.md",
           "type": "research",
           "summary": "Team research wave 4: truth lemma obstruction deep analysis (4 teammates)"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/19_bundle-truth-lemma-analysis.md",
+          "type": "research",
+          "summary": "Bundle vs family-level coherence analysis: semantic mismatch identified"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
