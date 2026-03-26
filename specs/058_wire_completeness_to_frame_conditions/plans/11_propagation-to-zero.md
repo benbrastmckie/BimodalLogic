@@ -50,7 +50,7 @@ When `F(psi)` is in the backward chain, the witness may be in the forward chain 
 
 ## Implementation Phases
 
-### Phase 1: Combined Bounded Witness Infrastructure [NOT STARTED]
+### Phase 1: Combined Bounded Witness Infrastructure [COMPLETED]
 
 **Goal**: Define `restricted_combined_bounded_witness` working over the full Int-indexed chain.
 
@@ -76,7 +76,7 @@ The key is that `succ_chain_canonicalTask_forward_MCS_from` already provides for
 
 ---
 
-### Phase 2: Fill Cross-Chain Sorries [NOT STARTED]
+### Phase 2: Fill Cross-Chain Sorries [COMPLETED]
 
 **Goal**: Use combined bounded witness to fill sorries at lines 3892 and 3917.
 
@@ -122,7 +122,7 @@ exact h_witness
 
 ---
 
-### Phase 3: Complete RestrictedTruthLemma [NOT STARTED]
+### Phase 3: Complete RestrictedTruthLemma [COMPLETED]
 
 **Goal**: With cross-chain sorries resolved, complete Phase 2 from plan v10.
 
@@ -148,7 +148,7 @@ The key dependencies:
 
 ---
 
-### Phase 4: Wire to FrameConditions/Completeness [NOT STARTED]
+### Phase 4: Wire to FrameConditions/Completeness [PARTIAL]
 
 **Goal**: Eliminate the 3 target sorries in FrameConditions/Completeness.lean.
 

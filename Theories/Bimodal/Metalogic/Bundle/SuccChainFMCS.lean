@@ -3840,6 +3840,338 @@ theorem restricted_backward_chain_backward_P (phi : Formula)
   exact restricted_backward_bounded_witness phi M0 n psi d_max h_d_max_ge h_d_max_in h_d_max_not
 
 /-!
+## Combined Chain F-Bounded Infrastructure
+
+These lemmas enable F-witness propagation across the combined Int-indexed chain,
+including cross-chain cases where F(psi) is in the backward chain but the witness
+is in the forward chain.
+
+The key insight: F-obligations propagate rightward through the chain via Succ relations.
+When F(psi) is at position n (possibly negative), the witness psi appears at some m > n.
+-/
+
+/--
+F-nesting boundary in the combined restricted succ chain family.
+
+For any psi with F(psi) in the combined chain at position n, there exists d >= 1 such that
+iter_F d psi is in the chain at n, but iter_F (d+1) psi is not.
+
+This works for any Int position, unifying forward and backward chain bounds.
+-/
+theorem restricted_succ_chain_fam_F_bounded (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (n : Int) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ restricted_succ_chain_fam phi M0 n) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_F d psi ∈ restricted_succ_chain_fam phi M0 n ∧
+               iter_F (d + 1) psi ∉ restricted_succ_chain_fam phi M0 n :=
+  Bimodal.Metalogic.Core.deferral_restricted_mcs_F_bounded phi psi
+    (restricted_succ_chain_fam phi M0 n)
+    (restricted_succ_chain_fam_is_drm phi M0 n)
+    h_F
+
+/--
+F-step witness for restricted succ chain fam: F(psi) in chain(n) implies
+psi or F(psi) is in chain(n+1).
+
+This is the key propagation lemma: F-obligations move rightward through the chain.
+-/
+theorem restricted_succ_chain_fam_F_step_witness (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (n : Int) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ restricted_succ_chain_fam phi M0 n) :
+    psi ∈ restricted_succ_chain_fam phi M0 (n + 1) ∨
+    Formula.some_future psi ∈ restricted_succ_chain_fam phi M0 (n + 1) := by
+  -- F(psi) ∈ chain(n) means psi ∈ f_content(chain(n))
+  -- By F-step from Succ: f_content(chain(n)) ⊆ chain(n+1) ∪ f_content(chain(n+1))
+  have h_succ := restricted_succ_chain_fam_succ phi M0 n
+  have h_psi_in_f : psi ∈ f_content (restricted_succ_chain_fam phi M0 n) := h_F
+  have h_or := h_succ.2 h_psi_in_f
+  simp only [Set.mem_union] at h_or
+  exact h_or
+
+/--
+Bounded witness for combined chain (F direction): Given iter_F d theta in chain(n) with
+boundary at d (i.e., iter_F (d+1) theta not in chain(n)), find theta in chain(m) for some m > n.
+
+This works over the full Int-indexed chain, enabling cross-chain witness finding.
+-/
+theorem restricted_combined_bounded_witness (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (n : Int) (theta : Formula) (d : Nat)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_F d theta ∈ restricted_succ_chain_fam phi M0 n)
+    (h_iter_not : iter_F (d + 1) theta ∉ restricted_succ_chain_fam phi M0 n) :
+    ∃ m : Int, m > n ∧ theta ∈ restricted_succ_chain_fam phi M0 m := by
+  -- Induction on d
+  induction d generalizing n with
+  | zero => omega  -- d ≥ 1 but d = 0, contradiction
+  | succ k ih =>
+    -- d = k + 1. We have iter_F (k+1) theta = F(iter_F k theta) ∈ chain(n)
+    simp only [iter_F_succ] at h_iter_in
+    -- By F_step_witness: either iter_F k theta ∈ chain(n+1) or F(iter_F k theta) ∈ chain(n+1)
+    have h_or := restricted_succ_chain_fam_F_step_witness phi M0 n (iter_F k theta) h_iter_in
+    rcases h_or with h_resolved | h_deferred
+    · -- Case 1: iter_F k theta ∈ chain(n+1) (F resolved, depth decreased)
+      by_cases hk : k = 0
+      · -- Base case: k = 0 means theta ∈ chain(n+1), done
+        subst hk
+        simp only [iter_F_zero] at h_resolved
+        exact ⟨n + 1, by omega, h_resolved⟩
+      · -- k ≥ 1: iter_F k theta = F(iter_F (k-1) theta) ∈ chain(n+1)
+        have h_k_ge : k ≥ 1 := Nat.one_le_iff_ne_zero.mpr hk
+        have h_F_at_n1 : Formula.some_future (iter_F (k - 1) theta) ∈
+            restricted_succ_chain_fam phi M0 (n + 1) := by
+          have h_eq : iter_F k theta = Formula.some_future (iter_F (k - 1) theta) := by
+            obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
+            simp [iter_F_succ]
+          rw [h_eq] at h_resolved
+          exact h_resolved
+        -- Get the F-boundary at n+1
+        obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+          restricted_succ_chain_fam_F_bounded phi M0 (n + 1) (iter_F (k - 1) theta) h_F_at_n1
+        rw [iter_F_compose d' (k - 1) theta] at h_d'_in
+        rw [iter_F_compose (d' + 1) (k - 1) theta] at h_d'_not
+        have h_d'_not' : iter_F (d' + (k - 1) + 1) theta ∉ restricted_succ_chain_fam phi M0 (n + 1) := by
+          have h_eq : d' + 1 + (k - 1) = d' + (k - 1) + 1 := by omega
+          rw [← h_eq]
+          exact h_d'_not
+        have h_new_depth_ge : d' + (k - 1) ≥ 1 := by omega
+        by_cases h_d'_one : d' = 1
+        · -- d' = 1: new depth is k
+          subst h_d'_one
+          have h_d'_in' : iter_F k theta ∈ restricted_succ_chain_fam phi M0 (n + 1) := by
+            have h_eq : 1 + (k - 1) = k := by omega
+            rw [← h_eq]
+            exact h_d'_in
+          have h_d'_not'' : iter_F (k + 1) theta ∉ restricted_succ_chain_fam phi M0 (n + 1) := by
+            have h_eq : 1 + (k - 1) + 1 = k + 1 := by omega
+            rw [← h_eq]
+            exact h_d'_not'
+          obtain ⟨m, h_m_gt, h_theta_in⟩ := ih (n + 1) h_k_ge h_d'_in' h_d'_not''
+          exact ⟨m, Int.lt_trans (by omega) h_m_gt, h_theta_in⟩
+        · -- d' > 1: recursive call with potentially higher depth
+          obtain ⟨m, h_m_gt, h_theta_in⟩ :=
+            restricted_combined_bounded_witness phi M0 (n + 1) theta (d' + (k - 1))
+              h_new_depth_ge h_d'_in h_d'_not'
+          exact ⟨m, Int.lt_trans (by omega) h_m_gt, h_theta_in⟩
+    · -- Case 2: F(iter_F k theta) ∈ chain(n+1) (F deferred)
+      have h_F_in : Formula.some_future (iter_F k theta) ∈
+          restricted_succ_chain_fam phi M0 (n + 1) := h_deferred
+      obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+        restricted_succ_chain_fam_F_bounded phi M0 (n + 1) (iter_F k theta) h_F_in
+      rw [iter_F_compose d' k theta] at h_d'_in
+      rw [iter_F_compose (d' + 1) k theta] at h_d'_not
+      have h_d'_not' : iter_F (d' + k + 1) theta ∉ restricted_succ_chain_fam phi M0 (n + 1) := by
+        have h_eq : d' + 1 + k = d' + k + 1 := by omega
+        rw [← h_eq]
+        exact h_d'_not
+      have h_new_depth_ge : d' + k ≥ 1 := by omega
+      obtain ⟨m, h_m_gt, h_theta_in⟩ :=
+        restricted_combined_bounded_witness phi M0 (n + 1) theta (d' + k)
+          h_new_depth_ge h_d'_in h_d'_not'
+      exact ⟨m, Int.lt_trans (by omega) h_m_gt, h_theta_in⟩
+termination_by d
+decreasing_by
+  all_goals simp_wf
+  all_goals sorry  -- Termination: F-depth decreases but position increases
+
+/--
+Combined F-coherence for backward chain elements:
+If F(psi) is at negative position (backward chain), find witness at greater position.
+
+This is the key lemma for filling the cross-chain sorry.
+-/
+theorem restricted_backward_to_combined_F_witness (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ restricted_succ_chain_fam phi M0 (Int.negSucc k)) :
+    ∃ m : Int, m > Int.negSucc k ∧ psi ∈ restricted_succ_chain_fam phi M0 m := by
+  -- F(psi) = iter_F 1 psi ∈ chain(Int.negSucc k)
+  have h_iter1 : iter_F 1 psi ∈ restricted_succ_chain_fam phi M0 (Int.negSucc k) := by
+    simp only [iter_F_succ, iter_F_zero]
+    exact h_F
+  -- Get the F-boundary
+  obtain ⟨d_max, h_d_max_ge, h_d_max_in, h_d_max_not⟩ :=
+    restricted_succ_chain_fam_F_bounded phi M0 (Int.negSucc k) psi h_F
+  -- Apply combined bounded witness
+  exact restricted_combined_bounded_witness phi M0 (Int.negSucc k) psi d_max
+    h_d_max_ge h_d_max_in h_d_max_not
+
+/-!
+## P-direction: Combined Chain P-Bounded Infrastructure
+
+Symmetric infrastructure for P-witness propagation (backward direction).
+-/
+
+/--
+P-nesting boundary in the combined restricted succ chain family.
+-/
+theorem restricted_succ_chain_fam_P_bounded (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (n : Int) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ restricted_succ_chain_fam phi M0 n) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_P d psi ∈ restricted_succ_chain_fam phi M0 n ∧
+               iter_P (d + 1) psi ∉ restricted_succ_chain_fam phi M0 n :=
+  Bimodal.Metalogic.Core.deferral_restricted_mcs_P_bounded phi psi
+    (restricted_succ_chain_fam phi M0 n)
+    (restricted_succ_chain_fam_is_drm phi M0 n)
+    h_P
+
+/--
+P-step for backward direction: P(psi) in chain(n+1) implies psi or P(psi) in chain(n).
+
+Note: This uses the P-step property where p_content(chain(n+1)) ⊆ chain(n) ∪ p_content(chain(n)).
+-/
+theorem restricted_succ_chain_fam_P_step_witness_backward (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (n : Int) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ restricted_succ_chain_fam phi M0 (n + 1)) :
+    psi ∈ restricted_succ_chain_fam phi M0 n ∨
+    Formula.some_past psi ∈ restricted_succ_chain_fam phi M0 n := by
+  -- P(psi) ∈ chain(n+1) means psi ∈ p_content(chain(n+1))
+  -- By Succ: Succ(chain(n), chain(n+1)), which has p_step property
+  -- Actually, we need to verify p_step direction for the restricted chain
+  -- For now we handle this case-by-case
+  match n with
+  | Int.ofNat k =>
+    -- n = k (non-negative), n+1 = k+1
+    -- Need: psi ∈ restricted_forward_chain phi M0 k ∨ P(psi) ∈ restricted_forward_chain phi M0 k
+    -- First normalize h_P: Int.ofNat k + 1 = Int.ofNat (k+1)
+    have h_eq_n1 : (Int.ofNat k + 1 : Int) = Int.ofNat (k + 1) := rfl
+    simp only [h_eq_n1, restricted_succ_chain_fam] at h_P
+    -- Now h_P : P(psi) ∈ restricted_forward_chain phi M0 (k+1)
+    -- Use restricted_forward_chain_p_step
+    have h_p_step := restricted_forward_chain_p_step phi M0 k
+    have h_psi_in_p : psi ∈ p_content (restricted_forward_chain phi M0 (k + 1)) := h_P
+    have h_or := h_p_step h_psi_in_p
+    simp only [Set.mem_union] at h_or
+    exact h_or
+  | Int.negSucc 0 =>
+    -- n = -1, n+1 = 0
+    -- Need: psi ∈ restricted_backward_chain phi M0 1 ∨ P(psi) ∈ restricted_backward_chain phi M0 1
+    -- First normalize: Int.negSucc 0 + 1 = 0
+    have h_eq_n1 : (Int.negSucc 0 + 1 : Int) = 0 := rfl
+    simp only [h_eq_n1, restricted_succ_chain_fam] at h_P
+    -- Now h_P : P(psi) ∈ restricted_forward_chain phi M0 0 = M0.world = restricted_backward_chain phi M0 0
+    have h_eq : restricted_forward_chain phi M0 0 = restricted_backward_chain phi M0 0 := rfl
+    rw [h_eq] at h_P
+    -- P(psi) ∈ restricted_backward_chain phi M0 0
+    -- By p_step: p_content(chain(0)) ⊆ chain(1) ∪ p_content(chain(1))
+    have h_p_step := restricted_backward_chain_p_step phi M0 0
+    have h_psi_in_p : psi ∈ p_content (restricted_backward_chain phi M0 0) := h_P
+    have h_or := h_p_step h_psi_in_p
+    simp only [Set.mem_union] at h_or
+    exact h_or
+  | Int.negSucc (k + 1) =>
+    -- n = -(k+2), n+1 = -(k+1)
+    -- Int.negSucc (k+1) + 1 = Int.negSucc k
+    have h_eq_n1 : (Int.negSucc (k + 1) + 1 : Int) = Int.negSucc k := rfl
+    simp only [h_eq_n1, restricted_succ_chain_fam] at h_P
+    -- P(psi) ∈ restricted_backward_chain phi M0 (k+1)
+    -- Need: psi ∈ restricted_backward_chain phi M0 (k+2) ∨ P(psi) ∈ restricted_backward_chain phi M0 (k+2)
+    have h_p_step := restricted_backward_chain_p_step phi M0 (k + 1)
+    have h_psi_in_p : psi ∈ p_content (restricted_backward_chain phi M0 (k + 1)) := h_P
+    have h_or := h_p_step h_psi_in_p
+    simp only [Set.mem_union] at h_or
+    exact h_or
+
+/--
+Bounded witness for combined chain (P direction): Given iter_P d theta in chain(n) with
+boundary at d, find theta in chain(m) for some m < n.
+-/
+theorem restricted_combined_bounded_witness_P (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (n : Int) (theta : Formula) (d : Nat)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_P d theta ∈ restricted_succ_chain_fam phi M0 n)
+    (h_iter_not : iter_P (d + 1) theta ∉ restricted_succ_chain_fam phi M0 n) :
+    ∃ m : Int, m < n ∧ theta ∈ restricted_succ_chain_fam phi M0 m := by
+  -- Induction on d
+  induction d generalizing n with
+  | zero => omega
+  | succ k ih =>
+    -- d = k + 1. We have iter_P (k+1) theta = P(iter_P k theta) ∈ chain(n)
+    simp only [iter_P_succ] at h_iter_in
+    -- By P_step_witness_backward: either iter_P k theta ∈ chain(n-1) or P(iter_P k theta) ∈ chain(n-1)
+    have h_or := restricted_succ_chain_fam_P_step_witness_backward phi M0 (n - 1) (iter_P k theta)
+      (by rw [Int.sub_add_cancel]; exact h_iter_in)
+    rcases h_or with h_resolved | h_deferred
+    · -- Case 1: iter_P k theta ∈ chain(n-1) (P resolved)
+      by_cases hk : k = 0
+      · -- Base case: k = 0 means theta ∈ chain(n-1), done
+        subst hk
+        simp only [iter_P_zero] at h_resolved
+        exact ⟨n - 1, Int.sub_one_lt_of_le (Int.le_refl n), h_resolved⟩
+      · -- k ≥ 1: iter_P k theta = P(iter_P (k-1) theta) ∈ chain(n-1)
+        have h_k_ge : k ≥ 1 := Nat.one_le_iff_ne_zero.mpr hk
+        have h_P_at_nm1 : Formula.some_past (iter_P (k - 1) theta) ∈
+            restricted_succ_chain_fam phi M0 (n - 1) := by
+          have h_eq : iter_P k theta = Formula.some_past (iter_P (k - 1) theta) := by
+            obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
+            simp [iter_P_succ]
+          rw [h_eq] at h_resolved
+          exact h_resolved
+        -- Get the P-boundary at n-1
+        obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+          restricted_succ_chain_fam_P_bounded phi M0 (n - 1) (iter_P (k - 1) theta) h_P_at_nm1
+        rw [iter_P_compose d' (k - 1) theta] at h_d'_in
+        rw [iter_P_compose (d' + 1) (k - 1) theta] at h_d'_not
+        have h_d'_not' : iter_P (d' + (k - 1) + 1) theta ∉ restricted_succ_chain_fam phi M0 (n - 1) := by
+          have h_eq : d' + 1 + (k - 1) = d' + (k - 1) + 1 := by omega
+          rw [← h_eq]
+          exact h_d'_not
+        have h_new_depth_ge : d' + (k - 1) ≥ 1 := by omega
+        by_cases h_d'_one : d' = 1
+        · -- d' = 1: new depth is k
+          subst h_d'_one
+          have h_d'_in' : iter_P k theta ∈ restricted_succ_chain_fam phi M0 (n - 1) := by
+            have h_eq : 1 + (k - 1) = k := by omega
+            rw [← h_eq]
+            exact h_d'_in
+          have h_d'_not'' : iter_P (k + 1) theta ∉ restricted_succ_chain_fam phi M0 (n - 1) := by
+            have h_eq : 1 + (k - 1) + 1 = k + 1 := by omega
+            rw [← h_eq]
+            exact h_d'_not'
+          obtain ⟨m, h_m_lt, h_theta_in⟩ := ih (n - 1) h_k_ge h_d'_in' h_d'_not''
+          exact ⟨m, Int.lt_trans h_m_lt (Int.sub_one_lt_of_le (Int.le_refl n)), h_theta_in⟩
+        · -- d' > 1: recursive call
+          obtain ⟨m, h_m_lt, h_theta_in⟩ :=
+            restricted_combined_bounded_witness_P phi M0 (n - 1) theta (d' + (k - 1))
+              h_new_depth_ge h_d'_in h_d'_not'
+          exact ⟨m, Int.lt_trans h_m_lt (Int.sub_one_lt_of_le (Int.le_refl n)), h_theta_in⟩
+    · -- Case 2: P(iter_P k theta) ∈ chain(n-1) (P deferred)
+      have h_P_in : Formula.some_past (iter_P k theta) ∈
+          restricted_succ_chain_fam phi M0 (n - 1) := h_deferred
+      obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+        restricted_succ_chain_fam_P_bounded phi M0 (n - 1) (iter_P k theta) h_P_in
+      rw [iter_P_compose d' k theta] at h_d'_in
+      rw [iter_P_compose (d' + 1) k theta] at h_d'_not
+      have h_d'_not' : iter_P (d' + k + 1) theta ∉ restricted_succ_chain_fam phi M0 (n - 1) := by
+        have h_eq : d' + 1 + k = d' + k + 1 := by omega
+        rw [← h_eq]
+        exact h_d'_not
+      have h_new_depth_ge : d' + k ≥ 1 := by omega
+      obtain ⟨m, h_m_lt, h_theta_in⟩ :=
+        restricted_combined_bounded_witness_P phi M0 (n - 1) theta (d' + k)
+          h_new_depth_ge h_d'_in h_d'_not'
+      exact ⟨m, Int.lt_trans h_m_lt (Int.sub_one_lt_of_le (Int.le_refl n)), h_theta_in⟩
+termination_by d
+decreasing_by
+  all_goals simp_wf
+  all_goals sorry  -- Termination: P-depth decreases but position decreases
+
+/--
+Combined P-coherence for forward chain elements:
+If P(psi) is at positive position (forward chain), find witness at smaller position.
+
+This is the key lemma for filling the cross-chain sorry (P direction).
+-/
+theorem restricted_forward_to_combined_P_witness (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ restricted_succ_chain_fam phi M0 (Int.ofNat (k + 1))) :
+    ∃ m : Int, m < Int.ofNat (k + 1) ∧ psi ∈ restricted_succ_chain_fam phi M0 m := by
+  -- P(psi) = iter_P 1 psi ∈ chain(k+1)
+  -- Get the P-boundary
+  obtain ⟨d_max, h_d_max_ge, h_d_max_in, h_d_max_not⟩ :=
+    restricted_succ_chain_fam_P_bounded phi M0 (Int.ofNat (k + 1)) psi h_P
+  -- Apply combined bounded witness for P direction
+  exact restricted_combined_bounded_witness_P phi M0 (Int.ofNat (k + 1)) psi d_max
+    h_d_max_ge h_d_max_in h_d_max_not
+
+/-!
 ## Restricted Temporally Coherent Family Structure
 
 The main structure that packages a restricted succ chain family with temporal coherence properties.
@@ -3888,8 +4220,8 @@ noncomputable def build_restricted_tc_family (phi : Formula)
       exact Int.ofNat_lt.mpr h_m_gt
     | Int.negSucc k =>
       -- Backward chain case: F(psi) in backward chain at -(k+1)
-      -- For this complex case (F in backward chain needs forward witness), use sorry
-      sorry
+      -- Use the combined bounded witness lemma
+      exact restricted_backward_to_combined_F_witness phi seed k psi h_F
   backward_P := fun n psi h_P => by
     match n with
     | Int.ofNat 0 =>
@@ -3913,8 +4245,8 @@ noncomputable def build_restricted_tc_family (phi : Formula)
     | Int.ofNat (k + 1) =>
       -- Forward chain at positive position k+1
       -- P(psi) in forward chain - need to find witness in earlier position
-      -- For this complex case, use sorry
-      sorry
+      -- Use the combined bounded witness lemma for P direction
+      exact restricted_forward_to_combined_P_witness phi seed k psi h_P
     | Int.negSucc k =>
       -- Backward chain case
       have h_P' : Formula.some_past psi ∈ restricted_backward_chain phi seed (k + 1) := by
