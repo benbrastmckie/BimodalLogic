@@ -37,7 +37,7 @@ technical_debt:
 58 → 59 → 60
 ```
 
-1. **58** [RESEARCHING] — Wire completeness to FrameConditions (3 sorries) — Bundle-level coherence insufficient; semantic mismatch with family-level requirement
+1. **58** [PLANNED] — Wire completeness to FrameConditions (3 sorries) — Deferral-restricted task construction via algebraic x-value computation
 2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -135,8 +135,8 @@ technical_debt:
 ---
 
 ### 58. Wire completeness to FrameConditions
-- **Effort**: 10 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 12 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**:
@@ -147,7 +147,8 @@ technical_debt:
   - [06_team-research.md](058_wire_completeness_to_frame_conditions/reports/06_team-research.md) — Task relation algebraic analysis (2 teammates)
 - **Plan**:
   - [04_strategy-a-implementation.md](058_wire_completeness_to_frame_conditions/plans/04_strategy-a-implementation.md) — BLOCKED
-  - [05_omega-enumeration.md](058_wire_completeness_to_frame_conditions/plans/05_omega-enumeration.md) — CURRENT
+  - [05_omega-enumeration.md](058_wire_completeness_to_frame_conditions/plans/05_omega-enumeration.md) — superseded
+  - [09_deferral-restricted-task.md](058_wire_completeness_to_frame_conditions/plans/09_deferral-restricted-task.md) — CURRENT
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
 
