@@ -763,7 +763,7 @@
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-26T21:40:11Z",
-      "last_updated": "2026-03-26T22:00:56Z",
+      "last_updated": "2026-03-26T22:18:10Z",
       "artifacts": [
         {
           "type": "research",
@@ -774,9 +774,14 @@
           "path": "specs/065_build_taskmodel_from_restricted_construction/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research: Option C viability analysis (2 teammates)"
+        },
+        {
+          "path": "specs/065_build_taskmodel_from_restricted_construction/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Team research v2: Bundle construction analysis, G/Box distinction"
         }
       ],
-      "session_id": "sess_1774561991_04af05",
+      "session_id": "sess_1774563036_2beca3",
       "researched": "2026-03-26T22:00:56Z"
     },
     {
