@@ -756,14 +756,14 @@
     {
       "project_number": 65,
       "project_name": "build_taskmodel_from_restricted_construction",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean4",
       "description": "Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.",
       "effort": "4-6 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-26T21:40:11Z",
-      "last_updated": "2026-03-26T22:32:50Z",
+      "last_updated": "2026-03-26T23:15:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -789,13 +789,23 @@
           "path": "specs/065_build_taskmodel_from_restricted_construction/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "Phase 1 completed - BLOCKED: requires family-level coherence not provided by bundle construction"
+        },
+        {
+          "path": "specs/065_build_taskmodel_from_restricted_construction/reports/08_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Wave 3 Teammate A: imp forward case requires backward IH, forward-only truth lemma impossible"
+        },
+        {
+          "path": "specs/065_build_taskmodel_from_restricted_construction/reports/09_team-research-wave3.md",
+          "type": "research",
+          "summary": "Wave 3 synthesis: forward-only truth lemma not viable; omega-enumeration construction is only path"
         }
       ],
-      "session_id": "sess_1774564134_4004c1",
-      "researched": "2026-03-26T22:00:56Z",
+      "session_id": "sess_1774564779_fb09d1",
+      "researched": "2026-03-26T23:15:00Z",
       "planned": "2026-03-26T22:26:59Z",
       "started": "2026-03-26T22:29:19Z",
-      "blocked_reason": "shifted_truth_lemma requires family-level temporal coherence (SAME family witnesses), but construct_bfmcs_bundle only provides bundle-level coherence (ANY family witnesses). Gap is fundamental - contradiction proofs require same-MCS witnesses."
+      "blocked_reason": "shifted_truth_lemma requires family-level temporal coherence (SAME family witnesses), but construct_bfmcs_bundle only provides bundle-level coherence (ANY family witnesses). Gap is fundamental - contradiction proofs require same-MCS witnesses. Wave 3 confirms forward-only truth lemma also blocked by imp case."
     },
     {
       "project_number": 66,

@@ -77,7 +77,7 @@ technical_debt:
 
 ### 65. Build TaskModel from Restricted Construction
 - **Effort**: 4-6 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
@@ -85,9 +85,11 @@ technical_debt:
   - [01_spawn-analysis.md](065_build_taskmodel_from_restricted_construction/reports/01_spawn-analysis.md)
   - [02_team-research.md](065_build_taskmodel_from_restricted_construction/reports/02_team-research.md)
   - [03_team-research.md](065_build_taskmodel_from_restricted_construction/reports/03_team-research.md)
+  - [08_teammate-a-findings.md](065_build_taskmodel_from_restricted_construction/reports/08_teammate-a-findings.md)
+  - [09_team-research-wave3.md](065_build_taskmodel_from_restricted_construction/reports/09_team-research-wave3.md)
 - **Plan**: [02_revised-plan.md](065_build_taskmodel_from_restricted_construction/plans/02_revised-plan.md)
 - **Summary**: [01_implementation-summary.md](065_build_taskmodel_from_restricted_construction/summaries/01_implementation-summary.md)
-- **Blocked Reason**: `shifted_truth_lemma` requires family-level coherence (SAME family witnesses), but `construct_bfmcs_bundle` provides only bundle-level coherence (ANY family witnesses)
+- **Blocked Reason**: `shifted_truth_lemma` requires family-level coherence (SAME family witnesses), but `construct_bfmcs_bundle` provides only bundle-level coherence. Wave 3: forward-only truth lemma also blocked — `imp` forward case requires backward IH for antecedent. Omega-enumeration construction is the only viable path.
 
 **Description**: Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.
 
