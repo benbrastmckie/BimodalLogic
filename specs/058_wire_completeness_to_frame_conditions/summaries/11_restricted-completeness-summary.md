@@ -1,116 +1,110 @@
 # Implementation Summary: Task #58 - Restricted Completeness
 
 **Task**: 58 - wire_completeness_to_frame_conditions
-**Status**: PARTIAL
-**Session**: sess_1774554501_414242 (continued from sess_1774552842_e97593)
+**Status**: BLOCKED
+**Session**: sess_1774555424_0fb43c
 **Date**: 2026-03-26
 
 ## Overview
 
-This session implemented Phase 2 (Restricted Bidirectional Truth Lemma) of the restricted completeness approach for task #58. Phase 1 was marked [COMPLETED] in the plan but had sorries in `build_restricted_tc_family` (lines 3892, 3917 in SuccChainFMCS.lean).
+Phase 2 (Restricted Bidirectional Truth Lemma) is structurally complete but blocked by sorries in Phase 1 (Restricted Family-Level Temporal Coherence).
 
-## Work Completed
+## Completed Work
 
-### Phase 2: RestrictedTruthLemma.lean (NEW FILE)
+### RestrictedTruthLemma.lean Refactoring
 
-Created `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` with:
+The file was refactored to eliminate FMCS structure dependency:
 
-1. **FMCS Construction** (`restricted_chain_to_fmcs`)
-   - Converts `RestrictedTemporallyCoherentFamily` to `FMCS Int`
-   - Uses `lindenbaumMCS_set` to extend DeferralRestrictedMCS to full MCS
-   - FMCS fields `forward_G` and `backward_H`: sorry (lines 91, 95)
+1. **Removed FMCS Construction**: Replaced `restricted_chain_to_fmcs` (which had unprovable `forward_G`/`backward_H` fields) with simpler `restricted_chain_ext` that directly provides Lindenbaum extensions.
 
-2. **Temporal Coherence Lifting**
-   - `restricted_fmcs_forward_F`: Forward F coherence for extended FMCS (sorry, line 122)
-   - `restricted_fmcs_backward_P`: Backward P coherence for extended FMCS (sorry, line 138)
+2. **Key Theorems Proven** (structurally complete, blocked by Phase 1 sorries):
+   - `restricted_chain_ext`: Lindenbaum extension of DRM at position n
+   - `restricted_chain_ext_is_mcs`: Extension is maximal consistent
+   - `restricted_chain_subset_extended`: DRM membership implies extension membership
+   - `extended_chain_closure_subset`: For closure formulas, extension membership implies DRM membership
+   - `restricted_truth_lemma`: Bidirectional equivalence for subformula closure
+   - `restricted_truth_at_seed`: Corollary for target formula at position 0
 
-3. **Embedding Theorems**
-   - `restricted_chain_subset_extended`: DRM subset of extended MCS (PROVEN)
-   - `extended_fmcs_closure_subset`: Converse for closure formulas (PROVEN - uses DRM maximality)
+3. **Eliminated Unnecessary Sorries**: Removed 4 sorries that were in unused helper theorems (FMCS forward_G/backward_H and forward_F/backward_P coherence).
 
-4. **Main Truth Lemma**
-   - `restricted_truth_lemma`: Biconditional for membership in restricted chain vs extended FMCS (PROVEN, uses above theorems)
-   - `restricted_truth_at_seed`: Corollary for target formula at time 0 (PROVEN)
+### Sorry Reduction
 
-### Key Insights
+| File | Before | After | Notes |
+|------|--------|-------|-------|
+| RestrictedTruthLemma.lean | 7 | 3 | Removed FMCS structure, kept 3 unused helper lemmas |
 
-1. **Approach**: Rather than building new frame/model infrastructure, leverage existing `FMCS`/`lindenbaumMCS_set` infrastructure
-2. **Embedding Strategy**: Show restricted chain membership is equivalent to extended MCS membership for closure formulas
-3. **Main Lemma Structure**: Truth lemma reduces to proving the embedding is a biconditional for subformulaClosure formulas
+Remaining sorries in RestrictedTruthLemma.lean (lines 106, 115, 135) are in helper lemmas that are NOT used anywhere.
 
-## Sorry Inventory
+## Blocking Issues
 
-### RestrictedTruthLemma.lean (6 sorries, down from 7)
-| Line | Location | Description |
-|------|----------|-------------|
-| 106 | `restricted_chain_G_propagates` (n<m) | G propagation through chain for n<m |
-| 115 | `restricted_chain_G_propagates` (n=m) | G propagation reflexive case |
-| 135 | `restricted_chain_H_step` | H-step backward through chain |
-| 208 | `restricted_chain_to_fmcs.forward_G` (n<m) | G-persistence through Succ relation (n<m case) |
-| 223 | `restricted_chain_to_fmcs.backward_H` | H-persistence through Succ relation |
-| 250 | `restricted_fmcs_forward_F` | Lift forward_F from tc_fam to extended FMCS |
-| 266 | `restricted_fmcs_backward_P` | Lift backward_P from tc_fam to extended FMCS |
+### Phase 1 Sorries in SuccChainFMCS.lean
 
-**COMPLETED**: `extended_fmcs_closure_subset` (formerly line 185) - proved using DRM maximality
-**PARTIAL**: `restricted_chain_to_fmcs.forward_G` (n=m case done via T-axiom)
+The `build_restricted_tc_family` function (lines 3878-3938) has 2 critical sorries:
 
-### SuccChainFMCS.lean (Pre-existing, Phase 1)
-| Lines | Location | Description |
-|-------|----------|-------------|
-| 3892 | `build_restricted_tc_family.forward_F` | F in backward chain case |
-| 3917 | `build_restricted_tc_family.backward_P` | P in forward chain case |
-| 3824 | `restricted_backward_bounded_witness` | Termination proof |
-| + others | Various | Pre-existing infrastructure sorries |
+| Line | Case | Description |
+|------|------|-------------|
+| 3892 | forward_F for Int.negSucc k | F(psi) in backward chain, need forward witness |
+| 3917 | backward_P for Int.ofNat (k+1) | P(psi) in forward chain, need backward witness |
 
-## Build Status
+These represent **cross-chain witness propagation**: when an F or P obligation is in one chain direction but the witness is in the other direction.
 
-- `lake build`: SUCCESS (937 jobs)
-- No new axioms introduced
-- Warnings only (unused variables, sorry declarations)
+### Mathematical Challenge
 
-## Next Steps
+The core issue is that the restricted chain has two directions:
+- Forward chain (non-negative indices): uses `restricted_forward_chain`
+- Backward chain (negative indices): uses `restricted_backward_chain`
 
-### To Complete Phase 2
-1. Prove `forward_G` and `backward_H` in FMCS structure (use Succ/G-persistence)
-2. Prove `restricted_fmcs_forward_F` and `restricted_fmcs_backward_P` (key: formulas in extended MCS that have F/P structure come from the original chain)
-3. Prove `extended_fmcs_closure_subset` (use DRM maximality within deferralClosure)
+They meet at position 0 where `forward_chain(0) = backward_chain(0) = M0`.
 
-### To Complete Phase 1
-1. Fill sorries in `build_restricted_tc_family` (cross-chain coherence)
-2. Fix termination proof in `restricted_backward_bounded_witness`
+For F-formulas in the backward chain (line 3892):
+1. F(psi) at position -(k+1) must find witness at some position > -(k+1)
+2. By Succ relation's f_step, F propagates toward 0
+3. If F(psi) reaches position 0, need to use `restricted_forward_chain_forward_F`
+4. This requires proving F-propagation through backward chain toward 0
 
-### Phase 3-4 (Blocked)
-- Requires Phase 1 and 2 completion
-- Phase 3: Lifting to full completeness
-- Phase 4: Wire to FrameConditions/Completeness.lean
+Similar logic applies to P-formulas in forward chain (line 3917).
+
+### Required Lemmas
+
+To complete Phase 1, need to prove:
+
+1. `restricted_backward_chain_F_propagates_to_zero`:
+   If F(psi) in backward_chain(k+1), then either psi is in some backward_chain(j) for j < k+1, or F(psi) reaches backward_chain(0).
+
+2. `restricted_forward_chain_P_propagates_to_zero`:
+   Symmetric for P in forward chain.
+
+## Impact on Downstream Phases
+
+- **Phase 3 (Lifting)**: Cannot proceed until Phase 1 and 2 complete
+- **Phase 4 (Wire to FrameConditions)**: Cannot proceed until Phase 3 complete
+
+## Verification Status
+
+```bash
+lake build  # Succeeds with warnings
+```
+
+All theorems in RestrictedTruthLemma.lean depend on `sorryAx` due to Phase 1 sorries in `RestrictedTemporallyCoherentFamily`.
 
 ## Files Modified
 
-| File | Change |
-|------|--------|
-| `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` | UPDATED: 303 lines (was 205) |
-| `specs/058.../plans/10_restricted-completeness.md` | Phase 2 status: PARTIAL |
+| File | Changes |
+|------|---------|
+| `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` | Refactored to remove FMCS dependency |
+| `specs/058_wire_completeness_to_frame_conditions/plans/10_restricted-completeness.md` | Updated phase statuses |
 
-### Session Progress (sess_1774554501_414242)
+## Recommendations
 
-1. **Completed `extended_fmcs_closure_subset`**: The key lemma showing that for formulas in deferralClosure, membership in extended MCS implies membership in original DRM. Proof uses:
-   - DRM maximality: if psi in deferralClosure but not in DRM, insert is inconsistent
-   - But psi in extended MCS and DRM subset of extended MCS
-   - So insert subset of extended MCS, which is consistent
-   - Contradiction
+1. **Complete Phase 1 First**: Fill the 2 sorries in `build_restricted_tc_family` before continuing with Phase 2 verification.
 
-2. **Partial `forward_G`**: The n=m case is complete using T-axiom (G psi -> psi). The n<m case requires chain propagation infrastructure.
+2. **Cross-Chain Lemmas**: Develop helper lemmas for F/P propagation across chain directions at position 0.
 
-3. **Added helper lemmas**:
-   - `restricted_chain_G_step`: G(psi) in chain(n) -> psi in chain(n+1)
-   - `restricted_chain_G_propagates`: G(psi) in chain(n) -> psi in chain(m) for m>=n
-   - `restricted_chain_H_step`: H(psi) in chain(n) -> psi in chain(n-1)
+3. **Alternative Approach**: Consider whether the restricted completeness approach is the right path, or if a different construction (like the OmegaFMCS pattern) would be more tractable.
 
-## Verification Results
+## Axioms Used
 
-```
-Build: SUCCESS
-New axioms: 0
-RestrictedTruthLemma.lean sorries: 5
-Total project sorry count (Metalogic): increased by 5
-```
+Standard mathematical axioms only (when Phase 1 sorries are filled):
+- `propext` (propositional extensionality)
+- `Classical.choice` (classical logic)
+- `Quot.sound` (quotient soundness)

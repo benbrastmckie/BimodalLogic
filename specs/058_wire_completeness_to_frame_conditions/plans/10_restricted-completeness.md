@@ -54,7 +54,7 @@ Key findings from report 50 integrated:
 
 ## Implementation Phases
 
-### Phase 1: Restricted Family-Level Temporal Coherence [COMPLETED]
+### Phase 1: Restricted Family-Level Temporal Coherence [PARTIAL]
 
 **Goal**: Prove `RestrictedTemporallyCoherentFamily` for families built from RestrictedMCS.
 
@@ -93,7 +93,7 @@ structure RestrictedTemporallyCoherentFamily (phi : Formula) where
 
 ---
 
-### Phase 2: Restricted Bidirectional Truth Lemma [PARTIAL]
+### Phase 2: Restricted Bidirectional Truth Lemma [BLOCKED]
 
 **Goal**: Prove bidirectional truth lemma for RestrictedTemporallyCoherentFamily.
 
