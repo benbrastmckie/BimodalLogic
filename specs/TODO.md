@@ -81,7 +81,9 @@ technical_debt:
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
-- **Research**: [01_spawn-analysis.md](065_build_taskmodel_from_restricted_construction/reports/01_spawn-analysis.md)
+- **Research**:
+  - [01_spawn-analysis.md](065_build_taskmodel_from_restricted_construction/reports/01_spawn-analysis.md)
+  - [02_team-research.md](065_build_taskmodel_from_restricted_construction/reports/02_team-research.md)
 
 **Description**: Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.
 
@@ -96,8 +98,6 @@ technical_debt:
 - **Research**: [01_spawn-analysis.md](066_wire_restricted_completeness_to_target_sorries/reports/01_spawn-analysis.md)
 
 **Description**: Connect restricted completeness path to the 3 target sorries in FrameConditions/Completeness.lean: bundle_validity_implies_provability, dense_completeness_fc, discrete_completeness_fc. Use contrapositive argument via RestrictedTaskModel.
-
----
 
 ---
 

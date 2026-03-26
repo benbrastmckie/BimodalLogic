@@ -763,14 +763,21 @@
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-26T21:40:11Z",
-      "last_updated": "2026-03-26T21:40:11Z",
+      "last_updated": "2026-03-26T22:00:56Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/065_build_taskmodel_from_restricted_construction/reports/01_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 58"
+        },
+        {
+          "path": "specs/065_build_taskmodel_from_restricted_construction/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research: Option C viability analysis (2 teammates)"
         }
-      ]
+      ],
+      "session_id": "sess_1774561991_04af05",
+      "researched": "2026-03-26T22:00:56Z"
     },
     {
       "project_number": 66,
