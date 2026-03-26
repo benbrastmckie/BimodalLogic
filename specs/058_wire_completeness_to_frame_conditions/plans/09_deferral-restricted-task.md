@@ -1,7 +1,7 @@
 # Implementation Plan: Task #58 - Deferral-Restricted Task Construction (v9)
 
 - **Task**: 58 - wire_completeness_to_frame_conditions
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12 hours
 - **Dependencies**: None (sorry-free infrastructure exists)
 - **Research Inputs**: reports/21_team-research.md
@@ -49,7 +49,7 @@ Key findings from report 21 integrated:
 
 ## Implementation Phases
 
-### Phase 1: Prove `deferralClosure_closed_under_box_class` [NOT STARTED]
+### Phase 1: Prove `deferralClosure_closed_under_box_class` [PARTIAL]
 
 **Goal**: Prove that if M0 is restricted to `deferralClosure(phi)`, and W has `box_class_agree M0 W`, then W is also restricted to `deferralClosure(phi)`.
 
@@ -80,7 +80,7 @@ Key findings from report 21 integrated:
 
 ---
 
-### Phase 2: Build Deferral-Restricted BFMCS Construction [NOT STARTED]
+### Phase 2: Build Deferral-Restricted BFMCS Construction [BLOCKED]
 
 **Goal**: Create a construction `construct_deferral_restricted_bfmcs` that builds a BFMCS from a deferral-restricted MCS with bounded F-nesting.
 
@@ -113,7 +113,7 @@ The construction follows this path:
 
 ---
 
-### Phase 3: Wire to Parametric Truth Lemma [NOT STARTED]
+### Phase 3: Wire to Parametric Truth Lemma [BLOCKED]
 
 **Goal**: Connect the deferral-restricted BFMCS to `parametric_shifted_truth_lemma`.
 
@@ -148,7 +148,7 @@ The completeness argument then proceeds:
 
 ---
 
-### Phase 4: Eliminate Target Sorries [NOT STARTED]
+### Phase 4: Eliminate Target Sorries [BLOCKED]
 
 **Goal**: Use the deferral-restricted completeness to eliminate the 3 target sorries.
 

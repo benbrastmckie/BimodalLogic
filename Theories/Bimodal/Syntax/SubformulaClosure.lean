@@ -987,4 +987,62 @@ theorem some_past_in_deferralClosure_is_in_closureWithNeg (phi chi : Formula)
       rw [← hf_eq] at h1
       simp only [p_nesting_depth_P_deferral] at h1; omega
 
+/--
+Any box formula in deferralClosure is in closureWithNeg.
+
+Box formulas are not imp formulas, so they cannot be deferral disjunctions.
+-/
+theorem box_in_deferralClosure_is_in_closureWithNeg (phi psi : Formula)
+    (h : Formula.box psi ∈ deferralClosure phi) :
+    Formula.box psi ∈ closureWithNeg phi :=
+  non_imp_in_deferralClosure_is_in_closureWithNeg phi _ h (by intro a b; exact Formula.noConfusion)
+
+/--
+If Box(psi) is in closureWithNeg(phi), then psi is in subformulaClosure(phi).
+
+This is the key closure property for box formulas: the inner formula of any
+Box formula in the closure is itself in the (raw) subformula closure.
+-/
+theorem box_inner_in_subformulaClosure_of_closureWithNeg (phi psi : Formula)
+    (h : Formula.box psi ∈ closureWithNeg phi) :
+    psi ∈ subformulaClosure phi := by
+  unfold closureWithNeg at h
+  simp only [Finset.mem_union, Finset.mem_image] at h
+  rcases h with h_sub | ⟨g, h_g_sub, h_g_eq⟩
+  · -- Box(psi) in subformulaClosure phi
+    exact closure_box phi psi h_sub
+  · -- Box(psi) = g.neg for some g in subformulaClosure
+    -- But g.neg = Formula.imp g Formula.bot, and this cannot equal Formula.box psi
+    cases h_g_eq
+
+/--
+If Box(psi) is in deferralClosure(phi), then psi is in subformulaClosure(phi).
+
+This combines box_in_deferralClosure_is_in_closureWithNeg and
+box_inner_in_subformulaClosure_of_closureWithNeg.
+-/
+theorem box_inner_in_subformulaClosure_of_deferralClosure (phi psi : Formula)
+    (h : Formula.box psi ∈ deferralClosure phi) :
+    psi ∈ subformulaClosure phi :=
+  box_inner_in_subformulaClosure_of_closureWithNeg phi psi
+    (box_in_deferralClosure_is_in_closureWithNeg phi psi h)
+
+/--
+If Box(psi) is in deferralClosure(phi), then psi is in closureWithNeg(phi).
+-/
+theorem box_inner_in_closureWithNeg_of_deferralClosure (phi psi : Formula)
+    (h : Formula.box psi ∈ deferralClosure phi) :
+    psi ∈ closureWithNeg phi :=
+  subformulaClosure_subset_closureWithNeg phi
+    (box_inner_in_subformulaClosure_of_deferralClosure phi psi h)
+
+/--
+If Box(psi) is in deferralClosure(phi), then psi is in deferralClosure(phi).
+-/
+theorem box_inner_in_deferralClosure (phi psi : Formula)
+    (h : Formula.box psi ∈ deferralClosure phi) :
+    psi ∈ deferralClosure phi :=
+  closureWithNeg_subset_deferralClosure phi
+    (box_inner_in_closureWithNeg_of_deferralClosure phi psi h)
+
 end Bimodal.Syntax
