@@ -37,7 +37,7 @@ technical_debt:
 58 → 59 → 60
 ```
 
-1. **58** [PLANNED] — Wire completeness to FrameConditions (3 sorries) — G backward needs same-family forward_F
+1. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — Bundle-level forward_F is sorry-free; use BFMCS_Bundle
 2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 

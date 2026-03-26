@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "planned",
+      "status": "researched",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -53,9 +53,9 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T15:11:34Z",
-      "session_id": "sess_1774485353_66b16a",
-      "researched": "2026-03-26T00:44:07Z",
+      "last_updated": "2026-03-26T15:29:58Z",
+      "session_id": "sess_1774538396_8c6327",
+      "researched": "2026-03-26T15:29:58Z",
       "planned": "2026-03-26T15:11:34Z",
       "artifacts": [
         {
@@ -127,6 +127,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/plans/08_corrected-truth-lemma.md",
           "type": "plan",
           "summary": "Corrected truth lemma analysis: G backward needs same-family forward_F"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/18_team-research.md",
+          "type": "research",
+          "summary": "Team research wave 4: truth lemma obstruction deep analysis (4 teammates)"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
