@@ -148,7 +148,7 @@ The key dependencies:
 
 ---
 
-### Phase 4: Wire to FrameConditions/Completeness [PARTIAL]
+### Phase 4: Wire to FrameConditions/Completeness [BLOCKED]
 
 **Goal**: Eliminate the 3 target sorries in FrameConditions/Completeness.lean.
 

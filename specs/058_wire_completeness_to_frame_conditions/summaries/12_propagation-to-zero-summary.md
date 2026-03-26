@@ -31,21 +31,51 @@ Filled the two cross-chain sorries in `build_restricted_tc_family`:
 
 `restricted_truth_lemma` and `restricted_truth_at_seed` were already implemented without requiring the G/H propagation helpers (which retain sorries but are unused).
 
-### Phase 4: Wire to FrameConditions/Completeness [PARTIAL]
+### Phase 4: Wire to FrameConditions/Completeness [BLOCKED]
 
 The 3 target sorries in `FrameConditions/Completeness.lean` remain:
 - `dense_completeness_fc` (line 115)
 - `discrete_completeness_fc` (line 158)
 - `bundle_validity_implies_provability` (line 186)
 
-**Analysis**: These sorries are documented as "model-theoretic glue" connecting the algebraic bundle construction to the semantic `valid_over` definition. The core algebraic completeness path through `UltrafilterChain.lean` is verified sorry-free:
+**Detailed Analysis (Session 2026-03-26)**:
+
+The core algebraic completeness path through `UltrafilterChain.lean` is verified sorry-free:
 
 ```
 'bundle_completeness_contradiction' depends on axioms: [propext, Classical.choice, Quot.sound]
 'mcs_neg_gives_countermodel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'boxClassFamilies_bundle_temporally_coherent' depends on axioms: [propext, Classical.choice, ...]
 ```
 
 No `sorryAx` in the algebraic path.
+
+**Technical Blocker: Bundle-Level vs Family-Level Coherence**:
+
+The completeness proof requires connecting two different coherence levels:
+
+1. **What we construct** (`BFMCS_Bundle` via `construct_bfmcs_bundle`):
+   - Bundle-level F coherence: F(phi) witness can be in ANY family of the bundle
+
+2. **What the truth lemma requires** (`BFMCS` with `temporally_coherent`):
+   - Family-level F coherence: F(phi) witness must be in the SAME family
+
+The backward G case of `shifted_truth_lemma` uses contraposition via `temporal_backward_G`, which requires family-level F-coherence. With bundle-level coherence, the contrapositive argument fails because the F-witness may be in a different family.
+
+**Proof State at sorry (line 214)**:
+```lean
+h_valid : valid_over Int phi
+_h : not (forall M, SetMaximalConsistent M -> phi in M)
+goal: False
+```
+
+To derive contradiction, we need `h_valid -> forall M, ... -> phi in M`, which requires the backward truth lemma, which needs family-level coherence we cannot provide.
+
+**Resolution Options**:
+- Option A: Prove family-level coherence (blocked - F-witnesses genuinely cross box classes)
+- Option B: Bundle-level truth lemma (major semantics refactor)
+- Option C: Alternative completeness path (new task)
+- Option D: Accept as documented technical debt (current state)
 
 ## Remaining Work
 

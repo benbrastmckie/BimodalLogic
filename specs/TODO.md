@@ -136,7 +136,7 @@ technical_debt:
 
 ### 58. Wire completeness to FrameConditions
 - **Effort**: 12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED] - Bundle-level vs family-level coherence mismatch
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**:
