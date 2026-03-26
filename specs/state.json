@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,8 +54,8 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T21:33:44Z",
-      "session_id": "sess_1774560119_c7b700",
+      "last_updated": "2026-03-26T23:15:00Z",
+      "session_id": "sess_1774566166_fb7902",
       "researched": "2026-03-26T18:32:08Z",
       "planned": "2026-03-26T20:39:59Z",
       "artifacts": [
@@ -183,9 +183,15 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/summaries/12_propagation-to-zero-summary.md",
           "type": "summary",
           "summary": "Phases 1-3 complete: cross-chain witness resolved, algebraic path sorry-free. Phase 4 partial: model-theoretic glue remains."
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Survey of all attempted approaches: 9 approaches documented, 5 definitive dead ends, omega-enumeration for restricted case identified as remaining viable path"
         }
       ],
-      "started": "2026-03-26T20:51:11Z"
+      "started": "2026-03-26T20:51:11Z",
+      "researched": "2026-03-26T23:15:00Z"
     },
     {
       "project_number": 57,
