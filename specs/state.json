@@ -53,9 +53,9 @@
         55
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T15:42:01Z",
-      "session_id": "sess_1774539418_a21f30",
-      "researched": "2026-03-26T15:42:01Z",
+      "last_updated": "2026-03-26T16:16:39Z",
+      "session_id": "sess_1774541227_10cfc8",
+      "researched": "2026-03-26T16:16:39Z",
       "planned": "2026-03-26T15:11:34Z",
       "artifacts": [
         {
@@ -137,6 +137,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/19_bundle-truth-lemma-analysis.md",
           "type": "research",
           "summary": "Bundle vs family-level coherence analysis: semantic mismatch identified"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/20_team-research.md",
+          "type": "research",
+          "summary": "Team research wave 5: breakthrough via deferral-restricted completeness path (4 teammates)"
         }
       ],
       "started": "2026-03-25T15:07:50Z"
