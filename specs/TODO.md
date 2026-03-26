@@ -77,7 +77,7 @@ technical_debt:
 
 ### 65. Build TaskModel from Restricted Construction
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
@@ -86,6 +86,8 @@ technical_debt:
   - [02_team-research.md](065_build_taskmodel_from_restricted_construction/reports/02_team-research.md)
   - [03_team-research.md](065_build_taskmodel_from_restricted_construction/reports/03_team-research.md)
 - **Plan**: [02_revised-plan.md](065_build_taskmodel_from_restricted_construction/plans/02_revised-plan.md)
+- **Summary**: [01_implementation-summary.md](065_build_taskmodel_from_restricted_construction/summaries/01_implementation-summary.md)
+- **Blocked Reason**: `shifted_truth_lemma` requires family-level coherence (SAME family witnesses), but `construct_bfmcs_bundle` provides only bundle-level coherence (ANY family witnesses)
 
 **Description**: Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.
 

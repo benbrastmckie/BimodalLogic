@@ -756,14 +756,14 @@
     {
       "project_number": 65,
       "project_name": "build_taskmodel_from_restricted_construction",
-      "status": "planned",
+      "status": "blocked",
       "language": "lean4",
       "description": "Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.",
       "effort": "4-6 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-26T21:40:11Z",
-      "last_updated": "2026-03-26T22:26:59Z",
+      "last_updated": "2026-03-26T22:32:50Z",
       "artifacts": [
         {
           "type": "research",
@@ -784,11 +784,18 @@
           "path": "specs/065_build_taskmodel_from_restricted_construction/plans/02_revised-plan.md",
           "type": "plan",
           "summary": "Revised 2-phase plan (removed blocked Bundle-Level Truth Lemma approach)"
+        },
+        {
+          "path": "specs/065_build_taskmodel_from_restricted_construction/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 completed - BLOCKED: requires family-level coherence not provided by bundle construction"
         }
       ],
-      "session_id": "sess_1774563564_3087fc",
+      "session_id": "sess_1774564134_4004c1",
       "researched": "2026-03-26T22:00:56Z",
-      "planned": "2026-03-26T22:26:59Z"
+      "planned": "2026-03-26T22:26:59Z",
+      "started": "2026-03-26T22:29:19Z",
+      "blocked_reason": "shifted_truth_lemma requires family-level temporal coherence (SAME family witnesses), but construct_bfmcs_bundle only provides bundle-level coherence (ANY family witnesses). Gap is fundamental - contradiction proofs require same-MCS witnesses."
     },
     {
       "project_number": 66,
