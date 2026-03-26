@@ -50,7 +50,8 @@
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
       "dependencies": [
-        55
+        999,
+        1000
       ],
       "created": "2026-03-24T19:43:07Z",
       "last_updated": "2026-03-26T21:33:44Z",
@@ -751,9 +752,49 @@
           "summary": "Team research wave 2: BFMCS saturation, modal structure, omega-enumeration design (3 teammates)"
         }
       ]
+    },
+    {
+      "project_number": 999,
+      "project_name": "build_taskmodel_from_restricted_construction",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.",
+      "effort": "4-6 hours",
+      "parent_task": 58,
+      "dependencies": [],
+      "created": "2026-03-26T21:40:11Z",
+      "last_updated": "2026-03-26T21:40:11Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/999_build_taskmodel_from_restricted_construction/reports/01_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 58"
+        }
+      ]
+    },
+    {
+      "project_number": 1000,
+      "project_name": "wire_restricted_completeness_to_target_sorries",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Connect restricted completeness path to the 3 target sorries in FrameConditions/Completeness.lean: bundle_validity_implies_provability, dense_completeness_fc, discrete_completeness_fc. Use contrapositive argument via RestrictedTaskModel.",
+      "effort": "3-4 hours",
+      "parent_task": 58,
+      "dependencies": [
+        999
+      ],
+      "created": "2026-03-26T21:40:11Z",
+      "last_updated": "2026-03-26T21:40:11Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/1000_wire_restricted_completeness_to_target_sorries/reports/01_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 58"
+        }
+      ]
     }
   ],
-  "next_project_number": 64,
+  "next_project_number": 1001,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

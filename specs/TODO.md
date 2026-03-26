@@ -1,5 +1,5 @@
 ---
-next_project_number: 65
+next_project_number: 1001
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -75,6 +75,30 @@ technical_debt:
 
 ---
 
+### 999. Build TaskModel from Restricted Construction
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #58
+- **Research**: [01_spawn-analysis.md](999_build_taskmodel_from_restricted_construction/reports/01_spawn-analysis.md)
+
+**Description**: Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.
+
+---
+
+### 1000. Wire Restricted Completeness to Target Sorries
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task 999
+- **Parent Task**: #58
+- **Research**: [01_spawn-analysis.md](1000_wire_restricted_completeness_to_target_sorries/reports/01_spawn-analysis.md)
+
+**Description**: Connect restricted completeness path to the 3 target sorries in FrameConditions/Completeness.lean: bundle_validity_implies_provability, dense_completeness_fc, discrete_completeness_fc. Use contrapositive argument via RestrictedTaskModel.
+
+---
+
 ---
 
 ### 64. Critical path review: algebraic analysis of completeness obstacles
@@ -138,7 +162,7 @@ technical_debt:
 - **Effort**: 12 hours
 - **Status**: [BLOCKED] - Bundle-level vs family-level coherence mismatch
 - **Language**: lean4
-- **Dependencies**: Task 55
+- **Dependencies**: Task 55, Task 999, Task 1000
 - **Research**:
   - [01_completeness-wiring-analysis.md](058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md)
   - [02_team-research.md](058_wire_completeness_to_frame_conditions/reports/02_team-research.md)
