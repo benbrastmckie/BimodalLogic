@@ -56,7 +56,7 @@
       "created": "2026-03-24T19:43:07Z",
       "last_updated": "2026-03-26T23:15:00Z",
       "session_id": "sess_1774566166_fb7902",
-      "researched": "2026-03-26T18:32:08Z",
+      "researched": "2026-03-26T23:15:00Z",
       "planned": "2026-03-26T20:39:59Z",
       "artifacts": [
         {
@@ -188,10 +188,14 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_teammate-a-findings.md",
           "type": "research",
           "summary": "Survey of all attempted approaches: 9 approaches documented, 5 definitive dead ends, omega-enumeration for restricted case identified as remaining viable path"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_team-research.md",
+          "type": "research",
+          "summary": "Wave 60: Comprehensive review - omega-enumeration doesn't exist, fix RestrictedTruthLemma.lean instead"
         }
       ],
-      "started": "2026-03-26T20:51:11Z",
-      "researched": "2026-03-26T23:15:00Z"
+      "started": "2026-03-26T20:51:11Z"
     },
     {
       "project_number": 57,
