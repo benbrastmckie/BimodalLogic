@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-27T23:38:26Z",
+      "last_updated": "2026-03-27T23:44:58Z",
       "artifacts": [
         {
           "type": "research",
@@ -915,10 +915,16 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/01_bundle-provability-research.md",
           "type": "research",
           "summary": "Comprehensive analysis of truth lemma gap, evaluation of three approaches, recommended restricted completeness path"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/plans/01_bundle-provability-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for restricted completeness approach to bundle_validity_implies_provability"
         }
       ],
-      "session_id": "sess_1774654413_fd3188",
-      "researched": "2026-03-27T23:38:26Z"
+      "session_id": "sess_1774654879_f9aebd",
+      "researched": "2026-03-27T23:38:26Z",
+      "planned": "2026-03-27T23:44:58Z"
     },
     {
       "project_number": 68,

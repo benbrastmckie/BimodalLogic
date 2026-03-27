@@ -79,13 +79,14 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
 - **Research**:
   - [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
   - [01_bundle-provability-research.md](067_prove_bundle_validity_implies_provability/reports/01_bundle-provability-research.md)
+- **Plan**: [01_bundle-provability-plan.md](067_prove_bundle_validity_implies_provability/plans/01_bundle-provability-plan.md)
 
 **Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.
 
