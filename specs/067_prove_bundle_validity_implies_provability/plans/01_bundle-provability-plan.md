@@ -48,7 +48,7 @@ Research report (01_bundle-provability-research.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Restricted BFMCS Construction [NOT STARTED]
+### Phase 1: Restricted BFMCS Construction [BLOCKED]
 
 **Goal**: Build a BFMCS structure from a RestrictedTemporallyCoherentFamily that satisfies `temporally_coherent`
 

@@ -838,41 +838,54 @@ noncomputable def restricted_tc_family_to_fmcs (phi : Formula)
   forward_G := fun t t' ψ htt' h_G => by
     -- G(ψ) ∈ extended MCS at t
     -- Need: ψ ∈ extended MCS at t'
-    -- This requires showing G propagates through the chain
-    -- For formulas in deferralClosure, we can use the restricted chain properties
-    -- For arbitrary formulas, we need full MCS properties
-
-    -- Case 1: ψ ∈ deferralClosure(phi) - use restricted chain
-    -- Case 2: ψ ∉ deferralClosure(phi) - use MCS closure under derivation
-
-    have h_mcs_t := restricted_chain_ext_is_mcs phi rtcf t
-    have h_mcs_t' := restricted_chain_ext_is_mcs phi rtcf t'
-
-    -- In full MCS, G(ψ) ∈ M implies ψ ∈ M for t' ≥ t via the reflexive semantics
-    -- More specifically: G(ψ) → ψ by T-axiom (temp_t_future in reflexive semantics)
-    -- And G(ψ) → G(G(ψ)) by temp_4
-
-    -- For t' = t: use T-axiom (reflexivity)
-    -- For t' > t: use temp_4 to preserve G, then step through chain
-
-    -- The proof requires showing that the extended MCS satisfies forward_G
-    -- This is complex because extended MCS are independent Lindenbaum extensions
-
-    -- For now, we use a direct MCS argument:
-    -- G(ψ) in MCS at t, and MCS at t' are related by Succ chain
-    -- The Succ relation ensures g_content propagates
-
-    -- Actually, the independent Lindenbaum extensions don't preserve Succ relation!
-    -- This is the key gap identified in the research.
-
-    -- However, for subformulaClosure formulas, we can use restricted_truth_lemma
-    -- For other formulas, we need a different argument
-
-    -- For completeness, we only need this for subformulaClosure formulas
-    -- Let's mark this as sorry for now and document the gap
+    --
+    -- Approach:
+    -- 1. If t = t': use T-axiom (G(ψ) → ψ derivable, MCS closed under derivation)
+    -- 2. If t < t': use a combination of MCS properties and chain structure
+    --
+    -- For MCS: G(ψ) → ψ is derivable via temp_t_future axiom
+    -- Since MCS is closed under derivation, G(ψ) ∈ M implies ψ ∈ M (at same time)
+    --
+    -- For t < t' case:
+    -- The extended MCSes are independent Lindenbaum extensions, so they don't
+    -- directly preserve G-propagation. However, we can use the fact that:
+    -- - Every MCS contains all theorems
+    -- - G(ψ) → ψ is derivable
+    -- - But this only gives ψ at t, not at t'
+    --
+    -- The key insight: for formulas in deferralClosure, we can use the restricted
+    -- chain's Succ properties. For arbitrary formulas, we use MCS maximality.
+    --
+    -- Actually, looking at this more carefully:
+    -- The extended MCS at t' is independent of the one at t.
+    -- We CANNOT prove G(ψ) at t implies ψ at t' in general!
+    --
+    -- HOWEVER: For completeness, we only evaluate ONE formula (phi or neg(phi)).
+    -- The truth lemma is only applied to the evaluation formula and its subformulas.
+    -- For these formulas, we can check if ψ ∈ deferralClosure.
+    --
+    -- The cleanest solution: prove this for ALL formulas using MCS properties.
+    --
+    -- For now: apply T-axiom at t', since all MCS are independent.
+    -- G(ψ) at t doesn't help for t' independently, but...
+    --
+    -- Wait, there's a simpler argument:
+    -- At t': G(ψ) → ψ is a theorem (temp_t_future)
+    -- If G(ψ) ∈ MCS at t', then ψ ∈ MCS at t' (by MCS closure)
+    -- The question is: is G(ψ) ∈ MCS at t' given G(ψ) ∈ MCS at t?
+    --
+    -- This is NOT necessarily true for independent extensions.
+    -- The gap remains for the general case.
+    --
+    -- For completeness purposes, we use a weaker property:
+    -- Build a variant that only satisfies forward_G for subformulaClosure formulas.
+    --
+    -- Since this blocks the general FMCS construction, we use sorry for now
+    -- and implement completeness via a different path.
     sorry
   backward_H := fun t t' ψ htt' h_H => by
-    -- Symmetric argument to forward_G
+    -- Symmetric to forward_G: H(ψ) → ψ via temp_t_past, but
+    -- we cannot propagate across independent Lindenbaum extensions.
     sorry
 
 /-!
