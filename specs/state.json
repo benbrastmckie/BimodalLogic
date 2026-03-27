@@ -54,8 +54,8 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T17:24:42Z",
-      "session_id": "sess_1774632254_17a71e",
+      "last_updated": "2026-03-27T18:09:31Z",
+      "session_id": "sess_1774633914_6725e8",
       "researched": "2026-03-27T16:38:33Z",
       "planned": "2026-03-27T16:46:18Z",
       "artifacts": [
@@ -218,6 +218,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/summaries/13_fix-a1-partial.md",
           "type": "summary",
           "summary": "Fix A1 partial: Phase 1 complete, Phase 2 blocked on neg_not_in_boundary_resolution_set"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/65_team-research.md",
+          "type": "research",
+          "summary": "Team research: BRS blocker algebraic analysis - theorem is FALSE, bypass with neg_not_in_seed_when_in_brs (3 teammates)"
         }
       ],
       "started": "2026-03-27T03:54:34Z"
