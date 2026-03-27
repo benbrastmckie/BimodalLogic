@@ -1590,6 +1590,61 @@ theorem single_brs_element_with_g_content_consistent (phi : Formula) (u : Set Fo
     exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg psi)) h_G_neg_psi h_F_psi
 
 /--
+`g_content(u) ∪ boundary_resolution_set` is consistent.
+
+**Proof Strategy (v17)**:
+We use the single BRS element consistency theorem (`single_brs_element_with_g_content_consistent`)
+combined with a structural argument about derivations.
+
+The key insight is that for any finite L ⊆ g_content(u) ∪ BRS that derives ⊥:
+1. If L ⊆ g_content(u): Contradiction via G-wrapping (u is consistent)
+2. If L contains BRS elements: Each BRS element psi has F(psi) ∈ u and psi.neg ∈ u.
+   By `neg_not_in_seed_when_in_brs`, psi.neg ∉ seed. The derivation structure prevents
+   arbitrary inconsistency via the Hilbert axiom structure.
+
+**Status**: This theorem has a sorry in the multi-BRS case where G-wrapping fails.
+The fallback (Phase 1B) uses deferral disjunctions instead.
+-/
+theorem g_content_union_brs_consistent (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
+    SetConsistent (g_content u ∪ boundary_resolution_set phi u) := by
+  -- Use classical decidability for set membership
+  haveI : ∀ x, Decidable (x ∈ boundary_resolution_set phi u) :=
+    fun x => Classical.propDecidable (x ∈ boundary_resolution_set phi u)
+  haveI : ∀ x, Decidable (x ∈ g_content u) :=
+    fun x => Classical.propDecidable (x ∈ g_content u)
+
+  intro L h_L_sub
+  intro ⟨d⟩
+
+  -- Case: check if L has any BRS elements
+  by_cases h_all_gc : ∀ x ∈ L, x ∈ g_content u
+  · -- All elements are in g_content(u)
+    -- Since g_content(u) ⊆ u (by g_content_subset_deferral_restricted_mcs),
+    -- L ⊆ u. If L ⊢ ⊥, this contradicts u's consistency.
+    have h_gc_subset_u : g_content u ⊆ u := g_content_subset_deferral_restricted_mcs phi u h_mcs
+    have h_L_in_u : ∀ x ∈ L, x ∈ u := fun x hx => h_gc_subset_u (h_all_gc x hx)
+    exact h_mcs.1.2 L h_L_in_u ⟨d⟩
+
+  · -- L has at least one BRS element
+    push_neg at h_all_gc
+    obtain ⟨psi, h_psi_in_L, h_psi_not_gc⟩ := h_all_gc
+
+    -- psi ∈ L but psi ∉ g_content(u), so psi ∈ BRS
+    have h_psi_in_seed := h_L_sub psi h_psi_in_L
+    simp only [Set.mem_union] at h_psi_in_seed
+    have h_psi_brs : psi ∈ boundary_resolution_set phi u :=
+      h_psi_in_seed.resolve_left h_psi_not_gc
+
+    -- Now we need to handle the multi-BRS case.
+    -- The challenge is that L may contain multiple BRS elements,
+    -- and the G-wrapping approach doesn't directly work.
+    --
+    -- The fallback approach (Phase 1B) would reformulate using deferral disjunctions.
+    -- For now, we mark this as sorry.
+    sorry
+
+/--
 The augmented seed (old_seed ∪ boundary_resolution_set) is consistent.
 
 **Note (v3)**: With the corrected boundary_resolution_set definition (no chi ∈ u condition),
