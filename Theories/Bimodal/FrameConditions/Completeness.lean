@@ -102,21 +102,27 @@ def DenseCompletenessStatement (φ : Formula) : Prop :=
 /--
 Dense completeness proof.
 
-The proof structure:
-1. If φ not provable, then neg φ is consistent
-2. Extend neg φ to MCS via Lindenbaum
-3. Build model from that MCS using SuccChain construction
-4. By hypothesis, φ is valid over the model
-5. By truth lemma, φ is NOT valid over the model
-6. Contradiction
+**Status**: BLOCKED — Cannot reduce to Int completeness.
 
-**Status**: Blocked pending SuccChain completeness integration.
+**Why This Cannot Use `completeness_over_Int`**:
+- The hypothesis is: φ valid over ALL densely-ordered D (Rat, Real, etc.)
+- Int is NOT densely ordered (there's no integer between 0 and 1)
+- Therefore we cannot specialize the hypothesis to Int
+- A separate proof path using a dense canonical model (e.g., over Rat) is needed
+
+**What Would Be Needed**:
+1. A dense canonical model construction (like `construct_bfmcs_bundle` but for Rat)
+2. A truth lemma for that construction
+3. The same model-theoretic glue as `bundle_validity_implies_provability`
+
+**Note**: The discrete version (`discrete_completeness_fc`) DOES reduce to Int
+completeness because Int is discrete.
 -/
 theorem dense_completeness_fc {φ : Formula} :
     DenseCompletenessStatement φ := by
   intro _h_valid
-  -- Blocked pending SuccChain completeness integration
-  -- See SuccChain/ for current development
+  -- Cannot reduce to completeness_over_Int: Int is not densely ordered.
+  -- Needs a separate proof using a dense canonical model (e.g., over Rat).
   sorry
 
 /-! ## Discrete Completeness -/
@@ -138,8 +144,6 @@ theorem discrete_soundness_proven {φ : Formula} (ax : Axiom φ) (h_dc : ax.isDi
 
 /--
 Discrete completeness statement: formulas valid over discrete temporal frames are provable.
-
-**Status**: BLOCKED by `discrete_Icc_finite_axiom` (documented debt).
 -/
 def DiscreteCompletenessStatement (φ : Formula) : Prop :=
   (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -147,20 +151,6 @@ def DiscreteCompletenessStatement (φ : Formula) : Prop :=
      [SuccOrder D] [PredOrder D] [IsSuccArchimedean D]
      [DiscreteTemporalFrame D], valid_over D φ) →
   Nonempty ([] ⊢ φ)
-
-/--
-Discrete completeness proof (blocked by discrete_Icc_finite_axiom).
-
-**Technical Debt Reference**:
-- Root cause: DF axiom creates existential obligations witnessable by any MCS
-- Resolution: Future task after FrameConditions refactor complete
--/
-theorem discrete_completeness_fc {φ : Formula} :
-    DiscreteCompletenessStatement φ := by
-  intro _h_valid
-  -- Blocked by discrete_Icc_finite_axiom dependency
-  -- See DiscreteCompleteness.lean for details
-  sorry
 
 /-! ## Completeness over Int -/
 
@@ -236,9 +226,32 @@ theorem completeness_over_Int {φ : Formula} :
   intro h_valid
   exact bundle_validity_implies_provability φ h_valid
 
+/-! ## Discrete Completeness via Int -/
+
+/--
+Discrete completeness proof: reduces to `completeness_over_Int`.
+
+**Proof Strategy**:
+1. Hypothesis: φ is valid over ALL discrete temporal frames
+2. Int is a discrete temporal frame (satisfies SuccOrder, PredOrder, IsSuccArchimedean)
+3. Specialize the hypothesis to Int to get `valid_over Int φ`
+4. Apply `completeness_over_Int` to conclude provability
+
+**Note**: The sorry comes from `bundle_validity_implies_provability` in `completeness_over_Int`.
+This proof is sorry-free modulo that single dependency.
+-/
+theorem discrete_completeness_fc {φ : Formula} :
+    DiscreteCompletenessStatement φ := by
+  intro h_valid_discrete
+  -- Int is a discrete temporal frame with all required instances
+  -- Specialize the discrete validity hypothesis to Int
+  have h_valid_int : valid_over Int φ := h_valid_discrete Int
+  -- Delegate to completeness_over_Int
+  exact completeness_over_Int h_valid_int
+
 /-! ## Documentation: Completeness Status (Task #58)
 
-### Completeness over Int: PROVEN (via Bundle Construction)
+### Completeness over Int: Has sorry for model-theoretic glue
 
 The core algebraic completeness proof is sorry-free:
 - `construct_bfmcs_bundle`: Build BFMCS_Bundle from any MCS
@@ -250,31 +263,32 @@ The only remaining sorry is in `bundle_validity_implies_provability`, which
 requires connecting the bundle model to the `TaskModel` semantics used in
 `valid_over`. This is model-theoretic glue, not proof-theoretic content.
 
-### Dense and Discrete Completeness: FOLLOW from Int
+### Discrete Completeness: REDUCES to Int Completeness (sorry-free reduction)
 
-Since Int is both discrete and dense-embeddable, formulas valid over:
-- All dense frames are valid over Int (since Int embeds in dense orders)
-- All discrete frames are valid over Int (since Int is discrete)
+`discrete_completeness_fc` is proven by:
+1. Int is a discrete temporal frame (has SuccOrder, PredOrder, IsSuccArchimedean)
+2. The hypothesis "φ valid over ALL discrete D" can be specialized to Int
+3. We then apply `completeness_over_Int`
 
-Therefore dense_completeness_fc and discrete_completeness_fc follow from
-completeness_over_Int.
+This reduction is SORRY-FREE. The only sorry is in `bundle_validity_implies_provability`.
 
-### Summary of Sorries Eliminated by Task #58
+### Dense Completeness: CANNOT reduce to Int Completeness
 
-The target sorries in this file were:
-- `dense_completeness_fc` (line 108): STILL PRESENT (needs model glue)
-- `discrete_completeness_fc` (line 151): STILL PRESENT (needs model glue)
-- `completeness_over_Int` (line 170): REDUCED to model-theoretic glue
+`dense_completeness_fc` still has its own sorry because:
+- Int is NOT densely ordered (no integer between 0 and 1)
+- Therefore we cannot specialize "φ valid over ALL dense D" to Int
+- A separate proof using a dense canonical model (e.g., over Rat) would be needed
 
-The core algebraic completeness proof in `UltrafilterChain.lean` is now
-fully sorry-free:
-- `boxClassFamilies_bundle_forward_F`
-- `boxClassFamilies_bundle_backward_P`
-- `boxClassFamilies_bundle_temporally_coherent`
-- `construct_bfmcs_bundle`
-- `mcs_neg_gives_countermodel`
-- `bundle_completeness_contradiction`
-- `not_provable_implies_neg_consistent`
+### Summary of Sorries in This File
+
+| Theorem | Status | Dependency |
+|---------|--------|------------|
+| `dense_completeness_fc` | SORRY | Needs dense canonical model |
+| `discrete_completeness_fc` | REDUCED | Via `completeness_over_Int` |
+| `completeness_over_Int` | REDUCED | Via `bundle_validity_implies_provability` |
+| `bundle_validity_implies_provability` | SORRY | Model-theoretic glue |
+
+The core algebraic completeness proof in `UltrafilterChain.lean` is fully sorry-free.
 -/
 
 end Bimodal.FrameConditions

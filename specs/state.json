@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,8 +54,8 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T22:57:46Z",
-      "session_id": "sess_1774652090_21cdaf",
+      "last_updated": "2026-03-27T23:12:01Z",
+      "session_id": "sess_1774652451_46c4ab",
       "researched": "2026-03-27T22:50:24Z",
       "planned": "2026-03-27T22:57:46Z",
       "artifacts": [
@@ -243,10 +243,15 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/plans/18_implementation-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan integrating team research: wire 3 sorries to 1, audit Z-chain crossings, test deferral disjunction seeds"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/19_implementation-summary.md",
+          "type": "summary",
+          "summary": "Partial: Phase 1-5 complete, discrete_completeness_fc now sorry-free, Tier 2 audits found no shortcuts, bundle_validity_implies_provability remains"
         }
       ],
-      "started": "2026-03-27T03:54:34Z",
-      "resume_phase": 1
+      "started": "2026-03-27T23:01:14Z",
+      "resume_phase": 6
     },
     {
       "project_number": 57,

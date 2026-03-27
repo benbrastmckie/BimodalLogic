@@ -46,7 +46,7 @@ Key findings from report 82 integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: Wire 3 Sorries to 1 [NOT STARTED]
+### Phase 1: Wire 3 Sorries to 1 [COMPLETED]
 
 **Goal**: Reduce the 3 sorries in Completeness.lean to delegate through `completeness_over_Int`, making the dependency explicit.
 
@@ -69,7 +69,7 @@ Key findings from report 82 integrated into this plan:
 
 ---
 
-### Phase 2: Audit Z-chain Crossing-Case Sorries [NOT STARTED]
+### Phase 2: Audit Z-chain Crossing-Case Sorries [COMPLETED]
 
 **Goal**: Determine if the sorries at lines 2347/2369 in UltrafilterChain.lean are tractable engineering problems or fundamental G-lift barrier instances.
 
@@ -93,7 +93,7 @@ Key findings from report 82 integrated into this plan:
 
 ---
 
-### Phase 3: Check Deferral Disjunction Seed Approach [NOT STARTED]
+### Phase 3: Check Deferral Disjunction Seed Approach [COMPLETED]
 
 **Goal**: Test whether using `psi OR F(psi)` instead of bare `psi` in BRS seeds eliminates the G-lift barrier.
 
@@ -117,7 +117,7 @@ Key findings from report 82 integrated into this plan:
 
 ---
 
-### Phase 4: Quick Check bot-in-deferralClosure [NOT STARTED]
+### Phase 4: Quick Check bot-in-deferralClosure [COMPLETED]
 
 **Goal**: Check if bot (False) is in the deferral closure, which would provide an alternative consistency proof path.
 
@@ -137,7 +137,7 @@ Key findings from report 82 integrated into this plan:
 
 ---
 
-### Phase 5: Document Path Forward [NOT STARTED]
+### Phase 5: Document Path Forward [COMPLETED]
 
 **Goal**: Based on Tier 2 findings, document the path forward for task 58.
 
