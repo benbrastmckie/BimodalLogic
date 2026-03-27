@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,10 +54,10 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T04:58:01Z",
+      "last_updated": "2026-03-27T15:50:40Z",
       "session_id": "sess_1774587086_06fcc5",
       "researched": "2026-03-27T04:58:01Z",
-      "planned": "2026-03-26T23:12:26Z",
+      "planned": "2026-03-27T15:50:40Z",
       "artifacts": [
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md",
@@ -190,11 +190,6 @@
           "summary": "Wave 60: Comprehensive review - omega-enumeration doesn't exist, fix RestrictedTruthLemma.lean instead"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/plans/12_restricted-truth-lemma-path.md",
-          "type": "plan",
-          "summary": "v12: Restricted truth lemma path (supersedes omega-enumeration)"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/summaries/12_implementation-progress.md",
           "type": "summary",
           "summary": "Partial: RestrictedCanonical section added, gap analysis documented, target sorries remain"
@@ -203,6 +198,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/61_path-forward-analysis.md",
           "type": "research",
           "summary": "Path forward analysis: real blocker is seed consistency sorry, two options identified"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/plans/13_seed-consistency-first.md",
+          "type": "plan",
+          "summary": "v13: Seed consistency first (supersedes v12)"
         }
       ],
       "started": "2026-03-27T03:54:34Z"

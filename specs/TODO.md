@@ -37,7 +37,7 @@ technical_debt:
 58 → 59 → 60
 ```
 
-1. **58** [IMPLEMENTING] — Wire completeness to FrameConditions (3 sorries) — Restricted completeness via RestrictedMCS
+1. **58** [PLANNED] — Wire completeness to FrameConditions (3 sorries) — Seed consistency first approach
 2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -166,13 +166,13 @@ technical_debt:
 
 ### 58. Wire completeness to FrameConditions
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**:
   - [60_team-research.md](058_wire_completeness_to_frame_conditions/reports/60_team-research.md) — Wave 60: Comprehensive review after 60 waves
-  - [60_teammate-a-findings.md](058_wire_completeness_to_frame_conditions/reports/60_teammate-a-findings.md) — Survey of all attempted approaches: 9 approaches, 5 dead ends
-- **Plan**: [12_restricted-truth-lemma-path.md](058_wire_completeness_to_frame_conditions/plans/12_restricted-truth-lemma-path.md) — v12: Fix RestrictedTruthLemma.lean sorries, build TaskModel, wire to completeness
+  - [61_path-forward-analysis.md](058_wire_completeness_to_frame_conditions/reports/61_path-forward-analysis.md) — Path forward: real blocker is seed consistency sorry
+- **Plan**: [13_seed-consistency-first.md](058_wire_completeness_to_frame_conditions/plans/13_seed-consistency-first.md) — v13: Fix root sorry (seed consistency), build restricted TaskModel, wire completeness
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
 
