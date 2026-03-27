@@ -166,7 +166,7 @@ technical_debt:
 
 ### 58. Wire completeness to FrameConditions
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**:
