@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Core.RestrictedMCS
+import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
 # Succ-Chain FMCS Construction
@@ -1423,6 +1424,170 @@ theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : For
     exact neg_not_in_p_step_blocking_restricted phi u psi h_ps
   · -- Case: psi.neg ∈ BRS (contradicts brs_mutual_exclusion)
     exact brs_mutual_exclusion phi u psi h_psi_brs h_brs
+
+/--
+Single BRS element with g_content is consistent: `{psi} ∪ g_content(u)` is consistent
+when `psi ∈ BRS` (i.e., `F(psi) ∈ u`).
+
+**Proof Strategy** (G-wrapping, adapted from WitnessSeed.lean):
+Suppose `L ⊆ {psi} ∪ g_content(u)` and `L ⊢ ⊥`. We derive a contradiction.
+
+Case 1 (psi ∈ L): By deduction, `L \ {psi} ⊢ psi.neg`. By generalized temporal K,
+`G(L \ {psi}) ⊢ G(psi.neg)`. Since `G(chi) ∈ u` for all `chi ∈ L \ {psi}` (from g_content),
+by MCS closure `G(psi.neg) ∈ u`. But `F(psi) = neg(G(psi.neg)) ∈ u`. Contradiction.
+
+Case 2 (psi ∉ L): All of L are in g_content(u), so `G(chi) ∈ u` for each `chi ∈ L`.
+From `L ⊢ ⊥`, by generalized temporal K, `G(L) ⊢ G(⊥)`. Since all of `G(L)` are in u,
+`G(⊥) ∈ u`. From `⊢ ⊥ → psi.neg`, by temporal necessitation `⊢ G(⊥ → psi.neg)`, by temporal K
+distribution `⊢ G(⊥) → G(psi.neg)`, so `G(psi.neg) ∈ u`. But `F(psi) ∈ u`. Contradiction.
+-/
+theorem single_brs_element_with_g_content_consistent (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (psi : Formula) (h_psi_brs : psi ∈ boundary_resolution_set phi u) :
+    SetConsistent ({psi} ∪ g_content u) := by
+  intro L hL_sub ⟨d⟩
+  -- Extract F(psi) ∈ u from BRS membership
+  have h_F_psi : Formula.some_future psi ∈ u :=
+    (mem_boundary_resolution_set_iff phi u psi).mp h_psi_brs |>.1
+
+  by_cases h_psi_in : psi ∈ L
+  · -- Case: psi ∈ L
+    let L_filt := L.filter (fun y => decide (y ≠ psi))
+    have h_perm := cons_filter_neq_perm h_psi_in
+    have d_reord : DerivationTree (psi :: L_filt) Formula.bot :=
+      derivation_exchange d (fun x => (h_perm x).symm)
+
+    have d_neg : L_filt ⊢ Formula.neg psi :=
+      deduction_theorem L_filt psi Formula.bot d_reord
+
+    -- Get G chi ∈ u for each chi ∈ L_filt from g_content
+    have h_G_filt_in_u : ∀ chi ∈ L_filt, Formula.all_future chi ∈ u := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L := h_and.1
+      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_seed := hL_sub chi h_in_L
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gcontent
+      · exact absurd h_eq h_ne
+      · exact h_gcontent
+
+    -- Apply generalized temporal K (G distributes over derivation)
+    have d_G_neg : (Context.map Formula.all_future L_filt) ⊢ Formula.all_future (Formula.neg psi) :=
+      Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg psi) d_neg
+
+    -- All formulas in G(L_filt) are in u
+    have h_G_context_in_u : ∀ chi ∈ Context.map Formula.all_future L_filt, chi ∈ u := by
+      intro chi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨xi, h_xi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_G_filt_in_u xi h_xi_in
+
+    -- By DRM closure under derivation, G(neg psi) ∈ u
+    -- First check that G(neg psi) is in deferralClosure
+    -- From F(psi) ∈ u ⊆ deferralClosure, we have F(psi) ∈ closureWithNeg
+    -- F(psi) = neg(G(neg psi)) = (G(neg psi)).imp bot
+    -- So G(neg psi) is a subformula of F(psi), hence in subformulaClosure ⊆ closureWithNeg ⊆ deferralClosure
+    have h_F_in_dc := h_mcs.1.1 h_F_psi
+    have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi psi h_F_in_dc
+    -- Extract G(neg psi) ∈ subformulaClosure from F(psi) ∈ closureWithNeg
+    have h_G_neg_sub : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.subformulaClosure phi := by
+      unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
+      simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+      rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+      · -- F(psi) in subformulaClosure: F(psi) = (G(neg psi)).imp bot
+        exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+      · -- F(psi) = chi.neg for chi in subformulaClosure: chi = G(neg psi)
+        unfold Formula.some_future Formula.neg at h_chi_neg_eq
+        have h_eq : chi = Formula.all_future (Formula.neg psi) := by cases h_chi_neg_eq; rfl
+        rw [h_eq] at h_chi_sub
+        exact h_chi_sub
+    have h_G_neg_dc : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.deferralClosure phi :=
+      Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+        (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+
+    have h_G_neg_in_u : Formula.all_future (Formula.neg psi) ∈ u :=
+      drm_closed_under_derivation h_mcs (Context.map Formula.all_future L_filt)
+        h_G_context_in_u d_G_neg h_G_neg_dc
+
+    -- Contradiction - F psi = neg(G(neg psi)) is also in u
+    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+    rw [h_F_eq] at h_F_psi
+    exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg psi)) h_G_neg_in_u h_F_psi
+
+  · -- Case: psi ∉ L, so L ⊆ g_content u
+    -- All elements of L are in g_content(u), meaning G chi ∈ u for each chi
+    have h_G_all_in_u : ∀ chi ∈ L, Formula.all_future chi ∈ u := by
+      intro chi h_mem
+      have h_in_seed := hL_sub chi h_mem
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gcontent
+      · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
+      · exact h_gcontent
+
+    -- From L ⊢ ⊥, by generalized temporal K: G(L) ⊢ G(⊥)
+    have d_G_bot : (Context.map Formula.all_future L) ⊢ Formula.all_future Formula.bot :=
+      Bimodal.Theorems.generalized_temporal_k L Formula.bot d
+
+    -- All formulas in G(L) are in u
+    have h_G_L_in_u : ∀ chi ∈ Context.map Formula.all_future L, chi ∈ u := by
+      intro chi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨xi, h_xi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_G_all_in_u xi h_xi_in
+
+    -- Alternative approach: derive neg psi directly from L, then G-wrap
+    -- From L ⊢ ⊥, derive L ⊢ neg psi (since ⊥ → anything)
+
+    -- ⊢ ⊥ → ¬psi by prop_s (weakening): ⊢ ⊥ → (psi → ⊥) = ⊢ ⊥ → ¬psi
+    have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg psi) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi)
+
+    -- Weaken to L
+    have h_bot_imp_neg_L : L ⊢ Formula.bot.imp (Formula.neg psi) :=
+      DerivationTree.weakening [] L _ h_bot_imp_neg (List.nil_subset _)
+
+    -- Apply modus ponens: L ⊢ neg psi
+    have d_neg_psi : L ⊢ Formula.neg psi :=
+      DerivationTree.modus_ponens L _ _ h_bot_imp_neg_L d
+
+    -- Apply generalized temporal K: G(L) ⊢ G(neg psi)
+    have d_G_neg : (Context.map Formula.all_future L) ⊢ Formula.all_future (Formula.neg psi) :=
+      Bimodal.Theorems.generalized_temporal_k L (Formula.neg psi) d_neg_psi
+
+    -- All formulas in G(L) are in u (same as before)
+    -- (h_G_L_in_u already defined above)
+
+    -- G(neg psi) ∈ deferralClosure
+    -- From F(psi) ∈ u ⊆ deferralClosure, we have F(psi) ∈ closureWithNeg
+    -- F(psi) = neg(G(neg psi)) = (G(neg psi)).imp bot
+    -- So G(neg psi) is a subformula of F(psi), hence in subformulaClosure
+    have h_F_in_dc := h_mcs.1.1 h_F_psi
+    have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi psi h_F_in_dc
+    have h_G_neg_sub : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.subformulaClosure phi := by
+      unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
+      simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+      rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+      · exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+      · unfold Formula.some_future Formula.neg at h_chi_neg_eq
+        have h_eq : chi = Formula.all_future (Formula.neg psi) := by cases h_chi_neg_eq; rfl
+        rw [h_eq] at h_chi_sub
+        exact h_chi_sub
+    have h_G_neg_dc : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.deferralClosure phi :=
+      Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+        (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+
+    -- G(¬psi) ∈ u via closure under derivation
+    have h_G_neg_psi : Formula.all_future (Formula.neg psi) ∈ u :=
+      drm_closed_under_derivation h_mcs (Context.map Formula.all_future L)
+        h_G_L_in_u d_G_neg h_G_neg_dc
+
+    -- Contradiction: F(psi) = ¬G(¬psi) ∈ u
+    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+    rw [h_F_eq] at h_F_psi
+    exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg psi)) h_G_neg_psi h_F_psi
 
 /--
 The augmented seed (old_seed ∪ boundary_resolution_set) is consistent.
