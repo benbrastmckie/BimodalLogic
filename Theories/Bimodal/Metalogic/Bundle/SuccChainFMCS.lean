@@ -1597,7 +1597,163 @@ theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Se
   --   then construct a derivation from u ∪ (L.erase ψ) to ⊥, contradicting u's consistency.
   --
   -- The remaining gap is the "cut-style" transformation from (L ⊢ ⊥) to (u-subset ⊢ ⊥).
-  sorry
+  --
+  -- Strategy: Strong induction on the number of elements in L that are NOT in u.
+  -- - If all elements of L are in u, then L ⊢ ⊥ contradicts u's consistency.
+  -- - If some element psi ∈ L is not in u, then psi ∈ BRS (since non-BRS ⊆ u).
+  --   By DRM maximality, psi.neg ∈ u.
+  --   Use deduction theorem: L' ⊢ psi.neg where L' = L with psi at front, then removed.
+  --   We construct a new list L'' that replaces psi with elements from u such that L'' ⊢ ⊥.
+  --
+  -- Key insight: Using the deduction theorem and modus ponens, we can "substitute"
+  -- BRS elements for derivations involving their negations from u.
+
+  -- Classify each element of L
+  -- Note: We use classical decidability for set membership
+  haveI : ∀ x, Decidable (x ∈ u) := fun x => Classical.propDecidable (x ∈ u)
+  let L_in_u := L.filter (fun x => x ∈ u)
+  let L_not_in_u := L.filter (fun x => x ∉ u)
+
+  -- Key lemma: elements not in u must be in BRS
+  have h_not_in_u_is_brs : ∀ psi ∈ L, psi ∉ u → psi ∈ boundary_resolution_set phi u := by
+    intro psi h_psi_in_L h_psi_not_in_u
+    have h_psi_in_seed := h_L psi h_psi_in_L
+    rw [mem_constrained_successor_seed_restricted_iff] at h_psi_in_seed
+    rcases h_psi_in_seed with h_gc | h_dd | h_block | h_brs
+    · -- g_content ⊆ u, contradiction
+      exact absurd (g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc) h_psi_not_in_u
+    · -- deferralDisjunctions ⊆ u, contradiction
+      exact absurd (deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd) h_psi_not_in_u
+    · -- p_step_blocking ⊆ u, contradiction
+      exact absurd (Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block) h_psi_not_in_u
+    · exact h_brs
+
+  -- Case analysis: is L_not_in_u empty?
+  by_cases h_all_in_u : ∀ psi ∈ L, psi ∈ u
+  · -- All elements of L are in u, direct contradiction
+    exact h_mcs.1.2 L h_all_in_u ⟨d⟩
+  · -- Some element is not in u
+    push_neg at h_all_in_u
+    obtain ⟨psi, h_psi_in_L, h_psi_not_in_u⟩ := h_all_in_u
+
+    -- psi ∈ BRS and psi ∉ u
+    have h_psi_brs := h_not_in_u_is_brs psi h_psi_in_L h_psi_not_in_u
+
+    -- From BRS membership, extract that psi ∈ subformulaClosure (needed for negation completeness)
+    -- psi ∈ BRS means F(psi) ∈ u ⊆ deferralClosure, so F(psi) ∈ closureWithNeg, so psi ∈ subformulaClosure
+    have h_F_psi_in_u : Formula.some_future psi ∈ u :=
+      (mem_boundary_resolution_set_iff phi u psi).mp h_psi_brs |>.1
+    have h_F_psi_dc : Formula.some_future psi ∈ Bimodal.Syntax.deferralClosure phi :=
+      h_mcs.1.1 h_F_psi_in_u
+    have h_F_psi_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi psi h_F_psi_dc
+    have h_psi_sub : psi ∈ Bimodal.Syntax.subformulaClosure phi :=
+      Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi psi h_F_psi_cwn
+
+    -- By DRM maximality, either psi ∈ u or psi.neg ∈ u
+    have h_neg_or_in_u := Bimodal.Metalogic.Core.deferral_restricted_mcs_negation_complete h_mcs psi h_psi_sub
+    rcases h_neg_or_in_u with h_in_u | h_neg_in_u
+    · exact absurd h_in_u h_psi_not_in_u
+    · -- psi.neg ∈ u
+      -- Now we use the key argument:
+      -- From L ⊢ ⊥ with psi ∈ L, use deduction theorem to get L' ⊢ psi.neg
+      -- where L' = L with psi removed.
+      --
+      -- But we have psi.neg ∈ u already!
+      -- The key insight: if we can show L' ⊆ u, then L' ⊢ psi.neg is derivable from u.
+      --
+      -- The recursive argument: L' has one fewer non-u element than L.
+      -- We apply the same argument to L' with a modified derivation.
+      --
+      -- However, this doesn't directly give us L' ⊢ ⊥.
+      -- We need a different approach.
+      --
+      -- Alternative: Use the fact that psi ∈ L and psi.neg ∈ u.
+      -- If we had psi.neg ∈ L, then L would contain a contradictory pair.
+      -- But psi.neg ∉ seed (by neg_not_in_seed_when_in_brs), so psi.neg ∉ L.
+      --
+      -- Key observation: The derivation L ⊢ ⊥ uses psi.
+      -- We can construct L'' = L_in_u ∪ {psi.neg} and show L'' ⊢ ⊥.
+      -- Since L'' ⊆ u, this contradicts u's consistency.
+      --
+      -- Construction:
+      -- 1. L ⊢ ⊥ (given)
+      -- 2. Use deduction theorem iteratively to eliminate non-u elements
+      -- 3. End up with L_in_u ⊢ f where f is some formula
+      -- 4. Use the fact that negations of non-u elements are in u
+      --
+      -- Actually, the simplest approach is:
+      -- L = L' ++ [psi] (reorder so psi is at the end, or use a permutation)
+      -- By deduction theorem: L' ⊢ psi → ⊥ = psi.neg
+      -- L' might still have non-u elements, so we recurse.
+      --
+      -- By strong induction on |L_not_in_u|:
+      -- - Base: |L_not_in_u| = 0 implies L ⊆ u, contradicts u's consistency
+      -- - Step: |L_not_in_u| = k+1, pick psi not in u
+      --   - L' = L.erase psi has |L'_not_in_u| = k
+      --   - By deduction theorem: L' ⊢ psi.neg
+      --   - psi.neg ∈ u and psi.neg ∈ deferralClosure
+      --   - If L' ⊆ u, then L' ⊢ psi.neg is consistent (no contradiction)
+      --   - Need L' ⊢ ⊥ to contradict u's consistency
+      --
+      -- The issue: deduction theorem gives L' ⊢ psi.neg, not L' ⊢ ⊥.
+      --
+      -- Alternative: L ∪ {psi.neg} ⊢ ⊥
+      -- Since psi ∈ L, we have L ∪ {psi.neg} ⊢ ⊥ via:
+      --   psi ∈ L, so L ⊢ psi
+      --   psi.neg ∈ L ∪ {psi.neg}, so L ∪ {psi.neg} ⊢ psi.neg
+      --   From psi and psi.neg: L ∪ {psi.neg} ⊢ ⊥
+      --
+      -- But L ∪ {psi.neg} is not necessarily ⊆ u (L has non-u elements).
+      --
+      -- Actually, the RIGHT approach is:
+      -- Consider L_in_u ∪ {psi.neg : psi ∈ L_not_in_u} ⊆ u
+      -- Show this set derives ⊥.
+      --
+      -- From L ⊢ ⊥, by iterated application of a lemma:
+      -- If L = L_in_u ∪ {psi_1, ..., psi_k} and each psi_i.neg ∈ u, then
+      -- L_in_u ∪ {psi_1.neg, ..., psi_k.neg} ⊢ ⊥
+      --
+      -- This is provable by induction on k using classical reasoning:
+      -- - Base k=0: L = L_in_u, done.
+      -- - Step: L = L' ∪ {psi_k} where L' = L_in_u ∪ {psi_1, ..., psi_{k-1}}
+      --   We have L = L' ∪ {psi_k} ⊢ ⊥
+      --   By deduction theorem: L' ⊢ psi_k → ⊥ = psi_k.neg
+      --   IH gives L_in_u ∪ {psi_1.neg, ..., psi_{k-1}.neg} ⊢ psi_k.neg
+      --   Adding psi_k.neg to the context doesn't help us get ⊥...
+      --
+      -- The fundamental issue: the deduction theorem gives us implications,
+      -- not ⊥. To get ⊥, we need a contradictory pair in the context.
+      --
+      -- Key insight (from classical logic):
+      -- If L ⊢ ⊥ and we can "trade" psi for psi.neg in a sound way,
+      -- we should be able to derive ⊥ from L_in_u ∪ {psi_i.neg}.
+      --
+      -- The way to do this uses modus tollens or proof by contradiction:
+      -- From L_in_u ∪ {psi} ⊢ ⊥ and psi.neg, we can derive:
+      -- L_in_u ∪ {psi.neg} ⊢ ⊥ if we use classical reasoning.
+      --
+      -- Specifically, in classical logic:
+      -- If Γ, A ⊢ ⊥ and Γ, ¬A ⊢ ⊥, then Γ ⊢ ⊥ (proof by cases on A ∨ ¬A).
+      -- But we don't have Γ, ¬A ⊢ ⊥ directly.
+      --
+      -- Alternative via double negation:
+      -- If Γ, A ⊢ ⊥, then Γ ⊢ ¬A (deduction theorem).
+      -- If ¬A ∈ Γ', then Γ' ⊢ ¬A.
+      -- We need Γ' ⊢ ⊥, which requires A ∈ Γ' too (for modus ponens with A → ⊥).
+      --
+      -- The resolution: we don't need L' ⊢ ⊥. We need the original L ⊢ ⊥ to
+      -- lead to a contradiction with u's consistency.
+      --
+      -- Final approach: Show that L cannot derive ⊥ without having a
+      -- contradictory pair. Since the seed has no contradictory pairs,
+      -- L cannot have one, hence L cannot derive ⊥.
+      --
+      -- But this requires proving "no contradictory pairs implies consistent",
+      -- which is non-trivial and might not be true in full generality
+      -- (L can derive ⊥ via complex reasoning without explicit pairs).
+      --
+      -- For now, we leave this as sorry to indicate the proof gap.
+      sorry
 
 /-!
 ## Phase 4: Restricted Constrained Successor Construction

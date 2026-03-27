@@ -111,7 +111,7 @@ theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : For
 
 ---
 
-### Phase 2: Prove Seed Consistency [PARTIAL]
+### Phase 2: Prove Seed Consistency [BLOCKED]
 
 **Goal**: Eliminate the root sorry `constrained_successor_seed_restricted_consistent` at line 1543
 
