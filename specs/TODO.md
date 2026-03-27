@@ -37,7 +37,7 @@ technical_debt:
 58 → 59 → 60
 ```
 
-1. **58** [RESEARCHED] — Wire completeness to FrameConditions (3 sorries) — Seed consistency first approach
+1. **58** [PLANNED] — Wire completeness to FrameConditions (3 sorries) — Fix A1 BRS mutual exclusion
 2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -170,9 +170,9 @@ technical_debt:
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**:
-  - [60_team-research.md](058_wire_completeness_to_frame_conditions/reports/60_team-research.md) — Wave 60: Comprehensive review after 60 waves
+  - [64_team-research.md](058_wire_completeness_to_frame_conditions/reports/64_team-research.md) — Team research: Fix A1 for BRS + Option B ruled out
   - [61_path-forward-analysis.md](058_wire_completeness_to_frame_conditions/reports/61_path-forward-analysis.md) — Path forward: real blocker is seed consistency sorry
-- **Plan**: [13_seed-consistency-first.md](058_wire_completeness_to_frame_conditions/plans/13_seed-consistency-first.md) — v13: Fix root sorry (seed consistency), build restricted TaskModel, wire completeness
+- **Plan**: [14_fix-a1-brs-mutual-exclusion.md](058_wire_completeness_to_frame_conditions/plans/14_fix-a1-brs-mutual-exclusion.md) — v14: Fix A1 (BRS mutual exclusion), 4 phases, 7 hours
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
 
