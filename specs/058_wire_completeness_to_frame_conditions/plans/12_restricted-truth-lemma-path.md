@@ -50,7 +50,15 @@ The core obstacle is a **coherence level mismatch**:
 
 ## Implementation Phases
 
-### Phase 1: Fix RestrictedTruthLemma.lean Sorries [NOT STARTED]
+### Phase 1: Fix RestrictedTruthLemma.lean Sorries [BLOCKED]
+
+**Implementation Note (2026-03-26)**: Analysis revealed that the 3 sorries (lines 106, 115, 135) are in UNUSED helper lemmas (`restricted_chain_G_propagates`, `restricted_chain_H_step`). The main `restricted_truth_lemma` theorem is already complete with no sorries. These helper lemmas were exploratory scaffolding that was never integrated.
+
+**Resolution**: The sorries in this file do not block completeness. Skip to Phase 2.
+
+**Original description below for reference:**
+
+### Phase 1: Fix RestrictedTruthLemma.lean Sorries [BLOCKED - See Note Above]
 
 **Goal**: Resolve the 3 G/H propagation sorries in RestrictedTruthLemma.lean
 
@@ -86,7 +94,23 @@ The sorries are at lines 106, 115, 135:
 
 ---
 
-### Phase 2: Build TaskModel from RestrictedTemporallyCoherentFamily [NOT STARTED]
+### Phase 2: Build TaskModel from RestrictedTemporallyCoherentFamily [PARTIAL]
+
+**Implementation Note (2026-03-26)**: Partial infrastructure added to `CanonicalConstruction.lean`:
+- New section `RestrictedCanonical` with documentation of the gap
+- Helper theorem `neg_in_mcs_implies_not_in_mcs`
+- Helper theorem `not_in_mcs_implies_not_true`
+- Attempted `restricted_tc_family_to_fmcs` with documented sorries for forward_G/backward_H
+
+**Blocker Identified**: The independent Lindenbaum extensions at each position don't preserve the Succ relation, so forward_G/backward_H can't be proven for the extended chain with arbitrary formulas. See Gap Analysis in CanonicalConstruction.lean.
+
+**Path Forward**: Either:
+1. Prove restricted completeness (bounded F/P-nesting formulas)
+2. Build specialized single-family BFMCS for specific formula evaluation
+
+**Original description below for reference:**
+
+### Phase 2: Build TaskModel from RestrictedTemporallyCoherentFamily [PARTIAL - See Note Above]
 
 **Goal**: Create TaskModel infrastructure for the restricted construction
 

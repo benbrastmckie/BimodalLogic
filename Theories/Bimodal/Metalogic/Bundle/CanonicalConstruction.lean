@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.TemporalCoherence
+import Bimodal.Metalogic.Bundle.SuccChainFMCS
+import Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
@@ -772,3 +774,182 @@ theorem shifted_truth_lemma (B : BFMCS Int)
       exact temporal_backward_H tcf t ψ h_all_mcs
 
 end Bimodal.Metalogic.Bundle.Canonical
+
+/-!
+# Restricted Canonical Construction for Completeness
+
+This section provides the infrastructure to build a TaskModel from a
+RestrictedTemporallyCoherentFamily, which is used for completeness proofs.
+
+## Key Insight (Task #58)
+
+The standard bundle construction (BFMCS_Bundle from UltrafilterChain) provides
+**bundle-level** temporal coherence: F/P witnesses can be in ANY family of the bundle.
+
+The shifted_truth_lemma requires **family-level** temporal coherence: F/P witnesses
+must be in the SAME family.
+
+RestrictedTemporallyCoherentFamily provides family-level coherence for formulas in
+the subformulaClosure. This is sufficient for completeness because we only need to
+evaluate the target formula phi and its subformulas.
+
+## Construction Overview
+
+1. Convert RestrictedTemporallyCoherentFamily to FMCS (using Lindenbaum extensions)
+2. Build single-family BFMCS with temporally_coherent property
+3. Use shifted_truth_lemma to connect MCS membership to truth_at
+4. Apply to valid_over for completeness
+
+## References
+
+- RestrictedTruthLemma.lean: restricted_truth_lemma
+- SuccChainFMCS.lean: RestrictedTemporallyCoherentFamily, build_restricted_tc_family
+-/
+
+namespace Bimodal.Metalogic.Bundle.RestrictedCanonical
+
+open Bimodal.Syntax
+open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Bundle
+open Bimodal.Metalogic.Bundle.Canonical
+open Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+open Bimodal.Semantics
+open Bimodal.ProofSystem
+
+/-!
+## Converting RestrictedTemporallyCoherentFamily to FMCS
+
+The Lindenbaum extension at each position gives us a full MCS.
+-/
+
+/--
+Convert a RestrictedTemporallyCoherentFamily to an FMCS using Lindenbaum extensions.
+
+At each time t, the MCS is the Lindenbaum extension of the restricted chain at t.
+This gives us full MCS (not just deferral-restricted) at each position.
+
+**Key Property**: For formulas in subformulaClosure(phi), membership in the MCS
+equals membership in the restricted chain (by restricted_truth_lemma).
+-/
+noncomputable def restricted_tc_family_to_fmcs (phi : Formula)
+    (rtcf : RestrictedTemporallyCoherentFamily phi) : FMCS Int where
+  mcs := fun t => restricted_chain_ext phi rtcf t
+  is_mcs := fun t => restricted_chain_ext_is_mcs phi rtcf t
+  forward_G := fun t t' ψ htt' h_G => by
+    -- G(ψ) ∈ extended MCS at t
+    -- Need: ψ ∈ extended MCS at t'
+    -- This requires showing G propagates through the chain
+    -- For formulas in deferralClosure, we can use the restricted chain properties
+    -- For arbitrary formulas, we need full MCS properties
+
+    -- Case 1: ψ ∈ deferralClosure(phi) - use restricted chain
+    -- Case 2: ψ ∉ deferralClosure(phi) - use MCS closure under derivation
+
+    have h_mcs_t := restricted_chain_ext_is_mcs phi rtcf t
+    have h_mcs_t' := restricted_chain_ext_is_mcs phi rtcf t'
+
+    -- In full MCS, G(ψ) ∈ M implies ψ ∈ M for t' ≥ t via the reflexive semantics
+    -- More specifically: G(ψ) → ψ by T-axiom (temp_t_future in reflexive semantics)
+    -- And G(ψ) → G(G(ψ)) by temp_4
+
+    -- For t' = t: use T-axiom (reflexivity)
+    -- For t' > t: use temp_4 to preserve G, then step through chain
+
+    -- The proof requires showing that the extended MCS satisfies forward_G
+    -- This is complex because extended MCS are independent Lindenbaum extensions
+
+    -- For now, we use a direct MCS argument:
+    -- G(ψ) in MCS at t, and MCS at t' are related by Succ chain
+    -- The Succ relation ensures g_content propagates
+
+    -- Actually, the independent Lindenbaum extensions don't preserve Succ relation!
+    -- This is the key gap identified in the research.
+
+    -- However, for subformulaClosure formulas, we can use restricted_truth_lemma
+    -- For other formulas, we need a different argument
+
+    -- For completeness, we only need this for subformulaClosure formulas
+    -- Let's mark this as sorry for now and document the gap
+    sorry
+  backward_H := fun t t' ψ htt' h_H => by
+    -- Symmetric argument to forward_G
+    sorry
+
+/-!
+## Alternative: Direct Completeness without Full FMCS
+
+For completeness, we don't actually need to build a full FMCS with forward_G/backward_H
+for arbitrary formulas. We only need to evaluate the target formula phi.
+
+The key observation: shifted_truth_lemma shows MCS membership ↔ truth_at for ANY formula.
+The temporal coherence requirements are used ONLY for the G/H cases.
+
+For a specific formula phi, we can:
+1. Build a model where phi is evaluated correctly
+2. Show that if phi ∉ MCS, then ¬truth_at ... phi
+
+This doesn't require full forward_G/backward_H for arbitrary formulas.
+-/
+
+/--
+For completeness: if neg(phi) is in an MCS M, then phi is not in M.
+
+This is immediate from MCS consistency.
+-/
+theorem neg_in_mcs_implies_not_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_neg : phi.neg ∈ M) : phi ∉ M :=
+  fun h_phi => set_consistent_not_both h_mcs.1 phi h_phi h_neg
+
+/--
+For completeness: if phi ∉ MCS M, and we can build a model where MCS membership
+equals truth_at at position 0, then phi is false at position 0.
+
+This is the contrapositive: ¬(phi ∈ M) and (phi ∈ M ↔ truth_at) implies ¬truth_at.
+-/
+theorem not_in_mcs_implies_not_true (M : Set Formula) (phi : Formula)
+    (h_not_in : phi ∉ M)
+    {F : TaskFrame Int} {model : TaskModel F} {Omega : Set (WorldHistory F)}
+    {tau : WorldHistory F}
+    (h_equiv : phi ∈ M ↔ truth_at model Omega tau 0 phi) :
+    ¬truth_at model Omega tau 0 phi :=
+  fun h_true => h_not_in (h_equiv.mpr h_true)
+
+/-!
+## Gap Analysis (Task #58)
+
+### What We Have
+
+1. **SuccChainFMCS**: Produces FMCS with forward_G/backward_H from SerialMCS
+2. **RestrictedTemporallyCoherentFamily**: Provides forward_F/backward_P for restricted chain
+3. **shifted_truth_lemma**: Connects MCS membership to truth_at, requires both
+
+### What's Missing
+
+The shifted_truth_lemma requires:
+- An FMCS with forward_G and backward_H
+- BFMCS.temporally_coherent (forward_F and backward_P)
+
+The gap: SuccChainFMCS provides forward_G/backward_H but NOT forward_F/backward_P.
+RestrictedTemporallyCoherentFamily provides forward_F/backward_P but over DRMs not full MCS.
+
+### Why This Is Hard
+
+F/P witness existence requires bounded F/P-nesting (which deferralClosure provides).
+But for the truth lemma, we need full MCS at each position (for MCS closure properties).
+The Lindenbaum extensions to get full MCS break the coherence because they're independent.
+
+### Path to Resolution
+
+Two possible approaches:
+
+1. **Restricted Completeness**: Prove completeness only for formulas where F/P-nesting
+   in the formula itself is bounded. This covers most practical cases.
+
+2. **Single-Family Construction**: For a specific formula phi, build a specialized
+   BFMCS where F/P coherence holds for subformulas of phi (which have bounded nesting).
+   This is what the plan suggests but requires careful construction.
+
+Either approach gives completeness for the formula being evaluated, which is sufficient.
+-/
+
+end Bimodal.Metalogic.Bundle.RestrictedCanonical

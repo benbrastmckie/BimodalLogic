@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,8 +54,8 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-26T23:12:26Z",
-      "session_id": "sess_1774566166_fb7902",
+      "last_updated": "2026-03-27T03:54:34Z",
+      "session_id": "sess_1774583649_35dca7",
       "researched": "2026-03-26T23:15:00Z",
       "planned": "2026-03-26T23:12:26Z",
       "artifacts": [
@@ -193,9 +193,14 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/plans/12_restricted-truth-lemma-path.md",
           "type": "plan",
           "summary": "v12: Restricted truth lemma path (supersedes omega-enumeration)"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/12_implementation-progress.md",
+          "type": "summary",
+          "summary": "Partial: RestrictedCanonical section added, gap analysis documented, target sorries remain"
         }
       ],
-      "started": "2026-03-26T20:51:11Z"
+      "started": "2026-03-27T03:54:34Z"
     },
     {
       "project_number": 57,
