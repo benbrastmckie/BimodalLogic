@@ -283,13 +283,20 @@ removes `chi ∈ u`. Consistency is proven differently: if F(chi) ∈ u then G(n
 -/
 def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
   {chi | Formula.some_future chi ∈ u ∧
-         Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula)}
+         Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
+         Formula.some_future chi.neg ∉ u}  -- Fix A1: mutual exclusion prevents chi and chi.neg in BRS
 
-/-- Membership in boundary_resolution_set. -/
+/-- Membership in boundary_resolution_set.
+
+Fix A1 (report 64): The mutual exclusion condition `F(chi.neg) ∉ u` ensures that
+chi and chi.neg cannot both be in BRS simultaneously. This enables the partition
+argument in `constrained_successor_seed_restricted_consistent`.
+-/
 lemma mem_boundary_resolution_set_iff (phi : Formula) (u : Set Formula) (chi : Formula) :
     chi ∈ boundary_resolution_set phi u ↔
     Formula.some_future chi ∈ u ∧
-    Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) := by
+    Formula.some_future (Formula.some_future chi) ∉ (deferralClosure phi : Set Formula) ∧
+    Formula.some_future chi.neg ∉ u := by
   rfl
 
 /--

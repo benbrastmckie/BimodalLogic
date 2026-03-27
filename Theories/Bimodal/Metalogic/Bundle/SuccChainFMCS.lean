@@ -1366,72 +1366,77 @@ theorem neg_not_in_p_step_blocking_restricted (phi : Formula) (u : Set Formula) 
   cases h_eq
 
 /--
-chi.neg is not in boundary_resolution_set when F(chi) ∈ u.
+With Fix A1: if chi ∈ BRS, then chi.neg ∉ BRS.
 
-**Proof (v3)**: With the corrected definition (no chi ∈ u condition), we prove:
-If chi.neg ∈ boundary_resolution_set, then F(chi.neg) ∈ u.
-F(chi.neg) = F(chi.imp bot) = neg(G(neg(chi.imp bot))) = neg(G(chi.neg.neg)) = neg(G(chi))
+Fix A1 adds the condition `F(chi.neg) ∉ u` to BRS membership. So if chi ∈ BRS, then:
+- `F(chi.neg) ∉ u` (by Fix A1 on chi)
+But for chi.neg to be in BRS, we need `F(chi.neg) ∈ u` (first BRS condition).
+These directly contradict.
 
-If F(chi) ∈ u, then neg(G(neg chi)) ∈ u (by definition of F).
-If F(chi.neg) ∈ u, then neg(G(chi)) ∈ u (by above).
+This is the core mutual exclusion lemma enabled by Fix A1.
+-/
+theorem brs_mutual_exclusion (phi : Formula) (u : Set Formula) (chi : Formula)
+    (h_chi_in_brs : chi ∈ boundary_resolution_set phi u) :
+    chi.neg ∉ boundary_resolution_set phi u := by
+  intro h_neg_in_brs
+  -- chi ∈ BRS gives us F(chi.neg) ∉ u (Fix A1 condition)
+  rw [mem_boundary_resolution_set_iff] at h_chi_in_brs
+  obtain ⟨_, _, h_F_neg_not_in⟩ := h_chi_in_brs
+  -- h_F_neg_not_in : F(chi.neg) ∉ u
 
-Actually these don't directly contradict. Let's use a structural argument:
-chi.neg.some_future = neg(all_future(neg(chi.neg))) = neg(all_future(neg(chi.imp bot)))
-                    = neg(all_future(chi))  (since neg(chi.imp bot) = neg(neg chi) or chi = ??? )
+  -- chi.neg ∈ BRS requires F(chi.neg) ∈ u (first BRS condition)
+  rw [mem_boundary_resolution_set_iff] at h_neg_in_brs
+  obtain ⟨h_F_neg_in, _, _⟩ := h_neg_in_brs
+  -- h_F_neg_in : F(chi.neg) ∈ u
 
-Actually, neg(chi.imp bot) is not directly chi. Let me use the syntactic structure.
+  -- Direct contradiction
+  exact h_F_neg_not_in h_F_neg_in
 
-The proof uses a syntactic argument: if chi.neg ∈ boundary_resolution_set, then
-F(chi.neg) ∈ u. We show this contradicts having F(chi) ∈ u by MCS consistency.
+/--
+chi.neg ∉ boundary_resolution_set when F(chi) ∈ u.
 
-F(chi) = neg(G(neg chi)) = neg(all_future(chi.neg))
-F(chi.neg) = neg(G(neg(chi.neg))) = neg(all_future(chi.neg.neg)) = neg(all_future chi) = neg(G(chi))
+**Proof Strategy with Fix A1**:
+Given h_F_in: F(chi) ∈ u, we want chi.neg ∉ BRS.
 
-If F(chi) ∈ u and F(chi.neg) ∈ u:
-- neg(G(neg chi)) ∈ u
-- neg(G(chi)) ∈ u
+If chi.neg ∈ BRS, then by Fix A1, F((chi.neg).neg) ∉ u, i.e., F(chi.neg.neg) ∉ u.
+But F(chi) ∈ u implies F(chi.neg.neg) ∈ u via the provable implication:
+  G(chi.neg.neg.neg) → G(chi.neg)  (by G_dne for chi.neg)
+  neg(G(chi.neg)) → neg(G(chi.neg.neg.neg))  (by contraposition)
+  F(chi) → F(chi.neg.neg)
 
-These don't directly contradict. However, we can use that if F(chi) ∈ u, then by the
-T-axiom-like property for temporal logic, we have specific constraints.
-
-Actually, the key insight: if F(chi.neg) ∈ u is equivalent to neg(G(chi)) ∈ u.
-Combined with F(chi) ∈ u (= neg(G(neg chi)) ∈ u), we need G(chi) and G(neg chi) analysis.
-
-Let me use a direct proof via MCS properties. If F(chi) ∈ u:
-- F(chi) = neg(G(neg chi))
-So G(neg chi) ∉ u (MCS consistency).
-This means neg(chi) ∉ g_content(u), which we already know.
-
-For boundary_resolution_set membership of chi.neg, we need F(chi.neg) ∈ u.
-This is neg(G(chi)) ∈ u, which is equivalent to G(chi) ∉ u (by MCS consistency).
-But this doesn't contradict anything we have.
-
-The lemma is not provable in general without additional constraints.
-We keep it with sorry but note it may need removal or a different approach.
+This requires showing F(chi.neg.neg) ∈ deferralClosure for drm_closed_under_derivation.
+From chi.neg ∈ BRS ⊆ deferralClosure, we can derive chi ∈ subformulaClosure,
+hence chi.neg.neg ∈ closureWithNeg ⊆ deferralClosure.
 -/
 theorem neg_not_in_boundary_resolution_set (phi : Formula) (u : Set Formula) (chi : Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
     (h_F_in : Formula.some_future chi ∈ u) :
     chi.neg ∉ boundary_resolution_set phi u := by
-  -- With the corrected definition: boundary_resolution_set requires F(chi.neg) ∈ u.
-  -- We show this contradicts F(chi) ∈ u via MCS consistency.
-  intro h_in
-  rw [mem_boundary_resolution_set_iff] at h_in
-  obtain ⟨h_F_neg_in_u, _⟩ := h_in
-  -- h_F_neg_in_u : F(chi.neg) ∈ u = neg(G(chi)) ∈ u
-  -- h_F_in : F(chi) ∈ u = neg(G(neg chi)) ∈ u
-  -- We need to derive a contradiction from both being in u.
-  -- F(chi.neg) = neg(G(neg(chi.neg))) = neg(G(neg(chi.imp bot)))
-  -- neg(chi.imp bot) = neg(neg chi or bot) = chi and neg bot = chi (since neg bot = true)
-  -- Actually: neg(chi.imp bot) = neg(neg chi or bot) using imp = neg or
-  -- chi.imp bot = chi.neg = neg chi, so neg(chi.neg) = neg(neg chi)
-  -- Hmm, this is getting confusing. Let me use the actual Formula definitions.
-  -- chi.neg = Formula.imp chi Formula.bot
-  -- neg(chi.neg) = (chi.neg).neg = Formula.imp (Formula.imp chi Formula.bot) Formula.bot
-  -- This is NOT equal to chi in general.
-  -- So F(chi.neg) = neg(G(neg(chi.neg))) = neg(G((chi.neg).neg))
-  -- This is not simply related to F(chi) or G(chi).
-  -- The lemma may not be provable. Use sorry for now.
+  intro h_chi_neg_in_brs
+  -- Save the BRS membership before destructuring
+  have h_brs_mem := h_chi_neg_in_brs
+  rw [mem_boundary_resolution_set_iff] at h_chi_neg_in_brs
+  obtain ⟨_, _, h_F_neg_neg_not_in⟩ := h_chi_neg_in_brs
+  -- h_F_neg_neg_not_in : F(chi.neg.neg) ∉ u (Fix A1 condition for chi.neg in BRS)
+
+  -- The proof requires showing F(chi) ∈ u implies F(chi.neg.neg) ∈ u.
+  -- This uses:
+  -- 1. G(chi.neg.neg.neg) → G(chi.neg) by G_dne_theorem
+  -- 2. Contraposition: F(chi) → F(chi.neg.neg)
+  -- 3. Closure under derivation in DRM
+
+  -- However, drm_closed_under_derivation requires the conclusion to be in deferralClosure.
+  -- For F(chi.neg.neg) to be in deferralClosure, we'd need chi.neg.neg in closureWithNeg,
+  -- which requires chi.neg in subformulaClosure. But chi.neg = chi.imp bot is not
+  -- guaranteed to be in subformulaClosure (only chi is, from the BRS membership structure).
+
+  -- This is a gap in the current infrastructure. The deferralClosure is finite and not
+  -- closed under arbitrary negation. A full proof would require either:
+  -- (A) Extending deferralClosure to include necessary double-negations, or
+  -- (B) Using a different proof strategy that doesn't require closure under derivation
+
+  -- For now, mark as sorry. The brs_mutual_exclusion lemma above handles the case where
+  -- chi is actually in BRS (not just F(chi) in u).
   sorry
 
 /--

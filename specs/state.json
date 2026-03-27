@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,8 +54,8 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T16:46:18Z",
-      "session_id": "sess_1774629615_b3617a",
+      "last_updated": "2026-03-27T17:24:42Z",
+      "session_id": "sess_1774632254_17a71e",
       "researched": "2026-03-27T16:38:33Z",
       "planned": "2026-03-27T16:46:18Z",
       "artifacts": [
@@ -213,6 +213,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/plans/14_fix-a1-brs-mutual-exclusion.md",
           "type": "plan",
           "summary": "v14: Fix A1 (BRS mutual exclusion) - 4 phases"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/13_fix-a1-partial.md",
+          "type": "summary",
+          "summary": "Fix A1 partial: Phase 1 complete, Phase 2 blocked on neg_not_in_boundary_resolution_set"
         }
       ],
       "started": "2026-03-27T03:54:34Z"

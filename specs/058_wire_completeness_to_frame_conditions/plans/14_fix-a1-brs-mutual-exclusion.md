@@ -1,7 +1,7 @@
 # Implementation Plan: Task #58 - Fix A1: BRS Mutual Exclusion (v14)
 
 - **Task**: 58 - wire_completeness_to_frame_conditions
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 6-8 hours
 - **Dependencies**: None (using existing infrastructure)
 - **Research Inputs**: reports/64_team-research.md
@@ -50,7 +50,7 @@ From report 64 (team research):
 
 ## Implementation Phases
 
-### Phase 1: Implement Fix A1 on boundary_resolution_set [NOT STARTED]
+### Phase 1: Implement Fix A1 on boundary_resolution_set [COMPLETED]
 
 **Goal**: Add mutual exclusion condition to BRS definition and update the membership lemma
 
@@ -80,7 +80,7 @@ def boundary_resolution_set (phi : Formula) (u : Set Formula) : Set Formula :=
 
 ---
 
-### Phase 2: Propagate Definition Change and Fix Dependent Lemmas [NOT STARTED]
+### Phase 2: Propagate Definition Change and Fix Dependent Lemmas [PARTIAL]
 
 **Goal**: Update all lemmas in SuccExistence.lean and SuccChainFMCS.lean that depend on BRS membership
 
