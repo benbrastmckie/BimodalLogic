@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,10 +54,10 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T22:50:24Z",
-      "session_id": "sess_1774651248_efe3ad",
+      "last_updated": "2026-03-27T22:57:46Z",
+      "session_id": "sess_1774652090_21cdaf",
       "researched": "2026-03-27T22:50:24Z",
-      "planned": "2026-03-27T20:43:13Z",
+      "planned": "2026-03-27T22:57:46Z",
       "artifacts": [
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md",
@@ -205,11 +205,6 @@
           "summary": "Team research: Multi-BRS consistency - Greedy Extension and Deferral Disjunction paths identified (4 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/plans/17_greedy-extension.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for wire_completeness_to_frame_conditions using greedy extension approach"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/summaries/18_greedy-extension-summary.md",
           "type": "summary",
           "summary": "Partial: Phase 1 BLOCKED - base case proven, multi-BRS case blocked by G-wrapping failure"
@@ -243,6 +238,11 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/82_team-research.md",
           "type": "research",
           "summary": "Team research: systematic review - deferral disjunction seeds and Z-chain as untested alternatives (4 teammates)"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/plans/18_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan integrating team research: wire 3 sorries to 1, audit Z-chain crossings, test deferral disjunction seeds"
         }
       ],
       "started": "2026-03-27T03:54:34Z",
