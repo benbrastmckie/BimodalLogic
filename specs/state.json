@@ -45,7 +45,7 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
@@ -54,8 +54,8 @@
         66
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T20:43:13Z",
-      "session_id": "sess_1774643927_24a7e6",
+      "last_updated": "2026-03-27T21:08:11Z",
+      "session_id": "sess_1774644593_57dd01",
       "researched": "2026-03-27T20:36:50Z",
       "planned": "2026-03-27T20:43:13Z",
       "artifacts": [
@@ -95,11 +95,6 @@
           "summary": "Phase 1 analysis: Strategy A blocked - pivot to restricted chain approach recommended"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/05_omega-enumeration-partial.md",
-          "type": "summary",
-          "summary": "Partial implementation: Phases 1-3 complete, Phases 4-5 have sorries (G-theory propagation gap)"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/11_team-research.md",
           "type": "research",
           "summary": "Team research: G-theory propagation gap analysis (3 teammates)"
@@ -113,11 +108,6 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/16_mathematical-strategy.md",
           "type": "research",
           "summary": "Bundle-level temporal coherence strategy for eliminating completeness sorries"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/06_bundle-coherence-summary.md",
-          "type": "summary",
-          "summary": "Bundle-level temporal coherence implementation - algebraic core is sorry-free, model-theoretic glue remains"
         },
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/17_team-research.md",
@@ -145,11 +135,6 @@
           "summary": "Team research wave 6: CanonicalTask 3-place approach - sub-case (b) corrected as vacuous (4 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/10_deferral-restricted-summary.md",
-          "type": "summary",
-          "summary": "Partial implementation: Phase 1 box-closure lemmas added; Phases 2-4 blocked on backward chain infrastructure"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/40_team-research.md",
           "type": "research",
           "summary": "Team research: model-theoretic glue analysis - all 4 teammates converge on bundle-level path (4 teammates)"
@@ -165,19 +150,9 @@
           "summary": "Team research: Options 1 & 3 deep analysis - restricted completeness recommended (4 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/11_restricted-completeness-summary.md",
-          "type": "summary",
-          "summary": "Partial implementation: Phase 2 framework created with 5 sorries in RestrictedTruthLemma.lean"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/49_team-research.md",
           "type": "research",
           "summary": "Team research: cross-chain witness propagation analysis - propagation-to-0 recommended (3 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/12_propagation-to-zero-summary.md",
-          "type": "summary",
-          "summary": "Phases 1-3 complete: cross-chain witness resolved, algebraic path sorry-free. Phase 4 partial: model-theoretic glue remains."
         },
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_teammate-a-findings.md",
@@ -188,11 +163,6 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_team-research.md",
           "type": "research",
           "summary": "Wave 60: Comprehensive review - omega-enumeration doesn't exist, fix RestrictedTruthLemma.lean instead"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/12_implementation-progress.md",
-          "type": "summary",
-          "summary": "Partial: RestrictedCanonical section added, gap analysis documented, target sorries remain"
         },
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/61_path-forward-analysis.md",
@@ -210,24 +180,9 @@
           "summary": "Team research: Fix A1 for BRS + Option B ruled out (2 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/13_fix-a1-partial.md",
-          "type": "summary",
-          "summary": "Fix A1 partial: Phase 1 complete, Phase 2 blocked on neg_not_in_boundary_resolution_set"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/65_team-research.md",
           "type": "research",
           "summary": "Team research: BRS blocker algebraic analysis - theorem is FALSE, bypass with neg_not_in_seed_when_in_brs (3 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/15_bypass-false-theorem-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary for plan v15 - Phase 1 complete, Phase 2 partial"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/16_phase2-blocker.md",
-          "type": "summary",
-          "summary": "Phase 2 blocker: seed consistency proof gap"
         },
         {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/63_teammate-d-findings.md",
@@ -245,11 +200,6 @@
           "summary": "Team research wave 63: seed consistency proof techniques (4 teammates)"
         },
         {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/17_g-wrapping-partial.md",
-          "type": "summary",
-          "summary": "Partial: Phase 1 complete (single-BRS G-wrapping proven), Phase 2+ blocked (multi-BRS G-wrapping exits deferralClosure)"
-        },
-        {
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/76_team-research.md",
           "type": "research",
           "summary": "Team research: Multi-BRS consistency - Greedy Extension and Deferral Disjunction paths identified (4 teammates)"
@@ -258,9 +208,15 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/plans/17_greedy-extension.md",
           "type": "plan",
           "summary": "4-phase implementation plan for wire_completeness_to_frame_conditions using greedy extension approach"
+        },
+        {
+          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/18_greedy-extension-summary.md",
+          "type": "summary",
+          "summary": "Partial: Phase 1 BLOCKED - base case proven, multi-BRS case blocked by G-wrapping failure"
         }
       ],
-      "started": "2026-03-27T03:54:34Z"
+      "started": "2026-03-27T03:54:34Z",
+      "resume_phase": 1
     },
     {
       "project_number": 57,

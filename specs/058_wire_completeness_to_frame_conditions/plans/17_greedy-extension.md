@@ -1,7 +1,7 @@
 # Implementation Plan: Task #58 - Greedy Extension Approach (v17)
 
 - **Task**: 58 - wire_completeness_to_frame_conditions
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 4-6 hours
 - **Dependencies**: Phase 1 from v16 (single_brs_element_with_g_content_consistent is PROVEN)
 - **Research Inputs**: reports/76_team-research.md (Greedy Extension + Deferral Disjunction approaches)
