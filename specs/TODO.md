@@ -1,5 +1,5 @@
 ---
-next_project_number: 67
+next_project_number: 69
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -34,12 +34,14 @@ technical_debt:
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-58 → 59 → 60
+67 → 68 → 58 → 59 → 60
 ```
 
-1. **58** [IMPLEMENTING] — Wire completeness to FrameConditions (3 sorries) — Fix A1 BRS mutual exclusion
-2. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
-3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **67** [RESEARCHED] — Prove bundle_validity_implies_provability (model-theoretic glue)
+2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #67)
+3. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #67, #68)
+4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
+5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. Code Cleanup (parallel to critical path)
 
@@ -72,6 +74,30 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 67. Prove bundle_validity_implies_provability via direct model construction
+- **Effort**: 4-8 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #58
+- **Research**: [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
+
+**Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.
+
+---
+
+### 68. Prove dense_completeness_fc via Rat canonical model
+- **Effort**: 6-10 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task #67
+- **Parent Task**: #58
+- **Research**: [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
+
+**Description**: Eliminate the sorry in dense_completeness_fc (FrameConditions/Completeness.lean line 121) by constructing a canonical model over Rat. Int cannot be used because Int is not densely ordered. Rat is countable, aligning with existing Lindenbaum/countable MCS machinery.
 
 ---
 

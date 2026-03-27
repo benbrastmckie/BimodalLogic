@@ -45,17 +45,17 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
       "dependencies": [
-        65,
-        66
+        67,
+        68
       ],
       "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T23:12:01Z",
-      "session_id": "sess_1774652451_46c4ab",
+      "last_updated": "2026-03-27T23:29:19Z",
+      "session_id": "sess_1774654141_b8e595",
       "researched": "2026-03-27T22:50:24Z",
       "planned": "2026-03-27T22:57:46Z",
       "artifacts": [
@@ -893,9 +893,49 @@
           "summary": "Spawn analysis from parent task 58"
         }
       ]
+    },
+    {
+      "project_number": 67,
+      "project_name": "prove_bundle_validity_implies_provability",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
+      "effort": "4-8 hours",
+      "parent_task": 58,
+      "dependencies": [],
+      "created": "2026-03-27T23:32:07Z",
+      "last_updated": "2026-03-27T23:32:07Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 58"
+        }
+      ]
+    },
+    {
+      "project_number": 68,
+      "project_name": "prove_dense_completeness_fc_via_rat",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Eliminate the sorry in dense_completeness_fc (FrameConditions/Completeness.lean line 121) by constructing a canonical model over Rat. This requires: (1) either parameterizing construct_bfmcs_bundle over the domain or creating construct_bfmcs_bundle_rat, (2) proving the corresponding truth lemma for the Rat construction, (3) wiring dense_completeness_fc through completeness_over_Rat. Int cannot be used because Int is not densely ordered. Rat is countable, aligning with existing Lindenbaum/countable MCS machinery.",
+      "effort": "6-10 hours",
+      "parent_task": 58,
+      "dependencies": [
+        67
+      ],
+      "created": "2026-03-27T23:32:07Z",
+      "last_updated": "2026-03-27T23:32:07Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 58"
+        }
+      ]
     }
   ],
-  "next_project_number": 67,
+  "next_project_number": 69,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
