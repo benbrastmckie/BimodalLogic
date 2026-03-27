@@ -1393,67 +1393,36 @@ theorem brs_mutual_exclusion (phi : Formula) (u : Set Formula) (chi : Formula)
   exact h_F_neg_not_in h_F_neg_in
 
 /--
-chi.neg ∉ boundary_resolution_set when F(chi) ∈ u.
+For any psi in BRS, psi.neg is NOT in the constrained successor seed.
 
-**Proof Strategy with Fix A1**:
-Given h_F_in: F(chi) ∈ u, we want chi.neg ∉ BRS.
+This is the correct formulation: the hypothesis is `psi ∈ BRS` (not `F(psi) ∈ u`).
+The false theorem `neg_not_in_boundary_resolution_set` attempted to prove the conclusion
+from `F(chi) ∈ u`, but that requires `chi = chi.neg.neg` syntactically, which is false in Lean.
 
-If chi.neg ∈ BRS, then by Fix A1, F((chi.neg).neg) ∉ u, i.e., F(chi.neg.neg) ∉ u.
-But F(chi) ∈ u implies F(chi.neg.neg) ∈ u via the provable implication:
-  G(chi.neg.neg.neg) → G(chi.neg)  (by G_dne for chi.neg)
-  neg(G(chi.neg)) → neg(G(chi.neg.neg.neg))  (by contraposition)
-  F(chi) → F(chi.neg.neg)
-
-This requires showing F(chi.neg.neg) ∈ deferralClosure for drm_closed_under_derivation.
-From chi.neg ∈ BRS ⊆ deferralClosure, we can derive chi ∈ subformulaClosure,
-hence chi.neg.neg ∈ closureWithNeg ⊆ deferralClosure.
+Provable using the four proven lemmas:
+1. neg_not_in_g_content_when_F_in (F(psi) ∈ u from BRS membership)
+2. neg_not_in_deferralDisjunctions (structural: OR vs IMP)
+3. neg_not_in_p_step_blocking_restricted (structural: all_past vs imp)
+4. brs_mutual_exclusion (Fix A1: if psi ∈ BRS then psi.neg ∉ BRS)
 -/
-theorem neg_not_in_boundary_resolution_set (phi : Formula) (u : Set Formula) (chi : Formula)
+theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
-    (h_F_in : Formula.some_future chi ∈ u) :
-    chi.neg ∉ boundary_resolution_set phi u := by
-  intro h_chi_neg_in_brs
-  -- Save the BRS membership before destructuring
-  have h_brs_mem := h_chi_neg_in_brs
-  rw [mem_boundary_resolution_set_iff] at h_chi_neg_in_brs
-  obtain ⟨_, _, h_F_neg_neg_not_in⟩ := h_chi_neg_in_brs
-  -- h_F_neg_neg_not_in : F(chi.neg.neg) ∉ u (Fix A1 condition for chi.neg in BRS)
-
-  -- The proof requires showing F(chi) ∈ u implies F(chi.neg.neg) ∈ u.
-  -- This uses:
-  -- 1. G(chi.neg.neg.neg) → G(chi.neg) by G_dne_theorem
-  -- 2. Contraposition: F(chi) → F(chi.neg.neg)
-  -- 3. Closure under derivation in DRM
-
-  -- However, drm_closed_under_derivation requires the conclusion to be in deferralClosure.
-  -- For F(chi.neg.neg) to be in deferralClosure, we'd need chi.neg.neg in closureWithNeg,
-  -- which requires chi.neg in subformulaClosure. But chi.neg = chi.imp bot is not
-  -- guaranteed to be in subformulaClosure (only chi is, from the BRS membership structure).
-
-  -- This is a gap in the current infrastructure. The deferralClosure is finite and not
-  -- closed under arbitrary negation. A full proof would require either:
-  -- (A) Extending deferralClosure to include necessary double-negations, or
-  -- (B) Using a different proof strategy that doesn't require closure under derivation
-
-  -- For now, mark as sorry. The brs_mutual_exclusion lemma above handles the case where
-  -- chi is actually in BRS (not just F(chi) in u).
-  sorry
-
-/--
-chi.neg is not in constrained_successor_seed_restricted when F(chi) ∈ u.
--/
-theorem neg_not_in_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula)
-    (chi : Formula)
-    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
-    (h_F_in : Formula.some_future chi ∈ u) :
-    chi.neg ∉ constrained_successor_seed_restricted phi u := by
+    (h_psi_brs : psi ∈ boundary_resolution_set phi u) :
+    psi.neg ∉ constrained_successor_seed_restricted phi u := by
   intro h_in
   rw [mem_constrained_successor_seed_restricted_iff] at h_in
   rcases h_in with h_g | h_dd | h_ps | h_brs
-  · exact neg_not_in_g_content_when_F_in phi u chi h_mcs h_F_in h_g
-  · exact neg_not_in_deferralDisjunctions phi u chi h_dd
-  · exact neg_not_in_p_step_blocking_restricted phi u chi h_ps
-  · exact neg_not_in_boundary_resolution_set phi u chi h_mcs h_F_in h_brs
+  · -- Case: psi.neg ∈ g_content(u)
+    -- From h_psi_brs, we have F(psi) ∈ u (first BRS condition)
+    have h_F_psi : Formula.some_future psi ∈ u :=
+      (mem_boundary_resolution_set_iff phi u psi).mp h_psi_brs |>.1
+    exact neg_not_in_g_content_when_F_in phi u psi h_mcs h_F_psi h_g
+  · -- Case: psi.neg ∈ deferralDisjunctions (structural impossibility)
+    exact neg_not_in_deferralDisjunctions phi u psi h_dd
+  · -- Case: psi.neg ∈ p_step_blocking_restricted (structural impossibility)
+    exact neg_not_in_p_step_blocking_restricted phi u psi h_ps
+  · -- Case: psi.neg ∈ BRS (contradicts brs_mutual_exclusion)
+    exact brs_mutual_exclusion phi u psi h_psi_brs h_brs
 
 /--
 The augmented seed (old_seed ∪ boundary_resolution_set) is consistent.
@@ -1540,11 +1509,94 @@ theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Se
   -- don't introduce inconsistencies. This is non-trivial and involves showing
   -- that no contradiction can arise from mixing boundary and non-boundary elements.
 
-  -- For Phase 1, we use sorry. The complete proof will use the fact that:
-  -- For any psi ∈ boundary_resolution_set, neg(psi) ∉ (non-boundary seed),
-  -- as proven by neg_not_in_g_content_when_F_in, neg_not_in_deferralDisjunctions,
-  -- and neg_not_in_p_step_blocking_restricted.
+  -- Strategy: Show L ⊢ bot leads to a contradiction with u's consistency.
+  --
+  -- Key insight: Use the deduction theorem to eliminate BRS elements one by one.
+  -- For each BRS element psi in L:
+  --   - If {L_rest, psi} ⊢ bot, then L_rest ⊢ psi.neg (deduction theorem)
+  --   - psi.neg ∈ deferralClosure (since psi ∈ BRS implies psi ∈ subformulaClosure)
+  --   - If L_rest ⊆ u, then by drm_closed_under_derivation, psi.neg ∈ u
+  --   - But psi ∈ BRS means psi.neg ∉ seed (by neg_not_in_seed_when_in_brs)
+  --     So psi.neg ∉ L_rest. And psi.neg ∈ u gives us something derivable from u.
+  --
+  -- After eliminating all BRS elements, we're left with a derivation from non-BRS elements,
+  -- which are all in u. This contradicts u's consistency.
+  --
+  -- Full proof by induction on the number of BRS elements in L:
 
+  intro ⟨d⟩
+
+  -- We'll prove by showing any derivation from L can be transformed to
+  -- a derivation from u, contradicting u's consistency.
+
+  -- Helper: classify each element of L as BRS or non-BRS
+  -- Non-BRS elements are all in u
+  -- BRS elements can be eliminated via deduction theorem
+
+  -- For simplicity, we use the fact that the seed ⊆ deferralClosure
+  -- and show consistency via the "no contradictory pairs" argument.
+
+  -- The key lemma: for any psi ∈ BRS, psi.neg ∉ seed
+  -- Combined with: non-BRS ⊆ u (which is consistent)
+  -- This means: if L ⊢ bot, we can derive a contradiction with u
+
+  -- Extract the BRS elements and non-BRS elements
+  -- We use a recursive argument based on the number of BRS elements
+
+  -- Prove by strengthening: show that for any list L from the seed,
+  -- if L ⊢ bot then there exists a list L' ⊆ u with L' ⊢ bot
+
+  -- Step 1: If L has no BRS elements, L ⊆ u, and we're done
+  -- Step 2: If L has a BRS element psi, we use deduction theorem
+
+  -- For now, we use a simpler argument:
+  -- Since all non-BRS elements are in u, and u is consistent,
+  -- any inconsistency must involve BRS elements.
+  -- But BRS elements and their negations can't both be in the seed.
+
+  -- The derivation d shows L ⊢ bot.
+  -- Transform this to a derivation from u by weakening and substitution.
+
+  -- Approach: Use the fact that L ⊆ seed and prove seed consistency
+  -- by showing any L ⊆ seed is consistent via transformation.
+
+  -- For each BRS element psi in L:
+  --   psi ∈ BRS means F(psi) ∈ u and (psi ∨ F(psi)) ∈ deferralDisjunctions ⊆ u
+  --   Using classical reasoning with the disjunction, we can derive:
+  --   If L_rest ⊢ psi.neg, then combined with (psi ∨ F(psi)),
+  --   we get L_rest ⊢ F(psi) by disjunctive syllogism.
+  --   But F(psi) ∈ u already, so this doesn't give us new information.
+  --
+  -- The actual proof needs to show that the seed is consistent because:
+  -- 1. Non-BRS ⊆ u is consistent
+  -- 2. BRS elements don't introduce new contradictions because
+  --    their negations aren't in the seed
+
+  -- Use the fact that if L contains both psi and psi.neg,
+  -- then L ⊢ bot trivially, but we need to show no such pair exists.
+
+  -- The complete proof uses a "no contradictory pairs" argument combined with
+  -- the deduction theorem. The key lemmas are:
+  --
+  -- 1. For any ψ ∈ BRS, ψ.neg ∉ seed (by neg_not_in_seed_when_in_brs)
+  -- 2. non-BRS ⊆ u, so no element χ ∈ non-BRS has χ.neg ∈ non-BRS (u is consistent)
+  -- 3. For χ ∈ non-BRS, χ.neg ∉ BRS (proven via semantic analysis: each case
+  --    g_content, deferralDisjunctions, p_step_blocking rules out χ.neg ∈ BRS)
+  --
+  -- These combine to show: the seed has no contradictory pair {χ, χ.neg}.
+  --
+  -- In propositional/modal logic, a finite set without contradictory pairs is consistent.
+  -- This metatheorem follows from compactness/satisfiability arguments but is non-trivial
+  -- to formalize in full generality for our Hilbert-style proof system.
+  --
+  -- The proof would proceed by strong induction on |L|:
+  -- - Base case: L = [] is trivially consistent
+  -- - Inductive case: If L ⊢ bot, extract a BRS element ψ ∈ L with ψ ∉ u
+  --   (or L ⊆ u, contradicting u's consistency). By negation completeness,
+  --   ψ.neg ∈ u but ψ.neg ∉ L. Use deduction theorem to get L.erase ψ ⊢ ψ.neg,
+  --   then construct a derivation from u ∪ (L.erase ψ) to ⊥, contradicting u's consistency.
+  --
+  -- The remaining gap is the "cut-style" transformation from (L ⊢ ⊥) to (u-subset ⊢ ⊥).
   sorry
 
 /-!

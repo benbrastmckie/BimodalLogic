@@ -57,7 +57,7 @@ This plan bypasses the false theorem entirely by using a reformulated lemma `neg
 
 ## Implementation Phases
 
-### Phase 1: Delete False Theorems and Create Replacement [NOT STARTED]
+### Phase 1: Delete False Theorems and Create Replacement [COMPLETED]
 
 **Goal**: Remove the false `neg_not_in_boundary_resolution_set` and create the correct `neg_not_in_seed_when_in_brs`
 
@@ -111,7 +111,7 @@ theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : For
 
 ---
 
-### Phase 2: Prove Seed Consistency [NOT STARTED]
+### Phase 2: Prove Seed Consistency [PARTIAL]
 
 **Goal**: Eliminate the root sorry `constrained_successor_seed_restricted_consistent` at line 1543
 
@@ -159,7 +159,7 @@ theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Se
 
 ---
 
-### Phase 3: Wire to Completeness.lean Sorries [NOT STARTED]
+### Phase 3: Wire to Completeness.lean Sorries [BLOCKED]
 
 **Goal**: Eliminate `dense_completeness_fc` (line 120) and complete `bundle_validity_implies_provability` (line 214)
 
