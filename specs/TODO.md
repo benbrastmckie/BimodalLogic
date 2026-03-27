@@ -166,13 +166,13 @@ technical_debt:
 
 ### 58. Wire completeness to FrameConditions
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 55
 - **Research**:
+  - [63_team-research.md](058_wire_completeness_to_frame_conditions/reports/63_team-research.md) — Team research: seed consistency proof techniques (4 teammates)
   - [65_team-research.md](058_wire_completeness_to_frame_conditions/reports/65_team-research.md) — Team research: BRS blocker analysis - theorem is FALSE, bypass recommended
-  - [64_team-research.md](058_wire_completeness_to_frame_conditions/reports/64_team-research.md) — Team research: Fix A1 for BRS + Option B ruled out
-- **Plan**: [15_bypass-false-theorem.md](058_wire_completeness_to_frame_conditions/plans/15_bypass-false-theorem.md) — v15: Bypass false theorem, 3 phases
+- **Plan**: [16_g-wrapping-approach.md](058_wire_completeness_to_frame_conditions/plans/16_g-wrapping-approach.md) — v16: 5-phase G-wrapping approach
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
 
