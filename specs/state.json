@@ -904,14 +904,21 @@
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-27T23:32:07Z",
+      "last_updated": "2026-03-27T23:38:26Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 58"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/reports/01_bundle-provability-research.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of truth lemma gap, evaluation of three approaches, recommended restricted completeness path"
         }
-      ]
+      ],
+      "session_id": "sess_1774654413_fd3188",
+      "researched": "2026-03-27T23:38:26Z"
     },
     {
       "project_number": 68,
