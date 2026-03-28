@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-27T23:57:15Z",
+      "last_updated": "2026-03-28T23:38:22Z",
       "artifacts": [
         {
           "type": "research",
@@ -925,10 +925,15 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "Detailed analysis of why the sorry cannot be eliminated with current architecture"
+        },
+        {
+          "type": "research",
+          "path": "specs/067_prove_bundle_validity_implies_provability/reports/07_team-research.md",
+          "summary": "Team research: task semantics perspective and algebraic completeness path via restricted coherence"
         }
       ],
-      "session_id": "sess_1774655172_0f6f43",
-      "researched": "2026-03-27T23:38:26Z",
+      "session_id": "sess_1774740765_719195",
+      "researched": "2026-03-28T23:38:22Z",
       "planned": "2026-03-27T23:44:58Z",
       "started": "2026-03-27T23:46:39Z",
       "blocker": "Independent Lindenbaum extensions don't preserve G/H propagation between positions"
