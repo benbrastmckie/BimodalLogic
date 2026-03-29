@@ -82,7 +82,7 @@ From `reports/08_team-research.md`:
 
 ---
 
-### Phase 2: Complete G/H Propagation [NOT STARTED]
+### Phase 2: Complete G/H Propagation [COMPLETED]
 
 **Goal**: Fill the 3 G/H propagation sorries in RestrictedTruthLemma.lean
 

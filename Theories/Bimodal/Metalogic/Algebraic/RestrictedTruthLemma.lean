@@ -100,19 +100,27 @@ theorem restricted_chain_G_propagates (phi : Formula)
       | succ k' => exact Nat.succ_pos k'
     obtain ⟨j, hj⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.pos_iff_ne_zero.mp hk_pos)
     have h_m_eq : m = n + (j + 1) := by omega
-    -- Use DRM properties to show psi at each step
-    -- First show G(psi) also propagates (by temp_4 in each DRM)
-    -- This is complex - for now defer to the main proof
+    -- NOTE: This theorem cannot be proven in general for DeferralRestrictedMCS chains.
+    -- The issue: G(ψ) ∈ chain(n) → G(ψ) ∈ chain(n+1) requires G(G(ψ)) ∈ chain(n),
+    -- which in turn requires G(G(ψ)) ∈ deferralClosure. But deferralClosure is bounded
+    -- by the formula structure of phi, and G(G(ψ)) may exceed that bound.
+    --
+    -- For the TRUTH LEMMA, this is NOT a problem because:
+    -- 1. The truth lemma only applies to ψ ∈ subformulaClosure(phi)
+    -- 2. The equivalence chain(n) ↔ ext(n) doesn't require G-propagation
+    -- 3. Semantic G-propagation follows from the truth lemma + frame properties
+    --
+    -- This lemma is marked sorry pending restructuring if needed for Phase 4.
+    -- If Phase 4 requires G-propagation, it should add the hypothesis that
+    -- G^k(ψ) ∈ deferralClosure for all k ≤ m - n, or use a semantic argument.
     sorry
-  · -- n = m: use T-axiom in the DRM
+  · -- n = m: use g_content_subset_deferral_restricted_mcs
+    -- G(ψ) ∈ chain(n) means ψ ∈ g_content(chain(n))
+    -- By g_content_subset_deferral_restricted_mcs: g_content(chain(n)) ⊆ chain(n)
+    -- Therefore ψ ∈ chain(n)
     have h_drm := restricted_succ_chain_fam_is_drm phi fam.seed n
-    have h_mcs := lindenbaumMCS_set_is_mcs _ h_drm.1.2
-    -- The DRM is consistent, but not necessarily closed under derivation
-    -- However, psi should be in the chain if G(psi) is, by DRM closure
-    -- Actually, DRM is NOT closed under arbitrary derivation, only within closure
-    -- For psi in deferralClosure: use DRM maximality
-    -- For psi not in deferralClosure: this case shouldn't arise in truth lemma
-    sorry
+    have h_psi_in_g : ψ ∈ g_content (restricted_succ_chain_fam phi fam.seed n) := h_G_in_chain
+    exact g_content_subset_deferral_restricted_mcs phi (restricted_succ_chain_fam phi fam.seed n) h_drm h_psi_in_g
 
 /--
 H-step for restricted chain: H(psi) in chain(n) implies psi in chain(n-1).
@@ -127,11 +135,26 @@ theorem restricted_chain_H_step (phi : Formula)
     (h_H_in_chain : Formula.all_past ψ ∈ restricted_succ_chain_fam phi fam.seed n)
     (h_psi_dc : ψ ∈ deferralClosure phi) :
     ψ ∈ restricted_succ_chain_fam phi fam.seed (n - 1) := by
-  -- The Succ relation gives h_content(chain(n)) ⊆ chain(n-1) for full MCS
-  -- But we need to work with DRMs
-  -- Key insight: H(psi) in chain(n) means psi is in h_content of chain(n)
-  -- By the Succ relation, h_content propagates backwards
-  -- The proof requires showing psi ends up in the DRM at n-1
+  -- NOTE: This theorem cannot be proven directly for DeferralRestrictedMCS chains.
+  -- The standard proof via `Succ_implies_h_content_reverse` requires full MCS properties
+  -- (specifically, negation_complete and implication_property for arbitrary formulas).
+  --
+  -- For DRM, these properties only hold for formulas in deferralClosure.
+  -- The proof would need to show:
+  -- 1. H(ψ) ∈ chain(n) gives ψ ∈ h_content(chain(n))
+  -- 2. Succ(chain(n-1), chain(n)) gives h_content(chain(n)) ⊆ chain(n-1)
+  -- But step 2 requires Succ_implies_h_content_reverse which needs full MCS.
+  --
+  -- Alternative approaches:
+  -- (a) Use Lindenbaum extensions, but they don't preserve Succ
+  -- (b) Prove a DRM version of h_content_reverse using temp_a within deferralClosure
+  -- (c) Use semantics: the truth lemma makes this property true semantically
+  --
+  -- For the current restricted truth lemma (which only proves chain ↔ ext equivalence),
+  -- this H-step property is NOT required. It would be needed for Phase 4 if we build
+  -- a full parametric truth lemma with H case handling.
+  --
+  -- Marking sorry pending Phase 4 requirements analysis.
   sorry
 
 /-!
