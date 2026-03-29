@@ -1,7 +1,7 @@
 # Implementation Plan: Task #67 (Plan v9)
 
 - **Task**: 67 - prove_bundle_validity_implies_provability
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 6 hours
 - **Dependencies**: Report 23 (team research on F-persistence blockers)
 - **Research Inputs**: specs/067_prove_bundle_validity_implies_provability/reports/23_team-research.md
@@ -48,7 +48,7 @@ Key findings from Report 23:
 
 ## Implementation Phases
 
-### Phase 1: Prove g_persistence_reverse (line 3944) [NOT STARTED]
+### Phase 1: Prove g_persistence_reverse (line 3944) [PARTIAL]
 
 **Goal**: Prove that `G(chi) in predecessor implies chi in u` for the restricted constrained predecessor.
 

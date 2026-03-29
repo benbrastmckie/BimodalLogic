@@ -3363,18 +3363,76 @@ theorem f_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
     exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
 
 /--
-The restricted predecessor deferral seed: h_content, pastDeferralDisjunctions, and
-f_step_blocking_formulas_restricted.
+G-step blocking formulas for restricted predecessor construction.
+
+Symmetric to `p_step_blocking_formulas_restricted`: blocks G-formulas that would
+violate g_content(predecessor) ⊆ u. If G(chi) ∈ closureWithNeg (NOT G_neg_neg_bot)
+and chi ∉ u, add neg(G(chi)) to block G(chi) from appearing.
+
+**Note**: We use neg(all_future chi) directly, NOT some_future(neg chi), because
+these are syntactically different formulas. We exclude G_neg_neg_bot because
+its negation is not in deferralClosure (design limitation).
+
+**Known Issue**: G_neg_neg_bot case remains blocked - deferralClosure needs to be
+extended to include neg(G_neg_neg_bot) for the full proof.
+-/
+def g_step_blocking_formulas_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
+  { ψ | ∃ chi : Formula,
+    Formula.all_future chi ∈ (Bimodal.Syntax.closureWithNeg phi : Finset Formula) ∧
+    chi ∉ u ∧
+    ψ = Formula.neg (Formula.all_future chi) }
+
+/--
+Membership in g_step_blocking_formulas_restricted.
+-/
+lemma mem_g_step_blocking_formulas_restricted_iff (phi : Formula) (u : Set Formula) (ψ : Formula) :
+    ψ ∈ g_step_blocking_formulas_restricted phi u ↔
+    ∃ chi : Formula, Formula.all_future chi ∈ (Bimodal.Syntax.closureWithNeg phi : Finset Formula) ∧
+                     chi ∉ u ∧
+                     ψ = Formula.neg (Formula.all_future chi) := by
+  simp only [g_step_blocking_formulas_restricted, Set.mem_setOf_eq]
+
+/--
+g_step_blocking_formulas_restricted stays within deferralClosure.
+
+**Proof**: For neg(G(chi)) to be in the set, we need G(chi) ∈ closureWithNeg.
+closureWithNeg = subformulaClosure ∪ { g.neg | g ∈ subformulaClosure }.
+If G(chi) ∈ subformulaClosure, then neg(G(chi)) ∈ closureWithNeg by neg_mem_closureWithNeg.
+-/
+theorem g_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    {ψ : Formula} (h_block : ψ ∈ g_step_blocking_formulas_restricted phi u) :
+    ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  obtain ⟨chi, h_G_in_cwn, _, rfl⟩ := h_block
+  -- neg(G(chi)), and G(chi) ∈ closureWithNeg
+  -- closureWithNeg = subformulaClosure ∪ { g.neg | g ∈ subformulaClosure }
+  unfold closureWithNeg at h_G_in_cwn
+  simp only [Finset.mem_union, Finset.mem_image] at h_G_in_cwn
+  rcases h_G_in_cwn with h_sub | ⟨g, h_g_sub, h_g_eq⟩
+  · -- G(chi) ∈ subformulaClosure, so neg(G(chi)) ∈ closureWithNeg
+    apply Bimodal.Syntax.closureWithNeg_subset_deferralClosure
+    exact Bimodal.Syntax.neg_mem_closureWithNeg phi (Formula.all_future chi) h_sub
+  · -- G(chi) = g.neg for some g ∈ subformulaClosure
+    -- g.neg = G(chi) means g.imp bot = all_future chi.
+    -- This is impossible since Formula.imp and Formula.all_future are different constructors.
+    simp only [Formula.neg] at h_g_eq
+    -- cases discharges the impossible equality
+    cases h_g_eq
+
+/--
+The restricted predecessor deferral seed: h_content, pastDeferralDisjunctions,
+f_step_blocking_formulas_restricted, and g_step_blocking_formulas_restricted.
 -/
 def constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
-  h_content u ∪ pastDeferralDisjunctions u ∪ f_step_blocking_formulas_restricted phi u
+  h_content u ∪ pastDeferralDisjunctions u ∪ f_step_blocking_formulas_restricted phi u ∪
+  g_step_blocking_formulas_restricted phi u
 
 /--
 Membership in constrained_predecessor_seed_restricted.
 -/
 lemma mem_constrained_predecessor_seed_restricted_iff (phi : Formula) (u : Set Formula) (ψ : Formula) :
     ψ ∈ constrained_predecessor_seed_restricted phi u ↔
-    ψ ∈ h_content u ∨ ψ ∈ pastDeferralDisjunctions u ∨ ψ ∈ f_step_blocking_formulas_restricted phi u := by
+    ψ ∈ h_content u ∨ ψ ∈ pastDeferralDisjunctions u ∨
+    ψ ∈ f_step_blocking_formulas_restricted phi u ∨ ψ ∈ g_step_blocking_formulas_restricted phi u := by
   simp only [constrained_predecessor_seed_restricted, Set.mem_union, or_assoc]
 
 /--
@@ -3382,20 +3440,27 @@ h_content subset of constrained_predecessor_seed_restricted.
 -/
 lemma h_content_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
     h_content u ⊆ constrained_predecessor_seed_restricted phi u :=
-  Set.subset_union_left.trans Set.subset_union_left
+  Set.subset_union_left.trans (Set.subset_union_left.trans Set.subset_union_left)
 
 /--
 pastDeferralDisjunctions subset of constrained_predecessor_seed_restricted.
 -/
 lemma pastDeferralDisjunctions_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
     pastDeferralDisjunctions u ⊆ constrained_predecessor_seed_restricted phi u :=
-  Set.subset_union_right.trans Set.subset_union_left
+  Set.subset_union_right.trans (Set.subset_union_left.trans Set.subset_union_left)
 
 /--
 f_step_blocking_formulas_restricted subset of constrained_predecessor_seed_restricted.
 -/
 lemma f_step_blocking_restricted_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
     f_step_blocking_formulas_restricted phi u ⊆ constrained_predecessor_seed_restricted phi u :=
+  Set.subset_union_right.trans Set.subset_union_left
+
+/--
+g_step_blocking_formulas_restricted subset of constrained_predecessor_seed_restricted.
+-/
+lemma g_step_blocking_restricted_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
+    g_step_blocking_formulas_restricted phi u ⊆ constrained_predecessor_seed_restricted phi u :=
   Set.subset_union_right
 
 /--
@@ -3406,13 +3471,15 @@ theorem constrained_predecessor_seed_restricted_subset_deferralClosure (phi : Fo
     constrained_predecessor_seed_restricted phi u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
   intro psi h_seed
   rw [mem_constrained_predecessor_seed_restricted_iff] at h_seed
-  rcases h_seed with h_hc | h_pd | h_block
+  rcases h_seed with h_hc | h_pd | h_f_block | h_g_block
   · -- h_content case
     exact h_content_subset_deferralClosure phi u h_u h_hc
   · -- pastDeferralDisjunctions case
     exact pastDeferralDisjunctions_subset_deferralClosure phi u h_u h_pd
   · -- f_step_blocking_formulas_restricted case
-    exact f_step_blocking_restricted_subset_deferralClosure phi u h_block
+    exact f_step_blocking_restricted_subset_deferralClosure phi u h_f_block
+  · -- g_step_blocking_formulas_restricted case
+    exact g_step_blocking_restricted_subset_deferralClosure phi u h_g_block
 
 /--
 h_content(u) ⊆ u when u is a DeferralRestrictedMCS.
@@ -3560,10 +3627,11 @@ theorem constrained_predecessor_seed_restricted_consistent (phi : Formula) (u : 
   have h_seed_subset_u : constrained_predecessor_seed_restricted phi u ⊆ u := by
     intro psi h_seed
     rw [mem_constrained_predecessor_seed_restricted_iff] at h_seed
-    rcases h_seed with h_hc | h_pd | h_block
+    rcases h_seed with h_hc | h_pd | h_f_block | h_g_block
     · exact h_content_subset_deferral_restricted_mcs phi u h_mcs h_hc
     · exact pastDeferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_pd
     · -- f_step_blocking_formulas_restricted case
+      have h_block := h_f_block
       -- First get G(neg chi) ∈ deferralClosure before destructuring h_block
       have h_G_neg_in_dc := f_step_blocking_restricted_subset_deferralClosure phi u h_block
       obtain ⟨chi, h_F_not, h_F_in_dc, h_chi_in_u, rfl⟩ := h_block
@@ -3671,6 +3739,147 @@ theorem constrained_predecessor_seed_restricted_consistent (phi : Formula) (u : 
       rw [h_F_eq] at d_F_combined
       have d_bot_final := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_G_combined d_F_combined
       exact h_mcs.1.2 L_combined h_combined_in_u ⟨d_bot_final⟩
+    · -- g_step_blocking_formulas_restricted case
+      -- psi = neg(G(chi)) where G(chi) ∈ closureWithNeg and chi ∉ u
+      have h_neg_G_in_dc := g_step_blocking_restricted_subset_deferralClosure phi u h_g_block
+      obtain ⟨chi, h_G_in_cwn, h_chi_not_in, rfl⟩ := h_g_block
+      -- G(chi) ∈ closureWithNeg ⊆ deferralClosure
+      have h_G_in_dc : Formula.all_future chi ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+        Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi h_G_in_cwn
+      -- neg(G(chi)), we need to show neg(G(chi)) ∈ u
+      -- By maximality: either neg(G(chi)) ∈ u or inserting it is inconsistent
+      by_contra h_neg_G_not_in
+      have h_insert_incons := h_mcs.2 (Formula.neg (Formula.all_future chi)) h_neg_G_in_dc h_neg_G_not_in
+      -- Inserting neg(G(chi)) is inconsistent means u ⊢ neg(neg(G(chi)))
+      unfold SetConsistent at h_insert_incons
+      push_neg at h_insert_incons
+      obtain ⟨L, h_L_sub, h_L_incons⟩ := h_insert_incons
+      obtain ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L_incons
+      -- Filter L to get L' = L \ {neg(G(chi))}
+      let neg_G := Formula.neg (Formula.all_future chi)
+      let L' := L.filter (· ≠ neg_G)
+      have h_L'_in_u : ∀ ψ ∈ L', ψ ∈ u := by
+        intro ψ hψ
+        have hψ' := List.mem_filter.mp hψ
+        have hψne : ψ ≠ neg_G := by simpa using hψ'.2
+        specialize h_L_sub ψ hψ'.1
+        simp [Set.mem_insert_iff] at h_L_sub
+        rcases h_L_sub with rfl | h_in
+        · exact absurd rfl hψne
+        · exact h_in
+      have h_L_sub' : L ⊆ neg_G :: L' := by
+        intro ψ hψ
+        by_cases hψG : ψ = neg_G
+        · simp [hψG]
+        · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by simpa using hψG⟩)
+      have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+      -- By deduction: L' ⊢ neg(G(chi)) → ⊥ = neg(neg(G(chi)))
+      have d_neg_neg_G : L' ⊢ Formula.neg neg_G :=
+        Bimodal.Metalogic.Core.deduction_theorem L' neg_G Formula.bot d_bot'
+      -- By double negation elimination: neg(neg(G(chi))) → G(chi)
+      have h_dne : [] ⊢ (Formula.neg neg_G).imp (Formula.all_future chi) :=
+        Bimodal.Theorems.Propositional.double_negation (Formula.all_future chi)
+      have d_dne' : L' ⊢ (Formula.neg neg_G).imp (Formula.all_future chi) :=
+        DerivationTree.weakening [] L' _ h_dne (List.nil_subset L')
+      have d_G_chi : L' ⊢ Formula.all_future chi :=
+        DerivationTree.modus_ponens L' _ _ d_dne' d_neg_neg_G
+      -- L' ⊆ u derives G(chi), and G(chi) ∈ deferralClosure
+      -- chi ∈ deferralClosure (from G(chi) ∈ deferralClosure)
+      have h_chi_in_dc := Bimodal.Syntax.deferralClosure_all_future phi chi h_G_in_dc
+      by_cases h_G_in_u : Formula.all_future chi ∈ u
+      · -- G(chi) ∈ u, so by T-axiom, chi ∈ u, contradicting h_chi_not_in
+        -- Use the T-axiom: G(chi) → chi
+        have h_T : [] ⊢ (Formula.all_future chi).imp chi :=
+          DerivationTree.axiom [] _ (Axiom.temp_t_future chi)
+        -- By maximality: if chi ∉ u and chi ∈ deferralClosure, insert chi u is inconsistent
+        have h_insert_chi_incons := h_mcs.2 chi h_chi_in_dc h_chi_not_in
+        unfold SetConsistent at h_insert_chi_incons
+        push_neg at h_insert_chi_incons
+        obtain ⟨L'', h_L''_sub, h_L''_incons⟩ := h_insert_chi_incons
+        obtain ⟨d_bot''⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L''_incons
+        -- Filter L'' to get L''' = L'' \ {chi}
+        let L''' := L''.filter (· ≠ chi)
+        have h_L'''_in_u : ∀ ψ ∈ L''', ψ ∈ u := by
+          intro ψ hψ
+          have hψ' := List.mem_filter.mp hψ
+          have hψne : ψ ≠ chi := by simpa using hψ'.2
+          specialize h_L''_sub ψ hψ'.1
+          simp [Set.mem_insert_iff] at h_L''_sub
+          rcases h_L''_sub with rfl | h_in
+          · exact absurd rfl hψne
+          · exact h_in
+        have h_L''_sub' : L'' ⊆ chi :: L''' := by
+          intro ψ hψ
+          by_cases hψchi : ψ = chi
+          · simp [hψchi]
+          · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by simpa using hψchi⟩)
+        have d_bot''' := DerivationTree.weakening L'' _ Formula.bot d_bot'' h_L''_sub'
+        -- By deduction: L''' ⊢ chi → ⊥ = neg(chi)
+        have d_neg_chi : L''' ⊢ Formula.neg chi :=
+          Bimodal.Metalogic.Core.deduction_theorem L''' chi Formula.bot d_bot'''
+        -- Now we have G(chi) ∈ u and G(chi) → chi. So u derives chi.
+        -- But L''' ⊢ neg(chi) and L''' ⊆ u. So u derives both chi and neg(chi), contradiction.
+        let L_final := Formula.all_future chi :: L'''
+        have h_L_final_in_u : ∀ ψ ∈ L_final, ψ ∈ u := by
+          intro ψ hψ
+          simp only [L_final, List.mem_cons] at hψ
+          rcases hψ with rfl | h_L'''
+          · exact h_G_in_u
+          · exact h_L'''_in_u ψ h_L'''
+        have d_T' : L_final ⊢ (Formula.all_future chi).imp chi :=
+          DerivationTree.weakening [] L_final _ h_T (List.nil_subset L_final)
+        have d_G_chi_L_final : L_final ⊢ Formula.all_future chi :=
+          DerivationTree.assumption L_final _ List.mem_cons_self
+        have d_chi : L_final ⊢ chi := DerivationTree.modus_ponens L_final _ _ d_T' d_G_chi_L_final
+        have d_neg_chi' : L_final ⊢ Formula.neg chi :=
+          DerivationTree.weakening L''' L_final _ d_neg_chi (List.subset_cons_of_subset _ (List.Subset.refl L'''))
+        have d_bot_final := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_chi d_neg_chi'
+        exact h_mcs.1.2 L_final h_L_final_in_u ⟨d_bot_final⟩
+      · -- G(chi) ∉ u, but L' ⊆ u derives G(chi) - contradiction with maximality
+        -- Since L' ⊢ G(chi) and L' ⊆ u, the set u derives G(chi)
+        -- For maximality contradiction, if inserting G(chi) is inconsistent,
+        -- then there exists M ⊆ insert G(chi) u with M ⊢ ⊥
+        -- Combined with L' ⊢ G(chi), we get M' ⊆ u with M' ⊢ ⊥
+        have h_insert_G_incons := h_mcs.2 (Formula.all_future chi) h_G_in_dc h_G_in_u
+        unfold SetConsistent at h_insert_G_incons
+        push_neg at h_insert_G_incons
+        obtain ⟨M, h_M_sub, h_M_incons⟩ := h_insert_G_incons
+        obtain ⟨d_bot_M⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_M_incons
+        -- Filter M to get M' = M \ {G(chi)}
+        let M' := M.filter (· ≠ Formula.all_future chi)
+        have h_M'_in_u : ∀ ψ ∈ M', ψ ∈ u := by
+          intro ψ hψ
+          have hψ' := List.mem_filter.mp hψ
+          have hψne : ψ ≠ Formula.all_future chi := by simpa using hψ'.2
+          specialize h_M_sub ψ hψ'.1
+          simp [Set.mem_insert_iff] at h_M_sub
+          rcases h_M_sub with rfl | h_in
+          · exact absurd rfl hψne
+          · exact h_in
+        have h_M_sub' : M ⊆ Formula.all_future chi :: M' := by
+          intro ψ hψ
+          by_cases hψG : ψ = Formula.all_future chi
+          · simp [hψG]
+          · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by simpa using hψG⟩)
+        have d_bot_M' := DerivationTree.weakening M _ Formula.bot d_bot_M h_M_sub'
+        -- By deduction: M' ⊢ G(chi) → ⊥
+        have d_neg_G : M' ⊢ Formula.neg (Formula.all_future chi) :=
+          Bimodal.Metalogic.Core.deduction_theorem M' (Formula.all_future chi) Formula.bot d_bot_M'
+        -- Now we have: L' ⊢ G(chi) and M' ⊢ neg(G(chi))
+        -- Combined: L' ++ M' ⊢ ⊥
+        let L_M := L' ++ M'
+        have h_L_M_in_u : ∀ ψ ∈ L_M, ψ ∈ u := by
+          intro ψ hψ
+          simp only [L_M, List.mem_append] at hψ
+          rcases hψ with h_L' | h_M'
+          · exact h_L'_in_u ψ h_L'
+          · exact h_M'_in_u ψ h_M'
+        have d_G_L_M : L_M ⊢ Formula.all_future chi :=
+          DerivationTree.weakening L' L_M _ d_G_chi (List.subset_append_left L' M')
+        have d_neg_G_L_M : L_M ⊢ Formula.neg (Formula.all_future chi) :=
+          DerivationTree.weakening M' L_M _ d_neg_G (List.subset_append_right L' M')
+        have d_bot_final := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_G_L_M d_neg_G_L_M
+        exact h_mcs.1.2 L_M h_L_M_in_u ⟨d_bot_final⟩
   -- Subset of consistent set is consistent
   intro L h_L_in_seed
   apply h_mcs.1.2 L
@@ -3940,8 +4149,259 @@ theorem constrained_predecessor_restricted_g_persistence_reverse (phi : Formula)
   -- - If chi ∈ u, we want to show G(chi) could be in v (but we need the reverse)
   -- - If chi ∉ u, then by maximality of u, insert chi u is inconsistent.
   --   So neg chi is "derivable" from u. Then G(neg chi) or related blocking...
-  -- This is getting complicated. Let me use sorry for now and come back to this.
-  sorry
+  -- Use g_step_blocking_formulas_restricted: if chi ∉ u and G(chi) ∈ closureWithNeg,
+  -- then neg(G(chi)) ∈ seed ⊆ v, contradicting G(chi) ∈ v.
+  by_cases h_chi_in_u : chi ∈ u
+  · exact h_chi_in_u
+  · -- chi ∉ u, need to derive contradiction from G(chi) ∈ v
+    -- Case split on whether G(chi) is in closureWithNeg or is G_neg_neg_bot
+    rcases Bimodal.Syntax.all_future_in_deferralClosure_cases phi chi h_G_in_dc with h_cwn | h_G_eq
+    · -- G(chi) ∈ closureWithNeg
+      -- By g_step_blocking, neg(G(chi)) ∈ seed ⊆ v
+      have h_neg_G_in_blocking : Formula.neg (Formula.all_future chi) ∈
+          g_step_blocking_formulas_restricted phi u :=
+        ⟨chi, h_cwn, h_chi_in_u, rfl⟩
+      have h_neg_G_in_seed : Formula.neg (Formula.all_future chi) ∈
+          constrained_predecessor_seed_restricted phi u :=
+        g_step_blocking_restricted_subset_constrained_predecessor_seed_restricted phi u h_neg_G_in_blocking
+      have h_neg_G_in_v : Formula.neg (Formula.all_future chi) ∈ v :=
+        constrained_predecessor_restricted_extends phi u h_mcs h_P_top h_neg_G_in_seed
+      -- But G(chi) ∈ v and neg(G(chi)) ∈ v contradicts consistency
+      exact False.elim (Bimodal.Metalogic.Core.set_consistent_not_both h_v_mcs.1.2
+        (Formula.all_future chi) h_G_chi h_neg_G_in_v)
+    · -- G(chi) = G_neg_neg_bot, so chi = neg_neg_bot
+      -- neg_neg_bot is not in any consistent set (it derives ⊥ with neg bot)
+      have h_chi_eq : chi = Bimodal.Syntax.neg_neg_bot := by
+        simp only [Bimodal.Syntax.G_neg_neg_bot, Formula.all_future] at h_G_eq
+        injection h_G_eq
+      -- Substitute chi = neg_neg_bot in h_G_chi
+      subst h_chi_eq
+      -- Now h_G_chi : G(neg_neg_bot) ∈ v
+      -- By T-axiom and maximality, neg_neg_bot ∈ v
+      have h_neg_neg_bot_in_v : Bimodal.Syntax.neg_neg_bot ∈ v := by
+        -- G(neg_neg_bot) ∈ v and T-axiom gives neg_neg_bot ∈ v
+        have h_T : [] ⊢ (Formula.all_future Bimodal.Syntax.neg_neg_bot).imp Bimodal.Syntax.neg_neg_bot :=
+          DerivationTree.axiom [] _ (Axiom.temp_t_future Bimodal.Syntax.neg_neg_bot)
+        -- Using maximality within deferralClosure
+        by_contra h_nnb_not_in_v
+        have h_insert_incons := h_v_mcs.2 Bimodal.Syntax.neg_neg_bot h_chi_in_dc h_nnb_not_in_v
+        unfold SetConsistent at h_insert_incons
+        push_neg at h_insert_incons
+        obtain ⟨L, h_L_sub, h_L_incons⟩ := h_insert_incons
+        obtain ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L_incons
+        -- Filter L to get L' = L \ {neg_neg_bot}
+        let L' := L.filter (· ≠ Bimodal.Syntax.neg_neg_bot)
+        have h_L'_in_v : ∀ ψ ∈ L', ψ ∈ v := by
+          intro ψ hψ
+          have hψ' := List.mem_filter.mp hψ
+          have hψne : ψ ≠ Bimodal.Syntax.neg_neg_bot := by simpa using hψ'.2
+          specialize h_L_sub ψ hψ'.1
+          simp [Set.mem_insert_iff] at h_L_sub
+          rcases h_L_sub with rfl | h_in
+          · exact absurd rfl hψne
+          · exact h_in
+        have h_L_sub' : L ⊆ Bimodal.Syntax.neg_neg_bot :: L' := by
+          intro ψ hψ
+          by_cases hψnnb : ψ = Bimodal.Syntax.neg_neg_bot
+          · simp [hψnnb]
+          · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by simpa using hψnnb⟩)
+        have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+        -- By deduction: L' ⊢ neg_neg_bot → ⊥ = neg(neg_neg_bot)
+        have d_neg_nnb : L' ⊢ Formula.neg Bimodal.Syntax.neg_neg_bot :=
+          Bimodal.Metalogic.Core.deduction_theorem L' Bimodal.Syntax.neg_neg_bot Formula.bot d_bot'
+        -- Now G(neg_neg_bot) ∈ v, so we can derive neg_neg_bot from G(neg_neg_bot) using T-axiom
+        let L'' := Formula.all_future Bimodal.Syntax.neg_neg_bot :: L'
+        have h_L''_in_v : ∀ ψ ∈ L'', ψ ∈ v := by
+          intro ψ hψ
+          simp only [L'', List.mem_cons] at hψ
+          rcases hψ with rfl | h_L'
+          · exact h_G_chi
+          · exact h_L'_in_v ψ h_L'
+        have d_T' : L'' ⊢ (Formula.all_future Bimodal.Syntax.neg_neg_bot).imp Bimodal.Syntax.neg_neg_bot :=
+          DerivationTree.weakening [] L'' _ h_T (List.nil_subset L'')
+        have d_G_nnb : L'' ⊢ Formula.all_future Bimodal.Syntax.neg_neg_bot :=
+          DerivationTree.assumption L'' _ List.mem_cons_self
+        have d_nnb : L'' ⊢ Bimodal.Syntax.neg_neg_bot := DerivationTree.modus_ponens L'' _ _ d_T' d_G_nnb
+        have d_neg_nnb' : L'' ⊢ Formula.neg Bimodal.Syntax.neg_neg_bot :=
+          DerivationTree.weakening L' L'' _ d_neg_nnb (List.subset_cons_of_subset _ (List.Subset.refl L'))
+        have d_bot_final := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_nnb d_neg_nnb'
+        exact h_v_mcs.1.2 L'' h_L''_in_v ⟨d_bot_final⟩
+      -- Now we have neg_neg_bot ∈ v
+      -- neg bot ∈ serialityFormulas ⊆ deferralClosure
+      have h_neg_bot_in_dc : Formula.neg Formula.bot ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+        Bimodal.Syntax.neg_bot_mem_deferralClosure phi
+      -- neg bot ∈ v by maximality (neg bot is derivable from empty, so consistent with v)
+      have h_neg_bot_in_v : Formula.neg Formula.bot ∈ v := by
+        by_contra h_not_in
+        have h_incons := h_v_mcs.2 (Formula.neg Formula.bot) h_neg_bot_in_dc h_not_in
+        -- If inserting neg bot is inconsistent, then v ⊢ neg(neg bot) = neg_neg_bot
+        unfold SetConsistent at h_incons
+        push_neg at h_incons
+        obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
+        obtain ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L_incons
+        -- Filter L to get L' = L \ {neg bot}
+        let L' := L.filter (· ≠ Formula.neg Formula.bot)
+        have h_L'_in_v : ∀ ψ ∈ L', ψ ∈ v := by
+          intro ψ hψ
+          have hψ' := List.mem_filter.mp hψ
+          have hψne : ψ ≠ Formula.neg Formula.bot := by simpa using hψ'.2
+          specialize h_L_sub ψ hψ'.1
+          simp [Set.mem_insert_iff] at h_L_sub
+          rcases h_L_sub with rfl | h_in
+          · exact absurd rfl hψne
+          · exact h_in
+        have h_L_sub' : L ⊆ Formula.neg Formula.bot :: L' := by
+          intro ψ hψ
+          by_cases hψnb : ψ = Formula.neg Formula.bot
+          · simp [hψnb]
+          · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by simpa using hψnb⟩)
+        have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+        -- L' ⊢ neg bot → ⊥ = neg(neg bot) = neg_neg_bot
+        have d_neg_nb : L' ⊢ Formula.neg (Formula.neg Formula.bot) :=
+          Bimodal.Metalogic.Core.deduction_theorem L' (Formula.neg Formula.bot) Formula.bot d_bot'
+        -- Now L' ⊆ v and L' ⊢ neg_neg_bot
+        -- Also neg_neg_bot ∈ v (h_neg_neg_bot_in_v)
+        -- Combined with L' ⊆ v, we need to derive contradiction
+        -- Actually, if L' ⊢ neg_neg_bot and neg_neg_bot ∈ v, that's consistent.
+        -- The contradiction comes from neg_neg_bot and neg bot together.
+        -- We have L' ⊢ neg_neg_bot but actually we want to show v is consistent with neg bot.
+        -- Since neg_neg_bot ∈ v, if we also had neg bot ∈ v, then we'd have contradiction.
+        -- But we're in the by_contra where neg bot ∉ v...
+        -- Actually, the right approach: L' ⊆ v, L' ⊢ neg_neg_bot. Also neg_neg_bot ∈ v.
+        -- Now add neg_neg_bot to L' and derive ⊥ from {neg_neg_bot, neg bot}? But neg bot ∉ L' since L' ⊆ v.
+        -- The key: We have neg_neg_bot ∈ v. If inserting neg bot is inconsistent,
+        -- there's L ⊆ insert (neg bot) v with L ⊢ ⊥. But neg_neg_bot = neg(neg bot).
+        -- So neg_neg_bot ∈ v means v already contains the negation of (neg bot).
+        -- Then {neg_neg_bot, neg bot} ⊢ ⊥ where neg_neg_bot ∈ v.
+        -- But if L ⊆ insert (neg bot) v and L ⊢ ⊥, and neg bot ∈ L, then
+        -- L' = L \ {neg bot} ⊆ v, and L ⊆ (neg bot) :: L'.
+        -- By deduction, L' ⊢ neg bot → ⊥ = neg(neg bot) = neg_neg_bot.
+        -- But L' ⊆ v and v is consistent, so we can't derive neg_neg_bot from L' if v is consistent.
+        -- Actually, wait - L' ⊆ v ⊢ neg_neg_bot, and neg_neg_bot ∈ v. That's fine.
+        -- The real contradiction: [neg_neg_bot] ⊆ v and neg_neg_bot with neg bot derives ⊥.
+        -- We need neg bot in v for the contradiction. But we're assuming neg bot ∉ v.
+        -- So actually if neg bot ∉ v, we can't derive ⊥ from v unless v is already inconsistent.
+        -- Let me reconsider: v ∪ {neg bot} is inconsistent. From this we can't directly conclude v is inconsistent.
+        -- But actually, if L' ⊆ v and L' ⊢ neg_neg_bot, and neg_neg_bot ∈ v already, that's fine.
+        -- We need to use the fact that both are in v: neg_neg_bot ∈ v.
+        -- Actually for any consistent v, if neg_neg_bot ∈ v, then neg bot ∈ v is forced (otherwise the T-axiom... no wait)
+        -- Hmm, this is tricky. Let me just check if L' derives something inconsistent with v.
+        -- Actually: if neg bot ∉ L (i.e., L ⊆ v), then L ⊢ ⊥ and L ⊆ v contradicts v's consistency.
+        by_cases h_nb_in_L : Formula.neg Formula.bot ∈ L
+        · -- neg bot ∈ L: we've shown L' ⊢ neg_neg_bot where L' ⊆ v
+          -- neg_neg_bot ∈ v (h_neg_neg_bot_in_v). This is fine, not a contradiction yet.
+          -- But we also know neg_neg_bot and neg bot together derive ⊥.
+          -- Since neg_neg_bot ∈ v, if neg bot ∈ v we'd have contradiction.
+          -- But we're assuming neg bot ∉ v. So no direct contradiction here.
+          -- Actually, looking at this more carefully: if v ∪ {neg bot} is inconsistent,
+          -- and neg_neg_bot = neg(neg bot) ∈ v, then by MCS property of v within deferralClosure,
+          -- neg bot SHOULD be in v (otherwise inserting neg bot is inconsistent, which is what h_incons says).
+          -- But actually this is consistent: neg_neg_bot ∈ v means neg(neg bot) ∈ v,
+          -- and neg bot ∉ v. Then insert neg bot u is inconsistent because neg(neg bot) ∈ v and neg bot contradict.
+          -- So L ⊆ insert (neg bot) v with L ⊢ ⊥. The minimal such L is just {neg_neg_bot, neg bot}.
+          -- Then L' = L \ {neg bot} contains neg_neg_bot if neg_neg_bot ∈ L, otherwise L' = L \ {neg bot} ⊆ v.
+          -- If neg_neg_bot ∈ L': L' ⊆ v so neg_neg_bot ∈ v (which we know).
+          -- If neg_neg_bot ∉ L but neg bot ∈ L: then L = ... some subset with neg bot...
+          -- Anyway, the key is: {neg_neg_bot} ⊆ v, and we can derive ⊥ from {neg_neg_bot, neg bot}.
+          -- So {neg_neg_bot, neg bot} ⊢ ⊥ and {neg_neg_bot} ⊆ v implies by deduction {neg_neg_bot} ⊢ neg(neg bot).
+          -- But neg(neg bot) = neg_neg_bot! So we'd have {neg_neg_bot} ⊢ neg_neg_bot, which is trivially true
+          -- and doesn't give us a contradiction. Hmm.
+          -- Actually wait: we have neg_neg_bot = neg(neg bot), so:
+          -- - neg_neg_bot ∈ v
+          -- - We want to show neg bot ∈ v for contradiction
+          -- - If neg bot ∉ v, then insert (neg bot) v is inconsistent
+          -- - This means ∃ L ⊆ insert (neg bot) v with L ⊢ ⊥
+          -- - The minimal such L is [neg_neg_bot, neg bot] since neg_neg_bot = neg(neg bot) and
+          --   neg(neg bot), neg bot ⊢ ⊥ (from φ, neg φ ⊢ ⊥)
+          -- - But wait, [neg_neg_bot, neg bot] ⊆ insert (neg bot) v only if neg_neg_bot ∈ v, which is true.
+          -- So L = [neg_neg_bot, neg bot] ⊆ insert (neg bot) v, and L ⊢ ⊥.
+          -- Then L' = L \ {neg bot} = [neg_neg_bot], and L' ⊆ v.
+          -- By deduction, L' ⊢ neg bot → ⊥ = neg_neg_bot. So [neg_neg_bot] ⊢ neg_neg_bot. True but useless.
+          -- The issue is we can't derive ⊥ from v alone. The inconsistency requires neg bot.
+          -- But that's fine! Maximality says if neg bot ∉ v, inserting it is inconsistent.
+          -- And it IS inconsistent (because neg_neg_bot ∈ v). So this doesn't contradict anything.
+          -- The question is: should neg_neg_bot be in a consistent set?
+          -- Answer: YES, neg_neg_bot = neg(neg bot) can be in a consistent set.
+          -- Example: {neg_neg_bot} is consistent (doesn't derive ⊥ by itself).
+          -- So having neg_neg_bot ∈ v and neg bot ∉ v is perfectly fine!
+          -- This means the proof approach is wrong. We can't derive contradiction from G_neg_neg_bot ∈ v.
+          -- Actually wait, let me reconsider the original goal.
+          -- We want: chi ∈ u where chi = neg_neg_bot.
+          -- The hypothesis is that chi ∉ u.
+          -- We're in the case where G(chi) = G_neg_neg_bot ∈ v (the predecessor).
+          -- But the goal is to show g_content(v) ⊆ u, i.e., chi ∈ u.
+          -- We assumed chi ∉ u and are trying to derive contradiction from G(chi) ∈ v.
+          -- But if G(chi) = G_neg_neg_bot is in v (which it is, since G_neg_neg_bot ∈ serialityFormulas ⊆ deferralClosure
+          -- and v is maximal), this doesn't directly contradict chi ∉ u.
+          -- The g_step_blocking mechanism only works for G(chi) ∈ closureWithNeg, not for G_neg_neg_bot.
+          -- So G_neg_neg_bot being in v is expected! And chi = neg_neg_bot might not be in u.
+          -- Therefore we CANNOT prove chi ∈ u in this case!
+          -- This means the seed augmentation approach doesn't fully work for G_neg_neg_bot.
+          -- We need to handle this case separately: show that if G(chi) = G_neg_neg_bot ∈ v,
+          -- we can still have chi = neg_neg_bot ∉ u. But then g_content(v) ⊈ u...
+          -- This is a real gap in the proof!
+          -- Actually, let me reconsider: the definition of g_content is {chi | G(chi) ∈ v}.
+          -- So chi ∈ g_content(v) means G(chi) ∈ v.
+          -- We want to prove g_content(v) ⊆ u.
+          -- If G_neg_neg_bot ∈ v, then neg_neg_bot ∈ g_content(v).
+          -- We need neg_neg_bot ∈ u.
+          -- But neg_neg_bot might not be in u! (u is consistent, neg_neg_bot alone is consistent but with neg bot...)
+          -- Actually, in a DeferralRestrictedMCS u that contains neg bot (which all do, by axiom),
+          -- neg_neg_bot = neg(neg bot) CANNOT be in u (since neg(neg bot), neg bot ⊢ ⊥).
+          -- So if G_neg_neg_bot ∈ v, then neg_neg_bot ∈ g_content(v), but neg_neg_bot ∉ u.
+          -- This means g_content(v) ⊈ u, violating the Succ relation!
+          -- This is a fundamental problem with the predecessor construction.
+          -- Actually wait - let me check: does G_neg_neg_bot have to be in v?
+          -- v is the Lindenbaum extension of the predecessor seed.
+          -- G_neg_neg_bot is in deferralClosure (as a seriality formula).
+          -- During Lindenbaum, we add formulas from deferralClosure that are consistent with the seed.
+          -- Is G_neg_neg_bot consistent with the seed?
+          -- The seed contains neg(G(chi)) for chi ∉ u and G(chi) ∈ closureWithNeg.
+          -- G_neg_neg_bot ∉ closureWithNeg (it's only in serialityFormulas).
+          -- So neg(G_neg_neg_bot) = F(neg_neg_bot).neg_neg... this is getting complicated.
+          -- Actually, the key insight: since neg_neg_bot is not in u (as u contains neg bot and is consistent),
+          -- and G(neg_neg_bot) ∈ deferralClosure but G(neg_neg_bot) ∉ closureWithNeg,
+          -- we didn't add neg(G(neg_neg_bot)) to the g_step_blocking set.
+          -- So during Lindenbaum, G_neg_neg_bot could be added to v.
+          -- Then g_content(v) contains neg_neg_bot, which is not in u.
+          -- This breaks the Succ relation!
+          -- We need to add G_neg_neg_bot blocking to the seed as well.
+          -- Actually, let's add neg(G_neg_neg_bot) = F(neg_neg_bot).neg to the seed.
+          -- But is F(neg_neg_bot).neg in deferralClosure? F(neg_neg_bot) = some_future(neg_neg_bot)
+          -- = neg(all_future(neg_neg_bot.neg)) = neg(G(neg_neg_bot.neg)).
+          -- neg_neg_bot.neg = neg(neg(neg bot)) = neg_neg_neg_bot.
+          -- So F(neg_neg_bot) = neg(G(neg_neg_neg_bot)).
+          -- And neg(G_neg_neg_bot) = neg(G(neg_neg_bot)) = F(neg_neg_bot.neg) = F(neg_neg_neg_bot).
+          -- This is getting very messy. Let me just add a special case for G_neg_neg_bot.
+          -- For now, I'll use sorry and note this as a gap.
+          sorry
+        · -- neg bot ∉ L, so L ⊆ v, and L ⊢ ⊥ contradicts v's consistency
+          have h_L_in_v : ∀ ψ ∈ L, ψ ∈ v := by
+            intro ψ hψ
+            specialize h_L_sub ψ hψ
+            simp [Set.mem_insert_iff] at h_L_sub
+            rcases h_L_sub with rfl | h_in
+            · -- ψ = Formula.bot.neg, but Formula.bot.neg ∉ L
+              exfalso
+              exact h_nb_in_L hψ
+            · exact h_in
+          exact h_v_mcs.1.2 L h_L_in_v ⟨d_bot⟩
+      -- Now derive ⊥ from neg_neg_bot and neg bot, both in v
+      let L_final := [Bimodal.Syntax.neg_neg_bot, Formula.neg Formula.bot]
+      have h_L_final_in_v : ∀ ψ ∈ L_final, ψ ∈ v := by
+        intro ψ hψ
+        simp only [L_final, List.mem_cons, List.mem_nil_iff] at hψ
+        rcases hψ with rfl | rfl | h_empty
+        · exact h_neg_neg_bot_in_v
+        · exact h_neg_bot_in_v
+        · exact h_empty.elim
+      have d_nnb : L_final ⊢ Bimodal.Syntax.neg_neg_bot :=
+        DerivationTree.assumption L_final _ (by simp [L_final])
+      have d_nb : L_final ⊢ Formula.neg Formula.bot :=
+        DerivationTree.assumption L_final _ (by simp [L_final])
+      have d_bot : L_final ⊢ Formula.bot :=
+        Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_nb d_nnb
+      exact False.elim (h_v_mcs.1.2 L_final h_L_final_in_v ⟨d_bot⟩)
 
 /--
 F-step for restricted predecessor (forward direction from predecessor to current):
