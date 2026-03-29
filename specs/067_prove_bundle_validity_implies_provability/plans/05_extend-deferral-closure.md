@@ -133,7 +133,7 @@ The key need is: `F(chi) ∈ deferralClosure → chi ∈ deferralClosure`. For F
 
 ---
 
-### Phase 3: Fix SuccChainFMCS.lean Call Sites [PARTIAL]
+### Phase 3: Fix SuccChainFMCS.lean Call Sites [COMPLETED]
 
 **Goal**: Update all 9 call sites of `some_future_in_deferralClosure_is_in_closureWithNeg` in SuccChainFMCS.lean
 
@@ -181,7 +181,7 @@ have h_chi_in_dc := F_inner_in_deferralClosure phi chi h_F_in_dc
 
 ---
 
-### Phase 4: Fix SuccExistence.lean and RestrictedMCS.lean [NOT STARTED]
+### Phase 4: Fix SuccExistence.lean and RestrictedMCS.lean [COMPLETED]
 
 **Goal**: Update remaining call sites in other files
 
@@ -207,7 +207,8 @@ have h_chi_in_dc := F_inner_in_deferralClosure phi chi h_F_in_dc
 
 ---
 
-### Phase 5: DeferralRestrictedSerialMCS Construction [NOT STARTED]
+### Phase 5: DeferralRestrictedSerialMCS Construction [COMPLETED]
+<!-- Phase 5 confirmed complete: build_restricted_serial_mcs_from_neg_consistent is sorry-free -->
 
 **Goal**: Prove that any consistent neg(phi) extends to DeferralRestrictedSerialMCS
 
@@ -238,7 +239,7 @@ have h_chi_in_dc := F_inner_in_deferralClosure phi chi h_F_in_dc
 
 ---
 
-### Phase 6: Complete bundle_validity_implies_provability [NOT STARTED]
+### Phase 6: Complete bundle_validity_implies_provability [PARTIAL]
 
 **Goal**: Eliminate the sorry in the main theorem
 

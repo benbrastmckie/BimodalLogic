@@ -1017,8 +1017,7 @@ theorem deferralDisjunctions_subset_deferralClosure (phi : Formula) (u : Set For
     deferralDisjunctions u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
   intro psi h_dd
   obtain ⟨chi, h_F_chi, rfl⟩ := h_dd
-  have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi (h_u h_F_chi)
-  exact Bimodal.Syntax.deferral_of_F_in_closure phi chi h_F_in_cwn
+  exact Bimodal.Syntax.deferral_of_F_in_deferralClosure phi chi (h_u h_F_chi)
 
 /--
 h_content of a set within deferralClosure stays in deferralClosure.
@@ -1037,8 +1036,7 @@ theorem pastDeferralDisjunctions_subset_deferralClosure (phi : Formula) (u : Set
     pastDeferralDisjunctions u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
   intro psi h_pd
   obtain ⟨chi, h_P_chi, rfl⟩ := h_pd
-  have h_P_in_cwn := Bimodal.Syntax.some_past_in_deferralClosure_is_in_closureWithNeg phi chi (h_u h_P_chi)
-  exact Bimodal.Syntax.deferral_of_P_in_closure phi chi h_P_in_cwn
+  exact Bimodal.Syntax.deferral_of_P_in_deferralClosure phi chi (h_u h_P_chi)
 
 /--
 The successor deferral seed of a set within deferralClosure stays in deferralClosure.
@@ -1241,8 +1239,7 @@ theorem deferralDisjunctions_subset_deferral_restricted_mcs (phi : Formula) (u :
   -- F(chi) ∈ u ⊆ deferralClosure
   have h_F_in_dc := h_mcs.1.1 h_F_chi
   -- F(chi) ∈ deferralClosure implies chi ∨ F(chi) ∈ deferralClosure
-  have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi h_F_in_dc
-  have h_disj_in_dc := Bimodal.Syntax.deferral_of_F_in_closure phi chi h_F_in_cwn
+  have h_disj_in_dc := Bimodal.Syntax.deferral_of_F_in_deferralClosure phi chi h_F_in_dc
   -- By maximality: either chi ∨ F(chi) ∈ u or insert is inconsistent
   by_contra h_not_in
   have h_insert_incons := h_mcs.2 (deferralDisjunction chi) h_disj_in_dc h_not_in
@@ -1486,26 +1483,35 @@ theorem single_brs_element_with_g_content_consistent (phi : Formula) (u : Set Fo
 
     -- By DRM closure under derivation, G(neg psi) ∈ u
     -- First check that G(neg psi) is in deferralClosure
-    -- From F(psi) ∈ u ⊆ deferralClosure, we have F(psi) ∈ closureWithNeg
-    -- F(psi) = neg(G(neg psi)) = (G(neg psi)).imp bot
-    -- So G(neg psi) is a subformula of F(psi), hence in subformulaClosure ⊆ closureWithNeg ⊆ deferralClosure
+    -- From F(psi) ∈ u ⊆ deferralClosure, we have either F(psi) ∈ closureWithNeg or F(psi) = F_top
+    -- In either case, G(neg psi) ∈ deferralClosure
     have h_F_in_dc := h_mcs.1.1 h_F_psi
-    have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi psi h_F_in_dc
-    -- Extract G(neg psi) ∈ subformulaClosure from F(psi) ∈ closureWithNeg
-    have h_G_neg_sub : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.subformulaClosure phi := by
-      unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
-      simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
-      rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
-      · -- F(psi) in subformulaClosure: F(psi) = (G(neg psi)).imp bot
-        exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
-      · -- F(psi) = chi.neg for chi in subformulaClosure: chi = G(neg psi)
-        unfold Formula.some_future Formula.neg at h_chi_neg_eq
-        have h_eq : chi = Formula.all_future (Formula.neg psi) := by cases h_chi_neg_eq; rfl
-        rw [h_eq] at h_chi_sub
-        exact h_chi_sub
-    have h_G_neg_dc : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.deferralClosure phi :=
-      Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-        (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+    have h_G_neg_dc : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.deferralClosure phi := by
+      rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi psi h_F_in_dc with h_F_in_cwn | h_F_top
+      · -- F(psi) ∈ closureWithNeg phi
+        -- Extract G(neg psi) ∈ subformulaClosure from F(psi) ∈ closureWithNeg
+        have h_G_neg_sub : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.subformulaClosure phi := by
+          unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
+          simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+          rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+          · -- F(psi) in subformulaClosure: F(psi) = (G(neg psi)).imp bot
+            exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+          · -- F(psi) = chi.neg for chi in subformulaClosure: chi = G(neg psi)
+            unfold Formula.some_future Formula.neg at h_chi_neg_eq
+            have h_eq : chi = Formula.all_future (Formula.neg psi) := by cases h_chi_neg_eq; rfl
+            rw [h_eq] at h_chi_sub
+            exact h_chi_sub
+        exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+      · -- F(psi) = F_top = F(neg bot), so psi = neg bot
+        -- G(neg psi) = G(neg(neg bot)) = G_neg_neg_bot ∈ deferralClosure
+        have h_psi_eq : psi = Formula.neg Formula.bot := by
+          simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
+          injection h_F_top with h1 _
+          injection h1 with h2
+          injection h2
+        simp only [h_psi_eq]
+        exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
 
     have h_G_neg_in_u : Formula.all_future (Formula.neg psi) ∈ u :=
       drm_closed_under_derivation h_mcs (Context.map Formula.all_future L_filt)
@@ -1561,23 +1567,31 @@ theorem single_brs_element_with_g_content_consistent (phi : Formula) (u : Set Fo
     -- (h_G_L_in_u already defined above)
 
     -- G(neg psi) ∈ deferralClosure
-    -- From F(psi) ∈ u ⊆ deferralClosure, we have F(psi) ∈ closureWithNeg
-    -- F(psi) = neg(G(neg psi)) = (G(neg psi)).imp bot
-    -- So G(neg psi) is a subformula of F(psi), hence in subformulaClosure
+    -- From F(psi) ∈ u ⊆ deferralClosure, we have either F(psi) ∈ closureWithNeg or F(psi) = F_top
     have h_F_in_dc := h_mcs.1.1 h_F_psi
-    have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi psi h_F_in_dc
-    have h_G_neg_sub : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.subformulaClosure phi := by
-      unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
-      simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
-      rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
-      · exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
-      · unfold Formula.some_future Formula.neg at h_chi_neg_eq
-        have h_eq : chi = Formula.all_future (Formula.neg psi) := by cases h_chi_neg_eq; rfl
-        rw [h_eq] at h_chi_sub
-        exact h_chi_sub
-    have h_G_neg_dc : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.deferralClosure phi :=
-      Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-        (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+    have h_G_neg_dc : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.deferralClosure phi := by
+      rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi psi h_F_in_dc with h_F_in_cwn | h_F_top
+      · -- F(psi) ∈ closureWithNeg phi
+        have h_G_neg_sub : Formula.all_future (Formula.neg psi) ∈ Bimodal.Syntax.subformulaClosure phi := by
+          unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
+          simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+          rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+          · exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+          · unfold Formula.some_future Formula.neg at h_chi_neg_eq
+            have h_eq : chi = Formula.all_future (Formula.neg psi) := by cases h_chi_neg_eq; rfl
+            rw [h_eq] at h_chi_sub
+            exact h_chi_sub
+        exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+      · -- F(psi) = F_top = F(neg bot), so psi = neg bot
+        -- G(neg psi) = G(neg(neg bot)) = G_neg_neg_bot ∈ deferralClosure
+        have h_psi_eq : psi = Formula.neg Formula.bot := by
+          simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
+          injection h_F_top with h1 _
+          injection h1 with h2
+          injection h2
+        simp only [h_psi_eq]
+        exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
 
     -- G(¬psi) ∈ u via closure under derivation
     have h_G_neg_psi : Formula.all_future (Formula.neg psi) ∈ u :=
@@ -1860,15 +1874,30 @@ theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Se
     have h_psi_brs := h_not_in_u_is_brs psi h_psi_in_L h_psi_not_in_u
 
     -- From BRS membership, extract that psi ∈ subformulaClosure (needed for negation completeness)
-    -- psi ∈ BRS means F(psi) ∈ u ⊆ deferralClosure, so F(psi) ∈ closureWithNeg, so psi ∈ subformulaClosure
+    -- psi ∈ BRS means F(psi) ∈ u ⊆ deferralClosure, so either F(psi) ∈ closureWithNeg or F(psi) = F_top
     have h_F_psi_in_u : Formula.some_future psi ∈ u :=
       (mem_boundary_resolution_set_iff phi u psi).mp h_psi_brs |>.1
     have h_F_psi_dc : Formula.some_future psi ∈ Bimodal.Syntax.deferralClosure phi :=
       h_mcs.1.1 h_F_psi_in_u
-    have h_F_psi_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi psi h_F_psi_dc
+    -- Case split on whether F(psi) ∈ closureWithNeg or F(psi) = F_top
+    rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi psi h_F_psi_dc with h_F_psi_cwn | h_F_top
+    swap  -- Handle F_top case first since it's simpler
+    · -- Case: F(psi) = F_top, so psi = neg bot
+      -- F_top = some_future (neg bot), so psi = neg bot
+      have h_psi_eq : psi = Formula.neg Formula.bot := by
+        simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
+        injection h_F_top with h1 _
+        injection h1 with h2
+        injection h2
+      -- psi = neg bot is a theorem, so it's in any DRM
+      have h_psi_in_u : psi ∈ u := by
+        rw [h_psi_eq]
+        exact Bimodal.Metalogic.Core.theorem_in_drm h_mcs neg_bot_theorem
+          (Bimodal.Syntax.neg_bot_mem_deferralClosure phi)
+      exact absurd h_psi_in_u h_psi_not_in_u
+    -- Case: F(psi) ∈ closureWithNeg, so psi ∈ subformulaClosure
     have h_psi_sub : psi ∈ Bimodal.Syntax.subformulaClosure phi :=
       Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi psi h_F_psi_cwn
-
     -- By DRM maximality, either psi ∈ u or psi.neg ∈ u
     have h_neg_or_in_u := Bimodal.Metalogic.Core.deferral_restricted_mcs_negation_complete h_mcs psi h_psi_sub
     rcases h_neg_or_in_u with h_in_u | h_neg_in_u
@@ -2093,13 +2122,9 @@ theorem constrained_successor_restricted_f_step (phi : Formula) (u : Set Formula
       -- Actually the deferral disjunction construction ensures both are in deferralClosure.
       have h_F_ψ_in_dc : Formula.some_future ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
         h_mcs.1.1 h_F_ψ
-      -- Check if ψ is in deferralClosure: F(ψ) ∈ deferralClosure => F(ψ) ∈ closureWithNeg
-      -- => ψ ∈ subformulaClosure => ψ ∈ closureWithNeg ⊆ deferralClosure
-      have h_F_ψ_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi ψ h_F_ψ_in_dc
-      have h_ψ_in_sub := Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi ψ h_F_ψ_in_cwn
+      -- F(ψ) ∈ deferralClosure => ψ ∈ deferralClosure (via F_inner_in_deferralClosure)
       have h_ψ_in_dc : ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
-        Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_ψ_in_sub)
+        Bimodal.Syntax.F_inner_in_deferralClosure phi ψ h_F_ψ_in_dc
       -- Now by maximality: either ψ ∈ v or insert ψ v is inconsistent
       have h_insert_ψ_incons := h_v_mcs.2 ψ h_ψ_in_dc h_ψ_in
       -- insert ψ v is inconsistent, so there exists L ⊆ v such that L ∪ {ψ} ⊢ ⊥
@@ -2284,6 +2309,46 @@ def DeferralRestrictedSerialMCS.toDeferralRestrictedMCS {phi : Formula}
   M.is_drm
 
 /--
+Build a DeferralRestrictedSerialMCS containing phi.neg, given that neg(phi) is consistent.
+
+This is the key construction for completeness: if phi is not provable, then neg(phi) is
+consistent, and we can build a DeferralRestrictedSerialMCS containing neg(phi).
+
+**Proof**:
+1. {neg phi} is DeferralRestricted (phi.neg ∈ deferralClosure phi)
+2. {neg phi} is consistent (given)
+3. Use deferral_restricted_lindenbaum to extend to DeferralRestrictedMCS M
+4. F_top ∈ M because F_top is a theorem and F_top ∈ deferralClosure phi
+5. P_top ∈ M similarly
+6. Therefore M is a DeferralRestrictedSerialMCS containing neg(phi)
+-/
+noncomputable def build_restricted_serial_mcs_from_neg_consistent (phi : Formula)
+    (h_cons : SetConsistent {phi.neg}) :
+    { M : DeferralRestrictedSerialMCS phi // phi.neg ∈ M.world } :=
+  -- Step 1: {phi.neg} is DeferralRestricted
+  let h_restricted : Bimodal.Metalogic.Core.DeferralRestricted phi {phi.neg} := fun x hx => by
+    simp only [Set.mem_singleton_iff] at hx
+    rw [hx]
+    exact Bimodal.Syntax.neg_self_mem_deferralClosure phi
+  -- Step 2: Apply deferral_restricted_lindenbaum to get DeferralRestrictedMCS
+  let lind := Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi {phi.neg} h_restricted h_cons
+  let M := lind.choose
+  let h_extends := lind.choose_spec.1
+  let h_drm := lind.choose_spec.2
+  -- Step 3: F_top ∈ M (theorem in deferralClosure)
+  let h_F_top_mem : F_top ∈ M :=
+    Bimodal.Metalogic.Core.theorem_in_drm h_drm F_top_theorem
+      (Bimodal.Syntax.F_top_mem_deferralClosure phi)
+  -- Step 4: P_top ∈ M (theorem in deferralClosure)
+  let h_P_top_mem : P_top ∈ M :=
+    Bimodal.Metalogic.Core.theorem_in_drm h_drm P_top_theorem
+      (Bimodal.Syntax.P_top_mem_deferralClosure phi)
+  -- Step 5: phi.neg ∈ M (from extension)
+  let h_neg_in_M : phi.neg ∈ M := h_extends (Set.mem_singleton phi.neg)
+  -- Step 6: Package as DeferralRestrictedSerialMCS
+  ⟨⟨M, h_drm, h_F_top_mem, h_P_top_mem⟩, h_neg_in_M⟩
+
+/--
 A restricted forward chain element: a DeferralRestrictedMCS with F_top.
 This bundles the MCS, its restriction proof, and F_top membership.
 -/
@@ -2419,12 +2484,9 @@ theorem F_top_in_restricted_successor (phi : Formula) (u : Set Formula)
   -- F_top ∈ deferralClosure phi (since F_top ∈ u ⊆ deferralClosure phi)
   have h_F_top_in_dc : Formula.some_future ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
     h_drm.1.1 h_F_top
-  -- From F_top ∈ deferralClosure, ψ = neg bot is in subformulaClosure hence deferralClosure
-  have h_F_ψ_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi ψ h_F_top_in_dc
-  have h_ψ_in_sub := Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi ψ h_F_ψ_in_cwn
+  -- ψ = neg bot is in deferralClosure directly (serialityFormulas)
   have h_ψ_in_dc : ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
-    Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-      (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_ψ_in_sub)
+    Bimodal.Syntax.neg_bot_mem_deferralClosure phi
   -- Now we prove F_top ∈ v by showing one of ψ or F(ψ) must be in v
   unfold deferralDisjunction at h_disj_in_succ
   by_cases h_F_ψ_in : Formula.some_future ψ ∈ v
@@ -3141,36 +3203,46 @@ theorem f_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
     {ψ : Formula} (h_block : ψ ∈ f_step_blocking_formulas_restricted phi u) :
     ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
   obtain ⟨chi, _, h_F_in_dc, _, rfl⟩ := h_block
-  -- F(chi) ∈ deferralClosure -> F(chi) ∈ closureWithNeg
-  have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi h_F_in_dc
-  -- F(chi) = (G(neg chi)).imp bot, so G(neg chi) is a subformula of F(chi)
-  -- closureWithNeg = subformulaClosure ∪ { g.neg | g ∈ subformulaClosure }
-  unfold closureWithNeg at h_F_in_cwn
-  simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
-  rcases h_F_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
-  · -- F(chi) in subformulaClosure, so G(neg chi) = subformula of F(chi)
-    -- F(chi) = some_future chi = neg (all_future (neg chi)) = (all_future (neg chi)).imp bot
-    -- So G(neg chi) = all_future(neg chi) is in the left of imp
-    apply Bimodal.Syntax.closureWithNeg_subset_deferralClosure
-    apply Bimodal.Syntax.subformulaClosure_subset_closureWithNeg
-    exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
-  · -- F(chi) = g.neg for some g in subformulaClosure
-    -- F(chi) = neg(G(neg chi)), so g = G(neg chi)
-    -- Therefore G(neg chi) ∈ subformulaClosure
-    have h_eq : g = Formula.all_future (Formula.neg chi) := by
-      -- F(chi) = some_future chi = neg (all_future (neg chi))
-      -- g.neg = F(chi) means g.imp bot = (all_future (neg chi)).imp bot
-      have h1 : Formula.some_future chi = Formula.neg (Formula.all_future (Formula.neg chi)) := rfl
-      rw [h1] at h_g_neg_eq
-      -- g.neg = (G(neg chi)).neg means g.imp bot = (G(neg chi)).imp bot
-      -- Formula.neg is defined as imp bot, so this is g.imp bot = (G(neg chi)).imp bot
-      simp only [Formula.neg] at h_g_neg_eq
-      -- h_g_neg_eq : g.imp Formula.bot = (Formula.all_future (Formula.neg chi)).imp Formula.bot
-      injection h_g_neg_eq
-    rw [h_eq] at h_g_sub
-    apply Bimodal.Syntax.closureWithNeg_subset_deferralClosure
-    apply Bimodal.Syntax.subformulaClosure_subset_closureWithNeg
-    exact h_g_sub
+  -- F(chi) ∈ deferralClosure, case split on whether it's in closureWithNeg or is F_top
+  rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi chi h_F_in_dc with h_F_in_cwn | h_F_top
+  · -- F(chi) ∈ closureWithNeg
+    -- F(chi) = (G(neg chi)).imp bot, so G(neg chi) is a subformula of F(chi)
+    -- closureWithNeg = subformulaClosure ∪ { g.neg | g ∈ subformulaClosure }
+    unfold closureWithNeg at h_F_in_cwn
+    simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+    rcases h_F_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
+    · -- F(chi) in subformulaClosure, so G(neg chi) = subformula of F(chi)
+      -- F(chi) = some_future chi = neg (all_future (neg chi)) = (all_future (neg chi)).imp bot
+      -- So G(neg chi) = all_future(neg chi) is in the left of imp
+      apply Bimodal.Syntax.closureWithNeg_subset_deferralClosure
+      apply Bimodal.Syntax.subformulaClosure_subset_closureWithNeg
+      exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+    · -- F(chi) = g.neg for some g in subformulaClosure
+      -- F(chi) = neg(G(neg chi)), so g = G(neg chi)
+      -- Therefore G(neg chi) ∈ subformulaClosure
+      have h_eq : g = Formula.all_future (Formula.neg chi) := by
+        -- F(chi) = some_future chi = neg (all_future (neg chi))
+        -- g.neg = F(chi) means g.imp bot = (all_future (neg chi)).imp bot
+        have h1 : Formula.some_future chi = Formula.neg (Formula.all_future (Formula.neg chi)) := rfl
+        rw [h1] at h_g_neg_eq
+        -- g.neg = (G(neg chi)).neg means g.imp bot = (G(neg chi)).imp bot
+        -- Formula.neg is defined as imp bot, so this is g.imp bot = (G(neg chi)).imp bot
+        simp only [Formula.neg] at h_g_neg_eq
+        -- h_g_neg_eq : g.imp Formula.bot = (Formula.all_future (Formula.neg chi)).imp Formula.bot
+        injection h_g_neg_eq
+      rw [h_eq] at h_g_sub
+      apply Bimodal.Syntax.closureWithNeg_subset_deferralClosure
+      apply Bimodal.Syntax.subformulaClosure_subset_closureWithNeg
+      exact h_g_sub
+  · -- F(chi) = F_top = F(neg bot), so chi = neg bot
+    -- G(neg chi) = G(neg(neg bot)) = G_neg_neg_bot ∈ serialityFormulas ⊆ deferralClosure
+    have h_chi_eq : chi = Formula.neg Formula.bot := by
+      simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
+      injection h_F_top with h1 _
+      injection h1 with h2
+      injection h2
+    simp only [h_chi_eq]
+    exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
 
 /--
 The restricted predecessor deferral seed: h_content, pastDeferralDisjunctions, and
@@ -3301,10 +3373,8 @@ theorem pastDeferralDisjunctions_subset_deferral_restricted_mcs (phi : Formula) 
   -- P(psi) ∈ u, and we need psi ∨ P(psi) ∈ u
   -- Since P(psi) ∈ u ⊆ deferralClosure, the disjunction is also in deferralClosure
   have h_P_in_dc := h_mcs.1.1 h_P_psi
-  -- P(psi) ∈ deferralClosure -> P(psi) ∈ closureWithNeg
-  have h_P_in_cwn := Bimodal.Syntax.some_past_in_deferralClosure_is_in_closureWithNeg phi psi h_P_in_dc
-  -- psi ∨ P(psi) ∈ deferralClosure (by deferral_of_P_in_closure)
-  have h_disj_in_dc := Bimodal.Syntax.deferral_of_P_in_closure phi psi h_P_in_cwn
+  -- psi ∨ P(psi) ∈ deferralClosure (handles both closureWithNeg and P_top cases)
+  have h_disj_in_dc := Bimodal.Syntax.deferral_of_P_in_deferralClosure phi psi h_P_in_dc
   -- By maximality within deferralClosure: either the disjunction is in u or inserting it is inconsistent
   by_contra h_not_in
   have h_insert_incons := h_mcs.2 (pastDeferralDisjunction psi) h_disj_in_dc h_not_in
@@ -3574,12 +3644,9 @@ theorem constrained_predecessor_restricted_p_step (phi : Formula) (u : Set Formu
   -- P(ψ) ∈ deferralClosure (since P(ψ) ∈ u ⊆ deferralClosure)
   have h_P_ψ_in_dc : Formula.some_past ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
     h_mcs.1.1 h_P_ψ
-  -- From P(ψ) ∈ deferralClosure, ψ is in subformulaClosure hence deferralClosure
-  have h_P_ψ_in_cwn := Bimodal.Syntax.some_past_in_deferralClosure_is_in_closureWithNeg phi ψ h_P_ψ_in_dc
-  have h_ψ_in_sub := Bimodal.Syntax.some_past_in_closureWithNeg_inner_in_subformulaClosure phi ψ h_P_ψ_in_cwn
+  -- P(ψ) ∈ deferralClosure => ψ ∈ deferralClosure (via P_inner_in_deferralClosure)
   have h_ψ_in_dc : ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
-    Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-      (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_ψ_in_sub)
+    Bimodal.Syntax.P_inner_in_deferralClosure phi ψ h_P_ψ_in_dc
   -- Now prove ψ ∈ v ∨ P(ψ) ∈ v by showing one must be in v
   unfold pastDeferralDisjunction at h_disj_in_pred
   by_cases h_ψ_in : ψ ∈ v
@@ -3778,11 +3845,8 @@ theorem constrained_predecessor_restricted_f_step_forward (phi : Formula) (u : S
   have h_F_chi : Formula.some_future chi ∈ v := h_F_chi_in_v
   -- F(chi) ∈ v ⊆ deferralClosure
   have h_F_in_dc := h_v_mcs.1.1 h_F_chi
-  -- chi ∈ deferralClosure
-  have h_F_in_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi h_F_in_dc
-  have h_chi_in_sub := Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi chi h_F_in_cwn
-  have h_chi_in_dc := Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-    (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_chi_in_sub)
+  -- F(chi) ∈ deferralClosure => chi ∈ deferralClosure (via F_inner_in_deferralClosure)
+  have h_chi_in_dc := Bimodal.Syntax.F_inner_in_deferralClosure phi chi h_F_in_dc
   -- The f_step_blocking formulas in the seed ensure this property.
   -- If chi ∈ u, we check if F(chi) ∈ u.
   -- If chi ∈ u but F(chi) ∉ u, then by f_step_blocking, G(neg chi) ∈ seed ⊆ v.
@@ -3850,12 +3914,9 @@ theorem P_top_in_restricted_predecessor (phi : Formula) (u : Set Formula)
   -- P_top ∈ deferralClosure phi (since P_top ∈ u ⊆ deferralClosure phi)
   have h_P_top_in_dc : Formula.some_past ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
     h_drm.1.1 h_P_top
-  -- From P_top ∈ deferralClosure, ψ = neg bot is in subformulaClosure hence deferralClosure
-  have h_P_ψ_in_cwn := Bimodal.Syntax.some_past_in_deferralClosure_is_in_closureWithNeg phi ψ h_P_top_in_dc
-  have h_ψ_in_sub := Bimodal.Syntax.some_past_in_closureWithNeg_inner_in_subformulaClosure phi ψ h_P_ψ_in_cwn
+  -- ψ = neg bot is in deferralClosure directly (serialityFormulas)
   have h_ψ_in_dc : ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
-    Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-      (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_ψ_in_sub)
+    Bimodal.Syntax.neg_bot_mem_deferralClosure phi
   -- Now we prove P_top ∈ v by showing one of ψ or P(ψ) must be in v
   unfold pastDeferralDisjunction at h_disj_in_pred
   by_cases h_P_ψ_in : Formula.some_past ψ ∈ v

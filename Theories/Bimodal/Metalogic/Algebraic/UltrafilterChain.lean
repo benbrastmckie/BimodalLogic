@@ -2033,7 +2033,7 @@ noncomputable def omega_chain_forward_with_inv
     let M_n := prev.val
     let inv_n := prev.property
     -- F_top is in M_n (every MCS contains F_top by seriality)
-    let h_F_top : F_top ∈ M_n := SetMaximalConsistent.contains_F_top inv_n.is_mcs
+    let h_F_top : Bimodal.Syntax.F_top ∈ M_n := SetMaximalConsistent.contains_F_top inv_n.is_mcs
     -- Get a witness for F_top
     let witness := omega_step_forward M_n inv_n.is_mcs (Formula.neg Formula.bot) h_F_top
     ⟨witness.val, {
@@ -2131,7 +2131,7 @@ noncomputable def omega_chain_backward_with_inv
     let M_n := prev.val
     let inv_n := prev.property
     -- P_top is in M_n (every MCS contains P_top by seriality)
-    let h_P_top : P_top ∈ M_n := SetMaximalConsistent.contains_P_top inv_n.is_mcs
+    let h_P_top : Bimodal.Syntax.P_top ∈ M_n := SetMaximalConsistent.contains_P_top inv_n.is_mcs
     -- Get a witness for P_top
     let witness := omega_step_backward M_n inv_n.is_mcs (Formula.neg Formula.bot) h_P_top
     ⟨witness.val, {
@@ -2286,7 +2286,7 @@ theorem omega_chain_forward_G_monotone (M0 : Set Formula) (h_mcs0 : SetMaximalCo
       unfold omega_chain_forward omega_chain_forward_with_inv
       -- The witness property preserves G from the input MCS
       have h_mcs_n := omega_chain_forward_mcs M0 h_mcs0 n
-      have h_F_top : F_top ∈ omega_chain_forward M0 h_mcs0 n :=
+      have h_F_top : Bimodal.Syntax.F_top ∈ omega_chain_forward M0 h_mcs0 n :=
         SetMaximalConsistent.contains_F_top h_mcs_n
       let witness := omega_step_forward (omega_chain_forward M0 h_mcs0 n) h_mcs_n
         (Formula.neg Formula.bot) h_F_top

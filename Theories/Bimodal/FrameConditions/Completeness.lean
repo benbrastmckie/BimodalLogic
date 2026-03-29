@@ -1,6 +1,7 @@
 import Bimodal.FrameConditions.Compatibility
 import Bimodal.Metalogic.DiscreteCompleteness
 import Bimodal.Metalogic.Algebraic.UltrafilterChain
+import Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
 
 /-!
 # Completeness Wiring
@@ -11,37 +12,30 @@ architecture, providing a unified API for completeness theorems.
 ## Main Definitions
 
 - `completeness_over D`: Template for completeness over temporal domain D
-- `dense_completeness_fc`: Dense completeness using typeclass constraints
-- `discrete_completeness_fc`: Discrete completeness using typeclass constraints
-- `completeness_over_Int`: Completeness over integer time (PROVEN via bundle construction)
+- `bundle_to_bfmcs`: Convert BFMCS_Bundle to BFMCS (sorry-free)
+- `bfmcs_from_mcs_temporally_coherent`: Family-level temporal coherence (isolated sorry)
+- `bundle_validity_implies_provability`: Core completeness (structurally complete)
+- `completeness_over_Int`: Completeness over integer time
+- `discrete_completeness_fc`: Discrete completeness (reduces to Int)
+- `dense_completeness_fc`: Dense completeness (separate sorry)
 
 ## Completeness Status
 
-### Completeness over Int: PROVEN via Bundle Construction (Task #58)
+### Completeness over Int: Structurally Complete (Task #67)
 
-The completeness theorem for formulas valid over Int is proven using the
-bundle-level temporal coherence approach from `UltrafilterChain.lean`:
+The proof of `bundle_validity_implies_provability` is structurally complete,
+with a single isolated sorry in `bfmcs_from_mcs_temporally_coherent`:
 
-1. If phi is not provable, then neg(phi) is consistent
-2. Extend neg(phi) to MCS M via Lindenbaum
-3. Build BFMCS_Bundle from M using boxClassFamilies
-4. neg(phi) is in eval_family.mcs(0) = M
-5. Therefore phi is NOT in M (by MCS consistency)
-6. Contrapositive: if phi is valid, then phi is provable
+1. If phi is not provable, neg(phi) is consistent (sorry-free)
+2. Extend to MCS M with neg(phi) in M, phi not in M (sorry-free)
+3. Build canonical model via BFMCS from M (sorry-free)
+4. Validity gives truth(phi) at the canonical model (sorry-free)
+5. Shifted truth lemma gives phi in M (requires temporal coherence)
+6. Contradiction with phi not in M (sorry-free)
 
-The key insight: bundle-level temporal coherence (F-witnesses can be in ANY
-family of the bundle) suffices for completeness. This avoids the blocked
-family-level temporal coherence (which requires F-witnesses in the SAME family).
+### Discrete Completeness: Reduces to Int (sorry-free reduction)
 
-### Dense Completeness: FOLLOWS from Int Completeness
-
-Any formula valid over ALL dense frames is in particular valid over Int.
-Since Int completeness is proven, dense completeness follows.
-
-### Discrete Completeness: FOLLOWS from Int Completeness
-
-Any formula valid over ALL discrete frames is in particular valid over Int.
-Since Int completeness is proven, discrete completeness follows.
+### Dense Completeness: Separate sorry (Int is not dense)
 
 ## Design Notes
 
@@ -60,8 +54,11 @@ open Bimodal.Syntax
 open Bimodal.Semantics
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Bundle
+open Bimodal.Metalogic.Bundle.Canonical
 open Bimodal.Metalogic.DiscreteCompleteness
 open Bimodal.Metalogic.Algebraic.UltrafilterChain
+open Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
 
 /-! ## Completeness Template -/
 
@@ -162,92 +159,137 @@ Completeness over Int statement: formulas valid on integer time are provable.
 def CompletenessOverIntStatement (φ : Formula) : Prop :=
   valid_over Int φ → Nonempty ([] ⊢ φ)
 
+/-!
+## Helper: Convert BFMCS_Bundle to BFMCS
+
+The `BFMCS_Bundle` from `construct_bfmcs_bundle` carries bundle-level temporal
+coherence fields. The `BFMCS` structure only needs modal coherence. This
+conversion discards the temporal fields, which are recovered via the
+`temporally_coherent` predicate.
+-/
+
+/--
+Convert a `BFMCS_Bundle` to a `BFMCS Int` by discarding bundle-level temporal fields.
+-/
+noncomputable def bundle_to_bfmcs (B : BFMCS_Bundle) : BFMCS Int where
+  families := B.families
+  nonempty := B.nonempty
+  modal_forward := B.modal_forward
+  modal_backward := B.modal_backward
+  eval_family := B.eval_family
+  eval_family_mem := B.eval_family_mem
+
+/--
+The eval_family of bundle_to_bfmcs agrees with the original.
+-/
+theorem bundle_to_bfmcs_eval_family (B : BFMCS_Bundle) :
+    (bundle_to_bfmcs B).eval_family = B.eval_family := rfl
+
+/--
+The families of bundle_to_bfmcs agree with the original.
+-/
+theorem bundle_to_bfmcs_families (B : BFMCS_Bundle) :
+    (bundle_to_bfmcs B).families = B.families := rfl
+
+/-!
+## Family-Level Temporal Coherence
+
+The `shifted_truth_lemma` requires `B.temporally_coherent`, which asserts that
+for each family in the BFMCS, F-witnesses and P-witnesses exist within the
+SAME family (not just somewhere in the bundle).
+
+This is the key lemma needed for completeness. The `construct_bfmcs_bundle`
+construction builds families via `boxClassFamilies`, where each family is a
+`shifted_fmcs (SuccChainFMCS S) delta` for some SerialMCS S.
+
+**Status**: This lemma requires proving `succ_chain_forward_F` for each
+SuccChainFMCS, which depends on the restricted chain F-nesting bound argument.
+The remaining sorry is in the fuel-exhaustion branch of the bounded witness
+proof (`restricted_bounded_witness_fueled` at fuel=0), which is semantically
+unreachable but not yet proven so.
+-/
+
+/--
+Family-level temporal coherence for BFMCS built from an MCS.
+
+**Proof depends on**: `Z_chain_forward_F` and `Z_chain_backward_P` from
+UltrafilterChain.lean, which have sorries in the fair-scheduling argument.
+
+This isolates the temporal coherence sorry from the completeness proof structure.
+-/
+theorem bfmcs_from_mcs_temporally_coherent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    (bundle_to_bfmcs (construct_bfmcs_bundle M h_mcs)).temporally_coherent := by
+  -- Each family in boxClassFamilies is a shifted SuccChainFMCS.
+  -- Family-level forward_F requires resolving F-obligations within the same chain.
+  -- This depends on the bounded F-nesting argument for restricted chains.
+  -- The proof structure is correct but the fuel-exhaustion branch is not yet closed.
+  sorry
+
+/-!
+## Core Completeness Theorem
+-/
+
 /--
 Bundle validity implies provability: the core completeness lemma.
 
 If φ is valid over Int, then φ is provable.
 
-**Proof**: By contrapositive using bundle construction.
+**Proof**: By contrapositive using canonical model construction.
 
-**Note**: This theorem has a sorry for the model-theoretic glue connecting
-BFMCS_Bundle to the TaskModel semantics. The algebraic completeness path
-in UltrafilterChain.lean is fully sorry-free.
+1. If φ is not provable, then neg(φ) is consistent (sorry-free)
+2. Extend to MCS M with neg(φ) ∈ M and φ ∉ M (sorry-free)
+3. Build BFMCS from M via `construct_bfmcs_bundle` (sorry-free)
+4. Apply `shifted_truth_lemma` to connect MCS membership with truth_at (sorry-free)
+5. Validity gives truth(φ) at the canonical model
+6. By truth lemma backward: φ ∈ M, contradicting φ ∉ M
+
+**Sorry dependency**: Step 4 requires `B.temporally_coherent`, which is
+isolated in `bfmcs_from_mcs_temporally_coherent`. The sorry is in the
+fuel-exhaustion branch of the restricted chain bounded witness proof.
 -/
 theorem bundle_validity_implies_provability (φ : Formula)
     (h_valid : valid_over Int φ) : Nonempty ([] ⊢ φ) := by
-  /-
-  ## Proof Strategy
-
-  This theorem requires connecting semantic validity to provability via:
-  1. Contrapositive: if φ not provable, then neg(φ) consistent
-  2. Extend neg(φ) to MCS M containing neg(φ)
-  3. Build canonical model from M
-  4. Show neg(φ) TRUE in canonical model (via truth lemma)
-  5. Therefore φ FALSE, contradicting validity hypothesis
-
-  ## Current Infrastructure (Sorry-Free)
-
-  The algebraic infrastructure in UltrafilterChain.lean is sorry-free:
-  - `not_provable_implies_neg_consistent`: neg(φ) consistent if φ not provable
-  - `set_lindenbaum`: extend consistent set to MCS
-  - `construct_bfmcs_bundle`: build BFMCS_Bundle with modal coherence
-  - `boxClassFamilies_bundle_temporally_coherent`: bundle-level F/P coherence
-
-  ## The Gap: Truth Lemma Requires Family-Level Temporal Coherence
-
-  The parametric truth lemma (`parametric_canonical_truth_lemma`) requires:
-  - `h_tc : B.temporally_coherent` (family-level forward_F and backward_P)
-
-  This is used in the BACKWARD direction of G and H cases:
-  - Backward G: ∀ s ≥ t, truth(ψ) at s → G(ψ) ∈ MCS
-  - Uses forward_F via contrapositive: F(neg ψ) witness
-
-  The bundle construction provides bundle-level coherence (witnesses in ANY family)
-  but NOT family-level coherence (witnesses in the SAME family).
-
-  ## Why Forward-Only Doesn't Work
-
-  The forward truth lemma for `neg(φ) = φ.imp ⊥` requires:
-  - Forward imp: (φ → ⊥) ∈ MCS, truth(φ) → truth(⊥) = False
-  - This needs: truth(φ) → φ ∈ MCS (BACKWARD IH for φ!)
-  - If φ contains G/H, backward IH needs h_tc
-
-  ## Resolution Path
-
-  Family-level temporal coherence for Z-chain (`Z_chain_forward_F`,
-  `Z_chain_backward_P`) needs to be proven. This requires showing that
-  F-witnesses can be found within the same omega chain, not just in the bundle.
-
-  The `RestrictedTemporallyCoherentFamily` approach (RestrictedTruthLemma.lean)
-  provides temporal coherence for formulas in deferralClosure(φ), which may
-  suffice for the specific formula φ being proven.
-  -/
   by_contra h_not_prov
-  -- neg(φ) is consistent when φ is not provable
-  have h_cons := not_provable_implies_neg_consistent φ h_not_prov
-  -- This contradicts: all MCSes contain φ
-  have _h_contra := bundle_completeness_contradiction φ h_cons
-  -- The gap: need to derive that h_valid implies all MCSes contain φ
-  -- This requires the bidirectional truth lemma with family-level temporal coherence
-  sorry
+  -- Step 1: neg(φ) is consistent
+  have h_neg_cons := not_provable_implies_neg_consistent φ h_not_prov
+  -- Step 2: Build MCS M with neg(φ) ∈ M and φ ∉ M
+  obtain ⟨M, h_mcs, h_neg_in, h_phi_not⟩ :=
+    neg_consistent_gives_mcs_without_phi φ h_neg_cons
+  -- Step 3: Build BFMCS from M
+  let BB := construct_bfmcs_bundle M h_mcs
+  let B := bundle_to_bfmcs BB
+  -- Step 4: Family-level temporal coherence (isolated sorry)
+  have h_tc : B.temporally_coherent :=
+    bfmcs_from_mcs_temporally_coherent M h_mcs
+  -- Step 5: The eval_family at time 0 is M
+  have h_eval_zero : B.eval_family.mcs 0 = M := by
+    show BB.eval_family.mcs 0 = M
+    exact construct_bfmcs_bundle_eval_at_zero M h_mcs
+  -- Step 6: ShiftClosedCanonicalOmega is shift-closed
+  have h_sc : ShiftClosed (ShiftClosedCanonicalOmega B) :=
+    shiftClosedCanonicalOmega_is_shift_closed B
+  -- Step 7: to_history of eval_family is in ShiftClosedCanonicalOmega
+  have h_mem : to_history B.eval_family ∈ ShiftClosedCanonicalOmega B :=
+    canonicalOmega_subset_shiftClosed B ⟨B.eval_family, B.eval_family_mem, rfl⟩
+  -- Step 8: By validity, φ is true at the canonical model
+  have h_true : truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B)
+      (to_history B.eval_family) 0 φ :=
+    h_valid CanonicalTaskFrame CanonicalTaskModel (ShiftClosedCanonicalOmega B)
+      h_sc (to_history B.eval_family) h_mem 0
+  -- Step 9: By shifted truth lemma backward, φ ∈ eval_family.mcs 0 = M
+  have h_phi_in_M : φ ∈ B.eval_family.mcs 0 :=
+    (shifted_truth_lemma B h_tc φ B.eval_family B.eval_family_mem 0).mpr h_true
+  rw [h_eval_zero] at h_phi_in_M
+  -- Step 10: Contradiction: φ ∈ M and φ ∉ M
+  exact h_phi_not h_phi_in_M
 
 /--
 Completeness over Int: formulas valid over Int are provable.
 
-**Proof Strategy** (contrapositive):
-1. If phi is not provable, then neg(phi) is consistent
-2. Extend neg(phi) to MCS M via Lindenbaum
-3. Build BFMCS_Bundle from M
-4. neg(phi) is in eval_family.mcs(0) = M
-5. Therefore phi is NOT in M (by MCS consistency)
-6. This contradicts the hypothesis that phi is valid over Int
+Delegates to `bundle_validity_implies_provability`.
 
-**Key Insight**: We use bundle-level temporal coherence where F-witnesses
-can be in ANY family of the bundle. This avoids the blocked family-level
-approach that requires F-witnesses in the SAME family.
-
-**Note**: Uses bundle_validity_implies_provability which has a sorry for
-the model-theoretic glue. The algebraic core is sorry-free.
+**Sorry dependency**: Inherits the isolated sorry from
+`bfmcs_from_mcs_temporally_coherent` (family-level temporal coherence).
 -/
 theorem completeness_over_Int {φ : Formula} :
     CompletenessOverIntStatement φ := by
@@ -277,19 +319,23 @@ theorem discrete_completeness_fc {φ : Formula} :
   -- Delegate to completeness_over_Int
   exact completeness_over_Int h_valid_int
 
-/-! ## Documentation: Completeness Status (Task #58)
+/-! ## Documentation: Completeness Status (Task #58 / #67)
 
-### Completeness over Int: Has sorry for model-theoretic glue
+### Completeness over Int: Structurally Complete
 
-The core algebraic completeness proof is sorry-free:
-- `construct_bfmcs_bundle`: Build BFMCS_Bundle from any MCS
-- `boxClassFamilies_bundle_temporally_coherent`: Bundle-level F/P coherence
-- `not_provable_implies_neg_consistent`: Contrapositive setup
-- `mcs_neg_gives_countermodel`: phi NOT in MCS containing neg(phi)
+The proof of `bundle_validity_implies_provability` is now structurally complete:
+1. Contrapositive setup via `not_provable_implies_neg_consistent` (sorry-free)
+2. MCS construction via `neg_consistent_gives_mcs_without_phi` (sorry-free)
+3. Canonical model via `construct_bfmcs_bundle` + `bundle_to_bfmcs` (sorry-free)
+4. Truth lemma via `shifted_truth_lemma` (sorry-free given temporal coherence)
+5. Validity instantiation at canonical model (sorry-free)
+6. Contradiction: φ ∈ M from truth lemma vs φ ∉ M from step 2 (sorry-free)
 
-The only remaining sorry is in `bundle_validity_implies_provability`, which
-requires connecting the bundle model to the `TaskModel` semantics used in
-`valid_over`. This is model-theoretic glue, not proof-theoretic content.
+**Isolated sorry**: `bfmcs_from_mcs_temporally_coherent` — family-level temporal
+coherence for the BFMCS built from boxClassFamilies. This requires proving that
+each SuccChainFMCS resolves all F/P-obligations within the same chain. The
+underlying gap is in `Z_chain_forward_F` (UltrafilterChain.lean), which needs
+the fair-scheduling argument for resolving F-obligations.
 
 ### Discrete Completeness: REDUCES to Int Completeness (sorry-free reduction)
 
@@ -298,7 +344,7 @@ requires connecting the bundle model to the `TaskModel` semantics used in
 2. The hypothesis "φ valid over ALL discrete D" can be specialized to Int
 3. We then apply `completeness_over_Int`
 
-This reduction is SORRY-FREE. The only sorry is in `bundle_validity_implies_provability`.
+This reduction is SORRY-FREE. The only sorry is in `bfmcs_from_mcs_temporally_coherent`.
 
 ### Dense Completeness: CANNOT reduce to Int Completeness
 
@@ -312,11 +358,26 @@ This reduction is SORRY-FREE. The only sorry is in `bundle_validity_implies_prov
 | Theorem | Status | Dependency |
 |---------|--------|------------|
 | `dense_completeness_fc` | SORRY | Needs dense canonical model |
-| `discrete_completeness_fc` | REDUCED | Via `completeness_over_Int` |
-| `completeness_over_Int` | REDUCED | Via `bundle_validity_implies_provability` |
-| `bundle_validity_implies_provability` | SORRY | Model-theoretic glue |
+| `bfmcs_from_mcs_temporally_coherent` | SORRY | Family-level temporal coherence |
+| `bundle_validity_implies_provability` | WIRED | Depends on `bfmcs_from_mcs_temporally_coherent` |
+| `completeness_over_Int` | WIRED | Via `bundle_validity_implies_provability` |
+| `discrete_completeness_fc` | WIRED | Via `completeness_over_Int` |
 
-The core algebraic completeness proof in `UltrafilterChain.lean` is fully sorry-free.
+### Path to Closing the Sorry
+
+`bfmcs_from_mcs_temporally_coherent` requires proving that each family in
+`boxClassFamilies M h_mcs` has forward_F and backward_P. Each family is a
+`shifted_fmcs (SuccChainFMCS S) delta`, so this reduces to proving
+`succ_chain_forward_F` for arbitrary SerialMCS.
+
+**Two approaches**:
+1. **Restricted chain**: The bounded F-nesting argument in SuccChainFMCS.lean
+   (restricted_bounded_witness_fueled) has a sorry only in the fuel=0 branch,
+   which is semantically unreachable with fuel = B*B+1 where B = closure_F_bound.
+   Proving this branch unreachable closes the restricted approach.
+2. **Fair scheduling**: Modify the omega chain construction to dovetail F/P
+   resolution, giving direct family-level forward_F. This is the standard
+   textbook approach but requires new infrastructure.
 -/
 
 end Bimodal.FrameConditions
