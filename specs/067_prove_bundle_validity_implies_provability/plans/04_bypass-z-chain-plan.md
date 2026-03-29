@@ -77,15 +77,32 @@ This plan abandons the Z-chain approach and follows the restricted coherence pat
 
 ## Implementation Phases
 
-### Phase 1: Build DeferralRestrictedSerialMCS from Consistent neg(phi) [NOT STARTED]
+### Phase 1: Build DeferralRestrictedSerialMCS from Consistent neg(phi) [BLOCKED]
 
 **Goal**: Construct a `DeferralRestrictedSerialMCS phi` containing `neg(phi)` from `SetConsistent {neg(phi)}`
 
-**Tasks**:
-- [ ] Verify `neg(phi) ∈ deferralClosure phi` (by definition: phi.neg ∈ closureWithNeg phi)
-- [ ] Apply `deferral_restricted_lindenbaum` to extend `{neg(phi)}` to DeferralRestrictedMCS
-- [ ] Prove F_top ∈ extension (F_top is a theorem, DRM is consistent and maximal in closure)
-- [ ] Prove P_top ∈ extension (symmetric argument)
+**BLOCKING ISSUE IDENTIFIED**:
+
+The construction requires F_top and P_top to be in `deferralClosure(phi)`. However:
+
+1. `F_top = F(neg bot)` and `P_top = P(neg bot)` are fixed formulas
+2. `some_future_in_deferralClosure_is_in_closureWithNeg` (SubformulaClosure.lean:919) proves:
+   `F(chi) ∈ deferralClosure(phi) → F(chi) ∈ closureWithNeg(phi)`
+3. `closureWithNeg(phi)` only contains subformulas of phi and their negations
+4. Therefore `F_top ∈ deferralClosure(phi)` requires phi to contain `F(neg bot)` as a subformula
+
+**For general phi, F_top is NOT in deferralClosure(phi)**. This makes the plan fundamentally blocked.
+
+**Example**: For phi = `box p`, deferralClosure(phi) contains:
+- `box p`, `neg(box p)`, `p`, `neg p`
+- Deferral disjunctions for any F-formulas in closureWithNeg (none for this phi)
+- F_top = `F(neg bot)` is NOT in this closure
+
+**Tasks (blocked)**:
+- [x] Verify `neg(phi) ∈ deferralClosure phi` ✓ (by definition)
+- [x] Apply `deferral_restricted_lindenbaum` to extend `{neg(phi)}` to DeferralRestrictedMCS ✓
+- [ ] Prove F_top ∈ extension - **BLOCKED: F_top ∉ deferralClosure(phi) for general phi**
+- [ ] Prove P_top ∈ extension - **BLOCKED: P_top ∉ deferralClosure(phi) for general phi**
 - [ ] Package as `DeferralRestrictedSerialMCS phi`
 - [ ] Prove `neg(phi) ∈ DeferralRestrictedSerialMCS.world`
 
@@ -93,16 +110,21 @@ This plan abandons the Z-chain approach and follows the restricted coherence pat
 - `deferral_restricted_lindenbaum` (RestrictedMCS.lean:714) - extends consistent set to DRM
 - `DeferralRestrictedSerialMCS` structure (SuccChainFMCS.lean:2272)
 - `neg_mem_closureWithNeg` (ClosureWithNeg.lean) - neg(phi) ∈ closureWithNeg
+- `theorem_in_drm` (RestrictedMCS.lean:1322) - theorems in closure are in DRM
+- `some_future_in_deferralClosure_is_in_closureWithNeg` (SubformulaClosure.lean:919) - **THE BLOCKING LEMMA**
+
+**Potential Resolutions**:
+1. Extend deferralClosure to always include seriality formulas (requires significant infrastructure)
+2. Prove completeness only for "seriality-compatible" formulas (where F_top ∈ deferralClosure(phi))
+3. Find an alternative proof path that doesn't require DeferralRestrictedSerialMCS
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Algebraic/RestrictedTruthLemma.lean` (add construction lemma)
-- OR create new `Theories/Bimodal/Metalogic/Completeness/RestrictedCompleteness.lean`
+- N/A (blocked)
 
-**Timing**: 1.5-2 hours
+**Timing**: Blocked - requires alternative approach
 
 **Verification**:
-- `lake build` passes
-- New lemma `build_restricted_serial_mcs_from_neg_consistent` type-checks
+- N/A (blocked)
 
 ---
 
