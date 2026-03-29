@@ -2877,16 +2877,32 @@ theorem construct_bfmcs_bundle_temporally_coherent (M0 : Set Formula) (h_mcs : S
   boxClassFamilies_bundle_temporally_coherent M0 h_mcs
 
 /-!
-### Phase 4: Forward Bundle Truth Lemma
+### Phase 4: Bundle Completeness Infrastructure
 
-The forward truth lemma: MCS membership implies truth in the bundle model.
-This is the key lemma for completeness - we only need the forward direction.
+**Note on the truth lemma**: The truth lemma is inherently BIDIRECTIONAL — both
+directions (MCS membership → truth AND truth → MCS membership) are required.
+The forward direction of the `imp` case invokes the backward induction hypothesis
+for the antecedent subformula (see ParametricTruthLemma.lean, line 208):
 
-For completeness, we show:
-1. neg(phi) in MCS M
-2. Build BFMCS_Bundle from M
-3. Forward truth lemma: neg(phi) in M implies neg(phi) TRUE in model
-4. So phi is FALSE in the model, contradicting validity
+    have h_psi_mcs : psi ∈ fam.mcs t := (ih_psi fam hfam t).mpr h_psi_true
+
+This means even a "forward-only" truth lemma for `neg(phi) = phi.imp bot` requires
+the backward direction for `phi`. The backward direction for `G`/`H` cases requires
+`forward_F`/`backward_P` at the family level (same-family witnesses), which is the
+temporal coherence condition `B.temporally_coherent`.
+
+A forward-only truth lemma CANNOT sidestep this requirement.
+
+**Completeness strategy (using sorry-free infrastructure)**:
+1. neg(phi) in MCS M (from non-provability via Lindenbaum)
+2. Build BFMCS_Bundle from M (sorry-free: construct_bfmcs_bundle)
+3. **Bidirectional** truth lemma: neg(phi) ∈ M ↔ truth_at ... neg(phi)
+4. Forward direction gives: neg(phi) TRUE in canonical model
+5. So phi is FALSE in the model, contradicting validity
+
+Step 3 requires `B.temporally_coherent` (family-level forward_F/backward_P).
+The sorry-free bundle construction provides only bundle-level coherence.
+The gap between bundle-level and family-level coherence is the remaining blocker.
 -/
 
 /--

@@ -51,7 +51,7 @@ Team research (07_team-research.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Restricted Coherence Transfer [NOT STARTED]
+### Phase 1: Restricted Coherence Transfer [PARTIAL]
 
 **Goal**: Prove that BFMCS_Bundle families inherit restricted coherence from SuccChainFMCS
 

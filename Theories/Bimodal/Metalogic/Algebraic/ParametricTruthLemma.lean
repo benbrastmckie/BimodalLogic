@@ -13,6 +13,43 @@ The truth lemma states:
 
 This is the key lemma connecting MCS membership to semantic truth evaluation.
 
+## Bidirectionality Requirement
+
+**The truth lemma is inherently bidirectional.** Both directions are required — the
+forward direction CANNOT be proved in isolation because the `imp` forward case uses
+the backward induction hypothesis:
+
+    Forward imp: (ψ → χ) ∈ MCS, truth(ψ) ⊢ truth(χ)
+      Step 1: truth(ψ) → ψ ∈ MCS        [BACKWARD IH for ψ]
+      Step 2: (ψ → χ) ∈ MCS, ψ ∈ MCS → χ ∈ MCS  [MCS modus ponens]
+      Step 3: χ ∈ MCS → truth(χ)          [FORWARD IH for χ]
+
+This propagates: since `neg(φ) = φ.imp ⊥`, proving the forward direction for `neg(φ)`
+requires the backward direction for `φ`. If `φ` contains `G` or `H` subformulas, the
+backward direction for those cases requires `forward_F`/`backward_P` (family-level
+temporal coherence), which is the `h_tc : B.temporally_coherent` hypothesis.
+
+**There is no known reformulation that avoids this requirement.**
+
+## Temporal Coherence Dependency
+
+The `h_tc` parameter is used ONLY in the backward direction of the `G` and `H` cases
+(lines 280 and 300), where `temporal_backward_G` / `temporal_backward_H` are invoked.
+These use a contrapositive argument:
+
+    Backward G: ∀ s ≥ t, truth(ψ) at s → G(ψ) ∈ fam.mcs t
+      Contrapositive: assume G(ψ) ∉ fam.mcs t
+      1. neg(G(ψ)) ∈ fam.mcs t           [MCS negation completeness]
+      2. F(neg(ψ)) ∈ fam.mcs t           [temporal duality]
+      3. ∃ s > t, neg(ψ) ∈ fam.mcs s    [forward_F — REQUIRES h_tc]
+      4. ψ ∈ fam.mcs s                   [backward IH + hypothesis]
+      5. Contradiction                     [ψ and neg(ψ) in consistent MCS]
+
+Step 3 is the critical use of `forward_F`. The witness must be in the SAME family
+`fam`, because the semantic hypothesis (truth at all s ≥ t) is evaluated along the
+history `to_history(fam)`. A witness in a DIFFERENT family would be evaluated along
+a different history and would not produce the needed contradiction.
+
 ## Main Results
 
 - `ParametricCanonicalTaskModel D`: D-parametric task model with valuation = MCS membership
@@ -26,10 +63,10 @@ The proof follows the same structure as CanonicalConstruction.lean, but generali
 to arbitrary D. The key cases are:
 - atom: valuation = MCS membership (by definition)
 - bot: both sides are False
-- imp: by induction and MCS closure under derivation
-- box: by modal coherence of BFMCS
-- all_future (G): by forward_G and temporal_backward_G
-- all_past (H): by backward_H and temporal_backward_H
+- imp: by induction and MCS closure under derivation (BOTH directions use BOTH IH directions)
+- box: by modal coherence of BFMCS (forward and backward)
+- all_future (G): forward by forward_G; backward by temporal_backward_G (NEEDS h_tc)
+- all_past (H): forward by backward_H; backward by temporal_backward_H (NEEDS h_tc)
 
 ## References
 
@@ -203,8 +240,13 @@ theorem parametric_canonical_truth_lemma
     have h_mcs := fam.is_mcs t
     constructor
     · -- Forward: (psi -> chi) in MCS and truth psi -> truth chi
+      -- NOTE: This is why the truth lemma is inherently bidirectional.
+      -- The forward direction uses the BACKWARD IH for psi (.mpr).
+      -- This means proving "MCS membership → truth" for any imp formula
+      -- requires "truth → MCS membership" for its antecedent subformula.
+      -- When that subformula contains G/H, the backward IH needs h_tc.
       intro h_imp h_psi_true
-      -- By IH backward: psi in MCS
+      -- By IH backward (the critical cross-direction dependency):
       have h_psi_mcs : psi ∈ fam.mcs t := (ih_psi fam hfam t).mpr h_psi_true
       -- By MCS modus ponens: chi in MCS
       have h_chi_mcs : chi ∈ fam.mcs t := SetMaximalConsistent.implication_property h_mcs h_imp h_psi_mcs
@@ -351,8 +393,9 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
     simp only [truth_at]
     have h_mcs := fam.is_mcs t
     constructor
-    · intro h_imp h_ψ_true
-      have h_ψ_mem := (ih_ψ fam hfam t).mpr h_ψ_true
+    · -- Forward imp: uses BACKWARD IH for ψ (bidirectionality requirement)
+      intro h_imp h_ψ_true
+      have h_ψ_mem := (ih_ψ fam hfam t).mpr h_ψ_true  -- backward IH
       exact (ih_χ fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp h_ψ_mem)
     · intro h_truth_imp
       rcases SetMaximalConsistent.negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
