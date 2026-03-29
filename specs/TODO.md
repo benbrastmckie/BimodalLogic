@@ -79,7 +79,7 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Blocker**: F-formula persistence - temporal_theory_witness_exists lacks F-step; need Succ-based construction
 - **Language**: lean4
 - **Dependencies**: None
@@ -96,6 +96,7 @@ technical_debt:
   - [06_well-founded-recursion.md](067_prove_bundle_validity_implies_provability/plans/06_well-founded-recursion.md)
   - [07_wire-restricted-chain.md](067_prove_bundle_validity_implies_provability/plans/07_wire-restricted-chain.md)
   - [08_dovetailed-omega-fmcs.md](067_prove_bundle_validity_implies_provability/plans/08_dovetailed-omega-fmcs.md)
+  - [09_fix-backward-chain.md](067_prove_bundle_validity_implies_provability/plans/09_fix-backward-chain.md)
 - **Summary**: [01_implementation-summary.md](067_prove_bundle_validity_implies_provability/summaries/01_implementation-summary.md)
 
 **Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.
