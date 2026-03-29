@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-29T00:22:36Z",
+      "last_updated": "2026-03-29T06:05:38Z",
       "artifacts": [
         {
           "type": "research",
@@ -965,13 +965,17 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/09_team-research.md",
           "type": "research",
           "summary": "Team research: Z-chain bypass via restricted coherence, task relation analysis (2 teammates)"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/plans/04_bypass-z-chain-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: bypass Z-chain via RestrictedTemporallyCoherentFamily direct path"
         }
       ],
-      "session_id": "sess_1774743732_4ad947",
+      "session_id": "sess_1774764136_f9f7e3",
       "researched": "2026-03-29T00:11:32Z",
-      "planned": "2026-03-29T00:20:46Z",
-      "started": "2026-03-27T23:46:39Z",
-      "blocker": "Same-family forward_F/backward_P required for truth lemma's backward G/H cases. Implementation path: ~300-400 lines for restricted truth lemma."
+      "planned": "2026-03-29T06:05:38Z",
+      "started": "2026-03-27T23:46:39Z"
     },
     {
       "project_number": 68,
