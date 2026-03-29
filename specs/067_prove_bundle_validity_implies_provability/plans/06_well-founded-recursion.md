@@ -50,51 +50,71 @@ From report 20_team-research.md:
 
 ## Implementation Phases
 
-### Phase 1: Analyze Current Recursion Structure [NOT STARTED]
+### Phase 1: Analyze Current Recursion Structure [COMPLETED]
 
 **Goal**: Understand exactly how `restricted_bounded_witness_fueled` recurses and what measure would work
 
 **Tasks**:
-- [ ] Read `restricted_bounded_witness_fueled` (SuccChainFMCS.lean:2782-2867)
-- [ ] Map out recursive call patterns:
-  - Case 1: theta ∈ chain(k+1) → witness found (base case)
-  - Case 2: F(iter_F n theta) ∈ chain(k+1) for some n → resolve at depth d' + (n-1)
-  - Case 3: iter_F n theta ∉ chain(k+1) for all n ≤ B → F obligation deferred
-- [ ] Identify the decreasing measure at each recursive call:
-  - Case 2: d decreases (resolved obligation reduces nesting)
-  - Case 3: k increases but d might stay same → need lexicographic ordering
-- [ ] Document why fuel=0 is semantically unreachable (for backup proof)
+- [x] Read `restricted_bounded_witness_fueled` (SuccChainFMCS.lean:2883-2961)
+- [x] Map out recursive call patterns:
+  - Case 1: n=0 and theta ∈ chain(k+1) → witness found (base case) ✓
+  - Case 2: iter_F n theta ∈ chain(k+1) (resolved) → recursive call at (k+1, d'+(n-1))
+  - Case 3: F(iter_F n theta) ∈ chain(k+1) (deferred) → recursive call at (k+1, d'+n)
+- [x] Identify the decreasing measure at each recursive call:
+  - Both cases: k increases by 1, d resets via F_bounded to d' < B
+  - Fuel decreases by 1 per call
+  - Total calls bounded by B*B (at most B positions × B depth resets)
+- [x] Document why fuel=0 is semantically unreachable:
+  - Starting fuel = B*B+1 where B = closure_F_bound phi
+  - Each call consumes 1 fuel and has bounded depth (< B)
+  - With B*B+1 fuel and B*B max calls, fuel > 0 always
+  - But converting this semantic argument to syntactic proof is non-trivial
 
-**Files to read**:
-- `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` (lines 2780-2870)
-- `Theories/Bimodal/Syntax/SubformulaClosure.lean` (`f_nesting_depth`, `closure_F_bound`)
+**Files analyzed**:
+- `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` (lines 2868-2980)
+- Key functions: `restricted_forward_chain_depth_bounded`, `restricted_forward_chain_F_bounded`
 
-**Timing**: 1-2 hours
+**Timing**: 2 hours (completed)
 
 **Verification**:
-- Recursion structure documented
-- Measure strategy identified
+- [x] Recursion structure documented
+- [x] Measure strategy identified (fuel-based with semantic unreachability)
+- [x] Blockers identified: converting semantic to syntactic termination
 
 ---
 
-### Phase 2: Define Well-Founded Measure [NOT STARTED]
+### Phase 2: Define Well-Founded Measure [BLOCKED]
 
 **Goal**: Create a well-founded relation on (depth, position) pairs
 
+**Status**: BLOCKED - Multiple approaches attempted, all require significant restructuring.
+
+**Approaches Attempted**:
+
+1. **h_fuel_pos hypothesis**: Add `(h_fuel_pos : fuel > 0)` parameter
+   - Issue: Recursive calls pass `fuel'` where `fuel = fuel' + 1`
+   - When `fuel = 1`, recursive call has `fuel' = 0`, can't prove `fuel' > 0`
+   - Would require proving that `fuel >= 2` is always maintained, which is the original problem
+
+2. **Strong induction on n**: Use `Nat.strong_induction_on` with iter_F depth
+   - Issue: The induction hypothesis doesn't match the recursive call structure
+   - Recursive calls use `F_bounded` which resets depth independently
+
+3. **Lexicographic measure (B*B - k, B - d)**:
+   - Issue: Need upper bound on k, but k's upper bound is what we're proving
+   - Circular: the witness position m > k is the goal, not a known bound
+
+**Root Cause**:
+The termination argument is semantic (fuel suffices by global work bound) not syntactic (measure decreases locally). Converting requires either:
+- Tracking global invariant: remaining_work ≤ remaining_fuel
+- Acc-based recursion: explicit accessibility proof on (k, d) pairs
+- Major refactoring: inline bounded_witness into iter_F_witness
+
 **Tasks**:
-- [ ] Define the measure type:
-  ```lean
-  -- Lexicographic ordering on (remaining_depth, steps_remaining)
-  def witnessSearchMeasure (phi : Formula) (theta : Formula) (k : Nat) : Nat × Nat :=
-    (closure_F_bound phi - f_nesting_depth theta, closure_F_bound phi * closure_F_bound phi - k)
-  ```
-- [ ] Prove the measure is well-founded (uses `Prod.Lex` with `Nat.lt_wfRel`)
-- [ ] Alternative: Use fuel as explicit measure parameter with proof it suffices:
-  ```lean
-  theorem fuel_suffices (phi theta : Formula) (k : Nat) :
-    ∀ d ≤ f_nesting_depth (iter_F d theta),
-    ∃ fuel, restricted_bounded_witness_fueled phi M0 k theta d fuel = witness
-  ```
+- [ ] Define the measure type (BLOCKED)
+- [ ] Prove measure is well-founded (BLOCKED)
+
+**Recommendation**: Switch to backup approach (Fair Scheduling, Phases B1-B3)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean`
@@ -107,7 +127,7 @@ From report 20_team-research.md:
 
 ---
 
-### Phase 3: Restructure with WellFoundedRecursion [NOT STARTED]
+### Phase 3: Restructure with WellFoundedRecursion [PARTIAL]
 
 **Goal**: Replace `restricted_bounded_witness_fueled` with well-founded recursive version
 
