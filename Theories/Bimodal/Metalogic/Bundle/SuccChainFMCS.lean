@@ -3363,6 +3363,165 @@ theorem f_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
     exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
 
 /--
+F-step blocking for the chi ∉ u case (alternative blocking).
+
+When chi ∉ u AND F(chi) ∉ u AND F(chi) ∈ deferralClosure, we need G(neg chi) in the seed
+to block F(chi) from appearing in the predecessor v. By maximality of u within
+deferralClosure: F(chi) ∉ u implies neg F(chi) = G(neg chi) ∈ u.
+
+This complements f_step_blocking_formulas_restricted which only handles chi ∈ u.
+Together they ensure f_content(predecessor) ⊆ u ∪ f_content(u).
+-/
+def f_step_blocking_alt_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
+  { ψ | ∃ chi : Formula,
+    chi ∉ u ∧
+    Formula.some_future chi ∉ u ∧
+    Formula.some_future chi ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) ∧
+    ψ = Formula.all_future (Formula.neg chi) }
+
+/--
+f_step_blocking_alt_restricted stays within deferralClosure.
+
+The proof is identical to f_step_blocking_restricted_subset_deferralClosure since
+the membership condition on F(chi) is the same.
+-/
+theorem f_step_blocking_alt_subset_deferralClosure (phi : Formula) (u : Set Formula)
+    {ψ : Formula} (h_block : ψ ∈ f_step_blocking_alt_restricted phi u) :
+    ψ ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  obtain ⟨chi, _, _, h_F_in_dc, rfl⟩ := h_block
+  rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi chi h_F_in_dc with h_F_in_cwn | h_F_top
+  · -- F(chi) ∈ closureWithNeg
+    unfold closureWithNeg at h_F_in_cwn
+    simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+    rcases h_F_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
+    · apply Bimodal.Syntax.closureWithNeg_subset_deferralClosure
+      apply Bimodal.Syntax.subformulaClosure_subset_closureWithNeg
+      exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+    · have h_eq : g = Formula.all_future (Formula.neg chi) := by
+        have h1 : Formula.some_future chi = Formula.neg (Formula.all_future (Formula.neg chi)) := rfl
+        rw [h1] at h_g_neg_eq
+        simp only [Formula.neg] at h_g_neg_eq
+        injection h_g_neg_eq
+      rw [← h_eq]
+      exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_g_sub)
+  · -- F(chi) = F_top = F(neg bot)
+    have h_chi_eq : chi = Formula.neg Formula.bot := by
+      simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
+      injection h_F_top with h1 _
+      injection h1 with h2
+      injection h2
+    simp only [h_chi_eq]
+    exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
+
+/--
+f_step_blocking_alt_restricted is a subset of u for any DeferralRestrictedMCS.
+
+When chi ∉ u and F(chi) ∉ u and F(chi) ∈ deferralClosure, by maximality of u,
+neg F(chi) = G(neg chi) ∈ u.
+-/
+theorem f_step_blocking_alt_subset_u (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    {ψ : Formula} (h_block : ψ ∈ f_step_blocking_alt_restricted phi u) :
+    ψ ∈ u := by
+  obtain ⟨chi, h_chi_not_in_u, h_F_not_in_u, h_F_in_dc, rfl⟩ := h_block
+  -- G(neg chi) = neg F(chi). Since F(chi) ∉ u and F(chi) ∈ deferralClosure, neg F(chi) ∈ u
+  -- by maximality. But we need to show this formally.
+  -- F(chi) = (G(neg chi)).imp bot = neg G(neg chi)
+  -- So neg F(chi) = neg (neg G(neg chi)) = G(neg chi)... actually that's not right.
+  -- F(chi) = some_future chi = neg (all_future (neg chi)) definitionally
+  -- So neg F(chi) would be neg (neg (all_future (neg chi))) which is not G(neg chi).
+  -- Actually, F(chi) = (all_future (neg chi)).imp bot = G(neg chi).imp bot = neg G(neg chi)
+  -- So G(neg chi) = neg F(chi)?? No wait:
+  -- F(psi) = neg G(neg psi) by definition
+  -- So G(neg chi) = neg F(chi)?? No: G(neg chi) is all_future (neg chi)
+  -- F(chi) = neg (all_future (neg chi)) = neg G(neg chi)
+  -- So neg F(chi) = neg (neg G(neg chi)) = ... that requires double negation elimination
+  -- But in terms of the formula structure:
+  -- neg F(chi) = neg (G(neg chi).imp bot) = neg ((all_future (neg chi)).imp bot)
+  -- which is NOT syntactically equal to G(neg chi)
+  -- Wait, let me reconsider. By maximality, if F(chi) ∈ dc and F(chi) ∉ u, then
+  -- inserting F(chi) into u is inconsistent. This means u derives neg F(chi) within dc.
+  -- But neg F(chi) being "derivable" from u doesn't directly mean neg F(chi) ∈ u.
+  -- Actually, for MCS within deferralClosure: if psi ∈ dc and u ⊢ psi (within dc), then psi ∈ u.
+  -- So we need: does u derive neg F(chi)? And is neg F(chi) ∈ deferralClosure?
+  -- The maximality condition says: for psi ∈ dc, either psi ∈ u or insert psi u is inconsistent.
+  -- If insert F(chi) u is inconsistent, then u ⊢ neg F(chi).
+  -- But we need neg F(chi) ∈ u, which requires neg F(chi) ∈ dc and u ⊢ neg F(chi).
+  -- Actually, look at the proof in the main theorem: h_G_in_u uses this exact logic.
+  -- Let me use that proof pattern.
+  by_contra h_not_in_u
+  -- G(neg chi) ∉ u. By maximality, inserting G(neg chi) is inconsistent.
+  -- Reconstruct the membership proof for f_step_blocking_alt
+  have h_mem : Formula.all_future (Formula.neg chi) ∈ f_step_blocking_alt_restricted phi u :=
+    ⟨chi, h_chi_not_in_u, h_F_not_in_u, h_F_in_dc, rfl⟩
+  have h_G_in_dc : Formula.all_future (Formula.neg chi) ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula) :=
+    f_step_blocking_alt_subset_deferralClosure phi u h_mem
+  have h_insert_incons := h_mcs.2 (Formula.all_future (Formula.neg chi)) h_G_in_dc h_not_in_u
+  unfold SetConsistent at h_insert_incons
+  push_neg at h_insert_incons
+  obtain ⟨L, h_L_sub, h_L_incons⟩ := h_insert_incons
+  obtain ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L_incons
+  -- L ⊆ insert G(neg chi) u, L ⊢ ⊥. By deduction: L' ⊢ neg G(neg chi) = F(chi)
+  let L' := L.filter (· ≠ Formula.all_future (Formula.neg chi))
+  have h_L'_in_u : ∀ ψ' ∈ L', ψ' ∈ u := by
+    intro ψ' hψ'
+    have hψ'_filter := List.mem_filter.mp hψ'
+    have hψ'_ne : ψ' ≠ Formula.all_future (Formula.neg chi) := by simpa using hψ'_filter.2
+    specialize h_L_sub ψ' hψ'_filter.1
+    simp [Set.mem_insert_iff] at h_L_sub
+    rcases h_L_sub with rfl | h_in
+    · exact absurd rfl hψ'_ne
+    · exact h_in
+  have h_L_sub' : L ⊆ Formula.all_future (Formula.neg chi) :: L' := by
+    intro ψ' hψ'
+    by_cases hψ'_eq : ψ' = Formula.all_future (Formula.neg chi)
+    · simp [hψ'_eq]
+    · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ', by simpa using hψ'_eq⟩)
+  have d_bot' := DerivationTree.weakening L _ Formula.bot d_bot h_L_sub'
+  have d_F_chi : L' ⊢ Formula.neg (Formula.all_future (Formula.neg chi)) :=
+    Bimodal.Metalogic.Core.deduction_theorem L' (Formula.all_future (Formula.neg chi)) Formula.bot d_bot'
+  -- L' ⊢ F(chi). But F(chi) ∉ u by assumption, and inserting F(chi) is inconsistent.
+  have h_insert_F_incons := h_mcs.2 (Formula.some_future chi) h_F_in_dc h_F_not_in_u
+  unfold SetConsistent at h_insert_F_incons
+  push_neg at h_insert_F_incons
+  obtain ⟨L'', h_L''_sub, h_L''_incons⟩ := h_insert_F_incons
+  obtain ⟨d_bot''⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot h_L''_incons
+  let L''' := L''.filter (· ≠ Formula.some_future chi)
+  have h_L'''_in_u : ∀ ψ' ∈ L''', ψ' ∈ u := by
+    intro ψ' hψ'
+    have hψ'_filter := List.mem_filter.mp hψ'
+    have hψ'_ne : ψ' ≠ Formula.some_future chi := by simpa using hψ'_filter.2
+    specialize h_L''_sub ψ' hψ'_filter.1
+    simp [Set.mem_insert_iff] at h_L''_sub
+    rcases h_L''_sub with rfl | h_in
+    · exact absurd rfl hψ'_ne
+    · exact h_in
+  have h_L''_sub' : L'' ⊆ Formula.some_future chi :: L''' := by
+    intro ψ' hψ'
+    by_cases hψ'_eq : ψ' = Formula.some_future chi
+    · simp [hψ'_eq]
+    · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ', by simpa using hψ'_eq⟩)
+  have d_bot''' := DerivationTree.weakening L'' _ Formula.bot d_bot'' h_L''_sub'
+  have d_neg_F : L''' ⊢ Formula.neg (Formula.some_future chi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L''' (Formula.some_future chi) Formula.bot d_bot'''
+  -- L' ⊢ F(chi) and L''' ⊢ neg F(chi). Combined: L' ++ L''' ⊢ ⊥
+  let L_comb := L' ++ L'''
+  have h_L_comb_in_u : ∀ ψ' ∈ L_comb, ψ' ∈ u := by
+    intro ψ' hψ'
+    simp only [L_comb, List.mem_append] at hψ'
+    rcases hψ' with h_L' | h_L'''
+    · exact h_L'_in_u ψ' h_L'
+    · exact h_L'''_in_u ψ' h_L'''
+  have d_F_comb : L_comb ⊢ Formula.some_future chi := by
+    have h_eq : Formula.neg (Formula.all_future (Formula.neg chi)) = Formula.some_future chi := rfl
+    rw [← h_eq]
+    exact DerivationTree.weakening L' L_comb _ d_F_chi (List.subset_append_left L' L''')
+  have d_neg_F_comb : L_comb ⊢ Formula.neg (Formula.some_future chi) :=
+    DerivationTree.weakening L''' L_comb _ d_neg_F (List.subset_append_right L' L''')
+  have d_bot_comb := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_F_comb d_neg_F_comb
+  exact h_mcs.1.2 L_comb h_L_comb_in_u ⟨d_bot_comb⟩
+
+/--
 G-step blocking formulas for restricted predecessor construction.
 
 Symmetric to `p_step_blocking_formulas_restricted`: blocks G-formulas that would
@@ -3430,7 +3589,11 @@ theorem g_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
 
 /--
 The restricted predecessor deferral seed: h_content, pastDeferralDisjunctions,
-f_step_blocking_formulas_restricted, g_step_blocking_formulas_restricted, and seriality_g_blocking.
+f_step_blocking_formulas_restricted, f_step_blocking_alt_restricted,
+g_step_blocking_formulas_restricted, and seriality_g_blocking.
+
+The f_step_blocking_alt_restricted handles the case chi ∉ u AND F(chi) ∉ u, complementing
+f_step_blocking_formulas_restricted which handles chi ∈ u AND F(chi) ∉ u.
 
 The seriality_g_blocking handles the special case of G_neg_neg_bot which is in serialityFormulas
 but not in closureWithNeg. Since neg_neg_bot is never in any consistent MCS, we always block
@@ -3438,7 +3601,7 @@ G_neg_neg_bot to ensure g_content(predecessor) ⊆ u.
 -/
 def constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) : Set Formula :=
   h_content u ∪ pastDeferralDisjunctions u ∪ f_step_blocking_formulas_restricted phi u ∪
-  g_step_blocking_formulas_restricted phi u ∪ seriality_g_blocking
+  f_step_blocking_alt_restricted phi u ∪ g_step_blocking_formulas_restricted phi u ∪ seriality_g_blocking
 
 /--
 Membership in constrained_predecessor_seed_restricted.
@@ -3446,7 +3609,8 @@ Membership in constrained_predecessor_seed_restricted.
 lemma mem_constrained_predecessor_seed_restricted_iff (phi : Formula) (u : Set Formula) (ψ : Formula) :
     ψ ∈ constrained_predecessor_seed_restricted phi u ↔
     ψ ∈ h_content u ∨ ψ ∈ pastDeferralDisjunctions u ∨
-    ψ ∈ f_step_blocking_formulas_restricted phi u ∨ ψ ∈ g_step_blocking_formulas_restricted phi u ∨
+    ψ ∈ f_step_blocking_formulas_restricted phi u ∨ ψ ∈ f_step_blocking_alt_restricted phi u ∨
+    ψ ∈ g_step_blocking_formulas_restricted phi u ∨
     ψ ∈ seriality_g_blocking := by
   simp only [constrained_predecessor_seed_restricted, Set.mem_union, or_assoc]
 
@@ -3462,23 +3626,31 @@ h_content subset of constrained_predecessor_seed_restricted.
 -/
 lemma h_content_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
     h_content u ⊆ constrained_predecessor_seed_restricted phi u :=
-  -- h_content is the leftmost component: h ⊆ (((h ∪ p) ∪ f) ∪ g) ∪ s
-  Set.subset_union_left.trans (Set.subset_union_left.trans (Set.subset_union_left.trans Set.subset_union_left))
+  -- h_content is the leftmost component: h ⊆ ((((h ∪ p) ∪ f) ∪ f_alt) ∪ g) ∪ s
+  Set.subset_union_left.trans (Set.subset_union_left.trans (Set.subset_union_left.trans (Set.subset_union_left.trans Set.subset_union_left)))
 
 /--
 pastDeferralDisjunctions subset of constrained_predecessor_seed_restricted.
 -/
 lemma pastDeferralDisjunctions_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
     pastDeferralDisjunctions u ⊆ constrained_predecessor_seed_restricted phi u :=
-  -- pastDeferralDisjunctions is second: p ⊆ (((h ∪ p) ∪ f) ∪ g) ∪ s
-  Set.subset_union_right.trans (Set.subset_union_left.trans (Set.subset_union_left.trans Set.subset_union_left))
+  -- pastDeferralDisjunctions is second: p ⊆ ((((h ∪ p) ∪ f) ∪ f_alt) ∪ g) ∪ s
+  Set.subset_union_right.trans (Set.subset_union_left.trans (Set.subset_union_left.trans (Set.subset_union_left.trans Set.subset_union_left)))
 
 /--
 f_step_blocking_formulas_restricted subset of constrained_predecessor_seed_restricted.
 -/
 lemma f_step_blocking_restricted_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
     f_step_blocking_formulas_restricted phi u ⊆ constrained_predecessor_seed_restricted phi u :=
-  -- f_step_blocking is third: f ⊆ (((h ∪ p) ∪ f) ∪ g) ∪ s
+  -- f_step_blocking is third: f ⊆ ((((h ∪ p) ∪ f) ∪ f_alt) ∪ g) ∪ s
+  Set.subset_union_right.trans (Set.subset_union_left.trans (Set.subset_union_left.trans Set.subset_union_left))
+
+/--
+f_step_blocking_alt_restricted subset of constrained_predecessor_seed_restricted.
+-/
+lemma f_step_blocking_alt_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
+    f_step_blocking_alt_restricted phi u ⊆ constrained_predecessor_seed_restricted phi u :=
+  -- f_step_blocking_alt is fourth: f_alt ⊆ ((((h ∪ p) ∪ f) ∪ f_alt) ∪ g) ∪ s
   Set.subset_union_right.trans (Set.subset_union_left.trans Set.subset_union_left)
 
 /--
@@ -3486,7 +3658,7 @@ g_step_blocking_formulas_restricted subset of constrained_predecessor_seed_restr
 -/
 lemma g_step_blocking_restricted_subset_constrained_predecessor_seed_restricted (phi : Formula) (u : Set Formula) :
     g_step_blocking_formulas_restricted phi u ⊆ constrained_predecessor_seed_restricted phi u :=
-  -- g_step_blocking is fourth: g ⊆ (((h ∪ p) ∪ f) ∪ g) ∪ s
+  -- g_step_blocking is fifth: g ⊆ ((((h ∪ p) ∪ f) ∪ f_alt) ∪ g) ∪ s
   Set.subset_union_right.trans Set.subset_union_left
 
 /--
@@ -3497,13 +3669,15 @@ theorem constrained_predecessor_seed_restricted_subset_deferralClosure (phi : Fo
     constrained_predecessor_seed_restricted phi u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
   intro psi h_seed
   rw [mem_constrained_predecessor_seed_restricted_iff] at h_seed
-  rcases h_seed with h_hc | h_pd | h_f_block | h_g_block | h_serial
+  rcases h_seed with h_hc | h_pd | h_f_block | h_f_alt | h_g_block | h_serial
   · -- h_content case
     exact h_content_subset_deferralClosure phi u h_u h_hc
   · -- pastDeferralDisjunctions case
     exact pastDeferralDisjunctions_subset_deferralClosure phi u h_u h_pd
   · -- f_step_blocking_formulas_restricted case
     exact f_step_blocking_restricted_subset_deferralClosure phi u h_f_block
+  · -- f_step_blocking_alt_restricted case
+    exact f_step_blocking_alt_subset_deferralClosure phi u h_f_alt
   · -- g_step_blocking_formulas_restricted case
     exact g_step_blocking_restricted_subset_deferralClosure phi u h_g_block
   · -- seriality_g_blocking case
@@ -3657,7 +3831,7 @@ theorem constrained_predecessor_seed_restricted_consistent (phi : Formula) (u : 
   have h_seed_subset_u : constrained_predecessor_seed_restricted phi u ⊆ u := by
     intro psi h_seed
     rw [mem_constrained_predecessor_seed_restricted_iff] at h_seed
-    rcases h_seed with h_hc | h_pd | h_f_block | h_g_block | h_serial
+    rcases h_seed with h_hc | h_pd | h_f_block | h_f_alt | h_g_block | h_serial
     · exact h_content_subset_deferral_restricted_mcs phi u h_mcs h_hc
     · exact pastDeferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_pd
     · -- f_step_blocking_formulas_restricted case
@@ -3769,6 +3943,9 @@ theorem constrained_predecessor_seed_restricted_consistent (phi : Formula) (u : 
       rw [h_F_eq] at d_F_combined
       have d_bot_final := Bimodal.Metalogic.Core.derives_bot_from_phi_neg_phi d_G_combined d_F_combined
       exact h_mcs.1.2 L_combined h_combined_in_u ⟨d_bot_final⟩
+    · -- f_step_blocking_alt_restricted case
+      -- This is G(neg chi) where chi ∉ u and F(chi) ∉ u and F(chi) ∈ deferralClosure
+      exact f_step_blocking_alt_subset_u phi u h_mcs h_f_alt
     · -- g_step_blocking_formulas_restricted case
       -- psi = neg(G(chi)) where G(chi) ∈ closureWithNeg and chi ∉ u
       have h_neg_G_in_dc := g_step_blocking_restricted_subset_deferralClosure phi u h_g_block
@@ -4935,21 +5112,23 @@ theorem constrained_predecessor_restricted_f_step_forward (phi : Formula) (u : S
         -- Let me re-read... oh I see, the proof derives False from F(chi) ∈ v, which is a valid approach
         -- since we can conclude anything from False. But it's overcomplicating things.
 
-        -- Regardless, for our case (chi ∉ u AND F(chi) ∉ u), we need a contradiction.
-        -- The current proof has a sorry here.
-        -- The fix is to add G(neg chi) to the seed for this case.
-
-        -- Let me modify the seed to include this blocking formula.
-        -- But that requires changing constrained_predecessor_seed_restricted and re-proving consistency.
-        -- This is getting lengthy for a single sorry.
-
-        -- Alternative: prove this case is vacuously impossible in the current setup.
-        -- If it's impossible for F(chi) ∈ v with chi ∉ u and F(chi) ∉ u, we're done.
-        -- But I don't see why it would be impossible without the seed modification.
-
-        -- For now, let me acknowledge this gap and move on.
-        -- The g_persistence_reverse sorry was the critical one.
-        sorry
+        -- The fix: use f_step_blocking_alt_restricted which adds G(neg chi) to the seed
+        -- when chi ∉ u AND F(chi) ∉ u AND F(chi) ∈ deferralClosure.
+        -- By this blocking, G(neg chi) ∈ seed ⊆ v.
+        -- F(chi) = neg G(neg chi) and G(neg chi) both in v contradicts consistency of v.
+        have h_blocking : Formula.all_future (Formula.neg chi) ∈
+            f_step_blocking_alt_restricted phi u :=
+          ⟨chi, h_chi_in_u, h_F_in_u, h_F_in_dc, rfl⟩
+        have h_G_neg_in_seed : Formula.all_future (Formula.neg chi) ∈
+            constrained_predecessor_seed_restricted phi u :=
+          f_step_blocking_alt_subset_constrained_predecessor_seed_restricted phi u h_blocking
+        have h_G_neg_in_v : Formula.all_future (Formula.neg chi) ∈ v :=
+          constrained_predecessor_restricted_extends phi u h_mcs h_P_top h_G_neg_in_seed
+        -- F(chi) = neg(G(neg chi)), so both in v contradicts consistency
+        have h_F_eq : Formula.some_future chi = Formula.neg (Formula.all_future (Formula.neg chi)) := rfl
+        rw [h_F_eq] at h_F_chi
+        exact False.elim (Bimodal.Metalogic.Core.set_consistent_not_both h_v_mcs.1.2
+          (Formula.all_future (Formula.neg chi)) h_G_neg_in_v h_F_chi)
       · -- F(chi) = F_top, so chi = neg bot
         -- neg bot is derivable (it's identity bot), so neg bot ∈ u by maximality
         have h_chi_eq : chi = Formula.neg Formula.bot := by

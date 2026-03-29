@@ -86,7 +86,7 @@ Key findings from Report 23:
 
 ---
 
-### Phase 2: Prove f_step_forward (line 4001) [IN PROGRESS]
+### Phase 2: Prove f_step_forward (line 4001) [COMPLETED]
 
 **Goal**: Prove the remaining sorry in `constrained_predecessor_restricted_f_step_forward` -- the case where chi not in u AND F(chi) not in u, but F(chi) appears in v.
 
@@ -123,9 +123,14 @@ The key mechanism: The f_step_blocking_formulas_restricted adds G(neg(xi)) to th
 
 ---
 
-### Phase 3: Fix fuel-exhaustion sorries [NOT STARTED]
+### Phase 3: Fix fuel-exhaustion sorries [BLOCKED]
 
-**Goal**: Eliminate the four remaining fuel-exhaustion sorries at lines 2913, 4341, 4499, and 4695.
+**Goal**: Eliminate the four remaining fuel-exhaustion sorries at lines 2913, 5527, 5683, 5879.
+
+**Blocking Issue**: These sorries occur in the fuel=0 base cases of recursive witness lemmas. They are semantically unreachable (initial fuel B*B+1 always exceeds required depth), but proving this requires significant restructuring:
+1. Well-founded recursion on a complex measure combining position k and depth d
+2. The recursion explores at most B*B positions (B positions x B depth), but d doesn't monotonically decrease
+3. Each approach requires threading invariants through 4+ recursive functions
 
 **Strategy**: These sorries all occur in fuel=0 base cases of recursion. They are semantically unreachable because the initial fuel (B*B+1 where B = closure_F_bound phi) always exceeds the required depth. Two approaches:
 
