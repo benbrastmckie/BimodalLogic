@@ -78,6 +78,24 @@ inductive Formula : Type where
   | all_future : Formula → Formula
   deriving Repr, DecidableEq, BEq, Hashable, Countable
 
+/-!
+### Infinite and Denumerable Instances
+
+Formula is infinite (via injection from Atom) and denumerable (countable + infinite).
+These instances enable enumeration of all formulas for the dovetailed chain construction.
+-/
+
+/-- Formula.atom is injective. -/
+theorem Formula.atom_injective : Function.Injective Formula.atom := by
+  intro a b h
+  injection h
+
+/-- Formula is infinite since Atom is infinite and Formula.atom is injective. -/
+instance : Infinite Formula := Infinite.of_injective Formula.atom Formula.atom_injective
+
+/-- Formula is denumerable (countable + infinite = bijection with Nat). -/
+noncomputable instance : Denumerable Formula := Classical.choice (nonempty_denumerable Formula)
+
 namespace Formula
 
 /-- Create an atom formula from a string (backward compatibility helper).

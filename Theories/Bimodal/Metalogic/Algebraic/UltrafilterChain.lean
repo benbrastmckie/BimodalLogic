@@ -3665,4 +3665,235 @@ theorem Z_chain_forward_F' (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     -- The full proof requires showing F(phi) at t < 0 leads to phi at some s > t
     sorry
 
+/-!
+## True Dovetailed Omega Chain Construction
+
+This section implements the TRUE dovetailed forward chain that achieves temporal coherence
+by construction. The key insight is that we use `Nat.unpair` to fairly schedule F-obligation
+resolution across all time points.
+
+### Mathematical Background
+
+The standard `omega_chain_forward` only resolves `F_top` at each step, which doesn't guarantee
+that arbitrary F(phi) obligations are resolved. The dovetailed construction explicitly targets
+each F-obligation for resolution using Cantor pairing.
+
+### Construction Strategy
+
+At step n+1:
+1. Decode (t, k) = Nat.unpair n
+2. If t ≤ n and k = 0, select an unresolved F-formula from chain(t) to resolve
+3. Build chain(n+1) as a resolving witness for that formula (from chain(n))
+4. If no unresolved formula exists, just use F_top
+
+### Key Property
+
+For any F(phi) ∈ chain(t), there exists s > t such that phi ∈ chain(s).
+This follows from:
+- F(phi) persists until resolved (by omega_forward_F_persistence_or_resolution)
+- The dovetailing ensures every (t, 0) pair is eventually hit
+- When we hit (t, 0) and F(phi) is still unresolved, we resolve it
+-/
+
+/--
+Predicate: F(phi) is unresolved at time n in the chain.
+Means F(phi) ∈ chain(n) but phi ∉ chain(n).
+-/
+def F_unresolved (chain : Nat → Set Formula) (n : Nat) (phi : Formula) : Prop :=
+  Formula.some_future phi ∈ chain n ∧ phi ∉ chain n
+
+/--
+Predicate: there exists an unresolved F-formula at time n.
+-/
+def has_unresolved_F (chain : Nat → Set Formula) (n : Nat) : Prop :=
+  ∃ phi, F_unresolved chain n phi
+
+/--
+Select an unresolved F-formula from chain(n), if one exists.
+Returns F_top if all F-formulas are already resolved.
+Uses Classical.choose with propDecidable for the existence check.
+-/
+noncomputable def select_unresolved_F (chain : Nat → Set Formula)
+    (_chain_mcs : ∀ n, SetMaximalConsistent (chain n)) (n : Nat) : Formula :=
+  @dite Formula (has_unresolved_F chain n) (Classical.propDecidable _)
+    (fun h => Classical.choose h)
+    (fun _ => Formula.neg Formula.bot)
+
+/--
+Proof that selected formula has F in chain(n).
+-/
+theorem select_unresolved_F_spec (chain : Nat → Set Formula)
+    (chain_mcs : ∀ n, SetMaximalConsistent (chain n)) (n : Nat) :
+    Formula.some_future (select_unresolved_F chain chain_mcs n) ∈ chain n := by
+  unfold select_unresolved_F
+  by_cases h : has_unresolved_F chain n
+  · -- has_unresolved_F case
+    have heq : @dite Formula (has_unresolved_F chain n) (Classical.propDecidable _)
+        (fun h => Classical.choose h) (fun _ => Formula.neg Formula.bot) =
+        Classical.choose h := by
+      simp only [h, dite_true]
+    rw [heq]
+    exact (Classical.choose_spec h).1
+  · -- no unresolved F case
+    have heq : @dite Formula (has_unresolved_F chain n) (Classical.propDecidable _)
+        (fun h => Classical.choose h) (fun _ => Formula.neg Formula.bot) =
+        Formula.neg Formula.bot := by
+      simp only [h, dite_false]
+    rw [heq]
+    exact SetMaximalConsistent.contains_F_top (chain_mcs n)
+
+/--
+The target time index for resolution at step n.
+Uses Nat.unpair to decode (time, index) from n.
+We only resolve at time t when unpair(n) = (t, 0) and t ≤ n.
+-/
+def resolution_target_time (n : Nat) : Nat :=
+  let (t, k) := Nat.unpair n
+  if k = 0 ∧ t ≤ n then t else n
+
+/--
+The k-th formula in the enumeration (uses Denumerable instance from Formula.lean).
+-/
+noncomputable def enumFormula (k : Nat) : Formula := Denumerable.ofNat Formula k
+
+/--
+Select the formula to resolve at step n.
+
+At step n, decode (t, k) = Nat.unpair n.
+- Let psi = enumFormula k (the k-th formula in enumeration)
+- If F(psi) ∈ M_n (the current chain point), return psi
+- Otherwise, return ⊤ (neg bot, which always has F(⊤) in any MCS)
+
+This ensures: for any formula psi, when n = Nat.pair t (encode psi) is reached,
+if F(psi) ∈ chain(n), we will resolve it by putting psi in chain(n+1).
+
+The decidability uses Classical.propDecidable since set membership is not decidable.
+-/
+noncomputable def selectFormulaToResolve (M_n : Set Formula) (n : Nat) : Formula :=
+  -- Inline version without inner let bindings
+  @ite _ (Formula.some_future (enumFormula (Nat.unpair n).2) ∈ M_n) (Classical.propDecidable _)
+    (enumFormula (Nat.unpair n).2)
+    (Formula.neg Formula.bot)
+
+/--
+Proof that the selected formula has F in M_n.
+-/
+theorem selectFormulaToResolve_has_F (M_n : Set Formula) (h_mcs : SetMaximalConsistent M_n) (n : Nat) :
+    Formula.some_future (selectFormulaToResolve M_n n) ∈ M_n := by
+  unfold selectFormulaToResolve enumFormula
+  -- The @ite with Classical.propDecidable expands to a dite-like structure
+  -- We need to show the goal definitionally equals the ite expression
+  show Formula.some_future (@ite Formula
+    (Formula.some_future (Denumerable.ofNat Formula (Nat.unpair n).2) ∈ M_n)
+    (Classical.propDecidable _)
+    (Denumerable.ofNat Formula (Nat.unpair n).2)
+    (Formula.neg Formula.bot)) ∈ M_n
+  by_cases h : Formula.some_future (Denumerable.ofNat Formula (Nat.unpair n).2) ∈ M_n
+  · -- F(psi) ∈ M_n case: ite chooses psi
+    rw [if_pos h]
+    exact h
+  · -- F(psi) ∉ M_n case: ite chooses F_top
+    rw [if_neg h]
+    exact SetMaximalConsistent.contains_F_top h_mcs
+
+/--
+True dovetailed forward chain with invariant.
+
+At each step n+1:
+- Decode (t, k) = Nat.unpair n
+- Let psi = enumFormula k (the k-th formula in enumeration)
+- If F(psi) ∈ chain(n), build chain(n+1) as resolving_witness for psi
+- Otherwise, build chain(n+1) as resolving_witness for ⊤
+
+The G-theory from M0 is preserved because:
+1. resolving_witness preserves G-theory from its input
+2. chain(n) has M0's G-theory by induction
+
+The box-class is preserved by transitivity.
+
+KEY PROPERTY (fairness): For any formula psi, the index Nat.pair t (encode psi)
+is eventually reached for every t. At that step, if F(psi) ∈ chain(n), we resolve it.
+Since Nat.pair is surjective onto Nat, every (t, encode psi) pair is hit.
+-/
+noncomputable def omega_chain_true_dovetailed_forward_with_inv
+    (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) :
+    Nat → { W : Set Formula // OmegaForwardInvariant M0 W }
+  | 0 => ⟨M0, ⟨h_mcs0, fun _ h => h, box_class_agree_refl M0⟩⟩
+  | n + 1 =>
+    let prev := omega_chain_true_dovetailed_forward_with_inv M0 h_mcs0 n
+    let M_n := prev.val
+    let inv_n := prev.property
+    -- Select formula based on enumeration: psi = enumFormula(k) where (_, k) = unpair(n)
+    -- If F(psi) ∈ M_n, resolve psi; otherwise resolve ⊤
+    let phi := selectFormulaToResolve M_n n
+    let h_F : Formula.some_future phi ∈ M_n := selectFormulaToResolve_has_F M_n inv_n.is_mcs n
+    -- Build witness using the selected formula
+    let witness := omega_step_forward M_n inv_n.is_mcs phi h_F
+    ⟨witness.val, {
+      is_mcs := witness.property.1
+      G_propagate := fun a h_Ga_M0 =>
+        witness.property.2.2.1 a (inv_n.G_propagate a h_Ga_M0)
+      box_agree := box_class_agree_trans inv_n.box_agree witness.property.2.2.2
+    }⟩
+
+/--
+Accessor for the true dovetailed forward chain.
+-/
+noncomputable def omega_chain_true_dovetailed_forward (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) :
+    Nat → Set Formula :=
+  fun n => (omega_chain_true_dovetailed_forward_with_inv M0 h_mcs0 n).val
+
+/--
+The true dovetailed chain is MCS at each point.
+-/
+theorem omega_chain_true_dovetailed_forward_mcs (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) :
+    ∀ n : Nat, SetMaximalConsistent (omega_chain_true_dovetailed_forward M0 h_mcs0 n) := by
+  intro n
+  exact (omega_chain_true_dovetailed_forward_with_inv M0 h_mcs0 n).property.is_mcs
+
+/--
+The true dovetailed chain preserves box class with M0.
+-/
+theorem omega_chain_true_dovetailed_forward_box_class (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) :
+    ∀ n : Nat, box_class_agree M0 (omega_chain_true_dovetailed_forward M0 h_mcs0 n) := by
+  intro n
+  exact (omega_chain_true_dovetailed_forward_with_inv M0 h_mcs0 n).property.box_agree
+
+/--
+The true dovetailed chain at 0 is M0.
+-/
+theorem omega_chain_true_dovetailed_forward_zero (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) :
+    omega_chain_true_dovetailed_forward M0 h_mcs0 0 = M0 := by
+  unfold omega_chain_true_dovetailed_forward omega_chain_true_dovetailed_forward_with_inv
+  rfl
+
+/--
+G-formulas from M0 propagate through the true dovetailed chain.
+-/
+theorem omega_chain_true_dovetailed_forward_G_theory (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
+    (a : Formula) (h_Ga_M0 : Formula.all_future a ∈ M0) :
+    ∀ n : Nat, Formula.all_future a ∈ omega_chain_true_dovetailed_forward M0 h_mcs0 n := by
+  intro n
+  exact (omega_chain_true_dovetailed_forward_with_inv M0 h_mcs0 n).property.G_propagate a h_Ga_M0
+
+/--
+Resolution property: At step n+1, the selected formula psi is included in chain(n+1).
+
+More specifically, if psi = enumFormula k where (_, k) = unpair(n), and F(psi) ∈ chain(n),
+then psi ∈ chain(n+1).
+-/
+theorem omega_chain_true_dovetailed_forward_resolves (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
+    (n : Nat) : selectFormulaToResolve (omega_chain_true_dovetailed_forward M0 h_mcs0 n) n ∈
+                omega_chain_true_dovetailed_forward M0 h_mcs0 (n + 1) := by
+  -- chain(n+1) is built using omega_step_forward with selectFormulaToResolve(chain(n), n)
+  -- omega_step_forward includes the formula in its result
+  -- The definition of omega_chain_true_dovetailed_forward_with_inv at n+1 is:
+  --   let phi := selectFormulaToResolve M_n n
+  --   let witness := omega_step_forward M_n ... phi ...
+  --   ⟨witness.val, ...⟩
+  -- And omega_step_forward's property.2.1 says phi ∈ witness.val
+  simp only [omega_chain_true_dovetailed_forward,
+             omega_chain_true_dovetailed_forward_with_inv]
+  exact (omega_step_forward _ _ _ _).property.2.1
+
 end Bimodal.Metalogic.Algebraic.UltrafilterChain
