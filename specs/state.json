@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-29T00:20:46Z",
+      "last_updated": "2026-03-29T00:22:36Z",
       "artifacts": [
         {
           "type": "research",
@@ -945,9 +945,14 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/plans/03_termination-first-plan.md",
           "type": "plan",
           "summary": "5-phase plan: termination sorries -> G/H propagation -> restricted BFMCS bridge -> truth lemma adaptation -> completeness wiring"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/summaries/03_completeness-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation - Phase 1 termination analysis complete, measure identified but decreasing_by proofs remain"
         }
       ],
-      "session_id": "sess_1774743374_9dae53",
+      "session_id": "sess_1774743732_4ad947",
       "researched": "2026-03-29T00:11:32Z",
       "planned": "2026-03-29T00:20:46Z",
       "started": "2026-03-27T23:46:39Z",

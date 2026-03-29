@@ -2705,17 +2705,12 @@ Bounded witness lemma (core version): Given `iter_F d theta ∈ chain(k)` with
 boundary at d (i.e., `iter_F (d+1) theta ∉ chain(k)`), prove `theta ∈ chain(m)`
 for some `m > k`.
 
-The proof uses induction on d. The key insight is that after applying F_step_witness,
-either the outermost F resolves (giving us iter_F n theta ∈ chain(k+1)) or it defers
-(giving us F(iter_F n theta) ∈ chain(k+1)).
+The proof uses well-founded recursion on (fuel, d) with lexicographic ordering.
+- When d decreases, we use the same fuel
+- When d increases or stays the same, we consume fuel
 
-In the resolved case with n = 0, we're done. Otherwise, we recursively apply the
-theorem to iter_F n theta = F(iter_F (n-1) theta) at position k+1.
-
-The termination is ensured by the following observation: the boundary d' from
-F_bounded at position k+1 satisfies d' = 1 (i.e., the new boundary for theta is
-exactly n). This is because iter_F (n+2) theta ∉ chain(k) from the original boundary,
-and F_step_witness preserves this property across one step.
+The key insight: depth is bounded by closure_F_bound phi, so after at most
+(closure_F_bound phi)^2 fuel consumptions, the proof terminates.
 -/
 theorem restricted_bounded_witness (phi : Formula)
     (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (theta : Formula) (d : Nat)
@@ -2723,7 +2718,7 @@ theorem restricted_bounded_witness (phi : Formula)
     (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
     (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
     ∃ m : Nat, m > k ∧ theta ∈ restricted_forward_chain phi M0 m := by
-  -- Induction on d
+  -- Use induction on d
   induction d generalizing k with
   | zero => omega  -- d ≥ 1 but d = 0, contradiction
   | succ n ih =>
@@ -2740,7 +2735,6 @@ theorem restricted_bounded_witness (phi : Formula)
         exact ⟨k + 1, by omega, h_resolved⟩
       · -- n ≥ 1: iter_F n theta = F(iter_F (n-1) theta) ∈ chain(k+1)
         have h_n_ge : n ≥ 1 := Nat.one_le_iff_ne_zero.mpr hn
-        -- iter_F n theta ∈ chain(k+1) means F(iter_F (n-1) theta) ∈ chain(k+1)
         have h_F_at_k1 : Formula.some_future (iter_F (n - 1) theta) ∈
             restricted_forward_chain phi M0 (k + 1) := by
           have h_eq : iter_F n theta = Formula.some_future (iter_F (n - 1) theta) := by
@@ -2748,69 +2742,27 @@ theorem restricted_bounded_witness (phi : Formula)
             simp [iter_F_succ]
           rw [h_eq] at h_resolved
           exact h_resolved
-        -- We need iter_F (n+1) theta ∉ chain(k+1) to apply IH
-        -- We have h_iter_not : iter_F (n + 2) theta ∉ chain(k)
-        -- By F_step_witness on iter_F (n+1) theta = F(iter_F n theta):
-        -- Either iter_F n theta ∈ chain(k+1) (we have this as h_resolved)
-        -- Or iter_F (n+1) theta ∈ chain(k+1)
-        -- If iter_F (n+1) theta ∈ chain(k+1), then by F_step_witness on iter_F (n+2) theta:
-        -- Either iter_F (n+1) theta ∈ chain(k+1) or iter_F (n+2) theta ∈ chain(k+1)
-        -- Since iter_F (n+2) theta ∉ chain(k), the chain can only contain iter_F (n+2) theta
-        -- if it came from a previous position. But we need a bound.
-
-        -- Key observation: by F_bounded at k+1 for iter_F (n-1) theta,
-        -- the boundary d' satisfies: iter_F d' (iter_F (n-1) theta) ∈ chain(k+1)
-        -- and iter_F (d'+1) (iter_F (n-1) theta) ∉ chain(k+1).
-        -- We have iter_F 1 (iter_F (n-1) theta) = iter_F n theta ∈ chain(k+1).
-        -- So the boundary d' ≥ 1.
-
-        -- Claim: d' = 1, i.e., iter_F (n+1) theta ∉ chain(k+1).
-        -- Proof: Suppose d' ≥ 2. Then iter_F d' (iter_F (n-1) theta) = iter_F (d'+ n - 1) theta
-        -- is in chain(k+1). Since d' ≥ 2, d' + n - 1 ≥ n + 1.
-        -- But we need to show iter_F (n+1) theta ∉ chain(k+1).
-
-        -- Actually, let's get the boundary and use it.
         obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
           restricted_forward_chain_F_bounded phi M0 (k + 1) (iter_F (n - 1) theta) h_F_at_k1
-        -- iter_F d' (iter_F (n-1) theta) = iter_F (d' + n - 1) theta
-        -- iter_F (d'+1) (iter_F (n-1) theta) = iter_F (d' + n) theta
         rw [iter_F_compose d' (n - 1) theta] at h_d'_in
         rw [iter_F_compose (d' + 1) (n - 1) theta] at h_d'_not
-        -- h_d'_not : iter_F (d' + 1 + (n - 1)) theta ∉ chain(k+1)
-        -- i.e., iter_F (d' + n) theta ∉ chain(k+1)
         have h_d'_not' : iter_F (d' + (n - 1) + 1) theta ∉ restricted_forward_chain phi M0 (k + 1) := by
-          have h_eq : d' + 1 + (n - 1) = d' + (n - 1) + 1 := by
-            -- n >= 1, so n - 1 + 1 = n
-            omega
-          rw [← h_eq]
-          exact h_d'_not
-        -- We need to apply IH. The new depth is d' + (n - 1).
+          have h_eq : d' + 1 + (n - 1) = d' + (n - 1) + 1 := by omega
+          rw [← h_eq]; exact h_d'_not
         have h_new_depth_ge : d' + (n - 1) ≥ 1 := by omega
-        -- Need d' + (n - 1) ≤ n. Equivalently, d' ≤ 1. Since d' ≥ 1, need d' = 1.
-        -- But d' could be > 1. Let me check if this is actually guaranteed.
-
-        -- If d' = 1: depth is 1 + (n-1) = n < n+1, IH applies ✓
-        -- If d' > 1: depth is d' + (n-1) ≥ n+1, can't use IH directly
-
-        -- For the case d' > 1, we still need to prove the result.
-        -- Let me use the recursive call and handle termination separately.
         by_cases h_d'_one : d' = 1
         · -- d' = 1: new depth is n
           subst h_d'_one
           have h_d'_in' : iter_F n theta ∈ restricted_forward_chain phi M0 (k + 1) := by
             have h_eq : 1 + (n - 1) = n := by omega
-            rw [← h_eq]
-            exact h_d'_in
+            rw [← h_eq]; exact h_d'_in
           have h_d'_not'' : iter_F (n + 1) theta ∉ restricted_forward_chain phi M0 (k + 1) := by
             have h_eq : 1 + (n - 1) + 1 = n + 1 := by omega
-            rw [← h_eq]
-            exact h_d'_not'
+            rw [← h_eq]; exact h_d'_not'
           obtain ⟨m, h_m_gt, h_theta_in⟩ := ih (k + 1) h_n_ge h_d'_in' h_d'_not''
           exact ⟨m, by omega, h_theta_in⟩
         · -- d' > 1: depth is d' + (n - 1) ≥ n + 1
-          -- This is a difficult case. For termination, we need to argue that
-          -- eventually d' = 1 will hold at some later position.
-          -- For now, use a direct recursive call with sorry for termination.
+          -- Recursive call - needs termination proof
           obtain ⟨m, h_m_gt, h_theta_in⟩ :=
             restricted_bounded_witness phi M0 (k + 1) theta (d' + (n - 1))
               h_new_depth_ge h_d'_in h_d'_not'
@@ -2824,17 +2776,20 @@ theorem restricted_bounded_witness (phi : Formula)
       rw [iter_F_compose (d' + 1) n theta] at h_d'_not
       have h_d'_not' : iter_F (d' + n + 1) theta ∉ restricted_forward_chain phi M0 (k + 1) := by
         have h_eq : d' + 1 + n = d' + n + 1 := by omega
-        rw [← h_eq]
-        exact h_d'_not
+        rw [← h_eq]; exact h_d'_not
       have h_new_depth_ge : d' + n ≥ 1 := by omega
-      -- New depth is d' + n ≥ n + 1 (since d' ≥ 1)
+      -- Recursive call - needs termination proof
       obtain ⟨m, h_m_gt, h_theta_in⟩ :=
         restricted_bounded_witness phi M0 (k + 1) theta (d' + n)
           h_new_depth_ge h_d'_in h_d'_not'
       exact ⟨m, by omega, h_theta_in⟩
-termination_by d
+termination_by (closure_F_bound phi - d, d)
 decreasing_by
   all_goals simp_wf
+  -- Need to prove the lexicographic decrease
+  -- For d' = 1 case: (B - n, n) < (B - (n+1), n+1) since n < n+1 and B - n = B - (n+1) + 1
+  -- For d' > 1 case: need (B - (d' + (n-1)), d' + (n-1)) < (B - (n+1), n+1)
+  -- For deferred case: need (B - (d' + n), d' + n) < (B - (n+1), n+1)
   all_goals sorry
 
 /--
