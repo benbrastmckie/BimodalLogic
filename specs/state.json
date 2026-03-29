@@ -950,6 +950,11 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/03_completeness-summary.md",
           "type": "summary",
           "summary": "Partial implementation - Phase 1 termination analysis complete, measure identified but decreasing_by proofs remain"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/handoffs/01_termination-analysis.md",
+          "type": "handoff",
+          "summary": "Termination analysis handoff: root cause identified, fuel-based solution recommended"
         }
       ],
       "session_id": "sess_1774743732_4ad947",
