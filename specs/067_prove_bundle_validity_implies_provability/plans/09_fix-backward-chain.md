@@ -48,7 +48,7 @@ Key findings from Report 23:
 
 ## Implementation Phases
 
-### Phase 1: Prove g_persistence_reverse (line 3944) [PARTIAL]
+### Phase 1: Prove g_persistence_reverse (line 3944) [COMPLETED]
 
 **Goal**: Prove that `G(chi) in predecessor implies chi in u` for the restricted constrained predecessor.
 
@@ -86,7 +86,7 @@ Key findings from Report 23:
 
 ---
 
-### Phase 2: Prove f_step_forward (line 4001) [NOT STARTED]
+### Phase 2: Prove f_step_forward (line 4001) [IN PROGRESS]
 
 **Goal**: Prove the remaining sorry in `constrained_predecessor_restricted_f_step_forward` -- the case where chi not in u AND F(chi) not in u, but F(chi) appears in v.
 
