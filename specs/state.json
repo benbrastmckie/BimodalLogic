@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-29T08:13:45Z",
+      "last_updated": "2026-03-29T16:05:47Z",
       "artifacts": [
         {
           "type": "research",
@@ -995,10 +995,15 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/05_completeness-wiring-summary.md",
           "type": "summary",
           "summary": "Phases 3-4 complete, proof restructured with sorry isolated in bfmcs_from_mcs_temporally_coherent"
+        },
+        {
+          "type": "research",
+          "path": "specs/067_prove_bundle_validity_implies_provability/reports/20_team-research.md",
+          "summary": "Team research: fuel exhaustion root cause, restricted_forward_chain_forward_F investigation recommended (2 teammates)"
         }
       ],
-      "session_id": "sess_1774769376_d4d3f4",
-      "researched": "2026-03-29T06:44:12Z",
+      "session_id": "sess_1774772143_d8f232",
+      "researched": "2026-03-29T16:05:47Z",
       "planned": "2026-03-29T06:52:34Z",
       "started": "2026-03-27T23:46:39Z",
       "blocker": "bfmcs_from_mcs_temporally_coherent sorry: family-level temporal coherence (forward_F/backward_P within SuccChainFMCS). Root cause: fuel-exhaustion branch in restricted_bounded_witness_fueled.",
