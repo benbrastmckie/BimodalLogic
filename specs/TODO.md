@@ -37,7 +37,7 @@ technical_debt:
 67 → 68 → 58 → 59 → 60
 ```
 
-1. **67** [RESEARCHED] — Prove bundle_validity_implies_provability (model-theoretic glue)
+1. **67** [PLANNED] — Prove bundle_validity_implies_provability (model-theoretic glue)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #67)
 3. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #67, #68)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
@@ -79,7 +79,7 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Blocker**: F_top ∉ deferralClosure(phi) for general phi - DeferralRestrictedSerialMCS cannot be constructed
 - **Language**: lean4
 - **Dependencies**: None
@@ -95,6 +95,7 @@ technical_debt:
   - [05_extend-deferral-closure.md](067_prove_bundle_validity_implies_provability/plans/05_extend-deferral-closure.md)
   - [06_well-founded-recursion.md](067_prove_bundle_validity_implies_provability/plans/06_well-founded-recursion.md)
   - [07_wire-restricted-chain.md](067_prove_bundle_validity_implies_provability/plans/07_wire-restricted-chain.md)
+  - [08_dovetailed-omega-fmcs.md](067_prove_bundle_validity_implies_provability/plans/08_dovetailed-omega-fmcs.md)
 - **Summary**: [01_implementation-summary.md](067_prove_bundle_validity_implies_provability/summaries/01_implementation-summary.md)
 
 **Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.
