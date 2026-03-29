@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-28T23:42:35Z",
+      "last_updated": "2026-03-29T00:01:06Z",
       "artifacts": [
         {
           "type": "research",
@@ -930,13 +930,18 @@
           "type": "plan",
           "path": "specs/067_prove_bundle_validity_implies_provability/plans/02_restricted-coherence-plan.md",
           "summary": "4-phase plan: restricted coherence transfer, restricted truth lemma, completeness wiring, cleanup"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/summaries/01_implementation-analysis.md",
+          "type": "summary",
+          "summary": "Deep analysis of completeness gap, implementation options documented"
         }
       ],
-      "session_id": "sess_1774741150_3b5b30",
+      "session_id": "sess_1774741595_814150",
       "researched": "2026-03-28T23:38:22Z",
       "planned": "2026-03-28T23:42:35Z",
       "started": "2026-03-27T23:46:39Z",
-      "blocker": "Independent Lindenbaum extensions don't preserve G/H propagation between positions"
+      "blocker": "Same-family forward_F/backward_P required for truth lemma's backward G/H cases. Implementation path: ~300-400 lines for restricted truth lemma."
     },
     {
       "project_number": 68,
