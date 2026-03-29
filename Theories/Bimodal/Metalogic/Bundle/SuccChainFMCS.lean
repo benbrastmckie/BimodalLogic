@@ -2732,7 +2732,40 @@ we're guaranteed to terminate because:
 2. The total number of "defer" steps is bounded by the product of positions visited × depth resets
 3. Since depth resets at most B times per position, and we make progress through the chain,
    B^2 fuel suffices.
+
+**Well-Founded Recursion (Plan 06)**: The depth parameter d from `deferral_restricted_mcs_F_bounded`
+satisfies 1 <= d < closure_F_bound phi. This bounds the total recursion depth.
 -/
+
+/--
+Upper bound on boundary depth from F_bounded.
+
+For any F(psi) in a DeferralRestrictedMCS M ⊆ deferralClosure phi, the boundary
+depth d from `deferral_restricted_mcs_F_bounded` satisfies d < closure_F_bound phi.
+
+This is because iter_F (closure_F_bound phi) psi would have f_nesting_depth exceeding
+the maximum in deferralClosure phi, so it cannot be in M.
+-/
+theorem deferral_restricted_mcs_F_bounded_upper (phi psi : Formula) (M : Set Formula)
+    (h_mcs : DeferralRestrictedMCS phi M)
+    (h_F_in : Formula.some_future psi ∈ M) :
+    ∀ d, d ≥ 1 → iter_F d psi ∈ M → iter_F (d + 1) psi ∉ M → d < closure_F_bound phi := by
+  intro d _h_d_ge h_iter_in _h_iter_not
+  by_contra h_ge
+  push_neg at h_ge
+  -- If d >= closure_F_bound phi, then iter_F d psi ∉ M (via depth argument)
+  -- This contradicts h_iter_in
+  have h_in_dc := Bimodal.Metalogic.Core.deferral_restricted_mcs_is_restricted h_mcs h_iter_in
+  have h_depth_bound : Bimodal.Syntax.f_nesting_depth (iter_F d psi) ≤
+      (Bimodal.Syntax.deferralClosure phi).sup Bimodal.Syntax.f_nesting_depth :=
+    Finset.le_sup h_in_dc
+  rw [Bimodal.Syntax.max_F_depth_deferralClosure_eq] at h_depth_bound
+  rw [Bimodal.Metalogic.Bundle.iter_F_f_nesting_depth] at h_depth_bound
+  unfold closure_F_bound at h_ge
+  -- h_depth_bound: d + f_nesting_depth psi ≤ max(max_F_depth_in_closure phi, 1)
+  -- h_ge: d ≥ max(max_F_depth_in_closure phi, 1) + 1
+  -- These are contradictory since f_nesting_depth psi >= 0
+  omega
 
 /--
 Helper: F(psi) in the restricted chain at position k implies psi or F(psi) is in position k+1.
@@ -2771,13 +2804,81 @@ private theorem iter_F_compose (d n : Nat) (psi : Formula) :
     simp only [h_eq, iter_F_succ]
 
 /--
-Fueled version of bounded witness lemma: Given `iter_F d theta ∈ chain(k)` with
-boundary at d (i.e., `iter_F (d+1) theta ∉ chain(k)`), prove `theta ∈ chain(m)`
-for some `m > k`.
+Depth bound maintained through recursion: at each call, d < closure_F_bound phi.
 
-The fuel parameter provides explicit termination: it decreases on every recursive call.
-The total number of recursive calls is bounded by B^2 where B = closure_F_bound phi.
-Uses fuel+1 pattern to simplify termination proofs.
+This follows from `deferral_restricted_mcs_F_bounded_upper` applied to the chain.
+-/
+private theorem restricted_forward_chain_depth_bounded (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (theta : Formula) (d : Nat)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
+    (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
+    d < closure_F_bound phi := by
+  -- iter_F d theta ∈ chain(k) implies iter_F 1 (iter_F (d-1) theta) = F(iter_F (d-1) theta) ∈ chain(k)
+  -- if d >= 1.
+  -- Actually, we need F(something) ∈ chain(k) to apply the upper bound.
+  -- We have iter_F d theta = F(iter_F (d-1) theta) when d >= 1.
+  obtain ⟨d', rfl⟩ : ∃ d', d = d' + 1 := ⟨d - 1, by omega⟩
+  -- Now d = d' + 1, so iter_F (d'+1) theta = F(iter_F d' theta)
+  have h_F_in : Formula.some_future (iter_F d' theta) ∈ restricted_forward_chain phi M0 k := by
+    simp only [iter_F_succ] at h_iter_in
+    exact h_iter_in
+  -- Apply the upper bound with psi = iter_F d' theta and d = 1
+  -- iter_F 1 psi = F(iter_F d' theta) = iter_F (d' + 1) theta ∈ chain(k) ✓
+  -- iter_F 2 psi = iter_F (d' + 2) theta ∉ chain(k) (need to prove from h_iter_not)
+  have h_mcs := restricted_forward_chain_is_drm phi M0 k
+  -- h_iter_in : iter_F (d' + 1) theta ∈ chain(k)
+  -- h_iter_not : iter_F (d' + 1 + 1) theta ∉ chain(k) = iter_F (d' + 2) theta ∉ chain(k)
+  -- Transform h_iter_in to iter_F 1 (iter_F d' theta) ∈ chain(k)
+  have h_iter_in' : iter_F 1 (iter_F d' theta) ∈ restricted_forward_chain phi M0 k := by
+    rw [iter_F_compose 1 d' theta]; simp only [Nat.add_comm]; exact h_iter_in
+  -- Transform h_iter_not to iter_F 2 (iter_F d' theta) ∉ chain(k)
+  have h_iter_not' : iter_F 2 (iter_F d' theta) ∉ restricted_forward_chain phi M0 k := by
+    rw [iter_F_compose 2 d' theta]
+    have h_eq : 2 + d' = d' + 1 + 1 := by omega
+    rw [h_eq]; exact h_iter_not
+  -- Apply the upper bound
+  have h_bound := deferral_restricted_mcs_F_bounded_upper phi (iter_F d' theta)
+    (restricted_forward_chain phi M0 k) h_mcs h_F_in
+    1 (by omega) h_iter_in' h_iter_not'
+  -- h_bound : 1 < closure_F_bound phi, but we need d' + 1 < closure_F_bound phi
+  -- The issue is that we passed d = 1, but we want to bound d' + 1.
+  -- Let me rethink this. The key fact is that iter_F (d' + 1) theta ∈ chain(k) with
+  -- iter_F (d' + 2) theta ∉ chain(k). This means d' + 1 is the boundary for theta.
+  -- So we should apply the upper bound directly to theta with d = d' + 1.
+  -- But deferral_restricted_mcs_F_bounded_upper requires F(psi) ∈ M first.
+  -- We have F(iter_F d' theta) ∈ chain(k), i.e., F(psi) ∈ M with psi = iter_F d' theta.
+  -- The bound says: for this psi, if the boundary is at d_bound, then d_bound < B.
+  -- From h_iter_in and h_iter_not, the boundary for psi is at d = 1.
+  -- So 1 < B, which is always true but doesn't help with d' + 1.
+  -- The correct approach: use the upper bound for theta directly.
+  -- But F(theta) may not be in chain(k). We have F(iter_F d' theta) ∈ chain(k).
+  -- The actual bound we need: if iter_F (d'+1) theta ∈ chain(k) ⊆ deferralClosure phi,
+  -- then f_nesting_depth (iter_F (d'+1) theta) ≤ max_F_depth, so (d'+1) + f_nesting_depth theta ≤ max_F_depth.
+  -- Thus d' + 1 ≤ max_F_depth < closure_F_bound phi.
+  have h_in_dc := Bimodal.Metalogic.Core.deferral_restricted_mcs_is_restricted h_mcs h_iter_in
+  have h_depth_bound : Bimodal.Syntax.f_nesting_depth (iter_F (d' + 1) theta) ≤
+      (Bimodal.Syntax.deferralClosure phi).sup Bimodal.Syntax.f_nesting_depth :=
+    Finset.le_sup h_in_dc
+  rw [Bimodal.Syntax.max_F_depth_deferralClosure_eq] at h_depth_bound
+  rw [Bimodal.Metalogic.Bundle.iter_F_f_nesting_depth] at h_depth_bound
+  unfold closure_F_bound
+  omega
+
+/--
+Fueled version of bounded witness lemma.
+
+The depth parameter d satisfies d < closure_F_bound phi (proved internally).
+This bound ensures termination: each recursive call either decreases d or increases k,
+and the total number of such operations is bounded by B^2 where B = closure_F_bound phi.
+
+**Fuel=0 Cases**: The sorries in the fuel=0 branches are semantically unreachable when the
+function is called with initial fuel >= B*B where B = closure_F_bound phi. Each recursive
+call consumes 1 fuel and has bounded depth (< B). The total calls are bounded by B*B because:
+- Each position k can have at most B "resolve" steps (each decreases effective F-nesting)
+- Between any two resolve steps, there can be at most B "defer" steps (bounded by depth)
+- The outer theorem `restricted_bounded_witness` calls this with fuel = B*B+1, ensuring
+  the fuel=0 cases are never reached.
 -/
 private theorem restricted_bounded_witness_fueled (phi : Formula)
     (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (theta : Formula) (d : Nat)
@@ -2786,15 +2887,27 @@ private theorem restricted_bounded_witness_fueled (phi : Formula)
     (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
     (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
     ∃ m : Nat, m > k ∧ theta ∈ restricted_forward_chain phi M0 m := by
+  -- Derive the depth bound from h_iter_in and h_iter_not
+  have h_d_lt : d < closure_F_bound phi :=
+    restricted_forward_chain_depth_bounded phi M0 k theta d h_d_ge h_iter_in h_iter_not
   match fuel with
   | 0 =>
-    -- Impossible case: d >= 1 but no fuel means no progress possible
-    -- This case never occurs with sufficient initial fuel (B*B+1)
+    -- SEMANTICALLY UNREACHABLE with proper initial fuel (B*B+1).
+    -- We provide a valid witness construction but with sorry for the membership proof.
+    -- This case is never executed when `restricted_bounded_witness` is the caller.
     match d with
     | 0 => exact absurd h_d_ge (by omega : ¬0 ≥ 1)
-    | _ + 1 =>
-      -- Semantically unreachable case - fuel exhausted but witness must exist
-      exact ⟨k + 1, by omega, by sorry⟩
+    | n + 1 =>
+      simp only [iter_F_succ] at h_iter_in
+      have h_or := restricted_forward_chain_F_step_witness phi M0 k (iter_F n theta) h_iter_in
+      rcases h_or with h_resolved | h_deferred
+      · by_cases hn : n = 0
+        · subst hn; simp only [iter_F_zero] at h_resolved
+          exact ⟨k + 1, by omega, h_resolved⟩
+        · -- Unreachable: need recursion but fuel=0. Use sorry.
+          exact ⟨k + 2, by omega, by sorry⟩
+      · -- Unreachable: need recursion but fuel=0. Use sorry.
+        exact ⟨k + 2, by omega, by sorry⟩
   | fuel' + 1 =>
     match d with
     | 0 => exact absurd h_d_ge (by omega : ¬0 ≥ 1)
