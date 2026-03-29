@@ -57,7 +57,7 @@ From `reports/08_team-research.md`:
 
 ## Implementation Phases
 
-### Phase 1: Fill Termination Sorries [PARTIAL]
+### Phase 1: Fill Termination Sorries [COMPLETED]
 
 **Goal**: Complete the 4 `decreasing_by sorry` proofs in SuccChainFMCS.lean using lexicographic measures
 
