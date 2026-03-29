@@ -175,32 +175,60 @@ in UltrafilterChain.lean is fully sorry-free.
 -/
 theorem bundle_validity_implies_provability (φ : Formula)
     (h_valid : valid_over Int φ) : Nonempty ([] ⊢ φ) := by
-  -- This theorem expresses the core completeness result.
-  -- The proof requires showing that the bundle model built from
-  -- any consistent set is a valid TaskModel over Int.
+  /-
+  ## Proof Strategy
 
-  -- The key components are:
-  -- 1. construct_bfmcs_bundle gives a BFMCS_Bundle
-  -- 2. This needs to be converted to TaskFrame/TaskModel
-  -- 3. Then valid_over gives truth at all points
-  -- 4. Including the evaluation point, so phi is in the MCS
+  This theorem requires connecting semantic validity to provability via:
+  1. Contrapositive: if φ not provable, then neg(φ) consistent
+  2. Extend neg(φ) to MCS M containing neg(φ)
+  3. Build canonical model from M
+  4. Show neg(φ) TRUE in canonical model (via truth lemma)
+  5. Therefore φ FALSE, contradicting validity hypothesis
 
-  -- The model-theoretic glue is the remaining work.
-  -- For now, we use Classical reasoning: either provable or not.
+  ## Current Infrastructure (Sorry-Free)
+
+  The algebraic infrastructure in UltrafilterChain.lean is sorry-free:
+  - `not_provable_implies_neg_consistent`: neg(φ) consistent if φ not provable
+  - `set_lindenbaum`: extend consistent set to MCS
+  - `construct_bfmcs_bundle`: build BFMCS_Bundle with modal coherence
+  - `boxClassFamilies_bundle_temporally_coherent`: bundle-level F/P coherence
+
+  ## The Gap: Truth Lemma Requires Family-Level Temporal Coherence
+
+  The parametric truth lemma (`parametric_canonical_truth_lemma`) requires:
+  - `h_tc : B.temporally_coherent` (family-level forward_F and backward_P)
+
+  This is used in the BACKWARD direction of G and H cases:
+  - Backward G: ∀ s ≥ t, truth(ψ) at s → G(ψ) ∈ MCS
+  - Uses forward_F via contrapositive: F(neg ψ) witness
+
+  The bundle construction provides bundle-level coherence (witnesses in ANY family)
+  but NOT family-level coherence (witnesses in the SAME family).
+
+  ## Why Forward-Only Doesn't Work
+
+  The forward truth lemma for `neg(φ) = φ.imp ⊥` requires:
+  - Forward imp: (φ → ⊥) ∈ MCS, truth(φ) → truth(⊥) = False
+  - This needs: truth(φ) → φ ∈ MCS (BACKWARD IH for φ!)
+  - If φ contains G/H, backward IH needs h_tc
+
+  ## Resolution Path
+
+  Family-level temporal coherence for Z-chain (`Z_chain_forward_F`,
+  `Z_chain_backward_P`) needs to be proven. This requires showing that
+  F-witnesses can be found within the same omega chain, not just in the bundle.
+
+  The `RestrictedTemporallyCoherentFamily` approach (RestrictedTruthLemma.lean)
+  provides temporal coherence for formulas in deferralClosure(φ), which may
+  suffice for the specific formula φ being proven.
+  -/
   by_contra h_not_prov
+  -- neg(φ) is consistent when φ is not provable
   have h_cons := not_provable_implies_neg_consistent φ h_not_prov
-  -- neg(phi) consistent contradicts phi being valid
-  -- (valid means true in ALL models, including canonical)
-  have _h := bundle_completeness_contradiction φ h_cons
-  -- h : ¬(∀ M, SetMaximalConsistent M → φ ∈ M)
-  -- But from h_valid, we should be able to derive that all MCSes contain phi.
-  -- This requires the canonical model theorem, which needs more infrastructure.
-
-  -- The algebraic completeness path is sorry-free. The gap is in connecting
-  -- to the semantic valid_over definition.
-
-  -- For Task #58, this sorry is acceptable: it's the model-theoretic glue,
-  -- not the core algebraic proof which is sorry-free.
+  -- This contradicts: all MCSes contain φ
+  have _h_contra := bundle_completeness_contradiction φ h_cons
+  -- The gap: need to derive that h_valid implies all MCSes contain φ
+  -- This requires the bidirectional truth lemma with family-level temporal coherence
   sorry
 
 /--

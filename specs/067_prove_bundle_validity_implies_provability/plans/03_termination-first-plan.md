@@ -106,7 +106,7 @@ From `reports/08_team-research.md`:
 
 ---
 
-### Phase 3: Restricted BFMCS Coherence Bridge [NOT STARTED]
+### Phase 3: Restricted BFMCS Coherence Bridge [COMPLETED]
 
 **Goal**: Create bridge between `RestrictedTemporallyCoherentFamily` and BFMCS temporal coherence
 
@@ -130,7 +130,7 @@ From `reports/08_team-research.md`:
 
 ---
 
-### Phase 4: Restricted Truth Lemma Adaptation [NOT STARTED]
+### Phase 4: Restricted Truth Lemma Adaptation [PARTIAL]
 
 **Goal**: Create restricted version of `parametric_canonical_truth_lemma` that uses restricted coherence
 

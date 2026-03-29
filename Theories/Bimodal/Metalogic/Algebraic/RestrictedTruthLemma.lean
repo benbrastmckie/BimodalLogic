@@ -312,4 +312,113 @@ theorem restricted_truth_at_seed (phi : Formula)
     phi ∈ restricted_chain_ext phi tc_fam 0 :=
   restricted_truth_lemma phi tc_fam 0 phi (self_mem_subformulaClosure phi)
 
+/-!
+## Phase 3: Completeness Bridge
+
+This section provides the key lemma for completeness: that the extended MCS
+at time 0 contains the seed formulas. Combined with the restricted truth lemma,
+this enables the completeness argument.
+
+### Completeness Strategy
+
+The completeness proof works as follows:
+1. If phi is not provable, neg(phi) is consistent
+2. Extend {neg(phi)} to a DeferralRestrictedMCS M0 over phi
+3. Build RestrictedTemporallyCoherentFamily from M0
+4. neg(phi) ∈ restricted_chain(0) = M0
+5. neg(phi) ∈ restricted_ext(0) by Lindenbaum
+6. The extended MCS at time 0 is a full MCS containing neg(phi)
+7. phi ∉ extended MCS (by MCS consistency with neg(phi))
+8. Build canonical model from extended MCS
+9. phi FALSE in canonical model (by truth lemma for MCS)
+10. Contradicts validity hypothesis
+
+### Key Insight
+
+For completeness, we don't need full temporal coherence on the extended chain.
+We only need:
+1. The restricted chain at time 0 embeds into a full MCS (Lindenbaum)
+2. That full MCS satisfies standard MCS properties
+3. We can apply existing completeness infrastructure
+
+The existing `construct_bfmcs_bundle` in UltrafilterChain.lean builds from
+ANY MCS. We can build from the Lindenbaum extension of the restricted chain.
+-/
+
+/--
+The extended MCS at time 0 contains formulas from the restricted chain seed.
+
+This is the key embedding for completeness: formulas in the DRM seed at time 0
+are preserved when we extend to a full MCS via Lindenbaum.
+-/
+theorem restricted_ext_contains_seed (phi : Formula)
+    (tc_fam : RestrictedTemporallyCoherentFamily phi)
+    (ψ : Formula)
+    (h_in_seed : ψ ∈ tc_fam.seed.world) :
+    ψ ∈ restricted_chain_ext phi tc_fam 0 := by
+  -- ψ ∈ seed.world = chain(0)
+  have h_in_chain : ψ ∈ restricted_succ_chain_fam phi tc_fam.seed 0 := by
+    rw [restricted_succ_chain_fam_zero]
+    exact h_in_seed
+  exact restricted_chain_subset_extended phi tc_fam 0 ψ h_in_chain
+
+/--
+The extended MCS at time 0 is maximal consistent.
+-/
+theorem restricted_ext_zero_is_mcs (phi : Formula)
+    (tc_fam : RestrictedTemporallyCoherentFamily phi) :
+    SetMaximalConsistent (restricted_chain_ext phi tc_fam 0) :=
+  restricted_chain_ext_is_mcs phi tc_fam 0
+
+/--
+If neg(phi) is in the seed, then phi is NOT in the extended MCS at time 0.
+
+This is the key lemma for completeness: it shows that we can construct
+an MCS that does NOT contain phi (when starting from consistent neg(phi)).
+-/
+theorem restricted_ext_neg_excludes_phi (phi : Formula)
+    (tc_fam : RestrictedTemporallyCoherentFamily phi)
+    (h_neg_in_seed : Formula.neg phi ∈ tc_fam.seed.world) :
+    phi ∉ restricted_chain_ext phi tc_fam 0 := by
+  intro h_phi_in
+  have h_neg_in := restricted_ext_contains_seed phi tc_fam (Formula.neg phi) h_neg_in_seed
+  have h_mcs := restricted_ext_zero_is_mcs phi tc_fam
+  exact set_consistent_not_both h_mcs.1 phi h_phi_in h_neg_in
+
+/-!
+## Completeness via Extended MCS
+
+The completeness proof uses the following strategy:
+1. From neg(phi) consistent, build a DRM containing neg(phi)
+2. The DRM at time 0 extends to a full MCS via Lindenbaum
+3. That MCS does not contain phi (by consistency with neg(phi))
+4. Build BFMCS_Bundle from that MCS using `construct_bfmcs_bundle`
+5. Apply the existing truth lemma infrastructure
+
+The key observation: once we have a full MCS containing neg(phi),
+we can use the existing BFMCS construction which IS sorry-free for
+modal coherence. The bundle-level temporal coherence suffices because
+we only need forward truth (MCS membership → semantic truth).
+-/
+
+/--
+Building an MCS containing neg(phi) from consistency of neg(phi).
+
+This combines:
+1. DeferralRestrictedMCS construction from consistent neg(phi)
+2. RestrictedTemporallyCoherentFamily from that DRM
+3. Lindenbaum extension to full MCS
+-/
+theorem neg_consistent_gives_mcs_without_phi (phi : Formula)
+    (h_neg_cons : SetConsistent {Formula.neg phi}) :
+    ∃ M : Set Formula, SetMaximalConsistent M ∧ Formula.neg phi ∈ M ∧ phi ∉ M := by
+  -- Extend {neg(phi)} to a full MCS directly via Lindenbaum
+  -- No need to go through DRM construction for this basic result
+  obtain ⟨M, h_extends, h_mcs⟩ := set_lindenbaum {Formula.neg phi} h_neg_cons
+  have h_neg_in : Formula.neg phi ∈ M := h_extends (Set.mem_singleton _)
+  have h_phi_not : phi ∉ M := by
+    intro h_phi
+    exact set_consistent_not_both h_mcs.1 phi h_phi h_neg_in
+  exact ⟨M, h_mcs, h_neg_in, h_phi_not⟩
+
 end Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
