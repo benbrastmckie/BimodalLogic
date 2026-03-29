@@ -217,11 +217,6 @@ The blocker is in `restricted_bounded_witness_fueled` at fuel=0 (line 2797):
 
 This sorry is NOT about F_top membership. It's about proving the fuel=0 case is unreachable.
 
-To wire the restricted chain infrastructure to bfmcs_from_mcs_temporally_coherent, we would need to:
-  1. Build families from restricted chains instead of SuccChainFMCS
-  2. Prove the necessary properties for these restricted families
-This construction should appeal directly to the task relation which constrains what counts as world histories which we are encoding with FMCSs included in the BFMCS. Then all that remains is to show how an arbitrary consistent set of sentences (CS) can be shown to be included as a subset of some MCS in some FMCS in the BFMCS of all world histories that obey the task relation.
-
 ## Confidence Level
 
 **HIGH** with important clarification:
