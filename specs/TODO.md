@@ -79,8 +79,8 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
-- **Blocker**: F_top ∉ deferralClosure(phi) for general phi - DeferralRestrictedSerialMCS cannot be constructed
+- **Status**: [RESEARCHED]
+- **Blocker**: F-formula persistence - temporal_theory_witness_exists lacks F-step; need Succ-based construction
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
