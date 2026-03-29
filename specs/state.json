@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-29T16:05:47Z",
+      "last_updated": "2026-03-29T16:13:26Z",
       "artifacts": [
         {
           "type": "research",
@@ -927,11 +927,6 @@
           "summary": "Team research: task semantics perspective and algebraic completeness path via restricted coherence"
         },
         {
-          "type": "plan",
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/02_restricted-coherence-plan.md",
-          "summary": "4-phase plan: restricted coherence transfer, restricted truth lemma, completeness wiring, cleanup"
-        },
-        {
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/01_implementation-analysis.md",
           "type": "summary",
           "summary": "Deep analysis of completeness gap, implementation options documented"
@@ -940,11 +935,6 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/08_team-research.md",
           "type": "research",
           "summary": "Team research: restricted truth lemma infrastructure, 2 teammates"
-        },
-        {
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/03_termination-first-plan.md",
-          "type": "plan",
-          "summary": "5-phase plan: termination sorries -> G/H propagation -> restricted BFMCS bridge -> truth lemma adaptation -> completeness wiring"
         },
         {
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/03_completeness-summary.md",
@@ -967,11 +957,6 @@
           "summary": "Team research: Z-chain bypass via restricted coherence, task relation analysis (2 teammates)"
         },
         {
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/04_bypass-z-chain-plan.md",
-          "type": "plan",
-          "summary": "4-phase plan: bypass Z-chain via RestrictedTemporallyCoherentFamily direct path"
-        },
-        {
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/04_completeness-blocked-summary.md",
           "type": "summary",
           "summary": "Phase 1 blocked: F_top not in deferralClosure(phi) for general phi"
@@ -980,11 +965,6 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/10_team-research.md",
           "type": "research",
           "summary": "Team research: F_top blocker root cause, deferralClosure extension recommended (2 teammates)"
-        },
-        {
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/05_extend-deferral-closure.md",
-          "type": "plan",
-          "summary": "7-phase plan to extend deferralClosure with seriality formulas {F_top, P_top, neg bot}, fixing the root cause blocker and enabling DeferralRestrictedSerialMCS construction"
         },
         {
           "path": "specs/067_prove_bundle_validity_implies_provability/handoffs/02_phase1-2-partial.md",
@@ -1000,14 +980,18 @@
           "type": "research",
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/20_team-research.md",
           "summary": "Team research: fuel exhaustion root cause, restricted_forward_chain_forward_F investigation recommended (2 teammates)"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/plans/06_well-founded-recursion.md",
+          "type": "plan",
+          "summary": "6-phase plan: well-founded recursion (primary) with fair scheduling backup"
         }
       ],
       "session_id": "sess_1774772143_d8f232",
       "researched": "2026-03-29T16:05:47Z",
-      "planned": "2026-03-29T06:52:34Z",
+      "planned": "2026-03-29T16:13:26Z",
       "started": "2026-03-27T23:46:39Z",
-      "blocker": "bfmcs_from_mcs_temporally_coherent sorry: family-level temporal coherence (forward_F/backward_P within SuccChainFMCS). Root cause: fuel-exhaustion branch in restricted_bounded_witness_fueled.",
-      "resume_phase": 6
+      "resume_phase": 1
     },
     {
       "project_number": 68,
