@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-29T00:11:32Z",
+      "last_updated": "2026-03-29T00:20:46Z",
       "artifacts": [
         {
           "type": "research",
@@ -940,11 +940,16 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/08_team-research.md",
           "type": "research",
           "summary": "Team research: restricted truth lemma infrastructure, 2 teammates"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/plans/03_termination-first-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: termination sorries -> G/H propagation -> restricted BFMCS bridge -> truth lemma adaptation -> completeness wiring"
         }
       ],
-      "session_id": "sess_1774742732_81e3b3",
+      "session_id": "sess_1774743374_9dae53",
       "researched": "2026-03-29T00:11:32Z",
-      "planned": "2026-03-28T23:42:35Z",
+      "planned": "2026-03-29T00:20:46Z",
       "started": "2026-03-27T23:46:39Z",
       "blocker": "Same-family forward_F/backward_P required for truth lemma's backward G/H cases. Implementation path: ~300-400 lines for restricted truth lemma."
     },
