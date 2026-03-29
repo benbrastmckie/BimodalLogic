@@ -228,23 +228,35 @@ theorem p_step_blocking_restricted_subset_deferralClosure (phi : Formula) (u : S
   rw [mem_p_step_blocking_formulas_restricted_iff] at hψ
   obtain ⟨χ, h_P_in_dc, _, _, rfl⟩ := hψ
   -- P(χ) ∈ deferralClosure implies H(¬χ) ∈ deferralClosure
-  -- First, P(χ) ∈ deferralClosure means P(χ) ∈ closureWithNeg (since closureWithNeg ⊆ deferralClosure)
-  have h_P_in_cwn := some_past_in_deferralClosure_is_in_closureWithNeg phi χ h_P_in_dc
-  -- P(χ) in closureWithNeg means P(χ) in subformulaClosure OR P(χ) = g.neg for g in subformulaClosure
-  unfold closureWithNeg at h_P_in_cwn
-  simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
-  rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
-  · -- P(χ) in subformulaClosure, so H(¬χ) = subformula of P(χ)
-    apply closureWithNeg_subset_deferralClosure
-    apply subformulaClosure_subset_closureWithNeg
-    exact closure_imp_left phi _ _ h_sub
-  · -- P(χ) = g.neg for g in subformulaClosure
-    -- g.neg = P(χ) = neg(H(neg χ)) implies g = H(neg χ)
-    unfold Formula.some_past Formula.neg at h_g_neg_eq
-    have h_eq : g = Formula.all_past (Formula.neg χ) := by cases h_g_neg_eq; rfl
-    rw [h_eq] at h_g_sub
-    exact closureWithNeg_subset_deferralClosure phi
-      (subformulaClosure_subset_closureWithNeg phi h_g_sub)
+  -- Use the new theorem that handles both closureWithNeg and P_top cases
+  rcases some_past_in_deferralClosure_cases phi χ h_P_in_dc with h_P_in_cwn | h_P_eq_P_top
+  · -- P(χ) ∈ closureWithNeg phi
+    -- P(χ) in closureWithNeg means P(χ) in subformulaClosure OR P(χ) = g.neg for g in subformulaClosure
+    unfold closureWithNeg at h_P_in_cwn
+    simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
+    rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
+    · -- P(χ) in subformulaClosure, so H(¬χ) = subformula of P(χ)
+      apply closureWithNeg_subset_deferralClosure
+      apply subformulaClosure_subset_closureWithNeg
+      exact closure_imp_left phi _ _ h_sub
+    · -- P(χ) = g.neg for g in subformulaClosure
+      -- g.neg = P(χ) = neg(H(neg χ)) implies g = H(neg χ)
+      unfold Formula.some_past Formula.neg at h_g_neg_eq
+      have h_eq : g = Formula.all_past (Formula.neg χ) := by cases h_g_neg_eq; rfl
+      rw [h_eq] at h_g_sub
+      exact closureWithNeg_subset_deferralClosure phi
+        (subformulaClosure_subset_closureWithNeg phi h_g_sub)
+  · -- P(χ) = P_top = P(neg bot), so χ = neg bot
+    -- We need to prove H(neg χ) = H(neg (neg bot)) = H_neg_neg_bot ∈ deferralClosure
+    simp only [P_top, Formula.some_past, Formula.neg] at h_P_eq_P_top
+    injection h_P_eq_P_top with h_inner _
+    injection h_inner with h_all
+    injection h_all with h_inner2
+    subst h_inner2
+    -- Goal: H(neg (neg bot)) = H_neg_neg_bot ∈ deferralClosure phi
+    -- H_neg_neg_bot is now in serialityFormulas, so it's in deferralClosure
+    simp only [Formula.neg]
+    exact H_neg_neg_bot_mem_deferralClosure phi
 
 /-!
 ## Boundary Resolution Set
@@ -312,13 +324,8 @@ theorem boundary_resolution_set_subset_deferralClosure (phi : Formula) (u : Set 
   obtain ⟨h_F_chi_in_u, _⟩ := h_chi
   -- F(chi) ∈ u ⊆ deferralClosure
   have h_F_chi_in_dc : Formula.some_future chi ∈ deferralClosure phi := h_u h_F_chi_in_u
-  -- F(chi) ∈ deferralClosure implies F(chi) ∈ closureWithNeg
-  have h_F_chi_cwn := Bimodal.Syntax.some_future_in_deferralClosure_is_in_closureWithNeg phi chi h_F_chi_in_dc
-  -- F(chi) ∈ closureWithNeg implies chi ∈ subformulaClosure
-  have h_chi_sub := Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi chi h_F_chi_cwn
-  -- chi ∈ subformulaClosure ⊆ closureWithNeg ⊆ deferralClosure
-  exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
-    (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_chi_sub)
+  -- F(chi) ∈ deferralClosure implies chi ∈ deferralClosure (handles both F_top case and regular case)
+  exact Bimodal.Syntax.F_inner_in_deferralClosure phi chi h_F_chi_in_dc
 
 /-!
 ## Restricted Constrained Successor Seed

@@ -151,15 +151,15 @@ If n > max_F_depth_in_closure(phi), then iter_F n phi is not in closureWithNeg(p
 We define closure_F_bound as max_F_depth + 1 to get the first n that leaves the closure.
 -/
 def closure_F_bound (phi : Formula) : Nat :=
-  Bimodal.Syntax.max_F_depth_in_closure phi + 1
+  max (Bimodal.Syntax.max_F_depth_in_closure phi) 1 + 1
 
 /-- iter_F exceeds the max F-depth bound for large n.
 
 If n >= closure_F_bound(phi), then the f_nesting_depth of iter_F n phi
-exceeds max_F_depth_in_closure(phi).
+exceeds max(max_F_depth_in_closure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_F_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_F_bound phi) :
-    Bimodal.Syntax.f_nesting_depth (iter_F n phi) > Bimodal.Syntax.max_F_depth_in_closure phi := by
+    Bimodal.Syntax.f_nesting_depth (iter_F n phi) > max (Bimodal.Syntax.max_F_depth_in_closure phi) 1 := by
   rw [iter_F_f_nesting_depth]
   unfold closure_F_bound at h
   have h_depth_nonneg : Bimodal.Syntax.f_nesting_depth phi ≥ 0 := Nat.zero_le _
@@ -798,15 +798,15 @@ If n > max_P_depth_in_closure(phi), then iter_P n phi is not in closureWithNeg(p
 We define closure_P_bound as max_P_depth + 1 to get the first n that leaves the closure.
 -/
 def closure_P_bound (phi : Formula) : Nat :=
-  Bimodal.Syntax.max_P_depth_in_closure phi + 1
+  max (Bimodal.Syntax.max_P_depth_in_closure phi) 1 + 1
 
 /-- iter_P exceeds the max P-depth bound for large n.
 
 If n >= closure_P_bound(phi), then the p_nesting_depth of iter_P n phi
-exceeds max_P_depth_in_closure(phi).
+exceeds max(max_P_depth_in_closure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_P_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_P_bound phi) :
-    Bimodal.Syntax.p_nesting_depth (iter_P n phi) > Bimodal.Syntax.max_P_depth_in_closure phi := by
+    Bimodal.Syntax.p_nesting_depth (iter_P n phi) > max (Bimodal.Syntax.max_P_depth_in_closure phi) 1 := by
   rw [iter_P_p_nesting_depth]
   unfold closure_P_bound at h
   have h_depth_nonneg : Bimodal.Syntax.p_nesting_depth phi ≥ 0 := Nat.zero_le _

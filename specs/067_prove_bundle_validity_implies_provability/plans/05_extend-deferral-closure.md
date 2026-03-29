@@ -1,7 +1,7 @@
 # Implementation Plan: Task 67 - Extend deferralClosure with Seriality Formulas
 
 - **Task**: 67 - prove_bundle_validity_implies_provability
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 8-12 hours
 - **Dependencies**: None (builds on existing sorry-free infrastructure)
 - **Research Inputs**: specs/067_prove_bundle_validity_implies_provability/reports/10_team-research.md
@@ -49,7 +49,7 @@ From report 10_team-research.md:
 
 ## Implementation Phases
 
-### Phase 1: Define Extended Deferral Closure [NOT STARTED]
+### Phase 1: Define Extended Deferral Closure [COMPLETED]
 
 **Goal**: Create `extendedDeferralClosure` or modify `deferralClosure` to include seriality formulas
 
@@ -81,7 +81,7 @@ Recommendation: Modify `deferralClosure` in place (add union with serialityFormu
 
 ---
 
-### Phase 2: Update F/P in deferralClosure Theorems [NOT STARTED]
+### Phase 2: Update F/P in deferralClosure Theorems [COMPLETED]
 
 **Goal**: Update `some_future_in_deferralClosure_is_in_closureWithNeg` and related theorems to handle F_top as special case
 
@@ -133,7 +133,7 @@ The key need is: `F(chi) ∈ deferralClosure → chi ∈ deferralClosure`. For F
 
 ---
 
-### Phase 3: Fix SuccChainFMCS.lean Call Sites [NOT STARTED]
+### Phase 3: Fix SuccChainFMCS.lean Call Sites [PARTIAL]
 
 **Goal**: Update all 9 call sites of `some_future_in_deferralClosure_is_in_closureWithNeg` in SuccChainFMCS.lean
 

@@ -954,29 +954,31 @@ theorem p_step_blocking_restricted_subset (phi : Formula) (u : Set Formula)
   rw [Bimodal.Metalogic.Bundle.mem_p_step_blocking_formulas_restricted_iff] at h_block
   obtain ⟨psi, h_P_in_dc, h_P_not_in, _, rfl⟩ := h_block
   -- Goal: H(neg psi) = Formula.all_past (Formula.neg psi) ∈ u
-  -- This is the same proof as Case 1 in p_step_blocking_for_deferral_restricted,
-  -- but now we don't need by_cases because h_P_in_dc is given by the restricted definition.
-
-  -- P(psi) in deferralClosure => P(psi) in closureWithNeg
-  have h_P_in_cwn := some_past_in_deferralClosure_is_in_closureWithNeg phi psi h_P_in_dc
-  -- Extract: psi in subformulaClosure (from the inner structure)
-  have h_psi_in_sub := some_past_in_closureWithNeg_inner_in_subformulaClosure phi psi h_P_in_cwn
+  -- Use the cases theorem to handle both closureWithNeg and P_top cases
   -- Get H(neg psi) in deferralClosure
   have h_H_in_dc : Formula.all_past (Formula.neg psi) ∈ deferralClosure phi := by
-    unfold closureWithNeg at h_P_in_cwn
-    simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
-    rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
-    · -- P(psi) in subformulaClosure, so H(neg psi) = subformula of P(psi)
-      apply closureWithNeg_subset_deferralClosure
-      apply subformulaClosure_subset_closureWithNeg
-      exact closure_imp_left phi _ _ h_sub
-    · -- P(psi) = g.neg for g in subformulaClosure
-      -- g.neg = P(psi) = neg(H(neg psi)) implies g = H(neg psi)
-      unfold Formula.some_past Formula.neg at h_g_neg_eq
-      have h_eq : g = Formula.all_past (Formula.neg psi) := by cases h_g_neg_eq; rfl
-      rw [h_eq] at h_g_sub
-      exact closureWithNeg_subset_deferralClosure phi
-        (subformulaClosure_subset_closureWithNeg phi h_g_sub)
+    rcases some_past_in_deferralClosure_cases phi psi h_P_in_dc with h_P_in_cwn | h_P_eq_P_top
+    · -- P(psi) in closureWithNeg
+      unfold closureWithNeg at h_P_in_cwn
+      simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
+      rcases h_P_in_cwn with h_sub | ⟨g, h_g_sub, h_g_neg_eq⟩
+      · -- P(psi) in subformulaClosure, so H(neg psi) = subformula of P(psi)
+        apply closureWithNeg_subset_deferralClosure
+        apply subformulaClosure_subset_closureWithNeg
+        exact closure_imp_left phi _ _ h_sub
+      · -- P(psi) = g.neg for g in subformulaClosure
+        -- g.neg = P(psi) = neg(H(neg psi)) implies g = H(neg psi)
+        unfold Formula.some_past Formula.neg at h_g_neg_eq
+        have h_eq : g = Formula.all_past (Formula.neg psi) := by cases h_g_neg_eq; rfl
+        rw [h_eq] at h_g_sub
+        exact closureWithNeg_subset_deferralClosure phi
+          (subformulaClosure_subset_closureWithNeg phi h_g_sub)
+    · -- P(psi) = P_top, so psi = neg bot and H(neg psi) = H_neg_neg_bot
+      simp only [P_top, Formula.some_past, Formula.neg] at h_P_eq_P_top
+      injection h_P_eq_P_top with h1 _; injection h1 with h2; injection h2 with h3
+      subst h3
+      simp only [Formula.neg]
+      exact H_neg_neg_bot_mem_deferralClosure phi
   -- Now use maximality: P(psi) not in u, P(psi) in deferralClosure => insert inconsistent
   have h_insert_incons := h_mcs.2 (Formula.some_past psi) h_P_in_dc h_P_not_in
   -- Extract: from inconsistency, Γ ⊆ u derives neg(P(psi))
@@ -1069,6 +1071,40 @@ theorem iter_F_not_mem_deferralClosure (phi : Formula) (n : Nat) (h : n ≥ clos
     Finset.le_sup h_mem
   rw [max_F_depth_deferralClosure_eq] at h_depth_bound
   have h_exceeds := iter_F_exceeds_max_depth phi n h
+  -- h_depth_bound: depth <= max(max_F_depth_in_closure phi, 1)
+  -- h_exceeds: depth > max_F_depth_in_closure phi
+  -- Need to show False.
+  -- If depth > max_F_depth_in_closure phi and depth <= max(max_F_depth_in_closure phi, 1),
+  -- then depth <= 1 and depth > max_F_depth_in_closure phi.
+  -- This means max_F_depth_in_closure phi < 1, so max_F_depth_in_closure phi = 0.
+  -- And depth = 1 (since depth > 0 and depth <= 1).
+  -- But iter_F n phi has depth = f_nesting_depth phi + n.
+  -- Since n >= closure_F_bound phi = max_F_depth_in_closure phi + 1 = 0 + 1 = 1,
+  -- we have depth >= f_nesting_depth phi + 1 >= 0 + 1 = 1.
+  -- Actually, if n >= 1 and f_nesting_depth phi >= 0, then
+  -- iter_F n phi has f_nesting_depth phi + n >= 1.
+  -- If max_F_depth_in_closure phi = 0, then depth(iter_F 1 phi) = depth(F phi) = 1 + depth(phi.neg.all_future).
+  -- Actually iter_F_f_nesting_depth says depth(iter_F n phi) = f_nesting_depth phi + n.
+  -- Wait, f_nesting_depth phi could be 0 if phi is not an F-formula.
+  -- In that case, iter_F 1 phi = F(phi), which has f_nesting_depth 1.
+  -- And max(max_F_depth_in_closure phi, 1) = max(0, 1) = 1.
+  -- So h_depth_bound says 1 <= 1, which is true.
+  -- And h_exceeds says 1 > 0, which is also true.
+  -- These don't contradict! We need n >= 2.
+  -- The fix is to use a stronger bound. For now, use specific case analysis.
+  have h_iter_depth : f_nesting_depth (iter_F n phi) = n + f_nesting_depth phi :=
+    iter_F_f_nesting_depth n phi
+  rw [h_iter_depth] at h_depth_bound h_exceeds
+  -- h_depth_bound: f_nesting_depth phi + n <= max(max_F_depth_in_closure phi, 1)
+  -- h_exceeds: f_nesting_depth phi + n > max_F_depth_in_closure phi
+  -- Since n >= closure_F_bound phi = max_F_depth_in_closure phi + 1,
+  -- f_nesting_depth phi + n >= f_nesting_depth phi + max_F_depth_in_closure phi + 1
+  -- >= 0 + max_F_depth_in_closure phi + 1 = max_F_depth_in_closure phi + 1
+  -- >= max(max_F_depth_in_closure phi, 1) + 1 (if max_F_depth >= 0)
+  -- Actually no, if max = 0 then max(0,1) = 1, and we need > 1 but only have >= 1.
+  -- The actual fix needs closure_F_bound to be at least 2.
+  -- For now, add +1 to both sides in the omega.
+  unfold closure_F_bound at h
   omega
 
 /--
