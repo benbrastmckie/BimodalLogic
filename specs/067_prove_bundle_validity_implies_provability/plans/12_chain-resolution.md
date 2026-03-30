@@ -60,7 +60,7 @@ For k >= B, the chain has had B steps to resolve all F-nesting levels. The `boun
 
 ## Implementation Phases
 
-### Phase 1: Prove Boundary Stabilization Lemma [NOT STARTED]
+### Phase 1: Prove Boundary Stabilization Lemma [BLOCKED]
 
 **Goal**: Prove that boundary conditions imply `k < B`.
 
