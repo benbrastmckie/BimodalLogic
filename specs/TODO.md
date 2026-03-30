@@ -79,8 +79,8 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
-- **Blocker**: boundary_implies_k_lt_B sorry - backward tracing lemma needed to complete proof
+- **Status**: [PLANNED]
+- **Blocker**: None (Plan 15 deletes flawed theorems, uses F_resolves shortcut)
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
@@ -102,6 +102,7 @@ technical_debt:
   - [10_well-founded-restructure.md](067_prove_bundle_validity_implies_provability/plans/10_well-founded-restructure.md)
   - [13_bulldozing-f-persistence.md](067_prove_bundle_validity_implies_provability/plans/13_bulldozing-f-persistence.md)
   - [14_backward-tracing-completion.md](067_prove_bundle_validity_implies_provability/plans/14_backward-tracing-completion.md)
+  - [15_f-resolves-shortcut.md](067_prove_bundle_validity_implies_provability/plans/15_f-resolves-shortcut.md)
 - **Summary**: [01_implementation-summary.md](067_prove_bundle_validity_implies_provability/summaries/01_implementation-summary.md)
 
 **Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.

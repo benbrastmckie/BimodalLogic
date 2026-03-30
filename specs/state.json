@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-30T17:12:36Z",
+      "last_updated": "2026-03-30T17:15:59Z",
       "artifacts": [
         {
           "type": "research",
@@ -1027,11 +1027,6 @@
           "summary": "Team research: fuel approach viability, quadratic invariant recommended (2 teammates)"
         },
         {
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/11_fuel-invariant.md",
-          "type": "plan",
-          "summary": "Fuel invariant approach: add h_inv hypothesis to eliminate sorries"
-        },
-        {
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/11_fuel-invariant-partial.md",
           "type": "summary",
           "summary": "Partial implementation: Phase 1 fuel=0 eliminated, k>=B case blocked on stabilization lemma"
@@ -1042,11 +1037,6 @@
           "summary": "Team research: k>=B blocker analysis, construction-level gap identified (2 teammates)"
         },
         {
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/12_chain-resolution.md",
-          "type": "plan",
-          "summary": "5-phase plan to prove boundary_implies_k_lt_B lemma and apply to all bounded witness sorries"
-        },
-        {
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/12_chain-resolution-summary.md",
           "type": "summary",
           "summary": "Phase 1 blocked: stabilization lemma unprovable with current chain construction"
@@ -1055,11 +1045,6 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/37_team-research.md",
           "type": "research",
           "summary": "Team research: bulldozing via seeded F-content recommended over all alternatives (2 teammates)"
-        },
-        {
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/13_bulldozing-f-persistence.md",
-          "type": "plan",
-          "summary": "6-phase plan: bulldozing via f_content seed for F-persistence"
         },
         {
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/38_fuel-cleanup-research.md",
@@ -1077,11 +1062,6 @@
           "summary": "Rigorous proof analysis for boundary_implies_k_lt_B with proof strategies and helper lemmas"
         },
         {
-          "path": "specs/067_prove_bundle_validity_implies_provability/plans/14_backward-tracing-completion.md",
-          "type": "plan",
-          "summary": "Backward tracing approach to complete boundary_implies_k_lt_B proof"
-        },
-        {
           "path": "specs/067_prove_bundle_validity_implies_provability/summaries/14_backward-tracing-summary.md",
           "type": "summary",
           "summary": "Partial implementation: helper lemma boundary_implies_k_plus_d_bounded added, 2 sorries remain"
@@ -1090,11 +1070,16 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/42_team-research.md",
           "type": "research",
           "summary": "Team research: boundary_implies_k_plus_d_bounded likely FALSE, F_resolves shortcut recommended (2 teammates)"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/plans/15_f-resolves-shortcut.md",
+          "type": "plan",
+          "summary": "F-resolves shortcut: delete flawed theorems, use simple induction"
         }
       ],
       "session_id": "sess_1774889317_ce930b",
       "researched": "2026-03-30T17:12:36Z",
-      "planned": "2026-03-30T15:56:24Z",
+      "planned": "2026-03-30T17:15:59Z",
       "started": "2026-03-27T23:46:39Z",
       "resume_phase": 4
     },
