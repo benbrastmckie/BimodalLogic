@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-30T15:24:32Z",
+      "last_updated": "2026-03-30T15:45:46Z",
       "artifacts": [
         {
           "type": "research",
@@ -1065,13 +1065,18 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/reports/38_fuel-cleanup-research.md",
           "type": "research",
           "summary": "Analyzed fuel approach relationship to bulldozing; recommends preserving fuel infrastructure since bulldozing reuses it"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/summaries/13_bulldozing-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: target sorries closed but depend on boundary_implies_k_lt_B which has sorry"
         }
       ],
-      "session_id": "sess_1774884074_101d8e",
+      "session_id": "sess_1774884377_e6b387",
       "researched": "2026-03-30T15:07:39Z",
       "planned": "2026-03-30T15:17:38Z",
       "started": "2026-03-27T23:46:39Z",
-      "resume_phase": 1
+      "resume_phase": 4
     },
     {
       "project_number": 68,

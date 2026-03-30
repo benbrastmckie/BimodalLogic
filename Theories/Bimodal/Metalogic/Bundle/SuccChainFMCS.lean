@@ -1148,11 +1148,17 @@ theorem constrained_successor_seed_restricted_subset_deferralClosure (phi : Form
     constrained_successor_seed_restricted phi u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
   intro psi h_seed
   rw [mem_constrained_successor_seed_restricted_iff] at h_seed
-  rcases h_seed with h_gc | h_dd | h_block | h_brs
+  rcases h_seed with h_gc | h_dd | h_block | h_brs | h_fc
   · exact g_content_subset_deferralClosure phi u h_u h_gc
   · exact deferralDisjunctions_subset_deferralClosure phi u h_u h_dd
   · exact p_step_blocking_restricted_subset_deferralClosure phi u h_block
   · exact boundary_resolution_set_subset_deferralClosure phi u h_u h_brs
+  · -- psi ∈ f_content u means F(psi) ∈ u
+    -- F(psi) ∈ u ⊆ deferralClosure, so F(psi) ∈ deferralClosure
+    -- By F_inner_in_deferralClosure, psi ∈ deferralClosure
+    have h_F_psi_in_u : Formula.some_future psi ∈ u := h_fc
+    have h_F_psi_in_dc := h_u h_F_psi_in_u
+    exact Bimodal.Syntax.F_inner_in_deferralClosure phi psi h_F_psi_in_dc
 
 /--
 g_content(u) ⊆ u when u is a DeferralRestrictedMCS.
@@ -1409,7 +1415,7 @@ theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : For
     psi.neg ∉ constrained_successor_seed_restricted phi u := by
   intro h_in
   rw [mem_constrained_successor_seed_restricted_iff] at h_in
-  rcases h_in with h_g | h_dd | h_ps | h_brs
+  rcases h_in with h_g | h_dd | h_ps | h_brs | h_fc
   · -- Case: psi.neg ∈ g_content(u)
     -- From h_psi_brs, we have F(psi) ∈ u (first BRS condition)
     have h_F_psi : Formula.some_future psi ∈ u :=
@@ -1421,6 +1427,12 @@ theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : For
     exact neg_not_in_p_step_blocking_restricted phi u psi h_ps
   · -- Case: psi.neg ∈ BRS (contradicts brs_mutual_exclusion)
     exact brs_mutual_exclusion phi u psi h_psi_brs h_brs
+  · -- Case: psi.neg ∈ f_content(u)
+    -- If psi.neg ∈ f_content(u), then F(psi.neg) ∈ u
+    -- But from h_psi_brs, we have F(psi.neg) ∉ u (BRS mutual exclusion condition)
+    have h_F_neg_not : Formula.some_future psi.neg ∉ u :=
+      (mem_boundary_resolution_set_iff phi u psi).mp h_psi_brs |>.2.2
+    exact h_F_neg_not h_fc
 
 /--
 Single BRS element with g_content is consistent: `{psi} ∪ g_content(u)` is consistent
@@ -1848,19 +1860,23 @@ theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Se
   let L_in_u := L.filter (fun x => x ∈ u)
   let L_not_in_u := L.filter (fun x => x ∉ u)
 
-  -- Key lemma: elements not in u must be in BRS
-  have h_not_in_u_is_brs : ∀ psi ∈ L, psi ∉ u → psi ∈ boundary_resolution_set phi u := by
+  -- Key lemma: elements not in u must be in BRS or f_content
+  -- In either case, F(psi) ∈ u, which is what we need for the proof
+  have h_not_in_u_has_F : ∀ psi ∈ L, psi ∉ u → Formula.some_future psi ∈ u := by
     intro psi h_psi_in_L h_psi_not_in_u
     have h_psi_in_seed := h_L psi h_psi_in_L
     rw [mem_constrained_successor_seed_restricted_iff] at h_psi_in_seed
-    rcases h_psi_in_seed with h_gc | h_dd | h_block | h_brs
+    rcases h_psi_in_seed with h_gc | h_dd | h_block | h_brs | h_fc
     · -- g_content ⊆ u, contradiction
       exact absurd (g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc) h_psi_not_in_u
     · -- deferralDisjunctions ⊆ u, contradiction
       exact absurd (deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd) h_psi_not_in_u
     · -- p_step_blocking ⊆ u, contradiction
       exact absurd (Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block) h_psi_not_in_u
-    · exact h_brs
+    · -- psi ∈ BRS, so F(psi) ∈ u
+      exact (mem_boundary_resolution_set_iff phi u psi).mp h_brs |>.1
+    · -- psi ∈ f_content u, so F(psi) ∈ u by definition
+      exact h_fc
 
   -- Case analysis: is L_not_in_u empty?
   by_cases h_all_in_u : ∀ psi ∈ L, psi ∈ u
@@ -1870,13 +1886,11 @@ theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Se
     push_neg at h_all_in_u
     obtain ⟨psi, h_psi_in_L, h_psi_not_in_u⟩ := h_all_in_u
 
-    -- psi ∈ BRS and psi ∉ u
-    have h_psi_brs := h_not_in_u_is_brs psi h_psi_in_L h_psi_not_in_u
+    -- psi ∉ u but in seed (either BRS or f_content), so F(psi) ∈ u
+    have h_F_psi_in_u : Formula.some_future psi ∈ u := h_not_in_u_has_F psi h_psi_in_L h_psi_not_in_u
 
-    -- From BRS membership, extract that psi ∈ subformulaClosure (needed for negation completeness)
-    -- psi ∈ BRS means F(psi) ∈ u ⊆ deferralClosure, so either F(psi) ∈ closureWithNeg or F(psi) = F_top
-    have h_F_psi_in_u : Formula.some_future psi ∈ u :=
-      (mem_boundary_resolution_set_iff phi u psi).mp h_psi_brs |>.1
+    -- From F(psi) ∈ u, extract that psi ∈ subformulaClosure (needed for negation completeness)
+    -- F(psi) ∈ u ⊆ deferralClosure, so either F(psi) ∈ closureWithNeg or F(psi) = F_top
     have h_F_psi_dc : Formula.some_future psi ∈ Bimodal.Syntax.deferralClosure phi :=
       h_mcs.1.1 h_F_psi_in_u
     -- Case split on whether F(psi) ∈ closureWithNeg or F(psi) = F_top
@@ -2062,6 +2076,23 @@ theorem constrained_successor_restricted_g_persistence (phi : Formula) (u : Set 
     g_content u ⊆ constrained_successor_restricted phi u h_mcs h_F_top :=
   Set.Subset.trans
     (g_content_subset_constrained_successor_seed_restricted phi u)
+    (constrained_successor_restricted_extends phi u h_mcs h_F_top)
+
+/--
+F-content persistence (strong form): f_content(u) ⊆ successor.
+
+This is the key property enabled by adding f_content to the seed.
+If F(psi) ∈ u, then psi ∈ successor (not just psi ∨ F(psi)).
+
+This prevents F-obligations from being "destroyed" by the Lindenbaum extension
+adding G(neg psi). With psi in the seed, the successor must contain psi.
+-/
+theorem constrained_successor_restricted_f_content_persistence (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    f_content u ⊆ constrained_successor_restricted phi u h_mcs h_F_top :=
+  Set.Subset.trans
+    (f_content_subset_constrained_successor_seed_restricted phi u)
     (constrained_successor_restricted_extends phi u h_mcs h_F_top)
 
 /--
@@ -2665,6 +2696,33 @@ theorem restricted_forward_chain_p_step (phi : Formula)
     (restricted_forward_chain_is_drm phi M0 n)
     (restricted_forward_chain_has_F_top phi M0 n)
 
+/--
+F-content persistence for restricted forward chain (strong form):
+f_content(chain(n)) ⊆ chain(n+1).
+
+This is the key property enabled by adding f_content to the seed.
+If F(psi) ∈ chain(n), then psi ∈ chain(n+1) (resolved, not deferred).
+-/
+theorem restricted_forward_chain_f_content_persistence (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (n : Nat) :
+    f_content (restricted_forward_chain phi M0 n) ⊆ restricted_forward_chain phi M0 (n + 1) :=
+  constrained_successor_restricted_f_content_persistence phi
+    (restricted_forward_chain phi M0 n)
+    (restricted_forward_chain_is_drm phi M0 n)
+    (restricted_forward_chain_has_F_top phi M0 n)
+
+/--
+Strong F-step witness: if F(psi) ∈ chain(k), then psi ∈ chain(k+1).
+
+This is the strong form of F-step enabled by f_content in the seed.
+Every F-obligation is resolved (not deferred) in exactly one step.
+-/
+theorem restricted_forward_chain_F_resolves (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ restricted_forward_chain phi M0 k) :
+    psi ∈ restricted_forward_chain phi M0 (k + 1) :=
+  restricted_forward_chain_f_content_persistence phi M0 k h_F
+
 /-!
 ## F-Nesting Boundedness for Restricted Forward Chain
 
@@ -2689,6 +2747,70 @@ theorem restricted_forward_chain_F_bounded (phi : Formula)
     (restricted_forward_chain phi M0 n)
     (restricted_forward_chain_is_drm phi M0 n)
     h_F
+
+/--
+F-nesting resolution: if iter_F d theta ∈ chain(j), then theta ∈ chain(j + d).
+
+This follows from strong F-persistence: each F-step resolves one layer of F-nesting.
+By induction, d layers of F-nesting get resolved after d chain steps.
+-/
+theorem restricted_forward_chain_iter_F_resolves (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (j d : Nat) (theta : Formula)
+    (h_in : iter_F d theta ∈ restricted_forward_chain phi M0 j) :
+    theta ∈ restricted_forward_chain phi M0 (j + d) := by
+  induction d generalizing j with
+  | zero =>
+    simp only [iter_F_zero, Nat.add_zero] at h_in ⊢
+    exact h_in
+  | succ n ih =>
+    -- iter_F (n + 1) theta = F(iter_F n theta)
+    -- h_in : F(iter_F n theta) ∈ chain(j)
+    -- By F-persistence: iter_F n theta ∈ chain(j + 1)
+    simp only [iter_F_succ] at h_in
+    have h_resolved : iter_F n theta ∈ restricted_forward_chain phi M0 (j + 1) :=
+      restricted_forward_chain_F_resolves phi M0 j (iter_F n theta) h_in
+    -- By IH: theta ∈ chain((j + 1) + n) = chain(j + (n + 1))
+    have h_eq : j + 1 + n = j + (n + 1) := by omega
+    rw [← h_eq]
+    exact ih (j + 1) h_resolved
+
+/--
+Key lemma: if we have a boundary at depth d (iter_F d theta in chain but iter_F (d+1) not),
+then the chain position k is bounded by the depth d.
+
+This uses F-persistence: if iter_F d theta first enters at chain(j), then after d steps
+theta is in chain(j+d). If k > d, then the formula would have been resolved earlier.
+
+Actually, we prove the contrapositive: k >= B is impossible when d < B, because
+formulas at depth d < B would all be resolved after B steps of the chain.
+-/
+theorem boundary_implies_k_lt_B (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k d : Nat) (theta : Formula)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
+    (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k)
+    (h_d_lt : d < closure_F_bound phi) :
+    k < closure_F_bound phi := by
+  -- The key insight: with F-persistence, F-formulas at depth d in chain(k) imply
+  -- F^{d+k}(theta) was in chain(0). Since d < B, and chain(0) F-depth is bounded by B,
+  -- we need d + k < B... but that's not quite right.
+  --
+  -- Actually the correct argument: if F^d(theta) ∈ chain(k) with d >= 1, then either
+  -- it was in chain(0), or F^{d+1}(theta) was in some chain(m-1) and resolved to F^d(theta)
+  -- in chain(m). Tracing back: F^{d+m}(theta) ∈ chain(0) for some m <= k.
+  -- Since F-depth in chain(0) is bounded by B, we have d + m < B, so m < B - d.
+  -- Therefore the first appearance of F^d(theta) is at chain(m) with m < B - d.
+  -- For F^d(theta) to be in chain(k), either:
+  -- - k = 0 and F^d(theta) ∈ chain(0), which means d < B (already have), or
+  -- - k >= 1 and F^{d+1}(theta) ∈ chain(k-1), which contradicts boundary if k-1 < k... no.
+  --
+  -- The actual complexity: F-formulas don't persist, so F^d(theta) ∈ chain(k) for k >= 1
+  -- requires "fresh" derivation at chain(k), which requires F^{d+1}(theta) ∈ chain(k-1).
+  -- Inductively: F^{d+k}(theta) ∈ chain(0). But d + k >= B contradicts F-depth bound if k >= B - d.
+  -- Since d < B, B - d >= 1, so k >= B - d is possible but k >= B > B - d + d = B... hmm.
+  --
+  -- For a rigorous proof, we need strong induction on k. The sorry here is the main blocker.
+  sorry
 
 /--
 Build CanonicalTask_forward chain for restricted forward chain.
@@ -2997,13 +3119,14 @@ private theorem restricted_bounded_witness_wf (phi : Formula)
               -- h_iter_not says iter_F (n+2) theta not in chain(k)
               -- This boundary condition only makes sense if k < B
               -- (otherwise both are in the stabilized chain or both are out)
-              have h1 : closure_F_bound phi - k = 0 := by omega
-              have h2 : closure_F_bound phi - (k + 1) = 0 := by omega
-              simp only [h1, Nat.zero_mul, Nat.zero_add] at h_inv
-              -- h_inv : remaining' + 1 >= 1, i.e., remaining' >= 0
-              -- We claim k < B by semantic argument, which contradicts hk : k >= B
-              -- For now, use sorry to indicate this needs a stabilization lemma
-              sorry
+              -- Use boundary_implies_k_lt_B to show k < B, contradicting hk : k >= B
+              -- Reconstruct the original h_iter_in before simp
+              have h_iter_in_orig : iter_F (n + 1) theta ∈ restricted_forward_chain phi M0 k := by
+                simp only [iter_F_succ]
+                exact h_iter_in
+              have h_k_lt_B := boundary_implies_k_lt_B phi M0 k (n + 1) theta
+                (by omega : n + 1 >= 1) h_iter_in_orig h_iter_not h_d_lt
+              exact absurd h_k_lt_B (Nat.not_lt.mpr hk)
           obtain ⟨m, h_m_gt, h_theta_in⟩ := restricted_bounded_witness_wf phi M0 (k + 1) theta (d' + (n - 1))
             remaining' h_new_depth_ge h_inv' h_d'_in h_d'_not'
           exact ⟨m, by omega, h_theta_in⟩
@@ -3028,13 +3151,16 @@ private theorem restricted_bounded_witness_wf (phi : Formula)
               rw [h1, Nat.add_mul, Nat.one_mul]
             rw [h_eq] at h_inv
             omega
-          · -- Case k >= B: similar to above, use exfalso with stabilization argument
+          · -- Case k >= B: use boundary_implies_k_lt_B to derive contradiction
             push_neg at hk
             exfalso
-            have h1 : closure_F_bound phi - k = 0 := by omega
-            simp only [h1, Nat.zero_mul, Nat.zero_add] at h_inv
-            -- Same semantic argument: k >= B should be impossible given boundary condition
-            sorry
+            -- Reconstruct the original h_iter_in before simp
+            have h_iter_in_orig : iter_F (n + 1) theta ∈ restricted_forward_chain phi M0 k := by
+              simp only [iter_F_succ]
+              exact h_iter_in
+            have h_k_lt_B := boundary_implies_k_lt_B phi M0 k (n + 1) theta
+              (by omega : n + 1 >= 1) h_iter_in_orig h_iter_not h_d_lt
+            exact absurd h_k_lt_B (Nat.not_lt.mpr hk)
         -- Recursive call with decremented remaining_steps and invariant
         obtain ⟨m, h_m_gt, h_theta_in⟩ := restricted_bounded_witness_wf phi M0 (k + 1) theta (d' + n)
           remaining' h_new_depth_ge h_inv' h_d'_in h_d'_not'
