@@ -128,7 +128,7 @@ technical_debt:
 
 ### 69. Close Z_chain_forward_F' via dovetailed omega construction
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
@@ -136,7 +136,8 @@ technical_debt:
   - [01_z-chain-forward-research.md](069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md)
   - [02_team-research.md](069_close_z_chain_forward_f/reports/02_team-research.md)
   - [03_sorry-closure-research.md](069_close_z_chain_forward_f/reports/03_sorry-closure-research.md)
-- **Plan**: [05_sorry-closure-plan.md](069_close_z_chain_forward_f/plans/05_sorry-closure-plan.md)
+  - [04_team-research.md](069_close_z_chain_forward_f/reports/04_team-research.md)
+- **Plan**: [06_semantic-fix-plan.md](069_close_z_chain_forward_f/plans/06_semantic-fix-plan.md)
 
 **Description**: Close the Z_chain_forward_F' theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction (lines 3668+) uses Nat.unpair to fairly schedule F-obligation resolution across all time points. Also closes omega_forward_F_bounded_persistence and one_step_f_resolution.
 
