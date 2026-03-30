@@ -57,7 +57,7 @@ From Plan v9 (completed):
 
 ## Implementation Phases
 
-### Phase 1: Forward Bounded Witness [NOT STARTED]
+### Phase 1: Forward Bounded Witness [PARTIAL]
 
 **Target**: `restricted_bounded_witness_wf` (line ~2883)
 

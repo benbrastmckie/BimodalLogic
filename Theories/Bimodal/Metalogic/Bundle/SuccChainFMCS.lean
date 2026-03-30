@@ -2866,24 +2866,32 @@ private theorem restricted_forward_chain_depth_bounded (phi : Formula)
   omega
 
 /--
-Well-founded version of bounded witness lemma using accessibility on remaining steps.
+Well-founded version of bounded witness lemma using remaining_steps for termination.
 
-The depth parameter d satisfies d < closure_F_bound phi (proved internally via
-`restricted_forward_chain_depth_bounded`). This bound ensures termination: each recursive
-call increases k by 1, and the total number of steps is bounded by B^2 where B = closure_F_bound phi.
+**Termination Argument**: We use a single `remaining_steps` parameter that decreases by 1 at
+each recursive call. With initial `remaining_steps = B * B + 1` where `B = closure_F_bound phi`,
+the recursion terminates because total work is bounded by `B * B`:
+- At most `B` "resolve" steps (each peels one F from the nesting)
+- At most `B` "defer" steps between each pair of resolves (depth bound)
 
-**Termination Argument**: We use an explicit `remaining_steps` parameter that decreases by 1 at
-each recursive call. The match on `remaining_steps` ensures we handle `0` and `succ` cases
-explicitly, with the `0` case being unreachable when called with sufficient initial steps.
-
-**Key Insight**: At each position k, the depth d < B. Each recursive call moves to k+1.
-The total number of positions visited before finding theta is bounded by B*B because
-the F-nesting across all positions is bounded by the formula size.
+**Fuel Invariant**: We thread `h_inv : remaining_steps ≥ (B - k) * B + 1` through the recursion
+where `B = closure_F_bound phi`. This invariant:
+1. Initially satisfied: `B*B+1 ≥ (B-0)*B + 1 = B*B + 1` ✓
+2. Preserved at k → k+1 with remaining_steps → remaining_steps - 1:
+   From `remaining_steps ≥ (B-k)*B + 1`, we need `remaining_steps - 1 ≥ (B-(k+1))*B + 1`.
+   When k < B: `(B-k)*B = (B-k-1)*B + B`, so `remaining_steps ≥ (B-k-1)*B + B + 1`,
+   thus `remaining_steps - 1 ≥ (B-k-1)*B + B ≥ (B-k-1)*B + 1 = (B-(k+1))*B + 1` ✓
+   When k ≥ B: `(B-k) = 0` and `(B-(k+1)) = 0`, so we need `remaining_steps - 1 ≥ 1`.
+   From `remaining_steps ≥ 0*B + 1 = 1`, if `remaining_steps ≥ 2` we get `remaining_steps - 1 ≥ 1`.
+   But `remaining_steps = 1` is possible. In that case we need to handle separately.
+3. Refutes fuel=0: When `remaining_steps = 0`, invariant says `0 ≥ (B-k)*B + 1 ≥ 1`.
+   But `0 ≥ 1` is false. Contradiction! ✓
 -/
 private theorem restricted_bounded_witness_wf (phi : Formula)
     (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (theta : Formula) (d : Nat)
     (remaining_steps : Nat)
     (h_d_ge : d ≥ 1)
+    (h_inv : remaining_steps ≥ (closure_F_bound phi - k) * closure_F_bound phi + 1)
     (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
     (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
     ∃ m : Nat, m > k ∧ theta ∈ restricted_forward_chain phi M0 m := by
@@ -2892,27 +2900,11 @@ private theorem restricted_bounded_witness_wf (phi : Formula)
     restricted_forward_chain_depth_bounded phi M0 k theta d h_d_ge h_iter_in h_iter_not
   match remaining_steps with
   | 0 =>
-    -- Base case: no remaining steps. Handle directly without recursion.
-    -- This case is unreachable when called with sufficient initial steps (B*B+1),
-    -- but the match structure requires handling it for well-foundedness.
-    match d with
-    | 0 => exact absurd h_d_ge (by omega : ¬0 ≥ 1)
-    | n + 1 =>
-      simp only [iter_F_succ] at h_iter_in
-      have h_or := restricted_forward_chain_F_step_witness phi M0 k (iter_F n theta) h_iter_in
-      rcases h_or with h_resolved | h_deferred
-      · by_cases hn : n = 0
-        · subst hn; simp only [iter_F_zero] at h_resolved
-          exact ⟨k + 1, by omega, h_resolved⟩
-        · -- n ≥ 1: Need recursion but remaining_steps=0.
-          -- This case is semantically unreachable with proper initial steps.
-          -- We use False.elim after showing this contradicts the bound.
-          -- Since we can't prove False here (it requires global tracking),
-          -- we note the witness exists by F-coherence and use sorry.
-          -- The restricted chain satisfies F_step, so theta eventually appears.
-          exact ⟨k + 1 + closure_F_bound phi * closure_F_bound phi, by omega, by sorry⟩
-      · -- F(iter_F n theta) ∈ chain(k+1) (deferred), similar reasoning
-        exact ⟨k + 1 + closure_F_bound phi * closure_F_bound phi, by omega, by sorry⟩
+    -- Base case: no remaining steps. Derive contradiction from fuel invariant.
+    -- h_inv says: 0 ≥ (B - k) * B + 1 ≥ 1
+    -- But 0 ≥ 1 is false.
+    exfalso
+    omega
   | remaining' + 1 =>
     match d with
     | 0 => exact absurd h_d_ge (by omega : ¬0 ≥ 1)
@@ -2945,8 +2937,75 @@ private theorem restricted_bounded_witness_wf (phi : Formula)
             have h_eq : d' + 1 + (n - 1) = d' + (n - 1) + 1 := by omega
             rw [← h_eq]; exact h_d'_not
           have h_new_depth_ge : d' + (n - 1) ≥ 1 := by omega
+          -- Prove invariant is preserved: remaining' ≥ (B - (k+1)) * B + 1
+          -- From h_inv: remaining' + 1 ≥ (B - k) * B + 1
+          -- We have (B - k) * B = (B - (k+1)) * B + B when k < B
+          -- So remaining' + 1 ≥ (B - (k+1)) * B + B + 1
+          -- Thus remaining' ≥ (B - (k+1)) * B + B ≥ (B - (k+1)) * B + 1 when B ≥ 1
+          have h_inv' : remaining' ≥ (closure_F_bound phi - (k + 1)) * closure_F_bound phi + 1 := by
+            have hB : closure_F_bound phi ≥ 1 := by unfold closure_F_bound; omega
+            by_cases hk : k < closure_F_bound phi
+            · -- Case k < B: (B - k) = (B - (k+1)) + 1
+              have h_eq : (closure_F_bound phi - k) * closure_F_bound phi =
+                          (closure_F_bound phi - (k + 1)) * closure_F_bound phi + closure_F_bound phi := by
+                have h1 : closure_F_bound phi - k = (closure_F_bound phi - (k + 1)) + 1 := by omega
+                rw [h1, Nat.add_mul, Nat.one_mul]
+              -- From h_inv: remaining' + 1 ≥ (B-k)*B + 1 = (B-(k+1))*B + B + 1
+              -- So remaining' + 1 ≥ (B-(k+1))*B + B + 1
+              -- Thus remaining' ≥ (B-(k+1))*B + B ≥ (B-(k+1))*B + 1
+              rw [h_eq] at h_inv
+              omega
+            · -- Case k ≥ B: both (B - k) and (B - (k+1)) are 0
+              -- In this case, h_inv : remaining' + 1 >= 1, so remaining' >= 0
+              -- We need remaining' >= 1
+              -- Use the fact that we're in the `remaining' + 1` match case,
+              -- which means remaining_steps = remaining' + 1 >= 1
+              -- If we had remaining_steps >= 2, then remaining' >= 1
+              -- But the initial fuel is B*(B+1)+1, and after at most B*(B+1) steps
+              -- (B resolves * (B+1) defers each), we should be done
+              -- Since k >= B implies we've made at least B steps, and each step uses at most B+1 fuel...
+              -- Actually, let's just note that in the k >= B case, the chain has stabilized,
+              -- so no new formulas appear. This means the recursion would terminate immediately
+              -- at the base case without needing more fuel.
+              -- For now, we handle this by proving that k >= B is impossible:
+              -- We have h_d_lt : d < B (the formula depth is bounded)
+              -- If k >= B, then the chain has processed B levels, and any formula
+              -- iter_F d theta with d < B should have been fully resolved.
+              -- But we also have h_iter_not : iter_F (d+1) theta not in chain(k),
+              -- which means there's still work to do, contradicting chain stabilization.
+              -- This is a semantic argument that requires a stabilization lemma.
+              -- For the proof to go through, we exfalso and derive contradiction:
+              push_neg at hk
+              -- We can derive False from k >= B and the existence of unresolved F-nesting
+              -- Actually, let's use a different approach: since (B-(k+1)) = 0,
+              -- the goal is remaining' >= 1, and we have h_inv : remaining' + 1 >= 1
+              -- which means remaining' >= 0. We need to show remaining' > 0.
+              -- From remaining_steps = remaining' + 1 and h_inv : remaining_steps >= 1,
+              -- if remaining_steps >= 2, then remaining' >= 1.
+              -- But we can't guarantee remaining_steps >= 2 with current hypotheses.
+              -- Use exfalso and derive contradiction from k >= B and h_d_lt.
+              exfalso
+              -- We have n + 1 < B and k >= B
+              -- For iter_F (n+1) theta to be in chain(k) with k >= B,
+              -- the formula must have appeared in an earlier chain.
+              -- But if it appeared in chain(B-1), the F-resolution would have happened.
+              -- This is the semantic argument - for now, we need a lemma.
+              -- The simplest path: assume k < B always (add as hypothesis)
+              -- For now, omega will fail, showing we need the lemma.
+              -- Actually, we can derive k < B from the chain structure:
+              -- h_iter_in says iter_F (n+1) theta in chain(k)
+              -- h_iter_not says iter_F (n+2) theta not in chain(k)
+              -- This boundary condition only makes sense if k < B
+              -- (otherwise both are in the stabilized chain or both are out)
+              have h1 : closure_F_bound phi - k = 0 := by omega
+              have h2 : closure_F_bound phi - (k + 1) = 0 := by omega
+              simp only [h1, Nat.zero_mul, Nat.zero_add] at h_inv
+              -- h_inv : remaining' + 1 >= 1, i.e., remaining' >= 0
+              -- We claim k < B by semantic argument, which contradicts hk : k >= B
+              -- For now, use sorry to indicate this needs a stabilization lemma
+              sorry
           obtain ⟨m, h_m_gt, h_theta_in⟩ := restricted_bounded_witness_wf phi M0 (k + 1) theta (d' + (n - 1))
-            remaining' h_new_depth_ge h_d'_in h_d'_not'
+            remaining' h_new_depth_ge h_inv' h_d'_in h_d'_not'
           exact ⟨m, by omega, h_theta_in⟩
       · -- Case 2: F(iter_F n theta) ∈ chain(k+1) (F deferred)
         have h_F_in : Formula.some_future (iter_F n theta) ∈
@@ -2959,9 +3018,26 @@ private theorem restricted_bounded_witness_wf (phi : Formula)
           have h_eq : d' + 1 + n = d' + n + 1 := by omega
           rw [← h_eq]; exact h_d'_not
         have h_new_depth_ge : d' + n ≥ 1 := by omega
-        -- Recursive call with decremented remaining_steps
+        -- Prove invariant is preserved (same reasoning as Case 1)
+        have h_inv' : remaining' ≥ (closure_F_bound phi - (k + 1)) * closure_F_bound phi + 1 := by
+          have hB : closure_F_bound phi ≥ 1 := by unfold closure_F_bound; omega
+          by_cases hk : k < closure_F_bound phi
+          · have h_eq : (closure_F_bound phi - k) * closure_F_bound phi =
+                        (closure_F_bound phi - (k + 1)) * closure_F_bound phi + closure_F_bound phi := by
+              have h1 : closure_F_bound phi - k = (closure_F_bound phi - (k + 1)) + 1 := by omega
+              rw [h1, Nat.add_mul, Nat.one_mul]
+            rw [h_eq] at h_inv
+            omega
+          · -- Case k >= B: similar to above, use exfalso with stabilization argument
+            push_neg at hk
+            exfalso
+            have h1 : closure_F_bound phi - k = 0 := by omega
+            simp only [h1, Nat.zero_mul, Nat.zero_add] at h_inv
+            -- Same semantic argument: k >= B should be impossible given boundary condition
+            sorry
+        -- Recursive call with decremented remaining_steps and invariant
         obtain ⟨m, h_m_gt, h_theta_in⟩ := restricted_bounded_witness_wf phi M0 (k + 1) theta (d' + n)
-          remaining' h_new_depth_ge h_d'_in h_d'_not'
+          remaining' h_new_depth_ge h_inv' h_d'_in h_d'_not'
         exact ⟨m, by omega, h_theta_in⟩
 termination_by remaining_steps
 
@@ -2979,9 +3055,16 @@ theorem restricted_bounded_witness (phi : Formula)
     (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
     ∃ m : Nat, m > k ∧ theta ∈ restricted_forward_chain phi M0 m := by
   -- Use well-founded version with sufficient remaining steps
+  -- Use B * (B + 1) + 1 as fuel to ensure invariant is preserved even when k >= B
   let B := closure_F_bound phi
-  exact restricted_bounded_witness_wf phi M0 k theta d (B * B + 1)
-    h_d_ge h_iter_in h_iter_not
+  -- Initial invariant: B * (B + 1) + 1 ≥ (B - k) * B + 1
+  -- For any k: (B - k) * B ≤ B * B ≤ B * (B + 1), so B * (B + 1) + 1 ≥ (B - k) * B + 1
+  have h_inv : B * (B + 1) + 1 ≥ (B - k) * B + 1 := by
+    have h1 : (B - k) * B ≤ B * B := Nat.mul_le_mul_right B (Nat.sub_le B k)
+    have h2 : B * B ≤ B * (B + 1) := Nat.mul_le_mul_left B (Nat.le_add_right B 1)
+    omega
+  exact restricted_bounded_witness_wf phi M0 k theta d (B * (B + 1) + 1)
+    h_d_ge h_inv h_iter_in h_iter_not
 
 /--
 Helper: If iter_F d psi ∈ chain(k) for some d >= 1, then psi ∈ chain(k + d') for some d'.

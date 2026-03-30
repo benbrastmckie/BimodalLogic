@@ -79,7 +79,7 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Blocker**: F-formula persistence - temporal_theory_witness_exists lacks F-step; need Succ-based construction
 - **Language**: lean4
 - **Dependencies**: None
