@@ -1,7 +1,7 @@
 # Implementation Plan: Close Z_chain_forward_F via Dovetailed Construction
 
 - **Task**: 69 - close_z_chain_forward_f
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 4 hours
 - **Dependencies**: None (research complete)
 - **Research Inputs**: specs/069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md
@@ -44,23 +44,39 @@ Key findings from research report:
 
 ## Implementation Phases
 
-### Phase 1: F-Persistence Lemma [NOT STARTED]
+### Phase 1: F-Persistence Lemma [BLOCKED]
 
 **Goal**: Prove that F(phi) persists in the dovetailed chain until resolved
 
-**Tasks**:
-- [ ] Define `omega_true_dovetailed_F_persistence` lemma
-- [ ] Prove: F(phi) in chain(n) and phi not in chain(n) implies F(phi) in chain(n+1) OR phi in chain(n+1)
-- [ ] Key argument: G(neg(phi)) not spontaneously added because G-theory is preserved from M0, and if G(neg(phi)) were in M0 then F(phi) = neg(G(neg(phi))) couldn't be in M0 (contradiction)
+**Status**: BLOCKED - Fundamental gap identified
 
-**Timing**: 1 hour
+**Findings**:
+1. The F-persistence approach has a fundamental gap: Lindenbaum extension can add G(neg phi) even when F(phi) was present in an earlier chain step
+2. The seed for `temporal_theory_witness_exists` is `{psi} ∪ G_theory ∪ box_theory`, which does NOT include F-formulas
+3. Since F(phi) is not preserved in the seed, Lindenbaum can add G(neg phi) = neg(F(phi)) without contradiction
+4. Once G(neg phi) enters the chain, F(phi) vanishes and phi can never appear
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` (after line 3897)
+**Implemented**:
+- [x] `selectFormulaToResolve_at_pair`: At target step n0 = Nat.pair t (encode phi), selectFormulaToResolve returns phi
+- [x] `omega_true_dovetailed_forward_F_resolution`: Main theorem with ONE case proven (F(phi) persists to n0) and ONE sorry (F(phi) vanishes before n0)
+
+**Gap Analysis**:
+The gap is NOT in the dovetailed enumeration strategy. The enumeration correctly targets phi at step n0. The gap is in the chain construction itself - it doesn't preserve F-formulas from step to step.
+
+**Possible Resolutions**:
+1. Modify construction to include F-formulas in seed (but this may cause other consistency issues)
+2. Prove that G(neg phi) being added leads to contradiction with M0 (requires new invariant)
+3. Use bundle-level coherence only (but truth lemma requires family-level)
+4. Redesign completeness proof to use bundle-level semantics
+
+**Timing**: 1 hour (completed with partial result)
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` (lines 3900-3990)
 
 **Verification**:
-- [ ] `lake build` succeeds
-- [ ] New lemma typechecks without sorry
+- [x] `lake build` succeeds (with sorries)
+- [ ] New lemma typechecks without sorry - BLOCKED
 
 ### Phase 2: Fairness Lemma and Resolution Bound [NOT STARTED]
 

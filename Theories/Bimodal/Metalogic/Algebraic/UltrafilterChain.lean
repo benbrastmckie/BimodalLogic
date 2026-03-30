@@ -3896,4 +3896,105 @@ theorem omega_chain_true_dovetailed_forward_resolves (M0 : Set Formula) (h_mcs0 
              omega_chain_true_dovetailed_forward_with_inv]
   exact (omega_step_forward _ _ _ _).property.2.1
 
+/-!
+## F-Resolution for True Dovetailed Chain
+
+The dovetailed construction guarantees that any F(phi) obligation at step t is eventually
+resolved by step n0+1 where n0 = Nat.pair t (Encodable.encode phi).
+
+Key insight: We don't need persistence at every step. The dovetailed construction
+FORCES resolution at the target step n0.
+
+**Proof Strategy**:
+1. Given F(phi) at step t
+2. Let k = Encodable.encode phi
+3. At step n0 = Nat.pair t k, if F(phi) is still in the chain, selectFormulaToResolve picks phi
+4. By omega_chain_true_dovetailed_forward_resolves, phi ∈ chain(n0+1)
+5. n0 >= t by Nat.left_le_pair, so n0+1 > t
+
+The challenge is handling the "if F(phi) is still in the chain" part. We prove:
+- If phi ∈ chain(m) for any m ≤ n0+1, we're done
+- If F(phi) ∈ chain(n0), then resolution is FORCED at n0+1
+-/
+
+/--
+At the target step n0 = Nat.pair t k where k = Encodable.encode phi,
+the selectFormulaToResolve function returns phi (via enumFormula).
+
+This is the key lemma connecting the enumeration to the original formula.
+-/
+theorem selectFormulaToResolve_at_pair (M_n : Set Formula) (t : Nat) (phi : Formula)
+    (h_F : Formula.some_future phi ∈ M_n) :
+    let n0 := Nat.pair t (Encodable.encode phi)
+    selectFormulaToResolve M_n n0 = phi := by
+  intro n0
+  unfold selectFormulaToResolve enumFormula
+  -- n0 = Nat.pair t (Encodable.encode phi)
+  -- (Nat.unpair n0).2 = Encodable.encode phi
+  have h_unpair : (Nat.unpair n0).2 = Encodable.encode phi := by
+    simp only [n0, Nat.unpair_pair]
+  -- enumFormula (Nat.unpair n0).2 = Denumerable.ofNat Formula (Encodable.encode phi) = phi
+  have h_enum : Denumerable.ofNat Formula (Nat.unpair n0).2 = phi := by
+    rw [h_unpair]
+    exact Denumerable.ofNat_encode phi
+  -- Now show the ite chooses phi
+  -- F(enumFormula k) = F(phi) ∈ M_n by h_F
+  have h_F_in : Formula.some_future (Denumerable.ofNat Formula (Nat.unpair n0).2) ∈ M_n := by
+    rw [h_enum]
+    exact h_F
+  rw [if_pos h_F_in, h_enum]
+
+/--
+Main F-resolution theorem for the true dovetailed forward chain.
+
+If F(phi) is in the chain at step t, then phi is in the chain at some step s > t.
+
+The proof uses the dovetailed construction's fairness: at step n0 = Nat.pair t (encode phi),
+the construction targets phi for resolution.
+
+**Proof Gap**: The case where F(phi) vanishes before n0 (because G(neg phi) enters the chain)
+has a subtle gap. The Lindenbaum extension used in `temporal_theory_witness_exists` can add
+G(neg phi) if it's consistent with the seed, even when F(phi) was present earlier.
+
+**Alternative**: Bundle-level temporal coherence (`boxClassFamilies_bundle_forward_F`) is
+proven without this gap, as it allows witnesses in ANY family of the bundle.
+-/
+theorem omega_true_dovetailed_forward_F_resolution (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
+    (t : Nat) (phi : Formula) (h_F : Formula.some_future phi ∈ omega_chain_true_dovetailed_forward M0 h_mcs0 t) :
+    ∃ s, t < s ∧ phi ∈ omega_chain_true_dovetailed_forward M0 h_mcs0 s := by
+  -- Let k = Encodable.encode phi and n0 = Nat.pair t k
+  let k := Encodable.encode phi
+  let n0 := Nat.pair t k
+  -- n0 >= t by Nat.left_le_pair
+  have h_n0_ge_t : t ≤ n0 := Nat.left_le_pair t k
+
+  -- Either phi appears in some chain point in (t, n0+1], or it doesn't
+  by_cases h_exists : ∃ m, t < m ∧ m ≤ n0 + 1 ∧ phi ∈ omega_chain_true_dovetailed_forward M0 h_mcs0 m
+  · -- Case 1: phi appears before or at n0+1
+    obtain ⟨m, h_lt, _, h_phi_m⟩ := h_exists
+    exact ⟨m, h_lt, h_phi_m⟩
+  · -- Case 2: phi does NOT appear in any chain point in (t, n0+1]
+    push_neg at h_exists
+    have h_s_gt_t : t < n0 + 1 := by omega
+
+    -- Case split on whether F(phi) persists to chain(n0)
+    by_cases h_F_n0 : Formula.some_future phi ∈ omega_chain_true_dovetailed_forward M0 h_mcs0 n0
+    · -- F(phi) ∈ chain(n0): Resolution is FORCED
+      -- selectFormulaToResolve picks phi because unpair(n0) = (t, encode phi)
+      have h_select : selectFormulaToResolve (omega_chain_true_dovetailed_forward M0 h_mcs0 n0) n0 = phi :=
+        selectFormulaToResolve_at_pair _ t phi h_F_n0
+      have h_resolved := omega_chain_true_dovetailed_forward_resolves M0 h_mcs0 n0
+      rw [h_select] at h_resolved
+      exact ⟨n0 + 1, h_s_gt_t, h_resolved⟩
+    · -- F(phi) ∉ chain(n0): F(phi) vanished somewhere between t and n0
+      -- This means G(neg phi) entered the chain at some step m ∈ [t+1, n0]
+      -- GAP: The current construction via Lindenbaum doesn't prevent G(neg phi) from entering
+      -- even when F(phi) = neg(G(neg phi)) was present at an earlier step.
+      --
+      -- Closing this gap requires either:
+      -- 1. A modified construction that explicitly excludes G(neg phi) when F(phi) is present
+      -- 2. Proving that G(neg phi) is inconsistent with some invariant maintained by the chain
+      -- 3. Using bundle-level coherence (which is already proven: boxClassFamilies_bundle_forward_F)
+      sorry
+
 end Bimodal.Metalogic.Algebraic.UltrafilterChain
