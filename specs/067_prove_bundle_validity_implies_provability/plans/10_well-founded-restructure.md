@@ -61,7 +61,7 @@ Already completed in plan v9 sessions:
 
 ---
 
-### Phase 2: Well-Founded Infrastructure [NOT STARTED]
+### Phase 2: Well-Founded Infrastructure [BLOCKED]
 
 **Goal**: Define the termination measure and prove it decreases for the recursive patterns used.
 

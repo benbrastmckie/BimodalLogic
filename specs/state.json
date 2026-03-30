@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-30T00:02:28Z",
+      "last_updated": "2026-03-30T00:05:56Z",
       "artifacts": [
         {
           "type": "research",
@@ -1035,9 +1035,14 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/plans/10_well-founded-restructure.md",
           "type": "plan",
           "summary": "Well-founded recursion restructure plan: 6 phases to eliminate fuel-based sorries via proper termination measures"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/summaries/12_well-founded-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting Phase 2 blocking issues and recommended next steps"
         }
       ],
-      "session_id": "sess_1774822269_334747",
+      "session_id": "sess_1774829128_ad0ed3",
       "researched": "2026-03-29T20:06:17Z",
       "planned": "2026-03-30T00:02:28Z",
       "started": "2026-03-27T23:46:39Z",
