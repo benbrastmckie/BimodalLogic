@@ -897,14 +897,14 @@
     {
       "project_number": 67,
       "project_name": "prove_bundle_validity_implies_provability",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "description": "Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The approach should either: (a) prove a forward-only truth lemma restructured to avoid the imp backward case, or (b) prove Z-chain family-level coherence via seam propagation for crossing cases and priority-queue dovetailing for forward_F. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.",
       "effort": "4-8 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-30T17:15:59Z",
+      "last_updated": "2026-03-30T17:27:43Z",
       "artifacts": [
         {
           "type": "research",
@@ -1075,13 +1075,20 @@
           "path": "specs/067_prove_bundle_validity_implies_provability/plans/15_f-resolves-shortcut.md",
           "type": "plan",
           "summary": "F-resolves shortcut: delete flawed theorems, use simple induction"
+        },
+        {
+          "path": "specs/067_prove_bundle_validity_implies_provability/summaries/15_f-resolves-summary.md",
+          "type": "summary",
+          "summary": "F-resolves shortcut: deleted flawed theorems, simplified proof"
         }
       ],
-      "session_id": "sess_1774889317_ce930b",
+      "session_id": "sess_1774891138_e5faba",
       "researched": "2026-03-30T17:12:36Z",
       "planned": "2026-03-30T17:15:59Z",
       "started": "2026-03-27T23:46:39Z",
-      "resume_phase": 4
+      "resume_phase": 4,
+      "completed": "2026-03-30T17:27:43Z",
+      "completion_summary": "Deleted flawed boundary analysis theorems (~340 lines). Simplified restricted_forward_chain_forward_F to 1-line proof using existing F_resolves. Build passes, no new sorries."
     },
     {
       "project_number": 68,

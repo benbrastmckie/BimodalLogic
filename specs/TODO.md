@@ -79,7 +79,9 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-30
+- **Summary**: Deleted flawed boundary analysis theorems (~340 lines). Simplified restricted_forward_chain_forward_F to 1-line proof using existing F_resolves.
 - **Blocker**: None (Plan 15 deletes flawed theorems, uses F_resolves shortcut)
 - **Language**: lean4
 - **Dependencies**: None
