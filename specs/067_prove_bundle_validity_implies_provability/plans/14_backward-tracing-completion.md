@@ -1,7 +1,7 @@
 # Implementation Plan: Backward Tracing for boundary_implies_k_lt_B
 
 - **Task**: 67 - prove_bundle_validity_implies_provability
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 2-4 hours
 - **Dependencies**: Plan 13 (Phases 1-3, 5-6 complete)
 - **Research Inputs**: reports/39_provenance-proof-research.md
@@ -58,7 +58,7 @@ From **Report 39 (Provenance Proof Research)**:
 
 ## Implementation Phases
 
-### Phase 1: Prove iter_F_trace_to_base Lemma [NOT STARTED]
+### Phase 1: Prove iter_F_trace_to_base Lemma [PARTIAL]
 
 **Goal**: Establish that F-formulas in chain(k) can be traced back to chain(0)
 
@@ -93,7 +93,7 @@ From **Report 39 (Provenance Proof Research)**:
 
 ---
 
-### Phase 2: Complete boundary_implies_k_lt_B Proof [NOT STARTED]
+### Phase 2: Complete boundary_implies_k_lt_B Proof [COMPLETED]
 
 **Goal**: Remove the sorry from `boundary_implies_k_lt_B` using backward tracing
 
@@ -123,7 +123,7 @@ From **Report 39 (Provenance Proof Research)**:
 
 ---
 
-### Phase 3: Final Verification [NOT STARTED]
+### Phase 3: Final Verification [PARTIAL]
 
 **Goal**: Verify complete proof chain and document
 

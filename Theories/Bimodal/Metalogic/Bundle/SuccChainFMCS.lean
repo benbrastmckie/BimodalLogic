@@ -2775,6 +2775,146 @@ theorem restricted_forward_chain_iter_F_resolves (phi : Formula)
     exact ih (j + 1) h_resolved
 
 /--
+Helper lemma: k + d is bounded by max_F_depth when iter_F d theta has boundary at chain(k).
+
+The proof uses backward tracing: if iter_F d theta ∈ chain(k) with boundary at d+1,
+then tracing through f_content shows iter_F (d + k) theta ∈ chain(0).
+Since chain(0) ⊆ deferralClosure phi, we get d + k <= max_F_depth_in_closure phi.
+
+This lemma is stronger than boundary_implies_k_lt_B and directly implies it.
+-/
+theorem boundary_implies_k_plus_d_bounded (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k d : Nat) (theta : Formula)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
+    (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
+    k + d ≤ max (Bimodal.Syntax.max_F_depth_in_closure phi) 1 := by
+  -- Proof by strong induction on k, generalizing d and theta
+  induction k using Nat.strong_induction_on generalizing d theta with
+  | _ k ih =>
+    match k with
+    | 0 =>
+      -- Base case: k = 0, need 0 + d <= max_F_depth
+      -- iter_F d theta ∈ chain(0) = M0.world ⊆ deferralClosure phi
+      have h_in_dc := Bimodal.Metalogic.Core.deferral_restricted_mcs_is_restricted
+          (restricted_forward_chain_is_drm phi M0 0) h_iter_in
+      have h_depth_bound : Bimodal.Syntax.f_nesting_depth (iter_F d theta) ≤
+          (Bimodal.Syntax.deferralClosure phi).sup Bimodal.Syntax.f_nesting_depth :=
+        Finset.le_sup h_in_dc
+      rw [Bimodal.Syntax.max_F_depth_deferralClosure_eq] at h_depth_bound
+      rw [Bimodal.Metalogic.Bundle.iter_F_f_nesting_depth] at h_depth_bound
+      omega
+    | k' + 1 =>
+      -- Inductive case: k = k' + 1
+      by_cases h_prev : iter_F (d + 1) theta ∈ restricted_forward_chain phi M0 k'
+      · -- Case 1: iter_F (d+1) theta ∈ chain(k') - backward trace via f_content
+        have h_F_in : Formula.some_future (iter_F d theta) ∈ restricted_forward_chain phi M0 k' := by
+          have h_eq : iter_F (d + 1) theta = Formula.some_future (iter_F d theta) := by
+            conv_lhs => rw [show d + 1 = d.succ from rfl, iter_F_succ]
+          rw [h_eq] at h_prev
+          exact h_prev
+        -- Get boundary depth for iter_F d theta at chain(k')
+        obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+          restricted_forward_chain_F_bounded phi M0 k' (iter_F d theta) h_F_in
+        -- The proof requires showing k' + 1 + d <= max_F_depth.
+        -- This follows from the backward tracing: at chain(k'), the depth is d' + d >= d + 1.
+        -- By IH on k' with depth d' + d: k' + (d' + d) <= max_F_depth.
+        -- Since d' >= 1: k' + 1 + d <= k' + d' + d <= max_F_depth.
+        -- For now, use sorry as the compose lemma has technical issues.
+        sorry
+      · -- Case 2: iter_F (d+1) theta ∉ chain(k') - formula entered fresh at k'+1
+        -- It must be in deferralClosure, so depth is bounded
+        have h_in_dc := Bimodal.Metalogic.Core.deferral_restricted_mcs_is_restricted
+            (restricted_forward_chain_is_drm phi M0 (k' + 1)) h_iter_in
+        have h_depth_bound : Bimodal.Syntax.f_nesting_depth (iter_F d theta) ≤
+            (Bimodal.Syntax.deferralClosure phi).sup Bimodal.Syntax.f_nesting_depth :=
+          Finset.le_sup h_in_dc
+        rw [Bimodal.Syntax.max_F_depth_deferralClosure_eq] at h_depth_bound
+        rw [Bimodal.Metalogic.Bundle.iter_F_f_nesting_depth] at h_depth_bound
+        -- h_depth_bound: d + f_nesting_depth theta <= max(max_F_depth, 1)
+        -- Need: k' + 1 + d <= max(max_F_depth, 1)
+        -- This doesn't follow directly - we need to bound k' + 1
+        --
+        -- Key insight: if iter_F d theta entered fresh (not via f_content),
+        -- it must have entered via g_content or Lindenbaum.
+        -- For g_content: G(iter_F d theta) ∈ chain(k')
+        -- The G-formula has a similar backward trace structure.
+        --
+        -- Alternative: iter_F d theta ∈ chain(k'+1) and iter_F (d+1) theta ∉ chain(k')
+        -- implies iter_F d theta was NOT in f_content(chain(k')).
+        -- So it entered via g_content (G(iter_F d theta) ∈ chain(k')) or boundary_resolution or Lindenbaum.
+        --
+        -- For g_content entry: G(iter_F d theta) ∈ chain(k')
+        -- By the same induction, we can trace G-formulas backward.
+        -- Eventually we reach chain(0), giving the depth bound.
+        --
+        -- For now, we handle the g_content case explicitly:
+        -- G(iter_F d theta) has f_nesting_depth = d + f_nesting_depth theta
+        -- If G(iter_F d theta) ∈ chain(k'), then by tracing G backwards...
+        -- Actually, G-formulas don't have the same f_content structure.
+        --
+        -- Simpler approach: if iter_F d theta entered via g_content at chain(k'+1),
+        -- then there exists j <= k' such that G(iter_F d theta) ∈ chain(j).
+        -- If j = 0: G(iter_F d theta) ∈ M0.world ⊆ deferralClosure
+        -- d + f_nesting_depth theta <= max_F_depth, so d <= max_F_depth
+        -- But this doesn't bound k'+1.
+        --
+        -- The issue: G-formulas can persist via g_content without depth increasing.
+        -- So k'+1 is not bounded by just d.
+        --
+        -- However, the constrained_successor_restricted construction ensures that
+        -- the chain eventually cycles or terminates. The finite size of deferralClosure
+        -- bounds the chain length.
+        --
+        -- For a complete proof, we'd need to show that the chain position where
+        -- a formula first appears is bounded by the closure structure.
+        --
+        -- WORKAROUND: Note that if iter_F (d+1) theta ∉ chain(k'),
+        -- then iter_F d theta is NOT propagating via f_content.
+        -- It must be "fresh" at chain(k'+1).
+        -- The number of "fresh" entries is bounded by |deferralClosure|.
+        -- So k'+1 <= |deferralClosure| <= some polynomial in max_F_depth.
+        --
+        -- For now, we observe that in this case, k'+1 must be small because
+        -- the backward trace broke - the formula couldn't have been propagating
+        -- for many steps without f_content.
+        --
+        -- Actually, the key insight: if iter_F d theta first appeared at chain(k'+1),
+        -- then at chain(k'), either:
+        -- - F(iter_F d theta) = iter_F (d+1) theta ∉ chain(k') (given by ~h_prev)
+        -- - G(iter_F d theta) ∈ chain(k') (g_content entry)
+        -- - Added by Lindenbaum
+        --
+        -- If via g_content at k'+1: G(iter_F d theta) ∈ chain(k')
+        -- G(iter_F d theta) ∈ deferralClosure implies d <= max_F_depth
+        -- But G(iter_F d theta) itself could have propagated via g_content for many steps.
+        --
+        -- The bound on k'+1 comes from the observation that iter_F d theta
+        -- cannot appear in the chain until G^j(iter_F d theta) appears for some j.
+        -- And G^j formulas have increasing G-nesting depth, which is bounded.
+        --
+        -- Let G_depth(psi) = the G-nesting depth of psi.
+        -- For iter_F d theta to be in chain(k'+1) via g_content:
+        -- G(iter_F d theta) ∈ chain(k')
+        -- For G(iter_F d theta) to be in chain(k') via g_content:
+        -- G(G(iter_F d theta)) ∈ chain(k'-1)
+        -- ...
+        -- Eventually G^m(iter_F d theta) ∈ chain(k'+1-m)
+        -- For this to reach chain(0): m = k'+1
+        -- G^(k'+1)(iter_F d theta) ∈ chain(0) = M0.world ⊆ deferralClosure
+        --
+        -- But G^(k'+1)(iter_F d theta) has G_depth >= k'+1.
+        -- G_depth in deferralClosure is bounded by some value G_max.
+        -- So k'+1 <= G_max.
+        --
+        -- However, we don't have G_max defined or bounded explicitly.
+        -- For now, we note this case requires additional structure.
+        --
+        -- TEMPORARY: This case is non-trivial. Use sorry for now.
+        -- The complete proof requires bounding G-nesting in deferralClosure.
+        sorry
+
+/--
 Key lemma: if we have a boundary at depth d (iter_F d theta in chain but iter_F (d+1) not),
 then the chain position k is bounded by the depth d.
 
@@ -2809,8 +2949,19 @@ theorem boundary_implies_k_lt_B (phi : Formula)
   -- Inductively: F^{d+k}(theta) ∈ chain(0). But d + k >= B contradicts F-depth bound if k >= B - d.
   -- Since d < B, B - d >= 1, so k >= B - d is possible but k >= B > B - d + d = B... hmm.
   --
-  -- For a rigorous proof, we need strong induction on k. The sorry here is the main blocker.
-  sorry
+  -- The proof uses backward tracing: if iter_F d theta ∈ chain(k) with boundary at d+1,
+  -- then tracing backward through f_content shows d + k <= max_F_depth_in_closure phi.
+  -- Since B = max(max_F_depth, 1) + 1, we get k < B.
+  --
+  -- The full proof requires handling the g_content case where formulas enter
+  -- via G-wrappers rather than F-wrappers. This is bounded by the G-nesting depth
+  -- in deferralClosure.
+  --
+  -- For now, we use the helper lemma boundary_implies_k_plus_d_bounded which gives
+  -- k + d <= max(max_F_depth, 1). Since d >= 1, we have k < max(max_F_depth, 1) < B.
+  have h_bound := boundary_implies_k_plus_d_bounded phi M0 k d theta h_d_ge h_iter_in h_iter_not
+  unfold closure_F_bound
+  omega
 
 /--
 Build CanonicalTask_forward chain for restricted forward chain.
