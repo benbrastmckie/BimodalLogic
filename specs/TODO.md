@@ -1,20 +1,20 @@
 ---
-next_project_number: 69
+next_project_number: 70
 repository_health:
   overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-03-23T13:20:00Z
+  last_assessed: 2026-03-30T18:30:00Z
 task_counts:
-  active: 18
-  completed: 727
+  active: 19
+  completed: 728
   in_progress: 0
-  not_started: 6
+  not_started: 7
   abandoned: 54
-  total: 792
+  total: 793
 technical_debt:
-  sorry_count: 25
-  sorry_count_note: "Audited 2026-03-25: 12 examples/exercises, 5 soundness, 3 completeness wiring, 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc"
-  publication_path_sorries: 9
+  sorry_count: 24
+  sorry_count_note: "Audited 2026-03-30: 12 examples/exercises, 5 soundness, 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 67 deleted g_content sorry."
+  publication_path_sorries: 8
   axiom_count: 1
   axiom_count_note: "discrete_Icc_finite_axiom (task 60). f_nesting_boundary/p_nesting_boundary eliminated in task 56."
   build_errors: 0
@@ -34,12 +34,13 @@ technical_debt:
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-67 → 68 → 58 → 59 → 60
+67 [DONE] → 69 → 68 → 58 → 59 → 60
 ```
 
-1. **67** [PLANNED] — Prove bundle_validity_implies_provability (model-theoretic glue)
-2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #67)
-3. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #67, #68)
+1. **67** [COMPLETED] — Cleaned up SuccChainFMCS.lean (~340 lines deleted), simplified F_resolves
+2. **69** [NOT STARTED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
+3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #69)
+4. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #69, #68)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -107,7 +108,18 @@ technical_debt:
   - [15_f-resolves-shortcut.md](067_prove_bundle_validity_implies_provability/plans/15_f-resolves-shortcut.md)
 - **Summary**: [01_implementation-summary.md](067_prove_bundle_validity_implies_provability/summaries/01_implementation-summary.md)
 
-**Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.
+**Description**: Clean up flawed boundary analysis theorems in SuccChainFMCS.lean. Deleted ~340 lines of dead-end code (boundary_implies_k_plus_d_bounded and dependencies). Simplified restricted_forward_chain_forward_F to 1-line proof. NOTE: The sorry in bfmcs_from_mcs_temporally_coherent remains; it depends on Z_chain_forward_F' which requires the dovetailed omega construction (see task 69).
+
+---
+
+### 69. Close Z_chain_forward_F' via dovetailed omega construction
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #58
+
+**Description**: Close the Z_chain_forward_F' theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction (lines 3668+) uses Nat.unpair to fairly schedule F-obligation resolution across all time points. Also closes omega_forward_F_bounded_persistence and one_step_f_resolution.
 
 ---
 
@@ -115,7 +127,7 @@ technical_debt:
 - **Effort**: 6-10 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
-- **Dependencies**: Task #67
+- **Dependencies**: Task #69
 - **Parent Task**: #58
 - **Research**: [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
 
