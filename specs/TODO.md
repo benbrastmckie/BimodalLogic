@@ -37,7 +37,7 @@ technical_debt:
 67 → 68 → 58 → 59 → 60
 ```
 
-1. **67** [IMPLEMENTING] — Prove bundle_validity_implies_provability (model-theoretic glue)
+1. **67** [PLANNED] — Prove bundle_validity_implies_provability (model-theoretic glue)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #67)
 3. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #67, #68)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
@@ -80,7 +80,7 @@ technical_debt:
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-6 hours
 - **Status**: [PLANNED]
-- **Blocker**: F-formula persistence - temporal_theory_witness_exists lacks F-step; need Succ-based construction
+- **Blocker**: boundary_implies_k_lt_B sorry - backward tracing lemma needed to complete proof
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
@@ -88,6 +88,7 @@ technical_debt:
   - [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
   - [01_bundle-provability-research.md](067_prove_bundle_validity_implies_provability/reports/01_bundle-provability-research.md)
   - [38_fuel-cleanup-research.md](067_prove_bundle_validity_implies_provability/reports/38_fuel-cleanup-research.md)
+  - [39_provenance-proof-research.md](067_prove_bundle_validity_implies_provability/reports/39_provenance-proof-research.md)
 - **Plan**:
   - [01_bundle-provability-plan.md](067_prove_bundle_validity_implies_provability/plans/01_bundle-provability-plan.md)
   - [02_restricted-coherence-plan.md](067_prove_bundle_validity_implies_provability/plans/02_restricted-coherence-plan.md)
@@ -99,6 +100,8 @@ technical_debt:
   - [08_dovetailed-omega-fmcs.md](067_prove_bundle_validity_implies_provability/plans/08_dovetailed-omega-fmcs.md)
   - [09_fix-backward-chain.md](067_prove_bundle_validity_implies_provability/plans/09_fix-backward-chain.md)
   - [10_well-founded-restructure.md](067_prove_bundle_validity_implies_provability/plans/10_well-founded-restructure.md)
+  - [13_bulldozing-f-persistence.md](067_prove_bundle_validity_implies_provability/plans/13_bulldozing-f-persistence.md)
+  - [14_backward-tracing-completion.md](067_prove_bundle_validity_implies_provability/plans/14_backward-tracing-completion.md)
 - **Summary**: [01_implementation-summary.md](067_prove_bundle_validity_implies_provability/summaries/01_implementation-summary.md)
 
 **Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.
