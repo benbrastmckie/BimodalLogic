@@ -1126,14 +1126,17 @@
     {
       "project_number": 69,
       "project_name": "close_z_chain_forward_f",
-      "status": "researched",
+      "status": "blocked",
       "language": "lean4",
       "description": "Close the Z_chain_forward_F theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction uses Nat.unpair to fairly schedule F-obligation resolution across all time points.",
       "effort": "6-10 hours",
       "parent_task": 58,
-      "dependencies": [],
+      "dependencies": [
+        71,
+        72
+      ],
       "created": "2026-03-30T17:33:23Z",
-      "last_updated": "2026-03-30T22:41:59Z",
+      "last_updated": "2026-03-30T22:51:25Z",
       "artifacts": [
         {
           "path": "specs/069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md",
@@ -1206,13 +1209,53 @@
           "summary": "Team research (2 teammates): f_preserving_seed_consistent is FALSE - counterexample found, bundle-level coherence is correct path"
         }
       ],
-      "session_id": "sess_1774909076_ee27d4",
+      "session_id": "sess_1774911059_c08af3",
       "researched": "2026-03-30T22:41:59Z",
       "planned": "2026-03-30T21:21:50Z",
       "started": "2026-03-30T18:47:22Z"
+    },
+    {
+      "project_number": 71,
+      "project_name": "document_f_persistence_findings",
+      "status": "researched",
+      "language": "markdown",
+      "description": "Consolidate discoveries from tasks 67 and 69 into ROADMAP.md: Document the F-persistence counterexample proving f_preserving_seed_consistent is FALSE. Explain why chain-level F-preservation cannot work. Document the bundle-level alternative (BFMCS_Bundle) that sidesteps F-persistence. Update the Completeness Gap section with the correct architecture. Mark chain-level sorries as dead code. List the proven bundle components and their locations.",
+      "effort": "2-3 hours",
+      "parent_task": 69,
+      "dependencies": [],
+      "created": "2026-03-30T22:53:42Z",
+      "last_updated": "2026-03-30T22:53:42Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/069_close_z_chain_forward_f/reports/18_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
+    },
+    {
+      "project_number": 72,
+      "project_name": "wire_completeness_bfmcs_bundle",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Connect the proven bundle-level temporal coherence to the main completeness theorem: Analyze what construct_bfmcs_bundle provides vs what bundle_validity_implies_provability needs. Adapt Completeness.lean to use BFMCS_Bundle instead of BFMCS (family-level). Wire through: construct_bfmcs_bundle -> ParametricCanonical -> completeness. Document any remaining gaps that emerge.",
+      "effort": "4-6 hours",
+      "parent_task": 69,
+      "dependencies": [
+        71
+      ],
+      "created": "2026-03-30T22:53:42Z",
+      "last_updated": "2026-03-30T22:53:42Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/069_close_z_chain_forward_f/reports/18_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
     }
   ],
-  "next_project_number": 71,
+  "next_project_number": 73,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

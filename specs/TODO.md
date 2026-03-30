@@ -1,16 +1,16 @@
 ---
-next_project_number: 71
+next_project_number: 73
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-30T18:30:00Z
 task_counts:
-  active: 19
+  active: 21
   completed: 728
   in_progress: 0
   not_started: 7
   abandoned: 54
-  total: 793
+  total: 795
 technical_debt:
   sorry_count: 24
   sorry_count_note: "Audited 2026-03-30: 12 examples/exercises, 5 soundness, 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 67 deleted g_content sorry."
@@ -34,16 +34,17 @@ technical_debt:
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-67 [DONE] → 69 [RESEARCHED] → 68 → 58 → 59 → 60
+67 [DONE] → 71 → 72 → 69 [BLOCKED] → 68 → 58 → 59 → 60
 ```
 
 1. **67** [COMPLETED] — Cleaned up SuccChainFMCS.lean (~340 lines deleted), simplified F_resolves
-2. **69** [RESEARCHED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
-   - **Blocked**: F-persistence gap — Lindenbaum can add G(neg phi) even when F(phi) present
-   - **Report**: [01_z-chain-forward-research.md](069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md)
-   - **Plan**: [14_strong-induction-approach.md](069_close_z_chain_forward_f/plans/14_strong-induction-approach.md)
-   - **Summary**: [03_z-chain-forward-summary.md](069_close_z_chain_forward_f/summaries/03_z-chain-forward-summary.md)
-3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #69)
+2. **71** [RESEARCHED] — Document F-persistence findings (counterexample proof, bundle-level path)
+3. **72** [RESEARCHED] — Wire completeness through BFMCS_Bundle (depends on #71)
+4. **69** [BLOCKED] — Close Z_chain_forward_F' (depends on #71, #72)
+   - **Discovery**: f_preserving_seed_consistent is FALSE (concrete counterexample)
+   - **Alternative**: Bundle-level coherence (BFMCS_Bundle) is already proven
+   - **Analysis**: [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
+5. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #69)
 4. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #69, #68)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
 5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -79,6 +80,30 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 71. Document F-persistence findings and update ROADMAP
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Language**: markdown
+- **Dependencies**: None
+- **Parent Task**: #69
+- **Research**: [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
+
+**Description**: Consolidate discoveries from tasks 67 and 69 into ROADMAP.md: Document the F-persistence counterexample proving f_preserving_seed_consistent is FALSE. Explain why chain-level F-preservation cannot work. Document the bundle-level alternative (BFMCS_Bundle) that sidesteps F-persistence. Update the Completeness Gap section with the correct architecture. Mark chain-level sorries as dead code. List the proven bundle components and their locations.
+
+---
+
+### 72. Wire completeness through BFMCS_Bundle
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task #71
+- **Parent Task**: #69
+- **Research**: [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
+
+**Description**: Connect the proven bundle-level temporal coherence to the main completeness theorem: Analyze what construct_bfmcs_bundle provides vs what bundle_validity_implies_provability needs. Adapt Completeness.lean to use BFMCS_Bundle instead of BFMCS (family-level). Wire through: construct_bfmcs_bundle -> ParametricCanonical -> completeness. Document any remaining gaps that emerge.
 
 ---
 
@@ -128,9 +153,9 @@ technical_debt:
 
 ### 69. Close Z_chain_forward_F' via dovetailed omega construction
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [BLOCKED]
 - **Language**: lean4
-- **Dependencies**: None
+- **Dependencies**: Task #71, Task #72
 - **Parent Task**: #58
 - **Reports**:
   - [01_z-chain-forward-research.md](069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md)
