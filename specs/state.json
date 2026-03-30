@@ -1126,14 +1126,14 @@
     {
       "project_number": 69,
       "project_name": "close_z_chain_forward_f",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the Z_chain_forward_F theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction uses Nat.unpair to fairly schedule F-obligation resolution across all time points.",
       "effort": "6-10 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-30T17:33:23Z",
-      "last_updated": "2026-03-30T21:19:20Z",
+      "last_updated": "2026-03-30T21:21:50Z",
       "artifacts": [
         {
           "path": "specs/069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md",
@@ -1181,11 +1181,6 @@
           "summary": "Team research (2 teammates): Z_chain blocker analysis - f_preserving_seed_consistent + Z_chain redefinition strategy"
         },
         {
-          "path": "specs/069_close_z_chain_forward_f/plans/13_dovetailed-omega-plan.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for closing Z_chain_forward_F via dovetailed omega construction"
-        },
-        {
           "path": "specs/069_close_z_chain_forward_f/summaries/14_dovetailed-omega-summary.md",
           "type": "summary",
           "summary": "Partial implementation: Phase 1 (f_preserving_seed_consistent) - 2 sorries remain in edge cases"
@@ -1194,11 +1189,16 @@
           "path": "specs/069_close_z_chain_forward_f/reports/14_remaining-sorry-analysis.md",
           "type": "report",
           "summary": "Research: strong induction approach for f_preserving_seed_consistent sorries"
+        },
+        {
+          "path": "specs/069_close_z_chain_forward_f/plans/14_strong-induction-approach.md",
+          "type": "plan",
+          "summary": "6-phase plan: delete 700-line proof, replace with 80-120 line strong induction"
         }
       ],
       "session_id": "sess_1774905215_d7710e",
       "researched": "2026-03-30T21:19:20Z",
-      "planned": "2026-03-30T20:45:44Z",
+      "planned": "2026-03-30T21:21:50Z",
       "started": "2026-03-30T18:47:22Z"
     }
   ],
