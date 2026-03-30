@@ -227,6 +227,517 @@ theorem R_Box_trans {U V W : Ultrafilter LindenbaumAlg}
   R_Box_euclidean (R_Box_symm h_UV) h_VW
 
 /-!
+### R_H Properties (Backward Temporal Accessibility)
+
+R_H is the backward temporal accessibility relation, dual to R_G.
+R_H(U, V) holds iff for all a, H(a) ∈ U implies a ∈ V.
+-/
+
+/--
+Backward temporal accessibility relation R_H on ultrafilters.
+
+R_H(U, V) holds iff for all a, H(a) ∈ U implies a ∈ V.
+This is the preimage containment: V contains all elements whose H is in U.
+-/
+def R_H (U V : Ultrafilter LindenbaumAlg) : Prop :=
+  ∀ a : LindenbaumAlg, STSA.H a ∈ U → a ∈ V
+
+/--
+R_H is reflexive: every ultrafilter is R_H-related to itself.
+
+Proof: From temp_t_past, we have H(a) ≤ a. Since H(a) ∈ U and U is
+upward closed, a ∈ U follows.
+-/
+theorem R_H_refl (U : Ultrafilter LindenbaumAlg) : R_H U U := by
+  intro a h_Ha_in
+  -- H_quot a ≤ a by temp_t_past
+  have h_le : STSA.H a ≤ a := by
+    induction a using Quotient.ind with
+    | _ φ =>
+      show H_quot (toQuot φ) ≤ toQuot φ
+      show Derives φ.all_past φ
+      exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ)⟩
+  exact U.mem_of_le h_Ha_in h_le
+
+/--
+R_H is transitive: R_H(U, V) and R_H(V, W) imply R_H(U, W).
+
+Proof: If H(a) ∈ U and R_H(U, V), then we need a ∈ W.
+From temp_4_past: H(a) ≤ H(H(a)), so H(H(a)) ∈ U.
+By R_H(U, V): H(a) ∈ V.
+By R_H(V, W): a ∈ W.
+-/
+theorem R_H_trans {U V W : Ultrafilter LindenbaumAlg}
+    (h_UV : R_H U V) (h_VW : R_H V W) : R_H U W := by
+  intro a h_Ha_in
+  -- Need H(H(a)) ∈ U to apply h_UV and get H(a) ∈ V
+  -- From temp_4_past: H(a) → H(H(a)), i.e., H(a) ≤ H(H(a))
+  have h_le : STSA.H a ≤ STSA.H (STSA.H a) := by
+    induction a using Quotient.ind with
+    | _ φ =>
+      show H_quot (toQuot φ) ≤ H_quot (H_quot (toQuot φ))
+      show Derives φ.all_past φ.all_past.all_past
+      exact ⟨temp_4_past φ⟩
+  have h_HHa_in : STSA.H (STSA.H a) ∈ U := U.mem_of_le h_Ha_in h_le
+  have h_Ha_in_V : STSA.H a ∈ V := h_UV (STSA.H a) h_HHa_in
+  exact h_VW a h_Ha_in_V
+
+/--
+R_G and R_H are converses: R_G(U, V) iff R_H(V, U).
+
+This follows from the temporal duality captured by the sigma involution.
+The key insight is that G and H are dual under sigma.
+
+Proof sketch (forward):
+- Assume R_G(U, V): for all a, G(a) ∈ U → a ∈ V
+- Want R_H(V, U): for all b, H(b) ∈ V → b ∈ U
+- From TL axiom (temporal introspection) and linearity, we can derive this.
+- The key is that in a linear temporal order, G and H are inverse relations.
+
+For the algebraic proof, we use the TA axiom: a ≤ G(P(a)) = G(¬H(¬a))
+This means if a ∈ U, then eventually a was true in the past direction.
+-/
+theorem R_G_R_H_converse {U V : Ultrafilter LindenbaumAlg} :
+    R_G U V ↔ R_H V U := by
+  constructor
+  · -- R_G(U, V) → R_H(V, U)
+    intro h_R_G b h_Hb_in_V
+    -- Need to show b ∈ U
+    -- We use the TA axiom: a ≤ G((H(aᶜ))ᶜ), i.e., a ≤ G(P(a)) where P = ¬H¬
+    -- Equivalently: if a ∈ U, then G(P(a)) ∈ U, so P(a) ∈ V by R_G
+    -- P(a) = ¬H(¬a) means "some past a" = F_past(a)
+
+    -- We prove the contrapositive: b ∉ U → H(b) ∉ V
+    by_contra h_b_notin_U
+    -- Since b ∉ U, we have bᶜ ∈ U (ultrafilter property)
+    have h_bc_in_U : bᶜ ∈ U := U.not_mem_iff_compl_mem b |>.mp h_b_notin_U
+    -- By TA axiom: bᶜ ≤ G((H((bᶜ)ᶜ))ᶜ) = G((H(b))ᶜ)
+    have h_TA : bᶜ ≤ STSA.G ((STSA.H ((bᶜ)ᶜ))ᶜ) := STSA.TA bᶜ
+    simp only [compl_compl] at h_TA
+    -- So G((H(b))ᶜ) ∈ U
+    have h_G_Hbc_in_U : STSA.G ((STSA.H b)ᶜ) ∈ U := U.mem_of_le h_bc_in_U h_TA
+    -- By R_G(U, V): (H(b))ᶜ ∈ V
+    have h_Hbc_in_V : (STSA.H b)ᶜ ∈ V := h_R_G ((STSA.H b)ᶜ) h_G_Hbc_in_U
+    -- But H(b) ∈ V and (H(b))ᶜ ∈ V contradicts ultrafilter property
+    exact V.compl_not (STSA.H b) h_Hb_in_V h_Hbc_in_V
+
+  · -- R_H(V, U) → R_G(U, V)
+    intro h_R_H a h_Ga_in_U
+    -- Need to show a ∈ V
+    -- We use the symmetric argument with the past version of TA
+    -- The sigma duality: σ(G(x)) = H(σ(x)) means H is the "mirrored" G
+
+    -- Contrapositive: a ∉ V → G(a) ∉ U
+    by_contra h_a_notin_V
+    have h_ac_in_V : aᶜ ∈ V := V.not_mem_iff_compl_mem a |>.mp h_a_notin_V
+
+    -- We need an axiom that is symmetric to TA for the past direction
+    -- The sigma automorphism gives us: σ(TA) which is b ≤ H(F(b))
+    -- where F = ¬G¬ (existential future)
+
+    -- Actually, we can derive the past-TA from the sigma duality:
+    -- From TA: a ≤ G(P(a))
+    -- Apply sigma: σ(a) ≤ σ(G(P(a))) = H(σ(P(a))) = H(F(σ(a)))
+    -- (since σ(P(x)) = σ(¬H(¬x)) = ¬σ(H(¬x)) = ¬G(σ(¬x)) = ¬G(¬σ(x)) = F(σ(x)))
+
+    -- For our use: aᶜ ≤ H((G((aᶜ)ᶜ))ᶜ) = H((G(a))ᶜ)
+    -- This follows from applying sigma to TA and using sigma_involution
+
+    -- Let's derive it directly:
+    -- From TA on σ(aᶜ): σ(aᶜ) ≤ G((H((σ(aᶜ))ᶜ))ᶜ)
+    -- Apply σ: σ(σ(aᶜ)) ≤ σ(G((H((σ(aᶜ))ᶜ))ᶜ))
+    -- = aᶜ ≤ H(σ((H((σ(aᶜ))ᶜ))ᶜ))     [by sigma_involution and sigma_G]
+    -- = aᶜ ≤ H((σ(H((σ(aᶜ))ᶜ)))ᶜ)     [by sigma_neg]
+    -- = aᶜ ≤ H((G(σ((σ(aᶜ))ᶜ)))ᶜ)     [by sigma_H]
+    -- = aᶜ ≤ H((G((σ(σ(aᶜ)))ᶜ))ᶜ)     [by sigma_neg]
+    -- = aᶜ ≤ H((G((aᶜ)ᶜ))ᶜ)           [by sigma_involution]
+    -- = aᶜ ≤ H((G(a))ᶜ)               [simplify]
+
+    have h_TA_sigma : aᶜ ≤ STSA.H ((STSA.G a)ᶜ) := by
+      -- Apply sigma to the TA axiom for σ(aᶜ)
+      have h_TA_base : STSA.sigma (aᶜ) ≤ STSA.G ((STSA.H ((STSA.sigma (aᶜ))ᶜ))ᶜ) :=
+        STSA.TA (STSA.sigma (aᶜ))
+      -- Apply sigma to both sides (sigma is order-preserving as an automorphism)
+      -- We need: sigma is monotone. From sigma_neg and sigma_sup, sigma preserves ≤.
+      have h_sigma_mono : ∀ x y : LindenbaumAlg, x ≤ y → STSA.sigma x ≤ STSA.sigma y := by
+        intro x y h_xy
+        -- x ≤ y iff x ⊔ y = y iff xᶜ ⊓ y = xᶜ (by lattice properties)
+        -- Actually, sigma preserves sup and neg, and ≤ is defined via sup/inf
+        -- Use: x ≤ y iff x ⊔ y = y, then σ(x ⊔ y) = σ(y), so σx ⊔ σy = σy, so σx ≤ σy
+        have h_sup : x ⊔ y = y := sup_eq_right.mpr h_xy
+        have h_sigma_sup_eq : STSA.sigma (x ⊔ y) = STSA.sigma y := by rw [h_sup]
+        rw [STSA.sigma_sup] at h_sigma_sup_eq
+        exact sup_eq_right.mp h_sigma_sup_eq
+      -- σ(σ(aᶜ)) ≤ σ(G(...))
+      have h_step1 : STSA.sigma (STSA.sigma (aᶜ)) ≤
+          STSA.sigma (STSA.G ((STSA.H ((STSA.sigma (aᶜ))ᶜ))ᶜ)) :=
+        h_sigma_mono _ _ h_TA_base
+      -- σ(σ(aᶜ)) = aᶜ
+      rw [STSA.sigma_involution] at h_step1
+      -- σ(G(x)) = H(σ(x))
+      rw [STSA.sigma_G] at h_step1
+      -- σ(xᶜ) = (σx)ᶜ
+      simp only [STSA.sigma_neg] at h_step1
+      -- σ(H(y)) = G(σ(y))
+      rw [STSA.sigma_H] at h_step1
+      simp only [STSA.sigma_neg, STSA.sigma_involution, compl_compl] at h_step1
+      exact h_step1
+
+    -- So H((G(a))ᶜ) ∈ V
+    have h_H_Gac_in_V : STSA.H ((STSA.G a)ᶜ) ∈ V := V.mem_of_le h_ac_in_V h_TA_sigma
+    -- By R_H(V, U): (G(a))ᶜ ∈ U
+    have h_Gac_in_U : (STSA.G a)ᶜ ∈ U := h_R_H ((STSA.G a)ᶜ) h_H_Gac_in_V
+    -- But G(a) ∈ U and (G(a))ᶜ ∈ U contradicts ultrafilter property
+    exact U.compl_not (STSA.G a) h_Ga_in_U h_Gac_in_U
+
+/-!
+## UltrafilterChain Structure
+
+An UltrafilterChain is an Int-indexed chain of ultrafilters with R_G connectivity.
+This is the ultrafilter-based analogue of FMCS (Family of Maximal Consistent Sets).
+
+The key property is that consecutive ultrafilters are R_G-related, which captures
+temporal accessibility: G(a) ∈ U_t implies a ∈ U_{t+1}.
+-/
+
+/--
+An UltrafilterChain is an Int-indexed chain of ultrafilters with R_G connectivity.
+
+The chain must satisfy:
+- R_G(chain t, chain (t + 1)) for all t (forward temporal connectivity)
+- R_H(chain t, chain (t - 1)) for all t (backward temporal connectivity)
+
+Note: The backward connectivity follows from forward connectivity via R_G_R_H_converse.
+-/
+structure UltrafilterChain where
+  /-- The Int-indexed family of ultrafilters -/
+  chain : Int → Ultrafilter LindenbaumAlg
+  /-- Forward R_G connectivity: chain(t) R_G chain(t+1) -/
+  R_G_connected : ∀ t : Int, R_G (chain t) (chain (t + 1))
+
+namespace UltrafilterChain
+
+/--
+Backward R_H connectivity follows from forward R_G connectivity.
+-/
+theorem R_H_connected (uc : UltrafilterChain) (t : Int) :
+    R_H (uc.chain t) (uc.chain (t - 1)) := by
+  -- R_G(chain(t-1), chain t) by R_G_connected
+  have h_R_G : R_G (uc.chain (t - 1)) (uc.chain ((t - 1) + 1)) := uc.R_G_connected (t - 1)
+  simp only [Int.sub_add_cancel] at h_R_G
+  -- R_H(chain t, chain(t-1)) by R_G_R_H_converse
+  exact R_G_R_H_converse.mp h_R_G
+
+/--
+Access the ultrafilter at time t.
+-/
+def at_time (uc : UltrafilterChain) (t : Int) : Ultrafilter LindenbaumAlg :=
+  uc.chain t
+
+/--
+R_G transitivity along the chain: for any n ≥ 0, chain(t) R_G chain(t + n).
+-/
+theorem R_G_forward (uc : UltrafilterChain) (t : Int) (n : ℕ) :
+    R_G (uc.chain t) (uc.chain (t + n)) := by
+  induction n with
+  | zero =>
+    -- (t + ↑0) simplifies to t
+    have h_eq : (t + (0 : ℕ) : Int) = t := by simp
+    rw [h_eq]
+    exact R_G_refl (uc.chain t)
+  | succ n ih =>
+    -- R_G(chain t, chain(t + n)) by IH
+    -- R_G(chain(t + n), chain(t + n + 1)) by R_G_connected
+    have h_step : R_G (uc.chain (t + n)) (uc.chain ((t + n) + 1)) :=
+      uc.R_G_connected (t + n)
+    have h_eq : (t + ↑n + 1 : Int) = t + ↑(n + 1) := by omega
+    rw [h_eq] at h_step
+    exact R_G_trans ih h_step
+
+/--
+R_H transitivity along the chain: for any n ≥ 0, chain(t) R_H chain(t - n).
+-/
+theorem R_H_backward (uc : UltrafilterChain) (t : Int) (n : ℕ) :
+    R_H (uc.chain t) (uc.chain (t - n)) := by
+  induction n with
+  | zero =>
+    have h_eq : (t - (0 : ℕ) : Int) = t := by simp
+    rw [h_eq]
+    exact R_H_refl (uc.chain t)
+  | succ n ih =>
+    have h_step : R_H (uc.chain (t - n)) (uc.chain ((t - n) - 1)) :=
+      uc.R_H_connected (t - n)
+    have h_eq : (t - ↑n - 1 : Int) = t - ↑(n + 1) := by omega
+    rw [h_eq] at h_step
+    exact R_H_trans ih h_step
+
+/--
+Shift an ultrafilter chain by offset k.
+The shifted chain places the original chain(0) at position k.
+-/
+def shift (uc : UltrafilterChain) (k : Int) : UltrafilterChain where
+  chain := fun t => uc.chain (t - k)
+  R_G_connected := fun t => by
+    have h := uc.R_G_connected (t - k)
+    simp only [Int.sub_add_cancel] at h ⊢
+    convert h using 2
+    omega
+
+/--
+The shifted chain at the offset equals the original chain at 0.
+-/
+theorem shift_at_offset (uc : UltrafilterChain) (k : Int) :
+    (uc.shift k).chain k = uc.chain 0 := by
+  unfold shift
+  simp
+
+/--
+G-formulas propagate forward along the chain.
+If G(a) ∈ chain(t), then a ∈ chain(t') for all t' ≥ t.
+
+The proof uses:
+1. temp_4: G(a) ≤ G(G(a)), so G(a) iterates
+2. R_G connectivity: G(G(a)) ∈ U and R_G(U,V) implies G(a) ∈ V
+3. temp_t: G(a) ≤ a gives the final step
+-/
+theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_le : t ≤ t')
+    (a : LindenbaumAlg) (h_G : STSA.G a ∈ uc.chain t) :
+    a ∈ uc.chain t' := by
+  -- By temp_t: G(a) ≤ a
+  have h_G_le_a : STSA.G a ≤ a := by
+    induction a using Quotient.ind with
+    | _ φ =>
+      show G_quot (toQuot φ) ≤ toQuot φ
+      show Derives φ.all_future φ
+      exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ)⟩
+  -- Helper: G(a) persists forward one step
+  have h_G_step : ∀ s : Int, STSA.G a ∈ uc.chain s → STSA.G a ∈ uc.chain (s + 1) := by
+    intro s h_Gs
+    have h_G_le : STSA.G a ≤ STSA.G (STSA.G a) := by
+      induction a using Quotient.ind with
+      | _ φ =>
+        show G_quot (toQuot φ) ≤ G_quot (G_quot (toQuot φ))
+        show Derives φ.all_future φ.all_future.all_future
+        exact ⟨DerivationTree.axiom [] _ (Axiom.temp_4 φ)⟩
+    have h_GG : STSA.G (STSA.G a) ∈ uc.chain s :=
+      (uc.chain s).mem_of_le h_Gs h_G_le
+    exact uc.R_G_connected s (STSA.G a) h_GG
+  -- Helper lemma: G(a) persists forward for any number of steps
+  have h_G_persists : ∀ k : ℕ, STSA.G a ∈ uc.chain (t + k) := by
+    intro k
+    induction k with
+    | zero =>
+      have h_eq : (t + (0 : ℕ) : Int) = t := by simp
+      rw [h_eq]
+      exact h_G
+    | succ m ih =>
+      have h_eq : (t + ↑(m + 1) : Int) = t + ↑m + 1 := by omega
+      rw [h_eq]
+      exact h_G_step (t + m) ih
+  -- Convert t' - t to natural number
+  have h_diff : t' - t ≥ 0 := Int.sub_nonneg_of_le h_le
+  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le h_diff
+  have h_t'_eq : t' = t + n := by omega
+  rw [h_t'_eq]
+  exact (uc.chain (t + n)).mem_of_le (h_G_persists n) h_G_le_a
+
+/--
+H-formulas propagate backward along the chain.
+If H(a) ∈ chain(t), then a ∈ chain(t') for all t' ≤ t.
+-/
+theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
+    (a : LindenbaumAlg) (h_H : STSA.H a ∈ uc.chain t) :
+    a ∈ uc.chain t' := by
+  -- By temp_t_past: H(a) ≤ a
+  have h_H_le_a : STSA.H a ≤ a := by
+    induction a using Quotient.ind with
+    | _ φ =>
+      show H_quot (toQuot φ) ≤ toQuot φ
+      show Derives φ.all_past φ
+      exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ)⟩
+  -- Helper: H(a) persists backward one step
+  have h_H_step : ∀ s : Int, STSA.H a ∈ uc.chain s → STSA.H a ∈ uc.chain (s - 1) := by
+    intro s h_Hs
+    have h_H_le : STSA.H a ≤ STSA.H (STSA.H a) := by
+      induction a using Quotient.ind with
+      | _ φ =>
+        show H_quot (toQuot φ) ≤ H_quot (H_quot (toQuot φ))
+        show Derives φ.all_past φ.all_past.all_past
+        exact ⟨temp_4_past φ⟩
+    have h_HH : STSA.H (STSA.H a) ∈ uc.chain s :=
+      (uc.chain s).mem_of_le h_Hs h_H_le
+    exact uc.R_H_connected s (STSA.H a) h_HH
+  -- Helper lemma: H(a) persists backward for any number of steps
+  have h_H_persists : ∀ k : ℕ, STSA.H a ∈ uc.chain (t - k) := by
+    intro k
+    induction k with
+    | zero =>
+      have h_eq : (t - (0 : ℕ) : Int) = t := by simp
+      rw [h_eq]
+      exact h_H
+    | succ m ih =>
+      have h_eq : (t - ↑(m + 1) : Int) = t - ↑m - 1 := by omega
+      rw [h_eq]
+      exact h_H_step (t - m) ih
+  -- Convert t - t' to natural number
+  have h_diff : t - t' ≥ 0 := Int.sub_nonneg_of_le h_le
+  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le h_diff
+  have h_t'_eq : t' = t - n := by omega
+  rw [h_t'_eq]
+  exact (uc.chain (t - n)).mem_of_le (h_H_persists n) h_H_le_a
+
+end UltrafilterChain
+
+/-!
+## Ultrafilter Temporal Coherence
+
+The crux of the ultrafilter approach: given F(phi) in an ultrafilter U,
+there exists an ultrafilter V such that R_G(U, V) and phi ∈ V.
+
+This eliminates the F-persistence problem that blocked the MCS-based approach,
+because ultrafilters have automatic negation completeness.
+
+### Mathematical Approach
+
+The proof uses filter extension:
+1. Define the G-preimage filter: `G_preimage(U) = { a | G(a) ∈ U }`
+2. Show `G_preimage(U) ∪ {phi}` generates a proper filter when F(phi) ∈ U
+3. Extend to ultrafilter V using Zorn's lemma (via Mathlib's `Ultrafilter.of`)
+4. V satisfies R_G(U, V) by construction and phi ∈ V
+
+The key consistency argument: if `G_preimage(U) ∪ {phi}` were inconsistent,
+there would exist a1,...,an with G(ai) ∈ U such that a1 ∧ ... ∧ an ∧ phi = ⊥.
+This implies G(a1 ∧ ... ∧ an) ∈ U (by temp_k_dist and ultrafilter closure),
+and G(a1 ∧ ... ∧ an) ≤ G(¬phi) (from the inconsistency).
+So G(¬phi) ∈ U, meaning ¬F(phi) ∈ U, contradicting F(phi) ∈ U.
+-/
+
+/--
+The G-preimage set of an ultrafilter: all elements whose G is in U.
+-/
+def G_preimage (U : Ultrafilter LindenbaumAlg) : Set LindenbaumAlg :=
+  { a | STSA.G a ∈ U }
+
+/--
+The H-preimage set of an ultrafilter: all elements whose H is in U.
+-/
+def H_preimage (U : Ultrafilter LindenbaumAlg) : Set LindenbaumAlg :=
+  { a | STSA.H a ∈ U }
+
+/--
+G_preimage contains ⊤ (since G(⊤) = ⊤ is always in an ultrafilter).
+-/
+theorem G_preimage_top (U : Ultrafilter LindenbaumAlg) : ⊤ ∈ G_preimage U := by
+  unfold G_preimage
+  simp only [Set.mem_setOf_eq]
+  -- G(⊤) = ⊤ by temp_k_dist applied to ⊤ → ⊤
+  have h_G_top : STSA.G (⊤ : LindenbaumAlg) = ⊤ := by
+    -- G preserves top: need to show G(⊤) ≤ ⊤ and ⊤ ≤ G(⊤)
+    -- G(⊤) ≤ ⊤ is trivial
+    -- ⊤ ≤ G(⊤): by temp_t (reflexive), ⊤ ≤ G(⊤) since G(⊤) → ⊤ gives ⊤ ≤ G(⊤)
+    -- Actually, G doesn't necessarily preserve ⊤. Let's check.
+    -- From temp_t: G(a) ≤ a, so G(⊤) ≤ ⊤ (trivial)
+    -- We need ⊤ ≤ G(⊤), i.e., ⊢ ⊤ → G(⊤)
+    -- G(⊤) = G(⊥ → ⊥) = all_future(⊥ → ⊥)
+    -- We have ⊢ G(⊥ → ⊥) by necessitation applied to ⊢ ⊥ → ⊥
+    apply le_antisymm
+    · -- G(⊤) ≤ ⊤ (trivial)
+      exact le_top
+    · -- ⊤ ≤ G(⊤)
+      show top_quot ≤ G_quot top_quot
+      unfold top_quot G_quot
+      show Derives (Formula.bot.imp Formula.bot) (Formula.all_future (Formula.bot.imp Formula.bot))
+      -- From ⊢ ⊥ → ⊥, by necessitation get ⊢ G(⊥ → ⊥)
+      -- Then ⊢ ⊤ → G(⊤) by prop_s
+      have h_id : [] ⊢ Formula.bot.imp Formula.bot :=
+        Bimodal.Theorems.Combinators.identity Formula.bot
+      have h_nec : [] ⊢ Formula.all_future (Formula.bot.imp Formula.bot) :=
+        DerivationTree.temporal_necessitation (Formula.bot.imp Formula.bot) h_id
+      have h_s : [] ⊢ (Formula.all_future (Formula.bot.imp Formula.bot)).imp
+          ((Formula.bot.imp Formula.bot).imp (Formula.all_future (Formula.bot.imp Formula.bot))) :=
+        DerivationTree.axiom [] _ (Axiom.prop_s _ _)
+      exact ⟨DerivationTree.modus_ponens [] _ _ h_s h_nec⟩
+  rw [h_G_top]
+  exact U.top_mem
+
+/--
+G_preimage is upward closed.
+-/
+theorem G_preimage_upward (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
+    (ha : a ∈ G_preimage U) (h_le : a ≤ b) : b ∈ G_preimage U := by
+  unfold G_preimage at ha ⊢
+  simp only [Set.mem_setOf_eq] at ha ⊢
+  -- G(a) ∈ U and a ≤ b implies G(a) ≤ G(b) by G_monotone
+  have h_G_le : STSA.G a ≤ STSA.G b := STSA.G_monotone a b h_le
+  exact U.mem_of_le ha h_G_le
+
+/--
+G_preimage is closed under finite meets.
+
+Proof uses the K-axiom distribution: G(a) ∧ G(b) → G(a ∧ b)
+derived from temp_k_dist and necessitation.
+-/
+theorem G_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
+    (ha : a ∈ G_preimage U) (hb : b ∈ G_preimage U) : a ⊓ b ∈ G_preimage U := by
+  unfold G_preimage at ha hb ⊢
+  simp only [Set.mem_setOf_eq] at ha hb ⊢
+  -- G(a) ∈ U and G(b) ∈ U, need G(a ⊓ b) ∈ U
+  have h_inf : STSA.G a ⊓ STSA.G b ∈ U := U.inf_mem ha hb
+  -- We need G(a) ⊓ G(b) ≤ G(a ⊓ b)
+  -- This follows from the K-axiom: G(p → q) → (G(p) → G(q))
+  -- Standard modal logic fact: G(φ) ∧ G(ψ) → G(φ ∧ ψ)
+  have h_K_inf : STSA.G a ⊓ STSA.G b ≤ STSA.G (a ⊓ b) := by
+    -- Derivation sketch:
+    -- 1. ⊢ ψ → (φ → φ ∧ ψ)  (conjunction introduction)
+    -- 2. ⊢ G(ψ → (φ → φ ∧ ψ)) by necessitation
+    -- 3. ⊢ G(ψ) → G(φ → φ ∧ ψ) by temp_k_dist
+    -- 4. ⊢ G(φ → φ ∧ ψ) → (G(φ) → G(φ ∧ ψ)) by temp_k_dist
+    -- 5. Combine: G(ψ) → (G(φ) → G(φ ∧ ψ))
+    -- 6. G(φ) ∧ G(ψ) → G(φ ∧ ψ)
+    sorry -- K-axiom distribution proof (routine but verbose)
+  exact U.mem_of_le h_inf h_K_inf
+
+/--
+The crux theorem: F(a) ∈ U implies existence of successor ultrafilter containing a.
+
+Given F(phi) in ultrafilter U, there exists ultrafilter V with:
+- R_G(U, V): for all b, G(b) ∈ U implies b ∈ V
+- phi ∈ V
+
+This eliminates the F-persistence problem from the MCS approach.
+
+**Status**: This theorem requires a filter extension argument (Zorn's lemma)
+to extend G_preimage(U) ∪ {phi} to an ultrafilter. The consistency of this
+extension follows from F(phi) ∈ U via contraposition with G(¬phi).
+
+The proof is marked sorry pending implementation of the Zorn argument.
+-/
+theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
+    (a : LindenbaumAlg) (h_F : (STSA.G aᶜ)ᶜ ∈ U) :
+    ∃ V : Ultrafilter LindenbaumAlg, R_G U V ∧ a ∈ V := by
+  -- The mathematical argument:
+  -- 1. Define the seed set S = G_preimage(U) ∪ {a}
+  -- 2. Show S is consistent (generates a proper filter)
+  --    - If inconsistent, there exist b1,...,bn with G(bi) ∈ U and b1 ⊓ ... ⊓ bn ⊓ a = ⊥
+  --    - This means b1 ⊓ ... ⊓ bn ≤ aᶜ
+  --    - By G_monotone: G(b1 ⊓ ... ⊓ bn) ≤ G(aᶜ)
+  --    - By G_preimage_inf: G(b1 ⊓ ... ⊓ bn) ∈ U
+  --    - So G(aᶜ) ∈ U, meaning (G(aᶜ))ᶜ ∉ U (ultrafilter)
+  --    - But h_F says (G(aᶜ))ᶜ ∈ U, contradiction
+  -- 3. Extend to ultrafilter V by Zorn's lemma
+  -- 4. V satisfies R_G(U, V) by construction and a ∈ V
+  sorry
+
+/--
+The symmetric theorem for past: P(a) ∈ U implies existence of predecessor ultrafilter containing a.
+-/
+theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
+    (a : LindenbaumAlg) (h_P : (STSA.H aᶜ)ᶜ ∈ U) :
+    ∃ V : Ultrafilter LindenbaumAlg, R_H U V ∧ a ∈ V := by
+  -- Symmetric to ultrafilter_F_resolution using H instead of G
+  sorry
+
+/-!
 ## Phase 2: Box-Class BFMCS Construction
 
 Rather than building the BFMCS through ultrafilter chains (which requires complex

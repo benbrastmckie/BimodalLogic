@@ -879,4 +879,175 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
           exact h_mem
         · rfl
 
+/-!
+## Helper Lemmas for Ultrafilter Properties
+
+These lemmas make it easier to work with ultrafilters in the context of
+temporal and modal accessibility relations.
+-/
+
+/--
+Exactly one of a or aᶜ is in an ultrafilter.
+This is the fundamental ultrafilter property that eliminates the F-persistence problem.
+-/
+theorem Ultrafilter.compl_xor {α : Type*} [BooleanAlgebra α] (U : Ultrafilter α) (a : α) :
+    (a ∈ U.carrier ∧ aᶜ ∉ U.carrier) ∨ (a ∉ U.carrier ∧ aᶜ ∈ U.carrier) := by
+  cases U.compl_or a with
+  | inl h => exact Or.inl ⟨h, U.compl_not a h⟩
+  | inr h =>
+    have h_not_a : a ∉ U.carrier := by
+      intro ha
+      exact U.compl_not a ha h
+    exact Or.inr ⟨h_not_a, h⟩
+
+/--
+Membership in ultrafilter is equivalent to non-membership of complement.
+-/
+theorem Ultrafilter.mem_iff_compl_not_mem {α : Type*} [BooleanAlgebra α]
+    (U : Ultrafilter α) (a : α) : a ∈ U.carrier ↔ aᶜ ∉ U.carrier := by
+  constructor
+  · exact U.compl_not a
+  · intro h
+    cases U.compl_or a with
+    | inl ha => exact ha
+    | inr hac => exact absurd hac h
+
+/--
+Non-membership in ultrafilter is equivalent to membership of complement.
+-/
+theorem Ultrafilter.not_mem_iff_compl_mem {α : Type*} [BooleanAlgebra α]
+    (U : Ultrafilter α) (a : α) : a ∉ U.carrier ↔ aᶜ ∈ U.carrier := by
+  constructor
+  · intro h
+    cases U.compl_or a with
+    | inl ha => exact absurd ha h
+    | inr hac => exact hac
+  · intro hac ha
+    exact U.compl_not a ha hac
+
+/--
+For formulas: [φ] ∈ U iff [¬φ] ∉ U.
+
+This is the formula-level version of ultrafilter negation completeness.
+-/
+theorem ultrafilter_neg_iff (U : Ultrafilter LindenbaumAlg) (φ : Formula) :
+    toQuot φ ∈ U.carrier ↔ toQuot φ.neg ∉ U.carrier := by
+  -- (toQuot φ)ᶜ = toQuot φ.neg by definition of neg_quot
+  have h_compl : (toQuot φ)ᶜ = toQuot φ.neg := rfl
+  rw [← h_compl]
+  exact U.mem_iff_compl_not_mem (toQuot φ)
+
+/--
+For formulas: [¬φ] ∈ U iff [φ] ∉ U.
+-/
+theorem ultrafilter_neg_iff' (U : Ultrafilter LindenbaumAlg) (φ : Formula) :
+    toQuot φ.neg ∈ U.carrier ↔ toQuot φ ∉ U.carrier := by
+  have h_compl : (toQuot φ)ᶜ = toQuot φ.neg := rfl
+  rw [← h_compl]
+  exact U.not_mem_iff_compl_mem (toQuot φ) |>.symm
+
+/--
+Convenience: wrap ultrafilterToSet result with its MCS proof.
+-/
+noncomputable def ultrafilter_to_mcs (U : Ultrafilter LindenbaumAlg) :
+    {Γ : Set Formula // SetMaximalConsistent Γ} :=
+  ⟨ultrafilterToSet U, ultrafilterToSet_mcs U⟩
+
+/--
+The carrier of ultrafilter_to_mcs.
+-/
+@[simp]
+theorem ultrafilter_to_mcs_val (U : Ultrafilter LindenbaumAlg) :
+    (ultrafilter_to_mcs U).val = ultrafilterToSet U := rfl
+
+/--
+Round-trip: ultrafilter_to_mcs ∘ mcsToUltrafilter = id.
+-/
+theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsistent S}) :
+    ultrafilter_to_mcs (mcsToUltrafilter Γ) = Γ := by
+  obtain ⟨f, g, h_left, _⟩ := SetMaximalConsistent.ultrafilter_correspondence
+  -- f = mcsToUltrafilter, g = ultrafilter_to_mcs
+  -- h_left says g (f Γ) = Γ
+  -- We need to show this for our specific definitions
+  apply Subtype.ext
+  simp only [ultrafilter_to_mcs, ultrafilterToSet, mcsToUltrafilter]
+  ext φ
+  constructor
+  · intro h_mem
+    obtain ⟨ψ, h_psi_in, h_eq⟩ := h_mem
+    -- h_eq : toQuot φ = toQuot ψ and ψ ∈ Γ.val
+    -- Need φ ∈ Γ.val
+    -- Since [φ] = [ψ], we have ⊢ φ ↔ ψ, so by MCS closure...
+    have h_le : toQuot ψ ≤ toQuot φ := by rw [← h_eq]
+    obtain ⟨d_imp⟩ := (h_le : Derives ψ φ)
+    -- From ψ ∈ Γ and ⊢ ψ → φ, derive φ ∈ Γ
+    by_contra h_not
+    have h_incons : ¬SetConsistent (insert φ Γ.val) := Γ.property.2 φ h_not
+    unfold SetConsistent at h_incons
+    push_neg at h_incons
+    obtain ⟨L, hL, hL_incons⟩ := h_incons
+    have ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot hL_incons
+
+    let Γ' := L.filter (· ≠ φ)
+    have h_Γ'_sub : ∀ χ ∈ Γ', χ ∈ Γ.val := by
+      intro χ hχ
+      have hχ' := List.mem_filter.mp hχ
+      have hχne : χ ≠ φ := by simpa using hχ'.2
+      specialize hL χ hχ'.1
+      simp [Set.mem_insert_iff] at hL
+      rcases hL with rfl | h_in_Γ
+      · exact absurd rfl hχne
+      · exact h_in_Γ
+    have h_L_sub : L ⊆ φ :: Γ' := by
+      intro χ hχ
+      by_cases hχeq : χ = φ
+      · simp [hχeq]
+      · simp only [List.mem_cons]; right
+        exact List.mem_filter.mpr ⟨hχ, by simpa⟩
+
+    have d_bot' : DerivationTree (φ :: Γ') Formula.bot :=
+      DerivationTree.weakening L (φ :: Γ') Formula.bot d_bot h_L_sub
+    have d_neg : DerivationTree Γ' φ.neg :=
+      Bimodal.Metalogic.Core.deduction_theorem Γ' φ Formula.bot d_bot'
+
+    have d_neg' : DerivationTree (ψ :: Γ') φ.neg :=
+      DerivationTree.weakening Γ' (ψ :: Γ') φ.neg d_neg (fun x hx => List.mem_cons_of_mem ψ hx)
+    have d_ψ : DerivationTree (ψ :: Γ') ψ :=
+      DerivationTree.assumption (ψ :: Γ') ψ (by simp)
+    have d_imp' : DerivationTree (ψ :: Γ') (ψ.imp φ) :=
+      DerivationTree.weakening [] (ψ :: Γ') (ψ.imp φ) d_imp (by simp)
+    have d_φ : DerivationTree (ψ :: Γ') φ :=
+      DerivationTree.modus_ponens (ψ :: Γ') ψ φ d_imp' d_ψ
+    have d_bot'' : DerivationTree (ψ :: Γ') Formula.bot :=
+      DerivationTree.modus_ponens (ψ :: Γ') φ Formula.bot d_neg' d_φ
+
+    have h_cons : Consistent (ψ :: Γ') := by
+      apply Γ.property.1 (ψ :: Γ')
+      intro χ hχ
+      simp at hχ
+      rcases hχ with rfl | hχ'
+      · exact h_psi_in
+      · exact h_Γ'_sub χ hχ'
+    exact h_cons ⟨d_bot''⟩
+  · intro h_mem
+    exact mem_mcsToSet h_mem
+
+/--
+Round-trip: mcsToUltrafilter ∘ ultrafilter_to_mcs = id.
+-/
+theorem mcs_ultrafilter_round_trip (U : Ultrafilter LindenbaumAlg) :
+    mcsToUltrafilter (ultrafilter_to_mcs U) = U := by
+  apply Ultrafilter.ext
+  simp only [mcsToUltrafilter, ultrafilter_to_mcs, ultrafilterToSet]
+  ext a
+  constructor
+  · intro ⟨φ, h_phi_in, h_eq⟩
+    rw [h_eq]
+    exact h_phi_in
+  · intro h_mem
+    induction a using Quotient.ind with
+    | _ φ =>
+      use φ
+      exact ⟨h_mem, rfl⟩
+
 end Bimodal.Metalogic.Algebraic.UltrafilterMCS
