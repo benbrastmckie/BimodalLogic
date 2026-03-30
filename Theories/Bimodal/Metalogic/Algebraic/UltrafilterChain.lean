@@ -1413,9 +1413,9 @@ theorem f_preserving_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
       · -- x ∈ F_unresolved_theory M
         exact h
 
-    -- x ∈ F_unresolved_theory M, so x = F(psi) for some psi with F(psi) ∈ M
+    -- x ∈ F_unresolved_theory M, so x = F(psi) for some psi with F(psi) ∈ M and psi ∉ M
     simp only [F_unresolved_theory, Set.mem_setOf_eq] at hx_F
-    obtain ⟨psi, rfl, h_Fpsi_M, _⟩ := hx_F
+    obtain ⟨psi, rfl, h_Fpsi_M, h_psi_not_M⟩ := hx_F
 
     -- Now we use the key argument:
     -- If L ⊢ ⊥ and F(psi) ∈ L, then L \ {F(psi)} ⊢ neg(F(psi)) = G(neg psi)
@@ -1444,36 +1444,661 @@ theorem f_preserving_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
       intro y hy
       exact h_L_sub y (List.mem_of_mem_filter hy)
 
-    -- PROOF CHALLENGE: This is the crux of the F-preserving seed consistency proof.
-    --
-    -- The difficulty is that L_no_F may contain:
-    -- 1. phi - which doesn't have G(phi) ∈ M (only F(phi) ∈ M)
-    -- 2. Other F-formulas from F_unresolved_theory - which don't have G(F(σ)) ∈ M
-    --
-    -- The proof strategy (from the docstring) is:
-    -- 1. Extract ALL F-formulas from L, building a disjunction of G(neg σ_i)
-    -- 2. Extract phi if present, adding neg(phi) to the disjunction
-    -- 3. Apply G_lift to the remaining context (⊆ temporal_box_seed)
-    -- 4. By T-axiom and disjunction_elim, either:
-    --    - G(neg σ_i) ∈ M for some i → contradiction with F(σ_i) ∈ M
-    --    - neg(phi) ∈ M → but G(neg σ_i) ∉ M for all i (since F(σ_i) ∈ M)
-    --
-    -- The subtlety: if neg(phi) ∈ M is the only outcome, this doesn't directly
-    -- contradict F(phi) ∈ M. However, note that:
-    -- - neg(phi) ∉ f_preserving_seed (for generic phi, neg(phi) is not a G/Box/F-formula)
-    -- - So {phi, neg(phi)} ⊈ f_preserving_seed, and this inconsistent pair
-    --   doesn't witness inconsistency of f_preserving_seed
-    --
-    -- The formal proof requires a careful induction on the number of F-formulas
-    -- in the derivation context, tracking that each extraction maintains
-    -- the invariant that if the disjunction's G-formulas are all not in M,
-    -- then the inconsistency must come from outside f_preserving_seed.
-    --
-    -- For now, this sorry represents the complexity of the full inductive argument.
-    -- The theorem IS mathematically valid - the F-preserving seed construction
-    -- is specifically designed to prevent derivation of G(neg σ) for any
-    -- σ where F(σ) ∈ M.
-    sorry
+    -- Key insight: All elements of L_no_F except possibly phi are in M.
+    -- - temporal_box_seed M ⊆ M (by definition of G_theory and box_theory)
+    -- - F_unresolved_theory M ⊆ M (F(sigma) ∈ M for each element)
+    -- - Only phi may not be in M
+
+    -- First, check if phi is in M - if so, the entire seed is in M
+    by_cases h_phi_M : phi ∈ M
+
+    · -- phi ∈ M: The entire seed is a subset of M, hence consistent
+      -- All elements of f_preserving_seed M phi are in M:
+      -- - {phi} ⊆ M by h_phi_M
+      -- - temporal_box_seed M ⊆ M
+      -- - F_unresolved_theory M ⊆ M
+      -- So L ⊆ M, and L ⊢ bot. By MCS derivation closure, bot ∈ M.
+      -- But MCS doesn't contain bot. Contradiction.
+      have h_L_in_M : ∀ x ∈ L, x ∈ M := by
+        intro x hx
+        have hx_seed := h_L_sub x hx
+        simp only [f_preserving_seed, Set.mem_union] at hx_seed
+        rcases hx_seed with (h | h) | h
+        · -- x ∈ {phi}
+          simp only [Set.mem_singleton_iff] at h
+          rw [h]; exact h_phi_M
+        · -- x ∈ temporal_box_seed M
+          simp only [temporal_box_seed, Set.mem_union] at h
+          rcases h with hG | hBox
+          · -- x ∈ G_theory M: x = G(a) with G(a) ∈ M
+            simp only [G_theory, Set.mem_setOf_eq] at hG
+            obtain ⟨a, rfl, ha⟩ := hG
+            exact ha
+          · -- x ∈ box_theory M - use box_theory_subset_mcs
+            exact box_theory_subset_mcs M h_mcs hBox
+        · -- x ∈ F_unresolved_theory M: x = F(sigma) with F(sigma) ∈ M
+          simp only [F_unresolved_theory, Set.mem_setOf_eq] at h
+          obtain ⟨sigma, rfl, h_Fsigma_M, _⟩ := h
+          exact h_Fsigma_M
+      -- Now derive contradiction
+      have h_bot_M : Formula.bot ∈ M :=
+        SetMaximalConsistent.closed_under_derivation h_mcs L h_L_in_M d
+      exact h_mcs.1 [Formula.bot] (fun x hx => by simp at hx; rw [hx]; exact h_bot_M)
+        ⟨DerivationTree.assumption [Formula.bot] Formula.bot (List.mem_singleton.mpr rfl)⟩
+
+    · -- phi ∉ M: All elements of L_no_F except phi are in M
+      -- By MCS completeness, neg(phi) ∈ M
+      have h_neg_phi_M : Formula.neg phi ∈ M := by
+        rcases SetMaximalConsistent.negation_complete h_mcs phi with h | h
+        · exact absurd h h_phi_M
+        · exact h
+
+      -- Filter L_no_F to remove phi
+      let L_no_phi := L_no_F.filter (· ≠ phi)
+
+      -- All elements of L_no_phi are in M
+      have h_L_no_phi_in_M : ∀ x ∈ L_no_phi, x ∈ M := by
+        intro x hx
+        have hx_L_no_F := List.mem_of_mem_filter hx
+        have hx_ne_phi : x ≠ phi := of_decide_eq_true (List.mem_filter.mp hx).2
+        have hx_seed := h_L_no_F_sub x hx_L_no_F
+        simp only [f_preserving_seed, Set.mem_union] at hx_seed
+        rcases hx_seed with (h | h) | h
+        · -- x ∈ {phi}
+          simp only [Set.mem_singleton_iff] at h
+          exact absurd h hx_ne_phi
+        · -- x ∈ temporal_box_seed M
+          simp only [temporal_box_seed, Set.mem_union] at h
+          rcases h with hG | hBox
+          · simp only [G_theory, Set.mem_setOf_eq] at hG
+            obtain ⟨a, rfl, ha⟩ := hG
+            exact ha
+          · -- x ∈ box_theory M - use box_theory_subset_mcs
+            exact box_theory_subset_mcs M h_mcs hBox
+        · -- x ∈ F_unresolved_theory M
+          simp only [F_unresolved_theory, Set.mem_setOf_eq] at h
+          obtain ⟨sigma, rfl, h_Fsigma_M, _⟩ := h
+          exact h_Fsigma_M
+
+      -- Now we show: L_no_phi ⊢ neg(F(psi))
+      -- And since L_no_phi ⊆ M, we get neg(F(psi)) = G(neg psi) ∈ M
+      -- This contradicts F(psi) ∈ M
+
+      -- Check if phi ∈ L_no_F
+      by_cases h_phi_L_no_F : phi ∈ L_no_F
+
+      · -- phi ∈ L_no_F: extract it using deduction theorem
+        have h_L_no_F_sub_phi : ∀ y ∈ L_no_F, y ∈ phi :: L_no_phi := by
+          intro y hy
+          by_cases h_eq : y = phi
+          · rw [h_eq]; exact .head _
+          · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hy, decide_eq_true h_eq⟩)
+
+        have d_weak' : DerivationTree (phi :: L_no_phi) (Formula.neg (Formula.some_future psi)) :=
+          DerivationTree.weakening L_no_F _ _ d_neg_F h_L_no_F_sub_phi
+
+        have d_imp : DerivationTree L_no_phi (phi.imp (Formula.neg (Formula.some_future psi))) :=
+          Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi _ d_weak'
+
+        -- Since L_no_phi ⊆ M, we get phi → G(neg psi) ∈ M
+        have h_imp_M : phi.imp (Formula.neg (Formula.some_future psi)) ∈ M :=
+          SetMaximalConsistent.closed_under_derivation h_mcs L_no_phi h_L_no_phi_in_M d_imp
+
+        -- By MCS implication property with neg(phi) ∈ M:
+        -- We have phi → G(neg psi) ∈ M and need to conclude about G(neg psi)
+        -- Actually, by MCS we have: either neg(phi) ∈ M or (phi → X) → X ∈ M... no that's wrong
+
+        -- Better: (A → B) ∈ M and neg(A) ∈ M doesn't directly give B ∈ M
+        -- But we can use: neg(phi) ∈ M implies phi ∉ M (which we have)
+        -- And (phi → G(neg psi)) ∈ M with phi ∉ M...
+        -- By MCS dichotomy: for any formula, either it or its negation is in MCS
+        -- So either G(neg psi) ∈ M or neg(G(neg psi)) = F(psi) ∈ M
+        -- We know F(psi) ∈ M. So this doesn't give us G(neg psi) ∈ M directly.
+
+        -- But wait! We can derive: neg(phi) → (phi → X) → X is a tautology? No, that's not right.
+        -- neg(A) ∧ (A → B) → ? We get: A is false, so A → B is vacuously true.
+        -- This doesn't tell us about B.
+
+        -- Actually, the key is: neg(phi) ∈ M means phi ∉ M.
+        -- And L_no_phi ⊢ phi → G(neg psi).
+        -- What if we add phi to M? Then M ∪ {phi} would be inconsistent (since neg(phi) ∈ M).
+        -- So {phi} ∪ temporal_box_seed M ∪ F_unresolved_theory M might be inconsistent?
+        -- No wait, that's what we're trying to prove is consistent!
+
+        -- Let me think differently. We have:
+        -- d_neg_F : L_no_F ⊢ G(neg psi)
+        -- And we're trying to derive False.
+
+        -- Key: L_no_F ⊆ f_preserving_seed M phi.
+        -- If L_no_F ⊆ {phi} ∪ temporal_box_seed M:
+        --   By temporal_theory_witness_consistent (modified), we can handle this.
+        -- If L_no_F still has elements from F_unresolved_theory M \ {F(psi)}:
+        --   We need to recurse.
+
+        -- Since we're in case 2 (some element not in standard seed), and we extracted F(psi),
+        -- check if L_no_F has more elements from F_unresolved_theory
+
+        -- Simpler approach: show L_no_phi ⊆ M, and L_no_F ⊢ G(neg psi)
+        -- Want to show G(neg psi) ∈ M.
+        -- If phi ∉ L_no_F (i.e., L_no_F = L_no_phi), then L_no_F ⊆ M, so G(neg psi) ∈ M. Done.
+        -- If phi ∈ L_no_F, we need different argument.
+
+        -- Actually, let's use the contrapositive.
+        -- We have F(psi) ∈ M, so neg(G(neg psi)) ∈ M.
+        -- If G(neg psi) ∈ M too, then M inconsistent. Contradiction since M is MCS.
+        -- So G(neg psi) ∉ M.
+        -- By MCS dichotomy, neg(G(neg psi)) = F(psi) ∈ M. Which we know.
+
+        -- So the question is: can we derive G(neg psi) ∈ M from our data?
+
+        -- We have: L_no_phi ⊢ phi → G(neg psi) with L_no_phi ⊆ M
+        -- So (phi → G(neg psi)) ∈ M.
+        -- By MCS dichotomy applied to G(neg psi):
+        --   Either G(neg psi) ∈ M (contradiction with F(psi) ∈ M)
+        --   Or F(psi) ∈ M (which we know)
+        -- This doesn't give us what we want directly.
+
+        -- The issue is that (phi → G(neg psi)) ∈ M with phi ∉ M doesn't force G(neg psi) ∈ M.
+
+        -- Let's try: Can we show the assumption "L ⊢ bot" leads to contradiction
+        -- without needing G(neg psi) ∈ M?
+
+        -- Actually, here's the key insight:
+        -- L_no_phi ⊆ M (all elements are either temporal_box_seed or F_unresolved, both ⊆ M)
+        -- L_no_phi ⊢ phi → G(neg psi)
+        -- So (phi → G(neg psi)) ∈ M.
+
+        -- Claim: phi → G(neg psi) leads to contradiction with F(psi) ∈ M and F(phi) ∈ M.
+
+        -- Actually no. phi → G(neg psi) just says "if phi then always neg psi".
+        -- F(phi) ∈ M says "eventually phi".
+        -- F(psi) ∈ M says "eventually psi".
+
+        -- The key temporal reasoning:
+        -- G(neg psi) means "always neg psi" including the future
+        -- phi → G(neg psi) means "if phi (now), then always neg psi (forever)"
+        -- F(phi) means "eventually phi"
+        -- F(psi) means "eventually psi"
+
+        -- If "eventually phi" and "phi implies always neg psi", then after phi holds,
+        -- we have "always neg psi" from that point. So psi never holds after phi.
+        -- But "eventually psi" says psi holds at some point.
+        -- This is consistent if psi holds BEFORE phi.
+
+        -- So the semantic argument doesn't give us a direct contradiction in general.
+
+        -- Hmm, this is tricky. Let me reconsider the mathematical argument.
+
+        -- Actually, I think the issue is that we can't prove this in full generality.
+        -- The f_preserving_seed is specifically designed for the case where
+        -- F-formulas preserve through the chain construction.
+
+        -- Let me look at the existing temporal_theory_witness_consistent proof again
+        -- to see if we can adapt it.
+
+        -- In temporal_theory_witness_consistent:
+        -- We have L ⊆ {phi} ∪ temporal_box_seed M with L ⊢ bot.
+        -- We extract phi: L_no_phi ⊢ neg(phi).
+        -- G-lift: G(neg phi) ∈ M (since L_no_phi ⊆ temporal_box_seed, all G-liftable).
+        -- Contradiction: F(phi) = neg(G(neg phi)) ∈ M contradicts G(neg phi) ∈ M.
+
+        -- In our case:
+        -- We have L ⊆ f_preserving_seed M phi with L ⊢ bot.
+        -- We extracted F(psi) to get L_no_F ⊢ G(neg psi).
+        -- L_no_F may contain phi and other F-formulas from F_unresolved_theory.
+
+        -- If we could G-lift from L_no_F, we'd get G(G(neg psi)) ∈ M, hence G(neg psi) ∈ M.
+        -- But phi and F-formulas don't have their G in M.
+
+        -- The strategy should be to extract ALL non-G-liftable elements.
+        -- After extracting all F-formulas and phi, the remaining context is G-liftable.
+
+        -- Actually, wait. We already have L_no_phi ⊆ M. And L_no_phi consists of:
+        -- - Elements from temporal_box_seed M (G-liftable)
+        -- - Elements from F_unresolved_theory M \ {F(psi)} (NOT G-liftable)
+
+        -- If L_no_phi has no elements from F_unresolved_theory, then L_no_phi ⊆ temporal_box_seed M,
+        -- and we can G-lift (phi → G(neg psi)) to get G(phi → G(neg psi)) ∈ M.
+
+        -- But if L_no_phi has F-formulas, we can't G-lift directly.
+
+        -- This suggests we need INDUCTION on the number of F-formulas in L.
+
+        -- For now, let's see if we can at least handle the case where L_no_phi ⊆ temporal_box_seed M:
+
+        by_cases h_L_no_phi_standard : ∀ x ∈ L_no_phi, x ∈ temporal_box_seed M
+
+        · -- L_no_phi ⊆ temporal_box_seed M: can G-lift
+          have h_G_liftable : ∀ x ∈ L_no_phi, Formula.all_future x ∈ M :=
+            fun x hx => G_of_temporal_box_seed M h_mcs x (h_L_no_phi_standard x hx)
+
+          -- G-lift: G(phi → G(neg psi)) ∈ M
+          have h_G_imp : Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi))) ∈ M :=
+            G_lift_from_context M h_mcs L_no_phi _ d_imp h_G_liftable
+
+          -- By K-axiom: G(A → B) → (G(A) → G(B))
+          -- So G(phi → G(neg psi)) → (G(phi) → G(G(neg psi)))
+          have h_K : [] ⊢ (Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi)))).imp
+              ((Formula.all_future phi).imp (Formula.all_future (Formula.neg (Formula.some_future psi)))) :=
+            DerivationTree.axiom [] _ (Axiom.temp_k_dist phi _)
+
+          have h_G_phi_imp_GG : (Formula.all_future phi).imp (Formula.all_future (Formula.neg (Formula.some_future psi))) ∈ M :=
+            SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_K) h_G_imp
+
+          -- By 4-axiom: G(G(X)) → G(X), or equivalently G(neg(F(psi))) → neg(F(psi))
+          -- Note: neg(F(psi)) = G(neg psi) is an all_future formula
+
+          -- Actually, let's simplify. We have G(G(neg psi)) → G(neg psi) by 4-axiom.
+          -- And G(phi) → G(G(neg psi)) ∈ M.
+          -- So G(phi) → G(neg psi) ∈ M (by transitivity).
+
+          -- Now, by MCS dichotomy: either G(phi) ∈ M or neg(G(phi)) = F(neg phi) ∈ M.
+
+          -- Case: G(phi) ∈ M. Then G(neg psi) ∈ M by modus ponens.
+          -- Contradiction with F(psi) ∈ M.
+
+          -- Case: F(neg phi) ∈ M.
+          -- F(neg phi) = neg(G(neg(neg phi))) = neg(G(phi)).
+          -- So G(phi) ∉ M.
+          -- And we have G(phi) → G(neg psi) ∈ M.
+          -- This is consistent with G(neg psi) ∉ M (since G(phi) ∉ M, implication holds vacuously).
+
+          -- Hmm, so this case doesn't give us contradiction either.
+
+          -- Wait, but we're trying to prove f_preserving_seed is CONSISTENT.
+          -- We assumed it's inconsistent (L ⊢ bot) and are deriving contradiction.
+          -- In this branch, we've shown that under our assumptions, either:
+          -- - G(neg psi) ∈ M (contradiction), or
+          -- - F(neg phi) ∈ M
+
+          -- If F(neg phi) ∈ M, what does that tell us about the seed's consistency?
+
+          -- F(neg phi) ∈ M means neg(phi) ∉ M (otherwise F(neg phi) would be "resolved").
+          -- Wait, F_unresolved_theory has F(X) where X ∉ M. So F(neg phi) ∈ M with neg phi ∉ M
+          -- means F(neg phi) ∈ F_unresolved_theory M.
+
+          -- But we also have neg(phi) ∈ M (from h_neg_phi_M)!
+          -- Actually wait, h_neg_phi_M says neg(phi) ∈ M.
+          -- And F(neg phi) ∈ M says neg(G(neg(neg phi))) = neg(G(phi)) ∈ M.
+          -- These are different. neg(phi) and F(neg phi) are different formulas.
+
+          -- So we have:
+          -- - neg(phi) ∈ M (because phi ∉ M, by MCS dichotomy)
+          -- - F(neg phi) ∈ M (from our case analysis)
+          -- - F(phi) ∈ M (given)
+
+          -- This is consistent! neg(phi) now, but phi eventually. Also neg phi eventually.
+          -- Semantically: currently phi is false. In the future, phi will be true (F(phi)).
+          -- Also in the future, phi will be false again (F(neg phi)). Compatible with phi true later.
+
+          -- So we can't derive contradiction from F(neg phi) ∈ M alone.
+
+          -- I think the issue is that we need a different approach for this case.
+
+          -- Actually, wait. Let me reconsider.
+
+          -- We have h_phi_L_no_F : phi ∈ L_no_F.
+          -- And L_no_F ⊢ G(neg psi).
+          -- After extracting phi: L_no_phi ⊢ phi → G(neg psi).
+          -- We're in the case h_L_no_phi_standard: L_no_phi ⊆ temporal_box_seed M.
+
+          -- So L_no_phi ⊆ temporal_box_seed M, and L_no_phi ⊆ L_no_F.
+          -- And L_no_F ⊆ f_preserving_seed M phi.
+          -- And L_no_F is a subset of the original L (minus F(psi)).
+
+          -- Now, the question is: does L_no_phi ⊢ phi → G(neg psi) lead to contradiction
+          -- with the consistency of f_preserving_seed?
+
+          -- Actually, I realize the argument should be different.
+          -- We should use the fact that F(psi) was extracted because F(psi) ∈ L
+          -- and F(psi) ∈ F_unresolved_theory M.
+
+          -- The key is: F(psi) ∈ M means psi ∉ M (by definition of F_unresolved_theory).
+          -- Wait no, F_unresolved_theory requires F(psi) ∈ M AND psi ∉ M.
+          -- So psi ∉ M.
+
+          -- We have: L_no_phi ⊢ phi → G(neg psi) with L_no_phi ⊆ temporal_box_seed M.
+          -- G-lift: G(phi → G(neg psi)) ∈ M.
+          -- By K and 4: G(phi) → G(neg psi) ∈ M (derived above).
+
+          -- Now, by contrapositive: neg(G(neg psi)) → neg(G(phi)) ∈ M.
+          -- i.e., F(psi) → F(neg phi) ∈ M.
+
+          -- We have F(psi) ∈ M. So F(neg phi) ∈ M by modus ponens.
+
+          -- Does F(neg phi) ∈ M contradict anything?
+          -- F(neg phi) = neg(G(phi)).
+          -- So G(phi) ∉ M.
+
+          -- And we have F(phi) ∈ M (given).
+          -- F(phi) = neg(G(neg phi)).
+          -- So G(neg phi) ∉ M.
+
+          -- So both G(phi) ∉ M and G(neg phi) ∉ M.
+          -- This is fine - it just means phi's G-value is not determined in M.
+
+          -- I don't see an immediate contradiction.
+
+          -- Let me try yet another approach. The issue might be that we need to
+          -- track the F-formulas more carefully.
+
+          -- INSIGHT: We have F(psi) ∈ M with psi ∉ M (from F_unresolved_theory).
+          -- And we derived G(neg psi) is "forced" in some sense from the seed.
+          -- The contradiction should come from F(psi) ∧ G(neg psi) being inconsistent.
+
+          -- F(psi) = neg(G(neg psi)).
+          -- So F(psi) ∧ G(neg psi) is indeed inconsistent!
+
+          -- We need to show G(neg psi) ∈ M to get contradiction.
+
+          -- We have: G(phi) → G(neg psi) ∈ M (from above).
+          -- Case: G(phi) ∈ M. Then G(neg psi) ∈ M. Done.
+          -- Case: G(phi) ∉ M.
+
+          -- In case G(phi) ∉ M:
+          -- By MCS dichotomy, F(neg phi) ∈ M (i.e., neg(G(phi)) ∈ M).
+
+          -- Hmm, but we can't directly get G(neg psi) from this.
+
+          -- OK here's a different idea. Let me check if the issue is with phi specifically.
+          -- What if phi = G(a) for some a? Then G(phi) = G(G(a)), and by 4-axiom, G(G(a)) → G(a),
+          -- so G(G(a)) ∈ M iff G(a) ∈ M.
+
+          -- For general phi, we don't have special structure.
+
+          -- I think the proof might need strong induction after all, handling the phi case
+          -- specially. Let me try implementing a helper lemma for this.
+
+          -- For now, let me just leave a sorry for this subcase and continue structuring the proof.
+          cases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future phi) with
+          | inl h_G_phi =>
+            -- G(phi) ∈ M: Apply modus ponens to get G(G(neg psi)) ∈ M
+            -- Note: h_G_phi_imp_GG : G(phi) → G(G(neg psi)) ∈ M
+            -- since neg(F(psi)) = neg(neg(G(neg psi))) = G(neg psi) definitionally
+            -- h_G_phi_imp_GG : G(phi) → G(neg(F(psi))) ∈ M
+            -- h_G_phi : G(phi) ∈ M
+            -- So G(neg(F(psi))) ∈ M
+            -- Note: neg(F(psi)) = neg(neg(G(neg psi))) = G(neg psi) by double negation
+            -- Actually: some_future psi = neg(all_future(neg psi))
+            -- So neg(some_future psi) = neg(neg(all_future(neg psi))) which normalizes to all_future(neg psi)
+            -- But in Lean's representation, some_future.neg = (psi.neg.all_future.neg).neg
+            -- Let's directly work with the types we have
+
+            -- h_G_neg_F_psi will be: (psi.some_future.neg).all_future ∈ M
+            -- which is G(neg(F(psi)))
+            have h_G_neg_F_psi : Formula.all_future (Formula.neg (Formula.some_future psi)) ∈ M :=
+              SetMaximalConsistent.implication_property h_mcs h_G_phi_imp_GG h_G_phi
+
+            -- Apply T-axiom: G(X) → X specialized to X := neg(F(psi))
+            -- This gives us neg(F(psi)) ∈ M
+            have h_T : [] ⊢ (Formula.all_future (Formula.neg (Formula.some_future psi))).imp
+                (Formula.neg (Formula.some_future psi)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.neg (Formula.some_future psi)))
+            have h_neg_F_psi : Formula.neg (Formula.some_future psi) ∈ M :=
+              SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G_neg_F_psi
+
+            -- neg(F(psi)) ∈ M and F(psi) ∈ M contradicts MCS consistency
+            exact set_consistent_not_both h_mcs.1 (Formula.some_future psi) h_Fpsi_M h_neg_F_psi
+          | inr h_neg_G_phi =>
+            -- neg(G(phi)) = F(neg phi) ∈ M
+            -- This doesn't immediately give us contradiction.
+            -- However, we can derive a contradiction via a different route.
+
+            -- Actually, F(neg phi) ∈ M is compatible with F(phi) ∈ M.
+            -- The issue is that our proof attempt assumes we can get G(neg psi) ∈ M,
+            -- but in this branch we can't.
+
+            -- Let me reconsider the whole structure. The key insight should be:
+            -- If L ⊢ bot and L ⊆ f_preserving_seed M phi, then we can find some G(neg X) ∈ M
+            -- where F(X) ∈ M, giving contradiction.
+
+            -- The issue is the phi extraction. When we extract phi, we go from
+            -- L ⊢ bot to L_no_phi ⊢ neg(phi). This doesn't involve F-formulas directly.
+
+            -- Wait, actually in this case we had:
+            -- L ⊢ bot with F(psi) ∈ L (from F_unresolved_theory)
+            -- L_no_F ⊢ G(neg psi) (after extracting F(psi))
+            -- And phi ∈ L_no_F
+
+            -- If all elements of L_no_phi are from temporal_box_seed, we can G-lift.
+            -- G(phi → G(neg psi)) ∈ M.
+
+            -- Now, here's the key: we should think about what this means for the SEED.
+            -- The seed is {phi} ∪ temporal_box_seed M ∪ F_unresolved_theory M.
+
+            -- G(phi → G(neg psi)) ∈ M means: "always, if phi then always neg psi".
+            -- This puts a constraint: whenever phi holds, psi cannot hold afterwards.
+
+            -- Now, F(psi) ∈ F_unresolved_theory M ⊆ seed.
+            -- And phi ∈ seed.
+            -- And G(phi → G(neg psi)) ∈ M.
+
+            -- If phi ∈ seed and F(psi) ∈ seed, then in any MCS extending the seed:
+            -- phi ∈ W and F(psi) ∈ W (since W extends seed).
+            -- But G(phi → G(neg psi)) ∈ M. Is G(phi → G(neg psi)) ∈ W?
+
+            -- Wait, the witness W is obtained from Lindenbaum extending f_preserving_seed.
+            -- G_theory M ⊆ f_preserving_seed, so G_theory M ⊆ W.
+            -- In particular, G(phi → G(neg psi)) ∈ M... but is this in G_theory M?
+
+            -- G_theory M = { G(a) | G(a) ∈ M }.
+            -- So G(phi → G(neg psi)) ∈ G_theory M iff G(phi → G(neg psi)) ∈ M.
+            -- We showed G(phi → G(neg psi)) ∈ M above (h_G_imp).
+
+            -- So G(phi → G(neg psi)) ∈ G_theory M ⊆ f_preserving_seed M phi.
+
+            -- Now, in any MCS W extending f_preserving_seed:
+            -- - phi ∈ W (since phi ∈ f_preserving_seed)
+            -- - F(psi) ∈ W (since F(psi) ∈ F_unresolved_theory M ⊆ f_preserving_seed)
+            -- - G(phi → G(neg psi)) ∈ W (since G(phi → G(neg psi)) ∈ G_theory M ⊆ f_preserving_seed)
+
+            -- From G(phi → G(neg psi)) ∈ W and phi ∈ W:
+            -- By T-axiom: (phi → G(neg psi)) ∈ W.
+            -- By modus ponens with phi ∈ W: G(neg psi) ∈ W.
+
+            -- But F(psi) = neg(G(neg psi)) ∈ W.
+            -- So both G(neg psi) and neg(G(neg psi)) are in W.
+            -- This contradicts W being consistent.
+
+            -- Therefore, no MCS extends f_preserving_seed M phi.
+            -- This means f_preserving_seed M phi is inconsistent!
+
+            -- But we're trying to prove it's CONSISTENT. So we have a contradiction.
+
+            -- Let me formalize this argument.
+
+            -- h_G_imp : G(phi → G(neg psi)) ∈ M
+            -- This means G(phi → G(neg psi)) ∈ G_theory M
+            have h_G_imp_in_seed : Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi))) ∈ f_preserving_seed M phi := by
+              apply G_theory_subset_f_preserving_seed
+              simp only [G_theory, Set.mem_setOf_eq]
+              exact ⟨phi.imp (Formula.neg (Formula.some_future psi)), rfl, h_G_imp⟩
+
+            -- Now, the seed contains:
+            -- - phi
+            -- - G(phi → neg(F(psi)))
+            -- - F(psi) (since F(psi) ∈ F_unresolved_theory M)
+
+            -- We can derive bot from these!
+            -- G(A → B) and A derive B (by T-axiom and modus ponens)
+            -- So G(phi → G(neg psi)) and phi derive G(neg psi)
+            -- And G(neg psi) and F(psi) derive bot (since F(psi) = neg(G(neg psi)))
+
+            -- Let's construct this derivation
+            have h_phi_in_seed : phi ∈ f_preserving_seed M phi := phi_in_f_preserving_seed M phi
+
+            have h_Fpsi_in_seed : Formula.some_future psi ∈ f_preserving_seed M phi := by
+              apply F_unresolved_subset_f_preserving_seed
+              simp only [F_unresolved_theory, Set.mem_setOf_eq]
+              exact ⟨psi, rfl, h_Fpsi_M, h_psi_not_M⟩
+
+            -- Derivation: [G(phi → G(neg psi)), phi, F(psi)] ⊢ bot
+
+            -- Step 1: T-axiom: G(phi → G(neg psi)) → (phi → G(neg psi))
+            have h_T : [] ⊢ (Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi)))).imp
+                (phi.imp (Formula.neg (Formula.some_future psi))) :=
+              DerivationTree.axiom [] _ (Axiom.temp_t_future _)
+
+            -- Step 2: From G(phi → G(neg psi)), derive phi → G(neg psi)
+            have h_d1 : [Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi)))] ⊢
+                phi.imp (Formula.neg (Formula.some_future psi)) :=
+              DerivationTree.modus_ponens [_] _ _ (DerivationTree.weakening [] _ _ h_T (fun _ h => nomatch h))
+                (DerivationTree.assumption _ _ (List.mem_singleton.mpr rfl))
+
+            -- Step 3: From phi → G(neg psi) and phi, derive G(neg psi)
+            have h_d2 : [phi, Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi)))] ⊢
+                Formula.neg (Formula.some_future psi) := by
+              apply DerivationTree.modus_ponens [phi, _] phi _
+              · exact DerivationTree.weakening [_] [phi, _] _ h_d1 (fun x hx => by
+                  simp only [List.mem_singleton] at hx
+                  rw [hx]
+                  exact List.mem_cons_of_mem _ (List.mem_singleton.mpr rfl))
+              · exact DerivationTree.assumption _ _ (.head _)
+
+            -- Step 4: G(neg psi) = neg(F(psi)), so G(neg psi) and F(psi) derive bot
+            -- neg(F(psi)) and F(psi) derive bot via neg_elim
+            have h_d3 : [Formula.some_future psi, phi, Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi)))] ⊢
+                Formula.bot := by
+              -- We have [phi, G(...)] ⊢ neg(F(psi))
+              -- We want [F(psi), phi, G(...)] ⊢ bot
+              apply DerivationTree.modus_ponens [_, phi, _] (Formula.some_future psi) Formula.bot
+              · -- Need: [F(psi), phi, G(...)] ⊢ F(psi) → bot = neg(F(psi))
+                -- But neg(F(psi)) = G(neg psi) = (psi.neg.all_future)
+                -- Actually, F(psi) = (psi.neg.all_future.neg)
+                -- So neg(F(psi)) = psi.neg.all_future
+                -- And our h_d2 gives [phi, G(...)] ⊢ psi.neg.all_future
+                have h_eq : Formula.neg (Formula.some_future psi) = (Formula.some_future psi).imp Formula.bot := rfl
+                rw [h_eq] at h_d2
+                exact DerivationTree.weakening [phi, _] [_, phi, _] _ h_d2 (fun x hx =>
+                  List.mem_cons_of_mem _ hx)
+              · exact DerivationTree.assumption _ _ (.head _)
+
+            -- Now we have a derivation from a subset of f_preserving_seed to bot
+            -- This contradicts consistency
+
+            -- The list [F(psi), phi, G(phi → G(neg psi))] is a subset of f_preserving_seed
+            have h_list_sub : ∀ x ∈ [Formula.some_future psi, phi,
+                Formula.all_future (phi.imp (Formula.neg (Formula.some_future psi)))],
+                x ∈ f_preserving_seed M phi := by
+              intro x hx
+              simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hx
+              rcases hx with rfl | rfl | rfl
+              · exact h_Fpsi_in_seed
+              · exact h_phi_in_seed
+              · exact h_G_imp_in_seed
+
+            -- This is inconsistent!
+            -- But wait, we're already in a proof by contradiction assuming
+            -- f_preserving_seed is inconsistent. So finding another inconsistency
+            -- doesn't help directly.
+
+            -- Actually, wait. We started with L ⊆ f_preserving_seed with L ⊢ bot.
+            -- We're trying to derive False (to show consistency).
+            -- But we've now constructed a different proof of inconsistency!
+
+            -- The issue is: the h_G_imp was derived using h_G_liftable, which used
+            -- h_L_no_phi_standard, which might not hold for arbitrary L.
+
+            -- Let me reconsider. We're in the case:
+            -- - h_phi_L_no_F : phi ∈ L_no_F
+            -- - h_L_no_phi_standard : L_no_phi ⊆ temporal_box_seed M
+            -- - h_neg_G_phi : neg(G(phi)) ∈ M
+
+            -- From h_L_no_phi_standard, we derived h_G_imp : G(phi → G(neg psi)) ∈ M.
+
+            -- Now, G(phi → G(neg psi)) ∈ G_theory M ⊆ f_preserving_seed M phi.
+            -- And phi ∈ f_preserving_seed.
+            -- And F(psi) ∈ f_preserving_seed.
+
+            -- So [F(psi), phi, G(phi → G(neg psi))] ⊆ f_preserving_seed with derivation to bot.
+
+            -- This IS a witness of inconsistency, independent of our original L!
+
+            -- Hmm, but this doesn't help us prove consistency. We're trying to prove
+            -- consistency, not find more witnesses of inconsistency.
+
+            -- Actually, wait. If we can construct an inconsistent subset of f_preserving_seed
+            -- from our assumptions (h_Fpsi_M, h_phi_L_no_F, h_L_no_phi_standard, etc.),
+            -- then f_preserving_seed IS inconsistent. But we're trying to prove it's consistent!
+
+            -- So we have a problem: under the given hypotheses, f_preserving_seed is inconsistent.
+
+            -- But the theorem claims f_preserving_seed IS consistent!
+
+            -- Let me re-examine. The issue might be with the case structure.
+
+            -- We have:
+            -- - F(phi) ∈ M (hypothesis)
+            -- - F(psi) ∈ F_unresolved_theory M (from case 2)
+            -- - h_L_no_phi_standard : L_no_phi ⊆ temporal_box_seed M
+
+            -- From these, we derived G(phi → G(neg psi)) ∈ M.
+
+            -- Wait, but G(phi → G(neg psi)) was derived by G-lifting L_no_phi ⊢ phi → G(neg psi).
+            -- And L_no_phi ⊢ phi → G(neg psi) came from extracting phi from L_no_F ⊢ G(neg psi).
+            -- And L_no_F ⊢ G(neg psi) came from extracting F(psi) from L ⊢ bot.
+
+            -- So G(phi → G(neg psi)) ∈ M is a consequence of assuming L ⊢ bot!
+
+            -- And then we showed [F(psi), phi, G(phi → G(neg psi))] ⊢ bot.
+
+            -- So from L ⊢ bot, we derived [F(psi), phi, G(...)] ⊢ bot.
+
+            -- This is consistent! We assumed inconsistency, and derived inconsistency.
+            -- It doesn't give us the contradiction we need.
+
+            -- The issue is: we need to show that the ASSUMPTION L ⊢ bot leads to contradiction.
+            -- Simply deriving another inconsistent subset doesn't contradict anything.
+
+            -- OK I think I see the issue now. The whole proof by contradiction is:
+            -- Assume ∃ L ⊆ f_preserving_seed with L ⊢ bot. Derive False.
+
+            -- We've been trying to derive False by showing G(neg psi) ∈ M contradicts F(psi) ∈ M.
+            -- But in this branch (h_neg_G_phi), we can't show G(neg psi) ∈ M.
+
+            -- The other route we tried (constructing [F(psi), phi, G(...)] ⊢ bot) doesn't help
+            -- because that's just another way of witnessing inconsistency, not a contradiction.
+
+            -- I think we need a different approach entirely.
+
+            -- Maybe strong induction on the number of elements in L?
+            -- Or on the number of non-G-liftable elements?
+
+            -- For now, let me mark this as sorry and move on to understand the full structure.
+            sorry
+
+        · -- L_no_phi has elements from F_unresolved_theory M (not all from temporal_box_seed)
+          -- We need to recurse, extracting more F-formulas
+          -- This requires strong induction on the count of F-formulas in L
+          sorry
+
+      · -- phi ∉ L_no_F: all elements of L_no_F are in M
+        -- L_no_F ⊆ M since phi ∉ L_no_F and all other elements are in M
+        have h_L_no_F_in_M : ∀ x ∈ L_no_F, x ∈ M := by
+          intro x hx
+          have hx_ne_phi : x ≠ phi := fun h_eq => by
+            rw [h_eq] at hx
+            exact h_phi_L_no_F hx
+          -- x ∈ L_no_F and x ≠ phi and x ≠ F(psi)
+          have hx_seed := h_L_no_F_sub x hx
+          simp only [f_preserving_seed, Set.mem_union] at hx_seed
+          rcases hx_seed with (h | h) | h
+          · simp only [Set.mem_singleton_iff] at h; exact absurd h hx_ne_phi
+          · simp only [temporal_box_seed, Set.mem_union] at h
+            rcases h with hG | hBox
+            · simp only [G_theory, Set.mem_setOf_eq] at hG
+              obtain ⟨a, rfl, ha⟩ := hG; exact ha
+            · exact box_theory_subset_mcs M h_mcs hBox
+          · simp only [F_unresolved_theory, Set.mem_setOf_eq] at h
+            obtain ⟨sigma, rfl, h_Fsigma_M, _⟩ := h; exact h_Fsigma_M
+
+        -- L_no_F ⊢ neg(F(psi)) and L_no_F ⊆ M, so neg(F(psi)) ∈ M
+        have h_neg_F_psi_M : Formula.neg (Formula.some_future psi) ∈ M :=
+          SetMaximalConsistent.closed_under_derivation h_mcs L_no_F h_L_no_F_in_M d_neg_F
+
+        -- neg(F(psi)) ∈ M and F(psi) ∈ M contradicts MCS consistency
+        -- F(psi) and neg(F(psi)) form an inconsistent pair
+        exact set_consistent_not_both h_mcs.1 (Formula.some_future psi) h_Fpsi_M h_neg_F_psi_M
 
 /--
 F-preserving temporal witness theorem:
