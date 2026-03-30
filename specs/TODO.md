@@ -37,7 +37,7 @@ technical_debt:
 67 → 68 → 58 → 59 → 60
 ```
 
-1. **67** [IMPLEMENTING] — Prove bundle_validity_implies_provability (model-theoretic glue)
+1. **67** [PLANNED] — Prove bundle_validity_implies_provability (model-theoretic glue)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #67)
 3. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #67, #68)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
@@ -97,6 +97,7 @@ technical_debt:
   - [07_wire-restricted-chain.md](067_prove_bundle_validity_implies_provability/plans/07_wire-restricted-chain.md)
   - [08_dovetailed-omega-fmcs.md](067_prove_bundle_validity_implies_provability/plans/08_dovetailed-omega-fmcs.md)
   - [09_fix-backward-chain.md](067_prove_bundle_validity_implies_provability/plans/09_fix-backward-chain.md)
+  - [10_well-founded-restructure.md](067_prove_bundle_validity_implies_provability/plans/10_well-founded-restructure.md)
 - **Summary**: [01_implementation-summary.md](067_prove_bundle_validity_implies_provability/summaries/01_implementation-summary.md)
 
 **Description**: Eliminate the sorry in bundle_validity_implies_provability (FrameConditions/Completeness.lean line 176) by constructing a TaskModel directly from BFMCS_Bundle without requiring family-level temporal coherence. The algebraic completeness infrastructure is sorry-free; the gap is purely in connecting bundle-level coherence to TaskModel semantics.
