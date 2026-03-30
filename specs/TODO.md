@@ -37,7 +37,7 @@ technical_debt:
 67 → 68 → 58 → 59 → 60
 ```
 
-1. **67** [PLANNED] — Prove bundle_validity_implies_provability (model-theoretic glue)
+1. **67** [RESEARCHED] — Prove bundle_validity_implies_provability (model-theoretic glue)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #67)
 3. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #67, #68)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
@@ -79,7 +79,7 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Blocker**: F-formula persistence - temporal_theory_witness_exists lacks F-step; need Succ-based construction
 - **Language**: lean4
 - **Dependencies**: None
