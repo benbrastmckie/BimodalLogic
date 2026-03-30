@@ -34,11 +34,11 @@ technical_debt:
 ### 1. Critical Path — Sorry-Free Completeness
 
 ```
-67 [DONE] → 69 [BLOCKED] → 68 → 58 → 59 → 60
+67 [DONE] → 69 [RESEARCHED] → 68 → 58 → 59 → 60
 ```
 
 1. **67** [COMPLETED] — Cleaned up SuccChainFMCS.lean (~340 lines deleted), simplified F_resolves
-2. **69** [BLOCKED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
+2. **69** [RESEARCHED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
    - **Blocked**: F-persistence gap — Lindenbaum can add G(neg phi) even when F(phi) present
    - **Report**: [01_z-chain-forward-research.md](069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md)
    - **Plan**: [02_z-chain-forward-plan.md](069_close_z_chain_forward_f/plans/02_z-chain-forward-plan.md)
