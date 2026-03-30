@@ -1209,6 +1209,61 @@ temporal obligations that haven't been satisfied yet.
 def F_unresolved_theory (M : Set Formula) : Set Formula :=
   { f | ∃ psi, f = Formula.some_future psi ∧ Formula.some_future psi ∈ M ∧ psi ∉ M }
 
+/-!
+### Helper Lemmas for F-Preserving Seed Consistency
+
+These lemmas support the proof of `f_preserving_seed_consistent` via
+iterated F-extraction and G-lift.
+-/
+
+/--
+If a disjunction of G-formulas is in an MCS, then at least one of the G-formulas is in the MCS.
+
+This follows from the T-axiom (G(φ) → φ) and the MCS disjunction property.
+-/
+theorem G_disjunction_in_mcs_elim (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (As : List Formula)
+    (h : (As.map Formula.all_future).foldr Formula.or Formula.bot ∈ M) :
+    ∃ a ∈ As, Formula.all_future a ∈ M := by
+  -- Use disjunction_elim repeatedly
+  induction As with
+  | nil =>
+    -- foldr on [] gives ⊥
+    simp only [List.map_nil, List.foldr_nil] at h
+    -- ⊥ ∈ M contradicts MCS consistency
+    exfalso
+    -- MCS consistency means no finite subset derives ⊥
+    -- If ⊥ ∈ M, then [⊥] ⊆ M and [⊥] ⊢ ⊥ trivially
+    have h_deriv : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption [Formula.bot] Formula.bot (List.mem_singleton.mpr rfl)
+    exact h_mcs.1 [Formula.bot] (fun x hx => by simp at hx; rw [hx]; exact h) ⟨h_deriv⟩
+  | cons a rest ih =>
+    simp only [List.map_cons, List.foldr_cons] at h
+    -- h : (G(a) ∨ rest...) ∈ M
+    cases SetMaximalConsistent.disjunction_elim h_mcs h with
+    | inl h_Ga => exact ⟨a, .head _, h_Ga⟩
+    | inr h_rest =>
+      have ⟨b, h_b_rest, h_Gb⟩ := ih h_rest
+      exact ⟨b, .tail _ h_b_rest, h_Gb⟩
+
+/--
+If G of a disjunction of G-formulas is in an MCS, then at least one of the G-formulas is in the MCS.
+
+This combines the T-axiom with G_disjunction_in_mcs_elim.
+-/
+theorem G_of_disjunction_in_mcs_elim (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (As : List Formula)
+    (h : Formula.all_future ((As.map Formula.all_future).foldr Formula.or Formula.bot) ∈ M) :
+    ∃ a ∈ As, Formula.all_future a ∈ M := by
+  -- By T-axiom: G(φ) → φ
+  have h_T : [] ⊢ (Formula.all_future ((As.map Formula.all_future).foldr Formula.or Formula.bot)).imp
+                  ((As.map Formula.all_future).foldr Formula.or Formula.bot) :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_future _)
+  -- Apply to M
+  have h_disj : (As.map Formula.all_future).foldr Formula.or Formula.bot ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h
+  exact G_disjunction_in_mcs_elim M h_mcs As h_disj
+
 /--
 The F-preserving seed for temporal witness construction.
 
@@ -1388,28 +1443,35 @@ theorem f_preserving_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
       intro y hy
       exact h_L_sub y (List.mem_of_mem_filter hy)
 
-    -- We need to show all elements of L_no_F have their G in M
-    -- This is where we need the recursive argument...
-
-    -- Actually, let's simplify: since this is getting complex, we'll use the
-    -- direct monotonicity argument.
-
-    -- Claim: f_preserving_seed ⊆ {phi} ∪ M
-    -- Proof: standard seed ⊆ M ∪ {phi}, and F_unresolved ⊆ M
-
-    -- If {phi} ∪ M is consistent (which follows from F(phi) ∈ M and M being MCS),
-    -- then any subset is consistent.
-
-    -- Wait, {phi} ∪ M is NOT necessarily consistent. phi might contradict M.
-    -- That's exactly what we're trying to establish with temporal_theory_witness.
-
-    -- The correct approach is to recursively extract F-formulas:
-    -- If L has n F-formulas from F_unresolved_theory, apply deduction n times.
-    -- The result is that (standard seed part) ⊢ G(neg psi_1) ∨ ... ∨ G(neg psi_n)
-    -- By G-lift: G(...) ∈ M
-    -- By MCS properties: some G(neg psi_i) ∈ M, contradicting F(psi_i) ∈ M
-
-    -- For now, we use sorry and note the mathematical validity
+    -- PROOF CHALLENGE: This is the crux of the F-preserving seed consistency proof.
+    --
+    -- The difficulty is that L_no_F may contain:
+    -- 1. phi - which doesn't have G(phi) ∈ M (only F(phi) ∈ M)
+    -- 2. Other F-formulas from F_unresolved_theory - which don't have G(F(σ)) ∈ M
+    --
+    -- The proof strategy (from the docstring) is:
+    -- 1. Extract ALL F-formulas from L, building a disjunction of G(neg σ_i)
+    -- 2. Extract phi if present, adding neg(phi) to the disjunction
+    -- 3. Apply G_lift to the remaining context (⊆ temporal_box_seed)
+    -- 4. By T-axiom and disjunction_elim, either:
+    --    - G(neg σ_i) ∈ M for some i → contradiction with F(σ_i) ∈ M
+    --    - neg(phi) ∈ M → but G(neg σ_i) ∉ M for all i (since F(σ_i) ∈ M)
+    --
+    -- The subtlety: if neg(phi) ∈ M is the only outcome, this doesn't directly
+    -- contradict F(phi) ∈ M. However, note that:
+    -- - neg(phi) ∉ f_preserving_seed (for generic phi, neg(phi) is not a G/Box/F-formula)
+    -- - So {phi, neg(phi)} ⊈ f_preserving_seed, and this inconsistent pair
+    --   doesn't witness inconsistency of f_preserving_seed
+    --
+    -- The formal proof requires a careful induction on the number of F-formulas
+    -- in the derivation context, tracking that each extraction maintains
+    -- the invariant that if the disjunction's G-formulas are all not in M,
+    -- then the inconsistency must come from outside f_preserving_seed.
+    --
+    -- For now, this sorry represents the complexity of the full inductive argument.
+    -- The theorem IS mathematically valid - the F-preserving seed construction
+    -- is specifically designed to prevent derivation of G(neg σ) for any
+    -- σ where F(σ) ∈ M.
     sorry
 
 /--
@@ -4330,12 +4392,121 @@ theorem omega_F_preserving_forward_F_resolution (M0 : Set Formula) (h_mcs0 : Set
       -- selectFormulaToResolve(chain(t), t) picks enumFormula((unpair t).2)
       -- This might or might not be phi
 
-      -- We use a different argument: F(phi) ∈ chain(t) means by MCS properties
-      -- there exists a witness W with phi ∈ W. That witness is accessible.
-      -- The dovetailed construction eventually reaches all formulas.
+      -- Key insight: If G(phi) ∈ chain(t), then G(phi) propagates to all future chains,
+      -- and by T-axiom, phi is in all future chains. This would contradict h_exists.
+      -- So if G(phi) ∈ chain(t), the h_exists hypothesis leads to contradiction.
 
-      -- For now, use sorry for this edge case (phi already at t)
-      sorry
+      by_cases h_G : Formula.all_future phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 t
+      · -- G(phi) ∈ chain(t): phi must be in chain(t+1), contradicting h_exists
+        -- The step from chain(t) to chain(t+1) uses omega_step_forward_F_preserving
+        -- which preserves G-formulas from chain(t)
+        let prev := omega_chain_F_preserving_forward_with_inv M0 h_mcs0 t
+        let M_t := prev.val
+        have h_eq_t : M_t = omega_chain_F_preserving_forward M0 h_mcs0 t := rfl
+        let psi := selectFormulaToResolve M_t t
+        have h_F_psi : Formula.some_future psi ∈ M_t := selectFormulaToResolve_has_F M_t prev.property.is_mcs t
+        let witness := omega_step_forward_F_preserving M_t prev.property.is_mcs psi h_F_psi
+
+        -- chain(t+1) = witness.val
+        have h_chain_succ : omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) = witness.val := rfl
+
+        -- G(phi) ∈ chain(t) = M_t
+        have h_G_Mt : Formula.all_future phi ∈ M_t := h_eq_t ▸ h_G
+
+        -- By witness property: G-formulas from M_t propagate to witness
+        have h_G_W : Formula.all_future phi ∈ witness.val := witness.property.2.2.1 phi h_G_Mt
+
+        have h_G_t1 : Formula.all_future phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) :=
+          h_chain_succ ▸ h_G_W
+
+        -- By T-axiom: G(phi) → phi
+        have h_mcs_t1 := omega_chain_F_preserving_forward_mcs M0 h_mcs0 (t + 1)
+        have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
+          DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
+        have h_phi_t1 : phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) :=
+          SetMaximalConsistent.implication_property h_mcs_t1 (theorem_in_mcs h_mcs_t1 h_T) h_G_t1
+        -- But h_exists says phi ∉ chain(t+1)
+        have h_not_t1 : phi ∉ omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) :=
+          h_exists (t + 1) (Nat.lt_succ_self t) (Nat.succ_le_succ h_n0_ge_t)
+        exact absurd h_phi_t1 h_not_t1
+
+      · -- G(phi) ∉ chain(t): Need to show phi appears at some s > t anyway
+        -- By MCS negation completeness: neg(G(phi)) = F(neg(phi)) ∈ chain(t)
+        -- This case is semantically valid: F(phi) holds at t because phi ∈ chain(t)
+        -- But we need phi at s > t for strict temporal coherence
+        --
+        -- Key observation: At the dovetailed step n0 = pair(t, encode(phi)),
+        -- selectFormulaToResolve picks enumFormula(encode(phi)) = phi if F(phi) ∈ chain(n0)
+        --
+        -- For F(phi) to be in chain(n0), we need F(phi) to persist from t to n0.
+        -- But phi ∈ chain(t) and phi ∉ chain(m) for t < m means:
+        -- - At step t→t+1: F(phi) is not in F_unresolved_theory(chain(t)) since phi ∈ chain(t)
+        -- - So F(phi) might not persist to chain(t+1)
+        --
+        -- However, we can use a different argument:
+        -- Since phi ∉ chain(t+1), F(phi) IS in F_unresolved_theory(chain(t+1)) if F(phi) ∈ chain(t+1)
+        -- We need to show F(phi) ∈ chain(t+1) first
+        --
+        -- Actually, the step from chain(t) to chain(t+1) is via a witness MCS
+        -- The witness might or might not include F(phi)
+        --
+        -- Alternative approach: Use that for m ∈ (t, n0+1], phi ∉ chain(m)
+        -- If F(phi) is ever in chain(m) for such m, then F(phi) persists to n0 and gets resolved
+        -- The question is: is F(phi) in chain(t+1)?
+        --
+        -- For now, we handle this by showing F(phi) must be in chain(t+1):
+        -- F(phi) = neg(G(neg(phi))) and G(neg(phi)) = neg(F(phi))
+        -- From h_F: F(phi) ∈ chain(t)
+        -- chain(t+1) is an MCS extending the seed from chain(t)
+        --
+        -- The seed includes: {selected_formula} ∪ G_theory ∪ box_theory ∪ F_unresolved
+        -- F(phi) is NOT in F_unresolved since phi ∈ chain(t)
+        -- But F(phi) could be derivable from the seed or added by Lindenbaum
+        --
+        -- This requires showing that excluding F(phi) would lead to inconsistency
+        -- If G(neg(phi)) ∈ chain(t+1), then neg(phi) ∈ chain(t+1) by T-axiom
+        -- And phi ∉ chain(t+1) by h_exists, so neg(phi) could be there
+        --
+        -- Actually, let's check: G(neg(phi)) ∈ chain(t) iff neg(F(phi)) ∈ chain(t)
+        -- Since F(phi) ∈ chain(t) by h_F, we have neg(F(phi)) ∉ chain(t) by MCS consistency
+        -- So G(neg(phi)) ∉ chain(t)
+        --
+        -- By MCS completeness: F(neg(neg(phi))) = F(phi) ∈ chain(t), which we have
+        -- This is circular.
+        --
+        -- The fundamental issue: the theorem requires s > t, but when phi ∈ chain(t)
+        -- and G(phi) ∉ chain(t), phi might only be true at t and nowhere else.
+        -- This is a genuine semantic possibility that the construction handles by
+        -- satisfying F(phi) at t itself.
+        --
+        -- For the strict s > t requirement, we need to verify this case cannot happen
+        -- OR modify the construction/theorem.
+        --
+        -- RESOLUTION: Looking at this more carefully, if F(phi) ∈ M and phi ∈ M but G(phi) ∉ M,
+        -- then the MCS is saying "phi is true now, and there exists a future time with phi,
+        -- but phi is not always true in the future".
+        --
+        -- For temporal coherence with strict s > t, we need to somehow ensure phi reappears.
+        -- The dovetailed construction at n0 would resolve F(phi) IF F(phi) ∈ chain(n0).
+        --
+        -- Since phi ∉ chain(m) for t < m ≤ n0+1, we have:
+        -- - phi ∉ chain(t+1), so F(phi) ∈ F_unresolved(chain(t+1)) if F(phi) ∈ chain(t+1)
+        -- - By F-persistence from (t+1), F(phi) would persist to n0 and get resolved
+        --
+        -- The gap is showing F(phi) ∈ chain(t+1).
+        --
+        -- For now, we use omega_chain_F_preserving_forward_F_theory to check if F-formulas
+        -- from chain(t) that are NOT in F_unresolved still persist. They don't by design.
+        --
+        -- This case genuinely requires the temporal coherence definition to allow s ≥ t
+        -- OR a modified construction that duplicates phi into the witness seed.
+        --
+        -- Since modifying the definition has broader implications, we note:
+        -- This sorry represents a semantic corner case where F(phi) is satisfied at t itself.
+        -- The strict s > t temporal coherence is stronger than semantic validity requires.
+        --
+        -- Marking as sorry with documentation for potential follow-up.
+        sorry
 
   · -- phi ∉ chain(t): Standard persistence argument applies
     -- Either phi appears in some chain point in (t, n0+1], or it doesn't

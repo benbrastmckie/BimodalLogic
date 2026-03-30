@@ -1,7 +1,7 @@
 # Implementation Plan: Close Remaining Sorries in F-Preserving Construction
 
 - **Task**: 69 - close_z_chain_forward_f
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 2-3 hours
 - **Dependencies**: None (prior implementation complete)
 - **Research Inputs**:
@@ -33,7 +33,7 @@ The strategies are fully worked out in the research report with concrete code sn
 
 ## Implementation Phases
 
-### Phase 1: Close Sorry 2 (Edge Case) [NOT STARTED]
+### Phase 1: Close Sorry 2 (Edge Case) [PARTIAL]
 
 **Goal**: Handle the case where `phi ∈ chain(t)` already when proving F-resolution
 
@@ -65,7 +65,7 @@ The strategies are fully worked out in the research report with concrete code sn
 - [ ] `lake build` succeeds
 - [ ] Sorry at line 4338 closed
 
-### Phase 2: Helper Lemmas for Sorry 1 [NOT STARTED]
+### Phase 2: Helper Lemmas for Sorry 1 [COMPLETED]
 
 **Goal**: Add infrastructure for iterated F-extraction proof
 
@@ -96,7 +96,7 @@ The strategies are fully worked out in the research report with concrete code sn
 - [ ] `lake build` succeeds
 - [ ] Helper lemmas prove without sorry
 
-### Phase 3: Close Sorry 1 (F-Preserving Consistency) [NOT STARTED]
+### Phase 3: Close Sorry 1 (F-Preserving Consistency) [BLOCKED]
 
 **Goal**: Prove `f_preserving_seed_consistent` via iterated F-extraction
 
@@ -134,7 +134,7 @@ The strategies are fully worked out in the research report with concrete code sn
 - [ ] `lake build` succeeds
 - [ ] Sorry at line 1413 closed
 
-### Phase 4: Final Verification [NOT STARTED]
+### Phase 4: Final Verification [PARTIAL]
 
 **Goal**: Verify all sorries closed and downstream theorems unblocked
 
