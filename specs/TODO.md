@@ -1,5 +1,5 @@
 ---
-next_project_number: 70
+next_project_number: 71
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -79,6 +79,16 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 70. Explore ultrafilter-based construction for temporal coherence
+- **Effort**: 12-20 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Parent Task**: #69
+
+**Description**: Explore ultrafilter-based construction for temporal coherence as alternative to MCS-based Lindenbaum extension. Ultrafilters of the Lindenbaum algebra have automatic negation completeness, eliminating the F-persistence gap where Lindenbaum can add G(neg phi). The R_G and R_Box relations on ultrafilters already exist (UltrafilterChain.lean lines 59-68). This task requires: (1) defining FMCS structure from ultrafilter chains, (2) proving ultrafilter chains satisfy temporal coherence by construction, (3) connecting ultrafilter-based completeness to existing MCS-based infrastructure. Reference: Strategy 4 in task 69 team research report.
 
 ---
 
