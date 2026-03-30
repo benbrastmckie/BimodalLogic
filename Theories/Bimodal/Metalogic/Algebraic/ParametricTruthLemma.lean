@@ -325,9 +325,10 @@ theorem parametric_canonical_truth_lemma
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      have h_all_mcs : ∀ s : D, t < s → psi ∈ fam.mcs s := by
+      -- Use weak inequality directly (aligned with reflexive semantics)
+      have h_all_mcs : ∀ s : D, t ≤ s → psi ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
+        exact (ih fam hfam s).mpr (h_all s hts)
       exact temporal_backward_G tcf t psi h_all_mcs
   | all_past psi ih =>
     -- H case: Under reflexive semantics, H quantifies over s ≤ t
@@ -345,9 +346,10 @@ theorem parametric_canonical_truth_lemma
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      have h_all_mcs : ∀ s : D, s < t → psi ∈ fam.mcs s := by
+      -- Use weak inequality directly (aligned with reflexive semantics)
+      have h_all_mcs : ∀ s : D, s ≤ t → psi ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
+        exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t psi h_all_mcs
 
 /-!
@@ -473,9 +475,10 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
+      -- Use weak inequality directly (aligned with reflexive semantics)
+      have h_all_mcs : ∀ s : D, t ≤ s → ψ ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
+        exact (ih fam hfam s).mpr (h_all s hts)
       exact temporal_backward_G tcf t ψ h_all_mcs
   | all_past ψ ih =>
     -- H case: Under reflexive semantics, H quantifies over s ≤ t
@@ -493,9 +496,10 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
+      -- Use weak inequality directly (aligned with reflexive semantics)
+      have h_all_mcs : ∀ s : D, s ≤ t → ψ ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
+        exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma

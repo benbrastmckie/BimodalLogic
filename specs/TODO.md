@@ -128,7 +128,7 @@ technical_debt:
 
 ### 69. Close Z_chain_forward_F' via dovetailed omega construction
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58

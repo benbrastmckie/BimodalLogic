@@ -299,27 +299,28 @@ theorem shifted_fmcs_at_offset (f : FMCS Int) (k : Int) :
 
 /--
 Temporal coherence is preserved by shifting.
+Uses weak inequality (t ≤ s) to match reflexive semantics.
 -/
 theorem shifted_temporal_forward_F (f : FMCS Int)
     (h_fwd : ∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ f.mcs t →
-      ∃ s : Int, t < s ∧ φ ∈ f.mcs s)
+      ∃ s : Int, t ≤ s ∧ φ ∈ f.mcs s)
     (k : Int) (t : Int) (φ : Formula)
     (h_F : Formula.some_future φ ∈ (shifted_fmcs f k).mcs t) :
-    ∃ s : Int, t < s ∧ φ ∈ (shifted_fmcs f k).mcs s := by
+    ∃ s : Int, t ≤ s ∧ φ ∈ (shifted_fmcs f k).mcs s := by
   unfold shifted_fmcs at h_F ⊢
   simp only at h_F ⊢
-  obtain ⟨s, h_lt, h_phi⟩ := h_fwd (t - k) φ h_F
+  obtain ⟨s, h_le, h_phi⟩ := h_fwd (t - k) φ h_F
   exact ⟨s + k, by omega, by simp only [Int.add_sub_cancel]; exact h_phi⟩
 
 theorem shifted_temporal_backward_P (f : FMCS Int)
     (h_bwd : ∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ f.mcs t →
-      ∃ s : Int, s < t ∧ φ ∈ f.mcs s)
+      ∃ s : Int, s ≤ t ∧ φ ∈ f.mcs s)
     (k : Int) (t : Int) (φ : Formula)
     (h_P : Formula.some_past φ ∈ (shifted_fmcs f k).mcs t) :
-    ∃ s : Int, s < t ∧ φ ∈ (shifted_fmcs f k).mcs s := by
+    ∃ s : Int, s ≤ t ∧ φ ∈ (shifted_fmcs f k).mcs s := by
   unfold shifted_fmcs at h_P ⊢
   simp only at h_P ⊢
-  obtain ⟨s, h_lt, h_phi⟩ := h_bwd (t - k) φ h_P
+  obtain ⟨s, h_le, h_phi⟩ := h_bwd (t - k) φ h_P
   exact ⟨s + k, by omega, by simp only [Int.add_sub_cancel]; exact h_phi⟩
 
 /-!
@@ -2762,84 +2763,55 @@ each step of the backward chain uses `past_theory_witness_exists` for P-witnesse
 -/
 
 /--
-Forward F coherence for Z-chain: F(phi) at t implies exists s > t with phi at s.
+Forward F coherence for Z-chain: F(phi) at t implies exists s ≥ t with phi at s.
 
-**Proof**: F(phi) ∈ Z_chain(t) means F(phi) is in the MCS at time t.
-At the next time point t+1, we can use the chain extension property.
-The forward chain at t+1 is obtained from the chain at t via a temporal witness
-that resolves F-obligations. So phi is at t+1.
+Uses weak inequality (t ≤ s) aligned with reflexive semantics.
+When phi is already in chain(t), we return s = t as witness.
+
+**Proof Strategy**:
+1. Check if phi ∈ Z_chain(t): if so, return s = t with le_refl
+2. Otherwise: the chain construction eventually resolves F(phi)
 -/
 theorem Z_chain_forward_F (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t : Int) (phi : Formula) (h_F : Formula.some_future phi ∈ Z_chain M0 h_mcs0 t) :
-    ∃ s : Int, t < s ∧ phi ∈ Z_chain M0 h_mcs0 s := by
-  -- Strategy: find a witness in the forward chain at t+1
-  -- The witness exists because F(phi) ∈ Z_chain(t) and
-  -- temporal_theory_witness_exists gives us a witness for any F-formula
+    ∃ s : Int, t ≤ s ∧ phi ∈ Z_chain M0 h_mcs0 s := by
+  -- With weak coherence: if phi ∈ chain(t), return s = t
+  by_cases h_phi_t : phi ∈ Z_chain M0 h_mcs0 t
+  · exact ⟨t, le_refl t, h_phi_t⟩
+  · -- phi ∉ Z_chain(t): Use semantic witness existence
+    -- F(phi) ∈ Z_chain(t) and phi ∉ Z_chain(t) means F(phi) is genuinely unresolved
+    -- By temporal_theory_witness_exists, there exists witness W with phi ∈ W
+    have h_mcs_t := Z_chain_mcs M0 h_mcs0 t
+    have h_witness := temporal_theory_witness_exists (Z_chain M0 h_mcs0 t) h_mcs_t phi h_F
+    obtain ⟨W, h_W_mcs, h_phi_W, _, h_box_agree⟩ := h_witness
 
-  -- The key insight: from F(phi) at time t, we can use temporal_theory_witness_exists
-  -- to get a witness MCS W with phi ∈ W. This witness is in the box-class of M0,
-  -- so we can find it somewhere in the Z_chain.
+    -- W is in the same box class as M0
+    have h_box_M0_t := Z_chain_box_class M0 h_mcs0 t
+    have h_box_M0_W : box_class_agree M0 W := box_class_agree_trans h_box_M0_t h_box_agree
 
-  -- For the omega chain construction, at each step we add a temporal witness
-  -- that resolves at least one F-obligation. If F(phi) is in the current MCS,
-  -- eventually it gets resolved.
-
-  -- For a cleaner proof, we use the direct witness construction:
-  have h_mcs_t := Z_chain_mcs M0 h_mcs0 t
-  have h_witness := temporal_theory_witness_exists (Z_chain M0 h_mcs0 t) h_mcs_t phi h_F
-  obtain ⟨W, h_W_mcs, h_phi_W, h_G_agree, h_box_agree⟩ := h_witness
-
-  -- W is an MCS with phi ∈ W and box_class_agree (Z_chain(t)) W
-  -- By transitivity of box_class_agree: box_class_agree M0 W
-  have h_box_M0_t := Z_chain_box_class M0 h_mcs0 t
-  have h_box_M0_W : box_class_agree M0 W := box_class_agree_trans h_box_M0_t h_box_agree
-
-  -- W is in the same box class as M0, so we can build a shifted SuccChainFMCS from W
-  -- and it will be in boxClassFamilies M0 h_mcs0
-
-  -- For the Z_chain specifically, we use the fact that the forward chain
-  -- eventually contains any MCS in the box class of M0
-
-  -- Alternative simpler approach: use s = t + 1
-  -- At t+1, if t >= 0, then t+1 > t and we're in the forward chain
-  -- The forward chain at t+1 is built from the chain at t via a temporal witness
-
-  -- Actually, the cleanest approach is to show that the forward chain at t+1
-  -- was constructed by taking a witness that contains phi (or eventually does)
-
-  -- For this proof, we use the fact that F_top is always resolved,
-  -- which means the chain keeps extending. And since F(phi) ∈ Z_chain(t),
-  -- we can find phi at some future point.
-
-  -- The direct proof: use that the witness W exists with phi ∈ W,
-  -- and W is in the bundle, so there's some time point s > t with phi at s
-
-  -- For now, we use a simpler observation:
-  -- In the forward chain, at step n+1 we resolve an F-obligation from step n
-  -- If F(phi) is in the chain at some point, eventually phi will be there
-
-  -- Actually, let me use the construction directly
-  -- When we're in the forward direction (t >= 0), the next step resolves F_top
-  -- But F(phi) might not be resolved immediately
-
-  -- The real issue: the current omega_chain_forward always resolves F_top,
-  -- not arbitrary F-obligations. We need to show that F(phi) eventually gets resolved.
-
-  -- For now, we use the fact that F(phi) implies the existence of a witness
-  -- and that witness is in the box class, so it appears somewhere in the bundle
-
-  -- Using sorry for now - this requires extending the chain construction
-  -- to track which F-obligations have been resolved
-  sorry
+    -- phi ∉ Z_chain(t): need strict resolution
+    -- The Z_chain uses omega_chain_forward which doesn't have F-resolution guarantee
+    -- For the phi ∉ chain(t) case, we need the F-preserving chain
+    -- This sorry represents the gap between Z_chain and F-preserving chain
+    -- Note: The F-preserving chain's resolution theorem IS closed (omega_F_preserving_forward_F_resolution)
+    sorry
 
 /--
-Backward P coherence for Z-chain: P(phi) at t implies exists s < t with phi at s.
+Backward P coherence for Z-chain: P(phi) at t implies exists s ≤ t with phi at s.
+
+Uses weak inequality (s ≤ t) aligned with reflexive semantics.
+When phi is already in chain(t), we return s = t as witness.
 -/
 theorem Z_chain_backward_P (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t : Int) (phi : Formula) (h_P : Formula.some_past phi ∈ Z_chain M0 h_mcs0 t) :
-    ∃ s : Int, s < t ∧ phi ∈ Z_chain M0 h_mcs0 s := by
-  -- Symmetric to Z_chain_forward_F
-  sorry
+    ∃ s : Int, s ≤ t ∧ phi ∈ Z_chain M0 h_mcs0 s := by
+  -- With weak coherence: if phi ∈ chain(t), return s = t
+  by_cases h_phi_t : phi ∈ Z_chain M0 h_mcs0 t
+  · exact ⟨t, le_refl t, h_phi_t⟩
+  · -- phi ∉ Z_chain(t): Symmetric to forward case
+    -- The Z_chain uses omega_chain_backward which doesn't have P-resolution guarantee
+    -- This sorry represents the gap between Z_chain and a P-preserving chain
+    sorry
 
 /-!
 ## Bundle-Level Temporal Coherence
@@ -3952,65 +3924,56 @@ This is the bounded obligation argument.
 -/
 theorem omega_forward_F_bounded_persistence (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (n : Nat) (phi : Formula) (h_F : Formula.some_future phi ∈ omega_chain_forward M0 h_mcs0 n) :
-    ∃ m : Nat, n < m ∧ phi ∈ omega_chain_forward M0 h_mcs0 m := by
-  -- This requires the dovetailed construction or an explicit bound on F-nesting
-  -- For now, use sorry as this is what the dovetailed approach solves
-  sorry
+    ∃ m : Nat, n ≤ m ∧ phi ∈ omega_chain_forward M0 h_mcs0 m := by
+  -- With weak coherence: if phi is already in chain(n), return m = n
+  by_cases h_phi_n : phi ∈ omega_chain_forward M0 h_mcs0 n
+  · exact ⟨n, le_refl n, h_phi_n⟩
+  · -- phi ∉ chain(n): needs dovetailed construction for strict resolution
+    -- The F-preserving chain handles this, but omega_chain_forward doesn't guarantee it
+    -- For non-F-preserving chain, we note that the resolution eventually happens
+    -- but proving it requires tracking F-obligations explicitly
+    sorry
 
 /--
-Z_chain_forward_F: F(phi) at t implies exists s > t with phi at s.
+Z_chain_forward_F': F(phi) at t implies exists s ≥ t with phi at s.
 
 This is the key temporal coherence property for completeness.
+Uses weak inequality (t ≤ s) aligned with reflexive semantics.
 -/
 theorem Z_chain_forward_F' (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t : Int) (phi : Formula) (h_F : Formula.some_future phi ∈ Z_chain M0 h_mcs0 t) :
-    ∃ s : Int, t < s ∧ phi ∈ Z_chain M0 h_mcs0 s := by
-  -- Use the bounded persistence theorem
-  unfold Z_chain at h_F
-  by_cases h_t_nonneg : t ≥ 0
-  · -- t >= 0, in forward chain
-    simp only [ge_iff_le, h_t_nonneg, ↓reduceDIte] at h_F
-    have h_bounded := omega_forward_F_bounded_persistence M0 h_mcs0 t.toNat phi h_F
-    obtain ⟨m, h_lt, h_phi_m⟩ := h_bounded
-    use m
-    constructor
-    · -- t < m
-      have : (t.toNat : Int) = t := Int.toNat_of_nonneg h_t_nonneg
-      omega
-    · -- phi ∈ Z_chain(m)
-      unfold Z_chain
-      have h_m_nonneg : (m : Int) ≥ 0 := by omega
-      simp only [ge_iff_le, h_m_nonneg, ↓reduceDIte, Int.toNat_natCast]
-      exact h_phi_m
-  · -- t < 0, in backward chain
-    push_neg at h_t_nonneg
-    simp only [ge_iff_le, not_le.mpr h_t_nonneg, ↓reduceDIte] at h_F
-    -- F(phi) is in the backward chain at index (-t).toNat
-    -- The backward chain is built from P-witnesses, not F-witnesses
-    -- F(phi) in backward chain means it was inherited from earlier steps
-
-    -- Key insight: the backward chain starts from M0 and goes "backward"
-    -- At M0 (index 0 of backward chain), F(phi) might be there
-    -- Then it propagates to backward_chain(1), backward_chain(2), etc.
-
-    -- For F-resolution in the backward chain, we need to extend forward
-    -- The forward chain from M0 (at Z_chain(0)) resolves F-obligations
-
-    -- So if F(phi) ∈ backward_chain((-t).toNat), and backward_chain passes through M0,
-    -- we can use the forward chain from M0 to resolve F(phi)
-
-    -- Actually, backward_chain(0) = M0, and for any F(phi) ∈ M0,
-    -- the forward chain resolves it
-
-    -- For F(phi) ∈ backward_chain(n) where n > 0, we need to check if F(phi)
-    -- is also in M0 (by H-theory propagation or otherwise)
-
-    -- The issue: backward chain uses P-witnesses which don't preserve F-formulas directly
-    -- F(phi) = neg(G(neg phi)), and H-theory preservation doesn't imply F-preservation
-
-    -- For now, use sorry for the backward direction
-    -- The full proof requires showing F(phi) at t < 0 leads to phi at some s > t
-    sorry
+    ∃ s : Int, t ≤ s ∧ phi ∈ Z_chain M0 h_mcs0 s := by
+  -- With weak coherence: if phi is already in chain(t), return s = t
+  by_cases h_phi_t : phi ∈ Z_chain M0 h_mcs0 t
+  · exact ⟨t, le_refl t, h_phi_t⟩
+  · -- phi ∉ Z_chain(t): Use bounded persistence
+    unfold Z_chain at h_F ⊢
+    by_cases h_t_nonneg : t ≥ 0
+    · -- t >= 0, in forward chain
+      simp only [ge_iff_le, h_t_nonneg, ↓reduceDIte] at h_F ⊢
+      -- Need to convert h_phi_t to the right form
+      have h_phi_t_fwd : phi ∉ omega_chain_forward M0 h_mcs0 t.toNat := by
+        unfold Z_chain at h_phi_t
+        simp only [ge_iff_le, h_t_nonneg, ↓reduceDIte] at h_phi_t
+        exact h_phi_t
+      have h_bounded := omega_forward_F_bounded_persistence M0 h_mcs0 t.toNat phi h_F
+      obtain ⟨m, h_le, h_phi_m⟩ := h_bounded
+      use m
+      constructor
+      · -- t ≤ m
+        have : (t.toNat : Int) = t := Int.toNat_of_nonneg h_t_nonneg
+        omega
+      · -- phi ∈ Z_chain(m)
+        have h_m_nonneg : (m : Int) ≥ 0 := by omega
+        simp only [ge_iff_le, h_m_nonneg, ↓reduceDIte, Int.toNat_natCast]
+        exact h_phi_m
+    · -- t < 0, in backward chain
+      push_neg at h_t_nonneg
+      simp only [ge_iff_le, not_le.mpr h_t_nonneg, ↓reduceDIte] at h_F ⊢
+      -- F(phi) ∈ backward_chain((-t).toNat) and phi ∉ backward_chain
+      -- For F-resolution from backward chain, need forward chain
+      -- This case requires showing phi eventually appears at some s ≥ t
+      sorry
 
 /-!
 ## True Dovetailed Omega Chain Construction
@@ -4332,188 +4295,31 @@ theorem omega_chain_F_preserving_forward_resolves (M0 : Set Formula) (h_mcs0 : S
 /--
 Main F-resolution theorem for the F-preserving forward chain.
 
-If F(phi) is in the chain at step t, then phi is in the chain at some step s > t.
+If F(phi) is in the chain at step t, then phi is in the chain at some step s ≥ t.
 
-Unlike the original omega_true_dovetailed_forward_F_resolution, this version
-has NO sorry gap because F-formulas are preserved until resolved.
+Uses weak inequality (t ≤ s) aligned with reflexive semantics.
+When phi is already in chain(t), we can return s = t as witness.
 -/
 theorem omega_F_preserving_forward_F_resolution (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t : Nat) (phi : Formula) (h_F : Formula.some_future phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 t) :
-    ∃ s, t < s ∧ phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 s := by
-  let k := Encodable.encode phi
-  let n0 := Nat.pair t k
-  have h_n0_ge_t : t ≤ n0 := Nat.left_le_pair t k
-
+    ∃ s, t ≤ s ∧ phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 s := by
   -- First check: is phi already in chain(t)?
+  -- With weak coherence (t ≤ s), we can return s = t when phi ∈ chain(t)
   by_cases h_phi_t : phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 t
-  · -- phi ∈ chain(t): We need to find phi at some s > t
-    -- The step from t to t+1 includes phi in the seed (since F(phi) ∈ chain(t))
-    -- Actually, if phi ∈ chain(t), then the step at t+1 that targets phi would
-    -- see phi as already "resolved" and might pick a different formula.
-    -- However, phi being in chain(t) means phi is true at t.
-    -- For temporal coherence, we need phi at s > t if F(phi) is at t.
-    -- This is a semantic requirement that the chain construction satisfies:
-    -- at step n0 = pair(t, k), if F(phi) ∈ chain(n0), we put phi in chain(n0+1).
-    -- So we can use the same logic.
-    -- Actually, if phi ∈ chain(t), then selectFormulaToResolve at step t might not
-    -- pick phi (since phi is already there). Let's handle this case.
-
-    -- Key: even if phi ∈ chain(t), we still have F(phi) ∈ chain(t)
-    -- At n0 = pair(t, k), we check F(phi) ∈ chain(n0)
-    -- If F(phi) persisted to n0, we resolve it
-    -- So we need F(phi) to persist from t to n0
-
-    -- Either phi appears in (t, n0+1], or we use persistence
-    by_cases h_exists : ∃ m, t < m ∧ m ≤ n0 + 1 ∧ phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 m
-    · obtain ⟨m, h_lt, _, h_phi_m⟩ := h_exists
-      exact ⟨m, h_lt, h_phi_m⟩
-    · -- Use the fact that at n0, we resolve F(phi) if it's there
-      -- phi ∈ chain(t) doesn't prevent F(phi) from persisting
-      -- because phi might not be in later chain points
-      push_neg at h_exists
-      -- Show F(phi) ∈ chain(n0) using persistence (phi might leave chain)
-      -- This is subtle: phi ∈ chain(t) but phi might not be in chain(t+1), etc.
-      -- In fact, h_exists says phi ∉ chain(m) for t < m ≤ n0+1
-      -- Combined with phi ∈ chain(t), this is consistent: phi at t but not later
-
-      -- For persistence, we need phi ∉ chain(m) for t ≤ m ≤ n0
-      -- We have phi ∉ chain(m) for t < m ≤ n0+1, but not for m = t
-      -- So we split: either use F(phi) at t directly, or use persistence from t+1
-
-      -- Actually, if phi ∈ chain(t), the F(phi) might not persist because
-      -- the F-unresolved condition is "F(psi) ∈ M ∧ psi ∉ M"
-      -- Since phi ∈ chain(t), F(phi) is "resolved" at t and might not persist
-
-      -- This is actually fine for our purposes: we just need phi at some s > t
-      -- At step t+1, the chain construction puts SOME phi in
-      -- If F(phi) was selected, phi goes in at t+1
-
-      -- Let's check: at step t, what gets resolved?
-      -- selectFormulaToResolve(chain(t), t) picks enumFormula((unpair t).2)
-      -- This might or might not be phi
-
-      -- Key insight: If G(phi) ∈ chain(t), then G(phi) propagates to all future chains,
-      -- and by T-axiom, phi is in all future chains. This would contradict h_exists.
-      -- So if G(phi) ∈ chain(t), the h_exists hypothesis leads to contradiction.
-
-      by_cases h_G : Formula.all_future phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 t
-      · -- G(phi) ∈ chain(t): phi must be in chain(t+1), contradicting h_exists
-        -- The step from chain(t) to chain(t+1) uses omega_step_forward_F_preserving
-        -- which preserves G-formulas from chain(t)
-        let prev := omega_chain_F_preserving_forward_with_inv M0 h_mcs0 t
-        let M_t := prev.val
-        have h_eq_t : M_t = omega_chain_F_preserving_forward M0 h_mcs0 t := rfl
-        let psi := selectFormulaToResolve M_t t
-        have h_F_psi : Formula.some_future psi ∈ M_t := selectFormulaToResolve_has_F M_t prev.property.is_mcs t
-        let witness := omega_step_forward_F_preserving M_t prev.property.is_mcs psi h_F_psi
-
-        -- chain(t+1) = witness.val
-        have h_chain_succ : omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) = witness.val := rfl
-
-        -- G(phi) ∈ chain(t) = M_t
-        have h_G_Mt : Formula.all_future phi ∈ M_t := h_eq_t ▸ h_G
-
-        -- By witness property: G-formulas from M_t propagate to witness
-        have h_G_W : Formula.all_future phi ∈ witness.val := witness.property.2.2.1 phi h_G_Mt
-
-        have h_G_t1 : Formula.all_future phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) :=
-          h_chain_succ ▸ h_G_W
-
-        -- By T-axiom: G(phi) → phi
-        have h_mcs_t1 := omega_chain_F_preserving_forward_mcs M0 h_mcs0 (t + 1)
-        have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
-        have h_phi_t1 : phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) :=
-          SetMaximalConsistent.implication_property h_mcs_t1 (theorem_in_mcs h_mcs_t1 h_T) h_G_t1
-        -- But h_exists says phi ∉ chain(t+1)
-        have h_not_t1 : phi ∉ omega_chain_F_preserving_forward M0 h_mcs0 (t + 1) :=
-          h_exists (t + 1) (Nat.lt_succ_self t) (Nat.succ_le_succ h_n0_ge_t)
-        exact absurd h_phi_t1 h_not_t1
-
-      · -- G(phi) ∉ chain(t): Need to show phi appears at some s > t anyway
-        -- By MCS negation completeness: neg(G(phi)) = F(neg(phi)) ∈ chain(t)
-        -- This case is semantically valid: F(phi) holds at t because phi ∈ chain(t)
-        -- But we need phi at s > t for strict temporal coherence
-        --
-        -- Key observation: At the dovetailed step n0 = pair(t, encode(phi)),
-        -- selectFormulaToResolve picks enumFormula(encode(phi)) = phi if F(phi) ∈ chain(n0)
-        --
-        -- For F(phi) to be in chain(n0), we need F(phi) to persist from t to n0.
-        -- But phi ∈ chain(t) and phi ∉ chain(m) for t < m means:
-        -- - At step t→t+1: F(phi) is not in F_unresolved_theory(chain(t)) since phi ∈ chain(t)
-        -- - So F(phi) might not persist to chain(t+1)
-        --
-        -- However, we can use a different argument:
-        -- Since phi ∉ chain(t+1), F(phi) IS in F_unresolved_theory(chain(t+1)) if F(phi) ∈ chain(t+1)
-        -- We need to show F(phi) ∈ chain(t+1) first
-        --
-        -- Actually, the step from chain(t) to chain(t+1) is via a witness MCS
-        -- The witness might or might not include F(phi)
-        --
-        -- Alternative approach: Use that for m ∈ (t, n0+1], phi ∉ chain(m)
-        -- If F(phi) is ever in chain(m) for such m, then F(phi) persists to n0 and gets resolved
-        -- The question is: is F(phi) in chain(t+1)?
-        --
-        -- For now, we handle this by showing F(phi) must be in chain(t+1):
-        -- F(phi) = neg(G(neg(phi))) and G(neg(phi)) = neg(F(phi))
-        -- From h_F: F(phi) ∈ chain(t)
-        -- chain(t+1) is an MCS extending the seed from chain(t)
-        --
-        -- The seed includes: {selected_formula} ∪ G_theory ∪ box_theory ∪ F_unresolved
-        -- F(phi) is NOT in F_unresolved since phi ∈ chain(t)
-        -- But F(phi) could be derivable from the seed or added by Lindenbaum
-        --
-        -- This requires showing that excluding F(phi) would lead to inconsistency
-        -- If G(neg(phi)) ∈ chain(t+1), then neg(phi) ∈ chain(t+1) by T-axiom
-        -- And phi ∉ chain(t+1) by h_exists, so neg(phi) could be there
-        --
-        -- Actually, let's check: G(neg(phi)) ∈ chain(t) iff neg(F(phi)) ∈ chain(t)
-        -- Since F(phi) ∈ chain(t) by h_F, we have neg(F(phi)) ∉ chain(t) by MCS consistency
-        -- So G(neg(phi)) ∉ chain(t)
-        --
-        -- By MCS completeness: F(neg(neg(phi))) = F(phi) ∈ chain(t), which we have
-        -- This is circular.
-        --
-        -- The fundamental issue: the theorem requires s > t, but when phi ∈ chain(t)
-        -- and G(phi) ∉ chain(t), phi might only be true at t and nowhere else.
-        -- This is a genuine semantic possibility that the construction handles by
-        -- satisfying F(phi) at t itself.
-        --
-        -- For the strict s > t requirement, we need to verify this case cannot happen
-        -- OR modify the construction/theorem.
-        --
-        -- RESOLUTION: Looking at this more carefully, if F(phi) ∈ M and phi ∈ M but G(phi) ∉ M,
-        -- then the MCS is saying "phi is true now, and there exists a future time with phi,
-        -- but phi is not always true in the future".
-        --
-        -- For temporal coherence with strict s > t, we need to somehow ensure phi reappears.
-        -- The dovetailed construction at n0 would resolve F(phi) IF F(phi) ∈ chain(n0).
-        --
-        -- Since phi ∉ chain(m) for t < m ≤ n0+1, we have:
-        -- - phi ∉ chain(t+1), so F(phi) ∈ F_unresolved(chain(t+1)) if F(phi) ∈ chain(t+1)
-        -- - By F-persistence from (t+1), F(phi) would persist to n0 and get resolved
-        --
-        -- The gap is showing F(phi) ∈ chain(t+1).
-        --
-        -- For now, we use omega_chain_F_preserving_forward_F_theory to check if F-formulas
-        -- from chain(t) that are NOT in F_unresolved still persist. They don't by design.
-        --
-        -- This case genuinely requires the temporal coherence definition to allow s ≥ t
-        -- OR a modified construction that duplicates phi into the witness seed.
-        --
-        -- Since modifying the definition has broader implications, we note:
-        -- This sorry represents a semantic corner case where F(phi) is satisfied at t itself.
-        -- The strict s > t temporal coherence is stronger than semantic validity requires.
-        --
-        -- Marking as sorry with documentation for potential follow-up.
-        sorry
+  · -- phi ∈ chain(t): return witness s = t with le_refl
+    exact ⟨t, le_refl t, h_phi_t⟩
 
   · -- phi ∉ chain(t): Standard persistence argument applies
+    -- n0 = pair(t, encode(phi)) is the step that resolves F(phi) if it persists
+    let k := Encodable.encode phi
+    let n0 := Nat.pair t k
+    have h_n0_ge_t : t ≤ n0 := Nat.left_le_pair t k
+
     -- Either phi appears in some chain point in (t, n0+1], or it doesn't
     by_cases h_exists : ∃ m, t < m ∧ m ≤ n0 + 1 ∧ phi ∈ omega_chain_F_preserving_forward M0 h_mcs0 m
     · -- Case 1: phi appears before or at n0+1
       obtain ⟨m, h_lt, _, h_phi_m⟩ := h_exists
-      exact ⟨m, h_lt, h_phi_m⟩
+      exact ⟨m, le_of_lt h_lt, h_phi_m⟩
     · -- Case 2: phi does NOT appear in any chain point in (t, n0+1]
       push_neg at h_exists
 
@@ -4550,8 +4356,8 @@ theorem omega_F_preserving_forward_F_resolution (M0 : Set Formula) (h_mcs0 : Set
       have h_resolved := omega_chain_F_preserving_forward_resolves M0 h_mcs0 n0
       rw [h_select] at h_resolved
 
-      have h_s_gt_t : t < n0 + 1 := by omega
-      exact ⟨n0 + 1, h_s_gt_t, h_resolved⟩
+      have h_s_ge_t : t ≤ n0 + 1 := by omega
+      exact ⟨n0 + 1, h_s_ge_t, h_resolved⟩
 
 /--
 True dovetailed forward chain with invariant.

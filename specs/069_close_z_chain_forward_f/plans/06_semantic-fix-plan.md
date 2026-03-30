@@ -51,7 +51,7 @@ From team research report (04_team-research.md):
 
 ## Implementation Phases
 
-### Phase 1: Weaken Temporal Coherence Definition [NOT STARTED]
+### Phase 1: Weaken Temporal Coherence Definition [COMPLETED]
 
 **Goal**: Change forward_F from `t < s` to `t ≤ s` and backward_P from `s < t` to `s ≤ t`
 
@@ -74,7 +74,7 @@ From team research report (04_team-research.md):
 - [ ] Definition changes compile
 - [ ] Error list captured for Phase 2
 
-### Phase 2: Fix Downstream Proofs in TemporalCoherence.lean [NOT STARTED]
+### Phase 2: Fix Downstream Proofs in TemporalCoherence.lean [COMPLETED]
 
 **Goal**: Update temporal_backward_G and temporal_backward_H to work with weak coherence
 
@@ -123,7 +123,7 @@ From team research report (04_team-research.md):
 - [ ] temporal_backward_G compiles
 - [ ] temporal_backward_H compiles
 
-### Phase 3: Propagate Changes to UltrafilterChain.lean [NOT STARTED]
+### Phase 3: Propagate Changes to UltrafilterChain.lean [COMPLETED]
 
 **Goal**: Update all consumers of forward_F in UltrafilterChain.lean
 
@@ -147,7 +147,7 @@ From team research report (04_team-research.md):
 - [ ] Edge case sorry closed
 - [ ] `lake build` succeeds
 
-### Phase 4: Close Z_chain_forward_F Theorems [NOT STARTED]
+### Phase 4: Close Z_chain_forward_F Theorems [PARTIAL]
 
 **Goal**: Close Z_chain_forward_F (line 2772) and Z_chain_forward_F' (line 3965)
 
@@ -177,7 +177,7 @@ From team research report (04_team-research.md):
 - [ ] Z_chain_forward_F' sorry closed
 - [ ] Z_chain_backward_P sorry closed
 
-### Phase 5: Re-evaluate f_preserving_seed_consistent [NOT STARTED]
+### Phase 5: Re-evaluate f_preserving_seed_consistent [COMPLETED]
 
 **Goal**: Determine if f_preserving_seed_consistent is still needed
 
@@ -201,7 +201,7 @@ From team research report (04_team-research.md):
 - [ ] Dependency analysis complete
 - [ ] Decision documented
 
-### Phase 6: Close Downstream Theorems and Verify [NOT STARTED]
+### Phase 6: Close Downstream Theorems and Verify [COMPLETED]
 
 **Goal**: Verify bfmcs_from_mcs_temporally_coherent and related theorems can close
 

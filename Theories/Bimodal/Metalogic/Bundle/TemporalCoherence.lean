@@ -137,33 +137,33 @@ The backward lemmas are proven directly using contraposition and MCS properties.
 TemporalCoherentFamily: An FMCS with temporal forward coherence properties.
 
 The key properties are:
-- `forward_F`: If F(phi) in fam.mcs t, then exists s > t with phi in fam.mcs s
-- `backward_P`: If P(phi) in fam.mcs t, then exists s < t with phi in fam.mcs s
+- `forward_F`: If F(phi) in fam.mcs t, then exists s ≥ t with phi in fam.mcs s
+- `backward_P`: If P(phi) in fam.mcs t, then exists s ≤ t with phi in fam.mcs s
 
 These are the existential duals of forward_G and backward_H.
-Uses strict inequality (s > t, s < t) for irreflexive semantics.
+Uses weak inequality (s ≥ t, s ≤ t) for reflexive semantics (aligned with Truth.lean).
 -/
 structure TemporalCoherentFamily (D : Type*) [Preorder D] [Zero D] extends FMCS D where
-  /-- Forward F coherence: F(phi) at t implies witness at some s > t (strict) -/
+  /-- Forward F coherence: F(phi) at t implies witness at some s ≥ t (weak) -/
   forward_F : ∀ t : D, ∀ φ : Formula,
-    Formula.some_future φ ∈ mcs t → ∃ s : D, t < s ∧ φ ∈ mcs s
-  /-- Backward P coherence: P(phi) at t implies witness at some s < t (strict) -/
+    Formula.some_future φ ∈ mcs t → ∃ s : D, t ≤ s ∧ φ ∈ mcs s
+  /-- Backward P coherence: P(phi) at t implies witness at some s ≤ t (weak) -/
   backward_P : ∀ t : D, ∀ φ : Formula,
-    Formula.some_past φ ∈ mcs t → ∃ s : D, s < t ∧ φ ∈ mcs s
+    Formula.some_past φ ∈ mcs t → ∃ s : D, s ≤ t ∧ φ ∈ mcs s
 
 /--
-Temporal backward G lemma: If phi in fam.mcs s for all s > t, then G(phi) in fam.mcs t.
+Temporal backward G lemma: If phi in fam.mcs s for all s ≥ t, then G(phi) in fam.mcs t.
 
 **Proof by Contraposition**:
 1. Assume G(phi) not in fam.mcs t
 2. By MCS maximality: neg(G(phi)) in fam.mcs t
 3. By neg_all_future_to_some_future_neg: F(neg phi) in fam.mcs t
-4. By forward_F: exists s > t with neg(phi) in fam.mcs s
-5. By hypothesis h_all: phi in fam.mcs s (since s > t)
+4. By forward_F: exists s ≥ t with neg(phi) in fam.mcs s
+5. By hypothesis h_all: phi in fam.mcs s (since s ≥ t)
 6. Contradiction: fam.mcs s contains both phi and neg(phi)
 -/
 theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, t < s → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, t ≤ s → φ ∈ fam.mcs s) :
     Formula.all_future φ ∈ fam.mcs t := by
   by_contra h_not_G
   have h_mcs := fam.is_mcs t
@@ -173,23 +173,23 @@ theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
     · exact h_neg
   have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_future_to_some_future_neg (fam.mcs t) h_mcs φ h_neg_G
-  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
-  have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 /--
-Temporal backward H lemma: If phi in fam.mcs s for all s < t, then H(phi) in fam.mcs t.
+Temporal backward H lemma: If phi in fam.mcs s for all s ≤ t, then H(phi) in fam.mcs t.
 
 **Proof by Contraposition** (symmetric to temporal_backward_G):
 1. Assume H(phi) not in fam.mcs t
 2. By MCS maximality: neg(H(phi)) in fam.mcs t
 3. By neg_all_past_to_some_past_neg: P(neg phi) in fam.mcs t
-4. By backward_P: exists s < t with neg(phi) in fam.mcs s
-5. By hypothesis h_all: phi in fam.mcs s (since s < t)
+4. By backward_P: exists s ≤ t with neg(phi) in fam.mcs s
+5. By hypothesis h_all: phi in fam.mcs s (since s ≤ t)
 6. Contradiction: fam.mcs s contains both phi and neg(phi)
 -/
 theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, s < t → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, s ≤ t → φ ∈ fam.mcs s) :
     Formula.all_past φ ∈ fam.mcs t := by
   by_contra h_not_H
   have h_mcs := fam.is_mcs t
@@ -199,23 +199,25 @@ theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
     · exact h_neg
   have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_past_to_some_past_neg (fam.mcs t) h_mcs φ h_neg_H
-  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
-  have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 /--
 Temporal coherence for a BFMCS: all families have forward_F and backward_P properties.
 
 This condition ensures that for each family in the BFMCS:
-- `forward_F`: If F(phi) is in the MCS at time t, then exists s > t with phi in the MCS at s
-- `backward_P`: If P(phi) is in the MCS at time t, then exists s < t with phi in the MCS at s
+- `forward_F`: If F(phi) is in the MCS at time t, then exists s ≥ t with phi in the MCS at s
+- `backward_P`: If P(phi) is in the MCS at time t, then exists s ≤ t with phi in the MCS at s
 
 These properties are used in the truth lemma backward direction for temporal operators G and H
 via the contraposition argument (temporal_backward_G and temporal_backward_H).
+
+Note: Uses weak inequality (s ≥ t, s ≤ t) to align with reflexive G/H semantics (Truth.lean).
 -/
 def BFMCS.temporally_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
-    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
-    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
+    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
+    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
 
 end Bimodal.Metalogic.Bundle
