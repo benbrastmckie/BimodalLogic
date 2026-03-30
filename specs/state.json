@@ -1133,7 +1133,7 @@
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-30T17:33:23Z",
-      "last_updated": "2026-03-30T22:14:13Z",
+      "last_updated": "2026-03-30T22:41:59Z",
       "artifacts": [
         {
           "path": "specs/069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md",
@@ -1199,10 +1199,15 @@
           "path": "specs/069_close_z_chain_forward_f/reports/16_team-research.md",
           "type": "report",
           "summary": "Team research (2 teammates): seed construction + strong induction strategy analysis for f_preserving_seed_consistent"
+        },
+        {
+          "path": "specs/069_close_z_chain_forward_f/reports/17_team-research.md",
+          "type": "report",
+          "summary": "Team research (2 teammates): f_preserving_seed_consistent is FALSE - counterexample found, bundle-level coherence is correct path"
         }
       ],
-      "session_id": "sess_1774908101_88f875",
-      "researched": "2026-03-30T22:14:13Z",
+      "session_id": "sess_1774909076_ee27d4",
+      "researched": "2026-03-30T22:41:59Z",
       "planned": "2026-03-30T21:21:50Z",
       "started": "2026-03-30T18:47:22Z"
     }
