@@ -38,7 +38,8 @@ technical_debt:
 ```
 
 1. **67** [COMPLETED] — Cleaned up SuccChainFMCS.lean (~340 lines deleted), simplified F_resolves
-2. **69** [NOT STARTED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
+2. **69** [RESEARCHED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
+   - **Report**: [01_z-chain-forward-research.md](069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md)
 3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #69)
 4. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #69, #68)
 4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
