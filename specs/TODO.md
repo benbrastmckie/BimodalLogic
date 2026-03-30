@@ -79,7 +79,7 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Blocker**: boundary_implies_k_lt_B sorry - backward tracing lemma needed to complete proof
 - **Language**: lean4
 - **Dependencies**: None
