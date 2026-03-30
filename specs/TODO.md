@@ -38,10 +38,10 @@ technical_debt:
 ```
 
 1. **67** [COMPLETED] — Cleaned up SuccChainFMCS.lean (~340 lines deleted), simplified F_resolves
-2. **69** [RESEARCHED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
+2. **69** [PLANNED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
    - **Blocked**: F-persistence gap — Lindenbaum can add G(neg phi) even when F(phi) present
    - **Report**: [01_z-chain-forward-research.md](069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md)
-   - **Plan**: [02_z-chain-forward-plan.md](069_close_z_chain_forward_f/plans/02_z-chain-forward-plan.md)
+   - **Plan**: [13_dovetailed-omega-plan.md](069_close_z_chain_forward_f/plans/13_dovetailed-omega-plan.md)
    - **Summary**: [03_z-chain-forward-summary.md](069_close_z_chain_forward_f/summaries/03_z-chain-forward-summary.md)
 3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #69)
 4. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #69, #68)
@@ -137,7 +137,7 @@ technical_debt:
   - [02_team-research.md](069_close_z_chain_forward_f/reports/02_team-research.md)
   - [03_sorry-closure-research.md](069_close_z_chain_forward_f/reports/03_sorry-closure-research.md)
   - [04_team-research.md](069_close_z_chain_forward_f/reports/04_team-research.md)
-- **Plan**: [06_semantic-fix-plan.md](069_close_z_chain_forward_f/plans/06_semantic-fix-plan.md)
+- **Plan**: [13_dovetailed-omega-plan.md](069_close_z_chain_forward_f/plans/13_dovetailed-omega-plan.md)
 
 **Description**: Close the Z_chain_forward_F' theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction (lines 3668+) uses Nat.unpair to fairly schedule F-obligation resolution across all time points. Also closes omega_forward_F_bounded_persistence and one_step_f_resolution.
 
