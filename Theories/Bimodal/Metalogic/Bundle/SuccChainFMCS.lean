@@ -634,6 +634,27 @@ theorem iter_F_shift (d : Nat) (phi : Formula) :
       _ = iter_F (k + 2) phi := rfl
 
 /--
+Composition lemma for iter_F: iter_F a (iter_F b phi) = iter_F (a + b) phi.
+
+This states that applying F^a to F^b(phi) gives F^{a+b}(phi).
+-/
+theorem iter_F_add (a b : Nat) (phi : Formula) :
+    iter_F a (iter_F b phi) = iter_F (a + b) phi := by
+  induction a with
+  | zero => simp only [iter_F_zero, Nat.zero_add]
+  | succ n ih =>
+    -- iter_F (n+1) (iter_F b phi) = F(iter_F n (iter_F b phi))
+    --                             = F(iter_F (n + b) phi)       [by IH]
+    --                             = iter_F (n + b + 1) phi
+    --                             = iter_F ((n + 1) + b) phi
+    have h_eq : n + b + 1 = (n + 1) + b := by omega
+    calc iter_F (n + 1) (iter_F b phi)
+        = Formula.some_future (iter_F n (iter_F b phi)) := rfl
+      _ = Formula.some_future (iter_F (n + b) phi) := by rw [ih]
+      _ = iter_F (n + b + 1) phi := rfl
+      _ = iter_F ((n + 1) + b) phi := by rw [h_eq]
+
+/--
 F-nesting boundary (with explicit boundedness): Given F(phi) ∈ M and existence of
 some n where iter_F n phi ∉ M, there exists d ≥ 1 such that iter_F d phi ∈ M
 and iter_F (d+1) phi ∉ M.
@@ -2820,8 +2841,15 @@ theorem boundary_implies_k_plus_d_bounded (phi : Formula)
         -- This follows from the backward tracing: at chain(k'), the depth is d' + d >= d + 1.
         -- By IH on k' with depth d' + d: k' + (d' + d) <= max_F_depth.
         -- Since d' >= 1: k' + 1 + d <= k' + d' + d <= max_F_depth.
-        -- For now, use sorry as the compose lemma has technical issues.
-        sorry
+        -- Rewrite using iter_F_add: iter_F d' (iter_F d theta) = iter_F (d' + d) theta
+        rw [iter_F_add] at h_d'_in h_d'_not
+        -- h_d'_not has type iter_F (d' + 1 + d) theta, need to convert to (d' + d + 1)
+        have h_eq : d' + 1 + d = d' + d + 1 := by omega
+        rw [h_eq] at h_d'_not
+        -- Apply IH on k' with depth (d' + d)
+        have h_d'_d_ge : d' + d >= 1 := by omega
+        have h_bound := ih k' (Nat.lt_succ_self k') (d' + d) theta h_d'_d_ge h_d'_in h_d'_not
+        omega
       · -- Case 2: iter_F (d+1) theta ∉ chain(k') - formula entered fresh at k'+1
         -- It must be in deferralClosure, so depth is bounded
         have h_in_dc := Bimodal.Metalogic.Core.deferral_restricted_mcs_is_restricted
@@ -2910,8 +2938,14 @@ theorem boundary_implies_k_plus_d_bounded (phi : Formula)
         -- However, we don't have G_max defined or bounded explicitly.
         -- For now, we note this case requires additional structure.
         --
-        -- TEMPORARY: This case is non-trivial. Use sorry for now.
-        -- The complete proof requires bounding G-nesting in deferralClosure.
+        -- REQUIRED INFRASTRUCTURE (not yet implemented):
+        -- 1. Define g_nesting_depth : Formula → Nat (analogous to f_nesting_depth)
+        -- 2. Define max_G_depth_in_closure phi := deferralClosure.sup g_nesting_depth
+        -- 3. Prove: formulas entering via g_content propagation are bounded by max_G_depth
+        -- 4. Use: k'+1 <= max_G_depth_in_closure phi
+        --
+        -- The theorem is mathematically sound but requires this infrastructure.
+        -- Current status: f_content case (line ~2850) is complete; g_content case pending.
         sorry
 
 /--
