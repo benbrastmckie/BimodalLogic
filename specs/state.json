@@ -1126,14 +1126,14 @@
     {
       "project_number": 69,
       "project_name": "close_z_chain_forward_f",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the Z_chain_forward_F theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction uses Nat.unpair to fairly schedule F-obligation resolution across all time points.",
       "effort": "6-10 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-30T17:33:23Z",
-      "last_updated": "2026-03-30T19:16:09Z",
+      "last_updated": "2026-03-30T19:19:25Z",
       "artifacts": [
         {
           "path": "specs/069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md",
@@ -1151,11 +1151,6 @@
           "summary": "Team research (4 teammates): F-preserving seeds strategy for overcoming F-persistence gap"
         },
         {
-          "path": "specs/069_close_z_chain_forward_f/plans/04_f-preserving-seeds-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v2: F-preserving seeds approach based on team research"
-        },
-        {
           "path": "specs/069_close_z_chain_forward_f/summaries/05_f-preserving-implementation-summary.md",
           "type": "summary",
           "summary": "Partial implementation: F-preserving seed infrastructure complete, 2 sorries remain"
@@ -1164,11 +1159,16 @@
           "path": "specs/069_close_z_chain_forward_f/reports/03_sorry-closure-research.md",
           "type": "report",
           "summary": "Analysis of proof states, closure strategies with code snippets, helper lemma requirements for both sorries"
+        },
+        {
+          "path": "specs/069_close_z_chain_forward_f/plans/05_sorry-closure-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v3: Close 2 remaining sorries via iterated F-extraction and edge case handling"
         }
       ],
       "session_id": "sess_1774897731_75c36b",
       "researched": "2026-03-30T19:16:09Z",
-      "planned": "2026-03-30T18:46:00Z",
+      "planned": "2026-03-30T19:19:25Z",
       "started": "2026-03-30T18:47:22Z"
     }
   ],
