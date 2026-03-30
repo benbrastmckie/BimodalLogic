@@ -79,7 +79,7 @@ technical_debt:
 
 ### 67. Prove bundle_validity_implies_provability via direct model construction
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNED]
 - **Blocker**: F-formula persistence - temporal_theory_witness_exists lacks F-step; need Succ-based construction
 - **Language**: lean4
 - **Dependencies**: None
@@ -87,6 +87,7 @@ technical_debt:
 - **Research**:
   - [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
   - [01_bundle-provability-research.md](067_prove_bundle_validity_implies_provability/reports/01_bundle-provability-research.md)
+  - [38_fuel-cleanup-research.md](067_prove_bundle_validity_implies_provability/reports/38_fuel-cleanup-research.md)
 - **Plan**:
   - [01_bundle-provability-plan.md](067_prove_bundle_validity_implies_provability/plans/01_bundle-provability-plan.md)
   - [02_restricted-coherence-plan.md](067_prove_bundle_validity_implies_provability/plans/02_restricted-coherence-plan.md)
