@@ -1,8 +1,8 @@
 # Implementation Plan: Close Z_chain_forward_F via Strong Induction Restructuring
 
 - **Task**: 69 - close_z_chain_forward_f
-- **Status**: [NOT STARTED]
-- **Effort**: 3.5 hours
+- **Status**: [BLOCKED]
+- **Effort**: 3.5 hours (estimated), actual: 2+ hours partial progress
 - **Dependencies**: None
 - **Research Inputs**:
   - specs/069_close_z_chain_forward_f/reports/12_team-research.md
@@ -59,30 +59,52 @@ f_preserving_seed_consistent (lines 1384-2101 -> 80-120 lines)
 
 ## Implementation Phases
 
-### Phase 1: Setup and Helper Lemmas [NOT STARTED]
+### Phase 1: Setup and Helper Lemmas [BLOCKED]
 
 **Goal**: Add helper lemma for countP decrease on filter
 
 **Analysis**: Need to prove that filtering out an element with property p decreases countP p.
 
-**Tasks**:
-- [ ] Add helper lemma near line 1370:
-  ```lean
-  private theorem countP_filter_remove_element_lt {α} [DecidableEq α]
-      (p : α → Bool) (L : List α) (x : α) (hx : x ∈ L) (hp : p x) :
-      List.countP p (L.filter (· ≠ x)) < List.countP p L
-  ```
-- [ ] Verify `Nat.strong_induction_on` signature
-- [ ] Run `lake build`
+**Attempted Work**:
+1. Analyzed the two sorries at lines 2068 and 2073 in `f_preserving_seed_consistent`
+2. Attempted to add helper lemmas (`countP_filter_remove_element_lt`, `dne_imp_compose`)
+3. Attempted DNE-based disjunction approach to avoid `G(phi) ∈ M` case split
 
-**Timing**: 0.25 hours
+**Attempted Fix**:
+Added disjunction-based approach to avoid the `G(phi) ∈ M` case split:
+1. Converted `phi → G(neg psi)` to `neg(neg phi) → G(neg psi) = neg(phi) ∨ G(neg psi)` via DNE
+2. G-lifted the disjunction
+3. Applied T-axiom to get `neg(phi) ∨ neg(F psi) ∈ M`
+4. Used disjunction elimination
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` (near line 1370)
+**Finding**: The disjunction approach does NOT fully work because:
+- When `phi ∉ M`, we automatically have `neg(phi) ∈ M`
+- The disjunction `neg(phi) ∨ neg(F psi)` is satisfied by the left disjunct
+- This gives no new information about `neg(F psi)`
+- The helper lemmas introduced build errors (List.filter match simplification issues)
 
-**Verification**:
-- [ ] Helper lemma compiles
-- [ ] No interference with existing code
+**Remaining Sorries** (2 in f_preserving_seed_consistent):
+1. Line 2068: Case where `neg(G(phi)) ∈ M` - cannot derive `G(neg psi) ∈ M`
+2. Line 2073: Case where `L_no_phi` has additional F-formulas requiring recursive extraction
+
+**Blocking Issue**: The fundamental issue is that the current proof structure:
+1. Extracts F(psi) FIRST, then extracts phi
+2. This gives `L_no_phi ⊢ phi → G(neg psi)` (implication)
+3. G-lifting gives `G(phi → G(neg psi)) ∈ M`
+4. K-distribution gives `G(phi) → G(G(neg psi)) ∈ M`
+5. When `G(phi) ∉ M`, we cannot conclude `G(neg psi) ∈ M`
+
+**Required Fix**: Complete restructure using strong induction:
+1. Extract phi FIRST (to get `L_no_phi ⊢ neg(phi)` conclusion)
+2. Then extract F-formulas to build `L_final ⊢ G(neg psi_1) ∨ ... ∨ neg(phi)`
+3. G-lift: `G(G(neg psi_1) ∨ ... ∨ neg(phi)) ∈ M`... but G doesn't distribute over disjunction!
+
+**Alternative approach needed**: The plan's suggestion of G-lifting a disjunction of G-formulas requires reaching `L_final ⊢ G(neg psi_1) ∨ G(neg psi_2) ∨ ... ∨ G(neg phi)` where the OUTERMOST operators are G. This requires a different extraction strategy that hasn't been found yet.
+
+**Timing**: 0.25 hours (original), actual: 2+ hours with no successful modification
+**Status**: Reverted all changes. File builds successfully with original 2 sorries.
+
+**Files**: No changes committed (all reverted)
 
 ---
 

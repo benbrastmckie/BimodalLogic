@@ -38,7 +38,7 @@ technical_debt:
 ```
 
 1. **67** [COMPLETED] — Cleaned up SuccChainFMCS.lean (~340 lines deleted), simplified F_resolves
-2. **69** [PLANNED] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
+2. **69** [IMPLEMENTING] — Close Z_chain_forward_F' via dovetailed construction (actual gap)
    - **Blocked**: F-persistence gap — Lindenbaum can add G(neg phi) even when F(phi) present
    - **Report**: [01_z-chain-forward-research.md](069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md)
    - **Plan**: [14_strong-induction-approach.md](069_close_z_chain_forward_f/plans/14_strong-induction-approach.md)
@@ -128,7 +128,7 @@ technical_debt:
 
 ### 69. Close Z_chain_forward_F' via dovetailed omega construction
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [BLOCKED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58

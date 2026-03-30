@@ -1126,14 +1126,14 @@
     {
       "project_number": 69,
       "project_name": "close_z_chain_forward_f",
-      "status": "planned",
+      "status": "blocked",
       "language": "lean4",
       "description": "Close the Z_chain_forward_F theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction uses Nat.unpair to fairly schedule F-obligation resolution across all time points.",
       "effort": "6-10 hours",
       "parent_task": 58,
       "dependencies": [],
       "created": "2026-03-30T17:33:23Z",
-      "last_updated": "2026-03-30T21:21:50Z",
+      "last_updated": "2026-03-30T21:55:51Z",
       "artifacts": [
         {
           "path": "specs/069_close_z_chain_forward_f/reports/01_z-chain-forward-research.md",
@@ -1196,7 +1196,7 @@
           "summary": "6-phase plan: delete 700-line proof, replace with 80-120 line strong induction"
         }
       ],
-      "session_id": "sess_1774905215_d7710e",
+      "session_id": "sess_1774906421_fb1998",
       "researched": "2026-03-30T21:19:20Z",
       "planned": "2026-03-30T21:21:50Z",
       "started": "2026-03-30T18:47:22Z"
