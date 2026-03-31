@@ -1281,14 +1281,14 @@
     {
       "project_number": 71,
       "project_name": "document_f_persistence_findings",
-      "status": "planned",
+      "status": "completed",
       "language": "markdown",
       "description": "Consolidate discoveries from tasks 67, 69, 70 into ROADMAP.md and source comments. Three items: (1) F-persistence counterexample documentation, (2) Truth lemma bidirectionality constraint — Imp forward requires backward IH, so F/P sorries block entire proof; correct misleading comments, (3) Separate-direction witness status — forward_G/backward_H sorry-free but forward_F/backward_P remain as the blocker.",
       "effort": "2-3 hours",
       "parent_task": 69,
       "dependencies": [],
       "created": "2026-03-30T22:53:42Z",
-      "last_updated": "2026-03-31T15:05:15Z",
+      "last_updated": "2026-03-31T17:35:59Z",
       "artifacts": [
         {
           "path": "specs/071_document_f_persistence_findings/reports/01_f-persistence-bidirectionality.md",
@@ -1299,11 +1299,19 @@
           "path": "specs/071_document_f_persistence_findings/plans/01_f-persistence-documentation.md",
           "type": "plan",
           "summary": "4-phase documentation plan for F-persistence counterexample, truth lemma bidirectionality, and F/P gaps"
+        },
+        {
+          "path": "specs/071_document_f_persistence_findings/summaries/01_f-persistence-documentation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "session_id": "sess_1774969365_e78514",
+      "session_id": "sess_1774978340_f7b77f",
       "researched": "2026-03-31T14:43:53Z",
-      "planned": "2026-03-31T15:05:15Z"
+      "planned": "2026-03-31T15:05:15Z",
+      "started": "2026-03-31T17:32:38Z",
+      "completed": "2026-03-31T17:35:59Z",
+      "completion_summary": "Documented bidirectionality constraint in ROADMAP.md, marked F-preserving seed approach as dead code in UltrafilterChain.lean with Task #69 counterexample references, and added cross-reference in SuccChainFMCS.lean."
     },
     {
       "project_number": 72,

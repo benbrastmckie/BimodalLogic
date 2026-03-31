@@ -208,7 +208,9 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 71. Document completeness architecture findings and update ROADMAP
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-31
+- **Summary**: Documented bidirectionality constraint in ROADMAP.md, marked F-preserving seed approach as dead code in UltrafilterChain.lean with Task #69 counterexample references, and added cross-reference in SuccChainFMCS.lean.
 - **Language**: markdown
 - **Dependencies**: None
 - **Parent Task**: #69
@@ -216,6 +218,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
   - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
   - [01_f-persistence-bidirectionality.md](071_document_f_persistence_findings/reports/01_f-persistence-bidirectionality.md)
 - **Plan**: [01_f-persistence-documentation.md](071_document_f_persistence_findings/plans/01_f-persistence-documentation.md)
+- **Implementation**: [01_f-persistence-documentation-summary.md](071_document_f_persistence_findings/summaries/01_f-persistence-documentation-summary.md)
 
 **Description**: Consolidate discoveries from tasks 67, 69, and 70 into ROADMAP.md and source code comments. Three items:
 

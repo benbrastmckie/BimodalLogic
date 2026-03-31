@@ -1,7 +1,7 @@
 # Implementation Plan: Task #71
 
 - **Task**: 71 - document_f_persistence_findings
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/071_document_f_persistence_findings/reports/01_f-persistence-bidirectionality.md
@@ -42,7 +42,7 @@ Consolidate discoveries from tasks 67, 69, 70 into ROADMAP.md and source code co
 
 ## Implementation Phases
 
-### Phase 1: ROADMAP.md Corrections [NOT STARTED]
+### Phase 1: ROADMAP.md Corrections [COMPLETED]
 
 **Goal**: Correct misleading "forward-only" statement and add bidirectionality architecture section
 
@@ -64,7 +64,7 @@ Consolidate discoveries from tasks 67, 69, 70 into ROADMAP.md and source code co
 
 ---
 
-### Phase 2: UltrafilterChain.lean Dead Code Comments [NOT STARTED]
+### Phase 2: UltrafilterChain.lean Dead Code Comments [COMPLETED]
 
 **Goal**: Mark F-persistence approach as dead code with counterexample reference
 
@@ -86,7 +86,7 @@ Consolidate discoveries from tasks 67, 69, 70 into ROADMAP.md and source code co
 
 ---
 
-### Phase 3: SuccChainFMCS.lean Cross-Reference [NOT STARTED]
+### Phase 3: SuccChainFMCS.lean Cross-Reference [COMPLETED]
 
 **Goal**: Add reference to F-persistence counterexample in existing documentation
 
@@ -107,7 +107,7 @@ Consolidate discoveries from tasks 67, 69, 70 into ROADMAP.md and source code co
 
 ---
 
-### Phase 4: Verification and Summary [NOT STARTED]
+### Phase 4: Verification and Summary [COMPLETED]
 
 **Goal**: Verify all documentation changes and create summary
 

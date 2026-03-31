@@ -192,7 +192,13 @@ Use separate constructions and achieve cross-direction coherence at CHAIN level.
 - G/H backward direction: Uses `temporal_backward_G`/`temporal_backward_H` which require
   `forward_F`/`backward_P` - HAS SORRY
 - Box backward direction: Requires modal saturation via BFMCS bundling - HAS SORRY
-- For completeness, only FORWARD truth lemma direction is needed
+
+**Bidirectionality Constraint** (Task #71 documentation):
+The truth lemma is INHERENTLY BIDIRECTIONAL - both directions are required for completeness.
+The forward Imp case (`truth_lemma_forward_imp` at SuccChainTruth.lean:200) uses the
+backward induction hypothesis via `.mpr`. Similarly, backward G/H cases require forward
+witnesses (`forward_F`/`backward_P`). This constraint was discovered in task 70 when
+proving that separate-direction witnesses (G/H only) are sorry-free while F/P gaps remain.
 
 ### Implementation Status
 

@@ -1026,6 +1026,14 @@ These properties directly enable the FORWARD direction of the truth lemma for G/
 - `forward_F` and `backward_P` have sorries due to unbounded F/P nesting
 - For sorry-free completeness, use `semantic_weak_completeness` (FMP path)
 
+**F-Persistence Counterexample (Task #69):**
+An earlier approach attempted to preserve unresolved F-formulas through the witness
+construction via `f_preserving_seed_consistent` in UltrafilterChain.lean. Task #69
+report 17 proved this approach FALSE: the F-preserving seed cannot be shown consistent
+because G-lifting F-formulas is not derivable. The separate-direction approach here
+avoids this issue by not attempting F-preservation - instead using chain-level
+Succ relation properties for G/H coherence only.
+
 **Separate-Direction Witness Approach (Plan v5):**
 The bidirectional_seed construction (UltrafilterChain.lean) is BLOCKED because
 H_theory elements are not G-liftable (H(a) -> G(H(a)) is not derivable in TM).

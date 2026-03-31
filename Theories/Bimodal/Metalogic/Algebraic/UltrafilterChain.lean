@@ -2509,8 +2509,16 @@ def F_unresolved_theory (M : Set Formula) : Set Formula :=
 /-!
 ### Helper Lemmas for F-Preserving Seed Consistency
 
-These lemmas support the proof of `f_preserving_seed_consistent` via
-iterated F-extraction and G-lift.
+**DEAD CODE** (Task #69, report 17 counterexample):
+The F-preserving seed approach was abandoned after Task #69 discovered a counterexample
+proving `f_preserving_seed_consistent` is FALSE. The counterexample uses M = MCS({F(p)})
+where F(p) is unresolved (p not in M). The F-preserving seed then includes F(p), but
+consistency cannot be guaranteed because G-lifting F-formulas is not derivable in TM.
+
+See: specs/069_explore_ultrafilter_construction/reports/17_f-preserving-counterexample.md
+
+These lemmas are retained for historical documentation but should not be used.
+The correct approach is the separate-direction witness construction in SuccChainFMCS.lean.
 -/
 
 /--
@@ -3412,6 +3420,9 @@ If F(phi) ∈ M (MCS), there exists MCS W with:
 
 This strengthens temporal_theory_witness_exists by ensuring that unresolved
 F-obligations are preserved in the witness.
+
+**DEAD CODE**: This theorem depends on `f_preserving_seed_consistent` which is FALSE.
+See Task #69 counterexample. Use the separate-direction construction in SuccChainFMCS.lean.
 -/
 theorem temporal_theory_witness_F_preserving (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
@@ -4740,6 +4751,10 @@ to an MCS with unbounded F-nesting.
 See Task #55 research reports for complete analysis.
 
 **Status**: This definition is BLOCKED. Use `construct_bfmcs_omega` instead.
+
+**DEAD CODE** (Task #69): The F-preserving seed approach this depends on has a
+counterexample proving `f_preserving_seed_consistent` is FALSE. The sorry here
+is unfixable via the F-preserving approach. See Task #69 report 17.
 -/
 @[deprecated "Use construct_bfmcs_omega" (since := "2026-03-24")]
 noncomputable def construct_bfmcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
@@ -4748,6 +4763,7 @@ noncomputable def construct_bfmcs (M : Set Formula) (h_mcs : SetMaximalConsisten
        M = fam.mcs t := by
   -- BLOCKED: boxClassFamilies_temporally_coherent uses sorry
   -- Use construct_bfmcs_omega instead
+  -- DEAD CODE: f_preserving_seed_consistent is FALSE (Task #69 counterexample)
   sorry
 
 /-!
