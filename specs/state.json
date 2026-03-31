@@ -1388,7 +1388,7 @@
       "language": "lean4",
       "priority": "high",
       "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint",
-      "last_updated": "2026-03-31T18:37:20Z",
+      "last_updated": "2026-03-31T19:12:45Z",
       "session_id": "sess_1774981537_ddb9be",
       "researched": "2026-03-31T18:22:30Z",
       "artifacts": [
@@ -1408,12 +1408,12 @@
           "summary": "Critical re-analysis: D ≠ CanonicalMCS, partial order D creates 2D time"
         },
         {
-          "path": "specs/077_research_preorder_taskframe_generalization/plans/01_roadmap-update.md",
+          "path": "specs/077_research_preorder_taskframe_generalization/plans/02_roadmap-update-revised.md",
           "type": "plan",
-          "summary": "2-phase plan to update ROADMAP.md with logic weakening discouragement section"
+          "summary": "Revised plan (v2): removes FMP recommendation, clarifies representation goal"
         }
       ],
-      "planned": "2026-03-31T18:37:20Z"
+      "planned": "2026-03-31T19:12:45Z"
     },
     {
       "project_number": 78,

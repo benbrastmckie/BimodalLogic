@@ -221,7 +221,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
   - [01_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md)
   - [02_time-shift-analysis.md](specs/077_research_preorder_taskframe_generalization/reports/02_time-shift-analysis.md)
   - [05_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/05_team-research.md) — Critical re-analysis: D ≠ WorldState
-- **Plan**: [01_roadmap-update.md](specs/077_research_preorder_taskframe_generalization/plans/01_roadmap-update.md)
+- **Plan**: [02_roadmap-update-revised.md](specs/077_research_preorder_taskframe_generalization/plans/02_roadmap-update-revised.md)
 
 **Description**: Research generalization of TaskFrame to relax the AddCommGroup constraint, enabling CanonicalMCS as completeness domain. From task 8 research:
 
