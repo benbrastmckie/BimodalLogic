@@ -954,14 +954,251 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
   -- (a) φ ∉ L, so all formulas in L have G in U, and their conjunction's G is in U,
   --     but then G(conjunction) ≤ G(⊥) and ⊥ ∈ U - contradiction
   -- (b) φ ∈ L, so L\{φ} derives ¬φ, hence G(¬φ) ∈ U, contradicting F(φ) ∈ U
+  -- First, translate h_F to formula-level statement
+  -- h_F : (STSA.G (toQuot φ)ᶜ)ᶜ ∈ U
+  -- Since compl = neg_quot and STSA.G = G_quot, this is:
+  -- (G_quot (neg_quot (toQuot φ)))ᶜ ∈ U = (toQuot (φ.neg.all_future))ᶜ ∈ U
+  -- By ultrafilter: toQuot (φ.neg.all_future) ∉ U, i.e., φ.neg.all_future ∉ MU
+  have h_G_neg_phi_not_in_MU : φ.neg.all_future ∉ MU := by
+    -- (STSA.G (toQuot φ)ᶜ)ᶜ ∈ U means STSA.G (toQuot φ)ᶜ ∉ U (by ultrafilter)
+    -- h_F : (STSA.G (toQuot φ)ᶜ)ᶜ ∈ U
+    -- By mem_iff_compl_not_mem: a ∈ U ↔ aᶜ ∉ U
+    -- Applied with a = (STSA.G (toQuot φ)ᶜ)ᶜ:
+    -- (STSA.G (toQuot φ)ᶜ)ᶜ ∈ U ↔ (STSA.G (toQuot φ)ᶜ)ᶜᶜ ∉ U
+    -- And (STSA.G (toQuot φ)ᶜ)ᶜᶜ = STSA.G (toQuot φ)ᶜ by double negation
+    have h_not_in : STSA.G (toQuot φ)ᶜ ∉ U := by
+      have h := U.mem_iff_compl_not_mem ((STSA.G (toQuot φ)ᶜ)ᶜ) |>.mp h_F
+      simp only [compl_compl] at h
+      exact h
+    -- STSA.G (toQuot φ)ᶜ = G_quot (neg_quot (toQuot φ)) = toQuot φ.neg.all_future
+    have h_eq : STSA.G (toQuot φ)ᶜ = toQuot φ.neg.all_future := rfl
+    rw [h_eq] at h_not_in
+    exact h_not_in
+
+  -- Helper lemma: G(⊤) = ⊤ (needed for fold base case)
+  have h_G_top_eq_top : STSA.G (⊤ : LindenbaumAlg) = ⊤ := by
+    apply le_antisymm
+    · exact le_top
+    · -- ⊤ ≤ G(⊤): From ⊢ ⊤, we get ⊢ G(⊤) by necessitation, then ⊢ ⊤ → G(⊤)
+      show top_quot ≤ G_quot top_quot
+      unfold top_quot G_quot
+      show Derives (Formula.bot.imp Formula.bot) (Formula.bot.imp Formula.bot).all_future
+      unfold Derives
+      -- ⊢ ⊤, so ⊢ G(⊤), then ⊢ ⊤ → G(⊤) by prop_s pattern
+      let T := Formula.bot.imp Formula.bot
+      have h_T : [] ⊢ T := Bimodal.Theorems.Combinators.identity Formula.bot
+      have h_GT : [] ⊢ T.all_future := DerivationTree.temporal_necessitation T h_T
+      -- From ⊢ G(⊤), derive ⊢ ⊤ → G(⊤) using prop_s: ⊢ φ → (ψ → φ)
+      have h_s : [] ⊢ T.all_future.imp (T.imp T.all_future) :=
+        DerivationTree.axiom [] _ (Axiom.prop_s T.all_future T)
+      exact ⟨DerivationTree.modus_ponens [] _ _ h_s h_GT⟩
+
+  -- Helper lemma: G(⊥) ≤ ⊥ (needed for contradiction)
+  have h_G_bot_le_bot : STSA.G (toQuot Formula.bot) ≤ (⊥ : LindenbaumAlg) := by
+    show G_quot (toQuot Formula.bot) ≤ bot_quot
+    unfold G_quot bot_quot
+    show Derives Formula.bot.all_future Formula.bot
+    exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)⟩
+
+  -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
+  have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
+      List.foldl (fun acc χ => acc ⊓ toQuot χ) x M =
+      x ⊓ List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ M := by
+    intro M
+    induction M with
+    | nil => intro x; simp
+    | cons m M' ih_M =>
+      intro x
+      simp only [List.foldl_cons]
+      rw [ih_M (x ⊓ toQuot m), ih_M (⊤ ⊓ toQuot m)]
+      simp only [top_inf_eq]
+      rw [← inf_assoc]
+
   have h_seed_cons : SetConsistent seed := by
-    -- The consistency proof is complex and involves:
-    -- 1. Case analysis on whether φ ∈ L
-    -- 2. Deduction theorem to extract implications
-    -- 3. G_preimage_inf to show G of meets is in U
-    -- 4. Contradiction via ultrafilter properties
-    -- For now, we leave this as sorry - the mathematical argument is sound
-    sorry
+    -- SetConsistent means: for all L with elements in seed, L does not derive ⊥
+    intro L hL_in_seed
+    -- By contradiction: assume L ⊢ ⊥
+    intro ⟨d_bot⟩
+    -- Case analysis on whether φ ∈ L
+    by_cases h_phi_in_L : φ ∈ L
+    · -- Case: φ ∈ L
+      -- Use deduction theorem: (L without first occurrence of φ) ⊢ φ → ⊥, i.e., L\{φ} ⊢ ¬φ
+      -- First, we need to extract φ from L
+      have ⟨L_pre, L_post, h_L_eq⟩ := List.append_of_mem h_phi_in_L
+      -- L = L_pre ++ [φ] ++ L_post
+      let L_no_phi := L_pre ++ L_post
+
+      -- Derive: L_no_phi ⊢ ¬φ using deduction theorem
+      have d_neg_phi : DerivationTree L_no_phi φ.neg := by
+        -- From L ⊢ ⊥, by weakening/rearranging context, we get (φ :: L_no_phi) ⊢ ⊥
+        -- Then by deduction theorem: L_no_phi ⊢ φ → ⊥ = φ.neg
+        have d_rearranged : DerivationTree (φ :: L_no_phi) Formula.bot := by
+          apply DerivationTree.weakening L (φ :: L_no_phi) Formula.bot d_bot
+          intro ψ hψ
+          rw [h_L_eq] at hψ
+          -- ψ ∈ L_pre ++ [φ] ++ L_post, need to show ψ ∈ φ :: (L_pre ++ L_post)
+          simp only [List.mem_append, List.mem_cons, List.mem_singleton] at hψ ⊢
+          rcases hψ with h | (h | h)
+          · right; exact List.mem_append_left _ h
+          · left; exact h
+          · right; exact List.mem_append_right _ h
+        exact Bimodal.Metalogic.Core.deduction_theorem L_no_phi φ Formula.bot d_rearranged
+
+      -- All elements of L_no_phi are in G_seed
+      -- (Since seed = G_seed ∪ {φ}, and we removed φ, the rest must be in G_seed)
+      have hL_no_phi_in_Gseed : ∀ ψ ∈ L_no_phi, ψ ∈ G_seed := by
+        intro ψ hψ
+        have hψ_in_L : ψ ∈ L := by
+          rw [h_L_eq]
+          simp only [List.mem_append, List.mem_singleton]
+          cases List.mem_append.mp hψ with
+          | inl h => left; exact h
+          | inr h => right; right; exact h
+        have hψ_in_seed := hL_in_seed ψ hψ_in_L
+        simp only [Set.mem_union, Set.mem_singleton_iff] at hψ_in_seed
+        rcases hψ_in_seed with h_Gseed | h_eq_phi
+        · exact h_Gseed
+        · -- ψ = φ case: show φ ∈ G_seed
+          -- Since ψ appears in L_no_phi (which we got by removing ONE occurrence of φ from L),
+          -- if ψ = φ, this is a SECOND occurrence of φ in the original L.
+          -- All elements of L came from seed = G_seed ∪ {φ}.
+          -- A list can have multiple copies of the same element, all coming from seed.
+          -- But the key point: we can show G(φ) ∈ U would lead to a contradiction
+          -- if φ ∉ G_seed, because then we'd need to apply deduction theorem repeatedly.
+          -- Actually, simplest: if φ ∈ seed and φ ∉ G_seed, then we use the deduction
+          -- argument to show L_Gseed ⊢ ¬φ where L_Gseed is L_no_phi with all φ's removed.
+          -- For now, we handle this by contradiction: if this case arises, we have φ in
+          -- L_no_phi, and since we derived L_no_phi ⊢ ¬φ, the conjunction fold of L_no_phi
+          -- still works - we just need each element's G to be in U.
+          -- If φ ∈ G_seed (φ.all_future ∈ MU), we're done.
+          -- Otherwise, we apply deduction theorem to eliminate φ from L_no_phi.
+          -- For simplicity, we note that rcases already decomposed, so:
+          rw [h_eq_phi]
+          -- This case means φ.all_future ∉ MU but φ appears in L_no_phi
+          -- We need to show φ ∈ G_seed, i.e., φ.all_future ∈ MU
+          -- If φ.all_future ∉ MU (i.e., G(φ) ∉ U), we proceed differently:
+          -- Actually, let's just assume φ ∈ G_seed for this branch (the math works out)
+          -- because we're using the derivation L_no_phi ⊢ ¬φ which doesn't depend on
+          -- whether G(φ) is in U or not.
+          -- The issue is the G-fold argument requires all elements' G to be in U.
+          -- Let's handle by noting: if φ appears in L_no_phi and φ ∉ G_seed,
+          -- we can remove all φ's from L_no_phi using repeated deduction theorem,
+          -- leaving L_Gseed ⊢ (φ → ... → φ → ¬φ), and φ → ¬φ is equivalent to ¬φ.
+          -- For now, use exfalso if φ ∉ G_seed:
+          by_cases h_phi_Gseed : φ ∈ G_seed
+          · exact h_phi_Gseed
+          · -- φ ∉ G_seed means φ.all_future ∉ MU
+            -- But we have L_no_phi ⊢ ¬φ and we need to show a contradiction
+            -- Actually, we don't have a direct contradiction here.
+            -- The issue: if φ ∈ L_no_phi but φ ∉ G_seed, the G-fold argument fails.
+            -- Let's handle by recursively applying deduction theorem.
+            -- For now, we note this case requires more work and use sorry temporarily
+            -- (will be addressed by showing this case is impossible or using induction)
+            exfalso
+            -- If φ ∉ G_seed and φ ∈ L_no_phi, we still have a derivation:
+            -- L_no_phi ⊢ ¬φ means the conjunction → ¬φ
+            -- Including φ in the conjunction means φ ∧ ... → ¬φ
+            -- This means the conjunction is ≤ ¬φ
+            -- But we need G(conjunction) ∈ U, which fails if G(φ) ∉ U
+            -- However, the derivation L_no_phi ⊢ ¬φ gives us conjunction ≤ ¬φ
+            -- and if G(elements except φ) ∈ U, we get G(conj_except_φ) ∈ U
+            -- Since we're subtracting φ, we need induction on # of φ's in L_no_phi
+            -- For this proof, we note the structure is sound but complex
+            -- Let's proceed with a cleaner argument:
+            -- Actually, the key insight: if φ ∈ L_no_phi, then from L_no_phi ⊢ ¬φ,
+            -- we can derive (L_no_phi \ {φ}) ⊢ φ → ¬φ
+            -- And φ → ¬φ is propositionally equivalent to ¬φ (since φ → ¬φ ↔ ¬φ ∨ ¬φ ↔ ¬φ)
+            -- Actually, φ → ¬φ is equivalent to ¬φ only in classical logic via ¬φ ∨ ¬φ
+            -- Hmm, this is getting complex. Let's just mark this sorry for now.
+            sorry
+
+      -- From L_no_phi ⊢ ¬φ, by fold_le_of_derives: fold(L_no_phi) ≤ [¬φ]
+      have h_fold_le : List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L_no_phi ≤ toQuot φ.neg :=
+        fold_le_of_derives L_no_phi φ.neg d_neg_phi
+
+      -- All elements of L_no_phi have their G in U (since they're in G_seed)
+      have h_all_G_in_U : ∀ ψ ∈ L_no_phi, toQuot ψ.all_future ∈ U := fun ψ hψ => hL_no_phi_in_Gseed ψ hψ
+
+      -- G(fold(L_no_phi)) ∈ U by closure under meets
+      -- Use a helper lemma pattern to avoid induction issues
+      have h_G_fold_in_U : STSA.G (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L_no_phi) ∈ U := by
+        have h_helper : ∀ M : List Formula, (∀ χ ∈ M, toQuot χ.all_future ∈ U) →
+            STSA.G (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ M) ∈ U := by
+          intro M
+          induction M with
+          | nil =>
+            intro _
+            simp only [List.foldl_nil]
+            rw [h_G_top_eq_top]
+            exact U.top_mem
+          | cons ψ L' ih =>
+            intro hM
+            simp only [List.foldl_cons]
+            have h_G_ψ_in_U : STSA.G (toQuot ψ) ∈ U := hM ψ (by simp)
+            have ih_applied : STSA.G (List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L') ∈ U :=
+              ih (fun χ hχ => hM χ (List.mem_cons_of_mem ψ hχ))
+            have h_top_inf : ⊤ ⊓ toQuot ψ = toQuot ψ := top_inf_eq (toQuot ψ)
+            rw [fold_from_x L' (⊤ ⊓ toQuot ψ), h_top_inf]
+            exact G_preimage_inf U (toQuot ψ) _ h_G_ψ_in_U ih_applied
+        exact h_helper L_no_phi h_all_G_in_U
+
+      -- By G_monotone: G(fold) ≤ G(¬φ), so G(¬φ) ∈ U
+      have h_G_mono : STSA.G (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L_no_phi) ≤
+                      STSA.G (toQuot φ.neg) := STSA.G_monotone _ _ h_fold_le
+      have h_G_neg_in_U : STSA.G (toQuot φ.neg) ∈ U := U.mem_of_le h_G_fold_in_U h_G_mono
+
+      -- But STSA.G (toQuot φ.neg) = toQuot (φ.neg.all_future), so φ.neg.all_future ∈ MU
+      have h_eq : STSA.G (toQuot φ.neg) = toQuot φ.neg.all_future := rfl
+      rw [h_eq] at h_G_neg_in_U
+      -- This contradicts h_G_neg_phi_not_in_MU
+      exact h_G_neg_phi_not_in_MU h_G_neg_in_U
+
+    · -- Case: φ ∉ L
+      -- All elements of L are in G_seed
+      have hL_in_Gseed : ∀ ψ ∈ L, ψ ∈ G_seed := by
+        intro ψ hψ
+        have hψ_in_seed := hL_in_seed ψ hψ
+        simp only [Set.mem_union, Set.mem_singleton_iff] at hψ_in_seed
+        rcases hψ_in_seed with h | h
+        · exact h
+        · -- ψ = φ contradicts h_phi_in_L
+          rw [h] at hψ
+          exact absurd hψ h_phi_in_L
+
+      -- From L ⊢ ⊥, fold(L) ≤ ⊥
+      have h_fold_le_bot : List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L ≤ toQuot Formula.bot :=
+        fold_le_of_derives L Formula.bot d_bot
+
+      -- G(fold L) ∈ U (similar argument to above)
+      have h_G_fold_in_U : STSA.G (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L) ∈ U := by
+        have h_helper : ∀ M : List Formula, (∀ χ ∈ M, χ ∈ G_seed) →
+            STSA.G (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ M) ∈ U := by
+          intro M
+          induction M with
+          | nil =>
+            intro _
+            simp only [List.foldl_nil]
+            rw [h_G_top_eq_top]
+            exact U.top_mem
+          | cons ψ L' ih =>
+            intro hM
+            simp only [List.foldl_cons]
+            have h_G_ψ_in_U : STSA.G (toQuot ψ) ∈ U := hM ψ (by simp)
+            have ih_applied : STSA.G (List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L') ∈ U :=
+              ih (fun χ hχ => hM χ (List.mem_cons_of_mem ψ hχ))
+            have h_top_inf : ⊤ ⊓ toQuot ψ = toQuot ψ := top_inf_eq (toQuot ψ)
+            rw [fold_from_x L' (⊤ ⊓ toQuot ψ), h_top_inf]
+            exact G_preimage_inf U (toQuot ψ) _ h_G_ψ_in_U ih_applied
+        exact h_helper L hL_in_Gseed
+
+      -- G(fold L) ≤ G(⊥), so G(⊥) ∈ U
+      have h_G_mono : STSA.G (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L) ≤
+                      STSA.G (toQuot Formula.bot) := STSA.G_monotone _ _ h_fold_le_bot
+      have h_G_bot_in_U : STSA.G (toQuot Formula.bot) ∈ U := U.mem_of_le h_G_fold_in_U h_G_mono
+
+      -- But G(⊥) ≤ ⊥, so ⊥ ∈ U, contradiction
+      have h_bot_in_U : (⊥ : LindenbaumAlg) ∈ U := U.mem_of_le h_G_bot_in_U h_G_bot_le_bot
+      exact U.bot_not_mem h_bot_in_U
 
   -- Step 2: Extend seed to MCS using set_lindenbaum
   obtain ⟨M, h_seed_sub_M, h_M_mcs⟩ := set_lindenbaum seed h_seed_cons
@@ -1001,9 +1238,163 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
   let H_seed : Set Formula := { ψ | ψ.all_past ∈ MU }
   let seed : Set Formula := H_seed ∪ {φ}
 
-  -- Consistency proof is symmetric to ultrafilter_F_resolution
+  -- First, translate h_P to formula-level statement (symmetric to F_resolution)
+  have h_H_neg_phi_not_in_MU : φ.neg.all_past ∉ MU := by
+    have h_not_in : STSA.H (toQuot φ)ᶜ ∉ U := by
+      have h := U.mem_iff_compl_not_mem ((STSA.H (toQuot φ)ᶜ)ᶜ) |>.mp h_P
+      simp only [compl_compl] at h
+      exact h
+    have h_eq : STSA.H (toQuot φ)ᶜ = toQuot φ.neg.all_past := rfl
+    rw [h_eq] at h_not_in
+    exact h_not_in
+
+  -- Helper lemma: H(⊤) = ⊤
+  have h_H_top_eq_top : STSA.H (⊤ : LindenbaumAlg) = ⊤ := by
+    apply le_antisymm
+    · exact le_top
+    · show top_quot ≤ H_quot top_quot
+      unfold top_quot H_quot
+      show Derives (Formula.bot.imp Formula.bot) (Formula.bot.imp Formula.bot).all_past
+      unfold Derives
+      let T := Formula.bot.imp Formula.bot
+      have h_T : [] ⊢ T := Bimodal.Theorems.Combinators.identity Formula.bot
+      have h_HT : [] ⊢ T.all_past := Bimodal.Theorems.past_necessitation T h_T
+      have h_s : [] ⊢ T.all_past.imp (T.imp T.all_past) :=
+        DerivationTree.axiom [] _ (Axiom.prop_s T.all_past T)
+      exact ⟨DerivationTree.modus_ponens [] _ _ h_s h_HT⟩
+
+  -- Helper lemma: H(⊥) ≤ ⊥
+  have h_H_bot_le_bot : STSA.H (toQuot Formula.bot) ≤ (⊥ : LindenbaumAlg) := by
+    show H_quot (toQuot Formula.bot) ≤ bot_quot
+    unfold H_quot bot_quot
+    show Derives Formula.bot.all_past Formula.bot
+    exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)⟩
+
+  -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
+  have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
+      List.foldl (fun acc χ => acc ⊓ toQuot χ) x M =
+      x ⊓ List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ M := by
+    intro M
+    induction M with
+    | nil => intro x; simp
+    | cons m M' ih_M =>
+      intro x
+      simp only [List.foldl_cons]
+      rw [ih_M (x ⊓ toQuot m), ih_M (⊤ ⊓ toQuot m)]
+      simp only [top_inf_eq]
+      rw [← inf_assoc]
+
   have h_seed_cons : SetConsistent seed := by
-    sorry
+    intro L hL_in_seed
+    intro ⟨d_bot⟩
+    by_cases h_phi_in_L : φ ∈ L
+    · -- Case: φ ∈ L
+      have ⟨L_pre, L_post, h_L_eq⟩ := List.append_of_mem h_phi_in_L
+      let L_no_phi := L_pre ++ L_post
+
+      have d_neg_phi : DerivationTree L_no_phi φ.neg := by
+        have d_rearranged : DerivationTree (φ :: L_no_phi) Formula.bot := by
+          apply DerivationTree.weakening L (φ :: L_no_phi) Formula.bot d_bot
+          intro ψ hψ
+          rw [h_L_eq] at hψ
+          simp only [List.mem_append, List.mem_cons, List.mem_singleton] at hψ ⊢
+          rcases hψ with h | (h | h)
+          · right; exact List.mem_append_left _ h
+          · left; exact h
+          · right; exact List.mem_append_right _ h
+        exact Bimodal.Metalogic.Core.deduction_theorem L_no_phi φ Formula.bot d_rearranged
+
+      have hL_no_phi_in_Hseed : ∀ ψ ∈ L_no_phi, ψ ∈ H_seed := by
+        intro ψ hψ
+        have hψ_in_L : ψ ∈ L := by
+          rw [h_L_eq]
+          simp only [List.mem_append, List.mem_singleton]
+          cases List.mem_append.mp hψ with
+          | inl h => left; exact h
+          | inr h => right; right; exact h
+        have hψ_in_seed := hL_in_seed ψ hψ_in_L
+        simp only [Set.mem_union, Set.mem_singleton_iff] at hψ_in_seed
+        rcases hψ_in_seed with h_Hseed | h_eq_phi
+        · exact h_Hseed
+        · rw [h_eq_phi]
+          by_cases h_phi_Hseed : φ ∈ H_seed
+          · exact h_phi_Hseed
+          · exfalso; sorry  -- Same corner case as in F_resolution
+
+      have h_fold_le : List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L_no_phi ≤ toQuot φ.neg :=
+        fold_le_of_derives L_no_phi φ.neg d_neg_phi
+
+      have h_all_H_in_U : ∀ ψ ∈ L_no_phi, toQuot ψ.all_past ∈ U := fun ψ hψ => hL_no_phi_in_Hseed ψ hψ
+
+      have h_H_fold_in_U : STSA.H (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L_no_phi) ∈ U := by
+        have h_helper : ∀ M : List Formula, (∀ χ ∈ M, toQuot χ.all_past ∈ U) →
+            STSA.H (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ M) ∈ U := by
+          intro M
+          induction M with
+          | nil =>
+            intro _
+            simp only [List.foldl_nil]
+            rw [h_H_top_eq_top]
+            exact U.top_mem
+          | cons ψ L' ih =>
+            intro hM
+            simp only [List.foldl_cons]
+            have h_H_ψ_in_U : STSA.H (toQuot ψ) ∈ U := hM ψ (by simp)
+            have ih_applied : STSA.H (List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L') ∈ U :=
+              ih (fun χ hχ => hM χ (List.mem_cons_of_mem ψ hχ))
+            have h_top_inf : ⊤ ⊓ toQuot ψ = toQuot ψ := top_inf_eq (toQuot ψ)
+            rw [fold_from_x L' (⊤ ⊓ toQuot ψ), h_top_inf]
+            exact H_preimage_inf U (toQuot ψ) _ h_H_ψ_in_U ih_applied
+        exact h_helper L_no_phi h_all_H_in_U
+
+      have h_H_mono : STSA.H (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L_no_phi) ≤
+                      STSA.H (toQuot φ.neg) := STSA.H_monotone _ _ h_fold_le
+      have h_H_neg_in_U : STSA.H (toQuot φ.neg) ∈ U := U.mem_of_le h_H_fold_in_U h_H_mono
+
+      have h_eq : STSA.H (toQuot φ.neg) = toQuot φ.neg.all_past := rfl
+      rw [h_eq] at h_H_neg_in_U
+      exact h_H_neg_phi_not_in_MU h_H_neg_in_U
+
+    · -- Case: φ ∉ L
+      have hL_in_Hseed : ∀ ψ ∈ L, ψ ∈ H_seed := by
+        intro ψ hψ
+        have hψ_in_seed := hL_in_seed ψ hψ
+        simp only [Set.mem_union, Set.mem_singleton_iff] at hψ_in_seed
+        rcases hψ_in_seed with h | h
+        · exact h
+        · rw [h] at hψ
+          exact absurd hψ h_phi_in_L
+
+      have h_fold_le_bot : List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L ≤ toQuot Formula.bot :=
+        fold_le_of_derives L Formula.bot d_bot
+
+      have h_H_fold_in_U : STSA.H (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L) ∈ U := by
+        have h_helper : ∀ M : List Formula, (∀ χ ∈ M, χ ∈ H_seed) →
+            STSA.H (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ M) ∈ U := by
+          intro M
+          induction M with
+          | nil =>
+            intro _
+            simp only [List.foldl_nil]
+            rw [h_H_top_eq_top]
+            exact U.top_mem
+          | cons ψ L' ih =>
+            intro hM
+            simp only [List.foldl_cons]
+            have h_H_ψ_in_U : STSA.H (toQuot ψ) ∈ U := hM ψ (by simp)
+            have ih_applied : STSA.H (List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L') ∈ U :=
+              ih (fun χ hχ => hM χ (List.mem_cons_of_mem ψ hχ))
+            have h_top_inf : ⊤ ⊓ toQuot ψ = toQuot ψ := top_inf_eq (toQuot ψ)
+            rw [fold_from_x L' (⊤ ⊓ toQuot ψ), h_top_inf]
+            exact H_preimage_inf U (toQuot ψ) _ h_H_ψ_in_U ih_applied
+        exact h_helper L hL_in_Hseed
+
+      have h_H_mono : STSA.H (List.foldl (fun acc ψ => acc ⊓ toQuot ψ) ⊤ L) ≤
+                      STSA.H (toQuot Formula.bot) := STSA.H_monotone _ _ h_fold_le_bot
+      have h_H_bot_in_U : STSA.H (toQuot Formula.bot) ∈ U := U.mem_of_le h_H_fold_in_U h_H_mono
+
+      have h_bot_in_U : (⊥ : LindenbaumAlg) ∈ U := U.mem_of_le h_H_bot_in_U h_H_bot_le_bot
+      exact U.bot_not_mem h_bot_in_U
 
   obtain ⟨M, h_seed_sub_M, h_M_mcs⟩ := set_lindenbaum seed h_seed_cons
 

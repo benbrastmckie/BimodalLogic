@@ -169,6 +169,15 @@ have h_seed_cons : SetConsistent seed := by
 
 ### Phase 4D: Prove ultrafilter_P_resolution [PARTIAL]
 
+**Status Note (2026-03-30)**: The main proof structure is complete. Two sorries remain:
+1. Line 1113: Corner case where `φ ∈ L_no_phi` but `φ ∉ G_seed` in F_resolution
+2. Line 1322: Symmetric corner case in P_resolution
+
+The sorries are for a degenerate edge case where the witness formula appears multiple times
+in the list but isn't in the G-preimage. This requires either:
+- Strong induction on the count of non-G_seed elements
+- Or showing this case is actually impossible via MCS properties
+
 **Goal**: Prove the symmetric past filter extension theorem: P(a) in U implies existence of predecessor ultrafilter containing a.
 
 **Tasks**:
