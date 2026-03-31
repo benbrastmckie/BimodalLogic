@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-31T00:00:00Z
 task_counts:
-  active: 18
+  active: 19
   completed: 739
   in_progress: 0
-  not_started: 10
+  not_started: 11
   abandoned: 64
-  total: 811
+  total: 812
 technical_debt:
   sorry_count: 20
   sorry_count_note: "Audited 2026-03-31: 12 examples/exercises, 1 soundness (temporal_duality, intentional), 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 59 filled 4 soundness sorries."
@@ -43,13 +43,14 @@ technical_debt:
 - **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
 - **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
 
-### 1. Phase B — Core Wiring (BLOCKED on F/P temporal coherence)
+### 1. Phase B — Core Wiring (CRITICAL PATH)
 
 ```
-[F/P witnesses] → 58 → 60
-                   ↘ 68 (dense path, parallel)
+81 (F/P research) → 58 → 60
+                      ↘ 68 (dense path, parallel)
 ```
 
+0. **81** [NOT STARTED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -75,6 +76,28 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 81. F/P Witness Representation Theorem Research
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Language**: formal
+- **Priority**: critical
+- **Dependencies**: None
+- **Created**: 2026-03-31
+- **Source**: Review 2026-03-31 (F/P witness problem analysis)
+
+**Description**: Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it.
+
+**Key Constraints**:
+1. Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics
+2. Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property
+3. Think creatively about families as constrained world-histories rather than linear chains
+4. Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse)
+5. The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics
+
+**Context**: All 6 prior approaches failed (23 sorries eliminated in Task #80). The problem is not engineering - it's a genuine mathematical difficulty requiring new proof-theoretic machinery. This task unblocks Task #58 (wire completeness to FrameConditions).
 
 ---
 
