@@ -60,7 +60,7 @@ The v2 plan's Phase 4C/4D proof structure was flawed:
 
 ## Implementation Phases
 
-### Phase 4C-fix: Filter-Deduction-Contraction for F_resolution [NOT STARTED]
+### Phase 4C-fix: Filter-Deduction-Contraction for F_resolution [COMPLETED]
 
 **Goal**: Fix the corner case sorry at UltrafilterChain.lean line 1113.
 
@@ -132,7 +132,7 @@ But phi not_in G_seed, so L_no_phi not subset G_seed
 
 ---
 
-### Phase 4D-fix: Symmetric Fix for P_resolution [NOT STARTED]
+### Phase 4D-fix: Symmetric Fix for P_resolution [COMPLETED]
 
 **Goal**: Fix the corner case sorry at UltrafilterChain.lean line 1322.
 
