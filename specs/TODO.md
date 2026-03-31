@@ -1,16 +1,16 @@
 ---
-next_project_number: 73
+next_project_number: 74
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-30T18:30:00Z
 task_counts:
   active: 21
-  completed: 728
+  completed: 730
   in_progress: 0
   not_started: 7
-  abandoned: 54
-  total: 795
+  abandoned: 58
+  total: 800
 technical_debt:
   sorry_count: 24
   sorry_count_note: "Audited 2026-03-30: 12 examples/exercises, 5 soundness, 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 67 deleted g_content sorry."
@@ -27,40 +27,40 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-03-24. Tasks 62, 63 archived (Box backward, documentation corrections).*
+*Updated 2026-03-30. Tasks 67, 70 completed. Tasks 69, 6, 65, 66 abandoned (see below).*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
-### 1. Critical Path — Sorry-Free Completeness
+**Key discovery (task 70)**: Separate-direction witnesses via SuccChainFMCS provide sorry-free `forward_G`/`backward_H`. F/P existential witnesses have sorries due to unbounded nesting. Forward-only truth lemma direction suffices for completeness. Bidirectional witness approach (plan v4) is BLOCKED (H_theory not G-liftable).
+
+### 1. Phase A — Quick Wins (parallel, no dependencies)
+
+- **73** [NOT STARTED] — Resolve Class A sorries via modal duality DNE (new)
+- **71** [RESEARCHED] — Document F-persistence findings (counterexample proof, working approach)
+- **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
+- **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries, independent)
+
+### 2. Phase B — Core Wiring (sequential)
 
 ```
-67 [DONE] → 71 → 72 → 69 [BLOCKED] → 68 → 58 → 59 → 60
+73 + 71 → 72 → 58 → 60
+              ↘ 68 (dense path, parallel)
 ```
 
-1. **67** [COMPLETED] — Cleaned up SuccChainFMCS.lean (~340 lines deleted), simplified F_resolves
-2. **71** [RESEARCHED] — Document F-persistence findings (counterexample proof, bundle-level path)
-3. **72** [RESEARCHED] — Wire completeness through BFMCS_Bundle (depends on #71)
-4. **69** [BLOCKED] — Close Z_chain_forward_F' (depends on #71, #72)
-   - **Discovery**: f_preserving_seed_consistent is FALSE (concrete counterexample)
-   - **Alternative**: Bundle-level coherence (BFMCS_Bundle) is already proven
-   - **Analysis**: [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
-5. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #69)
-4. **58** [BLOCKED] — Wire completeness to FrameConditions (depends on #69, #68)
-4. **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries)
-5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **72** [RESEARCHED] — Wire forward-only completeness via separate-direction witnesses (depends on #71, #73)
+2. **58** [RESEARCHED] — Wire completeness to FrameConditions (depends on #72, #68)
+3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #72)
+4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
-### 2. Code Cleanup (parallel to critical path)
+### 3. Code Cleanup (parallel to any phase)
 
-1. **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
+- **57** [RESEARCHED] — Clean up UltrafilterChain.lean
 
-### 3. Research
-
-- **64** [RESEARCHED] — Critical path review: algebraic analysis of completeness obstacles
-
-### 4. Experimental
+### 4. Experimental / Research
 
 - **61** [NOT STARTED] — Eliminate BFMCS bundles entirely (independent, explore later)
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
+- **64** [RESEARCHED] — Critical path review (completed research, reference only)
 
 ### 5. Deferred
 
@@ -73,11 +73,17 @@ technical_debt:
 ### 6. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
-- **6** [RESEARCHED] — Canonical TaskFrame completeness (may be superseded by 8)
 - **39** [RESEARCHED] — Preorder semantics study (theoretical)
 - **953** [RESEARCHED] — Bilateral proof system (55-90h)
 - **949** [RESEARCHED] — Update Demo.lean (cosmetic)
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
+
+### Abandoned (2026-03-30)
+
+- **69** — Z_chain_forward_F': mathematically false (concrete counterexample)
+- **6** — Canonical TaskFrame completeness: superseded by task 8
+- **65** — Build TaskModel from restricted construction: family-level coherence blocker
+- **66** — Wire restricted completeness: depends on abandoned task 65
 
 ## Tasks
 
@@ -95,15 +101,28 @@ technical_debt:
 
 ---
 
-### 72. Wire completeness through BFMCS_Bundle
+### 73. Resolve Class A sorries via modal duality DNE
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Created**: 2026-03-30
+
+**Description**: Resolve Class A sorries in SuccChainFMCS.lean via modal duality and double-negation elimination (DNE). The proof strategy is documented in ROADMAP.md: (1) `FF(ψ) ∈ deferralClosure` and `FF(ψ) ∉ u` given, (2) by negation completeness of restricted MCS: `neg(FF(ψ)) ∈ u`, (3) `neg(FF(ψ)) = neg(neg(G(neg(F(ψ)))))` (definitional, since `FF(ψ) = neg(G(neg(F(ψ))))`), (4) by `SetMaximalConsistent.double_neg_elim`: `G(neg(F(ψ))) ∈ u`, (5) so `neg(F(ψ)) ∈ g_content(u)`, (6) by Succ relation: `neg(F(ψ)) ∈ v`, (7-9) conclude `ψ ∈ v`. All ingredients exist in the codebase. Estimated: small, all existing lemmas.
+
+---
+
+### 72. Wire forward-only completeness via separate-direction witnesses
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
-- **Dependencies**: Task #71
-- **Parent Task**: #69
-- **Research**: [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
+- **Dependencies**: Task #71, Task #73
+- **Parent Task**: #58
+- **Research**:
+  - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
+  - [07_separate-direction-summary.md](070_explore_ultrafilter_construction/summaries/07_separate-direction-summary.md)
 
-**Description**: Connect the proven bundle-level temporal coherence to the main completeness theorem: Analyze what construct_bfmcs_bundle provides vs what bundle_validity_implies_provability needs. Adapt Completeness.lean to use BFMCS_Bundle instead of BFMCS (family-level). Wire through: construct_bfmcs_bundle -> ParametricCanonical -> completeness. Document any remaining gaps that emerge.
+**Description**: Wire the sorry-free separate-direction witnesses from SuccChainFMCS into the `construct_bfmcs` callback required by `parametric_algebraic_representation_conditional`. Task 70 established that `forward_G` and `backward_H` are sorry-free via separate seed constructions. The forward-only truth lemma direction suffices for completeness (only need MCS membership → truth_at, not the converse). Key steps: (1) Define weakly-coherent BFMCS requiring only G/H (not F/P), (2) Wire SuccChainFMCS forward_G/backward_H into this structure, (3) Show forward truth lemma holds with weak coherence, (4) Close `bfmcs_from_mcs_temporally_coherent` or bypass it with the new construction.
 
 ---
 
@@ -163,7 +182,8 @@ technical_debt:
 
 ### 69. Close Z_chain_forward_F' via dovetailed omega construction
 - **Effort**: 6-8 hours
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-03-30 — Z_chain_forward_F' is mathematically false. f_preserving_seed_consistent has a concrete counterexample (task 70). The separate-direction witness approach (task 72) bypasses this entirely.
 - **Language**: lean4
 - **Dependencies**: Task #71, Task #72
 - **Parent Task**: #58
@@ -182,7 +202,7 @@ technical_debt:
 - **Effort**: 6-10 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
-- **Dependencies**: Task #69
+- **Dependencies**: Task #72
 - **Parent Task**: #58
 - **Research**: [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
 
@@ -192,7 +212,8 @@ technical_debt:
 
 ### 65. Build TaskModel from Restricted Construction
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-03-30 — shifted_truth_lemma requires family-level coherence but construct_bfmcs_bundle provides only bundle-level. Forward-only completeness approach (task 72) supersedes this.
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #58
@@ -212,7 +233,8 @@ technical_debt:
 
 ### 66. Wire Restricted Completeness to Target Sorries
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-03-30 — Depends on task 65 which is abandoned. Superseded by task 72.
 - **Language**: lean4
 - **Dependencies**: Task 65
 - **Parent Task**: #58
@@ -273,7 +295,7 @@ technical_debt:
 - **Effort**: 3-5 hours
 - **Status**: [NOT STARTED]
 - **Language**: lean4
-- **Dependencies**: Task 58
+- **Dependencies**: None (parallelizable with completeness work per task 64 analysis)
 
 **Description**: Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.
 
@@ -283,7 +305,7 @@ technical_debt:
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
-- **Dependencies**: Task 55
+- **Dependencies**: Task #72, Task #68
 - **Research**:
   - [63_team-research.md](058_wire_completeness_to_frame_conditions/reports/63_team-research.md) — Team research: seed consistency proof techniques (4 teammates)
   - [65_team-research.md](058_wire_completeness_to_frame_conditions/reports/65_team-research.md) — Team research: BRS blocker analysis - theorem is FALSE, bypass recommended
@@ -400,7 +422,8 @@ technical_debt:
 
 ### 6. Replace FlagBFMCS satisfies_at with canonical TaskFrame using truth_at
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-03-30 — Superseded by task 8 (genuine truth_at completeness). Same fundamental blockers (WorldHistory convexity, F/P witness). Task 8 has the correct architectural approach.
 - **Language**: lean4
 - **Dependencies**: Task #1003
 - **Research**:

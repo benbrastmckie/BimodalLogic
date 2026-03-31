@@ -110,23 +110,20 @@
       "language": "lean4",
       "description": "Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.",
       "effort": "3-5 hours",
-      "dependencies": [
-        58
-      ],
+      "dependencies": [],
       "created": "2026-03-24T19:43:14Z",
       "last_updated": "2026-03-24T19:43:14Z"
     },
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean4",
       "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
       "effort": "8 hours",
       "dependencies": [
-        67,
-        68,
-        69
+        72,
+        68
       ],
       "created": "2026-03-24T19:43:07Z",
       "last_updated": "2026-03-27T23:29:19Z",
@@ -532,7 +529,7 @@
     {
       "project_number": 6,
       "project_name": "canonical_taskframe_completeness",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Replace FlagBFMCS satisfies_at with a canonical TaskFrame using truth_at. The current FlagBFMCS completeness theorem uses an internal satisfies_at relation rather than the official truth_at from the semantic layer. Eliminate satisfies_at entirely and construct a canonical TaskFrame directly from FlagBFMCS data, so that the completeness theorem states: consistent S implies existence of a TaskModel and world where truth_at holds for all φ ∈ S. Key architectural requirements: (1) Define canonical world states from CanonicalMCS, (2) Define the duration domain D parametrically (positions within each Flag chain serve as durations), (3) Define the task relation R on world states using CanonicalR, (4) Construct WorldHistory instances from Flags (each Flag yields a history mapping durations to world states), (5) Define the canonical TaskFrame and TaskModel using these components, (6) Prove the truth lemma directly for truth_at rather than satisfies_at, (7) State and prove the completeness theorem using the canonical valid predicate. The existing FlagBFMCS infrastructure (closedFlags, chainFMCS, modal saturation, temporal completeness) provides all the raw material. The work is restructuring it to fit the official TaskFrame/TaskModel/WorldHistory architecture. This supersedes the validity bridge approach in task 997.",
       "dependencies": [
@@ -690,7 +687,8 @@
         }
       ],
       "planned": "2026-03-20T21:44:12Z",
-      "started": "2026-03-20T16:51:08Z"
+      "started": "2026-03-20T16:51:08Z",
+      "abandoned_reason": "Superseded by task 8 (genuine truth_at completeness); same fundamental blockers"
     },
     {
       "project_number": 998,
@@ -897,7 +895,7 @@
     {
       "project_number": 65,
       "project_name": "build_taskmodel_from_restricted_construction",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Create TaskModel/TaskFrame infrastructure from RestrictedTemporallyCoherentFamily to enable semantic completeness proofs. Define RestrictedTaskFrame, RestrictedTaskModel, RestrictedOmega, prove shift-closure, and restricted_truth_lemma_semantic.",
       "effort": "4-6 hours",
@@ -946,12 +944,13 @@
       "researched": "2026-03-26T23:15:00Z",
       "planned": "2026-03-26T22:26:59Z",
       "started": "2026-03-26T22:29:19Z",
-      "blocked_reason": "shifted_truth_lemma requires family-level temporal coherence (SAME family witnesses), but construct_bfmcs_bundle only provides bundle-level coherence (ANY family witnesses). Gap is fundamental - contradiction proofs require same-MCS witnesses. Wave 3 confirms forward-only truth lemma also blocked by imp case."
+      "blocked_reason": "shifted_truth_lemma requires family-level temporal coherence (SAME family witnesses), but construct_bfmcs_bundle only provides bundle-level coherence (ANY family witnesses). Gap is fundamental - contradiction proofs require same-MCS witnesses. Wave 3 confirms forward-only truth lemma also blocked by imp case.",
+      "abandoned_reason": "shifted_truth_lemma requires family-level coherence; bundle-level insufficient; superseded by forward-only completeness approach"
     },
     {
       "project_number": 66,
       "project_name": "wire_restricted_completeness_to_target_sorries",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Connect restricted completeness path to the 3 target sorries in FrameConditions/Completeness.lean: bundle_validity_implies_provability, dense_completeness_fc, discrete_completeness_fc. Use contrapositive argument via RestrictedTaskModel.",
       "effort": "3-4 hours",
@@ -967,7 +966,8 @@
           "path": "specs/066_wire_restricted_completeness_to_target_sorries/reports/01_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 58"
         }
-      ]
+      ],
+      "abandoned_reason": "Depends on task 65 which is abandoned"
     },
     {
       "project_number": 67,
@@ -1174,7 +1174,7 @@
       "effort": "6-10 hours",
       "parent_task": 58,
       "dependencies": [
-        69
+        72
       ],
       "created": "2026-03-27T23:32:07Z",
       "last_updated": "2026-03-27T23:32:07Z",
@@ -1189,7 +1189,7 @@
     {
       "project_number": 69,
       "project_name": "close_z_chain_forward_f",
-      "status": "blocked",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Close the Z_chain_forward_F theorem in UltrafilterChain.lean via the true dovetailed omega construction. This is the actual remaining gap blocking bfmcs_from_mcs_temporally_coherent and thus bundle_validity_implies_provability. The dovetailed construction uses Nat.unpair to fairly schedule F-obligation resolution across all time points.",
       "effort": "6-10 hours",
@@ -1275,7 +1275,8 @@
       "session_id": "sess_1774911059_c08af3",
       "researched": "2026-03-30T22:41:59Z",
       "planned": "2026-03-30T21:21:50Z",
-      "started": "2026-03-30T18:47:22Z"
+      "started": "2026-03-30T18:47:22Z",
+      "abandoned_reason": "Z_chain_forward_F theorem is mathematically false (concrete counterexample proven in task 70)"
     },
     {
       "project_number": 71,
@@ -1305,7 +1306,8 @@
       "effort": "4-6 hours",
       "parent_task": 69,
       "dependencies": [
-        71
+        71,
+        73
       ],
       "created": "2026-03-30T22:53:42Z",
       "last_updated": "2026-03-30T22:53:42Z",
@@ -1316,9 +1318,20 @@
           "summary": "Spawn analysis from parent task"
         }
       ]
+    },
+    {
+      "project_number": 73,
+      "project_name": "resolve_class_a_sorries_dne",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Resolve Class A sorries in SuccChainFMCS.lean via modal duality and double-negation elimination. All ingredients exist: double_neg_elim, negation completeness of restricted MCS, and definitional equality of F/G duality.",
+      "effort": "2-3 hours",
+      "dependencies": [],
+      "created": "2026-03-30T23:00:00Z",
+      "last_updated": "2026-03-30T23:00:00Z"
     }
   ],
-  "next_project_number": 73,
+  "next_project_number": 74,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
