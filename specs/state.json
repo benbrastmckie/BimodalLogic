@@ -14,8 +14,8 @@
       "effort": "12-20 hours",
       "parent_task": 69,
       "created": "2026-03-30T18:43:29Z",
-      "last_updated": "2026-03-31T03:23:39Z",
-      "session_id": "sess_1774927396_43b919",
+      "last_updated": "2026-03-31T03:50:22Z",
+      "session_id": "sess_1774928450_0fd62e",
       "researched": "2026-03-31T03:09:45Z",
       "planned": "2026-03-31T03:16:31Z",
       "started": "2026-03-30T23:37:27Z",
@@ -54,6 +54,11 @@
           "path": "specs/070_explore_ultrafilter_construction/summaries/05_bidirectional-partial-summary.md",
           "type": "summary",
           "summary": "Partial implementation: Phase 0-1 complete (archive dead code, bidirectional seed), Phase 2 partial (G(H(a)) membership sorry)"
+        },
+        {
+          "path": "specs/070_explore_ultrafilter_construction/summaries/06_bidirectional-blocked-summary.md",
+          "type": "summary",
+          "summary": "Phase 2 blocked: H_theory elements not G-liftable, plan flaw discovered"
         }
       ]
     },

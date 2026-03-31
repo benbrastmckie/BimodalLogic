@@ -174,14 +174,32 @@ theorem bidirectional_seed_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsi
 
 ---
 
-### Phase 2: Prove Bidirectional Seed Consistency [PARTIAL]
+### Phase 2: Prove Bidirectional Seed Consistency [BLOCKED]
 
 **Goal**: Prove {phi} U bidirectional_seed is consistent when F(phi) in M.
 
-**Key Insight**: This is simpler than `f_preserving_seed_consistent` because:
+**BLOCKING ISSUE** (discovered 2026-03-30): The proof strategy below has a fundamental flaw.
+
+The claim "{phi} U M is consistent when F(phi) in M" is FALSE. The correct statement
+is "{phi} U temporal_box_seed(M) is consistent when F(phi) in M" because that proof
+uses G-lift, which requires all seed elements to be G-liftable.
+
+H_theory elements (H(a) with H(a) in M) are NOT G-liftable in general:
+- G(H(a)) in M requires H(a) -> G(H(a)) to be derivable
+- Semantically, H(a) -> G(H(a)) means "if a held at all past times, then at all
+  future times, a held at all past times (relative to those future times)"
+- This is NOT valid: H(a) at time t only constrains times <= t, not times > t
+
+**Possible resolutions**:
+1. Find a derivation of H(a) -> G(H(a)) from existing axioms (seems unlikely given semantic analysis)
+2. Prove H_theory elements don't contribute to deriving neg(phi) (difficult to formalize)
+3. Use a different seed construction that avoids this issue
+4. Add H(a) -> G(H(a)) as an axiom (changes the logic)
+
+**Original Key Insight** (FLAWED): This is simpler than `f_preserving_seed_consistent` because:
 - bidirectional_seed subset M (no F_unresolved_theory complications)
 - {phi} U bidirectional_seed subset {phi} U M
-- {phi} U M is consistent when F(phi) in M (standard temporal witness argument)
+- {phi} U M is consistent when F(phi) in M (standard temporal witness argument) **<-- FALSE**
 
 **Lemmas**:
 ```lean
