@@ -157,7 +157,7 @@ But phi not_in G_seed, so L_no_phi not subset G_seed
 
 ---
 
-### Phase 6A: Ultrafilter FMCS Forward F Coherence [NOT STARTED]
+### Phase 6A: Ultrafilter FMCS Forward F Coherence [COMPLETED]
 
 **Goal**: Prove ultrafilter-based FMCS have family-level forward F coherence.
 
@@ -182,7 +182,7 @@ theorem ultrafilter_FMCS_forward_F (uf : UltrafilterFMCS)
 
 ---
 
-### Phase 6B: Ultrafilter FMCS Backward P Coherence [NOT STARTED]
+### Phase 6B: Ultrafilter FMCS Backward P Coherence [PARTIAL]
 
 **Goal**: Prove ultrafilter-based FMCS have family-level backward P coherence.
 
@@ -200,7 +200,7 @@ theorem ultrafilter_FMCS_forward_F (uf : UltrafilterFMCS)
 
 ---
 
-### Phase 7A: Construct Ultrafilter-Based BFMCS [NOT STARTED]
+### Phase 7A: Construct Ultrafilter-Based BFMCS [PARTIAL]
 
 **Goal**: Build BFMCS from ultrafilter chains with `temporally_coherent` property.
 
@@ -216,7 +216,7 @@ theorem ultrafilter_FMCS_forward_F (uf : UltrafilterFMCS)
 
 ---
 
-### Phase 7B: Integration with Truth Lemma [NOT STARTED]
+### Phase 7B: Integration with Truth Lemma [BLOCKED]
 
 **Goal**: Complete integration with `parametric_canonical_truth_lemma`.
 
