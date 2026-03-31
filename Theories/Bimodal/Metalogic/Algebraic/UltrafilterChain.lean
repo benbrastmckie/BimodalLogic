@@ -3702,6 +3702,15 @@ only adds new formulas, never removes). This enables cross-direction temporal co
 /--
 Bidirectional temporal-modal seed: G-formulas, H-formulas, and box-formulas.
 This seed preserves BOTH forward and backward temporal theories.
+
+BLOCKED: H_theory elements are not G-liftable. The axiom H(a) -> G(H(a)) is NOT
+derivable in TM logic (see report 10: blocker-analysis.md). This means the
+bidirectional_seed_consistent theorem cannot be proven without adding new axioms.
+
+The separate-direction approach (SuccChainFMCS) avoids this by using:
+- Forward witnesses: temporal_box_seed (G_theory + box_theory) - G-liftable
+- Backward witnesses: past_temporal_box_seed (H_theory + box_theory) - H-liftable
+Cross-direction coherence is achieved at chain level via Succ relation properties.
 -/
 def bidirectional_temporal_box_seed (M : Set Formula) : Set Formula :=
   G_theory M ∪ H_theory M ∪ box_theory M
@@ -3786,15 +3795,18 @@ theorem bidirectional_seed_subset_phi_union_M (M : Set Formula) (h_mcs : SetMaxi
 Every element of bidirectional_temporal_box_seed can be G-lifted.
 
 G_theory elements: G(a) -> G(G(a)) by temp_4.
-H_theory elements: H(a) -> G(H(a)) by the linearity property.
+H_theory elements: H(a) -> G(H(a)) - BLOCKED: NOT derivable in TM!
 box_theory elements: handled by G_of_box_theory.
 
-For H-elements, the key insight is that in linear tense logic, H(a) implies G(H(a))
-because the past is fixed: if something was always true in the past, it will
-continue to be true that it was always true in the past, at all future times.
+BLOCKED: The H_theory case requires H(a) -> G(H(a)) which is NOT derivable in TM.
+This was the key blocker identified in report 10 (blocker-analysis.md).
 
-This uses: H(a) -> Box(H(a)) (S5-past: H is an S5 modal operator over past times)
-and Box(a) -> G(Box(a)) (temp_future axiom).
+The intuition that "past is fixed" is correct semantically, but proving it
+syntactically requires either:
+1. Adding H(a) -> G(H(a)) as an axiom (changes the logic)
+2. Having H(a) -> Box(H(a)) derivable (not available in our axiom set)
+
+Alternative: Use separate-direction witnesses via SuccChainFMCS.
 -/
 theorem G_of_bidirectional_seed (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ∀ x ∈ bidirectional_temporal_box_seed M, Formula.all_future x ∈ M := by
@@ -3870,6 +3882,13 @@ If F(phi) ∈ M (MCS), then {phi} ∪ bidirectional_temporal_box_seed(M) is cons
 
 This is the bidirectional version of temporal_theory_witness_consistent.
 The proof uses both G-lift and H-lift to handle the combined seed.
+
+BLOCKED: This theorem requires H(a) -> G(H(a)) which is NOT derivable in TM.
+The G_of_bidirectional_seed theorem has a sorry for the H_theory case because
+H-formulas cannot be G-lifted. See report 10 (blocker-analysis.md) for details.
+
+Alternative approach: Use separate forward/backward witnesses via SuccChainFMCS
+which achieves cross-direction coherence at chain level rather than seed level.
 -/
 theorem bidirectional_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #70 - Separate-Direction Witnesses (v5)
 
 - **Task**: 70 - Explore ultrafilter-based construction for temporal coherence
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 8-12 hours
 - **Dependencies**: None (infrastructure already exists)
 - **Research Inputs**:
@@ -53,7 +53,7 @@ This plan implements the **separate-direction witnesses** approach to temporal c
 
 ## Implementation Phases
 
-### Phase 0: Archive Bidirectional Construction [NOT STARTED]
+### Phase 0: Archive Bidirectional Construction [COMPLETED]
 
 **Goal**: Mark bidirectional_seed construction as blocked/experimental.
 
@@ -71,7 +71,7 @@ This plan implements the **separate-direction witnesses** approach to temporal c
 
 ---
 
-### Phase 1: Prove Succ Relation G-Propagation [NOT STARTED]
+### Phase 1: Prove Succ Relation G-Propagation [COMPLETED]
 
 **Goal**: Verify/strengthen the g_content subset property in Succ relation.
 
@@ -101,7 +101,7 @@ Where `g_content M = {φ | G(φ) ∈ M}` (the "unboxed" G-formulas).
 
 ---
 
-### Phase 2: Prove Succ Relation H-Propagation [NOT STARTED]
+### Phase 2: Prove Succ Relation H-Propagation [COMPLETED]
 
 **Goal**: Verify/strengthen the h_content subset property in Succ relation (backward direction).
 
@@ -131,7 +131,7 @@ Where `h_content M' = {φ | H(φ) ∈ M'}` (the "unboxed" H-formulas).
 
 ---
 
-### Phase 3: Chain-Level G-Propagation (Forward) [NOT STARTED]
+### Phase 3: Chain-Level G-Propagation (Forward) [COMPLETED]
 
 **Goal**: Prove G-formulas propagate through the forward chain.
 
@@ -158,7 +158,7 @@ theorem succ_chain_forward_G (M0 : SerialMCS) (n m : Int) (h : n ≤ m) (φ : Fo
 
 ---
 
-### Phase 4: Chain-Level H-Propagation (Backward) [NOT STARTED]
+### Phase 4: Chain-Level H-Propagation (Backward) [COMPLETED]
 
 **Goal**: Prove H-formulas propagate through the backward chain.
 
@@ -185,7 +185,7 @@ theorem succ_chain_backward_H (M0 : SerialMCS) (n m : Int) (h : n ≤ m) (φ : F
 
 ---
 
-### Phase 5: Package as TemporallyCoherent FMCS [NOT STARTED]
+### Phase 5: Package as TemporallyCoherent FMCS [COMPLETED]
 
 **Goal**: Show SuccChainFMCS satisfies temporal coherence requirements.
 
@@ -209,7 +209,7 @@ theorem succ_chain_backward_H (M0 : SerialMCS) (n m : Int) (h : n ≤ m) (φ : F
 
 ---
 
-### Phase 6: Connect to Truth Lemma [NOT STARTED]
+### Phase 6: Connect to Truth Lemma [COMPLETED]
 
 **Goal**: Verify that chain-level coherence suffices for truth lemma.
 
@@ -233,7 +233,7 @@ theorem succ_chain_backward_H (M0 : SerialMCS) (n m : Int) (h : n ≤ m) (φ : F
 
 ---
 
-### Phase 7: Document F/P Gaps and Next Steps [NOT STARTED]
+### Phase 7: Document F/P Gaps and Next Steps [COMPLETED]
 
 **Goal**: Document remaining work for forward_F and backward_P.
 

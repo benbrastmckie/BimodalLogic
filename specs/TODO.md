@@ -109,7 +109,9 @@ technical_debt:
 
 ### 70. Explore ultrafilter-based construction for temporal coherence
 - **Effort**: 10-14 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-30
+- **Summary**: Completed all 8 phases of plan v5 (separate-direction witnesses). Archived bidirectional construction as blocked (H_theory not G-liftable). Documented that SuccChainFMCS provides sorry-free forward_G/backward_H for truth lemma G/H cases.
 - **Language**: lean4
 - **Parent Task**: #69
 - **Research**:

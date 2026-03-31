@@ -8,14 +8,14 @@
     {
       "project_number": 70,
       "project_name": "explore_ultrafilter_construction",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "description": "Explore ultrafilter-based construction for temporal coherence as alternative to MCS-based Lindenbaum extension. Ultrafilters of the Lindenbaum algebra have automatic negation completeness, eliminating the F-persistence gap where Lindenbaum can add G(neg phi). The R_G and R_Box relations on ultrafilters already exist (UltrafilterChain.lean lines 59-68). This task requires: (1) defining FMCS structure from ultrafilter chains, (2) proving ultrafilter chains satisfy temporal coherence by construction, (3) connecting ultrafilter-based completeness to existing MCS-based infrastructure. Reference: Strategy 4 in task 69 team research report.",
       "effort": "12-20 hours",
       "parent_task": 69,
       "created": "2026-03-30T18:43:29Z",
-      "last_updated": "2026-03-31T04:25:31Z",
-      "session_id": "sess_1774929464_44d293",
+      "last_updated": "2026-03-31T04:36:55Z",
+      "session_id": "sess_1774931301_9d8c8b",
       "researched": "2026-03-31T04:02:49Z",
       "planned": "2026-03-31T04:25:31Z",
       "started": "2026-03-30T23:37:27Z",
@@ -69,8 +69,15 @@
           "path": "specs/070_explore_ultrafilter_construction/plans/05_separate-direction-witnesses.md",
           "type": "plan",
           "summary": "Separate-direction witnesses plan (v5) - chain-level G/H coherence"
+        },
+        {
+          "path": "specs/070_explore_ultrafilter_construction/summaries/07_separate-direction-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: separate-direction witnesses approach for temporal coherence"
         }
-      ]
+      ],
+      "completed": "2026-03-31T04:36:55Z",
+      "completion_summary": "Completed all 8 phases of plan v5 (separate-direction witnesses). Archived bidirectional construction as blocked (H_theory not G-liftable). Documented that SuccChainFMCS provides sorry-free forward_G/backward_H for truth lemma G/H cases. Updated ROADMAP.md with correct approach status."
     },
     {
       "project_number": 61,

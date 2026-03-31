@@ -1006,6 +1006,40 @@ noncomputable def SuccChainFMCS (M0 : SerialMCS) : FMCS Int where
 
 
 /-!
+## Connection to Truth Lemma (Task #70 Phase 6)
+
+The SuccChainFMCS provides the temporal coherence needed for the G/H cases
+of the truth lemma (see SuccChainTruth.lean):
+
+**Sorry-Free Properties:**
+- `forward_G`: G(phi) at t implies phi at all t' >= t (via `succ_chain_forward_G_le`)
+- `backward_H`: H(phi) at t implies phi at all t' <= t (via `succ_chain_backward_H_le`)
+
+These properties directly enable the FORWARD direction of the truth lemma for G/H:
+- G case: Uses `forward_G` to propagate phi to all future times
+- H case: Uses `backward_H` to propagate phi to all past times
+
+**Known Gaps (documented in Task #70):**
+- The BACKWARD direction of the truth lemma for G/H uses `temporal_backward_G`
+  and `temporal_backward_H` from TemporalCoherence.lean, which require
+  `forward_F` and `backward_P` properties (existential witnesses)
+- `forward_F` and `backward_P` have sorries due to unbounded F/P nesting
+- For sorry-free completeness, use `semantic_weak_completeness` (FMP path)
+
+**Separate-Direction Witness Approach (Plan v5):**
+The bidirectional_seed construction (UltrafilterChain.lean) is BLOCKED because
+H_theory elements are not G-liftable (H(a) -> G(H(a)) is not derivable in TM).
+Instead, this SuccChainFMCS construction achieves cross-direction coherence
+at the CHAIN level via the Succ relation properties:
+- Succ.g_persistence: g_content(M) ⊆ M' (forward G propagation)
+- Succ_implies_h_content_reverse: h_content(M') ⊆ M (backward H propagation)
+
+The chain-level approach works because each direction uses its own witness
+construction (forward uses temporal_box_seed, backward uses past_temporal_box_seed)
+rather than trying to combine them at the seed level.
+-/
+
+/-!
 ## Deferral-Restricted Seed Subset Lemmas
 
 These lemmas show that the successor/predecessor deferral seeds stay within

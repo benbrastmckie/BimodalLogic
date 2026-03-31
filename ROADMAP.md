@@ -140,8 +140,6 @@ Stone-space unraveling.
 
 ## Temporal Coherence Resolution (March 2026)
 
-The completeness gap has been analyzed and resolved via the **bidirectional temporal witness** approach.
-
 ### Dead Ends (Archived)
 
 1. **CoherentZChain** (UltrafilterChain.lean ~7286-7496): Fundamentally broken. Forward chain
@@ -161,35 +159,48 @@ The completeness gap has been analyzed and resolved via the **bidirectional temp
    intrinsically single-history; a witness in a different family uses a different history,
    invalidating the semantic argument for `temporal_backward_G`.
 
-### Correct Approach: Bidirectional Temporal Witness
+5. **Bidirectional Temporal Witness (plan v4)**: BLOCKED. The seed construction
+   `bidirectional_temporal_box_seed = G_theory ∪ H_theory ∪ box_theory` requires that ALL
+   seed elements be G-liftable for the consistency proof. H_theory elements are NOT
+   G-liftable: `H(a) -> G(H(a))` is NOT derivable in TM logic. See report 10 (blocker-analysis.md).
 
-**Key insight**: Preserve BOTH G-theory and H-theory in witness construction.
+### Working Approach: Separate-Direction Witnesses (SuccChainFMCS)
 
-Seed: `{phi} ∪ {G(psi) | G(psi) ∈ M} ∪ {H(psi) | H(psi) ∈ M} ∪ box_theory(M)`
+**Key insight**: Don't try to combine F-witness and P-witness at the seed level.
+Use separate constructions and achieve cross-direction coherence at CHAIN level.
 
-This seed is:
-1. A subset of `{phi} ∪ M` (all G(psi) and H(psi) formulas are in M)
-2. Consistent when `F(phi) ∈ M` (by standard temporal witness argument)
-3. Extended via Lindenbaum while preserving G and H membership
+**Implementation** (SuccChainFMCS.lean):
+- Forward witnesses use `temporal_box_seed` (G_theory + box_theory) - G-liftable, proven consistent
+- Backward witnesses use `past_temporal_box_seed` (H_theory + box_theory) - H-liftable, proven consistent
+- Cross-direction coherence achieved via Succ relation properties:
+  - `Succ.g_persistence`: g_content(M) ⊆ M' (forward G propagation)
+  - `Succ_implies_h_content_reverse`: h_content(M') ⊆ M (backward H propagation)
 
-The resulting MCS W satisfies:
-- `phi ∈ W` (witness property)
-- `G(psi) ∈ M` implies `G(psi) ∈ W` (G-preservation)
-- `H(psi) ∈ M` implies `H(psi) ∈ W` (H-preservation)
-- `box_class_agree M W` (modal consistency)
+**Sorry-Free Properties**:
+- `succ_chain_forward_G`: G(phi) at t implies phi at all t' > t
+- `succ_chain_backward_H`: H(phi) at t implies phi at all t' < t
+- `SuccChainFMCS`: FMCS structure with `forward_G` and `backward_H`
 
-A bidirectional chain using this witness preserves G in forward direction AND H in backward
-direction, enabling sorry-free cross-direction coherence.
+**Known Gaps (F/P Existential Witnesses)**:
+- `forward_F`: F(phi) at t implies exists t' >= t with phi at t'
+- `backward_P`: P(phi) at t implies exists t' <= t with phi at t'
+- These have sorries due to unbounded F/P nesting in arbitrary MCS
+- For sorry-free completeness, use `semantic_weak_completeness` (FMP path)
+
+**Truth Lemma Connection** (SuccChainTruth.lean):
+- G/H forward direction: Uses `succ_chain_forward_G_le`/`succ_chain_backward_H_le` - SORRY-FREE
+- G/H backward direction: Uses `temporal_backward_G`/`temporal_backward_H` which require
+  `forward_F`/`backward_P` - HAS SORRY
+- Box backward direction: Requires modal saturation via BFMCS bundling - HAS SORRY
+- For completeness, only FORWARD truth lemma direction is needed
 
 ### Implementation Status
 
-See task 70 plan v4 (`specs/070_explore_ultrafilter_construction/plans/04_bidirectional-witness.md`)
-for the 10-phase implementation plan. Key definitions:
-
-- `bidirectional_temporal_box_seed`: G-theory ∪ H-theory ∪ box_theory
-- `temporal_theory_witness_bidirectional`: Main F-witness with G and H preservation
-- `past_theory_witness_bidirectional`: Symmetric P-witness
-- `BidirectionalZChain`: Int-indexed chain with full cross-direction coherence
+Task 70 plan v5 (`specs/070_explore_ultrafilter_construction/plans/05_separate-direction-witnesses.md`):
+- Phase 0: Archive bidirectional construction - COMPLETED
+- Phase 1-5: Verify Succ relation G/H properties - COMPLETED (already sorry-free)
+- Phase 6: Connect to truth lemma - COMPLETED (documented in SuccChainFMCS.lean)
+- Phase 7: Document F/P gaps - COMPLETED (this section)
 
 ## Other Open Items
 
