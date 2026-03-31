@@ -63,7 +63,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
               ↘ 68 (dense path, parallel)
 ```
 
-1. **72** [RESEARCHED] — Wire completeness through fully coherent BFMCS (depends on #71, #73)
+1. **72** [PLANNED] — Wire completeness through fully coherent BFMCS (depends on #71, #73)
 2. **58** [RESEARCHED] — Wire completeness to FrameConditions (depends on #72, #68)
 3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #72)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)

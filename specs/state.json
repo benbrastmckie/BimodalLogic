@@ -1316,7 +1316,7 @@
     {
       "project_number": 72,
       "project_name": "wire_completeness_bfmcs_bundle",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Construct fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) for construct_bfmcs callback. Truth lemma is inherently bidirectional (Imp forward needs backward IH), so F/P sorries block entire proof. Options: (A) resolve F/P via fair-scheduling, (B) algebraic path with different construction, (C) FMP path.",
       "effort": "8-14 hours",
@@ -1325,7 +1325,7 @@
         71
       ],
       "created": "2026-03-30T22:53:42Z",
-      "last_updated": "2026-03-31T18:50:11Z",
+      "last_updated": "2026-03-31T19:12:31Z",
       "artifacts": [
         {
           "type": "research",
@@ -1346,10 +1346,16 @@
           "path": "specs/072_wire_completeness_bfmcs_bundle/reports/06_semantic-correction.md",
           "type": "research",
           "summary": "Semantic correction: bundle-level coherence is wrong for TM task semantics"
+        },
+        {
+          "path": "specs/072_wire_completeness_bfmcs_bundle/plans/07_semantic-cleanup.md",
+          "type": "plan",
+          "summary": "5-phase plan to archive bundle-level coherence constructs and document semantic correction"
         }
       ],
-      "session_id": "sess_1774982772_191c5d",
-      "researched": "2026-03-31T18:50:11Z"
+      "session_id": "sess_1774984189_59a591",
+      "researched": "2026-03-31T18:50:11Z",
+      "planned": "2026-03-31T19:12:31Z"
     },
     {
       "project_number": 74,
