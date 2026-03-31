@@ -208,6 +208,43 @@ Task 70 plan v5 (`specs/070_explore_ultrafilter_construction/plans/05_separate-d
 - Phase 6: Connect to truth lemma - COMPLETED (documented in SuccChainFMCS.lean)
 - Phase 7: Document F/P gaps - COMPLETED (this section)
 
+## Investigated Dead Ends: Logic Weakening (Task 77)
+
+**Conclusion**: Weakening TM by using a preorder (instead of linear order) for D does NOT
+provide a viable path to completeness. The F/P witness blocker is independent of the order
+structure on D.
+
+### Key Findings
+
+1. **Category Error**: Prior proposals that suggested "D = CanonicalMCS" conflated durations
+   (D, an ordered abelian group) with world states (MCS). These are categorically distinct.
+
+2. **Partial Order D Creates Multi-Dimensional Time**: If D is partially ordered (e.g., Z x Z),
+   histories span 2D convex regions, not branching timelines. G(phi) becomes "phi in the entire
+   future cone" - a fundamentally different temporal logic, not a natural weakening of TM.
+
+3. **Only temp_linearity Requires Linearity**: All other TM axioms (MF, TF, temp_4, modal K, S5)
+   work with preorder D. But dropping temp_linearity creates exotic semantics without solving
+   the completeness challenge.
+
+4. **F/P Blocker is Structural**: The blocker arises from omega-saturation in canonical model
+   construction (unbounded F-obligations in a single coherent timeline), not from the order
+   structure on D. Weakening D provides no advantage.
+
+### Representation Theorem Goal
+
+The goal of TM completeness is a **representation theorem** characterizing the frame class:
+
+> "TM is complete with respect to TaskFrames over totally ordered abelian groups."
+
+This tells us WHAT semantic class TM corresponds to. FMP/filtration techniques can prove
+decidability or finite model property, but do not provide this characterization.
+
+The canonical completeness approach (building a single countermodel from MCS) is the path to
+representation theorems. The F/P witness blocker remains an open challenge in this approach.
+
+**Reference**: `specs/077_research_preorder_taskframe_generalization/reports/05_team-research.md`
+
 ## Other Open Items
 
 ### Perpetuity Principles (16 sorries in Bridge.lean + Principles.lean)

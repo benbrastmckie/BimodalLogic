@@ -2,7 +2,7 @@
 
 - **Task**: 77 - research_preorder_taskframe_generalization
 - **Version**: 2 (revised)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_team-research.md, reports/02_time-shift-analysis.md, reports/05_team-research.md
@@ -61,7 +61,7 @@ Key findings from reports 01, 02, and 05:
 
 ## Implementation Phases
 
-### Phase 1: Add Logic Weakening Discouragement Section [NOT STARTED]
+### Phase 1: Add Logic Weakening Discouragement Section [COMPLETED]
 
 **Goal**: Add a new section to ROADMAP.md that documents why weakening TM to a preorder-based logic is not a viable path to completeness, while clarifying the representation theorem goal.
 
@@ -90,7 +90,7 @@ Key findings from reports 01, 02, and 05:
 
 ---
 
-### Phase 2: Verify and Commit [NOT STARTED]
+### Phase 2: Verify and Commit [COMPLETED]
 
 **Goal**: Verify the update is well-integrated and commit changes.
 

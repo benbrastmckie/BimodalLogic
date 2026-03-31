@@ -48,7 +48,7 @@ From 06_semantic-correction.md:
 
 ## Implementation Phases
 
-### Phase 1: Inventory and Preparation [NOT STARTED]
+### Phase 1: Inventory and Preparation [COMPLETED]
 
 **Goal**: Identify all bundle-related constructs and prepare archive directory structure
 
@@ -71,7 +71,7 @@ From 06_semantic-correction.md:
 
 ---
 
-### Phase 2: Extract Bundle Code to Boneyard [NOT STARTED]
+### Phase 2: Extract Bundle Code to Boneyard [IN PROGRESS]
 
 **Goal**: Move bundle-level coherence constructs from UltrafilterChain.lean to Boneyard
 

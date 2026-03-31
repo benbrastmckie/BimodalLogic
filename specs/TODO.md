@@ -46,7 +46,9 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 - **74** [NOT STARTED] — Research strict vs reflexive temporal semantics
 - **75** [NOT STARTED] — Research G'/H' operator extension design (depends on 74)
 - **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
-- **77** [NOT STARTED] — Research PreorderTaskFrame generalization (independent)
+- **77** [COMPLETED] — Research PreorderTaskFrame generalization (independent)
+  - **Completed**: 2026-03-31
+  - **Summary**: Added 'Investigated Dead Ends: Logic Weakening' section to ROADMAP.md documenting task 77 research findings - why preorder D does not help completeness and clarifying representation theorem goals.
 - **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
 
 ### 1. Phase A — Quick Wins (parallel, no dependencies)
@@ -263,17 +265,18 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 72. Wire completeness through fully coherent BFMCS construction
 - **Effort**: 8-14 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 3 hours
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task #71
-- **Parent Task**: #58
+- **Parent Task**: #69
 - **Research**:
   - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
   - [07_separate-direction-summary.md](070_explore_ultrafilter_construction/summaries/07_separate-direction-summary.md)
   - [01_team-research.md](072_wire_completeness_bfmcs_bundle/reports/01_team-research.md)
-- **Research**:
-  - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
-  - [07_separate-direction-summary.md](070_explore_ultrafilter_construction/summaries/07_separate-direction-summary.md)
+  - [05_team-research.md](072_wire_completeness_bfmcs_bundle/reports/05_team-research.md)
+  - [06_semantic-correction.md](072_wire_completeness_bfmcs_bundle/reports/06_semantic-correction.md)
+- **Plan**: [07_semantic-cleanup.md](072_wire_completeness_bfmcs_bundle/plans/07_semantic-cleanup.md)
 
 **Description**: Construct a fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) to provide the `construct_bfmcs` callback required by `parametric_algebraic_representation_conditional`. The truth lemma is inherently bidirectional — the Imp forward case structurally requires the backward IH (`(ih_psi fam hfam t).mpr`), so the backward G/H cases (which need forward_F/backward_P) infect the entire proof. A "forward-only" truth lemma is impossible. Task 70 proved forward_G/backward_H sorry-free, but forward_F/backward_P remain. Options: (A) Resolve F/P witnesses via fair-scheduling or formula-restricted completeness, (B) Use the algebraic path via ParametricRepresentation with a different BFMCS construction that achieves full coherence, (C) Use the FMP path (task 998 prerequisite). Needs research to identify the viable path.
 

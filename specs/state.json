@@ -1316,7 +1316,7 @@
     {
       "project_number": 72,
       "project_name": "wire_completeness_bfmcs_bundle",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Construct fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) for construct_bfmcs callback. Truth lemma is inherently bidirectional (Imp forward needs backward IH), so F/P sorries block entire proof. Options: (A) resolve F/P via fair-scheduling, (B) algebraic path with different construction, (C) FMP path.",
       "effort": "8-14 hours",
@@ -1325,7 +1325,7 @@
         71
       ],
       "created": "2026-03-30T22:53:42Z",
-      "last_updated": "2026-03-31T19:12:31Z",
+      "last_updated": "2026-03-31T19:21:01Z",
       "artifacts": [
         {
           "type": "research",
@@ -1353,9 +1353,10 @@
           "summary": "5-phase plan to archive bundle-level coherence constructs and document semantic correction"
         }
       ],
-      "session_id": "sess_1774984189_59a591",
+      "session_id": "sess_1774984830_64576c",
       "researched": "2026-03-31T18:50:11Z",
-      "planned": "2026-03-31T19:12:31Z"
+      "planned": "2026-03-31T19:12:31Z",
+      "started": "2026-03-31T19:21:01Z"
     },
     {
       "project_number": 74,
@@ -1384,12 +1385,12 @@
     {
       "project_number": 77,
       "project_name": "research_preorder_taskframe_generalization",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "priority": "high",
       "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint",
-      "last_updated": "2026-03-31T19:12:45Z",
-      "session_id": "sess_1774981537_ddb9be",
+      "last_updated": "2026-03-31T19:23:21Z",
+      "session_id": "sess_1774984852_710587",
       "researched": "2026-03-31T18:22:30Z",
       "artifacts": [
         {
@@ -1411,9 +1412,17 @@
           "path": "specs/077_research_preorder_taskframe_generalization/plans/02_roadmap-update-revised.md",
           "type": "plan",
           "summary": "Revised plan (v2): removes FMP recommendation, clarifies representation goal"
+        },
+        {
+          "path": "specs/077_research_preorder_taskframe_generalization/summaries/02_roadmap-update-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-03-31T19:12:45Z"
+      "planned": "2026-03-31T19:12:45Z",
+      "started": "2026-03-31T19:21:22Z",
+      "completed": "2026-03-31T19:23:21Z",
+      "completion_summary": "Added 'Investigated Dead Ends: Logic Weakening' section to ROADMAP.md documenting task 77 research findings - why preorder D does not help completeness and clarifying representation theorem goals."
     },
     {
       "project_number": 78,
