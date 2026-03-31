@@ -284,9 +284,10 @@ technical_debt:
 
 ### 59. Prove frame-specific soundness axioms
 - **Effort**: 3-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: None (parallelizable with completeness work per task 64 analysis)
+- **Research**: [01_frame-soundness-research.md](059_prove_frame_specific_soundness_axioms/reports/01_frame-soundness-research.md) — 4 of 5 sorries fillable via reflexive semantics; 1 requires type class constraints
 
 **Description**: Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.
 

@@ -34,13 +34,22 @@
     {
       "project_number": 59,
       "project_name": "prove_frame_specific_soundness_axioms",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "description": "Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.",
       "effort": "3-5 hours",
       "dependencies": [],
       "created": "2026-03-24T19:43:14Z",
-      "last_updated": "2026-03-24T19:43:14Z"
+      "last_updated": "2026-03-31T21:49:26Z",
+      "session_id": "sess_1774993419_e0fde9",
+      "researched": "2026-03-31T21:49:26Z",
+      "artifacts": [
+        {
+          "path": "specs/059_prove_frame_specific_soundness_axioms/reports/01_frame-soundness-research.md",
+          "type": "research_report",
+          "summary": "4 of 5 sorries fillable via reflexive semantics; 1 requires type class constraints"
+        }
+      ]
     },
     {
       "project_number": 58,
