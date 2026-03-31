@@ -24,6 +24,11 @@
           "path": "specs/070_explore_ultrafilter_construction/plans/02_ultrafilter-revised-plan.md",
           "type": "plan",
           "summary": "Revised 9-phase plan for ultrafilter-based temporal coherence (v2)"
+        },
+        {
+          "path": "specs/070_explore_ultrafilter_construction/reports/08_team-research.md",
+          "type": "research",
+          "summary": "Team research: seed consistency corner case resolution (filter-deduction-contraction approach)"
         }
       ]
     },
