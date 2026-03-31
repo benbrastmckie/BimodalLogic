@@ -8,14 +8,14 @@
     {
       "project_number": 70,
       "project_name": "explore_ultrafilter_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Explore ultrafilter-based construction for temporal coherence as alternative to MCS-based Lindenbaum extension. Ultrafilters of the Lindenbaum algebra have automatic negation completeness, eliminating the F-persistence gap where Lindenbaum can add G(neg phi). The R_G and R_Box relations on ultrafilters already exist (UltrafilterChain.lean lines 59-68). This task requires: (1) defining FMCS structure from ultrafilter chains, (2) proving ultrafilter chains satisfy temporal coherence by construction, (3) connecting ultrafilter-based completeness to existing MCS-based infrastructure. Reference: Strategy 4 in task 69 team research report.",
       "effort": "12-20 hours",
       "parent_task": 69,
       "created": "2026-03-30T18:43:29Z",
-      "last_updated": "2026-03-31T03:16:31Z",
-      "session_id": "sess_1774926757_fa04ca",
+      "last_updated": "2026-03-31T03:23:39Z",
+      "session_id": "sess_1774927396_43b919",
       "researched": "2026-03-31T03:09:45Z",
       "planned": "2026-03-31T03:16:31Z",
       "started": "2026-03-30T23:37:27Z",
@@ -49,6 +49,11 @@
           "path": "specs/070_explore_ultrafilter_construction/plans/04_bidirectional-witness.md",
           "type": "plan",
           "summary": "9-phase implementation plan for bidirectional temporal witness construction (v4)"
+        },
+        {
+          "path": "specs/070_explore_ultrafilter_construction/summaries/05_bidirectional-partial-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: Phase 0-1 complete (archive dead code, bidirectional seed), Phase 2 partial (G(H(a)) membership sorry)"
         }
       ]
     },

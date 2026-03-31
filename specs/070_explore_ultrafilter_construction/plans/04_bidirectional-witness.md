@@ -64,7 +64,7 @@ From report 09:
 
 ## Implementation Phases
 
-### Phase 0: Archive Dead Code and Update ROADMAP [NOT STARTED]
+### Phase 0: Archive Dead Code and Update ROADMAP [COMPLETED]
 
 **Goal**: Clean up dead approaches and document the resolution strategy.
 
@@ -125,7 +125,7 @@ A bidirectional chain using this witness preserves G in forward direction AND H 
 
 ---
 
-### Phase 1: Define Bidirectional Seed [NOT STARTED]
+### Phase 1: Define Bidirectional Seed [COMPLETED]
 
 **Goal**: Define the bidirectional seed and prove membership lemmas.
 
@@ -174,7 +174,7 @@ theorem bidirectional_seed_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsi
 
 ---
 
-### Phase 2: Prove Bidirectional Seed Consistency [NOT STARTED]
+### Phase 2: Prove Bidirectional Seed Consistency [PARTIAL]
 
 **Goal**: Prove {phi} U bidirectional_seed is consistent when F(phi) in M.
 

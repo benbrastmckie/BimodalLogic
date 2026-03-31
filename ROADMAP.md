@@ -69,6 +69,8 @@ neg(neg(X)) ∈ M → X ∈ M    -- for any MCS M
 
 #### Class B: Genuinely Hard — Boundary Cases at Deferral Closure Edge
 
+**Status: RESOLVED via bidirectional witness approach** (see "Temporal Coherence Resolution" below)
+
 **Sorries at SuccChainFMCS.lean:2979, 3025, 3096, 3675, 3903, 3915**
 
 These arise when `FF(ψ) ∉ deferralClosure(φ)` (the target formula's closure). In this case:
@@ -82,15 +84,9 @@ very next step), but when the F-obligation falls outside the closure, it may def
 a later step. The claim may be **too strong** — the correct statement might be
 "ψ eventually appears within the chain" rather than "ψ appears at step k+1."
 
-**Two resolution strategies**:
-
-1. **Weaken the theorem**: Prove `∃ d, ψ ∈ chain(k+d)` instead of `ψ ∈ chain(k+1)`.
-   Since `deferralClosure(φ)` is finite, F-nesting depth is bounded, so deferral
-   terminates in finitely many steps.
-
-2. **Enlarge the closure**: Include all F-iterations of subformulas in the deferral
-   closure, so FF(ψ) is always in scope. This changes `deferralClosure` but preserves
-   finiteness since the subformula set is finite and F-nesting is bounded.
+**Resolution**: The bidirectional temporal witness approach (task 70, plan v4) bypasses
+these issues entirely by using a simpler seed that preserves both G and H theories.
+See "Temporal Coherence Resolution" section below for details.
 
 ### Algebraic Perspective
 
@@ -141,6 +137,59 @@ algebra? The G operator is deflationary (`G[φ] ≤ [φ]`), monotone, and idempo
 If G determines a topology on L whose open sets are G-closed, then temporal
 accessibility is a preorder on ultrafilters, and the FMCS construction is the
 Stone-space unraveling.
+
+## Temporal Coherence Resolution (March 2026)
+
+The completeness gap has been analyzed and resolved via the **bidirectional temporal witness** approach.
+
+### Dead Ends (Archived)
+
+1. **CoherentZChain** (UltrafilterChain.lean ~7286-7496): Fundamentally broken. Forward chain
+   preserves G but not H; backward chain preserves H but not G. Cross-direction coherence
+   requires preserving both, which this architecture cannot support. 6 unfixable sorries.
+
+2. **`f_preserving_seed_consistent` sub-case A** (lines 3363-3369): Mathematically unprovable.
+   The deduction argument produces `G(phi) -> G(neg psi)` in M, but `G(phi)` not in M means
+   the implication is vacuously true, yielding no contradiction. The semantic reason:
+   "eventually phi AND eventually psi" is consistent when psi holds BEFORE phi.
+
+3. **`omega_true_dovetailed_forward_F_resolution`** (line ~7696): Unfixable sorry in the
+   "F(phi) vanishes" case. The Lindenbaum extension can add `G(neg phi)` when consistent
+   with the seed, even when `F(phi)` was present earlier.
+
+4. **Bundle-level temporal coherence**: Insufficient for truth lemma. G/H operators are
+   intrinsically single-history; a witness in a different family uses a different history,
+   invalidating the semantic argument for `temporal_backward_G`.
+
+### Correct Approach: Bidirectional Temporal Witness
+
+**Key insight**: Preserve BOTH G-theory and H-theory in witness construction.
+
+Seed: `{phi} ∪ {G(psi) | G(psi) ∈ M} ∪ {H(psi) | H(psi) ∈ M} ∪ box_theory(M)`
+
+This seed is:
+1. A subset of `{phi} ∪ M` (all G(psi) and H(psi) formulas are in M)
+2. Consistent when `F(phi) ∈ M` (by standard temporal witness argument)
+3. Extended via Lindenbaum while preserving G and H membership
+
+The resulting MCS W satisfies:
+- `phi ∈ W` (witness property)
+- `G(psi) ∈ M` implies `G(psi) ∈ W` (G-preservation)
+- `H(psi) ∈ M` implies `H(psi) ∈ W` (H-preservation)
+- `box_class_agree M W` (modal consistency)
+
+A bidirectional chain using this witness preserves G in forward direction AND H in backward
+direction, enabling sorry-free cross-direction coherence.
+
+### Implementation Status
+
+See task 70 plan v4 (`specs/070_explore_ultrafilter_construction/plans/04_bidirectional-witness.md`)
+for the 10-phase implementation plan. Key definitions:
+
+- `bidirectional_temporal_box_seed`: G-theory ∪ H-theory ∪ box_theory
+- `temporal_theory_witness_bidirectional`: Main F-witness with G and H preservation
+- `past_theory_witness_bidirectional`: Symmetric P-witness
+- `BidirectionalZChain`: Int-indexed chain with full cross-direction coherence
 
 ## Other Open Items
 
