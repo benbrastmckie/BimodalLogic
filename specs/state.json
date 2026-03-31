@@ -1372,9 +1372,9 @@
       "language": "lean4",
       "priority": "high",
       "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint",
-      "last_updated": "2026-03-31T18:07:04Z",
+      "last_updated": "2026-03-31T18:22:30Z",
       "session_id": "sess_1774980147_15379d",
-      "researched": "2026-03-31T18:07:04Z",
+      "researched": "2026-03-31T18:22:30Z",
       "artifacts": [
         {
           "path": "specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md",
@@ -1385,6 +1385,11 @@
           "path": "specs/077_research_preorder_taskframe_generalization/reports/02_time-shift-analysis.md",
           "type": "research",
           "summary": "Time-shift invariance analysis for BTM"
+        },
+        {
+          "path": "specs/077_research_preorder_taskframe_generalization/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Critical re-analysis: D ≠ CanonicalMCS, partial order D creates 2D time"
         }
       ]
     },
