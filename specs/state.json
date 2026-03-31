@@ -1325,7 +1325,7 @@
         71
       ],
       "created": "2026-03-30T22:53:42Z",
-      "last_updated": "2026-03-31T18:43:43Z",
+      "last_updated": "2026-03-31T18:50:11Z",
       "artifacts": [
         {
           "type": "research",
@@ -1341,10 +1341,15 @@
           "path": "specs/072_wire_completeness_bfmcs_bundle/reports/05_team-research.md",
           "type": "research",
           "summary": "Team research: Z_chain_forward_F bidirectionality analysis (2 teammates)"
+        },
+        {
+          "path": "specs/072_wire_completeness_bfmcs_bundle/reports/06_semantic-correction.md",
+          "type": "research",
+          "summary": "Semantic correction: bundle-level coherence is wrong for TM task semantics"
         }
       ],
-      "session_id": "sess_1774981391_bfd67b",
-      "researched": "2026-03-31T18:43:43Z"
+      "session_id": "sess_1774982772_191c5d",
+      "researched": "2026-03-31T18:50:11Z"
     },
     {
       "project_number": 74,
