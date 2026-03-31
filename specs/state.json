@@ -693,7 +693,7 @@
     {
       "project_number": 998,
       "project_name": "fmp_redesign_strict_temporal",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-19T17:05:39Z",
       "last_updated": "2026-03-19T17:05:39Z",
@@ -1281,23 +1281,29 @@
     {
       "project_number": 71,
       "project_name": "document_f_persistence_findings",
-      "status": "researched",
+      "status": "planned",
       "language": "markdown",
       "description": "Consolidate discoveries from tasks 67, 69, 70 into ROADMAP.md and source comments. Three items: (1) F-persistence counterexample documentation, (2) Truth lemma bidirectionality constraint — Imp forward requires backward IH, so F/P sorries block entire proof; correct misleading comments, (3) Separate-direction witness status — forward_G/backward_H sorry-free but forward_F/backward_P remain as the blocker.",
       "effort": "2-3 hours",
       "parent_task": 69,
       "dependencies": [],
       "created": "2026-03-30T22:53:42Z",
-      "last_updated": "2026-03-31T14:43:53Z",
+      "last_updated": "2026-03-31T15:05:15Z",
       "artifacts": [
         {
           "path": "specs/071_document_f_persistence_findings/reports/01_f-persistence-bidirectionality.md",
           "type": "research",
           "summary": "Research report confirming 3 findings: F-persistence counterexample, truth lemma bidirectionality constraint, separate-direction witness status"
+        },
+        {
+          "path": "specs/071_document_f_persistence_findings/plans/01_f-persistence-documentation.md",
+          "type": "plan",
+          "summary": "4-phase documentation plan for F-persistence counterexample, truth lemma bidirectionality, and F/P gaps"
         }
       ],
-      "session_id": "sess_1774968009_5310d1",
-      "researched": "2026-03-31T14:43:53Z"
+      "session_id": "sess_1774969365_e78514",
+      "researched": "2026-03-31T14:43:53Z",
+      "planned": "2026-03-31T15:05:15Z"
     },
     {
       "project_number": 72,
@@ -1331,9 +1337,41 @@
       "dependencies": [],
       "created": "2026-03-30T23:00:00Z",
       "last_updated": "2026-03-30T23:00:00Z"
+    },
+    {
+      "project_number": 74,
+      "project_name": "research_strict_vs_reflexive_semantics",
+      "status": "not_started",
+      "language": "formal",
+      "priority": "high",
+      "description": "Research strict vs reflexive temporal semantics for TM logic completeness"
+    },
+    {
+      "project_number": 75,
+      "project_name": "research_strict_temporal_extension_design",
+      "status": "not_started",
+      "language": "formal",
+      "priority": "high",
+      "description": "Research G prime / H prime operator extension design and conservative extension proof"
+    },
+    {
+      "project_number": 76,
+      "project_name": "research_density_discreteness_completeness",
+      "status": "not_started",
+      "language": "formal",
+      "priority": "high",
+      "description": "Research unified density/discreteness completeness paths under strict/reflexive semantics"
+    },
+    {
+      "project_number": 77,
+      "project_name": "research_preorder_taskframe_generalization",
+      "status": "not_started",
+      "language": "lean4",
+      "priority": "high",
+      "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint"
     }
   ],
-  "next_project_number": 74,
+  "next_project_number": 78,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

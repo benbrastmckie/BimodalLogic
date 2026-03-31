@@ -1,16 +1,16 @@
 ---
-next_project_number: 74
+next_project_number: 78
 repository_health:
   overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-03-30T18:30:00Z
+  last_assessed: 2026-03-31T00:00:00Z
 task_counts:
-  active: 21
+  active: 25
   completed: 730
-  in_progress: 0
-  not_started: 7
+  in_progress: 1
+  not_started: 10
   abandoned: 58
-  total: 800
+  total: 804
 technical_debt:
   sorry_count: 24
   sorry_count_note: "Audited 2026-03-30: 12 examples/exercises, 5 soundness, 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 67 deleted g_content sorry."
@@ -89,15 +89,118 @@ technical_debt:
 
 ---
 
+### 74. Research strict vs reflexive temporal semantics for TM logic
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: formal
+- **Priority**: high
+- **Created**: 2026-03-31
+- **Related**: Tasks 75-77, 998 (strict temporal extensions track)
+
+**Description**: Research and compare strict temporal semantics (G/H quantify over s > t / s < t) versus reflexive semantics (s ≥ t / s ≤ t) for TM logic completeness. Key questions:
+
+1. **Canonical model construction**: Does strict semantics simplify F/P witness construction? Under strict semantics, F(φ) at t means ∃s > t, φ(s) — the present is excluded, potentially avoiding the Lindenbaum extension issue where G(neg φ) can kill F(φ) witnesses.
+
+2. **Axiom implications**: The temp_t_future (Gφ → φ) and temp_t_past (Hφ → φ) axioms are ONLY valid under reflexive semantics. Under strict semantics, these would be removed. How does this affect the proof system?
+
+3. **Literature survey**: Survey existing literature on tense logics with both strict and reflexive operators (Kt, Kt.Li, Prior's tense logics).
+
+4. **Completeness path**: Determine if strict semantics provides a simpler path to completeness or if reflexive semantics with FMP workaround is preferable.
+
+---
+
+### 75. Research G'/H' operator extension design for TM logic
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: formal
+- **Priority**: high
+- **Created**: 2026-03-31
+- **Dependencies**: Task 74
+- **Related**: Tasks 74, 76-77, 998 (strict temporal extensions track)
+
+**Description**: Design the extension of TM logic with strict temporal operators G'/H' alongside existing reflexive G/H. Key design decisions:
+
+1. **Formula syntax extension**:
+   - Option A: Add G'/H' as new primitives in Formula type
+   - Option B: Define G'/H' as derived operators (G' φ := G φ ∧ ¬φ)
+   - Tradeoffs: Primitives are cleaner for semantics; definitions simplify conservative extension proof
+
+2. **Axiom schemas**: Determine axioms for strict operators:
+   - Distribution: G'(φ → ψ) → (G'φ → G'ψ)
+   - Interaction with reflexive: G ↔ (φ ∧ G'), H ↔ (φ ∧ H')
+   - Strict seriality: Gφ → Fφ (from NoMaxOrder)
+   - Strict density: G'G'φ → G'φ (from DenselyOrdered)
+
+3. **Conservative extension proof**: Show that for formulas without G'/H', derivability in extended system iff derivability in base system.
+
+4. **Modal interaction**: Verify G'/H' interact correctly with S5 modal operators □/◇.
+
+---
+
+### 76. Research unified density/discreteness completeness paths
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: formal
+- **Priority**: high
+- **Created**: 2026-03-31
+- **Dependencies**: Tasks 74, 75
+- **Related**: Tasks 68, 998 (dense/discrete completeness)
+
+**Description**: Research unified approach to density and discreteness completeness under both strict and reflexive semantics. Key questions:
+
+1. **Dense completeness**:
+   - Current blocker: dense_completeness_fc sorry (Int is not dense)
+   - Path A: Rat canonical model construction
+   - Path B: Strict semantics may simplify (density axiom documented for strict)
+   - Analyze which approach is more tractable
+
+2. **Discrete completeness**:
+   - Current: Reduces to Int completeness (sorry-free reduction)
+   - Blocker: discrete_Icc_finite_axiom (custom axiom, task 60)
+   - Path: SuccOrder-based approach vs quotient approach
+
+3. **Unified framework**:
+   - Can density and discreteness share canonical model infrastructure?
+   - ParametricRepresentation already parametric over D — extend to support both
+
+4. **Base logic completeness**:
+   - Is base logic (no density/discreteness axioms) complete?
+   - If incomplete, what minimal extension is needed?
+
+---
+
+### 77. Research PreorderTaskFrame generalization
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: high
+- **Created**: 2026-03-31
+- **Related**: Task 8 (genuine truth_at completeness)
+
+**Description**: Research generalization of TaskFrame to relax the AddCommGroup constraint, enabling CanonicalMCS as completeness domain. From task 8 research:
+
+1. **Current constraint**: `TaskFrame D` requires `[AddCommGroup D]`, but `CanonicalMCS` has no group structure.
+
+2. **Proposed generalization**: Define `PreorderTaskFrame D` with `[Preorder D] [Zero D]` that weakens algebraic requirements while preserving semantic meaning.
+
+3. **Key insight from task 8 research**: The TruthLemma doesn't actually use group operations — only ordering. This suggests the constraint can be relaxed.
+
+4. **Impact on completeness**: If successful, the sorry-free `canonicalMCSBFMCS` construction (forward_F, backward_P proven) can be used directly, sidestepping the F/P witness construction blocker entirely.
+
+5. **Implementation path**: Define PreorderTaskFrame, prove TruthLemma for it, instantiate with CanonicalMCS.
+
+---
+
 ### 71. Document completeness architecture findings and update ROADMAP
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: markdown
 - **Dependencies**: None
 - **Parent Task**: #69
 - **Research**:
   - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
   - [01_f-persistence-bidirectionality.md](071_document_f_persistence_findings/reports/01_f-persistence-bidirectionality.md)
+- **Plan**: [01_f-persistence-documentation.md](071_document_f_persistence_findings/plans/01_f-persistence-documentation.md)
 
 **Description**: Consolidate discoveries from tasks 67, 69, and 70 into ROADMAP.md and source code comments. Three items:
 
@@ -461,8 +564,10 @@ technical_debt:
 
 ### 998. Redesign FMP filtration for strict temporal semantics
 - **Effort**: TBD (estimated 4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
+- **Priority**: high
+- **Related**: Tasks 74-77 (strict temporal extensions research track)
 
 **Description**: Redesign the FMP (Finite Model Property) filtration for strict temporal semantics. The 2 sorry'd theorems in `Decidability/FMP/TruthPreservation.lean` — `mcs_all_future_closure` (line 263) and `mcs_all_past_closure` (line 281) — are deprecated because the temporal T-axiom (`Gφ → φ`) is NOT valid under strict semantics. `filtration_all_future_forward` and `filtration_all_past_forward` depend on them. The FMP module is separate from the main decidability pipeline (`decide` is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: `mcs_finite_model_property` in `FMP.lean` does NOT directly use these sorry'd lemmas, so the impact is localized to `filtration_all_future_forward`/`backward`.
 
