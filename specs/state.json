@@ -40,14 +40,19 @@
       "effort": "3-5 hours",
       "dependencies": [],
       "created": "2026-03-24T19:43:14Z",
-      "last_updated": "2026-03-31T21:49:26Z",
-      "session_id": "sess_1774993419_e0fde9",
-      "researched": "2026-03-31T21:49:26Z",
+      "last_updated": "2026-03-31T22:10:30Z",
+      "session_id": "sess_1774994572_64eed3",
+      "researched": "2026-03-31T22:10:30Z",
       "artifacts": [
         {
           "path": "specs/059_prove_frame_specific_soundness_axioms/reports/01_frame-soundness-research.md",
           "type": "research_report",
           "summary": "4 of 5 sorries fillable via reflexive semantics; 1 requires type class constraints"
+        },
+        {
+          "path": "specs/059_prove_frame_specific_soundness_axioms/reports/02_team-research.md",
+          "type": "research_report",
+          "summary": "Team research: strict semantics impact on density axioms, related tasks 74-76"
         }
       ]
     },
