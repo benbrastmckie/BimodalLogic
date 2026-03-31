@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-31T00:00:00Z
 task_counts:
-  active: 22
-  completed: 736
+  active: 18
+  completed: 739
   in_progress: 0
   not_started: 10
-  abandoned: 63
-  total: 809
+  abandoned: 64
+  total: 811
 technical_debt:
   sorry_count: 20
   sorry_count_note: "Audited 2026-03-31: 12 examples/exercises, 1 soundness (temporal_duality, intentional), 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 59 filled 4 soundness sorries."
@@ -43,13 +43,7 @@ technical_debt:
 - **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
 - **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
 
-### 1. Phase A — Quick Wins (parallel, no dependencies)
-
-- **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
-- **59** [COMPLETED] — Prove frame-specific soundness axioms (5 sorries, independent)
-- **80** [COMPLETED] — Audit UltrafilterChain dead code (removed 4,423 lines, 23 sorries)
-
-### 2. Phase B — Core Wiring (BLOCKED on F/P temporal coherence)
+### 1. Phase B — Core Wiring (BLOCKED on F/P temporal coherence)
 
 ```
 [F/P witnesses] → 58 → 60
@@ -60,25 +54,19 @@ technical_debt:
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
-### 3. Code Cleanup (parallel to any phase)
+### 2. Experimental / Research
 
-- **57** [RESEARCHED] — Clean up UltrafilterChain.lean
-- **80** [COMPLETED] — Audit UltrafilterChain dead code (review recommendation)
-
-### 4. Experimental / Research
-
-- ~~**61**~~ [ABANDONED] — Eliminate BFMCS bundles (bundle structure mathematically necessary)
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 - **64** [RESEARCHED] — Critical path review (completed research, reference only)
 
-### 5. Deferred
+### 3. Deferred
 
 - **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
 - **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
 - **21** [PLANNED] — Tech debt cleanup (depends on 18)
 - **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
 
-### 6. Backlog
+### 4. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
 - **39** [RESEARCHED] — Preorder semantics study (theoretical)
@@ -87,25 +75,6 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
-
----
-
-### 80. Audit UltrafilterChain dead code from abandoned approaches
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Priority**: high
-- **Created**: 2026-03-31
-- **Completed**: 2026-03-31
-- **Source**: Review 2026-03-31 (completeness architecture)
-- **Summary**: Removed 4,423 lines of dead code from UltrafilterChain.lean (53% reduction), eliminating all 23 sorries. File reduced from 8,376 to 3,953 lines.
-- **Research**:
-  - [01_dead-code-audit.md](080_ultrafilter_dead_code_audit/reports/01_dead-code-audit.md) — Initial audit: 24 sorries, 8 dead regions
-  - [02_medium-confidence-analysis.md](080_ultrafilter_dead_code_audit/reports/02_medium-confidence-analysis.md) — Follow-up: all medium items confirmed ARCHIVE
-- **Plan**: [01_dead-code-cleanup.md](080_ultrafilter_dead_code_audit/plans/01_dead-code-cleanup.md)
-- **Summary Artifact**: [01_cleanup-summary.md](080_ultrafilter_dead_code_audit/summaries/01_cleanup-summary.md)
-
-**Description**: Audit and remove dead code from UltrafilterChain.lean. The file has ~25 sorries across multiple abandoned approaches documented in ROADMAP.md: (1) old SuccChain with f_nesting_is_bounded (FALSE), (2) bidirectional seed with H(a)->G(H(a)) (NOT derivable), (3) Z_chain cross-chain propagation (structural gap), (4) CoherentZChain (same gaps). Cleanup reduces cognitive load, clarifies which sorries are actually blocking vs dead code, and may reveal ~430 lines removable.
 
 ---
 
@@ -262,16 +231,6 @@ technical_debt:
 
 ---
 
-### 61. EXPERIMENTAL: Eliminate BFMCS bundle machinery
-- **Effort**: 6-10 hours
-- **Status**: [NOT STARTED]
-- **Language**: lean4
-- **Dependencies**: None (independent exploration)
-
-**Description**: EXPERIMENTAL: Develop an alternative completeness proof that eliminates BFMCS bundle machinery entirely. Define canonical model with box-class equivalence for modal accessibility directly on worlds (MCS, time) pairs, not families. Use box_theory_witness_exists for the Box truth lemma without bundle quantification. Develop independently until proven to work, then consider replacing existing infrastructure. "Believe it when I see it" approach.
-
----
-
 ### 60. Remove discrete_Icc_finite_axiom
 - **Effort**: 4-6 hours
 - **Status**: [NOT STARTED]
@@ -279,23 +238,6 @@ technical_debt:
 - **Dependencies**: Task 59
 
 **Description**: Eliminate the custom axiom discrete_Icc_finite_axiom (FrameConditions/Completeness.lean line 187). Either prove the finiteness of DiscreteTimelineQuot intervals directly, or restructure the discrete completeness proof to avoid needing it. Research-heavy task.
-
----
-
-### 59. Prove frame-specific soundness axioms
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-31
-- **Summary**: Filled 4/5 frame-specific soundness sorries via reflexive self-witness pattern; temporal_duality documented as intentional architectural limitation
-- **Language**: lean4
-- **Dependencies**: None (parallelizable with completeness work per task 64 analysis)
-- **Research**:
-  - [01_frame-soundness-research.md](059_prove_frame_specific_soundness_axioms/reports/01_frame-soundness-research.md) — 4 of 5 sorries fillable via reflexive semantics; 1 requires type class constraints
-  - [02_team-research.md](059_prove_frame_specific_soundness_axioms/reports/02_team-research.md) — Team research: strict semantics impact, related tasks 74-76 (2 teammates)
-- **Plan**: [01_soundness-axioms.md](059_prove_frame_specific_soundness_axioms/plans/01_soundness-axioms.md) — 4-phase implementation plan
-- **Summary**: [01_soundness-axioms-summary.md](059_prove_frame_specific_soundness_axioms/summaries/01_soundness-axioms-summary.md) — Implementation summary
-
-**Description**: Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.
 
 ---
 
@@ -310,22 +252,6 @@ technical_debt:
 - **Plan**: [17_greedy-extension.md](058_wire_completeness_to_frame_conditions/plans/17_greedy-extension.md) — 4-phase greedy extension approach
 
 **Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
-
----
-
-### 57. Clean up UltrafilterChain.lean
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Started**: 2026-03-31
-- **Completed**: 2026-03-31
-- **Language**: lean4
-- **Research**:
-  - [01_cleanup-analysis.md](057_clean_up_ultrafilter_chain_lean/reports/01_cleanup-analysis.md) — Original analysis
-  - [02_post-80-review.md](057_clean_up_ultrafilter_chain_lean/reports/02_post-80-review.md) — Post-task-80 review: Phase 1 relations NOT dead code
-- **Plan**: [01_comment-cleanup.md](057_clean_up_ultrafilter_chain_lean/plans/01_comment-cleanup.md)
-- **Summary**: [01_cleanup-summary.md](057_clean_up_ultrafilter_chain_lean/summaries/01_cleanup-summary.md) — Removed 239 lines of exploratory comments (6% reduction)
-
-**Description**: ~~Remove ~150 lines of unused Phase 1 ultrafilter relations~~ (invalidated: actively used). Streamline ~100-150 lines of verbose comments in box_class_witness_consistent. File renaming not recommended.
 
 ---
 

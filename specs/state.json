@@ -6,19 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 61,
-      "project_name": "experiment_eliminate_bfmcs_bundles",
-      "status": "abandoned",
-      "language": "lean4",
-      "description": "EXPERIMENTAL: Develop an alternative completeness proof that eliminates BFMCS bundle machinery entirely. Define canonical model with box-class equivalence for modal accessibility directly on worlds (MCS, time) pairs, not families. Use box_theory_witness_exists for the Box truth lemma without bundle quantification. Develop independently until proven to work, then consider replacing existing infrastructure. Believe it when I see it approach.",
-      "effort": "6-10 hours",
-      "dependencies": [],
-      "created": "2026-03-24T19:43:30Z",
-      "last_updated": "2026-03-24T19:43:30Z",
-      "abandoned": "2026-03-31T20:19:04Z",
-      "abandoned_reason": "Bundle structure is mathematically necessary for modal completeness (Box backward requires multiple families). Review 2026-03-31."
-    },
-    {
       "project_number": 60,
       "project_name": "remove_discrete_icc_finite_axiom",
       "status": "not_started",
@@ -30,45 +17,6 @@
       ],
       "created": "2026-03-24T19:43:21Z",
       "last_updated": "2026-03-24T19:43:21Z"
-    },
-    {
-      "project_number": 59,
-      "project_name": "prove_frame_specific_soundness_axioms",
-      "status": "completed",
-      "language": "lean4",
-      "description": "Fill 5 sorries in Soundness.lean for frame-specific axiom validity: density (line 572), discreteness_forward (line 576), seriality_future (line 579), seriality_past (line 582), temporal_duality (line 602). These require frame-specific proofs using DenselyOrdered, SuccOrder constraints.",
-      "effort": "3-5 hours",
-      "dependencies": [],
-      "created": "2026-03-24T19:43:14Z",
-      "last_updated": "2026-03-31T22:42:22Z",
-      "session_id": "sess_1774996587_0de2dc",
-      "researched": "2026-03-31T22:10:30Z",
-      "artifacts": [
-        {
-          "path": "specs/059_prove_frame_specific_soundness_axioms/reports/01_frame-soundness-research.md",
-          "type": "research_report",
-          "summary": "4 of 5 sorries fillable via reflexive semantics; 1 requires type class constraints"
-        },
-        {
-          "path": "specs/059_prove_frame_specific_soundness_axioms/reports/02_team-research.md",
-          "type": "research_report",
-          "summary": "Team research: strict semantics impact on density axioms, related tasks 74-76"
-        },
-        {
-          "path": "specs/059_prove_frame_specific_soundness_axioms/plans/01_soundness-axioms.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for frame-specific soundness axioms"
-        },
-        {
-          "path": "specs/059_prove_frame_specific_soundness_axioms/summaries/01_soundness-axioms-summary.md",
-          "type": "summary",
-          "summary": "Filled 4/5 sorries via reflexive semantics; 1 intentional sorry (temporal_duality)"
-        }
-      ],
-      "planned": "2026-03-31T22:18:25Z",
-      "started": "2026-03-31T22:36:53Z",
-      "completed": "2026-03-31T22:42:22Z",
-      "completion_summary": "Filled 4/5 frame-specific soundness sorries via reflexive self-witness pattern; temporal_duality documented as intentional architectural limitation"
     },
     {
       "project_number": 58,
@@ -281,47 +229,6 @@
       "started": "2026-03-27T23:01:14Z",
       "resume_phase": 6,
       "blocked_by": "Temporal coherence (F/P witnesses)"
-    },
-    {
-      "project_number": 57,
-      "project_name": "clean_up_ultrafilter_chain_lean",
-      "status": "completed",
-      "language": "lean4",
-      "description": "Clean up UltrafilterChain.lean: remove ~150 lines of unused Phase 1 ultrafilter relations (R_G, R_Box, R_G_refl, R_G_trans, R_Box_refl, R_Box_euclidean, R_Box_symm, R_Box_trans) that are never referenced by the actual box-class construction. Remove ~280 lines of verbose exploratory comments in box_class_witness_consistent. Consider renaming file to BoxClassBFMCS.lean to match what it actually does.",
-      "effort": "1-2 hours",
-      "dependencies": [
-        56
-      ],
-      "created": "2026-03-24T19:43:00Z",
-      "last_updated": "2026-03-31T21:38:06Z",
-      "session_id": "sess_1774992676_97deaa",
-      "researched": "2026-03-31T21:22:26Z",
-      "artifacts": [
-        {
-          "path": "specs/057_clean_up_ultrafilter_chain_lean/reports/01_cleanup-analysis.md",
-          "type": "research_report",
-          "summary": "Confirmed ~170 lines of unused Phase 1 ultrafilter relations can be safely removed. Identified ~217 lines of verbose comments. File renaming to BoxClassBFMCS.lean is safe. Total: ~387 lines (~21% reduction)."
-        },
-        {
-          "path": "specs/057_clean_up_ultrafilter_chain_lean/reports/02_post-80-review.md",
-          "type": "research_report",
-          "summary": "Post-task-80 analysis: Phase 1 relations NOT dead code; revised scope is comment streamlining only (~100-150 lines)"
-        },
-        {
-          "path": "specs/057_clean_up_ultrafilter_chain_lean/plans/01_comment-cleanup.md",
-          "type": "plan",
-          "summary": "3-phase plan for comment streamlining (~100-150 lines)"
-        },
-        {
-          "path": "specs/057_clean_up_ultrafilter_chain_lean/summaries/01_cleanup-summary.md",
-          "type": "summary",
-          "summary": "Removed 239 lines of exploratory comments, updated docstring"
-        }
-      ],
-      "planned": "2026-03-31T21:28:00Z",
-      "started": "2026-03-31T21:31:31Z",
-      "completed": "2026-03-31T21:38:06Z",
-      "completion_summary": "Streamlined 239 lines of exploratory comments in box_class_witness_consistent proof. Updated module docstring. File reduced from 3953 to 3714 lines (6% reduction). Build verified."
     },
     {
       "project_number": 39,
@@ -786,46 +693,6 @@
           "summary": "Spawn analysis from parent task 73"
         }
       ]
-    },
-    {
-      "project_number": 80,
-      "project_name": "ultrafilter_dead_code_audit",
-      "status": "completed",
-      "language": "lean4",
-      "priority": "high",
-      "description": "Audit and remove dead code from UltrafilterChain.lean. File contains ~25 sorries across abandoned approaches (old SuccChain, bidirectional seed, Z_chain). Much code is dead ends documented in ROADMAP.md. Cleanup reduces cognitive load and clarifies which sorries are actually blocking.",
-      "created": "2026-03-31T20:13:41Z",
-      "effort": "2-4 hours",
-      "source": "review",
-      "last_updated": "2026-03-31T21:13:36Z",
-      "session_id": "sess_1774990357_58bc7a",
-      "researched": "2026-03-31T20:46:04Z",
-      "artifacts": [
-        {
-          "path": "specs/080_ultrafilter_dead_code_audit/reports/01_dead-code-audit.md",
-          "type": "research",
-          "summary": "Comprehensive audit identifying 24 sorries across 8 dead code regions (~2,100-2,875 lines removable). Four abandoned approaches confirmed."
-        },
-        {
-          "path": "specs/080_ultrafilter_dead_code_audit/reports/02_medium-confidence-analysis.md",
-          "type": "research",
-          "summary": "Follow-up analysis confirming all medium-confidence items as ARCHIVE candidates. Z_chain, omega F-persistence, P-preserving seed - no external deps. 23 sorries removable, ~2,925 lines (35%)."
-        },
-        {
-          "path": "specs/080_ultrafilter_dead_code_audit/plans/01_dead-code-cleanup.md",
-          "type": "plan",
-          "summary": "10-phase cleanup plan: archives 4 dead code regions to Boneyard, removes ~2,925 lines (35%), eliminates 23 of 24 sorries"
-        },
-        {
-          "path": "specs/080_ultrafilter_dead_code_audit/summaries/01_cleanup-summary.md",
-          "type": "summary",
-          "summary": "Execution summary: 4,423 lines removed (53%), 23 sorries eliminated"
-        }
-      ],
-      "planned": "2026-03-31T20:51:00Z",
-      "started": "2026-03-31T20:53:34Z",
-      "completed": "2026-03-31T21:13:36Z",
-      "completion_summary": "Removed 4,423 lines of dead code from UltrafilterChain.lean (53% reduction), eliminating all 23 sorries. File reduced from 8,376 to 3,953 lines."
     }
   ],
   "next_project_number": 81,
