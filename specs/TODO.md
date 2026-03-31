@@ -31,7 +31,7 @@ technical_debt:
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
-**Key discovery (task 70)**: Separate-direction witnesses via SuccChainFMCS provide sorry-free `forward_G`/`backward_H`. F/P existential witnesses have sorries due to unbounded nesting. Forward-only truth lemma direction suffices for completeness. Bidirectional witness approach (plan v4) is BLOCKED (H_theory not G-liftable).
+**Key discovery (task 70)**: Separate-direction witnesses via SuccChainFMCS provide sorry-free `forward_G`/`backward_H`. F/P existential witnesses have sorries due to unbounded nesting. The truth lemma is inherently bidirectional (Imp forward requires backward IH), so F/P sorries block the entire proof. Bidirectional witness approach (plan v4) is BLOCKED (H_theory not G-liftable).
 
 ### 1. Phase A — Quick Wins (parallel, no dependencies)
 
@@ -47,7 +47,7 @@ technical_debt:
               ↘ 68 (dense path, parallel)
 ```
 
-1. **72** [RESEARCHED] — Wire forward-only completeness via separate-direction witnesses (depends on #71, #73)
+1. **72** [RESEARCHED] — Wire completeness through fully coherent BFMCS (depends on #71, #73)
 2. **58** [RESEARCHED] — Wire completeness to FrameConditions (depends on #72, #68)
 3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #72)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -112,8 +112,8 @@ technical_debt:
 
 ---
 
-### 72. Wire forward-only completeness via separate-direction witnesses
-- **Effort**: 4-6 hours
+### 72. Wire completeness through fully coherent BFMCS construction
+- **Effort**: 8-14 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task #71, Task #73
@@ -122,7 +122,7 @@ technical_debt:
   - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
   - [07_separate-direction-summary.md](070_explore_ultrafilter_construction/summaries/07_separate-direction-summary.md)
 
-**Description**: Wire the sorry-free separate-direction witnesses from SuccChainFMCS into the `construct_bfmcs` callback required by `parametric_algebraic_representation_conditional`. Task 70 established that `forward_G` and `backward_H` are sorry-free via separate seed constructions. The forward-only truth lemma direction suffices for completeness (only need MCS membership → truth_at, not the converse). Key steps: (1) Define weakly-coherent BFMCS requiring only G/H (not F/P), (2) Wire SuccChainFMCS forward_G/backward_H into this structure, (3) Show forward truth lemma holds with weak coherence, (4) Close `bfmcs_from_mcs_temporally_coherent` or bypass it with the new construction.
+**Description**: Construct a fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) to provide the `construct_bfmcs` callback required by `parametric_algebraic_representation_conditional`. The truth lemma is inherently bidirectional — the Imp forward case structurally requires the backward IH (`(ih_psi fam hfam t).mpr`), so the backward G/H cases (which need forward_F/backward_P) infect the entire proof. A "forward-only" truth lemma is impossible. Task 70 proved forward_G/backward_H sorry-free, but forward_F/backward_P remain. Options: (A) Resolve F/P witnesses via fair-scheduling or formula-restricted completeness, (B) Use the algebraic path via ParametricRepresentation with a different BFMCS construction that achieves full coherence, (C) Use the FMP path (task 998 prerequisite). Needs research to identify the viable path.
 
 ---
 

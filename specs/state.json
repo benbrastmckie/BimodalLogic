@@ -1302,8 +1302,8 @@
       "project_name": "wire_completeness_bfmcs_bundle",
       "status": "researched",
       "language": "lean4",
-      "description": "Connect the proven bundle-level temporal coherence to the main completeness theorem: Analyze what construct_bfmcs_bundle provides vs what bundle_validity_implies_provability needs. Adapt Completeness.lean to use BFMCS_Bundle instead of BFMCS (family-level). Wire through: construct_bfmcs_bundle -> ParametricCanonical -> completeness. Document any remaining gaps that emerge.",
-      "effort": "4-6 hours",
+      "description": "Construct fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) for construct_bfmcs callback. Truth lemma is inherently bidirectional (Imp forward needs backward IH), so F/P sorries block entire proof. Options: (A) resolve F/P via fair-scheduling, (B) algebraic path with different construction, (C) FMP path.",
+      "effort": "8-14 hours",
       "parent_task": 69,
       "dependencies": [
         71,
