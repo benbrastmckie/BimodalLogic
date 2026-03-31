@@ -5399,6 +5399,26 @@ All sorry-free from earlier sections:
 /-!
 ### Bundle-Level Temporal Coherence Predicates
 
+**SEMANTIC WARNING**: Bundle-level coherence is INSUFFICIENT for TM task semantics.
+
+TM temporal operators (G, H, F, P) quantify over times in the SAME world history,
+not over different histories. Bundle-level coherence allows F/P witnesses in
+DIFFERENT families (histories), which is semantically wrong:
+
+- Bundle-level: F(phi) at (fam, t) -> witness at (fam', s) where fam' != fam possible
+- TM requires: F(phi) at (fam, t) -> witness at (fam, s) in SAME family
+
+The completeness proof (Completeness.lean) converts BFMCS_Bundle to BFMCS but needs
+`B.temporally_coherent` (family-level). The sorry in `bfmcs_from_mcs_temporally_coherent`
+exists PRECISELY because bundle-level coherence doesn't imply family-level coherence.
+
+See:
+- Truth.lean:118-125 - TM semantics showing single-history temporal quantification
+- ROADMAP.md:158-160 - Documents bundle approach as "dead end"
+- Boneyard/BundleTemporalCoherence/README.md - Full semantic explanation
+
+The correct path is SuccChainFMCS with family-level forward_F/backward_P.
+
 Define predicates that capture bundle-level F and P coherence.
 -/
 
@@ -8304,8 +8324,9 @@ the construction targets phi for resolution.
 has a subtle gap. The Lindenbaum extension used in `temporal_theory_witness_exists` can add
 G(neg phi) if it's consistent with the seed, even when F(phi) was present earlier.
 
-**Alternative**: Bundle-level temporal coherence (`boxClassFamilies_bundle_forward_F`) is
-proven without this gap, as it allows witnesses in ANY family of the bundle.
+**NOTE (2026-03-31)**: Bundle-level temporal coherence (`boxClassFamilies_bundle_forward_F`)
+allows witnesses in ANY family of the bundle, which is semantically WRONG for TM task
+semantics. TM requires witnesses in the SAME history/family. See ROADMAP.md:158-160.
 
 -- ARCHIVED: superseded by bidirectional construction
 -- This theorem has an unfixable sorry in the "F(phi) vanishes" case.
@@ -8348,7 +8369,8 @@ theorem omega_true_dovetailed_forward_F_resolution (M0 : Set Formula) (h_mcs0 : 
       -- Closing this gap requires either:
       -- 1. A modified construction that explicitly excludes G(neg phi) when F(phi) is present
       -- 2. Proving that G(neg phi) is inconsistent with some invariant maintained by the chain
-      -- 3. Using bundle-level coherence (which is already proven: boxClassFamilies_bundle_forward_F)
+      -- 3. Bundle-level coherence (boxClassFamilies_bundle_forward_F) is insufficient for TM
+      --    semantics; it allows witnesses in different histories. See ROADMAP.md:158-160.
       sorry
 
 end Bimodal.Metalogic.Algebraic.UltrafilterChain

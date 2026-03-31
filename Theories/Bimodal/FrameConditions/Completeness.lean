@@ -42,6 +42,17 @@ with a single isolated sorry in `bfmcs_from_mcs_temporally_coherent`:
 This module provides wrappers that expose completeness through the typeclass API.
 The underlying proofs use the bundle construction from UltrafilterChain.
 
+**IMPORTANT (2026-03-31)**: The bundle construction provides BUNDLE-level temporal
+coherence, which is semantically INSUFFICIENT for TM task semantics. TM temporal
+operators quantify over times in the SAME world history, but bundle-level coherence
+allows F/P witnesses in DIFFERENT histories.
+
+The sorry in `bfmcs_from_mcs_temporally_coherent` exists PRECISELY because bundle-level
+coherence does not imply family-level coherence. The correct path uses SuccChainFMCS
+with family-level temporal coherence.
+
+See: Boneyard/BundleTemporalCoherence/README.md for full semantic explanation.
+
 ## References
 
 - `Bimodal.Metalogic.Algebraic.UltrafilterChain`: Bundle-level temporal coherence

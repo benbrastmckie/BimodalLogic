@@ -151,3 +151,20 @@ The teammates agree on the problem diagnosis and differ only on which solution p
 - Task 69 report 17: Counterexample proving chain-level F-persistence is false
 - Task 70 summary 07: Bidirectional seed blocked (H_theory not G-liftable)
 - TruthPreservation.lean:256-281: FMP path has own sorries
+
+---
+
+## Errata (2026-03-31)
+
+**CORRECTION**: The bundle-level temporal coherence approach analyzed in this report
+is semantically WRONG for TM task semantics. TM temporal operators (G, H, F, P) quantify
+over times in the SAME world history, not over different histories as bundle-level
+coherence allows. See `reports/06_semantic-correction.md` for full analysis.
+
+The correct approach uses SuccChainFMCS with family-level temporal coherence.
+
+Key semantic distinction:
+- **Bundle-level**: F(phi) at (fam, t) -> witness at (fam', s) where fam' != fam allowed
+- **TM requires**: F(phi) at (fam, t) -> witness at (fam, s) in the SAME family
+
+See also: `ROADMAP.md:158-160` (identifies bundle as "dead end")

@@ -286,3 +286,21 @@ discrete_completeness_fc         — WIRED (no own sorry)
 | Restricted chain (RestrictedTemporallyCoherentFamily) | Sorry-free | 3 fuel-0 sorries | Needs multi-BRS fix |
 
 Both approaches have the same final gap: combining forward/backward into a full Int-indexed family.
+
+---
+
+## Errata (2026-03-31)
+
+**CORRECTION**: Finding 2 ("Bundle-Level Coherence -- A COMPLETE SORRY-FREE CONSTRUCTION EXISTS")
+is semantically WRONG for TM task semantics. While the code compiles without sorries, bundle-level
+coherence provides the WRONG semantic property.
+
+TM temporal operators (G, H, F, P) quantify over times in the SAME world history, not over
+different histories as bundle-level coherence allows. The completeness proof requires family-level
+coherence (`BFMCS.temporally_coherent`), not bundle-level coherence.
+
+The sorry in `bfmcs_from_mcs_temporally_coherent` (Completeness.lean:220-226) exists PRECISELY
+because bundle-level coherence does not imply family-level coherence.
+
+See `reports/06_semantic-correction.md` for full analysis.
+See also: `ROADMAP.md:158-160` (identifies bundle as "dead end")

@@ -203,3 +203,21 @@ The question is moot because the dovetailed approach is unfixable regardless:
 3. **Bidirectional seed**: BLOCKED (H(a)→G(H(a)) not derivable in TM)
 
 **The correct path**: Use `BFMCS_Bundle` with bundle-level coherence. Write `BundleTruthLemma` (~200 lines). This is mathematically cleaner and avoids all architectural problems.
+
+---
+
+## Errata (2026-03-31)
+
+**CORRECTION**: The recommendation to use `BFMCS_Bundle` with bundle-level coherence
+is semantically WRONG for TM task semantics. TM temporal operators (G, H, F, P) quantify
+over times in the SAME world history, not over different histories as bundle-level
+coherence allows. See `reports/06_semantic-correction.md` for full analysis.
+
+The claim "This is mathematically cleaner" is misleading: bundle-level coherence provides
+the WRONG semantics for TM. The truth lemma is inherently bidirectional (see
+ParametricTruthLemma.lean:208), and the backward direction for G/H cases requires
+family-level forward_F/backward_P.
+
+The correct approach uses SuccChainFMCS with family-level temporal coherence.
+
+See also: `ROADMAP.md:158-160` (identifies bundle as "dead end")

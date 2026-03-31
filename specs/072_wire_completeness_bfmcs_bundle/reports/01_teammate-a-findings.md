@@ -192,3 +192,19 @@ This is the deepest structural change but may be the cleanest long-term path sin
 4. **What does the task 73 blocker analysis say?** Tasks 73/77 may have identified the same gap. The spawned subtasks from task 73 may have produced relevant findings.
 
 5. **Is there a sorry-free `Z_chain_forward_F` for the restricted case?** The `restricted_combined_bounded_witness_F` pattern in SuccChainFMCS.lean suggests the restricted setting handles F-nesting via the `closure_F_bound`. Can this be reused for base completeness with a formula-specific approach?
+
+---
+
+## Errata (2026-03-31)
+
+**CORRECTION**: This report analyzes the type mismatch between `BFMCS_Bundle` (bundle-level
+coherence) and `BFMCS` (family-level coherence) and correctly identifies the gap. However,
+the discussion of "adapting the parametric truth lemma to bundle-level coherence" does not
+recognize that bundle-level coherence is semantically WRONG for TM task semantics.
+
+TM temporal operators (G, H, F, P) quantify over times in the SAME world history, not over
+different histories as bundle-level coherence allows. The truth lemma requires family-level
+coherence, not bundle-level coherence.
+
+See `reports/06_semantic-correction.md` for full analysis.
+See also: `ROADMAP.md:158-160` (identifies bundle as "dead end")

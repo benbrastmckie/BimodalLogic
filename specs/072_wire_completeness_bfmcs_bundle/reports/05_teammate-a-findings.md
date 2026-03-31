@@ -218,3 +218,22 @@ Building a single chain that interleaves F and P resolutions requires careful in
 4. **Must we build a single Z-chain doing both F and P?** Not necessarily. Bundle-level coherence avoids this entirely by allowing witnesses in different families. Within-family approaches require either a bidirectional seed or a single integrated chain.
 
 5. **What is the cleanest mathematical formulation?** The bundle-level approach (`BFMCS_Bundle`) is the cleanest: it matches standard Kripke completeness proofs where witnesses can be in any accessible world. The standard literature (e.g., Segerberg, Goldblatt) proves temporal completeness via canonical models with cross-world witnesses, not same-timeline witnesses.
+
+---
+
+## Errata (2026-03-31)
+
+**CORRECTION**: The claim that bundle-level coherence "matches standard Kripke completeness
+proofs" is WRONG for TM task semantics. TM temporal operators are NOT Kripke operators --
+they quantify over times in the SAME world history, not over different accessible worlds.
+
+Key semantic distinction (from Truth.lean:118-125):
+- **Temporal (G, H)**: Keep the SAME world history tau, vary only time s
+- **Modal (Box)**: Keep the SAME time t, vary world history sigma
+
+Bundle-level coherence allows F/P witnesses in DIFFERENT families (histories), which is
+semantically wrong for TM. The truth lemma is inherently bidirectional, and the backward
+direction for G/H cases requires family-level forward_F/backward_P.
+
+See `reports/06_semantic-correction.md` for full analysis.
+See also: `ROADMAP.md:158-160` (identifies bundle as "dead end")

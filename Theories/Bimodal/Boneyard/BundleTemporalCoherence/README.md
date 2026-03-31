@@ -1,5 +1,9 @@
 # Bundle-Level Temporal Coherence (ARCHIVED)
 
+**Archived**: 2026-03-31
+**Reason**: Semantically wrong for TM task semantics
+**Reference Copy Only**: Original code remains in UltrafilterChain.lean (used by Completeness.lean)
+
 ## Status: SEMANTICALLY INSUFFICIENT
 
 This directory documents **why bundle-level temporal coherence is semantically wrong** for TM task semantics, even though the code compiles and proves what it claims.

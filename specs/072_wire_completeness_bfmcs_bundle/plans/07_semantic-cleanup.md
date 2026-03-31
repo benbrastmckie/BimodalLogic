@@ -1,7 +1,7 @@
 # Implementation Plan: Semantic Cleanup for Task #72
 
 - **Task**: 72 - wire_completeness_bfmcs_bundle
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/072_wire_completeness_bfmcs_bundle/reports/06_semantic-correction.md
@@ -71,7 +71,7 @@ From 06_semantic-correction.md:
 
 ---
 
-### Phase 2: Extract Bundle Code to Boneyard [IN PROGRESS]
+### Phase 2: Extract Bundle Code to Boneyard [COMPLETED]
 
 **Goal**: Move bundle-level coherence constructs from UltrafilterChain.lean to Boneyard
 
@@ -110,7 +110,7 @@ From 06_semantic-correction.md:
 
 ---
 
-### Phase 3: Clean References in Other Files [NOT STARTED]
+### Phase 3: Clean References in Other Files [COMPLETED]
 
 **Goal**: Remove or update bundle references in RestrictedTruthLemma.lean and other files
 
@@ -134,7 +134,7 @@ From 06_semantic-correction.md:
 
 ---
 
-### Phase 4: Add Errata to Research Reports [NOT STARTED]
+### Phase 4: Add Errata to Research Reports [COMPLETED]
 
 **Goal**: Add correction notices to affected research reports
 
@@ -171,16 +171,16 @@ The correct approach uses SuccChainFMCS with family-level temporal coherence.
 
 ---
 
-### Phase 5: Final Documentation and Build Verification [NOT STARTED]
+### Phase 5: Final Documentation and Build Verification [COMPLETED]
 
 **Goal**: Ensure comprehensive documentation and clean build
 
 **Tasks**:
-- [ ] Update Boneyard README with full semantic explanation
-- [ ] Run `lake build` to verify no regressions
-- [ ] Run `lake build Theories.Bimodal.Boneyard.BundleTemporalCoherence.BundleCode` if needed
-- [ ] Review all modified files for consistency
-- [ ] Create implementation summary
+- [x] Update Boneyard README with full semantic explanation
+- [x] Run `lake build` to verify no regressions
+- [x] Run `lake build Theories.Bimodal.Boneyard.BundleTemporalCoherence.BundleCode` if needed
+- [x] Review all modified files for consistency
+- [x] Create implementation summary
 
 **Timing**: 30 minutes
 
@@ -196,11 +196,11 @@ The correct approach uses SuccChainFMCS with family-level temporal coherence.
 
 ## Testing & Validation
 
-- [ ] `lake build` succeeds after all phases
-- [ ] No sorries introduced (cleanup only, no new proofs)
-- [ ] Grep confirms no bundle construct references in active code
-- [ ] Boneyard contains complete extracted code for reference
-- [ ] Research reports have appropriate errata
+- [x] `lake build` succeeds after all phases
+- [x] No sorries introduced (cleanup only, no new proofs)
+- [x] Grep confirms no bundle construct references in active code
+- [x] Boneyard contains complete extracted code for reference
+- [x] Research reports have appropriate errata
 
 ## Artifacts & Outputs
 

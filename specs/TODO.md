@@ -214,16 +214,18 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 77. Research PreorderTaskFrame generalization
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-03-31
+- **Completed**: 2026-03-31
 - **Related**: Task 8 (genuine truth_at completeness)
 - **Research**:
   - [01_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md)
   - [02_time-shift-analysis.md](specs/077_research_preorder_taskframe_generalization/reports/02_time-shift-analysis.md)
   - [05_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/05_team-research.md) — Critical re-analysis: D ≠ WorldState
 - **Plan**: [02_roadmap-update-revised.md](specs/077_research_preorder_taskframe_generalization/plans/02_roadmap-update-revised.md)
+- **Summary**: Added 'Investigated Dead Ends: Logic Weakening' section to ROADMAP.md documenting task 77 research findings - why preorder D does not help completeness and clarifying representation theorem goals.
 
 **Description**: Research generalization of TaskFrame to relax the AddCommGroup constraint, enabling CanonicalMCS as completeness domain. From task 8 research:
 
@@ -266,7 +268,9 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 ### 72. Wire completeness through fully coherent BFMCS construction
 - **Effort**: 8-14 hours
 - **Effort**: 3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-31
+- **Summary**: Archived bundle-level temporal coherence constructs to Boneyard with semantic documentation; cleaned up references in active code; added errata to research reports
 - **Language**: lean4
 - **Dependencies**: Task #71
 - **Parent Task**: #69
@@ -277,6 +281,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
   - [05_team-research.md](072_wire_completeness_bfmcs_bundle/reports/05_team-research.md)
   - [06_semantic-correction.md](072_wire_completeness_bfmcs_bundle/reports/06_semantic-correction.md)
 - **Plan**: [07_semantic-cleanup.md](072_wire_completeness_bfmcs_bundle/plans/07_semantic-cleanup.md)
+- **Summary**: [08_implementation-summary.md](072_wire_completeness_bfmcs_bundle/summaries/08_implementation-summary.md)
 
 **Description**: Construct a fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) to provide the `construct_bfmcs` callback required by `parametric_algebraic_representation_conditional`. The truth lemma is inherently bidirectional — the Imp forward case structurally requires the backward IH (`(ih_psi fam hfam t).mpr`), so the backward G/H cases (which need forward_F/backward_P) infect the entire proof. A "forward-only" truth lemma is impossible. Task 70 proved forward_G/backward_H sorry-free, but forward_F/backward_P remain. Options: (A) Resolve F/P witnesses via fair-scheduling or formula-restricted completeness, (B) Use the algebraic path via ParametricRepresentation with a different BFMCS construction that achieves full coherence, (C) Use the FMP path (task 998 prerequisite). Needs research to identify the viable path.
 

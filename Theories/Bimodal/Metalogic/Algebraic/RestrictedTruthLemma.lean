@@ -341,8 +341,10 @@ We only need:
 2. That full MCS satisfies standard MCS properties
 3. We can apply existing completeness infrastructure
 
-The existing `construct_bfmcs_bundle` in UltrafilterChain.lean builds from
-ANY MCS. We can build from the Lindenbaum extension of the restricted chain.
+**NOTE**: The `construct_bfmcs_bundle` in UltrafilterChain.lean provides only
+BUNDLE-level temporal coherence, which is semantically insufficient for TM task
+semantics. The completeness proof needs FAMILY-level coherence for the truth lemma.
+See Boneyard/BundleTemporalCoherence/README.md for the semantic explanation.
 -/
 
 /--
@@ -395,10 +397,16 @@ The completeness proof uses the following strategy:
 4. Build BFMCS_Bundle from that MCS using `construct_bfmcs_bundle`
 5. Apply the existing truth lemma infrastructure
 
-The key observation: once we have a full MCS containing neg(phi),
-we can use the existing BFMCS construction which IS sorry-free for
-modal coherence. The bundle-level temporal coherence suffices because
-we only need forward truth (MCS membership → semantic truth).
+**CORRECTION (2026-03-31)**: The claim that "bundle-level temporal coherence
+suffices because we only need forward truth" is WRONG. The truth lemma is
+inherently bidirectional (see ParametricTruthLemma.lean:208), and the backward
+direction for G/H cases requires family-level forward_F/backward_P.
+
+The `bfmcs_from_mcs_temporally_coherent` theorem in Completeness.lean has a
+sorry PRECISELY because bundle-level coherence does not imply family-level
+coherence. See Boneyard/BundleTemporalCoherence/README.md for details.
+
+The correct path uses SuccChainFMCS with family-level temporal coherence.
 -/
 
 /--

@@ -209,3 +209,20 @@ COMPLETENESS
 ```
 
 The critical realization: the **entire** sorry chain in `construct_bfmcs` is dead code marked as such. The living sorry-free path runs through `BFMCS_Bundle` and bundle-level coherence.
+
+---
+
+## Errata (2026-03-31)
+
+**CORRECTION**: The recommendation that "the living sorry-free path runs through BFMCS_Bundle
+and bundle-level coherence" is semantically WRONG for TM task semantics. TM temporal operators
+(G, H, F, P) quantify over times in the SAME world history, not over different histories as
+bundle-level coherence allows. See `reports/06_semantic-correction.md` for full analysis.
+
+The claim that this path is "sorry-free" is misleading: the code compiles without sorries,
+but it provides the WRONG coherence property. The completeness proof requires family-level
+coherence, not bundle-level coherence.
+
+The correct approach uses SuccChainFMCS with family-level temporal coherence.
+
+See also: `ROADMAP.md:158-160` (identifies bundle as "dead end")
