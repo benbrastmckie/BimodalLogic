@@ -63,7 +63,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
               ↘ 68 (dense path, parallel)
 ```
 
-1. **72** [RESEARCHED] — Wire completeness through fully coherent BFMCS (depends on #71, #73)
+1. **72** [RESEARCHING] — Wire completeness through fully coherent BFMCS (depends on #71, #73)
 2. **58** [RESEARCHED] — Wire completeness to FrameConditions (depends on #72, #68)
 3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (depends on #72)
 4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -212,7 +212,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 77. Research PreorderTaskFrame generalization
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-03-31
@@ -221,6 +221,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
   - [01_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md)
   - [02_time-shift-analysis.md](specs/077_research_preorder_taskframe_generalization/reports/02_time-shift-analysis.md)
   - [05_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/05_team-research.md) — Critical re-analysis: D ≠ WorldState
+- **Plan**: [01_roadmap-update.md](specs/077_research_preorder_taskframe_generalization/plans/01_roadmap-update.md)
 
 **Description**: Research generalization of TaskFrame to relax the AddCommGroup constraint, enabling CanonicalMCS as completeness domain. From task 8 research:
 
