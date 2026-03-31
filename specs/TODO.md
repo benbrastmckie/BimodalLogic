@@ -36,7 +36,7 @@ technical_debt:
 ### 1. Phase A — Quick Wins (parallel, no dependencies)
 
 - **73** [NOT STARTED] — Resolve Class A sorries via modal duality DNE (new)
-- **71** [RESEARCHED] — Document F-persistence findings (counterexample proof, working approach)
+- **71** [RESEARCHED] — Document completeness architecture findings (counterexample, bidirectionality constraint, F/P gap)
 - **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 - **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries, independent)
 
@@ -89,7 +89,7 @@ technical_debt:
 
 ---
 
-### 71. Document F-persistence findings and update ROADMAP
+### 71. Document completeness architecture findings and update ROADMAP
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
 - **Language**: markdown
@@ -97,7 +97,13 @@ technical_debt:
 - **Parent Task**: #69
 - **Research**: [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
 
-**Description**: Consolidate discoveries from tasks 67 and 69 into ROADMAP.md: Document the F-persistence counterexample proving f_preserving_seed_consistent is FALSE. Explain why chain-level F-preservation cannot work. Document the bundle-level alternative (BFMCS_Bundle) that sidesteps F-persistence. Update the Completeness Gap section with the correct architecture. Mark chain-level sorries as dead code. List the proven bundle components and their locations.
+**Description**: Consolidate discoveries from tasks 67, 69, and 70 into ROADMAP.md and source code comments. Three items:
+
+1. **F-persistence counterexample**: Document that f_preserving_seed_consistent is FALSE (concrete counterexample). Explain why chain-level F-preservation cannot work. Mark chain-level sorries as dead code. List proven bundle components and their locations.
+
+2. **Truth lemma bidirectionality constraint**: Document in ROADMAP.md and in code comments (SuccChainTruth.lean, ParametricTruthLemma.lean, SuccChainFMCS.lean) that the truth lemma is inherently bidirectional — the Imp forward case structurally requires the backward IH (`(ih_psi fam hfam t).mpr`). This means backward G/H cases (which need `forward_F`/`backward_P`) infect the entire truth lemma. A "forward-only" truth lemma is impossible. Correct any existing comments that suggest otherwise (e.g., "For completeness, only FORWARD direction is needed" in ROADMAP.md line 195).
+
+3. **Separate-direction witness status**: Document that task 70 proved `forward_G`/`backward_H` sorry-free, but `forward_F`/`backward_P` remain open. Since full bidirectional coherence is required, the F/P gap is the remaining blocker for sorry-free completeness.
 
 ---
 

@@ -1283,7 +1283,7 @@
       "project_name": "document_f_persistence_findings",
       "status": "researched",
       "language": "markdown",
-      "description": "Consolidate discoveries from tasks 67 and 69 into ROADMAP.md: Document the F-persistence counterexample proving f_preserving_seed_consistent is FALSE. Explain why chain-level F-preservation cannot work. Document the bundle-level alternative (BFMCS_Bundle) that sidesteps F-persistence. Update the Completeness Gap section with the correct architecture. Mark chain-level sorries as dead code. List the proven bundle components and their locations.",
+      "description": "Consolidate discoveries from tasks 67, 69, 70 into ROADMAP.md and source comments. Three items: (1) F-persistence counterexample documentation, (2) Truth lemma bidirectionality constraint — Imp forward requires backward IH, so F/P sorries block entire proof; correct misleading comments, (3) Separate-direction witness status — forward_G/backward_H sorry-free but forward_F/backward_P remain as the blocker.",
       "effort": "2-3 hours",
       "parent_task": 69,
       "dependencies": [],
