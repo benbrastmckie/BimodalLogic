@@ -308,11 +308,12 @@ technical_debt:
 
 ### 57. Clean up UltrafilterChain.lean
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Research**:
   - [01_cleanup-analysis.md](057_clean_up_ultrafilter_chain_lean/reports/01_cleanup-analysis.md) — Original analysis
   - [02_post-80-review.md](057_clean_up_ultrafilter_chain_lean/reports/02_post-80-review.md) — Post-task-80 review: Phase 1 relations NOT dead code
+- **Plan**: [01_comment-cleanup.md](057_clean_up_ultrafilter_chain_lean/plans/01_comment-cleanup.md)
 
 **Description**: ~~Remove ~150 lines of unused Phase 1 ultrafilter relations~~ (invalidated: actively used). Streamline ~100-150 lines of verbose comments in box_class_witness_consistent. File renaming not recommended.
 
