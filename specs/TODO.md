@@ -47,7 +47,7 @@ technical_debt:
 
 - **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 - **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries, independent)
-- **80** [NOT STARTED] — Audit UltrafilterChain dead code (~25 sorries in abandoned approaches)
+- **80** [COMPLETED] — Audit UltrafilterChain dead code (removed 4,423 lines, 23 sorries)
 
 ### 2. Phase B — Core Wiring (BLOCKED on F/P temporal coherence)
 
@@ -63,7 +63,7 @@ technical_debt:
 ### 3. Code Cleanup (parallel to any phase)
 
 - **57** [RESEARCHED] — Clean up UltrafilterChain.lean
-- **80** [NOT STARTED] — Audit UltrafilterChain dead code (review recommendation)
+- **80** [COMPLETED] — Audit UltrafilterChain dead code (review recommendation)
 
 ### 4. Experimental / Research
 
@@ -92,15 +92,18 @@ technical_debt:
 
 ### 80. Audit UltrafilterChain dead code from abandoned approaches
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-03-31
+- **Completed**: 2026-03-31
 - **Source**: Review 2026-03-31 (completeness architecture)
+- **Summary**: Removed 4,423 lines of dead code from UltrafilterChain.lean (53% reduction), eliminating all 23 sorries. File reduced from 8,376 to 3,953 lines.
 - **Research**:
   - [01_dead-code-audit.md](080_ultrafilter_dead_code_audit/reports/01_dead-code-audit.md) — Initial audit: 24 sorries, 8 dead regions
   - [02_medium-confidence-analysis.md](080_ultrafilter_dead_code_audit/reports/02_medium-confidence-analysis.md) — Follow-up: all medium items confirmed ARCHIVE
 - **Plan**: [01_dead-code-cleanup.md](080_ultrafilter_dead_code_audit/plans/01_dead-code-cleanup.md)
+- **Summary Artifact**: [01_cleanup-summary.md](080_ultrafilter_dead_code_audit/summaries/01_cleanup-summary.md)
 
 **Description**: Audit and remove dead code from UltrafilterChain.lean. The file has ~25 sorries across multiple abandoned approaches documented in ROADMAP.md: (1) old SuccChain with f_nesting_is_bounded (FALSE), (2) bidirectional seed with H(a)->G(H(a)) (NOT derivable), (3) Z_chain cross-chain propagation (structural gap), (4) CoherentZChain (same gaps). Cleanup reduces cognitive load, clarifies which sorries are actually blocking vs dead code, and may reveal ~430 lines removable.
 
