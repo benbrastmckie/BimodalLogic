@@ -589,6 +589,47 @@ theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
 end UltrafilterChain
 
 /-!
+## UltrafilterChain to FMCS Conversion
+
+Convert an UltrafilterChain to an FMCS Int, enabling integration with
+the existing parametric truth lemma infrastructure.
+-/
+
+/--
+Convert an UltrafilterChain to an FMCS Int.
+
+The MCS at each time point is obtained via `ultrafilter_to_mcs`,
+and temporal coherence follows from `UltrafilterChain.forward_G`
+and `UltrafilterChain.backward_H`.
+-/
+noncomputable def UltrafilterChain_to_FMCS (uc : UltrafilterChain) : FMCS Int where
+  mcs := fun t => (ultrafilter_to_mcs (uc.chain t)).val
+  is_mcs := fun t => (ultrafilter_to_mcs (uc.chain t)).property
+  forward_G := fun t t' φ h_le h_G => by
+    -- φ.all_future ∈ ultrafilterToSet(chain t) means toQuot φ.all_future ∈ chain t
+    -- By forward_G theorem, toQuot φ ∈ chain t'
+    -- This means φ ∈ ultrafilterToSet(chain t')
+    unfold ultrafilter_to_mcs ultrafilterToSet at h_G ⊢
+    simp only [Set.mem_setOf_eq] at h_G ⊢
+    -- h_G : toQuot φ.all_future ∈ uc.chain t
+    -- Goal: toQuot φ ∈ uc.chain t'
+    exact uc.forward_G t t' h_le (toQuot φ) h_G
+  backward_H := fun t t' φ h_le h_H => by
+    -- Symmetric to forward_G using backward_H theorem
+    unfold ultrafilter_to_mcs ultrafilterToSet at h_H ⊢
+    simp only [Set.mem_setOf_eq] at h_H ⊢
+    exact uc.backward_H t t' h_le (toQuot φ) h_H
+
+/--
+Bridge lemma: formula membership in ultrafilter_to_mcs corresponds to
+quotient membership in the ultrafilter.
+-/
+theorem mem_UltrafilterChain_FMCS_iff (uc : UltrafilterChain) (t : Int) (φ : Formula) :
+    φ ∈ (UltrafilterChain_to_FMCS uc).mcs t ↔ toQuot φ ∈ uc.chain t := by
+  unfold UltrafilterChain_to_FMCS ultrafilter_to_mcs ultrafilterToSet
+  simp only [Set.mem_setOf_eq]
+
+/-!
 ## Ultrafilter Temporal Coherence
 
 The crux of the ultrafilter approach: given F(phi) in an ultrafilter U,
@@ -694,7 +735,190 @@ theorem G_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
     -- 4. ⊢ G(φ → φ ∧ ψ) → (G(φ) → G(φ ∧ ψ)) by temp_k_dist
     -- 5. Combine: G(ψ) → (G(φ) → G(φ ∧ ψ))
     -- 6. G(φ) ∧ G(ψ) → G(φ ∧ ψ)
-    sorry -- K-axiom distribution proof (routine but verbose)
+    induction a using Quotient.ind
+    induction b using Quotient.ind
+    rename_i φ ψ
+    -- Goal: STSA.G ⟦φ⟧ ⊓ STSA.G ⟦ψ⟧ ≤ STSA.G (⟦φ⟧ ⊓ ⟦ψ⟧)
+    -- Unfolds to: Derives (φ.all_future.and ψ.all_future) (φ.and ψ).all_future
+    show Derives (φ.all_future.and ψ.all_future) (φ.and ψ).all_future
+    unfold Derives
+    -- Step 1: pairing gives ⊢ φ → (ψ → φ ∧ ψ)
+    have d_pairing : ⊢ φ.imp (ψ.imp (φ.and ψ)) :=
+      Bimodal.Theorems.Combinators.pairing φ ψ
+    -- Step 2: temporal_necessitation gives ⊢ G(φ → (ψ → φ ∧ ψ))
+    have d_G_pairing : ⊢ (φ.imp (ψ.imp (φ.and ψ))).all_future :=
+      DerivationTree.temporal_necessitation (φ.imp (ψ.imp (φ.and ψ))) d_pairing
+    -- Step 3: temp_k_dist at outer level: G(φ → (ψ → φ ∧ ψ)) → (G(φ) → G(ψ → φ ∧ ψ))
+    have d_k1 : ⊢ ((φ.imp (ψ.imp (φ.and ψ))).all_future).imp
+                   (φ.all_future.imp (ψ.imp (φ.and ψ)).all_future) :=
+      DerivationTree.axiom [] _ (Axiom.temp_k_dist φ (ψ.imp (φ.and ψ)))
+    -- Apply to get: ⊢ G(φ) → G(ψ → φ ∧ ψ)
+    have d_step3 : ⊢ φ.all_future.imp (ψ.imp (φ.and ψ)).all_future :=
+      DerivationTree.modus_ponens [] _ _ d_k1 d_G_pairing
+    -- Step 4: temp_k_dist at inner level: G(ψ → φ ∧ ψ) → (G(ψ) → G(φ ∧ ψ))
+    have d_k2 : ⊢ ((ψ.imp (φ.and ψ)).all_future).imp
+                   (ψ.all_future.imp (φ.and ψ).all_future) :=
+      DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ (φ.and ψ))
+    -- Step 5: Compose: G(φ) → (G(ψ) → G(φ ∧ ψ))
+    -- Using b_combinator: (B → C) → (A → B) → (A → C)
+    -- With A = φ.all_future, B = (ψ.imp (φ.and ψ)).all_future, C = ψ.all_future.imp (φ.and ψ).all_future
+    have d_b : ⊢ ((ψ.imp (φ.and ψ)).all_future.imp (ψ.all_future.imp (φ.and ψ).all_future)).imp
+                  ((φ.all_future.imp (ψ.imp (φ.and ψ)).all_future).imp
+                   (φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future))) :=
+      Bimodal.Theorems.Combinators.b_combinator
+    have d_step5_inter : ⊢ (φ.all_future.imp (ψ.imp (φ.and ψ)).all_future).imp
+                           (φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future)) :=
+      DerivationTree.modus_ponens [] _ _ d_b d_k2
+    have d_step5 : ⊢ φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future) :=
+      DerivationTree.modus_ponens [] _ _ d_step5_inter d_step3
+    -- Step 6: Convert to conjunction form using lce_imp/rce_imp
+    -- We have: ⊢ G(φ) → (G(ψ) → G(φ ∧ ψ))
+    -- Need: ⊢ (G(φ) ∧ G(ψ)) → G(φ ∧ ψ)
+    -- Use: from [G(φ) ∧ G(ψ)], derive G(φ), then G(ψ), then apply d_step5 twice
+    have h_ctx : [φ.all_future.and ψ.all_future] ⊢ (φ.and ψ).all_future := by
+      -- Get G(φ) from conjunction
+      have h_conj : [φ.all_future.and ψ.all_future] ⊢ φ.all_future.and ψ.all_future := by
+        apply DerivationTree.assumption
+        simp
+      have h_Gφ : [φ.all_future.and ψ.all_future] ⊢ φ.all_future := by
+        apply DerivationTree.modus_ponens _ _ _
+        · apply DerivationTree.weakening [] _
+          · exact Bimodal.Theorems.Propositional.lce_imp φ.all_future ψ.all_future
+          · intro; simp
+        · exact h_conj
+      -- Get G(ψ) from conjunction
+      have h_Gψ : [φ.all_future.and ψ.all_future] ⊢ ψ.all_future := by
+        apply DerivationTree.modus_ponens _ _ _
+        · apply DerivationTree.weakening [] _
+          · exact Bimodal.Theorems.Propositional.rce_imp φ.all_future ψ.all_future
+          · intro; simp
+        · exact h_conj
+      -- Weaken d_step5 into context
+      have h_step5_ctx : [φ.all_future.and ψ.all_future] ⊢
+          φ.all_future.imp (ψ.all_future.imp (φ.and ψ).all_future) := by
+        apply DerivationTree.weakening [] _
+        · exact d_step5
+        · intro; simp
+      -- Apply twice
+      have h_inner : [φ.all_future.and ψ.all_future] ⊢ ψ.all_future.imp (φ.and ψ).all_future :=
+        DerivationTree.modus_ponens _ _ _ h_step5_ctx h_Gφ
+      exact DerivationTree.modus_ponens _ _ _ h_inner h_Gψ
+    -- Apply deduction theorem
+    exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.all_future.and ψ.all_future)
+             (φ.and ψ).all_future h_ctx⟩
+  exact U.mem_of_le h_inf h_K_inf
+
+/-!
+### H_preimage Properties
+
+Symmetric to G_preimage, these properties establish that H_preimage forms a filter base,
+which is needed for ultrafilter_P_resolution.
+-/
+
+/--
+H_preimage contains ⊤ (since H(⊤) = ⊤ is always in an ultrafilter).
+-/
+theorem H_preimage_top (U : Ultrafilter LindenbaumAlg) : ⊤ ∈ H_preimage U := by
+  unfold H_preimage
+  simp only [Set.mem_setOf_eq]
+  have h_H_top : STSA.H (⊤ : LindenbaumAlg) = ⊤ := by
+    apply le_antisymm
+    · exact le_top
+    · -- ⊤ ≤ H(⊤)
+      show top_quot ≤ H_quot top_quot
+      unfold top_quot H_quot
+      show Derives (Formula.bot.imp Formula.bot) (Formula.all_past (Formula.bot.imp Formula.bot))
+      have h_id : [] ⊢ Formula.bot.imp Formula.bot :=
+        Bimodal.Theorems.Combinators.identity Formula.bot
+      have h_nec : [] ⊢ Formula.all_past (Formula.bot.imp Formula.bot) :=
+        Bimodal.Theorems.past_necessitation (Formula.bot.imp Formula.bot) h_id
+      have h_s : [] ⊢ (Formula.all_past (Formula.bot.imp Formula.bot)).imp
+          ((Formula.bot.imp Formula.bot).imp (Formula.all_past (Formula.bot.imp Formula.bot))) :=
+        DerivationTree.axiom [] _ (Axiom.prop_s _ _)
+      exact ⟨DerivationTree.modus_ponens [] _ _ h_s h_nec⟩
+  rw [h_H_top]
+  exact U.top_mem
+
+/--
+H_preimage is upward closed.
+-/
+theorem H_preimage_upward (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
+    (ha : a ∈ H_preimage U) (h_le : a ≤ b) : b ∈ H_preimage U := by
+  unfold H_preimage at ha ⊢
+  simp only [Set.mem_setOf_eq] at ha ⊢
+  have h_H_le : STSA.H a ≤ STSA.H b := STSA.H_monotone a b h_le
+  exact U.mem_of_le ha h_H_le
+
+/--
+H_preimage is closed under finite meets.
+
+Proof uses the K-axiom distribution for H: H(a) ∧ H(b) → H(a ∧ b)
+derived from past_k_dist and past_necessitation.
+-/
+theorem H_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
+    (ha : a ∈ H_preimage U) (hb : b ∈ H_preimage U) : a ⊓ b ∈ H_preimage U := by
+  unfold H_preimage at ha hb ⊢
+  simp only [Set.mem_setOf_eq] at ha hb ⊢
+  have h_inf : STSA.H a ⊓ STSA.H b ∈ U := U.inf_mem ha hb
+  have h_K_inf : STSA.H a ⊓ STSA.H b ≤ STSA.H (a ⊓ b) := by
+    induction a using Quotient.ind
+    induction b using Quotient.ind
+    rename_i φ ψ
+    show Derives (φ.all_past.and ψ.all_past) (φ.and ψ).all_past
+    unfold Derives
+    -- Step 1: pairing gives ⊢ φ → (ψ → φ ∧ ψ)
+    have d_pairing : ⊢ φ.imp (ψ.imp (φ.and ψ)) :=
+      Bimodal.Theorems.Combinators.pairing φ ψ
+    -- Step 2: past_necessitation gives ⊢ H(φ → (ψ → φ ∧ ψ))
+    have d_H_pairing : ⊢ (φ.imp (ψ.imp (φ.and ψ))).all_past :=
+      Bimodal.Theorems.past_necessitation (φ.imp (ψ.imp (φ.and ψ))) d_pairing
+    -- Step 3: past_k_dist at outer level
+    have d_k1 : ⊢ ((φ.imp (ψ.imp (φ.and ψ))).all_past).imp
+                   (φ.all_past.imp (ψ.imp (φ.and ψ)).all_past) :=
+      Bimodal.Theorems.past_k_dist φ (ψ.imp (φ.and ψ))
+    have d_step3 : ⊢ φ.all_past.imp (ψ.imp (φ.and ψ)).all_past :=
+      DerivationTree.modus_ponens [] _ _ d_k1 d_H_pairing
+    -- Step 4: past_k_dist at inner level
+    have d_k2 : ⊢ ((ψ.imp (φ.and ψ)).all_past).imp
+                   (ψ.all_past.imp (φ.and ψ).all_past) :=
+      Bimodal.Theorems.past_k_dist ψ (φ.and ψ)
+    -- Step 5: Compose using b_combinator
+    have d_b : ⊢ ((ψ.imp (φ.and ψ)).all_past.imp (ψ.all_past.imp (φ.and ψ).all_past)).imp
+                  ((φ.all_past.imp (ψ.imp (φ.and ψ)).all_past).imp
+                   (φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past))) :=
+      Bimodal.Theorems.Combinators.b_combinator
+    have d_step5_inter : ⊢ (φ.all_past.imp (ψ.imp (φ.and ψ)).all_past).imp
+                           (φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past)) :=
+      DerivationTree.modus_ponens [] _ _ d_b d_k2
+    have d_step5 : ⊢ φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past) :=
+      DerivationTree.modus_ponens [] _ _ d_step5_inter d_step3
+    -- Step 6: Convert to conjunction form
+    have h_ctx : [φ.all_past.and ψ.all_past] ⊢ (φ.and ψ).all_past := by
+      have h_conj : [φ.all_past.and ψ.all_past] ⊢ φ.all_past.and ψ.all_past := by
+        apply DerivationTree.assumption
+        simp
+      have h_Hφ : [φ.all_past.and ψ.all_past] ⊢ φ.all_past := by
+        apply DerivationTree.modus_ponens _ _ _
+        · apply DerivationTree.weakening [] _
+          · exact Bimodal.Theorems.Propositional.lce_imp φ.all_past ψ.all_past
+          · intro; simp
+        · exact h_conj
+      have h_Hψ : [φ.all_past.and ψ.all_past] ⊢ ψ.all_past := by
+        apply DerivationTree.modus_ponens _ _ _
+        · apply DerivationTree.weakening [] _
+          · exact Bimodal.Theorems.Propositional.rce_imp φ.all_past ψ.all_past
+          · intro; simp
+        · exact h_conj
+      have h_step5_ctx : [φ.all_past.and ψ.all_past] ⊢
+          φ.all_past.imp (ψ.all_past.imp (φ.and ψ).all_past) := by
+        apply DerivationTree.weakening [] _
+        · exact d_step5
+        · intro; simp
+      have h_inner : [φ.all_past.and ψ.all_past] ⊢ ψ.all_past.imp (φ.and ψ).all_past :=
+        DerivationTree.modus_ponens _ _ _ h_step5_ctx h_Hφ
+      exact DerivationTree.modus_ponens _ _ _ h_inner h_Hψ
+    exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.all_past.and ψ.all_past)
+             (φ.and ψ).all_past h_ctx⟩
   exact U.mem_of_le h_inf h_K_inf
 
 /--
@@ -715,18 +939,54 @@ The proof is marked sorry pending implementation of the Zorn argument.
 theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
     (a : LindenbaumAlg) (h_F : (STSA.G aᶜ)ᶜ ∈ U) :
     ∃ V : Ultrafilter LindenbaumAlg, R_G U V ∧ a ∈ V := by
-  -- The mathematical argument:
-  -- 1. Define the seed set S = G_preimage(U) ∪ {a}
-  -- 2. Show S is consistent (generates a proper filter)
-  --    - If inconsistent, there exist b1,...,bn with G(bi) ∈ U and b1 ⊓ ... ⊓ bn ⊓ a = ⊥
-  --    - This means b1 ⊓ ... ⊓ bn ≤ aᶜ
-  --    - By G_monotone: G(b1 ⊓ ... ⊓ bn) ≤ G(aᶜ)
-  --    - By G_preimage_inf: G(b1 ⊓ ... ⊓ bn) ∈ U
-  --    - So G(aᶜ) ∈ U, meaning (G(aᶜ))ᶜ ∉ U (ultrafilter)
-  --    - But h_F says (G(aᶜ))ᶜ ∈ U, contradiction
-  -- 3. Extend to ultrafilter V by Zorn's lemma
-  -- 4. V satisfies R_G(U, V) by construction and a ∈ V
-  sorry
+  -- Extract formula representative for 'a'
+  obtain ⟨φ, rfl⟩ := Quotient.exists_rep a
+
+  -- Define the formula-level seed set:
+  -- seed = { ψ | G(ψ) ∈ ultrafilterToSet U } ∪ { φ }
+  -- This is the preimage of U under G, plus the witness φ
+  let MU := ultrafilterToSet U
+  let G_seed : Set Formula := { ψ | ψ.all_future ∈ MU }
+  let seed : Set Formula := G_seed ∪ {φ}
+
+  -- Step 1: Prove seed is SetConsistent
+  -- The key insight: if L ⊆ seed derives ⊥, then either:
+  -- (a) φ ∉ L, so all formulas in L have G in U, and their conjunction's G is in U,
+  --     but then G(conjunction) ≤ G(⊥) and ⊥ ∈ U - contradiction
+  -- (b) φ ∈ L, so L\{φ} derives ¬φ, hence G(¬φ) ∈ U, contradicting F(φ) ∈ U
+  have h_seed_cons : SetConsistent seed := by
+    -- The consistency proof is complex and involves:
+    -- 1. Case analysis on whether φ ∈ L
+    -- 2. Deduction theorem to extract implications
+    -- 3. G_preimage_inf to show G of meets is in U
+    -- 4. Contradiction via ultrafilter properties
+    -- For now, we leave this as sorry - the mathematical argument is sound
+    sorry
+
+  -- Step 2: Extend seed to MCS using set_lindenbaum
+  obtain ⟨M, h_seed_sub_M, h_M_mcs⟩ := set_lindenbaum seed h_seed_cons
+
+  -- Step 3: Convert M to ultrafilter
+  let V := mcsToUltrafilter ⟨M, h_M_mcs⟩
+
+  -- Step 4: Prove R_G U V and a ∈ V
+  use V
+  constructor
+  · -- R_G U V: for all b, G(b) ∈ U → b ∈ V
+    intro b h_Gb_in_U
+    -- Extract formula representative
+    obtain ⟨ψ, rfl⟩ := Quotient.exists_rep b
+    -- G(ψ) = toQuot ψ.all_future ∈ U means ψ.all_future ∈ MU
+    have h_ψ_in_Gseed : ψ ∈ G_seed := h_Gb_in_U
+    -- G_seed ⊆ seed ⊆ M
+    have h_ψ_in_M : ψ ∈ M := h_seed_sub_M (Set.mem_union_left _ h_ψ_in_Gseed)
+    -- ψ ∈ M means toQuot ψ ∈ V
+    exact mem_mcsToSet h_ψ_in_M
+
+  · -- a = toQuot φ ∈ V
+    have h_φ_in_seed : φ ∈ seed := Set.mem_union_right _ (Set.mem_singleton φ)
+    have h_φ_in_M : φ ∈ M := h_seed_sub_M h_φ_in_seed
+    exact mem_mcsToSet h_φ_in_M
 
 /--
 The symmetric theorem for past: P(a) ∈ U implies existence of predecessor ultrafilter containing a.
@@ -735,7 +995,33 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
     (a : LindenbaumAlg) (h_P : (STSA.H aᶜ)ᶜ ∈ U) :
     ∃ V : Ultrafilter LindenbaumAlg, R_H U V ∧ a ∈ V := by
   -- Symmetric to ultrafilter_F_resolution using H instead of G
-  sorry
+  obtain ⟨φ, rfl⟩ := Quotient.exists_rep a
+
+  let MU := ultrafilterToSet U
+  let H_seed : Set Formula := { ψ | ψ.all_past ∈ MU }
+  let seed : Set Formula := H_seed ∪ {φ}
+
+  -- Consistency proof is symmetric to ultrafilter_F_resolution
+  have h_seed_cons : SetConsistent seed := by
+    sorry
+
+  obtain ⟨M, h_seed_sub_M, h_M_mcs⟩ := set_lindenbaum seed h_seed_cons
+
+  let V := mcsToUltrafilter ⟨M, h_M_mcs⟩
+
+  use V
+  constructor
+  · -- R_H U V: for all b, H(b) ∈ U → b ∈ V
+    intro b h_Hb_in_U
+    obtain ⟨ψ, rfl⟩ := Quotient.exists_rep b
+    have h_ψ_in_Hseed : ψ ∈ H_seed := h_Hb_in_U
+    have h_ψ_in_M : ψ ∈ M := h_seed_sub_M (Set.mem_union_left _ h_ψ_in_Hseed)
+    exact mem_mcsToSet h_ψ_in_M
+
+  · -- a = toQuot φ ∈ V
+    have h_φ_in_seed : φ ∈ seed := Set.mem_union_right _ (Set.mem_singleton φ)
+    have h_φ_in_M : φ ∈ M := h_seed_sub_M h_φ_in_seed
+    exact mem_mcsToSet h_φ_in_M
 
 /-!
 ## Phase 2: Box-Class BFMCS Construction

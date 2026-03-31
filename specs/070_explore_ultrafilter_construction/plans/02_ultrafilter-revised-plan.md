@@ -1,7 +1,7 @@
 # Implementation Plan: Task #70 - Ultrafilter-Based Temporal Coherence (Revised v2)
 
 - **Task**: 70 - Explore ultrafilter-based construction for temporal coherence
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 10-14 hours
 - **Dependencies**: None (all infrastructure exists)
 - **Research Inputs**:
@@ -61,7 +61,7 @@ Key infrastructure confirmed:
 
 ## Implementation Phases
 
-### Phase 4A: Prove G_preimage_inf [NOT STARTED]
+### Phase 4A: Prove G_preimage_inf [COMPLETED]
 
 **Goal**: Complete the K-axiom distribution proof for G_preimage closure under meets.
 
@@ -99,7 +99,7 @@ have h_K_inf : STSA.G a ⊓ STSA.G b ≤ STSA.G (a ⊓ b) := by
 
 ---
 
-### Phase 4B: Add H_preimage_inf [NOT STARTED]
+### Phase 4B: Add H_preimage_inf [COMPLETED]
 
 **Goal**: Add the symmetric H-preimage closure lemma needed for `ultrafilter_P_resolution`.
 
@@ -122,7 +122,7 @@ have h_K_inf : STSA.G a ⊓ STSA.G b ≤ STSA.G (a ⊓ b) := by
 
 ---
 
-### Phase 4C: Prove ultrafilter_F_resolution [NOT STARTED]
+### Phase 4C: Prove ultrafilter_F_resolution [PARTIAL]
 
 **Goal**: Prove the core filter extension theorem: F(a) in U implies existence of successor ultrafilter containing a.
 
@@ -167,7 +167,7 @@ have h_seed_cons : SetConsistent seed := by
 
 ---
 
-### Phase 4D: Prove ultrafilter_P_resolution [NOT STARTED]
+### Phase 4D: Prove ultrafilter_P_resolution [PARTIAL]
 
 **Goal**: Prove the symmetric past filter extension theorem: P(a) in U implies existence of predecessor ultrafilter containing a.
 
@@ -193,7 +193,7 @@ have h_seed_cons : SetConsistent seed := by
 
 ---
 
-### Phase 5: UltrafilterChain to FMCS Conversion [NOT STARTED]
+### Phase 5: UltrafilterChain to FMCS Conversion [COMPLETED]
 
 **Goal**: Implement conversion from `UltrafilterChain` to `FMCS Int` structure.
 
