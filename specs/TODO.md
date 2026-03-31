@@ -27,11 +27,27 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-03-30. Tasks 67, 70 completed. Tasks 69, 6, 65, 66 abandoned (see below).*
+*Updated 2026-03-31. Tasks 74-77 created (strict temporal extensions research). Task 998 elevated to RESEARCHING.*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
 **Key discovery (task 70)**: Separate-direction witnesses via SuccChainFMCS provide sorry-free `forward_G`/`backward_H`. F/P existential witnesses have sorries due to unbounded nesting. The truth lemma is inherently bidirectional (Imp forward requires backward IH), so F/P sorries block the entire proof. Bidirectional witness approach (plan v4) is BLOCKED (H_theory not G-liftable).
+
+### 0. Strict Temporal Extensions Research (new track, parallel)
+
+Research track for extending TM with strict temporal operators (G'/H') and unified density/discreteness completeness:
+
+```
+74 → 75 → 76
+      ↘ 998 (FMP strict temporal)
+77 (PreorderTaskFrame, independent)
+```
+
+- **74** [NOT STARTED] — Research strict vs reflexive temporal semantics
+- **75** [NOT STARTED] — Research G'/H' operator extension design (depends on 74)
+- **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
+- **77** [NOT STARTED] — Research PreorderTaskFrame generalization (independent)
+- **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
 
 ### 1. Phase A — Quick Wins (parallel, no dependencies)
 
@@ -68,7 +84,6 @@ technical_debt:
 - **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
 - **21** [PLANNED] — Tech debt cleanup (depends on 18)
 - **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
-- **998** [NOT STARTED] — FMP redesign for strict temporal (separate concern)
 
 ### 6. Backlog
 
