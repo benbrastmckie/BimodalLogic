@@ -750,14 +750,19 @@
       "created": "2026-03-31T20:13:41Z",
       "effort": "2-4 hours",
       "source": "review",
-      "last_updated": "2026-03-31T20:31:10Z",
-      "session_id": "sess_1774988830_d365d0",
-      "researched": "2026-03-31T20:31:10Z",
+      "last_updated": "2026-03-31T20:46:04Z",
+      "session_id": "sess_1774989644_e948ec",
+      "researched": "2026-03-31T20:46:04Z",
       "artifacts": [
         {
           "path": "specs/080_ultrafilter_dead_code_audit/reports/01_dead-code-audit.md",
           "type": "research",
           "summary": "Comprehensive audit identifying 24 sorries across 8 dead code regions (~2,100-2,875 lines removable). Four abandoned approaches confirmed."
+        },
+        {
+          "path": "specs/080_ultrafilter_dead_code_audit/reports/02_medium-confidence-analysis.md",
+          "type": "research",
+          "summary": "Follow-up analysis confirming all medium-confidence items as ARCHIVE candidates. Z_chain, omega F-persistence, P-preserving seed - no external deps. 23 sorries removable, ~2,925 lines (35%)."
         }
       ]
     }
