@@ -8,13 +8,15 @@
     {
       "project_number": 61,
       "project_name": "experiment_eliminate_bfmcs_bundles",
-      "status": "not_started",
+      "status": "abandoned",
       "language": "lean4",
       "description": "EXPERIMENTAL: Develop an alternative completeness proof that eliminates BFMCS bundle machinery entirely. Define canonical model with box-class equivalence for modal accessibility directly on worlds (MCS, time) pairs, not families. Use box_theory_witness_exists for the Box truth lemma without bundle quantification. Develop independently until proven to work, then consider replacing existing infrastructure. Believe it when I see it approach.",
       "effort": "6-10 hours",
       "dependencies": [],
       "created": "2026-03-24T19:43:30Z",
-      "last_updated": "2026-03-24T19:43:30Z"
+      "last_updated": "2026-03-24T19:43:30Z",
+      "abandoned": "2026-03-31T20:19:04Z",
+      "abandoned_reason": "Bundle structure is mathematically necessary for modal completeness (Box backward requires multiple families). Review 2026-03-31."
     },
     {
       "project_number": 60,
@@ -45,7 +47,7 @@
       "project_name": "wire_completeness_to_frame_conditions",
       "status": "researched",
       "language": "lean4",
-      "description": "Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.",
+      "description": "Wire completeness theorems to FrameConditions. BLOCKED: Depends on bfmcs_from_mcs_temporally_coherent which requires F/P witness construction (~25 sorries in UltrafilterChain.lean). The parametric infrastructure is sorry-free but needs temporal coherence callback.",
       "effort": "8 hours",
       "dependencies": [
         72,
@@ -249,7 +251,8 @@
         }
       ],
       "started": "2026-03-27T23:01:14Z",
-      "resume_phase": 6
+      "resume_phase": 6,
+      "blocked_by": "Temporal coherence (F/P witnesses)"
     },
     {
       "project_number": 57,
@@ -736,9 +739,20 @@
           "summary": "Spawn analysis from parent task 73"
         }
       ]
+    },
+    {
+      "project_number": 80,
+      "project_name": "ultrafilter_dead_code_audit",
+      "status": "not_started",
+      "language": "lean4",
+      "priority": "high",
+      "description": "Audit and remove dead code from UltrafilterChain.lean. File contains ~25 sorries across abandoned approaches (old SuccChain, bidirectional seed, Z_chain). Much code is dead ends documented in ROADMAP.md. Cleanup reduces cognitive load and clarifies which sorries are actually blocking.",
+      "created": "2026-03-31T20:13:41Z",
+      "effort": "2-4 hours",
+      "source": "review"
     }
   ],
-  "next_project_number": 80,
+  "next_project_number": 81,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

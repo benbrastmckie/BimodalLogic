@@ -1,5 +1,5 @@
 ---
-next_project_number: 78
+next_project_number: 81
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -8,9 +8,9 @@ task_counts:
   active: 23
   completed: 735
   in_progress: 0
-  not_started: 10
-  abandoned: 62
-  total: 807
+  not_started: 11
+  abandoned: 63
+  total: 809
 technical_debt:
   sorry_count: 24
   sorry_count_note: "Audited 2026-03-30: 12 examples/exercises, 5 soundness, 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 67 deleted g_content sorry."
@@ -27,15 +27,11 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-03-31. Tasks 74-77 created (strict temporal extensions research). Task 998 elevated to RESEARCHING.*
+*Updated 2026-03-31.*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
-**Key discovery (task 70)**: Separate-direction witnesses via SuccChainFMCS provide sorry-free `forward_G`/`backward_H`. F/P existential witnesses have sorries due to unbounded nesting. The truth lemma is inherently bidirectional (Imp forward requires backward IH), so F/P sorries block the entire proof. Bidirectional witness approach (plan v4) is BLOCKED (H_theory not G-liftable).
-
 ### 0. Strict Temporal Extensions Research (new track, parallel)
-
-Research track for extending TM with strict temporal operators (G'/H') and unified density/discreteness completeness:
 
 ```
 74 → 75 → 76
@@ -46,34 +42,32 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 - **75** [NOT STARTED] — Research G'/H' operator extension design (depends on 74)
 - **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
 - **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
-- ~~**77**~~ [ARCHIVED] — PreorderTaskFrame generalization (completed 2026-03-31)
 
 ### 1. Phase A — Quick Wins (parallel, no dependencies)
 
-- **73** [NOT STARTED] — Resolve Class A sorries via modal duality DNE (new)
-- ~~**71**~~ [ARCHIVED] — Document completeness architecture findings (completed 2026-03-31)
 - **57** [RESEARCHED] — Clean up UltrafilterChain.lean, remove unused ultrafilter relations
 - **59** [NOT STARTED] — Prove frame-specific soundness axioms (5 sorries, independent)
+- **80** [NOT STARTED] — Audit UltrafilterChain dead code (~25 sorries in abandoned approaches)
 
-### 2. Phase B — Core Wiring (sequential)
+### 2. Phase B — Core Wiring (BLOCKED on F/P temporal coherence)
 
 ```
-73 → 58 → 60
-     ↘ 68 (dense path, parallel)
+[F/P witnesses] → 58 → 60
+                   ↘ 68 (dense path, parallel)
 ```
 
-1. ~~**72**~~ [ARCHIVED] — Wire completeness BFMCS (completed 2026-03-31, archived bundle approach)
-2. **58** [RESEARCHED] — Wire completeness to FrameConditions (depends on #68)
-3. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
-4. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
+2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
+3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 3. Code Cleanup (parallel to any phase)
 
 - **57** [RESEARCHED] — Clean up UltrafilterChain.lean
+- **80** [NOT STARTED] — Audit UltrafilterChain dead code (review recommendation)
 
 ### 4. Experimental / Research
 
-- **61** [NOT STARTED] — Eliminate BFMCS bundles entirely (independent, explore later)
+- ~~**61**~~ [ABANDONED] — Eliminate BFMCS bundles (bundle structure mathematically necessary)
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 - **64** [RESEARCHED] — Critical path review (completed research, reference only)
 
@@ -92,17 +86,19 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 - **949** [RESEARCHED] — Update Demo.lean (cosmetic)
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
-### Abandoned (archived 2026-03-31)
-
-- **6** — Canonical TaskFrame completeness: superseded by task 8
-- **65** — Build TaskModel from Restricted: family-level coherence blocker
-- **66** — Wire Restricted Completeness: dependent on abandoned 65
-- **69** — Z_chain_forward_F': mathematically false (concrete counterexample)
-- **6** — Canonical TaskFrame completeness: superseded by task 8
-- **65** — Build TaskModel from restricted construction: family-level coherence blocker
-- **66** — Wire restricted completeness: depends on abandoned task 65
-
 ## Tasks
+
+---
+
+### 80. Audit UltrafilterChain dead code from abandoned approaches
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: high
+- **Created**: 2026-03-31
+- **Source**: Review 2026-03-31 (completeness architecture)
+
+**Description**: Audit and remove dead code from UltrafilterChain.lean. The file has ~25 sorries across multiple abandoned approaches documented in ROADMAP.md: (1) old SuccChain with f_nesting_is_bounded (FALSE), (2) bidirectional seed with H(a)->G(H(a)) (NOT derivable), (3) Z_chain cross-chain propagation (structural gap), (4) CoherentZChain (same gaps). Cleanup reduces cognitive load, clarifies which sorries are actually blocking vs dead code, and may reveal ~430 lines removable.
 
 ---
 

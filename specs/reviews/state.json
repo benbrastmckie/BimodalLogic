@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking",
-  "_last_updated": "2026-03-31T00:00:00Z",
+  "_last_updated": "2026-03-31T20:20:55Z",
   "reviews": [
     {
       "review_id": "review-20260331",
@@ -16,15 +16,44 @@
         "medium_issues": 3,
         "low_issues": 0
       },
-      "tasks_created": [74, 75, 76, 77],
-      "tasks_updated": [998],
+      "tasks_created": [
+        74,
+        75,
+        76,
+        77
+      ],
+      "tasks_updated": [
+        998
+      ],
       "registries_updated": []
+    },
+    {
+      "review_id": "review-2026-03-31",
+      "date": "2026-03-31T20:20:55Z",
+      "scope": "completeness-architecture",
+      "report_path": "specs/reviews/2026-03-31_completeness-architecture-review.md",
+      "summary": {
+        "files_reviewed": 13,
+        "critical_issues": 1,
+        "high_issues": 3,
+        "medium_issues": 5,
+        "low_issues": 2
+      },
+      "tasks_created": [
+        80
+      ],
+      "tasks_abandoned": [
+        61
+      ],
+      "tasks_revised": [
+        58
+      ]
     }
   ],
   "statistics": {
-    "total_reviews": 1,
-    "last_review": "2026-03-31",
+    "total_reviews": 2,
+    "last_review": "2026-03-31T20:20:55Z",
     "total_issues_found": 8,
-    "total_tasks_created": 4
+    "total_tasks_created": 5
   }
 }
