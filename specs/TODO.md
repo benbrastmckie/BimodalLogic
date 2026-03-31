@@ -109,7 +109,7 @@ technical_debt:
 
 ### 70. Explore ultrafilter-based construction for temporal coherence
 - **Effort**: 10-14 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Parent Task**: #69
 - **Research**:
