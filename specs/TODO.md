@@ -104,6 +104,32 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ---
 
+### 79. Clean up termination artifact sorries in SuccChainFMCS
+- **Effort**: 1-2 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #73
+- **Created**: 2026-03-31
+- **Research**: [02_spawn-analysis.md](073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md)
+
+**Description**: Resolve 3 termination artifact sorries in SuccChainFMCS.lean at lines 5386, 5544, 5740. Handle fuel-exhausted branches in bounded_witness theorems (restricted_backward_bounded_witness_fueled, restricted_combined_bounded_witness_fueled, restricted_combined_bounded_witness_P_fueled). Options: prove branches unreachable via contradiction, refactor fuel-counting, or use absurd with omega-derivable contradiction.
+
+---
+
+### 78. Resolve consistency proof sorries in SuccChainFMCS
+- **Effort**: 1-2 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #73
+- **Created**: 2026-03-31
+- **Research**: [02_spawn-analysis.md](073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md)
+
+**Description**: Resolve 3 consistency proof sorries in SuccChainFMCS.lean at lines 1734, 1763, 2082. Prove set consistency for BRS-augmented seed sets (g_content_union_brs_consistent, augmented_seed_consistent, constrained_successor_seed_restricted_consistent) using structural consistency arguments.
+
+---
+
 ### 74. Research strict vs reflexive temporal semantics for TM logic
 - **Effort**: 4-6 hours
 - **Status**: [NOT STARTED]
@@ -186,7 +212,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 77. Research PreorderTaskFrame generalization
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-03-31
@@ -232,9 +258,9 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 73. Resolve Class A sorries via modal duality DNE
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [BLOCKED]
 - **Language**: lean4
-- **Dependencies**: None
+- **Dependencies**: Task #78, Task #79
 - **Created**: 2026-03-30
 - **Research**: [01_class-a-sorries-dne.md](073_resolve_class_a_sorries_dne/reports/01_class-a-sorries-dne.md)
 

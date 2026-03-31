@@ -1338,14 +1338,17 @@
     {
       "project_number": 73,
       "project_name": "resolve_class_a_sorries_dne",
-      "status": "researched",
+      "status": "blocked",
       "language": "lean4",
       "description": "Resolve Class A sorries in SuccChainFMCS.lean via modal duality and double-negation elimination. All ingredients exist: double_neg_elim, negation completeness of restricted MCS, and definitional equality of F/G duality.",
       "effort": "2-3 hours",
-      "dependencies": [],
+      "dependencies": [
+        78,
+        79
+      ],
       "created": "2026-03-30T23:00:00Z",
-      "last_updated": "2026-03-31T17:41:50Z",
-      "session_id": "sess_1774978625_476498",
+      "last_updated": "2026-03-31T17:51:05Z",
+      "session_id": "sess_1774979446_43b3b0",
       "researched": "2026-03-31T17:41:50Z",
       "artifacts": [
         {
@@ -1382,13 +1385,53 @@
     {
       "project_number": 77,
       "project_name": "research_preorder_taskframe_generalization",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "priority": "high",
-      "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint"
+      "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint",
+      "last_updated": "2026-03-31T17:49:24Z",
+      "session_id": "sess_1774979329_29349c"
+    },
+    {
+      "project_number": 78,
+      "project_name": "resolve_consistency_proof_sorries",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Resolve 3 consistency proof sorries in SuccChainFMCS.lean at lines 1734, 1763, 2082. Prove set consistency for BRS-augmented seed sets using structural consistency arguments.",
+      "effort": "1-2 hours",
+      "parent_task": 73,
+      "dependencies": [],
+      "created": "2026-03-31T17:53:01Z",
+      "last_updated": "2026-03-31T17:53:01Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 73"
+        }
+      ]
+    },
+    {
+      "project_number": 79,
+      "project_name": "clean_up_termination_artifact_sorries",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Resolve 3 termination artifact sorries in SuccChainFMCS.lean at lines 5386, 5544, 5740. Handle fuel-exhausted branches in bounded_witness theorems.",
+      "effort": "1-2 hours",
+      "parent_task": 73,
+      "dependencies": [],
+      "created": "2026-03-31T17:53:01Z",
+      "last_updated": "2026-03-31T17:53:01Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 73"
+        }
+      ]
     }
   ],
-  "next_project_number": 78,
+  "next_project_number": 80,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
