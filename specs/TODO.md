@@ -115,6 +115,7 @@ technical_debt:
 - **Research**:
   - [01_team-research.md](070_explore_ultrafilter_construction/reports/01_team-research.md)
   - [02_bundle-semantic-analysis.md](070_explore_ultrafilter_construction/reports/02_bundle-semantic-analysis.md)
+  - [05_team-research.md](070_explore_ultrafilter_construction/reports/05_team-research.md) (remaining work analysis)
 - **Plan**: [01_ultrafilter-implementation.md](070_explore_ultrafilter_construction/plans/01_ultrafilter-implementation.md)
 
 **Description**: Explore ultrafilter-based construction for temporal coherence as alternative to MCS-based Lindenbaum extension. Ultrafilters of the Lindenbaum algebra have automatic negation completeness, eliminating the F-persistence gap where Lindenbaum can add G(neg phi). The R_G and R_Box relations on ultrafilters already exist (UltrafilterChain.lean lines 59-68). This task requires: (1) defining FMCS structure from ultrafilter chains, (2) proving ultrafilter chains satisfy temporal coherence by construction, (3) connecting ultrafilter-based completeness to existing MCS-based infrastructure. Reference: Strategy 4 in task 69 team research report.
