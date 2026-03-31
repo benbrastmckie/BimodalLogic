@@ -1338,13 +1338,22 @@
     {
       "project_number": 73,
       "project_name": "resolve_class_a_sorries_dne",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "description": "Resolve Class A sorries in SuccChainFMCS.lean via modal duality and double-negation elimination. All ingredients exist: double_neg_elim, negation completeness of restricted MCS, and definitional equality of F/G duality.",
       "effort": "2-3 hours",
       "dependencies": [],
       "created": "2026-03-30T23:00:00Z",
-      "last_updated": "2026-03-30T23:00:00Z"
+      "last_updated": "2026-03-31T17:41:50Z",
+      "session_id": "sess_1774978625_476498",
+      "researched": "2026-03-31T17:41:50Z",
+      "artifacts": [
+        {
+          "path": "specs/073_resolve_class_a_sorries_dne/reports/01_class-a-sorries-dne.md",
+          "type": "research_report",
+          "summary": "Class A sorries no longer exist - DNE pattern already applied. Recommend scope clarification."
+        }
+      ]
     },
     {
       "project_number": 74,

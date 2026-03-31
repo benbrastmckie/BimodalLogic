@@ -232,10 +232,11 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 73. Resolve Class A sorries via modal duality DNE
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Created**: 2026-03-30
+- **Research**: [01_class-a-sorries-dne.md](073_resolve_class_a_sorries_dne/reports/01_class-a-sorries-dne.md)
 
 **Description**: Resolve Class A sorries in SuccChainFMCS.lean via modal duality and double-negation elimination (DNE). The proof strategy is documented in ROADMAP.md: (1) `FF(ψ) ∈ deferralClosure` and `FF(ψ) ∉ u` given, (2) by negation completeness of restricted MCS: `neg(FF(ψ)) ∈ u`, (3) `neg(FF(ψ)) = neg(neg(G(neg(F(ψ)))))` (definitional, since `FF(ψ) = neg(G(neg(F(ψ))))`), (4) by `SetMaximalConsistent.double_neg_elim`: `G(neg(F(ψ))) ∈ u`, (5) so `neg(F(ψ)) ∈ g_content(u)`, (6) by Succ relation: `neg(F(ψ)) ∈ v`, (7-9) conclude `ψ ∈ v`. All ingredients exist in the codebase. Estimated: small, all existing lemmas.
 
