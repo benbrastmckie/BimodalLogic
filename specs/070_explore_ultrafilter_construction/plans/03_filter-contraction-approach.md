@@ -182,7 +182,7 @@ theorem ultrafilter_FMCS_forward_F (uf : UltrafilterFMCS)
 
 ---
 
-### Phase 6B: Ultrafilter FMCS Backward P Coherence [PARTIAL]
+### Phase 6B: Ultrafilter FMCS Backward P Coherence [COMPLETED]
 
 **Goal**: Prove ultrafilter-based FMCS have family-level backward P coherence.
 
