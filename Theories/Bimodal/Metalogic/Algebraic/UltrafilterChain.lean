@@ -11,25 +11,33 @@ import Mathlib.Data.Nat.Pairing
 /-!
 # Ultrafilter Chain Construction
 
-This module implements the Jonsson-Tarski ultrafilter chain construction for
-building temporally coherent BFMCS from ultrafilters of the Lindenbaum algebra.
+This module implements the ultrafilter chain construction for building temporally
+coherent box-class BFMCS witnesses in S5 modal logic completeness proofs.
 
-## Key Insight
+## Overview
 
-Ultrafilters have **full negation completeness** by definition: for any element a,
-exactly one of a or aᶜ is in the ultrafilter. This eliminates the boundary problems
-that plague restricted MCS constructions like the SuccChain approach.
+The module has two main parts:
+
+**Phase 1 - Temporal Accessibility Relations**: Defines R_G and R_Box on ultrafilters
+of the Lindenbaum algebra, with properties (reflexivity, transitivity, symmetry for
+R_Box). The `UltrafilterChain` structure provides Int-indexed chains with R_G connectivity.
+
+**Phase 2 - Box-Class BFMCS Construction**: Given a diamond-formula Diamond(psi) in an
+MCS M, constructs a witness MCS N in the same box-class as M with psi in N. Uses
+box_content (formulas whose Box is in M) and proves witness consistency via
+K-distribution chain argument.
 
 ## Main Definitions
 
 - `R_G`: Temporal accessibility on ultrafilters (G-preimage containment)
 - `R_Box`: Modal accessibility on ultrafilters (Box-preimage containment)
 - `UltrafilterChain`: Int-indexed chain of ultrafilters with R_G connectivity
+- `box_content`: Set of formulas phi such that Box(phi) is in an MCS
+- `box_class_witness_consistent`: Consistency of {psi} union box_content(M)
 
 ## References
 
 - Jonsson-Tarski (1951-52): Boolean algebras with operators
-- Team research report 33_team-research.md
 -/
 
 namespace Bimodal.Metalogic.Algebraic.UltrafilterChain
@@ -1672,55 +1680,20 @@ This is the key lemma for modal saturation. The proof uses:
 theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (psi : Formula) (h_diamond : Formula.diamond psi ∈ M) :
     SetConsistent ({psi} ∪ box_content M) := by
-  -- SetConsistent means: for every finite list L ⊆ S, L does not derive bot
+  -- SetConsistent: for every finite list L ⊆ S, L does not derive bot
   intro L h_L_sub ⟨d⟩
-  -- L is a list of formulas from {psi} ∪ box_content(M)
-  -- d : L ⊢ bot
 
-  -- Every element of L is either psi or some ai with Box(ai) ∈ M
-  -- We can weaken to a derivation from [psi] ++ [a1, ..., an] where Box(ai) ∈ M
+  -- Strategy: Assume L ⊢ bot. Show this leads to Box(neg(psi)) ∈ M,
+  -- contradicting Diamond(psi) ∈ M via diamond_excludes_box_neg.
+  --
+  -- Key steps:
+  -- 1. Every element of L is psi or in box_content(M) (has Box in M)
+  -- 2. Elements in box_content(M) are also in M (by T axiom)
+  -- 3. Filter out psi to get L_no_psi ⊆ box_content(M)
+  -- 4. Deduction theorem: L_no_psi ⊢ neg(psi)
+  -- 5. Induction: if ctx ⊢ phi and Box(x) ∈ M for all x ∈ ctx, then Box(phi) ∈ M
+  -- 6. Therefore Box(neg(psi)) ∈ M, contradiction
 
-  -- Strategy: use deduction theorem to move all assumptions into the theorem,
-  -- then apply necessitation and K-distribution.
-
-  -- First, move all hypotheses out via repeated deduction theorem:
-  -- From L ⊢ bot, by weakening to include all of L in a single context,
-  -- we can derive: [] ⊢ l1 → l2 → ... → ln → bot = neg(l1 ∧ ... ∧ ln)
-
-  -- Actually, the key insight is simpler. We use:
-  -- 1. L ⊆ {psi} ∪ box_content(M) means every li is psi or in box_content(M)
-  -- 2. For li in box_content(M), Box(li) ∈ M, so by T axiom, li ∈ M
-  -- 3. For li = psi, we handle separately
-
-  -- Case: psi ∉ L. Then L ⊆ box_content(M), and every li has Box(li) ∈ M.
-  -- By T axiom: li ∈ M. So L ⊆ M. But M is consistent: L ⊆ M and L ⊢ bot
-  -- contradicts MCS consistency.
-
-  -- Case: psi ∈ L. Let L' = L without psi occurrences. Then all l ∈ L' have
-  -- Box(l) ∈ M, so l ∈ M (by T). And L' ∪ {psi} ⊢ bot (by weakening from L).
-
-  -- By repeated deduction theorem on L':
-  -- [psi] ⊢ l1 → l2 → ... → bot  (removing L' elements one by one)
-  -- Then [] ⊢ psi → (l1 → l2 → ... → bot)
-  -- i.e., [] ⊢ neg(psi) assuming L' derives bot with psi
-
-  -- Actually let's work more directly. Since L ⊢ bot:
-  -- By weakening, M_list ++ [psi] ⊢ bot where M_list consists of elements of M
-  -- (because for x ∈ L ∩ box_content(M), Box(x) ∈ M so x ∈ M by T)
-
-  -- Hmm, but psi might appear multiple times. Let me use a cleaner approach.
-
-  -- Simplest approach: show that L ⊆ M ∪ {psi}, and then get M_full ⊢ bot
-  -- where M_full contains all of M plus psi.
-
-  -- Actually, the cleanest approach is:
-  -- 1. From L ⊢ bot, derive [] ⊢ (conjunction of L) → bot
-  -- 2. The conjunction of L elements is a conjunction of psi and ai where Box(ai) ∈ M
-  -- 3. Apply necessitation and K to get Box(neg(psi)) ∈ M
-
-  -- Let me use the direct list-based approach from the MCS consistency proof.
-
-  -- All elements of L either equal psi or have their Box in M
   -- For elements with Box in M, they are also in M (by T axiom)
   have h_T := fun (phi : Formula) (h_box : Formula.box phi ∈ M) =>
     SetMaximalConsistent.implication_property h_mcs
@@ -1739,17 +1712,7 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
       -- x ∈ box_content M means Box(x) ∈ M, so x ∈ M by T
       exact h_T x h_bc
 
-  -- Now we have L ⊢ bot and every element of L is in M ∪ {psi}
-  -- Weaken the derivation to work from the context M ∪ {psi}
-  -- Since M is consistent, adding psi might make it inconsistent
-  -- But we'll show this leads to Box(neg(psi)) ∈ M, contradicting Diamond(psi) ∈ M
-
-  -- Approach: weaken L to (insert psi M)-list
-  -- L ⊢ bot, and L ⊆ insert psi M
-  -- So insert psi M is SetConsistent → False? No, SetConsistent uses finite subsets.
-  -- Actually L IS a finite subset of insert psi M.
-  -- So ¬SetConsistent (insert psi M).
-
+  -- L ⊆ insert psi M (as a finite subset), so insert psi M is inconsistent
   have h_not_cons : ¬SetConsistent (insert psi M) := by
     intro h_cons
     have h_L_sub' : ∀ x ∈ L, x ∈ insert psi M := by
@@ -1759,11 +1722,7 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
       · rw [h_psi]; exact Set.mem_insert psi M
     exact h_cons L h_L_sub' ⟨d⟩
 
-  -- Since M is MCS and insert psi M is inconsistent,
-  -- by MCS maximality: psi ∉ M implies ¬SetConsistent (insert psi M)
-  -- Conversely: if psi ∈ M, then insert psi M = M, which is consistent.
-
-  -- So psi ∉ M (otherwise insert psi M = M which is consistent)
+  -- psi ∉ M (otherwise insert psi M = M, which is consistent)
   have h_psi_notin : psi ∉ M := by
     intro h_in
     have h_eq : insert psi M = M := Set.insert_eq_of_mem h_in
@@ -1776,97 +1735,15 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
     · exact absurd h h_psi_notin
     · exact h
 
-  -- By MCS maximality: psi ∉ M implies ¬SetConsistent(insert psi M)
-  -- We already have this: h_not_cons
-  -- From ¬SetConsistent(insert psi M), there's a finite list L' ⊆ insert psi M with L' ⊢ bot
-  -- Using the deduction theorem approach:
-
-  -- Since insert psi M is inconsistent, ∃ L' ⊆ insert psi M, L' ⊢ bot
-  -- Remove psi from L' to get L'' ⊆ M with L'' ⊢ psi → bot = neg(psi)
-  -- But neg(psi) ∈ M already, and M is consistent. This doesn't directly give Box.
-
-  -- Let me use the direct S5 argument instead.
-  -- We have neg(psi) ∈ M. Can we get Box(neg(psi)) ∈ M?
-  -- Not directly from neg(psi) ∈ M. We need a different approach.
-
-  -- Going back to the original argument:
-  -- From L ⊢ bot where L ⊆ {psi} ∪ box_content(M):
-  -- Separate psi from the rest: let L' = L \ {psi}
-  -- Then L' ⊆ box_content(M), i.e., ∀ x ∈ L', Box(x) ∈ M
-  -- And L' ++ [psi, ..., psi] ⊢ bot (some copies of psi from L)
-  -- By weakening: L' ++ [psi] ⊢ bot (since duplicate psi adds nothing)
-  -- By deduction theorem: L' ⊢ neg(psi) = psi → bot
-
-  -- Now L' ⊢ neg(psi) where ∀ x ∈ L', Box(x) ∈ M.
-  -- Weaken to the full list [a1,...,an] where ai = elements of L' (with Box(ai) ∈ M):
-  -- [] ⊢ a1 → a2 → ... → an → neg(psi)  (by repeated deduction theorem)
-
-  -- Apply necessitation: [] ⊢ Box(a1 → a2 → ... → an → neg(psi))
-  -- Apply K-distribution n times:
-  -- [] ⊢ Box(a1) → Box(a2) → ... → Box(an) → Box(neg(psi))
-
-  -- Since Box(ai) ∈ M for all i, by MCS modus ponens: Box(neg(psi)) ∈ M
-  -- But Diamond(psi) = neg(Box(neg(psi))) ∈ M: contradiction with MCS consistency.
-
-  -- The full argument requires careful handling of the list operations.
-  -- Let's use the fact that M is MCS and work with the MCS-level inconsistency.
-
-  -- From h_not_cons, insert psi M is inconsistent.
-  -- From h_mcs.2: for any phi ∉ M, insert phi M is inconsistent.
-  -- This is exactly what h_psi_notin + h_mcs.2 gives us.
-
-  -- Now: since neg(psi) ∈ M, can we derive Box(neg(psi))?
-  -- In general no. But we can use the S5-specific argument.
-
-  -- The actual argument: L ⊢ bot, L ⊆ {psi} ∪ box_content(M).
-  -- We need to show this leads to Box(neg(psi)) ∈ M.
-
-  -- Approach using the MCS-level proof:
-  -- We'll construct a derivation [] ⊢ Box(neg(psi)) using:
-  -- 1. From L ⊢ bot, extract [] ⊢ a1 → ... → an → neg(psi) where Box(ai) ∈ M
-  -- 2. By necessitation and K: [] ⊢ Box(a1) → ... → Box(an) → Box(neg(psi))
-  -- 3. Since Box(ai) ∈ M: Box(neg(psi)) ∈ M
-
-  -- However, constructing this in Lean requires manipulating DerivationTree for
-  -- arbitrary-length lists. This is technically involved but mathematically straightforward.
-
-  -- For now, we'll use a simpler argument that avoids list manipulation:
-  -- We directly show the contradiction using diamond_excludes_box_neg from ModalSaturation.
-
-  -- diamond_excludes_box_neg: Diamond(psi) ∈ M → Box(neg(psi)) ∉ M
+  -- Diamond(psi) ∈ M implies Box(neg(psi)) ∉ M via diamond_excludes_box_neg
   have h_box_neg_notin : Formula.box (Formula.neg psi) ∉ M :=
     diamond_excludes_box_neg h_mcs psi h_diamond
 
-  -- We need Box(neg(psi)) ∈ M for the contradiction.
-  -- The inconsistency of {psi} ∪ box_content(M) means:
-  -- exists L ⊆ {psi} ∪ box_content(M) with L ⊢ bot.
-  -- We have this: L, d.
+  -- We will derive Box(neg(psi)) ∈ M, contradicting h_box_neg_notin.
+  -- Key: L ⊆ {psi} ∪ box_content(M), so non-psi elements have Box(x) ∈ M.
+  -- By deduction theorem and necessitation/K-distribution chain, Box(neg(psi)) ∈ M.
 
-  -- Key insight: we prove this by induction on the derivation,
-  -- but that's complex. Instead, use the finitary MCS argument:
-
-  -- Since L ⊢ bot and all non-psi elements of L are in M (via T axiom on Box),
-  -- we can weaken to [psi] ++ M_list ⊢ bot where M_list ⊆ M.
-  -- By deduction: M_list ⊢ neg(psi).
-  -- Since M_list ⊆ M and M is an MCS: neg(psi) ∈ M.
-  -- But this only gives neg(psi) ∈ M, not Box(neg(psi)) ∈ M.
-
-  -- The S5-specific step: we need to lift from formulas to Box-formulas.
-  -- The derivation L ⊢ bot where L ⊆ {psi} ∪ box_content(M) means:
-  -- There exist a1,...,an with Box(ai) ∈ M such that {psi, a1,...,an} ⊢ bot.
-  -- This means ⊢ a1 → ... → an → neg(psi) (after repeated deduction theorem).
-  -- By necessitation: ⊢ Box(a1 → ... → an → neg(psi))
-  -- By K-distribution: ⊢ Box(a1) → ... → Box(an) → Box(neg(psi))
-  -- Since Box(ai) ∈ M: Box(neg(psi)) ∈ M.
-
-  -- We formalize this using an auxiliary lemma that handles the K-distribution chain.
-
-  -- Step 1: Extract the box_content elements from L
-  -- Weaken d to work with elements that are all in M or equal to psi
-  -- Then apply the deduction theorem for psi to get M_list ⊢ neg(psi)
-
-  -- For the formalization, we use the list-based approach.
-  -- Filter L into psi-copies and box_content elements.
+  -- Filter L to extract non-psi elements (all in box_content(M))
   let L_no_psi := L.filter (· ≠ psi)
 
   -- All elements of L_no_psi are in box_content(M)
@@ -1880,118 +1757,7 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
     · rw [h] at hx_ne; exact absurd rfl hx_ne
     · exact h
 
-  -- Step 2: Weaken the derivation. L ⊢ bot can be weakened to (psi :: L_no_psi) ⊢ bot
-  -- because L_no_psi ⊆ L (modulo psi which we add back)
-  -- Actually, we need to weaken from L to a list containing psi and the L_no_psi elements.
-  -- Since L ⊆ {psi} ∪ set_of(L_no_psi ++ [psi]), we can weaken.
-
-  -- Simplification: just use the fact that L ⊆ insert psi M gives insert psi M inconsistent,
-  -- then use the MCS property to derive Box(neg(psi)) ∈ M through the S5 argument.
-
-  -- The S5 argument at the MCS level:
-  -- insert psi M is inconsistent → neg(psi) can be derived from M
-  -- → ¬SetConsistent (insert psi M)
-  -- → by maximality applied to (neg (neg psi)): if neg(neg(psi)) ∉ M then contradiction...
-  -- This is going in circles.
-
-  -- Let me use the DIRECT finitary argument.
-  -- We have d : DerivationTree L Formula.bot
-  -- We know every x ∈ L is in M ∪ {psi} (h_L_in_M_or_psi)
-  -- Weaken d to derive from M ∪ {psi}:
-
-  -- Weaken to [psi] ++ M_elems where M_elems are the non-psi elements of L, all in M.
-  -- Then apply deduction theorem for psi: M_elems ⊢ neg(psi).
-  -- Then [] ⊢ m1 → ... → mk → neg(psi) by repeated deduction.
-  -- By necessitation: ⊢ Box(m1 → ... → mk → neg(psi))
-  -- The mi are in M. But are Box(mi) in M? Only if mi ∈ box_content(M),
-  -- meaning Box(mi) ∈ M. For mi ∈ box_content(M), yes. For mi = some arbitrary
-  -- element of M, Box(mi) might not be in M.
-
-  -- AH - here's the key: the elements of L that are in M came from box_content(M).
-  -- They are ai where Box(ai) ∈ M. We used T axiom to put ai in M.
-  -- But for the K-distribution argument, we need Box(ai) ∈ M, which we have!
-
-  -- So: L = [psi, a1, ..., an] where Box(ai) ∈ M.
-  -- L ⊢ bot.
-  -- By repeated deduction: ⊢ psi → a1 → ... → an → bot = a1 → ... → an → neg(psi)
-  -- Wait, the order matters for deduction theorem.
-
-  -- Actually: L ⊢ bot. After deduction theorem removing psi:
-  -- L \ {psi} ⊢ neg(psi). Where L \ {psi} ⊆ box_content(M).
-  -- After repeated deduction on L \ {psi} = [a1,...,an]:
-  -- ⊢ a1 → a2 → ... → an → neg(psi)
-  -- By necessitation: ⊢ Box(a1 → ... → an → neg(psi))
-  -- By K (n times): ⊢ Box(a1) → Box(a2) → ... → Box(an) → Box(neg(psi))
-  -- Since Box(ai) ∈ M: Box(neg(psi)) ∈ M.
-  -- Contradiction with Diamond(psi) = neg(Box(neg(psi))) ∈ M.
-
-  -- The challenge is formalizing the "repeated deduction theorem" and
-  -- "K-distribution n times" for arbitrary n. Let me use a helper lemma.
-
-  -- Helper: if ⊢ A → B and Box(A) ∈ M, then Box(B) ∈ M.
-  -- Proof: By necessitation: ⊢ Box(A → B). By K: ⊢ Box(A) → Box(B).
-  -- Since Box(A) ∈ M: Box(B) ∈ M.
-
-  -- So we need: ⊢ a1 → (a2 → ... → (an → neg(psi))...)
-  -- Then: Box(a1) ∈ M → Box(a2 → ... → neg(psi)) ∈ M (by helper)
-  -- Then: Box(a2) ∈ M → Box(a3 → ... → neg(psi)) ∈ M (by helper on unboxed inner)
-  -- Wait, this doesn't quite work because Box distributes as Box(A→B) → (Box(A) → Box(B))
-
-  -- Let me use the standard "Box-lift" lemma:
-  -- If ⊢ A → B, then ⊢ Box(A) → Box(B)
-  -- Proof: Necessitate A → B, then apply K.
-
-  -- And the iterated version:
-  -- If ⊢ a1 → a2 → ... → an → C, then ⊢ Box(a1) → Box(a2) → ... → Box(an) → Box(C)
-  -- Proof by induction on n using the above.
-
-  -- For the formalization, we use List.foldl or induction on the list.
-  -- This is the "box_lift_chain" lemma.
-
-  -- Rather than formalizing the full iterated version (which requires complex list
-  -- manipulation), we use a key simplification:
-
-  -- From L ⊢ bot where L ⊆ {psi} ∪ box_content(M), we weaken L to M:
-  -- Every non-psi element ai of L has Box(ai) ∈ M, so ai ∈ M (by T).
-  -- So L ⊆ M ∪ {psi}. We already know insert psi M is inconsistent (h_not_cons).
-  -- By MCS maximality: neg(psi) ∈ M (h_neg_psi).
-
-  -- Now the key question: can we get Box(neg(psi)) ∈ M from this specific structure?
-
-  -- The answer is YES, using a more refined argument:
-  -- h_not_cons tells us insert psi M is inconsistent.
-  -- There exists a finite L' ⊆ insert psi M with L' ⊢ bot.
-  -- Take L' minimal. Then psi ∈ L' (otherwise L' ⊆ M and M inconsistent).
-  -- Remove psi: L'' = L' \ [psi]. L'' ⊆ M. [psi] ++ L'' ⊢ bot.
-  -- By deduction: L'' ⊢ neg(psi). By repeated deduction: ⊢ l1 → ... → lk → neg(psi).
-
-  -- Here l1,...,lk are elements of M. But we can't necessitate unless they are theorems.
-  -- The issue: l1,...,lk are arbitrary elements of M, not box_content elements.
-
-  -- BUT wait: in our specific case, L ⊆ {psi} ∪ box_content(M), not L ⊆ {psi} ∪ M.
-  -- So the non-psi elements of L are in box_content(M), meaning Box(li) ∈ M.
-
-  -- So the refined argument IS: L'' (non-psi part of L) ⊆ box_content(M).
-  -- ⊢ l1 → l2 → ... → lk → neg(psi) where Box(li) ∈ M.
-  -- Necessitate and distribute K:
-  -- ⊢ Box(l1) → Box(l2) → ... → Box(lk) → Box(neg(psi))
-  -- Since Box(li) ∈ M: Box(neg(psi)) ∈ M. Contradiction.
-
-  -- Let me now formalize this properly using induction on the list.
-
-  -- First, let's establish that we can extract a derivation from non-psi elements.
-  -- We have d : L ⊢ bot and L ⊆ {psi} ∪ box_content(M).
-  -- Weaken to (psi :: L_no_psi) ⊢ bot.
-
-  -- Actually, L might have psi in any position. We can weaken from L to any
-  -- superlist. The key fact: L ⊆ psi :: L_no_psi (as sets).
-  -- Wait, we need the opposite: weaken FROM L TO a smaller/different context.
-  -- Weakening goes: if L ⊆ L' then L ⊢ bot implies L' ⊢ bot.
-  -- So we need L ⊆ (psi :: L_no_psi).
-
-  -- This is true: every element of L is either psi (in head) or in L_no_psi (by filter).
-  -- Actually L_no_psi = L.filter (· ≠ psi) so L ⊆ [psi] ++ L_no_psi.
-
+  -- Weaken L to (psi :: L_no_psi): every element is either psi or in L_no_psi
   have h_L_sub_psi_Lnp : ∀ x ∈ L, x ∈ psi :: L_no_psi := by
     intro x hx
     by_cases h_eq : x = psi
@@ -2006,13 +1772,8 @@ theorem box_class_witness_consistent (M : Set Formula) (h_mcs : SetMaximalConsis
   have d_neg_psi : DerivationTree L_no_psi (Formula.neg psi) :=
     Bimodal.Metalogic.Core.deduction_theorem L_no_psi psi Formula.bot d_weak
 
-  -- Now we need: ⊢ l1 → l2 → ... → lk → neg(psi) by repeated deduction,
-  -- then necessitate and K-distribute.
-
-  -- We prove: Box(neg(psi)) ∈ M by induction on L_no_psi.
-  -- The invariant: if ctx ⊢ neg(psi) and ∀ x ∈ ctx, Box(x) ∈ M, then Box(neg(psi)) ∈ M.
-
-  -- This is the "box_lift_from_context" lemma.
+  -- box_lift_from_context: if ctx ⊢ phi and Box(x) ∈ M for all x ∈ ctx, then Box(phi) ∈ M
+  -- Proved by induction: use necessitation at base, deduction + K-distribution at cons.
   suffices h : ∀ (ctx : List Formula) (phi : Formula),
       DerivationTree ctx phi → (∀ x ∈ ctx, Formula.box x ∈ M) → Formula.box phi ∈ M by
     exact h_box_neg_notin (h L_no_psi (Formula.neg psi) d_neg_psi
