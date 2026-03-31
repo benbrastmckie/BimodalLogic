@@ -261,7 +261,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 - **Effort**: 8-14 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
-- **Dependencies**: Task #71, Task #73
+- **Dependencies**: Task #71
 - **Parent Task**: #58
 - **Research**:
   - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
