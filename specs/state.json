@@ -1316,7 +1316,7 @@
     {
       "project_number": 72,
       "project_name": "wire_completeness_bfmcs_bundle",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "description": "Construct fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) for construct_bfmcs callback. Truth lemma is inherently bidirectional (Imp forward needs backward IH), so F/P sorries block entire proof. Options: (A) resolve F/P via fair-scheduling, (B) algebraic path with different construction, (C) FMP path.",
       "effort": "8-14 hours",
@@ -1325,7 +1325,7 @@
         71
       ],
       "created": "2026-03-30T22:53:42Z",
-      "last_updated": "2026-03-31T18:23:39Z",
+      "last_updated": "2026-03-31T18:43:43Z",
       "artifacts": [
         {
           "type": "research",
@@ -1336,10 +1336,15 @@
           "path": "specs/072_wire_completeness_bfmcs_bundle/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates"
+        },
+        {
+          "path": "specs/072_wire_completeness_bfmcs_bundle/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Team research: Z_chain_forward_F bidirectionality analysis (2 teammates)"
         }
       ],
       "session_id": "sess_1774981391_bfd67b",
-      "researched": "2026-03-31T18:16:51Z"
+      "researched": "2026-03-31T18:43:43Z"
     },
     {
       "project_number": 74,
