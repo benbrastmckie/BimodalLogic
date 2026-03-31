@@ -1316,7 +1316,7 @@
     {
       "project_number": 72,
       "project_name": "wire_completeness_bfmcs_bundle",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "description": "Construct fully temporally coherent BFMCS (forward_G, backward_H, forward_F, backward_P) for construct_bfmcs callback. Truth lemma is inherently bidirectional (Imp forward needs backward IH), so F/P sorries block entire proof. Options: (A) resolve F/P via fair-scheduling, (B) algebraic path with different construction, (C) FMP path.",
       "effort": "8-14 hours",
@@ -1325,14 +1325,15 @@
         71
       ],
       "created": "2026-03-30T22:53:42Z",
-      "last_updated": "2026-03-30T22:53:42Z",
+      "last_updated": "2026-03-31T17:57:33Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/069_close_z_chain_forward_f/reports/18_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
         }
-      ]
+      ],
+      "session_id": "sess_1774979837_b02f17"
     },
     {
       "project_number": 74,
@@ -1365,14 +1366,19 @@
       "language": "lean4",
       "priority": "high",
       "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint",
-      "last_updated": "2026-03-31T17:54:55Z",
-      "session_id": "sess_1774979329_29349c",
-      "researched": "2026-03-31T17:54:55Z",
+      "last_updated": "2026-03-31T18:07:04Z",
+      "session_id": "sess_1774980147_15379d",
+      "researched": "2026-03-31T18:07:04Z",
       "artifacts": [
         {
           "path": "specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates"
+        },
+        {
+          "path": "specs/077_research_preorder_taskframe_generalization/reports/02_time-shift-analysis.md",
+          "type": "research",
+          "summary": "Time-shift invariance analysis for BTM"
         }
       ]
     },

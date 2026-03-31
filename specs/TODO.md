@@ -217,7 +217,9 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 - **Priority**: high
 - **Created**: 2026-03-31
 - **Related**: Task 8 (genuine truth_at completeness)
-- **Research**: [01_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md)
+- **Research**:
+  - [01_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md)
+  - [02_time-shift-analysis.md](specs/077_research_preorder_taskframe_generalization/reports/02_time-shift-analysis.md)
 
 **Description**: Research generalization of TaskFrame to relax the AddCommGroup constraint, enabling CanonicalMCS as completeness domain. From task 8 research:
 
@@ -259,7 +261,7 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 72. Wire completeness through fully coherent BFMCS construction
 - **Effort**: 8-14 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Task #71
 - **Parent Task**: #58
