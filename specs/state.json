@@ -8,27 +8,22 @@
     {
       "project_number": 70,
       "project_name": "explore_ultrafilter_construction",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Explore ultrafilter-based construction for temporal coherence as alternative to MCS-based Lindenbaum extension. Ultrafilters of the Lindenbaum algebra have automatic negation completeness, eliminating the F-persistence gap where Lindenbaum can add G(neg phi). The R_G and R_Box relations on ultrafilters already exist (UltrafilterChain.lean lines 59-68). This task requires: (1) defining FMCS structure from ultrafilter chains, (2) proving ultrafilter chains satisfy temporal coherence by construction, (3) connecting ultrafilter-based completeness to existing MCS-based infrastructure. Reference: Strategy 4 in task 69 team research report.",
       "effort": "12-20 hours",
       "parent_task": 69,
       "created": "2026-03-30T18:43:29Z",
-      "last_updated": "2026-03-31T03:09:45Z",
-      "session_id": "sess_1774926142_4a9890",
+      "last_updated": "2026-03-31T03:16:31Z",
+      "session_id": "sess_1774926757_fa04ca",
       "researched": "2026-03-31T03:09:45Z",
-      "planned": "2026-03-31T01:35:24Z",
+      "planned": "2026-03-31T03:16:31Z",
       "started": "2026-03-30T23:37:27Z",
       "artifacts": [
         {
           "path": "specs/070_explore_ultrafilter_construction/reports/08_team-research.md",
           "type": "research",
           "summary": "Team research: seed consistency corner case resolution (filter-deduction-contraction approach)"
-        },
-        {
-          "path": "specs/070_explore_ultrafilter_construction/plans/03_filter-contraction-approach.md",
-          "type": "plan",
-          "summary": "Revised 9-phase plan with filter-deduction-contraction fix (v3)"
         },
         {
           "path": "specs/070_explore_ultrafilter_construction/summaries/02_completion-summary.md",
@@ -49,6 +44,11 @@
           "path": "specs/070_explore_ultrafilter_construction/reports/09_team-research.md",
           "type": "research",
           "summary": "Team research: rigorous mathematical analysis of temporal coherence paths (bidirectional witness recommended)"
+        },
+        {
+          "path": "specs/070_explore_ultrafilter_construction/plans/04_bidirectional-witness.md",
+          "type": "plan",
+          "summary": "9-phase implementation plan for bidirectional temporal witness construction (v4)"
         }
       ]
     },
