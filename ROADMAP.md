@@ -237,11 +237,15 @@ The goal of TM completeness is a **representation theorem** characterizing the f
 
 > "TM is complete with respect to TaskFrames over totally ordered abelian groups."
 
-This tells us WHAT semantic class TM corresponds to. FMP/filtration techniques can prove
-decidability or finite model property, but do not provide this characterization.
+This tells us WHAT semantic class TM corresponds to. **Only the algebraic/canonical model
+approach is to be pursued for completeness.** The canonical completeness approach (building a
+single countermodel from MCS) is the unique path to representation theorems.
 
-The canonical completeness approach (building a single countermodel from MCS) is the path to
-representation theorems. The F/P witness blocker remains an open challenge in this approach.
+**FMP/filtration is NOT a substitute.** FMP proves decidability and finite model property but
+does not provide frame class characterization. FMP work (task #998) is a separate decidability
+track — it must not be conflated with, or used as a fallback for, the completeness theorem.
+The F/P witness blocker is an open challenge on the canonical model path, not a reason to
+retreat to FMP.
 
 **Reference**: `specs/077_research_preorder_taskframe_generalization/reports/05_team-research.md`
 
@@ -264,7 +268,8 @@ representation theorems. The F/P witness blocker remains an open challenge in th
 
 ### FMP Truth Preservation (4 sorries)
 - Filtration-based truth preservation for finite model property
-- Independent track
+- **Decidability track only** — not a path to the completeness representation theorem
+- Does not substitute for canonical model construction
 
 ## Recommended Priority Order
 

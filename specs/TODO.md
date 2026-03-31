@@ -92,7 +92,7 @@ technical_debt:
 
 ### 80. Audit UltrafilterChain dead code from abandoned approaches
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-03-31
@@ -100,6 +100,7 @@ technical_debt:
 - **Research**:
   - [01_dead-code-audit.md](080_ultrafilter_dead_code_audit/reports/01_dead-code-audit.md) — Initial audit: 24 sorries, 8 dead regions
   - [02_medium-confidence-analysis.md](080_ultrafilter_dead_code_audit/reports/02_medium-confidence-analysis.md) — Follow-up: all medium items confirmed ARCHIVE
+- **Plan**: [01_dead-code-cleanup.md](080_ultrafilter_dead_code_audit/plans/01_dead-code-cleanup.md)
 
 **Description**: Audit and remove dead code from UltrafilterChain.lean. The file has ~25 sorries across multiple abandoned approaches documented in ROADMAP.md: (1) old SuccChain with f_nesting_is_bounded (FALSE), (2) bidirectional seed with H(a)->G(H(a)) (NOT derivable), (3) Z_chain cross-chain propagation (structural gap), (4) CoherentZChain (same gaps). Cleanup reduces cognitive load, clarifies which sorries are actually blocking vs dead code, and may reveal ~430 lines removable.
 
