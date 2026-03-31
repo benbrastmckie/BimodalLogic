@@ -95,7 +95,9 @@ technical_debt:
 - **Language**: markdown
 - **Dependencies**: None
 - **Parent Task**: #69
-- **Research**: [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
+- **Research**:
+  - [18_spawn-analysis.md](069_close_z_chain_forward_f/reports/18_spawn-analysis.md)
+  - [01_f-persistence-bidirectionality.md](071_document_f_persistence_findings/reports/01_f-persistence-bidirectionality.md)
 
 **Description**: Consolidate discoveries from tasks 67, 69, and 70 into ROADMAP.md and source code comments. Three items:
 
