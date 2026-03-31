@@ -212,11 +212,12 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 
 ### 77. Research PreorderTaskFrame generalization
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-03-31
 - **Related**: Task 8 (genuine truth_at completeness)
+- **Research**: [01_team-research.md](specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md)
 
 **Description**: Research generalization of TaskFrame to relax the AddCommGroup constraint, enabling CanonicalMCS as completeness domain. From task 8 research:
 
@@ -253,18 +254,6 @@ Research track for extending TM with strict temporal operators (G'/H') and unifi
 2. **Truth lemma bidirectionality constraint**: Document in ROADMAP.md and in code comments (SuccChainTruth.lean, ParametricTruthLemma.lean, SuccChainFMCS.lean) that the truth lemma is inherently bidirectional — the Imp forward case structurally requires the backward IH (`(ih_psi fam hfam t).mpr`). This means backward G/H cases (which need `forward_F`/`backward_P`) infect the entire truth lemma. A "forward-only" truth lemma is impossible. Correct any existing comments that suggest otherwise (e.g., "For completeness, only FORWARD direction is needed" in ROADMAP.md line 195).
 
 3. **Separate-direction witness status**: Document that task 70 proved `forward_G`/`backward_H` sorry-free, but `forward_F`/`backward_P` remain open. Since full bidirectional coherence is required, the F/P gap is the remaining blocker for sorry-free completeness.
-
----
-
-### 73. Resolve Class A sorries via modal duality DNE
-- **Effort**: 2-3 hours
-- **Status**: [BLOCKED]
-- **Language**: lean4
-- **Dependencies**: Task #78, Task #79
-- **Created**: 2026-03-30
-- **Research**: [01_class-a-sorries-dne.md](073_resolve_class_a_sorries_dne/reports/01_class-a-sorries-dne.md)
-
-**Description**: Resolve Class A sorries in SuccChainFMCS.lean via modal duality and double-negation elimination (DNE). The proof strategy is documented in ROADMAP.md: (1) `FF(ψ) ∈ deferralClosure` and `FF(ψ) ∉ u` given, (2) by negation completeness of restricted MCS: `neg(FF(ψ)) ∈ u`, (3) `neg(FF(ψ)) = neg(neg(G(neg(F(ψ)))))` (definitional, since `FF(ψ) = neg(G(neg(F(ψ))))`), (4) by `SetMaximalConsistent.double_neg_elim`: `G(neg(F(ψ))) ∈ u`, (5) so `neg(F(ψ)) ∈ g_content(u)`, (6) by Succ relation: `neg(F(ψ)) ∈ v`, (7-9) conclude `ψ ∈ v`. All ingredients exist in the codebase. Estimated: small, all existing lemmas.
 
 ---
 

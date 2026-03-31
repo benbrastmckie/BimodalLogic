@@ -1322,8 +1322,7 @@
       "effort": "8-14 hours",
       "parent_task": 69,
       "dependencies": [
-        71,
-        73
+        71
       ],
       "created": "2026-03-30T22:53:42Z",
       "last_updated": "2026-03-30T22:53:42Z",
@@ -1332,29 +1331,6 @@
           "type": "research",
           "path": "specs/069_close_z_chain_forward_f/reports/18_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
-        }
-      ]
-    },
-    {
-      "project_number": 73,
-      "project_name": "resolve_class_a_sorries_dne",
-      "status": "blocked",
-      "language": "lean4",
-      "description": "Resolve Class A sorries in SuccChainFMCS.lean via modal duality and double-negation elimination. All ingredients exist: double_neg_elim, negation completeness of restricted MCS, and definitional equality of F/G duality.",
-      "effort": "2-3 hours",
-      "dependencies": [
-        78,
-        79
-      ],
-      "created": "2026-03-30T23:00:00Z",
-      "last_updated": "2026-03-31T17:51:05Z",
-      "session_id": "sess_1774979446_43b3b0",
-      "researched": "2026-03-31T17:41:50Z",
-      "artifacts": [
-        {
-          "path": "specs/073_resolve_class_a_sorries_dne/reports/01_class-a-sorries-dne.md",
-          "type": "research_report",
-          "summary": "Class A sorries no longer exist - DNE pattern already applied. Recommend scope clarification."
         }
       ]
     },
@@ -1385,12 +1361,20 @@
     {
       "project_number": 77,
       "project_name": "research_preorder_taskframe_generalization",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "priority": "high",
       "description": "Research PreorderTaskFrame generalization to relax AddCommGroup constraint",
-      "last_updated": "2026-03-31T17:49:24Z",
-      "session_id": "sess_1774979329_29349c"
+      "last_updated": "2026-03-31T17:54:55Z",
+      "session_id": "sess_1774979329_29349c",
+      "researched": "2026-03-31T17:54:55Z",
+      "artifacts": [
+        {
+          "path": "specs/077_research_preorder_taskframe_generalization/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 2 teammates"
+        }
+      ]
     },
     {
       "project_number": 78,
