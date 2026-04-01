@@ -704,7 +704,7 @@
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T15:59:40Z",
+      "last_updated": "2026-04-01T16:50:00Z",
       "notes": "Implementation blocked: H-blocker G-lift problem and F-persistence problem. See plan for details.",
       "session_id": "sess_1775057990_57ba45",
       "researched": "2026-04-01T15:59:40Z",
@@ -748,11 +748,16 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/08_team-research.md",
           "type": "research",
           "summary": "Team research run 8: Path A deep analysis — compactness invalid, f_step mechanism, resolution ordering (4 teammates)"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/reports/09_definitive-approach.md",
+          "type": "research",
+          "summary": "Definitive step-by-step construction guide: restricted-families BFMCS approach with 6-step implementation plan"
         }
       ],
       "planned": "2026-04-01T01:48:36Z",
       "started": "2026-04-01T01:49:54Z",
-      "next_artifact_number": 9
+      "next_artifact_number": 10
     }
   ],
   "next_project_number": 82,
