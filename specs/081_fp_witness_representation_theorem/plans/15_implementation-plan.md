@@ -48,7 +48,7 @@ Close the single remaining completeness sorry (`bfmcs_from_mcs_temporally_cohere
 
 ## Implementation Phases
 
-### Phase 1: Investigate F-Persistence and Define Partial Chain [NOT STARTED]
+### Phase 1: Investigate F-Persistence and Define Partial Chain [BLOCKED]
 
 **Goal:** Determine whether F(phi) persists along R_G chains, and define the partial chain structure for the Zorn construction.
 
