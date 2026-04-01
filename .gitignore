@@ -60,3 +60,4 @@ specs/tmp/
 specs/**/.*
 benchmarks/
 indent.log
+/.claude_OLD
