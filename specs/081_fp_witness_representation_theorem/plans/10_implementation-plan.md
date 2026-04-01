@@ -1,7 +1,7 @@
 # Implementation Plan: F/P Witness Representation Theorem
 
 - **Task**: 81 - F/P Witness Representation Theorem
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12 hours
 - **Dependencies**: None (self-contained bypass of existing sorry chain)
 - **Research Inputs**: reports/10_streamlined-guide.md
@@ -49,7 +49,7 @@ Report 10 (streamlined-guide.md) provides the verified 10-step roadmap. Key find
 
 ## Implementation Phases
 
-### Phase 1: Simplified Restricted Seed and Successor [NOT STARTED]
+### Phase 1: Simplified Restricted Seed and Successor [COMPLETED]
 
 **Goal**: Define the simplified restricted seed (without `boundary_resolution_set` and `f_content`) and prove its consistency is trivial, then build the successor via `deferral_restricted_lindenbaum`.
 
@@ -79,7 +79,7 @@ Report 10 (streamlined-guide.md) provides the verified 10-step roadmap. Key find
 
 ---
 
-### Phase 2: Forward Chain Construction [NOT STARTED]
+### Phase 2: Forward Chain Construction [BLOCKED]
 
 **Goal**: Build the forward chain from a DeferralRestrictedSerialMCS by iterating the simplified successor, and prove chain-level properties.
 
@@ -115,7 +115,7 @@ Report 10 (streamlined-guide.md) provides the verified 10-step roadmap. Key find
 
 ---
 
-### Phase 3: Forward F via Bounded F-Nesting [NOT STARTED]
+### Phase 3: Forward F via Bounded F-Nesting [BLOCKED]
 
 **Goal**: Prove that every F-obligation in the simplified forward chain is eventually resolved, using bounded F-nesting depth within deferralClosure.
 

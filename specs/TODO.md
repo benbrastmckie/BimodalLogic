@@ -82,12 +82,13 @@ technical_debt:
 
 ### 81. F/P Witness Representation Theorem Research
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Language**: formal
 - **Priority**: critical
 - **Dependencies**: None
 - **Created**: 2026-03-31
 - **Source**: Review 2026-03-31 (F/P witness problem analysis)
+- **Plan**: [10_implementation-plan.md](081_fp_witness_representation_theorem/plans/10_implementation-plan.md)
 - **Research**:
   - [01_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-a-findings.md) — Algebraic approaches (ultrafilters, BAO, STSA)
   - [01_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-b-findings.md) — Category-theoretic approaches (presheaves, groupoids)
