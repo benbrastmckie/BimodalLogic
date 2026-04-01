@@ -697,16 +697,16 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T18:03:30Z",
+      "last_updated": "2026-04-01T18:12:01Z",
       "notes": "Implementation blocked: H-blocker G-lift problem and F-persistence problem. See plan for details.",
-      "session_id": "sess_1775066091_02e055",
+      "session_id": "sess_1775066720_e748d3",
       "researched": "2026-04-01T18:03:30Z",
       "artifacts": [
         {
@@ -728,11 +728,6 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/04_team-research.md",
           "type": "research",
           "summary": "Team research run 4: dovetailed construction design vs compactness approach (2 teammates)"
-        },
-        {
-          "path": "specs/081_fp_witness_representation_theorem/plans/04_dovetailed-construction-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan for dovetailed construction with controlled seeding: 6 phases covering controlled seed infrastructure, forward chain, forward_F theorem, backward chain, cross-zero assembly, and completeness wiring"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/05_team-research.md",
@@ -760,11 +755,6 @@
           "summary": "Streamlined step-by-step guide: 10 steps, ~1570 lines, simplified restricted seed approach bypassing BFMCS"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/plans/10_implementation-plan.md",
-          "type": "plan",
-          "summary": "6-phase plan: simplified restricted chain + bounded F-nesting forward_F + restricted completeness theorem"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/summaries/10_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary documenting mathematical findings and partial implementation"
@@ -773,9 +763,14 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/11_team-research.md",
           "type": "research",
           "summary": "Team research run 9: blocker analysis — Options A-D evaluation with 4 teammates"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/plans/11_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v11: MCS Witness -> DRM Restriction approach for closing bfmcs_from_mcs_temporally_coherent sorry"
         }
       ],
-      "planned": "2026-04-01T17:45:00Z",
+      "planned": "2026-04-01T18:12:01Z",
       "started": "2026-04-01T01:49:54Z",
       "next_artifact_number": 12,
       "resume_phase": 2
