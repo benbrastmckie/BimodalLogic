@@ -122,7 +122,7 @@ Report 12 (team-research.md, 2 teammates) establishes:
 
 ---
 
-### Phase 4: Verify Sorry Closure Propagation [NOT STARTED]
+### Phase 4: Verify Sorry Closure Propagation [COMPLETED]
 
 **Goal**: Verify that closing the seed consistency sorry propagates through the entire proof chain to make `completeness_over_Int` and `discrete_completeness_fc` sorry-free (for this blocker).
 
@@ -151,7 +151,7 @@ Report 12 (team-research.md, 2 teammates) establishes:
 
 ---
 
-### Phase 5: Completeness Wiring (if needed) [NOT STARTED]
+### Phase 5: Completeness Wiring (if needed) [BLOCKED]
 
 **Goal**: If Phase 4 reveals that `completeness_over_Int` does not automatically become sorry-free (e.g., because it routes through `bfmcs_from_mcs_temporally_coherent` rather than the restricted chain), rewire the proof to use the restricted chain path.
 
