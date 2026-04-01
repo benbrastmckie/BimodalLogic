@@ -1,7 +1,7 @@
 # Implementation Plan: Dovetailed Construction with Controlled Seeding
 
 - **Task**: 81 - F/P Witness Representation Theorem
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 12 hours
 - **Dependencies**: None (all prerequisite infrastructure is sorry-free)
 - **Research Inputs**:
@@ -26,6 +26,52 @@ All four research rounds converge on the same conclusion:
 2. **Run 2**: Same-family `forward_F` is definitively REQUIRED -- the G backward case in `ParametricTruthLemma` uses contraposition through `to_history fam`, which binds to a specific family
 3. **Run 3**: CanonicalMCS as D eliminated (category error); Zorn reduces to dovetailed when correctly formulated; dovetailed construction is the natural and only approach
 4. **Run 4**: Controlled seeding is the shared mathematical core; compactness via product topology is isomorphic but adds overhead; full construction design with 4 invariants specified
+
+### Implementation Attempt Findings (2026-04-01)
+
+An implementation agent wrote `DovetailedChain.lean` (335 lines, untracked) before
+hitting a fundamental mathematical obstacle. Key findings:
+
+#### What Was Built
+- `forward_controlled_seed` definition with G_theory, box_theory, H-blockers, resolution formula
+- `h_blockers_subset_M0` and `g_blockers_subset_M0` (sorry-free)
+- `h_blocker_excludes` (sorry-free)
+- `forward_controlled_seed_consistent` — **BLOCKED with sorry** (the core obstacle)
+
+#### The H-Blocker G-Lift Problem
+The standard consistency proof (used by `temporal_theory_witness_consistent`) works by:
+1. Assume seed is inconsistent, extract finite L with L ⊢ bot
+2. Separate phi from L, get L_rest ⊢ neg(phi)
+3. G-lift every element of L_rest: show G(x) ∈ M for each x
+4. By G_lift_from_context: G(neg(phi)) ∈ M, contradicting F(phi) ∈ M
+
+**Step 3 fails for H-blockers.** `neg(H(chi)) ∈ M_0` does NOT imply `G(neg(H(chi))) ∈ M_0`.
+There is no axiom or theorem that G-lifts arbitrary formulas from an MCS.
+
+#### The Deeper F-Persistence Problem
+Even without H-blockers, using only the proven-consistent seed `{phi} ∪ temporal_box_seed(M)`,
+the **F-persistence problem** remains: Lindenbaum extension can freely add `G(neg(psi))` to
+the chain at any step, permanently killing a pending F(psi) obligation before its scheduled
+resolution step. The seed `{phi} ∪ temporal_box_seed(M)` does not prevent this because
+`G(neg(psi))` is consistent with the seed when `G(neg(psi)) ∉ G_theory(M)`.
+
+The agent explored multiple approaches to F-persistence:
+- **F-blockers in seed** (plan's approach): Can't be G-lifted either
+- **Resolve all obligations simultaneously**: Fails when obligations conflict (e.g., F(p) and F(neg(p)) both in M)
+- **Immediate resolution**: Can only resolve one per step; others may be lost
+- **Modified Lindenbaum**: Would require controlling which formulas Lindenbaum adds — major infrastructure change
+
+#### Conclusions
+1. **The seed `{phi} ∪ temporal_box_seed(M)` is the only proven-consistent option** — it gives forward_G, box-class agreement, and backward_H (via duality), but NOT F-persistence
+2. **F-persistence requires controlling Lindenbaum's choices**, which `set_lindenbaum` (Zorn-based) does not support
+3. **The plan's controlled seeding approach is mathematically correct in principle** but requires a consistency proof technique beyond G-lifting
+4. **Alternative**: A custom Lindenbaum construction that, when deciding between `G(neg(psi))` and `F(psi)`, always chooses `F(psi)` for pending obligations
+
+#### Possible Paths Forward
+1. **Custom Lindenbaum**: Build MCS by formula enumeration with deliberate choices preserving F-obligations
+2. **Ultrafilter-level argument**: Work at the quotient algebra level where filter extension may be more tractable
+3. **Restricted completeness**: Use existing sorry-free `restricted_forward_chain_forward_F` (UltrafilterChain.lean:2930) for weak completeness only
+4. **Rethink the seed**: Prove consistency of F-blocker-extended seed via a non-G-lift argument (e.g., show seed is a subset of the deductive closure of M, which is M itself since M is MCS)
 
 ## Goals & Non-Goals
 
@@ -54,7 +100,7 @@ All four research rounds converge on the same conclusion:
 
 ## Implementation Phases
 
-### Phase 1: Controlled Seed Infrastructure [NOT STARTED]
+### Phase 1: Controlled Seed Infrastructure [BLOCKED]
 
 **Goal**: Define the controlled seed construction and prove its consistency. This is the mathematical core that enables the entire construction.
 

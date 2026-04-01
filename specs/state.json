@@ -697,16 +697,16 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "planned",
+      "status": "blocked",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T01:48:36Z",
-      "notes": "Review 2026-03-31 identified this as the crux. All 6 prior approaches failed (23 sorries eliminated). The problem is mathematically hard but the solution should work with task semantics, not against it.",
-      "session_id": "sess_1743469200_p81plan",
+      "last_updated": "2026-04-01T02:46:58Z",
+      "notes": "Implementation blocked: H-blocker G-lift problem and F-persistence problem. See plan for details.",
+      "session_id": "sess_1743469200_impl81",
       "researched": "2026-04-01T01:33:32Z",
       "artifacts": [
         {
@@ -735,7 +735,8 @@
           "summary": "Implementation plan for dovetailed construction with controlled seeding: 6 phases covering controlled seed infrastructure, forward chain, forward_F theorem, backward chain, cross-zero assembly, and completeness wiring"
         }
       ],
-      "planned": "2026-04-01T01:48:36Z"
+      "planned": "2026-04-01T01:48:36Z",
+      "started": "2026-04-01T01:49:54Z"
     }
   ],
   "next_project_number": 82,
