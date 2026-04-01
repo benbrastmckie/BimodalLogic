@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **81** [IMPLEMENTING] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
+0. **81** [RESEARCHED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
    - **Plan**: [15_implementation-plan.md](specs/081_fp_witness_representation_theorem/plans/15_implementation-plan.md)
    - **Blocker**: Safe target approach fails — enriched seed inconsistency. All known same-family forward_F approaches share this blocker.
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
@@ -83,7 +83,7 @@ technical_debt:
 
 ### 81. F/P Witness Representation Theorem Research
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: formal
 - **Priority**: critical
 - **Dependencies**: None

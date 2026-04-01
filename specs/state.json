@@ -697,17 +697,17 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T23:38:00Z",
+      "last_updated": "2026-04-01T23:49:37Z",
       "notes": "BLOCKED: All 7 approaches to same-family forward_F fail. F-persistence fails at ultrafilter level. Fundamental barrier: resolving F-obligations conflicts with preserving them. Recommended alternatives: omega-branching tree + Konig, full canonical model, restricted completeness. See summaries/15_execution-summary.md.",
-      "session_id": "sess_1743559200_impl81",
-      "researched": "2026-04-01T22:55:57Z",
+      "session_id": "sess_1743560400_res81",
+      "researched": "2026-04-01T23:49:37Z",
       "artifacts": [
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/01_team-research.md",
@@ -798,11 +798,16 @@
           "path": "specs/081_fp_witness_representation_theorem/summaries/15_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary: Phase 1 blocked, 7 approaches analyzed and failed, 4 alternative paths recommended"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/reports/16_omega-tree-konig.md",
+          "type": "research",
+          "summary": "Research: omega-branching tree + Konig's lemma — tree not finitely branching, perpetual deferral blocks forward_F, recommends canonical model refactoring"
         }
       ],
       "planned": "2026-04-01T23:01:43Z",
       "started": "2026-04-01T22:25:56Z",
-      "next_artifact_number": 16,
+      "next_artifact_number": 17,
       "resume_phase": 1
     }
   ],
