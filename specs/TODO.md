@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **81** [BLOCKED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
+0. **81** [RESEARCHED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
    - **Plan**: [04_dovetailed-construction-plan.md](specs/081_fp_witness_representation_theorem/plans/04_dovetailed-construction-plan.md)
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
