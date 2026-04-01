@@ -40,7 +40,7 @@ Close the F/P witness gap (`forward_F` / `backward_P`) in the completeness proof
 
 ## Implementation Phases
 
-### Phase 1: Map Sorry Chain and Validate Approach [NOT STARTED]
+### Phase 1: Map Sorry Chain and Validate Approach [COMPLETED]
 - **Goal:** Understand the exact sorry chain from `forward_F` to `completeness_over_Int` and verify the safe target approach is viable.
 - **Tasks:**
   - [ ] Trace the sorry chain: `forward_F` → `succ_chain_forward_F` → `temporal_backward_G` → truth lemma → completeness
@@ -51,7 +51,7 @@ Close the F/P witness gap (`forward_F` / `backward_P`) in the completeness proof
   - [ ] Write a concrete mathematical sketch of the induction argument
 - **Timing:** 1.5 hours
 
-### Phase 2: Prove Safe Target Lemma [NOT STARTED]
+### Phase 2: Prove Safe Target Lemma [BLOCKED]
 - **Goal:** Prove that for any restricted MCS with unresolved F-obligations, there exists a successor that resolves at least one without net increase in the obligation set.
 - **Tasks:**
   - [ ] Define `unresolved_F_obligations : RestrictedMCS → Finset Formula` (F-formulas in MCS not yet witnessed)
