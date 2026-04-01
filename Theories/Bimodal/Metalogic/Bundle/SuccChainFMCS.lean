@@ -1799,6 +1799,127 @@ theorem single_target_with_g_content_consistent (phi : Formula) (u : Set Formula
     rw [h_F_eq] at h_F_target
     exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg target)) h_G_neg_target h_F_target
 
+/-!
+## Targeted Successor Construction
+
+The targeted successor resolves a SINGLE F-obligation at a time by using
+`{target} ∪ g_content(u)` as the seed. This is provably consistent
+(by `single_target_with_g_content_consistent`) and enables a targeted chain
+that resolves F-obligations one per step.
+
+Unlike the full `constrained_successor_seed_restricted`, this seed:
+1. Is provably consistent (sorry-free)
+2. Maintains G-persistence (g_content in the seed)
+3. Resolves exactly one F-obligation (the target)
+
+The trade-off: no deferralDisjunctions or p_step_blocking in the seed, so the
+successor only guarantees G-persistence and single-target resolution.
+-/
+
+/--
+The targeted g_content seed: `{target} ∪ g_content(u)`.
+-/
+def targeted_g_content_seed (u : Set Formula) (target : Formula) : Set Formula :=
+  {target} ∪ g_content u
+
+/--
+The targeted g_content seed is within deferralClosure when the target is.
+-/
+theorem targeted_g_content_seed_subset_dc (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    targeted_g_content_seed u target ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro x hx
+  simp only [targeted_g_content_seed, Set.mem_union, Set.mem_singleton_iff] at hx
+  rcases hx with rfl | h_gc
+  · exact h_target_dc
+  · exact g_content_subset_deferralClosure phi u h_drm.1.1 h_gc
+
+/--
+The targeted g_content seed is consistent when F(target) ∈ u.
+
+This is a direct application of `single_target_with_g_content_consistent`.
+-/
+theorem targeted_g_content_seed_consistent (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_target : Formula.some_future target ∈ u) :
+    SetConsistent (targeted_g_content_seed u target) :=
+  single_target_with_g_content_consistent phi u h_drm target h_F_target
+
+/--
+The targeted successor: Lindenbaum extension of `{target} ∪ g_content(u)` within deferralClosure.
+
+Given a DeferralRestrictedMCS u with F(target) ∈ u and target ∈ deferralClosure,
+this constructs a new DeferralRestrictedMCS v with:
+1. target ∈ v (F-obligation resolved)
+2. g_content(u) ⊆ v (G-persistence maintained)
+-/
+noncomputable def targeted_successor (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_target : Formula.some_future target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    Set Formula :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (targeted_g_content_seed u target)
+    (targeted_g_content_seed_subset_dc phi u target h_drm h_target_dc)
+    (targeted_g_content_seed_consistent phi u target h_drm h_F_target)).choose
+
+/-- The targeted successor extends the seed. -/
+theorem targeted_successor_extends (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_target : Formula.some_future target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    targeted_g_content_seed u target ⊆
+    targeted_successor phi u target h_drm h_F_target h_target_dc :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (targeted_g_content_seed u target)
+    (targeted_g_content_seed_subset_dc phi u target h_drm h_target_dc)
+    (targeted_g_content_seed_consistent phi u target h_drm h_F_target)).choose_spec.1
+
+/-- The targeted successor is a DeferralRestrictedMCS. -/
+theorem targeted_successor_is_drm (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_target : Formula.some_future target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    Bimodal.Metalogic.Core.DeferralRestrictedMCS phi
+    (targeted_successor phi u target h_drm h_F_target h_target_dc) :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (targeted_g_content_seed u target)
+    (targeted_g_content_seed_subset_dc phi u target h_drm h_target_dc)
+    (targeted_g_content_seed_consistent phi u target h_drm h_F_target)).choose_spec.2
+
+/-- The target formula is in the targeted successor. -/
+theorem targeted_successor_has_target (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_target : Formula.some_future target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    target ∈ targeted_successor phi u target h_drm h_F_target h_target_dc :=
+  targeted_successor_extends phi u target h_drm h_F_target h_target_dc
+    (Set.mem_union_left _ (Set.mem_singleton target))
+
+/-- G-persistence: g_content(u) ⊆ targeted_successor. -/
+theorem targeted_successor_g_persistence (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_F_target : Formula.some_future target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    g_content u ⊆ targeted_successor phi u target h_drm h_F_target h_target_dc :=
+  Set.Subset.trans (Set.subset_union_right) (targeted_successor_extends phi u target h_drm h_F_target h_target_dc)
+
+/-
+**Note on G-formula persistence**: `G(a) ∈ u → G(a) ∈ targeted_successor` does NOT hold
+in general for the targeted successor. The seed only contains `a` (the inner formula),
+not `G(a)` (the G-formula). The DRM Lindenbaum extension may add `¬G(a) = F(¬a)` to
+the successor, which is consistent with `a ∈ v`.
+
+For G-formula persistence, the chain construction should use the Succ relation,
+which only requires `g_content(u) ⊆ v` (inner formulas), not `G(a) ∈ v`.
+
+The existing `constrained_successor_restricted` achieves G-formula persistence because
+its seed includes `g_content(u)` and the resulting DRM's G(a) membership follows from
+the Succ/g_content interaction. The targeted successor provides a weaker but
+sorry-free guarantee.
+-/
+
 /--
 `g_content(u) ∪ boundary_resolution_set` is consistent.
 
