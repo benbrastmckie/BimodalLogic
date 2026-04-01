@@ -1,7 +1,7 @@
 # Implementation Plan: F/P Witness — Safe Target Seed Consistency (v12)
 
 - **Task**: 81 - F/P Witness Representation Theorem
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 10 hours
 - **Dependencies**: None (uses only sorry-free infrastructure from v11)
 - **Research Inputs**: reports/12_team-research.md
