@@ -1,7 +1,7 @@
 # Implementation Plan: F/P Witness Representation Theorem (v11)
 
 - **Task**: 81 - F/P Witness Representation Theorem
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 14 hours
 - **Dependencies**: None (uses only sorry-free infrastructure)
 - **Research Inputs**: reports/11_team-research.md
@@ -51,7 +51,7 @@ Report 11 (team-research.md, 4 teammates) provides:
 
 ## Implementation Phases
 
-### Phase 1: MCS Witness Successor Construction [NOT STARTED]
+### Phase 1: MCS Witness Successor Construction [COMPLETED]
 
 **Goal**: Define the core construction that takes a DRM u with F(target) in u, extends to full MCS, applies `temporal_theory_witness_exists`, and restricts back to a DRM successor.
 
@@ -78,7 +78,7 @@ Report 11 (team-research.md, 4 teammates) provides:
 
 ---
 
-### Phase 2: Succ Relation Properties [NOT STARTED]
+### Phase 2: Succ Relation Properties [COMPLETED]
 
 **Goal**: Prove the DRM successor from Phase 1 satisfies the full Succ relation properties needed for chain construction: deferralDisjunction persistence (weak f_step), p_step blocking, and box propagation.
 
@@ -102,7 +102,7 @@ Report 11 (team-research.md, 4 teammates) provides:
 
 ---
 
-### Phase 3: Forward Chain with Strong F-Resolution [NOT STARTED]
+### Phase 3: Forward Chain with Strong F-Resolution [PARTIAL]
 
 **Goal**: Build the forward chain by iterating the MCS witness successor, and prove forward_F using the strong property that each targeted step resolves exactly one F-obligation.
 
@@ -126,7 +126,7 @@ Report 11 (team-research.md, 4 teammates) provides:
 
 ---
 
-### Phase 4: Backward Chain and Backward P [NOT STARTED]
+### Phase 4: Backward Chain and Backward P [PARTIAL]
 
 **Goal**: Build the symmetric backward chain using `past_theory_witness_exists` and prove backward_P coherence.
 
@@ -148,7 +148,7 @@ Report 11 (team-research.md, 4 teammates) provides:
 
 ---
 
-### Phase 5: Combined Chain and TC Family [NOT STARTED]
+### Phase 5: Combined Chain and TC Family [BLOCKED]
 
 **Goal**: Combine forward/backward chains into an Int-indexed chain, prove box_class_agree propagation, and build a `RestrictedTemporallyCoherentFamily`.
 
@@ -178,7 +178,7 @@ Report 11 (team-research.md, 4 teammates) provides:
 
 ---
 
-### Phase 6: Completeness Wiring [NOT STARTED]
+### Phase 6: Completeness Wiring [BLOCKED]
 
 **Goal**: Wire the MCS witness TC family into the completeness proof, closing the blocking sorry in `bfmcs_from_mcs_temporally_coherent`.
 
