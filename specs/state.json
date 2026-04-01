@@ -704,7 +704,7 @@
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T22:13:45Z",
+      "last_updated": "2026-04-01T22:20:12Z",
       "notes": "Implementation blocked: H-blocker G-lift problem and F-persistence problem. See plan for details.",
       "session_id": "sess_1775080786_4e64ca",
       "researched": "2026-04-01T21:59:11Z",
@@ -765,11 +765,6 @@
           "summary": "Team research run 10: Lindenbaum seed unraveling — enriched seed principle, consistency gap, safe ordering (2 teammates)"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/plans/12_implementation-plan.md",
-          "type": "plan",
-          "summary": "5-phase plan to close constrained_successor_seed_restricted_consistent sorry, unblocking completeness_over_Int"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/summaries/12_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary: theorem falsity discovered, sorry-free alternatives added"
@@ -780,17 +775,17 @@
           "summary": "Comprehensive blocker analysis: F-persistence failure, enriched seed falsity, and 6 resolution paths"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/plans/13_implementation-plan.md",
-          "type": "plan",
-          "summary": "6-phase plan: close fuel=0 sorries in bounded witness recursion, wire to completeness"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/reports/14_fuel-approach-review.md",
           "type": "research",
           "summary": "Review: plan v13 fuel approach repeats known dead end from archived tasks 48/67"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/plans/14_safe-target-approach.md",
+          "type": "plan",
+          "summary": "5-phase plan: safe target lemma approach, avoiding fuel dead end"
         }
       ],
-      "planned": "2026-04-01T22:10:00Z",
+      "planned": "2026-04-01T22:20:12Z",
       "started": "2026-04-01T21:16:17Z",
       "next_artifact_number": 15,
       "resume_phase": 4

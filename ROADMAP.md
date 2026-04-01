@@ -159,6 +159,19 @@ Stone-space unraveling.
    intrinsically single-history; a witness in a different family uses a different history,
    invalidating the semantic argument for `temporal_backward_G`.
 
+6. **Fuel-based bounded witness recursion** (tasks 48, 67, 81 plan v13): Repeatedly attempted
+   and failed. The approach adds an explicit fuel parameter bounded by `closure_F_bound` to
+   the witness recursion and tries to prove the fuel=0 branch is unreachable. **Fundamental
+   flaw**: fuel conflates F-nesting depth (bounded) with persistence count (unbounded). In the
+   `inr` (persistence) case, the same F-formula can persist through arbitrarily many chain
+   steps without reducing depth, exhausting fuel while depth remains positive. Variants tried:
+   - Task 48 plan v5: Single fuel bounded by `closure_F_bound(phi)` — fuel exhaustion at
+     positive depth with no contradiction derivable
+   - Task 67 summaries 11-12: Two-fuel variant (resolve_fuel + defer_fuel) — invariant
+     preservation fails at recursive call sites
+   - Task 81 plan v13: Fuel `B*B+1` — same structural problem, persistence is not bounded by
+     depth. See `specs/081_.../reports/14_fuel-approach-review.md` for full analysis.
+
 5. **Bidirectional Temporal Witness (plan v4)**: BLOCKED. The seed construction
    `bidirectional_temporal_box_seed = G_theory ∪ H_theory ∪ box_theory` requires that ALL
    seed elements be G-liftable for the consistency proof. H_theory elements are NOT

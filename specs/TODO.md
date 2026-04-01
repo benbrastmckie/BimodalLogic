@@ -51,7 +51,7 @@ technical_debt:
 ```
 
 0. **81** [PLANNED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
-   - **Plan**: [13_implementation-plan.md](specs/081_fp_witness_representation_theorem/plans/13_implementation-plan.md)
+   - **Plan**: [14_safe-target-approach.md](specs/081_fp_witness_representation_theorem/plans/14_safe-target-approach.md)
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
