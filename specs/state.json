@@ -697,16 +697,16 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T22:55:57Z",
+      "last_updated": "2026-04-01T23:01:43Z",
       "notes": "BLOCKED: Safe target approach fails — enriched seed {target} ∪ constrained_successor_seed(M) is provably inconsistent when deferralDisjunctions conflict with target. F-persistence also fails (Lindenbaum can introduce G(neg(psi))). All known approaches to same-family forward_F share this blocker. See summaries/14_execution-summary.md for 4 alternative approaches.",
-      "session_id": "sess_1775083746_0b1613",
+      "session_id": "sess_1775084249_f1eba1",
       "researched": "2026-04-01T22:55:57Z",
       "artifacts": [
         {
@@ -780,11 +780,6 @@
           "summary": "Review: plan v13 fuel approach repeats known dead end from archived tasks 48/67"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/plans/14_safe-target-approach.md",
-          "type": "plan",
-          "summary": "5-phase plan: safe target lemma approach, avoiding fuel dead end"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/summaries/14_execution-summary.md",
           "type": "summary",
           "summary": "Phase 1 analysis: safe target blocked, enriched seed inconsistency, 4 alternative approaches"
@@ -793,9 +788,14 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/15_algebraic-temporal-shift.md",
           "type": "research",
           "summary": "Research: algebraic temporal shift — G not automorphism, ultrafilter_F_resolution sorry-free, 4 strategies for composing forward_F"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/plans/15_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: Zorn partial ultrafilter chains for F/P witness, wire to Completeness.lean sorry"
         }
       ],
-      "planned": "2026-04-01T22:20:12Z",
+      "planned": "2026-04-01T23:01:43Z",
       "started": "2026-04-01T22:25:56Z",
       "next_artifact_number": 16,
       "resume_phase": 2
