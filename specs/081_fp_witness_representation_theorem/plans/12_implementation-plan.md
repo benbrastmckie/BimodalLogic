@@ -1,7 +1,7 @@
 # Implementation Plan: F/P Witness — Safe Target Seed Consistency (v12)
 
 - **Task**: 81 - F/P Witness Representation Theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (uses only sorry-free infrastructure from v11)
 - **Research Inputs**: reports/12_team-research.md
@@ -49,7 +49,7 @@ Report 12 (team-research.md, 2 teammates) establishes:
 
 ## Implementation Phases
 
-### Phase 1: Analyze Seed Components and Prove Subset Relationships [NOT STARTED]
+### Phase 1: Analyze Seed Components and Prove Subset Relationships [COMPLETED]
 
 **Goal**: Establish which seed components are subsets of u and which are not. Prove the easy subset cases. Identify exactly what remains.
 

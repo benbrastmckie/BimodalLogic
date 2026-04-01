@@ -1679,6 +1679,127 @@ theorem single_brs_element_with_g_content_consistent (phi : Formula) (u : Set Fo
     exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg psi)) h_G_neg_psi h_F_psi
 
 /--
+`{target} ∪ g_content(u)` is consistent when `F(target) ∈ u`.
+
+This generalizes `single_brs_element_with_g_content_consistent` from BRS elements
+to arbitrary targets satisfying `F(target) ∈ u`. The BRS membership was only used
+to extract `F(psi) ∈ u`; the proof is identical.
+
+**Proof**: By the G-wrapping technique from `temporal_theory_witness_consistent`.
+If `L ⊆ {target} ∪ g_content(u)` and `L ⊢ ⊥`, we G-wrap the g_content part
+to derive `G(neg target) ∈ u`, contradicting `F(target) = neg(G(neg target)) ∈ u`.
+-/
+theorem single_target_with_g_content_consistent (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (target : Formula) (h_F_target : Formula.some_future target ∈ u) :
+    SetConsistent ({target} ∪ g_content u) := by
+  intro L hL_sub ⟨d⟩
+  -- The proof is the same as single_brs_element_with_g_content_consistent,
+  -- but uses h_F_target directly instead of extracting it from BRS membership.
+  by_cases h_target_in : target ∈ L
+  · -- Case: target ∈ L
+    let L_filt := L.filter (fun y => decide (y ≠ target))
+    have h_perm := cons_filter_neq_perm h_target_in
+    have d_reord : DerivationTree (target :: L_filt) Formula.bot :=
+      derivation_exchange d (fun x => (h_perm x).symm)
+    have d_neg : L_filt ⊢ Formula.neg target :=
+      deduction_theorem L_filt target Formula.bot d_reord
+    have h_G_filt_in_u : ∀ chi ∈ L_filt, Formula.all_future chi ∈ u := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L := h_and.1
+      have h_ne : chi ≠ target := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_seed := hL_sub chi h_in_L
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gcontent
+      · exact absurd h_eq h_ne
+      · exact h_gcontent
+    have d_G_neg : (Context.map Formula.all_future L_filt) ⊢ Formula.all_future (Formula.neg target) :=
+      Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg target) d_neg
+    have h_G_context_in_u : ∀ chi ∈ Context.map Formula.all_future L_filt, chi ∈ u := by
+      intro chi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨xi, h_xi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_G_filt_in_u xi h_xi_in
+    have h_F_in_dc := h_mcs.1.1 h_F_target
+    have h_G_neg_dc : Formula.all_future (Formula.neg target) ∈ Bimodal.Syntax.deferralClosure phi := by
+      rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi target h_F_in_dc with h_F_in_cwn | h_F_top
+      · have h_G_neg_sub : Formula.all_future (Formula.neg target) ∈ Bimodal.Syntax.subformulaClosure phi := by
+          unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
+          simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+          rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+          · exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+          · unfold Formula.some_future Formula.neg at h_chi_neg_eq
+            have h_eq : chi = Formula.all_future (Formula.neg target) := by cases h_chi_neg_eq; rfl
+            rw [h_eq] at h_chi_sub
+            exact h_chi_sub
+        exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+      · have h_target_eq : target = Formula.neg Formula.bot := by
+          simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
+          injection h_F_top with h1 _
+          injection h1 with h2
+          injection h2
+        simp only [h_target_eq]
+        exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
+    have h_G_neg_in_u : Formula.all_future (Formula.neg target) ∈ u :=
+      drm_closed_under_derivation h_mcs (Context.map Formula.all_future L_filt)
+        h_G_context_in_u d_G_neg h_G_neg_dc
+    have h_F_eq : Formula.some_future target = Formula.neg (Formula.all_future (Formula.neg target)) := rfl
+    rw [h_F_eq] at h_F_target
+    exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg target)) h_G_neg_in_u h_F_target
+  · -- Case: target ∉ L, so L ⊆ g_content u
+    have h_G_all_in_u : ∀ chi ∈ L, Formula.all_future chi ∈ u := by
+      intro chi h_mem
+      have h_in_seed := hL_sub chi h_mem
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gcontent
+      · exact absurd h_eq (fun h => h_target_in (h ▸ h_mem))
+      · exact h_gcontent
+    have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg target) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot target)
+    have h_bot_imp_neg_L : L ⊢ Formula.bot.imp (Formula.neg target) :=
+      DerivationTree.weakening [] L _ h_bot_imp_neg (List.nil_subset _)
+    have d_neg_target : L ⊢ Formula.neg target :=
+      DerivationTree.modus_ponens L _ _ h_bot_imp_neg_L d
+    have d_G_neg : (Context.map Formula.all_future L) ⊢ Formula.all_future (Formula.neg target) :=
+      Bimodal.Theorems.generalized_temporal_k L (Formula.neg target) d_neg_target
+    have h_G_L_in_u : ∀ chi ∈ Context.map Formula.all_future L, chi ∈ u := by
+      intro chi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨xi, h_xi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_G_all_in_u xi h_xi_in
+    have h_F_in_dc := h_mcs.1.1 h_F_target
+    have h_G_neg_dc : Formula.all_future (Formula.neg target) ∈ Bimodal.Syntax.deferralClosure phi := by
+      rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi target h_F_in_dc with h_F_in_cwn | h_F_top
+      · have h_G_neg_sub : Formula.all_future (Formula.neg target) ∈ Bimodal.Syntax.subformulaClosure phi := by
+          unfold Bimodal.Syntax.closureWithNeg at h_F_in_cwn
+          simp only [Finset.mem_union, Finset.mem_image] at h_F_in_cwn
+          rcases h_F_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+          · exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+          · unfold Formula.some_future Formula.neg at h_chi_neg_eq
+            have h_eq : chi = Formula.all_future (Formula.neg target) := by cases h_chi_neg_eq; rfl
+            rw [h_eq] at h_chi_sub
+            exact h_chi_sub
+        exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_G_neg_sub)
+      · have h_target_eq : target = Formula.neg Formula.bot := by
+          simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
+          injection h_F_top with h1 _
+          injection h1 with h2
+          injection h2
+        simp only [h_target_eq]
+        exact Bimodal.Syntax.G_neg_neg_bot_mem_deferralClosure phi
+    have h_G_neg_target : Formula.all_future (Formula.neg target) ∈ u :=
+      drm_closed_under_derivation h_mcs (Context.map Formula.all_future L)
+        h_G_L_in_u d_G_neg h_G_neg_dc
+    have h_F_eq : Formula.some_future target = Formula.neg (Formula.all_future (Formula.neg target)) := rfl
+    rw [h_F_eq] at h_F_target
+    exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg target)) h_G_neg_target h_F_target
+
+/--
 `g_content(u) ∪ boundary_resolution_set` is consistent.
 
 **Proof Strategy (v17)**:
@@ -1734,18 +1855,11 @@ theorem g_content_union_brs_consistent (phi : Formula) (u : Set Formula)
     sorry
 
 /--
-The augmented seed (old_seed ∪ boundary_resolution_set) is consistent.
+**ALSO FALSE** — reduces to `constrained_successor_seed_restricted_consistent` which is false.
 
-**Note (v3)**: With the corrected boundary_resolution_set definition (no chi ∈ u condition),
-we prove consistency via a different strategy. The non-boundary parts of the seed are still
-subsets of u, and we show that boundary_resolution_set elements don't introduce contradictions
-because their negations are not in the rest of the seed.
-
-**Key insight (v3)**: For psi ∈ boundary_resolution_set:
-- F(psi) ∈ u, which means neg(psi) ∉ g_content(u) (proven in neg_not_in_g_content_when_F_in)
-- neg(psi) ∉ deferralDisjunctions (structural)
-- neg(psi) ∉ p_step_blocking_restricted (structural)
-Therefore the seed is consistent.
+The union `constrained_successor_seed_restricted ∪ boundary_resolution_set` equals
+`constrained_successor_seed_restricted` (BRS is already a subset), so this theorem
+has the same counterexample as `constrained_successor_seed_restricted_consistent`.
 -/
 theorem augmented_seed_consistent (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
@@ -1763,29 +1877,27 @@ theorem augmented_seed_consistent (phi : Formula) (u : Set Formula)
   sorry
 
 /--
-The restricted constrained successor seed is consistent when u is a DeferralRestrictedMCS.
+**THEOREM IS FALSE** — the constrained_successor_seed_restricted can be inconsistent.
 
-**Proof Strategy (v3)**:
-The seed is `g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas_restricted(phi, u) ∪ boundary_resolution_set(phi, u)`.
+**Counterexample**: If both `F(A)` and `F(¬A)` are in u (which is consistent — it means
+"A holds at some future time" and "¬A holds at some future time"), then both `A` and `¬A`
+are in `f_content(u) ⊆ seed`. The set `{A, ¬A}` derives `⊥`, so the seed is inconsistent.
 
-With the corrected boundary_resolution_set definition (no chi ∈ u condition), we can no longer
-simply show seed ⊆ u. Instead, we prove consistency via a two-part argument:
+**Root cause**: `f_content(u) = {psi | F(psi) ∈ u}` includes BOTH psi and psi.neg when
+both F(psi) and F(psi.neg) are in u. This lacks the mutual exclusion guard that
+`boundary_resolution_set` has (the `F(chi.neg) ∉ u` condition).
 
-**Part 1**: The non-boundary part of the seed is a subset of u:
-1. g_content(u) ⊆ u: By `g_content_subset_deferral_restricted_mcs`
-2. deferralDisjunctions(u) ⊆ u: By `deferralDisjunctions_subset_deferral_restricted_mcs`
-3. p_step_blocking_formulas_restricted(phi, u) ⊆ u: By `p_step_blocking_restricted_subset`
+**Correct approach**: Use `single_target_with_g_content_consistent` to resolve
+one F-obligation at a time. The seed `{target} ∪ g_content(u)` IS consistent when
+`F(target) ∈ u`, via the G-wrapping technique. A targeted chain construction can
+resolve all F-obligations within the bounded F-nesting depth.
 
-**Part 2**: boundary_resolution_set doesn't introduce contradictions:
-For psi ∈ boundary_resolution_set(phi, u):
-- F(psi) ∈ u (by definition)
-- neg(psi) ∉ g_content(u) (since G(neg psi) ∉ u by MCS consistency with F(psi) = neg(G(neg psi)))
-- neg(psi) ∉ deferralDisjunctions (structural: OR vs IMP)
-- neg(psi) ∉ p_step_blocking_restricted (structural: H(neg xi) vs psi.imp bot)
+**See also**: SimplifiedChain.lean documents this same observation (lines 13-21).
 
-Therefore the seed is consistent: any finite subset L either:
-- Contains only non-boundary elements ⊆ u, so consistent
-- Contains boundary elements, but their negations can't be derived from the seed
+**Historical note (v3)**: The original claim was that f_content(u) ⊆ u because u is
+DRM-closed. This is false: f_content extracts the INNER formula psi from F(psi),
+and psi need not be in u. The docstring on constrained_successor_seed_restricted in
+SuccExistence.lean incorrectly states "f_content(u) ⊆ u (as u is DRM-closed)".
 -/
 theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
