@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **81** [NOT STARTED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
+0. **81** [RESEARCHED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -81,12 +81,16 @@ technical_debt:
 
 ### 81. F/P Witness Representation Theorem Research
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: formal
 - **Priority**: critical
 - **Dependencies**: None
 - **Created**: 2026-03-31
 - **Source**: Review 2026-03-31 (F/P witness problem analysis)
+- **Research**:
+  - [01_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-a-findings.md) — Algebraic approaches (ultrafilters, BAO, STSA)
+  - [01_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-b-findings.md) — Category-theoretic approaches (presheaves, groupoids)
+  - [01_team-research.md](081_fp_witness_representation_theorem/reports/01_team-research.md) — Team synthesis (2 teammates)
 
 **Description**: Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it.
 
@@ -98,6 +102,8 @@ technical_debt:
 5. The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics
 
 **Context**: All 6 prior approaches failed (23 sorries eliminated in Task #80). The problem is not engineering - it's a genuine mathematical difficulty requiring new proof-theoretic machinery. This task unblocks Task #58 (wire completeness to FrameConditions).
+
+**Research findings**: Central conflict identified — same-family vs bundle-level F/P witnesses. Single-step witness theorems are sorry-free (temporal_theory_witness_exists, past_theory_witness_exists). UltrafilterChain gives FMCS coherence (forward_G/backward_H) but not TemporalCoherentFamily (forward_F/backward_P). Key next step: analyze ParametricTruthLemma F-case to determine which coherence level is actually required. Three candidate paths: (1) Zorn on partial temporal families, (2) bundle-level coherence weakening, (3) CanonicalMCS as domain D.
 
 ---
 
