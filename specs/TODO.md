@@ -90,7 +90,10 @@ technical_debt:
 - **Research**:
   - [01_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-a-findings.md) — Algebraic approaches (ultrafilters, BAO, STSA)
   - [01_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-b-findings.md) — Category-theoretic approaches (presheaves, groupoids)
-  - [01_team-research.md](081_fp_witness_representation_theorem/reports/01_team-research.md) — Team synthesis (2 teammates)
+  - [01_team-research.md](081_fp_witness_representation_theorem/reports/01_team-research.md) — Team synthesis: algebraic vs category-theoretic (2 teammates)
+  - [02_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/02_teammate-a-findings.md) — Truth lemma F-case proof trace
+  - [02_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/02_teammate-b-findings.md) — Bundle architecture analysis
+  - [02_team-research.md](081_fp_witness_representation_theorem/reports/02_team-research.md) — Team synthesis: same-family forward_F CONFIRMED required
 
 **Description**: Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it.
 
@@ -103,7 +106,9 @@ technical_debt:
 
 **Context**: All 6 prior approaches failed (23 sorries eliminated in Task #80). The problem is not engineering - it's a genuine mathematical difficulty requiring new proof-theoretic machinery. This task unblocks Task #58 (wire completeness to FrameConditions).
 
-**Research findings**: Central conflict identified — same-family vs bundle-level F/P witnesses. Single-step witness theorems are sorry-free (temporal_theory_witness_exists, past_theory_witness_exists). UltrafilterChain gives FMCS coherence (forward_G/backward_H) but not TemporalCoherentFamily (forward_F/backward_P). Key next step: analyze ParametricTruthLemma F-case to determine which coherence level is actually required. Three candidate paths: (1) Zorn on partial temporal families, (2) bundle-level coherence weakening, (3) CanonicalMCS as domain D.
+**Research findings (Run 1)**: Central conflict identified — same-family vs bundle-level F/P witnesses. Single-step witness theorems are sorry-free. UltrafilterChain gives FMCS coherence but not TemporalCoherentFamily.
+
+**Research findings (Run 2)**: **Same-family forward_F CONFIRMED required.** The G backward case in ParametricTruthLemma uses forward_F via contraposition — the IH evaluates along `to_history fam`, making cross-family witnesses impossible. Bundle-level weakening ruled out. Remaining viable paths: (1) Dovetailed SuccChain with fair scheduling (sketched at UltrafilterChain.lean:3685-3711), (2) Zorn on partial temporal families, (3) CanonicalMCS as domain D.
 
 ---
 
