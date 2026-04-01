@@ -704,10 +704,10 @@
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T00:15:46Z",
+      "last_updated": "2026-04-01T01:33:32Z",
       "notes": "Review 2026-03-31 identified this as the crux. All 6 prior approaches failed (23 sorries eliminated). The problem is mathematically hard but the solution should work with task semantics, not against it.",
-      "session_id": "sess_1775002322_8d6caa",
-      "researched": "2026-04-01T00:08:50Z",
+      "session_id": "sess_1775006219_65c82d",
+      "researched": "2026-04-01T01:33:32Z",
       "artifacts": [
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/01_team-research.md",
@@ -718,6 +718,16 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research run 2: truth lemma F-case analysis (2 teammates)"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Team research run 3: 3 construction approaches (dovetail, Zorn, CanonicalMCS as D)"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/reports/04_team-research.md",
+          "type": "research",
+          "summary": "Team research run 4: dovetailed construction design vs compactness approach (2 teammates)"
         }
       ]
     }
