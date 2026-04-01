@@ -704,7 +704,7 @@
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T22:10:00Z",
+      "last_updated": "2026-04-01T22:13:45Z",
       "notes": "Implementation blocked: H-blocker G-lift problem and F-persistence problem. See plan for details.",
       "session_id": "sess_1775080786_4e64ca",
       "researched": "2026-04-01T21:59:11Z",
@@ -783,11 +783,16 @@
           "path": "specs/081_fp_witness_representation_theorem/plans/13_implementation-plan.md",
           "type": "plan",
           "summary": "6-phase plan: close fuel=0 sorries in bounded witness recursion, wire to completeness"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/reports/14_fuel-approach-review.md",
+          "type": "research",
+          "summary": "Review: plan v13 fuel approach repeats known dead end from archived tasks 48/67"
         }
       ],
       "planned": "2026-04-01T22:10:00Z",
       "started": "2026-04-01T21:16:17Z",
-      "next_artifact_number": 14,
+      "next_artifact_number": 15,
       "resume_phase": 4
     }
   ],
