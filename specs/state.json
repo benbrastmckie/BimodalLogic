@@ -697,16 +697,16 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "researching",
+      "status": "planned",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T19:03:19Z",
+      "last_updated": "2026-04-01T21:14:36Z",
       "notes": "Implementation blocked: H-blocker G-lift problem and F-persistence problem. See plan for details.",
-      "session_id": "sess_1775069041_hs3n",
+      "session_id": "sess_1775077790_57da43",
       "researched": "2026-04-01T18:03:30Z",
       "artifacts": [
         {
@@ -760,11 +760,6 @@
           "summary": "Team research run 9: blocker analysis — Options A-D evaluation with 4 teammates"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/plans/11_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v11: MCS Witness -> DRM Restriction approach for closing bfmcs_from_mcs_temporally_coherent sorry"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/summaries/11_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary: phases 1-2 complete, F-persistence gap blocks phases 5-6"
@@ -773,9 +768,14 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/12_team-research.md",
           "type": "research",
           "summary": "Team research run 10: Lindenbaum seed unraveling — enriched seed principle, consistency gap, safe ordering (2 teammates)"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/plans/12_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan to close constrained_successor_seed_restricted_consistent sorry, unblocking completeness_over_Int"
         }
       ],
-      "planned": "2026-04-01T18:12:01Z",
+      "planned": "2026-04-01T21:14:36Z",
       "started": "2026-04-01T01:49:54Z",
       "next_artifact_number": 13,
       "resume_phase": 3
