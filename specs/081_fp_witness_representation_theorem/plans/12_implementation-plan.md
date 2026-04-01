@@ -99,7 +99,7 @@ Report 12 (team-research.md, 2 teammates) establishes:
 
 ---
 
-### Phase 3: Prove constrained_successor_seed_restricted_consistent [NOT STARTED]
+### Phase 3: Prove constrained_successor_seed_restricted_consistent [PARTIAL]
 
 **Goal**: Complete the sorry-free proof of `constrained_successor_seed_restricted_consistent` using the strategy identified in Phase 2.
 
