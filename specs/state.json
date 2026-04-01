@@ -697,17 +697,17 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-01T21:39:53Z",
+      "last_updated": "2026-04-01T21:59:11Z",
       "notes": "Implementation blocked: H-blocker G-lift problem and F-persistence problem. See plan for details.",
-      "session_id": "sess_1775078150_ca7b3f",
-      "researched": "2026-04-01T18:03:30Z",
+      "session_id": "sess_1775079876_56d7f1",
+      "researched": "2026-04-01T21:59:11Z",
       "artifacts": [
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/01_team-research.md",
@@ -773,11 +773,16 @@
           "path": "specs/081_fp_witness_representation_theorem/summaries/12_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary: theorem falsity discovered, sorry-free alternatives added"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/reports/13_blocker-analysis.md",
+          "type": "research",
+          "summary": "Comprehensive blocker analysis: F-persistence failure, enriched seed falsity, and 6 resolution paths"
         }
       ],
       "planned": "2026-04-01T21:14:36Z",
       "started": "2026-04-01T21:16:17Z",
-      "next_artifact_number": 13,
+      "next_artifact_number": 14,
       "resume_phase": 4
     }
   ],
