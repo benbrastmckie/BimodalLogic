@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **81** [RESEARCHED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
+0. **81** [PLANNED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
    - **Blocker**: Safe target approach fails — enriched seed inconsistency. All known same-family forward_F approaches share this blocker.
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
@@ -95,7 +95,7 @@ technical_debt:
 
 ### 81. F/P Witness Representation Theorem Research
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: formal
 - **Priority**: critical
 - **Dependencies**: None
@@ -106,6 +106,7 @@ technical_debt:
   - [11_implementation-plan.md](081_fp_witness_representation_theorem/plans/11_implementation-plan.md)
   - [12_implementation-plan.md](081_fp_witness_representation_theorem/plans/12_implementation-plan.md)
   - [17_implementation-plan.md](081_fp_witness_representation_theorem/plans/17_implementation-plan.md)
+  - [20_restricted-coherence-plan.md](081_fp_witness_representation_theorem/plans/20_restricted-coherence-plan.md)
 - **Research**:
   - [01_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-a-findings.md) — Algebraic approaches (ultrafilters, BAO, STSA)
   - [01_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-b-findings.md) — Category-theoretic approaches (presheaves, groupoids)

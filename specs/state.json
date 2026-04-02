@@ -697,16 +697,16 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-02T17:29:09Z",
+      "last_updated": "2026-04-02T17:37:57Z",
       "notes": "BLOCKED: f_step_blocking in constrained_predecessor_restricted permanently blocks P-resolution. Three paths forward: (A) modified backward chain 8-12h, (B) restructured boxClassFamilies 10-15h, (C) alternative completeness via RestrictedTruthLemma 6-10h. See summaries/17_execution-summary.md.",
-      "session_id": "sess_1775170000_r81math",
+      "session_id": "sess_1775151178_y6h136",
       "researched": "2026-04-02T17:29:09Z",
       "artifacts": [
         {
@@ -805,11 +805,6 @@
           "summary": "Research: standard temporal completeness approach — cannot directly transfer to task semantics, identifies F-nesting depth argument as most viable path"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/plans/17_implementation-plan.md",
-          "type": "plan",
-          "summary": "4-phase plan: F-nesting depth infrastructure, base case via single_step_forcing, close fuel=0 sorries, wire to Completeness.lean sorry"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/summaries/17_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary: Phase 1 partial, f_step_blocking blocks P-resolution, 3 paths forward"
@@ -828,9 +823,14 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/20_team-research.md",
           "type": "research",
           "summary": "Team research run 20: canonical completeness via simultaneous induction (4 teammates including critic)"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/plans/20_restricted-coherence-plan.md",
+          "type": "plan",
+          "summary": "7-phase plan to refactor types to restricted coherence for canonical completeness (20-25 hours)"
         }
       ],
-      "planned": "2026-04-02T00:22:47Z",
+      "planned": "2026-04-02T17:37:57Z",
       "started": "2026-04-01T22:25:56Z",
       "next_artifact_number": 21,
       "resume_phase": 1
