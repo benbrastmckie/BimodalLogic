@@ -1,7 +1,7 @@
 # Implementation Plan: Restricted Coherence Refactoring for Canonical Completeness
 
 - **Task**: 81 - F/P Witness Representation Theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20-25 hours
 - **Dependencies**: None (FMP sorries deferred to task 82)
 - **Research Inputs**: reports/19_fmp-vs-canonical-completeness.md, reports/20_team-research.md, reports/18_team-research.md, summaries/17_execution-summary.md
@@ -48,7 +48,7 @@ Report 20 (team research, 4 teammates) provides the key architectural insight: t
 
 ## Implementation Phases
 
-### Phase 1: Formula Depth Infrastructure [NOT STARTED]
+### Phase 1: Formula Depth Infrastructure [COMPLETED]
 
 - **Goal:** Define the `modal_temporal_depth` function and prove key properties needed for the simultaneous induction argument. This is the foundational measure that enables the restricted coherence proof.
 
@@ -78,7 +78,7 @@ Report 20 (team research, 4 teammates) provides the key architectural insight: t
 
 ---
 
-### Phase 2: Decision Gate -- G/H Single-Step Sufficiency [NOT STARTED]
+### Phase 2: Decision Gate -- G/H Single-Step Sufficiency [COMPLETED]
 
 - **Goal:** Verify that the truth lemma's forward G case only needs single-step g_persistence (not iterated `G(G(chi))` propagation). This resolves the key remaining concern from Report 20 (Teammate B's bridge gap) before committing to the full refactoring.
 
