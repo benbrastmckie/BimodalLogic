@@ -225,7 +225,7 @@ Report 20 (team research, 4 teammates) provides the key architectural insight: t
 
 ---
 
-### Phase 6: Wire to Completeness and Close Sorry [NOT STARTED]
+### Phase 6: Wire to Completeness and Close Sorry [COMPLETED]
 
 - **Goal:** Replace the sorry in `bfmcs_from_mcs_temporally_coherent` (or bypass it) by wiring the restricted coherence path through to the completeness theorem.
 
