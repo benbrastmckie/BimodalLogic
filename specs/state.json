@@ -697,17 +697,17 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-02T16:32:33Z",
+      "last_updated": "2026-04-02T16:52:40Z",
       "notes": "BLOCKED: f_step_blocking in constrained_predecessor_restricted permanently blocks P-resolution. Three paths forward: (A) modified backward chain 8-12h, (B) restructured boxClassFamilies 10-15h, (C) alternative completeness via RestrictedTruthLemma 6-10h. See summaries/17_execution-summary.md.",
-      "session_id": "sess_1743559200_impl81",
-      "researched": "2026-04-02T00:12:38Z",
+      "session_id": "sess_1775148250_e0d26d",
+      "researched": "2026-04-02T16:52:40Z",
       "artifacts": [
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/01_team-research.md",
@@ -813,11 +813,16 @@
           "path": "specs/081_fp_witness_representation_theorem/summaries/17_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary: Phase 1 partial, f_step_blocking blocks P-resolution, 3 paths forward"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/reports/18_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: backward chain already sorry-free, boxClassFamilies replacement not viable, RestrictedTruthLemma cannot bypass, FMP path most viable"
         }
       ],
       "planned": "2026-04-02T00:22:47Z",
       "started": "2026-04-01T22:25:56Z",
-      "next_artifact_number": 18,
+      "next_artifact_number": 19,
       "resume_phase": 1
     }
   ],
