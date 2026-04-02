@@ -50,7 +50,7 @@ Close the 2 remaining sorry-bearing theorems blocking sorry-free canonical compl
 
 ## Implementation Phases
 
-### Phase 1: Verification and Dead Code Cleanup [NOT STARTED]
+### Phase 1: Verification and Dead Code Cleanup [COMPLETED]
 
 **Goal**: Confirm the dependency analysis from research, verify the FALSE theorem chain, and clean up dead code sorries.
 
@@ -74,7 +74,7 @@ Close the 2 remaining sorry-bearing theorems blocking sorry-free canonical compl
 
 ---
 
-### Phase 2: Single-Target F-Witness Chain Construction [NOT STARTED]
+### Phase 2: Single-Target F-Witness Chain Construction [COMPLETED]
 
 **Goal**: Build a new chain construction that resolves one F-obligation per step using the sorry-free `forward_temporal_witness_seed_consistent`, then iterates over all obligations in deferralClosure.
 
@@ -120,7 +120,7 @@ Given a full MCS chain `succ_chain_fam S` with `F(psi) in succ_chain_fam S n` an
 
 ---
 
-### Phase 3: Fair Scheduling for F/P Resolution [NOT STARTED]
+### Phase 3: Fair Scheduling for F/P Resolution [BLOCKED]
 
 **Goal**: Prove that the targeted chain with round-robin scheduling over the finite `deferralClosure(root)` resolves all F-obligations and P-obligations for deferralClosure formulas.
 
@@ -166,7 +166,7 @@ Consistency: Suppose for contradiction L subset seed with L derives bot. The g_c
 
 ---
 
-### Phase 4: Bridge to Completeness Path [NOT STARTED]
+### Phase 4: Bridge to Completeness Path [BLOCKED]
 
 **Goal**: Connect the targeted chain construction to the existing completeness infrastructure by proving `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P`, or by providing an alternative BFMCS construction that satisfies `restricted_temporally_coherent`.
 
@@ -208,7 +208,7 @@ The cleanest approach is:
 
 ---
 
-### Phase 5: Full Verification and Cleanup [NOT STARTED]
+### Phase 5: Full Verification and Cleanup [PARTIAL]
 
 **Goal**: Verify the entire completeness path is sorry-free, clean up any remaining issues, and ensure the build is clean.
 

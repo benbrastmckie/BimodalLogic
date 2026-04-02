@@ -81,6 +81,11 @@ theorem restricted_chain_G_step (phi : Formula)
 G propagates through restricted chain: G(psi) in chain(n) implies psi in chain(m) for m >= n.
 
 Proof by induction using G-step.
+
+**DEAD CODE**: This theorem has zero references outside its own definition.
+The restricted truth lemma does not require G-propagation at the DRM chain level;
+it uses Lindenbaum extensions and semantic arguments instead. The sorry is retained
+for historical documentation only and does not affect any completeness path.
 -/
 theorem restricted_chain_G_propagates (phi : Formula)
     (fam : RestrictedTemporallyCoherentFamily phi)
@@ -128,6 +133,11 @@ H-step for restricted chain: H(psi) in chain(n) implies psi in chain(n-1).
 This uses the h_content subset property from the Succ relation.
 Note: Succ_implies_h_content_reverse requires full MCS, so we use the
 Lindenbaum extensions and then project back to the DRM.
+
+**DEAD CODE**: This theorem has zero references outside its own definition.
+The restricted truth lemma does not require H-step at the DRM chain level;
+it uses Lindenbaum extensions and semantic arguments instead. The sorry is retained
+for historical documentation only and does not affect any completeness path.
 -/
 theorem restricted_chain_H_step (phi : Formula)
     (fam : RestrictedTemporallyCoherentFamily phi)
