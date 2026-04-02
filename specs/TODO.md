@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **83** [IMPLEMENTING] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
+0. **83** [RESEARCHED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
    - **Plan**: [04_restricted-coherence.md](specs/083_close_restricted_coherence_sorries/plans/04_restricted-coherence.md)
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
@@ -96,7 +96,7 @@ technical_debt:
 
 ### 83. Close Restricted Coherence Sorries
 - **Effort**: 12-18 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: 81
@@ -109,6 +109,7 @@ technical_debt:
   - [03_teammate-a-findings.md](083_close_restricted_coherence_sorries/reports/03_teammate-a-findings.md) -- Topological resolution and custom Lindenbaum analysis
   - [03_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/03_teammate-b-findings.md) -- Alternative completeness architectures analysis
   - [03_team-research.md](083_close_restricted_coherence_sorries/reports/03_team-research.md) -- Team synthesis: compatible F-preservation with topological ordering
+  - [04_f-preservation-seed.md](083_close_restricted_coherence_sorries/reports/04_f-preservation-seed.md) -- F-preservation seed blocked; all chain approaches face Lindenbaum F-kill; FMP path recommended
 - **Plan**:
   - [01_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/01_restricted-coherence.md) -- v1: 5-phase targeted chain construction (phases 1-2 done, phase 3 blocked)
   - [02_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md) -- v2: ResolvingFMCS with enriched deferral seed for sorry-free completeness
