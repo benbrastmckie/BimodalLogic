@@ -47,7 +47,7 @@ Close the 2 remaining sorries (`succ_chain_restricted_forward_F` and `succ_chain
 
 ## Implementation Phases
 
-### Phase 1: Enriched Deferral Seed and Consistency [NOT STARTED]
+### Phase 1: Enriched Deferral Seed and Consistency [BLOCKED]
 
 **Goal**: Define the enriched targeted seed that includes deferral disjunctions for F-persistence, and prove it is consistent.
 
