@@ -10,6 +10,7 @@ import Bimodal.Semantics.TaskFrame
 import Bimodal.Semantics.TaskModel
 import Bimodal.Semantics.Truth
 import Bimodal.Syntax.Formula
+import Bimodal.Syntax.SubformulaClosure
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Propositional
 
@@ -776,6 +777,151 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
+
+/-!
+## Restricted Shifted Truth Lemma
+
+This is the key innovation for closing the completeness sorry. Instead of requiring
+full temporal coherence (`B.temporally_coherent`), this version only requires restricted
+temporal coherence (`B.restricted_temporally_coherent root`).
+
+The restriction is: forward_F/backward_P only need to hold for formulas in
+`deferralClosure(root)`. This suffices because:
+1. The truth lemma only evaluates formulas in `subformulaClosure(root)`
+2. The G/H backward cases invoke forward_F on `neg(psi)` where `G(psi)` is in
+   `subformulaClosure(root)`, so `psi ∈ subformulaClosure(root)` and
+   `neg(psi) ∈ closureWithNeg(root) ⊆ deferralClosure(root)`
+
+The proof structure is identical to `shifted_truth_lemma` except:
+- The `all_future` and `all_past` backward cases use `restricted_temporal_backward_G/H`
+  instead of `temporal_backward_G/H`
+- Additional hypotheses track membership in `subformulaClosure(root)` through the recursion
+-/
+
+/--
+Restricted shifted truth lemma: MCS membership iff truth at the canonical model,
+using only restricted temporal coherence.
+
+This is identical to `shifted_truth_lemma` but with a weaker hypothesis:
+`B.restricted_temporally_coherent root` instead of `B.temporally_coherent`.
+The formula `φ` must be in `subformulaClosure root` (which includes `root` itself).
+-/
+theorem restricted_shifted_truth_lemma (B : BFMCS Int)
+    (root : Formula)
+    (h_tc : B.restricted_temporally_coherent root) (φ : Formula)
+    (h_sub : φ ∈ subformulaClosure root)
+    (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
+    φ ∈ fam.mcs t ↔
+    truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t φ := by
+  induction φ generalizing fam t with
+  | atom p =>
+    simp only [truth_at, CanonicalTaskModel, to_history]
+    constructor
+    · intro h_mem; exact ⟨True.intro, h_mem⟩
+    · intro ⟨_, h_val⟩; exact h_val
+  | bot =>
+    simp only [truth_at]
+    constructor
+    · intro h_mem
+      exfalso
+      have h_cons := (fam.is_mcs t).1
+      have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+        Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+    · intro h; exact h.elim
+  | imp ψ χ ih_ψ ih_χ =>
+    simp only [truth_at]
+    have h_mcs := fam.is_mcs t
+    -- Subformula membership passes to components
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_imp_left root ψ χ h_sub
+    have h_χ_sub : χ ∈ subformulaClosure root := closure_imp_right root ψ χ h_sub
+    constructor
+    · intro h_imp h_ψ_true
+      have h_ψ_mem := (ih_ψ h_ψ_sub fam hfam t).mpr h_ψ_true
+      exact (ih_χ h_χ_sub fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp h_ψ_mem)
+    · intro h_truth_imp
+      rcases SetMaximalConsistent.negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
+      · exact h_imp
+      · exfalso
+        have h_ψ_mcs : ψ ∈ fam.mcs t := by
+          have h_taut := neg_imp_implies_antecedent ψ χ
+          exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
+            (by simp [h_neg_imp])
+            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+        have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
+          have h_taut := neg_imp_implies_neg_consequent ψ χ
+          exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
+            (by simp [h_neg_imp])
+            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
+              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
+              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
+        have h_ψ_true : truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t ψ :=
+          (ih_ψ h_ψ_sub fam hfam t).mp h_ψ_mcs
+        have h_χ_true : truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t χ :=
+          h_truth_imp h_ψ_true
+        have h_χ_mcs : χ ∈ fam.mcs t := (ih_χ h_χ_sub fam hfam t).mpr h_χ_true
+        exact set_consistent_not_both (fam.is_mcs t).1 χ h_χ_mcs h_neg_χ_mcs
+  | box ψ ih =>
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_box root ψ h_sub
+    constructor
+    · -- Forward: Box ψ ∈ fam.mcs t → ∀ σ ∈ ShiftClosedCanonicalOmega B, truth_at ... σ t ψ
+      intro h_box σ h_σ_mem
+      obtain ⟨fam', hfam', delta, h_σ_eq⟩ := h_σ_mem
+      have h_box_shifted : Formula.box ψ ∈ fam.mcs (t + delta) :=
+        box_persistent fam ψ t (t + delta) h_box
+      have h_ψ_fam' : ψ ∈ fam'.mcs (t + delta) :=
+        B.modal_forward fam hfam ψ (t + delta) h_box_shifted fam' hfam'
+      have h_truth_canon := (ih h_ψ_sub fam' hfam' (t + delta)).mp h_ψ_fam'
+      have h_preserve := TimeShift.time_shift_preserves_truth
+        CanonicalTaskModel (ShiftClosedCanonicalOmega B)
+        (shiftClosedCanonicalOmega_is_shift_closed B) (to_history fam')
+        t (t + delta) ψ
+      have h_delta : (t + delta) - t = delta := by omega
+      rw [h_σ_eq]
+      rw [WorldHistory.time_shift_congr (to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
+      exact h_preserve.mpr h_truth_canon
+    · -- Backward: (∀ σ ∈ ShiftClosedCanonicalOmega B, truth_at ... σ t ψ) → Box ψ ∈ fam.mcs t
+      intro h_all_σ
+      have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs t := by
+        intro fam' hfam'
+        have h_mem := canonicalOmega_subset_shiftClosed B ⟨fam', hfam', rfl⟩
+        exact (ih h_ψ_sub fam' hfam' t).mpr (h_all_σ (to_history fam') h_mem)
+      exact B.modal_backward fam hfam ψ t h_all_fam
+  | all_future ψ ih =>
+    -- G case: restricted coherence suffices because neg(ψ) ∈ deferralClosure(root)
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_all_future root ψ h_sub
+    -- Key: neg(ψ) is in deferralClosure(root) because ψ ∈ subformulaClosure(root)
+    have h_neg_ψ_dc : Formula.neg ψ ∈ deferralClosure root :=
+      closureWithNeg_subset_deferralClosure root (neg_mem_closureWithNeg root ψ h_ψ_sub)
+    simp only [truth_at]
+    constructor
+    · intro h_G s hts
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
+      exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
+    · intro h_all
+      obtain ⟨h_forward_F, _⟩ := h_tc fam hfam
+      have h_all_mcs : ∀ s : Int, t ≤ s → ψ ∈ fam.mcs s := by
+        intro s hts
+        exact (ih h_ψ_sub fam hfam s).mpr (h_all s hts)
+      exact restricted_temporal_backward_G fam root h_forward_F t ψ h_neg_ψ_dc h_all_mcs
+  | all_past ψ ih =>
+    -- H case: symmetric to G case
+    have h_ψ_sub : ψ ∈ subformulaClosure root := closure_all_past root ψ h_sub
+    have h_neg_ψ_dc : Formula.neg ψ ∈ deferralClosure root :=
+      closureWithNeg_subset_deferralClosure root (neg_mem_closureWithNeg root ψ h_ψ_sub)
+    simp only [truth_at]
+    constructor
+    · intro h_H s hst
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
+      exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
+    · intro h_all
+      obtain ⟨_, h_backward_P⟩ := h_tc fam hfam
+      have h_all_mcs : ∀ s : Int, s ≤ t → ψ ∈ fam.mcs s := by
+        intro s hst
+        exact (ih h_ψ_sub fam hfam s).mpr (h_all s hst)
+      exact restricted_temporal_backward_H fam root h_backward_P t ψ h_neg_ψ_dc h_all_mcs
 
 end Bimodal.Metalogic.Bundle.Canonical
 

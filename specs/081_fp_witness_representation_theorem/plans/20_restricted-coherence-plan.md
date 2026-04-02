@@ -148,7 +148,7 @@ Report 20 (team research, 4 teammates) provides the key architectural insight: t
 
 ---
 
-### Phase 4: Adapt Truth Lemma for Restricted Coherence [NOT STARTED]
+### Phase 4: Adapt Truth Lemma for Restricted Coherence [COMPLETED]
 
 - **Goal:** Prove a restricted version of `parametric_canonical_truth_lemma` that takes `B.restricted_temporally_coherent root` instead of `B.temporally_coherent`, where root is the formula being evaluated. This is the central proof effort.
 
