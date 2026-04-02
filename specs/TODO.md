@@ -96,7 +96,7 @@ technical_debt:
 
 ### 83. Close Restricted Coherence Sorries
 - **Effort**: 12-18 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: 81
@@ -112,6 +112,7 @@ technical_debt:
 - **Plan**:
   - [01_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/01_restricted-coherence.md) -- v1: 5-phase targeted chain construction (phases 1-2 done, phase 3 blocked)
   - [02_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md) -- v2: ResolvingFMCS with enriched deferral seed for sorry-free completeness
+  - [03_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/03_restricted-coherence.md) -- v3: Finite resolving prefix with filtered compatible F-formulas and topological ordering
 
 **Description**: Close the 2 sorries in `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in `deferralClosure(root)` within a single SuccChainFMCS.
 
