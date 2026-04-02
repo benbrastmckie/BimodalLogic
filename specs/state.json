@@ -850,7 +850,7 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-02T21:32:52Z",
+      "last_updated": "2026-04-02T22:14:02Z",
       "notes": "Continues restricted coherence path from task 81. The 2 target sorries are more precisely scoped than the original bfmcs_from_mcs_temporally_coherent: restricted to deferralClosure formulas in a single chain rather than all formulas across all families.",
       "next_artifact_number": 4,
       "session_id": "sess_1775165541_b32b52",
@@ -910,6 +910,16 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/03_team-research.md",
           "type": "research",
           "summary": "Team research round 3: compatible F-preservation with topological ordering recommended"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/summaries/03_restricted-coherence-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 partial: DRM successor infrastructure, counterexample to joint consistency"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/handoffs/03_drm-chain-approach.md",
+          "type": "handoff",
+          "summary": "DRM chain approach handoff with remaining steps"
         }
       ],
       "started": "2026-04-02T21:32:52Z"
