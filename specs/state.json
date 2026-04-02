@@ -697,16 +697,16 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-02T00:12:38Z",
+      "last_updated": "2026-04-02T00:22:47Z",
       "notes": "BLOCKED: All 7 approaches to same-family forward_F fail. F-persistence fails at ultrafilter level. Fundamental barrier: resolving F-obligations conflicts with preserving them. Recommended alternatives: omega-branching tree + Konig, full canonical model, restricted completeness. See summaries/15_execution-summary.md.",
-      "session_id": "sess_1743561600_res81b",
+      "session_id": "sess_1743562800_plan81",
       "researched": "2026-04-02T00:12:38Z",
       "artifacts": [
         {
@@ -790,11 +790,6 @@
           "summary": "Research: algebraic temporal shift — G not automorphism, ultrafilter_F_resolution sorry-free, 4 strategies for composing forward_F"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/plans/15_implementation-plan.md",
-          "type": "plan",
-          "summary": "5-phase plan: Zorn partial ultrafilter chains for F/P witness, wire to Completeness.lean sorry"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/summaries/15_execution-summary.md",
           "type": "summary",
           "summary": "Execution summary: Phase 1 blocked, 7 approaches analyzed and failed, 4 alternative paths recommended"
@@ -808,9 +803,14 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/17_standard-completeness-approach.md",
           "type": "research",
           "summary": "Research: standard temporal completeness approach — cannot directly transfer to task semantics, identifies F-nesting depth argument as most viable path"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/plans/17_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: F-nesting depth infrastructure, base case via single_step_forcing, close fuel=0 sorries, wire to Completeness.lean sorry"
         }
       ],
-      "planned": "2026-04-01T23:01:43Z",
+      "planned": "2026-04-02T00:22:47Z",
       "started": "2026-04-01T22:25:56Z",
       "next_artifact_number": 18,
       "resume_phase": 1
