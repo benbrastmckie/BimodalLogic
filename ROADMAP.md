@@ -2,192 +2,133 @@
 
 ## Overview
 
-The repository has 98 `sorry` statements across 24 files. These fall into distinct categories:
+The repository has ~33 `sorry` statements across Lean source files. These fall into distinct categories:
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
-| SuccChain FMCS | 24 | SuccChainFMCS.lean | **CRITICAL PATH** |
-| Examples/pedagogical | 16 | Demo, ModalProofs, etc. | Expected |
-| Perpetuity bridge lemmas | 16 | Perpetuity/Bridge, Principles | Derivation work |
-| Completeness wiring | 9 | FrameConditions/Completeness, etc. | Blocked by SuccChain |
-| Soundness extensions | 5 | Soundness.lean | Frame-dependent |
-| FMP truth preservation | 4 | TruthPreservation.lean | Independent |
-| RestrictedMCS | 4 | RestrictedMCS.lean | Definition fix |
-| Infrastructure | 20 | Various | Mixed |
+| SuccChain FMCS | 4 | SuccChainFMCS.lean | Legacy (bypassed by restricted path) |
+| Restricted coherence | 2 | UltrafilterChain.lean | **CRITICAL PATH** |
+| Restricted truth lemma | 2 | RestrictedTruthLemma.lean | May be unnecessary |
+| Canonical construction | 2 | CanonicalConstruction.lean | Legacy (bypassed) |
+| Completeness (old path) | 1 | Completeness.lean | Legacy (bypassed) |
+| Dense completeness | 1 | Completeness.lean | Separate track (task 68) |
+| Discrete completeness | 1 | DiscreteCompleteness.lean | Blocked on custom axiom |
+| Soundness extensions | 1 | Soundness.lean | Frame-dependent |
+| FMP truth preservation | 2 | TruthPreservation.lean | Separate track (task 82) |
+| Simplified chain | 1 | SimplifiedChain.lean | Infrastructure |
+| SuccChain truth | 1 | SuccChainTruth.lean | Legacy |
+| Boneyard/dead code | 2 | FPreservingSeed.lean | Archived |
+| Examples/pedagogical | 14 | Demo, ModalProofs, etc. | Expected |
 
 ## The Completeness Gap (Priority 1)
 
-### Architecture
+### Architecture: Two Parallel Paths
+
+There are currently **two parallel completeness paths** in the codebase. The restricted path is the active approach; the original path is retained for reference but bypassed.
+
+#### Path A: Original (Full Temporal Coherence) -- BYPASSED
 
 ```
-⊬ φ → (Lindenbaum) → MCS M₀ ∋ φ.neg
-     → (SuccChain) → FMCS family over Int        ← BLOCKED HERE
-     → (Truth Lemma) → φ false at canonical model
-     → ¬valid φ
+completeness_over_Int
+  -> bundle_validity_implies_provability
+       -> shifted_truth_lemma (SORRY-FREE, but needs full coherence)
+       -> bfmcs_from_mcs_temporally_coherent (SORRY at Completeness.lean:237)
+            -> Z_chain_forward_F / Z_chain_backward_P (sorry)
 ```
 
-The algebraic path (`Algebraic/ParametricRepresentation.lean`) is **sorry-free** through the
-conditional representation theorem, but requires a `construct_bfmcs` callback that the
-SuccChain construction is trying to provide.
+This path requires proving that every family in the BFMCS satisfies `forward_F` and `backward_P` for ALL formulas. This is intractable because arbitrary MCS chains can defer F-obligations indefinitely through unbounded F-nesting.
 
-### The Two Classes of Sorry
+**Status**: Bypassed. The sorry at `bfmcs_from_mcs_temporally_coherent` remains but is no longer on the critical path. `completeness_over_Int` now delegates to the restricted path.
 
-#### Class A: Solvable via MCS Double-Negation Elimination
-
-**Sorries at SuccChainFMCS.lean:2359, 3011** — "Modal duality derivation"
-
-These are blocked by the comment: "Formula.neg is φ.imp bot, so some_future and
-all_future are NOT syntactic duals." But this is misleading — they ARE definitionally
-equal via `rfl`:
+#### Path B: Restricted Coherence -- ACTIVE (Task 81, completed)
 
 ```
-F(ψ) = some_future(ψ) = ψ.neg.all_future.neg = neg(G(neg(ψ)))    -- rfl
+completeness_over_Int
+  -> restricted_bundle_validity_implies_provability
+       -> restricted_shifted_truth_lemma (SORRY-FREE)
+       -> bfmcs_restricted_temporally_coherent
+            -> shifted_restricted_forward_F (SORRY-FREE)
+            -> succ_chain_restricted_forward_F (SORRY) <-- ONLY BLOCKER
+            -> succ_chain_restricted_backward_P (SORRY) <-- ONLY BLOCKER
 ```
 
-Therefore:
-```
-neg(FF(ψ)) = neg(neg(G(neg(F(ψ)))))
-```
+This path only requires `forward_F` and `backward_P` for formulas in `deferralClosure(root)`, where `root` is the formula being evaluated. Since the truth lemma only invokes temporal coherence on subformulas of `root`, and these all lie within `deferralClosure(root)`, restricted coherence suffices.
 
-And `SetMaximalConsistent.double_neg_elim` (TemporalCoherence.lean:124) gives:
-```
-neg(neg(X)) ∈ M → X ∈ M    -- for any MCS M
-```
+**Key insight**: The truth lemma's G backward case uses `forward_F` on `neg(psi)` where `G(psi)` is a subformula of root. Since `neg(psi) in closureWithNeg(root) subset deferralClosure(root)`, the restricted hypothesis is sufficient.
 
-**Proof sketch for sorry at 2359**:
-1. `FF(ψ) ∈ deferralClosure` and `FF(ψ) ∉ u` (given)
-2. By negation completeness of restricted MCS: `neg(FF(ψ)) ∈ u`
-3. `neg(FF(ψ)) = neg(neg(G(neg(F(ψ)))))` (definitional, since `FF(ψ) = neg(G(neg(F(ψ))))`)
-4. By `double_neg_elim`: `G(neg(F(ψ))) ∈ u`
-5. So `neg(F(ψ)) ∈ g_content(u)`
-6. By Succ relation: `neg(F(ψ)) ∈ v`
-7. From F-step: `ψ ∈ v ∨ F(ψ) ∈ v`
-8. `F(ψ) ∉ v` (by MCS consistency with `neg(F(ψ)) ∈ v`)
-9. Therefore `ψ ∈ v` ∎
+**Status**: Structurally complete. The only remaining sorries are:
+- `succ_chain_restricted_forward_F` (UltrafilterChain.lean:3762)
+- `succ_chain_restricted_backward_P` (UltrafilterChain.lean:3772)
 
-**Estimated effort**: Small. All ingredients exist in the codebase.
+These are **strictly more precise** than the original sorry: restricted to `deferralClosure` formulas in a single SuccChainFMCS, rather than all formulas across all families.
 
-#### Class B: Genuinely Hard — Boundary Cases at Deferral Closure Edge
+### What "Closing the Gap" Means (Task 83)
 
-**Status: RESOLVED via bidirectional witness approach** (see "Temporal Coherence Resolution" below)
+To achieve sorry-free canonical completeness, we need to prove:
 
-**Sorries at SuccChainFMCS.lean:2979, 3025, 3096, 3675, 3903, 3915**
+> Given `F(psi) in succ_chain_fam S n` with `psi in deferralClosure(root)`, there exists `m >= n` with `psi in succ_chain_fam S m`.
 
-These arise when `FF(ψ) ∉ deferralClosure(φ)` (the target formula's closure). In this case:
-- Negation completeness doesn't apply (formula outside the closure)
-- We cannot derive `neg(FF(ψ)) ∈ u`
-- The DNE argument from Class A breaks down
-- The F-step may defer: `ψ ∈ v ∨ F(ψ) ∈ v`, and we can't rule out `F(ψ) ∈ v`
+**Why this might be tractable now**: `deferralClosure(root)` is finite. The chain can only defer F-obligations within this finite set. A pigeonhole or fair-scheduling argument may show that deferral cannot continue indefinitely.
 
-**Root issue**: The theorem `restricted_single_step_forcing` claims `ψ ∈ v` (at the
-very next step), but when the F-obligation falls outside the closure, it may defer to
-a later step. The claim may be **too strong** — the correct statement might be
-"ψ eventually appears within the chain" rather than "ψ appears at step k+1."
+**Why it's still hard**: In a full MCS, `F(psi) in MCS` implies `F^k(psi) in MCS` for all k (by the temporal axiom). So F-nesting depth is not bounded even within `deferralClosure`. The persistence count (number of steps before resolution) is unbounded even though the formula set is bounded.
 
-**Resolution**: The bidirectional temporal witness approach (task 70, plan v4) bypasses
-these issues entirely by using a simpler seed that preserves both G and H theories.
-See "Temporal Coherence Resolution" section below for details.
+**Candidate approaches** (task 83):
+1. **Finite deferral argument**: `deferralClosure` is finite, so the set of pending F-obligations is bounded. Show that `constrained_successor`'s f_step cannot defer ALL of them indefinitely.
+2. **Dovetailed chain with fair scheduling**: Build a modified chain that cycles through pending F-obligations, resolving each in turn.
+3. **Ultrafilter/algebraic argument**: Use R_G accessibility in the Lindenbaum algebra to establish resolution at the algebraic level.
+
+### Completeness Chain (Sorry-Free Modulo Task 83)
+
+Everything below is sorry-free EXCEPT the two sorries in task 83:
+
+| Component | File | Status |
+|-----------|------|--------|
+| `not_provable_implies_neg_consistent` | Completeness.lean | Sorry-free |
+| `neg_consistent_gives_mcs_without_phi` | Completeness.lean | Sorry-free |
+| `construct_bfmcs_bundle` | UltrafilterChain.lean | Sorry-free |
+| `bundle_to_bfmcs` | Completeness.lean | Sorry-free |
+| `boxClassFamilies_modal_backward` | UltrafilterChain.lean | Sorry-free |
+| `restricted_shifted_truth_lemma` | CanonicalConstruction.lean | Sorry-free |
+| `restricted_temporal_backward_G` | TemporalCoherence.lean | Sorry-free |
+| `restricted_temporal_backward_H` | TemporalCoherence.lean | Sorry-free |
+| `bfmcs_restricted_temporally_coherent` | Completeness.lean | Depends on task 83 |
+| `restricted_bundle_validity_implies_provability` | Completeness.lean | Depends on task 83 |
+| `completeness_over_Int` | Completeness.lean | Depends on task 83 |
+| `discrete_completeness_fc` | Completeness.lean | Depends on task 83 |
 
 ### Algebraic Perspective
 
 The algebraic path (`Algebraic/`) provides sorry-free infrastructure:
 
 ```
-LindenbaumQuotient → BooleanStructure → InteriorOperators
-         → UltrafilterMCS → ParametricCanonical → ParametricTruthLemma
-         → ParametricRepresentation (SORRY-FREE, conditional)
+LindenbaumQuotient -> BooleanStructure -> InteriorOperators
+         -> UltrafilterMCS -> ParametricCanonical -> ParametricTruthLemma
+         -> ParametricRepresentation (SORRY-FREE, conditional)
 ```
 
-The gap is `construct_bfmcs`: given MCS M₀, produce a temporally coherent BFMCS.
+The gap is `construct_bfmcs`: given MCS M0, produce a temporally coherent BFMCS.
 
-#### Modal Completeness (Box Forward/Backward) — SOLVED
+#### Modal Completeness (Box Forward/Backward) -- SOLVED
 
-The **modal direction is complete**. `boxClassFamilies_modal_backward` (UltrafilterChain.lean:1678)
-proves modal backward for the `boxClassFamilies` bundle construction. This theorem is sorry-free
-and uses the contraposition argument:
+The modal direction is complete. `boxClassFamilies_modal_backward` (UltrafilterChain.lean:1678) is sorry-free.
 
-1. If Box(phi) not in MCS, then Diamond(neg phi) in M0
-2. `box_theory_witness_exists` provides W' with neg(phi) in W' and same box-class
-3. The shifted chain from W' is in the bundle
-4. If phi were in ALL families, it would be in W', contradiction
-
-The `parametric_canonical_truth_lemma` (ParametricTruthLemma.lean:170) uses `B.modal_backward`
-at line 269, which is populated by `boxClassFamilies_modal_backward` when constructing
-via `construct_bfmcs`.
-
-**Status**: Modal completeness (Box case) has no sorries. The remaining challenge is
-**temporal coherence** (G/H backward), which requires the SuccChain or per-obligation
-witness architecture work described above.
-
-**Algebraic insight**: The SuccChain approach tries to build the FMCS by explicit
-forward/backward enumeration. The algebraic approach could instead:
-
-1. Take the Lindenbaum algebra `L = Formula / ≡`
-2. The temporal operators G, H are interior operators on L (proven)
-3. Ultrafilters of L correspond to MCSs (proven)
-4. Define `mcs(t)` for each `t : D` using the **algebraic temporal shift**:
-   an automorphism of L induced by temporal translation
-5. The FMCS coherence conditions follow from algebraic properties
-
-This avoids the F-nesting boundary entirely because the algebraic construction
-doesn't enumerate F-obligations — it works at the level of the entire algebra.
-
-**Key question**: Can the temporal shift automorphism be defined on the Lindenbaum
-algebra? The G operator is deflationary (`G[φ] ≤ [φ]`), monotone, and idempotent.
-If G determines a topology on L whose open sets are G-closed, then temporal
-accessibility is a preorder on ultrafilters, and the FMCS construction is the
-Stone-space unraveling.
-
-## Temporal Coherence Resolution (March 2026)
+## Temporal Coherence Resolution History
 
 ### Dead Ends (Archived)
 
-1. **CoherentZChain** (UltrafilterChain.lean ~7286-7496): Fundamentally broken. Forward chain
-   preserves G but not H; backward chain preserves H but not G. Cross-direction coherence
-   requires preserving both, which this architecture cannot support. 6 unfixable sorries.
+1. **CoherentZChain**: Forward chain preserves G but not H; backward preserves H but not G. Unfixable.
 
-2. **`f_preserving_seed_consistent` sub-case A** (lines 3363-3369): Mathematically unprovable.
-   The deduction argument produces `G(phi) -> G(neg psi)` in M, but `G(phi)` not in M means
-   the implication is vacuously true, yielding no contradiction. The semantic reason:
-   "eventually phi AND eventually psi" is consistent when psi holds BEFORE phi.
+2. **`f_preserving_seed_consistent` sub-case A**: Mathematically unprovable. Vacuous implication yields no contradiction.
 
-3. **`omega_true_dovetailed_forward_F_resolution`** (line ~7696): Unfixable sorry in the
-   "F(phi) vanishes" case. The Lindenbaum extension can add `G(neg phi)` when consistent
-   with the seed, even when `F(phi)` was present earlier.
+3. **`omega_true_dovetailed_forward_F_resolution`**: Unfixable. Lindenbaum extension can add `G(neg phi)` when `F(phi)` was present.
 
-4. **Bundle-level temporal coherence**: Insufficient for truth lemma. G/H operators are
-   intrinsically single-history; a witness in a different family uses a different history,
-   invalidating the semantic argument for `temporal_backward_G`.
+4. **Bundle-level temporal coherence**: Insufficient for truth lemma. G/H operators are intrinsically single-history.
 
-6. **Fuel-based bounded witness recursion** (tasks 48, 67, 81 plan v13): Repeatedly attempted
-   and failed. The approach adds an explicit fuel parameter bounded by `closure_F_bound` to
-   the witness recursion and tries to prove the fuel=0 branch is unreachable. **Fundamental
-   flaw**: fuel conflates F-nesting depth (bounded) with persistence count (unbounded). In the
-   `inr` (persistence) case, the same F-formula can persist through arbitrarily many chain
-   steps without reducing depth, exhausting fuel while depth remains positive. Variants tried:
-   - Task 48 plan v5: Single fuel bounded by `closure_F_bound(phi)` — fuel exhaustion at
-     positive depth with no contradiction derivable
-   - Task 67 summaries 11-12: Two-fuel variant (resolve_fuel + defer_fuel) — invariant
-     preservation fails at recursive call sites
-   - Task 81 plan v13: Fuel `B*B+1` — same structural problem, persistence is not bounded by
-     depth. See `specs/081_.../reports/14_fuel-approach-review.md` for full analysis.
+5. **Fuel-based bounded witness recursion** (tasks 48, 67, 81 plan v13): Repeatedly failed. Fuel conflates F-nesting depth (bounded) with persistence count (unbounded).
 
-5. **Bidirectional Temporal Witness (plan v4)**: BLOCKED. The seed construction
-   `bidirectional_temporal_box_seed = G_theory ∪ H_theory ∪ box_theory` requires that ALL
-   seed elements be G-liftable for the consistency proof. H_theory elements are NOT
-   G-liftable: `H(a) -> G(H(a))` is NOT derivable in TM logic. See report 10 (blocker-analysis.md).
+6. **Bidirectional Temporal Witness (plan v4)**: BLOCKED. H_theory elements are not G-liftable.
 
-### Working Approach: Separate-Direction Witnesses (SuccChainFMCS)
-
-**Key insight**: Don't try to combine F-witness and P-witness at the seed level.
-Use separate constructions and achieve cross-direction coherence at CHAIN level.
-
-**Implementation** (SuccChainFMCS.lean):
-- Forward witnesses use `temporal_box_seed` (G_theory + box_theory) - G-liftable, proven consistent
-- Backward witnesses use `past_temporal_box_seed` (H_theory + box_theory) - H-liftable, proven consistent
-- Cross-direction coherence achieved via Succ relation properties:
-  - `Succ.g_persistence`: g_content(M) ⊆ M' (forward G propagation)
-  - `Succ_implies_h_content_reverse`: h_content(M') ⊆ M (backward H propagation)
+### Working Infrastructure: SuccChainFMCS
 
 **Sorry-Free Properties**:
 - `succ_chain_forward_G`: G(phi) at t implies phi at all t' > t
@@ -195,101 +136,59 @@ Use separate constructions and achieve cross-direction coherence at CHAIN level.
 - `SuccChainFMCS`: FMCS structure with `forward_G` and `backward_H`
 
 **Known Gaps (F/P Existential Witnesses)**:
-- `forward_F`: F(phi) at t implies exists t' >= t with phi at t'
-- `backward_P`: P(phi) at t implies exists t' <= t with phi at t'
-- These have sorries due to unbounded F/P nesting in arbitrary MCS
-- For sorry-free completeness, use `semantic_weak_completeness` (FMP path)
+- `forward_F` / `backward_P` for full MCS: sorry (bypassed by restricted path)
+- `succ_chain_restricted_forward_F` / `backward_P` for deferralClosure: sorry (task 83)
 
-**Truth Lemma Connection** (SuccChainTruth.lean):
-- G/H forward direction: Uses `succ_chain_forward_G_le`/`succ_chain_backward_H_le` - SORRY-FREE
-- G/H backward direction: Uses `temporal_backward_G`/`temporal_backward_H` which require
-  `forward_F`/`backward_P` - HAS SORRY
-- Box backward direction: Requires modal saturation via BFMCS bundling - HAS SORRY
+### Task 81 Contribution (April 2026)
 
-**Bidirectionality Constraint** (Task #71 documentation):
-The truth lemma is INHERENTLY BIDIRECTIONAL - both directions are required for completeness.
-The forward Imp case (`truth_lemma_forward_imp` at SuccChainTruth.lean:200) uses the
-backward induction hypothesis via `.mpr`. Similarly, backward G/H cases require forward
-witnesses (`forward_F`/`backward_P`). This constraint was discovered in task 70 when
-proving that separate-direction witnesses (G/H only) are sorry-free while F/P gaps remain.
-
-### Implementation Status
-
-Task 70 plan v5 (`specs/070_explore_ultrafilter_construction/plans/05_separate-direction-witnesses.md`):
-- Phase 0: Archive bidirectional construction - COMPLETED
-- Phase 1-5: Verify Succ relation G/H properties - COMPLETED (already sorry-free)
-- Phase 6: Connect to truth lemma - COMPLETED (documented in SuccChainFMCS.lean)
-- Phase 7: Document F/P gaps - COMPLETED (this section)
+Refactored the completeness proof to use restricted temporal coherence:
+- Defined `BFMCS.restricted_temporally_coherent` (forward_F/backward_P within `deferralClosure` only)
+- Proved sorry-free `restricted_temporal_backward_G/H`
+- Proved sorry-free `restricted_shifted_truth_lemma`
+- Wired `completeness_over_Int` through the restricted path
+- Narrowed the completeness gap from "all formulas, all families" to "deferralClosure formulas, single chain"
 
 ## Investigated Dead Ends: Logic Weakening (Task 77)
 
-**Conclusion**: Weakening TM by using a preorder (instead of linear order) for D does NOT
-provide a viable path to completeness. The F/P witness blocker is independent of the order
-structure on D.
-
-### Key Findings
-
-1. **Category Error**: Prior proposals that suggested "D = CanonicalMCS" conflated durations
-   (D, an ordered abelian group) with world states (MCS). These are categorically distinct.
-
-2. **Partial Order D Creates Multi-Dimensional Time**: If D is partially ordered (e.g., Z x Z),
-   histories span 2D convex regions, not branching timelines. G(phi) becomes "phi in the entire
-   future cone" - a fundamentally different temporal logic, not a natural weakening of TM.
-
-3. **Only temp_linearity Requires Linearity**: All other TM axioms (MF, TF, temp_4, modal K, S5)
-   work with preorder D. But dropping temp_linearity creates exotic semantics without solving
-   the completeness challenge.
-
-4. **F/P Blocker is Structural**: The blocker arises from omega-saturation in canonical model
-   construction (unbounded F-obligations in a single coherent timeline), not from the order
-   structure on D. Weakening D provides no advantage.
+**Conclusion**: Weakening TM by using a preorder (instead of linear order) for D does NOT provide a viable path to completeness. The F/P witness blocker is independent of the order structure on D.
 
 ### Representation Theorem Goal
 
-The goal of TM completeness is a **representation theorem** characterizing the frame class:
-
 > "TM is complete with respect to TaskFrames over totally ordered abelian groups."
 
-This tells us WHAT semantic class TM corresponds to. **Only the algebraic/canonical model
-approach is to be pursued for completeness.** The canonical completeness approach (building a
-single countermodel from MCS) is the unique path to representation theorems.
-
-**FMP/filtration is NOT a substitute.** FMP proves decidability and finite model property but
-does not provide frame class characterization. FMP work (task #998) is a separate decidability
-track — it must not be conflated with, or used as a fallback for, the completeness theorem.
-The F/P witness blocker is an open challenge on the canonical model path, not a reason to
-retreat to FMP.
-
-**Reference**: `specs/077_research_preorder_taskframe_generalization/reports/05_team-research.md`
+**Only the algebraic/canonical model approach is to be pursued for completeness.** FMP proves decidability but does not provide frame class characterization.
 
 ## Other Open Items
 
-### Perpetuity Principles (16 sorries in Bridge.lean + Principles.lean)
-- P5 (`◇▽φ → △◇φ`) has 1 technical sorry
-- Bridge lemmas need derivation work using combinators + modal axioms
-- Independent of completeness
-
-### Soundness Extensions (5 sorries in Soundness.lean)
-- `density`: requires `DenselyOrdered D`
-- `discreteness_forward`: requires `SuccOrder D`
-- `seriality_future/past`: requires `NoMaxOrder/NoMinOrder D`
-- These are frame-condition-dependent; architecture is sound
-
-### ModalS4 Theorems (not started)
-- 0/4 S4 nested modality theorems proven
-- Independent of completeness
-
-### FMP Truth Preservation (4 sorries)
+### FMP Truth Preservation (task 82, 2 sorries)
+- `mcs_all_future_closure` and `mcs_all_past_closure` in TruthPreservation.lean
 - Filtration-based truth preservation for finite model property
-- **Decidability track only** — not a path to the completeness representation theorem
-- Does not substitute for canonical model construction
+- **Decidability track only** -- not a path to the completeness representation theorem
+- Independent of the restricted coherence work
+
+### Dense Completeness (task 68, 1 sorry)
+- `dense_completeness_fc` needs a separate proof using dense canonical model (e.g., over Rat)
+- Cannot reduce to `completeness_over_Int` since Int is not densely ordered
+- Independent of the restricted coherence work
+
+### Soundness Extensions (1 sorry in Soundness.lean)
+- `density`: requires `DenselyOrdered D`
+- Frame-condition-dependent; architecture is sound
+
+### SuccChain FMCS Legacy Sorries (4 sorries)
+- In SuccChainFMCS.lean -- part of the original (bypassed) full-coherence path
+- Not on the critical path since `completeness_over_Int` now uses the restricted path
+- Could be cleaned up but not blocking
+
+### Examples/Pedagogical (14 sorries)
+- Demo.lean, ModalProofs.lean, ModalProofStrategies.lean, TemporalProofs.lean
+- Expected and intentional (exercises, demonstrations)
 
 ## Recommended Priority Order
 
-1. **Resolve Class A sorries** — modal duality via DNE (small, unblocks Class B thinking)
-2. **Design solution for Class B** — either weaken theorem or enlarge closure
-3. **Implement Class B solution** — complete `restricted_single_step_forcing`
-4. **Wire through** — SuccChainCompleteness → FrameConditions/Completeness
-5. **Perpetuity bridge lemmas** — derivation work
-6. **Soundness extensions** — frame-condition instances
-7. **ModalS4** — derived theorems
+1. **Task 83**: Close `succ_chain_restricted_forward_F/backward_P` -- sole blocker for sorry-free completeness
+2. **Task 82**: Close FMP TruthPreservation sorries -- gives weak completeness / decidability
+3. **Task 68**: Dense completeness via Rat canonical model
+4. **Task 58**: Wire completeness to FrameConditions (unblocked once task 83 done)
+5. **Task 60**: Remove `discrete_Icc_finite_axiom` custom axiom
+6. **Cleanup**: Remove legacy Path A sorries, archive dead code

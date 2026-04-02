@@ -50,10 +50,10 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **81** [COMPLETED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
-   - **Blocker**: Safe target approach fails — enriched seed inconsistency. All known same-family forward_F approaches share this blocker.
+0. **83** [NOT STARTED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
-1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
+1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
+2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -90,6 +90,27 @@ technical_debt:
 - **Created**: 2026-04-02
 
 **Description**: Close the 2 FMP TruthPreservation sorries (`mcs_all_future_closure` at line 263 and `mcs_all_past_closure` at line 281) in `Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean`. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (`Truth.lean`) uses reflexive semantics (`t ≤ s`, not `t < s`), and `temp_t_future`/`temp_t_past` ARE axioms (Axioms.lean:290,304). Proofs parallel to `mcs_box_closure` (TruthPreservation.lean:188-203). Closing these completes the FMP path giving **weak completeness of TM**.
+
+---
+
+### 83. Close Restricted Coherence Sorries
+- **Effort**: 12-20 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: critical
+- **Dependencies**: 81
+- **Created**: 2026-04-02
+
+**Description**: Close the 2 sorries in `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in `deferralClosure(root)` within a single SuccChainFMCS.
+
+**Potential approaches**:
+1. Show `constrained_successor` f_step eventually resolves each F-obligation because `deferralClosure` is finite and the chain cannot defer indefinitely within a bounded set
+2. Dovetailed chain construction with fair scheduling that cycles through pending F-obligations
+3. Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra
+
+**Also clean up**: 2 auxiliary sorries in RestrictedTruthLemma.lean (`restricted_chain_G_step`, `restricted_chain_H_step`) — may become unnecessary once main sorries are closed.
+
+**Excludes**: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), old full-coherence sorry (`bfmcs_from_mcs_temporally_coherent` — bypassed by restricted path).
 
 ---
 
