@@ -1800,6 +1800,220 @@ theorem single_target_with_g_content_consistent (phi : Formula) (u : Set Formula
     exact set_consistent_not_both h_mcs.1.2 (Formula.all_future (Formula.neg target)) h_G_neg_target h_F_target
 
 /-!
+## Targeted Predecessor for P-Resolution
+
+The targeted predecessor resolves a SINGLE P-obligation at a time by using
+`{target} ∪ h_content(u)` as the seed. This is the P-direction analog of the
+targeted successor construction.
+
+Key property: if P(target) ∈ u, then {target} ∪ h_content(u) is consistent,
+and the Lindenbaum extension within deferralClosure gives a DeferralRestrictedMCS
+containing target.
+-/
+
+/--
+Consistency of `{target} ∪ h_content(u)` when `P(target) ∈ u`.
+
+This is the P-direction analog of `single_target_with_g_content_consistent`.
+
+**Proof**: Assume L ⊆ {target} ∪ h_content(u) derives ⊥. Then either:
+- target ∈ L: By deduction, L \ {target} ⊢ neg(target). Apply generalized_past_k
+  to get H[L \ {target}] ⊢ H(neg target). Since L \ {target} ⊆ h_content(u),
+  H[L \ {target}] ⊆ u. By DRM closure, H(neg target) ∈ u. But P(target) = neg(H(neg target)) ∈ u,
+  contradicting MCS consistency.
+- target ∉ L: L ⊆ h_content(u). From L ⊢ ⊥, derive L ⊢ neg(target). Apply generalized_past_k.
+  Same contradiction.
+-/
+theorem single_target_with_h_content_consistent (phi : Formula) (u : Set Formula)
+    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (target : Formula) (h_P_target : Formula.some_past target ∈ u) :
+    SetConsistent ({target} ∪ h_content u) := by
+  intro L hL_sub ⟨d⟩
+  by_cases h_target_in : target ∈ L
+  · -- Case: target ∈ L
+    let L_filt := L.filter (fun y => decide (y ≠ target))
+    have h_perm := cons_filter_neq_perm h_target_in
+    have d_reord : DerivationTree (target :: L_filt) Formula.bot :=
+      derivation_exchange d (fun x => (h_perm x).symm)
+    have d_neg : L_filt ⊢ Formula.neg target :=
+      deduction_theorem L_filt target Formula.bot d_reord
+    have h_H_filt_in_u : ∀ chi ∈ L_filt, Formula.all_past chi ∈ u := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L := h_and.1
+      have h_ne : chi ≠ target := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_seed := hL_sub chi h_in_L
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_hcontent
+      · exact absurd h_eq h_ne
+      · exact h_hcontent
+    have d_H_neg : (Context.map Formula.all_past L_filt) ⊢ Formula.all_past (Formula.neg target) :=
+      Bimodal.Theorems.generalized_past_k L_filt (Formula.neg target) d_neg
+    have h_H_context_in_u : ∀ chi ∈ Context.map Formula.all_past L_filt, chi ∈ u := by
+      intro chi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨xi, h_xi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_H_filt_in_u xi h_xi_in
+    have h_P_in_dc := h_mcs.1.1 h_P_target
+    have h_H_neg_dc : Formula.all_past (Formula.neg target) ∈ Bimodal.Syntax.deferralClosure phi := by
+      rcases Bimodal.Syntax.some_past_in_deferralClosure_cases phi target h_P_in_dc with h_P_in_cwn | h_P_top
+      · have h_H_neg_sub : Formula.all_past (Formula.neg target) ∈ Bimodal.Syntax.subformulaClosure phi := by
+          unfold Bimodal.Syntax.closureWithNeg at h_P_in_cwn
+          simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
+          rcases h_P_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+          · exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+          · unfold Formula.some_past Formula.neg at h_chi_neg_eq
+            have h_eq : chi = Formula.all_past (Formula.neg target) := by cases h_chi_neg_eq; rfl
+            rw [h_eq] at h_chi_sub
+            exact h_chi_sub
+        exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_H_neg_sub)
+      · have h_target_eq : target = Formula.neg Formula.bot := by
+          simp only [Bimodal.Syntax.P_top, Formula.some_past, Formula.neg] at h_P_top
+          injection h_P_top with h1 _
+          injection h1 with h2
+          injection h2
+        simp only [h_target_eq]
+        exact Bimodal.Syntax.H_neg_neg_bot_mem_deferralClosure phi
+    have h_H_neg_target : Formula.all_past (Formula.neg target) ∈ u :=
+      drm_closed_under_derivation h_mcs (Context.map Formula.all_past L_filt)
+        h_H_context_in_u d_H_neg h_H_neg_dc
+    have h_P_eq : Formula.some_past target = Formula.neg (Formula.all_past (Formula.neg target)) := rfl
+    rw [h_P_eq] at h_P_target
+    exact set_consistent_not_both h_mcs.1.2 (Formula.all_past (Formula.neg target)) h_H_neg_target h_P_target
+  · -- Case: target ∉ L, so L ⊆ h_content u
+    have h_H_all_in_u : ∀ chi ∈ L, Formula.all_past chi ∈ u := by
+      intro chi h_mem
+      have h_in_seed := hL_sub chi h_mem
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_hcontent
+      · exact absurd h_eq (fun h => h_target_in (h ▸ h_mem))
+      · exact h_hcontent
+    have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg target) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot target)
+    have h_bot_imp_neg_L : L ⊢ Formula.bot.imp (Formula.neg target) :=
+      DerivationTree.weakening [] L _ h_bot_imp_neg (List.nil_subset _)
+    have d_neg_target : L ⊢ Formula.neg target :=
+      DerivationTree.modus_ponens L _ _ h_bot_imp_neg_L d
+    have d_H_neg : (Context.map Formula.all_past L) ⊢ Formula.all_past (Formula.neg target) :=
+      Bimodal.Theorems.generalized_past_k L (Formula.neg target) d_neg_target
+    have h_H_L_in_u : ∀ chi ∈ Context.map Formula.all_past L, chi ∈ u := by
+      intro chi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨xi, h_xi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_H_all_in_u xi h_xi_in
+    have h_P_in_dc := h_mcs.1.1 h_P_target
+    have h_H_neg_dc : Formula.all_past (Formula.neg target) ∈ Bimodal.Syntax.deferralClosure phi := by
+      rcases Bimodal.Syntax.some_past_in_deferralClosure_cases phi target h_P_in_dc with h_P_in_cwn | h_P_top
+      · have h_H_neg_sub : Formula.all_past (Formula.neg target) ∈ Bimodal.Syntax.subformulaClosure phi := by
+          unfold Bimodal.Syntax.closureWithNeg at h_P_in_cwn
+          simp only [Finset.mem_union, Finset.mem_image] at h_P_in_cwn
+          rcases h_P_in_cwn with h_sub | ⟨chi, h_chi_sub, h_chi_neg_eq⟩
+          · exact Bimodal.Syntax.closure_imp_left phi _ _ h_sub
+          · unfold Formula.some_past Formula.neg at h_chi_neg_eq
+            have h_eq : chi = Formula.all_past (Formula.neg target) := by cases h_chi_neg_eq; rfl
+            rw [h_eq] at h_chi_sub
+            exact h_chi_sub
+        exact Bimodal.Syntax.closureWithNeg_subset_deferralClosure phi
+          (Bimodal.Syntax.subformulaClosure_subset_closureWithNeg phi h_H_neg_sub)
+      · have h_target_eq : target = Formula.neg Formula.bot := by
+          simp only [Bimodal.Syntax.P_top, Formula.some_past, Formula.neg] at h_P_top
+          injection h_P_top with h1 _
+          injection h1 with h2
+          injection h2
+        simp only [h_target_eq]
+        exact Bimodal.Syntax.H_neg_neg_bot_mem_deferralClosure phi
+    have h_H_neg_target : Formula.all_past (Formula.neg target) ∈ u :=
+      drm_closed_under_derivation h_mcs (Context.map Formula.all_past L)
+        h_H_L_in_u d_H_neg h_H_neg_dc
+    have h_P_eq : Formula.some_past target = Formula.neg (Formula.all_past (Formula.neg target)) := rfl
+    rw [h_P_eq] at h_P_target
+    exact set_consistent_not_both h_mcs.1.2 (Formula.all_past (Formula.neg target)) h_H_neg_target h_P_target
+
+/--
+The targeted h_content seed: `{target} ∪ h_content(u)`.
+-/
+def targeted_h_content_seed (u : Set Formula) (target : Formula) : Set Formula :=
+  {target} ∪ h_content u
+
+/--
+The targeted h_content seed is within deferralClosure when the target is.
+-/
+theorem targeted_h_content_seed_subset_dc (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    targeted_h_content_seed u target ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
+  intro x hx
+  simp only [targeted_h_content_seed, Set.mem_union, Set.mem_singleton_iff] at hx
+  rcases hx with rfl | h_hc
+  · exact h_target_dc
+  · exact h_content_subset_deferralClosure phi u h_drm.1.1 h_hc
+
+/--
+The targeted h_content seed is consistent when P(target) ∈ u.
+
+This is a direct application of `single_target_with_h_content_consistent`.
+-/
+theorem targeted_h_content_seed_consistent (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_P_target : Formula.some_past target ∈ u) :
+    SetConsistent (targeted_h_content_seed u target) :=
+  single_target_with_h_content_consistent phi u h_drm target h_P_target
+
+/--
+The targeted predecessor: Lindenbaum extension of `{target} ∪ h_content(u)` within deferralClosure.
+
+Given a DeferralRestrictedMCS u with P(target) ∈ u and target ∈ deferralClosure,
+this constructs a new DeferralRestrictedMCS v with:
+1. target ∈ v (P-obligation resolved)
+2. h_content(u) ⊆ v (H-persistence maintained)
+-/
+noncomputable def targeted_predecessor (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_P_target : Formula.some_past target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    Set Formula :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (targeted_h_content_seed u target)
+    (targeted_h_content_seed_subset_dc phi u target h_drm h_target_dc)
+    (targeted_h_content_seed_consistent phi u target h_drm h_P_target)).choose
+
+/-- The targeted predecessor extends the seed. -/
+theorem targeted_predecessor_extends (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_P_target : Formula.some_past target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    targeted_h_content_seed u target ⊆
+    targeted_predecessor phi u target h_drm h_P_target h_target_dc :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (targeted_h_content_seed u target)
+    (targeted_h_content_seed_subset_dc phi u target h_drm h_target_dc)
+    (targeted_h_content_seed_consistent phi u target h_drm h_P_target)).choose_spec.1
+
+/-- The targeted predecessor is a DeferralRestrictedMCS. -/
+theorem targeted_predecessor_is_drm (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_P_target : Formula.some_past target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    Bimodal.Metalogic.Core.DeferralRestrictedMCS phi
+    (targeted_predecessor phi u target h_drm h_P_target h_target_dc) :=
+  (Bimodal.Metalogic.Core.deferral_restricted_lindenbaum phi
+    (targeted_h_content_seed u target)
+    (targeted_h_content_seed_subset_dc phi u target h_drm h_target_dc)
+    (targeted_h_content_seed_consistent phi u target h_drm h_P_target)).choose_spec.2
+
+/-- target is in the targeted predecessor. -/
+theorem targeted_predecessor_contains_target (phi : Formula) (u : Set Formula) (target : Formula)
+    (h_drm : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
+    (h_P_target : Formula.some_past target ∈ u)
+    (h_target_dc : target ∈ (Bimodal.Syntax.deferralClosure phi : Set Formula)) :
+    target ∈ targeted_predecessor phi u target h_drm h_P_target h_target_dc :=
+  targeted_predecessor_extends phi u target h_drm h_P_target h_target_dc
+    (Set.mem_union_left _ (Set.mem_singleton target))
+
+/-!
 ## Targeted Successor Construction
 
 The targeted successor resolves a SINGLE F-obligation at a time by using

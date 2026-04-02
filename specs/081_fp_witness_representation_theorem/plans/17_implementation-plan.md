@@ -43,7 +43,7 @@ Report 17 identifies Path A (close fuel exhaustion sorry) as the most promising 
 
 ## Implementation Phases
 
-### Phase 1: F-Nesting Depth Infrastructure [NOT STARTED]
+### Phase 1: F-Nesting Depth Infrastructure [PARTIAL]
 
 **Goal**: Formalize the F-nesting depth function and prove key properties within deferralClosure needed for the fuel-exhaustion argument.
 
@@ -66,7 +66,7 @@ Report 17 identifies Path A (close fuel exhaustion sorry) as the most promising 
 
 ---
 
-### Phase 2: Base Case -- Max-Depth Obligations Resolve in One Step [NOT STARTED]
+### Phase 2: Base Case -- Max-Depth Obligations Resolve in One Step [BLOCKED]
 
 **Goal**: Prove that F-obligations at the maximum nesting depth in a restricted Succ-chain resolve at the very next step, using single_step_forcing.
 
@@ -87,7 +87,7 @@ Report 17 identifies Path A (close fuel exhaustion sorry) as the most promising 
 
 ---
 
-### Phase 3: Inductive Step -- Prove Fuel Exhaustion Unreachable [NOT STARTED]
+### Phase 3: Inductive Step -- Prove Fuel Exhaustion Unreachable [BLOCKED]
 
 **Goal**: Replace or close the `sorry` in the fuel=0 branches by proving that the recursion terminates before fuel runs out.
 
@@ -110,7 +110,7 @@ Report 17 identifies Path A (close fuel exhaustion sorry) as the most promising 
 
 ---
 
-### Phase 4: Wire to Completeness Sorry [NOT STARTED]
+### Phase 4: Wire to Completeness Sorry [BLOCKED]
 
 **Goal**: Connect the sorry-free restricted chain coherence to `bfmcs_from_mcs_temporally_coherent` in Completeness.lean.
 
