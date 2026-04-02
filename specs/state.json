@@ -829,9 +829,22 @@
       "started": "2026-04-01T22:25:56Z",
       "next_artifact_number": 20,
       "resume_phase": 1
+    },
+    {
+      "project_number": 82,
+      "project_name": "close_fmp_truth_preservation_sorries",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Close the 2 FMP TruthPreservation sorries (mcs_all_future_closure at line 263 and mcs_all_past_closure at line 281) in Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (Truth.lean) uses reflexive semantics (t <= s, not t < s), and temp_t_future/temp_t_past ARE axioms (Axioms.lean:290,304). These sorries can be closed immediately with proofs parallel to mcs_box_closure (TruthPreservation.lean:188-203), replacing modal_t with temp_t_future/temp_t_past. Closing these completes the FMP path giving weak completeness of TM.",
+      "effort": "1-2 hours",
+      "dependencies": [],
+      "priority": "high",
+      "created": "2026-04-02T17:12:09Z",
+      "last_updated": "2026-04-02T17:12:09Z",
+      "next_artifact_number": 1
     }
   ],
-  "next_project_number": 82,
+  "next_project_number": 83,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

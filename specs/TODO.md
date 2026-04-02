@@ -1,5 +1,5 @@
 ---
-next_project_number: 81
+next_project_number: 83
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -50,9 +50,9 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **81** [IMPLEMENTING] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
-   - **Plan**: [15_implementation-plan.md](specs/081_fp_witness_representation_theorem/plans/15_implementation-plan.md)
+0. **81** [RESEARCHED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
    - **Blocker**: Safe target approach fails — enriched seed inconsistency. All known same-family forward_F approaches share this blocker.
+   - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
@@ -78,6 +78,18 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 82. Close FMP TruthPreservation Sorries
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: high
+- **Dependencies**: None
+- **Created**: 2026-04-02
+
+**Description**: Close the 2 FMP TruthPreservation sorries (`mcs_all_future_closure` at line 263 and `mcs_all_past_closure` at line 281) in `Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean`. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (`Truth.lean`) uses reflexive semantics (`t ≤ s`, not `t < s`), and `temp_t_future`/`temp_t_past` ARE axioms (Axioms.lean:290,304). Proofs parallel to `mcs_box_closure` (TruthPreservation.lean:188-203). Closing these completes the FMP path giving **weak completeness of TM**.
 
 ---
 
