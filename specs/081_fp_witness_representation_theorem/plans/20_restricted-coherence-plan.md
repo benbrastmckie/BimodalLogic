@@ -99,7 +99,7 @@ Report 20 (team research, 4 teammates) provides the key architectural insight: t
 
 ---
 
-### Phase 3: Define Restricted Coherence Types [NOT STARTED]
+### Phase 3: Define Restricted Coherence Types [COMPLETED]
 
 - **Goal:** Define the restricted coherence variant of `BFMCS.temporally_coherent` that only requires forward_F/backward_P for formulas within `deferralClosure` of a root formula. This is the core type refactoring.
 

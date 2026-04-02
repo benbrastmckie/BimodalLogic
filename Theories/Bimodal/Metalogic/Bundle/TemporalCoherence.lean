@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
+import Bimodal.Syntax.SubformulaClosure
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
@@ -219,5 +220,104 @@ def BFMCS.temporally_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
     (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
+
+/-!
+## Restricted Temporal Coherence
+
+Restricted temporal coherence only requires forward_F and backward_P for formulas
+within `deferralClosure(root)`. This weaker condition suffices for the truth lemma
+when evaluating formulas in `subformulaClosure(root)`, because the G/H backward
+cases only invoke forward_F/backward_P on `neg(psi)` where `psi` is a subformula
+of root, and `neg(psi) ∈ closureWithNeg(root) ⊆ deferralClosure(root)`.
+
+### Key Insight
+
+The existing `TemporalCoherentFamily` quantifies forward_F/backward_P over ALL formulas.
+This is impossible to prove for the SuccChainFMCS because F-nesting is unbounded in
+full MCS chains. The restricted variant only quantifies over `deferralClosure(root)`,
+where F-nesting IS bounded (by `max_F_depth_in_closure`), making the coherence proof
+achievable via the restricted chain construction.
+-/
+
+/--
+Restricted temporal coherence for a BFMCS: all families have forward_F and backward_P
+properties for formulas within `deferralClosure(root)` only.
+
+This is the key weakening that makes canonical completeness provable. The truth lemma
+for evaluating `root` only needs temporal coherence for formulas in `deferralClosure(root)`.
+-/
+def BFMCS.restricted_temporally_coherent (B : BFMCS D) (root : Formula) : Prop :=
+  ∀ fam ∈ B.families,
+    (∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
+      Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
+    (∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
+      Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
+
+/--
+Full temporal coherence implies restricted temporal coherence for any root.
+-/
+theorem BFMCS.temporally_coherent_implies_restricted (B : BFMCS D) (root : Formula)
+    (h_tc : B.temporally_coherent) : B.restricted_temporally_coherent root := by
+  intro fam hfam
+  obtain ⟨h_F, h_P⟩ := h_tc fam hfam
+  exact ⟨fun t φ _ h_F_in => h_F t φ h_F_in, fun t φ _ h_P_in => h_P t φ h_P_in⟩
+
+/--
+Restricted temporal backward G: If phi in fam.mcs s for all s ≥ t, then G(phi) in fam.mcs t.
+
+This is the restricted analog of `temporal_backward_G`. It only requires forward_F for
+`neg(phi)`, which must be in `deferralClosure(root)` (supplied as a hypothesis).
+
+The proof structure is identical to `temporal_backward_G`:
+1. Assume G(phi) not in fam.mcs t
+2. By MCS maximality: neg(G(phi)) in fam.mcs t
+3. By temporal duality: F(neg phi) in fam.mcs t
+4. By restricted forward_F (using h_neg_phi_dc): exists s ≥ t with neg(phi) in fam.mcs s
+5. Contradiction with phi in fam.mcs s
+-/
+theorem restricted_temporal_backward_G
+    (fam : FMCS D) (root : Formula)
+    (h_forward_F : ∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
+      Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s)
+    (t : D) (φ : Formula)
+    (h_neg_phi_dc : Formula.neg φ ∈ deferralClosure root)
+    (h_all : ∀ s : D, t ≤ s → φ ∈ fam.mcs s) :
+    Formula.all_future φ ∈ fam.mcs t := by
+  by_contra h_not_G
+  have h_mcs := fam.is_mcs t
+  have h_neg_G : Formula.neg (Formula.all_future φ) ∈ fam.mcs t := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future φ) with h_G | h_neg
+    · exact absurd h_G h_not_G
+    · exact h_neg
+  have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
+    neg_all_future_to_some_future_neg (fam.mcs t) h_mcs φ h_neg_G
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := h_forward_F t (Formula.neg φ) h_neg_phi_dc h_F_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
+
+/--
+Restricted temporal backward H: If phi in fam.mcs s for all s ≤ t, then H(phi) in fam.mcs t.
+
+Symmetric to `restricted_temporal_backward_G`, using restricted backward_P.
+-/
+theorem restricted_temporal_backward_H
+    (fam : FMCS D) (root : Formula)
+    (h_backward_P : ∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
+      Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
+    (t : D) (φ : Formula)
+    (h_neg_phi_dc : Formula.neg φ ∈ deferralClosure root)
+    (h_all : ∀ s : D, s ≤ t → φ ∈ fam.mcs s) :
+    Formula.all_past φ ∈ fam.mcs t := by
+  by_contra h_not_H
+  have h_mcs := fam.is_mcs t
+  have h_neg_H : Formula.neg (Formula.all_past φ) ∈ fam.mcs t := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_past φ) with h_H | h_neg
+    · exact absurd h_H h_not_H
+    · exact h_neg
+  have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=
+    neg_all_past_to_some_past_neg (fam.mcs t) h_mcs φ h_neg_H
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := h_backward_P t (Formula.neg φ) h_neg_phi_dc h_P_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 end Bimodal.Metalogic.Bundle
