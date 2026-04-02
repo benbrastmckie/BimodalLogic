@@ -271,7 +271,7 @@
         30,
         31
       ],
-      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
+      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame \u211a into the unconditional dense representation theorem: valid_dense \u03c6 \u2192 \u22a2_dense \u03c6. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
       "artifacts": [
         {
           "path": "specs/018_dense_representation_theorem_completion/reports/01_dense-representation-research.md",
@@ -416,7 +416,7 @@
       "language": "lean4",
       "created": "2026-03-19T17:05:39Z",
       "last_updated": "2026-03-19T17:05:39Z",
-      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
+      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean \u2014 mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) \u2014 are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
     },
     {
       "project_number": 992,
@@ -426,7 +426,7 @@
       "created": "2026-03-18T20:24:23Z",
       "last_updated": "2026-03-18T20:24:23Z",
       "researched": "2026-03-18T20:24:23Z",
-      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with □, G, H, σ operators and interaction axioms. Lift temporal duality σ from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
+      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with \u25a1, G, H, \u03c3 operators and interaction axioms. Lift temporal duality \u03c3 from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
       "artifacts": [
         {
           "type": "research",
@@ -441,7 +441,7 @@
       "status": "researched",
       "language": "lean",
       "priority": "medium",
-      "description": "Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with dual judgments: acceptance (Γ ⊢⁺ φ) and rejection (Γ ⊢⁻ φ). Parallel implementation with equivalence bridge.",
+      "description": "Refactor unilateral proof system (\u0393 \u22a2 \u03c6) to bilateral system with dual judgments: acceptance (\u0393 \u22a2\u207a \u03c6) and rejection (\u0393 \u22a2\u207b \u03c6). Parallel implementation with equivalence bridge.",
       "created": "2026-03-03T00:00:00Z",
       "last_updated": "2026-03-16T14:45:00Z",
       "researched": "2026-03-16T14:45:00Z",
@@ -597,7 +597,7 @@
       "last_updated": "2026-03-25T18:30:47Z",
       "session_id": "sess_1774461365_0e8fc2",
       "researched": "2026-03-25T18:30:47Z",
-      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + σ-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. τ proven impossible as global algebraic construction.",
+      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + \u03c3-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. \u03c4 proven impossible as global algebraic construction.",
       "artifacts": [
         {
           "path": "specs/064_critical_path_review/reports/05_team-research.md",
@@ -742,7 +742,7 @@
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/08_team-research.md",
           "type": "research",
-          "summary": "Team research run 8: Path A deep analysis — compactness invalid, f_step mechanism, resolution ordering (4 teammates)"
+          "summary": "Team research run 8: Path A deep analysis \u2014 compactness invalid, f_step mechanism, resolution ordering (4 teammates)"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/09_definitive-approach.md",
@@ -757,12 +757,12 @@
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/11_team-research.md",
           "type": "research",
-          "summary": "Team research run 9: blocker analysis — Options A-D evaluation with 4 teammates"
+          "summary": "Team research run 9: blocker analysis \u2014 Options A-D evaluation with 4 teammates"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/12_team-research.md",
           "type": "research",
-          "summary": "Team research run 10: Lindenbaum seed unraveling — enriched seed principle, consistency gap, safe ordering (2 teammates)"
+          "summary": "Team research run 10: Lindenbaum seed unraveling \u2014 enriched seed principle, consistency gap, safe ordering (2 teammates)"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/13_blocker-analysis.md",
@@ -777,17 +777,17 @@
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/15_algebraic-temporal-shift.md",
           "type": "research",
-          "summary": "Research: algebraic temporal shift — G not automorphism, ultrafilter_F_resolution sorry-free, 4 strategies for composing forward_F"
+          "summary": "Research: algebraic temporal shift \u2014 G not automorphism, ultrafilter_F_resolution sorry-free, 4 strategies for composing forward_F"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/16_omega-tree-konig.md",
           "type": "research",
-          "summary": "Research: omega-branching tree + Konig's lemma — tree not finitely branching, perpetual deferral blocks forward_F, recommends canonical model refactoring"
+          "summary": "Research: omega-branching tree + Konig's lemma \u2014 tree not finitely branching, perpetual deferral blocks forward_F, recommends canonical model refactoring"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/17_standard-completeness-approach.md",
           "type": "research",
-          "summary": "Research: standard temporal completeness approach — cannot directly transfer to task semantics, identifies F-nesting depth argument as most viable path"
+          "summary": "Research: standard temporal completeness approach \u2014 cannot directly transfer to task semantics, identifies F-nesting depth argument as most viable path"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/18_team-research.md",
@@ -841,7 +841,7 @@
     {
       "project_number": 83,
       "project_name": "close_restricted_coherence_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 2 sorries in succ_chain_restricted_forward_F and succ_chain_restricted_backward_P (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in deferralClosure(root) within a single SuccChainFMCS. Potential approaches: (1) Show that constrained_successor f_step eventually resolves each F-obligation because deferralClosure is finite and the chain cannot defer indefinitely within a bounded set, (2) Dovetailed chain construction with fair scheduling that cycles through pending F-obligations, (3) Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra. Also clean up the 2 auxiliary sorries in RestrictedTruthLemma.lean (restricted_chain_G_step and restricted_chain_H_step) which may become unnecessary once the main sorries are closed. Does NOT include: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), or the old full-coherence sorry (bfmcs_from_mcs_temporally_coherent) which is bypassed by the restricted path.",
       "effort": "12-18 hours",
@@ -850,10 +850,10 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-02T21:13:23Z",
+      "last_updated": "2026-04-02T21:17:21Z",
       "notes": "Continues restricted coherence path from task 81. The 2 target sorries are more precisely scoped than the original bfmcs_from_mcs_temporally_coherent: restricted to deferralClosure formulas in a single chain rather than all formulas across all families.",
       "next_artifact_number": 4,
-      "session_id": "sess_1775163906_638eaf",
+      "session_id": "sess_1775164630_2b7227",
       "researched": "2026-04-02T21:13:23Z",
       "planned": "2026-04-02T20:19:49Z",
       "plan_metadata": {
