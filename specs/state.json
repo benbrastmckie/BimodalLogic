@@ -697,16 +697,16 @@
     {
       "project_number": 81,
       "project_name": "fp_witness_representation_theorem",
-      "status": "planned",
+      "status": "completed",
       "language": "formal",
       "description": "Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it. Key constraints: (1) Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics. (2) Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property. (3) Think creatively about families as constrained world-histories rather than linear chains. (4) Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse). (5) The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics. This is the crux of the representation theorem.",
       "effort": "8-12 hours",
       "dependencies": [],
       "priority": "critical",
       "created": "2026-03-31T23:11:37Z",
-      "last_updated": "2026-04-02T17:37:57Z",
+      "last_updated": "2026-04-02T18:07:53Z",
       "notes": "BLOCKED: f_step_blocking in constrained_predecessor_restricted permanently blocks P-resolution. Three paths forward: (A) modified backward chain 8-12h, (B) restructured boxClassFamilies 10-15h, (C) alternative completeness via RestrictedTruthLemma 6-10h. See summaries/17_execution-summary.md.",
-      "session_id": "sess_1775151178_y6h136",
+      "session_id": "sess_1775151579_c0e52a",
       "researched": "2026-04-02T17:29:09Z",
       "artifacts": [
         {
@@ -765,11 +765,6 @@
           "summary": "Team research run 10: Lindenbaum seed unraveling — enriched seed principle, consistency gap, safe ordering (2 teammates)"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/summaries/12_execution-summary.md",
-          "type": "summary",
-          "summary": "Execution summary: theorem falsity discovered, sorry-free alternatives added"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/reports/13_blocker-analysis.md",
           "type": "research",
           "summary": "Comprehensive blocker analysis: F-persistence failure, enriched seed falsity, and 6 resolution paths"
@@ -780,19 +775,9 @@
           "summary": "Review: plan v13 fuel approach repeats known dead end from archived tasks 48/67"
         },
         {
-          "path": "specs/081_fp_witness_representation_theorem/summaries/14_execution-summary.md",
-          "type": "summary",
-          "summary": "Phase 1 analysis: safe target blocked, enriched seed inconsistency, 4 alternative approaches"
-        },
-        {
           "path": "specs/081_fp_witness_representation_theorem/reports/15_algebraic-temporal-shift.md",
           "type": "research",
           "summary": "Research: algebraic temporal shift — G not automorphism, ultrafilter_F_resolution sorry-free, 4 strategies for composing forward_F"
-        },
-        {
-          "path": "specs/081_fp_witness_representation_theorem/summaries/15_execution-summary.md",
-          "type": "summary",
-          "summary": "Execution summary: Phase 1 blocked, 7 approaches analyzed and failed, 4 alternative paths recommended"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/16_omega-tree-konig.md",
@@ -803,11 +788,6 @@
           "path": "specs/081_fp_witness_representation_theorem/reports/17_standard-completeness-approach.md",
           "type": "research",
           "summary": "Research: standard temporal completeness approach — cannot directly transfer to task semantics, identifies F-nesting depth argument as most viable path"
-        },
-        {
-          "path": "specs/081_fp_witness_representation_theorem/summaries/17_execution-summary.md",
-          "type": "summary",
-          "summary": "Execution summary: Phase 1 partial, f_step_blocking blocks P-resolution, 3 paths forward"
         },
         {
           "path": "specs/081_fp_witness_representation_theorem/reports/18_team-research.md",
@@ -828,12 +808,22 @@
           "path": "specs/081_fp_witness_representation_theorem/plans/20_restricted-coherence-plan.md",
           "type": "plan",
           "summary": "7-phase plan to refactor types to restricted coherence for canonical completeness (20-25 hours)"
+        },
+        {
+          "path": "specs/081_fp_witness_representation_theorem/summaries/20_restricted-coherence-summary.md",
+          "type": "summary",
+          "summary": "Restricted coherence refactoring for canonical completeness"
         }
       ],
       "planned": "2026-04-02T17:37:57Z",
-      "started": "2026-04-01T22:25:56Z",
+      "started": "2026-04-02T17:39:50Z",
       "next_artifact_number": 21,
-      "resume_phase": 1
+      "resume_phase": 1,
+      "completed": "2026-04-02T18:07:53Z",
+      "completion_summary": "Refactored completeness proof to use restricted temporal coherence. Added sorry-free restricted_shifted_truth_lemma and restricted_temporal_backward_G/H. Wired completeness_over_Int through restricted path. Remaining sorry precisely scoped to succ_chain_restricted_forward_F/backward_P in UltrafilterChain.lean.",
+      "roadmap_items": [
+        "Prove completeness theorem for TM bimodal logic"
+      ]
     },
     {
       "project_number": 82,

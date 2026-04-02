@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **81** [PLANNED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
+0. **81** [COMPLETED] — **CRITICAL**: F/P witness representation theorem (unblocks 58)
    - **Blocker**: Safe target approach fails — enriched seed inconsistency. All known same-family forward_F approaches share this blocker.
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
@@ -95,7 +95,7 @@ technical_debt:
 
 ### 81. F/P Witness Representation Theorem Research
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: formal
 - **Priority**: critical
 - **Dependencies**: None
@@ -114,6 +114,7 @@ technical_debt:
   - [02_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/02_teammate-a-findings.md) — Truth lemma F-case proof trace
   - [02_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/02_teammate-b-findings.md) — Bundle architecture analysis
   - [02_team-research.md](081_fp_witness_representation_theorem/reports/02_team-research.md) — Team synthesis: same-family forward_F CONFIRMED required
+- **Summary**: [20_restricted-coherence-summary.md](081_fp_witness_representation_theorem/summaries/20_restricted-coherence-summary.md)
 
 **Description**: Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it.
 

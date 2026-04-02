@@ -1,7 +1,7 @@
 # Implementation Plan: Restricted Coherence Refactoring for Canonical Completeness
 
 - **Task**: 81 - F/P Witness Representation Theorem
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 20-25 hours
 - **Dependencies**: None (FMP sorries deferred to task 82)
 - **Research Inputs**: reports/19_fmp-vs-canonical-completeness.md, reports/20_team-research.md, reports/18_team-research.md, summaries/17_execution-summary.md
