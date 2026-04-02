@@ -68,7 +68,7 @@ In a full MCS, `F(ψ) ∈ M ⟹ F(F(ψ)) ∈ M` (via T-axiom contrapositive), ma
 
 ## Implementation Phases
 
-### Phase 1: DRM Forward/Backward Chains [NOT STARTED]
+### Phase 1: DRM Forward/Backward Chains [BLOCKED]
 
 **Goal**: Build Nat-indexed DRM chains using `simplified_restricted_successor`, prove they form Succ chains with all DRM properties propagated.
 
