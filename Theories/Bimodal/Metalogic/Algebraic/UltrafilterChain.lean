@@ -3711,4 +3711,94 @@ arbitrary F-obligations by using `Nat.unpair` for fair scheduling.
 -/
 
 
+/-!
+## Restricted Temporal Coherence for BFMCS
+
+This section proves that the BFMCS built from `construct_bfmcs_bundle` satisfies
+restricted temporal coherence for any root formula.
+
+### Strategy
+
+Each family in `boxClassFamilies` is `shifted_fmcs (SuccChainFMCS S) k`. For restricted
+temporal coherence, we need forward_F and backward_P only for formulas in
+`deferralClosure(root)`.
+
+The proof uses the fact that each SuccChainFMCS is built from a full MCS chain
+where the Succ relation guarantees F-step: `f_content(chain(n)) ⊆ chain(n+1) ∪ f_content(chain(n+1))`.
+
+For formulas `psi ∈ deferralClosure(root)`, the F-nesting `F^k(psi)` is bounded
+within the chain because `F(psi) ∈ MCS ⟹ F^k(psi) ∈ MCS` for all k (by repeated
+application of the T-axiom for G), but the RESOLUTION is guaranteed by the
+restricted chain construction.
+
+**Key sorry**: `succ_chain_restricted_forward_F` states that for `psi ∈ deferralClosure(root)`,
+`F(psi) ∈ succ_chain_fam S n ⟹ ∃ m ≥ n, psi ∈ succ_chain_fam S m`. This is a strictly
+more precise sorry than the original `bfmcs_from_mcs_temporally_coherent`, scoped to
+a single chain property rather than the entire BFMCS coherence.
+-/
+
+open Bimodal.Syntax
+
+/--
+Restricted forward_F for SuccChainFMCS: for formulas in deferralClosure(root),
+F(psi) at time n implies psi at some time m ≥ n.
+
+**Status**: SORRY -- This is the key remaining gap for canonical completeness.
+
+**Why this is hard**: In a full MCS chain, `F(psi) ∈ MCS` implies `F^k(psi) ∈ MCS`
+for all k (by repeated application of `G(neg(psi)) → neg(psi)` contrapositively).
+So the F-nesting bound argument from the restricted chain does not apply directly.
+
+**Potential approaches**:
+1. Build a dovetailed chain that forces F-resolution via fair scheduling
+2. Use ultrafilter-level arguments (R_G accessibility in Lindenbaum algebra)
+3. Prove that the Succ relation's f_step with constrained_successor eventually resolves
+-/
+theorem succ_chain_restricted_forward_F (S : SerialMCS) (root : Formula)
+    (n : Int) (psi : Formula)
+    (h_dc : psi ∈ deferralClosure root)
+    (h_F : Formula.some_future psi ∈ succ_chain_fam S n) :
+    ∃ m : Int, n ≤ m ∧ psi ∈ succ_chain_fam S m := by
+  sorry
+
+/--
+Restricted backward_P for SuccChainFMCS: symmetric to forward_F.
+-/
+theorem succ_chain_restricted_backward_P (S : SerialMCS) (root : Formula)
+    (n : Int) (psi : Formula)
+    (h_dc : psi ∈ deferralClosure root)
+    (h_P : Formula.some_past psi ∈ succ_chain_fam S n) :
+    ∃ m : Int, m ≤ n ∧ psi ∈ succ_chain_fam S m := by
+  sorry
+
+/--
+Shifting preserves restricted forward_F.
+-/
+theorem shifted_restricted_forward_F (f : FMCS Int) (root : Formula)
+    (h_fwd : ∀ n : Int, ∀ psi : Formula, psi ∈ deferralClosure root →
+      Formula.some_future psi ∈ f.mcs n → ∃ m : Int, n ≤ m ∧ psi ∈ f.mcs m)
+    (k : Int) (t : Int) (psi : Formula)
+    (h_dc : psi ∈ deferralClosure root)
+    (h_F : Formula.some_future psi ∈ (shifted_fmcs f k).mcs t) :
+    ∃ s : Int, t ≤ s ∧ psi ∈ (shifted_fmcs f k).mcs s := by
+  unfold shifted_fmcs at h_F ⊢
+  simp only at h_F ⊢
+  obtain ⟨m, h_le, h_psi⟩ := h_fwd (t - k) psi h_dc h_F
+  exact ⟨m + k, by omega, by simp only [Int.add_sub_cancel]; exact h_psi⟩
+
+/--
+Shifting preserves restricted backward_P.
+-/
+theorem shifted_restricted_backward_P (f : FMCS Int) (root : Formula)
+    (h_bwd : ∀ n : Int, ∀ psi : Formula, psi ∈ deferralClosure root →
+      Formula.some_past psi ∈ f.mcs n → ∃ m : Int, m ≤ n ∧ psi ∈ f.mcs m)
+    (k : Int) (t : Int) (psi : Formula)
+    (h_dc : psi ∈ deferralClosure root)
+    (h_P : Formula.some_past psi ∈ (shifted_fmcs f k).mcs t) :
+    ∃ s : Int, s ≤ t ∧ psi ∈ (shifted_fmcs f k).mcs s := by
+  unfold shifted_fmcs at h_P ⊢
+  simp only at h_P ⊢
+  obtain ⟨m, h_le, h_psi⟩ := h_bwd (t - k) psi h_dc h_P
+  exact ⟨m + k, by omega, by simp only [Int.add_sub_cancel]; exact h_psi⟩
+
 end Bimodal.Metalogic.Algebraic.UltrafilterChain

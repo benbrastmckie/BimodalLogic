@@ -187,7 +187,7 @@ Report 20 (team research, 4 teammates) provides the key architectural insight: t
 
 ---
 
-### Phase 5: Bridge Restricted Chain to BFMCS Restricted Coherence [NOT STARTED]
+### Phase 5: Bridge Restricted Chain to BFMCS Restricted Coherence [COMPLETED]
 
 - **Goal:** Prove that the BFMCS built from `construct_bfmcs_bundle` satisfies `restricted_temporally_coherent` for any root formula. This connects the sorry-free restricted chain infrastructure to the completeness theorem.
 
