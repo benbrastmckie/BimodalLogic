@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **83** [IMPLEMENTING] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
+0. **83** [RESEARCHED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
@@ -95,7 +95,7 @@ technical_debt:
 
 ### 83. Close Restricted Coherence Sorries
 - **Effort**: 12-18 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: 81
@@ -104,6 +104,7 @@ technical_debt:
   - [01_teammate-a-findings.md](083_close_restricted_coherence_sorries/reports/01_teammate-a-findings.md) -- Primary sorry analysis, G-lift gap identification
   - [01_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/01_teammate-b-findings.md) -- Alternative approaches and prior art
   - [01_team-research.md](083_close_restricted_coherence_sorries/reports/01_team-research.md) -- Team synthesis: restructured restricted completeness recommended
+  - [02_blocker-analysis.md](083_close_restricted_coherence_sorries/reports/02_blocker-analysis.md) -- Deep analysis of Phase 3 blocker with mathematically rigorous path forward
 - **Plan**: [01_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/01_restricted-coherence.md) -- 5-phase targeted chain construction with fair scheduling
 
 **Description**: Close the 2 sorries in `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in `deferralClosure(root)` within a single SuccChainFMCS.
