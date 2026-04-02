@@ -44,7 +44,7 @@ Close the 2 remaining sorries (`succ_chain_restricted_forward_F` and `succ_chain
 
 ## Implementation Phases
 
-### Phase 1: Blocking Relation and Well-Foundedness [NOT STARTED]
+### Phase 1: Blocking Relation and Well-Foundedness [PARTIAL]
 
 **Goal**: Define the blocking relation on `deferralClosure(root)` and prove it is well-founded using TM linearity axiom.
 
