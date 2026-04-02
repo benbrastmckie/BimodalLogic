@@ -110,6 +110,9 @@ technical_debt:
   - [03_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/03_teammate-b-findings.md) -- Alternative completeness architectures analysis
   - [03_team-research.md](083_close_restricted_coherence_sorries/reports/03_team-research.md) -- Team synthesis: compatible F-preservation with topological ordering
   - [04_f-preservation-seed.md](083_close_restricted_coherence_sorries/reports/04_f-preservation-seed.md) -- F-preservation seed blocked; all chain approaches face Lindenbaum F-kill; FMP path recommended
+  - [05_teammate-a-findings.md](083_close_restricted_coherence_sorries/reports/05_teammate-a-findings.md) -- First-principles rethinking: canonical frame path extraction, history theory Zorn
+  - [05_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/05_teammate-b-findings.md) -- Alternative constructions: Kt two-phase literature, Until/Since analysis, G/F asymmetry
+  - [05_team-research.md](083_close_restricted_coherence_sorries/reports/05_team-research.md) -- Team synthesis: canonical frame path extraction recommended; chain construction categorically wrong
 - **Plan**:
   - [01_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/01_restricted-coherence.md) -- v1: 5-phase targeted chain construction (phases 1-2 done, phase 3 blocked)
   - [02_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md) -- v2: ResolvingFMCS with enriched deferral seed for sorry-free completeness
