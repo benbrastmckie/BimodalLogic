@@ -841,7 +841,7 @@
     {
       "project_number": 83,
       "project_name": "close_restricted_coherence_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 2 sorries in succ_chain_restricted_forward_F and succ_chain_restricted_backward_P (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in deferralClosure(root) within a single SuccChainFMCS. Potential approaches: (1) Show that constrained_successor f_step eventually resolves each F-obligation because deferralClosure is finite and the chain cannot defer indefinitely within a bounded set, (2) Dovetailed chain construction with fair scheduling that cycles through pending F-obligations, (3) Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra. Also clean up the 2 auxiliary sorries in RestrictedTruthLemma.lean (restricted_chain_G_step and restricted_chain_H_step) which may become unnecessary once the main sorries are closed. Does NOT include: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), or the old full-coherence sorry (bfmcs_from_mcs_temporally_coherent) which is bypassed by the restricted path.",
       "effort": "12-18 hours",
@@ -850,22 +850,27 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-02T20:09:01Z",
+      "last_updated": "2026-04-02T20:19:49Z",
       "notes": "Continues restricted coherence path from task 81. The 2 target sorries are more precisely scoped than the original bfmcs_from_mcs_temporally_coherent: restricted to deferralClosure formulas in a single chain rather than all formulas across all families.",
       "next_artifact_number": 3,
-      "session_id": "sess_1775159027_nb4vr",
+      "session_id": "sess_1775160775_b16562",
       "researched": "2026-04-02T18:34:49Z",
-      "planned": "2026-04-02T19:03:20Z",
+      "planned": "2026-04-02T20:19:49Z",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 15,
+        "total_effort_hours": 17,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 1,
+        "plan_version": 2,
         "reports_integrated": [
           {
             "path": "reports/01_team-research.md",
             "integrated_in_plan_version": 1,
+            "integrated_date": "2026-04-02"
+          },
+          {
+            "path": "reports/02_blocker-analysis.md",
+            "integrated_in_plan_version": 2,
             "integrated_date": "2026-04-02"
           }
         ]
@@ -877,11 +882,6 @@
           "summary": "Team research with 2 teammates: sorry analysis, alternative approaches, synthesis"
         },
         {
-          "path": "specs/083_close_restricted_coherence_sorries/plans/01_restricted-coherence.md",
-          "type": "plan",
-          "summary": "5-phase plan: targeted chain construction with fair scheduling, bypassing unsound restricted infrastructure"
-        },
-        {
           "path": "specs/083_close_restricted_coherence_sorries/summaries/01_restricted-coherence-summary.md",
           "type": "summary",
           "summary": "Partial implementation summary: TargetedFMCS built (sorry-free), multi-target F-resolution blocker documented"
@@ -890,6 +890,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/02_blocker-analysis.md",
           "type": "research",
           "summary": "Deep analysis of Phase 3 blocker with mathematically rigorous path forward"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md",
+          "type": "plan",
+          "summary": "v2 plan replacing SuccChainFMCS with ResolvingFMCS using enriched deferral seed for sorry-free completeness"
         }
       ],
       "started": "2026-04-02T18:53:02Z"
