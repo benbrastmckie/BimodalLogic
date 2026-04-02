@@ -118,34 +118,67 @@ If F(φ) ∈ M₀, then φ ⊀ φ. Proof: setting χ = φ in Theorem 1 immediate
 
 Direct proof: G(φ → G(¬φ)) ∈ M₀ would give (by temp_t_future twice) φ → ¬φ derivable from g_content(M₀). Then {φ} ∪ g_content(M₀) derives ⊥, contradicting `temporal_theory_witness_consistent` (which guarantees {φ} ∪ g_content(M₀) ∪ box_theory(M₀) is consistent when F(φ) ∈ M₀).
 
-### Transitivity: FAILS
+### Transitivity: PROVED (conditional on F(χ) ∈ M₀)
 
-φ ≺ χ means G(χ → G(¬φ)) ∈ M₀ and χ ≺ ψ means G(ψ → G(¬χ)) ∈ M₀. These do NOT imply φ ≺ ψ (i.e., G(ψ → G(¬φ)) ∈ M₀).
+**Theorem (Conditional Transitivity).** If φ ≺ χ and χ ≺ ψ, and F(χ) ∈ M₀, then φ ≺ ψ.
 
-The killing of χ by ψ is vacuous with respect to φ: after ψ occurs, χ never occurs again, but the implication χ → G(¬φ) is vacuously satisfied (no χ to trigger it). This tells us nothing about whether φ can occur after ψ.
+Since we define ≺ on F-obligations (formulas with F(·) ∈ M₀), the condition F(χ) ∈ M₀ is automatic.
 
-**Conclusion**: ≺ is an irreflexive directed graph with no 2-cycles, but NOT a partial order.
+**Proof sketch.** Assume G(χ → G(¬φ)) ∈ M₀ (H1), G(ψ → G(¬χ)) ∈ M₀ (H2), F(χ) ∈ M₀ (H3). Suppose for contradiction G(ψ → G(¬φ)) ∉ M₀, so by MCS negation-completeness and classical equivalence ¬G(A → B) ↔ F(A ∧ ¬B):
 
-### General n-Cycle Acyclicity: OPEN
+> F(ψ ∧ F(φ)) ∈ M₀
 
-The 2-cycle proof uses `temp_linearity` which gives a 3-way disjunction for pairs F(φ), F(χ). For longer cycles φ₁ ≺ φ₂ ≺ ... ≺ φₙ ≺ φ₁, the argument does not directly generalize because:
+Apply `temp_linearity` to F(χ) and F(ψ ∧ F(φ)):
 
-- We would need to apply temp_linearity to each adjacent pair, but the results don't compose (no transitivity)
-- A cycle of length 3 (φ ≺ χ ≺ ψ ≺ φ) requires showing {F(φ), F(χ), F(ψ)} with all three killing relations is inconsistent. This needs a more sophisticated use of linearity — possibly a generalized linearity principle for 3+ futures.
+> F(χ) ∧ F(ψ∧F(φ)) → F(χ∧(ψ∧F(φ))) ∨ F(χ∧F(ψ∧F(φ))) ∨ F(F(χ)∧(ψ∧F(φ)))
 
-**Status**: 2-cycle acyclicity is proved. General n-cycle acyclicity remains open and may require additional machinery or a different proof strategy.
+All three disjuncts are eliminated:
+
+**Disjunct 1**: F(χ ∧ (ψ ∧ F(φ))). From H2 via temp_t_future: ψ → ¬χ ∈ M₀. So χ ∧ ψ → ⊥. G-lift from [ψ → G(¬χ)]: G(¬(χ∧(ψ∧F(φ)))) ∈ M₀. Eliminated.
+
+**Disjunct 2**: F(χ ∧ F(ψ ∧ F(φ))). From H1: χ → G(¬φ) (via temp_t_future). Key chain:
+- F(ψ∧F(φ)) → F(F(φ)) (by F(A∧B) → F(B), a theorem)
+- F(F(φ)) → F(φ) (by temp_4 contrapositively: G(¬φ) → G(G(¬φ)))
+- So F(ψ∧F(φ)) → F(φ)
+- But χ → G(¬φ) → ¬F(φ)
+- Hence χ ∧ F(ψ∧F(φ)) → ⊥
+
+G-lift from [χ → G(¬φ)] using H1: G(¬(χ ∧ F(ψ∧F(φ)))) ∈ M₀. Eliminated.
+
+**Disjunct 3**: F(F(χ) ∧ (ψ ∧ F(φ))). From H2: ψ → G(¬χ) → ¬F(χ). So F(χ) ∧ ψ → ⊥. G-lift from [ψ → G(¬χ)] using H2: G(¬(F(χ)∧(ψ∧F(φ)))) ∈ M₀. Eliminated.
+
+All disjuncts negated → contradiction with F(χ) ∧ F(ψ∧F(φ)) ∈ M₀ via temp_linearity. **QED.**
+
+**Consequence**: ≺ restricted to F-obligations of M₀ is a **strict partial order** (irreflexive + transitive).
+
+### General n-Cycle Acyclicity: PROVED (follows from strict partial order)
+
+Since ≺ is irreflexive and transitive, it is a strict partial order. Strict partial orders have no cycles of any length. This follows by induction: a cycle φ₁ ≺ φ₂ ≺ ... ≺ φₙ ≺ φ₁ gives φ₁ ≺ φ₁ by repeated transitivity, contradicting irreflexivity.
 
 ### Well-Foundedness: FAILS
 
-The killing relation is NOT well-founded. An MCS can contain:
-- F(φₙ) for all n ∈ ℕ
-- φₙ ≺ φₙ₊₁ for all n (i.e., G(φₙ₊₁ → G(¬φₙ)) ∈ M₀ for all n)
+The killing relation is NOT well-founded. An MCS can consistently contain an infinite descending chain:
 
-This gives an infinite ascending chain φ₁ ≺ φ₂ ≺ φ₃ ≺ ..., which is NOT a cycle (by 2-acyclicity applied to adjacent pairs). The consistency of such an M₀ is not obviously contradicted — each φₙ₊₁ kills φₙ but doesn't create a cycle.
+> ... ≻ φ₃ ≻ φ₂ ≻ φ₁
 
-For well-foundedness (no infinite descending chains), the dual: φ₁ ≻ φ₂ ≻ φ₃ ≻ ... means G(φₙ → G(¬φₙ₊₁)) ∈ M₀ for all n. This says each obligation must be resolved BEFORE the next. While consistent, it means the scheduling must respect this infinite chain — possible in principle (schedule φ₁ at time 1, φ₂ at time 2, etc.) but the existence of such a schedule is not guaranteed by acyclicity alone.
+where G(φₙ → G(¬φₙ₊₁)) ∈ M₀ for all n, with F(φₙ) ∈ M₀ for all n.
 
-**Conclusion**: ≺ is NOT a well-order. It is not even a well-quasi-order. The F-obligations form an arbitrary countable directed graph with no 2-cycles.
+**Proof of consistency (by compactness)**: Using countably many atoms p₁, p₂, ..., the set S = {F(pₙ) | n ≥ 1} ∪ {G(pₙ → G(¬pₙ₊₁)) | n ≥ 1} is finitely consistent: any finite subset is satisfiable on ℤ by placing pₙ at time −n. By compactness, S extends to an MCS.
+
+**Consequence**: ≺ is NOT a well-order, NOT well-founded, and NOT a well-quasi-order. However, all chains and antichains are countable (since the formula language is countable).
+
+### Summary of Order Properties
+
+| Property | Status |
+|----------|--------|
+| Irreflexivity | **Proved** |
+| No 2-cycles (antisymmetry) | **Proved** |
+| Transitivity (on F-obligations) | **Proved** |
+| **Strict partial order** | **Proved** |
+| General n-cycle acyclicity | **Proved** (from SPO) |
+| Totality | **Fails** (incomparable obligations exist) |
+| Well-foundedness | **Fails** (infinite descending chains consistent) |
+| Well-order | **Fails** |
 
 ---
 
