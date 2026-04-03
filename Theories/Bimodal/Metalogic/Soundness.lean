@@ -588,33 +588,14 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
         fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
           fun r hr1 hr2 => h_phi'_range2 r hr1 (le_trans hr2 hs1t)⟩,
         h_phi_range1⟩
-  | until_connectedness φ ψ χ =>
-    -- SOUND: φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))
-    -- Proof: Given φ(t) and (χ U ψ)(t) with witness s ≥ t, ψ(s), χ on [t,s].
-    -- Take witness s: ψ(s) ✓, (χ S φ)(s) with witness t (φ(t) ✓, χ on [t,s] ✓), χ on [t,s] ✓.
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj
-    have h_both := and_of_not_imp_not h_conj
-    obtain ⟨h_phi_t, h_until⟩ := h_both
-    obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_until
-    -- Provide witness s for χ U (ψ ∧ (χ S φ))
-    exact ⟨s, hst,
-      fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
-      fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
-  | since_connectedness φ ψ χ =>
-    -- SOUND: φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))
-    -- Mirror of until_connectedness for the past direction.
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj
-    have h_both := and_of_not_imp_not h_conj
-    obtain ⟨h_phi_t, h_since⟩ := h_both
-    obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_since
-    -- Provide witness s for χ S (ψ ∧ (χ U φ))
-    exact ⟨s, hst,
-      fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
-      fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
+  | until_connectedness _ _ _ =>
+    -- UNSOUND under half-open semantics: φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))
+    -- The Until guard [t, s) does not provide χ(s), but the Since guard (t, s] requires it.
+    sorry
+  | since_connectedness _ _ _ =>
+    -- UNSOUND under half-open semantics: φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))
+    -- Mirror of until_connectedness unsoundness.
+    sorry
   | F_until_equiv ψ =>
     -- SOUND: F(ψ) → ⊤ U ψ. Both express ∃ s ≥ t with ψ(s).
     intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
@@ -786,24 +767,12 @@ theorem soundness (Γ : Context) (φ : Formula) :
           fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
             fun r hr1 hr2 => h_phi'_range2 r hr1 (le_trans hr2 hs1t)⟩,
           h_phi_range1⟩
-    | until_connectedness φ ψ χ =>
-      simp only [Formula.and, Formula.neg, truth_at]
-      intro h_conj
-      have h_both := and_of_not_imp_not h_conj
-      obtain ⟨h_phi_t, h_until⟩ := h_both
-      obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_until
-      exact ⟨s, hst,
-        fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
-        fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
-    | since_connectedness φ ψ χ =>
-      simp only [Formula.and, Formula.neg, truth_at]
-      intro h_conj
-      have h_both := and_of_not_imp_not h_conj
-      obtain ⟨h_phi_t, h_since⟩ := h_both
-      obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_since
-      exact ⟨s, hst,
-        fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
-        fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
+    | until_connectedness _ _ _ =>
+      -- UNSOUND under half-open semantics
+      sorry
+    | since_connectedness _ _ _ =>
+      -- UNSOUND under half-open semantics
+      sorry
     | F_until_equiv ψ =>
       -- SOUND: F(ψ) → ⊤ U ψ. Both express ∃ s ≥ t with ψ(s).
       simp only [Formula.some_future, Formula.neg, truth_at]

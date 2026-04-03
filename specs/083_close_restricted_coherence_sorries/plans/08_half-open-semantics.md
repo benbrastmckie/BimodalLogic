@@ -51,7 +51,7 @@ From report 08 (team research, 2 teammates):
 
 ## Implementation Phases
 
-### Phase 1: Half-Open Semantic Change [NOT STARTED]
+### Phase 1: Half-Open Semantic Change [COMPLETED]
 
 - **Goal:** Change Until/Since truth evaluation from closed to half-open interval for the phi guard. Verify the build compiles (allowing new sorry mismatches).
 
