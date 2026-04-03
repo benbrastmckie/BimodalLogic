@@ -850,8 +850,8 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T20:25:27Z",
-      "notes": "Phases 1,6 complete. Build passes (0 errors). Phases 2-5 structurally blocked: X-content propagation gap under strict semantics. 61 sorries remain across 6 files on canonical completeness path.",
+      "last_updated": "2026-04-03T21:25:50Z",
+      "notes": "Phases 1,2,3 complete, 4,6 partial, 5 blocked. 7 sorries closed. DovetailedChain Until persistence blocked by X/F-content G-liftability gap.",
       "next_artifact_number": 14,
       "session_id": "sess_1775247889_ef28eb",
       "researched": "2026-04-03T20:06:01Z",
@@ -996,10 +996,15 @@
           "path": "specs/083_close_restricted_coherence_sorries/plans/13_representation-theorem.md",
           "type": "plan",
           "summary": "v13: 6-phase plan for sorry-free canonical completeness — representation theorem path, dead code cleanup, soundness proofs"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/summaries/13_implementation-summary.md",
+          "type": "summary",
+          "summary": "Team implementation partial: 7 sorries closed, DovetailedChain blocked"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
-      "resume_phase": 2
+      "resume_phase": 4
     }
   ],
   "next_project_number": 84,
