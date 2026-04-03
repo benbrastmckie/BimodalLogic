@@ -850,8 +850,8 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T18:43:17Z",
-      "notes": "Phases 1-3 complete (half-open semantics, soundness, forward Until). Phase 4 blocked: backward Until direction needs G(phi U psi) derivation past witness point.",
+      "last_updated": "2026-04-03T19:51:18Z",
+      "notes": "Phases 1,6 complete. Build passes (0 errors). Phases 2-5 structurally blocked: X-content propagation gap under strict semantics. 61 sorries remain across 6 files on canonical completeness path.",
       "next_artifact_number": 13,
       "session_id": "sess_1743710400_impl83",
       "researched": "2026-04-03T18:29:33Z",
@@ -980,9 +980,15 @@
           "path": "specs/083_close_restricted_coherence_sorries/plans/12_g-content-resolution.md",
           "type": "plan",
           "summary": "v9: 6-phase plan covering G(a)->X(a) derived theorem, seed enrichment, 3-tier sorry resolution, and integration build"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/summaries/12_g-content-resolution-summary.md",
+          "type": "summary",
+          "summary": "Partial: Phase 1,6 complete, build passes, Phases 2-5 blocked on X-content propagation"
         }
       ],
-      "started": "2026-04-02T22:21:47Z"
+      "started": "2026-04-02T22:21:47Z",
+      "resume_phase": 2
     }
   ],
   "next_project_number": 84,
