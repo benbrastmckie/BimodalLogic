@@ -850,11 +850,11 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T15:12:52Z",
+      "last_updated": "2026-04-03T15:25:38Z",
       "notes": "Phases 1-3 complete (half-open semantics, soundness, forward Until). Phase 4 blocked: backward Until direction needs G(phi U psi) derivation past witness point.",
-      "next_artifact_number": 11,
-      "session_id": "sess_1775228409_4455da",
-      "researched": "2026-04-03T15:12:52Z",
+      "next_artifact_number": 12,
+      "session_id": "sess_1775229537_115bf2",
+      "researched": "2026-04-03T15:25:38Z",
       "planned": "2026-04-03T14:28:42Z",
       "plan_metadata": {
         "phases": 7,
@@ -965,6 +965,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/10_team-research.md",
           "type": "research",
           "summary": "Team research with 3 teammates: IRR-rules dissolved by task semantics, complete axiom system (33 axioms), root cause re-analysis confirms X-based backward induction resolves truth lemma blocker"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/11_team-research.md",
+          "type": "research",
+          "summary": "Team research: fully strict semantics recommended — half-open impossible, partial strict breaks F-U equivalence"
         }
       ],
       "started": "2026-04-02T22:21:47Z"
