@@ -850,11 +850,11 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-02T23:53:23Z",
+      "last_updated": "2026-04-03T00:23:28Z",
       "notes": "Continues restricted coherence path from task 81. The 2 target sorries are more precisely scoped than the original bfmcs_from_mcs_temporally_coherent: restricted to deferralClosure formulas in a single chain rather than all formulas across all families.",
-      "next_artifact_number": 6,
-      "session_id": "sess_1775196120_r5math",
-      "researched": "2026-04-02T23:53:23Z",
+      "next_artifact_number": 7,
+      "session_id": "sess_1775197800_us6lean",
+      "researched": "2026-04-03T00:23:28Z",
       "planned": "2026-04-02T22:19:13Z",
       "plan_metadata": {
         "phases": 4,
@@ -945,6 +945,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/05_team-research.md",
           "type": "research",
           "summary": "Team research round 5: first-principles rethinking via Task Semantics — canonical frame path extraction recommended"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/06_until-since-enrichment.md",
+          "type": "research",
+          "summary": "Until/Since enrichment: Burgess-Xu axioms, dovetailed chain with U-Induction, ~20 files ~3500 new lines, 82% survival"
         }
       ],
       "started": "2026-04-02T22:21:47Z"

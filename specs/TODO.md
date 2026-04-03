@@ -113,6 +113,7 @@ technical_debt:
   - [05_teammate-a-findings.md](083_close_restricted_coherence_sorries/reports/05_teammate-a-findings.md) -- First-principles rethinking: canonical frame path extraction, history theory Zorn
   - [05_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/05_teammate-b-findings.md) -- Alternative constructions: Kt two-phase literature, Until/Since analysis, G/F asymmetry
   - [05_team-research.md](083_close_restricted_coherence_sorries/reports/05_team-research.md) -- Team synthesis: canonical frame path extraction recommended; chain construction categorically wrong
+  - [06_until-since-enrichment.md](083_close_restricted_coherence_sorries/reports/06_until-since-enrichment.md) -- Until/Since enrichment: Burgess-Xu axioms, dovetailed chain, U-Induction kills perpetual deferral, 82% survival
 - **Plan**:
   - [01_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/01_restricted-coherence.md) -- v1: 5-phase targeted chain construction (phases 1-2 done, phase 3 blocked)
   - [02_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md) -- v2: ResolvingFMCS with enriched deferral seed for sorry-free completeness
