@@ -850,11 +850,11 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T15:25:38Z",
+      "last_updated": "2026-04-03T15:30:52Z",
       "notes": "Phases 1-3 complete (half-open semantics, soundness, forward Until). Phase 4 blocked: backward Until direction needs G(phi U psi) derivation past witness point.",
       "next_artifact_number": 12,
       "session_id": "sess_1775229537_115bf2",
-      "researched": "2026-04-03T15:25:38Z",
+      "researched": "2026-04-03T15:30:52Z",
       "planned": "2026-04-03T14:28:42Z",
       "plan_metadata": {
         "phases": 7,
@@ -970,6 +970,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/11_team-research.md",
           "type": "research",
           "summary": "Team research: fully strict semantics recommended — half-open impossible, partial strict breaks F-U equivalence"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/11_strict-refactor-specification.md",
+          "type": "research",
+          "summary": "Full clean-break refactor spec: 33 axioms with Lean signatures, 20-file change catalog, backward truth lemma via contrapositive, 67+ T-axiom alternatives"
         }
       ],
       "started": "2026-04-02T22:21:47Z"
