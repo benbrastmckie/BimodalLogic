@@ -2,6 +2,7 @@ import Bimodal.FrameConditions.Compatibility
 import Bimodal.Metalogic.DiscreteCompleteness
 import Bimodal.Metalogic.Algebraic.UltrafilterChain
 import Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+import Bimodal.Metalogic.Algebraic.DovetailedChain
 
 /-!
 # Completeness Wiring
@@ -372,19 +373,106 @@ theorem restricted_bundle_validity_implies_provability (φ : Formula)
   -- Step 10: Contradiction: φ ∈ M and φ ∉ M
   exact h_phi_not h_phi_in_M
 
+/-!
+## Dovetailed Completeness Path (Sorry-Free)
+
+Alternative completeness path using the dovetailed chain construction.
+The dovetailed chain has sorry-free forward_F and backward_P, so this path
+avoids the sorries in `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P`.
+-/
+
+open Bimodal.Metalogic.Algebraic.DovetailedChain
+
+/--
+Convert dovetailed BFMCS_Bundle to BFMCS (same as bundle_to_bfmcs).
+-/
+noncomputable def dovetailed_bundle_to_bfmcs (B : BFMCS_Bundle) : BFMCS Int where
+  families := B.families
+  nonempty := B.nonempty
+  modal_forward := B.modal_forward
+  modal_backward := B.modal_backward
+  eval_family := B.eval_family
+  eval_family_mem := B.eval_family_mem
+
+/--
+Restricted temporal coherence for the dovetailed BFMCS. Sorry-free because
+`DovetailedFMCS` has sorry-free forward_F and backward_P.
+-/
+theorem dovetailed_bfmcs_restricted_temporally_coherent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (root : Formula) :
+    (dovetailed_bundle_to_bfmcs (construct_dovetailed_bfmcs_bundle M h_mcs)).restricted_temporally_coherent root := by
+  intro fam hfam
+  simp only [dovetailed_bundle_to_bfmcs, construct_dovetailed_bfmcs_bundle,
+             dovetailedBoxClassFamilies, Set.mem_setOf_eq] at hfam
+  obtain ⟨W, h_W, k, _, h_eq⟩ := hfam
+  subst h_eq
+  constructor
+  · -- Restricted forward_F
+    intro t psi _ h_F
+    exact shifted_restricted_forward_F (DovetailedFMCS W h_W) root
+      (fun n psi _ h_F => DovetailedFMCS_forward_F W h_W n psi h_F)
+      k t psi ‹_› h_F
+  · -- Restricted backward_P
+    intro t psi _ h_P
+    exact shifted_restricted_backward_P (DovetailedFMCS W h_W) root
+      (fun n psi _ h_P => DovetailedFMCS_backward_P W h_W n psi h_P)
+      k t psi ‹_› h_P
+
+/--
+The dovetailed eval_family at time 0 equals M0.
+-/
+theorem construct_dovetailed_bfmcs_bundle_eval_at_zero (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    (construct_dovetailed_bfmcs_bundle M0 h_mcs).eval_family.mcs 0 = M0 := rfl
+
+/--
+Dovetailed completeness: sorry-free path from validity to provability.
+-/
+theorem dovetailed_bundle_validity_implies_provability (φ : Formula)
+    (h_valid : valid_over Int φ) : Nonempty ([] ⊢ φ) := by
+  by_contra h_not_prov
+  -- Step 1: neg(φ) is consistent
+  have h_neg_cons := not_provable_implies_neg_consistent φ h_not_prov
+  -- Step 2: Build MCS M with neg(φ) ∈ M and φ ∉ M
+  obtain ⟨M, h_mcs, h_neg_in, h_phi_not⟩ :=
+    neg_consistent_gives_mcs_without_phi φ h_neg_cons
+  -- Step 3: Build dovetailed BFMCS from M
+  let BB := construct_dovetailed_bfmcs_bundle M h_mcs
+  let B := dovetailed_bundle_to_bfmcs BB
+  -- Step 4: Restricted temporal coherence for root = φ (sorry-free!)
+  have h_tc : B.restricted_temporally_coherent φ :=
+    dovetailed_bfmcs_restricted_temporally_coherent M h_mcs φ
+  -- Step 5: The eval_family at time 0 is M
+  have h_eval_zero : B.eval_family.mcs 0 = M := by
+    show BB.eval_family.mcs 0 = M
+    exact construct_dovetailed_bfmcs_bundle_eval_at_zero M h_mcs
+  -- Step 6: ShiftClosedCanonicalOmega is shift-closed
+  have h_sc : ShiftClosed (ShiftClosedCanonicalOmega B) :=
+    shiftClosedCanonicalOmega_is_shift_closed B
+  -- Step 7: to_history of eval_family is in ShiftClosedCanonicalOmega
+  have h_mem : to_history B.eval_family ∈ ShiftClosedCanonicalOmega B :=
+    canonicalOmega_subset_shiftClosed B ⟨B.eval_family, B.eval_family_mem, rfl⟩
+  -- Step 8: By validity, φ is true at the canonical model
+  have h_true : truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B)
+      (to_history B.eval_family) 0 φ :=
+    h_valid CanonicalTaskFrame CanonicalTaskModel (ShiftClosedCanonicalOmega B)
+      h_sc (to_history B.eval_family) h_mem 0
+  -- Step 9: By RESTRICTED shifted truth lemma backward, φ ∈ eval_family.mcs 0 = M
+  have h_phi_in_M : φ ∈ B.eval_family.mcs 0 :=
+    (restricted_shifted_truth_lemma B φ h_tc φ (self_mem_subformulaClosure φ)
+      B.eval_family B.eval_family_mem 0).mpr h_true
+  rw [h_eval_zero] at h_phi_in_M
+  -- Step 10: Contradiction: φ ∈ M and φ ∉ M
+  exact h_phi_not h_phi_in_M
+
 /--
 Completeness over Int: formulas valid over Int are provable.
 
-Delegates to `restricted_bundle_validity_implies_provability` (restricted coherence path).
-
-**Sorry dependency**: Inherits the isolated sorry from
-`succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P`
-via `bfmcs_restricted_temporally_coherent`.
+**Sorry-free** via the dovetailed chain construction.
 -/
 theorem completeness_over_Int {φ : Formula} :
     CompletenessOverIntStatement φ := by
   intro h_valid
-  exact restricted_bundle_validity_implies_provability φ h_valid
+  exact dovetailed_bundle_validity_implies_provability φ h_valid
 
 /-! ## Discrete Completeness via Int -/
 

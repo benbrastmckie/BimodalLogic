@@ -299,7 +299,7 @@ From plan v4 (prior attempt):
 
 ---
 
-### Phase 7: Completeness Rewiring [NOT STARTED]
+### Phase 7: Completeness Rewiring [PARTIAL]
 
 **Goal**: Wire the dovetailed chain into the completeness path, close BOTH sorries, achieve sorry-free `completeness_over_Int`.
 

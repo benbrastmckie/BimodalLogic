@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Algebraic.UltrafilterChain
+import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.WitnessSeed
@@ -44,9 +45,16 @@ Uses `Nat.unpair` and `Denumerable Formula` for fair enumeration:
 
 namespace Bimodal.Metalogic.Algebraic.DovetailedChain
 
+open Classical
 open Bimodal.Syntax Bimodal.ProofSystem
 open Bimodal.Metalogic.Algebraic.UltrafilterChain
 open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
+
+/-- Helper: Int.negSucc is monotone-reversing on ≤. -/
+private theorem negSucc_le_negSucc_of_le {a b : Nat} (h : a ≤ b) :
+    Int.negSucc b ≤ Int.negSucc a :=
+  Int.neg_le_neg (Int.ofNat_le.mpr (Nat.succ_le_succ h))
 open Bimodal.Metalogic.Bundle
 
 /-!
@@ -137,27 +145,31 @@ theorem forward_step_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M
 The scheduling function: at step n, target formula `Denumerable.ofNat Formula j`
 where `(i, j) = Nat.unpair n`. We only care about j (the formula index) at each step.
 -/
-def schedule_formula (n : Nat) : Formula :=
+noncomputable def schedule_formula (n : Nat) : Formula :=
   Denumerable.ofNat Formula (Nat.unpair n).2
 
-/--
-The forward dovetailed chain: Nat-indexed MCS chain from base M_0.
-At each step, tries to resolve the scheduled formula's F-obligation.
--/
-noncomputable def forward_dovetailed (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
-    Nat → Set Formula
-  | 0 => M_0
+/-- The forward dovetailed chain with MCS proof, built simultaneously. -/
+noncomputable def forward_dovetailed_with_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
+    (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
+  | 0 => ⟨M_0, h_mcs_0⟩
   | n + 1 =>
-    let M_n := forward_dovetailed M_0 h_mcs_0 n
-    forward_step M_n (forward_dovetailed_mcs M_0 h_mcs_0 n) (schedule_formula n)
+    let ⟨M_n, h_n⟩ := forward_dovetailed_with_mcs M_0 h_mcs_0 n
+    ⟨forward_step M_n h_n (schedule_formula n), forward_step_mcs M_n h_n (schedule_formula n)⟩
 
-/--
-Each point in the forward dovetailed chain is an MCS.
--/
-theorem forward_dovetailed_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
-    ∀ n : Nat, SetMaximalConsistent (forward_dovetailed M_0 h_mcs_0 n)
-  | 0 => h_mcs_0
-  | n + 1 => forward_step_mcs _ (forward_dovetailed_mcs M_0 h_mcs_0 n) _
+/-- The forward dovetailed chain. -/
+noncomputable def forward_dovetailed (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) : Set Formula := (forward_dovetailed_with_mcs M_0 h_mcs_0 n).val
+
+/-- Each point in the forward dovetailed chain is an MCS. -/
+theorem forward_dovetailed_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) : SetMaximalConsistent (forward_dovetailed M_0 h_mcs_0 n) :=
+  (forward_dovetailed_with_mcs M_0 h_mcs_0 n).property
+
+/-- Forward dovetailed at step n+1 unfolds to forward_step. -/
+@[simp] theorem forward_dovetailed_succ (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) (n : Nat) :
+    forward_dovetailed M_0 h_mcs_0 (n + 1) =
+    forward_step (forward_dovetailed M_0 h_mcs_0 n) (forward_dovetailed_mcs M_0 h_mcs_0 n)
+      (schedule_formula n) := rfl
 
 /--
 Forward dovetailed chain starts at M_0.
@@ -171,10 +183,8 @@ G_theory propagation: G(a) ∈ chain(n) → G(a) ∈ chain(n+1).
 theorem forward_dovetailed_G_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (n : Nat) (a : Formula) :
     Formula.all_future a ∈ forward_dovetailed M_0 h_mcs_0 n →
-    Formula.all_future a ∈ forward_dovetailed M_0 h_mcs_0 (n + 1) := by
-  intro h
-  show Formula.all_future a ∈ forward_step _ _ _
-  exact forward_step_G_agree _ (forward_dovetailed_mcs M_0 h_mcs_0 n) _ a h
+    Formula.all_future a ∈ forward_dovetailed M_0 h_mcs_0 (n + 1) :=
+  forward_step_G_agree _ (forward_dovetailed_mcs M_0 h_mcs_0 n) _ a
 
 /--
 G_theory propagation through multiple steps.
@@ -196,9 +206,8 @@ g_content propagation: g_content(chain(n)) ⊆ chain(n+1).
 -/
 theorem forward_dovetailed_g_content_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (n : Nat) : g_content (forward_dovetailed M_0 h_mcs_0 n) ⊆
-    forward_dovetailed M_0 h_mcs_0 (n + 1) := by
-  show g_content _ ⊆ forward_step _ _ _
-  exact forward_step_g_content _ (forward_dovetailed_mcs M_0 h_mcs_0 n) _
+    forward_dovetailed M_0 h_mcs_0 (n + 1) :=
+  forward_step_g_content _ (forward_dovetailed_mcs M_0 h_mcs_0 n) _
 
 /--
 Forward G coherence: G(phi) at time n implies phi at all times m ≥ n.
@@ -274,6 +283,18 @@ theorem forward_dovetailed_backward_H (M_0 : Set Formula) (h_mcs_0 : SetMaximalC
     · have ⟨_, h_Hphi_m⟩ := forward_dovetailed_backward_H_step M_0 h_mcs_0 m phi h_H
       exact ih (Nat.lt_succ_iff.mp h_lt) h_Hphi_m
 
+/-- H(phi) propagation through the forward chain: H(phi) at step m implies H(phi) at step n for n ≤ m. -/
+theorem forward_dovetailed_H_propagate (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n m : Nat) (h_le : n ≤ m) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ forward_dovetailed M_0 h_mcs_0 m) :
+    Formula.all_past phi ∈ forward_dovetailed M_0 h_mcs_0 n := by
+  induction m with
+  | zero => exact Nat.le_zero.mp h_le ▸ h_H
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact h_H
+    · exact ih (Nat.lt_succ_iff.mp h_lt) (forward_dovetailed_backward_H_step M_0 h_mcs_0 m phi h_H).2
+
 /--
 box_class_agree propagation through the forward chain.
 -/
@@ -285,7 +306,7 @@ theorem forward_dovetailed_box_agree (M_0 : Set Formula) (h_mcs_0 : SetMaximalCo
     exact box_class_agree_trans ih
       (forward_step_box_agree _ (forward_dovetailed_mcs M_0 h_mcs_0 n) _)
 
-/--
+/-
 Forward F resolution: for any phi, if F(phi) ∈ chain(t), there exists s ≥ t
 with phi ∈ chain(s).
 
@@ -606,7 +627,7 @@ theorem forward_dovetailed_until_propagate (M_0 : Set Formula) (h_mcs_0 : SetMax
     · have h_le_n := Nat.lt_succ_iff.mp h_lt
       have h_U_n := ih h_le_n (fun m hm1 hm2 => h_not_psi m hm1 (Nat.le_succ_of_le hm2))
       exact forward_dovetailed_until_persists M_0 h_mcs_0 n psi h_U_n
-        (h_not_psi n h_le_n le_rfl)
+        (h_not_psi n h_le_n (Nat.le_succ n))
 
 /--
 Fair scheduling surjectivity: for any formula psi, there exist infinitely many
@@ -621,11 +642,10 @@ theorem schedule_formula_hits (t : Nat) (psi : Formula) :
   -- Let n = Nat.pair t (Encodable.encode psi)
   -- Then (Nat.unpair n).2 = Encodable.encode psi
   -- And t <= Nat.pair t k by Nat.left_le_pair
-  use Nat.pair t (Denumerable.encode psi)
+  use Nat.pair t (Encodable.encode psi)
   constructor
-  · exact Nat.left_le_pair t (Denumerable.encode psi)
+  · exact Nat.left_le_pair t (Encodable.encode psi)
   · simp [schedule_formula]
-    exact Denumerable.ofNat_encode psi
 
 /--
 Forward F resolution for the dovetailed chain.
@@ -741,27 +761,311 @@ theorem backward_step_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent 
     (theorem_in_mcs (backward_step_mcs M h_mcs phi)
       (DerivationTree.axiom _ _ (Axiom.temp_t_past a))) h_Ha_W
 
-/-- The backward dovetailed chain. -/
-noncomputable def backward_dovetailed (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
-    Nat → Set Formula
-  | 0 => M_0
+/-- The backward dovetailed chain with MCS proof, built simultaneously. -/
+noncomputable def backward_dovetailed_with_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
+    (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
+  | 0 => ⟨M_0, h_mcs_0⟩
   | n + 1 =>
-    let M_n := backward_dovetailed M_0 h_mcs_0 n
-    backward_step M_n (backward_dovetailed_mcs M_0 h_mcs_0 n) (schedule_formula n)
+    let ⟨M_n, h_n⟩ := backward_dovetailed_with_mcs M_0 h_mcs_0 n
+    ⟨backward_step M_n h_n (schedule_formula n), backward_step_mcs M_n h_n (schedule_formula n)⟩
+
+/-- The backward dovetailed chain. -/
+noncomputable def backward_dovetailed (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) : Set Formula := (backward_dovetailed_with_mcs M_0 h_mcs_0 n).val
 
 /-- Each point in the backward dovetailed chain is an MCS. -/
-theorem backward_dovetailed_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
-    ∀ n : Nat, SetMaximalConsistent (backward_dovetailed M_0 h_mcs_0 n)
-  | 0 => h_mcs_0
-  | n + 1 => backward_step_mcs _ (backward_dovetailed_mcs M_0 h_mcs_0 n) _
+theorem backward_dovetailed_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) : SetMaximalConsistent (backward_dovetailed M_0 h_mcs_0 n) :=
+  (backward_dovetailed_with_mcs M_0 h_mcs_0 n).property
 
-/-- Backward P resolution. -/
+/-- Backward dovetailed at step n+1 unfolds to backward_step. -/
+@[simp] theorem backward_dovetailed_succ (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) (n : Nat) :
+    backward_dovetailed M_0 h_mcs_0 (n + 1) =
+    backward_step (backward_dovetailed M_0 h_mcs_0 n) (backward_dovetailed_mcs M_0 h_mcs_0 n)
+      (schedule_formula n) := rfl
+
+/-- The backward step preserves box_class_agree. -/
+theorem backward_step_box_agree (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) : box_class_agree M (backward_step M h_mcs phi) := by
+  unfold backward_step
+  split
+  · exact (past_theory_witness_exists M h_mcs phi ‹_›).choose_spec.2.2.2
+  · exact (past_theory_witness_exists M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_P_top h_mcs)).choose_spec.2.2.2
+
+/-- box_class_agree propagation through the backward chain. -/
+theorem backward_dovetailed_box_agree (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) : box_class_agree M_0 (backward_dovetailed M_0 h_mcs_0 n) := by
+  induction n with
+  | zero => exact box_class_agree_refl M_0
+  | succ n ih =>
+    exact box_class_agree_trans ih
+      (backward_step_box_agree _ (backward_dovetailed_mcs M_0 h_mcs_0 n) _)
+
+/-- H_theory propagation: H(a) ∈ chain(n) → H(a) ∈ chain(n+1). -/
+theorem backward_dovetailed_H_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) (a : Formula) :
+    Formula.all_past a ∈ backward_dovetailed M_0 h_mcs_0 n →
+    Formula.all_past a ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) :=
+  backward_step_H_agree _ (backward_dovetailed_mcs M_0 h_mcs_0 n) _ a
+
+/-- H_theory propagation through multiple steps. -/
+theorem backward_dovetailed_H_propagate (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n m : Nat) (h_le : n ≤ m) (a : Formula)
+    (h_Ha : Formula.all_past a ∈ backward_dovetailed M_0 h_mcs_0 n) :
+    Formula.all_past a ∈ backward_dovetailed M_0 h_mcs_0 m := by
+  induction m with
+  | zero => exact Nat.le_zero.mp h_le ▸ h_Ha
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact h_Ha
+    · exact backward_dovetailed_H_step M_0 h_mcs_0 m a
+        (ih (Nat.lt_succ_iff.mp h_lt))
+
+/-- h_content propagation: h_content(chain(n)) ⊆ chain(n+1). -/
+theorem backward_dovetailed_h_content_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) : h_content (backward_dovetailed M_0 h_mcs_0 n) ⊆
+    backward_dovetailed M_0 h_mcs_0 (n + 1) :=
+  backward_step_h_content _ (backward_dovetailed_mcs M_0 h_mcs_0 n) _
+
+/-- g_content reverse: g_content(chain(n+1)) ⊆ chain(n), by duality. -/
+theorem backward_dovetailed_g_content_reverse (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) : g_content (backward_dovetailed M_0 h_mcs_0 (n + 1)) ⊆
+    backward_dovetailed M_0 h_mcs_0 n :=
+  h_content_subset_implies_g_content_reverse
+    (backward_dovetailed M_0 h_mcs_0 n)
+    (backward_dovetailed M_0 h_mcs_0 (n + 1))
+    (backward_dovetailed_mcs M_0 h_mcs_0 n)
+    (backward_dovetailed_mcs M_0 h_mcs_0 (n + 1))
+    (backward_dovetailed_h_content_step M_0 h_mcs_0 n)
+
+/-- Forward G coherence through the backward chain: G(phi) at step m implies phi at step n
+    for n ≤ m. Since the backward chain goes backward in time, "forward G" means
+    G(phi) at time -m implies phi at time -n for -n ≥ -m, i.e., n ≤ m.
+
+    Proof: G(phi) at chain(m) means phi ∈ g_content(chain(m)) ⊆ chain(m-1) by duality,
+    and G(phi) propagates backward through g_content reverse. -/
+theorem backward_dovetailed_G_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ backward_dovetailed M_0 h_mcs_0 (n + 1)) :
+    phi ∈ backward_dovetailed M_0 h_mcs_0 n ∧
+    Formula.all_future phi ∈ backward_dovetailed M_0 h_mcs_0 n := by
+  have h_mcs_n1 := backward_dovetailed_mcs M_0 h_mcs_0 (n + 1)
+  have h_mcs_n := backward_dovetailed_mcs M_0 h_mcs_0 n
+  -- phi ∈ g_content(chain(n+1)) since G(phi) ∈ chain(n+1)
+  have h_phi_g : phi ∈ g_content (backward_dovetailed M_0 h_mcs_0 (n + 1)) := h_G
+  -- By duality: g_content(chain(n+1)) ⊆ chain(n)
+  have h_phi_n := backward_dovetailed_g_content_reverse M_0 h_mcs_0 n h_phi_g
+  -- G(G(phi)) ∈ chain(n+1) by temp_4 for G
+  have h_GG : Formula.all_future (Formula.all_future phi) ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) :=
+    SetMaximalConsistent.implication_property h_mcs_n1
+      (theorem_in_mcs h_mcs_n1 (Bimodal.ProofSystem.DerivationTree.axiom _ _ (Axiom.temp_4 phi))) h_G
+  -- G(phi) ∈ g_content(chain(n+1))
+  have h_Gphi_g : Formula.all_future phi ∈ g_content (backward_dovetailed M_0 h_mcs_0 (n + 1)) := h_GG
+  -- G(phi) ∈ chain(n) by duality
+  have h_Gphi_n := backward_dovetailed_g_content_reverse M_0 h_mcs_0 n h_Gphi_g
+  exact ⟨h_phi_n, h_Gphi_n⟩
+
+/-- G(phi) propagation through the backward chain: G(phi) at step m implies G(phi) at step n for n ≤ m. -/
+theorem backward_dovetailed_G_propagate (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n m : Nat) (h_le : n ≤ m) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ backward_dovetailed M_0 h_mcs_0 m) :
+    Formula.all_future phi ∈ backward_dovetailed M_0 h_mcs_0 n := by
+  induction m with
+  | zero => exact Nat.le_zero.mp h_le ▸ h_G
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact h_G
+    · exact ih (Nat.lt_succ_iff.mp h_lt) (backward_dovetailed_G_step M_0 h_mcs_0 m phi h_G).2
+
+/-- Forward G coherence through multiple backward steps. -/
+theorem backward_dovetailed_forward_G (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n m : Nat) (h_le : n ≤ m) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ backward_dovetailed M_0 h_mcs_0 m) :
+    phi ∈ backward_dovetailed M_0 h_mcs_0 n := by
+  induction m with
+  | zero =>
+    have := Nat.le_zero.mp h_le; subst this
+    exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 0)
+      (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 0)
+        (DerivationTree.axiom _ _ (Axiom.temp_t_future phi))) h_G
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
+        (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
+          (DerivationTree.axiom _ _ (Axiom.temp_t_future phi))) h_G
+    · have ⟨_, h_Gphi_m⟩ := backward_dovetailed_G_step M_0 h_mcs_0 m phi h_G
+      exact ih (Nat.lt_succ_iff.mp h_lt) h_Gphi_m
+
+/-- Backward H through the backward chain: H(phi) at step n implies phi at step m for m ≥ n.
+    Since the backward chain goes backward in time, this means
+    H(phi) at time -n implies phi at time -m for -m ≤ -n. -/
+theorem backward_dovetailed_backward_H (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n m : Nat) (h_le : n ≤ m) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ backward_dovetailed M_0 h_mcs_0 n) :
+    phi ∈ backward_dovetailed M_0 h_mcs_0 m := by
+  induction m with
+  | zero =>
+    have := Nat.le_zero.mp h_le; subst this
+    exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 0)
+      (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 0)
+        (DerivationTree.axiom _ _ (Axiom.temp_t_past phi))) h_H
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
+        (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
+          (DerivationTree.axiom _ _ (Axiom.temp_t_past phi))) h_H
+    · have h_H_m := backward_dovetailed_H_propagate M_0 h_mcs_0 n m (Nat.lt_succ_iff.mp h_lt) phi h_H
+      exact backward_dovetailed_h_content_step M_0 h_mcs_0 m h_H_m
+
+/--
+P(psi) in MCS implies (top S psi) in MCS, via the P_since_equiv axiom.
+-/
+theorem P_implies_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
+    Formula.snce (Formula.neg Formula.bot) psi ∈ M := by
+  have h_ax : [] ⊢ (Formula.some_past psi).imp (Formula.snce (Formula.neg Formula.bot) psi) :=
+    DerivationTree.axiom [] _ (Axiom.P_since_equiv psi)
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_P
+
+/--
+Past necessitation: if `⊢ φ` then `⊢ H(φ)`.
+
+Derived from temporal_duality and temporal_necessitation:
+1. `⊢ φ` → `⊢ swap_temporal(φ)` (by temporal_duality)
+2. `⊢ swap_temporal(φ)` → `⊢ G(swap_temporal(φ))` (by temporal_necessitation)
+3. `⊢ G(swap_temporal(φ))` → `⊢ swap_temporal(G(swap_temporal(φ)))` = `⊢ H(swap_temporal(swap_temporal(φ)))` (by temporal_duality)
+4. `swap_temporal(swap_temporal(φ)) = φ` (by involution)
+-/
+private noncomputable def past_nec (φ : Formula) (d : DerivationTree [] φ) :
+    DerivationTree [] (Formula.all_past φ) :=
+  let d1 := DerivationTree.temporal_duality φ d
+  let d2 := DerivationTree.temporal_necessitation _ d1
+  let d3 := DerivationTree.temporal_duality _ d2
+  -- d3 : ⊢ (all_future (swap_temporal φ)).swap_temporal = all_past (swap_temporal (swap_temporal φ))
+  -- Need to rewrite swap_temporal(swap_temporal(φ)) to φ
+  have h_eq : Formula.all_past (φ.swap_temporal.swap_temporal) = Formula.all_past φ := by
+    rw [Formula.swap_temporal_involution]
+  h_eq ▸ d3
+
+/-- Derivation: `(top ∧ ⊥) → H(⊥)` (ex falso from conjunction, past version). -/
+private noncomputable def premise2_deriv_past :
+    [] ⊢ ((Formula.neg Formula.bot).and Formula.bot).imp (Formula.bot.all_past) := by
+  apply deduction_theorem
+  have h_rce := Bimodal.Theorems.Propositional.rce (Formula.neg Formula.bot) Formula.bot
+  have h_efq := DerivationTree.axiom [(Formula.neg Formula.bot).and Formula.bot] _
+    (Axiom.ex_falso (Formula.bot.all_past))
+  exact DerivationTree.modus_ponens _ _ _ h_efq h_rce
+
+/--
+Reverse of `P_implies_since_in_mcs`: `(top S psi) in MCS → P(psi) in MCS`.
+
+Proved using S-Induction with chi = bot:
+  `H(neg psi) → neg(top S psi)` (from S-Induction)
+Contrapositive: `(top S psi) → P(psi)`.
+-/
+theorem since_implies_P_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_S : Formula.snce (Formula.neg Formula.bot) psi ∈ M) :
+    Formula.some_past psi ∈ M := by
+  by_contra h_not_P
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past psi) with h_P | h_neg_P
+  · exact h_not_P h_P
+  · -- DNE: neg(P(psi)) = neg(neg(H(neg psi))) -> H(neg psi)
+    have h_dne := Bimodal.Theorems.Perpetuity.dne (psi.neg.all_past)
+    have h_H_neg : psi.neg.all_past ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_P
+    -- H(premise2_past) in M via past necessitation of tautology
+    have h_H_p2 : Formula.all_past (((Formula.neg Formula.bot).and Formula.bot).imp
+        (Formula.bot.all_past)) ∈ M :=
+      theorem_in_mcs h_mcs (past_nec _ premise2_deriv_past)
+    -- Conjunction of S-Induction premises
+    have h_conj := mcs_and_intro M h_mcs _ _ h_H_neg h_H_p2
+    -- Apply S-Induction axiom
+    have h_sind := DerivationTree.axiom [] _
+      (Axiom.since_induction (Formula.neg Formula.bot) psi Formula.bot)
+    have h_imp := SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_sind) h_conj
+    -- Apply to (top S psi) to get bot in MCS
+    have h_bot := SetMaximalConsistent.implication_property h_mcs h_imp h_S
+    -- bot in MCS contradicts consistency
+    exact h_mcs.1 [Formula.bot]
+      (fun φ h => by simp [List.mem_cons] at h; exact h ▸ h_bot)
+      ⟨DerivationTree.assumption _ _ (by simp)⟩
+
+/--
+Since persistence in the backward dovetailed chain: if `(top S psi) in chain(n)` and
+`psi not in chain(n)`, then `(top S psi) in chain(n+1)`.
+
+The key mechanism: by `since_unfold_in_mcs`, the deferral case gives
+`H(top S psi) in chain(n)`, so `(top S psi) in h_content(chain(n)) ⊆ chain(n+1)`.
+-/
+theorem backward_dovetailed_since_persists (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) (psi : Formula)
+    (h_S : Formula.snce (Formula.neg Formula.bot) psi ∈ backward_dovetailed M_0 h_mcs_0 n)
+    (h_not_psi : psi ∉ backward_dovetailed M_0 h_mcs_0 n) :
+    Formula.snce (Formula.neg Formula.bot) psi ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) := by
+  have h_mcs_n := backward_dovetailed_mcs M_0 h_mcs_0 n
+  rcases since_unfold_in_mcs _ h_mcs_n (Formula.neg Formula.bot) psi h_S with h_psi | ⟨_, h_H⟩
+  · exact absurd h_psi h_not_psi
+  · -- H(top S psi) in chain(n), so (top S psi) in h_content(chain(n)) ⊆ chain(n+1)
+    exact backward_dovetailed_h_content_step M_0 h_mcs_0 n h_H
+
+/--
+Since persistence through multiple steps: if `(top S psi) in chain(t)` and
+`psi not in chain(m)` for all m with t <= m <= n, then `(top S psi) in chain(n)`.
+-/
+theorem backward_dovetailed_since_propagate (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (t n : Nat) (h_le : t ≤ n) (psi : Formula)
+    (h_S : Formula.snce (Formula.neg Formula.bot) psi ∈ backward_dovetailed M_0 h_mcs_0 t)
+    (h_not_psi : ∀ m : Nat, t ≤ m → m ≤ n → psi ∉ backward_dovetailed M_0 h_mcs_0 m) :
+    Formula.snce (Formula.neg Formula.bot) psi ∈ backward_dovetailed M_0 h_mcs_0 n := by
+  induction n with
+  | zero => exact Nat.le_zero.mp h_le ▸ h_S
+  | succ n ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact h_S
+    · have h_le_n := Nat.lt_succ_iff.mp h_lt
+      have h_S_n := ih h_le_n (fun m hm1 hm2 => h_not_psi m hm1 (Nat.le_succ_of_le hm2))
+      exact backward_dovetailed_since_persists M_0 h_mcs_0 n psi h_S_n
+        (h_not_psi n h_le_n (Nat.le_succ n))
+
+/--
+Backward P resolution for the backward dovetailed chain.
+
+**Theorem**: If `P(psi) in chain(t)`, then there exists `s >= t` with `psi in chain(s)`.
+
+**Proof**: Mirror of `forward_dovetailed_forward_F` using Since instead of Until.
+-/
 theorem forward_dovetailed_backward_P_nat (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (t : Nat) (psi : Formula)
     (h_P : Formula.some_past psi ∈ backward_dovetailed M_0 h_mcs_0 t) :
     ∃ s : Nat, t ≤ s ∧ psi ∈ backward_dovetailed M_0 h_mcs_0 s := by
-  -- Mirror of forward_dovetailed_forward_F using P_since_equiv and since_unfold
-  sorry -- Symmetric proof using Since
+  -- Step 1: P(psi) in chain(t) implies (top S psi) in chain(t)
+  have h_mcs_t := backward_dovetailed_mcs M_0 h_mcs_0 t
+  have h_S := P_implies_since_in_mcs _ h_mcs_t psi h_P
+  -- Step 2: Either psi already appears at some step >= t, or it never does up to any bound
+  by_cases h_already : ∃ m : Nat, t ≤ m ∧ psi ∈ backward_dovetailed M_0 h_mcs_0 m
+  · exact h_already
+  · -- psi never appears: derive contradiction via resolution
+    push_neg at h_already
+    -- Step 3: Fair scheduling gives us a step n >= t targeting psi
+    obtain ⟨n, h_tn, h_sched⟩ := schedule_formula_hits t psi
+    -- Step 4: Since persists from t to n (since psi never appears in [t, n])
+    have h_S_n := backward_dovetailed_since_propagate M_0 h_mcs_0 t n h_tn psi h_S
+      (fun m hm1 hm2 => h_already m hm1)
+    -- Step 5: (top S psi) in chain(n) implies P(psi) in chain(n)
+    have h_mcs_n := backward_dovetailed_mcs M_0 h_mcs_0 n
+    have h_P_n : Formula.some_past psi ∈ backward_dovetailed M_0 h_mcs_0 n :=
+      since_implies_P_in_mcs _ h_mcs_n psi h_S_n
+    -- Step 6: At step n, schedule_formula(n) = psi, and P(psi) in chain(n)
+    -- So backward_step resolves: psi in chain(n+1)
+    have h_resolve := backward_step_resolves _ h_mcs_n psi h_P_n
+    use n + 1
+    constructor
+    · exact Nat.le_succ_of_le h_tn
+    · show psi ∈ backward_step _ (backward_dovetailed_mcs M_0 h_mcs_0 n) (schedule_formula n)
+      rw [h_sched]
+      exact backward_step_resolves _ (backward_dovetailed_mcs M_0 h_mcs_0 n) psi h_P_n
 
 /-!
 ## Combined Int-Indexed Dovetailed Family
@@ -788,14 +1092,102 @@ theorem dovetailed_fam_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent 
     dovetailed_fam M_0 h_mcs_0 0 = M_0 := rfl
 
 /--
-Forward G coherence for the Int-indexed dovetailed family:
-G(phi) at time n implies phi at all times m >= n (for non-negative n, m).
+Until propagation from backward chain to M_0: if `(⊤ U psi) ∈ backward_dovetailed k`,
+then either `psi` appears at some step in [0, k] of the backward chain, or
+`(⊤ U psi) ∈ M_0`.
 -/
+private theorem until_backward_to_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (k : Nat) (psi : Formula)
+    (h_U : Formula.untl (Formula.neg Formula.bot) psi ∈ backward_dovetailed M_0 h_mcs_0 k) :
+    (∃ j : Nat, j ≤ k ∧ psi ∈ backward_dovetailed M_0 h_mcs_0 j) ∨
+    Formula.untl (Formula.neg Formula.bot) psi ∈ M_0 := by
+  induction k with
+  | zero => exact Or.inr h_U
+  | succ k ih =>
+    have h_mcs_sk := backward_dovetailed_mcs M_0 h_mcs_0 (k + 1)
+    rcases until_unfold_in_mcs _ h_mcs_sk (Formula.neg Formula.bot) psi h_U with h_psi | ⟨_, h_G_U⟩
+    · exact Or.inl ⟨k + 1, le_refl _, h_psi⟩
+    · -- G(⊤ U psi) ∈ backward_dovetailed (k+1)
+      -- So (⊤ U psi) ∈ g_content(backward_dovetailed (k+1)) ⊆ backward_dovetailed k
+      have h_U_k : Formula.untl (Formula.neg Formula.bot) psi ∈ backward_dovetailed M_0 h_mcs_0 k :=
+        backward_dovetailed_g_content_reverse M_0 h_mcs_0 k h_G_U
+      rcases ih h_U_k with ⟨j, hj, h_psi_j⟩ | h_U_0
+      · exact Or.inl ⟨j, Nat.le_succ_of_le hj, h_psi_j⟩
+      · exact Or.inr h_U_0
+
+/--
+Since propagation from forward chain to M_0: if `(⊤ S psi) ∈ forward_dovetailed k`,
+then either `psi` appears at some step in [0, k] of the forward chain, or
+`(⊤ S psi) ∈ M_0`.
+-/
+private theorem since_forward_to_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (k : Nat) (psi : Formula)
+    (h_S : Formula.snce (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 k) :
+    (∃ j : Nat, j ≤ k ∧ psi ∈ forward_dovetailed M_0 h_mcs_0 j) ∨
+    Formula.snce (Formula.neg Formula.bot) psi ∈ M_0 := by
+  induction k with
+  | zero => exact Or.inr h_S
+  | succ k ih =>
+    have h_mcs_sk := forward_dovetailed_mcs M_0 h_mcs_0 (k + 1)
+    rcases since_unfold_in_mcs _ h_mcs_sk (Formula.neg Formula.bot) psi h_S with h_psi | ⟨_, h_H_S⟩
+    · exact Or.inl ⟨k + 1, le_refl _, h_psi⟩
+    · -- H(⊤ S psi) ∈ forward_dovetailed (k+1)
+      -- So (⊤ S psi) ∈ h_content(forward_dovetailed (k+1)) ⊆ forward_dovetailed k
+      have h_S_k : Formula.snce (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 k :=
+        forward_dovetailed_h_content_reverse M_0 h_mcs_0 k h_H_S
+      rcases ih h_S_k with ⟨j, hj, h_psi_j⟩ | h_S_0
+      · exact Or.inl ⟨j, Nat.le_succ_of_le hj, h_psi_j⟩
+      · exact Or.inr h_S_0
+
 theorem dovetailed_fam_forward_G (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (n m : Int) (h_le : n ≤ m) (phi : Formula)
     (h_G : Formula.all_future phi ∈ dovetailed_fam M_0 h_mcs_0 n) :
     phi ∈ dovetailed_fam M_0 h_mcs_0 m := by
-  sorry -- Uses forward_dovetailed_forward_G for non-negative case, cross-chain for negative
+  -- Case split on sign of n and m
+  match n, m with
+  | Int.ofNat a, Int.ofNat b =>
+    -- Both non-negative: use forward chain
+    have h_ab : a ≤ b := Int.ofNat_le.mp h_le
+    exact forward_dovetailed_forward_G M_0 h_mcs_0 a b h_ab phi h_G
+  | Int.negSucc a, Int.ofNat b =>
+    -- n < 0, m ≥ 0: propagate G through backward chain to M_0, then forward
+    -- G(phi) at backward_dovetailed (a+1) → G(phi) at backward_dovetailed 0 = M_0
+    -- Propagate G(phi) from backward step (a+1) to step 0 = M_0
+    have h_G_0 : Formula.all_future phi ∈ M_0 :=
+      backward_dovetailed_G_propagate M_0 h_mcs_0 0 (a + 1) (Nat.zero_le _) phi h_G
+    -- G(phi) at M_0 = forward_dovetailed 0, so phi at forward_dovetailed b
+    exact forward_dovetailed_forward_G M_0 h_mcs_0 0 b (Nat.zero_le b) phi h_G_0
+  | Int.ofNat _, Int.negSucc _ => exact absurd h_le (not_le_of_gt (lt_of_lt_of_le (Int.negSucc_lt_zero _) (Int.natCast_nonneg _)))
+  | Int.negSucc a, Int.negSucc b =>
+    -- Both negative: n = -(a+1), m = -(b+1), n ≤ m means a ≥ b
+    have h_ab : b + 1 ≤ a + 1 := by omega
+    -- G(phi) at backward_dovetailed (a+1) → phi at backward_dovetailed (b+1)
+    exact backward_dovetailed_forward_G M_0 h_mcs_0 (b + 1) (a + 1) h_ab phi h_G
+
+/--
+Backward H coherence for the Int-indexed dovetailed family:
+H(phi) at time n implies phi at all times m <= n.
+-/
+theorem dovetailed_fam_backward_H (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n m : Int) (h_le : m ≤ n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ dovetailed_fam M_0 h_mcs_0 n) :
+    phi ∈ dovetailed_fam M_0 h_mcs_0 m := by
+  match n, m with
+  | Int.negSucc a, Int.negSucc b =>
+    -- Both negative: use backward chain's backward_H
+    have h_ab : a + 1 ≤ b + 1 := by omega
+    exact backward_dovetailed_backward_H M_0 h_mcs_0 (a + 1) (b + 1) h_ab phi h_H
+  | Int.ofNat a, Int.negSucc b =>
+    -- n ≥ 0, m < 0: propagate H through forward chain to M_0, then backward
+    -- Propagate H(phi) from forward step a to step 0 = M_0
+    have h_H_0 : Formula.all_past phi ∈ M_0 :=
+      forward_dovetailed_H_propagate M_0 h_mcs_0 0 a (Nat.zero_le _) phi h_H
+    exact backward_dovetailed_backward_H M_0 h_mcs_0 0 (b + 1) (Nat.zero_le _) phi h_H_0
+  | Int.negSucc _, Int.ofNat _ => exact absurd h_le (not_le_of_gt (lt_of_lt_of_le (Int.negSucc_lt_zero _) (Int.natCast_nonneg _)))
+  | Int.ofNat a, Int.ofNat b =>
+    -- Both non-negative: use forward chain
+    have h_ab : b ≤ a := Int.ofNat_le.mp h_le
+    exact forward_dovetailed_backward_H M_0 h_mcs_0 b a h_ab phi h_H
 
 /--
 Forward F coherence for the Int-indexed dovetailed family.
@@ -804,7 +1196,33 @@ theorem dovetailed_fam_forward_F (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsis
     (n : Int) (psi : Formula)
     (h_F : Formula.some_future psi ∈ dovetailed_fam M_0 h_mcs_0 n) :
     ∃ m : Int, n ≤ m ∧ psi ∈ dovetailed_fam M_0 h_mcs_0 m := by
-  sorry -- Reduces to forward_dovetailed_forward_F for the non-negative case
+  match n with
+  | Int.ofNat k =>
+    -- Non-negative case: use forward_dovetailed_forward_F directly
+    obtain ⟨s, h_ks, h_psi_s⟩ := forward_dovetailed_forward_F M_0 h_mcs_0 k psi h_F
+    exact ⟨Int.ofNat s, Int.ofNat_le.mpr h_ks, h_psi_s⟩
+  | Int.negSucc k =>
+    -- Negative case: F(psi) at backward_dovetailed (k+1)
+    -- Convert to Until and propagate to M_0
+    have h_mcs_k := backward_dovetailed_mcs M_0 h_mcs_0 (k + 1)
+    have h_U := F_implies_until_in_mcs _ h_mcs_k psi h_F
+    rcases until_backward_to_zero M_0 h_mcs_0 (k + 1) psi h_U with ⟨j, hj, h_psi_j⟩ | h_U_0
+    · -- psi appears at backward_dovetailed j (time -j)
+      -- j ≤ k + 1, and we need m ≥ -(k+1)
+      -- backward_dovetailed j corresponds to time -(j) for j > 0 and time 0 for j = 0
+      match j with
+      | 0 =>
+        -- psi at M_0 = forward_dovetailed 0 = dovetailed_fam 0
+        exact ⟨0, le_of_lt (Int.negSucc_lt_zero k), h_psi_j⟩
+      | j + 1 =>
+        -- psi at backward_dovetailed (j+1) = dovetailed_fam (Int.negSucc j)
+        -- j + 1 ≤ k + 1 so j ≤ k, meaning negSucc k ≤ negSucc j
+        have : Int.negSucc k ≤ Int.negSucc j := negSucc_le_negSucc_of_le (by omega)
+        exact ⟨Int.negSucc j, this, h_psi_j⟩
+    · -- (⊤ U psi) ∈ M_0 = forward_dovetailed 0
+      have h_F_0 := until_implies_F_in_mcs M_0 h_mcs_0 psi h_U_0
+      obtain ⟨s, _, h_psi_s⟩ := forward_dovetailed_forward_F M_0 h_mcs_0 0 psi h_F_0
+      exact ⟨Int.ofNat s, le_trans (le_of_lt (Int.negSucc_lt_zero k)) (Int.natCast_nonneg s), h_psi_s⟩
 
 /--
 Backward P coherence for the Int-indexed dovetailed family.
@@ -813,6 +1231,216 @@ theorem dovetailed_fam_backward_P (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsi
     (n : Int) (psi : Formula)
     (h_P : Formula.some_past psi ∈ dovetailed_fam M_0 h_mcs_0 n) :
     ∃ m : Int, m ≤ n ∧ psi ∈ dovetailed_fam M_0 h_mcs_0 m := by
-  sorry -- Reduces to backward chain resolution
+  match n with
+  | Int.negSucc k =>
+    -- Negative case: use forward_dovetailed_backward_P_nat directly
+    obtain ⟨s, h_ks, h_psi_s⟩ := forward_dovetailed_backward_P_nat M_0 h_mcs_0 (k + 1) psi h_P
+    -- s ≥ k + 1 ≥ 1, so s = s' + 1 for some s'
+    -- s ≥ k + 1 ≥ 1
+    have h_s_pos : 0 < s := by omega
+    obtain ⟨s', rfl⟩ : ∃ s', s = s' + 1 := ⟨s - 1, by omega⟩
+    have : Int.negSucc s' ≤ Int.negSucc k := negSucc_le_negSucc_of_le (by omega)
+    exact ⟨Int.negSucc s', this, h_psi_s⟩
+  | Int.ofNat k =>
+    -- Non-negative case: P(psi) at forward_dovetailed k
+    -- Convert to Since and propagate to M_0
+    have h_mcs_k := forward_dovetailed_mcs M_0 h_mcs_0 k
+    have h_S := P_implies_since_in_mcs _ h_mcs_k psi h_P
+    rcases since_forward_to_zero M_0 h_mcs_0 k psi h_S with ⟨j, hj, h_psi_j⟩ | h_S_0
+    · -- psi appears at forward_dovetailed j (time j), j ≤ k
+      exact ⟨Int.ofNat j, Int.ofNat_le.mpr hj, h_psi_j⟩
+    · -- (⊤ S psi) ∈ M_0 = backward_dovetailed 0
+      have h_P_0 := since_implies_P_in_mcs M_0 h_mcs_0 psi h_S_0
+      obtain ⟨s, _, h_psi_s⟩ := forward_dovetailed_backward_P_nat M_0 h_mcs_0 0 psi h_P_0
+      match s with
+      | 0 => exact ⟨0, Int.natCast_nonneg k, h_psi_s⟩
+      | s + 1 =>
+        exact ⟨Int.negSucc s, le_trans (le_of_lt (Int.negSucc_lt_zero s)) (Int.natCast_nonneg k), h_psi_s⟩
+
+/-!
+## DovetailedFMCS: The FMCS Int Structure
+
+Wraps `dovetailed_fam` into an `FMCS Int` with all coherence properties.
+-/
+
+/-- The dovetailed FMCS: Int-indexed family with forward_G, backward_H,
+    forward_F, and backward_P. -/
+noncomputable def DovetailedFMCS (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
+    FMCS Int where
+  mcs := dovetailed_fam M_0 h_mcs_0
+  is_mcs := dovetailed_fam_mcs M_0 h_mcs_0
+  forward_G := fun t t' phi h_le h_G => dovetailed_fam_forward_G M_0 h_mcs_0 t t' h_le phi h_G
+  backward_H := fun t t' phi h_le h_H => dovetailed_fam_backward_H M_0 h_mcs_0 t t' h_le phi h_H
+
+/-- DovetailedFMCS at time 0 is M_0. -/
+theorem DovetailedFMCS_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
+    (DovetailedFMCS M_0 h_mcs_0).mcs 0 = M_0 := rfl
+
+/-- box_class_agree propagation through DovetailedFMCS. -/
+theorem dovetailed_fam_box_agree (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Int) : box_class_agree M_0 (dovetailed_fam M_0 h_mcs_0 n) := by
+  match n with
+  | Int.ofNat k => exact forward_dovetailed_box_agree M_0 h_mcs_0 k
+  | Int.negSucc k => exact backward_dovetailed_box_agree M_0 h_mcs_0 (k + 1)
+
+/-- Forward F for DovetailedFMCS (family-level, not just bundle-level). -/
+theorem DovetailedFMCS_forward_F (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (t : Int) (psi : Formula) (h_F : Formula.some_future psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs t) :
+    ∃ s : Int, t ≤ s ∧ psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs s :=
+  dovetailed_fam_forward_F M_0 h_mcs_0 t psi h_F
+
+/-- Backward P for DovetailedFMCS (family-level, not just bundle-level). -/
+theorem DovetailedFMCS_backward_P (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (t : Int) (psi : Formula) (h_P : Formula.some_past psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs t) :
+    ∃ s : Int, s ≤ t ∧ psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs s :=
+  dovetailed_fam_backward_P M_0 h_mcs_0 t psi h_P
+
+/-!
+## Dovetailed Box-Class Bundle
+
+Parallel to `boxClassFamilies` in UltrafilterChain.lean, but using DovetailedFMCS.
+-/
+
+/-- The dovetailed bundle families: all shifted DovetailedFMCS from MCSes with the same box theory. -/
+noncomputable def dovetailedBoxClassFamilies (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    Set (FMCS Int) :=
+  { f | ∃ (W : Set Formula) (h_W : SetMaximalConsistent W) (k : Int),
+    box_class_agree M0 W ∧
+    f = shifted_fmcs (DovetailedFMCS W h_W) k }
+
+/-- The dovetailed bundle is nonempty. -/
+theorem dovetailedBoxClassFamilies_nonempty (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    (dovetailedBoxClassFamilies M0 h_mcs).Nonempty := by
+  use DovetailedFMCS M0 h_mcs
+  simp only [dovetailedBoxClassFamilies, Set.mem_setOf_eq]
+  refine ⟨M0, h_mcs, 0, box_class_agree_refl M0, ?_⟩
+  unfold shifted_fmcs
+  cases (DovetailedFMCS M0 h_mcs)
+  simp only [Int.sub_zero]
+
+/-- The eval family is in the dovetailed bundle. -/
+theorem eval_family_mem_dovetailedBoxClassFamilies (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    DovetailedFMCS M0 h_mcs ∈ dovetailedBoxClassFamilies M0 h_mcs := by
+  simp only [dovetailedBoxClassFamilies, Set.mem_setOf_eq]
+  refine ⟨M0, h_mcs, 0, box_class_agree_refl M0, ?_⟩
+  unfold shifted_fmcs
+  cases (DovetailedFMCS M0 h_mcs)
+  simp only [Int.sub_zero]
+
+/-- Modal forward for dovetailed bundle: Box(phi) in any family implies phi in ALL families. -/
+theorem dovetailedBoxClassFamilies_modal_forward (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ dovetailedBoxClassFamilies M0 h_mcs)
+    (phi : Formula) (t : Int) (h_box : Formula.box phi ∈ fam.mcs t)
+    (fam' : FMCS Int) (hfam' : fam' ∈ dovetailedBoxClassFamilies M0 h_mcs) :
+    phi ∈ fam'.mcs t := by
+  -- Extract components
+  obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+  obtain ⟨W', h_W', k', h_agree', rfl⟩ := hfam'
+  -- Box(phi) at shifted DovetailedFMCS(W) time t = DovetailedFMCS(W) at t-k
+  -- By parametric_box_persistent, Box(phi) at time 0 of DovetailedFMCS(W) = W
+  have h_box_0 : Formula.box phi ∈ (DovetailedFMCS W h_W).mcs 0 :=
+    parametric_box_persistent (DovetailedFMCS W h_W) phi (t - k) 0 h_box
+  -- DovetailedFMCS(W) at 0 = W
+  have h_eq : (DovetailedFMCS W h_W).mcs 0 = W := rfl
+  rw [h_eq] at h_box_0
+  -- Box(phi) ∈ W, by box_class_agree, Box(phi) ∈ M0
+  have h_box_M0 : Formula.box phi ∈ M0 := (h_agree phi).mpr h_box_0
+  -- By box_class_agree, Box(phi) ∈ W'
+  have h_box_W' : Formula.box phi ∈ W' := (h_agree' phi).mp h_box_M0
+  -- DovetailedFMCS(W') at 0 = W'
+  have h_eq' : (DovetailedFMCS W' h_W').mcs 0 = W' := rfl
+  have h_box_0' : Formula.box phi ∈ (DovetailedFMCS W' h_W').mcs 0 := by rw [h_eq']; exact h_box_W'
+  -- By parametric_box_persistent, Box(phi) at time t-k' of DovetailedFMCS(W')
+  have h_box_t' : Formula.box phi ∈ (DovetailedFMCS W' h_W').mcs (t - k') :=
+    parametric_box_persistent (DovetailedFMCS W' h_W') phi 0 (t - k') h_box_0'
+  -- By T axiom, phi at time t-k'
+  exact SetMaximalConsistent.implication_property
+    ((DovetailedFMCS W' h_W').is_mcs (t - k'))
+    (theorem_in_mcs ((DovetailedFMCS W' h_W').is_mcs (t - k'))
+      (DerivationTree.axiom _ _ (Axiom.modal_t phi))) h_box_t'
+
+/-- Modal backward for dovetailed bundle: phi in ALL families implies Box(phi) in any family. -/
+theorem dovetailedBoxClassFamilies_modal_backward (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0)
+    (fam : FMCS Int) (hfam : fam ∈ dovetailedBoxClassFamilies M0 h_mcs)
+    (phi : Formula) (t : Int)
+    (h_all : ∀ fam' ∈ dovetailedBoxClassFamilies M0 h_mcs, phi ∈ fam'.mcs t) :
+    Formula.box phi ∈ fam.mcs t := by
+  obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+  by_contra h_not_box
+  -- Step 1: Box(phi) ∉ W (by parametric_box_persistent)
+  have h_box_not_W : Formula.box phi ∉ W := by
+    intro h_box_W
+    exact h_not_box (parametric_box_persistent (DovetailedFMCS W h_W) phi 0 (t - k) h_box_W)
+  -- Step 2: Box(phi) ∉ M0 (by box_class_agree)
+  have h_box_not_M0 : Formula.box phi ∉ M0 := fun h => h_box_not_W ((h_agree phi).mp h)
+  -- Step 3: neg(Box(phi)) ∈ M0
+  have h_neg_box_M0 : (Formula.box phi).neg ∈ M0 := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box phi) with h | h
+    · exact absurd h h_box_not_M0
+    · exact h
+  -- Step 4: Diamond(neg(phi)) ∈ M0 (via box_dne_theorem contrapositive)
+  have h_diamond_neg : (Formula.neg phi).diamond ∈ M0 := by
+    have h_eq : (Formula.neg phi).diamond =
+                Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) := rfl
+    rw [h_eq]
+    exact SetMaximalConsistent.contrapositive h_mcs (box_dne_theorem phi) h_neg_box_M0
+  -- Step 5: Get witness W' with neg(phi) ∈ W' and box_class_agree
+  obtain ⟨W', h_W'_mcs, h_neg_phi_W', h_agree'⟩ :=
+    box_theory_witness_exists M0 h_mcs (Formula.neg phi) h_diamond_neg
+  -- Step 6: shifted(DovetailedFMCS(W'), t) is in the bundle; at time t its MCS is W'
+  have h_witness_in : shifted_fmcs (DovetailedFMCS W' h_W'_mcs) t ∈
+      dovetailedBoxClassFamilies M0 h_mcs := ⟨W', h_W'_mcs, t, h_agree', rfl⟩
+  -- Step 7: neg(phi) ∈ witness at time t (since shifted at t = base at 0 = W')
+  have h_neg_phi_at_t : Formula.neg phi ∈ (shifted_fmcs (DovetailedFMCS W' h_W'_mcs) t).mcs t := by
+    simp only [shifted_fmcs, Int.sub_self]; exact h_neg_phi_W'
+  -- Step 8: phi ∈ witness at time t (from h_all)
+  have h_phi_at_t := h_all _ h_witness_in
+  -- Step 9: Contradiction
+  exact set_consistent_not_both ((shifted_fmcs (DovetailedFMCS W' h_W'_mcs) t).is_mcs t).1
+    phi h_phi_at_t h_neg_phi_at_t
+
+/--
+Construct the dovetailed BFMCS_Bundle.
+-/
+noncomputable def construct_dovetailed_bfmcs_bundle (M0 : Set Formula) (h_mcs : SetMaximalConsistent M0) :
+    BFMCS_Bundle where
+  families := dovetailedBoxClassFamilies M0 h_mcs
+  nonempty := dovetailedBoxClassFamilies_nonempty M0 h_mcs
+  modal_forward := dovetailedBoxClassFamilies_modal_forward M0 h_mcs
+  modal_backward := dovetailedBoxClassFamilies_modal_backward M0 h_mcs
+  bundle_forward_F := fun fam hfam φ t h_F => by
+    obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+    -- Get witness W' via temporal_theory_witness_exists
+    have h_mcs_t := (DovetailedFMCS W h_W).is_mcs (t - k)
+    obtain ⟨W', h_W'_mcs, h_phi_W', _, h_box_agree⟩ :=
+      temporal_theory_witness_exists _ h_mcs_t φ h_F
+    -- box_class_agree M0 W' by transitivity
+    have h_M0_W' : box_class_agree M0 W' :=
+      box_class_agree_trans (box_class_agree_trans h_agree (dovetailed_fam_box_agree W h_W (t - k))) h_box_agree
+    -- Build witness family shifted to t+1
+    exact ⟨shifted_fmcs (DovetailedFMCS W' h_W'_mcs) (t + 1),
+           ⟨W', h_W'_mcs, t + 1, h_M0_W', rfl⟩,
+           t + 1, Int.lt_add_one_iff.mpr (le_refl t), by
+             show φ ∈ (DovetailedFMCS W' h_W'_mcs).mcs ((t + 1) - (t + 1))
+             simp only [Int.sub_self]
+             exact h_phi_W'⟩
+  bundle_backward_P := fun fam hfam φ t h_P => by
+    obtain ⟨W, h_W, k, h_agree, rfl⟩ := hfam
+    -- Get witness W' via past_theory_witness_exists
+    have h_mcs_t := (DovetailedFMCS W h_W).is_mcs (t - k)
+    obtain ⟨W', h_W'_mcs, h_phi_W', _, h_box_agree⟩ :=
+      past_theory_witness_exists _ h_mcs_t φ h_P
+    -- box_class_agree M0 W' by transitivity
+    have h_M0_W' : box_class_agree M0 W' :=
+      box_class_agree_trans (box_class_agree_trans h_agree (dovetailed_fam_box_agree W h_W (t - k))) h_box_agree
+    -- Build witness family shifted to t-1
+    exact ⟨shifted_fmcs (DovetailedFMCS W' h_W'_mcs) (t - 1),
+           ⟨W', h_W'_mcs, t - 1, h_M0_W', rfl⟩,
+           t - 1, Int.sub_one_lt_iff.mpr (le_refl t), by
+             show φ ∈ (DovetailedFMCS W' h_W'_mcs).mcs ((t - 1) - (t - 1))
+             simp only [Int.sub_self]
+             exact h_phi_W'⟩
+  eval_family := DovetailedFMCS M0 h_mcs
+  eval_family_mem := eval_family_mem_dovetailedBoxClassFamilies M0 h_mcs
 
 end Bimodal.Metalogic.Algebraic.DovetailedChain
