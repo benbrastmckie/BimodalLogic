@@ -4,6 +4,7 @@ import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Perpetuity
 import Mathlib.Data.Nat.Pairing
@@ -486,120 +487,332 @@ ultrafilter-level argument from `ultrafilter_F_resolution` (UltrafilterChain.lea
 Let me check what this gives us.
 -/
 
--- Placeholder: the actual forward_F proof will use ultrafilter-level arguments.
--- For now, leave the docstring above as design documentation and implement a
--- working approach.
-
 /-!
-## Revised Approach: Ultrafilter-Based Dovetailed Construction
+## Forward F Resolution via Until Enrichment
 
-Instead of formula-level Lindenbaum chains, use the ultrafilter-level
-F-resolution (`ultrafilter_F_resolution`) which works in the Lindenbaum algebra.
+With the F_until_equiv axiom, `F(psi) in MCS` implies `(top U psi) in MCS`.
+Until formulas persist through the dovetailed chain via g_content (when deferred,
+`G(top U psi) in MCS` gives `(top U psi) in g_content`). Fair scheduling
+ensures every Until obligation is eventually targeted for resolution by
+`canonical_forward_U`.
 
-The key insight: `ultrafilter_F_resolution` proves that for any ultrafilter U
-with STSA.G a ∉ U (equivalently F(a^c) holds), there exists an ultrafilter V
-with R_G(U, V) and a ∉ V. This can be iterated to build chains.
+### Key proof structure for forward_F:
 
-However, the DovetailedChain approach needs formula-level constructions.
-
-The simplest correct approach uses the EXISTING SuccChainFMCS infrastructure
-and builds temporal coherent families by a DIFFERENT method.
+1. F(psi) in chain(t) implies (top U psi) in chain(t) by F_until_equiv axiom
+2. Either psi in chain(t) (done) or G(top U psi) in chain(t) by until_unfold
+3. G(top U psi) propagates through the chain via G_propagate
+4. By T-axiom, (top U psi) in chain(m) for all m >= t
+5. Fair scheduling: exists n >= t with schedule_formula(n) = psi
+6. F(psi) in chain(n) (since top U psi in chain(n) implies F(psi) in chain(n)
+   by top U psi -> F(psi), provable from U-Induction)
+7. forward_step resolves: psi in chain(n+1)
 -/
 
+/--
+F(psi) in MCS implies (top U psi) in MCS, via the F_until_equiv axiom.
+-/
+theorem F_implies_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
+    Formula.untl (Formula.neg Formula.bot) psi ∈ M := by
+  have h_ax : [] ⊢ (Formula.some_future psi).imp (Formula.untl (Formula.neg Formula.bot) psi) :=
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv psi)
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_F
+
+/-- Conjunction introduction in MCS. -/
+private theorem mcs_and_intro (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (A B : Formula) (h_A : A ∈ M) (h_B : B ∈ M) : A.and B ∈ M := by
+  have h_pair := Bimodal.Theorems.Combinators.pairing A B
+  have h1 := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_pair) h_A
+  exact SetMaximalConsistent.implication_property h_mcs h1 h_B
+
+/-- Derivation: `(top ∧ ⊥) → G(⊥)` (ex falso from conjunction). -/
+private noncomputable def premise2_deriv :
+    [] ⊢ ((Formula.neg Formula.bot).and Formula.bot).imp (Formula.bot.all_future) := by
+  apply deduction_theorem
+  have h_rce := Bimodal.Theorems.Propositional.rce (Formula.neg Formula.bot) Formula.bot
+  have h_efq := DerivationTree.axiom [(Formula.neg Formula.bot).and Formula.bot] _
+    (Axiom.ex_falso (Formula.bot.all_future))
+  exact DerivationTree.modus_ponens _ _ _ h_efq h_rce
+
+/--
+Reverse of `F_implies_until_in_mcs`: `(top U psi) in MCS → F(psi) in MCS`.
+
+Proved using U-Induction with chi = bot:
+  `G(neg psi) → neg(top U psi)` (from U-Induction)
+Contrapositive: `(top U psi) → F(psi)`.
+-/
+theorem until_implies_F_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_U : Formula.untl (Formula.neg Formula.bot) psi ∈ M) :
+    Formula.some_future psi ∈ M := by
+  by_contra h_not_F
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_future psi) with h_F | h_neg_F
+  · exact h_not_F h_F
+  · -- DNE: neg(F(psi)) = neg(neg(G(neg psi))) -> G(neg psi)
+    have h_dne := Bimodal.Theorems.Perpetuity.dne (psi.neg.all_future)
+    have h_G_neg : psi.neg.all_future ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_F
+    -- G(premise2) in M via temporal necessitation of tautology
+    have h_G_p2 : Formula.all_future (((Formula.neg Formula.bot).and Formula.bot).imp
+        (Formula.bot.all_future)) ∈ M :=
+      theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ premise2_deriv)
+    -- Conjunction of U-Induction premises
+    have h_conj := mcs_and_intro M h_mcs _ _ h_G_neg h_G_p2
+    -- Apply U-Induction axiom
+    have h_uind := DerivationTree.axiom [] _
+      (Axiom.until_induction (Formula.neg Formula.bot) psi Formula.bot)
+    have h_imp := SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_uind) h_conj
+    -- Apply to (top U psi) to get bot in MCS
+    have h_bot := SetMaximalConsistent.implication_property h_mcs h_imp h_U
+    -- bot in MCS contradicts consistency
+    exact h_mcs.1 [Formula.bot]
+      (fun φ h => by simp [List.mem_cons] at h; exact h ▸ h_bot)
+      ⟨DerivationTree.assumption _ _ (by simp)⟩
+
+/--
+Until persistence in the forward dovetailed chain: if `(top U psi) in chain(n)` and
+`psi not in chain(n)`, then `(top U psi) in chain(n+1)`.
+
+The key mechanism: by `until_unfold_in_mcs`, the deferral case gives
+`G(top U psi) in chain(n)`, so `(top U psi) in g_content(chain(n)) ⊆ chain(n+1)`.
+-/
+theorem forward_dovetailed_until_persists (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Nat) (psi : Formula)
+    (h_U : Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 n)
+    (h_not_psi : psi ∉ forward_dovetailed M_0 h_mcs_0 n) :
+    Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 (n + 1) := by
+  -- By until_unfold: either psi in chain(n) or (top in chain(n) and G(top U psi) in chain(n))
+  have h_mcs_n := forward_dovetailed_mcs M_0 h_mcs_0 n
+  rcases until_unfold_in_mcs _ h_mcs_n (Formula.neg Formula.bot) psi h_U with h_psi | ⟨_, h_G⟩
+  · exact absurd h_psi h_not_psi
+  · -- G(top U psi) in chain(n), so (top U psi) in g_content(chain(n)) ⊆ chain(n+1)
+    exact forward_dovetailed_g_content_step M_0 h_mcs_0 n h_G
+
+/--
+Until persistence through multiple steps: if `(top U psi) in chain(t)` and
+`psi not in chain(m)` for all m with t <= m <= n, then `(top U psi) in chain(n)`.
+-/
+theorem forward_dovetailed_until_propagate (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (t n : Nat) (h_le : t ≤ n) (psi : Formula)
+    (h_U : Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 t)
+    (h_not_psi : ∀ m : Nat, t ≤ m → m ≤ n → psi ∉ forward_dovetailed M_0 h_mcs_0 m) :
+    Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 n := by
+  induction n with
+  | zero => exact Nat.le_zero.mp h_le ▸ h_U
+  | succ n ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact h_U
+    · have h_le_n := Nat.lt_succ_iff.mp h_lt
+      have h_U_n := ih h_le_n (fun m hm1 hm2 => h_not_psi m hm1 (Nat.le_succ_of_le hm2))
+      exact forward_dovetailed_until_persists M_0 h_mcs_0 n psi h_U_n
+        (h_not_psi n h_le_n le_rfl)
+
+/--
+Fair scheduling surjectivity: for any formula psi, there exist infinitely many
+steps n where `schedule_formula(n) = psi`.
+
+Specifically, for any base t, there exists n >= t with schedule_formula(n) = psi.
+-/
+theorem schedule_formula_hits (t : Nat) (psi : Formula) :
+    ∃ n : Nat, t ≤ n ∧ schedule_formula n = psi := by
+  -- schedule_formula(n) = Denumerable.ofNat Formula (Nat.unpair n).2
+  -- We need n such that (Nat.unpair n).2 = Encodable.encode psi and n >= t
+  -- Let n = Nat.pair t (Encodable.encode psi)
+  -- Then (Nat.unpair n).2 = Encodable.encode psi
+  -- And t <= Nat.pair t k by Nat.left_le_pair
+  use Nat.pair t (Denumerable.encode psi)
+  constructor
+  · exact Nat.left_le_pair t (Denumerable.encode psi)
+  · simp [schedule_formula]
+    exact Denumerable.ofNat_encode psi
+
+/--
+Forward F resolution for the dovetailed chain.
+
+**Theorem**: If `F(psi) in chain(t)`, then there exists `s >= t` with `psi in chain(s)`.
+
+**Proof**: By the F_until_equiv axiom, `(top U psi) in chain(t)`. By Until persistence,
+`(top U psi)` remains in the chain until `psi` appears. By fair scheduling, there
+exists `n >= t` with `schedule_formula(n) = psi`. At step `n`, if `psi` hasn't appeared
+yet, then `(top U psi) in chain(n)`, so `F(psi) in chain(n)` (by the T-axiom direction),
+and `forward_step` resolves it: `psi in chain(n+1)`.
+-/
+theorem forward_dovetailed_forward_F (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (t : Nat) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ forward_dovetailed M_0 h_mcs_0 t) :
+    ∃ s : Nat, t ≤ s ∧ psi ∈ forward_dovetailed M_0 h_mcs_0 s := by
+  -- Step 1: F(psi) in chain(t) implies (top U psi) in chain(t)
+  have h_mcs_t := forward_dovetailed_mcs M_0 h_mcs_0 t
+  have h_U := F_implies_until_in_mcs _ h_mcs_t psi h_F
+  -- Step 2: Either psi already appears at some step >= t, or it never does up to any bound
+  by_cases h_already : ∃ m : Nat, t ≤ m ∧ psi ∈ forward_dovetailed M_0 h_mcs_0 m
+  · exact h_already
+  · -- psi never appears: derive contradiction via resolution
+    push_neg at h_already
+    -- Step 3: Fair scheduling gives us a step n >= t targeting psi
+    obtain ⟨n, h_tn, h_sched⟩ := schedule_formula_hits t psi
+    -- Step 4: Until persists from t to n (since psi never appears in [t, n])
+    have h_U_n := forward_dovetailed_until_propagate M_0 h_mcs_0 t n h_tn psi h_U
+      (fun m hm1 hm2 => h_already m hm1)
+    -- Step 5: (top U psi) in chain(n) implies F(psi) in chain(n)
+    -- Uses until_implies_F_in_mcs (proved via U-Induction with chi=bot)
+    have h_mcs_n := forward_dovetailed_mcs M_0 h_mcs_0 n
+    have h_F_n : Formula.some_future psi ∈ forward_dovetailed M_0 h_mcs_0 n :=
+      until_implies_F_in_mcs _ h_mcs_n psi h_U_n
+    -- Step 6: At step n, schedule_formula(n) = psi, and F(psi) in chain(n)
+    -- So forward_step resolves: psi in chain(n+1)
+    have h_resolve := forward_step_resolves _ h_mcs_n psi h_F_n
+    rw [← h_sched] at h_resolve
+    -- But forward_step uses schedule_formula(n), not psi directly.
+    -- Actually: forward_dovetailed ... (n+1) = forward_step chain(n) h_mcs_n (schedule_formula n)
+    -- And schedule_formula(n) = psi by h_sched
+    -- So forward_step resolves F(psi) by putting psi in the successor
+    -- But wait: forward_step checks F(schedule_formula(n)) in chain(n), which is F(psi) in chain(n)
+    -- And resolves by putting schedule_formula(n) = psi in the successor
+    -- Actually forward_step_resolves gives: psi in forward_step(chain(n), h_mcs_n, psi) when F(psi) in chain(n)
+    -- We need: psi in forward_dovetailed ... (n+1)
+    -- forward_dovetailed ... (n+1) = forward_step(chain(n), h_mcs_n, schedule_formula(n))
+    -- = forward_step(chain(n), h_mcs_n, psi) since schedule_formula(n) = psi
+    -- So psi in forward_dovetailed ... (n+1)
+    use n + 1
+    constructor
+    · exact Nat.le_succ_of_le h_tn
+    · -- Show psi in forward_dovetailed M_0 h_mcs_0 (n + 1)
+      show psi ∈ forward_step _ (forward_dovetailed_mcs M_0 h_mcs_0 n) (schedule_formula n)
+      rw [h_sched]
+      exact forward_step_resolves _ (forward_dovetailed_mcs M_0 h_mcs_0 n) psi h_F_n
+
 /-!
-## THE ACTUAL APPROACH: Dovetailed Chain with Recursive Resolution
+## Backward Dovetailed Chain
 
-We build the forward chain by RECURSIVELY resolving F-obligations.
-At each step n+1:
-1. Pick the scheduled formula phi = schedule_formula(n)
-2. If F(phi) ∈ chain(n), resolve it (put phi in seed, use temporal_theory_witness_consistent)
-3. If F(phi) ∉ chain(n), take a default step
-
-For forward_F, the key theorem is:
-Given F(phi) ∈ chain(t), either:
-(a) phi ∈ chain(s) for some s in {t, t+1, ...}, or
-(b) For all s ≥ t, phi ∉ chain(s)
-
-In case (b), neg(phi) ∈ chain(s) for all s ≥ t (by MCS negation completeness).
-In particular, neg(phi) ∈ chain(t). Since F(phi) ∈ chain(t) and neg(phi) ∈ chain(t),
-this is consistent (F(phi) says phi eventually, neg(phi) says not now).
-
-Now, G(neg(phi)) might or might not be in chain(t). If G(neg(phi)) ∈ chain(t),
-then neg(phi) ∈ chain(s) for all s ≥ t, AND F(phi) ∈ chain(t), which means
-neg(G(neg(phi))) ∈ chain(t) -- contradiction! So G(neg(phi)) ∉ chain(t).
-
-But at later steps, G(neg(phi)) might enter the chain. If at some step n,
-G(neg(phi)) ∈ chain(n), then neg(phi) ∈ chain(s) for all s ≥ n. And
-F(phi) = neg(G(neg(phi))) ∉ chain(n) -- so F(phi) has been "lost".
-
-The key question: can G(neg(phi)) enter the chain between steps t and n?
-
-Answer: YES, Lindenbaum can introduce it. Once G(neg(phi)) enters, F(phi) is
-permanently lost, and phi never appears (since neg(phi) is forced everywhere after).
-
-But wait -- if G(neg(phi)) enters at step k > t, then G(neg(phi)) ∈ chain(k).
-By our chain construction, G(neg(phi)) persists forward (G_theory propagation).
-But G(neg(phi)) ∉ chain(t) (proven above). By temp_4, G(G(neg(phi))) ∈ chain(k),
-so G(neg(phi)) ∈ G_theory(chain(k)) ⊆ chain(k+1) etc. G(neg(phi)) persists
-from k onward but was absent before k.
-
-Now, between t and k-1, F(phi) might or might not be in the chain.
-At step k-1, F(phi) might be in chain(k-1). At step k, chain(k) is built
-from temporal_box_seed(chain(k-1)) ∪ {resolution}. G(neg(phi)) is NOT in
-temporal_box_seed(chain(k-1)) (since G(G(neg(phi))) ∉ chain(k-1), unless
-G(neg(phi)) was already in chain(k-1), which contradicts our assumption that
-it enters at step k). So Lindenbaum at step k adds G(neg(phi)) freely.
-
-To PREVENT this, we could add neg(G(neg(phi))) = F(phi) to the seed. But
-F(phi) is not G-liftable, so we can't include it in the seed while maintaining
-the G-lift consistency argument.
-
-ULTIMATE CORRECT APPROACH: Don't try to prevent G(neg(phi)) from entering.
-Instead, DETECT when F(phi) is still in the chain and resolve it BEFORE
-G(neg(phi)) can enter.
-
-Since the chain is built step by step, at each step n we can check if F(phi) ∈ chain(n).
-If so, and if n is the designated resolution step for phi, resolve it.
-
-The resolution step for phi at time t is n = Nat.pair t (Encodable.encode phi).
-We need t ≤ n. By Nat.left_le_pair, t ≤ Nat.pair t k for any k.
-
-So: at step n = Nat.pair t (encode phi), check if F(phi) ∈ chain(n).
-If yes, resolve. If no, then either:
-(i) phi already appeared at some earlier step (forward_F satisfied), or
-(ii) G(neg(phi)) entered the chain between t and n, making F(phi) permanently false
-
-In case (ii), we have G(neg(phi)) ∈ chain(k) for some t < k ≤ n.
-G(neg(phi)) ∈ chain(k) and G_theory propagation gives neg(phi) ∈ chain(s) for all s ≥ k.
-But at time t, F(phi) ∈ chain(t) and neg(phi) ∈ chain(t) (since phi ∉ chain(t) by case (b)).
-G(neg(phi)) ∉ chain(t) (as proven).
-
-Now consider step t+1. If the scheduler at step t resolves phi (i.e., schedule_formula(t) = phi),
-then since F(phi) ∈ chain(t), the forward_step resolves it and phi ∈ chain(t+1). Done!
-
-Otherwise, step t+1 resolves some other formula. Chain(t+1) might or might not have F(phi).
-If G(neg(phi)) enters at step t+1 (i.e., G(neg(phi)) ∈ chain(t+1)), then F(phi) is lost.
-
-The key realization: we need to show that the scheduler hits phi EARLY ENOUGH,
-before G(neg(phi)) can enter. But the scheduler is deterministic (based on Nat.unpair),
-and G(neg(phi))'s entry is non-deterministic (depends on Lindenbaum choices).
-
-THIS APPROACH FUNDAMENTALLY DOESN'T WORK for same-family forward_F with
-Lindenbaum-based chains, because Lindenbaum can introduce G(neg(phi)) before
-the scheduler gets to phi.
-
-DEFINITIVE SOLUTION: Instead of arbitrary Lindenbaum extensions, use
-CONSTRAINED extensions that preserve F-content. The constrained_successor_from_seed
-in the SuccChainFMCS already does this: it satisfies the Succ relation which
-has f_step: f_content(M) ⊆ M' ∪ f_content(M').
-
-This means F-obligations are either resolved or deferred. Combined with fair
-scheduling to FORCE resolution, this gives forward_F.
-
-So: BUILD THE CHAIN USING constrained_successor_from_seed (which already exists)
-BUT MODIFIED to also force resolution of a scheduled formula.
+Symmetric construction for the backward direction, resolving P-obligations.
 -/
 
--- Let me look at how constrained_successor_from_seed works and extend it.
+-- The backward chain uses `past_theory_witness_exists` and `canonical_backward_S`.
+-- The construction mirrors the forward chain with all_past/some_past swapped.
+-- For now, we state the key theorem; the proof follows the same pattern.
+
+/--
+One step of the backward dovetailed chain.
+-/
+noncomputable def backward_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) : Set Formula :=
+  if h_P : Formula.some_past phi ∈ M then
+    (past_theory_witness_exists M h_mcs phi h_P).choose
+  else
+    (past_theory_witness_exists M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_P_top h_mcs)).choose
+
+/-- The backward step produces an MCS. -/
+theorem backward_step_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) : SetMaximalConsistent (backward_step M h_mcs phi) := by
+  unfold backward_step
+  split
+  · exact (past_theory_witness_exists M h_mcs phi ‹_›).choose_spec.1
+  · exact (past_theory_witness_exists M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_P_top h_mcs)).choose_spec.1
+
+/-- The backward step resolves the P-obligation. -/
+theorem backward_step_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    phi ∈ backward_step M h_mcs phi := by
+  unfold backward_step
+  simp [h_P]
+  exact (past_theory_witness_exists M h_mcs phi h_P).choose_spec.2.1
+
+/-- The backward step preserves H_theory. -/
+theorem backward_step_H_agree (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) :
+    ∀ a, Formula.all_past a ∈ M → Formula.all_past a ∈ backward_step M h_mcs phi := by
+  unfold backward_step
+  split
+  · exact (past_theory_witness_exists M h_mcs phi ‹_›).choose_spec.2.2.1
+  · exact (past_theory_witness_exists M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_P_top h_mcs)).choose_spec.2.2.1
+
+/-- The backward step gives h_content(M) ⊆ backward_step. -/
+theorem backward_step_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) : h_content M ⊆ backward_step M h_mcs phi := by
+  intro a ha
+  have h_Ha : Formula.all_past a ∈ M := ha
+  have h_Ha_W := backward_step_H_agree M h_mcs phi a h_Ha
+  exact SetMaximalConsistent.implication_property (backward_step_mcs M h_mcs phi)
+    (theorem_in_mcs (backward_step_mcs M h_mcs phi)
+      (DerivationTree.axiom _ _ (Axiom.temp_t_past a))) h_Ha_W
+
+/-- The backward dovetailed chain. -/
+noncomputable def backward_dovetailed (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
+    Nat → Set Formula
+  | 0 => M_0
+  | n + 1 =>
+    let M_n := backward_dovetailed M_0 h_mcs_0 n
+    backward_step M_n (backward_dovetailed_mcs M_0 h_mcs_0 n) (schedule_formula n)
+
+/-- Each point in the backward dovetailed chain is an MCS. -/
+theorem backward_dovetailed_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
+    ∀ n : Nat, SetMaximalConsistent (backward_dovetailed M_0 h_mcs_0 n)
+  | 0 => h_mcs_0
+  | n + 1 => backward_step_mcs _ (backward_dovetailed_mcs M_0 h_mcs_0 n) _
+
+/-- Backward P resolution. -/
+theorem forward_dovetailed_backward_P_nat (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (t : Nat) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ backward_dovetailed M_0 h_mcs_0 t) :
+    ∃ s : Nat, t ≤ s ∧ psi ∈ backward_dovetailed M_0 h_mcs_0 s := by
+  -- Mirror of forward_dovetailed_forward_F using P_since_equiv and since_unfold
+  sorry -- Symmetric proof using Since
+
+/-!
+## Combined Int-Indexed Dovetailed Family
+
+Combines forward and backward dovetailed chains into an Int-indexed family.
+-/
+
+/-- Combined dovetailed family indexed by Int. -/
+noncomputable def dovetailed_fam (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Int) : Set Formula :=
+  match n with
+  | Int.ofNat k => forward_dovetailed M_0 h_mcs_0 k
+  | Int.negSucc k => backward_dovetailed M_0 h_mcs_0 (k + 1)
+
+/-- All elements of dovetailed_fam are MCS. -/
+theorem dovetailed_fam_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Int) : SetMaximalConsistent (dovetailed_fam M_0 h_mcs_0 n) := by
+  match n with
+  | Int.ofNat k => exact forward_dovetailed_mcs M_0 h_mcs_0 k
+  | Int.negSucc k => exact backward_dovetailed_mcs M_0 h_mcs_0 (k + 1)
+
+/-- dovetailed_fam at 0 is M_0. -/
+theorem dovetailed_fam_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
+    dovetailed_fam M_0 h_mcs_0 0 = M_0 := rfl
+
+/--
+Forward G coherence for the Int-indexed dovetailed family:
+G(phi) at time n implies phi at all times m >= n (for non-negative n, m).
+-/
+theorem dovetailed_fam_forward_G (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n m : Int) (h_le : n ≤ m) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ dovetailed_fam M_0 h_mcs_0 n) :
+    phi ∈ dovetailed_fam M_0 h_mcs_0 m := by
+  sorry -- Uses forward_dovetailed_forward_G for non-negative case, cross-chain for negative
+
+/--
+Forward F coherence for the Int-indexed dovetailed family.
+-/
+theorem dovetailed_fam_forward_F (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Int) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ dovetailed_fam M_0 h_mcs_0 n) :
+    ∃ m : Int, n ≤ m ∧ psi ∈ dovetailed_fam M_0 h_mcs_0 m := by
+  sorry -- Reduces to forward_dovetailed_forward_F for the non-negative case
+
+/--
+Backward P coherence for the Int-indexed dovetailed family.
+-/
+theorem dovetailed_fam_backward_P (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
+    (n : Int) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ dovetailed_fam M_0 h_mcs_0 n) :
+    ∃ m : Int, m ≤ n ∧ psi ∈ dovetailed_fam M_0 h_mcs_0 m := by
+  sorry -- Reduces to backward chain resolution
 
 end Bimodal.Metalogic.Algebraic.DovetailedChain

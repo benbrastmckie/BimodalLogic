@@ -624,6 +624,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | since_linearity _ _ _ _ => exact absurd h_dc id
   | until_connectedness _ _ _ => exact absurd h_dc id
   | since_connectedness _ _ _ => exact absurd h_dc id
+  | F_until_equiv _ => exact absurd h_dc id
+  | P_since_equiv _ => exact absurd h_dc id
 
 /-! ## Axiom Validity (Local)
 
@@ -910,6 +912,8 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | since_linearity _ _ _ _ => exact absurd h_dc id
   | until_connectedness _ _ _ => exact absurd h_dc id
   | since_connectedness _ _ _ => exact absurd h_dc id
+  | F_until_equiv _ => exact absurd h_dc id
+  | P_since_equiv _ => exact absurd h_dc id
 
 /-! ## Rule Preservation for Local Validity
 

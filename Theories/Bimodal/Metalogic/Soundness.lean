@@ -415,6 +415,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | since_linearity _ _ _ _ => exact absurd h_base id
   | until_connectedness _ _ _ => exact absurd h_base id
   | since_connectedness _ _ _ => exact absurd h_base id
+  | F_until_equiv _ => exact absurd h_base id
+  | P_since_equiv _ => exact absurd h_base id
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -465,6 +467,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | since_linearity _ _ _ _ => exact absurd h_dc id
   | until_connectedness _ _ _ => exact absurd h_dc id
   | since_connectedness _ _ _ => exact absurd h_dc id
+  | F_until_equiv _ => exact absurd h_dc id
+  | P_since_equiv _ => exact absurd h_dc id
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -611,6 +615,26 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
     exact ⟨s, hst,
       fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
       fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
+  | F_until_equiv ψ =>
+    -- SOUND: F(ψ) → ⊤ U ψ. Both express ∃ s ≥ t with ψ(s).
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.some_future, Formula.neg, truth_at]
+    intro h1
+    have h2 : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
+      by_contra h3; push_neg at h3
+      exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
+    obtain ⟨s, hst, hs⟩ := h2
+    exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
+  | P_since_equiv ψ =>
+    -- SOUND: P(ψ) → ⊤ S ψ. Both express ∃ s ≤ t with ψ(s).
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.some_past, Formula.neg, truth_at]
+    intro h1
+    have h2 : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ := by
+      by_contra h3; push_neg at h3
+      exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
+    obtain ⟨s, hst, hs⟩ := h2
+    exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
 
 /-! ## Full Derivation Soundness
 
@@ -780,6 +804,24 @@ theorem soundness (Γ : Context) (φ : Formula) :
       exact ⟨s, hst,
         fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
         fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
+    | F_until_equiv ψ =>
+      -- SOUND: F(ψ) → ⊤ U ψ. Both express ∃ s ≥ t with ψ(s).
+      simp only [Formula.some_future, Formula.neg, truth_at]
+      intro h1
+      have h2 : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
+        by_contra h3; push_neg at h3
+        exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
+      obtain ⟨s, hst, hs⟩ := h2
+      exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
+    | P_since_equiv ψ =>
+      -- SOUND: P(ψ) → ⊤ S ψ. Both express ∃ s ≤ t with ψ(s).
+      simp only [Formula.some_past, Formula.neg, truth_at]
+      intro h1
+      have h2 : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ := by
+        by_contra h3; push_neg at h3
+        exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
+      obtain ⟨s, hst, hs⟩ := h2
+      exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -963,6 +1005,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | since_linearity _ _ _ _ => exact absurd h_dc id
     | until_connectedness _ _ _ => exact absurd h_dc id
     | since_connectedness _ _ _ => exact absurd h_dc id
+    | F_until_equiv _ => exact absurd h_dc id
+    | P_since_equiv _ => exact absurd h_dc id
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>

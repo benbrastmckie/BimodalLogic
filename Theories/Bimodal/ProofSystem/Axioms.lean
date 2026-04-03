@@ -551,6 +551,28 @@ inductive Axiom : Formula → Type where
       Axiom (Formula.and φ (Formula.snce χ ψ)
         |>.imp (Formula.snce χ (Formula.and ψ (Formula.untl χ φ))))
 
+  /--
+  F-Until equivalence (forward): `F(ψ) → ⊤ U ψ`
+
+  Links the derived operator F (= ¬G¬) with the primitive Until operator.
+  Semantically valid because both express "ψ holds at some future time ≥ t"
+  (the "⊤ at intermediates" condition in Until is vacuously true).
+
+  Combined with the provable reverse `⊤ U ψ → F(ψ)` (from until_induction
+  with χ = ⊥), this gives `F(ψ) ↔ ⊤ U ψ` in any MCS.
+  -/
+  | F_until_equiv (ψ : Formula) :
+      Axiom (Formula.some_future ψ |>.imp (Formula.untl (Formula.neg Formula.bot) ψ))
+
+  /--
+  P-Since equivalence (forward): `P(ψ) → ⊤ S ψ`
+
+  Mirror of `F_until_equiv` for the past direction.
+  Links P (= ¬H¬) with the primitive Since operator.
+  -/
+  | P_since_equiv (ψ : Formula) :
+      Axiom (Formula.some_past ψ |>.imp (Formula.snce (Formula.neg Formula.bot) ψ))
+
   deriving Repr
 
 /--
@@ -636,6 +658,8 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.since_linearity _ _ _ _ => .Discrete
   | Axiom.until_connectedness _ _ _ => .Discrete
   | Axiom.since_connectedness _ _ _ => .Discrete
+  | Axiom.F_until_equiv _ => .Discrete
+  | Axiom.P_since_equiv _ => .Discrete
 
 /--
 The minimal frame class required for an axiom is the class returned by `frameClass`.
@@ -659,6 +683,8 @@ def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
   | Axiom.since_linearity _ _ _ _ => False
   | Axiom.until_connectedness _ _ _ => False
   | Axiom.since_connectedness _ _ _ => False
+  | Axiom.F_until_equiv _ => False
+  | Axiom.P_since_equiv _ => False
   | _ => True
 
 /--
@@ -688,6 +714,8 @@ def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.since_linearity _ _ _ _ => False
   | Axiom.until_connectedness _ _ _ => False
   | Axiom.since_connectedness _ _ _ => False
+  | Axiom.F_until_equiv _ => False
+  | Axiom.P_since_equiv _ => False
   | _ => True
 
 /-! ### FrameClass Consistency Lemmas

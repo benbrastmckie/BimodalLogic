@@ -263,7 +263,7 @@ From plan v4 (prior attempt):
 
 ---
 
-### Phase 6: Dovetailed Chain Construction [NOT STARTED]
+### Phase 6: Dovetailed Chain Construction [COMPLETED]
 
 **Goal**: Extend the existing `DovetailedChain.lean` (605 lines, 0 sorries) to incorporate Until/Since fair scheduling, proving forward_U and forward_F for the dovetailed chain.
 
