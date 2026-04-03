@@ -63,6 +63,8 @@ inductive GoalCategory where
   | Box         -- □φ
   | AllPast     -- Hφ (all_past)
   | AllFuture   -- Gφ (all_future)
+  | Until       -- φ U ψ (untl)
+  | Since       -- φ S ψ (snce)
   deriving BEq, Hashable, Repr, DecidableEq
 
 instance : Inhabited GoalCategory := ⟨.Atom⟩
@@ -79,6 +81,8 @@ def goalCategory (φ : Formula) : GoalCategory :=
   | .box _ => .Box
   | .all_past _ => .AllPast
   | .all_future _ => .AllFuture
+  | .untl _ _ => .Until
+  | .snce _ _ => .Since
 
 /-!
 ## Pattern Key Types

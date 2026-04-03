@@ -123,6 +123,10 @@ def truth_at (M : TaskModel F) (Omega : Set (WorldHistory F))
   | Formula.box φ => ∀ (σ : WorldHistory F), σ ∈ Omega → truth_at M Omega σ t φ
   | Formula.all_past φ => ∀ (s : D), s ≤ t → truth_at M Omega τ s φ
   | Formula.all_future φ => ∀ (s : D), t ≤ s → truth_at M Omega τ s φ
+  | Formula.untl φ ψ => ∃ s : D, t ≤ s ∧ truth_at M Omega τ s ψ ∧
+      ∀ r : D, t ≤ r → r ≤ s → truth_at M Omega τ r φ
+  | Formula.snce φ ψ => ∃ s : D, s ≤ t ∧ truth_at M Omega τ s ψ ∧
+      ∀ r : D, s ≤ r → r ≤ t → truth_at M Omega τ r φ
 
 -- Note: We avoid defining a notation for truth_at as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use truth_at directly.
@@ -327,6 +331,20 @@ theorem truth_double_shift_cancel (M : TaskModel F) (Omega : Set (WorldHistory F
       exact (ih s).mp (h s h_lt)
     · intro h s h_lt
       exact (ih s).mpr (h s h_lt)
+  | untl φ ψ ih_φ ih_ψ =>
+    simp only [truth_at]
+    constructor
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ s).mp h_psi, fun r hr1 hr2 => (ih_φ r).mp (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ s).mpr h_psi, fun r hr1 hr2 => (ih_φ r).mpr (h_phi r hr1 hr2)⟩
+  | snce φ ψ ih_φ ih_ψ =>
+    simp only [truth_at]
+    constructor
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ s).mp h_psi, fun r hr1 hr2 => (ih_φ r).mp (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ s).mpr h_psi, fun r hr1 hr2 => (ih_φ r).mpr (h_phi r hr1 hr2)⟩
 
 /--
 Time-shift preserves truth of formulas.
@@ -501,6 +519,16 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           (y - x) h_shift_eq
       have h_ih := (ih σ s' (s' + (y - x))).mpr h_truth_orig
       exact (truth_history_eq M Omega _ _ s' h_hist_eq ψ).mp h_ih
+
+  | untl φ ψ ih_φ ih_ψ =>
+    -- Until: shifted ↔ original follows same pattern as all_future but with witnesses
+    -- Proof deferred to Phase 4 (Semantics Extension)
+    sorry
+
+  | snce φ ψ ih_φ ih_ψ =>
+    -- Since: symmetric to Until
+    -- Proof deferred to Phase 4 (Semantics Extension)
+    sorry
 
 /--
 Corollary: For any history σ at time y, there exists a history at time x

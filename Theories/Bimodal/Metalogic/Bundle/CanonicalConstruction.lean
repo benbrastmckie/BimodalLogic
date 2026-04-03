@@ -629,6 +629,8 @@ theorem canonical_truth_lemma
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t psi h_all_mcs
+  | untl phi psi ih_phi ih_psi => sorry
+  | snce phi psi ih_phi ih_psi => sorry
 
 /-!
 ## Shifted Truth Lemma
@@ -777,6 +779,8 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
+  | untl phi psi ih_phi ih_psi => sorry
+  | snce phi psi ih_phi ih_psi => sorry
 
 /-!
 ## Restricted Shifted Truth Lemma
@@ -922,6 +926,8 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
         intro s hst
         exact (ih h_ψ_sub fam hfam s).mpr (h_all s hst)
       exact restricted_temporal_backward_H fam root h_backward_P t ψ h_neg_ψ_dc h_all_mcs
+  | untl phi psi ih_phi ih_psi => sorry
+  | snce phi psi ih_phi ih_psi => sorry
 
 end Bimodal.Metalogic.Bundle.Canonical
 

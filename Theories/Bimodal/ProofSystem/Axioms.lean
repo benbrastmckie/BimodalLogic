@@ -450,6 +450,107 @@ inductive Axiom : Formula → Type where
   - Goldblatt 1992, *Logics of Time and Computation* (seriality axiom)
   -/
   | seriality_past (φ : Formula) : Axiom (φ.all_past.imp φ.some_past)
+
+  /--
+  Until Unfolding: `(φ U ψ) → ψ ∨ (φ ∧ G(φ U ψ))`
+
+  If φ holds until ψ, then either ψ holds now, or φ holds now and φ U ψ holds at all future times.
+  -/
+  | until_unfold (φ ψ : Formula) :
+      Axiom (Formula.untl φ ψ |>.imp
+        (Formula.or ψ (Formula.and φ (Formula.all_future (Formula.untl φ ψ)))))
+
+  /--
+  Until Introduction: `ψ ∨ (φ ∧ G(φ U ψ)) → (φ U ψ)`
+
+  Converse of unfolding: if ψ holds now, or φ holds and φ U ψ holds at all future times,
+  then φ U ψ holds.
+  -/
+  | until_intro (φ ψ : Formula) :
+      Axiom ((Formula.or ψ (Formula.and φ (Formula.all_future (Formula.untl φ ψ)))).imp
+        (Formula.untl φ ψ))
+
+  /--
+  Until Induction: `G(ψ → χ) ∧ G(φ ∧ χ → G(χ)) → ((φ U ψ) → χ)`
+
+  The key axiom preventing perpetual deferral. If ψ implies χ, and φ ∧ χ implies G(χ),
+  then φ U ψ implies χ. This is an induction principle on Until.
+  -/
+  | until_induction (φ ψ χ : Formula) :
+      Axiom (Formula.and
+        (Formula.all_future (ψ.imp χ))
+        (Formula.all_future ((Formula.and φ χ).imp (Formula.all_future χ)))
+        |>.imp ((Formula.untl φ ψ).imp χ))
+
+  /--
+  Until Linearity: `(φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ)))`
+
+  If two Until formulas hold simultaneously, their witnesses are linearly ordered.
+  -/
+  | until_linearity (φ ψ φ' ψ' : Formula) :
+      Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl φ' ψ')
+        |>.imp (Formula.or
+          (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
+          (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ)))))
+
+  /--
+  Since Unfolding: `(φ S ψ) → ψ ∨ (φ ∧ H(φ S ψ))`
+
+  Mirror of until_unfold for the past direction.
+  -/
+  | since_unfold (φ ψ : Formula) :
+      Axiom (Formula.snce φ ψ |>.imp
+        (Formula.or ψ (Formula.and φ (Formula.all_past (Formula.snce φ ψ)))))
+
+  /--
+  Since Introduction: `ψ ∨ (φ ∧ H(φ S ψ)) → (φ S ψ)`
+
+  Converse of Since unfolding.
+  -/
+  | since_intro (φ ψ : Formula) :
+      Axiom ((Formula.or ψ (Formula.and φ (Formula.all_past (Formula.snce φ ψ)))).imp
+        (Formula.snce φ ψ))
+
+  /--
+  Since Induction: `H(ψ → χ) ∧ H(φ ∧ χ → H(χ)) → ((φ S ψ) → χ)`
+
+  Mirror of until_induction for the past direction.
+  -/
+  | since_induction (φ ψ χ : Formula) :
+      Axiom (Formula.and
+        (Formula.all_past (ψ.imp χ))
+        (Formula.all_past ((Formula.and φ χ).imp (Formula.all_past χ)))
+        |>.imp ((Formula.snce φ ψ).imp χ))
+
+  /--
+  Since Linearity: `(φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ)))`
+
+  Mirror of until_linearity for the past direction.
+  -/
+  | since_linearity (φ ψ φ' ψ' : Formula) :
+      Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce φ' ψ')
+        |>.imp (Formula.or
+          (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
+          (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ)))))
+
+  /--
+  Until-Since Connectedness: `φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`
+
+  Connects forward Until with backward Since.
+  -/
+  | until_connectedness (φ ψ χ : Formula) :
+      Axiom (Formula.and φ (Formula.untl χ ψ)
+        |>.imp (Formula.untl χ (Formula.and ψ (Formula.snce χ φ))))
+
+  /--
+  Since-Until Connectedness: `φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))`
+
+  Mirror of until_connectedness.
+  -/
+  | since_connectedness (φ ψ χ : Formula) :
+      Axiom (Formula.and φ (Formula.snce χ ψ)
+        |>.imp (Formula.snce χ (Formula.and ψ (Formula.untl χ φ))))
+
   deriving Repr
 
 /--
@@ -525,6 +626,16 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.discreteness_forward _ => .Discrete
   | Axiom.seriality_future _ => .Discrete
   | Axiom.seriality_past _ => .Discrete
+  | Axiom.until_unfold _ _ => .Discrete
+  | Axiom.until_intro _ _ => .Discrete
+  | Axiom.until_induction _ _ _ => .Discrete
+  | Axiom.until_linearity _ _ _ _ => .Discrete
+  | Axiom.since_unfold _ _ => .Discrete
+  | Axiom.since_intro _ _ => .Discrete
+  | Axiom.since_induction _ _ _ => .Discrete
+  | Axiom.since_linearity _ _ _ _ => .Discrete
+  | Axiom.until_connectedness _ _ _ => .Discrete
+  | Axiom.since_connectedness _ _ _ => .Discrete
 
 /--
 The minimal frame class required for an axiom is the class returned by `frameClass`.
@@ -538,6 +649,16 @@ This excludes `discreteness_forward` which requires SuccOrder.
 -/
 def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
   | Axiom.discreteness_forward _ => False
+  | Axiom.until_unfold _ _ => False
+  | Axiom.until_intro _ _ => False
+  | Axiom.until_induction _ _ _ => False
+  | Axiom.until_linearity _ _ _ _ => False
+  | Axiom.since_unfold _ _ => False
+  | Axiom.since_intro _ _ => False
+  | Axiom.since_induction _ _ _ => False
+  | Axiom.since_linearity _ _ _ _ => False
+  | Axiom.until_connectedness _ _ _ => False
+  | Axiom.since_connectedness _ _ _ => False
   | _ => True
 
 /--
@@ -557,6 +678,16 @@ def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.discreteness_forward _ => False
   | Axiom.seriality_future _ => False
   | Axiom.seriality_past _ => False
+  | Axiom.until_unfold _ _ => False
+  | Axiom.until_intro _ _ => False
+  | Axiom.until_induction _ _ _ => False
+  | Axiom.until_linearity _ _ _ _ => False
+  | Axiom.since_unfold _ _ => False
+  | Axiom.since_intro _ _ => False
+  | Axiom.since_induction _ _ _ => False
+  | Axiom.since_linearity _ _ _ _ => False
+  | Axiom.until_connectedness _ _ _ => False
+  | Axiom.since_connectedness _ _ _ => False
   | _ => True
 
 /-! ### FrameClass Consistency Lemmas

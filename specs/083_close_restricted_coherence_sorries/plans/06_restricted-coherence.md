@@ -62,7 +62,7 @@ From plan v4 (prior attempt):
 
 ## Implementation Phases
 
-### Phase 1: Formula Type Extension [NOT STARTED]
+### Phase 1: Formula Type Extension [COMPLETED]
 
 **Goal**: Add `until` and `since` constructors to Formula, update all pattern-matching functions, achieve clean `lake build`.
 
@@ -100,7 +100,7 @@ From plan v4 (prior attempt):
 
 ---
 
-### Phase 2: SubformulaClosure and DeferralClosure Extension [NOT STARTED]
+### Phase 2: SubformulaClosure and DeferralClosure Extension [COMPLETED]
 
 **Goal**: Update subformula closure, deferral closure, and restricted MCS infrastructure for Until/Since formulas. Achieve clean `lake build`.
 
@@ -133,7 +133,7 @@ From plan v4 (prior attempt):
 
 ---
 
-### Phase 3: Axioms and Proof System [NOT STARTED]
+### Phase 3: Axioms and Proof System [COMPLETED]
 
 **Goal**: Add the 10 new Until/Since axiom schemata to the proof system. Achieve clean `lake build`.
 

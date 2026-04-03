@@ -150,6 +150,24 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     · exact (ih τ s).mp (h s h_ord)
     · exact (ih τ s).mpr (h s h_ord)
 
+  | untl φ ψ ih_φ ih_ψ =>
+    -- Until swaps to Since and back
+    simp only [Formula.swap_temporal, truth_at]
+    constructor
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ τ s).mp h_psi, fun r hr1 hr2 => (ih_φ τ r).mp (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ τ s).mpr h_psi, fun r hr1 hr2 => (ih_φ τ r).mpr (h_phi r hr1 hr2)⟩
+
+  | snce φ ψ ih_φ ih_ψ =>
+    -- Since swaps to Until and back
+    simp only [Formula.swap_temporal, truth_at]
+    constructor
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ τ s).mp h_psi, fun r hr1 hr2 => (ih_φ τ r).mp (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_psi, h_phi⟩
+      exact ⟨s, h_le, (ih_ψ τ s).mpr h_psi, fun r hr1 hr2 => (ih_φ τ r).mpr (h_phi r hr1 hr2)⟩
+
 /-!
 ## NOTE: Unprovable Theorem Removed
 
@@ -596,6 +614,16 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     -- h_G : ∀ s ≥ t, ψ.swap(s)
     -- Need: ψ.swap(t). By reflexivity t ≥ t, h_G gives ψ.swap(t).
     exact h_G t le_rfl
+  | until_unfold _ _ => exact absurd h_dc id
+  | until_intro _ _ => exact absurd h_dc id
+  | until_induction _ _ _ => exact absurd h_dc id
+  | until_linearity _ _ _ _ => exact absurd h_dc id
+  | since_unfold _ _ => exact absurd h_dc id
+  | since_intro _ _ => exact absurd h_dc id
+  | since_induction _ _ _ => exact absurd h_dc id
+  | since_linearity _ _ _ _ => exact absurd h_dc id
+  | until_connectedness _ _ _ => exact absurd h_dc id
+  | since_connectedness _ _ _ => exact absurd h_dc id
 
 /-! ## Axiom Validity (Local)
 
@@ -872,6 +900,16 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     simp only [truth_at]
     intro h_H
     exact h_H t le_rfl
+  | until_unfold _ _ => exact absurd h_dc id
+  | until_intro _ _ => exact absurd h_dc id
+  | until_induction _ _ _ => exact absurd h_dc id
+  | until_linearity _ _ _ _ => exact absurd h_dc id
+  | since_unfold _ _ => exact absurd h_dc id
+  | since_intro _ _ => exact absurd h_dc id
+  | since_induction _ _ _ => exact absurd h_dc id
+  | since_linearity _ _ _ _ => exact absurd h_dc id
+  | until_connectedness _ _ _ => exact absurd h_dc id
+  | since_connectedness _ _ _ => exact absurd h_dc id
 
 /-! ## Rule Preservation for Local Validity
 

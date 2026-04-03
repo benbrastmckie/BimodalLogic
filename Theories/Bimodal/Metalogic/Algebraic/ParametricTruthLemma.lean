@@ -351,6 +351,12 @@ theorem parametric_canonical_truth_lemma
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t psi h_all_mcs
+  | untl phi psi ih_phi ih_psi =>
+    -- Until truth lemma: deferred to Phase 7 (Completeness Rewiring)
+    sorry
+  | snce phi psi ih_phi ih_psi =>
+    -- Since truth lemma: deferred to Phase 7 (Completeness Rewiring)
+    sorry
 
 /-!
 ## Shifted Truth Lemma
@@ -501,5 +507,11 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
+  | untl phi psi ih_phi ih_psi =>
+    -- Until shifted truth lemma: deferred to Phase 7
+    sorry
+  | snce phi psi ih_phi ih_psi =>
+    -- Since shifted truth lemma: deferred to Phase 7
+    sorry
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma

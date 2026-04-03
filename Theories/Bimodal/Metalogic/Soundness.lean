@@ -405,6 +405,16 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | discreteness_forward _ => exact absurd h_base id
   | seriality_future _ => exact absurd h_base id
   | seriality_past _ => exact absurd h_base id
+  | until_unfold _ _ => exact absurd h_base id
+  | until_intro _ _ => exact absurd h_base id
+  | until_induction _ _ _ => exact absurd h_base id
+  | until_linearity _ _ _ _ => exact absurd h_base id
+  | since_unfold _ _ => exact absurd h_base id
+  | since_intro _ _ => exact absurd h_base id
+  | since_induction _ _ _ => exact absurd h_base id
+  | since_linearity _ _ _ _ => exact absurd h_base id
+  | until_connectedness _ _ _ => exact absurd h_base id
+  | since_connectedness _ _ _ => exact absurd h_base id
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -445,6 +455,16 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
     intro h_H h_neg_P
     -- Use t itself as witness: h_H gives ψ(t) at t ≤ t (reflexivity)
     exact h_neg_P t le_rfl (h_H t le_rfl)
+  | until_unfold _ _ => exact absurd h_dc id
+  | until_intro _ _ => exact absurd h_dc id
+  | until_induction _ _ _ => exact absurd h_dc id
+  | until_linearity _ _ _ _ => exact absurd h_dc id
+  | since_unfold _ _ => exact absurd h_dc id
+  | since_intro _ _ => exact absurd h_dc id
+  | since_induction _ _ _ => exact absurd h_dc id
+  | since_linearity _ _ _ _ => exact absurd h_dc id
+  | until_connectedness _ _ _ => exact absurd h_dc id
+  | since_connectedness _ _ _ => exact absurd h_dc id
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -486,6 +506,17 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
     intro h_H h_neg_P
     -- Use t itself as witness: h_H gives ψ(t) at t ≤ t (reflexivity)
     exact h_neg_P t le_rfl (h_H t le_rfl)
+  -- Until/Since axioms: soundness proofs deferred to Phase 4
+  | until_unfold _ _ => sorry
+  | until_intro _ _ => sorry
+  | until_induction _ _ _ => sorry
+  | until_linearity _ _ _ _ => sorry
+  | since_unfold _ _ => sorry
+  | since_intro _ _ => sorry
+  | since_induction _ _ _ => sorry
+  | since_linearity _ _ _ _ => sorry
+  | until_connectedness _ _ _ => sorry
+  | since_connectedness _ _ _ => sorry
 
 /-! ## Full Derivation Soundness
 
@@ -593,6 +624,17 @@ theorem soundness (Γ : Context) (φ : Formula) :
       simp only [Formula.some_past, Formula.neg, truth_at]
       intro h_H h_neg_P
       exact h_neg_P t le_rfl (h_H t le_rfl)
+    -- Until/Since axiom soundness: deferred to Phase 4
+    | until_unfold _ _ => sorry
+    | until_intro _ _ => sorry
+    | until_induction _ _ _ => sorry
+    | until_linearity _ _ _ _ => sorry
+    | since_unfold _ _ => sorry
+    | since_intro _ _ => sorry
+    | since_induction _ _ _ => sorry
+    | since_linearity _ _ _ _ => sorry
+    | until_connectedness _ _ _ => sorry
+    | since_connectedness _ _ _ => sorry
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -765,6 +807,17 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
       -- h_H : ∀ s ≤ t, φ(s), h_neg_P : ∀ s ≤ t, ¬φ(s)
       -- Contradiction at s = t using le_rfl
       exact h_neg_P t le_rfl (h_H t le_rfl)
+    -- Until/Since axioms: isDenseCompatible = False, excluded by h_dc
+    | until_unfold _ _ => exact absurd h_dc id
+    | until_intro _ _ => exact absurd h_dc id
+    | until_induction _ _ _ => exact absurd h_dc id
+    | until_linearity _ _ _ _ => exact absurd h_dc id
+    | since_unfold _ _ => exact absurd h_dc id
+    | since_intro _ _ => exact absurd h_dc id
+    | since_induction _ _ _ => exact absurd h_dc id
+    | since_linearity _ _ _ _ => exact absurd h_dc id
+    | until_connectedness _ _ _ => exact absurd h_dc id
+    | since_connectedness _ _ _ => exact absurd h_dc id
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>

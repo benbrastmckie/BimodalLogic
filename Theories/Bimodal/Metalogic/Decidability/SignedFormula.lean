@@ -249,6 +249,8 @@ def subformulas : Formula → List Formula
   | φ@(.box ψ) => φ :: subformulas ψ
   | φ@(.all_past ψ) => φ :: subformulas ψ
   | φ@(.all_future ψ) => φ :: subformulas ψ
+  | φ@(.untl ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
+  | φ@(.snce ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
 
 /-- Count of distinct subformulas (used for termination). -/
 def subformulaCount (φ : Formula) : Nat := (subformulas φ).eraseDups.length
@@ -319,6 +321,26 @@ theorem subformulas_trans {chi psi phi : Formula}
     · simp only [subformulas, List.mem_cons]
       right
       exact iha h2
+  | untl a b iha ihb =>
+    simp only [subformulas, List.mem_cons, List.mem_append] at h2
+    rcases h2 with rfl | ha | hb
+    · exact h1
+    · simp only [subformulas, List.mem_cons, List.mem_append]
+      right; left
+      exact iha ha
+    · simp only [subformulas, List.mem_cons, List.mem_append]
+      right; right
+      exact ihb hb
+  | snce a b iha ihb =>
+    simp only [subformulas, List.mem_cons, List.mem_append] at h2
+    rcases h2 with rfl | ha | hb
+    · exact h1
+    · simp only [subformulas, List.mem_cons, List.mem_append]
+      right; left
+      exact iha ha
+    · simp only [subformulas, List.mem_cons, List.mem_append]
+      right; right
+      exact ihb hb
 
 end Formula
 
@@ -358,6 +380,8 @@ def unexpandedComplexity (sf : SignedFormula) : Nat :=
   | .box _ => sf.formula.complexity
   | .all_past _ => sf.formula.complexity
   | .all_future _ => sf.formula.complexity
+  | .untl _ _ => sf.formula.complexity
+  | .snce _ _ => sf.formula.complexity
 
 /--
 Total unexpanded complexity of a branch.

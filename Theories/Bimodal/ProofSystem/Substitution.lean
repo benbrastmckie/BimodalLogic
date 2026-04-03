@@ -36,6 +36,8 @@ def Formula.subst (q r : Atom) : Formula → Formula
   | box φ => box (φ.subst q r)
   | all_past φ => all_past (φ.subst q r)
   | all_future φ => all_future (φ.subst q r)
+  | untl φ ψ => untl (φ.subst q r) (ψ.subst q r)
+  | snce φ ψ => snce (φ.subst q r) (ψ.subst q r)
 
 namespace Formula
 
@@ -69,6 +71,14 @@ theorem subst_all_past (q r : Atom) (φ : Formula) :
 @[simp]
 theorem subst_all_future (q r : Atom) (φ : Formula) :
     (all_future φ).subst q r = all_future (φ.subst q r) := rfl
+
+@[simp]
+theorem subst_untl (q r : Atom) (φ ψ : Formula) :
+    (untl φ ψ).subst q r = untl (φ.subst q r) (ψ.subst q r) := rfl
+
+@[simp]
+theorem subst_snce (q r : Atom) (φ ψ : Formula) :
+    (snce φ ψ).subst q r = snce (φ.subst q r) (ψ.subst q r) := rfl
 
 /-!
 ## Derived operator substitution
@@ -129,6 +139,12 @@ theorem subst_fresh_eq (q r : Atom) (φ : Formula) (h : q ∉ φ.atoms) :
   | all_future φ ih =>
     simp only [atoms] at h
     simp [subst, ih h]
+  | untl φ ψ ih1 ih2 =>
+    simp only [atoms, Finset.mem_union, not_or] at h
+    simp [subst, ih1 h.1, ih2 h.2]
+  | snce φ ψ ih1 ih2 =>
+    simp only [atoms, Finset.mem_union, not_or] at h
+    simp [subst, ih1 h.1, ih2 h.2]
 
 /-- Atoms of substituted formula: if q ∉ φ.atoms, then (φ.subst q r).atoms = φ.atoms.
     If q ∈ φ.atoms, then we replace q with r in the atom set. -/
@@ -149,6 +165,10 @@ theorem subst_atoms (q r : Atom) (φ : Formula) :
     simp only [subst, atoms, ih]
   | all_future φ ih =>
     simp only [subst, atoms, ih]
+  | untl φ ψ ih1 ih2 =>
+    simp only [subst, atoms, Finset.image_union, ih1, ih2]
+  | snce φ ψ ih1 ih2 =>
+    simp only [subst, atoms, Finset.image_union, ih1, ih2]
 
 end Formula
 
@@ -326,6 +346,8 @@ theorem swap_temporal_subst (q r : Atom) (φ : Formula) :
   | box a ih => simp [swap_temporal, subst, ih]
   | all_past a ih => simp [swap_temporal, subst, ih]
   | all_future a ih => simp [swap_temporal, subst, ih]
+  | untl a b iha ihb => simp [swap_temporal, subst, iha, ihb]
+  | snce a b iha ihb => simp [swap_temporal, subst, iha, ihb]
 
 /-- Derivations are preserved under atom substitution.
 

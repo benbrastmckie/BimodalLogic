@@ -638,6 +638,70 @@ def backwardDeferralSet (phi : Formula) : Finset Formula :=
   ((closureWithNeg phi).filter IsPastFormula).image toPastDeferral
 
 /-!
+## Until/Since Deferral Infrastructure
+
+For Until formulas `φ U ψ`, the deferral disjunction is `ψ ∨ (φ ∧ (φ U ψ))`.
+For Since formulas `φ S ψ`, the deferral disjunction is `ψ ∨ (φ ∧ (φ S ψ))`.
+These correspond to the U-Unfolding and S-Unfolding axioms.
+-/
+
+/-- Check if a formula is an Until formula. -/
+def IsUntilFormula : Formula → Prop
+  | .untl _ _ => True
+  | _ => False
+
+/-- IsUntilFormula is decidable. -/
+instance : DecidablePred IsUntilFormula :=
+  fun f => match f with
+  | .untl _ _ => isTrue True.intro
+  | .atom _ | .bot | .imp _ _ | .box _ | .all_past _ | .all_future _ | .snce _ _ =>
+    isFalse (by simp [IsUntilFormula])
+
+/-- Check if a formula is a Since formula. -/
+def IsSinceFormula : Formula → Prop
+  | .snce _ _ => True
+  | _ => False
+
+/-- IsSinceFormula is decidable. -/
+instance : DecidablePred IsSinceFormula :=
+  fun f => match f with
+  | .snce _ _ => isTrue True.intro
+  | .atom _ | .bot | .imp _ _ | .box _ | .all_past _ | .all_future _ | .untl _ _ =>
+    isFalse (by simp [IsSinceFormula])
+
+/--
+Convert an Until formula `φ U ψ` to its deferral disjunction `ψ ∨ (φ ∧ (φ U ψ))`.
+For non-Until formulas, returns bot (placeholder, will be filtered).
+-/
+def toUntilDeferral : Formula → Formula
+  | .untl phi psi => Formula.or psi (Formula.and phi (.untl phi psi))
+  | _ => Formula.bot
+
+/--
+Convert a Since formula `φ S ψ` to its deferral disjunction `ψ ∨ (φ ∧ (φ S ψ))`.
+For non-Since formulas, returns bot (placeholder, will be filtered).
+-/
+def toSinceDeferral : Formula → Formula
+  | .snce phi psi => Formula.or psi (Formula.and phi (.snce phi psi))
+  | _ => Formula.bot
+
+/--
+The set of Until-deferral disjunctions for phi.
+
+For each `φ' U ψ'` in closureWithNeg(phi), we add `ψ' ∨ (φ' ∧ (φ' U ψ'))`.
+-/
+def untilDeferralSet (phi : Formula) : Finset Formula :=
+  ((closureWithNeg phi).filter IsUntilFormula).image toUntilDeferral
+
+/--
+The set of Since-deferral disjunctions for phi.
+
+For each `φ' S ψ'` in closureWithNeg(phi), we add `ψ' ∨ (φ' ∧ (φ' S ψ'))`.
+-/
+def sinceDeferralSet (phi : Formula) : Finset Formula :=
+  ((closureWithNeg phi).filter IsSinceFormula).image toSinceDeferral
+
+/-!
 ## Seriality Formulas
 
 The seriality formulas F(neg bot), P(neg bot), and neg bot are always included
@@ -689,8 +753,8 @@ def serialityFormulas : Finset Formula :=
    neg_G_neg_neg_bot, neg_H_neg_neg_bot, F_top_deferral, P_top_deferral}
 
 /--
-The deferral closure extends closureWithNeg with deferral disjunctions and
-seriality formulas.
+The base deferral closure (F/P deferrals + seriality). The full deferralClosure extends
+this with Until/Since deferral sets.
 
 This closure is used for the restricted MCS construction in the completeness proof.
 It ensures that:
@@ -699,14 +763,37 @@ It ensures that:
 3. The closure is still finite
 4. F_top and P_top are always available (for seriality/chain construction)
 -/
-def deferralClosure (phi : Formula) : Finset Formula :=
+def baseDeferralClosure (phi : Formula) : Finset Formula :=
   closureWithNeg phi ∪ deferralDisjunctionSet phi ∪ backwardDeferralSet phi ∪ serialityFormulas
+
+def deferralClosure (phi : Formula) : Finset Formula :=
+  baseDeferralClosure phi
+
+/-- Extended deferral closure including Until/Since deferrals. Used in Phases 5-7. -/
+def extendedDeferralClosure (phi : Formula) : Finset Formula :=
+  baseDeferralClosure phi ∪ untilDeferralSet phi ∪ sinceDeferralSet phi
+
+/-- baseDeferralClosure equals deferralClosure (current definition). -/
+theorem baseDeferralClosure_eq_deferralClosure (phi : Formula) :
+    baseDeferralClosure phi = deferralClosure phi := rfl
+
+/-- baseDeferralClosure is a subset of deferralClosure. -/
+theorem baseDeferralClosure_subset_deferralClosure (phi : Formula) :
+    baseDeferralClosure phi ⊆ deferralClosure phi := by
+  rw [baseDeferralClosure_eq_deferralClosure]
+
+/-- deferralClosure is a subset of extendedDeferralClosure. -/
+theorem deferralClosure_subset_extendedDeferralClosure (phi : Formula) :
+    deferralClosure phi ⊆ extendedDeferralClosure phi := by
+  intro psi h
+  unfold extendedDeferralClosure
+  exact Finset.mem_union_left _ (Finset.mem_union_left _ h)
 
 /-- closureWithNeg is a subset of deferralClosure. -/
 theorem closureWithNeg_subset_deferralClosure (phi : Formula) :
     closureWithNeg phi ⊆ deferralClosure phi := by
   intro psi h
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   exact Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_union_left _ h))
 
 /-- The formula itself is in deferralClosure. -/
@@ -757,57 +844,60 @@ theorem neg_H_neg_neg_bot_mem_serialityFormulas : neg_H_neg_neg_bot ∈ serialit
   simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton]
   right; right; right; right; right; right; right; left; trivial
 
+/-- F_top is in baseDeferralClosure for any phi. -/
+theorem F_top_mem_baseDeferralClosure (phi : Formula) : F_top ∈ baseDeferralClosure phi := by
+  unfold baseDeferralClosure
+  exact Finset.mem_union_right _ F_top_mem_serialityFormulas
+
 /-- F_top is in deferralClosure for any phi. -/
-theorem F_top_mem_deferralClosure (phi : Formula) : F_top ∈ deferralClosure phi := by
-  unfold deferralClosure
-  apply Finset.mem_union_right
-  exact F_top_mem_serialityFormulas
+theorem F_top_mem_deferralClosure (phi : Formula) : F_top ∈ deferralClosure phi :=
+  baseDeferralClosure_subset_deferralClosure phi (F_top_mem_baseDeferralClosure phi)
 
 /-- P_top is in deferralClosure for any phi. -/
 theorem P_top_mem_deferralClosure (phi : Formula) : P_top ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact P_top_mem_serialityFormulas
 
 /-- neg bot is in deferralClosure for any phi. -/
 theorem neg_bot_mem_deferralClosure (phi : Formula) :
     Formula.neg Formula.bot ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact neg_bot_mem_serialityFormulas
 
 /-- neg neg bot is in deferralClosure for any phi. -/
 theorem neg_neg_bot_mem_deferralClosure (phi : Formula) :
     neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact neg_neg_bot_mem_serialityFormulas
 
 /-- G(neg neg bot) is in deferralClosure for any phi. -/
 theorem G_neg_neg_bot_mem_deferralClosure (phi : Formula) :
     G_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact G_neg_neg_bot_mem_serialityFormulas
 
 /-- H(neg neg bot) is in deferralClosure for any phi. -/
 theorem H_neg_neg_bot_mem_deferralClosure (phi : Formula) :
     H_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact H_neg_neg_bot_mem_serialityFormulas
 
 /-- neg(G_neg_neg_bot) is in deferralClosure for any phi. -/
 theorem neg_G_neg_neg_bot_mem_deferralClosure (phi : Formula) :
     neg_G_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact neg_G_neg_neg_bot_mem_serialityFormulas
 
 /-- neg(H_neg_neg_bot) is in deferralClosure for any phi. -/
 theorem neg_H_neg_neg_bot_mem_deferralClosure (phi : Formula) :
     neg_H_neg_neg_bot ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact neg_H_neg_neg_bot_mem_serialityFormulas
 
@@ -824,14 +914,14 @@ theorem P_top_deferral_mem_serialityFormulas : P_top_deferral ∈ serialityFormu
 /-- F_top_deferral is in deferralClosure for any phi. -/
 theorem F_top_deferral_mem_deferralClosure (phi : Formula) :
     F_top_deferral ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact F_top_deferral_mem_serialityFormulas
 
 /-- P_top_deferral is in deferralClosure for any phi. -/
 theorem P_top_deferral_mem_deferralClosure (phi : Formula) :
     P_top_deferral ∈ deferralClosure phi := by
-  unfold deferralClosure
+  unfold deferralClosure baseDeferralClosure
   apply Finset.mem_union_right
   exact P_top_deferral_mem_serialityFormulas
 
@@ -855,7 +945,7 @@ theorem toPastDeferral_some_past (chi : Formula) :
 theorem deferral_of_F_in_closure (phi chi : Formula)
     (h : Formula.some_future chi ∈ closureWithNeg phi) :
     Formula.or chi (Formula.some_future chi) ∈ deferralClosure phi := by
-  unfold deferralClosure deferralDisjunctionSet
+  unfold deferralClosure baseDeferralClosure deferralDisjunctionSet
   apply Finset.mem_union_left
   apply Finset.mem_union_left
   apply Finset.mem_union_right
@@ -870,7 +960,7 @@ theorem deferral_of_F_in_closure (phi chi : Formula)
 theorem deferral_of_P_in_closure (phi chi : Formula)
     (h : Formula.some_past chi ∈ closureWithNeg phi) :
     Formula.or chi (Formula.some_past chi) ∈ deferralClosure phi := by
-  unfold deferralClosure backwardDeferralSet
+  unfold deferralClosure baseDeferralClosure backwardDeferralSet
   apply Finset.mem_union_left
   apply Finset.mem_union_right
   rw [← toPastDeferral_some_past chi]
@@ -936,7 +1026,7 @@ theorem max_F_depth_deferralClosure_eq (phi : Formula) :
   · -- ≤ direction: every element of deferralClosure has depth ≤ max
     apply Finset.sup_le
     intro f hf
-    unfold deferralClosure at hf
+    unfold deferralClosure baseDeferralClosure at hf
     simp only [Finset.mem_union] at hf
     rcases hf with ((hf_orig | hf_defer_F) | hf_defer_P) | hf_serial
     · -- f ∈ closureWithNeg phi
@@ -1018,7 +1108,7 @@ theorem max_P_depth_deferralClosure_eq (phi : Formula) :
   apply le_antisymm
   · apply Finset.sup_le
     intro f hf
-    unfold deferralClosure at hf
+    unfold deferralClosure baseDeferralClosure at hf
     simp only [Finset.mem_union] at hf
     rcases hf with ((hf_orig | hf_defer_F) | hf_defer_P) | hf_serial
     · exact le_max_of_le_left (p_depth_le_max hf_orig)
@@ -1102,7 +1192,7 @@ private theorem non_imp_in_deferralClosure_is_in_closureWithNeg (phi : Formula)
     (h_not_G : f ≠ G_neg_neg_bot)
     (h_not_H : f ≠ H_neg_neg_bot) :
     f ∈ closureWithNeg phi := by
-  unfold deferralClosure at h
+  unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
   rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
   · exact h_orig
@@ -1144,7 +1234,7 @@ Any all_future formula in deferralClosure is either in closureWithNeg or is G_ne
 theorem all_future_in_deferralClosure_cases (phi psi : Formula)
     (h : Formula.all_future psi ∈ deferralClosure phi) :
     Formula.all_future psi ∈ closureWithNeg phi ∨ Formula.all_future psi = G_neg_neg_bot := by
-  unfold deferralClosure at h
+  unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
   rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
   · exact Or.inl h_orig
@@ -1199,7 +1289,7 @@ Any all_past formula in deferralClosure is either in closureWithNeg or is H_neg_
 theorem all_past_in_deferralClosure_cases (phi psi : Formula)
     (h : Formula.all_past psi ∈ deferralClosure phi) :
     Formula.all_past psi ∈ closureWithNeg phi ∨ Formula.all_past psi = H_neg_neg_bot := by
-  unfold deferralClosure at h
+  unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
   rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
   · exact Or.inl h_orig
@@ -1300,7 +1390,7 @@ The original theorem is no longer true because F_top is now in deferralClosure.
 theorem some_future_in_deferralClosure_cases (phi chi : Formula)
     (h : Formula.some_future chi ∈ deferralClosure phi) :
     Formula.some_future chi ∈ closureWithNeg phi ∨ Formula.some_future chi = F_top := by
-  unfold deferralClosure at h
+  unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
   rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
   · exact Or.inl h_orig
@@ -1384,7 +1474,7 @@ Symmetric to some_future_in_deferralClosure_cases.
 theorem some_past_in_deferralClosure_cases (phi chi : Formula)
     (h : Formula.some_past chi ∈ deferralClosure phi) :
     Formula.some_past chi ∈ closureWithNeg phi ∨ Formula.some_past chi = P_top := by
-  unfold deferralClosure at h
+  unfold deferralClosure baseDeferralClosure at h
   simp only [Finset.mem_union] at h
   rcases h with ((h_orig | h_defer_F) | h_defer_P) | h_serial
   · exact Or.inl h_orig

@@ -76,6 +76,10 @@ inductive Formula : Type where
   | all_past : Formula → Formula
   /-- Universal future (Gφ, "φ will always be true") -/
   | all_future : Formula → Formula
+  /-- Until (φ U ψ, "φ holds until ψ becomes true") -/
+  | untl : Formula → Formula → Formula
+  /-- Since (φ S ψ, "φ has held since ψ was true") -/
+  | snce : Formula → Formula → Formula
   deriving Repr, DecidableEq, BEq, Hashable, Countable
 
 /-!
@@ -114,6 +118,8 @@ def complexity : Formula → Nat
   | box φ => 1 + φ.complexity
   | all_past φ => 1 + φ.complexity
   | all_future φ => 1 + φ.complexity
+  | untl φ ψ => 1 + φ.complexity + ψ.complexity
+  | snce φ ψ => 1 + φ.complexity + ψ.complexity
 
 /-!
 ### BEq Reflexivity
@@ -136,6 +142,12 @@ private theorem beq_all_past_eq (a b : Formula) :
 private theorem beq_all_future_eq (a b : Formula) :
     (all_future a == all_future b) = (a == b) := rfl
 
+private theorem beq_untl_eq (a b c d : Formula) :
+    (untl a b == untl c d) = ((a == c) && (b == d)) := rfl
+
+private theorem beq_snce_eq (a b c d : Formula) :
+    (snce a b == snce c d) = ((a == c) && (b == d)) := rfl
+
 /-- BEq on Formula is reflexive. -/
 theorem beq_refl (φ : Formula) : (φ == φ) = true := by
   induction φ with
@@ -145,6 +157,8 @@ theorem beq_refl (φ : Formula) : (φ == φ) = true := by
   | box a ih => rw [beq_box_eq, ih]
   | all_past a ih => rw [beq_all_past_eq, ih]
   | all_future a ih => rw [beq_all_future_eq, ih]
+  | untl a b iha ihb => rw [beq_untl_eq, iha, ihb]; rfl
+  | snce a b iha ihb => rw [beq_snce_eq, iha, ihb]; rfl
 
 instance : ReflBEq Formula where
   rfl := beq_refl _
@@ -153,70 +167,54 @@ instance : ReflBEq Formula where
 theorem eq_of_beq {φ ψ : Formula} (h : (φ == ψ) = true) : φ = ψ := by
   induction φ generalizing ψ with
   | atom p =>
-    cases ψ with
+    match ψ with
     | atom q =>
       have heq : (atom p == atom q) = (p == q) := rfl
-      rw [heq] at h
-      have hp : p = q := beq_iff_eq.mp h
-      subst hp; rfl
-    | bot => exact absurd h (by rw [show (atom p == bot) = false from rfl]; decide)
-    | imp c d => exact absurd h (by rw [show (atom p == imp c d) = false from rfl]; decide)
-    | box c => exact absurd h (by rw [show (atom p == box c) = false from rfl]; decide)
-    | all_past c => exact absurd h (by rw [show (atom p == all_past c) = false from rfl]; decide)
-    | all_future c => exact absurd h (by rw [show (atom p == all_future c) = false from rfl]; decide)
+      rw [heq] at h; exact congrArg atom (beq_iff_eq.mp h)
+    | bot | imp _ _ | box _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
   | bot =>
-    cases ψ with
+    match ψ with
     | bot => rfl
-    | atom q => exact absurd h (by rw [show (bot == atom q) = false from rfl]; decide)
-    | imp c d => exact absurd h (by rw [show (bot == imp c d) = false from rfl]; decide)
-    | box c => exact absurd h (by rw [show (bot == box c) = false from rfl]; decide)
-    | all_past c => exact absurd h (by rw [show (bot == all_past c) = false from rfl]; decide)
-    | all_future c => exact absurd h (by rw [show (bot == all_future c) = false from rfl]; decide)
+    | atom _ | imp _ _ | box _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
   | imp a b iha ihb =>
-    cases ψ with
+    match ψ with
     | imp c d =>
       have heq : (imp a b == imp c d) = ((a == c) && (b == d)) := rfl
-      rw [heq] at h
-      simp only [Bool.and_eq_true] at h
+      rw [heq] at h; simp only [Bool.and_eq_true] at h
       exact congrArg₂ imp (iha h.1) (ihb h.2)
-    | atom q => exact absurd h (by rw [show (imp a b == atom q) = false from rfl]; decide)
-    | bot => exact absurd h (by rw [show (imp a b == bot) = false from rfl]; decide)
-    | box c => exact absurd h (by rw [show (imp a b == box c) = false from rfl]; decide)
-    | all_past c => exact absurd h (by rw [show (imp a b == all_past c) = false from rfl]; decide)
-    | all_future c => exact absurd h (by rw [show (imp a b == all_future c) = false from rfl]; decide)
+    | atom _ | bot | box _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
   | box a ih =>
-    cases ψ with
+    match ψ with
     | box c =>
       have heq : (box a == box c) = (a == c) := rfl
-      rw [heq] at h
-      exact congrArg box (ih h)
-    | atom q => exact absurd h (by rw [show (box a == atom q) = false from rfl]; decide)
-    | bot => exact absurd h (by rw [show (box a == bot) = false from rfl]; decide)
-    | imp c d => exact absurd h (by rw [show (box a == imp c d) = false from rfl]; decide)
-    | all_past c => exact absurd h (by rw [show (box a == all_past c) = false from rfl]; decide)
-    | all_future c => exact absurd h (by rw [show (box a == all_future c) = false from rfl]; decide)
+      rw [heq] at h; exact congrArg box (ih h)
+    | atom _ | bot | imp _ _ | all_past _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
   | all_past a ih =>
-    cases ψ with
+    match ψ with
     | all_past c =>
       have heq : (all_past a == all_past c) = (a == c) := rfl
-      rw [heq] at h
-      exact congrArg all_past (ih h)
-    | atom q => exact absurd h (by rw [show (all_past a == atom q) = false from rfl]; decide)
-    | bot => exact absurd h (by rw [show (all_past a == bot) = false from rfl]; decide)
-    | imp c d => exact absurd h (by rw [show (all_past a == imp c d) = false from rfl]; decide)
-    | box c => exact absurd h (by rw [show (all_past a == box c) = false from rfl]; decide)
-    | all_future c => exact absurd h (by rw [show (all_past a == all_future c) = false from rfl]; decide)
+      rw [heq] at h; exact congrArg all_past (ih h)
+    | atom _ | bot | imp _ _ | box _ | all_future _ | untl _ _ | snce _ _ => exact nomatch h
   | all_future a ih =>
-    cases ψ with
+    match ψ with
     | all_future c =>
       have heq : (all_future a == all_future c) = (a == c) := rfl
-      rw [heq] at h
-      exact congrArg all_future (ih h)
-    | atom q => exact absurd h (by rw [show (all_future a == atom q) = false from rfl]; decide)
-    | bot => exact absurd h (by rw [show (all_future a == bot) = false from rfl]; decide)
-    | imp c d => exact absurd h (by rw [show (all_future a == imp c d) = false from rfl]; decide)
-    | box c => exact absurd h (by rw [show (all_future a == box c) = false from rfl]; decide)
-    | all_past c => exact absurd h (by rw [show (all_future a == all_past c) = false from rfl]; decide)
+      rw [heq] at h; exact congrArg all_future (ih h)
+    | atom _ | bot | imp _ _ | box _ | all_past _ | untl _ _ | snce _ _ => exact nomatch h
+  | untl a b iha ihb =>
+    match ψ with
+    | untl c d =>
+      have heq : (untl a b == untl c d) = ((a == c) && (b == d)) := rfl
+      rw [heq] at h; simp only [Bool.and_eq_true] at h
+      exact congrArg₂ untl (iha h.1) (ihb h.2)
+    | atom _ | bot | imp _ _ | box _ | all_past _ | all_future _ | snce _ _ => exact nomatch h
+  | snce a b iha ihb =>
+    match ψ with
+    | snce c d =>
+      have heq : (snce a b == snce c d) = ((a == c) && (b == d)) := rfl
+      rw [heq] at h; simp only [Bool.and_eq_true] at h
+      exact congrArg₂ snce (iha h.1) (ihb h.2)
+    | atom _ | bot | imp _ _ | box _ | all_past _ | all_future _ | untl _ _ => exact nomatch h
 
 instance : LawfulBEq Formula where
   eq_of_beq := eq_of_beq
@@ -242,6 +240,8 @@ def modalDepth : Formula → Nat
   | box φ => 1 + φ.modalDepth
   | all_past φ => φ.modalDepth
   | all_future φ => φ.modalDepth
+  | untl φ ψ => max φ.modalDepth ψ.modalDepth
+  | snce φ ψ => max φ.modalDepth ψ.modalDepth
 
 /--
 Temporal depth: nesting level of temporal operators (G, F, H, P).
@@ -263,6 +263,8 @@ def temporalDepth : Formula → Nat
   | box φ => φ.temporalDepth
   | all_past φ => 1 + φ.temporalDepth
   | all_future φ => 1 + φ.temporalDepth
+  | untl φ ψ => 1 + max φ.temporalDepth ψ.temporalDepth
+  | snce φ ψ => 1 + max φ.temporalDepth ψ.temporalDepth
 
 /--
 Count implication operators in a formula.
@@ -283,6 +285,8 @@ def countImplications : Formula → Nat
   | box φ => φ.countImplications
   | all_past φ => φ.countImplications
   | all_future φ => φ.countImplications
+  | untl φ ψ => φ.countImplications + ψ.countImplications
+  | snce φ ψ => φ.countImplications + ψ.countImplications
 
 /--
 Negation (¬φ) as derived operator: φ → ⊥
@@ -412,6 +416,8 @@ def swap_temporal : Formula → Formula
   | box φ => box φ.swap_temporal
   | all_past φ => all_future φ.swap_temporal
   | all_future φ => all_past φ.swap_temporal
+  | untl φ ψ => snce φ.swap_temporal ψ.swap_temporal
+  | snce φ ψ => untl φ.swap_temporal ψ.swap_temporal
 
 
 /--
@@ -428,6 +434,8 @@ theorem swap_temporal_involution (φ : Formula) :
   | box _ ih => simp [swap_temporal, ih]
   | all_past _ ih => simp [swap_temporal, ih]
   | all_future _ ih => simp [swap_temporal, ih]
+  | untl _ _ ih1 ih2 => simp [swap_temporal, ih1, ih2]
+  | snce _ _ ih1 ih2 => simp [swap_temporal, ih1, ih2]
 
 
 /--
@@ -463,7 +471,7 @@ recurse into other imp formulas which also don't need them.
 -/
 def needsPositiveHypotheses : Formula → Bool
   | Formula.imp _ _ => false  -- All imp cases
-  | _ => true  -- atom, bot, box, G, H
+  | _ => true  -- atom, bot, box, G, H, until, since
 
 @[simp] lemma needsPositiveHypotheses_atom (s : Atom) :
     (Formula.atom s).needsPositiveHypotheses = true := rfl
@@ -479,6 +487,12 @@ def needsPositiveHypotheses : Formula → Bool
 
 @[simp] lemma needsPositiveHypotheses_all_past (psi : Formula) :
     (Formula.all_past psi).needsPositiveHypotheses = true := rfl
+
+@[simp] lemma needsPositiveHypotheses_untl (p q : Formula) :
+    (Formula.untl p q).needsPositiveHypotheses = true := rfl
+
+@[simp] lemma needsPositiveHypotheses_snce (p q : Formula) :
+    (Formula.snce p q).needsPositiveHypotheses = true := rfl
 
 @[simp] lemma needsPositiveHypotheses_imp (p q : Formula) :
     (Formula.imp p q).needsPositiveHypotheses = false := rfl
@@ -498,6 +512,8 @@ def atoms : Formula → Finset Atom
   | box φ => φ.atoms
   | all_past φ => φ.atoms
   | all_future φ => φ.atoms
+  | untl φ ψ => φ.atoms ∪ ψ.atoms
+  | snce φ ψ => φ.atoms ∪ ψ.atoms
 
 /-- swap_temporal preserves atoms: swapping past/future does not change which atoms appear. -/
 theorem atoms_swap_temporal (φ : Formula) : φ.swap_temporal.atoms = φ.atoms := by
@@ -508,6 +524,8 @@ theorem atoms_swap_temporal (φ : Formula) : φ.swap_temporal.atoms = φ.atoms :
   | box _ ih => simp [swap_temporal, atoms, ih]
   | all_past _ ih => simp [swap_temporal, atoms, ih]
   | all_future _ ih => simp [swap_temporal, atoms, ih]
+  | untl _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
+  | snce _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
 
 end Formula
 
