@@ -533,21 +533,27 @@ theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
 
 /--
-U-step for Succ with G-persistence: If `Succ u v`, `φ U ψ ∈ u`, and `¬ψ ∈ u`
-(i.e., the deferral case of until_unfold), then `φ U ψ ∈ v`.
+U-step for Succ with G-persistence.
 
-In the deferral case, `G(φ U ψ) ∈ u`, so `φ U ψ ∈ g_content(u) ⊆ v`.
+**BLOCKED** under strict semantics: The old argument relied on the non-strict `until_unfold`
+giving `ψ ∨ (φ ∧ G(φ U ψ))`, where `G(φ U ψ)` propagates via g_content. Under strict
+semantics, `until_unfold` gives `X(ψ ∨ (φ ∧ (φ U ψ)))` instead, and there is no G-wrapped
+Until formula to propagate through g_content. The X-formula gives `F(ψ ∨ ...)` via
+`next_implies_some_future`, placing the disjunction in `f_content(u)`. By Succ.f_step,
+it reaches `v ∪ f_content(v)`. However, if it lands in `v` and the `ψ` branch holds,
+`ψ → (φ U ψ)` is NOT valid under strict semantics (no strictly future witness). If it
+lands in `f_content(v)`, we get `F(ψ ∨ ...) ∈ v` but not `(φ U ψ) ∈ v`.
+
+This theorem requires the Succ relation to additionally propagate X-content, or a
+fundamentally different approach. The dovetailed chain construction bypasses this by
+resolving Until obligations through fair scheduling rather than Succ-based propagation.
 -/
 theorem until_persists_through_succ (u v : Set Formula)
-    (h_mcs_u : SetMaximalConsistent u) (h_succ : Succ u v)
+    (h_mcs_u : SetMaximalConsistent u) (h_mcs_v : SetMaximalConsistent v) (h_succ : Succ u v)
     (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ u) (h_neg_psi : Formula.neg ψ ∈ u) :
     Formula.untl φ ψ ∈ v := by
-  -- Under strict semantics, until_unfold gives X(ψ ∨ (φ ∧ (φ U ψ))) ∈ u.
-  -- The X-formula is ⊥ U (ψ ∨ (φ ∧ (φ U ψ))), which encodes a "next-step" obligation.
-  -- In the successor v, the disjunction ψ ∨ (φ ∧ (φ U ψ)) should hold.
-  -- Since ¬ψ ∈ u, the ¬ψ carries to v if ψ is "stable". But under strict semantics
-  -- the until_unfold structure is different.
-  -- TODO: Rewrite for X-based until_unfold.
+  -- BLOCKED: requires X-content propagation infrastructure.
+  -- See docstring for detailed analysis.
   sorry
 
 end Bimodal.Metalogic.Bundle

@@ -4,6 +4,7 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.GeneralizedNecessitation
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.TemporalDerived
 
 /-!
 # Witness Seed Definitions and Consistency
@@ -404,69 +405,61 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
       exact SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_G_imp) h_G_bot_in_M
 
-  -- Now apply until_induction with χ = ⊥ to derive ¬(φ U ψ) ∈ M
-  -- until_induction: G(ψ → χ) ∧ G((φ ∧ χ) → G(χ)) → ((φ U ψ) → χ)
-  -- With χ = ⊥:
-  --   G(ψ → ⊥) ∧ G((φ ∧ ⊥) → G(⊥)) → ((φ U ψ) → ⊥)
+  -- Apply until_induction with χ = ⊥ to derive ¬(φ U ψ) ∈ M.
+  -- New axiom shape (strict semantics, X-based):
+  --   G(ψ → ⊥) ∧ G((φ ∧ X(⊥)) → ⊥) → ((φ U ψ) → X(⊥))
+  -- where X(⊥) = ⊥ U ⊥.
   --
   -- G(ψ → ⊥) = G(¬ψ) — we have this (h_G_neg_psi)
-  -- G((φ ∧ ⊥) → G(⊥)) — provable (ex falso)
+  -- G((φ ∧ X(⊥)) → ⊥) — provable since X(⊥) → ⊥ (X_bot_absurd)
 
-  -- Step 1: Prove ⊢ (φ ∧ ⊥) → G(⊥) (ex falso)
-  -- (φ ∧ ⊥) → ⊥ by rce_imp (conjunction elimination right)
-  -- then ⊥ → G(⊥) by ex falso (prop_s)
-  -- Chain via prop_k: (A→B) → (B→C) → (A→C)
-  have h_and_bot_imp_G_bot : [] ⊢ (Formula.and φ Formula.bot).imp (Formula.all_future Formula.bot) := by
-    -- (φ ∧ ⊥) → ⊥ by rce_imp (conjunction elimination right)
-    have h_rce : [] ⊢ (Formula.and φ Formula.bot).imp Formula.bot :=
-      Bimodal.Theorems.Propositional.rce_imp φ Formula.bot
-    -- ⊥ → G(⊥) by ex falso
-    have h_efq : [] ⊢ Formula.bot.imp (Formula.all_future Formula.bot) :=
-      Bimodal.Theorems.Propositional.efq_axiom (Formula.all_future Formula.bot)
-    -- Build [φ ∧ ⊥] ⊢ G(⊥) by chaining
-    have h_rce_w : [Formula.and φ Formula.bot] ⊢ (Formula.and φ Formula.bot).imp Formula.bot :=
-      DerivationTree.weakening [] [Formula.and φ Formula.bot] _ h_rce (fun _ h => absurd h (List.not_mem_nil))
-    have h_efq_w : [Formula.and φ Formula.bot] ⊢ Formula.bot.imp (Formula.all_future Formula.bot) :=
-      DerivationTree.weakening [] [Formula.and φ Formula.bot] _ h_efq (fun _ h => absurd h (List.not_mem_nil))
-    have h_assume : [Formula.and φ Formula.bot] ⊢ (Formula.and φ Formula.bot) :=
-      DerivationTree.assumption _ _ (by simp)
-    have d1 : [Formula.and φ Formula.bot] ⊢ Formula.bot :=
-      DerivationTree.modus_ponens _ _ _ h_rce_w h_assume
-    have d2 : [Formula.and φ Formula.bot] ⊢ Formula.all_future Formula.bot :=
-      DerivationTree.modus_ponens _ _ _ h_efq_w d1
-    exact deduction_theorem [] _ _ d2
+  -- Step 1: Prove ⊢ (φ ∧ X(⊥)) → ⊥ where X(⊥) = ⊥ U ⊥
+  -- From X_bot_absurd: (⊥ U ⊥) → ⊥, weaken to (φ ∧ (⊥ U ⊥)) → ⊥ via rce + chain
+  have h_and_xbot_imp_bot : [] ⊢ (Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot := by
+    -- (φ ∧ X(⊥)) → X(⊥) by conjunction elimination right
+    have h_rce : [] ⊢ (Formula.and φ (Formula.bot.untl Formula.bot)).imp (Formula.bot.untl Formula.bot) :=
+      Bimodal.Theorems.Propositional.rce_imp φ (Formula.bot.untl Formula.bot)
+    -- X(⊥) → ⊥ by X_bot_absurd
+    exact Bimodal.Theorems.Combinators.imp_trans h_rce
+      Bimodal.Theorems.TemporalDerived.X_bot_absurd
 
-  -- Step 2: G((φ ∧ ⊥) → G(⊥)) by necessitation
-  have h_G_and_bot : [] ⊢ Formula.all_future ((Formula.and φ Formula.bot).imp (Formula.all_future Formula.bot)) :=
-    DerivationTree.temporal_necessitation _ h_and_bot_imp_G_bot
+  -- Step 2: G((φ ∧ X(⊥)) → ⊥) by necessitation
+  have h_G_and_xbot : [] ⊢ ((Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot).all_future :=
+    DerivationTree.temporal_necessitation _ h_and_xbot_imp_bot
 
-  -- Step 3: Both G(¬ψ) and G((φ ∧ ⊥) → G(⊥)) are in M.
-  -- Form their conjunction in M.
-  have h_G_and_bot_in_M : Formula.all_future ((Formula.and φ Formula.bot).imp (Formula.all_future Formula.bot)) ∈ M :=
-    theorem_in_mcs h_mcs h_G_and_bot
+  -- Step 3: G((φ ∧ X(⊥)) → ⊥) is in M (it's a theorem)
+  have h_G_and_xbot_in_M : ((Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot).all_future ∈ M :=
+    theorem_in_mcs h_mcs h_G_and_xbot
 
-  -- Conjunction: a ∈ M ∧ b ∈ M → a.and b ∈ M (inline conjunction_intro)
+  -- Step 4: Form conjunction G(¬ψ) ∧ G((φ ∧ X(⊥)) → ⊥) in M
   have h_conj_in_M : Formula.and
       (Formula.all_future (ψ.imp Formula.bot))
-      (Formula.all_future ((Formula.and φ Formula.bot).imp (Formula.all_future Formula.bot))) ∈ M := by
-    -- By negation completeness, either (a → ¬b) ∈ M or (a → ¬b).neg ∈ M
-    -- where a.and b = (a.imp b.neg).neg
+      (((Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot).all_future) ∈ M := by
     let a := Formula.all_future (ψ.imp Formula.bot)
-    let b := Formula.all_future ((Formula.and φ Formula.bot).imp (Formula.all_future Formula.bot))
+    let b := ((Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot).all_future
     rcases SetMaximalConsistent.negation_complete h_mcs (a.imp b.neg) with h_imp | h_neg
-    · -- (a → ¬b) ∈ M and a ∈ M gives ¬b ∈ M, contradicting b ∈ M
-      have h_neg_b := SetMaximalConsistent.implication_property h_mcs h_imp h_G_neg_psi
-      exact absurd h_G_and_bot_in_M (SetMaximalConsistent.neg_excludes h_mcs b h_neg_b)
+    · have h_neg_b := SetMaximalConsistent.implication_property h_mcs h_imp h_G_neg_psi
+      exact absurd h_G_and_xbot_in_M (SetMaximalConsistent.neg_excludes h_mcs b h_neg_b)
     · exact h_neg
 
-  -- Step 4: Apply until_induction axiom instance with χ = ⊥.
-  -- New axiom shape: G(ψ → ⊥) ∧ G((φ ∧ X(⊥)) → ⊥) → (φ U ψ) → X(⊥)
-  -- We have G(¬ψ) = G(ψ → ⊥) from h_conj_in_M (first component).
-  -- The second component G((φ ∧ X(⊥)) → ⊥) is vacuously true since X(⊥) = ⊥ U ⊥ ≡ ⊥.
-  -- Conclusion: (φ U ψ) → X(⊥). Since X(⊥) = ⊥ U ⊥, which is provably equivalent to ⊥,
-  -- we derive ¬(φ U ψ) and contradict h_U.
-  -- TODO: Complete proof-theoretic derivation for new axiom shape.
-  sorry
+  -- Step 5: Apply until_induction(φ, ψ, ⊥) to get (φ U ψ) → X(⊥) in M
+  have h_ind : [] ⊢ ((ψ.imp Formula.bot).all_future.and
+      ((Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot).all_future).imp
+      ((φ.untl ψ).imp (Formula.bot.untl Formula.bot)) :=
+    DerivationTree.axiom [] _ (Axiom.until_induction φ ψ Formula.bot)
+  have h_U_imp_Xbot : (φ.untl ψ).imp (Formula.bot.untl Formula.bot) ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ind) h_conj_in_M
+
+  -- Step 6: Get X(⊥) ∈ M from (φ U ψ) ∈ M
+  have h_Xbot : Formula.bot.untl Formula.bot ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs h_U_imp_Xbot h_U
+
+  -- Step 7: X(⊥) → ⊥, so ⊥ ∈ M, contradicting MCS consistency
+  have h_bot : Formula.bot ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.X_bot_absurd) h_Xbot
+  exact h_mcs.1 [Formula.bot] (fun _ hφ => by simp at hφ; exact hφ ▸ h_bot)
+    ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
 /--
 Since witness seed consistency: If `φ S ψ ∈ M` and M is MCS, then
@@ -538,43 +531,54 @@ theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
       exact SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_H_imp) h_H_bot_in_M
 
-  -- Apply since_induction with χ = ⊥
-  have h_and_bot_imp_H_bot : [] ⊢ (Formula.and φ Formula.bot).imp (Formula.all_past Formula.bot) := by
-    have h_rce : [] ⊢ (Formula.and φ Formula.bot).imp Formula.bot :=
-      Bimodal.Theorems.Propositional.rce_imp φ Formula.bot
-    have h_efq : [] ⊢ Formula.bot.imp (Formula.all_past Formula.bot) :=
-      Bimodal.Theorems.Propositional.efq_axiom (Formula.all_past Formula.bot)
-    have h_rce_w : [Formula.and φ Formula.bot] ⊢ (Formula.and φ Formula.bot).imp Formula.bot :=
-      DerivationTree.weakening [] [Formula.and φ Formula.bot] _ h_rce (fun _ h => absurd h (List.not_mem_nil))
-    have h_efq_w : [Formula.and φ Formula.bot] ⊢ Formula.bot.imp (Formula.all_past Formula.bot) :=
-      DerivationTree.weakening [] [Formula.and φ Formula.bot] _ h_efq (fun _ h => absurd h (List.not_mem_nil))
-    have h_assume : [Formula.and φ Formula.bot] ⊢ (Formula.and φ Formula.bot) :=
-      DerivationTree.assumption _ _ (by simp)
-    have d1 : [Formula.and φ Formula.bot] ⊢ Formula.bot :=
-      DerivationTree.modus_ponens _ _ _ h_rce_w h_assume
-    have d2 : [Formula.and φ Formula.bot] ⊢ Formula.all_past Formula.bot :=
-      DerivationTree.modus_ponens _ _ _ h_efq_w d1
-    exact deduction_theorem [] _ _ d2
+  -- Apply since_induction with χ = ⊥ (strict semantics, Y-based):
+  --   H(ψ → ⊥) ∧ H((φ ∧ Y(⊥)) → ⊥) → ((φ S ψ) → Y(⊥))
+  -- where Y(⊥) = ⊥ S ⊥.
 
-  have h_H_and_bot : [] ⊢ Formula.all_past ((Formula.and φ Formula.bot).imp (Formula.all_past Formula.bot)) :=
-    Bimodal.Theorems.past_necessitation _ h_and_bot_imp_H_bot
+  -- Step 1: Prove ⊢ (φ ∧ Y(⊥)) → ⊥ where Y(⊥) = ⊥ S ⊥
+  have h_and_ybot_imp_bot : [] ⊢ (Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot := by
+    have h_rce : [] ⊢ (Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp (Formula.snce Formula.bot Formula.bot) :=
+      Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce Formula.bot Formula.bot)
+    exact Bimodal.Theorems.Combinators.imp_trans h_rce
+      Bimodal.Theorems.TemporalDerived.Y_bot_absurd
 
-  have h_H_and_bot_in_M : Formula.all_past ((Formula.and φ Formula.bot).imp (Formula.all_past Formula.bot)) ∈ M :=
-    theorem_in_mcs h_mcs h_H_and_bot
+  -- Step 2: H((φ ∧ Y(⊥)) → ⊥) by past necessitation
+  have h_H_and_ybot : [] ⊢ ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past :=
+    Bimodal.Theorems.past_necessitation _ h_and_ybot_imp_bot
 
+  -- Step 3: H((φ ∧ Y(⊥)) → ⊥) is in M (it's a theorem)
+  have h_H_and_ybot_in_M : ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past ∈ M :=
+    theorem_in_mcs h_mcs h_H_and_ybot
+
+  -- Step 4: Form conjunction H(¬ψ) ∧ H((φ ∧ Y(⊥)) → ⊥) in M
   have h_conj_in_M : Formula.and
       (Formula.all_past (ψ.imp Formula.bot))
-      (Formula.all_past ((Formula.and φ Formula.bot).imp (Formula.all_past Formula.bot))) ∈ M := by
+      (((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past) ∈ M := by
     let a := Formula.all_past (ψ.imp Formula.bot)
-    let b := Formula.all_past ((Formula.and φ Formula.bot).imp (Formula.all_past Formula.bot))
+    let b := ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past
     rcases SetMaximalConsistent.negation_complete h_mcs (a.imp b.neg) with h_imp | h_neg
     · have h_neg_b := SetMaximalConsistent.implication_property h_mcs h_imp h_H_neg_psi
-      exact absurd h_H_and_bot_in_M (SetMaximalConsistent.neg_excludes h_mcs b h_neg_b)
+      exact absurd h_H_and_ybot_in_M (SetMaximalConsistent.neg_excludes h_mcs b h_neg_b)
     · exact h_neg
 
-  -- New axiom shape: H(ψ → ⊥) ∧ H((φ ∧ Y(⊥)) → ⊥) → (φ S ψ) → Y(⊥)
-  -- TODO: Complete proof-theoretic derivation for new axiom shape.
-  sorry
+  -- Step 5: Apply since_induction(φ, ψ, ⊥) to get (φ S ψ) → Y(⊥) in M
+  have h_ind : [] ⊢ ((ψ.imp Formula.bot).all_past.and
+      ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past).imp
+      ((φ.snce ψ).imp (Formula.snce Formula.bot Formula.bot)) :=
+    DerivationTree.axiom [] _ (Axiom.since_induction φ ψ Formula.bot)
+  have h_S_imp_Ybot : (φ.snce ψ).imp (Formula.snce Formula.bot Formula.bot) ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ind) h_conj_in_M
+
+  -- Step 6: Get Y(⊥) ∈ M from (φ S ψ) ∈ M
+  have h_Ybot : Formula.snce Formula.bot Formula.bot ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs h_S_imp_Ybot h_S
+
+  -- Step 7: Y(⊥) → ⊥, so ⊥ ∈ M, contradicting MCS consistency
+  have h_bot : Formula.bot ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.Y_bot_absurd) h_Ybot
+  exact h_mcs.1 [Formula.bot] (fun _ hφ => by simp at hφ; exact hφ ▸ h_bot)
+    ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
 /-!
 ## g_content/h_content Duality

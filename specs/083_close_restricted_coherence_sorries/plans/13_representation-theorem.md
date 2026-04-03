@@ -170,7 +170,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: X-Content Propagation and Until/Since Persistence [NOT STARTED]
+### Phase 4: X-Content Propagation and Until/Since Persistence [PARTIAL]
 
 **Goal**: Establish the infrastructure for X-content propagation through Succ chains, which is the critical gap identified in plan v12 but never addressed. `X(alpha) = bot U alpha` is neither g_content nor f_content, so the Succ relation does not propagate it. This phase provides the mechanism: derive `X(a) -> F(a)` as a theorem (or extend Succ with x_step), then prove Until persistence through Succ and WitnessSeed consistency.
 
