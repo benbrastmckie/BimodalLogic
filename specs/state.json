@@ -841,7 +841,7 @@
     {
       "project_number": 83,
       "project_name": "close_restricted_coherence_sorries",
-      "status": "planned",
+      "status": "researched",
       "language": "lean4",
       "description": "Close the 2 sorries in succ_chain_restricted_forward_F and succ_chain_restricted_backward_P (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in deferralClosure(root) within a single SuccChainFMCS. Potential approaches: (1) Show that constrained_successor f_step eventually resolves each F-obligation because deferralClosure is finite and the chain cannot defer indefinitely within a bounded set, (2) Dovetailed chain construction with fair scheduling that cycles through pending F-obligations, (3) Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra. Also clean up the 2 auxiliary sorries in RestrictedTruthLemma.lean (restricted_chain_G_step and restricted_chain_H_step) which may become unnecessary once the main sorries are closed. Does NOT include: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), or the old full-coherence sorry (bfmcs_from_mcs_temporally_coherent) which is bypassed by the restricted path.",
       "effort": "12-18 hours",
@@ -850,11 +850,11 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T14:28:42Z",
+      "last_updated": "2026-04-03T14:49:52Z",
       "notes": "Phases 1-6 complete, Phase 4+7 partial. Dovetailed chain sorry-free. Truth lemma Until/Since backward blocked by structural induction circularity.",
-      "next_artifact_number": 9,
-      "session_id": "sess_1775193766_w51",
-      "researched": "2026-04-03T05:16:01Z",
+      "next_artifact_number": 10,
+      "session_id": "sess_1775227205_726938",
+      "researched": "2026-04-03T14:49:52Z",
       "planned": "2026-04-03T14:28:42Z",
       "plan_metadata": {
         "phases": 7,
@@ -945,6 +945,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/plans/08_half-open-semantics.md",
           "type": "plan",
           "summary": "v7: Half-open interval semantics, 7 phases, 15 hours"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/09_team-research.md",
+          "type": "research",
+          "summary": "Team research with 3 teammates: strict vs weak semantics analysis, ideal logic design, critical risk assessment"
         }
       ],
       "started": "2026-04-02T22:21:47Z"
