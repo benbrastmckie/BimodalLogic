@@ -80,11 +80,7 @@ def R_Box (U V : Ultrafilter LindenbaumAlg) : Prop :=
 ### R_G Properties
 -/
 
-/-
-R_G_refl: DELETED under strict semantics.
-R_G is NOT reflexive: G quantifies over s > t, not s ≥ t.
-The T-axiom G(a) → a is not valid, so R_G U U does not hold in general.
--/
+-- R_G is NOT reflexive under strict semantics (G quantifies over s > t).
 
 /--
 R_G is transitive: R_G(U, V) and R_G(V, W) imply R_G(U, W).
@@ -239,8 +235,7 @@ This is the preimage containment: V contains all elements whose H is in U.
 def R_H (U V : Ultrafilter LindenbaumAlg) : Prop :=
   ∀ a : LindenbaumAlg, STSA.H a ∈ U → a ∈ V
 
--- R_H_refl: DELETED under strict semantics (T-axiom not valid)
--- R_H is NOT reflexive when H quantifies over s < t strictly.
+-- R_H is NOT reflexive under strict semantics (H quantifies over s < t).
 
 /--
 R_H is transitive: R_H(U, V) and R_H(V, W) imply R_H(U, W).
@@ -2749,14 +2744,8 @@ The resolving successor W from `temporal_theory_witness_exists` satisfies:
 3. box_class_agree: same modal accessibility class
 -/
 
-/-
-DELETED: temporal_witness_g_persistence
-
-Under strict semantics, G(a) → a is NOT valid, so g_content(M) ⊆ W cannot
-be proven from G-agreement alone. Instead, use the enriched witness
-`temporal_theory_witness_with_g_exists` which directly guarantees
-g_content(M) ⊆ W via seed membership.
--/
+-- G(a) → a is NOT valid under strict semantics, so g_content(M) ⊆ W uses
+-- the enriched witness `temporal_theory_witness_with_g_exists` instead.
 
 /-!
 **Deleted theorems (per task 55 plan v4)**:

@@ -1195,13 +1195,12 @@ theorem constrained_successor_seed_restricted_subset_deferralClosure (phi : Form
 /--
 g_content(u) ⊆ u when u is a DeferralRestrictedMCS.
 
-This uses the T-axiom (G(φ) → φ) and the maximality of DeferralRestrictedMCS within
-deferralClosure. The key insight is that if G(chi) ∈ u ⊆ deferralClosure, then
-chi ∈ deferralClosure (by `deferralClosure_all_future`), and by maximality of u,
-chi ∈ u (otherwise we could derive a contradiction using the T-axiom).
+Under strict semantics, this does NOT follow from the T-axiom (which is invalid).
+The proof uses an indirect argument: assuming chi not-in u and deriving contradiction
+via G(chi) in u, the T-axiom sorry, and DRM maximality.
+
+TODO(task 83 phase 3): Restructure without T-axiom dependency.
 -/
--- TODO: Under strict semantics, g_content(u) ⊆ u does not follow from T-axiom.
--- Needs proof-theoretic restructuring.
 theorem g_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
     g_content u ⊆ u := by
@@ -2159,27 +2158,8 @@ theorem g_content_union_brs_consistent (phi : Formula) (u : Set Formula)
     -- For now, we mark this as sorry.
     sorry
 
-/--
-**ALSO FALSE** — reduces to `constrained_successor_seed_restricted_consistent` which is false.
-
-The union `constrained_successor_seed_restricted ∪ boundary_resolution_set` equals
-`constrained_successor_seed_restricted` (BRS is already a subset), so this theorem
-has the same counterexample as `constrained_successor_seed_restricted_consistent`.
--/
-theorem augmented_seed_consistent (phi : Formula) (u : Set Formula)
-    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
-    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    SetConsistent (constrained_successor_seed_restricted phi u ∪ boundary_resolution_set phi u) := by
-  -- Since boundary_resolution_set ⊆ constrained_successor_seed_restricted (by definition),
-  -- the union equals constrained_successor_seed_restricted.
-  have h_absorption : constrained_successor_seed_restricted phi u ∪ boundary_resolution_set phi u =
-      constrained_successor_seed_restricted phi u := by
-    apply Set.union_eq_self_of_subset_right
-    exact boundary_resolution_set_subset_constrained_successor_seed_restricted phi u
-  rw [h_absorption]
-  -- Prove the seed is consistent (same proof as constrained_successor_seed_restricted_consistent)
-  -- Using sorry for now as this depends on the boundary_resolution_set consistency argument
-  sorry
+-- augmented_seed_consistent: DELETED (proven FALSE, documented counterexample above)
+-- Reduced to constrained_successor_seed_restricted_consistent which has same counterexample.
 
 /--
 **THEOREM IS FALSE** — the constrained_successor_seed_restricted can be inconsistent.

@@ -69,9 +69,6 @@ def ExistsTask (M M' : Set Formula) : Prop :=
 /-- Unfolding lemma for ExistsTask. -/
 @[simp] lemma ExistsTask_def {M M' : Set Formula} : ExistsTask M M' = (g_content M ⊆ M') := rfl
 
-/-- Backward compatibility alias for ExistsTask. -/
-@[deprecated ExistsTask "Use ExistsTask instead. CanonicalR is being phased out." (since := "2026-03-24")]
-abbrev CanonicalR := ExistsTask
 
 /--
 Canonical past relation: `M` sees `M'` in the past iff `h_content M ⊆ M'`.
@@ -84,9 +81,6 @@ def ExistsTask_past (M M' : Set Formula) : Prop :=
 /-- Unfolding lemma for ExistsTask_past. -/
 @[simp] lemma ExistsTask_past_def {M M' : Set Formula} : ExistsTask_past M M' = (h_content M ⊆ M') := rfl
 
-/-- Backward compatibility alias for ExistsTask_past. -/
-@[deprecated ExistsTask_past "Use ExistsTask_past instead. CanonicalR_past is being phased out." (since := "2026-03-24")]
-abbrev CanonicalR_past := ExistsTask_past
 
 /-!
 ## Forward G and Backward H (Trivial by Definition)

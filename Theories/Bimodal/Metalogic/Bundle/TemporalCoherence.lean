@@ -142,7 +142,7 @@ The key properties are:
 - `backward_P`: If P(phi) in fam.mcs t, then exists s ≤ t with phi in fam.mcs s
 
 These are the existential duals of forward_G and backward_H.
-Uses weak inequality (s ≥ t, s ≤ t) for reflexive semantics (aligned with Truth.lean).
+Uses strict inequality (s > t, s < t) for strict semantics (aligned with Truth.lean).
 -/
 structure TemporalCoherentFamily (D : Type*) [Preorder D] [Zero D] extends FMCS D where
   /-- Forward F coherence: F(phi) at t implies witness at some s > t (strict) -/
@@ -214,7 +214,7 @@ This condition ensures that for each family in the BFMCS:
 These properties are used in the truth lemma backward direction for temporal operators G and H
 via the contraposition argument (temporal_backward_G and temporal_backward_H).
 
-Note: Uses weak inequality (s ≥ t, s ≤ t) to align with reflexive G/H semantics (Truth.lean).
+Note: Uses strict inequality (s > t, s < t) aligned with strict G/H semantics (Truth.lean).
 -/
 def BFMCS.temporally_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,

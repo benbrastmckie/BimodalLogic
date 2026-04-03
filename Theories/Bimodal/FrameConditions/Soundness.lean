@@ -173,9 +173,8 @@ All 21 axioms are covered by the soundness theorems:
 20. discreteness_forward (DF)
 21. seriality_future, seriality_past
 
-Note: Under reflexive semantics, all axioms are trivially valid (witness t = current time),
-but the frame class constraints are still meaningful for the structural properties
-they impose on the temporal domain.
+Note: Under strict semantics (G/H quantify over s > t / s < t), frame class constraints
+are essential for axiom validity, not merely structural.
 -/
 
 end Bimodal.FrameConditions

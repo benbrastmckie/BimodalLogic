@@ -74,7 +74,7 @@ Five research artifacts inform this plan:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Dead Code Cleanup, Boneyard Archival, and ROADMAP Update [NOT STARTED]
+### Phase 1: Dead Code Cleanup, Boneyard Archival, and ROADMAP Update [COMPLETED]
 
 **Goal**: Remove dead code that obscures the critical path, archive T-axiom-dependent sorry functions to Boneyard, delete ghost directories, update stale documentation, and bring ROADMAP.md current. This housekeeping phase ensures subsequent phases work on a clean codebase with accurate metrics.
 

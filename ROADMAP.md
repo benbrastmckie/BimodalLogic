@@ -2,23 +2,29 @@
 
 ## Overview
 
-The repository has ~33 `sorry` statements across Lean source files. These fall into distinct categories:
+The repository has ~220 `sorry` statements across Lean source files (excluding Boneyard).
+This count expanded from ~33 after the strict semantics migration (Task 81, March 2026)
+which invalidated T-axiom-dependent proofs. Categories:
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
-| SuccChain FMCS | 4 | SuccChainFMCS.lean | Legacy (bypassed by restricted path) |
-| Restricted coherence | 2 | UltrafilterChain.lean | **CRITICAL PATH** |
-| Restricted truth lemma | 2 | RestrictedTruthLemma.lean | May be unnecessary |
-| Canonical construction | 2 | CanonicalConstruction.lean | Legacy (bypassed) |
-| Completeness (old path) | 1 | Completeness.lean | Legacy (bypassed) |
-| Dense completeness | 1 | Completeness.lean | Separate track (task 68) |
-| Discrete completeness | 1 | DiscreteCompleteness.lean | Blocked on custom axiom |
-| Soundness extensions | 1 | Soundness.lean | Frame-dependent |
-| FMP truth preservation | 2 | TruthPreservation.lean | Separate track (task 82) |
-| Simplified chain | 1 | SimplifiedChain.lean | Infrastructure |
-| SuccChain truth | 1 | SuccChainTruth.lean | Legacy |
-| Boneyard/dead code | 2 | FPreservingSeed.lean | Archived |
-| Examples/pedagogical | 14 | Demo, ModalProofs, etc. | Expected |
+| Completeness (old path) | ~39 | Completeness.lean | Legacy (bypassed by restricted path) |
+| Frame-class soundness | ~20 | Soundness.lean | Independent track (task 83 phase 6) |
+| SuccChain FMCS | ~18 | SuccChainFMCS.lean | T-axiom sorries + seed redesign (task 83 phase 3) |
+| UltrafilterChain | ~13 | UltrafilterChain.lean | **CRITICAL PATH** (task 83 phases 4-5) |
+| Modal bridge | ~13 | Bridge.lean | Infrastructure |
+| Canonical construction | ~9 | CanonicalConstruction.lean | Legacy (bypassed) |
+| Dovetailed chain | ~8 | DovetailedChain.lean | Legacy dead end |
+| Restricted truth lemma | ~7 | RestrictedTruthLemma.lean | Depends on g_content resolution |
+| SuccChain truth | ~7 | SuccChainTruth.lean | Legacy |
+| Temporal derived | ~5 | TemporalDerived.lean | **CRITICAL PATH** (task 83 phase 2) |
+| Simplified chain | ~6 | SimplifiedChain.lean | Infrastructure |
+| MCS witness | ~12 | MCSWitnessSuccessor/Chain.lean | Infrastructure |
+| Targeted chain | ~5 | TargetedChain.lean | Partially archived |
+| Dense completeness | ~1 | DenseCompleteness.lean | Separate track (task 68) |
+| Discrete completeness | ~3 | DiscreteCompleteness.lean | Blocked on custom axiom |
+| Examples/pedagogical | ~16 | Demo, ModalProofs, etc. | Expected (intentional) |
+| Other | ~38 | Various | Mixed legacy/infrastructure |
 
 ## The Completeness Gap (Priority 1)
 
@@ -64,18 +70,28 @@ These are **strictly more precise** than the original sorry: restricted to `defe
 
 ### What "Closing the Gap" Means (Task 83)
 
-To achieve sorry-free canonical completeness, we need to prove:
+Task 83 addresses three blockers for sorry-free canonical completeness:
 
-> Given `F(psi) in succ_chain_fam S n` with `psi in deferralClosure(root)`, there exists `m >= n` with `psi in succ_chain_fam S m`.
+**Blocker 1: Foundational derived theorems** (Phase 2)
+Four theorems in TemporalDerived.lean (`X_bot_absurd`, `Y_bot_absurd`,
+`until_implies_some_future`, `since_implies_some_past`) needed for Until/Since
+truth lemma cases.
+
+**Blocker 2: Seed redesign and g_content resolution** (Phase 3)
+`g_content_subset_deferral_restricted_mcs` uses a sorry where the T-axiom was
+invoked. Under strict semantics, `g_content(u) ⊆ u` requires a different proof
+strategy (seriality-based F-deferrals instead of T-axiom).
+
+**Blocker 3: Until/Since truth lemma** (Phases 4-5)
+The restricted forward_F/backward_P proofs require X-content propagation through
+successor chains and Until/Since persistence. The contrapositive approach with
+Until-complexity induction is the most promising strategy.
+
+> Given `F(psi) in succ_chain_fam S n` with `psi in deferralClosure(root)`, there exists `m > n` with `psi in succ_chain_fam S m`.
 
 **Why this might be tractable now**: `deferralClosure(root)` is finite. The chain can only defer F-obligations within this finite set. A pigeonhole or fair-scheduling argument may show that deferral cannot continue indefinitely.
 
 **Why it's still hard**: In a full MCS, `F(psi) in MCS` implies `F^k(psi) in MCS` for all k (by the temporal axiom). So F-nesting depth is not bounded even within `deferralClosure`. The persistence count (number of steps before resolution) is unbounded even though the formula set is bounded.
-
-**Candidate approaches** (task 83):
-1. **Finite deferral argument**: `deferralClosure` is finite, so the set of pending F-obligations is bounded. Show that `constrained_successor`'s f_step cannot defer ALL of them indefinitely.
-2. **Dovetailed chain with fair scheduling**: Build a modified chain that cycles through pending F-obligations, resolving each in turn.
-3. **Ultrafilter/algebraic argument**: Use R_G accessibility in the Lindenbaum algebra to establish resolution at the algebraic level.
 
 ### Completeness Chain (Sorry-Free Modulo Task 83)
 
@@ -139,14 +155,18 @@ The modal direction is complete. `boxClassFamilies_modal_backward` (UltrafilterC
 - `forward_F` / `backward_P` for full MCS: sorry (bypassed by restricted path)
 - `succ_chain_restricted_forward_F` / `backward_P` for deferralClosure: sorry (task 83)
 
-### Task 81 Contribution (April 2026)
+### Task 81 Contribution (March-April 2026)
 
-Refactored the completeness proof to use restricted temporal coherence:
+Migrated from reflexive to strict temporal semantics and refactored completeness:
+- **Strict semantics**: G/H quantify over s > t / s < t (not s >= t / s <= t)
+- **T-axiom removal**: `temp_t_future` and `temp_t_past` axioms removed from the proof system
+- **X/Y-based Until/Since**: Replaced reflexive Until/Since with X-based (next-step) variants
 - Defined `BFMCS.restricted_temporally_coherent` (forward_F/backward_P within `deferralClosure` only)
 - Proved sorry-free `restricted_temporal_backward_G/H`
 - Proved sorry-free `restricted_shifted_truth_lemma`
 - Wired `completeness_over_Int` through the restricted path
 - Narrowed the completeness gap from "all formulas, all families" to "deferralClosure formulas, single chain"
+- Expanded sorry count from ~33 to ~220 (T-axiom removal cascaded; most are on non-critical paths)
 
 ## Investigated Dead Ends: Logic Weakening (Task 77)
 
@@ -186,9 +206,12 @@ Refactored the completeness proof to use restricted temporal coherence:
 
 ## Recommended Priority Order
 
-1. **Task 83**: Close `succ_chain_restricted_forward_F/backward_P` -- sole blocker for sorry-free completeness
-2. **Task 82**: Close FMP TruthPreservation sorries -- gives weak completeness / decidability
-3. **Task 68**: Dense completeness via Rat canonical model
-4. **Task 58**: Wire completeness to FrameConditions (unblocked once task 83 done)
+1. **Task 83** (in progress): Representation theorem via canonical completeness
+   - Phase 2: Foundational derived theorems (TemporalDerived.lean)
+   - Phase 3: Seed redesign (g_content without T-axiom)
+   - Phase 4-5: Until/Since truth lemma via contrapositive approach
+   - Phase 6: Frame-class soundness proofs (19 sites, parallel track)
+2. **Task 58**: Wire completeness to FrameConditions (unblocked once task 83 done)
+3. **Task 82**: Close FMP TruthPreservation sorries -- requires strict-semantics FMP redesign
+4. **Task 68**: Dense completeness via Rat canonical model
 5. **Task 60**: Remove `discrete_Icc_finite_axiom` custom axiom
-6. **Cleanup**: Remove legacy Path A sorries, archive dead code

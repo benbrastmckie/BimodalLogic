@@ -90,9 +90,9 @@ This captures the frame condition for the seriality axioms:
 - `seriality_future`: F(neg bot) (there exists a future time)
 - `seriality_past`: P(neg bot) (there exists a past time)
 
-Under reflexive semantics, these axioms are trivially valid (witness t = current time),
-but the `NoMaxOrder` and `NoMinOrder` conditions are still meaningful for strict
-temporal reasoning and for compatibility with discrete frame extensions.
+Under strict semantics (G/H quantify over s > t / s < t), the `NoMaxOrder` and
+`NoMinOrder` conditions are essential: they ensure witnesses exist for the
+seriality axioms F(neg bot) and P(neg bot).
 -/
 class SerialFrame (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] : Prop where
