@@ -325,6 +325,14 @@ is trivially valid: if φ holds at ALL times, then at any future time z,
 -/
 def always (φ : Formula) : Formula := φ.all_past.and (φ.and φ.all_future)
 
+/-- Next-step operator: X(phi) = bot U phi.
+    Under discrete strict semantics, X(phi) at t means phi holds at t+1. -/
+def next (φ : Formula) : Formula := Formula.untl Formula.bot φ
+
+/-- Previous-step operator: Y(phi) = bot S phi.
+    Under discrete strict semantics, Y(phi) at t means phi holds at t-1. -/
+def prev (φ : Formula) : Formula := Formula.snce Formula.bot φ
+
 /--
 Derived reflexive future operator (G'φ := φ ∧ Gφ, "now and always in the future").
 
@@ -462,6 +470,16 @@ Since `neg φ = φ.imp bot` and `swap_temporal bot = bot`:
 theorem swap_temporal_neg (φ : Formula) :
     φ.neg.swap_temporal = φ.swap_temporal.neg := by
   simp only [neg, swap_temporal]
+
+/-- swap_temporal distributes over next/prev: swap(X(phi)) = Y(swap(phi)). -/
+theorem swap_temporal_next (φ : Formula) :
+    φ.next.swap_temporal = φ.swap_temporal.prev := by
+  simp [next, prev, swap_temporal]
+
+/-- swap_temporal distributes over prev/next: swap(Y(phi)) = X(swap(phi)). -/
+theorem swap_temporal_prev (φ : Formula) :
+    φ.prev.swap_temporal = φ.swap_temporal.next := by
+  simp [prev, next, swap_temporal]
 
 /--
 Formula requires the single-family/single-time hypotheses in buildSeedAux.

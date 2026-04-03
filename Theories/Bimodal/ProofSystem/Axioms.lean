@@ -3,23 +3,29 @@ import Bimodal.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 21 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 33 axiom schemata for bimodal logic TM (Tense and Modality)
+under strict temporal semantics (G/H quantify over s > t / s < t).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 21 axiom constructors organized into three categories:
-  - **Base axioms** (17): Valid on all linear orders (no special frame conditions)
+- 33 axiom constructors organized into three categories:
+  - **Base axioms** (16): Valid on all linear orders (no special frame conditions)
   - **Dense extension** (1): `density` - requires DenselyOrdered
-  - **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` - require SuccOrder/NoMaxOrder/NoMinOrder
+  - **Discrete extension** (16): `discreteness_forward`, `seriality_future`,
+    `seriality_past`, `disc_next`, `disc_prev`, Until/Since axioms (unfold, intro,
+    induction, linearity, connectedness), `F_until_equiv`, `P_since_equiv`
 
 ## Axiom Constructors
 
 - Base: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`, `modal_b`,
-  `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
-  `temp_t_future`, `temp_t_past`, `modal_future`, `temp_future`, `temp_linearity`
+  `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_a_dual`,
+  `temp_l`, `modal_future`, `temp_future`, `temp_linearity`
 - Dense: `density`
-- Discrete: `discreteness_forward`, `seriality_future`, `seriality_past`
+- Discrete: `discreteness_forward`, `seriality_future`, `seriality_past`, `disc_next`,
+  `disc_prev`, `until_unfold`, `until_intro`, `until_induction`, `until_linearity`,
+  `since_unfold`, `since_intro`, `since_induction`, `since_linearity`,
+  `until_connectedness`, `since_connectedness`, `F_until_equiv`, `P_since_equiv`
 
 ## Axiom Schemata
 
@@ -44,13 +50,13 @@ The TM logic includes:
 - **TK** (Temporal K Distribution): `G(φ → ψ) → (Gφ → Gψ)` - future distributes over implication
 - **T4** (Temporal 4): `Gφ → GGφ` - future of future is future (transitivity)
 - **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
-- **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
+- **TA_dual** (Temporal A Dual): `φ → HFφ` - past-direction connectedness
+- **TL** (Temporal L): `always φ → GHφ` - perpetuity implies recurrence
 
-**Note**: Under reflexive semantics, the T-axioms (Gφ → φ, Hφ → φ) ARE
-valid and ARE included as `temp_t_future` and `temp_t_past`. Reflexive semantics
-quantifies over s ≥ t, so the present is INCLUDED in temporal quantification.
-This simplifies the canonical model construction by making reflexivity definitional
-and eliminating the need for the canonicalR_irreflexive axiom.
+**Note**: Under strict semantics (G/H quantify over s > t / s < t), the T-axioms
+(Gφ → φ, Hφ → φ) are NOT valid and NOT included. The present is excluded from
+temporal quantification. Derived operators weak_future (G'φ = φ ∧ Gφ) and
+weak_past (H'φ = φ ∧ Hφ) recover reflexive readings when needed.
 ### Modal-Temporal Interaction Axioms
 - **MF** (Modal-Future): `□φ → □Fφ` - necessary truths remain necessary in future
 - **TF** (Temporal-Future): `□φ → F□φ` - necessary truths were/will-be necessary
@@ -74,18 +80,20 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM.
 
-A formula `φ` is an axiom if it matches one of the 19 axiom schema patterns.
+A formula `φ` is an axiom if it matches one of the 33 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
 
 The axioms are organized into three categories based on frame conditions:
-- **Base axioms** (15): Valid on all frames with linear temporal order
+- **Base axioms** (16): Valid on all frames with linear temporal order
 - **Dense extension** (1): `density` - valid on densely ordered frames
-- **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` -
-  valid on discrete ordered frames with SuccOrder/NoMaxOrder/NoMinOrder
+- **Discrete extension** (16): `discreteness_forward`, `seriality_future`,
+  `seriality_past`, `disc_next`, `disc_prev`, Until/Since axioms (unfold, intro,
+  induction, linearity, connectedness), `F_until_equiv`, `P_since_equiv`
 
 **Note**: Under strict temporal semantics (G/H quantify over s > t / s < t),
-the T-axioms (Gφ → φ, Hφ → φ) are NOT valid and NOT included. This simplifies the
-canonical model by making irreflexivity definitional.
+the T-axioms (Gφ → φ, Hφ → φ) are NOT valid and NOT included. Next (X) and
+Previous (Y) operators are derived as X(φ) = ⊥ U φ and Y(φ) = ⊥ S φ.
+Until/Since axioms use X/Y-based formulations instead of G/H-based ones.
 
 Classification predicates:
 - `isBase`: True for base axioms (neither density nor discreteness-specific)
@@ -276,32 +284,17 @@ inductive Axiom : Formula → Type where
   | temp_l (φ : Formula) : Axiom (φ.always.imp (Formula.all_future (Formula.all_past φ)))
 
   /--
-  Temporal T axiom (future): `Gφ → φ` (reflexivity of future).
+  Temporal A Dual axiom: `φ → H(Fφ)` (past-direction connectedness).
 
-  What holds at all future times (including now) holds at the present.
-  This axiom is valid because reflexive semantics uses ≤ (not <), so t ≤ t.
+  If φ holds now, then at all past times there exists a future time where φ held.
+  Under strict semantics, this is independent from temp_a and needed for
+  past-direction completeness.
 
-  This axiom was added when switching from strict to reflexive
-  temporal semantics. Under reflexive semantics, Gφ at t means "φ at all s ≥ t",
-  which includes t itself. Hence Gφ → φ is valid by taking s = t.
-
-  Semantically: `Gφ` at t means ∀s ≥ t, φ(s). Since t ≥ t (reflexivity), φ(t).
+  Semantically: if φ(t), then for all s < t, take witness r = t for F(φ) at s.
+  Since s < t means t > s, we have F(φ) at s.
   -/
-  | temp_t_future (φ : Formula) : Axiom (φ.all_future.imp φ)
-
-  /--
-  Temporal T axiom (past): `Hφ → φ` (reflexivity of past).
-
-  What holds at all past times (including now) holds at the present.
-  This axiom is valid because reflexive semantics uses ≤ (not <), so t ≤ t.
-
-  This axiom was added when switching from strict to reflexive
-  temporal semantics. Under reflexive semantics, Hφ at t means "φ at all s ≤ t",
-  which includes t itself. Hence Hφ → φ is valid by taking s = t.
-
-  Semantically: `Hφ` at t means ∀s ≤ t, φ(s). Since t ≤ t (reflexivity), φ(t).
-  -/
-  | temp_t_past (φ : Formula) : Axiom (φ.all_past.imp φ)
+  | temp_a_dual (φ : Formula) :
+      Axiom (φ.imp (Formula.all_past φ.some_future))
 
   /--
   Modal-Future axiom: `□φ → □Fφ` (modal-future interaction).
@@ -452,35 +445,45 @@ inductive Axiom : Formula → Type where
   | seriality_past (φ : Formula) : Axiom (φ.all_past.imp φ.some_past)
 
   /--
-  Until Unfolding: `(φ U ψ) → ψ ∨ (φ ∧ G(φ U ψ))`
+  Until Unfold (strict, X-based): `(φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`
 
-  If φ holds until ψ, then either ψ holds now, or φ holds now and φ U ψ holds at all future times.
+  Under strict semantics, φ U ψ at t means there exists s > t with ψ(s) and φ at all r
+  with t < r < s. The unfold says: at the next instant t+1, either ψ holds (base case)
+  or φ holds and φ U ψ continues.
+
+  X(chi) = bot U chi, so the conclusion is bot U (ψ ∨ (φ ∧ (φ U ψ))).
   -/
   | until_unfold (φ ψ : Formula) :
       Axiom (Formula.untl φ ψ |>.imp
-        (Formula.or ψ (Formula.and φ (Formula.all_future (Formula.untl φ ψ)))))
+        (Formula.untl Formula.bot
+          (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))))
 
   /--
-  Until Introduction: `ψ ∨ (φ ∧ G(φ U ψ)) → (φ U ψ)`
+  Until Introduction (strict, X-based): `X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`
 
-  Converse of unfolding: if ψ holds now, or φ holds and φ U ψ holds at all future times,
-  then φ U ψ holds.
+  Converse of unfold: if at the next instant, either ψ holds or φ holds and φ U ψ
+  continues, then φ U ψ holds now.
   -/
   | until_intro (φ ψ : Formula) :
-      Axiom ((Formula.or ψ (Formula.and φ (Formula.all_future (Formula.untl φ ψ)))).imp
+      Axiom ((Formula.untl Formula.bot
+          (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))).imp
         (Formula.untl φ ψ))
 
   /--
-  Until Induction: `G(ψ → χ) ∧ G(φ ∧ χ → G(χ)) → ((φ U ψ) → χ)`
+  Until Induction (strict, X-based):
+  `(ψ → χ) ∧ (φ ∧ X(χ) → χ) → ((φ U ψ) → X(χ))`
 
-  The key axiom preventing perpetual deferral. If ψ implies χ, and φ ∧ χ implies G(χ),
-  then φ U ψ implies χ. This is an induction principle on Until.
+  If ψ implies χ (base), and φ ∧ X(χ) implies χ (step),
+  then φ U ψ implies X(χ).
+
+  Note: conclusion is X(χ), not χ, because φ U ψ provides info
+  about strictly future times only. X(χ) = bot U χ.
   -/
   | until_induction (φ ψ χ : Formula) :
       Axiom (Formula.and
-        (Formula.all_future (ψ.imp χ))
-        (Formula.all_future ((Formula.and φ χ).imp (Formula.all_future χ)))
-        |>.imp ((Formula.untl φ ψ).imp χ))
+        (ψ.imp χ)
+        ((Formula.and φ (Formula.untl Formula.bot χ)).imp χ)
+        |>.imp ((Formula.untl φ ψ).imp (Formula.untl Formula.bot χ)))
 
   /--
   Until Linearity: `(φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ)))`
@@ -494,33 +497,38 @@ inductive Axiom : Formula → Type where
           (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ)))))
 
   /--
-  Since Unfolding: `(φ S ψ) → ψ ∨ (φ ∧ H(φ S ψ))`
+  Since Unfold (strict, Y-based): `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`
 
   Mirror of until_unfold for the past direction.
+  Y(chi) = bot S chi, so the conclusion is bot S (ψ ∨ (φ ∧ (φ S ψ))).
   -/
   | since_unfold (φ ψ : Formula) :
       Axiom (Formula.snce φ ψ |>.imp
-        (Formula.or ψ (Formula.and φ (Formula.all_past (Formula.snce φ ψ)))))
+        (Formula.snce Formula.bot
+          (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))))
 
   /--
-  Since Introduction: `ψ ∨ (φ ∧ H(φ S ψ)) → (φ S ψ)`
+  Since Introduction (strict, Y-based): `Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)`
 
-  Converse of Since unfolding.
+  Mirror of until_intro for the past direction.
   -/
   | since_intro (φ ψ : Formula) :
-      Axiom ((Formula.or ψ (Formula.and φ (Formula.all_past (Formula.snce φ ψ)))).imp
+      Axiom ((Formula.snce Formula.bot
+          (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))).imp
         (Formula.snce φ ψ))
 
   /--
-  Since Induction: `H(ψ → χ) ∧ H(φ ∧ χ → H(χ)) → ((φ S ψ) → χ)`
+  Since Induction (strict, Y-based):
+  `(ψ → χ) ∧ (φ ∧ Y(χ) → χ) → ((φ S ψ) → Y(χ))`
 
   Mirror of until_induction for the past direction.
+  Y(χ) = bot S χ.
   -/
   | since_induction (φ ψ χ : Formula) :
       Axiom (Formula.and
-        (Formula.all_past (ψ.imp χ))
-        (Formula.all_past ((Formula.and φ χ).imp (Formula.all_past χ)))
-        |>.imp ((Formula.snce φ ψ).imp χ))
+        (ψ.imp χ)
+        ((Formula.and φ (Formula.snce Formula.bot χ)).imp χ)
+        |>.imp ((Formula.snce φ ψ).imp (Formula.snce Formula.bot χ)))
 
   /--
   Since Linearity: `(φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ)))`
@@ -573,17 +581,41 @@ inductive Axiom : Formula → Type where
   | P_since_equiv (ψ : Formula) :
       Axiom (Formula.some_past ψ |>.imp (Formula.snce (Formula.neg Formula.bot) ψ))
 
+  /--
+  Discrete Next axiom: `F(⊤) → X(⊤)` (discrete successor existence).
+
+  Asserts that if there is any strict future time, there is an immediate next step.
+  F(neg bot) -> bot U (neg bot), i.e., F(top) -> X(top).
+
+  Valid on discrete frames (Z with SuccOrder + NoMaxOrder): take successor t+1,
+  the guard interval (t, t+1) is empty on integers.
+  -/
+  | disc_next :
+      Axiom ((Formula.neg Formula.bot).some_future.imp
+        (Formula.untl Formula.bot (Formula.neg Formula.bot)))
+
+  /--
+  Discrete Prev axiom: `P(⊤) → Y(⊤)` (discrete predecessor existence).
+
+  Mirror of disc_next for the past direction.
+  P(neg bot) -> bot S (neg bot), i.e., P(top) -> Y(top).
+  -/
+  | disc_prev :
+      Axiom ((Formula.neg Formula.bot).some_past.imp
+        (Formula.snce Formula.bot (Formula.neg Formula.bot)))
+
   deriving Repr
 
 /--
 Classification of frame conditions required for axiom validity.
 
 - `Base`: Axioms valid on all linear orders (no special frame conditions).
-  These 15 axioms form the core TM logic.
+  These 16 axioms form the core TM logic.
 - `Dense`: Axioms requiring DenselyOrdered frames. The `density` axiom (DN)
   is the only axiom in this class.
 - `Discrete`: Axioms requiring discrete frames with SuccOrder/NoMaxOrder/NoMinOrder.
-  Includes `discreteness_forward`, `seriality_future`, `seriality_past`.
+  Includes `discreteness_forward`, `seriality_future`, `seriality_past`, `disc_next`,
+  `disc_prev`, and all Until/Since axioms.
 
 **Hierarchy**: Base ⊂ Dense ∪ Discrete (base axioms valid in both extensions)
 
@@ -606,11 +638,11 @@ The typeclasses provide stronger type-level guarantees and integrate
 with Mathlib's order typeclass hierarchy.
 -/
 inductive FrameClass where
-  /-- Axioms valid on all linear orders (15 axioms) -/
+  /-- Axioms valid on all linear orders (16 axioms) -/
   | Base
   /-- Axioms requiring DenselyOrdered frames (1 axiom: density) -/
   | Dense
-  /-- Axioms requiring discrete frames with SuccOrder (4 axioms) -/
+  /-- Axioms requiring discrete frames with SuccOrder (16 axioms) -/
   | Discrete
   deriving Repr, DecidableEq, Inhabited
 
@@ -618,9 +650,9 @@ inductive FrameClass where
 Determines the frame class of an axiom based on its frame condition requirements.
 
 This is the **minimal** frame class where the axiom is valid:
-- Base axioms: valid on all linear orders
+- Base axioms (16): valid on all linear strict orders
 - Dense axiom (density): valid only on densely ordered frames
-- Discrete axioms: valid only on discrete frames
+- Discrete axioms (16): valid only on discrete frames
 
 Note: Base axioms are also valid on both dense and discrete frames,
 but their minimal class is `Base`.
@@ -638,9 +670,8 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.temp_k_dist _ _ => .Base
   | Axiom.temp_4 _ => .Base
   | Axiom.temp_a _ => .Base
+  | Axiom.temp_a_dual _ => .Base
   | Axiom.temp_l _ => .Base
-  | Axiom.temp_t_future _ => .Base
-  | Axiom.temp_t_past _ => .Base
   | Axiom.modal_future _ => .Base
   | Axiom.temp_future _ => .Base
   | Axiom.temp_linearity _ _ => .Base
@@ -648,6 +679,8 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.discreteness_forward _ => .Discrete
   | Axiom.seriality_future _ => .Discrete
   | Axiom.seriality_past _ => .Discrete
+  | Axiom.disc_next => .Discrete
+  | Axiom.disc_prev => .Discrete
   | Axiom.until_unfold _ _ => .Discrete
   | Axiom.until_intro _ _ => .Discrete
   | Axiom.until_induction _ _ _ => .Discrete
@@ -673,6 +706,8 @@ This excludes `discreteness_forward` which requires SuccOrder.
 -/
 def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
   | Axiom.discreteness_forward _ => False
+  | Axiom.disc_next => False
+  | Axiom.disc_prev => False
   | Axiom.until_unfold _ _ => False
   | Axiom.until_intro _ _ => False
   | Axiom.until_induction _ _ _ => False
@@ -704,6 +739,8 @@ def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.discreteness_forward _ => False
   | Axiom.seriality_future _ => False
   | Axiom.seriality_past _ => False
+  | Axiom.disc_next => False
+  | Axiom.disc_prev => False
   | Axiom.until_unfold _ _ => False
   | Axiom.until_intro _ _ => False
   | Axiom.until_induction _ _ _ => False

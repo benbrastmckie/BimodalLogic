@@ -50,7 +50,7 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **83** [PLANNED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
+0. **83** [IMPLEMENTING] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
    - **Plan**:
      - [08_half-open-semantics.md](specs/083_close_restricted_coherence_sorries/plans/08_half-open-semantics.md)
      - [11_strict-semantics-refactor.md](specs/083_close_restricted_coherence_sorries/plans/11_strict-semantics-refactor.md)
@@ -98,7 +98,7 @@ technical_debt:
 
 ### 83. Close Restricted Coherence Sorries
 - **Effort**: 12-18 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: 81

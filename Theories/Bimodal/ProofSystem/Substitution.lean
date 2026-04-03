@@ -295,12 +295,9 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
       simp only [Formula.always, subst_and, subst_all_past, subst_all_future]
     rw [h1]
     exact Axiom.temp_l (a.subst q r)
-  | temp_t_future a =>
-    simp only [subst_imp, subst_all_future]
-    exact Axiom.temp_t_future (a.subst q r)
-  | temp_t_past a =>
-    simp only [subst_imp, subst_all_past]
-    exact Axiom.temp_t_past (a.subst q r)
+  | temp_a_dual a =>
+    simp only [subst_imp, subst_all_past, subst_some_future]
+    exact Axiom.temp_a_dual (a.subst q r)
   | modal_future a =>
     simp only [subst_imp, subst_box, subst_all_future]
     exact Axiom.modal_future (a.subst q r)
@@ -327,6 +324,48 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | seriality_past a =>
     simp only [subst_imp, subst_all_past, subst_some_past]
     exact Axiom.seriality_past (a.subst q r)
+  | disc_next =>
+    simp only [subst_imp, subst_some_future, subst_untl, subst_neg, subst_bot]
+    exact Axiom.disc_next
+  | disc_prev =>
+    simp only [subst_imp, subst_some_past, subst_snce, subst_neg, subst_bot]
+    exact Axiom.disc_prev
+  | until_unfold a b =>
+    simp only [subst_imp, subst_untl, subst_or, subst_and, subst_bot]
+    exact Axiom.until_unfold (a.subst q r) (b.subst q r)
+  | until_intro a b =>
+    simp only [subst_imp, subst_untl, subst_or, subst_and, subst_bot]
+    exact Axiom.until_intro (a.subst q r) (b.subst q r)
+  | until_induction a b c =>
+    simp only [subst_imp, subst_and, subst_untl, subst_bot]
+    exact Axiom.until_induction (a.subst q r) (b.subst q r) (c.subst q r)
+  | until_linearity a b c d =>
+    simp only [subst_imp, subst_and, subst_or, subst_untl]
+    exact Axiom.until_linearity (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
+  | since_unfold a b =>
+    simp only [subst_imp, subst_snce, subst_or, subst_and, subst_bot]
+    exact Axiom.since_unfold (a.subst q r) (b.subst q r)
+  | since_intro a b =>
+    simp only [subst_imp, subst_snce, subst_or, subst_and, subst_bot]
+    exact Axiom.since_intro (a.subst q r) (b.subst q r)
+  | since_induction a b c =>
+    simp only [subst_imp, subst_and, subst_snce, subst_bot]
+    exact Axiom.since_induction (a.subst q r) (b.subst q r) (c.subst q r)
+  | since_linearity a b c d =>
+    simp only [subst_imp, subst_and, subst_or, subst_snce]
+    exact Axiom.since_linearity (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
+  | until_connectedness a b c =>
+    simp only [subst_imp, subst_and, subst_untl, subst_snce]
+    exact Axiom.until_connectedness (a.subst q r) (b.subst q r) (c.subst q r)
+  | since_connectedness a b c =>
+    simp only [subst_imp, subst_and, subst_snce, subst_untl]
+    exact Axiom.since_connectedness (a.subst q r) (b.subst q r) (c.subst q r)
+  | F_until_equiv a =>
+    simp only [subst_imp, subst_some_future, subst_untl, subst_neg, subst_bot]
+    exact Axiom.F_until_equiv (a.subst q r)
+  | P_since_equiv a =>
+    simp only [subst_imp, subst_some_past, subst_snce, subst_neg, subst_bot]
+    exact Axiom.P_since_equiv (a.subst q r)
 
 /-!
 ## Main theorem: derivation substitution
