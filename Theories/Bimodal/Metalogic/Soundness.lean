@@ -518,8 +518,24 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   -- UNSOUND: until_unfold — G(φ U ψ) requires Until at ALL s ≥ t, but witness covers [t, s_w].
   -- Counterexample: φ=⊤ on {0,1}, ψ at {1}, φ=⊥ at {2+}. (φ U ψ)(0) holds but G(φ U ψ)(0) fails.
   | until_unfold _ _ => sorry
-  -- UNSOUND: until_intro — ψ(t) alone doesn't give (φ U ψ)(t) since closed-interval requires φ(t).
-  | until_intro _ _ => sorry
+  -- SOUND under half-open: until_intro — ψ ∨ (φ ∧ G(φ U ψ)) → φ U ψ
+  -- Case 1: ψ(t) gives witness s=t with vacuous guard [t,t)=∅
+  -- Case 2: G(φ U ψ)(t) gives (φ U ψ)(t) directly by reflexivity of G
+  | until_intro φ ψ =>
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+    intro h_or
+    by_cases h_psi : truth_at M Omega τ t ψ
+    · -- Case 1: ψ(t) — use t as witness with vacuous guard
+      exact ⟨t, le_refl t, h_psi, fun _ h_le h_lt => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
+    · -- Case 2: ¬ψ(t), so h_or gives φ(t) ∧ G(φ U ψ)(t)
+      have h_and := h_or (fun h => absurd h h_psi)
+      -- h_and : ¬(φ(t) → ¬G(φ U ψ)(t)), i.e., φ(t) ∧ G(φ U ψ)(t)
+      by_contra h_neg_until
+      apply h_and
+      intro _h_phi h_G
+      -- G(φ U ψ)(t) means ∀ s ≥ t, (φ U ψ)(s). At s = t: (φ U ψ)(t).
+      exact h_neg_until (h_G t (le_refl t))
   -- UNSOUND: until_induction — needs backward propagation but premise only gives forward.
   | until_induction _ _ _ => sorry
   | until_linearity φ ψ φ' ψ' =>
@@ -556,8 +572,23 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
         h_phi'_range2⟩
   -- UNSOUND: since_unfold — mirror of until_unfold unsoundness.
   | since_unfold _ _ => sorry
-  -- UNSOUND: since_intro — mirror of until_intro unsoundness.
-  | since_intro _ _ => sorry
+  -- SOUND under half-open: since_intro — ψ ∨ (φ ∧ H(φ S ψ)) → φ S ψ
+  -- Case 1: ψ(t) gives witness s=t with vacuous guard (t,t]=∅
+  -- Case 2: H(φ S ψ)(t) gives (φ S ψ)(t) directly by reflexivity of H
+  | since_intro φ ψ =>
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+    intro h_or
+    by_cases h_psi : truth_at M Omega τ t ψ
+    · -- Case 1: ψ(t) — use t as witness with vacuous guard (t,t]=∅
+      exact ⟨t, le_refl t, h_psi, fun _ h_lt h_le => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
+    · -- Case 2: ¬ψ(t), so h_or gives φ(t) ∧ H(φ S ψ)(t)
+      have h_and := h_or (fun h => absurd h h_psi)
+      by_contra h_neg_since
+      apply h_and
+      intro _h_phi h_H
+      -- H(φ S ψ)(t) means ∀ s ≤ t, (φ S ψ)(s). At s = t: (φ S ψ)(t).
+      exact h_neg_since (h_H t (le_refl t))
   -- UNSOUND: since_induction — mirror of until_induction unsoundness.
   | since_induction _ _ _ => sorry
   | since_linearity φ ψ φ' ψ' =>
@@ -726,7 +757,16 @@ theorem soundness (Γ : Context) (φ : Formula) :
     -- Until/Since axiom soundness:
     -- 6 unsound axioms (unfold, intro, induction) need axiom reformulation
     | until_unfold _ _ => sorry
-    | until_intro _ _ => sorry
+    | until_intro φ ψ =>
+      simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+      intro h_or
+      by_cases h_psi : truth_at M Omega τ t ψ
+      · exact ⟨t, le_refl t, h_psi, fun _ h_le h_lt => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
+      · have h_and := h_or (fun h => absurd h h_psi)
+        by_contra h_neg_until
+        apply h_and
+        intro _h_phi h_G
+        exact h_neg_until (h_G t (le_refl t))
     | until_induction _ _ _ => sorry
     | until_linearity φ ψ φ' ψ' =>
       simp only [Formula.and, Formula.or, Formula.neg, truth_at]
@@ -747,7 +787,16 @@ theorem soundness (Γ : Context) (φ : Formula) :
             ⟨s1, h_le, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r (le_trans hs2t hr1) hr2⟩,
           h_phi'_range2⟩
     | since_unfold _ _ => sorry
-    | since_intro _ _ => sorry
+    | since_intro φ ψ =>
+      simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+      intro h_or
+      by_cases h_psi : truth_at M Omega τ t ψ
+      · exact ⟨t, le_refl t, h_psi, fun _ h_lt h_le => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
+      · have h_and := h_or (fun h => absurd h h_psi)
+        by_contra h_neg_since
+        apply h_and
+        intro _h_phi h_H
+        exact h_neg_since (h_H t (le_refl t))
     | since_induction _ _ _ => sorry
     | since_linearity φ ψ φ' ψ' =>
       simp only [Formula.and, Formula.or, Formula.neg, truth_at]

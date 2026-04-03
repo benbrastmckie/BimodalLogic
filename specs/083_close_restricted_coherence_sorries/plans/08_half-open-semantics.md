@@ -72,7 +72,7 @@ From report 08 (team research, 2 teammates):
 
 ---
 
-### Phase 2: Fix Downstream Soundness and Lemma Breakage [NOT STARTED]
+### Phase 2: Fix Downstream Soundness and Lemma Breakage [COMPLETED]
 
 - **Goal:** Fix all files broken by the semantic change outside Truth.lean. Fill the `until_intro` and `since_intro` soundness proofs (now provable).
 
