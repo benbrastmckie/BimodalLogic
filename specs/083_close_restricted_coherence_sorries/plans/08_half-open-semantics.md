@@ -98,7 +98,7 @@ From report 08 (team research, 2 teammates):
 
 ---
 
-### Phase 3: Truth Lemma Forward Direction (Until) [NOT STARTED]
+### Phase 3: Truth Lemma Forward Direction (Until) [COMPLETED]
 
 - **Goal:** Fill the forward direction of the Until case in `restricted_shifted_truth_lemma`: if `(phi U psi) in fam.mcs(t)`, then there exists a semantic witness `s >= t` with `psi` true at `s` and `phi` true at all `r` with `t <= r < s`.
 
@@ -121,7 +121,7 @@ From report 08 (team research, 2 teammates):
 
 ---
 
-### Phase 4: Truth Lemma Backward Direction (Until) [NOT STARTED]
+### Phase 4: Truth Lemma Backward Direction (Until) [PARTIAL]
 
 - **Goal:** Fill the backward direction of the Until case: if there exists a semantic witness (s >= t with psi true at s and phi true at all r with t <= r < s), then `(phi U psi) in fam.mcs(t)`.
 
