@@ -841,7 +841,7 @@
     {
       "project_number": 83,
       "project_name": "close_restricted_coherence_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 2 sorries in succ_chain_restricted_forward_F and succ_chain_restricted_backward_P (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in deferralClosure(root) within a single SuccChainFMCS. Potential approaches: (1) Show that constrained_successor f_step eventually resolves each F-obligation because deferralClosure is finite and the chain cannot defer indefinitely within a bounded set, (2) Dovetailed chain construction with fair scheduling that cycles through pending F-obligations, (3) Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra. Also clean up the 2 auxiliary sorries in RestrictedTruthLemma.lean (restricted_chain_G_step and restricted_chain_H_step) which may become unnecessary once the main sorries are closed. Does NOT include: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), or the old full-coherence sorry (bfmcs_from_mcs_temporally_coherent) which is bypassed by the restricted path.",
       "effort": "12-18 hours",
@@ -850,37 +850,27 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T00:23:28Z",
+      "last_updated": "2026-04-03T00:41:28Z",
       "notes": "Continues restricted coherence path from task 81. The 2 target sorries are more precisely scoped than the original bfmcs_from_mcs_temporally_coherent: restricted to deferralClosure formulas in a single chain rather than all formulas across all families.",
       "next_artifact_number": 7,
-      "session_id": "sess_1775197800_us6lean",
+      "session_id": "sess_1775176568_920071",
       "researched": "2026-04-03T00:23:28Z",
-      "planned": "2026-04-02T22:19:13Z",
+      "planned": "2026-04-03T00:41:28Z",
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 12,
+        "phases": 7,
+        "total_effort_hours": 27,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 4,
+        "plan_version": 6,
         "reports_integrated": [
           {
-            "path": "reports/01_team-research.md",
-            "integrated_in_plan_version": 1,
+            "path": "reports/06_until-since-enrichment.md",
+            "integrated_in_plan_version": 6,
             "integrated_date": "2026-04-02"
           },
           {
-            "path": "reports/02_blocker-analysis.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-04-02"
-          },
-          {
-            "path": "reports/03_team-research.md",
-            "integrated_in_plan_version": 3,
-            "integrated_date": "2026-04-02"
-          },
-          {
-            "path": "handoffs/03_drm-chain-approach.md",
-            "integrated_in_plan_version": 4,
+            "path": "reports/05_team-research.md",
+            "integrated_in_plan_version": 6,
             "integrated_date": "2026-04-02"
           }
         ]
@@ -900,11 +890,6 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/02_blocker-analysis.md",
           "type": "research",
           "summary": "Deep analysis of Phase 3 blocker with mathematically rigorous path forward"
-        },
-        {
-          "path": "specs/083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md",
-          "type": "plan",
-          "summary": "v2 plan replacing SuccChainFMCS with ResolvingFMCS using enriched deferral seed for sorry-free completeness"
         },
         {
           "path": "specs/083_close_restricted_coherence_sorries/summaries/02_restricted-coherence-summary.md",
@@ -927,11 +912,6 @@
           "summary": "DRM chain approach handoff with remaining steps"
         },
         {
-          "path": "specs/083_close_restricted_coherence_sorries/plans/04_restricted-coherence.md",
-          "type": "plan",
-          "summary": "v4: DRM chain with bounded_witness for sorry-free forward_F"
-        },
-        {
           "path": "specs/083_close_restricted_coherence_sorries/handoffs/04_deep-analysis.md",
           "type": "handoff",
           "summary": "Deep analysis of forward_F approaches — all v4 approaches have specific blockers"
@@ -950,6 +930,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/06_until-since-enrichment.md",
           "type": "research",
           "summary": "Until/Since enrichment: Burgess-Xu axioms, dovetailed chain with U-Induction, ~20 files ~3500 new lines, 82% survival"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/plans/06_restricted-coherence.md",
+          "type": "plan",
+          "summary": "v6: Until/Since language enrichment, 7 phases, 27 hours"
         }
       ],
       "started": "2026-04-02T22:21:47Z"

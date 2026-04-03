@@ -50,8 +50,8 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **83** [RESEARCHED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
-   - **Plan**: [04_restricted-coherence.md](specs/083_close_restricted_coherence_sorries/plans/04_restricted-coherence.md)
+0. **83** [PLANNED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
+   - **Plan**: [06_restricted-coherence.md](specs/083_close_restricted_coherence_sorries/plans/06_restricted-coherence.md)
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
@@ -119,6 +119,7 @@ technical_debt:
   - [02_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md) -- v2: ResolvingFMCS with enriched deferral seed for sorry-free completeness
   - [03_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/03_restricted-coherence.md) -- v3: Finite resolving prefix with filtered compatible F-formulas and topological ordering (joint consistency unprovable)
   - [04_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/04_restricted-coherence.md) -- v4: DRM chain with bounded_witness for sorry-free forward_F
+  - [06_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/06_restricted-coherence.md) -- v6: Until/Since language enrichment, 7 phases, 27 hours
 
 **Description**: Close the 2 sorries in `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in `deferralClosure(root)` within a single SuccChainFMCS.
 
