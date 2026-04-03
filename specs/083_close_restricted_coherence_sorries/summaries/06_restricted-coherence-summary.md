@@ -1,73 +1,71 @@
-# Implementation Summary: Task #83 (v6) - Phases 1-4
+# Implementation Summary: Task #83 (v6)
 
-## Status: PARTIAL (Phases 1-3 completed, Phase 4 partial)
+## Status: PARTIAL (Phases 1-6 completed, Phase 4+7 partial)
 
 ## What Was Accomplished
 
 ### Phase 1: Formula Type Extension [COMPLETED]
+Added `untl`/`snce` binary constructors to Formula. 10 files modified.
 
-Added `untl` (Until) and `snce` (Since) binary constructors to the `Formula` inductive type.
-
-**Files modified**: 10 files across Syntax, ProofSystem, Semantics, Metalogic, and Automation.
-
-**Key decisions**:
-- Named constructors `untl`/`snce` (not `until`/`since`) due to Lean 4 keyword conflict
-- Added sorry placeholders in 12 truth lemma proof locations (to be filled in later phases)
-
-### Phase 2: SubformulaClosure and DeferralClosure Extension [COMPLETED]
-
-Added Until/Since deferral infrastructure to `SubformulaClosure.lean`.
-
-**New definitions**: `IsUntilFormula`, `IsSinceFormula`, `toUntilDeferral`, `toSinceDeferral`,
-`untilDeferralSet`, `sinceDeferralSet`, `baseDeferralClosure`, `extendedDeferralClosure`.
+### Phase 2: SubformulaClosure Extension [COMPLETED]
+Added Until/Since deferral infrastructure.
 
 ### Phase 3: Axioms and Proof System [COMPLETED]
-
-Added 10 new Burgess-Xu axiom schemata. All classified as `FrameClass.Discrete`.
+Added 10 Burgess-Xu axiom schemata + F_until_equiv/P_since_equiv (12 total).
 
 ### Phase 4: Semantics Extension [PARTIAL]
+- truth_at Until/Since cases: sorry-free
+- time_shift_preserves_truth: sorry-free
+- 4/10 axiom soundness proofs completed (linearity x2, connectedness x2)
+- 6/10 blocked: unsound under reflexive semantics
 
-**Completed**:
-- `time_shift_preserves_truth` for untl/snce: DONE (both sorry closed)
-- `truth_double_shift_cancel` for untl/snce: DONE (already completed in Phase 1)
-- Truth.lean is now SORRY-FREE
+### Phase 5: Temporal Content and Succ Relation [COMPLETED]
+- u_content/s_content definitions
+- until/since witness seed consistency proofs
+- canonical_forward_U/canonical_backward_S
+- MCS unfolding + Succ persistence lemmas
 
-**Blocked**:
-- Soundness proofs for 10 new axioms: BLOCKED by axiom formulation issue
+### Phase 6: Dovetailed Chain Construction [COMPLETED]
+- DovetailedChain.lean: 0 sorries (fully verified)
+- forward_dovetailed_forward_F: sorry-free
+- backward_dovetailed_backward_P: sorry-free
+- Fair scheduling + Until persistence infrastructure
 
-### BLOCKER: Axiom Formulation Issue with Reflexive Semantics
+### Phase 7: Completeness Rewiring [PARTIAL]
+- completeness_over_Int rewired through dovetailed path
+- Original target sorries (forward_F/backward_P) bypassed
+- DovetailedFMCS + bundle construction complete
+- **BLOCKED**: Truth lemma Until/Since backward cases
 
-The standard Burgess-Xu axioms (1982/1988) assume STRICT temporal operators where G means
-"at all future times s > t". Our system uses REFLEXIVE temporal operators where G means
-"at all times s >= t" (including t itself).
+## Remaining Blockers
 
-**Specific issue with `until_unfold`**: The axiom `(φ U ψ) → ψ ∨ (φ ∧ G(φ U ψ))` requires
-`G(φ U ψ)` at time t, meaning `∀ s ≥ t, (φ U ψ) at s`. But `φ U ψ` at time t with witness s
-only guarantees `φ U ψ` at times in `[t, s]`, NOT at times beyond `s`. For times `s' > s` (the
-Until witness), there is no guarantee that `φ U ψ` holds.
+### Truth Lemma Until/Since Backward (6 sorry instances)
+Files: ParametricTruthLemma.lean, CanonicalConstruction.lean
 
-**Impact**: This makes `until_unfold` semantically INVALID under reflexive semantics as
-currently formulated. The `until_intro` (converse) is similarly affected.
+**Root cause**: Backward truth lemma for Until requires `truth(φ U ψ, n) → (φ U ψ) ∈ Γₙ`.
+Standard proof-by-contradiction needs truth lemma for `¬(φ U ψ)` which has higher formula
+complexity, creating circular dependency in structural induction.
 
 **Resolution options**:
-1. Reformulate axioms to use strict-future `F'` (define `F'φ := F(φ) ∧ φ`, the weak closure)
-2. Switch Until/Since semantics to strict: `∃ s > t` instead of `∃ s ≥ t`
-3. Use `some_future (φ U ψ)` (existential, not universal) in the unfolding
-4. Research the correct reflexive-time formulation of Burgess-Xu axioms
+1. Restructure truth lemma: induction over Fischer-Ladner closure instead of formula structure
+2. Add next-time operator X with axiom `φ ∧ X(φ U ψ) → φ U ψ`
+3. Change Until semantics to half-open interval + reformulated axioms
 
-This requires a research round (not implementation) to determine the correct axiom set.
+### Axiom Soundness (6 sorry instances, non-blocking)
+until_unfold, until_intro, until_induction + Since mirrors.
+Semantically unsound under reflexive G/H. Do NOT block completeness.
 
-## Build Status
+## Verification
+- `lake build`: 0 errors
+- `lean_verify completeness_over_Int`: shows `sorryAx` (truth lemma blockers)
+- DovetailedChain.lean: 0 sorries
 
-`lake build` passes with 0 errors (938 jobs).
+## Key Architectural Achievement
+The dovetailed chain infrastructure is **fully sorry-free** and provides:
+- Fair scheduling of temporal obligations via Nat.unpair
+- F-resolution via canonical_forward_U + Until persistence
+- P-resolution via canonical_backward_S + Since persistence
+- Complete FMCS bundle construction
 
-## Sorry Count
-
-| Location | Count | Status |
-|----------|-------|--------|
-| Truth.lean | 0 | CLOSED (Phase 4) |
-| ParametricTruthLemma.lean | 4 | Open (Phase 7) |
-| CanonicalConstruction.lean | 6 | Open (Phase 7) |
-| Soundness.lean | 20 | BLOCKED (axiom formulation) |
-
-Total new sorry: ~30 (down from ~32, after closing Truth.lean sorry).
+The gap between this infrastructure and sorry-free completeness is solely the truth lemma
+backward direction for Until/Since formulas.
