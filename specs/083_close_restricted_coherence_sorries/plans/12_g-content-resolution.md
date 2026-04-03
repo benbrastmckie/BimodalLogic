@@ -1,7 +1,7 @@
 # Implementation Plan: g_content Blocker Resolution for Task #83
 
 - **Task**: 83 - Close Restricted Coherence Sorries
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: Phases 1-4 of plan v8 (11_strict-semantics-refactor.md) COMPLETED
 - **Research Inputs**: reports/12_team-research.md (g_content blocker root cause and 3-tier resolution)
@@ -50,7 +50,7 @@ Resolve the g_content blocker that emerged after removing the T-axiom under stri
 
 ## Implementation Phases
 
-### Phase 1: Derived Theorems G(a)->X(a) and H(a)->Y(a) [NOT STARTED]
+### Phase 1: Derived Theorems G(a)->X(a) and H(a)->Y(a) [COMPLETED]
 
 **Goal**: Prove the foundational derived theorems that `G(a) -> X(a)` (where `X(a) = bot U a`) and the dual `H(a) -> Y(a)` (where `Y(a) = bot S a`) from the existing 33-axiom system. These are prerequisites for Tier 2 fixes.
 
