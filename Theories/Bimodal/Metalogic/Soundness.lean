@@ -67,9 +67,18 @@ The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` follows from:
 6. **IRR rule**: Sound by construction (see IRRSoundness.lean)
 7. **Weakening**: Monotonicity of semantic consequence
 
-**Status**: The axiom validity components are proven. The full composition into a single
-`soundness` theorem is straightforward but has not been assembled into one lemma.
-Each rule preservation property is either trivial or proven separately.
+**Frame-Class Architecture**:
+Soundness is organized by frame class because axioms require different frame conditions:
+- `soundness_dense`: For dense-compatible derivations on dense frames (sorry-free)
+- `soundness_discrete`: For discrete-compatible derivations on discrete frames
+  (sorry only for `temporal_duality`, pending `SoundnessLemmasDiscrete.lean`)
+- `soundness` (general): Stated without frame constraints, so frame-class axioms
+  remain as sorry (architectural limitation, not proof gap). Use `soundness_dense`
+  or `soundness_discrete` for complete proofs.
+
+All 20 individual axiom validity lemmas are proven sorry-free. The remaining
+sorries are solely in the derivation induction structure of `soundness` (general)
+and `temporal_duality` in `soundness_discrete`.
 
 ## References
 
@@ -758,6 +767,15 @@ theorem P_since_equiv_valid (ψ : Formula) :
   obtain ⟨s, hst, hs⟩ := h_exists
   exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
 
+/-- Next-implies-Future validity: `⊨_discrete X(φ) → F(φ)`. -/
+theorem next_implies_some_future_valid (φ : Formula) :
+    valid_discrete ((Formula.untl Formula.bot φ).imp φ.some_future) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  intro ⟨s, hts, h_phi_s, _h_guard⟩
+  intro h_G_neg_phi
+  exact h_G_neg_phi s hts h_phi_s
+
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
@@ -798,6 +816,7 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | since_connectedness _ _ _ => exact absurd h_base id
   | F_until_equiv _ => exact absurd h_base id
   | P_since_equiv _ => exact absurd h_base id
+  | next_implies_some_future _ => exact absurd h_base id
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -851,6 +870,7 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | since_connectedness _ _ _ => exact absurd h_dc id
   | F_until_equiv _ => exact absurd h_dc id
   | P_since_equiv _ => exact absurd h_dc id
+  | next_implies_some_future _ => exact absurd h_dc id
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -893,6 +913,7 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | since_connectedness φ ψ χ => exact since_connectedness_valid φ ψ χ
   | F_until_equiv ψ => exact F_until_equiv_valid ψ
   | P_since_equiv ψ => exact P_since_equiv_valid ψ
+  | next_implies_some_future φ => exact next_implies_some_future_valid φ
 
 /-! ## Full Derivation Soundness
 
@@ -992,6 +1013,7 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | since_connectedness _ _ _ => sorry
     | F_until_equiv _ => sorry
     | P_since_equiv _ => sorry
+    | next_implies_some_future _ => sorry
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1171,6 +1193,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | since_connectedness _ _ _ => exact absurd h_dc id
     | F_until_equiv _ => exact absurd h_dc id
     | P_since_equiv _ => exact absurd h_dc id
+    | next_implies_some_future _ => exact absurd h_dc id
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1194,6 +1217,120 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     -- Use derivable_implies_swap_valid from SoundnessLemmas
     -- h_dc : (temporal_duality φ' d').isDenseCompatible = d'.isDenseCompatible
     exact SoundnessLemmas.derivable_implies_swap_valid d' h_dc F M Omega h_sc τ h_mem t
+  | weakening Γ' Δ' φ' _ h_sub ih =>
+    exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+
+/-! ## Discrete Frame Soundness Theorems
+
+Analogous to `soundness_dense_valid` and `soundness_dense` above, these theorems
+provide soundness for discrete-compatible derivations on discrete frame types.
+-/
+
+/--
+**Soundness Discrete Valid**: Derivability from empty context implies discrete validity.
+
+For discrete-compatible derivations from empty context, the derived formula is
+valid on all discrete frames.
+
+**Note on temporal_duality**: The temporal_duality case requires proving that
+swap validity is preserved for discrete-compatible derivations. This is
+semantically true (each discrete axiom's swap is the corresponding dual axiom,
+also valid on discrete frames) but requires a discrete version of the swap
+validity infrastructure in SoundnessLemmas.lean. This case is marked sorry
+pending the creation of SoundnessLemmasDiscrete.lean.
+-/
+theorem soundness_discrete_valid {phi : Formula}
+    (d : DerivationTree [] phi) (h_dc : d.isDiscreteCompatible) : valid_discrete phi := by
+  match d with
+  | .axiom _ _ h_ax =>
+    exact axiom_valid_discrete h_ax h_dc
+  | .assumption _ _ h_mem =>
+    exact absurd h_mem (Syntax.Context.not_mem_nil _)
+  | .modus_ponens _ psi' _ d1 d2 =>
+    obtain ⟨h_dc1, h_dc2⟩ := h_dc
+    have h1 := soundness_discrete_valid d1 h_dc1
+    have h2 := soundness_discrete_valid d2 h_dc2
+    intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
+    have h1' := h1 D F M Omega h_sc tau h_mem t
+    have h2' := h2 D F M Omega h_sc tau h_mem t
+    simp only [truth_at] at h1'
+    exact h1' h2'
+  | .necessitation psi' d' =>
+    have h := soundness_discrete_valid d' h_dc
+    intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
+    simp only [truth_at]
+    intro sigma h_sigma_mem
+    exact h D F M Omega h_sc sigma h_sigma_mem t
+  | .temporal_necessitation psi' d' =>
+    have h := soundness_discrete_valid d' h_dc
+    intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
+    simp only [truth_at]
+    intro s _hts
+    exact h D F M Omega h_sc tau h_mem s
+  | .temporal_duality psi' d' =>
+    -- ARCHITECTURAL GAP: Requires derivable_implies_swap_valid_discrete
+    -- which proves that swap_temporal preserves validity for discrete-compatible
+    -- derivations. Semantically sound but the proof infrastructure (analogous to
+    -- SoundnessLemmas.derivable_implies_swap_valid for dense frames) has not yet
+    -- been created for discrete frames.
+    sorry
+  | .weakening Gamma' _ _ d' h_sub =>
+    have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
+    have h_dc_sub : (h_eq ▸ d').isDiscreteCompatible := by
+      simp only [DerivationTree.isDiscreteCompatible] at h_dc
+      subst h_eq
+      exact h_dc
+    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
+    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
+      simp only [h_height_eq, DerivationTree.height]
+      omega
+    exact soundness_discrete_valid (h_eq ▸ d') h_dc_sub
+termination_by d.height
+decreasing_by
+  all_goals first
+    | exact DerivationTree.mp_height_gt_left _ _
+    | exact DerivationTree.mp_height_gt_right _ _
+    | simp only [DerivationTree.height]; omega
+
+/--
+**Soundness for Discrete Frames**: Derivability implies semantic consequence on discrete frames.
+
+This is the discrete analogue of `soundness_dense`. Given a discrete-compatible
+derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at some configuration on a
+discrete frame, then `φ` is also true there.
+-/
+theorem soundness_discrete (Γ : Context) (φ : Formula)
+    (d : DerivationTree Γ φ) (h_dc : d.isDiscreteCompatible)
+    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D)
+    (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) :
+    truth_at M Omega τ t φ := by
+  induction d generalizing τ t with
+  | «axiom» Γ' φ' h_ax =>
+    exact axiom_valid_discrete h_ax h_dc D F M Omega h_sc τ h_mem t
+  | assumption Γ' φ' h_in =>
+    exact h_ctx φ' h_in
+  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
+    have ⟨h_dc1, h_dc2⟩ := h_dc
+    have h1 := ih1 h_dc1 τ h_mem t h_ctx
+    have h2 := ih2 h_dc2 τ h_mem t h_ctx
+    simp only [truth_at] at h1
+    exact h1 h2
+  | necessitation φ' _ ih =>
+    simp only [truth_at]
+    intro σ h_σ_mem
+    exact ih h_dc σ h_σ_mem t (by simp)
+  | temporal_necessitation φ' _ ih =>
+    simp only [truth_at]
+    intro s _hts
+    exact ih h_dc τ h_mem s (by simp)
+  | temporal_duality φ' d' ih =>
+    -- ARCHITECTURAL GAP: Same as soundness_discrete_valid above.
+    -- Requires discrete swap validity infrastructure.
+    sorry
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 

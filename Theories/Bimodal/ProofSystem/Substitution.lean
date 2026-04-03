@@ -366,6 +366,9 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | P_since_equiv a =>
     simp only [subst_imp, subst_some_past, subst_snce, subst_neg, subst_bot]
     exact Axiom.P_since_equiv (a.subst q r)
+  | next_implies_some_future a =>
+    simp only [subst_imp, subst_some_future, subst_untl, subst_neg, subst_bot]
+    exact Axiom.next_implies_some_future (a.subst q r)
 
 /-!
 ## Main theorem: derivation substitution

@@ -235,16 +235,21 @@ NOTE: This derivation is semantically clear but the syntactic proof tree
 construction is non-trivial. Uses sorry pending full axiom-level construction.
 -/
 noncomputable def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot := by
-  -- X(⊥) = ⊥ U ⊥ is semantically impossible (requires ⊥ at next time step)
-  -- Full derivation would use until_linearity + seriality
-  sorry
+  -- X(⊥) → F(⊥) by next_implies_some_future axiom
+  have h_X_to_F := DerivationTree.axiom [] _ (Axiom.next_implies_some_future Formula.bot)
+  -- G(⊤) is a theorem, so F(⊥) = ¬G(⊤) → ⊥ by DNI
+  have h_GT : ⊢ (Formula.bot.imp Formula.bot).all_future :=
+    DerivationTree.temporal_necessitation _ (identity Formula.bot)
+  have h_F_bot_absurd := mp h_GT (dni ((Formula.bot.imp Formula.bot).all_future))
+  exact imp_trans h_X_to_F h_F_bot_absurd
 
 /--
 `⊢ Y(⊥) → ⊥`, i.e., `⊢ (⊥ S ⊥) → ⊥`.
 Mirror of X_bot_absurd for the past direction.
 -/
 noncomputable def Y_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot := by
-  sorry
+  -- swap_temporal((⊥ U ⊥) → ⊥) = (⊥ S ⊥) → ⊥
+  exact DerivationTree.temporal_duality _ X_bot_absurd
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
@@ -255,12 +260,32 @@ to derive X(⊥) from G(¬ψ) ∧ (φ U ψ), then X_bot_absurd for contradiction
 -/
 noncomputable def until_implies_some_future (φ ψ : Formula) :
     ⊢ (Formula.untl φ ψ).imp (Formula.some_future ψ) := by
-  -- Contrapositive: G(¬ψ) → ¬(φ U ψ)
-  -- From G(¬ψ), derive both premises of until_induction with χ = ⊥:
-  --   G(ψ → ⊥) = G(¬ψ) (hypothesis)
-  --   G((φ ∧ X(⊥)) → ⊥) = G(X(⊥) → ⊥) (from X_bot_absurd under G)
-  -- Then (φ U ψ) → X(⊥), and X(⊥) → ⊥ by X_bot_absurd.
-  sorry
+  -- Strategy: show G(¬ψ) → ¬(φ U ψ), then flip to (φ U ψ) → F(ψ).
+  have h_xba := X_bot_absurd
+  -- (φ ∧ X(⊥)) → ⊥ from X_bot_absurd via weakening + DNI
+  have h_phi_neg_xbot : ⊢ φ.imp ((Formula.untl Formula.bot Formula.bot).imp Formula.bot) :=
+    mp h_xba (DerivationTree.axiom [] _ (Axiom.prop_s ((Formula.untl Formula.bot Formula.bot).imp Formula.bot) φ))
+  have h_and_absurd : ⊢ (Formula.and φ (Formula.untl Formula.bot Formula.bot)).imp Formula.bot :=
+    mp h_phi_neg_xbot (dni (φ.imp ((Formula.untl Formula.bot Formula.bot).imp Formula.bot)))
+  -- G((φ ∧ X(⊥)) → ⊥) + until_induction(φ, ψ, ⊥)
+  have h_G_and := DerivationTree.temporal_necessitation _ h_and_absurd
+  have h_ind := DerivationTree.axiom [] _ (Axiom.until_induction φ ψ Formula.bot)
+  -- G(¬ψ) → G(¬ψ) ∧ G((φ ∧ X(⊥)) → ⊥)
+  have h_conj : ⊢ (ψ.imp Formula.bot).all_future.imp
+      (Formula.and (ψ.imp Formula.bot).all_future
+        ((Formula.and φ (Formula.untl Formula.bot Formula.bot)).imp Formula.bot).all_future) :=
+    combine_imp_conj (identity _) (mp h_G_and (DerivationTree.axiom [] _ (Axiom.prop_s _ _)))
+  -- G(¬ψ) → (φ U ψ) → X(⊥)
+  have h5 := imp_trans h_conj h_ind
+  -- Compose with X_bot_absurd: G(¬ψ) → (φ U ψ) → ⊥
+  have h_xba_weak : ⊢ (φ.untl ψ).imp ((Formula.untl Formula.bot Formula.bot).imp Formula.bot) :=
+    mp h_xba (DerivationTree.axiom [] _ (Axiom.prop_s _ (φ.untl ψ)))
+  have h_prop_k := DerivationTree.axiom [] _ (Axiom.prop_k (φ.untl ψ) (Formula.untl Formula.bot Formula.bot) Formula.bot)
+  have h_compose := DerivationTree.modus_ponens [] _ _ h_prop_k h_xba_weak
+  have h6 : ⊢ (ψ.imp Formula.bot).all_future.imp ((φ.untl ψ).imp Formula.bot) :=
+    imp_trans h5 h_compose
+  -- Flip: (φ U ψ) → G(¬ψ) → ⊥ = (φ U ψ) → F(ψ)
+  exact mp h6 (@theorem_flip (ψ.imp Formula.bot).all_future (φ.untl ψ) Formula.bot)
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
@@ -268,6 +293,25 @@ Mirror of until_implies_some_future.
 -/
 noncomputable def since_implies_some_past (φ ψ : Formula) :
     ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) := by
-  sorry
+  -- Mirror of until_implies_some_future using since_induction + Y_bot_absurd
+  have h_yba := Y_bot_absurd
+  have h_phi_neg_ybot : ⊢ φ.imp ((Formula.snce Formula.bot Formula.bot).imp Formula.bot) :=
+    mp h_yba (DerivationTree.axiom [] _ (Axiom.prop_s ((Formula.snce Formula.bot Formula.bot).imp Formula.bot) φ))
+  have h_and_absurd : ⊢ (Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot :=
+    mp h_phi_neg_ybot (dni (φ.imp ((Formula.snce Formula.bot Formula.bot).imp Formula.bot)))
+  have h_H_and := Bimodal.Theorems.past_necessitation _ h_and_absurd
+  have h_ind := DerivationTree.axiom [] _ (Axiom.since_induction φ ψ Formula.bot)
+  have h_conj : ⊢ (ψ.imp Formula.bot).all_past.imp
+      (Formula.and (ψ.imp Formula.bot).all_past
+        ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past) :=
+    combine_imp_conj (identity _) (mp h_H_and (DerivationTree.axiom [] _ (Axiom.prop_s _ _)))
+  have h5 := imp_trans h_conj h_ind
+  have h_yba_weak : ⊢ (φ.snce ψ).imp ((Formula.snce Formula.bot Formula.bot).imp Formula.bot) :=
+    mp h_yba (DerivationTree.axiom [] _ (Axiom.prop_s _ (φ.snce ψ)))
+  have h_prop_k := DerivationTree.axiom [] _ (Axiom.prop_k (φ.snce ψ) (Formula.snce Formula.bot Formula.bot) Formula.bot)
+  have h_compose := DerivationTree.modus_ponens [] _ _ h_prop_k h_yba_weak
+  have h6 : ⊢ (ψ.imp Formula.bot).all_past.imp ((φ.snce ψ).imp Formula.bot) :=
+    imp_trans h5 h_compose
+  exact mp h6 (@theorem_flip (ψ.imp Formula.bot).all_past (φ.snce ψ) Formula.bot)
 
 end Bimodal.Theorems.TemporalDerived

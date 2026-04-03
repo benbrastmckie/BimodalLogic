@@ -109,7 +109,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Foundational Derived Theorems (TemporalDerived.lean) [NOT STARTED]
+### Phase 2: Foundational Derived Theorems (TemporalDerived.lean) [COMPLETED]
 
 **Goal**: Close the 4 sorry sites in TemporalDerived.lean that all downstream phases depend on. These are proof-theoretic derivations in the axiom system -- the semantics is clear (X(bot) is absurd because bot is never true; Until implies Some_future by definition). The challenge is constructing the syntactic derivation trees.
 
@@ -135,7 +135,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Seed Redesign and g_content Resolution (14 sorry closures) [NOT STARTED]
+### Phase 3: Seed Redesign and g_content Resolution (14 sorry closures) [BLOCKED]
 
 **Goal**: Redesign successor/predecessor seeds to not rely on the invalid `g_content(u) subset u` property. Under strict semantics, `G(chi) in MCS` does NOT imply `chi in MCS`. The correct approach: replace `g_content(u)` in seeds with `{F(chi) | G(chi) in u}`. Since `G(phi) -> F(phi)` (seriality axiom), each F(chi) is in u when G(chi) is. This gives `seed subset u`, restoring consistency. Also close the T-axiom ghost sorry sites that remain on the active path via the same seed restructuring.
 
@@ -241,7 +241,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Soundness Frame-Class Proofs and Final Polish [NOT STARTED]
+### Phase 6: Soundness Frame-Class Proofs and Final Polish [IN PROGRESS]
 
 **Goal**: Close the 19 frame-class-restricted soundness sorry sites in Soundness.lean. These are independent of completeness and represent routine semantic validity proofs. Also conduct a semantic consistency audit (flagged by Teammate D) to verify all axioms are sound under current strict semantics before investing in proofs.
 

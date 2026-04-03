@@ -587,24 +587,16 @@ theorem forward_dovetailed_until_persists (M_0 : Set Formula) (h_mcs_0 : SetMaxi
     (h_U : Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 n)
     (h_not_psi : psi ∉ forward_dovetailed M_0 h_mcs_0 n) :
     Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 (n + 1) := by
-  -- Under strict semantics, we propagate via F(ψ) instead of G(⊤ U ψ):
-  -- 1. ⊤ U ψ ∈ chain(n) → F(ψ) ∈ chain(n) (until_implies_F_in_mcs)
-  -- 2. F(ψ) propagates through the successor chain (F-step: resolved or deferred)
-  -- 3. If F(ψ) ∈ chain(n+1), then ⊤ U ψ ∈ chain(n+1) (F_until_equiv)
-  -- 4. If ψ ∈ chain(n+1), then we'd need ψ ∈ chain(n+1), contradicting our use case.
-  --    But in this theorem, we assume ψ ∉ chain(n), not ψ ∉ chain(n+1).
-  --    The caller ensures Until persists through all steps until ψ appears.
-  have h_mcs_n := forward_dovetailed_mcs M_0 h_mcs_0 n
-  -- Step 1: F(ψ) ∈ chain(n)
-  have h_F_psi := until_implies_F_in_mcs _ h_mcs_n psi h_U
-  -- Step 2: F(ψ) either resolved or deferred in chain(n+1)
-  -- forward_step preserves F-content via f_step_resolution/deferral
-  -- But we need ⊤ U ψ ∈ chain(n+1), which requires more work.
-  -- Alternative approach via G-theory: From ⊤ U ψ and ψ ∉ M, derive G(⊤ U ψ) ∈ M.
-  -- Under strict semantics: ⊤ U ψ → X(ψ ∨ (⊤ ∧ (⊤ U ψ))). In the deferral case
-  -- (ψ ∉ chain(n)), the Or resolves to ⊤ ∧ (⊤ U ψ) at the next step.
-  -- But we can't directly case-split on the X-formula.
-  -- For now, use sorry pending full X-content propagation infrastructure.
+  -- ON CRITICAL PATH for completeness_over_Int (via dovetailed_fam_forward_F).
+  -- BLOCKED by Phase 4: X-content propagation infrastructure.
+  --
+  -- Under strict semantics with X-based Until:
+  -- ⊤ U ψ → X(ψ ∨ (⊤ ∧ (⊤ U ψ)))  [until_unfold]
+  -- So X(ψ ∨ (⊤ ∧ (⊤ U ψ))) ∈ chain(n). Need: ψ ∨ (⊤ ∧ (⊤ U ψ)) ∈ chain(n+1).
+  -- This requires X-content propagation: X(α) ∈ chain(n) → α ∈ chain(n+1).
+  -- The forward_step (temporal_theory_witness_with_g_exists) preserves g_content
+  -- but NOT x_content. Needs X(α) → F(α) derivation (Phase 4: X_implies_F)
+  -- and then F-step propagation.
   sorry
 
 /--
@@ -1230,17 +1222,21 @@ theorem dovetailed_fam_box_agree (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsis
 
 /-- Forward F for DovetailedFMCS (family-level, strict inequality).
 Under strict semantics, F(ψ) ∈ mcs(t) means ψ at a strictly future time.
-The dovetailed chain gives a witness at s ≥ t; we strengthen to s > t via
-the observation that F(ψ) requires a strictly future witness. -/
+The dovetailed chain gives a witness at s ≥ t; we strengthen to s > t.
+
+**Status**: ON CRITICAL PATH for `completeness_over_Int`.
+**Blocked by**: `forward_dovetailed_until_persists` (sorry, Phase 4: X-content propagation).
+Even the non-strict `dovetailed_fam_forward_F` depends on Until persistence which has a sorry.
+Additionally, strengthening `≤` to `<` requires handling the `m = t` case (ψ already at t),
+which needs X-content propagation to show ψ persists to t+1 or F(ψ) is re-resolved. -/
 theorem DovetailedFMCS_forward_F (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (t : Int) (psi : Formula) (h_F : Formula.some_future psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs t) :
     ∃ s : Int, t < s ∧ psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs s := by
-  -- dovetailed_fam_forward_F gives s ≥ t. Under strict semantics, the witness
-  -- should be strictly future. For now, use sorry pending strict F-resolution proof.
   sorry
 
 /-- Backward P for DovetailedFMCS (family-level, strict inequality).
-Mirror of DovetailedFMCS_forward_F for the past direction. -/
+Temporal dual of DovetailedFMCS_forward_F. ON CRITICAL PATH for `completeness_over_Int`.
+Blocked by `backward_dovetailed_since_persists` (sorry, Phase 4: Y-content propagation). -/
 theorem DovetailedFMCS_backward_P (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (t : Int) (psi : Formula) (h_P : Formula.some_past psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs t) :
     ∃ s : Int, s < t ∧ psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs s := by

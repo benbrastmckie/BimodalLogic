@@ -620,6 +620,16 @@ inductive Axiom : Formula → Type where
       Axiom ((Formula.neg Formula.bot).some_past.imp
         (Formula.snce Formula.bot (Formula.neg Formula.bot)))
 
+  /--
+  Next-implies-Future axiom: `X(φ) → F(φ)` (next time is a future time).
+
+  If φ holds at the immediate next time, then φ holds at some future time.
+  Under strict semantics, this bridges X(φ) = ⊥ U φ and F(φ) = ¬G(¬φ).
+  Valid on discrete frames: the Until witness s > t certifies F(φ).
+  -/
+  | next_implies_some_future (φ : Formula) :
+      Axiom ((Formula.untl Formula.bot φ).imp φ.some_future)
+
   deriving Repr
 
 /--
@@ -709,6 +719,7 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.since_connectedness _ _ _ => .Discrete
   | Axiom.F_until_equiv _ => .Discrete
   | Axiom.P_since_equiv _ => .Discrete
+  | Axiom.next_implies_some_future _ => .Discrete
 
 /--
 The minimal frame class required for an axiom is the class returned by `frameClass`.
@@ -736,6 +747,7 @@ def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
   | Axiom.since_connectedness _ _ _ => False
   | Axiom.F_until_equiv _ => False
   | Axiom.P_since_equiv _ => False
+  | Axiom.next_implies_some_future _ => False
   | _ => True
 
 /--
@@ -769,6 +781,7 @@ def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.since_connectedness _ _ _ => False
   | Axiom.F_until_equiv _ => False
   | Axiom.P_since_equiv _ => False
+  | Axiom.next_implies_some_future _ => False
   | _ => True
 
 /-! ### FrameClass Consistency Lemmas

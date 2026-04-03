@@ -1195,11 +1195,16 @@ theorem constrained_successor_seed_restricted_subset_deferralClosure (phi : Form
 /--
 g_content(u) ⊆ u when u is a DeferralRestrictedMCS.
 
-Under strict semantics, this does NOT follow from the T-axiom (which is invalid).
-The proof uses an indirect argument: assuming chi not-in u and deriving contradiction
-via G(chi) in u, the T-axiom sorry, and DRM maximality.
+**Status**: PROVABLY FALSE under strict semantics. Under strict `<` (not `≤`),
+`G(φ) ∈ u` means φ holds at all strictly future states, NOT at the current state.
+So `φ ∈ g_content(u)` does NOT imply `φ ∈ u`.
 
-TODO(task 83 phase 3): Restructure without T-axiom dependency.
+**Not on critical path**: The completeness theorem `completeness_over_Int` uses the
+DovetailedChain construction which avoids this theorem entirely. The sorry-free
+`forward_temporal_witness_seed_consistent` uses G-wrapping instead of `g_content ⊆ u`.
+
+The sorry at the T-axiom call site is UNFIXABLE — it requires `G(χ) → χ`.
+Downstream consumers (simplified_restricted_seed_subset_u, etc.) inherit this false claim.
 -/
 theorem g_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
@@ -3944,7 +3949,9 @@ theorem constrained_predecessor_seed_restricted_subset_deferralClosure (phi : Fo
 /--
 h_content(u) ⊆ u when u is a DeferralRestrictedMCS.
 
-Uses the T-axiom (H(φ) → φ) and maximality within deferralClosure.
+**Status**: PROVABLY FALSE under strict semantics (temporal dual of
+`g_content_subset_deferral_restricted_mcs`). H(φ) ∈ u does NOT imply φ ∈ u.
+Not on critical completeness path.
 -/
 theorem h_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
