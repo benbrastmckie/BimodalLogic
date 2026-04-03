@@ -320,4 +320,55 @@ theorem restricted_temporal_backward_H
   have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
+/--
+Strict version of restricted_temporal_backward_G for strict temporal semantics.
+If phi in fam.mcs s for all s > t (strict), then G(phi) in fam.mcs t.
+
+Uses: If not G(phi), then F(neg phi), and forward_F gives witness s > t with neg(phi) in fam.mcs s.
+But phi in fam.mcs s (from h_all), contradiction.
+-/
+theorem restricted_temporal_backward_G_strict
+    (fam : FMCS D) (root : Formula)
+    (h_forward_F : ∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
+      Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s)
+    (t : D) (φ : Formula)
+    (h_neg_phi_dc : Formula.neg φ ∈ deferralClosure root)
+    (h_all : ∀ s : D, t < s → φ ∈ fam.mcs s) :
+    Formula.all_future φ ∈ fam.mcs t := by
+  by_contra h_not_G
+  have h_mcs := fam.is_mcs t
+  have h_neg_G : Formula.neg (Formula.all_future φ) ∈ fam.mcs t := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future φ) with h_G | h_neg
+    · exact absurd h_G h_not_G
+    · exact h_neg
+  have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
+    neg_all_future_to_some_future_neg (fam.mcs t) h_mcs φ h_neg_G
+  obtain ⟨s, h_lt, h_neg_phi_s⟩ := h_forward_F t (Formula.neg φ) h_neg_phi_dc h_F_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
+  exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
+
+/--
+Strict version of restricted_temporal_backward_H for strict temporal semantics.
+If phi in fam.mcs s for all s < t (strict), then H(phi) in fam.mcs t.
+-/
+theorem restricted_temporal_backward_H_strict
+    (fam : FMCS D) (root : Formula)
+    (h_backward_P : ∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
+      Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
+    (t : D) (φ : Formula)
+    (h_neg_phi_dc : Formula.neg φ ∈ deferralClosure root)
+    (h_all : ∀ s : D, s < t → φ ∈ fam.mcs s) :
+    Formula.all_past φ ∈ fam.mcs t := by
+  by_contra h_not_H
+  have h_mcs := fam.is_mcs t
+  have h_neg_H : Formula.neg (Formula.all_past φ) ∈ fam.mcs t := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_past φ) with h_H | h_neg
+    · exact absurd h_H h_not_H
+    · exact h_neg
+  have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=
+    neg_all_past_to_some_past_neg (fam.mcs t) h_mcs φ h_neg_H
+  obtain ⟨s, h_lt, h_neg_phi_s⟩ := h_backward_P t (Formula.neg φ) h_neg_phi_dc h_P_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
+  exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
+
 end Bimodal.Metalogic.Bundle

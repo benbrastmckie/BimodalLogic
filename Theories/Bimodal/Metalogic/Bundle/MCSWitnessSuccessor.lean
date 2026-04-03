@@ -120,11 +120,12 @@ noncomputable def forward_witness_bundle
     { W : Set Formula // SetMaximalConsistent W ∧ target ∈ W ∧
       (∀ a, Formula.all_future a ∈ drm_extend_to_mcs phi u h_drm →
         Formula.all_future a ∈ W) ∧
-      box_class_agree (drm_extend_to_mcs phi u h_drm) W } :=
+      box_class_agree (drm_extend_to_mcs phi u h_drm) W ∧
+      g_content (drm_extend_to_mcs phi u h_drm) ⊆ W } :=
   let M := drm_extend_to_mcs phi u h_drm
   let h_mcs := drm_extend_to_mcs_is_mcs phi u h_drm
   let h_F_in_M := drm_extend_to_mcs_extends phi u h_drm h_F_target
-  let h := temporal_theory_witness_exists M h_mcs target h_F_in_M
+  let h := temporal_theory_witness_with_g_exists M h_mcs target h_F_in_M
   ⟨h.choose, h.choose_spec⟩
 
 /--
@@ -160,7 +161,18 @@ theorem witness_mcs_box_agree
     (target : Formula) (h_F_target : Formula.some_future target ∈ u) :
     box_class_agree (drm_extend_to_mcs phi u h_drm)
       (witness_mcs phi u h_drm target h_F_target) :=
-  (forward_witness_bundle phi u h_drm target h_F_target).property.2.2.2
+  (forward_witness_bundle phi u h_drm target h_F_target).property.2.2.2.1
+
+/--
+g_content(M) ⊆ witness MCS. This is the new property from the enriched seed.
+Under strict semantics, this replaces the T-axiom pattern `G(a) → a`.
+-/
+theorem witness_mcs_g_content
+    (phi : Formula) (u : Set Formula) (h_drm : DeferralRestrictedMCS phi u)
+    (target : Formula) (h_F_target : Formula.some_future target ∈ u) :
+    g_content (drm_extend_to_mcs phi u h_drm) ⊆
+      witness_mcs phi u h_drm target h_F_target :=
+  (forward_witness_bundle phi u h_drm target h_F_target).property.2.2.2.2
 
 /-! ## Backward Witness: past_theory_witness_exists -/
 
@@ -173,11 +185,12 @@ noncomputable def backward_witness_bundle
     { W : Set Formula // SetMaximalConsistent W ∧ target ∈ W ∧
       (∀ a, Formula.all_past a ∈ drm_extend_to_mcs phi u h_drm →
         Formula.all_past a ∈ W) ∧
-      box_class_agree (drm_extend_to_mcs phi u h_drm) W } :=
+      box_class_agree (drm_extend_to_mcs phi u h_drm) W ∧
+      h_content (drm_extend_to_mcs phi u h_drm) ⊆ W } :=
   let M := drm_extend_to_mcs phi u h_drm
   let h_mcs := drm_extend_to_mcs_is_mcs phi u h_drm
   let h_P_in_M := drm_extend_to_mcs_extends phi u h_drm h_P_target
-  let h := past_theory_witness_exists M h_mcs target h_P_in_M
+  let h := past_theory_witness_with_h_exists M h_mcs target h_P_in_M
   ⟨h.choose, h.choose_spec⟩
 
 noncomputable def past_witness_mcs
@@ -210,7 +223,17 @@ theorem past_witness_mcs_box_agree
     (target : Formula) (h_P_target : Formula.some_past target ∈ u) :
     box_class_agree (drm_extend_to_mcs phi u h_drm)
       (past_witness_mcs phi u h_drm target h_P_target) :=
-  (backward_witness_bundle phi u h_drm target h_P_target).property.2.2.2
+  (backward_witness_bundle phi u h_drm target h_P_target).property.2.2.2.1
+
+/--
+h_content(M) ⊆ past witness MCS. New property from enriched seed.
+-/
+theorem past_witness_mcs_h_content
+    (phi : Formula) (u : Set Formula) (h_drm : DeferralRestrictedMCS phi u)
+    (target : Formula) (h_P_target : Formula.some_past target ∈ u) :
+    h_content (drm_extend_to_mcs phi u h_drm) ⊆
+      past_witness_mcs phi u h_drm target h_P_target :=
+  (backward_witness_bundle phi u h_drm target h_P_target).property.2.2.2.2
 
 /-! ## Targeted Forward Successor -/
 
@@ -253,10 +276,12 @@ theorem build_targeted_successor_g_persistence
   have h_Ga_M := drm_extend_to_mcs_extends phi u h_drm h_Ga_u
   have h_Ga_W := witness_mcs_G_agree phi u h_drm target h_F_target a h_Ga_M
   have h_W_mcs := witness_mcs_is_mcs phi u h_drm target h_F_target
+  -- Under strict semantics, use g_content membership from enriched seed.
+  -- G(a) ∈ u implies G(a) ∈ M (by extension), so a ∈ g_content(M).
+  -- The enriched witness guarantees g_content(M) ⊆ W.
+  have h_a_gc : a ∈ g_content (drm_extend_to_mcs phi u h_drm) := h_Ga_M
   have h_a_W : a ∈ witness_mcs phi u h_drm target h_F_target :=
-    SetMaximalConsistent.implication_property h_W_mcs
-      (theorem_in_mcs h_W_mcs
-        (sorry /* was: temp_t_future a */)) h_Ga_W
+    witness_mcs_g_content phi u h_drm target h_F_target h_a_gc
   have h_a_dc := g_content_subset_deferralClosure phi u h_drm.1.1 ha
   exact in_witness_and_dc_implies_in_successor phi _ h_W_mcs a h_a_W h_a_dc
 
@@ -313,10 +338,10 @@ theorem build_targeted_predecessor_h_persistence
   have h_Ha_M := drm_extend_to_mcs_extends phi u h_drm h_Ha_u
   have h_Ha_W := past_witness_mcs_H_agree phi u h_drm target h_P_target a h_Ha_M
   have h_W_mcs := past_witness_mcs_is_mcs phi u h_drm target h_P_target
+  -- Under strict semantics, use h_content membership from enriched seed.
+  have h_a_hc : a ∈ h_content (drm_extend_to_mcs phi u h_drm) := h_Ha_M
   have h_a_W : a ∈ past_witness_mcs phi u h_drm target h_P_target :=
-    SetMaximalConsistent.implication_property h_W_mcs
-      (theorem_in_mcs h_W_mcs
-        (sorry /* was: temp_t_past a */)) h_Ha_W
+    past_witness_mcs_h_content phi u h_drm target h_P_target h_a_hc
   have h_a_dc := h_content_subset_deferralClosure phi u h_drm.1.1 ha
   exact in_witness_and_dc_implies_in_successor phi _ h_W_mcs a h_a_W h_a_dc
 

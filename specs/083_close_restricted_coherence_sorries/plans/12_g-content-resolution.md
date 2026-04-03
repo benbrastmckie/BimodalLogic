@@ -99,7 +99,7 @@ Resolve the g_content blocker that emerged after removing the T-axiom under stri
 
 ---
 
-### Phase 3: Tier 1 Sorry Sites -- Direct Seed Membership [NOT STARTED]
+### Phase 3: Tier 1 Sorry Sites -- Direct Seed Membership [PARTIAL]
 
 **Goal**: Close the ~11 Tier 1 sorry sites by using direct membership in the enriched seed instead of the T-axiom detour pattern `G(a) in W -> a in W`.
 
@@ -156,7 +156,7 @@ Resolve the g_content blocker that emerged after removing the T-axiom under stri
 
 ---
 
-### Phase 5: Tier 3 Sorry Sites -- Algebraic R_G/R_H Restructuring [NOT STARTED]
+### Phase 5: Tier 3 Sorry Sites -- Algebraic R_G/R_H Restructuring [PARTIAL]
 
 **Goal**: Handle the ~7 Tier 3 sorry sites where R_G reflexivity was assumed. Delete invalid reflexivity lemmas, fix the `G(bot)->bot` special case via seriality, and restructure or defer the algebraic path.
 

@@ -908,7 +908,7 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
       have h_all_mcs : ∀ s : Int, t < s → ψ ∈ fam.mcs s := by
         intro s hts
         exact (ih h_ψ_sub fam hfam s).mpr (h_all s hts)
-      exact restricted_temporal_backward_G fam root h_forward_F t ψ h_neg_ψ_dc h_all_mcs
+      exact restricted_temporal_backward_G_strict fam root h_forward_F t ψ h_neg_ψ_dc h_all_mcs
   | all_past ψ ih =>
     -- H case: symmetric to G case
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_all_past root ψ h_sub
@@ -924,7 +924,7 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
       have h_all_mcs : ∀ s : Int, s < t → ψ ∈ fam.mcs s := by
         intro s hst
         exact (ih h_ψ_sub fam hfam s).mpr (h_all s hst)
-      exact restricted_temporal_backward_H fam root h_backward_P t ψ h_neg_ψ_dc h_all_mcs
+      exact restricted_temporal_backward_H_strict fam root h_backward_P t ψ h_neg_ψ_dc h_all_mcs
   | untl phi psi ih_phi ih_psi =>
     have h_phi_sub : phi ∈ subformulaClosure root := by
       unfold subformulaClosure at h_sub ⊢

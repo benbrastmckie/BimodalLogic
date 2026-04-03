@@ -139,7 +139,7 @@ theorem forward_step_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M
   -- a ∈ W by T-axiom: G(a) → a
   exact SetMaximalConsistent.implication_property (forward_step_mcs M h_mcs phi)
     (theorem_in_mcs (forward_step_mcs M h_mcs phi)
-      (sorry /* was: temp_t_future a */)) h_Ga_W
+      (sorry /- was: temp_t_future a -/)) h_Ga_W
 
 /--
 The scheduling function: at step n, target formula `Denumerable.ofNat Formula j`
@@ -221,7 +221,7 @@ theorem forward_dovetailed_forward_G (M_0 : Set Formula) (h_mcs_0 : SetMaximalCo
   -- phi ∈ chain(m) by T-axiom
   exact SetMaximalConsistent.implication_property (forward_dovetailed_mcs M_0 h_mcs_0 m)
     (theorem_in_mcs (forward_dovetailed_mcs M_0 h_mcs_0 m)
-      (sorry /* was: temp_t_future phi */)) h_Ga_m
+      (sorry /- was: temp_t_future phi -/)) h_Ga_m
 
 /--
 Backward H coherence for the forward chain: H(phi) at time n+1 implies phi at time n.
@@ -274,12 +274,12 @@ theorem forward_dovetailed_backward_H (M_0 : Set Formula) (h_mcs_0 : SetMaximalC
     have := Nat.le_zero.mp h_le; subst this
     exact SetMaximalConsistent.implication_property (forward_dovetailed_mcs M_0 h_mcs_0 0)
       (theorem_in_mcs (forward_dovetailed_mcs M_0 h_mcs_0 0)
-        (sorry /* was: temp_t_past phi */)) h_H
+        (sorry /- was: temp_t_past phi -/)) h_H
   | succ m ih =>
     rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
     · exact SetMaximalConsistent.implication_property (forward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
         (theorem_in_mcs (forward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
-          (sorry /* was: temp_t_past phi */)) h_H
+          (sorry /- was: temp_t_past phi -/)) h_H
     · have ⟨_, h_Hphi_m⟩ := forward_dovetailed_backward_H_step M_0 h_mcs_0 m phi h_H
       exact ih (Nat.lt_succ_iff.mp h_lt) h_Hphi_m
 
@@ -759,7 +759,7 @@ theorem backward_step_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent 
   have h_Ha_W := backward_step_H_agree M h_mcs phi a h_Ha
   exact SetMaximalConsistent.implication_property (backward_step_mcs M h_mcs phi)
     (theorem_in_mcs (backward_step_mcs M h_mcs phi)
-      (sorry /* was: temp_t_past a */)) h_Ha_W
+      (sorry /- was: temp_t_past a -/)) h_Ha_W
 
 /-- The backward dovetailed chain with MCS proof, built simultaneously. -/
 noncomputable def backward_dovetailed_with_mcs (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :
@@ -888,12 +888,12 @@ theorem backward_dovetailed_forward_G (M_0 : Set Formula) (h_mcs_0 : SetMaximalC
     have := Nat.le_zero.mp h_le; subst this
     exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 0)
       (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 0)
-        (sorry /* was: temp_t_future phi */)) h_G
+        (sorry /- was: temp_t_future phi -/)) h_G
   | succ m ih =>
     rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
     · exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
         (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
-          (sorry /* was: temp_t_future phi */)) h_G
+          (sorry /- was: temp_t_future phi -/)) h_G
     · have ⟨_, h_Gphi_m⟩ := backward_dovetailed_G_step M_0 h_mcs_0 m phi h_G
       exact ih (Nat.lt_succ_iff.mp h_lt) h_Gphi_m
 
@@ -909,12 +909,12 @@ theorem backward_dovetailed_backward_H (M_0 : Set Formula) (h_mcs_0 : SetMaximal
     have := Nat.le_zero.mp h_le; subst this
     exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 0)
       (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 0)
-        (sorry /* was: temp_t_past phi */)) h_H
+        (sorry /- was: temp_t_past phi -/)) h_H
   | succ m ih =>
     rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
     · exact SetMaximalConsistent.implication_property (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
         (theorem_in_mcs (backward_dovetailed_mcs M_0 h_mcs_0 (m + 1))
-          (sorry /* was: temp_t_past phi */)) h_H
+          (sorry /- was: temp_t_past phi -/)) h_H
     · have h_H_m := backward_dovetailed_H_propagate M_0 h_mcs_0 n m (Nat.lt_succ_iff.mp h_lt) phi h_H
       exact backward_dovetailed_h_content_step M_0 h_mcs_0 m h_H_m
 

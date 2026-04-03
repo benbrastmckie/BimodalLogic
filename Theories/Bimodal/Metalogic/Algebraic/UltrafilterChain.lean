@@ -79,23 +79,11 @@ def R_Box (U V : Ultrafilter LindenbaumAlg) : Prop :=
 ### R_G Properties
 -/
 
-/--
-R_G is reflexive: every ultrafilter is R_G-related to itself.
-
-Proof: From temp_t_future, we have G(a) ≤ a. Since G(a) ∈ U and U is
-upward closed, a ∈ U follows.
+/-
+R_G_refl: DELETED under strict semantics.
+R_G is NOT reflexive: G quantifies over s > t, not s ≥ t.
+The T-axiom G(a) → a is not valid, so R_G U U does not hold in general.
 -/
-theorem R_G_refl (U : Ultrafilter LindenbaumAlg) : R_G U U := by
-  intro a h_Ga_in
-  -- G_quot a ≤ a by temp_t_future
-  have h_le : STSA.G a ≤ a := by
-    -- Use the STSA instance
-    induction a using Quotient.ind with
-    | _ φ =>
-      show G_quot (toQuot φ) ≤ toQuot φ
-      show Derives φ.all_future φ
-      exact ⟨sorry /* was: temp_t_future φ */⟩
-  exact U.mem_of_le h_Ga_in h_le
 
 /--
 R_G is transitive: R_G(U, V) and R_G(V, W) imply R_G(U, W).
@@ -250,22 +238,8 @@ This is the preimage containment: V contains all elements whose H is in U.
 def R_H (U V : Ultrafilter LindenbaumAlg) : Prop :=
   ∀ a : LindenbaumAlg, STSA.H a ∈ U → a ∈ V
 
-/--
-R_H is reflexive: every ultrafilter is R_H-related to itself.
-
-Proof: From temp_t_past, we have H(a) ≤ a. Since H(a) ∈ U and U is
-upward closed, a ∈ U follows.
--/
-theorem R_H_refl (U : Ultrafilter LindenbaumAlg) : R_H U U := by
-  intro a h_Ha_in
-  -- H_quot a ≤ a by temp_t_past
-  have h_le : STSA.H a ≤ a := by
-    induction a using Quotient.ind with
-    | _ φ =>
-      show H_quot (toQuot φ) ≤ toQuot φ
-      show Derives φ.all_past φ
-      exact ⟨sorry /* was: temp_t_past φ */⟩
-  exact U.mem_of_le h_Ha_in h_le
+-- R_H_refl: DELETED under strict semantics (T-axiom not valid)
+-- R_H is NOT reflexive when H quantifies over s < t strictly.
 
 /--
 R_H is transitive: R_H(U, V) and R_H(V, W) imply R_H(U, W).
@@ -443,41 +417,44 @@ def at_time (uc : UltrafilterChain) (t : Int) : Ultrafilter LindenbaumAlg :=
   uc.chain t
 
 /--
-R_G transitivity along the chain: for any n ≥ 0, chain(t) R_G chain(t + n).
+R_G transitivity along the chain: for any n > 0, chain(t) R_G chain(t + n).
+Under strict semantics, n = 0 is excluded (R_G is not reflexive).
 -/
-theorem R_G_forward (uc : UltrafilterChain) (t : Int) (n : ℕ) :
+theorem R_G_forward (uc : UltrafilterChain) (t : Int) (n : ℕ) (hn : n > 0) :
     R_G (uc.chain t) (uc.chain (t + n)) := by
   induction n with
-  | zero =>
-    -- (t + ↑0) simplifies to t
-    have h_eq : (t + (0 : ℕ) : Int) = t := by simp
-    rw [h_eq]
-    exact R_G_refl (uc.chain t)
+  | zero => omega
   | succ n ih =>
-    -- R_G(chain t, chain(t + n)) by IH
-    -- R_G(chain(t + n), chain(t + n + 1)) by R_G_connected
-    have h_step : R_G (uc.chain (t + n)) (uc.chain ((t + n) + 1)) :=
-      uc.R_G_connected (t + n)
-    have h_eq : (t + ↑n + 1 : Int) = t + ↑(n + 1) := by omega
-    rw [h_eq] at h_step
-    exact R_G_trans ih h_step
+    by_cases hn0 : n = 0
+    · -- Base case: n = 0, so n + 1 = 1
+      subst hn0
+      simp
+      exact uc.R_G_connected t
+    · -- Inductive case: n > 0
+      have h_step : R_G (uc.chain (t + n)) (uc.chain ((t + n) + 1)) :=
+        uc.R_G_connected (t + n)
+      have h_eq : (t + ↑n + 1 : Int) = t + ↑(n + 1) := by omega
+      rw [h_eq] at h_step
+      exact R_G_trans (ih (by omega)) h_step
 
 /--
-R_H transitivity along the chain: for any n ≥ 0, chain(t) R_H chain(t - n).
+R_H transitivity along the chain: for any n > 0, chain(t) R_H chain(t - n).
+Under strict semantics, n = 0 is excluded (R_H is not reflexive).
 -/
-theorem R_H_backward (uc : UltrafilterChain) (t : Int) (n : ℕ) :
+theorem R_H_backward (uc : UltrafilterChain) (t : Int) (n : ℕ) (hn : n > 0) :
     R_H (uc.chain t) (uc.chain (t - n)) := by
   induction n with
-  | zero =>
-    have h_eq : (t - (0 : ℕ) : Int) = t := by simp
-    rw [h_eq]
-    exact R_H_refl (uc.chain t)
+  | zero => omega
   | succ n ih =>
-    have h_step : R_H (uc.chain (t - n)) (uc.chain ((t - n) - 1)) :=
-      uc.R_H_connected (t - n)
-    have h_eq : (t - ↑n - 1 : Int) = t - ↑(n + 1) := by omega
-    rw [h_eq] at h_step
-    exact R_H_trans ih h_step
+    by_cases hn0 : n = 0
+    · subst hn0
+      simp
+      exact uc.R_H_connected t
+    · have h_step : R_H (uc.chain (t - n)) (uc.chain ((t - n) - 1)) :=
+        uc.R_H_connected (t - n)
+      have h_eq : (t - ↑n - 1 : Int) = t - ↑(n + 1) := by omega
+      rw [h_eq] at h_step
+      exact R_H_trans (ih (by omega)) h_step
 
 /--
 Shift an ultrafilter chain by offset k.
@@ -517,7 +494,7 @@ theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_le : t ≤ t')
     | _ φ =>
       show G_quot (toQuot φ) ≤ toQuot φ
       show Derives φ.all_future φ
-      exact ⟨sorry /* was: temp_t_future φ */⟩
+      exact ⟨sorry /- was: temp_t_future φ -/⟩
   -- Helper: G(a) persists forward one step
   have h_G_step : ∀ s : Int, STSA.G a ∈ uc.chain s → STSA.G a ∈ uc.chain (s + 1) := by
     intro s h_Gs
@@ -562,7 +539,7 @@ theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
     | _ φ =>
       show H_quot (toQuot φ) ≤ toQuot φ
       show Derives φ.all_past φ
-      exact ⟨sorry /* was: temp_t_past φ */⟩
+      exact ⟨sorry /- was: temp_t_past φ -/⟩
   -- Helper: H(a) persists backward one step
   have h_H_step : ∀ s : Int, STSA.H a ∈ uc.chain s → STSA.H a ∈ uc.chain (s - 1) := by
     intro s h_Hs
@@ -1006,7 +983,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
     show G_quot (toQuot Formula.bot) ≤ bot_quot
     unfold G_quot bot_quot
     show Derives Formula.bot.all_future Formula.bot
-    exact ⟨sorry /* was: temp_t_future Formula.bot */⟩
+    exact ⟨sorry /- was: temp_t_future Formula.bot -/⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -1315,7 +1292,7 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
     show H_quot (toQuot Formula.bot) ≤ bot_quot
     unfold H_quot bot_quot
     show Derives Formula.bot.all_past Formula.bot
-    exact ⟨sorry /* was: temp_t_past Formula.bot */⟩
+    exact ⟨sorry /- was: temp_t_past Formula.bot -/⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -2799,7 +2776,7 @@ theorem temporal_witness_g_persistence (M : Set Formula) (h_mcs : SetMaximalCons
   have h_Ga_W : Formula.all_future a ∈ W := h_G_agree a h_Ga_M
   -- By temp_t_future: G(a) → a
   have h_T : [] ⊢ (Formula.all_future a).imp a :=
-    sorry /* was: temp_t_future a */
+    sorry /- was: temp_t_future a -/
   -- By MCS closure: a ∈ W
   exact SetMaximalConsistent.implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_Ga_W
 
