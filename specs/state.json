@@ -841,7 +841,7 @@
     {
       "project_number": 83,
       "project_name": "close_restricted_coherence_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 2 sorries in succ_chain_restricted_forward_F and succ_chain_restricted_backward_P (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in deferralClosure(root) within a single SuccChainFMCS. Potential approaches: (1) Show that constrained_successor f_step eventually resolves each F-obligation because deferralClosure is finite and the chain cannot defer indefinitely within a bounded set, (2) Dovetailed chain construction with fair scheduling that cycles through pending F-obligations, (3) Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra. Also clean up the 2 auxiliary sorries in RestrictedTruthLemma.lean (restricted_chain_G_step and restricted_chain_H_step) which may become unnecessary once the main sorries are closed. Does NOT include: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), or the old full-coherence sorry (bfmcs_from_mcs_temporally_coherent) which is bypassed by the restricted path.",
       "effort": "12-18 hours",
@@ -850,12 +850,12 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T18:29:33Z",
+      "last_updated": "2026-04-03T18:34:45Z",
       "notes": "Phases 1-3 complete (half-open semantics, soundness, forward Until). Phase 4 blocked: backward Until direction needs G(phi U psi) derivation past witness point.",
       "next_artifact_number": 13,
-      "session_id": "sess_1775239846_892a9f",
+      "session_id": "sess_1775241034_772eca",
       "researched": "2026-04-03T18:29:33Z",
-      "planned": "2026-04-03T15:39:09Z",
+      "planned": "2026-04-03T18:34:45Z",
       "plan_metadata": {
         "phases": 9,
         "total_effort_hours": 66,
@@ -972,14 +972,14 @@
           "summary": "Full clean-break refactor spec: 33 axioms with Lean signatures, 20-file change catalog, backward truth lemma via contrapositive, 67+ T-axiom alternatives"
         },
         {
-          "path": "specs/083_close_restricted_coherence_sorries/plans/11_strict-semantics-refactor.md",
-          "type": "plan",
-          "summary": "v8: 9-phase clean-break strict semantics refactor, 66 hours"
-        },
-        {
           "path": "specs/083_close_restricted_coherence_sorries/reports/12_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: g_content blocker root cause, G(a)->X(a) derivation, 3-tier fix strategy"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/plans/12_g-content-resolution.md",
+          "type": "plan",
+          "summary": "v9: 6-phase plan covering G(a)->X(a) derived theorem, seed enrichment, 3-tier sorry resolution, and integration build"
         }
       ],
       "started": "2026-04-02T22:21:47Z"
