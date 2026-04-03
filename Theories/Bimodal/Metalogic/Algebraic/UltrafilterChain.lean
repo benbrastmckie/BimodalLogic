@@ -2244,6 +2244,120 @@ theorem temporal_theory_witness_exists (M : Set Formula) (h_mcs : SetMaximalCons
       exact set_consistent_not_both h_W_mcs.1 (Formula.box psi) h_box_W h_neg_in_W
 
 /-!
+### Enriched Temporal Witness with g_content
+
+The enriched seed `{phi} ∪ temporal_box_seed(M) ∪ g_content(M)` is consistent
+when F(phi) ∈ M. This is stronger than the base `temporal_theory_witness_consistent`
+because it guarantees `g_content(M) ⊆ W` in the Lindenbaum extension.
+
+g_content(M) elements are G-liftable by definition: for each a ∈ g_content(M),
+G(a) ∈ M. This means G-lift applies to the entire enriched seed.
+-/
+
+/--
+The enriched temporal-modal seed: G_theory ∪ box_theory ∪ g_content.
+-/
+def temporal_box_g_seed (M : Set Formula) : Set Formula :=
+  temporal_box_seed M ∪ g_content M
+
+/--
+Every element of the enriched seed can be G-lifted.
+g_content elements a satisfy G(a) ∈ M by definition.
+-/
+theorem G_of_temporal_box_g_seed (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ temporal_box_g_seed M, Formula.all_future x ∈ M := by
+  intro x hx
+  simp only [temporal_box_g_seed, Set.mem_union] at hx
+  rcases hx with h | h
+  · exact G_of_temporal_box_seed M h_mcs x h
+  · -- x ∈ g_content M means G(x) ∈ M
+    exact h
+
+/--
+The enriched seed `{phi} ∪ temporal_box_g_seed(M)` is consistent when F(phi) ∈ M.
+
+Proof: same G-lift argument as temporal_theory_witness_consistent.
+If L ⊢ ⊥ and L ⊆ {phi} ∪ temporal_box_g_seed(M):
+- Extract phi by deduction: L' ⊢ ¬phi where L' ⊆ temporal_box_g_seed(M)
+- G-lift (all elements G-liftable): G(¬phi) ∈ M
+- But F(phi) = ¬G(¬phi) ∈ M, contradiction
+-/
+theorem temporal_theory_witness_with_g_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    SetConsistent ({phi} ∪ temporal_box_g_seed M) := by
+  intro L h_L_sub ⟨d⟩
+  let L_no_phi := L.filter (· ≠ phi)
+  have h_L_no_phi_seed : ∀ x ∈ L_no_phi, x ∈ temporal_box_g_seed M := by
+    intro x hx
+    have hx_L := List.mem_of_mem_filter hx
+    have hx_ne : x ≠ phi := of_decide_eq_true (List.mem_filter.mp hx).2
+    have := h_L_sub x hx_L
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with h | h
+    · rw [h] at hx_ne; exact absurd rfl hx_ne
+    · exact h
+  have h_L_sub_phi_Lnp : ∀ x ∈ L, x ∈ phi :: L_no_phi := by
+    intro x hx
+    by_cases h_eq : x = phi
+    · rw [h_eq]; exact .head _
+    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, decide_eq_true h_eq⟩)
+  have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
+    DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
+  have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+  have h_L_no_phi_G : ∀ x ∈ L_no_phi, Formula.all_future x ∈ M :=
+    fun x hx => G_of_temporal_box_g_seed M h_mcs x (h_L_no_phi_seed x hx)
+  have h_G_neg_phi : Formula.all_future (Formula.neg phi) ∈ M :=
+    G_lift_from_context M h_mcs L_no_phi (Formula.neg phi) d_neg_phi h_L_no_phi_G
+  exact some_future_excludes_all_future_neg h_mcs phi h_F h_G_neg_phi
+
+/--
+If F(phi) ∈ M (MCS), there exists MCS W with phi ∈ W,
+G_theory agreement, box_class_agree(M, W), AND g_content(M) ⊆ W.
+
+This is the enriched version of temporal_theory_witness_exists.
+-/
+theorem temporal_theory_witness_with_g_exists (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ phi ∈ W ∧
+      (∀ a, Formula.all_future a ∈ M → Formula.all_future a ∈ W) ∧
+      box_class_agree M W ∧ g_content M ⊆ W := by
+  have h_cons := temporal_theory_witness_with_g_consistent M h_mcs phi h_F
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum ({phi} ∪ temporal_box_g_seed M) h_cons
+  use W, h_W_mcs
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- phi ∈ W
+    exact h_extends (Set.mem_union_left _ (Set.mem_singleton phi))
+  · -- G_theory agreement
+    intro a ha
+    have : Formula.all_future a ∈ G_theory M := by
+      simp only [G_theory, Set.mem_setOf_eq]
+      exact ⟨a, rfl, ha⟩
+    exact h_extends (Set.mem_union_right _
+      (Set.mem_union_left _ (Set.mem_union_left _ this)))
+  · -- box_class_agree
+    intro psi
+    constructor
+    · intro h_box
+      have : Formula.box psi ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inl ⟨psi, rfl, h_box⟩
+      exact h_extends (Set.mem_union_right _
+        (Set.mem_union_left _ (Set.mem_union_right _ this)))
+    · intro h_box_W
+      by_contra h_not_in_M
+      have : Formula.neg (Formula.box psi) ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inr ⟨psi, rfl, h_not_in_M⟩
+      have h_neg_in_W : Formula.neg (Formula.box psi) ∈ W :=
+        h_extends (Set.mem_union_right _
+          (Set.mem_union_left _ (Set.mem_union_right _ this)))
+      exact set_consistent_not_both h_W_mcs.1 (Formula.box psi) h_box_W h_neg_in_W
+  · -- g_content(M) ⊆ W
+    intro a ha
+    exact h_extends (Set.mem_union_right _ (Set.mem_union_right _ ha))
+
+/-!
 ### H_theory and Past Direction Witness
 
 Symmetric to G_theory for the past direction. If P(phi) ∈ M (MCS), then
@@ -2466,6 +2580,103 @@ theorem past_theory_witness_exists (M : Set Formula) (h_mcs : SetMaximalConsiste
       have h_neg_in_W : Formula.neg (Formula.box psi) ∈ W :=
         h_extends (Set.mem_union_right _ (Set.mem_union_right _ this))
       exact set_consistent_not_both h_W_mcs.1 (Formula.box psi) h_box_W h_neg_in_W
+
+/-!
+### Enriched Past Witness with h_content
+
+Symmetric to the enriched future witness. The enriched seed
+`{phi} ∪ past_temporal_box_seed(M) ∪ h_content(M)` is consistent
+when P(phi) ∈ M, because h_content elements are H-liftable by definition.
+-/
+
+/--
+The enriched past seed: H_theory ∪ box_theory ∪ h_content.
+-/
+def past_temporal_box_h_seed (M : Set Formula) : Set Formula :=
+  past_temporal_box_seed M ∪ h_content M
+
+/--
+Every element of the enriched past seed can be H-lifted.
+-/
+theorem H_of_past_temporal_box_h_seed (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    ∀ x ∈ past_temporal_box_h_seed M, Formula.all_past x ∈ M := by
+  intro x hx
+  simp only [past_temporal_box_h_seed, Set.mem_union] at hx
+  rcases hx with h | h
+  · exact H_of_past_temporal_box_seed M h_mcs x h
+  · exact h
+
+/--
+The enriched past seed `{phi} ∪ past_temporal_box_h_seed(M)` is consistent when P(phi) ∈ M.
+-/
+theorem past_theory_witness_with_h_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    SetConsistent ({phi} ∪ past_temporal_box_h_seed M) := by
+  intro L h_L_sub ⟨d⟩
+  let L_no_phi := L.filter (· ≠ phi)
+  have h_L_no_phi_seed : ∀ x ∈ L_no_phi, x ∈ past_temporal_box_h_seed M := by
+    intro x hx
+    have hx_L := List.mem_of_mem_filter hx
+    have hx_ne : x ≠ phi := of_decide_eq_true (List.mem_filter.mp hx).2
+    have := h_L_sub x hx_L
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with h | h
+    · rw [h] at hx_ne; exact absurd rfl hx_ne
+    · exact h
+  have h_L_sub_phi_Lnp : ∀ x ∈ L, x ∈ phi :: L_no_phi := by
+    intro x hx
+    by_cases h_eq : x = phi
+    · rw [h_eq]; exact .head _
+    · exact List.mem_cons_of_mem phi (List.mem_filter.mpr ⟨hx, decide_eq_true h_eq⟩)
+  have d_weak : DerivationTree (phi :: L_no_phi) Formula.bot :=
+    DerivationTree.weakening L (phi :: L_no_phi) Formula.bot d h_L_sub_phi_Lnp
+  have d_neg_phi : DerivationTree L_no_phi (Formula.neg phi) :=
+    Bimodal.Metalogic.Core.deduction_theorem L_no_phi phi Formula.bot d_weak
+  have h_L_no_phi_H : ∀ x ∈ L_no_phi, Formula.all_past x ∈ M :=
+    fun x hx => H_of_past_temporal_box_h_seed M h_mcs x (h_L_no_phi_seed x hx)
+  have h_H_neg_phi : Formula.all_past (Formula.neg phi) ∈ M :=
+    H_lift_from_context M h_mcs L_no_phi (Formula.neg phi) d_neg_phi h_L_no_phi_H
+  exact some_past_excludes_all_past_neg h_mcs phi h_P h_H_neg_phi
+
+/--
+If P(phi) ∈ M (MCS), there exists MCS W with phi ∈ W,
+H_theory agreement, box_class_agree(M, W), AND h_content(M) ⊆ W.
+-/
+theorem past_theory_witness_with_h_exists (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ phi ∈ W ∧
+      (∀ a, Formula.all_past a ∈ M → Formula.all_past a ∈ W) ∧
+      box_class_agree M W ∧ h_content M ⊆ W := by
+  have h_cons := past_theory_witness_with_h_consistent M h_mcs phi h_P
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum ({phi} ∪ past_temporal_box_h_seed M) h_cons
+  use W, h_W_mcs
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · exact h_extends (Set.mem_union_left _ (Set.mem_singleton phi))
+  · intro a ha
+    have : Formula.all_past a ∈ H_theory M := by
+      simp only [H_theory, Set.mem_setOf_eq]
+      exact ⟨a, rfl, ha⟩
+    exact h_extends (Set.mem_union_right _
+      (Set.mem_union_left _ (Set.mem_union_left _ this)))
+  · intro psi
+    constructor
+    · intro h_box
+      have : Formula.box psi ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inl ⟨psi, rfl, h_box⟩
+      exact h_extends (Set.mem_union_right _
+        (Set.mem_union_left _ (Set.mem_union_right _ this)))
+    · intro h_box_W
+      by_contra h_not_in_M
+      have : Formula.neg (Formula.box psi) ∈ box_theory M := by
+        simp only [box_theory, Set.mem_setOf_eq]
+        exact Or.inr ⟨psi, rfl, h_not_in_M⟩
+      have h_neg_in_W : Formula.neg (Formula.box psi) ∈ W :=
+        h_extends (Set.mem_union_right _
+          (Set.mem_union_left _ (Set.mem_union_right _ this)))
+      exact set_consistent_not_both h_W_mcs.1 (Formula.box psi) h_box_W h_neg_in_W
+  · intro a ha
+    exact h_extends (Set.mem_union_right _ (Set.mem_union_right _ ha))
 
 /-!
 ### Resolving Successor Construction

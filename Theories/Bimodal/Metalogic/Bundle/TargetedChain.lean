@@ -61,7 +61,12 @@ noncomputable def targeted_forward_successor
   if h_F : Formula.some_future psi ∈ M then
     Classical.choose (canonical_forward_F M h_mcs psi h_F)
   else
-    constrained_successor_from_seed M h_mcs (SetMaximalConsistent.contains_F_top h_mcs)
+    -- Fallback: use canonical_forward_F with ⊤ (neg bot).
+    -- F(⊤) ∈ M always holds (contains_F_top), so this gives a sorry-free
+    -- successor with g_content(M) ⊆ W, avoiding the constrained_successor
+    -- seed consistency sorry.
+    Classical.choose (canonical_forward_F M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_F_top h_mcs))
 
 theorem targeted_forward_successor_mcs
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -72,7 +77,8 @@ theorem targeted_forward_successor_mcs
   · case isTrue h_F =>
     exact (Classical.choose_spec (canonical_forward_F M h_mcs psi h_F)).1
   · case isFalse _ =>
-    exact constrained_successor_from_seed_mcs M h_mcs (SetMaximalConsistent.contains_F_top h_mcs)
+    exact (Classical.choose_spec (canonical_forward_F M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_F_top h_mcs))).1
 
 theorem targeted_forward_successor_g_persistence
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -83,7 +89,8 @@ theorem targeted_forward_successor_g_persistence
   · case isTrue h_F =>
     exact (Classical.choose_spec (canonical_forward_F M h_mcs psi h_F)).2.1
   · case isFalse _ =>
-    exact (constrained_successor_succ M h_mcs (SetMaximalConsistent.contains_F_top h_mcs)).g_persistence
+    exact (Classical.choose_spec (canonical_forward_F M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_F_top h_mcs))).2.1
 
 theorem targeted_forward_successor_resolves
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -115,7 +122,11 @@ noncomputable def targeted_backward_predecessor
   if h_P : Formula.some_past psi ∈ M then
     Classical.choose (canonical_backward_P M h_mcs psi h_P)
   else
-    predecessor_from_deferral_seed M h_mcs (SetMaximalConsistent.contains_P_top h_mcs)
+    -- Fallback: use canonical_backward_P with ⊤ (neg bot).
+    -- P(⊤) ∈ M always holds (contains_P_top), so this gives a sorry-free
+    -- predecessor with h_content(M) ⊆ W.
+    Classical.choose (canonical_backward_P M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_P_top h_mcs))
 
 theorem targeted_backward_predecessor_mcs
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -126,7 +137,8 @@ theorem targeted_backward_predecessor_mcs
   · case isTrue h_P =>
     exact (Classical.choose_spec (canonical_backward_P M h_mcs psi h_P)).1
   · case isFalse _ =>
-    exact predecessor_from_deferral_seed_mcs M h_mcs (SetMaximalConsistent.contains_P_top h_mcs)
+    exact (Classical.choose_spec (canonical_backward_P M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_P_top h_mcs))).1
 
 theorem targeted_backward_predecessor_h_persistence
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -137,7 +149,8 @@ theorem targeted_backward_predecessor_h_persistence
   · case isTrue h_P =>
     exact (Classical.choose_spec (canonical_backward_P M h_mcs psi h_P)).2.1
   · case isFalse _ =>
-    exact predecessor_satisfies_h_persistence M h_mcs (SetMaximalConsistent.contains_P_top h_mcs)
+    exact (Classical.choose_spec (canonical_backward_P M h_mcs (Formula.neg Formula.bot)
+      (SetMaximalConsistent.contains_P_top h_mcs))).2.1
 
 theorem targeted_backward_predecessor_resolves
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
