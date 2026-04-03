@@ -241,7 +241,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Soundness Frame-Class Proofs and Final Polish [IN PROGRESS]
+### Phase 6: Soundness Frame-Class Proofs and Final Polish [PARTIAL]
 
 **Goal**: Close the 19 frame-class-restricted soundness sorry sites in Soundness.lean. These are independent of completeness and represent routine semantic validity proofs. Also conduct a semantic consistency audit (flagged by Teammate D) to verify all axioms are sound under current strict semantics before investing in proofs.
 
