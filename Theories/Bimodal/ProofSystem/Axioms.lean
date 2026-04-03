@@ -491,12 +491,13 @@ inductive Axiom : Formula → Type where
 
   /--
   Until Linearity (strict):
-  `(φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ))) ∨ X(ψ ∧ ψ')`
+  `(φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ))) ∨ F(ψ ∧ ψ')`
 
   If two Until formulas hold simultaneously, their witnesses are linearly ordered.
-  Under strict semantics, the third disjunct `X(ψ ∧ ψ')` handles the case when
-  both witnesses coincide at the immediate successor (where neither inner Until
-  can be formed because the witness is not strictly future).
+  Under strict semantics, the third disjunct `F(ψ ∧ ψ')` handles the case when
+  both witnesses coincide (where neither inner Until can be formed because
+  the witness is not strictly future from itself). F(ψ ∧ ψ') captures that
+  both ψ and ψ' hold at some future point.
   -/
   | until_linearity (φ ψ φ' ψ' : Formula) :
       Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl φ' ψ')
@@ -504,7 +505,7 @@ inductive Axiom : Formula → Type where
           (Formula.or
             (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
             (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ))))
-          (Formula.untl Formula.bot (Formula.and ψ ψ'))))
+          (Formula.some_future (Formula.and ψ ψ'))))
 
   /--
   Since Unfold (strict, Y-based): `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`
@@ -546,7 +547,7 @@ inductive Axiom : Formula → Type where
   `(φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ))) ∨ Y(ψ ∧ ψ')`
 
   Mirror of until_linearity for the past direction.
-  Third disjunct handles coinciding witnesses at the immediate predecessor.
+  Third disjunct `P(ψ ∧ ψ')` handles coinciding witnesses.
   -/
   | since_linearity (φ ψ φ' ψ' : Formula) :
       Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce φ' ψ')
@@ -554,7 +555,7 @@ inductive Axiom : Formula → Type where
           (Formula.or
             (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
             (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ))))
-          (Formula.snce Formula.bot (Formula.and ψ ψ'))))
+          (Formula.some_past (Formula.and ψ ψ'))))
 
   /--
   Until-Since Connectedness: `φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`

@@ -459,19 +459,14 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
       exact absurd h_G_and_bot_in_M (SetMaximalConsistent.neg_excludes h_mcs b h_neg_b)
     · exact h_neg
 
-  -- Step 4: Apply until_induction axiom instance
-  have h_uind : [] ⊢ (Formula.and
-      (Formula.all_future (ψ.imp Formula.bot))
-      (Formula.all_future ((Formula.and φ Formula.bot).imp (Formula.all_future Formula.bot)))
-      |>.imp ((Formula.untl φ ψ).imp Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.until_induction φ ψ Formula.bot)
-
-  -- Step 5: Modus ponens: (φ U ψ) → ⊥ ∈ M
-  have h_neg_U : (Formula.untl φ ψ).imp Formula.bot ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_uind) h_conj_in_M
-
-  -- Step 6: (φ U ψ).imp ⊥ = ¬(φ U ψ) and (φ U ψ) ∈ M, contradiction
-  exact set_consistent_not_both h_mcs.1 (Formula.untl φ ψ) h_U h_neg_U
+  -- Step 4: Apply until_induction axiom instance with χ = ⊥.
+  -- New axiom shape: G(ψ → ⊥) ∧ G((φ ∧ X(⊥)) → ⊥) → (φ U ψ) → X(⊥)
+  -- We have G(¬ψ) = G(ψ → ⊥) from h_conj_in_M (first component).
+  -- The second component G((φ ∧ X(⊥)) → ⊥) is vacuously true since X(⊥) = ⊥ U ⊥ ≡ ⊥.
+  -- Conclusion: (φ U ψ) → X(⊥). Since X(⊥) = ⊥ U ⊥, which is provably equivalent to ⊥,
+  -- we derive ¬(φ U ψ) and contradict h_U.
+  -- TODO: Complete proof-theoretic derivation for new axiom shape.
+  sorry
 
 /--
 Since witness seed consistency: If `φ S ψ ∈ M` and M is MCS, then
@@ -577,17 +572,9 @@ theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
       exact absurd h_H_and_bot_in_M (SetMaximalConsistent.neg_excludes h_mcs b h_neg_b)
     · exact h_neg
 
-  have h_sind : [] ⊢ (Formula.and
-      (Formula.all_past (ψ.imp Formula.bot))
-      (Formula.all_past ((Formula.and φ Formula.bot).imp (Formula.all_past Formula.bot)))
-      |>.imp ((Formula.snce φ ψ).imp Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.since_induction φ ψ Formula.bot)
-
-  have h_neg_S : (Formula.snce φ ψ).imp Formula.bot ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_sind) h_conj_in_M
-
-  -- (φ S ψ).imp ⊥ = ¬(φ S ψ) and (φ S ψ) ∈ M, contradiction
-  exact set_consistent_not_both h_mcs.1 (Formula.snce φ ψ) h_S h_neg_S
+  -- New axiom shape: H(ψ → ⊥) ∧ H((φ ∧ Y(⊥)) → ⊥) → (φ S ψ) → Y(⊥)
+  -- TODO: Complete proof-theoretic derivation for new axiom shape.
+  sorry
 
 /-!
 ## g_content/h_content Duality

@@ -519,78 +519,47 @@ theorem until_induction_valid (φ ψ χ : Formula) :
   -- At n = s: ¬χ(s). But ψ(s) → χ(s) by premise 1 at time s (s > t).
   exact h_all_neg s (Order.succ_le_of_lt hts) le_rfl (h_base_G s hts h_psi_s)
 
-/-- Until Linearity axiom validity:
-`⊨_discrete (φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ)))`.
-Given witnesses s₁ for φ U ψ and s₂ for φ' U ψ', by linear order either s₁ ≤ s₂ or s₂ ≤ s₁. -/
+/-- Until Linearity axiom validity (strict):
+`⊨_discrete (φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ))) ∨ X(ψ ∧ ψ')`.
+Given witnesses s₁ for φ U ψ and s₂ for φ' U ψ', by trichotomy:
+- s₁ < s₂: first disjunct
+- s₁ = s₂: third disjunct X(ψ ∧ ψ')
+- s₂ < s₁: second disjunct -/
 theorem until_linearity_valid (φ ψ φ' ψ' : Formula) :
     valid_discrete (Formula.and (Formula.untl φ ψ) (Formula.untl φ' ψ')
       |>.imp (Formula.or
-        (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
-        (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ))))) := by
+        (Formula.or
+          (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
+          (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ))))
+        (Formula.some_future (Formula.and ψ ψ')))) := by
   intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj
   have h_both := and_of_not_imp_not h_conj
   obtain ⟨h_until1, h_until2⟩ := h_both
   obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_until1
   obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_until2
+  -- Goal: (¬(A ∨ B) → False) → (∀ s > t, ¬¬(ψ(s) ∧ ψ'(s)) → False) → False
+  -- Structure: intro h_neg_AB h_neg_F, then derive False.
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
-  · -- s1 < s2: left disjunct with witness s1 (ψ(s1) ∧ (φ' U ψ')(s1))
-    intro h_neg_left
-    exfalso
-    exact h_neg_left ⟨s1, hs1t,
+  · -- s1 < s2: first disjunct φ U (ψ ∧ (φ' U ψ')) with witness s1
+    intro h_neg_AB _
+    exact h_neg_AB (fun h_neg_first => False.elim (h_neg_first ⟨s1, hs1t,
       fun h_imp => h_imp h_psi_s1
         ⟨s2, h_lt, h_psi'_s2, fun r hr1 hr2 => h_phi'_range2 r (lt_trans hs1t hr1) hr2⟩,
-      h_phi_range1⟩
-  · -- s1 = s2: left disjunct with witness s1 (ψ(s1) ∧ (φ' U ψ')(s1) via ψ'(s1))
+      h_phi_range1⟩))
+  · -- s1 = s2: third disjunct F(ψ ∧ ψ') with witness s1
     subst h_eq
-    intro h_neg_left
-    exfalso
-    -- At s1 = s2, both ψ(s1) and ψ'(s1) hold. Need (φ' U ψ') at s1.
-    -- We don't need a future witness for φ' U ψ' because ψ' already holds at s1.
-    -- But (φ' U ψ') at s1 means ∃ u > s1, ψ'(u) ∧ guard. ψ'(s1) doesn't give ∃ u > s1.
-    -- So we take the right disjunct instead: φ' U (ψ' ∧ (φ U ψ)) with witness s1
-    -- Same issue: need ∃ u > s1 for the inner Until.
-    -- Actually, we should take the left disjunct φ U (ψ ∧ (φ' U ψ')) with witness s1.
-    -- (ψ ∧ (φ' U ψ')) at s1 needs (φ' U ψ') at s1 = ∃ u > s1 with ψ'(u)... still need future witness.
-    -- The right approach: since s1 = s2 and ψ(s1), ψ'(s1) both hold, we can still provide
-    -- the left disjunct. For (φ' U ψ') at s1, we need a future witness.
-    -- But (φ' U ψ') at s1 is ∃ u > s1, ψ'(u) ∧ guard. We don't have such a witness.
-    -- Solution: we need to pick a disjunct differently.
-    -- Actually, re-examining: the conclusion is φ U (ψ ∧ (φ' U ψ')), which needs
-    -- ∃ s > t, (ψ ∧ (φ' U ψ'))(s) ∧ guard. At s = s1, we need (φ' U ψ')(s1).
-    -- (φ' U ψ') at s1 requires ∃ u > s1... which we don't have.
-    -- The correct resolution: when s1 = s2, we don't need (φ' U ψ')(s1) -- we can
-    -- simply pack the conjunction differently. Both ψ(s1) and ψ'(s1) hold at s1.
-    -- Left: φ U (ψ ∧ (φ' U ψ')) -- needs (φ' U ψ')(s1) = ∃ u > s1...
-    -- Neither disjunct works without a future witness for φ' U ψ' at s1.
-    -- This means until_linearity is NOT sound with this formulation when s1 = s2!
-    -- The axiom needs reconsideration for the equal case.
-    -- Actually wait: we can also split on whether s1 is the leftmost witness.
-    -- If we can find s1' ≤ s1 with ψ(s1') where s1' is minimal, we might find s1' < s2.
-    -- But that's not given to us.
-    -- RESOLUTION: The correct approach is to keep both disjuncts available:
-    -- Left: φ U (ψ ∧ (φ' U ψ')) with a potentially smaller witness
-    -- Actually, the axiom is still sound. At s = s1 = s2, if we're in a discrete order,
-    -- ψ'(s1) doesn't directly give (φ' U ψ')(s1) but we can use a different witness.
-    -- Hmm, let me reconsider. The Until witness just needs ψ ∧ (φ' U ψ') at some s > t.
-    -- If s1 = s2, pick some point before s1 if possible.
-    -- Actually the simplest fix: when s1 = s2, we know ψ(s1) and ψ'(s1).
-    -- We need either φ U (ψ ∧ (φ' U ψ')) or φ' U (ψ' ∧ (φ U ψ)).
-    -- For the first: ∃ u > t, (ψ ∧ (φ' U ψ'))(u), φ-guard.
-    -- Since ψ'(s1) holds but (φ' U ψ')(s1) needs a FUTURE ψ' witness from s1...
-    -- Key insight: the guard of φ U ψ ensures φ holds on (t, s1).
-    -- If there's a point s' in (t, s1) with ψ'(s'), then (φ' U ψ') holds at s' with witness s'.
-    -- But we don't know that.
-    -- The axiom is actually about the SAME phi guards being compatible.
-    -- Hmm, let me just use sorry for now and come back.
-    sorry
-  · -- s2 < s1: right disjunct with witness s2 (ψ'(s2) ∧ (φ U ψ)(s2))
-    intro _
-    exact ⟨s2, hs2t,
+    intro _ h_neg_F
+    exact h_neg_F s1 hs1t (fun h_imp => h_imp h_psi_s1 h_psi'_s2)
+  · -- s2 < s1: second disjunct φ' U (ψ' ∧ (φ U ψ)) with witness s2
+    intro h_neg_AB _
+    -- h_neg_AB : (¬A → B) → False. Contradict by showing A (first disjunct impossible, use second).
+    -- Actually provide (¬A → B): if ¬A, then we give B (second disjunct).
+    exact h_neg_AB (fun _ => ⟨s2, hs2t,
       fun h_imp => h_imp h_psi'_s2
         ⟨s1, h_gt, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r (lt_trans hs2t hr1) hr2⟩,
-      h_phi'_range2⟩
+      h_phi'_range2⟩)
 
 /-- Since Unfold axiom validity: `⊨_discrete (φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`.
 Mirror of until_unfold_valid for past direction. -/
@@ -612,8 +581,8 @@ theorem since_unfold_valid (φ ψ : Formula) :
     exact absurd (h_eq ▸ h_psi_s) h_neg_psi
   · -- s < pred(t): φ at pred(t) and φ S ψ at pred(t) with witness s
     intro h_neg_psi h_neg_phi_and_since
-    apply h_neg_phi_and_since
-    exact fun h_imp => h_imp (h_phi_guard (Order.pred t) h_lt (Order.pred_lt t))
+    exact h_neg_phi_and_since
+      (h_phi_guard (Order.pred t) h_lt (Order.pred_lt t))
       ⟨s, h_lt, h_psi_s, fun r hr1 hr2 => h_phi_guard r hr1 (lt_trans hr2 (Order.pred_lt t))⟩
 
 /-- Since Intro axiom validity: `⊨_discrete Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)`.
@@ -674,53 +643,62 @@ theorem since_induction_valid (φ ψ χ : Formula) :
     apply h_neg_chi_n
     have h_n_lt_t : n < t := lt_of_le_of_lt h_n_le_pred (Order.pred_lt t)
     have h_phi_n : truth_at M Omega τ n φ := h_phi_guard n hns h_n_lt_t
-    have h_Y_chi_n : ∃ u : T, u < n ∧ truth_at M Omega τ u χ ∧
-        ∀ r : T, u < r → r < n → False :=
-      ⟨Order.pred n, Order.pred_lt n, h_chi_pred_n, fun r hpr hrn =>
-        absurd (Order.le_pred_of_lt hrn) (not_le.mpr hpr)⟩
     -- Apply step premise at time n (n < t, so h_step_H gives the premise)
-    by_contra h_neg
-    exact h_step_H n h_n_lt_t (fun h_imp => h_neg (h_imp h_phi_n h_Y_chi_n))
+    -- h_step_H needs: (φ(n) → (∃ u < n, χ(u) ∧ guard) → False) → False
+    -- We have φ(n) and Y(χ)(n), so the double-negation holds.
+    exact h_step_H n h_n_lt_t (fun h_imp => h_imp h_phi_n
+      ⟨Order.pred n, Order.pred_lt n, h_chi_pred_n, fun r hpr hrn =>
+        absurd (Order.le_pred_of_lt hrn) (not_le.mpr hpr)⟩)
   -- Propagate ¬χ from pred(t) down to s using Pred.rec
   have h_all_neg : ∀ n : T, s ≤ n → n ≤ Order.pred t → ¬truth_at M Omega τ n χ := by
     intro n h_s_le_n h_n_le_pred
-    induction n, h_n_le_pred using Pred.rec with
-    | base => exact h_neg_chi_pred
-    | succ m h_le_m ih =>
-      have h_s_lt_m : s < m := lt_of_le_of_lt h_s_le_n (Order.pred_lt m)
+    refine Pred.rec ?_ ?_ h_n_le_pred h_s_le_n
+    · -- base: n = pred(t)
+      intro _; exact h_neg_chi_pred
+    · -- step: n → pred(n)
+      intro m h_le_m ih h_s_le_m
+      have h_s_lt_m : s < m := lt_of_le_of_lt h_s_le_m (Order.pred_lt m)
       exact h_propagate m h_le_m h_s_lt_m (ih (le_of_lt h_s_lt_m))
   -- At n = s: ¬χ(s). But ψ(s) → χ(s) by premise 1 at time s (s < t).
   exact h_all_neg s le_rfl (Order.le_pred_of_lt hst) (h_base_H s hst h_psi_s)
 
-/-- Since Linearity axiom validity:
-`⊨_discrete (φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ)))`.
-Mirror of until_linearity_valid. -/
+/-- Since Linearity axiom validity (strict):
+`⊨_discrete (φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ))) ∨ P(ψ ∧ ψ')`.
+Mirror of until_linearity_valid. Third disjunct handles coinciding witnesses. -/
 theorem since_linearity_valid (φ ψ φ' ψ' : Formula) :
     valid_discrete (Formula.and (Formula.snce φ ψ) (Formula.snce φ' ψ')
       |>.imp (Formula.or
-        (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
-        (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ))))) := by
+        (Formula.or
+          (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
+          (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ))))
+        (Formula.some_past (Formula.and ψ ψ')))) := by
   intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+  simp only [Formula.and, Formula.or, Formula.neg, Formula.some_past, truth_at]
   intro h_conj
   have h_both := and_of_not_imp_not h_conj
   obtain ⟨h_since1, h_since2⟩ := h_both
   obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_since1
   obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_since2
-  rcases le_total s1 s2 with h_le | h_le
-  · -- s1 ≤ s2: right disjunct with witness s2
-    intro _
-    exact ⟨s2, hs2t,
-      fun h_imp => h_imp h_psi'_s2 ⟨s1, h_le, h_psi_s1,
-        fun r hr1 hr2 => h_phi_range1 r hr1 (lt_of_lt_of_le hr2 (le_of_lt hs2t))⟩,
-      h_phi'_range2⟩
-  · -- s2 ≤ s1: left disjunct with witness s1
-    intro h_neg_left
-    exfalso
-    exact h_neg_left ⟨s1, hs1t,
-      fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
-        fun r hr1 hr2 => h_phi'_range2 r hr1 (lt_of_lt_of_le hr2 (le_of_lt hs1t))⟩,
-      h_phi_range1⟩
+  -- Goal: (¬(A ∨ B) → False) → (∀ s < t, ¬¬(ψ(s) ∧ ψ'(s)) → False) → False
+  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+  · -- s1 < s2: second disjunct φ' S (ψ' ∧ (φ S ψ)) with witness s2
+    intro h_neg_AB _
+    exact h_neg_AB (fun _ =>
+      ⟨s2, hs2t,
+        fun h_imp => h_imp h_psi'_s2
+          ⟨s1, h_lt, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r hr1 (lt_trans hr2 hs2t)⟩,
+        h_phi'_range2⟩)
+  · -- s1 = s2: third disjunct P(ψ ∧ ψ') with witness s1
+    subst h_eq
+    intro _ h_neg_P
+    exact h_neg_P s1 hs1t (fun h_imp => h_imp h_psi_s1 h_psi'_s2)
+  · -- s2 < s1: first disjunct φ S (ψ ∧ (φ' S ψ')) with witness s1
+    intro h_neg_AB _
+    exact h_neg_AB (fun h_neg_first => False.elim (h_neg_first
+      ⟨s1, hs1t,
+        fun h_imp => h_imp h_psi_s1
+          ⟨s2, h_gt, h_psi'_s2, fun r hr1 hr2 => h_phi'_range2 r hr1 (lt_trans hr2 hs1t)⟩,
+        h_phi_range1⟩))
 
 /-- Until-Since Connectedness axiom validity:
 `⊨_discrete φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`.
