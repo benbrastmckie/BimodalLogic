@@ -183,6 +183,64 @@ theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     exact h_extends (psi_mem_past_temporal_witness_seed M psi)
 
 /-!
+## Forward U and Backward S (Until/Since Witness Properties)
+
+These properties provide witnesses for Until/Since obligations in the canonical model.
+They are key to the dovetailed chain construction (Phase 6).
+-/
+
+/--
+U-forward property: If `φ U ψ ∈ M` and `M` is MCS, then there exists an MCS `W`
+such that `ExistsTask M W` and `ψ ∈ W`.
+
+**Key insight**: The until_induction axiom ensures that `{ψ} ∪ g_content(M)`
+is consistent when `φ U ψ ∈ M`. This is what makes Until different from F:
+with just `F(ψ) ∈ M`, the same seed consistency follows directly from the
+definition of F as ¬G(¬ψ). With Until, the consistency proof uses the
+induction axiom to prevent perpetual deferral of ψ.
+
+**Usage**: In the dovetailed chain (Phase 6), when a Until obligation `φ U ψ`
+is scheduled for resolution, this theorem provides the witness MCS where ψ holds.
+-/
+theorem canonical_forward_U (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧ ψ ∈ W := by
+  -- Step 1: {ψ} ∪ g_content(M) is consistent (uses until_induction)
+  have h_seed_cons : SetConsistent (until_witness_seed M ψ) :=
+    until_witness_seed_consistent M h_mcs φ ψ h_U
+  -- Step 2: Extend to an MCS via Lindenbaum
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (until_witness_seed M ψ) h_seed_cons
+  -- Step 3: W is the witness
+  use W, h_W_mcs
+  constructor
+  · -- ExistsTask M W: g_content M ⊆ W
+    exact Set.Subset.trans (g_content_subset_until_witness_seed M ψ) h_extends
+  · -- ψ ∈ W
+    exact h_extends (psi_mem_until_witness_seed M ψ)
+
+/--
+S-backward property: If `φ S ψ ∈ M` and `M` is MCS, then there exists an MCS `W`
+such that `ExistsTask_past M W` and `ψ ∈ W`.
+
+Symmetric to `canonical_forward_U` using since_induction.
+-/
+theorem canonical_backward_S (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask_past M W ∧ ψ ∈ W := by
+  -- Step 1: {ψ} ∪ h_content(M) is consistent (uses since_induction)
+  have h_seed_cons : SetConsistent (past_temporal_witness_seed M ψ) :=
+    since_witness_seed_consistent M h_mcs φ ψ h_S
+  -- Step 2: Extend to an MCS via Lindenbaum
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (past_temporal_witness_seed M ψ) h_seed_cons
+  -- Step 3: W is the witness
+  use W, h_W_mcs
+  constructor
+  · -- ExistsTask_past M W: h_content M ⊆ W
+    exact Set.Subset.trans (h_content_subset_past_temporal_witness_seed M ψ) h_extends
+  · -- ψ ∈ W
+    exact h_extends (psi_mem_past_temporal_witness_seed M ψ)
+
+/-!
 ## Transitivity of Canonical Relations
 
 The canonical relations are transitive using the Temporal 4 axiom (G phi -> GG phi).

@@ -80,6 +80,25 @@ See `p_content_iff_not_neg_in_h_content` for the formal relationship.
 def p_content (M : Set Formula) : Set Formula :=
   {phi | Formula.some_past phi ∈ M}
 
+/--
+u_content of an MCS: the set of all formula pairs (phi, psi) where `phi U psi` appears in the MCS.
+
+**Usage**: Used in the Succ relation U-step condition (Phase 5) and dovetailed chain
+construction (Phase 6). The U-step ensures that for each `(phi U psi) ∈ u`, the
+successor v either contains psi (resolved) or contains both phi and `phi U psi` (deferred).
+-/
+def u_content (M : Set Formula) : Set (Formula × Formula) :=
+  { p | Formula.untl p.1 p.2 ∈ M }
+
+/--
+s_content of an MCS: the set of all formula pairs (phi, psi) where `phi S psi` appears in the MCS.
+
+**Usage**: Used in the backward Succ relation S-step condition (Phase 5) and dovetailed
+chain construction (Phase 6). Symmetric to u_content.
+-/
+def s_content (M : Set Formula) : Set (Formula × Formula) :=
+  { p | Formula.snce p.1 p.2 ∈ M }
+
 /-! ## Membership Lemmas -/
 
 @[simp]
@@ -97,6 +116,14 @@ lemma mem_f_content_iff {M : Set Formula} {phi : Formula} :
 @[simp]
 lemma mem_p_content_iff {M : Set Formula} {phi : Formula} :
     phi ∈ p_content M ↔ Formula.some_past phi ∈ M := Iff.rfl
+
+@[simp]
+lemma mem_u_content_iff {M : Set Formula} {p : Formula × Formula} :
+    p ∈ u_content M ↔ Formula.untl p.1 p.2 ∈ M := Iff.rfl
+
+@[simp]
+lemma mem_s_content_iff {M : Set Formula} {p : Formula × Formula} :
+    p ∈ s_content M ↔ Formula.snce p.1 p.2 ∈ M := Iff.rfl
 
 /-! ## Duality Lemmas -/
 
