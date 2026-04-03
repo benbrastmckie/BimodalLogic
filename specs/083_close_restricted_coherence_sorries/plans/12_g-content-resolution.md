@@ -73,7 +73,7 @@ Resolve the g_content blocker that emerged after removing the T-axiom under stri
 
 ---
 
-### Phase 2: Seed Enrichment with g_content [PARTIAL]
+### Phase 2: Seed Enrichment with g_content [IN PROGRESS]
 
 **Goal**: Enrich `temporal_box_seed` to include `g_content(M)` and prove the enriched seed is consistent. This resolves Tier 1 sorry sites by providing direct seed membership for g_content elements.
 

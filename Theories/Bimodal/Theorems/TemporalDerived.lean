@@ -177,4 +177,97 @@ noncomputable def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) := by
   have h1 := DerivationTree.modus_ponens [] _ _ h_k h_topS_to_Y
   exact DerivationTree.modus_ponens [] _ _ h1 h_topSince
 
+/--
+`⊢ G(⊥) → ⊥`: G(⊥) is absurd because seriality gives F(⊥) = ¬G(⊤),
+but G(⊤) is a theorem.
+
+This is the special case needed for seed consistency proofs where the
+T-axiom `G(a) → a` was previously used at `a = ⊥`.
+-/
+def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot := by
+  -- Step 1: G(⊥) → F(⊥) by seriality
+  have h_ser := DerivationTree.axiom [] _ (Axiom.seriality_future Formula.bot)
+  -- Step 2: G(⊤) is a theorem (temporal necessitation of identity)
+  have h_top : ⊢ (Formula.bot.imp Formula.bot) :=
+    identity Formula.bot
+  have h_GT : ⊢ (Formula.bot.imp Formula.bot).all_future :=
+    DerivationTree.temporal_necessitation _ h_top
+  -- Step 3: G(⊤) → ¬¬G(⊤) by double negation introduction
+  -- ¬G(⊤) = G(⊤) → ⊥ = F(⊥)  (definitionally)
+  -- So ¬¬G(⊤) = F(⊥) → ⊥
+  have h_dni := dni ((Formula.bot.imp Formula.bot).all_future)
+  -- Step 4: F(⊥) → ⊥ by modus ponens
+  have h_F_absurd := mp h_GT h_dni
+  -- Step 5: G(⊥) → ⊥ by transitivity
+  exact imp_trans h_ser h_F_absurd
+
+/--
+`⊢ H(⊥) → ⊥`: H(⊥) is absurd because seriality gives P(⊥) = ¬H(⊤),
+but H(⊤) is a theorem.
+-/
+noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot := by
+  have h_ser := DerivationTree.axiom [] _ (Axiom.seriality_past Formula.bot)
+  have h_top : ⊢ (Formula.bot.imp Formula.bot) :=
+    identity Formula.bot
+  have h_HT : ⊢ (Formula.bot.imp Formula.bot).all_past :=
+    Bimodal.Theorems.past_necessitation _ h_top
+  have h_dni := dni ((Formula.bot.imp Formula.bot).all_past)
+  have h_P_absurd := mp h_HT h_dni
+  exact imp_trans h_ser h_P_absurd
+
+/--
+`⊢ X(⊥) → ⊥`, i.e., `⊢ (⊥ U ⊥) → ⊥`.
+
+X(⊥) = ⊥ U ⊥ semantically says "⊥ at the next time step", which is impossible
+because every time step has a consistent MCS.
+
+**Derivation**: Uses G_bot_absurd and G_implies_X to derive a contradiction.
+From G(⊥) → ⊥ (G_bot_absurd) and G(⊥) → X(⊥) (G_implies_X), we get that
+X(⊥) and G(⊤) are jointly inconsistent. Since G(⊤) is a theorem (via
+temporal necessitation of identity), X(⊥) leads to absurdity.
+
+The formal derivation uses until_linearity on X(⊥) and X(⊤) (a theorem):
+  X(⊥) ∧ X(⊤) → (X(⊥ ∧ X(⊤))) ∨ (X(⊤ ∧ X(⊥))) ∨ F(⊥ ∧ ⊤)
+  F(⊥ ∧ ⊤) ↔ F(⊥) ↔ ¬G(⊤), and ¬G(⊤) → ⊥ since G(⊤) is a theorem.
+  The other disjuncts are handled recursively by omega descent.
+
+NOTE: This derivation is semantically clear but the syntactic proof tree
+construction is non-trivial. Uses sorry pending full axiom-level construction.
+-/
+noncomputable def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot := by
+  -- X(⊥) = ⊥ U ⊥ is semantically impossible (requires ⊥ at next time step)
+  -- Full derivation would use until_linearity + seriality
+  sorry
+
+/--
+`⊢ Y(⊥) → ⊥`, i.e., `⊢ (⊥ S ⊥) → ⊥`.
+Mirror of X_bot_absurd for the past direction.
+-/
+noncomputable def Y_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot := by
+  sorry
+
+/--
+`⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
+
+Under strict semantics, φ U ψ means ∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r).
+The witness s certifies F(ψ). The derivation uses until_induction with χ = ⊥
+to derive X(⊥) from G(¬ψ) ∧ (φ U ψ), then X_bot_absurd for contradiction.
+-/
+noncomputable def until_implies_some_future (φ ψ : Formula) :
+    ⊢ (Formula.untl φ ψ).imp (Formula.some_future ψ) := by
+  -- Contrapositive: G(¬ψ) → ¬(φ U ψ)
+  -- From G(¬ψ), derive both premises of until_induction with χ = ⊥:
+  --   G(ψ → ⊥) = G(¬ψ) (hypothesis)
+  --   G((φ ∧ X(⊥)) → ⊥) = G(X(⊥) → ⊥) (from X_bot_absurd under G)
+  -- Then (φ U ψ) → X(⊥), and X(⊥) → ⊥ by X_bot_absurd.
+  sorry
+
+/--
+`⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
+Mirror of until_implies_some_future.
+-/
+noncomputable def since_implies_some_past (φ ψ : Formula) :
+    ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) := by
+  sorry
+
 end Bimodal.Theorems.TemporalDerived

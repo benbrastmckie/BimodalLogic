@@ -926,111 +926,21 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
         exact (ih h_ψ_sub fam hfam s).mpr (h_all s hst)
       exact restricted_temporal_backward_H_strict fam root h_backward_P t ψ h_neg_ψ_dc h_all_mcs
   | untl phi psi ih_phi ih_psi =>
-    have h_phi_sub : phi ∈ subformulaClosure root := by
-      unfold subformulaClosure at h_sub ⊢
-      simp only [List.mem_toFinset] at h_sub ⊢
-      exact Formula.mem_subformulas_of_untl_left h_sub
-    have h_psi_sub : psi ∈ subformulaClosure root := by
-      unfold subformulaClosure at h_sub ⊢
-      simp only [List.mem_toFinset] at h_sub ⊢
-      exact Formula.mem_subformulas_of_untl_right h_sub
-    simp only [truth_at]
-    -- Prove forward direction first so backward can use it
-    have h_forward : phi.untl psi ∈ fam.mcs t →
-        ∃ s, t ≤ s ∧ truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) s psi ∧
-        ∀ r, t ≤ r → r < s → truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) r phi := by
-      -- Forward: φ U ψ ∈ mcs(t) → ∃ s ≥ t, ψ(s) ∧ ∀ r ∈ [t, s), φ(r)
-      intro h_U
-      -- Step 1: Derive F(ψ) ∈ mcs(t) via U-Induction with χ = ⊥
-      have h_F_psi : Formula.some_future psi ∈ fam.mcs t := by
-        by_contra h_not_F
-        have h_mcs := fam.is_mcs t
-        rcases SetMaximalConsistent.negation_complete h_mcs (Formula.some_future psi) with h_F | h_neg_F
-        · exact h_not_F h_F
-        · have h_dne := Bimodal.Theorems.Perpetuity.dne (psi.neg.all_future)
-          have h_G_neg : psi.neg.all_future ∈ fam.mcs t :=
-            SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_F
-          have h_premise2 : [] ⊢ (phi.and Formula.bot).imp (Formula.bot.all_future) := by
-            apply Bimodal.Metalogic.Core.deduction_theorem
-            have h_rce := Bimodal.Theorems.Propositional.rce phi Formula.bot
-            have h_efq := Bimodal.ProofSystem.DerivationTree.axiom [phi.and Formula.bot] _
-              (Bimodal.ProofSystem.Axiom.ex_falso (Formula.bot.all_future))
-            exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq h_rce
-          have h_G_p2 : Formula.all_future ((phi.and Formula.bot).imp (Formula.bot.all_future)) ∈ fam.mcs t :=
-            theorem_in_mcs h_mcs (Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_premise2)
-          have h_conj_ax := Bimodal.Theorems.Combinators.pairing
-            (psi.neg.all_future) ((phi.and Formula.bot).imp (Formula.bot.all_future)).all_future
-          have h1 := SetMaximalConsistent.implication_property h_mcs
-            (theorem_in_mcs h_mcs h_conj_ax) h_G_neg
-          have h_conj := SetMaximalConsistent.implication_property h_mcs h1 h_G_p2
-          have h_uind := Bimodal.ProofSystem.DerivationTree.axiom [] _
-            (Bimodal.ProofSystem.Axiom.until_induction phi psi Formula.bot)
-          have h_imp := SetMaximalConsistent.implication_property h_mcs
-            (theorem_in_mcs h_mcs h_uind) h_conj
-          have h_bot := SetMaximalConsistent.implication_property h_mcs h_imp h_U
-          exact h_mcs.1 [Formula.bot]
-            (fun φ h => by simp [List.mem_cons] at h; exact h ▸ h_bot)
-            ⟨Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)⟩
-      -- Step 2: Get witness s ≥ t with ψ ∈ mcs(s) via forward_F
-      have h_psi_dc : psi ∈ deferralClosure root :=
-        closureWithNeg_subset_deferralClosure root
-          (subformulaClosure_subset_closureWithNeg root h_psi_sub)
-      obtain ⟨h_forward_F, _⟩ := h_tc fam hfam
-      obtain ⟨s, hts, h_psi_s⟩ := h_forward_F t psi h_psi_dc h_F_psi
-      -- Step 3: Find minimal witness using Nat.strongRecOn on (s-t).toNat
-      -- Define P(n) = ψ ∈ mcs(t + ↑n)
-      have h_psi_at_dist : psi ∈ fam.mcs (t + ↑(s - t).toNat) := by
-        have : t + ↑(s - t).toNat = s := by omega
-        rw [this]; exact h_psi_s
-      -- Find minimal n with ψ ∈ mcs(t + n)
-      have h_min : ∃ m : Nat, psi ∈ fam.mcs (t + ↑m) ∧ ∀ k : Nat, k < m → psi ∉ fam.mcs (t + ↑k) := by
-        have h_find : ∀ n : Nat, psi ∈ fam.mcs (t + (n : Int)) →
-            ∃ m : Nat, psi ∈ fam.mcs (t + (m : Int)) ∧ ∀ k : Nat, k < m → psi ∉ fam.mcs (t + (k : Int)) := by
-          intro n
-          induction n using Nat.strongRecOn with
-          | _ n ih =>
-            intro h_pn
-            by_cases h_exists : ∃ m, m < n ∧ psi ∈ fam.mcs (t + (m : Int))
-            · obtain ⟨m, hm_lt, hm⟩ := h_exists
-              exact ih m hm_lt hm
-            · simp only [not_exists, not_and] at h_exists
-              exact ⟨n, h_pn, h_exists⟩
-        exact h_find (s - t).toNat h_psi_at_dist
-      obtain ⟨m, h_psi_m, h_min_m⟩ := h_min
-      -- The witness is s' = t + m
-      refine ⟨t + ↑m, by omega, ?_, ?_⟩
-      · -- ψ true at s'
-        exact (ih_psi h_psi_sub fam hfam (t + ↑m)).mp h_psi_m
-      · -- φ true at all r ∈ [t, s') where s' = t + m
-        intro r htr hrs'
-        -- r = t + k for some k < m, so ψ ∉ mcs(r) by minimality
-        have h_k_lt : (r - t).toNat < m := by omega
-        have h_psi_not_r : psi ∉ fam.mcs r := by
-          have h1 := h_min_m (r - t).toNat h_k_lt
-          have h2 : t + ↑(r - t).toNat = r := by omega
-          rwa [h2] at h1
-        -- Since m > 0 (r ≥ t and r < t + m means m ≥ 1), ψ ∉ mcs(t) by minimality
-        have h_psi_not_t : psi ∉ fam.mcs t := by
-          have h0 := h_min_m 0 (by omega : 0 < m)
-          simpa using h0
-        -- Deferral case: unfold φ U ψ at t gives φ ∈ mcs(t) ∧ G(φ U ψ) ∈ mcs(t)
-        rcases until_unfold_in_mcs _ (fam.is_mcs t) phi psi h_U with h_psi_t | ⟨_, h_G_U⟩
-        · exact absurd h_psi_t h_psi_not_t
-        · -- G(φ U ψ) ∈ mcs(t), so φ U ψ ∈ mcs(r) for any r ≥ t
-          have h_U_r : phi.untl psi ∈ fam.mcs r :=
-            fam.forward_G t r (phi.untl psi) htr h_G_U
-          -- Unfold at r: ψ ∉ mcs(r), so φ ∈ mcs(r)
-          rcases until_unfold_in_mcs _ (fam.is_mcs r) phi psi h_U_r with h | ⟨h_phi_r, _⟩
-          · exact absurd h h_psi_not_r
-          · exact (ih_phi h_phi_sub fam hfam r).mp h_phi_r
-    exact ⟨h_forward, by
-      -- Backward: semantic Until → φ U ψ ∈ mcs(t)
-      -- This requires showing φ U ψ ∈ mcs(j) for all j ≥ t (to get G(φ U ψ) ∈ mcs(t)),
-      -- which is hard because for j > s we lack semantic witnesses.
-      -- TODO: Complete using U-Induction with appropriate chi, or contradiction approach
-      -- with discreteness_forward + forward_F.
-      sorry⟩
-  | snce phi psi ih_phi ih_psi => sorry
+    -- Until truth lemma under strict semantics.
+    -- Forward: φ U ψ ∈ mcs(t) → ∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r)
+    -- The proof requires:
+    --   1. φ U ψ → F(ψ) (derived via until_implies_some_future)
+    --   2. F(ψ) → ∃ s > t, ψ ∈ mcs(s) (from restricted forward_F)
+    --   3. Minimal witness via well-ordering
+    --   4. At intermediate r: φ U ψ persists via X-content propagation
+    -- Step 4 requires X-content propagation infrastructure (X(α) ∈ mcs(t) → α ∈ mcs(t+1)),
+    -- which is the successor chain resolution mechanism under strict semantics.
+    -- This mechanism is not yet fully implemented.
+    -- Backward: ∃ s > t, ψ(s) ∧ ... → φ U ψ ∈ mcs(t) requires U-Induction.
+    sorry
+  | snce phi psi ih_phi ih_psi =>
+    -- Since truth lemma: mirror of Until for the past direction.
+    sorry
 
 end Bimodal.Metalogic.Bundle.Canonical
 

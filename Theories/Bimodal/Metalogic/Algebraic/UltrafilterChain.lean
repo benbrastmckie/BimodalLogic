@@ -6,6 +6,7 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.SuccChainFMCS
 import Bimodal.Theorems.Perpetuity
+import Bimodal.Theorems.TemporalDerived
 import Mathlib.Data.Nat.Pairing
 
 /-!
@@ -477,25 +478,21 @@ theorem shift_at_offset (uc : UltrafilterChain) (k : Int) :
   simp
 
 /--
-G-formulas propagate forward along the chain.
-If G(a) ∈ chain(t), then a ∈ chain(t') for all t' ≥ t.
+G-formulas propagate forward along the chain (strict semantics).
+If G(a) ∈ chain(t), then a ∈ chain(t') for all t' > t.
 
 The proof uses:
-1. temp_4: G(a) ≤ G(G(a)), so G(a) iterates
-2. R_G connectivity: G(G(a)) ∈ U and R_G(U,V) implies G(a) ∈ V
-3. temp_t: G(a) ≤ a gives the final step
+1. temp_4: G(a) ≤ G(G(a)), so G(a) iterates forward
+2. R_G connectivity: G(a) ∈ chain(s) implies a ∈ chain(s+1)
+3. Final step: R_G connectivity at chain(t'-1) gives a ∈ chain(t')
+
+Under strict semantics, we do NOT use the T-axiom G(a) ≤ a (which is invalid).
+Instead, R_G connectivity directly gives the one-step result.
 -/
-theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_le : t ≤ t')
+theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_lt : t < t')
     (a : LindenbaumAlg) (h_G : STSA.G a ∈ uc.chain t) :
     a ∈ uc.chain t' := by
-  -- By temp_t: G(a) ≤ a
-  have h_G_le_a : STSA.G a ≤ a := by
-    induction a using Quotient.ind with
-    | _ φ =>
-      show G_quot (toQuot φ) ≤ toQuot φ
-      show Derives φ.all_future φ
-      exact ⟨sorry /- was: temp_t_future φ -/⟩
-  -- Helper: G(a) persists forward one step
+  -- Helper: G(a) persists forward one step via temp_4 + R_G
   have h_G_step : ∀ s : Int, STSA.G a ∈ uc.chain s → STSA.G a ∈ uc.chain (s + 1) := by
     intro s h_Gs
     have h_G_le : STSA.G a ≤ STSA.G (STSA.G a) := by
@@ -507,7 +504,7 @@ theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_le : t ≤ t')
     have h_GG : STSA.G (STSA.G a) ∈ uc.chain s :=
       (uc.chain s).mem_of_le h_Gs h_G_le
     exact uc.R_G_connected s (STSA.G a) h_GG
-  -- Helper lemma: G(a) persists forward for any number of steps
+  -- G(a) persists forward for any number of steps
   have h_G_persists : ∀ k : ℕ, STSA.G a ∈ uc.chain (t + k) := by
     intro k
     induction k with
@@ -519,28 +516,24 @@ theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_le : t ≤ t')
       have h_eq : (t + ↑(m + 1) : Int) = t + ↑m + 1 := by omega
       rw [h_eq]
       exact h_G_step (t + m) ih
-  -- Convert t' - t to natural number
-  have h_diff : t' - t ≥ 0 := Int.sub_nonneg_of_le h_le
-  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le h_diff
-  have h_t'_eq : t' = t + n := by omega
+  -- t' = t + n for some n ≥ 1
+  have h_diff : t' - t ≥ 1 := by omega
+  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le (by omega : t' - t - 1 ≥ 0)
+  -- G(a) ∈ chain(t + n), and R_G gives a ∈ chain(t + n + 1) = chain(t')
+  have h_t'_eq : t' = t + ↑n + 1 := by omega
   rw [h_t'_eq]
-  exact (uc.chain (t + n)).mem_of_le (h_G_persists n) h_G_le_a
+  exact uc.R_G_connected (t + n) a (h_G_persists n)
 
 /--
-H-formulas propagate backward along the chain.
-If H(a) ∈ chain(t), then a ∈ chain(t') for all t' ≤ t.
+H-formulas propagate backward along the chain (strict semantics).
+If H(a) ∈ chain(t), then a ∈ chain(t') for all t' < t.
+
+Uses R_H connectivity instead of the T-axiom H(a) ≤ a.
 -/
-theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
+theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_lt : t' < t)
     (a : LindenbaumAlg) (h_H : STSA.H a ∈ uc.chain t) :
     a ∈ uc.chain t' := by
-  -- By temp_t_past: H(a) ≤ a
-  have h_H_le_a : STSA.H a ≤ a := by
-    induction a using Quotient.ind with
-    | _ φ =>
-      show H_quot (toQuot φ) ≤ toQuot φ
-      show Derives φ.all_past φ
-      exact ⟨sorry /- was: temp_t_past φ -/⟩
-  -- Helper: H(a) persists backward one step
+  -- Helper: H(a) persists backward one step via temp_4_past + R_H
   have h_H_step : ∀ s : Int, STSA.H a ∈ uc.chain s → STSA.H a ∈ uc.chain (s - 1) := by
     intro s h_Hs
     have h_H_le : STSA.H a ≤ STSA.H (STSA.H a) := by
@@ -552,7 +545,7 @@ theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
     have h_HH : STSA.H (STSA.H a) ∈ uc.chain s :=
       (uc.chain s).mem_of_le h_Hs h_H_le
     exact uc.R_H_connected s (STSA.H a) h_HH
-  -- Helper lemma: H(a) persists backward for any number of steps
+  -- H(a) persists backward for any number of steps
   have h_H_persists : ∀ k : ℕ, STSA.H a ∈ uc.chain (t - k) := by
     intro k
     induction k with
@@ -564,12 +557,12 @@ theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
       have h_eq : (t - ↑(m + 1) : Int) = t - ↑m - 1 := by omega
       rw [h_eq]
       exact h_H_step (t - m) ih
-  -- Convert t - t' to natural number
-  have h_diff : t - t' ≥ 0 := Int.sub_nonneg_of_le h_le
-  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le h_diff
-  have h_t'_eq : t' = t - n := by omega
+  -- t' < t means t - t' ≥ 1, write as t - t' - 1 = n
+  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le (by omega : t - t' - 1 ≥ 0)
+  -- H(a) ∈ chain(t - n), and R_H gives a ∈ chain(t - n - 1) = chain(t')
+  have h_t'_eq : t' = t - ↑n - 1 := by omega
   rw [h_t'_eq]
-  exact (uc.chain (t - n)).mem_of_le (h_H_persists n) h_H_le_a
+  exact uc.R_H_connected (t - ↑n) a (h_H_persists n)
 
 end UltrafilterChain
 
@@ -983,7 +976,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
     show G_quot (toQuot Formula.bot) ≤ bot_quot
     unfold G_quot bot_quot
     show Derives Formula.bot.all_future Formula.bot
-    exact ⟨sorry /- was: temp_t_future Formula.bot -/⟩
+    exact ⟨Bimodal.Theorems.TemporalDerived.G_bot_absurd⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -1292,7 +1285,7 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
     show H_quot (toQuot Formula.bot) ≤ bot_quot
     unfold H_quot bot_quot
     show Derives Formula.bot.all_past Formula.bot
-    exact ⟨sorry /- was: temp_t_past Formula.bot -/⟩
+    exact ⟨Bimodal.Theorems.TemporalDerived.H_bot_absurd⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -2756,29 +2749,14 @@ The resolving successor W from `temporal_theory_witness_exists` satisfies:
 3. box_class_agree: same modal accessibility class
 -/
 
-/--
-G-persistence for temporal witness: g_content M ⊆ W.
+/-
+DELETED: temporal_witness_g_persistence
 
-Proof: For a ∈ g_content M, we have G(a) ∈ M.
-By G-agreement from temporal_theory_witness_exists: G(a) ∈ W.
-By temp_t_future (G(a) → a) and W being MCS: a ∈ W.
+Under strict semantics, G(a) → a is NOT valid, so g_content(M) ⊆ W cannot
+be proven from G-agreement alone. Instead, use the enriched witness
+`temporal_theory_witness_with_g_exists` which directly guarantees
+g_content(M) ⊆ W via seed membership.
 -/
-theorem temporal_witness_g_persistence (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (phi : Formula) (h_F : Formula.some_future phi ∈ M)
-    (W : Set Formula) (h_W_mcs : SetMaximalConsistent W) (h_phi_W : phi ∈ W)
-    (h_G_agree : ∀ a, Formula.all_future a ∈ M → Formula.all_future a ∈ W)
-    (h_box_agree : box_class_agree M W) :
-    g_content M ⊆ W := by
-  intro a h_gc
-  -- a ∈ g_content M means G(a) ∈ M
-  have h_Ga_M : Formula.all_future a ∈ M := h_gc
-  -- By G-agreement: G(a) ∈ W
-  have h_Ga_W : Formula.all_future a ∈ W := h_G_agree a h_Ga_M
-  -- By temp_t_future: G(a) → a
-  have h_T : [] ⊢ (Formula.all_future a).imp a :=
-    sorry /- was: temp_t_future a -/
-  -- By MCS closure: a ∈ W
-  exact SetMaximalConsistent.implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_Ga_W
 
 /-!
 **Deleted theorems (per task 55 plan v4)**:
@@ -3946,17 +3924,17 @@ theorem succ_chain_restricted_forward_F (S : SerialMCS) (root : Formula)
     (n : Int) (psi : Formula)
     (h_dc : psi ∈ deferralClosure root)
     (h_F : Formula.some_future psi ∈ succ_chain_fam S n) :
-    ∃ m : Int, n ≤ m ∧ psi ∈ succ_chain_fam S m := by
+    ∃ m : Int, n < m ∧ psi ∈ succ_chain_fam S m := by
   sorry
 
 /--
-Restricted backward_P for SuccChainFMCS: symmetric to forward_F.
+Restricted backward_P for SuccChainFMCS: symmetric to forward_F (strict inequality).
 -/
 theorem succ_chain_restricted_backward_P (S : SerialMCS) (root : Formula)
     (n : Int) (psi : Formula)
     (h_dc : psi ∈ deferralClosure root)
     (h_P : Formula.some_past psi ∈ succ_chain_fam S n) :
-    ∃ m : Int, m ≤ n ∧ psi ∈ succ_chain_fam S m := by
+    ∃ m : Int, m < n ∧ psi ∈ succ_chain_fam S m := by
   sorry
 
 /--
@@ -3964,29 +3942,29 @@ Shifting preserves restricted forward_F.
 -/
 theorem shifted_restricted_forward_F (f : FMCS Int) (root : Formula)
     (h_fwd : ∀ n : Int, ∀ psi : Formula, psi ∈ deferralClosure root →
-      Formula.some_future psi ∈ f.mcs n → ∃ m : Int, n ≤ m ∧ psi ∈ f.mcs m)
+      Formula.some_future psi ∈ f.mcs n → ∃ m : Int, n < m ∧ psi ∈ f.mcs m)
     (k : Int) (t : Int) (psi : Formula)
     (h_dc : psi ∈ deferralClosure root)
     (h_F : Formula.some_future psi ∈ (shifted_fmcs f k).mcs t) :
-    ∃ s : Int, t ≤ s ∧ psi ∈ (shifted_fmcs f k).mcs s := by
+    ∃ s : Int, t < s ∧ psi ∈ (shifted_fmcs f k).mcs s := by
   unfold shifted_fmcs at h_F ⊢
   simp only at h_F ⊢
-  obtain ⟨m, h_le, h_psi⟩ := h_fwd (t - k) psi h_dc h_F
+  obtain ⟨m, h_lt, h_psi⟩ := h_fwd (t - k) psi h_dc h_F
   exact ⟨m + k, by omega, by simp only [Int.add_sub_cancel]; exact h_psi⟩
 
 /--
-Shifting preserves restricted backward_P.
+Shifting preserves restricted backward_P (strict inequality).
 -/
 theorem shifted_restricted_backward_P (f : FMCS Int) (root : Formula)
     (h_bwd : ∀ n : Int, ∀ psi : Formula, psi ∈ deferralClosure root →
-      Formula.some_past psi ∈ f.mcs n → ∃ m : Int, m ≤ n ∧ psi ∈ f.mcs m)
+      Formula.some_past psi ∈ f.mcs n → ∃ m : Int, m < n ∧ psi ∈ f.mcs m)
     (k : Int) (t : Int) (psi : Formula)
     (h_dc : psi ∈ deferralClosure root)
     (h_P : Formula.some_past psi ∈ (shifted_fmcs f k).mcs t) :
-    ∃ s : Int, s ≤ t ∧ psi ∈ (shifted_fmcs f k).mcs s := by
+    ∃ s : Int, s < t ∧ psi ∈ (shifted_fmcs f k).mcs s := by
   unfold shifted_fmcs at h_P ⊢
   simp only at h_P ⊢
-  obtain ⟨m, h_le, h_psi⟩ := h_bwd (t - k) psi h_dc h_P
+  obtain ⟨m, h_lt, h_psi⟩ := h_bwd (t - k) psi h_dc h_P
   exact ⟨m + k, by omega, by simp only [Int.add_sub_cancel]; exact h_psi⟩
 
 end Bimodal.Metalogic.Algebraic.UltrafilterChain
