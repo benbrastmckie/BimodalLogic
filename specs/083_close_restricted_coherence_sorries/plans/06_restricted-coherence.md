@@ -171,7 +171,7 @@ From plan v4 (prior attempt):
 
 ---
 
-### Phase 4: Semantics Extension [PARTIAL]
+### Phase 4: Semantics Extension [PARTIAL] (4/10 soundness proofs done, 6 blocked pending axiom reformulation)
 
 **Goal**: Add Until/Since evaluation to the truth definition. Prove soundness of all 10 new axioms.
 

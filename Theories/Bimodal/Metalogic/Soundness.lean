@@ -506,21 +506,111 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
     intro h_H h_neg_P
     -- Use t itself as witness: h_H gives ψ(t) at t ≤ t (reflexivity)
     exact h_neg_P t le_rfl (h_H t le_rfl)
-  -- Until/Since axiom soundness: sorry pending axiom reformulation for reflexive semantics.
-  -- The standard Burgess-Xu axioms assume strict temporal operators; our reflexive G/H
-  -- require adjusted formulations. The key issue: G(φ U ψ) with reflexive G requires
-  -- φ U ψ at ALL s ≥ t, but the Until witness only covers [t, s_witness].
-  -- These will be resolved when the axiom formulations are adjusted.
+  -- Until/Since axiom soundness:
+  -- 6 of 10 axioms (unfold, intro, induction for both Until and Since) are UNSOUND
+  -- under reflexive temporal semantics. They require axiom reformulation (separate task).
+  -- The remaining 4 (linearity and connectedness) ARE sound and proven below.
+  --
+  -- UNSOUND: until_unfold — G(φ U ψ) requires Until at ALL s ≥ t, but witness covers [t, s_w].
+  -- Counterexample: φ=⊤ on {0,1}, ψ at {1}, φ=⊥ at {2+}. (φ U ψ)(0) holds but G(φ U ψ)(0) fails.
   | until_unfold _ _ => sorry
+  -- UNSOUND: until_intro — ψ(t) alone doesn't give (φ U ψ)(t) since closed-interval requires φ(t).
   | until_intro _ _ => sorry
+  -- UNSOUND: until_induction — needs backward propagation but premise only gives forward.
   | until_induction _ _ _ => sorry
-  | until_linearity _ _ _ _ => sorry
+  | until_linearity φ ψ φ' ψ' =>
+    -- SOUND: (φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ)))
+    -- Proof: Given witnesses s₁ for φ U ψ and s₂ for φ' U ψ', by linear order
+    -- either s₁ ≤ s₂ or s₂ ≤ s₁. WLOG s₁ ≤ s₂: take left disjunct with witness s₁.
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    -- Extract (φ U ψ) and (φ' U ψ') from the conjunction encoding
+    have h_both := and_of_not_imp_not h_conj
+    obtain ⟨h_until1, h_until2⟩ := h_both
+    -- h_until1 : ∃ s, t ≤ s ∧ truth ψ s ∧ ∀ r ∈ [t,s], truth φ r
+    -- h_until2 : ∃ s, t ≤ s ∧ truth ψ' s ∧ ∀ r ∈ [t,s], truth φ' r
+    obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_until1
+    obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_until2
+    rcases le_total s1 s2 with h_le | h_le
+    · -- s1 ≤ s2: take left disjunct with witness s1
+      -- Left = φ U (ψ ∧ (φ' U ψ')) with witness s1
+      -- (φ' U ψ')(s1) via witness s2 (s1 ≤ s2, ψ'(s2), φ' on [s1,s2] ⊆ [t,s2])
+      intro h_neg_left
+      exfalso
+      exact h_neg_left ⟨s1, hs1t,
+        fun h_imp => h_imp h_psi_s1
+          ⟨s2, h_le, h_psi'_s2, fun r hr1 hr2 => h_phi'_range2 r (le_trans hs1t hr1) hr2⟩,
+        h_phi_range1⟩
+    · -- s2 ≤ s1: take right disjunct with witness s2
+      -- Right = φ' U (ψ' ∧ (φ U ψ)) with witness s2
+      -- (φ U ψ)(s2) via witness s1 (s2 ≤ s1, ψ(s1), φ on [s2,s1] ⊆ [t,s1])
+      intro _
+      exact ⟨s2, hs2t,
+        fun h_imp => h_imp h_psi'_s2
+          ⟨s1, h_le, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r (le_trans hs2t hr1) hr2⟩,
+        h_phi'_range2⟩
+  -- UNSOUND: since_unfold — mirror of until_unfold unsoundness.
   | since_unfold _ _ => sorry
+  -- UNSOUND: since_intro — mirror of until_intro unsoundness.
   | since_intro _ _ => sorry
+  -- UNSOUND: since_induction — mirror of until_induction unsoundness.
   | since_induction _ _ _ => sorry
-  | since_linearity _ _ _ _ => sorry
-  | until_connectedness _ _ _ => sorry
-  | since_connectedness _ _ _ => sorry
+  | since_linearity φ ψ φ' ψ' =>
+    -- SOUND: (φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ)))
+    -- Mirror of until_linearity for the past direction.
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both := and_of_not_imp_not h_conj
+    obtain ⟨h_since1, h_since2⟩ := h_both
+    obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_since1
+    obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_since2
+    rcases le_total s1 s2 with h_le | h_le
+    · -- s1 ≤ s2: take right disjunct with witness s2
+      -- Right = φ' S (ψ' ∧ (φ S ψ)) with witness s2
+      -- (φ S ψ)(s2) via witness s1 (s1 ≤ s2, ψ(s1), φ on [s1,s2] ⊆ [s1,t])
+      intro _
+      exact ⟨s2, hs2t,
+        fun h_imp => h_imp h_psi'_s2 ⟨s1, h_le, h_psi_s1,
+          fun r hr1 hr2 => h_phi_range1 r hr1 (le_trans hr2 hs2t)⟩,
+        h_phi'_range2⟩
+    · -- s2 ≤ s1: take left disjunct with witness s1
+      -- Left = φ S (ψ ∧ (φ' S ψ')) with witness s1
+      -- (φ' S ψ')(s1) via witness s2 (s2 ≤ s1, ψ'(s2), φ' on [s2,s1] ⊆ [s2,t])
+      intro h_neg_left
+      exfalso
+      exact h_neg_left ⟨s1, hs1t,
+        fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
+          fun r hr1 hr2 => h_phi'_range2 r hr1 (le_trans hr2 hs1t)⟩,
+        h_phi_range1⟩
+  | until_connectedness φ ψ χ =>
+    -- SOUND: φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))
+    -- Proof: Given φ(t) and (χ U ψ)(t) with witness s ≥ t, ψ(s), χ on [t,s].
+    -- Take witness s: ψ(s) ✓, (χ S φ)(s) with witness t (φ(t) ✓, χ on [t,s] ✓), χ on [t,s] ✓.
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_both := and_of_not_imp_not h_conj
+    obtain ⟨h_phi_t, h_until⟩ := h_both
+    obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_until
+    -- Provide witness s for χ U (ψ ∧ (χ S φ))
+    exact ⟨s, hst,
+      fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
+      fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
+  | since_connectedness φ ψ χ =>
+    -- SOUND: φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))
+    -- Mirror of until_connectedness for the past direction.
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_both := and_of_not_imp_not h_conj
+    obtain ⟨h_phi_t, h_since⟩ := h_both
+    obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_since
+    -- Provide witness s for χ S (ψ ∧ (χ U φ))
+    exact ⟨s, hst,
+      fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
+      fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
 
 /-! ## Full Derivation Soundness
 
@@ -628,17 +718,68 @@ theorem soundness (Γ : Context) (φ : Formula) :
       simp only [Formula.some_past, Formula.neg, truth_at]
       intro h_H h_neg_P
       exact h_neg_P t le_rfl (h_H t le_rfl)
-    -- Until/Since axiom soundness: deferred to Phase 4
+    -- Until/Since axiom soundness:
+    -- 6 unsound axioms (unfold, intro, induction) need axiom reformulation
     | until_unfold _ _ => sorry
     | until_intro _ _ => sorry
     | until_induction _ _ _ => sorry
-    | until_linearity _ _ _ _ => sorry
+    | until_linearity φ ψ φ' ψ' =>
+      simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+      intro h_conj
+      have h_both := and_of_not_imp_not h_conj
+      obtain ⟨h_until1, h_until2⟩ := h_both
+      obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_until1
+      obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_until2
+      rcases le_total s1 s2 with h_le | h_le
+      · intro h_neg_left; exfalso
+        exact h_neg_left ⟨s1, hs1t,
+          fun h_imp => h_imp h_psi_s1
+            ⟨s2, h_le, h_psi'_s2, fun r hr1 hr2 => h_phi'_range2 r (le_trans hs1t hr1) hr2⟩,
+          h_phi_range1⟩
+      · intro _
+        exact ⟨s2, hs2t,
+          fun h_imp => h_imp h_psi'_s2
+            ⟨s1, h_le, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r (le_trans hs2t hr1) hr2⟩,
+          h_phi'_range2⟩
     | since_unfold _ _ => sorry
     | since_intro _ _ => sorry
     | since_induction _ _ _ => sorry
-    | since_linearity _ _ _ _ => sorry
-    | until_connectedness _ _ _ => sorry
-    | since_connectedness _ _ _ => sorry
+    | since_linearity φ ψ φ' ψ' =>
+      simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+      intro h_conj
+      have h_both := and_of_not_imp_not h_conj
+      obtain ⟨h_since1, h_since2⟩ := h_both
+      obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_since1
+      obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_since2
+      rcases le_total s1 s2 with h_le | h_le
+      · intro _
+        exact ⟨s2, hs2t,
+          fun h_imp => h_imp h_psi'_s2 ⟨s1, h_le, h_psi_s1,
+            fun r hr1 hr2 => h_phi_range1 r hr1 (le_trans hr2 hs2t)⟩,
+          h_phi'_range2⟩
+      · intro h_neg_left; exfalso
+        exact h_neg_left ⟨s1, hs1t,
+          fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
+            fun r hr1 hr2 => h_phi'_range2 r hr1 (le_trans hr2 hs1t)⟩,
+          h_phi_range1⟩
+    | until_connectedness φ ψ χ =>
+      simp only [Formula.and, Formula.neg, truth_at]
+      intro h_conj
+      have h_both := and_of_not_imp_not h_conj
+      obtain ⟨h_phi_t, h_until⟩ := h_both
+      obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_until
+      exact ⟨s, hst,
+        fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
+        fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
+    | since_connectedness φ ψ χ =>
+      simp only [Formula.and, Formula.neg, truth_at]
+      intro h_conj
+      have h_both := and_of_not_imp_not h_conj
+      obtain ⟨h_phi_t, h_since⟩ := h_both
+      obtain ⟨s, hst, h_psi_s, h_chi_range⟩ := h_since
+      exact ⟨s, hst,
+        fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t, fun r hr1 hr2 => h_chi_range r hr1 hr2⟩,
+        fun r hr1 hr2 => h_chi_range r hr1 hr2⟩
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
