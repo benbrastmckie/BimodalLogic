@@ -94,7 +94,7 @@ theorem R_G_refl (U : Ultrafilter LindenbaumAlg) : R_G U U := by
     | _ φ =>
       show G_quot (toQuot φ) ≤ toQuot φ
       show Derives φ.all_future φ
-      exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ)⟩
+      exact ⟨sorry /* was: temp_t_future φ */⟩
   exact U.mem_of_le h_Ga_in h_le
 
 /--
@@ -264,7 +264,7 @@ theorem R_H_refl (U : Ultrafilter LindenbaumAlg) : R_H U U := by
     | _ φ =>
       show H_quot (toQuot φ) ≤ toQuot φ
       show Derives φ.all_past φ
-      exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ)⟩
+      exact ⟨sorry /* was: temp_t_past φ */⟩
   exact U.mem_of_le h_Ha_in h_le
 
 /--
@@ -517,7 +517,7 @@ theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_le : t ≤ t')
     | _ φ =>
       show G_quot (toQuot φ) ≤ toQuot φ
       show Derives φ.all_future φ
-      exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ)⟩
+      exact ⟨sorry /* was: temp_t_future φ */⟩
   -- Helper: G(a) persists forward one step
   have h_G_step : ∀ s : Int, STSA.G a ∈ uc.chain s → STSA.G a ∈ uc.chain (s + 1) := by
     intro s h_Gs
@@ -562,7 +562,7 @@ theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
     | _ φ =>
       show H_quot (toQuot φ) ≤ toQuot φ
       show Derives φ.all_past φ
-      exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ)⟩
+      exact ⟨sorry /* was: temp_t_past φ */⟩
   -- Helper: H(a) persists backward one step
   have h_H_step : ∀ s : Int, STSA.H a ∈ uc.chain s → STSA.H a ∈ uc.chain (s - 1) := by
     intro s h_Hs
@@ -1006,7 +1006,7 @@ theorem ultrafilter_F_resolution (U : Ultrafilter LindenbaumAlg)
     show G_quot (toQuot Formula.bot) ≤ bot_quot
     unfold G_quot bot_quot
     show Derives Formula.bot.all_future Formula.bot
-    exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)⟩
+    exact ⟨sorry /* was: temp_t_future Formula.bot */⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -1315,7 +1315,7 @@ theorem ultrafilter_P_resolution (U : Ultrafilter LindenbaumAlg)
     show H_quot (toQuot Formula.bot) ≤ bot_quot
     unfold H_quot bot_quot
     show Derives Formula.bot.all_past Formula.bot
-    exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)⟩
+    exact ⟨sorry /* was: temp_t_past Formula.bot */⟩
 
   -- Helper lemma: fold from x = x ⊓ (fold from ⊤)
   have fold_from_x : ∀ (M : List Formula) (x : LindenbaumAlg),
@@ -2588,7 +2588,7 @@ theorem temporal_witness_g_persistence (M : Set Formula) (h_mcs : SetMaximalCons
   have h_Ga_W : Formula.all_future a ∈ W := h_G_agree a h_Ga_M
   -- By temp_t_future: G(a) → a
   have h_T : [] ⊢ (Formula.all_future a).imp a :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future a)
+    sorry /* was: temp_t_future a */
   -- By MCS closure: a ∈ W
   exact SetMaximalConsistent.implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_Ga_W
 

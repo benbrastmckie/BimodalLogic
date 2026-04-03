@@ -145,26 +145,26 @@ These are the existential duals of forward_G and backward_H.
 Uses weak inequality (s ≥ t, s ≤ t) for reflexive semantics (aligned with Truth.lean).
 -/
 structure TemporalCoherentFamily (D : Type*) [Preorder D] [Zero D] extends FMCS D where
-  /-- Forward F coherence: F(phi) at t implies witness at some s ≥ t (weak) -/
+  /-- Forward F coherence: F(phi) at t implies witness at some s > t (strict) -/
   forward_F : ∀ t : D, ∀ φ : Formula,
-    Formula.some_future φ ∈ mcs t → ∃ s : D, t ≤ s ∧ φ ∈ mcs s
-  /-- Backward P coherence: P(phi) at t implies witness at some s ≤ t (weak) -/
+    Formula.some_future φ ∈ mcs t → ∃ s : D, t < s ∧ φ ∈ mcs s
+  /-- Backward P coherence: P(phi) at t implies witness at some s < t (strict) -/
   backward_P : ∀ t : D, ∀ φ : Formula,
-    Formula.some_past φ ∈ mcs t → ∃ s : D, s ≤ t ∧ φ ∈ mcs s
+    Formula.some_past φ ∈ mcs t → ∃ s : D, s < t ∧ φ ∈ mcs s
 
 /--
-Temporal backward G lemma: If phi in fam.mcs s for all s ≥ t, then G(phi) in fam.mcs t.
+Temporal backward G lemma: If phi in fam.mcs s for all s > t, then G(phi) in fam.mcs t.
 
 **Proof by Contraposition**:
 1. Assume G(phi) not in fam.mcs t
 2. By MCS maximality: neg(G(phi)) in fam.mcs t
 3. By neg_all_future_to_some_future_neg: F(neg phi) in fam.mcs t
-4. By forward_F: exists s ≥ t with neg(phi) in fam.mcs s
-5. By hypothesis h_all: phi in fam.mcs s (since s ≥ t)
+4. By forward_F: exists s > t with neg(phi) in fam.mcs s
+5. By hypothesis h_all: phi in fam.mcs s (since s > t)
 6. Contradiction: fam.mcs s contains both phi and neg(phi)
 -/
 theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, t ≤ s → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, t < s → φ ∈ fam.mcs s) :
     Formula.all_future φ ∈ fam.mcs t := by
   by_contra h_not_G
   have h_mcs := fam.is_mcs t
@@ -179,18 +179,18 @@ theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 /--
-Temporal backward H lemma: If phi in fam.mcs s for all s ≤ t, then H(phi) in fam.mcs t.
+Temporal backward H lemma: If phi in fam.mcs s for all s < t, then H(phi) in fam.mcs t.
 
 **Proof by Contraposition** (symmetric to temporal_backward_G):
 1. Assume H(phi) not in fam.mcs t
 2. By MCS maximality: neg(H(phi)) in fam.mcs t
 3. By neg_all_past_to_some_past_neg: P(neg phi) in fam.mcs t
-4. By backward_P: exists s ≤ t with neg(phi) in fam.mcs s
-5. By hypothesis h_all: phi in fam.mcs s (since s ≤ t)
+4. By backward_P: exists s < t with neg(phi) in fam.mcs s
+5. By hypothesis h_all: phi in fam.mcs s (since s < t)
 6. Contradiction: fam.mcs s contains both phi and neg(phi)
 -/
 theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, s ≤ t → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, s < t → φ ∈ fam.mcs s) :
     Formula.all_past φ ∈ fam.mcs t := by
   by_contra h_not_H
   have h_mcs := fam.is_mcs t
@@ -218,8 +218,8 @@ Note: Uses weak inequality (s ≥ t, s ≤ t) to align with reflexive G/H semant
 -/
 def BFMCS.temporally_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
-    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
-    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
+    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
+    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
 
 /-!
 ## Restricted Temporal Coherence
@@ -249,9 +249,9 @@ for evaluating `root` only needs temporal coherence for formulas in `deferralClo
 def BFMCS.restricted_temporally_coherent (B : BFMCS D) (root : Formula) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
-      Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
+      Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
     (∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
-      Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
+      Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
 
 /--
 Full temporal coherence implies restricted temporal coherence for any root.

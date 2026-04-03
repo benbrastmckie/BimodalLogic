@@ -1200,11 +1200,12 @@ deferralClosure. The key insight is that if G(chi) ∈ u ⊆ deferralClosure, th
 chi ∈ deferralClosure (by `deferralClosure_all_future`), and by maximality of u,
 chi ∈ u (otherwise we could derive a contradiction using the T-axiom).
 -/
+-- TODO: Under strict semantics, g_content(u) ⊆ u does not follow from T-axiom.
+-- Needs proof-theoretic restructuring.
 theorem g_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
     g_content u ⊆ u := by
   intro chi h_gc
-  -- h_gc: G(chi) ∈ u
   have h_G_chi : Formula.all_future chi ∈ u := h_gc
   -- G(chi) ∈ u ⊆ deferralClosure implies chi ∈ deferralClosure
   have h_G_in_dc := h_mcs.1.1 h_G_chi
@@ -1240,7 +1241,7 @@ theorem g_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formul
     Bimodal.Metalogic.Core.deduction_theorem L' chi Formula.bot d_bot'
   -- We have T-axiom: G(chi) → chi
   have h_T : [] ⊢ (Formula.all_future chi).imp chi :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future chi)
+    sorry /- was: DerivationTree.axiom [] _ (Axiom.temp_t_future chi) -/
   -- L' ∪ {G(chi)} ⊢ chi via T-axiom
   let L'' := Formula.all_future chi :: L'
   have h_L''_G : Formula.all_future chi ∈ L'' := @List.mem_cons_self _ (Formula.all_future chi) L'
@@ -4005,7 +4006,7 @@ theorem h_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formul
     Bimodal.Metalogic.Core.deduction_theorem L' chi Formula.bot d_bot'
   -- We have T-axiom: H(chi) → chi
   have h_T : [] ⊢ (Formula.all_past chi).imp chi :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_past chi)
+    sorry /- was: DerivationTree.axiom [] _ (Axiom.temp_t_past chi) -/
   -- L' ∪ {H(chi)} ⊢ chi via T-axiom
   let L'' := Formula.all_past chi :: L'
   have h_L''_H : Formula.all_past chi ∈ L'' := @List.mem_cons_self _ (Formula.all_past chi) L'
@@ -4272,7 +4273,7 @@ theorem constrained_predecessor_seed_restricted_consistent (phi : Formula) (u : 
       · -- G(chi) ∈ u, so by T-axiom, chi ∈ u, contradicting h_chi_not_in
         -- Use the T-axiom: G(chi) → chi
         have h_T : [] ⊢ (Formula.all_future chi).imp chi :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_future chi)
+          sorry /- was: DerivationTree.axiom [] _ (Axiom.temp_t_future chi) -/
         -- By maximality: if chi ∉ u and chi ∈ deferralClosure, insert chi u is inconsistent
         have h_insert_chi_incons := h_mcs.2 chi h_chi_in_dc h_chi_not_in
         unfold SetConsistent at h_insert_chi_incons
@@ -4415,7 +4416,7 @@ theorem constrained_predecessor_seed_restricted_consistent (phi : Formula) (u : 
       have d_G : L' ⊢ Bimodal.Syntax.G_neg_neg_bot := DerivationTree.modus_ponens L' _ _ d_dne' d_G_nnb
       -- Now L' ⊆ u derives G_neg_neg_bot. By T-axiom, G_neg_neg_bot → neg_neg_bot
       have h_T : [] ⊢ Bimodal.Syntax.G_neg_neg_bot.imp Bimodal.Syntax.neg_neg_bot :=
-        DerivationTree.axiom [] _ (Axiom.temp_t_future Bimodal.Syntax.neg_neg_bot)
+        sorry /- was: DerivationTree.axiom [] _ (Axiom.temp_t_future neg_neg_bot) -/
       have d_T' : L' ⊢ Bimodal.Syntax.G_neg_neg_bot.imp Bimodal.Syntax.neg_neg_bot :=
         DerivationTree.weakening [] L' _ h_T (List.nil_subset L')
       have d_nnb : L' ⊢ Bimodal.Syntax.neg_neg_bot := DerivationTree.modus_ponens L' _ _ d_T' d_G

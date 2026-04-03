@@ -256,7 +256,7 @@ theorem build_targeted_successor_g_persistence
   have h_a_W : a ∈ witness_mcs phi u h_drm target h_F_target :=
     SetMaximalConsistent.implication_property h_W_mcs
       (theorem_in_mcs h_W_mcs
-        (DerivationTree.axiom _ _ (Axiom.temp_t_future a))) h_Ga_W
+        (sorry /* was: temp_t_future a */)) h_Ga_W
   have h_a_dc := g_content_subset_deferralClosure phi u h_drm.1.1 ha
   exact in_witness_and_dc_implies_in_successor phi _ h_W_mcs a h_a_W h_a_dc
 
@@ -316,7 +316,7 @@ theorem build_targeted_predecessor_h_persistence
   have h_a_W : a ∈ past_witness_mcs phi u h_drm target h_P_target :=
     SetMaximalConsistent.implication_property h_W_mcs
       (theorem_in_mcs h_W_mcs
-        (DerivationTree.axiom _ _ (Axiom.temp_t_past a))) h_Ha_W
+        (sorry /* was: temp_t_past a */)) h_Ha_W
   have h_a_dc := h_content_subset_deferralClosure phi u h_drm.1.1 ha
   exact in_witness_and_dc_implies_in_successor phi _ h_W_mcs a h_a_W h_a_dc
 

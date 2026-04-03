@@ -465,12 +465,12 @@ theorem constrained_successor_seed_consistent (u : Set Formula)
   -- Show that constrained_successor_seed u ⊆ u
   -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
 
-  -- Step 1: g_content(u) ⊆ u via T-axiom (Gφ → φ)
+  -- Step 1: Under strict semantics, g_content(u) ⊆ u does NOT hold via T-axiom.
+  -- The seed consistency needs a different proof strategy (e.g., proof-theoretic
+  -- argument using G-distribution and deduction theorem).
+  -- TODO: Restructure for strict semantics.
   have h_g_content_in_u : g_content u ⊆ u := by
-    intro χ h_gc
-    have h_T : [] ⊢ (Formula.all_future χ).imp χ :=
-      DerivationTree.axiom [] _ (Axiom.temp_t_future χ)
-    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_gc
+    sorry
 
   -- Step 2: deferralDisjunctions(u) ⊆ u
   have h_deferrals_in_u : deferralDisjunctions u ⊆ u := by
@@ -782,15 +782,10 @@ theorem successor_deferral_seed_consistent_axiom (u : Set Formula)
   -- Show that successor_deferral_seed u ⊆ u
   -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
 
-  -- Step 1: g_content(u) ⊆ u via T-axiom (Gφ → φ)
+  -- Step 1: Under strict semantics, g_content(u) ⊆ u needs proof-theoretic restructuring.
+  -- TODO: Restructure for strict semantics.
   have h_g_content_in_u : g_content u ⊆ u := by
-    intro χ h_gc
-    -- χ ∈ g_content(u) means G(χ) ∈ u
-    -- By T-axiom: G(χ) → χ is derivable
-    -- By MCS closure: χ ∈ u
-    have h_T : [] ⊢ (Formula.all_future χ).imp χ :=
-      DerivationTree.axiom [] _ (Axiom.temp_t_future χ)
-    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_gc
+    sorry
 
   -- Step 2: deferralDisjunctions(u) ⊆ u
   -- Each ψ ∨ F(ψ) where F(ψ) ∈ u is in u by MCS implication property
@@ -872,15 +867,10 @@ theorem predecessor_deferral_seed_consistent_axiom (u : Set Formula)
   -- Show that predecessor_deferral_seed u ⊆ u
   -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
 
-  -- Step 1: h_content(u) ⊆ u via T-axiom (Hφ → φ)
+  -- Step 1: Under strict semantics, h_content(u) ⊆ u needs proof-theoretic restructuring.
+  -- TODO: Restructure for strict semantics.
   have h_h_content_in_u : h_content u ⊆ u := by
-    intro χ h_hc
-    -- χ ∈ h_content(u) means H(χ) ∈ u
-    -- By T-axiom: H(χ) → χ is derivable
-    -- By MCS closure: χ ∈ u
-    have h_T : [] ⊢ (Formula.all_past χ).imp χ :=
-      DerivationTree.axiom [] _ (Axiom.temp_t_past χ)
-    exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_hc
+    sorry
 
   -- Step 2: pastDeferralDisjunctions(u) ⊆ u
   -- Each ψ ∨ P(ψ) where P(ψ) ∈ u is in u by MCS implication property

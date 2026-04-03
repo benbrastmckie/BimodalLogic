@@ -239,7 +239,7 @@ theorem targeted_forward_chain_forward_G
     exact SetMaximalConsistent.implication_property
       (targeted_forward_chain_mcs M0 h_mcs targets m)
       (theorem_in_mcs (targeted_forward_chain_mcs M0 h_mcs targets m)
-        (DerivationTree.axiom _ _ (Axiom.temp_t_future phi)))
+        (sorry /* was: temp_t_future phi */))
       h_at_m
   intro j
   induction j with
@@ -343,7 +343,7 @@ theorem targeted_backward_chain_backward_H
     exact SetMaximalConsistent.implication_property
       (targeted_backward_chain_mcs M0 h_mcs targets m)
       (theorem_in_mcs (targeted_backward_chain_mcs M0 h_mcs targets m)
-        (DerivationTree.axiom _ _ (Axiom.temp_t_past phi)))
+        (sorry /* was: temp_t_past phi */))
       h_at_m
   intro j
   induction j with
@@ -475,7 +475,7 @@ theorem targeted_fam_forward_G
     exact SetMaximalConsistent.implication_property
       (targeted_fam_mcs M0 h_mcs targets t')
       (theorem_in_mcs (targeted_fam_mcs M0 h_mcs targets t')
-        (DerivationTree.axiom _ _ (Axiom.temp_t_future phi)))
+        (sorry /* was: temp_t_future phi */))
       h_at_t'
   intro j
   induction j with
@@ -509,7 +509,7 @@ theorem targeted_fam_backward_H
     exact SetMaximalConsistent.implication_property
       (targeted_fam_mcs M0 h_mcs targets t')
       (theorem_in_mcs (targeted_fam_mcs M0 h_mcs targets t')
-        (DerivationTree.axiom _ _ (Axiom.temp_t_past phi)))
+        (sorry /* was: temp_t_past phi */))
       h_at_t'
   intro j
   induction j with

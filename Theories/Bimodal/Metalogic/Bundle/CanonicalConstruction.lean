@@ -431,12 +431,11 @@ theorem box_persistent
     theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
   have h_H_box : (Formula.box φ).all_past ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t) h_past_tf h_box
-  -- Step 3: Case split on s vs t
-  rcases le_or_lt t s with h_le | h_gt
-  · -- t ≤ s: use forward_G
-    exact fam.forward_G t s (Formula.box φ) h_le h_G_box
-  · -- s < t: use backward_H
-    exact fam.backward_H t s (Formula.box φ) (le_of_lt h_gt) h_H_box
+  -- Step 3: Case split on s vs t (strict semantics: use trichotomy)
+  rcases lt_trichotomy t s with h_lt | h_eq | h_gt
+  · exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
+  · exact h_eq ▸ h_box
+  · exact fam.backward_H t s (Formula.box φ) h_gt h_H_box
 
 /-!
 ## Phase 2-5: The Direct TruthLemma
@@ -604,7 +603,7 @@ theorem canonical_truth_lemma
         backward_P := h_backward_P
       }
       -- Use weak inequality directly (aligned with reflexive semantics)
-      have h_all_mcs : ∀ s : Int, t ≤ s → psi ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : Int, t < s → psi ∈ fam.mcs s := by
         intro s hts
         exact (ih fam hfam s).mpr (h_all s hts)
       exact temporal_backward_G tcf t psi h_all_mcs
@@ -625,7 +624,7 @@ theorem canonical_truth_lemma
         backward_P := h_backward_P
       }
       -- Use weak inequality directly (aligned with reflexive semantics)
-      have h_all_mcs : ∀ s : Int, s ≤ t → psi ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : Int, s < t → psi ∈ fam.mcs s := by
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t psi h_all_mcs
@@ -756,7 +755,7 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         backward_P := h_backward_P
       }
       -- Use weak inequality directly (aligned with reflexive semantics)
-      have h_all_mcs : ∀ s : Int, t ≤ s → ψ ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : Int, t < s → ψ ∈ fam.mcs s := by
         intro s hts
         exact (ih fam hfam s).mpr (h_all s hts)
       exact temporal_backward_G tcf t ψ h_all_mcs
@@ -775,7 +774,7 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         backward_P := h_backward_P
       }
       -- Use weak inequality directly (aligned with reflexive semantics)
-      have h_all_mcs : ∀ s : Int, s ≤ t → ψ ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : Int, s < t → ψ ∈ fam.mcs s := by
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
@@ -906,7 +905,7 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
       exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
     · intro h_all
       obtain ⟨h_forward_F, _⟩ := h_tc fam hfam
-      have h_all_mcs : ∀ s : Int, t ≤ s → ψ ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : Int, t < s → ψ ∈ fam.mcs s := by
         intro s hts
         exact (ih h_ψ_sub fam hfam s).mpr (h_all s hts)
       exact restricted_temporal_backward_G fam root h_forward_F t ψ h_neg_ψ_dc h_all_mcs
@@ -922,7 +921,7 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
       exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
     · intro h_all
       obtain ⟨_, h_backward_P⟩ := h_tc fam hfam
-      have h_all_mcs : ∀ s : Int, s ≤ t → ψ ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : Int, s < t → ψ ∈ fam.mcs s := by
         intro s hst
         exact (ih h_ψ_sub fam hfam s).mpr (h_all s hst)
       exact restricted_temporal_backward_H fam root h_backward_P t ψ h_neg_ψ_dc h_all_mcs
