@@ -841,7 +841,7 @@
     {
       "project_number": 83,
       "project_name": "close_restricted_coherence_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 2 sorries in succ_chain_restricted_forward_F and succ_chain_restricted_backward_P (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in deferralClosure(root) within a single SuccChainFMCS. Potential approaches: (1) Show that constrained_successor f_step eventually resolves each F-obligation because deferralClosure is finite and the chain cannot defer indefinitely within a bounded set, (2) Dovetailed chain construction with fair scheduling that cycles through pending F-obligations, (3) Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra. Also clean up the 2 auxiliary sorries in RestrictedTruthLemma.lean (restricted_chain_G_step and restricted_chain_H_step) which may become unnecessary once the main sorries are closed. Does NOT include: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), or the old full-coherence sorry (bfmcs_from_mcs_temporally_coherent) which is bypassed by the restricted path.",
       "effort": "12-18 hours",
@@ -850,32 +850,22 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T20:06:01Z",
+      "last_updated": "2026-04-03T20:16:55Z",
       "notes": "Phases 1,6 complete. Build passes (0 errors). Phases 2-5 structurally blocked: X-content propagation gap under strict semantics. 61 sorries remain across 6 files on canonical completeness path.",
       "next_artifact_number": 14,
-      "session_id": "sess_1775246158_e62aab",
+      "session_id": "sess_1775247055_4b179b",
       "researched": "2026-04-03T20:06:01Z",
-      "planned": "2026-04-03T18:34:45Z",
+      "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
-        "phases": 9,
-        "total_effort_hours": 66,
+        "phases": 6,
+        "total_effort_hours": 18,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 8,
+        "plan_version": 13,
         "reports_integrated": [
           {
-            "path": "reports/06_until-since-enrichment.md",
-            "integrated_in_plan_version": 6,
-            "integrated_date": "2026-04-02"
-          },
-          {
-            "path": "reports/05_team-research.md",
-            "integrated_in_plan_version": 6,
-            "integrated_date": "2026-04-02"
-          },
-          {
-            "path": "reports/08_team-research.md",
-            "integrated_in_plan_version": 7,
+            "path": "reports/13_team-research.md",
+            "integrated_in_plan_version": 13,
             "integrated_date": "2026-04-03"
           }
         ]
@@ -977,11 +967,6 @@
           "summary": "Team research with 4 teammates: g_content blocker root cause, G(a)->X(a) derivation, 3-tier fix strategy"
         },
         {
-          "path": "specs/083_close_restricted_coherence_sorries/plans/12_g-content-resolution.md",
-          "type": "plan",
-          "summary": "v9: 6-phase plan covering G(a)->X(a) derived theorem, seed enrichment, 3-tier sorry resolution, and integration build"
-        },
-        {
           "path": "specs/083_close_restricted_coherence_sorries/summaries/12_g-content-resolution-summary.md",
           "type": "summary",
           "summary": "Partial: Phase 1,6 complete, build passes, Phases 2-5 blocked on X-content propagation"
@@ -990,6 +975,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/13_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: sorry analysis, dead code, ROADMAP, plan critique — 3 critical blockers identified, contrapositive approach recommended"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/plans/13_representation-theorem.md",
+          "type": "plan",
+          "summary": "v13: 6-phase plan for sorry-free canonical completeness — representation theorem path, dead code cleanup, soundness proofs"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
