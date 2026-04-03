@@ -507,69 +507,30 @@ Properties of Until/Since formulas in MCS, derived from until_unfold/since_unfol
 These are used by the dovetailed chain construction to track Until/Since obligations.
 -/
 
-/--
-Until unfold in MCS: If `φ U ψ ∈ M` (MCS), then either ψ ∈ M or (φ ∈ M ∧ G(φ U ψ) ∈ M).
-
-This is the MCS-level consequence of the until_unfold axiom.
--/
+/-- Under strict semantics with X-based until_unfold, the unfold gives:
+  `(φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`, i.e., the disjunction holds at the NEXT time step.
+  This yields `X(ψ ∨ (φ ∧ (φ U ψ))) ∈ M`, which means the next MCS will satisfy the disjunction.
+  TODO: Rewrite to match new X-based unfold axiom shape. -/
 theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
-    ψ ∈ M ∨ (φ ∈ M ∧ Formula.all_future (Formula.untl φ ψ) ∈ M) := by
-  -- Apply until_unfold: (φ U ψ) → ψ ∨ (φ ∧ G(φ U ψ))
+    Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))) ∈ M := by
   have h_ax : [] ⊢ (Formula.untl φ ψ).imp
-      (Formula.or ψ (Formula.and φ (Formula.all_future (Formula.untl φ ψ)))) :=
+      (Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))) :=
     Bimodal.ProofSystem.DerivationTree.axiom [] _
       (Bimodal.ProofSystem.Axiom.until_unfold φ ψ)
-  have h_disj : Formula.or ψ (Formula.and φ (Formula.all_future (Formula.untl φ ψ))) ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_U
-  -- ψ ∨ (φ ∧ G(φ U ψ)) ∈ M means either ψ ∈ M or (φ ∧ G(φ U ψ)) ∈ M
-  -- Formula.or A B = (A.neg).imp B, so it's in M.
-  -- By negation completeness on ψ:
-  rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
-  · exact Or.inl h_psi
-  · -- ¬ψ ∈ M and (¬ψ → (φ ∧ G(φ U ψ))) ∈ M (since or = neg.imp)
-    -- h_disj : ψ.or (φ.and G(φ U ψ)) ∈ M
-    -- ψ.or X = ψ.neg.imp X, so ψ.neg.imp (φ.and G(φ U ψ)) ∈ M
-    have h_right : Formula.and φ (Formula.all_future (Formula.untl φ ψ)) ∈ M :=
-      SetMaximalConsistent.implication_property h_mcs h_disj h_neg_psi
-    -- Extract φ and G(φ U ψ) from the conjunction
-    -- Formula.and A B = (A.imp B.neg).neg
-    -- If (A ∧ B) ∈ M, then A ∈ M (by lce_imp) and B ∈ M (by rce_imp)
-    have h_lce : [] ⊢ (Formula.and φ (Formula.all_future (Formula.untl φ ψ))).imp φ :=
-      Bimodal.Theorems.Propositional.lce_imp φ (Formula.all_future (Formula.untl φ ψ))
-    have h_rce : [] ⊢ (Formula.and φ (Formula.all_future (Formula.untl φ ψ))).imp
-        (Formula.all_future (Formula.untl φ ψ)) :=
-      Bimodal.Theorems.Propositional.rce_imp φ (Formula.all_future (Formula.untl φ ψ))
-    exact Or.inr ⟨
-      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_lce) h_right,
-      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_rce) h_right⟩
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_U
 
-/--
-Since unfold in MCS: If `φ S ψ ∈ M` (MCS), then either ψ ∈ M or (φ ∈ M ∧ H(φ S ψ) ∈ M).
-
-Symmetric to `until_unfold_in_mcs`.
--/
+/-- Under strict semantics with Y-based since_unfold, the unfold gives:
+  `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`, i.e., the disjunction holds at the PREVIOUS time step.
+  TODO: Rewrite downstream consumers for new Y-based unfold. -/
 theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
-    ψ ∈ M ∨ (φ ∈ M ∧ Formula.all_past (Formula.snce φ ψ) ∈ M) := by
+    Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))) ∈ M := by
   have h_ax : [] ⊢ (Formula.snce φ ψ).imp
-      (Formula.or ψ (Formula.and φ (Formula.all_past (Formula.snce φ ψ)))) :=
+      (Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))) :=
     Bimodal.ProofSystem.DerivationTree.axiom [] _
       (Bimodal.ProofSystem.Axiom.since_unfold φ ψ)
-  have h_disj : Formula.or ψ (Formula.and φ (Formula.all_past (Formula.snce φ ψ))) ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
-  rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
-  · exact Or.inl h_psi
-  · have h_right : Formula.and φ (Formula.all_past (Formula.snce φ ψ)) ∈ M :=
-      SetMaximalConsistent.implication_property h_mcs h_disj h_neg_psi
-    have h_lce : [] ⊢ (Formula.and φ (Formula.all_past (Formula.snce φ ψ))).imp φ :=
-      Bimodal.Theorems.Propositional.lce_imp φ (Formula.all_past (Formula.snce φ ψ))
-    have h_rce : [] ⊢ (Formula.and φ (Formula.all_past (Formula.snce φ ψ))).imp
-        (Formula.all_past (Formula.snce φ ψ)) :=
-      Bimodal.Theorems.Propositional.rce_imp φ (Formula.all_past (Formula.snce φ ψ))
-    exact Or.inr ⟨
-      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_lce) h_right,
-      SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_rce) h_right⟩
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
 
 /--
 U-step for Succ with G-persistence: If `Succ u v`, `φ U ψ ∈ u`, and `¬ψ ∈ u`
@@ -581,11 +542,12 @@ theorem until_persists_through_succ (u v : Set Formula)
     (h_mcs_u : SetMaximalConsistent u) (h_succ : Succ u v)
     (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ u) (h_neg_psi : Formula.neg ψ ∈ u) :
     Formula.untl φ ψ ∈ v := by
-  -- By until_unfold in MCS u: ψ ∈ u ∨ (φ ∈ u ∧ G(φ U ψ) ∈ u)
-  rcases until_unfold_in_mcs u h_mcs_u φ ψ h_U with h_psi | ⟨_, h_G⟩
-  · -- ψ ∈ u contradicts ¬ψ ∈ u
-    exact absurd h_psi (SetMaximalConsistent.neg_excludes h_mcs_u ψ h_neg_psi)
-  · -- G(φ U ψ) ∈ u, so φ U ψ ∈ g_content(u) ⊆ v
-    exact h_succ.1 h_G
+  -- Under strict semantics, until_unfold gives X(ψ ∨ (φ ∧ (φ U ψ))) ∈ u.
+  -- The X-formula is ⊥ U (ψ ∨ (φ ∧ (φ U ψ))), which encodes a "next-step" obligation.
+  -- In the successor v, the disjunction ψ ∨ (φ ∧ (φ U ψ)) should hold.
+  -- Since ¬ψ ∈ u, the ¬ψ carries to v if ψ is "stable". But under strict semantics
+  -- the until_unfold structure is different.
+  -- TODO: Rewrite for X-based until_unfold.
+  sorry
 
 end Bimodal.Metalogic.Bundle
