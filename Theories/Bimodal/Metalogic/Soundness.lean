@@ -506,7 +506,11 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
     intro h_H h_neg_P
     -- Use t itself as witness: h_H gives ψ(t) at t ≤ t (reflexivity)
     exact h_neg_P t le_rfl (h_H t le_rfl)
-  -- Until/Since axioms: soundness proofs deferred to Phase 4
+  -- Until/Since axiom soundness: sorry pending axiom reformulation for reflexive semantics.
+  -- The standard Burgess-Xu axioms assume strict temporal operators; our reflexive G/H
+  -- require adjusted formulations. The key issue: G(φ U ψ) with reflexive G requires
+  -- φ U ψ at ALL s ≥ t, but the Until witness only covers [t, s_witness].
+  -- These will be resolved when the axiom formulations are adjusted.
   | until_unfold _ _ => sorry
   | until_intro _ _ => sorry
   | until_induction _ _ _ => sorry

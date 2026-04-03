@@ -1,63 +1,73 @@
-# Implementation Summary: Task #83 (v6) - Phases 1-3
+# Implementation Summary: Task #83 (v6) - Phases 1-4
 
-## Status: PARTIAL (Phases 1-3 of 7 completed)
+## Status: PARTIAL (Phases 1-3 completed, Phase 4 partial)
 
 ## What Was Accomplished
 
 ### Phase 1: Formula Type Extension [COMPLETED]
 
-Added `untl` (Until) and `snce` (Since) binary constructors to the `Formula` inductive type,
-extending the TM logic with temporal Until/Since operators needed for the Burgess-Xu approach
-to temporal completeness.
+Added `untl` (Until) and `snce` (Since) binary constructors to the `Formula` inductive type.
 
 **Files modified**: 10 files across Syntax, ProofSystem, Semantics, Metalogic, and Automation.
 
 **Key decisions**:
 - Named constructors `untl`/`snce` (not `until`/`since`) due to Lean 4 keyword conflict
-- Added sorry placeholders in 12 truth lemma proof locations (to be filled in Phases 4-7)
-- Simplified `eq_of_beq` proof using `nomatch` for cross-constructor dismissals
+- Added sorry placeholders in 12 truth lemma proof locations (to be filled in later phases)
 
 ### Phase 2: SubformulaClosure and DeferralClosure Extension [COMPLETED]
 
-Added Until/Since deferral infrastructure to `SubformulaClosure.lean` without breaking existing
-proofs. Introduced `baseDeferralClosure` as an intermediate definition to preserve backward
-compatibility.
+Added Until/Since deferral infrastructure to `SubformulaClosure.lean`.
 
 **New definitions**: `IsUntilFormula`, `IsSinceFormula`, `toUntilDeferral`, `toSinceDeferral`,
 `untilDeferralSet`, `sinceDeferralSet`, `baseDeferralClosure`, `extendedDeferralClosure`.
 
-**Key decision**: Kept `deferralClosure = baseDeferralClosure` (identical to old definition) to
-avoid cascading proof breakage. The `extendedDeferralClosure` includes Until/Since deferrals
-and will be used in later phases.
-
 ### Phase 3: Axioms and Proof System [COMPLETED]
 
-Added 10 new Burgess-Xu axiom schemata to the proof system:
-- `until_unfold`, `until_intro`, `until_induction`, `until_linearity`
-- `since_unfold`, `since_intro`, `since_induction`, `since_linearity`
-- `until_connectedness`, `since_connectedness`
+Added 10 new Burgess-Xu axiom schemata. All classified as `FrameClass.Discrete`.
 
-All classified as `FrameClass.Discrete`, `isDenseCompatible = False`, `isBase = False`.
+### Phase 4: Semantics Extension [PARTIAL]
 
-Updated Soundness.lean and SoundnessLemmas.lean with sorry stubs for axiom validity proofs.
+**Completed**:
+- `time_shift_preserves_truth` for untl/snce: DONE (both sorry closed)
+- `truth_double_shift_cancel` for untl/snce: DONE (already completed in Phase 1)
+- Truth.lean is now SORRY-FREE
 
-**Build status**: `lake build` passes with 0 errors.
+**Blocked**:
+- Soundness proofs for 10 new axioms: BLOCKED by axiom formulation issue
 
-## What Remains
+### BLOCKER: Axiom Formulation Issue with Reflexive Semantics
 
-Phases 4-7 (estimated 15-19 hours):
-- Phase 4: Soundness proofs for 10 new axioms + close Truth.lean time-shift sorry
-- Phase 5: TemporalContent/Succ relation extension with u_step/s_step
-- Phase 6: Dovetailed chain with Until/Since fair scheduling
-- Phase 7: Completeness rewiring to close original 2 sorry + 12 truth lemma sorry
+The standard Burgess-Xu axioms (1982/1988) assume STRICT temporal operators where G means
+"at all future times s > t". Our system uses REFLEXIVE temporal operators where G means
+"at all times s >= t" (including t itself).
 
-## New Sorries Introduced
+**Specific issue with `until_unfold`**: The axiom `(φ U ψ) → ψ ∨ (φ ∧ G(φ U ψ))` requires
+`G(φ U ψ)` at time t, meaning `∀ s ≥ t, (φ U ψ) at s`. But `φ U ψ` at time t with witness s
+only guarantees `φ U ψ` at times in `[t, s]`, NOT at times beyond `s`. For times `s' > s` (the
+Until witness), there is no guarantee that `φ U ψ` holds.
 
-| Phase | File | Count | Description |
-|-------|------|-------|-------------|
-| 1 | Truth.lean | 2 | time_shift_preserves_truth for untl/snce |
-| 1 | ParametricTruthLemma.lean | 4 | Two truth lemmas x 2 constructors |
-| 1 | CanonicalConstruction.lean | 6 | Three truth lemmas x 2 constructors |
-| 3 | Soundness.lean | 20 | 10 axiom validity proofs x 2 soundness theorems |
+**Impact**: This makes `until_unfold` semantically INVALID under reflexive semantics as
+currently formulated. The `until_intro` (converse) is similarly affected.
 
-Total: ~32 new sorry placeholders (all tracked, to be closed in Phases 4-7).
+**Resolution options**:
+1. Reformulate axioms to use strict-future `F'` (define `F'φ := F(φ) ∧ φ`, the weak closure)
+2. Switch Until/Since semantics to strict: `∃ s > t` instead of `∃ s ≥ t`
+3. Use `some_future (φ U ψ)` (existential, not universal) in the unfolding
+4. Research the correct reflexive-time formulation of Burgess-Xu axioms
+
+This requires a research round (not implementation) to determine the correct axiom set.
+
+## Build Status
+
+`lake build` passes with 0 errors (938 jobs).
+
+## Sorry Count
+
+| Location | Count | Status |
+|----------|-------|--------|
+| Truth.lean | 0 | CLOSED (Phase 4) |
+| ParametricTruthLemma.lean | 4 | Open (Phase 7) |
+| CanonicalConstruction.lean | 6 | Open (Phase 7) |
+| Soundness.lean | 20 | BLOCKED (axiom formulation) |
+
+Total new sorry: ~30 (down from ~32, after closing Truth.lean sorry).
