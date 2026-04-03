@@ -109,7 +109,7 @@ Complete clean-break refactor from reflexive (<=) to fully strict (<) temporal s
 
 ---
 
-### Phase 3: Soundness -- Core Axiom Validity [NOT STARTED]
+### Phase 3: Soundness -- Core Axiom Validity [COMPLETED]
 
 **Goal**: Prove soundness (validity) for all new and replaced axioms. This is the largest single-file effort and the mathematical core of the refactor.
 
@@ -143,7 +143,7 @@ Complete clean-break refactor from reflexive (<=) to fully strict (<) temporal s
 
 ---
 
-### Phase 4: Soundness Lemmas and Algebraic Layer [NOT STARTED]
+### Phase 4: Soundness Lemmas and Algebraic Layer [COMPLETED]
 
 **Goal**: Update SoundnessLemmas.lean (swapped axiom validity, bridge theorems) and the algebraic infrastructure (TenseS5Algebra, InteriorOperators).
 

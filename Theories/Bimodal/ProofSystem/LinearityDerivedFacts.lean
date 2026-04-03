@@ -11,17 +11,18 @@ derived consequences of the `temp_linearity` axiom.
 
 **Theorem (informal)**: The linearity schema
   `F(phi) and F(psi) -> F(phi and psi) or F(phi and F(psi)) or F(F(phi) and psi)`
-is NOT derivable from the original 16 TM axioms (prop_k, prop_s, ex_falso, peirce,
+is NOT derivable from the base TM axioms (prop_k, prop_s, ex_falso, peirce,
 modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist, temp_k_dist, temp_4,
-temp_a, temp_l, temp_t_future, temp_t_past, modal_future, temp_future).
+temp_a, temp_a_dual, temp_l, modal_future, temp_future, seriality_future,
+seriality_past, and the Until/Since axioms).
 
 **Counterexample**: Consider the frame with 3 points {0, 1a, 1b} where:
-- The temporal relation is: 0 R 0, 1a R 1a, 1b R 1b, 0 R 1a, 0 R 1b
+- The temporal relation is: 0 R 1a, 0 R 1b (strict, irreflexive)
   (but NOT 1a R 1b or 1b R 1a)
 - The S5 modal accessibility is universal (all 3 points see each other)
 
 This frame is:
-- Reflexive (satisfying temp_t_future, temp_t_past)
+- Irreflexive (consistent with strict temporal semantics)
 - Transitive (satisfying temp_4)
 - Connected via temp_a: for any point x and y > x, P(phi) holds at y
   if phi holds at x (with x as the past witness)

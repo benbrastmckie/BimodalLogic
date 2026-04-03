@@ -51,7 +51,7 @@ The key properties are:
 - Sigma is an involutive automorphism swapping G ↔ H
 - MF and TF ensure box formulas are temporally persistent
 - TA ensures temporal connectedness
-- TL captures temporal introspection
+- TL captures temporal introspection (strict semantics: always(a) ≤ GHa)
 - Linearity ensures temporal ordering is total
 -/
 class STSA (α : Type*) extends BooleanAlgebra α where
@@ -109,8 +109,8 @@ class STSA (α : Type*) extends BooleanAlgebra α where
   TA : ∀ a, a ≤ G ((H (aᶜ))ᶜ)
 
   -- Temporal introspection (TL)
-  /-- TL: Ha ⊓ Ga ≤ GHa -/
-  TL : ∀ a, H a ⊓ G a ≤ G (H a)
+  /-- TL: Ha ⊓ a ⊓ Ga ≤ GHa (under strict semantics, always(a) = Ha ⊓ a ⊓ Ga) -/
+  TL : ∀ a, H a ⊓ a ⊓ G a ≤ G (H a)
 
   -- Linearity (algebraic form)
   -- Fa ∧ Fb → F(a ∧ b) ∨ F(a ∧ Fb) ∨ F(Fa ∧ b)
@@ -195,79 +195,94 @@ theorem TA_quot (a : LindenbaumAlg) : a ≤ G_quot (neg_quot (H_quot (neg_quot a
   exact ⟨DerivationTree.axiom [] _ (Axiom.temp_a φ)⟩
 
 /--
-TL axiom on quotient: Ha ⊓ Ga ≤ GHa
+TL axiom on quotient: Ha ⊓ a ⊓ Ga ≤ GHa
 
-The axiom temp_l is: always φ → G(Hφ)
-where always φ = Hφ ∧ φ ∧ Gφ
+Under strict semantics, `always φ = Hφ ∧ φ ∧ Gφ` (which includes the present moment).
+The axiom `temp_l` states: `always φ → G(Hφ)`.
 
-So we need: Hφ ∧ Gφ ≤ always φ → G(Hφ) → G(Hφ)
-Actually we need Hφ ∧ Gφ → G(Hφ), which is weaker than temp_l.
-
-From temp_l: (Hφ ∧ φ ∧ Gφ) → G(Hφ)
-We need: Hφ ∧ Gφ → G(Hφ)
-
-Using temp_t_future: Gφ → φ (reflexive semantics), so Hφ ∧ Gφ → Hφ ∧ φ ∧ Gφ
-Then apply temp_l.
+The STSA TL field directly matches the temp_l axiom shape:
+  `Ha ⊓ a ⊓ Ga ≤ GHa` corresponds to `always(a) → G(H(a))`
 -/
-theorem TL_quot (a : LindenbaumAlg) : and_quot (H_quot a) (G_quot a) ≤ G_quot (H_quot a) := by
+theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a) ≤ G_quot (H_quot a) := by
   induction a using Quotient.ind
   rename_i φ
-  show Derives (Formula.and (Formula.all_past φ) (Formula.all_future φ))
+  -- Need: always(φ) → G(Hφ), which is exactly temp_l
+  -- and_quot (and_quot (H_quot ⟦φ⟧) ⟦φ⟧) (G_quot ⟦φ⟧) = ⟦always φ⟧
+  -- G_quot (H_quot ⟦φ⟧) = ⟦G(Hφ)⟧
+  show Derives (Formula.and (Formula.and (Formula.all_past φ) φ) (Formula.all_future φ))
                (Formula.all_future (Formula.all_past φ))
   unfold Derives
-  -- Strategy: Hφ ∧ Gφ → always φ → G(Hφ)
-  -- First show: Hφ ∧ Gφ → always φ
-  -- always φ = Hφ ∧ φ ∧ Gφ
-  -- So we need: Hφ ∧ Gφ → Hφ ∧ φ ∧ Gφ
-  -- From Gφ → φ (temp_t_future), we get φ from Gφ
-  -- Build: [Hφ ∧ Gφ] ⊢ Hφ ∧ φ ∧ Gφ
-  let HG := Formula.and φ.all_past φ.all_future
-  let Always := φ.always  -- Hφ ∧ φ ∧ Gφ = Hφ ∧ (φ ∧ Gφ)
+  -- always φ = Hφ ∧ (φ ∧ Gφ) = φ.all_past.and (φ.and φ.all_future)
+  -- But our LHS is (Hφ ∧ φ) ∧ Gφ, and always φ is Hφ ∧ (φ ∧ Gφ)
+  -- These are propositionally equivalent by associativity of ∧
+  -- We derive via context: [(Hφ ∧ φ) ∧ Gφ] ⊢ always φ ⊢ G(Hφ)
+  let LHS := Formula.and (Formula.and φ.all_past φ) φ.all_future
+  let Always := φ.always  -- Hφ ∧ (φ ∧ Gφ)
 
-  -- Derive in context [Hφ ∧ Gφ]
-  have h_ctx : [HG] ⊢ Always := by
-    -- Get Hφ from Hφ ∧ Gφ
-    have h_hg : [HG] ⊢ HG := DerivationTree.assumption [HG] HG (List.mem_singleton.mpr rfl)
+  -- Derive in context [LHS]
+  have h_lhs : [LHS] ⊢ LHS := DerivationTree.assumption [LHS] LHS (List.mem_singleton.mpr rfl)
 
-    -- lce: Hφ ∧ Gφ → Hφ
-    have lce_thm : ⊢ HG.imp φ.all_past := Bimodal.Theorems.Propositional.lce_imp φ.all_past φ.all_future
-    have lce_ctx : [HG] ⊢ HG.imp φ.all_past := DerivationTree.weakening [] [HG] _ lce_thm (List.nil_subset _)
-    have h_H : [HG] ⊢ φ.all_past := DerivationTree.modus_ponens [HG] HG φ.all_past lce_ctx h_hg
+  -- Extract components from (Hφ ∧ φ) ∧ Gφ
+  -- lce: (Hφ ∧ φ) ∧ Gφ → Hφ ∧ φ
+  have lce1_thm : ⊢ LHS.imp (Formula.and φ.all_past φ) :=
+    Bimodal.Theorems.Propositional.lce_imp (Formula.and φ.all_past φ) φ.all_future
+  have lce1_ctx : [LHS] ⊢ LHS.imp (Formula.and φ.all_past φ) :=
+    DerivationTree.weakening [] [LHS] _ lce1_thm (List.nil_subset _)
+  have h_HP : [LHS] ⊢ Formula.and φ.all_past φ :=
+    DerivationTree.modus_ponens [LHS] LHS _ lce1_ctx h_lhs
 
-    -- rce: Hφ ∧ Gφ → Gφ
-    have rce_thm : ⊢ HG.imp φ.all_future := Bimodal.Theorems.Propositional.rce_imp φ.all_past φ.all_future
-    have rce_ctx : [HG] ⊢ HG.imp φ.all_future := DerivationTree.weakening [] [HG] _ rce_thm (List.nil_subset _)
-    have h_G : [HG] ⊢ φ.all_future := DerivationTree.modus_ponens [HG] HG φ.all_future rce_ctx h_hg
+  -- lce: Hφ ∧ φ → Hφ
+  have lce2_thm : ⊢ (Formula.and φ.all_past φ).imp φ.all_past :=
+    Bimodal.Theorems.Propositional.lce_imp φ.all_past φ
+  have lce2_ctx : [LHS] ⊢ (Formula.and φ.all_past φ).imp φ.all_past :=
+    DerivationTree.weakening [] [LHS] _ lce2_thm (List.nil_subset _)
+  have h_H : [LHS] ⊢ φ.all_past :=
+    DerivationTree.modus_ponens [LHS] _ _ lce2_ctx h_HP
 
-    -- temp_t_future: Gφ → φ
-    have t_future : ⊢ φ.all_future.imp φ := DerivationTree.axiom [] _ (Axiom.temp_t_future φ)
-    have t_ctx : [HG] ⊢ φ.all_future.imp φ := DerivationTree.weakening [] [HG] _ t_future (List.nil_subset _)
-    have h_phi : [HG] ⊢ φ := DerivationTree.modus_ponens [HG] φ.all_future φ t_ctx h_G
+  -- rce: Hφ ∧ φ → φ
+  have rce1_thm : ⊢ (Formula.and φ.all_past φ).imp φ :=
+    Bimodal.Theorems.Propositional.rce_imp φ.all_past φ
+  have rce1_ctx : [LHS] ⊢ (Formula.and φ.all_past φ).imp φ :=
+    DerivationTree.weakening [] [LHS] _ rce1_thm (List.nil_subset _)
+  have h_phi : [LHS] ⊢ φ :=
+    DerivationTree.modus_ponens [LHS] _ _ rce1_ctx h_HP
 
-    -- Build Hφ ∧ (φ ∧ Gφ) = always φ
-    -- pairing: φ → (Gφ → φ ∧ Gφ)
-    have pair1 : ⊢ φ.imp (φ.all_future.imp (φ.and φ.all_future)) := Bimodal.Theorems.Combinators.pairing φ φ.all_future
-    have pair1_ctx : [HG] ⊢ φ.imp (φ.all_future.imp (φ.and φ.all_future)) := DerivationTree.weakening [] [HG] _ pair1 (List.nil_subset _)
-    have h_step1 : [HG] ⊢ φ.all_future.imp (φ.and φ.all_future) := DerivationTree.modus_ponens [HG] _ _ pair1_ctx h_phi
-    have h_phiG : [HG] ⊢ φ.and φ.all_future := DerivationTree.modus_ponens [HG] _ _ h_step1 h_G
+  -- rce: (Hφ ∧ φ) ∧ Gφ → Gφ
+  have rce2_thm : ⊢ LHS.imp φ.all_future :=
+    Bimodal.Theorems.Propositional.rce_imp (Formula.and φ.all_past φ) φ.all_future
+  have rce2_ctx : [LHS] ⊢ LHS.imp φ.all_future :=
+    DerivationTree.weakening [] [LHS] _ rce2_thm (List.nil_subset _)
+  have h_G : [LHS] ⊢ φ.all_future :=
+    DerivationTree.modus_ponens [LHS] _ _ rce2_ctx h_lhs
 
-    -- pairing: Hφ → ((φ ∧ Gφ) → Hφ ∧ (φ ∧ Gφ))
-    have pair2 : ⊢ φ.all_past.imp ((φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future))) :=
-      Bimodal.Theorems.Combinators.pairing φ.all_past (φ.and φ.all_future)
-    have pair2_ctx : [HG] ⊢ φ.all_past.imp ((φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future))) :=
-      DerivationTree.weakening [] [HG] _ pair2 (List.nil_subset _)
-    have h_step2 : [HG] ⊢ (φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future)) :=
-      DerivationTree.modus_ponens [HG] _ _ pair2_ctx h_H
-    have h_always : [HG] ⊢ φ.all_past.and (φ.and φ.all_future) := DerivationTree.modus_ponens [HG] _ _ h_step2 h_phiG
-    exact h_always
+  -- Build always φ = Hφ ∧ (φ ∧ Gφ) from components
+  have pair1 : ⊢ φ.imp (φ.all_future.imp (φ.and φ.all_future)) :=
+    Bimodal.Theorems.Combinators.pairing φ φ.all_future
+  have pair1_ctx : [LHS] ⊢ φ.imp (φ.all_future.imp (φ.and φ.all_future)) :=
+    DerivationTree.weakening [] [LHS] _ pair1 (List.nil_subset _)
+  have h_step1 : [LHS] ⊢ φ.all_future.imp (φ.and φ.all_future) :=
+    DerivationTree.modus_ponens [LHS] _ _ pair1_ctx h_phi
+  have h_phiG : [LHS] ⊢ φ.and φ.all_future :=
+    DerivationTree.modus_ponens [LHS] _ _ h_step1 h_G
 
-  -- Now apply temp_l: always φ → G(Hφ)
+  have pair2 : ⊢ φ.all_past.imp ((φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future))) :=
+    Bimodal.Theorems.Combinators.pairing φ.all_past (φ.and φ.all_future)
+  have pair2_ctx : [LHS] ⊢ φ.all_past.imp ((φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future))) :=
+    DerivationTree.weakening [] [LHS] _ pair2 (List.nil_subset _)
+  have h_step2 : [LHS] ⊢ (φ.and φ.all_future).imp (φ.all_past.and (φ.and φ.all_future)) :=
+    DerivationTree.modus_ponens [LHS] _ _ pair2_ctx h_H
+  have h_always : [LHS] ⊢ Always :=
+    DerivationTree.modus_ponens [LHS] _ _ h_step2 h_phiG
+
+  -- Apply temp_l: always φ → G(Hφ)
   have temp_l : ⊢ Always.imp (φ.all_past.all_future) := DerivationTree.axiom [] _ (Axiom.temp_l φ)
-  have temp_l_ctx : [HG] ⊢ Always.imp (φ.all_past.all_future) := DerivationTree.weakening [] [HG] _ temp_l (List.nil_subset _)
-  have h_result : [HG] ⊢ φ.all_past.all_future := DerivationTree.modus_ponens [HG] _ _ temp_l_ctx h_ctx
+  have temp_l_ctx : [LHS] ⊢ Always.imp (φ.all_past.all_future) :=
+    DerivationTree.weakening [] [LHS] _ temp_l (List.nil_subset _)
+  have h_result : [LHS] ⊢ φ.all_past.all_future :=
+    DerivationTree.modus_ponens [LHS] _ _ temp_l_ctx h_always
 
   -- Apply deduction theorem
-  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] HG (φ.all_past.all_future) h_result⟩
+  exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] LHS (φ.all_past.all_future) h_result⟩
 
 /--
 Linearity on quotient.

@@ -161,8 +161,8 @@ All 21 axioms are covered by the soundness theorems:
 2. ex_falso, peirce: Classical logic
 3. modal_t, modal_4, modal_b, modal_5_collapse: S5 modal axioms
 4. modal_k_dist: Modal K distribution
-5. temp_k_dist, temp_4, temp_t_future, temp_t_past: Temporal axioms
-6. temp_a, temp_l: Temporal interaction
+5. temp_k_dist, temp_4: Temporal axioms
+6. temp_a, temp_a_dual, temp_l: Temporal interaction
 7. modal_future, temp_future: Modal-temporal interaction
 8. temp_linearity: Linear time axiom
 
