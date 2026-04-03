@@ -64,6 +64,16 @@ Five research artifacts inform this plan:
 
 ## Implementation Phases
 
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1 | 1, 2 | -- |
+| 2 | 3, 6 | 1 |
+| 3 | 4 | 2, 3 |
+| 4 | 5 | 4 |
+
+Phases within the same wave can execute in parallel.
+
 ### Phase 1: Dead Code Cleanup, Boneyard Archival, and ROADMAP Update [NOT STARTED]
 
 **Goal**: Remove dead code that obscures the critical path, archive T-axiom-dependent sorry functions to Boneyard, delete ghost directories, update stale documentation, and bring ROADMAP.md current. This housekeeping phase ensures subsequent phases work on a clean codebase with accurate metrics.
@@ -88,6 +98,7 @@ Five research artifacts inform this plan:
 - [ ] Grep for remaining `temp_t_future|temp_t_past` references in Theories/ (should be zero outside Boneyard and comments)
 
 **Timing**: 2 hours
+**Depends on:** none
 
 **Verification**:
 - `lake build` succeeds with zero errors
@@ -112,6 +123,7 @@ Five research artifacts inform this plan:
 - [ ] Run `lake build` to confirm no regressions
 
 **Timing**: 3 hours
+**Depends on:** none
 
 **Files to modify**:
 - `Theories/Bimodal/Theorems/TemporalDerived.lean` -- close 4 sorry sites
@@ -141,6 +153,7 @@ Five research artifacts inform this plan:
 - [ ] Run `lake build` on all modified files
 
 **Timing**: 3 hours
+**Depends on:** 1
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean` -- seed redesign (3 sorry closures)
@@ -175,6 +188,7 @@ Five research artifacts inform this plan:
 - [ ] Run `lake build` on all modified files
 
 **Timing**: 3.5 hours
+**Depends on:** 2, 3
 
 **Files to modify**:
 - `Theories/Bimodal/Theorems/TemporalDerived.lean` -- X_implies_F, Y_implies_P (or new file)
@@ -211,6 +225,7 @@ Five research artifacts inform this plan:
 - [ ] Grep for `sorry` in the completeness critical path files (CanonicalConstruction, DovetailedChain, UltrafilterChain, SuccChainFMCS, SuccExistence, WitnessSeed, SuccRelation, Completeness.lean) -- should return zero on active path
 
 **Timing**: 3.5 hours
+**Depends on:** 4
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean` -- 4 Until/Since truth lemma sorries
@@ -249,6 +264,7 @@ Five research artifacts inform this plan:
 - [ ] Final sorry census: grep all Theories/ for sorry, categorize, update ROADMAP.md with final counts
 
 **Timing**: 3 hours
+**Depends on:** 1
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Soundness.lean` -- 19 frame-class soundness proofs

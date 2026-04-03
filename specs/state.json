@@ -850,10 +850,10 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-03T20:16:55Z",
+      "last_updated": "2026-04-03T21:01:38Z",
       "notes": "Phases 1,6 complete. Build passes (0 errors). Phases 2-5 structurally blocked: X-content propagation gap under strict semantics. 61 sorries remain across 6 files on canonical completeness path.",
       "next_artifact_number": 14,
-      "session_id": "sess_1775247055_4b179b",
+      "session_id": "sess_1743717600_impl83",
       "researched": "2026-04-03T20:06:01Z",
       "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
@@ -861,13 +861,29 @@
         "total_effort_hours": 18,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 13,
+        "plan_version": 14,
         "reports_integrated": [
           {
             "path": "reports/13_team-research.md",
             "integrated_in_plan_version": 13,
             "integrated_date": "2026-04-03"
           }
+        ],
+        "dependency_waves": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
         ]
       },
       "artifacts": [

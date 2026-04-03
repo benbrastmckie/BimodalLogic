@@ -50,10 +50,11 @@ technical_debt:
                       ↘ 68 (dense path, parallel)
 ```
 
-0. **83** [IMPLEMENTING] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
+0. **83** [PLANNED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
    - **Plan**:
      - [08_half-open-semantics.md](specs/083_close_restricted_coherence_sorries/plans/08_half-open-semantics.md)
      - [11_strict-semantics-refactor.md](specs/083_close_restricted_coherence_sorries/plans/11_strict-semantics-refactor.md)
+     - [13_representation-theorem.md](specs/083_close_restricted_coherence_sorries/plans/13_representation-theorem.md)
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
