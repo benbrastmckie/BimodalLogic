@@ -1,6 +1,7 @@
 import Bimodal.Semantics.Truth
 import Bimodal.Syntax.Context
 import Mathlib.Order.SuccPred.Basic
+import Mathlib.Order.SuccPred.Archimedean
 
 /-!
 # Validity - Semantic Validity and Consequence
@@ -176,7 +177,7 @@ capturing the frame condition for the discreteness axioms DF/DP.
 -/
 def valid_discrete (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
-    [Nontrivial D]
+    [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
     (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
@@ -195,7 +196,7 @@ theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : valid_dense φ
 Validity implies validity over discrete orders: every valid formula is valid_discrete.
 -/
 theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : valid_discrete φ :=
-  fun D _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+  fun D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
 
 /--
 Valid formulas are semantic consequences of empty context.

@@ -42,13 +42,14 @@ Build a family of MCS indexed by time, where each time point has its own
 MCS connected to adjacent times via temporal coherence conditions.
 
 **Design Evolution**: TM logic uses REFLEXIVE temporal operators with T-axioms
-(`G phi -> phi`, `H phi -> phi`) to enable coherence proofs.
+Under strict semantics, G quantifies over strict future (s > t) and
+H quantifies over strict past (s < t), so coherence conditions use strict `<`.
 
 ## Main Definitions
 
 - `FMCS D`: Structure pairing each time `t : D` with an MCS, plus coherence
-- `forward_G`: G formulas at t propagate to all times t' >= t (including t itself via T-axiom)
-- `backward_H`: H formulas at t propagate to all times t' <= t (including t itself via T-axiom)
+- `forward_G`: G formulas at t propagate to all strictly future times t' > t
+- `backward_H`: H formulas at t propagate to all strictly past times t' < t
 
 ## Design Note
 
@@ -84,13 +85,12 @@ A family of maximal consistent sets indexed by time, with temporal coherence.
 **Fields**:
 - `mcs`: Function assigning an MCS to each time point
 - `is_mcs`: Proof that each assigned set is maximal consistent
-- `forward_G`: G formulas propagate to future times (reflexive)
-- `backward_H`: H formulas propagate to past times (reflexive)
+- `forward_G`: G formulas propagate to strictly future times (t < t')
+- `backward_H`: H formulas propagate to strictly past times (t' < t)
 
 **Key Properties**:
-- The coherence conditions use REFLEXIVE inequalities (<= not <)
-- This matches TM's temporal operator semantics with T-axioms
-- Reflexivity enables Preorder generalization
+- The coherence conditions use STRICT inequalities (< not ≤)
+- This matches TM's strict temporal operator semantics
 
 **Terminology**:
 - FMCS = Family of MCS (single family)
@@ -102,21 +102,19 @@ structure FMCS where
   /-- Each assigned set is maximal consistent -/
   is_mcs : forall t, SetMaximalConsistent (mcs t)
   /--
-  Forward G coherence: G phi at time t implies phi at all future times t' >= t.
+  Forward G coherence: G phi at time t implies phi at all strictly future times t' > t.
 
-  Semantic justification: With reflexive semantics, `G phi` means "phi at all times s >= t".
-  If `G phi` is in the MCS at t, then phi must be in the MCS at any t' >= t.
-  By T-axiom, this includes phi ∈ mcs t (taking t' = t).
+  Semantic justification: Under strict semantics, `G phi` means "phi at all times s > t".
+  If `G phi` is in the MCS at t, then phi must be in the MCS at any t' > t.
   -/
-  forward_G : forall t t' phi, t ≤ t' -> Formula.all_future phi ∈ mcs t -> phi ∈ mcs t'
+  forward_G : forall t t' phi, t < t' -> Formula.all_future phi ∈ mcs t -> phi ∈ mcs t'
   /--
-  Backward H coherence: H phi at time t implies phi at all past times t' <= t.
+  Backward H coherence: H phi at time t implies phi at all strictly past times t' < t.
 
-  Semantic justification: With reflexive semantics, `H phi` means "phi at all times s <= t".
-  If `H phi` is in the MCS at t, then phi must be in the MCS at any t' <= t.
-  By T-axiom, this includes phi ∈ mcs t (taking t' = t).
+  Semantic justification: Under strict semantics, `H phi` means "phi at all times s < t".
+  If `H phi` is in the MCS at t, then phi must be in the MCS at any t' < t.
   -/
-  backward_H : forall t t' phi, t' ≤ t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
+  backward_H : forall t t' phi, t' < t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
 
 variable {D : Type*} [Preorder D]
 

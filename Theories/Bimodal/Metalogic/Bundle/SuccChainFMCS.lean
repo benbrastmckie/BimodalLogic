@@ -961,48 +961,17 @@ theorem succ_chain_canonicalTask_backward_MCS_P_from (M0 : SerialMCS) (start : I
 /-!
 ## FMCS Structure
 
-The FMCS structure requires reflexive coherence conditions (t ≤ t' not t < t').
-We handle this by splitting into t = t' (T-axiom) or t < t' (existing theorems).
+Under strict semantics, the FMCS structure requires strict coherence (t < t').
+The succ_chain_forward_G and succ_chain_backward_H theorems already prove
+the strict versions, so we use them directly.
 -/
 
-/-- Forward G coherence with reflexive inequality.
-    For t ≤ t': G phi at t implies phi at t'.
-    - If t = t': use T-axiom (temp_t_future)
-    - If t < t': use succ_chain_forward_G -/
-theorem succ_chain_forward_G_le (M0 : SerialMCS) (n m : Int) (phi : Formula)
-    (h_le : n ≤ m) (h_G : Formula.all_future phi ∈ succ_chain_fam M0 n) :
-    phi ∈ succ_chain_fam M0 m := by
-  rcases h_le.lt_or_eq with h_lt | rfl
-  · -- n < m: use succ_chain_forward_G
-    exact succ_chain_forward_G M0 n m phi h_lt h_G
-  · -- n = m: use T-axiom
-    exact SetMaximalConsistent.implication_property (succ_chain_fam_mcs M0 n)
-      (theorem_in_mcs (succ_chain_fam_mcs M0 n)
-        (Bimodal.ProofSystem.DerivationTree.axiom _ _
-          (Bimodal.ProofSystem.Axiom.temp_t_future phi))) h_G
-
-/-- Backward H coherence with reflexive inequality.
-    For m ≤ n: H phi at n implies phi at m.
-    - If m = n: use T-axiom (temp_t_past)
-    - If m < n: use succ_chain_backward_H -/
-theorem succ_chain_backward_H_le (M0 : SerialMCS) (n m : Int) (phi : Formula)
-    (h_le : m ≤ n) (h_H : Formula.all_past phi ∈ succ_chain_fam M0 n) :
-    phi ∈ succ_chain_fam M0 m := by
-  rcases h_le.lt_or_eq with h_lt | rfl
-  · -- m < n: use succ_chain_backward_H
-    exact succ_chain_backward_H M0 n m phi h_lt h_H
-  · -- m = n (so now m appears in place of both): use T-axiom
-    exact SetMaximalConsistent.implication_property (succ_chain_fam_mcs M0 m)
-      (theorem_in_mcs (succ_chain_fam_mcs M0 m)
-        (Bimodal.ProofSystem.DerivationTree.axiom _ _
-          (Bimodal.ProofSystem.Axiom.temp_t_past phi))) h_H
-
-/-- The Succ-chain family as an FMCS -/
+/-- The Succ-chain family as an FMCS (strict semantics) -/
 noncomputable def SuccChainFMCS (M0 : SerialMCS) : FMCS Int where
   mcs := succ_chain_fam M0
   is_mcs := succ_chain_fam_mcs M0
-  forward_G := succ_chain_forward_G_le M0
-  backward_H := succ_chain_backward_H_le M0
+  forward_G := succ_chain_forward_G M0
+  backward_H := succ_chain_backward_H M0
 
 
 /-!

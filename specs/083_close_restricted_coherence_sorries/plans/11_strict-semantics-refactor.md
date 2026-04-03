@@ -172,7 +172,7 @@ Complete clean-break refactor from reflexive (<=) to fully strict (<) temporal s
 
 ---
 
-### Phase 5: Canonical Model -- FMCS and Chain Infrastructure [NOT STARTED]
+### Phase 5: Canonical Model -- FMCS and Chain Infrastructure [PARTIAL]
 
 **Goal**: Update the FMCS structure to strict inequalities and refactor the chain construction files (SuccChainFMCS, CanonicalIrreflexivity) to remove T-axiom dependencies.
 

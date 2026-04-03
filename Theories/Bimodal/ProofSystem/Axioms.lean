@@ -471,30 +471,40 @@ inductive Axiom : Formula → Type where
 
   /--
   Until Induction (strict, X-based):
-  `(ψ → χ) ∧ (φ ∧ X(χ) → χ) → ((φ U ψ) → X(χ))`
+  `G(ψ → χ) ∧ G(φ ∧ X(χ) → χ) → ((φ U ψ) → X(χ))`
 
-  If ψ implies χ (base), and φ ∧ X(χ) implies χ (step),
-  then φ U ψ implies X(χ).
+  If at all future times ψ implies χ (base), and at all future times
+  φ ∧ X(χ) implies χ (step), then φ U ψ implies X(χ).
+
+  The premises are under G to ensure they hold at all future times,
+  which is necessary for the induction along the successor chain
+  from succ(t) to the witness s.
 
   Note: conclusion is X(χ), not χ, because φ U ψ provides info
   about strictly future times only. X(χ) = bot U χ.
   -/
   | until_induction (φ ψ χ : Formula) :
       Axiom (Formula.and
-        (ψ.imp χ)
-        ((Formula.and φ (Formula.untl Formula.bot χ)).imp χ)
+        ((ψ.imp χ).all_future)
+        (((Formula.and φ (Formula.untl Formula.bot χ)).imp χ).all_future)
         |>.imp ((Formula.untl φ ψ).imp (Formula.untl Formula.bot χ)))
 
   /--
-  Until Linearity: `(φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ)))`
+  Until Linearity (strict):
+  `(φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ))) ∨ X(ψ ∧ ψ')`
 
   If two Until formulas hold simultaneously, their witnesses are linearly ordered.
+  Under strict semantics, the third disjunct `X(ψ ∧ ψ')` handles the case when
+  both witnesses coincide at the immediate successor (where neither inner Until
+  can be formed because the witness is not strictly future).
   -/
   | until_linearity (φ ψ φ' ψ' : Formula) :
       Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl φ' ψ')
         |>.imp (Formula.or
-          (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
-          (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ)))))
+          (Formula.or
+            (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
+            (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ))))
+          (Formula.untl Formula.bot (Formula.and ψ ψ'))))
 
   /--
   Since Unfold (strict, Y-based): `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`
@@ -519,27 +529,32 @@ inductive Axiom : Formula → Type where
 
   /--
   Since Induction (strict, Y-based):
-  `(ψ → χ) ∧ (φ ∧ Y(χ) → χ) → ((φ S ψ) → Y(χ))`
+  `H(ψ → χ) ∧ H(φ ∧ Y(χ) → χ) → ((φ S ψ) → Y(χ))`
 
   Mirror of until_induction for the past direction.
+  The premises are under H to ensure they hold at all past times.
   Y(χ) = bot S χ.
   -/
   | since_induction (φ ψ χ : Formula) :
       Axiom (Formula.and
-        (ψ.imp χ)
-        ((Formula.and φ (Formula.snce Formula.bot χ)).imp χ)
+        ((ψ.imp χ).all_past)
+        (((Formula.and φ (Formula.snce Formula.bot χ)).imp χ).all_past)
         |>.imp ((Formula.snce φ ψ).imp (Formula.snce Formula.bot χ)))
 
   /--
-  Since Linearity: `(φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ)))`
+  Since Linearity (strict):
+  `(φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ))) ∨ Y(ψ ∧ ψ')`
 
   Mirror of until_linearity for the past direction.
+  Third disjunct handles coinciding witnesses at the immediate predecessor.
   -/
   | since_linearity (φ ψ φ' ψ' : Formula) :
       Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce φ' ψ')
         |>.imp (Formula.or
-          (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
-          (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ)))))
+          (Formula.or
+            (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
+            (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ))))
+          (Formula.snce Formula.bot (Formula.and ψ ψ'))))
 
   /--
   Until-Since Connectedness: `φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`

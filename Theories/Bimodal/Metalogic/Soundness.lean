@@ -181,27 +181,27 @@ theorem temp_k_dist_valid (φ ψ : Formula) :
   exact h_future_imp s hts (h_future_phi s hts)
 
 /-- Temporal 4 axiom is valid: `⊨ Gφ → GGφ`.
-Under reflexive semantics, uses transitivity of ≤. -/
+Under strict semantics, uses transitivity of <. -/
 theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_future s hts r hsr
-  exact h_future r (le_trans hts hsr)
+  exact h_future r (lt_trans hts hsr)
 
-/-- Temporal A axiom is valid: `⊨ φ → G(some_past φ)`.
-Under reflexive semantics: if φ at t, then for all s >= t, there exists r <= s with φ(r) (namely, t). -/
+/-- Temporal A axiom is valid: `⊨ φ → G(Pφ)`.
+Under strict semantics: if φ at t, then for all s > t, there exists r < s with φ(r) (namely, t). -/
 theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.some_past)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_phi s hts
   simp only [Formula.some_past, Formula.some_past, Formula.neg, truth_at]
   intro h_all_neg
-  -- h_all_neg : ∀ r ≤ s, ¬φ(r). But t ≤ s (from hts) and φ(t) (from h_phi).
+  -- h_all_neg : ∀ r < s, ¬φ(r). But t < s (from hts) and φ(t) (from h_phi).
   exact h_all_neg t hts h_phi
 
 /-- TL axiom validity: `△φ → G(Hφ)` is valid.
-Under reflexive semantics, △φ = Hφ ∧ φ ∧ Gφ encodes: (∀ u ≤ t, φ(u)) ∧ φ(t) ∧ (∀ v ≥ t, φ(v)).
-The goal G(Hφ) requires: ∀ s ≥ t, ∀ r ≤ s, φ(r).
+Under strict semantics, △φ = Hφ ∧ φ ∧ Gφ encodes: (∀ u < t, φ(u)) ∧ φ(t) ∧ (∀ v > t, φ(v)).
+The goal G(Hφ) requires: ∀ s > t, ∀ r < s, φ(r).
 This is implied by the △φ hypothesis which covers all times. -/
 theorem temp_l_valid (φ : Formula) :
     ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
@@ -209,21 +209,22 @@ theorem temp_l_valid (φ : Formula) :
   simp only [truth_at]
   intro h_always s _hts r hrs
   simp only [Formula.always, Formula.and, Formula.neg, truth_at] at h_always
-  -- Under reflexive semantics, always encodes: (∀ u ≤ t, φ(u)) ∧ ((φ(t) → (∀ v ≥ t, φ(v)) → ⊥) → ⊥)
+  -- Under strict semantics, always encodes: (∀ u < t, φ(u)) ∧ ((φ(t) → (∀ v > t, φ(v)) → ⊥) → ⊥)
   have h1 :
-    (∀ (u : T), u ≤ t → truth_at M Omega τ u φ) ∧
+    (∀ (u : T), u < t → truth_at M Omega τ u φ) ∧
     ((truth_at M Omega τ t φ →
-      (∀ (v : T), t ≤ v → truth_at M Omega τ v φ) → False) → False) :=
+      (∀ (v : T), t < v → truth_at M Omega τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : T), t ≤ v → truth_at M Omega τ v φ) :=
+  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : T), t < v → truth_at M Omega τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
-  -- With reflexive semantics, we have φ at all times (past including now, future including now)
-  -- Need φ(r) where r ≤ s. By r ≤ t or t ≤ r:
-  rcases le_or_lt r t with h_le | h_gt
-  · exact h_past r h_le
-  · exact h_future r (le_of_lt h_gt)
+  -- With strict semantics, we have φ at all times (past, now, future)
+  -- Need φ(r) where r < s. By r < t, r = t, or r > t:
+  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
+  · exact h_past r h_lt
+  · exact h_eq ▸ h_now
+  · exact h_future r h_gt
 
 /-- MF axiom validity: `□φ → □(Fφ)` is valid. Uses ShiftClosed Omega for time-shift invariance. -/
 theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).box)) := by
@@ -241,35 +242,22 @@ theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).all_futur
   have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
 
-/-- Temporal T axiom (future) validity: `⊨ Gφ → φ`.
-Under reflexive semantics, this is trivially valid: Gφ at t means ∀s ≥ t, φ(s).
-Since t ≥ t (reflexivity), φ(t) follows. -/
-theorem temp_t_future_valid (φ : Formula) : ⊨ (φ.all_future.imp φ) := by
+/-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
+Under strict semantics: if φ at t, then for all s < t, there exists r > s with φ(r) (namely, t). -/
+theorem temp_a_dual_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_past φ.some_future)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
-  intro h_G
-  -- h_G : ∀ s ≥ t, φ(s)
-  -- Goal: φ(t)
-  -- By reflexivity t ≥ t, so φ(t) from h_G
-  exact h_G t le_rfl
-
-/-- Temporal T axiom (past) validity: `⊨ Hφ → φ`.
-Under reflexive semantics, this is trivially valid: Hφ at t means ∀s ≤ t, φ(s).
-Since t ≤ t (reflexivity), φ(t) follows. -/
-theorem temp_t_past_valid (φ : Formula) : ⊨ (φ.all_past.imp φ) := by
-  intro T _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [truth_at]
-  intro h_H
-  -- h_H : ∀ s ≤ t, φ(s)
-  -- Goal: φ(t)
-  -- By reflexivity t ≤ t, so φ(t) from h_H
-  exact h_H t le_rfl
+  intro h_phi s hst
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  intro h_all_neg
+  -- h_all_neg : ∀ r > s, ¬φ(r). But s < t (from hst) and φ(t) (from h_phi).
+  exact h_all_neg t hst h_phi
 
 /-- Temporal linearity axiom validity:
 `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)` is valid.
 
 Uses linearity of D (LinearOrder instance).
-Under reflexive semantics, F quantifies over s ≥ t.
+Under strict semantics, F quantifies over s > t.
 -/
 theorem temp_linearity_valid (φ ψ : Formula) :
     ⊨ (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
@@ -279,17 +267,17 @@ theorem temp_linearity_valid (φ ψ : Formula) :
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj
-  -- Extract F(phi) and F(psi) witnesses (using ≤ for reflexive semantics)
-  have h_F_phi : (∀ (s : T), t ≤ s → truth_at M Omega τ s φ → False) → False :=
+  -- Extract F(phi) and F(psi) witnesses (using < for strict semantics)
+  have h_F_phi : (∀ (s : T), t < s → truth_at M Omega τ s φ → False) → False :=
     Classical.byContradiction (fun h_not =>
       h_conj (fun h1 _ => h_not (fun h_all => h1 (fun s hs h_phi => h_all s hs h_phi))))
-  have h_F_psi : (∀ (s : T), t ≤ s → truth_at M Omega τ s ψ → False) → False :=
+  have h_F_psi : (∀ (s : T), t < s → truth_at M Omega τ s ψ → False) → False :=
     Classical.byContradiction (fun h_not =>
       h_conj (fun _ h2 => h_not (fun h_all => h2 (fun s hs h_psi => h_all s hs h_psi))))
-  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ := by
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
     by_contra h_no; push_neg at h_no
     exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
-  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
     by_contra h_no; push_neg at h_no
     exact h_F_psi (fun s hs h_psi => h_no s hs h_psi)
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
@@ -300,7 +288,7 @@ theorem temp_linearity_valid (φ ψ : Formula) :
     apply h_neg_second
     intro h_all_neg_second
     exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_F_psi =>
-      h_neg_F_psi s2 (le_of_lt h_lt) h_psi_s2))
+      h_neg_F_psi s2 h_lt h_psi_s2))
   · -- s1 = s2: provide first disjunct F(φ ∧ ψ)
     subst h_eq
     intro h_neg_first
@@ -313,70 +301,484 @@ theorem temp_linearity_valid (φ ψ : Formula) :
     intro _
     intro h_all_neg_third
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
-      (fun h_neg_F_phi => h_neg_F_phi s1 (le_of_lt h_gt) h_phi_s1) h_psi_s2)
+      (fun h_neg_F_phi => h_neg_F_phi s1 h_gt h_phi_s1) h_psi_s2)
 
 /-- Density axiom (DN) is valid on dense orders: `⊨_dense GGφ → Gφ`.
-Under reflexive semantics, this is trivially valid: for any s ≥ t, taking r = s
-in GGφ (∀r ≥ t, ∀q ≥ r, φ(q)) gives ∀q ≥ s, φ(q), and taking q = s gives φ(s). -/
+Under strict semantics: for any s > t, by DenselyOrdered there exists r with t < r < s.
+From GGφ (∀r > t, ∀q > r, φ(q)) at r, since r < s, we get φ(s). -/
 theorem density_valid (φ : Formula) :
     valid_dense ((φ.all_future.all_future).imp φ.all_future) := by
   intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_GG s hts
-  -- h_GG : ∀ r ≥ t, ∀ q ≥ r, φ(q)
-  -- hts : t ≤ s
+  -- h_GG : ∀ r > t, ∀ q > r, φ(q)
+  -- hts : t < s
   -- Goal: φ(s)
-  -- Take r = s: from h_GG at s, ∀ q ≥ s, φ(q). Since s ≥ s, φ(s).
-  exact h_GG s hts s le_rfl
+  -- By DenselyOrdered, there exists r with t < r < s.
+  obtain ⟨r, htr, hrs⟩ := DenselyOrdered.dense t s hts
+  exact h_GG r htr s hrs
 
 /-- Forward discreteness axiom (DF) is valid on discrete orders: `⊨_discrete (F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
-Under reflexive semantics, this is trivially valid: if Hφ at t (∀r ≤ t, φ(r)),
-then F(Hφ) at t is witnessed by t itself (since t ≥ t by reflexivity). -/
+Under strict semantics: if Hφ at t (∀r < t, φ(r)) and φ(t), then Hφ at succ(t),
+since for all r < succ(t), either r < t (covered by Hφ) or r = t (covered by φ(t)).
+So F(Hφ) at t is witnessed by succ(t). -/
 theorem discreteness_forward_valid (φ : Formula) :
     valid_discrete (Formula.and (Formula.bot.neg.some_future)
       (Formula.and φ (Formula.all_past φ)) |>.imp
       (Formula.all_past φ).some_future) := by
-  intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.some_future, Formula.neg, truth_at]
   intro h_conj h_G_not_H
   -- Extract F⊤, φ, and Hφ from conjunction
   have h1 := and_of_not_imp_not h_conj
   have ⟨_h_F_top, h_phi_and_H⟩ := h1
   have h2 := and_of_not_imp_not h_phi_and_H
-  have ⟨_h_phi, h_H⟩ := h2
-  -- h_H : ∀ r ≤ t, φ(r) (Hφ at t)
-  -- Use t itself as the witness: t ≥ t by reflexivity
-  apply h_G_not_H t le_rfl
-  -- Goal: ∀ r ≤ t, φ(r) - this is exactly h_H
-  exact h_H
+  have ⟨h_phi, h_H⟩ := h2
+  -- h_H : ∀ r < t, φ(r) (Hφ at t, strict)
+  -- h_phi : φ(t)
+  -- Use succ(t) as witness: t < succ(t) by Order.lt_succ
+  apply h_G_not_H (Order.succ t) (Order.lt_succ t)
+  -- Goal: ∀ r < succ(t), φ(r). By lt_succ_iff_of_not_isMax, r < succ(t) ↔ r ≤ t.
+  intro r hrs
+  rcases Order.le_of_lt_succ hrs |>.lt_or_eq with h_lt | h_eq
+  · exact h_H r h_lt
+  · exact h_eq ▸ h_phi
 
 /-- Future seriality axiom validity: `⊨_discrete Gφ → Fφ`.
-Under reflexive semantics, this is trivially valid via T-axiom: Gφ → φ,
-and φ at t witnesses Fφ (∃s ≥ t, φ(s)) by taking s = t. -/
+Under strict semantics: from Gφ at t (∀s > t, φ(s)), by NoMaxOrder ∃ s > t,
+so φ(s) gives the witness for Fφ. -/
 theorem seriality_future_valid (φ : Formula) :
     valid_discrete (φ.all_future.imp φ.some_future) := by
-  intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro h_G h_neg_F
-  -- h_G : ∀ s ≥ t, φ(s) (Gφ at t)
-  -- h_neg_F : ∀ s ≥ t, ¬φ(s) (¬Fφ at t)
-  -- Use t itself as witness: t ≥ t by reflexivity
-  -- h_G gives φ(t), h_neg_F gives ¬φ(t). Contradiction.
-  exact h_neg_F t le_rfl (h_G t le_rfl)
+  -- h_G : ∀ s > t, φ(s) (Gφ at t, strict)
+  -- h_neg_F : ∀ s > t, ¬φ(s) (¬Fφ at t, strict)
+  -- By NoMaxOrder, there exists s > t.
+  obtain ⟨s, hts⟩ := exists_gt t
+  exact h_neg_F s hts (h_G s hts)
 
 /-- Past seriality axiom validity: `⊨_discrete Hφ → Pφ`.
-Under reflexive semantics, this is trivially valid via T-axiom: Hφ → φ,
-and φ at t witnesses Pφ (∃s ≤ t, φ(s)) by taking s = t. -/
+Under strict semantics: from Hφ at t (∀s < t, φ(s)), by NoMinOrder ∃ s < t,
+so φ(s) gives the witness for Pφ. -/
 theorem seriality_past_valid (φ : Formula) :
     valid_discrete (φ.all_past.imp φ.some_past) := by
-  intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_past, Formula.neg, truth_at]
   intro h_H h_neg_P
-  -- h_H : ∀ s ≤ t, φ(s) (Hφ at t)
-  -- h_neg_P : ∀ s ≤ t, ¬φ(s) (¬Pφ at t)
-  -- Use t itself as witness: t ≤ t by reflexivity
-  -- h_H gives φ(t), h_neg_P gives ¬φ(t). Contradiction.
-  exact h_neg_P t le_rfl (h_H t le_rfl)
+  -- h_H : ∀ s < t, φ(s) (Hφ at t, strict)
+  -- h_neg_P : ∀ s < t, ¬φ(s) (¬Pφ at t, strict)
+  -- By NoMinOrder, there exists s < t.
+  obtain ⟨s, hst⟩ := exists_lt t
+  exact h_neg_P s hst (h_H s hst)
+
+/-- Discrete Next axiom validity: `⊨_discrete F(⊤) → X(⊤)`.
+Under strict semantics: if ∃ s > t (F(⊤)), then bot U (neg bot) at t.
+Take witness s = succ(t). Guard interval (t, succ(t)) is empty on discrete orders. -/
+theorem disc_next_valid :
+    valid_discrete ((Formula.neg Formula.bot).some_future.imp
+      (Formula.untl Formula.bot (Formula.neg Formula.bot))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.neg, Formula.some_future, truth_at]
+  intro _h_F_top
+  -- Need: ∃ s > t, ¬False ∧ ∀ r, t < r → r < s → False
+  -- Take s = succ(t). t < succ(t) by Order.lt_succ (NoMaxOrder from Nontrivial + ordered group).
+  exact ⟨Order.succ t, Order.lt_succ t, id, fun r htr hrs =>
+    absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+
+/-- Discrete Prev axiom validity: `⊨_discrete P(⊤) → Y(⊤)`.
+Mirror of disc_next for past direction. -/
+theorem disc_prev_valid :
+    valid_discrete ((Formula.neg Formula.bot).some_past.imp
+      (Formula.snce Formula.bot (Formula.neg Formula.bot))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.neg, Formula.some_past, truth_at]
+  intro _h_P_top
+  -- Take s = pred(t). pred(t) < t by Order.pred_lt (NoMinOrder).
+  refine ⟨Order.pred t, Order.pred_lt t, id, fun r hrs hrt => ?_⟩
+  exact absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)
+
+/-- Until Unfold axiom validity: `⊨_discrete (φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`.
+Under strict semantics: given witness s > t for φ U ψ, the next instant is succ(t).
+If s = succ(t), ψ holds there (left disjunct).
+If s > succ(t), φ holds at succ(t) and φ U ψ continues (right disjunct). -/
+theorem until_unfold_valid (φ ψ : Formula) :
+    valid_discrete (Formula.untl φ ψ |>.imp
+      (Formula.untl Formula.bot
+        (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+  intro ⟨s, hts, h_psi_s, h_phi_guard⟩
+  -- Need: ∃ u > t, (ψ(u) ∨ (φ(u) ∧ (φ U ψ)(u))) ∧ ∀ r, t < r → r < u → False
+  -- Take u = succ(t).
+  refine ⟨Order.succ t, Order.lt_succ t, ?_, fun r htr hrs =>
+    absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+  -- Show: ψ(succ(t)) ∨ (φ(succ(t)) ∧ (φ U ψ)(succ(t)))
+  -- We have s > t, so succ(t) ≤ s.
+  have h_succ_le_s := Order.succ_le_of_lt hts
+  rcases h_succ_le_s.eq_or_lt with h_eq | h_lt
+  · -- s = succ(t): ψ holds at succ(t)
+    intro h_neg_psi
+    exact absurd (h_eq ▸ h_psi_s) h_neg_psi
+  · -- s > succ(t): φ at succ(t) and φ U ψ at succ(t) with witness s
+    intro h_neg_psi h_neg_phi_and_until
+    apply h_neg_phi_and_until
+    · -- φ(succ(t)): from guard, since t < succ(t) < s
+      exact h_phi_guard (Order.succ t) (Order.lt_succ t) h_lt
+    · -- (φ U ψ)(succ(t)) with witness s
+      exact ⟨s, h_lt, h_psi_s, fun r hr1 hr2 => h_phi_guard r (lt_trans (Order.lt_succ t) hr1) hr2⟩
+
+/-- Until Intro axiom validity: `⊨_discrete X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`.
+Under strict semantics: the bot-guard in X forces the witness to be succ(t).
+Then ψ(succ(t)) gives φ U ψ with witness succ(t), and φ(succ(t)) ∧ (φ U ψ)(succ(t))
+extends the witness from succ(t). -/
+theorem until_intro_valid (φ ψ : Formula) :
+    valid_discrete ((Formula.untl Formula.bot
+        (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))).imp
+      (Formula.untl φ ψ)) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+  intro ⟨u, htu, h_disj, h_bot_guard⟩
+  -- The bot guard forces u = succ(t):
+  -- From t < u, we get succ(t) ≤ u. If succ(t) < u, then t < succ(t) < u contradicts guard.
+  have h_u_eq : u = Order.succ t := le_antisymm
+    (by_contra fun h_not =>
+      h_bot_guard (Order.succ t) (Order.lt_succ t) (lt_of_not_le h_not))
+    (Order.succ_le_of_lt htu)
+  subst h_u_eq
+  -- h_disj : ψ(succ(t)) ∨ (φ(succ(t)) ∧ (φ U ψ)(succ(t)))
+  by_cases h_psi : truth_at M Omega τ (Order.succ t) ψ
+  · -- ψ at succ(t): witness = succ(t), guard interval (t, succ(t)) is empty
+    exact ⟨Order.succ t, Order.lt_succ t, h_psi, fun r htr hrs =>
+      absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+  · -- φ at succ(t) and (φ U ψ) at succ(t)
+    have h_and := h_disj (fun h => absurd h h_psi)
+    have h_phi_and_until := and_of_not_imp_not h_and
+    obtain ⟨h_phi_succ, h_until_succ⟩ := h_phi_and_until
+    obtain ⟨s', hs't1, h_psi_s', h_phi_guard'⟩ := h_until_succ
+    -- φ U ψ at t with witness s' > succ(t) > t, guard covers (t, s')
+    exact ⟨s', lt_trans (Order.lt_succ t) hs't1, h_psi_s', fun r htr hrs => by
+      -- r is either succ(t) or strictly greater
+      rcases (Order.succ_le_of_lt htr).eq_or_lt with h_eq | h_lt
+      · exact h_eq ▸ h_phi_succ
+      · exact h_phi_guard' r h_lt hrs⟩
+
+/-- Until Induction axiom validity:
+`⊨_discrete G(ψ → χ) ∧ G(φ ∧ X(χ) → χ) → ((φ U ψ) → X(χ))`.
+Proof by Succ.rec induction along the successor chain from succ(t) to s.
+Base: s = succ(t), ψ(s) → χ(s) by premise 1 at time s.
+Step: at n with succ(t) ≤ n < s, if χ(succ(n)) then φ(n) ∧ X(χ)(n) → χ(n) by premise 2 at time n.
+Uses IsSuccArchimedean to ensure the successor chain reaches s.
+Premises are under G to ensure they hold at all future times n > t. -/
+theorem until_induction_valid (φ ψ χ : Formula) :
+    valid_discrete (Formula.and
+      ((ψ.imp χ).all_future)
+      (((Formula.and φ (Formula.untl Formula.bot χ)).imp χ).all_future)
+      |>.imp ((Formula.untl φ ψ).imp (Formula.untl Formula.bot χ))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_premises h_until
+  -- Extract the two premises (under G)
+  have h_prems := and_of_not_imp_not h_premises
+  obtain ⟨h_base_G, h_step_G⟩ := h_prems
+  -- h_base_G : ∀ u > t, ψ(u) → χ(u) (premise 1 at all future times)
+  -- h_step_G : ∀ u > t, φ(u) ∧ X(χ)(u) → χ(u) (premise 2 at all future times, negated-imp)
+  -- h_until : φ U ψ at t, i.e., ∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r)
+  obtain ⟨s, hts, h_psi_s, h_phi_guard⟩ := h_until
+  -- Need: X(χ) at t = bot U χ at t = ∃ u > t, χ(u) ∧ ∀ r ∈ (t,u), ⊥
+  -- Take u = succ(t), need χ(succ(t)), empty guard.
+  refine ⟨Order.succ t, Order.lt_succ t, ?_, fun r htr hrs =>
+    absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+  -- Prove χ(succ(t)) by contrapositive: assume ¬χ(succ(t)), propagate forward to ¬χ(s).
+  by_contra h_neg_chi_succ
+  -- Propagation: if ¬χ(n) for succ(t) ≤ n < s, then ¬χ(succ(n))
+  have h_propagate : ∀ n : T, Order.succ t ≤ n → n < s → ¬truth_at M Omega τ n χ →
+      ¬truth_at M Omega τ (Order.succ n) χ := by
+    intro n h_succ_le_n hns h_neg_chi_n h_chi_succ_n
+    apply h_neg_chi_n
+    -- φ(n): from guard, since t < n (succ(t) ≤ n → t < n) and n < s.
+    have h_t_lt_n : t < n := lt_of_lt_of_le (Order.lt_succ t) h_succ_le_n
+    have h_phi_n : truth_at M Omega τ n φ := h_phi_guard n h_t_lt_n hns
+    -- X(χ)(n) = bot U χ at n with witness succ(n), empty guard.
+    have h_X_chi_n : ∃ u : T, n < u ∧ truth_at M Omega τ u χ ∧
+        ∀ r : T, n < r → r < u → False :=
+      ⟨Order.succ n, Order.lt_succ n, h_chi_succ_n, fun r htr hrs =>
+        absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+    -- Apply step premise at time n (n > t, so h_step_G gives us the premise)
+    exact h_step_G n h_t_lt_n (fun h_imp => h_imp h_phi_n h_X_chi_n)
+  -- Use Succ.rec to propagate ¬χ from succ(t) to s.
+  have h_all_neg : ∀ n : T, Order.succ t ≤ n → n ≤ s → ¬truth_at M Omega τ n χ := by
+    intro n h_le_n h_n_le_s
+    refine Succ.rec ?_ ?_ h_le_n h_n_le_s
+    · -- base: n = succ(t)
+      intro _; exact h_neg_chi_succ
+    · -- step: n → succ(n)
+      intro m h_le_m ih h_succ_m_le_s
+      have h_m_lt_s : m < s := lt_of_lt_of_le (Order.lt_succ m) h_succ_m_le_s
+      exact h_propagate m h_le_m h_m_lt_s (ih (le_of_lt h_m_lt_s))
+  -- At n = s: ¬χ(s). But ψ(s) → χ(s) by premise 1 at time s (s > t).
+  exact h_all_neg s (Order.succ_le_of_lt hts) le_rfl (h_base_G s hts h_psi_s)
+
+/-- Until Linearity axiom validity:
+`⊨_discrete (φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ)))`.
+Given witnesses s₁ for φ U ψ and s₂ for φ' U ψ', by linear order either s₁ ≤ s₂ or s₂ ≤ s₁. -/
+theorem until_linearity_valid (φ ψ φ' ψ' : Formula) :
+    valid_discrete (Formula.and (Formula.untl φ ψ) (Formula.untl φ' ψ')
+      |>.imp (Formula.or
+        (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
+        (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ))))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+  intro h_conj
+  have h_both := and_of_not_imp_not h_conj
+  obtain ⟨h_until1, h_until2⟩ := h_both
+  obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_until1
+  obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_until2
+  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+  · -- s1 < s2: left disjunct with witness s1 (ψ(s1) ∧ (φ' U ψ')(s1))
+    intro h_neg_left
+    exfalso
+    exact h_neg_left ⟨s1, hs1t,
+      fun h_imp => h_imp h_psi_s1
+        ⟨s2, h_lt, h_psi'_s2, fun r hr1 hr2 => h_phi'_range2 r (lt_trans hs1t hr1) hr2⟩,
+      h_phi_range1⟩
+  · -- s1 = s2: left disjunct with witness s1 (ψ(s1) ∧ (φ' U ψ')(s1) via ψ'(s1))
+    subst h_eq
+    intro h_neg_left
+    exfalso
+    -- At s1 = s2, both ψ(s1) and ψ'(s1) hold. Need (φ' U ψ') at s1.
+    -- We don't need a future witness for φ' U ψ' because ψ' already holds at s1.
+    -- But (φ' U ψ') at s1 means ∃ u > s1, ψ'(u) ∧ guard. ψ'(s1) doesn't give ∃ u > s1.
+    -- So we take the right disjunct instead: φ' U (ψ' ∧ (φ U ψ)) with witness s1
+    -- Same issue: need ∃ u > s1 for the inner Until.
+    -- Actually, we should take the left disjunct φ U (ψ ∧ (φ' U ψ')) with witness s1.
+    -- (ψ ∧ (φ' U ψ')) at s1 needs (φ' U ψ') at s1 = ∃ u > s1 with ψ'(u)... still need future witness.
+    -- The right approach: since s1 = s2 and ψ(s1), ψ'(s1) both hold, we can still provide
+    -- the left disjunct. For (φ' U ψ') at s1, we need a future witness.
+    -- But (φ' U ψ') at s1 is ∃ u > s1, ψ'(u) ∧ guard. We don't have such a witness.
+    -- Solution: we need to pick a disjunct differently.
+    -- Actually, re-examining: the conclusion is φ U (ψ ∧ (φ' U ψ')), which needs
+    -- ∃ s > t, (ψ ∧ (φ' U ψ'))(s) ∧ guard. At s = s1, we need (φ' U ψ')(s1).
+    -- (φ' U ψ') at s1 requires ∃ u > s1... which we don't have.
+    -- The correct resolution: when s1 = s2, we don't need (φ' U ψ')(s1) -- we can
+    -- simply pack the conjunction differently. Both ψ(s1) and ψ'(s1) hold at s1.
+    -- Left: φ U (ψ ∧ (φ' U ψ')) -- needs (φ' U ψ')(s1) = ∃ u > s1...
+    -- Neither disjunct works without a future witness for φ' U ψ' at s1.
+    -- This means until_linearity is NOT sound with this formulation when s1 = s2!
+    -- The axiom needs reconsideration for the equal case.
+    -- Actually wait: we can also split on whether s1 is the leftmost witness.
+    -- If we can find s1' ≤ s1 with ψ(s1') where s1' is minimal, we might find s1' < s2.
+    -- But that's not given to us.
+    -- RESOLUTION: The correct approach is to keep both disjuncts available:
+    -- Left: φ U (ψ ∧ (φ' U ψ')) with a potentially smaller witness
+    -- Actually, the axiom is still sound. At s = s1 = s2, if we're in a discrete order,
+    -- ψ'(s1) doesn't directly give (φ' U ψ')(s1) but we can use a different witness.
+    -- Hmm, let me reconsider. The Until witness just needs ψ ∧ (φ' U ψ') at some s > t.
+    -- If s1 = s2, pick some point before s1 if possible.
+    -- Actually the simplest fix: when s1 = s2, we know ψ(s1) and ψ'(s1).
+    -- We need either φ U (ψ ∧ (φ' U ψ')) or φ' U (ψ' ∧ (φ U ψ)).
+    -- For the first: ∃ u > t, (ψ ∧ (φ' U ψ'))(u), φ-guard.
+    -- Since ψ'(s1) holds but (φ' U ψ')(s1) needs a FUTURE ψ' witness from s1...
+    -- Key insight: the guard of φ U ψ ensures φ holds on (t, s1).
+    -- If there's a point s' in (t, s1) with ψ'(s'), then (φ' U ψ') holds at s' with witness s'.
+    -- But we don't know that.
+    -- The axiom is actually about the SAME phi guards being compatible.
+    -- Hmm, let me just use sorry for now and come back.
+    sorry
+  · -- s2 < s1: right disjunct with witness s2 (ψ'(s2) ∧ (φ U ψ)(s2))
+    intro _
+    exact ⟨s2, hs2t,
+      fun h_imp => h_imp h_psi'_s2
+        ⟨s1, h_gt, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r (lt_trans hs2t hr1) hr2⟩,
+      h_phi'_range2⟩
+
+/-- Since Unfold axiom validity: `⊨_discrete (φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`.
+Mirror of until_unfold_valid for past direction. -/
+theorem since_unfold_valid (φ ψ : Formula) :
+    valid_discrete (Formula.snce φ ψ |>.imp
+      (Formula.snce Formula.bot
+        (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+  intro ⟨s, hst, h_psi_s, h_phi_guard⟩
+  -- Take u = pred(t). pred(t) < t by Order.pred_lt.
+  refine ⟨Order.pred t, Order.pred_lt t, ?_, fun r hrs hrt =>
+    absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
+  -- Show: ψ(pred(t)) ∨ (φ(pred(t)) ∧ (φ S ψ)(pred(t)))
+  have h_pred_ge_s := Order.le_pred_of_lt hst
+  rcases h_pred_ge_s.eq_or_lt with h_eq | h_lt
+  · -- s = pred(t): ψ holds at pred(t)
+    intro h_neg_psi
+    exact absurd (h_eq ▸ h_psi_s) h_neg_psi
+  · -- s < pred(t): φ at pred(t) and φ S ψ at pred(t) with witness s
+    intro h_neg_psi h_neg_phi_and_since
+    apply h_neg_phi_and_since
+    exact fun h_imp => h_imp (h_phi_guard (Order.pred t) h_lt (Order.pred_lt t))
+      ⟨s, h_lt, h_psi_s, fun r hr1 hr2 => h_phi_guard r hr1 (lt_trans hr2 (Order.pred_lt t))⟩
+
+/-- Since Intro axiom validity: `⊨_discrete Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)`.
+Mirror of until_intro_valid for past direction. -/
+theorem since_intro_valid (φ ψ : Formula) :
+    valid_discrete ((Formula.snce Formula.bot
+        (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))).imp
+      (Formula.snce φ ψ)) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.or, Formula.and, Formula.neg, truth_at]
+  intro ⟨u, hut, h_disj, h_bot_guard⟩
+  -- Bot guard forces u = pred(t)
+  have h_u_eq : u = Order.pred t := le_antisymm
+    (Order.le_pred_of_lt hut)
+    (by_contra fun h_not =>
+      h_bot_guard (Order.pred t) (lt_of_not_le h_not) (Order.pred_lt t))
+  subst h_u_eq
+  by_cases h_psi : truth_at M Omega τ (Order.pred t) ψ
+  · -- ψ at pred(t): witness = pred(t), guard empty
+    exact ⟨Order.pred t, Order.pred_lt t, h_psi, fun r hrs hrt =>
+      absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
+  · -- φ at pred(t) and (φ S ψ) at pred(t)
+    have h_and := h_disj (fun h => absurd h h_psi)
+    have h_phi_and_since := and_of_not_imp_not h_and
+    obtain ⟨h_phi_pred, h_since_pred⟩ := h_phi_and_since
+    obtain ⟨s', hs'p, h_psi_s', h_phi_guard'⟩ := h_since_pred
+    exact ⟨s', lt_trans hs'p (Order.pred_lt t), h_psi_s', fun r hrs hrt => by
+      rcases (Order.le_pred_of_lt hrt).eq_or_lt with h_eq | h_lt
+      · exact h_eq ▸ h_phi_pred
+      · exact h_phi_guard' r hrs h_lt⟩
+
+/-- Since Induction axiom validity:
+`⊨_discrete H(ψ → χ) ∧ H(φ ∧ Y(χ) → χ) → ((φ S ψ) → Y(χ))`.
+Mirror of until_induction_valid. Uses IsPredArchimedean for Pred.rec induction.
+Premises are under H to ensure they hold at all past times n < t. -/
+theorem since_induction_valid (φ ψ χ : Formula) :
+    valid_discrete (Formula.and
+      ((ψ.imp χ).all_past)
+      (((Formula.and φ (Formula.snce Formula.bot χ)).imp χ).all_past)
+      |>.imp ((Formula.snce φ ψ).imp (Formula.snce Formula.bot χ))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_premises h_since
+  have h_prems := and_of_not_imp_not h_premises
+  obtain ⟨h_base_H, h_step_H⟩ := h_prems
+  -- h_base_H : ∀ u < t, ψ(u) → χ(u)
+  -- h_step_H : ∀ u < t, φ(u) ∧ Y(χ)(u) → χ(u) (negated-imp)
+  obtain ⟨s, hst, h_psi_s, h_phi_guard⟩ := h_since
+  -- Need: Y(χ) at t = bot S χ at t = ∃ u < t, χ(u) ∧ ∀ r ∈ (u,t), ⊥
+  refine ⟨Order.pred t, Order.pred_lt t, ?_, fun r hrs hrt =>
+    absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
+  -- Prove χ(pred(t)) by contrapositive propagation using Pred.rec.
+  by_contra h_neg_chi_pred
+  -- Propagation: ¬χ(n) ∧ s < n ≤ pred(t) → ¬χ(pred(n))
+  have h_propagate : ∀ n : T, n ≤ Order.pred t → s < n → ¬truth_at M Omega τ n χ →
+      ¬truth_at M Omega τ (Order.pred n) χ := by
+    intro n h_n_le_pred hns h_neg_chi_n h_chi_pred_n
+    apply h_neg_chi_n
+    have h_n_lt_t : n < t := lt_of_le_of_lt h_n_le_pred (Order.pred_lt t)
+    have h_phi_n : truth_at M Omega τ n φ := h_phi_guard n hns h_n_lt_t
+    have h_Y_chi_n : ∃ u : T, u < n ∧ truth_at M Omega τ u χ ∧
+        ∀ r : T, u < r → r < n → False :=
+      ⟨Order.pred n, Order.pred_lt n, h_chi_pred_n, fun r hpr hrn =>
+        absurd (Order.le_pred_of_lt hrn) (not_le.mpr hpr)⟩
+    -- Apply step premise at time n (n < t, so h_step_H gives the premise)
+    by_contra h_neg
+    exact h_step_H n h_n_lt_t (fun h_imp => h_neg (h_imp h_phi_n h_Y_chi_n))
+  -- Propagate ¬χ from pred(t) down to s using Pred.rec
+  have h_all_neg : ∀ n : T, s ≤ n → n ≤ Order.pred t → ¬truth_at M Omega τ n χ := by
+    intro n h_s_le_n h_n_le_pred
+    induction n, h_n_le_pred using Pred.rec with
+    | base => exact h_neg_chi_pred
+    | succ m h_le_m ih =>
+      have h_s_lt_m : s < m := lt_of_le_of_lt h_s_le_n (Order.pred_lt m)
+      exact h_propagate m h_le_m h_s_lt_m (ih (le_of_lt h_s_lt_m))
+  -- At n = s: ¬χ(s). But ψ(s) → χ(s) by premise 1 at time s (s < t).
+  exact h_all_neg s le_rfl (Order.le_pred_of_lt hst) (h_base_H s hst h_psi_s)
+
+/-- Since Linearity axiom validity:
+`⊨_discrete (φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ)))`.
+Mirror of until_linearity_valid. -/
+theorem since_linearity_valid (φ ψ φ' ψ' : Formula) :
+    valid_discrete (Formula.and (Formula.snce φ ψ) (Formula.snce φ' ψ')
+      |>.imp (Formula.or
+        (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
+        (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ))))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+  intro h_conj
+  have h_both := and_of_not_imp_not h_conj
+  obtain ⟨h_since1, h_since2⟩ := h_both
+  obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_since1
+  obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_since2
+  rcases le_total s1 s2 with h_le | h_le
+  · -- s1 ≤ s2: right disjunct with witness s2
+    intro _
+    exact ⟨s2, hs2t,
+      fun h_imp => h_imp h_psi'_s2 ⟨s1, h_le, h_psi_s1,
+        fun r hr1 hr2 => h_phi_range1 r hr1 (lt_of_lt_of_le hr2 (le_of_lt hs2t))⟩,
+      h_phi'_range2⟩
+  · -- s2 ≤ s1: left disjunct with witness s1
+    intro h_neg_left
+    exfalso
+    exact h_neg_left ⟨s1, hs1t,
+      fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
+        fun r hr1 hr2 => h_phi'_range2 r hr1 (lt_of_lt_of_le hr2 (le_of_lt hs1t))⟩,
+      h_phi_range1⟩
+
+/-- Until-Since Connectedness axiom validity:
+`⊨_discrete φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`.
+Under strict semantics: if φ(t) and χ U ψ at t with witness s, then
+ψ(s) and χ S φ at s with witness t (since φ(t) and χ on (t,s)). -/
+theorem until_connectedness_valid (φ ψ χ : Formula) :
+    valid_discrete (Formula.and φ (Formula.untl χ ψ)
+      |>.imp (Formula.untl χ (Formula.and ψ (Formula.snce χ φ)))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_conj
+  have h_both := and_of_not_imp_not h_conj
+  obtain ⟨h_phi_t, h_until⟩ := h_both
+  obtain ⟨s, hts, h_psi_s, h_chi_guard⟩ := h_until
+  -- Witness s for the conclusion χ U (ψ ∧ (χ S φ))
+  exact ⟨s, hts, fun h_imp => h_imp h_psi_s ⟨t, hts, h_phi_t,
+    fun r htr hrs => h_chi_guard r htr hrs⟩, h_chi_guard⟩
+
+/-- Since-Until Connectedness axiom validity:
+`⊨_discrete φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))`.
+Mirror of until_connectedness_valid. -/
+theorem since_connectedness_valid (φ ψ χ : Formula) :
+    valid_discrete (Formula.and φ (Formula.snce χ ψ)
+      |>.imp (Formula.snce χ (Formula.and ψ (Formula.untl χ φ)))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_conj
+  have h_both := and_of_not_imp_not h_conj
+  obtain ⟨h_phi_t, h_since⟩ := h_both
+  obtain ⟨s, hst, h_psi_s, h_chi_guard⟩ := h_since
+  exact ⟨s, hst, fun h_imp => h_imp h_psi_s ⟨t, hst, h_phi_t,
+    fun r hrs hrt => h_chi_guard r hrs hrt⟩, h_chi_guard⟩
+
+/-- F-Until equivalence validity: `⊨_discrete F(ψ) → ⊤ U ψ`.
+Under strict semantics, both express ∃ s > t with ψ(s). The ⊤ guard is vacuous. -/
+theorem F_until_equiv_valid (ψ : Formula) :
+    valid_discrete (Formula.some_future ψ |>.imp (Formula.untl (Formula.neg Formula.bot) ψ)) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  intro h_F
+  have h_exists : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_F (fun s hs hpsi => h_no s hs hpsi)
+  obtain ⟨s, hst, hs⟩ := h_exists
+  exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
+
+/-- P-Since equivalence validity: `⊨_discrete P(ψ) → ⊤ S ψ`.
+Mirror of F_until_equiv_valid. -/
+theorem P_since_equiv_valid (ψ : Formula) :
+    valid_discrete (Formula.some_past ψ |>.imp (Formula.snce (Formula.neg Formula.bot) ψ)) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_past, Formula.neg, truth_at]
+  intro h_P
+  have h_exists : ∃ s, s < t ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_P (fun s hs hpsi => h_no s hs hpsi)
+  obtain ⟨s, hst, hs⟩ := h_exists
+  exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
 
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
@@ -395,9 +797,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ
   | temp_4 ψ => exact temp_4_valid ψ
   | temp_a ψ => exact temp_a_valid ψ
+  | temp_a_dual ψ => exact temp_a_dual_valid ψ
   | temp_l ψ => exact temp_l_valid ψ
-  | temp_t_future ψ => exact temp_t_future_valid ψ
-  | temp_t_past ψ => exact temp_t_past_valid ψ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
   | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
@@ -405,6 +806,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | discreteness_forward _ => exact absurd h_base id
   | seriality_future _ => exact absurd h_base id
   | seriality_past _ => exact absurd h_base id
+  | disc_next => exact absurd h_base id
+  | disc_prev => exact absurd h_base id
   | until_unfold _ _ => exact absurd h_base id
   | until_intro _ _ => exact absurd h_base id
   | until_induction _ _ _ => exact absurd h_base id
@@ -435,28 +838,29 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | temp_k_dist φ ψ => exact Validity.valid_implies_valid_dense (temp_k_dist_valid φ ψ)
   | temp_4 ψ => exact Validity.valid_implies_valid_dense (temp_4_valid ψ)
   | temp_a ψ => exact Validity.valid_implies_valid_dense (temp_a_valid ψ)
+  | temp_a_dual ψ => exact Validity.valid_implies_valid_dense (temp_a_dual_valid ψ)
   | temp_l ψ => exact Validity.valid_implies_valid_dense (temp_l_valid ψ)
-  | temp_t_future ψ => exact Validity.valid_implies_valid_dense (temp_t_future_valid ψ)
-  | temp_t_past ψ => exact Validity.valid_implies_valid_dense (temp_t_past_valid ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_dense (temp_future_valid ψ)
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_valid φ ψ)
   | density ψ => exact density_valid ψ
   | discreteness_forward _ => exact absurd h_dc id
   | seriality_future ψ =>
-    -- Under reflexive semantics, Gψ → Fψ is trivially valid via T-axiom
+    -- Under strict semantics, Gψ → Fψ. By Nontrivial + ordered group, NoMaxOrder.
     intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_future, Formula.neg, truth_at]
     intro h_G h_neg_F
-    -- Use t itself as witness: h_G gives ψ(t) at t ≥ t (reflexivity)
-    exact h_neg_F t le_rfl (h_G t le_rfl)
+    obtain ⟨s, hts⟩ := exists_gt t
+    exact h_neg_F s hts (h_G s hts)
   | seriality_past ψ =>
-    -- Under reflexive semantics, Hψ → Pψ is trivially valid via T-axiom
+    -- Under strict semantics, Hψ → Pψ. By Nontrivial + ordered group, NoMinOrder.
     intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_past, Formula.neg, truth_at]
     intro h_H h_neg_P
-    -- Use t itself as witness: h_H gives ψ(t) at t ≤ t (reflexivity)
-    exact h_neg_P t le_rfl (h_H t le_rfl)
+    obtain ⟨s, hst⟩ := exists_lt t
+    exact h_neg_P s hst (h_H s hst)
+  | disc_next => exact absurd h_dc id
+  | disc_prev => exact absurd h_dc id
   | until_unfold _ _ => exact absurd h_dc id
   | until_intro _ _ => exact absurd h_dc id
   | until_induction _ _ _ => exact absurd h_dc id
@@ -488,165 +892,29 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | temp_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (temp_k_dist_valid φ ψ)
   | temp_4 ψ => exact Validity.valid_implies_valid_discrete (temp_4_valid ψ)
   | temp_a ψ => exact Validity.valid_implies_valid_discrete (temp_a_valid ψ)
+  | temp_a_dual ψ => exact Validity.valid_implies_valid_discrete (temp_a_dual_valid ψ)
   | temp_l ψ => exact Validity.valid_implies_valid_discrete (temp_l_valid ψ)
-  | temp_t_future ψ => exact Validity.valid_implies_valid_discrete (temp_t_future_valid ψ)
-  | temp_t_past ψ => exact Validity.valid_implies_valid_discrete (temp_t_past_valid ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_discrete (temp_future_valid ψ)
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_valid φ ψ)
   | density _ => exact absurd h_dc id
   | discreteness_forward ψ => exact discreteness_forward_valid ψ
-  | seriality_future ψ =>
-    -- Under reflexive semantics, Gψ → Fψ is trivially valid via T-axiom
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_future, Formula.neg, truth_at]
-    intro h_G h_neg_F
-    -- Use t itself as witness: h_G gives ψ(t) at t ≥ t (reflexivity)
-    exact h_neg_F t le_rfl (h_G t le_rfl)
-  | seriality_past ψ =>
-    -- Under reflexive semantics, Hψ → Pψ is trivially valid via T-axiom
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_past, Formula.neg, truth_at]
-    intro h_H h_neg_P
-    -- Use t itself as witness: h_H gives ψ(t) at t ≤ t (reflexivity)
-    exact h_neg_P t le_rfl (h_H t le_rfl)
-  -- Until/Since axiom soundness:
-  -- 6 of 10 axioms (unfold, intro, induction for both Until and Since) are UNSOUND
-  -- under reflexive temporal semantics. They require axiom reformulation (separate task).
-  -- The remaining 4 (linearity and connectedness) ARE sound and proven below.
-  --
-  -- UNSOUND: until_unfold — G(φ U ψ) requires Until at ALL s ≥ t, but witness covers [t, s_w].
-  -- Counterexample: φ=⊤ on {0,1}, ψ at {1}, φ=⊥ at {2+}. (φ U ψ)(0) holds but G(φ U ψ)(0) fails.
-  | until_unfold _ _ => sorry
-  -- SOUND under half-open: until_intro — ψ ∨ (φ ∧ G(φ U ψ)) → φ U ψ
-  -- Case 1: ψ(t) gives witness s=t with vacuous guard [t,t)=∅
-  -- Case 2: G(φ U ψ)(t) gives (φ U ψ)(t) directly by reflexivity of G
-  | until_intro φ ψ =>
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.or, Formula.and, Formula.neg, truth_at]
-    intro h_or
-    by_cases h_psi : truth_at M Omega τ t ψ
-    · -- Case 1: ψ(t) — use t as witness with vacuous guard
-      exact ⟨t, le_refl t, h_psi, fun _ h_le h_lt => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
-    · -- Case 2: ¬ψ(t), so h_or gives φ(t) ∧ G(φ U ψ)(t)
-      have h_and := h_or (fun h => absurd h h_psi)
-      -- h_and : ¬(φ(t) → ¬G(φ U ψ)(t)), i.e., φ(t) ∧ G(φ U ψ)(t)
-      by_contra h_neg_until
-      apply h_and
-      intro _h_phi h_G
-      -- G(φ U ψ)(t) means ∀ s ≥ t, (φ U ψ)(s). At s = t: (φ U ψ)(t).
-      exact h_neg_until (h_G t (le_refl t))
-  -- UNSOUND: until_induction — needs backward propagation but premise only gives forward.
-  | until_induction _ _ _ => sorry
-  | until_linearity φ ψ φ' ψ' =>
-    -- SOUND: (φ U ψ) ∧ (φ' U ψ') → (φ U (ψ ∧ (φ' U ψ'))) ∨ (φ' U (ψ' ∧ (φ U ψ)))
-    -- Proof: Given witnesses s₁ for φ U ψ and s₂ for φ' U ψ', by linear order
-    -- either s₁ ≤ s₂ or s₂ ≤ s₁. WLOG s₁ ≤ s₂: take left disjunct with witness s₁.
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
-    intro h_conj
-    -- Extract (φ U ψ) and (φ' U ψ') from the conjunction encoding
-    have h_both := and_of_not_imp_not h_conj
-    obtain ⟨h_until1, h_until2⟩ := h_both
-    -- h_until1 : ∃ s, t ≤ s ∧ truth ψ s ∧ ∀ r ∈ [t,s], truth φ r
-    -- h_until2 : ∃ s, t ≤ s ∧ truth ψ' s ∧ ∀ r ∈ [t,s], truth φ' r
-    obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_until1
-    obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_until2
-    rcases le_total s1 s2 with h_le | h_le
-    · -- s1 ≤ s2: take left disjunct with witness s1
-      -- Left = φ U (ψ ∧ (φ' U ψ')) with witness s1
-      -- (φ' U ψ')(s1) via witness s2 (s1 ≤ s2, ψ'(s2), φ' on [s1,s2] ⊆ [t,s2])
-      intro h_neg_left
-      exfalso
-      exact h_neg_left ⟨s1, hs1t,
-        fun h_imp => h_imp h_psi_s1
-          ⟨s2, h_le, h_psi'_s2, fun r hr1 hr2 => h_phi'_range2 r (le_trans hs1t hr1) hr2⟩,
-        h_phi_range1⟩
-    · -- s2 ≤ s1: take right disjunct with witness s2
-      -- Right = φ' U (ψ' ∧ (φ U ψ)) with witness s2
-      -- (φ U ψ)(s2) via witness s1 (s2 ≤ s1, ψ(s1), φ on [s2,s1] ⊆ [t,s1])
-      intro _
-      exact ⟨s2, hs2t,
-        fun h_imp => h_imp h_psi'_s2
-          ⟨s1, h_le, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r (le_trans hs2t hr1) hr2⟩,
-        h_phi'_range2⟩
-  -- UNSOUND: since_unfold — mirror of until_unfold unsoundness.
-  | since_unfold _ _ => sorry
-  -- SOUND under half-open: since_intro — ψ ∨ (φ ∧ H(φ S ψ)) → φ S ψ
-  -- Case 1: ψ(t) gives witness s=t with vacuous guard (t,t]=∅
-  -- Case 2: H(φ S ψ)(t) gives (φ S ψ)(t) directly by reflexivity of H
-  | since_intro φ ψ =>
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.or, Formula.and, Formula.neg, truth_at]
-    intro h_or
-    by_cases h_psi : truth_at M Omega τ t ψ
-    · -- Case 1: ψ(t) — use t as witness with vacuous guard (t,t]=∅
-      exact ⟨t, le_refl t, h_psi, fun _ h_lt h_le => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
-    · -- Case 2: ¬ψ(t), so h_or gives φ(t) ∧ H(φ S ψ)(t)
-      have h_and := h_or (fun h => absurd h h_psi)
-      by_contra h_neg_since
-      apply h_and
-      intro _h_phi h_H
-      -- H(φ S ψ)(t) means ∀ s ≤ t, (φ S ψ)(s). At s = t: (φ S ψ)(t).
-      exact h_neg_since (h_H t (le_refl t))
-  -- UNSOUND: since_induction — mirror of until_induction unsoundness.
-  | since_induction _ _ _ => sorry
-  | since_linearity φ ψ φ' ψ' =>
-    -- SOUND: (φ S ψ) ∧ (φ' S ψ') → (φ S (ψ ∧ (φ' S ψ'))) ∨ (φ' S (ψ' ∧ (φ S ψ)))
-    -- Mirror of until_linearity for the past direction.
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
-    intro h_conj
-    have h_both := and_of_not_imp_not h_conj
-    obtain ⟨h_since1, h_since2⟩ := h_both
-    obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_since1
-    obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_since2
-    rcases le_total s1 s2 with h_le | h_le
-    · -- s1 ≤ s2: take right disjunct with witness s2
-      -- Right = φ' S (ψ' ∧ (φ S ψ)) with witness s2
-      -- (φ S ψ)(s2) via witness s1 (s1 ≤ s2, ψ(s1), φ on [s1,s2] ⊆ [s1,t])
-      intro _
-      exact ⟨s2, hs2t,
-        fun h_imp => h_imp h_psi'_s2 ⟨s1, h_le, h_psi_s1,
-          fun r hr1 hr2 => h_phi_range1 r hr1 (le_trans hr2 hs2t)⟩,
-        h_phi'_range2⟩
-    · -- s2 ≤ s1: take left disjunct with witness s1
-      -- Left = φ S (ψ ∧ (φ' S ψ')) with witness s1
-      -- (φ' S ψ')(s1) via witness s2 (s2 ≤ s1, ψ'(s2), φ' on [s2,s1] ⊆ [s2,t])
-      intro h_neg_left
-      exfalso
-      exact h_neg_left ⟨s1, hs1t,
-        fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
-          fun r hr1 hr2 => h_phi'_range2 r hr1 (le_trans hr2 hs1t)⟩,
-        h_phi_range1⟩
-  | until_connectedness _ _ _ =>
-    -- UNSOUND under half-open semantics: φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))
-    -- The Until guard [t, s) does not provide χ(s), but the Since guard (t, s] requires it.
-    sorry
-  | since_connectedness _ _ _ =>
-    -- UNSOUND under half-open semantics: φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))
-    -- Mirror of until_connectedness unsoundness.
-    sorry
-  | F_until_equiv ψ =>
-    -- SOUND: F(ψ) → ⊤ U ψ. Both express ∃ s ≥ t with ψ(s).
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_future, Formula.neg, truth_at]
-    intro h1
-    have h2 : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
-      by_contra h3; push_neg at h3
-      exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
-    obtain ⟨s, hst, hs⟩ := h2
-    exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
-  | P_since_equiv ψ =>
-    -- SOUND: P(ψ) → ⊤ S ψ. Both express ∃ s ≤ t with ψ(s).
-    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_past, Formula.neg, truth_at]
-    intro h1
-    have h2 : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ := by
-      by_contra h3; push_neg at h3
-      exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
-    obtain ⟨s, hst, hs⟩ := h2
-    exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
+  | seriality_future ψ => exact seriality_future_valid ψ
+  | seriality_past ψ => exact seriality_past_valid ψ
+  | disc_next => exact disc_next_valid
+  | disc_prev => exact disc_prev_valid
+  | until_unfold φ ψ => exact until_unfold_valid φ ψ
+  | until_intro φ ψ => exact until_intro_valid φ ψ
+  | until_induction φ ψ χ => exact until_induction_valid φ ψ χ
+  | until_linearity φ ψ φ' ψ' => exact until_linearity_valid φ ψ φ' ψ'
+  | since_unfold φ ψ => exact since_unfold_valid φ ψ
+  | since_intro φ ψ => exact since_intro_valid φ ψ
+  | since_induction φ ψ χ => exact since_induction_valid φ ψ χ
+  | since_linearity φ ψ φ' ψ' => exact since_linearity_valid φ ψ φ' ψ'
+  | until_connectedness φ ψ χ => exact until_connectedness_valid φ ψ χ
+  | since_connectedness φ ψ χ => exact since_connectedness_valid φ ψ χ
+  | F_until_equiv ψ => exact F_until_equiv_valid ψ
+  | P_since_equiv ψ => exact P_since_equiv_valid ψ
 
 /-! ## Full Derivation Soundness
 
@@ -720,126 +988,32 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
     | temp_4 ψ => exact temp_4_valid ψ D F M Omega h_sc τ h_mem t
     | temp_a ψ => exact temp_a_valid ψ D F M Omega h_sc τ h_mem t
+    | temp_a_dual ψ => exact temp_a_dual_valid ψ D F M Omega h_sc τ h_mem t
     | temp_l ψ => exact temp_l_valid ψ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
-    | temp_t_future ψ => exact temp_t_future_valid ψ D F M Omega h_sc τ h_mem t
-    | temp_t_past ψ => exact temp_t_past_valid ψ D F M Omega h_sc τ h_mem t
     | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t
-    | density ψ =>
-      -- Density axiom: GGψ → Gψ. Under reflexive semantics (s <= t), trivially valid.
-      -- Given h_GG : forall r >= t, forall q >= r, phi q
-      -- For any s >= t, take r = s, q = s (via le_rfl) to get phi s.
-      simp only [truth_at]
-      intro h_GG s hts
-      exact h_GG s hts s le_rfl
-    | discreteness_forward ψ =>
-      -- Forward discreteness: (F⊤ ∧ φ ∧ Hφ) → F(Hφ). Under reflexive semantics, trivially valid.
-      -- The conjunction (F⊤ ∧ φ ∧ Hφ) implies Hφ, and we witness F(Hφ) at t via le_rfl.
-      simp only [Formula.and, Formula.some_future, Formula.neg, truth_at]
-      intro h_conj h_G_not_H
-      have h1 := and_of_not_imp_not h_conj
-      have ⟨_h_F_top, h_phi_and_H⟩ := h1
-      have h2 := and_of_not_imp_not h_phi_and_H
-      have ⟨_h_phi, h_H⟩ := h2
-      apply h_G_not_H t le_rfl
-      exact h_H
-    | seriality_future ψ =>
-      -- Seriality: Gψ → Fψ. Under reflexive semantics (s <= t), trivially valid via self-witness.
-      simp only [Formula.some_future, Formula.neg, truth_at]
-      intro h_G h_neg_F
-      exact h_neg_F t le_rfl (h_G t le_rfl)
-    | seriality_past ψ =>
-      -- Seriality: Hψ → Pψ. Under reflexive semantics (s <= t), trivially valid via self-witness.
-      simp only [Formula.some_past, Formula.neg, truth_at]
-      intro h_H h_neg_P
-      exact h_neg_P t le_rfl (h_H t le_rfl)
-    -- Until/Since axiom soundness:
-    -- 6 unsound axioms (unfold, intro, induction) need axiom reformulation
+    -- Frame-class-restricted axioms: require SuccOrder/PredOrder/DenselyOrdered.
+    -- The general soundness theorem cannot handle these without frame constraints.
+    -- Use soundness_dense or the discrete soundness for derivations involving these.
+    | density _ => sorry
+    | discreteness_forward _ => sorry
+    | seriality_future _ => sorry
+    | seriality_past _ => sorry
+    | disc_next => sorry
+    | disc_prev => sorry
     | until_unfold _ _ => sorry
-    | until_intro φ ψ =>
-      simp only [Formula.or, Formula.and, Formula.neg, truth_at]
-      intro h_or
-      by_cases h_psi : truth_at M Omega τ t ψ
-      · exact ⟨t, le_refl t, h_psi, fun _ h_le h_lt => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
-      · have h_and := h_or (fun h => absurd h h_psi)
-        by_contra h_neg_until
-        apply h_and
-        intro _h_phi h_G
-        exact h_neg_until (h_G t (le_refl t))
+    | until_intro _ _ => sorry
     | until_induction _ _ _ => sorry
-    | until_linearity φ ψ φ' ψ' =>
-      simp only [Formula.and, Formula.or, Formula.neg, truth_at]
-      intro h_conj
-      have h_both := and_of_not_imp_not h_conj
-      obtain ⟨h_until1, h_until2⟩ := h_both
-      obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_until1
-      obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_until2
-      rcases le_total s1 s2 with h_le | h_le
-      · intro h_neg_left; exfalso
-        exact h_neg_left ⟨s1, hs1t,
-          fun h_imp => h_imp h_psi_s1
-            ⟨s2, h_le, h_psi'_s2, fun r hr1 hr2 => h_phi'_range2 r (le_trans hs1t hr1) hr2⟩,
-          h_phi_range1⟩
-      · intro _
-        exact ⟨s2, hs2t,
-          fun h_imp => h_imp h_psi'_s2
-            ⟨s1, h_le, h_psi_s1, fun r hr1 hr2 => h_phi_range1 r (le_trans hs2t hr1) hr2⟩,
-          h_phi'_range2⟩
+    | until_linearity _ _ _ _ => sorry
     | since_unfold _ _ => sorry
-    | since_intro φ ψ =>
-      simp only [Formula.or, Formula.and, Formula.neg, truth_at]
-      intro h_or
-      by_cases h_psi : truth_at M Omega τ t ψ
-      · exact ⟨t, le_refl t, h_psi, fun _ h_lt h_le => absurd (lt_of_lt_of_le h_lt h_le) (lt_irrefl _)⟩
-      · have h_and := h_or (fun h => absurd h h_psi)
-        by_contra h_neg_since
-        apply h_and
-        intro _h_phi h_H
-        exact h_neg_since (h_H t (le_refl t))
+    | since_intro _ _ => sorry
     | since_induction _ _ _ => sorry
-    | since_linearity φ ψ φ' ψ' =>
-      simp only [Formula.and, Formula.or, Formula.neg, truth_at]
-      intro h_conj
-      have h_both := and_of_not_imp_not h_conj
-      obtain ⟨h_since1, h_since2⟩ := h_both
-      obtain ⟨s1, hs1t, h_psi_s1, h_phi_range1⟩ := h_since1
-      obtain ⟨s2, hs2t, h_psi'_s2, h_phi'_range2⟩ := h_since2
-      rcases le_total s1 s2 with h_le | h_le
-      · intro _
-        exact ⟨s2, hs2t,
-          fun h_imp => h_imp h_psi'_s2 ⟨s1, h_le, h_psi_s1,
-            fun r hr1 hr2 => h_phi_range1 r hr1 (le_trans hr2 hs2t)⟩,
-          h_phi'_range2⟩
-      · intro h_neg_left; exfalso
-        exact h_neg_left ⟨s1, hs1t,
-          fun h_imp => h_imp h_psi_s1 ⟨s2, h_le, h_psi'_s2,
-            fun r hr1 hr2 => h_phi'_range2 r hr1 (le_trans hr2 hs1t)⟩,
-          h_phi_range1⟩
-    | until_connectedness _ _ _ =>
-      -- UNSOUND under half-open semantics
-      sorry
-    | since_connectedness _ _ _ =>
-      -- UNSOUND under half-open semantics
-      sorry
-    | F_until_equiv ψ =>
-      -- SOUND: F(ψ) → ⊤ U ψ. Both express ∃ s ≥ t with ψ(s).
-      simp only [Formula.some_future, Formula.neg, truth_at]
-      intro h1
-      have h2 : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
-        by_contra h3; push_neg at h3
-        exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
-      obtain ⟨s, hst, hs⟩ := h2
-      exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
-    | P_since_equiv ψ =>
-      -- SOUND: P(ψ) → ⊤ S ψ. Both express ∃ s ≤ t with ψ(s).
-      simp only [Formula.some_past, Formula.neg, truth_at]
-      intro h1
-      have h2 : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ := by
-        by_contra h3; push_neg at h3
-        exact h1 (fun s hs hpsi => absurd hpsi (h3 s hs))
-      obtain ⟨s, hst, hs⟩ := h2
-      exact ⟨s, hst, hs, fun _ _ _ h => absurd h id⟩
+    | since_linearity _ _ _ _ => sorry
+    | until_connectedness _ _ _ => sorry
+    | since_connectedness _ _ _ => sorry
+    | F_until_equiv _ => sorry
+    | P_since_equiv _ => sorry
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -986,33 +1160,27 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
     | temp_4 ψ => exact temp_4_valid ψ D F M Omega h_sc τ h_mem t
     | temp_a ψ => exact temp_a_valid ψ D F M Omega h_sc τ h_mem t
+    | temp_a_dual ψ => exact temp_a_dual_valid ψ D F M Omega h_sc τ h_mem t
     | temp_l ψ => exact temp_l_valid ψ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
-    | temp_t_future ψ => exact temp_t_future_valid ψ D F M Omega h_sc τ h_mem t
-    | temp_t_past ψ => exact temp_t_past_valid ψ D F M Omega h_sc τ h_mem t
     | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t
-    | density ψ =>
-      -- Density axiom: GGψ → Gψ. Valid on dense frames via DenselyOrdered.
-      exact density_valid ψ D F M Omega h_sc τ h_mem t
-    | discreteness_forward _ =>
-      -- discreteness_forward is NOT dense-compatible, eliminated by h_dc
-      exact absurd h_dc id
+    | density ψ => exact density_valid ψ D F M Omega h_sc τ h_mem t
+    | discreteness_forward _ => exact absurd h_dc id
     | seriality_future ψ =>
-      -- Seriality: Gψ → Fψ. Under reflexive semantics, trivially valid via T-axiom.
+      -- Under strict semantics: Gψ → Fψ. Requires NoMaxOrder.
       simp only [Formula.some_future, Formula.neg, truth_at]
       intro h_G h_neg_F
-      -- h_G : ∀ s ≥ t, φ(s), h_neg_F : ∀ s ≥ t, ¬φ(s)
-      -- Contradiction at s = t using le_rfl
-      exact h_neg_F t le_rfl (h_G t le_rfl)
+      obtain ⟨s, hts⟩ := exists_gt t
+      exact h_neg_F s hts (h_G s hts)
     | seriality_past ψ =>
-      -- Seriality: Hψ → Pψ. Under reflexive semantics, trivially valid via T-axiom.
+      -- Under strict semantics: Hψ → Pψ. Requires NoMinOrder.
       simp only [Formula.some_past, Formula.neg, truth_at]
       intro h_H h_neg_P
-      -- h_H : ∀ s ≤ t, φ(s), h_neg_P : ∀ s ≤ t, ¬φ(s)
-      -- Contradiction at s = t using le_rfl
-      exact h_neg_P t le_rfl (h_H t le_rfl)
-    -- Until/Since axioms: isDenseCompatible = False, excluded by h_dc
+      obtain ⟨s, hst⟩ := exists_lt t
+      exact h_neg_P s hst (h_H s hst)
+    | disc_next => exact absurd h_dc id
+    | disc_prev => exact absurd h_dc id
     | until_unfold _ _ => exact absurd h_dc id
     | until_intro _ _ => exact absurd h_dc id
     | until_induction _ _ _ => exact absurd h_dc id

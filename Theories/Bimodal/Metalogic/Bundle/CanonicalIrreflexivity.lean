@@ -11,23 +11,19 @@ import Bimodal.ProofSystem.Substitution
 import Mathlib.Data.Finset.Union
 
 /-!
-# Canonical Frame Accessibility: Reflexive Semantics
+# Canonical Frame Accessibility: Strict Semantics
 
 ## STATUS: AXIOM-FREE
 
-**This module establishes reflexivity of the canonical accessibility relation.**
+**This module provides per-construction strictness infrastructure for the
+canonical accessibility relation.**
 
 ### Semantic Foundation
 
-Under reflexive semantics (G/H quantify over s >= t / s <= t), the T-axiom
-`G(phi) -> phi` is valid. This immediately gives `ExistsTask M M` for all MCS M,
-since `g_content(M) subseteq M` follows from T-axiom closure.
-
-### Key Theorems
-
-- `existsTask_reflexive`: ExistsTask M M holds for all MCS M (via T-axiom)
-- `existsTask_past_reflexive`: ExistsTask_past M M holds for all MCS M
-- All proofs are axiom-free
+Under strict semantics (G quantifies over s > t, H over s < t), ExistsTask
+is NOT reflexive: `ExistsTask M M` does NOT hold in general because
+`g_content(M) ⊆ M` (i.e., `G(phi) ∈ M → phi ∈ M`) is not derivable
+without the T-axiom.
 
 ### Per-Construction Strictness Pattern
 
@@ -36,9 +32,6 @@ When strictness (M != W) is needed for witness constructions:
 2. Show G(phi) in W (so phi in g_content(W))
 3. Show phi not in M
 4. Apply `strict_of_formula_in_g_content_not_in_source` to get not ExistsTask W M
-
-This pattern provides local strictness proofs without requiring universal
-irreflexivity (which is false under reflexive semantics).
 
 ### References
 
@@ -135,55 +128,15 @@ theorem exists_fresh_for_finset (S : Finset Formula) :
   exact Finset.mem_biUnion.mpr ⟨φ, hφ, h⟩
 
 /-!
-## Reflexive Semantics: ExistsTask Reflexivity
-
-Under reflexive semantics (G/H quantify over s >= t / s <= t), the canonical
-accessibility relation is REFLEXIVE: `ExistsTask M M` holds for all MCS M.
-
-Proof: `ExistsTask M M` means `g_content(M) ⊆ M`, i.e., for all phi,
-`G(phi) ∈ M → phi ∈ M`. This follows from the T-axiom `G(phi) → phi`
-which is derivable under reflexive semantics, and MCS closure under derivation.
--/
-
-/-- ExistsTask is reflexive under reflexive semantics: for any MCS M, `ExistsTask M M`.
-
-Proof: The T-axiom `temp_t_future` gives `G phi → phi` as a derivable theorem.
-Since M is an MCS, it is closed under modus ponens with derivable theorems.
-Thus `G phi ∈ M → phi ∈ M`, which is exactly `g_content(M) ⊆ M = ExistsTask M M`. -/
-theorem existsTask_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ExistsTask M M := by
-  intro phi h_G_phi
-  -- G(phi) ∈ M and T-axiom gives G(phi) → phi in M
-  have h_t_axiom : (Formula.all_future phi |>.imp phi) ∈ M :=
-    theorem_in_mcs h_mcs (.axiom _ _ (.temp_t_future phi))
-  exact SetMaximalConsistent.implication_property h_mcs h_t_axiom h_G_phi
-
-/-- Backward compatibility alias. -/
-abbrev canonicalR_reflexive := existsTask_reflexive
-
-/-- ExistsTask_past is reflexive under reflexive semantics: for any MCS M, `ExistsTask_past M M`.
-
-Proof: The T-axiom `temp_t_past` gives `H phi → phi` as a derivable theorem.
-Since M is an MCS, `H phi ∈ M → phi ∈ M`, which is `h_content(M) ⊆ M = ExistsTask_past M M`. -/
-theorem existsTask_past_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    ExistsTask_past M M := by
-  intro phi h_H_phi
-  have h_t_axiom : (Formula.all_past phi |>.imp phi) ∈ M :=
-    theorem_in_mcs h_mcs (.axiom _ _ (.temp_t_past phi))
-  exact SetMaximalConsistent.implication_property h_mcs h_t_axiom h_H_phi
-
-/-- Backward compatibility alias. -/
-abbrev canonicalR_past_reflexive := existsTask_past_reflexive
-
-/-!
 ## Per-Construction Strictness Infrastructure
 
-Under reflexive semantics, ExistsTask is a PREORDER (reflexive + transitive).
-Universal irreflexivity is FALSE, and antisymmetry also FAILS.
+Under strict semantics, ExistsTask is NOT reflexive: `ExistsTask M M`
+does not hold in general because `G(phi) ∈ M → phi ∈ M` requires the
+T-axiom which has been removed.
 
-Instead of proving `¬ExistsTask M M` universally, we prove **per-construction
-strictness**: at each call site where a witness W is constructed from M, we
-prove `¬ExistsTask W M` from the specific formula that distinguishes W from M.
+Instead, we provide per-construction strictness: at each call site where
+a witness W is constructed from M, we prove `¬ExistsTask W M` from the
+specific formula that distinguishes W from M.
 
 The key pattern:
 1. Construct witness W with some formula φ ∈ W
@@ -193,25 +146,6 @@ The key pattern:
 
 The following infrastructure supports this pattern.
 -/
-
-/-- When we have ExistsTask M N (forward accessibility) and explicit proof that
-¬ExistsTask N M (backward non-accessibility), we can conclude M < N in the
-preorder structure.
-
-This is the core lemma for per-construction strictness: construct the witness,
-prove forward accessibility, then prove backward non-accessibility from the
-specific formula that distinguishes the witness from the source. -/
-theorem lt_of_existsTask_and_not_reverse {M N : Set Formula}
-    (h_M_mcs : SetMaximalConsistent M) (h_N_mcs : SetMaximalConsistent N)
-    (h_fwd : ExistsTask M N)
-    (h_not_bwd : ¬ExistsTask N M) :
-    M ≠ N := by
-  intro h_eq
-  rw [h_eq] at h_not_bwd
-  exact h_not_bwd (existsTask_reflexive N h_N_mcs)
-
-/-- Backward compatibility alias. -/
-abbrev lt_of_canonicalR_and_not_reverse := @lt_of_existsTask_and_not_reverse
 
 /-- When witness W contains a formula φ in its g_content (i.e., G(φ) ∈ W) that is
 NOT in source M, then ¬ExistsTask W M.

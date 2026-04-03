@@ -337,10 +337,10 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
     simp only [subst_imp, subst_untl, subst_or, subst_and, subst_bot]
     exact Axiom.until_intro (a.subst q r) (b.subst q r)
   | until_induction a b c =>
-    simp only [subst_imp, subst_and, subst_untl, subst_bot]
+    simp only [subst_imp, subst_and, subst_untl, subst_bot, subst_all_future]
     exact Axiom.until_induction (a.subst q r) (b.subst q r) (c.subst q r)
   | until_linearity a b c d =>
-    simp only [subst_imp, subst_and, subst_or, subst_untl]
+    simp only [subst_imp, subst_and, subst_or, subst_untl, subst_bot]
     exact Axiom.until_linearity (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
   | since_unfold a b =>
     simp only [subst_imp, subst_snce, subst_or, subst_and, subst_bot]
@@ -349,10 +349,10 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
     simp only [subst_imp, subst_snce, subst_or, subst_and, subst_bot]
     exact Axiom.since_intro (a.subst q r) (b.subst q r)
   | since_induction a b c =>
-    simp only [subst_imp, subst_and, subst_snce, subst_bot]
+    simp only [subst_imp, subst_and, subst_snce, subst_bot, subst_all_past]
     exact Axiom.since_induction (a.subst q r) (b.subst q r) (c.subst q r)
   | since_linearity a b c d =>
-    simp only [subst_imp, subst_and, subst_or, subst_snce]
+    simp only [subst_imp, subst_and, subst_or, subst_snce, subst_bot]
     exact Axiom.since_linearity (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
   | until_connectedness a b c =>
     simp only [subst_imp, subst_and, subst_untl, subst_snce]
