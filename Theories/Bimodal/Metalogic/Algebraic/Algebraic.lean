@@ -9,6 +9,7 @@ import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
+import Bimodal.Metalogic.Algebraic.DeterministicChain
 
 /-!
 # Algebraic Representation Theorem
@@ -31,7 +32,9 @@ Algebraic/
 ├── ParametricHistory.lean        # D-parametric history conversion
 ├── ParametricTruthLemma.lean     # D-parametric truth lemma
 ├── ParametricRepresentation.lean # D-parametric representation theorem
-└── ParametricRepresentation.lean # D-parametric representation theorem
+│
+│   Deterministic Chain (Discrete Completeness)
+└── DeterministicChain.lean       # Int-indexed chain via x_content/y_content
 ```
 
 ## Mathematical Overview
@@ -88,5 +91,8 @@ open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricRepresentation
+
+-- Deterministic chain for discrete completeness
+open Bimodal.Metalogic.Algebraic.DeterministicChain
 
 end Bimodal.Metalogic.Algebraic

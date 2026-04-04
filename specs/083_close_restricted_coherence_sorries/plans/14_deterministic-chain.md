@@ -104,7 +104,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove x_content/y_content are MCS [NOT STARTED]
+### Phase 2: Prove x_content/y_content are MCS [COMPLETED]
 
 **Goal**: Establish that `x_content(M) = {a | X(a) in M}` is an MCS when M is an MCS, using the new axioms.
 
@@ -136,7 +136,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Build Deterministic Chain and Prove Properties [NOT STARTED]
+### Phase 3: Build Deterministic Chain and Prove Properties [COMPLETED]
 
 **Goal**: Replace the dovetailed chain with `chain(n+1) = x_content(chain(n))` and prove G-coherence, box_class_agree, and Until persistence.
 
