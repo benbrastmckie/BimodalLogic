@@ -850,9 +850,9 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-04T19:32:09Z",
+      "last_updated": "2026-04-04T19:54:04Z",
       "notes": "Phases 1-4 complete. Phase 5 blocked: forward_F circularity — mutual induction with truth lemma needed. 3 approaches in handoff.",
-      "next_artifact_number": 15,
+      "next_artifact_number": 16,
       "session_id": "sess_1775262087_b2e74c",
       "researched": "2026-04-03T23:57:51Z",
       "planned": "2026-04-03T20:16:55Z",
@@ -1013,6 +1013,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/handoffs/phase5_handoff.md",
           "type": "handoff",
           "summary": "Phase 5 handoff: forward_F circularity analysis with 3 resolution approaches"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/15_forward-f-resolution.md",
+          "type": "research",
+          "summary": "Deep analysis of forward_F circularity: all 3 options blocked by same cycle, hybrid Option D recommended"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
