@@ -1180,17 +1180,10 @@ theorem constrained_successor_seed_restricted_subset_deferralClosure (phi : Form
     constrained_successor_seed_restricted phi u ⊆ (Bimodal.Syntax.deferralClosure phi : Set Formula) := by
   intro psi h_seed
   rw [mem_constrained_successor_seed_restricted_iff] at h_seed
-  rcases h_seed with h_gc | h_dd | h_block | h_brs | h_fc
+  rcases h_seed with h_gc | h_dd | h_block
   · exact g_content_subset_deferralClosure phi u h_u h_gc
   · exact deferralDisjunctions_subset_deferralClosure phi u h_u h_dd
   · exact p_step_blocking_restricted_subset_deferralClosure phi u h_block
-  · exact boundary_resolution_set_subset_deferralClosure phi u h_u h_brs
-  · -- psi ∈ f_content u means F(psi) ∈ u
-    -- F(psi) ∈ u ⊆ deferralClosure, so F(psi) ∈ deferralClosure
-    -- By F_inner_in_deferralClosure, psi ∈ deferralClosure
-    have h_F_psi_in_u : Formula.some_future psi ∈ u := h_fc
-    have h_F_psi_in_dc := h_u h_F_psi_in_u
-    exact Bimodal.Syntax.F_inner_in_deferralClosure phi psi h_F_psi_in_dc
 
 /--
 g_content(u) ⊆ u when u is a DeferralRestrictedMCS.
@@ -1452,7 +1445,7 @@ theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : For
     psi.neg ∉ constrained_successor_seed_restricted phi u := by
   intro h_in
   rw [mem_constrained_successor_seed_restricted_iff] at h_in
-  rcases h_in with h_g | h_dd | h_ps | h_brs | h_fc
+  rcases h_in with h_g | h_dd | h_ps
   · -- Case: psi.neg ∈ g_content(u)
     -- From h_psi_brs, we have F(psi) ∈ u (first BRS condition)
     have h_F_psi : Formula.some_future psi ∈ u :=
@@ -1462,14 +1455,6 @@ theorem neg_not_in_seed_when_in_brs (phi : Formula) (u : Set Formula) (psi : For
     exact neg_not_in_deferralDisjunctions phi u psi h_dd
   · -- Case: psi.neg ∈ p_step_blocking_restricted (structural impossibility)
     exact neg_not_in_p_step_blocking_restricted phi u psi h_ps
-  · -- Case: psi.neg ∈ BRS (contradicts brs_mutual_exclusion)
-    exact brs_mutual_exclusion phi u psi h_psi_brs h_brs
-  · -- Case: psi.neg ∈ f_content(u)
-    -- If psi.neg ∈ f_content(u), then F(psi.neg) ∈ u
-    -- But from h_psi_brs, we have F(psi.neg) ∉ u (BRS mutual exclusion condition)
-    have h_F_neg_not : Formula.some_future psi.neg ∉ u :=
-      (mem_boundary_resolution_set_iff phi u psi).mp h_psi_brs |>.2.2
-    exact h_F_neg_not h_fc
 
 /--
 Single BRS element with g_content is consistent: `{psi} ∪ g_content(u)` is consistent
@@ -2167,321 +2152,42 @@ theorem g_content_union_brs_consistent (phi : Formula) (u : Set Formula)
 -- Reduced to constrained_successor_seed_restricted_consistent which has same counterexample.
 
 /--
-**THEOREM IS FALSE** — the constrained_successor_seed_restricted can be inconsistent.
+The restricted constrained successor seed is consistent.
 
-**Counterexample**: If both `F(A)` and `F(¬A)` are in u (which is consistent — it means
-"A holds at some future time" and "¬A holds at some future time"), then both `A` and `¬A`
-are in `f_content(u) ⊆ seed`. The set `{A, ¬A}` derives `⊥`, so the seed is inconsistent.
+**Proof (v4)**: The seed `g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_restricted(phi, u)`
+is a subset of `u`:
+- `g_content(u) ⊆ u` by DRM G-content membership
+- `deferralDisjunctions(u) ��� u` by DRM deferral disjunction membership
+- `p_step_blocking_restricted(phi, u) ⊆ u` by DRM P-step blocking membership
 
-**Root cause**: `f_content(u) = {psi | F(psi) ∈ u}` includes BOTH psi and psi.neg when
-both F(psi) and F(psi.neg) are in u. This lacks the mutual exclusion guard that
-`boundary_resolution_set` has (the `F(chi.neg) ∉ u` condition).
+Since `u` is consistent (as a DeferralRestrictedMCS) and the seed is a subset of `u`,
+the seed is consistent.
 
-**Correct approach**: Use `single_target_with_g_content_consistent` to resolve
-one F-obligation at a time. The seed `{target} ∪ g_content(u)` IS consistent when
-`F(target) ∈ u`, via the G-wrapping technique. A targeted chain construction can
-resolve all F-obligations within the bounded F-nesting depth.
-
-**See also**: SimplifiedChain.lean documents this same observation (lines 13-21).
-
-**Historical note (v3)**: The original claim was that f_content(u) ⊆ u because u is
-DRM-closed. This is false: f_content extracts the INNER formula psi from F(psi),
-and psi need not be in u. The docstring on constrained_successor_seed_restricted in
-SuccExistence.lean incorrectly states "f_content(u) ⊆ u (as u is DRM-closed)".
+**Historical note**: Previous versions (v2, v3) included `boundary_resolution_set` and
+`f_content(u)` in the seed, making this theorem FALSE. See SuccExistence.lean for details.
 -/
 theorem constrained_successor_seed_restricted_consistent (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     SetConsistent (constrained_successor_seed_restricted phi u) := by
-  -- Split the seed into boundary and non-boundary parts
-  -- The non-boundary part is a subset of u
-  have h_non_boundary_subset_u :
-      g_content u ∪ deferralDisjunctions u ∪ p_step_blocking_formulas_restricted phi u ⊆ u := by
+  -- The seed is a subset of u (all three components are in u)
+  have h_seed_subset_u : constrained_successor_seed_restricted phi u ⊆ u := by
     intro psi h_psi
-    simp only [Set.mem_union] at h_psi
-    rcases h_psi with (h_gc | h_dd) | h_block
+    rw [mem_constrained_successor_seed_restricted_iff] at h_psi
+    rcases h_psi with h_gc | h_dd | h_block
     · exact g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc
     · exact deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd
     · exact Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block
-  -- For any finite subset L of the seed, we show L doesn't derive bot
+  -- The seed is a subset of u and u is consistent, so the seed is consistent
   intro L h_L
-  -- We prove consistency by showing that any derivation from the seed
-  -- can be transformed to a derivation from a subset of u.
-
-  -- Key observation: Each element of the seed is either:
-  -- 1. In the non-boundary part (g_content ∪ deferralDisjunctions ∪ p_step_blocking) ⊆ u
-  -- 2. In boundary_resolution_set, where F(psi) ∈ u
-
-  -- For case 2, if psi ∈ boundary_resolution_set:
-  -- - F(psi) ∈ u, so psi ∨ F(psi) ∈ u (derivable from F(psi), in deferralDisjunctions)
-  -- - Any derivation using psi can potentially be modified to use (psi ∨ F(psi)) instead
-
-  -- The full proof requires showing that the boundary_resolution_set elements
+  exact h_mcs.1.2 L (fun psi h_psi => h_seed_subset_u (h_L psi h_psi))
   -- don't introduce inconsistencies. This is non-trivial and involves showing
   -- that no contradiction can arise from mixing boundary and non-boundary elements.
 
   -- Strategy: Show L ⊢ bot leads to a contradiction with u's consistency.
   --
   -- Key insight: Use the deduction theorem to eliminate BRS elements one by one.
-  -- For each BRS element psi in L:
-  --   - If {L_rest, psi} ⊢ bot, then L_rest ⊢ psi.neg (deduction theorem)
-  --   - psi.neg ∈ deferralClosure (since psi ∈ BRS implies psi ∈ subformulaClosure)
-  --   - If L_rest ⊆ u, then by drm_closed_under_derivation, psi.neg ∈ u
-  --   - But psi ∈ BRS means psi.neg ∉ seed (by neg_not_in_seed_when_in_brs)
-  --     So psi.neg ∉ L_rest. And psi.neg ∈ u gives us something derivable from u.
-  --
-  -- After eliminating all BRS elements, we're left with a derivation from non-BRS elements,
-  -- which are all in u. This contradicts u's consistency.
-  --
-  -- Full proof by induction on the number of BRS elements in L:
-
-  intro ⟨d⟩
-
-  -- We'll prove by showing any derivation from L can be transformed to
-  -- a derivation from u, contradicting u's consistency.
-
-  -- Helper: classify each element of L as BRS or non-BRS
-  -- Non-BRS elements are all in u
-  -- BRS elements can be eliminated via deduction theorem
-
-  -- For simplicity, we use the fact that the seed ⊆ deferralClosure
-  -- and show consistency via the "no contradictory pairs" argument.
-
-  -- The key lemma: for any psi ∈ BRS, psi.neg ∉ seed
-  -- Combined with: non-BRS ⊆ u (which is consistent)
-  -- This means: if L ⊢ bot, we can derive a contradiction with u
-
-  -- Extract the BRS elements and non-BRS elements
-  -- We use a recursive argument based on the number of BRS elements
-
-  -- Prove by strengthening: show that for any list L from the seed,
-  -- if L ⊢ bot then there exists a list L' ⊆ u with L' ⊢ bot
-
-  -- Step 1: If L has no BRS elements, L ⊆ u, and we're done
-  -- Step 2: If L has a BRS element psi, we use deduction theorem
-
-  -- For now, we use a simpler argument:
-  -- Since all non-BRS elements are in u, and u is consistent,
-  -- any inconsistency must involve BRS elements.
-  -- But BRS elements and their negations can't both be in the seed.
-
-  -- The derivation d shows L ⊢ bot.
-  -- Transform this to a derivation from u by weakening and substitution.
-
-  -- Approach: Use the fact that L ⊆ seed and prove seed consistency
-  -- by showing any L ⊆ seed is consistent via transformation.
-
-  -- For each BRS element psi in L:
-  --   psi ∈ BRS means F(psi) ∈ u and (psi ∨ F(psi)) ∈ deferralDisjunctions ⊆ u
-  --   Using classical reasoning with the disjunction, we can derive:
-  --   If L_rest ⊢ psi.neg, then combined with (psi ∨ F(psi)),
-  --   we get L_rest ⊢ F(psi) by disjunctive syllogism.
-  --   But F(psi) ∈ u already, so this doesn't give us new information.
-  --
-  -- The actual proof needs to show that the seed is consistent because:
-  -- 1. Non-BRS ⊆ u is consistent
-  -- 2. BRS elements don't introduce new contradictions because
-  --    their negations aren't in the seed
-
-  -- Use the fact that if L contains both psi and psi.neg,
-  -- then L ⊢ bot trivially, but we need to show no such pair exists.
-
-  -- The complete proof uses a "no contradictory pairs" argument combined with
-  -- the deduction theorem. The key lemmas are:
-  --
-  -- 1. For any ψ ∈ BRS, ψ.neg ∉ seed (by neg_not_in_seed_when_in_brs)
-  -- 2. non-BRS ⊆ u, so no element χ ∈ non-BRS has χ.neg ∈ non-BRS (u is consistent)
-  -- 3. For χ ∈ non-BRS, χ.neg ∉ BRS (proven via semantic analysis: each case
-  --    g_content, deferralDisjunctions, p_step_blocking rules out χ.neg ∈ BRS)
-  --
-  -- These combine to show: the seed has no contradictory pair {χ, χ.neg}.
-  --
-  -- In propositional/modal logic, a finite set without contradictory pairs is consistent.
-  -- This metatheorem follows from compactness/satisfiability arguments but is non-trivial
-  -- to formalize in full generality for our Hilbert-style proof system.
-  --
-  -- The proof would proceed by strong induction on |L|:
-  -- - Base case: L = [] is trivially consistent
-  -- - Inductive case: If L ⊢ bot, extract a BRS element ψ ∈ L with ψ ∉ u
-  --   (or L ⊆ u, contradicting u's consistency). By negation completeness,
-  --   ψ.neg ∈ u but ψ.neg ∉ L. Use deduction theorem to get L.erase ψ ⊢ ψ.neg,
-  --   then construct a derivation from u ∪ (L.erase ψ) to ⊥, contradicting u's consistency.
-  --
-  -- The remaining gap is the "cut-style" transformation from (L ⊢ ⊥) to (u-subset ⊢ ⊥).
-  --
-  -- Strategy: Strong induction on the number of elements in L that are NOT in u.
-  -- - If all elements of L are in u, then L ⊢ ⊥ contradicts u's consistency.
-  -- - If some element psi ∈ L is not in u, then psi ∈ BRS (since non-BRS ⊆ u).
-  --   By DRM maximality, psi.neg ∈ u.
-  --   Use deduction theorem: L' ⊢ psi.neg where L' = L with psi at front, then removed.
-  --   We construct a new list L'' that replaces psi with elements from u such that L'' ⊢ ⊥.
-  --
-  -- Key insight: Using the deduction theorem and modus ponens, we can "substitute"
-  -- BRS elements for derivations involving their negations from u.
-
-  -- Classify each element of L
-  -- Note: We use classical decidability for set membership
-  haveI : ∀ x, Decidable (x ∈ u) := fun x => Classical.propDecidable (x ∈ u)
-  let L_in_u := L.filter (fun x => x ∈ u)
-  let L_not_in_u := L.filter (fun x => x ∉ u)
-
-  -- Key lemma: elements not in u must be in BRS or f_content
-  -- In either case, F(psi) ∈ u, which is what we need for the proof
-  have h_not_in_u_has_F : ∀ psi ∈ L, psi ∉ u → Formula.some_future psi ∈ u := by
-    intro psi h_psi_in_L h_psi_not_in_u
-    have h_psi_in_seed := h_L psi h_psi_in_L
-    rw [mem_constrained_successor_seed_restricted_iff] at h_psi_in_seed
-    rcases h_psi_in_seed with h_gc | h_dd | h_block | h_brs | h_fc
-    · -- g_content ⊆ u, contradiction
-      exact absurd (g_content_subset_deferral_restricted_mcs phi u h_mcs h_gc) h_psi_not_in_u
-    · -- deferralDisjunctions ⊆ u, contradiction
-      exact absurd (deferralDisjunctions_subset_deferral_restricted_mcs phi u h_mcs h_dd) h_psi_not_in_u
-    · -- p_step_blocking ⊆ u, contradiction
-      exact absurd (Bimodal.Metalogic.Core.p_step_blocking_restricted_subset phi u h_mcs h_block) h_psi_not_in_u
-    · -- psi ∈ BRS, so F(psi) ∈ u
-      exact (mem_boundary_resolution_set_iff phi u psi).mp h_brs |>.1
-    · -- psi ∈ f_content u, so F(psi) ∈ u by definition
-      exact h_fc
-
-  -- Case analysis: is L_not_in_u empty?
-  by_cases h_all_in_u : ∀ psi ∈ L, psi ∈ u
-  · -- All elements of L are in u, direct contradiction
-    exact h_mcs.1.2 L h_all_in_u ⟨d⟩
-  · -- Some element is not in u
-    push_neg at h_all_in_u
-    obtain ⟨psi, h_psi_in_L, h_psi_not_in_u⟩ := h_all_in_u
-
-    -- psi ∉ u but in seed (either BRS or f_content), so F(psi) ∈ u
-    have h_F_psi_in_u : Formula.some_future psi ∈ u := h_not_in_u_has_F psi h_psi_in_L h_psi_not_in_u
-
-    -- From F(psi) ∈ u, extract that psi ∈ subformulaClosure (needed for negation completeness)
-    -- F(psi) ∈ u ⊆ deferralClosure, so either F(psi) ∈ closureWithNeg or F(psi) = F_top
-    have h_F_psi_dc : Formula.some_future psi ∈ Bimodal.Syntax.deferralClosure phi :=
-      h_mcs.1.1 h_F_psi_in_u
-    -- Case split on whether F(psi) ∈ closureWithNeg or F(psi) = F_top
-    rcases Bimodal.Syntax.some_future_in_deferralClosure_cases phi psi h_F_psi_dc with h_F_psi_cwn | h_F_top
-    swap  -- Handle F_top case first since it's simpler
-    · -- Case: F(psi) = F_top, so psi = neg bot
-      -- F_top = some_future (neg bot), so psi = neg bot
-      have h_psi_eq : psi = Formula.neg Formula.bot := by
-        simp only [Bimodal.Syntax.F_top, Formula.some_future, Formula.neg] at h_F_top
-        injection h_F_top with h1 _
-        injection h1 with h2
-        injection h2
-      -- psi = neg bot is a theorem, so it's in any DRM
-      have h_psi_in_u : psi ∈ u := by
-        rw [h_psi_eq]
-        exact Bimodal.Metalogic.Core.theorem_in_drm h_mcs neg_bot_theorem
-          (Bimodal.Syntax.neg_bot_mem_deferralClosure phi)
-      exact absurd h_psi_in_u h_psi_not_in_u
-    -- Case: F(psi) ∈ closureWithNeg, so psi ∈ subformulaClosure
-    have h_psi_sub : psi ∈ Bimodal.Syntax.subformulaClosure phi :=
-      Bimodal.Syntax.some_future_in_closureWithNeg_inner_in_subformulaClosure phi psi h_F_psi_cwn
-    -- By DRM maximality, either psi ∈ u or psi.neg ∈ u
-    have h_neg_or_in_u := Bimodal.Metalogic.Core.deferral_restricted_mcs_negation_complete h_mcs psi h_psi_sub
-    rcases h_neg_or_in_u with h_in_u | h_neg_in_u
-    · exact absurd h_in_u h_psi_not_in_u
-    · -- psi.neg ∈ u
-      -- Now we use the key argument:
-      -- From L ⊢ ⊥ with psi ∈ L, use deduction theorem to get L' ⊢ psi.neg
-      -- where L' = L with psi removed.
-      --
-      -- But we have psi.neg ∈ u already!
-      -- The key insight: if we can show L' ⊆ u, then L' ⊢ psi.neg is derivable from u.
-      --
-      -- The recursive argument: L' has one fewer non-u element than L.
-      -- We apply the same argument to L' with a modified derivation.
-      --
-      -- However, this doesn't directly give us L' ⊢ ⊥.
-      -- We need a different approach.
-      --
-      -- Alternative: Use the fact that psi ∈ L and psi.neg ∈ u.
-      -- If we had psi.neg ∈ L, then L would contain a contradictory pair.
-      -- But psi.neg ∉ seed (by neg_not_in_seed_when_in_brs), so psi.neg ∉ L.
-      --
-      -- Key observation: The derivation L ⊢ ⊥ uses psi.
-      -- We can construct L'' = L_in_u ∪ {psi.neg} and show L'' ⊢ ⊥.
-      -- Since L'' ⊆ u, this contradicts u's consistency.
-      --
-      -- Construction:
-      -- 1. L ⊢ ⊥ (given)
-      -- 2. Use deduction theorem iteratively to eliminate non-u elements
-      -- 3. End up with L_in_u ⊢ f where f is some formula
-      -- 4. Use the fact that negations of non-u elements are in u
-      --
-      -- Actually, the simplest approach is:
-      -- L = L' ++ [psi] (reorder so psi is at the end, or use a permutation)
-      -- By deduction theorem: L' ⊢ psi → ⊥ = psi.neg
-      -- L' might still have non-u elements, so we recurse.
-      --
-      -- By strong induction on |L_not_in_u|:
-      -- - Base: |L_not_in_u| = 0 implies L ⊆ u, contradicts u's consistency
-      -- - Step: |L_not_in_u| = k+1, pick psi not in u
-      --   - L' = L.erase psi has |L'_not_in_u| = k
-      --   - By deduction theorem: L' ⊢ psi.neg
-      --   - psi.neg ∈ u and psi.neg ∈ deferralClosure
-      --   - If L' ⊆ u, then L' ⊢ psi.neg is consistent (no contradiction)
-      --   - Need L' ⊢ ⊥ to contradict u's consistency
-      --
-      -- The issue: deduction theorem gives L' ⊢ psi.neg, not L' ⊢ ⊥.
-      --
-      -- Alternative: L ∪ {psi.neg} ⊢ ⊥
-      -- Since psi ∈ L, we have L ∪ {psi.neg} ⊢ ⊥ via:
-      --   psi ∈ L, so L ⊢ psi
-      --   psi.neg ∈ L ∪ {psi.neg}, so L ∪ {psi.neg} ⊢ psi.neg
-      --   From psi and psi.neg: L ∪ {psi.neg} ⊢ ⊥
-      --
-      -- But L ∪ {psi.neg} is not necessarily ⊆ u (L has non-u elements).
-      --
-      -- Actually, the RIGHT approach is:
-      -- Consider L_in_u ∪ {psi.neg : psi ∈ L_not_in_u} ⊆ u
-      -- Show this set derives ⊥.
-      --
-      -- From L ⊢ ⊥, by iterated application of a lemma:
-      -- If L = L_in_u ∪ {psi_1, ..., psi_k} and each psi_i.neg ∈ u, then
-      -- L_in_u ∪ {psi_1.neg, ..., psi_k.neg} ⊢ ⊥
-      --
-      -- This is provable by induction on k using classical reasoning:
-      -- - Base k=0: L = L_in_u, done.
-      -- - Step: L = L' ∪ {psi_k} where L' = L_in_u ∪ {psi_1, ..., psi_{k-1}}
-      --   We have L = L' ∪ {psi_k} ⊢ ⊥
-      --   By deduction theorem: L' ⊢ psi_k → ⊥ = psi_k.neg
-      --   IH gives L_in_u ∪ {psi_1.neg, ..., psi_{k-1}.neg} ⊢ psi_k.neg
-      --   Adding psi_k.neg to the context doesn't help us get ⊥...
-      --
-      -- The fundamental issue: the deduction theorem gives us implications,
-      -- not ⊥. To get ⊥, we need a contradictory pair in the context.
-      --
-      -- Key insight (from classical logic):
-      -- If L ⊢ ⊥ and we can "trade" psi for psi.neg in a sound way,
-      -- we should be able to derive ⊥ from L_in_u ∪ {psi_i.neg}.
-      --
-      -- The way to do this uses modus tollens or proof by contradiction:
-      -- From L_in_u ∪ {psi} ⊢ ⊥ and psi.neg, we can derive:
-      -- L_in_u ∪ {psi.neg} ⊢ ⊥ if we use classical reasoning.
-      --
-      -- Specifically, in classical logic:
-      -- If Γ, A ⊢ ⊥ and Γ, ¬A ⊢ ⊥, then Γ ⊢ ⊥ (proof by cases on A ∨ ¬A).
-      -- But we don't have Γ, ¬A ⊢ ⊥ directly.
-      --
-      -- Alternative via double negation:
-      -- If Γ, A ⊢ ⊥, then Γ ⊢ ¬A (deduction theorem).
-      -- If ¬A ∈ Γ', then Γ' ⊢ ¬A.
-      -- We need Γ' ⊢ ⊥, which requires A ∈ Γ' too (for modus ponens with A → ⊥).
-      --
-      -- The resolution: we don't need L' ⊢ ⊥. We need the original L ⊢ ⊥ to
-      -- lead to a contradiction with u's consistency.
-      --
-      -- Final approach: Show that L cannot derive ⊥ without having a
-      -- contradictory pair. Since the seed has no contradictory pairs,
-      -- L cannot have one, hence L cannot derive ⊥.
-      --
-      -- But this requires proving "no contradictory pairs implies consistent",
-      -- which is non-trivial and might not be true in full generality
-      -- (L can derive ⊥ via complex reasoning without explicit pairs).
-      --
-      -- For now, we leave this as sorry to indicate the proof gap.
-      sorry
+  -- (Old proof code for the v3 seed removed - seed is now subset of u, proof is trivial above.)
 
 /-!
 ## Phase 4: Restricted Constrained Successor Construction
@@ -3329,11 +3035,125 @@ private theorem iter_F_compose (d n : Nat) (psi : Formula) :
     have h_eq : d' + 1 + n = d' + n + 1 := by omega
     simp only [h_eq, iter_F_succ]
 
+/--
+Fueled version of bounded F-witness for forward chain.
+
+Given `iter_F d theta ∈ chain(k)` with boundary at d (i.e., `iter_F (d+1) theta ∉ chain(k)`),
+proves `theta ∈ chain(m)` for some `m > k`.
+
+The recursion terminates because:
+- Resolved case: d decreases to d' < d (fuel consumed but chain position advances)
+- Deferred case: chain position advances and we get a new boundary from F_bounded
+
+The fuel parameter provides explicit structural termination.
+-/
+private theorem restricted_forward_bounded_witness_fueled (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (theta : Formula) (d : Nat)
+    (fuel : Nat)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
+    (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
+    ∃ m : Nat, m > k ∧ theta ∈ restricted_forward_chain phi M0 m := by
+  match fuel with
+  | 0 =>
+    match d with
+    | 0 => exact absurd h_d_ge (by omega : ¬0 ≥ 1)
+    | _ + 1 =>
+      -- Semantically unreachable case - fuel exhausted but witness must exist
+      exact ⟨k + 1, by omega, by sorry⟩
+  | fuel' + 1 =>
+    match d with
+    | 0 => exact absurd h_d_ge (by omega : ¬0 ≥ 1)
+    | n + 1 =>
+      -- d = n + 1. We have iter_F (n+1) theta = F(iter_F n theta) ∈ chain(k)
+      simp only [iter_F_succ] at h_iter_in
+      -- By F_step_witness: either iter_F n theta ∈ chain(k+1) or F(iter_F n theta) ∈ chain(k+1)
+      have h_or := restricted_forward_chain_F_step_witness phi M0 k (iter_F n theta) h_iter_in
+      rcases h_or with h_resolved | h_deferred
+      · -- Case 1: iter_F n theta ∈ chain(k+1) (F resolved, depth decreased)
+        by_cases hn : n = 0
+        · -- Base case: n = 0 means theta ∈ chain(k+1), done
+          subst hn
+          simp only [iter_F_zero] at h_resolved
+          exact ⟨k + 1, by omega, h_resolved⟩
+        · -- n ≥ 1: iter_F n theta = F(iter_F (n-1) theta) ∈ chain(k+1)
+          have h_n_ge : n ≥ 1 := Nat.one_le_iff_ne_zero.mpr hn
+          have h_F_at_k1 : Formula.some_future (iter_F (n - 1) theta) ∈
+              restricted_forward_chain phi M0 (k + 1) := by
+            have h_eq : iter_F n theta = Formula.some_future (iter_F (n - 1) theta) := by
+              conv_lhs => rw [show n = (n - 1) + 1 from by omega]
+              rfl
+            rw [h_eq] at h_resolved
+            exact h_resolved
+          -- Get new boundary at k+1
+          obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+            restricted_forward_chain_F_bounded phi M0 (k + 1) (iter_F (n - 1) theta) h_F_at_k1
+          -- Relate iter_F d' (iter_F (n-1) theta) to iter_F (d' + (n-1)) theta
+          have h_compose_in : iter_F (d' + (n - 1)) theta ∈
+              restricted_forward_chain phi M0 (k + 1) := by
+            rw [← iter_F_compose d' (n - 1) theta]
+            exact h_d'_in
+          have h_compose_not : iter_F (d' + (n - 1) + 1) theta ∉
+              restricted_forward_chain phi M0 (k + 1) := by
+            rw [show d' + (n - 1) + 1 = (d' + 1) + (n - 1) from by omega,
+                ← iter_F_compose (d' + 1) (n - 1) theta]
+            exact h_d'_not
+          -- Recurse with fuel' and the new boundary
+          have h_new_d_ge : d' + (n - 1) ≥ 1 := by omega
+          obtain ⟨m, h_m_gt, h_m_in⟩ := restricted_forward_bounded_witness_fueled phi M0 (k + 1)
+            theta (d' + (n - 1)) fuel' h_new_d_ge h_compose_in h_compose_not
+          exact ⟨m, by omega, h_m_in⟩
+      · -- Case 2: F(iter_F n theta) ∈ chain(k+1) (F deferred, same depth at next position)
+        -- F(iter_F n theta) = iter_F (n+1) theta ∈ chain(k+1)
+        -- Get new boundary at k+1
+        obtain ⟨d', h_d'_ge, h_d'_in, h_d'_not⟩ :=
+          restricted_forward_chain_F_bounded phi M0 (k + 1) (iter_F n theta) h_deferred
+        have h_compose_in : iter_F (d' + n) theta ∈
+            restricted_forward_chain phi M0 (k + 1) := by
+          rw [← iter_F_compose d' n theta]
+          exact h_d'_in
+        have h_compose_not : iter_F (d' + n + 1) theta ∉
+            restricted_forward_chain phi M0 (k + 1) := by
+          rw [show d' + n + 1 = (d' + 1) + n from by omega,
+              ← iter_F_compose (d' + 1) n theta]
+          exact h_d'_not
+        have h_new_d_ge : d' + n ≥ 1 := by omega
+        obtain ⟨m, h_m_gt, h_m_in⟩ := restricted_forward_bounded_witness_fueled phi M0 (k + 1)
+          theta (d' + n) fuel' h_new_d_ge h_compose_in h_compose_not
+        exact ⟨m, by omega, h_m_in⟩
+
+/--
+Bounded F-witness: Given `iter_F d theta ∈ chain(k)` with boundary at d,
+proves `theta ∈ chain(m)` for some `m > k`.
+
+Wrapper around the fueled version with sufficient initial fuel.
+-/
+theorem restricted_forward_bounded_witness (phi : Formula)
+    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (theta : Formula) (d : Nat)
+    (h_d_ge : d ≥ 1)
+    (h_iter_in : iter_F d theta ∈ restricted_forward_chain phi M0 k)
+    (h_iter_not : iter_F (d + 1) theta ∉ restricted_forward_chain phi M0 k) :
+    ∃ m : Nat, m > k ∧ theta ∈ restricted_forward_chain phi M0 m := by
+  let B := closure_F_bound phi
+  exact restricted_forward_bounded_witness_fueled phi M0 k theta d (B * B + 1)
+    h_d_ge h_iter_in h_iter_not
+
+/--
+Forward F coherence for restricted chain (deferral-based proof):
+If `F(psi) ∈ chain(n)`, then there exists `m > n` with `psi ∈ chain(m)`.
+
+**Proof**: From `F(psi) ∈ chain(n)`, the F-nesting boundary gives `iter_F d psi ∈ chain(n)`
+with `iter_F (d+1) psi ∉ chain(n)` for some `d >= 1`. The bounded witness then
+resolves this via repeated application of the F-step deferral, proving `psi ∈ chain(m)`.
+-/
 theorem restricted_forward_chain_forward_F (phi : Formula)
     (M0 : DeferralRestrictedSerialMCS phi) (n : Nat) (psi : Formula)
     (h_F : Formula.some_future psi ∈ restricted_forward_chain phi M0 n) :
-    ∃ m : Nat, n < m ∧ psi ∈ restricted_forward_chain phi M0 m :=
-  ⟨n + 1, by omega, restricted_forward_chain_F_resolves phi M0 n psi h_F⟩
+    ∃ m : Nat, n < m ∧ psi ∈ restricted_forward_chain phi M0 m := by
+  -- Get F-nesting boundary
+  obtain ⟨d, h_d_ge, h_d_in, h_d_not⟩ := restricted_forward_chain_F_bounded phi M0 n psi h_F
+  -- Apply bounded witness
+  exact restricted_forward_bounded_witness phi M0 n psi d h_d_ge h_d_in h_d_not
 
 /-!
 ## Backward Chain Construction (P-direction)

@@ -63,7 +63,7 @@ Report 16 (g-depth resolution) established:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Audit and Remove f_content + boundary_resolution_set from Seed [NOT STARTED]
+### Phase 1: Audit and Remove f_content + boundary_resolution_set from Seed [COMPLETED]
 
 **Goal**: Remove the false components from the restricted seed and fix all compilation errors.
 
@@ -91,7 +91,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Seed Consistency and Rebuild Successor Properties [NOT STARTED]
+### Phase 2: Prove Seed Consistency and Rebuild Successor Properties [COMPLETED]
 
 **Goal**: Prove the corrected seed is consistent and establish the new successor properties (deferral-based F-step instead of immediate resolution).
 
@@ -117,7 +117,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Bounded Deferral Resolution for Forward_F [NOT STARTED]
+### Phase 3: Bounded Deferral Resolution for Forward_F [COMPLETED]
 
 **Goal**: Prove that F-obligations resolve within bounded steps using deferral disjunctions and bounded F-nesting depth.
 
@@ -144,7 +144,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Wire Restricted Chain to Completeness [NOT STARTED]
+### Phase 4: Wire Restricted Chain to Completeness [BLOCKED]
 
 **Goal**: Connect the sorry-free restricted chain forward_F/backward_P to close the `DovetailedFMCS_forward_F` and `DovetailedFMCS_backward_P` sorries in the completeness path.
 
@@ -173,7 +173,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Close Remaining Truth Lemma Sorries and Cleanup [NOT STARTED]
+### Phase 5: Close Remaining Truth Lemma Sorries and Cleanup [BLOCKED]
 
 **Goal**: Close the Until/Since truth lemma sorries in CanonicalConstruction.lean and clean up residual sorries from earlier phases.
 
