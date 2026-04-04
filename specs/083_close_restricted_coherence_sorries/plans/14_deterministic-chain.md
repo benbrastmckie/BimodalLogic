@@ -68,7 +68,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add X-K + X-Det Axioms and Update Pattern Matches [NOT STARTED]
+### Phase 1: Add X-K + X-Det Axioms and Update Pattern Matches [COMPLETED]
 
 **Goal**: Extend the axiom system with 4 new constructors and achieve `lake build` success with no new sorries (existing sorries unchanged).
 

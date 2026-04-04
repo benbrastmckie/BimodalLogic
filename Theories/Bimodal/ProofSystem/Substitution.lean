@@ -369,6 +369,18 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | next_implies_some_future a =>
     simp only [subst_imp, subst_some_future, subst_untl, subst_neg, subst_bot]
     exact Axiom.next_implies_some_future (a.subst q r)
+  | x_k_dist a b =>
+    simp only [subst_imp, subst_untl, subst_bot]
+    exact Axiom.x_k_dist (a.subst q r) (b.subst q r)
+  | x_det a =>
+    simp only [subst_imp, subst_neg, subst_untl, subst_bot]
+    exact Axiom.x_det (a.subst q r)
+  | y_k_dist a b =>
+    simp only [subst_imp, subst_snce, subst_bot]
+    exact Axiom.y_k_dist (a.subst q r) (b.subst q r)
+  | y_det a =>
+    simp only [subst_imp, subst_neg, subst_snce, subst_bot]
+    exact Axiom.y_det (a.subst q r)
 
 /-!
 ## Main theorem: derivation substitution

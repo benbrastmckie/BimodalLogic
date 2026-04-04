@@ -630,6 +630,54 @@ inductive Axiom : Formula → Type where
   | next_implies_some_future (φ : Formula) :
       Axiom ((Formula.untl Formula.bot φ).imp φ.some_future)
 
+  /--
+  Next K Distribution axiom: `X(φ → ψ) → (X(φ) → X(ψ))` (distribution for Next).
+
+  The next-step operator distributes over implication. This is the K axiom for the
+  Next operator X, where X(a) = ⊥ U a.
+
+  Semantically valid on discrete frames: if φ → ψ holds at t+1, and φ holds at t+1,
+  then ψ holds at t+1.
+  -/
+  | x_k_dist (φ ψ : Formula) :
+      Axiom ((φ.imp ψ |> Formula.untl Formula.bot).imp
+        ((Formula.untl Formula.bot φ).imp (Formula.untl Formula.bot ψ)))
+
+  /--
+  Next Determinism axiom: `¬X(φ) → X(¬φ)` (determinism of Next).
+
+  If φ does NOT hold at the next time, then ¬φ holds at the next time.
+  This captures that the successor is unique (deterministic).
+
+  Semantically valid on discrete frames: the successor of t is unique (t+1),
+  so either φ(t+1) or ¬φ(t+1).
+  -/
+  | x_det (φ : Formula) :
+      Axiom ((Formula.untl Formula.bot φ).neg.imp
+        (Formula.untl Formula.bot φ.neg))
+
+  /--
+  Previous K Distribution axiom: `Y(φ → ψ) → (Y(φ) → Y(ψ))` (distribution for Previous).
+
+  The previous-step operator distributes over implication. This is the K axiom for the
+  Previous operator Y, where Y(a) = ⊥ S a.
+
+  Semantically valid on discrete frames: symmetric dual of x_k_dist.
+  -/
+  | y_k_dist (φ ψ : Formula) :
+      Axiom ((φ.imp ψ |> Formula.snce Formula.bot).imp
+        ((Formula.snce Formula.bot φ).imp (Formula.snce Formula.bot ψ)))
+
+  /--
+  Previous Determinism axiom: `¬Y(φ) → Y(¬φ)` (determinism of Previous).
+
+  If φ does NOT hold at the previous time, then ¬φ holds at the previous time.
+  Symmetric dual of x_det.
+  -/
+  | y_det (φ : Formula) :
+      Axiom ((Formula.snce Formula.bot φ).neg.imp
+        (Formula.snce Formula.bot φ.neg))
+
   deriving Repr
 
 /--
@@ -720,6 +768,10 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.F_until_equiv _ => .Discrete
   | Axiom.P_since_equiv _ => .Discrete
   | Axiom.next_implies_some_future _ => .Discrete
+  | Axiom.x_k_dist _ _ => .Discrete
+  | Axiom.x_det _ => .Discrete
+  | Axiom.y_k_dist _ _ => .Discrete
+  | Axiom.y_det _ => .Discrete
 
 /--
 The minimal frame class required for an axiom is the class returned by `frameClass`.
@@ -748,6 +800,10 @@ def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
   | Axiom.F_until_equiv _ => False
   | Axiom.P_since_equiv _ => False
   | Axiom.next_implies_some_future _ => False
+  | Axiom.x_k_dist _ _ => False
+  | Axiom.x_det _ => False
+  | Axiom.y_k_dist _ _ => False
+  | Axiom.y_det _ => False
   | _ => True
 
 /--
@@ -782,6 +838,10 @@ def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.F_until_equiv _ => False
   | Axiom.P_since_equiv _ => False
   | Axiom.next_implies_some_future _ => False
+  | Axiom.x_k_dist _ _ => False
+  | Axiom.x_det _ => False
+  | Axiom.y_k_dist _ _ => False
+  | Axiom.y_det _ => False
   | _ => True
 
 /-! ### FrameClass Consistency Lemmas
