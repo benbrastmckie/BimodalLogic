@@ -863,6 +863,60 @@ theorem y_det_valid (φ : Formula) :
   exact h_not_Y_phi ⟨Order.pred t, Order.pred_lt t, h_phi_pred,
     fun r hrs hrt => absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
 
+/-- YX Identity axiom is valid on discrete frames: Y(X(φ)) → φ.
+Y(X(φ)) at t means "at pred(t), X(φ) held" = "at pred(t), φ held at succ(pred(t))" = "φ at t"
+since succ(pred(t)) = t on discrete frames with IsSuccArchimedean + IsPredArchimedean. -/
+theorem yx_identity_valid (φ : Formula) :
+    valid_discrete ((Formula.snce Formula.bot (Formula.untl Formula.bot φ)).imp φ) := by
+  intro T _ _ _ h_succ h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, h_s_lt_t, h_Xphi_at_s, h_no_between_st⟩
+  -- s < t and X(φ) at s: there exists r > s with φ at r and no r' between s and r
+  obtain ⟨r, h_s_lt_r, h_phi_at_r, h_no_between_sr⟩ := h_Xphi_at_s
+  -- s < r, and no element strictly between s and t, and no element strictly between s and r
+  -- We need to show r = t (both are the immediate successor of s)
+  -- Since h_no_between_st: ∀ u, s < u → u < t → False
+  -- and h_s_lt_r: s < r, h_s_lt_t: s < t
+  -- By Order.succ uniqueness: succ(s) = t and succ(s) = r, so r = t
+  have h_r_le_t : r ≤ t := by
+    by_contra h_not
+    push_neg at h_not
+    -- t < r, and s < t, so t is between s and r
+    exact h_no_between_sr t h_s_lt_t h_not
+  have h_t_le_r : t ≤ r := by
+    by_contra h_not
+    push_neg at h_not
+    -- r < t, and s < r, so r is between s and t
+    exact h_no_between_st r h_s_lt_r h_not
+  -- r = t
+  have h_eq : r = t := le_antisymm h_r_le_t h_t_le_r
+  rw [h_eq] at h_phi_at_r
+  exact h_phi_at_r
+
+/-- XY Identity axiom is valid on discrete frames: X(Y(φ)) → φ.
+Symmetric dual of yx_identity_valid. -/
+theorem xy_identity_valid (φ : Formula) :
+    valid_discrete ((Formula.untl Formula.bot (Formula.snce Formula.bot φ)).imp φ) := by
+  intro T _ _ _ h_succ h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, h_t_lt_s, h_Yphi_at_s, h_no_between_ts⟩
+  -- s > t and Y(φ) at s: there exists r < s with φ at r and no r' between r and s
+  obtain ⟨r, h_r_lt_s, h_phi_at_r, h_no_between_rs⟩ := h_Yphi_at_s
+  -- Show r = t (both are the immediate predecessor of s)
+  have h_t_le_r : t ≤ r := by
+    by_contra h_not
+    push_neg at h_not
+    -- r < t, t < s, so t is between r and s
+    exact h_no_between_rs t h_not h_t_lt_s
+  have h_r_le_t : r ≤ t := by
+    by_contra h_not
+    push_neg at h_not
+    -- t < r, r < s, so r is between t and s
+    exact h_no_between_ts r h_not h_r_lt_s
+  have h_eq : r = t := le_antisymm h_r_le_t h_t_le_r
+  rw [h_eq] at h_phi_at_r
+  exact h_phi_at_r
+
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
@@ -908,6 +962,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | x_det _ => exact absurd h_base id
   | y_k_dist _ _ => exact absurd h_base id
   | y_det _ => exact absurd h_base id
+  | yx_identity _ => exact absurd h_base id
+  | xy_identity _ => exact absurd h_base id
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -966,6 +1022,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | x_det _ => exact absurd h_dc id
   | y_k_dist _ _ => exact absurd h_dc id
   | y_det _ => exact absurd h_dc id
+  | yx_identity _ => exact absurd h_dc id
+  | xy_identity _ => exact absurd h_dc id
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -1013,6 +1071,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | x_det φ => exact x_det_valid φ
   | y_k_dist φ ψ => exact y_k_dist_valid φ ψ
   | y_det φ => exact y_det_valid φ
+  | yx_identity φ => exact yx_identity_valid φ
+  | xy_identity φ => exact xy_identity_valid φ
 
 /-! ## Full Derivation Soundness
 
@@ -1117,6 +1177,8 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | x_det _ => sorry
     | y_k_dist _ _ => sorry
     | y_det _ => sorry
+    | yx_identity _ => sorry
+    | xy_identity _ => sorry
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1301,6 +1363,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | x_det _ => exact absurd h_dc id
     | y_k_dist _ _ => exact absurd h_dc id
     | y_det _ => exact absurd h_dc id
+    | yx_identity _ => exact absurd h_dc id
+    | xy_identity _ => exact absurd h_dc id
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>

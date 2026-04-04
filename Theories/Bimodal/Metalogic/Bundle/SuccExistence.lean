@@ -376,15 +376,17 @@ lemma p_step_blocking_restricted_subset_constrained_successor_seed_restricted (p
     p_step_blocking_formulas_restricted phi u ⊆ constrained_successor_seed_restricted phi u :=
   Set.subset_union_right
 
-/-- boundary_resolution_set is no longer in the seed (v4). Preserved as sorry for API compat. -/
-lemma boundary_resolution_set_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
-    boundary_resolution_set phi u ⊆ constrained_successor_seed_restricted phi u := by
-  sorry -- REMOVED from seed in v4; callers must be updated
-
-/-- f_content is no longer in the seed (v4). Preserved as sorry for API compat. -/
-lemma f_content_subset_constrained_successor_seed_restricted (phi : Formula) (u : Set Formula) :
-    f_content u ⊆ constrained_successor_seed_restricted phi u := by
-  sorry -- REMOVED from seed in v4; callers must be updated
+-- NOTE (v4 cleanup): boundary_resolution_set and f_content were removed from the
+-- restricted seed in v4 because f_content in the seed was provably inconsistent
+-- (when both F(A) and F(neg A) are in a consistent MCS u, the seed would contain
+-- {A, neg A}). The sorry stubs `boundary_resolution_set_subset_constrained_successor_seed_restricted`
+-- and `f_content_subset_constrained_successor_seed_restricted` have been deleted.
+-- Their only callers were the dead-code chain in SuccChainFMCS.lean
+-- (constrained_successor_restricted_f_content_persistence -> restricted_forward_chain_F_resolves
+-- -> restricted_forward_chain_iter_F_resolves), which has also been removed.
+-- F-obligations are now resolved via bounded deferral using deferralDisjunctions
+-- (psi ∨ F(psi)) already in the seed, through the F-step property
+-- (constrained_successor_restricted_f_step).
 
 /-!
 ## Constrained Successor Seed (with P-Step Blocking)
