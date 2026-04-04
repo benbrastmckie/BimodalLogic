@@ -254,7 +254,7 @@ to the caller. The instantiation modules provide the concrete construction.
 theorem parametric_algebraic_representation_conditional
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent M →
-      Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
+      Σ' (B : BFMCS D) (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent)
          (fam : FMCS D) (hfam : fam ∈ B.families) (t : D),
          M = fam.mcs t) :
     ∃ (B : BFMCS D) (h_tc : B.temporally_coherent)
@@ -264,11 +264,11 @@ theorem parametric_algebraic_representation_conditional
   -- Step 1: Extend {φ.neg} to an MCS
   obtain ⟨M, h_mcs, h_neg_in⟩ := not_provable_implies_neg_extends_to_mcs φ h_not_prov
   -- Step 2: Use the construction function to get a BFMCS containing M
-  obtain ⟨B, h_tc, fam, hfam, t, h_eq⟩ := construct_bfmcs M h_mcs
+  obtain ⟨B, h_tc, h_uc, fam, hfam, t, h_eq⟩ := construct_bfmcs M h_mcs
   -- Step 3: φ.neg ∈ fam.mcs t (since M = fam.mcs t)
   have h_neg_in_fam : φ.neg ∈ fam.mcs t := h_eq ▸ h_neg_in
   -- Step 4: Apply the representation theorem
-  exact ⟨B, h_tc, fam, hfam, t, parametric_representation_from_neg_membership B h_tc φ fam hfam t h_neg_in_fam⟩
+  exact ⟨B, h_tc, fam, hfam, t, parametric_representation_from_neg_membership B h_tc h_uc φ fam hfam t h_neg_in_fam⟩
 
 /-!
 ## Completeness Corollary
@@ -287,6 +287,7 @@ This is the soundness direction: non-provability is witnessed by countermodels.
 -/
 theorem countermodel_implies_not_provable
     (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (h_uc : B.until_since_coherent)
     (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D)
     (h_false : ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
@@ -296,7 +297,7 @@ theorem countermodel_implies_not_provable
   -- If ⊢ φ, then φ ∈ every MCS
   have h_in : φ ∈ fam.mcs t := theorem_in_mcs (fam.is_mcs t) d
   -- By truth lemma: truth_at ... φ
-  have h_true := (parametric_shifted_truth_lemma B h_tc φ fam hfam t).mp h_in
+  have h_true := (parametric_shifted_truth_lemma B h_tc h_uc φ fam hfam t).mp h_in
   exact h_false h_true
 
 end Bimodal.Metalogic.Algebraic.ParametricRepresentation
