@@ -10,6 +10,7 @@ import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Algebraic.DeterministicChain
+import Bimodal.Metalogic.Algebraic.DeterministicFMCS
 
 /-!
 # Algebraic Representation Theorem
@@ -94,5 +95,6 @@ open Bimodal.Metalogic.Algebraic.ParametricRepresentation
 
 -- Deterministic chain for discrete completeness
 open Bimodal.Metalogic.Algebraic.DeterministicChain
+open Bimodal.Metalogic.Algebraic.DeterministicFMCS
 
 end Bimodal.Metalogic.Algebraic
