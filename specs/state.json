@@ -850,7 +850,7 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-04T19:54:04Z",
+      "last_updated": "2026-04-04T20:00:45Z",
       "notes": "Phases 1-4 complete. Phase 5 blocked: forward_F circularity — mutual induction with truth lemma needed. 3 approaches in handoff.",
       "next_artifact_number": 16,
       "session_id": "sess_1775262087_b2e74c",
@@ -858,15 +858,15 @@
       "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
         "phases": 6,
-        "total_effort_hours": 14,
+        "total_effort_hours": 16,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 14,
+        "plan_version": 15,
         "reports_integrated": [
           {
-            "path": "reports/14_team-research.md",
-            "integrated_in_plan_version": 14,
-            "integrated_date": "2026-04-03"
+            "path": "reports/15_forward-f-resolution.md",
+            "integrated_in_plan_version": 15,
+            "integrated_date": "2026-04-04"
           }
         ],
         "dependency_waves": [
@@ -874,7 +874,9 @@
             1
           ],
           [
-            2,
+            2
+          ],
+          [
             3
           ],
           [
@@ -1018,10 +1020,15 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/15_forward-f-resolution.md",
           "type": "research",
           "summary": "Deep analysis of forward_F circularity: all 3 options blocked by same cycle, hybrid Option D recommended"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/plans/15_forward-f-resolution.md",
+          "type": "plan",
+          "summary": "v15: 6-phase plan for x_content-based dovetailed chain modification to resolve forward_F circularity"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
-      "resume_phase": 5
+      "resume_phase": 1
     }
   ],
   "next_project_number": 84,
