@@ -850,22 +850,22 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-04T20:42:15Z",
+      "last_updated": "2026-04-04T20:49:10Z",
       "notes": "Round 16: G-depth doesn't help (circularity is in chain, not truth lemma). Found FALSE theorem constrained_successor_seed_restricted_consistent. Recommend fixing restricted seed by removing f_content.",
       "next_artifact_number": 17,
       "session_id": "sess_1775262087_b2e74c",
       "researched": "2026-04-03T23:57:51Z",
       "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 16,
+        "phases": 5,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 15,
+        "plan_version": 16,
         "reports_integrated": [
           {
-            "path": "reports/15_forward-f-resolution.md",
-            "integrated_in_plan_version": 15,
+            "path": "reports/16_g-depth-resolution.md",
+            "integrated_in_plan_version": 16,
             "integrated_date": "2026-04-04"
           }
         ],
@@ -884,9 +884,6 @@
           ],
           [
             5
-          ],
-          [
-            6
           ]
         ]
       },
@@ -1035,6 +1032,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/16_g-depth-resolution.md",
           "type": "research",
           "summary": "G-depth fails, found false theorem in restricted seed, recommend fixing restricted seed approach"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/plans/16_restricted-seed-fix.md",
+          "type": "plan",
+          "summary": "v16: 5-phase plan to fix restricted seed (remove f_content), rebuild F-resolution via deferral disjunctions"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
