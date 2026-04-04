@@ -850,8 +850,8 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-04T20:00:45Z",
-      "notes": "Phases 1-4 complete. Phase 5 blocked: forward_F circularity — mutual induction with truth lemma needed. 3 approaches in handoff.",
+      "last_updated": "2026-04-04T20:24:51Z",
+      "notes": "Plan v15 blocked at Phase 2: x_content vs g_content propagation gap. All 4 approaches to Until persistence through Lindenbaum steps fail.",
       "next_artifact_number": 16,
       "session_id": "sess_1775262087_b2e74c",
       "researched": "2026-04-03T23:57:51Z",
@@ -1025,6 +1025,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/plans/15_forward-f-resolution.md",
           "type": "plan",
           "summary": "v15: 6-phase plan for x_content-based dovetailed chain modification to resolve forward_F circularity"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/summaries/15_forward-f-resolution-summary.md",
+          "type": "summary",
+          "summary": "Plan v15 blocked: 4 approaches analyzed, all fail on x_content vs g_content gap"
         }
       ],
       "started": "2026-04-02T22:21:47Z",

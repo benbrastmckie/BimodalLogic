@@ -63,7 +63,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Prove forward_F for the Deterministic Chain (Mathematical Core) [NOT STARTED]
+### Phase 1: Prove forward_F for the Deterministic Chain (Mathematical Core) [COMPLETED]
 
 **Goal**: Prove `forward_F` for the deterministic chain by decomposing the truth lemma argument. This is the key mathematical step that breaks the circularity.
 
@@ -194,7 +194,7 @@ YES, it is possible in an MCS! The MCS is a set of FORMULAS, not a model. The fo
 
 ---
 
-### Phase 2: Close Dovetailed Chain Until Persistence [NOT STARTED]
+### Phase 2: Close Dovetailed Chain Until Persistence [BLOCKED]
 
 **Goal**: Close `forward_dovetailed_until_persists` by proving that the dovetailed chain's g_content-based steps DO preserve `(top U psi)` persistence, using the derivation `(top U psi) -> G(top U psi)`.
 
