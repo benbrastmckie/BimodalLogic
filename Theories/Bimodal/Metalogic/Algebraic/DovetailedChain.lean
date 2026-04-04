@@ -588,15 +588,36 @@ theorem forward_dovetailed_until_persists (M_0 : Set Formula) (h_mcs_0 : SetMaxi
     (h_not_psi : psi ∉ forward_dovetailed M_0 h_mcs_0 n) :
     Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 (n + 1) := by
   -- ON CRITICAL PATH for completeness_over_Int (via dovetailed_fam_forward_F).
-  -- BLOCKED by Phase 4: X-content propagation infrastructure.
   --
-  -- Under strict semantics with X-based Until:
-  -- ⊤ U ψ → X(ψ ∨ (⊤ ∧ (⊤ U ψ)))  [until_unfold]
-  -- So X(ψ ∨ (⊤ ∧ (⊤ U ψ))) ∈ chain(n). Need: ψ ∨ (⊤ ∧ (⊤ U ψ)) ∈ chain(n+1).
-  -- This requires X-content propagation: X(α) ∈ chain(n) → α ∈ chain(n+1).
-  -- The forward_step (temporal_theory_witness_with_g_exists) preserves g_content
-  -- but NOT x_content. Needs X(α) → F(α) derivation (Phase 4: X_implies_F)
-  -- and then F-step propagation.
+  -- ANALYSIS (task 83, plan v15, Phase 2):
+  --
+  -- The proof requires showing (⊤ U ψ) ∈ chain(n+1) where chain(n+1) is a
+  -- Lindenbaum extension of {target} ∪ temporal_box_g_seed(chain(n)).
+  --
+  -- until_unfold gives: X(ψ ∨ (⊤ ∧ (⊤ U ψ))) ∈ chain(n)
+  -- So ψ ∨ (⊤ ∧ (⊤ U ψ)) ∈ x_content(chain(n)).
+  --
+  -- BLOCKER: chain(n+1) ⊇ g_content(chain(n)) but NOT x_content(chain(n)).
+  -- The formula ψ ∨ (⊤ ∧ (⊤ U ψ)) is in x_content, not g_content.
+  -- For it to be in g_content, we'd need G(ψ ∨ (⊤ ∧ (⊤ U ψ))) ∈ chain(n),
+  -- which requires G(⊤ U ψ) ∈ chain(n). But (⊤ U ψ) → G(⊤ U ψ) is NOT
+  -- derivable (semantically false: Until is existential, G is universal).
+  --
+  -- ATTEMPTED APPROACHES (all blocked):
+  -- 1. Modify forward_step to use x_content base → chain becomes deterministic,
+  --    x_content(M) ∪ {target} is consistent only when target ∈ x_content(M),
+  --    so resolution step is vacuous. Forward_F unprovable without truth lemma.
+  -- 2. Add Until formulas to Lindenbaum seed → consistency proof fails because
+  --    Until formulas are not G-liftable. G(neg(⊤ U ψ)) ∈ chain(n) does not
+  --    contradict (⊤ U ψ) ∈ chain(n) under strict semantics (no T-axiom for G).
+  -- 3. until_induction instantiation → premise G(ψ → ⊤ U ψ) underivable under
+  --    strict semantics (ψ now ≠ ψ at a strictly future time).
+  -- 4. Prove F-persistence instead of Until persistence → F(ψ) = neg(G(neg(ψ)))
+  --    not preserved through Lindenbaum extensions (G(neg(ψ)) can enter freely).
+  --
+  -- RESOLUTION PATH: Requires either (a) a fundamentally new chain construction
+  -- that provides both x_content propagation and F-resolution, or (b) an algebraic
+  -- restructure that avoids same-family forward_F entirely.
   sorry
 
 /--
@@ -961,8 +982,10 @@ theorem backward_dovetailed_since_persists (M_0 : Set Formula) (h_mcs_0 : SetMax
     (h_not_psi : psi ∉ backward_dovetailed M_0 h_mcs_0 n) :
     Formula.snce (Formula.neg Formula.bot) psi ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) := by
   -- Mirror of forward_dovetailed_until_persists for the past direction.
-  -- Under strict semantics, Since persistence via Y-based unfold needs
-  -- Y-content propagation (similar issue to X-content for Until).
+  -- BLOCKED: same x/y-content propagation issue. The backward chain uses
+  -- h_content-based Lindenbaum extensions. Since unfold gives Y(ψ ∨ (⊤ ∧ (⊤ S ψ)))
+  -- which is in y_content, but backward_step preserves h_content, not y_content.
+  -- See forward_dovetailed_until_persists for detailed analysis.
   sorry
 
 /--
