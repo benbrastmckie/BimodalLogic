@@ -183,6 +183,7 @@ in the instantiation modules.
 -/
 theorem parametric_algebraic_representation_relative
     (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (h_uc : B.until_since_coherent)
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
@@ -190,7 +191,7 @@ theorem parametric_algebraic_representation_relative
       (parametric_to_history fam) t φ := by
   intro h_phi_true
   -- By shifted truth lemma (backward): truth_at ... φ implies φ ∈ fam.mcs t
-  have h_phi_in := (parametric_shifted_truth_lemma B h_tc φ fam hfam t).mpr h_phi_true
+  have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_uc φ fam hfam t).mpr h_phi_true
   -- But φ.neg ∈ fam.mcs t, contradiction with MCS consistency
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
 
@@ -203,13 +204,14 @@ The caller provides the BFMCS and the witness that φ.neg is in some family.
 -/
 theorem parametric_representation_from_neg_membership
     (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (h_uc : B.until_since_coherent)
     (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
   intro h_phi_true
-  have h_phi_in := (parametric_shifted_truth_lemma B h_tc φ fam hfam t).mpr h_phi_true
+  have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_uc φ fam hfam t).mpr h_phi_true
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
 
 /--

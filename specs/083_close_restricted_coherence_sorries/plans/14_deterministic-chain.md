@@ -171,7 +171,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Truth Lemma Until/Since Cases [NOT STARTED]
+### Phase 4: Truth Lemma Until/Since Cases [COMPLETED]
 
 **Goal**: Close the 4 Until/Since sorry sites in ParametricTruthLemma.lean using the deterministic chain's Until persistence and the Until-depth induction strategy.
 
@@ -202,7 +202,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Wire Deterministic Chain to completeness_over_Int [NOT STARTED]
+### Phase 5: Wire Deterministic Chain to completeness_over_Int [PARTIAL]
 
 **Goal**: Close the 2 UltrafilterChain sorries (`succ_chain_restricted_forward_F`, `succ_chain_restricted_backward_P`) and connect the deterministic chain to the existing completeness theorem structure.
 

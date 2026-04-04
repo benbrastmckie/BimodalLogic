@@ -203,11 +203,22 @@ theorem parametric_box_persistent
 /--
 The parametric canonical truth lemma: MCS membership iff truth at canonical model.
 
-For any D-parametric BFMCS with temporal coherence, family in the BFMCS, time t, and formula phi:
+For any D-parametric BFMCS with temporal coherence and Until/Since coherence,
+family in the BFMCS, time t, and formula phi:
   phi in fam.mcs t <-> truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B) (parametric_to_history fam) t phi
+
+The `h_uc` parameter provides Until/Since coherence: the semantic content of
+Until and Since operators is reflected at the MCS level. This is needed because
+the Until/Since truth conditions involve existential witnesses with guard
+conditions on intermediate times, which cannot be derived from temporal
+coherence (forward_F/backward_P) alone over generic D.
+
+For D = Int with deterministic chains, `h_uc` is provable from the chain
+structure via `until_persists_chain` and `since_persists_chain`.
 -/
 theorem parametric_canonical_truth_lemma
     (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (h_uc : B.until_since_coherent)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (phi : Formula) :
     phi ∈ fam.mcs t ↔
@@ -354,11 +365,37 @@ theorem parametric_canonical_truth_lemma
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t psi h_all_mcs
   | untl phi psi ih_phi ih_psi =>
-    -- Until truth lemma: deferred to Phase 7 (Completeness Rewiring)
-    sorry
+    -- Until truth lemma: (φ U ψ) ∈ fam.mcs t ↔ ∃ s > t, truth(ψ,s) ∧ ∀ r ∈ (t,s), truth(φ,r)
+    simp only [truth_at]
+    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    constructor
+    · -- Forward: (φ U ψ) ∈ fam.mcs t → semantic Until witness
+      intro h_U
+      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      exact ⟨s, h_ts,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
+    · -- Backward: semantic Until witness → (φ U ψ) ∈ fam.mcs t
+      intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_U t phi psi ⟨s, h_ts,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
-    -- Since truth lemma: deferred to Phase 7 (Completeness Rewiring)
-    sorry
+    -- Since truth lemma: (φ S ψ) ∈ fam.mcs t ↔ ∃ s < t, truth(ψ,s) ∧ ∀ r ∈ (s,t), truth(φ,r)
+    simp only [truth_at]
+    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    constructor
+    · -- Forward: (φ S ψ) ∈ fam.mcs t → semantic Since witness
+      intro h_S
+      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      exact ⟨s, h_st,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
+    · -- Backward: semantic Since witness → (φ S ψ) ∈ fam.mcs t
+      intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_S t phi psi ⟨s, h_st,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
 
 /-!
 ## Shifted Truth Lemma
@@ -375,7 +412,7 @@ to show that Box phi persists to all times, enabling truth at shifted histories
 via `time_shift_preserves_truth`.
 -/
 theorem parametric_shifted_truth_lemma (B : BFMCS D)
-    (h_tc : B.temporally_coherent) (φ : Formula)
+    (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent) (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
     φ ∈ fam.mcs t ↔
     truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
@@ -510,10 +547,36 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
   | untl phi psi ih_phi ih_psi =>
-    -- Until shifted truth lemma: deferred to Phase 7
-    sorry
+    -- Until shifted truth lemma: (φ U ψ) ∈ fam.mcs t ↔ ∃ s > t, truth(ψ,s) ∧ ∀ r ∈ (t,s), truth(φ,r)
+    simp only [truth_at]
+    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    constructor
+    · -- Forward: (φ U ψ) ∈ fam.mcs t → semantic Until witness
+      intro h_U
+      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      exact ⟨s, h_ts,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
+    · -- Backward: semantic Until witness → (φ U ψ) ∈ fam.mcs t
+      intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_U t phi psi ⟨s, h_ts,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
-    -- Since shifted truth lemma: deferred to Phase 7
-    sorry
+    -- Since shifted truth lemma: (φ S ψ) ∈ fam.mcs t ↔ ∃ s < t, truth(ψ,s) ∧ ∀ r ∈ (s,t), truth(φ,r)
+    simp only [truth_at]
+    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    constructor
+    · -- Forward: (φ S ψ) ∈ fam.mcs t → semantic Since witness
+      intro h_S
+      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      exact ⟨s, h_st,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
+    · -- Backward: semantic Since witness → (φ S ψ) ∈ fam.mcs t
+      intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_S t phi psi ⟨s, h_st,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma

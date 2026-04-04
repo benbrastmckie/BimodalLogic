@@ -388,4 +388,113 @@ theorem box_in_y_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dual) h_box
   exact h_content_propagates_to_y_content M h_mcs (Formula.box φ) h_H_box
 
+/-!
+## G-persistence Through the Chain (Multi-Step)
+
+G(φ) ∈ chain(n) implies G(φ) ∈ chain(n+1) via temp_4 + G→X.
+By induction, G(φ) persists to all chain positions ≥ n.
+Then φ ∈ chain(m) for all m > n (via G→X giving φ at next step).
+-/
+
+/-- G(φ) persists forward one step in the chain.
+    Uses temp_4 (G(φ) → G(G(φ))) and G→X (G(G(φ)) → X(G(φ))). -/
+theorem G_persists_forward_one_step (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n : ℕ) (φ : Formula)
+    (h_G : Formula.all_future φ ∈ deterministic_chain M₀ ↑n) :
+    Formula.all_future φ ∈ deterministic_chain M₀ (↑n + 1) := by
+  have h_mcs_n := deterministic_chain_mcs M₀ h_mcs ↑n
+  -- temp_4: G(φ) → G(G(φ))
+  have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+  have h_GG : φ.all_future.all_future ∈ deterministic_chain M₀ ↑n :=
+    SetMaximalConsistent.implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_t4) h_G
+  -- G(G(φ)) → X(G(φ)) via g_content_propagates_to_x_content
+  have h_Gx := g_content_propagates_to_x_content _ h_mcs_n φ.all_future h_GG
+  -- x_content(chain(n)) = chain(n+1)
+  show φ.all_future ∈ deterministic_chain M₀ (↑(n + 1))
+  rw [deterministic_chain_nat_succ]
+  exact h_Gx
+
+/-- G(φ) persists forward through the Nat-indexed chain.
+    If G(φ) ∈ chain(n) then G(φ) ∈ chain(n + k) for all k. -/
+theorem G_persists_forward (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n k : ℕ) (φ : Formula)
+    (h_G : Formula.all_future φ ∈ deterministic_chain M₀ ↑n) :
+    Formula.all_future φ ∈ deterministic_chain M₀ ↑(n + k) := by
+  induction k with
+  | zero => exact h_G
+  | succ k ih =>
+    have : ↑(n + k) + 1 = (↑(n + (k + 1)) : ℤ) := by omega
+    rw [← this]
+    exact G_persists_forward_one_step M₀ h_mcs (n + k) φ ih
+
+/-- Forward G coherence for Nat chain: G(φ) ∈ chain(n), n < m → φ ∈ chain(m).
+    Uses G persistence + G→X (φ ∈ x_content(chain(m-1)) = chain(m)). -/
+theorem forward_G_nat (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n m : ℕ) (h_lt : n < m) (φ : Formula)
+    (h_G : Formula.all_future φ ∈ deterministic_chain M₀ ↑n) :
+    φ ∈ deterministic_chain M₀ ↑m := by
+  -- m = n + (m - n), and m - n ≥ 1
+  obtain ⟨k, rfl⟩ : ∃ k, m = n + k + 1 := ⟨m - n - 1, by omega⟩
+  -- G(φ) persists to chain(n + k)
+  have h_G_at := G_persists_forward M₀ h_mcs n k φ h_G
+  -- φ ∈ x_content(chain(n + k)) = chain(n + k + 1)
+  have h_mcs_nk := deterministic_chain_mcs M₀ h_mcs ↑(n + k)
+  have h_phi_x := g_content_propagates_to_x_content _ h_mcs_nk φ h_G_at
+  show φ ∈ deterministic_chain M₀ ↑(n + k + 1)
+  rw [deterministic_chain_nat_succ]
+  exact h_phi_x
+
+/-!
+## H-persistence Through the Chain (Multi-Step)
+
+Symmetric to G-persistence, using y_content and the backward direction.
+H(φ) ∈ chain(-n) implies φ ∈ chain(-m) for all m > n.
+-/
+
+/-- H(φ) persists backward one step in the chain.
+    Uses temp_4_past (H(φ) → H(H(φ))) and H→Y. -/
+theorem H_persists_backward_one_step (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n : ℕ) (φ : Formula)
+    (h_H : Formula.all_past φ ∈ deterministic_chain M₀ (Int.negSucc n)) :
+    Formula.all_past φ ∈ deterministic_chain M₀ (Int.negSucc (n + 1)) := by
+  have h_mcs_n := deterministic_chain_mcs M₀ h_mcs (Int.negSucc n)
+  -- temp_4_past: H(φ) → H(H(φ)) (from temporal duality of temp_4)
+  have h_t4p := Bimodal.Metalogic.Core.temp_4_past φ
+  have h_HH : φ.all_past.all_past ∈ deterministic_chain M₀ (Int.negSucc n) :=
+    SetMaximalConsistent.implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_t4p) h_H
+  -- H(H(φ)) → Y(H(φ)) via h_content_propagates_to_y_content
+  have h_Hy := h_content_propagates_to_y_content _ h_mcs_n φ.all_past h_HH
+  -- y_content(chain(-(n+1))) = chain(-(n+2))
+  show φ.all_past ∈ deterministic_chain M₀ (Int.negSucc (n + 1))
+  rw [deterministic_chain_negSucc_succ]
+  exact h_Hy
+
+/-- H(φ) persists backward through the negative chain.
+    If H(φ) ∈ chain(-(n+1)) then H(φ) ∈ chain(-(n+1+k)) for all k. -/
+theorem H_persists_backward (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n k : ℕ) (φ : Formula)
+    (h_H : Formula.all_past φ ∈ deterministic_chain M₀ (Int.negSucc n)) :
+    Formula.all_past φ ∈ deterministic_chain M₀ (Int.negSucc (n + k)) := by
+  induction k with
+  | zero => simp; exact h_H
+  | succ k ih =>
+    have : n + (k + 1) = (n + k) + 1 := by omega
+    rw [this]
+    exact H_persists_backward_one_step M₀ h_mcs (n + k) φ ih
+
+/-- Backward H coherence for Nat chain: H(φ) ∈ chain(-(n+1)), n < m → φ ∈ chain(-(m+1)).
+    Uses H persistence + H→Y. -/
+theorem backward_H_negSucc (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n m : ℕ) (h_lt : n < m) (φ : Formula)
+    (h_H : Formula.all_past φ ∈ deterministic_chain M₀ (Int.negSucc n)) :
+    φ ∈ deterministic_chain M₀ (Int.negSucc m) := by
+  obtain ⟨k, rfl⟩ : ∃ k, m = n + k + 1 := ⟨m - n - 1, by omega⟩
+  have h_H_at := H_persists_backward M₀ h_mcs n k φ h_H
+  have h_mcs_nk := deterministic_chain_mcs M₀ h_mcs (Int.negSucc (n + k))
+  have h_phi_y := h_content_propagates_to_y_content _ h_mcs_nk φ h_H_at
+  show φ ∈ deterministic_chain M₀ (Int.negSucc (n + k + 1))
+  rw [deterministic_chain_negSucc_succ]
+  exact h_phi_y
+
 end Bimodal.Metalogic.Algebraic.DeterministicChain

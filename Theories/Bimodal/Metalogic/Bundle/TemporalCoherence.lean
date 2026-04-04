@@ -205,6 +205,52 @@ theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 /--
+Temporal backward G with explicit forward_F hypothesis (no TemporalCoherentFamily needed).
+
+This variant is used in the well-founded induction proof of forward_F, where we
+have forward_F for formulas of smaller size but not yet for all formulas.
+-/
+theorem temporal_backward_G_with_fwd_F {D : Type*} [Preorder D]
+    (fam : FMCS D) (t : D) (φ : Formula)
+    (h_forward_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t →
+      ∃ s : D, t < s ∧ (Formula.neg φ) ∈ fam.mcs s)
+    (h_all : ∀ s : D, t < s → φ ∈ fam.mcs s) :
+    Formula.all_future φ ∈ fam.mcs t := by
+  by_contra h_not_G
+  have h_mcs := fam.is_mcs t
+  have h_neg_G : Formula.neg (Formula.all_future φ) ∈ fam.mcs t := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future φ) with h_G | h_neg
+    · exact absurd h_G h_not_G
+    · exact h_neg
+  have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
+    neg_all_future_to_some_future_neg (fam.mcs t) h_mcs φ h_neg_G
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := h_forward_F_neg h_F_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
+
+/--
+Temporal backward H with explicit backward_P hypothesis.
+Symmetric dual of temporal_backward_G_with_fwd_F.
+-/
+theorem temporal_backward_H_with_bwd_P {D : Type*} [Preorder D]
+    (fam : FMCS D) (t : D) (φ : Formula)
+    (h_backward_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t →
+      ∃ s : D, s < t ∧ (Formula.neg φ) ∈ fam.mcs s)
+    (h_all : ∀ s : D, s < t → φ ∈ fam.mcs s) :
+    Formula.all_past φ ∈ fam.mcs t := by
+  by_contra h_not_H
+  have h_mcs := fam.is_mcs t
+  have h_neg_H : Formula.neg (Formula.all_past φ) ∈ fam.mcs t := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_past φ) with h_H | h_neg
+    · exact absurd h_H h_not_H
+    · exact h_neg
+  have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=
+    neg_all_past_to_some_past_neg (fam.mcs t) h_mcs φ h_neg_H
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := h_backward_P_neg h_P_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
+
+/--
 Temporal coherence for a BFMCS: all families have forward_F and backward_P properties.
 
 This condition ensures that for each family in the BFMCS:
@@ -370,5 +416,66 @@ theorem restricted_temporal_backward_H_strict
   obtain ⟨s, h_lt, h_neg_phi_s⟩ := h_backward_P t (Formula.neg φ) h_neg_phi_dc h_P_neg
   have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
+
+/-!
+## Until/Since Coherence
+
+Until/Since coherence captures the semantic content of Until/Since operators
+at the MCS level. The truth lemma for Until/Since requires that the FMCS
+satisfy this coherence: if (φ U ψ) is in an MCS at time t, there must exist
+a witness time s > t where ψ is in the MCS at s AND φ is in the MCS at all
+intermediate times. Similarly for Since in the past direction.
+
+This is a stronger condition than mere temporal coherence (forward_F/backward_P),
+which only provides existential witnesses without the guard condition on
+intermediate times.
+
+### Why This Is Needed
+
+The Until truth lemma needs to convert MCS membership of (φ U ψ) into a
+semantic witness: ∃ s > t, truth(ψ, s) ∧ ∀ r ∈ (t,s), truth(φ, r).
+The induction hypotheses convert between MCS membership and truth for the
+subformulas φ and ψ, but the truth lemma needs the MCS-level witness with
+the guard condition to apply the IH.
+
+For discrete D (e.g., Int), this is provable from the deterministic chain
+structure (x_content/y_content) via `until_persists_chain`. For generic D,
+it must be assumed as a coherence condition.
+
+### Backward Direction
+
+The backward direction (truth → MCS) also requires coherence: given a semantic
+witness for Until (∃ s > t with truth(ψ,s) and truth(φ,r) for r ∈ (t,s)),
+the IH converts to MCS membership, but we need (φ U ψ) ∈ fam.mcs t.
+This requires the `until_intro` axiom which works through X (next) operators,
+needing x_content chain structure. For generic D, we assume this directly.
+-/
+
+/--
+Until/Since coherence for a BFMCS: all families satisfy the semantic content
+of Until and Since at the MCS level.
+
+- `forward_until`: (φ U ψ) ∈ fam.mcs t → ∃ s > t, ψ ∈ fam.mcs s ∧ ∀ r ∈ (t,s), φ ∈ fam.mcs r
+- `backward_until`: ψ ∈ fam.mcs s for some s > t, φ ∈ fam.mcs r for all r ∈ (t,s) → (φ U ψ) ∈ fam.mcs t
+- `forward_since`: (φ S ψ) ∈ fam.mcs t → ∃ s < t, ψ ∈ fam.mcs s ∧ ∀ r ∈ (s,t), φ ∈ fam.mcs r
+- `backward_since`: ψ ∈ fam.mcs s for some s < t, φ ∈ fam.mcs r for all r ∈ (s,t) → (φ S ψ) ∈ fam.mcs t
+
+For D = Int with deterministic chains, these follow from `until_persists_chain`,
+`since_persists_chain`, `until_unfold_in_mcs`, and `since_unfold_in_mcs`.
+-/
+def BFMCS.until_since_coherent (B : BFMCS D) : Prop :=
+  ∀ fam ∈ B.families,
+    (∀ t : D, ∀ φ ψ : Formula,
+      Formula.untl φ ψ ∈ fam.mcs t →
+      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) ∧
+    (∀ t : D, ∀ φ ψ : Formula,
+      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) →
+      Formula.untl φ ψ ∈ fam.mcs t) ∧
+    (∀ t : D, ∀ φ ψ : Formula,
+      Formula.snce φ ψ ∈ fam.mcs t →
+      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) ∧
+    (∀ t : D, ∀ φ ψ : Formula,
+      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) →
+      Formula.snce φ ψ ∈ fam.mcs t)
 
 end Bimodal.Metalogic.Bundle
