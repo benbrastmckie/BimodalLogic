@@ -776,6 +776,93 @@ theorem next_implies_some_future_valid (φ : Formula) :
   intro h_G_neg_phi
   exact h_G_neg_phi s hts h_phi_s
 
+/-- X-K Distribution validity: `⊨_discrete X(φ → ψ) → (X(φ) → X(ψ))`.
+On discrete frames, X(a) = ⊥ U a holds iff a holds at succ(t). The bot guard
+forces the witness to be the immediate successor. So X(φ→ψ) and X(φ) both
+evaluate at succ(t), giving (φ→ψ)(succ(t)) and φ(succ(t)), hence ψ(succ(t)). -/
+theorem x_k_dist_valid (φ ψ : Formula) :
+    valid_discrete ((φ.imp ψ |> Formula.untl Formula.bot).imp
+      ((Formula.untl Formula.bot φ).imp (Formula.untl Formula.bot ψ))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s1, hts1, h_imp_s1, h_guard1⟩ ⟨s2, hts2, h_phi_s2, h_guard2⟩
+  -- Both s1 and s2 must equal succ(t) due to bot guards.
+  have h_s1_eq : s1 = Order.succ t := by
+    apply le_antisymm
+    · by_contra h_gt
+      push_neg at h_gt
+      exact h_guard1 (Order.succ t) (Order.lt_succ t) h_gt
+    · exact Order.succ_le_of_lt hts1
+  have h_s2_eq : s2 = Order.succ t := by
+    apply le_antisymm
+    · by_contra h_gt
+      push_neg at h_gt
+      exact h_guard2 (Order.succ t) (Order.lt_succ t) h_gt
+    · exact Order.succ_le_of_lt hts2
+  subst h_s1_eq; subst h_s2_eq
+  exact ⟨Order.succ t, Order.lt_succ t, h_imp_s1 h_phi_s2,
+    fun r htr hrs => absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+
+/-- X-Determinism validity: `⊨_discrete ¬X(φ) → X(¬φ)`.
+On discrete frames, if φ does not hold at succ(t), then ¬φ holds at succ(t).
+The proof uses classical logic: ¬X(φ) means there is no witness s > t with φ(s)
+and empty (t,s), which on discrete frames means ¬φ(succ(t)). -/
+theorem x_det_valid (φ : Formula) :
+    valid_discrete ((Formula.untl Formula.bot φ).neg.imp
+      (Formula.untl Formula.bot φ.neg)) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.neg, truth_at]
+  intro h_not_X_phi
+  -- Need: ∃ s > t, (φ(s) → False) ∧ ∀ r, t < r → r < s → False
+  -- Take s = succ(t).
+  refine ⟨Order.succ t, Order.lt_succ t, ?_, fun r htr hrs =>
+    absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+  -- Show ¬φ(succ(t)): suppose φ(succ(t)), then X(φ) holds, contradiction.
+  intro h_phi_succ
+  exact h_not_X_phi ⟨Order.succ t, Order.lt_succ t, h_phi_succ,
+    fun r htr hrs => absurd (Order.le_of_lt_succ hrs) (not_le.mpr htr)⟩
+
+/-- Y-K Distribution validity: `⊨_discrete Y(φ → ψ) → (Y(φ) → Y(ψ))`.
+Symmetric dual of x_k_dist_valid for the predecessor direction. -/
+theorem y_k_dist_valid (φ ψ : Formula) :
+    valid_discrete ((φ.imp ψ |> Formula.snce Formula.bot).imp
+      ((Formula.snce Formula.bot φ).imp (Formula.snce Formula.bot ψ))) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s1, hs1t, h_imp_s1, h_guard1⟩ ⟨s2, hs2t, h_phi_s2, h_guard2⟩
+  -- Both s1 and s2 must equal pred(t) due to bot guards.
+  have h_s1_eq : s1 = Order.pred t := by
+    apply le_antisymm
+    · exact Order.le_pred_of_lt hs1t
+    · by_contra h_lt
+      push_neg at h_lt
+      exact h_guard1 (Order.pred t) h_lt (Order.pred_lt t)
+  have h_s2_eq : s2 = Order.pred t := by
+    apply le_antisymm
+    · exact Order.le_pred_of_lt hs2t
+    · by_contra h_lt
+      push_neg at h_lt
+      exact h_guard2 (Order.pred t) h_lt (Order.pred_lt t)
+  subst h_s1_eq; subst h_s2_eq
+  exact ⟨Order.pred t, Order.pred_lt t, h_imp_s1 h_phi_s2,
+    fun r hrs hrt => absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
+
+/-- Y-Determinism validity: `⊨_discrete ¬Y(φ) → Y(¬φ)`.
+Symmetric dual of x_det_valid for the predecessor direction. -/
+theorem y_det_valid (φ : Formula) :
+    valid_discrete ((Formula.snce Formula.bot φ).neg.imp
+      (Formula.snce Formula.bot φ.neg)) := by
+  intro T _ _ _ _h_succ _h_pred _h_succ_arch _h_pred_arch _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.neg, truth_at]
+  intro h_not_Y_phi
+  -- Take s = pred(t).
+  refine ⟨Order.pred t, Order.pred_lt t, ?_, fun r hrs hrt =>
+    absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
+  -- Show ¬φ(pred(t)): suppose φ(pred(t)), then Y(φ) holds, contradiction.
+  intro h_phi_pred
+  exact h_not_Y_phi ⟨Order.pred t, Order.pred_lt t, h_phi_pred,
+    fun r hrs hrt => absurd (Order.le_pred_of_lt hrt) (not_le.mpr hrs)⟩
+
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
@@ -817,6 +904,10 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | F_until_equiv _ => exact absurd h_base id
   | P_since_equiv _ => exact absurd h_base id
   | next_implies_some_future _ => exact absurd h_base id
+  | x_k_dist _ _ => exact absurd h_base id
+  | x_det _ => exact absurd h_base id
+  | y_k_dist _ _ => exact absurd h_base id
+  | y_det _ => exact absurd h_base id
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -871,6 +962,10 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | F_until_equiv _ => exact absurd h_dc id
   | P_since_equiv _ => exact absurd h_dc id
   | next_implies_some_future _ => exact absurd h_dc id
+  | x_k_dist _ _ => exact absurd h_dc id
+  | x_det _ => exact absurd h_dc id
+  | y_k_dist _ _ => exact absurd h_dc id
+  | y_det _ => exact absurd h_dc id
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -914,6 +1009,10 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | F_until_equiv ψ => exact F_until_equiv_valid ψ
   | P_since_equiv ψ => exact P_since_equiv_valid ψ
   | next_implies_some_future φ => exact next_implies_some_future_valid φ
+  | x_k_dist φ ψ => exact x_k_dist_valid φ ψ
+  | x_det φ => exact x_det_valid φ
+  | y_k_dist φ ψ => exact y_k_dist_valid φ ψ
+  | y_det φ => exact y_det_valid φ
 
 /-! ## Full Derivation Soundness
 
@@ -1014,6 +1113,10 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | F_until_equiv _ => sorry
     | P_since_equiv _ => sorry
     | next_implies_some_future _ => sorry
+    | x_k_dist _ _ => sorry
+    | x_det _ => sorry
+    | y_k_dist _ _ => sorry
+    | y_det _ => sorry
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1194,6 +1297,10 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | F_until_equiv _ => exact absurd h_dc id
     | P_since_equiv _ => exact absurd h_dc id
     | next_implies_some_future _ => exact absurd h_dc id
+    | x_k_dist _ _ => exact absurd h_dc id
+    | x_det _ => exact absurd h_dc id
+    | y_k_dist _ _ => exact absurd h_dc id
+    | y_det _ => exact absurd h_dc id
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
