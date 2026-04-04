@@ -381,6 +381,12 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | y_det a =>
     simp only [subst_imp, subst_neg, subst_snce, subst_bot]
     exact Axiom.y_det (a.subst q r)
+  | yx_identity a =>
+    simp only [subst_imp, subst_snce, subst_untl, subst_bot]
+    exact Axiom.yx_identity (a.subst q r)
+  | xy_identity a =>
+    simp only [subst_imp, subst_untl, subst_snce, subst_bot]
+    exact Axiom.xy_identity (a.subst q r)
 
 /-!
 ## Main theorem: derivation substitution

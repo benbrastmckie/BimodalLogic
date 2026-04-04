@@ -2249,22 +2249,11 @@ theorem constrained_successor_restricted_g_persistence (phi : Formula) (u : Set 
     (g_content_subset_constrained_successor_seed_restricted phi u)
     (constrained_successor_restricted_extends phi u h_mcs h_F_top)
 
-/--
-F-content persistence (strong form): f_content(u) ⊆ successor.
-
-This is the key property enabled by adding f_content to the seed.
-If F(psi) ∈ u, then psi ∈ successor (not just psi ∨ F(psi)).
-
-This prevents F-obligations from being "destroyed" by the Lindenbaum extension
-adding G(neg psi). With psi in the seed, the successor must contain psi.
--/
-theorem constrained_successor_restricted_f_content_persistence (phi : Formula) (u : Set Formula)
-    (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u)
-    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
-    f_content u ⊆ constrained_successor_restricted phi u h_mcs h_F_top :=
-  Set.Subset.trans
-    (f_content_subset_constrained_successor_seed_restricted phi u)
-    (constrained_successor_restricted_extends phi u h_mcs h_F_top)
+-- NOTE (v4 cleanup): constrained_successor_restricted_f_content_persistence was removed.
+-- It claimed f_content(u) ⊆ successor, but this depended on f_content being in the seed,
+-- which was removed in v4 because it was provably inconsistent. The correct F-step property
+-- is constrained_successor_restricted_f_step below, which gives the weaker but correct
+-- f_content(u) ⊆ successor ∪ f_content(successor) via deferral disjunctions.
 
 /--
 F-step for restricted successor: f_content(u) ⊆ v ∪ f_content(v).
@@ -2867,32 +2856,24 @@ theorem restricted_forward_chain_p_step (phi : Formula)
     (restricted_forward_chain_is_drm phi M0 n)
     (restricted_forward_chain_has_F_top phi M0 n)
 
-/--
-F-content persistence for restricted forward chain (strong form):
-f_content(chain(n)) ⊆ chain(n+1).
-
-This is the key property enabled by adding f_content to the seed.
-If F(psi) ∈ chain(n), then psi ∈ chain(n+1) (resolved, not deferred).
--/
-theorem restricted_forward_chain_f_content_persistence (phi : Formula)
-    (M0 : DeferralRestrictedSerialMCS phi) (n : Nat) :
-    f_content (restricted_forward_chain phi M0 n) ⊆ restricted_forward_chain phi M0 (n + 1) :=
-  constrained_successor_restricted_f_content_persistence phi
-    (restricted_forward_chain phi M0 n)
-    (restricted_forward_chain_is_drm phi M0 n)
-    (restricted_forward_chain_has_F_top phi M0 n)
-
-/--
-Strong F-step witness: if F(psi) ∈ chain(k), then psi ∈ chain(k+1).
-
-This is the strong form of F-step enabled by f_content in the seed.
-Every F-obligation is resolved (not deferred) in exactly one step.
--/
-theorem restricted_forward_chain_F_resolves (phi : Formula)
-    (M0 : DeferralRestrictedSerialMCS phi) (k : Nat) (psi : Formula)
-    (h_F : Formula.some_future psi ∈ restricted_forward_chain phi M0 k) :
-    psi ∈ restricted_forward_chain phi M0 (k + 1) :=
-  restricted_forward_chain_f_content_persistence phi M0 k h_F
+-- NOTE (v4 cleanup): restricted_forward_chain_f_content_persistence and
+-- restricted_forward_chain_F_resolves were removed. They claimed one-step F-resolution
+-- (f_content(chain(n)) ⊆ chain(n+1)), which depended on f_content being in the seed.
+-- This was removed in v4 because f_content in the seed was provably inconsistent.
+--
+-- The correct F-step property is the WEAK form via deferral disjunctions:
+-- restricted_forward_chain_F_step_witness (line ~3007): for F(psi) ∈ chain(k),
+-- either psi ∈ chain(k+1) OR F(psi) ∈ chain(k+1) (obligation deferred).
+-- F-resolution is then achieved via bounded deferral in
+-- restricted_forward_chain_forward_F (line ~3149).
+--
+-- NOTE: The bounded deferral proof (restricted_forward_bounded_witness_fueled) has a
+-- sorry at fuel=0 that is NOT merely a technical gap. The fuel-based termination
+-- argument is mathematically unsound because the F-nesting boundary d can grow at
+-- each recursive step (from d to up to B + d - 1 where B = closure_F_bound).
+-- See restricted_forward_bounded_witness_fueled for detailed analysis.
+-- The restricted chain path is NOT on the critical path for completeness_over_Int;
+-- completeness goes through the DovetailedChain/DeterministicChain path instead.
 
 /-!
 ## F-Nesting Boundedness for Restricted Forward Chain
@@ -2919,31 +2900,12 @@ theorem restricted_forward_chain_F_bounded (phi : Formula)
     (restricted_forward_chain_is_drm phi M0 n)
     h_F
 
-/--
-F-nesting resolution: if iter_F d theta ∈ chain(j), then theta ∈ chain(j + d).
-
-This follows from strong F-persistence: each F-step resolves one layer of F-nesting.
-By induction, d layers of F-nesting get resolved after d chain steps.
--/
-theorem restricted_forward_chain_iter_F_resolves (phi : Formula)
-    (M0 : DeferralRestrictedSerialMCS phi) (j d : Nat) (theta : Formula)
-    (h_in : iter_F d theta ∈ restricted_forward_chain phi M0 j) :
-    theta ∈ restricted_forward_chain phi M0 (j + d) := by
-  induction d generalizing j with
-  | zero =>
-    simp only [iter_F_zero, Nat.add_zero] at h_in ⊢
-    exact h_in
-  | succ n ih =>
-    -- iter_F (n + 1) theta = F(iter_F n theta)
-    -- h_in : F(iter_F n theta) ∈ chain(j)
-    -- By F-persistence: iter_F n theta ∈ chain(j + 1)
-    simp only [iter_F_succ] at h_in
-    have h_resolved : iter_F n theta ∈ restricted_forward_chain phi M0 (j + 1) :=
-      restricted_forward_chain_F_resolves phi M0 j (iter_F n theta) h_in
-    -- By IH: theta ∈ chain((j + 1) + n) = chain(j + (n + 1))
-    have h_eq : j + 1 + n = j + (n + 1) := by omega
-    rw [← h_eq]
-    exact ih (j + 1) h_resolved
+-- NOTE (v4 cleanup): restricted_forward_chain_iter_F_resolves was removed.
+-- It claimed iter_F d theta ∈ chain(j) → theta ∈ chain(j + d), which depended on
+-- one-step F-resolution (restricted_forward_chain_F_resolves). Since one-step
+-- F-resolution is no longer available (f_content removed from seed in v4),
+-- this theorem is unsound. F-resolution is now handled via bounded deferral
+-- in restricted_forward_chain_forward_F.
 
 /--
 Build CanonicalTask_forward chain for restricted forward chain.

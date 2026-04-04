@@ -678,6 +678,32 @@ inductive Axiom : Formula → Type where
       Axiom ((Formula.snce Formula.bot φ).neg.imp
         (Formula.snce Formula.bot φ.neg))
 
+  /--
+  YX Identity axiom: `Y(X(φ)) → φ` (Previous of Next is identity).
+
+  On discrete frames, Y picks out time t-1 and X picks out time t+1.
+  So Y(X(φ)) at time t evaluates X(φ) at t-1, which evaluates φ at (t-1)+1 = t.
+  Hence Y(X(φ)) → φ is valid on all discrete linear frames.
+
+  Required for the deterministic chain construction: when the backward chain
+  (y_content iterations) is stitched with the forward chain (x_content iterations),
+  this axiom ensures G-coherence across the boundary.
+  -/
+  | yx_identity (φ : Formula) :
+      Axiom ((Formula.snce Formula.bot (Formula.untl Formula.bot φ)).imp φ)
+
+  /--
+  XY Identity axiom: `X(Y(φ)) → φ` (Next of Previous is identity).
+
+  Symmetric dual of yx_identity. On discrete frames, X picks out t+1 and Y
+  picks out t-1. So X(Y(φ)) at time t evaluates Y(φ) at t+1, which evaluates
+  φ at (t+1)-1 = t. Hence X(Y(φ)) → φ is valid on all discrete linear frames.
+
+  Required for backward H-coherence across the chain boundary.
+  -/
+  | xy_identity (φ : Formula) :
+      Axiom ((Formula.untl Formula.bot (Formula.snce Formula.bot φ)).imp φ)
+
   deriving Repr
 
 /--
@@ -772,6 +798,8 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.x_det _ => .Discrete
   | Axiom.y_k_dist _ _ => .Discrete
   | Axiom.y_det _ => .Discrete
+  | Axiom.yx_identity _ => .Discrete
+  | Axiom.xy_identity _ => .Discrete
 
 /--
 The minimal frame class required for an axiom is the class returned by `frameClass`.
@@ -804,6 +832,8 @@ def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
   | Axiom.x_det _ => False
   | Axiom.y_k_dist _ _ => False
   | Axiom.y_det _ => False
+  | Axiom.yx_identity _ => False
+  | Axiom.xy_identity _ => False
   | _ => True
 
 /--
@@ -842,6 +872,8 @@ def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.x_det _ => False
   | Axiom.y_k_dist _ _ => False
   | Axiom.y_det _ => False
+  | Axiom.yx_identity _ => False
+  | Axiom.xy_identity _ => False
   | _ => True
 
 /-! ### FrameClass Consistency Lemmas

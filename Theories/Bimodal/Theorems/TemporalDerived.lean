@@ -314,4 +314,76 @@ noncomputable def since_implies_some_past (φ ψ : Formula) :
     imp_trans h5 h_compose
   exact mp h6 (@theorem_flip (ψ.imp Formula.bot).all_past (φ.snce ψ) Formula.bot)
 
+/-!
+## YX and XY Identity: Y(X(φ)) → φ and X(Y(φ)) → φ
+
+These are direct applications of the yx_identity and xy_identity axioms.
+They express that "Previous of Next" and "Next of Previous" are identities
+on discrete linear frames.
+-/
+
+/-- Y(X(φ)) → φ: Previous of Next is identity.
+Direct axiom application. -/
+noncomputable def YX_identity (a : Formula) :
+    ⊢ (Formula.snce Formula.bot (Formula.untl Formula.bot a)).imp a :=
+  DerivationTree.axiom [] _ (Axiom.yx_identity a)
+
+/-- X(Y(φ)) → φ: Next of Previous is identity.
+Direct axiom application. -/
+noncomputable def XY_identity (a : Formula) :
+    ⊢ (Formula.untl Formula.bot (Formula.snce Formula.bot a)).imp a :=
+  DerivationTree.axiom [] _ (Axiom.xy_identity a)
+
+/-- Y-necessitation: if ⊢ φ then ⊢ Y(φ). Uses past temporal necessitation + H→Y. -/
+private noncomputable def y_nec' {φ : Formula} (h : DerivationTree [] φ) :
+    DerivationTree [] (Formula.snce Formula.bot φ) := by
+  have h_H : DerivationTree [] φ.all_past :=
+    Bimodal.Theorems.past_necessitation _ h
+  exact DerivationTree.modus_ponens [] _ _ (H_implies_Y φ) h_H
+
+/-- X-necessitation: if ⊢ φ then ⊢ X(φ). Uses temporal necessitation + G→X. -/
+private noncomputable def x_nec' {φ : Formula} (h : DerivationTree [] φ) :
+    DerivationTree [] (Formula.untl Formula.bot φ) := by
+  have h_G : DerivationTree [] φ.all_future :=
+    DerivationTree.temporal_necessitation _ h
+  exact DerivationTree.modus_ponens [] _ _ (G_implies_X φ) h_G
+
+/-- Y(G(φ)) → φ: if G(φ) held at the previous time, then φ holds now.
+Derived from G_implies_X (G(φ) → X(φ)), Y-K distribution, and YX_identity. -/
+noncomputable def YG_implies_self (a : Formula) :
+    ⊢ (Formula.snce Formula.bot a.all_future).imp a := by
+  -- Step 1: G(a) → X(a) (G_implies_X)
+  have h_GX := G_implies_X a
+  -- Step 2: Y(G(a)) → Y(X(a)) (by Y-K distribution)
+  have h_y_nec_GX := y_nec' h_GX
+  have h_y_k : ⊢ (Formula.snce Formula.bot (a.all_future.imp (X a))).imp
+      ((Formula.snce Formula.bot a.all_future).imp (Formula.snce Formula.bot (X a))) :=
+    DerivationTree.axiom [] _ (Axiom.y_k_dist a.all_future (X a))
+  have h_YG_imp_YX : ⊢ (Formula.snce Formula.bot a.all_future).imp
+      (Formula.snce Formula.bot (X a)) :=
+    DerivationTree.modus_ponens [] _ _ h_y_k h_y_nec_GX
+  -- Step 3: Y(X(a)) → a (YX_identity)
+  have h_YX := YX_identity a
+  -- Step 4: Chain: Y(G(a)) → Y(X(a)) → a
+  exact imp_trans h_YG_imp_YX h_YX
+
+/-- X(H(φ)) → φ: if H(φ) holds at the next time, then φ holds now.
+Derived from H_implies_Y (H(φ) → Y(φ)), X-K distribution, and XY_identity. -/
+noncomputable def XH_implies_self (a : Formula) :
+    ⊢ (Formula.untl Formula.bot a.all_past).imp a := by
+  -- Step 1: H(a) → Y(a) (H_implies_Y)
+  have h_HY := H_implies_Y a
+  -- Step 2: X(H(a)) → X(Y(a)) (by X-K distribution)
+  have h_x_nec_HY := x_nec' h_HY
+  have h_x_k : ⊢ (Formula.untl Formula.bot (a.all_past.imp (Y a))).imp
+      ((Formula.untl Formula.bot a.all_past).imp (Formula.untl Formula.bot (Y a))) :=
+    DerivationTree.axiom [] _ (Axiom.x_k_dist a.all_past (Y a))
+  have h_XH_imp_XY : ⊢ (Formula.untl Formula.bot a.all_past).imp
+      (Formula.untl Formula.bot (Y a)) :=
+    DerivationTree.modus_ponens [] _ _ h_x_k h_x_nec_HY
+  -- Step 3: X(Y(a)) → a (XY_identity)
+  have h_XY := XY_identity a
+  -- Step 4: Chain: X(H(a)) → X(Y(a)) → a
+  exact imp_trans h_XH_imp_XY h_XY
+
 end Bimodal.Theorems.TemporalDerived
