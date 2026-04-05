@@ -850,11 +850,11 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-05T16:40:07Z",
+      "last_updated": "2026-04-05T16:49:52Z",
       "notes": "Completeness path fully wired. DeterministicChain zero-sorry. DeterministicFMCS has 6 localized sorries (2 forward_F + 4 until/since coherence). YX/XY axioms added. False restricted seed theorem fixed. 104+ net sorries eliminated.",
-      "next_artifact_number": 20,
-      "session_id": "sess_1775406725_d2202a",
-      "researched": "2026-04-05T16:40:07Z",
+      "next_artifact_number": 21,
+      "session_id": "sess_1775407379_cf7f41",
+      "researched": "2026-04-05T16:49:52Z",
       "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
         "phases": 5,
@@ -1045,6 +1045,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/19_team-research.md",
           "type": "research",
           "summary": "Team research with 3 teammates: Tier 2 sorry-free completeness — FMP-based primary path (85%), chain construction secondary (60%), foundations verified"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/20_until-transfer-lemma-gap.md",
+          "type": "research",
+          "summary": "Self-contained exposition of the Until Transfer Lemma gap — root cause, definitions, all attempted workarounds, published alternatives"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
