@@ -850,9 +850,9 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-04T23:11:02Z",
+      "last_updated": "2026-04-05T03:20:42Z",
       "notes": "Completeness path fully wired. DeterministicChain zero-sorry. DeterministicFMCS has 6 localized sorries (2 forward_F + 4 until/since coherence). YX/XY axioms added. False restricted seed theorem fixed. 104+ net sorries eliminated.",
-      "next_artifact_number": 18,
+      "next_artifact_number": 19,
       "session_id": "sess_1775262087_b2e74c",
       "researched": "2026-04-03T23:57:51Z",
       "planned": "2026-04-03T20:16:55Z",
@@ -1047,6 +1047,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/17_chain-unification.md",
           "type": "research",
           "summary": "Chain unification: forward_F unprovable for det chain, F-step deferral is the concrete path, ParametricRepresentation broken"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/18_team-research.md",
+          "type": "research",
+          "summary": "Team research with 3 teammates: sorry audit, mathematical approach assessment, publication readiness — 4 blocking sorries, backward U/S closable, forward_F unprovable"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
