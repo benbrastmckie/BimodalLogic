@@ -850,7 +850,7 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-06T19:14:42Z",
+      "last_updated": "2026-04-06T20:04:25Z",
       "notes": "Completeness path fully wired. DeterministicChain zero-sorry. DeterministicFMCS has 6 localized sorries (2 forward_F + 4 until/since coherence). YX/XY axioms added. False restricted seed theorem fixed. 104+ net sorries eliminated.",
       "next_artifact_number": 23,
       "session_id": "sess_1775502868_95d2bd",
@@ -1060,10 +1060,15 @@
           "path": "specs/083_close_restricted_coherence_sorries/plans/22_completeness-closure.md",
           "type": "plan",
           "summary": "v22: 5-phase plan — close backward Until/Since, deprecate DovetailedChain, attempt finite deferral for forward_F, cleanup"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/summaries/22_implementation-summary.md",
+          "type": "summary",
+          "summary": "Team implementation partial: phases 1,2,5 complete, phases 3,4 partial (forward_F circularity)"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
-      "resume_phase": 1
+      "resume_phase": 4
     }
   ],
   "next_project_number": 84,
