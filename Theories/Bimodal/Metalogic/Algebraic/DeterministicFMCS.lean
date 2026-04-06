@@ -11,15 +11,19 @@ import Bimodal.Metalogic.Bundle.CanonicalFrame
 Builds a BFMCS from the deterministic chain and wires to the parametric
 representation theorem for completeness over Int.
 
-## Sorry Inventory
+## Sorry Inventory (4 sorries remaining)
 
 | Theorem | Status | Notes |
 |---------|--------|-------|
-| `deterministic_forward_F` | SORRY | Intra-family F witness |
-| `deterministic_backward_P` | SORRY | Intra-family P witness |
+| `deterministic_forward_F` | SORRY | Intra-family F witness (leaf sorry) |
+| `deterministic_backward_P` | SORRY | Intra-family P witness (leaf sorry) |
+| forward Until in `usc` | SORRY | Depends on `deterministic_forward_F` |
+| forward Since in `usc` | SORRY | Depends on `deterministic_backward_P` |
 
+Backward Until and backward Since in `usc` were closed in Phase 1 using
+`until_intro`/`since_intro` + backward induction on the deterministic chain.
 All structural theorems (FMCS, BFMCS, modal coherence, completeness wiring)
-are sorry-free given these two.
+are sorry-free given the two leaf sorries above.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.DeterministicFMCS
@@ -53,13 +57,17 @@ theorem DeterministicFMCS_at_zero (M₀ : Set Formula) (h_mcs : SetMaximalConsis
 ## Forward F / Backward P (Isolated Sorries)
 -/
 
-/-- **SORRY**: Intra-family F witness for the deterministic chain. -/
+/-- **SORRY**: Intra-family F witness for the deterministic chain.
+Open formalization problem: backward G derivation requires forward_F (circular).
+See `FiniteDeferral.lean` for infrastructure and detailed analysis.
+Recommended resolution: quasimodel approach (GHR 1994). -/
 theorem deterministic_forward_F (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
     (t : ℤ) (psi : Formula) (h_F : Formula.some_future psi ∈ deterministic_chain M₀ t) :
     ∃ s : ℤ, t < s ∧ psi ∈ deterministic_chain M₀ s := by
   sorry
 
-/-- **SORRY**: Intra-family P witness for the deterministic chain. -/
+/-- **SORRY**: Intra-family P witness for the deterministic chain.
+Symmetric to deterministic_forward_F. See `FiniteDeferral.lean` for analysis. -/
 theorem deterministic_backward_P (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
     (t : ℤ) (psi : Formula) (h_P : Formula.some_past psi ∈ deterministic_chain M₀ t) :
     ∃ s : ℤ, s < t ∧ psi ∈ deterministic_chain M₀ s := by

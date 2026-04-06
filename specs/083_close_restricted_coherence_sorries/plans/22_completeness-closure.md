@@ -133,7 +133,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Close forward_F and Remaining Sorries [NOT STARTED]
+### Phase 4: Close forward_F and Remaining Sorries [PARTIAL]
 
 **Goal**: If Phase 3 succeeds in establishing the cycle contradiction, close `deterministic_forward_F` and `deterministic_backward_P`, which automatically closes all remaining sorries (forward Until, forward Since, tc, usc).
 
@@ -165,7 +165,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Cleanup and Documentation [NOT STARTED]
+### Phase 5: Cleanup and Documentation [COMPLETED]
 
 **Goal**: Clean up dead code references, update module documentation, and ensure the sorry inventory is accurate.
 

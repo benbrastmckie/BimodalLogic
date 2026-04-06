@@ -1,10 +1,12 @@
 # Algebraic Representation Infrastructure
 
-**Status**: Future Extension Infrastructure (Not Required for Main Completeness Proof)
+**Status**: Active -- Contains the primary completeness path via deterministic chains
 
-This directory contains an algebraic approach to the representation theorem using Lindenbaum-Tarski
-algebra and ultrafilter theory. This is an **independent alternative** to the BFMCS approach in
-`Bundle/`.
+This directory contains:
+1. An algebraic approach to the representation theorem using Lindenbaum-Tarski algebra and ultrafilter theory
+2. The parametric truth lemma and representation infrastructure
+3. The deterministic chain construction (primary completeness path)
+4. The deprecated dovetailed chain construction (architecturally blocked)
 
 ## Purpose
 
@@ -18,32 +20,75 @@ supplementary infrastructure, not required for the current proof architecture.
 
 ## Modules
 
+### Boolean Algebra Foundation
 | Module | Purpose | Status |
 |--------|---------|--------|
 | `Algebraic.lean` | Module root, re-exports all components | Complete |
 | `LindenbaumQuotient.lean` | Quotient by provable equivalence | **Sorry-free** |
 | `BooleanStructure.lean` | Boolean algebra instance | **Sorry-free** |
 | `InteriorOperators.lean` | G/H as interior operators | **Sorry-free** |
+| `TenseS5Algebra.lean` | Tense S5 algebra structure | **Sorry-free** |
 | `UltrafilterMCS.lean` | Ultrafilter-MCS bijection | **Sorry-free** |
 | `AlgebraicRepresentation.lean` | Main representation theorem | **Sorry-free** |
+
+### Parametric Infrastructure
+| Module | Purpose | Status |
+|--------|---------|--------|
+| `UltrafilterChain.lean` | Ultrafilter chain construction | **Sorry-free** |
+| `ParametricHistory.lean` | Parametric history infrastructure | **Sorry-free** |
+| `ParametricTruthLemma.lean` | Parametric truth lemma | **Sorry-free** |
+| `ParametricRepresentation.lean` | Parametric representation theorem | **Sorry-free** |
+| `ParametricCanonical.lean` | Parametric canonical model | **Sorry-free** |
+| `RestrictedTruthLemma.lean` | Restricted truth lemma | **Sorry-free** |
+
+### Chain Constructions
+| Module | Purpose | Status |
+|--------|---------|--------|
+| `DeterministicChain.lean` | Deterministic chain construction | **Sorry-free** |
+| `DeterministicFMCS.lean` | FMCS/BFMCS bundle + completeness wiring | **4 sorries** (see below) |
+| `FiniteDeferral.lean` | Finite deferral infrastructure for forward_F | In progress |
+| `DovetailedChain.lean` | Dovetailed chain (deprecated) | **DEPRECATED** |
+
+### Sorry Status (DeterministicFMCS.lean)
+
+4 sorries remain, all depending on two leaf lemmas:
+- `deterministic_forward_F` -- intra-family F witness (leaf)
+- `deterministic_backward_P` -- intra-family P witness (leaf)
+- forward Until in `usc` -- depends on `forward_F`
+- forward Since in `usc` -- depends on `backward_P`
 
 ## Dependency Flowchart
 
 ```
-                LindenbaumQuotient.lean
+Boolean Algebra Path:
+
+                LindenbaumQuotient
                          │
             ┌────────────┼────────────┐
-            │            │            │
             v            v            v
-    BooleanStructure  InteriorOperators
+    BooleanStructure  InteriorOps  TenseS5Algebra
             │            │
             └────────────┤
+                         v
+              UltrafilterMCS
                          │
                          v
-              UltrafilterMCS.lean
-                         │
-                         v
-           AlgebraicRepresentation.lean
+           AlgebraicRepresentation
+
+Completeness Path:
+
+    UltrafilterChain ──> ParametricHistory ──> ParametricTruthLemma
+                                                        │
+                                                        v
+                                              ParametricRepresentation
+                                                        │
+                              DeterministicChain ───────>│
+                                                        v
+                                              DeterministicFMCS
+                                                        │
+                                    FiniteDeferral ────>│
+                                                        v
+                                              (Completeness wiring)
 ```
 
 ## Key Definitions
@@ -149,4 +194,4 @@ This algebraic path provides:
 
 ---
 
-*Last updated: 2026-02-03*
+*Last updated: 2026-04-06*
