@@ -850,11 +850,11 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-06T20:27:00Z",
+      "last_updated": "2026-04-06T20:45:00Z",
       "notes": "Completeness path fully wired. DeterministicChain zero-sorry. DeterministicFMCS has 6 localized sorries (2 forward_F + 4 until/since coherence). YX/XY axioms added. False restricted seed theorem fixed. 104+ net sorries eliminated.",
-      "next_artifact_number": 24,
-      "session_id": "sess_1775506025_aeb53f",
-      "researched": "2026-04-06T20:27:00Z",
+      "next_artifact_number": 25,
+      "session_id": "sess_1775507600_b3830d",
+      "researched": "2026-04-06T20:45:00Z",
       "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
         "phases": 5,
@@ -1070,6 +1070,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/23_team-research.md",
           "type": "research",
           "summary": "Team research with 3 teammates: quasimodel analysis, global canonical model survey, critical gap analysis — finite deferral+soundness recommended"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/24_quasimodel-filtration-study.md",
+          "type": "research",
+          "summary": "Complete mathematical analysis of quasimodel (GHR 1994), filtration, and finite deferral approaches — all three fail at same X-vs-G mismatch; recommends restricted completeness over pigeonhole cycle"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
