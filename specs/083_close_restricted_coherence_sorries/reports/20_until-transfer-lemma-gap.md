@@ -57,9 +57,11 @@ Given a set `M` of formulas, the following extract subsets of formulas appearing
 | `g_content(M)` | `{phi \| G(phi) in M}` | `g_content` |
 | `h_content(M)` | `{phi \| H(phi) in M}` | `h_content` |
 | `f_content(M)` | `{phi \| F(phi) in M}` | `f_content` |
+| `p_content(M)` | `{phi \| P(phi) in M}` | `p_content` |
 | `x_content(M)` | `{phi \| X(phi) in M}` | `x_content` |
 | `y_content(M)` | `{phi \| Y(phi) in M}` | `y_content` |
 | `u_content(M)` | `{(phi,psi) \| (phi U psi) in M}` | `u_content` |
+| `s_content(M)` | `{(phi,psi) \| (phi S psi) in M}` | `s_content` |
 
 The critical relationships:
 - `g_content(M) subset x_content(M)`: If `G(phi) in M` then `X(phi) in M` (provable from `G(phi) -> X(phi)`).
