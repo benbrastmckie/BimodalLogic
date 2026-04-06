@@ -210,7 +210,10 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Close auxiliary sorries, remove deprecated code, verify full completeness path is sorry-free.
 
+**Known issue from Phases 1-3**: `F_until_equiv_valid` and `P_since_equiv_valid` in Soundness.lean now have sorries — under mixed semantics, F(ψ) includes the present (≤) but Until requires strict future (>), so `F(ψ) → ⊤ U ψ` is no longer valid. These axioms may need to be removed or the equivalence reformulated.
+
 **Tasks**:
+- [ ] Resolve `F_until_equiv` / `P_since_equiv` axiom validity gap (remove axioms or reformulate)
 - [ ] Close or remove `restricted_chain_G_step` and `restricted_chain_H_step` in RestrictedTruthLemma.lean (may be unnecessary with reflexive coherence making the proofs simpler)
 - [ ] Verify `bfmcs_restricted_temporally_coherent` is sorry-free (it delegates to the now-closed `succ_chain_restricted_forward_F`/`backward_P`)
 - [ ] Verify `restricted_bundle_validity_implies_provability` is sorry-free
