@@ -4,7 +4,7 @@
 - **Status**: [NOT STARTED]
 - **Effort**: 10 hours
 - **Dependencies**: None (task 82 FMP TruthPreservation and task 68 dense_completeness_fc are out of scope)
-- **Research Inputs**: specs/083_close_restricted_coherence_sorries/reports/26_team-research.md
+- **Research Inputs**: specs/083_close_restricted_coherence_sorries/reports/26_team-research.md, specs/083_close_restricted_coherence_sorries/reports/27_team-research.md
 - **Artifacts**: plans/26_completeness-closure.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -22,6 +22,17 @@ Report 26 (team research, 3 teammates) established:
 - Mixed semantics (reflexive G/H with >=, strict U/S with >) is standard
 - Boneyard/TAxiomDependentCode/ contains ~300 lines of restorable hybrid chain code
 - Critical gap: Until persistence through Lindenbaum detours needs explicit handling
+
+Report 27 (team research, 3 teammates — advantages/disadvantages/literature) confirmed:
+- Mixed semantics IS the standard: Burgess-Xu axiom system has G(φ)→φ as axiom BX1
+- No fatal logical inconsistencies in the mixed approach
+- Until/Since axioms need NO changes (keep strict witnesses, X/Y-based formulations)
+- 4 sorries in SuccChainFMCS.lean directly closable by T-axiom (annotated `was: temp_t_future`)
+- Seriality and density axioms become trivially valid (lose frame correspondence but encoded separately in typeclasses)
+- CanonicalIrreflexivity.lean becomes obsolete (ExistsTask M M holds under reflexive semantics)
+- F(φ)/P(φ) now include present — derived theorems need semantic review
+- `always` middle conjunct becomes redundant (leave definition unchanged, update comments)
+- All parametric infrastructure (DeterministicChain, ParametricTruthLemma, box_class_agree) survives unchanged
 
 ## Goals & Non-Goals
 
@@ -102,6 +113,8 @@ Phases within the same wave can execute in parallel.
 - [ ] **Axioms.lean**: Add `temp_t_future (phi : Formula) : Axiom ((Formula.all_future phi).imp phi)` constructor
 - [ ] **Axioms.lean**: Add `temp_t_past (phi : Formula) : Axiom ((Formula.all_past phi).imp phi)` constructor
 - [ ] **Axioms.lean**: Mark both as `.Base` category; update axiom count in docstrings (16 -> 18)
+- [ ] **Axioms.lean**: Do NOT remove seriality_future, seriality_past, or density axioms — they become derivable but removing them would break downstream proofs. Add comments noting redundancy under reflexive semantics.
+- [ ] **Axioms.lean**: Do NOT change Until/Since axioms (unfold, intro, induction, connectedness) — they remain correct as-is since U/S keep strict semantics
 - [ ] **FMCSDef.lean**: Change `forward_G` from `t < t'` to `t ≤ t'`, `backward_H` from `t' < t` to `t' ≤ t`
 - [ ] **FMCSDef.lean**: Update docstrings to reflect reflexive coherence
 - [ ] Run `lake build` and fix all downstream compilation errors (expect 20-30 files with type mismatches on `<` vs `≤`)
@@ -144,16 +157,19 @@ Phases within the same wave can execute in parallel.
 - [ ] Restore relevant code from `Boneyard/TAxiomDependentCode/TargetedChainArchive.lean` (~lines for `targeted_forward_chain_forward_G`, `targeted_backward_chain_backward_H`, `targeted_fam_forward_G`, `targeted_fam_backward_H`)
 - [ ] Adapt restored code: replace `sorry /- was: temp_t_future phi -/` with actual T-axiom invocation `DerivationTree.axiom _ _ (Axiom.temp_t_future phi)`
 - [ ] Verify `DeterministicFMCS` provides `forward_G`/`backward_H` with `≤` (the strict case is the existing chain; the reflexive case t=t' is trivial)
+- [ ] Close the 4 directly closable sorries in `SuccChainFMCS.lean` that are annotated with `was: temp_t_future`/`temp_t_past` — replace `sorry` with `DerivationTree.axiom [] _ (Axiom.temp_t_future ...)` or equivalent
+- [ ] Simplify density axiom soundness proof (GG→G becomes trivial under ≥ transitivity)
+- [ ] Simplify seriality axiom soundness proofs (G→F trivial: G(φ)→φ→F(φ) taking s=t)
 
 **Timing**: 2 hours
 
 **Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Soundness.lean` - T-axiom soundness cases
-- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` - SuccChainFMCS reflexive coherence
+- `Theories/Bimodal/Metalogic/Soundness.lean` - T-axiom soundness cases + simplify density/seriality
+- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` - SuccChainFMCS reflexive coherence + close 4 T-axiom sorries
 - `Theories/Bimodal/Metalogic/Algebraic/DeterministicFMCS.lean` - DeterministicFMCS reflexive coherence
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean` - may become deletable or need updates
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean` - becomes obsolete; extract utility functions, delete rest
 
 **Verification**:
 - `lake build` succeeds
@@ -200,9 +216,13 @@ Phases within the same wave can execute in parallel.
 - [ ] Verify `restricted_bundle_validity_implies_provability` is sorry-free
 - [ ] Verify `completeness_over_Int` is sorry-free
 - [ ] Verify `discrete_completeness_fc` is sorry-free
-- [ ] Evaluate whether `CanonicalIrreflexivity.lean` can be deleted (irreflexivity infrastructure is unnecessary under reflexive semantics)
+- [ ] Delete irreflexivity infrastructure from `CanonicalIrreflexivity.lean` (ExistsTask M M now holds under reflexive semantics). Extract `atoms_of_set`/`fresh_for_set` utilities if used elsewhere.
 - [ ] Evaluate whether DovetailedChain.lean deprecated sorries should be updated or the file deleted
-- [ ] Update docstrings and module documentation to reflect reflexive semantics
+- [ ] Update `always` operator comment in Formula.lean (middle conjunct now redundant under reflexive G/H but leave definition unchanged)
+- [ ] Update `weak_future`/`weak_past` documentation (now semantically identical to G/H)
+- [ ] Review derived theorems involving F(φ)/P(φ) in TemporalDerived.lean (these now include present: φ → F(φ) is valid)
+- [ ] Add comments to seriality/density axioms noting they are derivable under reflexive semantics
+- [ ] Update docstrings and module documentation to reflect reflexive semantics (Truth.lean header, Axioms.lean counts, ~30 files with "strict" references)
 - [ ] Run `lake build` on full project to verify no regressions
 - [ ] Count remaining sorries in entire `Theories/Bimodal/` tree; document any that remain (should only be `dense_completeness_fc` and any task 82 items)
 
