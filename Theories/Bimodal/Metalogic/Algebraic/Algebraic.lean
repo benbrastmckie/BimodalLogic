@@ -11,6 +11,7 @@ import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Algebraic.DeterministicChain
 import Bimodal.Metalogic.Algebraic.DeterministicFMCS
+import Bimodal.Metalogic.Algebraic.FiniteDeferral
 
 /-!
 # Algebraic Representation Theorem

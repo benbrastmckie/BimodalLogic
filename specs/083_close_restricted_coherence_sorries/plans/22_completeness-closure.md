@@ -105,7 +105,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Finite Deferral Infrastructure for forward_F [NOT STARTED]
+### Phase 3: Finite Deferral Infrastructure for forward_F [PARTIAL]
 
 **Goal**: Build the subformula closure finiteness and pigeonhole infrastructure needed to prove `deterministic_forward_F` via the finite deferral argument.
 
