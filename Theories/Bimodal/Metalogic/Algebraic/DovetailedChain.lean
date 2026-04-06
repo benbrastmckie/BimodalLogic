@@ -1258,8 +1258,21 @@ noncomputable def DovetailedFMCS (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsis
     FMCS Int where
   mcs := dovetailed_fam M_0 h_mcs_0
   is_mcs := dovetailed_fam_mcs M_0 h_mcs_0
-  forward_G := fun t t' phi h_le h_G => dovetailed_fam_forward_G M_0 h_mcs_0 t t' h_le phi h_G
-  backward_H := fun t t' phi h_le h_H => dovetailed_fam_backward_H M_0 h_mcs_0 t t' h_le phi h_H
+  forward_G := fun t t' phi h_le h_G => by
+    rcases eq_or_lt_of_le h_le with h_eq | h_lt
+    · subst h_eq
+      exact SetMaximalConsistent.implication_property (dovetailed_fam_mcs M_0 h_mcs_0 t)
+        (theorem_in_mcs (dovetailed_fam_mcs M_0 h_mcs_0 t)
+          (DerivationTree.axiom [] _ (Axiom.temp_t_future phi))) h_G
+    · exact dovetailed_fam_forward_G M_0 h_mcs_0 t t' h_lt phi h_G
+  backward_H := fun t t' phi h_le h_H => by
+    rcases eq_or_lt_of_le h_le with h_eq | h_lt
+    · rw [h_eq]
+      rw [h_eq] at h_H
+      exact SetMaximalConsistent.implication_property (dovetailed_fam_mcs M_0 h_mcs_0 t)
+        (theorem_in_mcs (dovetailed_fam_mcs M_0 h_mcs_0 t)
+          (DerivationTree.axiom [] _ (Axiom.temp_t_past phi))) h_H
+    · exact dovetailed_fam_backward_H M_0 h_mcs_0 t t' h_lt phi h_H
 
 /-- DovetailedFMCS at time 0 is M_0. -/
 theorem DovetailedFMCS_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0) :

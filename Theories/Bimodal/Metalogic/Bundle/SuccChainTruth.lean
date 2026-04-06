@@ -321,9 +321,9 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
       intro h_all
       -- Use temporal_backward_G from TemporalCoherence.lean
       let tcf : TemporalCoherentFamily Int := SuccChainTemporalCoherent M0
-      have h_all_mcs : ∀ s : Int, t < s → psi ∈ succ_chain_fam M0 s := by
+      have h_all_mcs : ∀ s : Int, t ≤ s → psi ∈ succ_chain_fam M0 s := by
         intro s h_ts
-        exact (ih s).mpr (h_all s (le_of_lt h_ts))
+        exact (ih s).mpr (h_all s h_ts)
       exact temporal_backward_G tcf t psi h_all_mcs
   | all_past psi ih =>
     -- H: backward_H for forward direction, backward via temporal_backward_H
@@ -337,9 +337,9 @@ theorem succ_chain_truth_lemma (M0 : SerialMCS) (phi : Formula) (t : Int) :
       intro h_all
       -- Use temporal_backward_H from TemporalCoherence.lean
       let tcf : TemporalCoherentFamily Int := SuccChainTemporalCoherent M0
-      have h_all_mcs : ∀ s : Int, s < t → psi ∈ succ_chain_fam M0 s := by
+      have h_all_mcs : ∀ s : Int, s ≤ t → psi ∈ succ_chain_fam M0 s := by
         intro s h_st
-        exact (ih s).mpr (h_all s (le_of_lt h_st))
+        exact (ih s).mpr (h_all s h_st)
       exact temporal_backward_H tcf t psi h_all_mcs
 
 /--

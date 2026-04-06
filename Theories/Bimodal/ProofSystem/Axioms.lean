@@ -3,14 +3,14 @@ import Bimodal.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 33 axiom schemata for bimodal logic TM (Tense and Modality)
-under strict temporal semantics (G/H quantify over s > t / s < t).
+This module defines the 35 axiom schemata for bimodal logic TM (Tense and Modality)
+under mixed temporal semantics (G/H reflexive ≥/≤, U/S strict).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 33 axiom constructors organized into three categories:
-  - **Base axioms** (16): Valid on all linear orders (no special frame conditions)
+- 35 axiom constructors organized into three categories:
+  - **Base axioms** (18): Valid on all linear orders (no special frame conditions)
   - **Dense extension** (1): `density` - requires DenselyOrdered
   - **Discrete extension** (16): `discreteness_forward`, `seriality_future`,
     `seriality_past`, `disc_next`, `disc_prev`, Until/Since axioms (unfold, intro,
@@ -19,8 +19,9 @@ under strict temporal semantics (G/H quantify over s > t / s < t).
 ## Axiom Constructors
 
 - Base: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`, `modal_b`,
-  `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_a_dual`,
-  `temp_l`, `modal_future`, `temp_future`, `temp_linearity`
+  `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_t_future`,
+  `temp_t_past`, `temp_a`, `temp_a_dual`, `temp_l`, `modal_future`, `temp_future`,
+  `temp_linearity`
 - Dense: `density`
 - Discrete: `discreteness_forward`, `seriality_future`, `seriality_past`, `disc_next`,
   `disc_prev`, `until_unfold`, `until_intro`, `until_induction`, `until_linearity`,
@@ -53,10 +54,10 @@ The TM logic includes:
 - **TA_dual** (Temporal A Dual): `φ → HFφ` - past-direction connectedness
 - **TL** (Temporal L): `always φ → GHφ` - perpetuity implies recurrence
 
-**Note**: Under strict semantics (G/H quantify over s > t / s < t), the T-axioms
-(Gφ → φ, Hφ → φ) are NOT valid and NOT included. The present is excluded from
-temporal quantification. Derived operators weak_future (G'φ = φ ∧ Gφ) and
-weak_past (H'φ = φ ∧ Hφ) recover reflexive readings when needed.
+**Note**: Under reflexive semantics (G/H quantify over s ≥ t / s ≤ t), the T-axioms
+(Gφ → φ, Hφ → φ) ARE valid and included as `temp_t_future` and `temp_t_past`.
+Until/Since retain strict semantics (> / <). Derived operators weak_future (G'φ = φ ∧ Gφ)
+and weak_past (H'φ = φ ∧ Hφ) become semantically equivalent to G/H.
 ### Modal-Temporal Interaction Axioms
 - **MF** (Modal-Future): `□φ → □Fφ` - necessary truths remain necessary in future
 - **TF** (Temporal-Future): `□φ → F□φ` - necessary truths were/will-be necessary
@@ -90,10 +91,10 @@ The axioms are organized into three categories based on frame conditions:
   `seriality_past`, `disc_next`, `disc_prev`, Until/Since axioms (unfold, intro,
   induction, linearity, connectedness), `F_until_equiv`, `P_since_equiv`
 
-**Note**: Under strict temporal semantics (G/H quantify over s > t / s < t),
-the T-axioms (Gφ → φ, Hφ → φ) are NOT valid and NOT included. Next (X) and
+**Note**: Under reflexive temporal semantics (G/H quantify over s ≥ t / s ≤ t),
+the T-axioms (Gφ → φ, Hφ → φ) ARE valid and included. Next (X) and
 Previous (Y) operators are derived as X(φ) = ⊥ U φ and Y(φ) = ⊥ S φ.
-Until/Since axioms use X/Y-based formulations instead of G/H-based ones.
+Until/Since axioms use X/Y-based formulations with strict semantics.
 
 Classification predicates:
 - `isBase`: True for base axioms (neither density nor discreteness-specific)
@@ -254,6 +255,25 @@ inductive Axiom : Formula → Type where
   -/
   | temp_4 (φ : Formula) :
     Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
+
+  /--
+  Temporal T axiom (future): `Gφ → φ` (reflexivity of future).
+
+  Under reflexive semantics (G quantifies over s ≥ t), what holds at all
+  future-or-present times holds at the present. This is the first axiom (BX1)
+  in the Burgess-Xu axiom system.
+  -/
+  | temp_t_future (φ : Formula) :
+    Axiom ((Formula.all_future φ).imp φ)
+
+  /--
+  Temporal T axiom (past): `Hφ → φ` (reflexivity of past).
+
+  Under reflexive semantics (H quantifies over s ≤ t), what holds at all
+  past-or-present times holds at the present.
+  -/
+  | temp_t_past (φ : Formula) :
+    Axiom ((Formula.all_past φ).imp φ)
 
   /--
   Temporal A axiom: `φ → F(some_past φ)` (temporal connectedness).
@@ -769,6 +789,8 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.modal_k_dist _ _ => .Base
   | Axiom.temp_k_dist _ _ => .Base
   | Axiom.temp_4 _ => .Base
+  | Axiom.temp_t_future _ => .Base
+  | Axiom.temp_t_past _ => .Base
   | Axiom.temp_a _ => .Base
   | Axiom.temp_a_dual _ => .Base
   | Axiom.temp_l _ => .Base

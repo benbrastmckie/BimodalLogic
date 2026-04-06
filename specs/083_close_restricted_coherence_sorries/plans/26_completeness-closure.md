@@ -1,7 +1,7 @@
 # Implementation Plan: Close Restricted Coherence Sorries via Reflexive Semantics Switch
 
 - **Task**: 83 - Close Restricted Coherence Sorries
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 10 hours
 - **Dependencies**: None (task 82 FMP TruthPreservation and task 68 dense_completeness_fc are out of scope)
 - **Research Inputs**: specs/083_close_restricted_coherence_sorries/reports/26_team-research.md, specs/083_close_restricted_coherence_sorries/reports/27_team-research.md
@@ -76,7 +76,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Prototype Seed Consistency Lemma [NOT STARTED]
+### Phase 1: Prototype Seed Consistency Lemma [COMPLETED]
 
 **Goal**: Prove the key lemma in a scratch file to validate the approach before committing to full migration. If this fails, the plan is abandoned.
 
@@ -103,7 +103,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Core Definitions Switch (Semantics + Axioms + FMCS) [NOT STARTED]
+### Phase 2: Core Definitions Switch (Semantics + Axioms + FMCS) [COMPLETED]
 
 **Goal**: Switch G/H from strict to reflexive semantics in all core definition files. Add T-axioms. Update FMCS structure.
 
@@ -146,7 +146,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: T-Axiom Soundness and FMCS Reflexive Coherence [NOT STARTED]
+### Phase 3: T-Axiom Soundness and FMCS Reflexive Coherence [COMPLETED]
 
 **Goal**: Prove T-axiom validity under reflexive semantics. Update FMCS construction to provide reflexive coherence fields. Restore and adapt Boneyard code.
 

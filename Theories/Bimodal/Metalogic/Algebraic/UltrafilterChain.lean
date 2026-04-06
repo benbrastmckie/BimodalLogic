@@ -481,83 +481,105 @@ The proof uses:
 2. R_G connectivity: G(a) ∈ chain(s) implies a ∈ chain(s+1)
 3. Final step: R_G connectivity at chain(t'-1) gives a ∈ chain(t')
 
-Under strict semantics, we do NOT use the T-axiom G(a) ≤ a (which is invalid).
-Instead, R_G connectivity directly gives the one-step result.
+Under reflexive semantics, the T-axiom G(a) → a gives the t = t' case,
+and R_G connectivity gives the strict case.
 -/
-theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_lt : t < t')
+theorem forward_G (uc : UltrafilterChain) (t t' : Int) (h_le : t ≤ t')
     (a : LindenbaumAlg) (h_G : STSA.G a ∈ uc.chain t) :
     a ∈ uc.chain t' := by
-  -- Helper: G(a) persists forward one step via temp_4 + R_G
-  have h_G_step : ∀ s : Int, STSA.G a ∈ uc.chain s → STSA.G a ∈ uc.chain (s + 1) := by
-    intro s h_Gs
-    have h_G_le : STSA.G a ≤ STSA.G (STSA.G a) := by
+  rcases eq_or_lt_of_le h_le with h_eq | h_lt
+  · -- Reflexive case: t = t', use T-axiom G(a) → a
+    subst h_eq
+    have h_T : STSA.G a ≤ a := by
       induction a using Quotient.ind with
       | _ φ =>
-        show G_quot (toQuot φ) ≤ G_quot (G_quot (toQuot φ))
-        show Derives φ.all_future φ.all_future.all_future
-        exact ⟨DerivationTree.axiom [] _ (Axiom.temp_4 φ)⟩
-    have h_GG : STSA.G (STSA.G a) ∈ uc.chain s :=
-      (uc.chain s).mem_of_le h_Gs h_G_le
-    exact uc.R_G_connected s (STSA.G a) h_GG
-  -- G(a) persists forward for any number of steps
-  have h_G_persists : ∀ k : ℕ, STSA.G a ∈ uc.chain (t + k) := by
-    intro k
-    induction k with
-    | zero =>
-      have h_eq : (t + (0 : ℕ) : Int) = t := by simp
-      rw [h_eq]
-      exact h_G
-    | succ m ih =>
-      have h_eq : (t + ↑(m + 1) : Int) = t + ↑m + 1 := by omega
-      rw [h_eq]
-      exact h_G_step (t + m) ih
-  -- t' = t + n for some n ≥ 1
-  have h_diff : t' - t ≥ 1 := by omega
-  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le (by omega : t' - t - 1 ≥ 0)
-  -- G(a) ∈ chain(t + n), and R_G gives a ∈ chain(t + n + 1) = chain(t')
-  have h_t'_eq : t' = t + ↑n + 1 := by omega
-  rw [h_t'_eq]
-  exact uc.R_G_connected (t + n) a (h_G_persists n)
+        show G_quot (toQuot φ) ≤ toQuot φ
+        show Derives φ.all_future φ
+        exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ)⟩
+    exact (uc.chain t).mem_of_le h_G h_T
+  · -- Strict case: t < t'
+    -- Helper: G(a) persists forward one step via temp_4 + R_G
+    have h_G_step : ∀ s : Int, STSA.G a ∈ uc.chain s → STSA.G a ∈ uc.chain (s + 1) := by
+      intro s h_Gs
+      have h_G_le : STSA.G a ≤ STSA.G (STSA.G a) := by
+        induction a using Quotient.ind with
+        | _ φ =>
+          show G_quot (toQuot φ) ≤ G_quot (G_quot (toQuot φ))
+          show Derives φ.all_future φ.all_future.all_future
+          exact ⟨DerivationTree.axiom [] _ (Axiom.temp_4 φ)⟩
+      have h_GG : STSA.G (STSA.G a) ∈ uc.chain s :=
+        (uc.chain s).mem_of_le h_Gs h_G_le
+      exact uc.R_G_connected s (STSA.G a) h_GG
+    -- G(a) persists forward for any number of steps
+    have h_G_persists : ∀ k : ℕ, STSA.G a ∈ uc.chain (t + k) := by
+      intro k
+      induction k with
+      | zero =>
+        have h_eq : (t + (0 : ℕ) : Int) = t := by simp
+        rw [h_eq]
+        exact h_G
+      | succ m ih =>
+        have h_eq : (t + ↑(m + 1) : Int) = t + ↑m + 1 := by omega
+        rw [h_eq]
+        exact h_G_step (t + m) ih
+    -- t' = t + n for some n ≥ 1
+    have h_diff : t' - t ≥ 1 := by omega
+    obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le (by omega : t' - t - 1 ≥ 0)
+    -- G(a) ∈ chain(t + n), and R_G gives a ∈ chain(t + n + 1) = chain(t')
+    have h_t'_eq : t' = t + ↑n + 1 := by omega
+    rw [h_t'_eq]
+    exact uc.R_G_connected (t + n) a (h_G_persists n)
 
 /--
-H-formulas propagate backward along the chain (strict semantics).
-If H(a) ∈ chain(t), then a ∈ chain(t') for all t' < t.
+H-formulas propagate backward along the chain (reflexive semantics).
+If H(a) ∈ chain(t), then a ∈ chain(t') for all t' ≤ t.
 
-Uses R_H connectivity instead of the T-axiom H(a) ≤ a.
+Uses T-axiom for the reflexive case, R_H connectivity for strict case.
 -/
-theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_lt : t' < t)
+theorem backward_H (uc : UltrafilterChain) (t t' : Int) (h_le : t' ≤ t)
     (a : LindenbaumAlg) (h_H : STSA.H a ∈ uc.chain t) :
     a ∈ uc.chain t' := by
-  -- Helper: H(a) persists backward one step via temp_4_past + R_H
-  have h_H_step : ∀ s : Int, STSA.H a ∈ uc.chain s → STSA.H a ∈ uc.chain (s - 1) := by
-    intro s h_Hs
-    have h_H_le : STSA.H a ≤ STSA.H (STSA.H a) := by
+  rcases eq_or_lt_of_le h_le with h_eq | h_lt
+  · -- Reflexive case: t' = t, use T-axiom H(a) → a
+    subst h_eq
+    have h_T : STSA.H a ≤ a := by
       induction a using Quotient.ind with
       | _ φ =>
-        show H_quot (toQuot φ) ≤ H_quot (H_quot (toQuot φ))
-        show Derives φ.all_past φ.all_past.all_past
-        exact ⟨temp_4_past φ⟩
-    have h_HH : STSA.H (STSA.H a) ∈ uc.chain s :=
-      (uc.chain s).mem_of_le h_Hs h_H_le
-    exact uc.R_H_connected s (STSA.H a) h_HH
-  -- H(a) persists backward for any number of steps
-  have h_H_persists : ∀ k : ℕ, STSA.H a ∈ uc.chain (t - k) := by
-    intro k
-    induction k with
-    | zero =>
-      have h_eq : (t - (0 : ℕ) : Int) = t := by simp
-      rw [h_eq]
-      exact h_H
-    | succ m ih =>
-      have h_eq : (t - ↑(m + 1) : Int) = t - ↑m - 1 := by omega
-      rw [h_eq]
-      exact h_H_step (t - m) ih
-  -- t' < t means t - t' ≥ 1, write as t - t' - 1 = n
-  obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le (by omega : t - t' - 1 ≥ 0)
-  -- H(a) ∈ chain(t - n), and R_H gives a ∈ chain(t - n - 1) = chain(t')
-  have h_t'_eq : t' = t - ↑n - 1 := by omega
-  rw [h_t'_eq]
-  exact uc.R_H_connected (t - ↑n) a (h_H_persists n)
+        show H_quot (toQuot φ) ≤ toQuot φ
+        show Derives φ.all_past φ
+        exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ)⟩
+    exact (uc.chain t').mem_of_le h_H h_T
+  · -- Strict case: t' < t
+    -- Helper: H(a) persists backward one step via temp_4_past + R_H
+    have h_H_step : ∀ s : Int, STSA.H a ∈ uc.chain s → STSA.H a ∈ uc.chain (s - 1) := by
+      intro s h_Hs
+      have h_H_le : STSA.H a ≤ STSA.H (STSA.H a) := by
+        induction a using Quotient.ind with
+        | _ φ =>
+          show H_quot (toQuot φ) ≤ H_quot (H_quot (toQuot φ))
+          show Derives φ.all_past φ.all_past.all_past
+          exact ⟨temp_4_past φ⟩
+      have h_HH : STSA.H (STSA.H a) ∈ uc.chain s :=
+        (uc.chain s).mem_of_le h_Hs h_H_le
+      exact uc.R_H_connected s (STSA.H a) h_HH
+    -- H(a) persists backward for any number of steps
+    have h_H_persists : ∀ k : ℕ, STSA.H a ∈ uc.chain (t - k) := by
+      intro k
+      induction k with
+      | zero =>
+        have h_eq : (t - (0 : ℕ) : Int) = t := by simp
+        rw [h_eq]
+        exact h_H
+      | succ m ih =>
+        have h_eq : (t - ↑(m + 1) : Int) = t - ↑m - 1 := by omega
+        rw [h_eq]
+        exact h_H_step (t - m) ih
+    -- t' < t means t - t' ≥ 1, write as t - t' - 1 = n
+    obtain ⟨n, hn⟩ := Int.eq_ofNat_of_zero_le (by omega : t - t' - 1 ≥ 0)
+    -- H(a) ∈ chain(t - n), and R_H gives a ∈ chain(t - n - 1) = chain(t')
+    have h_t'_eq : t' = t - ↑n - 1 := by omega
+    rw [h_t'_eq]
+    exact uc.R_H_connected (t - ↑n) a (h_H_persists n)
 
 end UltrafilterChain
 

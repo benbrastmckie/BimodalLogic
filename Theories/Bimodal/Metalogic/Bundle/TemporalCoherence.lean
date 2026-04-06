@@ -164,7 +164,7 @@ Temporal backward G lemma: If phi in fam.mcs s for all s > t, then G(phi) in fam
 6. Contradiction: fam.mcs s contains both phi and neg(phi)
 -/
 theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, t < s → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, t ≤ s → φ ∈ fam.mcs s) :
     Formula.all_future φ ∈ fam.mcs t := by
   by_contra h_not_G
   have h_mcs := fam.is_mcs t
@@ -174,12 +174,12 @@ theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
     · exact h_neg
   have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_future_to_some_future_neg (fam.mcs t) h_mcs φ h_neg_G
-  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
-  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s (le_of_lt h_lt)
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 /--
-Temporal backward H lemma: If phi in fam.mcs s for all s < t, then H(phi) in fam.mcs t.
+Temporal backward H lemma: If phi in fam.mcs s for all s ≤ t, then H(phi) in fam.mcs t.
 
 **Proof by Contraposition** (symmetric to temporal_backward_G):
 1. Assume H(phi) not in fam.mcs t
@@ -190,7 +190,7 @@ Temporal backward H lemma: If phi in fam.mcs s for all s < t, then H(phi) in fam
 6. Contradiction: fam.mcs s contains both phi and neg(phi)
 -/
 theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, s < t → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, s ≤ t → φ ∈ fam.mcs s) :
     Formula.all_past φ ∈ fam.mcs t := by
   by_contra h_not_H
   have h_mcs := fam.is_mcs t
@@ -200,8 +200,8 @@ theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
     · exact h_neg
   have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_past_to_some_past_neg (fam.mcs t) h_mcs φ h_neg_H
-  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
-  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
+  have h_phi_s : φ ∈ fam.mcs s := h_all s (le_of_lt h_lt)
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 /--
