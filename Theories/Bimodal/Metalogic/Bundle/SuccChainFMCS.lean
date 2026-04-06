@@ -961,17 +961,43 @@ theorem succ_chain_canonicalTask_backward_MCS_P_from (M0 : SerialMCS) (start : I
 /-!
 ## FMCS Structure
 
-Under strict semantics, the FMCS structure requires strict coherence (t < t').
-The succ_chain_forward_G and succ_chain_backward_H theorems already prove
-the strict versions, so we use them directly.
+Under reflexive semantics, the FMCS structure requires reflexive coherence (t ≤ t').
+The reflexive case (t = t') is handled by the T-axiom (G(phi) → phi, H(phi) → phi),
+and the strict case delegates to succ_chain_forward_G / succ_chain_backward_H.
 -/
 
-/-- The Succ-chain family as an FMCS (strict semantics) -/
+/-- Forward G coherence with reflexive ≤ for SuccChain. -/
+theorem succ_chain_forward_G_le (M0 : SerialMCS) (n m : Int) (phi : Formula)
+    (h_le : n ≤ m) (h_G : Formula.all_future phi ∈ succ_chain_fam M0 n) :
+    phi ∈ succ_chain_fam M0 m := by
+  rcases eq_or_lt_of_le h_le with h_eq | h_lt
+  · -- Reflexive case: use T-axiom G(phi) → phi
+    subst h_eq
+    have h_t_axiom : DerivationTree [] ((Formula.all_future phi).imp phi) :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
+    exact SetMaximalConsistent.implication_property (succ_chain_fam_mcs M0 n)
+      (theorem_in_mcs (succ_chain_fam_mcs M0 n) h_t_axiom) h_G
+  · exact succ_chain_forward_G M0 n m phi h_lt h_G
+
+/-- Backward H coherence with reflexive ≤ for SuccChain. -/
+theorem succ_chain_backward_H_le (M0 : SerialMCS) (n m : Int) (phi : Formula)
+    (h_le : m ≤ n) (h_H : Formula.all_past phi ∈ succ_chain_fam M0 n) :
+    phi ∈ succ_chain_fam M0 m := by
+  rcases eq_or_lt_of_le h_le with h_eq | h_lt
+  · -- Reflexive case: use T-axiom H(phi) → phi
+    subst h_eq
+    have h_t_axiom : DerivationTree [] ((Formula.all_past phi).imp phi) :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_past phi)
+    exact SetMaximalConsistent.implication_property (succ_chain_fam_mcs M0 m)
+      (theorem_in_mcs (succ_chain_fam_mcs M0 m) h_t_axiom) h_H
+  · exact succ_chain_backward_H M0 n m phi h_lt h_H
+
+/-- The Succ-chain family as an FMCS (reflexive semantics) -/
 noncomputable def SuccChainFMCS (M0 : SerialMCS) : FMCS Int where
   mcs := succ_chain_fam M0
   is_mcs := succ_chain_fam_mcs M0
-  forward_G := succ_chain_forward_G M0
-  backward_H := succ_chain_backward_H M0
+  forward_G := succ_chain_forward_G_le M0
+  backward_H := succ_chain_backward_H_le M0
 
 
 /-!
