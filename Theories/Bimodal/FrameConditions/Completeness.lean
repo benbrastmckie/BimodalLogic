@@ -2,6 +2,7 @@ import Bimodal.FrameConditions.Compatibility
 import Bimodal.Metalogic.DiscreteCompleteness
 import Bimodal.Metalogic.Algebraic.UltrafilterChain
 import Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+-- NOTE: DovetailedChain is deprecated in favor of DeterministicFMCS (see DovetailedChain.lean header)
 import Bimodal.Metalogic.Algebraic.DovetailedChain
 
 /-!
