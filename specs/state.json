@@ -841,7 +841,7 @@
     {
       "project_number": 83,
       "project_name": "close_restricted_coherence_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 2 sorries in succ_chain_restricted_forward_F and succ_chain_restricted_backward_P (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in deferralClosure(root) within a single SuccChainFMCS. Potential approaches: (1) Show that constrained_successor f_step eventually resolves each F-obligation because deferralClosure is finite and the chain cannot defer indefinitely within a bounded set, (2) Dovetailed chain construction with fair scheduling that cycles through pending F-obligations, (3) Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra. Also clean up the 2 auxiliary sorries in RestrictedTruthLemma.lean (restricted_chain_G_step and restricted_chain_H_step) which may become unnecessary once the main sorries are closed. Does NOT include: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), or the old full-coherence sorry (bfmcs_from_mcs_temporally_coherent) which is bypassed by the restricted path.",
       "effort": "12-18 hours",
@@ -850,31 +850,31 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-06T07:11:18Z",
+      "last_updated": "2026-04-06T16:41:11Z",
       "notes": "Completeness path fully wired. DeterministicChain zero-sorry. DeterministicFMCS has 6 localized sorries (2 forward_F + 4 until/since coherence). YX/XY axioms added. False restricted seed theorem fixed. 104+ net sorries eliminated.",
       "next_artifact_number": 23,
-      "session_id": "sess_1775458847_52a131",
+      "session_id": "sess_1775493447_1b0da3",
       "researched": "2026-04-06T07:11:18Z",
       "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 14,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 18,
+        "plan_version": 22,
         "reports_integrated": [
           {
-            "path": "reports/18_team-research.md",
-            "integrated_in_plan_version": 18,
-            "integrated_date": "2026-04-04"
+            "path": "reports/22_global-canonical-model.md",
+            "integrated_in_plan_version": 22,
+            "integrated_date": "2026-04-06"
           }
         ],
         "dependency_waves": [
           [
-            1
+            1,
+            2
           ],
           [
-            2,
             3
           ],
           [
@@ -1037,11 +1037,6 @@
           "summary": "Team research with 3 teammates: sorry audit, mathematical approach assessment, publication readiness — 4 blocking sorries, backward U/S closable, forward_F unprovable"
         },
         {
-          "path": "specs/083_close_restricted_coherence_sorries/plans/18_completeness-closure.md",
-          "type": "plan",
-          "summary": "v18: 5-phase plan — backward U/S closure, docstring fixes, forward_F impossibility documentation, cleanup"
-        },
-        {
           "path": "specs/083_close_restricted_coherence_sorries/reports/19_team-research.md",
           "type": "research",
           "summary": "Team research with 3 teammates: Tier 2 sorry-free completeness — FMP-based primary path (85%), chain construction secondary (60%), foundations verified"
@@ -1060,6 +1055,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/22_global-canonical-model.md",
           "type": "research",
           "summary": "Comprehensive blueprint for global canonical model construction. All sorries reduce to single lemma (deterministic_forward_F). 6 approaches analyzed. Recommends finite deferral via subformula closure pigeonhole."
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/plans/22_completeness-closure.md",
+          "type": "plan",
+          "summary": "v22: 5-phase plan — close backward Until/Since, deprecate DovetailedChain, attempt finite deferral for forward_F, cleanup"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
