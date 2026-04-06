@@ -14,6 +14,9 @@ import Mathlib.Data.Nat.Pairing
 /-!
 # Dovetailed Chain Construction for Temporal Coherence
 
+**DEPRECATED**: This module is architecturally blocked and superseded by
+`DeterministicFMCS.lean`. See Deprecation Notice below.
+
 This module implements a dovetailed omega chain construction that resolves ALL
 F-obligations (and symmetrically P-obligations) fairly, yielding a
 `TemporalCoherentFamily Int` from any MCS M_0.
@@ -30,6 +33,20 @@ positive times) follows from the g_content/h_content duality theorems:
 - `g_content_subset_implies_h_content_reverse`: g_content(M) ⊆ M' → h_content(M') ⊆ M
 - `h_content_subset_implies_g_content_reverse`: h_content(M) ⊆ M' → g_content(M') ⊆ M
 
+## Architectural Limitation: X-vs-G Mismatch
+
+All 6 sorries in this module stem from a single architectural mismatch:
+Lindenbaum seeds provide **x_content-level** consistency (via `until_unfold` giving
+`X(ψ ∨ (⊤ ∧ (⊤ U ψ)))`), but Until persistence through chain steps requires
+**g_content-level** propagation (i.e., `G(⊤ U ψ)` preservation). The forward chain's
+`temporal_theory_witness_exists` preserves `G_theory` and gives `g_content`, but
+the `X`-formula from `until_unfold` is not G-liftable — `G(neg(⊤ U ψ)) ∈ chain(n)`
+does not contradict `(⊤ U ψ) ∈ chain(n)` under strict semantics.
+
+This means the dovetailed chain cannot propagate Until/Since obligations through
+Lindenbaum extension steps, blocking `forward_F`, `backward_P`, and all dependent
+coherence properties.
+
 ## Fair Scheduling
 
 Uses `Nat.unpair` and `Denumerable Formula` for fair enumeration:
@@ -42,6 +59,18 @@ Uses `Nat.unpair` and `Denumerable Formula` for fair enumeration:
 
 - `dovetailed_fmcs`: FMCS Int with forward_G, backward_H, forward_F, backward_P
 - `construct_bfmcs_int`: The `construct_bfmcs` function for D = Int
+-/
+
+/-!
+## Deprecation Notice
+
+This module is superseded by `Bimodal.Metalogic.Algebraic.DeterministicFMCS`, which uses
+a deterministic chain construction that avoids the X-vs-G mismatch. The deterministic
+approach resolves F-obligations via finite deferral rather than fair scheduling, enabling
+g_content-level propagation that this module cannot achieve.
+
+All 6 sorries in this module are annotated as `DEPRECATED` and will not be resolved.
+New development should use `DeterministicFMCS.lean` for the completeness proof pipeline.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.DovetailedChain
@@ -618,7 +647,7 @@ theorem forward_dovetailed_until_persists (M_0 : Set Formula) (h_mcs_0 : SetMaxi
   -- RESOLUTION PATH: Requires either (a) a fundamentally new chain construction
   -- that provides both x_content propagation and F-resolution, or (b) an algebraic
   -- restructure that avoids same-family forward_F entirely.
-  sorry
+  sorry -- DEPRECATED: architectural limitation (X-vs-G mismatch in Until persistence through Lindenbaum steps)
 
 /--
 Until persistence through multiple steps: if `(top U psi) in chain(t)` and
@@ -986,7 +1015,7 @@ theorem backward_dovetailed_since_persists (M_0 : Set Formula) (h_mcs_0 : SetMax
   -- h_content-based Lindenbaum extensions. Since unfold gives Y(ψ ∨ (⊤ ∧ (⊤ S ψ)))
   -- which is in y_content, but backward_step preserves h_content, not y_content.
   -- See forward_dovetailed_until_persists for detailed analysis.
-  sorry
+  sorry -- DEPRECATED: architectural limitation (X-vs-G mismatch in Until persistence through Lindenbaum steps)
 
 /--
 Since persistence through multiple steps: if `(top S psi) in chain(t)` and
@@ -1082,7 +1111,7 @@ private theorem until_backward_to_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximal
   -- Under strict semantics, until_unfold gives X(ψ ∨ (⊤ ∧ (⊤ U ψ))) instead of
   -- ψ ∨ (⊤ ∧ G(⊤ U ψ)). The X-formula is not directly case-splittable.
   -- Needs X-content propagation infrastructure for backward chain.
-  sorry
+  sorry -- DEPRECATED: architectural limitation (X-vs-G mismatch in Until persistence through Lindenbaum steps)
 
 /--
 Since propagation from forward chain to M_0: if `(⊤ S psi) ∈ forward_dovetailed k`,
@@ -1095,7 +1124,7 @@ private theorem since_forward_to_zero (M_0 : Set Formula) (h_mcs_0 : SetMaximalC
     (∃ j : Nat, j ≤ k ∧ psi ∈ forward_dovetailed M_0 h_mcs_0 j) ∨
     Formula.snce (Formula.neg Formula.bot) psi ∈ M_0 := by
   -- Mirror of until_backward_to_zero for Since. Same X/Y-content propagation issue.
-  sorry
+  sorry -- DEPRECATED: architectural limitation (X-vs-G mismatch in Until persistence through Lindenbaum steps)
 
 theorem dovetailed_fam_forward_G (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (n m : Int) (h_lt : n < m) (phi : Formula)
@@ -1255,7 +1284,7 @@ which needs X-content propagation to show ψ persists to t+1 or F(ψ) is re-reso
 theorem DovetailedFMCS_forward_F (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (t : Int) (psi : Formula) (h_F : Formula.some_future psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs t) :
     ∃ s : Int, t < s ∧ psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs s := by
-  sorry
+  sorry -- DEPRECATED: architectural limitation (X-vs-G mismatch in Until persistence through Lindenbaum steps)
 
 /-- Backward P for DovetailedFMCS (family-level, strict inequality).
 Temporal dual of DovetailedFMCS_forward_F. ON CRITICAL PATH for `completeness_over_Int`.
@@ -1263,7 +1292,7 @@ Blocked by `backward_dovetailed_since_persists` (sorry, Phase 4: Y-content propa
 theorem DovetailedFMCS_backward_P (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsistent M_0)
     (t : Int) (psi : Formula) (h_P : Formula.some_past psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs t) :
     ∃ s : Int, s < t ∧ psi ∈ (DovetailedFMCS M_0 h_mcs_0).mcs s := by
-  sorry
+  sorry -- DEPRECATED: architectural limitation (X-vs-G mismatch in Until persistence through Lindenbaum steps)
 
 /-!
 ## Dovetailed Box-Class Bundle

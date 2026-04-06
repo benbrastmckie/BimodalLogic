@@ -56,7 +56,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Close Backward Until/Since in DeterministicFMCS [NOT STARTED]
+### Phase 1: Close Backward Until/Since in DeterministicFMCS [COMPLETED]
 
 **Goal**: Close 2 of the 4 `usc` subcases (backward Until and backward Since) that do NOT depend on `deterministic_forward_F`.
 
@@ -81,7 +81,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Deprecate DovetailedChain [NOT STARTED]
+### Phase 2: Deprecate DovetailedChain [COMPLETED]
 
 **Goal**: Mark `DovetailedChain.lean` as architecturally blocked and document the X-vs-G mismatch limitation. Replace all 6 sorries with documented architectural limitation markers.
 

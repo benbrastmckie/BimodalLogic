@@ -163,6 +163,286 @@ theorem eval_at_zero (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀) :
     (construct_deterministic_bfmcs M₀ h_mcs).eval_family.mcs 0 = M₀ := rfl
 
 /-!
+## Backward Until/Since Infrastructure
+
+Helper lemmas for the backward direction of Until/Since coherence.
+Key results: YX/XY round-trip in MCS, general integer x_content membership,
+and backward Until/Since introduction via induction.
+-/
+
+/-- In any MCS: φ ∈ M → Y(X(φ)) ∈ M.
+Proven by contradiction using y_det, x_det, and yx_identity axioms. -/
+private theorem YX_round_trip {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (φ : Formula) (h_phi : φ ∈ M) :
+    Formula.snce Formula.bot (Formula.untl Formula.bot φ) ∈ M := by
+  by_contra h_not
+  have h_neg_YX := (SetMaximalConsistent.negation_complete h_mcs
+    (Formula.snce Formula.bot (Formula.untl Formula.bot φ))).resolve_left h_not
+  have h_Y_negX := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.axiom [] _
+      (Axiom.y_det (Formula.untl Formula.bot φ)))) h_neg_YX
+  have h_x_det : [] ⊢ (Formula.untl Formula.bot φ).neg.imp
+      (Formula.untl Formula.bot φ.neg) :=
+    DerivationTree.axiom [] _ (Axiom.x_det φ)
+  have h_H_xdet := Bimodal.Theorems.past_necessitation _ h_x_det
+  have h_Y_xdet := DerivationTree.modus_ponens [] _ _
+    (Bimodal.Theorems.TemporalDerived.H_implies_Y _) h_H_xdet
+  have h_Y_Xneg := SetMaximalConsistent.implication_property h_mcs
+    (SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.y_k_dist _ _)))
+      (theorem_in_mcs h_mcs h_Y_xdet)) h_Y_negX
+  have h_neg_phi := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.YX_identity φ.neg)) h_Y_Xneg
+  exact set_consistent_not_both h_mcs.1 φ h_phi h_neg_phi
+
+/-- In any MCS: φ ∈ M → X(Y(φ)) ∈ M.
+Symmetric dual of YX_round_trip. -/
+private theorem XY_round_trip {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (φ : Formula) (h_phi : φ ∈ M) :
+    Formula.untl Formula.bot (Formula.snce Formula.bot φ) ∈ M := by
+  by_contra h_not
+  have h_neg_XY := (SetMaximalConsistent.negation_complete h_mcs
+    (Formula.untl Formula.bot (Formula.snce Formula.bot φ))).resolve_left h_not
+  have h_X_negY := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.axiom [] _
+      (Axiom.x_det (Formula.snce Formula.bot φ)))) h_neg_XY
+  have h_y_det : [] ⊢ (Formula.snce Formula.bot φ).neg.imp
+      (Formula.snce Formula.bot φ.neg) :=
+    DerivationTree.axiom [] _ (Axiom.y_det φ)
+  have h_G_ydet := DerivationTree.temporal_necessitation _ h_y_det
+  have h_X_ydet := DerivationTree.modus_ponens [] _ _
+    (Bimodal.Theorems.TemporalDerived.G_implies_X _) h_G_ydet
+  have h_X_Yneg := SetMaximalConsistent.implication_property h_mcs
+    (SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.x_k_dist _ _)))
+      (theorem_in_mcs h_mcs h_X_ydet)) h_X_negY
+  have h_neg_phi := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.XY_identity φ.neg)) h_X_Yneg
+  exact set_consistent_not_both h_mcs.1 φ h_phi h_neg_phi
+
+/-- General integer x_content membership: φ ∈ chain(n+1) ↔ X(φ) ∈ chain(n) for all ℤ. -/
+theorem x_mem_chain_general (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n : ℤ) (φ : Formula) :
+    φ ∈ deterministic_chain M₀ (n + 1) ↔
+    Formula.untl Formula.bot φ ∈ deterministic_chain M₀ n := by
+  cases n with
+  | ofNat m =>
+    show φ ∈ deterministic_chain M₀ (↑m + 1) ↔ _
+    rw [show (↑m + 1 : ℤ) = ↑(m + 1) from by omega]
+    exact mem_chain_succ_iff_x_mem_chain M₀ m φ
+  | negSucc m =>
+    constructor
+    · intro h_phi
+      have h_mcs_n1 := deterministic_chain_mcs M₀ h_mcs (Int.negSucc m + 1)
+      have h_YX := YX_round_trip h_mcs_n1 φ h_phi
+      show Formula.untl Formula.bot φ ∈ deterministic_chain M₀ (Int.negSucc m)
+      cases m with
+      | zero => simp only [deterministic_chain, iterate_y_content, mem_y_content_iff]; exact h_YX
+      | succ m' => simp only [deterministic_chain, iterate_y_content, mem_y_content_iff]; exact h_YX
+    · intro h_X
+      have h_YX : Formula.snce Formula.bot (Formula.untl Formula.bot φ) ∈
+          deterministic_chain M₀ (Int.negSucc m + 1) := by
+        cases m with
+        | zero => simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_X; exact h_X
+        | succ m' => simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h_X; exact h_X
+      exact SetMaximalConsistent.implication_property (deterministic_chain_mcs M₀ h_mcs (Int.negSucc m + 1))
+        (theorem_in_mcs (deterministic_chain_mcs M₀ h_mcs (Int.negSucc m + 1))
+          (Bimodal.Theorems.TemporalDerived.YX_identity φ)) h_YX
+
+/-- General integer y_content membership: φ ∈ chain(n-1) ↔ Y(φ) ∈ chain(n) for all ℤ. -/
+theorem y_mem_chain_general (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀)
+    (n : ℤ) (φ : Formula) :
+    φ ∈ deterministic_chain M₀ (n - 1) ↔
+    Formula.snce Formula.bot φ ∈ deterministic_chain M₀ n := by
+  cases n with
+  | ofNat m =>
+    cases m with
+    | zero =>
+      constructor
+      · intro h; simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h; exact h
+      · intro h; show φ ∈ deterministic_chain M₀ (0 - 1)
+        simp only [deterministic_chain, iterate_y_content, mem_y_content_iff]; exact h
+    | succ m' =>
+      constructor
+      · intro h_phi
+        have h_phi' : φ ∈ deterministic_chain M₀ ↑m' := by
+          convert h_phi using 1; show deterministic_chain M₀ ↑m' = deterministic_chain M₀ (↑(m' + 1) - 1)
+          congr 1; push_cast; omega
+        show Formula.snce Formula.bot φ ∈ deterministic_chain M₀ ↑(m' + 1)
+        rw [show (↑(m' + 1) : ℤ) = ↑m' + 1 from by omega,
+            show ↑m' + 1 = (↑(m' + 1) : ℤ) from by omega]
+        rw [mem_chain_succ_iff_x_mem_chain]
+        exact XY_round_trip (deterministic_chain_mcs M₀ h_mcs ↑m') φ h_phi'
+      · intro h_Y
+        show φ ∈ deterministic_chain M₀ (↑(m' + 1) - 1)
+        rw [show (↑(m' + 1) : ℤ) - 1 = ↑m' from by omega]
+        have h_XY : Formula.untl Formula.bot (Formula.snce Formula.bot φ) ∈
+            deterministic_chain M₀ ↑m' := by
+          have : Formula.snce Formula.bot φ ∈ deterministic_chain M₀ ↑(m' + 1) := h_Y
+          rw [show (↑(m' + 1) : ℤ) = ↑m' + 1 from by omega,
+              show ↑m' + 1 = (↑(m' + 1) : ℤ) from by omega] at this
+          rw [mem_chain_succ_iff_x_mem_chain] at this; exact this
+        exact SetMaximalConsistent.implication_property (deterministic_chain_mcs M₀ h_mcs ↑m')
+          (theorem_in_mcs (deterministic_chain_mcs M₀ h_mcs ↑m')
+            (Bimodal.Theorems.TemporalDerived.XY_identity φ)) h_XY
+  | negSucc m =>
+    constructor
+    · intro h
+      rw [show (Int.negSucc m - 1 : ℤ) = Int.negSucc (m + 1) from by omega] at h
+      simp only [deterministic_chain, iterate_y_content, mem_y_content_iff] at h; exact h
+    · intro h
+      show φ ∈ deterministic_chain M₀ (Int.negSucc m - 1)
+      rw [show (Int.negSucc m - 1 : ℤ) = Int.negSucc (m + 1) from by omega]
+      simp only [deterministic_chain, iterate_y_content, mem_y_content_iff]; exact h
+
+/-!
+### MCS Propositional Helpers
+-/
+
+/-- Left disjunction introduction in MCS: a ∈ M → (a ∨ b) ∈ M. -/
+private theorem mcs_or_intro_left {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    {a : Formula} (h_a : a ∈ M) (b : Formula) : Formula.or a b ∈ M := by
+  have h_nna := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.dni a)) h_a
+  have h_bc : [] ⊢ (Formula.bot.imp b).imp ((a.neg.imp Formula.bot).imp (a.neg.imp b)) :=
+    @Bimodal.Theorems.Combinators.b_combinator a.neg Formula.bot b
+  have h_ef : [] ⊢ Formula.bot.imp b := DerivationTree.axiom [] _ (Axiom.ex_falso b)
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.modus_ponens [] _ _ h_bc h_ef)) h_nna
+
+/-- Right disjunction introduction in MCS: b ∈ M → (a ∨ b) ∈ M. -/
+private theorem mcs_or_intro_right {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (a : Formula) {b : Formula} (h_b : b ∈ M) : Formula.or a b ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.prop_s b a.neg))) h_b
+
+/-- Conjunction introduction in MCS. -/
+private theorem mcs_and_intro' {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    {a b : Formula} (h_a : a ∈ M) (h_b : b ∈ M) : Formula.and a b ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.pairing a b)) h_a) h_b
+
+/-!
+### Backward Until/Since via Chain Induction
+-/
+
+/-- Backward Until for the deterministic chain: given a witness at s > t with guard
+on (t, s), derive (φ U ψ) ∈ chain(t). Uses until_intro and induction on s - t. -/
+private theorem backward_until_chain (W : Set Formula) (h_W : SetMaximalConsistent W)
+    (t s : ℤ) (h_lt : t < s) (φ ψ : Formula)
+    (h_psi : ψ ∈ deterministic_chain W s)
+    (h_phi : ∀ r : ℤ, t < r → r < s → φ ∈ deterministic_chain W r) :
+    Formula.untl φ ψ ∈ deterministic_chain W t := by
+  -- Induction on the natural number (s - t - 1).toNat
+  -- We use (s - t).toNat as the decreasing measure with strong induction
+  have h_diff_pos : 0 < s - t := by omega
+  suffices h : ∀ (d : ℕ) (t' s' : ℤ), s' - t' = ↑d + 1 →
+      ψ ∈ deterministic_chain W s' →
+      (∀ r : ℤ, t' < r → r < s' → φ ∈ deterministic_chain W r) →
+      Formula.untl φ ψ ∈ deterministic_chain W t' by
+    exact h ((s - t - 1).toNat) t s (by omega) h_psi h_phi
+  intro d
+  induction d with
+  | zero =>
+    -- Base case: s' = t' + 1
+    intro t' s' h_diff h_psi_s h_phi_guard
+    have h_s_eq : s' = t' + 1 := by omega
+    -- ψ ∈ chain(t' + 1)
+    have h_psi_succ : ψ ∈ deterministic_chain W (t' + 1) := by rw [← h_s_eq]; exact h_psi_s
+    -- ψ ∨ (φ ∧ (φ U ψ)) ∈ chain(t' + 1) by left disjunction intro
+    have h_mcs_succ := deterministic_chain_mcs W h_W (t' + 1)
+    have h_disj : Formula.or ψ (Formula.and φ (Formula.untl φ ψ)) ∈
+        deterministic_chain W (t' + 1) :=
+      mcs_or_intro_left h_mcs_succ h_psi_succ _
+    -- X(ψ ∨ (φ ∧ (φ U ψ))) ∈ chain(t') by x_mem_chain_general
+    have h_X_disj := (x_mem_chain_general W h_W t' _).mp h_disj
+    -- until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)
+    exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
+      (theorem_in_mcs (deterministic_chain_mcs W h_W t')
+        (DerivationTree.axiom [] _ (Axiom.until_intro φ ψ))) h_X_disj
+  | succ d' ih =>
+    -- Inductive case: s' = t' + d' + 2
+    intro t' s' h_diff h_psi_s h_phi_guard
+    -- By IH applied to t' + 1 and s': (φ U ψ) ∈ chain(t' + 1)
+    have h_U_succ : Formula.untl φ ψ ∈ deterministic_chain W (t' + 1) := by
+      apply ih (t' + 1) s' (by omega) h_psi_s
+      intro r h_lt_r h_r_lt_s
+      exact h_phi_guard r (by omega) h_r_lt_s
+    -- φ ∈ chain(t' + 1) (from the guard, since t' < t' + 1 < s')
+    have h_phi_succ : φ ∈ deterministic_chain W (t' + 1) :=
+      h_phi_guard (t' + 1) (by omega) (by omega)
+    -- φ ∧ (φ U ψ) ∈ chain(t' + 1)
+    have h_mcs_succ := deterministic_chain_mcs W h_W (t' + 1)
+    have h_conj := mcs_and_intro' h_mcs_succ h_phi_succ h_U_succ
+    -- ψ ∨ (φ ∧ (φ U ψ)) ∈ chain(t' + 1) by right disjunction intro
+    have h_disj : Formula.or ψ (Formula.and φ (Formula.untl φ ψ)) ∈
+        deterministic_chain W (t' + 1) :=
+      mcs_or_intro_right h_mcs_succ ψ h_conj
+    -- X(ψ ∨ (φ ∧ (φ U ψ))) ∈ chain(t')
+    have h_X_disj := (x_mem_chain_general W h_W t' _).mp h_disj
+    -- until_intro
+    exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
+      (theorem_in_mcs (deterministic_chain_mcs W h_W t')
+        (DerivationTree.axiom [] _ (Axiom.until_intro φ ψ))) h_X_disj
+
+/-- Backward Since for the deterministic chain: given a witness at s < t with guard
+on (s, t), derive (φ S ψ) ∈ chain(t). Uses since_intro and induction on t - s. -/
+private theorem backward_since_chain (W : Set Formula) (h_W : SetMaximalConsistent W)
+    (t s : ℤ) (h_lt : s < t) (φ ψ : Formula)
+    (h_psi : ψ ∈ deterministic_chain W s)
+    (h_phi : ∀ r : ℤ, s < r → r < t → φ ∈ deterministic_chain W r) :
+    Formula.snce φ ψ ∈ deterministic_chain W t := by
+  suffices h : ∀ (d : ℕ) (t' s' : ℤ), t' - s' = ↑d + 1 →
+      ψ ∈ deterministic_chain W s' →
+      (∀ r : ℤ, s' < r → r < t' → φ ∈ deterministic_chain W r) →
+      Formula.snce φ ψ ∈ deterministic_chain W t' by
+    exact h ((t - s - 1).toNat) t s (by omega) h_psi h_phi
+  intro d
+  induction d with
+  | zero =>
+    -- Base case: t' = s' + 1, so s' = t' - 1
+    intro t' s' h_diff h_psi_s h_phi_guard
+    have h_s_eq : s' = t' - 1 := by omega
+    -- ψ ∈ chain(t' - 1)
+    have h_psi_pred : ψ ∈ deterministic_chain W (t' - 1) := by rw [← h_s_eq]; exact h_psi_s
+    -- ψ ∨ (φ ∧ (φ S ψ)) ∈ chain(t' - 1) by left disjunction intro
+    have h_mcs_pred := deterministic_chain_mcs W h_W (t' - 1)
+    have h_disj : Formula.or ψ (Formula.and φ (Formula.snce φ ψ)) ∈
+        deterministic_chain W (t' - 1) :=
+      mcs_or_intro_left h_mcs_pred h_psi_pred _
+    -- Y(ψ ∨ (φ ∧ (φ S ψ))) ∈ chain(t') by y_mem_chain_general
+    have h_Y_disj := (y_mem_chain_general W h_W t' _).mp h_disj
+    -- since_intro: Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)
+    exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
+      (theorem_in_mcs (deterministic_chain_mcs W h_W t')
+        (DerivationTree.axiom [] _ (Axiom.since_intro φ ψ))) h_Y_disj
+  | succ d' ih =>
+    -- Inductive case: t' = s' + d' + 2
+    intro t' s' h_diff h_psi_s h_phi_guard
+    -- By IH applied to t' - 1 and s': (φ S ψ) ∈ chain(t' - 1)
+    have h_S_pred : Formula.snce φ ψ ∈ deterministic_chain W (t' - 1) := by
+      apply ih (t' - 1) s' (by omega) h_psi_s
+      intro r h_lt_r h_r_lt
+      exact h_phi_guard r h_lt_r (by omega)
+    -- φ ∈ chain(t' - 1) (from the guard)
+    have h_phi_pred : φ ∈ deterministic_chain W (t' - 1) :=
+      h_phi_guard (t' - 1) (by omega) (by omega)
+    -- φ ∧ (φ S ψ) ∈ chain(t' - 1)
+    have h_mcs_pred := deterministic_chain_mcs W h_W (t' - 1)
+    have h_conj := mcs_and_intro' h_mcs_pred h_phi_pred h_S_pred
+    -- ψ ∨ (φ ∧ (φ S ψ)) ∈ chain(t' - 1) by right disjunction intro
+    have h_disj : Formula.or ψ (Formula.and φ (Formula.snce φ ψ)) ∈
+        deterministic_chain W (t' - 1) :=
+      mcs_or_intro_right h_mcs_pred ψ h_conj
+    -- Y(ψ ∨ (φ ∧ (φ S ψ))) ∈ chain(t')
+    have h_Y_disj := (y_mem_chain_general W h_W t' _).mp h_disj
+    -- since_intro
+    exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
+      (theorem_in_mcs (deterministic_chain_mcs W h_W t')
+        (DerivationTree.axiom [] _ (Axiom.since_intro φ ψ))) h_Y_disj
+
+/-!
 ## Temporal and Until/Since Coherence
 -/
 
@@ -183,7 +463,9 @@ theorem tc (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀) :
       show psi ∈ (DeterministicFMCS W h_W).mcs ((s + k) - k)
       simp [Int.add_sub_cancel]; exact h_psi⟩
 
-/-- Until/Since coherence. Depends on forward_F/backward_P (sorry). -/
+/-- Until/Since coherence. Forward cases depend on forward_F/backward_P (sorry).
+Backward Until and backward Since are closed using until_intro/since_intro
+and backward induction on the deterministic chain. -/
 theorem usc (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀) :
     (construct_deterministic_bfmcs M₀ h_mcs).until_since_coherent := by
   intro fam hfam
@@ -191,12 +473,27 @@ theorem usc (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M₀) :
   refine ⟨?_, ?_, ?_, ?_⟩
   · -- Forward Until: uses forward_F + until persistence
     intro t phi psi h_U; sorry
-  · -- Backward Until: uses until_intro
-    intro t phi psi h_wit; sorry
+  · -- Backward Until: uses until_intro + backward induction
+    intro t phi psi ⟨s, h_lt, h_psi, h_phi⟩
+    -- fam.mcs t = deterministic_chain W (t - k), fam.mcs s = deterministic_chain W (s - k)
+    exact backward_until_chain W h_W (t - k) (s - k) (by omega) phi psi h_psi
+      (fun r h_lt_r h_r_lt => by
+        have := h_phi (r + k) (by omega) (by omega)
+        show phi ∈ deterministic_chain W r
+        convert this using 1
+        show deterministic_chain W r = deterministic_chain W ((r + k) - k)
+        congr 1; omega)
   · -- Forward Since: symmetric
     intro t phi psi h_S; sorry
-  · -- Backward Since: symmetric
-    intro t phi psi h_wit; sorry
+  · -- Backward Since: uses since_intro + backward induction
+    intro t phi psi ⟨s, h_lt, h_psi, h_phi⟩
+    exact backward_since_chain W h_W (t - k) (s - k) (by omega) phi psi h_psi
+      (fun r h_lt_r h_r_lt => by
+        have := h_phi (r + k) (by omega) (by omega)
+        show phi ∈ deterministic_chain W r
+        convert this using 1
+        show deterministic_chain W r = deterministic_chain W ((r + k) - k)
+        congr 1; omega)
 
 /-!
 ## Completeness Wiring
