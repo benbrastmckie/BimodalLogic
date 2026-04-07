@@ -144,17 +144,11 @@ instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.peirce φ ψ) where
 instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.modal_k_dist φ ψ) where
   valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.modal_k_dist φ ψ) (by simp [Axiom.isBase]) D
 
-instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.temp_k_dist φ ψ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_k_dist φ ψ) (by simp [Axiom.isBase]) D
+instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_t_future φ) where
+  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_t_future φ) (by simp [Axiom.isBase]) D
 
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_4 φ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_4 φ) (by simp [Axiom.isBase]) D
-
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_a φ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_a φ) (by simp [Axiom.isBase]) D
-
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_l φ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_l φ) (by simp [Axiom.isBase]) D
+instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_t_past φ) where
+  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_t_past φ) (by simp [Axiom.isBase]) D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_future φ) where
   valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.modal_future φ) (by simp [Axiom.isBase]) D
@@ -162,56 +156,21 @@ instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_future φ) where
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_future φ) where
   valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_future φ) (by simp [Axiom.isBase]) D
 
-instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.temp_linearity φ ψ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_linearity φ ψ) (by simp [Axiom.isBase]) D
+/-! ## Discrete Axiom Instances
 
-/-! ## Dense Axiom Instance (1 axiom)
-
-The density axiom is compatible with DenseTemporalFrame.
+Under BX, discrete axioms are separate extension points (not in base system).
 -/
-
-instance (φ : Formula) : AxiomDenseCompatible (Axiom.density φ) where
-  valid := fun D _ _ _ _ _ _ _ _ => axiom_valid_dense_fc (Axiom.density φ) (by simp [Axiom.isDenseCompatible]) D
-
-/-! ## Discrete Axiom Instances (3 axioms)
-
-The discrete axioms are compatible with DiscreteTemporalFrame.
--/
-
-instance (φ : Formula) : AxiomDiscreteCompatible (Axiom.discreteness_forward φ) where
-  valid := fun D _ _ _ _ _ _ _ _ _ _ =>
-    axiom_valid_discrete_fc (Axiom.discreteness_forward φ) (by simp [Axiom.isDiscreteCompatible]) D
-
-instance (φ : Formula) : AxiomDiscreteCompatible (Axiom.seriality_future φ) where
-  valid := fun D _ _ _ _ _ _ _ _ _ _ =>
-    axiom_valid_discrete_fc (Axiom.seriality_future φ) (by simp [Axiom.isDiscreteCompatible]) D
-
-instance (φ : Formula) : AxiomDiscreteCompatible (Axiom.seriality_past φ) where
-  valid := fun D _ _ _ _ _ _ _ _ _ _ =>
-    axiom_valid_discrete_fc (Axiom.seriality_past φ) (by simp [Axiom.isDiscreteCompatible]) D
 
 /-! ## Compatibility Theorems -/
 
 /--
-If an axiom is base (neither density nor discreteness specific),
-then it is linear-compatible.
+If an axiom is base, then it is linear-compatible.
+Under BX, all axioms are base.
 -/
 theorem axiom_base_implies_linear_compatible {φ : Formula} (ax : Axiom φ) (h : ax.isBase) :
     AxiomLinearCompatible ax := by
   constructor
   intro D _ _ _ _
   exact axiom_base_valid_linear ax h D
-
-/--
-Consistency check: discreteness_forward is NOT dense-compatible.
--/
-theorem discreteness_forward_not_dense_compatible (φ : Formula) :
-    (Axiom.discreteness_forward φ).isDenseCompatible = False := rfl
-
-/--
-Consistency check: density is NOT discrete-compatible.
--/
-theorem density_not_discrete_compatible (φ : Formula) :
-    (Axiom.density φ).isDiscreteCompatible = False := rfl
 
 end Bimodal.FrameConditions

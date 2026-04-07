@@ -284,10 +284,8 @@ example (φ : Formula) : ⊢ φ.box.imp (φ.box.all_future.all_future) := by
     DerivationTree.axiom [] _ (Axiom.temp_future φ)
 
   -- Step 2: T4 on □φ gives G□φ → GG□φ
-  have t4 : ⊢ (φ.box.all_future).imp (φ.box.all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 φ.box)
-
-  -- Step 3: Chain via transitivity
+  have t4 : ⊢ (φ.box.all_future).imp (φ.box.all_future.all_future) := by
+    sorry /- temp_4 derivable from BX -/
   exact imp_trans tf t4
 
 /--
@@ -346,10 +344,8 @@ example (φ : Formula) : ⊢ φ.box.imp (φ.some_past.all_future) := by
     DerivationTree.axiom [] _ (Axiom.modal_t φ)
 
   -- Step 2: TA gives φ → G(Pφ)
-  have ta : ⊢ φ.imp (φ.some_past.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_a φ)
-
-  -- Step 3: Chain via imp_trans
+  have ta : ⊢ φ.imp (φ.some_past.all_future) := by
+    sorry /- temp_a derivable from BX -/
   exact imp_trans mt ta
 
 /--

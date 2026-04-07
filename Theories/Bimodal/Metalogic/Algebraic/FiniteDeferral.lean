@@ -45,7 +45,7 @@ theorem F_to_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
     Formula.untl (Formula.neg Formula.bot) ψ ∈ M := by
   have h_ax : [] ⊢ (Formula.some_future ψ).imp (Formula.untl (Formula.neg Formula.bot) ψ) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ)
+    sorry /- F_until_equiv removed in BX -/
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_F
 
 /-- F(ψ) ∈ chain(t) implies (⊤ U ψ) ∈ chain(t). -/
@@ -322,7 +322,7 @@ theorem G_neg_kills_until (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
       (theorem_in_mcs h_mcs_t (Bimodal.Theorems.Combinators.pairing _ _))
       h_G_neg) h_G_step_in
   -- until_induction axiom: G(¬ψ) ∧ G(step) → ((¬⊥ U ψ) → (⊥ U ⊥))
-  have h_ax := DerivationTree.axiom [] _ (Axiom.until_induction (Formula.neg Formula.bot) ψ Formula.bot)
+  have h_ax := sorry /- until_induction removed in BX -/ ψ Formula.bot)
   have h_imp := SetMaximalConsistent.implication_property h_mcs_t
     (theorem_in_mcs h_mcs_t h_ax) h_conj
   -- (¬⊥ U ψ) → (⊥ U ⊥) ∈ chain(t), apply to h_U

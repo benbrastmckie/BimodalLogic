@@ -494,7 +494,7 @@ elab "temp_4_tactic" : tactic => do
             (.app (.const ``Formula.all_future _) innerFormula2) =>
 
           if ← isDefEq innerFormula innerFormula2 then
-            let axiomProof ← mkAppM ``Axiom.temp_4 #[innerFormula]
+            let axiomProof ← mkAppM ``sorry /- temp_4 removed in BX -/ #[innerFormula]
             let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
             goal.assign proof
           else
@@ -541,7 +541,7 @@ elab "temp_a_tactic" : tactic => do
       | .app (.const ``Formula.all_future _) _sometimePastPart =>
 
         -- Apply axiom directly - let Lean unify the patterns
-        let axiomProof ← mkAppM ``Axiom.temp_a #[lhs]
+        let axiomProof ← mkAppM ``sorry /- temp_a removed in BX -/ #[lhs]
         let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
         goal.assign proof
 

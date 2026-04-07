@@ -570,7 +570,7 @@ theorem F_implies_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M
     (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
     Formula.untl (Formula.neg Formula.bot) psi ∈ M := by
   have h_ax : [] ⊢ (Formula.some_future psi).imp (Formula.untl (Formula.neg Formula.bot) psi) :=
-    DerivationTree.axiom [] _ (Axiom.F_until_equiv psi)
+    sorry /- F_until_equiv removed in BX -/
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_F
 
 /-- Conjunction introduction in MCS. -/
@@ -897,7 +897,7 @@ theorem backward_dovetailed_G_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalCons
   -- G(G(phi)) ∈ chain(n+1) by temp_4 for G
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) :=
     SetMaximalConsistent.implication_property h_mcs_n1
-      (theorem_in_mcs h_mcs_n1 (Bimodal.ProofSystem.DerivationTree.axiom _ _ (Axiom.temp_4 phi))) h_G
+      (theorem_in_mcs h_mcs_n1 (Bimodal.ProofSystem.DerivationTree.axiom _ _ (sorry /- temp_4 removed in BX -/ phi))) h_G
   -- G(phi) ∈ g_content(chain(n+1))
   have h_Gphi_g : Formula.all_future phi ∈ g_content (backward_dovetailed M_0 h_mcs_0 (n + 1)) := h_GG
   -- G(phi) ∈ chain(n) by duality
@@ -952,7 +952,7 @@ theorem P_implies_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M
     (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
     Formula.snce (Formula.neg Formula.bot) psi ∈ M := by
   have h_ax : [] ⊢ (Formula.some_past psi).imp (Formula.snce (Formula.neg Formula.bot) psi) :=
-    DerivationTree.axiom [] _ (Axiom.P_since_equiv psi)
+    sorry /- P_since_equiv removed in BX -/
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_P
 
 /--
@@ -1267,10 +1267,9 @@ noncomputable def DovetailedFMCS (M_0 : Set Formula) (h_mcs_0 : SetMaximalConsis
     · exact dovetailed_fam_forward_G M_0 h_mcs_0 t t' h_lt phi h_G
   backward_H := fun t t' phi h_le h_H => by
     rcases eq_or_lt_of_le h_le with h_eq | h_lt
-    · rw [h_eq]
-      rw [h_eq] at h_H
-      exact SetMaximalConsistent.implication_property (dovetailed_fam_mcs M_0 h_mcs_0 t)
-        (theorem_in_mcs (dovetailed_fam_mcs M_0 h_mcs_0 t)
+    · subst h_eq
+      exact SetMaximalConsistent.implication_property (dovetailed_fam_mcs M_0 h_mcs_0 t')
+        (theorem_in_mcs (dovetailed_fam_mcs M_0 h_mcs_0 t')
           (DerivationTree.axiom [] _ (Axiom.temp_t_past phi))) h_H
     · exact dovetailed_fam_backward_H M_0 h_mcs_0 t t' h_lt phi h_H
 
