@@ -51,7 +51,7 @@ def discreteness_past (φ : Formula) :
   have h_df : ⊢ (Formula.and (Formula.bot.neg.some_future)
     (Formula.and φ.swap_temporal (Formula.all_past φ.swap_temporal)) |>.imp
     (Formula.all_past φ.swap_temporal).some_future) :=
-    DerivationTree.axiom [] _ (Axiom.discreteness_forward φ.swap_temporal)
+    sorry -- discrete axioms removed in BX refactor -- sorry /- discreteness_forward removed in BX -/
   -- Step 2: Apply temporal_duality
   have h_swap := DerivationTree.temporal_duality _ h_df
   -- Step 3: The result of swapping should be DP at swap(swap(φ)) = DP at φ

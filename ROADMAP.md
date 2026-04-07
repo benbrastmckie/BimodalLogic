@@ -176,7 +176,9 @@ Migrated from reflexive to strict temporal semantics and refactored completeness
 
 > "TM is complete with respect to TaskFrames over totally ordered abelian groups."
 
-**Only the algebraic/canonical model approach is to be pursued for completeness.** FMP proves decidability but does not provide frame class characterization.
+**Only the algebraic/canonical model approach is to be pursued for completeness.** The representation theorem characterizes TM by showing that every consistent formula has a model built from the logic's own proof-theoretic structure (MCS ↔ worlds, truth lemma connecting membership and semantic truth). This structural correspondence is the scientific contribution — it tells us what TM *is*, not merely that it is complete.
+
+**Decidability-based completeness is explicitly excluded as a path to the representation theorem.** A decision procedure can establish `valid(φ) → provable(φ)` as a bare fact, but it provides no canonical model construction, no truth lemma, no structural correspondence between proof-theoretic and semantic notions, and no template for extensions of the logic. Decidability is of independent interest (see task 82, FMP track) and may yield a follow-up result, but it does not serve the goal of frame class characterization.
 
 ## Other Open Items
 

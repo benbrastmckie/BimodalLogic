@@ -56,10 +56,8 @@ private abbrev Y (a : Formula) : Formula := Formula.snce Formula.bot a  -- Y(a) 
 `⊢ G(a) → ⊤ U a` by chaining seriality_future with F_until_equiv.
 -/
 def G_implies_topUntil (a : Formula) :
-    ⊢ a.all_future.imp (Formula.untl top a) :=
-  imp_trans
-    (DerivationTree.axiom [] _ (Axiom.seriality_future a))
-    (DerivationTree.axiom [] _ (Axiom.F_until_equiv a))
+    ⊢ a.all_future.imp (Formula.untl top a) := by
+  sorry -- seriality + F_until_equiv derivable from BX (Phase 3)
 
 /--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
@@ -75,11 +73,8 @@ def G_implies_G_id (a : Formula) :
 -/
 def G_implies_G_step (a : Formula) :
     ⊢ a.all_future.imp
-      ((Formula.and top (X a)).imp a).all_future :=
-  mp (DerivationTree.temporal_necessitation _
-       (DerivationTree.axiom [] _ (Axiom.prop_s a (Formula.and top (X a)))))
-     (DerivationTree.axiom [] _
-       (Axiom.temp_k_dist a ((Formula.and top (X a)).imp a)))
+      ((Formula.and top (X a)).imp a).all_future := by
+  sorry /- temp_k_dist derivable from BX (Phase 3) -/
 
 /--
 The until_induction axiom instance for φ = ⊤, ψ = a, χ = a:
@@ -90,7 +85,7 @@ def until_ind_inst (a : Formula) :
         (a.imp a).all_future
         ((Formula.and top (X a)).imp a).all_future
       ).imp ((Formula.untl top a).imp (X a)) :=
-  DerivationTree.axiom [] _ (Axiom.until_induction top a a)
+  sorry /- removed in BX -/
 
 /--
 The main theorem: `⊢ G(a) → X(a)` where X(a) = ⊥ U a.
@@ -143,9 +138,7 @@ and P_since_equiv.
 noncomputable def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) := by
   -- Step 1: H(a) → ⊤ S a  (seriality_past + P_since_equiv)
   have h_topSince : ⊢ a.all_past.imp (Formula.snce top a) :=
-    imp_trans
-      (DerivationTree.axiom [] _ (Axiom.seriality_past a))
-      (DerivationTree.axiom [] _ (Axiom.P_since_equiv a))
+    sorry /- seriality_past + P_since_equiv removed in BX -/
   -- Step 2: H(a) → H(a→a) (theorem under H)
   have h_H_id : ⊢ a.all_past.imp (a.imp a).all_past :=
     mp (Bimodal.Theorems.past_necessitation _ (identity a))
@@ -166,7 +159,7 @@ noncomputable def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) := by
       (a.imp a).all_past
       ((Formula.and top (Y a)).imp a).all_past
     ).imp ((Formula.snce top a).imp (Y a)) :=
-    DerivationTree.axiom [] _ (Axiom.since_induction top a a)
+    sorry /- since_induction removed in BX -/
   -- Step 6: H(a) → (⊤ S a → Y(a))
   have h_topS_to_Y : ⊢ a.all_past.imp ((Formula.snce top a).imp (Y a)) :=
     imp_trans h_conj h_ind
@@ -184,36 +177,16 @@ but G(⊤) is a theorem.
 This is the special case needed for seed consistency proofs where the
 T-axiom `G(a) → a` was previously used at `a = ⊥`.
 -/
-def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot := by
-  -- Step 1: G(⊥) → F(⊥) by seriality
-  have h_ser := DerivationTree.axiom [] _ (Axiom.seriality_future Formula.bot)
-  -- Step 2: G(⊤) is a theorem (temporal necessitation of identity)
-  have h_top : ⊢ (Formula.bot.imp Formula.bot) :=
-    identity Formula.bot
-  have h_GT : ⊢ (Formula.bot.imp Formula.bot).all_future :=
-    DerivationTree.temporal_necessitation _ h_top
-  -- Step 3: G(⊤) → ¬¬G(⊤) by double negation introduction
-  -- ¬G(⊤) = G(⊤) → ⊥ = F(⊥)  (definitionally)
-  -- So ¬¬G(⊤) = F(⊥) → ⊥
-  have h_dni := dni ((Formula.bot.imp Formula.bot).all_future)
-  -- Step 4: F(⊥) → ⊥ by modus ponens
-  have h_F_absurd := mp h_GT h_dni
-  -- Step 5: G(⊥) → ⊥ by transitivity
-  exact imp_trans h_ser h_F_absurd
+def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot :=
+  -- Under reflexive BX semantics: G(⊥) → ⊥ follows directly from BX1 (temp_t_future)
+  DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
 
 /--
 `⊢ H(⊥) → ⊥`: H(⊥) is absurd because seriality gives P(⊥) = ¬H(⊤),
 but H(⊤) is a theorem.
 -/
-noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot := by
-  have h_ser := DerivationTree.axiom [] _ (Axiom.seriality_past Formula.bot)
-  have h_top : ⊢ (Formula.bot.imp Formula.bot) :=
-    identity Formula.bot
-  have h_HT : ⊢ (Formula.bot.imp Formula.bot).all_past :=
-    Bimodal.Theorems.past_necessitation _ h_top
-  have h_dni := dni ((Formula.bot.imp Formula.bot).all_past)
-  have h_P_absurd := mp h_HT h_dni
-  exact imp_trans h_ser h_P_absurd
+noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot :=
+  DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
 
 /--
 `⊢ X(⊥) → ⊥`, i.e., `⊢ (⊥ U ⊥) → ⊥`.
@@ -235,13 +208,7 @@ NOTE: This derivation is semantically clear but the syntactic proof tree
 construction is non-trivial. Uses sorry pending full axiom-level construction.
 -/
 noncomputable def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot := by
-  -- X(⊥) → F(⊥) by next_implies_some_future axiom
-  have h_X_to_F := DerivationTree.axiom [] _ (Axiom.next_implies_some_future Formula.bot)
-  -- G(⊤) is a theorem, so F(⊥) = ¬G(⊤) → ⊥ by DNI
-  have h_GT : ⊢ (Formula.bot.imp Formula.bot).all_future :=
-    DerivationTree.temporal_necessitation _ (identity Formula.bot)
-  have h_F_bot_absurd := mp h_GT (dni ((Formula.bot.imp Formula.bot).all_future))
-  exact imp_trans h_X_to_F h_F_bot_absurd
+  sorry /- X/Y axioms removed in BX, discrete-only -/
 
 /--
 `⊢ Y(⊥) → ⊥`, i.e., `⊢ (⊥ S ⊥) → ⊥`.
@@ -260,32 +227,7 @@ to derive X(⊥) from G(¬ψ) ∧ (φ U ψ), then X_bot_absurd for contradiction
 -/
 noncomputable def until_implies_some_future (φ ψ : Formula) :
     ⊢ (Formula.untl φ ψ).imp (Formula.some_future ψ) := by
-  -- Strategy: show G(¬ψ) → ¬(φ U ψ), then flip to (φ U ψ) → F(ψ).
-  have h_xba := X_bot_absurd
-  -- (φ ∧ X(⊥)) → ⊥ from X_bot_absurd via weakening + DNI
-  have h_phi_neg_xbot : ⊢ φ.imp ((Formula.untl Formula.bot Formula.bot).imp Formula.bot) :=
-    mp h_xba (DerivationTree.axiom [] _ (Axiom.prop_s ((Formula.untl Formula.bot Formula.bot).imp Formula.bot) φ))
-  have h_and_absurd : ⊢ (Formula.and φ (Formula.untl Formula.bot Formula.bot)).imp Formula.bot :=
-    mp h_phi_neg_xbot (dni (φ.imp ((Formula.untl Formula.bot Formula.bot).imp Formula.bot)))
-  -- G((φ ∧ X(⊥)) → ⊥) + until_induction(φ, ψ, ⊥)
-  have h_G_and := DerivationTree.temporal_necessitation _ h_and_absurd
-  have h_ind := DerivationTree.axiom [] _ (Axiom.until_induction φ ψ Formula.bot)
-  -- G(¬ψ) → G(¬ψ) ∧ G((φ ∧ X(⊥)) → ⊥)
-  have h_conj : ⊢ (ψ.imp Formula.bot).all_future.imp
-      (Formula.and (ψ.imp Formula.bot).all_future
-        ((Formula.and φ (Formula.untl Formula.bot Formula.bot)).imp Formula.bot).all_future) :=
-    combine_imp_conj (identity _) (mp h_G_and (DerivationTree.axiom [] _ (Axiom.prop_s _ _)))
-  -- G(¬ψ) → (φ U ψ) → X(⊥)
-  have h5 := imp_trans h_conj h_ind
-  -- Compose with X_bot_absurd: G(¬ψ) → (φ U ψ) → ⊥
-  have h_xba_weak : ⊢ (φ.untl ψ).imp ((Formula.untl Formula.bot Formula.bot).imp Formula.bot) :=
-    mp h_xba (DerivationTree.axiom [] _ (Axiom.prop_s _ (φ.untl ψ)))
-  have h_prop_k := DerivationTree.axiom [] _ (Axiom.prop_k (φ.untl ψ) (Formula.untl Formula.bot Formula.bot) Formula.bot)
-  have h_compose := DerivationTree.modus_ponens [] _ _ h_prop_k h_xba_weak
-  have h6 : ⊢ (ψ.imp Formula.bot).all_future.imp ((φ.untl ψ).imp Formula.bot) :=
-    imp_trans h5 h_compose
-  -- Flip: (φ U ψ) → G(¬ψ) → ⊥ = (φ U ψ) → F(ψ)
-  exact mp h6 (@theorem_flip (ψ.imp Formula.bot).all_future (φ.untl ψ) Formula.bot)
+  sorry /- derivable from BX axioms, Phase 3 -/
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
@@ -293,26 +235,7 @@ Mirror of until_implies_some_future.
 -/
 noncomputable def since_implies_some_past (φ ψ : Formula) :
     ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) := by
-  -- Mirror of until_implies_some_future using since_induction + Y_bot_absurd
-  have h_yba := Y_bot_absurd
-  have h_phi_neg_ybot : ⊢ φ.imp ((Formula.snce Formula.bot Formula.bot).imp Formula.bot) :=
-    mp h_yba (DerivationTree.axiom [] _ (Axiom.prop_s ((Formula.snce Formula.bot Formula.bot).imp Formula.bot) φ))
-  have h_and_absurd : ⊢ (Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot :=
-    mp h_phi_neg_ybot (dni (φ.imp ((Formula.snce Formula.bot Formula.bot).imp Formula.bot)))
-  have h_H_and := Bimodal.Theorems.past_necessitation _ h_and_absurd
-  have h_ind := DerivationTree.axiom [] _ (Axiom.since_induction φ ψ Formula.bot)
-  have h_conj : ⊢ (ψ.imp Formula.bot).all_past.imp
-      (Formula.and (ψ.imp Formula.bot).all_past
-        ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past) :=
-    combine_imp_conj (identity _) (mp h_H_and (DerivationTree.axiom [] _ (Axiom.prop_s _ _)))
-  have h5 := imp_trans h_conj h_ind
-  have h_yba_weak : ⊢ (φ.snce ψ).imp ((Formula.snce Formula.bot Formula.bot).imp Formula.bot) :=
-    mp h_yba (DerivationTree.axiom [] _ (Axiom.prop_s _ (φ.snce ψ)))
-  have h_prop_k := DerivationTree.axiom [] _ (Axiom.prop_k (φ.snce ψ) (Formula.snce Formula.bot Formula.bot) Formula.bot)
-  have h_compose := DerivationTree.modus_ponens [] _ _ h_prop_k h_yba_weak
-  have h6 : ⊢ (ψ.imp Formula.bot).all_past.imp ((φ.snce ψ).imp Formula.bot) :=
-    imp_trans h5 h_compose
-  exact mp h6 (@theorem_flip (ψ.imp Formula.bot).all_past (φ.snce ψ) Formula.bot)
+  sorry /- derivable from BX axioms, Phase 3 -/
 
 /-!
 ## YX and XY Identity: Y(X(φ)) → φ and X(Y(φ)) → φ
@@ -326,13 +249,13 @@ on discrete linear frames.
 Direct axiom application. -/
 noncomputable def YX_identity (a : Formula) :
     ⊢ (Formula.snce Formula.bot (Formula.untl Formula.bot a)).imp a :=
-  DerivationTree.axiom [] _ (Axiom.yx_identity a)
+  sorry /- yx_identity removed in BX -/
 
 /-- X(Y(φ)) → φ: Next of Previous is identity.
 Direct axiom application. -/
 noncomputable def XY_identity (a : Formula) :
     ⊢ (Formula.untl Formula.bot (Formula.snce Formula.bot a)).imp a :=
-  DerivationTree.axiom [] _ (Axiom.xy_identity a)
+  sorry /- xy_identity removed in BX -/
 
 /-- Y-necessitation: if ⊢ φ then ⊢ Y(φ). Uses past temporal necessitation + H→Y. -/
 private noncomputable def y_nec' {φ : Formula} (h : DerivationTree [] φ) :
@@ -358,7 +281,7 @@ noncomputable def YG_implies_self (a : Formula) :
   have h_y_nec_GX := y_nec' h_GX
   have h_y_k : ⊢ (Formula.snce Formula.bot (a.all_future.imp (X a))).imp
       ((Formula.snce Formula.bot a.all_future).imp (Formula.snce Formula.bot (X a))) :=
-    DerivationTree.axiom [] _ (Axiom.y_k_dist a.all_future (X a))
+    sorry /- y_k_dist removed in BX -/
   have h_YG_imp_YX : ⊢ (Formula.snce Formula.bot a.all_future).imp
       (Formula.snce Formula.bot (X a)) :=
     DerivationTree.modus_ponens [] _ _ h_y_k h_y_nec_GX
@@ -377,7 +300,7 @@ noncomputable def XH_implies_self (a : Formula) :
   have h_x_nec_HY := x_nec' h_HY
   have h_x_k : ⊢ (Formula.untl Formula.bot (a.all_past.imp (Y a))).imp
       ((Formula.untl Formula.bot a.all_past).imp (Formula.untl Formula.bot (Y a))) :=
-    DerivationTree.axiom [] _ (Axiom.x_k_dist a.all_past (Y a))
+    sorry /- x_k_dist removed in BX -/
   have h_XH_imp_XY : ⊢ (Formula.untl Formula.bot a.all_past).imp
       (Formula.untl Formula.bot (Y a)) :=
     DerivationTree.modus_ponens [] _ _ h_x_k h_x_nec_HY

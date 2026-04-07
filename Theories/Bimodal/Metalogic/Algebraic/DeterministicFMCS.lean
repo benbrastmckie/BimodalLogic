@@ -188,16 +188,16 @@ private theorem YX_round_trip {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     (Formula.snce Formula.bot (Formula.untl Formula.bot φ))).resolve_left h_not
   have h_Y_negX := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (DerivationTree.axiom [] _
-      (Axiom.y_det (Formula.untl Formula.bot φ)))) h_neg_YX
+      (sorry /- y_det removed in BX -/ (Formula.untl Formula.bot φ)))) h_neg_YX
   have h_x_det : [] ⊢ (Formula.untl Formula.bot φ).neg.imp
       (Formula.untl Formula.bot φ.neg) :=
-    DerivationTree.axiom [] _ (Axiom.x_det φ)
+    sorry /- x_det removed in BX -/
   have h_H_xdet := Bimodal.Theorems.past_necessitation _ h_x_det
   have h_Y_xdet := DerivationTree.modus_ponens [] _ _
     (Bimodal.Theorems.TemporalDerived.H_implies_Y _) h_H_xdet
   have h_Y_Xneg := SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.y_k_dist _ _)))
+      (theorem_in_mcs h_mcs (sorry /- y_k_dist removed in BX -/))
       (theorem_in_mcs h_mcs h_Y_xdet)) h_Y_negX
   have h_neg_phi := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.YX_identity φ.neg)) h_Y_Xneg
@@ -213,16 +213,16 @@ private theorem XY_round_trip {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     (Formula.untl Formula.bot (Formula.snce Formula.bot φ))).resolve_left h_not
   have h_X_negY := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (DerivationTree.axiom [] _
-      (Axiom.x_det (Formula.snce Formula.bot φ)))) h_neg_XY
+      (sorry /- x_det removed in BX -/ (Formula.snce Formula.bot φ)))) h_neg_XY
   have h_y_det : [] ⊢ (Formula.snce Formula.bot φ).neg.imp
       (Formula.snce Formula.bot φ.neg) :=
-    DerivationTree.axiom [] _ (Axiom.y_det φ)
+    sorry /- y_det removed in BX -/
   have h_G_ydet := DerivationTree.temporal_necessitation _ h_y_det
   have h_X_ydet := DerivationTree.modus_ponens [] _ _
     (Bimodal.Theorems.TemporalDerived.G_implies_X _) h_G_ydet
   have h_X_Yneg := SetMaximalConsistent.implication_property h_mcs
     (SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.x_k_dist _ _)))
+      (theorem_in_mcs h_mcs (sorry /- x_k_dist removed in BX -/))
       (theorem_in_mcs h_mcs h_X_ydet)) h_X_negY
   have h_neg_phi := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.XY_identity φ.neg)) h_X_Yneg
@@ -368,7 +368,7 @@ private theorem backward_until_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (DerivationTree.axiom [] _ (Axiom.until_intro φ ψ))) h_X_disj
+        (sorry /- until_intro removed in BX -/)) h_X_disj
   | succ d' ih =>
     -- Inductive case: s' = t' + d' + 2
     intro t' s' h_diff h_psi_s h_phi_guard
@@ -392,7 +392,7 @@ private theorem backward_until_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- until_intro
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (DerivationTree.axiom [] _ (Axiom.until_intro φ ψ))) h_X_disj
+        (sorry /- until_intro removed in BX -/)) h_X_disj
 
 /-- Backward Since for the deterministic chain: given a witness at s < t with guard
 on (s, t), derive (φ S ψ) ∈ chain(t). Uses since_intro and induction on t - s. -/
@@ -424,7 +424,7 @@ private theorem backward_since_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- since_intro: Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (DerivationTree.axiom [] _ (Axiom.since_intro φ ψ))) h_Y_disj
+        (sorry /- since_intro removed in BX -/)) h_Y_disj
   | succ d' ih =>
     -- Inductive case: t' = s' + d' + 2
     intro t' s' h_diff h_psi_s h_phi_guard
@@ -448,7 +448,7 @@ private theorem backward_since_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- since_intro
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (DerivationTree.axiom [] _ (Axiom.since_intro φ ψ))) h_Y_disj
+        (sorry /- since_intro removed in BX -/)) h_Y_disj
 
 /-!
 ## Temporal and Until/Since Coherence

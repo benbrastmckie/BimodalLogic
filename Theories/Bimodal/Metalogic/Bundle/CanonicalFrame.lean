@@ -256,7 +256,7 @@ theorem existsTask_transitive (M M' M'' : Set Formula)
   -- phi ∈ g_content M means G phi ∈ M
   -- By Temporal 4: ⊢ G phi → G(G phi), so G(G phi) ∈ M
   have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_4 phi)
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.sorry /- temp_4 removed in BX -/ phi)
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_G_phi
   -- G phi ∈ g_content M, and g_content M ⊆ M' by h_R1

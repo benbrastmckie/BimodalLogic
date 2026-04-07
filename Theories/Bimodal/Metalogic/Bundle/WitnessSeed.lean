@@ -164,7 +164,7 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
     -- By temporal K distribution: ⊢ G(⊥ → ¬psi) → (G(⊥) → G(¬psi))
     have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg psi))).imp
                      ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi))) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot (Formula.neg psi))
+      sorry /- temp_k_dist removed in BX -/
 
     -- Modus ponens twice: G(¬psi) ∈ M
     have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi)) :=
@@ -399,7 +399,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
         DerivationTree.temporal_necessitation _ h_bot_imp_neg
       have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg ψ))).imp
                        ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg ψ))) :=
-        DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot (Formula.neg ψ))
+        sorry /- temp_k_dist removed in BX -/
       have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg ψ)) :=
         DerivationTree.modus_ponens [] _ _ h_K h_G_ef
       exact SetMaximalConsistent.implication_property h_mcs
@@ -446,7 +446,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_ind : [] ⊢ ((ψ.imp Formula.bot).all_future.and
       ((Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot).all_future).imp
       ((φ.untl ψ).imp (Formula.bot.untl Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.until_induction φ ψ Formula.bot)
+    sorry /- until_induction removed in BX -/
   have h_U_imp_Xbot : (φ.untl ψ).imp (Formula.bot.untl Formula.bot) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ind) h_conj_in_M
 
@@ -565,7 +565,7 @@ theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   have h_ind : [] ⊢ ((ψ.imp Formula.bot).all_past.and
       ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past).imp
       ((φ.snce ψ).imp (Formula.snce Formula.bot Formula.bot)) :=
-    DerivationTree.axiom [] _ (Axiom.since_induction φ ψ Formula.bot)
+    sorry /- since_induction removed in BX -/
   have h_S_imp_Ybot : (φ.snce ψ).imp (Formula.snce Formula.bot Formula.bot) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ind) h_conj_in_M
 
@@ -592,7 +592,7 @@ which are still valid with irreflexive semantics.
 Derived from temp_a via temporal duality. -/
 noncomputable def past_temp_a (psi : Formula) :
     [] ⊢ psi.imp psi.some_future.all_past := by
-  have h_ta := DerivationTree.axiom [] _ (Axiom.temp_a psi.swap_temporal)
+  have h_ta := sorry /- temp_a removed in BX -/
   have h_dual := DerivationTree.temporal_duality _ h_ta
   have h_eq : (psi.swap_temporal.imp psi.swap_temporal.some_past.all_future).swap_temporal
     = psi.imp psi.some_future.all_past := by
@@ -613,7 +613,7 @@ theorem g_content_subset_implies_h_content_reverse
     · exact absurd h h_not_phi
     · exact h
   have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.all_future (Formula.neg phi).some_past) :=
-    DerivationTree.axiom [] _ (Axiom.temp_a (Formula.neg phi))
+    sorry /- temp_a removed in BX -/
   have h_G_P_neg : Formula.all_future (Formula.neg phi).some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
   have h_P_neg_M' : (Formula.neg phi).some_past ∈ M' := h_GC h_G_P_neg
@@ -652,7 +652,7 @@ theorem h_content_subset_implies_g_content_reverse
   have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).all_future :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_fk : [] ⊢ (phi.imp phi.neg.neg).all_future.imp (phi.all_future.imp phi.neg.neg.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist phi phi.neg.neg)
+    sorry /- temp_k_dist removed in BX -/
   have h_G_imp : [] ⊢ phi.all_future.imp phi.neg.neg.all_future :=
     DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
   have h_G_nn : phi.neg.neg.all_future ∈ M' :=

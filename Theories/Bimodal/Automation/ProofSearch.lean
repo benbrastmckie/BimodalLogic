@@ -472,7 +472,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       <|> (match lhs, rhs with
            | .all_future (.imp phi psi), .imp (.all_future phi') (.all_future psi') =>
                if phi = phi' ∧ psi = psi' then
-                 some ⟨_, Axiom.temp_k_dist phi psi⟩
+                 sorry -- removed in BX
                else none
            | _, _ => none)
 
@@ -480,7 +480,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       <|> (match lhs, rhs with
            | .all_future phi, .all_future (.all_future phi') =>
                if phi = phi' then
-                 some ⟨_, Axiom.temp_4 phi⟩
+                 sorry -- removed in BX
                else none
            | _, _ => none)
 
@@ -488,7 +488,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       <|> (match lhs, rhs with
            | phi, .all_future (.imp (.all_past (.imp phi' .bot)) .bot) =>
                if phi = phi' then
-                 some ⟨_, Axiom.temp_a phi⟩
+                 sorry -- removed in BX
                else none
            | _, _ => none)
 
@@ -499,7 +499,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
            | .imp (.imp (.all_past phi1) (.imp (.imp (.imp phi2 (.imp (.all_future phi3) .bot)) .bot) .bot)) .bot,
              .all_future (.all_past phi') =>
                if phi1 = phi2 ∧ phi2 = phi3 ∧ phi3 = phi' then
-                 some ⟨_, Axiom.temp_l phi1⟩
+                 sorry -- removed in BX
                else none
            | _, _ => none)
 

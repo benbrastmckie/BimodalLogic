@@ -199,17 +199,17 @@ def substAxiomFresh (s : String) {φ : ExtFormula} (h : ExtAxiom φ) :
   | ex_falso a => exact ExtAxiom.ex_falso _
   | peirce a b => exact ExtAxiom.peirce _ _
   | modal_k_dist a b => exact ExtAxiom.modal_k_dist _ _
-  | temp_k_dist a b => exact ExtAxiom.temp_k_dist _ _
-  | temp_4 a => exact ExtAxiom.temp_4 _
-  | temp_a a => exact ExtAxiom.temp_a _
-  | temp_l a => exact ExtAxiom.temp_l _
+  | temp_k_dist a b => exact Extsorry /- temp_k_dist removed in BX -/ _ _
+  | temp_4 a => exact Extsorry /- temp_4 removed in BX -/ _
+  | temp_a a => exact Extsorry /- temp_a removed in BX -/ _
+  | temp_l a => exact Extsorry /- temp_l removed in BX -/ _
   | modal_future a => exact ExtAxiom.modal_future _
   | temp_future a => exact ExtAxiom.temp_future _
-  | temp_linearity a b => exact ExtAxiom.temp_linearity _ _
-  | density a => exact ExtAxiom.density _
-  | discreteness_forward a => exact ExtAxiom.discreteness_forward _
-  | seriality_future => exact ExtAxiom.seriality_future
-  | seriality_past => exact ExtAxiom.seriality_past
+  | temp_linearity a b => exact Extsorry /- temp_linearity removed in BX -/ _ _
+  | density a => exact Extsorry /- density removed in BX -/ _
+  | discreteness_forward a => exact Extsorry /- discreteness_forward removed in BX -/ _
+  | seriality_future => exact Extsorry /- seriality_future removed in BX -/
+  | seriality_past => exact Extsorry /- seriality_past removed in BX -/
 
 /-!
 ## Unembedding Axioms: ExtAxiom to Axiom
@@ -227,17 +227,17 @@ def unembedAxiom {φ : ExtFormula} (h : ExtAxiom φ) : Axiom (unembedFormula φ)
   | ex_falso a => exact Axiom.ex_falso _
   | peirce a b => exact Axiom.peirce _ _
   | modal_k_dist a b => exact Axiom.modal_k_dist _ _
-  | temp_k_dist a b => exact Axiom.temp_k_dist _ _
-  | temp_4 a => exact Axiom.temp_4 _
-  | temp_a a => exact Axiom.temp_a _
-  | temp_l a => exact Axiom.temp_l _
+  | temp_k_dist a b => exact sorry /- temp_k_dist removed in BX -/ _ _
+  | temp_4 a => exact sorry /- temp_4 removed in BX -/ _
+  | temp_a a => exact sorry /- temp_a removed in BX -/ _
+  | temp_l a => exact sorry /- temp_l removed in BX -/ _
   | modal_future a => exact Axiom.modal_future _
   | temp_future a => exact Axiom.temp_future _
-  | temp_linearity a b => exact Axiom.temp_linearity _ _
-  | density a => exact Axiom.density _
-  | discreteness_forward a => exact Axiom.discreteness_forward _
-  | seriality_future => exact Axiom.seriality_future
-  | seriality_past => exact Axiom.seriality_past
+  | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/ _ _
+  | density a => exact sorry /- density removed in BX -/ _
+  | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/ _
+  | seriality_future => exact sorry /- seriality_future removed in BX -/
+  | seriality_past => exact sorry /- seriality_past removed in BX -/
 
 /-- unembedFormula commutes with swap_temporal. -/
 theorem unembed_swap_temporal (φ : ExtFormula) :
@@ -467,17 +467,17 @@ private def liftAxiom (s : String) {φ : ExtFormula} (h : ExtAxiom φ) :
   | ex_falso a => exact Axiom.ex_falso _
   | peirce a b => exact Axiom.peirce _ _
   | modal_k_dist a b => exact Axiom.modal_k_dist _ _
-  | temp_k_dist a b => exact Axiom.temp_k_dist _ _
-  | temp_4 a => exact Axiom.temp_4 _
-  | temp_a a => exact Axiom.temp_a _
-  | temp_l a => exact Axiom.temp_l _
+  | temp_k_dist a b => exact sorry /- temp_k_dist removed in BX -/ _ _
+  | temp_4 a => exact sorry /- temp_4 removed in BX -/ _
+  | temp_a a => exact sorry /- temp_a removed in BX -/ _
+  | temp_l a => exact sorry /- temp_l removed in BX -/ _
   | modal_future a => exact Axiom.modal_future _
   | temp_future a => exact Axiom.temp_future _
-  | temp_linearity a b => exact Axiom.temp_linearity _ _
-  | density a => exact Axiom.density _
-  | discreteness_forward a => exact Axiom.discreteness_forward _
-  | seriality_future => exact Axiom.seriality_future
-  | seriality_past => exact Axiom.seriality_past
+  | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/ _ _
+  | density a => exact sorry /- density removed in BX -/ _
+  | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/ _
+  | seriality_future => exact sorry /- seriality_future removed in BX -/
+  | seriality_past => exact sorry /- seriality_past removed in BX -/
 
 /-- liftFormula freshness transfer: if Sum.inl t ∉ phi.atoms and t ≠ s,
 then t ∉ (liftFormula s phi).atoms. -/

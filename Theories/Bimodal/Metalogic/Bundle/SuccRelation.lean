@@ -201,7 +201,7 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
       Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne_inner
     have h_k : [] ⊢ ((phi.neg.all_future).neg.neg.imp (phi.neg.all_future)).all_future.imp
                     ((phi.neg.all_future).neg.neg.all_future.imp (phi.neg.all_future).all_future) :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_k_dist _ _)
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.sorry /- temp_k_dist removed in BX -/ _ _)
     exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_k h_nec
 
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_G_dne) h_inner
@@ -517,7 +517,7 @@ theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   have h_ax : [] ⊢ (Formula.untl φ ψ).imp
       (Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))) :=
     Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.until_unfold φ ψ)
+      (Bimodal.ProofSystem.sorry /- until_unfold removed in BX -/ φ ψ)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_U
 
 /-- Under strict semantics with Y-based since_unfold, the unfold gives:
@@ -529,7 +529,7 @@ theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   have h_ax : [] ⊢ (Formula.snce φ ψ).imp
       (Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))) :=
     Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.Axiom.since_unfold φ ψ)
+      (Bimodal.ProofSystem.sorry /- since_unfold removed in BX -/ φ ψ)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
 
 /--

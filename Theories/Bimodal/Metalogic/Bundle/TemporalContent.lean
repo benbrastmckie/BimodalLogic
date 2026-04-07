@@ -271,7 +271,7 @@ noncomputable def x_lift_derivation {M : Set Formula}
     -- X-K axiom: X(a → φ) → (X(a) → X(φ)) is a theorem, hence in M
     have h_xk : (Formula.untl Formula.bot (a.imp φ)).imp
         ((Formula.untl Formula.bot a).imp (Formula.untl Formula.bot φ)) ∈ M :=
-      theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.x_k_dist a φ))
+      theorem_in_mcs h_mcs (sorry /- x_k_dist removed in BX -/)
     -- X(a) → X(φ) ∈ M by modus ponens
     have h_Xa_imp_Xφ : (Formula.untl Formula.bot a).imp (Formula.untl Formula.bot φ) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs h_xk h_X_imp
@@ -303,7 +303,7 @@ noncomputable def y_lift_derivation {M : Set Formula}
       ih (a.imp φ) d_imp h_L'_sub
     have h_yk : (Formula.snce Formula.bot (a.imp φ)).imp
         ((Formula.snce Formula.bot a).imp (Formula.snce Formula.bot φ)) ∈ M :=
-      theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.y_k_dist a φ))
+      theorem_in_mcs h_mcs (sorry /- y_k_dist removed in BX -/)
     have h_Ya_imp_Yφ : (Formula.snce Formula.bot a).imp (Formula.snce Formula.bot φ) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs h_yk h_Y_imp
     have h_Ya : Formula.snce Formula.bot a ∈ M :=
@@ -348,7 +348,7 @@ private noncomputable def x_content_maximal {M : Set Formula}
     | inr h => exact h
   have h_xdet : (Formula.untl Formula.bot φ).neg.imp
       (Formula.untl Formula.bot φ.neg) ∈ M :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.x_det φ))
+    theorem_in_mcs h_mcs (sorry /- x_det removed in BX -/)
   have h_X_neg : Formula.untl Formula.bot φ.neg ∈ M :=
     SetMaximalConsistent.implication_property h_mcs h_xdet h_neg_Xφ
   have h_neg_in_xc : φ.neg ∈ x_content M := h_X_neg
@@ -412,7 +412,7 @@ private noncomputable def y_content_maximal {M : Set Formula}
     | inr h => exact h
   have h_ydet : (Formula.snce Formula.bot φ).neg.imp
       (Formula.snce Formula.bot φ.neg) ∈ M :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.y_det φ))
+    theorem_in_mcs h_mcs (sorry /- y_det removed in BX -/)
   have h_Y_neg : Formula.snce Formula.bot φ.neg ∈ M :=
     SetMaximalConsistent.implication_property h_mcs h_ydet h_neg_Yφ
   have h_neg_in_yc : φ.neg ∈ y_content M := h_Y_neg

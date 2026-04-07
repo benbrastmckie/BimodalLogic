@@ -196,17 +196,17 @@ def substAxiom {φ : ExtFormula} (h : ExtAxiom φ) : ExtAxiom (substFormula φ) 
   | ex_falso a => exact ExtAxiom.ex_falso (substFormula a)
   | peirce a b => exact ExtAxiom.peirce (substFormula a) (substFormula b)
   | modal_k_dist a b => exact ExtAxiom.modal_k_dist (substFormula a) (substFormula b)
-  | temp_k_dist a b => exact ExtAxiom.temp_k_dist (substFormula a) (substFormula b)
-  | temp_4 a => exact ExtAxiom.temp_4 (substFormula a)
-  | temp_a a => exact ExtAxiom.temp_a (substFormula a)
-  | temp_l a => exact ExtAxiom.temp_l (substFormula a)
+  | temp_k_dist a b => exact Extsorry /- temp_k_dist removed in BX -/ (substFormula a) (substFormula b)
+  | temp_4 a => exact Extsorry /- temp_4 removed in BX -/ (substFormula a)
+  | temp_a a => exact Extsorry /- temp_a removed in BX -/ (substFormula a)
+  | temp_l a => exact Extsorry /- temp_l removed in BX -/ (substFormula a)
   | modal_future a => exact ExtAxiom.modal_future (substFormula a)
   | temp_future a => exact ExtAxiom.temp_future (substFormula a)
-  | temp_linearity a b => exact ExtAxiom.temp_linearity (substFormula a) (substFormula b)
-  | density a => exact ExtAxiom.density (substFormula a)
-  | discreteness_forward a => exact ExtAxiom.discreteness_forward (substFormula a)
-  | seriality_future => exact ExtAxiom.seriality_future
-  | seriality_past => exact ExtAxiom.seriality_past
+  | temp_linearity a b => exact Extsorry /- temp_linearity removed in BX -/ (substFormula a) (substFormula b)
+  | density a => exact Extsorry /- density removed in BX -/ (substFormula a)
+  | discreteness_forward a => exact Extsorry /- discreteness_forward removed in BX -/ (substFormula a)
+  | seriality_future => exact Extsorry /- seriality_future removed in BX -/
+  | seriality_past => exact Extsorry /- seriality_past removed in BX -/
 
 /-!
 ## List Substitution

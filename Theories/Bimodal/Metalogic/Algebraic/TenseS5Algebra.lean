@@ -192,7 +192,7 @@ theorem TA_quot (a : LindenbaumAlg) : a ≤ G_quot (neg_quot (H_quot (neg_quot a
   -- some_past φ = φ.neg.all_past.neg
   have h : Formula.some_past φ = Formula.neg (Formula.all_past (Formula.neg φ)) := rfl
   rw [← h]
-  exact ⟨DerivationTree.axiom [] _ (Axiom.temp_a φ)⟩
+  exact ⟨sorry /- temp_a removed in BX -/⟩
 
 /--
 TL axiom on quotient: Ha ⊓ a ⊓ Ga ≤ GHa
@@ -275,7 +275,7 @@ theorem TL_quot (a : LindenbaumAlg) : and_quot (and_quot (H_quot a) a) (G_quot a
     DerivationTree.modus_ponens [LHS] _ _ h_step2 h_phiG
 
   -- Apply temp_l: always φ → G(Hφ)
-  have temp_l : ⊢ Always.imp (φ.all_past.all_future) := DerivationTree.axiom [] _ (Axiom.temp_l φ)
+  have temp_l : ⊢ Always.imp (φ.all_past.all_future) := sorry /- temp_l removed in BX -/
   have temp_l_ctx : [LHS] ⊢ Always.imp (φ.all_past.all_future) :=
     DerivationTree.weakening [] [LHS] _ temp_l (List.nil_subset _)
   have h_result : [LHS] ⊢ φ.all_past.all_future :=
@@ -317,7 +317,7 @@ theorem linearity_quot (a b : LindenbaumAlg) :
       (Formula.or (Formula.some_future (φ.and (Formula.some_future ψ)))
         (Formula.some_future ((Formula.some_future φ).and ψ))))
   unfold Derives
-  exact ⟨DerivationTree.axiom [] _ (Axiom.temp_linearity φ ψ)⟩
+  exact ⟨sorry /- temp_l removed in BX -/⟩
 
 /--
 The Lindenbaum algebra is a Shift-Closed Tense S5 Algebra.

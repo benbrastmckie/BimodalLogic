@@ -512,132 +512,30 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [Formula.swap_temporal, truth_at]
     intro h_box_imp h_box_psi σ h_σ_mem
     exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
-  | temp_k_dist ψ χ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro h_past_imp h_past_psi s hst
-    exact h_past_imp s hst (h_past_psi s hst)
-  | temp_4 ψ => exact swap_axiom_t4_valid ψ
   | temp_t_future ψ =>
-    -- swap(Gψ → ψ) = H(swap ψ) → swap ψ (valid under reflexive semantics via s = t)
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro h_H
     exact h_H t (le_refl t)
   | temp_t_past ψ =>
-    -- swap(Hψ → ψ) = G(swap ψ) → swap ψ (valid under reflexive semantics via s = t)
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro h_G
     exact h_G t (le_refl t)
-  | temp_a ψ => exact swap_axiom_ta_valid ψ
-  | temp_l ψ => exact swap_axiom_tl_valid ψ
+  | left_mono_until _ _ _ => sorry
+  | left_mono_since _ _ _ => sorry
+  | right_mono_until _ _ _ => sorry
+  | right_mono_since _ _ _ => sorry
+  | connect_until_since _ _ _ => sorry
+  | connect_since_until _ _ _ => sorry
+  | self_accum_until _ _ => sorry
+  | self_accum_since _ _ => sorry
+  | absorb_until _ _ => sorry
+  | absorb_since _ _ => sorry
+  | linear_until _ _ _ _ => sorry
+  | linear_since _ _ _ _ => sorry
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
-  | temp_linearity ψ χ =>
-    -- The swap of the future-linearity axiom is the past-linearity axiom
-    -- P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)
-    -- With reflexive ≤, use trichotomy on witnesses
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_future,
-               Formula.neg, truth_at]
-    intro h_conj
-    -- Extract P(phi) and P(psi) witnesses using classical logic (reflexive semantics, ≤)
-    have h_P_phi : (∀ s, s ≤ t → truth_at M Omega τ s ψ.swap_temporal → False) → False :=
-      Classical.byContradiction (fun h_not =>
-        h_conj (fun h1 _ => h_not (fun h_all => h1 (fun s hs h_phi => h_all s hs h_phi))))
-    have h_P_psi : (∀ s, s ≤ t → truth_at M Omega τ s χ.swap_temporal → False) → False :=
-      Classical.byContradiction (fun h_not =>
-        h_conj (fun _ h2 => h_not (fun h_all => h2 (fun s hs h_psi => h_all s hs h_psi))))
-    -- Extract existential witnesses
-    have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ.swap_temporal := by
-      by_contra h_no; push_neg at h_no
-      exact h_P_phi (fun s hs h_phi => h_no s hs h_phi)
-    have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s χ.swap_temporal := by
-      by_contra h_no; push_neg at h_no
-      exact h_P_psi (fun s hs h_psi => h_no s hs h_psi)
-    rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
-    · -- s1 < s2: P(P(ψ.swap) ∧ χ.swap) witness at s2
-      intro _h_not_simul
-      intro _h_not_middle
-      intro h_not_last
-      apply h_not_last s2 hs2t
-      intro h_imp
-      apply h_imp
-      · intro h_no_past_phi
-        exact h_no_past_phi s1 (le_of_lt h_lt) h_phi_s1
-      · exact h_psi_s2
-    · -- s1 = s2: P(ψ.swap ∧ χ.swap) witness at s1
-      subst h_eq
-      intro h_not_first
-      exfalso
-      apply h_not_first
-      intro h_all_neg_first
-      exact h_all_neg_first s1 hs1t (fun h_imp => h_imp h_phi_s1 h_psi_s2)
-    · -- s2 < s1: P(ψ.swap ∧ P(χ.swap)) witness at s1
-      intro _h_not_simul
-      intro h_not_middle
-      exfalso
-      apply h_not_middle
-      intro h_all_neg_second
-      exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_P_psi =>
-        h_neg_P_psi s2 (le_of_lt h_gt) h_psi_s2))
-  | density ψ =>
-    -- swap(GGφ → Gφ) = HHφ → Hφ (valid under reflexive semantics)
-    -- Proof: If HHφ at t (∀r ≤ t, ∀s ≤ r, φ(s)), then Hφ at t (∀s ≤ t, φ(s)).
-    -- Take r = t: h_HH t (le_refl t) gives ∀s ≤ t, φ(s).
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro h_HH s hst
-    exact h_HH t (le_refl t) s hst
-  | discreteness_forward _ =>
-    -- discreteness_forward is not dense-compatible, eliminated by h_dc
-    exact absurd h_dc id
-  | seriality_future ψ =>
-    -- swap(Gψ → Fψ) = Hψ → Pψ (valid under reflexive semantics, trivially)
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro h_H h_all_neg
-    -- h_H : ∀ s ≤ t, ψ.swap(s)
-    -- h_all_neg : ∀ s ≤ t, ¬ψ.swap(s)
-    -- Take s = t with le_refl.
-    exact h_all_neg t (le_refl t) (h_H t (le_refl t))
-  | seriality_past ψ =>
-    -- swap(Hψ → Pψ) = Gψ → Fψ (valid under reflexive semantics, trivially)
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro h_G h_all_neg
-    -- h_G : ∀ s ≥ t, ψ.swap(s)
-    -- h_all_neg : ∀ s ≥ t, ¬ψ.swap(s)
-    -- Take s = t with le_refl.
-    exact h_all_neg t (le_refl t) (h_G t (le_refl t))
-  | temp_a_dual ψ =>
-    -- swap(φ → H(Fφ)) = swap(φ) → G(P(swap(φ))), same as temp_a for swap(φ)
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.some_future, Formula.neg, truth_at]
-    intro h_phi s hts h_all_neg
-    exact h_all_neg t hts h_phi
-  | disc_next => exact absurd h_dc id
-  | disc_prev => exact absurd h_dc id
-  | until_unfold _ _ => exact absurd h_dc id
-  | until_intro _ _ => exact absurd h_dc id
-  | until_induction _ _ _ => exact absurd h_dc id
-  | until_linearity _ _ _ _ => exact absurd h_dc id
-  | since_unfold _ _ => exact absurd h_dc id
-  | since_intro _ _ => exact absurd h_dc id
-  | since_induction _ _ _ => exact absurd h_dc id
-  | since_linearity _ _ _ _ => exact absurd h_dc id
-  | until_connectedness _ _ _ => exact absurd h_dc id
-  | since_connectedness _ _ _ => exact absurd h_dc id
-  | F_until_equiv _ => exact absurd h_dc id
-  | P_since_equiv _ => exact absurd h_dc id
-  | next_implies_some_future _ => exact absurd h_dc id
-  | x_k_dist _ _ => exact absurd h_dc id
-  | x_det _ => exact absurd h_dc id
-  | y_k_dist _ _ => exact absurd h_dc id
-  | y_det _ => exact absurd h_dc id
-  | yx_identity _ => exact absurd h_dc id
-  | xy_identity _ => exact absurd h_dc id
 
 /-! ## Axiom Validity (Local)
 
@@ -873,68 +771,28 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | ex_falso ψ => exact axiom_ex_falso_valid ψ
   | peirce φ ψ => exact axiom_peirce_valid φ ψ
   | modal_k_dist φ ψ => exact axiom_modal_k_dist_valid φ ψ
-  | temp_k_dist φ ψ => exact axiom_temp_k_dist_valid φ ψ
-  | temp_4 ψ => exact axiom_temp_4_valid ψ
   | temp_t_future ψ =>
-    -- Gψ → ψ (valid under reflexive semantics via s = t)
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
-    intro h_G
-    exact h_G t (le_refl t)
+    intro h_G; exact h_G t (le_refl t)
   | temp_t_past ψ =>
-    -- Hψ → ψ (valid under reflexive semantics via s = t)
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
-    intro h_H
-    exact h_H t (le_refl t)
-  | temp_a ψ => exact axiom_temp_a_valid ψ
-  | temp_l ψ => exact axiom_temp_l_valid ψ
+    intro h_H; exact h_H t (le_refl t)
+  | left_mono_until _ _ _ => sorry
+  | left_mono_since _ _ _ => sorry
+  | right_mono_until _ _ _ => sorry
+  | right_mono_since _ _ _ => sorry
+  | connect_until_since _ _ _ => sorry
+  | connect_since_until _ _ _ => sorry
+  | self_accum_until _ _ => sorry
+  | self_accum_since _ _ => sorry
+  | absorb_until _ _ => sorry
+  | absorb_since _ _ => sorry
+  | linear_until _ _ _ _ => sorry
+  | linear_since _ _ _ _ => sorry
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
-  | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
-  | temp_a_dual ψ =>
-    -- temp_a_dual: φ → H(Fφ) (valid under reflexive semantics)
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at]
-    intro h_phi s hst
-    simp only [Formula.some_future, Formula.neg, truth_at]
-    intro h_all_neg
-    exact h_all_neg t hst h_phi
-  | density ψ => exact axiom_density_valid ψ
-  | discreteness_forward _ => exact absurd h_dc id
-  | seriality_future ψ =>
-    -- Under reflexive semantics, Gψ → Fψ trivially via s = t
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_future, Formula.neg, truth_at]
-    intro h_G h_all_neg
-    exact h_all_neg t (le_refl t) (h_G t (le_refl t))
-  | seriality_past ψ =>
-    -- Under reflexive semantics, Hψ → Pψ trivially via s = t
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.some_past, Formula.neg, truth_at]
-    intro h_H h_all_neg
-    exact h_all_neg t (le_refl t) (h_H t (le_refl t))
-  | disc_next => exact absurd h_dc id
-  | disc_prev => exact absurd h_dc id
-  | until_unfold _ _ => exact absurd h_dc id
-  | until_intro _ _ => exact absurd h_dc id
-  | until_induction _ _ _ => exact absurd h_dc id
-  | until_linearity _ _ _ _ => exact absurd h_dc id
-  | since_unfold _ _ => exact absurd h_dc id
-  | since_intro _ _ => exact absurd h_dc id
-  | since_induction _ _ _ => exact absurd h_dc id
-  | since_linearity _ _ _ _ => exact absurd h_dc id
-  | until_connectedness _ _ _ => exact absurd h_dc id
-  | since_connectedness _ _ _ => exact absurd h_dc id
-  | F_until_equiv _ => exact absurd h_dc id
-  | P_since_equiv _ => exact absurd h_dc id
-  | next_implies_some_future _ => exact absurd h_dc id
-  | x_k_dist _ _ => exact absurd h_dc id
-  | x_det _ => exact absurd h_dc id
-  | y_k_dist _ _ => exact absurd h_dc id
-  | y_det _ => exact absurd h_dc id
-  | yx_identity _ => exact absurd h_dc id
-  | xy_identity _ => exact absurd h_dc id
 
 /-! ## Rule Preservation for Local Validity
 

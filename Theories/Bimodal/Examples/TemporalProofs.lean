@@ -78,23 +78,23 @@ This expresses that the temporal relation is transitive.
 
 /-- Temporal 4 on atomic formula -/
 example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "p"))
+  sorry /- temp_4 removed in BX -/)
 
 /-- Temporal 4 on implication -/
 example (p q : Formula) : ⊢ (p.imp q).all_future.imp (p.imp q).all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 (p.imp q))
+  sorry /- temp_4 removed in BX -/)
 
 /-- Temporal 4 with nested future: `FFFφ` follows from `FFφ` -/
 example (φ : Formula) : ⊢ φ.all_future.all_future.imp φ.all_future.all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 φ.all_future)
+  sorry /- temp_4 removed in BX -/
 
 /-- Temporal 4 demonstrates temporal transitivity -/
 example : ⊢ (Formula.atom_s "always_true").all_future.imp (Formula.atom_s "always_true").all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "always_true"))
+  sorry /- temp_4 removed in BX -/)
 
 /-- Temporal 4: G(Gφ) follows from Gφ -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+  sorry /- temp_4 removed in BX -/
 
 /-!
 ## Axiom TA: Temporal Connectedness (`φ → F(some_past φ)`)
@@ -105,19 +105,19 @@ This connects the present with the accessible past of all futures.
 
 /-- Temporal A on atomic formula -/
 example : ⊢ (Formula.atom_s "p").imp (Formula.atom_s "p").some_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom_s "p"))
+  sorry /- temp_a removed in BX -/)
 
 /-- Temporal A on negation -/
 example (φ : Formula) : ⊢ φ.neg.imp φ.neg.some_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_a φ.neg)
+  sorry /- temp_a removed in BX -/
 
 /-- Temporal A on complex formula -/
 example (p q : Formula) : ⊢ (p.and q).imp (p.and q).some_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_a (p.and q))
+  sorry /- temp_a removed in BX -/)
 
 /-- Temporal A demonstrates present is in past of all futures -/
 example : ⊢ (Formula.atom_s "now").imp (Formula.atom_s "now").some_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom_s "now"))
+  sorry /- temp_a removed in BX -/)
 
 /-!
 ## Axiom TL: Temporal Perpetuity (`△φ → G(Hφ)`)
@@ -131,19 +131,19 @@ Note: TL uses `always` (△ = H ∧ present ∧ G), not just `all_future` (G).
 
 /-- Temporal L on atomic formula: △p → G(Hp) -/
 example : ⊢ (Formula.atom_s "p").always.imp (Formula.atom_s "p").all_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_l (Formula.atom_s "p"))
+  sorry /- temp_l removed in BX -/)
 
 /-- Temporal L: always φ → G(Hφ) -/
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_l φ)
+  sorry /- temp_l removed in BX -/
 
 /-- Temporal L on complex formula: △(p ∨ q) → G(H(p ∨ q)) -/
 example (p q : Formula) : ⊢ (p.or q).always.imp (p.or q).all_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_l (p.or q))
+  sorry /- temp_l removed in BX -/)
 
 /-- Temporal L demonstrates perpetuity preservation -/
 example : ⊢ (Formula.atom_s "eternal").always.imp (Formula.atom_s "eternal").all_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_l (Formula.atom_s "eternal"))
+  sorry /- temp_l removed in BX -/)
 
 /-!
 ## Temporal Duality Rule
@@ -154,7 +154,7 @@ If `⊢ φ` (φ is a theorem), then `⊢ swap_temporal φ` is also a theorem.
 
 /-- Temporal duality example: T4 for future implies T4-like for past (via duality) -/
 example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future := by
-  exact DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "p"))
+  exact sorry /- temp_4 removed in BX -/)
 
 /-- Using temporal duality on a theorem -/
 example (φ : Formula) (h : ⊢ φ) : ⊢ φ.swap_temporal :=
@@ -221,7 +221,7 @@ example (φ : Formula) : φ.some_past = φ.neg.all_past.neg := rfl
 /-- Past and future interact via temporal axioms: △φ → G(Hφ) -/
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
   -- This is the TL axiom: always φ → G(Hφ)
-  DerivationTree.axiom [] _ (Axiom.temp_l φ)
+  sorry /- temp_l removed in BX -/
 
 /-!
 ## Multi-Step Temporal Reasoning
@@ -232,15 +232,15 @@ Combining temporal axioms for complex derivations.
 /-- Chaining temporal operators: `FFFφ` via T4 -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future.all_future := by
   -- Gφ → GGφ by T4
-  have h1 := DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+  have h1 := sorry /- temp_4 removed in BX -/
   -- GGφ → GGGφ by T4 applied to Gφ
-  have h2 := DerivationTree.axiom [] _ (Axiom.temp_4 φ.all_future)
+  have h2 := sorry /- temp_4 removed in BX -/
   -- Compose using transitivity: Gφ → GGφ → GGGφ
   exact imp_trans h1 h2
 
 /-- Temporal iteration: applying T4 repeatedly -/
 example : ⊢ (Formula.atom_s "perpetual").all_future.imp (Formula.atom_s "perpetual").all_future.all_future := by
-  exact DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "perpetual"))
+  exact sorry /- temp_4 removed in BX -/)
 
 /-!
 ## Temporal Properties
@@ -250,15 +250,15 @@ Examples demonstrating key temporal properties.
 
 /-- Idempotence pattern: `FFφ` is related to `Fφ` via T4 -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+  sorry /- temp_4 removed in BX -/
 
 /-- Present to future-past: TA axiom pattern -/
 example (φ : Formula) : ⊢ φ.imp φ.some_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_a φ)
+  sorry /- temp_a removed in BX -/
 
 /-- Perpetuity preservation: TL axiom pattern △φ → G(Hφ) -/
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_l φ)
+  sorry /- temp_l removed in BX -/
 
 /-!
 ## Modal-Temporal Interaction Axioms
@@ -290,19 +290,19 @@ Clear examples for learning temporal logic concepts.
 
 /-- Example: What will always be true remains always true -/
 example : ⊢ (Formula.atom_s "sun_rises").all_future.imp (Formula.atom_s "sun_rises").all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "sun_rises"))
+  sorry /- temp_4 removed in BX -/)
 
 /-- Example: Present events are in the past of all futures -/
 example : ⊢ (Formula.atom_s "today").imp (Formula.atom_s "today").some_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom_s "today"))
+  sorry /- temp_a removed in BX -/)
 
 /-- Example: Eternal truths (TL axiom): △"2+2=4" → G(H"2+2=4") -/
 example : ⊢ (Formula.atom_s "2+2=4").always.imp (Formula.atom_s "2+2=4").all_past.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_l (Formula.atom_s "2+2=4"))
+  sorry /- temp_l removed in BX -/)
 
 /-- Example: Future transitivity (T4 axiom): G"inevitable" → GG"inevitable" -/
 example : ⊢ (Formula.atom_s "inevitable").all_future.imp (Formula.atom_s "inevitable").all_future.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "inevitable"))
+  sorry /- temp_4 removed in BX -/)
 
 /-- Example: Sometimes notation (eventuality) -/
 example (φ : Formula) : φ.sometimes = (▽φ) := rfl

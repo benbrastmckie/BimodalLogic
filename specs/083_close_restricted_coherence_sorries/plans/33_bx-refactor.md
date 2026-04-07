@@ -67,7 +67,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Semantic Foundation -- Reflexive Until/Since [NOT STARTED]
+### Phase 1: Semantic Foundation -- Reflexive Until/Since [COMPLETED]
 
 **Goal**: Switch Until/Since witness from strict to reflexive and re-prove all affected Truth.lean lemmas. This is the foundational 2-line change that everything else builds on.
 
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Axiom System Replacement + Soundness [NOT STARTED]
+### Phase 2: Axiom System Replacement + Soundness [PARTIAL]
 
 **Goal**: Replace the Axiom inductive with BX constructors and prove sorry-free soundness for all axioms. This is the validation gate -- if BX soundness proofs succeed, the refactor is viable.
 

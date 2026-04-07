@@ -115,17 +115,17 @@ def embedAxiom {φ : Formula} : Axiom φ → ExtAxiom (embedFormula φ)
   | Axiom.ex_falso a => ExtAxiom.ex_falso (embedFormula a)
   | Axiom.peirce a b => ExtAxiom.peirce (embedFormula a) (embedFormula b)
   | Axiom.modal_k_dist a b => ExtAxiom.modal_k_dist (embedFormula a) (embedFormula b)
-  | Axiom.temp_k_dist a b => ExtAxiom.temp_k_dist (embedFormula a) (embedFormula b)
-  | Axiom.temp_4 a => ExtAxiom.temp_4 (embedFormula a)
-  | Axiom.temp_a a => ExtAxiom.temp_a (embedFormula a)
-  | Axiom.temp_l a => ExtAxiom.temp_l (embedFormula a)
+  | sorry /- temp_k_dist removed in BX -/ a b => Extsorry /- temp_k_dist removed in BX -/ (embedFormula a) (embedFormula b)
+  | sorry /- temp_4 removed in BX -/ a => Extsorry /- temp_4 removed in BX -/ (embedFormula a)
+  | sorry /- temp_a removed in BX -/ a => Extsorry /- temp_a removed in BX -/ (embedFormula a)
+  | sorry /- temp_l removed in BX -/ a => Extsorry /- temp_l removed in BX -/ (embedFormula a)
   | Axiom.modal_future a => ExtAxiom.modal_future (embedFormula a)
   | Axiom.temp_future a => ExtAxiom.temp_future (embedFormula a)
-  | Axiom.temp_linearity a b => ExtAxiom.temp_linearity (embedFormula a) (embedFormula b)
-  | Axiom.density a => ExtAxiom.density (embedFormula a)
-  | Axiom.discreteness_forward a => ExtAxiom.discreteness_forward (embedFormula a)
-  | Axiom.seriality_future => ExtAxiom.seriality_future
-  | Axiom.seriality_past => ExtAxiom.seriality_past
+  | sorry /- temp_linearity removed in BX -/ a b => Extsorry /- temp_linearity removed in BX -/ (embedFormula a) (embedFormula b)
+  | sorry /- density removed in BX -/ a => Extsorry /- density removed in BX -/ (embedFormula a)
+  | sorry /- discreteness_forward removed in BX -/ a => Extsorry /- discreteness_forward removed in BX -/ (embedFormula a)
+  | sorry /- seriality_future removed in BX -/ => Extsorry /- seriality_future removed in BX -/
+  | sorry /- seriality_past removed in BX -/ => Extsorry /- seriality_past removed in BX -/
 
 /-!
 ## Embedding Derivations

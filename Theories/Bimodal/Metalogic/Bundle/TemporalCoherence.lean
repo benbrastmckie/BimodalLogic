@@ -65,7 +65,7 @@ noncomputable def G_dne_theorem (phi : Formula) :
     DerivationTree.temporal_necessitation _ h_dne
   have h_K : [] ⊢ (Formula.all_future ((Formula.neg (Formula.neg phi)).imp phi)).imp
                ((Formula.all_future (Formula.neg (Formula.neg phi))).imp (Formula.all_future phi)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist _ _)
+    sorry /- temp_k_dist derivable from BX -/
   exact DerivationTree.modus_ponens [] _ _ h_K h_G_dne
 
 /--
@@ -455,10 +455,10 @@ needing x_content chain structure. For generic D, we assume this directly.
 Until/Since coherence for a BFMCS: all families satisfy the semantic content
 of Until and Since at the MCS level.
 
-- `forward_until`: (φ U ψ) ∈ fam.mcs t → ∃ s > t, ψ ∈ fam.mcs s ∧ ∀ r ∈ (t,s), φ ∈ fam.mcs r
-- `backward_until`: ψ ∈ fam.mcs s for some s > t, φ ∈ fam.mcs r for all r ∈ (t,s) → (φ U ψ) ∈ fam.mcs t
-- `forward_since`: (φ S ψ) ∈ fam.mcs t → ∃ s < t, ψ ∈ fam.mcs s ∧ ∀ r ∈ (s,t), φ ∈ fam.mcs r
-- `backward_since`: ψ ∈ fam.mcs s for some s < t, φ ∈ fam.mcs r for all r ∈ (s,t) → (φ S ψ) ∈ fam.mcs t
+- `forward_until`: (φ U ψ) ∈ fam.mcs t → ∃ s ≥ t, ψ ∈ fam.mcs s ∧ ∀ r ∈ [t,s), φ ∈ fam.mcs r
+- `backward_until`: ψ ∈ fam.mcs s for some s ≥ t, φ ∈ fam.mcs r for all r ∈ [t,s) → (φ U ψ) ∈ fam.mcs t
+- `forward_since`: (φ S ψ) ∈ fam.mcs t → ∃ s ≤ t, ψ ∈ fam.mcs s ∧ ∀ r ∈ (s,t], φ ∈ fam.mcs r
+- `backward_since`: ψ ∈ fam.mcs s for some s ≤ t, φ ∈ fam.mcs r for all r ∈ (s,t] → (φ S ψ) ∈ fam.mcs t
 
 For D = Int with deterministic chains, these follow from `until_persists_chain`,
 `since_persists_chain`, `until_unfold_in_mcs`, and `since_unfold_in_mcs`.
@@ -467,15 +467,15 @@ def BFMCS.until_since_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.untl φ ψ ∈ fam.mcs t →
-      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) ∧
+      ∃ s : D, t ≤ s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) →
+      (∃ s : D, t ≤ s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) →
       Formula.untl φ ψ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.snce φ ψ ∈ fam.mcs t →
-      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) ∧
+      ∃ s : D, s ≤ t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) →
+      (∃ s : D, s ≤ t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) →
       Formula.snce φ ψ ∈ fam.mcs t)
 
 end Bimodal.Metalogic.Bundle

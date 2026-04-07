@@ -80,7 +80,7 @@ theorem G_monotone (a b : LindenbaumAlg) (h : a ≤ b) : G_quot a ≤ G_quot b :
   have d_temp : DerivationTree [] (Formula.all_future (φ.imp ψ)) :=
     DerivationTree.temporal_necessitation (φ.imp ψ) d
   have d_k : DerivationTree [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist φ ψ)
+    sorry /- temp_k_dist derivable from BX -/
   exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
 
 /-!

@@ -83,7 +83,7 @@ noncomputable def past_k_dist (A B : Formula) :
   -- Apply temp_k_dist to swapped formulas
   have fk : ⊢ (A.swap_temporal.imp B.swap_temporal).all_future.imp
                (A.swap_temporal.all_future.imp B.swap_temporal.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist A.swap_temporal B.swap_temporal)
+    sorry -- temp_k_dist derivable from BX (Phase 3) -- sorry /- temp_k_dist removed in BX -/
   -- Apply temporal duality
   have td : ⊢ ((A.swap_temporal.imp B.swap_temporal).all_future.imp
                 (A.swap_temporal.all_future.imp B.swap_temporal.all_future)).swap_temporal :=
@@ -156,7 +156,7 @@ noncomputable def generalized_temporal_k : (Γ : Context) → (φ : Formula) →
     let k_dist :
       ⊢ (Formula.all_future (A.imp φ)).imp
         ((Formula.all_future A).imp (Formula.all_future φ)) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist A φ)
+      sorry -- temp_k_dist derivable from BX (Phase 3) -- sorry /- temp_k_dist removed in BX -/
     let k_dist_weak :
       (Context.map Formula.all_future Γ') ⊢
       (Formula.all_future (A.imp φ)).imp

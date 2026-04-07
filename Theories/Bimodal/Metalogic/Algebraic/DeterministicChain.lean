@@ -407,7 +407,7 @@ theorem G_persists_forward_one_step (M₀ : Set Formula) (h_mcs : SetMaximalCons
   have h_mcs_n := deterministic_chain_mcs M₀ h_mcs ↑n
   -- temp_4: G(φ) → G(G(φ))
   have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+    sorry /- temp_4 removed in BX -/
   have h_GG : φ.all_future.all_future ∈ deterministic_chain M₀ ↑n :=
     SetMaximalConsistent.implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_t4) h_G
   -- G(G(φ)) → X(G(φ)) via g_content_propagates_to_x_content
@@ -523,7 +523,7 @@ private theorem G_persists_backward_toward_zero (M₀ : Set Formula) (h_mcs : Se
   | succ k ih =>
     have h_mcs_succ := deterministic_chain_mcs M₀ h_mcs (Int.negSucc (k + 1))
     have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
-      DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+      sorry /- temp_4 removed in BX -/
     have h_GG : φ.all_future.all_future ∈ deterministic_chain M₀ (Int.negSucc (k + 1)) :=
       SetMaximalConsistent.implication_property h_mcs_succ
         (theorem_in_mcs h_mcs_succ h_t4) h_G
@@ -552,7 +552,7 @@ private theorem G_persists_forward_in_backward (M₀ : Set Formula) (h_mcs : Set
     rw [h_eq] at h_G
     have h_mcs_succ := deterministic_chain_mcs M₀ h_mcs (Int.negSucc ((m + d) + 1))
     have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
-      DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+      sorry /- temp_4 removed in BX -/
     have h_GG : φ.all_future.all_future ∈ deterministic_chain M₀ (Int.negSucc ((m + d) + 1)) :=
       SetMaximalConsistent.implication_property h_mcs_succ
         (theorem_in_mcs h_mcs_succ h_t4) h_G
@@ -595,7 +595,7 @@ theorem forward_G_boundary (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
   have h_phi_in_M0 : φ ∈ M₀ :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_YG_to_phi) h_YG_in_M0
   have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+    sorry /- temp_4 removed in BX -/
   have h_mcs_neg1 := deterministic_chain_mcs M₀ h_mcs (Int.negSucc 0)
   have h_GG_neg1 : φ.all_future.all_future ∈ deterministic_chain M₀ (Int.negSucc 0) :=
     SetMaximalConsistent.implication_property h_mcs_neg1
@@ -800,7 +800,7 @@ private theorem G_persists_backward_toward_zero_OLD (M₀ : Set Formula) (h_mcs 
     have h_mcs_succ := deterministic_chain_mcs M₀ h_mcs (Int.negSucc (k + 1))
     -- G(φ) → G(G(φ)) by temp_4
     have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
-      DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+      sorry /- temp_4 removed in BX -/
     have h_GG : φ.all_future.all_future ∈ deterministic_chain M₀ (Int.negSucc (k + 1)) :=
       SetMaximalConsistent.implication_property h_mcs_succ
         (theorem_in_mcs h_mcs_succ h_t4) h_G
@@ -840,7 +840,7 @@ private theorem G_persists_forward_in_backward (M₀ : Set Formula) (h_mcs : Set
     -- Apply one-step persistence to get G(φ) ∈ chain(negSucc (m + d))
     have h_mcs_succ := deterministic_chain_mcs M₀ h_mcs (Int.negSucc ((m + d) + 1))
     have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
-      DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+      sorry /- temp_4 removed in BX -/
     have h_GG : φ.all_future.all_future ∈ deterministic_chain M₀ (Int.negSucc ((m + d) + 1)) :=
       SetMaximalConsistent.implication_property h_mcs_succ
         (theorem_in_mcs h_mcs_succ h_t4) h_G
@@ -894,7 +894,7 @@ theorem forward_G_boundary (M₀ : Set Formula) (h_mcs : SetMaximalConsistent M�
   -- G(φ) → G(G(φ)) by temp_4. So G(G(φ)) ∈ chain(-1).
   -- Y(G(G(φ))) ∈ M₀. Then G(φ) ∈ M₀.
   have h_t4 : DerivationTree [] (φ.all_future.imp φ.all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+    sorry /- temp_4 removed in BX -/
   have h_mcs_neg1 := deterministic_chain_mcs M₀ h_mcs (Int.negSucc 0)
   have h_GG_neg1 : φ.all_future.all_future ∈ deterministic_chain M₀ (Int.negSucc 0) :=
     SetMaximalConsistent.implication_property h_mcs_neg1

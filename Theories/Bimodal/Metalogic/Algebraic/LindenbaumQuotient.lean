@@ -174,12 +174,12 @@ theorem provEquiv_all_future_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
   · have d_temp : DerivationTree [] (Formula.all_future (φ.imp ψ)) :=
       DerivationTree.temporal_necessitation (φ.imp ψ) d_fwd
     have d_k : DerivationTree [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist φ ψ)
+      sorry -- temp_k_dist derivable from BX -- (sorry /- temp_k_dist removed in BX -/ φ ψ)
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
   · have d_temp : DerivationTree [] (Formula.all_future (ψ.imp φ)) :=
       DerivationTree.temporal_necessitation (ψ.imp φ) d_bwd
     have d_k : DerivationTree [] ((ψ.imp φ).all_future.imp (ψ.all_future.imp φ.all_future)) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ φ)
+      sorry -- temp_k_dist derivable from BX -- (sorry /- temp_k_dist removed in BX -/ ψ φ)
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
 
 /--
