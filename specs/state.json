@@ -850,9 +850,9 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-06T22:30:00Z",
+      "last_updated": "2026-04-07T17:42:14Z",
       "notes": "Phase 1 complete: 4 T-axiom sorries closed, 2 dead theorems removed. Critical path discovery: completeness_over_Int goes through DovetailedFMCS_forward_F (DovetailedChain.lean), NOT succ_chain_restricted_forward_F. Plan v28 updated to target correct sorry.",
-      "next_artifact_number": 28,
+      "next_artifact_number": 29,
       "session_id": "sess_1775525602_0f7cf6",
       "researched": "2026-04-06T21:53:52Z",
       "planned": "2026-04-03T20:16:55Z",
@@ -1096,6 +1096,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/summaries/28_completeness-closure-summary.md",
           "type": "summary",
           "summary": "Partial implementation: Phase 1 done (4 T-axiom sorries + 2 dead theorems), Phase 2 blocked on DovetailedFMCS_forward_F"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/28_forward-f-blocker-analysis.md",
+          "type": "research",
+          "summary": "Deep analysis of forward_F blocker: DovetailedChain Until persistence genuinely unprovable; DeterministicChain same circularity; finite deferral cycle contradiction recommended"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
