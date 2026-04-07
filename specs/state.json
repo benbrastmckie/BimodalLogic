@@ -850,11 +850,11 @@
       ],
       "priority": "critical",
       "created": "2026-04-02T18:14:34Z",
-      "last_updated": "2026-04-07T20:22:55Z",
+      "last_updated": "2026-04-07T20:58:57Z",
       "notes": "Phase 1 complete: 4 T-axiom sorries closed, 2 dead theorems removed. Critical path discovery: completeness_over_Int goes through DovetailedFMCS_forward_F (DovetailedChain.lean), NOT succ_chain_restricted_forward_F. Plan v28 updated to target correct sorry.",
-      "next_artifact_number": 31,
-      "session_id": "sess_1775592661_d0e23e",
-      "researched": "2026-04-07T20:22:55Z",
+      "next_artifact_number": 32,
+      "session_id": "sess_1775594330_f8d3fa",
+      "researched": "2026-04-07T20:58:57Z",
       "planned": "2026-04-03T20:16:55Z",
       "plan_metadata": {
         "phases": 3,
@@ -1111,6 +1111,11 @@
           "path": "specs/083_close_restricted_coherence_sorries/reports/30_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: quasimodel analysis, F-nesting depth disproof, tuple construction formalization, F_until_equiv unsoundness discovery"
+        },
+        {
+          "path": "specs/083_close_restricted_coherence_sorries/reports/31_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: F_until_equiv resolution, literature confirmation, U/S analysis, critical synthesis — Option E' (4-axiom replacement) recommended"
         }
       ],
       "started": "2026-04-02T22:21:47Z",
