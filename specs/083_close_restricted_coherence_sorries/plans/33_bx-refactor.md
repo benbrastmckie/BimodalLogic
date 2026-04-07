@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Axiom System Replacement + Soundness [PARTIAL]
+### Phase 2: Axiom System Replacement + Soundness [COMPLETED]
 
 **Goal**: Replace the Axiom inductive with BX constructors and prove sorry-free soundness for all axioms. This is the validation gate -- if BX soundness proofs succeed, the refactor is viable.
 

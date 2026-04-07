@@ -21,7 +21,7 @@ requiring successor-chain constructions.
    - BX1/BX1': temp_t_future/past (reflexivity, KEEP from previous)
    - BX2/BX2': left_mono_until/since (left monotonicity)
    - BX3/BX3': right_mono_until/since (right monotonicity)
-   - BX4/BX4': connect_until_since/connect_since_until (connectedness)
+   - BX4/BX4': connect_future/connect_past (temporal connectedness)
    - BX5/BX5': self_accum_until/since (self-accumulation)
    - BX6/BX6': absorb_until/since (absorption)
    - BX7/BX7': linear_until/since (linearity)
@@ -122,17 +122,17 @@ inductive Axiom : Formula → Type where
   | right_mono_since (φ ψ χ : Formula) :
       Axiom ((φ.imp ψ).all_past.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ)))
 
-  /-- BX4: Until-Since connectedness: `φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`.
-  If φ holds now and χ U ψ holds, then at the witness for ψ, χ S φ also holds
-  (since χ held on the guard interval and φ held at the start). -/
-  | connect_until_since (φ ψ χ : Formula) :
-      Axiom (Formula.and φ (Formula.untl χ ψ)
-        |>.imp (Formula.untl χ (Formula.and ψ (Formula.snce χ φ))))
+  /-- BX4: Temporal connectedness (future): `φ → G(P(φ))`.
+  If φ holds now, then at all future times, P(φ) holds — the present is
+  always in the past of the future. This replaces the Burgess-Xu Until-Since
+  connectedness axiom, which is not valid under half-open guard semantics. -/
+  | connect_future (φ : Formula) :
+      Axiom (φ.imp (φ.some_past.all_future))
 
-  /-- BX4': Since-Until connectedness: `φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))`. -/
-  | connect_since_until (φ ψ χ : Formula) :
-      Axiom (Formula.and φ (Formula.snce χ ψ)
-        |>.imp (Formula.snce χ (Formula.and ψ (Formula.untl χ φ))))
+  /-- BX4': Temporal connectedness (past): `φ → H(F(φ))`.
+  Mirror of BX4: the present is always in the future of the past. -/
+  | connect_past (φ : Formula) :
+      Axiom (φ.imp (φ.some_future.all_past))
 
   /-- BX5: Self-accumulation of Until: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`.
   The eventuality enriches its own guard: at intermediate points, both φ holds

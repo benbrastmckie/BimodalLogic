@@ -295,12 +295,12 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | right_mono_since a b c =>
     simp only [subst_imp, subst_all_past, subst_snce]
     exact Axiom.right_mono_since (a.subst q r) (b.subst q r) (c.subst q r)
-  | connect_until_since a b c =>
-    simp only [subst_imp, subst_and, subst_untl, subst_snce]
-    exact Axiom.connect_until_since (a.subst q r) (b.subst q r) (c.subst q r)
-  | connect_since_until a b c =>
-    simp only [subst_imp, subst_and, subst_snce, subst_untl]
-    exact Axiom.connect_since_until (a.subst q r) (b.subst q r) (c.subst q r)
+  | connect_future a =>
+    simp only [subst_imp, subst_all_future, subst_some_past]
+    exact Axiom.connect_future (a.subst q r)
+  | connect_past a =>
+    simp only [subst_imp, subst_all_past, subst_some_future]
+    exact Axiom.connect_past (a.subst q r)
   | self_accum_until a b =>
     simp only [subst_imp, subst_untl, subst_and]
     exact Axiom.self_accum_until (a.subst q r) (b.subst q r)

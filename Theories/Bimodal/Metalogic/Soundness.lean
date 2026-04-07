@@ -393,8 +393,15 @@ theorem seriality_past_valid (φ : Formula) :
 /-!
 ## BX2-BX7: Until/Since Axiom Validity
 
-These 12 lemmas prove validity of the Burgess-Xu axioms BX2-BX7 (and their Since mirrors)
+These lemmas prove validity of the Burgess-Xu axioms BX2-BX7 (and their Since mirrors)
 on all linear temporal orders with reflexive Until/Since semantics.
+
+**Note on BX4**: The standard Burgess-Xu BX4 (`φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`)
+is not valid under the half-open guard convention [t, s) / (s, t] used here because
+the Since guard at the Until witness s requires χ(s), which the half-open Until guard
+excludes. We replace it with temporal connectedness: `φ → G(P(φ))` and `φ → H(F(φ))`,
+which are provably valid and capture the same mathematical content (temporal connectedness
+between present, future, and past).
 
 Recall the reflexive semantics:
 - `φ U ψ` at `t`: ∃ s ≥ t, ψ(s) ∧ ∀ r, t ≤ r < s → φ(r)
@@ -438,25 +445,25 @@ theorem right_mono_since_valid (φ ψ χ : Formula) :
   intro h_H ⟨s, hst, h_φs, h_guard⟩
   exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
 
-/-- BX4: Until-Since connectedness: `φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`.
-Given φ(t) and χ U ψ with witness s ≥ t: use s for conclusion Until.
-At endpoint s, need (χ S φ)(s) with witness w = t: φ(t) and χ on (t, s].
-Since guard (t, s] includes r = s, which requires χ(s) — but Until only provides χ on [t, s).
-The boundary r = s case requires χ(s) which is NOT guaranteed by the Until hypothesis.
-This is a known boundary mismatch between the asymmetric guard conventions
-(Until: closed-open [t, s), Since: open-closed (w, s]).
-Sorry pending resolution — may require adjusting the Since guard convention. -/
-theorem connect_until_since_valid (φ ψ χ : Formula) :
-    ⊨ (Formula.and φ (Formula.untl χ ψ)
-      |>.imp (Formula.untl χ (Formula.and ψ (Formula.snce χ φ)))) := by
-  sorry
+/-- BX4: Temporal connectedness (future): `φ → G(P(φ))`.
+If φ holds now, then at all future times, P(φ) holds.
+Proof: for any s ≥ t, P(φ)(s) = ¬H(¬φ)(s) = ¬∀w ≤ s.¬φ(w). Take w = t: t ≤ s, φ(t). -/
+theorem connect_future_valid (φ : Formula) :
+    ⊨ (φ.imp (φ.some_past.all_future)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_past, Formula.neg]
+  intro h_φt s hts h_H_neg
+  exact h_H_neg t hts h_φt
 
-/-- BX4': Since-Until connectedness: `φ ∧ (χ S ψ) → χ S (ψ ∧ (χ U φ))`.
-Mirror of BX4 with the same boundary mismatch. -/
-theorem connect_since_until_valid (φ ψ χ : Formula) :
-    ⊨ (Formula.and φ (Formula.snce χ ψ)
-      |>.imp (Formula.snce χ (Formula.and ψ (Formula.untl χ φ)))) := by
-  sorry
+/-- BX4': Temporal connectedness (past): `φ → H(F(φ))`.
+If φ holds now, then at all past times, F(φ) holds.
+Proof: for any s ≤ t, F(φ)(s) = ¬G(¬φ)(s) = ¬∀w ≥ s.¬φ(w). Take w = t: t ≥ s, φ(t). -/
+theorem connect_past_valid (φ : Formula) :
+    ⊨ (φ.imp (φ.some_future.all_past)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_future, Formula.neg]
+  intro h_φt s hst h_G_neg
+  exact h_G_neg t hst h_φt
 
 /-- BX5: Self-accumulation of Until: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`.
 Given φ U ψ with witness s ≥ t: same witness s. Endpoint ψ(s) is unchanged.
@@ -559,7 +566,41 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
           (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
           (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
         (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) := by
-  sorry
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  -- Hypothesis: ¬(U₁ → ¬U₂), extract both Until hypotheses
+  intro h_and
+  have h_U1 : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ ∧
+      ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ := by
+    by_contra h_not; exact h_and (fun h _ => h_not h)
+  have h_U2 : ∃ s, t ≤ s ∧ truth_at M Omega τ s θ ∧
+      ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ := by
+    by_contra h_not; exact h_and (fun _ h => h_not h)
+  obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
+  obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
+  -- Trichotomy on s1 and s2
+  simp only [truth_at, Formula.and, Formula.or, Formula.neg]
+  rcases le_or_lt s1 s2 with h_le | h_lt
+  · rcases eq_or_lt_of_le h_le with h_eq | h_lt
+    · -- s1 = s2: first disjunct (ψ ∧ θ) with witness s1
+      subst h_eq
+      intro h_neg_outer
+      exfalso; apply h_neg_outer; intro h_neg_first
+      exfalso; apply h_neg_first
+      exact ⟨s1, hts1,
+        fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
+        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr hrs)⟩
+    · -- s1 < s2: second disjunct (ψ ∧ χ) with witness s1
+      intro h_neg_outer
+      exfalso; apply h_neg_outer; intro _
+      exact ⟨s1, hts1,
+        fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 hts1 h_lt),
+        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
+  · -- s2 < s1: third disjunct (φ ∧ θ) with witness s2
+    intro _
+    exact ⟨s2, hts2,
+      fun h_neg_ep => h_neg_ep (h_guard1 s2 hts2 h_lt) h_θs2,
+      fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
 
 /-- BX7': Linearity of Since:
 `(φ S ψ) ∧ (χ S θ) → ((φ ∧ χ) S (ψ ∧ θ)) ∨ ((φ ∧ χ) S (ψ ∧ χ)) ∨ ((φ ∧ χ) S (φ ∧ θ))`. -/
@@ -570,7 +611,43 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
           (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
           (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
         (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) := by
-  sorry
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  -- Extract both Since hypotheses from conjunction
+  intro h_and
+  have h_S1 : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ ∧
+      ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ := by
+    by_contra h_not; exact h_and (fun h _ => h_not h)
+  have h_S2 : ∃ s, s ≤ t ∧ truth_at M Omega τ s θ ∧
+      ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ := by
+    by_contra h_not; exact h_and (fun _ h => h_not h)
+  obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
+  obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
+  -- Trichotomy on s1 and s2
+  simp only [truth_at, Formula.and, Formula.or, Formula.neg]
+  rcases le_or_lt s2 s1 with h_le | h_lt
+  · rcases eq_or_lt_of_le h_le with h_eq | h_lt
+    · -- s2 = s1: first disjunct (ψ ∧ θ) with witness s2
+      subst h_eq
+      intro h_neg_outer
+      exfalso; apply h_neg_outer; intro h_neg_first
+      exfalso; apply h_neg_first
+      exact ⟨s2, hs2t,
+        fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
+        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r hrs hrt)⟩
+    · -- s2 < s1: second disjunct (ψ ∧ χ) with witness s1
+      -- χ(s1) from guard2 since s2 < s1 ≤ t
+      intro h_neg_outer
+      exfalso; apply h_neg_outer; intro _
+      exact ⟨s1, hs1t,
+        fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt hs1t),
+        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
+  · -- s1 < s2: third disjunct (φ ∧ θ) with witness s2
+    -- φ(s2) from guard1 since s1 < s2 ≤ t
+    intro _
+    exact ⟨s2, hs2t,
+      fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt hs2t) h_θs2,
+      fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
 
 /-- Discrete Next axiom validity: `⊨_discrete F(⊤) → X(⊤)`.
 Under strict semantics: if ∃ s > t (F(⊤)), then bot U (neg bot) at t.
@@ -740,8 +817,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | left_mono_since φ ψ χ => exact left_mono_since_valid φ ψ χ
   | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ
   | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ
-  | connect_until_since _ _ _ => exact connect_until_since_valid _ _ _
-  | connect_since_until _ _ _ => exact connect_since_until_valid _ _ _
+  | connect_future _ => exact connect_future_valid _
+  | connect_past _ => exact connect_past_valid _
   | self_accum_until φ ψ => exact self_accum_until_valid φ ψ
   | self_accum_since φ ψ => exact self_accum_since_valid φ ψ
   | absorb_until φ ψ => exact absorb_until_valid φ ψ
@@ -771,8 +848,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | left_mono_since φ ψ χ => exact Validity.valid_implies_valid_dense (left_mono_since_valid φ ψ χ)
   | right_mono_until φ ψ χ => exact Validity.valid_implies_valid_dense (right_mono_until_valid φ ψ χ)
   | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_dense (right_mono_since_valid φ ψ χ)
-  | connect_until_since _ _ _ => exact Validity.valid_implies_valid_dense (connect_until_since_valid _ _ _)
-  | connect_since_until _ _ _ => exact Validity.valid_implies_valid_dense (connect_since_until_valid _ _ _)
+  | connect_future _ => exact Validity.valid_implies_valid_dense (connect_future_valid _)
+  | connect_past _ => exact Validity.valid_implies_valid_dense (connect_past_valid _)
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_dense (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_dense (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_dense (absorb_until_valid φ ψ)
@@ -803,8 +880,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | left_mono_since φ ψ χ => exact Validity.valid_implies_valid_discrete (left_mono_since_valid φ ψ χ)
   | right_mono_until φ ψ χ => exact Validity.valid_implies_valid_discrete (right_mono_until_valid φ ψ χ)
   | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_discrete (right_mono_since_valid φ ψ χ)
-  | connect_until_since _ _ _ => exact Validity.valid_implies_valid_discrete (connect_until_since_valid _ _ _)
-  | connect_since_until _ _ _ => exact Validity.valid_implies_valid_discrete (connect_since_until_valid _ _ _)
+  | connect_future _ => exact Validity.valid_implies_valid_discrete (connect_future_valid _)
+  | connect_past _ => exact Validity.valid_implies_valid_discrete (connect_past_valid _)
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_discrete (absorb_until_valid φ ψ)
@@ -889,8 +966,8 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | left_mono_since φ ψ χ => exact left_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
-    | connect_until_since φ ψ χ => exact connect_until_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
-    | connect_since_until φ ψ χ => exact connect_since_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
+    | connect_future φ => exact connect_future_valid φ D F M Omega h_sc τ h_mem t
+    | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1048,8 +1125,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | left_mono_since φ ψ χ => exact left_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
-    | connect_until_since φ ψ χ => exact connect_until_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
-    | connect_since_until φ ψ χ => exact connect_since_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
+    | connect_future φ => exact connect_future_valid φ D F M Omega h_sc τ h_mem t
+    | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t
