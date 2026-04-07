@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Close Trivial Sorries and Finish Phase 2-3 Leftovers [NOT STARTED]
+### Phase 1: Close Trivial Sorries and Finish Phase 2-3 Leftovers [COMPLETED]
 
 **Goal**: Close the 4 annotated T-axiom sorries in SuccChainFMCS.lean. Resolve the `F_until_equiv` / `P_since_equiv` semantic gap. These are mechanical fixes that don't require new mathematical insight.
 
@@ -102,7 +102,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Close the Main Sorries (Hybrid F-Resolution) [NOT STARTED]
+### Phase 2: Close the Main Sorries (Hybrid F-Resolution) [BLOCKED]
 
 **Goal**: Close `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` using seed consistency + Lindenbaum detour argument. This is the mathematical core of the task.
 
@@ -130,7 +130,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Cleanup, Auxiliary Sorries, and Verification [NOT STARTED]
+### Phase 3: Cleanup, Auxiliary Sorries, and Verification [IN PROGRESS]
 
 **Goal**: Close auxiliary sorries, remove deprecated code, verify full completeness path is sorry-free transitively.
 

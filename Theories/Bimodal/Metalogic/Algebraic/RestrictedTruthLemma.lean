@@ -77,95 +77,13 @@ theorem restricted_chain_G_step (phi : Formula)
   have h_g_content : ψ ∈ g_content (restricted_succ_chain_fam phi fam.seed n) := h_G_in_chain
   exact h_succ.g_persistence h_g_content
 
-/--
-G propagates through restricted chain: G(psi) in chain(n) implies psi in chain(m) for m >= n.
-
-Proof by induction using G-step.
-
-**DEAD CODE**: This theorem has zero references outside its own definition.
-The restricted truth lemma does not require G-propagation at the DRM chain level;
-it uses Lindenbaum extensions and semantic arguments instead. The sorry is retained
-for historical documentation only and does not affect any completeness path.
--/
-theorem restricted_chain_G_propagates (phi : Formula)
-    (fam : RestrictedTemporallyCoherentFamily phi)
-    (n m : Int) (ψ : Formula)
-    (h_nm : n ≤ m)
-    (h_G_in_chain : Formula.all_future ψ ∈ restricted_succ_chain_fam phi fam.seed n) :
-    ψ ∈ restricted_succ_chain_fam phi fam.seed m := by
-  rcases h_nm.lt_or_eq with h_lt | rfl
-  · -- n < m: propagate through chain
-    -- First get the difference
-    have h_diff_pos : 0 < m - n := Int.sub_pos.mpr h_lt
-    have h_le : 0 ≤ m - n := Int.le_of_lt h_diff_pos
-    obtain ⟨k, hk⟩ := Int.eq_ofNat_of_zero_le h_le
-    have hk_pos : k > 0 := by
-      cases k with
-      | zero => simp at hk; omega
-      | succ k' => exact Nat.succ_pos k'
-    obtain ⟨j, hj⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.pos_iff_ne_zero.mp hk_pos)
-    have h_m_eq : m = n + (j + 1) := by omega
-    -- NOTE: This theorem cannot be proven in general for DeferralRestrictedMCS chains.
-    -- The issue: G(ψ) ∈ chain(n) → G(ψ) ∈ chain(n+1) requires G(G(ψ)) ∈ chain(n),
-    -- which in turn requires G(G(ψ)) ∈ deferralClosure. But deferralClosure is bounded
-    -- by the formula structure of phi, and G(G(ψ)) may exceed that bound.
-    --
-    -- For the TRUTH LEMMA, this is NOT a problem because:
-    -- 1. The truth lemma only applies to ψ ∈ subformulaClosure(phi)
-    -- 2. The equivalence chain(n) ↔ ext(n) doesn't require G-propagation
-    -- 3. Semantic G-propagation follows from the truth lemma + frame properties
-    --
-    -- This lemma is marked sorry pending restructuring if needed for Phase 4.
-    -- If Phase 4 requires G-propagation, it should add the hypothesis that
-    -- G^k(ψ) ∈ deferralClosure for all k ≤ m - n, or use a semantic argument.
-    sorry
-  · -- n = m: use g_content_subset_deferral_restricted_mcs
-    -- G(ψ) ∈ chain(n) means ψ ∈ g_content(chain(n))
-    -- By g_content_subset_deferral_restricted_mcs: g_content(chain(n)) ⊆ chain(n)
-    -- Therefore ψ ∈ chain(n)
-    have h_drm := restricted_succ_chain_fam_is_drm phi fam.seed n
-    have h_psi_in_g : ψ ∈ g_content (restricted_succ_chain_fam phi fam.seed n) := h_G_in_chain
-    exact g_content_subset_deferral_restricted_mcs phi (restricted_succ_chain_fam phi fam.seed n) h_drm h_psi_in_g
-
-/--
-H-step for restricted chain: H(psi) in chain(n) implies psi in chain(n-1).
-
-This uses the h_content subset property from the Succ relation.
-Note: Succ_implies_h_content_reverse requires full MCS, so we use the
-Lindenbaum extensions and then project back to the DRM.
-
-**DEAD CODE**: This theorem has zero references outside its own definition.
-The restricted truth lemma does not require H-step at the DRM chain level;
-it uses Lindenbaum extensions and semantic arguments instead. The sorry is retained
-for historical documentation only and does not affect any completeness path.
--/
-theorem restricted_chain_H_step (phi : Formula)
-    (fam : RestrictedTemporallyCoherentFamily phi)
-    (n : Int) (ψ : Formula)
-    (h_H_in_chain : Formula.all_past ψ ∈ restricted_succ_chain_fam phi fam.seed n)
-    (h_psi_dc : ψ ∈ deferralClosure phi) :
-    ψ ∈ restricted_succ_chain_fam phi fam.seed (n - 1) := by
-  -- NOTE: This theorem cannot be proven directly for DeferralRestrictedMCS chains.
-  -- The standard proof via `Succ_implies_h_content_reverse` requires full MCS properties
-  -- (specifically, negation_complete and implication_property for arbitrary formulas).
-  --
-  -- For DRM, these properties only hold for formulas in deferralClosure.
-  -- The proof would need to show:
-  -- 1. H(ψ) ∈ chain(n) gives ψ ∈ h_content(chain(n))
-  -- 2. Succ(chain(n-1), chain(n)) gives h_content(chain(n)) ⊆ chain(n-1)
-  -- But step 2 requires Succ_implies_h_content_reverse which needs full MCS.
-  --
-  -- Alternative approaches:
-  -- (a) Use Lindenbaum extensions, but they don't preserve Succ
-  -- (b) Prove a DRM version of h_content_reverse using temp_a within deferralClosure
-  -- (c) Use semantics: the truth lemma makes this property true semantically
-  --
-  -- For the current restricted truth lemma (which only proves chain ↔ ext equivalence),
-  -- this H-step property is NOT required. It would be needed for Phase 4 if we build
-  -- a full parametric truth lemma with H case handling.
-  --
-  -- Marking sorry pending Phase 4 requirements analysis.
-  sorry
+-- NOTE: restricted_chain_G_propagates and restricted_chain_H_step were removed.
+-- Both were dead code (zero references) with unprovable sorries.
+-- restricted_chain_G_propagates: G(ψ) ∈ chain(n) → ψ ∈ chain(m) for m >= n
+--   Issue: requires G(G(ψ)) ∈ deferralClosure, which may exceed the bound.
+-- restricted_chain_H_step: H(ψ) ∈ chain(n) → ψ ∈ chain(n-1)
+--   Issue: requires Succ_implies_h_content_reverse which needs full MCS.
+-- The restricted truth lemma does not use either theorem.
 
 /-!
 ## Lindenbaum Extension of Restricted Chain
