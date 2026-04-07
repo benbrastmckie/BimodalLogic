@@ -897,7 +897,7 @@ theorem backward_dovetailed_G_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalCons
   -- G(G(phi)) ∈ chain(n+1) by temp_4 for G
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) :=
     SetMaximalConsistent.implication_property h_mcs_n1
-      (theorem_in_mcs h_mcs_n1 (Bimodal.ProofSystem.DerivationTree.axiom _ _ (sorry /- temp_4 removed in BX -/ phi))) h_G
+      (theorem_in_mcs h_mcs_n1 (sorry /- BX: derive temp_4 from BX1 -/)) h_G
   -- G(phi) ∈ g_content(chain(n+1))
   have h_Gphi_g : Formula.all_future phi ∈ g_content (backward_dovetailed M_0 h_mcs_0 (n + 1)) := h_GG
   -- G(phi) ∈ chain(n) by duality

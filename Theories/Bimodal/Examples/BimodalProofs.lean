@@ -216,8 +216,8 @@ example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
 example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box := by
   modal_search
 
-/-- Automated proof of temporal T4 axiom using temporal_search -/
-example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future := by
+/-- Automated proof of BX1 (temp_t_future) using temporal_search -/
+example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") := by
   temporal_search
 
 /-- Automated proof combining modal and temporal reasoning -/

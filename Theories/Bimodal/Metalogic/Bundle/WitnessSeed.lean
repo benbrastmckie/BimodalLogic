@@ -4,6 +4,7 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.GeneralizedNecessitation
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Perpetuity
 import Bimodal.Theorems.TemporalDerived
 
 /-!
@@ -592,13 +593,7 @@ which are still valid with irreflexive semantics.
 Derived from temp_a via temporal duality. -/
 noncomputable def past_temp_a (psi : Formula) :
     [] ⊢ psi.imp psi.some_future.all_past := by
-  have h_ta := sorry /- temp_a removed in BX -/
-  have h_dual := DerivationTree.temporal_duality _ h_ta
-  have h_eq : (psi.swap_temporal.imp psi.swap_temporal.some_past.all_future).swap_temporal
-    = psi.imp psi.some_future.all_past := by
-    simp [Formula.swap_temporal, Formula.neg, Formula.some_past, Formula.some_past,
-          Formula.some_future, Formula.swap_temporal, Formula.swap_temporal_involution]
-  rw [h_eq] at h_dual; exact h_dual
+  sorry /- BX: temp_a removed, derive from BX4 connectedness -/
 
 /-- If g_content(M) ⊆ M', then h_content(M') ⊆ M.
 Uses temp_a: φ → G(P(φ)). -/
@@ -652,7 +647,7 @@ theorem h_content_subset_implies_g_content_reverse
   have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).all_future :=
     DerivationTree.temporal_necessitation _ h_dni
   have h_fk : [] ⊢ (phi.imp phi.neg.neg).all_future.imp (phi.all_future.imp phi.neg.neg.all_future) :=
-    sorry /- temp_k_dist removed in BX -/
+    Bimodal.Theorems.Perpetuity.future_k_dist phi phi.neg.neg
   have h_G_imp : [] ⊢ phi.all_future.imp phi.neg.neg.all_future :=
     DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
   have h_G_nn : phi.neg.neg.all_future ∈ M' :=

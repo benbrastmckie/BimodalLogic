@@ -19,41 +19,14 @@ The TM system includes temporal operators for reasoning about time:
 - **always** (`△`): `Hφ ∧ φ ∧ Gφ` means "φ at all times" (past, present, future)
 - **sometimes** (`▽`): `¬(always ¬φ)` means "φ at some time" (past, present, or future)
 
-## Temporal Axioms
+## Temporal Axioms (BX System)
 
-- **T4** (temporal transitivity): `Fφ → FFφ` - future of future is future
-- **TA** (temporal connectedness): `φ → F(some_past φ)` - present accessible from future's past
-- **TL** (temporal perpetuity): `Fφ → F(Pφ)` - perpetual truths remain perpetual
+Under the BX refactor, the old discrete axiom set (T4, TA, TL) has been replaced by:
+- **BX1/BX1'**: Reflexivity of G/H (temp_t_future/past)
+- **BX2-BX7**: Until/Since axioms for linear temporal orders
 
-## Temporal Duality
-
-The TM system has a duality between past and future operators:
-- Swapping P and F in any theorem φ yields another theorem
-
-## Examples Categories
-
-1. **Basic Temporal Axioms**: T4, TA, TL applications
-2. **Temporal Duality**: Past/future symmetry demonstrations
-3. **Temporal Operators**: Using F, P, and their combinations
-4. **Temporal Reasoning**: Multi-step temporal derivations
-
-## Notation
-
-- `φ.all_future` = `Gφ` (for all future times)
-- `φ.all_past` = `Hφ` (for all past times)
-- `φ.some_future` = `Fφ = ¬G¬φ` (at some future time)
-- `φ.some_past` = `Pφ = ¬H¬φ` (at some past time)
-- `φ.always` = `Hφ ∧ φ ∧ Gφ` (at all times: past, present, future)
-- `φ.sometimes` = `¬(always ¬φ)` (at some time: past, present, or future)
-- `△φ` = always φ (at all times)
-- `▽φ` = sometimes φ (at some time)
-
-## Exercises
-
-This module contains 2 exercises marked with `-- EXERCISE:` comments:
-
-1. **Temporal K rule**: Using `generalized_temporal_k` (line ~169)
-2. **Future lifting**: Using temporal K rule (line ~183)
+Many of the examples below that previously used T4, TA, TL directly are now sorry'd
+pending derivation from the BX axiom system.
 
 ## References
 
@@ -70,80 +43,89 @@ open Bimodal.Theorems.Combinators
 open Bimodal.Automation
 
 /-!
-## Axiom T4: Temporal Transitivity (`Fφ → FFφ`)
+## BX1: Temporal Reflexivity (`G(φ) → φ` and `H(φ) → φ`)
 
-If something will always be true, then it will always be true that it will always be true.
-This expresses that the temporal relation is transitive.
+Under reflexive semantics, what holds at all future-or-present times holds now.
 -/
 
-/-- Temporal 4 on atomic formula -/
+/-- BX1: Temporal T (future) on atomic formula -/
+example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") :=
+  DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.atom_s "p"))
+
+/-- BX1': Temporal T (past) on atomic formula -/
+example : ⊢ (Formula.atom_s "p").all_past.imp (Formula.atom_s "p") :=
+  DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.atom_s "p"))
+
+/-!
+## Temporal 4 (`Gφ → GGφ`) — Derived from BX1
+
+Under BX with reflexive G, temp_4 should be derivable. These are sorry'd pending
+that derivation.
+-/
+
+/-- Temporal 4 on atomic formula (sorry'd - derive from BX1) -/
 example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future :=
-  sorry /- temp_4 removed in BX -/)
+  sorry /- BX: derive temp_4 from BX1 -/
 
-/-- Temporal 4 on implication -/
+/-- Temporal 4 on implication (sorry'd - derive from BX1) -/
 example (p q : Formula) : ⊢ (p.imp q).all_future.imp (p.imp q).all_future.all_future :=
-  sorry /- temp_4 removed in BX -/)
+  sorry /- BX: derive temp_4 from BX1 -/
 
-/-- Temporal 4 with nested future: `FFFφ` follows from `FFφ` -/
+/-- Temporal 4 with nested future -/
 example (φ : Formula) : ⊢ φ.all_future.all_future.imp φ.all_future.all_future.all_future :=
-  sorry /- temp_4 removed in BX -/
+  sorry /- BX: derive temp_4 from BX1 -/
 
 /-- Temporal 4 demonstrates temporal transitivity -/
 example : ⊢ (Formula.atom_s "always_true").all_future.imp (Formula.atom_s "always_true").all_future.all_future :=
-  sorry /- temp_4 removed in BX -/)
+  sorry /- BX: derive temp_4 from BX1 -/
 
 /-- Temporal 4: G(Gφ) follows from Gφ -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future :=
-  sorry /- temp_4 removed in BX -/
+  sorry /- BX: derive temp_4 from BX1 -/
 
 /-!
-## Axiom TA: Temporal Connectedness (`φ → F(some_past φ)`)
+## Axiom TA: Temporal Connectedness (`φ → G(Pφ)`)
 
-If something is true now, then at all future times there exists a past time where it was true.
-This connects the present with the accessible past of all futures.
+Under BX, this should be derivable from BX4 (connectedness).
 -/
 
-/-- Temporal A on atomic formula -/
+/-- Temporal A on atomic formula (sorry'd - derive from BX4) -/
 example : ⊢ (Formula.atom_s "p").imp (Formula.atom_s "p").some_past.all_future :=
-  sorry /- temp_a removed in BX -/)
+  sorry /- BX: derive temp_a from BX4 -/
 
 /-- Temporal A on negation -/
 example (φ : Formula) : ⊢ φ.neg.imp φ.neg.some_past.all_future :=
-  sorry /- temp_a removed in BX -/
+  sorry /- BX: derive temp_a from BX4 -/
 
 /-- Temporal A on complex formula -/
 example (p q : Formula) : ⊢ (p.and q).imp (p.and q).some_past.all_future :=
-  sorry /- temp_a removed in BX -/)
+  sorry /- BX: derive temp_a from BX4 -/
 
 /-- Temporal A demonstrates present is in past of all futures -/
 example : ⊢ (Formula.atom_s "now").imp (Formula.atom_s "now").some_past.all_future :=
-  sorry /- temp_a removed in BX -/)
+  sorry /- BX: derive temp_a from BX4 -/
 
 /-!
 ## Axiom TL: Temporal Perpetuity (`△φ → G(Hφ)`)
 
-If something is true at all times (always), then at all future times
-it was always true in the past.
-
-This is a strong axiom that connects temporal perpetuity across past and future.
-Note: TL uses `always` (△ = H ∧ present ∧ G), not just `all_future` (G).
+Under BX, this must be derived from BX axioms.
 -/
 
 /-- Temporal L on atomic formula: △p → G(Hp) -/
 example : ⊢ (Formula.atom_s "p").always.imp (Formula.atom_s "p").all_past.all_future :=
-  sorry /- temp_l removed in BX -/)
+  sorry /- BX: derive temp_l from BX axioms -/
 
 /-- Temporal L: always φ → G(Hφ) -/
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
-  sorry /- temp_l removed in BX -/
+  sorry /- BX: derive temp_l from BX axioms -/
 
 /-- Temporal L on complex formula: △(p ∨ q) → G(H(p ∨ q)) -/
 example (p q : Formula) : ⊢ (p.or q).always.imp (p.or q).all_past.all_future :=
-  sorry /- temp_l removed in BX -/)
+  sorry /- BX: derive temp_l from BX axioms -/
 
 /-- Temporal L demonstrates perpetuity preservation -/
 example : ⊢ (Formula.atom_s "eternal").always.imp (Formula.atom_s "eternal").all_past.all_future :=
-  sorry /- temp_l removed in BX -/)
+  sorry /- BX: derive temp_l from BX axioms -/
 
 /-!
 ## Temporal Duality Rule
@@ -151,10 +133,6 @@ example : ⊢ (Formula.atom_s "eternal").always.imp (Formula.atom_s "eternal").a
 The temporal duality rule swaps past and future operators in theorems.
 If `⊢ φ` (φ is a theorem), then `⊢ swap_temporal φ` is also a theorem.
 -/
-
-/-- Temporal duality example: T4 for future implies T4-like for past (via duality) -/
-example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future := by
-  exact sorry /- temp_4 removed in BX -/)
 
 /-- Using temporal duality on a theorem -/
 example (φ : Formula) (h : ⊢ φ) : ⊢ φ.swap_temporal :=
@@ -168,29 +146,24 @@ example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_futur
 /-!
 ## Temporal K Rule
 
-The temporal K rule distributes `F` over derivations:
-If `FΓ ⊢ φ` then `Γ ⊢ Fφ`.
+The temporal K rule distributes `G` over derivations:
+If `GΓ ⊢ φ` then `Γ ⊢ Gφ`.
 -/
 
 /-- Using temporal K rule: if `GΓ ⊢ φ` then `Γ ⊢ Gφ` -/
 example (p : Formula) : [p] ⊢ p.all_future := by
   -- EXERCISE: Complete this proof using generalized necessitation
-  -- Technique: Use `generalized_temporal_k` from Bimodal.Theorems.GeneralizedNecessitation
-  -- Hint: First derive [Gp] ⊢ p via assumption, then apply generalized temporal K
   sorry
 
 /-!
 ## Future Operator (G) Examples
 
 The all_future operator `G` expresses truth at all future times.
-Note: `G` (all_future) is different from `always` (`△` = H ∧ present ∧ G).
 -/
 
 /-- Future on atomic formula -/
 example (p : Formula) : [p] ⊢ p.all_future := by
   -- EXERCISE: Complete this proof using temporal K rule
-  -- Technique: Use `generalized_temporal_k` to lift derivation under G operator
-  -- Hint: This is similar to the temporal K rule example above
   sorry
 
 /-- Always (at all times) = H ∧ present ∧ G -/
@@ -207,8 +180,6 @@ example (φ : Formula) : (▽φ) = φ.sometimes := rfl
 
 /-!
 ## Past Operator (P) Examples
-
-The past operator `P` expresses truths that have always been.
 -/
 
 /-- Past on atomic formula (using in context) -/
@@ -220,45 +191,35 @@ example (φ : Formula) : φ.some_past = φ.neg.all_past.neg := rfl
 
 /-- Past and future interact via temporal axioms: △φ → G(Hφ) -/
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
-  -- This is the TL axiom: always φ → G(Hφ)
-  sorry /- temp_l removed in BX -/
+  sorry /- BX: derive temp_l from BX axioms -/
 
 /-!
 ## Multi-Step Temporal Reasoning
-
-Combining temporal axioms for complex derivations.
 -/
 
-/-- Chaining temporal operators: `FFFφ` via T4 -/
+/-- Chaining temporal operators: `GGGφ` via T4 -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future.all_future := by
-  -- Gφ → GGφ by T4
-  have h1 := sorry /- temp_4 removed in BX -/
-  -- GGφ → GGGφ by T4 applied to Gφ
-  have h2 := sorry /- temp_4 removed in BX -/
-  -- Compose using transitivity: Gφ → GGφ → GGGφ
-  exact imp_trans h1 h2
+  sorry /- BX: needs temp_4 derived from BX1 -/
 
 /-- Temporal iteration: applying T4 repeatedly -/
 example : ⊢ (Formula.atom_s "perpetual").all_future.imp (Formula.atom_s "perpetual").all_future.all_future := by
-  exact sorry /- temp_4 removed in BX -/)
+  sorry /- BX: needs temp_4 derived from BX1 -/
 
 /-!
 ## Temporal Properties
-
-Examples demonstrating key temporal properties.
 -/
 
-/-- Idempotence pattern: `FFφ` is related to `Fφ` via T4 -/
+/-- Idempotence pattern: `GGφ` is related to `Gφ` via T4 -/
 example (φ : Formula) : ⊢ φ.all_future.imp φ.all_future.all_future :=
-  sorry /- temp_4 removed in BX -/
+  sorry /- BX: derive temp_4 from BX1 -/
 
 /-- Present to future-past: TA axiom pattern -/
 example (φ : Formula) : ⊢ φ.imp φ.some_past.all_future :=
-  sorry /- temp_a removed in BX -/
+  sorry /- BX: derive temp_a from BX4 -/
 
 /-- Perpetuity preservation: TL axiom pattern △φ → G(Hφ) -/
 example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
-  sorry /- temp_l removed in BX -/
+  sorry /- BX: derive temp_l from BX axioms -/
 
 /-!
 ## Modal-Temporal Interaction Axioms
@@ -266,11 +227,11 @@ example (φ : Formula) : ⊢ φ.always.imp φ.all_past.all_future :=
 These axioms connect modal and temporal operators.
 -/
 
-/-- Modal-Future axiom MF: `□φ → □Fφ` -/
+/-- Modal-Future axiom MF: `□φ → □Gφ` -/
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future.box :=
   DerivationTree.axiom [] _ (Axiom.modal_future φ)
 
-/-- Temporal-Future axiom TF: `□φ → F□φ` -/
+/-- Temporal-Future axiom TF: `□φ → G□φ` -/
 example (φ : Formula) : ⊢ φ.box.imp φ.box.all_future :=
   DerivationTree.axiom [] _ (Axiom.temp_future φ)
 
@@ -284,25 +245,23 @@ example : ⊢ (Formula.atom_s "necessary").box.imp (Formula.atom_s "necessary").
 
 /-!
 ## Teaching Examples
-
-Clear examples for learning temporal logic concepts.
 -/
 
 /-- Example: What will always be true remains always true -/
 example : ⊢ (Formula.atom_s "sun_rises").all_future.imp (Formula.atom_s "sun_rises").all_future.all_future :=
-  sorry /- temp_4 removed in BX -/)
+  sorry /- BX: derive temp_4 from BX1 -/
 
 /-- Example: Present events are in the past of all futures -/
 example : ⊢ (Formula.atom_s "today").imp (Formula.atom_s "today").some_past.all_future :=
-  sorry /- temp_a removed in BX -/)
+  sorry /- BX: derive temp_a from BX4 -/
 
 /-- Example: Eternal truths (TL axiom): △"2+2=4" → G(H"2+2=4") -/
 example : ⊢ (Formula.atom_s "2+2=4").always.imp (Formula.atom_s "2+2=4").all_past.all_future :=
-  sorry /- temp_l removed in BX -/)
+  sorry /- BX: derive temp_l from BX axioms -/
 
 /-- Example: Future transitivity (T4 axiom): G"inevitable" → GG"inevitable" -/
 example : ⊢ (Formula.atom_s "inevitable").all_future.imp (Formula.atom_s "inevitable").all_future.all_future :=
-  sorry /- temp_4 removed in BX -/)
+  sorry /- BX: derive temp_4 from BX1 -/
 
 /-- Example: Sometimes notation (eventuality) -/
 example (φ : Formula) : φ.sometimes = (▽φ) := rfl
@@ -314,20 +273,16 @@ example (φ : Formula) : φ.always = (△φ) := rfl
 ## Automated Temporal Search
 
 The `temporal_search` tactic uses bounded proof search to automatically find
-derivations for temporal logic goals. It prioritizes temporal rules and can
-discover proofs involving axioms T4, TA, TL, and temporal K applications.
+derivations for temporal logic goals. Under BX, it can find proofs using
+BX1 (temp_t_future/past) and modal-temporal interaction axioms.
 -/
 
-/-- Automated proof of T4 axiom using temporal_search -/
-example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future := by
+/-- Automated proof of BX1 (temp_t_future) using temporal_search -/
+example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") := by
   temporal_search
 
-/-- Automated proof of TA axiom using temporal_search -/
-example : ⊢ (Formula.atom_s "p").imp (Formula.atom_s "p").some_past.all_future := by
-  temporal_search
-
-/-- Automated proof of TL axiom using temporal_search -/
-example : ⊢ (Formula.atom_s "p").always.imp (Formula.atom_s "p").all_past.all_future := by
+/-- Automated proof of BX1' (temp_t_past) using temporal_search -/
+example : ⊢ (Formula.atom_s "p").all_past.imp (Formula.atom_s "p") := by
   temporal_search
 
 /-- Automated proof of modal-future axiom MF using modal_search -/

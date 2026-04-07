@@ -494,9 +494,8 @@ elab "temp_4_tactic" : tactic => do
             (.app (.const ``Formula.all_future _) innerFormula2) =>
 
           if ← isDefEq innerFormula innerFormula2 then
-            let axiomProof ← mkAppM ``sorry /- temp_4 removed in BX -/ #[innerFormula]
-            let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
-            goal.assign proof
+            -- TODO: BX refactor - temp_4 axiom removed, must derive from BX1
+            throwError "temp_4_tactic: temp_4 axiom removed in BX refactor, derive from BX1"
           else
             throwError (
               "temp_4_tactic: expected Fφ → FFφ pattern with same φ, " ++
@@ -540,10 +539,8 @@ elab "temp_a_tactic" : tactic => do
       match rhs with
       | .app (.const ``Formula.all_future _) _sometimePastPart =>
 
-        -- Apply axiom directly - let Lean unify the patterns
-        let axiomProof ← mkAppM ``sorry /- temp_a removed in BX -/ #[lhs]
-        let proof ← mkAppM ``DerivationTree.axiom #[axiomProof]
-        goal.assign proof
+        -- TODO: BX refactor - temp_a axiom removed, must derive from BX4
+        throwError "temp_a_tactic: temp_a axiom removed in BX refactor, derive from BX4"
 
       | _ =>
         throwError "temp_a_tactic: expected F(...) on right side, got {rhs}"
@@ -620,10 +617,8 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       ``Axiom.modal_b,      -- φ → □◇φ
       ``Axiom.modal_5_collapse, -- ◇□φ → □φ
       ``Axiom.modal_k_dist, -- □(φ → ψ) → (□φ → □ψ)
-      ``Axiom.temp_k_dist,  -- G(φ → ψ) → (Gφ → Gψ)
-      ``Axiom.temp_4,       -- Gφ → GGφ
-      ``Axiom.temp_a,       -- φ → GHφ
-      ``Axiom.temp_l,       -- □φ → G□φ
+      ``Axiom.temp_t_future,  -- G(φ) → φ (BX1)
+      ``Axiom.temp_t_past,   -- H(φ) → φ (BX1')
       ``Axiom.modal_future, -- □φ → □Gφ
       ``Axiom.temp_future,  -- □φ → G□φ
       ``Axiom.prop_k,       -- (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
@@ -1266,8 +1261,8 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 example (p : Formula) : ⊢ (p.box).imp (p.box.box) := by
   modal_search 3
 
--- Test 3: Temporal search parses
-example (p : Formula) : ⊢ (p.all_future).imp (p.all_future.all_future) := by
+-- Test 3: Temporal search parses (BX1: G(φ) → φ)
+example (p : Formula) : ⊢ (p.all_future).imp p := by
   temporal_search
 
 -- Test 4: Error on non-derivability goal (commented - would fail compilation)
@@ -1351,8 +1346,8 @@ example (p : Formula) : ⊢ (p.box).imp (p.box.box) := by
 example (p : Formula) : ⊢ (p.box).imp p := by
   modal_search (depth := 5) (visitLimit := 500)
 
--- Test 20: temporal_search with named parameter
-example (p : Formula) : ⊢ (p.all_future).imp (p.all_future.all_future) := by
+-- Test 20: temporal_search with named parameter (BX1: G(φ) → φ)
+example (p : Formula) : ⊢ (p.all_future).imp p := by
   temporal_search (depth := 5)
 
 -- Test 21: SearchConfig structure works
@@ -1384,8 +1379,8 @@ example (p : Formula) : [p] ⊢ p := by
 example (p q : Formula) : ⊢ p.imp (q.imp p) := by
   propositional_search
 
--- Test 27: temporal_search on temporal axiom (temp_4)
-example (p : Formula) : ⊢ (p.all_future).imp (p.all_future.all_future) := by
+-- Test 27: temporal_search on temporal axiom (BX1: temp_t_future)
+example (p : Formula) : ⊢ (p.all_future).imp p := by
   temporal_search
 
 -- Test 28: modal_search on modal axiom (modal_4)

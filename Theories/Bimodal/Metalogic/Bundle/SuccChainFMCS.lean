@@ -122,8 +122,7 @@ noncomputable def F_top_theorem : [] ⊢ F_top := by
   -- seriality_future axiom: G(neg bot) -> F(neg bot)
   have h_serial : [] ⊢ (Formula.neg Formula.bot).all_future.imp
                         (Formula.neg Formula.bot).some_future :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.sorry /- seriality_future removed in BX -/ (Formula.neg Formula.bot))
+    sorry /- BX: seriality_future removed, derive from BX axioms -/
   exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_serial G_neg_bot_theorem
 
 /-- P(neg bot) is provable using the seriality_past axiom: H(phi) -> P(phi).
@@ -133,8 +132,7 @@ noncomputable def P_top_theorem : [] ⊢ P_top := by
   -- seriality_past axiom: H(neg bot) -> P(neg bot)
   have h_serial : [] ⊢ (Formula.neg Formula.bot).all_past.imp
                         (Formula.neg Formula.bot).some_past :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _
-      (Bimodal.ProofSystem.sorry /- seriality_past removed in BX -/ (Formula.neg Formula.bot))
+    sorry /- BX: seriality_past removed, derive from BX axioms -/
   exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_serial H_neg_bot_theorem
 
 /-- Every MCS contains F_top because F_top is a theorem.
@@ -419,7 +417,7 @@ theorem succ_chain_forward_G_step (M0 : SerialMCS) (n : Int) (phi : Formula)
   have h_phi_in_g : phi ∈ g_content (succ_chain_fam M0 n) := h_G
   have h_phi_next : phi ∈ succ_chain_fam M0 (n + 1) := h_succ.g_persistence h_phi_in_g
   have h_4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.sorry /- temp_4 removed in BX -/ phi)
+    sorry /- BX: derive temp_4 from BX1 -/
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ succ_chain_fam M0 n :=
     SetMaximalConsistent.implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_4) h_G
   have h_G_in_g : Formula.all_future phi ∈ g_content (succ_chain_fam M0 n) := h_GG
