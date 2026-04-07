@@ -526,8 +526,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | left_mono_since _ _ _ => sorry
   | right_mono_until _ _ _ => sorry
   | right_mono_since _ _ _ => sorry
-  | connect_until_since _ _ _ => sorry
-  | connect_since_until _ _ _ => sorry
+  | connect_future _ => sorry
+  | connect_past _ => sorry
   | self_accum_until _ _ => sorry
   | self_accum_since _ _ => sorry
   | absorb_until _ _ => sorry
@@ -783,8 +783,8 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | left_mono_since _ _ _ => sorry
   | right_mono_until _ _ _ => sorry
   | right_mono_since _ _ _ => sorry
-  | connect_until_since _ _ _ => sorry
-  | connect_since_until _ _ _ => sorry
+  | connect_future _ => sorry
+  | connect_past _ => sorry
   | self_accum_until _ _ => sorry
   | self_accum_since _ _ => sorry
   | absorb_until _ _ => sorry

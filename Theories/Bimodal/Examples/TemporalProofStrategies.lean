@@ -238,8 +238,8 @@ example (φ : Formula) : φ.sometimes = φ.neg.always.neg := rfl
 The TA axiom (`φ → G(Pφ)`) expresses temporal connectedness: if φ is true now,
 then at all future times, there exists a past time where φ was true (namely, now).
 
-**Note**: Under BX, connectedness is captured by BX4 (connect_until_since).
-The old temp_a axiom must be derived from BX axioms.
+**Note**: Under BX, connectedness is captured by BX4 (connect_future/connect_past).
+These are the temporal connectedness axioms: φ → G(P(φ)) and φ → H(F(φ)).
 
 **Key Technique**: Apply TA directly and chain with temporal operators.
 
