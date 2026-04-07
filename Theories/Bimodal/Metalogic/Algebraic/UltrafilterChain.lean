@@ -746,14 +746,14 @@ theorem G_preimage_inf (U : Ultrafilter LindenbaumAlg) (a b : LindenbaumAlg)
     -- Step 3: temp_k_dist at outer level: G(φ → (ψ → φ ∧ ψ)) → (G(φ) → G(ψ → φ ∧ ψ))
     have d_k1 : ⊢ ((φ.imp (ψ.imp (φ.and ψ))).all_future).imp
                    (φ.all_future.imp (ψ.imp (φ.and ψ)).all_future) :=
-      sorry /- temp_k_dist removed in BX -/))
+      Bimodal.Theorems.Perpetuity.future_k_dist _ _
     -- Apply to get: ⊢ G(φ) → G(ψ → φ ∧ ψ)
     have d_step3 : ⊢ φ.all_future.imp (ψ.imp (φ.and ψ)).all_future :=
       DerivationTree.modus_ponens [] _ _ d_k1 d_G_pairing
     -- Step 4: temp_k_dist at inner level: G(ψ → φ ∧ ψ) → (G(ψ) → G(φ ∧ ψ))
     have d_k2 : ⊢ ((ψ.imp (φ.and ψ)).all_future).imp
                    (ψ.all_future.imp (φ.and ψ).all_future) :=
-      sorry /- temp_k_dist removed in BX -/)
+      Bimodal.Theorems.Perpetuity.future_k_dist _ _
     -- Step 5: Compose: G(φ) → (G(ψ) → G(φ ∧ ψ))
     -- Using b_combinator: (B → C) → (A → B) → (A → C)
     -- With A = φ.all_future, B = (ψ.imp (φ.and ψ)).all_future, C = ψ.all_future.imp (φ.and ψ).all_future
@@ -2075,7 +2075,7 @@ theorem G_of_box_theory (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     have h_k : [] ⊢ (Formula.all_future ((Formula.box ((Formula.box a).neg)).imp ((Formula.box a).neg))).imp
         ((Formula.all_future (Formula.box ((Formula.box a).neg))).imp
          (Formula.all_future ((Formula.box a).neg))) :=
-      sorry /- temp_k_dist removed in BX -/.neg)) ((Formula.box a).neg))
+      Bimodal.Theorems.Perpetuity.future_k_dist _ _
     -- Combine via modus ponens: [] ⊢ G(Box(x)).imp G(x)
     have h_G_imp : [] ⊢ (Formula.all_future (Formula.box ((Formula.box a).neg))).imp
         (Formula.all_future ((Formula.box a).neg)) :=
@@ -2120,7 +2120,7 @@ theorem G_lift_from_context (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     have h_rest_G := fun x hx => h_ctx_G x (List.mem_cons_of_mem a hx)
     have h_G_imp := ih (a.imp phi) d_imp h_rest_G
     have h_G_a := h_ctx_G a (.head _)
-    have h_K := sorry /- temp_k_dist removed in BX -/
+    have h_K := Bimodal.Theorems.Perpetuity.future_k_dist a phi
     have h_imp_in_M := SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs h_K) h_G_imp
     exact SetMaximalConsistent.implication_property h_mcs h_imp_in_M h_G_a
@@ -2390,10 +2390,7 @@ Past temp_4: H(a) → H(H(a)), derived via temporal duality from temp_4.
 -/
 private noncomputable def past_temp_4 (a : Formula) :
     [] ⊢ (Formula.all_past a).imp (Formula.all_past (Formula.all_past a)) := by
-  have h_4 := sorry /- temp_4 removed in BX -/)
-  have h_dual := DerivationTree.temporal_duality _ h_4
-  simp [Formula.swap_temporal, Formula.swap_temporal_involution] at h_dual
-  exact h_dual
+  sorry /- BX: derive temp_4 from BX1, then duality for past version -/
 
 /--
 Past temp_future: Box(a) → H(Box(a)), derived via temporal duality from temp_future.
