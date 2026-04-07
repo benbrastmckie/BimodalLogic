@@ -102,30 +102,48 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Close the Main Sorries (Hybrid F-Resolution) [BLOCKED]
+### Phase 2: Close the Main Sorries (F-Resolution on Critical Path) [BLOCKED]
 
-**Goal**: Close `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` using seed consistency + Lindenbaum detour argument. This is the mathematical core of the task.
+**Goal**: Close the sorry-ful theorems on the completeness critical path. The critical path is:
+
+```
+completeness_over_Int
+  → dovetailed_bundle_validity_implies_provability
+    → dovetailed_bfmcs_restricted_temporally_coherent
+      → DovetailedFMCS_forward_F (SORRY — DovetailedChain.lean:1300)
+      → DovetailedFMCS_backward_P (SORRY — DovetailedChain.lean:1308)
+```
+
+**IMPORTANT**: Previous plan versions targeted `succ_chain_restricted_forward_F` (UltrafilterChain.lean), but that is NOT on the critical completeness path. The actual blockers are `DovetailedFMCS_forward_F` and `DovetailedFMCS_backward_P` in DovetailedChain.lean. The dovetailed chain is a different construction from the succ_chain.
+
+**Blocker analysis**: `DovetailedFMCS_forward_F` is blocked by `forward_dovetailed_until_persists` (sorry, X-content propagation through Lindenbaum steps). The comment says this is an "architectural limitation" — X-vs-G content mismatch when Until obligations need to persist through Lindenbaum extension steps.
+
+**Approach options**:
+1. Fix the dovetailed chain's Until persistence (X-content propagation) — the original blocker
+2. Implement seed consistency + Lindenbaum detour approach directly for the dovetailed chain
+3. Reroute completeness through a different chain construction (e.g., DeterministicChain)
 
 **Tasks**:
-- [ ] Implement seed consistency lemma in UltrafilterChain.lean: `f_witness_seed_consistent`: if F(psi) in M (MCS with T-axiom), then {psi} ∪ g_content(M) is consistent. Argument: F(psi) ∈ M ⟹ ¬G(¬psi) ∈ M (by MCS) ⟹ G(¬psi) ∉ M ⟹ ¬psi ∉ g_content(M)
-- [ ] Implement Lindenbaum detour: given F(psi) in succ_chain_fam(S, n), construct MCS at n+1 containing psi via Lindenbaum extension of {psi} ∪ g_content(succ_chain_fam(S, n))
-- [ ] Prove `succ_chain_restricted_forward_F`: for psi ∈ deferralClosure(root), F(psi) in succ_chain_fam(S, n) implies ∃ m > n with psi in succ_chain_fam(S, m). Use m = n+1 with Lindenbaum detour.
-- [ ] Prove `succ_chain_restricted_backward_P`: symmetric argument using h_content and past Lindenbaum extension
-- [ ] Handle Until persistence: verify Until obligations in succ_chain_fam(S, n) propagate to Lindenbaum extension at n+1 (through g_content inclusion or by adding Until obligations to seed)
-- [ ] If Lindenbaum detour changes chain type, update chain definition or provide interleaving alternative
+- [ ] Deep-read DovetailedChain.lean to understand `forward_dovetailed_until_persists` blocker and `dovetailed_fam_forward_F`
+- [ ] Evaluate which approach is most viable for closing `DovetailedFMCS_forward_F`
+- [ ] Implement the chosen approach
+- [ ] Close `DovetailedFMCS_forward_F` (DovetailedChain.lean:1300)
+- [ ] Close `DovetailedFMCS_backward_P` (DovetailedChain.lean:1308)
+- [ ] Optionally also close `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` (UltrafilterChain.lean — not on critical path but reduces sorry count)
 
 **Timing**: 4 hours
 
 **Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` — close the 2 main sorries
-- `Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean` — possibly add Lindenbaum extension helper
-- `Theories/Bimodal/Metalogic/Bundle/WitnessSeed.lean` — seed consistency infrastructure (if exists, otherwise inline)
+- `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` — close the 2 critical path sorries
+- `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` — optionally close 2 non-critical sorries
+- Additional files as determined by approach
 
 **Verification**:
-- `succ_chain_restricted_forward_F` compiles with no sorry
-- `succ_chain_restricted_backward_P` compiles with no sorry
+- `#print axioms Bimodal.FrameConditions.completeness_over_Int` shows no `sorryAx`
+- `DovetailedFMCS_forward_F` compiles with no sorry
+- `DovetailedFMCS_backward_P` compiles with no sorry
 - `lake build` succeeds
 
 ---
