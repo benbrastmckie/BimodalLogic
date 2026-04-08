@@ -325,6 +325,24 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | linear_since a b c d =>
     simp only [subst_imp, subst_and, subst_or, subst_snce]
     exact Axiom.linear_since (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
+  | refl_intro_until a b =>
+    simp only [subst_imp, subst_untl]
+    exact Axiom.refl_intro_until (a.subst q r) (b.subst q r)
+  | refl_intro_since a b =>
+    simp only [subst_imp, subst_snce]
+    exact Axiom.refl_intro_since (a.subst q r) (b.subst q r)
+  | until_elim a b =>
+    simp only [subst_imp, subst_untl, subst_or]
+    exact Axiom.until_elim (a.subst q r) (b.subst q r)
+  | since_elim a b =>
+    simp only [subst_imp, subst_snce, subst_or]
+    exact Axiom.since_elim (a.subst q r) (b.subst q r)
+  | until_F a b =>
+    simp only [subst_imp, subst_untl, subst_some_future]
+    exact Axiom.until_F (a.subst q r) (b.subst q r)
+  | since_P a b =>
+    simp only [subst_imp, subst_snce, subst_some_past]
+    exact Axiom.since_P (a.subst q r) (b.subst q r)
   | modal_future a =>
     simp only [subst_imp, subst_box, subst_all_future]
     exact Axiom.modal_future (a.subst q r)

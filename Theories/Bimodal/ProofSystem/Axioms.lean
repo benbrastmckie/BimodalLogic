@@ -17,7 +17,7 @@ requiring successor-chain constructions.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce
 2. **S5 Modal** (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
-3. **BX Temporal** (16 = temp_k_dist + temp_4 + 7 schemas x 2 directions):
+3. **BX Temporal** (22 = temp_k_dist + temp_4 + 10 schemas x 2 directions):
    - BX1/BX1': temp_t_future/past (reflexivity, KEEP from previous)
    - BX2/BX2': left_mono_until/since (left monotonicity)
    - BX3/BX3': right_mono_until/since (right monotonicity)
@@ -25,9 +25,12 @@ requiring successor-chain constructions.
    - BX5/BX5': self_accum_until/since (self-accumulation)
    - BX6/BX6': absorb_until/since (absorption)
    - BX7/BX7': linear_until/since (linearity)
+   - BX8/BX8': refl_intro_until/since (reflexive introduction)
+   - BX9/BX9': until_elim/since_elim (current-time elimination)
+   - BX10/BX10': until_F/since_P (eventuality extraction)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 27 axiom constructors (down from 35 in the previous system)
+**Total**: 33 axiom constructors
 
 ### Key Properties
 
@@ -51,10 +54,10 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-27 constructors organized into four layers:
+33 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (16): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (22): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (2): Modal-temporal interaction axioms
 
 All axioms are valid on all linear temporal orders (base frame class).
@@ -93,7 +96,7 @@ inductive Axiom : Formula → Type where
   | modal_k_dist (φ ψ : Formula) :
       Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
 
-  -- Layer 3: BX Temporal (16 = 9 future + 7 past-mirrors derived via duality)
+  -- Layer 3: BX Temporal (22 = 12 future + 10 past-mirrors derived via duality)
   -- Note: temp_k_dist and temp_4 are future-only axioms; their past versions
   -- (H-distribution, H-transitivity) are derived via temporal_duality.
 
@@ -189,6 +192,42 @@ inductive Axiom : Formula → Type where
             (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
             (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
+
+  /-- BX8: Reflexive Until introduction: `ψ → (φ U ψ)`.
+  Under reflexive Until semantics, the witness s = t (current time) always works:
+  ψ holds at t, and the guard interval [t, t) is empty, so φ vacuously holds on it.
+  This axiom is sound on all linear orders with reflexive Until (≤-witness). -/
+  | refl_intro_until (φ ψ : Formula) :
+      Axiom (ψ.imp (Formula.untl φ ψ))
+
+  /-- BX8': Reflexive Since introduction: `ψ → (φ S ψ)`.
+  Mirror of BX8 for the past direction. -/
+  | refl_intro_since (φ ψ : Formula) :
+      Axiom (ψ.imp (Formula.snce φ ψ))
+
+  /-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
+  Under reflexive Until semantics, `φ U ψ` at t has witness s ≥ t with ψ(s).
+  If s = t, then ψ(t) holds. If s > t, then φ(t) holds (from guard [t,s)).
+  Either way, `φ ∨ ψ` holds at t. -/
+  | until_elim (φ ψ : Formula) :
+      Axiom ((Formula.untl φ ψ).imp (Formula.or φ ψ))
+
+  /-- BX9': Since elimination: `(φ S ψ) → (φ ∨ ψ)`.
+  Mirror of BX9 for the past direction. -/
+  | since_elim (φ ψ : Formula) :
+      Axiom ((Formula.snce φ ψ).imp (Formula.or φ ψ))
+
+  /-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
+  Under reflexive Until semantics, `φ U ψ` at t has witness s ≥ t with ψ(s),
+  so F(ψ) = ¬G(¬ψ) holds. This cannot be derived from BX1-BX9 alone because
+  `(φ U ⊥) → (φ ∨ ⊥)` is only `¬¬φ`, not `⊥`. -/
+  | until_F (φ ψ : Formula) :
+      Axiom ((Formula.untl φ ψ).imp (Formula.some_future ψ))
+
+  /-- BX10': Since implies past eventuality: `(φ S ψ) → P(ψ)`.
+  Mirror of BX10 for the past direction. -/
+  | since_P (φ ψ : Formula) :
+      Axiom ((Formula.snce φ ψ).imp (Formula.some_past ψ))
 
   -- Layer 4: Modal-Temporal Interaction (2)
 

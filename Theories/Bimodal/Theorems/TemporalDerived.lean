@@ -19,17 +19,22 @@ under all-reflexive semantics.
 - `connect_past_thm`: `⊢ φ → H(F(φ))` (BX4' axiom)
 - `density_derivable`: `⊢ G(G(φ)) → G(φ)` (from BX1)
 
-## Discrete-Only Results (sorry, require X/Y extension)
+## BX8-BX10 Derived Results (sorry-free)
 
-Under reflexive semantics, X(a) = ⊥ U a holds at t iff a(t) (witness s = t,
-guard [t,t) is empty). So X(a) ↔ a semantically, making G(a) → X(a) trivially
-equivalent to G(a) → a (BX1). The theorems below are retained for backward
-compatibility but are marked as discrete-only extensions.
+These theorems use the reflexive Until/Since introduction (BX8/BX8'),
+elimination (BX9/BX9'), and eventuality extraction (BX10/BX10') axioms.
 
-- `G_implies_X`, `H_implies_Y`: Discrete-only (require strict semantics for meaning)
-- `X_bot_absurd`, `Y_bot_absurd`: Discrete-only
-- `YX_identity`, `XY_identity`: Discrete-only
-- `YG_implies_self`, `XH_implies_self`: Discrete-only
+- `G_implies_X`, `H_implies_Y`: From BX1 + BX8/BX8'
+- `X_bot_absurd`, `Y_bot_absurd`: From BX9/BX9' + propositional logic
+- `until_implies_some_future`, `since_implies_some_past`: Direct BX10/BX10'
+- `YX_identity`, `XY_identity`: From BX9/BX9' + propositional logic
+- `YG_implies_self`, `XH_implies_self`: From BX9/BX9' + BX1/BX1'
+
+## Key BX-Derived Lemmas for Canonical Completeness
+
+- `psi_imp_until`, `psi_imp_since`: Direct BX8/BX8'
+- `until_imp_or`, `since_imp_or`: Direct BX9/BX9'
+- `until_imp_F`, `since_imp_P`: Direct BX10/BX10'
 
 ## References
 
@@ -160,99 +165,181 @@ def G_implies_G_step (a : Formula) :
   exact DerivationTree.modus_ponens [] _ _ h_k h_nec
 
 /-!
-## Discrete-Only Theorems (sorry)
+## BX8-BX10 Derived Theorems (sorry-free)
 
-These theorems require X(a) = ⊥ U a to behave as "next" (discrete semantics).
-Under reflexive semantics, X(a) ↔ a, so these are trivially equivalent to
-simpler statements. They are retained for backward compatibility with
-downstream code that references them, and marked sorry pending discrete
-extension axioms.
+These theorems use the reflexive Until/Since axioms (BX8-BX10).
+Under reflexive semantics, X(a) = ⊥ U a ↔ a (witness s = t, guard [t,t) empty).
 -/
 
 /--
-`⊢ G(a) → ⊤ U a`: Under reflexive semantics, ⊤ U a at t requires ∃ s ≥ t with a(s).
-From G(a) → a (BX1), we get a(t), but the syntactic derivation of `a → ⊤ U a`
-requires a reflexive Until introduction principle not in the current BX axiom set.
+`⊢ G(a) → ⊤ U a`: From BX1 (G(a) → a) and BX8 (a → ⊤ U a), compose.
 -/
 def G_implies_topUntil (a : Formula) :
-    ⊢ a.all_future.imp (Formula.untl top a) := by
-  sorry -- Requires reflexive Until introduction (discrete extension)
+    ⊢ a.all_future.imp (Formula.untl top a) :=
+  imp_trans (DerivationTree.axiom [] _ (Axiom.temp_t_future a))
+    (DerivationTree.axiom [] _ (Axiom.refl_intro_until top a))
 
 /--
 `⊢ G(a) → X(a)` where X(a) = ⊥ U a.
-Under reflexive semantics X(a) ↔ a, so this is equivalent to BX1: G(a) → a.
-The syntactic derivation requires `a → ⊥ U a` (reflexive introduction).
+From BX1 (G(a) → a) and BX8 (a → ⊥ U a), compose.
 -/
-def G_implies_X (a : Formula) : ⊢ a.all_future.imp (X a) := by
-  sorry -- Requires reflexive Until introduction (discrete extension)
+def G_implies_X (a : Formula) : ⊢ a.all_future.imp (X a) :=
+  imp_trans (DerivationTree.axiom [] _ (Axiom.temp_t_future a))
+    (DerivationTree.axiom [] _ (Axiom.refl_intro_until Formula.bot a))
 
 /--
 `⊢ H(a) → Y(a)` where Y(a) = ⊥ S a. Mirror of G_implies_X.
+From BX1' (H(a) → a) and BX8' (a → ⊥ S a), compose.
 -/
-noncomputable def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) := by
-  sorry -- Requires reflexive Since introduction (discrete extension)
+def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) :=
+  imp_trans (DerivationTree.axiom [] _ (Axiom.temp_t_past a))
+    (DerivationTree.axiom [] _ (Axiom.refl_intro_since Formula.bot a))
 
 /--
-`⊢ (⊥ U ⊥) → ⊥`: X(⊥) is absurd. Discrete-only.
+`⊢ (⊥ U ⊥) → ⊥`: X(⊥) is absurd.
+From BX9: `(⊥ U ⊥) → (⊥ ∨ ⊥)` where `⊥ ∨ ⊥ = (⊥ → ⊥) → ⊥`.
+Then apply identity `⊥ → ⊥` to get ⊥.
 -/
-noncomputable def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot := by
-  sorry -- Discrete-only
+def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot :=
+  -- BX9 gives (⊥ U ⊥) → (⊥ ∨ ⊥) = (⊥ → ⊥) → ⊥
+  -- app1 gives (⊥ → ⊥) → ((⊥ → ⊥) → ⊥) → ⊥
+  -- compose: (⊥ U ⊥) → ⊥
+  imp_trans
+    (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot Formula.bot))
+    (mp (identity Formula.bot) theorem_app1)
 
 /--
-`⊢ (⊥ S ⊥) → ⊥`: Y(⊥) is absurd. Discrete-only.
+`⊢ (⊥ S ⊥) → ⊥`: Y(⊥) is absurd. Mirror of X_bot_absurd.
 -/
-noncomputable def Y_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot := by
-  sorry -- Discrete-only
+def Y_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot :=
+  imp_trans
+    (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot Formula.bot))
+    (mp (identity Formula.bot) theorem_app1)
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
-Under reflexive semantics, the witness s certifies F(ψ).
-Requires reflexive F introduction.
+Direct from BX10 axiom.
 -/
-noncomputable def until_implies_some_future (φ ψ : Formula) :
-    ⊢ (Formula.untl φ ψ).imp (Formula.some_future ψ) := by
-  sorry -- Requires reflexive F introduction (discrete extension)
+def until_implies_some_future (φ ψ : Formula) :
+    ⊢ (Formula.untl φ ψ).imp (Formula.some_future ψ) :=
+  DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
-Mirror of until_implies_some_future.
+Direct from BX10' axiom.
 -/
-noncomputable def since_implies_some_past (φ ψ : Formula) :
-    ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) := by
-  sorry -- Requires reflexive P introduction (discrete extension)
+def since_implies_some_past (φ ψ : Formula) :
+    ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) :=
+  DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
 
-/-- Y(X(φ)) → φ: Previous of Next is identity. Discrete-only. -/
-noncomputable def YX_identity (a : Formula) :
+/-- `(⊥ U a) → a`: Under reflexive semantics, X(a) = ⊥ U a implies a.
+From BX9: `(⊥ U a) → (⊥ ∨ a) = ((⊥→⊥) → a)`, then apply identity. -/
+private def X_elim (a : Formula) :
+    ⊢ (Formula.untl Formula.bot a).imp a :=
+  imp_trans
+    (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot a))
+    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+
+/-- `(⊥ S a) → a`: Mirror of X_elim. -/
+private def Y_elim (a : Formula) :
+    ⊢ (Formula.snce Formula.bot a).imp a :=
+  imp_trans
+    (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot a))
+    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+
+/-- Y(X(φ)) → φ: Previous of Next is identity.
+Compose Y_elim with X_elim. -/
+def YX_identity (a : Formula) :
     ⊢ (Formula.snce Formula.bot (Formula.untl Formula.bot a)).imp a :=
-  sorry -- Discrete-only (requires yx_identity axiom)
+  imp_trans (Y_elim (Formula.untl Formula.bot a)) (X_elim a)
 
-/-- X(Y(φ)) → φ: Next of Previous is identity. Discrete-only. -/
-noncomputable def XY_identity (a : Formula) :
+/-- X(Y(φ)) → φ: Next of Previous is identity.
+Compose X_elim with Y_elim. -/
+def XY_identity (a : Formula) :
     ⊢ (Formula.untl Formula.bot (Formula.snce Formula.bot a)).imp a :=
-  sorry -- Discrete-only (requires xy_identity axiom)
+  imp_trans (X_elim (Formula.snce Formula.bot a)) (Y_elim a)
 
-/-- Y-necessitation: if ⊢ φ then ⊢ Y(φ). Discrete-only (depends on H_implies_Y). -/
+/-- Y-necessitation: if ⊢ φ then ⊢ Y(φ). -/
 private noncomputable def y_nec' {φ : Formula} (h : DerivationTree [] φ) :
     DerivationTree [] (Formula.snce Formula.bot φ) := by
   have h_H : DerivationTree [] φ.all_past :=
     Bimodal.Theorems.past_necessitation _ h
   exact DerivationTree.modus_ponens [] _ _ (H_implies_Y φ) h_H
 
-/-- X-necessitation: if ⊢ φ then ⊢ X(φ). Discrete-only (depends on G_implies_X). -/
-private noncomputable def x_nec' {φ : Formula} (h : DerivationTree [] φ) :
+/-- X-necessitation: if ⊢ φ then ⊢ X(φ). -/
+private def x_nec' {φ : Formula} (h : DerivationTree [] φ) :
     DerivationTree [] (Formula.untl Formula.bot φ) := by
   have h_G : DerivationTree [] φ.all_future :=
     DerivationTree.temporal_necessitation _ h
   exact DerivationTree.modus_ponens [] _ _ (G_implies_X φ) h_G
 
-/-- Y(G(φ)) → φ: Discrete-only (depends on YX_identity). -/
-noncomputable def YG_implies_self (a : Formula) :
-    ⊢ (Formula.snce Formula.bot a.all_future).imp a := by
-  sorry -- Discrete-only (depends on y_k_dist, YX_identity)
+/-- Y(G(φ)) → φ: Compose Y_elim with BX1. -/
+def YG_implies_self (a : Formula) :
+    ⊢ (Formula.snce Formula.bot a.all_future).imp a :=
+  imp_trans (Y_elim a.all_future) (DerivationTree.axiom [] _ (Axiom.temp_t_future a))
 
-/-- X(H(φ)) → φ: Discrete-only (depends on XY_identity). -/
-noncomputable def XH_implies_self (a : Formula) :
-    ⊢ (Formula.untl Formula.bot a.all_past).imp a := by
-  sorry -- Discrete-only (depends on x_k_dist, XY_identity)
+/-- X(H(φ)) → φ: Compose X_elim with BX1'. -/
+def XH_implies_self (a : Formula) :
+    ⊢ (Formula.untl Formula.bot a.all_past).imp a :=
+  imp_trans (X_elim a.all_past) (DerivationTree.axiom [] _ (Axiom.temp_t_past a))
+
+/-!
+## Key BX-Derived Lemmas for Canonical Completeness
+
+These lemmas are the critical prerequisites for the Until/Since truth lemma
+in the BXCanonical completeness proof (Phase 1 of plan v34).
+-/
+
+/--
+`⊢ ψ → (φ U ψ)`: Reflexive Until introduction.
+Under reflexive Until semantics, ψ at current time gives a reflexive witness.
+Direct from BX8 axiom.
+-/
+def psi_imp_until (φ ψ : Formula) :
+    ⊢ ψ.imp (Formula.untl φ ψ) :=
+  DerivationTree.axiom [] _ (Axiom.refl_intro_until φ ψ)
+
+/--
+`⊢ ψ → (φ S ψ)`: Reflexive Since introduction.
+Mirror of psi_imp_until for the past direction.
+-/
+def psi_imp_since (φ ψ : Formula) :
+    ⊢ ψ.imp (Formula.snce φ ψ) :=
+  DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
+
+/--
+`⊢ (φ U ψ) → (φ ∨ ψ)`: Until implies disjunction at current time.
+At any time where φ U ψ holds, either the witness is now (giving ψ)
+or it is strictly in the future (giving φ from the guard).
+Direct from BX9 axiom.
+-/
+def until_imp_or (φ ψ : Formula) :
+    ⊢ (Formula.untl φ ψ).imp (Formula.or φ ψ) :=
+  DerivationTree.axiom [] _ (Axiom.until_elim φ ψ)
+
+/--
+`⊢ (φ S ψ) → (φ ∨ ψ)`: Since implies disjunction at current time.
+Mirror of until_imp_or.
+-/
+def since_imp_or (φ ψ : Formula) :
+    ⊢ (Formula.snce φ ψ).imp (Formula.or φ ψ) :=
+  DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
+
+/--
+`⊢ (φ U ψ) → F(ψ)`: Until implies eventuality of its endpoint.
+The witness s ≥ t with ψ(s) certifies F(ψ) at t.
+Direct from BX10 axiom.
+-/
+def until_imp_F (φ ψ : Formula) :
+    ⊢ (Formula.untl φ ψ).imp (Formula.some_future ψ) :=
+  DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
+
+/--
+`⊢ (φ S ψ) → P(ψ)`: Since implies past eventuality of its endpoint.
+Mirror of until_imp_F.
+-/
+def since_imp_P (φ ψ : Formula) :
+    ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) :=
+  DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
 
 end Bimodal.Theorems.TemporalDerived

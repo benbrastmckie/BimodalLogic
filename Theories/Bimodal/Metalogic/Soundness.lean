@@ -70,15 +70,13 @@ The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` follows from:
 **Frame-Class Architecture**:
 Soundness is organized by frame class because axioms require different frame conditions:
 - `soundness_dense`: For dense-compatible derivations on dense frames (sorry-free)
-- `soundness_discrete`: For discrete-compatible derivations on discrete frames
-  (sorry only for `temporal_duality`, pending `SoundnessLemmasDiscrete.lean`)
-- `soundness` (general): Stated without frame constraints, so frame-class axioms
-  remain as sorry (architectural limitation, not proof gap). Use `soundness_dense`
-  or `soundness_discrete` for complete proofs.
+- `soundness_discrete`: For discrete-compatible derivations on discrete frames (sorry-free)
+- `soundness` (general): Stated without frame constraints (sorry-free)
 
-All 20 individual axiom validity lemmas are proven sorry-free. The remaining
-sorries are solely in the derivation induction structure of `soundness` (general)
-and `temporal_duality` in `soundness_discrete`.
+All soundness theorems are sorry-free. The temporal_duality cases use
+`derivable_implies_swap_valid_general` from SoundnessLemmas.lean, which proves
+swap-validity without frame-class constraints (possible because the BX axiom
+system has no density or discreteness extension axioms).
 
 ## References
 
@@ -649,6 +647,71 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
       fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt hs2t) h_θs2,
       fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
 
+/-- BX8: Reflexive Until introduction: `ψ → (φ U ψ)`.
+Under reflexive Until semantics, the witness s = t (current time) always works:
+ψ holds at t, and the guard interval [t, t) is empty. -/
+theorem refl_intro_until_valid (φ ψ : Formula) :
+    ⊨ (ψ.imp (Formula.untl φ ψ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro h_ψt
+  exact ⟨t, le_refl t, h_ψt, fun r htr hrs => absurd hrs (not_lt.mpr htr)⟩
+
+/-- BX8': Reflexive Since introduction: `ψ → (φ S ψ)`.
+Under reflexive Since semantics, the witness s = t (current time) always works:
+ψ holds at t, and the guard interval (t, t] is empty. -/
+theorem refl_intro_since_valid (φ ψ : Formula) :
+    ⊨ (ψ.imp (Formula.snce φ ψ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro h_ψt
+  exact ⟨t, le_refl t, h_ψt, fun r hrt hrt' => absurd hrt (not_lt.mpr hrt')⟩
+
+/-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
+Under reflexive Until semantics with witness s ≥ t: if s = t then ψ(t);
+if s > t then φ(t) from guard [t, s). Either way φ ∨ ψ at t. -/
+theorem until_elim_valid (φ ψ : Formula) :
+    ⊨ ((Formula.untl φ ψ).imp (Formula.or φ ψ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.or, Formula.neg]
+  intro ⟨s, hts, h_ψs, h_guard⟩
+  intro h_not_φ
+  rcases eq_or_lt_of_le hts with h_eq | h_lt
+  · exact h_eq ▸ h_ψs
+  · exact absurd (h_guard t (le_refl t) h_lt) h_not_φ
+
+/-- BX9': Since elimination: `(φ S ψ) → (φ ∨ ψ)`.
+Mirror of BX9 for the past direction. -/
+theorem since_elim_valid (φ ψ : Formula) :
+    ⊨ ((Formula.snce φ ψ).imp (Formula.or φ ψ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.or, Formula.neg]
+  intro ⟨s, hst, h_ψs, h_guard⟩
+  intro h_not_φ
+  rcases eq_or_lt_of_le hst with h_eq | h_lt
+  · exact h_eq ▸ h_ψs
+  · exact absurd (h_guard t h_lt (le_refl t)) h_not_φ
+
+/-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
+F(ψ) = ¬G(¬ψ). Under reflexive Until, witness s ≥ t gives ψ(s), so ¬∀u≥t.¬ψ(u). -/
+theorem until_F_valid (φ ψ : Formula) :
+    ⊨ ((Formula.untl φ ψ).imp (Formula.some_future ψ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_future, Formula.neg]
+  intro ⟨s, hts, h_ψs, _⟩
+  intro h_G_neg
+  exact h_G_neg s hts h_ψs
+
+/-- BX10': Since implies past eventuality: `(φ S ψ) → P(ψ)`.
+P(ψ) = ¬H(¬ψ). Under reflexive Since, witness s ≤ t gives ψ(s), so ¬∀u≤t.¬ψ(u). -/
+theorem since_P_valid (φ ψ : Formula) :
+    ⊨ ((Formula.snce φ ψ).imp (Formula.some_past ψ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_past, Formula.neg]
+  intro ⟨s, hst, h_ψs, _⟩
+  intro h_H_neg
+  exact h_H_neg s hst h_ψs
+
 /-! ## Legacy Discrete Axiom Validity Theorems (Removed)
 
 The following discrete axiom validity theorems were removed in the BX refactor:
@@ -694,6 +757,12 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | absorb_since φ ψ => exact absorb_since_valid φ ψ
   | linear_until _ _ _ _ => exact linear_until_valid _ _ _ _
   | linear_since _ _ _ _ => exact linear_since_valid _ _ _ _
+  | refl_intro_until φ ψ => exact refl_intro_until_valid φ ψ
+  | refl_intro_since φ ψ => exact refl_intro_since_valid φ ψ
+  | until_elim φ ψ => exact until_elim_valid φ ψ
+  | since_elim φ ψ => exact since_elim_valid φ ψ
+  | until_F φ ψ => exact until_F_valid φ ψ
+  | since_P φ ψ => exact since_P_valid φ ψ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
 
@@ -727,6 +796,12 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | absorb_since φ ψ => exact Validity.valid_implies_valid_dense (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_since_valid _ _ _ _)
+  | refl_intro_until φ ψ => exact Validity.valid_implies_valid_dense (refl_intro_until_valid φ ψ)
+  | refl_intro_since φ ψ => exact Validity.valid_implies_valid_dense (refl_intro_since_valid φ ψ)
+  | until_elim φ ψ => exact Validity.valid_implies_valid_dense (until_elim_valid φ ψ)
+  | since_elim φ ψ => exact Validity.valid_implies_valid_dense (since_elim_valid φ ψ)
+  | until_F φ ψ => exact Validity.valid_implies_valid_dense (until_F_valid φ ψ)
+  | since_P φ ψ => exact Validity.valid_implies_valid_dense (since_P_valid φ ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_dense (temp_future_valid ψ)
 
@@ -761,6 +836,12 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | absorb_since φ ψ => exact Validity.valid_implies_valid_discrete (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_since_valid _ _ _ _)
+  | refl_intro_until φ ψ => exact Validity.valid_implies_valid_discrete (refl_intro_until_valid φ ψ)
+  | refl_intro_since φ ψ => exact Validity.valid_implies_valid_discrete (refl_intro_since_valid φ ψ)
+  | until_elim φ ψ => exact Validity.valid_implies_valid_discrete (until_elim_valid φ ψ)
+  | since_elim φ ψ => exact Validity.valid_implies_valid_discrete (since_elim_valid φ ψ)
+  | until_F φ ψ => exact Validity.valid_implies_valid_discrete (until_F_valid φ ψ)
+  | since_P φ ψ => exact Validity.valid_implies_valid_discrete (since_P_valid φ ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_discrete (temp_future_valid ψ)
 
@@ -849,6 +930,12 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
+    | refl_intro_until φ ψ => exact refl_intro_until_valid φ ψ D F M Omega h_sc τ h_mem t
+    | refl_intro_since φ ψ => exact refl_intro_since_valid φ ψ D F M Omega h_sc τ h_mem t
+    | until_elim φ ψ => exact until_elim_valid φ ψ D F M Omega h_sc τ h_mem t
+    | since_elim φ ψ => exact since_elim_valid φ ψ D F M Omega h_sc τ h_mem t
+    | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
+    | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
@@ -867,14 +954,9 @@ theorem soundness (Γ : Context) (φ : Formula) :
     intro s _hts
     exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- ARCHITECTURAL LIMITATION: temporal_duality soundness requires
-    -- [DenselyOrdered D] [Nontrivial D] constraints because it calls
-    -- SoundnessLemmas.derivable_implies_swap_valid which has those constraints.
-    --
-    -- For soundness of derivations containing temporal_duality, use the
-    -- soundness_dense theorem (line ~715) which provides these constraints.
-    -- This sorry is intentional and documents the frame-class restriction.
-    sorry
+    -- d' : ⊢ φ', goal is truth_at ... φ'.swap_temporal
+    -- Use general swap validity (no frame-class constraints needed for BX axiom system)
+    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
@@ -1010,6 +1092,12 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
+    | refl_intro_until φ ψ => exact refl_intro_until_valid φ ψ D F M Omega h_sc τ h_mem t
+    | refl_intro_since φ ψ => exact refl_intro_since_valid φ ψ D F M Omega h_sc τ h_mem t
+    | until_elim φ ψ => exact until_elim_valid φ ψ D F M Omega h_sc τ h_mem t
+    | since_elim φ ψ => exact since_elim_valid φ ψ D F M Omega h_sc τ h_mem t
+    | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
+    | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
@@ -1050,12 +1138,10 @@ provide soundness for discrete-compatible derivations on discrete frame types.
 For discrete-compatible derivations from empty context, the derived formula is
 valid on all discrete frames.
 
-**Note on temporal_duality**: The temporal_duality case requires proving that
-swap validity is preserved for discrete-compatible derivations. This is
-semantically true (each discrete axiom's swap is the corresponding dual axiom,
-also valid on discrete frames) but requires a discrete version of the swap
-validity infrastructure in SoundnessLemmas.lean. This case is marked sorry
-pending the creation of SoundnessLemmasDiscrete.lean.
+**Note on temporal_duality**: The temporal_duality case uses
+`derivable_implies_swap_valid_general` from SoundnessLemmas.lean, which proves
+swap-validity without frame-class constraints. No separate discrete version is
+needed because the BX axiom system has no frame-class extension axioms.
 -/
 theorem soundness_discrete_valid {phi : Formula}
     (d : DerivationTree [] phi) (h_dc : d.isDiscreteCompatible) : valid_discrete phi := by
@@ -1086,12 +1172,9 @@ theorem soundness_discrete_valid {phi : Formula}
     intro s _hts
     exact h D F M Omega h_sc tau h_mem s
   | .temporal_duality psi' d' =>
-    -- ARCHITECTURAL GAP: Requires derivable_implies_swap_valid_discrete
-    -- which proves that swap_temporal preserves validity for discrete-compatible
-    -- derivations. Semantically sound but the proof infrastructure (analogous to
-    -- SoundnessLemmas.derivable_implies_swap_valid for dense frames) has not yet
-    -- been created for discrete frames.
-    sorry
+    -- Use general swap validity (no frame-class constraints needed for BX axiom system)
+    intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
     have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
     have h_dc_sub : (h_eq ▸ d').isDiscreteCompatible := by
@@ -1146,9 +1229,8 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     intro s _hts
     exact ih h_dc τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- ARCHITECTURAL GAP: Same as soundness_discrete_valid above.
-    -- Requires discrete swap validity infrastructure.
-    sorry
+    -- Use general swap validity (no frame-class constraints needed for BX axiom system)
+    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
