@@ -124,7 +124,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fix FMP TruthPreservation Sorry [NOT STARTED]
+### Phase 3: Fix FMP TruthPreservation Sorry [COMPLETED]
 
 **Goal**: Fix the trivial `temp_4` sorry in FMP/TruthPreservation.lean by providing the correct axiom derivation.
 
