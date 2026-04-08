@@ -498,4 +498,109 @@ noncomputable def bx_modal_witness (w : BXPoint) (ψ : Formula)
       exact set_consistent_not_both hM_mcs.1 (Formula.box χ) h_box_M h_neg_in_M
   exact ⟨⟨M, hM_mcs⟩, h_equiv, h_ψ_in⟩
 
+/-! ## Eventuality Resolution for Until/Since
+
+The key construction for the Until/Since truth lemma: given φ U ψ ∈ w with ψ ∉ w,
+find a witness v ≥ w with ψ ∈ v such that for all intermediate u (w ≤ u < v),
+we have φ ∈ u. The dual construction handles Since.
+
+### Mathematical Status
+
+These proofs require either:
+(A) An Until-induction axiom (removed in BX refactoring, see WitnessSeed.lean), or
+(B) A proof that the canonical ordering bx_le is linear on intervals (from BX7), or
+(C) A modified Zorn construction adapted for the BX axiom system.
+
+The standard Burgess/Goldblatt proof uses approach (A). The BX axiom system
+replaces Until-induction with BX5 (self-accumulation), BX6 (absorption), and
+BX7 (linearity), but the completeness proof technique has not yet been adapted.
+
+The forward direction (eventuality resolution) requires showing that at intermediate
+points u ∈ [w, v), the formula φ holds. The key difficulty is propagating φ U ψ
+to intermediate points: φ U ψ ∈ w does not imply G(φ U ψ) ∈ w, so the formula
+does not propagate forward through g_content. Without Until-induction, there is
+no known way to establish the guard condition from the BX axioms alone.
+
+The backward direction requires showing φ U ψ ∈ w given a semantic witness.
+This is blocked on the forward direction and requires similar infrastructure.
+
+### References
+- Burgess 1984: "Basic tense logic" (uses Until-induction)
+- Goldblatt 1992: "Logics of Time and Computation" (canonical model construction)
+- BX refactoring: specs/083_close_restricted_coherence_sorries/
+-/
+
+/--
+Forward Until eventuality resolution: given φ U ψ ∈ w and ψ ∉ w,
+construct v ≥ w with ψ ∈ v and the guard φ on [w, v) satisfied.
+
+**Status**: sorry — blocked on Until-induction derivation from BX5+BX6+BX7,
+or equivalently on proving linearity of bx_le on intervals.
+See module docstring for mathematical analysis.
+-/
+noncomputable def bx_until_eventuality_resolution
+    (w : BXPoint) (φ ψ : Formula)
+    (h_until : Formula.untl φ ψ ∈ w.formulas)
+    (h_not_psi : ψ ∉ w.formulas) :
+    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
+      ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas := by
+  -- Available facts:
+  -- BX9: φ U ψ → φ ∨ ψ. Since ψ ∉ w: φ ∈ w.
+  -- BX10: φ U ψ → F(ψ). Get v ≥ w with ψ ∈ v via bx_forward_witness.
+  -- BX5: φ U ψ → (φ ∧ (φ U ψ)) U ψ (self-accumulation).
+  -- BX4: φ U ψ → G(P(φ U ψ)) (connectedness). So P(φ U ψ) ∈ u for w ≤ u.
+  -- Gap: cannot propagate φ U ψ to intermediate u without Until-induction or linearity.
+  sorry
+
+/--
+Backward Until: given v ≥ w with ψ ∈ v and the guard φ on [w, v), derive φ U ψ ∈ w.
+
+**Status**: sorry — blocked on the same infrastructure as forward Until.
+The standard proof uses contradiction + BX4 connectedness to propagate ¬(φ U ψ)
+forward, then derives contradiction with the guard. This requires showing that
+the backward witness u from P(¬(φ U ψ)) ∈ v lies in [w, v), which needs
+linearity of bx_le on the interval.
+-/
+noncomputable def bx_until_backward
+    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
+    (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
+    (h_guard : ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas)
+    (h_not_psi : ψ ∉ w.formulas) :
+    Formula.untl φ ψ ∈ w.formulas := by
+  -- By contradiction: assume ¬(φ U ψ) ∈ w.
+  -- By BX4: G(P(¬(φ U ψ))) ∈ w. Since w ≤ v: P(¬(φ U ψ)) ∈ v.
+  -- By BX8 + ψ ∈ v: φ U ψ ∈ v.
+  -- From P(¬(φ U ψ)) ∈ v: ∃ u ≤ v with ¬(φ U ψ) ∈ u.
+  -- Gap: need w ≤ u to use the guard. Requires linearity of bx_le between w and u.
+  sorry
+
+/--
+Forward Since eventuality resolution: mirror of bx_until_eventuality_resolution
+for the past direction, using h_content instead of g_content.
+
+**Status**: sorry — mirror of forward Until, blocked on same infrastructure.
+-/
+noncomputable def bx_since_eventuality_resolution
+    (w : BXPoint) (φ ψ : Formula)
+    (h_since : Formula.snce φ ψ ∈ w.formulas)
+    (h_not_psi : ψ ∉ w.formulas) :
+    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
+      ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas := by
+  -- Mirror of bx_until_eventuality_resolution using h_content, BX5', BX9', BX10'.
+  sorry
+
+/--
+Backward Since: mirror of bx_until_backward for the past direction.
+
+**Status**: sorry — mirror of backward Until, blocked on same infrastructure.
+-/
+noncomputable def bx_since_backward
+    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
+    (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
+    (h_guard : ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas)
+    (h_not_psi : ψ ∉ w.formulas) :
+    Formula.snce φ ψ ∈ w.formulas := by
+  -- Mirror of bx_until_backward using BX8', BX4', and past-direction argument.
+  sorry
+
 end Bimodal.Metalogic.BXCanonical

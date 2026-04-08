@@ -135,7 +135,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close Until/Since Truth Lemma [NOT STARTED]
+### Phase 3: Close Until/Since Truth Lemma [PARTIAL]
 
 **Goal**: Prove `until_iff_mcs` and `since_iff_mcs` in TruthLemma.lean, eliminating the 4 remaining sorries. This is the hardest phase.
 

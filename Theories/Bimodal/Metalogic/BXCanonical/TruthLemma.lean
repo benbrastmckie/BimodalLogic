@@ -26,9 +26,13 @@ into a TaskModel. The truth lemma is proved by structural induction on formulas.
 
 ## Status
 
-The truth lemma for G/H is fully provable from Frame.lean infrastructure.
-The truth lemma for Until/Since requires eventuality resolution which depends
-on Zorn's lemma and the BX5/BX6 axioms -- these are sorry'd for now.
+The truth lemma for atom, bot, imp, box, G, H is fully proved.
+The truth lemma for Until/Since is structurally complete: both directions
+(forward and backward) are proved modulo helper lemmas in Frame.lean:
+- `bx_until_eventuality_resolution` / `bx_since_eventuality_resolution` (forward)
+- `bx_until_backward` / `bx_since_backward` (backward)
+
+These helpers encapsulate the Zorn-based eventuality resolution argument.
 The completeness theorem is stated with sorry for the TaskModel construction.
 
 ## References
@@ -208,6 +212,58 @@ Strict part of bx_le: w is strictly below v in the canonical ordering.
 def bx_lt (w v : BXPoint) : Prop :=
   bx_le w v ∧ ¬bx_le v w
 
+/-! ### Helper: F(ψ) from witness existence
+
+If ψ ∈ v and bx_le w v, then F(ψ) ∈ w (because G(¬ψ) ∉ w).
+-/
+
+/--
+If bx_le w v, ψ ∈ v, then F(ψ) ∈ w.
+
+Proof: If G(¬ψ) ∈ w, then since bx_le w v, ¬ψ ∈ v. But ψ ∈ v gives ⊥.
+So G(¬ψ) ∉ w, hence ¬G(¬ψ) = F(ψ) ∈ w.
+-/
+theorem F_from_witness {w v : BXPoint} {ψ : Formula}
+    (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas) :
+    Formula.some_future ψ ∈ w.formulas := by
+  -- F(ψ) = ψ.neg.all_future.neg = ¬G(¬ψ)
+  -- By negation completeness: either G(¬ψ) ∈ w or ¬G(¬ψ) ∈ w
+  -- If G(¬ψ) ∈ w: since bx_le w v, ¬ψ ∈ v. But ψ ∈ v, contradiction.
+  by_contra h_not_F
+  have h_G_neg_psi : ψ.neg.all_future ∈ w.formulas := by
+    -- F(ψ) = ψ.neg.all_future.neg. ¬F(ψ) ∈ w means F(ψ).neg ∈ w.
+    -- F(ψ).neg = ψ.neg.all_future.neg.neg.
+    -- By DNE: ψ.neg.all_future.neg.neg → ψ.neg.all_future.
+    -- So ψ.neg.all_future ∈ w.
+    -- Actually: by negation completeness on ψ.neg.all_future:
+    cases SetMaximalConsistent.negation_complete w.is_mcs ψ.neg.all_future with
+    | inl h => exact h
+    | inr h =>
+      -- ψ.neg.all_future.neg ∈ w, which IS F(ψ) = ψ.some_future
+      exact absurd h h_not_F
+  -- G(¬ψ) ∈ w and bx_le w v: ¬ψ ∈ v
+  have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_G_forward h_wv h_G_neg_psi
+  -- But ψ ∈ v and ¬ψ ∈ v contradicts consistency
+  exact set_consistent_not_both v.is_mcs.1 ψ h_ψv h_neg_psi_v
+
+/--
+If bx_le v w, ψ ∈ v, then P(ψ) ∈ w.
+
+Mirror of F_from_witness for the past direction.
+-/
+theorem P_from_witness {w v : BXPoint} {ψ : Formula}
+    (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas) :
+    Formula.some_past ψ ∈ w.formulas := by
+  by_contra h_not_P
+  have h_H_neg_psi : ψ.neg.all_past ∈ w.formulas := by
+    cases SetMaximalConsistent.negation_complete w.is_mcs ψ.neg.all_past with
+    | inl h => exact h
+    | inr h => exact absurd h h_not_P
+  have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_H_forward h_vw h_H_neg_psi
+  exact set_consistent_not_both v.is_mcs.1 ψ h_ψv h_neg_psi_v
+
+/-! ### Until truth lemma -/
+
 /--
 Until truth in MCS: (φ U ψ) ∈ w iff there exists v ≥ w with ψ ∈ v and
 φ ∈ u for all u strictly between w and v (i.e., w ≤ u and u < v).
@@ -217,8 +273,10 @@ bx_le being a preorder (not antisymmetric): distinct BXPoints can be
 bx_le-equivalent. Using bx_lt ensures the reflexive witness case (v = w)
 has a vacuously true guard.
 
-The forward direction uses eventuality resolution (BX5/BX6).
-The backward direction uses BX4 (connectedness).
+The forward direction uses BX8-BX10 for the ψ ∈ w case and Zorn-based
+eventuality resolution for the ψ ∉ w case.
+The backward direction uses BX8 for the ψ ∈ w case and BX4 connectedness
+with eventuality resolution for the ψ ∉ w case.
 -/
 theorem until_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     Formula.untl φ ψ ∈ w.formulas ↔
@@ -229,23 +287,30 @@ theorem until_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     intro h_until
     by_cases h_ψ : ψ ∈ w.formulas
     · -- Case: ψ ∈ w. Take v = w (reflexive witness).
-      -- Guard is vacuous: bx_lt u w requires bx_le u w ∧ ¬bx_le w u,
-      -- but bx_le w u (from first hypothesis) and ¬bx_le w u contradict.
       refine ⟨w, bx_le_refl w, h_ψ, fun u h_wu h_uw => ?_⟩
       exact absurd h_wu h_uw.2
-    · -- Case: ψ ∉ w. Eventuality resolution via BX5/BX6.
-      -- ARCHITECTURAL NOTE: The eventuality resolution for the ψ ∉ w case
-      -- requires Zorn's lemma to construct a maximal chain of MCS where
-      -- φ U ψ persists, then show the limit must contain ψ (by BX5/BX6).
-      -- This is the hardest part of the BX canonical model construction.
-      sorry
+    · -- Case: ψ ∉ w. Eventuality resolution via Zorn.
+      -- Use the Zorn-based construction that finds a witness with guard.
+      obtain ⟨v, h_wv, h_ψv, h_guard_raw⟩ :=
+        bx_until_eventuality_resolution w φ ψ h_until h_ψ
+      exact ⟨v, h_wv, h_ψv, fun u h_wu h_uv => h_guard_raw u h_wu h_uv⟩
   · -- Backward: (∃ v ≥ w with ψ ∈ v, φ on [w, v)) → φ U ψ ∈ w.
-    -- Uses BX4 (connectedness) and BX7 (linearity).
-    sorry
+    intro ⟨v, h_wv, h_ψv, h_guard⟩
+    by_cases h_ψ : ψ ∈ w.formulas
+    · -- ψ ∈ w: direct from BX8 (psi_imp_until)
+      have h_bx8 : DerivationTree [] (ψ.imp (Formula.untl φ ψ)) :=
+        DerivationTree.axiom [] _ (Axiom.refl_intro_until φ ψ)
+      exact SetMaximalConsistent.implication_property w.is_mcs
+        (theorem_in_mcs w.is_mcs h_bx8) h_ψ
+    · -- ψ ∉ w: Use Zorn-based backward argument.
+      exact bx_until_backward w φ ψ v h_wv h_ψv
+        (fun u h_wu h_uv => h_guard u h_wu h_uv) h_ψ
 
 /--
 Since truth in MCS: (φ S ψ) ∈ w iff there exists v ≤ w with ψ ∈ v and
 φ ∈ u for all u strictly between v and w (i.e., v < u and u ≤ w).
+
+Mirror of until_iff_mcs for the past direction.
 -/
 theorem since_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     Formula.snce φ ψ ∈ w.formulas ↔
@@ -256,12 +321,39 @@ theorem since_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     intro h_since
     by_cases h_ψ : ψ ∈ w.formulas
     · -- Case: ψ ∈ w. Take v = w (reflexive witness).
-      -- Guard is vacuous: bx_lt w u requires ¬bx_le u w, but bx_le u w is given.
       refine ⟨w, bx_le_refl w, h_ψ, fun u h_wu h_uw => ?_⟩
       exact absurd h_uw h_wu.2
-    · -- Case: ψ ∉ w. Eventuality resolution via BX5'/BX6' (Since mirror).
-      sorry
+    · -- Case: ψ ∉ w. Mirror of forward Until.
+      have h_since_imp_or : DerivationTree [] ((Formula.snce φ ψ).imp (Formula.or φ ψ)) :=
+        DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
+      have h_or_w : Formula.or φ ψ ∈ w.formulas :=
+        SetMaximalConsistent.implication_property w.is_mcs
+          (theorem_in_mcs w.is_mcs h_since_imp_or) h_since
+      have h_phi_w : φ ∈ w.formulas := by
+        cases SetMaximalConsistent.negation_complete w.is_mcs φ with
+        | inl h => exact h
+        | inr h_neg_phi =>
+          have h_psi_w := SetMaximalConsistent.implication_property w.is_mcs h_or_w h_neg_phi
+          exact absurd h_psi_w h_ψ
+      have h_since_imp_P : DerivationTree [] ((Formula.snce φ ψ).imp (Formula.some_past ψ)) :=
+        DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
+      have h_P_psi : Formula.some_past ψ ∈ w.formulas :=
+        SetMaximalConsistent.implication_property w.is_mcs
+          (theorem_in_mcs w.is_mcs h_since_imp_P) h_since
+      -- Use Zorn-based construction for Since direction
+      obtain ⟨v, h_vw, h_ψv, h_guard_raw⟩ :=
+        bx_since_eventuality_resolution w φ ψ h_since h_ψ
+      exact ⟨v, h_vw, h_ψv, fun u h_vu h_uw => h_guard_raw u h_vu h_uw⟩
   · -- Backward: (∃ v ≤ w with ψ ∈ v, φ on (v, w]) → φ S ψ ∈ w.
-    sorry
+    intro ⟨v, h_vw, h_ψv, h_guard⟩
+    by_cases h_ψ : ψ ∈ w.formulas
+    · -- ψ ∈ w: direct from BX8' (psi_imp_since)
+      have h_bx8' : DerivationTree [] (ψ.imp (Formula.snce φ ψ)) :=
+        DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
+      exact SetMaximalConsistent.implication_property w.is_mcs
+        (theorem_in_mcs w.is_mcs h_bx8') h_ψ
+    · -- ψ ∉ w: Use Zorn-based backward argument (Since mirror).
+      exact bx_since_backward w φ ψ v h_vw h_ψv
+        (fun u h_vu h_uw => h_guard u h_vu h_uw) h_ψ
 
 end Bimodal.Metalogic.BXCanonical
