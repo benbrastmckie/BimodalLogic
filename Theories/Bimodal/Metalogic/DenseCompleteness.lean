@@ -115,11 +115,12 @@ The SuccChain architecture extends this to dense domains.
 -/
 theorem canonical_truth_lemma_int
     (B : BFMCS Int) (h_tc : B.temporally_coherent)
+    (h_uc : B.until_since_coherent)
     (fam : FMCS Int) (hfam : fam ∈ B.families)
     (t : Int) (φ : Formula) :
     φ ∈ fam.mcs t ↔
       truth_at CanonicalTaskModel (CanonicalOmega B) (to_history fam) t φ :=
-  canonical_truth_lemma B h_tc fam hfam t φ
+  canonical_truth_lemma B h_tc h_uc fam hfam t φ
 
 /--
 Re-export: The shifted truth lemma extends to shift-closed Omega.
@@ -129,10 +130,11 @@ ShiftClosed Omega). The shift-closure pattern is proven for Int.
 -/
 theorem shifted_truth_lemma_int
     (B : BFMCS Int) (h_tc : B.temporally_coherent)
+    (h_uc : B.until_since_coherent)
     (φ : Formula) (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔
       truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t φ :=
-  shifted_truth_lemma B h_tc φ fam hfam t
+  shifted_truth_lemma B h_tc h_uc φ fam hfam t
 
 /-!
 ## Future Work: Full Dense Completeness via SuccChain

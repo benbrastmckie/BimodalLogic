@@ -305,6 +305,46 @@ theorem closure_all_future (phi psi : Formula)
   exact Formula.mem_subformulas_of_all_future h
 
 /--
+Left component of Until is in closure.
+-/
+theorem closure_untl_left (phi psi chi : Formula)
+    (h : Formula.untl psi chi ∈ subformulaClosure phi) :
+    psi ∈ subformulaClosure phi := by
+  unfold subformulaClosure at h ⊢
+  simp only [List.mem_toFinset] at h ⊢
+  exact Formula.mem_subformulas_of_untl_left h
+
+/--
+Right component of Until is in closure.
+-/
+theorem closure_untl_right (phi psi chi : Formula)
+    (h : Formula.untl psi chi ∈ subformulaClosure phi) :
+    chi ∈ subformulaClosure phi := by
+  unfold subformulaClosure at h ⊢
+  simp only [List.mem_toFinset] at h ⊢
+  exact Formula.mem_subformulas_of_untl_right h
+
+/--
+Left component of Since is in closure.
+-/
+theorem closure_snce_left (phi psi chi : Formula)
+    (h : Formula.snce psi chi ∈ subformulaClosure phi) :
+    psi ∈ subformulaClosure phi := by
+  unfold subformulaClosure at h ⊢
+  simp only [List.mem_toFinset] at h ⊢
+  exact Formula.mem_subformulas_of_snce_left h
+
+/--
+Right component of Since is in closure.
+-/
+theorem closure_snce_right (phi psi chi : Formula)
+    (h : Formula.snce psi chi ∈ subformulaClosure phi) :
+    chi ∈ subformulaClosure phi := by
+  unfold subformulaClosure at h ⊢
+  simp only [List.mem_toFinset] at h ⊢
+  exact Formula.mem_subformulas_of_snce_right h
+
+/--
 If P(chi) is in closureWithNeg phi, then chi is in subformulaClosure phi.
 
 P(chi) = neg(H(neg chi)) = (H(neg chi)).imp bot.
