@@ -37,7 +37,7 @@ technical_debt:
 85 → 58 → 60
 ```
 
-1. **85** [NOT STARTED] — Research Until/Since chain coherence: 3 approaches (restricted deferral closure, simultaneous well-founded induction, quasimodel replacement)
+1. **85** [RESEARCHED] — Research Until/Since chain coherence: 3 approaches (restricted deferral closure, simultaneous well-founded induction, quasimodel replacement)
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (structurally complete; blocked on forward_until_since_coherent + step transfer — depends on 85)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -84,7 +84,7 @@ technical_debt:
 
 ### 85. Research Until/Since chain coherence approaches
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
