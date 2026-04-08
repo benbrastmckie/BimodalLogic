@@ -58,7 +58,7 @@ technical_debt:
      - [22_completeness-closure.md](specs/083_close_restricted_coherence_sorries/plans/22_completeness-closure.md)
      - [33_bx-refactor.md](specs/083_close_restricted_coherence_sorries/plans/33_bx-refactor.md)
      - [39_enriched-chain-completeness.md](specs/083_close_restricted_coherence_sorries/plans/39_enriched-chain-completeness.md)
-   - **84** [RESEARCHED] — **CRITICAL**: Establish `until_since_coherent` for bundle completeness — enriched-Succ chain with dovetailed Until scheduling (depends on 83)
+   - **84** [IMPLEMENTING] — **CRITICAL**: Establish `until_since_coherent` for bundle completeness — enriched-Succ chain with dovetailed Until scheduling (depends on 83)
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence + until_since_coherent)
@@ -103,7 +103,7 @@ technical_debt:
 
 ### 84. Establish Until/Since Coherence for Bundle Completeness
 - **Effort**: 12-18 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: 83

@@ -1,7 +1,7 @@
 # Implementation Plan: Establish until_since_coherent (Revised)
 
 - **Task**: 84 - Establish Until/Since Coherence for Bundle Completeness
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10-14 hours
 - **Dependencies**: None (task 83 closed the truth lemma sorries that added h_uc as hypothesis)
 - **Research Inputs**: reports/01_research-synthesis.md, reports/02_team-research.md, reports/03_team-research.md
