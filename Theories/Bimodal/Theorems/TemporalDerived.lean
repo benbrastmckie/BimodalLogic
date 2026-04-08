@@ -307,7 +307,7 @@ noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) :=
 
 Under reflexive Until/Since semantics, `X(α) = ⊥ U α` and `Y(α) = ⊥ S α` are
 equivalent to `α` in any MCS. These public versions of the private bot_until_elim/bot_since_elim
-are needed by downstream modules (SuccRelation, DeterministicFMCS).
+are needed by downstream modules (SuccRelation, canonical constructions).
 -/
 
 /-- `⊢ X(α) → α`: Under reflexive semantics, X(α) = ⊥ U α implies α.

@@ -438,8 +438,8 @@ The induction hypotheses convert between MCS membership and truth for the
 subformulas φ and ψ, but the truth lemma needs the MCS-level witness with
 the guard condition to apply the IH.
 
-For discrete D (e.g., Int), this is provable from the deterministic chain
-structure (x_content/y_content) via `until_persists_chain`. For generic D,
+For discrete D (e.g., Int), this was provable from the deterministic chain
+structure (bot-Until/bot-Since content, archived to Boneyard). For generic D,
 it must be assumed as a coherence condition.
 
 ### Backward Direction
@@ -447,8 +447,8 @@ it must be assumed as a coherence condition.
 The backward direction (truth → MCS) also requires coherence: given a semantic
 witness for Until (∃ s > t with truth(ψ,s) and truth(φ,r) for r ∈ (t,s)),
 the IH converts to MCS membership, but we need (φ U ψ) ∈ fam.mcs t.
-This requires the `until_intro` axiom which works through X (next) operators,
-needing x_content chain structure. For generic D, we assume this directly.
+This requires the `until_intro` axiom which works through bot-Until operators,
+needing chain structure. For generic D, we assume this directly.
 -/
 
 /--

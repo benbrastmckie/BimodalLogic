@@ -720,8 +720,7 @@ The following discrete axiom validity theorems were removed in the BX refactor:
 - since_unfold_valid, since_intro_valid, since_induction_valid, since_linearity_valid
 - until_connectedness_valid, since_connectedness_valid
 - F_until_equiv_valid, P_since_equiv_valid
-- next_implies_some_future_valid, x_k_dist_valid, x_det_valid
-- y_k_dist_valid, y_det_valid, yx_identity_valid, xy_identity_valid
+- Discrete operator axioms (bot-Until K-distribution, determinism, identity)
 
 These proved validity for discrete axioms that no longer exist in the BX axiom system.
 The BX system uses self-accumulation (BX5/BX6) and linearity (BX7) instead.

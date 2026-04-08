@@ -41,21 +41,13 @@ supplementary infrastructure, not required for the current proof architecture.
 | `ParametricCanonical.lean` | Parametric canonical model | **Sorry-free** |
 | `RestrictedTruthLemma.lean` | Restricted truth lemma | **Sorry-free** |
 
-### Chain Constructions
+### Chain Constructions (Archived to Boneyard/ChainCompleteness)
 | Module | Purpose | Status |
 |--------|---------|--------|
-| `DeterministicChain.lean` | Deterministic chain construction | **Sorry-free** |
-| `DeterministicFMCS.lean` | FMCS/BFMCS bundle + completeness wiring | **4 sorries** (see below) |
-| `FiniteDeferral.lean` | Finite deferral infrastructure for forward_F | In progress |
-| `DovetailedChain.lean` | Dovetailed chain (deprecated) | **DEPRECATED** |
-
-### Sorry Status (DeterministicFMCS.lean)
-
-4 sorries remain, all depending on two leaf lemmas:
-- `deterministic_forward_F` -- intra-family F witness (leaf)
-- `deterministic_backward_P` -- intra-family P witness (leaf)
-- forward Until in `usc` -- depends on `forward_F`
-- forward Since in `usc` -- depends on `backward_P`
+| `DeterministicChain.lean` | Deterministic chain construction | **Archived** |
+| `DeterministicFMCS.lean` | FMCS/BFMCS bundle + completeness wiring | **Archived** |
+| `FiniteDeferral.lean` | Finite deferral infrastructure for forward_F | **Archived** |
+| `DovetailedChain.lean` | Dovetailed chain (active, deprecated) | **DEPRECATED** |
 
 ## Dependency Flowchart
 
