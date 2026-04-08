@@ -282,7 +282,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Archive Chain Infrastructure to Boneyard [COMPLETED]
+### Phase 5: Archive Chain Infrastructure to Boneyard [PARTIAL]
 
 **Goal**: Move the old successor-chain completeness code to Boneyard/ and remove it from the build path. Only do this AFTER Phase 4 modules compile.
 
@@ -338,7 +338,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Integration Testing + Sorry Audit + Extension Hooks [NOT STARTED]
+### Phase 6: Integration Testing + Sorry Audit + Extension Hooks [COMPLETED]
 
 **Goal**: Final validation that the refactor is complete: zero sorry in core path, extension hooks for discrete completeness, and full lake build clean.
 
