@@ -9,9 +9,10 @@ import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Algebraic.ParametricHistory
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
-import Bimodal.Metalogic.Algebraic.DeterministicChain
-import Bimodal.Metalogic.Algebraic.DeterministicFMCS
-import Bimodal.Metalogic.Algebraic.FiniteDeferral
+-- Chain completeness modules archived to Boneyard/ChainCompleteness/:
+-- import Bimodal.Metalogic.Algebraic.DeterministicChain
+-- import Bimodal.Metalogic.Algebraic.DeterministicFMCS
+-- import Bimodal.Metalogic.Algebraic.FiniteDeferral
 
 /-!
 # Algebraic Representation Theorem
@@ -94,8 +95,8 @@ open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricRepresentation
 
--- Deterministic chain for discrete completeness
-open Bimodal.Metalogic.Algebraic.DeterministicChain
-open Bimodal.Metalogic.Algebraic.DeterministicFMCS
+-- Deterministic chain for discrete completeness (archived to Boneyard)
+-- open Bimodal.Metalogic.Algebraic.DeterministicChain
+-- open Bimodal.Metalogic.Algebraic.DeterministicFMCS
 
 end Bimodal.Metalogic.Algebraic

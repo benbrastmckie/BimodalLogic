@@ -474,16 +474,28 @@ noncomputable def bx_modal_witness (w : BXPoint) (ψ : Formula)
         cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.box χ) with
         | inl h => exact absurd h h_not_box
         | inr h => exact h
-      -- In S5: ¬□φ → □¬□φ. This is derivable from modal_b + modal_4.
-      -- Proof: φ → □◇φ (modal_b). Take φ = ¬□χ: ¬□χ → □◇¬□χ.
-      -- ◇¬□χ = ¬□¬¬□χ = ¬□□χ. Hmm that's not ¬□χ.
-      -- Actually: In S5, ¬□φ → □¬□φ is a standard theorem.
-      -- Derivation: From modal_b with ψ = ¬□χ: ¬□χ → □◇(¬□χ).
-      -- ◇(¬□χ) = ¬□¬(¬□χ) = ¬□(□χ). Wait, ¬(¬□χ) = □χ (in classical logic + definition).
-      -- Actually ¬(¬□χ) is not □χ syntactically. ¬(¬□χ) = (□χ → ⊥) → ⊥.
-      -- This is getting too complex syntactically. Let me use a sorry for now
-      -- and come back to prove this derived theorem.
-      sorry
+      -- S5 negative introspection: ¬□φ → □(¬□φ)
+      -- Derivation:
+      -- 1. modal_5_collapse χ: ◇(□χ) → □χ, i.e., (□χ).neg.box.neg → □χ
+      -- 2. Contrapositive: (□χ).neg → (□χ).neg.box.neg.neg
+      -- 3. DNE on (□χ).neg.box: (□χ).neg.box.neg.neg → (□χ).neg.box
+      -- 4. Compose: (□χ).neg → (□χ).neg.box, i.e., ¬□χ → □(¬□χ)
+      have h_m5 : DerivationTree [] ((Formula.box χ).neg.box.neg.imp (Formula.box χ)) :=
+        DerivationTree.axiom [] _ (Axiom.modal_5_collapse χ)
+      have h_contra : DerivationTree [] ((Formula.box χ).neg.imp (Formula.box χ).neg.box.neg.neg) :=
+        Propositional.contraposition h_m5
+      have h_dne : DerivationTree [] ((Formula.box χ).neg.box.neg.neg.imp (Formula.box χ).neg.box) :=
+        Propositional.double_negation ((Formula.box χ).neg.box)
+      have h_neg_intro : DerivationTree [] ((Formula.box χ).neg.imp (Formula.box χ).neg.box) :=
+        Combinators.imp_trans h_contra h_dne
+      -- ¬□χ ∈ w → □(¬□χ) ∈ w
+      have h_box_neg_box := SetMaximalConsistent.implication_property w.is_mcs
+        (theorem_in_mcs w.is_mcs h_neg_intro) h_neg_box
+      -- □(¬□χ) ∈ w → (¬□χ) ∈ bc → (¬□χ) ∈ M
+      have h_in_bc : (Formula.box χ).neg ∈ bc := h_box_neg_box
+      have h_neg_in_M := h_bc_sub h_in_bc
+      -- But □χ ∈ M and ¬□χ ∈ M contradicts M consistent
+      exact set_consistent_not_both hM_mcs.1 (Formula.box χ) h_box_M h_neg_in_M
   exact ⟨⟨M, hM_mcs⟩, h_equiv, h_ψ_in⟩
 
 end Bimodal.Metalogic.BXCanonical

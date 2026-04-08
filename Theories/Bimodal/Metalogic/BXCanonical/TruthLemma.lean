@@ -159,17 +159,46 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
   · -- (∀ v ~ w, φ ∈ v) → □φ ∈ w
     intro h_all
     by_contra h_not_box
-    -- ¬□φ ∈ w, so ◇¬φ ∈ w? No, ¬□φ ≠ ◇¬φ syntactically.
-    -- But we can show: ¬□φ ∈ w means (□φ → ⊥) ∈ w.
-    -- ◇(¬φ) = ¬□(¬¬φ). Not the same.
-    -- Use the modal witness: we need ◇(¬φ) ∈ w to get a witness with ¬φ.
-    -- Actually: ¬(□φ) ∈ w. We want ◇(¬φ) ∈ w.
-    -- From ¬(□φ) and the derivable □(φ → ¬¬φ), we get ¬(□(¬¬φ)) = ◇(¬φ).
-    -- This requires some work. Alternative: directly build a witness.
-    -- Since ¬(□φ) ∈ w, {¬φ} ∪ box_content(w) is consistent (similar to bx_modal_witness).
-    -- Then extend to MCS v. v is modally equivalent to w (forward: □ψ ∈ w → □□ψ ∈ w → □ψ ∈ bc → □ψ ∈ v;
-    -- backward: sorry for now). And ¬φ ∈ v, so φ ∉ v. Contradiction with h_all.
-    sorry
+    -- Derive ◇(¬φ) ∈ w from ¬□φ ∈ w using S5.
+    -- S5 derivation: ¬□φ → ◇(¬φ)
+    -- 1. DNE: ⊢ ¬¬φ → φ
+    -- 2. NEC+K: ⊢ □(¬¬φ) → □φ
+    -- 3. Contrapositive: ⊢ ¬□φ → ¬□(¬¬φ) = ◇(¬φ)
+    have h_dne : DerivationTree [] (φ.neg.neg.imp φ) :=
+      Bimodal.Theorems.Propositional.double_negation φ
+    -- NEC: □(¬¬φ → φ)
+    have h_nec_dne : DerivationTree [] (Formula.box (φ.neg.neg.imp φ)) :=
+      DerivationTree.necessitation _ h_dne
+    -- K: □(¬¬φ → φ) → (□(¬¬φ) → □φ)
+    have h_k : DerivationTree [] ((Formula.box (φ.neg.neg.imp φ)).imp
+        (φ.neg.neg.box.imp φ.box)) :=
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.neg φ)
+    -- MP: □(¬¬φ) → □φ
+    have h_box_dne : DerivationTree [] (φ.neg.neg.box.imp φ.box) :=
+      DerivationTree.modus_ponens [] _ _ h_k h_nec_dne
+    -- Contrapositive: ¬□φ → ¬□(¬¬φ) = ◇(¬φ)
+    -- φ.box.neg → φ.neg.neg.box.neg
+    have h_neg_box_to_dia : DerivationTree [] (φ.box.neg.imp φ.neg.neg.box.neg) :=
+      Bimodal.Theorems.Propositional.contraposition h_box_dne
+    -- ¬□φ ∈ w
+    have h_neg_box : (Formula.box φ).neg ∈ w.formulas := by
+      cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.box φ) with
+      | inl h => exact absurd h h_not_box
+      | inr h => exact h
+    -- ◇(¬φ) ∈ w (note: ◇(¬φ) = φ.neg.diamond = φ.neg.neg.box.neg = φ.box.neg... no)
+    -- Actually: Formula.diamond (φ.neg) = φ.neg.neg.box.neg and φ.box.neg ≠ that.
+    -- We derived: φ.box.neg → φ.neg.neg.box.neg
+    -- φ.neg.neg.box.neg = Formula.diamond (φ.neg) = ◇(¬φ)
+    have h_dia_neg : Formula.diamond φ.neg ∈ w.formulas :=
+      SetMaximalConsistent.implication_property w.is_mcs
+        (theorem_in_mcs w.is_mcs h_neg_box_to_dia) h_neg_box
+    -- ◇(¬φ) ∈ w, so by bx_modal_witness there exists v ~ w with ¬φ ∈ v
+    obtain ⟨v, h_equiv, h_neg_in⟩ := bx_modal_witness w φ.neg h_dia_neg
+    -- ¬φ ∈ v means φ ∉ v
+    have h_not_in : φ ∉ v.formulas :=
+      SetMaximalConsistent.neg_excludes v.is_mcs φ h_neg_in
+    -- But h_all says φ ∈ v for all v ~ w
+    exact h_not_in (h_all v h_equiv)
 
 /-! ## Until/Since MCS Properties -/
 
