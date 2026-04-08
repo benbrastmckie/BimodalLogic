@@ -46,24 +46,12 @@ technical_debt:
 ### 1. Phase B — Core Wiring (CRITICAL PATH)
 
 ```
-81 (F/P research) → 58 → 60
-                      ↘ 68 (dense path, parallel)
+58 → 60
+ ↘ 68 (dense path, parallel)
 ```
 
-0. **83** [COMPLETED] — **CRITICAL**: Close restricted coherence sorries (succ_chain_restricted_forward_F/backward_P) — unblocks sorry-free completeness
-   - **Plan**:
-     - [08_half-open-semantics.md](specs/083_close_restricted_coherence_sorries/plans/08_half-open-semantics.md)
-     - [11_strict-semantics-refactor.md](specs/083_close_restricted_coherence_sorries/plans/11_strict-semantics-refactor.md)
-     - [13_representation-theorem.md](specs/083_close_restricted_coherence_sorries/plans/13_representation-theorem.md)
-     - [22_completeness-closure.md](specs/083_close_restricted_coherence_sorries/plans/22_completeness-closure.md)
-     - [33_bx-refactor.md](specs/083_close_restricted_coherence_sorries/plans/33_bx-refactor.md)
-     - [39_enriched-chain-completeness.md](specs/083_close_restricted_coherence_sorries/plans/39_enriched-chain-completeness.md)
-   - **84** [COMPLETED] — **CRITICAL**: Establish `until_since_coherent` for bundle completeness — split into backward (step-transfer sorry) + forward (blocked sorry), refactored all truth lemma signatures
-     - Completed: 2026-04-08
-     - **Summary**: Split until_since_coherent into backward and forward halves. Refactored all truth lemma signatures across 9 files. 3 monolithic sorry sites replaced with precisely scoped split sorry sites.
-   - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
-1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
-2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence + until_since_coherent)
+- **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
+1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence + until_since_coherent)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -102,110 +90,6 @@ technical_debt:
 **Description**: Close the 2 FMP TruthPreservation sorries (`mcs_all_future_closure` at line 263 and `mcs_all_past_closure` at line 281) in `Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean`. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (`Truth.lean`) uses reflexive semantics (`t ≤ s`, not `t < s`), and `temp_t_future`/`temp_t_past` ARE axioms (Axioms.lean:290,304). Proofs parallel to `mcs_box_closure` (TruthPreservation.lean:188-203). Closing these completes the FMP path giving **weak completeness of TM**.
 
 ---
-
-### 84. Establish Until/Since Coherence for Bundle Completeness
-- **Effort**: 12-18 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-08
-- **Summary**: Split until_since_coherent into backward and forward halves. Refactored all truth lemma signatures across 9 files. 3 monolithic sorry sites replaced with precisely scoped split sorry sites.
-- **Language**: lean4
-- **Priority**: critical
-- **Dependencies**: 83
-- **Created**: 2026-04-07
-- **Research**:
-  - [01_research-synthesis.md](084_establish_until_since_coherent/reports/01_research-synthesis.md) -- Synthesis of 38 task 83 research iterations: X-vs-G root cause, 4 approaches ranked, enriched seed recommended
-- **Plan**:
-  - [02_until-since-coherent.md](084_establish_until_since_coherent/plans/02_until-since-coherent.md)
-  - [03_revised-until-since.md](084_establish_until_since_coherent/plans/03_revised-until-since.md)
-  - [04_until-since-split.md](084_establish_until_since_coherent/plans/04_until-since-split.md)
-- **Summary**:
-  - [04_until-since-split-summary.md](084_establish_until_since_coherent/summaries/04_until-since-split-summary.md)
-
-**Description**: Establish `BFMCS.until_since_coherent` for chain constructions to close the 3 remaining sorry sites in `FrameConditions/Completeness.lean` (lines 322, 356, 450). Task 83 closed the truth lemma sorries by adding `until_since_coherent` as a hypothesis; this task provides the witness proof. The recommended approach is an enriched-Succ chain where the Lindenbaum seed at each step includes `g_content(w_n)` plus active Until formulas still present in `w_n`. Seed consistency follows because all seed elements are in `w_n` (an MCS, hence consistent). Dovetailed scheduling over the finite subformula closure ensures eventual resolution. Optionally unify with the `temporally_coherent` sorry (line 239) via a single enriched chain providing all coherence properties (forward_G, backward_H, forward_F, backward_P, forward_Until, backward_Until, forward_Since, backward_Since). Does NOT include: `dense_completeness_fc` (task 68), FMP TruthPreservation (task 82), or BXCanonical sorries (proven impossible).
-
----
-
-### 83. Close Restricted Coherence Sorries
-- **Effort**: 12-18 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-07
-- **Summary**: Closed all 6 Until/Since sorry cases in truth lemmas by adding until_since_coherent hypothesis. Fixed G_dne_theorem. Net -4 sorries.
-- **Language**: lean4
-- **Priority**: critical
-- **Dependencies**: 81
-- **Created**: 2026-04-02
-- **Research**:
-  - [01_teammate-a-findings.md](083_close_restricted_coherence_sorries/reports/01_teammate-a-findings.md) -- Primary sorry analysis, G-lift gap identification
-  - [01_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/01_teammate-b-findings.md) -- Alternative approaches and prior art
-  - [01_team-research.md](083_close_restricted_coherence_sorries/reports/01_team-research.md) -- Team synthesis: restructured restricted completeness recommended
-  - [02_blocker-analysis.md](083_close_restricted_coherence_sorries/reports/02_blocker-analysis.md) -- Deep analysis of Phase 3 blocker with mathematically rigorous path forward
-  - [03_teammate-a-findings.md](083_close_restricted_coherence_sorries/reports/03_teammate-a-findings.md) -- Topological resolution and custom Lindenbaum analysis
-  - [03_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/03_teammate-b-findings.md) -- Alternative completeness architectures analysis
-  - [03_team-research.md](083_close_restricted_coherence_sorries/reports/03_team-research.md) -- Team synthesis: compatible F-preservation with topological ordering
-  - [04_f-preservation-seed.md](083_close_restricted_coherence_sorries/reports/04_f-preservation-seed.md) -- F-preservation seed blocked; all chain approaches face Lindenbaum F-kill; FMP path recommended
-  - [05_teammate-a-findings.md](083_close_restricted_coherence_sorries/reports/05_teammate-a-findings.md) -- First-principles rethinking: canonical frame path extraction, history theory Zorn
-  - [05_teammate-b-findings.md](083_close_restricted_coherence_sorries/reports/05_teammate-b-findings.md) -- Alternative constructions: Kt two-phase literature, Until/Since analysis, G/F asymmetry
-  - [05_team-research.md](083_close_restricted_coherence_sorries/reports/05_team-research.md) -- Team synthesis: canonical frame path extraction recommended; chain construction categorically wrong
-  - [06_until-since-enrichment.md](083_close_restricted_coherence_sorries/reports/06_until-since-enrichment.md) -- Until/Since enrichment: Burgess-Xu axioms, dovetailed chain, U-Induction kills perpetual deferral, 82% survival
-  - [08_team-research.md](083_close_restricted_coherence_sorries/reports/08_team-research.md) -- Half-open semantics recommended: only 2 sorries block completeness, reflexive/strict mismatch root cause
-- **Plan**:
-  - [01_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/01_restricted-coherence.md) -- v1: 5-phase targeted chain construction (phases 1-2 done, phase 3 blocked)
-  - [02_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/02_restricted-coherence.md) -- v2: ResolvingFMCS with enriched deferral seed for sorry-free completeness
-  - [03_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/03_restricted-coherence.md) -- v3: Finite resolving prefix with filtered compatible F-formulas and topological ordering (joint consistency unprovable)
-  - [04_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/04_restricted-coherence.md) -- v4: DRM chain with bounded_witness for sorry-free forward_F
-  - [06_restricted-coherence.md](083_close_restricted_coherence_sorries/plans/06_restricted-coherence.md) -- v6: Until/Since language enrichment, 7 phases, 27 hours
-  - [08_half-open-semantics.md](083_close_restricted_coherence_sorries/plans/08_half-open-semantics.md) -- v7: Half-open interval semantics, 7 phases, 15 hours
-
-**Description**: Close the 2 sorries in `succ_chain_restricted_forward_F` and `succ_chain_restricted_backward_P` (UltrafilterChain.lean:3762,3772). These are the sole remaining blockers for sorry-free canonical completeness over Int. The restricted path (task 81) narrowed the problem: we only need F/P resolution for formulas in `deferralClosure(root)` within a single SuccChainFMCS.
-
-**Potential approaches**:
-1. Show `constrained_successor` f_step eventually resolves each F-obligation because `deferralClosure` is finite and the chain cannot defer indefinitely within a bounded set
-2. Dovetailed chain construction with fair scheduling that cycles through pending F-obligations
-3. Ultrafilter-level argument using R_G accessibility in the Lindenbaum algebra
-
-**Also clean up**: 2 auxiliary sorries in RestrictedTruthLemma.lean (`restricted_chain_G_step`, `restricted_chain_H_step`) — may become unnecessary once main sorries are closed.
-
-**Excludes**: FMP TruthPreservation (task 82), dense_completeness_fc (task 68), old full-coherence sorry (`bfmcs_from_mcs_temporally_coherent` — bypassed by restricted path).
-
----
-
-### 81. F/P Witness Representation Theorem Research
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Language**: formal
-- **Priority**: critical
-- **Dependencies**: None
-- **Created**: 2026-03-31
-- **Source**: Review 2026-03-31 (F/P witness problem analysis)
-- **Plan**:
-  - [10_implementation-plan.md](081_fp_witness_representation_theorem/plans/10_implementation-plan.md)
-  - [11_implementation-plan.md](081_fp_witness_representation_theorem/plans/11_implementation-plan.md)
-  - [12_implementation-plan.md](081_fp_witness_representation_theorem/plans/12_implementation-plan.md)
-  - [17_implementation-plan.md](081_fp_witness_representation_theorem/plans/17_implementation-plan.md)
-  - [20_restricted-coherence-plan.md](081_fp_witness_representation_theorem/plans/20_restricted-coherence-plan.md)
-- **Research**:
-  - [01_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-a-findings.md) — Algebraic approaches (ultrafilters, BAO, STSA)
-  - [01_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/01_teammate-b-findings.md) — Category-theoretic approaches (presheaves, groupoids)
-  - [01_team-research.md](081_fp_witness_representation_theorem/reports/01_team-research.md) — Team synthesis: algebraic vs category-theoretic (2 teammates)
-  - [02_teammate-a-findings.md](081_fp_witness_representation_theorem/reports/02_teammate-a-findings.md) — Truth lemma F-case proof trace
-  - [02_teammate-b-findings.md](081_fp_witness_representation_theorem/reports/02_teammate-b-findings.md) — Bundle architecture analysis
-  - [02_team-research.md](081_fp_witness_representation_theorem/reports/02_team-research.md) — Team synthesis: same-family forward_F CONFIRMED required
-- **Summary**: [20_restricted-coherence-summary.md](081_fp_witness_representation_theorem/summaries/20_restricted-coherence-summary.md)
-
-**Description**: Research the F/P witness problem for family-level temporal coherence from first principles. The goal is to find the mathematically purest construction that works WITH task semantics rather than fighting it.
-
-**Key Constraints**:
-1. Avoid the distraction of CanonicalR/ExistsTask from standard Kripke semantics - these are NOT relevant to task semantics
-2. Focus on what is distinctive about the task relation: duration-indexed, compositional, converse property
-3. Think creatively about families as constrained world-histories rather than linear chains
-4. Consider algebraic perspectives (ultrafilters, quotient algebras) and category-theoretic perspectives (presheaves, fiber bundles, groupoid structure from converse)
-5. The correct solution may not be obvious, but it will be easier than forcing standard approaches onto non-standard semantics
-
-**Context**: All 6 prior approaches failed (23 sorries eliminated in Task #80). The problem is not engineering - it's a genuine mathematical difficulty requiring new proof-theoretic machinery. This task unblocks Task #58 (wire completeness to FrameConditions).
-
-**Research findings (Run 1)**: Central conflict identified — same-family vs bundle-level F/P witnesses. Single-step witness theorems are sorry-free. UltrafilterChain gives FMCS coherence but not TemporalCoherentFamily.
-
-**Research findings (Run 2)**: **Same-family forward_F CONFIRMED required.** The G backward case in ParametricTruthLemma uses forward_F via contraposition — the IH evaluates along `to_history fam`, making cross-family witnesses impossible. Bundle-level weakening ruled out. Remaining viable paths: (1) Dovetailed SuccChain with fair scheduling (sketched at UltrafilterChain.lean:3685-3711), (2) Zorn on partial temporal families, (3) CanonicalMCS as domain D.
 
 ---
 
