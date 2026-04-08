@@ -718,9 +718,9 @@
       "effort": "8-12 hours",
       "dependencies": [],
       "created": "2026-04-08T00:00:00Z",
-      "last_updated": "2026-04-08T21:30:02Z",
+      "last_updated": "2026-04-08T21:43:35Z",
       "researched": "2026-04-08T21:30:02Z",
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/085_until_since_chain_coherence/reports/01_team-research.md",
