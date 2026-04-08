@@ -55,7 +55,7 @@ Three sorry sites in `FrameConditions/Completeness.lean` (lines 322, 356, 450) r
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Foundation -- g_content_subset_mcs and Enriched Seed Consistency [NOT STARTED]
+### Phase 1: Foundation -- g_content_subset_mcs and Enriched Seed Consistency [COMPLETED]
 
 **Goal**: Prove `g_content(u) ⊆ u` for any MCS u under BX1, and verify that the enriched seed `g_content(w) ∪ {active Until formulas in w}` is consistent.
 
@@ -80,7 +80,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Forward Until and Forward Since via Enriched Chain [NOT STARTED]
+### Phase 2: Forward Until and Forward Since via Enriched Chain [BLOCKED]
 
 **Goal**: Prove the forward directions -- that `(phi U psi) ∈ fam.mcs t` implies existence of witness s >= t with psi at s and phi on guard interval [t,s), and symmetrically for Since.
 
@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Backward Until and Backward Since [NOT STARTED]
+### Phase 3: Backward Until and Backward Since [BLOCKED]
 
 **Goal**: Prove the backward directions -- that existence of a witness implies `(phi U psi) ∈ fam.mcs t` (and symmetrically for Since). This is the critical risk phase.
 
@@ -134,7 +134,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Assemble until_since_coherent for All Three Chain Types [NOT STARTED]
+### Phase 4: Assemble until_since_coherent for All Three Chain Types [BLOCKED]
 
 **Goal**: Wire forward and backward results into complete `until_since_coherent` proofs for the three bundle constructions used at the sorry sites.
 
@@ -160,7 +160,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Integration Testing and Cleanup [NOT STARTED]
+### Phase 5: Integration Testing and Cleanup [PARTIAL]
 
 **Goal**: Verify the full completeness pipeline builds sorry-free (modulo known-open sorries), clean up temporary artifacts, and document the approach.
 

@@ -445,20 +445,11 @@ def deferral_disjunction_from_F (φ : Formula) :
 /--
 The constrained successor seed is consistent.
 
-**Status**: BLOCKED — depends on `g_content(u) ⊆ u` which is FALSE under strict semantics.
-Under strict semantics, `G(φ) ∈ u` does NOT imply `φ ∈ u` (no T-axiom).
+**Status**: PROVEN under BX1 (reflexive G).
 
-**Not on critical path**: The completeness theorem `completeness_over_Int` uses the
-DovetailedChain construction (via `temporal_theory_witness_with_g_exists`) which proves
-seed consistency via the G-wrapping technique without requiring `g_content(u) ⊆ u`.
-This theorem is only used by the SuccChainFMCS path which is not the primary
-completeness route.
-
-**Original proof strategy** (invalid under strict semantics):
-The seed is `g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas(u)`.
-1. g_content(u) ⊆ u: REQUIRES T-axiom G(φ) → φ — FALSE under strict semantics
-2. deferralDisjunctions(u) ⊆ u: Valid (sorry-free)
-3. p_step_blocking_formulas(u) ⊆ u: Valid (sorry-free)
+Under BX1, `G(φ) → φ`, so `g_content(u) ⊆ u` for any MCS u. The seed
+`g_content(u) ∪ deferralDisjunctions(u) ∪ p_step_blocking_formulas(u) ⊆ u`,
+and any subset of an MCS is consistent.
 
 This extends `successor_deferral_seed_consistent` with the P-step blocking guarantee.
 -/
@@ -469,11 +460,12 @@ theorem constrained_successor_seed_consistent (u : Set Formula)
   -- Show that constrained_successor_seed u ⊆ u
   -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
 
-  -- KNOWN FALSE under strict semantics: g_content(u) ⊆ u requires T-axiom (G(φ) → φ).
-  -- Not on critical completeness path — completeness uses DovetailedChain instead.
-  -- See forward_temporal_witness_seed_consistent for the sorry-free approach.
+  -- Under BX1 (reflexive G): G(φ) → φ. So G(φ) ∈ u implies φ ∈ u by MCS closure.
   have h_g_content_in_u : g_content u ⊆ u := by
-    sorry
+    intro chi h_gc
+    have h_G_chi : Formula.all_future chi ∈ u := h_gc
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future chi))) h_G_chi
 
   -- Step 2: deferralDisjunctions(u) ⊆ u
   have h_deferrals_in_u : deferralDisjunctions u ⊆ u := by
@@ -766,22 +758,21 @@ We use an axiom with documented semantic justification, consistent with existing
 /--
 The successor deferral seed is consistent.
 
-**Status**: BLOCKED — depends on `g_content(u) ⊆ u` which is FALSE under strict semantics.
-Not on critical completeness path (completeness uses DovetailedChain).
+**Status**: PROVEN under BX1 (reflexive G).
 
-**Original proof strategy** (invalid under strict semantics):
-The seed is `g_content(u) ∪ {φ ∨ F(φ) | F(φ) ∈ u}`.
-1. g_content(u) ⊆ u: REQUIRES T-axiom — FALSE under strict semantics
-2. deferralDisjunctions ⊆ u: Valid (sorry-free)
+Under BX1, `G(φ) → φ`, so `g_content(u) ⊆ u` for any MCS u. The seed
+`g_content(u) ∪ deferralDisjunctions(u) ⊆ u`, hence consistent.
 -/
 theorem successor_deferral_seed_consistent_axiom (u : Set Formula)
     (h_mcs : SetMaximalConsistent u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     SetConsistent (successor_deferral_seed u) := by
-  -- KNOWN FALSE under strict semantics: g_content(u) ⊆ u requires T-axiom.
-  -- Not on critical completeness path — completeness uses DovetailedChain instead.
+  -- Under BX1 (reflexive G): G(φ) → φ. So g_content(u) ⊆ u by MCS closure.
   have h_g_content_in_u : g_content u ⊆ u := by
-    sorry
+    intro chi h_gc
+    have h_G_chi : Formula.all_future chi ∈ u := h_gc
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future chi))) h_G_chi
 
   -- Step 2: deferralDisjunctions(u) ⊆ u
   -- Each ψ ∨ F(ψ) where F(ψ) ∈ u is in u by MCS implication property
@@ -842,22 +833,22 @@ def past_deferral_disjunction_from_P (φ : Formula) :
 /--
 The predecessor deferral seed is consistent.
 
-**Status**: BLOCKED — depends on `h_content(u) ⊆ u` which is FALSE under strict semantics.
-Not on critical completeness path (completeness uses DovetailedChain).
-Temporal dual of `successor_deferral_seed_consistent_axiom`.
+**Status**: PROVEN under BX1' (reflexive H).
 
-**Original proof strategy** (invalid under strict semantics):
-1. h_content(u) ⊆ u: REQUIRES T-axiom H(φ) → φ — FALSE under strict semantics
-2. pastDeferralDisjunctions ⊆ u: Valid (sorry-free)
+Under BX1', `H(φ) → φ`, so `h_content(u) ⊆ u` for any MCS u. The seed
+`h_content(u) ∪ pastDeferralDisjunctions(u) ⊆ u`, hence consistent.
+Temporal dual of `successor_deferral_seed_consistent_axiom`.
 -/
 theorem predecessor_deferral_seed_consistent_axiom (u : Set Formula)
     (h_mcs : SetMaximalConsistent u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     SetConsistent (predecessor_deferral_seed u) := by
-  -- KNOWN FALSE under strict semantics: h_content(u) ⊆ u requires T-axiom.
-  -- Not on critical completeness path — completeness uses DovetailedChain instead.
+  -- Under BX1' (reflexive H): H(φ) → φ. So h_content(u) ⊆ u by MCS closure.
   have h_h_content_in_u : h_content u ⊆ u := by
-    sorry
+    intro chi h_hc
+    have h_H_chi : Formula.all_past chi ∈ u := h_hc
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past chi))) h_H_chi
 
   -- Step 2: pastDeferralDisjunctions(u) ⊆ u
   -- Each ψ ∨ P(ψ) where P(ψ) ∈ u is in u by MCS implication property
