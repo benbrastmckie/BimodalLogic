@@ -512,7 +512,7 @@ These are used by the dovetailed chain construction to track Until/Since obligat
 theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
     Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))) ∈ M := by
-  have h_ax := Bimodal.Theorems.TemporalDerived.until_unfold_X φ ψ
+  have h_ax := Bimodal.Theorems.TemporalDerived.until_unfold_wrapped φ ψ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_U
 
 /-- `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`: Y-wrapped Since unfolding in an MCS.
@@ -520,7 +520,7 @@ theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
     Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))) ∈ M := by
-  have h_ax := Bimodal.Theorems.TemporalDerived.since_unfold_Y φ ψ
+  have h_ax := Bimodal.Theorems.TemporalDerived.since_unfold_wrapped φ ψ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
 
 /--

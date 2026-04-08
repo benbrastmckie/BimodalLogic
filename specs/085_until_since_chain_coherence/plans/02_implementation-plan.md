@@ -57,7 +57,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Rename X/Y Theorems and Remove Pure X/Y Code [NOT STARTED]
+### Phase 1: Rename X/Y Theorems and Remove Pure X/Y Code [COMPLETED]
 
 **Goal**: Rename kept theorems from X/Y notation to bot-Until/bot-Since notation, then remove purely X/Y definitions and theorems from TemporalDerived.lean.
 

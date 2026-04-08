@@ -325,7 +325,7 @@ private noncomputable def x_content_set_consistent {M : Set Formula}
   have h_Xbot : Formula.untl Formula.bot Formula.bot ∈ M :=
     x_lift_derivation h_mcs L Formula.bot d_bot h_X_sub
   have h_neg_Xbot : (Formula.untl Formula.bot Formula.bot).neg ∈ M :=
-    theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.X_bot_absurd
+    theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.bot_until_bot_absurd
   exact set_consistent_not_both h_mcs.1 (Formula.untl Formula.bot Formula.bot)
     h_Xbot h_neg_Xbot
 
@@ -391,7 +391,7 @@ private noncomputable def y_content_set_consistent {M : Set Formula}
   have h_Ybot : Formula.snce Formula.bot Formula.bot ∈ M :=
     y_lift_derivation h_mcs L Formula.bot d_bot h_Y_sub
   have h_neg_Ybot : (Formula.snce Formula.bot Formula.bot).neg ∈ M :=
-    theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.Y_bot_absurd
+    theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.bot_since_bot_absurd
   exact set_consistent_not_both h_mcs.1 (Formula.snce Formula.bot Formula.bot)
     h_Ybot h_neg_Ybot
 

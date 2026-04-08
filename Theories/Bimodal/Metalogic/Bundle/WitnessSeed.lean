@@ -422,7 +422,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
       Bimodal.Theorems.Propositional.rce_imp φ (Formula.bot.untl Formula.bot)
     -- X(⊥) → ⊥ by X_bot_absurd
     exact Bimodal.Theorems.Combinators.imp_trans h_rce
-      Bimodal.Theorems.TemporalDerived.X_bot_absurd
+      Bimodal.Theorems.TemporalDerived.bot_until_bot_absurd
 
   -- Step 2: G((φ ∧ X(⊥)) → ⊥) by necessitation
   have h_G_and_xbot : [] ⊢ ((Formula.and φ (Formula.bot.untl Formula.bot)).imp Formula.bot).all_future :=
@@ -458,7 +458,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   -- Step 7: X(⊥) → ⊥, so ⊥ ∈ M, contradicting MCS consistency
   have h_bot : Formula.bot ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.X_bot_absurd) h_Xbot
+      (theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.bot_until_bot_absurd) h_Xbot
   exact h_mcs.1 [Formula.bot] (fun _ hφ => by simp at hφ; exact hφ ▸ h_bot)
     ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
@@ -541,7 +541,7 @@ theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
     have h_rce : [] ⊢ (Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp (Formula.snce Formula.bot Formula.bot) :=
       Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce Formula.bot Formula.bot)
     exact Bimodal.Theorems.Combinators.imp_trans h_rce
-      Bimodal.Theorems.TemporalDerived.Y_bot_absurd
+      Bimodal.Theorems.TemporalDerived.bot_since_bot_absurd
 
   -- Step 2: H((φ ∧ Y(⊥)) → ⊥) by past necessitation
   have h_H_and_ybot : [] ⊢ ((Formula.and φ (Formula.snce Formula.bot Formula.bot)).imp Formula.bot).all_past :=
@@ -577,7 +577,7 @@ theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
   -- Step 7: Y(⊥) → ⊥, so ⊥ ∈ M, contradicting MCS consistency
   have h_bot : Formula.bot ∈ M :=
     SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.Y_bot_absurd) h_Ybot
+      (theorem_in_mcs h_mcs Bimodal.Theorems.TemporalDerived.bot_since_bot_absurd) h_Ybot
   exact h_mcs.1 [Formula.bot] (fun _ hφ => by simp at hφ; exact hφ ▸ h_bot)
     ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
