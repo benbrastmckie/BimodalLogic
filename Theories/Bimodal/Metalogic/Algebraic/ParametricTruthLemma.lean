@@ -218,7 +218,8 @@ structure via `until_persists_chain` and `since_persists_chain`.
 -/
 theorem parametric_canonical_truth_lemma
     (B : BFMCS D) (h_tc : B.temporally_coherent)
-    (h_uc : B.until_since_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (phi : Formula) :
     phi ∈ fam.mcs t ↔
@@ -365,7 +366,8 @@ theorem parametric_canonical_truth_lemma
   | untl phi psi ih_phi ih_psi =>
     -- Until truth lemma: (φ U ψ) ∈ fam.mcs t ↔ ∃ s > t, truth(ψ,s) ∧ ∀ r ∈ (t,s), truth(φ,r)
     simp only [truth_at]
-    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
+    obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
     · -- Forward: (φ U ψ) ∈ fam.mcs t → semantic Until witness
       intro h_U
@@ -381,7 +383,8 @@ theorem parametric_canonical_truth_lemma
   | snce phi psi ih_phi ih_psi =>
     -- Since truth lemma: (φ S ψ) ∈ fam.mcs t ↔ ∃ s < t, truth(ψ,s) ∧ ∀ r ∈ (s,t), truth(φ,r)
     simp only [truth_at]
-    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
+    obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
     · -- Forward: (φ S ψ) ∈ fam.mcs t → semantic Since witness
       intro h_S
@@ -410,7 +413,9 @@ to show that Box phi persists to all times, enabling truth at shifted histories
 via `time_shift_preserves_truth`.
 -/
 theorem parametric_shifted_truth_lemma (B : BFMCS D)
-    (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent) (φ : Formula)
+    (h_tc : B.temporally_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent) (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
     φ ∈ fam.mcs t ↔
     truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
@@ -543,34 +548,30 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
   | untl phi psi ih_phi ih_psi =>
-    -- Until shifted truth lemma: (φ U ψ) ∈ fam.mcs t ↔ ∃ s > t, truth(ψ,s) ∧ ∀ r ∈ (t,s), truth(φ,r)
     simp only [truth_at]
-    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
+    obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
-    · -- Forward: (φ U ψ) ∈ fam.mcs t → semantic Until witness
-      intro h_U
+    · intro h_U
       obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
       exact ⟨s, h_ts,
         (ih_psi fam hfam s).mp h_psi_s,
         fun r h_tr h_rs => (ih_phi fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
-    · -- Backward: semantic Until witness → (φ U ψ) ∈ fam.mcs t
-      intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+    · intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
       exact h_bwd_U t phi psi ⟨s, h_ts,
         (ih_psi fam hfam s).mpr h_truth_psi_s,
         fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
-    -- Since shifted truth lemma: (φ S ψ) ∈ fam.mcs t ↔ ∃ s < t, truth(ψ,s) ∧ ∀ r ∈ (s,t), truth(φ,r)
     simp only [truth_at]
-    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
+    obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
-    · -- Forward: (φ S ψ) ∈ fam.mcs t → semantic Since witness
-      intro h_S
+    · intro h_S
       obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
       exact ⟨s, h_st,
         (ih_psi fam hfam s).mp h_psi_s,
         fun r h_sr h_rt => (ih_phi fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
-    · -- Backward: semantic Since witness → (φ S ψ) ∈ fam.mcs t
-      intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+    · intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
       exact h_bwd_S t phi psi ⟨s, h_st,
         (ih_psi fam hfam s).mpr h_truth_psi_s,
         fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩

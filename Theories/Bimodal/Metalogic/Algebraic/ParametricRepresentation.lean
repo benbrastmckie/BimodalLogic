@@ -183,16 +183,15 @@ in the instantiation modules.
 -/
 theorem parametric_algebraic_representation_relative
     (B : BFMCS D) (h_tc : B.temporally_coherent)
-    (h_uc : B.until_since_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent)
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
   intro h_phi_true
-  -- By shifted truth lemma (backward): truth_at ... φ implies φ ∈ fam.mcs t
-  have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_uc φ fam hfam t).mpr h_phi_true
-  -- But φ.neg ∈ fam.mcs t, contradiction with MCS consistency
+  have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mpr h_phi_true
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
 
 /--
@@ -204,14 +203,15 @@ The caller provides the BFMCS and the witness that φ.neg is in some family.
 -/
 theorem parametric_representation_from_neg_membership
     (B : BFMCS D) (h_tc : B.temporally_coherent)
-    (h_uc : B.until_since_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent)
     (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
   intro h_phi_true
-  have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_uc φ fam hfam t).mpr h_phi_true
+  have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mpr h_phi_true
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
 
 /--
@@ -254,21 +254,19 @@ to the caller. The instantiation modules provide the concrete construction.
 theorem parametric_algebraic_representation_conditional
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent M →
-      Σ' (B : BFMCS D) (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent)
+      Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
+         (h_buc : B.backward_until_since_coherent)
+         (h_fuc : B.forward_until_since_coherent)
          (fam : FMCS D) (hfam : fam ∈ B.families) (t : D),
          M = fam.mcs t) :
     ∃ (B : BFMCS D) (h_tc : B.temporally_coherent)
       (fam : FMCS D) (hfam : fam ∈ B.families) (t : D),
       ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
         (parametric_to_history fam) t φ := by
-  -- Step 1: Extend {φ.neg} to an MCS
   obtain ⟨M, h_mcs, h_neg_in⟩ := not_provable_implies_neg_extends_to_mcs φ h_not_prov
-  -- Step 2: Use the construction function to get a BFMCS containing M
-  obtain ⟨B, h_tc, h_uc, fam, hfam, t, h_eq⟩ := construct_bfmcs M h_mcs
-  -- Step 3: φ.neg ∈ fam.mcs t (since M = fam.mcs t)
+  obtain ⟨B, h_tc, h_buc, h_fuc, fam, hfam, t, h_eq⟩ := construct_bfmcs M h_mcs
   have h_neg_in_fam : φ.neg ∈ fam.mcs t := h_eq ▸ h_neg_in
-  -- Step 4: Apply the representation theorem
-  exact ⟨B, h_tc, fam, hfam, t, parametric_representation_from_neg_membership B h_tc h_uc φ fam hfam t h_neg_in_fam⟩
+  exact ⟨B, h_tc, fam, hfam, t, parametric_representation_from_neg_membership B h_tc h_buc h_fuc φ fam hfam t h_neg_in_fam⟩
 
 /-!
 ## Completeness Corollary
@@ -287,17 +285,16 @@ This is the soundness direction: non-provability is witnessed by countermodels.
 -/
 theorem countermodel_implies_not_provable
     (B : BFMCS D) (h_tc : B.temporally_coherent)
-    (h_uc : B.until_since_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent)
     (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D)
     (h_false : ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ) :
     ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ) := by
   intro ⟨d⟩
-  -- If ⊢ φ, then φ ∈ every MCS
   have h_in : φ ∈ fam.mcs t := theorem_in_mcs (fam.is_mcs t) d
-  -- By truth lemma: truth_at ... φ
-  have h_true := (parametric_shifted_truth_lemma B h_tc h_uc φ fam hfam t).mp h_in
+  have h_true := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mp h_in
   exact h_false h_true
 
 end Bimodal.Metalogic.Algebraic.ParametricRepresentation

@@ -478,4 +478,82 @@ def BFMCS.until_since_coherent (B : BFMCS D) : Prop :=
       (∃ s : D, s ≤ t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) →
       Formula.snce φ ψ ∈ fam.mcs t)
 
+/-!
+## Split Until/Since Coherence
+
+The full `until_since_coherent` predicate bundles four conjuncts:
+1. forward_until, 2. backward_until, 3. forward_since, 4. backward_since
+
+Research (task 84, 4 rounds) conclusively shows that forward Until/Since
+(conjuncts 1 and 3) is blocked by a fundamental incompatibility between
+Lindenbaum extension freedom and Until formula persistence through chain
+steps. The backward direction (conjuncts 2 and 4) is provable given a
+step transfer property.
+
+Splitting the predicate allows closing backward coherence while leaving
+forward coherence as a precisely scoped sorry.
+-/
+
+/--
+Backward Until/Since coherence: conjuncts 2 and 4 of `until_since_coherent`.
+
+Given a witness pattern (ψ at some s, φ on the guard interval), derive
+the Until/Since formula membership at the target time.
+-/
+def BFMCS.backward_until_since_coherent (B : BFMCS D) : Prop :=
+  ∀ fam ∈ B.families,
+    (∀ t : D, ∀ φ ψ : Formula,
+      (∃ s : D, t ≤ s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) →
+      Formula.untl φ ψ ∈ fam.mcs t) ∧
+    (∀ t : D, ∀ φ ψ : Formula,
+      (∃ s : D, s ≤ t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) →
+      Formula.snce φ ψ ∈ fam.mcs t)
+
+/--
+Forward Until/Since coherence: conjuncts 1 and 3 of `until_since_coherent`.
+
+Given Until/Since formula membership, produce a witness time with the
+guard condition on intermediate times.
+-/
+def BFMCS.forward_until_since_coherent (B : BFMCS D) : Prop :=
+  ∀ fam ∈ B.families,
+    (∀ t : D, ∀ φ ψ : Formula,
+      Formula.untl φ ψ ∈ fam.mcs t →
+      ∃ s : D, t ≤ s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) ∧
+    (∀ t : D, ∀ φ ψ : Formula,
+      Formula.snce φ ψ ∈ fam.mcs t →
+      ∃ s : D, s ≤ t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r)
+
+omit [Zero D] in
+/--
+Recombination: backward + forward implies the original `until_since_coherent`.
+-/
+theorem BFMCS.split_until_since_coherent (B : BFMCS D)
+    (h_buc : B.backward_until_since_coherent) (h_fuc : B.forward_until_since_coherent) :
+    B.until_since_coherent := by
+  intro fam hfam
+  obtain ⟨h_bwd_U, h_bwd_S⟩ := h_buc fam hfam
+  obtain ⟨h_fwd_U, h_fwd_S⟩ := h_fuc fam hfam
+  exact ⟨h_fwd_U, h_bwd_U, h_fwd_S, h_bwd_S⟩
+
+omit [Zero D] in
+/--
+Extract backward half from the original `until_since_coherent`.
+-/
+theorem BFMCS.until_since_coherent_backward (B : BFMCS D)
+    (h_uc : B.until_since_coherent) : B.backward_until_since_coherent := by
+  intro fam hfam
+  obtain ⟨_, h_bwd_U, _, h_bwd_S⟩ := h_uc fam hfam
+  exact ⟨h_bwd_U, h_bwd_S⟩
+
+omit [Zero D] in
+/--
+Extract forward half from the original `until_since_coherent`.
+-/
+theorem BFMCS.until_since_coherent_forward (B : BFMCS D)
+    (h_uc : B.until_since_coherent) : B.forward_until_since_coherent := by
+  intro fam hfam
+  obtain ⟨h_fwd_U, _, h_fwd_S, _⟩ := h_uc fam hfam
+  exact ⟨h_fwd_U, h_fwd_S⟩
+
 end Bimodal.Metalogic.Bundle

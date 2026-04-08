@@ -160,12 +160,13 @@ This provides a template for the discrete completeness truth lemma.
 -/
 theorem discrete_base_truth_lemma
     (B : BFMCS Int) (h_tc : B.temporally_coherent)
-    (h_uc : B.until_since_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent)
     (fam : FMCS Int) (hfam : fam ∈ B.families)
     (t : Int) (φ : Formula) :
     φ ∈ fam.mcs t ↔
       truth_at CanonicalTaskModel (CanonicalOmega B) (to_history fam) t φ :=
-  canonical_truth_lemma B h_tc h_uc fam hfam t φ
+  canonical_truth_lemma B h_tc h_buc h_fuc fam hfam t φ
 
 /-!
 ## SuccOrder/PredOrder Dependency Documentation
