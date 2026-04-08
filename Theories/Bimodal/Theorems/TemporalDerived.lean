@@ -50,8 +50,6 @@ open Bimodal.Theorems.Combinators
 
 -- Abbreviations for readability
 private abbrev top : Formula := Formula.neg Formula.bot  -- ⊤ = ¬⊥
-private abbrev X (a : Formula) : Formula := Formula.untl Formula.bot a  -- X(a) = ⊥ U a
-private abbrev Y (a : Formula) : Formula := Formula.snce Formula.bot a  -- Y(a) = ⊥ S a
 
 /-!
 ## BX-Derivable Temporal Theorems (sorry-free)
@@ -163,22 +161,6 @@ def G_implies_topUntil (a : Formula) :
     ⊢ a.all_future.imp (Formula.untl top a) :=
   imp_trans (DerivationTree.axiom [] _ (Axiom.temp_t_future a))
     (DerivationTree.axiom [] _ (Axiom.refl_intro_until top a))
-
-/--
-`⊢ G(a) → X(a)` where X(a) = ⊥ U a.
-From BX1 (G(a) → a) and BX8 (a → ⊥ U a), compose.
--/
-def G_implies_X (a : Formula) : ⊢ a.all_future.imp (X a) :=
-  imp_trans (DerivationTree.axiom [] _ (Axiom.temp_t_future a))
-    (DerivationTree.axiom [] _ (Axiom.refl_intro_until Formula.bot a))
-
-/--
-`⊢ H(a) → Y(a)` where Y(a) = ⊥ S a. Mirror of G_implies_X.
-From BX1' (H(a) → a) and BX8' (a → ⊥ S a), compose.
--/
-def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) :=
-  imp_trans (DerivationTree.axiom [] _ (Axiom.temp_t_past a))
-    (DerivationTree.axiom [] _ (Axiom.refl_intro_since Formula.bot a))
 
 /--
 `⊢ (⊥ U ⊥) → ⊥`: X(⊥) is absurd.

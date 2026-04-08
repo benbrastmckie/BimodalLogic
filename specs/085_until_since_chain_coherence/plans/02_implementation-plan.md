@@ -95,7 +95,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Remove x_content/y_content Section and Archive Discreteness [NOT STARTED]
+### Phase 2: Remove x_content/y_content Section and Archive Discreteness [COMPLETED]
 
 **Goal**: Remove the x_content/y_content infrastructure from TemporalContent.lean (4 sorry sites) and archive Discreteness.lean to Boneyard (1 sorry site).
 
