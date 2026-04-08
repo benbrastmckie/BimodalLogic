@@ -209,7 +209,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: BX Canonical Model Completeness [NOT STARTED]
+### Phase 4: BX Canonical Model Completeness [PARTIAL]
 
 **Goal**: Build the new BX canonical model completeness proof in a new `Metalogic/BXCanonical/` module directory. This is the highest-risk phase but also where the main sorries get eliminated.
 
