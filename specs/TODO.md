@@ -1,16 +1,16 @@
 ---
-next_project_number: 83
+next_project_number: 86
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-31T00:00:00Z
 task_counts:
-  active: 19
+  active: 18
   completed: 739
   in_progress: 0
-  not_started: 11
-  abandoned: 64
-  total: 812
+  not_started: 10
+  abandoned: 66
+  total: 813
 technical_debt:
   sorry_count: 20
   sorry_count_note: "Audited 2026-03-31: 12 examples/exercises, 1 soundness (temporal_duality, intentional), 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 59 filled 4 soundness sorries."
@@ -27,11 +27,26 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-03-31.*
+*Updated 2026-04-08. Tasks 78, 79 abandoned (SuccChain redundant with dovetailed path). Task 85 created for Until/Since chain coherence research. Task 58 description updated post-tasks 83/84.*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
-### 0. Strict Temporal Extensions Research (new track, parallel)
+### 1. Critical Path — Until/Since Chain Coherence
+
+```
+85 → 58 → 60
+```
+
+1. **85** [NOT STARTED] — Research Until/Since chain coherence: 3 approaches (restricted deferral closure, simultaneous well-founded induction, quasimodel replacement)
+2. **58** [BLOCKED] — Wire completeness to FrameConditions (structurally complete; blocked on forward_until_since_coherent + step transfer — depends on 85)
+3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+
+### 2. Independent Completeness Paths (parallel)
+
+- **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries — gives weak completeness
+- **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (independent, needs Rat construction)
+
+### 3. Strict Temporal Extensions Research (parallel track)
 
 ```
 74 → 75 → 76
@@ -43,31 +58,19 @@ technical_debt:
 - **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
 - **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
 
-### 1. Phase B — Core Wiring (CRITICAL PATH)
-
-```
-58 → 60
- ↘ 68 (dense path, parallel)
-```
-
-- **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
-1. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence + until_since_coherent)
-2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
-3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
-
-### 2. Experimental / Research
+### 4. Experimental / Research
 
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 - **64** [RESEARCHED] — Critical path review (completed research, reference only)
 
-### 3. Deferred
+### 5. Deferred
 
 - **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
 - **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
 - **21** [PLANNED] — Tech debt cleanup (depends on 18)
 - **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
 
-### 4. Backlog
+### 6. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
 - **39** [RESEARCHED] — Preorder semantics study (theoretical)
@@ -76,6 +79,34 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 85. Research Until/Since chain coherence approaches
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: critical
+- **Dependencies**: None
+- **Created**: 2026-04-08
+- **Related**: Tasks 58, 83 (archived), 84 (archived)
+
+**Description**: Research 3 approaches to closing the dominant completeness blocker (~12 sorry sites in FrameConditions/Completeness.lean). The root cause is G-lift incompatibility: Until formulas `(φ U ψ)` cannot be included in Lindenbaum chain seeds because `G(φ U ψ) ∉ M` in general. Tasks 83 (39 research rounds) and 84 (4 rounds, 95% confidence) exhaustively proved the standard enriched-seed approach fails.
+
+**Three unexplored directions**:
+
+1. **Restricted forward Until via deferral closure**: If forward Until coherence is restricted to formulas in the deferral closure, the restricted chain's sorry-free `restricted_forward_F` (SuccChainFMCS.lean) might suffice. Investigate whether `restricted_until_since_coherent` (quantifying only over deferral closure) is sufficient for the truth lemma.
+
+2. **Simultaneous well-founded induction**: Prove `forward_F` and `forward_Until` simultaneously by induction on formula complexity or subformula depth. The circularity (`forward_F` → `temporal_backward_G` → `forward_F`) might break if both are proven in a single mutual induction over the subformula closure.
+
+3. **Quasimodel replacement**: Replace the Lindenbaum chain construction with a constraint-satisfaction approach (GHR 1994 style). Avoids G-lift entirely but is a major rewrite (~2000 LOC, 50% confidence). Prior investigation (task 83 report 24) found linearization issues — determine if these are fundamental or surmountable.
+
+**Key references**:
+- `FrameConditions/Completeness.lean` — 5 sorry sites (3 forward_until_since_coherent + hidden step transfer in backward)
+- `UntilSinceCoherence.lean` — 6 parameterized sorry-free backward theorems (infrastructure ready)
+- `DovetailedChain.lean` — Sorry-free bundle-level forward_F (but cross-family)
+- Task 83 reports 24, 28, 38, 39 — Prior analysis
+- Task 84 report 04_team-research.md — Definitive G-lift incompatibility analysis
 
 ---
 
@@ -95,7 +126,7 @@ technical_debt:
 
 ### 79. Clean up termination artifact sorries in SuccChainFMCS
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #73
@@ -108,7 +139,7 @@ technical_debt:
 
 ### 78. Resolve consistency proof sorries in SuccChainFMCS
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #73
@@ -258,15 +289,15 @@ technical_debt:
 
 ### 58. Wire completeness to FrameConditions
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [BLOCKED]
 - **Language**: lean4
-- **Dependencies**: Task #72, Task #68
+- **Dependencies**: Task #85
 - **Research**:
   - [63_team-research.md](058_wire_completeness_to_frame_conditions/reports/63_team-research.md) — Team research: seed consistency proof techniques (4 teammates)
   - [65_team-research.md](058_wire_completeness_to_frame_conditions/reports/65_team-research.md) — Team research: BRS blocker analysis - theorem is FALSE, bypass recommended
 - **Plan**: [17_greedy-extension.md](058_wire_completeness_to_frame_conditions/plans/17_greedy-extension.md) — 4-phase greedy extension approach
 
-**Description**: Connect construct_bfmcs to the top-level completeness theorems in FrameConditions/Completeness.lean. Eliminate the 3 sorries: dense_completeness_fc (line 108), discrete_completeness_fc (line 151), completeness_over_Int (line 170). This wires the sorry-free algebraic path through to the final completeness statements.
+**Description**: Wire completeness to FrameConditions. Post-tasks 83/84 status: wiring is DONE — `completeness_over_Int`, `discrete_completeness_fc`, and `dovetailed_bundle_validity_implies_provability` are structurally complete. Remaining sorries: (1) `forward_until_since_coherent` (3 sites, blocked by G-lift incompatibility — see task 85), (2) backward step transfer (6 sites, same root cause), (3) `dense_completeness_fc` (1 site, needs Rat canonical model — see task 68). Task 82 (FMP) provides weak completeness independently.
 
 ---
 
