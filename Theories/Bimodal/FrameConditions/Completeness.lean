@@ -325,7 +325,7 @@ theorem bundle_validity_implies_provability (φ : Formula)
   -- The step transfer hypothesis (pulling Until/Since backward one chain step)
   -- is sorry'd: SuccChainFMCS g_content propagates G-formulas forward (r → r+1)
   -- but cannot pull Until formulas backward (r+1 → r). Closing this requires
-  -- enriched seeds or x_content-style chain constructions.
+  -- enriched seeds or alternative chain constructions.
   have h_buc : B.backward_until_since_coherent := by
     intro fam hfam
     constructor
@@ -596,7 +596,7 @@ Each `h_buc` uses `backward_until_coherent` / `backward_since_coherent` from
 `UntilSinceCoherence.lean`, parameterized by a step transfer hypothesis.
 The step transfer says: `(φ U ψ) ∈ fam.mcs (r+1) ∧ φ ∈ fam.mcs r → (φ U ψ) ∈ fam.mcs r`.
 This is sorry'd because `g_content` propagates G-formulas forward but cannot
-pull Until/Since backward. Closing requires enriched seeds or x_content chains.
+pull Until/Since backward. Closing requires enriched seeds or alternative chains.
 
 **Forward Until/Since** (witness extraction sorry):
 Each `h_fuc` requires converting `(φ U ψ) ∈ fam.mcs t` into a witness time s
@@ -618,7 +618,7 @@ Lindenbaum extension freedom (research task 84, 4 rounds, 95% confidence).
 **Step transfer** (backward coherence):
 - Enriched successor seed that includes `{φ U ψ | φ U ψ ∈ M}` alongside `g_content(M)`,
   so that Until formulas persist into the next step's seed and therefore its extension.
-- Or: x_content-style deterministic chain where `X(α) ↔ α` makes the chain constant.
+- Or: bot-Until-based deterministic chain where `(⊥ U α) ↔ α` makes the chain constant.
 
 **Witness extraction** (forward coherence):
 - Restricted forward Until via deferral closure

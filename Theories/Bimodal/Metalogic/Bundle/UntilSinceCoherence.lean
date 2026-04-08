@@ -27,10 +27,10 @@ The backward induction from s to t requires, at each intermediate step r:
 This step is NOT derivable from the bare FMCS structure (forward_G, backward_H).
 It requires additional chain properties:
 
-1. **Deterministic chain** (Boneyard/DeterministicFMCS): Has x_content linking
-   `φ ∈ chain(n+1) ↔ X(φ) ∈ chain(n)`, giving the step via `until_intro`.
-   Under BX reflexive semantics, x_content(M) = M (since X(α) ↔ α), so the
-   deterministic chain is constant and backward Until is trivially satisfied.
+1. **Deterministic chain** (archived to Boneyard/DiscreteXY): Used bot-Until
+   linking `φ ∈ chain(n+1) ↔ (⊥ U φ) ∈ chain(n)`, giving the step via `until_intro`.
+   Under BX reflexive semantics, (⊥ U α) ↔ α in any MCS, so the deterministic
+   chain is constant and backward Until is trivially satisfied.
 
 2. **Dovetailed/SuccChain**: Has g_content linking `G(φ) ∈ chain(n) → φ ∈ chain(n+1)`,
    which goes forward but not backward. The h_content duality gives
@@ -106,7 +106,7 @@ Backward Until for an FMCS over Int, parameterized by step transfer.
 
 The step hypothesis says: if `(φ U ψ) ∈ fam.mcs (r+1)` and `φ ∈ fam.mcs r`,
 then `(φ U ψ) ∈ fam.mcs r`. This abstracts over the chain-link mechanism
-(x_content, enriched seed, etc.) that enables pulling Until backward.
+(bot-Until content, enriched seed, etc.) that enables pulling Until backward.
 -/
 theorem backward_until_from_step (fam : FMCS Int)
     (φ ψ : Formula)

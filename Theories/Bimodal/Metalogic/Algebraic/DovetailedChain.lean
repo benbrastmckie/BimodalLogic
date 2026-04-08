@@ -14,8 +14,8 @@ import Mathlib.Data.Nat.Pairing
 /-!
 # Dovetailed Chain Construction for Temporal Coherence
 
-**DEPRECATED**: This module is architecturally blocked and superseded by
-`DeterministicFMCS.lean`. See Deprecation Notice below.
+**DEPRECATED**: This module is architecturally blocked. The deterministic chain
+approach (archived to Boneyard/ChainCompleteness) was superseded by BXCanonical.
 
 This module implements a dovetailed omega chain construction that resolves ALL
 F-obligations (and symmetrically P-obligations) fairly, yielding a
@@ -36,11 +36,11 @@ positive times) follows from the g_content/h_content duality theorems:
 ## Architectural Limitation: X-vs-G Mismatch
 
 All 6 sorries in this module stem from a single architectural mismatch:
-Lindenbaum seeds provide **x_content-level** consistency (via `until_unfold` giving
-`X(ψ ∨ (⊤ ∧ (⊤ U ψ)))`), but Until persistence through chain steps requires
+Lindenbaum seeds provide **bot-Until-level** consistency (via `until_unfold` giving
+`(⊥ U (ψ ∨ (⊤ ∧ (⊤ U ψ))))`), but Until persistence through chain steps requires
 **g_content-level** propagation (i.e., `G(⊤ U ψ)` preservation). The forward chain's
 `temporal_theory_witness_exists` preserves `G_theory` and gives `g_content`, but
-the `X`-formula from `until_unfold` is not G-liftable — `G(neg(⊤ U ψ)) ∈ chain(n)`
+the `⊥ U`-formula from `until_unfold` is not G-liftable — `G(neg(⊤ U ψ)) ∈ chain(n)`
 does not contradict `(⊤ U ψ) ∈ chain(n)` under strict semantics.
 
 This means the dovetailed chain cannot propagate Until/Since obligations through
@@ -64,13 +64,12 @@ Uses `Nat.unpair` and `Denumerable Formula` for fair enumeration:
 /-!
 ## Deprecation Notice
 
-This module is superseded by `Bimodal.Metalogic.Algebraic.DeterministicFMCS`, which uses
-a deterministic chain construction that avoids the X-vs-G mismatch. The deterministic
-approach resolves F-obligations via finite deferral rather than fair scheduling, enabling
-g_content-level propagation that this module cannot achieve.
+The deterministic chain approach (DeterministicFMCS, archived to Boneyard/ChainCompleteness)
+used bot-Until content linking to avoid the bot-Until-vs-G mismatch. However, both
+approaches are superseded by the BXCanonical path (Metalogic/BXCanonical/).
 
 All 6 sorries in this module are annotated as `DEPRECATED` and will not be resolved.
-New development should use `DeterministicFMCS.lean` for the completeness proof pipeline.
+New development should use the BXCanonical path for the completeness proof pipeline.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.DovetailedChain
@@ -623,19 +622,18 @@ theorem forward_dovetailed_until_persists (M_0 : Set Formula) (h_mcs_0 : SetMaxi
   -- The proof requires showing (⊤ U ψ) ∈ chain(n+1) where chain(n+1) is a
   -- Lindenbaum extension of {target} ∪ temporal_box_g_seed(chain(n)).
   --
-  -- until_unfold gives: X(ψ ∨ (⊤ ∧ (⊤ U ψ))) ∈ chain(n)
-  -- So ψ ∨ (⊤ ∧ (⊤ U ψ)) ∈ x_content(chain(n)).
+  -- until_unfold gives: (⊥ U (ψ ∨ (⊤ ∧ (⊤ U ψ)))) ∈ chain(n)
+  -- So ψ ∨ (⊤ ∧ (⊤ U ψ)) is derivable from bot-Until elimination.
   --
-  -- BLOCKER: chain(n+1) ⊇ g_content(chain(n)) but NOT x_content(chain(n)).
-  -- The formula ψ ∨ (⊤ ∧ (⊤ U ψ)) is in x_content, not g_content.
+  -- BLOCKER: chain(n+1) ⊇ g_content(chain(n)) but not the bot-Until content.
+  -- The formula ψ ∨ (⊤ ∧ (⊤ U ψ)) is accessible via bot-Until, not g_content.
   -- For it to be in g_content, we'd need G(ψ ∨ (⊤ ∧ (⊤ U ψ))) ∈ chain(n),
   -- which requires G(⊤ U ψ) ∈ chain(n). But (⊤ U ψ) → G(⊤ U ψ) is NOT
   -- derivable (semantically false: Until is existential, G is universal).
   --
   -- ATTEMPTED APPROACHES (all blocked):
-  -- 1. Modify forward_step to use x_content base → chain becomes deterministic,
-  --    x_content(M) ∪ {target} is consistent only when target ∈ x_content(M),
-  --    so resolution step is vacuous. Forward_F unprovable without truth lemma.
+  -- 1. Modify forward_step to use bot-Until base → chain becomes deterministic,
+  --    but resolution step is vacuous. Forward_F unprovable without truth lemma.
   -- 2. Add Until formulas to Lindenbaum seed → consistency proof fails because
   --    Until formulas are not G-liftable. G(neg(⊤ U ψ)) ∈ chain(n) does not
   --    contradict (⊤ U ψ) ∈ chain(n) under strict semantics (no T-axiom for G).

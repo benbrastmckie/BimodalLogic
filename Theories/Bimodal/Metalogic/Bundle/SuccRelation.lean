@@ -527,17 +527,17 @@ theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 U-step for Succ with G-persistence.
 
 **BLOCKED** under strict semantics: The old argument relied on the non-strict `until_unfold`
-giving `ψ ∨ (φ ∧ G(φ U ψ))`, where `G(φ U ψ)` propagates via g_content. Under strict
-semantics, `until_unfold` gives `X(ψ ∨ (φ ∧ (φ U ψ)))` instead, and there is no G-wrapped
-Until formula to propagate through g_content. The X-formula gives `F(ψ ∨ ...)` via
-`next_implies_some_future`, placing the disjunction in `f_content(u)`. By Succ.f_step,
-it reaches `v ∪ f_content(v)`. However, if it lands in `v` and the `ψ` branch holds,
-`ψ → (φ U ψ)` is NOT valid under strict semantics (no strictly future witness). If it
+giving `ψ ∨ (φ ∧ G(φ U ψ))`, where `G(φ U ψ)` propagates via g_content. Under the
+BX axiom system, `until_unfold_wrapped` gives `(⊥ U (ψ ∨ (φ ∧ (φ U ψ))))` instead,
+and there is no G-wrapped Until formula to propagate through g_content. The bot-Until
+formula gives `F(ψ ∨ ...)` via eventuality extraction, placing the disjunction in
+`f_content(u)`. By Succ.f_step, it reaches `v ∪ f_content(v)`. However, if it lands
+in `v` and the `ψ` branch holds, `ψ → (φ U ψ)` uses BX8 (reflexive intro). If it
 lands in `f_content(v)`, we get `F(ψ ∨ ...) ∈ v` but not `(φ U ψ) ∈ v`.
 
-This theorem requires the Succ relation to additionally propagate X-content, or a
-fundamentally different approach. The dovetailed chain construction bypasses this by
-resolving Until obligations through fair scheduling rather than Succ-based propagation.
+This theorem requires the Succ relation to additionally propagate bot-Until content,
+or a fundamentally different approach. The dovetailed chain construction bypasses this
+by resolving Until obligations through fair scheduling rather than Succ-based propagation.
 -/
 theorem until_persists_through_succ (u v : Set Formula)
     (h_mcs_u : SetMaximalConsistent u) (h_mcs_v : SetMaximalConsistent v) (h_succ : Succ u v)

@@ -37,7 +37,7 @@ Algebraic/
 ├── ParametricRepresentation.lean # D-parametric representation theorem
 │
 │   Deterministic Chain (Discrete Completeness)
-└── DeterministicChain.lean       # Int-indexed chain via x_content/y_content
+└── DeterministicChain.lean       # Int-indexed chain (archived to Boneyard)
 ```
 
 ## Mathematical Overview
