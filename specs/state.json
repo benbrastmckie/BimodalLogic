@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 86,
+      "project_name": "close_bxcanonical_completeness_sorries",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
+      "created": "2026-04-08T22:20:49Z",
+      "last_updated": "2026-04-08T22:20:49Z"
+    },
+    {
       "project_number": 60,
       "project_name": "remove_discrete_icc_finite_axiom",
       "status": "not_started",
@@ -784,7 +793,7 @@
       "completion_summary": "Completed all 6 phases: renamed X/Y theorems, removed x_content/y_content (-5 sorries), fixed FMP temp_4 sorry (-1), investigated BX7 linearity (blocked), cleaned comments, defined restricted coherence. Net -6 sorry sites."
     }
   ],
-  "next_project_number": 86,
+  "next_project_number": 87,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
