@@ -101,7 +101,7 @@ technical_debt:
 
 ### 83. Close Restricted Coherence Sorries
 - **Effort**: 12-18 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: 81
