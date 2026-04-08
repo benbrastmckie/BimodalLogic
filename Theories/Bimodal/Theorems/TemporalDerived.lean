@@ -25,11 +25,10 @@ under all-reflexive semantics.
 These theorems use the reflexive Until/Since introduction (BX8/BX8'),
 elimination (BX9/BX9'), and eventuality extraction (BX10/BX10') axioms.
 
-- `G_implies_X`, `H_implies_Y`: From BX1 + BX8/BX8'
-- `X_bot_absurd`, `Y_bot_absurd`: From BX9/BX9' + propositional logic
+- `bot_until_bot_absurd`, `bot_since_bot_absurd`: (⊥ U ⊥) → ⊥, (⊥ S ⊥) → ⊥
 - `until_implies_some_future`, `since_implies_some_past`: Direct BX10/BX10'
-- `YX_identity`, `XY_identity`: From BX9/BX9' + propositional logic
-- `YG_implies_self`, `XH_implies_self`: From BX9/BX9' + BX1/BX1'
+- `bot_until_elim`, `bot_since_elim`: (⊥ U a) → a, (⊥ S a) → a (private)
+- `bot_until_id`, `bot_since_id`: Public versions of the above
 
 ## Key BX-Derived Lemmas for Canonical Completeness
 
@@ -150,21 +149,6 @@ def G_implies_G_id (a : Formula) :
   mp (DerivationTree.temporal_necessitation _ (identity a))
      (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).all_future a.all_future))
 
-/--
-`⊢ G(a) → G((⊤ ∧ X(a)) → a)`: From prop_s and temp_k_dist.
--/
-def G_implies_G_step (a : Formula) :
-    ⊢ a.all_future.imp
-      ((Formula.and top (X a)).imp a).all_future := by
-  have h_weak : ⊢ a.imp ((Formula.and top (X a)).imp a) :=
-    DerivationTree.axiom [] _ (Axiom.prop_s a (Formula.and top (X a)))
-  have h_nec : ⊢ (a.imp ((Formula.and top (X a)).imp a)).all_future :=
-    DerivationTree.temporal_necessitation _ h_weak
-  have h_k : ⊢ (a.imp ((Formula.and top (X a)).imp a)).all_future.imp
-    (a.all_future.imp ((Formula.and top (X a)).imp a).all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist a ((Formula.and top (X a)).imp a))
-  exact DerivationTree.modus_ponens [] _ _ h_k h_nec
-
 /-!
 ## BX8-BX10 Derived Theorems (sorry-free)
 
@@ -201,7 +185,7 @@ def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) :=
 From BX9: `(⊥ U ⊥) → (⊥ ∨ ⊥)` where `⊥ ∨ ⊥ = (⊥ → ⊥) → ⊥`.
 Then apply identity `⊥ → ⊥` to get ⊥.
 -/
-def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot :=
+def bot_until_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot :=
   -- BX9 gives (⊥ U ⊥) → (⊥ ∨ ⊥) = (⊥ → ⊥) → ⊥
   -- app1 gives (⊥ → ⊥) → ((⊥ → ⊥) → ⊥) → ⊥
   -- compose: (⊥ U ⊥) → ⊥
@@ -210,9 +194,9 @@ def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot :=
     (mp (identity Formula.bot) theorem_app1)
 
 /--
-`⊢ (⊥ S ⊥) → ⊥`: Y(⊥) is absurd. Mirror of X_bot_absurd.
+`⊢ (⊥ S ⊥) → ⊥`: Y(⊥) is absurd. Mirror of bot_until_bot_absurd.
 -/
-def Y_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot :=
+def bot_since_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot :=
   imp_trans
     (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot Formula.bot))
     (mp (identity Formula.bot) theorem_app1)
@@ -235,54 +219,18 @@ def since_implies_some_past (φ ψ : Formula) :
 
 /-- `(⊥ U a) → a`: Under reflexive semantics, X(a) = ⊥ U a implies a.
 From BX9: `(⊥ U a) → (⊥ ∨ a) = ((⊥→⊥) → a)`, then apply identity. -/
-private def X_elim (a : Formula) :
+private def bot_until_elim (a : Formula) :
     ⊢ (Formula.untl Formula.bot a).imp a :=
   imp_trans
     (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot a))
     (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
 
-/-- `(⊥ S a) → a`: Mirror of X_elim. -/
-private def Y_elim (a : Formula) :
+/-- `(⊥ S a) → a`: Mirror of bot_until_elim. -/
+private def bot_since_elim (a : Formula) :
     ⊢ (Formula.snce Formula.bot a).imp a :=
   imp_trans
     (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot a))
     (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
-
-/-- Y(X(φ)) → φ: Previous of Next is identity.
-Compose Y_elim with X_elim. -/
-def YX_identity (a : Formula) :
-    ⊢ (Formula.snce Formula.bot (Formula.untl Formula.bot a)).imp a :=
-  imp_trans (Y_elim (Formula.untl Formula.bot a)) (X_elim a)
-
-/-- X(Y(φ)) → φ: Next of Previous is identity.
-Compose X_elim with Y_elim. -/
-def XY_identity (a : Formula) :
-    ⊢ (Formula.untl Formula.bot (Formula.snce Formula.bot a)).imp a :=
-  imp_trans (X_elim (Formula.snce Formula.bot a)) (Y_elim a)
-
-/-- Y-necessitation: if ⊢ φ then ⊢ Y(φ). -/
-private noncomputable def y_nec' {φ : Formula} (h : DerivationTree [] φ) :
-    DerivationTree [] (Formula.snce Formula.bot φ) := by
-  have h_H : DerivationTree [] φ.all_past :=
-    Bimodal.Theorems.past_necessitation _ h
-  exact DerivationTree.modus_ponens [] _ _ (H_implies_Y φ) h_H
-
-/-- X-necessitation: if ⊢ φ then ⊢ X(φ). -/
-private def x_nec' {φ : Formula} (h : DerivationTree [] φ) :
-    DerivationTree [] (Formula.untl Formula.bot φ) := by
-  have h_G : DerivationTree [] φ.all_future :=
-    DerivationTree.temporal_necessitation _ h
-  exact DerivationTree.modus_ponens [] _ _ (G_implies_X φ) h_G
-
-/-- Y(G(φ)) → φ: Compose Y_elim with BX1. -/
-def YG_implies_self (a : Formula) :
-    ⊢ (Formula.snce Formula.bot a.all_future).imp a :=
-  imp_trans (Y_elim a.all_future) (DerivationTree.axiom [] _ (Axiom.temp_t_future a))
-
-/-- X(H(φ)) → φ: Compose X_elim with BX1'. -/
-def XH_implies_self (a : Formula) :
-    ⊢ (Formula.untl Formula.bot a.all_past).imp a :=
-  imp_trans (X_elim a.all_past) (DerivationTree.axiom [] _ (Axiom.temp_t_past a))
 
 /-!
 ## Key BX-Derived Lemmas for Canonical Completeness
@@ -376,20 +324,20 @@ noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) :=
 ## X/Y Identity (X(α) → α, Y(α) → α)
 
 Under reflexive Until/Since semantics, `X(α) = ⊥ U α` and `Y(α) = ⊥ S α` are
-equivalent to `α` in any MCS. These public versions of the private X_elim/Y_elim
+equivalent to `α` in any MCS. These public versions of the private bot_until_elim/bot_since_elim
 are needed by downstream modules (SuccRelation, DeterministicFMCS).
 -/
 
 /-- `⊢ X(α) → α`: Under reflexive semantics, X(α) = ⊥ U α implies α.
 From BX9: `(⊥ U α) → (⊥ ∨ α) = (⊤ → α)`, then apply `⊤ = id ⊥`. -/
-noncomputable def x_implies_id (a : Formula) :
+noncomputable def bot_until_id (a : Formula) :
     ⊢ (Formula.untl Formula.bot a).imp a :=
   imp_trans
     (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot a))
     (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
 
-/-- `⊢ Y(α) → α`: Mirror of x_implies_id for past direction. -/
-noncomputable def y_implies_id (a : Formula) :
+/-- `⊢ Y(α) → α`: Mirror of bot_until_id for past direction. -/
+noncomputable def bot_since_id (a : Formula) :
     ⊢ (Formula.snce Formula.bot a).imp a :=
   imp_trans
     (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot a))
@@ -457,29 +405,29 @@ noncomputable def since_unfold_thm (φ ψ : Formula) :
 
 /-- `⊢ (φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`: X-wrapped Until unfolding.
 Compose until_unfold_thm with BX8 (reflexive intro at ⊥). -/
-noncomputable def until_unfold_X (φ ψ : Formula) :
+noncomputable def until_unfold_wrapped (φ ψ : Formula) :
     ⊢ (Formula.untl φ ψ).imp
       (Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))) :=
   imp_trans (until_unfold_thm φ ψ) (psi_imp_until Formula.bot _)
 
 /-- `⊢ (φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`: Y-wrapped Since unfolding. Mirror. -/
-noncomputable def since_unfold_Y (φ ψ : Formula) :
+noncomputable def since_unfold_wrapped (φ ψ : Formula) :
     ⊢ (Formula.snce φ ψ).imp
       (Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))) :=
   imp_trans (since_unfold_thm φ ψ) (psi_imp_since Formula.bot _)
 
 /-- `⊢ X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`: Until introduction rule.
-Compose x_implies_id with or_until_imp. This is the key rule for backward
+Compose bot_until_id with or_until_imp. This is the key rule for backward
 Until induction in the canonical completeness construction. -/
 noncomputable def until_intro (φ ψ : Formula) :
     ⊢ (Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))).imp
       (Formula.untl φ ψ) :=
-  imp_trans (x_implies_id _) (or_until_imp φ ψ)
+  imp_trans (bot_until_id _) (or_until_imp φ ψ)
 
 /-- `⊢ Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)`: Since introduction rule. Mirror. -/
 noncomputable def since_intro (φ ψ : Formula) :
     ⊢ (Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))).imp
       (Formula.snce φ ψ) :=
-  imp_trans (y_implies_id _) (or_since_imp φ ψ)
+  imp_trans (bot_since_id _) (or_since_imp φ ψ)
 
 end Bimodal.Theorems.TemporalDerived
