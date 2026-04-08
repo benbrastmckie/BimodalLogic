@@ -37,7 +37,7 @@ technical_debt:
 85 → 58 → 60
 ```
 
-1. **85** [RESEARCHED] — Research Until/Since chain coherence: 3 approaches (restricted deferral closure, simultaneous well-founded induction, quasimodel replacement)
+1. **85** [PLANNED] — Research Until/Since chain coherence: 3 approaches (restricted deferral closure, simultaneous well-founded induction, quasimodel replacement)
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (structurally complete; blocked on forward_until_since_coherent + step transfer — depends on 85)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -84,12 +84,16 @@ technical_debt:
 
 ### 85. Research Until/Since chain coherence approaches
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
 - **Created**: 2026-04-08
 - **Related**: Tasks 58, 83 (archived), 84 (archived)
+- **Research**:
+  - [01_team-research.md](specs/085_until_since_chain_coherence/reports/01_team-research.md)
+  - [02_xy-archival-scope.md](specs/085_until_since_chain_coherence/reports/02_xy-archival-scope.md)
+- **Plan**: [02_implementation-plan.md](specs/085_until_since_chain_coherence/plans/02_implementation-plan.md)
 
 **Description**: Research 3 approaches to closing the dominant completeness blocker (~12 sorry sites in FrameConditions/Completeness.lean). The root cause is G-lift incompatibility: Until formulas `(φ U ψ)` cannot be included in Lindenbaum chain seeds because `G(φ U ψ) ∉ M` in general. Tasks 83 (39 research rounds) and 84 (4 rounds, 95% confidence) exhaustively proved the standard enriched-seed approach fails.
 
