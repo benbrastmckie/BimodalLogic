@@ -203,8 +203,19 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
 /-! ## Until/Since MCS Properties -/
 
 /--
+Strict part of bx_le: w is strictly below v in the canonical ordering.
+-/
+def bx_lt (w v : BXPoint) : Prop :=
+  bx_le w v ∧ ¬bx_le v w
+
+/--
 Until truth in MCS: (φ U ψ) ∈ w iff there exists v ≥ w with ψ ∈ v and
-φ ∈ u for all w ≤ u < v.
+φ ∈ u for all u strictly between w and v (i.e., w ≤ u and u < v).
+
+The guard uses the strict ordering bx_lt u v to avoid issues with
+bx_le being a preorder (not antisymmetric): distinct BXPoints can be
+bx_le-equivalent. Using bx_lt ensures the reflexive witness case (v = w)
+has a vacuously true guard.
 
 The forward direction uses eventuality resolution (BX5/BX6).
 The backward direction uses BX4 (connectedness).
@@ -212,29 +223,45 @@ The backward direction uses BX4 (connectedness).
 theorem until_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     Formula.untl φ ψ ∈ w.formulas ↔
       ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
-        ∀ u : BXPoint, bx_le w u → bx_le u v → u ≠ v → φ ∈ u.formulas := by
-  -- Forward: φ U ψ ∈ w → ∃ v ≥ w with ψ ∈ v and φ on (w, v).
-  --   If ψ ∈ w: take v = w (reflexive witness, empty guard). Done.
-  --   If ψ ∉ w: Eventuality resolution via BX5 (self-accumulation) and BX6 (absorption).
-  --     Requires Zorn's lemma to construct a maximal chain of MCS where φ U ψ persists,
-  --     then show the supremum MCS must contain ψ (else BX5 gives infinite deferral,
-  --     contradicting BX6 absorption). This is the hardest case.
-  -- Backward: (∃ v ≥ w with ψ ∈ v, φ on (w, v)) → φ U ψ ∈ w.
-  --   By contrapositive: if φ U ψ ∉ w, then ¬(φ U ψ) ∈ w (MCS negation completeness).
-  --   Need to show no such witness v exists. Uses BX4 (connectedness) and BX7 (linearity).
-  sorry
+        ∀ u : BXPoint, bx_le w u → bx_lt u v → φ ∈ u.formulas := by
+  constructor
+  · -- Forward: φ U ψ ∈ w → ∃ v ≥ w with ψ ∈ v and φ on [w, v).
+    intro h_until
+    by_cases h_ψ : ψ ∈ w.formulas
+    · -- Case: ψ ∈ w. Take v = w (reflexive witness).
+      -- Guard is vacuous: bx_lt u w requires bx_le u w ∧ ¬bx_le w u,
+      -- but bx_le w u (from first hypothesis) and ¬bx_le w u contradict.
+      refine ⟨w, bx_le_refl w, h_ψ, fun u h_wu h_uw => ?_⟩
+      exact absurd h_wu h_uw.2
+    · -- Case: ψ ∉ w. Eventuality resolution via BX5/BX6.
+      -- ARCHITECTURAL NOTE: The eventuality resolution for the ψ ∉ w case
+      -- requires Zorn's lemma to construct a maximal chain of MCS where
+      -- φ U ψ persists, then show the limit must contain ψ (by BX5/BX6).
+      -- This is the hardest part of the BX canonical model construction.
+      sorry
+  · -- Backward: (∃ v ≥ w with ψ ∈ v, φ on [w, v)) → φ U ψ ∈ w.
+    -- Uses BX4 (connectedness) and BX7 (linearity).
+    sorry
 
 /--
 Since truth in MCS: (φ S ψ) ∈ w iff there exists v ≤ w with ψ ∈ v and
-φ ∈ u for all v < u ≤ w.
+φ ∈ u for all u strictly between v and w (i.e., v < u and u ≤ w).
 -/
 theorem since_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     Formula.snce φ ψ ∈ w.formulas ↔
       ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
-        ∀ u : BXPoint, bx_le v u → bx_le u w → u ≠ v → φ ∈ u.formulas := by
-  -- Mirror of until_iff_mcs using BX5'/BX6' (self-accumulation/absorption for Since)
-  -- and BX4' (connect_past) for the backward direction.
-  -- Same Zorn's lemma eventuality resolution structure, reversed temporal direction.
-  sorry
+        ∀ u : BXPoint, bx_lt v u → bx_le u w → φ ∈ u.formulas := by
+  constructor
+  · -- Forward: φ S ψ ∈ w → ∃ v ≤ w with ψ ∈ v and φ on (v, w].
+    intro h_since
+    by_cases h_ψ : ψ ∈ w.formulas
+    · -- Case: ψ ∈ w. Take v = w (reflexive witness).
+      -- Guard is vacuous: bx_lt w u requires ¬bx_le u w, but bx_le u w is given.
+      refine ⟨w, bx_le_refl w, h_ψ, fun u h_wu h_uw => ?_⟩
+      exact absurd h_uw h_wu.2
+    · -- Case: ψ ∉ w. Eventuality resolution via BX5'/BX6' (Since mirror).
+      sorry
+  · -- Backward: (∃ v ≤ w with ψ ∈ v, φ on (v, w]) → φ S ψ ∈ w.
+    sorry
 
 end Bimodal.Metalogic.BXCanonical

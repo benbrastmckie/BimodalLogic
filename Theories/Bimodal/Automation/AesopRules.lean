@@ -95,17 +95,17 @@ def axiom_modal_b (Γ : Context) (φ : Formula) :
     DerivationTree Γ (φ.imp (Formula.box φ.diamond)) :=
   DerivationTree.axiom Γ _ (Axiom.modal_b φ)
 
-/-- Temporal 4 axiom -- derivable from BX, sorry'd. -/
+/-- Temporal 4 axiom: G(φ) → G(G(φ)). In BX axiom system. -/
 @[aesop safe apply]
 def axiom_temp_4 (Γ : Context) (φ : Formula) :
-    DerivationTree Γ ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) := by
-  sorry /- temp_4 derivable from BX -/
+    DerivationTree Γ ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ))) :=
+  DerivationTree.axiom Γ _ (Axiom.temp_4 φ)
 
-/-- Temporal A axiom -- derivable from BX, sorry'd. -/
+/-- Connect future (BX4): φ → G(P(φ)). In BX axiom system. -/
 @[aesop safe apply]
 def axiom_temp_a (Γ : Context) (φ : Formula) :
-    DerivationTree Γ (φ.imp (Formula.all_future φ.some_past)) := by
-  sorry /- temp_a derivable from BX -/
+    DerivationTree Γ (φ.imp (Formula.all_future φ.some_past)) :=
+  DerivationTree.axiom Γ _ (Axiom.connect_future φ)
 
 /-!
 ## Forward Chaining Rules for Proven Axioms
@@ -159,18 +159,20 @@ If we have `Fφ` derivable, we can derive `FFφ` using temporal 4 axiom and modu
 def temp_4_forward {Γ : Context} {φ : Formula} :
     DerivationTree Γ (Formula.all_future φ) →
     DerivationTree Γ (Formula.all_future (Formula.all_future φ)) := by
-  sorry /- temp_4 derivable from BX -/
+  intro d
+  exact DerivationTree.modus_ponens Γ _ _ (axiom_temp_4 Γ φ) d
 
 /--
-Forward chaining for Temporal A axiom: `φ → F(some_past φ)`.
+Forward chaining for Connect Future (BX4): `φ → G(P(φ))`.
 
-If we have `φ` derivable, we can derive `F(some_past φ)` using temporal A axiom
+If we have `φ` derivable, we can derive `G(P(φ))` using connect_future axiom
 and modus ponens.
 -/
 @[aesop safe forward]
 def temp_a_forward {Γ : Context} {φ : Formula} :
     DerivationTree Γ φ → DerivationTree Γ (Formula.all_future φ.some_past) := by
-  sorry /- temp_a derivable from BX -/
+  intro d
+  exact DerivationTree.modus_ponens Γ _ _ (axiom_temp_a Γ φ) d
 
 /--
 Forward chaining for Propositional K axiom: `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`.

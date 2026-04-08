@@ -210,6 +210,7 @@ Phases within the same wave can execute in parallel.
 ---
 
 ### Phase 4: BX Canonical Model Completeness [PARTIAL]
+<!-- Session sess_1775599347_408ff8: Reflexive witness cases proved for until_iff_mcs/since_iff_mcs. Guard condition revised to use strict ordering (bx_lt). Eventuality resolution cases (ψ ∉ w) and backward directions remain sorry. -->
 
 **Goal**: Build the new BX canonical model completeness proof in a new `Metalogic/BXCanonical/` module directory. This is the highest-risk phase but also where the main sorries get eliminated.
 

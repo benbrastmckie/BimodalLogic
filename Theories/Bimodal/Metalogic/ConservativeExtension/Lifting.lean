@@ -227,15 +227,15 @@ def unembedAxiom {φ : ExtFormula} (h : ExtAxiom φ) : Axiom (unembedFormula φ)
   | ex_falso a => exact Axiom.ex_falso _
   | peirce a b => exact Axiom.peirce _ _
   | modal_k_dist a b => exact Axiom.modal_k_dist _ _
-  | temp_k_dist a b => exact sorry /- temp_k_dist removed in BX -/ _ _
-  | temp_4 a => exact sorry /- temp_4 removed in BX -/ _
-  | temp_a a => exact sorry /- temp_a removed in BX -/ _
-  | temp_l a => exact sorry /- temp_l removed in BX -/ _
+  | temp_k_dist a b => exact Axiom.temp_k_dist _ _
+  | temp_4 a => exact Axiom.temp_4 _
+  | temp_a a => exact Axiom.connect_future _
+  | temp_l a => exact sorry /- temp_l has no direct BX analogue -/
   | modal_future a => exact Axiom.modal_future _
   | temp_future a => exact Axiom.temp_future _
-  | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/ _ _
-  | density a => exact sorry /- density removed in BX -/ _
-  | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/ _
+  | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/
+  | density a => exact sorry /- density removed in BX -/
+  | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/
   | seriality_future => exact sorry /- seriality_future removed in BX -/
   | seriality_past => exact sorry /- seriality_past removed in BX -/
 
@@ -467,15 +467,15 @@ private def liftAxiom (s : String) {φ : ExtFormula} (h : ExtAxiom φ) :
   | ex_falso a => exact Axiom.ex_falso _
   | peirce a b => exact Axiom.peirce _ _
   | modal_k_dist a b => exact Axiom.modal_k_dist _ _
-  | temp_k_dist a b => exact sorry /- temp_k_dist removed in BX -/ _ _
-  | temp_4 a => exact sorry /- temp_4 removed in BX -/ _
-  | temp_a a => exact sorry /- temp_a removed in BX -/ _
-  | temp_l a => exact sorry /- temp_l removed in BX -/ _
+  | temp_k_dist a b => exact Axiom.temp_k_dist _ _
+  | temp_4 a => exact Axiom.temp_4 _
+  | temp_a a => exact Axiom.connect_future _
+  | temp_l a => exact sorry /- temp_l has no direct BX analogue -/
   | modal_future a => exact Axiom.modal_future _
   | temp_future a => exact Axiom.temp_future _
-  | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/ _ _
-  | density a => exact sorry /- density removed in BX -/ _
-  | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/ _
+  | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/
+  | density a => exact sorry /- density removed in BX -/
+  | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/
   | seriality_future => exact sorry /- seriality_future removed in BX -/
   | seriality_past => exact sorry /- seriality_past removed in BX -/
 

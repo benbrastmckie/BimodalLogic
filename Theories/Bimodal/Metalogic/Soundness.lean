@@ -649,153 +649,20 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
       fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt hs2t) h_θs2,
       fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
 
-/-- Discrete Next axiom validity: `⊨_discrete F(⊤) → X(⊤)`.
-Under strict semantics: if ∃ s > t (F(⊤)), then bot U (neg bot) at t.
-Take witness s = succ(t). Guard interval (t, succ(t)) is empty on discrete orders. -/
-theorem disc_next_valid :
-    valid_discrete ((Formula.neg Formula.bot).some_future.imp
-      (Formula.untl Formula.bot (Formula.neg Formula.bot))) := by
-  -- TEMPORARY: sorry pending Phase 2 BX refactor (discrete axioms will be removed)
-  sorry
+/-! ## Legacy Discrete Axiom Validity Theorems (Removed)
 
-/-- Discrete Prev axiom validity: `⊨_discrete P(⊤) → Y(⊤)`.
-Mirror of disc_next for past direction. -/
-theorem disc_prev_valid :
-    valid_discrete ((Formula.neg Formula.bot).some_past.imp
-      (Formula.snce Formula.bot (Formula.neg Formula.bot))) := by
-  sorry
+The following discrete axiom validity theorems were removed in the BX refactor:
+- disc_next_valid, disc_prev_valid
+- until_unfold_valid, until_intro_valid, until_induction_valid, until_linearity_valid
+- since_unfold_valid, since_intro_valid, since_induction_valid, since_linearity_valid
+- until_connectedness_valid, since_connectedness_valid
+- F_until_equiv_valid, P_since_equiv_valid
+- next_implies_some_future_valid, x_k_dist_valid, x_det_valid
+- y_k_dist_valid, y_det_valid, yx_identity_valid, xy_identity_valid
 
-/-- Until Unfold axiom validity: `⊨_discrete (φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`.
-Under strict semantics: given witness s > t for φ U ψ, the next instant is succ(t).
-If s = succ(t), ψ holds there (left disjunct).
-If s > succ(t), φ holds at succ(t) and φ U ψ continues (right disjunct). -/
-theorem until_unfold_valid (φ ψ : Formula) :
-    valid_discrete (Formula.untl φ ψ |>.imp
-      (Formula.untl Formula.bot
-        (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))))) := by
-  sorry
-
-/-- Until Intro axiom validity: `⊨_discrete X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`.
-Under strict semantics: the bot-guard in X forces the witness to be succ(t).
-Then ψ(succ(t)) gives φ U ψ with witness succ(t), and φ(succ(t)) ∧ (φ U ψ)(succ(t))
-extends the witness from succ(t). -/
-theorem until_intro_valid (φ ψ : Formula) :
-    valid_discrete ((Formula.untl Formula.bot
-        (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))).imp
-      (Formula.untl φ ψ)) := by
-  sorry
-
-/-- Until Induction -- temporarily sorry, removed in Phase 2 -/
-theorem until_induction_valid (φ ψ χ : Formula) :
-    valid_discrete (Formula.and
-      ((ψ.imp χ).all_future)
-      (((Formula.and φ (Formula.untl Formula.bot χ)).imp χ).all_future)
-      |>.imp ((Formula.untl φ ψ).imp (Formula.untl Formula.bot χ))) := by
-  sorry
-
-/-- Until Linearity -- temporarily sorry, removed in Phase 2 -/
-theorem until_linearity_valid (φ ψ φ' ψ' : Formula) :
-    valid_discrete (Formula.and (Formula.untl φ ψ) (Formula.untl φ' ψ')
-      |>.imp (Formula.or
-        (Formula.or
-          (Formula.untl φ (Formula.and ψ (Formula.untl φ' ψ')))
-          (Formula.untl φ' (Formula.and ψ' (Formula.untl φ ψ))))
-        (Formula.some_future (Formula.and ψ ψ')))) := by
-  sorry
-
-/-- Since Unfold -- temporarily sorry, removed in Phase 2 -/
-theorem since_unfold_valid (φ ψ : Formula) :
-    valid_discrete (Formula.snce φ ψ |>.imp
-      (Formula.snce Formula.bot
-        (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))))) := by
-  sorry
-
-/-- Since Intro -- temporarily sorry, removed in Phase 2 -/
-theorem since_intro_valid (φ ψ : Formula) :
-    valid_discrete ((Formula.snce Formula.bot
-        (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))).imp
-      (Formula.snce φ ψ)) := by
-  sorry
-
-/-- Since Induction -- temporarily sorry, removed in Phase 2 -/
-theorem since_induction_valid (φ ψ χ : Formula) :
-    valid_discrete (Formula.and
-      ((ψ.imp χ).all_past)
-      (((Formula.and φ (Formula.snce Formula.bot χ)).imp χ).all_past)
-      |>.imp ((Formula.snce φ ψ).imp (Formula.snce Formula.bot χ))) := by
-  sorry
-
-/-- Since Linearity -- temporarily sorry, removed in Phase 2 -/
-theorem since_linearity_valid (φ ψ φ' ψ' : Formula) :
-    valid_discrete (Formula.and (Formula.snce φ ψ) (Formula.snce φ' ψ')
-      |>.imp (Formula.or
-        (Formula.or
-          (Formula.snce φ (Formula.and ψ (Formula.snce φ' ψ')))
-          (Formula.snce φ' (Formula.and ψ' (Formula.snce φ ψ))))
-        (Formula.some_past (Formula.and ψ ψ')))) := by
-  sorry
-
-/-- Until Connectedness -- temporarily sorry, removed in Phase 2 -/
-theorem until_connectedness_valid (φ ψ χ : Formula) :
-    valid_discrete (Formula.and φ (Formula.untl χ ψ)
-      |>.imp (Formula.untl χ (Formula.and ψ (Formula.snce χ φ)))) := by
-  sorry
-
-/-- Since Connectedness -- temporarily sorry, removed in Phase 2 -/
-theorem since_connectedness_valid (φ ψ χ : Formula) :
-    valid_discrete (Formula.and φ (Formula.snce χ ψ)
-      |>.imp (Formula.snce χ (Formula.and ψ (Formula.untl χ φ)))) := by
-  sorry
-
-/-- F-Until equivalence -- temporarily sorry, removed in Phase 2 -/
-theorem F_until_equiv_valid (ψ : Formula) :
-    valid_discrete (Formula.some_future ψ |>.imp (Formula.untl (Formula.neg Formula.bot) ψ)) := by
-  sorry
-
-/-- P-Since equivalence -- temporarily sorry, removed in Phase 2 -/
-theorem P_since_equiv_valid (ψ : Formula) :
-    valid_discrete (Formula.some_past ψ |>.imp (Formula.snce (Formula.neg Formula.bot) ψ)) := by
-  sorry
-
-/-- Next implies some_future -- temporarily sorry, removed in Phase 2 -/
-theorem next_implies_some_future_valid (φ : Formula) :
-    valid_discrete ((Formula.untl Formula.bot φ).imp φ.some_future) := by
-  sorry
-
-/-- X K distribution -- temporarily sorry, removed in Phase 2 -/
-theorem x_k_dist_valid (φ ψ : Formula) :
-    valid_discrete (Formula.untl Formula.bot (φ.imp ψ) |>.imp
-      ((Formula.untl Formula.bot φ).imp (Formula.untl Formula.bot ψ))) := by
-  sorry
-
-/-- X determinacy -- temporarily sorry, removed in Phase 2 -/
-theorem x_det_valid (φ : Formula) :
-    valid_discrete ((Formula.untl Formula.bot φ).neg.imp
-      (Formula.untl Formula.bot φ.neg)) := by
-  sorry
-
-/-- Y K distribution -- temporarily sorry, removed in Phase 2 -/
-theorem y_k_dist_valid (φ ψ : Formula) :
-    valid_discrete (Formula.snce Formula.bot (φ.imp ψ) |>.imp
-      ((Formula.snce Formula.bot φ).imp (Formula.snce Formula.bot ψ))) := by
-  sorry
-
-/-- Y determinacy -- temporarily sorry, removed in Phase 2 -/
-theorem y_det_valid (φ : Formula) :
-    valid_discrete ((Formula.snce Formula.bot φ).neg.imp
-      (Formula.snce Formula.bot φ.neg)) := by
-  sorry
-
-/-- YX identity -- temporarily sorry, removed in Phase 2 -/
-theorem yx_identity_valid (φ : Formula) :
-    valid_discrete ((Formula.snce Formula.bot (Formula.untl Formula.bot φ)).imp φ) := by
-  sorry
-
-/-- XY identity -- temporarily sorry, removed in Phase 2 -/
-theorem xy_identity_valid (φ : Formula) :
-    valid_discrete ((Formula.untl Formula.bot (Formula.snce Formula.bot φ)).imp φ) := by
-  sorry
-
+These proved validity for discrete axioms that no longer exist in the BX axiom system.
+The BX system uses self-accumulation (BX5/BX6) and linearity (BX7) instead.
+-/
 
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
