@@ -586,31 +586,48 @@ This reduction is SORRY-FREE. The only sorry is in `bfmcs_from_mcs_temporally_co
 - Therefore we cannot specialize "φ valid over ALL dense D" to Int
 - A separate proof using a dense canonical model (e.g., over Rat) would be needed
 
-### Summary of Sorries in This File
+### Summary of Sorries in This File (Task #84 update)
 
-| Theorem | Status | Dependency |
-|---------|--------|------------|
+Until/Since coherence is split into backward and forward halves.
+Each completeness theorem carries two sorry categories:
+
+**Backward Until/Since** (step transfer sorry):
+Each `h_buc` uses `backward_until_coherent` / `backward_since_coherent` from
+`UntilSinceCoherence.lean`, parameterized by a step transfer hypothesis.
+The step transfer says: `(φ U ψ) ∈ fam.mcs (r+1) ∧ φ ∈ fam.mcs r → (φ U ψ) ∈ fam.mcs r`.
+This is sorry'd because `g_content` propagates G-formulas forward but cannot
+pull Until/Since backward. Closing requires enriched seeds or x_content chains.
+
+**Forward Until/Since** (witness extraction sorry):
+Each `h_fuc` requires converting `(φ U ψ) ∈ fam.mcs t` into a witness time s
+with `ψ ∈ fam.mcs s` and `φ` on the guard `[t, s)`. This is blocked by
+Lindenbaum extension freedom (research task 84, 4 rounds, 95% confidence).
+
+| Theorem | Status | Sorry dependencies |
+|---------|--------|--------------------|
 | `dense_completeness_fc` | SORRY | Needs dense canonical model |
-| `bfmcs_from_mcs_temporally_coherent` | SORRY | Family-level temporal coherence |
-| `bundle_validity_implies_provability` | WIRED | Depends on `bfmcs_from_mcs_temporally_coherent` |
-| `completeness_over_Int` | WIRED | Via `bundle_validity_implies_provability` |
+| `bfmcs_from_mcs_temporally_coherent` | SORRY | Family-level F/P temporal coherence |
+| `bundle_validity_implies_provability` | SORRY | Step transfer (backward) + witness extraction (forward) |
+| `restricted_bundle_validity_implies_provability` | SORRY | Step transfer + witness extraction |
+| `dovetailed_bundle_validity_implies_provability` | SORRY | Step transfer + witness extraction |
+| `completeness_over_Int` | WIRED | Via `dovetailed_bundle_validity_implies_provability` |
 | `discrete_completeness_fc` | WIRED | Via `completeness_over_Int` |
 
-### Path to Closing the Sorry
+### Path to Closing
 
-`bfmcs_from_mcs_temporally_coherent` requires proving that each family in
-`boxClassFamilies M h_mcs` has forward_F and backward_P. Each family is a
-`shifted_fmcs (SuccChainFMCS S) delta`, so this reduces to proving
-`succ_chain_forward_F` for arbitrary SerialMCS.
+**Step transfer** (backward coherence):
+- Enriched successor seed that includes `{φ U ψ | φ U ψ ∈ M}` alongside `g_content(M)`,
+  so that Until formulas persist into the next step's seed and therefore its extension.
+- Or: x_content-style deterministic chain where `X(α) ↔ α` makes the chain constant.
 
-**Two approaches**:
-1. **Restricted chain**: The bounded F-nesting argument in SuccChainFMCS.lean
-   (restricted_bounded_witness_fueled) has a sorry only in the fuel=0 branch,
-   which is semantically unreachable with fuel = B*B+1 where B = closure_F_bound.
-   Proving this branch unreachable closes the restricted approach.
-2. **Fair scheduling**: Modify the omega chain construction to dovetail F/P
-   resolution, giving direct family-level forward_F. This is the standard
-   textbook approach but requires new infrastructure.
+**Witness extraction** (forward coherence):
+- Restricted forward Until via deferral closure
+- Simultaneous well-founded induction on formula complexity
+- Quasimodel replacement (~2000 LOC)
+
+**Temporal coherence** (`bfmcs_from_mcs_temporally_coherent`):
+- Restricted chain: bounded F-nesting argument (fuel=0 branch unreachability)
+- Fair scheduling: dovetailed F/P resolution (standard textbook approach)
 -/
 
 end Bimodal.FrameConditions

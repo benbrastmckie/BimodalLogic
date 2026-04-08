@@ -59,7 +59,7 @@ Key findings from report 04 (team research):
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Split the Predicate Definition [NOT STARTED]
+### Phase 1: Split the Predicate Definition [COMPLETED]
 
 **Goal**: Define `backward_until_since_coherent` and `forward_until_since_coherent` as separate predicates in TemporalCoherence.lean, and provide a recombination lemma showing their conjunction equals the original.
 
@@ -85,7 +85,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Refactor Truth Lemma to Accept Split Coherence [NOT STARTED]
+### Phase 2: Refactor Truth Lemma to Accept Split Coherence [COMPLETED]
 
 **Goal**: Modify the parametric truth lemma, shifted truth lemma, and restricted shifted truth lemma to accept backward and forward coherence as separate parameters, threading them to the appropriate Until/Since cases.
 
@@ -146,7 +146,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Replace Monolithic Sorry with Split Sorry [NOT STARTED]
+### Phase 4: Replace Monolithic Sorry with Split Sorry [COMPLETED]
 
 **Goal**: Update the three completeness theorems to use split coherence, providing backward coherence from Phase 3 and leaving forward coherence as a precisely scoped, documented sorry.
 
