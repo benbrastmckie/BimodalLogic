@@ -82,6 +82,31 @@ technical_debt:
 
 ---
 
+### 86. Close BXCanonical completeness sorries via Until-witness ordering or FMP bridge
+- **Effort**: 12-20 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: critical
+- **Dependencies**: None
+- **Created**: 2026-04-08
+- **Related**: Tasks 85, 83 (archived), 84 (archived), 58
+
+**Description**: Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) — the minimal path to completeness. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content (universal future) while BX7 gives Until witness ordering — but redefining bx_le using Until-based ordering may work; (2) FMP path now has 0 core-logic sorries after temp_4 fix, and bridging from FMP to full completeness is an alternative. Prior research (tasks 83, 84, 85) exhaustively proved enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M) = M). Burgess-Xu axiom 4 is semantically invalid in this system. The BXCanonical architecture is the right path (5 sorries vs 40+ in Bundle).
+
+**Two viable approaches**:
+
+1. **Until-witness ordering for bx_le**: Redefine bx_le using Until-based witness ordering instead of g_content subset. BX7 gives linearity of Until witnesses directly, which could translate to bx_le totality on intervals — enabling the guard verification for all 4 Frame.lean sorries.
+
+2. **FMP bridge to completeness**: FMP path has 0 core-logic sorries after task 85 fixed temp_4. Bridge from FMP (non-provable → falsifiable in finite model) to full completeness by constructing TaskModel from filtered closure MCS. Works in finite setting where inductive arguments are more tractable.
+
+**Key references**:
+- `BXCanonical/Frame.lean:553,584,599,613` — 4 sorry sites (Until/Since eventuality + backward)
+- `BXCanonical/Completeness.lean:144` — 1 sorry (model embedding)
+- `Decidability/FMP/TruthPreservation.lean` — FMP path (0 core sorries after task 85)
+- Task 85 reports 01 (team research) and 02 (X/Y archival), summary 02
+
+---
+
 ### 85. Research Until/Since chain coherence approaches
 - **Effort**: 8-12 hours
 - **Status**: [COMPLETED]
