@@ -1169,9 +1169,33 @@
       "resume_phase": 4,
       "completed": "2026-04-08T07:13:05Z",
       "completion_summary": "Closed all 6 Until/Since sorry cases in canonical_truth_lemma, shifted_truth_lemma, and restricted_shifted_truth_lemma by adding until_since_coherent hypothesis. Fixed G_dne_theorem sorry. Net -4 sorries (7 removed, 3 added in completeness wiring)."
+    },
+    {
+      "project_number": 84,
+      "project_name": "establish_until_since_coherent",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Establish BFMCS.until_since_coherent for chain constructions in FrameConditions/Completeness.lean. Three sorry sites (lines 322, 356, 450) require proving that BFMCS families built from construct_bfmcs_bundle and construct_dovetailed_bfmcs_bundle satisfy Until/Since eventuality resolution — i.e., that (phi U psi) in fam.mcs t implies existence of a witness s >= t with psi at s and phi on the guard interval [t,s), and conversely. Task 83 closed the truth lemma sorries by adding until_since_coherent as a hypothesis; this task provides the witness. The recommended approach (from 38 research iterations in task 83) is an enriched-Succ chain where the Lindenbaum seed at each step includes g_content(w_n) PLUS active Until formulas still present in w_n. Seed consistency follows because all seed elements are in w_n (an MCS). Dovetailed scheduling over the finite subformula closure ensures eventual resolution. Optionally unify with temporally_coherent sorry (line 239) via a single enriched chain providing all coherence properties. Does NOT include: dense_completeness_fc (task 68), FMP TruthPreservation (task 82), or BXCanonical Frame.lean sorries (proven impossible).",
+      "effort": "12-18 hours",
+      "dependencies": [
+        83
+      ],
+      "priority": "critical",
+      "created": "2026-04-08T07:20:28Z",
+      "last_updated": "2026-04-08T07:20:28Z",
+      "next_artifact_number": 2,
+      "researched": "2026-04-08T07:20:28Z",
+      "notes": "Follow-up to task 83. Research synthesis from 38 iterations of task 83 research included as report 01.",
+      "artifacts": [
+        {
+          "path": "specs/084_establish_until_since_coherent/reports/01_research-synthesis.md",
+          "type": "research",
+          "summary": "Synthesis of task 83 research: X-vs-G mismatch root cause, 4 approaches ranked, enriched seed with Until-specific scheduling recommended"
+        }
+      ]
     }
   ],
-  "next_project_number": 84,
+  "next_project_number": 85,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
