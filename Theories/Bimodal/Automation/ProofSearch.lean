@@ -468,38 +468,36 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- temp_k_dist: F(φ → ψ) → (Fφ → Fψ)
+      -- temp_k_dist: G(φ → ψ) → (Gφ → Gψ) -- still in BX system
       <|> (match lhs, rhs with
            | .all_future (.imp phi psi), .imp (.all_future phi') (.all_future psi') =>
                if phi = phi' ∧ psi = psi' then
-                 sorry -- removed in BX
+                 some ⟨_, Axiom.temp_k_dist phi psi⟩
                else none
            | _, _ => none)
 
-      -- temp_4: Fφ → FFφ
+      -- temp_4: Gφ → GGφ -- still in BX system
       <|> (match lhs, rhs with
            | .all_future phi, .all_future (.all_future phi') =>
                if phi = phi' then
-                 sorry -- removed in BX
+                 some ⟨_, Axiom.temp_4 phi⟩
                else none
            | _, _ => none)
 
-      -- temp_a: φ → F(Pφ) where P = some_past = ¬H¬φ = (φ.neg.all_past).neg
+      -- connect_future (BX4): φ → G(Pφ) where P = some_past = ¬H¬φ = (φ.neg.all_past).neg
       <|> (match lhs, rhs with
            | phi, .all_future (.imp (.all_past (.imp phi' .bot)) .bot) =>
                if phi = phi' then
-                 sorry -- removed in BX
+                 some ⟨_, Axiom.connect_future phi⟩
                else none
            | _, _ => none)
 
-      -- temp_l: △φ → F(Hφ) where △φ = always φ = Hφ ∧ (φ ∧ Gφ)
-      -- always φ = (Hφ.imp ((φ.imp (Gφ.imp ⊥)).imp ⊥).imp ⊥).imp ⊥
-      -- This pattern is complex due to and expansion, we check structurally
+      -- temp_l: △φ → G(Hφ) -- removed in BX (was derivable from interaction axioms)
       <|> (match lhs, rhs with
            | .imp (.imp (.all_past phi1) (.imp (.imp (.imp phi2 (.imp (.all_future phi3) .bot)) .bot) .bot)) .bot,
              .all_future (.all_past phi') =>
                if phi1 = phi2 ∧ phi2 = phi3 ∧ phi3 = phi' then
-                 sorry -- removed in BX
+                 none -- removed in BX, not a base axiom
                else none
            | _, _ => none)
 

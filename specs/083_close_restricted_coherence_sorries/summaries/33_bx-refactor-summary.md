@@ -106,8 +106,8 @@ These files provide shared infrastructure used by BOTH the old chain path AND th
 **Original 4 target sorries eliminated:**
 - `succ_chain_restricted_forward_F` -- Archived to Boneyard (still in UltrafilterChain.lean but not on critical path; Int completeness uses sorry-free dovetailed path)
 - `succ_chain_restricted_backward_P` -- Same
-- `F_until_equiv_valid` -- Now dead code (discrete-only, still in Soundness.lean as sorry'd `valid_discrete`)
-- `P_since_equiv_valid` -- Same
+- `F_until_equiv_valid` -- Removed from Soundness.lean (session 2)
+- `P_since_equiv_valid` -- Removed from Soundness.lean (session 2)
 
 ## Key Architectural Achievements
 
@@ -133,3 +133,17 @@ These files provide shared infrastructure used by BOTH the old chain path AND th
 - `Theories/Bimodal/Theorems/TemporalDerived.lean` -- BX-derived temporal principles
 - `Theories/Bimodal/Metalogic/Metalogic.lean` -- BXCanonical import
 - ~20 additional files with exhaustiveness fixes and removed axiom references
+
+## Session 2: Sorry Cleanup + Guard Condition Fix (2026-04-07)
+
+### Changes
+
+1. **Soundness.lean**: Removed 21 dead `valid_discrete` theorem stubs for axioms no longer in BX system
+2. **BXCanonical/TruthLemma.lean**: Revised guard condition from `u != v` to `bx_lt u v` (strict ordering); proved reflexive witness cases for `until_iff_mcs` and `since_iff_mcs`
+3. **Automation/ProofSearch.lean**: Fixed 4 sorry stubs to use actual BX axiom constructors
+4. **Automation/AesopRules.lean**: Fixed 6 sorry stubs to use actual BX axiom constructors
+5. **ConservativeExtension/Lifting.lean**: Fixed 6 sorry stubs in `unembedAxiom` for BX axioms
+
+### Sorry Count Update: 128 total outside Boneyard (was ~159)
+
+Core sorries (excluding examples and chain code): 36
