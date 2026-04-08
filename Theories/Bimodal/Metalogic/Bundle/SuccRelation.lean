@@ -554,4 +554,84 @@ theorem until_persists_through_succ (u v : Set Formula)
   -- See docstring for detailed analysis.
   sorry
 
+/-!
+## Until/Since Introduction at the MCS Level
+
+Under the BX axiom system with reflexive Until/Since semantics, the `until_intro` and
+`since_intro` rules are derivable at the MCS level. These replace the removed X/Y-based
+axioms from the non-reflexive system.
+
+Key insight: Under reflexive Until, `X(α) = (⊥ U α)` is equivalent to `α` in any MCS
+(by BX8 and BX9). So `until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)` reduces to
+`(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`, which follows from BX8 (ψ case) and conjunction
+elimination (φ ∧ (φ U ψ) case).
+-/
+
+/--
+In any MCS: `(ψ ∨ (φ ∧ (φ U ψ))) ∈ M → (φ U ψ) ∈ M`.
+
+This is the reflexive version of `until_intro`. Under reflexive Until semantics,
+the disjunction `ψ ∨ (φ ∧ (φ U ψ))` immediately gives `(φ U ψ)`:
+- If ψ holds, by BX8 (reflexive intro): `ψ → (φ U ψ)`
+- If `φ ∧ (φ U ψ)` holds, by conjunction elimination: `(φ U ψ)` directly
+-/
+theorem or_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (φ ψ : Formula)
+    (h : Formula.or ψ (Formula.and φ (Formula.untl φ ψ)) ∈ M) :
+    Formula.untl φ ψ ∈ M := by
+  -- or ψ B = ψ.neg.imp B, so h : (ψ → ⊥) → (φ ∧ (φ U ψ)) ∈ M
+  -- By MCS: either ψ ∈ M or ψ.neg ∈ M
+  rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
+  · -- Case: ψ ∈ M. By BX8, φ U ψ ∈ M
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_until φ ψ)) h_psi
+  · -- Case: ¬ψ ∈ M. From or: (φ ∧ (φ U ψ)) ∈ M
+    have h_conj : Formula.and φ (Formula.untl φ ψ) ∈ M := by
+      unfold Formula.or at h
+      exact SetMaximalConsistent.implication_property h_mcs h h_neg_psi
+    -- From conjunction, extract φ U ψ
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.untl φ ψ))) h_conj
+
+/--
+In any MCS: `(ψ ∨ (φ ∧ (φ S ψ))) ∈ M → (φ S ψ) ∈ M`.
+
+Temporal dual of `or_until_in_mcs`. Uses BX8' (reflexive Since intro) and
+conjunction elimination.
+-/
+theorem or_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (φ ψ : Formula)
+    (h : Formula.or ψ (Formula.and φ (Formula.snce φ ψ)) ∈ M) :
+    Formula.snce φ ψ ∈ M := by
+  rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
+  · exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_since φ ψ)) h_psi
+  · have h_conj : Formula.and φ (Formula.snce φ ψ) ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs
+        (by unfold Formula.or at h; exact h) h_neg_psi
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce φ ψ))) h_conj
+
+/--
+`g_content(u) ⊆ u` for any MCS u under BX1 (reflexive G).
+
+Under BX1, `G(φ) → φ`, so `G(φ) ∈ u` and MCS derivation closure give `φ ∈ u`.
+-/
+theorem g_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent u) :
+    g_content u ⊆ u := by
+  intro chi h_gc
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future chi))) h_gc
+
+/--
+`h_content(u) ⊆ u` for any MCS u under BX1' (reflexive H).
+
+Under BX1', `H(φ) → φ`, so `H(φ) ∈ u` and MCS derivation closure give `φ ∈ u`.
+-/
+theorem h_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent u) :
+    h_content u ⊆ u := by
+  intro chi h_hc
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past chi))) h_hc
+
 end Bimodal.Metalogic.Bundle

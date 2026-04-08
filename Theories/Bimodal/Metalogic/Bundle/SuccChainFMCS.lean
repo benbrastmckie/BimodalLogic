@@ -1212,16 +1212,9 @@ theorem constrained_successor_seed_restricted_subset_deferralClosure (phi : Form
 /--
 g_content(u) ⊆ u when u is a DeferralRestrictedMCS.
 
-**Status**: PROVABLY FALSE under strict semantics. Under strict `<` (not `≤`),
-`G(φ) ∈ u` means φ holds at all strictly future states, NOT at the current state.
-So `φ ∈ g_content(u)` does NOT imply `φ ∈ u`.
-
-**Not on critical path**: The completeness theorem `completeness_over_Int` uses the
-DovetailedChain construction which avoids this theorem entirely. The sorry-free
-`forward_temporal_witness_seed_consistent` uses G-wrapping instead of `g_content ⊆ u`.
-
-The sorry at the T-axiom call site is UNFIXABLE — it requires `G(χ) → χ`.
-Downstream consumers (simplified_restricted_seed_subset_u, etc.) inherit this false claim.
+**Status**: PROVEN under BX1 (reflexive G). Under BX1, `G(φ) → φ` is an axiom,
+so `G(φ) ∈ u` and MCS derivation closure give `φ ∈ u`. The proof uses the BX1
+axiom (temp_t_future) via the T-axiom argument at line 1264.
 -/
 theorem g_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
@@ -3755,9 +3748,9 @@ theorem constrained_predecessor_seed_restricted_subset_deferralClosure (phi : Fo
 /--
 h_content(u) ⊆ u when u is a DeferralRestrictedMCS.
 
-**Status**: PROVABLY FALSE under strict semantics (temporal dual of
-`g_content_subset_deferral_restricted_mcs`). H(φ) ∈ u does NOT imply φ ∈ u.
-Not on critical completeness path.
+**Status**: PROVEN under BX1' (reflexive H). Under BX1', `H(φ) → φ` is an axiom,
+so `H(φ) ∈ u` and MCS derivation closure give `φ ∈ u`. Temporal dual of
+`g_content_subset_deferral_restricted_mcs`.
 -/
 theorem h_content_subset_deferral_restricted_mcs (phi : Formula) (u : Set Formula)
     (h_mcs : Bimodal.Metalogic.Core.DeferralRestrictedMCS phi u) :
