@@ -211,7 +211,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Truth Lemma Refactoring and Sorry Summary Update [NOT STARTED]
+### Phase 6: Truth Lemma Refactoring and Sorry Summary Update [COMPLETED]
 
 **Goal**: Refactor truth lemma to use `restricted_forward_until_since_coherent` scoped to `subformulaClosure(root)`, and produce final sorry accounting.
 
