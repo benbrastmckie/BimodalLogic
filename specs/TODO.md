@@ -58,9 +58,10 @@ technical_debt:
      - [22_completeness-closure.md](specs/083_close_restricted_coherence_sorries/plans/22_completeness-closure.md)
      - [33_bx-refactor.md](specs/083_close_restricted_coherence_sorries/plans/33_bx-refactor.md)
      - [39_enriched-chain-completeness.md](specs/083_close_restricted_coherence_sorries/plans/39_enriched-chain-completeness.md)
+   - **84** [RESEARCHED] — **CRITICAL**: Establish `until_since_coherent` for bundle completeness — enriched-Succ chain with dovetailed Until scheduling (depends on 83)
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
-2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence)
+2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence + until_since_coherent)
 2. **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
@@ -97,6 +98,20 @@ technical_debt:
 - **Created**: 2026-04-02
 
 **Description**: Close the 2 FMP TruthPreservation sorries (`mcs_all_future_closure` at line 263 and `mcs_all_past_closure` at line 281) in `Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean`. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (`Truth.lean`) uses reflexive semantics (`t ≤ s`, not `t < s`), and `temp_t_future`/`temp_t_past` ARE axioms (Axioms.lean:290,304). Proofs parallel to `mcs_box_closure` (TruthPreservation.lean:188-203). Closing these completes the FMP path giving **weak completeness of TM**.
+
+---
+
+### 84. Establish Until/Since Coherence for Bundle Completeness
+- **Effort**: 12-18 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Priority**: critical
+- **Dependencies**: 83
+- **Created**: 2026-04-07
+- **Research**:
+  - [01_research-synthesis.md](084_establish_until_since_coherent/reports/01_research-synthesis.md) -- Synthesis of 38 task 83 research iterations: X-vs-G root cause, 4 approaches ranked, enriched seed recommended
+
+**Description**: Establish `BFMCS.until_since_coherent` for chain constructions to close the 3 remaining sorry sites in `FrameConditions/Completeness.lean` (lines 322, 356, 450). Task 83 closed the truth lemma sorries by adding `until_since_coherent` as a hypothesis; this task provides the witness proof. The recommended approach is an enriched-Succ chain where the Lindenbaum seed at each step includes `g_content(w_n)` plus active Until formulas still present in `w_n`. Seed consistency follows because all seed elements are in `w_n` (an MCS, hence consistent). Dovetailed scheduling over the finite subformula closure ensures eventual resolution. Optionally unify with the `temporally_coherent` sorry (line 239) via a single enriched chain providing all coherence properties (forward_G, backward_H, forward_F, backward_P, forward_Until, backward_Until, forward_Since, backward_Since). Does NOT include: `dense_completeness_fc` (task 68), FMP TruthPreservation (task 82), or BXCanonical sorries (proven impossible).
 
 ---
 
