@@ -1173,7 +1173,7 @@
     {
       "project_number": 84,
       "project_name": "establish_until_since_coherent",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Establish BFMCS.until_since_coherent for chain constructions in FrameConditions/Completeness.lean. Three sorry sites (lines 322, 356, 450) require proving that BFMCS families built from construct_bfmcs_bundle and construct_dovetailed_bfmcs_bundle satisfy Until/Since eventuality resolution — i.e., that (phi U psi) in fam.mcs t implies existence of a witness s >= t with psi at s and phi on the guard interval [t,s), and conversely. Task 83 closed the truth lemma sorries by adding until_since_coherent as a hypothesis; this task provides the witness. The recommended approach (from 38 research iterations in task 83) is an enriched-Succ chain where the Lindenbaum seed at each step includes g_content(w_n) PLUS active Until formulas still present in w_n. Seed consistency follows because all seed elements are in w_n (an MCS). Dovetailed scheduling over the finite subformula closure ensures eventual resolution. Optionally unify with temporally_coherent sorry (line 239) via a single enriched chain providing all coherence properties. Does NOT include: dense_completeness_fc (task 68), FMP TruthPreservation (task 82), or BXCanonical Frame.lean sorries (proven impossible).",
       "effort": "12-18 hours",
@@ -1223,7 +1223,7 @@
           "summary": "4-phase plan to split until_since_coherent into backward (closable) and forward (blocked) halves, refactor truth lemma, and narrow sorry surface"
         }
       ],
-      "session_id": "sess_1775676735_5b589d",
+      "session_id": "sess_1775678019_6bf7b3",
       "started": "2026-04-08T14:59:24Z"
     }
   ],

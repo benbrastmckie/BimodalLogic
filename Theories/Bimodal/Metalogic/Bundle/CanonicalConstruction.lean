@@ -490,7 +490,8 @@ noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 
 theorem canonical_truth_lemma
     (B : BFMCS Int) (h_tc : B.temporally_coherent)
-    (h_uc : B.until_since_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent)
     (fam : FMCS Int) (hfam : fam ∈ B.families)
     (t : Int) (phi : Formula) :
     phi ∈ fam.mcs t ↔
@@ -628,7 +629,8 @@ theorem canonical_truth_lemma
       exact temporal_backward_H tcf t psi h_all_mcs
   | untl phi psi ih_phi ih_psi =>
     simp only [truth_at]
-    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
+    obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
     · intro h_U
       obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
@@ -641,7 +643,8 @@ theorem canonical_truth_lemma
         fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
     simp only [truth_at]
-    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
+    obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
     · intro h_S
       obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
@@ -674,7 +677,9 @@ show that Box phi persists to all times, enabling truth at shifted histories
 via `time_shift_preserves_truth`.
 -/
 theorem shifted_truth_lemma (B : BFMCS Int)
-    (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent) (φ : Formula)
+    (h_tc : B.temporally_coherent)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent) (φ : Formula)
     (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔
     truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t φ := by
@@ -800,7 +805,8 @@ theorem shifted_truth_lemma (B : BFMCS Int)
       exact temporal_backward_H tcf t ψ h_all_mcs
   | untl phi psi ih_phi ih_psi =>
     simp only [truth_at]
-    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
+    obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
     · intro h_U
       obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
@@ -813,7 +819,8 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
     simp only [truth_at]
-    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
+    obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
     · intro h_S
       obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
@@ -856,7 +863,8 @@ The formula `φ` must be in `subformulaClosure root` (which includes `root` itse
 theorem restricted_shifted_truth_lemma (B : BFMCS Int)
     (root : Formula)
     (h_tc : B.restricted_temporally_coherent root)
-    (h_uc : B.until_since_coherent) (φ : Formula)
+    (h_buc : B.backward_until_since_coherent)
+    (h_fuc : B.forward_until_since_coherent) (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
     (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔
@@ -974,7 +982,8 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
     have h_phi_sub : phi ∈ subformulaClosure root := closure_untl_left root phi psi h_sub
     have h_psi_sub : psi ∈ subformulaClosure root := closure_untl_right root phi psi h_sub
     simp only [truth_at]
-    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
+    obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
     · intro h_U
       obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
@@ -989,7 +998,8 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
     have h_phi_sub : phi ∈ subformulaClosure root := closure_snce_left root phi psi h_sub
     have h_psi_sub : psi ∈ subformulaClosure root := closure_snce_right root phi psi h_sub
     simp only [truth_at]
-    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
+    obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
     · intro h_S
       obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
