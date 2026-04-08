@@ -1182,17 +1182,23 @@
       ],
       "priority": "critical",
       "created": "2026-04-08T07:20:28Z",
-      "last_updated": "2026-04-08T07:20:28Z",
-      "next_artifact_number": 2,
-      "researched": "2026-04-08T07:20:28Z",
+      "last_updated": "2026-04-08T07:32:26Z",
+      "next_artifact_number": 3,
+      "researched": "2026-04-08T07:32:26Z",
       "notes": "Follow-up to task 83. Research synthesis from 38 iterations of task 83 research included as report 01.",
       "artifacts": [
         {
           "path": "specs/084_establish_until_since_coherent/reports/01_research-synthesis.md",
           "type": "research",
           "summary": "Synthesis of task 83 research: X-vs-G mismatch root cause, 4 approaches ranked, enriched seed with Until-specific scheduling recommended"
+        },
+        {
+          "path": "specs/084_establish_until_since_coherent/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research with 3 teammates: enriched seed analysis, alternative approaches, risk analysis — forward Until 85% viable, backward Until 55%, g_content⊆u opportunity"
         }
-      ]
+      ],
+      "session_id": "sess_1775633025_627e3c"
     }
   ],
   "next_project_number": 85,
