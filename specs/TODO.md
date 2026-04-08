@@ -58,7 +58,9 @@ technical_debt:
      - [22_completeness-closure.md](specs/083_close_restricted_coherence_sorries/plans/22_completeness-closure.md)
      - [33_bx-refactor.md](specs/083_close_restricted_coherence_sorries/plans/33_bx-refactor.md)
      - [39_enriched-chain-completeness.md](specs/083_close_restricted_coherence_sorries/plans/39_enriched-chain-completeness.md)
-   - **84** [RESEARCHED] — **CRITICAL**: Establish `until_since_coherent` for bundle completeness — enriched-Succ chain with dovetailed Until scheduling (depends on 83)
+   - **84** [COMPLETED] — **CRITICAL**: Establish `until_since_coherent` for bundle completeness — split into backward (step-transfer sorry) + forward (blocked sorry), refactored all truth lemma signatures
+     - Completed: 2026-04-08
+     - **Summary**: Split until_since_coherent into backward and forward halves. Refactored all truth lemma signatures across 9 files. 3 monolithic sorry sites replaced with precisely scoped split sorry sites.
    - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries (mcs_all_future_closure, mcs_all_past_closure) — gives weak completeness
 1. **81** [COMPLETED] — F/P witness representation theorem (restricted coherence refactoring)
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (blocked on temporal coherence + until_since_coherent)
