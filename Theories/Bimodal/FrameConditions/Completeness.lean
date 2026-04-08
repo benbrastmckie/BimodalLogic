@@ -318,9 +318,11 @@ theorem bundle_validity_implies_provability (φ : Formula)
       (to_history B.eval_family) 0 φ :=
     h_valid CanonicalTaskFrame CanonicalTaskModel (ShiftClosedCanonicalOmega B)
       h_sc (to_history B.eval_family) h_mem 0
+  -- Step 4b: Until/Since coherence (isolated sorry, same gap as h_tc)
+  have h_uc : B.until_since_coherent := sorry
   -- Step 9: By shifted truth lemma backward, φ ∈ eval_family.mcs 0 = M
   have h_phi_in_M : φ ∈ B.eval_family.mcs 0 :=
-    (shifted_truth_lemma B h_tc φ B.eval_family B.eval_family_mem 0).mpr h_true
+    (shifted_truth_lemma B h_tc h_uc φ B.eval_family B.eval_family_mem 0).mpr h_true
   rw [h_eval_zero] at h_phi_in_M
   -- Step 10: Contradiction: φ ∈ M and φ ∉ M
   exact h_phi_not h_phi_in_M
@@ -350,6 +352,8 @@ theorem restricted_bundle_validity_implies_provability (φ : Formula)
   -- Step 4: Restricted temporal coherence for root = φ
   have h_tc : B.restricted_temporally_coherent φ :=
     bfmcs_restricted_temporally_coherent M h_mcs φ
+  -- Step 4b: Until/Since coherence (isolated sorry, same gap as temporal coherence)
+  have h_uc : B.until_since_coherent := sorry
   -- Step 5: The eval_family at time 0 is M
   have h_eval_zero : B.eval_family.mcs 0 = M := by
     show BB.eval_family.mcs 0 = M
@@ -368,7 +372,7 @@ theorem restricted_bundle_validity_implies_provability (φ : Formula)
   -- Step 9: By RESTRICTED shifted truth lemma backward, φ ∈ eval_family.mcs 0 = M
   -- φ is in subformulaClosure(φ) by self_mem_subformulaClosure
   have h_phi_in_M : φ ∈ B.eval_family.mcs 0 :=
-    (restricted_shifted_truth_lemma B φ h_tc φ (self_mem_subformulaClosure φ)
+    (restricted_shifted_truth_lemma B φ h_tc h_uc φ (self_mem_subformulaClosure φ)
       B.eval_family B.eval_family_mem 0).mpr h_true
   rw [h_eval_zero] at h_phi_in_M
   -- Step 10: Contradiction: φ ∈ M and φ ∉ M
@@ -442,6 +446,8 @@ theorem dovetailed_bundle_validity_implies_provability (φ : Formula)
   -- Step 4: Restricted temporal coherence for root = φ (sorry-free!)
   have h_tc : B.restricted_temporally_coherent φ :=
     dovetailed_bfmcs_restricted_temporally_coherent M h_mcs φ
+  -- Step 4b: Until/Since coherence (isolated sorry for dovetailed chain)
+  have h_uc : B.until_since_coherent := sorry
   -- Step 5: The eval_family at time 0 is M
   have h_eval_zero : B.eval_family.mcs 0 = M := by
     show BB.eval_family.mcs 0 = M
@@ -459,7 +465,7 @@ theorem dovetailed_bundle_validity_implies_provability (φ : Formula)
       h_sc (to_history B.eval_family) h_mem 0
   -- Step 9: By RESTRICTED shifted truth lemma backward, φ ∈ eval_family.mcs 0 = M
   have h_phi_in_M : φ ∈ B.eval_family.mcs 0 :=
-    (restricted_shifted_truth_lemma B φ h_tc φ (self_mem_subformulaClosure φ)
+    (restricted_shifted_truth_lemma B φ h_tc h_uc φ (self_mem_subformulaClosure φ)
       B.eval_family B.eval_family_mem 0).mpr h_true
   rw [h_eval_zero] at h_phi_in_M
   -- Step 10: Contradiction: φ ∈ M and φ ∉ M

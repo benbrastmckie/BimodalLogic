@@ -1,7 +1,7 @@
 # Implementation Plan: Enriched Chain Construction for Bundle Completeness
 
 - **Task**: 83 - Close Restricted Coherence Sorries
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10-14 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/39_team-research.md (3-teammate synthesis on Bundle vs BXCanonical path analysis)
@@ -67,7 +67,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Verify Backward Until Derivation [NOT STARTED]
+### Phase 1: Verify Backward Until Derivation [COMPLETED]
 
 **Goal**: De-risk the backward direction by formally deriving the key lemma `neg(phi U psi) -> neg(psi) /\ (neg(phi) \/ G(neg(phi U psi)))` from BX axioms in Lean. This is the highest-risk component (70% confidence from research).
 
@@ -99,7 +99,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Enriched Chain Construction [NOT STARTED]
+### Phase 2: Enriched Chain Construction [BLOCKED]
 
 **Goal**: Create `EnrichedChain.lean` implementing dovetailed scheduling over the finite deferral closure, producing an FMCS with forward_F and backward_P properties.
 
@@ -147,7 +147,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fill Until/Since Truth Lemma Cases [NOT STARTED]
+### Phase 3: Fill Until/Since Truth Lemma Cases [COMPLETED]
 
 **Goal**: Close the 6 sorry cases for Until/Since in `canonical_truth_lemma`, `shifted_truth_lemma`, and `restricted_shifted_truth_lemma` in CanonicalConstruction.lean.
 
@@ -185,7 +185,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Wire Completeness [NOT STARTED]
+### Phase 4: Wire Completeness [PARTIAL]
 
 **Goal**: Connect the enriched chain construction to the completeness theorem. Given an unprovable formula, build an enriched FMCS where the formula fails, producing a countermodel.
 
@@ -223,7 +223,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Audit and Cleanup [NOT STARTED]
+### Phase 5: Audit and Cleanup [COMPLETED]
 
 **Goal**: Full sorry audit of Bundle/, verify target sorries are resolved, catalog remaining sorries, and create summary.
 

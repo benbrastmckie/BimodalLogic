@@ -81,13 +81,13 @@ natural choice) while achieving the same sorry-free compositionality.
 
 ```
 theorem canonical_truth_lemma
-    (B : BFMCS Int) (h_tc : B.temporally_coherent)
+    (B : BFMCS Int) (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent)
     (fam : FMCS Int) (hfam : fam in B.families)
     (t : Int) (phi : Formula) :
     phi in fam.mcs t <-> truth_at CanonicalTaskModel (CanonicalOmega B) (to_history fam) t phi
 
 theorem shifted_truth_lemma
-    (B : BFMCS Int) (h_tc : B.temporally_coherent)
+    (B : BFMCS Int) (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent)
     (phi : Formula) (fam : FMCS Int) (hfam : fam in B.families) (t : Int) :
     phi in fam.mcs t <->
     truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t phi
@@ -490,6 +490,7 @@ noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 
 theorem canonical_truth_lemma
     (B : BFMCS Int) (h_tc : B.temporally_coherent)
+    (h_uc : B.until_since_coherent)
     (fam : FMCS Int) (hfam : fam ∈ B.families)
     (t : Int) (phi : Formula) :
     phi ∈ fam.mcs t ↔
@@ -625,8 +626,32 @@ theorem canonical_truth_lemma
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t psi h_all_mcs
-  | untl phi psi ih_phi ih_psi => sorry
-  | snce phi psi ih_phi ih_psi => sorry
+  | untl phi psi ih_phi ih_psi =>
+    simp only [truth_at]
+    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    constructor
+    · intro h_U
+      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      exact ⟨s, h_ts,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
+    · intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_U t phi psi ⟨s, h_ts,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
+  | snce phi psi ih_phi ih_psi =>
+    simp only [truth_at]
+    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    constructor
+    · intro h_S
+      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      exact ⟨s, h_st,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
+    · intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_S t phi psi ⟨s, h_st,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
 
 /-!
 ## Shifted Truth Lemma
@@ -649,7 +674,7 @@ show that Box phi persists to all times, enabling truth at shifted histories
 via `time_shift_preserves_truth`.
 -/
 theorem shifted_truth_lemma (B : BFMCS Int)
-    (h_tc : B.temporally_coherent) (φ : Formula)
+    (h_tc : B.temporally_coherent) (h_uc : B.until_since_coherent) (φ : Formula)
     (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔
     truth_at CanonicalTaskModel (ShiftClosedCanonicalOmega B) (to_history fam) t φ := by
@@ -773,8 +798,32 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
-  | untl phi psi ih_phi ih_psi => sorry
-  | snce phi psi ih_phi ih_psi => sorry
+  | untl phi psi ih_phi ih_psi =>
+    simp only [truth_at]
+    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    constructor
+    · intro h_U
+      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      exact ⟨s, h_ts,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
+    · intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_U t phi psi ⟨s, h_ts,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
+  | snce phi psi ih_phi ih_psi =>
+    simp only [truth_at]
+    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    constructor
+    · intro h_S
+      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      exact ⟨s, h_st,
+        (ih_psi fam hfam s).mp h_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
+    · intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_S t phi psi ⟨s, h_st,
+        (ih_psi fam hfam s).mpr h_truth_psi_s,
+        fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
 
 /-!
 ## Restricted Shifted Truth Lemma
@@ -806,7 +855,8 @@ The formula `φ` must be in `subformulaClosure root` (which includes `root` itse
 -/
 theorem restricted_shifted_truth_lemma (B : BFMCS Int)
     (root : Formula)
-    (h_tc : B.restricted_temporally_coherent root) (φ : Formula)
+    (h_tc : B.restricted_temporally_coherent root)
+    (h_uc : B.until_since_coherent) (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
     (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔
@@ -921,21 +971,35 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
         exact (ih h_ψ_sub fam hfam s).mpr (h_all s (le_of_lt hst))
       exact restricted_temporal_backward_H_strict fam root h_backward_P t ψ h_neg_ψ_dc h_all_mcs
   | untl phi psi ih_phi ih_psi =>
-    -- Until truth lemma under strict semantics.
-    -- Forward: φ U ψ ∈ mcs(t) → ∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r)
-    -- The proof requires:
-    --   1. φ U ψ → F(ψ) (derived via until_implies_some_future)
-    --   2. F(ψ) → ∃ s > t, ψ ∈ mcs(s) (from restricted forward_F)
-    --   3. Minimal witness via well-ordering
-    --   4. At intermediate r: φ U ψ persists via X-content propagation
-    -- Step 4 requires X-content propagation infrastructure (X(α) ∈ mcs(t) → α ∈ mcs(t+1)),
-    -- which is the successor chain resolution mechanism under strict semantics.
-    -- This mechanism is not yet fully implemented.
-    -- Backward: ∃ s > t, ψ(s) ∧ ... → φ U ψ ∈ mcs(t) requires U-Induction.
-    sorry
+    have h_phi_sub : phi ∈ subformulaClosure root := closure_untl_left root phi psi h_sub
+    have h_psi_sub : psi ∈ subformulaClosure root := closure_untl_right root phi psi h_sub
+    simp only [truth_at]
+    obtain ⟨h_fwd_U, h_bwd_U, _, _⟩ := h_uc fam hfam
+    constructor
+    · intro h_U
+      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      exact ⟨s, h_ts,
+        (ih_psi h_psi_sub fam hfam s).mp h_psi_s,
+        fun r h_tr h_rs => (ih_phi h_phi_sub fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
+    · intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_U t phi psi ⟨s, h_ts,
+        (ih_psi h_psi_sub fam hfam s).mpr h_truth_psi_s,
+        fun r h_tr h_rs => (ih_phi h_phi_sub fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
-    -- Since truth lemma: mirror of Until for the past direction.
-    sorry
+    have h_phi_sub : phi ∈ subformulaClosure root := closure_snce_left root phi psi h_sub
+    have h_psi_sub : psi ∈ subformulaClosure root := closure_snce_right root phi psi h_sub
+    simp only [truth_at]
+    obtain ⟨_, _, h_fwd_S, h_bwd_S⟩ := h_uc fam hfam
+    constructor
+    · intro h_S
+      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      exact ⟨s, h_st,
+        (ih_psi h_psi_sub fam hfam s).mp h_psi_s,
+        fun r h_sr h_rt => (ih_phi h_phi_sub fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
+    · intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+      exact h_bwd_S t phi psi ⟨s, h_st,
+        (ih_psi h_psi_sub fam hfam s).mpr h_truth_psi_s,
+        fun r h_sr h_rt => (ih_phi h_phi_sub fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
 
 end Bimodal.Metalogic.Bundle.Canonical
 
