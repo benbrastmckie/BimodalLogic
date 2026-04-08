@@ -1,7 +1,7 @@
 # Implementation Plan: Split Until/Since Coherence (v3)
 
 - **Task**: 84 - Establish until_since_coherent for chain constructions
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None (builds on completed Phase 1 and partial Phase 2 from plan v2)
 - **Research Inputs**: specs/084_establish_until_since_coherent/reports/04_team-research.md
