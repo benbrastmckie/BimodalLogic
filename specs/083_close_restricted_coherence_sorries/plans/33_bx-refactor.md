@@ -282,7 +282,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Archive Chain Infrastructure to Boneyard [NOT STARTED]
+### Phase 5: Archive Chain Infrastructure to Boneyard [COMPLETED]
 
 **Goal**: Move the old successor-chain completeness code to Boneyard/ and remove it from the build path. Only do this AFTER Phase 4 modules compile.
 
