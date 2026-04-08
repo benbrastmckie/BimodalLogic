@@ -213,6 +213,15 @@ theorem until_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     Formula.untl φ ψ ∈ w.formulas ↔
       ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
         ∀ u : BXPoint, bx_le w u → bx_le u v → u ≠ v → φ ∈ u.formulas := by
+  -- Forward: φ U ψ ∈ w → ∃ v ≥ w with ψ ∈ v and φ on (w, v).
+  --   If ψ ∈ w: take v = w (reflexive witness, empty guard). Done.
+  --   If ψ ∉ w: Eventuality resolution via BX5 (self-accumulation) and BX6 (absorption).
+  --     Requires Zorn's lemma to construct a maximal chain of MCS where φ U ψ persists,
+  --     then show the supremum MCS must contain ψ (else BX5 gives infinite deferral,
+  --     contradicting BX6 absorption). This is the hardest case.
+  -- Backward: (∃ v ≥ w with ψ ∈ v, φ on (w, v)) → φ U ψ ∈ w.
+  --   By contrapositive: if φ U ψ ∉ w, then ¬(φ U ψ) ∈ w (MCS negation completeness).
+  --   Need to show no such witness v exists. Uses BX4 (connectedness) and BX7 (linearity).
   sorry
 
 /--
@@ -223,6 +232,9 @@ theorem since_iff_mcs (w : BXPoint) (φ ψ : Formula) :
     Formula.snce φ ψ ∈ w.formulas ↔
       ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
         ∀ u : BXPoint, bx_le v u → bx_le u w → u ≠ v → φ ∈ u.formulas := by
+  -- Mirror of until_iff_mcs using BX5'/BX6' (self-accumulation/absorption for Since)
+  -- and BX4' (connect_past) for the backward direction.
+  -- Same Zorn's lemma eventuality resolution structure, reversed temporal direction.
   sorry
 
 end Bimodal.Metalogic.BXCanonical
