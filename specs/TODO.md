@@ -103,7 +103,7 @@ technical_debt:
 
 ### 84. Establish Until/Since Coherence for Bundle Completeness
 - **Effort**: 12-18 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: 83
