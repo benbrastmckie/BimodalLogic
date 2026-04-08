@@ -277,6 +277,12 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | modal_k_dist a b =>
     simp only [subst_imp, subst_box]
     exact Axiom.modal_k_dist (a.subst q r) (b.subst q r)
+  | temp_k_dist a b =>
+    simp only [subst_imp, subst_all_future]
+    exact Axiom.temp_k_dist (a.subst q r) (b.subst q r)
+  | temp_4 a =>
+    simp only [subst_imp, subst_all_future]
+    exact Axiom.temp_4 (a.subst q r)
   | temp_t_future a =>
     simp only [subst_imp, subst_all_future]
     exact Axiom.temp_t_future (a.subst q r)

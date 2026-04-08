@@ -245,7 +245,7 @@ theorem SetMaximalConsistent.all_future_all_future {S : Set Formula} {φ : Formu
     (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
   -- Temporal 4 axiom: Gφ → GGφ
   have h_temp_4_thm : [] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
-    sorry -- temp_4 derivable from BX axioms (Phase 3)
+    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
   -- Weaken to context [Gφ]
   have h_temp_4 : [Formula.all_future φ] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
     DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
@@ -271,7 +271,7 @@ def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.
   let ψ := φ.swap_temporal
   -- Step 1: Get T4 axiom for ψ: Gψ → GGψ
   have h1 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future) :=
-    sorry -- temp_4 derivable from BX axioms (Phase 3)
+    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
   -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
   have h2 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
     DerivationTree.temporal_duality _ h1

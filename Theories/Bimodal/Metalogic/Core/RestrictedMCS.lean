@@ -1418,7 +1418,7 @@ theorem neg_FF_implies_GG_neg_in_drm {phi : Formula} {M : Set Formula}
       Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_dne_inner
     have h_k : [] ⊢ ((psi.neg.all_future).neg.neg.imp (psi.neg.all_future)).all_future.imp
                     ((psi.neg.all_future).neg.neg.all_future.imp (psi.neg.all_future).all_future) :=
-      sorry -- temp_k_dist derivable from BX axioms (Phase 3)
+      DerivationTree.axiom [] _ (Axiom.temp_k_dist (psi.neg.all_future).neg.neg (psi.neg.all_future))
     exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_k h_nec
 
   let premise2 := (psi.neg.all_future.neg).neg.all_future
