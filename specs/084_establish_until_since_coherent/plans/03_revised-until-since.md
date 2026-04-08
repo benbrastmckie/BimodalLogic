@@ -1,0 +1,217 @@
+# Implementation Plan: Establish until_since_coherent (Revised)
+
+- **Task**: 84 - Establish Until/Since Coherence for Bundle Completeness
+- **Status**: [NOT STARTED]
+- **Effort**: 10-14 hours
+- **Dependencies**: None (task 83 closed the truth lemma sorries that added h_uc as hypothesis)
+- **Research Inputs**: reports/01_research-synthesis.md, reports/02_team-research.md, reports/03_team-research.md
+- **Artifacts**: plans/03_revised-until-since.md (this file)
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
+- **Type**: lean4
+- **Lean Intent**: false
+- **Revision**: v2 of plans/02_until-since-coherent.md
+
+## Revision Summary
+
+Plan v1 (02_until-since-coherent.md) was blocked at phases 2-4 by the X-vs-G mismatch. Team research round 03 discovered three breakthroughs:
+
+1. **X is trivial under BX**: `X(alpha) = bot U alpha <-> alpha` via BX8+BX9. The mismatch is a legacy of incomplete BX migration, not a fundamental obstacle.
+2. **`until_intro` IS derivable**: `or_until_in_mcs` (already proved in Phase 1) composes with `X(alpha) -> alpha` to give `until_intro`. This was the missing piece for backward Until/Since.
+3. **Negation unfolding is INVALID**: Countermodel exists. Do NOT pursue this approach.
+
+The revised plan reorders phases: backward directions FIRST (high confidence, 90%), forward directions second (65-85%), with a clean fallback.
+
+## Overview
+
+Three sorry sites in `FrameConditions/Completeness.lean` (lines 322, 356, 450) require `until_since_coherent` with four conjuncts: forward Until, backward Until, forward Since, backward Since. Phase 1 (completed) proved the foundation (`g_content_subset_mcs`, `or_until_in_mcs`, etc.) and closed 3 sorries. This revised plan attacks backward directions first (newly unblocked by the `until_intro` derivation), then forward directions via enriched seeds, with a definition-split fallback.
+
+### Phase 1 Accomplishments (Already Done)
+
+- `g_content_subset_mcs` and `h_content_subset_mcs` proved sorry-free
+- `or_until_in_mcs` and `or_since_in_mcs` proved sorry-free
+- 3 sorries closed in SuccExistence.lean (seed consistency under BX1)
+- Lake build passes cleanly
+
+## Goals & Non-Goals
+
+**Goals**:
+- Derive `until_intro`/`since_intro` from BX axioms (using `or_until_in_mcs` + X-triviality)
+- Port backward Until/Since proofs from DeterministicFMCS Boneyard
+- Establish forward Until/Since for enriched dovetailed chain
+- Close the three sorry sites at lines 322, 356, 450 of Completeness.lean
+
+**Non-Goals**:
+- `dense_completeness_fc` (task 68 -- Int is not dense)
+- FMP TruthPreservation (task 82)
+- BXCanonical Frame.lean sorries (proven impossible)
+- `bfmcs_from_mcs_temporally_coherent` sorry at line 239 (may benefit but not primary target)
+- Repairing x_content/y_content/X-K/X-Det sorry sites (discrete-only, incompatible with density)
+
+## Risks & Mitigations
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| `until_intro` derivation fails in Lean (despite theoretical argument) | H | L (10%) | The derivation is: X(alpha) -> alpha (BX8+BX9) then compose with or_until_in_mcs. Both components are proved. Risk is only type-mismatch or universe issues. |
+| Backward proof port requires x_content linkage | M | M (30%) | DeterministicFMCS uses x_content successor. Need to verify backward induction works with g_content-based chains. If not, adapt the induction to use g_content. |
+| Forward Until enriched seed joint consistency fails | H | M (35%) | Three-way `{target} union g_content union active_untils` needs explicit proof. Fallback: restrict dovetailing to Until targets only. |
+| Line 322 circular dependency with TC sorry | M | H (60%) | Line 322 needs both until_since_coherent AND temporally_coherent (line 239 sorry). Focus on lines 356/450 which have sorry-free TC. Line 322 may require unified enriched chain or remain as last sorry. |
+| Backward proof works for deterministic chain but not dovetailed | M | M (25%) | The backward induction uses chain distance (s-t). For dovetailed chains, the successor structure differs. May need to abstract the backward proof over any chain with a successor relation. |
+
+## Implementation Phases
+
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1 | 1 | -- |
+| 2 | 2 | 1 |
+| 3 | 3 | 1 |
+| 4 | 4 | 2, 3 |
+
+Phases 2 and 3 can execute in parallel (wave 2-3).
+
+### Phase 1: Derive until_intro and since_intro [NOT STARTED]
+
+**Goal**: Establish `until_intro` and `since_intro` as derived rules in the BX system, closing the key gap identified in the Boneyard DeterministicFMCS.
+
+**Tasks**:
+- [ ] Derive `x_implies_id`: `X(alpha) -> alpha` for any formula alpha in any MCS. Proof: `X(alpha) = bot U alpha`, BX9 gives `bot U alpha -> bot or alpha`, propositional `bot or alpha -> alpha`. Compose.
+- [ ] Derive `until_intro_in_mcs`: `X(psi or (phi and (phi U psi))) in M -> (phi U psi) in M`. Proof: `x_implies_id` gives `(psi or (phi and (phi U psi))) in M`, then `or_until_in_mcs` gives `(phi U psi) in M`.
+- [ ] Derive `since_intro_in_mcs`: symmetric via `or_since_in_mcs` and BX8'+BX9'
+- [ ] Replace `until_unfold_in_mcs` sorry (SuccRelation.lean:514-520) with BX-native derivation: `(phi U psi) -> (psi or (phi and (phi U psi)))` via BX5+BX9, no X wrapper
+- [ ] Replace `since_unfold_in_mcs` sorry (SuccRelation.lean:525-531) symmetrically
+- [ ] Close DeterministicFMCS sorry sites at lines 371, 395, 427, 451 using the new derivations
+
+**Timing**: 2-3 hours
+
+**Depends on**: none (builds on Phase 1 results from v1 plan)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean` -- add until_intro_in_mcs, since_intro_in_mcs, x_implies_id; replace until_unfold/since_unfold sorries
+- `Theories/Bimodal/Boneyard/ChainCompleteness/Algebraic/DeterministicFMCS.lean` -- close until_intro/since_intro sorry sites
+
+**Verification**:
+- All new derivations compile sorry-free
+- `lake build` succeeds
+- DeterministicFMCS backward Until/Since proofs now sorry-free (modulo their other dependencies)
+
+---
+
+### Phase 2: Backward Until and Backward Since [NOT STARTED]
+
+**Goal**: Prove the backward directions of `until_since_coherent` -- given a witness s with psi at s and phi on guard interval, conclude `(phi U psi) in fam.mcs t`. This was previously blocked but is now unblocked by Phase 1's `until_intro` derivation.
+
+**Tasks**:
+- [ ] Study `backward_until_chain` in DeterministicFMCS.lean:340-395 to understand the proof pattern: induction on `(s - t).toNat` using `until_intro` at each inductive step
+- [ ] Determine whether the backward induction generalizes from deterministic chains (x_content successor) to enriched/dovetailed chains (g_content + enriched seed successor). Key question: does the induction depend on x_content specifically, or just on the existence of a successor relation?
+- [ ] If generalizable: port `backward_until_chain` and `backward_since_chain` to work with the BFMCS family chain structure
+- [ ] If NOT generalizable (x_content specific): adapt the proof to use g_content-based successor. The key step is: at position r, `psi or (phi and (phi U psi)) in chain(r+1)` and `until_intro` gives `(phi U psi) in chain(r)`. Under g_content successor, need `psi or (phi and (phi U psi)) in g_content(chain(r))` or equivalent.
+- [ ] Prove `backward_until` matching the second conjunct of `until_since_coherent`
+- [ ] Prove `backward_since` matching the fourth conjunct (symmetric)
+
+**Timing**: 3-4 hours
+
+**Depends on**: 1
+
+**Files to modify**:
+- New file or section in `Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean` -- backward proofs for BFMCS chains
+- Possibly `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` -- if backward proof needs chain-level lemmas
+
+**Verification**:
+- Backward Until and backward Since lemmas compile sorry-free
+- Type signatures match the second and fourth conjuncts of `until_since_coherent`
+- `lake build` succeeds
+
+---
+
+### Phase 3: Forward Until and Forward Since via Enriched Seed [NOT STARTED]
+
+**Goal**: Prove forward directions -- `(phi U psi) in fam.mcs t` implies existence of witness s >= t. Uses enriched seed approach with BX-native reasoning (no X).
+
+**Tasks**:
+- [ ] Define BX-native Until unfolding: `(phi U psi) -> (psi or (phi and (phi U psi)))` via BX5+BX9 (no X wrapper). This is a current-time disjunction.
+- [ ] Define enriched seed for dovetailed chain: `seed(w, step) = g_content(w) union {phi U psi : phi U psi in w and psi not in w}` with consistency proof (all elements in w, which is MCS)
+- [ ] Prove Until persistence through enriched chain: if `phi U psi in chain(n)` and `psi not in chain(n)`, then `phi U psi in chain(n+1)` (by enriched seed inclusion + Lindenbaum preservation of seed elements)
+- [ ] Prove guard extraction: for intermediate r where `phi U psi in chain(r)` and `psi not in chain(r)`, BX9 gives `phi or psi`, so `phi in chain(r)` (guard holds)
+- [ ] Prove witness resolution via dovetailed scheduling: round-robin over Until/F targets in subformula closure ensures each psi is eventually placed in seed. At that step, Lindenbaum either includes psi (done) or... need to handle the case where psi conflicts with the seed. Fallback: BX10 gives `F(psi)`, and dovetailed F-scheduling resolves it.
+- [ ] Prove joint seed consistency: `{scheduled_target} union g_content(w) union {active Untils in w}` is consistent. Argument: standard G-lift covers `{target} union g_content(w)`. Active Untils are in w and subset of w. The full union is subset of w (since g_content(w) subset w by BX1), hence consistent.
+- [ ] Mirror for forward Since using h_content and BX8'/BX9'
+- [ ] Prove `forward_until` and `forward_since` for dovetailed chain
+
+**Timing**: 4-5 hours
+
+**Depends on**: 1 (uses BX-native unfolding from Phase 1)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` -- enriched chain modifications
+- New file `Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean` -- forward proofs
+- `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` -- enriched seed definitions if needed
+
+**Verification**:
+- Forward Until and forward Since lemmas compile sorry-free
+- Type signatures match first and third conjuncts of `until_since_coherent`
+- `lake build` succeeds
+
+---
+
+### Phase 4: Assemble and Close Sorry Sites [NOT STARTED]
+
+**Goal**: Wire forward and backward results into complete `until_since_coherent` proofs and close the three sorry sites.
+
+**Tasks**:
+- [ ] Assemble `dovetailed_bfmcs_until_since_coherent` for `construct_dovetailed_bfmcs_bundle`: combine all four conjuncts (forward Until, backward Until, forward Since, backward Since) for the dovetailed chain families
+- [ ] Close sorry at Completeness.lean line 450 (`dovetailed_bundle_validity_implies_provability`)
+- [ ] Assess line 356 (`restricted_bundle_validity_implies_provability`): determine if the backward proof from Phase 2 applies to restricted SuccChain families. If yes, assemble and close.
+- [ ] Assess line 322 (`bundle_validity_implies_provability`): this also needs `temporally_coherent` (sorry at line 239). If TC is still sorry, this site cannot be fully closed. Document clearly.
+- [ ] Run `lake build` on full project, verify no regressions
+- [ ] Count remaining sorries in Completeness.lean -- target: reduced from 5 to at least 2 (lines 450 and either 356 or both 356+322 closed)
+- [ ] Update module-level documentation in modified files
+- [ ] Clean up any temporary scaffolding
+
+**Timing**: 2-3 hours
+
+**Depends on**: 2, 3
+
+**Files to modify**:
+- `Theories/Bimodal/FrameConditions/Completeness.lean` -- replace sorry sites with proof terms
+- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherence.lean` -- add until_since_coherent assembly theorems
+- `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` -- dovetailed-specific wiring
+
+**Verification**:
+- At least line 450 sorry replaced with proof term
+- `lake build` succeeds with no new sorries
+- Sorry count in Completeness.lean decreased by at least 1 (target: 2-3)
+
+## Fallback Strategy
+
+If Phase 3 (forward directions) stalls:
+
+1. **Split `until_since_coherent`** into `backward_until_since_coherent` (provable) and `forward_until_since_coherent` (sorry)
+2. Restructure truth lemma to accept backward-only coherence where forward is not needed, or to accept each direction separately
+3. Close backward for all paths immediately (Phase 2 results)
+4. Leave forward as a precisely scoped sorry with clear documentation
+5. Estimated effort for split: ~300 LOC refactoring, 80% confidence
+
+This gives partial but real progress: backward Until/Since closed, sorry scope narrowed from "entire until_since_coherent" to "forward direction only."
+
+## Testing & Validation
+
+- [ ] `lake build` succeeds after each phase
+- [ ] `until_intro_in_mcs` and `since_intro_in_mcs` compile sorry-free (Phase 1)
+- [ ] Backward Until/Since close without sorry (Phase 2)
+- [ ] Forward Until/Since close without sorry (Phase 3) OR documented with fallback
+- [ ] At least Completeness.lean line 450 sorry replaced (Phase 4)
+- [ ] No new sorries introduced anywhere in the codebase
+- [ ] Grep for `sorry` in Completeness.lean shows reduction from current count
+
+## Artifacts & Outputs
+
+- `plans/03_revised-until-since.md` (this file, revision of 02_until-since-coherent.md)
+- Modified Lean source files (listed per phase)
+- `summaries/03_revised-until-since-summary.md` (after implementation)
+
+## Rollback/Contingency
+
+- All changes are additive (new lemmas and proof terms replacing sorry). If a phase fails, prior sorry can be restored.
+- Phase 1 and Phase 2 are nearly risk-free (90% confidence). These should be committed independently.
+- Phase 3 carries the main risk (65-85%). The fallback split preserves Phase 2 progress.
+- Git commits per phase enable per-phase rollback via `git revert`.
