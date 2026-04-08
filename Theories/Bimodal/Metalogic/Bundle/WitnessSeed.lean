@@ -165,7 +165,7 @@ theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetM
     -- By temporal K distribution: ⊢ G(⊥ → ¬psi) → (G(⊥) → G(¬psi))
     have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg psi))).imp
                      ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi))) :=
-      sorry /- temp_k_dist removed in BX -/
+      DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot (Formula.neg psi))
 
     -- Modus ponens twice: G(¬psi) ∈ M
     have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg psi)) :=
@@ -400,7 +400,7 @@ theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
         DerivationTree.temporal_necessitation _ h_bot_imp_neg
       have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg ψ))).imp
                        ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg ψ))) :=
-        sorry /- temp_k_dist removed in BX -/
+        DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot (Formula.neg ψ))
       have h_G_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg ψ)) :=
         DerivationTree.modus_ponens [] _ _ h_K h_G_ef
       exact SetMaximalConsistent.implication_property h_mcs
@@ -592,8 +592,8 @@ which are still valid with irreflexive semantics.
 /-- Past analog of axiom temp_a: ⊢ φ → H(F(φ)).
 Derived from temp_a via temporal duality. -/
 noncomputable def past_temp_a (psi : Formula) :
-    [] ⊢ psi.imp psi.some_future.all_past := by
-  sorry /- BX: temp_a removed, derive from BX4 connectedness -/
+    [] ⊢ psi.imp psi.some_future.all_past :=
+  DerivationTree.axiom [] _ (Axiom.connect_past psi)
 
 /-- If g_content(M) ⊆ M', then h_content(M') ⊆ M.
 Uses temp_a: φ → G(P(φ)). -/
@@ -608,7 +608,7 @@ theorem g_content_subset_implies_h_content_reverse
     · exact absurd h h_not_phi
     · exact h
   have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.all_future (Formula.neg phi).some_past) :=
-    sorry /- temp_a removed in BX -/
+    DerivationTree.axiom [] _ (Axiom.connect_future (Formula.neg phi))
   have h_G_P_neg : Formula.all_future (Formula.neg phi).some_past ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
   have h_P_neg_M' : (Formula.neg phi).some_past ∈ M' := h_GC h_G_P_neg

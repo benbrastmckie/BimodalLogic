@@ -1,6 +1,7 @@
 -- Re-export commonly used modules for convenience
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Decidability
+import Bimodal.Metalogic.BXCanonical.BXCanonical
 
 /-!
 # Bimodal Metalogic
