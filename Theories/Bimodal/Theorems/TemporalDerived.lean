@@ -2,6 +2,7 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.Propositional
 
 /-!
 # Temporal Derived Theorems from BX Axioms
@@ -341,5 +342,144 @@ Mirror of until_imp_F.
 def since_imp_P (φ ψ : Formula) :
     ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) :=
   DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
+
+/-!
+## Propositional Helpers for Until/Since Derivations
+-/
+
+/-- Contrapositive: `⊢ (A → B) → (¬B → ¬A)`.
+Derived from b_combinator and theorem_flip. -/
+noncomputable def contrapositive (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) :=
+  mp b_combinator (theorem_flip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
+
+private noncomputable def ctx_mp {Γ : Context} {A B : Formula}
+    (h1 : Γ ⊢ A.imp B) (h2 : Γ ⊢ A) : Γ ⊢ B :=
+  DerivationTree.modus_ponens Γ A B h1 h2
+
+private noncomputable def ctx_thm {Γ : Context} {A : Formula}
+    (h : ⊢ A) : Γ ⊢ A :=
+  DerivationTree.weakening [] Γ A h (List.nil_subset Γ)
+
+/-- Disjunction commutativity: `⊢ (A ∨ B) → (B ∨ A)`.
+Since `A ∨ B = ¬A → B`, this is `(¬A → B) → (¬B → A)`, proved by
+contraposition of the hypothesis composed with DNE. -/
+noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) := by
+  unfold Formula.or
+  apply Bimodal.Metalogic.Core.deduction_theorem [] (A.neg.imp B) (B.neg.imp A)
+  apply Bimodal.Metalogic.Core.deduction_theorem [A.neg.imp B] B.neg A
+  have h1 : [B.neg, A.neg.imp B] ⊢ A.neg.imp B := DerivationTree.assumption _ _ (by simp)
+  have h2 : [B.neg, A.neg.imp B] ⊢ B.neg := DerivationTree.assumption _ _ (by simp)
+  have h3 : [B.neg, A.neg.imp B] ⊢ A.neg.neg := ctx_mp (ctx_mp (ctx_thm b_combinator) h2) h1
+  exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.double_negation A)) h3
+
+/-!
+## X/Y Identity (X(α) → α, Y(α) → α)
+
+Under reflexive Until/Since semantics, `X(α) = ⊥ U α` and `Y(α) = ⊥ S α` are
+equivalent to `α` in any MCS. These public versions of the private X_elim/Y_elim
+are needed by downstream modules (SuccRelation, DeterministicFMCS).
+-/
+
+/-- `⊢ X(α) → α`: Under reflexive semantics, X(α) = ⊥ U α implies α.
+From BX9: `(⊥ U α) → (⊥ ∨ α) = (⊤ → α)`, then apply `⊤ = id ⊥`. -/
+noncomputable def x_implies_id (a : Formula) :
+    ⊢ (Formula.untl Formula.bot a).imp a :=
+  imp_trans
+    (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot a))
+    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+
+/-- `⊢ Y(α) → α`: Mirror of x_implies_id for past direction. -/
+noncomputable def y_implies_id (a : Formula) :
+    ⊢ (Formula.snce Formula.bot a).imp a :=
+  imp_trans
+    (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot a))
+    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+
+/-!
+## Until/Since Unfolding and Introduction Theorems
+
+These are the key derived theorems for backward Until/Since in the
+canonical completeness construction.
+-/
+
+/-- `⊢ (ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`: Or-Until introduction.
+The ψ branch uses BX8 (reflexive intro), the conjunction branch uses
+right conjunction elimination. Classical case split via Peirce + contrapositive. -/
+noncomputable def or_until_imp (φ ψ : Formula) :
+    ⊢ (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ) := by
+  unfold Formula.or
+  let Γ₁ : Context := [ψ.neg.imp (φ.and (Formula.untl φ ψ))]
+  let Γ₂ : Context := [(Formula.untl φ ψ).neg, ψ.neg.imp (φ.and (Formula.untl φ ψ))]
+  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
+  apply ctx_mp (ctx_thm (show ⊢ _ from DerivationTree.axiom [] _ (Axiom.peirce (Formula.untl φ ψ) Formula.bot)))
+  apply Bimodal.Metalogic.Core.deduction_theorem Γ₁ _ _
+  have h_contra : Γ₂ ⊢ (Formula.untl φ ψ).neg.imp ψ.neg :=
+    ctx_mp (ctx_thm (contrapositive ψ (Formula.untl φ ψ))) (ctx_thm (psi_imp_until φ ψ))
+  have h_neg_until : Γ₂ ⊢ (Formula.untl φ ψ).neg := DerivationTree.assumption _ _ (List.Mem.head _)
+  have h_hyp : Γ₂ ⊢ ψ.neg.imp (φ.and (Formula.untl φ ψ)) :=
+    DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
+  exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.rce_imp φ (Formula.untl φ ψ)))
+    (ctx_mp h_hyp (ctx_mp h_contra h_neg_until))
+
+/-- `⊢ (ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)`: Or-Since introduction. Mirror of or_until_imp. -/
+noncomputable def or_since_imp (φ ψ : Formula) :
+    ⊢ (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ) := by
+  unfold Formula.or
+  let Γ₁ : Context := [ψ.neg.imp (φ.and (Formula.snce φ ψ))]
+  let Γ₂ : Context := [(Formula.snce φ ψ).neg, ψ.neg.imp (φ.and (Formula.snce φ ψ))]
+  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
+  apply ctx_mp (ctx_thm (show ⊢ _ from DerivationTree.axiom [] _ (Axiom.peirce (Formula.snce φ ψ) Formula.bot)))
+  apply Bimodal.Metalogic.Core.deduction_theorem Γ₁ _ _
+  have h_contra : Γ₂ ⊢ (Formula.snce φ ψ).neg.imp ψ.neg :=
+    ctx_mp (ctx_thm (contrapositive ψ (Formula.snce φ ψ))) (ctx_thm (psi_imp_since φ ψ))
+  have h_neg_since : Γ₂ ⊢ (Formula.snce φ ψ).neg := DerivationTree.assumption _ _ (List.Mem.head _)
+  have h_hyp : Γ₂ ⊢ ψ.neg.imp (φ.and (Formula.snce φ ψ)) :=
+    DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
+  exact ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce φ ψ)))
+    (ctx_mp h_hyp (ctx_mp h_contra h_neg_since))
+
+/-- `⊢ (φ U ψ) → (ψ ∨ (φ ∧ (φ U ψ)))`: Until unfolding at current time.
+From BX5 (self-accumulation) + BX9 (elimination) + or-commutativity. -/
+noncomputable def until_unfold_thm (φ ψ : Formula) :
+    ⊢ (Formula.untl φ ψ).imp (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))) :=
+  imp_trans
+    (imp_trans (DerivationTree.axiom [] _ (Axiom.self_accum_until φ ψ))
+              (DerivationTree.axiom [] _ (Axiom.until_elim (Formula.and φ (Formula.untl φ ψ)) ψ)))
+    (formula_or_comm _ _)
+
+/-- `⊢ (φ S ψ) → (ψ ∨ (φ ∧ (φ S ψ)))`: Since unfolding at current time. Mirror. -/
+noncomputable def since_unfold_thm (φ ψ : Formula) :
+    ⊢ (Formula.snce φ ψ).imp (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))) :=
+  imp_trans
+    (imp_trans (DerivationTree.axiom [] _ (Axiom.self_accum_since φ ψ))
+              (DerivationTree.axiom [] _ (Axiom.since_elim (Formula.and φ (Formula.snce φ ψ)) ψ)))
+    (formula_or_comm _ _)
+
+/-- `⊢ (φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`: X-wrapped Until unfolding.
+Compose until_unfold_thm with BX8 (reflexive intro at ⊥). -/
+noncomputable def until_unfold_X (φ ψ : Formula) :
+    ⊢ (Formula.untl φ ψ).imp
+      (Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))) :=
+  imp_trans (until_unfold_thm φ ψ) (psi_imp_until Formula.bot _)
+
+/-- `⊢ (φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`: Y-wrapped Since unfolding. Mirror. -/
+noncomputable def since_unfold_Y (φ ψ : Formula) :
+    ⊢ (Formula.snce φ ψ).imp
+      (Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))) :=
+  imp_trans (since_unfold_thm φ ψ) (psi_imp_since Formula.bot _)
+
+/-- `⊢ X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`: Until introduction rule.
+Compose x_implies_id with or_until_imp. This is the key rule for backward
+Until induction in the canonical completeness construction. -/
+noncomputable def until_intro (φ ψ : Formula) :
+    ⊢ (Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))).imp
+      (Formula.untl φ ψ) :=
+  imp_trans (x_implies_id _) (or_until_imp φ ψ)
+
+/-- `⊢ Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)`: Since introduction rule. Mirror. -/
+noncomputable def since_intro (φ ψ : Formula) :
+    ⊢ (Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))).imp
+      (Formula.snce φ ψ) :=
+  imp_trans (y_implies_id _) (or_since_imp φ ψ)
 
 end Bimodal.Theorems.TemporalDerived

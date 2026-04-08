@@ -507,27 +507,20 @@ Properties of Until/Since formulas in MCS, derived from until_unfold/since_unfol
 These are used by the dovetailed chain construction to track Until/Since obligations.
 -/
 
-/-- Under strict semantics with X-based until_unfold, the unfold gives:
-  `(φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`, i.e., the disjunction holds at the NEXT time step.
-  This yields `X(ψ ∨ (φ ∧ (φ U ψ))) ∈ M`, which means the next MCS will satisfy the disjunction.
-  TODO: Rewrite to match new X-based unfold axiom shape. -/
+/-- `(φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`: X-wrapped Until unfolding in an MCS.
+  Derived from BX5 (self-accumulation) + BX9 (elimination) + BX8 (reflexive intro). -/
 theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
     Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))) ∈ M := by
-  have h_ax : [] ⊢ (Formula.untl φ ψ).imp
-      (Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ)))) :=
-    sorry /- BX: until_unfold removed, derive from BX5 self-accumulation -/
+  have h_ax := Bimodal.Theorems.TemporalDerived.until_unfold_X φ ψ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_U
 
-/-- Under strict semantics with Y-based since_unfold, the unfold gives:
-  `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`, i.e., the disjunction holds at the PREVIOUS time step.
-  TODO: Rewrite downstream consumers for new Y-based unfold. -/
+/-- `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`: Y-wrapped Since unfolding in an MCS.
+  Derived from BX5' (self-accumulation) + BX9' (elimination) + BX8' (reflexive intro). -/
 theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
     Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))) ∈ M := by
-  have h_ax : [] ⊢ (Formula.snce φ ψ).imp
-      (Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ)))) :=
-    sorry /- BX: since_unfold removed, derive from BX5' self-accumulation -/
+  have h_ax := Bimodal.Theorems.TemporalDerived.since_unfold_Y φ ψ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
 
 /--

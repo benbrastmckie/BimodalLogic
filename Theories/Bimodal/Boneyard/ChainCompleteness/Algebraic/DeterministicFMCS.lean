@@ -20,10 +20,11 @@ representation theorem for completeness over Int.
 | forward Until in `usc` | SORRY | Depends on `deterministic_forward_F` |
 | forward Since in `usc` | SORRY | Depends on `deterministic_backward_P` |
 
-Backward Until and backward Since in `usc` were closed in Phase 1 using
-`until_intro`/`since_intro` + backward induction on the deterministic chain.
-All structural theorems (FMCS, BFMCS, modal coherence, completeness wiring)
-are sorry-free given the two leaf sorries above.
+Backward Until and backward Since in `usc` are sorry-free using
+`until_intro`/`since_intro` from TemporalDerived + backward induction
+on the deterministic chain. All structural theorems (FMCS, BFMCS,
+modal coherence, completeness wiring) are sorry-free given the leaf
+sorries above.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.DeterministicFMCS
@@ -368,7 +369,7 @@ private theorem backward_until_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (sorry /- until_intro removed in BX -/)) h_X_disj
+        (Bimodal.Theorems.TemporalDerived.until_intro φ ψ)) h_X_disj
   | succ d' ih =>
     -- Inductive case: s' = t' + d' + 2
     intro t' s' h_diff h_psi_s h_phi_guard
@@ -392,7 +393,7 @@ private theorem backward_until_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- until_intro
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (sorry /- until_intro removed in BX -/)) h_X_disj
+        (Bimodal.Theorems.TemporalDerived.until_intro φ ψ)) h_X_disj
 
 /-- Backward Since for the deterministic chain: given a witness at s < t with guard
 on (s, t), derive (φ S ψ) ∈ chain(t). Uses since_intro and induction on t - s. -/
@@ -424,7 +425,7 @@ private theorem backward_since_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- since_intro: Y(ψ ∨ (φ ∧ (φ S ψ))) → (φ S ψ)
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (sorry /- since_intro removed in BX -/)) h_Y_disj
+        (Bimodal.Theorems.TemporalDerived.since_intro φ ψ)) h_Y_disj
   | succ d' ih =>
     -- Inductive case: t' = s' + d' + 2
     intro t' s' h_diff h_psi_s h_phi_guard
@@ -448,7 +449,7 @@ private theorem backward_since_chain (W : Set Formula) (h_W : SetMaximalConsiste
     -- since_intro
     exact SetMaximalConsistent.implication_property (deterministic_chain_mcs W h_W t')
       (theorem_in_mcs (deterministic_chain_mcs W h_W t')
-        (sorry /- since_intro removed in BX -/)) h_Y_disj
+        (Bimodal.Theorems.TemporalDerived.since_intro φ ψ)) h_Y_disj
 
 /-!
 ## Temporal and Until/Since Coherence

@@ -69,17 +69,17 @@ Three sorry sites in `FrameConditions/Completeness.lean` (lines 322, 356, 450) r
 
 Phases 2 and 3 can execute in parallel (wave 2-3).
 
-### Phase 1: Derive until_intro and since_intro [NOT STARTED]
+### Phase 1: Derive until_intro and since_intro [COMPLETED]
 
 **Goal**: Establish `until_intro` and `since_intro` as derived rules in the BX system, closing the key gap identified in the Boneyard DeterministicFMCS.
 
 **Tasks**:
-- [ ] Derive `x_implies_id`: `X(alpha) -> alpha` for any formula alpha in any MCS. Proof: `X(alpha) = bot U alpha`, BX9 gives `bot U alpha -> bot or alpha`, propositional `bot or alpha -> alpha`. Compose.
-- [ ] Derive `until_intro_in_mcs`: `X(psi or (phi and (phi U psi))) in M -> (phi U psi) in M`. Proof: `x_implies_id` gives `(psi or (phi and (phi U psi))) in M`, then `or_until_in_mcs` gives `(phi U psi) in M`.
-- [ ] Derive `since_intro_in_mcs`: symmetric via `or_since_in_mcs` and BX8'+BX9'
-- [ ] Replace `until_unfold_in_mcs` sorry (SuccRelation.lean:514-520) with BX-native derivation: `(phi U psi) -> (psi or (phi and (phi U psi)))` via BX5+BX9, no X wrapper
-- [ ] Replace `since_unfold_in_mcs` sorry (SuccRelation.lean:525-531) symmetrically
-- [ ] Close DeterministicFMCS sorry sites at lines 371, 395, 427, 451 using the new derivations
+- [x] Derive `x_implies_id`: `X(alpha) -> alpha` for any formula alpha in any MCS. Proof: `X(alpha) = bot U alpha`, BX9 gives `bot U alpha -> bot or alpha`, propositional `bot or alpha -> alpha`. Compose.
+- [x] Derive `until_intro_in_mcs`: `X(psi or (phi and (phi U psi))) in M -> (phi U psi) in M`. Proof: `x_implies_id` gives `(psi or (phi and (phi U psi))) in M`, then `or_until_in_mcs` gives `(phi U psi) in M`.
+- [x] Derive `since_intro_in_mcs`: symmetric via `or_since_in_mcs` and BX8'+BX9'
+- [x] Replace `until_unfold_in_mcs` sorry (SuccRelation.lean:514-520) with BX-native derivation: `(phi U psi) -> (psi or (phi and (phi U psi)))` via BX5+BX9, no X wrapper
+- [x] Replace `since_unfold_in_mcs` sorry (SuccRelation.lean:525-531) symmetrically
+- [x] Close DeterministicFMCS sorry sites at lines 371, 395, 427, 451 using the new derivations
 
 **Timing**: 2-3 hours
 
