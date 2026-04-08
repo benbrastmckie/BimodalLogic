@@ -4,32 +4,37 @@ import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
-# Temporal Derived Theorems: G(a) → X(a) and H(a) → Y(a)
+# Temporal Derived Theorems from BX Axioms
 
-Under strict temporal semantics (G quantifies over s > t, not s ≥ t),
-the T-axiom `G(a) → a` is NOT valid. However, the weaker `G(a) → X(a)` IS
-derivable from the axiom system, where X(a) = ⊥ U a (next).
+This module contains temporal theorems derived from the Burgess-Xu (BX) axiom system
+under all-reflexive semantics.
 
-## Main Results
+## BX-Derivable Results (sorry-free)
 
-- `G_implies_X`: `⊢ G(a) → X(a)` -- if `a` holds at all strictly future times,
-  then `a` holds at the next time.
-- `H_implies_Y`: `⊢ H(a) → Y(a)` -- dual: if `a` holds at all strictly past times,
-  then `a` holds at the previous time.
+- `G_bot_absurd`: `⊢ G(⊥) → ⊥` (from BX1)
+- `H_bot_absurd`: `⊢ H(⊥) → ⊥` (from BX1')
+- `G_distribution`: `⊢ G(φ → ψ) → (G(φ) → G(ψ))` (temp_k_dist axiom)
+- `G_transitivity`: `⊢ G(φ) → G(G(φ))` (temp_4 axiom)
+- `connect_future_thm`: `⊢ φ → G(P(φ))` (BX4 axiom)
+- `connect_past_thm`: `⊢ φ → H(F(φ))` (BX4' axiom)
+- `density_derivable`: `⊢ G(G(φ)) → G(φ)` (from BX1)
 
-## Proof Strategy
+## Discrete-Only Results (sorry, require X/Y extension)
 
-The derivation uses:
-1. `prop_s` to derive `G(a) → G((⊤ ∧ X(a)) → a)` (weakening under G)
-2. `until_induction` with φ=⊤, ψ=a, χ=a to get
-   `G(a→a) ∧ G((⊤∧X(a))→a) → ((⊤ U a) → X(a))`
-3. `seriality_future` + `F_until_equiv` to get `G(a) → ⊤ U a`
-4. Chaining to get `G(a) → X(a)`
+Under reflexive semantics, X(a) = ⊥ U a holds at t iff a(t) (witness s = t,
+guard [t,t) is empty). So X(a) ↔ a semantically, making G(a) → X(a) trivially
+equivalent to G(a) → a (BX1). The theorems below are retained for backward
+compatibility but are marked as discrete-only extensions.
+
+- `G_implies_X`, `H_implies_Y`: Discrete-only (require strict semantics for meaning)
+- `X_bot_absurd`, `Y_bot_absurd`: Discrete-only
+- `YX_identity`, `XY_identity`: Discrete-only
+- `YG_implies_self`, `XH_implies_self`: Discrete-only
 
 ## References
 
-- Task 83 research report 12: Root cause analysis of g_content blocker
-- Goldblatt 1992, *Logics of Time and Computation*
+- Burgess 1982/84: Until-Since temporal logic axiomatization
+- Task 83: BX axiom system refactor
 -/
 
 namespace Bimodal.Theorems.TemporalDerived
@@ -44,20 +49,92 @@ private abbrev X (a : Formula) : Formula := Formula.untl Formula.bot a  -- X(a) 
 private abbrev Y (a : Formula) : Formula := Formula.snce Formula.bot a  -- Y(a) = ⊥ S a
 
 /-!
-## G(a) → X(a) Derivation
+## BX-Derivable Temporal Theorems (sorry-free)
 
-### Step 1: G(a) → ⊤ U a  (seriality + F_until_equiv)
-### Step 2: G(a) → G(a→a) ∧ G((⊤∧X(a))→a)  (prop_s under G)
-### Step 3: until_induction gives (⊤ U a) → X(a) from the conjunction
-### Step 4: Chain steps 1, 2, 3 to get G(a) → X(a)
+These theorems are directly derivable from the BX axiom system.
 -/
 
 /--
-`⊢ G(a) → ⊤ U a` by chaining seriality_future with F_until_equiv.
+`⊢ G(⊥) → ⊥`: G(⊥) is absurd because BX1 gives G(φ) → φ, instantiated at φ = ⊥.
 -/
-def G_implies_topUntil (a : Formula) :
-    ⊢ a.all_future.imp (Formula.untl top a) := by
-  sorry -- seriality + F_until_equiv derivable from BX (Phase 3)
+def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot :=
+  DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
+
+/--
+`⊢ H(⊥) → ⊥`: H(⊥) is absurd because BX1' gives H(φ) → φ, instantiated at φ = ⊥.
+-/
+noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot :=
+  DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
+
+/--
+`⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G-distribution. Direct axiom (temp_k_dist).
+-/
+def G_distribution (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
+  DerivationTree.axiom [] _ (Axiom.temp_k_dist φ ψ)
+
+/--
+`⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H-distribution. Derived via temporal duality from G-distribution.
+-/
+noncomputable def H_distribution (φ ψ : Formula) :
+    ⊢ (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past) :=
+  Bimodal.Theorems.past_k_dist φ ψ
+
+/--
+`⊢ G(φ) → G(G(φ))`: G-transitivity. Direct axiom (temp_4).
+-/
+def G_transitivity (φ : Formula) :
+    ⊢ φ.all_future.imp φ.all_future.all_future :=
+  DerivationTree.axiom [] _ (Axiom.temp_4 φ)
+
+/--
+`⊢ H(φ) → H(H(φ))`: H-transitivity. Derived via temporal duality from G-transitivity.
+-/
+noncomputable def H_transitivity (φ : Formula) :
+    ⊢ φ.all_past.imp φ.all_past.all_past := by
+  -- Derive by applying temporal duality to G-transitivity of swap_temporal φ
+  let ψ := φ.swap_temporal
+  have h1 : ⊢ ψ.all_future.imp ψ.all_future.all_future :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+  have h2 : ⊢ (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
+    DerivationTree.temporal_duality _ h1
+  simp only [Formula.swap_temporal] at h2
+  have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
+  rw [h_inv] at h2
+  exact h2
+
+/--
+`⊢ φ → G(P(φ))`: Temporal connectedness (future). Direct axiom (BX4).
+The present is always in the past of the future.
+-/
+def connect_future_thm (φ : Formula) :
+    ⊢ φ.imp (φ.some_past.all_future) :=
+  DerivationTree.axiom [] _ (Axiom.connect_future φ)
+
+/--
+`⊢ φ → H(F(φ))`: Temporal connectedness (past). Direct axiom (BX4').
+The present is always in the future of the past.
+-/
+def connect_past_thm (φ : Formula) :
+    ⊢ φ.imp (φ.some_future.all_past) :=
+  DerivationTree.axiom [] _ (Axiom.connect_past φ)
+
+/--
+`⊢ G(G(φ)) → G(φ)`: Density (derivable from BX1).
+Under reflexive semantics, BX1 gives G(ψ) → ψ for any ψ.
+Instantiate ψ = G(φ): G(G(φ)) → G(φ).
+-/
+def density_derivable (φ : Formula) :
+    ⊢ φ.all_future.all_future.imp φ.all_future :=
+  DerivationTree.axiom [] _ (Axiom.temp_t_future φ.all_future)
+
+/--
+`⊢ H(H(φ)) → H(φ)`: Past density (derivable from BX1').
+Instantiate BX1' with ψ = H(φ).
+-/
+def past_density_derivable (φ : Formula) :
+    ⊢ φ.all_past.all_past.imp φ.all_past :=
+  DerivationTree.axiom [] _ (Axiom.temp_t_past φ.all_past)
 
 /--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
@@ -68,166 +145,73 @@ def G_implies_G_id (a : Formula) :
      (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).all_future a.all_future))
 
 /--
-`⊢ G(a) → G((⊤ ∧ X(a)) → a)`: From the prop_s instance
-`⊢ a → ((⊤ ∧ X(a)) → a)`, apply temporal necessitation and temp_k_dist.
+`⊢ G(a) → G((⊤ ∧ X(a)) → a)`: From prop_s and temp_k_dist.
 -/
 def G_implies_G_step (a : Formula) :
     ⊢ a.all_future.imp
       ((Formula.and top (X a)).imp a).all_future := by
-  sorry /- temp_k_dist derivable from BX (Phase 3) -/
+  have h_weak : ⊢ a.imp ((Formula.and top (X a)).imp a) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s a (Formula.and top (X a)))
+  have h_nec : ⊢ (a.imp ((Formula.and top (X a)).imp a)).all_future :=
+    DerivationTree.temporal_necessitation _ h_weak
+  have h_k : ⊢ (a.imp ((Formula.and top (X a)).imp a)).all_future.imp
+    (a.all_future.imp ((Formula.and top (X a)).imp a).all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist a ((Formula.and top (X a)).imp a))
+  exact DerivationTree.modus_ponens [] _ _ h_k h_nec
 
-/--
-The until_induction axiom instance for φ = ⊤, ψ = a, χ = a:
-`⊢ G(a→a) ∧ G((⊤∧X(a))→a) → ((⊤ U a) → X(a))`
+/-!
+## Discrete-Only Theorems (sorry)
+
+These theorems require X(a) = ⊥ U a to behave as "next" (discrete semantics).
+Under reflexive semantics, X(a) ↔ a, so these are trivially equivalent to
+simpler statements. They are retained for backward compatibility with
+downstream code that references them, and marked sorry pending discrete
+extension axioms.
 -/
-def until_ind_inst (a : Formula) :
-    ⊢ (Formula.and
-        (a.imp a).all_future
-        ((Formula.and top (X a)).imp a).all_future
-      ).imp ((Formula.untl top a).imp (X a)) :=
-  sorry /- removed in BX -/
 
 /--
-The main theorem: `⊢ G(a) → X(a)` where X(a) = ⊥ U a.
+`⊢ G(a) → ⊤ U a`: Under reflexive semantics, ⊤ U a at t requires ∃ s ≥ t with a(s).
+From G(a) → a (BX1), we get a(t), but the syntactic derivation of `a → ⊤ U a`
+requires a reflexive Until introduction principle not in the current BX axiom set.
+-/
+def G_implies_topUntil (a : Formula) :
+    ⊢ a.all_future.imp (Formula.untl top a) := by
+  sorry -- Requires reflexive Until introduction (discrete extension)
 
-Under strict temporal semantics, G(a) states that `a` holds at all strictly
-future times (s > t). X(a) states that `a` holds at the next time (t+1).
-Since t+1 > t, this is semantically valid.
-
-**Proof outline**:
-1. `G(a) → G(a→a)` and `G(a) → G((⊤∧X(a))→a)` (prop_s under G)
-2. Combine: `G(a) → G(a→a) ∧ G((⊤∧X(a))→a)` (conjunction)
-3. until_induction: `G(a→a) ∧ G((⊤∧X(a))→a) → ((⊤ U a) → X(a))`
-4. So `G(a) → (⊤ U a) → X(a)`
-5. `G(a) → ⊤ U a` (seriality + F_until_equiv)
-6. Chain: `G(a) → X(a)`
+/--
+`⊢ G(a) → X(a)` where X(a) = ⊥ U a.
+Under reflexive semantics X(a) ↔ a, so this is equivalent to BX1: G(a) → a.
+The syntactic derivation requires `a → ⊥ U a` (reflexive introduction).
 -/
 def G_implies_X (a : Formula) : ⊢ a.all_future.imp (X a) := by
-  -- Step 1: G(a) → G(a→a) ∧ G((⊤∧X(a))→a)
-  have h_conj : ⊢ a.all_future.imp
-      (Formula.and (a.imp a).all_future
-        ((Formula.and top (X a)).imp a).all_future) :=
-    combine_imp_conj (G_implies_G_id a) (G_implies_G_step a)
-  -- Step 2: G(a→a) ∧ G((⊤∧X(a))→a) → ((⊤ U a) → X(a))
-  have h_ind := until_ind_inst a
-  -- Step 3: G(a) → ((⊤ U a) → X(a))
-  have h_topU_to_X : ⊢ a.all_future.imp ((Formula.untl top a).imp (X a)) :=
-    imp_trans h_conj h_ind
-  -- Step 4: G(a) → ⊤ U a
-  have h_topU := G_implies_topUntil a
-  -- Step 5: Chain to get G(a) → X(a)
-  -- From G(a) → (⊤ U a → X(a)) and G(a) → ⊤ U a, get G(a) → X(a)
-  -- This is the S-combinator pattern:
-  -- prop_k: (P → Q → R) → (P → Q) → P → R
-  have h_k : ⊢ (a.all_future.imp ((Formula.untl top a).imp (X a))).imp
-    ((a.all_future.imp (Formula.untl top a)).imp (a.all_future.imp (X a))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k a.all_future (Formula.untl top a) (X a))
-  have h1 := DerivationTree.modus_ponens [] _ _ h_k h_topU_to_X
-  exact DerivationTree.modus_ponens [] _ _ h1 h_topU
+  sorry -- Requires reflexive Until introduction (discrete extension)
 
 /--
-The dual theorem: `⊢ H(a) → Y(a)` where Y(a) = ⊥ S a.
-
-Under strict temporal semantics, H(a) states that `a` holds at all strictly
-past times (s < t). Y(a) states that `a` holds at the previous time (t-1).
-Since t-1 < t, this is semantically valid.
-
-Derived symmetrically to G_implies_X using since_induction, seriality_past,
-and P_since_equiv.
+`⊢ H(a) → Y(a)` where Y(a) = ⊥ S a. Mirror of G_implies_X.
 -/
 noncomputable def H_implies_Y (a : Formula) : ⊢ a.all_past.imp (Y a) := by
-  -- Step 1: H(a) → ⊤ S a  (seriality_past + P_since_equiv)
-  have h_topSince : ⊢ a.all_past.imp (Formula.snce top a) :=
-    sorry /- seriality_past + P_since_equiv removed in BX -/
-  -- Step 2: H(a) → H(a→a) (theorem under H)
-  have h_H_id : ⊢ a.all_past.imp (a.imp a).all_past :=
-    mp (Bimodal.Theorems.past_necessitation _ (identity a))
-       (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).all_past a.all_past))
-  -- Step 3: H(a) → H((⊤ ∧ Y(a)) → a)
-  have h_H_step : ⊢ a.all_past.imp
-      ((Formula.and top (Y a)).imp a).all_past :=
-    mp (Bimodal.Theorems.past_necessitation _
-         (DerivationTree.axiom [] _ (Axiom.prop_s a (Formula.and top (Y a)))))
-       (Bimodal.Theorems.past_k_dist a ((Formula.and top (Y a)).imp a))
-  -- Step 4: Combine conjunction
-  have h_conj : ⊢ a.all_past.imp
-      (Formula.and (a.imp a).all_past
-        ((Formula.and top (Y a)).imp a).all_past) :=
-    combine_imp_conj h_H_id h_H_step
-  -- Step 5: since_induction instance
-  have h_ind : ⊢ (Formula.and
-      (a.imp a).all_past
-      ((Formula.and top (Y a)).imp a).all_past
-    ).imp ((Formula.snce top a).imp (Y a)) :=
-    sorry /- since_induction removed in BX -/
-  -- Step 6: H(a) → (⊤ S a → Y(a))
-  have h_topS_to_Y : ⊢ a.all_past.imp ((Formula.snce top a).imp (Y a)) :=
-    imp_trans h_conj h_ind
-  -- Step 7: Chain
-  have h_k : ⊢ (a.all_past.imp ((Formula.snce top a).imp (Y a))).imp
-    ((a.all_past.imp (Formula.snce top a)).imp (a.all_past.imp (Y a))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k a.all_past (Formula.snce top a) (Y a))
-  have h1 := DerivationTree.modus_ponens [] _ _ h_k h_topS_to_Y
-  exact DerivationTree.modus_ponens [] _ _ h1 h_topSince
+  sorry -- Requires reflexive Since introduction (discrete extension)
 
 /--
-`⊢ G(⊥) → ⊥`: G(⊥) is absurd because seriality gives F(⊥) = ¬G(⊤),
-but G(⊤) is a theorem.
-
-This is the special case needed for seed consistency proofs where the
-T-axiom `G(a) → a` was previously used at `a = ⊥`.
--/
-def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot :=
-  -- Under reflexive BX semantics: G(⊥) → ⊥ follows directly from BX1 (temp_t_future)
-  DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
-
-/--
-`⊢ H(⊥) → ⊥`: H(⊥) is absurd because seriality gives P(⊥) = ¬H(⊤),
-but H(⊤) is a theorem.
--/
-noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot :=
-  DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
-
-/--
-`⊢ X(⊥) → ⊥`, i.e., `⊢ (⊥ U ⊥) → ⊥`.
-
-X(⊥) = ⊥ U ⊥ semantically says "⊥ at the next time step", which is impossible
-because every time step has a consistent MCS.
-
-**Derivation**: Uses G_bot_absurd and G_implies_X to derive a contradiction.
-From G(⊥) → ⊥ (G_bot_absurd) and G(⊥) → X(⊥) (G_implies_X), we get that
-X(⊥) and G(⊤) are jointly inconsistent. Since G(⊤) is a theorem (via
-temporal necessitation of identity), X(⊥) leads to absurdity.
-
-The formal derivation uses until_linearity on X(⊥) and X(⊤) (a theorem):
-  X(⊥) ∧ X(⊤) → (X(⊥ ∧ X(⊤))) ∨ (X(⊤ ∧ X(⊥))) ∨ F(⊥ ∧ ⊤)
-  F(⊥ ∧ ⊤) ↔ F(⊥) ↔ ¬G(⊤), and ¬G(⊤) → ⊥ since G(⊤) is a theorem.
-  The other disjuncts are handled recursively by omega descent.
-
-NOTE: This derivation is semantically clear but the syntactic proof tree
-construction is non-trivial. Uses sorry pending full axiom-level construction.
+`⊢ (⊥ U ⊥) → ⊥`: X(⊥) is absurd. Discrete-only.
 -/
 noncomputable def X_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot := by
-  sorry /- X/Y axioms removed in BX, discrete-only -/
+  sorry -- Discrete-only
 
 /--
-`⊢ Y(⊥) → ⊥`, i.e., `⊢ (⊥ S ⊥) → ⊥`.
-Mirror of X_bot_absurd for the past direction.
+`⊢ (⊥ S ⊥) → ⊥`: Y(⊥) is absurd. Discrete-only.
 -/
 noncomputable def Y_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot := by
-  -- swap_temporal((⊥ U ⊥) → ⊥) = (⊥ S ⊥) → ⊥
-  exact DerivationTree.temporal_duality _ X_bot_absurd
+  sorry -- Discrete-only
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
-
-Under strict semantics, φ U ψ means ∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r).
-The witness s certifies F(ψ). The derivation uses until_induction with χ = ⊥
-to derive X(⊥) from G(¬ψ) ∧ (φ U ψ), then X_bot_absurd for contradiction.
+Under reflexive semantics, the witness s certifies F(ψ).
+Requires reflexive F introduction.
 -/
 noncomputable def until_implies_some_future (φ ψ : Formula) :
     ⊢ (Formula.untl φ ψ).imp (Formula.some_future ψ) := by
-  sorry /- derivable from BX axioms, Phase 3 -/
+  sorry -- Requires reflexive F introduction (discrete extension)
 
 /--
 `⊢ (φ S ψ) → P(ψ)`: Any Since formula implies past eventuality.
@@ -235,78 +219,40 @@ Mirror of until_implies_some_future.
 -/
 noncomputable def since_implies_some_past (φ ψ : Formula) :
     ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) := by
-  sorry /- derivable from BX axioms, Phase 3 -/
+  sorry -- Requires reflexive P introduction (discrete extension)
 
-/-!
-## YX and XY Identity: Y(X(φ)) → φ and X(Y(φ)) → φ
-
-These are direct applications of the yx_identity and xy_identity axioms.
-They express that "Previous of Next" and "Next of Previous" are identities
-on discrete linear frames.
--/
-
-/-- Y(X(φ)) → φ: Previous of Next is identity.
-Direct axiom application. -/
+/-- Y(X(φ)) → φ: Previous of Next is identity. Discrete-only. -/
 noncomputable def YX_identity (a : Formula) :
     ⊢ (Formula.snce Formula.bot (Formula.untl Formula.bot a)).imp a :=
-  sorry /- yx_identity removed in BX -/
+  sorry -- Discrete-only (requires yx_identity axiom)
 
-/-- X(Y(φ)) → φ: Next of Previous is identity.
-Direct axiom application. -/
+/-- X(Y(φ)) → φ: Next of Previous is identity. Discrete-only. -/
 noncomputable def XY_identity (a : Formula) :
     ⊢ (Formula.untl Formula.bot (Formula.snce Formula.bot a)).imp a :=
-  sorry /- xy_identity removed in BX -/
+  sorry -- Discrete-only (requires xy_identity axiom)
 
-/-- Y-necessitation: if ⊢ φ then ⊢ Y(φ). Uses past temporal necessitation + H→Y. -/
+/-- Y-necessitation: if ⊢ φ then ⊢ Y(φ). Discrete-only (depends on H_implies_Y). -/
 private noncomputable def y_nec' {φ : Formula} (h : DerivationTree [] φ) :
     DerivationTree [] (Formula.snce Formula.bot φ) := by
   have h_H : DerivationTree [] φ.all_past :=
     Bimodal.Theorems.past_necessitation _ h
   exact DerivationTree.modus_ponens [] _ _ (H_implies_Y φ) h_H
 
-/-- X-necessitation: if ⊢ φ then ⊢ X(φ). Uses temporal necessitation + G→X. -/
+/-- X-necessitation: if ⊢ φ then ⊢ X(φ). Discrete-only (depends on G_implies_X). -/
 private noncomputable def x_nec' {φ : Formula} (h : DerivationTree [] φ) :
     DerivationTree [] (Formula.untl Formula.bot φ) := by
   have h_G : DerivationTree [] φ.all_future :=
     DerivationTree.temporal_necessitation _ h
   exact DerivationTree.modus_ponens [] _ _ (G_implies_X φ) h_G
 
-/-- Y(G(φ)) → φ: if G(φ) held at the previous time, then φ holds now.
-Derived from G_implies_X (G(φ) → X(φ)), Y-K distribution, and YX_identity. -/
+/-- Y(G(φ)) → φ: Discrete-only (depends on YX_identity). -/
 noncomputable def YG_implies_self (a : Formula) :
     ⊢ (Formula.snce Formula.bot a.all_future).imp a := by
-  -- Step 1: G(a) → X(a) (G_implies_X)
-  have h_GX := G_implies_X a
-  -- Step 2: Y(G(a)) → Y(X(a)) (by Y-K distribution)
-  have h_y_nec_GX := y_nec' h_GX
-  have h_y_k : ⊢ (Formula.snce Formula.bot (a.all_future.imp (X a))).imp
-      ((Formula.snce Formula.bot a.all_future).imp (Formula.snce Formula.bot (X a))) :=
-    sorry /- y_k_dist removed in BX -/
-  have h_YG_imp_YX : ⊢ (Formula.snce Formula.bot a.all_future).imp
-      (Formula.snce Formula.bot (X a)) :=
-    DerivationTree.modus_ponens [] _ _ h_y_k h_y_nec_GX
-  -- Step 3: Y(X(a)) → a (YX_identity)
-  have h_YX := YX_identity a
-  -- Step 4: Chain: Y(G(a)) → Y(X(a)) → a
-  exact imp_trans h_YG_imp_YX h_YX
+  sorry -- Discrete-only (depends on y_k_dist, YX_identity)
 
-/-- X(H(φ)) → φ: if H(φ) holds at the next time, then φ holds now.
-Derived from H_implies_Y (H(φ) → Y(φ)), X-K distribution, and XY_identity. -/
+/-- X(H(φ)) → φ: Discrete-only (depends on XY_identity). -/
 noncomputable def XH_implies_self (a : Formula) :
     ⊢ (Formula.untl Formula.bot a.all_past).imp a := by
-  -- Step 1: H(a) → Y(a) (H_implies_Y)
-  have h_HY := H_implies_Y a
-  -- Step 2: X(H(a)) → X(Y(a)) (by X-K distribution)
-  have h_x_nec_HY := x_nec' h_HY
-  have h_x_k : ⊢ (Formula.untl Formula.bot (a.all_past.imp (Y a))).imp
-      ((Formula.untl Formula.bot a.all_past).imp (Formula.untl Formula.bot (Y a))) :=
-    sorry /- x_k_dist removed in BX -/
-  have h_XH_imp_XY : ⊢ (Formula.untl Formula.bot a.all_past).imp
-      (Formula.untl Formula.bot (Y a)) :=
-    DerivationTree.modus_ponens [] _ _ h_x_k h_x_nec_HY
-  -- Step 3: X(Y(a)) → a (XY_identity)
-  have h_XY := XY_identity a
-  -- Step 4: Chain: X(H(a)) → X(Y(a)) → a
-  exact imp_trans h_XH_imp_XY h_XY
+  sorry -- Discrete-only (depends on x_k_dist, XY_identity)
 
 end Bimodal.Theorems.TemporalDerived

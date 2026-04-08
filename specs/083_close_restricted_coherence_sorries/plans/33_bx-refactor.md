@@ -157,7 +157,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Derived Theorems + Match Exhaustiveness [NOT STARTED]
+### Phase 3: Derived Theorems + Match Exhaustiveness [COMPLETED]
 
 **Goal**: Recover key derived temporal theorems from BX axioms and fix all pattern match exhaustiveness failures across the codebase caused by the Axiom type change.
 

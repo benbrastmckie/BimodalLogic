@@ -811,6 +811,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | ex_falso ψ => exact ex_falso_valid ψ
   | peirce φ ψ => exact peirce_valid φ ψ
   | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ
+  | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ
+  | temp_4 ψ => exact temp_4_valid ψ
   | temp_t_future ψ => exact temp_t_future_valid ψ
   | temp_t_past ψ => exact temp_t_past_valid ψ
   | left_mono_until φ ψ χ => exact left_mono_until_valid φ ψ χ
@@ -842,6 +844,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | ex_falso ψ => exact Validity.valid_implies_valid_dense (ex_falso_valid ψ)
   | peirce φ ψ => exact Validity.valid_implies_valid_dense (peirce_valid φ ψ)
   | modal_k_dist φ ψ => exact Validity.valid_implies_valid_dense (modal_k_dist_valid φ ψ)
+  | temp_k_dist φ ψ => exact Validity.valid_implies_valid_dense (temp_k_dist_valid φ ψ)
+  | temp_4 ψ => exact Validity.valid_implies_valid_dense (temp_4_valid ψ)
   | temp_t_future ψ => exact Validity.valid_implies_valid_dense (temp_t_future_valid ψ)
   | temp_t_past ψ => exact Validity.valid_implies_valid_dense (temp_t_past_valid ψ)
   | left_mono_until φ ψ χ => exact Validity.valid_implies_valid_dense (left_mono_until_valid φ ψ χ)
@@ -874,6 +878,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | ex_falso ψ => exact Validity.valid_implies_valid_discrete (ex_falso_valid ψ)
   | peirce φ ψ => exact Validity.valid_implies_valid_discrete (peirce_valid φ ψ)
   | modal_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (modal_k_dist_valid φ ψ)
+  | temp_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (temp_k_dist_valid φ ψ)
+  | temp_4 ψ => exact Validity.valid_implies_valid_discrete (temp_4_valid ψ)
   | temp_t_future ψ => exact Validity.valid_implies_valid_discrete (temp_t_future_valid ψ)
   | temp_t_past ψ => exact Validity.valid_implies_valid_discrete (temp_t_past_valid ψ)
   | left_mono_until φ ψ χ => exact Validity.valid_implies_valid_discrete (left_mono_until_valid φ ψ χ)
@@ -960,6 +966,8 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | ex_falso ψ => exact ex_falso_valid ψ D F M Omega h_sc τ h_mem t
     | peirce φ ψ => exact peirce_valid φ ψ D F M Omega h_sc τ h_mem t
     | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_4 ψ => exact temp_4_valid ψ D F M Omega h_sc τ h_mem t
     | temp_t_future ψ => exact temp_t_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_t_past ψ => exact temp_t_past_valid ψ D F M Omega h_sc τ h_mem t
     | left_mono_until φ ψ χ => exact left_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
@@ -1119,6 +1127,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | ex_falso ψ => exact ex_falso_valid ψ D F M Omega h_sc τ h_mem t
     | peirce φ ψ => exact peirce_valid φ ψ D F M Omega h_sc τ h_mem t
     | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_4 ψ => exact temp_4_valid ψ D F M Omega h_sc τ h_mem t
     | temp_t_future ψ => exact temp_t_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_t_past ψ => exact temp_t_past_valid ψ D F M Omega h_sc τ h_mem t
     | left_mono_until φ ψ χ => exact left_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t

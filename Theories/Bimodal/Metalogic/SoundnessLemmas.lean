@@ -512,6 +512,18 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [Formula.swap_temporal, truth_at]
     intro h_box_imp h_box_psi σ h_σ_mem
     exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
+  | temp_k_dist ψ χ =>
+    -- swap of G(φ→ψ) → (Gφ → Gψ) is H(φ'→ψ') → (Hφ' → Hψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H_imp h_H_phi s hst
+    exact h_H_imp s hst (h_H_phi s hst)
+  | temp_4 ψ =>
+    -- swap of G(φ) → G(G(φ)) is H(φ') → H(H(φ'))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H s hst r hrs
+    exact h_H r (le_trans hrs hst)
   | temp_t_future ψ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
@@ -522,18 +534,170 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [Formula.swap_temporal, truth_at]
     intro h_G
     exact h_G t (le_refl t)
-  | left_mono_until _ _ _ => sorry
-  | left_mono_since _ _ _ => sorry
-  | right_mono_until _ _ _ => sorry
-  | right_mono_since _ _ _ => sorry
-  | connect_future _ => sorry
-  | connect_past _ => sorry
-  | self_accum_until _ _ => sorry
-  | self_accum_since _ _ => sorry
-  | absorb_until _ _ => sorry
-  | absorb_since _ _ => sorry
-  | linear_until _ _ _ _ => sorry
-  | linear_since _ _ _ _ => sorry
+  | left_mono_until φ ψ χ =>
+    -- swap: H(φ' → χ') → ((φ' S ψ') → (χ' S ψ'))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H ⟨s, hst, h_ψs, h_guard⟩
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  | left_mono_since φ ψ χ =>
+    -- swap: G(φ' → χ') → ((φ' U ψ') → (χ' U ψ'))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_G ⟨s, hts, h_ψs, h_guard⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  | right_mono_until φ ψ χ =>
+    -- swap: H(φ' → ψ') → ((χ' S φ') → (χ' S ψ'))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H ⟨s, hst, h_φs, h_guard⟩
+    exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
+  | right_mono_since φ ψ χ =>
+    -- swap: G(φ' → ψ') → ((χ' U φ') → (χ' U ψ'))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_G ⟨s, hts, h_φs, h_guard⟩
+    exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
+  | connect_future φ =>
+    -- swap of (φ → G(P(φ))) = (φ' → H(F(φ')))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at, Formula.some_future, Formula.neg]
+    intro h_φt s hst h_G_neg
+    exact h_G_neg t hst h_φt
+  | connect_past φ =>
+    -- swap of (φ → H(F(φ))) = (φ' → G(P(φ')))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg]
+    intro h_φt s hts h_H_neg
+    exact h_H_neg t hts h_φt
+  | self_accum_until φ ψ =>
+    -- swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hst, h_ψs, h_guard⟩
+    refine ⟨s, hst, h_ψs, fun r hrs hrt => ?_⟩
+    show (truth_at M Omega τ r φ.swap_temporal →
+      (∃ s', s' ≤ r ∧ truth_at M Omega τ s' ψ.swap_temporal ∧
+        ∀ q, s' < q → q ≤ r → truth_at M Omega τ q φ.swap_temporal) → False) → False
+    intro h_neg
+    exact h_neg (h_guard r hrs hrt)
+      ⟨s, le_of_lt hrs, h_ψs, fun q hqs hqr => h_guard q hqs (le_trans hqr hrt)⟩
+  | self_accum_since φ ψ =>
+    -- swap: (φ' U ψ') → ((φ' ∧ (φ' U ψ')) U ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hts, h_ψs, h_guard⟩
+    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
+    show (truth_at M Omega τ r φ.swap_temporal →
+      (∃ s', r ≤ s' ∧ truth_at M Omega τ s' ψ.swap_temporal ∧
+        ∀ q, r ≤ q → q < s' → truth_at M Omega τ q φ.swap_temporal) → False) → False
+    intro h_neg
+    exact h_neg (h_guard r htr hrs)
+      ⟨s, le_of_lt hrs, h_ψs, fun q hqr hqs => h_guard q (le_trans htr hqr) hqs⟩
+  | absorb_until φ ψ =>
+    -- swap: (φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s1, hs1t, h_endpoint, h_outer_guard⟩
+    simp only [truth_at, Formula.and, Formula.neg] at h_endpoint
+    have h_φs1 : truth_at M Omega τ s1 φ.swap_temporal := by
+      by_contra h_not
+      exact h_endpoint (fun h => absurd h h_not)
+    have h_inner : ∃ s2, s2 ≤ s1 ∧ truth_at M Omega τ s2 ψ.swap_temporal ∧
+        ∀ r, s2 < r → r ≤ s1 → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_not
+      exact h_endpoint (fun _ h_S => h_not h_S)
+    obtain ⟨s2, hs2s1, h_ψs2, h_inner_guard⟩ := h_inner
+    refine ⟨s2, le_trans hs2s1 hs1t, h_ψs2, fun r hrs2 hrt => ?_⟩
+    rcases lt_or_ge s1 r with h_lt | h_ge
+    · exact h_outer_guard r h_lt hrt
+    · rcases eq_or_lt_of_le h_ge with h_eq | h_gt
+      · rw [h_eq]; exact h_φs1
+      · exact h_inner_guard r hrs2 (le_of_lt h_gt)
+  | absorb_since φ ψ =>
+    -- swap: (φ' U (φ' ∧ (φ' U ψ'))) → (φ' U ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s1, hts1, h_endpoint, h_outer_guard⟩
+    simp only [truth_at, Formula.and, Formula.neg] at h_endpoint
+    have h_φs1 : truth_at M Omega τ s1 φ.swap_temporal := by
+      by_contra h_not
+      exact h_endpoint (fun h => absurd h h_not)
+    have h_inner : ∃ s2, s1 ≤ s2 ∧ truth_at M Omega τ s2 ψ.swap_temporal ∧
+        ∀ r, s1 ≤ r → r < s2 → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_not
+      exact h_endpoint (fun _ h_U => h_not h_U)
+    obtain ⟨s2, hs1s2, h_ψs2, h_inner_guard⟩ := h_inner
+    refine ⟨s2, le_trans hts1 hs1s2, h_ψs2, fun r htr hrs2 => ?_⟩
+    rcases lt_or_ge r s1 with h_lt | h_ge
+    · exact h_outer_guard r htr h_lt
+    · rcases eq_or_lt_of_le h_ge with h_eq | h_gt
+      · rw [← h_eq]; exact h_φs1
+      · exact h_inner_guard r (le_of_lt h_gt) hrs2
+  | linear_until φ ψ χ θ =>
+    -- swap: (φ' S ψ') ∧ (χ' S θ') → ((φ'∧χ') S (ψ'∧θ')) ∨ ((φ'∧χ') S (ψ'∧χ')) ∨ ((φ'∧χ') S (φ'∧θ'))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_and
+    have h_S1 : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_not; exact h_and (fun h _ => h_not h)
+    have h_S2 : ∃ s, s ≤ t ∧ truth_at M Omega τ s θ.swap_temporal ∧
+        ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ.swap_temporal := by
+      by_contra h_not; exact h_and (fun _ h => h_not h)
+    obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
+    obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
+    simp only [truth_at, Formula.and, Formula.or, Formula.neg]
+    rcases le_or_lt s2 s1 with h_le | h_lt
+    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
+      · subst h_eq
+        intro h_neg_outer
+        exfalso; apply h_neg_outer; intro h_neg_first
+        exfalso; apply h_neg_first
+        exact ⟨s2, hs2t,
+          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
+          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r hrs hrt)⟩
+      · intro h_neg_outer
+        exfalso; apply h_neg_outer; intro _
+        exact ⟨s1, hs1t,
+          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt hs1t),
+          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
+    · intro _
+      exact ⟨s2, hs2t,
+        fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt hs2t) h_θs2,
+        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
+  | linear_since φ ψ χ θ =>
+    -- swap: (φ' U ψ') ∧ (χ' U θ') → ((φ'∧χ') U (ψ'∧θ')) ∨ ((φ'∧χ') U (ψ'∧χ')) ∨ ((φ'∧χ') U (φ'∧θ'))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_and
+    have h_U1 : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_not; exact h_and (fun h _ => h_not h)
+    have h_U2 : ∃ s, t ≤ s ∧ truth_at M Omega τ s θ.swap_temporal ∧
+        ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ.swap_temporal := by
+      by_contra h_not; exact h_and (fun _ h => h_not h)
+    obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
+    obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
+    simp only [truth_at, Formula.and, Formula.or, Formula.neg]
+    rcases le_or_lt s1 s2 with h_le | h_lt
+    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
+      · subst h_eq
+        intro h_neg_outer
+        exfalso; apply h_neg_outer; intro h_neg_first
+        exfalso; apply h_neg_first
+        exact ⟨s1, hts1,
+          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
+          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr hrs)⟩
+      · intro h_neg_outer
+        exfalso; apply h_neg_outer; intro _
+        exact ⟨s1, hts1,
+          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 hts1 h_lt),
+          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
+    · intro _
+      exact ⟨s2, hts2,
+        fun h_neg_ep => h_neg_ep (h_guard1 s2 hts2 h_lt) h_θs2,
+        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
@@ -771,6 +935,8 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | ex_falso ψ => exact axiom_ex_falso_valid ψ
   | peirce φ ψ => exact axiom_peirce_valid φ ψ
   | modal_k_dist φ ψ => exact axiom_modal_k_dist_valid φ ψ
+  | temp_k_dist φ ψ => exact axiom_temp_k_dist_valid φ ψ
+  | temp_4 ψ => exact axiom_temp_4_valid ψ
   | temp_t_future ψ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
@@ -779,18 +945,158 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
     intro h_H; exact h_H t (le_refl t)
-  | left_mono_until _ _ _ => sorry
-  | left_mono_since _ _ _ => sorry
-  | right_mono_until _ _ _ => sorry
-  | right_mono_since _ _ _ => sorry
-  | connect_future _ => sorry
-  | connect_past _ => sorry
-  | self_accum_until _ _ => sorry
-  | self_accum_since _ _ => sorry
-  | absorb_until _ _ => sorry
-  | absorb_since _ _ => sorry
-  | linear_until _ _ _ _ => sorry
-  | linear_since _ _ _ _ => sorry
+  | left_mono_until φ ψ χ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_G ⟨s, hts, h_ψs, h_guard⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  | left_mono_since φ ψ χ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_H ⟨s, hst, h_ψs, h_guard⟩
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  | right_mono_until φ ψ χ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_G ⟨s, hts, h_φs, h_guard⟩
+    exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
+  | right_mono_since φ ψ χ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_H ⟨s, hst, h_φs, h_guard⟩
+    exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
+  | connect_future φ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at, Formula.some_past, Formula.neg]
+    intro h_φt s hts h_H_neg
+    exact h_H_neg t hts h_φt
+  | connect_past φ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at, Formula.some_future, Formula.neg]
+    intro h_φt s hst h_G_neg
+    exact h_G_neg t hst h_φt
+  | self_accum_until φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, h_ψs, h_guard⟩
+    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
+    show (truth_at M Omega τ r φ →
+      (∃ s', r ≤ s' ∧ truth_at M Omega τ s' ψ ∧
+        ∀ q, r ≤ q → q < s' → truth_at M Omega τ q φ) → False) → False
+    intro h_neg
+    exact h_neg (h_guard r htr hrs)
+      ⟨s, le_of_lt hrs, h_ψs, fun q hqr hqs => h_guard q (le_trans htr hqr) hqs⟩
+  | self_accum_since φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hst, h_ψs, h_guard⟩
+    refine ⟨s, hst, h_ψs, fun r hrs hrt => ?_⟩
+    show (truth_at M Omega τ r φ →
+      (∃ s', s' ≤ r ∧ truth_at M Omega τ s' ψ ∧
+        ∀ q, s' < q → q ≤ r → truth_at M Omega τ q φ) → False) → False
+    intro h_neg
+    exact h_neg (h_guard r hrs hrt)
+      ⟨s, le_of_lt hrs, h_ψs, fun q hqs hqr => h_guard q hqs (le_trans hqr hrt)⟩
+  | absorb_until φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s1, hts1, h_endpoint, h_outer_guard⟩
+    simp only [truth_at, Formula.and, Formula.neg] at h_endpoint
+    have h_φs1 : truth_at M Omega τ s1 φ := by
+      by_contra h_not
+      exact h_endpoint (fun h => absurd h h_not)
+    have h_inner : ∃ s2, s1 ≤ s2 ∧ truth_at M Omega τ s2 ψ ∧
+        ∀ r, s1 ≤ r → r < s2 → truth_at M Omega τ r φ := by
+      by_contra h_not
+      exact h_endpoint (fun _ h_U => h_not h_U)
+    obtain ⟨s2, hs1s2, h_ψs2, h_inner_guard⟩ := h_inner
+    refine ⟨s2, le_trans hts1 hs1s2, h_ψs2, fun r htr hrs2 => ?_⟩
+    rcases lt_or_ge r s1 with h_lt | h_ge
+    · exact h_outer_guard r htr h_lt
+    · rcases eq_or_lt_of_le h_ge with h_eq | h_gt
+      · rw [← h_eq]; exact h_φs1
+      · exact h_inner_guard r (le_of_lt h_gt) hrs2
+  | absorb_since φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s1, hs1t, h_endpoint, h_outer_guard⟩
+    simp only [truth_at, Formula.and, Formula.neg] at h_endpoint
+    have h_φs1 : truth_at M Omega τ s1 φ := by
+      by_contra h_not
+      exact h_endpoint (fun h => absurd h h_not)
+    have h_inner : ∃ s2, s2 ≤ s1 ∧ truth_at M Omega τ s2 ψ ∧
+        ∀ r, s2 < r → r ≤ s1 → truth_at M Omega τ r φ := by
+      by_contra h_not
+      exact h_endpoint (fun _ h_S => h_not h_S)
+    obtain ⟨s2, hs2s1, h_ψs2, h_inner_guard⟩ := h_inner
+    refine ⟨s2, le_trans hs2s1 hs1t, h_ψs2, fun r hrs2 hrt => ?_⟩
+    rcases lt_or_ge s1 r with h_lt | h_ge
+    · exact h_outer_guard r h_lt hrt
+    · rcases eq_or_lt_of_le h_ge with h_eq | h_gt
+      · rw [h_eq]; exact h_φs1
+      · exact h_inner_guard r hrs2 (le_of_lt h_gt)
+  | linear_until φ ψ χ θ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_and
+    have h_U1 : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ := by
+      by_contra h_not; exact h_and (fun h _ => h_not h)
+    have h_U2 : ∃ s, t ≤ s ∧ truth_at M Omega τ s θ ∧
+        ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ := by
+      by_contra h_not; exact h_and (fun _ h => h_not h)
+    obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
+    obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
+    simp only [truth_at, Formula.and, Formula.or, Formula.neg]
+    rcases le_or_lt s1 s2 with h_le | h_lt
+    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
+      · subst h_eq
+        intro h_neg_outer
+        exfalso; apply h_neg_outer; intro h_neg_first
+        exfalso; apply h_neg_first
+        exact ⟨s1, hts1,
+          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
+          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr hrs)⟩
+      · intro h_neg_outer
+        exfalso; apply h_neg_outer; intro _
+        exact ⟨s1, hts1,
+          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 hts1 h_lt),
+          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
+    · intro _
+      exact ⟨s2, hts2,
+        fun h_neg_ep => h_neg_ep (h_guard1 s2 hts2 h_lt) h_θs2,
+        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
+  | linear_since φ ψ χ θ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_and
+    have h_S1 : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ := by
+      by_contra h_not; exact h_and (fun h _ => h_not h)
+    have h_S2 : ∃ s, s ≤ t ∧ truth_at M Omega τ s θ ∧
+        ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ := by
+      by_contra h_not; exact h_and (fun _ h => h_not h)
+    obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
+    obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
+    simp only [truth_at, Formula.and, Formula.or, Formula.neg]
+    rcases le_or_lt s2 s1 with h_le | h_lt
+    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
+      · subst h_eq
+        intro h_neg_outer
+        exfalso; apply h_neg_outer; intro h_neg_first
+        exfalso; apply h_neg_first
+        exact ⟨s2, hs2t,
+          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
+          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r hrs hrt)⟩
+      · intro h_neg_outer
+        exfalso; apply h_neg_outer; intro _
+        exact ⟨s1, hs1t,
+          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt hs1t),
+          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
+    · intro _
+      exact ⟨s2, hs2t,
+        fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt hs2t) h_θs2,
+        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 

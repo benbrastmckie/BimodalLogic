@@ -17,7 +17,7 @@ requiring successor-chain constructions.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce
 2. **S5 Modal** (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
-3. **BX Temporal** (14 = 7 schemas x 2 directions):
+3. **BX Temporal** (16 = temp_k_dist + temp_4 + 7 schemas x 2 directions):
    - BX1/BX1': temp_t_future/past (reflexivity, KEEP from previous)
    - BX2/BX2': left_mono_until/since (left monotonicity)
    - BX3/BX3': right_mono_until/since (right monotonicity)
@@ -27,7 +27,7 @@ requiring successor-chain constructions.
    - BX7/BX7': linear_until/since (linearity)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 25 axiom constructors (down from 35 in the previous system)
+**Total**: 27 axiom constructors (down from 35 in the previous system)
 
 ### Key Properties
 
@@ -51,10 +51,10 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-25 constructors organized into four layers:
+27 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (14): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (16): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (2): Modal-temporal interaction axioms
 
 All axioms are valid on all linear temporal orders (base frame class).
@@ -93,7 +93,19 @@ inductive Axiom : Formula → Type where
   | modal_k_dist (φ ψ : Formula) :
       Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
 
-  -- Layer 3: BX Temporal (14 = 7 x 2)
+  -- Layer 3: BX Temporal (16 = 9 future + 7 past-mirrors derived via duality)
+  -- Note: temp_k_dist and temp_4 are future-only axioms; their past versions
+  -- (H-distribution, H-transitivity) are derived via temporal_duality.
+
+  /-- Temporal K distribution (future): `G(φ → ψ) → (G(φ) → G(ψ))`.
+  Standard Hilbert axiom for the G modality. Essential for generalized temporal necessitation. -/
+  | temp_k_dist (φ ψ : Formula) :
+      Axiom ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future))
+
+  /-- Temporal 4 (future transitivity): `G(φ) → G(G(φ))`.
+  What always holds will always always hold. Valid on reflexive+transitive orders. -/
+  | temp_4 (φ : Formula) :
+      Axiom (φ.all_future.imp φ.all_future.all_future)
 
   /-- BX1: Temporal T (future): `G(φ) → φ` (reflexivity of future).
   Under reflexive semantics, what holds at all future-or-present times holds now. -/
