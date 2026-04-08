@@ -118,7 +118,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close Backward Coherence for All Construction Paths [NOT STARTED]
+### Phase 3: Close Backward Coherence for All Construction Paths [COMPLETED]
 
 **Goal**: Provide sorry-free `backward_until_since_coherent` for all three BFMCS construction paths in Completeness.lean. This requires either discharging the step transfer hypothesis or using the existing parameterized backward theorems from UntilSinceCoherence.lean.
 

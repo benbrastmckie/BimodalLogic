@@ -2,6 +2,7 @@ import Bimodal.FrameConditions.Compatibility
 import Bimodal.Metalogic.DiscreteCompleteness
 import Bimodal.Metalogic.Algebraic.UltrafilterChain
 import Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 -- NOTE: DovetailedChain is deprecated in favor of DeterministicFMCS (see DovetailedChain.lean header)
 import Bimodal.Metalogic.Algebraic.DovetailedChain
 
@@ -318,11 +319,31 @@ theorem bundle_validity_implies_provability (φ : Formula)
       (to_history B.eval_family) 0 φ :=
     h_valid CanonicalTaskFrame CanonicalTaskModel (ShiftClosedCanonicalOmega B)
       h_sc (to_history B.eval_family) h_mem 0
-  -- Step 4b: Until/Since coherence (split: backward sorry + forward sorry)
-  -- Forward Until/Since blocked by G-lift incompatibility (research task 84, 4 rounds)
-  have h_buc : B.backward_until_since_coherent := sorry
-  -- Forward Until/Since: converting (φ U ψ) ∈ MCS to witness pattern.
-  -- Blocked: Lindenbaum extension freedom prevents Until persistence through chain steps.
+  -- Step 4b: Until/Since coherence (split: backward + forward)
+  -- Backward Until/Since: deriving (φ U ψ) ∈ fam.mcs t from a witness pattern.
+  -- Uses parameterized backward theorems from UntilSinceCoherence.lean.
+  -- The step transfer hypothesis (pulling Until/Since backward one chain step)
+  -- is sorry'd: SuccChainFMCS g_content propagates G-formulas forward (r → r+1)
+  -- but cannot pull Until formulas backward (r+1 → r). Closing this requires
+  -- enriched seeds or x_content-style chain constructions.
+  have h_buc : B.backward_until_since_coherent := by
+    intro fam hfam
+    constructor
+    · exact backward_until_coherent B
+        (fun fam _hfam φ ψ r h_U_next _h_phi => sorry) fam hfam
+    · exact backward_since_coherent B
+        (fun fam _hfam φ ψ r h_S_prev _h_phi => sorry) fam hfam
+  /- Forward Until/Since coherence: converting (φ U ψ) ∈ fam.mcs t to a
+     witness time s ≥ t with ψ ∈ fam.mcs s and φ on the guard interval [t, s).
+     BLOCKED: Lindenbaum extension freedom prevents Until persistence through
+     chain steps. The Lindenbaum lemma extends g_content seeds to full MCS,
+     but this extension is non-deterministic and may drop Until obligations.
+     Research (task 84, 4 rounds, 3 teammates, 95% confidence) confirms this
+     is a fundamental incompatibility between G-lift and Until semantics.
+     Potential future directions:
+     - Restricted forward Until via deferral closure
+     - Simultaneous well-founded induction on formula complexity
+     - Quasimodel replacement (~2000 LOC) -/
   have h_fuc : B.forward_until_since_coherent := sorry
   -- Step 9: By shifted truth lemma backward, φ ∈ eval_family.mcs 0 = M
   have h_phi_in_M : φ ∈ B.eval_family.mcs 0 :=
@@ -356,9 +377,19 @@ theorem restricted_bundle_validity_implies_provability (φ : Formula)
   -- Step 4: Restricted temporal coherence for root = φ
   have h_tc : B.restricted_temporally_coherent φ :=
     bfmcs_restricted_temporally_coherent M h_mcs φ
-  -- Step 4b: Until/Since coherence (split: backward sorry + forward sorry)
-  have h_buc : B.backward_until_since_coherent := sorry
-  -- Forward Until/Since: blocked by G-lift incompatibility (research task 84)
+  -- Step 4b: Until/Since coherence (split: backward + forward)
+  -- Backward: parameterized by step transfer (sorry'd — see bundle_validity above)
+  have h_buc : B.backward_until_since_coherent := by
+    intro fam hfam
+    constructor
+    · exact backward_until_coherent B
+        (fun fam _hfam φ ψ r h_U_next _h_phi => sorry) fam hfam
+    · exact backward_since_coherent B
+        (fun fam _hfam φ ψ r h_S_prev _h_phi => sorry) fam hfam
+  /- Forward Until/Since coherence: converting (φ U ψ) ∈ fam.mcs t to a
+     witness time s ≥ t with ψ ∈ fam.mcs s and φ on the guard interval [t, s).
+     BLOCKED: Lindenbaum extension freedom prevents Until persistence through
+     chain steps — see bundle_validity_implies_provability for full explanation. -/
   have h_fuc : B.forward_until_since_coherent := sorry
   -- Step 5: The eval_family at time 0 is M
   have h_eval_zero : B.eval_family.mcs 0 = M := by
@@ -451,9 +482,19 @@ theorem dovetailed_bundle_validity_implies_provability (φ : Formula)
   -- Step 4: Restricted temporal coherence for root = φ (sorry-free!)
   have h_tc : B.restricted_temporally_coherent φ :=
     dovetailed_bfmcs_restricted_temporally_coherent M h_mcs φ
-  -- Step 4b: Until/Since coherence (split: backward sorry + forward sorry)
-  have h_buc : B.backward_until_since_coherent := sorry
-  -- Forward Until/Since: blocked by G-lift incompatibility (research task 84)
+  -- Step 4b: Until/Since coherence (split: backward + forward)
+  -- Backward: parameterized by step transfer (sorry'd — see bundle_validity above)
+  have h_buc : B.backward_until_since_coherent := by
+    intro fam hfam
+    constructor
+    · exact backward_until_coherent B
+        (fun fam _hfam φ ψ r h_U_next _h_phi => sorry) fam hfam
+    · exact backward_since_coherent B
+        (fun fam _hfam φ ψ r h_S_prev _h_phi => sorry) fam hfam
+  /- Forward Until/Since coherence: converting (φ U ψ) ∈ fam.mcs t to a
+     witness time s ≥ t with ψ ∈ fam.mcs s and φ on the guard interval [t, s).
+     BLOCKED: Lindenbaum extension freedom prevents Until persistence through
+     chain steps — see bundle_validity_implies_provability for full explanation. -/
   have h_fuc : B.forward_until_since_coherent := sorry
   -- Step 5: The eval_family at time 0 is M
   have h_eval_zero : B.eval_family.mcs 0 = M := by
