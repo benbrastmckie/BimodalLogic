@@ -549,7 +549,16 @@ noncomputable def bx_until_eventuality_resolution
   -- BX10: φ U ψ → F(ψ). Get v ≥ w with ψ ∈ v via bx_forward_witness.
   -- BX5: φ U ψ → (φ ∧ (φ U ψ)) U ψ (self-accumulation).
   -- BX4: φ U ψ → G(P(φ U ψ)) (connectedness). So P(φ U ψ) ∈ u for w ≤ u.
-  -- Gap: cannot propagate φ U ψ to intermediate u without Until-induction or linearity.
+  --
+  -- Investigation (task 85, phase 4):
+  -- BX7 gives linearity of Until witnesses, but bx_le is defined via g_content
+  -- (universal future). The mismatch is: bx_le u v means ∀ φ, G(φ) ∈ u → φ ∈ v,
+  -- while BX7 gives ordering of Until resolution times. Bridging these requires
+  -- either Until-induction (removed) or redefining bx_le via Until witnesses.
+  -- Approach (B) from the module docstring (proving bx_le linearity from BX7)
+  -- is blocked by this G-content vs Until-witness mismatch.
+  -- Viable path forward: redefine bx_le using Until-based witness ordering,
+  -- or adopt a quasimodel/filtration approach that avoids canonical ordering.
   sorry
 
 /--
