@@ -21,9 +21,9 @@
     {
       "project_number": 58,
       "project_name": "wire_completeness_to_frame_conditions",
-      "status": "researched",
+      "status": "blocked",
       "language": "lean4",
-      "description": "Wire completeness theorems to FrameConditions. BLOCKED: Depends on bfmcs_from_mcs_temporally_coherent which requires F/P witness construction (~25 sorries in UltrafilterChain.lean). The parametric infrastructure is sorry-free but needs temporal coherence callback.",
+      "description": "Wire completeness to FrameConditions. Post-tasks 83/84 status: wiring is DONE — completeness_over_Int, discrete_completeness_fc, and dovetailed_bundle_validity_implies_provability are structurally complete. Remaining sorries: (1) forward_until_since_coherent (3 sites, blocked by G-lift incompatibility — see task 85), (2) backward step transfer (6 sites, same root cause), (3) dense_completeness_fc (1 site, needs Rat canonical model — see task 68). Task 82 (FMP) provides weak completeness independently.",
       "effort": "8 hours",
       "dependencies": [
         72,
@@ -659,7 +659,7 @@
     {
       "project_number": 78,
       "project_name": "resolve_consistency_proof_sorries",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Resolve 3 consistency proof sorries in SuccChainFMCS.lean at lines 1734, 1763, 2082. Prove set consistency for BRS-augmented seed sets using structural consistency arguments.",
       "effort": "1-2 hours",
@@ -673,12 +673,13 @@
           "path": "specs/073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 73"
         }
-      ]
+      ],
+      "completion_summary": "Abandoned: SuccChainFMCS consistency sorries are redundant since dovetailed path bypasses SuccChain entirely."
     },
     {
       "project_number": 79,
       "project_name": "clean_up_termination_artifact_sorries",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Resolve 3 termination artifact sorries in SuccChainFMCS.lean at lines 5386, 5544, 5740. Handle fuel-exhausted branches in bounded_witness theorems.",
       "effort": "1-2 hours",
@@ -692,7 +693,8 @@
           "path": "specs/073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 73"
         }
-      ]
+      ],
+      "completion_summary": "Abandoned: SuccChainFMCS termination sorries are redundant since dovetailed path bypasses SuccChain entirely."
     },
     {
       "project_number": 82,
@@ -706,9 +708,20 @@
       "created": "2026-04-02T17:12:09Z",
       "last_updated": "2026-04-02T17:12:09Z",
       "next_artifact_number": 1
+    },
+    {
+      "project_number": 85,
+      "project_name": "until_since_chain_coherence",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Research 3 approaches to Until/Since chain coherence: (1) restricted forward Until via deferral closure, (2) simultaneous well-founded induction on forward_F + forward_Until, (3) quasimodel replacement. The dominant completeness blocker (~12 sorry sites) caused by G-lift incompatibility.",
+      "effort": "8-12 hours",
+      "dependencies": [],
+      "created": "2026-04-08T00:00:00Z",
+      "last_updated": "2026-04-08T00:00:00Z"
     }
   ],
-  "next_project_number": 85,
+  "next_project_number": 86,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
