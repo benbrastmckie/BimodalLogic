@@ -67,7 +67,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Derive Key BX Lemmas [NOT STARTED]
+### Phase 1: Derive Key BX Lemmas [COMPLETED]
 
 **Goal**: Establish the three critical derived theorems that all subsequent truth lemma proofs depend on. These go in `Theorems/TemporalDerived.lean` or a new `BXCanonical/DerivedLemmas.lean`.
 
@@ -102,7 +102,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix Soundness.lean Sorries [NOT STARTED]
+### Phase 2: Fix Soundness.lean Sorries [COMPLETED]
 
 **Goal**: Close the 3 `temporal_duality` sorries at lines 877, 1094, 1151 by factoring `derivable_implies_swap_valid` to remove the density constraint.
 
