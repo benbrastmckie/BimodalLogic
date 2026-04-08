@@ -96,48 +96,110 @@ Phases 2 and 3 can execute in parallel (wave 2-3).
 
 ---
 
-### Phase 2: Backward Until and Backward Since [NOT STARTED]
+### Phase 2: Backward Until and Backward Since [PARTIAL]
 
 **Goal**: Prove the backward directions of `until_since_coherent` -- given a witness s with psi at s and phi on guard interval, conclude `(phi U psi) in fam.mcs t`. This was previously blocked but is now unblocked by Phase 1's `until_intro` derivation.
 
-**Tasks**:
-- [ ] Study `backward_until_chain` in DeterministicFMCS.lean:340-395 to understand the proof pattern: induction on `(s - t).toNat` using `until_intro` at each inductive step
-- [ ] Determine whether the backward induction generalizes from deterministic chains (x_content successor) to enriched/dovetailed chains (g_content + enriched seed successor). Key question: does the induction depend on x_content specifically, or just on the existence of a successor relation?
-- [ ] If generalizable: port `backward_until_chain` and `backward_since_chain` to work with the BFMCS family chain structure
-- [ ] If NOT generalizable (x_content specific): adapt the proof to use g_content-based successor. The key step is: at position r, `psi or (phi and (phi U psi)) in chain(r+1)` and `until_intro` gives `(phi U psi) in chain(r)`. Under g_content successor, need `psi or (phi and (phi U psi)) in g_content(chain(r))` or equivalent.
-- [ ] Prove `backward_until` matching the second conjunct of `until_since_coherent`
-- [ ] Prove `backward_since` matching the fourth conjunct (symmetric)
+**Implementation Results** (2026-04-08):
 
-**Timing**: 3-4 hours
+Created `UntilSinceCoherence.lean` with 6 sorry-free theorems:
+- `backward_until_reflexive`: ψ ∈ M → (φ U ψ) ∈ M (base case, any MCS)
+- `backward_since_reflexive`: ψ ∈ M → (φ S ψ) ∈ M (base case, any MCS)
+- `backward_until_from_step`: Full backward Until parameterized by step transfer
+- `backward_since_from_step`: Full backward Since parameterized by step transfer
+- `backward_until_coherent`: 2nd conjunct of until_since_coherent for BFMCS Int
+- `backward_since_coherent`: 4th conjunct of until_since_coherent for BFMCS Int
+
+**Blocker for full closure**: The "step transfer" hypothesis requires:
+  `(φ U ψ) ∈ fam.mcs (r+1) ∧ φ ∈ fam.mcs r → (φ U ψ) ∈ fam.mcs r`
+
+This property is NOT available from the dovetailed/SuccChain constructions:
+- **g_content link** (`G(α) ∈ chain(n) → α ∈ chain(n+1)`) goes forward, not backward
+- **h_content duality** (`H(α) ∈ chain(n+1) → α ∈ chain(n)`) requires H-wrapped formulas; Until is not H-wrapped
+- **x_content link** is trivial under BX (`X(α) ↔ α`, so x_content(M) = M); the deterministic chain becomes constant, making backward Until trivial but useless for non-constant chains
+- No BX axiom derives `(φ U ψ) ∈ M_t` from `(φ U ψ) ∈ M_{t+1}` where M_t ≠ M_{t+1}
+
+The step transfer requires a chain construction that explicitly preserves Until formulas across positions, beyond what g_content/Succ linking provides. This is the same construction modification needed for forward Until (Phase 3 enriched seeds).
+
+**Tasks**:
+- [x] Study `backward_until_chain` in DeterministicFMCS.lean:340-395
+- [x] Determine generalizability: NOT generalizable (x_content specific, and under BX x_content is trivial)
+- [x] Prove reflexive base case (t = s): `backward_until_reflexive`, `backward_since_reflexive`
+- [x] Prove parameterized backward Until/Since: `backward_until_from_step`, `backward_since_from_step`
+- [x] Prove BFMCS assembly: `backward_until_coherent`, `backward_since_coherent`
+- [ ] Provide step transfer for dovetailed chain (BLOCKED -- needs modified chain construction)
+
+**Timing**: 3 hours (analysis) + 1 hour (implementation)
 
 **Depends on**: 1
 
-**Files to modify**:
-- New file or section in `Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean` -- backward proofs for BFMCS chains
-- Possibly `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` -- if backward proof needs chain-level lemmas
+**Files modified**:
+- NEW: `Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean` -- 6 sorry-free theorems
 
 **Verification**:
-- Backward Until and backward Since lemmas compile sorry-free
-- Type signatures match the second and fourth conjuncts of `until_since_coherent`
-- `lake build` succeeds
+- All 6 theorems compile sorry-free (verified via lean_verify)
+- Type signatures match the second and fourth conjuncts of `until_since_coherent` (given step transfer)
+- `lake build` succeeds with no regressions
 
 ---
 
-### Phase 3: Forward Until and Forward Since via Enriched Seed [NOT STARTED]
+### Phase 3: Forward Until and Forward Since via Enriched Seed [BLOCKED]
 
 **Goal**: Prove forward directions -- `(phi U psi) in fam.mcs t` implies existence of witness s >= t. Uses enriched seed approach with BX-native reasoning (no X).
 
-**Tasks**:
-- [ ] Define BX-native Until unfolding: `(phi U psi) -> (psi or (phi and (phi U psi)))` via BX5+BX9 (no X wrapper). This is a current-time disjunction.
-- [ ] Define enriched seed for dovetailed chain: `seed(w, step) = g_content(w) union {phi U psi : phi U psi in w and psi not in w}` with consistency proof (all elements in w, which is MCS)
-- [ ] Prove Until persistence through enriched chain: if `phi U psi in chain(n)` and `psi not in chain(n)`, then `phi U psi in chain(n+1)` (by enriched seed inclusion + Lindenbaum preservation of seed elements)
-- [ ] Prove guard extraction: for intermediate r where `phi U psi in chain(r)` and `psi not in chain(r)`, BX9 gives `phi or psi`, so `phi in chain(r)` (guard holds)
-- [ ] Prove witness resolution via dovetailed scheduling: round-robin over Until/F targets in subformula closure ensures each psi is eventually placed in seed. At that step, Lindenbaum either includes psi (done) or... need to handle the case where psi conflicts with the seed. Fallback: BX10 gives `F(psi)`, and dovetailed F-scheduling resolves it.
-- [ ] Prove joint seed consistency: `{scheduled_target} union g_content(w) union {active Untils in w}` is consistent. Argument: standard G-lift covers `{target} union g_content(w)`. Active Untils are in w and subset of w. The full union is subset of w (since g_content(w) subset w by BX1), hence consistent.
-- [ ] Mirror for forward Since using h_content and BX8'/BX9'
-- [ ] Prove `forward_until` and `forward_since` for dovetailed chain
+**Blocker Analysis** (2026-04-08):
 
-**Timing**: 4-5 hours
+The enriched seed approach is blocked by the G-lift consistency argument.
+
+**Root Cause**: The dovetailed chain extends MCS via Lindenbaum extension of
+`{target} union temporal_box_g_seed(M)`. The consistency proof uses G-lifting:
+every element x in `temporal_box_g_seed(M)` satisfies `G(x) in M`, enabling
+derivation of `G(neg(target)) in M` from any proof of `neg(target)` from the seed,
+which contradicts `F(target) in M`.
+
+Until formulas `(phi U psi) in M` do NOT satisfy `G(phi U psi) in M` in general.
+(Counterexample: `(p U q)` at t=0 with witness at t=2; at t=3, `(p U q)` fails,
+so `G(p U q)` is false at t=0.) Therefore, Until formulas CANNOT be G-lifted,
+and adding them to the seed breaks the consistency argument.
+
+**Why the plan's consistency claim fails**: The plan claimed "active Untils are in w
+and subset of w, hence consistent." This conflates subset-of-MCS-is-consistent (true
+for the seed ALONE) with target-plus-seed-is-consistent (requires the G-lift argument).
+The seed `S subset M` is consistent, but `{target} union S` may not be, because
+`S derives neg(target)` only gives `neg(target) in M`, which does NOT contradict
+`F(target) in M` (they are compatible: F says future, neg says now).
+
+**Alternative approaches investigated and rejected**:
+1. **Until derivable from target**: `psi -> (phi U psi)` (BX8), so adding
+   `(phi U psi)` when target=psi is redundant. But this only works when
+   target equals the specific psi, not for other Until formulas.
+2. **BX4 propagation**: `phi -> G(P(phi))` gives `P(phi U psi)` in the next
+   step via g_content, but P(phi U psi) does not give (phi U psi).
+3. **BX10 + F-persistence**: `(phi U psi) -> F(psi)`, but `F(psi)` does not
+   persist through g_content (would need `G(F(psi)) in M`, not available).
+4. **Deterministic chain (x_content)**: Under BX, `X(alpha) = (bot U alpha) = alpha`
+   in any MCS. So x_content(M) = M and the deterministic chain is CONSTANT.
+   Forward Until is then unsatisfiable (psi never at M but Until says it should be).
+5. **Proof by contradiction**: Assume psi never appears. Then neg(psi) at all
+   future times. Need G(neg(psi)) for contradiction with F(psi), but proving
+   G(neg(psi)) requires temporal_backward_G which requires forward_F (circular).
+
+**Conclusion**: The forward direction requires a fundamentally new chain construction
+that preserves Until formulas through Lindenbaum steps, with a non-G-lift consistency
+argument. This is beyond the scope of the current enriched seed approach.
+
+**Tasks**:
+- [x] Analyze BX-native Until unfolding: `until_unfold_thm` already proved in Phase 1
+- [x] Analyze enriched seed consistency: BLOCKED (G-lift incompatible with Until)
+- [ ] ~Define enriched seed~ (blocked by consistency)
+- [ ] ~Prove Until persistence~ (blocked by seed)
+- [ ] ~Prove guard extraction~ (blocked)
+- [ ] ~Prove witness resolution~ (blocked)
+- [ ] ~Prove joint seed consistency~ (blocked -- see analysis above)
+- [ ] ~Mirror for forward Since~ (blocked)
+- [ ] ~Prove forward_until and forward_since~ (blocked)
+
+**Timing**: N/A (blocked)
 
 **Depends on**: 1 (uses BX-native unfolding from Phase 1)
 
