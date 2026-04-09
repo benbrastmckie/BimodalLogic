@@ -593,20 +593,27 @@ we have φ ∈ u. The dual construction handles Since.
 These proofs require either:
 (A) An Until-induction axiom (removed in BX refactoring, see WitnessSeed.lean), or
 (B) A proof that the canonical ordering bx_le is linear on intervals (from BX7), or
-(C) A modified Zorn construction adapted for the BX axiom system.
+(C) A chain-specific construction that avoids universal guard quantification.
 
-The standard Burgess/Goldblatt proof uses approach (A). The BX axiom system
-replaces Until-induction with BX5 (self-accumulation), BX6 (absorption), and
-BX7 (linearity), but the completeness proof technique has not yet been adapted.
+**Analysis (Task 86, Phase 2)**:
+- Approach (A): Until-induction was removed in BX refactoring. Not available.
+- Approach (B): Global bx_le linearity is FALSE (report 08). BX7 constrains
+  Until-witness ordering, not g_content inclusion. No bridge exists.
+- Approach (C): Requires constructing Int -> BXPoint chains with g_content
+  successor properties AND proving Until formula propagation along the chain.
+  This is blocked by the X-vs-G mismatch: Lindenbaum seeds provide
+  bot-Until-level consistency but Until persistence through chain steps
+  requires g_content-level propagation (same blocker as DovetailedChain.lean).
 
 The forward direction (eventuality resolution) requires showing that at intermediate
 points u ∈ [w, v), the formula φ holds. The key difficulty is propagating φ U ψ
 to intermediate points: φ U ψ ∈ w does not imply G(φ U ψ) ∈ w, so the formula
-does not propagate forward through g_content. Without Until-induction, there is
-no known way to establish the guard condition from the BX axioms alone.
+does not propagate forward through g_content.
 
-The backward direction requires showing φ U ψ ∈ w given a semantic witness.
-This is blocked on the forward direction and requires similar infrastructure.
+The backward direction also requires linearity: the contradiction approach needs
+to show that a backward witness u from P(¬(φ U ψ)) ∈ v lies in [w, v), which
+requires bx_le comparability of u and w. The direct approach yields only
+F(φ U ψ) ∈ w (via h_content duality + BX4'), not φ U ψ ∈ w.
 
 ### References
 - Burgess 1984: "Basic tense logic" (uses Until-induction)

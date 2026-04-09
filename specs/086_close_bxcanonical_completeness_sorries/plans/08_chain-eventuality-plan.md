@@ -92,44 +92,52 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Design Chain-Specific Eventuality Resolution API [NOT STARTED]
+### Phase 2: Design Chain-Specific Eventuality Resolution API [COMPLETED]
 
 **Goal**: Define the type signatures and proof obligations for chain-specific Until/Since resolution that avoids universal quantification over all BXPoints.
 
 **Tasks**:
-- [ ] Study the existing dovetailed chain infrastructure in `Metalogic/Algebraic/DovetailedChain.lean` and `Metalogic/Bundle/UntilSinceCoherence.lean` -- identify reusable components
-- [ ] Study `backward_until_from_step` in UntilSinceCoherence.lean (line 111) -- this already proves backward Until for FMCS Int chains given a step transfer lemma; determine if Frame.lean can delegate to this
-- [ ] Design new lemma signatures for Frame.lean that replace universal BXPoint quantification with chain-specific quantification:
-  ```
-  -- Option A: Redefine Frame.lean lemmas with chain parameter
-  bx_until_chain_resolution (chain : Nat -> BXPoint) (n : Nat) (phi psi : Formula)
-    (h_until : phi.untl psi in (chain n).formulas)
-    (h_not_psi : psi not-in (chain n).formulas) :
-    exists m > n, psi in (chain m).formulas and
-      forall k, n <= k -> k < m -> phi in (chain k).formulas
+- [x] Study the existing dovetailed chain infrastructure in `Metalogic/Algebraic/DovetailedChain.lean` and `Metalogic/Bundle/UntilSinceCoherence.lean` -- identify reusable components
+- [x] Study `backward_until_from_step` in UntilSinceCoherence.lean (line 111) -- this already proves backward Until for FMCS Int chains given a step transfer lemma; determine if Frame.lean can delegate to this
+- [x] Design new lemma signatures for Frame.lean that replace universal BXPoint quantification with chain-specific quantification
+- [x] Determine which option is compatible with the TruthLemma.lean consumers of Frame.lean lemmas -- check `until_iff_mcs` and `since_iff_mcs` in TruthLemma.lean
+- [x] **Go/no-go gate**: NO-GO. Chain-specific API requires rewriting TruthLemma.lean AND constructing new chain infrastructure. See findings below.
 
-  -- Option B: Keep current signatures but weaken guards
-  -- Replace: forall u : BXPoint, bx_le w u -> ... -> phi in u.formulas
-  -- With:    forall u : BXPoint, bx_le w u -> bx_le u v -> (exists chain through w,u,v) -> phi in u.formulas
-  ```
-- [ ] Determine which option is compatible with the TruthLemma.lean consumers of Frame.lean lemmas -- check `until_iff_mcs` and `since_iff_mcs` in TruthLemma.lean
-- [ ] **Go/no-go gate**: If the chain-specific API can be integrated without rewriting TruthLemma.lean, proceed. If TruthLemma.lean also needs rewriting, document the scope expansion and proceed only if total effort remains under 12 hours.
-
-**Timing**: 2 hours
+**Timing**: 2 hours (actual: ~1.5 hours)
 
 **Depends on**: 1
 
+**Go/No-Go Decision: NO-GO**
+
+Analysis findings:
+
+1. **DovetailedChain.lean is DEPRECATED** and has 6 sorries from the same X-vs-G mismatch (Lindenbaum seeds provide bot-Until-level consistency but Until persistence through chain steps requires g_content-level propagation). Cannot be reused.
+
+2. **`backward_until_from_step` in UntilSinceCoherence.lean** requires a step transfer hypothesis (`φ U ψ ∈ fam.mcs(r+1) ∧ φ ∈ fam.mcs(r) → φ U ψ ∈ fam.mcs(r)`) that is itself blocked by the same X-vs-G mismatch. It operates on FMCS Int chains, not BXPoints.
+
+3. **Option A (chain-parameterized lemmas)** requires: (a) constructing an Int -> BXPoint chain with g_content successor properties, (b) proving Until formula propagation along the chain (blocked by X-vs-G mismatch), (c) rewriting TruthLemma.lean to use chain-specific truth lemma instead of global bx_le.
+
+4. **Option B (weakened guards)** doesn't help: the guard weakening still requires proving that intermediate points on a chain satisfy the guard, which needs Until propagation.
+
+5. **TruthLemma.lean compatibility**: `until_iff_mcs` and `since_iff_mcs` are NOT used by CanonicalEmbedding.lean or Completeness.lean. They exist as standalone results. So rewriting them is safe from a dependency standpoint. However, the rewrite would need new chain infrastructure that doesn't exist.
+
+6. **Backward direction analysis**: Even `bx_until_backward` (proving φ U ψ ∈ w from a semantic witness) is blocked. The contradiction approach requires linearity of bx_le on intervals (to show that a backward witness u from P(¬(φ U ψ)) ∈ v lies in [w,v)). The direct approach yields only F(φ U ψ) ∈ w (from h_content duality + BX4'), not φ U ψ ∈ w.
+
+7. **Effort estimate for chain-specific approach**: 20+ hours minimum (construct chain builder, prove chain properties, prove Until propagation on chains, restructure TruthLemma.lean). Far exceeds the 12-hour budget.
+
+**Conclusion**: Phases 3-4 are BLOCKED. The Frame.lean sorries require fundamentally new infrastructure (chain construction with Until propagation) that is blocked by the same X-vs-G mismatch that blocks DovetailedChain.lean. No known approach can close these sorries within the effort budget.
+
 **Files to modify**:
-- None (design phase -- produces API specification documented in this plan or a companion file)
+- None (design phase -- produces API specification documented in this plan)
 
 **Verification**:
-- Clear API design with concrete Lean type signatures
-- Compatibility analysis with TruthLemma.lean consumers documented
-- Go/no-go decision recorded
+- [x] Clear API design analysis documented
+- [x] Compatibility analysis with TruthLemma.lean consumers documented
+- [x] Go/no-go decision recorded: NO-GO
 
 ---
 
-### Phase 3: Implement Chain-Specific Eventuality Resolution [NOT STARTED]
+### Phase 3: Implement Chain-Specific Eventuality Resolution [BLOCKED]
 
 **Goal**: Implement the chain-specific Until/Since resolution lemmas and close the 4 Frame.lean sorries.
 
@@ -163,7 +171,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Integration and Sorry Audit [NOT STARTED]
+### Phase 4: Integration and Sorry Audit [PARTIAL]
 
 **Goal**: Verify all changes compose correctly, update documentation, and audit remaining sorry count.
 

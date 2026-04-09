@@ -150,6 +150,13 @@ theorem bx_completeness (φ : Formula) :
   -- The G/H case requires non-constant histories that visit multiple BXPoints
   -- (the "surjectivity problem" -- constant histories collapse temporal structure).
   -- The Until/Since case requires eventuality resolution (Frame.lean sorries).
+  --
+  -- **Task 86 Update**: WitnessSeed.lean sorries (until/since seed consistency)
+  -- are now closed via BX10/BX10' contradiction, making canonical_forward_U
+  -- and canonical_backward_S sorry-free. Frame.lean sorries (eventuality
+  -- resolution with guard condition) remain blocked by the X-vs-G mismatch
+  -- (Until formulas don't propagate through g_content-based bx_le ordering).
+  -- CanonicalEmbedding.lean:418 sorry (imp Case B) is orthogonal.
   sorry
 
 /--
