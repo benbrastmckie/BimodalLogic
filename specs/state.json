@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 87,
+      "project_name": "full_representation_theorem_until_since",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Prove the full representation theorem for TM with Until/Since operators via the enriched chain construction in Bundle/. This is the enriched-Succ chain with dovetailed scheduling over subformula closure — the only viable path to full Until/Since forward coherence identified after 39+ research rounds (task 83). Key components: (1) combined_F_seed_consistent lemma (compactness + temporal duality, ~50-100 LOC), (2) enriched chain builder with all pending F-obligations in each Lindenbaum seed, (3) backward Until direction via BX6 absorption derivation, (4) forward_F by construction (every F(ψ) in chain(t) has ψ in chain(t+1)). Estimated 600-1000 LOC new proof work, 70-85% confidence per task 83 round 39 assessment. Depends on task 86 (USF fragment completeness) for validating the non-Until/Since cases of the truth lemma. See task 83 reports 38-39, task 86 report 05 (team research round 5) for detailed analysis.",
+      "created": "2026-04-09T15:52:36Z",
+      "last_updated": "2026-04-09T15:52:36Z"
+    },
+    {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
       "status": "researched",
@@ -834,7 +843,7 @@
       "completion_summary": "Completed all 6 phases: renamed X/Y theorems, removed x_content/y_content (-5 sorries), fixed FMP temp_4 sorry (-1), investigated BX7 linearity (blocked), cleaned comments, defined restricted coherence. Net -6 sorry sites."
     }
   ],
-  "next_project_number": 87,
+  "next_project_number": 88,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
