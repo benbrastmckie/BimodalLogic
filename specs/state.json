@@ -17,11 +17,11 @@
     {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
       "created": "2026-04-08T22:20:49Z",
-      "last_updated": "2026-04-09T19:12:31Z",
+      "last_updated": "2026-04-09T19:23:00Z",
       "session_id": "sess_1775760751_a5c0e8",
       "researched": "2026-04-09T18:24:37Z",
       "next_artifact_number": 9,
@@ -92,7 +92,9 @@
           "summary": "Closed 2 WitnessSeed.lean sorries via BX10; Phase 2 NO-GO for chain-specific Frame.lean approach"
         }
       ],
-      "started": "2026-04-09T06:15:44Z"
+      "started": "2026-04-09T06:15:44Z",
+      "completed": "2026-04-09T19:23:00Z",
+      "completion_summary": "Closed 2 WitnessSeed.lean sorries via BX10/BX10 contradiction (sorry count 8->6 in BXCanonical/). Frame.lean 4 sorries blocked by g_content vs Until-witness mismatch; new task needed for alternative approach."
     },
     {
       "project_number": 60,
@@ -871,9 +873,20 @@
       "started": "2026-04-08T21:57:42Z",
       "completed": "2026-04-08T22:18:11Z",
       "completion_summary": "Completed all 6 phases: renamed X/Y theorems, removed x_content/y_content (-5 sorries), fixed FMP temp_4 sorry (-1), investigated BX7 linearity (blocked), cleaned comments, defined restricted coherence. Net -6 sorry sites."
+    },
+    {
+      "project_number": 88,
+      "project_name": "close_remaining_bxcanonical_sorries",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Close 6 remaining BXCanonical sorries (4 Frame.lean eventuality resolution, 1 CanonicalEmbedding.lean imp Case B, 1 Completeness.lean model embedding). Task 86 proved chain-specific and proof-theoretic approaches are blocked by g_content vs Until-witness mismatch. Needs fundamentally new technique: quasimodel/filtration approach, FMP bridge to full completeness, or alternative canonical model ordering that avoids bx_le linearity (proven impossible from BX axioms). DovetailedChain.lean is deprecated with 6 sorries from same mismatch.",
+      "created": "2026-04-09T19:23:00Z",
+      "last_updated": "2026-04-09T19:23:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 88,
+  "next_project_number": 89,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
