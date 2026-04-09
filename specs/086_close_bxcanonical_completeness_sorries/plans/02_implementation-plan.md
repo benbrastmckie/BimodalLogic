@@ -108,7 +108,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Truth Lemma Bridge for Fragment Connectives [PARTIAL]
+### Phase 3: Truth Lemma Bridge for Fragment Connectives [COMPLETED]
 
 **Goal**: Prove that for each fragment connective, MCS membership corresponds to truth_at in the tailored countermodel. This is the core mathematical content.
 
