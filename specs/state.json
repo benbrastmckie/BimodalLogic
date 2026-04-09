@@ -17,12 +17,12 @@
     {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
-      "status": "planned",
+      "status": "blocked",
       "language": "lean4",
       "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
       "created": "2026-04-08T22:20:49Z",
-      "last_updated": "2026-04-09T17:16:57Z",
-      "session_id": "sess_1775754077_721a36",
+      "last_updated": "2026-04-09T18:15:00Z",
+      "session_id": "sess_1775755919_ae30f5",
       "researched": "2026-04-09T16:54:13Z",
       "next_artifact_number": 8,
       "artifacts": [
@@ -75,6 +75,11 @@
           "path": "specs/086_close_bxcanonical_completeness_sorries/plans/07_proof-theoretic-plan.md",
           "type": "plan",
           "summary": "3-phase plan for closing usf_completeness imp Case B sorry via proof-theoretic route or FMP bridge"
+        },
+        {
+          "path": "specs/086_close_bxcanonical_completeness_sorries/summaries/07_execution-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 go/no-go: NO-GO. 8 proof-theoretic approaches all blocked by contextual necessitation gap"
         }
       ],
       "started": "2026-04-09T06:15:44Z"

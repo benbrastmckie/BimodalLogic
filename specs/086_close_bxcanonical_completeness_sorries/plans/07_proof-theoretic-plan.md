@@ -1,7 +1,7 @@
 # Implementation Plan: Close usf_completeness imp Case B via Proof-Theoretic Route
 
 - **Task**: 86 - Close BXCanonical completeness sorries
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 5 hours
 - **Dependencies**: None (all prerequisite infrastructure is sorry-free)
 - **Research Inputs**: reports/07_team-research.md, reports/06_usf-completeness-path.md
@@ -60,7 +60,7 @@ ROADMAP.md documents the FMP bridge as dead end #10 (faces same branching-vs-lin
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Proof-Theoretic Derivation of imp Case B [NOT STARTED]
+### Phase 1: Proof-Theoretic Derivation of imp Case B [BLOCKED]
 
 **Goal**: Derive `⊢ ψ → χ` directly from `valid (ψ → χ)` using BX axioms and the structural induction hypothesis, without building a semantic countermodel.
 
