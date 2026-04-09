@@ -70,7 +70,7 @@ No ROAD_MAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Combined F-Seed Consistency + Chain Construction [NOT STARTED]
+### Phase 1: Combined F-Seed Consistency + Chain Construction [BLOCKED]
 
 **Goal**: Prove multi-target forward seed consistency and define the dovetailed chain with all required temporal properties.
 

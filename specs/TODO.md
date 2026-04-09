@@ -96,7 +96,7 @@ technical_debt:
 
 ### 86. Close BXCanonical completeness sorries via Until-witness ordering or FMP bridge
 - **Effort**: 12-20 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
@@ -125,6 +125,7 @@ technical_debt:
   - [04_restructure-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/04_restructure-research.md)
   - [05_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/05_team-research.md) — Deep dive past attempts, combined F-seed + dovetail chain hybrid
   - [06_usf-completeness-path.md](specs/086_close_bxcanonical_completeness_sorries/reports/06_usf-completeness-path.md) — Detailed path: combined F-seed + bidirectional truth lemma
+  - [08_bxle-linearity-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/08_bxle-linearity-research.md) — bx_le linearity unprovable; 2 WitnessSeed sorries closable via BX10; chain-specific eventuality resolution recommended
 
 ---
 
