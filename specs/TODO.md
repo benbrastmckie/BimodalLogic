@@ -1,5 +1,5 @@
 ---
-next_project_number: 86
+next_project_number: 88
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -79,6 +79,18 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 87. Full representation theorem with Until/Since via enriched chain construction in Bundle/
+- **Effort**: 40-60 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 86 (USF fragment completeness)
+- **Created**: 2026-04-09
+- **Related**: Tasks 83 (archived), 84 (archived), 85, 86, 58
+
+**Description**: Prove the full representation theorem for TM with Until/Since operators via the enriched-Succ chain with dovetailed scheduling over subformula closure in Bundle/. The only viable path to full Until/Since forward coherence after 39+ research rounds. Key components: combined_F_seed_consistent lemma, enriched chain builder, backward Until direction via BX6 absorption, forward_F by construction. Estimated 600-1000 LOC, 70-85% confidence. See task 83 reports 38-39, task 86 report 05 for detailed analysis.
 
 ---
 
