@@ -17,12 +17,12 @@
     {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
       "created": "2026-04-08T22:20:49Z",
-      "last_updated": "2026-04-09T15:41:09Z",
-      "session_id": "sess_1775748512_e71e33",
+      "last_updated": "2026-04-09T16:06:11Z",
+      "session_id": "sess_1744217000_e3d203",
       "researched": "2026-04-09T15:41:09Z",
       "next_artifact_number": 7,
       "artifacts": [
@@ -47,11 +47,6 @@
           "summary": "Detailed restructure blueprint: dovetail chain construction, bidirectional truth lemma, 9 components"
         },
         {
-          "path": "specs/086_close_bxcanonical_completeness_sorries/plans/04_implementation-plan.md",
-          "type": "plan",
-          "summary": "5-phase plan to close usf_completeness imp Case B sorry via dovetailed chain bidirectional truth lemma"
-        },
-        {
           "path": "specs/086_close_bxcanonical_completeness_sorries/handoffs/01_forward-f-blocker.md",
           "type": "handoff",
           "summary": "Phase 1 complete; Phases 2-5 blocked on forward_F property for dovetail chain"
@@ -65,6 +60,11 @@
           "path": "specs/086_close_bxcanonical_completeness_sorries/reports/06_usf-completeness-path.md",
           "type": "research",
           "summary": "Detailed path to closing usf_completeness imp Case B: combined F-seed + dovetail chain + bidirectional truth lemma"
+        },
+        {
+          "path": "specs/086_close_bxcanonical_completeness_sorries/plans/06_usf-completeness-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan: combined F-seed chain + truth lemma to close CanonicalEmbedding.lean sorry"
         }
       ],
       "started": "2026-04-09T06:15:44Z"
