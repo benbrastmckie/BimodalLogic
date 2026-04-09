@@ -17,12 +17,12 @@
     {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
       "created": "2026-04-08T22:20:49Z",
-      "last_updated": "2026-04-09T18:24:37Z",
-      "session_id": "sess_1775757851_eb3abc",
+      "last_updated": "2026-04-09T18:33:52Z",
+      "session_id": "sess_1775759378_d6628b",
       "researched": "2026-04-09T18:24:37Z",
       "next_artifact_number": 9,
       "artifacts": [
@@ -72,11 +72,6 @@
           "summary": "Team research: constant histories impossible, combined F-seed false, 4 new directions identified"
         },
         {
-          "path": "specs/086_close_bxcanonical_completeness_sorries/plans/07_proof-theoretic-plan.md",
-          "type": "plan",
-          "summary": "3-phase plan for closing usf_completeness imp Case B sorry via proof-theoretic route or FMP bridge"
-        },
-        {
           "path": "specs/086_close_bxcanonical_completeness_sorries/summaries/07_execution-summary.md",
           "type": "summary",
           "summary": "Phase 1 go/no-go: NO-GO. 8 proof-theoretic approaches all blocked by contextual necessitation gap"
@@ -85,6 +80,11 @@
           "path": "specs/086_close_bxcanonical_completeness_sorries/reports/08_bxle-linearity-research.md",
           "type": "research",
           "summary": "Global bx_le linearity is unprovable from BX axioms; found 2 closable WitnessSeed.lean sorries via BX10; recommend chain-specific eventuality resolution"
+        },
+        {
+          "path": "specs/086_close_bxcanonical_completeness_sorries/plans/05_chain-eventuality-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: close 2 WitnessSeed.lean sorries via BX10, then 4 Frame.lean sorries via chain-specific eventuality resolution"
         }
       ],
       "started": "2026-04-09T06:15:44Z"
