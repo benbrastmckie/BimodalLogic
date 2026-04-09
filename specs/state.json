@@ -8,12 +8,12 @@
     {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
       "created": "2026-04-08T22:20:49Z",
-      "last_updated": "2026-04-08T23:14:00Z",
-      "session_id": "sess_1775689647_27a54c",
+      "last_updated": "2026-04-08T23:58:31Z",
+      "session_id": "sess_1775692711_cb9e98",
       "researched": "2026-04-08T22:32:07Z",
       "next_artifact_number": 3,
       "artifacts": [
@@ -26,6 +26,11 @@
           "path": "specs/086_close_bxcanonical_completeness_sorries/plans/02_implementation-plan.md",
           "type": "plan",
           "summary": "Canonical model embedding: 5 phases, TaskFrame + WorldHistory + Omega + truth bridge"
+        },
+        {
+          "path": "specs/086_close_bxcanonical_completeness_sorries/summaries/02_execution-summary.md",
+          "type": "summary",
+          "summary": "Fragment completeness for {atom, bot, imp, box}; G/H require non-constant histories"
         }
       ]
     },

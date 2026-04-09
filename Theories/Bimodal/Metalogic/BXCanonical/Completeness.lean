@@ -140,7 +140,16 @@ theorem bx_completeness (φ : Formula) :
   -- Now we need: valid φ implies φ ∈ M (for any MCS M).
   -- This requires the canonical model construction.
   -- Build canonical TaskModel and show φ false at w₀.
-  -- For now, sorry the model construction.
+  --
+  -- **Partial Progress (Task 86)**:
+  -- `fragment_completeness` in CanonicalEmbedding.lean proves this for the
+  -- temporal-free fragment {atom, bot, imp, box} using a bidirectional truth
+  -- lemma on constant histories with modal-equivalence-class Omega.
+  --
+  -- This sorry remains for formulas containing G, H, Until, or Since.
+  -- The G/H case requires non-constant histories that visit multiple BXPoints
+  -- (the "surjectivity problem" -- constant histories collapse temporal structure).
+  -- The Until/Since case requires eventuality resolution (Frame.lean sorries).
   sorry
 
 /--

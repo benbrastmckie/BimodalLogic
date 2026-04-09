@@ -57,7 +57,7 @@ Close sorry #5 at `Completeness.lean:144` by constructing a canonical TaskModel 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Foundation -- UntilSinceFree Predicate and Canonical TaskFrame [NOT STARTED]
+### Phase 1: Foundation -- UntilSinceFree Predicate and Canonical TaskFrame [COMPLETED]
 
 **Goal**: Define the formula fragment predicate and the canonical TaskFrame that all countermodels will use.
 
@@ -82,7 +82,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: WorldHistory and Omega Construction Toolkit [NOT STARTED]
+### Phase 2: WorldHistory and Omega Construction Toolkit [COMPLETED]
 
 **Goal**: Build the machinery for constructing WorldHistory values from BXPoint sequences and their shift-closed Omega sets.
 
@@ -108,7 +108,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Truth Lemma Bridge for Fragment Connectives [NOT STARTED]
+### Phase 3: Truth Lemma Bridge for Fragment Connectives [PARTIAL]
 
 **Goal**: Prove that for each fragment connective, MCS membership corresponds to truth_at in the tailored countermodel. This is the core mathematical content.
 
@@ -135,7 +135,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Fragment Completeness Theorem [NOT STARTED]
+### Phase 4: Fragment Completeness Theorem [COMPLETED]
 
 **Goal**: Assemble the fragment completeness theorem from the countermodel construction.
 
@@ -158,7 +158,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Integration and Documentation [NOT STARTED]
+### Phase 5: Integration and Documentation [COMPLETED]
 
 **Goal**: Connect fragment completeness to the existing codebase, document limitations, and set up for future Until/Since work.
 
