@@ -84,7 +84,7 @@ technical_debt:
 
 ### 86. Close BXCanonical completeness sorries via Until-witness ordering or FMP bridge
 - **Effort**: 12-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None

@@ -61,7 +61,7 @@ Close the single remaining sorry in `usf_completeness` (imp Case B, CanonicalEmb
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Box Preservation and Modal Equivalence Along bx_le [NOT STARTED]
+### Phase 1: Box Preservation and Modal Equivalence Along bx_le [COMPLETED]
 
 **Goal**: Prove that box formulas are preserved in both directions along `bx_le` chains, and that `bx_modal_equiv` holds between any two `bx_le`-related BXPoints.
 
@@ -87,7 +87,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Dovetailed Chain Construction [NOT STARTED]
+### Phase 2: Dovetailed Chain Construction [BLOCKED]
 
 **Goal**: Define the dovetailed chain function that maps `Int -> BXPoint` for a given starting BXPoint, visiting G-backward witnesses for positive times and H-backward witnesses for negative times.
 
