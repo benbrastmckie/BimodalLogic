@@ -88,7 +88,7 @@ technical_debt:
 
 ### 88. Close remaining 6 BXCanonical sorries via alternative completeness approach
 - **Effort**: 20-40 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
