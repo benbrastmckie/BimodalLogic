@@ -96,7 +96,7 @@ technical_debt:
 
 ### 86. Close BXCanonical completeness sorries via Until-witness ordering or FMP bridge
 - **Effort**: 12-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
@@ -116,7 +116,9 @@ technical_debt:
 - `BXCanonical/Completeness.lean:144` — 1 sorry (model embedding)
 - `Decidability/FMP/TruthPreservation.lean` — FMP path (0 core sorries after task 85)
 - Task 85 reports 01 (team research) and 02 (X/Y archival), summary 02
-- **Plan**: [04_implementation-plan.md](specs/086_close_bxcanonical_completeness_sorries/plans/04_implementation-plan.md)
+- **Plan**:
+  - [04_implementation-plan.md](specs/086_close_bxcanonical_completeness_sorries/plans/04_implementation-plan.md)
+  - [06_usf-completeness-plan.md](specs/086_close_bxcanonical_completeness_sorries/plans/06_usf-completeness-plan.md)
 - **Research**:
   - [01_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/01_team-research.md)
   - [03_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/03_team-research.md)
