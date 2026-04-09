@@ -189,6 +189,15 @@ theorem modal_omega_eq_of_equiv {w v : BXPoint} (h : bx_modal_equiv w v) :
   · intro ⟨u, h_wu, hσ⟩; exact ⟨u, bx_modal_equiv_trans (bx_modal_equiv_symm h) h_wu, hσ⟩
   · intro ⟨u, h_vu, hσ⟩; exact ⟨u, bx_modal_equiv_trans h h_vu, hσ⟩
 
+/-! ### modal_omega equals along bx_le -/
+
+/--
+modal_omega is equal for bx_le-related BXPoints.
+-/
+theorem modal_omega_eq_of_bx_le {w v : BXPoint} (h_le : bx_le w v) :
+    modal_omega w = modal_omega v :=
+  modal_omega_eq_of_equiv (bx_modal_equiv_of_bx_le h_le)
+
 /-! ## Truth Lemma for Temporal-Free Fragment
 
 For temporal-free formulas, MCS membership at w corresponds exactly to semantic

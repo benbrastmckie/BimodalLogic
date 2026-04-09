@@ -498,6 +498,90 @@ noncomputable def bx_modal_witness (w : BXPoint) (ψ : Formula)
       exact set_consistent_not_both hM_mcs.1 (Formula.box χ) h_box_M h_neg_in_M
   exact ⟨⟨M, hM_mcs⟩, h_equiv, h_ψ_in⟩
 
+/-! ## Box Preservation Along bx_le
+
+Key lemma for the dovetail chain truth lemma: box formulas are preserved
+in both directions along the canonical temporal ordering bx_le. This follows
+from temp_future (□φ → G(□φ)) for the forward direction, and S5 negative
+introspection (¬□φ → □(¬□φ)) for the backward direction (via contrapositive).
+-/
+
+/--
+S5 negative introspection: ¬□φ → □(¬□φ).
+
+Proof: modal_5_collapse gives ◇□φ → □φ, i.e., ¬□(¬□φ) → □φ.
+Contrapositive: ¬□φ → ¬¬□(¬□φ). Compose with DNE to get ¬□φ → □(¬□φ).
+-/
+noncomputable def neg_box_to_box_neg_box (φ : Formula) :
+    DerivationTree [] ((Formula.box φ).neg.imp (Formula.box (Formula.box φ).neg)) := by
+  -- modal_5_collapse φ: (□φ).neg.box.neg → □φ, i.e., ◇□φ → □φ
+  have h_m5 : DerivationTree [] ((Formula.box φ).neg.box.neg.imp (Formula.box φ)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_5_collapse φ)
+  -- Contrapositive: (□φ).neg → (□φ).neg.box.neg.neg
+  have h_contra : DerivationTree [] ((Formula.box φ).neg.imp (Formula.box φ).neg.box.neg.neg) :=
+    Propositional.contraposition h_m5
+  -- DNE: (□φ).neg.box.neg.neg → (□φ).neg.box
+  have h_dne : DerivationTree [] ((Formula.box φ).neg.box.neg.neg.imp (Formula.box φ).neg.box) :=
+    Propositional.double_negation ((Formula.box φ).neg.box)
+  -- Compose
+  exact Combinators.imp_trans h_contra h_dne
+
+/--
+Box formulas are preserved in both directions along bx_le.
+
+Forward: □φ ∈ w → G(□φ) ∈ w (temp_future) → □φ ∈ v (bx_G_forward).
+Backward: contrapositive of forward applied to ¬□φ using S5 negative introspection.
+  If □φ ∉ w, then ¬□φ ∈ w, then □(¬□φ) ∈ w (neg_box_to_box_neg_box),
+  then G(□(¬□φ)) ∈ w (temp_future), then □(¬□φ) ∈ v, then ¬□φ ∈ v (modal_t),
+  so □φ ∉ v. Contrapositive: □φ ∈ v → □φ ∈ w.
+-/
+theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : bx_le w v) (φ : Formula) :
+    Formula.box φ ∈ w.formulas ↔ Formula.box φ ∈ v.formulas := by
+  constructor
+  · -- Forward: □φ ∈ w → □φ ∈ v
+    intro h_box
+    -- □φ → G(□φ) by temp_future
+    have h_tf : DerivationTree [] ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) :=
+      DerivationTree.axiom [] _ (Axiom.temp_future φ)
+    have h_G_box := SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs h_tf) h_box
+    -- G(□φ) ∈ w and w ≤ v gives □φ ∈ v
+    exact bx_G_forward h_le h_G_box
+  · -- Backward: □φ ∈ v → □φ ∈ w (contrapositive)
+    intro h_box_v
+    by_contra h_not_box
+    -- ¬□φ ∈ w (negation completeness)
+    have h_neg_box : (Formula.box φ).neg ∈ w.formulas := by
+      cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.box φ) with
+      | inl h => exact absurd h h_not_box
+      | inr h => exact h
+    -- ¬□φ → □(¬□φ) by S5 negative introspection
+    have h_box_neg := SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs (neg_box_to_box_neg_box φ)) h_neg_box
+    -- □(¬□φ) → G(□(¬□φ)) by temp_future
+    have h_tf2 : DerivationTree [] ((Formula.box (Formula.box φ).neg).imp
+        (Formula.all_future (Formula.box (Formula.box φ).neg))) :=
+      DerivationTree.axiom [] _ (Axiom.temp_future (Formula.box φ).neg)
+    have h_G_box_neg := SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs h_tf2) h_box_neg
+    -- G(□(¬□φ)) ∈ w and w ≤ v gives □(¬□φ) ∈ v
+    have h_box_neg_v := bx_G_forward h_le h_G_box_neg
+    -- □(¬□φ) ∈ v → ¬□φ ∈ v by modal_t
+    have h_mt : DerivationTree [] ((Formula.box (Formula.box φ).neg).imp (Formula.box φ).neg) :=
+      DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg)
+    have h_neg_v := SetMaximalConsistent.implication_property v.is_mcs
+      (theorem_in_mcs v.is_mcs h_mt) h_box_neg_v
+    -- ¬□φ ∈ v and □φ ∈ v: contradiction
+    exact set_consistent_not_both v.is_mcs.1 (Formula.box φ) h_box_v h_neg_v
+
+/--
+Modal equivalence holds between any two bx_le-related BXPoints.
+Immediate corollary of box_preserved_along_bx_le.
+-/
+theorem bx_modal_equiv_of_bx_le {w v : BXPoint} (h_le : bx_le w v) :
+    bx_modal_equiv w v :=
+  fun φ => box_preserved_along_bx_le h_le φ
+
 /-! ## Eventuality Resolution for Until/Since
 
 The key construction for the Until/Since truth lemma: given φ U ψ ∈ w with ψ ∉ w,
