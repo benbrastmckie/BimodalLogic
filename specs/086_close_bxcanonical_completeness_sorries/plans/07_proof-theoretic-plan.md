@@ -2,7 +2,7 @@
 
 - **Task**: 86 - Close BXCanonical completeness sorries
 - **Status**: [NOT STARTED]
-- **Effort**: 8 hours
+- **Effort**: 5 hours
 - **Dependencies**: None (all prerequisite infrastructure is sorry-free)
 - **Research Inputs**: reports/07_team-research.md, reports/06_usf-completeness-path.md
 - **Artifacts**: plans/07_proof-theoretic-plan.md (this file)
@@ -12,7 +12,7 @@
 
 ## Overview
 
-Close the single remaining sorry in `usf_completeness` (imp Case B, CanonicalEmbedding.lean:418) using a proof-theoretic argument that completely bypasses the semantic gap. The strategy splits into two approaches tried in sequence: (1) direct structural argument using available BX axioms and derivation machinery, (2) FMP bridge via USF truth lemma on closure MCS. Both avoid the known-impossible constant-history semantic construction. The prior plan (06) was based on combined F-seed chain construction, which was invalidated because G does not distribute over disjunction and constant-history backward G truth lemma is structurally impossible. Definition of done: `lake build` succeeds with zero sorries in CanonicalEmbedding.lean.
+Close the single remaining sorry in `usf_completeness` (imp Case B, CanonicalEmbedding.lean:418) using a direct proof-theoretic argument that completely bypasses the semantic gap. The strategy uses BX axioms and derivation machinery to derive `⊢ ψ → χ` structurally, without building a countermodel. The prior plan (06) was based on combined F-seed chain construction, which was invalidated because G does not distribute over disjunction and constant-history backward G truth lemma is structurally impossible. The FMP bridge approach is also inappropriate — it faces the same branching-vs-linear mismatch as the direct canonical model construction (see ROAD_MAP.md). Definition of done: `lake build` succeeds with zero sorries in CanonicalEmbedding.lean.
 
 ### Research Integration
 
@@ -21,11 +21,11 @@ Close the single remaining sorry in `usf_completeness` (imp Case B, CanonicalEmb
 
 ### Prior Plan Reference
 
-Prior plan 06 proposed 4 sequential phases: combined F-seed consistency, dovetail history + omega, bidirectional truth lemma, sorry closure. Total estimated effort was 10 hours. The plan was blocked at Phase 1 because the combined F-seed consistency assumption is mathematically false (G does not distribute over disjunction). Effort calibration suggests 8 hours is appropriate for the new approach, accounting for the exploratory nature of the proof-theoretic route but avoiding the dovetail chain machinery entirely.
+Prior plan 06 proposed 4 sequential phases: combined F-seed consistency, dovetail history + omega, bidirectional truth lemma, sorry closure. Total estimated effort was 10 hours. The plan was blocked at Phase 1 because the combined F-seed consistency assumption is mathematically false (G does not distribute over disjunction). Effort calibration suggests 5 hours for the revised approach: 3 hours exploration + 2 hours formalization.
 
 ### Roadmap Alignment
 
-No ROAD_MAP.md found.
+ROAD_MAP.md documents the FMP bridge as a known dead end (faces same branching-vs-linear mismatch). The proof-theoretic approach is the active path for USF completeness.
 
 ## Goals & Non-Goals
 
@@ -40,14 +40,14 @@ No ROAD_MAP.md found.
 - Build non-constant-history canonical models (no chain construction)
 - Prove bx_le linearity (may be needed for Until/Since but not for this approach)
 - General completeness for all formulas (only USF fragment)
+- FMP bridge to completeness (faces same branching-vs-linear mismatch, see ROAD_MAP.md)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
 | Direct proof-theoretic argument has a logical gap we haven't seen | H | M | Phase 1 is pure exploration with explicit go/no-go gate before committing |
-| FMP bridge (Phase 2) requires a truth lemma on closure MCS that has same difficulty as full truth lemma | H | M | Closure MCS are restricted to subformula closure, which may simplify; go/no-go gate at end of Phase 2 |
-| Both approaches fail, leaving sorry intact | H | L | Phases are designed to produce reusable lemmas even if sorry remains; partial progress is preserved |
+| Proof-theoretic argument fails, leaving sorry intact | H | M | Phase 1 is designed to produce reusable lemmas even if sorry remains; partial progress is preserved; task marked [BLOCKED] with detailed analysis |
 | Lean4 formalization of proof-theoretic argument is significantly harder than pen-and-paper | M | M | Use lean-lsp tools (lean_goal, lean_multi_attempt) for interactive development; budget extra time |
 
 ## Implementation Phases
@@ -56,10 +56,9 @@ No ROAD_MAP.md found.
 | Wave | Phases | Blocked by |
 |------|--------|------------|
 | 1 | 1 | -- |
-| 2 | 2 | 1 (only if Phase 1 fails) |
-| 3 | 3 | 1 or 2 |
+| 2 | 2 | 1 |
 
-Phases within the same wave can execute in parallel. Phase 2 is only attempted if Phase 1 reaches its go/no-go gate without success. Phase 3 uses whichever of Phase 1 or 2 succeeds.
+Phases within the same wave can execute in parallel.
 
 ### Phase 1: Proof-Theoretic Derivation of imp Case B [NOT STARTED]
 
@@ -95,41 +94,12 @@ Phases within the same wave can execute in parallel. Phase 2 is only attempted i
 
 ---
 
-### Phase 2: FMP Bridge via Closure MCS Truth Lemma [NOT STARTED]
+### Phase 2: Formalize and Close Sorry [NOT STARTED]
 
-**Goal**: Prove `valid (ψ.imp χ) → ψ.imp χ ∈ S.carrier` for all `S : ClosureMCSBundle (ψ.imp χ)` where ψ, χ are USF. Combined with sorry-free `fmp_contrapositive`, this yields `⊢ ψ → χ`.
-
-**Tasks**:
-- [ ] Understand `ClosureMCS` structure: a closure MCS for `ψ.imp χ` is an MCS restricted to formulas in `subformulaClosure (ψ.imp χ)`. The closure is FINITE (bounded by sub-formulas). This finiteness may simplify the truth lemma.
-- [ ] Investigate building a FINITE canonical model from closure MCS where truth corresponds to membership:
-  - Define a canonical model on `ClosureMCSBundle (ψ.imp χ)` using the filtration structure
-  - The `FilteredWorld` type already exists in the FMP module
-  - Need: truth lemma restricted to sub-formulas of `ψ.imp χ` (all of which are USF)
-- [ ] Key simplification for USF on finite models: the sub-formula closure of a USF formula contains only USF sub-formulas. On a finite model with finitely many "worlds" (closure MCS), the temporal quantifiers G/H range over finite linear orders. The truth lemma for G/H on finite linear orders may be tractable without chain construction.
-- [ ] Investigate whether the existing `filtered_model_truth_lemma` or similar infrastructure in the FMP module already provides what's needed (the filtration truth lemma for sub-formulas)
-- [ ] If filtration truth lemma exists or can be proved: combine with `valid → true in all models → true in finite model → φ ∈ S.carrier` to close the gap
-- [ ] **Go/no-go gate**: If closure MCS truth lemma is achievable, proceed to formalize. If it reduces to the same branching-vs-linear mismatch, document and proceed to Phase 3 alternative.
-
-**Timing**: 3 hours (with hard stop)
-
-**Depends on**: 1 (only if Phase 1 fails at its go/no-go gate)
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalEmbedding.lean` -- add FMP bridge lemma
-- Possibly `Theories/Bimodal/Metalogic/Decidability/FMP/` -- extend filtration truth lemma if needed
-
-**Verification**:
-- If successful: `lake build` with zero new sorries
-- If go/no-go reached: documented analysis
-
----
-
-### Phase 3: Formalize and Close Sorry [NOT STARTED]
-
-**Goal**: Formalize whichever approach succeeded in Phase 1 or 2 into a complete Lean proof replacing the sorry at CanonicalEmbedding.lean:418.
+**Goal**: Formalize the proof strategy from Phase 1 into a complete Lean proof replacing the sorry at CanonicalEmbedding.lean:418.
 
 **Tasks**:
-- [ ] Implement the proof strategy identified in Phase 1 or 2 in Lean 4
+- [ ] Implement the proof strategy identified in Phase 1 in Lean 4
 - [ ] Use `lean_goal` at each step to verify proof state
 - [ ] Use `lean_multi_attempt` to test tactic candidates
 - [ ] Replace the `sorry` at line 418 with the complete proof
@@ -140,7 +110,7 @@ Phases within the same wave can execute in parallel. Phase 2 is only attempted i
 
 **Timing**: 2 hours
 
-**Depends on**: 1 or 2 (whichever succeeds)
+**Depends on**: 1
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/CanonicalEmbedding.lean` -- replace sorry with proof, update docstring
@@ -153,7 +123,7 @@ Phases within the same wave can execute in parallel. Phase 2 is only attempted i
 ## Testing & Validation
 
 - [ ] `lake build` passes with zero errors after each phase
-- [ ] Zero sorries in `CanonicalEmbedding.lean` after Phase 3
+- [ ] Zero sorries in `CanonicalEmbedding.lean` after Phase 2
 - [ ] `grep -rn sorry Theories/Bimodal/Metalogic/BXCanonical/` shows only the expected Frame.lean sorries (lines 646, 668, 683, 697)
 - [ ] No regression in existing sorry-free proofs (fragment_completeness, fragment_truth_iff, G_iff_mcs, etc.)
 
@@ -161,12 +131,12 @@ Phases within the same wave can execute in parallel. Phase 2 is only attempted i
 
 - `plans/07_proof-theoretic-plan.md` (this file)
 - `summaries/07_execution-summary.md` (after implementation)
+- `specs/ROAD_MAP.md` (updated with dead ends)
 - Modified: `Theories/Bimodal/Metalogic/BXCanonical/CanonicalEmbedding.lean` (sorry closure)
 
 ## Rollback/Contingency
 
-- All changes are additive (new lemmas) except the sorry replacement in Phase 3
-- If both Phase 1 and Phase 2 fail at their go/no-go gates, the sorry remains with updated comments documenting the investigation. The task should be marked [BLOCKED] with a description of why both approaches failed.
-- If Phase 3 formalization hits Lean-specific issues, preserve all helper lemmas and keep the sorry with a detailed comment explaining the proof strategy that works on paper but needs further Lean engineering.
+- All changes are additive (new lemmas) except the sorry replacement in Phase 2
+- If Phase 1 fails at its go/no-go gate, the sorry remains with updated comments documenting the investigation. The task should be marked [BLOCKED] with a description of why the proof-theoretic approach failed.
+- If Phase 2 formalization hits Lean-specific issues, preserve all helper lemmas and keep the sorry with a detailed comment explaining the proof strategy that works on paper but needs further Lean engineering.
 - Git provides full rollback via `git revert` on individual phase commits.
-- Fallback: if proof-theoretic and FMP routes both fail, consider marking the sorry as a genuine open problem and documenting it as such, since 7 research iterations have exhausted known approaches.
