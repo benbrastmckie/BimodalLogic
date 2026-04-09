@@ -122,6 +122,7 @@ technical_debt:
   - [03_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/03_team-research.md)
   - [04_restructure-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/04_restructure-research.md)
   - [05_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/05_team-research.md) — Deep dive past attempts, combined F-seed + dovetail chain hybrid
+  - [06_usf-completeness-path.md](specs/086_close_bxcanonical_completeness_sorries/reports/06_usf-completeness-path.md) — Detailed path: combined F-seed + bidirectional truth lemma
 
 ---
 
