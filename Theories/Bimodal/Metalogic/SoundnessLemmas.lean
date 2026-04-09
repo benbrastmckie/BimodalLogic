@@ -349,6 +349,38 @@ theorem swap_axiom_tl_valid (φ : Formula) :
   · exact h_future u (le_of_lt h_gt)
 
 /--
+Swap of F_until_equiv: `F(φ) → ⊤ U φ` swaps to `P(φ') → ⊤ S φ'`. -/
+theorem swap_axiom_F_until_equiv_valid (φ : Formula) :
+    is_valid D ((Formula.some_future φ).imp
+      (Formula.untl (Formula.bot.imp Formula.bot) φ)).swap_temporal := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.some_future,
+    Formula.neg, Formula.imp, Formula.untl, Formula.snce]
+  intro h_P
+  by_contra h_not_S
+  push_neg at h_not_S
+  apply h_P
+  intro s hst h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_S s hst h_φs
+  exact hf
+
+/--
+Swap of P_since_equiv: `P(φ) → ⊤ S φ` swaps to `F(φ') → ⊤ U φ'`. -/
+theorem swap_axiom_P_since_equiv_valid (φ : Formula) :
+    is_valid D ((Formula.some_past φ).imp
+      (Formula.snce (Formula.bot.imp Formula.bot) φ)).swap_temporal := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.some_future,
+    Formula.neg, Formula.imp, Formula.untl, Formula.snce]
+  intro h_F
+  by_contra h_not_U
+  push_neg at h_not_U
+  apply h_F
+  intro s hts h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_U s hts h_φs
+  exact hf
+
+/--
 Modal-Future axiom (MF) swaps to a valid formula: `box φ -> box Fφ` swaps to `box(swap φ) -> box P(swap φ)`.
 
 The swapped form states: if swap φ holds at all histories in Omega at time t, then for all histories σ
@@ -742,6 +774,54 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro ⟨s, hts, h_ψs, _⟩
     intro h_G_neg
     exact h_G_neg s hts h_ψs
+  | temp_linearity φ ψ =>
+    -- swap of temp_linearity is temp_linearity_past on swapped formulas
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_past,
+      Formula.some_future, Formula.neg, truth_at]
+    intro h_conj
+    have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s φ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun h1 _ => by apply h1; intro s hs h_phi; exact h_no s hs h_phi)
+    have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun _ h2 => by apply h2; intro s hs h_psi; exact h_no s hs h_psi)
+    rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+    · intro _ ; intro _
+      intro h_all_neg_third
+      exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
+        (fun h_neg => h_neg s1 (le_of_lt h_lt) h_phi_s1) h_psi_s2)
+    · subst h_eq; intro h_neg_first; exfalso; apply h_neg_first
+      intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_phi_s1 h_psi_s2)
+    · intro _ ; intro h_neg_second; exfalso; apply h_neg_second
+      intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg =>
+        h_neg s2 (le_of_lt h_gt) h_psi_s2))
+  | temp_linearity_past φ ψ =>
+    -- swap of temp_linearity_past is temp_linearity on swapped formulas
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_past,
+      Formula.some_future, Formula.neg, truth_at]
+    intro h_conj
+    have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun h1 _ => by apply h1; intro s hs h_phi; exact h_no s hs h_phi)
+    have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_conj (fun _ h2 => by apply h2; intro s hs h_psi; exact h_no s hs h_psi)
+    rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+    · intro _ ; intro h_neg_second; exfalso; apply h_neg_second
+      intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg =>
+        h_neg s2 (le_of_lt h_lt) h_psi_s2))
+    · subst h_eq; intro h_neg_first; exfalso; apply h_neg_first
+      intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_phi_s1 h_psi_s2)
+    · intro _ ; intro _
+      intro h_all_neg_third
+      exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
+        (fun h_neg => h_neg s1 (le_of_lt h_gt) h_phi_s1) h_psi_s2)
+  | F_until_equiv φ =>
+    exact swap_axiom_F_until_equiv_valid φ
+  | P_since_equiv φ =>
+    exact swap_axiom_P_since_equiv_valid φ
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
@@ -952,6 +1032,80 @@ private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
     intro h_all_neg_third
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
       (fun h_neg_F_phi => h_neg_F_phi s1 (le_of_lt h_gt) h_phi_s1) h_psi_s2)
+
+/-- Past temporal linearity axiom validity (BX11'):
+`P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is locally valid.
+Mirror of `axiom_temp_linearity_valid` for the past direction. -/
+private theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
+    is_valid D (Formula.and (Formula.some_past φ) (Formula.some_past ψ) |>.imp
+      (Formula.or (Formula.some_past (Formula.and φ ψ))
+        (Formula.or (Formula.some_past (Formula.and φ (Formula.some_past ψ)))
+          (Formula.some_past (Formula.and (Formula.some_past φ) ψ))))) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_past, Formula.neg, truth_at]
+  intro h_conj
+  -- Extract P(phi) and P(psi) witnesses
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun h1 _ => by
+      apply h1; intro s hs h_phi; exact h_no s hs h_phi)
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun _ h2 => by
+      apply h2; intro s hs h_psi; exact h_no s hs h_psi)
+  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+  · -- s1 < s2: third disjunct P(P(φ) ∧ ψ)
+    intro _
+    intro _
+    intro h_all_neg_third
+    exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
+      (fun h_neg_P_phi => h_neg_P_phi s1 (le_of_lt h_lt) h_phi_s1) h_psi_s2)
+  · -- s1 = s2: first disjunct P(φ ∧ ψ)
+    subst h_eq
+    intro h_neg_first
+    exfalso
+    apply h_neg_first
+    intro h_all_neg_first
+    exact h_all_neg_first s1 hs1t (fun h_imp => h_imp h_phi_s1 h_psi_s2)
+  · -- s2 < s1: second disjunct P(φ ∧ P(ψ))
+    intro _
+    intro h_neg_second
+    exfalso
+    apply h_neg_second
+    intro h_all_neg_second
+    exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_P_psi =>
+      h_neg_P_psi s2 (le_of_lt h_gt) h_psi_s2))
+
+/-- F-Until equivalence axiom validity (BX12):
+`F(φ) → (⊤ U φ)` is locally valid.
+If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, guard ⊤ = ¬⊥ is trivially satisfied). -/
+private theorem axiom_F_until_equiv_valid (φ : Formula) :
+    is_valid D ((Formula.some_future φ).imp
+      (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_future, Formula.neg]
+  intro h_F
+  by_contra h_not_U
+  push_neg at h_not_U
+  apply h_F
+  intro s hts h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_U s hts h_φs
+  exact hf
+
+/-- P-Since equivalence axiom validity (BX12'):
+`P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence. -/
+private theorem axiom_P_since_equiv_valid (φ : Formula) :
+    is_valid D ((Formula.some_past φ).imp
+      (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_past, Formula.neg]
+  intro h_P
+  by_contra h_not_S
+  push_neg at h_not_S
+  apply h_P
+  intro s hst h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_S s hst h_φs
+  exact hf
 
 /-- Density axiom (DN) is locally valid on dense orders: `GGφ → Gφ` (Sahlqvist form).
 Under reflexive semantics, trivially valid via r = t. -/
@@ -1179,6 +1333,10 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     intro ⟨s, hst, h_ψs, _⟩
     intro h_H_neg
     exact h_H_neg s hst h_ψs
+  | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
+  | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
+  | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
+  | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 
@@ -1584,6 +1742,14 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) : is_valid D φ.s
     intro ⟨s, hts, h_ψs, _⟩
     intro h_G_neg
     exact h_G_neg s hts h_ψs
+  | temp_linearity φ ψ =>
+    exact axiom_temp_linearity_past_valid φ.swap_temporal ψ.swap_temporal
+  | temp_linearity_past φ ψ =>
+    exact axiom_temp_linearity_valid φ.swap_temporal ψ.swap_temporal
+  | F_until_equiv φ =>
+    exact axiom_P_since_equiv_valid φ.swap_temporal
+  | P_since_equiv φ =>
+    exact axiom_F_until_equiv_valid φ.swap_temporal
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
@@ -1800,6 +1966,10 @@ private theorem axiom_locally_valid_general {φ : Formula} (h : Axiom φ) : is_v
     intro ⟨s, hst, h_ψs, _⟩
     intro h_H_neg
     exact h_H_neg s hst h_ψs
+  | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
+  | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
+  | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
+  | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 

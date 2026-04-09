@@ -569,7 +569,7 @@ theorem F_implies_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M
     (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
     Formula.untl (Formula.neg Formula.bot) psi ∈ M := by
   have h_ax : [] ⊢ (Formula.some_future psi).imp (Formula.untl (Formula.neg Formula.bot) psi) :=
-    sorry /- F_until_equiv removed in BX -/
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv psi)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_F
 
 /-- Conjunction introduction in MCS. -/
@@ -895,7 +895,7 @@ theorem backward_dovetailed_G_step (M_0 : Set Formula) (h_mcs_0 : SetMaximalCons
   -- G(G(phi)) ∈ chain(n+1) by temp_4 for G
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ backward_dovetailed M_0 h_mcs_0 (n + 1) :=
     SetMaximalConsistent.implication_property h_mcs_n1
-      (theorem_in_mcs h_mcs_n1 (sorry /- BX: derive temp_4 from BX1 -/)) h_G
+      (theorem_in_mcs h_mcs_n1 (DerivationTree.axiom [] _ (Axiom.temp_4 phi))) h_G
   -- G(phi) ∈ g_content(chain(n+1))
   have h_Gphi_g : Formula.all_future phi ∈ g_content (backward_dovetailed M_0 h_mcs_0 (n + 1)) := h_GG
   -- G(phi) ∈ chain(n) by duality
@@ -950,7 +950,7 @@ theorem P_implies_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M
     (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
     Formula.snce (Formula.neg Formula.bot) psi ∈ M := by
   have h_ax : [] ⊢ (Formula.some_past psi).imp (Formula.snce (Formula.neg Formula.bot) psi) :=
-    sorry /- P_since_equiv removed in BX -/
+    DerivationTree.axiom [] _ (Axiom.P_since_equiv psi)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_P
 
 /--

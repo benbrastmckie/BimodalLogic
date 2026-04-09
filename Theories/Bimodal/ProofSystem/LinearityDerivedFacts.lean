@@ -75,6 +75,6 @@ noncomputable def temp_linearity_derivation (φ ψ : Formula) :
       (Formula.or (Formula.some_future (Formula.and φ ψ))
         (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
           (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))) :=
-  sorry /- temp_l removed in BX -/
+  DerivationTree.axiom [] _ (Axiom.temp_linearity φ ψ)
 
 end Bimodal.ProofSystem

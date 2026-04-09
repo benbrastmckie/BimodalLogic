@@ -17,7 +17,7 @@ requiring successor-chain constructions.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce
 2. **S5 Modal** (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
-3. **BX Temporal** (22 = temp_k_dist + temp_4 + 10 schemas x 2 directions):
+3. **BX Temporal** (26 = temp_k_dist + temp_4 + 12 schemas x 2 directions):
    - BX1/BX1': temp_t_future/past (reflexivity, KEEP from previous)
    - BX2/BX2': left_mono_until/since (left monotonicity)
    - BX3/BX3': right_mono_until/since (right monotonicity)
@@ -28,9 +28,11 @@ requiring successor-chain constructions.
    - BX8/BX8': refl_intro_until/since (reflexive introduction)
    - BX9/BX9': until_elim/since_elim (current-time elimination)
    - BX10/BX10': until_F/since_P (eventuality extraction)
+   - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
+   - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 33 axiom constructors
+**Total**: 37 axiom constructors
 
 ### Key Properties
 
@@ -54,10 +56,10 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-33 constructors organized into four layers:
+37 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (22): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (26): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (2): Modal-temporal interaction axioms
 
 All axioms are valid on all linear temporal orders (base frame class).
@@ -228,6 +230,38 @@ inductive Axiom : Formula → Type where
   Mirror of BX10 for the past direction. -/
   | since_P (φ ψ : Formula) :
       Axiom ((Formula.snce φ ψ).imp (Formula.some_past ψ))
+
+  -- Layer 3b: Additional BX Temporal (4 = 2 axioms x 2 directions)
+
+  /-- BX11: Temporal linearity:
+  `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`.
+  Future witnesses are linearly ordered. Uses linearity of the underlying temporal order.
+  This axiom is NOT derivable from BX1-BX10 (see LinearityDerivedFacts.lean counterexample). -/
+  | temp_linearity (φ ψ : Formula) :
+      Axiom (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
+        (Formula.or (Formula.some_future (Formula.and φ ψ))
+          (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
+            (Formula.some_future (Formula.and (Formula.some_future φ) ψ)))))
+
+  /-- BX11': Temporal linearity (past):
+  `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)`.
+  Past dual of BX11. -/
+  | temp_linearity_past (φ ψ : Formula) :
+      Axiom (Formula.and (Formula.some_past φ) (Formula.some_past ψ) |>.imp
+        (Formula.or (Formula.some_past (Formula.and φ ψ))
+          (Formula.or (Formula.some_past (Formula.and φ (Formula.some_past ψ)))
+            (Formula.some_past (Formula.and (Formula.some_past φ) ψ)))))
+
+  /-- BX12: F-Until equivalence: `F(φ) → (⊤ U φ)`.
+  Every future eventuality can be witnessed by an Until formula with vacuous guard.
+  Here ⊤ = ¬⊥ = ⊥ → ⊥. Bridges F-formulas to Until-formulas. -/
+  | F_until_equiv (φ : Formula) :
+      Axiom ((Formula.some_future φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ))
+
+  /-- BX12': P-Since equivalence: `P(φ) → (⊤ S φ)`.
+  Past dual of BX12. -/
+  | P_since_equiv (φ : Formula) :
+      Axiom ((Formula.some_past φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ))
 
   -- Layer 4: Modal-Temporal Interaction (2)
 

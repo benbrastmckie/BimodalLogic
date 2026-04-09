@@ -45,7 +45,7 @@ theorem F_to_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
     Formula.untl (Formula.neg Formula.bot) ψ ∈ M := by
   have h_ax : [] ⊢ (Formula.some_future ψ).imp (Formula.untl (Formula.neg Formula.bot) ψ) :=
-    sorry /- F_until_equiv removed in BX -/
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_F
 
 /-- F(ψ) ∈ chain(t) implies (⊤ U ψ) ∈ chain(t). -/
