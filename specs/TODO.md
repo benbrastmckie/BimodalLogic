@@ -41,12 +41,16 @@ technical_debt:
 2. **58** [BLOCKED] — Wire completeness to FrameConditions (structurally complete; blocked on forward_until_since_coherent + step transfer — depends on 85)
 3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
-### 2. Independent Completeness Paths (parallel)
+### 2. BXCanonical Remaining Sorries
+
+- **88** [NOT STARTED] — Close 6 remaining BXCanonical sorries (Frame.lean eventuality + CanonicalEmbedding + Completeness). Needs new technique: quasimodel/filtration, FMP bridge, or alternative ordering. Successor to task 86.
+
+### 3. Independent Completeness Paths (parallel)
 
 - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries — gives weak completeness
 - **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (independent, needs Rat construction)
 
-### 3. Strict Temporal Extensions Research (parallel track)
+### 4. Strict Temporal Extensions Research (parallel track)
 
 ```
 74 → 75 → 76
@@ -58,19 +62,19 @@ technical_debt:
 - **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
 - **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
 
-### 4. Experimental / Research
+### 5. Experimental / Research
 
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 - **64** [RESEARCHED] — Critical path review (completed research, reference only)
 
-### 5. Deferred
+### 6. Deferred
 
 - **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
 - **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
 - **21** [PLANNED] — Tech debt cleanup (depends on 18)
 - **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
 
-### 6. Backlog
+### 7. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
 - **39** [RESEARCHED] — Preorder semantics study (theoretical)
@@ -79,6 +83,31 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 88. Close remaining 6 BXCanonical sorries via alternative completeness approach
+- **Effort**: 20-40 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: critical
+- **Dependencies**: None
+- **Created**: 2026-04-09
+- **Related**: Tasks 86, 85, 58
+
+**Description**: Close 6 remaining BXCanonical sorries: 4 Frame.lean (eventuality resolution for Until/Since forward + backward), 1 CanonicalEmbedding.lean (imp Case B), 1 Completeness.lean (model embedding). Task 86 closed 2 WitnessSeed.lean sorries but proved chain-specific and proof-theoretic approaches are blocked by g_content vs Until-witness mismatch. bx_le linearity is mathematically impossible from BX axioms. DovetailedChain.lean is deprecated (6 sorries from same mismatch).
+
+**Viable directions** (from task 86 analysis):
+1. **Quasimodel/filtration approach**: Avoid canonical model ordering issues entirely by working with finite approximations
+2. **FMP bridge to full completeness**: FMP path has 0 core-logic sorries; bridge from FMP (non-provable -> falsifiable in finite model) to full completeness
+3. **Alternative canonical model ordering**: Replace bx_le with Until-based ordering that BX7 can prove linear (requires redesigning Frame.lean)
+
+**Key references**:
+- `BXCanonical/Frame.lean` -- 4 sorry sites (eventuality resolution)
+- `BXCanonical/CanonicalEmbedding.lean:418` -- imp Case B
+- `BXCanonical/Completeness.lean:153` -- model embedding
+- Task 86 reports 08 (bx_le linearity), summaries 08 (chain-eventuality)
+- Task 86 plan 07 (proof-theoretic NO-GO), plan 08 (chain-specific NO-GO)
 
 ---
 
@@ -96,12 +125,14 @@ technical_debt:
 
 ### 86. Close BXCanonical completeness sorries via Until-witness ordering or FMP bridge
 - **Effort**: 12-20 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-04-09
+- **Summary**: Closed 2 WitnessSeed.lean sorries via BX10/BX10' contradiction (sorry count 8->6 in BXCanonical/). Frame.lean 4 sorries blocked by g_content vs Until-witness mismatch; task 88 created for alternative approach.
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
 - **Created**: 2026-04-08
-- **Related**: Tasks 85, 83 (archived), 84 (archived), 58
+- **Related**: Tasks 85, 83 (archived), 84 (archived), 58, 88
 
 **Description**: Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) — the minimal path to completeness. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content (universal future) while BX7 gives Until witness ordering — but redefining bx_le using Until-based ordering may work; (2) FMP path now has 0 core-logic sorries after temp_4 fix, and bridging from FMP to full completeness is an alternative. Prior research (tasks 83, 84, 85) exhaustively proved enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M) = M). Burgess-Xu axiom 4 is semantically invalid in this system. The BXCanonical architecture is the right path (5 sorries vs 40+ in Bundle).
 

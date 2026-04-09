@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Sorries via BX10 + Chain-Specific Eventuality
 
 - **Task**: 86 - Close BXCanonical completeness sorries
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12 hours
 - **Dependencies**: None (all prerequisite infrastructure is sorry-free)
 - **Research Inputs**: reports/08_bxle-linearity-research.md
