@@ -17,14 +17,14 @@
     {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
       "created": "2026-04-08T22:20:49Z",
-      "last_updated": "2026-04-09T16:10:21Z",
-      "session_id": "sess_1775751021_effac8",
-      "researched": "2026-04-09T15:41:09Z",
-      "next_artifact_number": 7,
+      "last_updated": "2026-04-09T16:54:13Z",
+      "session_id": "sess_1775753064_b0a100",
+      "researched": "2026-04-09T16:54:13Z",
+      "next_artifact_number": 8,
       "artifacts": [
         {
           "path": "specs/086_close_bxcanonical_completeness_sorries/reports/01_team-research.md",
@@ -70,6 +70,11 @@
           "path": "specs/086_close_bxcanonical_completeness_sorries/summaries/06_execution-summary.md",
           "type": "summary",
           "summary": "Mathematical obstruction: combined F-seed inconsistent, one-at-a-time chain fails forward_F, constant history backward truth lemma fails for G"
+        },
+        {
+          "path": "specs/086_close_bxcanonical_completeness_sorries/reports/07_team-research.md",
+          "type": "research",
+          "summary": "Team research: constant histories impossible, combined F-seed false, 4 new directions identified"
         }
       ],
       "started": "2026-04-09T06:15:44Z"
