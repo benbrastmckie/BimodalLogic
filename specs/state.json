@@ -877,21 +877,27 @@
     {
       "project_number": 88,
       "project_name": "close_remaining_bxcanonical_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close 6 remaining BXCanonical sorries (4 Frame.lean eventuality resolution, 1 CanonicalEmbedding.lean imp Case B, 1 Completeness.lean model embedding). Task 86 proved chain-specific and proof-theoretic approaches are blocked by g_content vs Until-witness mismatch. Needs fundamentally new technique: quasimodel/filtration approach, FMP bridge to full completeness, or alternative canonical model ordering that avoids bx_le linearity (proven impossible from BX axioms). DovetailedChain.lean is deprecated with 6 sorries from same mismatch.",
       "created": "2026-04-09T19:23:00Z",
-      "last_updated": "2026-04-09T20:45:00Z",
+      "last_updated": "2026-04-09T21:05:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/088_close_remaining_bxcanonical_sorries/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research: BX axiom system incomplete for linear time; re-add temp_linearity recommended (95% confidence)"
+        },
+        {
+          "path": "specs/088_close_remaining_bxcanonical_sorries/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "6-phase plan to close 6 BXCanonical sorries by restoring temp_linearity and F_until_equiv axioms"
         }
       ],
-      "session_id": "sess_1775761829_9fc245",
-      "researched": "2026-04-09T20:45:00Z"
+      "session_id": "sess_1775763139_19e35c",
+      "researched": "2026-04-09T20:45:00Z",
+      "planned": "2026-04-09T21:05:00Z"
     }
   ],
   "next_project_number": 89,
