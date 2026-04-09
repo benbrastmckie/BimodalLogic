@@ -84,7 +84,7 @@ technical_debt:
 
 ### 86. Close BXCanonical completeness sorries via Until-witness ordering or FMP bridge
 - **Effort**: 12-20 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
@@ -109,6 +109,7 @@ technical_debt:
   - [01_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/01_team-research.md)
   - [03_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/03_team-research.md)
   - [04_restructure-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/04_restructure-research.md)
+  - [05_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/05_team-research.md) — Deep dive past attempts, combined F-seed + dovetail chain hybrid
 
 ---
 
