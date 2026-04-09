@@ -43,7 +43,7 @@ technical_debt:
 
 ### 2. BXCanonical Remaining Sorries
 
-- **88** [RESEARCHED] — Close 6 remaining BXCanonical sorries (Frame.lean eventuality + CanonicalEmbedding + Completeness). Needs new technique: quasimodel/filtration, FMP bridge, or alternative ordering. Successor to task 86.
+- **88** [PLANNED] — Close 6 remaining BXCanonical sorries (Frame.lean eventuality + CanonicalEmbedding + Completeness). Needs new technique: quasimodel/filtration, FMP bridge, or alternative ordering. Successor to task 86.
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -88,7 +88,7 @@ technical_debt:
 
 ### 88. Close remaining 6 BXCanonical sorries via alternative completeness approach
 - **Effort**: 20-40 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
@@ -109,6 +109,7 @@ technical_debt:
 - Task 86 reports 08 (bx_le linearity), summaries 08 (chain-eventuality)
 - Task 86 plan 07 (proof-theoretic NO-GO), plan 08 (chain-specific NO-GO)
 - **Research**: [01_team-research.md](specs/088_close_remaining_bxcanonical_sorries/reports/01_team-research.md) — BX axiom system incomplete; re-add temp_linearity recommended (95% confidence)
+- **Plan**: [01_implementation-plan.md](specs/088_close_remaining_bxcanonical_sorries/plans/01_implementation-plan.md) — 6-phase: restore temp_linearity + F_until_equiv, derive linearity, close all 6 sorries
 
 ---
 
