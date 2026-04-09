@@ -8,12 +8,12 @@
     {
       "project_number": 86,
       "project_name": "close_bxcanonical_completeness_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) via Until-witness ordering or FMP bridge. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content while BX7 gives Until witness ordering — redefining bx_le may work; (2) FMP path now has 0 core-logic sorries, bridging to full completeness is an alternative. Enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M)=M). Burgess-Xu axiom 4 is semantically invalid.",
       "created": "2026-04-08T22:20:49Z",
-      "last_updated": "2026-04-09T05:00:00Z",
-      "session_id": "sess_1775712248_0c5948",
+      "last_updated": "2026-04-09T05:56:31Z",
+      "session_id": "sess_1775713902_4be392",
       "researched": "2026-04-09T05:00:00Z",
       "next_artifact_number": 5,
       "artifacts": [
@@ -21,11 +21,6 @@
           "path": "specs/086_close_bxcanonical_completeness_sorries/reports/01_team-research.md",
           "type": "research",
           "summary": "Both original approaches non-viable; decidability route (60%) and fragment completeness (80%) identified as alternatives"
-        },
-        {
-          "path": "specs/086_close_bxcanonical_completeness_sorries/plans/02_implementation-plan.md",
-          "type": "plan",
-          "summary": "Canonical model embedding: 5 phases, TaskFrame + WorldHistory + Omega + truth bridge"
         },
         {
           "path": "specs/086_close_bxcanonical_completeness_sorries/summaries/02_execution-summary.md",
@@ -41,6 +36,11 @@
           "path": "specs/086_close_bxcanonical_completeness_sorries/reports/04_restructure-research.md",
           "type": "research",
           "summary": "Detailed restructure blueprint: dovetail chain construction, bidirectional truth lemma, 9 components"
+        },
+        {
+          "path": "specs/086_close_bxcanonical_completeness_sorries/plans/04_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan to close usf_completeness imp Case B sorry via dovetailed chain bidirectional truth lemma"
         }
       ]
     },
