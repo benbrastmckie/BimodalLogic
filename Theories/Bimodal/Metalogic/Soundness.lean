@@ -326,6 +326,81 @@ theorem temp_linearity_valid (φ ψ : Formula) :
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
       (fun h_neg_F_phi => h_neg_F_phi s1 (le_of_lt h_gt) h_phi_s1) h_psi_s2)
 
+/-- Past temporal linearity axiom validity (BX11'):
+`P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is valid.
+
+Mirror of `temp_linearity_valid` for the past direction.
+-/
+theorem temp_linearity_past_valid (φ ψ : Formula) :
+    ⊨ (Formula.and (Formula.some_past φ) (Formula.some_past ψ) |>.imp
+      (Formula.or (Formula.some_past (Formula.and φ ψ))
+        (Formula.or (Formula.some_past (Formula.and φ (Formula.some_past ψ)))
+          (Formula.some_past (Formula.and (Formula.some_past φ) ψ))))) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_past, Formula.neg, truth_at]
+  intro h_conj
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun h1 _ => by
+      apply h1; intro s hs h_phi; exact h_no s hs h_phi)
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun _ h2 => by
+      apply h2; intro s hs h_psi; exact h_no s hs h_psi)
+  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+  · -- s1 < s2: third disjunct P(P(φ) ∧ ψ)
+    intro _
+    intro _
+    intro h_all_neg_third
+    exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
+      (fun h_neg_P_phi => h_neg_P_phi s1 (le_of_lt h_lt) h_phi_s1) h_psi_s2)
+  · -- s1 = s2: first disjunct P(φ ∧ ψ)
+    subst h_eq
+    intro h_neg_first
+    exfalso
+    apply h_neg_first
+    intro h_all_neg_first
+    exact h_all_neg_first s1 hs1t (fun h_imp => h_imp h_phi_s1 h_psi_s2)
+  · -- s2 < s1: second disjunct P(φ ∧ P(ψ))
+    intro _
+    intro h_neg_second
+    exfalso
+    apply h_neg_second
+    intro h_all_neg_second
+    exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_P_psi =>
+      h_neg_P_psi s2 (le_of_lt h_gt) h_psi_s2))
+
+/-- F-Until equivalence axiom validity (BX12):
+`F(φ) → (⊤ U φ)` is valid. Here ⊤ = ⊥ → ⊥.
+
+If F(φ) holds at t, there exists s ≥ t with φ(s). Take this s as the Until witness.
+The guard ⊤ is trivially satisfied on [t, s). -/
+theorem F_until_equiv_valid (φ : Formula) :
+    ⊨ ((Formula.some_future φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_future, Formula.neg]
+  intro h_F
+  by_contra h_not_U
+  push_neg at h_not_U
+  apply h_F
+  intro s hts h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_U s hts h_φs
+  exact hf
+
+/-- P-Since equivalence axiom validity (BX12'):
+`P(φ) → (⊤ S φ)` is valid. Past dual of F-Until equivalence. -/
+theorem P_since_equiv_valid (φ : Formula) :
+    ⊨ ((Formula.some_past φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at, Formula.some_past, Formula.neg]
+  intro h_P
+  by_contra h_not_S
+  push_neg at h_not_S
+  apply h_P
+  intro s hst h_φs
+  obtain ⟨_, _, _, hf, _⟩ := h_not_S s hst h_φs
+  exact hf
+
 /-- Density axiom (DN) is valid on dense orders: `⊨_dense GGφ → Gφ`.
 Under reflexive semantics: GGφ → Gφ is trivially valid. From GGφ at t (∀r ≥ t, ∀q ≥ r, φ(q)),
 taking r = t gives ∀q ≥ t, φ(q), which is Gφ at t. -/
@@ -762,6 +837,10 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | since_elim φ ψ => exact since_elim_valid φ ψ
   | until_F φ ψ => exact until_F_valid φ ψ
   | since_P φ ψ => exact since_P_valid φ ψ
+  | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
+  | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ
+  | F_until_equiv φ => exact F_until_equiv_valid φ
+  | P_since_equiv φ => exact P_since_equiv_valid φ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
 
@@ -801,6 +880,10 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | since_elim φ ψ => exact Validity.valid_implies_valid_dense (since_elim_valid φ ψ)
   | until_F φ ψ => exact Validity.valid_implies_valid_dense (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_dense (since_P_valid φ ψ)
+  | temp_linearity φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_valid φ ψ)
+  | temp_linearity_past φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_past_valid φ ψ)
+  | F_until_equiv φ => exact Validity.valid_implies_valid_dense (F_until_equiv_valid φ)
+  | P_since_equiv φ => exact Validity.valid_implies_valid_dense (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_dense (temp_future_valid ψ)
 
@@ -841,6 +924,10 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | since_elim φ ψ => exact Validity.valid_implies_valid_discrete (since_elim_valid φ ψ)
   | until_F φ ψ => exact Validity.valid_implies_valid_discrete (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_discrete (since_P_valid φ ψ)
+  | temp_linearity φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_valid φ ψ)
+  | temp_linearity_past φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_past_valid φ ψ)
+  | F_until_equiv φ => exact Validity.valid_implies_valid_discrete (F_until_equiv_valid φ)
+  | P_since_equiv φ => exact Validity.valid_implies_valid_discrete (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_discrete (temp_future_valid ψ)
 
@@ -935,6 +1022,10 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | since_elim φ ψ => exact since_elim_valid φ ψ D F M Omega h_sc τ h_mem t
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ D F M Omega h_sc τ h_mem t
+    | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
+    | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
@@ -1097,6 +1188,10 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | since_elim φ ψ => exact since_elim_valid φ ψ D F M Omega h_sc τ h_mem t
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ D F M Omega h_sc τ h_mem t
+    | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
+    | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>

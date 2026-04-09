@@ -72,7 +72,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Restore Axioms and Prove Soundness [NOT STARTED]
+### Phase 1: Restore Axioms and Prove Soundness [COMPLETED]
 
 **Goal**: Add `temp_linearity`, `F_until_equiv`, and their past duals to the `Axiom` inductive type and prove their soundness.
 
@@ -113,7 +113,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Derive bx_le Linearity [NOT STARTED]
+### Phase 2: Derive bx_le Linearity [BLOCKED]
 
 **Goal**: Prove that `bx_le` is a total order on BXPoints using `temp_linearity` and `F_until_equiv`.
 
@@ -139,7 +139,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close 4 Frame.lean Sorries [NOT STARTED]
+### Phase 3: Close 4 Frame.lean Sorries [BLOCKED]
 
 **Goal**: Use bx_le linearity to close the 4 eventuality resolution sorries.
 
@@ -162,7 +162,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Close CanonicalEmbedding.lean Sorry [NOT STARTED]
+### Phase 4: Close CanonicalEmbedding.lean Sorry [BLOCKED]
 
 **Goal**: Close the imp Case B sorry at `CanonicalEmbedding.lean:418` using non-constant histories enabled by bx_le linearity.
 
@@ -188,7 +188,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Close Completeness.lean Sorry [NOT STARTED]
+### Phase 5: Close Completeness.lean Sorry [BLOCKED]
 
 **Goal**: Close the final sorry in `bx_completeness` at `Completeness.lean:160` using the now-complete truth lemma.
 
@@ -211,7 +211,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Fix Downstream Sorries and Final Validation [NOT STARTED]
+### Phase 6: Fix Downstream Sorries and Final Validation [PARTIAL]
 
 **Goal**: Close remaining sorry markers in Boneyard and validate the full build is clean.
 
