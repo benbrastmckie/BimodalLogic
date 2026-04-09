@@ -152,6 +152,8 @@ The modal direction is complete. `boxClassFamilies_modal_backward` (UltrafilterC
 
 10. **FMP bridge to completeness** (task 86): The sorry-free `fmp_contrapositive` cannot bridge to `valid phi -> provable phi` without a truth lemma connecting validity to closure MCS membership. This truth lemma faces the same branching-vs-linear mismatch as the direct canonical model construction. The FMP module is valuable for decidability but does NOT provide a shortcut to completeness.
 
+11. **Proof-theoretic Case B for usf_completeness** (task 86, plan v7): 8 approaches explored to derive `|- psi -> chi` directly from `valid(psi -> chi)` without countermodel construction, all blocked by the **contextual necessitation gap**: temporal necessitation `|- alpha -> |- G(alpha)` requires empty context, so `[psi] |- alpha` does not give `[psi] |- G(alpha)`. Approaches tried: flatten + fragment_completeness, constant-model validity transfer, unflatten theorem, well-founded induction on size, FMP contrapositive, contextual strong completeness, case analysis on chi's structure, normal form reduction. Novel result: validity transfer `valid phi -> valid (flatten phi)` for USF phi is sound but insufficient (unflatten `|- flatten(phi) -> phi` is not derivable).
+
 ### Working Infrastructure: SuccChainFMCS
 
 **Sorry-Free Properties**:
