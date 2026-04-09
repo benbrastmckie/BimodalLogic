@@ -12,7 +12,7 @@
 
 ## Overview
 
-Close the single remaining sorry in `usf_completeness` (imp Case B, CanonicalEmbedding.lean:418) using a direct proof-theoretic argument that completely bypasses the semantic gap. The strategy uses BX axioms and derivation machinery to derive `⊢ ψ → χ` structurally, without building a countermodel. The prior plan (06) was based on combined F-seed chain construction, which was invalidated because G does not distribute over disjunction and constant-history backward G truth lemma is structurally impossible. The FMP bridge approach is also inappropriate — it faces the same branching-vs-linear mismatch as the direct canonical model construction (see ROAD_MAP.md). Definition of done: `lake build` succeeds with zero sorries in CanonicalEmbedding.lean.
+Close the single remaining sorry in `usf_completeness` (imp Case B, CanonicalEmbedding.lean:418) using a direct proof-theoretic argument that completely bypasses the semantic gap. The strategy uses BX axioms and derivation machinery to derive `⊢ ψ → χ` structurally, without building a countermodel. The prior plan (06) was based on combined F-seed chain construction, which was invalidated because G does not distribute over disjunction and constant-history backward G truth lemma is structurally impossible. The FMP bridge approach is also inappropriate — it faces the same branching-vs-linear mismatch as the direct canonical model construction (see ROADMAP.md). Definition of done: `lake build` succeeds with zero sorries in CanonicalEmbedding.lean.
 
 ### Research Integration
 
@@ -25,7 +25,7 @@ Prior plan 06 proposed 4 sequential phases: combined F-seed consistency, dovetai
 
 ### Roadmap Alignment
 
-ROAD_MAP.md documents the FMP bridge as a known dead end (faces same branching-vs-linear mismatch). The proof-theoretic approach is the active path for USF completeness.
+ROADMAP.md documents the FMP bridge as dead end #10 (faces same branching-vs-linear mismatch). The proof-theoretic approach is the active path for USF completeness.
 
 ## Goals & Non-Goals
 
@@ -40,7 +40,7 @@ ROAD_MAP.md documents the FMP bridge as a known dead end (faces same branching-v
 - Build non-constant-history canonical models (no chain construction)
 - Prove bx_le linearity (may be needed for Until/Since but not for this approach)
 - General completeness for all formulas (only USF fragment)
-- FMP bridge to completeness (faces same branching-vs-linear mismatch, see ROAD_MAP.md)
+- FMP bridge to completeness (faces same branching-vs-linear mismatch, see ROADMAP.md)
 
 ## Risks & Mitigations
 
@@ -131,7 +131,7 @@ Phases within the same wave can execute in parallel.
 
 - `plans/07_proof-theoretic-plan.md` (this file)
 - `summaries/07_execution-summary.md` (after implementation)
-- `specs/ROAD_MAP.md` (updated with dead ends)
+- `ROADMAP.md` (updated with dead ends #7-10)
 - Modified: `Theories/Bimodal/Metalogic/BXCanonical/CanonicalEmbedding.lean` (sorry closure)
 
 ## Rollback/Contingency

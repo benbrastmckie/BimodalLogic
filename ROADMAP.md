@@ -144,6 +144,14 @@ The modal direction is complete. `boxClassFamilies_modal_backward` (UltrafilterC
 
 6. **Bidirectional Temporal Witness (plan v4)**: BLOCKED. H_theory elements are not G-liftable.
 
+7. **Combined F-seed chain construction** (task 86 plans v4-v6): The multi-target seed `{psi | F(psi) in w} union g_content(w)` is inconsistent in general. G does not distribute over disjunction — the compactness step in the multi-target argument is mathematically false.
+
+8. **Constant-history canonical models for G/H** (task 86): On a constant history (all times map to same world), G(alpha) is semantically identical to alpha. It is structurally impossible to build a constant-history countermodel that distinguishes formulas containing G/H from their temporal-free flattening. This blocks backward truth lemma for G on constant histories.
+
+9. **Flatten reduction** (task 86): `flatten(chi) in w` does not imply `chi in w` when chi contains G/H, because `alpha` does not imply `G(alpha)` for non-theorems.
+
+10. **FMP bridge to completeness** (task 86): The sorry-free `fmp_contrapositive` cannot bridge to `valid phi -> provable phi` without a truth lemma connecting validity to closure MCS membership. This truth lemma faces the same branching-vs-linear mismatch as the direct canonical model construction. The FMP module is valuable for decidability but does NOT provide a shortcut to completeness.
+
 ### Working Infrastructure: SuccChainFMCS
 
 **Sorry-Free Properties**:
