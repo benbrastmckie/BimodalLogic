@@ -43,7 +43,7 @@ technical_debt:
 
 ### 2. BXCanonical Remaining Sorries
 
-- **88** [PLANNED] — Close 6 remaining BXCanonical sorries (Frame.lean eventuality + CanonicalEmbedding + Completeness). Needs new technique: quasimodel/filtration, FMP bridge, or alternative ordering. Successor to task 86.
+- **88** [IMPLEMENTING] — Close 6 remaining BXCanonical sorries (Frame.lean eventuality + CanonicalEmbedding + Completeness). Needs new technique: quasimodel/filtration, FMP bridge, or alternative ordering. Successor to task 86.
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -88,7 +88,7 @@ technical_debt:
 
 ### 88. Close remaining 6 BXCanonical sorries via alternative completeness approach
 - **Effort**: 20-40 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
