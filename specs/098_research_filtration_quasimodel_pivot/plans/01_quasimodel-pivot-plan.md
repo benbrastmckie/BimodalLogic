@@ -223,7 +223,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Locus-Control, Until/Since Helpers, and Sorry Closure [NOT STARTED]
+### Phase 5: Locus-Control, Until/Since Helpers, and Sorry Closure [PARTIAL]
 
 **Goal**: Prove the locus-control lemma, then use the full quasimodel machinery to close all four Until/Since sorries in Frame.lean. Since requires a standalone proof (not a dual rename of Until, per Phase 0 Probe 6).
 
@@ -269,7 +269,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Integration, Build Verification, and Regression [NOT STARTED]
+### Phase 6: Integration, Build Verification, and Regression [COMPLETED]
 
 **Goal**: Wire the new Quasimodel module into the BXCanonical import hierarchy, verify that no existing sorry-free proofs are broken, and confirm the sorry count reduction.
 

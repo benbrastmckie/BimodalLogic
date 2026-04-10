@@ -86,6 +86,7 @@ theorem HintikkaPoint.not_mem_of_neg_mem {Sigma : Finset Formula} (h : HintikkaP
 
 /-! ## Sigma-Signature: Projecting a BXPoint to a Hintikka Point -/
 
+open Classical in
 /-- The Sigma-signature of a BXPoint: the intersection of its formulas with Sigma.
 
     This projects the infinite MCS down to its Sigma-component. The key property
@@ -95,19 +96,18 @@ noncomputable def sigma_signature_formulas (w : BXPoint) (Sigma : Finset Formula
     Finset Formula :=
   Sigma.filter (fun f => f ∈ w.formulas)
 
+open Classical in
 theorem sigma_signature_subset (w : BXPoint) (Sigma : Finset Formula) :
     sigma_signature_formulas w Sigma ⊆ Sigma :=
   Finset.filter_subset _ _
 
+open Classical in
 theorem sigma_signature_mem_iff (w : BXPoint) (Sigma : Finset Formula) (f : Formula) :
     f ∈ sigma_signature_formulas w Sigma ↔ f ∈ Sigma ∧ f ∈ w.formulas := by
   simp [sigma_signature_formulas, Finset.mem_filter]
 
-/-- The Sigma-signature of a BXPoint is locally consistent, provided Sigma is
-    closed under negation (i.e., for any f ∈ Sigma, neg f ∈ Sigma).
-
-    Proof: if both f and neg(f) were in w.formulas, then w would be inconsistent
-    (since w is an MCS). -/
+open Classical in
+/-- The Sigma-signature of a BXPoint is locally consistent. -/
 theorem sigma_signature_consistent (w : BXPoint) (Sigma : Finset Formula) :
     ∀ f ∈ sigma_signature_formulas w Sigma,
       Formula.neg f ∉ sigma_signature_formulas w Sigma := by
@@ -116,6 +116,7 @@ theorem sigma_signature_consistent (w : BXPoint) (Sigma : Finset Formula) :
   -- f ∈ w.formulas and f.neg ∈ w.formulas contradicts w being MCS
   exact set_consistent_not_both w.is_mcs.1 f hf.2 hfn.2
 
+open Classical in
 /-- Bot is not in the Sigma-signature of any BXPoint. -/
 theorem sigma_signature_bot_free (w : BXPoint) (Sigma : Finset Formula) :
     Formula.bot ∉ sigma_signature_formulas w Sigma := by
@@ -126,11 +127,8 @@ theorem sigma_signature_bot_free (w : BXPoint) (Sigma : Finset Formula) :
   exact this [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h.2)
     ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
-/-- The Sigma-signature of a BXPoint is locally maximal, provided Sigma is
-    closed under negation.
-
-    Proof: for any f ∈ Sigma, by negation completeness of the MCS w,
-    either f ∈ w.formulas or f.neg ∈ w.formulas. -/
+open Classical in
+/-- The Sigma-signature of a BXPoint is locally maximal. -/
 theorem sigma_signature_maximal (w : BXPoint) (Sigma : Finset Formula)
     (h_neg_closed : ∀ f ∈ Sigma, Formula.neg f ∈ Sigma) :
     ∀ f ∈ Sigma, f ∈ sigma_signature_formulas w Sigma ∨
@@ -140,8 +138,8 @@ theorem sigma_signature_maximal (w : BXPoint) (Sigma : Finset Formula)
   · left; rw [sigma_signature_mem_iff]; exact ⟨hf, h⟩
   · right; rw [sigma_signature_mem_iff]; exact ⟨h_neg_closed f hf, h⟩
 
-/-- Construct a HintikkaPoint from a BXPoint's Sigma-signature, provided Sigma
-    has the negation closure property. -/
+open Classical in
+/-- Construct a HintikkaPoint from a BXPoint's Sigma-signature. -/
 noncomputable def sigma_signature (w : BXPoint) (Sigma : Finset Formula)
     (h_neg_closed : ∀ f ∈ Sigma, Formula.neg f ∈ Sigma) :
     HintikkaPoint Sigma where
@@ -151,6 +149,7 @@ noncomputable def sigma_signature (w : BXPoint) (Sigma : Finset Formula)
   bot_free := sigma_signature_bot_free w Sigma
   locally_maximal := sigma_signature_maximal w Sigma h_neg_closed
 
+open Classical in
 /-- A formula is in the Sigma-signature iff it's in both Sigma and the BXPoint. -/
 theorem sigma_signature_mem {w : BXPoint} {Sigma : Finset Formula}
     {h_neg : ∀ f ∈ Sigma, Formula.neg f ∈ Sigma} {f : Formula} :
@@ -159,32 +158,9 @@ theorem sigma_signature_mem {w : BXPoint} {Sigma : Finset Formula}
 
 /-! ## Finiteness of HintikkaPoint Space -/
 
-/-- The number of Hintikka points over Sigma is bounded by the number of
-    subsets of Sigma (which is 2^|Sigma|). This gives us a finite space
-    to work with in the quasimodel construction.
-
-    Note: We don't need an explicit Fintype instance for the quasimodel
-    construction; we just need the cardinality bound for the termination
-    argument. The bound is `2^Sigma.card`. -/
-theorem hintikka_point_card_bound (Sigma : Finset Formula) :
-    ∀ (points : Finset (HintikkaPoint Sigma)),
-      points.card ≤ 2 ^ Sigma.card := by
-  intro points
-  -- Each HintikkaPoint is determined by its formulas, which is a subset of Sigma.
-  -- The number of subsets of Sigma is 2^|Sigma|.
-  -- Since the map HintikkaPoint → Finset Formula (via .formulas) is injective,
-  -- |points| ≤ |Sigma.powerset| = 2^|Sigma|.
-  have h_inj : Function.Injective (fun (h : HintikkaPoint Sigma) => h.formulas) := by
-    intro h1 h2 heq; exact HintikkaPoint.ext heq
-  calc points.card
-      ≤ (points.image (fun h => h.formulas)).card :=
-        le_of_eq (Finset.card_image_of_injective points h_inj).symm
-    _ ≤ Sigma.powerset.card := by
-        apply Finset.card_le_card
-        intro s hs
-        rw [Finset.mem_image] at hs
-        obtain ⟨h, _, rfl⟩ := hs
-        exact Finset.mem_powerset.mpr h.subset_sigma
-    _ = 2 ^ Sigma.card := Finset.card_powerset Sigma
+/-- Hintikka points are determined by their formula sets (injective). -/
+theorem hintikka_point_formulas_injective (Sigma : Finset Formula) :
+    Function.Injective (fun (h : HintikkaPoint Sigma) => h.formulas) :=
+  fun h1 h2 heq => HintikkaPoint.ext heq
 
 end Bimodal.Metalogic.BXCanonical.Quasimodel
