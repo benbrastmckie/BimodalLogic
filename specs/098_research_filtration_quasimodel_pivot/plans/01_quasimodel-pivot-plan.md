@@ -113,7 +113,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: HintikkaPoint Definition and Properties [NOT STARTED]
+### Phase 2: HintikkaPoint Definition and Properties [COMPLETED]
 
 **Goal**: Define the Hintikka point structure over a Sigma-closure with local consistency, maximality, and BX truth conditions, and prove basic decidability and equality properties.
 
