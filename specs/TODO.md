@@ -27,22 +27,29 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-10. Tasks 85, 86, 88 archived (completed). Tasks 78, 79 archived (abandoned, SuccChain redundant).*
+*Updated 2026-04-10. Created tasks 90-95 after review discovered ROAD_MAP.md is stale: T-axiom is present, semantics is reflexive, BX axiom system is complete. Task 89 superseded by 90+92.*
 
-**Goal**: Zero custom axioms, zero sorries on the completeness path.
+**Goal**: Close BXCanonical completeness via Burgess-Xu Until-induction; archive strict-semantics legacy; zero custom axioms.
 
-### 1. Critical Path — Until/Since Chain Coherence
+### 1. Critical Path — BXCanonical Completeness
 
 ```
-58 → 60
+91 → 90 → 92 → 93 → 95
+          ↘ 94
 ```
 
-1. **58** [BLOCKED] — Wire completeness to FrameConditions (structurally complete; blocked on forward_until_since_coherent + step transfer)
-2. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
+2. **90** [NOT STARTED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
+3. **92** [NOT STARTED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; depends on 90)
+4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
+5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
+6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
+7. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom, independent)
 
-### 2. BXCanonical Remaining Sorries
+### 2. Superseded / Legacy
 
-- **89** [RESEARCHED] — Close 4 Frame.lean eventuality sorries. BXCanonical not on critical path; temp_linearity re-addition transforms to 8-16h.
+- **89** [RESEARCHED] — Superseded by 90+92. Research round was conducted against stale semantic state.
+- **58** [BLOCKED] — Wire completeness to FrameConditions. Abandoned: FrameConditions/Completeness.lean is legacy strict-semantics code to be archived by 94.
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -82,6 +89,85 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 91. Update ROAD_MAP.md to reflect BX reflexive-semantics architecture
+- **Effort**: 2-4 hours
+- **Status**: [RESEARCHED]
+- **Language**: meta
+- **Priority**: high
+- **Dependencies**: None
+- **Created**: 2026-04-10
+- **Related**: Tasks 90, 92, 94
+- **Research**: [01_bx-reflexive-roadmap-research.md](091_update_roadmap_bx_reflexive/reports/01_bx-reflexive-roadmap-research.md)
+
+**Description**: Rewrite `specs/ROAD_MAP.md` to match the actual codebase. The current roadmap describes a strict-semantics architecture (post task 81) that no longer matches the code: it claims the T-axiom was removed, that Until/Since are strict, and that `UltrafilterChain.lean` is the active completeness path. Verify against current code: (1) `temp_t_future`/`temp_t_past` are BX1/BX1' in `ProofSystem/Axioms.lean:117-122`; (2) `Semantics/Truth.lean:126-131` uses reflexive ≤/≥ for all temporal operators; (3) X/Y exist only as dead definitional abbreviations in `Syntax/Formula.lean:330-334`; (4) `Metalogic.lean` imports `BXCanonical`, not `UltrafilterChain`. Document: the BX axiom system and each axiom's role, the canonical model construction in `BXCanonical`, the actual remaining sorries (4 in `Frame.lean` for U/S, 1 Box at `Frame.lean:440`, 1 embedding at `Completeness.lean:154`), and the Burgess-Xu Until-induction technique as the path forward. **Do this first** so downstream research/planning agents have an accurate baseline.
+
+---
+
+### 90. Research: Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure)
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: high
+- **Dependencies**: Task 91 (accurate roadmap)
+- **Created**: 2026-04-10
+- **Related**: Tasks 89 (supersedes), 92
+
+**Description**: Research and decide the approach for closing the 4 Until/Since truth-lemma sorries in `BXCanonical/Frame.lean` (lines 653, 675, 690, 704). The BX axiom system already contains everything Burgess 1982 / Xu 1988 needed: BX5 (self_accum_until), BX6 (absorb_until), BX7 (linear_until), BX10 (until_F: (φUψ)→F(ψ)), BX11 (temp_linearity), BX12 (F_until_equiv), BX4 (connect_future), and T (temp_t_future). The blocker is a mismatch between the canonical ordering `bx_le := g_content ⊆` (Frame.lean:61) and the Until-witness ordering given by BX7. **Option A**: redefine `bx_le` via Until-witnesses and prove equivalence with the g_content definition using BX10 + BX12 + BX4 + T. **Option B**: keep `bx_le := g_content ⊆` and Henkin-enrich the MCS closure with Until witnesses (Burgess 1984 style). Deliverable: a report in `specs/090_research_bx_le_redefinition/reports/` comparing the two on (i) proof complexity, (ii) impact on the Box-direction argument, (iii) impact on TaskModel embedding, (iv) recommended choice with justification. Supersedes task 89 — its research was conducted against a stale semantic state.
+
+---
+
+### 92. Implement Burgess-Xu Until/Since truth lemma in BXCanonical/Frame.lean
+- **Effort**: 8-20 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: high
+- **Dependencies**: Task 90 (approach decision)
+- **Created**: 2026-04-10
+- **Related**: Tasks 89 (supersedes), 90, 93
+
+**Description**: Close the 4 Until/Since truth-lemma sorries in `Theories/Bimodal/Metalogic/BXCanonical/Frame.lean`: `bx_until_eventuality_resolution` (line 653), `bx_until_backward` (line 675), `bx_since_eventuality_resolution` (line 690), `bx_since_backward` (line 704). Uses the approach chosen in task 90. Standard technique is Burgess 1982 / Xu 1988 Until-induction. Proof sketch: BX10 (`until_F`) extracts the F-witness, BX7 + BX11 give linearity, BX5 (`self_accum_until`) handles guard persistence at intermediate points, BX6 (`absorb_until`) prevents infinite deferral, BX9 (`until_elim`) handles the current-time case, BX4 (`connect_future`) + T (`temp_t_future`) drive the contrapositive in the backward direction. No new axioms needed.
+
+---
+
+### 93. Complete BXCanonical canonical model embedding
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: high
+- **Dependencies**: Task 92
+- **Created**: 2026-04-10
+- **Related**: Tasks 92, 95
+
+**Description**: Close the remaining two BXCanonical sorries after task 92: (1) Box-direction sorry at `BXCanonical/Frame.lean:440` via the standard canonical-model argument for modal Box using `bx_modal_equiv`; (2) TaskModel embedding sorry at `BXCanonical/Completeness.lean:154` constructing a `TaskModel` from the BXPoint canonical frame. Once closed together with task 92, `completeness_over_Int` becomes sorry-free through `BXCanonical`, and the top-level completeness theorem's `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`.
+
+---
+
+### 94. Archive strict-semantics legacy code to Boneyard
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: medium
+- **Dependencies**: Task 91
+- **Created**: 2026-04-10
+- **Related**: Tasks 58 (closes), 91
+
+**Description**: Move the legacy strict-semantics completeness code to `Boneyard/StrictSemanticsLegacy/` with a README explaining its history. Files: `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` (~67 sorries), `Theories/Bimodal/FrameConditions/Completeness.lean` (~54 sorries), `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` (~29 sorries), `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` (~61 sorries). These were written under strict temporal semantics (strict G/H, strict U/S) before the codebase reverted to reflexive BX semantics; their sorry count reflects architectural incompatibility, not real mathematical gaps. Update any importers (`Metalogic.lean` already points to `BXCanonical`). Mechanically drops ~210 sorries from the non-Boneyard count. Update `state.json.technical_debt` to reflect new counts. Also formally closes task 58 (which was blocked on this legacy path). Do after task 91 so the Boneyard README can cite the authoritative roadmap.
+
+---
+
+### 95. Verification audit: #print axioms + sorry classification pass
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: medium
+- **Dependencies**: Task 93
+- **Created**: 2026-04-10
+- **Related**: Tasks 60, 93
+
+**Description**: Verification pass to confirm no corners cut on the representation and completeness theorems. (1) Run `#print axioms` on `BXCanonical.completeness` and `discrete_completeness_fc`; confirm output is exactly `{propext, Classical.choice, Quot.sound}`. (2) Grep `Theories/Bimodal/Metalogic/Soundness.lean` and `SoundnessLemmas.lean` for real `sorry` tactics vs `sorry` in docstrings (`Soundness.lean` shows 4 grep hits all inside doc comments; `SoundnessLemmas.lean` shows 37 hits that must be classified). (3) Confirm `soundness`, `soundness_dense`, `soundness_discrete` all build and list only standard axioms. (4) Audit custom axiom list: expected `{discrete_Icc_finite_axiom}` (task 60); confirm no others. (5) Produce an audit report at `specs/reviews/completeness-audit-{DATE}.md`.
 
 ---
 
