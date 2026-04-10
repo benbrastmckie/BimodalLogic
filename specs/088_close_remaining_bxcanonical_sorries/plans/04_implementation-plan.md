@@ -1,7 +1,7 @@
 # Implementation Plan: Close CanonicalEmbedding:418 Sorry (v4)
 
 - **Task**: 88 - Close remaining BXCanonical sorries (NARROWED SCOPE: CanonicalEmbedding:418 only)
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 6 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/04_team-research.md
@@ -62,7 +62,7 @@ Phases are sequential: Phase 1 builds infrastructure, Phase 2 closes the sorry.
 
 ---
 
-### Phase 1: Build Two-Point WorldHistory and USF Truth Bridge [NOT STARTED]
+### Phase 1: Build Two-Point WorldHistory and USF Truth Bridge [BLOCKED]
 
 **Goal**: Construct a two-point WorldHistory and prove the truth bridge lemma for USF formulas on this history.
 
@@ -94,7 +94,7 @@ Phases are sequential: Phase 1 builds infrastructure, Phase 2 closes the sorry.
 
 ---
 
-### Phase 2: Close the Sorry at Line 418 [NOT STARTED]
+### Phase 2: Close the Sorry at Line 418 [BLOCKED]
 
 **Goal**: Use the two-point history construction to derive a contradiction in imp Case B, closing the sorry.
 
