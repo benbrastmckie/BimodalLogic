@@ -1,7 +1,7 @@
 # Implementation Plan: Local Hintikka-Set Quasimodel for Until/Since Truth Lemma
 
 - **Task**: 98 - research_filtration_quasimodel_pivot
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 25-45 hours
 - **Dependencies**: None (independent of tasks 96, 97; parallel research track)
 - **Research Inputs**: specs/098_research_filtration_quasimodel_pivot/reports/01_filtration-quasimodel-pivot.md
