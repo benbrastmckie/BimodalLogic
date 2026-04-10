@@ -3,7 +3,7 @@ task: 91
 type: plan
 session: sess_1776000100_plan91
 date: 2026-04-10
-status: not_started
+status: completed
 phase_count: 8
 estimated_hours: 5
 ---
@@ -11,7 +11,7 @@ estimated_hours: 5
 # Implementation Plan: Task #91 - Rewrite ROAD_MAP.md for BX Reflexive Semantics
 
 - **Task**: 91 - update_roadmap_bx_reflexive
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (research complete)
 - **Research Inputs**: specs/091_update_roadmap_bx_reflexive/reports/01_bx-reflexive-roadmap-research.md
@@ -79,7 +79,7 @@ This task rewrites `specs/ROAD_MAP.md` itself. It is the roadmap-accuracy prereq
 
 Phases within the same wave can execute in parallel (though in practice they will be authored sequentially as sections of the single ROAD_MAP.md file).
 
-### Phase 1: Scaffold new ROAD_MAP.md and archive legacy content [NOT STARTED]
+### Phase 1: Scaffold new ROAD_MAP.md and archive legacy content [COMPLETED]
 
 **Goal**: Create the skeleton of the rewritten roadmap and identify which current-file content survives.
 
@@ -142,7 +142,7 @@ Phases within the same wave can execute in parallel (though in practice they wil
 
 ---
 
-### Phase 2: Document the BX Axiom System [NOT STARTED]
+### Phase 2: Document the BX Axiom System [COMPLETED]
 
 **Goal**: Produce a complete, cited "BX Axiom System" section.
 
@@ -178,7 +178,7 @@ Phases within the same wave can execute in parallel (though in practice they wil
 
 ---
 
-### Phase 3: Document reflexive truth semantics and X/Y operator status [NOT STARTED]
+### Phase 3: Document reflexive truth semantics and X/Y operator status [COMPLETED]
 
 **Goal**: Produce the "Reflexive Truth Semantics" and "X/Y Operator Status" sections.
 
@@ -221,7 +221,7 @@ Phases within the same wave can execute in parallel (though in practice they wil
 
 ---
 
-### Phase 4: Document the active Metalogic path (BXCanonical) [NOT STARTED]
+### Phase 4: Document the active Metalogic path (BXCanonical) [COMPLETED]
 
 **Goal**: Produce the "Active Metalogic Path: BXCanonical" and "Canonical Model Construction" sections.
 
@@ -263,7 +263,7 @@ Phases within the same wave can execute in parallel (though in practice they wil
 
 ---
 
-### Phase 5: Inventory remaining sorries (active path) [NOT STARTED]
+### Phase 5: Inventory remaining sorries (active path) [COMPLETED]
 
 **Goal**: Produce the "Active-Path Sorry Inventory" section — the canonical list of 6 sorries.
 
@@ -301,7 +301,7 @@ Phases within the same wave can execute in parallel (though in practice they wil
 
 ---
 
-### Phase 6: Document legacy code to archive [NOT STARTED]
+### Phase 6: Document legacy code to archive [COMPLETED]
 
 **Goal**: Produce the "Legacy Code Inventory" section listing files slated for task 94 archival.
 
@@ -336,7 +336,7 @@ Phases within the same wave can execute in parallel (though in practice they wil
 
 ---
 
-### Phase 7: Document the Burgess-Xu Until-induction path forward [NOT STARTED]
+### Phase 7: Document the Burgess-Xu Until-induction path forward [COMPLETED]
 
 **Goal**: Produce the "Burgess-Xu Until-Induction Technique" section explaining how the 4 Frame.lean Until/Since sorries will be closed.
 
@@ -385,7 +385,7 @@ Phases within the same wave can execute in parallel (though in practice they wil
 
 ---
 
-### Phase 8: Final assembly, cross-references, and verification [NOT STARTED]
+### Phase 8: Final assembly, cross-references, and verification [COMPLETED]
 
 **Goal**: Wire all sections together, write the new Overview and Recommended Priority Order, add the task cross-reference section, and verify every file:line reference.
 
