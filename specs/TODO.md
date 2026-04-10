@@ -41,9 +41,7 @@ technical_debt:
 
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
 2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
-3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; spawned 96/97/98)
-   - **96** [RESEARCHED] — Research BX13 axiom candidates: all rejected (categorical impossibility)
-   - **97** [RESEARCHED] — Research layered bx_le redefinition: all 4 candidates rejected
+3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; 98 is sole viable path)
    - **98** [RESEARCHED] — Research filtration/quasimodel pivot: CONDITIONAL GO on local quasimodel (25-45h)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
@@ -106,32 +104,6 @@ technical_debt:
 - **Research**: [01_filtration-quasimodel-pivot.md](098_research_filtration_quasimodel_pivot/reports/01_filtration-quasimodel-pivot.md)
 
 **Description**: Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Deliverables: filtration vs quasimodel comparison, cascade-cost audit, local quasimodel sketch, revised effort estimate, go/no-go recommendation. **Result**: CONDITIONAL GO on local Hintikka-set quasimodel (25-45h). NO-GO on classical filtration.
-
----
-
-### 97. Research layered bx_le redefinition preserving Box truth lemma
-- **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
-- **Language**: logic
-- **Dependencies**: None
-- **Parent Task**: #92
-- **Created**: 2026-04-10
-- **Research**: [01_layered-bx-le.md](097_research_layered_bx_le_redefinition/reports/01_layered-bx-le.md)
-
-**Description**: Revisit task 90's Option A rejection with a layered definition: bx_le_prime w u := g_content(w) ⊆ u.formulas ∧ until_compatible w u. Evaluate 2-4 candidates for until_compatible on reflexivity, transitivity, Box preservation, and Gap U5/B-GAP closure. **Result**: REJECT ALL — B-GAP invariant under second-conjunct strengthening; Gap U5 requires infeasible interval linearity.
-
----
-
-### 96. Research BX13 axiom candidates for Until propagation
-- **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
-- **Language**: logic
-- **Dependencies**: None
-- **Parent Task**: #92
-- **Created**: 2026-04-10
-- **Research**: [01_bx13-axiom-candidates.md](096_research_bx13_until_axiom_candidates/reports/01_bx13-axiom-candidates.md)
-
-**Description**: Research whether new sound BX axioms (BX13, BX14, ...) can close Gap U5 and B-GAP without breaking soundness. Evaluate at least 3 candidates with formal statements, soundness proofs or countermodels, and closure tests. **Result**: All rejected. Categorical impossibility: Until provides bounded-interval guarantees while g_content propagation requires unbounded-interval (G-wrapped) formulas.
 
 ---
 
