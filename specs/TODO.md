@@ -40,7 +40,7 @@ technical_debt:
 
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
 2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
-3. **92** [RESEARCHED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; depends on 90)
+3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; run /spawn 92)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -131,7 +131,8 @@ technical_debt:
 
 ### 92. Implement Burgess-Xu Until/Since truth lemma in BXCanonical/Frame.lean
 - **Effort**: 13-23 hours (revised from 8-16h per team research round 02)
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
+- **Blocker**: Phase 0 diagnostic gate: all 6 Burgess-Xu probes failed (Gap U5 and B-GAP both unrescued). See specs/092_implement_bx_until_truth_lemma/reports/03_phase0-diagnostic.md. Run `/spawn 92` to decompose.
 - **Language**: lean4
 - **Priority**: high
 - **Dependencies**: Task 90 (approach decision, completed)

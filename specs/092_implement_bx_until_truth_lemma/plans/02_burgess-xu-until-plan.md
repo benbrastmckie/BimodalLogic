@@ -95,7 +95,7 @@ Phases within the same wave can execute in parallel. Phase 0 is a hard gate: no 
 
 ---
 
-### Phase 0: Diagnostic Gate (Burgess-Xu Probes) [NOT STARTED]
+### Phase 0: Diagnostic Gate (Burgess-Xu Probes) [BLOCKED]
 
 **Goal**: Before any proof implementation, run six diagnostic probes to validate (or rescue) each fragile step in the Burgess-Xu kernel. Produce a written decision document that determines whether Phases 1-6 proceed or task 92 goes [BLOCKED] via `/spawn 92`.
 
