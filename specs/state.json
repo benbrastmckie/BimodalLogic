@@ -100,7 +100,10 @@
         93
       ],
       "dependencies": [
-        90
+        90,
+        96,
+        97,
+        98
       ],
       "researched": "2026-04-10T20:43:54Z",
       "planned": "2026-04-10T21:15:00Z",
@@ -888,7 +891,8 @@
       "session_id": "sess_1775856249_7db675",
       "parent_task": 92,
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "dependencies": []
     },
     {
       "project_number": 97,
@@ -907,7 +911,8 @@
       "session_id": "sess_1775856249_7db675",
       "parent_task": 92,
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "dependencies": []
     },
     {
       "project_number": 98,
@@ -926,7 +931,8 @@
       "session_id": "sess_1775856249_7db675",
       "parent_task": 92,
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "dependencies": []
     }
   ],
   "next_project_number": 99,
