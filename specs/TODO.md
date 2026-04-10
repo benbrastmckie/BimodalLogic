@@ -44,7 +44,7 @@ technical_debt:
 ### 2. BXCanonical Remaining Sorries
 
 - **88** [COMPLETED] — Deleted CanonicalEmbedding.lean (1 sorry removed), relocated validity lemmas, added anti-pattern entry.
-- **89** [NOT STARTED] — Close 4 Frame.lean eventuality sorries via quasimodel/Henkin construction (40-80h). X-vs-G mismatch confirmed fundamental. Split from task 88.
+- **89** [RESEARCHED] — Close 4 Frame.lean eventuality sorries. BXCanonical not on critical path; temp_linearity re-addition transforms to 8-16h.
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -89,7 +89,7 @@ technical_debt:
 
 ### 89. Close 4 Frame.lean eventuality resolution sorries via quasimodel or Henkin construction
 - **Effort**: 40-80 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: high
 - **Dependencies**: None (independent of task 88 CanonicalEmbedding)
