@@ -1,7 +1,7 @@
 # Implementation Plan: Task 90 — bx_le Redefinition Decision Artifact
 
 - **Task**: 90 - Research bx_le redefinition decision
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3-4 hours
 - **Dependencies**: None (team research complete)
 - **Research Inputs**: specs/090_research_bx_le_redefinition/reports/01_team-research.md
@@ -71,7 +71,7 @@ Advances ROAD_MAP.md items related to closing the 4 Until/Since truth-lemma sorr
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Diagnostic — bx_le_linear probe [NOT STARTED]
+### Phase 1: Diagnostic — bx_le_linear probe [COMPLETED]
 
 **Goal**: Determine via read-only lean-lsp probes whether `bx_le_linear` (or the weaker `bx_le_interval_linear`) is derivable from BX7 + BX11 + BX12 in the current axiom inventory. Record a definitive outcome (success / partial / blocked / inconclusive) with enough detail to guide task 92.
 
@@ -100,7 +100,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Document diagnostic findings [NOT STARTED]
+### Phase 2: Document diagnostic findings [COMPLETED]
 
 **Goal**: Write a short, reproducible diagnostic report capturing Phase 1's probes, outcomes, and evidence so that task 92 (and any future revisitor) can reconstruct the reasoning without re-running the probes.
 
@@ -127,7 +127,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Produce decision artifact for task 92 [NOT STARTED]
+### Phase 3: Produce decision artifact for task 92 [COMPLETED]
 
 **Goal**: Synthesize the team research recommendation and Phase 2's diagnostic outcome into a single concrete recommendation document that tells task 92 exactly which path to take, with success criteria, the canonical name to use, and the scope boundaries.
 
@@ -157,7 +157,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update task 92 description (optional) [NOT STARTED]
+### Phase 4: Update task 92 description (optional) [COMPLETED]
 
 **Goal**: Reflect the chosen approach and any scope adjustments in task 92's public description in TODO.md and state.json so the next `/research` or `/plan` invocation on task 92 loads the right mental model. Skipped if any ambiguity exists about the update.
 
