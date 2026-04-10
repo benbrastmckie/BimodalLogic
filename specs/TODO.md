@@ -1,5 +1,5 @@
 ---
-next_project_number: 88
+next_project_number: 90
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -43,7 +43,8 @@ technical_debt:
 
 ### 2. BXCanonical Remaining Sorries
 
-- **88** [RESEARCHED] — Close 6 remaining BXCanonical sorries (Frame.lean eventuality + CanonicalEmbedding + Completeness). Needs new technique: quasimodel/filtration, FMP bridge, or alternative ordering. Successor to task 86.
+- **88** [RESEARCHED] — Close CanonicalEmbedding:418 sorry (usf_completeness). Two-point WorldHistory approach, 4-8h. Successor to task 86.
+- **89** [NOT STARTED] — Close 4 Frame.lean eventuality sorries via quasimodel/Henkin construction (40-80h). X-vs-G mismatch confirmed fundamental. Split from task 88.
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -83,6 +84,19 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 89. Close 4 Frame.lean eventuality resolution sorries via quasimodel or Henkin construction
+- **Effort**: 40-80 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: high
+- **Dependencies**: None (independent of task 88 CanonicalEmbedding)
+- **Created**: 2026-04-10
+- **Related**: Tasks 88, 86, 85, 83
+
+**Description**: Close 4 Frame.lean eventuality resolution sorries (bx_until_eventuality_resolution:653, bx_until_backward:675, bx_since_eventuality_resolution:690, bx_since_backward:704) via quasimodel (GHR 1994) or Henkin fair scheduling construction. The X-vs-G mismatch is confirmed fundamental (6 rounds, 99% confidence): no BX axiom bridges φ U ψ membership to G(φ U ψ) membership, so eventualities must be resolved by model construction rather than ordering propagation. Requires 4-8h research spike into quasimodel viability (task 83 linearization issues), then 30-40h implementation. Downstream: Completeness.lean:160 closes automatically when these 4 are resolved.
 
 ---
 
