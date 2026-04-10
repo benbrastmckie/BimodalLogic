@@ -150,7 +150,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Quasimodel Construction with Defect-Discharge [NOT STARTED]
+### Phase 3: Quasimodel Construction with Defect-Discharge [COMPLETED]
 
 **Goal**: Construct the Burgess-Xu one-step quasimodel: a finite linear sequence of Hintikka points with the defect-discharge property for a given Until formula. This is the core mathematical construction.
 
