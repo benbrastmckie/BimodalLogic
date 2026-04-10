@@ -88,12 +88,12 @@
     {
       "project_number": 92,
       "project_name": "implement_bx_until_truth_lemma",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "priority": "high",
       "description": "Close the 4 Until/Since truth-lemma sorries in Theories/Bimodal/Metalogic/BXCanonical/Frame.lean: bx_until_eventuality_resolution (line 653), bx_until_backward (line 675), bx_since_eventuality_resolution (line 690), bx_since_backward (line 704). Per task 90 decision (specs/090_research_bx_le_redefinition/reports/03_task92_recommendation.md), use **Burgess-Xu Until-induction** on the unchanged bx_le := g_content ⊆ ordering. Do NOT redefine bx_le (Option A is structurally infeasible) and do NOT attempt a preliminary bx_le_linear lemma (Phase 1 lean-lsp diagnostic confirmed global and interval linearity are not derivable from BX7+BX11+BX12 due to the object-logic/metalogic bridge gap). Construct the trajectory directly: BX10 to get F(ψ), BX12 for the vacuous-guard Until form, BX7 linear_until to pick the earliest ψ-witness, BX5 self-accumulation + BX6 absorption for guard persistence along the w-trajectory, BX9 until_elim for the current-time case, BX4 connect_future for the backward direction (propagate ¬(φUψ) forward along w, not backward from v). Mirrors apply for Since via BX5/6/7/10/11/12-primes. Rewrite misleading \"linearity gap\" comments at Frame.lean:647-651 and :674. Estimated 8-16 hours. Scope fence: does NOT close Frame.lean:440 (task 93, Box direction) or Completeness.lean:154 (task 93, TaskModel embedding). Depends on task 90. Supersedes task 89.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-10T20:43:54Z",
+      "last_updated": "2026-04-10T21:15:00Z",
       "related_tasks": [
         89,
         90,
@@ -103,6 +103,7 @@
         90
       ],
       "researched": "2026-04-10T20:43:54Z",
+      "planned": "2026-04-10T21:15:00Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -114,9 +115,14 @@
           "path": "specs/092_implement_bx_until_truth_lemma/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research synthesis (4 teammates: Primary/Alternatives/Critic/Horizons). Identifies 2 gaps in task 90 sketch (U5 forward BX5 propagation, B-GAP backward BX4 direction). Recommends mandatory Phase 0 diagnostic gate with 6 probes before Phase 1 implementation. Revised estimate 13-23h."
+        },
+        {
+          "path": "specs/092_implement_bx_until_truth_lemma/plans/02_burgess-xu-until-plan.md",
+          "type": "plan",
+          "summary": "7-phase Burgess-Xu Until/Since plan: Phase 0 mandatory diagnostic gate (6 probes, <=3h, escalation trigger to /spawn 92), Phases 1-4 close the 4 sorries (Frame.lean:653/675/690/704) with zero-debt policy, Phase 5 extracts helpers to UntilHelpers.lean, Phase 6 docs/ROAD_MAP/sanity-test/memory harvest. Effort 13-23h. Dependency waves: [[0],[1,2],[3,4],[5],[6]]."
         }
       ],
-      "session_id": "sess_1775853007_8f994f"
+      "session_id": "sess_1775854769_417f04"
     },
     {
       "project_number": 93,
