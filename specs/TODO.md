@@ -39,7 +39,7 @@ technical_debt:
 ```
 
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
-2. **90** [PLANNED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
+2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
 3. **92** [NOT STARTED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; depends on 90)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
@@ -110,10 +110,15 @@ technical_debt:
 
 ### 90. Research: Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure)
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-04-10
+- **Summary**: Delivered decision artifact: reject Option A, adopt Burgess-Xu Until-induction on unchanged bx_le. Phase 1 lean-lsp probes proved global and interval linearity non-derivable from BX7+BX11+BX12 (metalogic/object-logic bridge gap). Task 92 unblocked with concrete direction; scope fenced from task 93.
 - **Artifacts**:
   - [01_team-research.md](090_research_bx_le_redefinition/reports/01_team-research.md)
   - [01_bx_le_decision-plan.md](090_research_bx_le_redefinition/plans/01_bx_le_decision-plan.md)
+  - [02_bx_le_linear_diagnostic.md](090_research_bx_le_redefinition/reports/02_bx_le_linear_diagnostic.md)
+  - [03_task92_recommendation.md](090_research_bx_le_redefinition/reports/03_task92_recommendation.md)
+  - [01_bx_le_decision-summary.md](090_research_bx_le_redefinition/summaries/01_bx_le_decision-summary.md)
 - **Language**: lean4
 - **Priority**: high
 - **Dependencies**: Task 91 (accurate roadmap)
@@ -133,7 +138,7 @@ technical_debt:
 - **Created**: 2026-04-10
 - **Related**: Tasks 89 (supersedes), 90, 93
 
-**Description**: Close the 4 Until/Since truth-lemma sorries in `Theories/Bimodal/Metalogic/BXCanonical/Frame.lean`: `bx_until_eventuality_resolution` (line 653), `bx_until_backward` (line 675), `bx_since_eventuality_resolution` (line 690), `bx_since_backward` (line 704). Uses the approach chosen in task 90. Standard technique is Burgess 1982 / Xu 1988 Until-induction. Proof sketch: BX10 (`until_F`) extracts the F-witness, BX7 + BX11 give linearity, BX5 (`self_accum_until`) handles guard persistence at intermediate points, BX6 (`absorb_until`) prevents infinite deferral, BX9 (`until_elim`) handles the current-time case, BX4 (`connect_future`) + T (`temp_t_future`) drive the contrapositive in the backward direction. No new axioms needed.
+**Description**: Close the 4 Until/Since truth-lemma sorries in `Theories/Bimodal/Metalogic/BXCanonical/Frame.lean`: `bx_until_eventuality_resolution` (line 653), `bx_until_backward` (line 675), `bx_since_eventuality_resolution` (line 690), `bx_since_backward` (line 704). Per task 90 decision ([03_task92_recommendation.md](090_research_bx_le_redefinition/reports/03_task92_recommendation.md)), use **Burgess-Xu Until-induction** on the unchanged `bx_le := g_content ⊆` ordering. Do NOT redefine `bx_le` (Option A is structurally infeasible) and do NOT attempt a preliminary `bx_le_linear` lemma (the Phase 1 lean-lsp diagnostic confirmed global and interval linearity are not derivable from BX7+BX11+BX12 due to the object-logic/metalogic bridge gap). Construct the trajectory directly: BX10 to get F(ψ), BX12 for the vacuous-guard Until form, BX7 `linear_until` to pick the earliest ψ-witness, BX5 self-accumulation + BX6 absorption for guard persistence, BX9 `until_elim` for the current-time case, BX4 `connect_future` for the backward direction (propagate ¬(φUψ) forward along `w`, not backward from `v`). Mirrors apply for Since via the primed axioms. Rewrite misleading "linearity gap" comments at `Frame.lean:647-651` and `:674`. Scope fence: does NOT close `Frame.lean:440` or `Completeness.lean:154` (task 93). No new axioms needed.
 
 ---
 
