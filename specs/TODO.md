@@ -39,7 +39,7 @@ technical_debt:
 ```
 
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
-2. **90** [RESEARCHED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
+2. **90** [PLANNED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
 3. **92** [NOT STARTED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; depends on 90)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
@@ -110,8 +110,10 @@ technical_debt:
 
 ### 90. Research: Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure)
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
-- **Artifacts**: [01_team-research.md](090_research_bx_le_redefinition/reports/01_team-research.md)
+- **Status**: [PLANNED]
+- **Artifacts**:
+  - [01_team-research.md](090_research_bx_le_redefinition/reports/01_team-research.md)
+  - [01_bx_le_decision-plan.md](090_research_bx_le_redefinition/plans/01_bx_le_decision-plan.md)
 - **Language**: lean4
 - **Priority**: high
 - **Dependencies**: Task 91 (accurate roadmap)
