@@ -22,18 +22,18 @@
     {
       "project_number": 91,
       "project_name": "update_roadmap_bx_reflexive",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "description": "Rewrite specs/ROAD_MAP.md to accurately reflect the current BX reflexive-semantics architecture. The existing roadmap describes a strict-semantics state (task 81 migration) that has since been reverted or superseded: it claims the T-axiom was removed, that Until/Since are strict, that X/Y are primitive operators, and that UltrafilterChain.lean is the active completeness path. None of these match the code. Current reality: (1) temp_t_future and temp_t_past are present as BX1/BX1prime (Axioms.lean:117-122); (2) Truth.lean:126-131 uses reflexive leq/geq for all temporal operators including Until/Since; (3) X/Y exist only as definitional abbreviations X(phi)=botUphi, Y(phi)=botSphi and are useless under reflexive semantics; (4) the active metalogic path is Metalogic.lean to BXCanonical to Frame + TruthLemma + Completeness; UltrafilterChain.lean and FrameConditions/Completeness.lean are legacy strict-semantics code. Rewrite ROAD_MAP.md to document: the BX axiom system and what each axiom contributes, the canonical model construction in BXCanonical, the actual remaining sorries (4 in Frame.lean for Until/Since + 1 Box sorry at Frame.lean:440 + 1 TaskModel embedding at Completeness.lean:154), the legacy code to be archived, and the Burgess-Xu Until-induction technique as the path forward. Recommended to do before task 90 so research/planning agents have an accurate baseline.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-10T18:48:59Z",
+      "last_updated": "2026-04-10T19:01:05Z",
       "related_tasks": [
         90,
         92,
         94
       ],
-      "session_id": "sess_1776000100_plan91",
+      "session_id": "sess_1776000200_impl91",
       "artifacts": [
         {
           "path": "specs/091_update_roadmap_bx_reflexive/reports/01_bx-reflexive-roadmap-research.md",
@@ -43,9 +43,16 @@
           "path": "specs/091_update_roadmap_bx_reflexive/plans/01_bx-reflexive-roadmap-plan.md",
           "type": "plan",
           "summary": "Phased plan for ROAD_MAP.md rewrite (8 phases, ~5 hours, documentation-only)"
+        },
+        {
+          "path": "specs/091_update_roadmap_bx_reflexive/summaries/01_bx-reflexive-roadmap-summary.md",
+          "type": "summary",
+          "summary": "Execution summary for ROAD_MAP.md rewrite"
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Rewrote specs/ROAD_MAP.md (605 lines) to replace the stale task-81 strict-semantics narrative with an accurate description of the current all-reflexive Burgess-Xu architecture. The new roadmap documents all 37 BX axioms (with file:line refs to Axioms.lean), quotes the reflexive Truth.lean:120-131 semantics verbatim, maps the active Metalogic -> BXCanonical/{Frame,TruthLemma,Completeness} completeness path, inventories the 6 remaining active-path sorries (Frame.lean:440, 653, 675, 690, 704; Completeness.lean:154), lists ~210 legacy sorries in 4 files slated for task 94 archival, and explains the Burgess-Xu Until-induction technique (Option A vs Option B) as the path forward for tasks 90/92. All 12 historical Dead Ends and the independent Dense/FMP/Soundness tracks were preserved.",
+      "claudemd_suggestions": "none"
     },
     {
       "project_number": 92,
