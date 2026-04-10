@@ -115,25 +115,33 @@ noncomputable def G_neg_bot_theorem : [] ⊢ Formula.all_future (Formula.neg For
 noncomputable def H_neg_bot_theorem : [] ⊢ Formula.all_past (Formula.neg Formula.bot) :=
   Bimodal.Theorems.past_necessitation _ neg_bot_theorem
 
-/-- F(neg bot) is provable using the seriality_future axiom: G(phi) -> F(phi).
-    Instantiating with phi = neg bot and applying modus ponens with G_neg_bot_theorem. -/
+/-- F(neg bot) is provable: F(¬⊥) = ¬G(¬¬⊥), which follows from BX1 + DNE.
+    BX1 gives G(¬¬⊥) → ¬¬⊥, and double_negation gives ¬¬⊥ → ⊥, so G(¬¬⊥) → ⊥. -/
 noncomputable def F_top_theorem : [] ⊢ F_top := by
-  unfold F_top
-  -- seriality_future axiom: G(neg bot) -> F(neg bot)
-  have h_serial : [] ⊢ (Formula.neg Formula.bot).all_future.imp
-                        (Formula.neg Formula.bot).some_future :=
-    sorry /- BX: seriality_future removed, derive from BX axioms -/
-  exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_serial G_neg_bot_theorem
+  unfold F_top Formula.some_future
+  -- Goal: ⊢ (neg bot).neg.all_future.neg = G(¬¬⊥) → ⊥
+  -- Step 1: G(¬¬⊥) → ¬¬⊥ (BX1)
+  have h_bx1 : [] ⊢ Formula.bot.neg.neg.all_future.imp Formula.bot.neg.neg :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot.neg.neg)
+  -- Step 2: ¬¬⊥ → ⊥ (double negation elimination on ⊥)
+  have h_dne : [] ⊢ Formula.bot.neg.neg.imp Formula.bot :=
+    Bimodal.Theorems.Propositional.double_negation Formula.bot
+  -- Step 3: G(¬¬⊥) → ⊥ by transitivity
+  exact Bimodal.Theorems.Combinators.imp_trans h_bx1 h_dne
 
-/-- P(neg bot) is provable using the seriality_past axiom: H(phi) -> P(phi).
-    Instantiating with phi = neg bot and applying modus ponens with H_neg_bot_theorem. -/
+/-- P(neg bot) is provable: P(¬⊥) = ¬H(¬¬⊥), which follows from BX1' + DNE.
+    BX1' gives H(¬¬⊥) → ¬¬⊥, and double_negation gives ¬¬⊥ → ⊥, so H(¬¬⊥) → ⊥. -/
 noncomputable def P_top_theorem : [] ⊢ P_top := by
-  unfold P_top
-  -- seriality_past axiom: H(neg bot) -> P(neg bot)
-  have h_serial : [] ⊢ (Formula.neg Formula.bot).all_past.imp
-                        (Formula.neg Formula.bot).some_past :=
-    sorry /- BX: seriality_past removed, derive from BX axioms -/
-  exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_serial H_neg_bot_theorem
+  unfold P_top Formula.some_past
+  -- Goal: ⊢ (neg bot).neg.all_past.neg = H(¬¬⊥) → ⊥
+  -- Step 1: H(¬¬⊥) → ¬¬⊥ (BX1')
+  have h_bx1 : [] ⊢ Formula.bot.neg.neg.all_past.imp Formula.bot.neg.neg :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot.neg.neg)
+  -- Step 2: ¬¬⊥ → ⊥ (double negation elimination on ⊥)
+  have h_dne : [] ⊢ Formula.bot.neg.neg.imp Formula.bot :=
+    Bimodal.Theorems.Propositional.double_negation Formula.bot
+  -- Step 3: H(¬¬⊥) → ⊥ by transitivity
+  exact Bimodal.Theorems.Combinators.imp_trans h_bx1 h_dne
 
 /-- Every MCS contains F_top because F_top is a theorem.
     Theorems are in every MCS by closure under derivation. -/

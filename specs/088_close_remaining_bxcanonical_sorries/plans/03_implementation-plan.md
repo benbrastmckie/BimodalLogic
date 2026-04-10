@@ -84,7 +84,7 @@ Phases within the same wave can execute in parallel. Phases 1 and 2 are fully in
 
 ---
 
-### Phase 1: Close CanonicalEmbedding:418 (usf_completeness) [NOT STARTED]
+### Phase 1: Close CanonicalEmbedding:418 (usf_completeness) [PARTIAL]
 
 **Goal**: Close the `usf_completeness` imp Case B sorry independently, yielding the first S5+G/H completeness in Lean 4.
 
@@ -110,7 +110,7 @@ Phases within the same wave can execute in parallel. Phases 1 and 2 are fully in
 
 ---
 
-### Phase 2: Architecture Spike — Until-Witness Chain bx_le (GO/NO-GO GATE) [NOT STARTED]
+### Phase 2: Architecture Spike — Until-Witness Chain bx_le (GO/NO-GO GATE) [COMPLETED — NO-GO]
 
 **Goal**: Research and prototype an alternative `bx_le` definition using Until-witness chains instead of g_content inclusion. Produce a go/no-go decision for the architectural change.
 
