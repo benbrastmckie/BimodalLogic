@@ -186,7 +186,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Realization Lifting Lemma [NOT STARTED]
+### Phase 4: Realization Lifting Lemma [PARTIAL]
 
 **Goal**: Prove that each step of the Hintikka quasimodel chain can be realized as a BXPoint, lifting the abstract chain to a concrete chain in the canonical model with `bx_le` between consecutive points. This is the first of two critical gate lemmas (condition C1).
 
