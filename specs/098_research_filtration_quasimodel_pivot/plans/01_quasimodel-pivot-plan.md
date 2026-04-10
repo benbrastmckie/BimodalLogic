@@ -1,7 +1,7 @@
 # Implementation Plan: Local Hintikka-Set Quasimodel for Until/Since Truth Lemma
 
 - **Task**: 98 - research_filtration_quasimodel_pivot
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25-45 hours
 - **Dependencies**: None (independent of tasks 96, 97; parallel research track)
 - **Research Inputs**: specs/098_research_filtration_quasimodel_pivot/reports/01_filtration-quasimodel-pivot.md
@@ -80,7 +80,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Sigma-Closure Infrastructure [NOT STARTED]
+### Phase 1: Sigma-Closure Infrastructure [COMPLETED]
 
 **Goal**: Define the finite subformula closure type and prove its closure operations, providing the foundation for Hintikka points.
 
