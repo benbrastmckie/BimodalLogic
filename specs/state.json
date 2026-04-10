@@ -8,15 +8,25 @@
     {
       "project_number": 90,
       "project_name": "research_bx_le_redefinition",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "priority": "high",
       "description": "Research and decide between Option A (redefine bx_le via Until-witnesses) and Option B (Henkin-closure enrichment) for closing the 4 Until/Since truth-lemma sorries in BXCanonical/Frame.lean. The BX axiom system already contains BX5 (self_accum_until), BX6 (absorb_until), BX7 (linear_until), BX10 (until_F), BX11 (temp_linearity), BX12 (F_until_equiv), BX4 (connect_future), and T (temp_t_future) -- everything Burgess 1982 / Xu 1988 needed. The Frame.lean sorries are not blocked on missing axioms; they are blocked on a mismatch between the canonical ordering bx_le := g_content-subset and the Until-witness ordering given by BX7. Option A: redefine bx_le via Until-witnesses, then prove equivalence with the g_content definition using BX10 + BX12 + BX4 + T. Option B: keep bx_le := g_content-subset but Henkin-enrich MCS closure with Until witnesses (Burgess 1984 style). Deliverable: a report comparing the two approaches on (i) proof complexity, (ii) impact on the existing Box-direction proof, (iii) impact on TaskModel embedding at Completeness.lean:154, (iv) recommended choice with justification. Prerequisite for task 92. Supersedes task 89, whose research round was conducted against a stale semantic state.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-10T19:30:00Z",
+      "last_updated": "2026-04-10T19:28:54Z",
       "related_tasks": [
         89,
         92
+      ],
+      "session_id": "sess_1775848762_res90",
+      "researched": "2026-04-10T19:28:54Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/090_research_bx_le_redefinition/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): recommend Option B as Burgess-Xu Until-induction with bx_le_linear diagnostic prerequisite"
+        }
       ]
     },
     {
