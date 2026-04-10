@@ -94,13 +94,14 @@ technical_debt:
 
 ### 91. Update ROAD_MAP.md to reflect BX reflexive-semantics architecture
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Priority**: high
 - **Dependencies**: None
 - **Created**: 2026-04-10
 - **Related**: Tasks 90, 92, 94
 - **Research**: [01_bx-reflexive-roadmap-research.md](091_update_roadmap_bx_reflexive/reports/01_bx-reflexive-roadmap-research.md)
+- **Plan**: [01_bx-reflexive-roadmap-plan.md](091_update_roadmap_bx_reflexive/plans/01_bx-reflexive-roadmap-plan.md)
 
 **Description**: Rewrite `specs/ROAD_MAP.md` to match the actual codebase. The current roadmap describes a strict-semantics architecture (post task 81) that no longer matches the code: it claims the T-axiom was removed, that Until/Since are strict, and that `UltrafilterChain.lean` is the active completeness path. Verify against current code: (1) `temp_t_future`/`temp_t_past` are BX1/BX1' in `ProofSystem/Axioms.lean:117-122`; (2) `Semantics/Truth.lean:126-131` uses reflexive ≤/≥ for all temporal operators; (3) X/Y exist only as dead definitional abbreviations in `Syntax/Formula.lean:330-334`; (4) `Metalogic.lean` imports `BXCanonical`, not `UltrafilterChain`. Document: the BX axiom system and each axiom's role, the canonical model construction in `BXCanonical`, the actual remaining sorries (4 in `Frame.lean` for U/S, 1 Box at `Frame.lean:440`, 1 embedding at `Completeness.lean:154`), and the Burgess-Xu Until-induction technique as the path forward. **Do this first** so downstream research/planning agents have an accurate baseline.
 
