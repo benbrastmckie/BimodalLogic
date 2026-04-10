@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 89,
+      "project_name": "close_frame_lean_eventuality_sorries",
+      "status": "not_started",
+      "language": "lean4",
+      "description": "Close 4 Frame.lean eventuality resolution sorries (bx_until_eventuality_resolution:653, bx_until_backward:675, bx_since_eventuality_resolution:690, bx_since_backward:704) via quasimodel (GHR 1994) or Henkin fair scheduling construction. The X-vs-G mismatch is confirmed fundamental (6 rounds, 99% confidence): no BX axiom bridges phi U psi membership to G(phi U psi) membership, so eventualities must be resolved by model construction rather than ordering propagation. Requires 4-8h research spike into quasimodel viability (task 83 linearization issues), then 30-40h implementation. Downstream: Completeness.lean:160 closes automatically when these 4 are resolved.",
+      "created": "2026-04-10T07:01:32Z",
+      "last_updated": "2026-04-10T07:01:32Z"
+    },
+    {
       "project_number": 87,
       "project_name": "full_representation_theorem_until_since",
       "status": "not_started",
@@ -965,7 +974,7 @@
       }
     }
   ],
-  "next_project_number": 89,
+  "next_project_number": 90,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
