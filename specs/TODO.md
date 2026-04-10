@@ -139,7 +139,7 @@ technical_debt:
 - **Blocker**: Phase 0 diagnostic gate: all 6 Burgess-Xu probes failed (Gap U5 and B-GAP both unrescued). See specs/092_implement_bx_until_truth_lemma/reports/03_phase0-diagnostic.md. Run `/spawn 92` to decompose.
 - **Language**: lean4
 - **Priority**: high
-- **Dependencies**: Task 90 (approach decision, completed)
+- **Dependencies**: Task 90 (approach decision, completed), Task 96, Task 97, Task 98 (spawned research)
 - **Created**: 2026-04-10
 - **Related**: Tasks 89 (supersedes), 90, 93
 - **Artifacts**:
