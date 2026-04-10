@@ -130,7 +130,7 @@ technical_debt:
 ---
 
 ### 92. Implement Burgess-Xu Until/Since truth lemma in BXCanonical/Frame.lean
-- **Effort**: 8-16 hours
+- **Effort**: 13-23 hours (revised from 8-16h per team research round 02)
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: high
@@ -139,6 +139,7 @@ technical_debt:
 - **Related**: Tasks 89 (supersedes), 90, 93
 - **Artifacts**:
   - [01_inherited-from-task90.md](092_implement_bx_until_truth_lemma/reports/01_inherited-from-task90.md)
+  - [02_team-research.md](092_implement_bx_until_truth_lemma/reports/02_team-research.md)
 
 **Description**: Close the 4 Until/Since truth-lemma sorries in `Theories/Bimodal/Metalogic/BXCanonical/Frame.lean`: `bx_until_eventuality_resolution` (line 653), `bx_until_backward` (line 675), `bx_since_eventuality_resolution` (line 690), `bx_since_backward` (line 704). Per task 90 decision ([03_task92_recommendation.md](090_research_bx_le_redefinition/reports/03_task92_recommendation.md)), use **Burgess-Xu Until-induction** on the unchanged `bx_le := g_content ⊆` ordering. Do NOT redefine `bx_le` (Option A is structurally infeasible) and do NOT attempt a preliminary `bx_le_linear` lemma (the Phase 1 lean-lsp diagnostic confirmed global and interval linearity are not derivable from BX7+BX11+BX12 due to the object-logic/metalogic bridge gap). Construct the trajectory directly: BX10 to get F(ψ), BX12 for the vacuous-guard Until form, BX7 `linear_until` to pick the earliest ψ-witness, BX5 self-accumulation + BX6 absorption for guard persistence, BX9 `until_elim` for the current-time case, BX4 `connect_future` for the backward direction (propagate ¬(φUψ) forward along `w`, not backward from `v`). Mirrors apply for Since via the primed axioms. Rewrite misleading "linearity gap" comments at `Frame.lean:647-651` and `:674`. Scope fence: does NOT close `Frame.lean:440` or `Completeness.lean:154` (task 93). No new axioms needed.
 
