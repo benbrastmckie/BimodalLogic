@@ -3,14 +3,14 @@ next_project_number: 90
 repository_health:
   overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-03-31T00:00:00Z
+  last_assessed: 2026-04-10T00:00:00Z
 task_counts:
-  active: 18
-  completed: 739
+  active: 21
+  completed: 742
   in_progress: 0
   not_started: 10
-  abandoned: 66
-  total: 813
+  abandoned: 68
+  total: 821
 technical_debt:
   sorry_count: 20
   sorry_count_note: "Audited 2026-03-31: 12 examples/exercises, 1 soundness (temporal_duality, intentional), 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 59 filled 4 soundness sorries."
@@ -27,23 +27,21 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-08. Tasks 78, 79 abandoned (SuccChain redundant with dovetailed path). Task 85 created for Until/Since chain coherence research. Task 58 description updated post-tasks 83/84.*
+*Updated 2026-04-10. Tasks 85, 86, 88 archived (completed). Tasks 78, 79 archived (abandoned, SuccChain redundant).*
 
 **Goal**: Zero custom axioms, zero sorries on the completeness path.
 
 ### 1. Critical Path — Until/Since Chain Coherence
 
 ```
-85 → 58 → 60
+58 → 60
 ```
 
-1. **85** [COMPLETED] — Research Until/Since chain coherence: 3 approaches (restricted deferral closure, simultaneous well-founded induction, quasimodel replacement)
-2. **58** [BLOCKED] — Wire completeness to FrameConditions (structurally complete; blocked on forward_until_since_coherent + step transfer — depends on 85)
-3. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
+1. **58** [BLOCKED] — Wire completeness to FrameConditions (structurally complete; blocked on forward_until_since_coherent + step transfer)
+2. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom)
 
 ### 2. BXCanonical Remaining Sorries
 
-- **88** [COMPLETED] — Deleted CanonicalEmbedding.lean (1 sorry removed), relocated validity lemmas, added anti-pattern entry.
 - **89** [RESEARCHED] — Close 4 Frame.lean eventuality sorries. BXCanonical not on critical path; temp_linearity re-addition transforms to 8-16h.
 
 ### 3. Independent Completeness Paths (parallel)
@@ -95,39 +93,11 @@ technical_debt:
 - **Dependencies**: None (independent of task 88 CanonicalEmbedding)
 - **Created**: 2026-04-10
 - **Related**: Tasks 88, 86, 85, 83
+- **Research**: [01_team-research.md](specs/089_close_frame_lean_eventuality_sorries/reports/01_team-research.md)
 
 **Description**: Close 4 Frame.lean eventuality resolution sorries (bx_until_eventuality_resolution:653, bx_until_backward:675, bx_since_eventuality_resolution:690, bx_since_backward:704) via quasimodel (GHR 1994) or Henkin fair scheduling construction. The X-vs-G mismatch is confirmed fundamental (6 rounds, 99% confidence): no BX axiom bridges φ U ψ membership to G(φ U ψ) membership, so eventualities must be resolved by model construction rather than ordering propagation. Requires 4-8h research spike into quasimodel viability (task 83 linearization issues), then 30-40h implementation. Downstream: Completeness.lean:160 closes automatically when these 4 are resolved.
 
 ---
-
-### 88. Close remaining 6 BXCanonical sorries via alternative completeness approach
-- **Effort**: 20-40 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-10
-- **Summary**: Deleted CanonicalEmbedding.lean (434 lines, 1 sorry), relocated 3 validity reduction lemmas to Semantics/Validity.lean, updated references, added anti-pattern entry to ROAD_MAP.md. BXCanonical sorry count reduced by 1.
-- **Language**: lean4
-- **Priority**: critical
-- **Dependencies**: None
-- **Created**: 2026-04-09
-- **Related**: Tasks 86, 85, 58
-
-**Description**: Close 6 remaining BXCanonical sorries: 4 Frame.lean (eventuality resolution for Until/Since forward + backward), 1 CanonicalEmbedding.lean (imp Case B), 1 Completeness.lean (model embedding). Task 86 closed 2 WitnessSeed.lean sorries but proved chain-specific and proof-theoretic approaches are blocked by g_content vs Until-witness mismatch. bx_le linearity is mathematically impossible from BX axioms. DovetailedChain.lean is deprecated (6 sorries from same mismatch).
-
-**Viable directions** (from task 86 analysis):
-1. **Quasimodel/filtration approach**: Avoid canonical model ordering issues entirely by working with finite approximations
-2. **FMP bridge to full completeness**: FMP path has 0 core-logic sorries; bridge from FMP (non-provable -> falsifiable in finite model) to full completeness
-3. **Alternative canonical model ordering**: Replace bx_le with Until-based ordering that BX7 can prove linear (requires redesigning Frame.lean)
-
-**Key references**:
-- `BXCanonical/Frame.lean` -- 4 sorry sites (eventuality resolution)
-- `BXCanonical/CanonicalEmbedding.lean:418` -- imp Case B
-- `BXCanonical/Completeness.lean:153` -- model embedding
-- Task 86 reports 08 (bx_le linearity), summaries 08 (chain-eventuality)
-- Task 86 plan 07 (proof-theoretic NO-GO), plan 08 (chain-specific NO-GO)
-- **Research**: [01_team-research.md](specs/088_close_remaining_bxcanonical_sorries/reports/01_team-research.md) — BX axiom system incomplete; re-add temp_linearity recommended (95% confidence)
-- **Plan**:
-  - [01_implementation-plan.md](specs/088_close_remaining_bxcanonical_sorries/plans/01_implementation-plan.md) — 6-phase: restore temp_linearity + F_until_equiv, derive linearity, close all 6 sorries
-  - [06_deletion-cleanup.md](specs/088_close_remaining_bxcanonical_sorries/plans/06_deletion-cleanup.md) — 4-phase: delete CanonicalEmbedding.lean, relocate 3 lemmas, add anti-pattern to ROAD_MAP
 
 ---
 
@@ -143,74 +113,6 @@ technical_debt:
 
 ---
 
-### 86. Close BXCanonical completeness sorries via Until-witness ordering or FMP bridge
-- **Effort**: 12-20 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-09
-- **Summary**: Closed 2 WitnessSeed.lean sorries via BX10/BX10' contradiction (sorry count 8->6 in BXCanonical/). Frame.lean 4 sorries blocked by g_content vs Until-witness mismatch; task 88 created for alternative approach.
-- **Language**: lean4
-- **Priority**: critical
-- **Dependencies**: None
-- **Created**: 2026-04-08
-- **Related**: Tasks 85, 83 (archived), 84 (archived), 58, 88
-
-**Description**: Close the 5 BXCanonical sorry sites (4 in Frame.lean for Until/Since eventuality resolution + backward, 1 in Completeness.lean for model embedding) — the minimal path to completeness. Task 85 research found: (1) BX7 linearity cannot directly prove bx_le totality because bx_le uses g_content (universal future) while BX7 gives Until witness ordering — but redefining bx_le using Until-based ordering may work; (2) FMP path now has 0 core-logic sorries after temp_4 fix, and bridging from FMP to full completeness is an alternative. Prior research (tasks 83, 84, 85) exhaustively proved enriched-seed and chain-based approaches are blocked under reflexive semantics (x_content(M) = M). Burgess-Xu axiom 4 is semantically invalid in this system. The BXCanonical architecture is the right path (5 sorries vs 40+ in Bundle).
-
-**Two viable approaches**:
-
-1. **Until-witness ordering for bx_le**: Redefine bx_le using Until-based witness ordering instead of g_content subset. BX7 gives linearity of Until witnesses directly, which could translate to bx_le totality on intervals — enabling the guard verification for all 4 Frame.lean sorries.
-
-2. **FMP bridge to completeness**: FMP path has 0 core-logic sorries after task 85 fixed temp_4. Bridge from FMP (non-provable → falsifiable in finite model) to full completeness by constructing TaskModel from filtered closure MCS. Works in finite setting where inductive arguments are more tractable.
-
-**Key references**:
-- `BXCanonical/Frame.lean:553,584,599,613` — 4 sorry sites (Until/Since eventuality + backward)
-- `BXCanonical/Completeness.lean:144` — 1 sorry (model embedding)
-- `Decidability/FMP/TruthPreservation.lean` — FMP path (0 core sorries after task 85)
-- Task 85 reports 01 (team research) and 02 (X/Y archival), summary 02
-- **Plan**:
-  - [04_implementation-plan.md](specs/086_close_bxcanonical_completeness_sorries/plans/04_implementation-plan.md)
-  - [06_usf-completeness-plan.md](specs/086_close_bxcanonical_completeness_sorries/plans/06_usf-completeness-plan.md)
-  - [08_chain-eventuality-plan.md](specs/086_close_bxcanonical_completeness_sorries/plans/08_chain-eventuality-plan.md) — 4-phase: WitnessSeed BX10 fix + chain-specific eventuality resolution
-- **Research**:
-  - [01_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/01_team-research.md)
-  - [03_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/03_team-research.md)
-  - [04_restructure-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/04_restructure-research.md)
-  - [05_team-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/05_team-research.md) — Deep dive past attempts, combined F-seed + dovetail chain hybrid
-  - [06_usf-completeness-path.md](specs/086_close_bxcanonical_completeness_sorries/reports/06_usf-completeness-path.md) — Detailed path: combined F-seed + bidirectional truth lemma
-  - [08_bxle-linearity-research.md](specs/086_close_bxcanonical_completeness_sorries/reports/08_bxle-linearity-research.md) — bx_le linearity unprovable; 2 WitnessSeed sorries closable via BX10; chain-specific eventuality resolution recommended
-
----
-
-### 85. Research Until/Since chain coherence approaches
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Priority**: critical
-- **Dependencies**: None
-- **Created**: 2026-04-08
-- **Related**: Tasks 58, 83 (archived), 84 (archived)
-- **Research**:
-  - [01_team-research.md](specs/085_until_since_chain_coherence/reports/01_team-research.md)
-  - [02_xy-archival-scope.md](specs/085_until_since_chain_coherence/reports/02_xy-archival-scope.md)
-- **Plan**: [02_implementation-plan.md](specs/085_until_since_chain_coherence/plans/02_implementation-plan.md)
-
-**Description**: Research 3 approaches to closing the dominant completeness blocker (~12 sorry sites in FrameConditions/Completeness.lean). The root cause is G-lift incompatibility: Until formulas `(φ U ψ)` cannot be included in Lindenbaum chain seeds because `G(φ U ψ) ∉ M` in general. Tasks 83 (39 research rounds) and 84 (4 rounds, 95% confidence) exhaustively proved the standard enriched-seed approach fails.
-
-**Three unexplored directions**:
-
-1. **Restricted forward Until via deferral closure**: If forward Until coherence is restricted to formulas in the deferral closure, the restricted chain's sorry-free `restricted_forward_F` (SuccChainFMCS.lean) might suffice. Investigate whether `restricted_until_since_coherent` (quantifying only over deferral closure) is sufficient for the truth lemma.
-
-2. **Simultaneous well-founded induction**: Prove `forward_F` and `forward_Until` simultaneously by induction on formula complexity or subformula depth. The circularity (`forward_F` → `temporal_backward_G` → `forward_F`) might break if both are proven in a single mutual induction over the subformula closure.
-
-3. **Quasimodel replacement**: Replace the Lindenbaum chain construction with a constraint-satisfaction approach (GHR 1994 style). Avoids G-lift entirely but is a major rewrite (~2000 LOC, 50% confidence). Prior investigation (task 83 report 24) found linearization issues — determine if these are fundamental or surmountable.
-
-**Key references**:
-- `FrameConditions/Completeness.lean` — 5 sorry sites (3 forward_until_since_coherent + hidden step transfer in backward)
-- `UntilSinceCoherence.lean` — 6 parameterized sorry-free backward theorems (infrastructure ready)
-- `DovetailedChain.lean` — Sorry-free bundle-level forward_F (but cross-family)
-- Task 83 reports 24, 28, 38, 39 — Prior analysis
-- Task 84 report 04_team-research.md — Definitive G-lift incompatibility analysis
-
 ---
 
 ### 82. Close FMP TruthPreservation Sorries
@@ -224,32 +126,6 @@ technical_debt:
 **Description**: Close the 2 FMP TruthPreservation sorries (`mcs_all_future_closure` at line 263 and `mcs_all_past_closure` at line 281) in `Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean`. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (`Truth.lean`) uses reflexive semantics (`t ≤ s`, not `t < s`), and `temp_t_future`/`temp_t_past` ARE axioms (Axioms.lean:290,304). Proofs parallel to `mcs_box_closure` (TruthPreservation.lean:188-203). Closing these completes the FMP path giving **weak completeness of TM**.
 
 ---
-
----
-
-### 79. Clean up termination artifact sorries in SuccChainFMCS
-- **Effort**: 1-2 hours
-- **Status**: [ABANDONED]
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: #73
-- **Created**: 2026-03-31
-- **Research**: [02_spawn-analysis.md](073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md)
-
-**Description**: Resolve 3 termination artifact sorries in SuccChainFMCS.lean at lines 5386, 5544, 5740. Handle fuel-exhausted branches in bounded_witness theorems (restricted_backward_bounded_witness_fueled, restricted_combined_bounded_witness_fueled, restricted_combined_bounded_witness_P_fueled). Options: prove branches unreachable via contradiction, refactor fuel-counting, or use absurd with omega-derivable contradiction.
-
----
-
-### 78. Resolve consistency proof sorries in SuccChainFMCS
-- **Effort**: 1-2 hours
-- **Status**: [ABANDONED]
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: #73
-- **Created**: 2026-03-31
-- **Research**: [02_spawn-analysis.md](073_resolve_class_a_sorries_dne/reports/02_spawn-analysis.md)
-
-**Description**: Resolve 3 consistency proof sorries in SuccChainFMCS.lean at lines 1734, 1763, 2082. Prove set consistency for BRS-augmented seed sets (g_content_union_brs_consistent, augmented_seed_consistent, constrained_successor_seed_restricted_consistent) using structural consistency arguments.
 
 ---
 
