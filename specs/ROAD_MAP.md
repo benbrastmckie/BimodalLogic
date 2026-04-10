@@ -154,6 +154,8 @@ The modal direction is complete. `boxClassFamilies_modal_backward` (UltrafilterC
 
 11. **Proof-theoretic Case B for usf_completeness** (task 86, plan v7): 8 approaches explored to derive `|- psi -> chi` directly from `valid(psi -> chi)` without countermodel construction, all blocked by the **contextual necessitation gap**: temporal necessitation `|- alpha -> |- G(alpha)` requires empty context, so `[psi] |- alpha` does not give `[psi] |- G(alpha)`. Approaches tried: flatten + fragment_completeness, constant-model validity transfer, unflatten theorem, well-founded induction on size, FMP contrapositive, contextual strong completeness, case analysis on chi's structure, normal form reduction. Novel result: validity transfer `valid phi -> valid (flatten phi)` for USF phi is sound but insufficient (unflatten `|- flatten(phi) -> phi` is not derivable).
 
+12. **Constant-history CanonicalEmbedding fragment completeness** (task 88): The entire `CanonicalEmbedding.lean` module (434 lines) attempted to prove fragment completeness for {atom, bot, imp, box, G, H} using constant histories (all times map to a single BXPoint). This is permanently impossible: on constant histories, `G(alpha)` is semantically identical to `alpha`, so the truth bridge for `imp` Case B (`valid(psi -> chi)` with `chi` containing G) cannot distinguish `chi` from its temporal-free flattening. The bidirectional truth lemma on constant histories is inherently restricted to temporal-free formulas. File deleted in task 88; validity reduction lemmas (`valid_of_valid_all_future`, `valid_of_valid_all_past`, `valid_of_valid_box`) relocated to `Semantics/Validity.lean`.
+
 ### Working Infrastructure: SuccChainFMCS
 
 **Sorry-Free Properties**:

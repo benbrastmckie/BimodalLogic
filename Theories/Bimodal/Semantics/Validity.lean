@@ -262,6 +262,42 @@ theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrde
   apply h_unsat
   exact ⟨F, M, Omega, τ, h_mem, t, h_all⟩
 
+/-! ### Validity Reduction Lemmas
+
+These lemmas reduce validity of compound temporal/modal formulas to validity of
+their subformulas. Relocated from the deleted `BXCanonical/CanonicalEmbedding.lean`.
+-/
+
+/--
+If G(φ) is valid, then φ is valid.
+
+Proof: G(φ) at time t means ∀ s ≥ t, truth_at φ at s. Since t ≤ t (reflexive),
+this gives truth_at φ at t.
+-/
+theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.all_future φ)) :
+    valid φ := by
+  intro D _ _ _ F M Omega h_sc τ h_mem t
+  exact h D F M Omega h_sc τ h_mem t t (le_refl t)
+
+/--
+If H(φ) is valid, then φ is valid.
+-/
+theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.all_past φ)) :
+    valid φ := by
+  intro D _ _ _ F M Omega h_sc τ h_mem t
+  exact h D F M Omega h_sc τ h_mem t t (le_refl t)
+
+/--
+If □φ is valid, then φ is valid.
+
+Proof: □φ at (τ, t) means ∀ σ ∈ Omega, truth_at φ at (σ, t). Since τ ∈ Omega,
+this gives truth_at φ at (τ, t).
+-/
+theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
+    valid φ := by
+  intro D _ _ _ F M Omega h_sc τ h_mem t
+  exact h D F M Omega h_sc τ h_mem t τ h_mem
+
 end Validity
 
 end Bimodal.Semantics

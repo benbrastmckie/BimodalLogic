@@ -1,7 +1,7 @@
 # Implementation Plan: Delete CanonicalEmbedding.lean and Clean Up References
 
 - **Task**: 88 - Close remaining BXCanonical sorries
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: reports/06_deletion-impact.md
@@ -63,7 +63,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Relocate Validity Lemmas [NOT STARTED]
+### Phase 1: Relocate Validity Lemmas [COMPLETED]
 
 **Goal**: Move three useful validity reduction lemmas from CanonicalEmbedding.lean to Semantics/Validity.lean before deletion.
 
@@ -86,7 +86,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Delete CanonicalEmbedding.lean and Update BXCanonical.lean [NOT STARTED]
+### Phase 2: Delete CanonicalEmbedding.lean and Update BXCanonical.lean [COMPLETED]
 
 **Goal**: Remove the dead-end file and clean up the module barrel file.
 
@@ -111,7 +111,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Update Completeness.lean Comments and Add Anti-Pattern Entry [NOT STARTED]
+### Phase 3: Update Completeness.lean Comments and Add Anti-Pattern Entry [COMPLETED]
 
 **Goal**: Remove stale references to CanonicalEmbedding.lean in Completeness.lean and document the anti-pattern.
 
@@ -135,7 +135,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Full Build Verification and Sorry Audit [NOT STARTED]
+### Phase 4: Full Build Verification and Sorry Audit [COMPLETED]
 
 **Goal**: Confirm the full project builds and the sorry count decreased.
 

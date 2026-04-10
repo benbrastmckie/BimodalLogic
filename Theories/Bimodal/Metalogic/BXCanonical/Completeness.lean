@@ -141,22 +141,16 @@ theorem bx_completeness (φ : Formula) :
   -- This requires the canonical model construction.
   -- Build canonical TaskModel and show φ false at w₀.
   --
-  -- **Partial Progress (Task 86)**:
-  -- `fragment_completeness` in CanonicalEmbedding.lean proves this for the
-  -- temporal-free fragment {atom, bot, imp, box} using a bidirectional truth
-  -- lemma on constant histories with modal-equivalence-class Omega.
+  -- **Status**: Requires canonical model construction showing φ false at w₀.
+  -- The constant-history approach (CanonicalEmbedding.lean) was permanently
+  -- rejected: G collapses to identity on constant histories, making temporal
+  -- truth bridges impossible. See ROAD_MAP.md anti-pattern entry.
   --
-  -- This sorry remains for formulas containing G, H, Until, or Since.
-  -- The G/H case requires non-constant histories that visit multiple BXPoints
-  -- (the "surjectivity problem" -- constant histories collapse temporal structure).
-  -- The Until/Since case requires eventuality resolution (Frame.lean sorries).
-  --
-  -- **Task 86 Update**: WitnessSeed.lean sorries (until/since seed consistency)
-  -- are now closed via BX10/BX10' contradiction, making canonical_forward_U
-  -- and canonical_backward_S sorry-free. Frame.lean sorries (eventuality
-  -- resolution with guard condition) remain blocked by the X-vs-G mismatch
-  -- (Until formulas don't propagate through g_content-based bx_le ordering).
-  -- CanonicalEmbedding.lean:418 sorry (imp Case B) is orthogonal.
+  -- Remaining blockers:
+  -- - G/H case: needs non-constant histories visiting multiple BXPoints
+  -- - Until/Since case: needs eventuality resolution (Frame.lean sorries)
+  -- - Frame.lean X-vs-G mismatch: Until formulas don't propagate through
+  --   g_content-based bx_le ordering
   sorry
 
 /--
