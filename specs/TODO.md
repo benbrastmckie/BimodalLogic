@@ -43,7 +43,7 @@ technical_debt:
 
 ### 2. BXCanonical Remaining Sorries
 
-- **88** [RESEARCHED] — Close CanonicalEmbedding:418 sorry (usf_completeness). Two-point WorldHistory approach, 4-8h. Successor to task 86.
+- **88** [PLANNED] — Close CanonicalEmbedding:418 sorry (usf_completeness). Two-point WorldHistory approach, 4-8h. Successor to task 86.
 - **89** [NOT STARTED] — Close 4 Frame.lean eventuality sorries via quasimodel/Henkin construction (40-80h). X-vs-G mismatch confirmed fundamental. Split from task 88.
 
 ### 3. Independent Completeness Paths (parallel)
@@ -102,7 +102,7 @@ technical_debt:
 
 ### 88. Close remaining 6 BXCanonical sorries via alternative completeness approach
 - **Effort**: 20-40 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None
@@ -123,7 +123,9 @@ technical_debt:
 - Task 86 reports 08 (bx_le linearity), summaries 08 (chain-eventuality)
 - Task 86 plan 07 (proof-theoretic NO-GO), plan 08 (chain-specific NO-GO)
 - **Research**: [01_team-research.md](specs/088_close_remaining_bxcanonical_sorries/reports/01_team-research.md) — BX axiom system incomplete; re-add temp_linearity recommended (95% confidence)
-- **Plan**: [01_implementation-plan.md](specs/088_close_remaining_bxcanonical_sorries/plans/01_implementation-plan.md) — 6-phase: restore temp_linearity + F_until_equiv, derive linearity, close all 6 sorries
+- **Plan**:
+  - [01_implementation-plan.md](specs/088_close_remaining_bxcanonical_sorries/plans/01_implementation-plan.md) — 6-phase: restore temp_linearity + F_until_equiv, derive linearity, close all 6 sorries
+  - [06_deletion-cleanup.md](specs/088_close_remaining_bxcanonical_sorries/plans/06_deletion-cleanup.md) — 4-phase: delete CanonicalEmbedding.lean, relocate 3 lemmas, add anti-pattern to ROAD_MAP
 
 ---
 
