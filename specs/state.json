@@ -877,62 +877,83 @@
     {
       "project_number": 96,
       "project_name": "research_bx13_until_axiom_candidates",
-      "status": "not_started",
+      "status": "researched",
       "language": "logic",
       "priority": "high",
       "description": "Research whether one or more new sound BX axioms (BX13, BX14, ...) can close Gap U5 (BX5 self-accumulation propagation along the Until chain) and B-GAP (BX4 backward-direction connectedness) without breaking soundness over the task frame semantics. For each candidate: (1) state it formally, (2) prove or refute semantic validity via the task frame semantics in Theories/Bimodal/Semantics/ or exhibit a Kripke countermodel, (3) attempt to close at least one of the four sorries at Frame.lean:653, 675, 690, 704 via lean_multi_attempt in a scratch buffer, and (4) classify as (sound+closes), (sound+does-not-close), or (unsound+countermodel). Concrete candidates: G-Until lift (φ U ψ) -> G((φ U ψ) ∨ ψ); self-accumulation persistence axiom; backward-witness locus axiom linking P(¬(φ U ψ)) at v to ¬(φ U ψ) at a w-reachable u. Definition of done: research report with at least 3 candidate axioms, each classified, plus a ranked shortlist or an explicit negative result. Scope fence: read-only; do NOT modify Axioms.lean or Frame.lean. Spawned from task 92 Phase 0 diagnostic failure (specs/092_implement_bx_until_truth_lemma/reports/04_spawn-analysis.md).",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-10T22:00:00Z",
+      "last_updated": "2026-04-10T21:57:28Z",
       "related_tasks": [
         92,
         97,
         98
       ],
-      "session_id": "sess_1775856249_7db675",
+      "session_id": "sess_1775856757_3e0e7d",
       "parent_task": 92,
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "dependencies": []
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/096_research_bx13_until_axiom_candidates/reports/01_bx13-axiom-candidates.md",
+          "summary": "6 axiom candidates evaluated, all rejected (2 sound but non-closing, 4 unsound). Categorical impossibility proven."
+        }
+      ],
+      "dependencies": [],
+      "researched": "2026-04-10T21:57:28Z"
     },
     {
       "project_number": 97,
       "project_name": "research_layered_bx_le_redefinition",
-      "status": "not_started",
+      "status": "researched",
       "language": "logic",
       "priority": "high",
       "description": "Task 90 rejected Option A (Until-witness-based bx_le redefinition) because naive witness orderings failed transitivity and equivalence. Revisit that decision with a layered definition: bx_le_prime w u := g_content(w) ⊆ u.formulas ∧ until_compatible w u. Research 2-4 candidate definitions of until_compatible (Until-witness subset, finite-prefix agreement on Until formulas, interval-linearity closure) and for each evaluate: (a) is bx_le_prime reflexive and transitive, (b) does it preserve box_preserved_along_bx_le and the Box/G/H truth lemmas at Frame.lean:501-583 (probe via lean_multi_attempt against the existing Box proof skeleton), (c) does it close Gap U5 and B-GAP by making the guard clause derivable from BX axioms, (d) is it equivalent to the current bx_le on the image of box_preserved_along_bx_le. Definition of done: research report with decision matrix (candidate x criteria x pass/fail) and recommendation (adopt candidate X / reject all with cited obstruction). Scope fence: read-only; do NOT modify Frame.lean. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-10T22:00:00Z",
+      "last_updated": "2026-04-10T21:57:28Z",
       "related_tasks": [
         92,
         96,
         98
       ],
-      "session_id": "sess_1775856249_7db675",
+      "session_id": "sess_1775856757_3e0e7d",
       "parent_task": 92,
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "dependencies": []
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/097_research_layered_bx_le_redefinition/reports/01_layered-bx-le.md",
+          "summary": "4 layered bx_le candidates evaluated, all rejected. B-GAP invariant under second-conjunct strengthening."
+        }
+      ],
+      "dependencies": [],
+      "researched": "2026-04-10T21:57:28Z"
     },
     {
       "project_number": 98,
       "project_name": "research_filtration_quasimodel_pivot",
-      "status": "not_started",
+      "status": "researched",
       "language": "logic",
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-10T22:00:00Z",
+      "last_updated": "2026-04-10T21:57:28Z",
       "related_tasks": [
         92,
         96,
         97
       ],
-      "session_id": "sess_1775856249_7db675",
+      "session_id": "sess_1775856757_3e0e7d",
       "parent_task": 92,
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "dependencies": []
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/098_research_filtration_quasimodel_pivot/reports/01_filtration-quasimodel-pivot.md",
+          "summary": "Conditional GO on local Hintikka-set quasimodel pivot (25-45h). NO-GO on classical filtration."
+        }
+      ],
+      "dependencies": [],
+      "researched": "2026-04-10T21:57:28Z"
     }
   ],
   "next_project_number": 99,

@@ -42,9 +42,9 @@ technical_debt:
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
 2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
 3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; spawned 96/97/98)
-   - **96** [NOT STARTED] — Research BX13 axiom candidates for Until propagation (independent; 6-10h)
-   - **97** [NOT STARTED] — Research layered bx_le redefinition preserving Box truth lemma (independent; 6-10h)
-   - **98** [NOT STARTED] — Research filtration or quasimodel pivot for Until/Since truth lemma (independent; 8-12h)
+   - **96** [RESEARCHED] — Research BX13 axiom candidates: all rejected (categorical impossibility)
+   - **97** [RESEARCHED] — Research layered bx_le redefinition: all 4 candidates rejected
+   - **98** [RESEARCHED] — Research filtration/quasimodel pivot: CONDITIONAL GO on local quasimodel (25-45h)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
