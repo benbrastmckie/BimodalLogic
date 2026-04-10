@@ -886,11 +886,11 @@
     {
       "project_number": 88,
       "project_name": "close_remaining_bxcanonical_sorries",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "description": "Close 6 remaining BXCanonical sorries (4 Frame.lean eventuality resolution, 1 CanonicalEmbedding.lean imp Case B, 1 Completeness.lean model embedding). Task 86 proved chain-specific and proof-theoretic approaches are blocked by g_content vs Until-witness mismatch. Needs fundamentally new technique: quasimodel/filtration approach, FMP bridge to full completeness, or alternative canonical model ordering that avoids bx_le linearity (proven impossible from BX axioms). DovetailedChain.lean is deprecated with 6 sorries from same mismatch.",
       "created": "2026-04-09T19:23:00Z",
-      "last_updated": "2026-04-10T16:51:52Z",
+      "last_updated": "2026-04-10T17:20:00Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -993,7 +993,8 @@
             "integrated_date": "2026-04-10"
           }
         ]
-      }
+      },
+      "completion_summary": "Deleted CanonicalEmbedding.lean (434 lines, 1 sorry), relocated 3 validity reduction lemmas to Semantics/Validity.lean, updated BXCanonical.lean and Completeness.lean references, added anti-pattern entry to ROAD_MAP.md. BXCanonical sorry count reduced by 1."
     }
   ],
   "next_project_number": 90,
