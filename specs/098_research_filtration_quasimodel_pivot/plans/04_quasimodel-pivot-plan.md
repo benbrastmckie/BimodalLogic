@@ -335,7 +335,7 @@ TODO), and prove the Since analogue of
 
 ---
 
-### Phase 5: Realize Full Chain with stricter seed (C.4) [NOT STARTED]
+### Phase 5: Realize Full Chain with stricter seed (C.4) [BLOCKED]
 
 **Goal**: Turn the witnessed Hintikka chain into a BXPoint chain via
 `realize_chain_step`, discharging the **stricter** enriched seed

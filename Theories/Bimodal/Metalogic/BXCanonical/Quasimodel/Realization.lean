@@ -394,6 +394,66 @@ theorem chain_step_seed_consistent_enriched_since
     · exact h_hv h_g
   exact w.is_mcs.1 L h_L_in_w ⟨d⟩
 
+/-! ## Phase 5: Chain Realization Infrastructure
+
+Task 98 Phase 5 (plan v4): infrastructure for realizing a Hintikka chain
+as a chain of BXPoints in the canonical model.
+
+### Mathematical Analysis
+
+The plan's "strict seed" approach (C.4) proposes a Lindenbaum seed
+`h_{i+1}.formulas ∪ g_content(v_i.formulas) ∪ {¬f | f ∈ Sigma \ h_{i+1}}`
+to realize each chain step. Analysis reveals a genuine obstacle:
+
+**Obstacle**: `g_content(v_i) ⊆ w_{i+1}.formulas` (required for seed consistency
+via `chain_step_seed_consistent_enriched`) fails for `G(χ) ∈ v_i` with
+`G(χ) ∉ Sigma`. The `hintikka_step` only propagates G-formulas *within* Sigma,
+so `χ ∈ h_{i+1}` is not guaranteed when `G(χ) ∉ Sigma`. If additionally
+`χ ∈ Sigma` and `χ ∉ h_{i+1}`, the strict seed forces `¬χ ∈ v_{i+1}` while
+`bx_le` forces `χ ∈ v_{i+1}`, making the seed inconsistent.
+
+**Further obstacle**: G-formulas do NOT persist through the Hintikka chain.
+For `G(χ) ∈ h_i` (with `G(χ) ∈ Sigma`), hintikka_step gives `χ ∈ h_{i+1}`,
+but `G(χ) ∈ h_{i+1}` is not guaranteed: the witness `w_{i+1}` backing `h_{i+1}`
+may have `¬G(χ) ∈ w_{i+1}` (meaning χ holds now but not always in the future),
+which is consistent with `χ ∈ h_{i+1}`. Without G-persistence, χ may not reach
+the last point of chains longer than 2.
+
+**Consequence**: Chain realization requires either (a) G-persistence in the
+Sigma-closure (not available for the enriched closure), or (b) a completely
+different approach. The guard property (`φ ∈ u` for arbitrary intermediate
+BXPoints `u`) additionally requires locus-control exhaustiveness (Phase 6).
+
+### Proven Infrastructure
+
+The lemmas below provide the *provable* building blocks:
+- `hintikka_step_g_prop`: G-propagation through a single hintikka_step
+- `g_content_sigma` / `g_content_sigma_sub_g_content`: Sigma-restricted g_content
+-/
+
+/-- The Sigma-restricted g_content of a BXPoint: only those `χ` where
+    `G(χ) ∈ w.formulas` AND `G(χ) ∈ Sigma`. This subset of g_content is
+    guaranteed to propagate through `hintikka_step` (via the G-propagation
+    clause), unlike full `g_content` which may contain `G(χ) ∉ Sigma`. -/
+def g_content_sigma (w : BXPoint) (Sigma : Finset Formula) : Set Formula :=
+  {χ : Formula | Formula.all_future χ ∈ w.formulas ∧ Formula.all_future χ ∈ Sigma}
+
+/-- g_content_sigma is a subset of g_content. -/
+theorem g_content_sigma_sub_g_content (w : BXPoint) (Sigma : Finset Formula) :
+    g_content_sigma w Sigma ⊆ g_content w.formulas := by
+  intro χ hχ
+  exact hχ.1
+
+/-- G-propagation at the Hintikka level: if `hintikka_step h₁ h₂` and
+    `G(χ) ∈ h₁.formulas`, then `χ ∈ h₂.formulas`. This is the first
+    clause of `hintikka_step`. -/
+theorem hintikka_step_g_prop
+    {Sigma : Finset Formula} {h₁ h₂ : HintikkaPoint Sigma}
+    (h_step : hintikka_step h₁ h₂) {χ : Formula}
+    (h_Gχ : Formula.all_future χ ∈ h₁.formulas) :
+    χ ∈ h₂.formulas :=
+  h_step.1 χ h_Gχ
+
 /-! ## Until Eventuality Resolution
 
 The main theorem for the forward Until direction. Given φ U ψ ∈ w with ψ ∉ w,
