@@ -193,7 +193,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Chain-Step Seed Consistency [NOT STARTED]
+### Phase 4: Chain-Step Seed Consistency [PARTIAL]
 
 **Goal**: Prove `chain_step_seed_consistent` — the Phase 4b obligation from plan v2 — using the EnrichedClosure route.
 

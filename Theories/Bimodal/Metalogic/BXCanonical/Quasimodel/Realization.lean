@@ -1,4 +1,7 @@
 import Bimodal.Metalogic.BXCanonical.Quasimodel.Construction
+import Bimodal.Syntax.BigConj
+import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Propositional
 
 /-!
 # Realization Lifting Lemma
@@ -127,6 +130,89 @@ theorem F_from_above {w v : BXPoint} {ψ : Formula}
   have h_connect := connect_past_mcs h_mem
   -- H(F(ψ)) ∈ v and bx_le w v → F(ψ) ∈ w
   exact bx_H_forward h_le h_connect
+
+/-! ## Phase 4 Scaffolding: DerivationTree-level bigconj helpers
+
+These lemmas turn a list of formulas into a `DerivationTree`-level
+conjunction (and back). They are consumed by the chain-step seed
+consistency reduction below: given a finite subset `L_h` of a Hintikka
+point's formulas, we need to move between "each element of `L_h` is
+derivable" and "the conjunction `bigconj L_h` is derivable".
+
+They are colocated here (rather than in `Bimodal.Syntax.BigConj`) because
+they depend on `DerivationTree` and the propositional combinator library,
+whereas `BigConj.lean` is `DerivationTree`-free scaffolding for the
+Fisher-Ladner `EnrichedClosure`. -/
+
+/-- Conjunction introduction from a list of assumptions:
+    the list derives its own big conjunction. -/
+noncomputable def bigconj_intro : (L : List Formula) → L ⊢ bigconj L
+  | [] => by
+      -- bigconj [] = ¬⊥ = ⊥ → ⊥
+      have h : ⊢ Formula.bot.imp Formula.bot :=
+        Bimodal.Theorems.Combinators.identity Formula.bot
+      show [] ⊢ Formula.bot.neg
+      simpa [bigconj, Formula.neg] using h
+  | [a] => by
+      -- bigconj [a] = a; the list derives a by assumption.
+      show [a] ⊢ a
+      simpa [bigconj] using
+        DerivationTree.assumption [a] a (by simp)
+  | a :: b :: rest => by
+      -- bigconj (a :: b :: rest) = a ∧ bigconj (b :: rest)
+      have h_rec : (b :: rest) ⊢ bigconj (b :: rest) := bigconj_intro (b :: rest)
+      have h_rec_w : (a :: b :: rest) ⊢ bigconj (b :: rest) :=
+        DerivationTree.weakening _ _ _ h_rec (by
+          intro x hx
+          simp at hx
+          rcases hx with rfl | hx'
+          · simp
+          · simp [hx'])
+      have h_a : (a :: b :: rest) ⊢ a :=
+        DerivationTree.assumption _ a (by simp)
+      have h_pair :
+          ⊢ a.imp ((bigconj (b :: rest)).imp (Formula.and a (bigconj (b :: rest)))) :=
+        Bimodal.Theorems.Combinators.pairing a (bigconj (b :: rest))
+      have h_pair_w :
+          (a :: b :: rest) ⊢ a.imp ((bigconj (b :: rest)).imp
+            (Formula.and a (bigconj (b :: rest)))) :=
+        DerivationTree.weakening [] (a :: b :: rest) _ h_pair (by intro; simp)
+      have h_step1 : (a :: b :: rest) ⊢
+          (bigconj (b :: rest)).imp (Formula.and a (bigconj (b :: rest))) :=
+        DerivationTree.modus_ponens _ _ _ h_pair_w h_a
+      have h_step2 : (a :: b :: rest) ⊢ Formula.and a (bigconj (b :: rest)) :=
+        DerivationTree.modus_ponens _ _ _ h_step1 h_rec_w
+      show (a :: b :: rest) ⊢ bigconj (a :: b :: rest)
+      simpa [bigconj] using h_step2
+
+/-- Conjunction elimination: `[bigconj L] ⊢ φ` for every `φ ∈ L`. -/
+noncomputable def bigconj_mem_iff :
+    (L : List Formula) → (φ : Formula) → φ ∈ L → [bigconj L] ⊢ φ
+  | [], _, h => by simp at h
+  | [a], φ, h => by
+      have heq : φ = a := by simpa using h
+      subst heq
+      show [bigconj [φ]] ⊢ φ
+      simpa [bigconj] using DerivationTree.assumption [φ] φ (by simp)
+  | a :: b :: rest, φ, h => by
+      show [bigconj (a :: b :: rest)] ⊢ φ
+      rw [show bigconj (a :: b :: rest) = Formula.and a (bigconj (b :: rest)) from rfl]
+      by_cases hφa : φ = a
+      · subst hφa
+        exact Bimodal.Theorems.Propositional.lce φ (bigconj (b :: rest))
+      · have h_in : φ ∈ b :: rest := by
+          rcases List.mem_cons.mp h with rfl | h'
+          · exact absurd rfl hφa
+          · exact h'
+        have h_rce : [Formula.and a (bigconj (b :: rest))] ⊢ bigconj (b :: rest) :=
+          Bimodal.Theorems.Propositional.rce a (bigconj (b :: rest))
+        have h_rec : [bigconj (b :: rest)] ⊢ φ := bigconj_mem_iff (b :: rest) φ h_in
+        have h_imp : [] ⊢ (bigconj (b :: rest)).imp φ :=
+          deduction_theorem [] (bigconj (b :: rest)) φ (by simpa using h_rec)
+        have h_imp_w :
+            [Formula.and a (bigconj (b :: rest))] ⊢ (bigconj (b :: rest)).imp φ :=
+          DerivationTree.weakening [] _ _ h_imp (by intro; simp)
+        exact DerivationTree.modus_ponens _ _ _ h_imp_w h_rce
 
 /-! ## Enriched Seed Consistency
 
