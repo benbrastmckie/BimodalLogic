@@ -718,4 +718,41 @@ theorem hintikka_chain_guard_step {Sigma : Finset Formula} {φ ψ : Formula}
     φ ∈ h1.formulas := by
   exact (h_step.2.2 φ ψ h_target h_not).1
 
+/-! ### Task 98 Phase 3 adapter: `quasimodel_chain_exists`
+
+Thin re-export of `hintikka_chain_exists` in the shape Phase 4 / Phase 5
+of task 98 will consume: the witnessed raw chain together with its
+`ChainWitnessed` predicate returned as **separate** components, so that
+downstream `realize_chain_step` proofs can destructure the witness
+predicate explicitly without having to re-derive it.
+
+**Starting `BXPoint` witness source**: at every Phase 5 call site, the
+initial witness `w0 : BXPoint` is the MCS starting point supplied by
+Frame.lean's Until/Since context (the point at which the eventuality
+resolution obligation is raised). Concretely, for
+`bx_until_eventuality_resolution` (Frame.lean:653) the starting point
+is the MCS `w` at which `φ U ψ ∈ w.formulas` is witnessed, and
+`h0.formulas = sigma_signature w Sigma` by construction, so the subset
+hypothesis `h0_sub` reduces to `sigma_signature_mem_witness` under
+`EnrichedClosure`. The Phase 4a proof discharges this subset obligation
+in its own file without modifying anything here.
+
+Consumes (reference only, zero churn):
+- `hintikka_chain_exists` : the Phase 3 main theorem proved above.
+- `ChainWitnessed`        : the Phase 3 MCS-witness predicate.
+- `chain_step_seed_consistent` : the task-99 landed seed-consistency lemma.
+
+This adapter does not introduce any new axioms or sorries; it is a
+propositional re-export that names the `ChainWitnessed` component at
+the top level of the existential for downstream ergonomics. -/
+theorem quasimodel_chain_exists
+    {Sigma : Finset Formula} {φ ψ : Formula}
+    (oracle : HintikkaStepOracle (Sigma := Sigma) φ ψ)
+    (h0 : HintikkaPoint Sigma) (w0 : BXPoint)
+    (h0_sub : ∀ f ∈ h0.formulas, f ∈ w0.formulas)
+    (h_target : Formula.untl φ ψ ∈ h0.formulas) :
+    ∃ c : HintikkaRawChain Sigma,
+      c.head = h0 ∧ ψ ∈ c.last.formulas ∧ ChainWitnessed c :=
+  hintikka_chain_exists oracle h0 w0 h0_sub h_target
+
 end Bimodal.Metalogic.BXCanonical.Quasimodel

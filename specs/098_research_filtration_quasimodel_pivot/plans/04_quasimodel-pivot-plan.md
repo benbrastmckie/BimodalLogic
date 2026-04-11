@@ -207,7 +207,7 @@ no work.
 
 ---
 
-### Phase 3: Integrate the BXPoint-backed HintikkaStepOracle (task 99 payload) [NOT STARTED]
+### Phase 3: Integrate the BXPoint-backed HintikkaStepOracle (task 99 payload) [COMPLETED]
 
 **Goal**: Adopt task 99's `WitnessedHintikka` / `ChainWitnessed` /
 `HintikkaStepOracle` / `hintikka_chain_exists` / `chain_step_seed_consistent`
