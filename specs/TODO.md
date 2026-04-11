@@ -96,7 +96,7 @@ technical_debt:
 
 ### 98. Research filtration or quasimodel pivot for Until/Since truth lemma
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Language**: logic
 - **Dependencies**: None
 - **Parent Task**: #92

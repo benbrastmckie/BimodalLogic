@@ -120,7 +120,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Hintikka-Level Chain and Realization Lifting [NOT STARTED]
+### Phase 4: Hintikka-Level Chain and Realization Lifting [BLOCKED]
 
 **Goal**: Restructure Realization.lean to prove Until/Since guards at the Hintikka level (trivial from `hintikka_step` definition), construct the defect-discharge chain explicitly, and realize it to BXPoints. This replaces the previous approach that attempted guard proofs at the BXPoint level via bx_le.
 
@@ -162,7 +162,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Until/Since Sorry Closure and Frame.lean Integration [NOT STARTED]
+### Phase 5: Until/Since Sorry Closure and Frame.lean Integration [BLOCKED]
 
 **Goal**: Assemble the full proofs for the four sorry targets using the Hintikka chain + realization + guard transfer infrastructure from Phase 4, then wire them into Frame.lean.
 
