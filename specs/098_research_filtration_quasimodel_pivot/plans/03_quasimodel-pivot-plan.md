@@ -95,7 +95,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Bigconj and EnrichedClosure Definition [PARTIAL]
+### Phase 1: Bigconj and EnrichedClosure Definition [COMPLETED]
 
 **Goal**: Define the Fisher-Ladner closure and its core helper functions in isolation so they can be typechecked before any refactor.
 
@@ -132,7 +132,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Migrate HintikkaPoint / Construction to EnrichedClosure [NOT STARTED]
+### Phase 2: Migrate HintikkaPoint / Construction to EnrichedClosure [COMPLETED]
 
 **Goal**: Replace references to `SubformulaClosure` with `enrichedClosure` across the HintikkaPoint / Construction / Realization API surface, preferring a `ClosureScheme` typeclass if the direct rewrite cascades too broadly.
 

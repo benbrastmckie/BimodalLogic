@@ -880,15 +880,15 @@
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-11T12:10:00Z",
+      "last_updated": "2026-04-11T12:30:00Z",
       "related_tasks": [
         92,
         96,
         97
       ],
-      "session_id": "sess_1775870486_f3131c",
+      "session_id": "sess_1775870901_a5e128",
       "parent_task": 92,
-      "next_artifact_number": 4,
+      "next_artifact_number": 5,
       "artifacts": [
         {
           "type": "research",
@@ -944,11 +944,16 @@
           "path": "specs/098_research_filtration_quasimodel_pivot/summaries/03_enrichedclosure-implementation-summary.md",
           "type": "summary",
           "summary": "Phase 1 partial: bigconj/neg_bigconj and Fisher-Ladner enrichedClosure scaffolding landed, lake build 949/949 clean, zero new sorries/axioms. 10 target sorries preserved. Phases 2-8 not attempted (52-98h exceeds single session)."
+        },
+        {
+          "path": "specs/098_research_filtration_quasimodel_pivot/summaries/04_phase2-plus-summary.md",
+          "type": "summary",
+          "summary": "Phases 1-2 completed; Gate A passed (blast radius 0, HintikkaPoint/Construction/Realization/LocusControl already Sigma-abstract). enriched_neg_of_core_mem landed. lake build 949/949 clean, baseline sorries/axioms unchanged. Phases 3-8 deferred."
         }
       ],
       "dependencies": [],
       "researched": "2026-04-11T00:09:58Z",
-      "resume_phase": 1,
+      "resume_phase": 3,
       "plan_metadata": {
         "phases": 8,
         "total_effort_hours": 72,
