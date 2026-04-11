@@ -43,8 +43,8 @@ technical_debt:
 2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
 3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; 98 is sole viable path)
    - **98** [BLOCKED] — Research filtration/quasimodel pivot: CONDITIONAL GO on local quasimodel (25-45h)
-     - **99** [RESEARCHED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
-     - **100** [RESEARCHED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
+     - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
+     - **100** [PLANNED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -98,12 +98,13 @@ technical_debt:
 
 ### 100. Revise task 98 plan v3 to plan v4 addressing Phase 5/6 blockers and zero-debt violation
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: logic
 - **Dependencies**: Task #99
 - **Parent Task**: #98
 - **Created**: 2026-04-11
 - **Research**: [01_spawn-analysis.md](100_revise_plan_v4_phase_5_6/reports/01_spawn-analysis.md)
+- **Plan**: [04_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/04_quasimodel-pivot-plan.md)
 
 **Description**: Revise plans/03_quasimodel-pivot-plan.md to plan v4 (04_quasimodel-pivot-plan.md) incorporating the BXPoint-backed oracle landed in task 99 and round 4 critic findings: (a) update Phase 3/4 descriptions; (b) remove Phase 6 axiom fallback (zero-debt violation); (c) add explicit Phase 5 consistency plan for realize_chain_step stricter seed obligation; (d) replace Phase 6 locus-control with zero-debt plan or explicit descope; (e) adjust Phases 4-8 effort to realistic 70-135h. Preserve plan v3 unchanged.
 
