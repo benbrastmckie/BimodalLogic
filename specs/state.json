@@ -875,12 +875,12 @@
     {
       "project_number": 98,
       "project_name": "research_filtration_quasimodel_pivot",
-      "status": "planning",
+      "status": "planned",
       "language": "logic",
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-11T01:13:51Z",
+      "last_updated": "2026-04-11T01:19:01Z",
       "related_tasks": [
         92,
         96,
@@ -904,11 +904,6 @@
           "path": "specs/098_research_filtration_quasimodel_pivot/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): bx_le non-totality gap confirmed unprovable; must restructure to use Hintikka chain guard-by-definition"
-        },
-        {
-          "path": "specs/098_research_filtration_quasimodel_pivot/plans/02_quasimodel-pivot-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v2 restructuring phases 4-5 to prove guards at Hintikka level instead of BXPoint level"
         },
         {
           "path": "specs/098_research_filtration_quasimodel_pivot/summaries/02_implementation-complete.md",
@@ -939,17 +934,22 @@
           "path": "specs/098_research_filtration_quasimodel_pivot/reports/03_team-research.md",
           "type": "research",
           "summary": "Round 3 synthesis: EnrichedClosure (Fisher-Ladner) resolves gate-check gap; defect_count termination specified; recommend task 99 for implementation"
+        },
+        {
+          "path": "specs/098_research_filtration_quasimodel_pivot/plans/03_quasimodel-pivot-plan.md",
+          "type": "plan",
+          "summary": "Plan v3: 8 phases, 52-98h. EnrichedClosure (Fisher-Ladner) approach. Gates A/B, closes 10 sorries (R1-R6 Realization, F1-F4 Frame)."
         }
       ],
       "dependencies": [],
       "researched": "2026-04-11T00:09:58Z",
       "resume_phase": 5,
       "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 28,
+        "phases": 8,
+        "total_effort_hours": 72,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 2,
+        "plan_version": 3,
         "dependency_waves": [
           [
             1
@@ -958,27 +958,21 @@
             2
           ],
           [
-            3
+            3,
+            4
           ],
           [
-            4,
             5
           ],
           [
             6
+          ],
+          [
+            7
+          ],
+          [
+            8
           ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_filtration-quasimodel-pivot.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-04-10"
-          },
-          {
-            "path": "reports/02_team-research.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-04-10"
-          }
         ]
       }
     }
