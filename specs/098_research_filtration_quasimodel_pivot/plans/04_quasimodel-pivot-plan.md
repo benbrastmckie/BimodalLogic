@@ -295,7 +295,7 @@ lemma `chain_step_seed_consistent_enriched` that extends the seed with
 
 ---
 
-### Phase 4b: Since dual — witness-backed HintikkaStepOracleSince [NOT STARTED]
+### Phase 4b: Since dual — witness-backed HintikkaStepOracleSince [COMPLETED]
 
 **Goal**: Port task 99's BXPoint-backed witness pattern to the Since
 dual (`HintikkaStepOracleSince`, which task 99 explicitly left as a
