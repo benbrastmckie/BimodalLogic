@@ -875,18 +875,18 @@
     {
       "project_number": 98,
       "project_name": "research_filtration_quasimodel_pivot",
-      "status": "researched",
+      "status": "blocked",
       "language": "logic",
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-11T13:50:00Z",
+      "last_updated": "2026-04-11T14:00:00Z",
       "related_tasks": [
         92,
         96,
         97
       ],
-      "session_id": "sess_1775873649_08b347",
+      "session_id": "sess_1775874352_979179",
       "parent_task": 92,
       "next_artifact_number": 9,
       "artifacts": [
@@ -971,7 +971,10 @@
           "summary": "Round 4 team research (4 teammates): recommends descoping task 98 and spawning task 99 for Option 4a (BXPoint-backed HintikkaStepOracle, 10-15h). Identifies Phase 5/6 as independent blockers requiring plan revision. Unblocks tasks 93/94 for parallel work."
         }
       ],
-      "dependencies": [],
+      "dependencies": [
+        99,
+        100
+      ],
       "researched": "2026-04-11T13:50:00Z",
       "resume_phase": 4,
       "plan_metadata": {
@@ -1005,9 +1008,61 @@
           ]
         ]
       }
+    },
+    {
+      "project_number": 99,
+      "project_name": "bxpoint_backed_hintikka_oracle",
+      "status": "researched",
+      "language": "lean4",
+      "priority": "high",
+      "description": "Unblock task 98 Phase 4 by implementing Option 4a from round 4 team research (specs/098_research_filtration_quasimodel_pivot/reports/08_team-research.md, teammate B). Modify HintikkaStepOracle (Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/Construction.lean:452) so every Hintikka point in the chain carries a concrete BXPoint witness at chain-construction time. Thread bx_forward_witness (Frame.lean:164) through hintikka_chain_exists so each h_i = sigma_signature w_i for a witnessed MCS w_i. Prove chain_step_seed_consistent via a one-line subset witness into w.is_mcs.1, mirroring enriched_seed_consistent_until h_neg_in=false branch. Scope: Construction.lean HintikkaStepOracle + hintikka_chain_exists only. Buffer for Teammate C C.2 fix to enriched_g_neg_bigconj_mem if needed. Acceptance: lake build clean, 0 new sorries, 0 new axioms, chain_step_seed_consistent proved. Zero-debt compliant.",
+      "effort": "10-15 hours",
+      "created": "2026-04-11T14:05:00Z",
+      "last_updated": "2026-04-11T14:05:00Z",
+      "parent_task": 98,
+      "dependencies": [],
+      "related_tasks": [
+        98,
+        100
+      ],
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/099_bxpoint_backed_hintikka_oracle/reports/01_spawn-analysis.md",
+          "summary": "Spawn analysis from task 98 round 4 team research"
+        }
+      ]
+    },
+    {
+      "project_number": 100,
+      "project_name": "revise_plan_v4_phase_5_6",
+      "status": "researched",
+      "language": "logic",
+      "priority": "medium",
+      "description": "Revise specs/098_research_filtration_quasimodel_pivot/plans/03_quasimodel-pivot-plan.md to plan v4 (new file 04_quasimodel-pivot-plan.md) per round 4 team research critic findings (reports/08_teammate-c-findings.md). Required: (a) update Phase 3/4 to reflect new BXPoint-backed HintikkaStepOracle shape and MCS-subset proof of chain_step_seed_consistent; (b) remove Phase 6 axiom fallback (zero-debt violation C.5); (c) add explicit Phase 5 consistency plan for realize_chain_step stricter seed obligation (C.4); (d) replace Phase 6 locus-control exhaustiveness with zero-debt plan or explicit descope; (e) adjust Phases 4-8 effort to realistic 70-135h (C.7). Preserve plan v3 unchanged. Language logic (planning only).",
+      "effort": "2-4 hours",
+      "created": "2026-04-11T14:05:00Z",
+      "last_updated": "2026-04-11T14:05:00Z",
+      "parent_task": 98,
+      "dependencies": [
+        99
+      ],
+      "related_tasks": [
+        98,
+        99
+      ],
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/100_revise_plan_v4_phase_5_6/reports/01_spawn-analysis.md",
+          "summary": "Spawn analysis from task 98 round 4 team research"
+        }
+      ]
     }
   ],
-  "next_project_number": 99,
+  "next_project_number": 101,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
