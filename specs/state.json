@@ -875,18 +875,18 @@
     {
       "project_number": 98,
       "project_name": "research_filtration_quasimodel_pivot",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean4",
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-11T14:20:00Z",
+      "last_updated": "2026-04-11T14:30:00Z",
       "related_tasks": [
         92,
         96,
         97
       ],
-      "session_id": "sess_1775924610_34c8e8",
+      "session_id": "sess_1775926099_ef4e54",
       "parent_task": 92,
       "next_artifact_number": 10,
       "artifacts": [
@@ -993,7 +993,9 @@
       ],
       "dependencies": [
         99,
-        100
+        100,
+        101,
+        102
       ],
       "researched": "2026-04-11T13:50:00Z",
       "resume_phase": 5,
@@ -1101,9 +1103,51 @@
       "session_id": "sess_1775875865_a24e8b",
       "planned": "2026-04-11T03:00:00Z",
       "completion_summary": "Produced plan v4 at specs/098_research_filtration_quasimodel_pivot/plans/04_quasimodel-pivot-plan.md addressing round 4 critic findings (C.4 stricter seed via MCS witness, C.5 axiom fallback removed, C.6 BXPoint-backed oracle from task 99, C.7 rebudget to 70-135h). Plan v3 preserved unchanged. Planning-only task; no implementation work for task 100 itself."
+    },
+    {
+      "project_number": 101,
+      "project_name": "research_quotient_filtration_model",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Research and design the quotient/filtration model construction (Goldblatt 1992, Blackburn et al. 2001) for closing the 4 Frame.lean and 6 Realization.lean Until/Since sorries. The canonical ordering bx_le (g_content inclusion) is a preorder, not total. The quotient defines equivalence classes by Sigma-agreement where the ordering IS total. Research: (a) equivalence relation and BXPoint/MCS interaction, (b) Mathlib Quotient/Setoid/Fintype APIs, (c) totality proof from BX7/BX11, (d) whether Frame.lean sorry signatures can be filled directly, (e) Realization.lean delegation, (f) lifting mechanism. Output: design document mapping mathematical construction to Lean 4 definitions.",
+      "effort": "8-12 hours",
+      "parent_task": 98,
+      "dependencies": [],
+      "created": "2026-04-11T14:35:00Z",
+      "last_updated": "2026-04-11T14:35:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 98"
+        }
+      ]
+    },
+    {
+      "project_number": 102,
+      "project_name": "implement_quotient_filtration_close_sorries",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Implement the quotient/filtration model construction and close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean). Steps: (a) define Sigma-agreement equivalence as Setoid, (b) construct quotient model, (c) prove well-definedness, (d) prove totality from BX7/BX11, (e) prove Until/Since truth lemma in quotient, (f) lift to canonical model, (g) close Realization.lean sorries by delegation. Definition of done: lake build with zero new sorries and zero new axioms.",
+      "effort": "30-45 hours",
+      "parent_task": 98,
+      "dependencies": [
+        101
+      ],
+      "created": "2026-04-11T14:35:00Z",
+      "last_updated": "2026-04-11T14:35:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 98"
+        }
+      ]
     }
   ],
-  "next_project_number": 101,
+  "next_project_number": 103,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
