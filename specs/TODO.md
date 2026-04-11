@@ -42,9 +42,11 @@ technical_debt:
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
 2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
 3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; 98 is sole viable path)
-   - **98** [IMPLEMENTING] — Research filtration/quasimodel pivot: plan v5 BX7 direct proof approach
+   - **98** [BLOCKED] — Research filtration/quasimodel pivot: plan v5 BX7 direct proof blocked (circularity)
      - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
      - **100** [COMPLETED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
+     - **101** [RESEARCHED] — Research quotient filtration model for BX completeness (8-12h)
+     - **102** [RESEARCHED] — Implement quotient filtration and close Until/Since sorries (30-45h, depends on 101)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -96,6 +98,32 @@ technical_debt:
 
 ---
 
+### 102. Implement quotient filtration model and close Until Since sorries
+- **Effort**: 30-45 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task #101
+- **Parent Task**: #98
+- **Created**: 2026-04-11
+- **Research**: [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
+
+**Description**: Implement the quotient/filtration model construction and close all 10 Until/Since sorries (4 in Frame.lean: bx_until_eventuality_resolution, bx_until_backward, bx_since_eventuality_resolution, bx_since_backward; 6 in Realization.lean). Steps: (a) define Sigma-agreement equivalence as Setoid, (b) construct quotient model, (c) prove well-definedness, (d) prove totality from BX7/BX11, (e) prove Until/Since truth lemma in quotient, (f) lift to canonical model, (g) close Realization.lean sorries by delegation. Definition of done: lake build with zero new sorries and zero new axioms.
+
+---
+
+### 101. Research quotient filtration model for BX completeness
+- **Effort**: 8-12 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #98
+- **Created**: 2026-04-11
+- **Research**: [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
+
+**Description**: Research and design the quotient/filtration model construction (Goldblatt 1992, Blackburn et al. 2001) for closing the 4 Frame.lean and 6 Realization.lean Until/Since sorries. The canonical ordering bx_le (g_content inclusion) is a preorder, not total. The quotient defines equivalence classes by Sigma-agreement where the ordering IS total. Research: (a) equivalence relation and BXPoint/MCS interaction, (b) Mathlib Quotient/Setoid/Fintype APIs, (c) totality proof from BX7/BX11, (d) whether Frame.lean sorry signatures can be filled directly, (e) Realization.lean delegation, (f) lifting mechanism. Output: design document mapping mathematical construction to Lean 4 definitions.
+
+---
+
 ### 100. Revise task 98 plan v3 to plan v4 addressing Phase 5/6 blockers and zero-debt violation
 - **Effort**: 2-4 hours
 - **Status**: [COMPLETED]
@@ -128,8 +156,8 @@ technical_debt:
 
 ### 98. Research filtration or quasimodel pivot for Until/Since truth lemma
 - **Effort**: 8-12 hours (research) + 70-135h (plan v4 implementation)
-- **Status**: [IMPLEMENTING]
-- **Dependencies**: Task #99, Task #100
+- **Status**: [BLOCKED]
+- **Dependencies**: Task #99, Task #100, Task #101, Task #102
 - **Language**: lean4
 - **Parent Task**: #92
 - **Created**: 2026-04-10
