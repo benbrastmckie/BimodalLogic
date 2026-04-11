@@ -46,7 +46,7 @@ technical_debt:
      - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
      - **100** [COMPLETED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
      - **101** [COMPLETED] — Research quotient filtration model for BX completeness (8-12h)
-     - **102** [RESEARCHED] — Implement quotient filtration and close Until/Since sorries (30-45h, depends on 101)
+     - **102** [RESEARCHED] — Implement defect-discharge chain and close Until/Since sorries (45h, depends on 101)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -98,8 +98,8 @@ technical_debt:
 
 ---
 
-### 102. Implement quotient filtration model and close Until Since sorries
-- **Effort**: 30-45 hours
+### 102. Implement defect-discharge chain and close Until Since sorries
+- **Effort**: 45 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task #101
@@ -107,7 +107,7 @@ technical_debt:
 - **Created**: 2026-04-11
 - **Research**: [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
 
-**Description**: Implement the quotient/filtration model construction and close all 10 Until/Since sorries (4 in Frame.lean: bx_until_eventuality_resolution, bx_until_backward, bx_since_eventuality_resolution, bx_since_backward; 6 in Realization.lean). Steps: (a) define Sigma-agreement equivalence as Setoid, (b) construct quotient model, (c) prove well-definedness, (d) prove totality from BX7/BX11, (e) prove Until/Since truth lemma in quotient, (f) lift to canonical model, (g) close Realization.lean sorries by delegation. Definition of done: lake build with zero new sorries and zero new axioms.
+**Description**: Implement the defect-discharge chain construction and close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean). Task 101 research found that a naive quotient/Setoid construction is NOT viable. Instead: (a) define sigma_le, sigma_strict, sigma_equiv on BXPoints using enrichedClosure Sigma, (b) construct defect-discharge chains via well-founded induction on sigma_defect_count, (c) prove guard extension lemma, (d) MODIFY Frame.lean sorry signatures to use sigma_strict guard instead of not-bx_le, (e) update TruthLemma.lean Until/Since cases, (f) close Realization.lean sorries via LocusControl delegation. No Mathlib Quotient/Setoid needed. New files: SigmaOrdering.lean, DefectChain.lean, GuardExtension.lean. Highest risk: Phase 3 guard extension (15h). Definition of done: lake build with zero new sorries and zero new axioms.
 
 ---
 
