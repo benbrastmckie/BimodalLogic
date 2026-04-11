@@ -164,7 +164,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Refined QuasimodelChain Type and Defect-Count Termination [NOT STARTED]
+### Phase 3: Refined QuasimodelChain Type and Defect-Count Termination [PARTIAL]
 
 **Goal**: Introduce the `QuasimodelChain` type tracking a "target defect" and prove the strict-decrease lemma required for well-founded chain termination.
 
