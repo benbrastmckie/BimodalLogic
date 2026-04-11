@@ -1,7 +1,7 @@
 # Implementation Plan: BXPoint-backed HintikkaStepOracle
 
 - **Task**: 99 - bxpoint_backed_hintikka_oracle
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10-15 hours
 - **Dependencies**: None (parent task 98 Phase 4 blocked on this)
 - **Research Inputs**: specs/099_bxpoint_backed_hintikka_oracle/reports/01_spawn-analysis.md
@@ -79,7 +79,7 @@ No prior plan for task 99. Parent task 98's plan v3 (`specs/098_research_filtrat
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Strengthen `HintikkaStepOracle` output type with BXPoint witness [NOT STARTED]
+### Phase 1: Strengthen `HintikkaStepOracle` output type with BXPoint witness [COMPLETED]
 
 - **Goal:** Modify the `HintikkaStepOracle` definition in `Construction.lean:452` so every output point carries a concrete `BXPoint` witness `w` with a structural link `h'.formulas = sigma_signature w` (or a refinement predicate of equivalent strength). Type-checks only; no proofs yet.
 - **Tasks:**
@@ -91,7 +91,7 @@ Phases within the same wave can execute in parallel.
 - **Timing:** 2h
 - **Depends on:** none
 
-### Phase 2: Thread `bx_forward_witness` through `hintikka_chain_exists` [NOT STARTED]
+### Phase 2: Thread `bx_forward_witness` through `hintikka_chain_exists` [COMPLETED]
 
 - **Goal:** Update `hintikka_chain_exists` (`Construction.lean:556-598`) so the recursion constructs each successor via the oracle and carries the `BXPoint` witness forward. Every point in the returned `HintikkaRawChain` is backed by an explicit `BXPoint`.
 - **Tasks:**
@@ -105,7 +105,7 @@ Phases within the same wave can execute in parallel.
 - **Timing:** 2-3h
 - **Depends on:** 1
 
-### Phase 3: Prove `chain_step_seed_consistent` via MCS-subset route [NOT STARTED]
+### Phase 3: Prove `chain_step_seed_consistent` via MCS-subset route [COMPLETED]
 
 - **Goal:** Introduce (or relocate from parent plan v3 Phase 4 scaffolding) the lemma `chain_step_seed_consistent` and discharge it using the `w.is_mcs.1` subset witness, mirroring `enriched_seed_consistent_until`'s `h_neg_in = false` branch (Realization.lean:271-276).
 - **Tasks:**
@@ -120,7 +120,7 @@ Phases within the same wave can execute in parallel.
 - **Timing:** 2-3h
 - **Depends on:** 2
 
-### Phase 4: Repair downstream callers and apply `enriched_g_neg_bigconj_mem` buffer fix if needed [NOT STARTED]
+### Phase 4: Repair downstream callers and apply `enriched_g_neg_bigconj_mem` buffer fix if needed [COMPLETED]
 
 - **Goal:** Restore `lake build` by adjusting any direct callers of the changed `HintikkaStepOracle` / `hintikka_chain_exists` signatures. Apply Teammate C §C.2 scope fix to `enriched_g_neg_bigconj_mem` only if the updated type-check flags a concrete gap.
 - **Tasks:**
@@ -132,7 +132,7 @@ Phases within the same wave can execute in parallel.
 - **Timing:** 2-3h
 - **Depends on:** 3
 
-### Phase 5: Zero-debt verification [NOT STARTED]
+### Phase 5: Zero-debt verification [COMPLETED]
 
 - **Goal:** Prove the build is clean and zero-debt: `lake build` clean, 0 new `sorry`, 0 new axioms, `chain_step_seed_consistent` actually closed.
 - **Tasks:**
