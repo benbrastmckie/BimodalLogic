@@ -1146,7 +1146,7 @@
     {
       "project_number": 102,
       "project_name": "implement_quotient_filtration_close_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Implement the defect-discharge chain construction and close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean). Task 101 research found that a naive quotient/Setoid construction is NOT viable -- bx_le is not total even on Sigma-equivalence classes, and BX11 does not provide the needed totality. Instead, the approach uses: (a) define sigma_le, sigma_strict, sigma_equiv on BXPoints using the enrichedClosure Sigma set, (b) construct defect-discharge chains via well-founded induction on sigma_defect_count (number of Until formulas in Sigma whose goal is absent), (c) prove the guard extension lemma -- that phi holds at arbitrary intermediate BXPoints (not just chain members) using enrichedClosure G/H-enrichment properties, (d) MODIFY the 4 Frame.lean sorry signatures to use sigma_strict guard instead of the unprovable not-bx_le guard (replace `not bx_le v u` with `sigma_strict Sigma u v`), (e) update TruthLemma.lean Until/Since cases to use the modified signatures, (f) close the 6 Realization.lean sorries via LocusControl.lean delegation. No Mathlib Quotient/Setoid needed -- reuses existing HintikkaPoint/enrichedClosure/sigma_signature infrastructure. New files under Theories/Bimodal/Metalogic/BXCanonical/Filtration/: SigmaOrdering.lean, DefectChain.lean, GuardExtension.lean. Estimated 45h across 5 phases. Highest risk is Phase 3 (guard extension, 15h); fallback is replacing bx_le entirely with chain-constructed linear ordering (+20h). Definition of done: lake build with zero new sorries and zero new axioms.",
       "effort": "45 hours",
@@ -1155,7 +1155,7 @@
         101
       ],
       "created": "2026-04-11T14:35:00Z",
-      "last_updated": "2026-04-11T18:20:52Z",
+      "last_updated": "2026-04-11T19:23:21Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -1164,23 +1164,23 @@
           "summary": "Spawn analysis from parent task 98"
         },
         {
-          "path": "specs/102_implement_quotient_filtration_close_sorries/plans/01_defect-discharge-implementation.md",
-          "type": "plan",
-          "summary": "5-phase plan: SigmaOrdering, DefectChain, GuardExtension, Frame.lean sorry closure, Realization.lean delegation. 45h, sequential."
-        },
-        {
           "path": "specs/102_implement_quotient_filtration_close_sorries/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): BX7 direct proof, finite model, literature cross-reference, critic analysis"
+        },
+        {
+          "path": "specs/102_implement_quotient_filtration_close_sorries/plans/02_defect-discharge-implementation.md",
+          "type": "plan",
+          "summary": "Revised plan (v2): staged BX7 investigation then finite model fallback, 7 phases, 38h"
         }
       ],
-      "session_id": "sess_1775931033_60d2fd",
+      "session_id": "sess_1775935133_5eef52",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 45,
+        "phases": 7,
+        "total_effort_hours": 38,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 1,
+        "plan_version": 2,
         "dependency_waves": [
           [
             1
@@ -1196,7 +1196,40 @@
           ],
           [
             5
+          ],
+          [
+            6
+          ],
+          [
+            7
           ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/02_team-research.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-04-11"
+          },
+          {
+            "path": "reports/02_teammate-a-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-04-11"
+          },
+          {
+            "path": "reports/02_teammate-b-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-04-11"
+          },
+          {
+            "path": "reports/02_teammate-c-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-04-11"
+          },
+          {
+            "path": "reports/02_teammate-d-findings.md",
+            "integrated_in_plan_version": 2,
+            "integrated_date": "2026-04-11"
+          }
         ]
       },
       "started": "2026-04-11T17:43:43Z",
