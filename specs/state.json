@@ -1146,7 +1146,7 @@
     {
       "project_number": 102,
       "project_name": "implement_quotient_filtration_close_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Implement the defect-discharge chain construction and close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean). Task 101 research found that a naive quotient/Setoid construction is NOT viable -- bx_le is not total even on Sigma-equivalence classes, and BX11 does not provide the needed totality. Instead, the approach uses: (a) define sigma_le, sigma_strict, sigma_equiv on BXPoints using the enrichedClosure Sigma set, (b) construct defect-discharge chains via well-founded induction on sigma_defect_count (number of Until formulas in Sigma whose goal is absent), (c) prove the guard extension lemma -- that phi holds at arbitrary intermediate BXPoints (not just chain members) using enrichedClosure G/H-enrichment properties, (d) MODIFY the 4 Frame.lean sorry signatures to use sigma_strict guard instead of the unprovable not-bx_le guard (replace `not bx_le v u` with `sigma_strict Sigma u v`), (e) update TruthLemma.lean Until/Since cases to use the modified signatures, (f) close the 6 Realization.lean sorries via LocusControl.lean delegation. No Mathlib Quotient/Setoid needed -- reuses existing HintikkaPoint/enrichedClosure/sigma_signature infrastructure. New files under Theories/Bimodal/Metalogic/BXCanonical/Filtration/: SigmaOrdering.lean, DefectChain.lean, GuardExtension.lean. Estimated 45h across 5 phases. Highest risk is Phase 3 (guard extension, 15h); fallback is replacing bx_le entirely with chain-constructed linear ordering (+20h). Definition of done: lake build with zero new sorries and zero new axioms.",
       "effort": "45 hours",
@@ -1155,15 +1155,45 @@
         101
       ],
       "created": "2026-04-11T14:35:00Z",
-      "last_updated": "2026-04-11T15:25:00Z",
+      "last_updated": "2026-04-11T17:41:23Z",
       "next_artifact_number": 1,
       "artifacts": [
         {
           "type": "research",
           "path": "specs/098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 98"
+        },
+        {
+          "path": "specs/102_implement_quotient_filtration_close_sorries/plans/01_defect-discharge-implementation.md",
+          "type": "plan",
+          "summary": "5-phase plan: SigmaOrdering, DefectChain, GuardExtension, Frame.lean sorry closure, Realization.lean delegation. 45h, sequential."
         }
-      ]
+      ],
+      "session_id": "sess_1775928986_8d3538",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 45,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ]
+      }
     }
   ],
   "next_project_number": 103,
