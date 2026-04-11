@@ -255,7 +255,7 @@ realized-as-it-is-built (C.6): every point carries its MCS witness.
 
 ---
 
-### Phase 4a: Consume chain_step_seed_consistent for Until realization [NOT STARTED]
+### Phase 4a: Consume chain_step_seed_consistent for Until realization [COMPLETED]
 
 **Goal**: In `Realization.lean`, replace the failed v3 Phase 4b
 derivation with a direct consumption of the task-99-landed

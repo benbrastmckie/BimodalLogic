@@ -322,6 +322,78 @@ theorem enriched_seed_consistent_since
       exact h_seed_in_w α hα (fun h_eq => h_neg_in (h_eq ▸ hα))
     exact w.is_mcs.1 L h_L_in_w ⟨d⟩
 
+/-! ## Phase 4a: Chain-step seed consistency (enriched with g_content)
+
+Task 98 Phase 4a (plan v4): lift task 99's `chain_step_seed_consistent`
+to the enriched seed `h.formulas ∪ g_content v.formulas`, where
+`h : HintikkaPoint Sigma` is a point of a witnessed Hintikka chain and
+`v : BXPoint` is the prior BXPoint being extended in the `realize_chain_step`
+construction.
+
+The proof is a one-step subset-of-MCS argument: `ChainWitnessed` gives us
+a `BXPoint w` backing `h` with `h.formulas ⊆ w.formulas`; the hypothesis
+`h_bx_le_witness` additionally states that `bx_le v w` (i.e.
+`g_content v.formulas ⊆ w.formulas`). Together, every element of the
+enriched seed lies in `w.formulas`, so `w.is_mcs.1` discharges any
+`SetConsistent` obligation.
+
+This matches the `h_neg_in = false` branch of
+`enriched_seed_consistent_until` above and the one-line proof of
+`chain_step_seed_consistent` in `Construction.lean:676-690`; it is the
+lifting lemma Phase 5's stricter seed (C.4) consumes for the
+`h.formulas ∪ g_content v.formulas` chunk. -/
+
+theorem chain_step_seed_consistent_enriched
+    {Sigma : Finset Formula} {c : HintikkaRawChain Sigma}
+    (h_wit : ChainWitnessed c)
+    {h : HintikkaPoint Sigma} (h_mem : h ∈ c.points)
+    (v : BXPoint)
+    (h_bx_le_witness :
+      ∀ w : BXPoint, (∀ f ∈ h.formulas, f ∈ w.formulas) → bx_le v w) :
+    SetConsistent ((h.formulas : Set Formula) ∪ g_content v.formulas) := by
+  -- Extract a BXPoint witness `w` backing `h` from the `ChainWitnessed` predicate.
+  obtain ⟨w, hw⟩ := h_wit h h_mem
+  -- The caller-supplied witness hypothesis upgrades the backing witness to `bx_le v w`.
+  have h_vw : bx_le v w := h_bx_le_witness w hw
+  -- Any list from the enriched seed is entirely contained in `w.formulas`.
+  intro L hL ⟨d⟩
+  have h_L_in_w : ∀ α ∈ L, α ∈ w.formulas := by
+    intro α hα
+    have h_mem_L := hL α hα
+    rcases h_mem_L with h_h | h_g
+    · exact hw α h_h
+    · exact h_vw h_g
+  exact w.is_mcs.1 L h_L_in_w ⟨d⟩
+
+/-- Since dual of `chain_step_seed_consistent_enriched`: the enriched
+    seed `h.formulas ∪ h_content v.formulas` is consistent whenever the
+    chain is witnessed and the caller can upgrade the backing witness
+    `w` to `bx_le w v` (equivalently `h_content v.formulas ⊆ w.formulas`
+    via `h_content_subset_implies_g_content_reverse`).
+
+    Phase 4b will consume this lemma once `HintikkaStepOracleSince` is
+    strengthened to carry a `WitnessedHintikka`. The statement is already
+    provable today because `ChainWitnessed` is domain-agnostic. -/
+theorem chain_step_seed_consistent_enriched_since
+    {Sigma : Finset Formula} {c : HintikkaRawChain Sigma}
+    (h_wit : ChainWitnessed c)
+    {h : HintikkaPoint Sigma} (h_mem : h ∈ c.points)
+    (v : BXPoint)
+    (h_h_content_witness :
+      ∀ w : BXPoint, (∀ f ∈ h.formulas, f ∈ w.formulas) →
+        h_content v.formulas ⊆ w.formulas) :
+    SetConsistent ((h.formulas : Set Formula) ∪ h_content v.formulas) := by
+  obtain ⟨w, hw⟩ := h_wit h h_mem
+  have h_hv : h_content v.formulas ⊆ w.formulas := h_h_content_witness w hw
+  intro L hL ⟨d⟩
+  have h_L_in_w : ∀ α ∈ L, α ∈ w.formulas := by
+    intro α hα
+    have h_mem_L := hL α hα
+    rcases h_mem_L with h_h | h_g
+    · exact hw α h_h
+    · exact h_hv h_g
+  exact w.is_mcs.1 L h_L_in_w ⟨d⟩
+
 /-! ## Until Eventuality Resolution
 
 The main theorem for the forward Until direction. Given φ U ψ ∈ w with ψ ∉ w,
