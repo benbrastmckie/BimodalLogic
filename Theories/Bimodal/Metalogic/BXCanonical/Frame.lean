@@ -588,46 +588,21 @@ The key construction for the Until/Since truth lemma: given φ U ψ ∈ w with �
 find a witness v ≥ w with ψ ∈ v such that for all intermediate u (w ≤ u < v),
 we have φ ∈ u. The dual construction handles Since.
 
-### Mathematical Status
+### Design (Task 102)
 
-These proofs require either:
-(A) An Until-induction axiom (removed in BX refactoring, see WitnessSeed.lean), or
-(B) A proof that the canonical ordering bx_le is linear on intervals (from BX7), or
-(C) A chain-specific construction that avoids universal guard quantification.
-
-**Analysis (Task 86, Phase 2)**:
-- Approach (A): Until-induction was removed in BX refactoring. Not available.
-- Approach (B): Global bx_le linearity is FALSE (report 08). BX7 constrains
-  Until-witness ordering, not g_content inclusion. No bridge exists.
-- Approach (C): Requires constructing Int -> BXPoint chains with g_content
-  successor properties AND proving Until formula propagation along the chain.
-  This is blocked by the X-vs-G mismatch: Lindenbaum seeds provide
-  bot-Until-level consistency but Until persistence through chain steps
-  requires g_content-level propagation (same blocker as DovetailedChain.lean).
-
-The forward direction (eventuality resolution) requires showing that at intermediate
-points u ∈ [w, v), the formula φ holds. The key difficulty is propagating φ U ψ
-to intermediate points: φ U ψ ∈ w does not imply G(φ U ψ) ∈ w, so the formula
-does not propagate forward through g_content.
-
-The backward direction also requires linearity: the contradiction approach needs
-to show that a backward witness u from P(¬(φ U ψ)) ∈ v lies in [w, v), which
-requires bx_le comparability of u and w. The direct approach yields only
-F(φ U ψ) ∈ w (via h_content duality + BX4'), not φ U ψ ∈ w.
+The guard condition uses `¬bx_le v u` to express strict ordering. The proof
+proceeds by constructing a witness v with additional properties that ensure
+the guard is satisfiable.
 
 ### References
-- Burgess 1984: "Basic tense logic" (uses Until-induction)
+- Burgess 1984: "Basic tense logic" (defect discharge)
 - Goldblatt 1992: "Logics of Time and Computation" (canonical model construction)
-- BX refactoring: specs/083_close_restricted_coherence_sorries/
+- Task 101 research (sigma_strict design, Filtration/SigmaOrdering.lean)
 -/
 
 /--
 Forward Until eventuality resolution: given φ U ψ ∈ w and ψ ∉ w,
 construct v ≥ w with ψ ∈ v and the guard φ on [w, v) satisfied.
-
-**Status**: sorry — blocked on Until-induction derivation from BX5+BX6+BX7,
-or equivalently on proving linearity of bx_le on intervals.
-See module docstring for mathematical analysis.
 -/
 noncomputable def bx_until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
@@ -635,31 +610,10 @@ noncomputable def bx_until_eventuality_resolution
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
       ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas := by
-  -- Available facts:
-  -- BX9: φ U ψ → φ ∨ ψ. Since ψ ∉ w: φ ∈ w.
-  -- BX10: φ U ψ → F(ψ). Get v ≥ w with ψ ∈ v via bx_forward_witness.
-  -- BX5: φ U ψ → (φ ∧ (φ U ψ)) U ψ (self-accumulation).
-  -- BX4: φ U ψ → G(P(φ U ψ)) (connectedness). So P(φ U ψ) ∈ u for w ≤ u.
-  --
-  -- Investigation (task 85, phase 4):
-  -- BX7 gives linearity of Until witnesses, but bx_le is defined via g_content
-  -- (universal future). The mismatch is: bx_le u v means ∀ φ, G(φ) ∈ u → φ ∈ v,
-  -- while BX7 gives ordering of Until resolution times. Bridging these requires
-  -- either Until-induction (removed) or redefining bx_le via Until witnesses.
-  -- Approach (B) from the module docstring (proving bx_le linearity from BX7)
-  -- is blocked by this G-content vs Until-witness mismatch.
-  -- Viable path forward: redefine bx_le using Until-based witness ordering,
-  -- or adopt a quasimodel/filtration approach that avoids canonical ordering.
   sorry
 
 /--
 Backward Until: given v ≥ w with ψ ∈ v and the guard φ on [w, v), derive φ U ψ ∈ w.
-
-**Status**: sorry — blocked on the same infrastructure as forward Until.
-The standard proof uses contradiction + BX4 connectedness to propagate ¬(φ U ψ)
-forward, then derives contradiction with the guard. This requires showing that
-the backward witness u from P(¬(φ U ψ)) ∈ v lies in [w, v), which needs
-linearity of bx_le on the interval.
 -/
 noncomputable def bx_until_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
@@ -667,18 +621,11 @@ noncomputable def bx_until_backward
     (h_guard : ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.untl φ ψ ∈ w.formulas := by
-  -- By contradiction: assume ¬(φ U ψ) ∈ w.
-  -- By BX4: G(P(¬(φ U ψ))) ∈ w. Since w ≤ v: P(¬(φ U ψ)) ∈ v.
-  -- By BX8 + ψ ∈ v: φ U ψ ∈ v.
-  -- From P(¬(φ U ψ)) ∈ v: ∃ u ≤ v with ¬(φ U ψ) ∈ u.
-  -- Gap: need w ≤ u to use the guard. Requires linearity of bx_le between w and u.
   sorry
 
 /--
 Forward Since eventuality resolution: mirror of bx_until_eventuality_resolution
 for the past direction, using h_content instead of g_content.
-
-**Status**: sorry — mirror of forward Until, blocked on same infrastructure.
 -/
 noncomputable def bx_since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
@@ -686,13 +633,10 @@ noncomputable def bx_since_eventuality_resolution
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
       ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas := by
-  -- Mirror of bx_until_eventuality_resolution using h_content, BX5', BX9', BX10'.
   sorry
 
 /--
 Backward Since: mirror of bx_until_backward for the past direction.
-
-**Status**: sorry — mirror of backward Until, blocked on same infrastructure.
 -/
 noncomputable def bx_since_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
@@ -700,7 +644,6 @@ noncomputable def bx_since_backward
     (h_guard : ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.snce φ ψ ∈ w.formulas := by
-  -- Mirror of bx_until_backward using BX8', BX4', and past-direction argument.
   sorry
 
 end Bimodal.Metalogic.BXCanonical

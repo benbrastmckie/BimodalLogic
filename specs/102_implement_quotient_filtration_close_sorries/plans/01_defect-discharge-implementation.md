@@ -1,7 +1,7 @@
 # Implementation Plan: Defect-Discharge Chain Construction and Sorry Closure
 
 - **Task**: 102 - implement_quotient_filtration_close_sorries
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 45 hours
 - **Dependencies**: Task 101 (research, completed)
 - **Research Inputs**: specs/101_research_quotient_filtration_model/reports/01_quotient-filtration-design.md
@@ -77,7 +77,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Sigma Ordering Infrastructure [NOT STARTED]
+### Phase 1: Sigma Ordering Infrastructure [COMPLETED]
 
 **Goal**: Define the Sigma-restricted ordering predicates and prove their basic properties, establishing the vocabulary used by all subsequent phases.
 
@@ -111,7 +111,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Defect-Discharge Chain Construction [NOT STARTED]
+### Phase 2: Defect-Discharge Chain Construction [PARTIAL]
 
 **Goal**: Define the sigma defect count, construct defect-discharge chains by well-founded recursion, and prove that chains have the guard property at chain members and the goal at the terminal point.
 
