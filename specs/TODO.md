@@ -42,7 +42,7 @@ technical_debt:
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
 2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
 3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; 98 is sole viable path)
-   - **98** [RESEARCHED] — Research filtration/quasimodel pivot: Phase 5 blocked on chain realization
+   - **98** [PLANNED] — Research filtration/quasimodel pivot: plan v5 BX7 direct proof approach
      - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
      - **100** [COMPLETED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
@@ -128,7 +128,7 @@ technical_debt:
 
 ### 98. Research filtration or quasimodel pivot for Until/Since truth lemma
 - **Effort**: 8-12 hours (research) + 70-135h (plan v4 implementation)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Dependencies**: Task #99, Task #100
 - **Language**: lean4
 - **Parent Task**: #92
@@ -142,6 +142,7 @@ technical_debt:
   - [02_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/02_quasimodel-pivot-plan.md)
   - [03_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/03_quasimodel-pivot-plan.md)
   - [04_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/04_quasimodel-pivot-plan.md)
+  - [05_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/05_quasimodel-pivot-plan.md)
 
 **Description**: Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Deliverables: filtration vs quasimodel comparison, cascade-cost audit, local quasimodel sketch, revised effort estimate, go/no-go recommendation. **Result**: Round 1: CONDITIONAL GO on local quasimodel (25-45h). Round 2: 6 sorries confirmed UNPROVABLE under bx_le framework — must restructure Realization.lean to use Hintikka chain with guard-by-definition.
 
