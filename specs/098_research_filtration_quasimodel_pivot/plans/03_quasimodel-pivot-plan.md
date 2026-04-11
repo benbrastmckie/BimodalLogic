@@ -95,7 +95,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Bigconj and EnrichedClosure Definition [NOT STARTED]
+### Phase 1: Bigconj and EnrichedClosure Definition [PARTIAL]
 
 **Goal**: Define the Fisher-Ladner closure and its core helper functions in isolation so they can be typechecked before any refactor.
 

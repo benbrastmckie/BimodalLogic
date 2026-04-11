@@ -875,18 +875,18 @@
     {
       "project_number": 98,
       "project_name": "research_filtration_quasimodel_pivot",
-      "status": "planned",
+      "status": "implementing",
       "language": "logic",
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-11T01:19:01Z",
+      "last_updated": "2026-04-11T12:10:00Z",
       "related_tasks": [
         92,
         96,
         97
       ],
-      "session_id": "sess_1775870022_312993",
+      "session_id": "sess_1775870486_f3131c",
       "parent_task": 92,
       "next_artifact_number": 4,
       "artifacts": [
@@ -939,11 +939,16 @@
           "path": "specs/098_research_filtration_quasimodel_pivot/plans/03_quasimodel-pivot-plan.md",
           "type": "plan",
           "summary": "Plan v3: 8 phases, 52-98h. EnrichedClosure (Fisher-Ladner) approach. Gates A/B, closes 10 sorries (R1-R6 Realization, F1-F4 Frame)."
+        },
+        {
+          "path": "specs/098_research_filtration_quasimodel_pivot/summaries/03_enrichedclosure-implementation-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 partial: bigconj/neg_bigconj and Fisher-Ladner enrichedClosure scaffolding landed, lake build 949/949 clean, zero new sorries/axioms. 10 target sorries preserved. Phases 2-8 not attempted (52-98h exceeds single session)."
         }
       ],
       "dependencies": [],
       "researched": "2026-04-11T00:09:58Z",
-      "resume_phase": 5,
+      "resume_phase": 1,
       "plan_metadata": {
         "phases": 8,
         "total_effort_hours": 72,
