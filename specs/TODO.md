@@ -96,7 +96,7 @@ technical_debt:
 
 ### 98. Research filtration or quasimodel pivot for Until/Since truth lemma
 - **Effort**: 8-12 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: logic
 - **Dependencies**: None
 - **Parent Task**: #92
@@ -104,9 +104,11 @@ technical_debt:
 - **Research**:
   - [01_filtration-quasimodel-pivot.md](098_research_filtration_quasimodel_pivot/reports/01_filtration-quasimodel-pivot.md)
   - [02_team-research.md](098_research_filtration_quasimodel_pivot/reports/02_team-research.md)
+  - [03_team-research.md](098_research_filtration_quasimodel_pivot/reports/03_team-research.md)
 - **Plan**:
   - [01_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/01_quasimodel-pivot-plan.md)
   - [02_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/02_quasimodel-pivot-plan.md)
+  - [03_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/03_quasimodel-pivot-plan.md)
 
 **Description**: Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Deliverables: filtration vs quasimodel comparison, cascade-cost audit, local quasimodel sketch, revised effort estimate, go/no-go recommendation. **Result**: Round 1: CONDITIONAL GO on local quasimodel (25-45h). Round 2: 6 sorries confirmed UNPROVABLE under bx_le framework — must restructure Realization.lean to use Hintikka chain with guard-by-definition.
 
