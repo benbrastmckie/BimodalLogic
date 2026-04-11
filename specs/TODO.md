@@ -44,7 +44,7 @@ technical_debt:
 3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; 98 is sole viable path)
    - **98** [BLOCKED] — Research filtration/quasimodel pivot: CONDITIONAL GO on local quasimodel (25-45h)
      - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
-     - **100** [PLANNED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
+     - **100** [COMPLETED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -98,7 +98,9 @@ technical_debt:
 
 ### 100. Revise task 98 plan v3 to plan v4 addressing Phase 5/6 blockers and zero-debt violation
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-04-10
+- **Summary**: Produced plan v4 at specs/098_research_filtration_quasimodel_pivot/plans/04_quasimodel-pivot-plan.md addressing round 4 critic findings (C.4 stricter seed via MCS witness, C.5 axiom fallback removed, C.6 BXPoint-backed oracle from task 99, C.7 rebudget to 70-135h). Plan v3 preserved unchanged. Planning-only task; no implementation work for task 100 itself.
 - **Language**: logic
 - **Dependencies**: Task #99
 - **Parent Task**: #98
