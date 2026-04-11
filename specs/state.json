@@ -875,20 +875,20 @@
     {
       "project_number": 98,
       "project_name": "research_filtration_quasimodel_pivot",
-      "status": "implementing",
+      "status": "researched",
       "language": "logic",
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-11T13:25:00Z",
+      "last_updated": "2026-04-11T13:50:00Z",
       "related_tasks": [
         92,
         96,
         97
       ],
-      "session_id": "sess_1775872721_1e9067",
+      "session_id": "sess_1775873649_08b347",
       "parent_task": 92,
-      "next_artifact_number": 8,
+      "next_artifact_number": 9,
       "artifacts": [
         {
           "type": "research",
@@ -964,10 +964,15 @@
           "path": "specs/098_research_filtration_quasimodel_pivot/summaries/07_phase4-summary.md",
           "type": "summary",
           "summary": "Phase 4 [PARTIAL]: bigconj_intro and bigconj_mem_iff delivered at DerivationTree level. chain_step_seed_consistent deferred — newly identified gap between HintikkaPoint.locally_consistent (pairwise) and derivation-level consistency needed for Teammate A reduction. 3 resolution options documented; recommends option 3 (direct BXPoint-level chain construction, 8-15h). lake build 950/950, 0 new sorries/axioms."
+        },
+        {
+          "path": "specs/098_research_filtration_quasimodel_pivot/reports/08_team-research.md",
+          "type": "research",
+          "summary": "Round 4 team research (4 teammates): recommends descoping task 98 and spawning task 99 for Option 4a (BXPoint-backed HintikkaStepOracle, 10-15h). Identifies Phase 5/6 as independent blockers requiring plan revision. Unblocks tasks 93/94 for parallel work."
         }
       ],
       "dependencies": [],
-      "researched": "2026-04-11T00:09:58Z",
+      "researched": "2026-04-11T13:50:00Z",
       "resume_phase": 4,
       "plan_metadata": {
         "phases": 8,
