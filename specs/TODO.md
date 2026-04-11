@@ -100,12 +100,13 @@ technical_debt:
 
 ### 102. Implement defect-discharge chain and close Until Since sorries
 - **Effort**: 45 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task #101
 - **Parent Task**: #98
 - **Created**: 2026-04-11
 - **Research**: [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
+- **Plan**: [01_defect-discharge-implementation.md](102_implement_quotient_filtration_close_sorries/plans/01_defect-discharge-implementation.md)
 
 **Description**: Implement the defect-discharge chain construction and close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean). Task 101 research found that a naive quotient/Setoid construction is NOT viable. Instead: (a) define sigma_le, sigma_strict, sigma_equiv on BXPoints using enrichedClosure Sigma, (b) construct defect-discharge chains via well-founded induction on sigma_defect_count, (c) prove guard extension lemma, (d) MODIFY Frame.lean sorry signatures to use sigma_strict guard instead of not-bx_le, (e) update TruthLemma.lean Until/Since cases, (f) close Realization.lean sorries via LocusControl delegation. No Mathlib Quotient/Setoid needed. New files: SigmaOrdering.lean, DefectChain.lean, GuardExtension.lean. Highest risk: Phase 3 guard extension (15h). Definition of done: lake build with zero new sorries and zero new axioms.
 
