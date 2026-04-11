@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.BXCanonical.Quasimodel.HintikkaPoint
+import Mathlib.Data.List.Chain
 
 /-!
 # Quasimodel Construction with Defect-Discharge
@@ -423,18 +424,200 @@ noncomputable def QuasimodelChain.singleton {Sigma : Finset Formula} {φ ψ : Fo
     intro i
     exact absurd i.isLt (by simp)
 
-/-! ### Phase 3 remaining work
+/-! ### `hintikka_chain_exists` via step-oracle
 
-`hintikka_chain_exists` (constructing a `QuasimodelChain` that reaches the
-witness by well-founded recursion on `defect_count`) is blocked on the
-`defect_mono` discharge from Phase 5 and the step-construction machinery
-from Phase 4. It is therefore deferred to a follow-up session along with
-Phases 4-5, where all three strands compose to the realization proof.
+The abstract existence theorem: given a step oracle that, at every
+Hintikka point carrying the target defect but missing the witness,
+produces a next point either reaching the witness or strictly
+decreasing the defect count, we can build a list of Hintikka points
+starting at `h0` with consecutive `hintikka_step` relations and
+`ψ` present at the last point.
 
-The scaffolding in this file — `untilDefectSet`, `defect_count_eq_card`,
-`hintikka_step_target_decrease`, and `QuasimodelChain` — is the Phase 3
-deliverable: it provides the termination measure, the strict-decrease
-lemma (under the monotonicity hypothesis), and the structural type that
-the recursion will populate. -/
+This lemma is purely combinatorial: it takes the oracle as a parameter
+and performs the well-founded recursion on `defect_count`. The Phase 5
+realization lifting discharges the oracle by constructing steps via
+Lindenbaum extension on the Phase 4 seed-consistent seed.
+
+We use a `HintikkaRawChain` predicate on `List (HintikkaPoint Sigma)`
+rather than extending `QuasimodelChain.target_at_head` all the way
+through, because the oracle only guarantees the target defect at
+non-terminal points. The head carries the target; interior points
+carry the target (because they did not yet reach `ψ`); the last
+point carries `ψ` but need not carry the target. -/
+
+/-- The step-oracle signature: at any Hintikka point carrying the target
+    Until-defect and missing the witness, one can step to a next point
+    either reaching the witness or strictly decreasing the defect count
+    while preserving the target defect. -/
+def HintikkaStepOracle {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
+  ∀ h : HintikkaPoint Sigma,
+    Formula.untl φ ψ ∈ h.formulas → ψ ∉ h.formulas →
+    ∃ h' : HintikkaPoint Sigma, hintikka_step h h' ∧
+      (ψ ∈ h'.formulas ∨
+        (Formula.untl φ ψ ∈ h'.formulas ∧ defect_count h' < defect_count h))
+
+/-- A raw Hintikka chain: a nonempty list of Hintikka points with each
+    consecutive pair related by `hintikka_step`.
+
+    Phrased via Mathlib's `List.IsChain` to get cons/append/last lemmas
+    for free. -/
+structure HintikkaRawChain (Sigma : Finset Formula) where
+  points : List (HintikkaPoint Sigma)
+  nonempty : points ≠ []
+  is_chain : points.IsChain hintikka_step
+
+/-- The last point of a raw chain. -/
+noncomputable def HintikkaRawChain.last {Sigma : Finset Formula}
+    (c : HintikkaRawChain Sigma) : HintikkaPoint Sigma :=
+  c.points.getLast c.nonempty
+
+/-- The head of a raw chain. -/
+noncomputable def HintikkaRawChain.head {Sigma : Finset Formula}
+    (c : HintikkaRawChain Sigma) : HintikkaPoint Sigma :=
+  c.points.head c.nonempty
+
+/-- Singleton raw chain. -/
+noncomputable def HintikkaRawChain.singleton {Sigma : Finset Formula}
+    (h : HintikkaPoint Sigma) : HintikkaRawChain Sigma where
+  points := [h]
+  nonempty := by simp
+  is_chain := by simp
+
+@[simp] theorem HintikkaRawChain.singleton_points {Sigma : Finset Formula}
+    (h : HintikkaPoint Sigma) :
+    (HintikkaRawChain.singleton h).points = [h] := rfl
+
+@[simp] theorem HintikkaRawChain.singleton_last {Sigma : Finset Formula}
+    (h : HintikkaPoint Sigma) :
+    (HintikkaRawChain.singleton h).last = h := by
+  unfold HintikkaRawChain.last
+  simp [HintikkaRawChain.singleton_points]
+
+@[simp] theorem HintikkaRawChain.singleton_head {Sigma : Finset Formula}
+    (h : HintikkaPoint Sigma) :
+    (HintikkaRawChain.singleton h).head = h := by
+  unfold HintikkaRawChain.head
+  simp [HintikkaRawChain.singleton_points]
+
+/-- Prepend a Hintikka point to a raw chain, provided the new head
+    steps to the old head. -/
+noncomputable def HintikkaRawChain.cons {Sigma : Finset Formula}
+    (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
+    (h_step : hintikka_step h0 c.head) :
+    HintikkaRawChain Sigma where
+  points := h0 :: c.points
+  nonempty := by simp
+  is_chain := by
+    -- Use List.IsChain.cons: given IsChain r l and ∀ y ∈ l.head?, r x y, get IsChain r (x :: l)
+    apply List.IsChain.cons c.is_chain
+    intro y hy
+    -- hy : y ∈ c.points.head?, need hintikka_step h0 y
+    -- c.points is nonempty, so c.points.head? = some c.head = some (c.points.head c.nonempty)
+    have h_eq : c.points.head? = some (c.points.head c.nonempty) :=
+      List.head?_eq_some_head c.nonempty
+    rw [h_eq] at hy
+    simp at hy
+    -- hy : c.points.head c.nonempty = y
+    show hintikka_step h0 y
+    have : c.head = y := by
+      unfold HintikkaRawChain.head
+      exact hy
+    rw [← this]
+    exact h_step
+
+@[simp] theorem HintikkaRawChain.cons_points {Sigma : Finset Formula}
+    (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
+    (h_step : hintikka_step h0 c.head) :
+    (HintikkaRawChain.cons h0 c h_step).points = h0 :: c.points := rfl
+
+@[simp] theorem HintikkaRawChain.cons_head {Sigma : Finset Formula}
+    (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
+    (h_step : hintikka_step h0 c.head) :
+    (HintikkaRawChain.cons h0 c h_step).head = h0 := by
+  unfold HintikkaRawChain.head
+  simp [HintikkaRawChain.cons_points]
+
+theorem HintikkaRawChain.cons_last {Sigma : Finset Formula}
+    (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
+    (h_step : hintikka_step h0 c.head) :
+    (HintikkaRawChain.cons h0 c h_step).last = c.last := by
+  unfold HintikkaRawChain.last
+  simp [HintikkaRawChain.cons_points, List.getLast_cons c.nonempty]
+
+/-- **Phase 3 main theorem**: `hintikka_chain_exists`.
+
+    Given a step oracle and a starting Hintikka point `h0` carrying the
+    target Until-defect, there exists a raw Hintikka chain starting at
+    `h0` and ending at a point where `ψ` is present.
+
+    The claim is propositional (an `∃`-statement) because the `HintikkaStepOracle`
+    itself is propositional; the chain data is extracted by the caller via
+    `Classical.choose` if they need a `noncomputable` term. -/
+theorem hintikka_chain_exists
+    {Sigma : Finset Formula} {φ ψ : Formula}
+    (oracle : HintikkaStepOracle (Sigma := Sigma) φ ψ)
+    (h0 : HintikkaPoint Sigma)
+    (h_target : Formula.untl φ ψ ∈ h0.formulas) :
+    ∃ c : HintikkaRawChain Sigma, c.head = h0 ∧ ψ ∈ c.last.formulas := by
+  -- Strong induction on `defect_count h0`.
+  -- We generalise over `h0` so the inductive hypothesis applies at the
+  -- successor Hintikka point.
+  -- Strong induction on `defect_count h0`
+  suffices h : ∀ n h0,
+      defect_count h0 = n →
+      Formula.untl φ ψ ∈ h0.formulas →
+      ∃ c : HintikkaRawChain Sigma, c.head = h0 ∧ ψ ∈ c.last.formulas by
+    exact h (defect_count h0) h0 rfl h_target
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro h0 h_n h_target
+    by_cases h_psi : ψ ∈ h0.formulas
+    · -- Already at witness: singleton chain
+      refine ⟨HintikkaRawChain.singleton h0, ?_, ?_⟩
+      · simp
+      · simpa using h_psi
+    · -- Not yet at witness: invoke oracle
+      obtain ⟨h', h_step, h_cases⟩ := oracle h0 h_target h_psi
+      rcases h_cases with h_psi' | ⟨h_target', h_dec⟩
+      · -- Oracle reached witness in one step: two-point chain [h0, h']
+        refine ⟨HintikkaRawChain.cons h0 (HintikkaRawChain.singleton h') ?_, ?_, ?_⟩
+        · -- hintikka_step h0 (singleton h').head
+          simpa [HintikkaRawChain.singleton_head] using h_step
+        · -- head = h0
+          simp
+        · -- ψ ∈ last.formulas
+          rw [HintikkaRawChain.cons_last]
+          simpa using h_psi'
+      · -- Oracle stepped to strictly smaller defect: recurse via ih
+        have h_dec' : defect_count h' < n := h_n ▸ h_dec
+        obtain ⟨c', hc'_head, hc'_witness⟩ :=
+          ih (defect_count h') h_dec' h' rfl h_target'
+        refine ⟨HintikkaRawChain.cons h0 c' (by rw [hc'_head]; exact h_step), ?_, ?_⟩
+        · simp
+        · rw [HintikkaRawChain.cons_last]; exact hc'_witness
+
+/-- **Since dual** of `hintikka_chain_exists`: the oracle goes backwards
+    (from `h'` stepping to `h`) and the strict-decrease is on
+    `since_defect_count`. -/
+def HintikkaStepOracleSince {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
+  ∀ h : HintikkaPoint Sigma,
+    Formula.snce φ ψ ∈ h.formulas → ψ ∉ h.formulas →
+    ∃ h' : HintikkaPoint Sigma, hintikka_step h' h ∧
+      (ψ ∈ h'.formulas ∨
+        (Formula.snce φ ψ ∈ h'.formulas ∧ since_defect_count h' < since_defect_count h))
+
+/-- Guard lemma: at any interior point of the raw chain built by
+    `hintikka_chain_exists`, the guard `φ ∈ h_i.formulas` holds
+    whenever the target Until is still present and the witness is
+    still absent. This follows directly from the `hintikka_step`
+    G-clause for Until propagation. -/
+theorem hintikka_chain_guard_step {Sigma : Finset Formula} {φ ψ : Formula}
+    {h1 h2 : HintikkaPoint Sigma}
+    (h_step : hintikka_step h1 h2)
+    (h_target : Formula.untl φ ψ ∈ h1.formulas)
+    (h_not : ψ ∉ h1.formulas) :
+    φ ∈ h1.formulas := by
+  exact (h_step.2.2 φ ψ h_target h_not).1
 
 end Bimodal.Metalogic.BXCanonical.Quasimodel
