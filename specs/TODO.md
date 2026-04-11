@@ -46,7 +46,7 @@ technical_debt:
      - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
      - **100** [COMPLETED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
      - **101** [COMPLETED] — Research quotient filtration model for BX completeness (8-12h)
-     - **102** [IMPLEMENTING] — Implement defect-discharge chain and close Until/Since sorries (45h, depends on 101)
+     - **102** [RESEARCHED] — Implement defect-discharge chain and close Until/Since sorries (45h, depends on 101)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -100,7 +100,7 @@ technical_debt:
 
 ### 102. Implement defect-discharge chain and close Until Since sorries
 - **Effort**: 45 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task #101
 - **Parent Task**: #98
