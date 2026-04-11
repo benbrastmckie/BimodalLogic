@@ -113,12 +113,13 @@ technical_debt:
 
 ### 101. Research quotient filtration model for BX completeness
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #98
 - **Created**: 2026-04-11
 - **Research**: [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
+- **Plan**: [01_quotient-filtration-research.md](101_research_quotient_filtration_model/plans/01_quotient-filtration-research.md)
 
 **Description**: Research and design the quotient/filtration model construction (Goldblatt 1992, Blackburn et al. 2001) for closing the 4 Frame.lean and 6 Realization.lean Until/Since sorries. The canonical ordering bx_le (g_content inclusion) is a preorder, not total. The quotient defines equivalence classes by Sigma-agreement where the ordering IS total. Research: (a) equivalence relation and BXPoint/MCS interaction, (b) Mathlib Quotient/Setoid/Fintype APIs, (c) totality proof from BX7/BX11, (d) whether Frame.lean sorry signatures can be filled directly, (e) Realization.lean delegation, (f) lifting mechanism. Output: design document mapping mathematical construction to Lean 4 definitions.
 
