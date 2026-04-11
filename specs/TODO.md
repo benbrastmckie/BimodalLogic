@@ -42,7 +42,9 @@ technical_debt:
 1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
 2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
 3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; 98 is sole viable path)
-   - **98** [RESEARCHED] — Research filtration/quasimodel pivot: CONDITIONAL GO on local quasimodel (25-45h)
+   - **98** [BLOCKED] — Research filtration/quasimodel pivot: CONDITIONAL GO on local quasimodel (25-45h)
+     - **99** [RESEARCHED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
+     - **100** [RESEARCHED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -94,9 +96,36 @@ technical_debt:
 
 ---
 
+### 100. Revise task 98 plan v3 to plan v4 addressing Phase 5/6 blockers and zero-debt violation
+- **Effort**: 2-4 hours
+- **Status**: [RESEARCHED]
+- **Language**: logic
+- **Dependencies**: Task #99
+- **Parent Task**: #98
+- **Created**: 2026-04-11
+- **Research**: [01_spawn-analysis.md](100_revise_plan_v4_phase_5_6/reports/01_spawn-analysis.md)
+
+**Description**: Revise plans/03_quasimodel-pivot-plan.md to plan v4 (04_quasimodel-pivot-plan.md) incorporating the BXPoint-backed oracle landed in task 99 and round 4 critic findings: (a) update Phase 3/4 descriptions; (b) remove Phase 6 axiom fallback (zero-debt violation); (c) add explicit Phase 5 consistency plan for realize_chain_step stricter seed obligation; (d) replace Phase 6 locus-control with zero-debt plan or explicit descope; (e) adjust Phases 4-8 effort to realistic 70-135h. Preserve plan v3 unchanged.
+
+---
+
+### 99. Implement BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency
+- **Effort**: 10-15 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #98
+- **Created**: 2026-04-11
+- **Research**: [01_spawn-analysis.md](099_bxpoint_backed_hintikka_oracle/reports/01_spawn-analysis.md)
+
+**Description**: Unblock task 98 Phase 4 by implementing Option 4a (round 4 team research, teammate B). Modify HintikkaStepOracle (Construction.lean:452) so every Hintikka point in the chain carries a concrete BXPoint witness. Thread bx_forward_witness (Frame.lean:164) through hintikka_chain_exists so each h_i = sigma_signature w_i for a witnessed MCS. Prove chain_step_seed_consistent via one-line subset witness into w.is_mcs.1. Scope narrow: Construction.lean HintikkaStepOracle + hintikka_chain_exists only. Acceptance: lake build clean, 0 new sorries/axioms, chain_step_seed_consistent proved.
+
+---
+
 ### 98. Research filtration or quasimodel pivot for Until/Since truth lemma
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [BLOCKED]
+- **Dependencies**: Task #99, Task #100
 - **Language**: logic
 - **Dependencies**: None
 - **Parent Task**: #92
