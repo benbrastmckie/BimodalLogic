@@ -689,21 +689,150 @@ theorem chain_step_seed_consistent
     exact hw α (h_sub (hL α hα))
   exact w.is_mcs.1 L h_L_in_w ⟨d⟩
 
-/-- **Since dual** of `hintikka_chain_exists`: the oracle goes backwards
-    (from `h'` stepping to `h`) and the strict-decrease is on
+/-- **Since dual** of `HintikkaStepOracle`: the oracle goes backwards
+    (producing `h'` that steps to `h`) and the strict-decrease is on
     `since_defect_count`.
 
-    TODO (task 99 follow-up / parent task 98 Phase 4 Since dual): apply
-    the same `WitnessedHintikka` / `BXPoint`-backing strengthening done
-    to `HintikkaStepOracle` above so that the Since dual of
+    Task 98 Phase 4b strengthens the Since oracle to return a
+    `WitnessedHintikka` (the same BXPoint-backing strengthening task 99
+    applied to the Until oracle) so that the Since dual of
     `chain_step_seed_consistent` can be proved by the same one-line
-    MCS-subset route. Mechanical port of this file's Until-side fix. -/
+    MCS-subset route. -/
 def HintikkaStepOracleSince {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
   ∀ h : HintikkaPoint Sigma,
     Formula.snce φ ψ ∈ h.formulas → ψ ∉ h.formulas →
-    ∃ h' : HintikkaPoint Sigma, hintikka_step h' h ∧
-      (ψ ∈ h'.formulas ∨
-        (Formula.snce φ ψ ∈ h'.formulas ∧ since_defect_count h' < since_defect_count h))
+    ∃ wh' : WitnessedHintikka Sigma, hintikka_step wh'.point h ∧
+      (ψ ∈ wh'.point.formulas ∨
+        (Formula.snce φ ψ ∈ wh'.point.formulas ∧
+          since_defect_count wh'.point < since_defect_count h))
+
+/-- Append a single Hintikka point to a raw chain, provided the old
+    last point steps to the new point. Used by `hintikka_chain_exists_since`
+    to extend chains on the right (toward the present). -/
+noncomputable def HintikkaRawChain.snoc {Sigma : Finset Formula}
+    (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
+    (h_step : hintikka_step c.last h0) :
+    HintikkaRawChain Sigma where
+  points := c.points ++ [h0]
+  nonempty := by
+    intro h_eq
+    exact c.nonempty (List.append_eq_nil_iff.mp h_eq).1
+  is_chain := by
+    apply List.IsChain.append c.is_chain (by simp)
+    intro x hx y hy
+    -- hx : x ∈ c.points.getLast?, hy : y ∈ [h0].head?
+    -- Therefore x = c.last and y = h0, and h_step gives hintikka_step x y.
+    have h_last : c.points.getLast? = some (c.points.getLast c.nonempty) :=
+      List.getLast?_eq_some_getLast c.nonempty
+    rw [h_last] at hx
+    simp at hx
+    have h_head : ([h0] : List (HintikkaPoint Sigma)).head? = some h0 := by simp
+    rw [h_head] at hy
+    simp at hy
+    show hintikka_step x y
+    rw [← hx, ← hy]
+    -- Need hintikka_step (c.points.getLast c.nonempty) h0, i.e. hintikka_step c.last h0
+    exact h_step
+
+@[simp] theorem HintikkaRawChain.snoc_points {Sigma : Finset Formula}
+    (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
+    (h_step : hintikka_step c.last h0) :
+    (c.snoc h0 h_step).points = c.points ++ [h0] := rfl
+
+theorem HintikkaRawChain.snoc_last {Sigma : Finset Formula}
+    (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
+    (h_step : hintikka_step c.last h0) :
+    (c.snoc h0 h_step).last = h0 := by
+  unfold HintikkaRawChain.last
+  simp [HintikkaRawChain.snoc_points]
+
+theorem HintikkaRawChain.snoc_head {Sigma : Finset Formula}
+    (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
+    (h_step : hintikka_step c.last h0) :
+    (c.snoc h0 h_step).head = c.head := by
+  unfold HintikkaRawChain.head
+  simp [c.nonempty]
+
+/-- **Phase 4b main theorem**: `hintikka_chain_exists_since`.
+
+    Since dual of `hintikka_chain_exists`. Given a Since step-oracle and
+    a terminal Hintikka point `h0` carrying the target Since-defect
+    (plus a concrete `BXPoint` witness `w0` backing `h0`), there exists a
+    raw Hintikka chain ending at `h0`, whose head contains `ψ`, with
+    every point backed by a concrete `BXPoint` witness (`ChainWitnessed`).
+
+    Mirrors `hintikka_chain_exists` with the chain extended on the right
+    (via `HintikkaRawChain.snoc`) rather than on the left: at each
+    recursion step, the oracle produces a predecessor `wh'.point` of the
+    current `h0`, and we recursively build a chain ending at
+    `wh'.point`, then snoc `h0` onto that chain. -/
+theorem hintikka_chain_exists_since
+    {Sigma : Finset Formula} {φ ψ : Formula}
+    (oracle : HintikkaStepOracleSince (Sigma := Sigma) φ ψ)
+    (h0 : HintikkaPoint Sigma) (w0 : BXPoint)
+    (h0_sub : ∀ f ∈ h0.formulas, f ∈ w0.formulas)
+    (h_target : Formula.snce φ ψ ∈ h0.formulas) :
+    ∃ c : HintikkaRawChain Sigma,
+      c.last = h0 ∧ ψ ∈ c.head.formulas ∧ ChainWitnessed c := by
+  -- Strong induction on `since_defect_count h0`, generalised over `h0` and `w0`.
+  suffices h : ∀ n h0 (w0 : BXPoint),
+      (∀ f ∈ h0.formulas, f ∈ w0.formulas) →
+      since_defect_count h0 = n →
+      Formula.snce φ ψ ∈ h0.formulas →
+      ∃ c : HintikkaRawChain Sigma,
+        c.last = h0 ∧ ψ ∈ c.head.formulas ∧ ChainWitnessed c by
+    exact h (since_defect_count h0) h0 w0 h0_sub rfl h_target
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro h0 w0 h0_sub h_n h_target
+    by_cases h_psi : ψ ∈ h0.formulas
+    · -- Already at witness: singleton chain.
+      refine ⟨HintikkaRawChain.singleton h0, ?_, ?_, ?_⟩
+      · simp
+      · simpa using h_psi
+      · intro h hh
+        simp [HintikkaRawChain.singleton_points] at hh
+        exact ⟨w0, by subst hh; exact h0_sub⟩
+    · -- Not yet at witness: invoke oracle to get a predecessor `wh'.point`.
+      obtain ⟨wh', h_step, h_cases⟩ := oracle h0 h_target h_psi
+      rcases h_cases with h_psi' | ⟨h_target', h_dec⟩
+      · -- Predecessor already contains ψ: chain [wh'.point, h0] via singleton.snoc.
+        have h_sing_last : (HintikkaRawChain.singleton wh'.point).last = wh'.point := by simp
+        refine ⟨(HintikkaRawChain.singleton wh'.point).snoc h0
+          (by rw [h_sing_last]; exact h_step), ?_, ?_, ?_⟩
+        · rw [HintikkaRawChain.snoc_last]
+        · rw [HintikkaRawChain.snoc_head]; simpa using h_psi'
+        · intro h hh
+          simp [HintikkaRawChain.snoc_points,
+            HintikkaRawChain.singleton_points] at hh
+          rcases hh with rfl | rfl
+          · exact ⟨wh'.witness, wh'.point_subset_witness⟩
+          · exact ⟨w0, h0_sub⟩
+      · -- Oracle stepped to strictly smaller defect: recurse on wh'.point.
+        have h_dec' : since_defect_count wh'.point < n := h_n ▸ h_dec
+        obtain ⟨c', hc'_last, hc'_head, hc'_witd⟩ :=
+          ih (since_defect_count wh'.point) h_dec' wh'.point wh'.witness
+            wh'.point_subset_witness rfl h_target'
+        refine ⟨c'.snoc h0 (by rw [hc'_last]; exact h_step), ?_, ?_, ?_⟩
+        · rw [HintikkaRawChain.snoc_last]
+        · rw [HintikkaRawChain.snoc_head]; exact hc'_head
+        · intro h hh
+          simp [HintikkaRawChain.snoc_points] at hh
+          rcases hh with h_in | rfl
+          · exact hc'_witd h h_in
+          · exact ⟨w0, h0_sub⟩
+
+/-- **Phase 4b seed-consistency lemma**: Since dual of
+    `chain_step_seed_consistent`. `ChainWitnessed` is chain-direction
+    agnostic so the Until-side proof applies verbatim. -/
+theorem chain_step_seed_consistent_since
+    {Sigma : Finset Formula}
+    {c : HintikkaRawChain Sigma} (h_wit : ChainWitnessed c)
+    {h : HintikkaPoint Sigma} (h_mem : h ∈ c.points)
+    (S : Set Formula) (h_sub : S ⊆ (h.formulas : Set Formula)) :
+    SetConsistent S :=
+  chain_step_seed_consistent (c := c) h_wit h_mem S h_sub
 
 /-- Guard lemma: at any interior point of the raw chain built by
     `hintikka_chain_exists`, the guard `φ ∈ h_i.formulas` holds
