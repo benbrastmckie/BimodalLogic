@@ -111,12 +111,13 @@ technical_debt:
 
 ### 99. Implement BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency
 - **Effort**: 10-15 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #98
 - **Created**: 2026-04-11
 - **Research**: [01_spawn-analysis.md](099_bxpoint_backed_hintikka_oracle/reports/01_spawn-analysis.md)
+- **Plan**: [01_bxpoint-backed-oracle.md](099_bxpoint_backed_hintikka_oracle/plans/01_bxpoint-backed-oracle.md)
 
 **Description**: Unblock task 98 Phase 4 by implementing Option 4a (round 4 team research, teammate B). Modify HintikkaStepOracle (Construction.lean:452) so every Hintikka point in the chain carries a concrete BXPoint witness. Thread bx_forward_witness (Frame.lean:164) through hintikka_chain_exists so each h_i = sigma_signature w_i for a witnessed MCS. Prove chain_step_seed_consistent via one-line subset witness into w.is_mcs.1. Scope narrow: Construction.lean HintikkaStepOracle + hintikka_chain_exists only. Acceptance: lake build clean, 0 new sorries/axioms, chain_step_seed_consistent proved.
 
