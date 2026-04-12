@@ -120,7 +120,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Defect-Discharge Chain Lemmas [PARTIAL]
+### Phase 2: Defect-Discharge Chain Lemmas [BLOCKED]
 
 **Goal**: Define sigma defect count and prove the per-step lemmas needed for chain construction. Complete the well-founded chain construction.
 
@@ -152,7 +152,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: BX7 Direct Proof Investigation [NOT STARTED]
+### Phase 3: BX7 Direct Proof Investigation [COMPLETED]
 
 **Goal**: Time-boxed 4-hour investigation of whether BX7 (linear_until) can directly close the Until forward sorry (`bx_until_eventuality_resolution`). This is a decision gate: success leads to Phase 4, failure leads to Phase 4-alt.
 
