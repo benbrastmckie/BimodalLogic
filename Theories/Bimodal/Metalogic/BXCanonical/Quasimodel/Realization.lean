@@ -16,50 +16,21 @@ in the canonical model, preserving the temporal ordering `bx_le`.
 
 ## Main Results
 
-- `until_eventuality_resolution`: Until eventuality resolution (partial — 2 sorries)
-- `until_backward`: Until backward direction (partial — 1 sorry)
-- `since_eventuality_resolution`: Since eventuality resolution (partial — 2 sorries)
-- `since_backward`: Since backward direction (partial — 1 sorry)
+- `until_eventuality_resolution`: Until eventuality resolution (delegates to Frame.lean)
+- `until_backward`: Until backward direction (delegates to Frame.lean)
+- `since_eventuality_resolution`: Since eventuality resolution (delegates to Frame.lean)
+- `since_backward`: Since backward direction (delegates to Frame.lean)
 
 ## Mathematical Analysis
 
-All 6 remaining sorries share the same root cause: the canonical ordering `bx_le`
-(defined as `g_content ⊆`) is a preorder but NOT a total order, and the guard
-proofs require propagating non-G formulas across `bx_le`.
+The Until/Since functions in this module now delegate to Frame.lean's canonical
+versions (identical signatures). The sorry root cause analysis has been moved
+to `CanonicalChain.lean`.
 
-### Root cause: bx_le non-totality
-
-`bx_le w v` means `g_content(w) ⊆ v.formulas`, i.e., `∀ φ, G(φ) ∈ w → φ ∈ v`.
-This is reflexive (BX1) and transitive (temp_4), but NOT total:
-two MCSs w, v can have G(p) ∈ w, p ∉ v AND G(q) ∈ v, q ∉ w simultaneously
-(where p, q are distinct atoms). BX11 (temporal linearity) constrains
-F-witnesses to be ordered but does not force g_content inclusion to be total.
-
-### Why the guard proofs fail
-
-For `until_eventuality_resolution`, the guard requires: for any u with
-`bx_le w u` and `bx_lt u v`, show `φ ∈ u`. The proof obtains a backward
-witness u' ≤ u with `(φ U ψ) ∈ u'` and `φ ∈ u'` (from BX9). But
-`φ ∈ u'` does not lift to `φ ∈ u` because `bx_le u' u` only propagates
-G-content, not arbitrary formulas.
-
-For `until_backward`, the contradiction approach obtains u with `bx_le u v`
-and `¬(φ U ψ) ∈ u`, but needs `bx_le w u` to apply the guard. The enriched
-seed `{¬(φ U ψ)} ∪ g_content(w) ∪ h_content(v)` IS consistent (proved below)
-and yields u with both `bx_le w u` and `bx_le u v`, but the final contradiction
-still requires Until-monotonicity or case analysis on `bx_le v u`.
-
-### What would close these sorries
-
-One of:
-1. **Until-induction axiom**: `(ψ ∨ (φ ∧ X(θ)) → θ) → (φ U ψ → θ)`.
-   This was removed from BX during the refactoring (BX5-BX7 were added instead).
-2. **Until goal-weakening**: `(φ U (φ ∧ ψ)) → (φ U ψ)`.
-   This appears NOT derivable from BX1-BX12.
-3. **Restructured canonical model**: Define `bx_le` differently (e.g., using
-   Until-witness ordering) so that totality is guaranteed.
-4. **Quasimodel filtration**: Work in a finite quotient model where the ordering
-   IS total by construction, then lift back to the canonical model.
+The key insight: the guard property in these signatures is mathematically
+correct but appears unprovable from BX1-BX12 due to non-totality of the
+`bx_le` preorder. See `CanonicalChain.lean` for the full analysis and
+recommended resolution path (chain-based completeness).
 
 ## References
 
@@ -454,171 +425,46 @@ theorem hintikka_step_g_prop
     χ ∈ h₂.formulas :=
   h_step.1 χ h_Gχ
 
-/-! ## Until Eventuality Resolution
-
-The main theorem for the forward Until direction. Given φ U ψ ∈ w with ψ ∉ w,
-we construct v ≥ w with ψ ∈ v and φ on the strict interval [w, v).
-
-The proof proceeds in two stages:
-1. Get a raw witness v with bx_le w v and ψ ∈ v (from bx_forward_witness + BX10)
-2. Prove the guard property using BX axioms
-
-Stage 2 has a gap: for u in the strict interval, we can derive P(φ U ψ) ∈ u
-(from BX4 + bx_G_forward), giving a backward witness u' with φ U ψ ∈ u' and
-φ ∈ u' (BX9). But φ ∈ u' does not lift to φ ∈ u because bx_le u' u only
-propagates G-content, not arbitrary formulas. -/
+/-! ## Until Eventuality Resolution (delegates to Frame.lean) -/
 
 noncomputable def until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas := by
-  -- Stage 1: Get raw witness
-  have h_F : Formula.some_future ψ ∈ w.formulas := until_F_mcs h_until
-  obtain ⟨v, h_wv, h_ψv⟩ := bx_forward_witness w ψ h_F
-  -- Stage 2: Guard property
-  have h_phi_w : φ ∈ w.formulas := by
-    rcases until_elim_mcs h_until with h | h
-    · exact h
-    · exact absurd h h_not_psi
-  have h_accum : Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ ∈ w.formulas :=
-    self_accum_mcs h_until
-  have h_connect : Formula.all_future (Formula.some_past (Formula.untl φ ψ)) ∈ w.formulas :=
-    connect_future_mcs h_until
-  refine ⟨v, h_wv, h_ψv, fun u h_wu h_uv => ?_⟩
-  -- P(φ U ψ) ∈ u (from G(P(φ U ψ)) ∈ w and bx_le w u)
-  have h_P_until_u : Formula.some_past (Formula.untl φ ψ) ∈ u.formulas :=
-    bx_G_forward h_wu h_connect
-  -- ∃ u' ≤ u with φ U ψ ∈ u'
-  obtain ⟨u', h_u'u, h_until_u'⟩ := bx_backward_witness u (Formula.untl φ ψ) h_P_until_u
-  rcases until_elim_mcs h_until_u' with h_phi_u' | h_psi_u'
-  · -- φ ∈ u': need to lift to φ ∈ u via bx_le u' u
-    -- GAP: bx_le u' u only propagates G-content.
-    -- φ ∈ u' does NOT imply G(φ) ∈ u', so φ ∈ u is not derivable.
-    -- Closing this requires Until-monotonicity or bx_le totality.
-    sorry
-  · -- ψ ∈ u': similarly need φ ∈ u
-    -- Even though ψ ∈ u' and bx_le u' u, we can't derive φ ∈ u.
-    -- Having ψ at a backward point doesn't help with the guard at u.
-    sorry
+      ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas :=
+  -- Delegate to Frame.lean's version (identical signature)
+  bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
-/-! ## Until Backward Direction
-
-Given bx_le w v, ψ ∈ v, guard φ on [w,v), and ψ ∉ w, derive φ U ψ ∈ w.
-
-The proof uses contradiction: assume ¬(φ U ψ) ∈ w, then constructs a
-witness u using the enriched seed {¬(φ U ψ)} ∪ g_content(w) ∪ h_content(v).
-This seed is provably consistent (enriched_seed_consistent_until above),
-giving u with bx_le w u AND bx_le u v AND ¬(φ U ψ) ∈ u.
-
-The remaining gap: showing bx_le v u is false (so the guard applies)
-or deriving a contradiction from φ ∈ u and ¬(φ U ψ) ∈ u. -/
+/-! ## Until Backward Direction (delegates to Frame.lean) -/
 
 noncomputable def until_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
     (h_guard : ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    Formula.untl φ ψ ∈ w.formulas := by
-  by_contra h_not_until
-  have h_neg_until : (Formula.untl φ ψ).neg ∈ w.formulas := by
-    rcases SetMaximalConsistent.negation_complete w.is_mcs (Formula.untl φ ψ) with h | h
-    · exact absurd h h_not_until
-    · exact h
-  -- Enriched seed is consistent
-  have h_seed_cons := enriched_seed_consistent_until w v φ ψ h_neg_until h_wv h_ψv
-  -- Extend to MCS
-  obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum _ h_seed_cons
-  -- Construct BXPoint u from M
-  let u : BXPoint := ⟨M, hM_mcs⟩
-  -- ¬(φ U ψ) ∈ u
-  have h_neg_until_u : (Formula.untl φ ψ).neg ∈ u.formulas :=
-    hM_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton _)))
-  -- bx_le w u: g_content(w) ⊆ u
-  have h_wu : bx_le w u := by
-    intro χ hχ
-    exact hM_sup (Set.mem_union_left _ (Set.mem_union_right _ hχ))
-  -- bx_le u v: from h_content(v) ⊆ u, via h_content_subset_implies_g_content_reverse
-  have h_hv_sub : h_content v.formulas ⊆ u.formulas := by
-    intro χ hχ
-    exact hM_sup (Set.mem_union_right _ hχ)
-  have h_uv : bx_le u v :=
-    h_content_subset_implies_g_content_reverse v.formulas M v.is_mcs hM_mcs h_hv_sub
-  -- Now we have bx_le w u and bx_le u v.
-  -- The guard applies if ¬bx_le v u.
-  -- GAP: We cannot currently show ¬bx_le v u or derive a contradiction directly.
-  -- If ¬bx_le v u: guard gives φ ∈ u, but φ ∈ u ∧ ¬(φ U ψ) ∈ u is consistent
-  -- (φ can hold while φ U ψ fails if ψ never arrives).
-  -- We have F(ψ) ∈ u (from F_from_above + bx_le u v + ψ ∈ v... wait, we need
-  -- bx_le from u to something with ψ. We have bx_le u v and ψ ∈ v.)
-  -- F(ψ) ∈ w from F_from_above h_wv h_ψv. But does F(ψ) ∈ u?
-  -- From BX4 on F(ψ) ∈ w: G(P(F(ψ))) ∈ w. bx_le w u: P(F(ψ)) ∈ u.
-  -- P(F(ψ)) ∈ u gives a backward F(ψ)-witness, not F(ψ) at u directly.
-  -- Alternatively: from bx_le u v and ψ ∈ v, by F_from_above: F(ψ) ∈ u? No,
-  -- F_from_above needs bx_le u v and gives F(ψ) ∈ u? Let me check.
-  -- bx_le u v and ψ ∈ v: BX4' on ψ: H(F(ψ)) ∈ v. bx_H_forward with bx_le u v: F(ψ) ∈ u. Yes!
-  -- So F(ψ) ∈ u. Then BX12: ⊤ U ψ ∈ u. BX7 analysis shows case 3 gives
-  -- φ U (φ ∧ (φ U ψ)) which via BX6 gives φ U ψ, contradicting ¬(φ U ψ) ∈ u.
-  -- But the BX7 disjunction is not guaranteed to land on case 3.
-  sorry
+    Formula.untl φ ψ ∈ w.formulas :=
+  -- Delegate to Frame.lean's version (identical signature)
+  bx_until_backward w φ ψ v h_wv h_ψv h_guard h_not_psi
 
-/-! ## Since Eventuality Resolution -/
+/-! ## Since Eventuality Resolution (delegates to Frame.lean) -/
 
 noncomputable def since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas := by
-  -- Mirror of Until using BX5', BX9', BX10', BX4', bx_backward_witness
-  have h_P : Formula.some_past ψ ∈ w.formulas := since_P_mcs h_since
-  obtain ⟨v, h_vw, h_ψv⟩ := bx_backward_witness w ψ h_P
-  have h_phi_w : φ ∈ w.formulas := by
-    rcases since_elim_mcs h_since with h | h
-    · exact h
-    · exact absurd h h_not_psi
-  have _h_accum := self_accum_since_mcs h_since
-  have h_connect := connect_past_mcs h_since
-  refine ⟨v, h_vw, h_ψv, fun u h_vu h_uw => ?_⟩
-  -- F(φ S ψ) ∈ u (from H(F(φ S ψ)) ∈ w and bx_le u w)
-  have h_F_since_u : Formula.some_future (Formula.snce φ ψ) ∈ u.formulas :=
-    bx_H_forward h_uw h_connect
-  obtain ⟨u', h_uu', h_since_u'⟩ := bx_forward_witness u (Formula.snce φ ψ) h_F_since_u
-  rcases since_elim_mcs h_since_u' with h_phi_u' | h_psi_u'
-  · -- φ ∈ u': same guard-lifting gap as Until
-    sorry
-  · -- ψ ∈ u': same gap
-    sorry
+      ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas :=
+  -- Delegate to Frame.lean's version (identical signature)
+  bx_since_eventuality_resolution w φ ψ h_since h_not_psi
 
 noncomputable def since_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
     (h_guard : ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    Formula.snce φ ψ ∈ w.formulas := by
-  by_contra h_not_since
-  have h_neg_since : (Formula.snce φ ψ).neg ∈ w.formulas := by
-    rcases SetMaximalConsistent.negation_complete w.is_mcs (Formula.snce φ ψ) with h | h
-    · exact absurd h h_not_since
-    · exact h
-  -- Enriched seed for Since direction
-  have h_seed_cons := enriched_seed_consistent_since w v φ ψ h_neg_since h_vw h_ψv
-  obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum _ h_seed_cons
-  let u : BXPoint := ⟨M, hM_mcs⟩
-  have h_neg_since_u : (Formula.snce φ ψ).neg ∈ u.formulas :=
-    hM_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton _)))
-  -- bx_le u w: from h_content(w) ⊆ u, via h_content_subset_implies_g_content_reverse
-  have h_hw_sub : h_content w.formulas ⊆ u.formulas := by
-    intro χ hχ
-    exact hM_sup (Set.mem_union_left _ (Set.mem_union_right _ hχ))
-  have h_uw : bx_le u w :=
-    h_content_subset_implies_g_content_reverse w.formulas M w.is_mcs hM_mcs h_hw_sub
-  -- bx_le v u: from g_content(v) ⊆ u
-  have h_vu : bx_le v u := by
-    intro χ hχ
-    exact hM_sup (Set.mem_union_right _ hχ)
-  -- Same gap as until_backward: need ¬bx_le u v or alternative contradiction path
-  sorry
+    Formula.snce φ ψ ∈ w.formulas :=
+  -- Delegate to Frame.lean's version (identical signature)
+  bx_since_backward w φ ψ v h_vw h_ψv h_guard h_not_psi
 
 end Bimodal.Metalogic.BXCanonical.Quasimodel
