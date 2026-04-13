@@ -16,13 +16,17 @@ which constructs a canonical frame of maximally consistent sets ordered by
 
 **Active-path sorry summary** (the only sorries blocking `bx_completeness`):
 
-| Category | Count | Location |
-|----------|-------|----------|
-| Until/Since eventuality + backward | 4 | `Metalogic/BXCanonical/Frame.lean:653, 675, 690, 704` |
-| Box modal-equivalence witness | 1 | `Metalogic/BXCanonical/Frame.lean:440` |
-| TaskModel embedding (final step) | 1 | `Metalogic/BXCanonical/Completeness.lean:154` |
-| **Active-path total** | **6** | all inside `BXCanonical/` |
-| Legacy strict-semantics files | ~210 | `UltrafilterChain.lean`, `FrameConditions/Completeness.lean`, `DovetailedChain.lean`, `SuccChainFMCS.lean` (to be archived by task 94) |
+> **⚠ STALE (2026-04-12 review)**: This table was accurate at task 91 (2026-04-10).
+> Since then, tasks 90+92+98+102 closed all Frame.lean sorries.
+> **Actual state**: 1 sorry remains (Completeness.lean:154). See task 103 for full rewrite.
+
+| Category | Count | Location | Status (2026-04-12) |
+|----------|-------|----------|---------------------|
+| Until/Since eventuality + backward | ~~4~~ 0 | `Frame.lean:653, 675, 690, 704` | **CLOSED** (tasks 98+102) |
+| Box modal-equivalence witness | ~~1~~ 0 | `Frame.lean:440` | **CLOSED** (task 102) |
+| TaskModel embedding (final step) | 1 | `Completeness.lean:154` | **OPEN** (task 93) |
+| **Active-path total** | **1** | `BXCanonical/Completeness.lean:154` | |
+| Legacy strict-semantics files | ~210 | various (to be archived by task 94) | Pending archival |
 
 See sections below for the axiom system, reflexive semantics, canonical
 construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy.
@@ -588,18 +592,25 @@ characterization.
 
 ## Task Cross-Reference
 
+> **Updated 2026-04-12 (review task 103 pending full rewrite)**
+
 | Task | Status | Description | Depends On |
 |------|--------|-------------|------------|
-| 91 | [IMPLEMENTING] | Rewrite ROAD_MAP.md for BX reflexive semantics (this task) | — |
-| 94 | [NOT STARTED] | Archive strict-semantics legacy files to Boneyard | 91 |
-| 90 | [NOT STARTED] | Research Option A vs Option B for Until/Since closure | 91 |
-| 92 | [NOT STARTED] | Implement chosen Until/Since approach; close 4 Frame.lean sorries | 90 |
-| 93 | [NOT STARTED] | Close Frame.lean:440 (Box) and Completeness.lean:154 (TaskModel) | 92 |
+| 91 | **[COMPLETED]** | Rewrite ROAD_MAP.md for BX reflexive semantics | — |
+| 90 | **[COMPLETED]** | Research Option A vs Option B for Until/Since closure | — |
+| 92 | **[COMPLETED]** | Implement Until/Since truth lemma approach | 90 |
+| 98 | **[COMPLETED]** | Implement eventuality resolution (Frame.lean:653, 690) | 92 |
+| 102 | **[COMPLETED]** | Close remaining Frame.lean sorries (675, 704, 440) | 98 |
+| 93 | [NOT STARTED] | Close Completeness.lean:154 (TaskModel embedding) — **sole remaining sorry** | 102 |
 | 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 93 |
-| 68 | [NOT STARTED] | Dense completeness via ℚ canonical model | — (independent) |
-| 82 | [NOT STARTED] | FMP Truth Preservation (decidability track) | — (independent) |
-| 60 | [NOT STARTED] | Remove `discrete_Icc_finite_axiom` | — (independent) |
+| 103 | [NOT STARTED] | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
+| 94 | [NOT STARTED] | Archive strict-semantics legacy files to Boneyard | 103 |
+| 104 | [NOT STARTED] | Clean up superseded tasks + fix state.json | — |
+| 105 | [NOT STARTED] | Update stale sorry-blocker comments in BXCanonical | — |
+| 82 | [NOT STARTED] | FMP Truth Preservation (weak completeness, independent) | — |
+| 68 | [RESEARCHED] | Dense completeness via ℚ canonical model | — (independent) |
+| 60 | [NOT STARTED] | Remove `discrete_Icc_finite_axiom` (may already be gone) | — |
 
 ---
 
-*Last updated: 2026-04-10 (task 91)*
+*Last updated: 2026-04-12 (review)*

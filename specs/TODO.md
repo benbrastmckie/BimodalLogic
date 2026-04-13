@@ -1,22 +1,22 @@
 ---
-next_project_number: 90
+next_project_number: 106
 repository_health:
-  overall_score: 92
-  production_readiness: improved
-  last_assessed: 2026-04-13T00:00:00Z
+  overall_score: 95
+  production_readiness: near-publication
+  last_assessed: 2026-04-12T00:00:00Z
 task_counts:
-  active: 23
-  completed: 750
+  active: 27
+  completed: 758
   in_progress: 0
-  not_started: 10
+  not_started: 13
   abandoned: 69
-  total: 842
+  total: 854
 technical_debt:
-  sorry_count: 20
-  sorry_count_note: "Audited 2026-03-31: 12 examples/exercises, 1 soundness (temporal_duality, intentional), 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 59 filled 4 soundness sorries."
-  publication_path_sorries: 4
-  axiom_count: 1
-  axiom_count_note: "discrete_Icc_finite_axiom (task 60). f_nesting_boundary/p_nesting_boundary eliminated in task 56."
+  sorry_count: 23
+  sorry_count_note: "Audited 2026-04-12: 1 active-path (BXCanonical/Completeness.lean:154), 2 FrameConditions wiring, ~20 legacy (task 94 archival), ~57 examples, ~21 Boneyard. Soundness and Decidability are sorry-free."
+  publication_path_sorries: 1
+  axiom_count: 0
+  axiom_count_note: "Zero custom axioms. discrete_Icc_finite_axiom eliminated. f_nesting_boundary/p_nesting_boundary eliminated in task 56."
   build_errors: 0
   status: excellent
 ---
@@ -27,29 +27,25 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-13. Tasks 92, 98, 102 completed: all 4 Frame.lean Until/Since sorries closed. Next: 93 (Box + Completeness embedding), then 95 (verification audit).*
+*Updated 2026-04-12. Review: tasks 90-92, 98-102 completed (all Frame.lean sorries closed). Pruned 91 (completed). Added 103-105 from review. Task 89 superseded.*
 
-**Goal**: Close BXCanonical completeness via Burgess-Xu Until-induction; archive strict-semantics legacy; zero custom axioms.
+**Goal**: Close the final BXCanonical sorry (TaskModel embedding), archive legacy code, produce publication-quality completeness proof.
 
-### 1. Critical Path — BXCanonical Completeness
+### 1. Critical Path ��� BXCanonical Completeness
 
 ```
 93 → 95
-91 → 94
-60 (independent)
+103 → 94
 ```
 
-1. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154
+1. **93** [NOT STARTED] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
-3. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture
-4. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
-5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom, independent)
+3. **103** [NOT STARTED] — Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
+4. **94** [NOT STARTED] — Archive legacy strict-semantics code to Boneyard (~210 sorry drop)
+5. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
+6. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
 
-### 2. Superseded / Legacy
-
-- **89** [RESEARCHED] — Superseded by 90+92. Stale semantic state.
-
-### 3. Independent Completeness Paths (parallel)
+### 2. Independent Completeness Paths (parallel)
 
 - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries — gives weak completeness
 - **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (needs Rat construction)
@@ -90,16 +86,51 @@ technical_debt:
 
 ---
 
-### 93. Complete BXCanonical canonical model embedding
-- **Effort**: 4-8 hours
+### 105. Update stale sorry-blocker comments in BXCanonical code
+- **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
 - **Language**: lean4
 - **Priority**: high
-- **Dependencies**: Task 92
-- **Created**: 2026-04-10
-- **Related**: Tasks 92, 95
+- **Created**: 2026-04-12
+- **Related**: Tasks 93, 102
 
-**Description**: Close the remaining two BXCanonical sorries after task 92: (1) Box-direction sorry at `BXCanonical/Frame.lean:440` via the standard canonical-model argument for modal Box using `bx_modal_equiv`; (2) TaskModel embedding sorry at `BXCanonical/Completeness.lean:154` constructing a `TaskModel` from the BXPoint canonical frame. Once closed together with task 92, `completeness_over_Int` becomes sorry-free through `BXCanonical`, and the top-level completeness theorem's `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`.
+**Description**: Update stale sorry-blocker comments in BXCanonical code files. (1) Completeness.lean:149-153 lists Until/Since and Frame.lean X-vs-G mismatch as remaining blockers — these are now resolved by tasks 98+102. (2) Frame.lean:440-441 says "For now, sorry the full modal equivalence" but the proof is now complete. (3) BXCanonical.lean:20 says "sorry for full completeness" — should note only TaskModel embedding remains. (4) Verify no other stale sorry references in the 13 BXCanonical files. Also update X/Y operator docstrings in Formula.lean:328-334 (reference stale strict semantics).
+
+---
+
+### 104. Clean up superseded tasks and fix state.json
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Priority**: high
+- **Created**: 2026-04-12
+
+**Description**: Clean up superseded and stale tasks: (1) Abandon task 89 (Close 4 Frame.lean sorries) — fully superseded by completed tasks 90+92+98+102 which closed all 4 sorries. (2) Update task 60 to remove dependency on nonexistent task 59 and reassess whether the axiom is actually gone (no Lean `axiom` declaration found). (3) Assess task 87 (full representation via Bundle/) for supersession by BXCanonical approach. (4) Clarify task 998 vs task 82 semantics assumptions. (5) Fix state.json technical_debt metrics.
+
+---
+
+### 103. Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Priority**: critical
+- **Created**: 2026-04-12
+- **Related**: Tasks 91, 93, 95
+
+**Description**: Comprehensive ROAD_MAP.md rewrite reflecting post-Until/Since closure state. The current ROAD_MAP.md (written during task 91, 2026-04-10) has critical factual errors: (1) Active-path sorry inventory says 6 but only 1 remains (Completeness.lean:154); (2) Task cross-reference table shows completed tasks as NOT STARTED; (3) Recommended priority order lists completed tasks; (4) New BXCanonical infrastructure (Quasimodel/, Filtration/, CanonicalChain.lean — 7 new files) is undocumented. Must update: sorry inventory, task cross-reference, priority order, module import graph, add section documenting the quasimodel approach that closed Until/Since. Publication-blocking.
+
+---
+
+### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Priority**: critical
+- **Dependencies**: None (tasks 90, 92, 98, 102 completed)
+- **Created**: 2026-04-10
+- **Related**: Tasks 92, 95, 102
+
+**Description**: Close the sole remaining BXCanonical sorry: TaskModel embedding at `BXCanonical/Completeness.lean:154`. This constructs a `TaskModel` from the BXPoint canonical frame. The Box-direction sorry (Frame.lean:440) was closed by task 102. All 4 Until/Since sorries (Frame.lean:653, 675, 690, 704) were closed by tasks 90+92+98+102. Once this sorry is closed, `bx_completeness` becomes sorry-free, and `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`. The TaskModel embedding must use non-constant histories (constant histories collapse G to identity — see ROAD_MAP.md anti-pattern #12).
 
 ---
 
