@@ -100,7 +100,7 @@ technical_debt:
 
 ### 102. Implement defect-discharge chain and close Until Since sorries
 - **Effort**: 38 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task #101
 - **Parent Task**: #98
@@ -110,7 +110,9 @@ technical_debt:
   - [02_team-research.md](102_implement_quotient_filtration_close_sorries/reports/02_team-research.md)
   - [03_team-research.md](102_implement_quotient_filtration_close_sorries/reports/03_team-research.md)
   - [04_task-semantics-research.md](102_implement_quotient_filtration_close_sorries/reports/04_task-semantics-research.md)
-- **Plan**: [02_defect-discharge-implementation.md](102_implement_quotient_filtration_close_sorries/plans/02_defect-discharge-implementation.md)
+- **Plan**:
+  - [02_defect-discharge-implementation.md](102_implement_quotient_filtration_close_sorries/plans/02_defect-discharge-implementation.md)
+  - [04_canonical-chain-plan.md](102_implement_quotient_filtration_close_sorries/plans/04_canonical-chain-plan.md)
 
 **Description**: Close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean) using a staged approach: (1) BX7 direct proof investigation (time-boxed 4h) using linear_until axiom with F(psi) at intermediate points, (2) if BX7 fails, construct independent finite linear model from defect-discharge chains with position-based total ordering, (3) close Realization.lean by deleting independent implementations and delegating to Frame.lean. Round 2 team research confirmed bx_le non-totality is architectural (non-standard in literature); sigma_strict guard weakening creates equal bridge problems. Phase 1 (SigmaOrdering) complete, Phase 2 (DefectChain) partial. Highest risk: BX7 disjunct analysis (Phase 3, 4h gate). Definition of done: lake build with zero new sorries and zero new axioms.
 
