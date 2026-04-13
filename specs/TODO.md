@@ -5,15 +5,15 @@ repository_health:
   production_readiness: near-publication
   last_assessed: 2026-04-12T00:00:00Z
 task_counts:
-  active: 27
-  completed: 758
+  active: 24
+  completed: 760
   in_progress: 0
   not_started: 13
   abandoned: 69
-  total: 854
+  total: 853
 technical_debt:
-  sorry_count: 23
-  sorry_count_note: "Audited 2026-04-12: 1 active-path (BXCanonical/Completeness.lean:154), 2 FrameConditions wiring, ~20 legacy (task 94 archival), ~57 examples, ~21 Boneyard. Soundness and Decidability are sorry-free."
+  sorry_count: 140
+  sorry_count_note: "Audited 2026-04-12: 140 non-Boneyard (1 active-path at BXCanonical/Completeness.lean:154), 171 Boneyard (includes 107 archived by task 94). Soundness and Decidability are sorry-free."
   publication_path_sorries: 1
   axiom_count: 0
   axiom_count_note: "Zero custom axioms. discrete_Icc_finite_axiom eliminated. f_nesting_boundary/p_nesting_boundary eliminated in task 56."
@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-12. Review: tasks 90-92, 98-102 completed (all Frame.lean sorries closed). Pruned 91 (completed). Added 103-105 from review. Task 89 superseded.*
+*Updated 2026-04-12. Review: tasks 90-92, 98-102 completed (all Frame.lean sorries closed). Pruned 91 (completed). Added 103-105 from review. Task 89 superseded. Tasks 94, 103 completed (archived).*
 
 **Goal**: Close the final BXCanonical sorry (TaskModel embedding), archive legacy code, produce publication-quality completeness proof.
 
@@ -35,15 +35,12 @@ technical_debt:
 
 ```
 93 → 95
-103 → 94
 ```
 
 1. **93** [RESEARCHING] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
-3. **103** [COMPLETED] — Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
-4. **94** [RESEARCHED] — Archive legacy strict-semantics code to Boneyard (~210 sorry drop)
-5. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
-6. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
+3. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
+4. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
 
 ### 2. Independent Completeness Paths (parallel)
 
@@ -109,21 +106,6 @@ technical_debt:
 
 ---
 
-### 103. Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Priority**: critical
-- **Created**: 2026-04-12
-- **Related**: Tasks 91, 93, 95
-- **Research**: [01_roadmap-rewrite-research.md](specs/103_rewrite_roadmap_post_until_since/reports/01_roadmap-rewrite-research.md)
-- **Plan**: [01_roadmap-rewrite-plan.md](specs/103_rewrite_roadmap_post_until_since/plans/01_roadmap-rewrite-plan.md)
-- **Summary**: [01_roadmap-rewrite-summary.md](specs/103_rewrite_roadmap_post_until_since/summaries/01_roadmap-rewrite-summary.md)
-
-**Description**: Comprehensive ROAD_MAP.md rewrite reflecting post-Until/Since closure state. The current ROAD_MAP.md (written during task 91, 2026-04-10) has critical factual errors: (1) Active-path sorry inventory says 6 but only 1 remains (Completeness.lean:154); (2) Task cross-reference table shows completed tasks as NOT STARTED; (3) Recommended priority order lists completed tasks; (4) New BXCanonical infrastructure (Quasimodel/, Filtration/, CanonicalChain.lean — 7 new files) is undocumented. Must update: sorry inventory, task cross-reference, priority order, module import graph, add section documenting the quasimodel approach that closed Until/Since. Publication-blocking.
-
----
-
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
 - **Status**: [RESEARCHING]
@@ -134,22 +116,6 @@ technical_debt:
 - **Related**: Tasks 92, 95, 102
 
 **Description**: Close the sole remaining BXCanonical sorry: TaskModel embedding at `BXCanonical/Completeness.lean:154`. This constructs a `TaskModel` from the BXPoint canonical frame. The Box-direction sorry (Frame.lean:440) was closed by task 102. All 4 Until/Since sorries (Frame.lean:653, 675, 690, 704) were closed by tasks 90+92+98+102. Once this sorry is closed, `bx_completeness` becomes sorry-free, and `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`. The TaskModel embedding must use non-constant histories (constant histories collapse G to identity — see ROAD_MAP.md anti-pattern #12).
-
----
-
-### 94. Archive strict-semantics legacy code to Boneyard
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Priority**: medium
-- **Dependencies**: Task 91
-- **Created**: 2026-04-10
-- **Related**: Tasks 58 (closes), 91
-- **Research**: [01_archive-strict-legacy.md](specs/094_archive_strict_semantics_legacy/reports/01_archive-strict-legacy.md)
-- **Plan**: [01_archive-strict-legacy.md](specs/094_archive_strict_semantics_legacy/plans/01_archive-strict-legacy.md)
-- **Summary**: [01_archive-strict-legacy-summary.md](specs/094_archive_strict_semantics_legacy/summaries/01_archive-strict-legacy-summary.md)
-
-**Description**: Move the legacy strict-semantics completeness code to `Boneyard/StrictSemanticsLegacy/` with a README explaining its history. Files: `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` (~67 sorries), `Theories/Bimodal/FrameConditions/Completeness.lean` (~54 sorries), `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` (~29 sorries), `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` (~61 sorries). These were written under strict temporal semantics (strict G/H, strict U/S) before the codebase reverted to reflexive BX semantics; their sorry count reflects architectural incompatibility, not real mathematical gaps. Update any importers (`Metalogic.lean` already points to `BXCanonical`). Mechanically drops ~210 sorries from the non-Boneyard count. Update `state.json.technical_debt` to reflect new counts. Also formally closes task 58 (which was blocked on this legacy path). Do after task 91 so the Boneyard README can cite the authoritative roadmap.
 
 ---
 

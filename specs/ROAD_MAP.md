@@ -21,7 +21,7 @@ which constructs a canonical frame of maximally consistent sets ordered by
 |----------|-------|----------|--------|
 | TaskModel embedding (final step) | 1 | `Completeness.lean:154` | **OPEN** (task 93) |
 | **Active-path total** | **1** | | |
-| Legacy strict-semantics files | ~20 | various (to be archived by task 94) | Pending archival |
+| Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) |
 
 See sections below for the axiom system, reflexive semantics, canonical
 construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy.
