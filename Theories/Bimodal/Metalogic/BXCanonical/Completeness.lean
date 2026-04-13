@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.BXCanonical.TruthLemma
+import Bimodal.Metalogic.BXCanonical.CanonicalModel
 import Bimodal.Semantics.Validity
 
 /-!
@@ -25,12 +25,11 @@ theorem bx_completeness (φ : Formula) :
 
 ## Status
 
-The completeness theorem is stated. The proof requires:
-- Canonical TaskModel construction (embedding BXPoints into TaskFrame)
-- Full truth lemma (all formula cases)
-- Until/Since eventuality resolution
+The completeness proof is wired through `bx_countermodel` from CanonicalModel.lean.
+The sorry at the proof site has been replaced with a proof using the BXCanonical
+canonical model construction and parametric algebraic representation theorem.
 
-Currently sorry'd pending completion of the canonical model embedding.
+Remaining leaf sorries are in CanonicalModel.lean (temporal coherence proofs).
 
 ## References
 
@@ -114,12 +113,12 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 1. Assume φ is not derivable
 2. By `neg_consistent_of_not_derivable`: {¬φ} is consistent
 3. By Lindenbaum: extend to MCS w₀ with ¬φ ∈ w₀
-4. Build canonical model (sorry'd: requires TaskModel embedding)
-5. By truth lemma: φ is false at w₀ in the model
-6. Therefore φ is not valid
+4. Build canonical model via `bx_countermodel` (CanonicalModel.lean)
+5. By parametric truth lemma: φ is false at the canonical evaluation point
+6. Instantiate `valid φ` at the canonical model to get truth, contradiction
 
-**Status**: The consistency argument and MCS construction are proved.
-The canonical model embedding is sorry'd.
+**Status**: Proof completed via `bx_countermodel`. Remaining leaf sorries
+are in CanonicalModel.lean (temporal coherence, modal saturation).
 -/
 theorem bx_completeness (φ : Formula) :
     valid φ → Nonempty (DerivationTree [] φ) := by
@@ -137,21 +136,11 @@ theorem bx_completeness (φ : Formula) :
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   -- φ ∉ M (since ¬φ ∈ M and M is MCS)
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
-  -- Now we need: valid φ implies φ ∈ M (for any MCS M).
-  -- This requires the canonical model construction.
-  -- Build canonical TaskModel and show φ false at w₀.
-  --
-  -- **Status**: Requires canonical model construction showing φ false at w₀.
-  -- The constant-history approach (CanonicalEmbedding.lean) was permanently
-  -- rejected: G collapses to identity on constant histories, making temporal
-  -- truth bridges impossible. See ROAD_MAP.md anti-pattern entry.
-  --
-  -- Remaining blockers:
-  -- - G/H case: needs non-constant histories visiting multiple BXPoints
-  -- - Until/Since case: needs eventuality resolution (Frame.lean sorries)
-  -- - Frame.lean X-vs-G mismatch: Until formulas don't propagate through
-  --   g_content-based bx_le ordering
-  sorry
+  -- Build canonical model and derive contradiction
+  obtain ⟨D, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+    bx_countermodel M hM_mcs φ h_neg_in
+  -- valid φ gives truth at every point, including the countermodel point
+  exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
 /--
 BX Completeness (alternate form): valid → derivable.

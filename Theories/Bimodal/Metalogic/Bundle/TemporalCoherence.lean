@@ -555,6 +555,36 @@ theorem BFMCS.forward_implies_restricted_forward (B : BFMCS D) (root : Formula)
   exact ⟨fun t φ ψ _ h_mem => h_fwd_U t φ ψ h_mem,
          fun t φ ψ _ h_mem => h_fwd_S t φ ψ h_mem⟩
 
+/--
+Restricted backward Until/Since coherence: conjuncts 2 and 4 of `until_since_coherent`,
+but quantifying only over Until/Since formulas in `subformulaClosure(root)`.
+
+This weakening is sufficient for the truth lemma, which only needs coherence for
+formulas that appear as subformulas of the root formula being evaluated.
+-/
+def BFMCS.restricted_backward_until_since_coherent (B : BFMCS D) (root : Formula) : Prop :=
+  ∀ fam ∈ B.families,
+    (∀ t : D, ∀ φ ψ : Formula,
+      Formula.untl φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
+      (∃ s : D, t ≤ s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) →
+      Formula.untl φ ψ ∈ fam.mcs t) ∧
+    (∀ t : D, ∀ φ ψ : Formula,
+      Formula.snce φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
+      (∃ s : D, s ≤ t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) →
+      Formula.snce φ ψ ∈ fam.mcs t)
+
+omit [Zero D] in
+/--
+Full backward coherence implies restricted backward coherence for any root.
+-/
+theorem BFMCS.backward_implies_restricted_backward (B : BFMCS D) (root : Formula)
+    (h_buc : B.backward_until_since_coherent) :
+    B.restricted_backward_until_since_coherent root := by
+  intro fam hfam
+  obtain ⟨h_bwd_U, h_bwd_S⟩ := h_buc fam hfam
+  exact ⟨fun t φ ψ _ h_wit => h_bwd_U t φ ψ h_wit,
+         fun t φ ψ _ h_wit => h_bwd_S t φ ψ h_wit⟩
+
 omit [Zero D] in
 /--
 Recombination: backward + forward implies the original `until_since_coherent`.

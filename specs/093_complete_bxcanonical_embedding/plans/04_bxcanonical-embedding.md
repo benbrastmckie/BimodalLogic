@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Temporal Coherence Sorries
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 8 hours
 - **Dependencies**: None (task 92 already completed)
 - **Research Inputs**: reports/04_team-research.md, reports/02_team-research.md
@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Restricted Truth Lemma and Representation [NOT STARTED]
+### Phase 1: Restricted Truth Lemma and Representation [COMPLETED]
 
 **Goal**: Create a restricted parametric truth lemma that accepts `restricted_temporally_coherent root` (plus restricted Until/Since coherence) instead of full `temporally_coherent`, for evaluating a specific target formula `root`. Then create a restricted representation theorem that uses it.
 
@@ -99,7 +99,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Modify Chain Construction for Deferral Seeds [NOT STARTED]
+### Phase 2: Modify Chain Construction for Deferral Seeds [BLOCKED]
 
 **Goal**: Replace the current `fwd_succ`/`bwd_pred` chain step functions with versions that use `successor_deferral_seed` from `SuccExistence.lean`, ensuring F/P obligations are preserved via resolve-or-defer disjunctions rather than the current f_carry/p_carry approach that fails at resolving steps.
 
@@ -125,7 +125,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove Restricted Forward_F, Backward_P, and Until/Since Coherence [NOT STARTED]
+### Phase 3: Prove Restricted Forward_F, Backward_P, and Until/Since Coherence [BLOCKED]
 
 **Goal**: Close the 4 sorry in `CanonicalModel.lean` using the deferral chain from Phase 2 and the restricted coherence definitions.
 
@@ -151,7 +151,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Wire Restricted Infrastructure into Completeness [NOT STARTED]
+### Phase 4: Wire Restricted Infrastructure into Completeness [COMPLETED]
 
 **Goal**: Update `bx_countermodel` and `bx_completeness` to use the restricted representation theorem from Phase 1, passing `restricted_temporally_coherent root` instead of `temporally_coherent`.
 
