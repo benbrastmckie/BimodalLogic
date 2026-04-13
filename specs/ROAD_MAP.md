@@ -4,7 +4,7 @@
 
 TM is a bimodal logic combining S5 modality with reflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-04-10.
+state of the completeness effort as of 2026-04-13 (post-Until/Since closure).
 
 **Architecture**: The proof system has 37 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
@@ -14,19 +14,14 @@ completeness path flows through `Theories/Bimodal/Metalogic/BXCanonical/`,
 which constructs a canonical frame of maximally consistent sets ordered by
 `g_content` inclusion.
 
-**Active-path sorry summary** (the only sorries blocking `bx_completeness`):
+**Active-path sorry summary**: There is exactly **1 sorry** blocking
+`bx_completeness`, at `Completeness.lean:154` (TaskModel embedding, task 93).
 
-> **⚠ STALE (2026-04-12 review)**: This table was accurate at task 91 (2026-04-10).
-> Since then, tasks 90+92+98+102 closed all Frame.lean sorries.
-> **Actual state**: 1 sorry remains (Completeness.lean:154). See task 103 for full rewrite.
-
-| Category | Count | Location | Status (2026-04-12) |
-|----------|-------|----------|---------------------|
-| Until/Since eventuality + backward | ~~4~~ 0 | `Frame.lean:653, 675, 690, 704` | **CLOSED** (tasks 98+102) |
-| Box modal-equivalence witness | ~~1~~ 0 | `Frame.lean:440` | **CLOSED** (task 102) |
+| Category | Count | Location | Status |
+|----------|-------|----------|--------|
 | TaskModel embedding (final step) | 1 | `Completeness.lean:154` | **OPEN** (task 93) |
-| **Active-path total** | **1** | `BXCanonical/Completeness.lean:154` | |
-| Legacy strict-semantics files | ~210 | various (to be archived by task 94) | Pending archival |
+| **Active-path total** | **1** | | |
+| Legacy strict-semantics files | ~20 | various (to be archived by task 94) | Pending archival |
 
 See sections below for the axiom system, reflexive semantics, canonical
 construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy.
@@ -259,15 +254,17 @@ def bx_modal_equiv (w v : BXPoint) : Prop :=
   consistent; uses BX1 to contradict `G(⊥) ∈ S`.
 - `bx_forward_witness` / `bx_backward_witness`: Lindenbaum extension producing
   G/H canonical witnesses.
-- `bx_modal_witness` (Frame.lean ~423+): constructs the modal-direction witness.
-  Contains the `sorry` at line 440 (see Sorry Inventory below).
+- `bx_modal_witness` (Frame.lean): constructs the modal-direction witness.
+  Sorry-free (closed by task 102).
 
 ### Truth Lemma (TruthLemma.lean:27-36)
 
-Proved by formula induction. Cases `atom`, `bot`, `imp`, `box`, `G`, `H` are
-sorry-free. The `U` and `S` cases delegate to the four `Frame.lean` helper
-lemmas (`bx_until_eventuality_resolution`, `bx_until_backward`,
-`bx_since_eventuality_resolution`, `bx_since_backward`).
+Proved by formula induction. All cases (`atom`, `bot`, `imp`, `box`, `G`, `H`,
+`U`, `S`) are **sorry-free**. The `U` and `S` cases delegate to the four
+`Frame.lean` helper lemmas (`bx_until_eventuality_resolution`,
+`bx_until_backward`, `bx_since_eventuality_resolution`,
+`bx_since_backward`), all of which were closed by tasks 98+102 via the
+quasimodel/filtration infrastructure.
 
 ### Completeness Theorem (Completeness.lean:124-154)
 
@@ -295,37 +292,34 @@ histories that visit multiple BXPoints.
 
 ## Active-Path Sorry Inventory
 
-There are exactly **6 sorries** on the active completeness path, all inside
-`Theories/Bimodal/Metalogic/BXCanonical/`. They fall into three groups:
-Until/Since eventuality resolution (4), Box modal-witness (1), and TaskModel
-embedding (1).
+There is exactly **1 sorry** on the active completeness path, inside
+`Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`.
 
-| # | File:Line | Definition | Goal Summary | Blocker | Strategy / Owning Task |
-|---|-----------|------------|--------------|---------|------------------------|
-| 1 | Frame.lean:440 | `bx_modal_witness` (Box direction of truth lemma) | Produce MCS `M` with `bx_modal_equiv w M` and `ψ ∈ M`, given `◇ψ ∈ w` | S5 argument needs modal-5 closure of `box_content` across the equivalence class | **Task 93**. Use `modal_5_collapse` + `modal_b` + Lindenbaum to show `box_content(w) = box_content(M)` |
-| 2 | Frame.lean:653 | `bx_until_eventuality_resolution` | `φUψ ∈ w, ψ ∉ w  ⊢  ∃ v, bx_le w v ∧ ψ ∈ v ∧ (∀ u ∈ [w,v), φ ∈ u)` | X-vs-G mismatch: `φUψ ∈ w` does not imply `G(φUψ) ∈ w`, so the eventuality does not propagate through the `g_content`-based `bx_le` ordering | **Tasks 90+92**. Burgess-Xu Until-induction via BX5+BX6+BX7+BX10 (Option A), or Henkin witness closure (Option B) |
-| 3 | Frame.lean:675 | `bx_until_backward` | `bx_le w v, ψ ∈ v, guard φ on [w,v), ψ ∉ w  ⊢  φUψ ∈ w` | Needs linearity of `bx_le` on the interval | **Tasks 90+92**. Contrapositive: assume `¬(φUψ) ∈ w`, use BX4 to propagate `G(P(¬(φUψ)))`, derive contradiction |
-| 4 | Frame.lean:690 | `bx_since_eventuality_resolution` | Mirror of #2 for S and `h_content` | Same as #2 | **Tasks 90+92**. Mirror using BX5', BX9', BX10' |
-| 5 | Frame.lean:704 | `bx_since_backward` | Mirror of #3 for S | Same as #3 | **Tasks 90+92**. Mirror using BX8' + BX4' |
-| 6 | Completeness.lean:154 | `bx_completeness` final step | Convert a BXPoint canonical frame into a `TaskModel F` over some `D` with `¬φ` false at `w₀` | Embedding a discrete canonical frame into `TaskFrame D` requires choosing `D` (e.g. `Int`) and defining non-constant histories. Constant histories rejected (task 88) | **Task 93**. Standard canonical-model-to-Kripke-model construction handling both the temporal dimension (linear) and the modal dimension (S5 equivalence classes) simultaneously |
+| # | File:Line | Definition | Goal Summary | Owning Task |
+|---|-----------|------------|--------------|-------------|
+| 1 | Completeness.lean:154 | `bx_completeness` final step | Convert a BXPoint canonical frame into a `TaskModel F` over some `D` with `¬φ` false at `w₀` | **Task 93** |
 
-### Current Gap Summary
+The TaskModel embedding requires choosing `D` (e.g. `Int`) and defining
+non-constant histories. Constant histories were rejected (task 88 anti-pattern):
+on constant histories, `G(α) ≡ α` semantically, so the temporal truth bridge
+fails. The embedding must use non-constant histories that visit multiple
+BXPoints.
 
-`Frame.lean:590-622` contains a module-level analysis of why the four
-Until/Since sorries are hard:
+### Closed Sorries (Tasks 90+92+98+102)
 
-- (A) An Until-induction axiom was removed in an earlier refactoring. Not
-  currently available as a direct axiom, but the BX axiom set is sufficient
-  to derive the needed induction via BX5+BX6+BX7+BX10.
-- (B) Global `bx_le` linearity is FALSE. BX7 constrains Until-witness
-  ordering, not `g_content` inclusion.
-- (C) A chain-specific construction is blocked by the X-vs-G mismatch:
-  `φ U ψ ∈ w` does not imply `G(φ U ψ) ∈ w`, so the formula does not
-  propagate forward through `g_content`.
+The following 5 sorries in `Frame.lean` were closed between 2026-04-10 and
+2026-04-12 via the quasimodel/filtration infrastructure:
 
-The Burgess-Xu Until-induction technique (next section) is the intended
-path forward: it closes the gap through proof-theoretic manipulation of the
-BX axioms rather than through a chain construction.
+| Former sorry | Definition | Closed by |
+|-------------|------------|-----------|
+| Frame.lean (formerly :440) | `bx_modal_witness` | Task 102 |
+| Frame.lean (formerly :653) | `bx_until_eventuality_resolution` | Task 98 |
+| Frame.lean (formerly :675) | `bx_until_backward` | Task 102 |
+| Frame.lean (formerly :690) | `bx_since_eventuality_resolution` | Task 98 |
+| Frame.lean (formerly :704) | `bx_since_backward` | Task 102 |
+
+Frame.lean is now **completely sorry-free** (673 lines). See "How Until/Since
+Were Closed" below for the approach that resolved these.
 
 ---
 
@@ -335,15 +329,19 @@ The following files were written under a strict-semantics architecture that
 has since been reverted to the all-reflexive BX system. They are **not
 imported by `BXCanonical`** and are not on the active completeness path.
 **Task 94** will archive them to `Boneyard/StrictSemanticsLegacy/`. Archiving
-these files mechanically drops approximately **210 sorries** from the
-codebase total.
+these files drops approximately **~20 sorries** from the active (non-Boneyard,
+non-Example) tree.
 
-| File | Approx sorries | Architecture | Imported by BXCanonical? |
-|------|---------------|--------------|---------------------------|
-| `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` | ~67 | strict G/H + SuccChain F/P witnesses | No |
-| `Theories/Bimodal/FrameConditions/Completeness.lean` | ~54 | Original full-coherence completeness | No |
-| `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` | ~29 | Dovetailed Z-chain construction | No |
-| `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` | ~61 | SuccChain FMCS + restricted coherence | No |
+| File | Approx sorries | Category | Imported by BXCanonical? |
+|------|---------------|----------|---------------------------|
+| `Metalogic/Algebraic/UltrafilterChain.lean` | 4 | Legacy strict-semantics | No |
+| `Metalogic/Algebraic/DovetailedChain.lean` | 6 | Deprecated (X-vs-G mismatch) | No |
+| `Metalogic/Algebraic/LindenbaumQuotient.lean` | 2 | temp_k_dist derivable from BX | No |
+| `Metalogic/Algebraic/InteriorOperators.lean` | 1 | temp_k_dist derivable from BX | No |
+| `Metalogic/Bundle/SuccChainFMCS.lean` | 3 | Legacy strict-semantics | No |
+| `Metalogic/Bundle/SuccRelation.lean` | 1 | Legacy | No |
+| `Metalogic/Bundle/CanonicalFrame.lean` | 1 | BX derivability | No |
+| `FrameConditions/Completeness.lean` | 2 | Wiring (temporal coherence + dense) | No |
 
 Additional legacy code still imported by `Metalogic.lean` at top-level for
 aggregation but not required for BX completeness:
@@ -514,25 +512,31 @@ warnings regardless of the semantic change.
 - Cannot reduce to `completeness_over_Int` since `Int` is not densely ordered.
 - Independent of the BX canonical construction.
 
-### FMP Truth Preservation (task 82, 2 sorries)
+### FMP Truth Preservation (task 82, 0 sorries in active tree)
 
-- `mcs_all_future_closure` and `mcs_all_past_closure` in
-  `TruthPreservation.lean`.
-- Filtration-based truth preservation for the finite model property.
-- **Decidability track only** — not a path to the completeness representation
+- The sorries previously in `TruthPreservation.lean` (`mcs_all_future_closure`
+  and `mcs_all_past_closure`) have been **archived to Boneyard**. The FMP module
+  is currently sorry-free in the active source tree.
+- Task 82's description may need reassessment: the original sorries are gone,
+  so the task may already be complete or may need a new description.
+- **Decidability track only** -- not a path to the completeness representation
   theorem.
 - Independent of BXCanonical.
 
-### Soundness Extensions (1 sorry in Soundness.lean)
+### Soundness (sorry-free)
 
-- `density`: requires `DenselyOrdered D`.
-- Frame-condition-dependent; architecture is sound.
+- `Soundness.lean`, `DenseSoundness.lean`, and `DiscreteSoundness.lean` are
+  all **entirely sorry-free**. Confirmed 2026-04-13.
 
-### Examples / Pedagogical (~14 sorries)
+### Examples / Pedagogical (~57 sorries)
 
 - `Demo.lean`, `ModalProofs.lean`, `ModalProofStrategies.lean`,
-  `TemporalProofs.lean`.
+  `TemporalProofs.lean`, and others.
 - Expected and intentional (exercises, demonstrations).
+
+### Boneyard (~14 sorries)
+
+- Archived dead code across `Boneyard/` subdirectories. Expected.
 
 ---
 
