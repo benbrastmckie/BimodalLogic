@@ -3,14 +3,14 @@ next_project_number: 90
 repository_health:
   overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-04-10T00:00:00Z
+  last_assessed: 2026-04-13T00:00:00Z
 task_counts:
-  active: 21
-  completed: 742
+  active: 23
+  completed: 750
   in_progress: 0
   not_started: 10
-  abandoned: 68
-  total: 821
+  abandoned: 69
+  total: 842
 technical_debt:
   sorry_count: 20
   sorry_count_note: "Audited 2026-03-31: 12 examples/exercises, 1 soundness (temporal_duality, intentional), 2 completeness wiring (bfmcs_from_mcs_temporally_coherent + dense), 2 FMP, 1 SuccChainTruth (intentional), 1 Demo, 1 misc. Task 59 filled 4 soundness sorries."
@@ -87,157 +87,6 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
-
----
-
-### 102. Implement defect-discharge chain and close Until Since sorries
-- **Effort**: 38 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Dependencies**: Task #101
-- **Parent Task**: #98
-- **Created**: 2026-04-11
-- **Completed**: 2026-04-13
-- **Summary**: Deleted 2 unsound backward sorry functions (bx_until_backward, bx_since_backward) from Frame.lean and all delegation wrappers. Frame.lean now has 0 sorries. lake build passes cleanly.
-- **Research**:
-  - [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
-  - [02_team-research.md](102_implement_quotient_filtration_close_sorries/reports/02_team-research.md)
-  - [03_team-research.md](102_implement_quotient_filtration_close_sorries/reports/03_team-research.md)
-  - [04_task-semantics-research.md](102_implement_quotient_filtration_close_sorries/reports/04_task-semantics-research.md)
-  - [05_team-research.md](102_implement_quotient_filtration_close_sorries/reports/05_team-research.md)
-- **Plan**:
-  - [02_defect-discharge-implementation.md](102_implement_quotient_filtration_close_sorries/plans/02_defect-discharge-implementation.md)
-  - [04_canonical-chain-plan.md](102_implement_quotient_filtration_close_sorries/plans/04_canonical-chain-plan.md)
-  - [05_signature-weakening-plan.md](102_implement_quotient_filtration_close_sorries/plans/05_signature-weakening-plan.md)
-  - [06_backward-sorry-plan.md](102_implement_quotient_filtration_close_sorries/plans/06_backward-sorry-plan.md)
-
-**Description**: Close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean) using a staged approach: (1) BX7 direct proof investigation (time-boxed 4h) using linear_until axiom with F(psi) at intermediate points, (2) if BX7 fails, construct independent finite linear model from defect-discharge chains with position-based total ordering, (3) close Realization.lean by deleting independent implementations and delegating to Frame.lean. Round 2 team research confirmed bx_le non-totality is architectural (non-standard in literature); sigma_strict guard weakening creates equal bridge problems. Phase 1 (SigmaOrdering) complete, Phase 2 (DefectChain) partial. Highest risk: BX7 disjunct analysis (Phase 3, 4h gate). Definition of done: lake build with zero new sorries and zero new axioms.
-
----
-
-### 101. Research quotient filtration model for BX completeness
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-11
-- **Summary**: Comprehensive design document for quotient/filtration model. Key findings: bx_le not total even on Sigma-classes; defect-discharge chain with modified sigma_strict guard is viable; Frame.lean sorry signatures need changes; 45h estimated for task 102.
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: #98
-- **Created**: 2026-04-11
-- **Research**: [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
-- **Plan**: [01_quotient-filtration-research.md](101_research_quotient_filtration_model/plans/01_quotient-filtration-research.md)
-
-**Description**: Research and design the quotient/filtration model construction (Goldblatt 1992, Blackburn et al. 2001) for closing the 4 Frame.lean and 6 Realization.lean Until/Since sorries. The canonical ordering bx_le (g_content inclusion) is a preorder, not total. The quotient defines equivalence classes by Sigma-agreement where the ordering IS total. Research: (a) equivalence relation and BXPoint/MCS interaction, (b) Mathlib Quotient/Setoid/Fintype APIs, (c) totality proof from BX7/BX11, (d) whether Frame.lean sorry signatures can be filled directly, (e) Realization.lean delegation, (f) lifting mechanism. Output: design document mapping mathematical construction to Lean 4 definitions.
-
----
-
-### 100. Revise task 98 plan v3 to plan v4 addressing Phase 5/6 blockers and zero-debt violation
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-10
-- **Summary**: Produced plan v4 at specs/098_research_filtration_quasimodel_pivot/plans/04_quasimodel-pivot-plan.md addressing round 4 critic findings (C.4 stricter seed via MCS witness, C.5 axiom fallback removed, C.6 BXPoint-backed oracle from task 99, C.7 rebudget to 70-135h). Plan v3 preserved unchanged. Planning-only task; no implementation work for task 100 itself.
-- **Language**: logic
-- **Dependencies**: Task #99
-- **Parent Task**: #98
-- **Created**: 2026-04-11
-- **Research**: [01_spawn-analysis.md](100_revise_plan_v4_phase_5_6/reports/01_spawn-analysis.md)
-- **Plan**: [04_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/04_quasimodel-pivot-plan.md)
-
-**Description**: Revise plans/03_quasimodel-pivot-plan.md to plan v4 (04_quasimodel-pivot-plan.md) incorporating the BXPoint-backed oracle landed in task 99 and round 4 critic findings: (a) update Phase 3/4 descriptions; (b) remove Phase 6 axiom fallback (zero-debt violation); (c) add explicit Phase 5 consistency plan for realize_chain_step stricter seed obligation; (d) replace Phase 6 locus-control with zero-debt plan or explicit descope; (e) adjust Phases 4-8 effort to realistic 70-135h. Preserve plan v3 unchanged.
-
----
-
-### 99. Implement BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency
-- **Effort**: 10-15 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Dependencies**: None
-- **Parent Task**: #98
-- **Created**: 2026-04-11
-- **Research**: [01_spawn-analysis.md](099_bxpoint_backed_hintikka_oracle/reports/01_spawn-analysis.md)
-- **Plan**: [01_bxpoint-backed-oracle.md](099_bxpoint_backed_hintikka_oracle/plans/01_bxpoint-backed-oracle.md)
-
-**Description**: Unblock task 98 Phase 4 by implementing Option 4a (round 4 team research, teammate B). Modify HintikkaStepOracle (Construction.lean:452) so every Hintikka point in the chain carries a concrete BXPoint witness. Thread bx_forward_witness (Frame.lean:164) through hintikka_chain_exists so each h_i = sigma_signature w_i for a witnessed MCS. Prove chain_step_seed_consistent via one-line subset witness into w.is_mcs.1. Scope narrow: Construction.lean HintikkaStepOracle + hintikka_chain_exists only. Acceptance: lake build clean, 0 new sorries/axioms, chain_step_seed_consistent proved.
-
----
-
-### 98. Research filtration or quasimodel pivot for Until/Since truth lemma
-- **Effort**: 8-12 hours (research) + 70-135h (plan v4 implementation)
-- **Status**: [COMPLETED]
-- **Dependencies**: Task #99, Task #100, Task #101, Task #102
-- **Language**: lean4
-- **Parent Task**: #92
-- **Created**: 2026-04-10
-- **Completed**: 2026-04-13
-- **Summary**: Research complete. Spawned subtasks 99-102 which closed all 4 Frame.lean Until/Since sorries via enriched closure infrastructure and defect-discharge chains.
-- **Research**:
-  - [01_filtration-quasimodel-pivot.md](098_research_filtration_quasimodel_pivot/reports/01_filtration-quasimodel-pivot.md)
-  - [02_team-research.md](098_research_filtration_quasimodel_pivot/reports/02_team-research.md)
-  - [03_team-research.md](098_research_filtration_quasimodel_pivot/reports/03_team-research.md)
-- **Plan**:
-  - [01_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/01_quasimodel-pivot-plan.md)
-  - [02_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/02_quasimodel-pivot-plan.md)
-  - [03_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/03_quasimodel-pivot-plan.md)
-  - [04_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/04_quasimodel-pivot-plan.md)
-  - [05_quasimodel-pivot-plan.md](098_research_filtration_quasimodel_pivot/plans/05_quasimodel-pivot-plan.md)
-
-**Description**: Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Deliverables: filtration vs quasimodel comparison, cascade-cost audit, local quasimodel sketch, revised effort estimate, go/no-go recommendation. **Result**: Round 1: CONDITIONAL GO on local quasimodel (25-45h). Round 2: 6 sorries confirmed UNPROVABLE under bx_le framework — must restructure Realization.lean to use Hintikka chain with guard-by-definition.
-
----
-
-### 91. Update ROAD_MAP.md to reflect BX reflexive-semantics architecture
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Priority**: high
-- **Dependencies**: None
-- **Created**: 2026-04-10
-- **Related**: Tasks 90, 92, 94
-- **Research**: [01_bx-reflexive-roadmap-research.md](091_update_roadmap_bx_reflexive/reports/01_bx-reflexive-roadmap-research.md)
-- **Plan**: [01_bx-reflexive-roadmap-plan.md](091_update_roadmap_bx_reflexive/plans/01_bx-reflexive-roadmap-plan.md)
-- **Summary**: [01_bx-reflexive-roadmap-summary.md](091_update_roadmap_bx_reflexive/summaries/01_bx-reflexive-roadmap-summary.md)
-
-**Description**: Rewrite `specs/ROAD_MAP.md` to match the actual codebase. The current roadmap describes a strict-semantics architecture (post task 81) that no longer matches the code: it claims the T-axiom was removed, that Until/Since are strict, and that `UltrafilterChain.lean` is the active completeness path. Verify against current code: (1) `temp_t_future`/`temp_t_past` are BX1/BX1' in `ProofSystem/Axioms.lean:117-122`; (2) `Semantics/Truth.lean:126-131` uses reflexive ≤/≥ for all temporal operators; (3) X/Y exist only as dead definitional abbreviations in `Syntax/Formula.lean:330-334`; (4) `Metalogic.lean` imports `BXCanonical`, not `UltrafilterChain`. Document: the BX axiom system and each axiom's role, the canonical model construction in `BXCanonical`, the actual remaining sorries (4 in `Frame.lean` for U/S, 1 Box at `Frame.lean:440`, 1 embedding at `Completeness.lean:154`), and the Burgess-Xu Until-induction technique as the path forward. **Do this first** so downstream research/planning agents have an accurate baseline.
-
----
-
-### 90. Research: Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure)
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-10
-- **Summary**: Delivered decision artifact: reject Option A, adopt Burgess-Xu Until-induction on unchanged bx_le. Phase 1 lean-lsp probes proved global and interval linearity non-derivable from BX7+BX11+BX12 (metalogic/object-logic bridge gap). Task 92 unblocked with concrete direction; scope fenced from task 93.
-- **Artifacts**:
-  - [01_team-research.md](090_research_bx_le_redefinition/reports/01_team-research.md)
-  - [01_bx_le_decision-plan.md](090_research_bx_le_redefinition/plans/01_bx_le_decision-plan.md)
-  - [02_bx_le_linear_diagnostic.md](090_research_bx_le_redefinition/reports/02_bx_le_linear_diagnostic.md)
-  - [03_task92_recommendation.md](090_research_bx_le_redefinition/reports/03_task92_recommendation.md)
-  - [01_bx_le_decision-summary.md](090_research_bx_le_redefinition/summaries/01_bx_le_decision-summary.md)
-- **Language**: lean4
-- **Priority**: high
-- **Dependencies**: Task 91 (accurate roadmap)
-- **Created**: 2026-04-10
-- **Related**: Tasks 89 (supersedes), 92
-
-**Description**: Research and decide the approach for closing the 4 Until/Since truth-lemma sorries in `BXCanonical/Frame.lean` (lines 653, 675, 690, 704). The BX axiom system already contains everything Burgess 1982 / Xu 1988 needed: BX5 (self_accum_until), BX6 (absorb_until), BX7 (linear_until), BX10 (until_F: (φUψ)→F(ψ)), BX11 (temp_linearity), BX12 (F_until_equiv), BX4 (connect_future), and T (temp_t_future). The blocker is a mismatch between the canonical ordering `bx_le := g_content ⊆` (Frame.lean:61) and the Until-witness ordering given by BX7. **Option A**: redefine `bx_le` via Until-witnesses and prove equivalence with the g_content definition using BX10 + BX12 + BX4 + T. **Option B**: keep `bx_le := g_content ⊆` and Henkin-enrich the MCS closure with Until witnesses (Burgess 1984 style). Deliverable: a report in `specs/090_research_bx_le_redefinition/reports/` comparing the two on (i) proof complexity, (ii) impact on the Box-direction argument, (iii) impact on TaskModel embedding, (iv) recommended choice with justification. Supersedes task 89 — its research was conducted against a stale semantic state.
-
----
-
-### 92. Implement Burgess-Xu Until/Since truth lemma in BXCanonical/Frame.lean
-- **Effort**: 13-23 hours (revised from 8-16h per team research round 02)
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Priority**: high
-- **Dependencies**: Task 90 (approach decision, completed), Task 96, Task 97, Task 98 (spawned research)
-- **Created**: 2026-04-10
-- **Completed**: 2026-04-13
-- **Summary**: All 4 Frame.lean Until/Since sorries closed: 2 forward (eventuality resolution), 2 backward (deleted as semantically unsound). Frame.lean has 0 sorry tactics.
-- **Related**: Tasks 89 (supersedes), 90, 93
-- **Artifacts**:
-  - [01_inherited-from-task90.md](092_implement_bx_until_truth_lemma/reports/01_inherited-from-task90.md)
-  - [02_team-research.md](092_implement_bx_until_truth_lemma/reports/02_team-research.md)
-  - [02_burgess-xu-until-plan.md](092_implement_bx_until_truth_lemma/plans/02_burgess-xu-until-plan.md)
-
-**Description**: Close the 4 Until/Since truth-lemma sorries in `Theories/Bimodal/Metalogic/BXCanonical/Frame.lean`: `bx_until_eventuality_resolution` (line 653), `bx_until_backward` (line 675), `bx_since_eventuality_resolution` (line 690), `bx_since_backward` (line 704). Per task 90 decision ([03_task92_recommendation.md](090_research_bx_le_redefinition/reports/03_task92_recommendation.md)), use **Burgess-Xu Until-induction** on the unchanged `bx_le := g_content ⊆` ordering. Do NOT redefine `bx_le` (Option A is structurally infeasible) and do NOT attempt a preliminary `bx_le_linear` lemma (the Phase 1 lean-lsp diagnostic confirmed global and interval linearity are not derivable from BX7+BX11+BX12 due to the object-logic/metalogic bridge gap). Construct the trajectory directly: BX10 to get F(ψ), BX12 for the vacuous-guard Until form, BX7 `linear_until` to pick the earliest ψ-witness, BX5 self-accumulation + BX6 absorption for guard persistence, BX9 `until_elim` for the current-time case, BX4 `connect_future` for the backward direction (propagate ¬(φUψ) forward along `w`, not backward from `v`). Mirrors apply for Since via the primed axioms. Rewrite misleading "linearity gap" comments at `Frame.lean:647-651` and `:674`. Scope fence: does NOT close `Frame.lean:440` or `Completeness.lean:154` (task 93). No new axioms needed.
 
 ---
 
