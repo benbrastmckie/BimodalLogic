@@ -86,7 +86,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Extend Deferral Closure with Reynolds Enrichment [NOT STARTED]
+### Phase 1: Extend Deferral Closure with Reynolds Enrichment [BLOCKED]
 
 **Goal**: Add `(top U phi)` to `deferralClosure(root)` for every `F(phi)` that appears as a deferral target, enabling the BX12 reduction `F(phi) -> (top U phi)` to land within the closure. Also add `(top S phi)` symmetrically for `P(phi)`.
 
