@@ -24,65 +24,6 @@
       "session_id": "sess_1776063182_1c639d"
     },
     {
-      "project_number": 94,
-      "project_name": "archive_strict_semantics_legacy",
-      "status": "completed",
-      "language": "lean4",
-      "priority": "medium",
-      "description": "Archive legacy strict-semantics completeness code to Boneyard with a README explaining its history. Files to move: Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean (~67 sorries, only imported by FrameConditions/Completeness.lean and DovetailedChain.lean and Boneyard); Theories/Bimodal/FrameConditions/Completeness.lean (~54 sorries, imports UltrafilterChain); Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean (~29 sorries, imports UltrafilterChain); Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean (~61 sorries, part of old SuccChain path). Leave a Boneyard/StrictSemanticsLegacy/README.md documenting: (1) these files were written under strict temporal semantics (G/H with strict <, strict U/S) before the codebase reverted to reflexive BX semantics; (2) the active completeness path is BXCanonical.lean; (3) the sorry count in these files reflects architectural incompatibility, not genuine mathematical gaps. Update Metalogic.lean and any other importers to drop references. Update sorry counts in state.json technical_debt. Mechanically drops ~210 sorries from the non-Boneyard count. Should be done after task 91 (roadmap update) so the archive README can reference the authoritative roadmap. Estimated 2-4 hours.",
-      "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-13T06:56:36Z",
-      "related_tasks": [
-        58,
-        91
-      ],
-      "session_id": "sess_1776063006_d75224",
-      "artifacts": [
-        {
-          "path": "specs/094_archive_strict_semantics_legacy/plans/01_archive-strict-legacy.md",
-          "type": "plan",
-          "summary": "4-phase plan to archive 9 legacy strict-semantics files to Boneyard, removing ~107 sorries from the active codebase"
-        },
-        {
-          "path": "specs/094_archive_strict_semantics_legacy/summaries/01_archive-strict-legacy-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary for archiving 9 legacy strict-semantics files to Boneyard"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 2.5,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ],
-          [
-            4
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_archive-strict-legacy.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-04-12"
-          }
-        ]
-      },
-      "completion_summary": "Archived 9 legacy strict-semantics completeness files (107 sorries) to Boneyard/StrictSemanticsLegacy, updated all importers, verified lake build succeeds, and updated sorry counts in state.json.",
-      "roadmap_items": [
-        "Legacy strict-semantics files (~20 sorries) pending archival by task 94"
-      ]
-    },
-    {
       "project_number": 95,
       "project_name": "completeness_verification_audit",
       "status": "not_started",
@@ -578,70 +519,6 @@
       "created": "2026-04-02T17:12:09Z",
       "last_updated": "2026-04-02T17:12:09Z",
       "next_artifact_number": 1
-    },
-    {
-      "project_number": 103,
-      "project_name": "rewrite_roadmap_post_until_since",
-      "status": "completed",
-      "language": "meta",
-      "priority": "critical",
-      "description": "Comprehensive ROAD_MAP.md rewrite reflecting post-Until/Since closure state. The current ROAD_MAP.md (written during task 91, 2026-04-10) has critical factual errors: (1) Active-path sorry inventory says 6 but only 1 remains (Completeness.lean:154); (2) Task cross-reference table shows completed tasks as NOT STARTED; (3) Recommended priority order lists completed tasks; (4) New BXCanonical infrastructure (Quasimodel/, Filtration/, CanonicalChain.lean) is undocumented. Must update: sorry inventory, task cross-reference, priority order, module import graph, add section documenting the quasimodel approach that closed Until/Since. Publication-blocking.",
-      "created": "2026-04-12T00:00:00Z",
-      "last_updated": "2026-04-13T07:45:00Z",
-      "related_tasks": [
-        91,
-        93,
-        95
-      ],
-      "session_id": "sess_1776062532_502265",
-      "researched": "2026-04-13T07:00:00Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/103_rewrite_roadmap_post_until_since/reports/01_roadmap-rewrite-research.md",
-          "type": "research",
-          "summary": "Comprehensive analysis: 1 sorry remains (was 6), 9 new BXCanonical files undocumented (2,289 lines), 8 sections need rewrite, full import graph mapped"
-        },
-        {
-          "path": "specs/103_rewrite_roadmap_post_until_since/plans/01_roadmap-rewrite-plan.md",
-          "type": "plan",
-          "summary": "4-phase plan for comprehensive ROAD_MAP.md rewrite covering sorry inventory correction, module graph update, new infrastructure documentation, and cross-reference verification"
-        },
-        {
-          "path": "specs/103_rewrite_roadmap_post_until_since/summaries/01_roadmap-rewrite-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary for ROAD_MAP.md rewrite"
-        }
-      ],
-      "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 3,
-        "complexity": "medium",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ],
-          [
-            4
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "reports/01_roadmap-rewrite-research.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-04-12"
-          }
-        ]
-      },
-      "completion_summary": "Comprehensive ROAD_MAP.md rewrite: corrected sorry inventory (6->1), added 13-file module graph, documented 9-file quasimodel/filtration infrastructure, rewrote priority order and strategy sections."
     },
     {
       "project_number": 104,
