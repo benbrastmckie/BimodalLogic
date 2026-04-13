@@ -108,7 +108,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update Import Paths in Non-Boneyard Files [NOT STARTED]
+### Phase 2: Update Import Paths in Non-Boneyard Files [COMPLETED]
 
 **Goal**: Remove all imports of archived files from non-Boneyard Lean files so the codebase compiles.
 

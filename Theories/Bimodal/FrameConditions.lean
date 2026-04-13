@@ -2,7 +2,7 @@ import Bimodal.FrameConditions.FrameClass
 import Bimodal.FrameConditions.Validity
 import Bimodal.FrameConditions.Soundness
 import Bimodal.FrameConditions.Compatibility
-import Bimodal.FrameConditions.Completeness
+
 
 /-!
 # Frame Conditions Module
