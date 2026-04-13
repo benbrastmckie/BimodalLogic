@@ -37,7 +37,7 @@ technical_debt:
 93 → 95
 ```
 
-1. **93** [RESEARCHING] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
+1. **93** [RESEARCHED] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 3. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
 4. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
@@ -108,12 +108,13 @@ technical_debt:
 
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None (tasks 90, 92, 98, 102 completed)
 - **Created**: 2026-04-10
 - **Related**: Tasks 92, 95, 102
+- **Research**: [01_taskmodel-embedding.md](specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md)
 
 **Description**: Close the sole remaining BXCanonical sorry: TaskModel embedding at `BXCanonical/Completeness.lean:154`. This constructs a `TaskModel` from the BXPoint canonical frame. The Box-direction sorry (Frame.lean:440) was closed by task 102. All 4 Until/Since sorries (Frame.lean:653, 675, 690, 704) were closed by tasks 90+92+98+102. Once this sorry is closed, `bx_completeness` becomes sorry-free, and `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`. The TaskModel embedding must use non-constant histories (constant histories collapse G to identity — see ROAD_MAP.md anti-pattern #12).
 
