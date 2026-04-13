@@ -412,4 +412,115 @@ noncomputable def since_intro (φ ψ : Formula) :
       (Formula.snce φ ψ) :=
   imp_trans (bot_since_id _) (or_since_imp φ ψ)
 
+/-!
+## Reflexivity of F and P
+
+Under BX reflexive semantics (BX1: G(α) → α), we derive α → F(α).
+The dual gives α → P(α).
+-/
+
+/-- `⊢ α → F(α)`: Any formula implies its own future eventuality.
+Under reflexive semantics, the current time witnesses F(α).
+Proof: BX1 gives G(¬α) → ¬α. Contrapositive: ¬¬α → ¬G(¬α) = F(α).
+Compose with DNI: α → ¬¬α → F(α). -/
+noncomputable def refl_F (α : Formula) :
+    ⊢ α.imp α.some_future := by
+  unfold Formula.some_future
+  -- Goal: α → (α.neg.all_future.neg)
+  -- i.e., α → (G(¬α) → ⊥)
+  -- Step 1: G(¬α) → ¬α (BX1)
+  have h_bx1 : ⊢ α.neg.all_future.imp α.neg :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_future α.neg)
+  -- Step 2: contrapositive of BX1: ¬¬α → ¬G(¬α) = F(α)
+  have h_contra : ⊢ α.neg.neg.imp α.neg.all_future.neg :=
+    mp h_bx1 (contrapositive α.neg.all_future α.neg)
+  -- Step 3: α → ¬¬α (DNI)
+  have h_dni : ⊢ α.imp α.neg.neg := dni α
+  -- Step 4: compose
+  exact imp_trans h_dni h_contra
+
+/-- `⊢ α → P(α)`: Any formula implies its own past eventuality.
+Under reflexive semantics, the current time witnesses P(α).
+Dual of refl_F. -/
+noncomputable def refl_P (α : Formula) :
+    ⊢ α.imp α.some_past := by
+  unfold Formula.some_past
+  have h_bx1 : ⊢ α.neg.all_past.imp α.neg :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_past α.neg)
+  have h_contra : ⊢ α.neg.neg.imp α.neg.all_past.neg :=
+    mp h_bx1 (contrapositive α.neg.all_past α.neg)
+  exact imp_trans (dni α) h_contra
+
+/-!
+## Until F-Expansion
+
+The key derived theorem for backward Until coherence:
+`(φ U ψ) → ψ ∨ (φ ∧ F(φ U ψ))`
+
+This strengthens `until_unfold_thm` by replacing the bare `(φ U ψ)` in the
+conjunction with `F(φ U ψ)`. The F-wrapped version enables the contrapositive
+argument: `¬(φ U ψ) ∧ φ → G(¬(φ U ψ))`.
+-/
+
+/-- `⊢ (φ U ψ) → ψ ∨ (φ ∧ F(φ U ψ))`: Until F-expansion.
+From `until_unfold_thm`: `(φ U ψ) → ψ ∨ (φ ∧ (φ U ψ))`.
+From `refl_F`: `(φ U ψ) → F(φ U ψ)`.
+In the `φ ∧ (φ U ψ)` branch, replace `(φ U ψ)` with `F(φ U ψ)` (weaker). -/
+noncomputable def until_F_expansion (φ ψ : Formula) :
+    ⊢ (Formula.untl φ ψ).imp
+      (Formula.or ψ (Formula.and φ (Formula.untl φ ψ).some_future)) := by
+  -- until_unfold_thm: (φ U ψ) → ψ ∨ (φ ∧ (φ U ψ))
+  -- We want: (φ U ψ) → ψ ∨ (φ ∧ F(φ U ψ))
+  -- In context [φ U ψ]:
+  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
+  -- Have φ U ψ in context
+  let Γ := [Formula.untl φ ψ]
+  have h_until : Γ ⊢ Formula.untl φ ψ := DerivationTree.assumption _ _ (by simp [Γ])
+  -- Get ψ ∨ (φ ∧ (φ U ψ)) from unfolding
+  have h_unfold : Γ ⊢ Formula.or ψ (Formula.and φ (Formula.untl φ ψ)) :=
+    ctx_mp (ctx_thm (until_unfold_thm φ ψ)) h_until
+  -- Get F(φ U ψ)
+  have h_F : Γ ⊢ (Formula.untl φ ψ).some_future :=
+    ctx_mp (ctx_thm (refl_F (Formula.untl φ ψ))) h_until
+  -- Case-split: ψ ∨ (φ ∧ (φ U ψ)) is ¬ψ → (φ ∧ (φ U ψ))
+  -- Want: ¬ψ → (φ ∧ F(φ U ψ)). From hypothesis: if ¬ψ then φ from conjunction; F(φ U ψ) already held.
+  unfold Formula.or at h_unfold ⊢
+  apply Bimodal.Metalogic.Core.deduction_theorem Γ _ _
+  have h_neg_psi : (ψ.neg :: Γ) ⊢ ψ.neg :=
+    DerivationTree.assumption _ _ (by simp [Γ])
+  have h_unfold' : (ψ.neg :: Γ) ⊢ ψ.neg.imp (Formula.and φ (Formula.untl φ ψ)) :=
+    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_unfold (by intro x hx; simp [Γ, hx])
+  have h_conj : (ψ.neg :: Γ) ⊢ Formula.and φ (Formula.untl φ ψ) :=
+    ctx_mp h_unfold' h_neg_psi
+  have h_phi : (ψ.neg :: Γ) ⊢ φ :=
+    ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.lce_imp φ (Formula.untl φ ψ))) h_conj
+  have h_F' : (ψ.neg :: Γ) ⊢ (Formula.untl φ ψ).some_future :=
+    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_F (by intro x hx; simp [Γ, hx])
+  exact ctx_mp (ctx_mp (ctx_thm (pairing φ (Formula.untl φ ψ).some_future)) h_phi) h_F'
+
+/-- `⊢ (φ S ψ) → ψ ∨ (φ ∧ P(φ S ψ))`: Since P-expansion. Dual of until_F_expansion. -/
+noncomputable def since_P_expansion (φ ψ : Formula) :
+    ⊢ (Formula.snce φ ψ).imp
+      (Formula.or ψ (Formula.and φ (Formula.snce φ ψ).some_past)) := by
+  apply Bimodal.Metalogic.Core.deduction_theorem [] _ _
+  let Γ := [Formula.snce φ ψ]
+  have h_since : Γ ⊢ Formula.snce φ ψ := DerivationTree.assumption _ _ (by simp [Γ])
+  have h_unfold : Γ ⊢ Formula.or ψ (Formula.and φ (Formula.snce φ ψ)) :=
+    ctx_mp (ctx_thm (since_unfold_thm φ ψ)) h_since
+  have h_P : Γ ⊢ (Formula.snce φ ψ).some_past :=
+    ctx_mp (ctx_thm (refl_P (Formula.snce φ ψ))) h_since
+  unfold Formula.or at h_unfold ⊢
+  apply Bimodal.Metalogic.Core.deduction_theorem Γ _ _
+  have h_neg_psi : (ψ.neg :: Γ) ⊢ ψ.neg :=
+    DerivationTree.assumption _ _ (by simp [Γ])
+  have h_unfold' : (ψ.neg :: Γ) ⊢ ψ.neg.imp (Formula.and φ (Formula.snce φ ψ)) :=
+    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_unfold (by intro x hx; simp [Γ, hx])
+  have h_conj : (ψ.neg :: Γ) ⊢ Formula.and φ (Formula.snce φ ψ) :=
+    ctx_mp h_unfold' h_neg_psi
+  have h_phi : (ψ.neg :: Γ) ⊢ φ :=
+    ctx_mp (ctx_thm (Bimodal.Theorems.Propositional.lce_imp φ (Formula.snce φ ψ))) h_conj
+  have h_P' : (ψ.neg :: Γ) ⊢ (Formula.snce φ ψ).some_past :=
+    DerivationTree.weakening Γ (ψ.neg :: Γ) _ h_P (by intro x hx; simp [Γ, hx])
+  exact ctx_mp (ctx_mp (ctx_thm (pairing φ (Formula.snce φ ψ).some_past)) h_phi) h_P'
+
 end Bimodal.Theorems.TemporalDerived
