@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Strict-Semantics Legacy Code
 
 - **Task**: 94 - archive_strict_semantics_legacy
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 91 (completed)
 - **Research Inputs**: reports/01_archive-strict-legacy.md
@@ -67,7 +67,7 @@ This plan advances these ROAD_MAP.md items:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Create Boneyard Directory and Move Files [NOT STARTED]
+### Phase 1: Create Boneyard Directory and Move Files [COMPLETED]
 
 **Goal**: Move all 9 legacy files to `Boneyard/StrictSemanticsLegacy/` and write the archival README.
 
