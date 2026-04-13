@@ -1,7 +1,7 @@
 # Implementation Plan: Rewrite ROAD_MAP.md Post-Until/Since
 
 - **Task**: 103 - Comprehensive ROAD_MAP.md rewrite reflecting post-Until/Since closure state
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_roadmap-rewrite-research.md
@@ -62,7 +62,7 @@ This task directly rewrites ROAD_MAP.md itself. It advances the "publication-blo
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Overview and Sorry Inventory Correction [NOT STARTED]
+### Phase 1: Overview and Sorry Inventory Correction [COMPLETED]
 
 **Goal**: Fix the overview sorry summary and the detailed sorry inventory section to reflect the actual state of 1 active-path sorry.
 
