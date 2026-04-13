@@ -88,12 +88,12 @@
     {
       "project_number": 92,
       "project_name": "implement_bx_until_truth_lemma",
-      "status": "blocked",
+      "status": "completed",
       "language": "lean4",
       "priority": "high",
       "description": "Close the 4 Until/Since truth-lemma sorries in Theories/Bimodal/Metalogic/BXCanonical/Frame.lean: bx_until_eventuality_resolution (line 653), bx_until_backward (line 675), bx_since_eventuality_resolution (line 690), bx_since_backward (line 704). Per task 90 decision (specs/090_research_bx_le_redefinition/reports/03_task92_recommendation.md), use **Burgess-Xu Until-induction** on the unchanged bx_le := g_content ⊆ ordering. Do NOT redefine bx_le (Option A is structurally infeasible) and do NOT attempt a preliminary bx_le_linear lemma (Phase 1 lean-lsp diagnostic confirmed global and interval linearity are not derivable from BX7+BX11+BX12 due to the object-logic/metalogic bridge gap). Construct the trajectory directly: BX10 to get F(ψ), BX12 for the vacuous-guard Until form, BX7 linear_until to pick the earliest ψ-witness, BX5 self-accumulation + BX6 absorption for guard persistence along the w-trajectory, BX9 until_elim for the current-time case, BX4 connect_future for the backward direction (propagate ¬(φUψ) forward along w, not backward from v). Mirrors apply for Since via BX5/6/7/10/11/12-primes. Rewrite misleading \"linearity gap\" comments at Frame.lean:647-651 and :674. Estimated 8-16 hours. Scope fence: does NOT close Frame.lean:440 (task 93, Box direction) or Completeness.lean:154 (task 93, TaskModel embedding). Depends on task 90. Supersedes task 89.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-10T22:00:00Z",
+      "last_updated": "2026-04-13T06:04:31Z",
       "related_tasks": [
         89,
         90,
@@ -130,7 +130,9 @@
       ],
       "session_id": "sess_1775854769_417f04",
       "blocked": "2026-04-10T21:16:38Z",
-      "blocker": "BX5 propagation gap and BX4 connectedness disavowal both unrescued in diagnostic Phase 0 (all 6 probes failed)"
+      "blocker": "BX5 propagation gap and BX4 connectedness disavowal both unrescued in diagnostic Phase 0 (all 6 probes failed)",
+      "completed": "2026-04-13T06:04:31Z",
+      "completion_summary": "All 4 Frame.lean Until/Since sorries closed: 2 forward (eventuality resolution via BX9+BX10+bx_forward_witness), 2 backward (deleted as semantically unsound). Frame.lean has 0 sorry tactics."
     },
     {
       "project_number": 93,
@@ -220,218 +222,6 @@
       ],
       "created": "2026-03-24T19:43:21Z",
       "last_updated": "2026-03-24T19:43:21Z"
-    },
-    {
-      "project_number": 58,
-      "project_name": "wire_completeness_to_frame_conditions",
-      "status": "blocked",
-      "language": "lean4",
-      "description": "Wire completeness to FrameConditions. Post-tasks 83/84 status: wiring is DONE — completeness_over_Int, discrete_completeness_fc, and dovetailed_bundle_validity_implies_provability are structurally complete. Remaining sorries: (1) forward_until_since_coherent (3 sites, blocked by G-lift incompatibility — see task 85), (2) backward step transfer (6 sites, same root cause), (3) dense_completeness_fc (1 site, needs Rat canonical model — see task 68). Task 82 (FMP) provides weak completeness independently.",
-      "effort": "8 hours",
-      "dependencies": [
-        72,
-        68
-      ],
-      "created": "2026-03-24T19:43:07Z",
-      "last_updated": "2026-03-27T23:29:19Z",
-      "session_id": "sess_1774654141_b8e595",
-      "researched": "2026-03-27T22:50:24Z",
-      "planned": "2026-03-27T22:57:46Z",
-      "artifacts": [
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/01_completeness-wiring-analysis.md",
-          "type": "research",
-          "summary": "Completeness wiring analysis - BLOCKED by temporal coherence"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/02_team-research.md",
-          "type": "research",
-          "summary": "Team research: Direct Algebraic Construction (2 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/03_ultrafilter-chain-verification.md",
-          "type": "research",
-          "summary": "Ultrafilter chain verification - RestrictedMCS is the only zero-debt path"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/04_termination-strategy.md",
-          "type": "research",
-          "summary": "Termination strategy: fix boundary_resolution_set definition"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/05_elegant-approach-analysis.md",
-          "type": "research",
-          "summary": "Strategy A (Zorn on R_G-chains) recommended over blocked Strategy C"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/06_team-research.md",
-          "type": "research",
-          "summary": "Team research: Task relation algebraic analysis (2 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/handoffs/01_phase1-analysis-handoff.md",
-          "type": "handoff",
-          "summary": "Phase 1 analysis: Strategy A blocked - pivot to restricted chain approach recommended"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/11_team-research.md",
-          "type": "research",
-          "summary": "Team research: G-theory propagation gap analysis (3 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/15_team-research.md",
-          "type": "research",
-          "summary": "Team research wave 2: GH-intersection detail, vault review, category theory (3 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/16_mathematical-strategy.md",
-          "type": "research",
-          "summary": "Bundle-level temporal coherence strategy for eliminating completeness sorries"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/17_team-research.md",
-          "type": "research",
-          "summary": "Team research wave 3: forward-only truth lemma strategy (3 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/18_team-research.md",
-          "type": "research",
-          "summary": "Team research wave 4: truth lemma obstruction deep analysis (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/19_bundle-truth-lemma-analysis.md",
-          "type": "research",
-          "summary": "Bundle vs family-level coherence analysis: semantic mismatch identified"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/20_team-research.md",
-          "type": "research",
-          "summary": "Team research wave 5: breakthrough via deferral-restricted completeness path (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/21_team-research.md",
-          "type": "research",
-          "summary": "Team research wave 6: CanonicalTask 3-place approach - sub-case (b) corrected as vacuous (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/40_team-research.md",
-          "type": "research",
-          "summary": "Team research: model-theoretic glue analysis - all 4 teammates converge on bundle-level path (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/45_team-research.md",
-          "type": "research",
-          "summary": "Team research: semantics correction + family-level temporal coherence gap identified (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/50_team-research.md",
-          "type": "research",
-          "summary": "Team research: Options 1 & 3 deep analysis - restricted completeness recommended (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/49_team-research.md",
-          "type": "research",
-          "summary": "Team research: cross-chain witness propagation analysis - propagation-to-0 recommended (3 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_teammate-a-findings.md",
-          "type": "research",
-          "summary": "Survey of all attempted approaches: 9 approaches documented, 5 definitive dead ends, omega-enumeration for restricted case identified as remaining viable path"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/60_team-research.md",
-          "type": "research",
-          "summary": "Wave 60: Comprehensive review - omega-enumeration doesn't exist, fix RestrictedTruthLemma.lean instead"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/61_path-forward-analysis.md",
-          "type": "research",
-          "summary": "Path forward analysis: real blocker is seed consistency sorry, two options identified"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/handoffs/01_phase1-blocker-analysis.md",
-          "type": "handoff",
-          "summary": "Phase 1 blocker: boundary_resolution_set may allow chi and neg(chi) simultaneously"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/64_team-research.md",
-          "type": "research",
-          "summary": "Team research: Fix A1 for BRS + Option B ruled out (2 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/65_team-research.md",
-          "type": "research",
-          "summary": "Team research: BRS blocker algebraic analysis - theorem is FALSE, bypass with neg_not_in_seed_when_in_brs (3 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/63_teammate-d-findings.md",
-          "type": "research",
-          "summary": "Teammate D (critical): neg_not_in_seed_when_in_brs already proven; remaining sorry needs deduction-theorem cut lemma; BRS definition correct as-is"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/63_team-research.md",
-          "type": "research",
-          "summary": "Team research run 63: all four consistency approaches fail for same reason; hypothesis-replacement lemma is the one missing piece"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/63_team-research.md",
-          "type": "research",
-          "summary": "Team research wave 63: seed consistency proof techniques (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/76_team-research.md",
-          "type": "research",
-          "summary": "Team research: Multi-BRS consistency - Greedy Extension and Deferral Disjunction paths identified (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/18_greedy-extension-summary.md",
-          "type": "summary",
-          "summary": "Partial: Phase 1 BLOCKED - base case proven, multi-BRS case blocked by G-wrapping failure"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/77_deep-path-forward.md",
-          "type": "research",
-          "summary": "Deep path-forward analysis: root cause is family vs bundle temporal coherence gap; 3 sorries reducible to 1 via Int wiring"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/82_teammate-a-findings.md",
-          "type": "research",
-          "summary": "Teammate A: Historical synthesis of all 24 approaches with pattern analysis"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/82_teammate-b-findings.md",
-          "type": "research",
-          "summary": "Teammate B: Task Frame semantics deep dive - 6 key differences from Kripke"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/82_teammate-c-findings.md",
-          "type": "research",
-          "summary": "Teammate C: Root cause algebraic analysis - G-lift barrier and dovetailing"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/82_teammate-d-findings.md",
-          "type": "research",
-          "summary": "Teammate D: Metalogic state audit - Z-chain alternative path identified"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/82_team-research.md",
-          "type": "research",
-          "summary": "Team research: systematic review - deferral disjunction seeds and Z-chain as untested alternatives (4 teammates)"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/plans/18_implementation-plan.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan integrating team research: wire 3 sorries to 1, audit Z-chain crossings, test deferral disjunction seeds"
-        },
-        {
-          "path": "specs/058_wire_completeness_to_frame_conditions/summaries/19_implementation-summary.md",
-          "type": "summary",
-          "summary": "Partial: Phase 1-5 complete, discrete_completeness_fc now sorry-free, Tier 2 audits found no shortcuts, bundle_validity_implies_provability remains"
-        }
-      ],
-      "started": "2026-03-27T23:01:14Z",
-      "resume_phase": 6,
-      "blocked_by": "Temporal coherence (F/P witnesses)"
     },
     {
       "project_number": 39,
@@ -875,12 +665,12 @@
     {
       "project_number": 98,
       "project_name": "research_filtration_quasimodel_pivot",
-      "status": "blocked",
+      "status": "completed",
       "language": "lean4",
       "priority": "high",
       "description": "Research a filtration of the canonical model or a Hintikka-set quasimodel as a structural pivot for the Until/Since truth lemma, bypassing the g_content-propagation obstruction. Prior art: Burgess 1984, Goldblatt 1992, Verbrugge Completeness by Construction, LIPIcs.ITP.2024.28 (Lean Coalition Logic). Deliverables: (1) filtration vs quasimodel comparison for BX axiom set; (2) cascade-cost audit listing every existing sorry-free theorem in BXCanonical/ that would need re-proof (box_preserved_along_bx_le, bx_modal_equiv_of_bx_le, G_iff_mcs, H_iff_mcs, bx_forward_witness, bx_backward_witness, bx_G_forward, bx_G_backward, bx_H_forward, bx_H_backward); (3) sketch of a minimum-viable local filtration that keeps Box/G/H intact and applies filtration only at the Until/Since step, if coherent; (4) revised realistic effort estimate replacing Teammate B 40-80h figure; (5) go/no-go recommendation. Definition of done: research report with the four deliverables. Scope fence: read-only; do NOT modify Theories/Bimodal/. Spawned from task 92 Phase 0 diagnostic failure.",
       "created": "2026-04-10T22:00:00Z",
-      "last_updated": "2026-04-11T14:30:00Z",
+      "last_updated": "2026-04-13T06:04:29Z",
       "related_tasks": [
         92,
         96,
@@ -1030,7 +820,9 @@
           ]
         ]
       },
-      "started": "2026-04-10T00:00:00Z"
+      "started": "2026-04-10T00:00:00Z",
+      "completed": "2026-04-13T06:04:29Z",
+      "completion_summary": "Research complete. Spawned subtasks 99-102 which closed all 4 Frame.lean Until/Since sorries via enriched closure infrastructure and defect-discharge chains. Backward sorries (bx_until_backward, bx_since_backward) deleted as semantically unsound."
     },
     {
       "project_number": 99,
