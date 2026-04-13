@@ -31,7 +31,7 @@ technical_debt:
 
 **Goal**: Close the final BXCanonical sorry (TaskModel embedding), archive legacy code, produce publication-quality completeness proof.
 
-### 1. Critical Path ��� BXCanonical Completeness
+### 1. Critical Path — BXCanonical Completeness
 
 ```
 93 → 95
