@@ -1,10 +1,10 @@
 import Bimodal.FrameConditions.Compatibility
-import Bimodal.Metalogic.DiscreteCompleteness
-import Bimodal.Metalogic.Algebraic.UltrafilterChain
-import Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
+import Bimodal.Boneyard.StrictSemanticsLegacy.DiscreteCompleteness
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.RestrictedTruthLemma
 import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 -- NOTE: DovetailedChain is deprecated in favor of DeterministicFMCS (see DovetailedChain.lean header)
-import Bimodal.Metalogic.Algebraic.DovetailedChain
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.DovetailedChain
 
 /-!
 # Completeness Wiring

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Algebraic.UltrafilterChain
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.TemporalContent

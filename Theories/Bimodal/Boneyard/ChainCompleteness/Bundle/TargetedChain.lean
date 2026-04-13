@@ -1,10 +1,10 @@
-import Bimodal.Metalogic.Bundle.SuccChainFMCS
+import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Algebraic.UltrafilterChain
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 
 /-!
 # Targeted Chain Construction

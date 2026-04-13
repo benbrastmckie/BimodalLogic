@@ -155,7 +155,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update Boneyard Imports (Best-Effort) [NOT STARTED]
+### Phase 4: Update Boneyard Imports (Best-Effort) [COMPLETED]
 
 **Goal**: Update existing Boneyard files that imported the moved files to use new paths, preventing future confusion.
 

@@ -4,7 +4,7 @@ import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
-import Bimodal.Metalogic.Bundle.SuccChainFMCS
+import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import Bimodal.Theorems.Perpetuity
 import Bimodal.Theorems.TemporalDerived
 import Mathlib.Data.Nat.Pairing
