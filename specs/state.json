@@ -1146,7 +1146,7 @@
     {
       "project_number": 102,
       "project_name": "implement_quotient_filtration_close_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Implement the defect-discharge chain construction and close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean). Task 101 research found that a naive quotient/Setoid construction is NOT viable -- bx_le is not total even on Sigma-equivalence classes, and BX11 does not provide the needed totality. Instead, the approach uses: (a) define sigma_le, sigma_strict, sigma_equiv on BXPoints using the enrichedClosure Sigma set, (b) construct defect-discharge chains via well-founded induction on sigma_defect_count (number of Until formulas in Sigma whose goal is absent), (c) prove the guard extension lemma -- that phi holds at arbitrary intermediate BXPoints (not just chain members) using enrichedClosure G/H-enrichment properties, (d) MODIFY the 4 Frame.lean sorry signatures to use sigma_strict guard instead of the unprovable not-bx_le guard (replace `not bx_le v u` with `sigma_strict Sigma u v`), (e) update TruthLemma.lean Until/Since cases to use the modified signatures, (f) close the 6 Realization.lean sorries via LocusControl.lean delegation. No Mathlib Quotient/Setoid needed -- reuses existing HintikkaPoint/enrichedClosure/sigma_signature infrastructure. New files under Theories/Bimodal/Metalogic/BXCanonical/Filtration/: SigmaOrdering.lean, DefectChain.lean, GuardExtension.lean. Estimated 45h across 5 phases. Highest risk is Phase 3 (guard extension, 15h); fallback is replacing bx_le entirely with chain-constructed linear ordering (+20h). Definition of done: lake build with zero new sorries and zero new axioms.",
       "effort": "45 hours",
@@ -1155,7 +1155,7 @@
         101
       ],
       "created": "2026-04-11T14:35:00Z",
-      "last_updated": "2026-04-13T05:11:53Z",
+      "last_updated": "2026-04-13T05:42:21Z",
       "next_artifact_number": 6,
       "artifacts": [
         {
@@ -1194,11 +1194,6 @@
           "summary": "Team research (4 teammates, round 5): Until induction rejected, chain bypass viable with S5 gap, two new alternatives proposed"
         },
         {
-          "path": "specs/102_implement_quotient_filtration_close_sorries/plans/05_signature-weakening-plan.md",
-          "type": "plan",
-          "summary": "v4 plan: weaken Frame.lean signatures to chain-member quantification (Alt A), 4 phases, 16h"
-        },
-        {
           "path": "specs/102_implement_quotient_filtration_close_sorries/summaries/05_signature-weakening-summary.md",
           "type": "summary",
           "summary": "Partial: 2/4 Frame.lean sorries closed (forward eventuality resolution). Backward sorries remain. All callers updated. Lake build clean."
@@ -1207,15 +1202,20 @@
           "path": "specs/102_implement_quotient_filtration_close_sorries/reports/06_backward-sorry-research.md",
           "type": "research",
           "summary": "Backward sorry analysis: bx_until_backward/bx_since_backward unprovable as stated. 5 approaches evaluated, all insufficient. Recommend chain-level backward induction bypass."
+        },
+        {
+          "path": "specs/102_implement_quotient_filtration_close_sorries/plans/06_backward-sorry-plan.md",
+          "type": "plan",
+          "summary": "v5 plan: 3-phase chain-level backward induction to close 2 remaining backward Until/Since sorries, 10h"
         }
       ],
-      "session_id": "sess_1776056563_9f800a",
+      "session_id": "sess_1776058535_51b3b1",
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 16,
+        "phases": 3,
+        "total_effort_hours": 10,
         "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 4,
+        "plan_version": 5,
         "dependency_waves": [
           [
             1
@@ -1225,30 +1225,12 @@
           ],
           [
             3
-          ],
-          [
-            4
           ]
         ],
         "reports_integrated": [
           {
-            "path": "reports/05_team-research.md",
-            "integrated_in_plan_version": 4,
-            "integrated_date": "2026-04-12"
-          },
-          {
-            "path": "reports/05_teammate-c-findings.md",
-            "integrated_in_plan_version": 4,
-            "integrated_date": "2026-04-12"
-          },
-          {
-            "path": "reports/05_teammate-b-findings.md",
-            "integrated_in_plan_version": 4,
-            "integrated_date": "2026-04-12"
-          },
-          {
-            "path": "reports/05_teammate-a-findings.md",
-            "integrated_in_plan_version": 4,
+            "path": "reports/06_backward-sorry-research.md",
+            "integrated_in_plan_version": 5,
             "integrated_date": "2026-04-12"
           }
         ]
