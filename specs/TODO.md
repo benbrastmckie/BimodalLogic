@@ -41,7 +41,7 @@ technical_debt:
 1. **93** [NOT STARTED] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 3. **103** [RESEARCHED] — Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
-4. **94** [RESEARCHING] — Archive legacy strict-semantics code to Boneyard (~210 sorry drop)
+4. **94** [RESEARCHED] — Archive legacy strict-semantics code to Boneyard (~210 sorry drop)
 5. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
 6. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
 
@@ -111,7 +111,7 @@ technical_debt:
 
 ### 103. Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Priority**: critical
 - **Created**: 2026-04-12
@@ -138,12 +138,13 @@ technical_debt:
 
 ### 94. Archive strict-semantics legacy code to Boneyard
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: medium
 - **Dependencies**: Task 91
 - **Created**: 2026-04-10
 - **Related**: Tasks 58 (closes), 91
+- **Research**: [01_archive-strict-legacy.md](specs/094_archive_strict_semantics_legacy/reports/01_archive-strict-legacy.md)
 
 **Description**: Move the legacy strict-semantics completeness code to `Boneyard/StrictSemanticsLegacy/` with a README explaining its history. Files: `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` (~67 sorries), `Theories/Bimodal/FrameConditions/Completeness.lean` (~54 sorries), `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` (~29 sorries), `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` (~61 sorries). These were written under strict temporal semantics (strict G/H, strict U/S) before the codebase reverted to reflexive BX semantics; their sorry count reflects architectural incompatibility, not real mathematical gaps. Update any importers (`Metalogic.lean` already points to `BXCanonical`). Mechanically drops ~210 sorries from the non-Boneyard count. Update `state.json.technical_debt` to reflect new counts. Also formally closes task 58 (which was blocked on this legacy path). Do after task 91 so the Boneyard README can cite the authoritative roadmap.
 
