@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Embedding (v11 -- Quasimodel BFMCS via Defect-Discharge)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: None (tasks 90, 92, 98, 102 already completed)
 - **Research Inputs**: reports/11_team-research.md
@@ -85,7 +85,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Extend deferralClosure with Reynolds Until/Since Enrichment [NOT STARTED]
+### Phase 1: Extend deferralClosure with Reynolds Until/Since Enrichment [BLOCKED]
 
 **Goal**: Add `(top U psi)` to `deferralClosure(root)` for every `F(psi)` target in the closure, and symmetrically `(top S psi)` for `P(psi)`. This enables BX12 reduction `F(psi) -> (top U psi)` to land within the closure, which is required for the quasimodel adapter to work within the restricted coherence scope.
 
@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Build QuasimodelChain-to-FMCS Adapter [NOT STARTED]
+### Phase 2: Build QuasimodelChain-to-FMCS Adapter [BLOCKED]
 
 **Goal**: Create an adapter that converts a quasimodel chain segment (finite sequence of BXPoints with hintikka_step ordering) into an FMCS over Int, using identity tails beyond the chain boundaries. This adapter will provide the restricted forward_G, backward_H, and F-eventuality resolution needed for the restricted coherence proofs.
 
