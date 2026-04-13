@@ -84,7 +84,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Define Restricted Carry Sets and Verify Closure Properties [NOT STARTED]
+### Phase 1: Define Restricted Carry Sets and Verify Closure Properties [BLOCKED]
 
 **Goal**: Define `restrictedUntilCarry` and `restrictedSinceCarry`, verify that `subformulaClosure(root)` has the necessary closure properties for the BX12 reduction, and establish the mathematical prerequisites.
 
