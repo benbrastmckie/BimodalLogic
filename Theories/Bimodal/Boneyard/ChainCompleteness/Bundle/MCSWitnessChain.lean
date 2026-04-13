@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Bundle.MCSWitnessSuccessor
-import Bimodal.Metalogic.Algebraic.UltrafilterChain
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 import Bimodal.Metalogic.Core.RestrictedMCS
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties

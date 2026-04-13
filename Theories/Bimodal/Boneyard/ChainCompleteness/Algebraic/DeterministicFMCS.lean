@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Algebraic.DeterministicChain
-import Bimodal.Metalogic.Algebraic.UltrafilterChain
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Bundle.TemporalCoherence

@@ -6,7 +6,7 @@ import Bimodal.Metalogic.Bundle.TargetedChain
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Algebraic.UltrafilterChain
+import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 
 /-!
 # Resolving Chain Construction

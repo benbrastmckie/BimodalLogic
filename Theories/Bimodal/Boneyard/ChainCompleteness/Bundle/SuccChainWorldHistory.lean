@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.SuccChainFMCS
+import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import Bimodal.Metalogic.Bundle.SuccChainTaskFrame
 import Bimodal.Semantics.WorldHistory
 

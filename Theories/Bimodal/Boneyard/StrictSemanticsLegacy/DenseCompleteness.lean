@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.CanonicalConstruction
+import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.CanonicalConstruction
 import Bimodal.Metalogic.Bundle.BFMCS
 
 import Bimodal.Semantics.Validity
