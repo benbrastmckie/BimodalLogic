@@ -79,7 +79,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add until_neg_carry / since_neg_carry to Chain Seeds [NOT STARTED]
+### Phase 1: Add until_neg_carry / since_neg_carry to Chain Seeds [BLOCKED]
 
 **Goal**: Define `until_neg_carry(M)` and `since_neg_carry(M)`, add them to the `fwd_succ` and `bwd_pred` seeds respectively, and prove the consistency of the augmented seeds. Prove forward stability of negated Until formulas and derive backward Until step transfer.
 
