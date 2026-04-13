@@ -670,9 +670,15 @@
     "abandoned": 45
   },
   "repository_health": {
-    "last_assessed": "2026-04-13T06:09:29Z",
+    "last_assessed": "2026-04-12T00:00:00Z",
     "status": "healthy",
-    "build_errors": 0
+    "build_errors": 0,
+    "sorry_counts": {
+      "non_boneyard": 140,
+      "boneyard": 171,
+      "total": 311,
+      "note": "Task 94 archived 9 files (~107 sorries) from active codebase to Boneyard/StrictSemanticsLegacy"
+    }
   },
   "last_updated": "2026-04-12T12:00:00Z",
   "vault_count": 1,
