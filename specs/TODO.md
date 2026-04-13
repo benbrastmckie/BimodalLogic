@@ -37,7 +37,7 @@ technical_debt:
 93 → 95
 ```
 
-1. **93** [RESEARCHED] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
+1. **93** [PLANNED] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 3. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
 4. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
@@ -108,7 +108,7 @@ technical_debt:
 
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None (tasks 90, 92, 98, 102 completed)
