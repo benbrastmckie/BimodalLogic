@@ -1146,7 +1146,7 @@
     {
       "project_number": 102,
       "project_name": "implement_quotient_filtration_close_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Implement the defect-discharge chain construction and close all 10 Until/Since sorries (4 in Frame.lean, 6 in Realization.lean). Task 101 research found that a naive quotient/Setoid construction is NOT viable -- bx_le is not total even on Sigma-equivalence classes, and BX11 does not provide the needed totality. Instead, the approach uses: (a) define sigma_le, sigma_strict, sigma_equiv on BXPoints using the enrichedClosure Sigma set, (b) construct defect-discharge chains via well-founded induction on sigma_defect_count (number of Until formulas in Sigma whose goal is absent), (c) prove the guard extension lemma -- that phi holds at arbitrary intermediate BXPoints (not just chain members) using enrichedClosure G/H-enrichment properties, (d) MODIFY the 4 Frame.lean sorry signatures to use sigma_strict guard instead of the unprovable not-bx_le guard (replace `not bx_le v u` with `sigma_strict Sigma u v`), (e) update TruthLemma.lean Until/Since cases to use the modified signatures, (f) close the 6 Realization.lean sorries via LocusControl.lean delegation. No Mathlib Quotient/Setoid needed -- reuses existing HintikkaPoint/enrichedClosure/sigma_signature infrastructure. New files under Theories/Bimodal/Metalogic/BXCanonical/Filtration/: SigmaOrdering.lean, DefectChain.lean, GuardExtension.lean. Estimated 45h across 5 phases. Highest risk is Phase 3 (guard extension, 15h); fallback is replacing bx_le entirely with chain-constructed linear ordering (+20h). Definition of done: lake build with zero new sorries and zero new axioms.",
       "effort": "45 hours",
@@ -1155,7 +1155,7 @@
         101
       ],
       "created": "2026-04-11T14:35:00Z",
-      "last_updated": "2026-04-13T04:31:11Z",
+      "last_updated": "2026-04-13T04:43:16Z",
       "next_artifact_number": 6,
       "artifacts": [
         {
@@ -1184,11 +1184,6 @@
           "summary": "Task semantics deep analysis: TaskFrame/TaskRel/WorldHistory definitions, root cause of Frame.lean sorry unprovability (bx_le non-totality), resolution via linear canonical chain with integer-indexed task_rel"
         },
         {
-          "path": "specs/102_implement_quotient_filtration_close_sorries/plans/04_canonical-chain-plan.md",
-          "type": "plan",
-          "summary": "v3 plan: canonical chain construction to close all 10 Until/Since sorries, 5 phases, 28h"
-        },
-        {
           "path": "specs/102_implement_quotient_filtration_close_sorries/summaries/04_canonical-chain-summary.md",
           "type": "summary",
           "summary": "Partial: 6/10 sorries closed (Realization.lean delegation). 4 Frame.lean sorries remain - unprovable from BX1-BX12"
@@ -1197,15 +1192,20 @@
           "path": "specs/102_implement_quotient_filtration_close_sorries/reports/05_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates, round 5): Until induction rejected, chain bypass viable with S5 gap, two new alternatives proposed"
+        },
+        {
+          "path": "specs/102_implement_quotient_filtration_close_sorries/plans/05_signature-weakening-plan.md",
+          "type": "plan",
+          "summary": "v4 plan: weaken Frame.lean signatures to chain-member quantification (Alt A), 4 phases, 16h"
         }
       ],
-      "session_id": "sess_1776054236_8274bc",
+      "session_id": "sess_1776054785_2c6b84",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 28,
-        "complexity": "complex",
+        "phases": 4,
+        "total_effort_hours": 16,
+        "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 3,
+        "plan_version": 4,
         "dependency_waves": [
           [
             1
@@ -1218,25 +1218,27 @@
           ],
           [
             4
-          ],
-          [
-            5
           ]
         ],
         "reports_integrated": [
           {
-            "path": "reports/04_task-semantics-research.md",
-            "integrated_in_plan_version": 3,
+            "path": "reports/05_team-research.md",
+            "integrated_in_plan_version": 4,
             "integrated_date": "2026-04-12"
           },
           {
-            "path": "reports/02_team-research.md",
-            "integrated_in_plan_version": 3,
+            "path": "reports/05_teammate-c-findings.md",
+            "integrated_in_plan_version": 4,
             "integrated_date": "2026-04-12"
           },
           {
-            "path": "reports/03_team-research.md",
-            "integrated_in_plan_version": 3,
+            "path": "reports/05_teammate-b-findings.md",
+            "integrated_in_plan_version": 4,
+            "integrated_date": "2026-04-12"
+          },
+          {
+            "path": "reports/05_teammate-a-findings.md",
+            "integrated_in_plan_version": 4,
             "integrated_date": "2026-04-12"
           }
         ]
