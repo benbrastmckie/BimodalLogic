@@ -100,7 +100,7 @@ technical_debt:
 
 ### 102. Implement defect-discharge chain and close Until Since sorries
 - **Effort**: 38 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task #101
 - **Parent Task**: #98
