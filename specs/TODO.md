@@ -139,7 +139,7 @@ technical_debt:
 
 ### 94. Archive strict-semantics legacy code to Boneyard
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Priority**: medium
 - **Dependencies**: Task 91
@@ -147,6 +147,7 @@ technical_debt:
 - **Related**: Tasks 58 (closes), 91
 - **Research**: [01_archive-strict-legacy.md](specs/094_archive_strict_semantics_legacy/reports/01_archive-strict-legacy.md)
 - **Plan**: [01_archive-strict-legacy.md](specs/094_archive_strict_semantics_legacy/plans/01_archive-strict-legacy.md)
+- **Summary**: [01_archive-strict-legacy-summary.md](specs/094_archive_strict_semantics_legacy/summaries/01_archive-strict-legacy-summary.md)
 
 **Description**: Move the legacy strict-semantics completeness code to `Boneyard/StrictSemanticsLegacy/` with a README explaining its history. Files: `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` (~67 sorries), `Theories/Bimodal/FrameConditions/Completeness.lean` (~54 sorries), `Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean` (~29 sorries), `Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean` (~61 sorries). These were written under strict temporal semantics (strict G/H, strict U/S) before the codebase reverted to reflexive BX semantics; their sorry count reflects architectural incompatibility, not real mathematical gaps. Update any importers (`Metalogic.lean` already points to `BXCanonical`). Mechanically drops ~210 sorries from the non-Boneyard count. Update `state.json.technical_debt` to reflect new counts. Also formally closes task 58 (which was blocked on this legacy path). Do after task 91 so the Boneyard README can cite the authoritative roadmap.
 

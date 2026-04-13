@@ -26,12 +26,12 @@
     {
       "project_number": 94,
       "project_name": "archive_strict_semantics_legacy",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "priority": "medium",
       "description": "Archive legacy strict-semantics completeness code to Boneyard with a README explaining its history. Files to move: Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean (~67 sorries, only imported by FrameConditions/Completeness.lean and DovetailedChain.lean and Boneyard); Theories/Bimodal/FrameConditions/Completeness.lean (~54 sorries, imports UltrafilterChain); Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean (~29 sorries, imports UltrafilterChain); Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean (~61 sorries, part of old SuccChain path). Leave a Boneyard/StrictSemanticsLegacy/README.md documenting: (1) these files were written under strict temporal semantics (G/H with strict <, strict U/S) before the codebase reverted to reflexive BX semantics; (2) the active completeness path is BXCanonical.lean; (3) the sorry count in these files reflects architectural incompatibility, not genuine mathematical gaps. Update Metalogic.lean and any other importers to drop references. Update sorry counts in state.json technical_debt. Mechanically drops ~210 sorries from the non-Boneyard count. Should be done after task 91 (roadmap update) so the archive README can reference the authoritative roadmap. Estimated 2-4 hours.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-13T06:50:27Z",
+      "last_updated": "2026-04-13T06:56:36Z",
       "related_tasks": [
         58,
         91
@@ -42,6 +42,11 @@
           "path": "specs/094_archive_strict_semantics_legacy/plans/01_archive-strict-legacy.md",
           "type": "plan",
           "summary": "4-phase plan to archive 9 legacy strict-semantics files to Boneyard, removing ~107 sorries from the active codebase"
+        },
+        {
+          "path": "specs/094_archive_strict_semantics_legacy/summaries/01_archive-strict-legacy-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for archiving 9 legacy strict-semantics files to Boneyard"
         }
       ],
       "plan_metadata": {
@@ -71,7 +76,11 @@
             "integrated_date": "2026-04-12"
           }
         ]
-      }
+      },
+      "completion_summary": "Archived 9 legacy strict-semantics completeness files (107 sorries) to Boneyard/StrictSemanticsLegacy, updated all importers, verified lake build succeeds, and updated sorry counts in state.json.",
+      "roadmap_items": [
+        "Legacy strict-semantics files (~20 sorries) pending archival by task 94"
+      ]
     },
     {
       "project_number": 95,
