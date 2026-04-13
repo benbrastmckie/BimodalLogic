@@ -85,7 +85,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Forward Chain Step Construction [NOT STARTED]
+### Phase 1: Forward Chain Step Construction [BLOCKED]
 
 **Goal**: Construct the one-step forward chain operation: given a BXPoint `w` with Until-defects, produce a successor `w'` with `bx_le w w'` and either one defect discharged or all defects propagated with the guard formula maintained.
 
