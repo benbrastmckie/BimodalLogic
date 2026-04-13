@@ -185,30 +185,65 @@ are **not imported** by `BXCanonical`.
 ### Module Import Graph
 
 ```
-Metalogic.lean (aggregator; see Theories/Bimodal/Metalogic/Metalogic.lean:4)
-  └── Metalogic/BXCanonical/BXCanonical.lean
-        ├── Metalogic/BXCanonical/Frame.lean
-        │     ├── Metalogic/Core/MaximalConsistent
-        │     ├── Metalogic/Core/MCSProperties
-        │     ├── Metalogic/Bundle/TemporalContent
-        │     ├── Metalogic/Bundle/WitnessSeed
-        │     ├── Metalogic/Bundle/CanonicalFrame
-        │     └── Theorems/GeneralizedNecessitation
-        ├── Metalogic/BXCanonical/TruthLemma.lean
-        │     ├── Metalogic/BXCanonical/Frame
-        │     ├── Semantics/Truth
-        │     └── Semantics/Validity
-        └── Metalogic/BXCanonical/Completeness.lean
-              ├── Metalogic/BXCanonical/TruthLemma
-              └── Semantics/Validity
+Metalogic/BXCanonical/BXCanonical.lean (aggregator)
+  ├── Frame.lean (673 lines, sorry-free)
+  │     ├── Core/MaximalConsistent
+  │     ├── Core/MCSProperties
+  │     ├── Bundle/TemporalContent
+  │     ├── Bundle/WitnessSeed
+  │     ├── Bundle/CanonicalFrame
+  │     ├── Syntax/Formula
+  │     └── Theorems/GeneralizedNecessitation
+  │
+  ├── TruthLemma.lean (320 lines, sorry-free)
+  │     ├── Frame
+  │     ├── Semantics/Truth
+  │     └── Semantics/Validity
+  │
+  ├── Completeness.lean (163 lines, 1 sorry)
+  │     ├── TruthLemma
+  │     └── Semantics/Validity
+  │
+  ├── CanonicalChain.lean (157 lines, sorry-free)
+  │     ├── Frame
+  │     ├── Quasimodel/Construction
+  │     └── Filtration/DefectChain
+  │
+  ├── Quasimodel/
+  │     ├── SubformulaClosure.lean (114 lines)
+  │     │     └── Syntax/Formula
+  │     ├── HintikkaPoint.lean (166 lines)
+  │     │     ├── SubformulaClosure
+  │     │     └── Frame
+  │     ├── EnrichedClosure.lean (158 lines)
+  │     │     ├── Syntax/BigConj
+  │     │     ├── SubformulaClosure
+  │     │     └── Mathlib.Data.Finset.Powerset
+  │     ├── Construction.lean (887 lines)
+  │     │     ├── HintikkaPoint
+  │     │     └── Mathlib.Data.List.Chain
+  │     ├── Realization.lean (444 lines)
+  │     │     ├── Construction
+  │     │     ├── Syntax/BigConj
+  │     │     ├── Theorems/Combinators
+  │     │     └── Theorems/Propositional
+  │     └── LocusControl.lean (47 lines)
+  │           └── Realization
+  │
+  └── Filtration/
+        ├── SigmaOrdering.lean (179 lines)
+        │     ├── Frame
+        │     └── Quasimodel/EnrichedClosure
+        └── DefectChain.lean (137 lines)
+              ├── SigmaOrdering
+              └── Quasimodel/Construction
 ```
 
-**Verification**:
-```
-grep -r "import.*\(UltrafilterChain\|SuccChainFMCS\|FrameConditions\.Completeness\)" \
-  Theories/Bimodal/Metalogic/BXCanonical/
-```
-returns nothing. These legacy files are not on the active path.
+**Total BXCanonical module: 3,473 lines across 13 files, 1 sorry.**
+
+Legacy files (`UltrafilterChain`, `SuccChainFMCS`, `FrameConditions/Completeness`)
+are still built via top-level aggregation in `Metalogic.lean` but are **not
+imported** by `BXCanonical`.
 
 ---
 
@@ -287,6 +322,95 @@ Step 4 (the TaskModel embedding) is the `sorry` at `Completeness.lean:154`.
 (task 88 anti-pattern): on constant histories, `G(α) ≡ α` semantically, so the
 temporal truth bridge fails. The TaskModel embedding must use non-constant
 histories that visit multiple BXPoints.
+
+---
+
+## Quasimodel/Filtration Infrastructure
+
+Nine new files (2,289 lines, all sorry-free) were added under `BXCanonical/`
+between tasks 90 and 102, implementing a Hintikka-set quasimodel with
+defect-discharge to close the Until/Since eventuality obligations.
+
+### Quasimodel/ (Hintikka-set quasimodel construction)
+
+| File | Lines | Purpose | Key Definitions |
+|------|-------|---------|-----------------|
+| `SubformulaClosure.lean` | 114 | Finite subformula closure (Sigma-closure) | `subformulas`, `SubformulaClosure`, `ghEnrichment` |
+| `HintikkaPoint.lean` | 166 | Hintikka point definition and sigma-signature | `HintikkaPoint`, `sigma_signature`, `sigma_signature_consistent`, `sigma_signature_maximal` |
+| `EnrichedClosure.lean` | 158 | Fisher-Ladner enriched closure with G/H negation formulas | `enrichedGNegBigconj`, `enrichedHNegBigconj`, `enrichedClosure` |
+| `Construction.lean` | 887 | BX axiom lemmas at MCS level with defect-discharge | `hintikka_step`, `UntilDefect`, `defect_count`, `QuasimodelChain` |
+| `Realization.lean` | 444 | Realization lifting from Hintikka chains to BXPoint chains | `until_forward_seed`, `since_backward_seed`, `until_eventuality_resolution`, `since_eventuality_resolution` |
+| `LocusControl.lean` | 47 | Delegation layer (primed variants) | `bx_until_eventuality_resolution'`, `bx_since_eventuality_resolution'` |
+
+### Filtration/ (Sigma-restricted ordering)
+
+| File | Lines | Purpose | Key Definitions |
+|------|-------|---------|-----------------|
+| `SigmaOrdering.lean` | 179 | Sigma-restricted ordering on BXPoints | `sigma_le`, `sigma_strict`, `sigma_equiv`, `bx_le_implies_sigma_le` |
+| `DefectChain.lean` | 137 | Defect-discharge chain via well-founded recursion | `sigma_defect_count`, `until_defect`, `defect_step_phi` |
+
+### CanonicalChain.lean (top-level bridge)
+
+| File | Lines | Purpose | Key Definitions |
+|------|-------|---------|-----------------|
+| `CanonicalChain.lean` | 157 | MCS-level BX axiom lemmas and delegation bridges | `psi_imp_until_mcs`, `psi_imp_since_mcs`, `F_imp_top_until_mcs`, `left_mono_until_mcs` |
+
+---
+
+## How Until/Since Were Closed
+
+The four Until/Since eventuality and backward sorries in `Frame.lean` were
+the hardest part of the BX completeness proof. They were closed between
+2026-04-10 and 2026-04-12 through tasks 90, 92, 98, and 102.
+
+### The Problem
+
+The original canonical model construction used `bx_le` (defined as
+`g_content w ⊆ v`) for the temporal ordering. The Until/Since eventuality
+obligations require finding a witness point where the eventuality formula
+is discharged. The core difficulty was the **X-vs-G mismatch**: `φ U ψ ∈ w`
+does not imply `G(φ U ψ) ∈ w`, so the formula does not propagate forward
+through the `g_content`-based ordering.
+
+### The Solution: Hintikka-Set Quasimodel with Defect-Discharge
+
+**Research (task 90)** identified two strategies. **Option A** -- a quasimodel
+approach using Hintikka points with defect-discharge -- was chosen for its
+proof-theoretic elegance and avoidance of Henkin witness closure machinery.
+
+The approach works as follows:
+
+1. **Subformula closure** (`SubformulaClosure.lean`): Define a finite
+   sigma-closure of the target formula, restricting attention to a bounded
+   set of subformulas.
+
+2. **Hintikka points** (`HintikkaPoint.lean`): Define Hintikka points as
+   MCS sets restricted to the sigma-closure, with sigma-signatures encoding
+   consistency and maximality within the closure.
+
+3. **Enriched closure** (`EnrichedClosure.lean`): Extend the closure with
+   Fisher-Ladner enrichment formulas (G/H-negation big conjunctions) that
+   ensure the finite model property.
+
+4. **Defect-discharge construction** (`Construction.lean`, 887 lines): Build
+   `QuasimodelChain`s where each step discharges an `UntilDefect` --
+   a formula `φ U ψ` held at a point but not yet witnessed. The
+   `defect_count` decreases at each step, ensuring termination via
+   well-founded recursion on the finite sigma-closure.
+
+5. **Realization** (`Realization.lean`): Lift the Hintikka chain construction
+   back to BXPoint chains, producing the eventuality resolution and backward
+   witnesses that `Frame.lean` needs.
+
+6. **Sigma-restricted ordering** (`Filtration/`): Define `sigma_le` as a
+   sigma-restricted variant of `bx_le` that respects the finite closure.
+   `DefectChain.lean` uses well-founded recursion on `sigma_defect_count`
+   to discharge all defects.
+
+**Implementation (task 92)** built the initial infrastructure. **Task 98**
+closed `bx_until_eventuality_resolution` and `bx_since_eventuality_resolution`.
+**Task 102** closed the remaining three sorries: `bx_until_backward`,
+`bx_since_backward`, and `bx_modal_witness`.
 
 ---
 
