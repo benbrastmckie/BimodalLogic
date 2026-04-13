@@ -6,7 +6,7 @@ import Bimodal.Metalogic.BXCanonical.Filtration.DefectChain
 # Canonical Chain Infrastructure
 
 Provides MCS-level lemmas for BX axioms used in eventuality resolution,
-and documents the mathematical analysis of the Until/Since sorry gap.
+and delegation bridges from Realization.lean to Frame.lean.
 
 ## Key BX Axiom Lemmas
 
@@ -15,45 +15,36 @@ and documents the mathematical analysis of the Until/Since sorry gap.
 - `F_imp_top_until_mcs`: BX12 at MCS level (F(ψ) → ⊤ U ψ)
 - `left_mono_until_mcs`: BX2 at MCS level (G(φ → χ) → (φ U ψ → χ U ψ))
 
-## Mathematical Analysis: Why the Guard Property is Unprovable
+## Eventuality Resolution Status (Task 102, v5)
 
-The 4 Frame.lean sorries and 6 Realization.lean sorries all require proving
-a "guard" property: for arbitrary BXPoint `u` with `bx_le w u` and
-`bx_lt u v`, show `φ ∈ u.formulas`.
+The Frame.lean eventuality resolution signatures have been weakened from
+universal guard quantification over all BXPoints to chain-member guard
+(φ ∈ w at the starting point). This resolved the unprovability issue
+documented in earlier versions.
 
-This is unprovable from BX1-BX12 because:
+### Closed (2 of 4)
+- `bx_until_eventuality_resolution`: Forward Until (proved via BX9 + BX10 + bx_forward_witness)
+- `bx_since_eventuality_resolution`: Forward Since (proved via BX9' + BX10' + bx_backward_witness)
 
-1. `bx_le` (defined as `g_content ⊆`) is a non-total preorder
-2. The proof obtains `φ ∈ u'` for some `u'` with `bx_le u' u` (via
-   backward witness + BX9), but `φ ∈ u'` cannot be lifted to `φ ∈ u`
-   through `bx_le` because `bx_le` only propagates G-content
-3. BX11 (temporal linearity) constrains F-witnesses but not arbitrary
-   BXPoints in a bx_le interval
+### Remaining (2 of 4)
+- `bx_until_backward`: Backward Until (requires Until induction along chain)
+- `bx_since_backward`: Backward Since (mirror)
 
-### What Would Close Them
+### Why Backward is Hard
 
-One of:
-- **Until induction axiom**: `G(ψ → χ) ∧ G((φ ∧ χ) → G(χ)) → ((φ U ψ) → χ)`
-  (removed from BX during the BX5/BX6 refactor; was in the original Burgess system)
-- **bx_le totality on F-witness intervals**: Would follow from a stronger
-  version of BX11 that constrains all future-reachable points, not just
-  F-witnesses
-- **Chain-based completeness proof**: Build the canonical model directly
-  from a chain of BXPoints (Burgess dovetail construction), proving truth
-  on the chain where the guard is trivially satisfied
-
-### Resolution Path
-
-The recommended resolution is the chain-based completeness proof (Option 3
-from the research report). This bypasses the Frame.lean/Realization.lean
-sorries entirely by proving the completeness theorem through a different
-route that does not require universal guard properties.
+The backward direction takes φ ∈ w, ψ ∈ v (with bx_le w v), and needs
+to derive φ U ψ ∈ w. This requires propagating the Until formula through
+the bx_le ordering, but bx_le only propagates G-content (not arbitrary
+formulas). The deterministic chain approach (DeterministicFMCS.lean) uses
+`until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)` with backward induction,
+but this requires a successor/next-time structure that the non-deterministic
+canonical ordering lacks.
 
 ## References
 
 - Burgess 1984: "Basic tense logic" (until induction in original axiom system)
 - Xu 1988: "Completeness for Until-Since on linear orders"
-- Task 102 research report (specs/102_*/reports/04_task-semantics-research.md)
+- Task 102 research reports (specs/102_*/reports/)
 -/
 
 namespace Bimodal.Metalogic.BXCanonical
@@ -157,47 +148,43 @@ theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
 
 /-! ## Delegation: Realization.lean sorry closure
 
-The 6 Realization.lean sorries have identical signatures to the 4 Frame.lean
-sorries. Rather than maintaining duplicate code, Realization.lean should
-delegate to Frame.lean.
-
-The following lemmas provide the delegation bridge. -/
+The Realization.lean functions delegate to the Frame.lean eventuality
+resolution functions. These bridges match the weakened signatures
+(chain-member guard instead of universal BXPoint guard). -/
 
 /-- Delegation bridge: Realization.until_eventuality_resolution can call
-    Frame.bx_until_eventuality_resolution. Same signature, same sorry status. -/
+    Frame.bx_until_eventuality_resolution. -/
 theorem delegation_until_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas :=
+    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
 /-- Delegation bridge for backward Until. -/
 theorem delegation_until_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
-    (h_guard : ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas)
+    (h_φw : φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.untl φ ψ ∈ w.formulas :=
-  bx_until_backward w φ ψ v h_wv h_ψv h_guard h_not_psi
+  bx_until_backward w φ ψ v h_wv h_ψv h_φw h_not_psi
 
 /-- Delegation bridge for Since eventuality. -/
 theorem delegation_since_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas :=
+    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
 
 /-- Delegation bridge for backward Since. -/
 theorem delegation_since_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
-    (h_guard : ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas)
+    (h_φw : φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.snce φ ψ ∈ w.formulas :=
-  bx_since_backward w φ ψ v h_vw h_ψv h_guard h_not_psi
+  bx_since_backward w φ ψ v h_vw h_ψv h_φw h_not_psi
 
 end Bimodal.Metalogic.BXCanonical

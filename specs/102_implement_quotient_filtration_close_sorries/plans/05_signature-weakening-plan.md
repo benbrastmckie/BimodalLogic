@@ -1,7 +1,7 @@
 # Implementation Plan: Weaken Frame.lean Sorry Signatures to Chain-Member Quantification (v4)
 
 - **Task**: 102 - implement_quotient_filtration_close_sorries
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 16 hours
 - **Dependencies**: None
 - **Research Inputs**:
@@ -80,7 +80,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Define Chain Type and Build Forward Chain [NOT STARTED]
+### Phase 1: Define Chain Type and Build Forward Chain [COMPLETED]
 
 **Goal**: Define a finite defect-discharge chain structure (`UntilChain` / `SinceChain`) and the chain construction function using well-founded recursion on defect count.
 
@@ -121,7 +121,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Rewrite Frame.lean Sorry Signatures and Close Forward Sorries [NOT STARTED]
+### Phase 2: Rewrite Frame.lean Sorry Signatures and Close Forward Sorries [COMPLETED]
 
 **Goal**: Change the 4 Frame.lean sorry signatures to use chain-member quantification, then close `bx_until_eventuality_resolution` and `bx_since_eventuality_resolution` using the chain construction from Phase 1.
 
@@ -172,7 +172,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Update Callers (TruthLemma, Realization, CanonicalChain, LocusControl) [NOT STARTED]
+### Phase 3: Update Callers (TruthLemma, Realization, CanonicalChain, LocusControl) [COMPLETED]
 
 **Goal**: Update all files that call the 4 Frame.lean functions to use the new chain-based signatures.
 
@@ -210,7 +210,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Final Validation and Cleanup [NOT STARTED]
+### Phase 4: Final Validation and Cleanup [COMPLETED]
 
 **Goal**: Comprehensive verification that all changes are consistent, no regressions, and the codebase is clean.
 

@@ -226,7 +226,7 @@ dual.
 
 ---
 
-### Phase 5: Forward Until -- BX7 Direct Proof [NOT STARTED]
+### Phase 5: Forward Until -- BX7 Direct Proof [BLOCKED]
 
 **Goal**: Prove `bx_until_eventuality_resolution` in Frame.lean
 sorry-free, using BX7 (Until linearity), BX5 (self-accumulation),

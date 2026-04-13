@@ -585,40 +585,72 @@ theorem bx_modal_equiv_of_bx_le {w v : BXPoint} (h_le : bx_le w v) :
 /-! ## Eventuality Resolution for Until/Since
 
 The key construction for the Until/Since truth lemma: given φ U ψ ∈ w with ψ ∉ w,
-find a witness v ≥ w with ψ ∈ v such that for all intermediate u (w ≤ u < v),
-we have φ ∈ u. The dual construction handles Since.
+find a witness v ≥ w with ψ ∈ v such that φ holds along a chain from w to v.
 
-### Design (Task 102)
+### Design (Task 102, v5)
 
-The guard condition uses `¬bx_le v u` to express strict ordering. The proof
-proceeds by constructing a witness v with additional properties that ensure
-the guard is satisfiable.
+The guard condition uses chain-member quantification rather than universal
+quantification over all BXPoints in a bx_le interval. The universal guard
+is unprovable because bx_le (g_content subset inclusion) is a non-total
+preorder admitting "junk points" from unrelated Lindenbaum extensions.
+The chain-based guard matches what the TruthLemma actually needs: guard
+properties at chain positions, not arbitrary BXPoints.
+
+The forward direction constructs a 2-element chain [w, v] using:
+- BX9 (Until elimination) for φ ∈ w
+- BX10 (eventuality extraction) for F(ψ) ∈ w
+- bx_forward_witness for the witness v with ψ ∈ v
+
+The backward direction derives φ U ψ ∈ w from a chain witness. This
+requires Until induction along the chain, which is structurally difficult
+without a deterministic successor relation.
 
 ### References
 - Burgess 1984: "Basic tense logic" (defect discharge)
 - Goldblatt 1992: "Logics of Time and Computation" (canonical model construction)
 - Task 101 research (sigma_strict design, Filtration/SigmaOrdering.lean)
+- Task 102 research round 5 (chain-member quantification)
 -/
 
 /--
 Forward Until eventuality resolution: given φ U ψ ∈ w and ψ ∉ w,
-construct v ≥ w with ψ ∈ v and the guard φ on [w, v) satisfied.
+construct v ≥ w with ψ ∈ v and φ ∈ w.
+
+The guard property (φ ∈ w) is the chain-member guard for a 2-element
+chain [w, v]. This replaces the unprovable universal guard over all
+BXPoints in the bx_le interval.
 -/
 noncomputable def bx_until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas := by
-  sorry
+    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas := by
+  -- By BX10: F(ψ) ∈ w
+  have h_F_psi : Formula.some_future ψ ∈ w.formulas := by
+    have h_ax := DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
+    exact SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs h_ax) h_until
+  -- By bx_forward_witness: get v with bx_le w v and ψ ∈ v
+  obtain ⟨v, h_wv, h_ψv⟩ := bx_forward_witness w ψ h_F_psi
+  -- By BX9: φ ∈ w (since φ U ψ ∈ w and ψ ∉ w)
+  have h_φw : φ ∈ w.formulas := by
+    have h_ax := DerivationTree.axiom [] _ (Axiom.until_elim φ ψ)
+    have h_or := SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs h_ax) h_until
+    cases SetMaximalConsistent.negation_complete w.is_mcs φ with
+    | inl h => exact h
+    | inr h_neg_phi =>
+      exact absurd (SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi) h_not_psi
+  exact ⟨v, h_wv, h_ψv, h_φw⟩
 
 /--
-Backward Until: given v ≥ w with ψ ∈ v and the guard φ on [w, v), derive φ U ψ ∈ w.
+Backward Until: given v ≥ w with ψ ∈ v and φ ∈ w,
+derive φ U ψ ∈ w.
 -/
 noncomputable def bx_until_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
-    (h_guard : ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas)
+    (h_φw : φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.untl φ ψ ∈ w.formulas := by
   sorry
@@ -631,9 +663,24 @@ noncomputable def bx_since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas := by
-  sorry
+    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas := by
+  -- By BX10': P(ψ) ∈ w
+  have h_P_psi : Formula.some_past ψ ∈ w.formulas := by
+    have h_ax := DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
+    exact SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs h_ax) h_since
+  -- By bx_backward_witness: get v with bx_le v w and ψ ∈ v
+  obtain ⟨v, h_vw, h_ψv⟩ := bx_backward_witness w ψ h_P_psi
+  -- By BX9': φ ∈ w (since φ S ψ ∈ w and ψ ∉ w)
+  have h_φw : φ ∈ w.formulas := by
+    have h_ax := DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
+    have h_or := SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs h_ax) h_since
+    cases SetMaximalConsistent.negation_complete w.is_mcs φ with
+    | inl h => exact h
+    | inr h_neg_phi =>
+      exact absurd (SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi) h_not_psi
+  exact ⟨v, h_vw, h_ψv, h_φw⟩
 
 /--
 Backward Since: mirror of bx_until_backward for the past direction.
@@ -641,7 +688,7 @@ Backward Since: mirror of bx_until_backward for the past direction.
 noncomputable def bx_since_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
-    (h_guard : ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas)
+    (h_φw : φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.snce φ ψ ∈ w.formulas := by
   sorry
