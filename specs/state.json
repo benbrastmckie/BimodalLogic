@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-13T16:54:05Z",
+      "last_updated": "2026-04-13T17:39:00Z",
       "related_tasks": [
         92,
         95
@@ -21,8 +21,8 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776096701_b3f682",
-      "researched": "2026-04-13T16:09:13Z",
+      "session_id": "sess_1776101028_05efaf",
+      "researched": "2026-04-13T17:39:00Z",
       "artifacts": [
         {
           "path": "specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md",
@@ -48,9 +48,14 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/04_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "4-phase plan: restricted truth lemma, deferral seed chain, restricted coherence proofs, completeness wiring. 8 hours estimated."
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: novel backward Until approach, F(⊤) gap, augmented deferral seeds"
         }
       ],
-      "next_artifact_number": 5,
+      "next_artifact_number": 6,
       "started": "2026-04-13T07:28:59Z"
     },
     {
