@@ -15,30 +15,15 @@ and delegation bridges from Realization.lean to Frame.lean.
 - `F_imp_top_until_mcs`: BX12 at MCS level (F(ψ) → ⊤ U ψ)
 - `left_mono_until_mcs`: BX2 at MCS level (G(φ → χ) → (φ U ψ → χ U ψ))
 
-## Eventuality Resolution Status (Task 102, v5)
+## Eventuality Resolution Status (Task 102, v6)
 
-The Frame.lean eventuality resolution signatures have been weakened from
-universal guard quantification over all BXPoints to chain-member guard
-(φ ∈ w at the starting point). This resolved the unprovability issue
-documented in earlier versions.
-
-### Closed (2 of 4)
+The Frame.lean forward eventuality resolution functions are proved:
 - `bx_until_eventuality_resolution`: Forward Until (proved via BX9 + BX10 + bx_forward_witness)
 - `bx_since_eventuality_resolution`: Forward Since (proved via BX9' + BX10' + bx_backward_witness)
 
-### Remaining (2 of 4)
-- `bx_until_backward`: Backward Until (requires Until induction along chain)
-- `bx_since_backward`: Backward Since (mirror)
-
-### Why Backward is Hard
-
-The backward direction takes φ ∈ w, ψ ∈ v (with bx_le w v), and needs
-to derive φ U ψ ∈ w. This requires propagating the Until formula through
-the bx_le ordering, but bx_le only propagates G-content (not arbitrary
-formulas). The deterministic chain approach (DeterministicFMCS.lean) uses
-`until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)` with backward induction,
-but this requires a successor/next-time structure that the non-deterministic
-canonical ordering lacks.
+The backward functions (`bx_until_backward`, `bx_since_backward`) were removed
+in v6: their signatures were semantically unsound (φ ∈ w alone does not entail
+the full interval guard for φ U ψ ∈ w) and they had no downstream consumers.
 
 ## References
 
@@ -161,15 +146,6 @@ theorem delegation_until_eventuality
     ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
-/-- Delegation bridge for backward Until. -/
-theorem delegation_until_backward
-    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
-    (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas)
-    (h_not_psi : ψ ∉ w.formulas) :
-    Formula.untl φ ψ ∈ w.formulas :=
-  bx_until_backward w φ ψ v h_wv h_ψv h_φw h_not_psi
-
 /-- Delegation bridge for Since eventuality. -/
 theorem delegation_since_eventuality
     (w : BXPoint) (φ ψ : Formula)
@@ -177,14 +153,5 @@ theorem delegation_since_eventuality
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
-
-/-- Delegation bridge for backward Since. -/
-theorem delegation_since_backward
-    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
-    (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas)
-    (h_not_psi : ψ ∉ w.formulas) :
-    Formula.snce φ ψ ∈ w.formulas :=
-  bx_since_backward w φ ψ v h_vw h_ψv h_φw h_not_psi
 
 end Bimodal.Metalogic.BXCanonical

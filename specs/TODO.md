@@ -46,7 +46,7 @@ technical_debt:
      - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
      - **100** [COMPLETED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
      - **101** [COMPLETED] — Research quotient filtration model for BX completeness (8-12h)
-     - **102** [RESEARCHED] — Implement defect-discharge chain and close Until/Since sorries (38h, depends on 101)
+     - **102** [COMPLETED] — Implement defect-discharge chain and close Until/Since sorries (38h, depends on 101)
 4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
@@ -100,11 +100,13 @@ technical_debt:
 
 ### 102. Implement defect-discharge chain and close Until Since sorries
 - **Effort**: 38 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Dependencies**: Task #101
 - **Parent Task**: #98
 - **Created**: 2026-04-11
+- **Completed**: 2026-04-13
+- **Summary**: Deleted 2 unsound backward sorry functions (bx_until_backward, bx_since_backward) from Frame.lean and all delegation wrappers. Frame.lean now has 0 sorries. lake build passes cleanly.
 - **Research**:
   - [11_spawn-analysis.md](098_research_filtration_quasimodel_pivot/reports/11_spawn-analysis.md)
   - [02_team-research.md](102_implement_quotient_filtration_close_sorries/reports/02_team-research.md)

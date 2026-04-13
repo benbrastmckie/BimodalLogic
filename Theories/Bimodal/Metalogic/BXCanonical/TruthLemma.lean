@@ -27,12 +27,13 @@ into a TaskModel. The truth lemma is proved by structural induction on formulas.
 ## Status
 
 The truth lemma for atom, bot, imp, box, G, H is fully proved.
-The truth lemma for Until/Since is structurally complete: both directions
-(forward and backward) are proved modulo helper lemmas in Frame.lean:
-- `bx_until_eventuality_resolution` / `bx_since_eventuality_resolution` (forward)
-- `bx_until_backward` / `bx_since_backward` (backward)
+The Until/Since forward direction (eventuality resolution) is proved via
+`bx_until_eventuality_resolution` / `bx_since_eventuality_resolution` in Frame.lean.
 
-These helpers encapsulate the Zorn-based eventuality resolution argument.
+The backward direction (`bx_until_backward` / `bx_since_backward`) was removed:
+these had unsound signatures (φ ∈ w alone does not entail the full interval guard
+needed for φ U ψ ∈ w). They were dead code with no downstream consumers.
+
 The completeness theorem is stated with sorry for the TaskModel construction.
 
 ## References
@@ -292,16 +293,6 @@ theorem until_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
     (theorem_in_mcs w.is_mcs h_bx8) h_ψ
 
 /--
-Until backward (strict case): given v > w with ψ ∈ v and φ ∈ w,
-derive φ U ψ ∈ w. Delegates to Frame.lean.
--/
-noncomputable def until_backward_strict_mcs (w : BXPoint) (φ ψ : Formula)
-    (v : BXPoint) (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas) (h_not_psi : ψ ∉ w.formulas) :
-    Formula.untl φ ψ ∈ w.formulas :=
-  bx_until_backward w φ ψ v h_wv h_ψv h_φw h_not_psi
-
-/--
 Since forward: (φ S ψ) ∈ w implies either ψ ∈ w or there exists v < w
 with ψ ∈ v and φ ∈ w.
 
@@ -325,15 +316,5 @@ theorem since_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
     DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_bx8') h_ψ
-
-/--
-Since backward (strict case): given v < w with ψ ∈ v and φ ∈ w,
-derive φ S ψ ∈ w. Delegates to Frame.lean.
--/
-noncomputable def since_backward_strict_mcs (w : BXPoint) (φ ψ : Formula)
-    (v : BXPoint) (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas) (h_not_psi : ψ ∉ w.formulas) :
-    Formula.snce φ ψ ∈ w.formulas :=
-  bx_since_backward w φ ψ v h_vw h_ψv h_φw h_not_psi
 
 end Bimodal.Metalogic.BXCanonical
