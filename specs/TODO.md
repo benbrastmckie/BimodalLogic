@@ -108,13 +108,16 @@ technical_debt:
 
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None (tasks 90, 92, 98, 102 completed)
 - **Created**: 2026-04-10
 - **Related**: Tasks 92, 95, 102
-- **Research**: [01_taskmodel-embedding.md](specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md)
+- **Research**:
+  - [01_taskmodel-embedding.md](specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md)
+  - [02_team-research.md](specs/093_complete_bxcanonical_embedding/reports/02_team-research.md)
+  - [03_team-research.md](specs/093_complete_bxcanonical_embedding/reports/03_team-research.md)
 - **Plan**: [02_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/02_bxcanonical-embedding.md)
 
 **Description**: Close the sole remaining BXCanonical sorry: TaskModel embedding at `BXCanonical/Completeness.lean:154`. This constructs a `TaskModel` from the BXPoint canonical frame. The Box-direction sorry (Frame.lean:440) was closed by task 102. All 4 Until/Since sorries (Frame.lean:653, 675, 690, 704) were closed by tasks 90+92+98+102. Once this sorry is closed, `bx_completeness` becomes sorry-free, and `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`. The TaskModel embedding must use non-constant histories (constant histories collapse G to identity — see ROAD_MAP.md anti-pattern #12).
@@ -242,6 +245,7 @@ technical_debt:
    - Path A: Rat canonical model construction
    - Path B: Strict semantics may simplify (density axiom documented for strict)
    - Analyze which approach is more tractable
+   - **Hint**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) propagates the Until formula through intervals, populating dense guards via BX9 `until_elim`. Cantor-domain chain construction over a countable dense order with interval-filling for Until guards is the key technique.
 
 2. **Discrete completeness**:
    - Current: Reduces to Int completeness (sorry-free reduction)
@@ -273,6 +277,8 @@ technical_debt:
 - **Research**: [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
 
 **Description**: Eliminate the sorry in dense_completeness_fc (FrameConditions/Completeness.lean line 121) by constructing a canonical model over Rat. Int cannot be used because Int is not densely ordered. Rat is countable, aligning with existing Lindenbaum/countable MCS machinery.
+
+**Hint**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) is the key to dense guard population — it propagates the Until formula itself through the interval, making each intermediate point contain `φ` via BX9 `until_elim`. Use Cantor-domain chain construction over a countable dense order, with interval-filling for Until guards.
 
 ---
 
@@ -392,6 +398,8 @@ technical_debt:
 
 **Description**: Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.
 
+**Hint**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) is the key to dense guard population — it propagates the Until formula itself through the interval, making each intermediate point contain `φ` via BX9 `until_elim`. Use Cantor-domain chain construction over a countable dense order, with interval-filling for Until guards.
+
 ---
 
 ### 8. Establish genuine truth_at completeness theorems for TM logic
@@ -407,6 +415,8 @@ technical_debt:
  **Plan**: [03_revised-completeness-plan.md](008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
 
 **Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
+
+**Hint (dense leg)**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) is the key to dense guard population — it propagates the Until formula itself through the interval, making each intermediate point contain `φ` via BX9 `until_elim`. Use Cantor-domain chain construction over a countable dense order, with interval-filling for Until guards.
 
 ---
 
