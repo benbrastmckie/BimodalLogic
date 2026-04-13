@@ -644,18 +644,6 @@ noncomputable def bx_until_eventuality_resolution
   exact ⟨v, h_wv, h_ψv, h_φw⟩
 
 /--
-Backward Until: given v ≥ w with ψ ∈ v and φ ∈ w,
-derive φ U ψ ∈ w.
--/
-noncomputable def bx_until_backward
-    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
-    (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas)
-    (h_not_psi : ψ ∉ w.formulas) :
-    Formula.untl φ ψ ∈ w.formulas := by
-  sorry
-
-/--
 Forward Since eventuality resolution: mirror of bx_until_eventuality_resolution
 for the past direction, using h_content instead of g_content.
 -/
@@ -681,16 +669,5 @@ noncomputable def bx_since_eventuality_resolution
     | inr h_neg_phi =>
       exact absurd (SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi) h_not_psi
   exact ⟨v, h_vw, h_ψv, h_φw⟩
-
-/--
-Backward Since: mirror of bx_until_backward for the past direction.
--/
-noncomputable def bx_since_backward
-    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
-    (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas)
-    (h_not_psi : ψ ∉ w.formulas) :
-    Formula.snce φ ψ ∈ w.formulas := by
-  sorry
 
 end Bimodal.Metalogic.BXCanonical

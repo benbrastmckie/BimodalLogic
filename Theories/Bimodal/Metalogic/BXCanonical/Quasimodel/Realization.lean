@@ -17,9 +17,7 @@ in the canonical model, preserving the temporal ordering `bx_le`.
 ## Main Results
 
 - `until_eventuality_resolution`: Until eventuality resolution (delegates to Frame.lean)
-- `until_backward`: Until backward direction (delegates to Frame.lean)
 - `since_eventuality_resolution`: Since eventuality resolution (delegates to Frame.lean)
-- `since_backward`: Since backward direction (delegates to Frame.lean)
 
 ## Mathematical Analysis
 
@@ -434,16 +432,6 @@ noncomputable def until_eventuality_resolution
     ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
-/-! ## Until Backward Direction (delegates to Frame.lean) -/
-
-noncomputable def until_backward
-    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
-    (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas)
-    (h_not_psi : ψ ∉ w.formulas) :
-    Formula.untl φ ψ ∈ w.formulas :=
-  bx_until_backward w φ ψ v h_wv h_ψv h_φw h_not_psi
-
 /-! ## Since Eventuality Resolution (delegates to Frame.lean) -/
 
 noncomputable def since_eventuality_resolution
@@ -452,13 +440,5 @@ noncomputable def since_eventuality_resolution
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
-
-noncomputable def since_backward
-    (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
-    (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
-    (h_φw : φ ∈ w.formulas)
-    (h_not_psi : ψ ∉ w.formulas) :
-    Formula.snce φ ψ ∈ w.formulas :=
-  bx_since_backward w φ ψ v h_vw h_ψv h_φw h_not_psi
 
 end Bimodal.Metalogic.BXCanonical.Quasimodel
