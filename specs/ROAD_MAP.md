@@ -537,21 +537,22 @@ Until-structure of formulas, using the following axioms:
 8. **BX1 (`temp_t_future`)**: `Gφ → φ` provides reflexivity of `bx_le` and is
    used at the final witness to extract the current-time satisfaction of `ψ`.
 
-### Option A vs Option B (Task 90's research framing)
+### Resolution: Option A (Quasimodel with Defect-Discharge)
 
-Two strategies are open for closing the 4 `bx_until_*` / `bx_since_*` sorries:
+Task 90 (research) identified two strategies for closing the 4 `bx_until_*` /
+`bx_since_*` sorries:
 
-- **Option A: Redefine `bx_le`**. Change `bx_le` from `g_content ⊆` to an
-  Until-witness-based ordering, then prove the two definitions equivalent
-  using BX10 + BX12 + BX4 + BX1. Avoids Henkin closure but requires more
-  intricate reflexivity/transitivity proofs for the new ordering.
-- **Option B: Henkin witness closure**. Explicitly enrich the canonical frame
-  with witness MCS points for each Until/Since formula — the classical
-  Burgess construction. Standard but adds machinery to the BXPoint type.
+- **Option A: Quasimodel with defect-discharge** -- Build a Hintikka-set
+  quasimodel with sigma-restricted filtration ordering. Avoids Henkin closure
+  machinery; uses well-founded recursion on defect count.
+- **Option B: Henkin witness closure** -- Explicitly enrich the canonical frame
+  with witness MCS points. Classical Burgess construction but adds machinery
+  to the BXPoint type.
 
-Task 90 is the research task that will choose between Option A and Option B;
-task 92 will implement the chosen approach. See `Frame.lean:590-622` for the
-in-code analysis these tasks will build on.
+**Option A was chosen and implemented successfully** through tasks 92, 98,
+and 102. The implementation added 2,289 lines of sorry-free infrastructure
+across 9 files (see "Quasimodel/Filtration Infrastructure" and "How
+Until/Since Were Closed" above). All 5 Frame.lean sorries are closed.
 
 ---
 
@@ -696,25 +697,28 @@ characterization.
 
 ## Recommended Priority Order
 
-1. **Task 91** [this task]: Rewrite `specs/ROAD_MAP.md` to reflect the BX
-   reflexive-semantics architecture.
-2. **Task 94**: Archive legacy strict-semantics code
-   (`UltrafilterChain.lean`, `FrameConditions/Completeness.lean`,
-   `DovetailedChain.lean`, `SuccChainFMCS.lean`) to
-   `Boneyard/StrictSemanticsLegacy/`. Immediate ~210 sorry drop.
-3. **Task 90**: Research Option A (redefine `bx_le` via Until witnesses) vs
-   Option B (Henkin closure) for the 4 Until/Since sorries.
-4. **Task 92**: Implement the chosen approach in `BXCanonical/Frame.lean`.
-   Closes the 4 Until/Since sorries (Frame.lean:653, 675, 690, 704).
-5. **Task 93**: Close the Box direction (`Frame.lean:440`) via the S5
-   argument, and the final TaskModel embedding
-   (`Completeness.lean:154`) using non-constant histories.
-6. **Task 95**: `#print axioms` audit on `BXCanonical.bx_completeness` and
-   `discrete_completeness_fc`; expected output is exactly
-   `{propext, Classical.choice, Quot.sound}`.
-7. **Task 68**: Dense completeness via `ℚ` canonical model (independent track).
-8. **Task 82**: FMP Truth Preservation (independent, decidability track).
-9. **Task 60**: Remove `discrete_Icc_finite_axiom` custom axiom (independent).
+### Critical Path (sequential)
+
+1. **Task 93**: Close `Completeness.lean:154` (TaskModel embedding). The
+   **sole remaining active-path sorry**. Requires constructing a `TaskModel`
+   from the BXPoint canonical frame using non-constant histories.
+2. **Task 95**: `#print axioms` audit on `bx_completeness`; expected output
+   is exactly `{propext, Classical.choice, Quot.sound}`. Depends on task 93.
+
+### Documentation/Cleanup (parallelizable)
+
+3. **Task 94**: Archive legacy strict-semantics files to
+   `Boneyard/StrictSemanticsLegacy/`. Drops ~20 sorries from active tree.
+4. **Task 104**: Clean up superseded tasks in state.json (abandon 89,
+   update 60/87/998).
+5. **Task 105**: Update stale sorry-blocker comments in BXCanonical code.
+
+### Independent Tracks
+
+6. **Task 68**: Dense completeness via `ℚ` canonical model (independent).
+7. **Task 82**: FMP Truth Preservation -- may need reassessment (sorries
+   archived to Boneyard, 0 remain in active tree).
+8. **Task 60**: Remove `discrete_Icc_finite_axiom` (may already be gone).
 
 ---
 
