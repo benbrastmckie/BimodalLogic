@@ -38,7 +38,7 @@ technical_debt:
 103 → 94
 ```
 
-1. **93** [NOT STARTED] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
+1. **93** [RESEARCHING] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
 3. **103** [COMPLETED] — Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
 4. **94** [RESEARCHED] — Archive legacy strict-semantics code to Boneyard (~210 sorry drop)
@@ -126,7 +126,7 @@ technical_debt:
 
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None (tasks 90, 92, 98, 102 completed)

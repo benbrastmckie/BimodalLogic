@@ -2,7 +2,6 @@ import Bimodal.Metalogic.SoundnessLemmas
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Completeness
 import Bimodal.Metalogic.Decidability
-import Bimodal.Metalogic.Bundle.CanonicalConstruction
 
 /-!
 # Bimodal.Metalogic - Soundness, Completeness, and Decidability
@@ -16,7 +15,7 @@ procedures.
 | Component | Status | Key Theorem |
 |-----------|--------|-------------|
 | Soundness | COMPLETE | `soundness : Gamma derives phi -> Gamma valid phi` |
-| Completeness | IN PROGRESS | SuccChain architecture |
+| Completeness | IN PROGRESS | BXCanonical architecture |
 | Decidability | COMPLETE | `decide : Formula -> DecisionResult` |
 
 ## Publication-Ready Theorems
@@ -25,7 +24,7 @@ The following theorems are sorry-free with zero custom axioms:
 
 - `soundness`: If Gamma derives phi, then phi is valid (Soundness.lean)
 - `bmcs_truth_lemma`: Truth lemma for BFMCS (Bundle/TruthLemma.lean)
-- `shifted_truth_lemma`: Truth lemma for shift-closed Omega (CanonicalConstruction.lean)
+
 
 ## Axiom Dependencies
 
@@ -43,7 +42,7 @@ Standard Lean axioms only (no custom axioms on publication path):
 - `Completeness`: Completeness infrastructure (MCS theory, canonical constructions)
 - `Decidability`: Tableau-based decision procedure with proof/countermodel extraction
 - `Bundle/`: BFMCS infrastructure and truth lemma
-- `SuccChain/`: Successor chain completeness architecture (active)
+- `BXCanonical/`: Reflexive BX completeness architecture (active)
 
 ## Usage
 
