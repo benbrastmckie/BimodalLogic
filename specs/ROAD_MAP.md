@@ -724,7 +724,7 @@ characterization.
 
 ## Task Cross-Reference
 
-> **Updated 2026-04-12 (review task 103 pending full rewrite)**
+> **Updated 2026-04-13 (task 103 rewrite)**
 
 | Task | Status | Description | Depends On |
 |------|--------|-------------|------------|
@@ -736,7 +736,7 @@ characterization.
 | 93 | [NOT STARTED] | Close Completeness.lean:154 (TaskModel embedding) — **sole remaining sorry** | 102 |
 | 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 93 |
 | 103 | [NOT STARTED] | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
-| 94 | [NOT STARTED] | Archive strict-semantics legacy files to Boneyard | 103 |
+| 94 | [PLANNING] | Archive strict-semantics legacy files to Boneyard | 103 |
 | 104 | [NOT STARTED] | Clean up superseded tasks + fix state.json | — |
 | 105 | [NOT STARTED] | Update stale sorry-blocker comments in BXCanonical | — |
 | 82 | [NOT STARTED] | FMP Truth Preservation (weak completeness, independent) | — |
@@ -745,4 +745,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-04-12 (review)*
+*Last updated: 2026-04-13 (task 103 rewrite)*
