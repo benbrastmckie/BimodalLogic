@@ -27,46 +27,38 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-10. Spawned tasks 96/97/98 from task 92 Phase 0 diagnostic failure: BX5 propagation and BX4 connectedness both unrescued. Three parallel research tasks investigate BX13 axiom candidates, layered bx_le redefinition, and filtration/quasimodel pivot.*
+*Updated 2026-04-13. Tasks 92, 98, 102 completed: all 4 Frame.lean Until/Since sorries closed. Next: 93 (Box + Completeness embedding), then 95 (verification audit).*
 
 **Goal**: Close BXCanonical completeness via Burgess-Xu Until-induction; archive strict-semantics legacy; zero custom axioms.
 
 ### 1. Critical Path — BXCanonical Completeness
 
 ```
-91 → 90 → 92 → 93 → 95
-          ↓↘ 94
-   [96, 97, 98] → 92 (re-plan)
+93 → 95
+91 → 94
+60 (independent)
 ```
 
-1. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture (prerequisite for accurate research)
-2. **90** [COMPLETED] — Research/decide Option A (redefine bx_le via Until-witnesses) vs Option B (Henkin closure) for BXCanonical Until-induction (depends on 91)
-3. **92** [BLOCKED] — Implement Until/Since truth lemma in BXCanonical/Frame.lean (4 sorries; Phase 0 gate failed; 98 is sole viable path)
-   - **98** [BLOCKED] — Research filtration/quasimodel pivot: plan v5 BX7 direct proof blocked (circularity)
-     - **99** [COMPLETED] — BXPoint-backed HintikkaStepOracle for Phase 4 chain-step seed consistency (10-15h, foundational)
-     - **100** [COMPLETED] — Revise task 98 plan v3 to plan v4 (depends on 99, 2-4h)
-     - **101** [COMPLETED] — Research quotient filtration model for BX completeness (8-12h)
-     - **102** [COMPLETED] — Implement defect-discharge chain and close Until/Since sorries (38h, depends on 101)
-4. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154 (depends on 92)
-5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
-6. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
-7. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom, independent)
+1. **93** [NOT STARTED] — Close Box sorry at Frame.lean:440 + TaskModel embedding at Completeness.lean:154
+2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
+3. **91** [NOT STARTED] — Update ROAD_MAP.md to reflect BX reflexive-semantics architecture
+4. **94** [NOT STARTED] — Archive UltrafilterChain.lean + FrameConditions/Completeness.lean + SuccChainFMCS.lean to Boneyard (depends on 91)
+5. **60** [NOT STARTED] — Remove discrete_Icc_finite_axiom (custom axiom, independent)
 
 ### 2. Superseded / Legacy
 
-- **89** [RESEARCHED] — Superseded by 90+92. Research round was conducted against stale semantic state.
-- **58** [BLOCKED] — Wire completeness to FrameConditions. Abandoned: FrameConditions/Completeness.lean is legacy strict-semantics code to be archived by 94.
+- **89** [RESEARCHED] — Superseded by 90+92. Stale semantic state.
 
 ### 3. Independent Completeness Paths (parallel)
 
 - **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries — gives weak completeness
-- **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (independent, needs Rat construction)
+- **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (needs Rat construction)
 
 ### 4. Strict Temporal Extensions Research (parallel track)
 
 ```
 74 → 75 → 76
-      ↘ 998 (FMP strict temporal)
+      ↘ 998
 ```
 
 - **74** [NOT STARTED] — Research strict vs reflexive temporal semantics
@@ -77,7 +69,7 @@ technical_debt:
 ### 5. Experimental / Research
 
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
-- **64** [RESEARCHED] — Critical path review (completed research, reference only)
+- **64** [RESEARCHED] — Critical path review (reference only)
 
 ### 6. Deferred
 
@@ -171,11 +163,13 @@ technical_debt:
 
 ### 98. Research filtration or quasimodel pivot for Until/Since truth lemma
 - **Effort**: 8-12 hours (research) + 70-135h (plan v4 implementation)
-- **Status**: [BLOCKED]
+- **Status**: [COMPLETED]
 - **Dependencies**: Task #99, Task #100, Task #101, Task #102
 - **Language**: lean4
 - **Parent Task**: #92
 - **Created**: 2026-04-10
+- **Completed**: 2026-04-13
+- **Summary**: Research complete. Spawned subtasks 99-102 which closed all 4 Frame.lean Until/Since sorries via enriched closure infrastructure and defect-discharge chains.
 - **Research**:
   - [01_filtration-quasimodel-pivot.md](098_research_filtration_quasimodel_pivot/reports/01_filtration-quasimodel-pivot.md)
   - [02_team-research.md](098_research_filtration_quasimodel_pivot/reports/02_team-research.md)
@@ -230,12 +224,13 @@ technical_debt:
 
 ### 92. Implement Burgess-Xu Until/Since truth lemma in BXCanonical/Frame.lean
 - **Effort**: 13-23 hours (revised from 8-16h per team research round 02)
-- **Status**: [BLOCKED]
-- **Blocker**: Phase 0 diagnostic gate: all 6 Burgess-Xu probes failed (Gap U5 and B-GAP both unrescued). See specs/092_implement_bx_until_truth_lemma/reports/03_phase0-diagnostic.md. Run `/spawn 92` to decompose.
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Priority**: high
 - **Dependencies**: Task 90 (approach decision, completed), Task 96, Task 97, Task 98 (spawned research)
 - **Created**: 2026-04-10
+- **Completed**: 2026-04-13
+- **Summary**: All 4 Frame.lean Until/Since sorries closed: 2 forward (eventuality resolution), 2 backward (deleted as semantically unsound). Frame.lean has 0 sorry tactics.
 - **Related**: Tasks 89 (supersedes), 90, 93
 - **Artifacts**:
   - [01_inherited-from-task90.md](092_implement_bx_until_truth_lemma/reports/01_inherited-from-task90.md)
@@ -463,20 +458,6 @@ technical_debt:
 - **Dependencies**: Task 59
 
 **Description**: Eliminate the custom axiom discrete_Icc_finite_axiom (FrameConditions/Completeness.lean line 187). Either prove the finiteness of DiscreteTimelineQuot intervals directly, or restructure the discrete completeness proof to avoid needing it. Research-heavy task.
-
----
-
-### 58. Wire completeness to FrameConditions
-- **Effort**: 4-6 hours
-- **Status**: [BLOCKED]
-- **Language**: lean4
-- **Dependencies**: Task #85
-- **Research**:
-  - [63_team-research.md](058_wire_completeness_to_frame_conditions/reports/63_team-research.md) — Team research: seed consistency proof techniques (4 teammates)
-  - [65_team-research.md](058_wire_completeness_to_frame_conditions/reports/65_team-research.md) — Team research: BRS blocker analysis - theorem is FALSE, bypass recommended
-- **Plan**: [17_greedy-extension.md](058_wire_completeness_to_frame_conditions/plans/17_greedy-extension.md) — 4-phase greedy extension approach
-
-**Description**: Wire completeness to FrameConditions. Post-tasks 83/84 status: wiring is DONE — `completeness_over_Int`, `discrete_completeness_fc`, and `dovetailed_bundle_validity_implies_provability` are structurally complete. Remaining sorries: (1) `forward_until_since_coherent` (3 sites, blocked by G-lift incompatibility — see task 85), (2) backward step transfer (6 sites, same root cause), (3) `dense_completeness_fc` (1 site, needs Rat canonical model — see task 68). Task 82 (FMP) provides weak completeness independently.
 
 ---
 
