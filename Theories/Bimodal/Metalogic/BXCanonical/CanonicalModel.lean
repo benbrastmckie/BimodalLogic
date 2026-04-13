@@ -488,14 +488,36 @@ theorem box_stable_in_shifted_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsis
     Formula.box φ ∈ (shifted_bx_fmcs M₀ h₀ s).mcs t ↔ Formula.box φ ∈ M₀ :=
   box_stable_in_int_chain M₀ h₀ φ (t - s)
 
-/-! ## Temporal Coherence -/
+/-! ## Temporal Coherence
 
+### Obstacle Analysis (Task 93, v11)
+
+`bx_fmcs_forward_F` and `bx_fmcs_backward_P` are UNPROVABLE for the current
+scheduling chain construction. The root cause: at resolving steps for formula
+chi (where F(chi) in chain(n)), the Lindenbaum seed `{chi} union g_content(chain(n))`
+does NOT include f_carry. So F(psi) for psi != chi may be lost. Once lost
+(G(neg psi) appears), the loss is permanent (G propagates via BX4 G->GG).
+
+Enriching the resolving seed with f_carry is INVALID: the enriched seed
+`{chi} union g_content(M) union f_carry(M)` can be inconsistent.
+Counterexample: G(F(alpha) -> neg psi) in M, F(alpha) in M, F(psi) in M.
+
+The fix requires replacing the scheduling chain with a construction that
+resolves F-obligations within a finite subformula closure (quasimodel
+approach). See `specs/093_complete_bxcanonical_embedding/handoffs/11_forward-f-obstacle.md`.
+
+These theorems are on the active completeness path (used by `bx_bfmcs_restricted_tc`
+which is used by `bx_countermodel`). Closing them requires a new chain construction.
+-/
+
+-- BLOCKED: unprovable for scheduling chain (see obstacle analysis above)
 theorem bx_fmcs_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (t : Int) (ψ : Formula)
     (h_F : Formula.some_future ψ ∈ (bx_fmcs M₀ h₀).mcs t) :
     ∃ s : Int, t < s ∧ ψ ∈ (bx_fmcs M₀ h₀).mcs s := by
   sorry
 
+-- BLOCKED: symmetric obstacle to bx_fmcs_forward_F
 theorem bx_fmcs_backward_P (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (t : Int) (ψ : Formula)
     (h_P : Formula.some_past ψ ∈ (bx_fmcs M₀ h₀).mcs t) :
@@ -564,8 +586,14 @@ noncomputable def bx_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
   eval_family := shifted_bx_fmcs M₀ h₀ 0
   eval_family_mem := ⟨M₀, h₀, 0, fun _ => Iff.rfl, rfl⟩
 
-/-! ## Coherence -/
+/-! ## Coherence
 
+DEAD CODE: The unrestricted coherence theorems (bx_bfmcs_tc, bx_bfmcs_buc, bx_bfmcs_fuc)
+delegate to the sorry'd bx_fmcs_forward_F/backward_P. They are not on the active
+completeness path -- only the restricted variants are used by bx_countermodel.
+-/
+
+-- DEAD CODE: not on active completeness path
 theorem bx_bfmcs_tc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
     (bx_bfmcs M₀ h₀).temporally_coherent := by
   intro fam hfam; obtain ⟨N, h_N, s, _, rfl⟩ := hfam
