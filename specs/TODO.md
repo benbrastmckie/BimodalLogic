@@ -40,7 +40,7 @@ technical_debt:
 
 1. **93** [NOT STARTED] — Close TaskModel embedding sorry at Completeness.lean:154 (sole remaining active-path sorry)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 93)
-3. **103** [RESEARCHED] — Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
+3. **103** [COMPLETED] — Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
 4. **94** [RESEARCHED] — Archive legacy strict-semantics code to Boneyard (~210 sorry drop)
 5. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
 6. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
@@ -111,13 +111,14 @@ technical_debt:
 
 ### 103. Comprehensive ROAD_MAP.md rewrite for post-Until/Since state
 - **Effort**: 3-5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Priority**: critical
 - **Created**: 2026-04-12
 - **Related**: Tasks 91, 93, 95
 - **Research**: [01_roadmap-rewrite-research.md](specs/103_rewrite_roadmap_post_until_since/reports/01_roadmap-rewrite-research.md)
 - **Plan**: [01_roadmap-rewrite-plan.md](specs/103_rewrite_roadmap_post_until_since/plans/01_roadmap-rewrite-plan.md)
+- **Summary**: [01_roadmap-rewrite-summary.md](specs/103_rewrite_roadmap_post_until_since/summaries/01_roadmap-rewrite-summary.md)
 
 **Description**: Comprehensive ROAD_MAP.md rewrite reflecting post-Until/Since closure state. The current ROAD_MAP.md (written during task 91, 2026-04-10) has critical factual errors: (1) Active-path sorry inventory says 6 but only 1 remains (Completeness.lean:154); (2) Task cross-reference table shows completed tasks as NOT STARTED; (3) Recommended priority order lists completed tasks; (4) New BXCanonical infrastructure (Quasimodel/, Filtration/, CanonicalChain.lean — 7 new files) is undocumented. Must update: sorry inventory, task cross-reference, priority order, module import graph, add section documenting the quasimodel approach that closed Until/Since. Publication-blocking.
 
@@ -138,7 +139,7 @@ technical_debt:
 
 ### 94. Archive strict-semantics legacy code to Boneyard
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: medium
 - **Dependencies**: Task 91
