@@ -78,7 +78,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Prerequisites -- Port F(top)/P(top) and Verify Expansion Axiom [NOT STARTED]
+### Phase 1: Prerequisites -- Port F(top)/P(top) and Verify Expansion Axiom [COMPLETED]
 
 **Goal**: Port `F_top_theorem`, `P_top_theorem`, `SetMaximalConsistent.contains_F_top`, and `SetMaximalConsistent.contains_P_top` from the Boneyard to the main `CanonicalChain.lean` file. Verify that the contrapositive argument for backward Until is derivable from available BX axioms.
 
@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Modify Chain Seeds for Deferral Disjunctions [NOT STARTED]
+### Phase 2: Modify Chain Seeds for Deferral Disjunctions [PARTIAL]
 
 **Goal**: Augment `fwd_succ` and `bwd_pred` in `CanonicalModel.lean` to include deferral disjunctions in their seeds, enabling restricted forward_F/backward_P to be proved. The key change: at resolving steps, the seed becomes `{psi} union g_content(M) union deferralDisjunctions(M)` (was `{psi} union g_content(M)`); at non-resolving steps, the seed becomes `g_content(M) union deferralDisjunctions(M)` (was `g_content(M) union f_carry(M)`).
 
@@ -136,7 +136,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove Backward Until/Since Coherence via Contrapositive [NOT STARTED]
+### Phase 3: Prove Backward Until/Since Coherence via Contrapositive [BLOCKED]
 
 **Goal**: Close `bx_bfmcs_restricted_buc` (line 621) using the novel contrapositive argument from Research Report 05. This does NOT require chain modification -- it works with the existing `g_content` propagation.
 
