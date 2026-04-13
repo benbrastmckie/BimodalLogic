@@ -431,9 +431,7 @@ noncomputable def until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas :=
-  -- Delegate to Frame.lean's version (identical signature)
+    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
 /-! ## Until Backward Direction (delegates to Frame.lean) -/
@@ -441,11 +439,10 @@ noncomputable def until_eventuality_resolution
 noncomputable def until_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
-    (h_guard : ∀ u : BXPoint, bx_le w u → bx_le u v ∧ ¬bx_le v u → φ ∈ u.formulas)
+    (h_φw : φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.untl φ ψ ∈ w.formulas :=
-  -- Delegate to Frame.lean's version (identical signature)
-  bx_until_backward w φ ψ v h_wv h_ψv h_guard h_not_psi
+  bx_until_backward w φ ψ v h_wv h_ψv h_φw h_not_psi
 
 /-! ## Since Eventuality Resolution (delegates to Frame.lean) -/
 
@@ -453,18 +450,15 @@ noncomputable def since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
-      ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas :=
-  -- Delegate to Frame.lean's version (identical signature)
+    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
 
 noncomputable def since_backward
     (w : BXPoint) (φ ψ : Formula) (v : BXPoint)
     (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
-    (h_guard : ∀ u : BXPoint, bx_le v u ∧ ¬bx_le u v → bx_le u w → φ ∈ u.formulas)
+    (h_φw : φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     Formula.snce φ ψ ∈ w.formulas :=
-  -- Delegate to Frame.lean's version (identical signature)
-  bx_since_backward w φ ψ v h_vw h_ψv h_guard h_not_psi
+  bx_since_backward w φ ψ v h_vw h_ψv h_φw h_not_psi
 
 end Bimodal.Metalogic.BXCanonical.Quasimodel

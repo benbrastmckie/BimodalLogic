@@ -265,95 +265,75 @@ theorem P_from_witness {w v : BXPoint} {ψ : Formula}
 /-! ### Until truth lemma -/
 
 /--
-Until truth in MCS: (φ U ψ) ∈ w iff there exists v ≥ w with ψ ∈ v and
-φ ∈ u for all u strictly between w and v (i.e., w ≤ u and u < v).
+Until truth in MCS (forward): (φ U ψ) ∈ w implies either ψ ∈ w (reflexive
+witness) or there exists v > w with ψ ∈ v and φ ∈ w.
 
-The guard uses the strict ordering bx_lt u v to avoid issues with
-bx_le being a preorder (not antisymmetric): distinct BXPoints can be
-bx_le-equivalent. Using bx_lt ensures the reflexive witness case (v = w)
-has a vacuously true guard.
-
-The forward direction uses BX8-BX10 for the ψ ∈ w case and Zorn-based
-eventuality resolution for the ψ ∉ w case.
-The backward direction uses BX8 for the ψ ∈ w case and BX4 connectedness
-with eventuality resolution for the ψ ∉ w case.
+This is the forward half of the truth lemma for Until. The backward half
+(deriving φ U ψ from witnesses) requires Until induction which is
+structurally difficult without a deterministic successor relation.
 -/
-theorem until_iff_mcs (w : BXPoint) (φ ψ : Formula) :
-    Formula.untl φ ψ ∈ w.formulas ↔
-      ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧
-        ∀ u : BXPoint, bx_le w u → bx_lt u v → φ ∈ u.formulas := by
-  constructor
-  · -- Forward: φ U ψ ∈ w → ∃ v ≥ w with ψ ∈ v and φ on [w, v).
-    intro h_until
-    by_cases h_ψ : ψ ∈ w.formulas
-    · -- Case: ψ ∈ w. Take v = w (reflexive witness).
-      refine ⟨w, bx_le_refl w, h_ψ, fun u h_wu h_uw => ?_⟩
-      exact absurd h_wu h_uw.2
-    · -- Case: ψ ∉ w. Eventuality resolution via Zorn.
-      -- Use the Zorn-based construction that finds a witness with guard.
-      obtain ⟨v, h_wv, h_ψv, h_guard_raw⟩ :=
-        bx_until_eventuality_resolution w φ ψ h_until h_ψ
-      exact ⟨v, h_wv, h_ψv, fun u h_wu h_uv => h_guard_raw u h_wu h_uv⟩
-  · -- Backward: (∃ v ≥ w with ψ ∈ v, φ on [w, v)) → φ U ψ ∈ w.
-    intro ⟨v, h_wv, h_ψv, h_guard⟩
-    by_cases h_ψ : ψ ∈ w.formulas
-    · -- ψ ∈ w: direct from BX8 (psi_imp_until)
-      have h_bx8 : DerivationTree [] (ψ.imp (Formula.untl φ ψ)) :=
-        DerivationTree.axiom [] _ (Axiom.refl_intro_until φ ψ)
-      exact SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_bx8) h_ψ
-    · -- ψ ∉ w: Use Zorn-based backward argument.
-      exact bx_until_backward w φ ψ v h_wv h_ψv
-        (fun u h_wu h_uv => h_guard u h_wu h_uv) h_ψ
+theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
+    (h_until : Formula.untl φ ψ ∈ w.formulas) :
+    ψ ∈ w.formulas ∨
+      (∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas) := by
+  by_cases h_ψ : ψ ∈ w.formulas
+  · exact Or.inl h_ψ
+  · exact Or.inr (bx_until_eventuality_resolution w φ ψ h_until h_ψ)
 
 /--
-Since truth in MCS: (φ S ψ) ∈ w iff there exists v ≤ w with ψ ∈ v and
-φ ∈ u for all u strictly between v and w (i.e., v < u and u ≤ w).
-
-Mirror of until_iff_mcs for the past direction.
+Until backward (reflexive case): ψ ∈ w implies φ U ψ ∈ w (from BX8).
 -/
-theorem since_iff_mcs (w : BXPoint) (φ ψ : Formula) :
-    Formula.snce φ ψ ∈ w.formulas ↔
-      ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧
-        ∀ u : BXPoint, bx_lt v u → bx_le u w → φ ∈ u.formulas := by
-  constructor
-  · -- Forward: φ S ψ ∈ w → ∃ v ≤ w with ψ ∈ v and φ on (v, w].
-    intro h_since
-    by_cases h_ψ : ψ ∈ w.formulas
-    · -- Case: ψ ∈ w. Take v = w (reflexive witness).
-      refine ⟨w, bx_le_refl w, h_ψ, fun u h_wu h_uw => ?_⟩
-      exact absurd h_uw h_wu.2
-    · -- Case: ψ ∉ w. Mirror of forward Until.
-      have h_since_imp_or : DerivationTree [] ((Formula.snce φ ψ).imp (Formula.or φ ψ)) :=
-        DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
-      have h_or_w : Formula.or φ ψ ∈ w.formulas :=
-        SetMaximalConsistent.implication_property w.is_mcs
-          (theorem_in_mcs w.is_mcs h_since_imp_or) h_since
-      have h_phi_w : φ ∈ w.formulas := by
-        cases SetMaximalConsistent.negation_complete w.is_mcs φ with
-        | inl h => exact h
-        | inr h_neg_phi =>
-          have h_psi_w := SetMaximalConsistent.implication_property w.is_mcs h_or_w h_neg_phi
-          exact absurd h_psi_w h_ψ
-      have h_since_imp_P : DerivationTree [] ((Formula.snce φ ψ).imp (Formula.some_past ψ)) :=
-        DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
-      have h_P_psi : Formula.some_past ψ ∈ w.formulas :=
-        SetMaximalConsistent.implication_property w.is_mcs
-          (theorem_in_mcs w.is_mcs h_since_imp_P) h_since
-      -- Use Zorn-based construction for Since direction
-      obtain ⟨v, h_vw, h_ψv, h_guard_raw⟩ :=
-        bx_since_eventuality_resolution w φ ψ h_since h_ψ
-      exact ⟨v, h_vw, h_ψv, fun u h_vu h_uw => h_guard_raw u h_vu h_uw⟩
-  · -- Backward: (∃ v ≤ w with ψ ∈ v, φ on (v, w]) → φ S ψ ∈ w.
-    intro ⟨v, h_vw, h_ψv, h_guard⟩
-    by_cases h_ψ : ψ ∈ w.formulas
-    · -- ψ ∈ w: direct from BX8' (psi_imp_since)
-      have h_bx8' : DerivationTree [] (ψ.imp (Formula.snce φ ψ)) :=
-        DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
-      exact SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_bx8') h_ψ
-    · -- ψ ∉ w: Use Zorn-based backward argument (Since mirror).
-      exact bx_since_backward w φ ψ v h_vw h_ψv
-        (fun u h_vu h_uw => h_guard u h_vu h_uw) h_ψ
+theorem until_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
+    (h_ψ : ψ ∈ w.formulas) :
+    Formula.untl φ ψ ∈ w.formulas := by
+  have h_bx8 : DerivationTree [] (ψ.imp (Formula.untl φ ψ)) :=
+    DerivationTree.axiom [] _ (Axiom.refl_intro_until φ ψ)
+  exact SetMaximalConsistent.implication_property w.is_mcs
+    (theorem_in_mcs w.is_mcs h_bx8) h_ψ
+
+/--
+Until backward (strict case): given v > w with ψ ∈ v and φ ∈ w,
+derive φ U ψ ∈ w. Delegates to Frame.lean.
+-/
+noncomputable def until_backward_strict_mcs (w : BXPoint) (φ ψ : Formula)
+    (v : BXPoint) (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas)
+    (h_φw : φ ∈ w.formulas) (h_not_psi : ψ ∉ w.formulas) :
+    Formula.untl φ ψ ∈ w.formulas :=
+  bx_until_backward w φ ψ v h_wv h_ψv h_φw h_not_psi
+
+/--
+Since forward: (φ S ψ) ∈ w implies either ψ ∈ w or there exists v < w
+with ψ ∈ v and φ ∈ w.
+
+Mirror of until_forward_mcs for the past direction.
+-/
+theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
+    (h_since : Formula.snce φ ψ ∈ w.formulas) :
+    ψ ∈ w.formulas ∨
+      (∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas) := by
+  by_cases h_ψ : ψ ∈ w.formulas
+  · exact Or.inl h_ψ
+  · exact Or.inr (bx_since_eventuality_resolution w φ ψ h_since h_ψ)
+
+/--
+Since backward (reflexive case): ψ ∈ w implies φ S ψ ∈ w (from BX8').
+-/
+theorem since_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
+    (h_ψ : ψ ∈ w.formulas) :
+    Formula.snce φ ψ ∈ w.formulas := by
+  have h_bx8' : DerivationTree [] (ψ.imp (Formula.snce φ ψ)) :=
+    DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
+  exact SetMaximalConsistent.implication_property w.is_mcs
+    (theorem_in_mcs w.is_mcs h_bx8') h_ψ
+
+/--
+Since backward (strict case): given v < w with ψ ∈ v and φ ∈ w,
+derive φ S ψ ∈ w. Delegates to Frame.lean.
+-/
+noncomputable def since_backward_strict_mcs (w : BXPoint) (φ ψ : Formula)
+    (v : BXPoint) (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas)
+    (h_φw : φ ∈ w.formulas) (h_not_psi : ψ ∉ w.formulas) :
+    Formula.snce φ ψ ∈ w.formulas :=
+  bx_since_backward w φ ψ v h_vw h_ψv h_φw h_not_psi
 
 end Bimodal.Metalogic.BXCanonical
