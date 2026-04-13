@@ -25,17 +25,52 @@
     {
       "project_number": 94,
       "project_name": "archive_strict_semantics_legacy",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "priority": "medium",
       "description": "Archive legacy strict-semantics completeness code to Boneyard with a README explaining its history. Files to move: Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean (~67 sorries, only imported by FrameConditions/Completeness.lean and DovetailedChain.lean and Boneyard); Theories/Bimodal/FrameConditions/Completeness.lean (~54 sorries, imports UltrafilterChain); Theories/Bimodal/Metalogic/Algebraic/DovetailedChain.lean (~29 sorries, imports UltrafilterChain); Theories/Bimodal/Metalogic/Bundle/SuccChainFMCS.lean (~61 sorries, part of old SuccChain path). Leave a Boneyard/StrictSemanticsLegacy/README.md documenting: (1) these files were written under strict temporal semantics (G/H with strict <, strict U/S) before the codebase reverted to reflexive BX semantics; (2) the active completeness path is BXCanonical.lean; (3) the sorry count in these files reflects architectural incompatibility, not genuine mathematical gaps. Update Metalogic.lean and any other importers to drop references. Update sorry counts in state.json technical_debt. Mechanically drops ~210 sorries from the non-Boneyard count. Should be done after task 91 (roadmap update) so the archive README can reference the authoritative roadmap. Estimated 2-4 hours.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-12T12:00:00Z",
+      "last_updated": "2026-04-13T06:49:14Z",
       "related_tasks": [
         58,
         91
       ],
-      "session_id": "sess_1776062319_e1ad7b"
+      "session_id": "sess_1776062721_778c16",
+      "artifacts": [
+        {
+          "path": "specs/094_archive_strict_semantics_legacy/plans/01_archive-strict-legacy.md",
+          "type": "plan",
+          "summary": "4-phase plan to archive 9 legacy strict-semantics files to Boneyard, removing ~107 sorries from the active codebase"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 2.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_archive-strict-legacy.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-04-12"
+          }
+        ]
+      }
     },
     {
       "project_number": 95,
@@ -78,7 +113,7 @@
       "project_name": "full_representation_theorem_until_since",
       "status": "not_started",
       "language": "lean4",
-      "description": "Prove the full representation theorem for TM with Until/Since operators via the enriched chain construction in Bundle/. This is the enriched-Succ chain with dovetailed scheduling over subformula closure \u2014 the only viable path to full Until/Since forward coherence identified after 39+ research rounds (task 83). Key components: (1) combined_F_seed_consistent lemma (compactness + temporal duality, ~50-100 LOC), (2) enriched chain builder with all pending F-obligations in each Lindenbaum seed, (3) backward Until direction via BX6 absorption derivation, (4) forward_F by construction (every F(\u03c8) in chain(t) has \u03c8 in chain(t+1)). Estimated 600-1000 LOC new proof work, 70-85% confidence per task 83 round 39 assessment. Depends on task 86 (USF fragment completeness) for validating the non-Until/Since cases of the truth lemma. See task 83 reports 38-39, task 86 report 05 (team research round 5) for detailed analysis.",
+      "description": "Prove the full representation theorem for TM with Until/Since operators via the enriched chain construction in Bundle/. This is the enriched-Succ chain with dovetailed scheduling over subformula closure — the only viable path to full Until/Since forward coherence identified after 39+ research rounds (task 83). Key components: (1) combined_F_seed_consistent lemma (compactness + temporal duality, ~50-100 LOC), (2) enriched chain builder with all pending F-obligations in each Lindenbaum seed, (3) backward Until direction via BX6 absorption derivation, (4) forward_F by construction (every F(ψ) in chain(t) has ψ in chain(t+1)). Estimated 600-1000 LOC new proof work, 70-85% confidence per task 83 round 39 assessment. Depends on task 86 (USF fragment completeness) for validating the non-Until/Since cases of the truth lemma. See task 83 reports 38-39, task 86 report 05 (team research round 5) for detailed analysis.",
       "created": "2026-04-09T15:52:36Z",
       "last_updated": "2026-04-09T15:52:36Z"
     },
@@ -136,7 +171,7 @@
         30,
         31
       ],
-      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame \u211a into the unconditional dense representation theorem: valid_dense \u03c6 \u2192 \u22a2_dense \u03c6. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
+      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
       "artifacts": [
         {
           "path": "specs/018_dense_representation_theorem_completion/reports/01_dense-representation-research.md",
@@ -281,7 +316,7 @@
       "language": "lean4",
       "created": "2026-03-19T17:05:39Z",
       "last_updated": "2026-03-19T17:05:39Z",
-      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean \u2014 mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) \u2014 are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
+      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
     },
     {
       "project_number": 992,
@@ -291,7 +326,7 @@
       "created": "2026-03-18T20:24:23Z",
       "last_updated": "2026-03-18T20:24:23Z",
       "researched": "2026-03-18T20:24:23Z",
-      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with \u25a1, G, H, \u03c3 operators and interaction axioms. Lift temporal duality \u03c3 from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
+      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with □, G, H, σ operators and interaction axioms. Lift temporal duality σ from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
       "artifacts": [
         {
           "type": "research",
@@ -306,7 +341,7 @@
       "status": "researched",
       "language": "lean",
       "priority": "medium",
-      "description": "Refactor unilateral proof system (\u0393 \u22a2 \u03c6) to bilateral system with dual judgments: acceptance (\u0393 \u22a2\u207a \u03c6) and rejection (\u0393 \u22a2\u207b \u03c6). Parallel implementation with equivalence bridge.",
+      "description": "Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with dual judgments: acceptance (Γ ⊢⁺ φ) and rejection (Γ ⊢⁻ φ). Parallel implementation with equivalence bridge.",
       "created": "2026-03-03T00:00:00Z",
       "last_updated": "2026-03-16T14:45:00Z",
       "researched": "2026-03-16T14:45:00Z",
@@ -462,7 +497,7 @@
       "last_updated": "2026-03-25T18:30:47Z",
       "session_id": "sess_1774461365_0e8fc2",
       "researched": "2026-03-25T18:30:47Z",
-      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + \u03c3-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. \u03c4 proven impossible as global algebraic construction.",
+      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + σ-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. τ proven impossible as global algebraic construction.",
       "artifacts": [
         {
           "path": "specs/064_critical_path_review/reports/05_team-research.md",
@@ -598,7 +633,7 @@
       "status": "not_started",
       "language": "meta",
       "priority": "high",
-      "description": "Clean up superseded and stale tasks: (1) Abandon task 89 (Close 4 Frame.lean sorries) \u2014 fully superseded by completed tasks 90+92+98+102 which closed all 4 sorries. (2) Update task 60 to remove dependency on nonexistent task 59 and reassess whether the axiom is actually gone. (3) Assess task 87 (full representation via Bundle/) for supersession by BXCanonical approach. (4) Fix state.json technical_debt: set axiom_count to 0 (no Lean axiom declarations exist), update sorry_count and publication_path_sorries to reflect 1 remaining active-path sorry. (5) Clarify task 998 vs task 82 semantics assumptions.",
+      "description": "Clean up superseded and stale tasks: (1) Abandon task 89 (Close 4 Frame.lean sorries) — fully superseded by completed tasks 90+92+98+102 which closed all 4 sorries. (2) Update task 60 to remove dependency on nonexistent task 59 and reassess whether the axiom is actually gone. (3) Assess task 87 (full representation via Bundle/) for supersession by BXCanonical approach. (4) Fix state.json technical_debt: set axiom_count to 0 (no Lean axiom declarations exist), update sorry_count and publication_path_sorries to reflect 1 remaining active-path sorry. (5) Clarify task 998 vs task 82 semantics assumptions.",
       "created": "2026-04-12T00:00:00Z",
       "last_updated": "2026-04-12T00:00:00Z"
     },
@@ -608,7 +643,7 @@
       "status": "not_started",
       "language": "lean4",
       "priority": "high",
-      "description": "Update stale sorry-blocker comments in BXCanonical code files. (1) Completeness.lean:149-153 lists Until/Since and Frame.lean X-vs-G mismatch as remaining blockers \u2014 these are now resolved. (2) Frame.lean:440-441 says \"For now, sorry the full modal equivalence\" but the proof is now complete. (3) BXCanonical.lean:20 says \"sorry for full completeness\" \u2014 should note only TaskModel embedding remains. (4) Verify no other stale sorry references in the 13 BXCanonical files. Also update X/Y operator docstrings in Formula.lean:328-334 (reference stale strict semantics).",
+      "description": "Update stale sorry-blocker comments in BXCanonical code files. (1) Completeness.lean:149-153 lists Until/Since and Frame.lean X-vs-G mismatch as remaining blockers — these are now resolved. (2) Frame.lean:440-441 says \"For now, sorry the full modal equivalence\" but the proof is now complete. (3) BXCanonical.lean:20 says \"sorry for full completeness\" — should note only TaskModel embedding remains. (4) Verify no other stale sorry references in the 13 BXCanonical files. Also update X/Y operator docstrings in Formula.lean:328-334 (reference stale strict semantics).",
       "created": "2026-04-12T00:00:00Z",
       "last_updated": "2026-04-12T00:00:00Z"
     }
