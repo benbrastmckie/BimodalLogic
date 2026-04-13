@@ -13,7 +13,7 @@
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-13T21:04:44Z",
+      "last_updated": "2026-04-13T21:40:46Z",
       "related_tasks": [
         92,
         95
@@ -21,8 +21,8 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776111737_2e444d",
-      "researched": "2026-04-13T21:04:44Z",
+      "session_id": "sess_1776115804_92a64f",
+      "researched": "2026-04-13T21:40:46Z",
       "artifacts": [
         {
           "path": "specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md",
@@ -93,9 +93,14 @@
           "path": "specs/093_complete_bxcanonical_embedding/reports/09_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: definitive untilCarry counterexample, FMP Bridge architecture discovered, 3 alternative architectures ranked"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/reports/10_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: Plan v8 double-fatality confirmed, BX12 reduction + quasimodel BFMCS recommended"
         }
       ],
-      "next_artifact_number": 10,
+      "next_artifact_number": 11,
       "started": "2026-04-13T07:28:59Z"
     },
     {
