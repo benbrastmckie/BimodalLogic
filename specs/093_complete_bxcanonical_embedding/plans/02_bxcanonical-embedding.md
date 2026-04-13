@@ -1,8 +1,8 @@
 # Implementation Plan: Close BXCanonical TaskModel Embedding Sorry
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
-- **Effort**: 6 hours
+- **Status**: [IN PROGRESS]
+- **Effort**: 6 hours estimated, ~4 hours spent
 - **Dependencies**: Task 92 (truth lemma)
 - **Research Inputs**: reports/01_taskmodel-embedding.md, reports/02_team-research.md
 - **Artifacts**: plans/02_bxcanonical-embedding.md (this file)
@@ -51,11 +51,27 @@ No prior plan.
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
+| F(ψ) persistence through resolving steps (**REALIZED**) | H | H | The dovetailed chain loses F-obligations at resolving steps. See "Blocker" section below. Three mitigation paths identified. |
 | Multi-obligation Until interleaving complexity exceeds estimate | H | M | Use priority-based chain: resolve Until at t+1 (guard trivially satisfied since `[t, t+1)` in Int contains only `r = t`), then F/P via standard dovetailing. Seed unresolved Until formulas into Lindenbaum extensions. |
-| Modal saturation requires more boilerplate than estimated | M | M | The BXPoint-to-PCWS bridge is definitional (both wrap MCS). Focus on packaging, not re-proving. |
-| Forward/backward Until/Since coherence proofs are harder than expected | H | L | BX8 (`refl_intro_until`) handles base case. BX5 (`self_accum_until`) propagates. The Int guard trick makes forward coherence tractable. |
-| Task 92 (truth lemma) not yet complete, blocking dependency | H | M | Phase 1 (FMCS chain) and Phase 2 (BFMCS packaging) can proceed independently. Only Phase 4 (bridge proof) needs the truth lemma from the parametric side, which is already proved. The dependency on task 92 is for the BXCanonical-level truth lemma, which feeds into the BFMCS coherence proofs. |
+| Modal saturation requires more boilerplate than estimated | M | M | **Resolved**: Shifted FMCS families solved the time-offset problem. |
+| Forward/backward Until/Since coherence proofs are harder than expected | H | M | Blocked on forward_F. Once chain construction is resolved, these may follow from the same enriched chain. |
 | Axiom contamination from unexpected sorry in import chain | H | L | Team research verified zero sorry in Frame.lean, ParametricCanonical.lean, ParametricTruthLemma.lean, ParametricHistory.lean, ParametricRepresentation.lean. Run `#print axioms` after each phase. |
+
+## Blocker: F(ψ) Persistence in Dovetailed Chain
+
+**Discovered 2026-04-13 during implementation.**
+
+The dovetailed chain construction (`fwd_succ` / `bwd_pred`) uses Lindenbaum extensions of `{σ} ∪ g_content(M)` at resolving steps (where `F(σ) ∈ M`). The Lindenbaum lemma produces an arbitrary MCS extending this seed, and the extension may include `G(¬ψ)` for other formulas ψ with `F(ψ) ∈ M`, permanently killing `F(ψ)`.
+
+**What was tried**:
+1. **f_carry enrichment** (implemented): Added `f_carry(M) = {F(χ) ∈ M}` to the non-resolving seed (`g_content(M) ∪ f_carry(M)`). This preserves F-obligations through non-resolving steps. However, the enriched RESOLVING seed `{σ} ∪ g_content(M) ∪ f_carry(M)` can be genuinely inconsistent (e.g., when `G(F(χ) → ¬σ) ∈ M`), so f_carry cannot be added to resolving steps.
+2. **Classical contradiction argument**: Attempted showing that if `ψ ∉ chain(s)` for all `s > t`, then `G(¬ψ) ∈ chain(t)`, contradicting `F(ψ) ∈ chain(t)`. But deriving `G(¬ψ) ∈ chain(t)` from `¬ψ ∈ chain(s)` for all `s > t` requires backward_G, which itself requires forward_F — circular.
+3. **BX linearity argument**: Applying BX11 (`F(α) ∧ F(β) → F(α ∧ β) ∨ ...`) to the conflicting F-obligations. This produces structurally larger F-formulas at each resolving step, creating an infinite regress that never terminates.
+
+**Viable mitigation paths (not yet attempted)**:
+1. **Biased Lindenbaum**: Build a custom `biased_set_lindenbaum` that, when extending a seed S, preferentially includes formulas from a "bias set" P (e.g., f_carry) whenever consistent. This ensures F(ψ) survives resolving steps unless forced out by inconsistency — and if forced out, `G(¬ψ)` is derivable from the seed, giving a contradiction argument.
+2. **Canonical frame approach**: Instead of a linear Int-indexed chain, use the canonical frame's accessibility relation from `CanonicalFrame.lean` where forward_F is trivial (each F-obligation gets a fresh witness). Requires restructuring the BFMCS construction.
+3. **Restricted temporal coherence**: Use `BFMCS.restricted_temporally_coherent` (already defined in Bundle/) which only requires forward_F for formulas in `deferralClosure(root)`. This scopes the obligation to finitely many formulas, making a priority-based resolution schedule feasible.
 
 ## Implementation Phases
 
@@ -71,125 +87,133 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Dovetailed FMCS Chain Construction [NOT STARTED]
+### Phase 1: Dovetailed FMCS Chain Construction [PARTIAL]
 
 **Goal**: Build an `Int -> BXPoint` chain from a starting MCS, satisfying `forward_G` and `backward_H`, with temporal coherence (`forward_F`, `backward_P`) and Until/Since forward coherence.
 
-**Tasks**:
-- [ ] Create `BXCanonical/CanonicalModel.lean` with appropriate imports
-- [ ] Define the obligation enumeration using `Denumerable Formula` (enumerate F-obligations, P-obligations, Until-obligations, Since-obligations)
-- [ ] Define the priority-based chain step function: at each positive step, resolve the highest-priority obligation (Until first via `bx_until_eventuality_resolution`, then F via `bx_forward_witness`); at each negative step, resolve Since/P obligations similarly
-- [ ] Construct the `FMCS Int` structure from the chain, with `forward_G` proved via `bx_le` transitivity along the chain
-- [ ] Prove `backward_H` via reverse `bx_le` transitivity
-- [ ] Prove `forward_F`: every `F(psi)` obligation is eventually resolved by dovetailing
-- [ ] Prove `backward_P`: every `P(psi)` obligation is eventually resolved
-- [ ] Prove `forward_until_since_coherent`: for `phi U psi in fam.mcs t`, the chain places `psi` at some `s >= t` with `phi` on the guard interval `[t, s)`. Use the Int guard trick: place witness at `t+1`, guard reduces to `phi in fam.mcs t` which is given by BX9 (`until_elim`)
-- [ ] Prove `backward_until_since_coherent`: given witness pattern, derive Until/Since membership using BX8 (`refl_intro_until`)
-- [ ] Seed unresolved Until formulas into Lindenbaum extensions at each chain step to handle multi-obligation interleaving
+**Completed work**:
+- [x] Create `BXCanonical/CanonicalModel.lean` with appropriate imports
+- [x] Define the obligation enumeration using `Denumerable Formula` (`schedule`, `schedule_surjective_above`)
+- [x] Define `fwd_succ` / `bwd_pred` chain step functions with f_carry / p_carry enrichment for non-resolving steps
+- [x] Build `fwd_chain`, `bwd_chain`, `int_chain` combining forward/backward into `Int → Set Formula`
+- [x] Construct `bx_fmcs : FMCS Int` with `forward_G` proved via g_content transitivity
+- [x] Prove `backward_H` via h_content reverse duality
+- [x] Prove g_content/h_content propagation across full Int chain (`int_chain_g_content`, `int_chain_h_content`)
+- [x] Prove `g_content_subset_self`, `h_content_subset_self` (T-axiom reflexivity)
+- [x] Prove `fwd_succ_f_carry` / `bwd_pred_p_carry` (F/P persistence through non-resolving steps)
 
-**Timing**: 2 hours
+**Remaining work (blocked — see Blocker section)**:
+- [ ] Prove `bx_fmcs_forward_F` (line 491): F(ψ) ∈ chain(t) → ∃ s > t, ψ ∈ chain(s)
+- [ ] Prove `bx_fmcs_backward_P` (line 497): P(ψ) ∈ chain(t) → ∃ s < t, ψ ∈ chain(s)
 
-**Depends on**: none
+**Timing**: 2 hours estimated, ~2 hours spent, **blocked**
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` - New file: dovetailed chain construction, FMCS structure, coherence proofs
+**Depends on**: none (but blocked on chain construction design)
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` — ~490 lines: chain construction, FMCS structure, all non-temporal-coherence proofs
 
 **Verification**:
-- `lake build` compiles the new file without errors
-- FMCS structure type-checks with all required fields (forward_G, backward_H, forward_F, backward_P, forward_until_since_coherent, backward_until_since_coherent)
+- `lake build` compiles with 4 sorry warnings (forward_F, backward_P, buc, fuc)
 
 ---
 
-### Phase 2: BFMCS Packaging with Modal Saturation [NOT STARTED]
+### Phase 2: BFMCS Packaging with Modal Saturation [COMPLETED]
 
 **Goal**: Construct a `BFMCS Int` from the FMCS chain by adding modal witness families, satisfying modal saturation and all coherence conditions.
 
-**Tasks**:
-- [ ] Define the BXPoint-to-ParametricCanonicalWorldState coercion (definitional: `fun w => ⟨w.formulas, w.is_mcs⟩`)
-- [ ] For each Diamond obligation `Diamond psi in fam.mcs t`, use `bx_modal_witness` to get a witness BXPoint, then build a new FMCS chain from that witness using Phase 1's chain construction
-- [ ] Package all families into the BFMCS structure with modal saturation proof
-- [ ] Prove `box_coherent`: Box formulas are preserved across modal-equivalent families, using `box_preserved_along_bx_le`
-- [ ] Verify temporal coherence is inherited by each new witness family (each uses the same chain construction)
-- [ ] Define `construct_bfmcs : (M : Set Formula) -> SetMaximalConsistent M -> BFMCS Int` as the top-level constructor
+**Completed work**:
+- [x] Define `shifted_bx_fmcs`: time-shifted FMCS placing chain origin at arbitrary time offset `s`
+- [x] Prove `box_stable_in_int_chain`: Box φ ∈ chain(t) ↔ Box φ ∈ M₀ for all t (key helper)
+- [x] Prove `box_stable_in_shifted_fmcs`: corollary for shifted families
+- [x] Define `bx_bfmcs` with shifted families: `{ shifted_bx_fmcs N h_N s | N modal-equiv M₀, s : Int }`
+- [x] Prove `modal_forward`: Box φ at any family → φ at all families (via box stability + T-axiom)
+- [x] Prove `modal_backward`: φ at all families → Box φ (contrapositive via `bx_modal_witness` + shifted families)
+- [x] Wire `bx_construct_bfmcs`, `bx_countermodel` with shifted families
+- [x] Update `Completeness.lean` for shifted family API
 
-**Timing**: 1.5 hours
+**Design change**: Families set changed from `{ bx_fmcs N h_N | matching Box }` to `{ shifted_bx_fmcs N h_N s | matching Box, s : Int }`. This was necessary because `bx_modal_witness` produces witnesses at the chain origin (time 0), but modal_backward requires witnesses at arbitrary time t. Shifted families place the witness MCS at the needed time position.
+
+**Timing**: 1.5 hours estimated, ~1.5 hours spent
 
 **Depends on**: 1
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` - Add BFMCS construction, modal saturation, coherence proofs
+**Files modified**:
+- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` — Added ~100 lines: shifted_bx_fmcs, box_stable helpers, modal proofs
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` — Updated to use shifted family API
 
 **Verification**:
-- `construct_bfmcs` type-checks and returns a `BFMCS Int` with all coherence fields satisfied
-- No sorry in the file
+- `modal_forward` and `modal_backward` have no sorry ✓
+- `lake build` succeeds (with 4 remaining sorry in temporal/coherence proofs)
 
 ---
 
-### Phase 3: Bridge Proof Infrastructure [NOT STARTED]
+### Phase 2b: Until/Since Coherence [NOT STARTED]
+
+**Goal**: Prove backward and forward Until/Since coherence for the BFMCS.
+
+**Remaining sorries**:
+- `bx_bfmcs_buc` (line 581): backward Until/Since coherence — given witness pattern, derive Until/Since membership
+- `bx_bfmcs_fuc` (line 586): forward Until/Since coherence — given Until/Since membership, produce witness
+
+**Note**: These depend on Phase 1 (forward_F/backward_P) being resolved, since the coherence proofs operate over families that must be temporally coherent. However, backward Until coherence (`buc`) may be provable independently using `backward_until_from_step` from `UntilSinceCoherence.lean` if a step-transfer property can be established for the chain.
+
+**Timing**: 1.5 hours estimated
+
+**Depends on**: 1 (for temporal coherence), but buc may be partially independent
+
+---
+
+### Phase 3: Bridge Proof Infrastructure [COMPLETED]
 
 **Goal**: Connect `construct_bfmcs` to `parametric_algebraic_representation_conditional` to produce a concrete TaskModel where MCS membership corresponds to semantic truth.
 
-**Tasks**:
-- [ ] Verify that `construct_bfmcs` satisfies the preconditions of `parametric_algebraic_representation_conditional` (temporally coherent, backward/forward Until/Since coherent)
-- [ ] Apply `parametric_algebraic_representation_conditional` to get: for any formula `psi`, `psi in M` iff `truth_at (ParametricCanonicalTaskModel Int) Omega tau 0 psi`, where `tau` is the parametric history of the starting family and `Omega` is the shift-closed set
-- [ ] Prove the contrapositive: if `phi not_in M`, then `not truth_at ... phi` at the evaluation point
-- [ ] Package this as a lemma: `bxcanonical_countermodel : SetMaximalConsistent M -> phi not_in M -> exists (D : Type) (F : TaskFrame D) (M_model : TaskModel D F) (Omega : Set (WorldHistory D F.WorldState)) (tau : WorldHistory D F.WorldState) (t : D), ShiftClosed Omega /\ tau in Omega /\ not (truth_at M_model Omega tau t phi)`
+**Status**: Fully implemented. `bx_construct_bfmcs` returns a `Σ'` bundle with BFMCS, coherence proofs, evaluation family, and membership proof. `bx_countermodel` applies `parametric_representation_from_neg_membership` to produce a countermodel.
 
-**Timing**: 1.5 hours
+**Note**: Both `bx_construct_bfmcs` and `bx_countermodel` compile and type-check, but they transitively depend on the sorry-bearing coherence proofs from Phases 1 and 2b.
 
-**Depends on**: 2
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` - Add bridge lemma connecting BFMCS to parametric representation
-
-**Verification**:
-- `bxcanonical_countermodel` type-checks without sorry
-- The lemma produces a concrete TaskModel, Omega, history, and time witnessing `not truth_at ... phi`
+**Files modified**:
+- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` — bridge section (~30 lines)
 
 ---
 
-### Phase 4: Close the Sorry at Completeness.lean:154 [NOT STARTED]
+### Phase 4: Close the Sorry at Completeness.lean [COMPLETED]
 
 **Goal**: Replace the sorry with a proof that derives `False` from `valid phi` and `phi not_in M`.
 
-**Tasks**:
-- [ ] Import `BXCanonical.CanonicalModel` in `Completeness.lean`
-- [ ] At the sorry site (line 154), apply `bxcanonical_countermodel` to get a TaskModel where `phi` is false
-- [ ] Instantiate `valid phi` (which quantifies over ALL TaskModels, Omega, histories, times) at the specific model/Omega/history/time from the countermodel
-- [ ] Derive contradiction: `valid phi` gives `truth_at ... phi`, countermodel gives `not truth_at ... phi`
-- [ ] Remove the sorry
-- [ ] Run `lake build` to verify zero active-path sorry
-- [ ] Run `#print axioms bx_completeness` and verify only `propext`, `Classical.choice`, `Quot.sound` appear
+**Status**: Fully implemented. `bx_completeness` proves `valid φ → Nonempty (DerivationTree [] φ)` via contrapositive using `bx_countermodel`.
 
-**Timing**: 1 hour
+**Note**: The proof compiles but transitively depends on sorry through `bx_countermodel → bx_bfmcs_tc → bx_fmcs_forward_F`.
 
-**Depends on**: 3
+**Files modified**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` — complete rewrite (~150 lines)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` - Replace sorry at line 154 with proof using `bxcanonical_countermodel`
+## Current Sorry Inventory (4 remaining)
 
-**Verification**:
-- `lake build` succeeds with no errors
-- `#print axioms bx_completeness` shows only `propext`, `Classical.choice`, `Quot.sound`
-- `grep -r "sorry" Theories/Bimodal/Metalogic/BXCanonical/` returns no matches
+| Sorry | File:Line | Phase | Blocker |
+|-------|-----------|-------|---------|
+| `bx_fmcs_forward_F` | CanonicalModel.lean:495 | 1 | F(ψ) persistence (see Blocker) |
+| `bx_fmcs_backward_P` | CanonicalModel.lean:501 | 1 | P(ψ) persistence (symmetric) |
+| `bx_bfmcs_buc` | CanonicalModel.lean:584 | 2b | Step transfer property |
+| `bx_bfmcs_fuc` | CanonicalModel.lean:589 | 2b | Forward eventuality extraction |
 
 ## Testing & Validation
 
-- [ ] `lake build` completes successfully with zero errors
+- [x] `lake build` completes successfully with zero errors (4 sorry warnings)
 - [ ] `grep -r "sorry" Theories/Bimodal/Metalogic/BXCanonical/` returns no matches
 - [ ] `#print axioms bx_completeness` lists only `propext`, `Classical.choice`, `Quot.sound`
-- [ ] `#print axioms completeness_over_Int` (if it exists) lists only the same three axioms
 - [ ] No regressions in existing tests: `lake build` for the full project
 
 ## Artifacts & Outputs
 
-- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` - New file: FMCS chain construction, BFMCS packaging, bridge lemma (estimated 550-750 lines)
-- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` - Modified: sorry replaced with proof (estimated 5-15 lines changed)
-- `specs/093_complete_bxcanonical_embedding/summaries/02_bxcanonical-embedding-summary.md` - Implementation summary
+- `Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean` — New file (~625 lines): FMCS chain construction, BFMCS packaging, bridge lemma
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` — Modified: sorry replaced with proof using `bx_countermodel` (~150 lines)
+- `specs/093_complete_bxcanonical_embedding/summaries/02_bxcanonical-embedding-summary.md` — Implementation summary (pending)
 
 ## Rollback/Contingency
 
 - The only modified existing file is `Completeness.lean` (a few lines). Revert with `git checkout -- Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`.
 - The new file `CanonicalModel.lean` can be deleted entirely without affecting existing code.
 - If the BFMCS construction proves too complex for Int, fall back to a simpler construction using restricted coherence conditions (`restricted_forward_until_since_coherent`) which narrows the Until/Since burden to subformulas of the target formula.
-- If modal saturation is unexpectedly difficult, consider a single-family approach where the starting MCS is already modally saturated (this is true for any MCS in S5, since Box formulas are preserved by `bx_modal_equiv`).
+- **Primary contingency for forward_F blocker**: Use the biased Lindenbaum approach (see Blocker section, path 1). This requires ~100 lines of new infrastructure but is a targeted fix.
+- **Fallback contingency**: Use restricted temporal coherence (path 3), which limits the forward_F obligation to finitely many formulas within `deferralClosure(root)`, making priority-based resolution feasible.
