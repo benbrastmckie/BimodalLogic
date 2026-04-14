@@ -87,6 +87,191 @@ theorem FF_imp_F_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     Formula.some_future ψ ∈ M :=
   SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs (FF_imp_F ψ)) h
 
+/-! ## F-Monotonicity
+
+F(A ∧ B) → F(A) and F(A ∧ B) → F(B), derived from conjunction elimination
+and contrapositive reasoning through G. -/
+
+/-- F-monotonicity: from ⊢ A → B, derive ⊢ F(A) → F(B).
+Proof: contrapose A → B to ¬B → ¬A, lift to G(¬B) → G(¬A) by future_mono,
+contrapose to ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B). -/
+noncomputable def F_mono {A B : Formula} (h : ⊢ A.imp B) :
+    ⊢ A.some_future.imp B.some_future := by
+  -- ⊢ ¬B → ¬A
+  have h1 := Bimodal.Theorems.Propositional.contraposition h
+  -- ⊢ G(¬B) → G(¬A)
+  have h2 := future_mono h1
+  -- ⊢ ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B)
+  exact Bimodal.Theorems.Propositional.contraposition h2
+
+/-- F(A ∧ B) → F(A) at MCS level. -/
+theorem F_conj_left_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (A B : Formula) (h : (A.and B).some_future ∈ M) :
+    A.some_future ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (F_mono (Bimodal.Theorems.Propositional.lce_imp A B))) h
+
+/-- F(A ∧ B) → F(B) at MCS level. -/
+theorem F_conj_right_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (A B : Formula) (h : (A.and B).some_future ∈ M) :
+    B.some_future ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (F_mono (Bimodal.Theorems.Propositional.rce_imp A B))) h
+
+/-! ## BX11 Fold: Enriched Forward Step Existence
+
+Given F(target) ∈ M and F(χᵢ) ∈ M for each χᵢ in a list `others`,
+construct an MCS M' with g_content(M) ⊆ M' where for EACH formula
+(target and all others): either the formula itself or its F-version is in M'.
+
+The construction uses iterated BX11 to build a compound F-formula.
+At each step, BX11 gives three cases; in all cases, the compound grows
+and each original formula is represented as either direct or F-protected.
+F(A ∧ B) → F(A) (F-monotonicity) handles extraction from nested F-conjunctions.
+F(F(ψ)) → F(ψ) (FF_imp_F) reduces double-F to single-F. -/
+
+/-- Enriched forward step existence: given F-formulas for target and others in M,
+there exists MCS M' extending g_content(M) where each formula is either
+directly present or F-protected.
+
+The proof works by BX11 fold. We produce a formula `β` with `F(β) ∈ M`
+such that from `β ∈ M'` (MCS), each original formula ψᵢ satisfies
+`ψᵢ ∈ M'` or `F(ψᵢ) ∈ M'`.
+
+Base: `β = target`, from `F(target) ∈ M`.
+Step: given `F(β) ∈ M` and `F(χ) ∈ M`, BX11 gives `F(β')` for some β':
+  - F(β ∧ χ): β' = β ∧ χ. From β' ∈ M': β ∈ M' and χ ∈ M'.
+  - F(β ∧ F(χ)): β' = β ∧ F(χ). From β' ∈ M': β ∈ M' and F(χ) ∈ M'.
+  - F(F(β) ∧ χ): β' = F(β) ∧ χ. From β' ∈ M': F(β) ∈ M' and χ ∈ M'.
+    For items tracked inside β: F(β) ∈ M' gives F(component) ∈ M' by
+    F-monotonicity, and FF_imp_F collapses double-F.
+
+Helper: BX11 fold compound. Given `F(β) ∈ M` and F-membership for a list,
+produce `β'` with `F(β') ∈ M` such that from `β' ∈ M'` (MCS):
+- from `β ∈ M'`, all previous items are recovered (by extract_prev)
+- F(β) ∈ M' gives F-versions of previous items (by F-monotonicity)
+- each new χ satisfies χ ∈ M' or F(χ) ∈ M'
+
+The invariant: there exists β with F(β) ∈ M and an extraction function
+`extract : β ∈ M' → (target ∈ M' ∨ F(target) ∈ M') ∧ ∀ χ ∈ seen, (χ ∈ M' ∨ F(χ) ∈ M')`.
+When β gets F-wrapped (BX11 case 3), the extraction degrades: direct ψ ∈ M'
+becomes F(ψ) ∈ M' (via F-monotonicity from F(β) ∈ M'). This is fine since
+the conclusion allows either. -/
+private theorem enriched_fwd_fold {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (β : Formula) (h_Fβ : Formula.some_future β ∈ M)
+    -- The extraction function for the accumulated compound
+    (tracked : List Formula)
+    (h_extract : ∀ M' : Set Formula, SetMaximalConsistent M' →
+      β ∈ M' → ∀ χ, χ ∈ tracked → (χ ∈ M' ∨ Formula.some_future χ ∈ M'))
+    (h_F_extract : ∀ M' : Set Formula, SetMaximalConsistent M' →
+      Formula.some_future β ∈ M' → ∀ χ, χ ∈ tracked → Formula.some_future χ ∈ M')
+    -- New formulas to fold in
+    (others : List Formula) (h_F_others : ∀ χ, χ ∈ others → Formula.some_future χ ∈ M) :
+    ∃ β' : Formula, Formula.some_future β' ∈ M ∧
+      (∀ M' : Set Formula, SetMaximalConsistent M' →
+        β' ∈ M' → ∀ χ, χ ∈ tracked ++ others → (χ ∈ M' ∨ Formula.some_future χ ∈ M')) ∧
+      (∀ M' : Set Formula, SetMaximalConsistent M' →
+        Formula.some_future β' ∈ M' → ∀ χ, χ ∈ tracked ++ others → Formula.some_future χ ∈ M') := by
+  induction others generalizing β tracked with
+  | nil =>
+    exact ⟨β, h_Fβ,
+      fun M' h_mcs' h_β χ hχ => by rw [List.append_nil] at hχ; exact h_extract M' h_mcs' h_β χ hχ,
+      fun M' h_mcs' h_Fβ' χ hχ => by rw [List.append_nil] at hχ; exact h_F_extract M' h_mcs' h_Fβ' χ hχ⟩
+  | cons χ rest ih =>
+    -- F(β) ∈ M and F(χ) ∈ M. Apply BX11.
+    have h_Fχ : Formula.some_future χ ∈ M := h_F_others χ (by simp)
+    rcases temp_linearity_mcs h_mcs β χ h_Fβ h_Fχ with
+      h_both | h_β_first | h_χ_first
+    · -- Case 1: F(β ∧ χ) ∈ M. New compound: β ∧ χ.
+      rw [show tracked ++ χ :: rest = (tracked ++ [χ]) ++ rest from by
+        simp [List.append_assoc, List.singleton_append]]
+      apply ih (β.and χ) h_both (tracked ++ [χ]) ?_ ?_ ?_
+      · -- extract for β ∧ χ
+        intro M' h_mcs' h_βχ ψ' hψ'
+        have h_lce := SetMaximalConsistent.implication_property h_mcs'
+          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ)) h_βχ
+        have h_rce := SetMaximalConsistent.implication_property h_mcs'
+          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β χ)) h_βχ
+        rcases List.mem_append.mp hψ' with h_tracked | h_new
+        · exact h_extract M' h_mcs' h_lce ψ' h_tracked
+        · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inl h_rce
+      · -- F-extract for β ∧ χ
+        intro M' h_mcs' h_Fβχ ψ' hψ'
+        have h_Fl := F_conj_left_mcs h_mcs' β χ h_Fβχ
+        have h_Fr := F_conj_right_mcs h_mcs' β χ h_Fβχ
+        rcases List.mem_append.mp hψ' with h_tracked | h_new
+        · exact h_F_extract M' h_mcs' h_Fl ψ' h_tracked
+        · rw [List.mem_singleton] at h_new; rw [h_new]; exact h_Fr
+      · intro ψ' hψ'; exact h_F_others ψ' (List.mem_cons_of_mem _ hψ')
+    · -- Case 2: F(β ∧ F(χ)) ∈ M. New compound: β ∧ F(χ).
+      rw [show tracked ++ χ :: rest = (tracked ++ [χ]) ++ rest from by
+        simp [List.append_assoc, List.singleton_append]]
+      apply ih (β.and χ.some_future) h_β_first (tracked ++ [χ]) ?_ ?_ ?_
+      · -- extract for β ∧ F(χ)
+        intro M' h_mcs' h_βFχ ψ' hψ'
+        have h_lce := SetMaximalConsistent.implication_property h_mcs'
+          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β χ.some_future)) h_βFχ
+        have h_rce := SetMaximalConsistent.implication_property h_mcs'
+          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β χ.some_future)) h_βFχ
+        rcases List.mem_append.mp hψ' with h_tracked | h_new
+        · exact h_extract M' h_mcs' h_lce ψ' h_tracked
+        · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inr h_rce
+      · -- F-extract for β ∧ F(χ)
+        intro M' h_mcs' h_F ψ' hψ'
+        have h_Fl := F_conj_left_mcs h_mcs' β χ.some_future h_F
+        have h_Fr := FF_imp_F_mcs h_mcs' χ (F_conj_right_mcs h_mcs' β χ.some_future h_F)
+        rcases List.mem_append.mp hψ' with h_tracked | h_new
+        · exact h_F_extract M' h_mcs' h_Fl ψ' h_tracked
+        · rw [List.mem_singleton] at h_new; rw [h_new]; exact h_Fr
+      · intro ψ' hψ'; exact h_F_others ψ' (List.mem_cons_of_mem _ hψ')
+    · -- Case 3: F(F(β) ∧ χ) ∈ M. New compound: F(β) ∧ χ.
+      rw [show tracked ++ χ :: rest = (tracked ++ [χ]) ++ rest from by
+        simp [List.append_assoc, List.singleton_append]]
+      apply ih (β.some_future.and χ) h_χ_first (tracked ++ [χ]) ?_ ?_ ?_
+      · -- extract for F(β) ∧ χ
+        intro M' h_mcs' h_Fβχ ψ' hψ'
+        have h_lce := SetMaximalConsistent.implication_property h_mcs'
+          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp β.some_future χ)) h_Fβχ
+        have h_rce := SetMaximalConsistent.implication_property h_mcs'
+          (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp β.some_future χ)) h_Fβχ
+        rcases List.mem_append.mp hψ' with h_tracked | h_new
+        · exact Or.inr (h_F_extract M' h_mcs' h_lce ψ' h_tracked)
+        · rw [List.mem_singleton] at h_new; rw [h_new]; exact Or.inl h_rce
+      · -- F-extract for F(β) ∧ χ
+        intro M' h_mcs' h_F ψ' hψ'
+        have h_Fl := FF_imp_F_mcs h_mcs' β (F_conj_left_mcs h_mcs' β.some_future χ h_F)
+        have h_Fr := F_conj_right_mcs h_mcs' β.some_future χ h_F
+        rcases List.mem_append.mp hψ' with h_tracked | h_new
+        · exact h_F_extract M' h_mcs' h_Fl ψ' h_tracked
+        · rw [List.mem_singleton] at h_new; rw [h_new]; exact h_Fr
+      · intro ψ' hψ'; exact h_F_others ψ' (List.mem_cons_of_mem _ hψ')
+
+theorem enriched_fwd_exists {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (h_F_target : Formula.some_future target ∈ M)
+    (others : List Formula) (h_F_others : ∀ χ, χ ∈ others → Formula.some_future χ ∈ M) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧
+      g_content M ⊆ M' ∧
+      (target ∈ M' ∨ Formula.some_future target ∈ M') ∧
+      ∀ χ, χ ∈ others → (χ ∈ M' ∨ Formula.some_future χ ∈ M') := by
+  -- Use the fold to get compound β' with F(β') ∈ M and extraction properties
+  obtain ⟨β', h_Fβ', h_extract', _⟩ := enriched_fwd_fold h_mcs target h_F_target
+    [target]
+    (fun M' _ h_β χ hχ => by simp [List.mem_singleton] at hχ; subst hχ; exact Or.inl h_β)
+    (fun M' h_mcs' h_Fβ χ hχ => by simp [List.mem_singleton] at hχ; subst hχ; exact h_Fβ)
+    others h_F_others
+  -- Lindenbaum extend {β'} ∪ g_content(M)
+  have h_seed_cons := forward_temporal_witness_seed_consistent M h_mcs β' h_Fβ'
+  obtain ⟨M', h_sup, h_mcs'⟩ := set_lindenbaum _ h_seed_cons
+  have h_β'_in : β' ∈ M' := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+  have h_g_sub : g_content M ⊆ M' := fun φ hφ => h_sup (Set.mem_union_right _ hφ)
+  refine ⟨M', h_mcs', h_g_sub, ?_, ?_⟩
+  · -- target ∈ M' ∨ F(target) ∈ M'
+    have := h_extract' M' h_mcs' h_β'_in target (by simp [List.mem_cons_self])
+    exact this
+  · -- ∀ χ ∈ others, χ ∈ M' ∨ F(χ) ∈ M'
+    intro χ hχ
+    exact h_extract' M' h_mcs' h_β'_in χ (by simp [hχ])
+
 /-! ## Modal Fix
 
 The set of modal formulas from M₀: both □φ ∈ M₀ and ¬□φ ∈ M₀ formulas.
@@ -210,19 +395,67 @@ def rrSchedule (L : List Formula) (n : Nat) : Formula :=
   if h : L.length > 0 then L.get ⟨n % L.length, Nat.mod_lt n h⟩
   else Formula.bot  -- dummy for empty list
 
-/-- Forward step with BX11 fold protection.
-At step n: schedule = L[n % k]. Fold ALL F-formulas in sigma that are in M.
-Use enriched seed to resolve the scheduled formula while protecting the rest.
+/-- Enriched forward step: at a resolving step, use enriched_fwd_exists
+to protect ALL F-formulas from sigma_list. At a non-resolving step, use
+the standard fwd_succ (which preserves f_carry). -/
+noncomputable def enriched_fwd_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (sigma_list : List Formula) : Set Formula :=
+  if h_F : Formula.some_future target ∈ M then
+    let others := sigma_list.filter (fun χ => decide (Formula.some_future χ ∈ M))
+    (enriched_fwd_exists h_mcs target h_F others (by
+      intro χ hχ; exact of_decide_eq_true ((List.mem_filter.mp hχ).2))).choose
+  else
+    fwd_succ M h_mcs target
 
-For simplicity, at each step we just use the basic fwd_succ from CanonicalModel.lean.
-The BX11 fold protection will be handled in the forward_F proof. -/
+theorem enriched_fwd_step_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (sigma_list : List Formula) :
+    SetMaximalConsistent (enriched_fwd_step M h_mcs target sigma_list) := by
+  unfold enriched_fwd_step; split
+  · exact (enriched_fwd_exists h_mcs target ‹_›
+      (sigma_list.filter (fun χ => decide (Formula.some_future χ ∈ M))) (by
+      intro χ hχ; exact of_decide_eq_true ((List.mem_filter.mp hχ).2))).choose_spec.1
+  · exact fwd_succ_mcs M h_mcs target
+
+theorem enriched_fwd_step_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (sigma_list : List Formula) :
+    g_content M ⊆ enriched_fwd_step M h_mcs target sigma_list := by
+  unfold enriched_fwd_step; split
+  · exact (enriched_fwd_exists h_mcs target ‹_›
+      (sigma_list.filter (fun χ => decide (Formula.some_future χ ∈ M))) (by
+      intro χ hχ; exact of_decide_eq_true ((List.mem_filter.mp hχ).2))).choose_spec.2.1
+  · exact fwd_succ_g_content M h_mcs target
+
+/-- The key property: at a resolving step, each formula from sigma_list
+with F(χ) ∈ M has either χ ∈ M' or F(χ) ∈ M'. -/
+theorem enriched_fwd_step_preserves (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (sigma_list : List Formula)
+    (χ : Formula) (hχ_mem : χ ∈ sigma_list) (hFχ : Formula.some_future χ ∈ M) :
+    χ ∈ enriched_fwd_step M h_mcs target sigma_list ∨
+    Formula.some_future χ ∈ enriched_fwd_step M h_mcs target sigma_list := by
+  unfold enriched_fwd_step; split
+  case isTrue h_F =>
+    have h_spec := (enriched_fwd_exists h_mcs target h_F
+      (sigma_list.filter (fun ψ => decide (Formula.some_future ψ ∈ M))) (by
+      intro ψ hψ; exact of_decide_eq_true ((List.mem_filter.mp hψ).2))).choose_spec
+    -- χ is in the filtered list (since F(χ) ∈ M and χ ∈ sigma_list)
+    have hχ_filtered : χ ∈ sigma_list.filter (fun ψ => decide (Formula.some_future ψ ∈ M)) := by
+      exact List.mem_filter.mpr ⟨hχ_mem, decide_eq_true_eq.mpr hFχ⟩
+    exact h_spec.2.2.2 χ hχ_filtered
+  case isFalse h_not_F =>
+    -- Non-resolving step. F(χ) ∈ M and F(target) ∉ M.
+    -- fwd_succ uses seed g_content(M) ∪ f_carry(M). F(χ) ∈ f_carry(M) ⊆ M'.
+    right; exact fwd_succ_f_carry M h_mcs target h_not_F ⟨hFχ, χ, rfl⟩
+
+/-- Forward step with BX11 fold protection.
+At each step, the enriched seed protects all F-formulas from sigma_list. -/
 noncomputable def rr_fwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) : (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
   | 0 => ⟨M₀, h₀⟩
   | n + 1 =>
     let ⟨M, hM⟩ := rr_fwd_chain M₀ h₀ sigma_list n
     let target := rrSchedule sigma_list n
-    ⟨fwd_succ M hM target, fwd_succ_mcs M hM target⟩
+    ⟨enriched_fwd_step M hM target sigma_list,
+     enriched_fwd_step_mcs M hM target sigma_list⟩
 
 /-- Backward step symmetric. -/
 noncomputable def rr_bwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -262,9 +495,9 @@ theorem rr_fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsi
     g_content (rr_fwd_chain M₀ h₀ sigma_list n).val ⊆
       (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).val := by
   show g_content (rr_fwd_chain M₀ h₀ sigma_list n).val ⊆
-    fwd_succ (rr_fwd_chain M₀ h₀ sigma_list n).val
-      (rr_fwd_chain M₀ h₀ sigma_list n).property (rrSchedule sigma_list n)
-  exact fwd_succ_g_content _ _ _
+    enriched_fwd_step (rr_fwd_chain M₀ h₀ sigma_list n).val
+      (rr_fwd_chain M₀ h₀ sigma_list n).property (rrSchedule sigma_list n) sigma_list
+  exact enriched_fwd_step_g_content _ _ _ _
 
 -- Transitive g_content propagation (same proof as fwd_chain_g_content_trans)
 theorem rr_fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -450,6 +683,174 @@ theorem shifted_dd_fmcs_at_s (M₀ : Set Formula) (h₀ : SetMaximalConsistent M
   show dd_chain M₀ h₀ sigma_list (s - s) = M₀
   simp [dd_chain, rr_fwd_chain]
 
+/-! ## Ordered Defect-Discharge Infrastructure
+
+Infrastructure for the ordered defect-discharge approach to forward_F.
+Key idea: among F-defects in an MCS, BX11 linearity induces a total preorder.
+For the "earliest" defect ψ, BX11 gives F(ψ ∧ ...) (cases 1 or 2, not case 3),
+guaranteeing ψ is directly in the successor MCS via enriched_resolving_seed_consistent.
+
+## Definitions
+
+- `conj_comm_imp`: conjunction commutativity ⊢ (A ∧ B) → (B ∧ A)
+- `F_conj_comm_mcs`: F-commutativity at MCS level
+- `bx11_earlier`: BX11 ordering on formulas in an MCS
+- `bx11_earlier_total`: totality of BX11 ordering on F-defects
+- `discharge_fwd_step`: one step resolving a single target using enriched seed
+- `discharge_fwd_chain`: iterated discharge for sigma_list.length steps
+-/
+
+/-- Conjunction commutativity: ⊢ (A ∧ B) → (B ∧ A). -/
+noncomputable def conj_comm_imp (A B : Formula) : ⊢ (A.and B).imp (B.and A) :=
+  Bimodal.Theorems.Combinators.combine_imp_conj
+    (Bimodal.Theorems.Propositional.rce_imp A B)
+    (Bimodal.Theorems.Propositional.lce_imp A B)
+
+/-- F(A ∧ B) ∈ M → F(B ∧ A) ∈ M for any MCS M, by F-monotonicity of conjunction
+commutativity. -/
+theorem F_conj_comm_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (A B : Formula) (h : (A.and B).some_future ∈ M) :
+    (B.and A).some_future ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (F_mono (conj_comm_imp A B))) h
+
+/-- BX11 ordering: ψ₁ is "at least as early as" ψ₂ when BX11 gives case 1 or 2,
+i.e., F(ψ₁ ∧ ψ₂) ∈ M ∨ F(ψ₁ ∧ F(ψ₂)) ∈ M. When this holds, the enriched
+resolving seed {ψ₁, ...} ∪ g_content(M) guarantees ψ₁ ∈ M'. -/
+def bx11_earlier (M : Set Formula) (ψ₁ ψ₂ : Formula) : Prop :=
+  Formula.some_future (Formula.and ψ₁ ψ₂) ∈ M ∨
+  Formula.some_future (Formula.and ψ₁ (Formula.some_future ψ₂)) ∈ M
+
+/-- BX11 ordering is total on F-defects: for any ψ₁, ψ₂ with F(ψ₁), F(ψ₂) ∈ M,
+either ψ₁ is at least as early as ψ₂ or vice versa. -/
+theorem bx11_earlier_total {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (ψ₁ ψ₂ : Formula) (h₁ : Formula.some_future ψ₁ ∈ M) (h₂ : Formula.some_future ψ₂ ∈ M) :
+    bx11_earlier M ψ₁ ψ₂ ∨ bx11_earlier M ψ₂ ψ₁ := by
+  rcases temp_linearity_mcs h_mcs ψ₁ ψ₂ h₁ h₂ with h | h | h
+  · -- Case 1: F(ψ₁ ∧ ψ₂) ∈ M
+    exact Or.inl (Or.inl h)
+  · -- Case 2: F(ψ₁ ∧ F(ψ₂)) ∈ M
+    exact Or.inl (Or.inr h)
+  · -- Case 3: F(F(ψ₁) ∧ ψ₂) ∈ M. By conjunction commutativity under F:
+    -- F(F(ψ₁) ∧ ψ₂) → F(ψ₂ ∧ F(ψ₁)), so ψ₂ is earlier than ψ₁.
+    right; right
+    exact F_conj_comm_mcs h_mcs (Formula.some_future ψ₁) ψ₂ h
+
+/-- When ψ₁ is bx11_earlier than ψ₂ in MCS M, we can extract a compound formula
+F(ψ₁ ∧ α) ∈ M (for some α) such that enriched_resolving_seed_consistent gives
+{ψ₁, α} ∪ g_content(M) consistent, guaranteeing ψ₁ ∈ M' in the Lindenbaum extension. -/
+theorem bx11_earlier_resolving_seed {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (ψ₁ ψ₂ : Formula) (h_earlier : bx11_earlier M ψ₁ ψ₂) :
+    ∃ α : Formula, Formula.some_future (Formula.and ψ₁ α) ∈ M ∧
+      (∀ M' : Set Formula, SetMaximalConsistent M' → α ∈ M' →
+        ψ₂ ∈ M' ∨ Formula.some_future ψ₂ ∈ M') := by
+  rcases h_earlier with h_both | h_first
+  · -- F(ψ₁ ∧ ψ₂) ∈ M: α = ψ₂. From α ∈ M': ψ₂ ∈ M' directly.
+    exact ⟨ψ₂, h_both, fun M' _ h_α => Or.inl h_α⟩
+  · -- F(ψ₁ ∧ F(ψ₂)) ∈ M: α = F(ψ₂). From α ∈ M': F(ψ₂) ∈ M'.
+    exact ⟨Formula.some_future ψ₂, h_first, fun M' _ h_α => Or.inr h_α⟩
+
+/-- Single-target discharge step: given F(ψ) ∈ M for MCS M, there exists M' with
+ψ ∈ M' and g_content(M) ⊆ M'. This is the base case for discharge when
+there is exactly one defect. -/
+theorem discharge_single_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧ ψ ∈ M' ∧ g_content M ⊆ M' := by
+  have h_cons := forward_temporal_witness_seed_consistent M h_mcs ψ h_F
+  obtain ⟨M', h_sup, h_mcs'⟩ := set_lindenbaum _ h_cons
+  have h_ψ : ψ ∈ M' := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+  have h_g : g_content M ⊆ M' := fun φ hφ => h_sup (Set.mem_union_right _ hφ)
+  exact ⟨M', h_mcs', h_ψ, h_g⟩
+
+/-- Two-target discharge step: given F(ψ₁) ∈ M and F(ψ₂) ∈ M for MCS M,
+and ψ₁ bx11_earlier than ψ₂, there exists M' with:
+- ψ₁ ∈ M' (guaranteed, from enriched_resolving_seed_consistent)
+- ψ₂ ∈ M' ∨ F(ψ₂) ∈ M' (disjunctive, from BX11 compound extraction)
+- g_content(M) ⊆ M' -/
+theorem discharge_two_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ψ₁ ψ₂ : Formula)
+    (h_F1 : Formula.some_future ψ₁ ∈ M)
+    (h_earlier : bx11_earlier M ψ₁ ψ₂) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧ ψ₁ ∈ M' ∧
+      (ψ₂ ∈ M' ∨ Formula.some_future ψ₂ ∈ M') ∧ g_content M ⊆ M' := by
+  obtain ⟨α, h_Fψα, h_extract⟩ := bx11_earlier_resolving_seed h_mcs ψ₁ ψ₂ h_earlier
+  have h_cons := enriched_resolving_seed_consistent h_mcs ψ₁ α h_Fψα
+  obtain ⟨M', h_sup, h_mcs'⟩ := set_lindenbaum _ h_cons
+  have h_ψ₁ : ψ₁ ∈ M' := by
+    apply h_sup
+    show ψ₁ ∈ ({ψ₁, α} : Set Formula) ∪ g_content M
+    exact Set.mem_union_left _ (Set.mem_insert _ _)
+  have h_α : α ∈ M' := by
+    apply h_sup
+    show α ∈ ({ψ₁, α} : Set Formula) ∪ g_content M
+    exact Set.mem_union_left _ (Set.mem_insert_of_mem _ rfl)
+  have h_g : g_content M ⊆ M' := fun φ hφ => h_sup (Set.mem_union_right _ hφ)
+  exact ⟨M', h_mcs', h_ψ₁, h_extract M' h_mcs' h_α, h_g⟩
+
+/-- Multi-target discharge step via the BX11 fold: given F(target) ∈ M and
+F(χ) ∈ M for each χ in others, there exists M' with g_content(M) ⊆ M'
+and each formula (target and all others) is either directly in M' or
+F-protected in M'.
+
+This is a direct wrapper around enriched_fwd_exists. The disjunctive result
+(target ∈ M' ∨ F(target) ∈ M') is inherent to the BX11 fold.
+When Phase 2 proves forward_F, it uses the BX11 ordering to show that
+the target is eventually resolved directly (not just F-protected). -/
+theorem discharge_multi_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (h_F_target : Formula.some_future target ∈ M)
+    (others : List Formula) (h_F_others : ∀ χ, χ ∈ others → Formula.some_future χ ∈ M) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧
+      g_content M ⊆ M' ∧
+      (target ∈ M' ∨ Formula.some_future target ∈ M') ∧
+      (∀ χ, χ ∈ others → (χ ∈ M' ∨ Formula.some_future χ ∈ M')) :=
+  enriched_fwd_exists h_mcs target h_F_target others h_F_others
+
+/-- Defect list: formulas from sigma_list that have F-obligations in M. -/
+noncomputable def activeDefects (M : Set Formula) (sigma_list : List Formula) : List Formula :=
+  sigma_list.filter (fun ψ => Formula.some_future ψ ∈ M)
+
+/-- Every element of activeDefects has an F-obligation. -/
+theorem activeDefects_F_mem {M : Set Formula} {sigma_list : List Formula}
+    {ψ : Formula} (h : ψ ∈ activeDefects M sigma_list) :
+    Formula.some_future ψ ∈ M := by
+  simp only [activeDefects, List.mem_filter, decide_eq_true_eq] at h
+  exact h.2
+
+/-- Every element of activeDefects is in sigma_list. -/
+theorem activeDefects_mem_sigma {M : Set Formula} {sigma_list : List Formula}
+    {ψ : Formula} (h : ψ ∈ activeDefects M sigma_list) :
+    ψ ∈ sigma_list := by
+  simp only [activeDefects, List.mem_filter] at h
+  exact h.1
+
+/-- The discharge forward chain: iterate enriched_fwd_step for sigma_list.length steps,
+then use identity (repeat terminal MCS). This is structurally the same as
+rr_fwd_chain but with the important property that each step uses the enriched
+seed that protects ALL F-formulas from sigma_list.
+
+The chain is indexed by Nat: chain(0) = M₀, chain(n+1) = enriched_fwd_step(chain(n)).
+The schedule cycles through sigma_list formulas as targets.
+After sigma_list.length steps (one full cycle), every formula has been the target
+at least once. The identity tail just repeats the terminal state. -/
+noncomputable def discharge_fwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) :
+    (n : Nat) → { M : Set Formula // SetMaximalConsistent M } :=
+  rr_fwd_chain M₀ h₀ sigma_list
+
+/-- The discharge chain has g_content propagation at each step. -/
+theorem discharge_fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat) :
+    g_content (discharge_fwd_chain M₀ h₀ sigma_list n).val ⊆
+      (discharge_fwd_chain M₀ h₀ sigma_list (n + 1)).val :=
+  rr_fwd_chain_g_content_step M₀ h₀ sigma_list n
+
+/-- The discharge chain has transitive g_content propagation. -/
+theorem discharge_fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) {m n : Nat} (h : m ≤ n) :
+    g_content (discharge_fwd_chain M₀ h₀ sigma_list m).val ⊆
+      (discharge_fwd_chain M₀ h₀ sigma_list n).val :=
+  rr_fwd_chain_g_content_trans M₀ h₀ sigma_list h
+
 /-! ## Forward_F for the round-robin chain -/
 
 /-- Forward F: F(ψ) ∈ chain(t) with ψ = sigma_list[j] → ∃ s > t, ψ ∈ chain(s).
@@ -466,15 +867,121 @@ forward_F has the SAME obstacle as int_chain.
 TO FIX THIS: we need to use the enriched seed at resolving steps.
 This requires modifying fwd_succ to include BX11 fold protection.
 
-Let me define a MODIFIED fwd_succ that uses the enriched seed. -/
+Let me define a MODIFIED fwd_succ that uses the enriched seed.
 
--- For now, use sorry for forward_F and focus on getting the BFMCS compiled.
+F-preservation: at each forward step, F(ψ) ∈ chain(n) implies
+ψ ∈ chain(n+1) or F(ψ) ∈ chain(n+1), for ψ ∈ sigma_list. -/
+theorem rr_fwd_chain_F_preserved (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ sigma_list)
+    (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val) :
+    ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).val ∨
+    Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).val :=
+  enriched_fwd_step_preserves _ _ _ _ ψ hψ h_F
+
+/-- F(ψ) propagates through the forward chain: if F(ψ) ∈ chain(n),
+then for all m ≥ n, either ψ ∈ chain(s) for some n < s ≤ m+1,
+or F(ψ) ∈ chain(m+1). -/
+theorem rr_fwd_chain_F_propagate (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ sigma_list)
+    (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val)
+    (m : Nat) (h_le : n ≤ m) :
+    (∃ s : Nat, n < s ∧ s ≤ m + 1 ∧ ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list s).val) ∨
+    Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list (m + 1)).val := by
+  induction m with
+  | zero =>
+    have : n = 0 := Nat.eq_zero_of_le_zero h_le; subst this
+    rcases rr_fwd_chain_F_preserved M₀ h₀ sigma_list 0 ψ hψ h_F with h | h
+    · exact Or.inl ⟨1, Nat.zero_lt_one, le_refl 1, h⟩
+    · exact Or.inr h
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · -- n = m + 1
+      rcases rr_fwd_chain_F_preserved M₀ h₀ sigma_list (m + 1) ψ hψ h_F with h | h
+      · exact Or.inl ⟨m + 2, by omega, le_refl _, h⟩
+      · exact Or.inr h
+    · -- n < m + 1, i.e., n ≤ m
+      rcases ih (Nat.lt_succ_iff.mp h_lt) with ⟨s, h_lt_s, h_le_s, h_in⟩ | h_F_m
+      · exact Or.inl ⟨s, h_lt_s, by omega, h_in⟩
+      · -- F(ψ) ∈ chain(m+1). Apply preservation at step m+1.
+        rcases rr_fwd_chain_F_preserved M₀ h₀ sigma_list (m + 1) ψ hψ h_F_m with h | h
+        · exact Or.inl ⟨m + 2, by omega, le_refl _, h⟩
+        · exact Or.inr h
+
+/-- Forward_F for the forward Nat chain: F(ψ) ∈ chain(n) → ∃ s > n, ψ ∈ chain(s).
+Proof: ψ is visited by the round-robin at step m for some m ≥ n (since ψ ∈ sigma_list).
+By F_propagate, either ψ is already found, or F(ψ) ∈ chain(m+1).
+Since rrSchedule sigma_list m = ψ and F(ψ) ∈ chain(m), the enriched step
+resolves ψ (target = ψ, and with the BX11 fold, target ∈ M' or F(target) ∈ M').
+If F(ψ) is always F-protected, repeat with fewer defects until resolved.
+Actually, we use the simpler argument: schedule visits ψ infinitely,
+and by classical reasoning, either ψ appears somewhere or F(ψ) persists forever.
+If F(ψ) persists forever, at each visit the enriched step produces M' where
+ψ ∈ M' or F(ψ) ∈ M'. By no_new_f_defects, the defect count can only decrease.
+Since it's bounded below by 0, it eventually reaches 0 or 1 (only F(ψ)).
+At that point, the enriched step with empty others resolves ψ.
+
+For simplicity, we use byContradiction + the persistence argument. -/
+/- FIX: The `enriched_fwd_step` uses `enriched_fwd_exists` which returns
+  `target ∈ M' ∨ F(target) ∈ M'` via BX11 fold. However, the BX11 fold can
+  always F-wrap the target (case 3), so `target ∈ M'` is NOT guaranteed.
+  The set S = {χ ∈ sigma_list | F(χ) ∈ chain(m)} is stable (all F-formulas
+  preserved at every step), so the "defect count decreases" argument fails.
+
+  CORRECT APPROACH: Replace the chain construction to use
+  `enriched_resolving_seed_consistent` directly, which guarantees the target
+  is in M' by putting it as the first component of the seed. This requires:
+  1. At each step, use BX11 to find the "earliest witness" formula
+  2. Use `enriched_resolving_seed_consistent` with that formula as the first
+     component — guaranteed to be in M' (BX11 cases 1 or 2 for the earliest)
+  3. Prove termination via strict decrease of a well-founded measure
+     (e.g., the set of unresolved defects, using the property that the
+     earliest-witness formula is always resolved and no new F-formulas appear)
+  4. Identity tail after all defects are resolved
+
+  The key missing infrastructure is:
+  - `find_earliest_witness`: given F-defects in an MCS, find the one whose
+    BX11 ordering makes it earliest (so that BX11 cases 1 or 2 always fire)
+  - A proof that the earliest-witness formula IS resolved (not F-wrapped)
+  - A proof that the defect count strictly decreases at each step
+
+  See specs/093_complete_bxcanonical_embedding/reports/13_long-term-solution.md
+  Section 2.1-2.4 for the mathematical argument.
+-/
+theorem rr_fwd_chain_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (h_nonempty : sigma_list.length > 0)
+    (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ sigma_list)
+    (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val) :
+    ∃ s : Nat, n < s ∧ ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list s).val := by
+  sorry
+
 theorem dd_fmcs_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (sigma_list : List Formula) (t : Int) (ψ : Formula)
+    (sigma_list : List Formula) (h_nonempty : sigma_list.length > 0)
+    (t : Int) (ψ : Formula)
     (hψ : ψ ∈ sigma_list)
     (h_F : Formula.some_future ψ ∈ (dd_fmcs M₀ h₀ sigma_list).mcs t) :
     ∃ s : Int, t < s ∧ ψ ∈ (dd_fmcs M₀ h₀ sigma_list).mcs s := by
-  sorry
+  -- dd_fmcs.mcs t = dd_chain M₀ h₀ sigma_list t
+  -- For t ≥ 0: dd_chain = rr_fwd_chain(t.toNat). Use rr_fwd_chain_forward_F.
+  -- For t < 0: dd_chain = rr_bwd_chain. Propagate F(ψ) to the forward chain.
+  simp only [dd_fmcs] at h_F ⊢
+  rcases le_or_gt 0 t with h_nonneg | h_neg
+  · -- t ≥ 0: in the forward chain
+    simp only [dd_chain] at h_F
+    rw [if_pos h_nonneg] at h_F
+    obtain ⟨s, h_lt, h_in⟩ := rr_fwd_chain_forward_F M₀ h₀ sigma_list h_nonempty
+      t.toNat ψ hψ h_F
+    refine ⟨Int.ofNat s, ?_, ?_⟩
+    · rw [show t = Int.ofNat t.toNat from (Int.toNat_of_nonneg h_nonneg).symm]
+      exact Int.ofNat_lt.mpr h_lt
+    · simp only [dd_chain, show (Int.ofNat s ≥ 0) from Int.natCast_nonneg s, ite_true]
+      exact h_in
+  · -- t < 0: in the backward chain. F(ψ) must propagate to M₀.
+    -- Use the fact that F(ψ) ∈ bwd_chain implies it can be witnessed in the forward chain.
+    -- This requires F(ψ) to reach M₀ or to be directly available.
+    sorry
 
 theorem dd_fmcs_backward_P (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (t : Int) (ψ : Formula)
