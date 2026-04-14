@@ -936,6 +936,19 @@ theorem bx11_earlier_resolving_seed {M : Set Formula} (h_mcs : SetMaximalConsist
   · -- F(ψ₁ ∧ F(ψ₂)) ∈ M: α = F(ψ₂). From α ∈ M': F(ψ₂) ∈ M'.
     exact ⟨Formula.some_future ψ₂, h_first, fun M' _ h_α => Or.inr h_α⟩
 
+/-- Strengthened bx11_earlier_resolving_seed: also gives F-extraction. -/
+theorem bx11_earlier_resolving_seed_strong {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (ψ₁ ψ₂ : Formula) (h_earlier : bx11_earlier M ψ₁ ψ₂) :
+    ∃ α : Formula, Formula.some_future (Formula.and ψ₁ α) ∈ M ∧
+      (∀ M' : Set Formula, SetMaximalConsistent M' → α ∈ M' →
+        ψ₂ ∈ M' ∨ Formula.some_future ψ₂ ∈ M') ∧
+      (∀ M' : Set Formula, SetMaximalConsistent M' →
+        Formula.some_future α ∈ M' → Formula.some_future ψ₂ ∈ M') := by
+  rcases h_earlier with h_both | h_first
+  · exact ⟨ψ₂, h_both, fun M' _ h_α => Or.inl h_α, fun M' _ h_Fα => h_Fα⟩
+  · exact ⟨Formula.some_future ψ₂, h_first, fun M' _ h_α => Or.inr h_α,
+      fun M' h_mcs' h_FFψ₂ => FF_imp_F_mcs h_mcs' ψ₂ h_FFψ₂⟩
+
 /-- Single-target discharge step: given F(ψ) ∈ M for MCS M, there exists M' with
 ψ ∈ M' and g_content(M) ⊆ M'. This is the base case for discharge when
 there is exactly one defect. -/
@@ -990,6 +1003,46 @@ theorem discharge_multi_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
       (target ∈ M' ∨ Formula.some_future target ∈ M') ∧
       (∀ χ, χ ∈ others → (χ ∈ M' ∨ Formula.some_future χ ∈ M')) :=
   enriched_fwd_exists h_mcs target h_F_target others h_F_others
+
+/-- When target is bx11_earlier than every formula in others, there exists
+M' extending g_content(M) with target ∈ M' (guaranteed, not disjunctive). -/
+theorem target_stays_direct_in_fold {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (h_F_target : Formula.some_future target ∈ M)
+    (others : List Formula) (h_F_others : ∀ χ, χ ∈ others → Formula.some_future χ ∈ M)
+    (h_earliest : ∀ χ, χ ∈ others → bx11_earlier M target χ) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧
+      g_content M ⊆ M' ∧ target ∈ M' ∧
+      (∀ χ, χ ∈ others → (χ ∈ M' ∨ Formula.some_future χ ∈ M')) := by
+  have h_data : ∀ χ, χ ∈ others → ∃ α : Formula,
+      Formula.some_future (target.and α) ∈ M ∧
+      (∀ M' : Set Formula, SetMaximalConsistent M' → α ∈ M' →
+        χ ∈ M' ∨ Formula.some_future χ ∈ M') ∧
+      (∀ M' : Set Formula, SetMaximalConsistent M' →
+        Formula.some_future α ∈ M' → Formula.some_future χ ∈ M') :=
+    fun χ hχ => bx11_earlier_resolving_seed_strong h_mcs target χ (h_earliest χ hχ)
+  let compounds := others.pmap (fun χ (hχ : χ ∈ others) =>
+    target.and (h_data χ hχ).choose) (fun _ h => h)
+  have h_F_compounds : ∀ c, c ∈ compounds → Formula.some_future c ∈ M := by
+    intro c hc; simp only [compounds, List.mem_pmap] at hc
+    obtain ⟨χ, hχ, rfl⟩ := hc; exact (h_data χ hχ).choose_spec.1
+  obtain ⟨M', h_mcs', h_g, _, h_c_disj, w, h_w_origin, _, h_w_in⟩ :=
+    resolving_enriched_fwd_exists h_mcs target h_F_target compounds h_F_compounds
+  have h_target_in : target ∈ M' := by
+    rcases h_w_origin with rfl | h_w_comp
+    · exact h_w_in
+    · simp only [compounds, List.mem_pmap] at h_w_comp
+      obtain ⟨χ, hχ, rfl⟩ := h_w_comp
+      exact SetMaximalConsistent.implication_property h_mcs'
+        (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.lce_imp target _)) h_w_in
+  refine ⟨M', h_mcs', h_g, h_target_in, fun χ hχ => ?_⟩
+  have h_comp_mem : target.and (h_data χ hχ).choose ∈ compounds :=
+    List.mem_pmap.mpr ⟨χ, hχ, rfl⟩
+  rcases h_c_disj _ h_comp_mem with h_direct | h_F_wrap
+  · exact (h_data χ hχ).choose_spec.2.1 M' h_mcs'
+      (SetMaximalConsistent.implication_property h_mcs'
+        (theorem_in_mcs h_mcs' (Bimodal.Theorems.Propositional.rce_imp target _)) h_direct)
+  · exact Or.inr ((h_data χ hχ).choose_spec.2.2 M' h_mcs'
+      (F_conj_right_mcs h_mcs' target _ h_F_wrap))
 
 /-- Defect list: formulas from sigma_list that have F-obligations in M. -/
 noncomputable def activeDefects (M : Set Formula) (sigma_list : List Formula) : List Formula :=
