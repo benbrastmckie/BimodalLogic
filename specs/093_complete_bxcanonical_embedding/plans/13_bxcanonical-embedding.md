@@ -80,7 +80,7 @@ Plan v11 (4 phases, 14 hours) attempted a QuasimodelChain-to-FMCS adapter levera
 | 4 | 4 | 3 |
 | 5 | 5 | 4 |
 
-### Phase 1: Ordered Seed Consistency [NOT STARTED]
+### Phase 1: Ordered Seed Consistency [COMPLETED]
 
 **Goal**: Prove the Ordered Seed Consistency Theorem and F-Defect Monotonicity in a new module `OrderedSeedConsistency.lean`.
 
@@ -113,7 +113,7 @@ Plan v11 (4 phases, 14 hours) attempted a QuasimodelChain-to-FMCS adapter levera
 
 ---
 
-### Phase 2: Root-Scoped Defect-Discharge Chain (Forward) [NOT STARTED]
+### Phase 2: Root-Scoped Defect-Discharge Chain (Forward) [PARTIAL]
 
 **Goal**: Build the forward defect-discharge chain: a finite sequence of MCS that resolves all F-defects and Until-defects in `extendedDeferralClosure(root)`, plus an identity tail.
 
