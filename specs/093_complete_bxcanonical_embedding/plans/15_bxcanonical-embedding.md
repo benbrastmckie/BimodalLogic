@@ -75,7 +75,7 @@ Plan v14 (22 hours, 6 phases) was partially executed. Phase 1 COMPLETED: 16 sorr
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Prove target_stays_direct_in_fold and ordered_discharge_step [NOT STARTED]
+### Phase 1: Prove target_stays_direct_in_fold and ordered_discharge_step [PARTIAL]
 
 **Goal**: Prove the key new theorem `target_stays_direct_in_fold` establishing that when the fold target has the BX11-earliest witness among all F-defects, BX11 Cases 1 or 2 always fire (never Case 3). Then define `ordered_discharge_step` that uses this to guarantee direct resolution of the earliest defect.
 
