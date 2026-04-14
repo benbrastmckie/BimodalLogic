@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Embedding (v13 -- Ordered Defect-Discharge Chain)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 50 hours
 - **Dependencies**: None (tasks 90, 92, 98, 101, 102 already completed)
 - **Research Inputs**: reports/13_long-term-solution.md
@@ -113,9 +113,19 @@ Plan v11 (4 phases, 14 hours) attempted a QuasimodelChain-to-FMCS adapter levera
 
 ---
 
-### Phase 2: Root-Scoped Defect-Discharge Chain (Forward) [PARTIAL]
+### Phase 2: Root-Scoped Defect-Discharge Chain (Forward) [IN PROGRESS]
 
 **Goal**: Build the forward defect-discharge chain: a finite sequence of MCS that resolves all F-defects and Until-defects in `extendedDeferralClosure(root)`, plus an identity tail.
+
+**Blocker**: Round-robin enriched chain cannot prove `forward_F` — see `summaries/13_bxcanonical-embedding-summary.md` for full analysis. Required restructuring: replace `rr_fwd_chain` with finite ordered defect-discharge chain + identity tail.
+
+**RootScopedChain.lean file map** (879 lines):
+- Lines 1-448: Library lemmas (FF_imp_F, F_mono, BX11 fold, enriched step) — **PROVED**, keep
+- Lines 449-652: Round-robin chain + Int assembly + g_content/box_stable — **PROVED**, but forward_F unprovable
+- Lines 654-684: FMCS/BFMCS structure defs — **PROVED**
+- Lines 686-770: `rr_fwd_chain_forward_F` — **SORRY, KEY BLOCKER**
+- Lines 772-847: Downstream sorries (forward_F, backward_P, restricted coherence) — **SORRY**
+- Lines 849-879: `dd_countermodel` — uses sorry-dependent theorems
 
 **Tasks**:
 - [ ] Create `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean`
@@ -134,12 +144,24 @@ Plan v11 (4 phases, 14 hours) attempted a QuasimodelChain-to-FMCS adapter levera
 **Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- new file (~300 lines)
+- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- extend (~300 lines added)
 
 **Verification**:
 - `lake build Bimodal.Metalogic.BXCanonical.RootScopedChain` succeeds
 - Chain has no sorry
 - The chain length is bounded by `(extendedDeferralClosure root).card`
+
+**Implementation strategy (updated 2026-04-14)**:
+
+Two possible approaches for the defect-discharge chain:
+
+**Approach A (Preferred): Modify enriched_fwd_step to guarantee target resolution**.
+Change the step to pick the BX11-earliest defect as target and use `enriched_resolving_seed_consistent` so that the target is DIRECTLY in the Lindenbaum seed (not via .choose disjunction). Keep the existing round-robin scheduling but at each resolving step, always resolve the BX11-earliest. The key change: instead of `enriched_fwd_exists` (which gives `target ∈ M' ∨ F(target) ∈ M'`), use `enriched_resolving_seed_consistent` (which gives `target ∈ M'` guaranteed via seed inclusion).
+
+**Approach B (Fallback): Build a separate finite chain**.
+Define `fwd_discharge_chain` independently via well-founded recursion on `|{φ ∈ sigma_list | F(φ) ∈ M, φ ∉ M}|`. After all defects resolved, extend with identity tail. Replace `rr_fwd_chain` in `dd_chain`.
+
+**If returning from interruption**: Read RootScopedChain.lean lines 686-770 to see if `rr_fwd_chain_forward_F` is still sorry. If so, the restructuring has not yet been completed. The agent launched in session sess_1776180711_c675a9 may have made partial progress — check git log for commits after `ad0aed4f8`.
 
 ---
 
@@ -269,3 +291,24 @@ The new modules (`OrderedSeedConsistency.lean`, `RootScopedChain.lean`) are addi
 3. **Step transfer fails**: If Until-enriched seed consistency cannot be proved, fall back to a two-phase chain: first discharge all F-defects (Phase A), then in a second pass discharge all Until-defects with the step-transfer property guaranteed by the defect-free F state.
 
 4. **Full rollback**: Delete `OrderedSeedConsistency.lean` and `RootScopedChain.lean`, revert CanonicalModel.lean to HEAD. The existing sorry sites remain as they were.
+
+## Implementation Log
+
+### 2026-04-14 (sess_1776132289_bbf044): Phase 1 + partial Phase 2
+- OrderedSeedConsistency.lean: all theorems proved, no sorry
+- RootScopedChain.lean: library + round-robin chain + BFMCS proved; 6 sorries remain
+- Commit: `ad0aed4f8`
+
+### 2026-04-14 (sess_1776180711_c675a9): Analysis + Phase 2 restructuring
+- Established that round-robin chain CANNOT prove forward_F (see summary for proof)
+- Launched agent to restructure as ordered defect-discharge chain
+
+## How to Resume
+
+1. Check `git log --oneline -5` for commits after `ad0aed4f8`
+2. `grep -n sorry RootScopedChain.lean` — if `rr_fwd_chain_forward_F` still sorry, restructuring incomplete
+3. Read `summaries/13_bxcanonical-embedding-summary.md` for full analysis of the blocker
+4. **What to keep**: BX11 fold library (lines 1-448), BFMCS structure (dd_bfmcs, modal_forward/backward)
+5. **What to replace**: forward chain (`rr_fwd_chain`) and backward chain (`rr_bwd_chain`)
+6. **How**: Define `discharge_fwd_step` using `enriched_resolving_seed_consistent` (target directly in seed, not via disjunction). Well-founded recursion on defect count. Identity tail after all defects resolved.
+7. **Key theorems**: `enriched_resolving_seed_consistent`, `temp_linearity_mcs`, `no_new_f_defects`, `forward_temporal_witness_seed_consistent`
