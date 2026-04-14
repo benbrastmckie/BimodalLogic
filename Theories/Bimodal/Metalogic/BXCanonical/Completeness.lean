@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.BXCanonical.CanonicalModel
+import Bimodal.Metalogic.BXCanonical.RootScopedChain
 import Bimodal.Semantics.Validity
 
 /-!
@@ -138,7 +138,7 @@ theorem bx_completeness (φ : Formula) :
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
   -- Build canonical model and derive contradiction
   obtain ⟨D, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-    bx_countermodel M hM_mcs φ h_neg_in
+    dd_countermodel M hM_mcs φ h_neg_in
   -- valid φ gives truth at every point, including the countermodel point
   exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
