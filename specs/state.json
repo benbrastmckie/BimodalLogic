@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "planned",
+      "status": "researched",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-14T22:40:49Z",
+      "last_updated": "2026-04-14T22:48:24Z",
       "related_tasks": [
         92,
         95
@@ -21,7 +21,7 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776206107_5fa152",
+      "session_id": "sess_1776206590_becfba",
       "researched": "2026-04-14T22:27:55Z",
       "artifacts": [
         {
@@ -163,9 +163,14 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/16_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "6-phase plan (v16) addressing the 3-cycle gap: Phase 0 updates ROAD_MAP.md with dead ends 13-21, Phase 1 gates on BX11 acyclicity, Phases 2-4 close 6 sorry sites via Strategy C (direct witness contradiction), Phase 5 verifies and finalizes"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/reports/17_round-robin-chain-history.md",
+          "type": "research",
+          "summary": "Comprehensive history of round-robin chain approaches for task 93, documenting 19 failed strategies and lessons learned for Plan v16"
         }
       ],
-      "next_artifact_number": 17,
+      "next_artifact_number": 18,
       "started": "2026-04-13T07:28:59Z"
     },
     {

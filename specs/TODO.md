@@ -108,7 +108,7 @@ technical_debt:
 
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None (tasks 90, 92, 98, 102 completed)
@@ -118,6 +118,7 @@ technical_debt:
   - [01_taskmodel-embedding.md](specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md)
   - [02_team-research.md](specs/093_complete_bxcanonical_embedding/reports/02_team-research.md)
   - [03_team-research.md](specs/093_complete_bxcanonical_embedding/reports/03_team-research.md)
+  - [093_complete_bxcanonical_embedding/reports/17_round-robin-chain-history.md]
 - **Plan**:
     - [02_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/02_bxcanonical-embedding.md)
     - [04_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/04_bxcanonical-embedding.md)
