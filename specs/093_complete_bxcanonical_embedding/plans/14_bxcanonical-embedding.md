@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Embedding (v14 -- Ordered Defect-Discharge Chain)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 22 hours
 - **Dependencies**: None (OrderedSeedConsistency.lean completed, all infrastructure proved)
 - **Research Inputs**: reports/14_team-research.md, reports/13_long-term-solution.md
@@ -70,7 +70,7 @@ Plan v13 (50 hours, 5 phases) was the first plan for this approach. Phase 1 (Ord
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Ordered Defect-Discharge Forward Chain [NOT STARTED]
+### Phase 1: Ordered Defect-Discharge Forward Chain [COMPLETED]
 
 **Goal**: Replace `rr_fwd_chain` with a finite ordered defect-discharge chain that resolves the BX11-earliest defect at each step, using `enriched_resolving_seed_consistent` for guaranteed target resolution.
 
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove forward_F (Close Lines 790 and 816) [NOT STARTED]
+### Phase 2: Prove forward_F (Close Lines 790 and 816) [PARTIAL]
 
 **Goal**: Prove that F(psi) in chain(n) implies psi in chain(s) for some s > n, closing `rr_fwd_chain_forward_F` and the negative-t case of `dd_fmcs_forward_F`.
 
