@@ -72,7 +72,7 @@ Plan v16 (20 hours, 6 phases) was never executed. It included a 3-hour Strategy 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Close rr_fwd_chain_forward_F via Strategy C [IN PROGRESS]
+### Phase 1: Close rr_fwd_chain_forward_F via Strategy C [BLOCKED]
 
 **Goal**: Prove `rr_fwd_chain_forward_F` (line 1192): `F(psi) in chain(n)` implies `psi in chain(s)` for some `s > n`. Use the direct witness contradiction argument (Strategy C) on the existing round-robin chain.
 
