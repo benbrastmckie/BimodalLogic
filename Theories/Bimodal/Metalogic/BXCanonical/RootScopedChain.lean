@@ -554,6 +554,26 @@ theorem rrSchedule_mem (L : List Formula) (n : Nat) (h : L.length > 0) :
   simp only [rrSchedule, dif_pos h]
   exact List.getElem_mem (Nat.mod_lt n h)
 
+/-- For any ψ ∈ L, there exists a visit step m > n where rrSchedule L m = ψ.
+This follows from the modular arithmetic of the round-robin schedule. -/
+theorem rrSchedule_visits (L : List Formula) (n : Nat) (ψ : Formula)
+    (h_len : L.length > 0) (hψ : ψ ∈ L) :
+    ∃ m : Nat, n < m ∧ rrSchedule L m = ψ := by
+  obtain ⟨j, hj_lt, hj_eq⟩ := List.getElem_of_mem hψ
+  -- Take m = (n + 1) * L.length + j. Then m > n and m % L.length = j.
+  refine ⟨(n + 1) * L.length + j, ?_, ?_⟩
+  · -- (n + 1) * L.length + j > n
+    have : n + 1 ≤ (n + 1) * L.length := Nat.le_mul_of_pos_right _ h_len
+    omega
+  · -- rrSchedule L ((n + 1) * L.length + j) = ψ
+    unfold rrSchedule
+    simp only [dif_pos h_len]
+    have h_mod : ((n + 1) * L.length + j) % L.length = j := by
+      rw [Nat.mul_comm]
+      rw [Nat.mul_add_mod_self_left]
+      exact Nat.mod_eq_of_lt hj_lt
+    simp only [h_mod, List.get_eq_getElem, hj_eq]
+
 /-- Enriched forward step: at a resolving step, use resolving_enriched_fwd_exists
 to protect ALL F-formulas from sigma_list AND guarantee at least one defect is
 resolved. At a non-resolving step, use the standard fwd_succ (which preserves

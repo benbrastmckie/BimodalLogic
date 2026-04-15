@@ -78,7 +78,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: ROAD_MAP.md Update [NOT STARTED]
+### Phase 1: ROAD_MAP.md Update [COMPLETED]
 
 **Goal**: Update ROAD_MAP.md with all dead ends from the task 93 investigation, progress made, what remains, and corrected sorry inventory.
 
@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Design and Define target_resolving_fwd_step [NOT STARTED]
+### Phase 2: Design and Define target_resolving_fwd_step [BLOCKED]
 
 **Goal**: Replace `enriched_fwd_step` with a new `target_resolving_fwd_step` that controls the Lindenbaum choice to guarantee `target in M'` while preserving `g_content(M) subset M'` and providing `chi in M' or F(chi) in M'` for other F-obligations.
 
@@ -204,7 +204,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Define target_resolving_chain and Never-Resolved Invariant [NOT STARTED]
+### Phase 3: Define target_resolving_chain and Never-Resolved Invariant [BLOCKED]
 
 **Goal**: Define a new chain `target_resolving_chain` using `target_resolving_fwd_step` and thread a "never-resolved count" invariant through the recursion that guarantees termination of the F-obligation discharge.
 
@@ -263,7 +263,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Prove rr_fwd_chain_forward_F via Never-Resolved Induction [NOT STARTED]
+### Phase 4: Prove rr_fwd_chain_forward_F via Never-Resolved Induction [BLOCKED]
 
 **Goal**: Prove the primary blocker `rr_fwd_chain_forward_F` (line 1275) using the new chain construction and well-founded induction on the never-resolved count.
 
@@ -301,7 +301,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Re-prove Downstream Forward Chain Theorems [NOT STARTED]
+### Phase 5: Re-prove Downstream Forward Chain Theorems [BLOCKED]
 
 **Goal**: Update `rr_fwd_chain` to use the new chain definition (or prove that the new chain satisfies all properties needed by downstream theorems) and re-prove the ~30 theorems that depend on the chain definition.
 
@@ -336,7 +336,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Close Remaining 5 Sorry Sites [NOT STARTED]
+### Phase 6: Close Remaining 5 Sorry Sites [BLOCKED]
 
 **Goal**: Close the remaining 5 sorry sites (lines 1306, 1313, 1366, 1371, 1376) that depend on `rr_fwd_chain_forward_F`.
 
@@ -381,7 +381,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Final Verification, Axiom Audit, and ROAD_MAP.md Completion [NOT STARTED]
+### Phase 7: Final Verification, Axiom Audit, and ROAD_MAP.md Completion [BLOCKED]
 
 **Goal**: Verify the complete sorry-free build, run axiom audits, update ROAD_MAP.md with the successful outcome, and add documentation.
 

@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "researched",
+      "status": "implementing",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-15T02:05:49Z",
+      "last_updated": "2026-04-15T02:42:30Z",
       "related_tasks": [
         92,
         95
@@ -185,9 +185,9 @@
           "summary": "Team research with 4 teammates: bilateral pairs approach analyzed, found isomorphic to MCS, recommended Plan v18 with two low-cost pre-attempts"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/reports/20_bilateral-submaximal.md",
-          "type": "research_report",
-          "summary": "Deep analysis of sub-maximal bilateral pairs: truth lemma backward implication requires negation completeness (maximality); 5+ showstoppers; deterministic Lindenbaum within MCS recommended instead"
+          "path": "specs/093_complete_bxcanonical_embedding/summaries/18_bxcanonical-embedding-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: Phase 1 complete (ROAD_MAP update, rrSchedule_visits helper), Phases 2-7 blocked on forward_F mathematical obstruction"
         }
       ],
       "next_artifact_number": 21,
@@ -481,6 +481,11 @@
           "path": "specs/953_refactor_proof_system_to_bilateral/reports/research-003.md",
           "type": "research",
           "summary": "Cost-benefit analysis: 55-90 hours effort, low-medium benefit, recommend deferring until higher-priority tasks (981, 951) progress"
+        },
+        {
+          "path": "specs/953_refactor_proof_system_to_bilateral/reports/20_bilateral-submaximal.md",
+          "type": "research_report",
+          "summary": "Deep analysis of sub-maximal bilateral pairs: truth lemma backward implication requires negation completeness (maximality); 5+ showstoppers; deterministic Lindenbaum within MCS recommended instead"
         }
       ],
       "session_id": "sess_1773878520_a3f2b1"

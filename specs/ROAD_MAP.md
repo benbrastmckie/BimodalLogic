@@ -14,13 +14,20 @@ completeness path flows through `Theories/Bimodal/Metalogic/BXCanonical/`,
 which constructs a canonical frame of maximally consistent sets ordered by
 `g_content` inclusion.
 
-**Active-path sorry summary**: There is exactly **1 sorry** blocking
-`bx_completeness`, at `Completeness.lean:154` (TaskModel embedding, task 93).
+**Active-path sorry summary**: There are **6 sorries** blocking
+`bx_completeness`, all in `RootScopedChain.lean` (task 93). The sorry at
+`Completeness.lean:154` was resolved via `dd_countermodel`, which depends on
+the 6 sorry sites below.
 
 | Category | Count | Location | Status |
 |----------|-------|----------|--------|
-| TaskModel embedding (final step) | 1 | `Completeness.lean:154` | **OPEN** (task 93) |
-| **Active-path total** | **1** | | |
+| `rr_fwd_chain_forward_F` | 1 | `RootScopedChain.lean:1275` | **OPEN** -- PRIMARY BLOCKER |
+| `dd_fmcs_forward_F` (t < 0) | 1 | `RootScopedChain.lean:1306` | **OPEN** -- depends on 1275 |
+| `dd_fmcs_backward_P` | 1 | `RootScopedChain.lean:1313` | **OPEN** -- symmetric to forward_F |
+| `dd_bfmcs_restricted_tc` | 1 | `RootScopedChain.lean:1366` | **OPEN** -- depends on forward_F + backward_P |
+| `dd_bfmcs_restricted_buc` | 1 | `RootScopedChain.lean:1371` | **OPEN** -- backward Until coherence |
+| `dd_bfmcs_restricted_fuc` | 1 | `RootScopedChain.lean:1376` | **OPEN** -- forward Until coherence |
+| **Active-path total** | **6** | | |
 | Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) |
 
 See sections below for the axiom system, reflexive semantics, canonical
@@ -626,6 +633,73 @@ warnings regardless of the semantic change.
     `valid_of_valid_box`) relocated to `Semantics/Validity.lean`. Still
     referenced as an anti-pattern at `Completeness.lean:143-148`.
 
+13. **f_carry seed for enriched forward step** (task 93, plans v8-v14):
+    `{target} union g_content(M) union f_carry(M)` is inconsistent in general.
+    Counterexample: `G(F(alpha) -> neg psi) in M`, `F(alpha) in M`, `F(psi) in M`.
+    The G-formula forces `F(alpha) -> neg psi` into any Lindenbaum extension
+    containing g_content(M), while f_carry requires both F(alpha) and F(psi)
+    to be present. No G-lift argument avoids this.
+
+14. **Fuel-based F-nesting recursion** (task 93, plans v5-v7): Conflates
+    F-nesting depth (bounded by subformula closure) with visit count
+    (unbounded). F(psi) can persist through arbitrarily many round-robin
+    cycles without resolution.
+
+15. **BX11 acyclicity gate check** (task 93, plan v16 Strategy A): 3-cycle
+    semantic counterexample. Three formulas psi1, psi2, psi3 with
+    bx11_earlier forming a cycle in different MCS contexts. BX11 is not
+    transitive and does not induce a well-order.
+
+16. **Strategy C: direct witness contradiction on existing chain** (task 93,
+    plans v16-v17): Permanent BX11 displacement is syntactically consistent.
+    The `.choose` in `set_lindenbaum` is unconstrained. All three attack
+    vectors (visit-step analysis, pigeonhole, discharge_single_step) fail.
+    Confidence: 10-15%.
+
+17. **Approach A: target-prioritized fold** (task 93, report 18): Reduces
+    multi-step fold Case 3 to single BX11 application, but the final BX11
+    between target and compound can still fire Case 3.
+
+18. **Approach B: iterative refinement** (task 93, report 18):
+    Mathematically sound but requires chain redefinition -- subsumed by the
+    ordered-discharge approach.
+
+19. **Approach C: discharge_single_step at chain level** (task 93, report 18):
+    Fatal F-propagation gap at non-target resolving steps.
+
+20. **Approach 21: Until reformulation via BX12** (task 93, report 18):
+    `F(psi) -> top U psi` by BX12, then `bx_until_eventuality_resolution`.
+    Produces abstract BXPoints not chain indices; `top U psi` may not be in
+    `deferralClosure(root)`.
+
+21. **Strategy C fold-order variant** (task 93, report 18 synthesis):
+    Processing target last in the BX11 fold. Investigated but fold outcome
+    depends on MCS content which is itself determined by `.choose`.
+
+### Task 93: Progress and Infrastructure
+
+Six sorry-free helper lemmas proved during v17 Phase 1 (all in
+`RootScopedChain.lean`):
+- `discharge_single_step`: Given F(psi) in MCS M, exists M' with psi in M'
+  and g_content(M) subset M'.
+- `discharge_two_step`: Two-target version using BX11 ordering.
+- `enriched_resolving_seed_consistent`: Seed {psi, alpha} union g_content(M)
+  is consistent when F(psi and alpha) in M.
+- `bx11_earlier_resolving_seed_strong`: When target is bx11_earlier than chi,
+  produces a resolving alpha from the BX11 compound.
+- `rr_fwd_chain_F_obligation_forward`: F-obligation constancy (forward).
+- `rr_fwd_chain_F_obligation_backward`: F-obligation constancy (backward).
+
+F-obligation constancy infrastructure: `rr_fwd_chain_F_propagate` reduces
+forward_F to "F(psi) cannot persist at every future step". The
+`enriched_fwd_step_preserves` gives disjunctive F-preservation at each step.
+
+The core finding: the `.choose` in `set_lindenbaum` (called via
+`resolving_enriched_fwd_exists`) is the root cause of the forward_F gap.
+Controlling this choice is the only viable path. Standard completeness proofs
+(Burgess 1984, Goldblatt 1992, GHR 1994) handle forward_F semantically, not
+syntactically.
+
 ---
 
 ## Other Open Items
@@ -733,7 +807,7 @@ characterization.
 | 92 | **[COMPLETED]** | Implement Until/Since truth lemma approach | 90 |
 | 98 | **[COMPLETED]** | Implement eventuality resolution (Frame.lean:653, 690) | 92 |
 | 102 | **[COMPLETED]** | Close remaining Frame.lean sorries (675, 704, 440) | 98 |
-| 93 | [NOT STARTED] | Close Completeness.lean:154 (TaskModel embedding) — **sole remaining sorry** | 102 |
+| 93 | [IMPLEMENTING] | Close RootScopedChain.lean 6 sorries (chain replacement approach) -- **6 active-path sorries** | 102 |
 | 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 93 |
 | 103 | [NOT STARTED] | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
 | 94 | [PLANNING] | Archive strict-semantics legacy files to Boneyard | 103 |
