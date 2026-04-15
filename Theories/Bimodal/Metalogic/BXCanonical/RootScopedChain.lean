@@ -1132,7 +1132,8 @@ theorem rr_fwd_chain_F_obligation_absent (M₀ : Set Formula) (h₀ : SetMaximal
       (rr_fwd_chain M₀ h₀ sigma_list n).property
       (Formula.some_future ψ) with h | h
     · exact absurd h h_not_F
-    · exact h
+    · exact SetMaximalConsistent.double_neg_elim
+        (rr_fwd_chain M₀ h₀ sigma_list n).property _ h
   exact no_new_f_defects
     (rr_fwd_chain M₀ h₀ sigma_list n).property
     (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).property
@@ -1148,7 +1149,7 @@ theorem rr_fwd_chain_F_obligation_forward (M₀ : Set Formula) (h₀ : SetMaxima
   | zero => exact Nat.eq_zero_of_le_zero h_le ▸ h_F
   | succ m ih =>
     rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
-    · exact rr_fwd_chain_F_obligation_persists M₀ h₀ sigma_list m ψ hψ h_F
+    · exact h_F
     · exact rr_fwd_chain_F_obligation_persists M₀ h₀ sigma_list m ψ hψ
         (ih (Nat.lt_succ_iff.mp h_lt))
 
@@ -1160,15 +1161,17 @@ theorem rr_fwd_chain_F_obligation_backward (M₀ : Set Formula) (h₀ : SetMaxim
     (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list m).val) :
     Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val := by
   by_contra h_not
-  have : Formula.some_future ψ ∉ (rr_fwd_chain M₀ h₀ sigma_list m).val := by
-    induction m with
-    | zero => exact Nat.eq_zero_of_le_zero h_le ▸ h_not
-    | succ m ih =>
-      rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
-      · exact rr_fwd_chain_F_obligation_absent M₀ h₀ sigma_list m ψ h_not
-      · exact rr_fwd_chain_F_obligation_absent M₀ h₀ sigma_list m ψ
-          (ih (Nat.lt_succ_iff.mp h_lt))
-  exact this h_F
+  suffices h_abs : ∀ k, n ≤ k →
+      Formula.some_future ψ ∉ (rr_fwd_chain M₀ h₀ sigma_list k).val from
+    h_abs m h_le h_F
+  intro k h_nk
+  induction k with
+  | zero => exact Nat.eq_zero_of_le_zero h_nk ▸ h_not
+  | succ k ih =>
+    rcases Nat.eq_or_lt_of_le h_nk with rfl | h_lt
+    · exact h_not
+    · exact rr_fwd_chain_F_obligation_absent M₀ h₀ sigma_list k ψ
+        (ih (Nat.lt_succ_iff.mp h_lt))
 
 /-! ## Forward_F for the round-robin chain -/
 
