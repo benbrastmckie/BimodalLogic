@@ -1090,6 +1090,86 @@ theorem discharge_fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaxi
       (discharge_fwd_chain M₀ h₀ sigma_list n).val :=
   rr_fwd_chain_g_content_trans M₀ h₀ sigma_list h
 
+/-! ## φ → F(φ) and F-obligation constancy -/
+
+/-- φ → F(φ) is derivable in BX.
+Proof: temp_t gives G(¬φ) → ¬φ. Contrapositive: ¬¬φ → ¬G(¬φ).
+Since F(φ) = ¬G(¬φ) and ¬¬φ follows from φ by DNI, we get φ → F(φ). -/
+noncomputable def phi_imp_F_phi (φ : Formula) :
+    ⊢ φ.imp φ.some_future := by
+  unfold Formula.some_future
+  exact Bimodal.Theorems.Combinators.imp_trans (dni φ)
+    (Bimodal.Theorems.Propositional.contraposition
+      (DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.neg φ))))
+
+/-- At MCS level: φ ∈ M → F(φ) ∈ M. -/
+theorem phi_in_mcs_imp_F_phi {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (φ : Formula) (h : φ ∈ M) : φ.some_future ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (phi_imp_F_phi φ)) h
+
+/-- F-obligation persistence: F(ψ) ∈ chain(n) → F(ψ) ∈ chain(n+1).
+Combines enriched_fwd_step_preserves (F(ψ) ∈ M → ψ ∈ M' ∨ F(ψ) ∈ M')
+with phi_in_mcs_imp_F_phi (ψ ∈ M' → F(ψ) ∈ M'). -/
+theorem rr_fwd_chain_F_obligation_persists (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ sigma_list)
+    (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val) :
+    Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).val := by
+  rcases enriched_fwd_step_preserves _ _ _ _ ψ hψ h_F with h | h
+  · exact phi_in_mcs_imp_F_phi
+      (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).property ψ h
+  · exact h
+
+/-- F-obligation non-appearance: F(ψ) ∉ chain(n) → F(ψ) ∉ chain(n+1).
+From no_new_f_defects: G(¬ψ) ∈ chain(n) implies F(ψ) ∉ chain(n+1). -/
+theorem rr_fwd_chain_F_obligation_absent (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat) (ψ : Formula)
+    (h_not_F : Formula.some_future ψ ∉ (rr_fwd_chain M₀ h₀ sigma_list n).val) :
+    Formula.some_future ψ ∉ (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).val := by
+  have h_G : Formula.all_future (Formula.neg ψ) ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val := by
+    rcases SetMaximalConsistent.negation_complete
+      (rr_fwd_chain M₀ h₀ sigma_list n).property
+      (Formula.some_future ψ) with h | h
+    · exact absurd h h_not_F
+    · exact h
+  exact no_new_f_defects
+    (rr_fwd_chain M₀ h₀ sigma_list n).property
+    (rr_fwd_chain M₀ h₀ sigma_list (n + 1)).property
+    (enriched_fwd_step_g_content _ _ _ _) ψ h_G
+
+/-- F-obligation constancy (forward): F(ψ) ∈ chain(n) → F(ψ) ∈ chain(m) for all m ≥ n. -/
+theorem rr_fwd_chain_F_obligation_forward (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n m : Nat) (ψ : Formula)
+    (hψ : ψ ∈ sigma_list) (h_le : n ≤ m)
+    (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val) :
+    Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list m).val := by
+  induction m with
+  | zero => exact Nat.eq_zero_of_le_zero h_le ▸ h_F
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact rr_fwd_chain_F_obligation_persists M₀ h₀ sigma_list m ψ hψ h_F
+    · exact rr_fwd_chain_F_obligation_persists M₀ h₀ sigma_list m ψ hψ
+        (ih (Nat.lt_succ_iff.mp h_lt))
+
+/-- F-obligation constancy (backward): F(ψ) ∈ chain(m) → F(ψ) ∈ chain(n) for all n ≤ m.
+Contrapositive of F_obligation_absent iterated. -/
+theorem rr_fwd_chain_F_obligation_backward (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n m : Nat) (ψ : Formula)
+    (h_le : n ≤ m)
+    (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list m).val) :
+    Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val := by
+  by_contra h_not
+  have : Formula.some_future ψ ∉ (rr_fwd_chain M₀ h₀ sigma_list m).val := by
+    induction m with
+    | zero => exact Nat.eq_zero_of_le_zero h_le ▸ h_not
+    | succ m ih =>
+      rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+      · exact rr_fwd_chain_F_obligation_absent M₀ h₀ sigma_list m ψ h_not
+      · exact rr_fwd_chain_F_obligation_absent M₀ h₀ sigma_list m ψ
+          (ih (Nat.lt_succ_iff.mp h_lt))
+  exact this h_F
+
 /-! ## Forward_F for the round-robin chain -/
 
 /-- Forward F: F(ψ) ∈ chain(t) with ψ = sigma_list[j] → ∃ s > t, ψ ∈ chain(s).
