@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 2: Pen-and-Paper Verification of WF Measure [NOT STARTED]
+### Phase 2: Pen-and-Paper Verification of WF Measure [COMPLETED]
 
 **Goal**: Verify on paper that the Goldblatt WF-induction argument terminates, resolving the circularity between `forward_F` and `backward_G`. Produce a written proof sketch in a Lean comment block documenting the exact mathematical argument.
 
