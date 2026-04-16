@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 1: Extract DRM Chain Infrastructure from Boneyard [NOT STARTED]
+### Phase 1: Extract DRM Chain Infrastructure from Boneyard [COMPLETED]
 
 **Goal**: Move the sorry-free DRM chain construction from `Boneyard/ChainCompleteness/Bundle/` into the active codebase, verify it compiles, and establish the foundation for the forward_F proof.
 
@@ -123,7 +123,7 @@ The critical difference from the full MCS chain: the DRM successor uses `deferra
 
 ---
 
-### Phase 2: Build DRM Forward Chain and Prove forward_F within DRM [NOT STARTED]
+### Phase 2: Build DRM Forward Chain and Prove forward_F within DRM [PARTIAL]
 
 **Goal**: Define an iterated DRM chain using `simplified_restricted_successor`, prove it satisfies `Succ` at each step, and apply `bounded_witness` (or a DRM-specific analog) to prove forward_F for formulas in `deferralClosure`.
 
@@ -325,7 +325,7 @@ The critical difference from the full MCS chain: the DRM successor uses `deferra
 
 ---
 
-### Phase 5: Quasimodel Bridge (FALLBACK -- execute only if Phases 1-3 fail) [NOT STARTED]
+### Phase 5: Quasimodel Bridge (FALLBACK -- execute only if Phases 1-3 fail) [IN PROGRESS]
 
 **Goal**: If the DRM approach fails at any go/no-go decision point, implement the Quasimodel bridge: extract an Int-indexed FMCS family from the sorry-free Quasimodel infrastructure and wire it into `dd_bfmcs`.
 
