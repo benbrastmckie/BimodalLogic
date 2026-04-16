@@ -1128,6 +1128,30 @@ theorem phi_in_mcs_imp_F_phi {M : Set Formula} (h_mcs : SetMaximalConsistent M)
   SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (phi_imp_F_phi φ)) h
 
+/-! ## Extended Defect Seed Consistency
+
+The key mathematical lemma: when the target is bx11_earlier than all other
+F-defects, we can construct M' with target ∈ M' AND F(chi) ∈ M' for all
+other F-defects chi, AND g_content(M) ⊆ M'. This enables a chain step
+that both resolves the target AND preserves all F-obligations. -/
+
+/-- Strengthened target resolution: when target is bx11_earlier than all others,
+the successor M' has target directly resolved AND all other F-obligations
+preserved (not just disjunctively). -/
+theorem target_resolving_fwd_exists_strong {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (target : Formula) (h_F_target : Formula.some_future target ∈ M)
+    (others : List Formula) (h_F_others : ∀ χ, χ ∈ others → Formula.some_future χ ∈ M)
+    (h_earliest : ∀ χ, χ ∈ others → bx11_earlier M target χ) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧
+      g_content M ⊆ M' ∧ target ∈ M' ∧
+      (∀ χ, χ ∈ others → Formula.some_future χ ∈ M') := by
+  obtain ⟨M', h_mcs', h_g, h_target, h_others⟩ :=
+    target_stays_direct_in_fold h_mcs target h_F_target others h_F_others h_earliest
+  refine ⟨M', h_mcs', h_g, h_target, fun χ hχ => ?_⟩
+  rcases h_others χ hχ with h_direct | h_F
+  · exact phi_in_mcs_imp_F_phi h_mcs' χ h_direct
+  · exact h_F
+
 /-- F-obligation persistence: F(ψ) ∈ chain(n) → F(ψ) ∈ chain(n+1).
 Combines enriched_fwd_step_preserves (F(ψ) ∈ M → ψ ∈ M' ∨ F(ψ) ∈ M')
 with phi_in_mcs_imp_F_phi (ψ ∈ M' → F(ψ) ∈ M'). -/

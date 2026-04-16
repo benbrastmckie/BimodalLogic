@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Gate Check -- Fold-Order Trick [NOT STARTED]
+### Phase 1: Gate Check -- Fold-Order Trick [BLOCKED]
 
 **Goal**: Concretely test whether processing target LAST in the BX11 fold eliminates the non-deterministic deferral that blocks `rr_fwd_chain_forward_F`. This is the cheapest possible test (2 hours) and has never been attempted despite 21 research rounds.
 
@@ -97,7 +97,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove `extended_defect_seed_consistent` for n Defects [NOT STARTED]
+### Phase 2: Prove `extended_defect_seed_consistent` for n Defects [PARTIAL]
 
 **Goal**: Generalize the 2-defect case in `OrderedSeedConsistency.lean` to n defects. This is the KEY mathematical lemma: given F-defects `[psi_1, ..., psi_n]` all with `F(psi_k) in M`, there exists an index j such that `{psi_j} union {F(psi_k) | k != j} union g_content(M)` is consistent.
 
@@ -136,7 +136,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Replace Chain Step and Close forward_F / backward_P [NOT STARTED]
+### Phase 3: Replace Chain Step and Close forward_F / backward_P [BLOCKED]
 
 **Goal**: Use the result from Phase 1 (fold-order trick) or Phase 2 (extended defect seed) to build a chain step that deterministically resolves the target formula. Close `rr_fwd_chain_forward_F`, `dd_fmcs_forward_F`, and `dd_fmcs_backward_P`.
 
@@ -172,7 +172,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Close restricted_tc, buc, fuc and Final Assembly [NOT STARTED]
+### Phase 4: Close restricted_tc, buc, fuc and Final Assembly [BLOCKED]
 
 **Goal**: Close the remaining 3 sorry sites (`dd_bfmcs_restricted_tc`, `dd_bfmcs_restricted_buc`, `dd_bfmcs_restricted_fuc`) using the now-proved forward_F/backward_P results, then verify complete sorry-free state.
 
@@ -212,7 +212,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Documentation and ROAD_MAP Update [NOT STARTED]
+### Phase 5: Documentation and ROAD_MAP Update [BLOCKED]
 
 **Goal**: Update ROAD_MAP.md with final results, document the successful approach, and add docstrings.
 
