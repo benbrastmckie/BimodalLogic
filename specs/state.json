@@ -13,7 +13,7 @@
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-16T20:03:48Z",
+      "last_updated": "2026-04-16T20:33:14Z",
       "related_tasks": [
         92,
         95
@@ -21,8 +21,8 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776368824_3b2c98",
-      "researched": "2026-04-16T20:03:48Z",
+      "session_id": "sess_1776638400_a7d3e1",
+      "researched": "2026-04-16T20:33:14Z",
       "artifacts": [
         {
           "path": "specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md",
@@ -228,9 +228,14 @@
           "path": "specs/093_complete_bxcanonical_embedding/reports/25_bfmcs-quasimodel-witnesses.md",
           "type": "research_report",
           "summary": "Exhaustive first-principles analysis of BFMCS Quasimodel Witnesses strategy: fatal BXPoint-to-Int bridging gap found, 7 variant strategies analyzed, recommends full canonical model restructuring or defect re-entry bound"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/reports/26_defect-reentry-analysis.md",
+          "type": "research_report",
+          "summary": "Complete first-principles analysis of defect re-entry in BXCanonical forward_F: defect re-entry CAN happen, perpetual deferral IS semantically consistent, chain construction must be modified"
         }
       ],
-      "next_artifact_number": 26,
+      "next_artifact_number": 27,
       "started": "2026-04-13T07:28:59Z"
     },
     {
