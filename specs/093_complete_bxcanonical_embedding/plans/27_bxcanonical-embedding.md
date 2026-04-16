@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Embedding (v27 -- Goldblatt WF-Induction Chain)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 35 hours
 - **Dependencies**: None (task 92 completed; truth lemma and quasimodel infrastructure sorry-free)
 - **Research Inputs**: reports/27_team-research.md, reports/26_defect-reentry-analysis.md, reports/17_round-robin-chain-history.md
@@ -74,7 +74,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 1: Update ROAD_MAP.md [NOT STARTED]
+### Phase 1: Update ROAD_MAP.md [COMPLETED]
 
 **Goal**: Bring ROAD_MAP.md up to date with the strategic shift to Goldblatt WF-induction, document 5 new dead ends, correct stale metrics, and record the approach change for task 93.
 

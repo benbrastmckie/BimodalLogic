@@ -4,7 +4,7 @@
 
 TM is a bimodal logic combining S5 modality with reflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-04-13 (post-Until/Since closure).
+state of the completeness effort as of 2026-04-16 (plan v27: Goldblatt WF-induction).
 
 **Architecture**: The proof system has 37 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
@@ -21,12 +21,12 @@ the 6 sorry sites below.
 
 | Category | Count | Location | Status |
 |----------|-------|----------|--------|
-| `rr_fwd_chain_forward_F` | 1 | `RootScopedChain.lean:1275` | **OPEN** -- PRIMARY BLOCKER |
-| `dd_fmcs_forward_F` (t < 0) | 1 | `RootScopedChain.lean:1306` | **OPEN** -- depends on 1275 |
-| `dd_fmcs_backward_P` | 1 | `RootScopedChain.lean:1313` | **OPEN** -- symmetric to forward_F |
-| `dd_bfmcs_restricted_tc` | 1 | `RootScopedChain.lean:1366` | **OPEN** -- depends on forward_F + backward_P |
-| `dd_bfmcs_restricted_buc` | 1 | `RootScopedChain.lean:1371` | **OPEN** -- backward Until coherence |
-| `dd_bfmcs_restricted_fuc` | 1 | `RootScopedChain.lean:1376` | **OPEN** -- forward Until coherence |
+| `rr_fwd_chain_forward_F` | 1 | `RootScopedChain.lean:1321` | **OPEN** -- PRIMARY BLOCKER |
+| `dd_fmcs_forward_F` (t < 0) | 1 | `RootScopedChain.lean:1352` | **OPEN** -- depends on 1321 |
+| `dd_fmcs_backward_P` | 1 | `RootScopedChain.lean:1359` | **OPEN** -- symmetric to forward_F |
+| `dd_bfmcs_restricted_tc` | 1 | `RootScopedChain.lean:1412` | **OPEN** -- depends on forward_F + backward_P |
+| `dd_bfmcs_restricted_buc` | 1 | `RootScopedChain.lean:1417` | **OPEN** -- backward Until coherence |
+| `dd_bfmcs_restricted_fuc` | 1 | `RootScopedChain.lean:1422` | **OPEN** -- forward Until coherence |
 | **Active-path total** | **6** | | |
 | Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) |
 
@@ -192,7 +192,7 @@ are **not imported** by `BXCanonical`.
 ### Module Import Graph
 
 ```
-Metalogic/BXCanonical/BXCanonical.lean (aggregator)
+Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   ├── Frame.lean (673 lines, sorry-free)
   │     ├── Core/MaximalConsistent
   │     ├── Core/MCSProperties
@@ -207,14 +207,30 @@ Metalogic/BXCanonical/BXCanonical.lean (aggregator)
   │     ├── Semantics/Truth
   │     └── Semantics/Validity
   │
-  ├── Completeness.lean (163 lines, 1 sorry)
-  │     ├── TruthLemma
+  ├── Completeness.lean (152 lines, sorry-free -- delegates to RootScopedChain)
+  │     ├── RootScopedChain
   │     └── Semantics/Validity
   │
   ├── CanonicalChain.lean (157 lines, sorry-free)
   │     ├── Frame
   │     ├── Quasimodel/Construction
   │     └── Filtration/DefectChain
+  │
+  ├── OrderedSeedConsistency.lean (255 lines, sorry-free)
+  │     ├── Frame
+  │     └── CanonicalChain
+  │
+  ├── CanonicalModel.lean (498 lines, sorry-free)
+  │     ├── CanonicalChain
+  │     ├── TruthLemma
+  │     └── Bundle/FMCSDef
+  │
+  ├── RootScopedChain.lean (1,454 lines, 6 sorries -- task 93)
+  │     ├── OrderedSeedConsistency
+  │     ├── CanonicalModel
+  │     ├── Bundle/UntilSinceCoherence
+  │     ├── Algebraic/ParametricRepresentation
+  │     └── Algebraic/RestrictedParametricTruthLemma
   │
   ├── Quasimodel/
   │     ├── SubformulaClosure.lean (114 lines)
@@ -246,7 +262,7 @@ Metalogic/BXCanonical/BXCanonical.lean (aggregator)
               └── Quasimodel/Construction
 ```
 
-**Total BXCanonical module: 3,473 lines across 13 files, 1 sorry.**
+**Total BXCanonical module: 5,669 lines across 16 files, 6 sorries (all in RootScopedChain.lean).**
 
 Legacy files (`UltrafilterChain`, `SuccChainFMCS`, `FrameConditions/Completeness`)
 are still built via top-level aggregation in `Metalogic.lean` but are **not
@@ -423,18 +439,25 @@ closed `bx_until_eventuality_resolution` and `bx_since_eventuality_resolution`.
 
 ## Active-Path Sorry Inventory
 
-There is exactly **1 sorry** on the active completeness path, inside
-`Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`.
+There are **6 sorries** on the active completeness path, all in
+`Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean`.
+`Completeness.lean` is now sorry-free (delegates to `dd_countermodel` in
+`RootScopedChain.lean`, which depends on the 6 sorry sites below).
 
 | # | File:Line | Definition | Goal Summary | Owning Task |
 |---|-----------|------------|--------------|-------------|
-| 1 | Completeness.lean:154 | `bx_completeness` final step | Convert a BXPoint canonical frame into a `TaskModel F` over some `D` with `¬φ` false at `w₀` | **Task 93** |
+| 1 | RootScopedChain.lean:1321 | `rr_fwd_chain_forward_F` | If F(psi) in chain(n), exists s > n with psi in chain(s) | **Task 93** |
+| 2 | RootScopedChain.lean:1352 | `dd_fmcs_forward_F` (t < 0) | Forward F resolution in the backward chain region | **Task 93** |
+| 3 | RootScopedChain.lean:1359 | `dd_fmcs_backward_P` | Symmetric backward P resolution | **Task 93** |
+| 4 | RootScopedChain.lean:1412 | `dd_bfmcs_restricted_tc` | Restricted temporal coherence from forward_F + backward_P | **Task 93** |
+| 5 | RootScopedChain.lean:1417 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
+| 6 | RootScopedChain.lean:1422 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
 
-The TaskModel embedding requires choosing `D` (e.g. `Int`) and defining
-non-constant histories. Constant histories were rejected (task 88 anti-pattern):
-on constant histories, `G(α) ≡ α` semantically, so the temporal truth bridge
-fails. The embedding must use non-constant histories that visit multiple
-BXPoints.
+All 6 sorries form a single cluster: sorries 2-6 depend on sorry 1
+(`rr_fwd_chain_forward_F`), which is the PRIMARY BLOCKER. The current
+approach (plan v27) replaces the round-robin chain with a Goldblatt-style
+well-founded induction chain using `fwd_succ` with induction on
+`f_nesting_depth` within `deferralClosure(root)`.
 
 ### Closed Sorries (Tasks 90+92+98+102)
 
@@ -676,6 +699,42 @@ warnings regardless of the semantic change.
     Processing target last in the BX11 fold. Investigated but fold outcome
     depends on MCS content which is itself determined by `.choose`.
 
+22. **Defect re-entry in enriched chain** (task 93, report 26): Perpetual
+    deferral is semantically consistent. The BX11 ordering can permanently
+    favor one formula over another, so `enriched_fwd_step` can resolve
+    target psi but have F(psi) re-enter at the very next step via
+    Lindenbaum extension. No termination argument exists for the enriched
+    chain with round-robin scheduling.
+
+23. **G(F(chi)) non-derivability blocking persistent-carry seed** (task 93,
+    reports 22, 26): `F(chi) in M` does NOT imply `G(F(chi)) in M`. The
+    persistent-carry seed `{psi} union f_carry(M) union g_content(M)` is
+    inconsistent when `G(F(alpha) -> neg psi) in M` and both `F(alpha)`
+    and `F(psi)` are in `f_carry(M)`. This blocks all enriched seed
+    approaches that try to carry F-obligations through g_content.
+
+24. **Non-enriched chain F-obligation loss** (task 93, report 26 Section 7.2):
+    The simple `fwd_succ` step uses seed `{target} union g_content(M)` at
+    resolving steps, which does NOT include `f_carry`. F-obligations for
+    non-target formulas are lost at resolving steps. Round-robin scheduling
+    with `fwd_succ` cannot maintain F-obligation constancy.
+
+25. **Quasimodel BXPoint-to-Int bridging gap** (task 93, report 25):
+    The sorry-free quasimodel infrastructure produces abstract BXPoint
+    chains (Hintikka chains over sigma-closures), but these cannot be
+    directly wired into the Int-indexed FMCS/BFMCS families required by
+    the parametric representation theorem. The BXPoint chain indices are
+    not ordered by `bx_le` in a way compatible with Int's linear order.
+
+26. **Semantic coherence circularity** (task 93, report 26 Section 6.6):
+    The truth lemma requires `forward_F` (to resolve F-witnesses in the
+    canonical model), but proving `forward_F` on the canonical chain
+    requires the truth lemma (to establish that F(psi) in an MCS means
+    psi holds at some future point in the model). Standard completeness
+    proofs (Burgess 1984, Goldblatt 1992) handle this semantically via
+    well-founded induction on formula depth, not syntactically on the
+    chain.
+
 ### Task 93: Progress and Infrastructure
 
 Six sorry-free helper lemmas proved during v17 Phase 1 (all in
@@ -699,6 +758,31 @@ The core finding: the `.choose` in `set_lindenbaum` (called via
 Controlling this choice is the only viable path. Standard completeness proofs
 (Burgess 1984, Goldblatt 1992, GHR 1994) handle forward_F semantically, not
 syntactically.
+
+### Current Strategy: Goldblatt WF-Induction Chain (Plan v27)
+
+After 26 rounds of research documenting dead ends 13-26, the strategy has
+shifted from syntactic chain manipulation to a **Goldblatt-style well-founded
+induction** approach. All four Round 27 research teammates converge on this
+recommendation.
+
+**Key insight**: Instead of proving `forward_F` on the existing round-robin
+chain (which is blocked by perpetual deferral, dead end 22), build a new
+chain construction where F-obligations are resolved by well-founded recursion
+on `f_nesting_depth` within `deferralClosure(root)`. The simple `fwd_succ`
+step (already sorry-free) provides the per-step resolution, and induction on
+formula depth provides termination.
+
+**Infrastructure already in place** (all sorry-free):
+- `deferralClosure`: finite set of formulas reachable by F/P-nesting from root
+- `max_F_depth_in_closure`: maximum F-nesting depth in deferral closure
+- `forward_temporal_witness_seed_consistent`: seed consistency for single-step resolution
+- `fwd_succ` / `bwd_pred`: sorry-free successor/predecessor step constructions
+- `fwd_succ_resolves`: proof that `fwd_succ` resolves its target
+
+**Plan**: 6 phases (35 hours estimated). Phase 1 updates this ROAD_MAP.
+Phase 2 verifies the WF-induction argument on paper. Phases 3-5 implement
+the chain and close all 6 sorries. Phase 6 runs the final axiom audit.
 
 ---
 
@@ -798,7 +882,7 @@ characterization.
 
 ## Task Cross-Reference
 
-> **Updated 2026-04-13 (task 103 rewrite)**
+> **Updated 2026-04-16 (task 93 phase 1: dead ends 22-26, Goldblatt WF-induction strategy)**
 
 | Task | Status | Description | Depends On |
 |------|--------|-------------|------------|
@@ -807,10 +891,10 @@ characterization.
 | 92 | **[COMPLETED]** | Implement Until/Since truth lemma approach | 90 |
 | 98 | **[COMPLETED]** | Implement eventuality resolution (Frame.lean:653, 690) | 92 |
 | 102 | **[COMPLETED]** | Close remaining Frame.lean sorries (675, 704, 440) | 98 |
-| 93 | [IMPLEMENTING] | Close RootScopedChain.lean 6 sorries (chain replacement approach) -- **6 active-path sorries** | 102 |
+| 93 | [IMPLEMENTING] | Close RootScopedChain.lean 6 sorries (Goldblatt WF-induction chain approach) -- **6 active-path sorries** | 102 |
 | 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 93 |
-| 103 | [NOT STARTED] | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
-| 94 | [PLANNING] | Archive strict-semantics legacy files to Boneyard | 103 |
+| 103 | **[COMPLETED]** | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
+| 94 | **[COMPLETED]** | Archive strict-semantics legacy files to Boneyard | 103 |
 | 104 | [NOT STARTED] | Clean up superseded tasks + fix state.json | — |
 | 105 | [NOT STARTED] | Update stale sorry-blocker comments in BXCanonical | — |
 | 82 | [NOT STARTED] | FMP Truth Preservation (weak completeness, independent) | — |
@@ -819,4 +903,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-04-13 (task 103 rewrite)*
+*Last updated: 2026-04-16 (task 93 phase 1: dead ends 22-26, corrected metrics, Goldblatt WF-induction strategy)*
