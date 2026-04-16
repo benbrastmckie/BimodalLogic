@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Embedding (v21 -- Two-Tier Closure)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 12 hours
 - **Dependencies**: None (Phase 1 of Plan v18 completed; quasimodel infrastructure sorry-free)
 - **Research Inputs**: reports/21_team-research.md, reports/18_team-research.md, summaries/18_bxcanonical-embedding-summary.md
@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Close buc/fuc Sorries via Quasimodel Infrastructure [NOT STARTED]
+### Phase 1: Close buc/fuc Sorries via Quasimodel Infrastructure [BLOCKED]
 
 **Goal**: Close `dd_bfmcs_restricted_buc` (line 1391) and `dd_bfmcs_restricted_fuc` (line 1396) independently of forward_F, using the sorry-free Until/Since eventuality resolution from the quasimodel infrastructure.
 
@@ -105,7 +105,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Test Fold-Order Trick for forward_F [NOT STARTED]
+### Phase 2: Test Fold-Order Trick for forward_F [BLOCKED]
 
 **Goal**: Concretely test whether processing target LAST in the BX11 fold (`enriched_fwd_fold_with_witness`) closes `rr_fwd_chain_forward_F`. Even if it fails, the result precisely characterizes the remaining obstruction.
 
@@ -134,7 +134,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close forward_F, backward_P, and dd_fmcs Sorries [NOT STARTED]
+### Phase 3: Close forward_F, backward_P, and dd_fmcs Sorries [BLOCKED]
 
 **Goal**: If Phase 2 succeeded with the fold-order trick, use it to close the remaining forward/backward chain sorries. If Phase 2 failed, this phase documents the gap and marks remaining sorries for the ordered-discharge approach.
 
@@ -166,7 +166,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Close restricted_tc and Final Assembly [NOT STARTED]
+### Phase 4: Close restricted_tc and Final Assembly [BLOCKED]
 
 **Goal**: Close `dd_bfmcs_restricted_tc` (line 1386) by assembling the four sub-proofs (G-forward, H-backward, F-forward, P-backward), then verify the complete sorry-free state.
 
@@ -197,7 +197,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: ROAD_MAP.md Final Update and Documentation [NOT STARTED]
+### Phase 5: ROAD_MAP.md Final Update and Documentation [BLOCKED]
 
 **Goal**: Update ROAD_MAP.md with the outcome (full success or partial progress), add docstrings to new definitions, and correct dead end #21.
 
