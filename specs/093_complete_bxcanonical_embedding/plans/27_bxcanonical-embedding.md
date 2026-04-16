@@ -148,7 +148,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 3: Build WF-Induction Chain Construction [NOT STARTED]
+### Phase 3: Build WF-Induction Chain Construction [PARTIAL]
 
 **Goal**: Define a new chain construction based on well-founded induction on `f_nesting_depth` within `deferralClosure(root)`. The chain resolves F-defects by depth-stratified processing: all depth-0 defects first, then depth-1 defects using depth-0 resolution as infrastructure, and so on.
 

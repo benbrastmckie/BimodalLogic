@@ -3514,29 +3514,150 @@ theorem rr_fwd_chain_F_propagate (M₀ : Set Formula) (h₀ : SetMaximalConsiste
    END OF PROOF SKETCH
    ===================================================================== -/
 
+/-! ## WF-Induction Infrastructure for forward_F
+
+The f_nesting_depth induction resolves depth ≥ 1 trivially:
+- If f_nesting_depth(ψ) ≥ 1, then ψ = F(ψ') for some ψ' with lower depth.
+- F(F(ψ')) ∈ chain(n) → F(ψ') ∈ chain(n) by FF_imp_F_mcs.
+- By IH: ψ' ∈ chain(s) for some s > n.
+- ψ' ∈ chain(s) → F(ψ') = ψ ∈ chain(s) by phi_in_mcs_imp_F_phi.
+
+The depth-0 base case remains the core mathematical challenge. -/
+
+/-- If f_nesting_depth(ψ) ≥ 1, then ψ has the form some_future(ψ') for some ψ'. -/
+theorem f_nesting_depth_pos_is_future (ψ : Formula) (h : f_nesting_depth ψ ≥ 1) :
+    ∃ ψ' : Formula, ψ = Formula.some_future ψ' := by
+  -- f_nesting_depth matches on .imp (.all_future (.imp inner .bot)) .bot
+  -- If depth ≥ 1, then ψ must match this pattern
+  cases ψ with
+  | atom _ => simp [f_nesting_depth] at h
+  | bot => simp [f_nesting_depth] at h
+  | box _ => simp [f_nesting_depth] at h
+  | all_future _ => simp [f_nesting_depth] at h
+  | all_past _ => simp [f_nesting_depth] at h
+  | untl _ _ => simp [f_nesting_depth] at h
+  | snce _ _ => simp [f_nesting_depth] at h
+  | imp a b =>
+    cases a with
+    | all_future c =>
+      cases c with
+      | imp inner d =>
+        cases d with
+        | bot =>
+          cases b with
+          | bot => exact ⟨inner, by simp [Formula.some_future, Formula.neg]⟩
+          | _ => simp [f_nesting_depth] at h
+        | _ => simp [f_nesting_depth] at h
+      | _ => simp [f_nesting_depth] at h
+    | _ => simp [f_nesting_depth] at h
+
+/-- Depth ≥ 1 case of forward_F: reduces to IH at strictly lower depth.
+
+Given F(ψ) ∈ chain(n) with f_nesting_depth(ψ) ≥ 1:
+1. ψ = F(ψ') for some ψ' with f_nesting_depth(ψ') < f_nesting_depth(ψ)
+2. F(F(ψ')) ∈ chain(n) → F(ψ') ∈ chain(n) by FF_imp_F_mcs
+3. By IH (applied to ψ' at lower depth): ψ' ∈ chain(s) for some s > n
+4. ψ' ∈ chain(s) → F(ψ') ∈ chain(s) by phi_in_mcs_imp_F_phi
+5. F(ψ') = ψ, so ψ ∈ chain(s). Done. -/
+theorem rr_fwd_chain_forward_F_depth_pos (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (h_nonempty : sigma_list.length > 0)
+    -- sigma_list is closed under F-inner extraction (satisfied by deferralClosure)
+    (h_closed : ∀ χ : Formula, Formula.some_future χ ∈ sigma_list → χ ∈ sigma_list)
+    (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ sigma_list)
+    (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val)
+    (h_depth : f_nesting_depth ψ ≥ 1)
+    -- IH: forward_F holds for all formulas of strictly lower f_nesting_depth
+    (ih : ∀ (m : Nat) (χ : Formula), χ ∈ sigma_list →
+      f_nesting_depth χ < f_nesting_depth ψ →
+      Formula.some_future χ ∈ (rr_fwd_chain M₀ h₀ sigma_list m).val →
+      ∃ s : Nat, m < s ∧ χ ∈ (rr_fwd_chain M₀ h₀ sigma_list s).val) :
+    ∃ s : Nat, n < s ∧ ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list s).val := by
+  -- Step 1: ψ = F(ψ') for some ψ'
+  obtain ⟨ψ', rfl⟩ := f_nesting_depth_pos_is_future ψ h_depth
+  -- Step 2: F(F(ψ')) ∈ chain(n) → F(ψ') ∈ chain(n)
+  have h_Fψ' : Formula.some_future ψ' ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val :=
+    FF_imp_F_mcs (rr_fwd_chain M₀ h₀ sigma_list n).property ψ' h_F
+  -- Step 3: depth of ψ' < depth of F(ψ') = ψ
+  have h_depth_lt : f_nesting_depth ψ' < f_nesting_depth (Formula.some_future ψ') := by
+    rw [f_nesting_depth_some_future]; omega
+  -- Step 4: ψ' ∈ sigma_list (by closure under F-stripping)
+  have hψ'_mem : ψ' ∈ sigma_list := h_closed ψ' hψ
+  -- Step 5: Apply IH to get ψ' ∈ chain(s) for some s > n
+  obtain ⟨s, h_lt, h_in⟩ := ih n ψ' hψ'_mem h_depth_lt h_Fψ'
+  -- Step 6: ψ' ∈ chain(s) → F(ψ') ∈ chain(s) by phi_in_mcs_imp_F_phi
+  exact ⟨s, h_lt, phi_in_mcs_imp_F_phi
+    (rr_fwd_chain M₀ h₀ sigma_list s).property ψ' h_in⟩
+
 /-- Forward_F for the forward Nat chain: F(ψ) ∈ chain(n) → ∃ s > n, ψ ∈ chain(s).
 
 ## Status
 
-See the proof sketch block comment above for a detailed mathematical analysis.
-The f_nesting_depth induction resolves depth ≥ 1 trivially via FF_imp_F.
-The depth-0 base case requires either:
-(a) extended seed consistency ({target} ∪ g_content(M) ∪ f_carry(M)), or
-(b) a non-linear chain construction (omega-squared), or
-(c) a quasimodel bridge.
+The f_nesting_depth induction resolves depth ≥ 1 trivially via FF_imp_F
+(see `rr_fwd_chain_forward_F_depth_pos` above).
 
-Path (a) fails in general when F(G(¬ψ)) ∈ M (Case 4 analysis).
-Paths (b) and (c) are the remaining options for Phase 3. -/
+The depth-0 base case is the core mathematical challenge. The proof sketch
+(Sections 1-30 above) exhaustively analyzes every approach and identifies
+the precise obstruction: at resolving steps for other targets, the
+Lindenbaum extension of {target} ∪ g_content(M) can choose G(¬ψ) over F(ψ),
+permanently killing the F-obligation. Extended seed consistency
+({target} ∪ g_content(M) ∪ f_carry(M)) fails in general when
+F(G(¬ψ)) ∈ M (Case 4 analysis, Section 24).
+
+The existing enriched chain preserves F(ψ) at every step (by
+rr_fwd_chain_F_obligation_persists), but at each resolving step the
+BX11 fold may resolve a DIFFERENT formula, perpetually deferring ψ
+(Report 26).
+
+Remaining viable paths for the depth-0 case:
+(a) Non-linear chain construction (omega-squared interleaving)
+(b) Quasimodel bridge (800-1200 new LOC)
+(c) Proof that sigma_list membership + F-obligation persistence
+    implies eventual resolution via a counting argument -/
 theorem rr_fwd_chain_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (h_nonempty : sigma_list.length > 0)
+    -- sigma_list is closed under F-inner extraction (satisfied by deferralClosure)
+    (h_closed : ∀ χ : Formula, Formula.some_future χ ∈ sigma_list → χ ∈ sigma_list)
     (n : Nat) (ψ : Formula)
     (hψ : ψ ∈ sigma_list)
     (h_F : Formula.some_future ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list n).val) :
     ∃ s : Nat, n < s ∧ ψ ∈ (rr_fwd_chain M₀ h₀ sigma_list s).val := by
-  sorry
+  -- Strong induction on f_nesting_depth(ψ)
+  -- We prove a stronger statement: for all d, for all ψ with f_nesting_depth ψ = d,
+  -- the forward_F property holds. Then instantiate with d = f_nesting_depth ψ.
+  suffices h_ind : ∀ (d : Nat) (m : Nat) (χ : Formula), χ ∈ sigma_list →
+      f_nesting_depth χ ≤ d →
+      Formula.some_future χ ∈ (rr_fwd_chain M₀ h₀ sigma_list m).val →
+      ∃ s : Nat, m < s ∧ χ ∈ (rr_fwd_chain M₀ h₀ sigma_list s).val from
+    h_ind (f_nesting_depth ψ) n ψ hψ (le_refl _) h_F
+  intro d
+  induction d with
+  | zero =>
+    -- Base case: f_nesting_depth(χ) ≤ 0, i.e., = 0
+    -- This is the depth-0 case: the core mathematical challenge.
+    -- F(χ) ∈ chain(m), χ has no outer F-operators.
+    -- F(χ) persists forever (rr_fwd_chain_F_obligation_forward).
+    -- But perpetual deferral is possible (Report 26): at each visit step,
+    -- the BX11 fold may resolve a different formula.
+    -- This is the irreducible depth-0 obstruction.
+    intro m χ _hχ_mem _hχ_depth _hχ_F
+    sorry
+  | succ d ih =>
+    -- Inductive case: f_nesting_depth(χ) ≤ d + 1
+    intro m χ hχ_mem hχ_depth hχ_F
+    by_cases h_zero : f_nesting_depth χ = 0
+    · -- Depth exactly 0: delegate to base case (which is sorry)
+      exact ih m χ hχ_mem (by omega) hχ_F
+    · -- Depth ≥ 1: use the depth_pos lemma
+      have h_pos : f_nesting_depth χ ≥ 1 := by omega
+      exact rr_fwd_chain_forward_F_depth_pos M₀ h₀ sigma_list h_nonempty h_closed
+        m χ hχ_mem hχ_F h_pos (fun m' χ' hχ'_mem hχ'_lt hχ'_F =>
+          ih m' χ' hχ'_mem (by omega) hχ'_F)
 
 theorem dd_fmcs_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (h_nonempty : sigma_list.length > 0)
+    -- sigma_list is closed under F-inner extraction
+    (h_closed : ∀ χ : Formula, Formula.some_future χ ∈ sigma_list → χ ∈ sigma_list)
     (t : Int) (ψ : Formula)
     (hψ : ψ ∈ sigma_list)
     (h_F : Formula.some_future ψ ∈ (dd_fmcs M₀ h₀ sigma_list).mcs t) :
@@ -3549,7 +3670,7 @@ theorem dd_fmcs_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀
   · -- t ≥ 0: in the forward chain
     simp only [dd_chain] at h_F
     rw [if_pos h_nonneg] at h_F
-    obtain ⟨s, h_lt, h_in⟩ := rr_fwd_chain_forward_F M₀ h₀ sigma_list h_nonempty
+    obtain ⟨s, h_lt, h_in⟩ := rr_fwd_chain_forward_F M₀ h₀ sigma_list h_nonempty h_closed
       t.toNat ψ hψ h_F
     refine ⟨Int.ofNat s, ?_, ?_⟩
     · rw [show t = Int.ofNat t.toNat from (Int.toNat_of_nonneg h_nonneg).symm]
