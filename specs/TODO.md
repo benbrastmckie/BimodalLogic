@@ -143,7 +143,9 @@ technical_debt:
   - [093_complete_bxcanonical_embedding/plans/21_bxcanonical-embedding.md]
   - [093_complete_bxcanonical_embedding/plans/22_bxcanonical-embedding.md]
   - [093_complete_bxcanonical_embedding/plans/23_bxcanonical-embedding.md]
-- **Summary**: [093_complete_bxcanonical_embedding/summaries/23_bxcanonical-embedding-summary.md]
+- **Summary**:
+  - [093_complete_bxcanonical_embedding/summaries/23_bxcanonical-embedding-summary.md]
+  - [093_complete_bxcanonical_embedding/summaries/27_bxcanonical-embedding-summary.md]
   - [093_complete_bxcanonical_embedding/plans/27_bxcanonical-embedding.md]
 
 **Description**: Close the sole remaining BXCanonical sorry: TaskModel embedding at `BXCanonical/Completeness.lean:154`. This constructs a `TaskModel` from the BXPoint canonical frame. The Box-direction sorry (Frame.lean:440) was closed by task 102. All 4 Until/Since sorries (Frame.lean:653, 675, 690, 704) were closed by tasks 90+92+98+102. Once this sorry is closed, `bx_completeness` becomes sorry-free, and `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`. The TaskModel embedding must use non-constant histories (constant histories collapse G to identity — see ROAD_MAP.md anti-pattern #12).
