@@ -124,6 +124,7 @@ technical_debt:
   - [21_team-research.md](specs/093_complete_bxcanonical_embedding/reports/21_team-research.md)
   - [093_complete_bxcanonical_embedding/reports/22_team-research.md]
   - [093_complete_bxcanonical_embedding/reports/23_team-research.md]
+  - [25_bfmcs-quasimodel-witnesses.md](specs/093_complete_bxcanonical_embedding/reports/25_bfmcs-quasimodel-witnesses.md)
 - **Plan**:
     - [02_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/02_bxcanonical-embedding.md)
     - [04_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/04_bxcanonical-embedding.md)
