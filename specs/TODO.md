@@ -121,7 +121,7 @@ technical_debt:
   - [093_complete_bxcanonical_embedding/reports/17_round-robin-chain-history.md]
   - [093_complete_bxcanonical_embedding/reports/19_team-research.md]
   - [093_complete_bxcanonical_embedding/reports/20_bilateral-submaximal.md]
-  - [21_primary-approach-analysis.md](specs/093_complete_bxcanonical_embedding/reports/21_primary-approach-analysis.md)
+  - [21_team-research.md](specs/093_complete_bxcanonical_embedding/reports/21_team-research.md)
 - **Plan**:
     - [02_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/02_bxcanonical-embedding.md)
     - [04_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/04_bxcanonical-embedding.md)
