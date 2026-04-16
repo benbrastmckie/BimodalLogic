@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
 import Bimodal.Metalogic.BXCanonical.CanonicalModel
 import Bimodal.Metalogic.Bundle.UntilSinceCoherence
+import Bimodal.Metalogic.Algebraic.ParametricRepresentation
+import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 
 /-!
 # Root-Scoped Defect-Discharge Chain

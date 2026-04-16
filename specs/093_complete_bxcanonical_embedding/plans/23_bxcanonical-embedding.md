@@ -1,7 +1,7 @@
 # Implementation Plan: Close BXCanonical Embedding (v23 -- Demand-Driven Chain)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 30 hours
 - **Dependencies**: None (task 92 completed; truth lemma and quasimodel infrastructure sorry-free)
 - **Research Inputs**: reports/23_team-research.md, reports/22_team-research.md, summaries/18_bxcanonical-embedding-summary.md
@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Dead-Code Cleanup [NOT STARTED]
+### Phase 1: Dead-Code Cleanup [COMPLETED]
 
 **Goal**: Remove 2 dead-code sorries from `CanonicalModel.lean` to reduce noise and clarify the active sorry inventory.
 
@@ -98,7 +98,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove `extended_defect_seed_consistent` [NOT STARTED]
+### Phase 2: Prove `extended_defect_seed_consistent` [BLOCKED]
 
 **Goal**: Prove the existential n-defect seed consistency theorem: given F-defects `[psi_1, ..., psi_n]` all with `F(psi_k) in M`, there exists an index j such that the seed `{psi_j} union {F(psi_k) | k != j} union g_content(M)` is consistent.
 
@@ -133,7 +133,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Build Demand-Driven Chain Construction [NOT STARTED]
+### Phase 3: Build Demand-Driven Chain Construction [BLOCKED]
 
 **Goal**: Replace the round-robin `rr_fwd_chain` with a demand-driven chain where each step resolves one specific F-demand. Forward_F holds by construction: at step k (dedicated to demand psi_k), psi_k is placed directly in the chain step's MCS.
 
@@ -164,7 +164,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Close forward_F / backward_P and Restricted TC [NOT STARTED]
+### Phase 4: Close forward_F / backward_P and Restricted TC [BLOCKED]
 
 **Goal**: Wire the demand-driven chain into `dd_fmcs`/`dd_bfmcs` and close the first 4 sorry sites: `rr_fwd_chain_forward_F`, `dd_fmcs_forward_F`, `dd_fmcs_backward_P`, and `dd_bfmcs_restricted_tc`.
 
@@ -194,7 +194,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Close restricted_buc and restricted_fuc [NOT STARTED]
+### Phase 5: Close restricted_buc and restricted_fuc [BLOCKED]
 
 **Goal**: Close the final 2 sorry sites (`dd_bfmcs_restricted_buc`, `dd_bfmcs_restricted_fuc`) using the now-proved forward_F/backward_P and demand-driven chain properties.
 
@@ -226,7 +226,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Final Verification and Axiom Audit [NOT STARTED]
+### Phase 6: Final Verification and Axiom Audit [BLOCKED]
 
 **Goal**: Verify that `bx_completeness` is sorry-free and depends only on the expected axioms.
 
