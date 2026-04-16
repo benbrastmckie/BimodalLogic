@@ -13,7 +13,7 @@
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-16T19:34:23Z",
+      "last_updated": "2026-04-16T20:03:48Z",
       "related_tasks": [
         92,
         95
@@ -21,8 +21,8 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776367216_766def",
-      "researched": "2026-04-16T19:34:23Z",
+      "session_id": "sess_1776368824_3b2c98",
+      "researched": "2026-04-16T20:03:48Z",
       "artifacts": [
         {
           "path": "specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md",
@@ -223,9 +223,14 @@
           "path": "specs/093_complete_bxcanonical_embedding/reports/24_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: defect re-entry gap analysis, quasimodel restructuring path, non-enriched chain F-loss, ROAD_MAP updates"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/reports/25_bfmcs-quasimodel-witnesses.md",
+          "type": "research_report",
+          "summary": "Exhaustive first-principles analysis of BFMCS Quasimodel Witnesses strategy: fatal BXPoint-to-Int bridging gap found, 7 variant strategies analyzed, recommends full canonical model restructuring or defect re-entry bound"
         }
       ],
-      "next_artifact_number": 25,
+      "next_artifact_number": 26,
       "started": "2026-04-13T07:28:59Z"
     },
     {
