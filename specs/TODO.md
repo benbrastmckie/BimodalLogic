@@ -108,7 +108,7 @@ technical_debt:
 
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None (tasks 90, 92, 98, 102 completed)
@@ -123,6 +123,7 @@ technical_debt:
   - [093_complete_bxcanonical_embedding/reports/20_bilateral-submaximal.md]
   - [21_team-research.md](specs/093_complete_bxcanonical_embedding/reports/21_team-research.md)
   - [093_complete_bxcanonical_embedding/reports/22_team-research.md]
+  - [093_complete_bxcanonical_embedding/reports/23_team-research.md]
 - **Plan**:
     - [02_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/02_bxcanonical-embedding.md)
     - [04_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/04_bxcanonical-embedding.md)
