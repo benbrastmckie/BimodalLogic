@@ -1,8 +1,6 @@
 import Bimodal.Metalogic.BXCanonical.CanonicalChain
 import Bimodal.Metalogic.BXCanonical.TruthLemma
-import Bimodal.Metalogic.Algebraic.ParametricRepresentation
-import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
-import Bimodal.Metalogic.Bundle.UntilSinceCoherence
+import Bimodal.Metalogic.Bundle.FMCSDef
 
 /-!
 # BXCanonical Canonical Model Construction
@@ -26,12 +24,6 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
-open Bimodal.Metalogic.Algebraic.ParametricCanonical
-open Bimodal.Metalogic.Algebraic.ParametricHistory
-open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
-open Bimodal.Metalogic.Algebraic.ParametricRepresentation
-open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
-open Bimodal.Semantics
 open Bimodal.Theorems.Perpetuity
 open Bimodal.Theorems.Combinators
 
@@ -488,201 +480,19 @@ theorem box_stable_in_shifted_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsis
     Formula.box φ ∈ (shifted_bx_fmcs M₀ h₀ s).mcs t ↔ Formula.box φ ∈ M₀ :=
   box_stable_in_int_chain M₀ h₀ φ (t - s)
 
-/-! ## Temporal Coherence
+/-! ## Dead Code Removed
 
-### Obstacle Analysis (Task 93, v11)
+The following definitions and theorems were removed as dead code (not on the active
+completeness path, which uses `dd_countermodel` in RootScopedChain.lean):
 
-`bx_fmcs_forward_F` and `bx_fmcs_backward_P` are UNPROVABLE for the current
-scheduling chain construction. The root cause: at resolving steps for formula
-chi (where F(chi) in chain(n)), the Lindenbaum seed `{chi} union g_content(chain(n))`
-does NOT include f_carry. So F(psi) for psi != chi may be lost. Once lost
-(G(neg psi) appears), the loss is permanent (G propagates via BX4 G->GG).
+- `bx_fmcs_forward_F`, `bx_fmcs_backward_P` — unprovable for scheduling chain
+- `bx_bfmcs` — BFMCS construction using old `int_chain`
+- `bx_bfmcs_tc`, `bx_bfmcs_buc`, `bx_bfmcs_fuc` — unrestricted coherence (had sorry)
+- `bx_bfmcs_restricted_tc/buc/fuc` — restricted coherence (had sorry, delegated to above)
+- `bx_countermodel` — superseded by `dd_countermodel` in RootScopedChain.lean
 
-Enriching the resolving seed with f_carry is INVALID: the enriched seed
-`{chi} union g_content(M) union f_carry(M)` can be inconsistent.
-Counterexample: G(F(alpha) -> neg psi) in M, F(alpha) in M, F(psi) in M.
-
-The fix requires replacing the scheduling chain with a construction that
-resolves F-obligations within a finite subformula closure (quasimodel
-approach). See `specs/093_complete_bxcanonical_embedding/handoffs/11_forward-f-obstacle.md`.
-
-These theorems are on the active completeness path (used by `bx_bfmcs_restricted_tc`
-which is used by `bx_countermodel`). Closing them requires a new chain construction.
+The active completeness path is:
+  `bx_completeness` (Completeness.lean) → `dd_countermodel` (RootScopedChain.lean)
 -/
-
--- BLOCKED: unprovable for scheduling chain (see obstacle analysis above)
-theorem bx_fmcs_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (t : Int) (ψ : Formula)
-    (h_F : Formula.some_future ψ ∈ (bx_fmcs M₀ h₀).mcs t) :
-    ∃ s : Int, t < s ∧ ψ ∈ (bx_fmcs M₀ h₀).mcs s := by
-  sorry
-
--- BLOCKED: symmetric obstacle to bx_fmcs_forward_F
-theorem bx_fmcs_backward_P (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (t : Int) (ψ : Formula)
-    (h_P : Formula.some_past ψ ∈ (bx_fmcs M₀ h₀).mcs t) :
-    ∃ s : Int, s < t ∧ ψ ∈ (bx_fmcs M₀ h₀).mcs s := by
-  sorry
-
-/-! ## BFMCS -/
-
-noncomputable def bx_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) : BFMCS Int where
-  families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N) (s : Int),
-    (∀ φ, Formula.box φ ∈ M₀ ↔ Formula.box φ ∈ N) ∧ fam = shifted_bx_fmcs N h_N s }
-  nonempty := ⟨shifted_bx_fmcs M₀ h₀ 0, M₀, h₀, 0, fun _ => Iff.rfl, rfl⟩
-  modal_forward := by
-    intro fam hfam φ t h_box fam' hfam'
-    obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
-    obtain ⟨N', h_N', s', h_eqN', rfl⟩ := hfam'
-    -- Box φ ∈ (shifted N s).mcs t = chain(N, t-s) → Box φ ∈ M₀ (by box stability + matching)
-    have h_box_M0 : Formula.box φ ∈ M₀ :=
-      (h_eqN φ).mpr ((box_stable_in_shifted_fmcs N h_N φ s t).mp h_box)
-    -- Box φ ∈ M₀ → Box φ ∈ (shifted N' s').mcs t (by matching + stability)
-    have h_box_t' : Formula.box φ ∈ (shifted_bx_fmcs N' h_N' s').mcs t :=
-      (box_stable_in_shifted_fmcs N' h_N' φ s' t).mpr ((h_eqN' φ).mp h_box_M0)
-    -- Box φ → φ (by T-axiom)
-    exact SetMaximalConsistent.implication_property
-      ((shifted_bx_fmcs N' h_N' s').is_mcs t)
-      (theorem_in_mcs ((shifted_bx_fmcs N' h_N' s').is_mcs t)
-        (DerivationTree.axiom [] _ (Axiom.modal_t φ))) h_box_t'
-  modal_backward := by
-    intro fam hfam φ t h_all
-    obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
-    -- Reduce to showing Box φ ∈ M₀ via box stability + matching
-    suffices h_box_M0 : Formula.box φ ∈ M₀ from
-      (box_stable_in_shifted_fmcs N h_N φ s t).mpr ((h_eqN φ).mp h_box_M0)
-    -- By contradiction: assume Box φ ∉ M₀
-    by_contra h_not_box
-    -- (Box φ).neg ∈ M₀
-    have h_neg_box : (Formula.box φ).neg ∈ M₀ := by
-      rcases SetMaximalConsistent.negation_complete h₀ (Formula.box φ) with h | h
-      · exact absurd h h_not_box
-      · exact h
-    -- Diamond(¬φ) ∈ M₀: from ¬Box(φ) → ¬Box(¬¬φ) = Diamond(¬φ)
-    have h_diamond_neg : (Formula.neg φ).diamond ∈ M₀ :=
-      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
-        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
-    -- Use bx_modal_witness to get witness v with ¬φ ∈ v.formulas
-    obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨M₀, h₀⟩ (Formula.neg φ) h_diamond_neg
-    -- v has matching Box formulas with M₀
-    have h_box_match : ∀ ψ, Formula.box ψ ∈ M₀ ↔ Formula.box ψ ∈ v.formulas :=
-      fun ψ => h_equiv ψ
-    -- Build SHIFTED family from v at time t: shifted_bx_fmcs v.formulas v.is_mcs t
-    -- At time t, this family's MCS is int_chain v.formulas v.is_mcs (t - t) = v.formulas
-    -- So ¬φ ∈ (shifted_bx_fmcs v.formulas v.is_mcs t).mcs t
-    have h_fam_v_mem : shifted_bx_fmcs v.formulas v.is_mcs t ∈
-        { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N) (s : Int),
-          (∀ ψ, Formula.box ψ ∈ M₀ ↔ Formula.box ψ ∈ N) ∧
-          fam = shifted_bx_fmcs N h_N s } :=
-      ⟨v.formulas, v.is_mcs, t, h_box_match, rfl⟩
-    -- By h_all: φ ∈ (shifted_bx_fmcs v.formulas v.is_mcs t).mcs t
-    have h_phi_v_t := h_all (shifted_bx_fmcs v.formulas v.is_mcs t) h_fam_v_mem
-    -- (shifted_bx_fmcs v.formulas v.is_mcs t).mcs t = int_chain v.formulas v.is_mcs 0 = v.formulas
-    have h_mcs_eq : (shifted_bx_fmcs v.formulas v.is_mcs t).mcs t = v.formulas :=
-      shifted_bx_fmcs_at_s v.formulas v.is_mcs t
-    -- So φ ∈ v.formulas and ¬φ ∈ v.formulas: contradiction
-    rw [h_mcs_eq] at h_phi_v_t
-    exact set_consistent_not_both v.is_mcs.1 φ h_phi_v_t h_neg_phi_v
-  eval_family := shifted_bx_fmcs M₀ h₀ 0
-  eval_family_mem := ⟨M₀, h₀, 0, fun _ => Iff.rfl, rfl⟩
-
-/-! ## Coherence
-
-DEAD CODE: The unrestricted coherence theorems (bx_bfmcs_tc, bx_bfmcs_buc, bx_bfmcs_fuc)
-delegate to the sorry'd bx_fmcs_forward_F/backward_P. They are not on the active
-completeness path -- only the restricted variants are used by bx_countermodel.
--/
-
--- DEAD CODE: not on active completeness path
-theorem bx_bfmcs_tc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
-    (bx_bfmcs M₀ h₀).temporally_coherent := by
-  intro fam hfam; obtain ⟨N, h_N, s, _, rfl⟩ := hfam
-  constructor
-  · -- forward_F for shifted family
-    intro t ψ h_F
-    -- h_F : F(ψ) ∈ (shifted_bx_fmcs N h_N s).mcs t = int_chain N h_N (t - s)
-    have ⟨s', h_lt, h_ψ⟩ := bx_fmcs_forward_F N h_N (t - s) ψ h_F
-    exact ⟨s' + s, by omega, by simpa [shifted_bx_fmcs, show s' + s - s = s' by omega] using h_ψ⟩
-  · -- backward_P for shifted family
-    intro t ψ h_P
-    have ⟨s', h_lt, h_ψ⟩ := bx_fmcs_backward_P N h_N (t - s) ψ h_P
-    exact ⟨s' + s, by omega, by simpa [shifted_bx_fmcs, show s' + s - s = s' by omega] using h_ψ⟩
-
-theorem bx_bfmcs_buc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
-    (bx_bfmcs M₀ h₀).backward_until_since_coherent := by
-  intro fam hfam; obtain ⟨N, h_N, s, _, rfl⟩ := hfam
-  constructor <;> (intro t φ ψ ⟨r, h_le, h_psi, h_guard⟩; sorry)
-
-theorem bx_bfmcs_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
-    (bx_bfmcs M₀ h₀).forward_until_since_coherent := by
-  intro fam hfam; obtain ⟨N, h_N, s, _, rfl⟩ := hfam
-  constructor <;> (intro t φ ψ h_mem; sorry)
-
-/-! ## Restricted Coherence
-
-The restricted variants only require coherence for formulas within
-`deferralClosure(root)` (temporal) or `subformulaClosure(root)` (Until/Since).
-This is sufficient for the truth lemma when evaluating a specific formula `root`.
-
-These are the active-path coherence conditions used by `bx_countermodel`.
-The unrestricted versions above become dead code.
--/
-
-theorem bx_bfmcs_restricted_tc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (root : Formula) :
-    (bx_bfmcs M₀ h₀).restricted_temporally_coherent root := by
-  intro fam hfam; obtain ⟨N, h_N, s, _, rfl⟩ := hfam
-  constructor
-  · -- restricted forward_F for shifted family
-    intro t ψ _h_dc h_F
-    have ⟨s', h_lt, h_ψ⟩ := bx_fmcs_forward_F N h_N (t - s) ψ h_F
-    exact ⟨s' + s, by omega, by simpa [shifted_bx_fmcs, show s' + s - s = s' by omega] using h_ψ⟩
-  · -- restricted backward_P for shifted family
-    intro t ψ _h_dc h_P
-    have ⟨s', h_lt, h_ψ⟩ := bx_fmcs_backward_P N h_N (t - s) ψ h_P
-    exact ⟨s' + s, by omega, by simpa [shifted_bx_fmcs, show s' + s - s = s' by omega] using h_ψ⟩
-
-theorem bx_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (root : Formula) :
-    (bx_bfmcs M₀ h₀).restricted_backward_until_since_coherent root := by
-  intro fam hfam; obtain ⟨N, h_N, s, _, rfl⟩ := hfam
-  constructor <;> (intro t φ ψ _h_sub ⟨r, h_le, h_psi, h_guard⟩; sorry)
-
-theorem bx_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (root : Formula) :
-    (bx_bfmcs M₀ h₀).restricted_forward_until_since_coherent root := by
-  intro fam hfam; obtain ⟨N, h_N, s, _, rfl⟩ := hfam
-  constructor <;> (intro t φ ψ _h_sub h_mem; sorry)
-
-/-! ## Bridge -/
-
-/-- BXCanonical countermodel theorem using fully restricted coherence.
-The restricted coherence conditions scope all obligations to `subformulaClosure φ`
-and `deferralClosure φ`, making the completeness proof depend only on finitely-scoped
-coherence properties. -/
-theorem bx_countermodel (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (φ : Formula) (h_neg_in : φ.neg ∈ M) :
-    ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (F : TaskFrame D) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬truth_at TM Omega τ t φ := by
-  refine ⟨Int, inferInstance, inferInstance, inferInstance,
-    ParametricCanonicalTaskFrame Int, ParametricCanonicalTaskModel Int,
-    ShiftClosedParametricCanonicalOmega (bx_bfmcs M h_mcs),
-    shiftClosedParametricCanonicalOmega_is_shift_closed _,
-    parametric_to_history (shifted_bx_fmcs M h_mcs 0),
-    parametricCanonicalOmega_subset_shiftClosed _
-      ⟨shifted_bx_fmcs M h_mcs 0, ⟨M, h_mcs, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
-    0, ?_⟩
-  have h_neg_fam : φ.neg ∈ (shifted_bx_fmcs M h_mcs 0).mcs 0 := by
-    rw [shifted_bx_fmcs_at_s]; exact h_neg_in
-  exact fully_restricted_parametric_representation_from_neg_membership
-    (bx_bfmcs M h_mcs) φ
-    (bx_bfmcs_restricted_tc M h_mcs φ)
-    (bx_bfmcs_restricted_buc M h_mcs φ)
-    (bx_bfmcs_restricted_fuc M h_mcs φ)
-    φ (self_mem_subformulaClosure φ)
-    (shifted_bx_fmcs M h_mcs 0) ⟨M, h_mcs, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 end Bimodal.Metalogic.BXCanonical
