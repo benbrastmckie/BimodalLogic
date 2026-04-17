@@ -1,7 +1,7 @@
 # Implementation Plan: Quasimodel-Derived Chain for BXCanonical Completeness (v32)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (task 102 completed; truth lemma sorry-free)
 - **Research Inputs**: reports/32_team-research.md
@@ -68,7 +68,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 1: Build Defect-Driven Forward Chain [NOT STARTED]
+### Phase 1: Build Defect-Driven Forward Chain [BLOCKED]
 
 **Goal**: Replace `rr_fwd_chain` with a new `defect_fwd_chain` that resolves F-obligations one per step using defect-driven scheduling (not round-robin). Forward_F is definitional: each F-defect is targeted in order, and the cascading seed protection ensures subsequent defects survive each resolving step.
 
@@ -101,7 +101,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 2: Build Defect-Driven Backward Chain and Assemble Int-Chain [NOT STARTED]
+### Phase 2: Build Defect-Driven Backward Chain and Assemble Int-Chain [BLOCKED]
 
 **Goal**: Build the symmetric backward chain for P-obligations and assemble the full Int-indexed chain. This addresses sorry 3's difficulty (backward chain lacks enrichment) by giving it the same defect-driven treatment as the forward chain. Also address sorry 5's step transfer property by ensuring Until formulas are tracked and preserved.
 
@@ -138,7 +138,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 3: Wire Into FMCS/BFMCS and Close Sorries 1-4 [NOT STARTED]
+### Phase 3: Wire Into FMCS/BFMCS and Close Sorries 1-4 [BLOCKED]
 
 **Goal**: Replace `dd_fmcs`/`dd_bfmcs` internals to use `defect_dd_chain` and close sorry sites 1 (forward_F, line 1413), 2 (forward_F for t<0, line 1457), 3 (backward_P, line 1464), and 4 (restricted_tc, line 1517). This exploits the diamond dependency structure: sorries 1 and 3 are independent roots, and sorry 4 depends on both.
 
@@ -165,7 +165,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 4: Close Until/Since Coherence and Final Verification [NOT STARTED]
+### Phase 4: Close Until/Since Coherence and Final Verification [BLOCKED]
 
 **Goal**: Close sorry sites 5 (line 1522, `dd_bfmcs_restricted_buc`) and 6 (line 1527, `dd_bfmcs_restricted_fuc`). Then perform final verification that `bx_completeness` is sorry-free.
 
