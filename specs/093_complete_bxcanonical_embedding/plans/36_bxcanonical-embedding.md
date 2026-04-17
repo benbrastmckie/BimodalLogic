@@ -1,7 +1,7 @@
 # Implementation Plan: Oracle Construction + Quasimodel-Backed BFMCS (v36)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: Task 92 (truth lemma sorry-free)
 - **Research Inputs**: reports/36_team-research.md
@@ -66,7 +66,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Build HintikkaStepOracle from bx_forward_witness [NOT STARTED]
+### Phase 1: Build HintikkaStepOracle from bx_forward_witness [IN PROGRESS]
 
 **Goal**: Construct `HintikkaStepOracle` for arbitrary Until formulas `(phi U psi)` using `bx_forward_witness`, and the symmetric `HintikkaStepOracleSince` using `bx_backward_witness`. This is the central novel construction.
 
