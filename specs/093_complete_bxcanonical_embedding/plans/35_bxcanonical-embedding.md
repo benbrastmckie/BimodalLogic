@@ -1,7 +1,7 @@
 # Implementation Plan: BX12 Reduction for Temporal Coherence (v35)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: Task 92 (truth lemma sorry-free)
 - **Research Inputs**: reports/35_team-research.md
@@ -63,7 +63,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: BX Axiom MCS Helpers and Forward Until Coherence [NOT STARTED]
+### Phase 1: BX Axiom MCS Helpers and Forward Until Coherence [BLOCKED]
 
 **Goal**: Prove forward Until/Since coherence for dd_bfmcs: if `(phi U psi) in fam.mcs(t)`, find witness `s >= t` with `psi in fam.mcs(s)` and `phi` guarding `[t, s)`. Close sorry 1527 (`dd_bfmcs_restricted_fuc`).
 
