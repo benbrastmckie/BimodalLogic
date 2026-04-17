@@ -225,7 +225,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── TruthLemma
   │     └── Bundle/FMCSDef
   │
-  ├── RootScopedChain.lean (1,454 lines, 6 sorries -- task 93)
+  ├── RootScopedChain.lean (1,559 lines, 6 sorries -- task 93)
   │     ├── OrderedSeedConsistency
   │     ├── CanonicalModel
   │     ├── Bundle/UntilSinceCoherence
@@ -446,17 +446,17 @@ There are **6 sorries** on the active completeness path, all in
 
 | # | File:Line | Definition | Goal Summary | Owning Task |
 |---|-----------|------------|--------------|-------------|
-| 1 | RootScopedChain.lean:1321 | `rr_fwd_chain_forward_F` | If F(psi) in chain(n), exists s > n with psi in chain(s) | **Task 93** |
-| 2 | RootScopedChain.lean:1352 | `dd_fmcs_forward_F` (t < 0) | Forward F resolution in the backward chain region | **Task 93** |
-| 3 | RootScopedChain.lean:1359 | `dd_fmcs_backward_P` | Symmetric backward P resolution | **Task 93** |
-| 4 | RootScopedChain.lean:1412 | `dd_bfmcs_restricted_tc` | Restricted temporal coherence from forward_F + backward_P | **Task 93** |
-| 5 | RootScopedChain.lean:1417 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
-| 6 | RootScopedChain.lean:1422 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
+| 1 | RootScopedChain.lean:1413 | `rr_fwd_chain_forward_F` | If F(psi) in chain(n), exists s > n with psi in chain(s) | **Task 93** |
+| 2 | RootScopedChain.lean:1457 | `dd_fmcs_forward_F` (t < 0) | Forward F resolution in the backward chain region | **Task 93** |
+| 3 | RootScopedChain.lean:1464 | `dd_fmcs_backward_P` | Symmetric backward P resolution | **Task 93** |
+| 4 | RootScopedChain.lean:1517 | `dd_bfmcs_restricted_tc` | Restricted temporal coherence from forward_F + backward_P | **Task 93** |
+| 5 | RootScopedChain.lean:1522 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
+| 6 | RootScopedChain.lean:1527 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
 
 All 6 sorries form a single cluster: sorries 2-6 depend on sorry 1
 (`rr_fwd_chain_forward_F`), which is the PRIMARY BLOCKER. The current
-approach (plan v27) replaces the round-robin chain with a Goldblatt-style
-well-founded induction chain using `fwd_succ` with induction on
+approach (plan v30) replaces the round-robin chain with a quasimodel-derived
+chain where forward_F is built into the construction using `fwd_succ` with
 `f_nesting_depth` within `deferralClosure(root)`.
 
 ### Closed Sorries (Tasks 90+92+98+102)
@@ -735,6 +735,28 @@ warnings regardless of the semantic change.
     well-founded induction on formula depth, not syntactically on the
     chain.
 
+27. **DRM bounded_witness via single_step_forcing** (task 93, report 29):
+    Negation completeness gap -- the DRM bounded witness approach fails
+    because `single_step_forcing` cannot guarantee negation-complete
+    intermediate states, breaking the MCS chain invariant.
+
+28. **Full MCS bounded_witness** (task 93, report 29):
+    F-reflexivity blocks the exit condition. When the bounded witness
+    encounters F(psi) with psi already present, it cannot distinguish
+    between "resolved" and "still pending" states, leading to infinite
+    loops in the termination argument.
+
+29. **DRM chain preventing perpetual deferral** (task 93, report 29):
+    Relocates non-determinism rather than eliminating it. The DRM chain
+    construction moves the `.choose` problem from the Lindenbaum extension
+    to the defect-resolution oracle, without solving the core issue.
+
+30. **Per-formula witness wired into same-family membership** (task 93,
+    report 30): `restricted_temporally_coherent` requires witnesses ON the
+    chain (same FMCS family), but `bx_forward_witness` produces BXPoints
+    outside the chain family. Bridging BXPoint witnesses back to chain
+    membership is blocked by the Lindenbaum non-determinism gap.
+
 ### Task 93: Progress and Infrastructure
 
 Six sorry-free helper lemmas proved during v17 Phase 1 (all in
@@ -759,30 +781,38 @@ Controlling this choice is the only viable path. Standard completeness proofs
 (Burgess 1984, Goldblatt 1992, GHR 1994) handle forward_F semantically, not
 syntactically.
 
-### Current Strategy: Goldblatt WF-Induction Chain (Plan v27)
+### Current Strategy: Quasimodel-Derived Chain (Plan v30)
 
-After 26 rounds of research documenting dead ends 13-26, the strategy has
-shifted from syntactic chain manipulation to a **Goldblatt-style well-founded
-induction** approach. All four Round 27 research teammates converge on this
-recommendation.
+After 30 rounds of research documenting dead ends 13-30, the strategy has
+converged on a **quasimodel-derived chain** approach. All four Round 30
+research teammates independently recommend this path. The round-robin chain
+with `enriched_fwd_step` is confirmed permanently blocked (dead end 22).
 
-**Key insight**: Instead of proving `forward_F` on the existing round-robin
-chain (which is blocked by perpetual deferral, dead end 22), build a new
-chain construction where F-obligations are resolved by well-founded recursion
-on `f_nesting_depth` within `deferralClosure(root)`. The simple `fwd_succ`
-step (already sorry-free) provides the per-step resolution, and induction on
-formula depth provides termination.
+**Key insight**: Replace `rr_fwd_chain` with a new `qm_fwd_chain` that
+embeds the quasimodel's defect-discharge mechanism into the Nat-indexed
+forward chain. Forward_F is built INTO the construction (definitional)
+rather than proved ABOUT an existing chain. Each F-obligation is resolved
+within a bounded number of steps because the quasimodel's `defect_count`
+strictly decreases.
+
+**Literature consensus**: Burgess 1982, GHR 1994, Goldblatt 1992, and
+Verbrugge 2004 all build forward_F into the chain construction, avoiding
+the Lindenbaum non-determinism gap that blocks all post-hoc proof approaches.
 
 **Infrastructure already in place** (all sorry-free):
 - `deferralClosure`: finite set of formulas reachable by F/P-nesting from root
-- `max_F_depth_in_closure`: maximum F-nesting depth in deferral closure
-- `forward_temporal_witness_seed_consistent`: seed consistency for single-step resolution
 - `fwd_succ` / `bwd_pred`: sorry-free successor/predecessor step constructions
 - `fwd_succ_resolves`: proof that `fwd_succ` resolves its target
+- Quasimodel infrastructure (1,816 lines across 6 files in `Quasimodel/`)
+- `resolving_enriched_fwd_exists`: BX11 fold with resolving property
+- Restricted parametric truth lemma (sorry-free)
 
-**Plan**: 6 phases (35 hours estimated). Phase 1 updates this ROAD_MAP.
-Phase 2 verifies the WF-induction argument on paper. Phases 3-5 implement
-the chain and close all 6 sorries. Phase 6 runs the final axiom audit.
+**Dead code archived**: `DRMChain.lean` moved to `Boneyard/RoundRobinChain/`.
+Proof sketch sections 1-30 (2,200 lines) archived to same directory.
+
+**Plan**: 4 phases (10 hours estimated). Phase 1 archives dead code. Phase 2
+builds the quasimodel-derived forward chain. Phase 3 wires it into FMCS/BFMCS.
+Phase 4 closes Until/Since coherence and runs the final axiom audit.
 
 ---
 
@@ -860,6 +890,7 @@ characterization.
 1. **Task 93**: Close `Completeness.lean:154` (TaskModel embedding). The
    **sole remaining active-path sorry**. Requires constructing a `TaskModel`
    from the BXPoint canonical frame using non-constant histories.
+   **Current approach**: Quasimodel-derived chain (Plan v30, 4 phases).
 2. **Task 95**: `#print axioms` audit on `bx_completeness`; expected output
    is exactly `{propext, Classical.choice, Quot.sound}`. Depends on task 93.
 
@@ -882,7 +913,7 @@ characterization.
 
 ## Task Cross-Reference
 
-> **Updated 2026-04-16 (task 93 phase 1: dead ends 22-26, Goldblatt WF-induction strategy)**
+> **Updated 2026-04-16 (task 93 plan v30: dead ends 27-30, quasimodel-derived chain strategy)**
 
 | Task | Status | Description | Depends On |
 |------|--------|-------------|------------|
@@ -903,4 +934,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-04-16 (task 93 phase 1: dead ends 22-26, corrected metrics, Goldblatt WF-induction strategy)*
+*Last updated: 2026-04-16 (task 93 plan v30: dead ends 27-30, quasimodel-derived chain strategy, DRMChain archived)*
