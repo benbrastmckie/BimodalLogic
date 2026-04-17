@@ -1,7 +1,7 @@
 # Implementation Plan: Quasimodel-Derived Chain for BXCanonical Completeness
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (task 102 completed; truth lemma sorry-free)
 - **Research Inputs**: reports/30_team-research.md, reports/29_team-research.md, handoffs/02_enriched-chain-analysis.md, handoffs/01_forward-f-analysis.md
@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 1: Archive Dead Approaches and Update ROAD_MAP.md [NOT STARTED]
+### Phase 1: Archive Dead Approaches and Update ROAD_MAP.md [COMPLETED]
 
 **Goal**: Clean house before building the new solution. Archive the round-robin chain code and all dead-end attempt artifacts to Boneyard. Update ROAD_MAP.md with dead ends 27-30 and the new quasimodel-derived chain strategy.
 
