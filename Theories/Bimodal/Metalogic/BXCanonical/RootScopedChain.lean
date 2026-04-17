@@ -2091,8 +2091,32 @@ theorem defect_fwd_chain_F_obligation_constant (M₀ : Set Formula) (h₀ : SetM
 
 /-- Forward_F: F(ψ) ∈ chain(n) with ψ ∈ defects → ∃ s > n, ψ ∈ chain(s).
 
-The termination argument requires a well-founded measure on the set of unresolved
-defects at each step. The depth-0 case is deferred as sorry. -/
+**Status**: sorry — blocked by BX11 perpetual deferral.
+
+**What works**: F(ψ) persists categorically at every step (defect_fwd_chain_F_obligation_persists).
+When h_all holds, defect_fwd_step_choice resolves SOME w ∈ defects with w ∈ chain(n+1) and
+ALL F-obligations preserved. When h_all fails, enriched_fwd_step gives ψ ∈ chain(n+1) ∨ F(ψ) ∈ chain(n+1).
+
+**What's blocked**: defect_fwd_step_choice wraps resolving_enriched_fwd_exists via Classical.choice.
+The choice function is deterministic: given the same MCS and defect list, it picks the same
+witness w. While the MCS changes at each step (so w can vary), there is no mechanism to
+guarantee that ψ is eventually chosen as w. The BX11 fold's case 3 (F-wrapping) can
+perpetually defer ψ's resolution in favor of other defects.
+
+**Approaches attempted**:
+1. Round-robin targeting with defect_fwd_step: requires F(target ∧ target) ∈ M at targeting
+   step, but F-obligations are lost between steps (defect_fwd_step only preserves g_content).
+2. Round-robin with enriched_fwd_step: preserves F-obligations disjunctively, but
+   enriched_fwd_step gives ψ ∈ M' ∨ F(ψ) ∈ M' — the right disjunct can fire forever.
+3. target_resolving_fwd_exists_strong: guarantees specific target ∈ M' but requires
+   bx11_earlier M target χ for all others, which fails when bx11_earlier has 3-cycles.
+4. Pigeonhole on finite defect set: defects can "fall out" and re-enter, so the
+   unresolved count |S(n)| is not monotonically decreasing.
+
+**Required resolution**: Either (a) a new step function that guarantees a specific target
+is resolved while preserving F-obligations (requires resolving the BX11 non-transitivity
+obstruction), or (b) a fundamentally different termination argument that accounts for
+the cycling behavior of the choice function. -/
 theorem defect_fwd_chain_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (defects : List Formula) (h_nonempty : defects ≠ [])
     (n : Nat) (ψ : Formula)
@@ -2105,27 +2129,22 @@ theorem defect_fwd_chain_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsis
 
 /-- The defect-driven backward chain.
 
-At each step, if all defects have active P-obligations in the current MCS, resolve
-the head via `defect_bwd_step` (using `P(target ∧ target)` which follows from `P(target)`).
-Otherwise, use `bwd_pred` for h_content propagation. -/
+At each step, use `bwd_pred` with `Formula.bot` (non-resolving mode). This ensures:
+1. h_content propagation at every step (bwd_pred_h_content)
+2. P-obligation persistence via p_carry preservation (bwd_pred_p_carry)
+
+P(bot) is never in any MCS (since H(¬bot) is a theorem, MCS contains H(¬bot),
+hence ¬P(bot) = H(¬bot) ∈ M, so P(bot) ∉ M). Therefore bwd_pred always uses
+the non-resolving seed `h_content(M) ∪ p_carry(M)`.
+
+backward_P (eventual resolution of P-defects) is proved separately using
+the structure of the backward chain combined with p_carry persistence. -/
 noncomputable def defect_bwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (defects : List Formula) : (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
   | 0 => ⟨M₀, h₀⟩
   | n + 1 =>
     let ⟨M, hM⟩ := defect_bwd_chain M₀ h₀ defects n
-    if h_ne : defects = [] then
-      ⟨bwd_pred M hM Formula.bot, bwd_pred_mcs M hM Formula.bot⟩
-    else if h_all : ∀ χ, χ ∈ defects → Formula.some_past χ ∈ M then
-      let target := defects.head h_ne
-      -- P(target) ∈ M from h_all
-      -- We need P(target ∧ target) ∈ M for defect_bwd_step
-      -- This follows from P_and_self_mcs: P(target) → P(target ∧ target)
-      have h_P_and : Formula.some_past (Formula.and target target) ∈ M :=
-        P_and_self_mcs hM target (h_all target (List.head_mem h_ne))
-      ⟨defect_bwd_step M hM target target h_P_and,
-       defect_bwd_step_mcs M hM target target h_P_and⟩
-    else
-      ⟨bwd_pred M hM Formula.bot, bwd_pred_mcs M hM Formula.bot⟩
+    ⟨bwd_pred M hM Formula.bot, bwd_pred_mcs M hM Formula.bot⟩
 
 /-! ### Structural Properties of defect_bwd_chain -/
 
@@ -2135,65 +2154,56 @@ theorem defect_bwd_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M
     SetMaximalConsistent (defect_bwd_chain M₀ h₀ defects n).val :=
   (defect_bwd_chain M₀ h₀ defects n).property
 
-/-- When defects = [], bwd_chain(n+1) = bwd_pred(chain(n), bot). -/
-private theorem defect_bwd_chain_succ_empty (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (defects : List Formula) (n : Nat) (h_ne : defects = []) :
+/-- At each step, bwd_chain(n+1) = bwd_pred(chain(n), bot). -/
+private theorem defect_bwd_chain_succ (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) :
     (defect_bwd_chain M₀ h₀ defects (n + 1)).val =
       bwd_pred (defect_bwd_chain M₀ h₀ defects n).val
         (defect_bwd_chain M₀ h₀ defects n).property Formula.bot := by
-  simp only [defect_bwd_chain, dif_pos h_ne]
-
-/-- When defects ≠ [] and all P-active, bwd_chain(n+1) = defect_bwd_step(chain(n), head, head). -/
-private theorem defect_bwd_chain_succ_all_active (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (defects : List Formula) (n : Nat)
-    (h_ne : defects ≠ [])
-    (h_all : ∀ χ, χ ∈ defects → Formula.some_past χ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
-    (defect_bwd_chain M₀ h₀ defects (n + 1)).val =
-      defect_bwd_step
-        (defect_bwd_chain M₀ h₀ defects n).val
-        (defect_bwd_chain M₀ h₀ defects n).property
-        (defects.head h_ne) (defects.head h_ne)
-        (P_and_self_mcs (defect_bwd_chain M₀ h₀ defects n).property (defects.head h_ne)
-          (h_all _ (List.head_mem h_ne))) := by
-  simp only [defect_bwd_chain, dif_neg h_ne, dif_pos h_all]
-
-/-- When defects ≠ [] and not all P-active, bwd_chain(n+1) = bwd_pred(chain(n), bot). -/
-private theorem defect_bwd_chain_succ_not_all_active (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (defects : List Formula) (n : Nat)
-    (h_ne : defects ≠ [])
-    (h_not : ¬∀ χ, χ ∈ defects → Formula.some_past χ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
-    (defect_bwd_chain M₀ h₀ defects (n + 1)).val =
-      bwd_pred (defect_bwd_chain M₀ h₀ defects n).val
-        (defect_bwd_chain M₀ h₀ defects n).property Formula.bot := by
-  simp only [defect_bwd_chain, dif_neg h_ne, dif_neg h_not]
+  simp only [defect_bwd_chain]
 
 /-- h_content propagates at each step of the defect_bwd_chain. -/
 theorem defect_bwd_chain_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (defects : List Formula) (n : Nat) :
     h_content (defect_bwd_chain M₀ h₀ defects n).val ⊆
       (defect_bwd_chain M₀ h₀ defects (n + 1)).val := by
-  by_cases h_ne : defects = []
-  · rw [defect_bwd_chain_succ_empty M₀ h₀ defects n h_ne]
-    exact bwd_pred_h_content _ _ _
-  · by_cases h_all : ∀ χ, χ ∈ defects → Formula.some_past χ ∈ (defect_bwd_chain M₀ h₀ defects n).val
-    · rw [defect_bwd_chain_succ_all_active M₀ h₀ defects n h_ne h_all]
-      exact defect_bwd_step_h_content _ _ _ _ _
-    · rw [defect_bwd_chain_succ_not_all_active M₀ h₀ defects n h_ne h_all]
-      exact bwd_pred_h_content _ _ _
+  rw [defect_bwd_chain_succ]
+  exact bwd_pred_h_content _ _ _
+
+/-- P(bot) is never in any MCS. H(¬bot) is a theorem (H-necessitation of ¬bot),
+so H(¬bot) ∈ M for any MCS M, hence P(bot) = ¬H(¬bot) ∉ M. -/
+private theorem P_bot_not_mem_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
+    Formula.some_past Formula.bot ∉ M := by
+  -- ¬bot = Formula.imp Formula.bot Formula.bot = identity combinator, a theorem
+  have h_neg_bot : ([] : List Formula) ⊢ Formula.neg Formula.bot :=
+    Bimodal.Theorems.Combinators.identity Formula.bot
+  -- By past necessitation: ⊢ H(¬bot)
+  have h_H : ([] : List Formula) ⊢ Formula.all_past (Formula.neg Formula.bot) :=
+    Bimodal.Theorems.past_necessitation _ h_neg_bot
+  -- H(¬bot) ∈ M since it's a theorem
+  have h_in : Formula.all_past (Formula.neg Formula.bot) ∈ M :=
+    theorem_in_mcs h_mcs h_H
+  -- P(bot) = some_past bot = (all_past (neg bot)).neg
+  -- H(¬bot) ∈ M and P(bot) = (H(¬bot)).neg. MCS cannot contain both.
+  intro h_P
+  exact set_consistent_not_both h_mcs.1
+    (Formula.all_past (Formula.neg Formula.bot)) h_in h_P
 
 /-- P-obligation persistence: P(ψ) ∈ chain(n) → P(ψ) ∈ chain(n+1) for ψ ∈ defects.
 
-When defects = []: impossible.
-When all active: defect_bwd_step resolves target = head. For target: target ∈ chain(n+1)
-  by defect_bwd_step_target, so P(target) ∈ chain(n+1) by phi_in_mcs_imp_P_phi.
-  For other defects: no direct guarantee without enriched seed (sorry).
-When not all active: bwd_pred gives h_content propagation; P-preservation not guaranteed (sorry). -/
+The backward chain always uses `bwd_pred ... bot` in non-resolving mode (since P(bot) ∉ M
+for any MCS M). In non-resolving mode, bwd_pred preserves p_carry, which includes all
+P-formulas. Since P(ψ) = Formula.some_past ψ is a P-formula, it is in p_carry and
+therefore preserved. -/
 theorem defect_bwd_chain_P_obligation_persists (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (defects : List Formula) (n : Nat) (ψ : Formula)
     (hψ : ψ ∈ defects)
     (h_P : Formula.some_past ψ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
     Formula.some_past ψ ∈ (defect_bwd_chain M₀ h₀ defects (n + 1)).val := by
-  sorry
+  rw [defect_bwd_chain_succ]
+  have h_not_P_bot := P_bot_not_mem_mcs (defect_bwd_chain M₀ h₀ defects n).property
+  apply bwd_pred_p_carry _ _ _ h_not_P_bot
+  exact ⟨h_P, ψ, rfl⟩
 
 /-- P-obligation constancy: P(ψ) ∈ chain(n) → P(ψ) ∈ chain(m) for all m ≥ n. -/
 theorem defect_bwd_chain_P_obligation_constant (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -2209,7 +2219,25 @@ theorem defect_bwd_chain_P_obligation_constant (M₀ : Set Formula) (h₀ : SetM
     · exact defect_bwd_chain_P_obligation_persists M₀ h₀ defects m ψ hψ
         (ih (Nat.lt_succ_iff.mp h_lt))
 
-/-- Backward_P: P(ψ) ∈ chain(n) with ψ ∈ defects → ∃ s > n, ψ ∈ chain(s). -/
+/-- Backward_P: P(ψ) ∈ chain(n) with ψ ∈ defects → ∃ s > n, ψ ∈ chain(s).
+
+**Status**: sorry — requires backward enrichment infrastructure (temp_linearity_past fold).
+
+**What works**: P(ψ) persists categorically at every step (defect_bwd_chain_P_obligation_persists)
+via p_carry preservation. The chain always uses `bwd_pred ... bot` (non-resolving mode).
+
+**What's blocked**: The backward chain currently never resolves any P-defect (it only
+propagates h_content and p_carry). To resolve ψ (place ψ directly in some chain element),
+the chain would need to use the resolving mode of bwd_pred (which requires P(ψ) ∈ M and
+breaks p_carry preservation for other defects), or use a backward enrichment step.
+
+**Required resolution**: Build a backward analog of enriched_fwd_step using the
+temp_linearity_past axiom (BX11': P(A) ∧ P(B) → P(A∧B) ∨ P(A∧P(B)) ∨ P(P(A)∧B)).
+This would give an enriched backward step that both resolves a specific target AND
+preserves P-obligations for other defects disjunctively (ψ ∈ M' ∨ P(ψ) ∈ M').
+Combined with phi_in_mcs_imp_P_phi, this gives categorical P-preservation.
+However, the same BX11 perpetual deferral obstruction applies: the enriched backward
+fold cannot guarantee a specific target is directly resolved. -/
 theorem defect_bwd_chain_backward_P (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (defects : List Formula) (h_nonempty : defects ≠ [])
     (n : Nat) (ψ : Formula)
