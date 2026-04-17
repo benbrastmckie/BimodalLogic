@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-17T14:40:10Z",
+      "last_updated": "2026-04-17T15:03:41Z",
       "related_tasks": [
         92,
         95
@@ -21,7 +21,7 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776436225_54ec6a",
+      "session_id": "sess_1776436887_140dfa",
       "researched": "2026-04-17T14:27:31Z",
       "artifacts": [
         {
@@ -215,11 +215,6 @@
           "summary": "Team research with 4 teammates: forward_F definitively blocked, quasimodel-derived chain recommended, 4 gaps identified"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/summaries/32_bxcanonical-embedding-summary.md",
-          "type": "summary",
-          "summary": "Implementation analysis blocked on forward_F mathematical obstruction; all 6 sorries remain open"
-        },
-        {
           "path": "specs/093_complete_bxcanonical_embedding/reports/33_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: defect-driven chain implementation analysis, 4 critical Plan v32 errors found, target_resolving_fwd_exists_strong identified as key primitive"
@@ -238,6 +233,11 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/35_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "Implementation plan v35: BX12 reduction strategy for closing 8 sorry sites via Until/Since coherence"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/summaries/35_bxcanonical-embedding-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 blocked: backward Until step transfer not derivable in BX, forward Until has same perpetual deferral. Three resolution paths identified."
         }
       ],
       "next_artifact_number": 36,
@@ -313,6 +313,30 @@
             "forward_F",
             "backward_P",
             "diamond"
+          ]
+        },
+        {
+          "content": "The backward Until step transfer property (phi U psi in chain(r+1) AND phi in chain(r) -> phi U psi in chain(r)) requires phi AND F(phi U psi) -> phi U psi, which is NOT derivable in the BX axiom system.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/093_complete_bxcanonical_embedding/summaries/35_bxcanonical-embedding-summary.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "until-step-transfer",
+            "backward-until-coherence",
+            "F-alpha-not-theorem",
+            "BX-axiom-limitation"
+          ]
+        },
+        {
+          "content": "For BXCanonical completeness, the three restricted coherence properties all require Until/Since coherence at the chain level. BX12 reduction converts forward_F to forward Until but both have the same perpetual deferral difficulty.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/093_complete_bxcanonical_embedding/summaries/35_bxcanonical-embedding-summary.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "BXCanonical-completeness",
+            "restricted-coherence",
+            "BX12-reduction",
+            "perpetual-deferral"
           ]
         }
       ]
