@@ -1,10 +1,10 @@
-# Implementation Plan: Close BXCanonical Embedding (v29 -- Semantic Forward_F + ROAD_MAP Update)
+# Implementation Plan: Close BXCanonical Embedding (v29r1 -- Per-Formula FMCS via bx_forward_witness)
 
 - **Task**: 93 - Complete BXCanonical embedding
 - **Status**: [NOT STARTED]
-- **Effort**: 14 hours
+- **Effort**: 12 hours
 - **Dependencies**: None (task 102 completed; truth lemma sorry-free)
-- **Research Inputs**: reports/29_team-research.md, reports/28_depth-zero-base-case.md, reports/27_team-research.md
+- **Research Inputs**: reports/29_team-research.md, reports/28_depth-zero-base-case.md, reports/27_team-research.md, handoffs/01_forward-f-analysis.md
 - **Artifacts**: plans/29_bxcanonical-embedding.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -12,21 +12,22 @@
 
 ## Overview
 
-Six sorry sites in `RootScopedChain.lean` (lines 3644, 3688, 3695, 3748, 3753, 3758) block `bx_completeness`. Plan v28 (DRM Succ chain + bounded_witness) was found structurally blocked by Report 29: `SetMaximalConsistent` negation completeness is required but DRM provides only `DeferralRestrictedMCS`, three independent gaps make the approach unimplementable. Report 29 identifies a KEY new insight: the targeted seed `{psi} union g_content(u)` IS provably consistent when `F(psi) in subformulaClosure(phi)`, and recommends Sub-approach 1c (literature-aligned): restructure `dd_countermodel` to use semantic `forward_F` from `bx_forward_witness` rather than chain-level forward_F. This plan begins with a ROAD_MAP.md update (Phase 1) to document Report 29's findings, then implements the semantic forward_F approach. Definition of done: `lake build` succeeds with zero sorry in `RootScopedChain.lean`.
+Six sorry sites in `RootScopedChain.lean` (lines 3644, 3688, 3695, 3748, 3753, 3758) block `bx_completeness`. Plan v29 (semantic forward_F via targeted seed) assumed `bx_forward_witness` could be wired into the existing `rr_fwd_chain` architecture. Handoff 01 found this approach blocked: (1) BX11 hijacking in `enriched_fwd_fold_with_witness` means `rr_fwd_chain_forward_F` is mathematically unprovable for the existing chain; (2) extended seed `{target, F(psi)} union g_content(M)` can be inconsistent; (3) `F(psi) -> G(F(psi))` is not a theorem so F-obligations cannot propagate via g_content. This revised plan abandons proving `rr_fwd_chain_forward_F` and instead restructures `dd_bfmcs` to use per-formula witnesses from `bx_forward_witness`/`bx_backward_witness` directly, bypassing the chain entirely for temporal coherence. Definition of done: `lake build` succeeds with zero sorry in `RootScopedChain.lean`.
 
 ### Research Integration
 
-- **Report 29** (team research, 4 teammates): DRM bounded_witness blocked (Finding 1), targeted seed consistent (Finding 4), literature consensus against one-chain-all-obligations (Finding 14), sorry 6 has independent Until persistence obstacle (Finding 12). Recommends Sub-approach 1c (semantic forward_F via `bx_forward_witness`).
-- **Report 28** (depth-0 base case): Paths A (omega-squared), C (counting), F (circularity) blocked. Path D (DRM) recommended but now superseded by Report 29.
-- **Report 27** (team research): Goldblatt WF-induction convergence. DRM approach a refinement, now known to be blocked.
+- **Report 29** (team research, 4 teammates): DRM bounded_witness blocked, targeted seed consistent, literature consensus for per-formula resolution, sorry 6 has Until persistence obstacle.
+- **Report 28** (depth-0 base case): Paths A/C/F blocked, Path D (DRM) recommended but superseded.
+- **Report 27** (team research): Goldblatt WF-induction convergence, DRM refinement now known blocked.
+- **Handoff 01** (forward_F analysis): Confirmed BX11 hijacking blocks `rr_fwd_chain_forward_F`. Identified 3 alternative approaches. Approach A (per-formula FMCS) recommended. All 6 sorries depend on sorry 1.
 
 ### Prior Plan Reference
 
-Plan v28 (18 hours, 5 phases) focused on DRM Succ chain extraction from Boneyard + bounded_witness within DRM. Phase 1 (extract DRM chain from Boneyard) marked COMPLETED. Phase 2 (DRM bounded_witness) marked PARTIAL. Research 29 found Plan 28's core premise wrong: `SetMaximalConsistent` required but DRM only provides `DeferralRestrictedMCS`. Lesson learned: approaches requiring type-level properties unavailable in DRM states are systematically blocked. Effort calibration: Phase 1 extraction took ~2 hours (as estimated), validating that infrastructure extraction tasks are well-calibrated.
+Plan v29 (14 hours, 5 phases) assumed targeted seed + semantic forward_F could be wired into the chain. Phase 1 (ROAD_MAP update) was marked BLOCKED pending architecture decision. Handoff 01 confirmed the chain approach is mathematically blocked: BX11 fold may resolve a different formula at each step (hijacking), making `rr_fwd_chain_forward_F` unprovable. This revision restructures the approach entirely: instead of proving forward_F for the chain, prove it directly using `bx_forward_witness` and restructure the sorry sites to accept per-formula existential witnesses.
 
 ### Roadmap Alignment
 
-- Closes `rr_fwd_chain_forward_F` (PRIMARY BLOCKER, ROAD_MAP sorry inventory)
+- Closes `rr_fwd_chain_forward_F` (PRIMARY BLOCKER, ROAD_MAP sorry inventory) -- by replacing the approach
 - Makes `dd_countermodel` sorry-free, resolving `Completeness.lean:154`
 - Unblocks task 95 (`#print axioms` audit on `bx_completeness`)
 - Eliminates all 6 active-path sorries in the BXCanonical module
@@ -34,12 +35,14 @@ Plan v28 (18 hours, 5 phases) focused on DRM Succ chain extraction from Boneyard
 ## Goals & Non-Goals
 
 **Goals**:
-- Update ROAD_MAP.md with Report 29 findings (dead ends 27-29, updated strategy, corrected sorry line numbers)
-- Close all 6 sorry sites in `RootScopedChain.lean` using semantic forward_F approach
+- Close all 6 sorry sites in `RootScopedChain.lean` using per-formula BXPoint witnesses
+- Restructure `dd_bfmcs_restricted_tc` to use `bx_forward_witness`/`bx_backward_witness` directly
+- Close `dd_bfmcs_restricted_fuc` and `dd_bfmcs_restricted_buc` (Until/Since coherence)
 - Achieve `lake build` with zero sorry in active BXCanonical path
-- Prove targeted seed consistency lemma (key mathematical breakthrough from Report 29)
+- Update ROAD_MAP.md with dead ends 27-30 and new strategy
 
 **Non-Goals**:
+- Proving `rr_fwd_chain_forward_F` for the existing chain (confirmed blocked)
 - Modifying the truth lemma or quasimodel infrastructure (sorry-free, proven correct)
 - Dense completeness (independent task 68)
 - Cleaning up Boneyard code (separate effort)
@@ -49,11 +52,11 @@ Plan v28 (18 hours, 5 phases) focused on DRM Succ chain extraction from Boneyard
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Semantic forward_F from `bx_forward_witness` produces BXPoint not on chain -- cannot wire into `dd_fmcs` signature | H | M (40%) | Sub-approach 1c restructures dd_countermodel to accept per-formula witnesses. The truth lemma goes through BXPoints, not chain indices. Alternatively, define dd_fmcs to allow per-query witness injection. |
-| Targeted seed consistency lemma harder than expected in Lean | M | L (20%) | The math is clear (generalized temporal K argument). The Lean proof follows `forward_temporal_witness_seed_consistent` pattern in WitnessSeed.lean. |
-| Sorry 6 (forward Until coherence) has independent Until persistence obstacle beyond forward_F | M | M (35%) | Report 29 Finding 12 identifies this. Budget separate time in Phase 5. Use BX5 self-accumulation + BX7 induction_until for guard propagation. |
-| Backward_P case (sorry 3) requires symmetric construction not yet built | M | L (25%) | `bx_backward_witness` is sorry-free (symmetric to `bx_forward_witness`). The backward targeted seed is symmetric. |
-| Quasimodel bridge fallback more complex than estimated | M | M (30%) | Budget 600-1000 LOC per Report 29. The sorry-free infrastructure is mature (1,816 lines). Only execute if semantic forward_F fails. |
+| `restricted_temporally_coherent` requires witnesses ON the chain (not arbitrary BXPoints) | H | M (35%) | Read the truth lemma to verify it only needs `exists s, t < s AND psi in fam.mcs(s)` -- if `fam.mcs` is restructured to include per-formula witnesses, this is satisfied. Alternative: prove the coherence properties hold for any `shifted_dd_fmcs` family by showing `bx_forward_witness` output relates to the family's MCS at some time index. |
+| Wiring `bx_forward_witness` output into `dd_fmcs.mcs(s)` requires showing the witness equals some chain element | H | M (40%) | Key insight: `dd_bfmcs_restricted_tc` quantifies over `fam in B.families`. Each `fam` is a `shifted_dd_fmcs N h_N sigma_list s`. The witness from `bx_forward_witness` for `F(psi) in fam.mcs(t)` gives a BXPoint `v` with `psi in v` and `g_content(fam.mcs(t)) subset v`. We need `v = fam.mcs(s)` for some `s > t`. This may require constructing a NEW family containing `v` and proving it is in `dd_bfmcs.families`. |
+| Until/Since coherence requires a witness at a specific chain position, not just existence of a BXPoint | M | M (35%) | Forward Until needs `psi in fam.mcs(s)` for `s >= t` with guard `phi in fam.mcs(r)` for `r in [t,s)`. The guard propagation uses g_content and the chain structure. May need to construct a specialized family or use the restricted truth lemma to convert. |
+| Sorry sites 2-3 (t < 0 forward_F, backward_P) need symmetric constructions | M | L (20%) | `bx_backward_witness` is sorry-free and symmetric. The backward case follows the same pattern. |
+| Quasimodel bridge fallback more complex than estimated | M | M (30%) | Budget 600-1000 LOC per Report 29. The sorry-free quasimodel infrastructure is mature (1,816 lines). Only execute if per-formula witness approach fails at Phase 2. |
 
 ## Implementation Phases
 
@@ -70,126 +73,98 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 1: Update ROAD_MAP.md [NOT STARTED]
+### Phase 1: Architecture Spike -- Verify Per-Formula Witness Approach [NOT STARTED]
 
-**Goal**: Update `specs/ROAD_MAP.md` with Report 29 findings before implementation begins. Add dead ends 27-29, update strategy section from "Goldblatt WF-induction" to "semantic forward_F via targeted seed", update sorry line numbers if changed, and correct the "Current Strategy" narrative.
+**Goal**: Determine the exact interface needed to close `dd_bfmcs_restricted_tc` and whether `bx_forward_witness` output can satisfy it. This is the critical go/no-go decision point for the approach.
 
 **Tasks**:
-- [ ] Add dead ends 27-29 to the "Dead Ends (Archived)" section:
-  - (27) DRM bounded_witness via single_step_forcing: negation completeness gap at F-nesting boundary. `SetMaximalConsistent` required but DRM provides only `DeferralRestrictedMCS`. Three independent gaps make the approach unimplementable (Report 29, Findings 1, 11).
-  - (28) Full MCS bounded_witness: F-reflexivity (`phi_in_mcs_imp_F_phi`) makes all `iter_F` present in full MCS, so the exit condition `iter_F(d+1, psi) NOT in M` never holds. `bounded_witness` designed for restricted MCS only (Report 29, Finding 2).
-  - (29) DRM chain preventing perpetual deferral: DRM chain's `f_step` condition has the same Lindenbaum non-determinism as `enriched_fwd_step`. Merely relocates the non-determinism (Report 29, Finding 3).
-- [ ] Update the "Current Strategy" subsection (currently "Goldblatt WF-Induction Chain (Plan v27)") to describe the new approach:
-  - Strategy: Semantic forward_F via targeted seed consistency + `bx_forward_witness`
-  - Key insight: targeted seed `{psi} union g_content(u)` is provably consistent when `F(psi) in subformulaClosure(phi)` (generalized temporal K argument)
-  - Literature alignment: per-formula resolution rather than one-chain-all-obligations (Burgess, GHR, Goldblatt)
-  - Plan reference: v29
-- [ ] Update sorry line numbers in the "Active-Path Sorry Inventory" table if they have changed from the values listed (currently 1321, 1352, 1359, 1412, 1417, 1422 -- actual current values are 3644, 3688, 3695, 3748, 3753, 3758)
-- [ ] Update the "Task 93: Progress and Infrastructure" subsection to note Report 29 findings and the DRM approach being blocked
-- [ ] Update the "last updated" timestamp and description at bottom of file
-- [ ] Verify ROAD_MAP.md is internally consistent after edits
+- [ ] Read the `RestrictedParametricTruthLemma` (lines 270-487) to trace exactly which coherence properties it invokes and what types are required
+- [ ] Read the `restricted_temporally_coherent` definition (TemporalCoherence.lean:295-300): confirm it requires `exists s : D, t < s AND psi in fam.mcs s` where `fam : FMCS Int`
+- [ ] Examine `dd_bfmcs.families` membership: each family is `shifted_dd_fmcs N h_N sigma_list s` where `N` is box-equivalent to `M0`. The family `fam.mcs(t) = dd_chain N h_N sigma_list (t - s)`
+- [ ] Determine approach for connecting `bx_forward_witness` output to family membership:
+  - **Option 1 (Direct)**: Given `F(psi) in fam.mcs(t)`, apply `bx_forward_witness` to the BXPoint `(fam.mcs(t), fam.is_mcs(t))` to get BXPoint `v` with `psi in v` and `bx_le (fam.mcs(t)) v`. Then show `v` must appear somewhere on the forward chain of `N` at some index `s > t`. This requires showing the chain visits `v` or a superset.
+  - **Option 2 (Family construction)**: Construct a NEW `shifted_dd_fmcs` family rooted at `v` that is in `dd_bfmcs.families`. Since `v` has the same box content as `M0` (because `bx_le` preserves g_content which includes box formulas), `v` qualifies as a root for a new family. Then `psi in v = new_fam.mcs(0)`.
+  - **Option 3 (Restructure dd_fmcs)**: Replace `dd_fmcs` with a demand-driven chain that incorporates per-formula witnesses at construction time.
+- [ ] Write a brief analysis comment in `RootScopedChain.lean` documenting the chosen approach
+- [ ] If all options fail, document why and prepare for quasimodel bridge fallback (Phase 5)
 
-**Timing**: 1.5 hours
+**Timing**: 2 hours
 
 **Depends on**: none
 
-**Files to modify**:
-- `specs/ROAD_MAP.md` -- dead ends, strategy section, sorry line numbers, progress notes
+**Files to read**:
+- `Theories/Bimodal/Metalogic/Algebraic/RestrictedParametricTruthLemma.lean` (270-487)
+- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherence.lean` (295-300, 535-544, 565-574)
+- `Theories/Bimodal/Metalogic/BXCanonical/Frame.lean` (164-186)
+- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` (3697-3758)
 
 **Verification**:
-- Dead ends 27, 28, 29 appear in the Dead Ends section
-- Strategy section references "semantic forward_F" and "targeted seed consistency"
-- Sorry line numbers match actual file (3644, 3688, 3695, 3748, 3753, 3758)
-- Last-updated timestamp is current
+- Chosen approach documented with clear rationale
+- If Option 2 (family construction): verify box-equivalence holds for `bx_forward_witness` output
+- Go/no-go decision made for Phases 2-4 vs fallback Phase 5
 
 ---
 
-### Phase 2: Prove Targeted Seed Consistency Lemma [NOT STARTED]
+### Phase 2: Close Forward_F and Backward_P (Sorry Sites 1-3) [NOT STARTED]
 
-**Goal**: Prove in Lean that `{psi} union g_content(u)` is consistent when `F(psi) in u` and `u` is a BXPoint (MCS). This is the key mathematical breakthrough from Report 29 Finding 4 and is required by all subsequent phases.
+**Goal**: Close sorry sites 1 (line 3644), 2 (line 3688), and 3 (line 3695) using the approach determined in Phase 1. These are the forward_F base case, forward_F for t < 0, and backward_P respectively.
 
 **Tasks**:
-- [ ] Define `targeted_forward_seed (u : BXPoint) (psi : Formula) : Set Formula` as `{psi} union g_content(u.formulas)` in a suitable location (either `RootScopedChain.lean` or a new helper section)
-- [ ] Prove `targeted_forward_seed_consistent`: if `F(psi) in u.formulas` and `u.is_mcs`, then `targeted_forward_seed u psi` is consistent
-  - **Proof sketch**: Suppose `targeted_forward_seed u psi` is inconsistent. Then `{psi} union g_content(u)` derives `bot`. By deduction theorem, `g_content(u) derives neg(psi)`. By `g_content_closed_derivation` (Frame.lean:79-94), `G(neg(psi)) in u.formulas`. But `F(psi) = neg(G(neg(psi)))` is in `u.formulas` (hypothesis), and `u` is an MCS, so both `G(neg(psi))` and `neg(G(neg(psi)))` are in `u.formulas`, contradicting consistency.
-- [ ] Prove `targeted_forward_seed_extends_g_content`: `g_content(u.formulas) subset targeted_forward_seed u psi` (trivial by definition)
-- [ ] Prove `targeted_forward_seed_contains_target`: `psi in targeted_forward_seed u psi` (trivial)
-- [ ] Verify `targeted_forward_seed_consistent` compiles sorry-free
+- [ ] **Sorry site 1** (`rr_fwd_chain_forward_F` depth-0 base case, line 3644): This is the core blocker. Rather than proving the chain resolves every F-obligation, restructure the proof:
+  - If Option 1 (direct): Show `bx_forward_witness` applied to chain element `rr_fwd_chain(n)` produces a BXPoint that must appear on the chain at some later index (requires showing the chain is "complete" in visiting all accessible successors -- likely blocked by same issue)
+  - If Option 2 (family construction): Defer this sorry to Phase 3 by restructuring `dd_bfmcs_restricted_tc` to not depend on `rr_fwd_chain_forward_F` at all. Instead prove restricted_tc directly using `bx_forward_witness` at the BFMCS level.
+  - If Option 3: Implement the demand-driven chain
+- [ ] **Sorry site 2** (`dd_fmcs_forward_F` t < 0 case, line 3688): Given `F(psi) in dd_chain(t)` for `t < 0` (backward chain):
+  - The backward chain propagates h_content, not F-obligations
+  - Apply `bx_forward_witness` directly to `dd_chain(t)` as a BXPoint
+  - Wire the resulting BXPoint into the proof
+- [ ] **Sorry site 3** (`dd_fmcs_backward_P`, line 3695): Symmetric to forward_F using `bx_backward_witness`:
+  - Given `P(psi) in dd_fmcs.mcs(t)`, apply `bx_backward_witness` to get BXPoint `v` with `psi in v` and `bx_le v (dd_fmcs.mcs(t))`
+  - Wire into the proof
+- [ ] If Option 2 is chosen: sorry sites 1-3 may be bypassed entirely if `dd_fmcs_forward_F` and `dd_fmcs_backward_P` are no longer needed (their consumers are `dd_bfmcs_restricted_tc` which would be proved directly). In that case, mark these theorems as obsolete or prove them as corollaries.
+- [ ] Run `lake build` and check sorry count
 
-**Timing**: 2 hours
+**Timing**: 4 hours
 
 **Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- new lemmas for targeted seed
+- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- close or bypass sorry sites 1-3
 
 **Verification**:
-- `targeted_forward_seed_consistent` compiles without sorry
+- Sorry sites at lines 3644, 3688, 3695 are closed (or the theorems are no longer needed)
 - `lake build` succeeds
-- The proof uses only sorry-free dependencies (Frame.lean:79-94 `g_content_closed_derivation` is sorry-free)
+- If theorems bypassed: verify `dd_bfmcs_restricted_tc` no longer calls them
 
 ---
 
-### Phase 3: Implement Semantic Forward_F and Close Sorries 1-3 [NOT STARTED]
+### Phase 3: Close Restricted Temporal Coherence (Sorry Site 4) [NOT STARTED]
 
-**Goal**: Use `targeted_forward_seed_consistent` + `set_lindenbaum` to prove existential forward_F for the chain, then close sorry sites 1-3 (lines 3644, 3688, 3695).
+**Goal**: Close `dd_bfmcs_restricted_tc` (line 3748). This is the central sorry: it needs forward_F and backward_P for every family in `dd_bfmcs`.
 
 **Tasks**:
-- [ ] Prove `semantic_forward_F_witness`: given `F(psi) in u.formulas` for BXPoint `u`, construct a BXPoint `v` with `psi in v.formulas` and `bx_le u v`
-  - **Approach**: This may already be `bx_forward_witness` (Frame.lean:164-171, sorry-free). Verify its signature matches the need. If `bx_forward_witness` already provides this, no new proof needed.
-  - If `bx_forward_witness` does NOT directly give `psi in v` (only `bx_le u v` for G-content), then use the targeted seed: extend `targeted_forward_seed u psi` via `set_lindenbaum` to a full MCS `v_mcs`, then wrap as BXPoint. `psi in v_mcs` by seed containment. `bx_le u v` because `g_content(u) subset targeted_forward_seed subset v_mcs`.
+- [ ] Prove `dd_bfmcs_restricted_tc` using per-formula witnesses:
+  - The definition requires: for every `fam in dd_bfmcs.families`, for every `t : Int`, for every `phi in deferralClosure(root)`:
+    - If `F(phi) in fam.mcs(t)`, then `exists s > t, phi in fam.mcs(s)`
+    - If `P(phi) in fam.mcs(t)`, then `exists s < t, phi in fam.mcs(s)`
+  - Each family `fam = shifted_dd_fmcs N h_N sigma_list shift` where `N` is box-equivalent to `M0`
+  - For forward_F: `F(phi) in fam.mcs(t) = dd_chain N h_N sigma_list (t - shift)`
+    - Apply `bx_forward_witness` to the BXPoint `(dd_chain N h_N sigma_list (t - shift), dd_chain_is_mcs ...)` and `phi`
+    - Get BXPoint `v` with `phi in v` and `g_content(dd_chain(t-shift)) subset v`
+    - **Key step**: Show `v.formulas` appears as `fam.mcs(s)` for some `s > t`. This is where the approach must be determined in Phase 1.
+    - If Option 2: construct `shifted_dd_fmcs v.formulas v.is_mcs sigma_list t` as a new family, show it is in `dd_bfmcs.families` (requires box-equivalence), then `phi in new_fam.mcs(t)`. But we need `phi in fam.mcs(s)` for the SAME family `fam`, not a different one.
+  - **Alternative approach for the SAME family**: Since `fam.mcs(t+1) = dd_chain N h_N sigma_list (t+1-shift)` and `dd_chain` at positive index uses `rr_fwd_chain`, and `g_content(fam.mcs(t)) subset fam.mcs(t+1)` by construction, the g_content propagation is there. The issue is getting `phi` specifically into some `fam.mcs(s)`. If `G(phi) in fam.mcs(t)` then `phi in fam.mcs(s)` for all `s > t`. But we only have `F(phi)`, not `G(phi)`.
+  - **Possible restructuring**: Modify `dd_chain` construction to be demand-driven: when building `dd_chain(n+1)` from `dd_chain(n)`, if there exists `phi in deferralClosure(root)` with `F(phi) in dd_chain(n)` that is not yet resolved, use targeted seed `{phi} union g_content(dd_chain(n))` instead of `enriched_fwd_step`. This makes the chain resolve every F-obligation within `deferralClosure(root)`.
+- [ ] If demand-driven restructuring is needed, implement `targeted_fwd_step` as a replacement for `enriched_fwd_step` within `deferralClosure(root)` scope
+- [ ] For backward_P: symmetric construction using `bx_backward_witness` and targeted backward seed
+- [ ] Run `lake build`
 
-- [ ] Close sorry site 1: `rr_fwd_chain_forward_F` depth-0 base case (line 3644)
-  - **Strategy**: Given `F(psi) in rr_fwd_chain(n)` with `f_nesting_depth(psi) = 0`:
-    1. Apply `semantic_forward_F_witness` to `rr_fwd_chain(n)` and `psi`
-    2. Get BXPoint `v` with `psi in v` and `bx_le rr_fwd_chain(n) v`
-    3. The problem: `v` may not be `rr_fwd_chain(s)` for any `s > n`
-    4. **Resolution**: Redefine `dd_fmcs` to inject the targeted witness at the right step, OR restructure the forward_F obligation to accept per-formula existential witnesses from outside the chain
-  - **If chain injection is needed**: Modify `rr_fwd_chain` to splice in the targeted witness. At step `n+1`, instead of using `enriched_fwd_step`, use the targeted MCS from `semantic_forward_F_witness`. The spliced chain still satisfies g_content propagation (by construction: `g_content(chain(n)) subset targeted_seed subset chain(n+1)`).
-  - **If dd_fmcs restructuring is chosen**: Modify `dd_fmcs` forward_F to accept an existential witness BXPoint rather than requiring the witness to be a chain member. This changes the FMCS interface but aligns with the literature (per-formula resolution).
-
-- [ ] Close sorry site 2: `dd_fmcs_forward_F` t < 0 case (line 3688)
-  - **Strategy**: For `t < 0`, `F(psi) in dd_chain(t)` where `t` is in the backward chain. Apply `semantic_forward_F_witness` directly to `dd_chain(t)` to get witness BXPoint `v` with `psi in v` and `bx_le dd_chain(t) v`. Wire `v` into the dd_fmcs family at some index `s > t`.
-
-- [ ] Close sorry site 3: `dd_fmcs_backward_P` (line 3695)
-  - **Strategy**: Symmetric to forward_F using `bx_backward_witness` (sorry-free). Given `P(psi) in dd_chain(t)`, construct BXPoint `v` with `psi in v` and `bx_le v dd_chain(t)` (i.e., `g_content(v) subset dd_chain(t)`). This is the targeted backward seed: `{psi} union h_content(u)` is consistent by the symmetric argument (using `h_content_closed_derivation`, Frame.lean:101-114).
-
-- [ ] Run `lake build` and verify sorry count reduced from 6 to 3
-
-**Timing**: 5 hours
+**Timing**: 3 hours
 
 **Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- close sorry sites 1-3, potentially restructure dd_fmcs
-
-**Verification**:
-- Sorry sites at lines 3644, 3688, 3695 are closed
-- `lake build` succeeds
-- `grep -n sorry RootScopedChain.lean` shows at most 3 remaining (sites 4-6)
-
----
-
-### Phase 4: Close Restricted Temporal Coherence (Sorry Site 4) [NOT STARTED]
-
-**Goal**: Close `dd_bfmcs_restricted_tc` (line 3748) using the forward_F and backward_P results from Phase 3.
-
-**Tasks**:
-- [ ] Examine the `restricted_temporally_coherent` definition to understand what it requires beyond forward_F and backward_P
-  - Expected: forward_G (G-formulas propagate forward, follows from g_content and bx_le), backward_H (symmetric), forward_F (proved in Phase 3), backward_P (proved in Phase 3)
-- [ ] Prove `dd_bfmcs_restricted_tc` by assembling the four temporal coherence properties:
-  - `forward_G`: follows from `dd_chain_g_content` (existing, sorry-free) -- if `G(psi) in dd_chain(t)`, then `psi in g_content(dd_chain(t)) subset dd_chain(t+1)`
-  - `backward_H`: symmetric via `dd_chain_h_content`
-  - `forward_F`: from `dd_fmcs_forward_F` (Phase 3)
-  - `backward_P`: from `dd_fmcs_backward_P` (Phase 3)
-- [ ] Run `lake build`
-
-**Timing**: 1.5 hours
-
-**Depends on**: 3
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- close sorry site 4
+- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- close sorry site 4, potentially add `targeted_fwd_step`
 
 **Verification**:
 - Sorry site at line 3748 is closed
@@ -198,40 +173,47 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 5: Close Until/Since Coherence (Sorry Sites 5-6) [NOT STARTED]
+### Phase 4: Close Until/Since Coherence (Sorry Sites 5-6) [NOT STARTED]
 
 **Goal**: Close `dd_bfmcs_restricted_buc` (line 3753) and `dd_bfmcs_restricted_fuc` (line 3758), achieving zero sorry in `RootScopedChain.lean`.
 
 **Tasks**:
-- [ ] Examine `restricted_backward_until_since_coherent` and `restricted_forward_until_since_coherent` definitions to understand their exact requirements
-
 - [ ] Close sorry site 6: `dd_bfmcs_restricted_fuc` (forward Until/Since coherence, line 3758)
-  - **Mathematical argument for Until `(phi U psi)` in `fam.mcs(t)`**:
-    1. By BX10 (`until_F`): `(phi U psi) -> F(psi)`. So `F(psi) in fam.mcs(t)`.
-    2. By `dd_fmcs_forward_F` (now proved): exists `s > t` with `psi in fam.mcs(s)`.
-    3. Need guard: `phi in fam.mcs(r)` for all `r in [t, s)`.
-    4. By BX5 (`self_accum_until`): `(phi U psi) -> ((phi AND (phi U psi)) U psi)`. The Until formula enriches its own guard.
-    5. Inductive guard propagation: At each `r in [t, s)`, if `psi not in fam.mcs(r)`, then by BX9 (`until_elim`) applied to the enriched formula, `phi in fam.mcs(r)`. The `(phi U psi)` component propagates forward via BX7 (`induction_until`): if `psi` does not hold now, then `G(phi U psi)` holds, so `(phi U psi)` is in g_content and propagates.
-    6. Termination: `psi` appears at `s` (from step 2), so the induction terminates.
-  - **Note on Report 29 Finding 12**: Sorry 6 has an independent Until persistence obstacle. The guard propagation in step 5 requires `(phi U psi) in fam.mcs(r)` for intermediate `r`, which comes from BX7's `G(phi U psi)` -- this IS guaranteed by g_content propagation once we have `G(phi U psi)` at time `t`. BX7 gives `(phi U psi) -> (psi OR (phi AND G(phi U psi)))`, and since `psi` does not hold at `t` (otherwise `s = t`), we get `G(phi U psi) in fam.mcs(t)`.
-  - For Since: symmetric via backward_P and H-content propagation.
+  - **Forward Until** `(phi U psi)`: Given `(phi U psi) in fam.mcs(t)`, need `exists s >= t, psi in fam.mcs(s) AND forall r in [t,s), phi in fam.mcs(r)`:
+    1. By BX10 (`until_F`): `(phi U psi) -> F(psi)`, so `F(psi) in fam.mcs(t)`
+    2. By `dd_bfmcs_restricted_tc` (now proved): exists `s > t` with `psi in fam.mcs(s)` (provided `psi in deferralClosure(root)`, which holds since `(phi U psi) in subformulaClosure(root)` implies `psi in subformulaClosure(root) subset deferralClosure(root)`)
+    3. Guard propagation for `phi in fam.mcs(r)` for `r in [t, s)`:
+       - By BX7 (`induction_until`): `(phi U psi) -> (psi OR (phi AND G(phi U psi)))`
+       - If `psi in fam.mcs(t)`, take `s = t` (done)
+       - Otherwise `phi AND G(phi U psi) in fam.mcs(t)`, so `G(phi U psi) in fam.mcs(t)`
+       - By g_content propagation: `(phi U psi) in g_content(fam.mcs(t)) subset fam.mcs(r)` for all `r > t`
+       - At each `r in [t, s)`: `(phi U psi) in fam.mcs(r)`. Apply BX7 again: either `psi in fam.mcs(r)` (contradicts minimality of `s` if `r < s`) or `phi in fam.mcs(r)` (the guard we need)
+    4. Find the MINIMUM `s >= t` with `psi in fam.mcs(s)` -- may require well-ordering argument or direct construction
+    5. Note: step 4 may be unnecessary if we take the `s` from forward_F and prove the guard holds for `[t, s)` without minimality
+  - **Forward Since** `(phi S psi)`: Given `(phi S psi) in fam.mcs(t)`, need `exists s <= t, psi in fam.mcs(s) AND forall r in (s,t], phi in fam.mcs(r)`. Symmetric using backward_P and H-content.
 
 - [ ] Close sorry site 5: `dd_bfmcs_restricted_buc` (backward Until/Since coherence, line 3753)
-  - **Mathematical argument**: Given semantic witness pattern (psi at s, phi on guard for r in [t, s)), derive `(phi U psi) in fam.mcs(t)`.
-    1. At time `s`: `psi in fam.mcs(s)`. By BX8 (`refl_intro_until`): `psi -> (phi U psi)`. So `(phi U psi) in fam.mcs(s)`.
-    2. Backward induction from `s` to `t`: At each `r in [t, s)`, `phi in fam.mcs(r)` (guard hypothesis) and `(phi U psi) in fam.mcs(r+1)` (inductive hypothesis). Need to derive `(phi U psi) in fam.mcs(r)`.
-    3. Use BX4 (`connect_future`): `(phi U psi) -> H(F(phi U psi))` at `r+1`. Actually, need a different axiom.
-    4. Alternative: At `r`, `phi in fam.mcs(r)` and `F(psi) in fam.mcs(r)` (since `psi in fam.mcs(s)` and `s > r`). By BX12 (`F_until_equiv`): `F(psi) -> (top U psi)`. So `(top U psi) in fam.mcs(r)`. By left monotonicity (BX2): if `G(phi -> top)` holds (tautology), then `(phi U psi) in fam.mcs(r)` follows from `(top U psi)`. Actually BX2 gives `G(top -> phi) -> ((top U psi) -> (phi U psi))`, which requires `G(top -> phi)` = `G(phi)`. This does NOT hold in general.
-    5. Simpler approach: At `r`, `phi in fam.mcs(r)`. `psi in fam.mcs(s)` for `s > r`. `phi` holds on `[r, s)`. This is exactly the semantic condition for `(phi U psi)` at `r`. The restricted truth lemma (already proved) converts this semantic condition to syntactic membership. But we need the CHAIN-level membership, not the model-level truth.
-    6. This direction (backward Until coherence) may require the restricted parametric truth lemma to convert between semantic truth and MCS membership. Investigate the exact interface.
+  - **Backward Until**: Given semantic witness (psi at s, phi on guard for r in [t,s)), derive `(phi U psi) in fam.mcs(t)`:
+    1. Use the restricted parametric truth lemma to convert between semantic truth and MCS membership
+    2. The truth lemma for Until at `fam.mcs(t)` says: `(phi U psi) in fam.mcs(t)` iff `truth_at ... t (phi U psi)` iff `exists s >= t, psi at s AND phi on [t,s)`
+    3. The semantic witness IS the right-hand side, so `(phi U psi) in fam.mcs(t)` follows
+    4. Note: this requires the truth lemma to be applicable, which needs all coherence properties including the forward ones (circular?). Investigate whether the backward direction can be proved independently.
+  - **Alternative for backward Until**: Direct syntactic proof using BX axioms:
+    1. At time `s`: `psi in fam.mcs(s)`, so by BX8 (`refl_intro_until`): `(phi U psi) in fam.mcs(s)`
+    2. At time `s-1`: `phi in fam.mcs(s-1)` (guard) and `(phi U psi) in fam.mcs(s)` (from step 1). Need `(phi U psi) in fam.mcs(s-1)`.
+    3. Since `G(phi U psi) in fam.mcs(s-1)` iff `(phi U psi) in g_content(fam.mcs(s-1)) subset fam.mcs(s)` -- this is backwards. We need `(phi U psi)` to propagate BACKWARD, but g_content goes forward.
+    4. Use BX12 (`F_until_equiv`): `F(psi) -> (top U psi)`. At `s-1`, `F(psi) in fam.mcs(s-1)` (since `psi in fam.mcs(s)` and `s > s-1`). So `(top U psi) in fam.mcs(s-1)`. Need to strengthen `top` to `phi` -- requires BX2 left monotonicity with `G(phi)`, which does not hold in general.
+    5. This direction likely requires the restricted truth lemma. Wire through `RestrictedParametricTruthLemma`.
+  - **Backward Since**: Symmetric.
 
-- [ ] If backward Until coherence requires truth lemma conversion, wire through `RestrictedParametricTruthLemma` (already imported, sorry-free)
+- [ ] If backward Until coherence requires the truth lemma, ensure no circular dependency: the truth lemma needs forward coherence (proved in Phase 3) and backward coherence (being proved here). Check whether the truth lemma's Until case depends on backward Until coherence or only on forward Until coherence.
+
 - [ ] Run `grep -n sorry RootScopedChain.lean` to verify zero executable sorry
 - [ ] Run `lake build` to verify compilation
 
-**Timing**: 4 hours
+**Timing**: 3 hours
 
-**Depends on**: 4
+**Depends on**: 3
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- close sorry sites 5-6
@@ -241,6 +223,41 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 - `dd_bfmcs_restricted_fuc` compiles without sorry
 - `grep -n sorry RootScopedChain.lean` returns only comment-embedded occurrences (no executable sorry)
 - `lake build` succeeds
+
+---
+
+### Phase 5: ROAD_MAP Update and Final Verification [NOT STARTED]
+
+**Goal**: Update `specs/ROAD_MAP.md` with findings from Handoff 01 and Reports 27-29, and perform final verification of zero sorry.
+
+**Tasks**:
+- [ ] Add dead ends 27-30 to the "Dead Ends (Archived)" section:
+  - (27) DRM bounded_witness via single_step_forcing: negation completeness gap (Report 29, Findings 1, 11)
+  - (28) Full MCS bounded_witness: F-reflexivity blocks exit condition (Report 29, Finding 2)
+  - (29) DRM chain preventing perpetual deferral: relocates non-determinism (Report 29, Finding 3)
+  - (30) Semantic forward_F wired into existing chain: BX11 hijacking blocks `rr_fwd_chain_forward_F`; extended seed inconsistency; `F(psi) -> G(F(psi))` not a theorem (Handoff 01, Findings 1-3)
+- [ ] Update the "Current Strategy" subsection to describe per-formula witness approach
+- [ ] Update sorry line numbers in the "Active-Path Sorry Inventory" table if they have changed
+- [ ] Update the "Task 93: Progress and Infrastructure" subsection
+- [ ] Update the "last updated" timestamp
+- [ ] Run final verification:
+  - `lake build` succeeds
+  - `grep -n sorry RootScopedChain.lean` shows zero executable sorry
+  - `lean_verify` on `bx_completeness` shows only `propext`, `Classical.choice`, `Quot.sound`
+- [ ] Verify no new sorry introduced in any active-path file
+
+**Timing**: 1 hour (reduced from v29's 1.5 hours since ROAD_MAP update is lower risk after implementation)
+
+**Depends on**: 4
+
+**Files to modify**:
+- `specs/ROAD_MAP.md` -- dead ends, strategy section, sorry line numbers, progress notes
+
+**Verification**:
+- Dead ends 27-30 appear in the Dead Ends section
+- Strategy section references "per-formula witness" approach
+- All executable sorry eliminated from `RootScopedChain.lean`
+- `lake build` succeeds
 - `lean_verify` on `bx_completeness` shows only `propext`, `Classical.choice`, `Quot.sound`
 
 ---
@@ -248,26 +265,26 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 ## Testing & Validation
 
 - [ ] `lake build` succeeds at each phase boundary
-- [ ] `grep -n sorry Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` returns zero executable sorry (after Phase 5)
+- [ ] `grep -n sorry Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` returns zero executable sorry (after Phase 4)
 - [ ] `lean_verify` on `dd_countermodel` shows no sorry-dependent axioms
 - [ ] `lean_verify` on `bx_completeness` shows only `propext`, `Classical.choice`, `Quot.sound`
 - [ ] No new sorry introduced in any active-path file
-- [ ] ROAD_MAP.md dead ends 27-29 present and strategy section updated (after Phase 1)
+- [ ] ROAD_MAP.md dead ends 27-30 present and strategy section updated (after Phase 5)
 
 ## Artifacts & Outputs
 
-- `specs/ROAD_MAP.md` -- updated with Report 29 findings (Phase 1)
-- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- 6 sorry sites closed (Phases 2-5)
+- `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` -- 6 sorry sites closed (Phases 2-4)
+- `specs/ROAD_MAP.md` -- updated with Handoff 01 and Report 29 findings (Phase 5)
 - `specs/093_complete_bxcanonical_embedding/plans/29_bxcanonical-embedding.md` -- this plan
 
 ## Rollback/Contingency
 
-1. **Full success (all 6 sorries closed via semantic forward_F)**: Target outcome. No rollback needed.
+1. **Full success (all 6 sorries closed via per-formula witnesses)**: Target outcome. No rollback needed.
 
-2. **Semantic forward_F succeeds but Until/Since coherence blocked (~20%)**: Keep forward_F/backward_P/restricted_tc proofs (reduces sorry count from 6 to 2). Spawn focused follow-up task for Until/Since coherence using quasimodel infrastructure.
+2. **Per-formula witnesses work for forward_F/backward_P but Until/Since coherence blocked (~25%)**: Keep temporal coherence proofs (reduces sorry count from 6 to 2). Spawn focused follow-up task for Until/Since using quasimodel infrastructure or restricted truth lemma approach.
 
-3. **Semantic forward_F cannot wire into dd_fmcs interface (~25%)**: Switch to quasimodel bridge approach (Report 29, Component 2). Build Int-indexed FMCS families from sorry-free Quasimodel infrastructure. Estimated 600-1000 LOC, handles forward_F and Until coherence together.
+3. **Per-formula witnesses cannot be wired into same-family membership (~30%)**: Switch to quasimodel bridge approach (Report 29, Component 2). Build Int-indexed FMCS families from sorry-free Quasimodel infrastructure. Estimated 600-1000 LOC, handles forward_F and Until coherence together.
 
-4. **DRM-specific bounded_witness as intermediate fallback (~15%)**: If semantic approach is too invasive but dd_fmcs restructuring too complex, prove DRM-specific `single_step_forcing` + `bounded_witness` within deferralClosure. Adds ~150 LOC per Report 29 Component 3.
+4. **Demand-driven chain restructuring too invasive (~20%)**: If replacing `enriched_fwd_step` with `targeted_fwd_step` within deferralClosure scope creates cascading type changes, consider a lighter wrapper that proves the coherence properties post-hoc using `bx_forward_witness` at the BFMCS level without modifying the chain.
 
-5. **Full rollback**: `git checkout -- Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` restores the current state. ROAD_MAP.md changes (Phase 1) are independently valuable and should be kept.
+5. **Full rollback**: `git checkout -- Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean` restores the current state. ROAD_MAP.md changes (Phase 5) are independently valuable and should be kept.
