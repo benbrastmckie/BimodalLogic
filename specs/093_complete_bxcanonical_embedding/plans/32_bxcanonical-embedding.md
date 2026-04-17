@@ -1,7 +1,7 @@
 # Implementation Plan: Quasimodel-Derived Chain for BXCanonical Completeness (v32)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 10 hours
 - **Dependencies**: None (task 102 completed; truth lemma sorry-free)
 - **Research Inputs**: reports/32_team-research.md

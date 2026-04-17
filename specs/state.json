@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-17T04:31:00Z",
+      "last_updated": "2026-04-17T04:55:54Z",
       "related_tasks": [
         92,
         95
@@ -21,7 +21,7 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776399924_a3b2f7",
+      "session_id": "sess_1776400347_4cae4d",
       "researched": "2026-04-17T04:22:02Z",
       "artifacts": [
         {
@@ -205,11 +205,6 @@
           "summary": "Team research with 4 teammates: quasimodel bridge recommended, inverted dependency order identified, 3 approaches rejected"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/summaries/30_bxcanonical-embedding-summary.md",
-          "type": "summary",
-          "summary": "Phase 1 completed (archive dead code, update ROAD_MAP). Phase 2 blocked by forward_F obstruction."
-        },
-        {
           "path": "specs/093_complete_bxcanonical_embedding/reports/31_forward-f-blocker.md",
           "type": "research_report",
           "summary": "Deep analysis of forward_F blocker: BX11 perpetual deferral, subset lattice termination, quasimodel-derived chain"
@@ -223,11 +218,16 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/32_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "Implementation plan v32 with 4 phases to close all 6 RootScopedChain.lean sorries via defect-driven chain construction replacing round-robin approach"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/summaries/32_bxcanonical-embedding-summary.md",
+          "type": "summary",
+          "summary": "Implementation analysis blocked on forward_F mathematical obstruction; all 6 sorries remain open"
         }
       ],
       "next_artifact_number": 33,
       "started": "2026-04-13T07:28:59Z",
-      "resume_phase": 2,
+      "resume_phase": 1,
       "memory_candidates": [
         {
           "content": "In the BXCanonical completeness proof, the enriched chain with BX11 fold preserves F-obligations forever but BX11 perpetual deferral prevents guaranteeing a specific formula is eventually resolved. This is the irreducible obstruction after 30 research rounds.",
@@ -263,6 +263,41 @@
             "forward_F",
             "subset_lattice",
             "transient_defects"
+          ]
+        },
+        {
+          "content": "The BX11 fold (enriched_fwd_step/resolving_enriched_fwd_exists) preserves F-obligations at every step via disjunctive results, but .choose from the existential can perpetually defer any specific formula. The defect count does NOT decrease because phi_in_mcs_imp_F_phi ensures F(psi) persists whenever psi is present.",
+          "category": "INSIGHT",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "forward_F",
+            "BX11",
+            "perpetual_deferral",
+            "defect_count",
+            "enriched_fwd_step"
+          ]
+        },
+        {
+          "content": "backward_until_from_step parameterizes backward Until coherence over a step transfer property that is NOT derivable from bare FMCS structure. The step transfer depends on either forward_F or chain-level enrichment.",
+          "category": "INSIGHT",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "step_transfer",
+            "backward_until",
+            "UntilSinceCoherence",
+            "g_content"
+          ]
+        },
+        {
+          "content": "The 6 sorry sites in RootScopedChain.lean form a dependency diamond: sorry 1 and sorry 3 are independent roots. All 6 ultimately depend on solving the forward_F chain construction problem.",
+          "category": "PATTERN",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "sorry_dependency",
+            "RootScopedChain",
+            "forward_F",
+            "backward_P",
+            "diamond"
           ]
         }
       ]
