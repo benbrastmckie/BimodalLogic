@@ -130,6 +130,7 @@ technical_debt:
   - [093_complete_bxcanonical_embedding/reports/28_depth-zero-base-case.md]
   - [093_complete_bxcanonical_embedding/reports/31_forward-f-blocker.md]
   - [093_complete_bxcanonical_embedding/reports/33_team-research.md]
+  - [093_complete_bxcanonical_embedding/reports/37_team-research.md]
 - **Plan**:
     - [02_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/02_bxcanonical-embedding.md)
     - [04_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/04_bxcanonical-embedding.md)
