@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 1: Architecture Spike -- Verify Per-Formula Witness Approach [NOT STARTED]
+### Phase 1: Architecture Spike -- Verify Per-Formula Witness Approach [BLOCKED]
 
 **Goal**: Determine the exact interface needed to close `dd_bfmcs_restricted_tc` and whether `bx_forward_witness` output can satisfy it. This is the critical go/no-go decision point for the approach.
 
