@@ -441,4 +441,157 @@ noncomputable def since_eventuality_resolution
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
 
+/-! ## SubformulaClosure Temporal Closure Properties
+
+The Quasimodel `SubformulaClosure` (with G/H enrichment and negation pairing)
+satisfies the key closure property needed by hintikka_step:
+if `G(χ) ∈ Sigma` or `H(χ) ∈ Sigma`, then `χ ∈ Sigma`.
+Similarly, if `(φ U ψ) ∈ Sigma`, then `φ, ψ ∈ Sigma`.
+
+These are essential for the oracle construction: when we project a BXPoint
+to a Sigma-signature, G-propagation and Until-propagation at the BXPoint
+level must land back inside Sigma. -/
+
+/-- `G(χ) ∈ subformulas target → χ ∈ subformulas target`. -/
+private theorem subformulas_G_unwrap {target χ : Formula}
+    (h : Formula.all_future χ ∈ subformulas target) :
+    χ ∈ subformulas target := by
+  induction target with
+  | atom _ => simp [subformulas] at h
+  | bot => simp [subformulas] at h
+  | imp a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · exact Or.inr (Or.inl (iha ha))
+    · exact Or.inr (Or.inr (ihb hb))
+  | box a ih =>
+    simp [subformulas] at h ⊢; exact Or.inr (ih h)
+  | all_future a ih =>
+    simp [subformulas] at h ⊢; rcases h with rfl | ha
+    · exact Or.inr (self_mem_subformulas _)
+    · exact Or.inr (ih ha)
+  | all_past a ih =>
+    simp [subformulas] at h ⊢; exact Or.inr (ih h)
+  | untl a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · exact Or.inr (Or.inl (iha ha))
+    · exact Or.inr (Or.inr (ihb hb))
+  | snce a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · exact Or.inr (Or.inl (iha ha))
+    · exact Or.inr (Or.inr (ihb hb))
+
+/-- `H(χ) ∈ subformulas target → χ ∈ subformulas target`. -/
+private theorem subformulas_H_unwrap {target χ : Formula}
+    (h : Formula.all_past χ ∈ subformulas target) :
+    χ ∈ subformulas target := by
+  induction target with
+  | atom _ => simp [subformulas] at h
+  | bot => simp [subformulas] at h
+  | imp a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · exact Or.inr (Or.inl (iha ha))
+    · exact Or.inr (Or.inr (ihb hb))
+  | box a ih =>
+    simp [subformulas] at h ⊢; exact Or.inr (ih h)
+  | all_future a ih =>
+    simp [subformulas] at h ⊢; exact Or.inr (ih h)
+  | all_past a ih =>
+    simp [subformulas] at h ⊢; rcases h with rfl | ha
+    · exact Or.inr (self_mem_subformulas _)
+    · exact Or.inr (ih ha)
+  | untl a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · exact Or.inr (Or.inl (iha ha))
+    · exact Or.inr (Or.inr (ihb hb))
+  | snce a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · exact Or.inr (Or.inl (iha ha))
+    · exact Or.inr (Or.inr (ihb hb))
+
+/-- `(φ U ψ) ∈ subformulas target → φ, ψ ∈ subformulas target`. -/
+private theorem subformulas_untl_unwrap {target φ ψ : Formula}
+    (h : Formula.untl φ ψ ∈ subformulas target) :
+    φ ∈ subformulas target ∧ ψ ∈ subformulas target := by
+  induction target with
+  | atom _ => simp [subformulas] at h
+  | bot => simp [subformulas] at h
+  | imp a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · obtain ⟨l, r⟩ := iha ha; exact ⟨Or.inr (Or.inl l), Or.inr (Or.inl r)⟩
+    · obtain ⟨l, r⟩ := ihb hb; exact ⟨Or.inr (Or.inr l), Or.inr (Or.inr r)⟩
+  | box a ih =>
+    simp [subformulas] at h ⊢
+    obtain ⟨l, r⟩ := ih h; exact ⟨Or.inr l, Or.inr r⟩
+  | all_future a ih =>
+    simp [subformulas] at h ⊢
+    obtain ⟨l, r⟩ := ih h; exact ⟨Or.inr l, Or.inr r⟩
+  | all_past a ih =>
+    simp [subformulas] at h ⊢
+    obtain ⟨l, r⟩ := ih h; exact ⟨Or.inr l, Or.inr r⟩
+  | untl a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ⟨rfl, rfl⟩ | ha | hb
+    · exact ⟨Or.inr (Or.inl (self_mem_subformulas φ)),
+             Or.inr (Or.inr (self_mem_subformulas ψ))⟩
+    · obtain ⟨l, r⟩ := iha ha; exact ⟨Or.inr (Or.inl l), Or.inr (Or.inl r)⟩
+    · obtain ⟨l, r⟩ := ihb hb; exact ⟨Or.inr (Or.inr l), Or.inr (Or.inr r)⟩
+  | snce a b iha ihb =>
+    simp [subformulas] at h ⊢; rcases h with ha | hb
+    · obtain ⟨l, r⟩ := iha ha; exact ⟨Or.inr (Or.inl l), Or.inr (Or.inl r)⟩
+    · obtain ⟨l, r⟩ := ihb hb; exact ⟨Or.inr (Or.inr l), Or.inr (Or.inr r)⟩
+
+/-- Classify membership in `ghEnrichment`. -/
+private theorem ghEnrichment_mem_cases {S : Finset Formula} {f : Formula}
+    (h : f ∈ ghEnrichment S) :
+    f ∈ S ∨ (∃ g ∈ S, f = Formula.all_future g) ∨ (∃ g ∈ S, f = Formula.all_past g) := by
+  simp only [ghEnrichment, Finset.mem_union, Finset.mem_image] at h
+  rcases h with (h_sub | ⟨g, hg, rfl⟩) | ⟨g, hg, rfl⟩
+  · exact Or.inl h_sub
+  · exact Or.inr (Or.inl ⟨g, hg, rfl⟩)
+  · exact Or.inr (Or.inr ⟨g, hg, rfl⟩)
+
+/-- Classify membership in `SubformulaClosure`. -/
+private theorem SubformulaClosure_mem_cases {target f : Formula}
+    (h : f ∈ SubformulaClosure target) :
+    f ∈ ghEnrichment (subformulas target) ∨
+    (∃ g ∈ ghEnrichment (subformulas target), f = Formula.neg g) := by
+  simp only [SubformulaClosure, Finset.mem_union, Finset.mem_image] at h
+  rcases h with h_base | ⟨g, hg, rfl⟩
+  · exact Or.inl h_base
+  · exact Or.inr ⟨g, hg, rfl⟩
+
+theorem SubformulaClosure_G_closed {target χ : Formula}
+    (h : Formula.all_future χ ∈ SubformulaClosure target) :
+    χ ∈ SubformulaClosure target := by
+  rcases SubformulaClosure_mem_cases h with h_base | ⟨g, _, hg_eq⟩
+  · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, hf, hfeq⟩ | ⟨f, _, hfeq⟩
+    · exact subformula_mem (subformulas_G_unwrap h_sub)
+    · have : χ = f := by injection hfeq
+      subst this; exact subformula_mem hf
+    · cases hfeq -- G(χ) = H(f) impossible
+  · simp [Formula.neg] at hg_eq -- G(χ) = neg(g) impossible
+
+/-- If `H(χ) ∈ SubformulaClosure target`, then `χ ∈ SubformulaClosure target`. -/
+theorem SubformulaClosure_H_closed {target χ : Formula}
+    (h : Formula.all_past χ ∈ SubformulaClosure target) :
+    χ ∈ SubformulaClosure target := by
+  rcases SubformulaClosure_mem_cases h with h_base | ⟨g, _, hg_eq⟩
+  · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, _, hfeq⟩ | ⟨f, hf, hfeq⟩
+    · exact subformula_mem (subformulas_H_unwrap h_sub)
+    · cases hfeq -- H(χ) = G(f) impossible
+    · have : χ = f := by injection hfeq
+      subst this; exact subformula_mem hf
+  · simp [Formula.neg] at hg_eq -- H(χ) = neg(g) impossible
+
+/-- If `(φ U ψ) ∈ SubformulaClosure target`, then `φ, ψ ∈ SubformulaClosure target`. -/
+theorem SubformulaClosure_untl_closed {target φ ψ : Formula}
+    (h : Formula.untl φ ψ ∈ SubformulaClosure target) :
+    φ ∈ SubformulaClosure target ∧ ψ ∈ SubformulaClosure target := by
+  rcases SubformulaClosure_mem_cases h with h_base | ⟨g, _, hg_eq⟩
+  · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, _, hfeq⟩ | ⟨f, _, hfeq⟩
+    · obtain ⟨l, r⟩ := subformulas_untl_unwrap h_sub
+      exact ⟨subformula_mem l, subformula_mem r⟩
+    · cases hfeq -- (φ U ψ) = G(f) impossible
+    · cases hfeq -- (φ U ψ) = H(f) impossible
+  · simp [Formula.neg] at hg_eq -- (φ U ψ) = neg(g) impossible
+
 end Bimodal.Metalogic.BXCanonical.Quasimodel
