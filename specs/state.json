@@ -13,7 +13,7 @@
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-17T15:38:23Z",
+      "last_updated": "2026-04-17T17:09:06Z",
       "related_tasks": [
         92,
         95
@@ -230,11 +230,6 @@
           "summary": "Team research with 4 teammates: BX12 reduction discovery, quasimodel audit, Until/Since coherence path"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/summaries/35_bxcanonical-embedding-summary.md",
-          "type": "summary",
-          "summary": "Phase 1 blocked: backward Until step transfer not derivable in BX, forward Until has same perpetual deferral. Three resolution paths identified."
-        },
-        {
           "path": "specs/093_complete_bxcanonical_embedding/reports/36_teammate-a-findings.md",
           "type": "research",
           "summary": "Quasimodel bridge deep study: LOW confidence, fatal finite-to-Int gap, HintikkaStepOracle never constructed, forward_F master bottleneck"
@@ -248,6 +243,11 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/36_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "Implementation plan v36: oracle construction + quasimodel-backed BFMCS replacing dd_bfmcs, 5 phases, 10 hours"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/summaries/36_bxcanonical-embedding-summary.md",
+          "type": "summary",
+          "summary": "Partial Phase 1: SubformulaClosure temporal closure properties (G-closed, H-closed, Until-closed)"
         }
       ],
       "next_artifact_number": 37,
@@ -347,6 +347,28 @@
             "restricted-coherence",
             "BX12-reduction",
             "perpetual-deferral"
+          ]
+        },
+        {
+          "content": "SubformulaClosure (Quasimodel) is closed under temporal unwrapping: G(chi) in Sigma implies chi in Sigma, and similarly for H and Until subformulas.",
+          "category": "TECHNIQUE",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "SubformulaClosure",
+            "temporal-closure",
+            "G-closed",
+            "hintikka-step"
+          ]
+        },
+        {
+          "content": "Until formula propagation through bx_le is fundamentally blocked: bx_le w v means g_content(w) subset v, which propagates G(chi) but Until formulas do NOT become G(Until) so they do not propagate. hintikka_step Until propagation clause cannot be satisfied using standard bx_forward_witness alone.",
+          "category": "INSIGHT",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "Until-propagation",
+            "bx_le",
+            "hintikka-step",
+            "oracle-construction"
           ]
         }
       ]

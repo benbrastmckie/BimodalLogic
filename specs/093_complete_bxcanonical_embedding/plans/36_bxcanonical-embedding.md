@@ -66,7 +66,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Build HintikkaStepOracle from bx_forward_witness [IN PROGRESS]
+### Phase 1: Build HintikkaStepOracle from bx_forward_witness [PARTIAL]
 
 **Goal**: Construct `HintikkaStepOracle` for arbitrary Until formulas `(phi U psi)` using `bx_forward_witness`, and the symmetric `HintikkaStepOracleSince` using `bx_backward_witness`. This is the central novel construction.
 
