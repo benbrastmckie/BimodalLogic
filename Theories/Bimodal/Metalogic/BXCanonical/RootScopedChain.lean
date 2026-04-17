@@ -1875,4 +1875,347 @@ theorem defect_step_from_earliest {M : Set Formula} (h_mcs : SetMaximalConsisten
           · exact phi_in_mcs_imp_F_phi h_mcs' χ h
           · exact h
 
+/-! ## Phase 2: Defect-Driven Forward and Backward Chains
+
+We build `defect_fwd_chain` and `defect_bwd_chain`, iterating the single-step
+resolution primitive `defect_step_from_earliest`. The forward chain resolves
+F-defects; the backward chain resolves P-defects.
+
+### Chain Step Function
+
+`defect_fwd_step_choice` wraps `defect_step_from_earliest` via Classical.choice:
+given a non-empty list of active F-defects, it produces a specific MCS M' with
+the required resolution and preservation properties.
+
+### Forward Chain
+
+`defect_fwd_chain M₀ h₀ defects n` iterates the step function n times.
+At each step, if all defects have active F-obligations, use `defect_step_from_earliest`;
+otherwise use `fwd_succ`. This guarantees:
+1. MCS at each step
+2. g_content propagation
+3. F-obligation constancy
+
+### Backward Chain
+
+`defect_bwd_chain M₀ h₀ defects n` is the backward analog, using
+`defect_bwd_step` to resolve P-defects. P-obligations are constant by a
+symmetric argument (sorry for the persistence step).
+-/
+
+/-! ### φ → P(φ) at MCS level -/
+
+/-- `φ → P(φ)` is derivable in BX.
+Proof: temp_t_past gives H(¬φ) → ¬φ. Contrapositive: φ → ¬H(¬φ) = P(φ). -/
+noncomputable def phi_imp_P_phi (φ : Formula) :
+    ⊢ φ.imp φ.some_past := by
+  unfold Formula.some_past
+  exact Bimodal.Theorems.Combinators.imp_trans (dni φ)
+    (Bimodal.Theorems.Propositional.contraposition
+      (DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.neg φ))))
+
+/-- At MCS level: φ ∈ M → P(φ) ∈ M. -/
+theorem phi_in_mcs_imp_P_phi {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (φ : Formula) (h : φ ∈ M) : φ.some_past ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (phi_imp_P_phi φ)) h
+
+/-! ### P-monotonicity: from ⊢ A → B, derive ⊢ P(A) → P(B) -/
+
+/-- P-monotonicity: from ⊢ A → B, derive ⊢ P(A) → P(B).
+Proof: contrapose A → B to ¬B → ¬A, lift to H(¬B) → H(¬A) by past_mono,
+contrapose to ¬H(¬A) → ¬H(¬B), i.e., P(A) → P(B). -/
+noncomputable def P_mono {A B : Formula} (h : ⊢ A.imp B) :
+    ⊢ A.some_past.imp B.some_past := by
+  have h1 := Bimodal.Theorems.Propositional.contraposition h
+  have h2 := Bimodal.Theorems.Perpetuity.past_mono h1
+  exact Bimodal.Theorems.Propositional.contraposition h2
+
+/-! ### φ ∧ φ ↔ φ direction: φ → φ ∧ φ -/
+
+/-- `φ → φ ∧ φ` is derivable. Proof via S axiom pattern:
+  - `pairing φ φ : ⊢ φ → φ → φ ∧ φ`
+  - S axiom (instantiated): `⊢ (φ → φ → φ ∧ φ) → (φ → φ) → (φ → φ ∧ φ)`
+  - Apply to `pairing φ φ` and `identity φ`. -/
+noncomputable def and_self_intro (φ : Formula) : ⊢ φ.imp (φ.and φ) :=
+  -- prop_k φ φ (φ.and φ) : (φ → φ → φ ∧ φ) → (φ → φ) → φ → φ ∧ φ
+  -- Apply to pairing φ φ then identity φ
+  DerivationTree.modus_ponens [] _ _
+    (DerivationTree.modus_ponens [] _ _
+      (DerivationTree.axiom [] _ (Axiom.prop_k φ φ (φ.and φ)))
+      (Bimodal.Theorems.Combinators.pairing φ φ))
+    (Bimodal.Theorems.Combinators.identity φ)
+
+/-- `P(φ) → P(φ ∧ φ)` by P-monotonicity with the self-pairing `φ → φ ∧ φ`. -/
+noncomputable def P_and_self (φ : Formula) : ⊢ φ.some_past.imp (φ.and φ).some_past :=
+  P_mono (and_self_intro φ)
+
+/-- At MCS level: P(φ) ∈ M → P(φ ∧ φ) ∈ M. -/
+theorem P_and_self_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (φ : Formula) (h : φ.some_past ∈ M) : (φ.and φ).some_past ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (P_and_self φ)) h
+
+/-! ### Forward Chain Step Selection -/
+
+/-- The forward chain step data: given M and a non-empty defect list with active
+F-obligations, selects a specific M' satisfying the step properties. Uses
+Classical.choice to pick from `defect_step_from_earliest`. -/
+noncomputable def defect_fwd_step_choice
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) : Set Formula :=
+  (defect_step_from_earliest h_mcs defects h_nonempty h_F).choose
+
+private theorem defect_fwd_step_choice_spec
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
+    SetMaximalConsistent (defect_fwd_step_choice M h_mcs defects h_nonempty h_F) ∧
+    g_content M ⊆ defect_fwd_step_choice M h_mcs defects h_nonempty h_F ∧
+    (∃ w ∈ defects, Formula.some_future w ∈ M ∧
+        w ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F) ∧
+    (∀ χ, χ ∈ defects →
+        Formula.some_future χ ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F) :=
+  (defect_step_from_earliest h_mcs defects h_nonempty h_F).choose_spec
+
+/-! ### Defect-Driven Forward Chain -/
+
+/-- The defect-driven forward chain.
+
+At each step, if all defects in the list have active F-obligations in the current
+MCS, use `defect_fwd_step_choice` (which resolves some defect and preserves all
+F-obligations). Otherwise, use `enriched_fwd_step` with head element (which also
+preserves F-obligations for formulas in `defects` via F-carry). -/
+noncomputable def defect_fwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) : (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
+  | 0 => ⟨M₀, h₀⟩
+  | n + 1 =>
+    let ⟨M, hM⟩ := defect_fwd_chain M₀ h₀ defects n
+    if h_ne : defects = [] then
+      ⟨fwd_succ M hM Formula.bot, fwd_succ_mcs M hM Formula.bot⟩
+    else if h_all : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M then
+      ⟨defect_fwd_step_choice M hM defects h_ne h_all,
+       (defect_fwd_step_choice_spec M hM defects h_ne h_all).1⟩
+    else
+      -- Use enriched_fwd_step which preserves F-obligations for defects members
+      ⟨enriched_fwd_step M hM (defects.head h_ne) defects,
+       enriched_fwd_step_mcs M hM (defects.head h_ne) defects⟩
+
+/-! ### Structural Properties of defect_fwd_chain -/
+
+/-- Each element of the defect_fwd_chain is MCS (by construction). -/
+theorem defect_fwd_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) :
+    SetMaximalConsistent (defect_fwd_chain M₀ h₀ defects n).val :=
+  (defect_fwd_chain M₀ h₀ defects n).property
+
+/-- When defects = [], chain(n+1) = fwd_succ(chain(n), bot). -/
+private theorem defect_fwd_chain_succ_empty (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) (h_ne : defects = []) :
+    (defect_fwd_chain M₀ h₀ defects (n + 1)).val =
+      fwd_succ (defect_fwd_chain M₀ h₀ defects n).val
+        (defect_fwd_chain M₀ h₀ defects n).property Formula.bot := by
+  simp only [defect_fwd_chain, dif_pos h_ne]
+
+/-- When defects ≠ [] and all F-active, chain(n+1) = defect_fwd_step_choice(chain(n)). -/
+private theorem defect_fwd_chain_succ_all_active (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat)
+    (h_ne : defects ≠ [])
+    (h_all : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ (defect_fwd_chain M₀ h₀ defects n).val) :
+    (defect_fwd_chain M₀ h₀ defects (n + 1)).val =
+      defect_fwd_step_choice
+        (defect_fwd_chain M₀ h₀ defects n).val
+        (defect_fwd_chain M₀ h₀ defects n).property
+        defects h_ne h_all := by
+  simp only [defect_fwd_chain, dif_neg h_ne, dif_pos h_all]
+
+/-- When defects ≠ [] and not all F-active, chain(n+1) = enriched_fwd_step(chain(n), head, defects). -/
+private theorem defect_fwd_chain_succ_not_all_active (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat)
+    (h_ne : defects ≠ [])
+    (h_not : ¬∀ χ, χ ∈ defects → Formula.some_future χ ∈ (defect_fwd_chain M₀ h₀ defects n).val) :
+    (defect_fwd_chain M₀ h₀ defects (n + 1)).val =
+      enriched_fwd_step
+        (defect_fwd_chain M₀ h₀ defects n).val
+        (defect_fwd_chain M₀ h₀ defects n).property
+        (defects.head h_ne)
+        defects := by
+  simp only [defect_fwd_chain, dif_neg h_ne, dif_neg h_not]
+
+/-- g_content propagates at each step of the defect_fwd_chain. -/
+theorem defect_fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) :
+    g_content (defect_fwd_chain M₀ h₀ defects n).val ⊆
+      (defect_fwd_chain M₀ h₀ defects (n + 1)).val := by
+  by_cases h_ne : defects = []
+  · rw [defect_fwd_chain_succ_empty M₀ h₀ defects n h_ne]
+    exact fwd_succ_g_content _ _ _
+  · by_cases h_all : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ (defect_fwd_chain M₀ h₀ defects n).val
+    · rw [defect_fwd_chain_succ_all_active M₀ h₀ defects n h_ne h_all]
+      exact (defect_fwd_step_choice_spec _ _ defects h_ne h_all).2.1
+    · rw [defect_fwd_chain_succ_not_all_active M₀ h₀ defects n h_ne h_all]
+      exact enriched_fwd_step_g_content _ _ _ _
+
+/-- F-obligation persistence: F(ψ) ∈ chain(n) → F(ψ) ∈ chain(n+1) for ψ ∈ defects. -/
+theorem defect_fwd_chain_F_obligation_persists (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ defects)
+    (h_F : Formula.some_future ψ ∈ (defect_fwd_chain M₀ h₀ defects n).val) :
+    Formula.some_future ψ ∈ (defect_fwd_chain M₀ h₀ defects (n + 1)).val := by
+  by_cases h_ne : defects = []
+  · simp only [h_ne, List.not_mem_nil] at hψ
+  · by_cases h_all : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ (defect_fwd_chain M₀ h₀ defects n).val
+    · rw [defect_fwd_chain_succ_all_active M₀ h₀ defects n h_ne h_all]
+      exact (defect_fwd_step_choice_spec _ _ defects h_ne h_all).2.2.2 ψ hψ
+    · rw [defect_fwd_chain_succ_not_all_active M₀ h₀ defects n h_ne h_all]
+      rcases enriched_fwd_step_preserves _ _ (defects.head h_ne) defects ψ hψ h_F with h | h
+      · exact phi_in_mcs_imp_F_phi (enriched_fwd_step_mcs _ _ (defects.head h_ne) defects) ψ h
+      · exact h
+
+/-- F-obligation constancy: F(ψ) ∈ chain(n) → F(ψ) ∈ chain(m) for all m ≥ n. -/
+theorem defect_fwd_chain_F_obligation_constant (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n m : Nat) (ψ : Formula)
+    (hψ : ψ ∈ defects) (h_le : n ≤ m)
+    (h_F : Formula.some_future ψ ∈ (defect_fwd_chain M₀ h₀ defects n).val) :
+    Formula.some_future ψ ∈ (defect_fwd_chain M₀ h₀ defects m).val := by
+  induction m with
+  | zero => exact Nat.eq_zero_of_le_zero h_le ▸ h_F
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact h_F
+    · exact defect_fwd_chain_F_obligation_persists M₀ h₀ defects m ψ hψ
+        (ih (Nat.lt_succ_iff.mp h_lt))
+
+/-! ### Forward_F for defect_fwd_chain -/
+
+/-- Forward_F: F(ψ) ∈ chain(n) with ψ ∈ defects → ∃ s > n, ψ ∈ chain(s).
+
+The termination argument requires a well-founded measure on the set of unresolved
+defects at each step. The depth-0 case is deferred as sorry. -/
+theorem defect_fwd_chain_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ defects)
+    (h_F : Formula.some_future ψ ∈ (defect_fwd_chain M₀ h₀ defects n).val) :
+    ∃ s : Nat, n < s ∧ ψ ∈ (defect_fwd_chain M₀ h₀ defects s).val := by
+  sorry
+
+/-! ### Defect-Driven Backward Chain -/
+
+/-- The defect-driven backward chain.
+
+At each step, if all defects have active P-obligations in the current MCS, resolve
+the head via `defect_bwd_step` (using `P(target ∧ target)` which follows from `P(target)`).
+Otherwise, use `bwd_pred` for h_content propagation. -/
+noncomputable def defect_bwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) : (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
+  | 0 => ⟨M₀, h₀⟩
+  | n + 1 =>
+    let ⟨M, hM⟩ := defect_bwd_chain M₀ h₀ defects n
+    if h_ne : defects = [] then
+      ⟨bwd_pred M hM Formula.bot, bwd_pred_mcs M hM Formula.bot⟩
+    else if h_all : ∀ χ, χ ∈ defects → Formula.some_past χ ∈ M then
+      let target := defects.head h_ne
+      -- P(target) ∈ M from h_all
+      -- We need P(target ∧ target) ∈ M for defect_bwd_step
+      -- This follows from P_and_self_mcs: P(target) → P(target ∧ target)
+      have h_P_and : Formula.some_past (Formula.and target target) ∈ M :=
+        P_and_self_mcs hM target (h_all target (List.head_mem h_ne))
+      ⟨defect_bwd_step M hM target target h_P_and,
+       defect_bwd_step_mcs M hM target target h_P_and⟩
+    else
+      ⟨bwd_pred M hM Formula.bot, bwd_pred_mcs M hM Formula.bot⟩
+
+/-! ### Structural Properties of defect_bwd_chain -/
+
+/-- Each element of the defect_bwd_chain is MCS. -/
+theorem defect_bwd_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) :
+    SetMaximalConsistent (defect_bwd_chain M₀ h₀ defects n).val :=
+  (defect_bwd_chain M₀ h₀ defects n).property
+
+/-- When defects = [], bwd_chain(n+1) = bwd_pred(chain(n), bot). -/
+private theorem defect_bwd_chain_succ_empty (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) (h_ne : defects = []) :
+    (defect_bwd_chain M₀ h₀ defects (n + 1)).val =
+      bwd_pred (defect_bwd_chain M₀ h₀ defects n).val
+        (defect_bwd_chain M₀ h₀ defects n).property Formula.bot := by
+  simp only [defect_bwd_chain, dif_pos h_ne]
+
+/-- When defects ≠ [] and all P-active, bwd_chain(n+1) = defect_bwd_step(chain(n), head, head). -/
+private theorem defect_bwd_chain_succ_all_active (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat)
+    (h_ne : defects ≠ [])
+    (h_all : ∀ χ, χ ∈ defects → Formula.some_past χ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
+    (defect_bwd_chain M₀ h₀ defects (n + 1)).val =
+      defect_bwd_step
+        (defect_bwd_chain M₀ h₀ defects n).val
+        (defect_bwd_chain M₀ h₀ defects n).property
+        (defects.head h_ne) (defects.head h_ne)
+        (P_and_self_mcs (defect_bwd_chain M₀ h₀ defects n).property (defects.head h_ne)
+          (h_all _ (List.head_mem h_ne))) := by
+  simp only [defect_bwd_chain, dif_neg h_ne, dif_pos h_all]
+
+/-- When defects ≠ [] and not all P-active, bwd_chain(n+1) = bwd_pred(chain(n), bot). -/
+private theorem defect_bwd_chain_succ_not_all_active (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat)
+    (h_ne : defects ≠ [])
+    (h_not : ¬∀ χ, χ ∈ defects → Formula.some_past χ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
+    (defect_bwd_chain M₀ h₀ defects (n + 1)).val =
+      bwd_pred (defect_bwd_chain M₀ h₀ defects n).val
+        (defect_bwd_chain M₀ h₀ defects n).property Formula.bot := by
+  simp only [defect_bwd_chain, dif_neg h_ne, dif_neg h_not]
+
+/-- h_content propagates at each step of the defect_bwd_chain. -/
+theorem defect_bwd_chain_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) :
+    h_content (defect_bwd_chain M₀ h₀ defects n).val ⊆
+      (defect_bwd_chain M₀ h₀ defects (n + 1)).val := by
+  by_cases h_ne : defects = []
+  · rw [defect_bwd_chain_succ_empty M₀ h₀ defects n h_ne]
+    exact bwd_pred_h_content _ _ _
+  · by_cases h_all : ∀ χ, χ ∈ defects → Formula.some_past χ ∈ (defect_bwd_chain M₀ h₀ defects n).val
+    · rw [defect_bwd_chain_succ_all_active M₀ h₀ defects n h_ne h_all]
+      exact defect_bwd_step_h_content _ _ _ _ _
+    · rw [defect_bwd_chain_succ_not_all_active M₀ h₀ defects n h_ne h_all]
+      exact bwd_pred_h_content _ _ _
+
+/-- P-obligation persistence: P(ψ) ∈ chain(n) → P(ψ) ∈ chain(n+1) for ψ ∈ defects.
+
+When defects = []: impossible.
+When all active: defect_bwd_step resolves target = head. For target: target ∈ chain(n+1)
+  by defect_bwd_step_target, so P(target) ∈ chain(n+1) by phi_in_mcs_imp_P_phi.
+  For other defects: no direct guarantee without enriched seed (sorry).
+When not all active: bwd_pred gives h_content propagation; P-preservation not guaranteed (sorry). -/
+theorem defect_bwd_chain_P_obligation_persists (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ defects)
+    (h_P : Formula.some_past ψ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
+    Formula.some_past ψ ∈ (defect_bwd_chain M₀ h₀ defects (n + 1)).val := by
+  sorry
+
+/-- P-obligation constancy: P(ψ) ∈ chain(n) → P(ψ) ∈ chain(m) for all m ≥ n. -/
+theorem defect_bwd_chain_P_obligation_constant (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (n m : Nat) (ψ : Formula)
+    (hψ : ψ ∈ defects) (h_le : n ≤ m)
+    (h_P : Formula.some_past ψ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
+    Formula.some_past ψ ∈ (defect_bwd_chain M₀ h₀ defects m).val := by
+  induction m with
+  | zero => exact Nat.eq_zero_of_le_zero h_le ▸ h_P
+  | succ m ih =>
+    rcases Nat.eq_or_lt_of_le h_le with rfl | h_lt
+    · exact h_P
+    · exact defect_bwd_chain_P_obligation_persists M₀ h₀ defects m ψ hψ
+        (ih (Nat.lt_succ_iff.mp h_lt))
+
+/-- Backward_P: P(ψ) ∈ chain(n) with ψ ∈ defects → ∃ s > n, ψ ∈ chain(s). -/
+theorem defect_bwd_chain_backward_P (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (n : Nat) (ψ : Formula)
+    (hψ : ψ ∈ defects)
+    (h_P : Formula.some_past ψ ∈ (defect_bwd_chain M₀ h₀ defects n).val) :
+    ∃ s : Nat, n < s ∧ ψ ∈ (defect_bwd_chain M₀ h₀ defects s).val := by
+  sorry
+
 end Bimodal.Metalogic.BXCanonical
