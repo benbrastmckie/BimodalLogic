@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel (though this plan is fully s
 
 ---
 
-### Phase 2: Build Quasimodel-Derived Forward Chain [NOT STARTED]
+### Phase 2: Build Quasimodel-Derived Forward Chain [BLOCKED]
 
 **Goal**: Replace `rr_fwd_chain` with a new `qm_fwd_chain` that embeds the quasimodel's defect-discharge mechanism into the Nat-indexed forward chain. Forward_F is definitional: the chain resolves every F-obligation within a bounded number of steps because the quasimodel's `defect_count` strictly decreases.
 
