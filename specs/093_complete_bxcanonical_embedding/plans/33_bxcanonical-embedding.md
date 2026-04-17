@@ -124,7 +124,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Build Defect-Driven Forward and Backward Chains [NOT STARTED]
+### Phase 2: Build Defect-Driven Forward and Backward Chains [PARTIAL]
 
 **Goal**: Define `defect_fwd_chain` and `defect_bwd_chain` that cycle through defects infinitely, using `defect_step_from_earliest` at each step. Prove forward_F and backward_P as structural properties of these chains.
 
