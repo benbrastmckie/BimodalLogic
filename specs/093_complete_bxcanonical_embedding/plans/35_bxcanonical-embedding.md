@@ -1,7 +1,7 @@
 # Implementation Plan: BX12 Reduction for Temporal Coherence (v35)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 14 hours
 - **Dependencies**: Task 92 (truth lemma sorry-free)
 - **Research Inputs**: reports/35_team-research.md
