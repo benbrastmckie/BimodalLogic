@@ -228,6 +228,11 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/33_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "Defect-driven chain construction plan v33: 6 phases, 18 hours, builds new chain from scratch using target_resolving_fwd_exists_strong"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/reports/34_forward-f-obstruction-analysis.md",
+          "type": "research_report",
+          "summary": "Forward_F obstruction analysis: 3 paths (quasimodel bridge, fwd_succ scheduling, F-tower fold) with comparison matrix and research questions"
         }
       ],
       "next_artifact_number": 34,
