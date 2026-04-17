@@ -1556,4 +1556,323 @@ theorem dd_countermodel (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     φ (self_mem_subformulaClosure φ)
     (shifted_dd_fmcs M h_mcs sigma_list 0) ⟨M, h_mcs, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
+/-! ## Custom Lindenbaum Extension Infrastructure (Phase 0)
+
+This section provides infrastructure for building Lindenbaum extensions from an
+arbitrary consistent seed parameterized by (target, guard) formulas, rather than
+the fixed seed used by `fwd_succ`. This is the foundational building block for
+the defect-discharge strategy in subsequent phases.
+
+### Forward Direction
+
+The **defect resolving seed** is `{target, guard} ∪ g_content(M)`.
+When `F(target ∧ guard) ∈ M`, this seed is consistent by
+`enriched_resolving_seed_consistent`.
+
+### Backward Direction
+
+The **past defect resolving seed** is `{target, guard} ∪ h_content(M)`.
+When `P(target ∧ guard) ∈ M`, this seed is consistent by a past
+analog of `enriched_resolving_seed_consistent` proved below.
+-/
+
+/-! ### Forward Defect Step -/
+
+/-- The forward defect resolving seed: `{target, guard} ∪ g_content(M)`. -/
+def defect_resolving_seed (M : Set Formula) (target guard : Formula) : Set Formula :=
+  {target, guard} ∪ g_content M
+
+/-- When `F(target ∧ guard) ∈ M` for MCS M, the seed `{target, guard} ∪ g_content(M)` is
+consistent. This follows directly from `enriched_resolving_seed_consistent` with
+`ψ = target` and `α = guard`. -/
+theorem defect_resolving_seed_consistent {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (target guard : Formula)
+    (h_F : Formula.some_future (Formula.and target guard) ∈ M) :
+    SetConsistent (defect_resolving_seed M target guard) := by
+  -- enriched_resolving_seed_consistent gives exactly this: if F(ψ ∧ α) ∈ M,
+  -- then {ψ, α} ∪ g_content(M) is consistent. Here ψ = target, α = guard.
+  have h := enriched_resolving_seed_consistent h_mcs target guard h_F
+  -- enriched_resolving_seed M target guard = {target, guard} ∪ g_content M
+  -- = defect_resolving_seed M target guard
+  exact h
+
+/-- The defect forward step: Lindenbaum extension of `defect_resolving_seed M target guard`.
+Defined when `F(target ∧ guard) ∈ M`. -/
+noncomputable def defect_fwd_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_F : Formula.some_future (Formula.and target guard) ∈ M) : Set Formula :=
+  (set_lindenbaum (defect_resolving_seed M target guard)
+    (defect_resolving_seed_consistent h_mcs target guard h_F)).choose
+
+private theorem defect_fwd_step_lindenbaum (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_F : Formula.some_future (Formula.and target guard) ∈ M) :
+    defect_resolving_seed M target guard ⊆ defect_fwd_step M h_mcs target guard h_F ∧
+    SetMaximalConsistent (defect_fwd_step M h_mcs target guard h_F) :=
+  (set_lindenbaum (defect_resolving_seed M target guard)
+    (defect_resolving_seed_consistent h_mcs target guard h_F)).choose_spec
+
+/-- The result of `defect_fwd_step` is MCS. -/
+theorem defect_fwd_step_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_F : Formula.some_future (Formula.and target guard) ∈ M) :
+    SetMaximalConsistent (defect_fwd_step M h_mcs target guard h_F) :=
+  (defect_fwd_step_lindenbaum M h_mcs target guard h_F).2
+
+/-- The target formula is in the defect forward step. -/
+theorem defect_fwd_step_target (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_F : Formula.some_future (Formula.and target guard) ∈ M) :
+    target ∈ defect_fwd_step M h_mcs target guard h_F := by
+  apply (defect_fwd_step_lindenbaum M h_mcs target guard h_F).1
+  show target ∈ defect_resolving_seed M target guard
+  exact Set.mem_union_left _ (Set.mem_insert _ _)
+
+/-- The guard formula is in the defect forward step. -/
+theorem defect_fwd_step_guard (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_F : Formula.some_future (Formula.and target guard) ∈ M) :
+    guard ∈ defect_fwd_step M h_mcs target guard h_F := by
+  apply (defect_fwd_step_lindenbaum M h_mcs target guard h_F).1
+  show guard ∈ defect_resolving_seed M target guard
+  exact Set.mem_union_left _ (Set.mem_insert_of_mem _ rfl)
+
+/-- The g_content of M is a subset of the defect forward step (G-propagation maintained). -/
+theorem defect_fwd_step_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_F : Formula.some_future (Formula.and target guard) ∈ M) :
+    g_content M ⊆ defect_fwd_step M h_mcs target guard h_F := by
+  intro φ hφ
+  apply (defect_fwd_step_lindenbaum M h_mcs target guard h_F).1
+  show φ ∈ defect_resolving_seed M target guard
+  exact Set.mem_union_right _ hφ
+
+/-! ### Backward Defect Step
+
+The backward analog uses `h_content` instead of `g_content` and `P` (some_past)
+instead of `F` (some_future). We first prove a past analog of
+`enriched_resolving_seed_consistent`.
+-/
+
+/-- If `P(target ∧ guard) ∈ M` for MCS M, then `{target, guard} ∪ h_content(M)` is
+consistent.
+
+The proof strategy mirrors `enriched_resolving_seed_consistent`:
+1. `P(target ∧ guard) ∈ M` implies `{target ∧ guard} ∪ h_content(M)` is consistent
+   (by `past_temporal_witness_seed_consistent`)
+2. Lindenbaum-extend to MCS M'
+3. M' contains `target ∧ guard`, so by conjunction elimination: `target ∈ M'` and `guard ∈ M'`
+4. M' contains `h_content(M)` (superset)
+5. So `{target, guard} ∪ h_content(M) ⊆ M'`
+6. Since M' is consistent, any subset is consistent
+-/
+theorem enriched_past_resolving_seed_consistent {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) :
+    SetConsistent ({target, guard} ∪ h_content M) := by
+  -- Step 1: {target ∧ guard} ∪ h_content(M) is consistent
+  have h_seed_cons := past_temporal_witness_seed_consistent M h_mcs
+    (Formula.and target guard) h_P
+  -- Step 2: Lindenbaum extend
+  obtain ⟨M', h_sup, h_M'_mcs⟩ := set_lindenbaum _ h_seed_cons
+  -- Step 3: target ∧ guard ∈ M'
+  have h_conj_in : Formula.and target guard ∈ M' :=
+    h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+  -- target ∈ M' by left conjunction elimination
+  have h_target_in : target ∈ M' :=
+    SetMaximalConsistent.implication_property h_M'_mcs
+      (theorem_in_mcs h_M'_mcs (Bimodal.Theorems.Propositional.lce_imp target guard)) h_conj_in
+  -- guard ∈ M' by right conjunction elimination
+  have h_guard_in : guard ∈ M' :=
+    SetMaximalConsistent.implication_property h_M'_mcs
+      (theorem_in_mcs h_M'_mcs (Bimodal.Theorems.Propositional.rce_imp target guard)) h_conj_in
+  -- Step 4: h_content(M) ⊆ M'
+  have h_h_sub : h_content M ⊆ M' :=
+    fun χ hχ => h_sup (Set.mem_union_right _ hχ)
+  -- Step 5: {target, guard} ∪ h_content(M) ⊆ M'
+  have h_seed_sub : {target, guard} ∪ h_content M ⊆ M' := by
+    intro φ hφ
+    simp only [Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff] at hφ
+    rcases hφ with (rfl | rfl) | hh
+    · exact h_target_in
+    · exact h_guard_in
+    · exact h_h_sub hh
+  -- Step 6: M' is consistent, so any subset is consistent
+  intro L hL hd
+  exact h_M'_mcs.1 L (fun φ hφ => h_seed_sub (hL φ hφ)) hd
+
+/-- The past defect resolving seed: `{target, guard} ∪ h_content(M)`. -/
+def past_defect_resolving_seed (M : Set Formula) (target guard : Formula) : Set Formula :=
+  {target, guard} ∪ h_content M
+
+/-- When `P(target ∧ guard) ∈ M` for MCS M, the past defect seed is consistent. -/
+theorem past_defect_resolving_seed_consistent {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) :
+    SetConsistent (past_defect_resolving_seed M target guard) :=
+  enriched_past_resolving_seed_consistent h_mcs target guard h_P
+
+/-- The defect backward step: Lindenbaum extension of `past_defect_resolving_seed M target guard`.
+Defined when `P(target ∧ guard) ∈ M`. -/
+noncomputable def defect_bwd_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) : Set Formula :=
+  (set_lindenbaum (past_defect_resolving_seed M target guard)
+    (past_defect_resolving_seed_consistent h_mcs target guard h_P)).choose
+
+private theorem defect_bwd_step_lindenbaum (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) :
+    past_defect_resolving_seed M target guard ⊆ defect_bwd_step M h_mcs target guard h_P ∧
+    SetMaximalConsistent (defect_bwd_step M h_mcs target guard h_P) :=
+  (set_lindenbaum (past_defect_resolving_seed M target guard)
+    (past_defect_resolving_seed_consistent h_mcs target guard h_P)).choose_spec
+
+/-- The result of `defect_bwd_step` is MCS. -/
+theorem defect_bwd_step_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) :
+    SetMaximalConsistent (defect_bwd_step M h_mcs target guard h_P) :=
+  (defect_bwd_step_lindenbaum M h_mcs target guard h_P).2
+
+/-- The target formula is in the defect backward step (target is resolved). -/
+theorem defect_bwd_step_target (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) :
+    target ∈ defect_bwd_step M h_mcs target guard h_P := by
+  apply (defect_bwd_step_lindenbaum M h_mcs target guard h_P).1
+  show target ∈ past_defect_resolving_seed M target guard
+  exact Set.mem_union_left _ (Set.mem_insert _ _)
+
+/-- The guard formula is in the defect backward step (guard is present). -/
+theorem defect_bwd_step_guard (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) :
+    guard ∈ defect_bwd_step M h_mcs target guard h_P := by
+  apply (defect_bwd_step_lindenbaum M h_mcs target guard h_P).1
+  show guard ∈ past_defect_resolving_seed M target guard
+  exact Set.mem_union_left _ (Set.mem_insert_of_mem _ rfl)
+
+/-- The h_content of M is a subset of the defect backward step (H-propagation maintained). -/
+theorem defect_bwd_step_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (target guard : Formula)
+    (h_P : Formula.some_past (Formula.and target guard) ∈ M) :
+    h_content M ⊆ defect_bwd_step M h_mcs target guard h_P := by
+  intro φ hφ
+  apply (defect_bwd_step_lindenbaum M h_mcs target guard h_P).1
+  show φ ∈ past_defect_resolving_seed M target guard
+  exact Set.mem_union_right _ hφ
+
+/-! ## Phase 1: BX11 Minimum Selection and Single-Step Target Resolution
+
+The key tool `target_resolving_fwd_exists_strong` requires a target that is
+`bx11_earlier` than ALL other defects. This section constructs such a target
+from a non-empty finite list of F-defects using the following approach:
+
+### Observation
+
+For any two F-defects ψ₁, ψ₂ with F(ψ₁), F(ψ₂) ∈ M, `bx11_earlier_total`
+gives either `bx11_earlier M ψ₁ ψ₂` or `bx11_earlier M ψ₂ ψ₁`.
+
+For a list of N defects, `bx11_earlier` is non-transitive and may admit
+3-cycles, so a global "beats all" element need not exist. However, for the
+purposes of Phase 2 (forward_F), we need: given a non-empty defect list,
+there exists a step M' where SOME defect is directly resolved AND ALL
+F-obligations are preserved. This is provided by `resolving_enriched_fwd_exists`.
+
+### Interface
+
+`pick_bx11_earliest`: Given a non-empty defect list, returns the head element.
+The key property is membership in the defect list (and thus having an F-obligation).
+Due to non-transitivity of `bx11_earlier`, this function cannot guarantee that
+its result beats all other elements; the downstream theorem uses
+`resolving_enriched_fwd_exists` instead.
+
+`defect_step_from_earliest`: Wraps `resolving_enriched_fwd_exists` to give
+a step M' with: some defect w directly resolved, all other F-obligations
+preserved (F(χ) ∈ M' for ALL χ in the defect list via `phi_in_mcs_imp_F_phi`),
+and g_content(M) ⊆ M'.
+-/
+
+/-- `pick_bx11_earliest`: given a non-empty defect list with F-obligations, returns an element
+of the list. The element is the head of the list (a well-defined choice).
+
+Note: due to non-transitivity of `bx11_earlier`, there may be no element that is
+`bx11_earlier` than ALL other elements (tournaments can have 3-cycles). The downstream
+`defect_step_from_earliest` uses `resolving_enriched_fwd_exists` (which handles the
+general case) rather than `target_resolving_fwd_exists_strong`. -/
+noncomputable def pick_bx11_earliest (M : Set Formula) (_ : SetMaximalConsistent M)
+    (defects : List Formula)
+    (h_nonempty : defects ≠ [])
+    (_ : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) : Formula :=
+  defects.head h_nonempty
+
+/-- `pick_bx11_earliest` returns a member of the defect list. -/
+theorem pick_bx11_earliest_mem (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
+    pick_bx11_earliest M h_mcs defects h_nonempty h_F ∈ defects :=
+  List.head_mem h_nonempty
+
+/-- `pick_bx11_earliest` has an F-obligation in M (follows from membership in defects). -/
+theorem pick_bx11_earliest_F_mem (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
+    Formula.some_future (pick_bx11_earliest M h_mcs defects h_nonempty h_F) ∈ M :=
+  h_F _ (pick_bx11_earliest_mem M h_mcs defects h_nonempty h_F)
+
+/-! ### Single-Step Target Resolution
+
+`defect_step_from_earliest` produces a forward step M' from a non-empty defect list
+where:
+1. The pick_bx11_earliest target is directly resolved (present in M')
+2. ALL other defects have their F-obligations preserved in M'
+3. g_content(M) ⊆ M'
+
+The proof uses `resolving_enriched_fwd_exists` which handles the general multi-defect
+case without requiring a global bx11_earlier minimum.
+-/
+
+/-- Given a non-empty defect list, there exists a forward step M' where:
+- Some defect is directly resolved (the resolving witness w ∈ M')
+- ALL defects from the list have F-obligations preserved (F(χ) ∈ M' for all χ ∈ defects)
+- g_content(M) ⊆ M'
+
+This is the key single-step primitive for Phase 2's defect-driven chain. -/
+theorem defect_step_from_earliest {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧
+      g_content M ⊆ M' ∧
+      -- The pick_bx11_earliest target, or some other defect, is directly resolved
+      (∃ w ∈ defects, Formula.some_future w ∈ M ∧ w ∈ M') ∧
+      -- ALL defects have F-obligations preserved in M'
+      (∀ χ, χ ∈ defects → Formula.some_future χ ∈ M') := by
+  -- Use resolving_enriched_fwd_exists: it gives a witness that is directly resolved,
+  -- and all others are either in M' or F-protected.
+  match defects, h_nonempty with
+  | [], h => exact absurd rfl h
+  | (target :: others), _ =>
+      obtain ⟨M', h_mcs', h_g, h_target_disj, h_others_disj, w, h_w_origin, h_w_F, h_w_in⟩ :=
+        resolving_enriched_fwd_exists h_mcs target
+          (h_F target (List.mem_cons_self))
+          others (fun χ hχ => h_F χ (List.mem_cons_of_mem _ hχ))
+      refine ⟨M', h_mcs', h_g, ?_, ?_⟩
+      · -- Witness membership: w is in defects
+        refine ⟨w, ?_, h_w_F, h_w_in⟩
+        rcases h_w_origin with rfl | h_in_others
+        · exact List.mem_cons_self
+        · exact List.mem_cons_of_mem _ h_in_others
+      · -- F-obligations preserved for ALL defects
+        intro χ hχ
+        rcases List.mem_cons.mp hχ with rfl | h_in_others
+        · -- χ = target: use h_target_disj : target ∈ M' ∨ F(target) ∈ M'
+          rcases h_target_disj with h | h
+          · exact phi_in_mcs_imp_F_phi h_mcs' χ h
+          · exact h
+        · -- χ ∈ others: h_others_disj gives χ ∈ M' ∨ F(χ) ∈ M'
+          rcases h_others_disj χ h_in_others with h | h
+          · exact phi_in_mcs_imp_F_phi h_mcs' χ h
+          · exact h
+
 end Bimodal.Metalogic.BXCanonical

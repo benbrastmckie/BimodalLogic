@@ -1,7 +1,7 @@
 # Implementation Plan: Defect-Driven Chain from Scratch (v33)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18 hours
 - **Dependencies**: None (task 102 completed; truth lemma sorry-free)
 - **Research Inputs**: reports/33_team-research.md, reports/32_team-research.md
@@ -69,7 +69,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Build Custom Lindenbaum Extension Infrastructure [NOT STARTED]
+### Phase 0: Build Custom Lindenbaum Extension Infrastructure [COMPLETED]
 
 **Goal**: Create a new Lindenbaum extension function that accepts an arbitrary consistent seed (target + guard formulas + g_content) rather than the fixed seed used by `fwd_succ`. This is the foundational infrastructure required by all subsequent phases.
 
@@ -98,7 +98,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Build bx11_min Selection and Single-Step Target Resolution [NOT STARTED]
+### Phase 1: Build bx11_min Selection and Single-Step Target Resolution [COMPLETED]
 
 **Goal**: Implement the local bx11_min selection mechanism and prove that `target_resolving_fwd_exists_strong` can be invoked at each chain step. This phase bridges Phase 0's custom step function with the bx11 ordering infrastructure already in the codebase.
 
