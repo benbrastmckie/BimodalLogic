@@ -76,7 +76,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Backward Until/Since Coherence (restricted_buc) [NOT STARTED]
+### Phase 1: Backward Until/Since Coherence (restricted_buc) [BLOCKED]
 
 **Goal**: Close `dd_bfmcs_restricted_buc` independently of the forward_F blocker. This is the easiest of the three sorry sites and does not depend on the oracle approach.
 
