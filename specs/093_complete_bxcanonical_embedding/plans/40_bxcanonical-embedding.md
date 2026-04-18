@@ -124,7 +124,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Build `qm_oracle_step` and Prove Seed Consistency [NOT STARTED]
+### Phase 3: Build `qm_oracle_step` and Prove Seed Consistency [PARTIAL]
 
 **Goal**: Implement the oracle step that, given an MCS M with Until defects, produces a successor MCS M' where all Until defects are either propagated or resolved. Prove the seed consistency lemma.
 
