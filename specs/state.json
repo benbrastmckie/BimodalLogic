@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-18T00:07:23Z",
+      "last_updated": "2026-04-18T00:42:02Z",
       "related_tasks": [
         92,
         95
@@ -21,7 +21,7 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776470519_c9ad1a",
+      "session_id": "sess_1776471010_28fe01",
       "researched": "2026-04-17T17:45:44Z",
       "artifacts": [
         {
@@ -240,11 +240,6 @@
           "summary": "Team research with 4 teammates: quasimodel bridge audit, oracle construction path, BX12+full coherence recommended"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/summaries/36_bxcanonical-embedding-summary.md",
-          "type": "summary",
-          "summary": "Partial Phase 1: SubformulaClosure temporal closure properties (G-closed, H-closed, Until-closed)"
-        },
-        {
           "path": "specs/093_complete_bxcanonical_embedding/reports/37_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: extended seed oracle construction, self_resolving chain alternative, Until propagation correction"
@@ -253,6 +248,11 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/37_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "Implementation plan v37 with 5 phases: extended seed oracle, quasimodel BFMCS, Until/Since coherence, BX12 bridge + rewiring, cleanup"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/summaries/37_bxcanonical-embedding-summary.md",
+          "type": "summary",
+          "summary": "Analysis-only implementation attempt revealing two fundamental mathematical blockers in the oracle construction approach"
         }
       ],
       "next_artifact_number": 38,
@@ -374,6 +374,37 @@
             "bx_le",
             "hintikka-step",
             "oracle-construction"
+          ]
+        },
+        {
+          "content": "In BX temporal logic, the forward_temporal_witness_seed_consistent proof uses a G-lift technique: L' |- neg(psi) is lifted to G(L'). This G-lift ONLY works when all elements of L' are in g_content(M). Until formulas (alpha U beta) in an MCS do NOT have G(alpha U beta) in the MCS, so extending the seed with Until formulas breaks the G-lift proof.",
+          "category": "INSIGHT",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "seed-consistency",
+            "G-lift",
+            "Until-formula",
+            "g_content"
+          ]
+        },
+        {
+          "content": "Backward Until/Since coherence is NOT a property of general FMCS over Int. The chain construction must EXPLICITLY ensure backward Until coherence.",
+          "category": "INSIGHT",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "backward-until-coherence",
+            "FMCS",
+            "chain-construction"
+          ]
+        },
+        {
+          "content": "bx_le w v does NOT propagate Until formulas. The oracle construction must use an enriched Lindenbaum seed that explicitly includes Until defects.",
+          "category": "INSIGHT",
+          "confidence": 0.92,
+          "suggested_keywords": [
+            "bx_le",
+            "Until-propagation",
+            "enriched-seed"
           ]
         }
       ]
