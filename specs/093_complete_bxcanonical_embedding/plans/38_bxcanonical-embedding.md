@@ -1,7 +1,7 @@
 # Implementation Plan: Direct Coherence Proofs for dd_bfmcs (v38)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: Task 92 (truth lemma sorry-free)
 - **Research Inputs**: reports/38_team-research.md, reports/37_team-research.md
@@ -64,7 +64,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Restricted Temporal Coherence (restricted_tc) [NOT STARTED]
+### Phase 1: Restricted Temporal Coherence (restricted_tc) [BLOCKED]
 
 **Goal**: Prove `dd_bfmcs_restricted_tc` -- that for every family in `dd_bfmcs` and every `phi in deferralClosure(root)`, if `F(phi) in fam.mcs(t)` then there exists `s > t` with `phi in fam.mcs(s)` (and symmetrically for P).
 
