@@ -69,7 +69,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Archive Dead Round-Robin Code to Boneyard [NOT STARTED]
+### Phase 1: Archive Dead Round-Robin Code to Boneyard [COMPLETED]
 
 **Goal**: Remove all dead round-robin chain infrastructure from the active codebase to eliminate future distraction. Move to `Boneyard/` directory for historical reference.
 
@@ -97,17 +97,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Validate Derived Rules and Key Lemmas [NOT STARTED]
+### Phase 2: Validate Derived Rules and Key Lemmas [COMPLETED]
 
 **Goal**: Before any implementation, validate the mathematical preconditions by semantic counter-model analysis and pencil-and-paper proof. This addresses the systematic process failure identified in round 40 research.
 
 **Tasks**:
-- [ ] **Validate `bx_le` gives h_content backward**: Check whether `bx_le w v` (i.e., `g_content(w) <= v`) also implies `h_content(v) <= w`. Inspect `bx_le` definition in `Frame.lean`. If it does NOT, document this and plan for forward-only `hintikka_step` variant in Phase 3.
-- [ ] **Validate Until introduction rule is NOT needed**: Confirm that the qm_bfmcs approach does NOT require `phi /\ F(phi U psi) -> phi U psi` (which is semantically invalid per round 40). The restricted_buc proof should follow from the chain's constructive guard property, not from a derived rule.
-- [ ] **Pencil-proof `until_defects_seed_consistent`**: The seed is `g_content(M) U {Until-defects of M}`. Since both sets are subsets of `M.formulas` (g_content by BX1 reflexivity, Until defects by definition), the seed is a subset of `M.formulas`. Any inconsistency of the seed would give an inconsistency of a subset of an MCS, contradicting MCS consistency. Write this argument as a comment.
-- [ ] **Validate vacuous interval guard**: For integer indices, confirm `forall r : Int, t <= r -> r < t + 1 -> phi in mcs(r)` is vacuously true (no integers in the open interval `(t, t+1)`). Write a test with `lean_multi_attempt` using `omega`.
-- [ ] **Validate `SubformulaClosure_untl_closed`**: Confirm `phi U psi in SubformulaClosure(root) -> psi in SubformulaClosure(root)`. This is the precondition ensuring the oracle always reaches witnesses.
-- [ ] **Design decision**: Determine whether to build a new `qm_bfmcs` type or modify `dd_bfmcs` in place. Recommendation: replace `dd_bfmcs` definition to reuse the existing `dd_countermodel` wiring.
+- [x] **Validate `bx_le` gives h_content backward**: PASS. `g_content_subset_implies_h_content_reverse` (WitnessSeed.lean:511) proves bx_le w v implies h_content(v) ⊆ w. Full hintikka_step (G-forward + H-backward) is valid.
+- [x] **Validate Until introduction rule is NOT needed**: PASS. qm_bfmcs uses BX8+BX7+oracle guard, NOT the invalid `phi /\ F(phi U psi) -> phi U psi` rule.
+- [x] **Pencil-proof `until_defects_seed_consistent`**: PASS. Oracle seed ⊆ M.formulas by: g_content ⊆ M by BX1 reflexivity; Until-defects ⊆ M by definition. MCS consistency discharges any subset inconsistency.
+- [x] **Validate vacuous interval guard**: PASS. `omega` proves: `(t ≤ r ∧ r < t + 1 → r = t)` and `(t < r ∧ r < t + 1 → False)` for integers. Single-step guard reduces to phi ∈ mcs(t) only.
+- [x] **Validate `SubformulaClosure_untl_closed`**: PASS. `SubformulaClosure_untl_closed` (Realization.lean:586) is sorry-free and proves both φ ∈ Sigma and ψ ∈ Sigma from `φ U ψ ∈ Sigma`.
+- [x] **Design decision**: DECIDED. Modify `dd_bfmcs` in place; reuse `dd_countermodel` wiring. Do not create separate `qm_bfmcs` type.
 
 **Timing**: 1.5 hours
 
