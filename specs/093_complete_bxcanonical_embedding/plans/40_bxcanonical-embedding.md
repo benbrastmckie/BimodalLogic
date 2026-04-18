@@ -153,7 +153,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Build `qm_fmcs` and `qm_bfmcs` [NOT STARTED]
+### Phase 4: Build `qm_fmcs` and `qm_bfmcs` [PARTIAL]
 
 **Goal**: Construct an Int-indexed FMCS from oracle step iteration and wrap it in a BFMCS. restricted_tc holds BY CONSTRUCTION because the oracle resolves F-obligations directly.
 

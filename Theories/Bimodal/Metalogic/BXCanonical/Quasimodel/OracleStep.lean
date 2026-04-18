@@ -114,6 +114,71 @@ theorem qm_oracle_step_until_in_next (w : BXPoint) (Sigma : Finset Formula)
   qm_oracle_step_includes_seed w Sigma
     (Set.mem_union_right _ ⟨φ, ψ, rfl, h_until, h_not_psi, h_sigma⟩)
 
+/-! ## Backward Oracle Step (Since defects)
+
+The backward oracle step is the mirror of qm_oracle_step using h_content and Since defects.
+Its seed is: h_content(w) ∪ {Since-defects of w in Sigma}
+
+Properties:
+- h_content(w) ⊆ qm_oracle_step_bwd(w, Sigma) (H-propagation)
+- g_content(qm_oracle_step_bwd(w, Sigma)) ⊆ w (G-backward from h_content duality)
+- All Since-defects from Sigma at w are in qm_oracle_step_bwd(w, Sigma)
+-/
+
+/-- Backward oracle seed: h_content(w) ∪ {Since-defects of w in Sigma}.
+
+A Since-defect at w is a formula `φ S ψ` where `φ S ψ ∈ w.formulas` and `ψ ∉ w.formulas`. -/
+def qm_oracle_seed_bwd (w : BXPoint) (Sigma : Finset Formula) : Set Formula :=
+  h_content w.formulas ∪
+  {f : Formula | ∃ φ ψ, f = Formula.snce φ ψ ∧
+    Formula.snce φ ψ ∈ w.formulas ∧ ψ ∉ w.formulas ∧ Formula.snce φ ψ ∈ Sigma}
+
+theorem qm_oracle_seed_bwd_subset_mcs (w : BXPoint) (Sigma : Finset Formula) :
+    qm_oracle_seed_bwd w Sigma ⊆ w.formulas := by
+  intro f hf
+  rcases hf with h_h | ⟨φ, ψ, rfl, h_in, _, _⟩
+  · exact SetMaximalConsistent.implication_property w.is_mcs
+      (theorem_in_mcs w.is_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past f))) h_h
+  · exact h_in
+
+theorem qm_oracle_seed_bwd_consistent (w : BXPoint) (Sigma : Finset Formula) :
+    SetConsistent (qm_oracle_seed_bwd w Sigma) :=
+  fun L hL hd => w.is_mcs.1 L
+    (fun α hα => qm_oracle_seed_bwd_subset_mcs w Sigma (hL α hα)) hd
+
+/-- The backward oracle step as a BXPoint: Lindenbaum extension of the backward oracle seed. -/
+noncomputable def qm_oracle_step_bwd (w : BXPoint) (Sigma : Finset Formula) : BXPoint where
+  formulas :=
+    (set_lindenbaum (qm_oracle_seed_bwd w Sigma) (qm_oracle_seed_bwd_consistent w Sigma)).choose
+  is_mcs :=
+    (set_lindenbaum (qm_oracle_seed_bwd w Sigma)
+      (qm_oracle_seed_bwd_consistent w Sigma)).choose_spec.2
+
+theorem qm_oracle_step_bwd_includes_seed (w : BXPoint) (Sigma : Finset Formula) :
+    qm_oracle_seed_bwd w Sigma ⊆ (qm_oracle_step_bwd w Sigma).formulas :=
+  (set_lindenbaum (qm_oracle_seed_bwd w Sigma)
+    (qm_oracle_seed_bwd_consistent w Sigma)).choose_spec.1
+
+/-- H-propagation: h_content(w) ⊆ qm_oracle_step_bwd(w, Sigma). -/
+theorem qm_oracle_step_bwd_h_content (w : BXPoint) (Sigma : Finset Formula) :
+    h_content w.formulas ⊆ (qm_oracle_step_bwd w Sigma).formulas :=
+  fun φ hφ => qm_oracle_step_bwd_includes_seed w Sigma (Set.mem_union_left _ hφ)
+
+/-- bx_le (backward): g_content(qm_oracle_step_bwd(w, Sigma)) ⊆ w. -/
+theorem qm_oracle_step_bwd_g_content (w : BXPoint) (Sigma : Finset Formula) :
+    g_content (qm_oracle_step_bwd w Sigma).formulas ⊆ w.formulas :=
+  h_content_subset_implies_g_content_reverse w.formulas (qm_oracle_step_bwd w Sigma).formulas
+    w.is_mcs (qm_oracle_step_bwd w Sigma).is_mcs (qm_oracle_step_bwd_h_content w Sigma)
+
+/-- Since defects in Sigma at w propagate to qm_oracle_step_bwd(w). -/
+theorem qm_oracle_step_bwd_since_in_prev (w : BXPoint) (Sigma : Finset Formula)
+    {φ ψ : Formula}
+    (h_since : Formula.snce φ ψ ∈ w.formulas) (h_not_psi : ψ ∉ w.formulas)
+    (h_sigma : Formula.snce φ ψ ∈ Sigma) :
+    Formula.snce φ ψ ∈ (qm_oracle_step_bwd w Sigma).formulas :=
+  qm_oracle_step_bwd_includes_seed w Sigma
+    (Set.mem_union_right _ ⟨φ, ψ, rfl, h_since, h_not_psi, h_sigma⟩)
+
 /-! ## hintikka_step for sigma_signature inputs -/
 
 /-- For `h = sigma_signature w Sigma`, the oracle step `sigma_signature (qm_oracle_step w) Sigma`
