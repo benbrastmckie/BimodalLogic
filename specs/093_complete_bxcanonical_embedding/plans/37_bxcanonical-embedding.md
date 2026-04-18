@@ -1,7 +1,7 @@
 # Implementation Plan: Extended Seed Oracle + Hybrid BFMCS (v37)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: Task 92 (truth lemma sorry-free)
 - **Research Inputs**: reports/37_team-research.md, reports/36_team-research.md
@@ -68,7 +68,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Extended Seed Oracle Construction [NOT STARTED]
+### Phase 1: Extended Seed Oracle Construction [BLOCKED]
 
 **Goal**: Build `HintikkaStepOracle` using the extended Lindenbaum seed that includes Until defects, and symmetric backward oracle for Since.
 
