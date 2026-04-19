@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Archive Unfinished Oracle Replacement and Update ROAD_MAP.md [NOT STARTED]
+### Phase 1: Archive Unfinished Oracle Replacement and Update ROAD_MAP.md [COMPLETED]
 
 **Goal**: Archive the qm_bfmcs construction from RootScopedChain.lean with the accurate label "unfinished oracle replacement, abandoned at backward coherence obstruction." Preserve reusable oracle infrastructure in OracleStep.lean.
 
