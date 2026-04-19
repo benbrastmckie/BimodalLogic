@@ -458,16 +458,140 @@ and `dd_bfmcs`. The forward/backward chain sub-definitions (`fwd_chain_of_sigma`
 without exposing the dead round-robin identifiers.
 -/
 
-/-- Forward chain: iterate fwd_succ. (Replaces the archived rr_fwd_chain.) -/
+/-! ### Preserving Forward Step Infrastructure
+
+The chain uses a forward step that preserves ALL F-obligations for sigma_list
+formulas at each step, using the BX11 fold via `resolving_enriched_fwd_exists`.
+This is essential for proving forward temporal coherence (restricted_tc).
+-/
+
+/-- φ → F(φ) is derivable in BX (early definition for chain dependency). -/
+private noncomputable def phi_imp_F_phi_early (φ : Formula) :
+    ⊢ φ.imp φ.some_future := by
+  unfold Formula.some_future
+  exact Bimodal.Theorems.Combinators.imp_trans (dni φ)
+    (Bimodal.Theorems.Propositional.contraposition
+      (DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.neg φ))))
+
+/-- At MCS level: φ ∈ M → F(φ) ∈ M (early version). -/
+private theorem phi_in_mcs_imp_F_phi_early {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (φ : Formula) (h : φ ∈ M) : φ.some_future ∈ M :=
+  SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (phi_imp_F_phi_early φ)) h
+
+/-- Active F-defects in sigma_list: formulas χ with F(χ) ∈ M.
+    Uses classical decidability for the membership predicate. -/
+private noncomputable def active_defects (M : Set Formula)
+    (sigma_list : List Formula) : List Formula :=
+  sigma_list.filter (fun χ => decide (Formula.some_future χ ∈ M))
+
+private theorem active_defects_subset {M : Set Formula} {sigma_list : List Formula}
+    {χ : Formula} (h : χ ∈ active_defects M sigma_list) : χ ∈ sigma_list := by
+  simp only [active_defects, List.mem_filter] at h; exact h.1
+
+private theorem active_defects_F_mem {M : Set Formula} {sigma_list : List Formula}
+    {χ : Formula} (h : χ ∈ active_defects M sigma_list) :
+    Formula.some_future χ ∈ M := by
+  simp only [active_defects, List.mem_filter, decide_eq_true_eq] at h; exact h.2
+
+private theorem mem_active_defects {M : Set Formula} {sigma_list : List Formula}
+    {χ : Formula} (h_mem : χ ∈ sigma_list) (h_F : Formula.some_future χ ∈ M) :
+    χ ∈ active_defects M sigma_list := by
+  simp only [active_defects, List.mem_filter, decide_eq_true_eq]; exact ⟨h_mem, h_F⟩
+
+/-- Defect step existence (early version for chain dependency): given a non-empty
+    defect list with F-obligations in M, there exists M' where at least one defect
+    is resolved and ALL F-obligations are preserved. -/
+private theorem defect_step_early {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
+    ∃ M' : Set Formula, SetMaximalConsistent M' ∧
+      g_content M ⊆ M' ∧
+      (∃ w ∈ defects, Formula.some_future w ∈ M ∧ w ∈ M') ∧
+      (∀ χ, χ ∈ defects → Formula.some_future χ ∈ M') := by
+  match defects, h_nonempty with
+  | [], h => exact absurd rfl h
+  | (target :: others), _ =>
+    obtain ⟨M', h_mcs', h_g, h_target_disj, h_others_disj, w, h_w_origin, h_w_F, h_w_in⟩ :=
+      resolving_enriched_fwd_exists h_mcs target
+        (h_F target List.mem_cons_self)
+        others (fun χ hχ => h_F χ (List.mem_cons_of_mem _ hχ))
+    refine ⟨M', h_mcs', h_g, ?_, ?_⟩
+    · exact ⟨w, by rcases h_w_origin with rfl | h; exact .head _; exact .tail _ h,
+        h_w_F, h_w_in⟩
+    · intro χ hχ
+      rcases List.mem_cons.mp hχ with rfl | h_in
+      · rcases h_target_disj with h | h
+        · exact phi_in_mcs_imp_F_phi_early h_mcs' χ h
+        · exact h
+      · rcases h_others_disj χ h_in with h | h
+        · exact phi_in_mcs_imp_F_phi_early h_mcs' χ h
+        · exact h
+
+/-- Concrete defect step choice (early version). -/
+private noncomputable def defect_step_choice_early
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) : Set Formula :=
+  (defect_step_early h_mcs defects h_nonempty h_F).choose
+
+private theorem defect_step_choice_early_spec
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (defects : List Formula) (h_nonempty : defects ≠ [])
+    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
+    let M' := defect_step_choice_early M h_mcs defects h_nonempty h_F
+    SetMaximalConsistent M' ∧ g_content M ⊆ M' ∧
+    (∃ w ∈ defects, Formula.some_future w ∈ M ∧ w ∈ M') ∧
+    (∀ χ, χ ∈ defects → Formula.some_future χ ∈ M') :=
+  (defect_step_early h_mcs defects h_nonempty h_F).choose_spec
+
+/-- Preserving forward step: when active defects exist in sigma_list,
+    use defect_step_choice_early (resolves ≥1, preserves ALL F-obligations).
+    When no defects, use fwd_succ with round-robin target. -/
+private noncomputable def preserving_fwd_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (sigma_list : List Formula) (n : Nat) : Set Formula :=
+  let defects := active_defects M sigma_list
+  if h : defects ≠ [] then
+    defect_step_choice_early M h_mcs defects h (fun χ hχ => active_defects_F_mem hχ)
+  else
+    let target := if hl : sigma_list.length > 0
+      then sigma_list.get ⟨n % sigma_list.length, Nat.mod_lt n hl⟩
+      else Formula.bot
+    fwd_succ M h_mcs target
+
+private theorem preserving_fwd_step_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (sigma_list : List Formula) (n : Nat) :
+    SetMaximalConsistent (preserving_fwd_step M h_mcs sigma_list n) := by
+  simp only [preserving_fwd_step]; split
+  · exact (defect_step_choice_early_spec M h_mcs _ _ _).1
+  · exact fwd_succ_mcs M h_mcs _
+
+private theorem preserving_fwd_step_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (sigma_list : List Formula) (n : Nat) :
+    g_content M ⊆ preserving_fwd_step M h_mcs sigma_list n := by
+  simp only [preserving_fwd_step]; split
+  · exact (defect_step_choice_early_spec M h_mcs _ _ _).2.1
+  · exact fwd_succ_g_content M h_mcs _
+
+/-- F-obligations for sigma_list formulas are preserved at each step. -/
+private theorem preserving_fwd_step_F_preserved (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (sigma_list : List Formula) (n : Nat)
+    (χ : Formula) (h_chi : χ ∈ sigma_list) (h_F : Formula.some_future χ ∈ M) :
+    Formula.some_future χ ∈ preserving_fwd_step M h_mcs sigma_list n := by
+  simp only [preserving_fwd_step]
+  have h_mem : χ ∈ active_defects M sigma_list := mem_active_defects h_chi h_F
+  have h_ne : active_defects M sigma_list ≠ [] := List.ne_nil_of_mem h_mem
+  rw [dif_pos h_ne]
+  exact (defect_step_choice_early_spec M h_mcs _ h_ne _).2.2.2 χ h_mem
+
+/-- Forward chain: iterate preserving_fwd_step. Preserves all F-obligations. -/
 private noncomputable def fwd_chain_of_sigma (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) : (n : Nat) → { M : Set Formula // SetMaximalConsistent M }
   | 0 => ⟨M₀, h₀⟩
   | n + 1 =>
     let ⟨M, hM⟩ := fwd_chain_of_sigma M₀ h₀ sigma_list n
-    let target := if h : sigma_list.length > 0
-      then sigma_list.get ⟨n % sigma_list.length, Nat.mod_lt n h⟩
-      else Formula.bot
-    ⟨fwd_succ M hM target, fwd_succ_mcs M hM target⟩
+    ⟨preserving_fwd_step M hM sigma_list n,
+     preserving_fwd_step_mcs M hM sigma_list n⟩
 
 /-- Backward chain: iterate bwd_pred. (Replaces the archived rr_bwd_chain.) -/
 private noncomputable def bwd_chain_of_sigma (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -508,11 +632,8 @@ The forward chain has g_content(chain(n)) ⊆ chain(n+1) at each step
 private theorem sigma_fwd_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (n : Nat) :
     g_content (fwd_chain_of_sigma M₀ h₀ sigma_list n).val ⊆
-      (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).val := by
-  show g_content (fwd_chain_of_sigma M₀ h₀ sigma_list n).val ⊆
-    fwd_succ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val
-      (fwd_chain_of_sigma M₀ h₀ sigma_list n).property _
-  exact fwd_succ_g_content _ _ _
+      (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).val :=
+  preserving_fwd_step_g_content _ _ _ _
 
 -- Transitive g_content propagation for fwd_chain_of_sigma
 private theorem sigma_fwd_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -944,21 +1065,98 @@ noncomputable def dd_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
   eval_family := shifted_dd_fmcs M₀ h₀ sigma_list 0
   eval_family_mem := ⟨M₀, h₀, 0, fun _ => Iff.rfl, rfl⟩
 
+/-! ### F-persistence and forward-F for the preserving chain -/
+
+/-- F-persistence: F(χ) ∈ chain(m) → F(χ) ∈ chain(n) for m ≤ n, when χ ∈ sigma_list. -/
+private theorem fwd_chain_F_persistent (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) {m n : Nat} (h : m ≤ n)
+    (χ : Formula) (h_chi : χ ∈ sigma_list)
+    (h_F : Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list m).val) :
+    Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val := by
+  induction n with
+  | zero =>
+    have := Nat.eq_zero_of_le_zero h; subst this; exact h_F
+  | succ n ih =>
+    rcases Nat.eq_or_lt_of_le h with rfl | h_lt
+    · exact h_F
+    · exact preserving_fwd_step_F_preserved _ _ sigma_list n χ h_chi
+        (ih (Nat.lt_succ_iff.mp h_lt))
+
+/-- Forward F-resolution: F(φ) in the preserving chain gives φ at some later step.
+    At each step with defects, at least one defect w is directly resolved (w ∈ chain(n+1)).
+    Since F(φ) persists forever, active defects are non-empty at every step.
+    At the first step, some defect is resolved; if it's φ, done.
+    This provides the ∃ m > n witness. -/
+private theorem fwd_chain_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat) (φ : Formula) (h_phi : φ ∈ sigma_list)
+    (h_F : Formula.some_future φ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val) :
+    ∃ m, n < m ∧ φ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list m).val := by
+  -- F(φ) persists to chain(n), so active_defects at chain(n) is non-empty
+  -- The preserving step resolves at least one defect w ∈ chain(n+1)
+  -- By resolving_enriched_fwd_exists, this w comes from the BX11 fold
+  -- We need to show φ is eventually resolved
+  --
+  -- Key observation: at step n, chain(n+1) = preserving_fwd_step(chain(n), sigma_list, n).
+  -- If there are active defects, at least one w ∈ chain(n+1).
+  -- F(φ) ∈ chain(n+1) (preserved).
+  --
+  -- The resolved w satisfies w ∈ chain(n+1). If w = φ, take m = n+1.
+  -- If w ≠ φ: F(φ) ∈ chain(n+1), so we can repeat.
+  --
+  -- Termination argument requires well-founded induction on defect count
+  -- or a pigeonhole argument. For now, we use the immediate resolution:
+  -- at step n, there exist active defects. The step resolves some w ∈ chain(n+1).
+  -- Use by_cases whether w = φ or not, and recurse.
+  -- This terminates because sigma_list is finite and defects are tracked.
+  sorry
+
 -- Restricted coherence
 theorem dd_bfmcs_restricted_tc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (root : Formula)
     (h_sub : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ sigma_list) :
     (dd_bfmcs M₀ h₀ sigma_list).restricted_temporally_coherent root := by
-  sorry
+  intro fam hfam
+  obtain ⟨N, h_N, s, _h_eqN, rfl⟩ := hfam
+  constructor
+  · -- Forward: F(φ) ∈ fam.mcs t → ∃ u > t, φ ∈ fam.mcs u
+    intro t φ h_phi_dc h_F
+    have h_phi_sigma : φ ∈ sigma_list := h_sub φ h_phi_dc
+    rcases le_or_gt 0 (t - s) with h_pos | h_neg
+    · -- t - s ≥ 0: use pfwd_chain forward_F
+      have h_F' : Formula.some_future φ ∈ (fwd_chain_of_sigma N h_N sigma_list (t - s).toNat).val := by
+        simp only [shifted_dd_fmcs, dd_chain, if_pos h_pos] at h_F; exact h_F
+      obtain ⟨m, h_lt, h_in⟩ := fwd_chain_forward_F N h_N sigma_list (t - s).toNat φ h_phi_sigma h_F'
+      refine ⟨(m : Int) + s, by omega, ?_⟩
+      show φ ∈ dd_chain N h_N sigma_list ((↑m + s) - s)
+      have h_eq : (↑m + s) - s = (m : Int) := by omega
+      rw [h_eq]; simp only [dd_chain, show (m : Int) ≥ 0 from Int.ofNat_nonneg m, ite_true]
+      exact h_in
+    · -- t - s < 0: backward chain.
+      -- F(φ) ∈ backward chain needs to be resolved.
+      -- The backward chain doesn't have F-preservation, so we need a
+      -- different argument. For now, sorry this case.
+      sorry
+  · -- Backward: P(φ) ∈ fam.mcs t → ∃ u < t, φ ∈ fam.mcs u
+    -- Symmetric argument using backward chain P-resolution.
+    -- The backward chain uses bwd_pred which has the same F-preservation issue
+    -- but for P-formulas. A symmetric preserving_bwd_step is needed.
+    -- For now, sorry this direction.
+    intro t φ h_phi_dc h_P
+    sorry
 
 theorem dd_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (root : Formula) :
     (dd_bfmcs M₀ h₀ sigma_list).restricted_backward_until_since_coherent root := by
+  -- Backward Until/Since coherence requires the step transfer property
+  -- which is blocked for Lindenbaum-based chains under reflexive semantics.
+  -- This requires either a deterministic chain (X/Y content) or a different approach.
   sorry
 
 theorem dd_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (root : Formula) :
     (dd_bfmcs M₀ h₀ sigma_list).restricted_forward_until_since_coherent root := by
+  -- Forward Until/Since coherence depends on restricted_tc and Until propagation.
+  -- Requires proving that Until defects eventually resolve using BX10 + BX12.
   sorry
 
 /-! ## Countermodel -/
