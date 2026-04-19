@@ -1,7 +1,7 @@
 # Implementation Plan: DD-BFMCS Scheduling Chain Coherence (Revised)
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10 hours
 - **Dependencies**: Task 92 (truth lemma sorry-free) -- satisfied
 - **Research Inputs**: reports/41_team-research.md, reports/42_team-research.md
@@ -128,7 +128,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Close dd_bfmcs_restricted_tc (Reynolds Induction on Defects) [NOT STARTED]
+### Phase 2: Close dd_bfmcs_restricted_tc (Reynolds Induction on Defects) [PARTIAL]
 
 **Goal**: Prove that F-eventualities are eventually resolved in the scheduling chain using Reynolds' induction on `defects.length`.
 
