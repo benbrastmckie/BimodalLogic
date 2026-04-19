@@ -264,7 +264,7 @@ The approach:
 
 ---
 
-### Phase 6: Path B Attempt -- Full Quasimodel-Derived BFMCS [NOT STARTED]
+### Phase 6: Path B Attempt -- Full Quasimodel-Derived BFMCS [BLOCKED]
 
 **Goal**: Replace `dd_bfmcs` entirely with a new BFMCS built from palindromic cycling of the quasimodel HintikkaPoint chain.
 
@@ -305,7 +305,7 @@ The approach:
 
 ---
 
-### Phase 7: Path B Evaluation and Final Assessment [NOT STARTED]
+### Phase 7: Path B Evaluation and Final Assessment [COMPLETED]
 
 **Goal**: Assess Path B results and provide comprehensive assessment of all three paths.
 
