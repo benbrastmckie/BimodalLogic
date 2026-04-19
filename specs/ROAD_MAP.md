@@ -811,6 +811,29 @@ warnings regardless of the semantic change.
     (which checks `F(chi) in M`, not `chi not in M`). This blocks the
     Reynolds induction approach from plan v42.
 
+34. **Path C: Pigeonhole fix for fwd_chain_forward_F** (task 93, plan v44
+    Phase 2): The BX11 fold in `resolving_enriched_fwd_exists` resolves
+    SOME defect w via Lindenbaum `.choose`, but the resolved w is opaque
+    and cannot be forced to equal a specific target phi. Three sub-approaches
+    all fail:
+    (a) **Pigeonhole on active_defects**: Active defects never shrink (F-
+    persistence keeps all defects active forever), so no counting argument
+    works.
+    (b) **bx11_earlier minimum**: BX11 ordering is non-transitive (dead end
+    #15), so no global minimum exists among defects. `target_stays_direct_in_fold`
+    requires target to beat ALL others, which can't be guaranteed.
+    (c) **Self-resolving chain redesign**: `self_resolving_fwd_step` resolves
+    a specific target AND preserves its own F-obligation, but does NOT preserve
+    F-obligations for other formulas (f_carry inclusion leads to dead end #13
+    inconsistency). Round-robin targeting with `self_resolving_fwd_step` loses
+    F(phi) at resolving steps for other formulas, so F(phi) may not survive
+    to phi's round-robin turn. Similarly, `fwd_succ` at resolving steps kills
+    f_carry (dead end #24).
+    **Root cause**: Fundamental tension between target resolution and
+    F-obligation preservation in Lindenbaum-based chains. Any seed that includes
+    both target and f_carry is potentially inconsistent (dead end #13), and any
+    seed without f_carry loses F-obligations at resolving steps.
+
 ### Task 93: Progress and Infrastructure
 
 Six sorry-free helper lemmas proved during v17 Phase 1 (all in

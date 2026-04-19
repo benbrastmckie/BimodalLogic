@@ -105,7 +105,7 @@ Phases within the same wave can execute in parallel. Phases 4-7 are conditional:
 
 ---
 
-### Phase 2: Path C Attempt -- Pigeonhole Fix for fwd_chain_forward_F [NOT STARTED]
+### Phase 2: Path C Attempt -- Pigeonhole Fix for fwd_chain_forward_F [BLOCKED]
 
 **Goal**: Close `fwd_chain_forward_F` (line 1111) using the pigeonhole argument on the finite sigma_list, leveraging the proved `fwd_chain_F_persistent` and `defect_step_choice_early_spec`.
 
@@ -159,7 +159,7 @@ Phases within the same wave can execute in parallel. Phases 4-7 are conditional:
 
 ---
 
-### Phase 3: Path C Evaluation [NOT STARTED]
+### Phase 3: Path C Evaluation [COMPLETED]
 
 **Goal**: Assess Path C results, document findings in ROAD_MAP.md, and provide clear go/no-go decision for Path A.
 
