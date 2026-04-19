@@ -190,7 +190,7 @@ Phases within the same wave can execute in parallel. Phases 4-7 are conditional:
 
 ---
 
-### Phase 4: Path A Attempt -- Oracle-Based Chain Replacement [NOT STARTED]
+### Phase 4: Path A Attempt -- Oracle-Based Chain Replacement [BLOCKED]
 
 **Goal**: Replace `fwd_chain_of_sigma` / `bwd_chain_of_sigma` with oracle-based chain construction using the sorry-free `hintikka_step_for_sigma_sig` infrastructure.
 
@@ -235,7 +235,7 @@ The approach:
 
 ---
 
-### Phase 5: Path A Evaluation [NOT STARTED]
+### Phase 5: Path A Evaluation [COMPLETED]
 
 **Goal**: Assess Path A results, document findings in ROAD_MAP.md, and provide clear go/no-go decision for Path B.
 
