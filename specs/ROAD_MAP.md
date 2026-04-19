@@ -834,6 +834,26 @@ warnings regardless of the semantic change.
     both target and f_carry is potentially inconsistent (dead end #13), and any
     seed without f_carry loses F-obligations at resolving steps.
 
+35. **Path A: Oracle-based chain replacement partially viable but blocked by
+    defect-count sorry** (task 93, plan v44 Phase 4): The oracle infrastructure
+    (`hintikka_step_for_sigma_sig`) provides G-propagation, H-backward, and
+    Until-propagation, all sorry-free. The strategy: F(φ) → (⊤ U φ) by BX12,
+    then oracle defect-discharge resolves (⊤ U φ). Two blockers:
+    (a) **Defect-count decrease sorry** (`OracleStep.lean:452`): Lindenbaum
+    extension may introduce new Until-defects not present in the original MCS,
+    so `defect_count(sigma_sig(oracle_step)) < defect_count(sigma_sig(w))`
+    is not proven. This sorry exists in the "fully sorry-free oracle"
+    `hintikka_step_oracle_for_sigma_sig`.
+    (b) **Enhanced oracle seed F-preservation**: Adding `{F(φ) | F(φ) ∈ w,
+    φ ∈ Sigma}` to the oracle seed IS consistent (it's a subset of w.formulas),
+    which would give F-preservation. But this is novel infrastructure not yet
+    built, and the defect-count sorry (a) blocks the termination argument
+    regardless.
+    **Positive finding**: The enhanced oracle seed approach avoids dead end #13
+    because the additional F-formulas are already in the MCS (subset
+    consistency), unlike the f_carry approach which adds formulas to a seed
+    that may conflict with g_content.
+
 ### Task 93: Progress and Infrastructure
 
 Six sorry-free helper lemmas proved during v17 Phase 1 (all in
