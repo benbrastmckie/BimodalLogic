@@ -854,6 +854,38 @@ warnings regardless of the semantic change.
     consistency), unlike the f_carry approach which adds formulas to a seed
     that may conflict with g_content.
 
+36. **Path B: Quasimodel-derived BFMCS blocked by same Lindenbaum opacity**
+    (task 93, plan v44 Phase 6): Replacing dd_bfmcs entirely with a
+    palindromic quasimodel chain faces the same irreducible obstruction.
+    Two independent blockers:
+    (a) **F/P eventuality resolution**: ANY Int-indexed MCS chain based on
+    iterated Lindenbaum extensions via `Classical.choose` makes the
+    chain(n+1) MCS opaque. The proved lemma "alpha in chain(n+1) implies
+    F(alpha) in chain(n)" (contrapositive of g_content propagation) goes
+    the WRONG direction -- it gives F-membership at the PREDECESSOR, not
+    a WITNESS at a successor. F(phi) in chain(n) requires finding m > n
+    with phi in chain(m), which requires controlling what `set_lindenbaum`
+    chooses, regardless of whether the chain uses preserving_fwd_step,
+    oracle_step, or any other Lindenbaum-based construction.
+    (b) **Until/Since step transfer**: Backward Until coherence requires
+    the step transfer `(phi U psi) in chain(r+1) AND phi in chain(r)
+    implies (phi U psi) in chain(r)`. This requires pulling Until from a
+    successor into the current step. The only known mechanism is the
+    deterministic chain's bot-Until linking `(bot U alpha) in chain(r)
+    iff alpha in chain(r+1)`, which is NOT available for Lindenbaum-based
+    chains. The F-membership lemma gives `F(phi U psi) in chain(r)` from
+    `(phi U psi) in chain(r+1)`, but there is NO BX axiom
+    `phi AND F(phi U psi) -> phi U psi` (this would require a "next"
+    operator). Under reflexive semantics, `or_until_in_mcs` gives
+    `psi OR (phi AND (phi U psi)) -> phi U psi`, but this requires
+    `(phi U psi)` at the SAME time step, not a future step.
+    **Root cause**: The irreducible obstruction is the gap between
+    SEMANTIC temporal reasoning (which can freely reference future/past
+    states) and SYNTACTIC MCS membership (which is local to one MCS).
+    Lindenbaum extensions are non-constructive (axiom of choice) and
+    provide no inter-step structural guarantees. This obstruction applies
+    to ALL three paths (C, A, B) equally.
+
 ### Task 93: Progress and Infrastructure
 
 Six sorry-free helper lemmas proved during v17 Phase 1 (all in
@@ -878,31 +910,56 @@ Controlling this choice is the only viable path. Standard completeness proofs
 (Burgess 1984, Goldblatt 1992, GHR 1994) handle forward_F semantically, not
 syntactically.
 
-### Current Strategy: Three-Path DD-BFMCS Coherence (Plan v44)
+### Current Strategy: Architecture Reassessment Required (Post Plan v44)
 
-After 44 rounds of research and planning, the strategy attempts three
-architecture paths (C, A, B) to close the 5 remaining sorry sites in
-`RootScopedChain.lean`. Plan v42's Reynolds induction approach was found to be
-blocked by defect oscillation (dead end #33). The oracle replacement approach
-(qm_bfmcs, plan v40 phases 3-4) was archived after hitting a backward coherence
-obstruction.
+**Status**: All three paths (C, A, B) from plan v44 have been attempted and
+are BLOCKED by the same irreducible obstruction. The 5 sorry sites in
+`RootScopedChain.lean` remain open.
 
-**Path C (pigeonhole fix)**: Target `fwd_chain_forward_F` directly. Since
-`fwd_chain_F_persistent` proves F(phi) persists at all future steps, and
-`defect_step_choice_early_spec` resolves at least one defect per step,
-the argument is: with a finite sigma_list of k formulas, at each step some
-defect w is placed directly in the next MCS. The pigeonhole argument on the
-finite defect set should eventually force phi to be the resolved formula.
+**Path C (pigeonhole fix)**: BLOCKED (dead end #34). The BX11 fold resolves
+an arbitrary defect via `Classical.choose`. The resolved defect is opaque
+and cannot be forced to equal a specific target. Active defects never shrink
+(F-persistence), so no counting argument works.
 
-**Path A (oracle-based chains)**: Replace `fwd_chain_of_sigma` /
-`bwd_chain_of_sigma` with oracle-based variants using the sorry-free
-`hintikka_step_for_sigma_sig` infrastructure. Defect resolution is built
-into the oracle step.
+**Path A (oracle-based chains)**: BLOCKED (dead end #35). The sigma-specific
+oracle has a defect-count decrease sorry. Enhanced oracle seed F-preservation
+is viable but blocked by the defect-count termination argument.
 
-**Path B (quasimodel BFMCS)**: Replace `dd_bfmcs` entirely with a new BFMCS
-built from palindromic cycling of the quasimodel HintikkaPoint chain.
-`dd_countermodel` is fully parametric over BFMCS, so any BFMCS satisfying the
-three restricted coherence properties can be substituted.
+**Path B (quasimodel BFMCS)**: BLOCKED (dead end #36). Palindromic quasimodel
+chain faces the same Lindenbaum opacity. Both F/P eventuality resolution and
+Until/Since step transfer are blocked. The Until step transfer requires a
+"next" operator (bot-Until content linking) which Lindenbaum-based chains
+cannot provide.
+
+**Irreducible core obstruction**: The gap between SEMANTIC temporal reasoning
+(which can reference future/past states freely) and SYNTACTIC MCS membership
+(which is local to one MCS). Lindenbaum extensions via `Classical.choose`
+are non-constructive and provide no inter-step structural guarantees.
+All known chain architectures (preserving, oracle, quasimodel) share this
+property. Standard completeness proofs (Burgess 1984, Goldblatt 1992, GHR
+1994) handle this semantically, not syntactically.
+
+**Key mathematical insight from Phase 6 analysis**: A useful lemma IS
+derivable -- "alpha in chain(n+1) implies F(alpha) in chain(n)" (and its
+P-dual) via contrapositive of g_content propagation. However, this goes the
+WRONG direction for eventuality resolution and is insufficient for the
+Until step transfer.
+
+**Recommended next steps**:
+1. **Deterministic chain approach**: The only chain with provable Until
+   backward coherence is the deterministic chain (`DeterministicFMCS.lean`),
+   which has bot-Until content linking. Under reflexive semantics, the
+   deterministic chain is CONSTANT (bot U alpha = alpha), which trivially
+   satisfies backward Until but cannot resolve F-eventualities. A hybrid
+   approach combining deterministic Until-linking with Lindenbaum F-resolution
+   might work.
+2. **Semantic completeness proof**: Abandon the syntactic chain approach
+   entirely. Use a model-theoretic argument where the canonical model is
+   built with semantic witnesses (as in Goldblatt/GHR), avoiding the need
+   to control Lindenbaum choices.
+3. **Axiom strengthening**: Add a "next" operator or Until-induction axiom
+   to the BX system. This would make the Until step transfer derivable but
+   changes the logic.
 
 **Infrastructure already in place** (all sorry-free):
 - `deferralClosure`: finite set of formulas reachable by F/P-nesting from root
@@ -914,14 +971,12 @@ three restricted coherence properties can be substituted.
 - Quasimodel infrastructure (1,816 lines across 6 files in `Quasimodel/`)
 - Oracle infrastructure in `OracleStep.lean` (sigma-specific oracle sorry-free)
 - Restricted parametric truth lemma (sorry-free)
+- Backward Until/Since from step transfer (`backward_until_from_step`, sorry-free)
+- Deterministic chain with bot-Until linking (Boneyard, sorry-free for backward Until)
 
 **Archived code**:
 - `DRMChain.lean` and proof sketch sections 1-30 in `Boneyard/RoundRobinChain/`
 - Oracle coherence (qm_bfmcs) in `Boneyard/OracleCoherence.lean`
-
-**Plan**: 7 phases (12 hours estimated). Phase 1 updates ROAD_MAP.md.
-Phase 2 attempts Path C (pigeonhole). Phase 3 evaluates.
-Phases 4-7 (conditional) attempt Paths A and B if earlier paths fail.
 
 ---
 
