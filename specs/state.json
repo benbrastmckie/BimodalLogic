@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-19T19:17:48Z",
+      "last_updated": "2026-04-19T20:36:38Z",
       "related_tasks": [
         92,
         95
@@ -21,7 +21,7 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776625863_99fc89",
+      "session_id": "sess_1776629480_786896",
       "researched": "2026-04-19T17:43:24Z",
       "artifacts": [
         {
@@ -245,11 +245,6 @@
           "summary": "Team research with 4 teammates: extended seed oracle construction, self_resolving chain alternative, Until propagation correction"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/summaries/37_bxcanonical-embedding-summary.md",
-          "type": "summary",
-          "summary": "Analysis-only implementation attempt revealing two fundamental mathematical blockers in the oracle construction approach"
-        },
-        {
           "path": "specs/093_complete_bxcanonical_embedding/reports/38_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: language design tradeoffs definitively answered -- do not change language/semantics, fix BX11 fold chain construction instead"
@@ -265,19 +260,9 @@
           "summary": "Team research with 4 teammates: systematic review of 38 rounds, false blocker identified in Plan v37, two viable paths (quasimodel oracle, sr_fwd_chain)"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/summaries/39_bxcanonical-embedding-summary.md",
-          "type": "summary",
-          "summary": "Phase 1 blocked: Until introduction derived rule semantically invalid, backward Until coherence requires different approach"
-        },
-        {
           "path": "specs/093_complete_bxcanonical_embedding/reports/40_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: v39 obstacle confirmed, dd_chain architecture wrong, two viable paths (defect_fwd_chain induction, quasimodel BFMCS)"
-        },
-        {
-          "path": "specs/093_complete_bxcanonical_embedding/summaries/40_bxcanonical-embedding-summary.md",
-          "type": "summary",
-          "summary": "Partial implementation: oracle step infrastructure built, 2 irreducible mathematical blockers remain"
         },
         {
           "path": "specs/093_complete_bxcanonical_embedding/reports/41_team-research.md",
@@ -303,11 +288,16 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/44_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "Three-path strategy plan (C/A/B) for closing RootScopedChain.lean sorries with progressive ROAD_MAP.md updates"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/summaries/44_bxcanonical-embedding-summary.md",
+          "type": "summary",
+          "summary": "Three-path strategy: Path C and A blocked, comprehensive failure analysis documented with dead ends #31-35"
         }
       ],
       "next_artifact_number": 45,
       "started": "2026-04-13T07:28:59Z",
-      "resume_phase": 2,
+      "resume_phase": 6,
       "memory_candidates": [
         {
           "content": "In the BXCanonical completeness proof, the enriched chain with BX11 fold preserves F-obligations forever but BX11 perpetual deferral prevents guaranteeing a specific formula is eventually resolved. This is the irreducible obstruction after 30 research rounds.",
@@ -455,6 +445,34 @@
             "bx_le",
             "Until-propagation",
             "enriched-seed"
+          ]
+        },
+        {
+          "content": "Enhanced oracle seed F-preservation: Adding {F(phi) | F(phi) in w, phi in Sigma} to the oracle seed (qm_oracle_seed) is consistent because it's a subset of w.formulas. This avoids dead end #13 (f_carry inconsistency) because the F-formulas are already in the MCS. The standard f_carry approach fails because the seed {target} union g_content(M) union f_carry(M) adds target (which may not be in M) alongside f_carry, and G-formulas in g_content can contradict f_carry entries. The enhanced oracle seed keeps everything within the MCS.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/093_complete_bxcanonical_embedding/summaries/44_bxcanonical-embedding-summary.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "oracle-seed",
+            "f-carry",
+            "consistency",
+            "lindenbaum",
+            "F-preservation",
+            "BX11"
+          ]
+        },
+        {
+          "content": "The fundamental tension in Lindenbaum-based chains for BX completeness: (1) Target resolution requires the target formula in the seed, (2) F-obligation preservation requires f_carry in the seed, (3) The combined seed {target} union g_content union f_carry is potentially inconsistent (dead end #13). The BX11 fold (resolving_enriched_fwd_exists) preserves all F-obligations but resolves an opaque defect via .choose. No proof-theoretic argument can force a specific formula to be resolved because .choose is deterministic but opaque. Active defects never shrink because phi -> F(phi) is derivable (phi_imp_F_phi), so resolved formulas re-enter the defect set.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/093_complete_bxcanonical_embedding/summaries/44_bxcanonical-embedding-summary.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "lindenbaum",
+            "f-carry",
+            "BX11-fold",
+            "defect-resolution",
+            "forward-F",
+            "completeness"
           ]
         }
       ]
