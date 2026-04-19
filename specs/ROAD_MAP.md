@@ -4,7 +4,7 @@
 
 TM is a bimodal logic combining S5 modality with reflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-04-18 (plan v42: scheduling chain coherence).
+state of the completeness effort as of 2026-04-19 (plan v44: three-path strategy for DD-BFMCS coherence).
 
 **Architecture**: The proof system has 37 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
@@ -14,21 +14,25 @@ completeness path flows through `Theories/Bimodal/Metalogic/BXCanonical/`,
 which constructs a canonical frame of maximally consistent sets ordered by
 `g_content` inclusion.
 
-**Active-path sorry summary**: There are **3 sorries** blocking
+**Active-path sorry summary**: There are **5 sorries** blocking
 `bx_completeness`, all in `RootScopedChain.lean` (task 93). The sorry at
 `Completeness.lean:154` was resolved via `dd_countermodel`, which depends on
-the 3 sorry sites below. The oracle replacement approach (qm_bfmcs, 6 additional
+the 5 sorry sites below. The oracle replacement approach (qm_bfmcs, 6 additional
 sorries) was archived to `Boneyard/OracleCoherence.lean` on 2026-04-18 after
 hitting a backward coherence obstruction.
 
 | Category | Count | Location | Status |
 |----------|-------|----------|--------|
-| `dd_bfmcs_restricted_tc` | 1 | `RootScopedChain.lean:952` | **OPEN** -- restricted temporal coherence |
-| `dd_bfmcs_restricted_buc` | 1 | `RootScopedChain.lean:957` | **OPEN** -- backward Until/Since coherence |
-| `dd_bfmcs_restricted_fuc` | 1 | `RootScopedChain.lean:962` | **OPEN** -- forward Until/Since coherence |
-| **Active-path total** | **3** | | |
+| `fwd_chain_forward_F` | 1 | `RootScopedChain.lean:1111` | **OPEN** -- F-resolution for preserving chain |
+| `dd_bfmcs_restricted_tc` (forward, backward chain case) | 1 | `RootScopedChain.lean:1138` | **OPEN** -- restricted temporal coherence (backward chain F-case) |
+| `dd_bfmcs_restricted_tc` (backward direction) | 1 | `RootScopedChain.lean:1145` | **OPEN** -- restricted temporal coherence (P-resolution) |
+| `dd_bfmcs_restricted_buc` | 1 | `RootScopedChain.lean:1153` | **OPEN** -- backward Until/Since coherence |
+| `dd_bfmcs_restricted_fuc` | 1 | `RootScopedChain.lean:1160` | **OPEN** -- forward Until/Since coherence |
+| **Active-path total** | **5** | | |
 | Oracle replacement (qm_bfmcs) | 6 | archived to Boneyard/OracleCoherence.lean | **ARCHIVED** (2026-04-18) |
 | Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) |
+
+**Dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
 
 See sections below for the axiom system, reflexive semantics, canonical
 construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy.
@@ -225,7 +229,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── TruthLemma
   │     └── Bundle/FMCSDef
   │
-  ├── RootScopedChain.lean (1,483 lines, 3 sorries -- task 93)
+  ├── RootScopedChain.lean (1,681 lines, 5 sorries -- task 93)
   │     ├── OrderedSeedConsistency
   │     ├── CanonicalModel
   │     ├── Bundle/UntilSinceCoherence
@@ -262,7 +266,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
               └── Quasimodel/Construction
 ```
 
-**Total BXCanonical module: 5,593 lines across 16 files, 3 sorries (all in RootScopedChain.lean).**
+**Total BXCanonical module: 5,791 lines across 16 files, 5 sorries (all in RootScopedChain.lean).**
 
 Legacy files (`UltrafilterChain`, `SuccChainFMCS`, `FrameConditions/Completeness`)
 are still built via top-level aggregation in `Metalogic.lean` but are **not
@@ -439,25 +443,52 @@ closed `bx_until_eventuality_resolution` and `bx_since_eventuality_resolution`.
 
 ## Active-Path Sorry Inventory
 
-There are **3 sorries** on the active completeness path, all in
+There are **5 sorries** on the active completeness path, all in
 `Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean`.
 `Completeness.lean` is now sorry-free (delegates to `dd_countermodel` in
-`RootScopedChain.lean`, which depends on the 3 sorry sites below).
+`RootScopedChain.lean`, which depends on the 5 sorry sites below).
 
 | # | File:Line | Definition | Goal Summary | Owning Task |
 |---|-----------|------------|--------------|-------------|
-| 1 | RootScopedChain.lean:952 | `dd_bfmcs_restricted_tc` | Restricted temporal coherence for dd_bfmcs scheduling chain | **Task 93** |
-| 2 | RootScopedChain.lean:957 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
-| 3 | RootScopedChain.lean:962 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
+| 1 | RootScopedChain.lean:1111 | `fwd_chain_forward_F` | F(phi) in chain(n) implies phi in chain(m) for some m > n | **Task 93** |
+| 2 | RootScopedChain.lean:1138 | `dd_bfmcs_restricted_tc` (fwd, bwd chain) | Forward temporal coherence for backward chain case (F-resolution on negative side) | **Task 93** |
+| 3 | RootScopedChain.lean:1145 | `dd_bfmcs_restricted_tc` (backward) | Backward temporal coherence: P(phi) resolution | **Task 93** |
+| 4 | RootScopedChain.lean:1153 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
+| 5 | RootScopedChain.lean:1160 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
 
-All 3 sorries target the `dd_bfmcs` scheduling chain's restricted coherence
-properties. The oracle replacement approach (qm_bfmcs) was archived to
+All 5 sorries target the `dd_bfmcs` scheduling chain's restricted coherence
+properties. The dependency chain is: `fwd_chain_forward_F` -> `restricted_tc`
+(forward, positive side) -> remaining `restricted_tc` cases -> `restricted_buc`
+-> `restricted_fuc`. The oracle replacement approach (qm_bfmcs) was archived to
 `Boneyard/OracleCoherence.lean` on 2026-04-18 after hitting a backward
 coherence obstruction (`phi /\ F(phi U psi) -> phi U psi` is semantically
-invalid). The current approach (plan v42) uses Reynolds induction on
-`defects.length` with `defect_fwd_step_choice_spec` for restricted_tc,
-enriched backward seed for restricted_buc, and restricted_tc + BX9 guard
-argument for restricted_fuc.
+invalid).
+
+### Three-Path Strategy (Plan v44, 2026-04-19)
+
+After 44 rounds of research and planning, the current approach attempts three
+architecture paths (C, then A, then B) to close all 5 sorries:
+
+| Path | Strategy | Confidence | LOC Est. | Key Requirement |
+|------|----------|------------|----------|-----------------|
+| **C** | Pigeonhole fix for `fwd_chain_forward_F` | 35% | 100-200 | F-persistence + finite sigma_list -> pigeonhole on defect resolution |
+| **A** | Oracle-based chain replacement | 50% | 500-800 | Sorry-free `hintikka_step_for_sigma_sig` provides sigma-specific oracle |
+| **B** | Full quasimodel-derived BFMCS | 55% | 400-600 | Palindromic cycling avoids wraparound; BFMCS is parametric |
+
+**Irreducible core**: All paths require defect-count monotonicity across
+Lindenbaum extension. The `.choose` in `set_lindenbaum` is unconstrained, making
+the resolved defect non-deterministic. The BX11 fold provides only a disjunctive
+guarantee (target in M' OR F(target) in M'), not a definite resolution.
+
+**Key research findings from rounds 43-44**:
+- The enriched seed approach is definitively dead (counterexample from report 43)
+- OracleStep.lean has 7-8 sorry sites (previously claimed sorry-free); but the
+  sigma-specific oracle (`hintikka_step_for_sigma_sig`) IS sorry-free
+- Reynolds induction on `defects.length` fails due to defect oscillation
+  (resolving phi creates F(phi) which regenerates the defect)
+- The `preserving_fwd_step` with `defect_step_choice_early` correctly preserves
+  ALL F-obligations and resolves at least one defect per step
+- `fwd_chain_F_persistent` is proved sorry-free
 
 ### Closed Sorries (Tasks 90+92+98+102)
 
@@ -757,6 +788,29 @@ warnings regardless of the semantic change.
     outside the chain family. Bridging BXPoint witnesses back to chain
     membership is blocked by the Lindenbaum non-determinism gap.
 
+31. **Enriched seed approach definitively dead** (task 93, report 43):
+    Counterexample: `G(F(alpha) -> neg psi) in M` with both `F(alpha)` and
+    `F(psi)` in `f_carry`. The G-formula forces `F(alpha) -> neg psi` into
+    any Lindenbaum extension containing `g_content(M)`, while `f_carry`
+    requires both `F(alpha)` and `F(psi)` to be present, creating an
+    inconsistency. No variant of the enriched seed approach can avoid this.
+
+32. **"Sorry-free oracle" claim at OracleStep.lean is false** (task 93,
+    report 44, teammate C): OracleStep.lean contains 7-8 sorry sites in the
+    universal oracle infrastructure. The sigma-specific oracle
+    (`hintikka_step_for_sigma_sig`, lines 188-222) IS sorry-free, but the
+    universal oracle used by `qm_oracle_step` is not. Any path relying on
+    the universal oracle inherits these sorries.
+
+33. **Reynolds induction on defects.length fails** (task 93, report 44):
+    Defects can oscillate: resolving phi (placing it in M') causes
+    `phi in M'`, but `F(phi)` persists (F-preservation), so at the next
+    step, the defect condition `F(phi) in M' AND phi in sigma_list` still
+    holds. The defect count does not decrease because resolved formulas
+    remain "active defects" under the current `active_defects` definition
+    (which checks `F(chi) in M`, not `chi not in M`). This blocks the
+    Reynolds induction approach from plan v42.
+
 ### Task 93: Progress and Infrastructure
 
 Six sorry-free helper lemmas proved during v17 Phase 1 (all in
@@ -781,36 +835,50 @@ Controlling this choice is the only viable path. Standard completeness proofs
 (Burgess 1984, Goldblatt 1992, GHR 1994) handle forward_F semantically, not
 syntactically.
 
-### Current Strategy: Scheduling Chain Coherence (Plan v42)
+### Current Strategy: Three-Path DD-BFMCS Coherence (Plan v44)
 
-After 42 rounds of research and planning, the strategy targets the 3 remaining
-`dd_bfmcs_restricted_*` sorries directly on the existing scheduling chain
-(`fwd_chain_of_sigma` / `bwd_chain_of_sigma`). The oracle replacement approach
+After 44 rounds of research and planning, the strategy attempts three
+architecture paths (C, A, B) to close the 5 remaining sorry sites in
+`RootScopedChain.lean`. Plan v42's Reynolds induction approach was found to be
+blocked by defect oscillation (dead end #33). The oracle replacement approach
 (qm_bfmcs, plan v40 phases 3-4) was archived after hitting a backward coherence
-obstruction: `phi /\ F(phi U psi) -> phi U psi` is semantically invalid.
+obstruction.
 
-**Key insight**: The existing `defect_fwd_step_choice_spec` already provides
-F-persistence for all defects AND resolution of the earliest defect. Reynolds
-induction on `defects.length` gives restricted_tc. The backward direction
-uses enriched backward seeds applied to `bwd_pred` / `bwd_chain_of_sigma`.
+**Path C (pigeonhole fix)**: Target `fwd_chain_forward_F` directly. Since
+`fwd_chain_F_persistent` proves F(phi) persists at all future steps, and
+`defect_step_choice_early_spec` resolves at least one defect per step,
+the argument is: with a finite sigma_list of k formulas, at each step some
+defect w is placed directly in the next MCS. The pigeonhole argument on the
+finite defect set should eventually force phi to be the resolved formula.
+
+**Path A (oracle-based chains)**: Replace `fwd_chain_of_sigma` /
+`bwd_chain_of_sigma` with oracle-based variants using the sorry-free
+`hintikka_step_for_sigma_sig` infrastructure. Defect resolution is built
+into the oracle step.
+
+**Path B (quasimodel BFMCS)**: Replace `dd_bfmcs` entirely with a new BFMCS
+built from palindromic cycling of the quasimodel HintikkaPoint chain.
+`dd_countermodel` is fully parametric over BFMCS, so any BFMCS satisfying the
+three restricted coherence properties can be substituted.
 
 **Infrastructure already in place** (all sorry-free):
 - `deferralClosure`: finite set of formulas reachable by F/P-nesting from root
 - `fwd_succ` / `bwd_pred`: sorry-free successor/predecessor step constructions
-- `defect_fwd_step_choice` / `defect_fwd_step_choice_spec`: F-persistence + resolution
+- `defect_step_choice_early` / `defect_step_choice_early_spec`: F-persistence + resolution
+- `fwd_chain_F_persistent`: F(chi) persists across all forward chain steps
+- `preserving_fwd_step_F_preserved`: F-obligations preserved at each step
+- `target_stays_direct_in_fold`: target guaranteed in M' when bx11_earlier than all others
 - Quasimodel infrastructure (1,816 lines across 6 files in `Quasimodel/`)
-- Oracle infrastructure in `OracleStep.lean` (preserved as reusable)
+- Oracle infrastructure in `OracleStep.lean` (sigma-specific oracle sorry-free)
 - Restricted parametric truth lemma (sorry-free)
 
 **Archived code**:
 - `DRMChain.lean` and proof sketch sections 1-30 in `Boneyard/RoundRobinChain/`
 - Oracle coherence (qm_bfmcs) in `Boneyard/OracleCoherence.lean`
 
-**Plan**: 5 phases (10 hours estimated). Phase 1 archives oracle code (done).
-Phase 2 closes restricted_tc via Reynolds induction. Phase 3 closes
-restricted_buc via enriched backward seed. Phase 4 closes restricted_fuc
-via restricted_tc + BX9 guard. Phase 5 integrates and verifies sorry-free
-completeness.
+**Plan**: 7 phases (12 hours estimated). Phase 1 updates ROAD_MAP.md.
+Phase 2 attempts Path C (pigeonhole). Phase 3 evaluates.
+Phases 4-7 (conditional) attempt Paths A and B if earlier paths fail.
 
 ---
 
@@ -885,11 +953,11 @@ characterization.
 
 ### Critical Path (sequential)
 
-1. **Task 93**: Close 3 remaining `dd_bfmcs_restricted_*` sorries. The
-   **sole remaining active-path sorry cluster**. Requires proving restricted
-   temporal, backward Until/Since, and forward Until/Since coherence for the
-   scheduling chain.
-   **Current approach**: Scheduling chain coherence (Plan v42, 5 phases).
+1. **Task 93**: Close 5 remaining sorry sites in `RootScopedChain.lean`. The
+   **sole remaining active-path sorry cluster**. Requires `fwd_chain_forward_F`
+   (F-resolution), restricted temporal coherence (forward + backward),
+   backward Until/Since, and forward Until/Since coherence.
+   **Current approach**: Three-path strategy (Plan v44, 7 phases).
 2. **Task 95**: `#print axioms` audit on `bx_completeness`; expected output
    is exactly `{propext, Classical.choice, Quot.sound}`. Depends on task 93.
 
@@ -912,7 +980,7 @@ characterization.
 
 ## Task Cross-Reference
 
-> **Updated 2026-04-18 (task 93 plan v42: oracle archived, scheduling chain coherence strategy)**
+> **Updated 2026-04-19 (task 93 plan v44: three-path strategy for DD-BFMCS coherence)**
 
 | Task | Status | Description | Depends On |
 |------|--------|-------------|------------|
@@ -921,7 +989,7 @@ characterization.
 | 92 | **[COMPLETED]** | Implement Until/Since truth lemma approach | 90 |
 | 98 | **[COMPLETED]** | Implement eventuality resolution (Frame.lean:653, 690) | 92 |
 | 102 | **[COMPLETED]** | Close remaining Frame.lean sorries (675, 704, 440) | 98 |
-| 93 | [IMPLEMENTING] | Close RootScopedChain.lean 3 sorries (scheduling chain coherence approach) -- **3 active-path sorries** | 102 |
+| 93 | [IMPLEMENTING] | Close RootScopedChain.lean 5 sorries (three-path strategy, plan v44) -- **5 active-path sorries** | 102 |
 | 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 93 |
 | 103 | **[COMPLETED]** | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
 | 94 | **[COMPLETED]** | Archive strict-semantics legacy files to Boneyard | 103 |
@@ -933,4 +1001,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-04-18 (task 93 plan v42: oracle replacement archived to Boneyard/OracleCoherence.lean, sorry count reduced from 6 to 3)*
+*Last updated: 2026-04-19 (task 93 plan v44: three-path strategy for DD-BFMCS coherence, sorry inventory updated to 5 sites with correct line numbers)*
