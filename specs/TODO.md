@@ -71,12 +71,13 @@ technical_debt:
 
 ### 109. Close chain construction sorries for sorry-free completeness
 - **Effort**: 20-40 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-20
 - **Dependencies**: 93
 - **Report**: [specs/109_close_chain_construction_sorries/reports/01_chain-construction-sorries.md]
+- **Research**: [109_close_chain_construction_sorries/reports/02_team-research.md]
 
 **Description**: Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free `bx_completeness`. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93). 4 of 11 are genuinely unprovable/false as stated.
 
