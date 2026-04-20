@@ -63,7 +63,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Close Standalone Lemma Sorries [IN PROGRESS]
+### Phase 1: Close Standalone Lemma Sorries [COMPLETED]
 
 **Goal**: Close the 4 standalone lemma sorries (#1-4) using verified proof sketches from research.
 

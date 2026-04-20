@@ -320,11 +320,11 @@ theorem swap_axiom_tl_valid (φ : Formula) :
     exact h_always fun h_G => absurd (h_G r htr) h_neg
   have h_present : truth_at M Omega τ t φ.swap_temporal := by
     by_contra h_not
-    exact h_always fun _ h_inner => h_inner (fun h_neg _ => h_neg h_not)
+    exact h_always fun _ h_inner => h_inner (fun h_pres _ => h_not h_pres)
   have h_past : ∀ r, r < t → truth_at M Omega τ r φ.swap_temporal := by
     by_contra h_not; push_neg at h_not
     obtain ⟨r, hrt, h_neg⟩ := h_not
-    exact h_always fun _ h_inner => h_inner (fun _ h_neg2 => h_neg2 r hrt h_neg)
+    exact h_always fun _ h_inner => h_inner (fun _ h_H => h_neg (h_H r hrt))
   rcases lt_trichotomy u t with h_lt | h_eq | h_gt
   · exact h_past u h_lt
   · exact h_eq ▸ h_present
@@ -941,11 +941,11 @@ private theorem axiom_temp_l_valid (φ : Formula) :
     exact h_always fun h_H => absurd (h_H r hrt) h_neg
   have h_present : truth_at M Omega τ t φ := by
     by_contra h_not
-    exact h_always fun _ h_inner => h_inner (fun h_neg _ => h_neg h_not)
-  have h_future : �� r, t < r → truth_at M Omega τ r φ := by
+    exact h_always fun _ h_inner => h_inner (fun h_pres _ => h_not h_pres)
+  have h_future : ∀ r, t < r → truth_at M Omega τ r φ := by
     by_contra h_not; push_neg at h_not
     obtain ⟨r, htr, h_neg⟩ := h_not
-    exact h_always fun _ h_inner => h_inner (fun _ h_neg2 => h_neg2 r htr h_neg)
+    exact h_always fun _ h_inner => h_inner (fun _ h_G => h_neg (h_G r htr))
   rcases lt_trichotomy u t with h_lt | h_eq | h_gt
   · exact h_past u h_lt
   · exact h_eq ▸ h_present
@@ -982,7 +982,30 @@ private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
       (Formula.or (Formula.some_future (Formula.and φ ψ))
         (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
           (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))) := by
-  sorry
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
+  intro h_conj
+  -- Extract Fφ witness
+  have ⟨s1, hts1, h_φs1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun h_F _ => h_F fun s hts h_phi => (h_no s hts h_phi).elim)
+  -- Extract Fψ witness
+  have ⟨s2, hts2, h_ψs2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun _ h_F => h_F fun s hts h_psi => (h_no s hts h_psi).elim)
+  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+  · -- s1 < s2: take r = s1, giving F(φ ∧ F(ψ))
+    intro _; intro h_neg_second; exfalso; apply h_neg_second
+    intro h_all; exact h_all s1 hts1 (fun h_imp => h_imp h_φs1
+      (fun h_neg => h_neg s2 h_lt h_ψs2))
+  · -- s1 = s2: giving F(φ ∧ ψ)
+    subst h_eq
+    intro h_neg_first; exfalso; apply h_neg_first
+    intro h_all; exact h_all s1 hts1 (fun h_imp => h_imp h_φs1 h_ψs2)
+  · -- s2 < s1: take r = s2, giving F(F(φ) ∧ ψ)
+    intro _; intro _
+    intro h_all; exact h_all s2 hts2 (fun h_imp => h_imp
+      (fun h_neg => h_neg s1 h_gt h_φs1) h_ψs2)
 
 /-- Past temporal linearity axiom validity (BX11'):
 `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is locally valid.
@@ -992,7 +1015,30 @@ private theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
       (Formula.or (Formula.some_past (Formula.and φ ψ))
         (Formula.or (Formula.some_past (Formula.and φ (Formula.some_past ψ)))
           (Formula.some_past (Formula.and (Formula.some_past φ) ψ))))) := by
-  sorry
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_past, Formula.neg, truth_at]
+  intro h_conj
+  -- Extract Pφ witness
+  have ⟨s1, hs1t, h_φs1⟩ : ∃ s, s < t ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun h_P _ => h_P fun s hst h_phi => (h_no s hst h_phi).elim)
+  -- Extract Pψ witness
+  have ⟨s2, hs2t, h_ψs2⟩ : ∃ s, s < t ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_conj (fun _ h_P => h_P fun s hst h_psi => (h_no s hst h_psi).elim)
+  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+  · -- s1 < s2: take r = s2, giving P(P(φ) ∧ ψ)
+    intro _; intro _
+    intro h_all; exact h_all s2 hs2t (fun h_imp => h_imp
+      (fun h_neg => h_neg s1 h_lt h_φs1) h_ψs2)
+  · -- s1 = s2: giving P(φ ∧ ψ)
+    subst h_eq
+    intro h_neg_first; exfalso; apply h_neg_first
+    intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_φs1 h_ψs2)
+  · -- s1 > s2: take r = s1, giving P(φ ∧ P(ψ))
+    intro _; intro h_neg_second; exfalso; apply h_neg_second
+    intro h_all; exact h_all s1 hs1t (fun h_imp => h_imp h_φs1
+      (fun h_neg => h_neg s2 h_gt h_ψs2))
 
 /-- F-Until equivalence axiom validity (BX12):
 `F(φ) → (⊤ U φ)` is locally valid.
