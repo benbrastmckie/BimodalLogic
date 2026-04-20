@@ -79,15 +79,6 @@ technical_debt:
 
 ---
 
-### 110. Widen TODO entry format context for all task-creating commands
-- **Effort**: 0.5 hours
-- **Status**: [NOT STARTED]
-- **Language**: meta
-- **Priority**: medium
-- **Created**: 2026-04-20
-
-**Description**: The `state-management-schema.md` context file (which defines the canonical TODO.md entry format) only loads for `task_types: ["meta"]` and `commands: ["/task", "/todo"]`. Commands like `/review` that also create task entries never see the format spec, causing inconsistent Description formatting (bulleted vs standalone paragraph). Fix: (1) Widen `load_when` in `index.json` to include `/review`, `/errors`, `/fix-it`, and all agents that create tasks. (2) Add explicit `@state-management-schema.md` reference to `review.md` task creation section (line 806). (3) Scan other task-creating commands for the same gap.
-
 ---
 
 ### 109. Close chain construction sorries for sorry-free completeness
