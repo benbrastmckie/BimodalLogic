@@ -479,9 +479,6 @@ The proof handles each axiom case:
 
 theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontrivial D]
     (h_dc : h.isDenseCompatible) : is_valid D φ.swap_temporal := by
-  sorry
-  /- Temporarily sorry'd during irreflexive semantics switch.
-  The swap validity proofs need mechanical ≤ to < updates throughout.
   cases h with
   | prop_k ψ χ ρ =>
     intro F M Omega _h_sc τ _h_mem t
@@ -540,15 +537,21 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
     intro h_H s hst r hrs
-    exact h_H r (le_trans hrs hst)
+    exact h_H r (lt_trans hrs hst)
   | serial_future =>
+    -- swap of ⊤ → F⊤ is ⊤ → P⊤; need ∃ s < t, which follows from Nontrivial
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    sorry
+    simp only [Formula.swap_temporal, Formula.some_future, Formula.neg, truth_at]
+    intro _ h_all_neg
+    obtain ⟨s, hst⟩ := exists_lt t
+    exact h_all_neg s hst (fun h => h)
   | serial_past =>
+    -- swap of ⊤ → P⊤ is ⊤ → F⊤; need ∃ s > t, which follows from Nontrivial
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    sorry
+    simp only [Formula.swap_temporal, Formula.some_past, Formula.neg, truth_at]
+    intro _ h_all_neg
+    obtain ⟨s, hts⟩ := exists_gt t
+    exact h_all_neg s hts (fun h => h)
   | left_mono_until φ ψ χ =>
     -- swap: H(φ' → χ') → ((φ' S ψ') → (χ' S ψ'))
     intro F M Omega _h_sc τ _h_mem t
@@ -713,16 +716,6 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       exact ⟨s2, hts2,
         fun h_neg_ep => h_neg_ep (h_guard1 s2 hts2 h_lt) h_θs2,
         fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
-  | until_step φ ψ =>
-    -- swap of until_step is since_step swapped
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    sorry
-  | since_step φ ψ =>
-    -- swap of since_step is until_step swapped
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    sorry
   | until_elim φ ψ =>
     -- swap of ((φ U ψ) → (φ ∨ ψ)) is ((φ' S ψ') → (φ' ∨ ψ'))
     intro F M Omega _h_sc τ _h_mem t
@@ -805,7 +798,6 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     exact swap_axiom_P_since_equiv_valid φ
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
-  -/
 
 /-! ## Axiom Validity (Local)
 
@@ -1085,8 +1077,6 @@ private theorem axiom_density_valid [DenselyOrdered D] (φ : Formula) :
 /-- All dense-compatible axioms are locally valid on dense orders. -/
 private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Formula} (h : Axiom φ)
     (h_dc : h.isDenseCompatible) : is_valid D φ := by
-  sorry
-  /- Temporarily sorry'd during irreflexive semantics switch.
   cases h with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
   | prop_s φ ψ => exact axiom_prop_s_valid φ ψ
@@ -1301,7 +1291,6 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
-  -/
 
 /-! ## Rule Preservation for Local Validity
 

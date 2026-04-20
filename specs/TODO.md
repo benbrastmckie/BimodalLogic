@@ -132,12 +132,13 @@ technical_debt:
 
 ### 106. Rewrite ROADMAP.md for irreflexive semantics
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: markdown
 - **Priority**: critical
 - **Created**: 2026-04-20
 - **Research**: [106_rewrite_roadmap_irreflexive/reports/01_roadmap-rewrite-audit.md]
 - **Plan**: [106_rewrite_roadmap_irreflexive/plans/01_roadmap-rewrite.md]
+- **Summary**: [106_rewrite_roadmap_irreflexive/summaries/01_roadmap-rewrite-summary.md]
 
 **Description**: ROADMAP says "fully reflexive" throughout but semantics is now irreflexive. Rewrite Overview, update sorry inventory line numbers, update axiom tables (BX1/BX1' -> seriality, BX8/BX8' removed, BX2 reformulated), document task 93 outcome and remaining CanonicalModel sorry cluster.
 
