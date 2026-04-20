@@ -149,4 +149,58 @@ theorem bx_completeness' (φ : Formula) (h : valid φ) :
     Nonempty (DerivationTree [] φ) :=
   bx_completeness φ h
 
+/-! ## Axiom Audit (Phase 0 Results)
+
+Captured during Phase 0 of task 109 (2026-04-20).
+
+### Current State (as of Phase 0)
+
+```
+#print axioms bx_completeness
+-- depends on: [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]
+
+#print axioms dd_countermodel
+-- depends on: [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]
+```
+
+### Axiom Classification
+
+- `propext`, `Classical.choice`, `Quot.sound` — target axioms (acceptable, standard Lean 4)
+- `sorryAx` — must be eliminated (7 critical-path sorries)
+- `Lean.ofReduceBool`, `Lean.trustCompiler` — introduced by `native_decide` in Syntax layer
+  (Formula.lean, SignedFormula.lean); these are acceptable, not sorry-related
+
+### Sorry Dependency Tree
+
+The `sorryAx` dependency traces through `dd_countermodel` → `dd_bfmcs` in RootScopedChain.lean.
+
+**Dead code sorries** (CanonicalModel.lean, not on critical path — Phase 1 deletes these):
+1. `enriched_seed_consistent` (line ~54) — dead code
+2. `fwd_succ_f_carry` (line ~98) — dead code
+3. `enriched_past_seed_consistent` (line ~113) — dead code
+4. `bwd_pred_p_carry` (line ~164) — dead code
+
+**Reflexive base case sorries** (CanonicalModel.lean — Phase 2 eliminates by switching to strict ordering):
+5. `g_content_subset_self` (line ~205) — reflexive base case for `fwd_chain_g_content_trans`
+6. `h_content_subset_self` (line ~211) — reflexive base case for `bwd_chain_h_content_trans`
+
+**Chain construction coherence sorries** (RootScopedChain.lean — Phases 3-5):
+7. `fwd_chain_forward_F` (line ~1044) — F-obligation resolution in forward chain
+8. `dd_bfmcs_restricted_tc` forward t-s<0 case (line ~1092) — backward F-resolution
+9. `dd_bfmcs_restricted_tc` backward direction (line ~1099) — P-preservation
+10. `dd_bfmcs_restricted_buc` (line ~1107) — backward Until coherence
+11. `dd_bfmcs_restricted_fuc` (line ~1114) — forward Until coherence
+
+### Target State
+
+After all phases complete, `#print axioms bx_completeness` should show:
+`{propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound}`
+
+(The `Lean.ofReduceBool` and `Lean.trustCompiler` remain from `native_decide` in the Syntax layer
+and are not removable without changing the decidability infrastructure.)
+-/
+
+#print axioms Bimodal.Metalogic.BXCanonical.bx_completeness
+#print axioms Bimodal.Metalogic.BXCanonical.dd_countermodel
+
 end Bimodal.Metalogic.BXCanonical
