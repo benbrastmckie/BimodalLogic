@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-20T14:46:39Z",
+      "last_updated": "2026-04-20T14:55:42Z",
       "related_tasks": [
         92,
         95
@@ -21,7 +21,7 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776695919_9ccc81",
+      "session_id": "sess_1776696651_b8c483",
       "researched": "2026-04-20T14:46:39Z",
       "artifacts": [
         {
@@ -300,11 +300,6 @@
           "summary": "Team research with 4 teammates: A2 guard convention, axiom disposition table, defect_step_early phi→F(phi) finding, sorry closure map"
         },
         {
-          "path": "specs/093_complete_bxcanonical_embedding/plans/48_bxcanonical-embedding.md",
-          "type": "plan",
-          "summary": "Irreflexive semantics with A2 guard convention: 5 phases, 14 hours, 800-1200 LOC"
-        },
-        {
           "path": "specs/093_complete_bxcanonical_embedding/summaries/48_bxcanonical-embedding-summary.md",
           "type": "summary",
           "summary": "Phase 1 partial: core semantic change complete, 41 downstream errors remain"
@@ -318,6 +313,11 @@
           "path": "specs/093_complete_bxcanonical_embedding/reports/49_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: soundness break found, constrained Lindenbaum not universal, semantic rewrite recommended as fallback"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/plans/49_bxcanonical-embedding.md",
+          "type": "plan",
+          "summary": "Plan v49: fix guard convention, complete soundness, close 5 sorry sites (4 phases, 12h)"
         }
       ],
       "next_artifact_number": 50,
