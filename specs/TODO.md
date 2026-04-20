@@ -47,7 +47,7 @@ technical_debt:
 5. **107** [PLANNED] — Archive dead Quasimodel code (OracleStep + BXCanonical/Boneyard)
 6. **108** [PLANNED] — Audit SoundnessLemmas.lean sorry sites
 7. **105** [PLANNED] — Update stale sorry-blocker comments in BXCanonical code
-8. **104** [PLANNED] — Clean up stale task state and metrics
+8. **104** [COMPLETED] — Clean up stale task state and metrics
 9. **110** [NOT STARTED] — Widen TODO entry format context for all task-creating commands
 
 ### 3. Independent Completeness Paths (parallel)
@@ -158,12 +158,15 @@ technical_debt:
 
 ### 104. Clean up stale task state and metrics
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-04-20
+- **Summary**: Cleaned stale task state: removed task 60 dependency on archived task 59, corrected sorry metrics (140->129 non-Boneyard, 1->11 publication-path), fixed TODO.md next_project_number.
 - **Language**: meta
 - **Priority**: medium
 - **Created**: 2026-04-12
 - **Research**: [104_clean_superseded_tasks/reports/01_stale-state-cleanup.md]
 - **Plan**: [104_clean_superseded_tasks/plans/01_stale-state-cleanup.md]
+- **Summary**: [104_clean_superseded_tasks/summaries/01_stale-state-cleanup-summary.md]
 
 **Description**: Clean up remaining stale task state after post-task-93 review (which abandoned 89, 87, 74, 75, 76, 82): (1) Update task 60 to remove dependency on nonexistent task 59 and reassess `discrete_Icc_finite_axiom` status. (2) Fix state.json `technical_debt` metrics: update `sorry_count`, `publication_path_sorries` to reflect current state (11 active-path sorries). (3) Update TODO.md frontmatter metrics to match.
 

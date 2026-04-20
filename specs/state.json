@@ -1062,7 +1062,7 @@
     {
       "project_number": 104,
       "project_name": "clean_superseded_tasks",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "description": "Clean up remaining stale task state: (1) Update task 60 to remove dependency on nonexistent task 59 and reassess discrete_Icc_finite_axiom status. (2) Fix state.json technical_debt metrics (sorry_count, publication_path_sorries) to reflect current state post-task-93. (3) Update TODO.md frontmatter metrics. Tasks 89, 87, 74, 75, 76, 82 already abandoned in post-task-93 review.",
@@ -1070,7 +1070,26 @@
       "last_updated": "2026-04-20T18:32:27Z",
       "task_type": "meta",
       "session_id": "sess_1776709935_89f761",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Cleaned stale task state: removed task 60 dependency on archived task 59, corrected sorry metrics (140->129 non-Boneyard, 1->11 publication-path), fixed TODO.md next_project_number.",
+      "claudemd_suggestions": "none",
+      "artifacts": [
+        {
+          "path": "specs/104_clean_superseded_tasks/reports/01_stale-state-cleanup.md",
+          "type": "research",
+          "summary": "Research report on stale state cleanup items"
+        },
+        {
+          "path": "specs/104_clean_superseded_tasks/plans/01_stale-state-cleanup.md",
+          "type": "plan",
+          "summary": "3-phase plan for stale state cleanup"
+        },
+        {
+          "path": "specs/104_clean_superseded_tasks/summaries/01_stale-state-cleanup-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for stale task state cleanup"
+        }
+      ]
     },
     {
       "project_number": 105,
