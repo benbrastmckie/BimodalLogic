@@ -34,7 +34,8 @@ The backward direction (`bx_until_backward` / `bx_since_backward`) was removed:
 these had unsound signatures (φ ∈ w alone does not entail the full interval guard
 needed for φ U ψ ∈ w). They were dead code with no downstream consumers.
 
-The completeness theorem is stated with sorry for the TaskModel construction.
+The completeness theorem delegates to `dd_countermodel` for the TaskModel construction;
+remaining sorries are in chain coherence proofs (RootScopedChain.lean, CanonicalModel.lean).
 
 ## References
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Update Stale BXCanonical Comments
 
 - **Task**: 105 - Update stale sorry-blocker comments in BXCanonical code files
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Dependencies**: None (tasks 90, 92, 98, 102 already completed)
 - **Research Inputs**: specs/105_update_bxcanonical_comments/reports/01_stale-comments-audit.md
@@ -57,7 +57,7 @@ This task maintains documentation accuracy for the BXCanonical completeness path
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Update All Stale Comments and Docstrings [NOT STARTED]
+### Phase 1: Update All Stale Comments and Docstrings [COMPLETED]
 
 **Goal**: Edit all 8 stale comments/docstrings across 5 files
 
@@ -90,7 +90,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Build Verification [NOT STARTED]
+### Phase 2: Build Verification [COMPLETED]
 
 **Goal**: Confirm that comment-only changes do not break the build
 
