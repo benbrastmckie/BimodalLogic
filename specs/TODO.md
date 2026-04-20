@@ -43,11 +43,12 @@ technical_debt:
 
 ### 2. Documentation & Cleanup
 
-4. **106** [NOT STARTED] — Rewrite ROADMAP.md for irreflexive semantics (critical)
-5. **107** [NOT STARTED] — Archive dead Quasimodel code (OracleStep + BXCanonical/Boneyard)
-6. **108** [NOT STARTED] — Audit SoundnessLemmas.lean sorry sites
-7. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
-8. **104** [NOT STARTED] — Clean up stale task state and metrics
+4. **106** [PLANNED] — Rewrite ROADMAP.md for irreflexive semantics (critical)
+5. **107** [PLANNED] — Archive dead Quasimodel code (OracleStep + BXCanonical/Boneyard)
+6. **108** [PLANNED] — Audit SoundnessLemmas.lean sorry sites
+7. **105** [PLANNED] — Update stale sorry-blocker comments in BXCanonical code
+8. **104** [PLANNED] — Clean up stale task state and metrics
+9. **110** [NOT STARTED] — Widen TODO entry format context for all task-creating commands
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -78,6 +79,17 @@ technical_debt:
 
 ---
 
+### 110. Widen TODO entry format context for all task-creating commands
+- **Effort**: 0.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Priority**: medium
+- **Created**: 2026-04-20
+
+**Description**: The `state-management-schema.md` context file (which defines the canonical TODO.md entry format) only loads for `task_types: ["meta"]` and `commands: ["/task", "/todo"]`. Commands like `/review` that also create task entries never see the format spec, causing inconsistent Description formatting (bulleted vs standalone paragraph). Fix: (1) Widen `load_when` in `index.json` to include `/review`, `/errors`, `/fix-it`, and all agents that create tasks. (2) Add explicit `@state-management-schema.md` reference to `review.md` task creation section (line 806). (3) Scan other task-creating commands for the same gap.
+
+---
+
 ### 109. Close chain construction sorries for sorry-free completeness
 - **Effort**: 20-40 hours
 - **Status**: [NOT STARTED]
@@ -85,8 +97,9 @@ technical_debt:
 - **Priority**: critical
 - **Created**: 2026-04-20
 - **Dependencies**: 93
-- **Description**: Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free `bx_completeness`. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93). 4 of 11 are genuinely unprovable/false as stated.
 - **Report**: [specs/109_close_chain_construction_sorries/reports/01_chain-construction-sorries.md]
+
+**Description**: Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free `bx_completeness`. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93). 4 of 11 are genuinely unprovable/false as stated.
 
 ---
 
@@ -98,7 +111,8 @@ technical_debt:
 - **Created**: 2026-04-20
 - **Research**: [108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md]
 - **Plan**: [108_audit_soundness_lemmas_sorries/plans/01_soundness-sorry-closure.md]
-- **Description**: Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as closeable under irreflexive semantics, genuinely blocked, or in block-commented sorry'd theorem. Close straightforward ones. Document blocked ones.
+
+**Description**: Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as closeable under irreflexive semantics, genuinely blocked, or in block-commented sorry'd theorem. Close straightforward ones. Document blocked ones.
 
 ---
 
@@ -110,7 +124,8 @@ technical_debt:
 - **Created**: 2026-04-20
 - **Research**: [107_archive_dead_quasimodel_code/reports/01_quasimodel-archive-audit.md]
 - **Plan**: [107_archive_dead_quasimodel_code/plans/01_quasimodel-archive.md]
-- **Description**: Move OracleStep.lean (25 sorries, orphaned), OracleCoherence.lean (14 sorries), and RoundRobinChain.lean (5 sorries) from BXCanonical to main Boneyard/. Remove from build chain. Net reduction ~44 sorry occurrences. Add README.
+
+**Description**: Move OracleStep.lean (25 sorries, orphaned), OracleCoherence.lean (14 sorries), and RoundRobinChain.lean (5 sorries) from BXCanonical to main Boneyard/. Remove from build chain. Net reduction ~44 sorry occurrences. Add README.
 
 ---
 
@@ -122,7 +137,8 @@ technical_debt:
 - **Created**: 2026-04-20
 - **Research**: [106_rewrite_roadmap_irreflexive/reports/01_roadmap-rewrite-audit.md]
 - **Plan**: [106_rewrite_roadmap_irreflexive/plans/01_roadmap-rewrite.md]
-- **Description**: ROADMAP says "fully reflexive" throughout but semantics is now irreflexive. Rewrite Overview, update sorry inventory line numbers, update axiom tables (BX1/BX1' -> seriality, BX8/BX8' removed, BX2 reformulated), document task 93 outcome and remaining CanonicalModel sorry cluster.
+
+**Description**: ROADMAP says "fully reflexive" throughout but semantics is now irreflexive. Rewrite Overview, update sorry inventory line numbers, update axiom tables (BX1/BX1' -> seriality, BX8/BX8' removed, BX2 reformulated), document task 93 outcome and remaining CanonicalModel sorry cluster.
 
 ---
 
