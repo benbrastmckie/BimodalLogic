@@ -6,7 +6,7 @@ TM is a bimodal logic combining S5 modality with irreflexive linear temporal log
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
 state of the completeness effort as of 2026-04-20 (irreflexive semantics rewrite).
 
-**Architecture**: The proof system has 33 BX axioms (propositional, S5 modal,
+**Architecture**: The proof system has 35 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
 **irreflexive**: G/H quantify over `t < s` / `s < t` (strict inequality), and
 Until/Since require strictly future/past witnesses. The active
@@ -14,23 +14,22 @@ completeness path flows through `Theories/Bimodal/Metalogic/BXCanonical/`,
 which constructs a canonical frame of maximally consistent sets ordered by
 `g_content` inclusion.
 
-**Active-path sorry summary**: There are **5 sorries** blocking
-`bx_completeness`, all in `RootScopedChain.lean` (task 93). The sorry at
-`Completeness.lean:154` was resolved via `dd_countermodel`, which depends on
-the 5 sorry sites below. The oracle replacement approach (qm_bfmcs, 6 additional
-sorries) was archived to `Boneyard/OracleCoherence.lean` on 2026-04-18 after
-hitting a backward coherence obstruction.
+**Sorry summary**: The BXCanonical module has **23 sorry proofs** across 7 files,
+in three categories:
 
-| Category | Count | Location | Status |
-|----------|-------|----------|--------|
-| `fwd_chain_forward_F` | 1 | `RootScopedChain.lean:1111` | **OPEN** -- F-resolution for preserving chain |
-| `dd_bfmcs_restricted_tc` (forward, backward chain case) | 1 | `RootScopedChain.lean:1138` | **OPEN** -- restricted temporal coherence (backward chain F-case) |
-| `dd_bfmcs_restricted_tc` (backward direction) | 1 | `RootScopedChain.lean:1145` | **OPEN** -- restricted temporal coherence (P-resolution) |
-| `dd_bfmcs_restricted_buc` | 1 | `RootScopedChain.lean:1153` | **OPEN** -- backward Until/Since coherence |
-| `dd_bfmcs_restricted_fuc` | 1 | `RootScopedChain.lean:1160` | **OPEN** -- forward Until/Since coherence |
-| **Active-path total** | **5** | | |
+| Category | Count | Files | Status |
+|----------|-------|-------|--------|
+| **Critical path** (blocking `bx_completeness`) | 5 | `RootScopedChain.lean` | **OPEN** (task 109) |
+| **Irreflexive-consequence** (BX1 removal artifacts) | 18 | Frame, TruthLemma, CanonicalModel, Construction, Realization, SigmaOrdering | **OPEN** (task 109) |
+| **Total BXCanonical** | **23** | 7 files | |
 | Oracle replacement (qm_bfmcs) | 6 | archived to Boneyard/OracleCoherence.lean | **ARCHIVED** (2026-04-18) |
 | Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) |
+
+The 5 critical-path sorries in `RootScopedChain.lean` (lines 1065, 1092, 1099, 1107, 1114)
+block `dd_countermodel`, which `Completeness.lean` delegates to for the completeness proof.
+The 18 irreflexive-consequence sorries are artifacts of the BX1 removal (e.g., `bx_le_refl`,
+`g_content_subset_self`, `refl_intro_until_mcs`, `sigma_le_refl`) that need redesign under
+irreflexive semantics.
 
 **Dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
 
@@ -45,7 +44,7 @@ construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy
 four layers (see `Axioms.lean:46-49` for Burgess 1982/84, Xu 1988, Venema 1993
 references). Under irreflexive semantics (strict `<` for G/H, strict witness
 for U/S), the axiom set replaces BX1/BX1' (reflexive T) with seriality axioms
-and replaces BX8/BX8' (reflexive Until/Since introduction) with step axioms.
+and removes BX8/BX8' (not sound under irreflexive Until/Since).
 
 ### Layer 1: Propositional (4)
 
@@ -66,43 +65,43 @@ and replaces BX8/BX8' (reflexive Until/Since introduction) with step axioms.
 | `modal_5_collapse` | Axioms.lean:95 | `◇□φ → □φ` | S5 characteristic |
 | `modal_k_dist` | Axioms.lean:98 | `□(φ → ψ) → (□φ → □ψ)` | Normal modality |
 
-### Layer 3: BX Temporal (26)
+### Layer 3: BX Temporal (24)
 
 | Axiom | File:Line | Statement (future direction) | Role |
 |-------|-----------|------------------------------|------|
 | `temp_k_dist` | Axioms.lean:107 | `G(φ → ψ) → (Gφ → Gψ)` | K for G |
 | `temp_4` | Axioms.lean:112 | `Gφ → GGφ` | Transitivity; needed for `bx_le_trans` |
-| BX1 `serial_future` | Axioms.lean:117 | `T -> F(T)` | Seriality (replaces reflexive T) |
-| BX1' `serial_past` | Axioms.lean:123 | `T -> P(T)` | Mirror seriality |
-| BX2 `left_mono_until` | Axioms.lean:126 | `G(φ→χ) → ((φUψ)→(χUψ))` | Left monotonicity |
-| BX2' `left_mono_since` | Axioms.lean:130 | mirror for S | |
-| BX3 `right_mono_until` | Axioms.lean:135 | `G(φ→ψ) → ((χUφ)→(χUψ))` | Right monotonicity |
-| BX3' `right_mono_since` | Axioms.lean:139 | mirror for S | |
-| BX4 `connect_future` | Axioms.lean:146 | `φ → G(P(φ))` | Temporal connectedness |
-| BX4' `connect_past` | Axioms.lean:151 | `φ → H(F(φ))` | Mirror |
-| BX5 `self_accum_until` | Axioms.lean:157 | `(φUψ) → ((φ ∧ (φUψ))Uψ)` | **Key eventuality axiom** |
-| BX5' `self_accum_since` | Axioms.lean:162 | mirror for S | |
-| BX6 `absorb_until` | Axioms.lean:169 | `(φU(φ ∧ (φUψ))) → (φUψ)` | Prevents infinite deferral |
-| BX6' `absorb_since` | Axioms.lean:173 | mirror for S | |
-| BX7 `linear_until` | Axioms.lean:180 | four-formula linearity disjunction | Linearity of U witnesses |
-| BX7' `linear_since` | Axioms.lean:190 | mirror for S | |
-| BX8 `until_step` | Axioms.lean:205 | `φ ∧ F(φUψ) → (φUψ)` | Step introduction |
-| BX8' `since_step` | Axioms.lean:210 | `φ ∧ P(φSψ) → (φSψ)` | Mirror |
-| BX9 `until_elim` | Axioms.lean:214 | `(φUψ) → (φ ∨ ψ)` | Current-time elim |
-| BX9' `since_elim` | Axioms.lean:219 | mirror for S | |
-| BX10 `until_F` | Axioms.lean:226 | `(φUψ) → F(ψ)` | Eventuality extraction |
-| BX10' `since_P` | Axioms.lean:231 | mirror for S | |
-| BX11 `temp_linearity` | Axioms.lean:240 | F-witness linearity disjunction | Linear order on F witnesses |
-| BX11' `temp_linearity_past` | Axioms.lean:249 | mirror for P | |
-| BX12 `F_until_equiv` | Axioms.lean:258 | `F(φ) → (⊤Uφ)` | Bridges F to U |
-| BX12' `P_since_equiv` | Axioms.lean:263 | `P(φ) → (⊤Sφ)` | Mirror |
+| BX1 `serial_future` | Axioms.lean:117 | `T → F(T)` | Seriality (replaces reflexive T) |
+| BX1' `serial_past` | Axioms.lean:122 | `T → P(T)` | Mirror seriality |
+| BX2 `left_mono_until` | Axioms.lean:127 | `(φ→χ) ∧ G(φ→χ) → ((φUψ)→(χUψ))` | Left monotonicity |
+| BX2' `left_mono_since` | Axioms.lean:133 | mirror for S | |
+| BX3 `right_mono_until` | Axioms.lean:139 | `G(φ→ψ) → ((χUφ)→(χUψ))` | Right monotonicity |
+| BX3' `right_mono_since` | Axioms.lean:143 | mirror for S | |
+| BX4 `connect_future` | Axioms.lean:150 | `φ → G(P(φ))` | Temporal connectedness |
+| BX4' `connect_past` | Axioms.lean:155 | `φ → H(F(φ))` | Mirror |
+| BX5 `self_accum_until` | Axioms.lean:161 | `(φUψ) → ((φ ∧ (φUψ))Uψ)` | **Key eventuality axiom** |
+| BX5' `self_accum_since` | Axioms.lean:166 | mirror for S | |
+| BX6 `absorb_until` | Axioms.lean:173 | `(φU(φ ∧ (φUψ))) → (φUψ)` | Prevents infinite deferral |
+| BX6' `absorb_since` | Axioms.lean:177 | mirror for S | |
+| BX7 `linear_until` | Axioms.lean:184 | four-formula linearity disjunction | Linearity of U witnesses |
+| BX7' `linear_since` | Axioms.lean:194 | mirror for S | |
+| BX9 `until_elim` | Axioms.lean:207 | `(φUψ) → (φ ∨ ψ)` | Guard extraction |
+| BX9' `since_elim` | Axioms.lean:213 | mirror for S | |
+| BX10 `until_F` | Axioms.lean:220 | `(φUψ) → F(ψ)` | Eventuality extraction |
+| BX10' `since_P` | Axioms.lean:225 | mirror for S | |
+| BX11 `temp_linearity` | Axioms.lean:234 | F-witness linearity disjunction | Linear order on F witnesses |
+| BX11' `temp_linearity_past` | Axioms.lean:243 | mirror for P | |
+| BX12 `F_until_equiv` | Axioms.lean:252 | `F(φ) → (⊤Uφ)` | Bridges F to U |
+| BX12' `P_since_equiv` | Axioms.lean:257 | `P(φ) → (⊤Sφ)` | Mirror |
+
+*Note: BX8/BX8' (until_step/since_step) were removed -- not sound under irreflexive semantics.*
 
 ### Layer 4: Modal-Temporal Interaction (2)
 
 | Axiom | File:Line | Statement |
 |-------|-----------|-----------|
-| `modal_future` | Axioms.lean:269 | `□φ → □(Gφ)` |
-| `temp_future` | Axioms.lean:272 | `□φ → G(□φ)` |
+| `modal_future` | Axioms.lean:263 | `□φ → □(Gφ)` |
+| `temp_future` | Axioms.lean:266 | `□φ → G(□φ)` |
 
 ### Irreflexive semantics and the seriality switch
 
@@ -173,22 +172,34 @@ def next (φ : Formula) : Formula := Formula.untl Formula.bot φ
 def prev (φ : Formula) : Formula := Formula.snce Formula.bot φ
 ```
 
-Unfolding `Formula.next φ = Formula.untl Formula.bot φ` against the reflexive
+Unfolding `Formula.next φ = Formula.untl Formula.bot φ` against the irreflexive
 Until clause (`Truth.lean:128-129`):
 
 ```
-truth_at (⊥ U φ) at t  ↔  ∃ s, t ≤ s ∧ truth_at φ s ∧ ∀ r, t ≤ r < s → truth_at ⊥ r
-                       ↔  ∃ s, t ≤ s ∧ truth_at φ s ∧ ∀ r, t ≤ r < s → False
-                       ↔  ∃ s, t ≤ s ∧ truth_at φ s ∧ (∀ r, ¬(t ≤ r < s))
-                       ↔  ∃ s, s = t ∧ truth_at φ s    [empty half-open interval forces s=t]
-                       ↔  truth_at φ t
+truth_at (⊥ U φ) at t  ↔  ∃ s, t < s ∧ truth_at φ s ��� ∀ r, t < r → r < s �� truth_at ⊥ r
+                       ↔  ∃ s, t < s ∧ truth_at φ s ∧ ∀ r, t < r → r < s → False
+                       ↔  ∃ s, t < s ∧ truth_at φ s ∧ (∀ r, ¬(t < r ∧ r < s))
+                       ↔  ∃ s, t < s ∧ truth_at φ s ∧ (t, s) = ∅
 ```
 
-Under the current reflexive semantics with half-open guard, `next φ ≡ φ` and
-`prev φ ≡ φ` semantically. `X`/`Y` are definitional dead code: their docstrings
-reference "discrete strict semantics" which is stale (that semantics was
-reverted). **They should not be used in proofs.** Task 94 may archive or
-delete these definitions.
+Under irreflexive semantics, `⊥ U φ` at `t` requires a strictly future witness
+`s > t` with `φ(s)` and an empty open interval `(t, s)`. The behavior depends
+on the order structure:
+
+- **Discrete order** (e.g., `ℤ`): The interval `(t, s)` is empty iff `s = t + 1`.
+  So `X(φ)` at `t` means `φ` holds at the immediate successor `t + 1`. This is
+  a genuine next-step operator, matching the docstring's "discrete strict semantics."
+  Similarly, `Y(φ)` at `t` means `φ` holds at `t - 1`.
+
+- **Dense order** (e.g., `ℚ` or `ℝ`): The interval `(t, s)` is never empty for
+  `s > t`. So `⊥ U φ` is unsatisfiable on dense orders, and `X(φ)` is always
+  false. Similarly, `Y(φ)` is always false on dense orders.
+
+Under the current irreflexive semantics, `X`/`Y` have genuine semantic content
+on discrete orders (they are true next/previous-step operators). On dense orders,
+they are vacuously false. **They are not currently used in proofs**, but they
+are no longer trivially equivalent to their argument as they were under the
+former reflexive semantics.
 
 ---
 
@@ -203,7 +214,7 @@ are **not imported** by `BXCanonical`.
 
 ```
 Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
-  ├── Frame.lean (673 lines, sorry-free)
+  ├── Frame.lean (726 lines, 1 sorry: bx_le_refl)
   │     ├── Core/MaximalConsistent
   │     ├── Core/MCSProperties
   │     ├── Bundle/TemporalContent
@@ -212,7 +223,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── Syntax/Formula
   │     └── Theorems/GeneralizedNecessitation
   │
-  ├── TruthLemma.lean (320 lines, sorry-free)
+  ├── TruthLemma.lean (319 lines, 2 sorries: until/since_backward_refl_mcs)
   │     ├── Frame
   │     ├── Semantics/Truth
   │     └── Semantics/Validity
@@ -221,7 +232,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── RootScopedChain
   │     └── Semantics/Validity
   │
-  ├── CanonicalChain.lean (157 lines, sorry-free)
+  ├── CanonicalChain.lean (160 lines, sorry-free)
   │     ├── Frame
   │     ├── Quasimodel/Construction
   │     └── Filtration/DefectChain
@@ -230,12 +241,12 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── Frame
   │     └── CanonicalChain
   │
-  ├── CanonicalModel.lean (498 lines, sorry-free)
+  ├── CanonicalModel.lean (474 lines, 6 sorries: enriched_seed, f/p_carry, g/h_content_subset)
   │     ├── CanonicalChain
   │     ├── TruthLemma
   │     └── Bundle/FMCSDef
   │
-  ├── RootScopedChain.lean (1,681 lines, 5 sorries -- task 93)
+  ├── RootScopedChain.lean (1,487 lines, 5 sorries -- task 109)
   │     ├── OrderedSeedConsistency
   │     ├── CanonicalModel
   │     ├── Bundle/UntilSinceCoherence
@@ -243,36 +254,36 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     └── Algebraic/RestrictedParametricTruthLemma
   │
   ├── Quasimodel/
-  │     ├── SubformulaClosure.lean (114 lines)
+  │     ├── SubformulaClosure.lean (114 lines, sorry-free)
   │     │     └── Syntax/Formula
-  │     ├── HintikkaPoint.lean (166 lines)
+  │     ├── HintikkaPoint.lean (144 lines, sorry-free)
   │     │     ├── SubformulaClosure
   │     │     └── Frame
-  │     ├── EnrichedClosure.lean (158 lines)
+  │     ├── EnrichedClosure.lean (158 lines, sorry-free)
   │     │     ├── Syntax/BigConj
   │     │     ├── SubformulaClosure
   │     │     └── Mathlib.Data.Finset.Powerset
-  │     ├── Construction.lean (887 lines)
+  │     ├── Construction.lean (885 lines, 2 sorries: refl_intro_until/since_mcs)
   │     │     ├── HintikkaPoint
   │     │     └── Mathlib.Data.List.Chain
-  │     ├── Realization.lean (444 lines)
+  │     ├── Realization.lean (576 lines, 4 sorries: F/P_of_mem, g/h_content in seed)
   │     │     ├── Construction
   │     │     ├── Syntax/BigConj
   │     │     ├── Theorems/Combinators
   │     │     └── Theorems/Propositional
-  │     └── LocusControl.lean (47 lines)
+  │     └── LocusControl.lean (47 lines, sorry-free)
   │           └── Realization
   │
   └── Filtration/
-        ├── SigmaOrdering.lean (179 lines)
+        ├── SigmaOrdering.lean (167 lines, 3 sorries: sigma_le_refl, sigma_strict_irrefl, not_sigma_equiv)
         │     ├── Frame
         │     └── Quasimodel/EnrichedClosure
-        └── DefectChain.lean (137 lines)
+        └── DefectChain.lean (137 lines, sorry-free)
               ├── SigmaOrdering
               └── Quasimodel/Construction
 ```
 
-**Total BXCanonical module: 5,791 lines across 16 files, 5 sorries (all in RootScopedChain.lean).**
+**Total BXCanonical module: 5,829 lines across 16 files, 23 sorries (5 critical-path + 18 irreflexive-consequence).**
 
 Legacy files (`UltrafilterChain`, `SuccChainFMCS`, `FrameConditions/Completeness`)
 are still built via top-level aggregation in `Metalogic.lean` but are **not
@@ -302,8 +313,7 @@ def bx_le (w v : BXPoint) : Prop :=
 Equivalently: `w ≤ v ↔ ∀ φ, G(φ) ∈ w → φ ∈ v`.
 
 - **Reflexivity** (`bx_le_refl`): NOT valid under irreflexive semantics (BX1 removed).
-  Without BX1, `g_content w ⊆ w` would fail; see `g_content_set_consistent`
-  (`Frame.lean:122-133`) for the BX1 invocation.
+  Without BX1, `g_content w ⊆ w` fails. `bx_le_refl` is sorry'd (intentionally invalid).
 - **Transitivity** (`bx_le_trans`): requires `Gφ → GGφ` = `temp_4`.
 
 ### Canonical Modal Equivalence (Frame.lean:65-68)
@@ -318,8 +328,9 @@ def bx_modal_equiv (w v : BXPoint) : Prop :=
 - `g_content_closed_derivation` (Frame.lean:79-94): if `L ⊆ g_content(S)` and
   `L ⊢ φ`, then `Gφ ∈ S`. Uses `generalized_temporal_k`.
 - `h_content_closed_derivation` (Frame.lean:101-114): dual for H.
-- `g_content_set_consistent` (Frame.lean:122-133): `g_content` of an MCS is
-  consistent; uses BX1 to contradict `G(⊥) ∈ S`.
+- `g_content_set_consistent` (Frame.lean:122-162): `g_content` of an MCS is
+  consistent; uses seriality (`T → F(T)`) to contradict `G(⊥) ∈ S` via
+  `G(⊥) → G(¬⊤)` and `F(⊤) = ¬G(¬⊤)`. Sorry-free.
 - `bx_forward_witness` / `bx_backward_witness`: Lindenbaum extension producing
   G/H canonical witnesses.
 - `bx_modal_witness` (Frame.lean): constructs the modal-direction witness.
@@ -327,12 +338,13 @@ def bx_modal_equiv (w v : BXPoint) : Prop :=
 
 ### Truth Lemma (TruthLemma.lean:27-36)
 
-Proved by formula induction. All cases (`atom`, `bot`, `imp`, `box`, `G`, `H`,
-`U`, `S`) are **sorry-free**. The `U` and `S` cases delegate to the four
-`Frame.lean` helper lemmas (`bx_until_eventuality_resolution`,
-`bx_until_backward`, `bx_since_eventuality_resolution`,
-`bx_since_backward`), all of which were closed by tasks 98+102 via the
-quasimodel/filtration infrastructure.
+Proved by formula induction. The core cases (`atom`, `bot`, `imp`, `box`, `G`, `H`,
+`U` forward, `S` forward) are **sorry-free**. The `U` and `S` forward cases delegate
+to `bx_until_eventuality_resolution` / `bx_since_eventuality_resolution` in
+`Frame.lean`, closed by tasks 98+102. Two auxiliary lemmas
+(`until_backward_refl_mcs`, `since_backward_refl_mcs`) are sorry'd as
+irreflexive-consequence artifacts -- they assumed reflexive Until/Since introduction
+which is invalid under irreflexive semantics.
 
 ### Completeness Theorem (Completeness.lean:124-154)
 
@@ -350,43 +362,44 @@ Contrapositive proof flow:
 5. By the truth lemma: `φ` is false at `M` in the model.
 6. Contradiction with `valid φ`.
 
-Step 4 (the TaskModel embedding) is the `sorry` at `Completeness.lean:154`.
-`Completeness.lean:143-148` documents the rejected **constant-history approach**
-(task 88 anti-pattern): on constant histories, `G(α) ≡ α` semantically, so the
-temporal truth bridge fails. The TaskModel embedding must use non-constant
-histories that visit multiple BXPoints.
+Step 4 is handled by `dd_countermodel` (in `RootScopedChain.lean`), which
+`Completeness.lean` calls directly. `Completeness.lean` itself is sorry-free;
+the remaining sorries are in the chain construction that `dd_countermodel`
+depends on (see Sorry Inventory above).
 
 ---
 
 ## Quasimodel/Filtration Infrastructure
 
-Nine new files (2,289 lines, all sorry-free) were added under `BXCanonical/`
-between tasks 90 and 102, implementing a Hintikka-set quasimodel with
-defect-discharge to close the Until/Since eventuality obligations.
+Nine files (2,228 lines) under `BXCanonical/` implement a Hintikka-set
+quasimodel with defect-discharge to close the Until/Since eventuality
+obligations. Under irreflexive semantics, 9 of these sorries are
+irreflexive-consequence artifacts (Construction 2, Realization 4,
+SigmaOrdering 3); the remaining files are sorry-free.
 
 ### Quasimodel/ (Hintikka-set quasimodel construction)
 
 | File | Lines | Purpose | Key Definitions |
 |------|-------|---------|-----------------|
 | `SubformulaClosure.lean` | 114 | Finite subformula closure (Sigma-closure) | `subformulas`, `SubformulaClosure`, `ghEnrichment` |
-| `HintikkaPoint.lean` | 166 | Hintikka point definition and sigma-signature | `HintikkaPoint`, `sigma_signature`, `sigma_signature_consistent`, `sigma_signature_maximal` |
+| `HintikkaPoint.lean` | 144 | Hintikka point definition and sigma-signature | `HintikkaPoint`, `sigma_signature`, `sigma_signature_consistent`, `sigma_signature_maximal` |
 | `EnrichedClosure.lean` | 158 | Fisher-Ladner enriched closure with G/H negation formulas | `enrichedGNegBigconj`, `enrichedHNegBigconj`, `enrichedClosure` |
-| `Construction.lean` | 887 | BX axiom lemmas at MCS level with defect-discharge | `hintikka_step`, `UntilDefect`, `defect_count`, `QuasimodelChain` |
-| `Realization.lean` | 444 | Realization lifting from Hintikka chains to BXPoint chains | `until_forward_seed`, `since_backward_seed`, `until_eventuality_resolution`, `since_eventuality_resolution` |
+| `Construction.lean` | 885 | BX axiom lemmas at MCS level with defect-discharge (2 sorries) | `hintikka_step`, `UntilDefect`, `defect_count`, `QuasimodelChain` |
+| `Realization.lean` | 576 | Realization lifting from Hintikka chains to BXPoint chains (4 sorries) | `until_forward_seed`, `since_backward_seed`, `until_eventuality_resolution`, `since_eventuality_resolution` |
 | `LocusControl.lean` | 47 | Delegation layer (primed variants) | `bx_until_eventuality_resolution'`, `bx_since_eventuality_resolution'` |
 
 ### Filtration/ (Sigma-restricted ordering)
 
 | File | Lines | Purpose | Key Definitions |
 |------|-------|---------|-----------------|
-| `SigmaOrdering.lean` | 179 | Sigma-restricted ordering on BXPoints | `sigma_le`, `sigma_strict`, `sigma_equiv`, `bx_le_implies_sigma_le` |
+| `SigmaOrdering.lean` | 167 | Sigma-restricted ordering on BXPoints (3 sorries) | `sigma_le`, `sigma_strict`, `sigma_equiv`, `bx_le_implies_sigma_le` |
 | `DefectChain.lean` | 137 | Defect-discharge chain via well-founded recursion | `sigma_defect_count`, `until_defect`, `defect_step_phi` |
 
 ### CanonicalChain.lean (top-level bridge)
 
 | File | Lines | Purpose | Key Definitions |
 |------|-------|---------|-----------------|
-| `CanonicalChain.lean` | 157 | MCS-level BX axiom lemmas and delegation bridges | `psi_imp_until_mcs`, `psi_imp_since_mcs`, `F_imp_top_until_mcs`, `left_mono_until_mcs` |
+| `CanonicalChain.lean` | 160 | MCS-level BX axiom lemmas and delegation bridges (sorry-free) | `psi_imp_until_mcs`, `psi_imp_since_mcs`, `F_imp_top_until_mcs`, `left_mono_until_mcs` |
 
 ---
 
@@ -447,20 +460,37 @@ closed `bx_until_eventuality_resolution` and `bx_since_eventuality_resolution`.
 
 ---
 
-## Active-Path Sorry Inventory
+## Sorry Inventory
 
-There are **5 sorries** on the active completeness path, all in
-`Theories/Bimodal/Metalogic/BXCanonical/RootScopedChain.lean`.
-`Completeness.lean` is now sorry-free (delegates to `dd_countermodel` in
-`RootScopedChain.lean`, which depends on the 5 sorry sites below).
+The BXCanonical module has **23 sorry proofs** in three categories.
+
+### Critical Path (5 sorries in RootScopedChain.lean)
+
+`Completeness.lean` is sorry-free but delegates to `dd_countermodel` in
+`RootScopedChain.lean`, which depends on these 5 sorry sites:
 
 | # | File:Line | Definition | Goal Summary | Owning Task |
 |---|-----------|------------|--------------|-------------|
-| 1 | RootScopedChain.lean:~1093 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
-| 2 | RootScopedChain.lean:~1120 | `dd_bfmcs_restricted_tc` (fwd F-case) | Forward temporal coherence (F-resolution) | **Task 93** |
-| 3 | RootScopedChain.lean:~1127 | `dd_bfmcs_restricted_tc` (backward P) | Backward temporal coherence (P-resolution) | **Task 93** |
-| 4 | RootScopedChain.lean:~1135 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
-| 5 | RootScopedChain.lean:~1142 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
+| 1 | RootScopedChain.lean:1065 | `fwd_chain_forward_F` | F-resolution for preserving chain | **Task 109** |
+| 2 | RootScopedChain.lean:1092 | `dd_bfmcs_restricted_tc` (fwd, backward chain case) | Restricted temporal coherence (backward chain F-case) | **Task 109** |
+| 3 | RootScopedChain.lean:1099 | `dd_bfmcs_restricted_tc` (backward direction) | Backward temporal coherence (P-resolution) | **Task 109** |
+| 4 | RootScopedChain.lean:1107 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 109** |
+| 5 | RootScopedChain.lean:1114 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 109** |
+
+### Irreflexive-Consequence (18 sorries across 6 files)
+
+These are artifacts of the BX1/BX1' removal (task 93). Under the former reflexive
+semantics, `G(φ) → φ` (BX1) made these provable; under irreflexive semantics,
+they are either mathematically false (e.g., `bx_le_refl`) or require redesign.
+
+| File | Sorries | Key Definitions |
+|------|---------|-----------------|
+| Frame.lean | 1 | `bx_le_refl` (intentionally invalid) |
+| TruthLemma.lean | 2 | `until_backward_refl_mcs`, `since_backward_refl_mcs` |
+| CanonicalModel.lean | 6 | `enriched_seed_consistent`, `fwd_succ_f_carry`, `enriched_past_seed_consistent`, `bwd_pred_p_carry`, `g_content_subset_self`, `h_content_subset_self` |
+| Construction.lean | 2 | `refl_intro_until_mcs`, `refl_intro_since_mcs` |
+| Realization.lean | 4 | `F_of_mem`, `P_of_mem`, g/h_content subset in seed proofs |
+| SigmaOrdering.lean | 3 | `sigma_le_refl`, `sigma_strict_irrefl`, `not_sigma_equiv_of_sigma_strict` |
 
 ### Irreflexive Semantics Strategy (Plan v48, 2026-04-19)
 
@@ -595,13 +625,14 @@ Until-structure of formulas, using the following axioms:
 5. **BX6 (`absorb_until`)**: `(φU(φ ∧ (φUψ))) → (φUψ)` — prevents the
    self-accumulation from producing nested deferrals; the two-step resolution
    collapses.
-6. **BX9 (`until_elim`)**: `(φUψ) → (φ ∨ ψ)` handles the `s = t` (current-time)
-   case under reflexive semantics.
+6. **BX9 (`until_elim`)**: `(φUψ) → (φ ∨ ψ)`. Under irreflexive semantics
+   with A2 guard, `φ U ψ` at `t` has witness `s > t` with `ψ(s)` and guard
+   `φ` on `[t, s)`. Since `t ∈ [t, s)`, `φ(t)` holds. So `φ ∨ ψ` at `t`.
 7. **BX4 (`connect_future`)**: `φ → G(P(φ))` is used in the backward direction
    to propagate `¬(φUψ)` forward and derive a contradiction with the guard.
-8. **BX1 (`serial_future`)**: Under irreflexive semantics, `Gφ → φ` is replaced by
-   `T → F(T)` (seriality). Reflexivity of `bx_le` is lost; consistency of
-   `g_content` uses seriality to show `G(bot)` contradicts `F(T)`.
+8. **BX1 (`serial_future`)**: `T → F(T)` (seriality). Replaces the former
+   reflexive `Gφ → φ`. Consistency of `g_content` uses seriality to show
+   `G(bot)` contradicts `F(T)`.
 
 ### Resolution: Option A (Quasimodel with Defect-Discharge)
 
@@ -1056,13 +1087,14 @@ characterization.
 
 ### Critical Path (sequential)
 
-1. **Task 93**: Close 5 remaining sorry sites in `RootScopedChain.lean`. The
-   **sole remaining active-path sorry cluster**. Requires `fwd_chain_forward_F`
-   (F-resolution), restricted temporal coherence (forward + backward),
-   backward Until/Since, and forward Until/Since coherence.
-   **Current approach**: Three-path strategy (Plan v44, 7 phases).
+1. **Task 109**: Close 23 BXCanonical sorries (5 critical-path in
+   `RootScopedChain.lean` + 18 irreflexive-consequence across 6 files).
+   The critical-path sorries require `fwd_chain_forward_F` (F-resolution),
+   restricted temporal coherence (forward + backward), backward Until/Since,
+   and forward Until/Since coherence. The irreflexive-consequence sorries
+   need redesign for the new semantics (e.g., removing reflexivity assumptions).
 2. **Task 95**: `#print axioms` audit on `bx_completeness`; expected output
-   is exactly `{propext, Classical.choice, Quot.sound}`. Depends on task 93.
+   is exactly `{propext, Classical.choice, Quot.sound}`. Depends on task 109.
 
 ### Documentation/Cleanup (parallelizable)
 
@@ -1083,7 +1115,7 @@ characterization.
 
 ## Task Cross-Reference
 
-> **Updated 2026-04-19 (task 93 plan v44: three-path strategy for DD-BFMCS coherence)**
+> **Updated 2026-04-20 (task 106: ROADMAP rewrite for irreflexive semantics)**
 
 | Task | Status | Description | Depends On |
 |------|--------|-------------|------------|
@@ -1092,16 +1124,18 @@ characterization.
 | 92 | **[COMPLETED]** | Implement Until/Since truth lemma approach | 90 |
 | 98 | **[COMPLETED]** | Implement eventuality resolution (Frame.lean:653, 690) | 92 |
 | 102 | **[COMPLETED]** | Close remaining Frame.lean sorries (675, 704, 440) | 98 |
-| 93 | [IMPLEMENTING] | Close RootScopedChain.lean 5 sorries (three-path strategy, plan v44) -- **5 active-path sorries** | 102 |
-| 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 93 |
+| 93 | **[COMPLETED]** | Irreflexive semantics switch: seriality axioms, BX8 removal, defect step redesign | 102 |
+| 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 109 |
 | 103 | **[COMPLETED]** | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
 | 94 | **[COMPLETED]** | Archive strict-semantics legacy files to Boneyard | 103 |
 | 104 | [NOT STARTED] | Clean up superseded tasks + fix state.json | — |
 | 105 | [NOT STARTED] | Update stale sorry-blocker comments in BXCanonical | — |
+| 106 | [IMPLEMENTING] | Rewrite ROADMAP.md for irreflexive semantics | 93 |
+| 109 | [NOT STARTED] | Close 23 BXCanonical sorries (5 critical-path + 18 irreflexive-consequence) | 93 |
 | 82 | [NOT STARTED] | FMP Truth Preservation (weak completeness, independent) | — |
 | 68 | [RESEARCHED] | Dense completeness via ℚ canonical model | — (independent) |
 | 60 | [NOT STARTED] | Remove `discrete_Icc_finite_axiom` (may already be gone) | — |
 
 ---
 
-*Last updated: 2026-04-19 (task 93 plan v48: irreflexive semantics switch, seriality axioms, defect step weakened to disjunctive form, sorry inventory 5 sites)*
+*Last updated: 2026-04-20 (task 106: ROADMAP rewrite for irreflexive semantics -- fix terminology, axiom counts, sorry inventory, X/Y analysis, module line counts)*
