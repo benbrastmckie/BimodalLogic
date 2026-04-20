@@ -440,12 +440,12 @@ theorem discreteness_forward_valid (φ : Formula) :
   have ⟨h_phi, h_H⟩ := h2
   -- h_H : ∀ r < t, φ(r) (Hφ at t, strict)
   -- h_phi : φ(t)
-  -- h_F_top : F(⊤) at t, i.e., ∃ s > t, ⊤(s)
-  -- Under strict semantics, F(Hφ) = ¬G(¬Hφ) = ¬(∀ s > t, ¬(∀ r < s, φ(r)))
-  -- Need to find s > t such that ∀ r < s, φ(r).
-  -- From F(⊤): ∃ s > t. For that s, ∀ r < s: if r < t use h_H, if r = t use h_phi,
-  -- if t < r < s we don't know φ(r). This requires successor structure.
-  sorry
+  -- Use successor: succ(t) > t, and ∀ r < succ(t), r ≤ t, so φ(r) by h_H or h_phi.
+  have h_nomax : NoMaxOrder T := inferInstance
+  exact h_G_not_H (Order.succ t) (Order.lt_succ_of_not_isMax (not_isMax t)) (fun r hr => by
+    rcases lt_or_eq_of_le (Order.le_of_lt_succ hr) with h | h
+    · exact h_H r h
+    · exact h ▸ h_phi)
 
 /-- Future seriality axiom validity: `⊨_discrete Gφ → Fφ`.
 Under strict semantics: Gφ → Fφ requires NoMaxOrder. -/
@@ -495,23 +495,41 @@ Recall the reflexive semantics:
 - `H(φ)` at `t`: ∀ s ≤ t, φ(s)
 -/
 
-/-- BX2: Left monotonicity of Until: `G(φ → χ) → ((φ U ψ) → (χ U ψ))`.
-If φ → χ holds at all times ≥ t, and φ U ψ holds, then χ U ψ holds with the same witness,
-since at each guard point r in [t, s), φ(r) and (φ → χ)(r) give χ(r). -/
+/-- BX2: Left monotonicity of Until: `(φ→χ) ∧ G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
+Under half-open guard [t,s): (φ→χ)(t) covers t, G(φ→χ) covers (t,s). Together cover [t,s). -/
 theorem left_mono_until_valid (φ ψ χ : Formula) :
-    ⊨ ((φ.imp χ).all_future.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
+    ⊨ (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
+      ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [truth_at]
-  intro h_G ⟨s, hts, h_ψs, h_guard⟩
-  exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  simp only [truth_at, Formula.and, Formula.neg]
+  intro h_conj ⟨s, hts, h_ψs, h_guard⟩
+  -- Extract (φ→χ)(t) and G(φ→χ) from encoded conjunction ¬((φ→χ)(t) → ¬G(φ→χ))
+  have h_now : truth_at M Omega τ t φ → truth_at M Omega τ t χ := by
+    by_contra h_not; exact h_conj (fun h _ => h_not h)
+  have h_G : ∀ r, t < r → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
+    by_contra h_not; exact h_conj (fun _ h => h_not h)
+  exact ⟨s, hts, h_ψs, fun r htr hrs => by
+    rcases eq_or_lt_of_le htr with h_eq | h_lt
+    · subst h_eq; exact h_now (h_guard t le_rfl hrs)
+    · exact h_G r h_lt (h_guard r htr hrs)⟩
 
-/-- BX2': Left monotonicity of Since: `H(φ → χ) → ((φ S ψ) → (χ S ψ))`. -/
+/-- BX2': Left monotonicity of Since: `(φ→χ) ∧ H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
+Under half-open guard (s,t]: (φ→χ)(t) covers t, H(φ→χ) covers (s,t). Together cover (s,t]. -/
 theorem left_mono_since_valid (φ ψ χ : Formula) :
-    ⊨ ((φ.imp χ).all_past.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
+    ⊨ (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
+      ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [truth_at]
-  intro h_H ⟨s, hst, h_ψs, h_guard⟩
-  exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  simp only [truth_at, Formula.and, Formula.neg]
+  intro h_conj ⟨s, hst, h_ψs, h_guard⟩
+  -- Extract (φ→χ)(t) and H(φ→χ) from encoded conjunction
+  have h_now : truth_at M Omega τ t φ → truth_at M Omega τ t χ := by
+    by_contra h_not; exact h_conj (fun h _ => h_not h)
+  have h_H : ∀ r, r < t → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
+    by_contra h_not; exact h_conj (fun _ h => h_not h)
+  exact ⟨s, hst, h_ψs, fun r hsr hrt => by
+    rcases eq_or_lt_of_le hrt with h_eq | h_lt
+    · exact h_eq ▸ h_now (h_eq ▸ h_guard r hsr hrt)
+    · exact h_H r h_lt (h_guard r hsr hrt)⟩
 
 /-- BX3: Right monotonicity of Until: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
 Same witness s; φ(s) and (φ → ψ)(s) give ψ(s). Guard is unchanged. -/
@@ -566,10 +584,10 @@ theorem self_accum_until_valid (φ ψ : Formula) :
   -- φ.and ψ' = (φ.imp ψ'.neg).neg, so truth_at of and is ¬(φ(r) → ¬ψ'(r))
   show (truth_at M Omega τ r φ →
     (∃ s', r < s' ∧ truth_at M Omega τ s' ψ ∧
-      ∀ q, r < q → q < s' → truth_at M Omega τ q φ) → False) → False
+      ∀ q, r ≤ q → q < s' → truth_at M Omega τ q φ) → False) → False
   intro h_neg
   exact h_neg (h_guard r htr hrs)
-    ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (lt_trans htr hqr) hqs⟩
+    ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (le_trans htr hqr) hqs⟩
 
 /-- BX5': Self-accumulation of Since: `(φ S ψ) → ((φ ∧ (φ S ψ)) S ψ)`. -/
 theorem self_accum_since_valid (φ ψ : Formula) :
@@ -582,10 +600,10 @@ theorem self_accum_since_valid (φ ψ : Formula) :
   -- Goal: truth_at M Omega τ r (φ.and (φ.snce ψ))
   show (truth_at M Omega τ r φ →
     (∃ s', s' < r ∧ truth_at M Omega τ s' ψ ∧
-      ∀ q, s' < q → q < r → truth_at M Omega τ q φ) → False) → False
+      ∀ q, s' < q → q ≤ r → truth_at M Omega τ q φ) → False) → False
   intro h_neg
   exact h_neg (h_guard r hrs hrt)
-    ⟨s, hrs, h_ψs, fun q hqs hqr => h_guard q hqs (lt_trans hqr hrt)⟩
+    ⟨s, hrs, h_ψs, fun q hqs hqr => h_guard q hqs (le_trans hqr hrt)⟩
 
 /-- BX6: Absorption of Until: `(φ U (φ ∧ (φ U ψ))) → (φ U ψ)`.
 Given φ U (φ ∧ (φ U ψ)) with witness s1: at s1, φ(s1) ∧ (φ U ψ)(s1) holds.
@@ -605,15 +623,14 @@ theorem absorb_until_valid (φ ψ : Formula) :
     by_contra h_not
     exact h_endpoint (fun h => absurd h h_not)
   have h_inner : ∃ s2, s1 < s2 ∧ truth_at M Omega τ s2 ψ ∧
-      ∀ r, s1 < r → r < s2 → truth_at M Omega τ r φ := by
+      ∀ r, s1 ≤ r → r < s2 → truth_at M Omega τ r φ := by
     by_contra h_not
     exact h_endpoint (fun _ h_U => h_not h_U)
   obtain ⟨s2, hs1s2, h_ψs2, h_inner_guard⟩ := h_inner
   refine ⟨s2, lt_trans hts1 hs1s2, h_ψs2, fun r htr hrs2 => ?_⟩
-  rcases lt_trichotomy r s1 with h_lt | h_eq | h_gt
+  rcases lt_or_le r s1 with h_lt | h_ge
   · exact h_outer_guard r htr h_lt
-  · rw [h_eq]; exact h_φs1
-  · exact h_inner_guard r h_gt hrs2
+  · exact h_inner_guard r h_ge hrs2
 
 /-- BX6': Absorption of Since: `(φ S (φ ∧ (φ S ψ))) → (φ S ψ)`. -/
 theorem absorb_since_valid (φ ψ : Formula) :
@@ -626,15 +643,14 @@ theorem absorb_since_valid (φ ψ : Formula) :
     by_contra h_not
     exact h_endpoint (fun h => absurd h h_not)
   have h_inner : ∃ s2, s2 < s1 ∧ truth_at M Omega τ s2 ψ ∧
-      ∀ r, s2 < r → r < s1 → truth_at M Omega τ r φ := by
+      ∀ r, s2 < r → r ≤ s1 → truth_at M Omega τ r φ := by
     by_contra h_not
     exact h_endpoint (fun _ h_S => h_not h_S)
   obtain ⟨s2, hs2s1, h_ψs2, h_inner_guard⟩ := h_inner
   refine ⟨s2, lt_trans hs2s1 hs1t, h_ψs2, fun r hrs2 hrt => ?_⟩
-  rcases lt_trichotomy s1 r with h_lt | h_eq | h_gt
-  · exact h_outer_guard r h_lt hrt
-  · rw [← h_eq]; exact h_φs1
-  · exact h_inner_guard r hrs2 h_gt
+  rcases le_or_lt r s1 with h_le | h_gt
+  · exact h_inner_guard r hrs2 h_le
+  · exact h_outer_guard r h_gt hrt
 
 /-- BX7: Linearity of Until:
 `(φ U ψ) ∧ (χ U θ) → ((φ ∧ χ) U (ψ ∧ θ)) ∨ ((φ ∧ χ) U (ψ ∧ χ)) ∨ ((φ ∧ χ) U (φ ∧ θ))`.
@@ -654,10 +670,10 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
   -- Hypothesis: ¬(U₁ → ¬U₂), extract both Until hypotheses
   intro h_and
   have h_U1 : ∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
-      ∀ r, t < r → r < s → truth_at M Omega τ r φ := by
+      ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ := by
     by_contra h_not; exact h_and (fun h _ => h_not h)
   have h_U2 : ∃ s, t < s ∧ truth_at M Omega τ s θ ∧
-      ∀ r, t < r → r < s → truth_at M Omega τ r χ := by
+      ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ := by
     by_contra h_not; exact h_and (fun _ h => h_not h)
   obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
   obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
@@ -677,12 +693,12 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
       intro h_neg_outer
       exfalso; apply h_neg_outer; intro _
       exact ⟨s1, hts1,
-        fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 hts1 h_lt),
+        fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 (le_of_lt hts1) h_lt),
         fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
   · -- s2 < s1: third disjunct (φ ∧ θ) with witness s2
     intro _
     exact ⟨s2, hts2,
-      fun h_neg_ep => h_neg_ep (h_guard1 s2 hts2 h_lt) h_θs2,
+      fun h_neg_ep => h_neg_ep (h_guard1 s2 (le_of_lt hts2) h_lt) h_θs2,
       fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
 
 /-- BX7': Linearity of Since:
@@ -699,10 +715,10 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
   -- Extract both Since hypotheses from conjunction
   intro h_and
   have h_S1 : ∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
-      ∀ r, s < r → r < t → truth_at M Omega τ r φ := by
+      ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ := by
     by_contra h_not; exact h_and (fun h _ => h_not h)
   have h_S2 : ∃ s, s < t ∧ truth_at M Omega τ s θ ∧
-      ∀ r, s < r → r < t → truth_at M Omega τ r χ := by
+      ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ := by
     by_contra h_not; exact h_and (fun _ h => h_not h)
   obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
   obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
@@ -723,58 +739,39 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
       intro h_neg_outer
       exfalso; apply h_neg_outer; intro _
       exact ⟨s1, hs1t,
-        fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt hs1t),
+        fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt (le_of_lt hs1t)),
         fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
   · -- s1 < s2: third disjunct (φ ∧ θ) with witness s2
     -- φ(s2) from guard1 since s1 < s2 ≤ t
     intro _
     exact ⟨s2, hs2t,
-      fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt hs2t) h_θs2,
+      fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt (le_of_lt hs2t)) h_θs2,
       fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
 
-/-- BX8: Until step: `φ ∧ F(φ U ψ) → (φ U ψ)`.
-Under irreflexive semantics with open guard: if φ(t) and F(φ U ψ)(t),
-then ∃ s' > t with (φ U ψ)(s'). That gives ∃ s'' > s' with ψ(s'') and guard (s', s'').
-Use s'' as witness: s'' > t, guard at r ∈ (t, s''):
-  if t < r < s': ?? need φ(r) but we don't have it from (φ U ψ)(s').
-
-This axiom is NOT directly semantically valid under irreflexive semantics with open guard.
-It requires additional structure (density or successor). Sorry for now. -/
-theorem until_step_valid (φ ψ : Formula) :
-    ⊨ ((Formula.and φ (Formula.some_future (Formula.untl φ ψ))).imp (Formula.untl φ ψ)) := by
-  intro T _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [truth_at, Formula.and, Formula.neg, Formula.some_future]
-  sorry
-
-/-- BX8': Since step: `φ ∧ P(φ S ψ) → (φ S ψ)`.
-Mirror of until_step. Sorry for now. -/
-theorem since_step_valid (φ ψ : Formula) :
-    ⊨ ((Formula.and φ (Formula.some_past (Formula.snce φ ψ))).imp (Formula.snce φ ψ)) := by
-  intro T _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [truth_at, Formula.and, Formula.neg, Formula.some_past]
-  sorry
+-- BX8/BX8' (until_step_valid/since_step_valid) REMOVED.
+-- These axioms are not sound under the half-open guard convention.
 
 /-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
-Under irreflexive Until with open guard (t, s): φ U ψ at t has witness s > t with ψ(s)
-and guard φ on (t, s). The guard does NOT include t, so φ(t) is not directly guaranteed.
-This axiom is kept for proof system compatibility; sorry for the semantic gap. -/
+Under half-open guard [t, s): φ U ψ at t has witness s > t with ψ(s) and φ on [t,s).
+Since t ∈ [t,s) (because t ≤ t and t < s), the guard gives φ(t). So φ ∨ ψ via Left. -/
 theorem until_elim_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ ψ).imp (Formula.or φ ψ)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.or, Formula.neg]
-  intro ⟨s, hts, h_ψs, _h_guard⟩
-  intro _h_not_φ
-  sorry
+  intro ⟨s, hts, _h_ψs, h_guard⟩
+  intro h_not_φ
+  exact absurd (h_guard t le_rfl hts) h_not_φ
 
 /-- BX9': Since elimination: `(φ S ψ) → (φ ∨ ψ)`.
-Under irreflexive Since with open guard (s, t): mirror of BX9. -/
+Under half-open guard (s, t]: φ S ψ at t has witness s < t with ψ(s) and φ on (s,t].
+Since t ∈ (s,t] (because s < t and t ≤ t), the guard gives φ(t). So φ ∨ ψ via Left. -/
 theorem since_elim_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ ψ).imp (Formula.or φ ψ)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.or, Formula.neg]
-  intro ⟨s, hst, h_ψs, _h_guard⟩
-  intro _h_not_φ
-  sorry
+  intro ⟨s, hst, _h_ψs, h_guard⟩
+  intro h_not_φ
+  exact absurd (h_guard t hst le_rfl) h_not_φ
 
 /-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
 F(ψ) = ¬G(¬ψ). Under reflexive Until, witness s ≥ t gives ψ(s), so ¬∀u≥t.¬ψ(u). -/
@@ -840,8 +837,6 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | absorb_since φ ψ => exact absorb_since_valid φ ψ
   | linear_until _ _ _ _ => exact linear_until_valid _ _ _ _
   | linear_since _ _ _ _ => exact linear_since_valid _ _ _ _
-  | until_step φ ψ => exact until_step_valid φ ψ
-  | since_step φ ψ => exact since_step_valid φ ψ
   | until_elim φ ψ => exact until_elim_valid φ ψ
   | since_elim φ ψ => exact since_elim_valid φ ψ
   | until_F φ ψ => exact until_F_valid φ ψ
@@ -883,8 +878,6 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | absorb_since φ ψ => exact Validity.valid_implies_valid_dense (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_since_valid _ _ _ _)
-  | until_step φ ψ => exact Validity.valid_implies_valid_dense (until_step_valid φ ψ)
-  | since_step φ ψ => exact Validity.valid_implies_valid_dense (since_step_valid φ ψ)
   | until_elim φ ψ => exact Validity.valid_implies_valid_dense (until_elim_valid φ ψ)
   | since_elim φ ψ => exact Validity.valid_implies_valid_dense (since_elim_valid φ ψ)
   | until_F φ ψ => exact Validity.valid_implies_valid_dense (until_F_valid φ ψ)
@@ -927,8 +920,6 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | absorb_since φ ψ => exact Validity.valid_implies_valid_discrete (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_since_valid _ _ _ _)
-  | until_step φ ψ => exact Validity.valid_implies_valid_discrete (until_step_valid φ ψ)
-  | since_step φ ψ => exact Validity.valid_implies_valid_discrete (since_step_valid φ ψ)
   | until_elim φ ψ => exact Validity.valid_implies_valid_discrete (until_elim_valid φ ψ)
   | since_elim φ ψ => exact Validity.valid_implies_valid_discrete (since_elim_valid φ ψ)
   | until_F φ ψ => exact Validity.valid_implies_valid_discrete (until_F_valid φ ψ)
@@ -1025,8 +1016,6 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    | until_step φ ψ => exact until_step_valid φ ψ D F M Omega h_sc τ h_mem t
-    | since_step φ ψ => exact since_step_valid φ ψ D F M Omega h_sc τ h_mem t
     | until_elim φ ψ => exact until_elim_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_elim φ ψ => exact since_elim_valid φ ψ D F M Omega h_sc τ h_mem t
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1191,8 +1180,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    | until_step φ ψ => exact until_step_valid φ ψ D F M Omega h_sc τ h_mem t
-    | since_step φ ψ => exact since_step_valid φ ψ D F M Omega h_sc τ h_mem t
     | until_elim φ ψ => exact until_elim_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_elim φ ψ => exact since_elim_valid φ ψ D F M Omega h_sc τ h_mem t
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
