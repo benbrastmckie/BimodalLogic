@@ -70,7 +70,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Overview and Semantics Language Corrections [IN PROGRESS]
+### Phase 1: Overview and Semantics Language Corrections [COMPLETED]
 
 **Goal**: Fix all "reflexive" -> "irreflexive" terminology in the overview, irreflexive semantics section, legacy code section, and Burgess-Xu section. Correct the axiom count in the overview.
 
@@ -100,7 +100,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Axiom System Table Corrections [NOT STARTED]
+### Phase 2: Axiom System Table Corrections [COMPLETED]
 
 **Goal**: Fix axiom count, remove BX8/BX8' from the table, update all Axioms.lean line number references, and verify BX2 description consistency.
 
@@ -125,7 +125,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: X/Y Operator Section Rewrite [NOT STARTED]
+### Phase 3: X/Y Operator Section Rewrite [COMPLETED]
 
 **Goal**: Completely rewrite the X/Y Operator Status section (lines 163-192) for irreflexive semantics.
 
@@ -151,7 +151,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Sorry Inventory and Module Import Graph [NOT STARTED]
+### Phase 4: Sorry Inventory and Module Import Graph [COMPLETED]
 
 **Goal**: Restructure the sorry inventory to reflect actual sorry counts (32 non-Boneyard) with categorization, fix module line counts, and correct sorry-free claims.
 
@@ -183,7 +183,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Canonical Model, Quasimodel, Cross-Reference, and Final Pass [NOT STARTED]
+### Phase 5: Canonical Model, Quasimodel, Cross-Reference, and Final Pass [COMPLETED]
 
 **Goal**: Update remaining sections (canonical model construction, quasimodel/filtration, task cross-reference), update the "Last Updated" line, and do a final consistency pass.
 
