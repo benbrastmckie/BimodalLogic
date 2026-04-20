@@ -277,7 +277,8 @@ this gives truth_at φ at t.
 theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.all_future φ)) :
     valid φ := by
   intro D _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t t (le_refl t)
+  -- Under strict semantics, G(φ) valid does not give φ valid without NoMaxOrder.
+  sorry
 
 /--
 If H(φ) is valid, then φ is valid.
@@ -285,7 +286,7 @@ If H(φ) is valid, then φ is valid.
 theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.all_past φ)) :
     valid φ := by
   intro D _ _ _ F M Omega h_sc τ h_mem t
-  exact h D F M Omega h_sc τ h_mem t t (le_refl t)
+  sorry
 
 /--
 If □φ is valid, then φ is valid.

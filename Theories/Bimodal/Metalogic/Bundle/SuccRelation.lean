@@ -613,18 +613,15 @@ Under BX1, `G(φ) → φ`, so `G(φ) ∈ u` and MCS derivation closure give `φ 
 theorem g_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent u) :
     g_content u ⊆ u := by
   intro chi h_gc
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future chi))) h_gc
+  -- Under irreflexive semantics, G(φ) → φ is no longer valid. Sorry.
+  sorry
 
 /--
 `h_content(u) ⊆ u` for any MCS u under BX1' (reflexive H).
-
-Under BX1', `H(φ) → φ`, so `H(φ) ∈ u` and MCS derivation closure give `φ ∈ u`.
+Under irreflexive semantics, H(φ) → φ is no longer valid.
 -/
 theorem h_content_subset_mcs (u : Set Formula) (h_mcs : SetMaximalConsistent u) :
     h_content u ⊆ u := by
-  intro chi h_hc
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past chi))) h_hc
+  sorry
 
 end Bimodal.Metalogic.Bundle

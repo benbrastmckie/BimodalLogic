@@ -1,7 +1,7 @@
 # Implementation Plan: Irreflexive Semantics with A2 Guard Convention
 
 - **Task**: 93 - Complete BXCanonical embedding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: Task 92 (truth lemma sorry-free) -- satisfied
 - **Research Inputs**: reports/48_team-research.md, reports/44_team-research.md
@@ -77,7 +77,7 @@ Phases are fully sequential: each builds on the prior phase's semantic and axiom
 
 ---
 
-### Phase 1: Semantic and Axiom Layer Switch [NOT STARTED]
+### Phase 1: Semantic and Axiom Layer Switch [PARTIAL]
 
 **Goal**: Change Truth.lean to irreflexive semantics with A2 guard convention, update the axiom set (remove 4, add 2), and update soundness proofs. After this phase, `lake build` should pass with new sorries only in files that depend on removed axioms.
 

@@ -60,14 +60,17 @@ These theorems are directly derivable from the BX axiom system.
 /--
 `⊢ G(⊥) → ⊥`: G(⊥) is absurd because BX1 gives G(φ) → φ, instantiated at φ = ⊥.
 -/
-def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot :=
-  DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
+def G_bot_absurd : ⊢ Formula.bot.all_future.imp Formula.bot := by
+  -- Under irreflexive semantics, G(⊥) → ⊥ requires seriality: G(⊥) means ∀s>t, ⊥.
+  -- If ∃s>t (seriality), then ⊥ at s, contradiction. So G(⊥) → ⊥.
+  -- Derivable from serial_future + contrapositive.
+  sorry
 
 /--
 `⊢ H(⊥) → ⊥`: H(⊥) is absurd because BX1' gives H(φ) → φ, instantiated at φ = ⊥.
 -/
-noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot :=
-  DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
+noncomputable def H_bot_absurd : ⊢ Formula.bot.all_past.imp Formula.bot := by
+  sorry
 
 /--
 `⊢ G(φ → ψ) → (G(φ) → G(ψ))`: G-distribution. Direct axiom (temp_k_dist).
@@ -128,16 +131,17 @@ Under reflexive semantics, BX1 gives G(ψ) → ψ for any ψ.
 Instantiate ψ = G(φ): G(G(φ)) → G(φ).
 -/
 def density_derivable (φ : Formula) :
-    ⊢ φ.all_future.all_future.imp φ.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_t_future φ.all_future)
+    ⊢ φ.all_future.all_future.imp φ.all_future := by
+  -- Under irreflexive semantics, GGφ → Gφ requires density, not just BX1.
+  sorry
 
 /--
 `⊢ H(H(φ)) → H(φ)`: Past density (derivable from BX1').
 Instantiate BX1' with ψ = H(φ).
 -/
 def past_density_derivable (φ : Formula) :
-    ⊢ φ.all_past.all_past.imp φ.all_past :=
-  DerivationTree.axiom [] _ (Axiom.temp_t_past φ.all_past)
+    ⊢ φ.all_past.all_past.imp φ.all_past := by
+  sorry
 
 /--
 `⊢ G(a) → G(a → a)`: G(a→a) is a theorem, so G(a) → G(a→a) by prop_s.
@@ -158,9 +162,8 @@ Under reflexive semantics, X(a) = ⊥ U a ↔ a (witness s = t, guard [t,t) empt
 `⊢ G(a) → ⊤ U a`: From BX1 (G(a) → a) and BX8 (a → ⊤ U a), compose.
 -/
 def G_implies_topUntil (a : Formula) :
-    ⊢ a.all_future.imp (Formula.untl top a) :=
-  imp_trans (DerivationTree.axiom [] _ (Axiom.temp_t_future a))
-    (DerivationTree.axiom [] _ (Axiom.refl_intro_until top a))
+    ⊢ a.all_future.imp (Formula.untl top a) := by
+  sorry
 
 /--
 `⊢ (⊥ U ⊥) → ⊥`: X(⊥) is absurd.
@@ -227,16 +230,18 @@ Under reflexive Until semantics, ψ at current time gives a reflexive witness.
 Direct from BX8 axiom.
 -/
 def psi_imp_until (φ ψ : Formula) :
-    ⊢ ψ.imp (Formula.untl φ ψ) :=
-  DerivationTree.axiom [] _ (Axiom.refl_intro_until φ ψ)
+    ⊢ ψ.imp (Formula.untl φ ψ) := by
+  -- Under irreflexive semantics, ψ → (φ U ψ) is NOT valid.
+  -- Need strict future witness s > t with ψ(s); just having ψ(t) is insufficient.
+  sorry
 
 /--
 `⊢ ψ → (φ S ψ)`: Reflexive Since introduction.
 Mirror of psi_imp_until for the past direction.
 -/
 def psi_imp_since (φ ψ : Formula) :
-    ⊢ ψ.imp (Formula.snce φ ψ) :=
-  DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
+    ⊢ ψ.imp (Formula.snce φ ψ) := by
+  sorry
 
 /--
 `⊢ (φ U ψ) → (φ ∨ ψ)`: Until implies disjunction at current time.
@@ -425,31 +430,16 @@ Proof: BX1 gives G(¬α) → ¬α. Contrapositive: ¬¬α → ¬G(¬α) = F(α).
 Compose with DNI: α → ¬¬α → F(α). -/
 noncomputable def refl_F (α : Formula) :
     ⊢ α.imp α.some_future := by
-  unfold Formula.some_future
-  -- Goal: α → (α.neg.all_future.neg)
-  -- i.e., α → (G(¬α) → ⊥)
-  -- Step 1: G(¬α) → ¬α (BX1)
-  have h_bx1 : ⊢ α.neg.all_future.imp α.neg :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future α.neg)
-  -- Step 2: contrapositive of BX1: ¬¬α → ¬G(¬α) = F(α)
-  have h_contra : ⊢ α.neg.neg.imp α.neg.all_future.neg :=
-    mp h_bx1 (contrapositive α.neg.all_future α.neg)
-  -- Step 3: α → ¬¬α (DNI)
-  have h_dni : ⊢ α.imp α.neg.neg := dni α
-  -- Step 4: compose
-  exact imp_trans h_dni h_contra
+  -- Under irreflexive semantics, α → F(α) is NOT valid.
+  -- The current time does not witness F(α) since F requires strict future.
+  sorry
 
 /-- `⊢ α → P(α)`: Any formula implies its own past eventuality.
 Under reflexive semantics, the current time witnesses P(α).
 Dual of refl_F. -/
 noncomputable def refl_P (α : Formula) :
     ⊢ α.imp α.some_past := by
-  unfold Formula.some_past
-  have h_bx1 : ⊢ α.neg.all_past.imp α.neg :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_past α.neg)
-  have h_contra : ⊢ α.neg.neg.imp α.neg.all_past.neg :=
-    mp h_bx1 (contrapositive α.neg.all_past α.neg)
-  exact imp_trans (dni α) h_contra
+  sorry
 
 /-!
 ## Until F-Expansion

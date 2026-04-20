@@ -225,6 +225,9 @@ theorem parametric_canonical_truth_lemma
     phi ∈ fam.mcs t ↔
       truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
         (parametric_to_history fam) t phi := by
+  sorry
+  /- Temporarily sorry'd during irreflexive semantics switch.
+  All ≤ quantifiers need to become < for G/H/U/S.
   induction phi generalizing fam t with
   | atom p =>
     -- atom case: phi in fam.mcs t <-> exists ht, M.valuation (tau.states t ht) p
@@ -397,6 +400,7 @@ theorem parametric_canonical_truth_lemma
       exact h_bwd_S t phi psi ⟨s, h_st,
         (ih_psi fam hfam s).mpr h_truth_psi_s,
         fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
+  -/
 
 /-!
 ## Shifted Truth Lemma
@@ -420,7 +424,8 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
     φ ∈ fam.mcs t ↔
     truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
-  induction φ generalizing fam t with
+  sorry
+  /- Temporarily sorry'd during irreflexive semantics switch.
   | atom p =>
     -- Identical to parametric_canonical_truth_lemma (atom case is Omega-independent)
     simp only [truth_at, ParametricCanonicalTaskModel, parametric_to_history]
@@ -575,5 +580,6 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       exact h_bwd_S t phi psi ⟨s, h_st,
         (ih_psi fam hfam s).mpr h_truth_psi_s,
         fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
+  -/
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma
