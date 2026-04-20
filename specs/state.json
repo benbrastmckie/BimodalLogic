@@ -1163,9 +1163,43 @@
       "priority": "high",
       "description": "Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as: (a) closeable under irreflexive semantics, (b) genuinely blocked, or (c) in block-commented/sorry-d theorem. Close straightforward ones. Document blocked ones with explanation.",
       "created": "2026-04-20T17:43:07Z",
-      "last_updated": "2026-04-20T18:37:19Z",
+      "last_updated": "2026-04-20T19:23:06Z",
       "session_id": "sess_1776709935_89f761",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "resume_phase": 2,
+      "artifacts": [
+        {
+          "path": "specs/108_audit_soundness_lemmas_sorries/summaries/01_soundness-sorry-closure-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation summary: 5 of 8 sorries closed"
+        }
+      ],
+      "memory_candidates": [
+        {
+          "content": "When uncommenting block-commented Lean proofs that were sorry'd during a semantics change (reflexive to irreflexive), it's far more efficient to write fresh proofs from scratch rather than fixing 50+ mechanical errors.",
+          "category": "TECHNIQUE",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "lean4",
+            "sorry-closure",
+            "block-comment",
+            "rewrite-vs-fix",
+            "irreflexive-semantics"
+          ]
+        },
+        {
+          "content": "For soundness lemma proofs involving BX axioms with conjunction premises, the Formula.and encoding via double-negation requires an explicit helper: and_extract. Add Formula.and and Formula.neg to simp sets when these axioms appear.",
+          "category": "PATTERN",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "lean4",
+            "formula-and",
+            "conjunction-decomposition",
+            "classical-logic",
+            "soundness-lemmas"
+          ]
+        }
+      ]
     },
     {
       "project_number": 109,

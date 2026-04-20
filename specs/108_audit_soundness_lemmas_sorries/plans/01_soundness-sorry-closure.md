@@ -1,7 +1,7 @@
 # Implementation Plan: Audit and Close SoundnessLemmas.lean Sorries
 
 - **Task**: 108 - Audit 28 sorry occurrences in SoundnessLemmas.lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 6 hours
 - **Dependencies**: None (self-contained file with known call sites)
 - **Research Inputs**: specs/108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md
