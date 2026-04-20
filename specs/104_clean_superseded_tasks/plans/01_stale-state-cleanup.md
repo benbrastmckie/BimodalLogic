@@ -80,7 +80,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update Sorry Count Metrics [NOT STARTED]
+### Phase 2: Update Sorry Count Metrics [COMPLETED]
 
 **Goal**: Correct sorry_count and publication_path_sorries in both state.json and TODO.md.
 

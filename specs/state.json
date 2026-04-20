@@ -1169,10 +1169,10 @@
     "status": "healthy",
     "build_errors": 0,
     "sorry_counts": {
-      "non_boneyard": 140,
+      "non_boneyard": 129,
       "boneyard": 171,
-      "total": 311,
-      "note": "Task 94 archived 9 files (~107 sorries) from active codebase to Boneyard/StrictSemanticsLegacy"
+      "total": 300,
+      "note": "Audited 2026-04-20: 129 non-Boneyard sorries, 11 active-path in CanonicalModel.lean (6) + RootScopedChain.lean (5), 4 genuinely false/unprovable. Task 94 archived 9 files (~107 sorries) to Boneyard/StrictSemanticsLegacy."
     }
   },
   "last_updated": "2026-04-12T12:00:00Z",
