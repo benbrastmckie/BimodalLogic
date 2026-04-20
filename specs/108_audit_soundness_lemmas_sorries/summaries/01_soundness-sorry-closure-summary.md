@@ -1,56 +1,63 @@
 # Implementation Summary: Task #108
 
 - **Task**: 108 - Audit and close SoundnessLemmas.lean sorries
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Started**: 2026-04-20
 - **Completed**: 2026-04-20
-- **Effort**: 6 hours (estimated), partial completion
+- **Effort**: 6 hours (estimated), 2 sessions
 - **Dependencies**: None
 - **Artifacts**: plans/01_soundness-sorry-closure.md
 - **Standards**: status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Closed 5 of 8 active sorries in SoundnessLemmas.lean. Wrote fresh proofs for the general (frame-class-free) `axiom_locally_valid_general` and all supporting standalone lemmas. Added `[Nontrivial D]` to general version signatures to support serial axiom proofs.
+Closed all 8 active sorries in SoundnessLemmas.lean across 4 phases. The file now compiles cleanly with zero sorry occurrences. The full project builds successfully (950 jobs, 0 errors).
 
 ## What Changed
 
-### Phase 1: Standalone Lemma Sorries (COMPLETED)
+### Phase 1: Standalone Lemma Sorries (COMPLETED - previous session)
 - Closed `swap_axiom_tl_valid`: trichotomy-based proof extracting future/present/past from `always` encoding
 - Closed `axiom_temp_l_valid`: same pattern for non-swap version
 - Closed `axiom_temp_linearity_valid`: existential extraction + trichotomy on witnesses
 - Closed `axiom_temp_linearity_past_valid`: mirror for past direction
 
-### Phase 3: General Master Dispatch (PARTIAL)
-- Wrote complete fresh proof for `axiom_locally_valid_general` (all 25 axiom cases)
-- Added `and_extract` helper for conjunction decomposition from double-negation encoding
-- Added `[Nontrivial D]` to `axiom_swap_valid_general`, `axiom_locally_valid_general`, `derivable_valid_and_swap_valid_general`, `derivable_implies_swap_valid_general`
-- `axiom_swap_valid_general` still has sorry (swap version of all 25 cases)
+### Phase 2: Dense Master Dispatch Theorems (COMPLETED)
+- Wrote complete 25-case `axiom_swap_valid` proof (dense version with `[DenselyOrdered D] [Nontrivial D]`)
+- Wrote complete 25-case `axiom_locally_valid` proof delegating to per-axiom helpers
 
-### Phase 2: Dense Versions (PARTIAL)
-- Dense `axiom_swap_valid` and `axiom_locally_valid` have sorry placeholders
-- These will delegate to general versions once `axiom_swap_valid_general` is complete
+### Phase 3: General Master Dispatch Theorems (COMPLETED)
+- Wrote complete 25-case `axiom_swap_valid_general` proof (general version with `[Nontrivial D]` only)
+- `axiom_locally_valid_general` was completed in previous session
+
+### Phase 4: Final Verification (COMPLETED)
+- Full `lake build` succeeds with 950 jobs
+- `grep -c sorry SoundnessLemmas.lean` returns 0
+- No regressions in Soundness.lean, DenseSoundness.lean, or DiscreteSoundness.lean
 
 ## Decisions
 
-1. **Strategy pivot**: Instead of uncommenting and fixing old block-commented proofs (which had 50+ errors from reflexive -> irreflexive semantics change), wrote fresh proofs from scratch
-2. **General-first approach**: Fixed general versions first, since dense versions can delegate to them
-3. **Nontrivial D requirement**: Added `[Nontrivial D]` to general versions (needed for serial axiom proofs using `exists_gt`/`exists_lt`)
-4. **Removed dead cases**: Deleted `until_step`/`since_step` cases (BX8/BX8' removed from axiom system)
+1. **Full case-match proofs instead of delegation**: Since `axiom_swap_valid` (dense) is defined before `axiom_swap_valid_general`, we wrote independent full case-match proofs for both rather than having dense delegate to general.
+
+2. **Strict semantics corrections**: The old commented-out proofs used `≤` (reflexive semantics) but the current system uses strict `<`. Key fixes:
+   - `le_trans` → `lt_trans` in `temp_4` cases
+   - Since guard `(s, t]` with `s < r → r ≤ t`; Until guard `[t, s)` with `t ≤ r → r < s`
+   - Dead `until_step`/`since_step` cases removed (BX8/BX8' no longer in axiom system)
+
+3. **Conjunction handling**: Added `Formula.and, Formula.neg` to simp sets for axioms involving `∧` (left_mono, self_accum, absorb, linear), using `and_extract` helper for double-negation decomposition.
+
+4. **Serial axiom proofs**: Used `exists_gt`/`exists_lt` from `Nontrivial` for general version, same for dense version (density not needed since `Nontrivial` suffices).
 
 ## Impacts
 
-- Build passes with 3 active sorries (down from 8)
-- `axiom_locally_valid_general` is fully proven
-- Downstream signatures updated for `[Nontrivial D]` - Soundness.lean call sites unaffected (constraint already in scope)
+- SoundnessLemmas.lean is now fully sorry-free
+- All soundness infrastructure (Soundness.lean, DenseSoundness.lean, DiscreteSoundness.lean) continues to compile cleanly
+- The temporal duality bridge theorems are now complete, strengthening the soundness proof chain
 
 ## Follow-ups
 
-- Close `axiom_swap_valid_general` (25 swap cases, requires `and_extract` for left_mono and formula.and/neg simp for linear/absorb/self_accum cases)
-- Make dense `axiom_swap_valid` and `axiom_locally_valid` delegate to general versions
-- Verify Soundness.lean call site compatibility
+- None required. The file is complete.
 
 ## References
 
-- `Theories/Bimodal/Metalogic/SoundnessLemmas.lean`
 - `specs/108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md`
+- `specs/108_audit_soundness_lemmas_sorries/plans/01_soundness-sorry-closure.md`
