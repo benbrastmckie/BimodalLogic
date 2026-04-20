@@ -1127,14 +1127,25 @@
     {
       "project_number": 107,
       "project_name": "archive_dead_quasimodel_code",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "description": "Archive OracleStep.lean (25 sorries, orphaned) and BXCanonical/Boneyard/ (OracleCoherence.lean 14 sorries, RoundRobinChain.lean 5 sorries) to main Boneyard/. Remove from build chain. Net reduction: ~44 active-path sorry occurrences. Add README documenting deprecation under irreflexive semantics.",
       "created": "2026-04-20T17:43:07Z",
-      "last_updated": "2026-04-20T18:37:19Z",
+      "last_updated": "2026-04-20T18:41:49Z",
       "session_id": "sess_1776709935_89f761",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Moved 3 orphaned files (OracleStep, OracleCoherence, RoundRobinChain) totaling 1,467 lines and 44 sorries to Boneyard/QuasimodelOracle/, updated cross-references, and verified lake build passes.",
+      "roadmap_items": [
+        "Archived code"
+      ],
+      "artifacts": [
+        {
+          "path": "specs/107_archive_dead_quasimodel_code/summaries/01_quasimodel-archive-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for archiving 3 orphaned quasimodel oracle files to Boneyard"
+        }
+      ]
     },
     {
       "project_number": 108,
