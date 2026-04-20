@@ -69,7 +69,7 @@ Phases are sequential: each depends on the semantic/axiom changes of the prior p
 
 ---
 
-### Phase 1: Fix Guard Convention and Soundness [NOT STARTED]
+### Phase 1: Fix Guard Convention and Soundness [BLOCKED]
 
 **Goal**: Change Until/Since guard from open (t, s) to half-open [t, s) in Truth.lean, then complete all sorry'd soundness proofs. After this phase, Soundness.lean is sorry-free.
 
@@ -102,7 +102,7 @@ Phases are sequential: each depends on the semantic/axiom changes of the prior p
 
 ---
 
-### Phase 2: Remove phi_imp_F_phi Infrastructure and Redesign Chain [NOT STARTED]
+### Phase 2: Remove phi_imp_F_phi Infrastructure and Redesign Chain [COMPLETED]
 
 **Goal**: Delete the invalid `phi_imp_F_phi` and `phi_imp_P_phi` definitions and all callers. Redesign `defect_step_early` to work without them. The chain construction should compile (with the 5 core sorry sites still open).
 
@@ -131,7 +131,7 @@ Phases are sequential: each depends on the semantic/axiom changes of the prior p
 
 ---
 
-### Phase 3: Close fwd_chain_forward_F and restricted_tc [NOT STARTED]
+### Phase 3: Close fwd_chain_forward_F and restricted_tc [BLOCKED]
 
 **Goal**: Close the first 3 sorry sites: `fwd_chain_forward_F` (line 1093), and both cases of `restricted_tc` (lines 1120, 1127). These are the temporal coherence foundations that the Until/Since coherence proofs depend on.
 
@@ -155,7 +155,7 @@ Phases are sequential: each depends on the semantic/axiom changes of the prior p
 
 ---
 
-### Phase 4: Close restricted_buc and restricted_fuc [NOT STARTED]
+### Phase 4: Close restricted_buc and restricted_fuc [BLOCKED]
 
 **Goal**: Close the final 2 sorry sites (Until/Since coherence). These depend on `restricted_tc` (proved in Phase 3) and the Until/Since propagation axioms BX9, BX10, BX12.
 
