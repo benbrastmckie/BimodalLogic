@@ -111,6 +111,7 @@ technical_debt:
 - **Created**: 2026-04-20
 - **Research**: [108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md]
 - **Plan**: [108_audit_soundness_lemmas_sorries/plans/01_soundness-sorry-closure.md]
+- **Summary**: [108_audit_soundness_lemmas_sorries/summaries/01_soundness-sorry-closure-summary.md]
 
 **Description**: Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as closeable under irreflexive semantics, genuinely blocked, or in block-commented sorry'd theorem. Close straightforward ones. Document blocked ones.
 
