@@ -92,45 +92,49 @@ technical_debt:
 
 ### 108. Audit SoundnessLemmas.lean sorry sites
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-04-20
 - **Research**: [108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md]
+- **Plan**: [108_audit_soundness_lemmas_sorries/plans/01_soundness-sorry-closure.md]
 - **Description**: Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as closeable under irreflexive semantics, genuinely blocked, or in block-commented sorry'd theorem. Close straightforward ones. Document blocked ones.
 
 ---
 
 ### 107. Archive dead Quasimodel code to Boneyard
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-04-20
 - **Research**: [107_archive_dead_quasimodel_code/reports/01_quasimodel-archive-audit.md]
+- **Plan**: [107_archive_dead_quasimodel_code/plans/01_quasimodel-archive.md]
 - **Description**: Move OracleStep.lean (25 sorries, orphaned), OracleCoherence.lean (14 sorries), and RoundRobinChain.lean (5 sorries) from BXCanonical to main Boneyard/. Remove from build chain. Net reduction ~44 sorry occurrences. Add README.
 
 ---
 
 ### 106. Rewrite ROADMAP.md for irreflexive semantics
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: markdown
 - **Priority**: critical
 - **Created**: 2026-04-20
 - **Research**: [106_rewrite_roadmap_irreflexive/reports/01_roadmap-rewrite-audit.md]
+- **Plan**: [106_rewrite_roadmap_irreflexive/plans/01_roadmap-rewrite.md]
 - **Description**: ROADMAP says "fully reflexive" throughout but semantics is now irreflexive. Rewrite Overview, update sorry inventory line numbers, update axiom tables (BX1/BX1' -> seriality, BX8/BX8' removed, BX2 reformulated), document task 93 outcome and remaining CanonicalModel sorry cluster.
 
 ---
 
 ### 105. Update stale sorry-blocker comments in BXCanonical code
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-04-12
 - **Related**: Tasks 93, 102
 - **Research**: [105_update_bxcanonical_comments/reports/01_stale-comments-audit.md]
+- **Plan**: [105_update_bxcanonical_comments/plans/01_stale-comments-update.md]
 
 **Description**: Update stale sorry-blocker comments in BXCanonical code files. (1) Completeness.lean:149-153 lists Until/Since and Frame.lean X-vs-G mismatch as remaining blockers — these are now resolved by tasks 98+102. (2) Frame.lean:440-441 says "For now, sorry the full modal equivalence" but the proof is now complete. (3) BXCanonical.lean:20 says "sorry for full completeness" — should note only TaskModel embedding remains. (4) Verify no other stale sorry references in the 13 BXCanonical files. Also update X/Y operator docstrings in Formula.lean:328-334 (reference stale strict semantics).
 
@@ -138,11 +142,12 @@ technical_debt:
 
 ### 104. Clean up stale task state and metrics
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Priority**: medium
 - **Created**: 2026-04-12
 - **Research**: [104_clean_superseded_tasks/reports/01_stale-state-cleanup.md]
+- **Plan**: [104_clean_superseded_tasks/plans/01_stale-state-cleanup.md]
 
 **Description**: Clean up remaining stale task state after post-task-93 review (which abandoned 89, 87, 74, 75, 76, 82): (1) Update task 60 to remove dependency on nonexistent task 59 and reassess `discrete_Icc_finite_axiom` status. (2) Fix state.json `technical_debt` metrics: update `sorry_count`, `publication_path_sorries` to reflect current state (11 active-path sorries). (3) Update TODO.md frontmatter metrics to match.
 
