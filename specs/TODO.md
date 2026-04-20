@@ -158,7 +158,7 @@ technical_debt:
 
 ### 104. Clean up stale task state and metrics
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Priority**: medium
 - **Created**: 2026-04-12
@@ -375,13 +375,12 @@ technical_debt:
 
 ---
 
-### 60. Remove discrete_Icc_finite_axiom
-- **Effort**: 4-6 hours
+### 60. Clean up stale discrete_Icc_finite_axiom references
+- **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
 - **Language**: lean4
-- **Dependencies**: Task 59
 
-**Description**: Eliminate the custom axiom discrete_Icc_finite_axiom (FrameConditions/Completeness.lean line 187). Either prove the finiteness of DiscreteTimelineQuot intervals directly, or restructure the discrete completeness proof to avoid needing it. Research-heavy task.
+**Description**: discrete_Icc_finite_axiom was already eliminated (zero custom axioms confirmed). Remaining scope: clean up stale docstrings in FrameClass.lean and SuccExistence.lean that still reference the removed axiom.
 
 ---
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Clean Superseded Tasks
 
 - **Task**: 104 - clean_superseded_tasks
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/104_clean_superseded_tasks/reports/01_stale-state-cleanup.md
@@ -55,7 +55,7 @@ ROADMAP.md references 5 active-path sorries in RootScopedChain.lean. The researc
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Fix Task 60 in state.json and TODO.md [NOT STARTED]
+### Phase 1: Fix Task 60 in state.json and TODO.md [COMPLETED]
 
 **Goal**: Remove stale dependency on task 59 and update task 60 description.
 
