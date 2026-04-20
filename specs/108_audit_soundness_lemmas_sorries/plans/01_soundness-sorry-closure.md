@@ -1,7 +1,7 @@
 # Implementation Plan: Audit and Close SoundnessLemmas.lean Sorries
 
 - **Task**: 108 - Audit 28 sorry occurrences in SoundnessLemmas.lean
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None (self-contained file with known call sites)
 - **Research Inputs**: specs/108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md
@@ -87,7 +87,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Uncomment and Fix Dense Master Dispatch Theorems [PARTIAL]
+### Phase 2: Uncomment and Fix Dense Master Dispatch Theorems [COMPLETED]
 
 **Goal**: Restore the proof bodies for `axiom_swap_valid` and `axiom_locally_valid` (dense versions with `[DenselyOrdered D] [Nontrivial D]`), applying the identified fixes.
 
@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Uncomment and Fix General Master Dispatch Theorems [PARTIAL]
+### Phase 3: Uncomment and Fix General Master Dispatch Theorems [COMPLETED]
 
 **Goal**: Restore the proof bodies for `axiom_swap_valid_general` and `axiom_locally_valid_general`, adding `[Nontrivial D]` to signatures and updating downstream theorems.
 
@@ -143,7 +143,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update Call Sites and Final Verification [NOT STARTED]
+### Phase 4: Update Call Sites and Final Verification [COMPLETED]
 
 **Goal**: Update call sites in Soundness.lean for the `[Nontrivial D]` signature change and verify clean compilation of the full project.
 
