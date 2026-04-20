@@ -87,7 +87,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Uncomment and Fix Dense Master Dispatch Theorems [NOT STARTED]
+### Phase 2: Uncomment and Fix Dense Master Dispatch Theorems [IN PROGRESS]
 
 **Goal**: Restore the proof bodies for `axiom_swap_valid` and `axiom_locally_valid` (dense versions with `[DenselyOrdered D] [Nontrivial D]`), applying the identified fixes.
 
