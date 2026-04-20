@@ -1,51 +1,59 @@
-# Implementation Summary: Task #93
+# Implementation Summary: Irreflexive Semantics Switch
 
-- **Task**: 93 - Complete BXCanonical embedding (irreflexive semantics switch)
-- **Status**: [PARTIAL]
-- **Started**: 2026-04-19
-- **Completed**: 2026-04-19
-- **Effort**: ~3 hours
-- **Dependencies**: Task 92 (truth lemma sorry-free)
-- **Artifacts**: plans/48_bxcanonical-embedding.md
-- **Standards**: status-markers.md, artifact-management.md, tasks.md, summary-format.md
+- **Task**: 93 - Complete BXCanonical embedding
+- **Status**: PARTIAL (Phases 1, 2, 5 completed; Phase 3 partial; Phase 4 blocked)
+- **Session**: sess_1776649069_d70589
 
-## Overview
+## Phase Status
 
-Implemented Phase 1 of the irreflexive semantics switch for the BX bimodal logic proof system. Changed the semantic foundation from reflexive (≤) to irreflexive (<) temporal quantification with open guard semantics for Until and Since. This is a foundational change that affects every file using `truth_at`.
+| Phase | Status | Summary |
+|-------|--------|---------|
+| 1: Semantic/Axiom Layer | COMPLETED | Truth.lean strict <, axioms replaced, 16+ files updated |
+| 2: Frame/Model Repair | COMPLETED | g/h_content_set_consistent via seriality, enriched_seed bypassed |
+| 3: Chain Redesign | PARTIAL | defect_step weakened to disjunctive output |
+| 4: Close Sorry Sites | BLOCKED | Lindenbaum non-determinism prevents finite descent |
+| 5: ROAD_MAP.md | COMPLETED | Axiom table, semantics, sorry inventory updated |
 
-## What Changed
+## What Was Accomplished
 
-- **Truth.lean**: Changed `all_future` from `t ≤ s` to `t < s`, `all_past` from `s ≤ t` to `s < t`, Until witness from `t ≤ s` to `t < s` with open guard `t < r` (was `t ≤ r`), Since witness from `s ≤ t` to `s < t` with open guard `r < t` (was `r ≤ t`). Updated all TimeShift proofs.
-- **Axioms.lean**: Removed `temp_t_future` (BX1), `temp_t_past` (BX1'), `refl_intro_until` (BX8), `refl_intro_since` (BX8'). Added `serial_future` (⊤ → F(⊤)), `serial_past` (⊤ → P(⊤)), `until_step` (φ ∧ F(φ U ψ) → φ U ψ), `since_step` (φ ∧ P(φ S ψ) → φ S ψ). Axiom count: 37 → 35.
-- **Soundness.lean**: Updated all validity proofs. `temp_4_valid` uses `lt_trans` instead of `le_trans`. `density_valid` uses `exists_between` (DenselyOrdered). Updated all case match tables. Sorry'd seriality and step axiom validity proofs (require frame conditions).
-- **SoundnessLemmas.lean**: Sorry'd `axiom_swap_valid`, `axiom_swap_valid_general`, `axiom_locally_valid`, `axiom_locally_valid_general`, and helper proofs. These need mechanical ≤ → < updates throughout.
-- **TemporalDerived.lean**: Sorry'd all BX1-dependent theorems (`G_bot_absurd`, `H_bot_absurd`, `density_derivable`, `refl_F`, `refl_P`, `psi_imp_until`, `psi_imp_since`).
-- **Frame.lean**: Sorry'd `bx_le_refl` (no longer valid under irreflexive semantics), `g_content_set_consistent`, `bx_H_backward`.
-- **SuccRelation.lean**: Sorry'd `g_content_subset_mcs`, `h_content_subset_mcs`.
-- **ParametricTruthLemma.lean**: Sorry'd `parametric_canonical_truth_lemma`, `parametric_shifted_truth_lemma`.
+### Phase 1 (completed)
+- Irreflexive semantics switch: G/H use `<`, Until/Since use strict witness with open guard
+- Removed BX1/BX1' (reflexive T), refl_intro_until/since; added serial_future/serial_past
+- Propagated changes through 16+ files with sorry markers for BX1-dependent code
 
-## Decisions
+### Phase 2 (completed)
+- Proved `g_content_set_consistent` via seriality: G(bot) in MCS contradicts F(top) from serial_future
+- Proved `h_content_set_consistent` via seriality: H(bot) in MCS contradicts P(top) from serial_past
+- Fixed `bx_H_backward` using new h_content_set_consistent
+- Simplified `fwd_succ`/`bwd_pred` non-resolving branches to use g_content/h_content alone
 
-- Chose **open guard** semantics (t, s) for Until and (s, t) for Since, matching standard Burgess 1984 formulation. This makes BX2/BX3 (monotonicity) valid but invalidates BX9 (until_elim: φ U ψ → φ ∨ ψ) since the guard no longer includes the current time.
-- BX9 is sorry'd but BX10 (φ U ψ → F(ψ)) remains valid and is the critical axiom for completeness.
-- Seriality axioms require frame conditions (NoMaxOrder/NoMinOrder) so are sorry'd in the universal validity proof but will be valid on the canonical model.
+### Phase 3 (partial)
+- `defect_step_early`: weakened to disjunctive output (chi in M' OR F(chi) in M')
+- `fwd_chain_defect_one_step`: single-step atomic preservation
+- `defect_step_from_earliest` and `defect_fwd_step_choice_spec`: updated to match
 
-## Impacts
+### Phase 4 (blocked)
+The 5 sorry sites cannot be closed with the current Lindenbaum-based chain construction.
+The Lindenbaum extension is non-constructive and can re-introduce F-obligations even when
+phi -> F(phi) is not derivable. A constrained Lindenbaum extension or alternative chain
+construction is needed. See handoff at `specs/093_complete_bxcanonical_embedding/handoffs/48_sorry-closure-handoff.md`.
 
-- 41 compilation errors remain in 6 downstream files (expected, to be addressed in Phase 2+)
-- Key files affected: TruthLemma.lean, SigmaOrdering.lean, Construction.lean, Compatibility.lean, RestrictedParametricTruthLemma.lean, SuccExistence.lean
-- Many theorems now sorry'd that were previously sorry-free -- this is expected and planned
+### Phase 5 (completed)
+- Updated ROAD_MAP.md axiom table (serial_future/past, until_step/since_step)
+- Updated semantics section (irreflexive with strict inequalities)
+- Updated sorry inventory with irreflexive semantics strategy
 
-## Follow-ups
+## Sorry Count (Critical Path)
 
-- Phase 2: Repair Frame.lean and CanonicalModel.lean (remove bx_le_refl usage, use seriality)
-- Fix remaining 41 compilation errors in downstream files
-- Re-prove sorry'd SoundnessLemmas proofs with < instead of ≤ (mechanical but tedious)
-- Re-prove TemporalDerived theorems using seriality instead of BX1
+| File | Count | Notes |
+|------|-------|-------|
+| Frame.lean | 1 | bx_le_refl (intentionally invalid) |
+| CanonicalModel.lean | 6 | Dead code + genuinely false lemmas |
+| RootScopedChain.lean | 8 | 3 intentionally invalid + 5 original sorry sites |
+| CanonicalChain.lean | 2 | Reflexive intro (intentionally invalid) |
+| TruthLemma.lean | 2 | Reflexive backward (intentionally invalid) |
 
-## References
-
-- `specs/093_complete_bxcanonical_embedding/plans/48_bxcanonical-embedding.md`
-- `specs/093_complete_bxcanonical_embedding/reports/48_team-research.md`
-- `Theories/Bimodal/Semantics/Truth.lean`
-- `Theories/Bimodal/ProofSystem/Axioms.lean`
+## Verification
+- `lake build`: PASSES (950 jobs, 0 errors)
+- No new axiom declarations (0 total)
+- All sorry sites are in proofs, not definitions

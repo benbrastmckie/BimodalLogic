@@ -48,13 +48,15 @@ open Bimodal.Automation
 Under reflexive semantics, what holds at all future-or-present times holds now.
 -/
 
-/-- BX1: Temporal T (future) on atomic formula -/
-example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") :=
-  DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.atom_s "p"))
+/-- BX1 (G(φ) → φ) removed under irreflexive semantics.
+Replaced by seriality: ⊤ → F(⊤). -/
+example : ⊢ (Formula.bot.imp Formula.bot).imp (Formula.some_future (Formula.bot.imp Formula.bot)) :=
+  DerivationTree.axiom [] _ Axiom.serial_future
 
-/-- BX1': Temporal T (past) on atomic formula -/
-example : ⊢ (Formula.atom_s "p").all_past.imp (Formula.atom_s "p") :=
-  DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.atom_s "p"))
+/-- BX1' (H(φ) → φ) removed under irreflexive semantics.
+Replaced by seriality: ⊤ → P(⊤). -/
+example : ⊢ (Formula.bot.imp Formula.bot).imp (Formula.some_past (Formula.bot.imp Formula.bot)) :=
+  DerivationTree.axiom [] _ Axiom.serial_past
 
 /-!
 ## Temporal 4 (`Gφ → GGφ`) — Derived from BX1
@@ -277,13 +279,13 @@ derivations for temporal logic goals. Under BX, it can find proofs using
 BX1 (temp_t_future/past) and modal-temporal interaction axioms.
 -/
 
-/-- Automated proof of BX1 (temp_t_future) using temporal_search -/
-example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") := by
-  temporal_search
+-- BX1 removed under irreflexive semantics. Disabled test.
+-- example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") := by
+--   temporal_search
 
-/-- Automated proof of BX1' (temp_t_past) using temporal_search -/
-example : ⊢ (Formula.atom_s "p").all_past.imp (Formula.atom_s "p") := by
-  temporal_search
+-- BX1' removed under irreflexive semantics. Disabled test.
+-- example : ⊢ (Formula.atom_s "p").all_past.imp (Formula.atom_s "p") := by
+--   temporal_search
 
 /-- Automated proof of modal-future axiom MF using modal_search -/
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future.box := by

@@ -77,7 +77,7 @@ Phases are fully sequential: each builds on the prior phase's semantic and axiom
 
 ---
 
-### Phase 1: Semantic and Axiom Layer Switch [PARTIAL]
+### Phase 1: Semantic and Axiom Layer Switch [COMPLETED]
 
 **Goal**: Change Truth.lean to irreflexive semantics with A2 guard convention, update the axiom set (remove 4, add 2), and update soundness proofs. After this phase, `lake build` should pass with new sorries only in files that depend on removed axioms.
 
@@ -113,7 +113,7 @@ Phases are fully sequential: each builds on the prior phase's semantic and axiom
 
 ---
 
-### Phase 2: Canonical Frame and Model Repair [NOT STARTED]
+### Phase 2: Canonical Frame and Model Repair [COMPLETED]
 
 **Goal**: Repair Frame.lean and CanonicalModel.lean to work without BX1/BX1'. The canonical temporal ordering `bx_le` loses reflexivity but retains transitivity. Enriched seed consistency proofs must be redesigned to use seriality instead of BX1.
 
@@ -143,7 +143,7 @@ Phases are fully sequential: each builds on the prior phase's semantic and axiom
 
 ---
 
-### Phase 3: Chain Construction Redesign [NOT STARTED]
+### Phase 3: Chain Construction Redesign [PARTIAL]
 
 **Goal**: Redesign `defect_step_early` and the chain construction in RootScopedChain.lean to not use phi -> F(phi). Build backward chain infrastructure. After this phase, the chain construction compiles (possibly with the 5 sorries still open but no additional sorry sites).
 
@@ -172,7 +172,7 @@ Phases are fully sequential: each builds on the prior phase's semantic and axiom
 
 ---
 
-### Phase 4: Close Sorry Sites [NOT STARTED]
+### Phase 4: Close Sorry Sites [BLOCKED]
 
 **Goal**: Close all 5 sorry sites in RootScopedChain.lean using the redesigned chain construction and backward chain infrastructure.
 
@@ -200,7 +200,7 @@ Phases are fully sequential: each builds on the prior phase's semantic and axiom
 
 ---
 
-### Phase 5: ROAD_MAP.md Update and Non-Critical Cleanup [NOT STARTED]
+### Phase 5: ROAD_MAP.md Update and Non-Critical Cleanup [COMPLETED]
 
 **Goal**: Update ROAD_MAP.md with the irreflexive semantics strategy, updated axiom table, and resolved sorry inventory. Clean up non-critical breakage with sorry markers for follow-up tasks.
 

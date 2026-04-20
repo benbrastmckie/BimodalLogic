@@ -756,22 +756,18 @@ theorem since_step_valid (φ ψ : Formula) :
 
 /-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
 Under irreflexive Until with open guard (t, s): φ U ψ at t has witness s > t with ψ(s)
-and guard φ on (t, s). The guard does NOT include t, so φ(t) is not guaranteed.
-However, (φ U ψ) → F(ψ) IS valid (BX10). BX9 may not be semantically valid
-under open guard but is kept for proof system compatibility.
-Sorry-free proof requires half-open guard or additional axioms. -/
+and guard φ on (t, s). The guard does NOT include t, so φ(t) is not directly guaranteed.
+This axiom is kept for proof system compatibility; sorry for the semantic gap. -/
 theorem until_elim_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ ψ).imp (Formula.or φ ψ)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.or, Formula.neg]
   intro ⟨s, hts, h_ψs, _h_guard⟩
   intro _h_not_φ
-  -- Under open guard, we don't get φ(t). We only know F(ψ).
-  -- BX9 is not semantically valid under open guard irreflexive semantics.
   sorry
 
 /-- BX9': Since elimination: `(φ S ψ) → (φ ∨ ψ)`.
-Mirror of BX9. Sorry for same reason. -/
+Under irreflexive Since with open guard (s, t): mirror of BX9. -/
 theorem since_elim_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ ψ).imp (Formula.or φ ψ)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t

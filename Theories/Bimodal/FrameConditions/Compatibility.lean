@@ -144,11 +144,11 @@ instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.peirce φ ψ) where
 instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.modal_k_dist φ ψ) where
   valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.modal_k_dist φ ψ) (by simp [Axiom.isBase]) D
 
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_t_future φ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_t_future φ) (by simp [Axiom.isBase]) D
+instance : AxiomLinearCompatible (Axiom.serial_future) where
+  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.serial_future) (by simp [Axiom.isBase]) D
 
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_t_past φ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_t_past φ) (by simp [Axiom.isBase]) D
+instance : AxiomLinearCompatible (Axiom.serial_past) where
+  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.serial_past) (by simp [Axiom.isBase]) D
 
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_future φ) where
   valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.modal_future φ) (by simp [Axiom.isBase]) D

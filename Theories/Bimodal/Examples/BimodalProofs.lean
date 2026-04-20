@@ -216,9 +216,9 @@ example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
 example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box := by
   modal_search
 
-/-- Automated proof of BX1 (temp_t_future) using temporal_search -/
-example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") := by
-  temporal_search
+-- BX1 removed under irreflexive semantics. Disabled test.
+-- example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") := by
+--   temporal_search
 
 /-- Automated proof combining modal and temporal reasoning -/
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future.box := by

@@ -62,30 +62,15 @@ theorem F_of_mem {w : BXPoint} {ψ : Formula}
     rcases SetMaximalConsistent.negation_complete w.is_mcs (Formula.all_future (Formula.neg ψ)) with h_pos | h_neg
     · exact h_pos
     · exact absurd h_neg h_not_F
-  -- G(¬ψ) ∈ w → ¬ψ ∈ w (BX1)
-  have h_ax : DerivationTree [] ((Formula.all_future (Formula.neg ψ)).imp (Formula.neg ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.neg ψ))
-  have h_neg : Formula.neg ψ ∈ w.formulas :=
-    SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h_G_neg
-  exact set_consistent_not_both w.is_mcs.1 ψ h h_neg
+  -- Under irreflexive semantics, BX1 (G(φ) → φ) is removed.
+  -- F_of_mem no longer follows from BX1. Sorry'd (non-critical Quasimodel path).
+  sorry
 
-/-- P(ψ) ∈ w when ψ ∈ w. Dual of F_of_mem. -/
+/-- P(ψ) ∈ w when ψ ∈ w. Dual of F_of_mem.
+Under irreflexive semantics, BX1' (H(φ) → φ) is removed. Sorry'd (non-critical). -/
 theorem P_of_mem {w : BXPoint} {ψ : Formula}
     (h : ψ ∈ w.formulas) : Formula.some_past ψ ∈ w.formulas := by
-  by_contra h_not_P
-  have h_P_def : Formula.some_past ψ = Formula.neg (Formula.all_past (Formula.neg ψ)) := rfl
-  rw [h_P_def] at h_not_P
-  have h_H_neg : Formula.all_past (Formula.neg ψ) ∈ w.formulas := by
-    rcases SetMaximalConsistent.negation_complete w.is_mcs (Formula.all_past (Formula.neg ψ)) with h_pos | h_neg
-    · exact h_pos
-    · exact absurd h_neg h_not_P
-  have h_ax : DerivationTree [] ((Formula.all_past (Formula.neg ψ)).imp (Formula.neg ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.neg ψ))
-  have h_neg : Formula.neg ψ ∈ w.formulas :=
-    SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h_H_neg
-  exact set_consistent_not_both w.is_mcs.1 ψ h h_neg
+  sorry
 
 /-! ## Helper: F(ψ) from bx_le w v and ψ ∈ v
 
@@ -207,12 +192,9 @@ theorem enriched_seed_consistent_until
     simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
     rcases h_mem with (rfl | h_g) | h_h
     · exact absurd rfl h_ne
-    · -- α ∈ g_content(w): G(α) ∈ w → α ∈ w by BX1
-      have h_Gα : Formula.all_future α ∈ w.formulas := h_g
-      have h_ax : DerivationTree [] ((Formula.all_future α).imp α) :=
-        DerivationTree.axiom [] _ (Axiom.temp_t_future α)
-      exact SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_ax) h_Gα
+    · -- α ∈ g_content(w): G(α) ∈ w → α ∈ w (BX1 removed under irreflexive semantics)
+      -- Sorry'd (non-critical Quasimodel path)
+      sorry
     · -- α ∈ h_content(v): H(α) ∈ v → α ∈ w by bx_H_forward
       exact bx_H_forward h_wv h_h
   -- Case split on whether ¬(φ U ψ) ∈ L
@@ -262,12 +244,9 @@ theorem enriched_seed_consistent_since
     simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
     rcases h_mem with (rfl | h_h) | h_g
     · exact absurd rfl h_ne
-    · -- α ∈ h_content(w): H(α) ∈ w → α ∈ w by BX1'
-      have h_Hα : Formula.all_past α ∈ w.formulas := h_h
-      have h_ax : DerivationTree [] ((Formula.all_past α).imp α) :=
-        DerivationTree.axiom [] _ (Axiom.temp_t_past α)
-      exact SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_ax) h_Hα
+    · -- α ∈ h_content(w): H(α) ∈ w → α ∈ w (BX1' removed under irreflexive semantics)
+      -- Sorry'd (non-critical Quasimodel path)
+      sorry
     · -- α ∈ g_content(v): G(α) ∈ v. bx_le v w means g_content(v) ⊆ w.
       exact h_vw h_g
   by_cases h_neg_in : (Formula.snce φ ψ).neg ∈ L

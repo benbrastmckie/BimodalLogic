@@ -282,15 +282,14 @@ theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
   · exact Or.inr (bx_until_eventuality_resolution w φ ψ h_until h_ψ)
 
 /--
-Until backward (reflexive case): ψ ∈ w implies φ U ψ ∈ w (from BX8).
+Until backward (reflexive case): ψ ∈ w implies φ U ψ ∈ w.
+Under irreflexive semantics, ψ → (φ U ψ) is NOT axiomatically valid (no
+reflexive witness). This lemma is sorry'd pending redesign.
 -/
 theorem until_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
     (h_ψ : ψ ∈ w.formulas) :
     Formula.untl φ ψ ∈ w.formulas := by
-  have h_bx8 : DerivationTree [] (ψ.imp (Formula.untl φ ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.refl_intro_until φ ψ)
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_bx8) h_ψ
+  sorry
 
 /--
 Since forward: (φ S ψ) ∈ w implies either ψ ∈ w or there exists v < w
@@ -307,14 +306,13 @@ theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
   · exact Or.inr (bx_since_eventuality_resolution w φ ψ h_since h_ψ)
 
 /--
-Since backward (reflexive case): ψ ∈ w implies φ S ψ ∈ w (from BX8').
+Since backward (reflexive case): ψ ∈ w implies φ S ψ ∈ w.
+Under irreflexive semantics, ψ → (φ S ψ) is NOT axiomatically valid (no
+reflexive witness). This lemma is sorry'd pending redesign.
 -/
 theorem since_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
     (h_ψ : ψ ∈ w.formulas) :
     Formula.snce φ ψ ∈ w.formulas := by
-  have h_bx8' : DerivationTree [] (ψ.imp (Formula.snce φ ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_bx8') h_ψ
+  sorry
 
 end Bimodal.Metalogic.BXCanonical

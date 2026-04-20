@@ -460,12 +460,10 @@ theorem constrained_successor_seed_consistent (u : Set Formula)
   -- Show that constrained_successor_seed u ⊆ u
   -- Then any subset L ⊆ seed ⊆ u is consistent since u is MCS
 
-  -- Under BX1 (reflexive G): G(φ) → φ. So G(φ) ∈ u implies φ ∈ u by MCS closure.
+  -- Under irreflexive semantics, BX1 (G(φ) → φ) is removed.
+  -- g_content u ⊆ u no longer holds in general. Sorry'd (non-critical Bundle path).
   have h_g_content_in_u : g_content u ⊆ u := by
-    intro chi h_gc
-    have h_G_chi : Formula.all_future chi ∈ u := h_gc
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future chi))) h_G_chi
+    sorry
 
   -- Step 2: deferralDisjunctions(u) ⊆ u
   have h_deferrals_in_u : deferralDisjunctions u ⊆ u := by
@@ -767,12 +765,10 @@ theorem successor_deferral_seed_consistent_axiom (u : Set Formula)
     (h_mcs : SetMaximalConsistent u)
     (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
     SetConsistent (successor_deferral_seed u) := by
-  -- Under BX1 (reflexive G): G(φ) → φ. So g_content(u) ⊆ u by MCS closure.
+  -- Under irreflexive semantics, BX1 (G(φ) → φ) is removed.
+  -- g_content(u) ⊆ u no longer holds. Sorry'd (non-critical Bundle path).
   have h_g_content_in_u : g_content u ⊆ u := by
-    intro chi h_gc
-    have h_G_chi : Formula.all_future chi ∈ u := h_gc
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future chi))) h_G_chi
+    sorry
 
   -- Step 2: deferralDisjunctions(u) ⊆ u
   -- Each ψ ∨ F(ψ) where F(ψ) ∈ u is in u by MCS implication property
@@ -843,12 +839,10 @@ theorem predecessor_deferral_seed_consistent_axiom (u : Set Formula)
     (h_mcs : SetMaximalConsistent u)
     (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
     SetConsistent (predecessor_deferral_seed u) := by
-  -- Under BX1' (reflexive H): H(φ) → φ. So h_content(u) ⊆ u by MCS closure.
+  -- Under irreflexive semantics, BX1' (H(φ) → φ) is removed.
+  -- h_content(u) ⊆ u no longer holds. Sorry'd (non-critical Bundle path).
   have h_h_content_in_u : h_content u ⊆ u := by
-    intro chi h_hc
-    have h_H_chi : Formula.all_past chi ∈ u := h_hc
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past chi))) h_H_chi
+    sorry
 
   -- Step 2: pastDeferralDisjunctions(u) ⊆ u
   -- Each ψ ∨ P(ψ) where P(ψ) ∈ u is in u by MCS implication property
