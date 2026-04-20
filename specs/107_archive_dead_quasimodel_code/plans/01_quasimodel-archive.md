@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Dead Quasimodel Code
 
 - **Task**: 107 - archive_dead_quasimodel_code
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/107_archive_dead_quasimodel_code/reports/01_quasimodel-archive-audit.md
@@ -63,7 +63,7 @@ No prior plan.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Move Files and Create README [NOT STARTED]
+### Phase 1: Move Files and Create README [COMPLETED]
 
 **Goal**: Relocate the three orphaned files to `Boneyard/QuasimodelOracle/` and create the archive README.
 
@@ -100,7 +100,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Build Verification [NOT STARTED]
+### Phase 2: Build Verification [COMPLETED]
 
 **Goal**: Confirm `lake build` passes with zero regressions after the file moves.
 
