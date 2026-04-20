@@ -3,13 +3,13 @@ next_project_number: 111
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-04-12T00:00:00Z
+  last_assessed: 2026-04-20T19:00:00Z
 task_counts:
-  active: 24
-  completed: 760
+  active: 16
+  completed: 766
   in_progress: 0
-  not_started: 13
-  abandoned: 69
+  not_started: 6
+  abandoned: 75
   total: 853
 technical_debt:
   sorry_count: 129
@@ -27,28 +27,18 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-20. Post-task-93 review: abandoned 89, 87, 74, 75, 76, 82 (superseded by irreflexive switch). Created 106-109. Revised 95 (depends on 109), 104 (narrowed scope).*
+*Updated 2026-04-20. Archived 12 tasks (6 completed, 6 abandoned). Irreflexive semantics transition complete.*
 
-**Goal**: Close the 11 chain construction sorries (task 109) for sorry-free `bx_completeness`, archive legacy code, update documentation for irreflexive semantics.
+**Goal**: Close the 11 chain construction sorries (task 109) for sorry-free `bx_completeness`.
 
 ### 1. Critical Path — BXCanonical Completeness
 
 ```
-93 → 109 → 95
+109 → 95
 ```
 
-1. **93** [COMPLETED] — Close TaskModel embedding sorry (seriality + Nontrivial fix)
-2. **109** [NOT STARTED] — Close 11 chain construction sorries (5 RootScopedChain + 6 CanonicalModel) — the hard open problem
-3. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 109)
-
-### 2. Documentation & Cleanup
-
-4. **106** [PLANNED] — Rewrite ROADMAP.md for irreflexive semantics (critical)
-5. **107** [PLANNED] — Archive dead Quasimodel code (OracleStep + BXCanonical/Boneyard)
-6. **108** [PLANNED] — Audit SoundnessLemmas.lean sorry sites
-7. **105** [PLANNED] — Update stale sorry-blocker comments in BXCanonical code
-8. **104** [COMPLETED] — Clean up stale task state and metrics
-9. **110** [NOT STARTED] — Widen TODO entry format context for all task-creating commands
+1. **109** [NOT STARTED] — Close 11 chain construction sorries (5 RootScopedChain + 6 CanonicalModel) — the hard open problem
+2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 109)
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -79,8 +69,6 @@ technical_debt:
 
 ---
 
----
-
 ### 109. Close chain construction sorries for sorry-free completeness
 - **Effort**: 20-40 hours
 - **Status**: [NOT STARTED]
@@ -91,148 +79,6 @@ technical_debt:
 - **Report**: [specs/109_close_chain_construction_sorries/reports/01_chain-construction-sorries.md]
 
 **Description**: Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free `bx_completeness`. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93). 4 of 11 are genuinely unprovable/false as stated.
-
----
-
-### 108. Audit SoundnessLemmas.lean sorry sites
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Priority**: high
-- **Created**: 2026-04-20
-- **Research**: [108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md]
-- **Plan**: [108_audit_soundness_lemmas_sorries/plans/01_soundness-sorry-closure.md]
-- **Summary**: [108_audit_soundness_lemmas_sorries/summaries/01_soundness-sorry-closure-summary.md]
-
-**Description**: Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as closeable under irreflexive semantics, genuinely blocked, or in block-commented sorry'd theorem. Close straightforward ones. Document blocked ones.
-
----
-
-### 107. Archive dead Quasimodel code to Boneyard
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Priority**: high
-- **Created**: 2026-04-20
-- **Research**: [107_archive_dead_quasimodel_code/reports/01_quasimodel-archive-audit.md]
-- **Plan**: [107_archive_dead_quasimodel_code/plans/01_quasimodel-archive.md]
-- **Summary**: [107_archive_dead_quasimodel_code/summaries/01_quasimodel-archive-summary.md]
-
-**Description**: Move OracleStep.lean (25 sorries, orphaned), OracleCoherence.lean (14 sorries), and RoundRobinChain.lean (5 sorries) from BXCanonical to main Boneyard/. Remove from build chain. Net reduction ~44 sorry occurrences. Add README.
-
----
-
-### 106. Rewrite ROADMAP.md for irreflexive semantics
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: markdown
-- **Priority**: critical
-- **Created**: 2026-04-20
-- **Research**: [106_rewrite_roadmap_irreflexive/reports/01_roadmap-rewrite-audit.md]
-- **Plan**: [106_rewrite_roadmap_irreflexive/plans/01_roadmap-rewrite.md]
-- **Summary**: [106_rewrite_roadmap_irreflexive/summaries/01_roadmap-rewrite-summary.md]
-
-**Description**: ROADMAP says "fully reflexive" throughout but semantics is now irreflexive. Rewrite Overview, update sorry inventory line numbers, update axiom tables (BX1/BX1' -> seriality, BX8/BX8' removed, BX2 reformulated), document task 93 outcome and remaining CanonicalModel sorry cluster.
-
----
-
-### 105. Update stale sorry-blocker comments in BXCanonical code
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Priority**: high
-- **Created**: 2026-04-12
-- **Related**: Tasks 93, 102
-- **Research**: [105_update_bxcanonical_comments/reports/01_stale-comments-audit.md]
-- **Plan**: [105_update_bxcanonical_comments/plans/01_stale-comments-update.md]
-- **Summary**: [105_update_bxcanonical_comments/summaries/01_stale-comments-summary.md]
-
-**Description**: Update stale sorry-blocker comments in BXCanonical code files. (1) Completeness.lean:149-153 lists Until/Since and Frame.lean X-vs-G mismatch as remaining blockers — these are now resolved by tasks 98+102. (2) Frame.lean:440-441 says "For now, sorry the full modal equivalence" but the proof is now complete. (3) BXCanonical.lean:20 says "sorry for full completeness" — should note only TaskModel embedding remains. (4) Verify no other stale sorry references in the 13 BXCanonical files. Also update X/Y operator docstrings in Formula.lean:328-334 (reference stale strict semantics).
-
----
-
-### 104. Clean up stale task state and metrics
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-20
-- **Summary**: Cleaned stale task state: removed task 60 dependency on archived task 59, corrected sorry metrics (140->129 non-Boneyard, 1->11 publication-path), fixed TODO.md next_project_number.
-- **Language**: meta
-- **Priority**: medium
-- **Created**: 2026-04-12
-- **Research**: [104_clean_superseded_tasks/reports/01_stale-state-cleanup.md]
-- **Plan**: [104_clean_superseded_tasks/plans/01_stale-state-cleanup.md]
-- **Summary**: [104_clean_superseded_tasks/summaries/01_stale-state-cleanup-summary.md]
-
-**Description**: Clean up remaining stale task state after post-task-93 review (which abandoned 89, 87, 74, 75, 76, 82): (1) Update task 60 to remove dependency on nonexistent task 59 and reassess `discrete_Icc_finite_axiom` status. (2) Fix state.json `technical_debt` metrics: update `sorry_count`, `publication_path_sorries` to reflect current state (11 active-path sorries). (3) Update TODO.md frontmatter metrics to match.
-
----
-
-### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-04-20
-- **Summary**: Added Nontrivial D to validity definitions, closed 2 serial axiom sorries + 2 bonus sorries, fixed OracleStep build failures. Net -2 sorries, lake build clean.
-- **Language**: lean4
-- **Priority**: critical
-- **Dependencies**: None (tasks 90, 92, 98, 102 completed)
-- **Created**: 2026-04-10
-- **Related**: Tasks 92, 95, 102
-- **Research**:
-  - [01_taskmodel-embedding.md](specs/093_complete_bxcanonical_embedding/reports/01_taskmodel-embedding.md)
-  - [02_team-research.md](specs/093_complete_bxcanonical_embedding/reports/02_team-research.md)
-  - [03_team-research.md](specs/093_complete_bxcanonical_embedding/reports/03_team-research.md)
-  - [093_complete_bxcanonical_embedding/reports/17_round-robin-chain-history.md]
-  - [093_complete_bxcanonical_embedding/reports/19_team-research.md]
-  - [093_complete_bxcanonical_embedding/reports/20_bilateral-submaximal.md]
-  - [21_team-research.md](specs/093_complete_bxcanonical_embedding/reports/21_team-research.md)
-  - [093_complete_bxcanonical_embedding/reports/22_team-research.md]
-  - [093_complete_bxcanonical_embedding/reports/23_team-research.md]
-  - [25_bfmcs-quasimodel-witnesses.md](specs/093_complete_bxcanonical_embedding/reports/25_bfmcs-quasimodel-witnesses.md)
-  - [26_defect-reentry-analysis.md](specs/093_complete_bxcanonical_embedding/reports/26_defect-reentry-analysis.md)
-  - [27_team-research.md](specs/093_complete_bxcanonical_embedding/reports/27_team-research.md)
-  - [093_complete_bxcanonical_embedding/reports/28_depth-zero-base-case.md]
-  - [093_complete_bxcanonical_embedding/reports/31_forward-f-blocker.md]
-  - [093_complete_bxcanonical_embedding/reports/33_team-research.md]
-  - [093_complete_bxcanonical_embedding/reports/37_team-research.md]
-  - [093_complete_bxcanonical_embedding/reports/38_team-research.md]
-  - [093_complete_bxcanonical_embedding/reports/42_team-research.md]
-- **Plan**:
-    - [02_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/02_bxcanonical-embedding.md)
-    - [04_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/04_bxcanonical-embedding.md)
-    - [05_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/05_bxcanonical-embedding.md)
-    - [06_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/06_bxcanonical-embedding.md)
-    - [08_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/08_bxcanonical-embedding.md)
-    - [11_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/11_bxcanonical-embedding.md)
-    - [13_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/13_bxcanonical-embedding.md)
-    - [14_bxcanonical-embedding.md](specs/093_complete_bxcanonical_embedding/plans/14_bxcanonical-embedding.md)
-  - [093_complete_bxcanonical_embedding/plans/15_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/16_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/17_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/18_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/21_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/22_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/23_bxcanonical-embedding.md]
-- **Summary**:
-  - [093_complete_bxcanonical_embedding/summaries/23_bxcanonical-embedding-summary.md]
-  - [093_complete_bxcanonical_embedding/summaries/27_bxcanonical-embedding-summary.md]
-  - [093_complete_bxcanonical_embedding/plans/27_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/28_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/29_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/30_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/32_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/summaries/32_bxcanonical-embedding-summary.md]
-  - [093_complete_bxcanonical_embedding/plans/33_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/35_bxcanonical-embedding.md]
-  - [36_teammate-a-findings.md](specs/093_complete_bxcanonical_embedding/reports/36_teammate-a-findings.md)
-  - [093_complete_bxcanonical_embedding/plans/36_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/37_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/38_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/39_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/41_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/42_bxcanonical-embedding.md]
-  - [093_complete_bxcanonical_embedding/plans/48_bxcanonical-embedding.md]
-
-**Description**: Close the sole remaining BXCanonical sorry: TaskModel embedding at `BXCanonical/Completeness.lean:154`. This constructs a `TaskModel` from the BXPoint canonical frame. The Box-direction sorry (Frame.lean:440) was closed by task 102. All 4 Until/Since sorries (Frame.lean:653, 675, 690, 704) were closed by tasks 90+92+98+102. Once this sorry is closed, `bx_completeness` becomes sorry-free, and `#print axioms` should list only `propext`, `Classical.choice`, `Quot.sound`. The TaskModel embedding must use non-constant histories (constant histories collapse G to identity — see ROAD_MAP.md anti-pattern #12).
 
 ---
 
@@ -249,87 +95,6 @@ technical_debt:
 
 ---
 
-### 89. Close 4 Frame.lean eventuality resolution sorries via quasimodel or Henkin construction
-- **Effort**: 40-80 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-04-20
-- **Reason**: Fully superseded by completed tasks 90+92+98+102 which closed all 4 Frame.lean sorries.
-- **Language**: lean4
-- **Priority**: high
-- **Dependencies**: None (independent of task 88 CanonicalEmbedding)
-- **Created**: 2026-04-10
-
----
-
----
-
-### 87. Full representation theorem with Until/Since via enriched chain construction in Bundle/
-- **Effort**: 40-60 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-04-20
-- **Reason**: Bundle/ enriched chain approach superseded by BXCanonical path (task 109). Bundle/ has 14 sorry sites referencing removed BX1.
-- **Language**: lean4
-- **Dependencies**: Task 86 (USF fragment completeness)
-- **Created**: 2026-04-09
-
----
-
----
-
-### 82. Close FMP TruthPreservation Sorries
-- **Effort**: 1-2 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-04-20
-- **Reason**: Description assumes reflexive semantics and temp_t_future/temp_t_past axioms which were removed in task 93 (irreflexive switch). Subsumed by task 998 (FMP redesign for irreflexive semantics).
-- **Language**: lean4
-- **Priority**: high
-- **Created**: 2026-04-02
-
----
-
----
-
-### 74. Research strict vs reflexive temporal semantics for TM logic
-- **Effort**: 4-6 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-04-20
-- **Reason**: Question answered by task 93: switched to irreflexive semantics with BX1/BX1' replaced by seriality axioms.
-- **Language**: formal
-- **Priority**: high
-- **Created**: 2026-03-31
-
----
-
-### 75. Research G'/H' operator extension design for TM logic
-- **Effort**: 4-6 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-04-20
-- **Reason**: Moot: semantics settled on irreflexive in task 93. G'/H' extension not needed since G/H now use strict quantification directly.
-- **Language**: formal
-- **Priority**: high
-- **Created**: 2026-03-31
-- **Dependencies**: Task 74
-
----
-
-### 76. Research unified density/discreteness completeness paths
-- **Effort**: 4-6 hours
-- **Status**: [ABANDONED]
-- **Abandoned**: 2026-04-20
-- **Reason**: Framed around strict-vs-reflexive question resolved by task 93 (irreflexive switch). Dense completeness continues independently as task 68.
-- **Language**: formal
-- **Priority**: high
-- **Created**: 2026-03-31
-- **Dependencies**: Tasks 74, 75
-
----
-
-
-
-
-
-
-
 ### 68. Prove dense_completeness_fc via Rat canonical model
 - **Effort**: 6-10 hours
 - **Status**: [RESEARCHED]
@@ -343,8 +108,6 @@ technical_debt:
 **Hint**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) is the key to dense guard population — it propagates the Until formula itself through the interval, making each intermediate point contain `φ` via BX9 `until_elim`. Use Cantor-domain chain construction over a countable dense order, with interval-filling for Until guards.
 
 ---
-
-
 
 ### 64. Critical path review: algebraic analysis of completeness obstacles
 - **Effort**: Research task
