@@ -1158,12 +1158,12 @@
     {
       "project_number": 108,
       "project_name": "audit_soundness_lemmas_sorries",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "description": "Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as: (a) closeable under irreflexive semantics, (b) genuinely blocked, or (c) in block-commented/sorry-d theorem. Close straightforward ones. Document blocked ones with explanation.",
       "created": "2026-04-20T17:43:07Z",
-      "last_updated": "2026-04-20T19:23:06Z",
+      "last_updated": "2026-04-20T19:50:49Z",
       "session_id": "sess_1776709935_89f761",
       "next_artifact_number": 2,
       "resume_phase": 2,
@@ -1171,7 +1171,7 @@
         {
           "path": "specs/108_audit_soundness_lemmas_sorries/summaries/01_soundness-sorry-closure-summary.md",
           "type": "summary",
-          "summary": "Partial implementation summary: 5 of 8 sorries closed"
+          "summary": "All 8 active sorries closed in SoundnessLemmas.lean"
         }
       ],
       "memory_candidates": [
@@ -1198,7 +1198,23 @@
             "classical-logic",
             "soundness-lemmas"
           ]
+        },
+        {
+          "content": "When converting proof code from reflexive (<=) to strict (<) temporal semantics: (1) Replace le_trans with lt_trans; (2) Guard patterns change; (3) Add Formula.and/neg to simp sets; (4) Use and_extract helper; (5) exists_gt/exists_lt from Nontrivial suffice for serial cases.",
+          "category": "PATTERN",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "strict-semantics",
+            "temporal-logic",
+            "swap-validity",
+            "soundness-lemmas",
+            "irreflexive"
+          ]
         }
+      ],
+      "completion_summary": "Closed all 8 active sorries in SoundnessLemmas.lean by writing complete 25-case proofs for axiom_swap_valid, axiom_locally_valid, and axiom_swap_valid_general, correcting strict-semantics issues from the old reflexive code.",
+      "roadmap_items": [
+        "Close all 8 active sorries in SoundnessLemmas.lean"
       ]
     },
     {
