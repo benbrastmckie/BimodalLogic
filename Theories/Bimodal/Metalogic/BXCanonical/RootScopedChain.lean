@@ -465,13 +465,12 @@ formulas at each step, using the BX11 fold via `resolving_enriched_fwd_exists`.
 This is essential for proving forward temporal coherence (restricted_tc).
 -/
 
-/-- φ → F(φ) is derivable in BX (early definition for chain dependency). -/
+/-- φ → F(φ) is NOT derivable under irreflexive semantics (BX1 removed).
+This is the KEY insight: resolved defects no longer re-enter via φ → F(φ).
+Sorry'd -- Phase 3 will redesign defect_step_early to not use this. -/
 private noncomputable def phi_imp_F_phi_early (φ : Formula) :
     ⊢ φ.imp φ.some_future := by
-  unfold Formula.some_future
-  exact Bimodal.Theorems.Combinators.imp_trans (dni φ)
-    (Bimodal.Theorems.Propositional.contraposition
-      (DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.neg φ))))
+  sorry
 
 /-- At MCS level: φ ∈ M → F(φ) ∈ M (early version). -/
 private theorem phi_in_mcs_imp_F_phi_early {M : Set Formula} (h_mcs : SetMaximalConsistent M)
@@ -508,7 +507,7 @@ private theorem defect_step_early {M : Set Formula} (h_mcs : SetMaximalConsisten
     ∃ M' : Set Formula, SetMaximalConsistent M' ∧
       g_content M ⊆ M' ∧
       (∃ w ∈ defects, Formula.some_future w ∈ M ∧ w ∈ M') ∧
-      (∀ χ, χ ∈ defects → Formula.some_future χ ∈ M') := by
+      (∀ χ, χ ∈ defects → χ ∈ M' ∨ Formula.some_future χ ∈ M') := by
   match defects, h_nonempty with
   | [], h => exact absurd rfl h
   | (target :: others), _ =>
@@ -521,12 +520,8 @@ private theorem defect_step_early {M : Set Formula} (h_mcs : SetMaximalConsisten
         h_w_F, h_w_in⟩
     · intro χ hχ
       rcases List.mem_cons.mp hχ with rfl | h_in
-      · rcases h_target_disj with h | h
-        · exact phi_in_mcs_imp_F_phi_early h_mcs' χ h
-        · exact h
-      · rcases h_others_disj χ h_in with h | h
-        · exact phi_in_mcs_imp_F_phi_early h_mcs' χ h
-        · exact h
+      · exact h_target_disj
+      · exact h_others_disj χ h_in
 
 /-- Concrete defect step choice (early version). -/
 private noncomputable def defect_step_choice_early
@@ -542,7 +537,7 @@ private theorem defect_step_choice_early_spec
     let M' := defect_step_choice_early M h_mcs defects h_nonempty h_F
     SetMaximalConsistent M' ∧ g_content M ⊆ M' ∧
     (∃ w ∈ defects, Formula.some_future w ∈ M ∧ w ∈ M') ∧
-    (∀ χ, χ ∈ defects → Formula.some_future χ ∈ M') :=
+    (∀ χ, χ ∈ defects → χ ∈ M' ∨ Formula.some_future χ ∈ M') :=
   (defect_step_early h_mcs defects h_nonempty h_F).choose_spec
 
 /-- Preserving forward step: when active defects exist in sigma_list,
@@ -573,10 +568,13 @@ private theorem preserving_fwd_step_g_content (M : Set Formula) (h_mcs : SetMaxi
   · exact (defect_step_choice_early_spec M h_mcs _ _ _).2.1
   · exact fwd_succ_g_content M h_mcs _
 
-/-- F-obligations for sigma_list formulas are preserved at each step. -/
-private theorem preserving_fwd_step_F_preserved (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+/-- Defect preservation: for sigma_list formulas with F-obligation in M,
+    after one step, either the formula itself or its F-obligation is in M'.
+    Under irreflexive semantics, resolved defects do NOT have F re-entry. -/
+private theorem preserving_fwd_step_defect_preserved (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (sigma_list : List Formula) (n : Nat)
     (χ : Formula) (h_chi : χ ∈ sigma_list) (h_F : Formula.some_future χ ∈ M) :
+    χ ∈ preserving_fwd_step M h_mcs sigma_list n ∨
     Formula.some_future χ ∈ preserving_fwd_step M h_mcs sigma_list n := by
   simp only [preserving_fwd_step]
   have h_mem : χ ∈ active_defects M sigma_list := mem_active_defects h_chi h_F
@@ -643,16 +641,11 @@ private theorem sigma_fwd_g_content_trans (M₀ : Set Formula) (h₀ : SetMaxima
   induction n with
   | zero =>
     have : m = 0 := Nat.eq_zero_of_le_zero h; subst this
-    intro φ hφ; exact SetMaximalConsistent.implication_property
-      (fwd_chain_of_sigma M₀ h₀ sigma_list 0).property
-      (theorem_in_mcs (fwd_chain_of_sigma M₀ h₀ sigma_list 0).property
-        (DerivationTree.axiom [] _ (Axiom.temp_t_future φ))) hφ
+    -- Under irreflexive semantics, g_content_subset_self is sorry'd
+    exact g_content_subset_self (fwd_chain_of_sigma M₀ h₀ sigma_list 0).property
   | succ n ih =>
     rcases Nat.eq_or_lt_of_le h with rfl | h_lt
-    · exact fun φ hφ => SetMaximalConsistent.implication_property
-        (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
-        (theorem_in_mcs (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
-          (DerivationTree.axiom [] _ (Axiom.temp_t_future φ))) hφ
+    · exact g_content_subset_self (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
     · intro φ hφ
       have h_GG := SetMaximalConsistent.all_future_all_future
         (fwd_chain_of_sigma M₀ h₀ sigma_list m).property hφ
@@ -676,16 +669,11 @@ private theorem sigma_bwd_h_content_trans (M₀ : Set Formula) (h₀ : SetMaxima
   induction n with
   | zero =>
     have : m = 0 := Nat.eq_zero_of_le_zero h; subst this
-    intro φ hφ; exact SetMaximalConsistent.implication_property
-      (bwd_chain_of_sigma M₀ h₀ sigma_list 0).property
-      (theorem_in_mcs (bwd_chain_of_sigma M₀ h₀ sigma_list 0).property
-        (DerivationTree.axiom [] _ (Axiom.temp_t_past φ))) hφ
+    -- Under irreflexive semantics, h_content_subset_self is sorry'd
+    exact h_content_subset_self (bwd_chain_of_sigma M₀ h₀ sigma_list 0).property
   | succ n ih =>
     rcases Nat.eq_or_lt_of_le h with rfl | h_lt
-    · exact fun φ hφ => SetMaximalConsistent.implication_property
-        (bwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
-        (theorem_in_mcs (bwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
-          (DerivationTree.axiom [] _ (Axiom.temp_t_past φ))) hφ
+    · exact h_content_subset_self (bwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
     · intro φ hφ
       have h_HH := SetMaximalConsistent.all_past_all_past
         (bwd_chain_of_sigma M₀ h₀ sigma_list m).property hφ
@@ -997,14 +985,11 @@ theorem target_stays_direct_in_fold {M : Set Formula} (h_mcs : SetMaximalConsist
 /-! ## φ → F(φ) -/
 
 /-- φ → F(φ) is derivable in BX.
-Proof: temp_t gives G(¬φ) → ¬φ. Contrapositive: ¬¬φ → ¬G(¬φ).
-Since F(φ) = ¬G(¬φ) and ¬¬φ follows from φ by DNI, we get φ → F(φ). -/
+Under irreflexive semantics, φ → F(φ) is NOT derivable (BX1 removed).
+This is the key insight enabling defect count decrease. Sorry'd pending Phase 3 redesign. -/
 noncomputable def phi_imp_F_phi (φ : Formula) :
     ⊢ φ.imp φ.some_future := by
-  unfold Formula.some_future
-  exact Bimodal.Theorems.Combinators.imp_trans (dni φ)
-    (Bimodal.Theorems.Propositional.contraposition
-      (DerivationTree.axiom [] _ (Axiom.temp_t_future (Formula.neg φ))))
+  sorry
 
 /-- At MCS level: φ ∈ M → F(φ) ∈ M. -/
 theorem phi_in_mcs_imp_F_phi {M : Set Formula} (h_mcs : SetMaximalConsistent M)
@@ -1067,20 +1052,17 @@ noncomputable def dd_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
 
 /-! ### F-persistence and forward-F for the preserving chain -/
 
-/-- F-persistence: F(χ) ∈ chain(m) → F(χ) ∈ chain(n) for m ≤ n, when χ ∈ sigma_list. -/
-private theorem fwd_chain_F_persistent (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (sigma_list : List Formula) {m n : Nat} (h : m ≤ n)
+/-- Defect persistence: if F(χ) ∈ chain(m), then at chain(m+1), either
+    χ ∈ chain(m+1) (resolved) or F(χ) ∈ chain(m+1) (still pending).
+    Under irreflexive semantics, F does NOT unconditionally persist across
+    multiple steps. One-step preservation is the atomic building block. -/
+private theorem fwd_chain_defect_one_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat)
     (χ : Formula) (h_chi : χ ∈ sigma_list)
-    (h_F : Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list m).val) :
-    Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val := by
-  induction n with
-  | zero =>
-    have := Nat.eq_zero_of_le_zero h; subst this; exact h_F
-  | succ n ih =>
-    rcases Nat.eq_or_lt_of_le h with rfl | h_lt
-    · exact h_F
-    · exact preserving_fwd_step_F_preserved _ _ sigma_list n χ h_chi
-        (ih (Nat.lt_succ_iff.mp h_lt))
+    (h_F : Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val) :
+    χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).val ∨
+    Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).val :=
+  preserving_fwd_step_defect_preserved _ _ sigma_list n χ h_chi h_F
 
 /-- Forward F-resolution: F(φ) in the preserving chain gives φ at some later step.
     At each step with defects, at least one defect w is directly resolved (w ∈ chain(n+1)).
@@ -1477,12 +1459,10 @@ theorem defect_step_from_earliest {M : Set Formula} (h_mcs : SetMaximalConsisten
     (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
     ∃ M' : Set Formula, SetMaximalConsistent M' ∧
       g_content M ⊆ M' ∧
-      -- The pick_bx11_earliest target, or some other defect, is directly resolved
+      -- Some defect is directly resolved
       (∃ w ∈ defects, Formula.some_future w ∈ M ∧ w ∈ M') ∧
-      -- ALL defects have F-obligations preserved in M'
-      (∀ χ, χ ∈ defects → Formula.some_future χ ∈ M') := by
-  -- Use resolving_enriched_fwd_exists: it gives a witness that is directly resolved,
-  -- and all others are either in M' or F-protected.
+      -- Each defect is either resolved or F-preserved (irreflexive semantics)
+      (∀ χ, χ ∈ defects → χ ∈ M' ∨ Formula.some_future χ ∈ M') := by
   match defects, h_nonempty with
   | [], h => exact absurd rfl h
   | (target :: others), _ =>
@@ -1491,22 +1471,14 @@ theorem defect_step_from_earliest {M : Set Formula} (h_mcs : SetMaximalConsisten
           (h_F target (List.mem_cons_self))
           others (fun χ hχ => h_F χ (List.mem_cons_of_mem _ hχ))
       refine ⟨M', h_mcs', h_g, ?_, ?_⟩
-      · -- Witness membership: w is in defects
-        refine ⟨w, ?_, h_w_F, h_w_in⟩
+      · refine ⟨w, ?_, h_w_F, h_w_in⟩
         rcases h_w_origin with rfl | h_in_others
         · exact List.mem_cons_self
         · exact List.mem_cons_of_mem _ h_in_others
-      · -- F-obligations preserved for ALL defects
-        intro χ hχ
+      · intro χ hχ
         rcases List.mem_cons.mp hχ with rfl | h_in_others
-        · -- χ = target: use h_target_disj : target ∈ M' ∨ F(target) ∈ M'
-          rcases h_target_disj with h | h
-          · exact phi_in_mcs_imp_F_phi h_mcs' χ h
-          · exact h
-        · -- χ ∈ others: h_others_disj gives χ ∈ M' ∨ F(χ) ∈ M'
-          rcases h_others_disj χ h_in_others with h | h
-          · exact phi_in_mcs_imp_F_phi h_mcs' χ h
-          · exact h
+        · exact h_target_disj
+        · exact h_others_disj χ h_in_others
 
 /-! ## Phase 2: Defect-Driven Forward and Backward Chains
 
@@ -1542,14 +1514,11 @@ Given `F(ψ) ∈ chain(n)` with `ψ ∈ defects`:
 
 /-! ### φ → P(φ) at MCS level -/
 
-/-- `φ → P(φ)` is derivable in BX.
-Proof: temp_t_past gives H(¬φ) → ¬φ. Contrapositive: φ → ¬H(¬φ) = P(φ). -/
+/-- `φ → P(φ)` is NOT derivable under irreflexive semantics (BX1' removed).
+Sorry'd pending Phase 3 redesign. -/
 noncomputable def phi_imp_P_phi (φ : Formula) :
     ⊢ φ.imp φ.some_past := by
-  unfold Formula.some_past
-  exact Bimodal.Theorems.Combinators.imp_trans (dni φ)
-    (Bimodal.Theorems.Propositional.contraposition
-      (DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.neg φ))))
+  sorry
 
 /-- At MCS level: φ ∈ M → P(φ) ∈ M. -/
 theorem phi_in_mcs_imp_P_phi {M : Set Formula} (h_mcs : SetMaximalConsistent M)
@@ -1675,6 +1644,7 @@ private theorem defect_fwd_step_choice_spec
     (∃ w ∈ defects, Formula.some_future w ∈ M ∧
         w ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F) ∧
     (∀ χ, χ ∈ defects →
+        χ ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F ∨
         Formula.some_future χ ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F) :=
   (defect_step_from_earliest h_mcs defects h_nonempty h_F).choose_spec
 

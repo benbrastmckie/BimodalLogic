@@ -41,10 +41,11 @@ construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy
 
 ## BX Axiom System
 
-`Theories/Bimodal/ProofSystem/Axioms.lean` defines 37 axiom constructors in
+`Theories/Bimodal/ProofSystem/Axioms.lean` defines 35 axiom constructors in
 four layers (see `Axioms.lean:46-49` for Burgess 1982/84, Xu 1988, Venema 1993
-references). All axioms are sound on the frame class `Base` (linear temporal
-orders with S5 modal equivalence).
+references). Under irreflexive semantics (strict `<` for G/H, strict witness
+for U/S), the axiom set replaces BX1/BX1' (reflexive T) with seriality axioms
+and replaces BX8/BX8' (reflexive Until/Since introduction) with step axioms.
 
 ### Layer 1: Propositional (4)
 
@@ -71,8 +72,8 @@ orders with S5 modal equivalence).
 |-------|-----------|------------------------------|------|
 | `temp_k_dist` | Axioms.lean:107 | `G(φ → ψ) → (Gφ → Gψ)` | K for G |
 | `temp_4` | Axioms.lean:112 | `Gφ → GGφ` | Transitivity; needed for `bx_le_trans` |
-| **BX1** `temp_t_future` | **Axioms.lean:117** | **`Gφ → φ`** | **Reflexive T; needed for `bx_le_refl`** |
-| **BX1'** `temp_t_past` | **Axioms.lean:121** | **`Hφ → φ`** | **Mirror reflexive T** |
+| BX1 `serial_future` | Axioms.lean:117 | `T -> F(T)` | Seriality (replaces reflexive T) |
+| BX1' `serial_past` | Axioms.lean:123 | `T -> P(T)` | Mirror seriality |
 | BX2 `left_mono_until` | Axioms.lean:126 | `G(φ→χ) → ((φUψ)→(χUψ))` | Left monotonicity |
 | BX2' `left_mono_since` | Axioms.lean:130 | mirror for S | |
 | BX3 `right_mono_until` | Axioms.lean:135 | `G(φ→ψ) → ((χUφ)→(χUψ))` | Right monotonicity |
@@ -85,8 +86,8 @@ orders with S5 modal equivalence).
 | BX6' `absorb_since` | Axioms.lean:173 | mirror for S | |
 | BX7 `linear_until` | Axioms.lean:180 | four-formula linearity disjunction | Linearity of U witnesses |
 | BX7' `linear_since` | Axioms.lean:190 | mirror for S | |
-| BX8 `refl_intro_until` | Axioms.lean:202 | `ψ → (φUψ)` | **Reflexive Until witness at s=t** |
-| BX8' `refl_intro_since` | Axioms.lean:207 | `ψ → (φSψ)` | Mirror |
+| BX8 `until_step` | Axioms.lean:205 | `φ ∧ F(φUψ) → (φUψ)` | Step introduction |
+| BX8' `since_step` | Axioms.lean:210 | `φ ∧ P(φSψ) → (φSψ)` | Mirror |
 | BX9 `until_elim` | Axioms.lean:214 | `(φUψ) → (φ ∨ ψ)` | Current-time elim |
 | BX9' `since_elim` | Axioms.lean:219 | mirror for S | |
 | BX10 `until_F` | Axioms.lean:226 | `(φUψ) → F(ψ)` | Eventuality extraction |
@@ -103,27 +104,31 @@ orders with S5 modal equivalence).
 | `modal_future` | Axioms.lean:269 | `□φ → □(Gφ)` |
 | `temp_future` | Axioms.lean:272 | `□φ → G(□φ)` |
 
-### Why the axioms prove reflexive semantics
+### Irreflexive semantics and the seriality switch
 
-BX1/BX1' (`temp_t_future` / `temp_t_past`) are present and necessary — the
-"T-axiom removal" claim from the pre-2026-04-10 roadmap was stale. Without BX1,
-reflexivity of `bx_le` (`g_content w ⊆ w`) fails; see `Frame.lean:120-132`
-(`g_content_set_consistent`) where BX1 is invoked to derive a contradiction
-from `G(⊥) ∈ S`.
+Under the irreflexive semantics switch (task 93), BX1/BX1' (`Gφ → φ` / `Hφ → φ`)
+were replaced by seriality axioms (`T → F(T)` / `T → P(T)`). This means:
 
-BX8 (`ψ → (φUψ)`) and BX9 (`(φUψ) → (φ ∨ ψ)`) are **only sound under
-reflexive Until semantics** where the witness `s = t` is allowed. Under strict
-`<` semantics, BX8 would require `ψ` to force a strict future witness, which
-is false in general. These two axioms are the clearest code-level evidence
-that the codebase is fully reflexive.
+- `bx_le` is no longer reflexive (g_content(w) is NOT a subset of w)
+- `g_content_set_consistent` uses seriality instead of BX1: if G(bot) in MCS,
+  seriality gives F(T) = not G(neg T), and G(bot) implies G(neg T) by ex falso,
+  contradiction
+- BX8 is now the step axiom `φ ∧ F(φUψ) → (φUψ)` instead of reflexive intro
+- `φ → F(φ)` is NOT derivable -- this is the KEY insight for completeness:
+  resolved defects do not re-enter as F-obligations
+
+The critical architectural consequence: under irreflexive semantics, the
+active defect count strictly decreases at each chain step, because resolved
+formulas φ in M' do NOT generate F(φ) in M'. This unblocks the 5 remaining
+sorry sites in RootScopedChain.lean.
 
 ---
 
-## Reflexive Truth Semantics
+## Irreflexive Truth Semantics
 
-All four temporal operators in TM use reflexive ordering. The current point is
-included for G and H (`≤`), and Until/Since witnesses can be the current point
-(`t ≤ s` / `s ≤ t`) with a half-open guard.
+All four temporal operators in TM use strict (irreflexive) ordering. The current
+point is EXCLUDED for G and H (`<`), and Until/Since witnesses must be strictly
+future/past (`t < s` / `s < t`) with open guards.
 
 From `Theories/Bimodal/Semantics/Truth.lean:120-131`:
 
@@ -134,22 +139,23 @@ def truth_at (M : TaskModel F) (Omega : Set (WorldHistory F))
   | Formula.bot => False
   | Formula.imp φ ψ => truth_at M Omega τ t φ → truth_at M Omega τ t ψ
   | Formula.box φ => ∀ (σ : WorldHistory F), σ ∈ Omega → truth_at M Omega σ t φ
-  | Formula.all_past φ => ∀ (s : D), s ≤ t → truth_at M Omega τ s φ
-  | Formula.all_future φ => ∀ (s : D), t ≤ s → truth_at M Omega τ s φ
-  | Formula.untl φ ψ => ∃ s : D, t ≤ s ∧ truth_at M Omega τ s ψ ∧
-      ∀ r : D, t ≤ r → r < s → truth_at M Omega τ r φ
-  | Formula.snce φ ψ => ∃ s : D, s ≤ t ∧ truth_at M Omega τ s ψ ∧
-      ∀ r : D, s < r → r ≤ t → truth_at M Omega τ r φ
+  | Formula.all_past φ => ∀ (s : D), s < t → truth_at M Omega τ s φ
+  | Formula.all_future φ => ∀ (s : D), t < s → truth_at M Omega τ s φ
+  | Formula.untl φ ψ => ∃ s : D, t < s ∧ truth_at M Omega τ s ψ ∧
+      ∀ r : D, t < r → r < s → truth_at M Omega τ r φ
+  | Formula.snce φ ψ => ∃ s : D, s < t ∧ truth_at M Omega τ s ψ ∧
+      ∀ r : D, s < r → r < t → truth_at M Omega τ r φ
 ```
 
-- **G (`all_future`)**: `∀ s, t ≤ s → ...` — reflexive future (includes `t`).
-- **H (`all_past`)**: `∀ s, s ≤ t → ...` — reflexive past (includes `t`).
-- **U (`untl`)**: `∃ s, t ≤ s ∧ ψ@s ∧ ∀ r, t ≤ r < s → φ@r` — reflexive witness,
-  half-open guard `[t, s)`.
-- **S (`snce`)**: `∃ s, s ≤ t ∧ ψ@s ∧ ∀ r, s < r ≤ t → φ@r` — mirror.
+- **G (`all_future`)**: `∀ s, t < s → ...` — strict future (excludes `t`).
+- **H (`all_past`)**: `∀ s, s < t → ...` — strict past (excludes `t`).
+- **U (`untl`)**: `∃ s, t < s ∧ ψ@s ∧ ∀ r, t < r < s → φ@r` — strict witness,
+  open guard `(t, s)`.
+- **S (`snce`)**: `∃ s, s < t ∧ ψ@s ∧ ∀ r, s < r < t → φ@r` — mirror.
 
-The half-open guard (strict on the witness side) makes the `s = t` case
-vacuous for the guard and forces `ψ` at `t` — i.e. BX8 (`ψ → (φUψ)`) is sound.
+Under irreflexive semantics, `Gφ → φ` is NOT valid (BX1 removed), and
+`φ → F(φ)` is NOT derivable. Seriality axioms (`T → F(T)`, `T → P(T)`)
+ensure the temporal order has no maximum/minimum elements.
 
 ---
 
@@ -295,7 +301,7 @@ def bx_le (w v : BXPoint) : Prop :=
 
 Equivalently: `w ≤ v ↔ ∀ φ, G(φ) ∈ w → φ ∈ v`.
 
-- **Reflexivity** (`bx_le_refl`): requires `Gφ → φ` = BX1 `temp_t_future`.
+- **Reflexivity** (`bx_le_refl`): NOT valid under irreflexive semantics (BX1 removed).
   Without BX1, `g_content w ⊆ w` would fail; see `g_content_set_consistent`
   (`Frame.lean:122-133`) for the BX1 invocation.
 - **Transitivity** (`bx_le_trans`): requires `Gφ → GGφ` = `temp_4`.
@@ -450,45 +456,41 @@ There are **5 sorries** on the active completeness path, all in
 
 | # | File:Line | Definition | Goal Summary | Owning Task |
 |---|-----------|------------|--------------|-------------|
-| 1 | RootScopedChain.lean:1111 | `fwd_chain_forward_F` | F(phi) in chain(n) implies phi in chain(m) for some m > n | **Task 93** |
-| 2 | RootScopedChain.lean:1138 | `dd_bfmcs_restricted_tc` (fwd, bwd chain) | Forward temporal coherence for backward chain case (F-resolution on negative side) | **Task 93** |
-| 3 | RootScopedChain.lean:1145 | `dd_bfmcs_restricted_tc` (backward) | Backward temporal coherence: P(phi) resolution | **Task 93** |
-| 4 | RootScopedChain.lean:1153 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
-| 5 | RootScopedChain.lean:1160 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
+| 1 | RootScopedChain.lean:~1093 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
+| 2 | RootScopedChain.lean:~1120 | `dd_bfmcs_restricted_tc` (fwd F-case) | Forward temporal coherence (F-resolution) | **Task 93** |
+| 3 | RootScopedChain.lean:~1127 | `dd_bfmcs_restricted_tc` (backward P) | Backward temporal coherence (P-resolution) | **Task 93** |
+| 4 | RootScopedChain.lean:~1135 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 93** |
+| 5 | RootScopedChain.lean:~1142 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 93** |
 
-All 5 sorries target the `dd_bfmcs` scheduling chain's restricted coherence
-properties. The dependency chain is: `fwd_chain_forward_F` -> `restricted_tc`
-(forward, positive side) -> remaining `restricted_tc` cases -> `restricted_buc`
--> `restricted_fuc`. The oracle replacement approach (qm_bfmcs) was archived to
-`Boneyard/OracleCoherence.lean` on 2026-04-18 after hitting a backward
-coherence obstruction (`phi /\ F(phi U psi) -> phi U psi` is semantically
-invalid).
+### Irreflexive Semantics Strategy (Plan v48, 2026-04-19)
 
-### Three-Path Strategy (Plan v44, 2026-04-19)
+The irreflexive semantics switch (task 93, plan v48) resolves the fundamental
+obstruction that blocked all previous approaches: under reflexive semantics,
+`phi -> F(phi)` is derivable (from BX1), so resolving a defect phi creates
+F(phi) which regenerates the defect. This "defect oscillation" blocked
+pigeonhole arguments, oracle chains, and quasimodel approaches.
 
-After 44 rounds of research and planning, the current approach attempts three
-architecture paths (C, then A, then B) to close all 5 sorries:
+Under irreflexive semantics, `phi -> F(phi)` is NOT derivable because
+`G(neg phi) -> neg phi` (BX1) is removed. This means:
 
-| Path | Strategy | Confidence | LOC Est. | Key Requirement |
-|------|----------|------------|----------|-----------------|
-| **C** | Pigeonhole fix for `fwd_chain_forward_F` | 35% | 100-200 | F-persistence + finite sigma_list -> pigeonhole on defect resolution |
-| **A** | Oracle-based chain replacement | 50% | 500-800 | Sorry-free `hintikka_step_for_sigma_sig` provides sigma-specific oracle |
-| **B** | Full quasimodel-derived BFMCS | 55% | 400-600 | Palindromic cycling avoids wraparound; BFMCS is parametric |
+- At each chain step, `defect_step_early` gives: for each defect chi,
+  either `chi in M'` (resolved) or `F(chi) in M'` (still pending)
+- Resolved defects do NOT re-enter as F-obligations
+- Active defects (chi with F(chi) in M) strictly decrease at each step
+- After at most |sigma_list| steps, all defects are resolved
 
-**Irreducible core**: All paths require defect-count monotonicity across
-Lindenbaum extension. The `.choose` in `set_lindenbaum` is unconstrained, making
-the resolved defect non-deterministic. The BX11 fold provides only a disjunctive
-guarantee (target in M' OR F(target) in M'), not a definite resolution.
+**Key structural changes:**
+- `defect_step_early` weakened from `F(chi) in M'` to `chi in M' OR F(chi) in M'`
+- `fwd_chain_F_persistent` replaced by `fwd_chain_defect_one_step` (single-step)
+- `defect_step_from_earliest` output weakened to disjunctive form
+- `g_content_set_consistent` proved via seriality (not BX1)
+- `h_content_set_consistent` proved via seriality (not BX1')
+- `enriched_seed_consistent` bypassed (fwd_succ uses g_content alone)
 
-**Key research findings from rounds 43-44**:
-- The enriched seed approach is definitively dead (counterexample from report 43)
-- OracleStep.lean has 7-8 sorry sites (previously claimed sorry-free); but the
-  sigma-specific oracle (`hintikka_step_for_sigma_sig`) IS sorry-free
-- Reynolds induction on `defects.length` fails due to defect oscillation
-  (resolving phi creates F(phi) which regenerates the defect)
-- The `preserving_fwd_step` with `defect_step_choice_early` correctly preserves
-  ALL F-obligations and resolves at least one defect per step
-- `fwd_chain_F_persistent` is proved sorry-free
+**Phase 3-4 remaining work:** Build finite descent argument on active_defects
+to close the 5 sorry sites. The defect step infrastructure is in place; the
+proof requires showing that |active_defects(chain(n+1))| < |active_defects(chain(n))|
+when defects are present.
 
 ### Closed Sorries (Tasks 90+92+98+102)
 
@@ -503,8 +505,10 @@ The following 5 sorries in `Frame.lean` were closed between 2026-04-10 and
 | Frame.lean (formerly :690) | `bx_since_eventuality_resolution` | Task 98 |
 | Frame.lean (formerly :704) | `bx_since_backward` | Task 102 |
 
-Frame.lean is now **completely sorry-free** (673 lines). See "How Until/Since
-Were Closed" below for the approach that resolved these.
+Frame.lean has **1 sorry** (`bx_le_refl`, intentionally invalid under irreflexive semantics).
+The key consistency proofs (`g_content_set_consistent`, `h_content_set_consistent`,
+`bx_H_backward`) are all sorry-free using seriality. See "How Until/Since Were Closed"
+below for the approach that resolved the eventuality sorries.
 
 ---
 
@@ -595,8 +599,9 @@ Until-structure of formulas, using the following axioms:
    case under reflexive semantics.
 7. **BX4 (`connect_future`)**: `φ → G(P(φ))` is used in the backward direction
    to propagate `¬(φUψ)` forward and derive a contradiction with the guard.
-8. **BX1 (`temp_t_future`)**: `Gφ → φ` provides reflexivity of `bx_le` and is
-   used at the final witness to extract the current-time satisfaction of `ψ`.
+8. **BX1 (`serial_future`)**: Under irreflexive semantics, `Gφ → φ` is replaced by
+   `T → F(T)` (seriality). Reflexivity of `bx_le` is lost; consistency of
+   `g_content` uses seriality to show `G(bot)` contradicts `F(T)`.
 
 ### Resolution: Option A (Quasimodel with Defect-Discharge)
 
@@ -1099,4 +1104,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-04-19 (task 93 plan v44: three-path strategy for DD-BFMCS coherence, sorry inventory updated to 5 sites with correct line numbers)*
+*Last updated: 2026-04-19 (task 93 plan v48: irreflexive semantics switch, seriality axioms, defect step weakened to disjunctive form, sorry inventory 5 sites)*

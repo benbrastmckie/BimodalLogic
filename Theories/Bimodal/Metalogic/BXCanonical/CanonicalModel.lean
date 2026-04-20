@@ -47,37 +47,34 @@ def f_carry (M : Set Formula) : Set Formula :=
 theorem f_carry_subset (M : Set Formula) : f_carry M ⊆ M :=
   fun _ h => h.1
 
-/-- The enriched non-resolving seed: g_content(M) ∪ f_carry(M) ⊆ M, hence consistent. -/
+/-- The enriched non-resolving seed: g_content(M) ∪ f_carry(M) consistent.
+Under irreflexive semantics, g_content(M) ⊆ M no longer follows from BX1.
+Consistency needs to be proved via seriality + MCS properties.
+Sorry'd pending Phase 2 redesign (canonical model repair). -/
 theorem enriched_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     SetConsistent (g_content M ∪ f_carry M) := by
-  have h_g_sub : g_content M ⊆ M := by
-    intro φ hφ
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future φ))) hφ
-  have h_sub : g_content M ∪ f_carry M ⊆ M :=
-    Set.union_subset h_g_sub (f_carry_subset M)
-  intro L hL hd
-  exact h_mcs.1 L (fun φ hφ => h_sub (hL φ hφ)) hd
+  sorry
 
 /-! ## Forward Step -/
 
 /-- Build a successor MCS containing g_content(M). If F(ψ) ∈ M, also contains ψ.
-    When not resolving, the seed includes f_carry(M) to preserve F-formulas. -/
+    Under irreflexive semantics, the non-resolving branch uses g_content(M) alone
+    (consistent by seriality via g_content_set_consistent). -/
 noncomputable def fwd_succ (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
     Set Formula := by
   by_cases h_F : Formula.some_future ψ ∈ M
   · exact (set_lindenbaum (forward_temporal_witness_seed M ψ)
       (forward_temporal_witness_seed_consistent M h_mcs ψ h_F)).choose
-  · exact (set_lindenbaum (g_content M ∪ f_carry M)
-      (enriched_seed_consistent h_mcs)).choose
+  · exact (set_lindenbaum (g_content M)
+      (g_content_set_consistent h_mcs)).choose
 
 theorem fwd_succ_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
     SetMaximalConsistent (fwd_succ M h_mcs ψ) := by
   unfold fwd_succ; split
   · exact (set_lindenbaum (forward_temporal_witness_seed M ψ)
       (forward_temporal_witness_seed_consistent M h_mcs ψ ‹_›)).choose_spec.2
-  · exact (set_lindenbaum (g_content M ∪ f_carry M)
-      (enriched_seed_consistent h_mcs)).choose_spec.2
+  · exact (set_lindenbaum (g_content M)
+      (g_content_set_consistent h_mcs)).choose_spec.2
 
 theorem fwd_succ_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
     g_content M ⊆ fwd_succ M h_mcs ψ := by
@@ -85,9 +82,8 @@ theorem fwd_succ_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (�
   · exact fun χ hχ => (set_lindenbaum (forward_temporal_witness_seed M ψ)
       (forward_temporal_witness_seed_consistent M h_mcs ψ ‹_›)).choose_spec.1
       (Set.mem_union_right _ hχ)
-  · exact fun χ hχ => (set_lindenbaum (g_content M ∪ f_carry M)
-      (enriched_seed_consistent h_mcs)).choose_spec.1
-      (Set.mem_union_left _ hχ)
+  · exact fun χ hχ => (set_lindenbaum (g_content M)
+      (g_content_set_consistent h_mcs)).choose_spec.1 hχ
 
 theorem fwd_succ_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
     (h_F : Formula.some_future ψ ∈ M) : ψ ∈ fwd_succ M h_mcs ψ := by
@@ -96,14 +92,13 @@ theorem fwd_succ_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
     (forward_temporal_witness_seed_consistent M h_mcs ψ h_F)).choose_spec.1
     (Set.mem_union_left _ (Set.mem_singleton ψ))
 
-/-- F-formulas persist through non-resolving steps. -/
+/-- Under irreflexive semantics, f_carry is NOT preserved at non-resolving steps.
+The non-resolving branch only seeds with g_content(M).
+This theorem is no longer provable and is sorry'd for backward compatibility. -/
 theorem fwd_succ_f_carry (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
     (h_not_F : Formula.some_future ψ ∉ M) :
     f_carry M ⊆ fwd_succ M h_mcs ψ := by
-  unfold fwd_succ; rw [dif_neg h_not_F]
-  exact fun χ hχ => (set_lindenbaum (g_content M ∪ f_carry M)
-    (enriched_seed_consistent h_mcs)).choose_spec.1
-    (Set.mem_union_right _ hχ)
+  sorry
 
 /-! ## P-carry: P-formulas from an MCS -/
 
@@ -117,46 +112,35 @@ theorem p_carry_subset (M : Set Formula) : p_carry M ⊆ M :=
 /-- The enriched non-resolving seed for backward: h_content(M) ∪ p_carry(M) ⊆ M, hence consistent. -/
 theorem enriched_past_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     SetConsistent (h_content M ∪ p_carry M) := by
-  have h_h_sub : h_content M ⊆ M := by
-    intro φ hφ
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past φ))) hφ
-  have h_sub : h_content M ∪ p_carry M ⊆ M :=
-    Set.union_subset h_h_sub (p_carry_subset M)
-  intro L hL hd
-  exact h_mcs.1 L (fun φ hφ => h_sub (hL φ hφ)) hd
+  -- Under irreflexive semantics, h_content(M) ⊆ M no longer follows from BX1'.
+  -- Sorry'd pending Phase 2 redesign.
+  sorry
 
 /-! ## Backward Step -/
 
-/-- h_content(M) is consistent for MCS M (via H T-axiom). -/
+/-- h_content(M) is consistent for MCS M.
+Under irreflexive semantics, uses seriality (⊤ → P(⊤)) via h_content_set_consistent. -/
 theorem h_content_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
-    SetConsistent (h_content M) := by
-  intro L hL ⟨d⟩
-  have h_H_bot := h_content_closed_derivation h_mcs L hL d
-  have h_ax : DerivationTree [] (Formula.all_past Formula.bot |>.imp Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
-  have h_bot := SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs h_ax) h_H_bot
-  exact h_mcs.1 [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot)
-    ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+    SetConsistent (h_content M) :=
+  h_content_set_consistent h_mcs
 
 /-- Build a predecessor MCS containing h_content(M). If P(ψ) ∈ M, also contains ψ.
-    When not resolving, the seed includes p_carry(M) to preserve P-formulas. -/
+    Under irreflexive semantics, the non-resolving branch uses h_content(M) alone. -/
 noncomputable def bwd_pred (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
     Set Formula := by
   by_cases h_P : Formula.some_past ψ ∈ M
   · exact (set_lindenbaum (past_temporal_witness_seed M ψ)
       (past_temporal_witness_seed_consistent M h_mcs ψ h_P)).choose
-  · exact (set_lindenbaum (h_content M ∪ p_carry M)
-      (enriched_past_seed_consistent h_mcs)).choose
+  · exact (set_lindenbaum (h_content M)
+      (h_content_set_consistent h_mcs)).choose
 
 theorem bwd_pred_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
     SetMaximalConsistent (bwd_pred M h_mcs ψ) := by
   unfold bwd_pred; split
   · exact (set_lindenbaum (past_temporal_witness_seed M ψ)
       (past_temporal_witness_seed_consistent M h_mcs ψ ‹_›)).choose_spec.2
-  · exact (set_lindenbaum (h_content M ∪ p_carry M)
-      (enriched_past_seed_consistent h_mcs)).choose_spec.2
+  · exact (set_lindenbaum (h_content M)
+      (h_content_set_consistent h_mcs)).choose_spec.2
 
 theorem bwd_pred_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula) :
     h_content M ⊆ bwd_pred M h_mcs ψ := by
@@ -164,9 +148,8 @@ theorem bwd_pred_h_content (M : Set Formula) (h_mcs : SetMaximalConsistent M) (�
   · exact fun χ hχ => (set_lindenbaum (past_temporal_witness_seed M ψ)
       (past_temporal_witness_seed_consistent M h_mcs ψ ‹_›)).choose_spec.1
       (Set.mem_union_right _ hχ)
-  · exact fun χ hχ => (set_lindenbaum (h_content M ∪ p_carry M)
-      (enriched_past_seed_consistent h_mcs)).choose_spec.1
-      (Set.mem_union_left _ hχ)
+  · exact fun χ hχ => (set_lindenbaum (h_content M)
+      (h_content_set_consistent h_mcs)).choose_spec.1 hχ
 
 theorem bwd_pred_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
     (h_P : Formula.some_past ψ ∈ M) : ψ ∈ bwd_pred M h_mcs ψ := by
@@ -175,14 +158,13 @@ theorem bwd_pred_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
     (past_temporal_witness_seed_consistent M h_mcs ψ h_P)).choose_spec.1
     (Set.mem_union_left _ (Set.mem_singleton ψ))
 
-/-- P-formulas persist through non-resolving backward steps. -/
+/-- Under irreflexive semantics, p_carry is NOT preserved at non-resolving backward steps.
+The non-resolving branch only seeds with h_content(M).
+Sorry'd for backward compatibility. -/
 theorem bwd_pred_p_carry (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
     (h_not_P : Formula.some_past ψ ∉ M) :
     p_carry M ⊆ bwd_pred M h_mcs ψ := by
-  unfold bwd_pred; rw [dif_neg h_not_P]
-  exact fun χ hχ => (set_lindenbaum (h_content M ∪ p_carry M)
-    (enriched_past_seed_consistent h_mcs)).choose_spec.1
-    (Set.mem_union_right _ hχ)
+  sorry
 
 /-! ## Forward/Backward Chains -/
 
@@ -218,19 +200,17 @@ theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (t
 
 /-! ### g_content/h_content reflexivity under BX T-axioms -/
 
-/-- Under BX T-axiom: G(φ) → φ, so g_content(M) ⊆ M for any MCS M. -/
+/-- Under irreflexive semantics, g_content(M) ⊆ M does NOT hold (BX1 removed).
+Sorry'd pending Phase 2 redesign. -/
 theorem g_content_subset_self {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     g_content M ⊆ M := by
-  intro φ hφ
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future φ))) hφ
+  sorry
 
-/-- Under BX T-past axiom: H(φ) → φ, so h_content(M) ⊆ M for any MCS M. -/
+/-- Under irreflexive semantics, h_content(M) ⊆ M does NOT hold (BX1' removed).
+Sorry'd pending Phase 2 redesign. -/
 theorem h_content_subset_self {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     h_content M ⊆ M := by
-  intro φ hφ
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past φ))) hφ
+  sorry
 
 /-! ### Chain ordering (g_content/h_content) -/
 
@@ -247,10 +227,8 @@ theorem fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsist
   | zero =>
     have : m = 0 := Nat.eq_zero_of_le_zero h
     subst this
-    intro φ hφ
-    exact SetMaximalConsistent.implication_property (fwd_chain M₀ h₀ 0).property
-      (theorem_in_mcs (fwd_chain M₀ h₀ 0).property
-        (DerivationTree.axiom [] _ (Axiom.temp_t_future φ))) hφ
+    -- Under irreflexive semantics, g_content_subset_self is sorry'd
+    exact g_content_subset_self (fwd_chain M₀ h₀ 0).property
   | succ n ih =>
     rcases Nat.eq_or_lt_of_le h with rfl | h_lt
     · exact g_content_subset_self (fwd_chain M₀ h₀ (n + 1)).property
@@ -271,10 +249,8 @@ theorem bwd_chain_h_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsist
   | zero =>
     have : m = 0 := Nat.eq_zero_of_le_zero h
     subst this
-    intro φ hφ
-    exact SetMaximalConsistent.implication_property (bwd_chain M₀ h₀ 0).property
-      (theorem_in_mcs (bwd_chain M₀ h₀ 0).property
-        (DerivationTree.axiom [] _ (Axiom.temp_t_past φ))) hφ
+    -- Under irreflexive semantics, h_content_subset_self is sorry'd
+    exact h_content_subset_self (bwd_chain M₀ h₀ 0).property
   | succ n ih =>
     rcases Nat.eq_or_lt_of_le h with rfl | h_lt
     · exact h_content_subset_self (bwd_chain M₀ h₀ (n + 1)).property

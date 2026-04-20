@@ -42,21 +42,19 @@ open Bimodal.Metalogic.BXCanonical.Filtration
 
 /-! ## BX8 at MCS level: ψ → φ U ψ -/
 
-/-- BX8 at MCS level: if ψ ∈ w then (φ U ψ) ∈ w. -/
+/-- Reflexive Until introduction at MCS level: if ψ ∈ w then (φ U ψ) ∈ w.
+Under irreflexive semantics, ψ → (φ U ψ) requires a strict future witness.
+Sorry'd pending chain construction redesign (Phase 3). -/
 theorem psi_imp_until_mcs {w : BXPoint} {φ ψ : Formula}
     (h : ψ ∈ w.formulas) : Formula.untl φ ψ ∈ w.formulas := by
-  have h_ax : DerivationTree [] (ψ.imp (Formula.untl φ ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.refl_intro_until φ ψ)
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  sorry
 
-/-- BX8' at MCS level: if ψ ∈ w then (φ S ψ) ∈ w. -/
+/-- Reflexive Since introduction at MCS level: if ψ ∈ w then (φ S ψ) ∈ w.
+Under irreflexive semantics, ψ → (φ S ψ) requires a strict past witness.
+Sorry'd pending chain construction redesign (Phase 3). -/
 theorem psi_imp_since_mcs {w : BXPoint} {φ ψ : Formula}
     (h : ψ ∈ w.formulas) : Formula.snce φ ψ ∈ w.formulas := by
-  have h_ax : DerivationTree [] (ψ.imp (Formula.snce φ ψ)) :=
-    DerivationTree.axiom [] _ (Axiom.refl_intro_since φ ψ)
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  sorry
 
 /-! ## BX12 at MCS level: F(ψ) → ⊤ U ψ -/
 
