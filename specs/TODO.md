@@ -12,9 +12,9 @@ task_counts:
   abandoned: 69
   total: 853
 technical_debt:
-  sorry_count: 140
-  sorry_count_note: "Audited 2026-04-12: 140 non-Boneyard (1 active-path at BXCanonical/Completeness.lean:154), 171 Boneyard (includes 107 archived by task 94). Soundness and Decidability are sorry-free."
-  publication_path_sorries: 1
+  sorry_count: 129
+  sorry_count_note: "Audited 2026-04-20: 129 non-Boneyard, 11 active-path in CanonicalModel.lean (6) + RootScopedChain.lean (5), 4 genuinely false/unprovable. 171 Boneyard (includes 107 archived by task 94). Soundness and Decidability are sorry-free."
+  publication_path_sorries: 11
   axiom_count: 0
   axiom_count_note: "Zero custom axioms. discrete_Icc_finite_axiom eliminated. f_nesting_boundary/p_nesting_boundary eliminated in task 56."
   build_errors: 0
