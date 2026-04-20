@@ -448,7 +448,7 @@ theorem modal_fix_subset_mcs {M₀ : Set Formula} (h₀ : SetMaximalConsistent M
 /-! ## Round-Robin Infrastructure (archived)
 
 The round-robin chain approach (`rr_fwd_seed`, `rr_fwd_chain`, `enriched_fwd_step`, etc.)
-has been archived to `Boneyard/RoundRobinChain.lean`. It is confirmed dead after 40 rounds
+has been archived to `Boneyard/QuasimodelOracle/RoundRobinChain.lean`. It is confirmed dead after 40 rounds
 of research: the depth-0 base case of `forward_F` is blocked by the BX11 perpetual
 deferral obstruction and cannot be proved with this construction.
 
