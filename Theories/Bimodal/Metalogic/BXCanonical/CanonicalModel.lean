@@ -38,23 +38,6 @@ theorem schedule_surjective_above (ψ : Formula) (k : Nat) :
    Nat.left_le_pair k _,
    by simp [schedule, Nat.unpair_pair, Denumerable.ofNat_encode]⟩
 
-/-! ## F-carry: F-formulas from an MCS -/
-
-/-- The set of F-formulas (some_future χ) that are in M. -/
-def f_carry (M : Set Formula) : Set Formula :=
-  {φ ∈ M | ∃ χ, φ = Formula.some_future χ}
-
-theorem f_carry_subset (M : Set Formula) : f_carry M ⊆ M :=
-  fun _ h => h.1
-
-/-- The enriched non-resolving seed: g_content(M) ∪ f_carry(M) consistent.
-Under irreflexive semantics, g_content(M) ⊆ M does not follow from BX1.
-Consistency needs to be proved via seriality + MCS properties.
-Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
-theorem enriched_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
-    SetConsistent (g_content M ∪ f_carry M) := by
-  sorry
-
 /-! ## Forward Step -/
 
 /-- Build a successor MCS containing g_content(M). If F(ψ) ∈ M, also contains ψ.
@@ -91,29 +74,6 @@ theorem fwd_succ_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
   exact (set_lindenbaum (forward_temporal_witness_seed M ψ)
     (forward_temporal_witness_seed_consistent M h_mcs ψ h_F)).choose_spec.1
     (Set.mem_union_left _ (Set.mem_singleton ψ))
-
-/-- Under irreflexive semantics, f_carry is NOT preserved at non-resolving steps.
-The non-resolving branch only seeds with g_content(M).
-Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
-theorem fwd_succ_f_carry (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
-    (h_not_F : Formula.some_future ψ ∉ M) :
-    f_carry M ⊆ fwd_succ M h_mcs ψ := by
-  sorry
-
-/-! ## P-carry: P-formulas from an MCS -/
-
-/-- The set of P-formulas (some_past χ) that are in M. -/
-def p_carry (M : Set Formula) : Set Formula :=
-  {φ ∈ M | ∃ χ, φ = Formula.some_past χ}
-
-theorem p_carry_subset (M : Set Formula) : p_carry M ⊆ M :=
-  fun _ h => h.1
-
-/-- The enriched non-resolving seed for backward: h_content(M) ∪ p_carry(M) ⊆ M, hence consistent.
-Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
-theorem enriched_past_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
-    SetConsistent (h_content M ∪ p_carry M) := by
-  sorry
 
 /-! ## Backward Step -/
 
@@ -157,14 +117,6 @@ theorem bwd_pred_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
     (past_temporal_witness_seed_consistent M h_mcs ψ h_P)).choose_spec.1
     (Set.mem_union_left _ (Set.mem_singleton ψ))
 
-/-- Under irreflexive semantics, p_carry is NOT preserved at non-resolving backward steps.
-The non-resolving branch only seeds with h_content(M).
-Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
-theorem bwd_pred_p_carry (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
-    (h_not_P : Formula.some_past ψ ∉ M) :
-    p_carry M ⊆ bwd_pred M h_mcs ψ := by
-  sorry
-
 /-! ## Forward/Backward Chains -/
 
 noncomputable def fwd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
@@ -197,22 +149,6 @@ theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (t
   · exact (fwd_chain M₀ h₀ t.toNat).property
   · exact (bwd_chain M₀ h₀ ((-t).toNat)).property
 
-/-! ### g_content/h_content reflexivity under BX T-axioms -/
-
-/-- Under irreflexive semantics, g_content(M) ⊆ M does NOT hold in general (BX1 removed).
-Sorry'd: this is the reflexive base case of fwd/bwd_chain_g/h_content_trans.
-Phase 2 of the implementation plan changes FMCS to strict ordering, eliminating this reflexive case. -/
-theorem g_content_subset_self {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
-    g_content M ⊆ M := by
-  sorry
-
-/-- Under irreflexive semantics, h_content(M) ⊆ M does NOT hold in general (BX1' removed).
-Sorry'd: this is the reflexive base case of bwd_chain_h_content_trans.
-Phase 2 of the implementation plan changes FMCS to strict ordering, eliminating this reflexive case. -/
-theorem h_content_subset_self {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
-    h_content M ⊆ M := by
-  sorry
-
 /-! ### Chain ordering (g_content/h_content) -/
 
 theorem fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (n : Nat) :
@@ -221,21 +157,19 @@ theorem fwd_chain_g_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsiste
     (fwd_succ (fwd_chain M₀ h₀ n).val (fwd_chain M₀ h₀ n).property (schedule n))
   exact fwd_succ_g_content _ _ _
 
+/-- g_content transits strictly: m < n → g_content(chain(m)) ⊆ chain(n).
+Under strict FMCS ordering, only strictly future propagation is needed. -/
 theorem fwd_chain_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    {m n : Nat} (h : m ≤ n) :
+    {m n : Nat} (h : m < n) :
     g_content (fwd_chain M₀ h₀ m).val ⊆ (fwd_chain M₀ h₀ n).val := by
   induction n with
-  | zero =>
-    have : m = 0 := Nat.eq_zero_of_le_zero h
-    subst this
-    -- Under irreflexive semantics, g_content_subset_self is sorry'd
-    exact g_content_subset_self (fwd_chain M₀ h₀ 0).property
+  | zero => exact absurd h (Nat.not_lt_zero m)
   | succ n ih =>
-    rcases Nat.eq_or_lt_of_le h with rfl | h_lt
-    · exact g_content_subset_self (fwd_chain M₀ h₀ (n + 1)).property
+    rcases Nat.eq_or_lt_of_le (Nat.lt_succ_iff.mp h) with rfl | h_lt
+    · exact fwd_chain_g_content_step M₀ h₀ m
     · intro φ hφ
       have h_GG := SetMaximalConsistent.all_future_all_future (fwd_chain M₀ h₀ m).property hφ
-      exact fwd_chain_g_content_step M₀ h₀ n (ih (Nat.lt_succ_iff.mp h_lt) h_GG)
+      exact fwd_chain_g_content_step M₀ h₀ n (ih h_lt h_GG)
 
 theorem bwd_chain_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (n : Nat) :
     h_content (bwd_chain M₀ h₀ n).val ⊆ (bwd_chain M₀ h₀ (n + 1)).val := by
@@ -243,118 +177,96 @@ theorem bwd_chain_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsiste
     (bwd_pred (bwd_chain M₀ h₀ n).val (bwd_chain M₀ h₀ n).property (schedule n))
   exact bwd_pred_h_content _ _ _
 
+/-- h_content transits strictly: m < n → h_content(chain(m)) ⊆ chain(n).
+Under strict FMCS ordering, only strictly past propagation is needed. -/
 theorem bwd_chain_h_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    {m n : Nat} (h : m ≤ n) :
+    {m n : Nat} (h : m < n) :
     h_content (bwd_chain M₀ h₀ m).val ⊆ (bwd_chain M₀ h₀ n).val := by
   induction n with
-  | zero =>
-    have : m = 0 := Nat.eq_zero_of_le_zero h
-    subst this
-    -- Under irreflexive semantics, h_content_subset_self is sorry'd
-    exact h_content_subset_self (bwd_chain M₀ h₀ 0).property
+  | zero => exact absurd h (Nat.not_lt_zero m)
   | succ n ih =>
-    rcases Nat.eq_or_lt_of_le h with rfl | h_lt
-    · exact h_content_subset_self (bwd_chain M₀ h₀ (n + 1)).property
+    rcases Nat.eq_or_lt_of_le (Nat.lt_succ_iff.mp h) with rfl | h_lt
+    · exact bwd_chain_h_content_step M₀ h₀ m
     · intro φ hφ
       have h_HH := SetMaximalConsistent.all_past_all_past (bwd_chain M₀ h₀ m).property hφ
-      exact bwd_chain_h_content_step M₀ h₀ n (ih (Nat.lt_succ_iff.mp h_lt) h_HH)
+      exact bwd_chain_h_content_step M₀ h₀ n (ih h_lt h_HH)
 
 /-! ### Forward G and Backward H -/
 
-/-- The g_content relationship also gives us reverse h_content. -/
+/-- The g_content relationship also gives us reverse h_content (strict). -/
 theorem fwd_chain_reverse_h (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    {m n : Nat} (h : m ≤ n) :
-    h_content (fwd_chain M₀ h₀ n).val ⊆ (fwd_chain M₀ h₀ m).val := by
-  -- g_content(chain(m)) ⊆ chain(n) implies h_content(chain(n)) ⊆ chain(m)
-  exact g_content_subset_implies_h_content_reverse
+    {m n : Nat} (h : m < n) :
+    h_content (fwd_chain M₀ h₀ n).val ⊆ (fwd_chain M₀ h₀ m).val :=
+  g_content_subset_implies_h_content_reverse
     (fwd_chain M₀ h₀ m).val (fwd_chain M₀ h₀ n).val
     (fwd_chain M₀ h₀ m).property (fwd_chain M₀ h₀ n).property
     (fwd_chain_g_content_trans M₀ h₀ h)
 
-/-- Reverse: h_content along bwd_chain gives g_content in reverse. -/
+/-- Reverse: h_content along bwd_chain gives g_content in reverse (strict). -/
 theorem bwd_chain_reverse_g (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    {m n : Nat} (h : m ≤ n) :
-    g_content (bwd_chain M₀ h₀ n).val ⊆ (bwd_chain M₀ h₀ m).val := by
-  exact h_content_subset_implies_g_content_reverse
+    {m n : Nat} (h : m < n) :
+    g_content (bwd_chain M₀ h₀ n).val ⊆ (bwd_chain M₀ h₀ m).val :=
+  h_content_subset_implies_g_content_reverse
     (bwd_chain M₀ h₀ m).val (bwd_chain M₀ h₀ n).val
     (bwd_chain M₀ h₀ m).property (bwd_chain M₀ h₀ n).property
     (bwd_chain_h_content_trans M₀ h₀ h)
 
-/-- g_content propagation across the full Int chain. -/
+/-- g_content propagation across the full Int chain (strict). -/
 theorem int_chain_g_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    {t t' : Int} (h_le : t ≤ t') :
+    {t t' : Int} (h_lt : t < t') :
     g_content (int_chain M₀ h₀ t) ⊆ int_chain M₀ h₀ t' := by
   simp only [int_chain]
   split_ifs with ht ht'
-  · -- t ≥ 0, t' ≥ 0
-    exact fwd_chain_g_content_trans M₀ h₀ (Int.toNat_le_toNat h_le)
+  · -- t ≥ 0, t' ≥ 0: use fwd_chain_g_content_trans (strict)
+    exact fwd_chain_g_content_trans M₀ h₀ (by omega)
   · -- t ≥ 0, t' < 0: impossible
     omega
-  · -- t < 0, t' ≥ 0: go through chain(0) = M₀
-    -- g_content(bwd(-t)) ⊆ bwd(0) = M₀ = fwd(0) ⊆ fwd(t')
-    -- g_content(bwd(-t)) ⊆ bwd(0) is bwd_chain_reverse_g with 0 ≤ (-t).toNat
+  · -- t < 0, t' ≥ 0: go through M₀
+    -- hχ : χ ∈ g_content(bwd(-t)), so G(χ) ∈ bwd(-t).
+    -- G(G(χ)) ∈ bwd(-t) via temp_4, then bwd_chain_reverse_g: G(χ) ∈ bwd(0) = M₀.
+    -- For t' > 0: G(χ) ∈ fwd(0), use fwd_chain_g_content_trans.
+    -- For t' = 0: χ ∈ g_content(bwd(-t)) and bwd_chain_reverse_g: χ ∈ bwd(0) = M₀ = fwd(0).
     intro χ hχ
-    have h1 : χ ∈ (bwd_chain M₀ h₀ 0).val :=
-      bwd_chain_reverse_g M₀ h₀ (Nat.zero_le _) hχ
-    simp [bwd_chain] at h1
-    -- Now χ ∈ M₀ = fwd_chain(0)
-    have h2 : χ ∈ (fwd_chain M₀ h₀ 0).val := by simp [fwd_chain]; exact h1
-    -- Propagate from fwd(0) to fwd(t'.toNat)
-    -- We need g_content(fwd(0)) ⊆ fwd(t'.toNat), but we only have χ ∈ fwd(0)
-    -- Actually, we need G(χ) ∈ chain(t), which gives G(χ) ∈ bwd(-t)
-    -- then G(G(χ)) ∈ bwd(-t) via temp_4, then G(χ) ∈ bwd(0)
-    -- Actually this is subtler. Let me use the fact that g_content means G(χ) ∈ chain(t).
-    -- So G(χ) ∈ bwd(-t). By bwd_chain_reverse_g: G(χ) ∈ bwd(0) = M₀.
-    -- So G(χ) ∈ fwd(0) = M₀, which means χ ∈ g_content(fwd(0)) ⊆ fwd(t'.toNat).
-    -- Wait, G(χ) ∈ fwd(0) means χ ∈ g_content(fwd(0)), and fwd_chain_g_content_trans
-    -- gives g_content(fwd(0)) ⊆ fwd(t'.toNat).
-    -- But we derived χ ∈ M₀ = fwd(0), not G(χ) ∈ M₀.
-    -- The issue: bwd_chain_reverse_g gives g_content(bwd(-t)) ⊆ bwd(0).
-    -- hχ says G(χ) ∈ bwd(-t) (since hχ ∈ g_content(int_chain t) and int_chain t = bwd(-t))
-    -- Wait, no. hχ is in g_content of the set, not the set itself.
-    -- g_content(bwd(-t)) means {ψ | G(ψ) ∈ bwd(-t)}. So hχ : G(χ) ∈ bwd(-t).
-    -- bwd_chain_reverse_g gives g_content(bwd(-t)) ⊆ bwd(0), so χ ∈ bwd(0) = M₀.
-    -- But we need χ ∈ fwd(t'.toNat). We have χ ∈ M₀ = fwd(0).
-    -- For χ to propagate: we need G(χ) ∈ fwd(0), i.e., G(χ) ∈ M₀.
-    -- We have G(χ) ∈ bwd(-t) and need G(χ) ∈ bwd(0) = M₀.
-    -- bwd_chain_reverse_g gives g_content(bwd(-t)) ⊆ bwd(0).
-    -- So if G(G(χ)) ∈ bwd(-t), then G(χ) ∈ bwd(0) = M₀.
-    -- G(G(χ)) ∈ bwd(-t) follows from G(χ) ∈ bwd(-t) via temp_4 (G → GG).
-    -- Then G(χ) ∈ M₀ = fwd(0), so χ ∈ g_content(fwd(0)) ⊆ fwd(t'.toNat).
     have h_Gchi_in_bwd : Formula.all_future χ ∈ (bwd_chain M₀ h₀ ((-t).toNat)).val := hχ
-    have h_GGchi := SetMaximalConsistent.all_future_all_future
-      (bwd_chain M₀ h₀ ((-t).toNat)).property h_Gchi_in_bwd
-    have h_Gchi_in_M0 : Formula.all_future χ ∈ M₀ :=
-      bwd_chain_reverse_g M₀ h₀ (Nat.zero_le _) h_GGchi
-    -- Now G(χ) ∈ fwd(0) = M₀, so χ ∈ g_content(fwd(0))
-    exact fwd_chain_g_content_trans M₀ h₀ (Nat.zero_le _) h_Gchi_in_M0
-  · -- t < 0, t' < 0: bwd_chain_reverse_g
-    -- Need g_content(bwd(-t)) ⊆ bwd(-t')
-    -- We have (-t').toNat ≤ (-t).toNat (since t ≤ t' < 0 means -t ≥ -t' > 0)
+    rcases Nat.eq_zero_or_pos t'.toNat with h_zero | h_pos
+    · -- t' = 0: χ ∈ bwd(0) = M₀ = fwd(0)
+      have h_chi_in_bwd0 : χ ∈ (bwd_chain M₀ h₀ 0).val :=
+        bwd_chain_reverse_g M₀ h₀ (by omega) hχ
+      simp only [bwd_chain] at h_chi_in_bwd0
+      simp only [h_zero, fwd_chain]
+      exact h_chi_in_bwd0
+    · -- t' > 0: G(χ) ∈ M₀, use fwd_chain_g_content_trans
+      have h_GGchi := SetMaximalConsistent.all_future_all_future
+        (bwd_chain M₀ h₀ ((-t).toNat)).property h_Gchi_in_bwd
+      have h_Gchi_in_bwd0 : Formula.all_future χ ∈ (bwd_chain M₀ h₀ 0).val :=
+        bwd_chain_reverse_g M₀ h₀ (by omega) h_GGchi
+      simp only [bwd_chain] at h_Gchi_in_bwd0
+      -- h_Gchi_in_bwd0 : G(χ) ∈ M₀ = fwd_chain(0)
+      exact fwd_chain_g_content_trans M₀ h₀ h_pos h_Gchi_in_bwd0
+  · -- t < 0, t' < 0: bwd_chain_reverse_g (strict)
+    -- Since t < t' < 0: (-t').toNat < (-t).toNat
     exact bwd_chain_reverse_g M₀ h₀ (by omega)
 
 theorem int_chain_forward_G (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (t t' : Int) (φ : Formula) (h_le : t ≤ t')
+    (t t' : Int) (φ : Formula) (h_lt : t < t')
     (h_G : Formula.all_future φ ∈ int_chain M₀ h₀ t) :
     φ ∈ int_chain M₀ h₀ t' :=
-  int_chain_g_content M₀ h₀ h_le h_G
+  int_chain_g_content M₀ h₀ h_lt h_G
 
-/-- h_content propagation across the full Int chain (reverse direction). -/
+/-- h_content propagation across the full Int chain (reverse direction, strict). -/
 theorem int_chain_h_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    {t t' : Int} (h_le : t ≤ t') :
-    h_content (int_chain M₀ h₀ t') ⊆ int_chain M₀ h₀ t := by
-  -- h_content(chain(t')) ⊆ chain(t) follows from g_content(chain(t)) ⊆ chain(t')
-  -- via the duality: g_content_subset_implies_h_content_reverse
-  exact g_content_subset_implies_h_content_reverse
+    {t t' : Int} (h_lt : t < t') :
+    h_content (int_chain M₀ h₀ t') ⊆ int_chain M₀ h₀ t :=
+  g_content_subset_implies_h_content_reverse
     (int_chain M₀ h₀ t) (int_chain M₀ h₀ t')
     (int_chain_mcs M₀ h₀ t) (int_chain_mcs M₀ h₀ t')
-    (int_chain_g_content M₀ h₀ h_le)
+    (int_chain_g_content M₀ h₀ h_lt)
 
 theorem int_chain_backward_H (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (t t' : Int) (φ : Formula) (h_le : t' ≤ t)
+    (t t' : Int) (φ : Formula) (h_lt : t' < t)
     (h_H : Formula.all_past φ ∈ int_chain M₀ h₀ t) :
     φ ∈ int_chain M₀ h₀ t' :=
-  int_chain_h_content M₀ h₀ h_le h_H
+  int_chain_h_content M₀ h₀ h_lt h_H
 
 /-! ## FMCS -/
 
@@ -379,8 +291,8 @@ noncomputable def shifted_bx_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsist
     (s : Int) : FMCS Int where
   mcs t := int_chain M₀ h₀ (t - s)
   is_mcs t := int_chain_mcs M₀ h₀ (t - s)
-  forward_G t t' φ h_le h_G := int_chain_forward_G M₀ h₀ (t - s) (t' - s) φ (by omega) h_G
-  backward_H t t' φ h_le h_H := int_chain_backward_H M₀ h₀ (t - s) (t' - s) φ (by omega) h_H
+  forward_G t t' φ h_lt h_G := int_chain_forward_G M₀ h₀ (t - s) (t' - s) φ (by omega) h_G
+  backward_H t t' φ h_lt h_H := int_chain_backward_H M₀ h₀ (t - s) (t' - s) φ (by omega) h_H
 
 theorem shifted_bx_fmcs_at_s (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (s : Int) :
     (shifted_bx_fmcs M₀ h₀ s).mcs s = M₀ := by
@@ -414,12 +326,14 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
         (theorem_in_mcs h₀ (neg_box_to_box_neg_box φ)) h_neg_box_M0
     -- Propagate Box(¬(Box φ)) to chain(t)
     have h_box_neg_t : Formula.box (Formula.box φ).neg ∈ int_chain M₀ h₀ t := by
-      rcases le_or_gt 0 t with h_pos | h_neg
-      · -- t ≥ 0: use G propagation
+      rcases lt_trichotomy 0 t with h_pos | rfl | h_neg
+      · -- t > 0: use G propagation
         have h_G := SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.temp_future (Formula.box φ).neg)))
           h_box_neg
         exact int_chain_forward_G M₀ h₀ 0 t (Formula.box (Formula.box φ).neg) h_pos h_G
+      · -- t = 0: chain(0) = M₀
+        rw [int_chain_zero]; exact h_box_neg
       · -- t < 0: use H propagation (Box → Box Box → H Box via modal_4 + box_to_past)
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ M₀ :=
           SetMaximalConsistent.implication_property h₀
@@ -427,7 +341,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
             h_box_neg
         have h_H := SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (box_to_past (Formula.box (Formula.box φ).neg))) h_box_box_neg
-        exact int_chain_backward_H M₀ h₀ 0 t (Formula.box (Formula.box φ).neg) (Int.le_of_lt h_neg) h_H
+        exact int_chain_backward_H M₀ h₀ 0 t (Formula.box (Formula.box φ).neg) h_neg h_H
     -- Box(¬(Box φ)) ∈ chain(t), so ¬(Box φ) ∈ chain(t) by modal_t
     have h_neg_box_t : (Formula.box φ).neg ∈ int_chain M₀ h₀ t :=
       SetMaximalConsistent.implication_property (int_chain_mcs M₀ h₀ t)
@@ -438,38 +352,25 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
     exact set_consistent_not_both (int_chain_mcs M₀ h₀ t).1 (Formula.box φ) h_box_t h_neg_box_t
   · -- Forward: Box φ ∈ M₀ → Box φ ∈ chain(t)
     intro h_box_M0
-    rcases le_or_gt 0 t with h_pos | h_neg
-    · -- t ≥ 0: use G propagation (temp_future: □φ → G(□φ))
+    rcases lt_trichotomy 0 t with h_pos | rfl | h_neg
+    · -- t > 0: use G propagation (temp_future: □φ → G(□φ))
       have h_G := SetMaximalConsistent.implication_property h₀
         (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.temp_future φ))) h_box_M0
       exact int_chain_forward_G M₀ h₀ 0 t (Formula.box φ) h_pos h_G
+    · -- t = 0: chain(0) = M₀
+      rw [int_chain_zero]; exact h_box_M0
     · -- t < 0: use H propagation (modal_4: □φ → □□φ, box_to_past: □(□φ) → H(□φ))
       have h_box_box : Formula.box (Formula.box φ) ∈ M₀ :=
         SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box_M0
       have h_H := SetMaximalConsistent.implication_property h₀
         (theorem_in_mcs h₀ (box_to_past (Formula.box φ))) h_box_box
-      exact int_chain_backward_H M₀ h₀ 0 t (Formula.box φ) (Int.le_of_lt h_neg) h_H
+      exact int_chain_backward_H M₀ h₀ 0 t (Formula.box φ) h_neg h_H
 
 /-- Box stability for shifted FMCS: Box φ ∈ (shifted_bx_fmcs M₀ h₀ s).mcs t ↔ Box φ ∈ M₀. -/
 theorem box_stable_in_shifted_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (φ : Formula) (s t : Int) :
     Formula.box φ ∈ (shifted_bx_fmcs M₀ h₀ s).mcs t ↔ Formula.box φ ∈ M₀ :=
   box_stable_in_int_chain M₀ h₀ φ (t - s)
-
-/-! ## Dead Code Removed
-
-The following definitions and theorems were removed as dead code (not on the active
-completeness path, which uses `dd_countermodel` in RootScopedChain.lean):
-
-- `bx_fmcs_forward_F`, `bx_fmcs_backward_P` — unprovable for scheduling chain
-- `bx_bfmcs` — BFMCS construction using old `int_chain`
-- `bx_bfmcs_tc`, `bx_bfmcs_buc`, `bx_bfmcs_fuc` — unrestricted coherence (had sorry)
-- `bx_bfmcs_restricted_tc/buc/fuc` — restricted coherence (had sorry, delegated to above)
-- `bx_countermodel` — superseded by `dd_countermodel` in RootScopedChain.lean
-
-The active completeness path is:
-  `bx_completeness` (Completeness.lean) → `dd_countermodel` (RootScopedChain.lean)
--/
 
 end Bimodal.Metalogic.BXCanonical

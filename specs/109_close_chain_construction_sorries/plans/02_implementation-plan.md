@@ -101,7 +101,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Dead Code Cleanup [NOT STARTED]
+### Phase 1: Dead Code Cleanup [COMPLETED]
 
 **Goal**: Delete 4 dead-code sorries (#1-#4) from CanonicalModel.lean and archive to Boneyard/. Update ROADMAP.md.
 
@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: FMCS Strict Ordering [NOT STARTED]
+### Phase 2: FMCS Strict Ordering [COMPLETED]
 
 **Goal**: Change `FMCS.forward_G` and `FMCS.backward_H` from `<=` to `<` (strict), eliminating the need for `g_content_subset_self` (#5) and `h_content_subset_self` (#6). Update ROADMAP.md.
 

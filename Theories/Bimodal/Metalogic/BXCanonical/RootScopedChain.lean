@@ -620,24 +620,21 @@ private theorem sigma_fwd_g_content_step (M₀ : Set Formula) (h₀ : SetMaximal
       (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).val :=
   preserving_fwd_step_g_content _ _ _ _
 
--- Transitive g_content propagation for fwd_chain_of_sigma
+-- Transitive g_content propagation for fwd_chain_of_sigma (strict)
 private theorem sigma_fwd_g_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (sigma_list : List Formula) {m n : Nat} (h : m ≤ n) :
+    (sigma_list : List Formula) {m n : Nat} (h : m < n) :
     g_content (fwd_chain_of_sigma M₀ h₀ sigma_list m).val ⊆
       (fwd_chain_of_sigma M₀ h₀ sigma_list n).val := by
   induction n with
-  | zero =>
-    have : m = 0 := Nat.eq_zero_of_le_zero h; subst this
-    -- Under irreflexive semantics, g_content_subset_self is sorry'd
-    exact g_content_subset_self (fwd_chain_of_sigma M₀ h₀ sigma_list 0).property
+  | zero => exact absurd h (Nat.not_lt_zero m)
   | succ n ih =>
-    rcases Nat.eq_or_lt_of_le h with rfl | h_lt
-    · exact g_content_subset_self (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
+    rcases Nat.eq_or_lt_of_le (Nat.lt_succ_iff.mp h) with rfl | h_lt
+    · exact sigma_fwd_g_content_step M₀ h₀ sigma_list m
     · intro φ hφ
       have h_GG := SetMaximalConsistent.all_future_all_future
         (fwd_chain_of_sigma M₀ h₀ sigma_list m).property hφ
       exact sigma_fwd_g_content_step M₀ h₀ sigma_list n
-        (ih (Nat.lt_succ_iff.mp h_lt) h_GG)
+        (ih h_lt h_GG)
 
 -- Backward chain h_content propagation step
 private theorem sigma_bwd_h_content_step (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -650,48 +647,63 @@ private theorem sigma_bwd_h_content_step (M₀ : Set Formula) (h₀ : SetMaximal
   exact bwd_pred_h_content _ _ _
 
 private theorem sigma_bwd_h_content_trans (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (sigma_list : List Formula) {m n : Nat} (h : m ≤ n) :
+    (sigma_list : List Formula) {m n : Nat} (h : m < n) :
     h_content (bwd_chain_of_sigma M₀ h₀ sigma_list m).val ⊆
       (bwd_chain_of_sigma M₀ h₀ sigma_list n).val := by
   induction n with
-  | zero =>
-    have : m = 0 := Nat.eq_zero_of_le_zero h; subst this
-    -- Under irreflexive semantics, h_content_subset_self is sorry'd
-    exact h_content_subset_self (bwd_chain_of_sigma M₀ h₀ sigma_list 0).property
+  | zero => exact absurd h (Nat.not_lt_zero m)
   | succ n ih =>
-    rcases Nat.eq_or_lt_of_le h with rfl | h_lt
-    · exact h_content_subset_self (bwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).property
+    rcases Nat.eq_or_lt_of_le (Nat.lt_succ_iff.mp h) with rfl | h_lt
+    · exact sigma_bwd_h_content_step M₀ h₀ sigma_list m
     · intro φ hφ
       have h_HH := SetMaximalConsistent.all_past_all_past
         (bwd_chain_of_sigma M₀ h₀ sigma_list m).property hφ
       exact sigma_bwd_h_content_step M₀ h₀ sigma_list n
-        (ih (Nat.lt_succ_iff.mp h_lt) h_HH)
+        (ih h_lt h_HH)
 
--- Full Int-indexed g_content propagation
+-- Full Int-indexed g_content propagation (strict)
 theorem dd_chain_g_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (sigma_list : List Formula) {t t' : Int} (h_le : t ≤ t') :
+    (sigma_list : List Formula) {t t' : Int} (h_lt : t < t') :
     g_content (dd_chain M₀ h₀ sigma_list t) ⊆ dd_chain M₀ h₀ sigma_list t' := by
   simp only [dd_chain]
   split_ifs with ht ht'
-  · exact sigma_fwd_g_content_trans M₀ h₀ sigma_list (Int.toNat_le_toNat h_le)
+  · -- t ≥ 0, t' ≥ 0: strict forward propagation
+    exact sigma_fwd_g_content_trans M₀ h₀ sigma_list (by omega)
   · omega
-  · intro χ hχ
-    have h_G_in_bwd := hχ
+  · -- t < 0, t' ≥ 0: go through M₀
+    intro χ hχ
     have h_GG := SetMaximalConsistent.all_future_all_future
-      (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).property h_G_in_bwd
-    have h_G_in_M0 : Formula.all_future χ ∈ M₀ := by
-      have : g_content (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).val ⊆
-          (bwd_chain_of_sigma M₀ h₀ sigma_list 0).val :=
-        h_content_subset_implies_g_content_reverse
-          (bwd_chain_of_sigma M₀ h₀ sigma_list 0).val
-          (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).val
-          (bwd_chain_of_sigma M₀ h₀ sigma_list 0).property
-          (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).property
-          (sigma_bwd_h_content_trans M₀ h₀ sigma_list (Nat.zero_le _))
-      simp [bwd_chain_of_sigma] at this
-      exact this h_GG
-    exact sigma_fwd_g_content_trans M₀ h₀ sigma_list (Nat.zero_le _) h_G_in_M0
-  · exact (h_content_subset_implies_g_content_reverse
+      (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).property hχ
+    rcases Nat.eq_zero_or_pos t'.toNat with h_zero | h_pos
+    · -- t' = 0: χ ∈ bwd(0) = M₀ = fwd(0)
+      have h_chi_bwd0 : χ ∈ (bwd_chain_of_sigma M₀ h₀ sigma_list 0).val := by
+        have : g_content (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).val ⊆
+            (bwd_chain_of_sigma M₀ h₀ sigma_list 0).val := by
+          exact h_content_subset_implies_g_content_reverse
+              (bwd_chain_of_sigma M₀ h₀ sigma_list 0).val
+              (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).val
+              (bwd_chain_of_sigma M₀ h₀ sigma_list 0).property
+              (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).property
+              (sigma_bwd_h_content_trans M₀ h₀ sigma_list (by omega))
+        exact this hχ
+      simp only [h_zero, fwd_chain_of_sigma]
+      simp [bwd_chain_of_sigma] at h_chi_bwd0
+      exact h_chi_bwd0
+    · -- t' > 0: G(χ) ∈ M₀, use sigma_fwd_g_content_trans
+      have h_G_in_M0 : Formula.all_future χ ∈ M₀ := by
+        have : g_content (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).val ⊆
+            (bwd_chain_of_sigma M₀ h₀ sigma_list 0).val := by
+          exact h_content_subset_implies_g_content_reverse
+              (bwd_chain_of_sigma M₀ h₀ sigma_list 0).val
+              (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).val
+              (bwd_chain_of_sigma M₀ h₀ sigma_list 0).property
+              (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).property
+              (sigma_bwd_h_content_trans M₀ h₀ sigma_list (by omega))
+        simp [bwd_chain_of_sigma] at this
+        exact this h_GG
+      exact sigma_fwd_g_content_trans M₀ h₀ sigma_list h_pos h_G_in_M0
+  · -- t < 0, t' < 0: strict backward propagation
+    exact (h_content_subset_implies_g_content_reverse
       (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t').toNat)).val
       (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t).toNat)).val
       (bwd_chain_of_sigma M₀ h₀ sigma_list ((-t').toNat)).property
@@ -701,19 +713,19 @@ theorem dd_chain_g_content (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
 /-! ## Box stability (same as box_stable_in_int_chain) -/
 
 private theorem dd_chain_forward_G_helper (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (sigma_list : List Formula) (t t' : Int) (φ : Formula) (h_le : t ≤ t')
+    (sigma_list : List Formula) (t t' : Int) (φ : Formula) (h_lt : t < t')
     (h_G : Formula.all_future φ ∈ dd_chain M₀ h₀ sigma_list t) :
     φ ∈ dd_chain M₀ h₀ sigma_list t' :=
-  dd_chain_g_content M₀ h₀ sigma_list h_le h_G
+  dd_chain_g_content M₀ h₀ sigma_list h_lt h_G
 
 private theorem dd_chain_backward_H_helper (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
-    (sigma_list : List Formula) (t t' : Int) (φ : Formula) (h_le : t' ≤ t)
+    (sigma_list : List Formula) (t t' : Int) (φ : Formula) (h_lt : t' < t)
     (h_H : Formula.all_past φ ∈ dd_chain M₀ h₀ sigma_list t) :
     φ ∈ dd_chain M₀ h₀ sigma_list t' :=
   g_content_subset_implies_h_content_reverse
     (dd_chain M₀ h₀ sigma_list t') (dd_chain M₀ h₀ sigma_list t)
     (dd_chain_mcs M₀ h₀ sigma_list t') (dd_chain_mcs M₀ h₀ sigma_list t)
-    (dd_chain_g_content M₀ h₀ sigma_list h_le) h_H
+    (dd_chain_g_content M₀ h₀ sigma_list h_lt) h_H
 
 theorem box_stable_dd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (φ : Formula) (t : Int) :
@@ -730,18 +742,19 @@ theorem box_stable_dd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
       SetMaximalConsistent.implication_property h₀
         (theorem_in_mcs h₀ (neg_box_to_box_neg_box φ)) h_neg_box_M0
     have h_box_neg_t : Formula.box (Formula.box φ).neg ∈ dd_chain M₀ h₀ sigma_list t := by
-      rcases le_or_gt 0 t with h_pos | h_neg
+      rcases lt_trichotomy 0 t with h_pos | rfl | h_neg
       · have h_G := SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.temp_future (Formula.box φ).neg)))
           h_box_neg
         exact dd_chain_forward_G_helper M₀ h₀ sigma_list 0 t _ h_pos h_G
+      · simp [dd_chain, fwd_chain_of_sigma]; exact h_box_neg
       · have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ M₀ :=
           SetMaximalConsistent.implication_property h₀
             (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)))
             h_box_neg
         have h_H := SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (box_to_past (Formula.box (Formula.box φ).neg))) h_box_box_neg
-        exact dd_chain_backward_H_helper M₀ h₀ sigma_list 0 t _ (Int.le_of_lt h_neg) h_H
+        exact dd_chain_backward_H_helper M₀ h₀ sigma_list 0 t _ h_neg h_H
     have h_neg_box_t : (Formula.box φ).neg ∈ dd_chain M₀ h₀ sigma_list t :=
       SetMaximalConsistent.implication_property (dd_chain_mcs M₀ h₀ sigma_list t)
         (theorem_in_mcs (dd_chain_mcs M₀ h₀ sigma_list t)
@@ -751,16 +764,17 @@ theorem box_stable_dd_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M�
       (Formula.box φ) h_box_t h_neg_box_t
   · -- Forward: Box φ ∈ M₀ → Box φ ∈ chain(t)
     intro h_box_M0
-    rcases le_or_gt 0 t with h_pos | h_neg
+    rcases lt_trichotomy 0 t with h_pos | rfl | h_neg
     · have h_G := SetMaximalConsistent.implication_property h₀
         (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.temp_future φ))) h_box_M0
       exact dd_chain_forward_G_helper M₀ h₀ sigma_list 0 t _ h_pos h_G
+    · simp [dd_chain, fwd_chain_of_sigma]; exact h_box_M0
     · have h_box_box : Formula.box (Formula.box φ) ∈ M₀ :=
         SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box_M0
       have h_H := SetMaximalConsistent.implication_property h₀
         (theorem_in_mcs h₀ (box_to_past (Formula.box φ))) h_box_box
-      exact dd_chain_backward_H_helper M₀ h₀ sigma_list 0 t _ (Int.le_of_lt h_neg) h_H
+      exact dd_chain_backward_H_helper M₀ h₀ sigma_list 0 t _ h_neg h_H
 
 /-! ## FMCS from dd_chain -/
 
@@ -768,25 +782,25 @@ noncomputable def dd_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀
     (sigma_list : List Formula) : FMCS Int where
   mcs := dd_chain M₀ h₀ sigma_list
   is_mcs := dd_chain_mcs M₀ h₀ sigma_list
-  forward_G t t' φ h_le h_G := dd_chain_g_content M₀ h₀ sigma_list h_le h_G
-  backward_H t t' φ h_le h_H :=
+  forward_G t t' φ h_lt h_G := dd_chain_g_content M₀ h₀ sigma_list h_lt h_G
+  backward_H t t' φ h_lt h_H :=
     g_content_subset_implies_h_content_reverse
       (dd_chain M₀ h₀ sigma_list t') (dd_chain M₀ h₀ sigma_list t)
       (dd_chain_mcs M₀ h₀ sigma_list t') (dd_chain_mcs M₀ h₀ sigma_list t)
-      (dd_chain_g_content M₀ h₀ sigma_list h_le) h_H
+      (dd_chain_g_content M₀ h₀ sigma_list h_lt) h_H
 
 /-- Shifted dd_fmcs. -/
 noncomputable def shifted_dd_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (s : Int) : FMCS Int where
   mcs t := dd_chain M₀ h₀ sigma_list (t - s)
   is_mcs t := dd_chain_mcs M₀ h₀ sigma_list (t - s)
-  forward_G t t' φ h_le h_G :=
-    dd_chain_g_content M₀ h₀ sigma_list (by omega : t - s ≤ t' - s) h_G
-  backward_H t t' φ h_le h_H :=
+  forward_G t t' φ h_lt h_G :=
+    dd_chain_g_content M₀ h₀ sigma_list (by omega : t - s < t' - s) h_G
+  backward_H t t' φ h_lt h_H :=
     g_content_subset_implies_h_content_reverse
       (dd_chain M₀ h₀ sigma_list (t' - s)) (dd_chain M₀ h₀ sigma_list (t - s))
       (dd_chain_mcs M₀ h₀ sigma_list (t' - s)) (dd_chain_mcs M₀ h₀ sigma_list (t - s))
-      (dd_chain_g_content M₀ h₀ sigma_list (by omega : t' - s ≤ t - s)) h_H
+      (dd_chain_g_content M₀ h₀ sigma_list (by omega : t' - s < t - s)) h_H
 
 theorem shifted_dd_fmcs_at_s (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (s : Int) :

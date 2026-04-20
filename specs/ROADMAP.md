@@ -14,14 +14,14 @@ completeness path flows through `Theories/Bimodal/Metalogic/BXCanonical/`,
 which constructs a canonical frame of maximally consistent sets ordered by
 `g_content` inclusion.
 
-**Sorry summary**: The BXCanonical module has **23 sorry proofs** across 7 files,
-in three categories:
+**Sorry summary**: The BXCanonical module has **19 sorry proofs** across 7 files,
+in three categories (task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
 | **Critical path** (blocking `bx_completeness`) | 5 | `RootScopedChain.lean` | **OPEN** (task 109) |
-| **Irreflexive-consequence** (BX1 removal artifacts) | 18 | Frame, TruthLemma, CanonicalModel, Construction, Realization, SigmaOrdering | **OPEN** (task 109) |
-| **Total BXCanonical** | **23** | 7 files | |
+| **Irreflexive-consequence** (BX1 removal artifacts) | 14 | Frame, TruthLemma, CanonicalModel, Construction, Realization, SigmaOrdering | **OPEN** (task 109) |
+| **Total BXCanonical** | **19** | 7 files | |
 | Oracle replacement (qm_bfmcs) | 6 | archived to Boneyard/OracleCoherence.lean | **ARCHIVED** (2026-04-18) |
 | Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) |
 
@@ -241,7 +241,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── Frame
   │     └── CanonicalChain
   │
-  ├── CanonicalModel.lean (474 lines, 6 sorries: enriched_seed, f/p_carry, g/h_content_subset)
+  ├── CanonicalModel.lean (~440 lines, 2 sorries: g/h_content_subset; dead-code removed in task 109 Phase 1)
   │     ├── CanonicalChain
   │     ├── TruthLemma
   │     └── Bundle/FMCSDef
@@ -283,7 +283,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
               └── Quasimodel/Construction
 ```
 
-**Total BXCanonical module: 5,829 lines across 16 files, 23 sorries (5 critical-path + 18 irreflexive-consequence).**
+**Total BXCanonical module: ~5,795 lines across 16 files, 19 sorries (5 critical-path + 14 irreflexive-consequence). Task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel.lean.**
 
 Legacy files (`UltrafilterChain`, `SuccChainFMCS`, `FrameConditions/Completeness`)
 are still built via top-level aggregation in `Metalogic.lean` but are **not
@@ -487,7 +487,7 @@ they are either mathematically false (e.g., `bx_le_refl`) or require redesign.
 |------|---------|-----------------|
 | Frame.lean | 1 | `bx_le_refl` (intentionally invalid) |
 | TruthLemma.lean | 2 | `until_backward_refl_mcs`, `since_backward_refl_mcs` |
-| CanonicalModel.lean | 6 | `enriched_seed_consistent`, `fwd_succ_f_carry`, `enriched_past_seed_consistent`, `bwd_pred_p_carry`, `g_content_subset_self`, `h_content_subset_self` |
+| CanonicalModel.lean | 2 | `g_content_subset_self`, `h_content_subset_self` (4 dead-code sorries removed in task 109 Phase 1) |
 | Construction.lean | 2 | `refl_intro_until_mcs`, `refl_intro_since_mcs` |
 | Realization.lean | 4 | `F_of_mem`, `P_of_mem`, g/h_content subset in seed proofs |
 | SigmaOrdering.lean | 3 | `sigma_le_refl`, `sigma_strict_irrefl`, `not_sigma_equiv_of_sigma_strict` |

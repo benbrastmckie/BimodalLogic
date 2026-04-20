@@ -102,19 +102,19 @@ structure FMCS where
   /-- Each assigned set is maximal consistent -/
   is_mcs : forall t, SetMaximalConsistent (mcs t)
   /--
-  Forward G coherence: G phi at time t implies phi at all times t' ≥ t.
+  Forward G coherence: G phi at time t implies phi at all strictly future times t' > t.
 
-  Semantic justification: Under reflexive semantics, `G phi` means "phi at all times s ≥ t".
-  If `G phi` is in the MCS at t, then phi must be in the MCS at any t' ≥ t.
+  Semantic justification: Under strict semantics, `G phi` means "phi at all times s > t".
+  If `G phi` is in the MCS at t, then phi must be in the MCS at any t' > t.
   -/
-  forward_G : forall t t' phi, t ≤ t' -> Formula.all_future phi ∈ mcs t -> phi ∈ mcs t'
+  forward_G : forall t t' phi, t < t' -> Formula.all_future phi ∈ mcs t -> phi ∈ mcs t'
   /--
-  Backward H coherence: H phi at time t implies phi at all times t' ≤ t.
+  Backward H coherence: H phi at time t implies phi at all strictly past times t' < t.
 
-  Semantic justification: Under reflexive semantics, `H phi` means "phi at all times s ≤ t".
-  If `H phi` is in the MCS at t, then phi must be in the MCS at any t' ≤ t.
+  Semantic justification: Under strict semantics, `H phi` means "phi at all times s < t".
+  If `H phi` is in the MCS at t, then phi must be in the MCS at any t' < t.
   -/
-  backward_H : forall t t' phi, t' ≤ t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
+  backward_H : forall t t' phi, t' < t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
 
 variable {D : Type*} [Preorder D]
 

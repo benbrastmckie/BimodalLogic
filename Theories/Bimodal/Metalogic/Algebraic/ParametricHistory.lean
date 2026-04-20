@@ -70,7 +70,7 @@ def parametric_to_history (fam : FMCS D) : WorldHistory (ParametricCanonicalTask
     · -- t - s > 0: need ExistsTask (fam.mcs s) (fam.mcs t)
       rw [if_pos h_pos]
       intro phi h_G_phi
-      exact fam.forward_G s t phi hst h_G_phi
+      exact fam.forward_G s t phi (sub_pos.mp h_pos) h_G_phi
     · -- t - s <= 0, but s <= t means t - s >= 0, so t - s = 0
       have h_eq : t - s = 0 := le_antisymm (not_lt.mp h_pos) (sub_nonneg.mpr hst)
       have h_neg : ¬(t - s < 0) := not_lt.mpr (sub_nonneg.mpr hst)
