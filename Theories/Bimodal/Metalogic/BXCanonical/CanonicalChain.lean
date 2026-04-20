@@ -10,10 +10,9 @@ and delegation bridges from Realization.lean to Frame.lean.
 
 ## Key BX Axiom Lemmas
 
-- `psi_imp_until_mcs`: BX8 at MCS level (ψ → φ U ψ)
-- `psi_imp_since_mcs`: BX8' at MCS level (ψ → φ S ψ)
 - `F_imp_top_until_mcs`: BX12 at MCS level (F(ψ) → ⊤ U ψ)
-- `left_mono_until_mcs`: BX2 at MCS level (G(φ → χ) → (φ U ψ → χ U ψ))
+- `left_mono_until_mcs`: BX2 at MCS level ((φ→χ) ∧ G(φ→χ) → (φ U ψ → χ U ψ))
+- `left_mono_since_mcs`: BX2' at MCS level ((φ→χ) ∧ H(φ→χ) → (φ S ψ → χ S ψ))
 
 ## Eventuality Resolution Status (Task 102, v6)
 
@@ -40,21 +39,8 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.BXCanonical.Filtration
 
-/-! ## BX8 at MCS level: ψ → φ U ψ -/
-
-/-- Reflexive Until introduction at MCS level: if ψ ∈ w then (φ U ψ) ∈ w.
-Under irreflexive semantics, ψ → (φ U ψ) requires a strict future witness.
-Sorry'd pending chain construction redesign (Phase 3). -/
-theorem psi_imp_until_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : ψ ∈ w.formulas) : Formula.untl φ ψ ∈ w.formulas := by
-  sorry
-
-/-- Reflexive Since introduction at MCS level: if ψ ∈ w then (φ S ψ) ∈ w.
-Under irreflexive semantics, ψ → (φ S ψ) requires a strict past witness.
-Sorry'd pending chain construction redesign (Phase 3). -/
-theorem psi_imp_since_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : ψ ∈ w.formulas) : Formula.snce φ ψ ∈ w.formulas := by
-  sorry
+-- NOTE: psi_imp_until_mcs / psi_imp_since_mcs REMOVED.
+-- These corresponded to BX8/BX8' which are invalid under half-open guard.
 
 /-! ## BX12 at MCS level: F(ψ) → ⊤ U ψ -/
 
@@ -82,28 +68,47 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
 /-! ## BX2 at MCS level: left monotonicity of Until -/
 
 /-- BX2 at MCS level: left monotonicity of Until.
-    If G(φ → χ) ∈ w and (φ U ψ) ∈ w, then (χ U ψ) ∈ w. -/
+    If (φ → χ) ∈ w and G(φ → χ) ∈ w and (φ U ψ) ∈ w, then (χ U ψ) ∈ w. -/
 theorem left_mono_until_mcs {w : BXPoint} {φ ψ χ : Formula}
+    (h_imp : (φ.imp χ) ∈ w.formulas)
     (h_G : Formula.all_future (φ.imp χ) ∈ w.formulas)
     (h_until : Formula.untl φ ψ ∈ w.formulas) :
     Formula.untl χ ψ ∈ w.formulas := by
-  have h_ax : DerivationTree [] ((Formula.all_future (φ.imp χ)).imp
+  have h_ax : DerivationTree [] (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
     ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) :=
     DerivationTree.axiom [] _ (Axiom.left_mono_until φ ψ χ)
+  -- Need (φ→χ) ∧ G(φ→χ) ∈ w, i.e., ((φ→χ).imp (G(φ→χ)).neg).neg ∈ w
+  have h_conj : Formula.and (φ.imp χ) (φ.imp χ).all_future ∈ w.formulas := by
+    -- and = (a.imp b.neg).neg. By negation completeness, either (a.imp b.neg) or its neg.
+    -- If (a.imp b.neg) ∈ w, then with a ∈ w gives b.neg ∈ w. But b ∈ w too: contradiction.
+    cases SetMaximalConsistent.negation_complete w.is_mcs ((φ.imp χ).imp (Formula.all_future (φ.imp χ)).neg) with
+    | inr h => exact h
+    | inl h_bad =>
+      have h_neg_G := SetMaximalConsistent.implication_property w.is_mcs h_bad h_imp
+      exact absurd h_G (SetMaximalConsistent.neg_excludes w.is_mcs _ h_neg_G)
   have h1 := SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h_G
+    (theorem_in_mcs w.is_mcs h_ax) h_conj
   exact SetMaximalConsistent.implication_property w.is_mcs h1 h_until
 
-/-- BX2' at MCS level: left monotonicity of Since. -/
+/-- BX2' at MCS level: left monotonicity of Since.
+    If (φ → χ) ∈ w and H(φ → χ) ∈ w and (φ S ψ) ∈ w, then (χ S ψ) ∈ w. -/
 theorem left_mono_since_mcs {w : BXPoint} {φ ψ χ : Formula}
+    (h_imp : (φ.imp χ) ∈ w.formulas)
     (h_H : Formula.all_past (φ.imp χ) ∈ w.formulas)
     (h_since : Formula.snce φ ψ ∈ w.formulas) :
     Formula.snce χ ψ ∈ w.formulas := by
-  have h_ax : DerivationTree [] ((Formula.all_past (φ.imp χ)).imp
+  have h_ax : DerivationTree [] (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
     ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) :=
     DerivationTree.axiom [] _ (Axiom.left_mono_since φ ψ χ)
+  -- Need (φ→χ) ∧ H(φ→χ) ∈ w
+  have h_conj : Formula.and (φ.imp χ) (φ.imp χ).all_past ∈ w.formulas := by
+    cases SetMaximalConsistent.negation_complete w.is_mcs ((φ.imp χ).imp (Formula.all_past (φ.imp χ)).neg) with
+    | inr h => exact h
+    | inl h_bad =>
+      have h_neg_H := SetMaximalConsistent.implication_property w.is_mcs h_bad h_imp
+      exact absurd h_H (SetMaximalConsistent.neg_excludes w.is_mcs _ h_neg_H)
   have h1 := SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h_H
+    (theorem_in_mcs w.is_mcs h_ax) h_conj
   exact SetMaximalConsistent.implication_property w.is_mcs h1 h_since
 
 /-! ## BX6 at MCS level: absorption -/

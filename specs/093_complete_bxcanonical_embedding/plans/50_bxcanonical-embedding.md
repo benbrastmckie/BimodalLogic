@@ -72,7 +72,7 @@ Phases 4 and 5 are independent of each other (both depend on Phase 3 for a compi
 
 ---
 
-### Phase 1: Switch Guard Convention in Truth.lean [NOT STARTED]
+### Phase 1: Switch Guard Convention in Truth.lean [COMPLETED]
 
 **Goal**: Change Until/Since guard from open (t,s) to half-open [t,s) / (s,t]. Fix downstream compilation in Truth.lean itself (TimeShift lemmas, truth_at helpers).
 
@@ -97,7 +97,7 @@ Phases 4 and 5 are independent of each other (both depend on Phase 3 for a compi
 
 ---
 
-### Phase 2: Drop BX8/BX8' and Reformulate BX2/BX2' in Axioms [NOT STARTED]
+### Phase 2: Drop BX8/BX8' and Reformulate BX2/BX2' in Axioms [COMPLETED]
 
 **Goal**: Remove BX8/BX8' from the axiom inductive type. Reformulate BX2/BX2' to include the extra (phi->chi) conjunct. Update all pattern-match sites in DerivationTree, Soundness, etc.
 
@@ -132,7 +132,7 @@ Phases 4 and 5 are independent of each other (both depend on Phase 3 for a compi
 
 ---
 
-### Phase 3: Close Soundness Proofs (BX9, BX1, temporal interaction) [NOT STARTED]
+### Phase 3: Close Soundness Proofs (BX9, BX1, temporal interaction) [COMPLETED]
 
 **Goal**: Close all remaining sorry sites in Soundness.lean. BX9/BX9' are now trivially provable under half-open guard. BX1/BX1' need NoMaxOrder/NoMinOrder (specialize to Int or add typeclass). Line 448 temporal interaction needs review under new guard.
 
@@ -160,7 +160,7 @@ Phases 4 and 5 are independent of each other (both depend on Phase 3 for a compi
 
 ---
 
-### Phase 4: Audit and Fix BX2 Call Sites in Completeness [NOT STARTED]
+### Phase 4: Audit and Fix BX2 Call Sites in Completeness [COMPLETED]
 
 **Goal**: The reformulated BX2 requires `(phi->chi) ∈ w.formulas` in addition to `G(phi->chi) ∈ w.formulas`. Update all callers of `left_mono_until_mcs`/`left_mono_since_mcs` to provide this extra hypothesis.
 
@@ -189,7 +189,7 @@ Phases 4 and 5 are independent of each other (both depend on Phase 3 for a compi
 
 ---
 
-### Phase 5: Assess Chain Construction Sorries [NOT STARTED]
+### Phase 5: Assess Chain Construction Sorries [COMPLETED]
 
 **Goal**: With the corrected axiom system (BX9 sound, BX8 removed, BX2 reformulated), reassess the 5 chain construction sorry sites in RootScopedChain.lean / OracleCoherence.lean. Determine which are now closeable and attempt closure where feasible.
 

@@ -25,7 +25,7 @@ requiring successor-chain constructions.
    - BX5/BX5': self_accum_until/since (self-accumulation)
    - BX6/BX6': absorb_until/since (absorption)
    - BX7/BX7': linear_until/since (linearity)
-   - BX8/BX8': until_step/since_step (step introduction)
+   - BX8/BX8': REMOVED (until_step/since_step not sound under half-open guard)
    - BX9/BX9': until_elim/since_elim (current-time elimination)
    - BX10/BX10': until_F/since_P (eventuality extraction)
    - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
@@ -122,14 +122,17 @@ inductive Axiom : Formula → Type where
   | serial_past :
     Axiom ((Formula.bot.imp Formula.bot).imp (Formula.some_past (Formula.bot.imp Formula.bot)))
 
-  /-- BX2: Left monotonicity of Until: `G(φ → χ) → ((φ U ψ) → (χ U ψ))`.
-  If φ implies χ at all times, then φ U ψ implies χ U ψ. -/
+  /-- BX2: Left monotonicity of Until: `(φ→χ) ∧ G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
+  Under half-open guard [t,s): (φ→χ)(t) covers t, G(φ→χ) covers (t,s). Together cover [t,s). -/
   | left_mono_until (φ ψ χ : Formula) :
-      Axiom ((φ.imp χ).all_future.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ)))
+      Axiom (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
+        ((Formula.untl φ ψ).imp (Formula.untl χ ψ)))
 
-  /-- BX2': Left monotonicity of Since: `H(φ → χ) → ((φ S ψ) → (χ S ψ))`. -/
+  /-- BX2': Left monotonicity of Since: `(φ→χ) ∧ H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
+  Under half-open guard (s,t]: (φ→χ)(t) covers t, H(φ→χ) covers (s,t). Together cover (s,t]. -/
   | left_mono_since (φ ψ χ : Formula) :
-      Axiom ((φ.imp χ).all_past.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
+      Axiom (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
+        ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
 
   /-- BX3: Right monotonicity of Until: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
   If φ implies ψ at all times, then χ U φ implies χ U ψ. -/
@@ -196,19 +199,7 @@ inductive Axiom : Formula → Type where
             (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
 
-  /-- BX8: Until step: `φ ∧ F(φ U ψ) → (φ U ψ)`.
-  Under irreflexive Until semantics with strict witness s > t:
-  if φ holds now and F(φ U ψ) holds, then there exists s' > t with (φ U ψ)(s').
-  That s' has witness s'' > s' with ψ(s''). Use s'' as witness: s'' > t,
-  guard holds at t (φ from hypothesis) and on [s', s'') from inner guard,
-  and on (t, s') from F-position. -/
-  | until_step (φ ψ : Formula) :
-      Axiom ((Formula.and φ (Formula.some_future (Formula.untl φ ψ))).imp (Formula.untl φ ψ))
-
-  /-- BX8': Since step: `φ ∧ P(φ S ψ) → (φ S ψ)`.
-  Mirror of BX8 for the past direction. -/
-  | since_step (φ ψ : Formula) :
-      Axiom ((Formula.and φ (Formula.some_past (Formula.snce φ ψ))).imp (Formula.snce φ ψ))
+  -- NOTE: BX8/BX8' (until_step/since_step) removed -- not sound under half-open guard.
 
   /-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
   Under irreflexive Until semantics with A2 guard, `φ U ψ` at t has witness s > t
