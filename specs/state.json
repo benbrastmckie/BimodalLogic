@@ -1234,16 +1234,6 @@
         106
       ],
       "next_artifact_number": 2
-    },
-    {
-      "project_number": 110,
-      "project_name": "widen_todo_entry_format_context",
-      "status": "not_started",
-      "task_type": "meta",
-      "priority": "medium",
-      "description": "Widen load_when for state-management-schema.md in index.json so /review and all task-creating commands see the TODO.md entry format spec. Add explicit format reference to review.md task creation section.",
-      "created": "2026-04-20T18:28:36Z",
-      "last_updated": "2026-04-20T18:28:36Z"
     }
   ],
   "next_project_number": 111,
