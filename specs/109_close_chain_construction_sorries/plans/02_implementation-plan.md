@@ -180,7 +180,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: F-Resolution Keystone [NOT STARTED]
+### Phase 3: F-Resolution Keystone [BLOCKED]
 
 **Goal**: Close `fwd_chain_forward_F` (#7) by modifying the chain construction for deterministic priority resolution. Update ROADMAP.md.
 
@@ -217,7 +217,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Backward P-Preservation [NOT STARTED]
+### Phase 4: Backward P-Preservation [BLOCKED]
 
 **Goal**: Build `preserving_bwd_step` symmetric to the forward chain, close `restricted_tc` backward cases (#8, #9). Update ROADMAP.md.
 
@@ -257,7 +257,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Until/Since Coherence [NOT STARTED]
+### Phase 5: Until/Since Coherence [BLOCKED]
 
 **Goal**: Close `restricted_buc` (#10) and `restricted_fuc` (#11). Update ROADMAP.md.
 
@@ -303,7 +303,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Final Verification [NOT STARTED]
+### Phase 6: Final Verification [BLOCKED]
 
 **Goal**: Verify `#print axioms bx_completeness` shows only `{propext, Classical.choice, Quot.sound}`. Update ROADMAP.md with final state.
 
