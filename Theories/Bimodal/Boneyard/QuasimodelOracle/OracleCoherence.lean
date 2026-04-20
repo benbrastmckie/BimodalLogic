@@ -11,7 +11,7 @@ hintikka_step_for_sigma_sig) is preserved as reusable infrastructure.
 
 import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
 import Bimodal.Metalogic.BXCanonical.CanonicalModel
-import Bimodal.Metalogic.BXCanonical.Quasimodel.OracleStep
+-- import Bimodal.Metalogic.BXCanonical.Quasimodel.OracleStep  -- archived; no longer compiled
 import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma

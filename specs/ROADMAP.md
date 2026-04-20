@@ -2,14 +2,14 @@
 
 ## Overview
 
-TM is a bimodal logic combining S5 modality with reflexive linear temporal logic,
+TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-04-19 (plan v44: three-path strategy for DD-BFMCS coherence).
+state of the completeness effort as of 2026-04-20 (irreflexive semantics rewrite).
 
-**Architecture**: The proof system has 37 BX axioms (propositional, S5 modal,
+**Architecture**: The proof system has 33 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
-**fully reflexive**: G/H quantify over `t ≤ s` / `s ≤ t`, and Until/Since admit
-the current point `s = t` as a witness under a half-open guard. The active
+**irreflexive**: G/H quantify over `t < s` / `s < t` (strict inequality), and
+Until/Since require strictly future/past witnesses. The active
 completeness path flows through `Theories/Bimodal/Metalogic/BXCanonical/`,
 which constructs a canonical frame of maximally consistent sets ordered by
 `g_content` inclusion.
@@ -34,7 +34,7 @@ hitting a backward coherence obstruction.
 
 **Dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
 
-See sections below for the axiom system, reflexive semantics, canonical
+See sections below for the axiom system, irreflexive semantics, canonical
 construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy.
 
 ---

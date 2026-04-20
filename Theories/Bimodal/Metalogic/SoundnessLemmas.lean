@@ -310,10 +310,25 @@ double-negation encoding of conjunction.
 theorem swap_axiom_tl_valid (φ : Formula) :
     is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, truth_at]
+  simp only [Formula.always, Formula.and, Formula.swap_temporal, Formula.neg, truth_at]
   intro h_always s h_s_lt_t u h_s_lt_u
-  -- Under strict semantics, always decomposes differently. Need trichotomy.
-  sorry
+  -- h_always encodes: ¬¬(Gφ' ∧ ¬¬(φ'(t) ∧ Hφ'))
+  -- Extract the three components
+  have h_future : ∀ r, t < r → truth_at M Omega τ r φ.swap_temporal := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, htr, h_neg⟩ := h_not
+    exact h_always fun h_G => absurd (h_G r htr) h_neg
+  have h_present : truth_at M Omega τ t φ.swap_temporal := by
+    by_contra h_not
+    exact h_always fun _ h_inner => h_inner (fun h_neg _ => h_neg h_not)
+  have h_past : ∀ r, r < t → truth_at M Omega τ r φ.swap_temporal := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, hrt, h_neg⟩ := h_not
+    exact h_always fun _ h_inner => h_inner (fun _ h_neg2 => h_neg2 r hrt h_neg)
+  rcases lt_trichotomy u t with h_lt | h_eq | h_gt
+  · exact h_past u h_lt
+  · exact h_eq ▸ h_present
+  · exact h_future u h_gt
 
 /--
 Swap of F_until_equiv: `F(φ) → ⊤ U φ` swaps to `P(φ') → ⊤ S φ'`. -/

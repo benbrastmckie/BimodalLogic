@@ -1,7 +1,7 @@
 # Implementation Plan: Audit and Close SoundnessLemmas.lean Sorries
 
 - **Task**: 108 - Audit 28 sorry occurrences in SoundnessLemmas.lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None (self-contained file with known call sites)
 - **Research Inputs**: specs/108_audit_soundness_lemmas_sorries/reports/01_soundness-sorry-audit.md
@@ -63,7 +63,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Close Standalone Lemma Sorries [NOT STARTED]
+### Phase 1: Close Standalone Lemma Sorries [IN PROGRESS]
 
 **Goal**: Close the 4 standalone lemma sorries (#1-4) using verified proof sketches from research.
 
