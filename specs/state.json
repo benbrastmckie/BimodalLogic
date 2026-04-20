@@ -555,25 +555,26 @@
       "status": "not_started",
       "language": "lean4",
       "priority": "medium",
-      "description": "Verification pass to confirm no corners cut on the representation and completeness theorems once tasks 92 and 93 are complete. Steps: (1) Run #print axioms on BXCanonical.completeness and any frame-specific completeness theorems (discrete, dense modulo task 68); confirm output is exactly {propext, Classical.choice, Quot.sound} with no user-declared axioms. (2) Grep Theories/Bimodal/Metalogic/Soundness.lean and SoundnessLemmas.lean for real sorry tactics distinguished from sorry appearing in doc-comments (SoundnessLemmas.lean shows 37 grep hits but Soundness.lean hits are all in docstrings claiming sorry-freeness -- must classify each one). (3) Confirm the soundness theorems (soundness, soundness_dense, soundness_discrete) build and list only the standard axioms. (4) Audit custom axiom list: expected {discrete_Icc_finite_axiom} which is task 60; confirm no others. (5) Produce an audit report in specs/reviews/ documenting the verified sorry-free status. Depends on task 93.",
+      "description": "Verification pass to confirm sorry-free completeness. (1) Run #print axioms on bx_completeness; confirm output is exactly {propext, Classical.choice, Quot.sound}. (2) Classify all sorry occurrences in Soundness.lean and SoundnessLemmas.lean (real sorry vs docstring). (3) Confirm soundness, soundness_dense, soundness_discrete build with only standard axioms. (4) Audit for any custom Lean axiom declarations. (5) Produce audit report. Depends on task 109 (chain construction closure) for full completeness verification.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-10T19:30:00Z",
+      "last_updated": "2026-04-20T17:58:07Z",
       "related_tasks": [
         60,
         93
       ],
       "dependencies": [
-        93
+        93,
+        109
       ]
     },
     {
       "project_number": 89,
       "project_name": "close_frame_lean_eventuality_sorries",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Close 4 Frame.lean eventuality resolution sorries (bx_until_eventuality_resolution:653, bx_until_backward:675, bx_since_eventuality_resolution:690, bx_since_backward:704) via quasimodel (GHR 1994) or Henkin fair scheduling construction. The X-vs-G mismatch is confirmed fundamental (6 rounds, 99% confidence): no BX axiom bridges phi U psi membership to G(phi U psi) membership, so eventualities must be resolved by model construction rather than ordering propagation. Requires 4-8h research spike into quasimodel viability (task 83 linearization issues), then 30-40h implementation. Downstream: Completeness.lean:160 closes automatically when these 4 are resolved.",
       "created": "2026-04-10T07:01:32Z",
-      "last_updated": "2026-04-10T17:49:26Z",
+      "last_updated": "2026-04-20T17:58:07Z",
       "session_id": "sess_1775842413_373db5",
       "researched": "2026-04-10T17:49:26Z",
       "next_artifact_number": 2,
@@ -583,16 +584,18 @@
           "type": "research",
           "summary": "Team research (4 teammates): BXCanonical not on critical path; temp_linearity re-addition is key enabler; sorries likely unprovable as-is"
         }
-      ]
+      ],
+      "abandonment_reason": "Superseded by completed tasks 90+92+98+102 which closed all 4 Frame.lean sorries"
     },
     {
       "project_number": 87,
       "project_name": "full_representation_theorem_until_since",
-      "status": "not_started",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Prove the full representation theorem for TM with Until/Since operators via the enriched chain construction in Bundle/. This is the enriched-Succ chain with dovetailed scheduling over subformula closure — the only viable path to full Until/Since forward coherence identified after 39+ research rounds (task 83). Key components: (1) combined_F_seed_consistent lemma (compactness + temporal duality, ~50-100 LOC), (2) enriched chain builder with all pending F-obligations in each Lindenbaum seed, (3) backward Until direction via BX6 absorption derivation, (4) forward_F by construction (every F(ψ) in chain(t) has ψ in chain(t+1)). Estimated 600-1000 LOC new proof work, 70-85% confidence per task 83 round 39 assessment. Depends on task 86 (USF fragment completeness) for validating the non-Until/Since cases of the truth lemma. See task 83 reports 38-39, task 86 report 05 (team research round 5) for detailed analysis.",
       "created": "2026-04-09T15:52:36Z",
-      "last_updated": "2026-04-09T15:52:36Z"
+      "last_updated": "2026-04-20T17:58:07Z",
+      "abandonment_reason": "Bundle/ enriched chain approach superseded by BXCanonical path (task 109)"
     },
     {
       "project_number": 60,
@@ -1017,39 +1020,46 @@
     {
       "project_number": 74,
       "project_name": "research_strict_vs_reflexive_semantics",
-      "status": "not_started",
+      "status": "abandoned",
       "language": "formal",
       "priority": "high",
-      "description": "Research strict vs reflexive temporal semantics for TM logic completeness"
+      "description": "Research strict vs reflexive temporal semantics for TM logic completeness",
+      "last_updated": "2026-04-20T17:58:07Z",
+      "abandonment_reason": "Question answered: switched to irreflexive semantics in task 93"
     },
     {
       "project_number": 75,
       "project_name": "research_strict_temporal_extension_design",
-      "status": "not_started",
+      "status": "abandoned",
       "language": "formal",
       "priority": "high",
-      "description": "Research G prime / H prime operator extension design and conservative extension proof"
+      "description": "Research G prime / H prime operator extension design and conservative extension proof",
+      "last_updated": "2026-04-20T17:58:07Z",
+      "abandonment_reason": "Moot: semantics settled on irreflexive in task 93, G prime/H prime extension not needed"
     },
     {
       "project_number": 76,
       "project_name": "research_density_discreteness_completeness",
-      "status": "not_started",
+      "status": "abandoned",
       "language": "formal",
       "priority": "high",
-      "description": "Research unified density/discreteness completeness paths under strict/reflexive semantics"
+      "description": "Research unified density/discreteness completeness paths under strict/reflexive semantics",
+      "last_updated": "2026-04-20T17:58:07Z",
+      "abandonment_reason": "Framed around strict-vs-reflexive question resolved by task 93 irreflexive switch"
     },
     {
       "project_number": 82,
       "project_name": "close_fmp_truth_preservation_sorries",
-      "status": "not_started",
+      "status": "abandoned",
       "language": "lean4",
       "description": "Close the 2 FMP TruthPreservation sorries (mcs_all_future_closure at line 263 and mcs_all_past_closure at line 281) in Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (Truth.lean) uses reflexive semantics (t <= s, not t < s), and temp_t_future/temp_t_past ARE axioms (Axioms.lean:290,304). These sorries can be closed immediately with proofs parallel to mcs_box_closure (TruthPreservation.lean:188-203), replacing modal_t with temp_t_future/temp_t_past. Closing these completes the FMP path giving weak completeness of TM.",
       "effort": "1-2 hours",
       "dependencies": [],
       "priority": "high",
       "created": "2026-04-02T17:12:09Z",
-      "last_updated": "2026-04-02T17:12:09Z",
-      "next_artifact_number": 1
+      "last_updated": "2026-04-20T17:58:07Z",
+      "next_artifact_number": 1,
+      "abandonment_reason": "Description assumes reflexive semantics and temp_t_future/temp_t_past axioms which were removed in task 93. Subsumed by task 998 (FMP redesign for irreflexive semantics)"
     },
     {
       "project_number": 104,
@@ -1057,9 +1067,9 @@
       "status": "not_started",
       "language": "meta",
       "priority": "high",
-      "description": "Clean up superseded and stale tasks: (1) Abandon task 89 (Close 4 Frame.lean sorries) — fully superseded by completed tasks 90+92+98+102 which closed all 4 sorries. (2) Update task 60 to remove dependency on nonexistent task 59 and reassess whether the axiom is actually gone. (3) Assess task 87 (full representation via Bundle/) for supersession by BXCanonical approach. (4) Fix state.json technical_debt: set axiom_count to 0 (no Lean axiom declarations exist), update sorry_count and publication_path_sorries to reflect 1 remaining active-path sorry. (5) Clarify task 998 vs task 82 semantics assumptions.",
+      "description": "Clean up remaining stale task state: (1) Update task 60 to remove dependency on nonexistent task 59 and reassess discrete_Icc_finite_axiom status. (2) Fix state.json technical_debt metrics (sorry_count, publication_path_sorries) to reflect current state post-task-93. (3) Update TODO.md frontmatter metrics. Tasks 89, 87, 74, 75, 76, 82 already abandoned in post-task-93 review.",
       "created": "2026-04-12T00:00:00Z",
-      "last_updated": "2026-04-12T00:00:00Z"
+      "last_updated": "2026-04-20T17:58:07Z"
     },
     {
       "project_number": 105,

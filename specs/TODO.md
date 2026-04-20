@@ -27,15 +27,11 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-12. Review: tasks 90-92, 98-102 completed (all Frame.lean sorries closed). Pruned 91 (completed). Added 103-105 from review. Task 89 superseded. Tasks 94, 103 completed (archived).*
+*Updated 2026-04-20. Post-task-93 review: abandoned 89, 87, 74, 75, 76, 82 (superseded by irreflexive switch). Created 106-109. Revised 95 (depends on 109), 104 (narrowed scope).*
 
-**Goal**: Close the final BXCanonical sorry (TaskModel embedding), archive legacy code, produce publication-quality completeness proof.
+**Goal**: Close the 11 chain construction sorries (task 109) for sorry-free `bx_completeness`, archive legacy code, update documentation for irreflexive semantics.
 
 ### 1. Critical Path — BXCanonical Completeness
-
-```
-93 → 95
-```
 
 ```
 93 → 109 → 95
@@ -44,42 +40,33 @@ technical_debt:
 1. **93** [COMPLETED] — Close TaskModel embedding sorry (seriality + Nontrivial fix)
 2. **109** [NOT STARTED] — Close 11 chain construction sorries (5 RootScopedChain + 6 CanonicalModel) — the hard open problem
 3. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 109)
+
+### 2. Documentation & Cleanup
+
 4. **106** [NOT STARTED] — Rewrite ROADMAP.md for irreflexive semantics (critical)
 5. **107** [NOT STARTED] — Archive dead Quasimodel code (OracleStep + BXCanonical/Boneyard)
 6. **108** [NOT STARTED] — Audit SoundnessLemmas.lean sorry sites
-7. **104** [NOT STARTED] — Clean up superseded tasks (89, 60, 87, state.json fixes)
-8. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
+7. **105** [NOT STARTED] — Update stale sorry-blocker comments in BXCanonical code
+8. **104** [NOT STARTED] — Clean up stale task state and metrics
 
-### 2. Independent Completeness Paths (parallel)
+### 3. Independent Completeness Paths (parallel)
 
-- **82** [NOT STARTED] — Close 2 FMP TruthPreservation sorries — gives weak completeness
+- **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
 - **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (needs Rat construction)
 
-### 4. Strict Temporal Extensions Research (parallel track)
-
-```
-74 → 75 → 76
-      ↘ 998
-```
-
-- **74** [NOT STARTED] — Research strict vs reflexive temporal semantics
-- **75** [NOT STARTED] — Research G'/H' operator extension design (depends on 74)
-- **76** [NOT STARTED] — Research unified density/discreteness completeness (depends on 74, 75)
-- **998** [RESEARCHING] — FMP redesign for strict temporal (parallel to 75)
-
-### 5. Experimental / Research
+### 4. Experimental / Research
 
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 - **64** [RESEARCHED] — Critical path review (reference only)
 
-### 6. Deferred
+### 5. Deferred
 
 - **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
 - **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
 - **21** [PLANNED] — Tech debt cleanup (depends on 18)
 - **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
 
-### 7. Backlog
+### 6. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
 - **39** [RESEARCHED] — Preorder semantics study (theoretical)
@@ -216,14 +203,14 @@ The chain construction needs a fundamental redesign. Two genuinely unprovable th
 
 ---
 
-### 104. Clean up superseded tasks and fix state.json
-- **Effort**: 1-2 hours
+### 104. Clean up stale task state and metrics
+- **Effort**: 1 hour
 - **Status**: [NOT STARTED]
 - **Language**: meta
-- **Priority**: high
+- **Priority**: medium
 - **Created**: 2026-04-12
 
-**Description**: Clean up superseded and stale tasks: (1) Abandon task 89 (Close 4 Frame.lean sorries) — fully superseded by completed tasks 90+92+98+102 which closed all 4 sorries. (2) Update task 60 to remove dependency on nonexistent task 59 and reassess whether the axiom is actually gone (no Lean `axiom` declaration found). (3) Assess task 87 (full representation via Bundle/) for supersession by BXCanonical approach. (4) Clarify task 998 vs task 82 semantics assumptions. (5) Fix state.json technical_debt metrics.
+**Description**: Clean up remaining stale task state after post-task-93 review (which abandoned 89, 87, 74, 75, 76, 82): (1) Update task 60 to remove dependency on nonexistent task 59 and reassess `discrete_Icc_finite_axiom` status. (2) Fix state.json `technical_debt` metrics: update `sorry_count`, `publication_path_sorries` to reflect current state (11 active-path sorries). (3) Update TODO.md frontmatter metrics to match.
 
 ---
 
@@ -301,25 +288,23 @@ The chain construction needs a fundamental redesign. Two genuinely unprovable th
 - **Status**: [NOT STARTED]
 - **Language**: lean4
 - **Priority**: medium
-- **Dependencies**: Task 93
+- **Dependencies**: Tasks 93, 109
 - **Created**: 2026-04-10
-- **Related**: Tasks 60, 93
+- **Related**: Tasks 60, 93, 109
 
-**Description**: Verification pass to confirm no corners cut on the representation and completeness theorems. (1) Run `#print axioms` on `BXCanonical.completeness` and `discrete_completeness_fc`; confirm output is exactly `{propext, Classical.choice, Quot.sound}`. (2) Grep `Theories/Bimodal/Metalogic/Soundness.lean` and `SoundnessLemmas.lean` for real `sorry` tactics vs `sorry` in docstrings (`Soundness.lean` shows 4 grep hits all inside doc comments; `SoundnessLemmas.lean` shows 37 hits that must be classified). (3) Confirm `soundness`, `soundness_dense`, `soundness_discrete` all build and list only standard axioms. (4) Audit custom axiom list: expected `{discrete_Icc_finite_axiom}` (task 60); confirm no others. (5) Produce an audit report at `specs/reviews/completeness-audit-{DATE}.md`.
+**Description**: Verification pass to confirm sorry-free completeness after task 109 closes the chain construction sorries. (1) Run `#print axioms` on `bx_completeness`; confirm output is exactly `{propext, Classical.choice, Quot.sound}` with no `sorry` dependency. (2) Classify all `sorry` occurrences in `Soundness.lean` and `SoundnessLemmas.lean` (real sorry vs docstring/comment). (3) Confirm `soundness`, `soundness_dense`, `soundness_discrete` build with only standard axioms. (4) Audit for any custom Lean `axiom` declarations (expected: possibly `discrete_Icc_finite_axiom` per task 60). (5) Produce audit report at `specs/reviews/completeness-audit-{DATE}.md`. Depends on task 109 for full completeness verification.
 
 ---
 
 ### 89. Close 4 Frame.lean eventuality resolution sorries via quasimodel or Henkin construction
 - **Effort**: 40-80 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-04-20
+- **Reason**: Fully superseded by completed tasks 90+92+98+102 which closed all 4 Frame.lean sorries.
 - **Language**: lean4
 - **Priority**: high
 - **Dependencies**: None (independent of task 88 CanonicalEmbedding)
 - **Created**: 2026-04-10
-- **Related**: Tasks 88, 86, 85, 83
-- **Research**: [01_team-research.md](specs/089_close_frame_lean_eventuality_sorries/reports/01_team-research.md)
-
-**Description**: Close 4 Frame.lean eventuality resolution sorries (bx_until_eventuality_resolution:653, bx_until_backward:675, bx_since_eventuality_resolution:690, bx_since_backward:704) via quasimodel (GHR 1994) or Henkin fair scheduling construction. The X-vs-G mismatch is confirmed fundamental (6 rounds, 99% confidence): no BX axiom bridges φ U ψ membership to G(φ U ψ) membership, so eventualities must be resolved by model construction rather than ordering propagation. Requires 4-8h research spike into quasimodel viability (task 83 linearization issues), then 30-40h implementation. Downstream: Completeness.lean:160 closes automatically when these 4 are resolved.
 
 ---
 
@@ -327,13 +312,12 @@ The chain construction needs a fundamental redesign. Two genuinely unprovable th
 
 ### 87. Full representation theorem with Until/Since via enriched chain construction in Bundle/
 - **Effort**: 40-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-04-20
+- **Reason**: Bundle/ enriched chain approach superseded by BXCanonical path (task 109). Bundle/ has 14 sorry sites referencing removed BX1.
 - **Language**: lean4
 - **Dependencies**: Task 86 (USF fragment completeness)
 - **Created**: 2026-04-09
-- **Related**: Tasks 83 (archived), 84 (archived), 85, 86, 58
-
-**Description**: Prove the full representation theorem for TM with Until/Since operators via the enriched-Succ chain with dovetailed scheduling over subformula closure in Bundle/. The only viable path to full Until/Since forward coherence after 39+ research rounds. Key components: combined_F_seed_consistent lemma, enriched chain builder, backward Until direction via BX6 absorption, forward_F by construction. Estimated 600-1000 LOC, 70-85% confidence. See task 83 reports 38-39, task 86 report 05 for detailed analysis.
 
 ---
 
@@ -341,13 +325,12 @@ The chain construction needs a fundamental redesign. Two genuinely unprovable th
 
 ### 82. Close FMP TruthPreservation Sorries
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-04-20
+- **Reason**: Description assumes reflexive semantics and temp_t_future/temp_t_past axioms which were removed in task 93 (irreflexive switch). Subsumed by task 998 (FMP redesign for irreflexive semantics).
 - **Language**: lean4
 - **Priority**: high
-- **Dependencies**: None
 - **Created**: 2026-04-02
-
-**Description**: Close the 2 FMP TruthPreservation sorries (`mcs_all_future_closure` at line 263 and `mcs_all_past_closure` at line 281) in `Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean`. The sorry comments incorrectly claim TM uses strict semantics. The actual codebase (`Truth.lean`) uses reflexive semantics (`t ≤ s`, not `t < s`), and `temp_t_future`/`temp_t_past` ARE axioms (Axioms.lean:290,304). Proofs parallel to `mcs_box_closure` (TruthPreservation.lean:188-203). Closing these completes the FMP path giving **weak completeness of TM**.
 
 ---
 
@@ -355,82 +338,36 @@ The chain construction needs a fundamental redesign. Two genuinely unprovable th
 
 ### 74. Research strict vs reflexive temporal semantics for TM logic
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-04-20
+- **Reason**: Question answered by task 93: switched to irreflexive semantics with BX1/BX1' replaced by seriality axioms.
 - **Language**: formal
 - **Priority**: high
 - **Created**: 2026-03-31
-- **Related**: Tasks 75-77, 998 (strict temporal extensions track)
-
-**Description**: Research and compare strict temporal semantics (G/H quantify over s > t / s < t) versus reflexive semantics (s ≥ t / s ≤ t) for TM logic completeness. Key questions:
-
-1. **Canonical model construction**: Does strict semantics simplify F/P witness construction? Under strict semantics, F(φ) at t means ∃s > t, φ(s) — the present is excluded, potentially avoiding the Lindenbaum extension issue where G(neg φ) can kill F(φ) witnesses.
-
-2. **Axiom implications**: The temp_t_future (Gφ → φ) and temp_t_past (Hφ → φ) axioms are ONLY valid under reflexive semantics. Under strict semantics, these would be removed. How does this affect the proof system?
-
-3. **Literature survey**: Survey existing literature on tense logics with both strict and reflexive operators (Kt, Kt.Li, Prior's tense logics).
-
-4. **Completeness path**: Determine if strict semantics provides a simpler path to completeness or if reflexive semantics with FMP workaround is preferable.
 
 ---
 
 ### 75. Research G'/H' operator extension design for TM logic
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-04-20
+- **Reason**: Moot: semantics settled on irreflexive in task 93. G'/H' extension not needed since G/H now use strict quantification directly.
 - **Language**: formal
 - **Priority**: high
 - **Created**: 2026-03-31
 - **Dependencies**: Task 74
-- **Related**: Tasks 74, 76-77, 998 (strict temporal extensions track)
-
-**Description**: Design the extension of TM logic with strict temporal operators G'/H' alongside existing reflexive G/H. Key design decisions:
-
-1. **Formula syntax extension**:
-   - Option A: Add G'/H' as new primitives in Formula type
-   - Option B: Define G'/H' as derived operators (G' φ := G φ ∧ ¬φ)
-   - Tradeoffs: Primitives are cleaner for semantics; definitions simplify conservative extension proof
-
-2. **Axiom schemas**: Determine axioms for strict operators:
-   - Distribution: G'(φ → ψ) → (G'φ → G'ψ)
-   - Interaction with reflexive: G ↔ (φ ∧ G'), H ↔ (φ ∧ H')
-   - Strict seriality: Gφ → Fφ (from NoMaxOrder)
-   - Strict density: G'G'φ → G'φ (from DenselyOrdered)
-
-3. **Conservative extension proof**: Show that for formulas without G'/H', derivability in extended system iff derivability in base system.
-
-4. **Modal interaction**: Verify G'/H' interact correctly with S5 modal operators □/◇.
 
 ---
 
 ### 76. Research unified density/discreteness completeness paths
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
+- **Abandoned**: 2026-04-20
+- **Reason**: Framed around strict-vs-reflexive question resolved by task 93 (irreflexive switch). Dense completeness continues independently as task 68.
 - **Language**: formal
 - **Priority**: high
 - **Created**: 2026-03-31
 - **Dependencies**: Tasks 74, 75
-- **Related**: Tasks 68, 998 (dense/discrete completeness)
-
-**Description**: Research unified approach to density and discreteness completeness under both strict and reflexive semantics. Key questions:
-
-1. **Dense completeness**:
-   - Current blocker: dense_completeness_fc sorry (Int is not dense)
-   - Path A: Rat canonical model construction
-   - Path B: Strict semantics may simplify (density axiom documented for strict)
-   - Analyze which approach is more tractable
-   - **Hint**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) propagates the Until formula through intervals, populating dense guards via BX9 `until_elim`. Cantor-domain chain construction over a countable dense order with interval-filling for Until guards is the key technique.
-
-2. **Discrete completeness**:
-   - Current: Reduces to Int completeness (sorry-free reduction)
-   - Blocker: discrete_Icc_finite_axiom (custom axiom, task 60)
-   - Path: SuccOrder-based approach vs quotient approach
-
-3. **Unified framework**:
-   - Can density and discreteness share canonical model infrastructure?
-   - ParametricRepresentation already parametric over D — extend to support both
-
-4. **Base logic completeness**:
-   - Is base logic (no density/discreteness axioms) complete?
-   - If incomplete, what minimal extension is needed?
 
 ---
 
