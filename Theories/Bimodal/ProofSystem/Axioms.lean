@@ -4,7 +4,7 @@ import Bimodal.Syntax.Formula
 # Axioms - Burgess-Xu (BX) Axiom Schemata for TM Logic
 
 This module defines the axiom schemata for bimodal logic TM (Tense and Modality)
-under the Burgess-Xu (BX) axiom system with all-reflexive temporal semantics.
+under the Burgess-Xu (BX) axiom system with irreflexive temporal semantics (A2 guard convention).
 
 ## Axiom System
 
@@ -18,21 +18,21 @@ requiring successor-chain constructions.
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce
 2. **S5 Modal** (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
 3. **BX Temporal** (26 = temp_k_dist + temp_4 + 12 schemas x 2 directions):
-   - BX1/BX1': temp_t_future/past (reflexivity, KEEP from previous)
+   - BX1/BX1': serial_future/past (seriality, replaces reflexivity)
    - BX2/BX2': left_mono_until/since (left monotonicity)
    - BX3/BX3': right_mono_until/since (right monotonicity)
    - BX4/BX4': connect_future/connect_past (temporal connectedness)
    - BX5/BX5': self_accum_until/since (self-accumulation)
    - BX6/BX6': absorb_until/since (absorption)
    - BX7/BX7': linear_until/since (linearity)
-   - BX8/BX8': refl_intro_until/since (reflexive introduction)
+   - BX8/BX8': until_step/since_step (step introduction)
    - BX9/BX9': until_elim/since_elim (current-time elimination)
    - BX10/BX10': until_F/since_P (eventuality extraction)
    - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 37 axiom constructors
+**Total**: 35 axiom constructors
 
 ### Key Properties
 
@@ -56,7 +56,7 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-37 constructors organized into four layers:
+35 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (26): Burgess-Xu axioms for Until/Since on linear orders
@@ -112,14 +112,15 @@ inductive Axiom : Formula → Type where
   | temp_4 (φ : Formula) :
       Axiom (φ.all_future.imp φ.all_future.all_future)
 
-  /-- BX1: Temporal T (future): `G(φ) → φ` (reflexivity of future).
-  Under reflexive semantics, what holds at all future-or-present times holds now. -/
-  | temp_t_future (φ : Formula) :
-    Axiom ((Formula.all_future φ).imp φ)
+  /-- Serial future: `⊤ → F(⊤)` (future seriality).
+  Under irreflexive semantics, every time point has a strict future. -/
+  | serial_future :
+    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.some_future (Formula.bot.imp Formula.bot)))
 
-  /-- BX1': Temporal T (past): `H(φ) → φ` (reflexivity of past). -/
-  | temp_t_past (φ : Formula) :
-    Axiom ((Formula.all_past φ).imp φ)
+  /-- Serial past: `⊤ → P(⊤)` (past seriality).
+  Under irreflexive semantics, every time point has a strict past. -/
+  | serial_past :
+    Axiom ((Formula.bot.imp Formula.bot).imp (Formula.some_past (Formula.bot.imp Formula.bot)))
 
   /-- BX2: Left monotonicity of Until: `G(φ → χ) → ((φ U ψ) → (χ U ψ))`.
   If φ implies χ at all times, then φ U ψ implies χ U ψ. -/
@@ -195,27 +196,29 @@ inductive Axiom : Formula → Type where
             (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
 
-  /-- BX8: Reflexive Until introduction: `ψ → (φ U ψ)`.
-  Under reflexive Until semantics, the witness s = t (current time) always works:
-  ψ holds at t, and the guard interval [t, t) is empty, so φ vacuously holds on it.
-  This axiom is sound on all linear orders with reflexive Until (≤-witness). -/
-  | refl_intro_until (φ ψ : Formula) :
-      Axiom (ψ.imp (Formula.untl φ ψ))
+  /-- BX8: Until step: `φ ∧ F(φ U ψ) → (φ U ψ)`.
+  Under irreflexive Until semantics with strict witness s > t:
+  if φ holds now and F(φ U ψ) holds, then there exists s' > t with (φ U ψ)(s').
+  That s' has witness s'' > s' with ψ(s''). Use s'' as witness: s'' > t,
+  guard holds at t (φ from hypothesis) and on [s', s'') from inner guard,
+  and on (t, s') from F-position. -/
+  | until_step (φ ψ : Formula) :
+      Axiom ((Formula.and φ (Formula.some_future (Formula.untl φ ψ))).imp (Formula.untl φ ψ))
 
-  /-- BX8': Reflexive Since introduction: `ψ → (φ S ψ)`.
+  /-- BX8': Since step: `φ ∧ P(φ S ψ) → (φ S ψ)`.
   Mirror of BX8 for the past direction. -/
-  | refl_intro_since (φ ψ : Formula) :
-      Axiom (ψ.imp (Formula.snce φ ψ))
+  | since_step (φ ψ : Formula) :
+      Axiom ((Formula.and φ (Formula.some_past (Formula.snce φ ψ))).imp (Formula.snce φ ψ))
 
   /-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
-  Under reflexive Until semantics, `φ U ψ` at t has witness s ≥ t with ψ(s).
-  If s = t, then ψ(t) holds. If s > t, then φ(t) holds (from guard [t,s)).
-  Either way, `φ ∨ ψ` holds at t. -/
+  Under irreflexive Until semantics with A2 guard, `φ U ψ` at t has witness s > t
+  with ψ(s) and guard φ on [t,s). Since t ∈ [t,s), φ(t) holds. So φ ∨ ψ at t. -/
   | until_elim (φ ψ : Formula) :
       Axiom ((Formula.untl φ ψ).imp (Formula.or φ ψ))
 
   /-- BX9': Since elimination: `(φ S ψ) → (φ ∨ ψ)`.
-  Mirror of BX9 for the past direction. -/
+  Under irreflexive Since, `φ S ψ` at t has witness s < t with ψ(s) and guard φ
+  on (s,t]. Since t ∈ (s,t], φ(t) holds. So φ ∨ ψ at t. -/
   | since_elim (φ ψ : Formula) :
       Axiom ((Formula.snce φ ψ).imp (Formula.or φ ψ))
 

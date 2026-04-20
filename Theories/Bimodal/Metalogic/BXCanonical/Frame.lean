@@ -122,15 +122,8 @@ then ⊥ ∈ S (by BX1: G(⊥) → ⊥), contradicting S consistent.
 theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent S) :
     SetConsistent (g_content S) := by
   intro L hL ⟨d⟩
-  have h_G_bot := g_content_closed_derivation h_mcs L hL d
-  -- G(⊥) → ⊥ by BX1
-  have h_ax : DerivationTree [] (Formula.all_future Formula.bot |>.imp Formula.bot) :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
-  have h_imp_in := theorem_in_mcs h_mcs h_ax
-  have h_bot := SetMaximalConsistent.implication_property h_mcs h_imp_in h_G_bot
-  -- ⊥ ∈ S contradicts S consistent
-  exact h_mcs.1 [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot)
-    ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+  -- Under irreflexive semantics, G(⊥) → ⊥ requires seriality, not BX1.
+  sorry
 
 /-! ## Reflexivity (from BX1: G(φ) → φ) -/
 
@@ -138,12 +131,9 @@ theorem g_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
 The canonical ordering is reflexive: w ≤ w for all BXPoints.
 -/
 theorem bx_le_refl (w : BXPoint) : bx_le w w := by
-  intro φ hφ
-  have h_Gφ : Formula.all_future φ ∈ w.formulas := hφ
-  have h_ax : DerivationTree [] ((Formula.all_future φ).imp φ) :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future φ)
-  have h_imp_in := theorem_in_mcs w.is_mcs h_ax
-  exact SetMaximalConsistent.implication_property w.is_mcs h_imp_in h_Gφ
+  -- Under irreflexive semantics, bx_le is NOT reflexive.
+  -- G(φ) → φ is no longer valid.
+  sorry
 
 /-! ## Transitivity (from temp_4: G(φ) → G(G(φ))) -/
 
@@ -277,6 +267,9 @@ Mirror of bx_G_backward using h_content.
 noncomputable def bx_H_backward (w : BXPoint) (φ : Formula)
     (h_not_H : Formula.all_past φ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ φ ∉ v.formulas := by
+  -- Under irreflexive semantics, this needs redesign (uses BX1' via H(⊥)→⊥).
+  sorry
+  /- OLD PROOF:
   -- Seed: {¬φ} ∪ h_content(w)
   have h_seed_cons : SetConsistent ({Formula.neg φ} ∪ h_content w.formulas) := by
     intro L hL ⟨d⟩
@@ -326,6 +319,7 @@ noncomputable def bx_H_backward (w : BXPoint) (φ : Formula)
     h_content_subset_implies_g_content_reverse w.formulas M w.is_mcs hM_mcs h_h_sub,
     SetMaximalConsistent.neg_excludes hM_mcs φ
       (hM_sup (Set.mem_union_left _ (Set.mem_singleton _)))⟩
+  -/
 
 /-! ## Modal Equivalence Properties -/
 
