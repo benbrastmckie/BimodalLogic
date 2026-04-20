@@ -48,9 +48,9 @@ theorem f_carry_subset (M : Set Formula) : f_carry M ⊆ M :=
   fun _ h => h.1
 
 /-- The enriched non-resolving seed: g_content(M) ∪ f_carry(M) consistent.
-Under irreflexive semantics, g_content(M) ⊆ M no longer follows from BX1.
+Under irreflexive semantics, g_content(M) ⊆ M does not follow from BX1.
 Consistency needs to be proved via seriality + MCS properties.
-Sorry'd pending Phase 2 redesign (canonical model repair). -/
+Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
 theorem enriched_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     SetConsistent (g_content M ∪ f_carry M) := by
   sorry
@@ -94,7 +94,7 @@ theorem fwd_succ_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
 
 /-- Under irreflexive semantics, f_carry is NOT preserved at non-resolving steps.
 The non-resolving branch only seeds with g_content(M).
-This theorem is no longer provable and is sorry'd for backward compatibility. -/
+Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
 theorem fwd_succ_f_carry (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
     (h_not_F : Formula.some_future ψ ∉ M) :
     f_carry M ⊆ fwd_succ M h_mcs ψ := by
@@ -109,11 +109,10 @@ def p_carry (M : Set Formula) : Set Formula :=
 theorem p_carry_subset (M : Set Formula) : p_carry M ⊆ M :=
   fun _ h => h.1
 
-/-- The enriched non-resolving seed for backward: h_content(M) ∪ p_carry(M) ⊆ M, hence consistent. -/
+/-- The enriched non-resolving seed for backward: h_content(M) ∪ p_carry(M) ⊆ M, hence consistent.
+Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
 theorem enriched_past_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     SetConsistent (h_content M ∪ p_carry M) := by
-  -- Under irreflexive semantics, h_content(M) ⊆ M no longer follows from BX1'.
-  -- Sorry'd pending Phase 2 redesign.
   sorry
 
 /-! ## Backward Step -/
@@ -160,7 +159,7 @@ theorem bwd_pred_resolves (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ
 
 /-- Under irreflexive semantics, p_carry is NOT preserved at non-resolving backward steps.
 The non-resolving branch only seeds with h_content(M).
-Sorry'd for backward compatibility. -/
+Sorry'd: this is dead code not on the active completeness path. See Phase 1 of the implementation plan. -/
 theorem bwd_pred_p_carry (M : Set Formula) (h_mcs : SetMaximalConsistent M) (ψ : Formula)
     (h_not_P : Formula.some_past ψ ∉ M) :
     p_carry M ⊆ bwd_pred M h_mcs ψ := by
@@ -200,14 +199,16 @@ theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) (t
 
 /-! ### g_content/h_content reflexivity under BX T-axioms -/
 
-/-- Under irreflexive semantics, g_content(M) ⊆ M does NOT hold (BX1 removed).
-Sorry'd pending Phase 2 redesign. -/
+/-- Under irreflexive semantics, g_content(M) ⊆ M does NOT hold in general (BX1 removed).
+Sorry'd: this is the reflexive base case of fwd/bwd_chain_g/h_content_trans.
+Phase 2 of the implementation plan changes FMCS to strict ordering, eliminating this reflexive case. -/
 theorem g_content_subset_self {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     g_content M ⊆ M := by
   sorry
 
-/-- Under irreflexive semantics, h_content(M) ⊆ M does NOT hold (BX1' removed).
-Sorry'd pending Phase 2 redesign. -/
+/-- Under irreflexive semantics, h_content(M) ⊆ M does NOT hold in general (BX1' removed).
+Sorry'd: this is the reflexive base case of bwd_chain_h_content_trans.
+Phase 2 of the implementation plan changes FMCS to strict ordering, eliminating this reflexive case. -/
 theorem h_content_subset_self {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
     h_content M ⊆ M := by
   sorry

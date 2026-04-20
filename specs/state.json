@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-20T22:48:51Z",
+      "last_updated": "2026-04-20T22:50:32Z",
       "dependencies": [
         93
       ],
@@ -458,7 +458,7 @@
         106
       ],
       "next_artifact_number": 3,
-      "session_id": "sess_1776724708_cdf4a4",
+      "session_id": "sess_1776725401_45dab9",
       "researched": "2026-04-20T22:30:43Z",
       "artifacts": [
         {
