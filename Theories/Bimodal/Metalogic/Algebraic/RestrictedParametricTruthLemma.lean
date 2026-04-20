@@ -193,7 +193,7 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     simp only [truth_at]
     constructor
     · intro h_G s hts
-      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ (le_of_lt hts) h_G
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
       exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
     · -- Backward: use restricted temporal coherence (strict version)
       intro h_all
@@ -212,7 +212,7 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     simp only [truth_at]
     constructor
     · intro h_H s hst
-      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ (le_of_lt hst) h_H
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
       exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
     · -- Backward: use restricted temporal coherence (strict version)
       intro h_all
@@ -391,7 +391,7 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     simp only [truth_at]
     constructor
     · intro h_G s hts
-      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ (le_of_lt hts) h_G
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
       exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
     · intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_rtc fam hfam
@@ -407,7 +407,7 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     simp only [truth_at]
     constructor
     · intro h_H s hst
-      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ (le_of_lt hst) h_H
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
       exact (ih h_ψ_sub fam hfam s).mp h_psi_mcs
     · intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_rtc fam hfam

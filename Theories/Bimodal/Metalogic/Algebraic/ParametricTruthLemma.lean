@@ -190,11 +190,11 @@ theorem parametric_box_persistent
   -- Step 3: Case split on s vs t
   rcases lt_trichotomy t s with h_lt | h_eq | h_gt
   · -- t < s: use forward_G
-    exact fam.forward_G t s (Formula.box φ) (le_of_lt h_lt) h_G_box
+    exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
   · -- t = s: box φ ∈ fam.mcs t = fam.mcs s
     exact h_eq ▸ h_box
   · -- s < t: use backward_H
-    exact fam.backward_H t s (Formula.box φ) (le_of_lt h_gt) h_H_box
+    exact fam.backward_H t s (Formula.box φ) h_gt h_H_box
 
 /-!
 ## The Parametric Canonical Truth Lemma
