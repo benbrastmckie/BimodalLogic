@@ -465,19 +465,6 @@ formulas at each step, using the BX11 fold via `resolving_enriched_fwd_exists`.
 This is essential for proving forward temporal coherence (restricted_tc).
 -/
 
-/-- φ → F(φ) is NOT derivable under irreflexive semantics (BX1 removed).
-This is the KEY insight: resolved defects no longer re-enter via φ → F(φ).
-Sorry'd -- Phase 3 will redesign defect_step_early to not use this. -/
-private noncomputable def phi_imp_F_phi_early (φ : Formula) :
-    ⊢ φ.imp φ.some_future := by
-  sorry
-
-/-- At MCS level: φ ∈ M → F(φ) ∈ M (early version). -/
-private theorem phi_in_mcs_imp_F_phi_early {M : Set Formula} (h_mcs : SetMaximalConsistent M)
-    (φ : Formula) (h : φ ∈ M) : φ.some_future ∈ M :=
-  SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (phi_imp_F_phi_early φ)) h
-
 /-- Active F-defects in sigma_list: formulas χ with F(χ) ∈ M.
     Uses classical decidability for the membership predicate. -/
 private noncomputable def active_defects (M : Set Formula)
@@ -982,21 +969,6 @@ theorem target_stays_direct_in_fold {M : Set Formula} (h_mcs : SetMaximalConsist
   · exact Or.inr ((h_data χ hχ).choose_spec.2.2 M' h_mcs'
       (F_conj_right_mcs h_mcs' target _ h_F_wrap))
 
-/-! ## φ → F(φ) -/
-
-/-- φ → F(φ) is derivable in BX.
-Under irreflexive semantics, φ → F(φ) is NOT derivable (BX1 removed).
-This is the key insight enabling defect count decrease. Sorry'd pending Phase 3 redesign. -/
-noncomputable def phi_imp_F_phi (φ : Formula) :
-    ⊢ φ.imp φ.some_future := by
-  sorry
-
-/-- At MCS level: φ ∈ M → F(φ) ∈ M. -/
-theorem phi_in_mcs_imp_F_phi {M : Set Formula} (h_mcs : SetMaximalConsistent M)
-    (φ : Formula) (h : φ ∈ M) : φ.some_future ∈ M :=
-  SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (phi_imp_F_phi φ)) h
-
 /-! ## Extended Defect Seed Consistency
 
 The key mathematical lemma: when the target is bx11_earlier than all other
@@ -1405,7 +1377,7 @@ its result beats all other elements; the downstream theorem uses
 
 `defect_step_from_earliest`: Wraps `resolving_enriched_fwd_exists` to give
 a step M' with: some defect w directly resolved, all other F-obligations
-preserved (F(χ) ∈ M' for ALL χ in the defect list via `phi_in_mcs_imp_F_phi`),
+preserved (χ ∈ M' ∨ F(χ) ∈ M' for ALL χ in the defect list),
 and g_content(M) ⊆ M'.
 -/
 
@@ -1511,141 +1483,5 @@ Given `F(ψ) ∈ chain(n)` with `ψ ∈ defects`:
 6. By well-founded induction on the number of OTHER active defects at step n,
    ψ is eventually resolved.
 -/
-
-/-! ### φ → P(φ) at MCS level -/
-
-/-- `φ → P(φ)` is NOT derivable under irreflexive semantics (BX1' removed).
-Sorry'd pending Phase 3 redesign. -/
-noncomputable def phi_imp_P_phi (φ : Formula) :
-    ⊢ φ.imp φ.some_past := by
-  sorry
-
-/-- At MCS level: φ ∈ M → P(φ) ∈ M. -/
-theorem phi_in_mcs_imp_P_phi {M : Set Formula} (h_mcs : SetMaximalConsistent M)
-    (φ : Formula) (h : φ ∈ M) : φ.some_past ∈ M :=
-  SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (phi_imp_P_phi φ)) h
-
-/-! ### Self-Resolving Seed: F(ψ) → F(ψ ∧ F(ψ)) -/
-
-/-- `φ → φ ∧ φ` is derivable. -/
-noncomputable def and_self_intro (φ : Formula) : ⊢ φ.imp (φ.and φ) :=
-  DerivationTree.modus_ponens [] _ _
-    (DerivationTree.modus_ponens [] _ _
-      (DerivationTree.axiom [] _ (Axiom.prop_k φ φ (φ.and φ)))
-      (Bimodal.Theorems.Combinators.pairing φ φ))
-    (Bimodal.Theorems.Combinators.identity φ)
-
-/-- `ψ → ψ ∧ F(ψ)` is derivable: pair ψ with F(ψ) using phi_imp_F_phi. -/
-noncomputable def phi_imp_phi_and_F_phi (ψ : Formula) :
-    ⊢ ψ.imp (ψ.and ψ.some_future) :=
-  Bimodal.Theorems.Combinators.combine_imp_conj
-    (Bimodal.Theorems.Combinators.identity ψ)
-    (phi_imp_F_phi ψ)
-
-/-- `F(ψ) → F(ψ ∧ F(ψ))` by F-monotonicity of `ψ → ψ ∧ F(ψ)`. -/
-noncomputable def F_and_self_F (ψ : Formula) :
-    ⊢ ψ.some_future.imp (ψ.and ψ.some_future).some_future :=
-  F_mono (phi_imp_phi_and_F_phi ψ)
-
-/-- At MCS level: F(ψ) ∈ M → F(ψ ∧ F(ψ)) ∈ M. -/
-theorem F_and_self_F_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h : ψ.some_future ∈ M) : (ψ.and ψ.some_future).some_future ∈ M :=
-  SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (F_and_self_F ψ)) h
-
-/-- Self-resolving forward step: given F(ψ) ∈ M, build M' with
-ψ ∈ M', F(ψ) ∈ M', and g_content(M) ⊆ M'.
-
-Uses the self-resolving seed {ψ, F(ψ)} ∪ g_content(M), which is consistent
-because F(ψ ∧ F(ψ)) ∈ M (by F_and_self_F_mcs) and enriched_resolving_seed_consistent
-gives {ψ, F(ψ)} ∪ g_content(M) consistent. -/
-noncomputable def self_resolving_fwd_step (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) : Set Formula :=
-  (set_lindenbaum (enriched_resolving_seed M ψ ψ.some_future)
-    (enriched_resolving_seed_consistent h_mcs ψ ψ.some_future
-      (F_and_self_F_mcs h_mcs ψ h_F))).choose
-
-theorem self_resolving_fwd_step_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
-    SetMaximalConsistent (self_resolving_fwd_step M h_mcs ψ h_F) :=
-  (set_lindenbaum (enriched_resolving_seed M ψ ψ.some_future)
-    (enriched_resolving_seed_consistent h_mcs ψ ψ.some_future
-      (F_and_self_F_mcs h_mcs ψ h_F))).choose_spec.2
-
-private theorem self_resolving_fwd_step_sup (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
-    enriched_resolving_seed M ψ ψ.some_future ⊆ self_resolving_fwd_step M h_mcs ψ h_F :=
-  (set_lindenbaum (enriched_resolving_seed M ψ ψ.some_future)
-    (enriched_resolving_seed_consistent h_mcs ψ ψ.some_future
-      (F_and_self_F_mcs h_mcs ψ h_F))).choose_spec.1
-
-theorem self_resolving_fwd_step_target (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
-    ψ ∈ self_resolving_fwd_step M h_mcs ψ h_F :=
-  self_resolving_fwd_step_sup M h_mcs ψ h_F
-    (Set.mem_union_left _ (Set.mem_insert _ _))
-
-theorem self_resolving_fwd_step_F_target (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
-    Formula.some_future ψ ∈ self_resolving_fwd_step M h_mcs ψ h_F :=
-  self_resolving_fwd_step_sup M h_mcs ψ h_F
-    (Set.mem_union_left _ (Set.mem_insert_of_mem _ rfl))
-
-theorem self_resolving_fwd_step_g_content (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h_F : Formula.some_future ψ ∈ M) :
-    g_content M ⊆ self_resolving_fwd_step M h_mcs ψ h_F :=
-  fun φ hφ => self_resolving_fwd_step_sup M h_mcs ψ h_F (Set.mem_union_right _ hφ)
-
-/-! ### P-monotonicity and P self-resolving -/
-
-/-- P-monotonicity: from ⊢ A → B, derive ⊢ P(A) → P(B). -/
-noncomputable def P_mono {A B : Formula} (h : ⊢ A.imp B) :
-    ⊢ A.some_past.imp B.some_past := by
-  have h1 := Bimodal.Theorems.Propositional.contraposition h
-  have h2 := Bimodal.Theorems.Perpetuity.past_mono h1
-  exact Bimodal.Theorems.Propositional.contraposition h2
-
-/-- `ψ → ψ ∧ P(ψ)` is derivable: pair ψ with P(ψ) using phi_imp_P_phi. -/
-noncomputable def phi_imp_phi_and_P_phi (ψ : Formula) :
-    ⊢ ψ.imp (ψ.and ψ.some_past) :=
-  Bimodal.Theorems.Combinators.combine_imp_conj
-    (Bimodal.Theorems.Combinators.identity ψ)
-    (phi_imp_P_phi ψ)
-
-/-- `P(ψ) → P(ψ ∧ P(ψ))` by P-monotonicity. -/
-noncomputable def P_and_self_P (ψ : Formula) :
-    ⊢ ψ.some_past.imp (ψ.and ψ.some_past).some_past :=
-  P_mono (phi_imp_phi_and_P_phi ψ)
-
-/-- At MCS level: P(ψ) ∈ M → P(ψ ∧ P(ψ)) ∈ M. -/
-theorem P_and_self_P_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent M)
-    (ψ : Formula) (h : ψ.some_past ∈ M) : (ψ.and ψ.some_past).some_past ∈ M :=
-  SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs (P_and_self_P ψ)) h
-
-/-! ### Forward Chain Step Selection -/
-
-/-- The forward chain step data: given M and a non-empty defect list with active
-F-obligations, selects a specific M' satisfying the step properties. Uses
-Classical.choice to pick from `defect_step_from_earliest`. -/
-noncomputable def defect_fwd_step_choice
-    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (defects : List Formula) (h_nonempty : defects ≠ [])
-    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) : Set Formula :=
-  (defect_step_from_earliest h_mcs defects h_nonempty h_F).choose
-
-private theorem defect_fwd_step_choice_spec
-    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (defects : List Formula) (h_nonempty : defects ≠ [])
-    (h_F : ∀ χ, χ ∈ defects → Formula.some_future χ ∈ M) :
-    SetMaximalConsistent (defect_fwd_step_choice M h_mcs defects h_nonempty h_F) ∧
-    g_content M ⊆ defect_fwd_step_choice M h_mcs defects h_nonempty h_F ∧
-    (∃ w ∈ defects, Formula.some_future w ∈ M ∧
-        w ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F) ∧
-    (∀ χ, χ ∈ defects →
-        χ ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F ∨
-        Formula.some_future χ ∈ defect_fwd_step_choice M h_mcs defects h_nonempty h_F) :=
-  (defect_step_from_earliest h_mcs defects h_nonempty h_F).choose_spec
 
 end Bimodal.Metalogic.BXCanonical
