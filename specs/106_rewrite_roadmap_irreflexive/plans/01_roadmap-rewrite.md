@@ -1,7 +1,7 @@
 # Implementation Plan: Rewrite ROADMAP for Irreflexive Semantics
 
 - **Task**: 106 - Rewrite ROADMAP for irreflexive semantics
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (documentation task; task 93 already completed)
 - **Research Inputs**: specs/106_rewrite_roadmap_irreflexive/reports/01_roadmap-rewrite-audit.md
@@ -70,7 +70,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Overview and Semantics Language Corrections [NOT STARTED]
+### Phase 1: Overview and Semantics Language Corrections [IN PROGRESS]
 
 **Goal**: Fix all "reflexive" -> "irreflexive" terminology in the overview, irreflexive semantics section, legacy code section, and Burgess-Xu section. Correct the axiom count in the overview.
 

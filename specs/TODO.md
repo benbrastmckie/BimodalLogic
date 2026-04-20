@@ -105,7 +105,7 @@ technical_debt:
 
 ### 108. Audit SoundnessLemmas.lean sorry sites
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-04-20
@@ -118,7 +118,7 @@ technical_debt:
 
 ### 107. Archive dead Quasimodel code to Boneyard
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-04-20
@@ -131,7 +131,7 @@ technical_debt:
 
 ### 106. Rewrite ROADMAP.md for irreflexive semantics
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: markdown
 - **Priority**: critical
 - **Created**: 2026-04-20
@@ -144,13 +144,14 @@ technical_debt:
 
 ### 105. Update stale sorry-blocker comments in BXCanonical code
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-04-12
 - **Related**: Tasks 93, 102
 - **Research**: [105_update_bxcanonical_comments/reports/01_stale-comments-audit.md]
 - **Plan**: [105_update_bxcanonical_comments/plans/01_stale-comments-update.md]
+- **Summary**: [105_update_bxcanonical_comments/summaries/01_stale-comments-summary.md]
 
 **Description**: Update stale sorry-blocker comments in BXCanonical code files. (1) Completeness.lean:149-153 lists Until/Since and Frame.lean X-vs-G mismatch as remaining blockers — these are now resolved by tasks 98+102. (2) Frame.lean:440-441 says "For now, sorry the full modal equivalence" but the proof is now complete. (3) BXCanonical.lean:20 says "sorry for full completeness" — should note only TaskModel embedding remains. (4) Verify no other stale sorry references in the 13 BXCanonical files. Also update X/Y operator docstrings in Formula.lean:328-334 (reference stale strict semantics).
 
