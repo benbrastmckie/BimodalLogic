@@ -118,12 +118,13 @@ technical_debt:
 
 ### 107. Archive dead Quasimodel code to Boneyard
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Priority**: high
 - **Created**: 2026-04-20
 - **Research**: [107_archive_dead_quasimodel_code/reports/01_quasimodel-archive-audit.md]
 - **Plan**: [107_archive_dead_quasimodel_code/plans/01_quasimodel-archive.md]
+- **Summary**: [107_archive_dead_quasimodel_code/summaries/01_quasimodel-archive-summary.md]
 
 **Description**: Move OracleStep.lean (25 sorries, orphaned), OracleCoherence.lean (14 sorries), and RoundRobinChain.lean (5 sorries) from BXCanonical to main Boneyard/. Remove from build chain. Net reduction ~44 sorry occurrences. Add README.
 

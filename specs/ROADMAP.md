@@ -113,7 +113,7 @@ were replaced by seriality axioms (`T → F(T)` / `T → P(T)`). This means:
 - `g_content_set_consistent` uses seriality instead of BX1: if G(bot) in MCS,
   seriality gives F(T) = not G(neg T), and G(bot) implies G(neg T) by ex falso,
   contradiction
-- BX8 is now the step axiom `φ ∧ F(φUψ) → (φUψ)` instead of reflexive intro
+- BX8/BX8' (until_step/since_step) were removed entirely -- not sound under irreflexive semantics
 - `φ → F(φ)` is NOT derivable -- this is the KEY insight for completeness:
   resolved defects do not re-enter as F-obligations
 
@@ -514,11 +514,10 @@ below for the approach that resolved the eventuality sorries.
 
 ## Legacy Code Inventory
 
-The following files were written under a strict-semantics architecture that
-has since been reverted to the all-reflexive BX system. They are **not
-imported by `BXCanonical`** and are not on the active completeness path.
-**Task 94** will archive them to `Boneyard/StrictSemanticsLegacy/`. Archiving
-these files drops approximately **~20 sorries** from the active (non-Boneyard,
+The following files were written under earlier architectural iterations and are
+**not imported by `BXCanonical`** and are not on the active completeness path.
+**Task 94** archived them to `Boneyard/StrictSemanticsLegacy/` (completed 2026-04-12).
+This dropped approximately **~20 sorries** from the active (non-Boneyard,
 non-Example) tree.
 
 | File | Approx sorries | Category | Imported by BXCanonical? |
@@ -573,8 +572,9 @@ See also the Stanford Encyclopedia of Philosophy:
 ### Key Result
 
 Burgess (1982), simplified by Xu (1988), gives a complete axiomatization of
-the Since-Until tense logic over **all reflexive linear orderings**. The BX
-axioms BX1-BX12 in `Axioms.lean` are modeled on this axiomatization.
+the Since-Until tense logic over **all linear orderings**. The BX axioms
+BX1-BX12 in `Axioms.lean` are modeled on this axiomatization, adapted for
+irreflexive semantics (BX1/BX1' replaced by seriality, BX8/BX8' removed).
 
 ### Axiom Roles in the Until-Induction Proof
 

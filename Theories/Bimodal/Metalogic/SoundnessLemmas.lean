@@ -930,7 +930,26 @@ private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → Fal
 /-- Temporal L axiom is locally valid (strict semantics). -/
 private theorem axiom_temp_l_valid (φ : Formula) :
     is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
-  sorry
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.always, Formula.and, Formula.neg, truth_at]
+  intro h_always s hts u hus
+  -- h_always encodes: ¬¬(Hφ ∧ ¬¬(φ(t) ∧ Gφ))
+  -- Extract past component
+  have h_past : ∀ r, r < t → truth_at M Omega τ r φ := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, hrt, h_neg⟩ := h_not
+    exact h_always fun h_H => absurd (h_H r hrt) h_neg
+  have h_present : truth_at M Omega τ t φ := by
+    by_contra h_not
+    exact h_always fun _ h_inner => h_inner (fun h_neg _ => h_neg h_not)
+  have h_future : �� r, t < r → truth_at M Omega τ r φ := by
+    by_contra h_not; push_neg at h_not
+    obtain ⟨r, htr, h_neg⟩ := h_not
+    exact h_always fun _ h_inner => h_inner (fun _ h_neg2 => h_neg2 r htr h_neg)
+  rcases lt_trichotomy u t with h_lt | h_eq | h_gt
+  · exact h_past u h_lt
+  · exact h_eq ▸ h_present
+  · exact h_future u h_gt
 
 /-- Modal-Future axiom is locally valid. -/
 private theorem axiom_modal_future_valid (φ : Formula) :
