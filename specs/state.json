@@ -1100,9 +1100,26 @@
       "description": "Audit 28 sorry occurrences in SoundnessLemmas.lean. Classify each as: (a) closeable under irreflexive semantics, (b) genuinely blocked, or (c) in block-commented/sorry-d theorem. Close straightforward ones. Document blocked ones with explanation.",
       "created": "2026-04-20T17:43:07Z",
       "last_updated": "2026-04-20T17:43:07Z"
+    },
+    {
+      "project_number": 109,
+      "project_name": "close_chain_construction_sorries",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Close the 11 active-path sorry sites blocking sorry-free completeness: 5 in RootScopedChain.lean (chain coherence) and 6 in CanonicalModel.lean (seed consistency and g/h_content subset identity without BX1). These form a dependency diamond rooted in the irreflexive semantics redesign of the canonical chain construction. This is the sole remaining obstacle to a sorry-free bx_completeness theorem.",
+      "created": "2026-04-20T17:47:26Z",
+      "last_updated": "2026-04-20T17:47:26Z",
+      "dependencies": [
+        93
+      ],
+      "related_tasks": [
+        95,
+        106
+      ]
     }
   ],
-  "next_project_number": 109,
+  "next_project_number": 110,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
