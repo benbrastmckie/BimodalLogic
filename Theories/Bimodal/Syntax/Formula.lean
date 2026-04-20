@@ -326,11 +326,11 @@ is trivially valid: if φ holds at ALL times, then at any future time z,
 def always (φ : Formula) : Formula := φ.all_past.and (φ.and φ.all_future)
 
 /-- Next-step operator: X(phi) = bot U phi.
-    Under discrete strict semantics, X(phi) at t means phi holds at t+1. -/
+    X(phi) at t means phi holds at t+1. -/
 def next (φ : Formula) : Formula := Formula.untl Formula.bot φ
 
 /-- Previous-step operator: Y(phi) = bot S phi.
-    Under discrete strict semantics, Y(phi) at t means phi holds at t-1. -/
+    Y(phi) at t means phi holds at t-1. -/
 def prev (φ : Formula) : Formula := Formula.snce Formula.bot φ
 
 /--

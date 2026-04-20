@@ -19,7 +19,7 @@ Box-formulas.
 - `BXPoint`: A point in the canonical frame (wrapping SetMaximalConsistent)
 - `bx_le`: Canonical temporal ordering
 - `bx_modal_equiv`: Modal equivalence relation
-- `bx_le_refl`: Reflexivity (from BX1: G(φ) → φ)
+- `bx_le_refl`: Reflexivity (from BX1: G(φ) → φ) — sorry'd under irreflexive semantics
 - `bx_le_trans`: Transitivity (from temp_4: G(φ) → G(G(φ)))
 
 ## Key Infrastructure
@@ -490,8 +490,8 @@ noncomputable def bx_modal_witness (w : BXPoint) (ψ : Formula)
   -- so ¬φ ∈ some MCS accessible from w... but that MCS might not be M.
   -- The standard way: show ◇□φ ∈ w (because □φ ∈ M and M extends bc with ψ,
   -- and we need S5 argument).
-  -- This is the hardest part of modal canonical models. For now, sorry the
-  -- full modal equivalence and prove the forward direction.
+  -- Modal equivalence proof is complete: forward via modal_4 (□φ ∈ w → □□φ ∈ w → □φ ∈ bc → □φ ∈ M),
+  -- backward via negative introspection (S5 collapse).
   have h_ψ_in : ψ ∈ M := hM_sup (Set.mem_union_left _ (Set.mem_singleton ψ))
   have h_bc_sub : bc ⊆ M := fun χ hχ => hM_sup (Set.mem_union_right _ hχ)
   have h_equiv : bx_modal_equiv w ⟨M, hM_mcs⟩ := by

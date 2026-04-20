@@ -25,11 +25,11 @@ theorem bx_completeness (φ : Formula) :
 
 ## Status
 
-The completeness proof is wired through `bx_countermodel` from CanonicalModel.lean.
+The completeness proof is wired through `dd_countermodel` from CanonicalModel.lean.
 The sorry at the proof site has been replaced with a proof using the BXCanonical
 canonical model construction and parametric algebraic representation theorem.
 
-Remaining leaf sorries are in CanonicalModel.lean (temporal coherence proofs).
+Remaining leaf sorries are in CanonicalModel.lean and RootScopedChain.lean (chain construction coherence proofs).
 
 ## References
 
@@ -113,12 +113,12 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 1. Assume φ is not derivable
 2. By `neg_consistent_of_not_derivable`: {¬φ} is consistent
 3. By Lindenbaum: extend to MCS w₀ with ¬φ ∈ w₀
-4. Build canonical model via `bx_countermodel` (CanonicalModel.lean)
+4. Build canonical model via `dd_countermodel` (CanonicalModel.lean)
 5. By parametric truth lemma: φ is false at the canonical evaluation point
 6. Instantiate `valid φ` at the canonical model to get truth, contradiction
 
-**Status**: Proof completed via `bx_countermodel`. Remaining leaf sorries
-are in CanonicalModel.lean (temporal coherence, modal saturation).
+**Status**: Proof completed via `dd_countermodel`. Remaining leaf sorries
+are in CanonicalModel.lean and RootScopedChain.lean (chain construction coherence).
 -/
 theorem bx_completeness (φ : Formula) :
     valid φ → Nonempty (DerivationTree [] φ) := by
