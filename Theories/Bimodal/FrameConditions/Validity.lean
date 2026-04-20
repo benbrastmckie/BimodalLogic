@@ -73,7 +73,7 @@ over all suitable D.
 -/
 def valid_linear (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [LinearTemporalFrame D], valid_over D φ
+    [Nontrivial D] [LinearTemporalFrame D], valid_over D φ
 
 /--
 A formula is valid over dense temporal frames if it is valid over all
@@ -108,14 +108,14 @@ This is immediate since `valid` quantifies over all D.
 theorem valid_of_forall_valid_over {φ : Formula}
     (h : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], valid_over D φ) :
     valid φ := by
-  intro D _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t
 
 /--
 Universal validity implies validity over any specific type.
 -/
 theorem valid_over_of_valid {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    {φ : Formula} (h : valid φ) : valid_over D φ := by
+    [Nontrivial D] {φ : Formula} (h : valid φ) : valid_over D φ := by
   intro F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t
 
@@ -165,7 +165,7 @@ theorem valid_discrete_fc_of_valid_discrete {φ : Formula} (h : valid_discrete �
 Universal validity implies linear validity.
 -/
 theorem valid_linear_of_valid {φ : Formula} (h : valid φ) : valid_linear φ := by
-  intro D _ _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t
 
 /--
@@ -183,7 +183,6 @@ Linear validity implies discrete validity (base axioms are valid on discrete fra
 theorem valid_discrete_fc_of_valid_linear {φ : Formula} (h : valid_linear φ) :
     valid_discrete_fc φ := by
   intro D _ _ _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
-  -- DiscreteTemporalFrame extends SerialFrame which extends LinearTemporalFrame
   haveI : LinearTemporalFrame D := {}
   exact h D F M Omega h_sc τ h_mem t
 

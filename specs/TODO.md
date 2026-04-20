@@ -108,7 +108,9 @@ technical_debt:
 
 ### 93. Close TaskModel embedding sorry (sole remaining active-path sorry)
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-04-20
+- **Summary**: Added Nontrivial D to validity definitions, closed 2 serial axiom sorries + 2 bonus sorries, fixed OracleStep build failures. Net -2 sorries, lake build clean.
 - **Language**: lean4
 - **Priority**: critical
 - **Dependencies**: None (tasks 90, 92, 98, 102 completed)

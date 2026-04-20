@@ -71,7 +71,8 @@ all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def valid (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) (M : TaskModel F)
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
     (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
     truth_at M Omega τ t φ
@@ -94,7 +95,8 @@ all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) (M : TaskModel F)
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
     (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
     (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) →
@@ -204,9 +206,9 @@ Valid formulas are semantic consequences of empty context.
 theorem valid_iff_empty_consequence (φ : Formula) :
     (⊨ φ) ↔ ([] ⊨ φ) := by
   constructor
-  · intro h D _ _ _ F M Omega h_sc τ h_mem t _
+  · intro h D _ _ _ _ F M Omega h_sc τ h_mem t _
     exact h D F M Omega h_sc τ h_mem t
-  · intro h D _ _ _ F M Omega h_sc τ h_mem t
+  · intro h D _ _ _ _ F M Omega h_sc τ h_mem t
     exact h D F M Omega h_sc τ h_mem t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 /--
@@ -214,7 +216,7 @@ Semantic consequence is monotonic: adding premises preserves consequences.
 -/
 theorem consequence_monotone {Γ Δ : Context} {φ : Formula} :
     Γ ⊆ Δ → (Γ ⊨ φ) → (Δ ⊨ φ) := by
-  intro h_sub h_cons D _ _ _ F M Omega h_sc τ h_mem t h_delta
+  intro h_sub h_cons D _ _ _ _ F M Omega h_sc τ h_mem t h_delta
   apply h_cons D F M Omega h_sc τ h_mem t
   intro ψ hψ
   exact h_delta ψ (h_sub hψ)
@@ -224,14 +226,14 @@ If a formula is valid, it is a semantic consequence of any context.
 -/
 theorem valid_consequence (φ : Formula) (Γ : Context) :
     (⊨ φ) → (Γ ⊨ φ) :=
-  fun h D _ _ _ F M Omega h_sc τ h_mem t _ => h D F M Omega h_sc τ h_mem t
+  fun h D _ _ _ _ F M Omega h_sc τ h_mem t _ => h D F M Omega h_sc τ h_mem t
 
 /--
 Context with all formulas true implies each formula individually true.
 -/
 theorem consequence_of_member {Γ : Context} {φ : Formula} :
     φ ∈ Γ → (Γ ⊨ φ) := by
-  intro h _ _ _ _ F M Omega h_sc τ h_mem t h_all
+  intro h _ _ _ _ _ F M Omega h_sc τ h_mem t h_all
   exact h_all φ h
 
 /--
@@ -244,7 +246,7 @@ consequence in that type, see `unsatisfiable_implies_all_fixed`.
 -/
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
     (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ¬satisfiable D Γ) → (Γ ⊨ φ) :=
-  fun h_unsat D _ _ _ F M Omega _h_sc τ h_mem t h_all =>
+  fun h_unsat D _ _ _ _ F M Omega _h_sc τ h_mem t h_all =>
     absurd ⟨F, M, Omega, τ, h_mem, t, h_all⟩ (h_unsat D)
 
 /--
@@ -276,17 +278,26 @@ this gives truth_at φ at t.
 -/
 theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.all_future φ)) :
     valid φ := by
-  intro D _ _ _ F M Omega h_sc τ h_mem t
-  -- Under strict semantics, G(φ) valid does not give φ valid without NoMaxOrder.
-  sorry
+  intro D _ _ _ _ F M Omega h_sc τ h_mem t
+  -- With Nontrivial D, we have NoMaxOrder D. Get s > t, then G(φ) at s gives φ at all r > s.
+  -- But G(φ) at t gives φ at all s > t. We need φ at t itself.
+  -- Actually under strict G: G(φ)(t) = ∀ s > t, φ(s). This does NOT give φ(t).
+  -- We need a different approach. G(φ) valid means ∀ t, ∀ s > t, φ(s).
+  -- By NoMinOrder, pick r < t, then G(φ)(r) gives φ at all s > r, including s = t (if t > r). QED.
+  have h_G := h D F M Omega h_sc τ h_mem
+  obtain ⟨r, hrt⟩ := exists_lt t
+  exact h_G r t hrt
 
 /--
 If H(φ) is valid, then φ is valid.
 -/
 theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.all_past φ)) :
     valid φ := by
-  intro D _ _ _ F M Omega h_sc τ h_mem t
-  sorry
+  intro D _ _ _ _ F M Omega h_sc τ h_mem t
+  -- H(φ) valid at all times. Pick s > t, then H(φ)(s) gives φ(t) since t < s.
+  have h_H := h D F M Omega h_sc τ h_mem
+  obtain ⟨s, hts⟩ := exists_gt t
+  exact h_H s t hts
 
 /--
 If □φ is valid, then φ is valid.
@@ -296,7 +307,7 @@ this gives truth_at φ at (τ, t).
 -/
 theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
     valid φ := by
-  intro D _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t τ h_mem
 
 end Validity

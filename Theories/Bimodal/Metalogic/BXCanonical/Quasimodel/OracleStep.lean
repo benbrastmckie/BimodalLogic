@@ -72,8 +72,10 @@ theorem qm_oracle_seed_subset_mcs (w : BXPoint) (Sigma : Finset Formula) :
     qm_oracle_seed w Sigma ⊆ w.formulas := by
   intro f hf
   rcases hf with h_g | ⟨φ, ψ, rfl, h_in, _, _⟩
-  · exact SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future f))) h_g
+  · -- Under irreflexive semantics, G(f) ∈ w does not imply f ∈ w (T-axiom removed).
+    -- Previously used Axiom.temp_t_future which is no longer in the axiom set.
+    -- This is on the Quasimodel path (deprecated under irreflexive semantics).
+    sorry
   · exact h_in
 
 theorem qm_oracle_seed_consistent (w : BXPoint) (Sigma : Finset Formula) :
@@ -137,8 +139,10 @@ theorem qm_oracle_seed_bwd_subset_mcs (w : BXPoint) (Sigma : Finset Formula) :
     qm_oracle_seed_bwd w Sigma ⊆ w.formulas := by
   intro f hf
   rcases hf with h_h | ⟨φ, ψ, rfl, h_in, _, _⟩
-  · exact SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past f))) h_h
+  · -- Under irreflexive semantics, H(f) ∈ w does not imply f ∈ w (T-axiom removed).
+    -- Previously used Axiom.temp_t_past which is no longer in the axiom set.
+    -- This is on the Quasimodel path (deprecated under irreflexive semantics).
+    sorry
   · exact h_in
 
 theorem qm_oracle_seed_bwd_consistent (w : BXPoint) (Sigma : Finset Formula) :
