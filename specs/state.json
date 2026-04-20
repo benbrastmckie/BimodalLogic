@@ -8,12 +8,12 @@
     {
       "project_number": 93,
       "project_name": "complete_bxcanonical_embedding",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "priority": "high",
       "description": "Close the remaining two BXCanonical sorries to complete the canonical model embedding: (1) the Box-direction sorry at BXCanonical/Frame.lean:440, which requires the standard canonical-model argument for modal Box using bx_modal_equiv; (2) the TaskModel embedding sorry at BXCanonical/Completeness.lean:154, which constructs a TaskModel from the BXPoint-based canonical frame. Once these are closed together with task 92, completeness_over_Int becomes sorry-free via BXCanonical, and #print axioms on the top-level completeness theorem should list only propext, Classical.choice, Quot.sound. Estimated 4-8 hours. Depends on task 92 (needs the truth lemma proved).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-20T17:06:53Z",
+      "last_updated": "2026-04-20T17:29:54Z",
       "related_tasks": [
         92,
         95
@@ -21,7 +21,7 @@
       "dependencies": [
         92
       ],
-      "session_id": "sess_1776704640_e3edef",
+      "session_id": "sess_1776704965_17f029",
       "researched": "2026-04-20T17:02:09Z",
       "artifacts": [
         {
@@ -333,6 +333,11 @@
           "path": "specs/093_complete_bxcanonical_embedding/plans/51_bxcanonical-embedding.md",
           "type": "plan",
           "summary": "Plan v51: add Nontrivial constraint, close 6 serial sorries, fix OracleStep (3 phases, 2.5h)"
+        },
+        {
+          "path": "specs/093_complete_bxcanonical_embedding/summaries/51_bxcanonical-embedding-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: Nontrivial fix, serial sorry closure, OracleStep repair"
         }
       ],
       "next_artifact_number": 52,
@@ -540,7 +545,9 @@
             "exists_between"
           ]
         }
-      ]
+      ],
+      "completed": "2026-04-20T17:29:54Z",
+      "completion_summary": "Added Nontrivial D to validity definitions, closed 2 serial axiom sorries + 2 bonus sorries, fixed OracleStep build failures. Net -2 sorries, lake build clean."
     },
     {
       "project_number": 95,

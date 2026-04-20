@@ -137,7 +137,7 @@ theorem bx_completeness (φ : Formula) :
   -- φ ∉ M (since ¬φ ∈ M and M is MCS)
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
   -- Build canonical model and derive contradiction
-  obtain ⟨D, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+  obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
     dd_countermodel M hM_mcs φ h_neg_in
   -- valid φ gives truth at every point, including the countermodel point
   exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)

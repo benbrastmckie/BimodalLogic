@@ -1118,12 +1118,12 @@ theorem dd_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsisten
 theorem dd_countermodel (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_neg_in : φ.neg ∈ M) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (F : TaskFrame D) (TM : TaskModel F)
+      (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
   let sigma_list := (extendedDeferralClosure φ).toList
-  refine ⟨Int, inferInstance, inferInstance, inferInstance,
+  refine ⟨Int, inferInstance, inferInstance, inferInstance, inferInstance,
     ParametricCanonicalTaskFrame Int, ParametricCanonicalTaskModel Int,
     ShiftClosedParametricCanonicalOmega (dd_bfmcs M h_mcs sigma_list),
     shiftClosedParametricCanonicalOmega_is_shift_closed _,

@@ -47,7 +47,7 @@ If `Γ ⊢ φ` (φ is derivable from Γ), then for any model over D,
 if all formulas in Γ are true, then φ is true.
 -/
 def soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ) :
+    [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ) :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
       (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
@@ -65,7 +65,7 @@ This is the strongest soundness theorem, applying to the widest class of frames.
 -/
 theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [LinearTemporalFrame D] :
+    [Nontrivial D] [LinearTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
       (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
@@ -109,7 +109,7 @@ Base axioms are valid on all linear temporal frames.
 -/
 theorem axiom_base_valid_linear {φ : Formula} (ax : Axiom φ) (h_base : ax.isBase)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [LinearTemporalFrame D] :
+    [Nontrivial D] [LinearTemporalFrame D] :
     valid_over D φ := by
   intro F M Omega h_sc τ h_mem t
   exact axiom_base_valid ax h_base D F M Omega h_sc τ h_mem t

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #93
 
 - **Task**: 93 - Complete BXCanonical embedding (seriality + Nontrivial fix)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/51_team-research.md
@@ -66,7 +66,7 @@ Phases 2 and 3 are independent of each other (both depend on Phase 1 for the upd
 
 ---
 
-### Phase 1: Add [Nontrivial D] to Validity Definitions [NOT STARTED]
+### Phase 1: Add [Nontrivial D] to Validity Definitions [COMPLETED]
 
 **Goal**: Add the `[Nontrivial D]` typeclass constraint to `valid`, `semantic_consequence`, and `dd_countermodel` in Validity.lean. Update all downstream signatures that reference these definitions.
 
@@ -94,7 +94,7 @@ Phases 2 and 3 are independent of each other (both depend on Phase 1 for the upd
 
 ---
 
-### Phase 2: Close Serial Axiom Sorry Sites [NOT STARTED]
+### Phase 2: Close Serial Axiom Sorry Sites [COMPLETED]
 
 **Goal**: Close all 6 serial axiom sorry sites using `exists_gt`/`exists_lt` now that `Nontrivial D` provides `NoMaxOrder D` and `NoMinOrder D`.
 
@@ -123,7 +123,7 @@ Phases 2 and 3 are independent of each other (both depend on Phase 1 for the upd
 
 ---
 
-### Phase 3: Fix OracleStep.lean Build Failures [NOT STARTED]
+### Phase 3: Fix OracleStep.lean Build Failures [COMPLETED]
 
 **Goal**: Fix compilation errors in OracleStep.lean caused by references to deleted `Axiom.temp_t_future` and `Axiom.temp_t_past` constructors.
 
