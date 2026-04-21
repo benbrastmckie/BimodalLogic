@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T01:15:56Z",
+      "last_updated": "2026-04-21T01:27:56Z",
       "dependencies": [
         93
       ],
@@ -458,7 +458,7 @@
         106
       ],
       "next_artifact_number": 5,
-      "session_id": "sess_1776733503_632b6a",
+      "session_id": "sess_1776734589_54a688",
       "researched": "2026-04-21T01:15:56Z",
       "artifacts": [
         {
@@ -477,11 +477,6 @@
           "summary": "Team research (4 teammates): BX11 deferral analysis, two viable paths identified"
         },
         {
-          "path": "specs/109_close_chain_construction_sorries/plans/03_implementation-plan.md",
-          "type": "plan",
-          "summary": "v3 plan: active defect finite descent (Path A) + quasimodel fallback (Path B). 6 phases, 14 hours."
-        },
-        {
           "path": "specs/109_close_chain_construction_sorries/summaries/03_chain-construction-summary.md",
           "type": "summary",
           "summary": "Partial implementation summary: 3 infrastructure lemmas added, phase 1 blocked on BX11 fold termination"
@@ -495,6 +490,11 @@
           "path": "specs/109_close_chain_construction_sorries/reports/04_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): deep analysis of BX11 termination blocker, 2 viable paths identified"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/plans/04_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v4: Path D (quasimodel run-composition) with 7 phases, 18 hours estimated"
         }
       ],
       "started": "2026-04-21T00:26:07Z"
