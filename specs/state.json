@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-20T23:56:41Z",
+      "last_updated": "2026-04-21T00:07:48Z",
       "dependencies": [
         93
       ],
@@ -457,9 +457,9 @@
         95,
         106
       ],
-      "next_artifact_number": 3,
-      "session_id": "sess_1776725401_45dab9",
-      "researched": "2026-04-20T22:30:43Z",
+      "next_artifact_number": 4,
+      "session_id": "sess_1776729500_24d339",
+      "researched": "2026-04-21T00:07:48Z",
       "artifacts": [
         {
           "path": "specs/109_close_chain_construction_sorries/plans/02_implementation-plan.md",
@@ -475,6 +475,11 @@
           "path": "specs/109_close_chain_construction_sorries/handoffs/01_phase3-analysis.md",
           "type": "handoff",
           "summary": "Deep analysis of F-defect resolution obstacle with recommended approaches"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): BX11 deferral analysis, two viable paths identified"
         }
       ]
     }
