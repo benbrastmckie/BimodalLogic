@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T01:31:29Z",
+      "last_updated": "2026-04-21T02:08:18Z",
       "dependencies": [
         93
       ],
@@ -457,9 +457,9 @@
         95,
         106
       ],
-      "next_artifact_number": 5,
-      "session_id": "sess_1776735066_6bc386",
-      "researched": "2026-04-21T01:15:56Z",
+      "next_artifact_number": 6,
+      "session_id": "sess_1776736722_f9f82d",
+      "researched": "2026-04-21T02:08:18Z",
       "artifacts": [
         {
           "path": "specs/109_close_chain_construction_sorries/summaries/02_implementation-summary.md",
@@ -505,6 +505,11 @@
           "path": "specs/109_close_chain_construction_sorries/summaries/04_chain-construction-summary.md",
           "type": "summary",
           "summary": "Partial implementation summary: blocked at analysis, fundamental Lindenbaum opacity blocker identified"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): step-indexed forced resolution and Sigma-restricted tracking identified as viable paths"
         }
       ],
       "started": "2026-04-21T00:26:07Z"
