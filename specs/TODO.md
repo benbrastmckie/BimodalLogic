@@ -37,7 +37,7 @@ technical_debt:
 109 → 95
 ```
 
-1. **109** [RESEARCHED] — Close 11 chain construction sorries (5 RootScopedChain + 6 CanonicalModel) — the hard open problem
+1. **109** [IMPLEMENTING] — Close 11 chain construction sorries (5 RootScopedChain + 6 CanonicalModel) — the hard open problem
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 109)
 
 ### 3. Independent Completeness Paths (parallel)
@@ -71,7 +71,7 @@ technical_debt:
 
 ### 109. Close chain construction sorries for sorry-free completeness
 - **Effort**: 20-40 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-20
