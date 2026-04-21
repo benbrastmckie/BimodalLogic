@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T03:57:30Z",
+      "last_updated": "2026-04-21T04:49:15Z",
       "dependencies": [
         93
       ],
@@ -458,7 +458,7 @@
         106
       ],
       "next_artifact_number": 7,
-      "session_id": "sess_1745189500_b4c8d2",
+      "session_id": "sess_1745190200_c5d9e3",
       "researched": "2026-04-21T02:52:20Z",
       "artifacts": [
         {
@@ -512,11 +512,6 @@
           "summary": "Team research (4 teammates): both approaches flawed, BX12 bridge and constructive discharge identified as viable"
         },
         {
-          "path": "specs/109_close_chain_construction_sorries/plans/06_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v5 using BX12 bridge to close 5 critical-path sorry sites in RootScopedChain.lean"
-        },
-        {
           "path": "specs/109_close_chain_construction_sorries/summaries/06_chain-construction-summary.md",
           "type": "summary",
           "summary": "Implementation summary: BX12 bridge blocked, chain redesign required, 0/5 phases completed"
@@ -525,6 +520,11 @@
           "path": "specs/109_close_chain_construction_sorries/handoffs/01_chain-redesign-handoff.md",
           "type": "handoff",
           "summary": "Handoff: chain redesign required for fwd_chain_forward_F, hybrid step approach proposed"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/plans/06_implementation-plan.md",
+          "type": "plan",
+          "summary": "v6 plan: hybrid forward chain with discharge_single_step at round-robin slots, 5 phases, 18 hours"
         }
       ],
       "started": "2026-04-21T00:26:07Z"

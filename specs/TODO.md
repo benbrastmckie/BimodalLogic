@@ -71,7 +71,7 @@ technical_debt:
 
 ### 109. Close chain construction sorries for sorry-free completeness
 - **Effort**: 20-40 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-20
