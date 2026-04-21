@@ -1,7 +1,7 @@
 # Implementation Plan: Close Chain Construction Sorries (v5)
 
 - **Task**: 109 - Close chain construction sorries
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: Task 93 (irreflexive semantics switch, completed)
 - **Research Inputs**: specs/109_close_chain_construction_sorries/reports/06_team-research.md
@@ -81,7 +81,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: BX12 Bridge for Sorry #1 (fwd_chain_forward_F) [NOT STARTED]
+### Phase 1: BX12 Bridge for Sorry #1 (fwd_chain_forward_F) [BLOCKED]
 
 **Goal**: Close the keystone sorry at RootScopedChain.lean:1134 by reducing F-eventuality to Until-eventuality via BX12, then applying the sorry-free `bx_until_eventuality_resolution` infrastructure.
 
