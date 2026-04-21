@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T00:24:01Z",
+      "last_updated": "2026-04-21T00:26:07Z",
       "dependencies": [
         93
       ],
@@ -458,7 +458,7 @@
         106
       ],
       "next_artifact_number": 4,
-      "session_id": "sess_1776730700_1db5e8",
+      "session_id": "sess_1776731155_a31b32",
       "researched": "2026-04-21T00:07:48Z",
       "artifacts": [
         {
@@ -480,8 +480,19 @@
           "path": "specs/109_close_chain_construction_sorries/plans/03_implementation-plan.md",
           "type": "plan",
           "summary": "v3 plan: active defect finite descent (Path A) + quasimodel fallback (Path B). 6 phases, 14 hours."
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/summaries/03_chain-construction-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation summary: 3 infrastructure lemmas added, phase 1 blocked on BX11 fold termination"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/handoffs/01_phase1-analysis.md",
+          "type": "handoff",
+          "summary": "Phase 1 gap analysis with 4 recommended approaches"
         }
-      ]
+      ],
+      "started": "2026-04-21T00:26:07Z"
     }
   ],
   "next_project_number": 111,

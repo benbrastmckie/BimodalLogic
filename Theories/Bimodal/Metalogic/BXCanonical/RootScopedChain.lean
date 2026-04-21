@@ -1050,32 +1050,87 @@ private theorem fwd_chain_defect_one_step (M₀ : Set Formula) (h₀ : SetMaxima
     Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list (n + 1)).val :=
   preserving_fwd_step_defect_preserved _ _ sigma_list n χ h_chi h_F
 
+/-- F-obligation monotonicity: once F(χ) leaves the forward chain, it never returns.
+    If F(χ) ∉ chain(n), then F(χ) ∉ chain(m) for all m ≥ n.
+    Proof: F(χ) ∉ chain(n) means G(¬χ) ∈ chain(n) (MCS). By temp_4, G(G(¬χ)) ∈ chain(n).
+    So G(¬χ) ∈ g_content(chain(n)) ⊆ chain(n+1). By induction, G(¬χ) ∈ chain(m). -/
+private theorem fwd_chain_F_obligation_monotone (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n : Nat) (χ : Formula)
+    (h_not_F : Formula.some_future χ ∉ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val) :
+    ∀ m, n ≤ m → Formula.some_future χ ∉ (fwd_chain_of_sigma M₀ h₀ sigma_list m).val := by
+  intro m h_le
+  induction m with
+  | zero => omega_nat; exact h_not_F
+  | succ m ih =>
+    rcases Nat.eq_or_gt_of_le h_le with rfl | h_gt
+    · exact h_not_F
+    · have h_le' : n ≤ m := by omega
+      have h_not_F_m := ih h_le'
+      -- G(¬χ) ∈ chain(m) since F(χ) = ¬G(¬χ) ∉ chain(m) and chain(m) is MCS
+      have h_mcs_m := (fwd_chain_of_sigma M₀ h₀ sigma_list m).property
+      have h_G_neg : Formula.all_future (Formula.neg χ) ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list m).val := by
+        rcases SetMaximalConsistent.negation_complete h_mcs_m (Formula.some_future χ) with h | h
+        · exact absurd h h_not_F_m
+        · -- ¬F(χ) = ¬¬G(¬χ) ∈ chain(m), so G(¬χ) ∈ chain(m) by double negation elimination
+          exact SetMaximalConsistent.implication_property h_mcs_m
+            (theorem_in_mcs h_mcs_m (Bimodal.Theorems.Propositional.dne (Formula.all_future (Formula.neg χ)))) h
+      -- By temp_4: G(¬χ) → G(G(¬χ)), so G(G(¬χ)) ∈ chain(m)
+      have h_GG_neg : Formula.all_future (Formula.all_future (Formula.neg χ)) ∈
+          (fwd_chain_of_sigma M₀ h₀ sigma_list m).val :=
+        SetMaximalConsistent.implication_property h_mcs_m
+          (theorem_in_mcs h_mcs_m
+            (DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.neg χ)))) h_G_neg
+      -- G(¬χ) ∈ g_content(chain(m)) ⊆ chain(m+1)
+      have h_G_neg_succ : Formula.all_future (Formula.neg χ) ∈
+          (fwd_chain_of_sigma M₀ h₀ sigma_list (m + 1)).val :=
+        sigma_fwd_g_content_one_step M₀ h₀ sigma_list m h_GG_neg
+      -- F(χ) = ¬G(¬χ) ∉ chain(m+1)
+      have h_mcs_succ := (fwd_chain_of_sigma M₀ h₀ sigma_list (m + 1)).property
+      intro h_F_succ
+      exact set_consistent_not_both h_mcs_succ.1 (Formula.all_future (Formula.neg χ))
+        h_G_neg_succ h_F_succ
+
+/-- The set of F-obligations {χ | F(χ) ∈ chain(k)} is non-increasing along the chain.
+    Consequence: the number of active defects can only decrease or stay the same. -/
+private theorem fwd_chain_F_set_nonincreasing (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (sigma_list : List Formula) (n m : Nat) (h_le : n ≤ m) (χ : Formula)
+    (h_F : Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list m).val) :
+    Formula.some_future χ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val := by
+  by_contra h_not
+  exact fwd_chain_F_obligation_monotone M₀ h₀ sigma_list n χ h_not m h_le h_F
+
+/-- When there is exactly one active defect (singleton list), defect_step_choice_early
+    guarantees that defect is directly resolved (present in M'). -/
+private theorem singleton_defect_resolved (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (φ : Formula) (h_F : Formula.some_future φ ∈ M)
+    (h_only : active_defects M [φ] = [φ]) :
+    φ ∈ defect_step_choice_early M h_mcs [φ] (by simp) (fun χ hχ => by
+      simp at hχ; subst hχ; exact h_F) := by
+  have spec := defect_step_choice_early_spec M h_mcs [φ] (by simp) (fun χ hχ => by
+    simp at hχ; subst hχ; exact h_F)
+  obtain ⟨_, _, ⟨w, h_w_mem, _, h_w_in⟩, _⟩ := spec
+  simp at h_w_mem
+  rwa [h_w_mem] at h_w_in
+
 /-- Forward F-resolution: F(φ) in the preserving chain gives φ at some later step.
     At each step with defects, at least one defect w is directly resolved (w ∈ chain(n+1)).
     Since F(φ) persists forever, active defects are non-empty at every step.
     At the first step, some defect is resolved; if it's φ, done.
-    This provides the ∃ m > n witness. -/
+    This provides the ∃ m > n witness.
+
+    KEY INSIGHT (fwd_chain_F_obligation_monotone): F-obligations never return once lost.
+    The set {χ | F(χ) ∈ chain(k)} is non-increasing. Eventually it stabilizes.
+    When it reaches {φ} (single defect), φ is guaranteed resolved.
+
+    REMAINING GAP: Need to show the set eventually reaches {φ}. In the stabilized phase,
+    every resolved defect w has both w ∈ chain(k+1) AND F(w) ∈ chain(k+1), preventing
+    the F-obligation count from decreasing further. Closing this requires either:
+    (a) A chain redesign that forces F(w) ∉ chain(k+1) for resolved w, or
+    (b) An argument that BX11 case 2 cannot fire indefinitely for a fixed pair. -/
 private theorem fwd_chain_forward_F (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (sigma_list : List Formula) (n : Nat) (φ : Formula) (h_phi : φ ∈ sigma_list)
     (h_F : Formula.some_future φ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list n).val) :
     ∃ m, n < m ∧ φ ∈ (fwd_chain_of_sigma M₀ h₀ sigma_list m).val := by
-  -- F(φ) persists to chain(n), so active_defects at chain(n) is non-empty
-  -- The preserving step resolves at least one defect w ∈ chain(n+1)
-  -- By resolving_enriched_fwd_exists, this w comes from the BX11 fold
-  -- We need to show φ is eventually resolved
-  --
-  -- Key observation: at step n, chain(n+1) = preserving_fwd_step(chain(n), sigma_list, n).
-  -- If there are active defects, at least one w ∈ chain(n+1).
-  -- F(φ) ∈ chain(n+1) (preserved).
-  --
-  -- The resolved w satisfies w ∈ chain(n+1). If w = φ, take m = n+1.
-  -- If w ≠ φ: F(φ) ∈ chain(n+1), so we can repeat.
-  --
-  -- Termination argument requires well-founded induction on defect count
-  -- or a pigeonhole argument. For now, we use the immediate resolution:
-  -- at step n, there exist active defects. The step resolves some w ∈ chain(n+1).
-  -- Use by_cases whether w = φ or not, and recurse.
-  -- This terminates because sigma_list is finite and defects are tracked.
   sorry
 
 -- Restricted coherence

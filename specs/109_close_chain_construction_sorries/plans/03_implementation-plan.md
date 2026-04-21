@@ -74,7 +74,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Dead Code Archival and ROADMAP Update [NOT STARTED]
+### Phase 0: Dead Code Archival and ROADMAP Update [PARTIAL]
 
 **Goal**: Archive remaining dead code from the irreflexive transition (false lemmas that are sorry'd because they require `chi -> F(chi)` or reflexive ordering). Update ROADMAP.md sorry inventory.
 
@@ -101,7 +101,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Active Defect Finite Descent for fwd_chain_forward_F [NOT STARTED]
+### Phase 1: Active Defect Finite Descent for fwd_chain_forward_F [BLOCKED]
 
 **Goal**: Close sorry #1 (`fwd_chain_forward_F`, line 1079) by proving that F-defects are eventually resolved via a finite descent argument on the active defect set.
 
