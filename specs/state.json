@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T02:52:20Z",
+      "last_updated": "2026-04-21T03:55:11Z",
       "dependencies": [
         93
       ],
@@ -458,7 +458,7 @@
         106
       ],
       "next_artifact_number": 7,
-      "session_id": "sess_1776739165_d98a94",
+      "session_id": "sess_1745189400_a3b7c1",
       "researched": "2026-04-21T02:52:20Z",
       "artifacts": [
         {
@@ -492,11 +492,6 @@
           "summary": "Team research (4 teammates): deep analysis of BX11 termination blocker, 2 viable paths identified"
         },
         {
-          "path": "specs/109_close_chain_construction_sorries/plans/04_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v4: Path D (quasimodel run-composition) with 7 phases, 18 hours estimated"
-        },
-        {
           "path": "specs/109_close_chain_construction_sorries/handoffs/04_fwd-chain-analysis.md",
           "type": "handoff",
           "summary": "Deep analysis: fwd_chain_forward_F unprovable with current chain construction, 3 redesign paths identified"
@@ -515,6 +510,11 @@
           "path": "specs/109_close_chain_construction_sorries/reports/06_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): both approaches flawed, BX12 bridge and constructive discharge identified as viable"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/plans/06_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v5 using BX12 bridge to close 5 critical-path sorry sites in RootScopedChain.lean"
         }
       ],
       "started": "2026-04-21T00:26:07Z"
