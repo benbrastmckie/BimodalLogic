@@ -88,6 +88,7 @@ technical_debt:
   - [109_close_chain_construction_sorries/reports/09_team-research.md]
   - [109_close_chain_construction_sorries/reports/10_reflexive-until-evaluation.md]
   - [109_close_chain_construction_sorries/reports/11_team-research.md]
+  - [109_close_chain_construction_sorries/reports/12_van-benthem-analysis.md]
 - **Plan**:
   - [109_close_chain_construction_sorries/plans/02_implementation-plan.md]
   - [109_close_chain_construction_sorries/plans/03_implementation-plan.md]
