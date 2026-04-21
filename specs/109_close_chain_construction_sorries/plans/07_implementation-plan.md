@@ -69,7 +69,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Archive Dead Code and Update ROADMAP [NOT STARTED]
+### Phase 1: Archive Dead Code and Update ROADMAP [COMPLETED]
 
 **Goal**: Remove the unfixable `fwd_chain_of_sigma` / `dd_bfmcs` construction and dead code from RootScopedChain.lean. Archive to Boneyard. Update ROADMAP.md to reflect the architectural pivot.
 
@@ -97,7 +97,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Rewire dd_countermodel to bx_fmcs [NOT STARTED]
+### Phase 2: Rewire dd_countermodel to bx_fmcs [COMPLETED]
 
 **Goal**: Replace `dd_countermodel` to use the sorry-free `bx_fmcs` / `shifted_bx_fmcs` from `CanonicalModel.lean` instead of the archived `dd_bfmcs`. Define a new `bx_bfmcs` (BFMCS wrapper) and new coherence theorem stubs.
 
@@ -124,7 +124,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove restricted_tc (F/P resolution) [NOT STARTED]
+### Phase 3: Prove restricted_tc (F/P resolution) [BLOCKED]
 
 **Goal**: Close the `bx_bfmcs_restricted_tc` sorry by proving temporal coherence for the schedule-based chain. This resolves 3 of the original 5 sorry sites (forward F-resolution, backward-region F-resolution, backward P-resolution).
 
@@ -154,7 +154,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Prove restricted_fuc (forward Until/Since coherence) [NOT STARTED]
+### Phase 4: Prove restricted_fuc (forward Until/Since coherence) [BLOCKED]
 
 **Goal**: Close `bx_bfmcs_restricted_fuc` by proving forward Until/Since coherence using F-resolution from Phase 3 + guard persistence via BX5/BX9.
 
@@ -187,7 +187,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Backward Until/Since Coherence and Final Audit [NOT STARTED]
+### Phase 5: Backward Until/Since Coherence and Final Audit [BLOCKED]
 
 **Goal**: Attempt to close `bx_bfmcs_restricted_buc` (backward Until/Since coherence). Run `#print axioms` audit. Document results.
 
