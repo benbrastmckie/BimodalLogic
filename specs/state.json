@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T17:11:51Z",
+      "last_updated": "2026-04-21T17:21:44Z",
       "dependencies": [
         93
       ],
@@ -458,7 +458,7 @@
         106
       ],
       "next_artifact_number": 13,
-      "session_id": "sess_1776789868_57d306",
+      "session_id": "sess_1776791649_5f253a",
       "researched": "2026-04-21T16:58:20Z",
       "artifacts": [
         {
@@ -527,11 +527,6 @@
           "summary": "Team research (4 teammates): breakthrough finding - rewire dd_countermodel to sorry-free bx_fmcs construction"
         },
         {
-          "path": "specs/109_close_chain_construction_sorries/plans/07_implementation-plan.md",
-          "type": "plan",
-          "summary": "v7 plan: archive dead code, rewire dd_countermodel to bx_fmcs, prove restricted_tc/fuc/buc, 5 phases, 14 hours"
-        },
-        {
           "path": "specs/109_close_chain_construction_sorries/summaries/07_chain-construction-summary.md",
           "type": "summary",
           "summary": "Partial implementation: phases 1-2 completed, 3-5 blocked. Sorries reduced 5->3, code 1556->229 lines."
@@ -560,6 +555,11 @@
           "path": "specs/109_close_chain_construction_sorries/reports/12_van-benthem-analysis.md",
           "type": "research",
           "summary": "Van Benthem irreflexivity undefinability: reconciled with same-validities claim, no obstruction to two-phase strategy"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/plans/12_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v8: 11 phases (reflexive completeness + irreflexive B1), 55h total"
         }
       ],
       "started": "2026-04-21T00:26:07Z"
