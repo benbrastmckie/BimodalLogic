@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T01:27:56Z",
+      "last_updated": "2026-04-21T01:31:29Z",
       "dependencies": [
         93
       ],
@@ -458,7 +458,7 @@
         106
       ],
       "next_artifact_number": 5,
-      "session_id": "sess_1776734589_54a688",
+      "session_id": "sess_1776735066_6bc386",
       "researched": "2026-04-21T01:15:56Z",
       "artifacts": [
         {
@@ -495,6 +495,16 @@
           "path": "specs/109_close_chain_construction_sorries/plans/04_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan v4: Path D (quasimodel run-composition) with 7 phases, 18 hours estimated"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/handoffs/04_fwd-chain-analysis.md",
+          "type": "handoff",
+          "summary": "Deep analysis: fwd_chain_forward_F unprovable with current chain construction, 3 redesign paths identified"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/summaries/04_chain-construction-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation summary: blocked at analysis, fundamental Lindenbaum opacity blocker identified"
         }
       ],
       "started": "2026-04-21T00:26:07Z"
