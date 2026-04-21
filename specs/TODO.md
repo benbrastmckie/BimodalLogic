@@ -82,6 +82,7 @@ technical_debt:
   - [specs/109_close_chain_construction_sorries/reports/03_team-research.md]
   - [109_close_chain_construction_sorries/reports/04_team-research.md]
   - [109_close_chain_construction_sorries/reports/05_team-research.md]
+  - [109_close_chain_construction_sorries/reports/06_team-research.md]
 - **Plan**:
   - [109_close_chain_construction_sorries/plans/02_implementation-plan.md]
   - [109_close_chain_construction_sorries/plans/03_implementation-plan.md]

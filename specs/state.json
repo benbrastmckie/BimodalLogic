@@ -449,7 +449,7 @@
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T02:08:18Z",
+      "last_updated": "2026-04-21T02:52:20Z",
       "dependencies": [
         93
       ],
@@ -457,9 +457,9 @@
         95,
         106
       ],
-      "next_artifact_number": 6,
-      "session_id": "sess_1776736722_f9f82d",
-      "researched": "2026-04-21T02:08:18Z",
+      "next_artifact_number": 7,
+      "session_id": "sess_1776739165_d98a94",
+      "researched": "2026-04-21T02:52:20Z",
       "artifacts": [
         {
           "path": "specs/109_close_chain_construction_sorries/summaries/02_implementation-summary.md",
@@ -510,6 +510,11 @@
           "path": "specs/109_close_chain_construction_sorries/reports/05_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): step-indexed forced resolution and Sigma-restricted tracking identified as viable paths"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/reports/06_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): both approaches flawed, BX12 bridge and constructive discharge identified as viable"
         }
       ],
       "started": "2026-04-21T00:26:07Z"
