@@ -444,12 +444,12 @@
     {
       "project_number": 109,
       "project_name": "close_chain_construction_sorries",
-      "status": "planned",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
       "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T04:49:15Z",
+      "last_updated": "2026-04-21T05:05:59Z",
       "dependencies": [
         93
       ],
@@ -457,9 +457,9 @@
         95,
         106
       ],
-      "next_artifact_number": 7,
-      "session_id": "sess_1745190200_c5d9e3",
-      "researched": "2026-04-21T02:52:20Z",
+      "next_artifact_number": 8,
+      "session_id": "sess_1745187600_b947d9",
+      "researched": "2026-04-21T05:05:59Z",
       "artifacts": [
         {
           "path": "specs/109_close_chain_construction_sorries/summaries/02_implementation-summary.md",
@@ -525,6 +525,11 @@
           "path": "specs/109_close_chain_construction_sorries/plans/06_implementation-plan.md",
           "type": "plan",
           "summary": "v6 plan: hybrid forward chain with discharge_single_step at round-robin slots, 5 phases, 18 hours"
+        },
+        {
+          "path": "specs/109_close_chain_construction_sorries/reports/07_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): breakthrough finding - rewire dd_countermodel to sorry-free bx_fmcs construction"
         }
       ],
       "started": "2026-04-21T00:26:07Z"
