@@ -563,6 +563,61 @@
         }
       ],
       "started": "2026-04-21T00:26:07Z"
+    },
+    {
+      "project_number": 107,
+      "project_name": "chain_design_diagnostics_for_representation_theorem",
+      "status": "planned",
+      "language": "lean4",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
+      "created": "2026-04-23T22:39:08Z",
+      "last_updated": "2026-04-23T22:47:08Z",
+      "researched": "2026-04-23T22:39:08Z",
+      "related_tasks": [
+        93
+      ],
+      "dependencies": [],
+      "next_artifact_number": 7,
+      "artifacts": [
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
+          "type": "report",
+          "summary": "Initial 7-area diagnostic analysis"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/02_chain-design-diagnostics.md",
+          "type": "report",
+          "summary": "24 Lean diagnostics: 9 dead ends, 3 viable paths"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/03_team-research.md",
+          "type": "report",
+          "summary": "Team research: 3 corrections, verified Until guard theorem, finite witness chains recommended"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/04_literature-sources.md",
+          "type": "report",
+          "summary": "Literature search: 8 papers, 4 free PDFs"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/05_team-research.md",
+          "type": "report",
+          "summary": "Literature study: Burgess chronicle with binary g(x,y) is the correct architecture"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/06_team-research.md",
+          "type": "report",
+          "summary": "Semantic design: strict G/H enables direct Burgess, Box+G+H quick win, phased adoption"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/06_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for Burgess chronicle construction targeting sorry-free bx_completeness (22 hours)"
+        }
+      ],
+      "session_id": "sess_1776983958_45e9d3"
     }
   ],
   "next_project_number": 111,
