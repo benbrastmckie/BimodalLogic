@@ -97,7 +97,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Burgess Chronicle Type and r-Relation (Lemmas 2.2-2.3) [NOT STARTED]
+### Phase 2: Burgess Chronicle Type and r-Relation (Lemmas 2.2-2.3) [PARTIAL]
 
 **Goal**: Define the chronicle data structure and establish the r-relation infrastructure from Burgess Section 2.
 
@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Point Insertion Lemmas (2.4-2.8) [NOT STARTED]
+### Phase 3: Point Insertion Lemmas (2.4-2.8) [PARTIAL]
 
 **Goal**: Implement the core point insertion machinery that enables chronicle extension.
 

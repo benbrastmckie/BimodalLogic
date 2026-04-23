@@ -1,0 +1,325 @@
+import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Bundle.TemporalContent
+import Bimodal.Metalogic.BXCanonical.Frame
+import Mathlib.Data.Rat.Defs
+
+/-!
+# Chronicle Types for Burgess 1982 Construction
+
+This module defines the chronicle data structure from Burgess 1982, Section 2,
+adapted for irreflexive (strict) temporal semantics.
+
+## Overview
+
+A **chronicle** is a triple `(f, g, dom)` where:
+- `f : Rat -> Set Formula` maps rational time points to maximal consistent sets (MCS)
+- `g : Rat -> Rat -> Set Formula` maps adjacent intervals to deductively closed sets (DCS)
+- `dom : Finset Rat` is the finite domain of defined time points
+
+## Key Definitions
+
+- `SetDeductivelyClosed`: A set of formulas closed under derivation
+- `rRelation`: The r-relation from Burgess Lemma 2.3
+- `rMaximal`: B is a maximal DCS with r(A, B)
+- `Chronicle`: The core data structure
+- `Chronicle.c0`-`c5'`: The chronicle conditions
+
+## Design Notes
+
+The r-relation captures Until-propagation conditions that g_content alone cannot
+provide. Where g_content(A) = {phi | G(phi) in A} captures universal future
+propagation, the r-relation additionally tracks which Until-obligations from A
+are resolved vs. continuing in the interval set B. This is exactly why the
+chronicle needs a binary interval function g(x,y) rather than the unary
+g_content approach used in the existing chain construction.
+
+## Adaptation for Strict Semantics
+
+Under strict (irreflexive) semantics, the Until operator `phi U psi` at time t
+requires a witness s > t (strict) with psi(s) and guard phi on [t,s) (half-open).
+The Burgess construction's use of A3a is replaced by direct application of
+BX4 (connect_future), BX5 (self_accum_until), and BX9 (until_elim).
+
+## References
+
+- Burgess 1982: "Axioms for tense logic II: Time periods"
+- Burgess 1984: "Basic tense logic"
+-/
+
+namespace Bimodal.Metalogic.BXCanonical.Chronicle
+
+open Bimodal.Syntax
+open Bimodal.ProofSystem
+open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Bundle
+
+/-! ## Deductively Closed Sets (DCS) -/
+
+/--
+A set of formulas is **deductively closed** if it is consistent and closed
+under derivation: whenever all premises of a derivation are in the set,
+the conclusion is also in the set.
+
+Every MCS is deductively closed, but not every DCS is maximal.
+DCS are used for the interval function `g(x,y)` in the chronicle,
+which describes the formulas that hold throughout an interval.
+-/
+def SetDeductivelyClosed (S : Set Formula) : Prop :=
+  SetConsistent S ∧
+  ∀ (L : List Formula) (φ : Formula),
+    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree L φ) → φ ∈ S
+
+/-- Every MCS is deductively closed. -/
+theorem mcs_is_dcs {S : Set Formula} (h : SetMaximalConsistent S) :
+    SetDeductivelyClosed S :=
+  ⟨h.1, fun L _ hL hd => SetMaximalConsistent.closed_under_derivation h L hL hd⟩
+
+/-- A DCS contains all theorems. -/
+theorem dcs_contains_theorems {S : Set Formula} (h : SetDeductivelyClosed S)
+    {φ : Formula} (hd : DerivationTree [] φ) : φ ∈ S :=
+  h.2 [] φ (fun _ h => absurd h List.not_mem_nil) hd
+
+/-- A DCS is consistent. -/
+theorem dcs_consistent {S : Set Formula} (h : SetDeductivelyClosed S) :
+    SetConsistent S := h.1
+
+/-- Modus ponens in a DCS: if phi -> psi and phi are in S, then psi is in S. -/
+theorem dcs_modus_ponens {S : Set Formula} (h : SetDeductivelyClosed S)
+    {φ ψ : Formula} (h_imp : φ.imp ψ ∈ S) (h_phi : φ ∈ S) : ψ ∈ S := by
+  apply h.2 [φ, φ.imp ψ] ψ
+  · intro χ h_mem
+    simp only [List.mem_cons, List.mem_nil_iff, or_false] at h_mem
+    rcases h_mem with rfl | rfl
+    · exact h_phi
+    · exact h_imp
+  · exact DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ
+      (DerivationTree.assumption _ (φ.imp ψ) (by simp))
+      (DerivationTree.assumption _ φ (by simp))
+
+/-- A DCS is closed under conjunction: if phi, psi in S then phi ∧ psi in S. -/
+theorem dcs_conj_closed {S : Set Formula} (h : SetDeductivelyClosed S)
+    {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S := by
+  -- phi ∧ psi = ¬(phi → ¬psi)
+  -- We have ⊢ phi → (psi → phi ∧ psi) (pairing)
+  have h_pair := dcs_contains_theorems h (Bimodal.Theorems.Combinators.pairing φ ψ)
+  exact dcs_modus_ponens h (dcs_modus_ponens h h_pair h_phi) h_psi
+
+/-! ## Adjacency predicate -/
+
+/--
+Two domain points x < y are **adjacent** in the domain dom if there is
+no z in dom strictly between them.
+-/
+def Adjacent (dom : Finset Rat) (x y : Rat) : Prop :=
+  x ∈ dom ∧ y ∈ dom ∧ x < y ∧ ∀ z ∈ dom, ¬(x < z ∧ z < y)
+
+/-! ## The r-Relation (Burgess Lemma 2.3) -/
+
+/--
+The **r-relation** `rRelation A B` from Burgess Section 2.
+
+For an MCS A and a set B (typically a DCS), `rRelation A B` holds when:
+for all formulas gamma and delta, if `Until(gamma, delta) in A`,
+then `delta in B` or (`gamma in B` and `Until(gamma, delta) in B`).
+
+This captures: B is a valid continuation of A with respect to Until-obligations.
+At B, either the Until-eventuality is resolved (delta holds) or the guard
+continues (gamma holds and the Until persists).
+
+Under strict semantics, this connects to:
+- BX5 (self_accum_until): phi U psi -> (phi ∧ (phi U psi)) U psi
+- BX9 (until_elim): phi U psi -> phi ∨ psi
+-/
+def rRelation (A B : Set Formula) : Prop :=
+  ∀ (γ δ : Formula),
+    Formula.untl γ δ ∈ A →
+    δ ∈ B ∨ (γ ∈ B ∧ Formula.untl γ δ ∈ B)
+
+/--
+Symmetric r-relation for Since: `rRelationSince A B`.
+
+For all gamma, delta: if `Since(gamma, delta) in A`, then `delta in B`
+or (`gamma in B` and `Since(gamma, delta) in B`).
+-/
+def rRelationSince (A B : Set Formula) : Prop :=
+  ∀ (γ δ : Formula),
+    Formula.snce γ δ ∈ A →
+    δ ∈ B ∨ (γ ∈ B ∧ Formula.snce γ δ ∈ B)
+
+/-! ## R-Maximality -/
+
+/--
+**R-maximality**: `rMaximal A B` means B is a maximal DCS satisfying `rRelation A B`.
+
+B is R-maximal with respect to A if:
+1. B is deductively closed
+2. rRelation A B holds
+3. No proper DCS extension of B still satisfies rRelation A
+
+R-maximality ensures interval sets contain as many formulas as possible
+while maintaining consistency and the r-relation.
+-/
+def rMaximal (A B : Set Formula) : Prop :=
+  SetDeductivelyClosed B ∧
+  rRelation A B ∧
+  ∀ (C : Set Formula),
+    SetDeductivelyClosed C →
+    B ⊂ C →
+    ¬rRelation A C
+
+/--
+R-maximality for Since.
+-/
+def rMaximalSince (A B : Set Formula) : Prop :=
+  SetDeductivelyClosed B ∧
+  rRelationSince A B ∧
+  ∀ (C : Set Formula),
+    SetDeductivelyClosed C →
+    B ⊂ C →
+    ¬rRelationSince A C
+
+/-! ## Chronicle Structure -/
+
+/--
+A **Chronicle** is a triple `(f, g, dom)` representing a finite temporal
+model over the rationals, as defined in Burgess 1982 Section 2.
+
+The chronicle assigns:
+- An MCS `f(x)` to each rational time point x in the domain
+- A DCS `g(x,y)` to each pair of adjacent time points x < y in the domain,
+  representing formulas that hold throughout the interval (x,y)
+-/
+structure Chronicle where
+  /-- Point assignment: maps rational time points to sets of formulas -/
+  f : Rat → Set Formula
+  /-- Interval assignment: maps pairs (x,y) with x < y to sets of formulas -/
+  g : Rat → Rat → Set Formula
+  /-- Finite domain of time points -/
+  dom : Finset Rat
+
+/-! ## Chronicle Conditions -/
+
+/-- **C0**: Every point in the domain maps to an MCS. -/
+def Chronicle.c0 (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom, SetMaximalConsistent (χ.f x)
+
+/-- **C1**: Every adjacent pair maps to a DCS. -/
+def Chronicle.c1 (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, Adjacent χ.dom x y → SetDeductivelyClosed (χ.g x y)
+
+/-- **C2**: The r-relation holds between point and interval assignments.
+For adjacent x < y, r(f(x), g(x,y)) holds. -/
+def Chronicle.c2 (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, Adjacent χ.dom x y → rRelation (χ.f x) (χ.g x y)
+
+/-- **C2'**: R-maximality for adjacent pairs. -/
+def Chronicle.c2' (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, Adjacent χ.dom x y → rMaximal (χ.f x) (χ.g x y)
+
+/-- **C3**: Interval decomposition -- g_content(f(x)) subset of g(x,y) for adjacent x,y.
+This captures that universal future formulas (under G) at x also hold in the interval. -/
+def Chronicle.c3 (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, Adjacent χ.dom x y → g_content (χ.f x) ⊆ χ.g x y
+
+/-- **C5**: Forward Until witness condition.
+For x in dom: if `gamma U delta in f(x)`, then there exists y in dom
+with x < y such that delta in f(y) and the guard gamma holds at all
+intermediate domain points. -/
+def Chronicle.c5 (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom,
+    ∀ (γ δ : Formula),
+      Formula.untl γ δ ∈ χ.f x →
+      ∃ y ∈ χ.dom, x < y ∧ δ ∈ χ.f y ∧
+        ∀ z ∈ χ.dom, x < z → z < y →
+          γ ∈ χ.f z ∧ Formula.untl γ δ ∈ χ.f z
+
+/-- **C5'**: Backward Since witness condition (mirror of C5). -/
+def Chronicle.c5' (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom,
+    ∀ (γ δ : Formula),
+      Formula.snce γ δ ∈ χ.f x →
+      ∃ y ∈ χ.dom, y < x ∧ δ ∈ χ.f y ∧
+        ∀ z ∈ χ.dom, y < z → z < x →
+          γ ∈ χ.f z ∧ Formula.snce γ δ ∈ χ.f z
+
+/--
+A **valid chronicle** satisfies all the core chronicle conditions.
+This is the target state after the omega-chain construction in Phase 4.
+-/
+structure ValidChronicle extends Chronicle where
+  /-- C0: Points map to MCS -/
+  hc0 : toChronicle.c0
+  /-- C1: Adjacent intervals map to DCS -/
+  hc1 : toChronicle.c1
+  /-- C2: r-relation holds -/
+  hc2 : toChronicle.c2
+  /-- C2': R-maximality for adjacent pairs -/
+  hc2' : toChronicle.c2'
+  /-- C3: g_content propagation -/
+  hc3 : toChronicle.c3
+  /-- C5: Forward Until witnesses -/
+  hc5 : toChronicle.c5
+  /-- C5': Backward Since witnesses -/
+  hc5' : toChronicle.c5'
+
+/-! ## Basic Properties -/
+
+/-- The r-relation is monotone in the second argument: if B subset C and r(A, C),
+then r(A, B) does NOT necessarily hold. But r-relation IS monotone contravariantly:
+if B subset C and r(A, B), then for gamma U delta in A, if delta in B then delta in C. -/
+theorem rRelation_subset {A B C : Set Formula}
+    (h_r : rRelation A B) (h_sub : B ⊆ C) : rRelation A C := by
+  intro γ δ h_until
+  rcases h_r γ δ h_until with h_delta | ⟨h_gamma, h_u⟩
+  · exact Or.inl (h_sub h_delta)
+  · exact Or.inr ⟨h_sub h_gamma, h_sub h_u⟩
+
+/-- Similarly for Since. -/
+theorem rRelationSince_subset {A B C : Set Formula}
+    (h_r : rRelationSince A B) (h_sub : B ⊆ C) : rRelationSince A C := by
+  intro γ δ h_since
+  rcases h_r γ δ h_since with h_delta | ⟨h_gamma, h_s⟩
+  · exact Or.inl (h_sub h_delta)
+  · exact Or.inr ⟨h_sub h_gamma, h_sub h_s⟩
+
+/-- The r-relation holds for any MCS B that extends A (when A is an MCS).
+If A subset B (as MCS), then trivially r(A, B) holds since gamma U delta in A
+implies gamma U delta in B, and by BX9 (until_elim) in B: gamma ∨ delta in B,
+which means either delta in B or gamma in B. In the latter case,
+gamma U delta in B by hypothesis. -/
+theorem rRelation_of_superset_mcs {A B : Set Formula}
+    (h_mcs_B : SetMaximalConsistent B)
+    (h_sub : A ⊆ B) : rRelation A B := by
+  intro γ δ h_until
+  have h_until_B : Formula.untl γ δ ∈ B := h_sub h_until
+  -- By BX9: (γ U δ) → (γ ∨ δ), i.e., (γ U δ) → (¬γ → δ)
+  have h_elim : DerivationTree [] ((Formula.untl γ δ).imp (Formula.or γ δ)) :=
+    DerivationTree.axiom [] _ (Axiom.until_elim γ δ)
+  have h_or : Formula.or γ δ ∈ B :=
+    SetMaximalConsistent.implication_property h_mcs_B
+      (theorem_in_mcs h_mcs_B h_elim) h_until_B
+  -- Formula.or γ δ = γ.neg.imp δ
+  -- Either γ ∈ B or ¬γ ∈ B
+  rcases SetMaximalConsistent.negation_complete h_mcs_B γ with h_gamma | h_neg_gamma
+  · -- γ ∈ B: right disjunct
+    exact Or.inr ⟨h_gamma, h_until_B⟩
+  · -- ¬γ ∈ B: from ¬γ → δ (which is or γ δ) and ¬γ, get δ
+    exact Or.inl (SetMaximalConsistent.implication_property h_mcs_B h_or h_neg_gamma)
+
+/-- Similarly for Since. -/
+theorem rRelationSince_of_superset_mcs {A B : Set Formula}
+    (h_mcs_B : SetMaximalConsistent B)
+    (h_sub : A ⊆ B) : rRelationSince A B := by
+  intro γ δ h_since
+  have h_since_B : Formula.snce γ δ ∈ B := h_sub h_since
+  have h_elim : DerivationTree [] ((Formula.snce γ δ).imp (Formula.or γ δ)) :=
+    DerivationTree.axiom [] _ (Axiom.since_elim γ δ)
+  have h_or : Formula.or γ δ ∈ B :=
+    SetMaximalConsistent.implication_property h_mcs_B
+      (theorem_in_mcs h_mcs_B h_elim) h_since_B
+  rcases SetMaximalConsistent.negation_complete h_mcs_B γ with h_gamma | h_neg_gamma
+  · exact Or.inr ⟨h_gamma, h_since_B⟩
+  · exact Or.inl (SetMaximalConsistent.implication_property h_mcs_B h_or h_neg_gamma)
+
+end Bimodal.Metalogic.BXCanonical.Chronicle
