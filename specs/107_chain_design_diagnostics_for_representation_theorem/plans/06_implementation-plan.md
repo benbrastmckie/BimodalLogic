@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: A3a/A4a Derivability and ParametricTruthLemma Fix [NOT STARTED]
+### Phase 1: A3a/A4a Derivability and ParametricTruthLemma Fix [COMPLETED]
 
 **Goal**: Verify A3a and A4a are derivable from BX axioms under strict semantics, and fix the 2 ParametricTruthLemma sorry sites that block the critical path.
 
