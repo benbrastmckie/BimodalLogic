@@ -156,7 +156,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Counterexample Elimination and Omega-Union (Lemmas 2.9-2.10, 2.11) [NOT STARTED]
+### Phase 4: Counterexample Elimination and Omega-Union (Lemmas 2.9-2.10, 2.11) [PARTIAL]
 
 **Goal**: Build the iterative chronicle construction that eliminates all C4a/C5a counterexamples, and prove the truth claim.
 
