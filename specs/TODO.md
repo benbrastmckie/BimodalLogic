@@ -34,11 +34,11 @@ technical_debt:
 ### 1. Critical Path — BXCanonical Completeness
 
 ```
-109 → 95
+107 → 95
 ```
 
-1. **109** [RESEARCHED] — Close 11 chain construction sorries (5 RootScopedChain + 6 CanonicalModel) — the hard open problem
-2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 109)
+1. **107** [IMPLEMENTING] — Burgess chronicle construction for BX representation theorem (irr_until branch)
+2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -66,6 +66,20 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+---
+
+### 107. Burgess chronicle construction for BX representation theorem
+- **Effort**: 22 hours
+- **Status**: [IMPLEMENTING]
+- **Language**: lean4
+- **Priority**: critical
+- **Created**: 2026-04-23
+- **Dependencies**: None
+- **Related**: 93, 109
+- **Plan**: [specs/107_chain_design_diagnostics_for_representation_theorem/plans/06_implementation-plan.md]
+
+**Description**: Implement the Burgess 1982 chronicle construction for BX completeness on the `irr_until` branch. Fix 2 ParametricTruthLemma sorry sites, derive A3a/A4a from BX axioms, build chronicle types with r-relation (Lemmas 2.2-2.3), point insertion (Lemmas 2.4-2.8), counterexample elimination (Lemmas 2.9-2.11), and wire into dd_countermodel to replace 3 RootScopedChain sorry sites. Target: sorry-free bx_completeness.
 
 ---
 

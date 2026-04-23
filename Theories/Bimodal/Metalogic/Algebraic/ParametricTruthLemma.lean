@@ -225,9 +225,6 @@ theorem parametric_canonical_truth_lemma
     phi ∈ fam.mcs t ↔
       truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
         (parametric_to_history fam) t phi := by
-  sorry
-  /- Temporarily sorry'd during irreflexive semantics switch.
-  All ≤ quantifiers need to become < for G/H/U/S.
   induction phi generalizing fam t with
   | atom p =>
     -- atom case: phi in fam.mcs t <-> exists ht, M.valuation (tau.states t ht) p
@@ -257,25 +254,15 @@ theorem parametric_canonical_truth_lemma
     have h_mcs := fam.is_mcs t
     constructor
     · -- Forward: (psi -> chi) in MCS and truth psi -> truth chi
-      -- NOTE: This is why the truth lemma is inherently bidirectional.
-      -- The forward direction uses the BACKWARD IH for psi (.mpr).
-      -- This means proving "MCS membership → truth" for any imp formula
-      -- requires "truth → MCS membership" for its antecedent subformula.
-      -- When that subformula contains G/H, the backward IH needs h_tc.
       intro h_imp h_psi_true
-      -- By IH backward (the critical cross-direction dependency):
       have h_psi_mcs : psi ∈ fam.mcs t := (ih_psi fam hfam t).mpr h_psi_true
-      -- By MCS modus ponens: chi in MCS
       have h_chi_mcs : chi ∈ fam.mcs t := SetMaximalConsistent.implication_property h_mcs h_imp h_psi_mcs
-      -- By IH forward: truth chi
       exact (ih_chi fam hfam t).mp h_chi_mcs
     · -- Backward: (truth psi -> truth chi) -> (psi -> chi) in MCS
       intro h_truth_imp
       rcases SetMaximalConsistent.negation_complete h_mcs (psi.imp chi) with h_imp | h_neg_imp
       · exact h_imp
-      · -- neg(psi -> chi) in MCS - derive contradiction
-        exfalso
-        -- From neg(psi -> chi), we get psi in MCS and neg(chi) in MCS
+      · exfalso
         have h_psi_mcs : psi ∈ fam.mcs t := by
           have h_taut := neg_imp_implies_antecedent psi chi
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
@@ -290,84 +277,67 @@ theorem parametric_canonical_truth_lemma
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        -- By IH: psi is true
         have h_psi_true : truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
             (parametric_to_history fam) t psi :=
           (ih_psi fam hfam t).mp h_psi_mcs
-        -- By hypothesis: chi is true
         have h_chi_true : truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
             (parametric_to_history fam) t chi :=
           h_truth_imp h_psi_true
-        -- By IH: chi in MCS
         have h_chi_mcs : chi ∈ fam.mcs t := (ih_chi fam hfam t).mpr h_chi_true
-        -- Contradiction: chi and neg(chi) in consistent MCS
         exact set_consistent_not_both (fam.is_mcs t).1 chi h_chi_mcs h_neg_chi_mcs
   | box psi ih =>
-    -- box case: box psi in MCS <-> forall sigma in Omega, truth sigma t psi
     simp only [truth_at]
     constructor
-    · -- Forward: box psi in MCS -> forall sigma in Omega, truth sigma t psi
-      intro h_box sigma h_sigma_mem
-      -- sigma in ParametricCanonicalOmega B means sigma = parametric_to_history fam' for some fam' in B.families
+    · intro h_box sigma h_sigma_mem
       obtain ⟨fam', hfam', h_eq⟩ := h_sigma_mem
       subst h_eq
-      -- By modal_forward: psi in fam'.mcs t
       have h_psi_mcs : psi ∈ fam'.mcs t := B.modal_forward fam hfam psi t h_box fam' hfam'
-      -- By IH: truth at fam'
       exact (ih fam' hfam' t).mp h_psi_mcs
-    · -- Backward: forall sigma in Omega, truth sigma t psi -> box psi in MCS
-      intro h_all
-      -- For each fam' in B.families, parametric_to_history fam' is in ParametricCanonicalOmega
-      -- By IH backward: psi in fam'.mcs t
+    · intro h_all
       have h_psi_all_mcs : ∀ fam' ∈ B.families, psi ∈ fam'.mcs t := by
         intro fam' hfam'
         have h_in_omega : parametric_to_history fam' ∈ ParametricCanonicalOmega B := ⟨fam', hfam', rfl⟩
         have h_truth := h_all (parametric_to_history fam') h_in_omega
         exact (ih fam' hfam' t).mpr h_truth
-      -- By modal_backward: box psi in MCS
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
   | all_future psi ih =>
-    -- G case: Under reflexive semantics, G quantifies over s ≥ t
+    -- G case: Under strict semantics, G quantifies over s > t
     simp only [truth_at]
     constructor
-    · -- Forward: G psi in MCS -> forall s ≥ t, truth tau s psi
+    · -- Forward: G psi in MCS -> forall s > t, truth tau s psi
       intro h_G s hts
       have h_psi_mcs : psi ∈ fam.mcs s := fam.forward_G t s psi hts h_G
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s ≥ t, truth tau s psi -> G psi in MCS
+    · -- Backward: forall s > t, truth tau s psi -> G psi in MCS
       intro h_all
-      obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      let tcf : TemporalCoherentFamily D := {
-        toFMCS := fam
-        forward_F := h_forward_F
-        backward_P := h_backward_P
-      }
-      have h_all_mcs : ∀ s : D, t ≤ s → psi ∈ fam.mcs s := by
+      obtain ⟨h_forward_F, _⟩ := h_tc fam hfam
+      -- Build strict h_all_mcs from IH
+      have h_all_mcs : ∀ s : D, t < s → psi ∈ fam.mcs s := by
         intro s hts
         exact (ih fam hfam s).mpr (h_all s hts)
-      exact temporal_backward_G tcf t psi h_all_mcs
+      -- Use temporal_backward_G_with_fwd_F which accepts strict quantifier
+      exact temporal_backward_G_with_fwd_F fam t psi
+        (fun h_F_neg => h_forward_F t (Formula.neg psi) h_F_neg) h_all_mcs
   | all_past psi ih =>
-    -- H case: Under reflexive semantics, H quantifies over s ≤ t
+    -- H case: Under strict semantics, H quantifies over s < t
     simp only [truth_at]
     constructor
-    · -- Forward: H psi in MCS -> forall s ≤ t, truth tau s psi
+    · -- Forward: H psi in MCS -> forall s < t, truth tau s psi
       intro h_H s hst
       have h_psi_mcs : psi ∈ fam.mcs s := fam.backward_H t s psi hst h_H
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s ≤ t, truth tau s psi -> H psi in MCS
+    · -- Backward: forall s < t, truth tau s psi -> H psi in MCS
       intro h_all
-      obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      let tcf : TemporalCoherentFamily D := {
-        toFMCS := fam
-        forward_F := h_forward_F
-        backward_P := h_backward_P
-      }
-      have h_all_mcs : ∀ s : D, s ≤ t → psi ∈ fam.mcs s := by
+      obtain ⟨_, h_backward_P⟩ := h_tc fam hfam
+      -- Build strict h_all_mcs from IH
+      have h_all_mcs : ∀ s : D, s < t → psi ∈ fam.mcs s := by
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
-      exact temporal_backward_H tcf t psi h_all_mcs
+      -- Use temporal_backward_H_with_bwd_P which accepts strict quantifier
+      exact temporal_backward_H_with_bwd_P fam t psi
+        (fun h_P_neg => h_backward_P t (Formula.neg psi) h_P_neg) h_all_mcs
   | untl phi psi ih_phi ih_psi =>
-    -- Until truth lemma: (φ U ψ) ∈ fam.mcs t ↔ ∃ s > t, truth(ψ,s) ∧ ∀ r ∈ (t,s), truth(φ,r)
+    -- Until truth lemma: (φ U ψ) ∈ fam.mcs t ↔ ∃ s > t, truth(ψ,s) ∧ ∀ r ∈ [t,s), truth(φ,r)
     simp only [truth_at]
     obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
@@ -384,7 +354,7 @@ theorem parametric_canonical_truth_lemma
         (ih_psi fam hfam s).mpr h_truth_psi_s,
         fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
-    -- Since truth lemma: (φ S ψ) ∈ fam.mcs t ↔ ∃ s < t, truth(ψ,s) ∧ ∀ r ∈ (s,t), truth(φ,r)
+    -- Since truth lemma: (φ S ψ) ∈ fam.mcs t ↔ ∃ s < t, truth(ψ,s) ∧ ∀ r ∈ (s,t], truth(φ,r)
     simp only [truth_at]
     obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
@@ -400,7 +370,6 @@ theorem parametric_canonical_truth_lemma
       exact h_bwd_S t phi psi ⟨s, h_st,
         (ih_psi fam hfam s).mpr h_truth_psi_s,
         fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
-  -/
 
 /-!
 ## Shifted Truth Lemma
@@ -424,10 +393,8 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
     φ ∈ fam.mcs t ↔
     truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
-  sorry
-  /- Temporarily sorry'd during irreflexive semantics switch.
+  induction φ generalizing fam t with
   | atom p =>
-    -- Identical to parametric_canonical_truth_lemma (atom case is Omega-independent)
     simp only [truth_at, ParametricCanonicalTaskModel, parametric_to_history]
     constructor
     · intro h_mem
@@ -448,9 +415,8 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
     simp only [truth_at]
     have h_mcs := fam.is_mcs t
     constructor
-    · -- Forward imp: uses BACKWARD IH for ψ (bidirectionality requirement)
-      intro h_imp h_ψ_true
-      have h_ψ_mem := (ih_ψ fam hfam t).mpr h_ψ_true  -- backward IH
+    · intro h_imp h_ψ_true
+      have h_ψ_mem := (ih_ψ fam hfam t).mpr h_ψ_true
       exact (ih_χ fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp h_ψ_mem)
     · intro h_truth_imp
       rcases SetMaximalConsistent.negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
@@ -480,78 +446,59 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         exact set_consistent_not_both (fam.is_mcs t).1 χ h_χ_mcs h_neg_χ_mcs
   | box ψ ih =>
     constructor
-    · -- Forward: Box ψ in fam.mcs t -> forall sigma in ShiftClosedParametricCanonicalOmega B, truth_at ... sigma t ψ
-      intro h_box σ h_σ_mem
-      -- sigma in ShiftClosedParametricCanonicalOmega B means sigma = time_shift (parametric_to_history fam') delta
+    · intro h_box σ h_σ_mem
       obtain ⟨fam', hfam', delta, h_σ_eq⟩ := h_σ_mem
-      -- By parametric_box_persistent: Box ψ in fam.mcs (t + delta)
       have h_box_shifted : Formula.box ψ ∈ fam.mcs (t + delta) :=
         parametric_box_persistent fam ψ t (t + delta) h_box
-      -- By modal_forward: ψ in fam'.mcs (t + delta)
       have h_ψ_fam' : ψ ∈ fam'.mcs (t + delta) :=
         B.modal_forward fam hfam ψ (t + delta) h_box_shifted fam' hfam'
-      -- By IH at (fam', hfam', t + delta): truth_at ... (parametric_to_history fam') (t + delta) ψ
       have h_truth_canon := (ih fam' hfam' (t + delta)).mp h_ψ_fam'
-      -- By time_shift_preserves_truth with shift-closed Omega:
-      -- truth_at ... (time_shift (parametric_to_history fam') delta) t ψ <-> truth_at ... (parametric_to_history fam') (t + delta) ψ
       have h_preserve := TimeShift.time_shift_preserves_truth
         (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
         (shiftClosedParametricCanonicalOmega_is_shift_closed B) (parametric_to_history fam')
         t (t + delta) ψ
-      -- time_shift_preserves_truth: truth_at ... (time_shift sigma (y - x)) x phi <-> truth_at ... sigma y phi
-      -- With x = t, y = t + delta: (t+delta) - t = delta
       have h_delta : (t + delta) - t = delta := add_sub_cancel_left t delta
       rw [h_σ_eq]
       rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
       exact h_preserve.mpr h_truth_canon
-    · -- Backward: (forall sigma in ShiftClosedParametricCanonicalOmega B, truth_at ... sigma t ψ) -> Box ψ in fam.mcs t
-      intro h_all_σ
-      -- Only use canonical histories (delta = 0 case)
+    · intro h_all_σ
       have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs t := by
         intro fam' hfam'
         have h_mem := parametricCanonicalOmega_subset_shiftClosed B ⟨fam', hfam', rfl⟩
         exact (ih fam' hfam' t).mpr (h_all_σ (parametric_to_history fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
   | all_future ψ ih =>
-    -- G case: Under reflexive semantics, G quantifies over s ≥ t
+    -- G case: Under strict semantics, G quantifies over s > t
     simp only [truth_at]
     constructor
-    · -- Forward: G ψ ∈ fam.mcs t → ∀ s ≥ t, truth_at ... s ψ
+    · -- Forward: G ψ ∈ fam.mcs t → ∀ s > t, truth_at ... s ψ
       intro h_G s hts
       have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: (∀ s ≥ t, truth_at ... s ψ) → G ψ ∈ fam.mcs t
+    · -- Backward: (∀ s > t, truth_at ... s ψ) → G ψ ∈ fam.mcs t
       intro h_all
-      obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      let tcf : TemporalCoherentFamily D := {
-        toFMCS := fam
-        forward_F := h_forward_F
-        backward_P := h_backward_P
-      }
-      have h_all_mcs : ∀ s : D, t ≤ s → ψ ∈ fam.mcs s := by
+      obtain ⟨h_forward_F, _⟩ := h_tc fam hfam
+      have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
         intro s hts
         exact (ih fam hfam s).mpr (h_all s hts)
-      exact temporal_backward_G tcf t ψ h_all_mcs
+      exact temporal_backward_G_with_fwd_F fam t ψ
+        (fun h_F_neg => h_forward_F t (Formula.neg ψ) h_F_neg) h_all_mcs
   | all_past ψ ih =>
-    -- H case: Under reflexive semantics, H quantifies over s ≤ t
+    -- H case: Under strict semantics, H quantifies over s < t
     simp only [truth_at]
     constructor
-    · -- Forward: H ψ ∈ fam.mcs t → ∀ s ≤ t, truth_at ... s ψ
+    · -- Forward: H ψ ∈ fam.mcs t → ∀ s < t, truth_at ... s ψ
       intro h_H s hst
       have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: (∀ s ≤ t, truth_at ... s ψ) → H ψ ∈ fam.mcs t
+    · -- Backward: (∀ s < t, truth_at ... s ψ) → H ψ ∈ fam.mcs t
       intro h_all
-      obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      let tcf : TemporalCoherentFamily D := {
-        toFMCS := fam
-        forward_F := h_forward_F
-        backward_P := h_backward_P
-      }
-      have h_all_mcs : ∀ s : D, s ≤ t → ψ ∈ fam.mcs s := by
+      obtain ⟨_, h_backward_P⟩ := h_tc fam hfam
+      have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
-      exact temporal_backward_H tcf t ψ h_all_mcs
+      exact temporal_backward_H_with_bwd_P fam t ψ
+        (fun h_P_neg => h_backward_P t (Formula.neg ψ) h_P_neg) h_all_mcs
   | untl phi psi ih_phi ih_psi =>
     simp only [truth_at]
     obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
@@ -580,6 +527,5 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       exact h_bwd_S t phi psi ⟨s, h_st,
         (ih_psi fam hfam s).mpr h_truth_psi_s,
         fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
-  -/
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma
