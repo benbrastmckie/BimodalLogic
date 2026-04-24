@@ -269,7 +269,7 @@ Prior plans: `plans/08_implementation-plan.md` (v2), `plans/09_implementation-pl
 
 ---
 
-### Phase 5: Prove Limit Properties (C5/C5') [COMPLETED]
+### Phase 5: Prove Limit Properties (C5/C5') [PARTIAL]
 
 **Goal**: Prove that the limit chronicle (union of the omega-chain) satisfies C5/C5' (forward Until/Since witnesses exist). Close sorry sites #7 and #8.
 
