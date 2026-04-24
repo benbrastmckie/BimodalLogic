@@ -587,11 +587,7 @@ theorem limit_c1_at_domain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x : Rat) (_hx : x ∈ limit_dom A h_mcs) (y : Rat) :
     SetDeductivelyClosed (limit_g A h_mcs x y) := by
   unfold limit_g
-  -- The deductive closure of g_content(limit_f(x)) is a DCS when g_content is
-  -- consistent. g_content consistency requires showing G(⊥) ∉ limit_f(x),
-  -- which holds for non-degenerate chronicles but needs generalized temporal K
-  -- to prove formally. Deferred pending the generalized temporal K lemma.
-  sorry
+  exact deductiveClosure_is_dcs (g_content_set_consistent (limit_c0 A h_mcs x _hx))
 
 /--
 The limit chronicle satisfies C3: g_content(limit_f(x)) ⊆ limit_g(x, y).
@@ -601,20 +597,149 @@ theorem limit_c3 (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     g_content (limit_f A h_mcs x) ⊆ limit_g A h_mcs x y := by
   exact subset_deductiveClosure (g_content (limit_f A h_mcs x))
 
+/-! ## g_content / h_content Duality
+
+The key bridge between forward (G) and backward (H) temporal propagation:
+for MCS A and B, g_content(A) ⊆ B if and only if h_content(B) ⊆ A.
+
+This duality means we only need to establish one direction of the
+temporal chain property; the other follows automatically.
+-/
+
+/--
+Forward duality: g_content(A) ⊆ B implies h_content(B) ⊆ A for MCS A, B.
+
+Proof: Suppose H(ψ) ∈ B and ψ ∉ A. Then ¬ψ ∈ A (MCS).
+By BX4 (connect_future): ¬ψ → G(P(¬ψ)), so G(P(¬ψ)) ∈ A.
+Hence P(¬ψ) ∈ g_content(A) ⊆ B. Now P(¬ψ) = ¬H(ψ^{nn}),
+so H(ψ^{nn}) ∉ B. But H(ψ) → H(ψ^{nn}) (past necessitation of DNI
++ past K distribution), so H(ψ^{nn}) ∈ B. Contradiction.
+-/
+theorem g_content_sub_imp_h_content_sub {A B : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_B : SetMaximalConsistent B)
+    (h_gAB : g_content A ⊆ B) :
+    h_content B ⊆ A := by
+  intro ψ hψ
+  -- hψ : H(ψ) ∈ B, i.e., ψ ∈ h_content(B)
+  -- Need: ψ ∈ A
+  by_contra h_not
+  -- ¬ψ ∈ A by MCS negation completeness
+  have h_neg_ψ : ψ.neg ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_A ψ with h | h
+    · exact absurd h h_not
+    · exact h
+  -- BX4: ¬ψ → G(P(¬ψ))
+  have h_GP : Formula.all_future (Formula.some_past ψ.neg) ∈ A :=
+    connect_future_mcs h_mcs_A ψ.neg h_neg_ψ
+  -- P(¬ψ) ∈ g_content(A) ⊆ B
+  have h_P_neg_ψ_B : Formula.some_past ψ.neg ∈ B := h_gAB h_GP
+  -- P(¬ψ) = ¬H(ψ.neg.neg), so H(ψ.neg.neg) ∉ B
+  -- P(α) = some_past α = (all_past α.neg).neg
+  -- so P(¬ψ) = (all_past (ψ.neg).neg).neg = (H(ψ.neg.neg)).neg
+  have h_H_nn_not : Formula.all_past ψ.neg.neg ∉ B :=
+    SetMaximalConsistent.neg_excludes h_mcs_B _ h_P_neg_ψ_B
+  -- But H(ψ) → H(ψ.neg.neg) by: ⊢ ψ → ψ.neg.neg (dni) + past necessitation + past K
+  have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
+    Bimodal.Theorems.Combinators.dni ψ
+  have h_H_dni : DerivationTree [] (Formula.all_past (ψ.imp ψ.neg.neg)) :=
+    Bimodal.Theorems.past_necessitation _ h_dni
+  have h_H_dist : DerivationTree [] ((Formula.all_past (ψ.imp ψ.neg.neg)).imp
+      (Formula.all_past ψ |>.imp (Formula.all_past ψ.neg.neg))) :=
+    Bimodal.Theorems.past_k_dist ψ ψ.neg.neg
+  have h_H_nn : Formula.all_past ψ.neg.neg ∈ B := by
+    have h1 := theorem_in_mcs h_mcs_B h_H_dni
+    have h2 := theorem_in_mcs h_mcs_B h_H_dist
+    have h3 := SetMaximalConsistent.implication_property h_mcs_B h2 h1
+    exact SetMaximalConsistent.implication_property h_mcs_B h3 hψ
+  exact h_H_nn_not h_H_nn
+
+/--
+Backward duality: h_content(B) ⊆ A implies g_content(A) ⊆ B for MCS A, B.
+
+Proof: Suppose G(ψ) ∈ A and ψ ∉ B. Then ¬ψ ∈ B (MCS).
+By BX4' (connect_past): ¬ψ → H(F(¬ψ)), so H(F(¬ψ)) ∈ B.
+Hence F(¬ψ) ∈ h_content(B) ⊆ A. Now F(¬ψ) = ¬G(ψ^{nn}),
+so G(ψ^{nn}) ∉ A. But G(ψ) → G(ψ^{nn}) (temporal necessitation of DNI
++ temporal K distribution), so G(ψ^{nn}) ∈ A. Contradiction.
+-/
+theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_B : SetMaximalConsistent B)
+    (h_hBA : h_content B ⊆ A) :
+    g_content A ⊆ B := by
+  intro ψ hψ
+  -- hψ : G(ψ) ∈ A, i.e., ψ ∈ g_content(A)
+  -- Need: ψ ∈ B
+  by_contra h_not
+  have h_neg_ψ : ψ.neg ∈ B := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_B ψ with h | h
+    · exact absurd h h_not
+    · exact h
+  -- BX4': ¬ψ → H(F(¬ψ))
+  have h_ax : DerivationTree [] (ψ.neg.imp (ψ.neg.some_future.all_past)) :=
+    DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg)
+  have h_HF : Formula.all_past (Formula.some_future ψ.neg) ∈ B :=
+    SetMaximalConsistent.implication_property h_mcs_B
+      (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
+  -- F(¬ψ) ∈ h_content(B) ⊆ A
+  have h_F_neg_ψ_A : Formula.some_future ψ.neg ∈ A := h_hBA h_HF
+  -- F(¬ψ) = ¬G(ψ.neg.neg), so G(ψ.neg.neg) ∉ A
+  have h_G_nn_not : Formula.all_future ψ.neg.neg ∉ A :=
+    SetMaximalConsistent.neg_excludes h_mcs_A _ h_F_neg_ψ_A
+  -- But G(ψ) → G(ψ.neg.neg) by DNI + temporal necessitation + temporal K
+  have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
+    Bimodal.Theorems.Combinators.dni ψ
+  have h_G_dni : DerivationTree [] (Formula.all_future (ψ.imp ψ.neg.neg)) :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_G_dist : DerivationTree [] ((Formula.all_future (ψ.imp ψ.neg.neg)).imp
+      (Formula.all_future ψ |>.imp (Formula.all_future ψ.neg.neg))) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ ψ.neg.neg)
+  have h_G_nn : Formula.all_future ψ.neg.neg ∈ A := by
+    have h1 := theorem_in_mcs h_mcs_A h_G_dni
+    have h2 := theorem_in_mcs h_mcs_A h_G_dist
+    have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
+    exact SetMaximalConsistent.implication_property h_mcs_A h3 hψ
+  exact h_G_nn_not h_G_nn
+
 /--
 **The g_content chain property**: The key invariant needed for forward_G.
 
 This states: for any x < y both in limit_dom, g_content(limit_f(x)) ⊆ limit_f(y).
 
 **Status**: OPEN. The current omega-chain construction does NOT maintain this
-invariant. The C5 elimination inserts points with g_content of the triggering
-point, not of the adjacent predecessor. Fixing this requires either:
-1. Modifying the elimination seed to include g_content of all predecessors, OR
-2. Modifying the insertion position to be immediately after the triggering point, OR
-3. A fundamentally different construction (e.g., the direct truth lemma over
-   sparse X with a separate evaluation structure).
+invariant because C5-forward elimination places new points beyond ALL domain
+points with a seed containing only g_content of the triggering point.
 
-See reports/15_team-research.md for detailed analysis.
+**Analysis (v6 session)**: Three approaches were evaluated:
+
+1. **Enlarged seed** (plan v6 approach): Include g_content of ALL predecessor
+   domain points in the seed. BLOCKED: the enlarged seed
+   {η} ∪ ⋃_{x ∈ dom} g_content(f(x)) reduces to {η} ∪ g_content(f(m))
+   (where m = max(dom)) via temp_4 and the inductive invariant. But this
+   requires F(η) ∈ f(m), which fails when the triggering point t < m
+   because F(η) (existential) does not propagate forward through g_content.
+
+2. **Modified insertion position**: Place new points adjacent to the
+   triggering point instead of beyond all domain points. Fixes the forward
+   direction but breaks the backward direction (g_content(f(y)) ⊆ f(x)
+   for existing x > y).
+
+3. **Duality bridge** (new, proven here): `g_content_sub_imp_h_content_sub`
+   shows g_content(A) ⊆ B ↔ h_content(B) ⊆ A for MCS A, B. This means
+   proving ONE direction of the chain property gives BOTH. But the
+   fundamental construction issue (ensuring g_content propagation at
+   insertion time) remains.
+
+**Recommended next step**: Modify the omega-chain to use a two-pass approach:
+(a) insert witness point via current C5 elimination, then (b) at the same
+step, propagate g_content to the new point using a secondary Lindenbaum
+extension that extends the witness MCS to include g_content of all
+predecessors. The secondary extension maintains consistency because the
+predecessors' g_content is contained in g_content of the max point (by
+temp_4 + invariant), and the max point has a consistent g_content by
+g_content_set_consistent.
+
+**Key dependency**: limit_backward_H now uses this lemma via the duality
+bridge, so closing this sorry also closes limit_backward_H.
 -/
 theorem g_content_chain_property (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
@@ -643,11 +768,13 @@ theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hyx : y < x) (φ : Formula) (h_H : Formula.all_past φ ∈ limit_f A h_mcs x) :
     φ ∈ limit_f A h_mcs y := by
-  -- By h_content chain property (dual of g_content)
-  -- H(phi) in limit_f(x) means phi in h_content(limit_f(x))
-  -- Need h_content(limit_f(x)) ⊆ limit_f(y) for y < x
-  -- This follows from g_content chain property + canonical duality
-  sorry
+  -- g_content(limit_f(y)) ⊆ limit_f(x) by g_content_chain_property (y < x)
+  have h_g_chain := g_content_chain_property A h_mcs y x hy hx hyx
+  -- By duality: h_content(limit_f(x)) ⊆ limit_f(y)
+  have h_h_chain := g_content_sub_imp_h_content_sub
+    (limit_c0 A h_mcs y hy) (limit_c0 A h_mcs x hx) h_g_chain
+  -- H(φ) ∈ limit_f(x) means φ ∈ h_content(limit_f(x))
+  exact h_h_chain h_H
 
 /-! ## Claim 2.11: Truth Claim
 

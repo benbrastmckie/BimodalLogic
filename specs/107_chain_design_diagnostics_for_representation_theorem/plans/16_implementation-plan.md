@@ -76,7 +76,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Fix g_content_chain_property via Modified Elimination Seeds [NOT STARTED]
+### Phase 1: Fix g_content_chain_property via Modified Elimination Seeds [PARTIAL]
 
 **Goal**: Close the critical bottleneck `g_content_chain_property` (g_content(limit_f(x)) subset limit_f(y) for x < y in limit_dom) by modifying the omega-chain's counterexample elimination functions to maintain g_content propagation as an invariant. Also close `limit_c1_at_domain` and `limit_backward_H`.
 
