@@ -491,6 +491,164 @@ theorem limit_satisfies_c5'_weak (A : Set Formula) (h_mcs : SetMaximalConsistent
   exact ⟨y, ⟨n + 1, hy_dom⟩, hy_lt,
     by rw [limit_f_eq A h_mcs y (n + 1) hy_dom]; exact hy_η⟩
 
+/-! ## F/P Resolution in the Limit
+
+Key derived properties: F(phi) and P(phi) formulas in the limit domain
+are resolved by witnesses, using BX12 to convert F to Until and then
+applying C5_weak.
+-/
+
+/--
+F-resolution for the limit: F(phi) in limit_f(x) implies there exists
+y > x in limit_dom with phi in limit_f(y).
+
+Proof: F(phi) in limit_f(x) -> (top U phi) in limit_f(x) by BX12.
+Then limit_satisfies_c5_weak gives y > x with phi in limit_f(y).
+-/
+theorem limit_F_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x : Rat) (hx : x ∈ limit_dom A h_mcs)
+    (φ : Formula)
+    (h_F : Formula.some_future φ ∈ limit_f A h_mcs x) :
+    ∃ y ∈ limit_dom A h_mcs, x < y ∧ φ ∈ limit_f A h_mcs y := by
+  -- BX12: F(phi) -> (top U phi) where top = bot.imp bot
+  have h_mcs_x := limit_c0 A h_mcs x hx
+  have h_bx12 : DerivationTree [] ((Formula.some_future φ).imp
+      (Formula.untl (Formula.bot.imp Formula.bot) φ)) :=
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv φ)
+  have h_until : Formula.untl (Formula.bot.imp Formula.bot) φ ∈ limit_f A h_mcs x :=
+    SetMaximalConsistent.implication_property h_mcs_x
+      (theorem_in_mcs h_mcs_x h_bx12) h_F
+  -- Apply C5_weak
+  exact limit_satisfies_c5_weak A h_mcs x hx _ φ h_until
+
+/--
+P-resolution for the limit: P(phi) in limit_f(x) implies there exists
+y < x in limit_dom with phi in limit_f(y).
+
+Proof: P(phi) in limit_f(x) -> (top S phi) in limit_f(x) by BX12'.
+Then limit_satisfies_c5'_weak gives y < x with phi in limit_f(y).
+-/
+theorem limit_P_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x : Rat) (hx : x ∈ limit_dom A h_mcs)
+    (φ : Formula)
+    (h_P : Formula.some_past φ ∈ limit_f A h_mcs x) :
+    ∃ y ∈ limit_dom A h_mcs, y < x ∧ φ ∈ limit_f A h_mcs y := by
+  -- BX12': P(phi) -> (top S phi) where top = bot.imp bot
+  have h_mcs_x := limit_c0 A h_mcs x hx
+  have h_bx12' : DerivationTree [] ((Formula.some_past φ).imp
+      (Formula.snce (Formula.bot.imp Formula.bot) φ)) :=
+    DerivationTree.axiom [] _ (Axiom.P_since_equiv φ)
+  have h_since : Formula.snce (Formula.bot.imp Formula.bot) φ ∈ limit_f A h_mcs x :=
+    SetMaximalConsistent.implication_property h_mcs_x
+      (theorem_in_mcs h_mcs_x h_bx12') h_P
+  -- Apply C5'_weak
+  exact limit_satisfies_c5'_weak A h_mcs x hx _ φ h_since
+
+/-! ## Limit Interval Function (g-Function Infrastructure)
+
+The limit interval function assigns a deductively closed set to each pair
+of adjacent domain points. This is the g-function infrastructure identified
+as the deepest gap in the chronicle construction (Task 107, Report 15).
+
+**Design**: For adjacent x < y in limit_dom, we define:
+  limit_g(x, y) = deductiveClosure(g_content(limit_f(x)))
+
+This gives C3 trivially: g_content(limit_f(x)) ⊆ deductiveClosure(g_content(limit_f(x))).
+
+**Critical Gap (forward_G)**: To derive forward_G from this infrastructure,
+we additionally need g_content(limit_f(x)) ⊆ limit_f(y) for adjacent x < y
+in limit_dom. This is NOT a consequence of the current omega-chain construction:
+the elimination functions insert points via Lindenbaum extensions that include
+g_content of the TRIGGERING point, not necessarily of the adjacent predecessor.
+
+The correct fix requires modifying the omega-chain to maintain this invariant.
+See `g_content_chain_property` below for the precise statement needed.
+-/
+
+/--
+The **limit interval function**: for each pair (x, y) of rationals, assigns
+the deductive closure of g_content(limit_f(x)).
+
+For adjacent domain points x < y, this captures the set of formulas that
+"hold throughout the interval (x, y)" in the sense of being derivable from
+the G-content of the left endpoint.
+
+For non-adjacent or non-domain pairs, the value is mathematically irrelevant
+(the chronicle conditions only reference g at adjacent pairs).
+-/
+noncomputable def limit_g (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    Rat → Rat → Set Formula :=
+  fun x _y => deductiveClosure (g_content (limit_f A h_mcs x))
+
+/--
+The limit interval function satisfies C1 (DCS) at domain points.
+-/
+theorem limit_c1_at_domain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x : Rat) (_hx : x ∈ limit_dom A h_mcs) (y : Rat) :
+    SetDeductivelyClosed (limit_g A h_mcs x y) := by
+  unfold limit_g
+  -- The deductive closure of g_content(limit_f(x)) is a DCS when g_content is
+  -- consistent. g_content consistency requires showing G(⊥) ∉ limit_f(x),
+  -- which holds for non-degenerate chronicles but needs generalized temporal K
+  -- to prove formally. Deferred pending the generalized temporal K lemma.
+  sorry
+
+/--
+The limit chronicle satisfies C3: g_content(limit_f(x)) ⊆ limit_g(x, y).
+-/
+theorem limit_c3 (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) :
+    g_content (limit_f A h_mcs x) ⊆ limit_g A h_mcs x y := by
+  exact subset_deductiveClosure (g_content (limit_f A h_mcs x))
+
+/--
+**The g_content chain property**: The key invariant needed for forward_G.
+
+This states: for any x < y both in limit_dom, g_content(limit_f(x)) ⊆ limit_f(y).
+
+**Status**: OPEN. The current omega-chain construction does NOT maintain this
+invariant. The C5 elimination inserts points with g_content of the triggering
+point, not of the adjacent predecessor. Fixing this requires either:
+1. Modifying the elimination seed to include g_content of all predecessors, OR
+2. Modifying the insertion position to be immediately after the triggering point, OR
+3. A fundamentally different construction (e.g., the direct truth lemma over
+   sparse X with a separate evaluation structure).
+
+See reports/15_team-research.md for detailed analysis.
+-/
+theorem g_content_chain_property (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
+    (hxy : x < y) :
+    g_content (limit_f A h_mcs x) ⊆ limit_f A h_mcs y := by
+  sorry
+
+/--
+Forward_G for domain points, assuming g_content chain property.
+
+If the g_content chain property holds, then forward_G follows:
+G(phi) in limit_f(x) -> phi in g_content(limit_f(x)) -> phi in limit_f(y).
+-/
+theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
+    (hxy : x < y) (φ : Formula) (h_G : Formula.all_future φ ∈ limit_f A h_mcs x) :
+    φ ∈ limit_f A h_mcs y :=
+  g_content_chain_property A h_mcs x y hx hy hxy h_G
+
+/--
+Backward_H for domain points (dual of forward_G).
+
+H(phi) in limit_f(x) and y < x -> phi in limit_f(y).
+-/
+theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
+    (hyx : y < x) (φ : Formula) (h_H : Formula.all_past φ ∈ limit_f A h_mcs x) :
+    φ ∈ limit_f A h_mcs y := by
+  -- By h_content chain property (dual of g_content)
+  -- H(phi) in limit_f(x) means phi in h_content(limit_f(x))
+  -- Need h_content(limit_f(x)) ⊆ limit_f(y) for y < x
+  -- This follows from g_content chain property + canonical duality
+  sorry
+
 /-! ## Claim 2.11: Truth Claim
 
 The truth claim states that the valuation V(alpha) = {x : alpha in f(x)}
@@ -521,7 +679,7 @@ interval function g. Here we state it as a theorem with sorry, establishing
 the proof obligation for Phase 5 integration.
 -/
 theorem claim_2_11 (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (x : Rat) (hx : x ∈ limit_dom A h_mcs) (φ : Formula) :
+    (x : Rat) (_hx : x ∈ limit_dom A h_mcs) (φ : Formula) :
     φ ∈ limit_f A h_mcs x ↔
       φ ∈ limit_f A h_mcs x := by
   -- Trivially true as stated; the real content is the equivalence with
@@ -530,7 +688,7 @@ theorem claim_2_11 (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   -- 1. limit_c0: f(x) is MCS (handles atom, bot, imp, box cases)
   -- 2. limit_satisfies_c5_weak: Until witnesses exist (handles Until forward)
   -- 3. limit_satisfies_c5'_weak: Since witnesses exist (handles Since forward)
-  -- 4. g_content coherence: G/H truth (requires interval function)
+  -- 4. g_content_chain_property: G/H truth (requires omega-chain fix)
   exact Iff.rfl
 
 /-! ## Chronicle Model Construction
