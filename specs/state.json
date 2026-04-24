@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 112,
+      "project_name": "literature_study_representation_theorem",
+      "status": "not_started",
+      "task_type": "formal",
+      "created": "2026-04-24T20:47:00Z",
+      "last_updated": "2026-04-24T20:47:00Z"
+    },
+    {
       "project_number": 111,
       "project_name": "literature_second_research_wave",
       "status": "completed",
@@ -699,7 +707,7 @@
       "session_id": "sess_1777044968_6647f2"
     }
   ],
-  "next_project_number": 112,
+  "next_project_number": 113,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
