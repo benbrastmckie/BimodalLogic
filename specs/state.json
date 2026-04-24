@@ -8,10 +8,10 @@
     {
       "project_number": 111,
       "project_name": "literature_second_research_wave",
-      "status": "planning",
+      "status": "planned",
       "task_type": "general",
       "created": "2026-04-24T18:13:55Z",
-      "last_updated": "2026-04-24T18:28:32Z",
+      "last_updated": "2026-04-24T18:31:33Z",
       "session_id": "sess_1777055295_4ba687",
       "researched": "2026-04-24T18:26:56Z",
       "next_artifact_number": 2,
@@ -20,6 +20,11 @@
           "path": "specs/111_literature_second_research_wave/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates"
+        },
+        {
+          "path": "specs/111_literature_second_research_wave/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: download 3 free PDFs, add Second Research Wave section to literature/README.md, update existing entries"
         }
       ]
     },
