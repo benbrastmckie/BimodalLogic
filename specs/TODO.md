@@ -1,5 +1,5 @@
 ---
-next_project_number: 112
+next_project_number: 113
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -46,6 +46,8 @@ technical_debt:
 - **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (needs Rat construction)
 
 ### 4. Experimental / Research
+
+- **112** [NOT STARTED] — Systematic literature study: review 5 non-original sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to task 107 representation theorem
 
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 - **64** [RESEARCHED] — Critical path review (reference only)
