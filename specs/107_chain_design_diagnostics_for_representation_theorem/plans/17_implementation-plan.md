@@ -116,7 +116,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Rebuild Binary g Function [NOT STARTED]
+### Phase 1: Rebuild Binary g Function [PARTIAL]
 
 **Goal**: Redefine the Chronicle structure to carry a binary g(x,y) function between adjacent domain points, modify the omega-chain step to maintain (f, g) pairs with C2 and C3 as invariants, define limit_g as the limit of the binary g, and prove g_content_chain_property from the maintained invariants. This replaces plan v6's enlarged-seed approach which was blocked by a consistency gap.
 

@@ -384,6 +384,94 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       simp only [ite_true]
       exact h_neg_δ_x
 
+/-! ## G-Propagation Counterexample Elimination
+
+When G(α) ∈ f(x) and α ∉ f(y) for adjacent x < y, insert a new point z between
+x and y with α ∈ f(z) and g_content(f(x)) ⊆ f(z). This breaks the adjacency of
+(x, y), ensuring the G-propagation failure cannot persist to the limit.
+
+The seed {α} ∪ g_content(f(x)) is consistent because G(α) → F(α) (by
+`G_implies_F_mcs`), so `forward_temporal_witness_seed_consistent` applies.
+-/
+
+/--
+**G-propagation counterexample elimination**: Given G(α) ∈ f(x) and α ∉ f(y)
+for adjacent x < y, insert z = (x+y)/2 between x and y with α ∈ f(z) and
+g_content(f(x)) ⊆ f(z).
+-/
+noncomputable def eliminate_g_prop_counterexample {χ : Chronicle}
+    (h_c0 : χ.c0)
+    (x y : Rat) (α : Formula)
+    (h_x_mem : x ∈ χ.dom) (h_y_mem : y ∈ χ.dom)
+    (h_adj : Adjacent χ.dom x y)
+    (h_G : Formula.all_future α ∈ χ.f x)
+    (h_not : α ∉ χ.f y) :
+    ∃ χ' : Chronicle,
+      χ.dom ⊆ χ'.dom ∧
+      (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
+      χ'.c0 ∧
+      χ.dom ⊂ χ'.dom := by
+  set z := (x + y) / 2 with hz_def
+  have hxy := h_adj.2.2.1
+  have hz_lt_y : z < y := by linarith
+  have hx_lt_z : x < z := by linarith
+  have hz_notin : z ∉ χ.dom := by
+    intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
+  have h_mcs_x := h_c0 x h_x_mem
+  -- Use g_propagation_witness to get an MCS D with α ∈ D and g_content(f(x)) ⊆ D
+  obtain ⟨D, h_D_mcs, h_α_D, _h_g_sub⟩ := g_propagation_witness h_mcs_x α h_G
+  refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
+    Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+  · intro q hq
+    have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
+    exact if_neg h_ne
+  · intro q hq
+    simp only [Finset.mem_insert] at hq
+    rcases hq with rfl | hq
+    · simp only [ite_true]; exact h_D_mcs
+    · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
+      simp only [h_ne, ite_false]; exact h_c0 q hq
+
+/--
+**H-propagation counterexample elimination**: Mirror for backward direction.
+Given H(α) ∈ f(x) and α ∉ f(y) for adjacent y < x, insert z between y and x.
+-/
+noncomputable def eliminate_h_prop_counterexample {χ : Chronicle}
+    (h_c0 : χ.c0)
+    (x y : Rat) (α : Formula)
+    (h_x_mem : x ∈ χ.dom) (h_y_mem : y ∈ χ.dom)
+    (h_adj : Adjacent χ.dom y x)
+    (h_H : Formula.all_past α ∈ χ.f x)
+    (h_not : α ∉ χ.f y) :
+    ∃ χ' : Chronicle,
+      χ.dom ⊆ χ'.dom ∧
+      (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
+      χ'.c0 ∧
+      χ.dom ⊂ χ'.dom := by
+  set z := (y + x) / 2 with hz_def
+  have hyx := h_adj.2.2.1
+  have hz_lt_x : z < x := by linarith
+  have hy_lt_z : y < z := by linarith
+  have hz_notin : z ∉ χ.dom := by
+    intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hy_lt_z, hz_lt_x⟩
+  have h_mcs_x := h_c0 x h_x_mem
+  -- P(α) ∈ f(x) by H_implies_P_mcs, then past_temporal_witness_seed gives us D
+  have h_P := H_implies_P_mcs h_mcs_x α h_H
+  have h_seed := past_temporal_witness_seed_consistent (χ.f x) h_mcs_x α h_P
+  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
+  have h_α_D : α ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+  refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
+    Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+  · intro q hq
+    have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
+    exact if_neg h_ne
+  · intro q hq
+    simp only [Finset.mem_insert] at hq
+    rcases hq with rfl | hq
+    · simp only [ite_true]; exact h_D_mcs
+    · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
+      simp only [h_ne, ite_false]; exact h_c0 q hq
+
 /-! ## Potential Counterexample Interface -/
 
 /--
@@ -392,10 +480,12 @@ C4 (backward counterexample) and C5 (forward witness) conditions,
 each in forward (Until) and backward (Since) directions.
 -/
 inductive PotentialCounterexampleKind : Type where
-  | c4_forward  : PotentialCounterexampleKind  -- C4: Until backward counterexample
-  | c4_backward : PotentialCounterexampleKind  -- C4': Since backward counterexample
-  | c5_forward  : PotentialCounterexampleKind  -- C5: Until forward witness
-  | c5_backward : PotentialCounterexampleKind  -- C5': Since forward witness
+  | c4_forward    : PotentialCounterexampleKind  -- C4: Until backward counterexample
+  | c4_backward   : PotentialCounterexampleKind  -- C4': Since backward counterexample
+  | c5_forward    : PotentialCounterexampleKind  -- C5: Until forward witness
+  | c5_backward   : PotentialCounterexampleKind  -- C5': Since forward witness
+  | g_prop_forward  : PotentialCounterexampleKind  -- G-propagation: G(α) ∈ f(x), α ∉ f(y), x < y adj
+  | g_prop_backward : PotentialCounterexampleKind  -- H-propagation: H(α) ∈ f(x), α ∉ f(y), y < x adj
   deriving DecidableEq, Countable
 
 /--
@@ -543,6 +633,51 @@ noncomputable def eliminate_potential_counterexample
       have ce : C4'Counterexample χ :=
         ⟨pc.x, pc.y, h_xm, h_ym, h_adj, pc.ξ, pc.η, h_neg_since, h_guard, h_no_wit⟩
       have h_elim := eliminate_C4'_counterexample h_c0 ce
+      let χ' := h_elim.choose
+      have h_prop := h_elim.choose_spec
+      exact { val := χ'
+              dom_sub := h_prop.1
+              c0 := h_prop.2.2.1
+              f_agrees := h_prop.2.1
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
+    · exact { val := χ
+              dom_sub := Finset.Subset.refl _
+              c0 := h_c0
+              f_agrees := fun _ _ => rfl
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
+  | .g_prop_forward =>
+    -- G-propagation forward: G(η) ∈ f(x), η ∉ f(y), x < y adjacent
+    -- Here ξ = formula α, η encodes α, x and y are the adjacent pair
+    by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
+        Adjacent χ.dom pc.x pc.y ∧
+        Formula.all_future pc.η ∈ χ.f pc.x ∧
+        pc.η ∉ χ.f pc.y
+    · obtain ⟨h_xm, h_ym, h_adj, h_G, h_not⟩ := h_actual
+      have h_elim := eliminate_g_prop_counterexample h_c0 pc.x pc.y pc.η h_xm h_ym h_adj h_G h_not
+      let χ' := h_elim.choose
+      have h_prop := h_elim.choose_spec
+      exact { val := χ'
+              dom_sub := h_prop.1
+              c0 := h_prop.2.2.1
+              f_agrees := h_prop.2.1
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
+    · exact { val := χ
+              dom_sub := Finset.Subset.refl _
+              c0 := h_c0
+              f_agrees := fun _ _ => rfl
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
+  | .g_prop_backward =>
+    -- H-propagation backward: H(η) ∈ f(x), η ∉ f(y), y < x adjacent
+    by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
+        Adjacent χ.dom pc.y pc.x ∧
+        Formula.all_past pc.η ∈ χ.f pc.x ∧
+        pc.η ∉ χ.f pc.y
+    · obtain ⟨h_xm, h_ym, h_adj, h_H, h_not⟩ := h_actual
+      have h_elim := eliminate_h_prop_counterexample h_c0 pc.x pc.y pc.η h_xm h_ym h_adj h_H h_not
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
       exact { val := χ'
