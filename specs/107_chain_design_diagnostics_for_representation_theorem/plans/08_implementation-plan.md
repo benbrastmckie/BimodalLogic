@@ -109,7 +109,7 @@ Prior plan: `plans/06_implementation-plan.md` (22 hours, 5 phases). Phase 1 (Par
 
 ---
 
-### Phase 1: Add C4/C4' and Clean Up False Lemmas [NOT STARTED]
+### Phase 1: Add C4/C4' and Clean Up False Lemmas [COMPLETED]
 
 **Goal**: Add the missing C4/C4' backward counterexample conditions to `ValidChronicle`, implement C4 counterexample elimination (Lemma 2.9), and withdraw the false `until_guard_consistent` lemma.
 
@@ -142,7 +142,7 @@ Prior plan: `plans/06_implementation-plan.md` (22 hours, 5 phases). Phase 1 (Par
 
 ---
 
-### Phase 2: Close Easy Sorry Sites [NOT STARTED]
+### Phase 2: Close Easy Sorry Sites [COMPLETED]
 
 **Goal**: Close the 4 easy sorry sites that require only standard Mathlib utilities and countability arguments.
 
