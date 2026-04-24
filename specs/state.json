@@ -573,13 +573,13 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-24T00:24:02Z",
-      "researched": "2026-04-24T00:24:02Z",
+      "last_updated": "2026-04-24T00:42:31Z",
+      "researched": "2026-04-24T00:42:31Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 8,
+      "next_artifact_number": 9,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -625,9 +625,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md",
           "type": "report",
           "summary": "Post-implementation review: 3 critical architectural gaps (missing C4, broken extended_limit_f, vacuous C5), 35-55h estimate for 3-phase fix"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/08_verbrugge-step-by-step.md",
+          "type": "report",
+          "summary": "Verbrugge step-by-step vs Burgess chronicle: insert between points, add C4, dense domain. 5-phase fix plan (44-67h)"
         }
       ],
-      "session_id": "sess_1776989664_1cc94d"
+      "session_id": "sess_1776990905_d48648"
     }
   ],
   "next_project_number": 111,
