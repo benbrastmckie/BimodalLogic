@@ -174,24 +174,45 @@ theorem counterexample_enum_surjective :
   intro pc
   exact ⟨Encodable.encode pc, Denumerable.ofNat_encode pc⟩
 
+/--
+The counterexample enumeration (via Cantor unpairing) covers all potential
+counterexamples above any threshold. For any pc and k, there exists n ≥ k
+such that `counterexample_enum (Nat.unpair n).2 = pc`.
+
+This is the key property needed for the limit argument: even if a counterexample's
+canonical index j is below the step where its domain point enters, there exist
+arbitrarily large steps n where counterexample j is re-processed.
+-/
+theorem counterexample_enum_surjective_above (pc : PotentialCounterexample) (k : Nat) :
+    ∃ n : Nat, n ≥ k ∧ counterexample_enum (Nat.unpair n).2 = pc := by
+  have ⟨j, hj⟩ := counterexample_enum_surjective pc
+  exact ⟨Nat.pair k j, Nat.left_le_pair k j,
+    by simp [Nat.unpair_pair, hj]⟩
+
 /-! ## Omega-Chain: Iterated Counterexample Elimination -/
 
 /--
 The **omega-chain**: a sequence of chronicles indexed by Nat, where each
-chronicle extends the previous one by eliminating the n-th potential
-counterexample (if it is an actual counterexample).
+chronicle extends the previous one by eliminating a potential counterexample.
+
+Uses Cantor unpairing: at step n+1, process `counterexample_enum (Nat.unpair n).2`.
+This ensures every counterexample index j is processed at infinitely many steps
+(for all i, step `Nat.pair i j + 1` processes counterexample j). This is essential
+because a counterexample (x, ξ, η) can only be eliminated when x is already in the
+domain, and x may enter the domain at a later step than the counterexample's first
+enumeration index.
 
 - omega_chain 0 = singleton_chronicle A
-- omega_chain (n+1) = eliminate_potential_counterexample (omega_chain n) (enum n)
+- omega_chain (n+1) = eliminate_potential_counterexample (omega_chain n) (enum (unpair n).2)
 -/
 noncomputable def omega_chain (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
     (n : Nat) → { χ : Chronicle // χ.c0 }
   | 0 => ⟨singleton_chronicle A, singleton_c0 h_mcs⟩
   | n + 1 =>
     let prev := omega_chain A h_mcs n
-    let pc := counterexample_enum n
+    let pc := counterexample_enum (Nat.unpair n).2
     let result := eliminate_potential_counterexample prev.val prev.property pc
-    ⟨result.val, result.property.2.1⟩
+    ⟨result.val, result.c0⟩
 
 /--
 Extract the chronicle at step n.
@@ -216,7 +237,7 @@ theorem omega_chain_dom_mono (A : Set Formula) (h_mcs : SetMaximalConsistent A) 
   exact (eliminate_potential_counterexample
     (omega_chain A h_mcs n).val
     (omega_chain A h_mcs n).property
-    (counterexample_enum n)).property.1
+    (counterexample_enum (Nat.unpair n).2)).dom_sub
 
 /--
 The point function agrees on old domain points across the chain.
@@ -228,7 +249,7 @@ theorem omega_chain_f_agrees (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   exact (eliminate_potential_counterexample
     (omega_chain A h_mcs n).val
     (omega_chain A h_mcs n).property
-    (counterexample_enum n)).property.2.2 x hx
+    (counterexample_enum (Nat.unpair n).2)).f_agrees x hx
 
 /--
 Domain monotonicity extends transitively: for m ≤ n, dom(m) ⊆ dom(n).
@@ -252,6 +273,74 @@ theorem omega_chain_f_agrees_le (A : Set Formula) (h_mcs : SetMaximalConsistent 
   | step h ih =>
     rw [omega_chain_f_agrees A h_mcs _ x (omega_chain_dom_mono_le A h_mcs h hx)]
     exact ih
+
+/--
+C5 witness at step n+1: if `counterexample_enum (Nat.unpair n).2` is a c5_forward
+counterexample with x ∈ dom(n) and U(ξ,η) ∈ f_n(x), then a witness exists in dom(n+1).
+
+This directly exposes the `c5_forward_witness` field of `EliminationResult`.
+-/
+theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (n : Nat) (x : Rat) (ξ η : Formula)
+    (hx : x ∈ (omega_chain_val A h_mcs n).dom)
+    (h_until : Formula.untl ξ η ∈ (omega_chain_val A h_mcs n).f x)
+    (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_forward⟩) :
+    ∃ y ∈ (omega_chain_val A h_mcs (n + 1)).dom,
+      x < y ∧ η ∈ (omega_chain_val A h_mcs (n + 1)).f y := by
+  -- Abbreviate the elimination result at step n+1
+  set pc := counterexample_enum (Nat.unpair n).2 with hpc_def
+  set result := eliminate_potential_counterexample
+    (omega_chain_val A h_mcs n)
+    (omega_chain_c0 A h_mcs n)
+    pc with hresult_def
+  -- omega_chain_val(n+1) = result.val
+  have h_eq : omega_chain_val A h_mcs (n + 1) = result.val := rfl
+  rw [h_eq]
+  -- Extract c5_forward_witness from result
+  have h_kind : pc.kind = .c5_forward := by rw [hn_eq]
+  have h_mem : pc.x ∈ (omega_chain_val A h_mcs n).dom := by
+    rw [show pc.x = x from by rw [hn_eq]]; exact hx
+  have h_unt : Formula.untl pc.ξ pc.η ∈ (omega_chain_val A h_mcs n).f pc.x := by
+    rw [show pc.ξ = ξ from by rw [hn_eq], show pc.η = η from by rw [hn_eq],
+        show pc.x = x from by rw [hn_eq]]
+    exact h_until
+  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ := result.c5_forward_witness h_kind h_mem h_unt
+  have hpc_x : pc.x = x := by rw [hn_eq]
+  have hpc_η : pc.η = η := by rw [hn_eq]
+  refine ⟨y, hy_dom, ?_, ?_⟩
+  · rwa [hpc_x] at hy_lt
+  · rwa [hpc_η] at hy_η
+
+/--
+C5' witness at step n+1 (mirror for Since).
+-/
+theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (n : Nat) (x : Rat) (ξ η : Formula)
+    (hx : x ∈ (omega_chain_val A h_mcs n).dom)
+    (h_since : Formula.snce ξ η ∈ (omega_chain_val A h_mcs n).f x)
+    (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_backward⟩) :
+    ∃ y ∈ (omega_chain_val A h_mcs (n + 1)).dom,
+      y < x ∧ η ∈ (omega_chain_val A h_mcs (n + 1)).f y := by
+  set pc := counterexample_enum (Nat.unpair n).2 with hpc_def
+  set result := eliminate_potential_counterexample
+    (omega_chain_val A h_mcs n)
+    (omega_chain_c0 A h_mcs n)
+    pc with hresult_def
+  have h_eq : omega_chain_val A h_mcs (n + 1) = result.val := rfl
+  rw [h_eq]
+  have h_kind : pc.kind = .c5_backward := by rw [hn_eq]
+  have h_mem : pc.x ∈ (omega_chain_val A h_mcs n).dom := by
+    rw [show pc.x = x from by rw [hn_eq]]; exact hx
+  have h_snc : Formula.snce pc.ξ pc.η ∈ (omega_chain_val A h_mcs n).f pc.x := by
+    rw [show pc.ξ = ξ from by rw [hn_eq], show pc.η = η from by rw [hn_eq],
+        show pc.x = x from by rw [hn_eq]]
+    exact h_since
+  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ := result.c5_backward_witness h_kind h_mem h_snc
+  have hpc_x : pc.x = x := by rw [hn_eq]
+  have hpc_η : pc.η = η := by rw [hn_eq]
+  refine ⟨y, hy_dom, ?_, ?_⟩
+  · rwa [hpc_x] at hy_lt
+  · rwa [hpc_η] at hy_η
 
 /-! ## Limit Chronicle
 
@@ -363,14 +452,23 @@ theorem limit_satisfies_c5_weak (A : Set Formula) (h_mcs : SetMaximalConsistent 
     ∃ y ∈ limit_dom A h_mcs, x < y ∧ η ∈ limit_f A h_mcs y := by
   -- x ∈ limit_dom means x ∈ dom(n₀) for some n₀
   obtain ⟨n₀, hn₀⟩ := hx
-  -- The enumeration covers (x, 0, ξ, η, c5_forward)
-  -- (y field is unused for C5 counterexamples)
-  obtain ⟨k, hk⟩ := counterexample_enum_surjective
-    ⟨x, 0, ξ, η, .c5_forward⟩
-  -- At step max(n₀, k) + 1, the counterexample has been processed
-  -- Either a witness was inserted, or one already existed
-  -- The detailed argument requires tracking through the chain
-  sorry
+  -- By surjective_above, there exists n ≥ n₀ such that the counterexample
+  -- (x, 0, ξ, η, c5_forward) is processed at step n+1.
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, 0, ξ, η, .c5_forward⟩ n₀
+  -- x ∈ dom(n) since n ≥ n₀
+  have hx_n : x ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hn₀
+  -- U(ξ,η) ∈ f_n(x) by f-agreement on old domain points
+  have h_until_n : Formula.untl ξ η ∈ (omega_chain_val A h_mcs n).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs hn_ge x hn₀]
+    rwa [← limit_f_eq A h_mcs x n₀ hn₀]
+  -- omega_chain_c5_witness gives us a witness in dom(n+1)
+  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ :=
+    omega_chain_c5_witness A h_mcs n x ξ η hx_n h_until_n hn_eq
+  -- Transfer to the limit
+  exact ⟨y, ⟨n + 1, hy_dom⟩, hy_lt,
+    by rw [limit_f_eq A h_mcs y (n + 1) hy_dom]; exact hy_η⟩
 
 /--
 Mirror: the limit chronicle satisfies C5' (Since witnesses).
@@ -380,7 +478,18 @@ theorem limit_satisfies_c5'_weak (A : Set Formula) (h_mcs : SetMaximalConsistent
     (ξ η : Formula)
     (h_since : Formula.snce ξ η ∈ limit_f A h_mcs x) :
     ∃ y ∈ limit_dom A h_mcs, y < x ∧ η ∈ limit_f A h_mcs y := by
-  sorry
+  obtain ⟨n₀, hn₀⟩ := hx
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, 0, ξ, η, .c5_backward⟩ n₀
+  have hx_n : x ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hn₀
+  have h_since_n : Formula.snce ξ η ∈ (omega_chain_val A h_mcs n).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs hn_ge x hn₀]
+    rwa [← limit_f_eq A h_mcs x n₀ hn₀]
+  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ :=
+    omega_chain_c5'_witness A h_mcs n x ξ η hx_n h_since_n hn_eq
+  exact ⟨y, ⟨n + 1, hy_dom⟩, hy_lt,
+    by rw [limit_f_eq A h_mcs y (n + 1) hy_dom]; exact hy_η⟩
 
 /-! ## Claim 2.11: Truth Claim
 
