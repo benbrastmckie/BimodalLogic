@@ -250,7 +250,10 @@ between x and y:
   If δ ∈ f(z₀), then by the r-relation and ¬(γ U δ) ∈ f(x), we get a
   sub-counterexample with fewer intermediate points.
 
-This is sorry'd pending completion of `lemma_2_6_strong` (Phase 3).
+Sorry'd pending Phase 4 implementation using `lemma_2_6` (non-strong version).
+`lemma_2_6_strong` was withdrawn in Phase 3 (false under strict semantics).
+C4 elimination only needs neg delta in D and g_content(A) subset D, which
+`lemma_2_6` provides.
 -/
 noncomputable def eliminate_C4_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
@@ -283,7 +286,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.δ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom := by
   -- Mirror of C4 elimination for Since direction.
-  -- Sorry'd pending lemma_2_6_strong (Phase 3).
+  -- Sorry'd pending Phase 4 implementation using `lemma_2_6` (non-strong).
+  -- `lemma_2_6_strong` was withdrawn in Phase 3 (false under strict semantics).
   sorry
 
 /-! ## Potential Counterexample Interface -/
