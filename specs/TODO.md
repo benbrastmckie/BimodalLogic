@@ -1,5 +1,5 @@
 ---
-next_project_number: 111
+next_project_number: 112
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -66,6 +66,13 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+### 111. Identify and add literature sources from task 107 research to literature/README.md
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+
+**Description**: Look through task 107 research reports (04_literature-sources.md and 03_team-research.md) to identify sources not yet included in literature/README.md. Add these under a 'Second Research Wave' section with links to journal websites or PDFs, copying PDFs into the literature/ directory where available
 
 ---
 
@@ -347,3 +354,7 @@ technical_debt:
 
 **Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
 
+
+## Recommended Order
+
+1. **111** -> research (independent)
