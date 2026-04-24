@@ -168,7 +168,7 @@ Prior plan: `plans/06_implementation-plan.md` (22 hours, 5 phases). Phase 1 (Par
 
 ---
 
-### Phase 3: Close PointInsertion Sorry Sites (Lemmas 2.6-2.8) [IN PROGRESS]
+### Phase 3: Close PointInsertion Sorry Sites (Lemmas 2.6-2.8) [BLOCKED]
 
 **Goal**: Close the 4 PointInsertion sorry sites that implement the core point insertion machinery. These become essential once C4 is added (Phase 1) and the C5 insertion strategy is redesigned (Phase 4).
 
