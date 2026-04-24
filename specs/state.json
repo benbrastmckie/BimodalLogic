@@ -620,13 +620,13 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-24T20:58:19Z",
+      "last_updated": "2026-04-25T04:00:00Z",
       "researched": "2026-04-24T04:22:39Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 16,
+      "next_artifact_number": 17,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -712,6 +712,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/15_implementation-plan.md",
           "type": "plan",
           "summary": "v5: 5 phases (g-function fix, guard conventions, C4 closure, Rat milestone, general completeness via direct BFMCS truth lemma)"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/16_team-research.md",
+          "type": "report",
+          "summary": "Critical evaluation: chronicle viable but expensive (100h). Hybrid Int-chain approach (~24h) most promising alternative. Ship G/H/Box first."
         }
       ],
       "session_id": "sess_1777044968_6647f2"
