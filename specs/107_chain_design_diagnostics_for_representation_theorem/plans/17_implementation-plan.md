@@ -85,7 +85,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Update ROADMAP.md [NOT STARTED]
+### Phase 0: Update ROADMAP.md [COMPLETED]
 
 **Goal**: Bring the stale ROADMAP.md (last updated 2026-04-20) up to date with current findings from the chronicle construction effort.
 

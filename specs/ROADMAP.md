@@ -4,18 +4,27 @@
 
 TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-04-20 (irreflexive semantics rewrite).
+state of the completeness effort as of 2026-04-24 (chronicle binary g rebuild).
 
 **Architecture**: The proof system has 35 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
 **irreflexive**: G/H quantify over `t < s` / `s < t` (strict inequality), and
-Until/Since require strictly future/past witnesses. The active
-completeness path flows through `Theories/Bimodal/Metalogic/BXCanonical/`,
-which constructs a canonical frame of maximally consistent sets ordered by
-`g_content` inclusion.
+Until/Since require strictly future/past witnesses. There are two active
+completeness paths:
+
+1. **BXCanonical** (`Theories/Bimodal/Metalogic/BXCanonical/`): Canonical frame
+   of maximally consistent sets ordered by `g_content` inclusion. The 5 critical-path
+   sorries in `RootScopedChain.lean` are blocked by Lindenbaum opacity (see dead ends
+   #34-#36). Task 109 tracks these.
+2. **Chronicle** (`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`): Burgess 1982
+   chronicle construction using controlled PointInsertion to escape Lindenbaum opacity.
+   Task 107 (active) is rebuilding the chronicle with binary g(x,y) to close 12 sorry
+   sites and achieve the representation theorem. This is the primary completeness path.
 
 **Sorry summary**: The BXCanonical module has **19 sorry proofs** across 7 files,
-in three categories (task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
+plus the Chronicle sub-module has **12 sorry proofs** across 3 files.
+
+BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
@@ -31,7 +40,28 @@ The 18 irreflexive-consequence sorries are artifacts of the BX1 removal (e.g., `
 `g_content_subset_self`, `refl_intro_until_mcs`, `sigma_le_refl`) that need redesign under
 irreflexive semantics.
 
-**Dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
+**BXCanonical dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
+
+Chronicle sorries (task 107):
+
+| Category | Count | Files | Status |
+|----------|-------|-------|--------|
+| **g_content chain** (blocking limit_backward_H) | 1 | `ChronicleConstruction.lean` | **OPEN** (root cause: unary g) |
+| **C4 sub-cases** (blocking sorry-free elimination) | 2 | `CounterexampleElimination.lean` | **OPEN** |
+| **Countermodel wiring** (temporal/Until/Since coherence) | 9 | `ChronicleToCountermodel.lean` | **OPEN** |
+| **Total Chronicle** | **12** | 3 files | |
+
+The chronicle's `g_content_chain_property` sorry is the critical bottleneck (task 107 report 17):
+the current codebase defines g as a **unary** function `limit_g(x,y) = deductiveClosure(g_content(limit_f(x)))`,
+which is a function of x only. Burgess 1982 uses a **binary** interval function g(x,y) maintained
+through the omega-chain with the C3 decomposition identity: `g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z)`.
+Task 107 is rebuilding the chronicle with binary g to close all 12 sorry sites.
+
+**Key finding -- density axiom** (task 107 report 11): Dense domains (e.g., Q) are WRONG for
+general completeness. GGp->Gp is valid on Q but not derivable in BX. Burgess uses sparse
+X ⊂ Q. The representation theorem goal (D=Rat, totally ordered abelian groups) accepts GGp->Gp
+as valid for that specific frame class. General completeness (all strict linear orders) requires
+sparse X where GGp->Gp may fail.
 
 See sections below for the axiom system, irreflexive semantics, canonical
 construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy.
@@ -203,9 +233,38 @@ former reflexive semantics.
 
 ---
 
-## Active Metalogic Path: BXCanonical
+## Active Metalogic Paths
 
-The active completeness path flows through `Metalogic/BXCanonical/`. The
+Two completeness paths are active. The **Chronicle** path (task 107) is the primary
+path and is under active development. The **BXCanonical** path (task 109) is secondary;
+its 5 critical-path sorries are blocked by Lindenbaum opacity (dead ends #34-#36) and
+will become dead code once the chronicle path succeeds.
+
+### Path 1: Chronicle Construction (Task 107, PRIMARY)
+
+The Burgess 1982 chronicle construction builds a countermodel via controlled
+PointInsertion, escaping the Lindenbaum opacity that blocks BXCanonical. The
+construction lives in `Metalogic/BXCanonical/Chronicle/` (6 files, ~2990 lines).
+
+**Current state**: 12 sorry sites. The critical bottleneck is `g_content_chain_property`
+in `ChronicleConstruction.lean`, caused by an architecturally wrong unary g function.
+Task 107 is rebuilding with Burgess's binary g(x,y) interval function.
+
+**Chronicle module structure**:
+- `ChronicleTypes.lean` (354 lines) -- Chronicle structure, ChronicleProperty invariant
+- `PointInsertion.lean` (450 lines) -- Lemma 2.4/2.6 controlled MCS insertion (sorry-free)
+- `RRelation.lean` (345 lines) -- R-relation infrastructure (sorry-free)
+- `CounterexampleElimination.lean` (561 lines) -- C4/C5 elimination (2 sorries)
+- `ChronicleConstruction.lean` (857 lines) -- Omega-chain, limit construction (1 sorry)
+- `ChronicleToCountermodel.lean` (423 lines) -- BFMCS wiring (9 sorries)
+
+**Key insight (report 17)**: The hybrid Int-chain + enriched seed approach is definitively
+dead (dead ends #7, #13, #23, #31). The chronicle construction is NOT a dead end -- all
+gaps are engineering problems, not mathematical impossibilities (report 16).
+
+### Path 2: BXCanonical (Task 109, SECONDARY)
+
+The BXCanonical path flows through `Metalogic/BXCanonical/`. The
 legacy `UltrafilterChain`, `FrameConditions/Completeness`, and `SuccChainFMCS`
 modules are still built via top-level aggregation in `Metalogic.lean:1-4` but
 are **not imported** by `BXCanonical`.
@@ -922,6 +981,15 @@ warnings regardless of the semantic change.
     provide no inter-step structural guarantees. This obstruction applies
     to ALL three paths (C, A, B) equally.
 
+37. **Chronicle construction is NOT a dead end** (task 107, report 16):
+    Assessment confirmed that all chronicle gaps are engineering problems, not
+    mathematical impossibilities. The PointInsertion lemmas (2.4, 2.6) are
+    sorry-free. The g_content_chain_property blocker was traced to an
+    architecturally wrong unary g function (report 17), not a fundamental
+    obstruction. Binary g(x,y) with C3 decomposition resolves the root cause.
+    **This is an anti-assessment, not a dead end**: the chronicle path is viable
+    and is the primary completeness strategy.
+
 ### Task 93: Progress and Infrastructure
 
 Six sorry-free helper lemmas proved during v17 Phase 1 (all in
@@ -946,56 +1014,32 @@ Controlling this choice is the only viable path. Standard completeness proofs
 (Burgess 1984, Goldblatt 1992, GHR 1994) handle forward_F semantically, not
 syntactically.
 
-### Current Strategy: Architecture Reassessment Required (Post Plan v44)
+### Current Strategy: Chronicle Construction (Task 107)
 
-**Status**: All three paths (C, A, B) from plan v44 have been attempted and
-are BLOCKED by the same irreducible obstruction. The 5 sorry sites in
-`RootScopedChain.lean` remain open.
+**Status**: The chronicle construction (task 107) is the active completeness strategy.
+All three BXCanonical paths (C, A, B) from plan v44 are BLOCKED by Lindenbaum opacity
+(dead ends #34-#36). The chronicle escapes this obstruction via controlled PointInsertion.
 
-**Path C (pigeonhole fix)**: BLOCKED (dead end #34). The BX11 fold resolves
-an arbitrary defect via `Classical.choose`. The resolved defect is opaque
-and cannot be forced to equal a specific target. Active defects never shrink
-(F-persistence), so no counting argument works.
+**BXCanonical obstruction (for reference)**: The gap between SEMANTIC temporal reasoning
+(which can reference future/past states freely) and SYNTACTIC MCS membership (which is
+local to one MCS). Lindenbaum extensions via `Classical.choose` are non-constructive
+and provide no inter-step structural guarantees. The chronicle avoids this by building
+MCS via PointInsertion with explicit control over the seed content.
 
-**Path A (oracle-based chains)**: BLOCKED (dead end #35). The sigma-specific
-oracle has a defect-count decrease sorry. Enhanced oracle seed F-preservation
-is viable but blocked by the defect-count termination argument.
+**Chronicle approach (task 107, plan v7)**:
+1. **Binary g(x,y)**: Rebuild chronicle with Burgess's binary interval function g(x,y)
+   maintained through the omega-chain. C3 decomposition: g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
+2. **g-splitting**: When C4 elimination inserts z between adjacent x and y, g(x,y) splits
+   into g(x,z) and g(z,y) preserving C2/C3 invariants.
+3. **limit_g**: Define as the limit of binary g through the omega-chain. g_content_chain_property
+   then follows from C2+C3.
+4. **Guard resolution**: BX9 bridge converts open guards (C5) to half-open guards (truth semantics).
+5. **Representation theorem**: sorry-free `dd_countermodel_chronicle` over D=Rat.
+6. **General completeness**: Direct BFMCS truth lemma over sparse X for all strict linear orders.
 
-**Path B (quasimodel BFMCS)**: BLOCKED (dead end #36). Palindromic quasimodel
-chain faces the same Lindenbaum opacity. Both F/P eventuality resolution and
-Until/Since step transfer are blocked. The Until step transfer requires a
-"next" operator (bot-Until content linking) which Lindenbaum-based chains
-cannot provide.
-
-**Irreducible core obstruction**: The gap between SEMANTIC temporal reasoning
-(which can reference future/past states freely) and SYNTACTIC MCS membership
-(which is local to one MCS). Lindenbaum extensions via `Classical.choose`
-are non-constructive and provide no inter-step structural guarantees.
-All known chain architectures (preserving, oracle, quasimodel) share this
-property. Standard completeness proofs (Burgess 1984, Goldblatt 1992, GHR
-1994) handle this semantically, not syntactically.
-
-**Key mathematical insight from Phase 6 analysis**: A useful lemma IS
-derivable -- "alpha in chain(n+1) implies F(alpha) in chain(n)" (and its
-P-dual) via contrapositive of g_content propagation. However, this goes the
-WRONG direction for eventuality resolution and is insufficient for the
-Until step transfer.
-
-**Recommended next steps**:
-1. **Deterministic chain approach**: The only chain with provable Until
-   backward coherence is the deterministic chain (`DeterministicFMCS.lean`),
-   which has bot-Until content linking. Under reflexive semantics, the
-   deterministic chain is CONSTANT (bot U alpha = alpha), which trivially
-   satisfies backward Until but cannot resolve F-eventualities. A hybrid
-   approach combining deterministic Until-linking with Lindenbaum F-resolution
-   might work.
-2. **Semantic completeness proof**: Abandon the syntactic chain approach
-   entirely. Use a model-theoretic argument where the canonical model is
-   built with semantic witnesses (as in Goldblatt/GHR), avoiding the need
-   to control Lindenbaum choices.
-3. **Axiom strengthening**: Add a "next" operator or Until-induction axiom
-   to the BX system. This would make the Until step transfer derivable but
-   changes the logic.
+**The hybrid Int-chain + enriched seed approach should NOT be revisited** (dead ends
+#7, #13, #23, #31). The chronicle construction is confirmed to be the right path
+(report 16: all gaps are engineering, not mathematical impossibilities).
 
 **Infrastructure already in place** (all sorry-free):
 - `deferralClosure`: finite set of formulas reachable by F/P-nesting from root
@@ -1065,6 +1109,16 @@ blocker is independent of the order structure on `D`.
 
 > "TM is complete with respect to TaskFrames over totally ordered abelian groups."
 
+This is the stated ROADMAP goal. Since totally ordered abelian groups (e.g., Rat)
+are dense, GGp->Gp is valid for this frame class. The chronicle construction
+achieves this as **Path B** (D=Rat completeness, task 107 Phase 4).
+
+**General completeness** (all strict linear orders) is a stretch goal achieved by
+**Path A** (task 107 Phase 5). On sparse domains, GGp->Gp may fail (it is not
+derivable in BX), which is correct -- BX is complete for ALL strict linear orders,
+not just dense ones. The density axiom finding (report 11) established that dense
+domains are wrong for general completeness.
+
 **Only the algebraic/canonical model approach is pursued for completeness.**
 The representation theorem characterizes TM by showing that every consistent
 formula has a model built from the logic's own proof-theoretic structure
@@ -1085,37 +1139,40 @@ characterization.
 
 ## Recommended Priority Order
 
-### Critical Path (sequential)
+### Critical Path: Chronicle (primary completeness strategy)
 
-1. **Task 109**: Close 23 BXCanonical sorries (5 critical-path in
-   `RootScopedChain.lean` + 18 irreflexive-consequence across 6 files).
-   The critical-path sorries require `fwd_chain_forward_F` (F-resolution),
-   restricted temporal coherence (forward + backward), backward Until/Since,
-   and forward Until/Since coherence. The irreflexive-consequence sorries
-   need redesign for the new semantics (e.g., removing reflexivity assumptions).
-2. **Task 95**: `#print axioms` audit on `bx_completeness`; expected output
-   is exactly `{propext, Classical.choice, Quot.sound}`. Depends on task 109.
+1. **Task 107** (ACTIVE): Rebuild chronicle with binary g(x,y), close 12 sorry sites.
+   Phases: binary g rebuild -> guard resolution -> C4 sub-cases -> Rat completeness -> general completeness.
+   This is the primary path to both the representation theorem (D=Rat) and general completeness
+   (all strict linear orders).
+2. **Task 112**: Systematic literature study supporting task 107 (Burgess 1982b, Venema 1993, etc.).
+3. **Task 95**: `#print axioms` audit on completeness theorem. Depends on task 107 or 109.
+
+### Secondary Path: BXCanonical (blocked, low priority)
+
+4. **Task 109**: Close 23 BXCanonical sorries (5 critical-path + 18 irreflexive-consequence).
+   Blocked by Lindenbaum opacity (dead ends #34-#36). The 5 critical-path sorries in
+   `RootScopedChain.lean` become dead code once task 107 succeeds. The 18
+   irreflexive-consequence sorries remain independently valuable for cleanup.
 
 ### Documentation/Cleanup (parallelizable)
 
-3. **Task 94**: Archive legacy strict-semantics files to
-   `Boneyard/StrictSemanticsLegacy/`. Drops ~20 sorries from active tree.
-4. **Task 104**: Clean up superseded tasks in state.json (abandon 89,
+5. **Task 104**: Clean up superseded tasks in state.json (abandon 89,
    update 60/87/998).
-5. **Task 105**: Update stale sorry-blocker comments in BXCanonical code.
+6. **Task 105**: Update stale sorry-blocker comments in BXCanonical code.
 
 ### Independent Tracks
 
-6. **Task 68**: Dense completeness via `ℚ` canonical model (independent).
-7. **Task 82**: FMP Truth Preservation -- may need reassessment (sorries
+7. **Task 68**: Dense completeness via Q canonical model (independent).
+8. **Task 82**: FMP Truth Preservation -- may need reassessment (sorries
    archived to Boneyard, 0 remain in active tree).
-8. **Task 60**: Remove `discrete_Icc_finite_axiom` (may already be gone).
+9. **Task 60**: Remove `discrete_Icc_finite_axiom` (may already be gone).
 
 ---
 
 ## Task Cross-Reference
 
-> **Updated 2026-04-20 (task 106: ROADMAP rewrite for irreflexive semantics)**
+> **Updated 2026-04-24 (task 107: chronicle binary g rebuild, ROADMAP update)**
 
 | Task | Status | Description | Depends On |
 |------|--------|-------------|------------|
@@ -1125,17 +1182,19 @@ characterization.
 | 98 | **[COMPLETED]** | Implement eventuality resolution (Frame.lean:653, 690) | 92 |
 | 102 | **[COMPLETED]** | Close remaining Frame.lean sorries (675, 704, 440) | 98 |
 | 93 | **[COMPLETED]** | Irreflexive semantics switch: seriality axioms, BX8 removal, defect step redesign | 102 |
-| 95 | [NOT STARTED] | `#print axioms` audit on `bx_completeness` | 109 |
+| 95 | [NOT STARTED] | `#print axioms` audit on completeness theorem | 107 or 109 |
 | 103 | **[COMPLETED]** | Comprehensive ROAD_MAP.md rewrite for post-Until/Since state | — |
 | 94 | **[COMPLETED]** | Archive strict-semantics legacy files to Boneyard | 103 |
 | 104 | [NOT STARTED] | Clean up superseded tasks + fix state.json | — |
 | 105 | [NOT STARTED] | Update stale sorry-blocker comments in BXCanonical | — |
 | 106 | [IMPLEMENTING] | Rewrite ROADMAP.md for irreflexive semantics | 93 |
+| 107 | **[IMPLEMENTING]** | Burgess chronicle construction: binary g rebuild, close 12 sorry sites, representation theorem | — |
 | 109 | [NOT STARTED] | Close 23 BXCanonical sorries (5 critical-path + 18 irreflexive-consequence) | 93 |
+| 112 | **[RESEARCHED]** | Systematic literature study for task 107 representation theorem | — |
 | 82 | [NOT STARTED] | FMP Truth Preservation (weak completeness, independent) | — |
-| 68 | [RESEARCHED] | Dense completeness via ℚ canonical model | — (independent) |
+| 68 | [RESEARCHED] | Dense completeness via Q canonical model | — (independent) |
 | 60 | [NOT STARTED] | Remove `discrete_Icc_finite_axiom` (may already be gone) | — |
 
 ---
 
-*Last updated: 2026-04-20 (task 106: ROADMAP rewrite for irreflexive semantics -- fix terminology, axiom counts, sorry inventory, X/Y analysis, module line counts)*
+*Last updated: 2026-04-24 (task 107: chronicle binary g rebuild -- added Chronicle path, binary g finding, density axiom finding, dead end #37, updated priority order and sorry inventory)*
