@@ -3,6 +3,7 @@ import Bimodal.Metalogic.BXCanonical.Chronicle.RRelation
 import Bimodal.Metalogic.BXCanonical.Chronicle.PointInsertion
 import Bimodal.Metalogic.BXCanonical.Chronicle.CounterexampleElimination
 import Mathlib.Data.Rat.Defs
+import Mathlib.Data.Rat.Denumerable
 
 /-!
 # Chronicle Construction (Omega-Chain and Claim 2.11)
@@ -91,36 +92,87 @@ f(0) = A in the singleton chronicle.
 theorem singleton_f_zero (A : Set Formula) :
     (singleton_chronicle A).f 0 = A := rfl
 
+/--
+The singleton chronicle satisfies C4 vacuously: a singleton domain has no
+adjacent pairs, so the universal quantifier over adjacent pairs is vacuously true.
+-/
+theorem singleton_c4 (A : Set Formula) :
+    (singleton_chronicle A).c4 := by
+  intro x y h_adj
+  -- Adjacent requires x ∈ dom ∧ y ∈ dom ∧ x < y ∧ ...
+  -- But dom = {0}, so x = 0 and y = 0, contradicting x < y
+  obtain ⟨hx, hy, hxy, _⟩ := h_adj
+  simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
+  subst hx; subst hy
+  simp at hxy
+
+/--
+The singleton chronicle satisfies C4' vacuously (mirror of C4).
+-/
+theorem singleton_c4' (A : Set Formula) :
+    (singleton_chronicle A).c4' := by
+  intro x y h_adj
+  obtain ⟨hx, hy, hxy, _⟩ := h_adj
+  simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
+  subst hx; subst hy
+  simp at hxy
+
+/-! ## Countability of Potential Counterexamples
+
+PotentialCounterexample is countable (all fields are countable) and infinite
+(Rat embeds into it), hence Denumerable (bijection with Nat).
+-/
+
+/-- PotentialCounterexample is countable since all its fields are countable. -/
+instance : Countable PotentialCounterexample :=
+  Function.Injective.countable
+    (f := fun pc => (pc.x, pc.y, pc.ξ, pc.η, pc.kind))
+    (fun a b h => by
+      cases a; cases b
+      simp only [Prod.mk.injEq] at h
+      obtain ⟨h1, h2, h3, h4, h5⟩ := h
+      subst h1; subst h2; subst h3; subst h4; subst h5; rfl)
+
+/-- PotentialCounterexample is infinite since Rat embeds into it. -/
+instance : Infinite PotentialCounterexample :=
+  Infinite.of_injective
+    (fun (q : ℚ) => PotentialCounterexample.mk q 0 Formula.bot Formula.bot .c5_forward)
+    (fun a b h => by injection h)
+
+/-- PotentialCounterexample is Denumerable (countable + infinite). -/
+noncomputable instance : Denumerable PotentialCounterexample :=
+  Classical.choice (nonempty_denumerable _)
+
 /-! ## Omega-Chain Construction
 
-The key idea: enumerate all potential counterexamples (Rat x Formula x Formula x Bool)
+The key idea: enumerate all potential counterexamples
+(Rat x Rat x Formula x Formula x PotentialCounterexampleKind)
 and process them one at a time. At step n, process the n-th potential counterexample.
 If it is an actual counterexample for the current chronicle, eliminate it.
 Otherwise, leave the chronicle unchanged.
 
-The enumeration exists because Rat and Formula are both countable.
+The enumeration exists because Rat, Formula, and PotentialCounterexampleKind
+are all countable, making PotentialCounterexample Denumerable.
 -/
 
 /--
-An enumeration of potential counterexamples. This is noncomputable because
-it uses the countability of Rat and Formula.
-
-We postulate an enumeration function that assigns a PotentialCounterexample
-to each natural number. By countability, every potential counterexample
-appears in this enumeration.
+An enumeration of potential counterexamples. Uses the `Denumerable` instance
+on `PotentialCounterexample` (which is countable and infinite, hence in
+bijection with Nat) to assign a counterexample to each natural number.
 -/
-noncomputable def counterexample_enum : Nat → PotentialCounterexample := by
-  -- Rat and Formula are countable, so Rat × Formula × Formula × Bool is countable
-  -- We use classical choice to pick an enumeration
-  sorry
+noncomputable def counterexample_enum : Nat → PotentialCounterexample :=
+  fun n => Denumerable.ofNat PotentialCounterexample n
 
 /--
-The enumeration covers all potential counterexamples: for any (x, xi, eta, dir),
-there exists n such that counterexample_enum n = (x, xi, eta, dir).
+The enumeration covers all potential counterexamples: for any
+(x, y, xi, eta, kind), there exists n such that counterexample_enum n
+matches that tuple. This follows from the surjectivity of
+`Denumerable.ofNat`.
 -/
 theorem counterexample_enum_surjective :
     ∀ pc : PotentialCounterexample, ∃ n : Nat, counterexample_enum n = pc := by
-  sorry
+  intro pc
+  exact ⟨Encodable.encode pc, Denumerable.ofNat_encode pc⟩
 
 /-! ## Omega-Chain: Iterated Counterexample Elimination -/
 
@@ -290,9 +342,9 @@ theorem zero_mem_limit_dom (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
 The key theorem: the limit chronicle satisfies C5 (every Until obligation
 has a witness). The proof uses the surjectivity of the counterexample
 enumeration: for any potential C5 counterexample (x, xi, eta), there
-exists n such that counterexample_enum n = (x, xi, eta, true). At step
-n+1, this counterexample is either eliminated (a witness is inserted)
-or it was already not a counterexample (a witness already exists).
+exists n such that counterexample_enum n = (x, 0, xi, eta, c5_forward).
+At step n+1, this counterexample is either eliminated (a witness is
+inserted) or it was already not a counterexample (a witness already exists).
 -/
 
 /--
@@ -311,8 +363,10 @@ theorem limit_satisfies_c5_weak (A : Set Formula) (h_mcs : SetMaximalConsistent 
     ∃ y ∈ limit_dom A h_mcs, x < y ∧ η ∈ limit_f A h_mcs y := by
   -- x ∈ limit_dom means x ∈ dom(n₀) for some n₀
   obtain ⟨n₀, hn₀⟩ := hx
-  -- The enumeration covers (x, ξ, η, true)
-  obtain ⟨k, hk⟩ := counterexample_enum_surjective ⟨x, ξ, η, true⟩
+  -- The enumeration covers (x, 0, ξ, η, c5_forward)
+  -- (y field is unused for C5 counterexamples)
+  obtain ⟨k, hk⟩ := counterexample_enum_surjective
+    ⟨x, 0, ξ, η, .c5_forward⟩
   -- At step max(n₀, k) + 1, the counterexample has been processed
   -- Either a witness was inserted, or one already existed
   -- The detailed argument requires tracking through the chain

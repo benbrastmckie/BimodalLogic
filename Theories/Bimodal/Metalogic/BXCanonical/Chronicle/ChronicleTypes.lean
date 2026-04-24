@@ -222,6 +222,31 @@ This captures that universal future formulas (under G) at x also hold in the int
 def Chronicle.c3 (χ : Chronicle) : Prop :=
   ∀ x y : Rat, Adjacent χ.dom x y → g_content (χ.f x) ⊆ χ.g x y
 
+/-- **C4**: Backward counterexample condition for Until (Burgess 1982).
+For all x, y in dom with x < y adjacent: if `¬(γ U δ) ∈ f(x)` and `γ ∈ f(y)`,
+then there exists z in dom with `x < z < y` and `¬δ ∈ f(z)`.
+
+Intuition: If Until(γ,δ) is false at x but the guard γ still holds at the next
+point y, then the negation of the eventuality δ must be witnessed somewhere
+between x and y. This is the "backward counterexample" condition: from the
+perspective of y looking backward, we need evidence that δ failed. -/
+def Chronicle.c4 (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, Adjacent χ.dom x y →
+    ∀ (γ δ : Formula),
+      (Formula.untl γ δ).neg ∈ χ.f x →
+      γ ∈ χ.f y →
+      ∃ z ∈ χ.dom, x < z ∧ z < y ∧ δ.neg ∈ χ.f z
+
+/-- **C4'**: Backward counterexample condition for Since (mirror of C4).
+For all x, y in dom with y < x adjacent: if `¬(γ S δ) ∈ f(x)` and `γ ∈ f(y)`,
+then there exists z in dom with `y < z < x` and `¬δ ∈ f(z)`. -/
+def Chronicle.c4' (χ : Chronicle) : Prop :=
+  ∀ x y : Rat, Adjacent χ.dom y x →
+    ∀ (γ δ : Formula),
+      (Formula.snce γ δ).neg ∈ χ.f x →
+      γ ∈ χ.f y →
+      ∃ z ∈ χ.dom, y < z ∧ z < x ∧ δ.neg ∈ χ.f z
+
 /-- **C5**: Forward Until witness condition.
 For x in dom: if `gamma U delta in f(x)`, then there exists y in dom
 with x < y such that delta in f(y) and the guard gamma holds at all
@@ -258,6 +283,10 @@ structure ValidChronicle extends Chronicle where
   hc2' : toChronicle.c2'
   /-- C3: g_content propagation -/
   hc3 : toChronicle.c3
+  /-- C4: Backward counterexample for Until -/
+  hc4 : toChronicle.c4
+  /-- C4': Backward counterexample for Since -/
+  hc4' : toChronicle.c4'
   /-- C5: Forward Until witnesses -/
   hc5 : toChronicle.c5
   /-- C5': Backward Since witnesses -/

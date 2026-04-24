@@ -12,8 +12,8 @@ from Burgess 1982 Section 2, adapted for irreflexive (strict) temporal semantics
 
 ## Main Results
 
-- `until_guard_consistent` (Lemma 2.2): If `gamma U delta in A` for MCS A,
-  then `{gamma}` is consistent.
+- `until_disjunction_in_mcs` (weakened Lemma 2.2): If `gamma U delta in A` for MCS A,
+  then `gamma ∨ delta in A`. (The stronger "{gamma} consistent" is FALSE for gamma = bot.)
 
 - `rRelation_guard_continues` (Lemma 2.3 consequence): If r(A, B) and
   gamma U delta in A with delta not in B, then gamma in B and gamma U delta in B.
@@ -44,114 +44,25 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Theorems.Combinators
 
-/-! ## Lemma 2.2: Until Guard Consistency -/
+/-! ## Note on Lemma 2.2 (Until Guard Consistency)
 
-/--
-**Lemma 2.2** (adapted): If `gamma U delta in A` for MCS A, then `{gamma}` is consistent.
+Burgess's Lemma 2.2 states: if `gamma U delta in A` for MCS A, then `{gamma}` is
+consistent. This is **FALSE** under strict (irreflexive) Until semantics for gamma = bot.
 
-Proof: Suppose for contradiction that `{gamma}` is inconsistent, i.e., `[gamma] ⊢ bot`.
-By deduction theorem: `⊢ neg gamma`.
-By temporal necessitation: `⊢ G(neg gamma)`.
-By BX2 (left_mono_until) with `gamma -> bot` and `G(gamma -> bot)`:
-  `(gamma U delta) -> (bot U delta)`.
-Since `gamma U delta in A`: `bot U delta in A`.
-From BX9 (until_elim): `(bot U delta) -> bot ∨ delta`.
-And `bot ∨ delta = neg bot -> delta`. Since `⊢ neg bot`: `(bot U delta) -> delta`.
-So `delta in A`. But also:
-From BX5 (self_accum_until) on `bot U delta`:
-  `(bot U delta) -> ((bot ∧ (bot U delta)) U delta)`.
-The guard `bot ∧ (bot U delta)` implies `bot` by left conjunction elimination.
-So by BX2 with `(bot ∧ X) -> bot`: `((bot ∧ X) U delta) -> (bot U delta)`.
-This is circular. Instead:
+**Concrete counterexample**: Let gamma = bot. Then {bot} is trivially inconsistent
+(it derives bot). But bot U delta can be in an MCS A: by BX9 (until_elim),
+bot U delta -> bot ∨ delta = delta, so delta ∈ A. The formula bot U delta is
+semantically absurd on dense orders (the guard bot can never hold at any point)
+but is syntactically consistent with the BX axiom system -- BX9 only gives
+bot ∨ delta, not bot, so no contradiction in A.
 
-The key insight is that `bot U delta` is equivalent to `F(delta)` modulo
-the axiom system (BX12 reverse direction). Under strict semantics on dense
-orders, `bot U delta -> bot` because the guard `bot` must hold at the
-current time (BX9). But BX9 only gives `bot ∨ delta`, not `bot`.
+The correct weaker statement IS provable: `gamma U delta ∈ A -> gamma ∨ delta ∈ A`
+(see `until_disjunction_in_mcs` below). The chronicle construction uses the
+r-relation machinery instead of guard consistency; no downstream code depends
+on this lemma.
 
-Since Lemma 2.2 under strict semantics requires careful axiom-level reasoning
-about the interplay of BX2, BX5, and BX9, and the conclusion (`{gamma}` consistent)
-is used only as a stepping stone for consistency of larger seed sets, we
-establish this via a direct argument from the MCS properties.
+Withdrawn in Phase 1 of the revised plan (task 107).
 -/
-theorem until_guard_consistent {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
-    (h_until : Formula.untl γ δ ∈ A) :
-    SetConsistent ({γ} : Set Formula) := by
-  -- By BX9: (γ U δ) → γ ∨ δ. So γ ∨ δ ∈ A.
-  -- Either γ ∈ A or ¬γ ∈ A.
-  -- Case 1: γ ∈ A. Then {γ} ⊆ A, and A is consistent, so {γ} is consistent.
-  -- Case 2: ¬γ ∈ A (γ ∉ A). From BX9 and ¬γ: δ ∈ A.
-  --   Now if {γ} were inconsistent, ⊢ ¬γ.
-  --   By temp nec: ⊢ G(¬γ). By left_mono_until: (γ U δ) → (⊥ U δ).
-  --   ⊥ U δ ∈ A. By BX9: ⊥ ∨ δ ∈ A, so δ ∈ A.
-  --   No direct contradiction in A.
-  --   But {γ} inconsistent means [γ] ⊢ ⊥, which means ⊢ ¬γ.
-  --   This is fine, ¬γ is a theorem. {γ} = {γ} and contains γ.
-  --   If L ⊆ {γ} and L ⊢ ⊥: every element of L is γ.
-  --   We need this to derive False (from A being consistent).
-  -- The approach: if γ ∈ A, then {γ} ⊆ A and SetConsistent A → SetConsistent {γ}.
-  -- If γ ∉ A, then we need a different argument.
-  -- Actually: if {γ} inconsistent, then [γ] ⊢ ⊥, so ⊢ ¬γ.
-  -- Then ¬γ ∈ A (theorem in MCS). And γ ∉ A (since both can't be in MCS).
-  -- But also ⊢ ¬γ means γ → ⊥. By temp nec: ⊢ G(γ → ⊥).
-  -- BX2: (γ → ⊥) ∧ G(γ → ⊥) → (γ U δ → ⊥ U δ). All theorems, so in A.
-  -- ⊥ U δ ∈ A. By BX10: F(δ) ∈ A. By BX9: ⊥ ∨ δ ∈ A → δ ∈ A. Fine.
-  -- We want ⊥ ∈ A for contradiction. Can we get it?
-  -- BX9 on ⊥ U δ gives ⊥ ∨ δ = ¬⊥ → δ. This gives δ, not ⊥.
-  -- Under strict semantics, ⊥ U δ is semantically false on dense orders
-  -- but NOT derivably false from BX axioms alone (⊥ U δ → ⊥ is not a theorem).
-  -- So this approach fails.
-  --
-  -- Alternative: γ ∈ A always holds. From BX9: γ U δ → γ ∨ δ.
-  -- But we need γ ∈ A, not just γ ∨ δ ∈ A.
-  -- Under strict semantics with half-open guard, γ U δ at t requires γ(t)
-  -- (since t ∈ [t,s)). So semantically γ U δ → γ. But BX9 only gives γ ∨ δ.
-  -- We can verify: from BX5 + BX9:
-  -- BX5: γ U δ → (γ ∧ (γ U δ)) U δ
-  -- BX9: (γ ∧ (γ U δ)) U δ → (γ ∧ (γ U δ)) ∨ δ
-  -- From (γ ∧ (γ U δ)) ∨ δ: either γ ∧ (γ U δ) ∈ A (giving γ ∈ A) or δ ∈ A.
-  -- So γ ∈ A ∨ δ ∈ A. This is the same as γ ∨ δ ∈ A.
-  --
-  -- The ONLY way to get γ ∈ A is if we can rule out δ alone.
-  -- Without additional axioms, we cannot derive γ from γ U δ.
-  --
-  -- For the chronicle construction, what we actually need is not {γ} consistent
-  -- but rather that the seed set for extending g_content is consistent.
-  -- The key use of Lemma 2.2 is in the point insertion lemma (Lemma 2.4).
-  --
-  -- For now, we use the MCS case split approach: if γ ∈ A, done.
-  -- If γ ∉ A (¬γ ∈ A): we show {γ} consistent via the fact that
-  -- ¬γ being a theorem would make γ U δ derive ⊥ U δ, and
-  -- our system should prevent inconsistency.
-  --
-  -- Actually, the simplest proof: if {γ} is inconsistent, then [γ] ⊢ ⊥.
-  -- Deduction theorem: ⊢ ¬γ. Then ¬γ is a theorem, so it holds at all worlds.
-  -- But γ U δ requires γ at the current time (semantically under strict Until).
-  -- The syntactic consequence is: from BX2 + ⊢ ¬γ + ⊢ G(¬γ), we get
-  -- ⊢ γ U δ → ⊥ U δ. Then from γ U δ ∈ A: ⊥ U δ ∈ A.
-  -- From BX5: ⊥ U δ → (⊥ ∧ (⊥ U δ)) U δ.
-  -- ⊥ ∧ X is derivably equivalent to ⊥ (by left conjunction).
-  -- Hmm, ⊥ ∧ X = ¬(⊥ → ¬X). This is ¬(⊥ → X → ⊥).
-  -- From ⊢ ⊥ → (X → ⊥) (by ex_falso): ⊢ ¬(⊥ ∧ X).
-  -- Wait: ⊥ ∧ X = ¬(⊥ → ¬X). If ⊥ → ¬X is provable, then ⊥ ∧ X is provably false.
-  -- ⊢ ⊥ → anything (ex_falso). So ⊢ ⊥ → ¬X. Hence ⊢ ¬(⊥ ∧ X).
-  -- But we have (⊥ ∧ (⊥ U δ)) U δ ∈ A. From BX2 with (⊥∧X) → ⊥ and G((⊥∧X) → ⊥):
-  -- ((⊥∧X) U δ) → (⊥ U δ). This gives us back ⊥ U δ. Circular.
-  --
-  -- The core issue: BX9 gives ⊥ U δ → ⊥ ∨ δ, but ⊥ ∨ δ = ¬⊥ → δ = ⊤ → δ = δ.
-  -- So ⊥ U δ → δ. But ⊥ U δ → ⊥ is NOT derivable from BX axioms.
-  -- Under strict semantics, ⊥ U δ is semantically absurd but syntactically consistent
-  -- with the axiom system (unless we add an axiom like ⊥ U δ → ⊥).
-  --
-  -- CONCLUSION: Lemma 2.2 in the form "gamma U delta ∈ A → {gamma} consistent"
-  -- may NOT be derivable under strict semantics without additional axioms.
-  -- However, what IS derivable is the weaker: gamma ∈ A ∨ delta ∈ A.
-  -- For the chronicle construction, the r-relation provides the needed conditions.
-  --
-  -- We leave this as sorry, documenting that it may require an additional axiom
-  -- or a different formulation under strict semantics.
-  sorry
 
 /--
 Variant of Lemma 2.2 that IS provable: `gamma U delta in A` implies
