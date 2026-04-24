@@ -567,19 +567,19 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-24T00:06:59Z",
-      "researched": "2026-04-23T22:39:08Z",
+      "last_updated": "2026-04-24T00:24:02Z",
+      "researched": "2026-04-24T00:24:02Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 7,
+      "next_artifact_number": 8,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -620,9 +620,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/06_implementation-summary.md",
           "type": "summary",
           "summary": "Team implementation: 5 phases, 2764 lines chronicle construction, 2 sorries eliminated, 20 new, critical path rewired"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md",
+          "type": "report",
+          "summary": "Post-implementation review: 3 critical architectural gaps (missing C4, broken extended_limit_f, vacuous C5), 35-55h estimate for 3-phase fix"
         }
       ],
-      "session_id": "sess_1776984748_336b77"
+      "session_id": "sess_1776989664_1cc94d"
     }
   ],
   "next_project_number": 111,
