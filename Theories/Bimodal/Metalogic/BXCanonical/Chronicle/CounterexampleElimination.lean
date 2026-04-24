@@ -235,25 +235,19 @@ structure C4'Counterexample (χ : Chronicle) where
 /--
 **Lemma 2.9** (C4 Counterexample Elimination): Given a chronicle satisfying C0
 and a C4 counterexample (x, y, gamma, delta), eliminate it by inserting a new
-point z between x and y with `¬δ ∈ f(z)`.
+point z = (x + y) / 2 between x and y with `¬δ ∈ f(z)`.
 
-The construction proceeds by cases on the number of domain points strictly
-between x and y:
+The proof proceeds by case analysis on MCS negation completeness:
 
-- **Base case** (no intermediate points, i.e., x and y are truly adjacent in dom):
-  Use `lemma_2_6` to insert a point z = (x + y) / 2 with an MCS containing ¬δ.
-  The seed set {¬δ} ∪ g_content(f(x)) is consistent because ¬(γ U δ) ∈ f(x)
-  and the r-relation decomposition.
+- If `¬δ ∈ f(x)`: assign f(z) = f(x), which is already an MCS with ¬δ.
+- If `δ ∈ f(x)` but `¬δ ∈ f(y)`: assign f(z) = f(y).
+- If `δ ∈ f(x)` and `δ ∈ f(y)`: requires an independent MCS with ¬δ.
+  This sub-case needs g_content(f(x)) ⊆ f(y) (from C3) to derive
+  G(δ) ∉ f(x), enabling `lemma_2_6`. The full proof is deferred to
+  Phase 5 when the omega-chain tracks C3 invariants.
 
-- **Inductive case** (k+1 intermediate points): The nearest intermediate point
-  z₀ either has δ ∈ f(z₀) or ¬δ ∈ f(z₀). If ¬δ ∈ f(z₀), we're done.
-  If δ ∈ f(z₀), then by the r-relation and ¬(γ U δ) ∈ f(x), we get a
-  sub-counterexample with fewer intermediate points.
-
-Sorry'd pending Phase 4 implementation using `lemma_2_6` (non-strong version).
-`lemma_2_6_strong` was withdrawn in Phase 3 (false under strict semantics).
-C4 elimination only needs neg delta in D and g_content(A) subset D, which
-`lemma_2_6` provides.
+The construction preserves C0 (every point maps to an MCS) and ensures
+f agreement on all old domain points.
 -/
 noncomputable def eliminate_C4_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
@@ -264,17 +258,73 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, ce.x < z ∧ z < ce.y ∧ ce.δ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom := by
-  -- The elimination requires inserting a new point between x and y.
-  -- Since x and y are adjacent in dom (no intermediate domain points),
-  -- we can place the new point at the midpoint.
-  -- The MCS at the new point must contain ¬δ and be compatible with
-  -- g_content(f(x)) via the r-relation.
-  -- This reduces to lemma_2_6 (PointInsertion.lean), which is sorry'd
-  -- in Phase 3. We sorry this pending that dependency.
-  sorry
+  -- Step 1: Get the midpoint z = (x + y) / 2, which is not in dom
+  -- since x and y are adjacent (no domain points strictly between them).
+  set z := (ce.x + ce.y) / 2 with hz_def
+  have hxy := ce.adj.2.2.1  -- x < y
+  have hz_lt_y : z < ce.y := by linarith
+  have hx_lt_z : ce.x < z := by linarith
+  have hz_notin : z ∉ χ.dom := by
+    intro h_mem
+    exact ce.adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
+  -- Step 2: Find an MCS D containing ¬δ.
+  -- By MCS negation completeness: either δ ∈ f(x) or ¬δ ∈ f(x).
+  have h_mcs_x := h_c0 ce.x ce.x_mem
+  have h_mcs_y := h_c0 ce.y ce.y_mem
+  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.δ with h_δ_x | h_neg_δ_x
+  · -- Case 1: δ ∈ f(x). Check f(y) for ¬δ.
+    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.δ with h_δ_y | h_neg_δ_y
+    · -- Sub-case 1a: δ ∈ f(x) and δ ∈ f(y). Both contain δ.
+      -- We need an independent MCS with ¬δ. This requires ¬δ to be consistent,
+      -- which holds iff δ is not provable. From ¬(γ U δ) ∈ f(x) (an MCS),
+      -- we know f(x) is consistent and contains ¬(γ U δ). If δ were provable
+      -- (⊢ δ), then by temporal necessitation ⊢ G(δ), so G(δ) ∈ f(x).
+      -- This is consistent with ¬(γ U δ) ∈ f(x) in general, so we cannot
+      -- derive a contradiction. However, the Burgess omega-chain construction
+      -- maintains C3 (g_content(f(x)) ⊆ g(x,y) ⊆ f(y) for adjacent x < y),
+      -- which together with the r-relation structure prevents this sub-case
+      -- from arising: δ ∉ f(y) follows from C3 + ¬(γ U δ) ∈ f(x).
+      -- This sorry will be resolved when the full chronicle invariants are
+      -- propagated through the omega-chain (Phase 5+).
+      sorry
+    · -- Sub-case 1b: δ ∈ f(x) and ¬δ ∈ f(y). Use D = f(y).
+      refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
+        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+      · intro x hx
+        have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+        exact if_neg h_ne
+      · intro x hx
+        simp only [Finset.mem_insert] at hx
+        rcases hx with rfl | hx
+        · simp only [ite_true]; exact h_mcs_y
+        · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+          simp only [h_ne, ite_false]; exact h_c0 x hx
+      · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
+        simp only [ite_true]
+        exact h_neg_δ_y
+  · -- Case 2: ¬δ ∈ f(x). Use D = f(x).
+    refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
+      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+    · -- f agrees on old points
+      intro x hx
+      have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+      exact if_neg h_ne
+    · -- C0: every point maps to MCS
+      intro x hx
+      simp only [Finset.mem_insert] at hx
+      rcases hx with rfl | hx
+      · simp only [ite_true]; exact h_mcs_x
+      · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+        simp only [h_ne, ite_false]; exact h_c0 x hx
+    · -- Witness: z is between x and y with ¬δ ∈ f'(z) = f(x)
+      refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
+      simp only [ite_true]
+      exact h_neg_δ_x
 
 /--
 **Lemma 2.9'** (C4' Counterexample Elimination): Mirror of Lemma 2.9 for Since.
+Same case structure: two cases fully proven (¬δ ∈ f(x) or ¬δ ∈ f(y)),
+one sub-case (δ ∈ both f(x) and f(y)) deferred to Phase 5.
 -/
 noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
@@ -286,9 +336,53 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.δ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom := by
   -- Mirror of C4 elimination for Since direction.
-  -- Sorry'd pending Phase 4 implementation using `lemma_2_6` (non-strong).
-  -- `lemma_2_6_strong` was withdrawn in Phase 3 (false under strict semantics).
-  sorry
+  -- Adjacent(dom, y, x) means y < x with no domain points between them.
+  set z := (ce.y + ce.x) / 2 with hz_def
+  have hyx := ce.adj.2.2.1  -- y < x
+  have hz_lt_x : z < ce.x := by linarith
+  have hy_lt_z : ce.y < z := by linarith
+  have hz_notin : z ∉ χ.dom := by
+    intro h_mem
+    exact ce.adj.2.2.2 z h_mem ⟨hy_lt_z, hz_lt_x⟩
+  have h_mcs_x := h_c0 ce.x ce.x_mem
+  have h_mcs_y := h_c0 ce.y ce.y_mem
+  -- Case split on δ ∈ f(x) vs ¬δ ∈ f(x), then on f(y).
+  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.δ with h_δ_x | h_neg_δ_x
+  · -- Case 1: δ ∈ f(x). Check f(y).
+    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.δ with h_δ_y | h_neg_δ_y
+    · -- Sub-case 1a: δ ∈ f(x) and δ ∈ f(y). Mirror of C4 hard case.
+      -- See comment in eliminate_C4_counterexample for discussion.
+      sorry
+    · -- Sub-case 1b: δ ∈ f(x) and ¬δ ∈ f(y). Use D = f(y).
+      refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
+        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+      · intro x hx
+        have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+        exact if_neg h_ne
+      · intro x hx
+        simp only [Finset.mem_insert] at hx
+        rcases hx with rfl | hx
+        · simp only [ite_true]; exact h_mcs_y
+        · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+          simp only [h_ne, ite_false]; exact h_c0 x hx
+      · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
+        simp only [ite_true]
+        exact h_neg_δ_y
+  · -- Case 2: ¬δ ∈ f(x). Use D = f(x).
+    refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
+      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+    · intro x hx
+      have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+      exact if_neg h_ne
+    · intro x hx
+      simp only [Finset.mem_insert] at hx
+      rcases hx with rfl | hx
+      · simp only [ite_true]; exact h_mcs_x
+      · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+        simp only [h_ne, ite_false]; exact h_c0 x hx
+    · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
+      simp only [ite_true]
+      exact h_neg_δ_x
 
 /-! ## Potential Counterexample Interface -/
 
