@@ -1,128 +1,119 @@
-# Research Report: Task #107 — Critical Evaluation Against Task 112 Literature Study
+# Research Report: Task #107 — Critical Evaluation Against Literature & ROADMAP
 
 **Task**: 107 - Burgess chronicle construction for BX representation theorem
 **Date**: 2026-04-25
 **Mode**: Team Research (4 teammates)
-**Focus**: Is the current approach on the right track? Is there a better alternative?
+**Focus**: Is the current approach on track? Is there a better alternative?
 
 ## Summary
 
-The team splits on whether the chronicle is "dead end #37" (Teammate A) or "viable with engineering effort" (Teammate C). Both make strong cases. The resolution: **the chronicle's gaps are fixable (not mathematically impossible), but the effort is likely 100+ hours, and a faster alternative exists.** Teammate B identifies a **Hybrid Int-Chain approach** (~24 hours) that reuses 100% of sorry-free infrastructure, though it has an identified consistency risk requiring a 4-hour paper proof. Teammate D recommends shipping G/H/Box completeness first (1-2 weeks) regardless of which Until/Since strategy is chosen.
+**The hybrid Int-chain approach (Teammate B's recommendation) has ALREADY been tried and is documented as dead ends #7, #13, #23, #31 in the ROADMAP.** The enriched seed `until_content(M) ∪ g_content(M)` is inconsistent in general (counterexample: `G(F(α) → ¬ψ) ∈ M` with both `F(α)` and `F(ψ)` in f_carry). All three Int-chain paths from plan v44 were attempted and blocked by the same irreducible Lindenbaum opacity obstruction. **The chronicle (task 107) was created specifically to escape this.**
 
-## Key Findings
+The chronicle avoids Lindenbaum opacity by building the model from scratch via PointInsertion lemmas that control exactly what goes into each MCS, rather than using generic Lindenbaum extensions. This is fundamentally different from the Int-chain approach and is NOT subject to the same dead-end pattern.
 
-### 1. The Chronicle Is NOT Mathematically Dead (Teammate C — Confirmed)
+**The chronicle is NOT dead end #37.** Its gaps are engineering problems (absent construction steps), not mathematical impossibilities. The ROADMAP also reveals that the stated representation theorem goal is "TM is complete with respect to TaskFrames over totally ordered abelian groups" — which IS the D=Rat level completeness (Path B).
 
-The 36 prior dead ends all hit **mathematical impossibilities** (false lemma statements, Lindenbaum opacity, reflexivity requirements). The chronicle's 4 gaps are all **absent construction steps**:
+## Critical ROADMAP Context (Not Seen by Teammates)
 
-| Gap | Nature | Fix Estimate |
+The teammates did not fully internalize the ROADMAP's 36 dead ends. Key findings from the ROADMAP:
+
+### The Lindenbaum Opacity Obstruction
+> "The irreducible core obstruction is the gap between SEMANTIC temporal reasoning and SYNTACTIC MCS membership. Lindenbaum extensions via Classical.choose are non-constructive and provide no inter-step structural guarantees. This obstruction applies to ALL chain architectures." (ROADMAP, dead end #36)
+
+This is WHY the chronicle exists. The chronicle bypasses Lindenbaum opacity because:
+- PointInsertion lemma_2_4: constructs MCS via Lindenbaum extension of a CONTROLLED seed (g_content + specific formulas)
+- PointInsertion lemma_2_6: similarly controlled
+- The seed is NOT generic `g_content ∪ f_carry` — it targets specific Until/Since witnesses
+- C4/C5 elimination controls which points are inserted and what they contain
+
+### Dead End #7 = The Hybrid Approach
+> "The multi-target seed {ψ | F(ψ) ∈ w} ∪ g_content(w) is inconsistent in general. G does not distribute over disjunction — the compactness step in the multi-target argument is mathematically false." (ROADMAP, dead end #7)
+
+This is EXACTLY what Teammate B's "hybrid Int-chain + enriched seed" proposes. It has already been proven inconsistent.
+
+### Dead End #13/23/31 = Enriched Seed Variants
+> "G(F(alpha) → ¬ψ) ∈ M with both F(alpha) and F(ψ) in f_carry creates inconsistency. No variant of the enriched seed approach can avoid this." (ROADMAP, dead end #31)
+
+### The Representation Theorem Goal
+> "TM is complete with respect to TaskFrames over totally ordered abelian groups." (ROADMAP)
+
+This is D=Rat (or any totally ordered abelian group). The user's aspiration for "general strict linear orders" is MORE ambitious than the stated goal. Path B (Rat milestone) IS the representation theorem.
+
+## Teammate Findings (Corrected Against ROADMAP)
+
+### Teammate A: "Chronicle is dead end #37"
+**INCORRECT.** A argues the chronicle mixes incompatible proof strategies. While the design confusion about the g function is a valid concern, the fundamental mechanism (controlled PointInsertion rather than generic Lindenbaum) is mathematically sound and specifically designed to escape the Lindenbaum opacity that killed all Int-chain approaches. The gaps are engineering (g function never updated, guard mismatch), not mathematical impossibility.
+
+### Teammate B: "Hybrid Int-chain approach (~24h)"
+**ALREADY A KNOWN DEAD END (#7/#13/#31).** The enriched seed approach is provably inconsistent. The 4-hour paper-proof feasibility study would rediscover the counterexample from dead end #7. This approach must NOT be pursued.
+
+### Teammate C: "NOT dead end #37"
+**CORRECT.** C's analysis distinguishes engineering gaps from mathematical impossibilities. All 4 chronicle gaps are fixable:
+- g function: medium fix (15-25h)
+- Guard mismatch: solved on paper via BX9 (5-10h)
+- g_content chain: hardest but uses temp_4 transitivity (20-35h)
+- extended_limit_f: avoided by Path A (sparse X)
+
+C's 100-hour estimate is realistic given the false-lemma discovery rate.
+
+### Teammate D: "Ship G/H/Box first"
+**PARTIALLY CORRECT, BUT G/H/BOX COMPLETENESS ALREADY EXISTS.** The Int chain already gives G/H/Box completeness via the sorry-free parametric truth lemma. The 5 RootScopedChain sorry sites are specifically about Until/Since coherence, not G/H/Box. Shipping "G/H/Box completeness" amounts to stating the existing theorem — which IS a valid milestone, but the real value is Until/Since.
+
+D's observation about the quasimodel subsystem is interesting but the ROADMAP documents why bridging Int chain ↔ quasimodel is blocked (dead end #25, #36).
+
+## Synthesis: The Chronicle IS the Right Path
+
+### Why alternatives don't work (from ROADMAP)
+
+| Alternative | Dead End # | Reason |
+|------------|-----------|--------|
+| Hybrid Int-chain + enriched seed | #7, #13, #31 | Enriched seed inconsistent (G(F(α)→¬ψ) counterexample) |
+| Oracle-based chains | #35 | Defect-count decrease sorry; Lindenbaum opacity |
+| Quasimodel BFMCS | #36 | Same Lindenbaum opacity; Until step transfer blocked |
+| Pigeonhole on defects | #34 | Active defects never shrink (F-persistence) |
+| Fuel-based recursion | #5, #14 | Fuel conflates nesting depth with persistence |
+| Venema model replacement | Not tried | 40+h for Doets theorem alone (Teammate B) |
+
+### Why the chronicle IS different
+
+The chronicle escapes the Lindenbaum opacity obstruction because:
+1. **It doesn't use iterative Lindenbaum extensions on a fixed chain.** Each point's MCS is constructed independently via controlled PointInsertion lemmas.
+2. **The omega-chain builds a GRAPH of MCS**, not a linear chain. Points are inserted between existing points (midpoint for C4) or beyond them (extension for C5).
+3. **g_content propagation is by CONSTRUCTION**, not by hoping Lindenbaum chooses correctly. When lemma_2_4 inserts point y for U(ξ,η) at x, the seed explicitly includes g_content(f(x)), so g_content(f(x)) ⊆ f(y) holds by construction.
+4. **The truth lemma (Claim 2.11) is Burgess's standard semantic argument**, not dependent on controlling Lindenbaum choices.
+
+### The current gaps are fixable
+
+| Gap | Nature | Why fixable |
 |-----|--------|-------------|
-| g function never updated | Missing code in omega-chain step | 15-25h |
-| Guard convention mismatch | BX9 bridges open→half-open (solved on paper) | 5-10h |
-| g_content_chain_property | Requires modified Lindenbaum seeds | 20-35h |
-| extended_limit_f FALSE | Path A (sparse X) avoids entirely | 0h |
+| g function never updated | The omega-chain step copies g verbatim instead of updating. Fix: define g(x,z) and g(z,y) when inserting z between x and y. | PointInsertion already constructs f(z) from controlled seeds; g(x,z) = deductiveClosure(relevant formulas) follows the same pattern. |
+| Guard mismatch | C5 open guard vs half-open semantics. BX9 gives φ∨ψ at starting point. | BX9 + MCS negation completeness: if ψ∉f(x) then φ∈f(x), providing the half-open guard at x. |
+| g_content chain | Need g_content(f(x)) ⊆ f(y) for non-adjacent x < y. | temp_4 (Gφ→GGφ) keeps G(φ) alive through intermediate points. At each intermediate z: G(φ) ∈ f(z) (by induction). At final y: φ ∈ g_content(f(y-1)) ⊆ f(y) (by construction). |
+| extended_limit_f FALSE | Assigns root MCS A to non-domain rationals. | Path A (sparse X truth lemma) avoids entirely. Path B requires a different non-domain extension. |
 
-**Total: 40-70h** for the chronicle gaps alone, plus Phase 5 (general completeness). Teammate C recommends budgeting **100 hours** given the false-lemma discovery rate.
+### Recommended plan
 
-### 2. But the Chronicle Mixes Incompatible Strategies (Teammate A — Valid Concern)
+**Continue with the chronicle (plan v5), with these corrections:**
 
-Teammate A identifies a design-level problem: the current implementation conflates:
-- **Burgess 1984** instant-based chronicles (the g-function and interval decomposition)
-- **Burgess 1982a** Until/Since completeness (the C4/C5 counterexample elimination)
-- **Verbrugge 2004** step-by-step insertion (the omega-chain dovetailing)
+1. **Phase 1 (g function)**: The deepest gap but NOT a design confusion — it's a missing construction step. The omega-chain's `eliminate_potential_counterexample` must return updated g alongside updated f and dom. Estimated: 15-25h.
 
-These three strategies have different assumptions about the interval function, guard conventions, and domain structure. The g-function confusion (it's never updated) may stem from this conflation rather than a simple omission.
+2. **Phase 2 (guard conventions)**: BX9 bridges the gap. Formalize `until_elim_mcs` + MCS negation completeness to get half-open guards from open C5. Estimated: 5-10h.
 
-**This doesn't make it a dead end, but it means fixing the gaps requires untangling the design, not just adding missing code.**
+3. **Phase 3 (C4 sub-case 1a)**: Paper-validate first (potential false lemma). Estimated: 8h.
 
-### 3. The Hybrid Int-Chain Approach Is Most Promising (~24h) (Teammate B)
+4. **Phase 4 (close sorry sites)**: With g function and guards fixed, the ChronicleToCountermodel sorry sites become approachable. This gives the representation theorem (D=Rat, matching ROADMAP goal). Estimated: 16h.
 
-**Key idea**: The Int chain over Z already provides sorry-free forward_G, backward_H, box_stable, and the full parametric truth lemma. Modify the Int chain construction to include Until/Since content in the Lindenbaum seed:
+5. **Phase 5 (general completeness)**: Direct BFMCS truth lemma over sparse X. This extends beyond the ROADMAP's stated goal to achieve completeness for all strict linear orders. Estimated: 13h.
 
-```
-seed(n+1) = g_content(chain(n)) ∪ until_content(chain(n))
-```
+**Total: 57-72h** (with 100h budget given discovery rate).
 
-where `until_content(M) = {η | ∃ξ, (ξ U η) ∈ M} ∪ {ξ | ∃η, (ξ U η) ∈ M}`.
-
-**Advantages**:
-- Reuses 100% of sorry-free Int chain infrastructure
-- D = Int has AddCommGroup (no type issues)
-- Z is discrete (no density axiom concern)
-- No g-function, no domain extension, no guard mismatch
-- Estimated ~24 hours
-
-**Critical risk**: `until_content(M) ∪ g_content(M)` may be INCONSISTENT. Under irreflexive semantics, `φ U ψ` and `G(¬(φ U ψ))` can coexist in an MCS, potentially making the enriched seed contradictory.
-
-**Recommended**: 4-hour paper-proof feasibility study before committing.
-
-### 4. Venema Model Replacement Is Elegant but Expensive (Teammates A, B)
-
-Venema 1993's "completeness via completeness" technique is theoretically cleaner but requires:
-- Formalizing Doets' theorem (~40+ hours alone)
-- The S5 Box extension is an open research question
-- Total effort likely exceeds current plan v5
-
-**Not recommended as primary approach**, but the conceptual insight (build easy model first, then add witnesses) informs the hybrid approach.
-
-### 5. Ship G/H/Box Completeness First (Teammate D — Pragmatic)
-
-The Int chain already provides:
-- Sorry-free FMCS over Z
-- Sorry-free forward_G, backward_H, box_stable
-- Sorry-free parametric truth lemma (for G, H, Box, atoms, propositional connectives)
-
-What's missing for G/H/Box-only completeness:
-- The restricted temporal coherence (F/P witnesses) — may already be close
-- The BFMCS construction for Box saturation — may need minor work
-
-**Shipping G/H/Box completeness as a milestone (1-2 weeks)** produces a publishable result and validates the parametric infrastructure, regardless of which Until/Since strategy is ultimately chosen.
-
-### 6. The Quasimodel Connection (Teammate D)
-
-The codebase has TWO sorry-free subsystems that have never been connected:
-- Int chain: G/H/Box (Metalogic/BXCanonical/CanonicalModel.lean)
-- Quasimodel: Until/Since eventuality resolution (Metalogic/BXCanonical/Quasimodel/)
-
-The 3 RootScopedChain sorry sites sit exactly at the gap between these subsystems. Understanding WHY they're sorry'd (Lindenbaum opacity? reflexivity? something else?) could reveal whether bridging them is feasible.
-
-## Synthesis: Recommended Strategy
-
-### Phase 0: Feasibility Studies (1 week)
-
-**0a (4h)**: Paper-prove consistency of `g_content(M) ∪ until_content(M)` for the hybrid Int-chain approach. If consistent → hybrid approach is viable (~24h). If inconsistent → chronicle approach continues.
-
-**0b (8h)**: Investigate the 3 RootScopedChain sorry sites. Why exactly are they sorry'd? Is the obstacle Lindenbaum opacity, reflexivity, or something else? If it's something fixable, the gap between Int chain and quasimodel may be bridgeable.
-
-### Phase 1: Ship G/H/Box Completeness (2 weeks)
-
-Using the existing Int chain + parametric truth lemma, prove completeness for the G/H/Box fragment of BX. This:
-- Validates the parametric infrastructure end-to-end
-- Produces a publishable milestone
-- Is achievable with existing sorry-free code
-
-### Phase 2: Until/Since (approach depends on Phase 0 results)
-
-**If hybrid feasible**: Modify Int chain Lindenbaum seed to include Until/Since content. ~24 hours.
-
-**If hybrid infeasible but chronicle viable**: Continue plan v5 with corrected effort estimate (~100h). Fix g function, guard conventions, g_content chain.
-
-**If both infeasible**: Research Venema-style model replacement or alternative technique.
-
-## Conflicts Resolved
-
-| Conflict | Resolution |
-|----------|------------|
-| A: "dead end #37" vs C: "NOT dead end #37" | **C is technically correct** (gaps are engineering, not math), but **A's design concern is valid** (mixed strategies increase fix complexity). The chronicle is viable but expensive. |
-| A: Venema model replacement (40-60h) vs B: Venema requires 40+h for Doets alone | **B's estimate is more grounded** in codebase reality. Venema is too expensive as primary approach. |
-| B: hybrid Int-chain (24h) vs plan v5 (55-100h) | **Hybrid is worth a 4-hour feasibility study** before committing to either. |
-| D: ship G/H/Box first vs continuing Until/Since | **Ship G/H/Box regardless** — it's a milestone that doesn't depend on the Until/Since strategy. |
+**Do NOT pursue the hybrid Int-chain approach.** It is a known dead end.
 
 ## Teammate Contributions
 
-| Teammate | Angle | Status | Key Contribution |
-|----------|-------|--------|-----------------|
-| A | Literature evaluation | completed | Chronicle mixes 3 strategies; Venema model replacement suggested |
-| B | Alternative approaches | completed | Hybrid Int-chain (~24h) most promising; consistency risk identified |
-| C | Critic / viability | completed | NOT dead end — all gaps are engineering; 100h realistic estimate |
-| D | Strategic direction | completed | Ship G/H/Box first; bridge Int chain + quasimodel subsystems |
+| Teammate | Angle | Status | Key Contribution | Corrected? |
+|----------|-------|--------|-----------------|------------|
+| A | Literature evaluation | completed | Design confusion concern (valid); "dead end #37" claim (incorrect) | Yes — chronicle escapes Lindenbaum opacity |
+| B | Alternative approaches | completed | Hybrid Int-chain suggestion (already dead end #7) | Yes — ROADMAP documents inconsistency |
+| C | Critic / viability | completed | NOT dead end; all gaps engineering; 100h estimate | Confirmed correct |
+| D | Strategic direction | completed | Ship G/H/Box first (valid milestone) | Partially — G/H/Box already works |
