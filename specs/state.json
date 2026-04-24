@@ -634,7 +634,7 @@
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/09_implementation-plan.md",
           "type": "plan",
-          "summary": "Revised v3: Phase 3 deferred, Phases 4-7 proceed without Phase 3"
+          "summary": "Rewritten 8-phase plan: PointInsertion before C5 redesign, linear chain 3→4→5→6→7→8"
         }
       ],
       "session_id": "sess_1777004665_66ee5c"
