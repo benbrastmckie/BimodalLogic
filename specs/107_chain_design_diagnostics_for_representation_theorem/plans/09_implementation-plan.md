@@ -222,7 +222,7 @@ Prior plans: `plans/08_implementation-plan.md` (v2), `plans/09_implementation-pl
 
 ---
 
-### Phase 4: C4 Elimination + Redesign C5 Insertion (D3-Routed) [NOT STARTED]
+### Phase 4: C4 Elimination + Redesign C5 Insertion (D3-Routed) [PARTIAL]
 
 **Goal**: Close the 2 C4 elimination sorry sites using `lemma_2_6` (non-strong, already sorry-free), and redesign C5 counterexample elimination to insert witnesses BETWEEN existing points (Burgess Lemma 2.10) routing through the D3 case of BX7.
 
@@ -241,8 +241,8 @@ Prior plans: `plans/08_implementation-plan.md` (v2), `plans/09_implementation-pl
   - **The D2 case is handled by re-applying BX7**: if D2 holds at this level, the re-application with the D2 formula and `top U neg eta` eventually terminates in D3 (because D1 is absurd and the formula complexity decreases). Alternatively, by negation completeness, if neither D1 nor D3 holds, D2 must hold; but from D2 we can extract `F(eta /\ top)` via BX10, and then the eta-witness exists with `g_content(A) <= D`. Since eta IS in D (from D2's BX10), subcase (i) or (ii) applies at the next inductive step.
 
 **Tasks**:
-- [ ] Close `eliminate_C4_counterexample` (sorry #5, line 271): implement using `lemma_2_6` for base case and induction on intermediate points for inductive case. No need for `lemma_2_6_strong`.
-- [ ] Close `eliminate_C4'_counterexample` (sorry #6, line 287): mirror for Since direction.
+- [x] Implement `eliminate_C4_counterexample` (sorry #5): midpoint insertion with MCS case analysis. Two of three sub-cases proven (¬δ ∈ f(x), or ¬δ ∈ f(y)). One sub-case (δ ∈ both f(x) and f(y)) requires C3 invariant tracking (deferred to Phase 5).
+- [x] Implement `eliminate_C4'_counterexample` (sorry #6): mirror for Since. Same structure and sorry status as C4.
 - [ ] Redesign `eliminate_C5_counterexample` to implement Lemma 2.10 correctly:
   - Implement the n=0, subcase (i), subcase (ii), subcase (iii) structure
   - Subcase (iii) routes through the D3 case of BX7 (already proven in reformulated `lemma_2_7`)
@@ -250,7 +250,7 @@ Prior plans: `plans/08_implementation-plan.md` (v2), `plans/09_implementation-pl
 - [ ] Implement `eliminate_C5'_counterexample`: mirror for Since.
 - [ ] Add `exists_rat_between` utility: for x < y, produce (x+y)/2 with x < mid < y.
 - [ ] Update interval function g maintenance when inserting between points: split g(x,x') into g(x,z) and g(z,x') using R-relation decomposition.
-- [ ] Run `lake build` and verify
+- [x] Run `lake build` and verify (build passes with 2 targeted sub-case sorries)
 
 **Timing**: 12 hours
 
@@ -261,10 +261,11 @@ Prior plans: `plans/08_implementation-plan.md` (v2), `plans/09_implementation-pl
 
 **Verification**:
 - `lake build` succeeds
-- `eliminate_C4_counterexample`, `eliminate_C4'_counterexample` are sorry-free
-- `eliminate_C5_counterexample` uses between-point insertion routed through D3 (not endpoint insertion)
-- No new sorry sites introduced
-- Sorry count: 13 -> 11
+- `eliminate_C4_counterexample`: 2/3 sub-cases proven; 1 sorry remains (δ ∈ both endpoints, needs C3)
+- `eliminate_C4'_counterexample`: mirror, same sorry status
+- C5 redesign not yet attempted (requires Phase 4b)
+- Sorry count: 13 (unchanged; 2 monolithic sorries replaced by 2 targeted sub-case sorries)
+- **Blocking issue**: C4 elimination with only C0 cannot handle case where δ ∈ both f(x) and f(y). Resolution requires propagating C3 (g_content invariant) through omega-chain. This is naturally Phase 5 work.
 
 ---
 
