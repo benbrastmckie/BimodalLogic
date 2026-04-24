@@ -44,8 +44,12 @@ both phases are complete.
 - `lemma_2_5b`: Composition of g_content ordering (transitivity)
 - `lemma_2_6`: Counterexample insertion (delta not in C -> insert D with neg delta)
 - `lemma_2_7_guard`: Guard extraction at current point from Until
-- `lemma_2_7`: Until witness insertion (fully sorry'd, requires complex BX7 argument)
-- `lemma_2_8`: Variant of 2.7 with neg-disjunction condition at C
+
+### Withdrawn (Phase 3, Task 107)
+
+- `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) <= C unprovable)
+- `lemma_2_7`: FALSE under strict semantics (D2 branch cannot produce xi at future MCS)
+- `lemma_2_8`: Depends on `lemma_2_7`; also has false D2-style reasoning
 
 ## References
 
@@ -326,38 +330,17 @@ noncomputable def lemma_2_6 {A C : Set Formula}
     h_sup (Set.mem_union_left _ (Set.mem_singleton _)),
     fun χ hχ => h_sup (Set.mem_union_right _ hχ)⟩
 
-/--
-Strengthened Lemma 2.6: additionally, g_content(D) ⊆ C (D is "between" A and C).
+/-!
+**`lemma_2_6_strong` withdrawn**: The conclusion `g_content(D) ⊆ C` is **false**
+under strict (irreflexive) semantics. Under reflexive semantics, `g_content(M) ⊆ M`
+for all MCS M (the T-axiom `Gφ → φ`), which makes the "between" property provable.
+Under strict semantics this fails: `G(φ) ∈ A` does NOT imply `φ ∈ A`.
 
-This requires a more careful seed construction that includes h_content(C)
-in addition to g_content(A), ensuring the new MCS D flows forward to C.
-The proof builds on the observation that {¬δ} ∪ g_content(A) ∪ h_content(C)
-is consistent when δ ∉ C and g_content(A) ⊆ C.
+The non-strong `lemma_2_6` (which provides `¬δ ∈ D` and `g_content(A) ⊆ D` without
+the `g_content(D) ⊆ C` conclusion) suffices for C4 counterexample elimination.
+The between-point structure is provided by the chronicle's g-function and C3,
+not by individual lemma conclusions. See Phase 4 of the implementation plan.
 -/
-noncomputable def lemma_2_6_strong {A C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
-    (h_g_AC : g_content A ⊆ C)
-    (δ : Formula)
-    (h_δ_not_C : δ ∉ C) :
-    ∃ D : Set Formula, SetMaximalConsistent D ∧
-      δ.neg ∈ D ∧ g_content A ⊆ D ∧ g_content D ⊆ C := by
-  -- Step 1: G(δ) ∉ A
-  have h_Gδ_not_A : Formula.all_future δ ∉ A := by
-    intro h_Gδ; exact h_δ_not_C (h_g_AC h_Gδ)
-  -- Step 2: F(¬δ) ∈ A
-  have h_F_neg_δ := F_neg_of_G_not h_mcs_A δ h_Gδ_not_A
-  -- Step 3: Show {¬δ} ∪ g_content(A) ∪ h_content(C) is consistent.
-  -- This is consistent because:
-  -- - g_content(A) ⊆ C (hypothesis)
-  -- - h_content(C) ⊆ any MCS that g_content flows to (by duality)
-  -- - ¬δ is compatible because δ ∉ C
-  -- The proof of consistency uses: if L ⊆ seed and L ⊢ ⊥, then...
-  -- This is a complex consistency argument. For the chronicle construction,
-  -- the simpler lemma_2_6 (without g_content(D) ⊆ C) suffices for
-  -- Phase 4, which establishes the full interval structure.
-  -- We sorry the consistency proof here (Phase 2 dependency for duality).
-  sorry
 
 /-! ## Lemma 2.7: Until Guard Propagation and Witness Insertion
 
@@ -414,527 +397,54 @@ theorem conj_right_mcs {A : Set Formula}
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_ax) h_conj
 
-/--
-**Lemma 2.7** (adapted): Given MCS A with U(ξ, η) ∈ A and MCS C with
-g_content(A) ⊆ C and η ∉ C, there exists MCS D with ξ ∈ D,
-g_content(A) ⊆ D.
+/-!
+### Withdrawn Lemmas
 
-This is the "positive insertion" lemma: the Until guard ξ can be realized
-at an intermediate point D.
+**`lemma_2_7` withdrawn** (Phase 3, Task 107): The original statement
 
-### Proof
+  `U(xi, eta) in A, g_content(A) subset C, eta not in C ==> exists D, MCS D, xi in D, g_content(A) subset D`
 
-1. BX5: U(ξ∧U(ξ,η), η) ∈ A
-2. η ∉ C → G(η) ∉ A → F(¬η) ∈ A
-3. BX12: (⊤ U ¬η) ∈ A
-4. BX7: three-way disjunction from U(ξ∧U(ξ,η), η) ∧ (⊤ U ¬η)
-5. First disjunct (witness η∧¬η) is absurd
-6. Third disjunct gives F((ξ∧U(ξ,η))∧¬η) → seed with ξ
-7. Second disjunct also gives ξ via BX9 (guard contains ξ)
+is **false under strict (irreflexive) semantics**. The BX7 three-way case split produces:
+
+- **D1**: `U(_, eta AND neg eta)` -- absurd (F(contradiction) impossible in MCS). Proven.
+- **D2**: `U(_, eta AND top)` -- the witness has eta but NOT xi. Under strict semantics,
+  g_content does not propagate Until formulas, so the guard xi cannot be transferred to
+  a future MCS via g_content alone. Counterexample: on Z with strict `<`, let xi be true
+  only at time 0, eta true everywhere except 0, `U(xi, eta)` at 0 with witness at 1.
+  No future MCS contains xi.
+- **D3**: `U(_, (xi AND U(xi,eta)) AND neg eta)` -- produces `F((xi AND U(xi,eta)) AND neg eta)`,
+  from which a future MCS D with xi follows via Lindenbaum extension. Proven sorry-free.
+
+The D3 case is the only sound branch. Phase 4 (C5 elimination) uses the D3 proof
+pattern directly by checking the BX7 disjunction at each inductive step and routing
+through the D3 branch. The D3 proof code is self-contained and does not reference D2.
+
+**`lemma_2_6_strong` withdrawn** (Phase 3, Task 107): The conclusion
+`g_content(D) subset C` is false under strict semantics. See note above `lemma_2_7_guard`.
+
+**`lemma_2_8` withdrawn** (Phase 3, Task 107): The eta-not-in-C case called `lemma_2_7`
+directly, and the eta-in-C case had its own false D2-style reasoning. With both
+`lemma_2_7` and `lemma_2_6_strong` withdrawn, `lemma_2_8` has no correct foundation.
+
+### Available Building Blocks for Phase 4
+
+The following sorry-free lemmas remain available for C5 elimination:
+
+- `lemma_2_4`: Until witness endpoint construction (beta, g_content(A), P(U(gamma,beta)))
+- `lemma_2_6`: Negative insertion (neg delta in D, g_content(A) subset D)
+- `lemma_2_5b`: g_content ordering transitivity
+- `lemma_2_7_guard`: Guard extraction (U(xi,eta) in A, eta not in A ==> xi in A)
+- `conj_left_mcs`, `conj_right_mcs`: Conjunction component extraction
+- `conj_mcs`: Conjunction introduction in MCS
+- `until_elim_mcs`: BX9 at MCS level (U(gamma,beta) ==> gamma or beta)
+- `until_F_mcs`: BX10 at MCS level (U(gamma,beta) ==> F(beta))
+- `self_accum_until_mcs`: BX5 at MCS level (U(gamma,beta) ==> U(gamma AND U(gamma,beta), beta))
+- `connect_future_mcs`: BX4 at MCS level (phi ==> G(P(phi)))
+- `F_neg_of_G_not`: G(phi) not in A ==> F(neg phi) in A
+
+Phase 4 will inline the D3 case proof using these building blocks, applying BX7 with
+appropriate formulas and handling only the D1 (absurd) and D3 (witness) branches,
+with an additional hypothesis or case analysis that ensures D2 does not arise.
 -/
-noncomputable def lemma_2_7 {A C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
-    (h_g_AC : g_content A ⊆ C)
-    (ξ η : Formula)
-    (h_until : Formula.untl ξ η ∈ A)
-    (h_η_not_C : η ∉ C) :
-    ∃ D : Set Formula, SetMaximalConsistent D ∧
-      ξ ∈ D ∧ g_content A ⊆ D := by
-  -- Setup: BX5, F(¬η), BX12
-  have h_self_accum := self_accum_until_mcs h_mcs_A ξ η h_until
-  have h_Gη_not : Formula.all_future η ∉ A := by
-    intro h; exact h_η_not_C (h_g_AC h)
-  have h_F_neg_η := F_neg_of_G_not h_mcs_A η h_Gη_not
-  -- BX12: F(¬η) → ⊤ U ¬η
-  let top := Formula.bot.imp Formula.bot
-  have h_top_until : Formula.untl top η.neg ∈ A := by
-    have h_ax : DerivationTree [] ((Formula.some_future η.neg).imp (Formula.untl top η.neg)) :=
-      DerivationTree.axiom [] _ (Axiom.F_until_equiv η.neg)
-    exact SetMaximalConsistent.implication_property h_mcs_A
-      (theorem_in_mcs h_mcs_A h_ax) h_F_neg_η
-
-  -- Build conjunction for BX7
-  have h_conj := conj_mcs h_mcs_A _ _ h_self_accum h_top_until
-
-  -- Apply BX7
-  let φ := Formula.and ξ (Formula.untl ξ η)
-  let ψ := η
-  let χ := top
-  let θ := η.neg
-  have h_ax_linear : DerivationTree [] (
-      Formula.and (Formula.untl φ ψ) (Formula.untl χ θ) |>.imp
-      (Formula.or
-        (Formula.or
-          (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) :=
-    DerivationTree.axiom [] _ (Axiom.linear_until φ ψ χ θ)
-
-  have h_disj := SetMaximalConsistent.implication_property h_mcs_A
-    (theorem_in_mcs h_mcs_A h_ax_linear) h_conj
-
-  -- Three-way case split
-  -- D1: U(φ∧χ, ψ∧θ) = U(φ∧⊤, η∧¬η) -- absurd (F(η∧¬η) = F(⊥))
-  -- D2: U(φ∧χ, ψ∧χ) = U(φ∧⊤, η∧⊤) -- witness has η
-  -- D3: U(φ∧χ, φ∧θ) = U(φ∧⊤, φ∧¬η) -- witness has ξ∧U(ξ,η)∧¬η
-
-  -- First, check if D1 is in A or its negation
-  rcases SetMaximalConsistent.negation_complete h_mcs_A
-    (Formula.untl (Formula.and φ χ) (Formula.and ψ θ)) with h_D1 | h_neg_D1
-  · -- D1: U(_, η∧¬η) ∈ A. By BX10: F(η∧¬η) ∈ A.
-    -- η∧¬η = (η.imp (η.neg).neg).neg. In MCS, this is a contradiction.
-    -- BX10: U(φ∧χ, η∧¬η) → F(η∧¬η)
-    have h_F_contr := until_F_mcs h_mcs_A (Formula.and φ χ) (Formula.and ψ θ) h_D1
-    -- F(η ∧ ¬η) ∈ A. But η ∧ ¬η is inconsistent.
-    -- η ∧ ¬η = (η.imp (η.neg).neg).neg = (η.imp (η.imp bot).imp bot).neg
-    -- Actually, F(η ∧ ¬η) = ¬G(¬(η ∧ ¬η)). We need to show this leads to ⊥.
-    -- (η ∧ ¬η) → ⊥ is a theorem. So G(η∧¬η → ⊥) is provable.
-    -- G(¬(η∧¬η)) is provable. So F(η∧¬η) = ¬G(¬(η∧¬η)) leads to contradiction.
-    -- Use: (η ∧ ¬η) ∈ any MCS is impossible (contradiction).
-    -- So F(η ∧ ¬η) should be impossible in any MCS.
-    -- Formally: ⊢ (η ∧ ¬η) → ⊥. By temporal necessitation: ⊢ G((η∧¬η) → ⊥).
-    -- By temp_k_dist: G((η∧¬η)→⊥) → (G(η∧¬η) → G(⊥)).
-    -- But we need ¬G(¬(η∧¬η)) ∈ A. If G(¬(η∧¬η)) ∈ A, that's fine.
-    -- The issue is ¬G(¬(η∧¬η)) ∈ A means G(¬(η∧¬η)) ∉ A.
-    -- But ¬(η∧¬η) is a theorem, so G(¬(η∧¬η)) is provable, hence in all MCS.
-    -- Contradiction with G(¬(η∧¬η)) ∉ A.
-    --
-    -- Show: ¬(η ∧ ¬η) is a theorem (tautology)
-    -- ¬(η ∧ ¬η) = (η.and η.neg).neg = ((η.imp η.neg.neg).neg).neg
-    --           = (η.imp η.neg.neg)  (double negation of negation)
-    -- Hmm, let's just show F(η ∧ ¬η) leads to contradiction.
-    -- and ψ θ = and η (η.neg) = (η.imp (η.neg).neg).neg
-    -- F(and η η.neg) = some_future (and η η.neg)
-    --               = (and η η.neg).neg.all_future.neg
-    -- We know (and η η.neg) → ⊥ is provable (it's a contradiction).
-    -- So G((and η η.neg) → ⊥) is provable (temporal necessitation of tautology).
-    -- Then: by g_content logic, if there were a future point with η∧¬η,
-    -- that would violate consistency.
-    -- But proving this formally requires showing ⊢ (η ∧ ¬η) → ⊥.
-    -- This is: ⊢ (η.imp η.neg.neg).neg → ⊥, i.e., ⊢ ¬¬(η → ¬¬η).
-    -- Hmm. Let's use the identity: conj_and_neg_bot.
-    -- Actually: and η η.neg = (η.imp η.neg.neg).neg = (η.imp (η.imp ⊥).imp ⊥).neg
-    -- Let me just sorry this case since it requires building a complex derivation
-    -- tree for the propositional tautology ¬(η ∧ ¬η). The other cases are
-    -- more interesting mathematically.
-    -- For now, handle this via exfalso: MCS cannot contain η∧¬η.
-    exfalso
-    -- We have F(η ∧ ¬η) ∈ A. This means ¬G(¬(η ∧ ¬η)) ∈ A.
-    -- But ¬(η ∧ ¬η) is a tautology, so G(¬(η ∧ ¬η)) is provable, hence in A.
-    -- This contradicts ¬G(¬(η ∧ ¬η)) ∈ A.
-    -- ⊢ (η ∧ ¬η) → ⊥
-    -- and η η.neg = (η.imp η.neg.neg).neg = (η → (η → ⊥) → ⊥) → ⊥
-    -- This is: ¬(η → ¬¬η). But η → ¬¬η is DNI, which is provable.
-    -- So ¬DNI is provable? No! DNI is provable, so ¬DNI → ⊥ is provable.
-    -- That is, (η → ¬¬η) → ⊥ → ⊥ is fine but we need ¬(η → ¬¬η) → ⊥.
-    -- Actually, (η → ¬¬η) is DNI, which IS provable. So DNI ∈ A.
-    -- (η → ¬¬η) = (η.imp η.neg.neg) ∈ A (it's a theorem).
-    -- and η η.neg = (η.imp η.neg.neg).neg, which is the negation of DNI.
-    -- ¬DNI ∈ A contradicts DNI ∈ A (by set_consistent_not_both).
-    -- So η ∧ ¬η ∉ A for any MCS A. And F(η ∧ ¬η) ∉ A for any MCS A? No!
-    -- F(η ∧ ¬η) = ¬G(¬(η ∧ ¬η)). G(¬(η ∧ ¬η)) = G(DNI).
-    -- DNI is a theorem, so G(DNI) is provable (temporal necessitation of theorem).
-    -- So G(DNI) ∈ A. Hence ¬G(DNI) ∉ A. Hence F(η ∧ ¬η) ∉ A.
-    -- But h_F_contr says F(η ∧ ¬η) ∈ A. Contradiction!
-    have h_dni : DerivationTree [] (η.imp η.neg.neg) := dni η
-    have h_dni_in_A := theorem_in_mcs h_mcs_A h_dni
-    -- h_F_contr : (and η η.neg).some_future ∈ A
-    --           = ((η.imp η.neg.neg).neg).neg.all_future.neg ∈ A
-    --           = (η.imp η.neg.neg).all_future.neg ∈ A
-    -- So: ¬G(η → ¬¬η) ∈ A.
-    -- But: G(η → ¬¬η) ∈ A (temporal necessitation of DNI)
-    have h_G_dni : DerivationTree [] (Formula.all_future (η.imp η.neg.neg)) :=
-      DerivationTree.temporal_necessitation _ h_dni
-    have h_G_dni_in_A := theorem_in_mcs h_mcs_A h_G_dni
-    -- h_F_contr : some_future (and η η.neg) ∈ A
-    -- some_future X = X.neg.all_future.neg
-    -- and η η.neg = (η.imp η.neg.neg).neg
-    -- So some_future (and η η.neg) = (and η η.neg).neg.all_future.neg
-    --   = (η.imp η.neg.neg).neg.neg.all_future.neg
-    --   = (η.imp η.neg.neg).all_future.neg  (since neg.neg = id syntactically? NO!)
-    -- Actually: neg X = X.imp bot. neg.neg X = (X.imp bot).imp bot.
-    -- So (and η η.neg).neg = ((η.imp η.neg.neg).neg).imp bot
-    --   = ((η.imp η.neg.neg).imp bot).imp bot -- this is ¬¬(η → ¬¬η)
-    -- This is NOT the same as (η.imp η.neg.neg).
-    -- F(η∧¬η) = (η∧¬η).neg.all_future.neg
-    -- = ((η∧¬η).imp bot).all_future.imp bot
-    -- = ((((η.imp η.neg.neg).neg).imp bot).all_future).imp bot
-    -- = (((η.imp η.neg.neg).neg.imp bot).all_future).imp bot
-    --
-    -- This is ¬G(¬¬(η→¬¬η)). NOT ¬G(η→¬¬η).
-    -- So we need G(¬¬(η→¬¬η)) ∈ A, not G(η→¬¬η) ∈ A.
-    -- G(¬¬X) follows from G(X) + G(X → ¬¬X) by temp_k_dist.
-    -- X → ¬¬X is DNI itself. So G(X → ¬¬X) by temporal necessitation.
-    -- Then G(X → ¬¬X) → (G(X) → G(¬¬X)) by temp_k_dist.
-    -- Applied to X = (η → ¬¬η):
-    -- G(η→¬¬η) ∈ A (from h_G_dni_in_A)
-    -- G((η→¬¬η) → ¬¬(η→¬¬η)) ∈ A (temporal necessitation of DNI for η→¬¬η)
-    have h_dni2 : DerivationTree [] ((η.imp η.neg.neg).imp (η.imp η.neg.neg).neg.neg) :=
-      dni (η.imp η.neg.neg)
-    have h_G_dni2 : DerivationTree [] (Formula.all_future
-        ((η.imp η.neg.neg).imp (η.imp η.neg.neg).neg.neg)) :=
-      DerivationTree.temporal_necessitation _ h_dni2
-    have h_kd : DerivationTree [] (
-        ((η.imp η.neg.neg).imp (η.imp η.neg.neg).neg.neg).all_future.imp
-        ((η.imp η.neg.neg).all_future.imp (η.imp η.neg.neg).neg.neg.all_future)) :=
-      DerivationTree.axiom [] _ (Axiom.temp_k_dist (η.imp η.neg.neg) (η.imp η.neg.neg).neg.neg)
-    have h1 := theorem_in_mcs h_mcs_A h_G_dni2
-    have h2 := theorem_in_mcs h_mcs_A h_kd
-    have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
-    have h_G_nn_dni := SetMaximalConsistent.implication_property h_mcs_A h3 h_G_dni_in_A
-    -- h_G_nn_dni : G(¬¬(η→¬¬η)) ∈ A = (η.imp η.neg.neg).neg.neg.all_future ∈ A
-    -- h_F_contr : F(η∧¬η) = ((η.imp η.neg.neg).neg.imp bot).all_future.imp bot ∈ A
-    --           = (η.imp η.neg.neg).neg.neg.all_future.neg ∈ A
-    -- (since neg X = X.imp bot, so neg.neg X = (X.imp bot).imp bot)
-    -- Wait: (and η η.neg).neg = ((η.imp η.neg.neg).neg).neg
-    --                         = ((η.imp η.neg.neg).neg).imp bot
-    -- some_future (and η η.neg) = ((and η η.neg).neg).all_future.neg
-    --   = ((((η.imp η.neg.neg).neg).imp bot)).all_future.neg
-    --   = ((η.imp η.neg.neg).neg.neg).all_future.neg
-    --   (since neg.neg X = (X.imp bot).imp bot, BUT neg.imp bot = neg.neg. Actually
-    --    neg X = X.imp bot, so (neg X).imp bot = (X.imp bot).imp bot = neg.neg X.)
-    -- Great, so: some_future (and η η.neg) = (η.imp η.neg.neg).neg.neg.all_future.neg
-    -- This is ¬(G(¬¬(η→¬¬η))). We have G(¬¬(η→¬¬η)) ∈ A AND ¬G(¬¬(η→¬¬η)) ∈ A.
-    -- Contradiction!
-    -- h_G_nn_dni : (η.imp η.neg.neg).neg.neg.all_future ∈ A
-    -- h_F_contr is F(and η η.neg) ∈ A
-    -- Let's verify the types match
-    -- some_future X = X.neg.all_future.neg
-    -- X = and η η.neg = (η.imp η.neg.neg).neg
-    -- X.neg = (η.imp η.neg.neg).neg.neg  (since neg (neg Y) = (Y.imp bot).imp bot)
-    -- Wait: neg X = X.imp bot. X = (η.imp η.neg.neg).neg = (η.imp η.neg.neg).imp bot.
-    -- X.neg = ((η.imp η.neg.neg).imp bot).imp bot = (η.imp η.neg.neg).neg.neg? No!
-    -- neg X for X = (η.imp η.neg.neg).neg:
-    -- neg ((η.imp η.neg.neg).neg) = ((η.imp η.neg.neg).neg).imp bot
-    -- But (η.imp η.neg.neg).neg = (η.imp η.neg.neg).imp bot
-    -- So neg ((η.imp η.neg.neg).imp bot) = ((η.imp η.neg.neg).imp bot).imp bot
-    -- And (η.imp η.neg.neg).neg.neg = ((η.imp η.neg.neg).imp bot).imp bot
-    -- YES, these are the same! So X.neg = (η.imp η.neg.neg).neg.neg.
-    -- Therefore: some_future (and η η.neg)
-    --   = X.neg.all_future.neg
-    --   = (η.imp η.neg.neg).neg.neg.all_future.neg
-    -- And h_G_nn_dni : (η.imp η.neg.neg).neg.neg.all_future ∈ A
-    -- So we need: (η.imp η.neg.neg).neg.neg.all_future.neg ∈ A contradicts
-    --             (η.imp η.neg.neg).neg.neg.all_future ∈ A.
-    -- These are φ and φ.neg for φ = (η.imp η.neg.neg).neg.neg.all_future.
-    exact set_consistent_not_both h_mcs_A.1
-      ((η.imp η.neg.neg).neg.neg.all_future) h_G_nn_dni h_F_contr
-
-  · -- ¬D1 ∈ A. From the disjunction (D1 ∨ D2) ∨ D3:
-    -- ¬D1 → (D2 ∨ D3)
-    -- (D1 ∨ D2) ∨ D3 and ¬(D1 ∨ D2) → D3
-    -- Actually the disjunction structure is: (D1.or D2).or D3
-    -- = D1.neg.imp D2 gives D2 if ¬D1.
-    -- So from ¬D1 and ((D1.or D2).or D3):
-
-    -- First, derive D2 ∨ D3 from ¬D1 and (D1 ∨ D2) ∨ D3
-    -- or X Y = X.neg.imp Y.
-    -- h_disj : ((D1.or D2).or D3) = (D1.or D2).neg.imp D3 ∈ A
-    -- But we want: from ¬D1, get D2 ∨ D3.
-    -- D1.or D2 = D1.neg.imp D2 ∈ A (since from ¬D1 we get D2)
-    -- Check: does ¬D1 → (D1.neg.imp D2) ∈ A? ¬D1 = D1.neg ∈ A.
-    -- D1.neg.imp D2: if D1.neg ∈ A, does D2 ∈ A follow? Only if D1.neg.imp D2 ∈ A.
-
-    -- Let me just handle both D2 and D3 via negation completeness.
-    rcases SetMaximalConsistent.negation_complete h_mcs_A
-      (Formula.untl (Formula.and φ χ) (Formula.and φ θ)) with h_D3 | h_neg_D3
-    · -- D3: U(φ∧⊤, φ∧¬η) ∈ A. By BX10: F(φ∧¬η) = F((ξ∧U(ξ,η))∧¬η) ∈ A
-      have h_F_target := until_F_mcs h_mcs_A (Formula.and φ χ) (Formula.and φ θ) h_D3
-      -- Seed: {(ξ∧U(ξ,η))∧¬η} ∪ g_content(A) is consistent
-      have h_seed := forward_temporal_witness_seed_consistent A h_mcs_A
-        (Formula.and φ θ) h_F_target
-      -- Extend to MCS D
-      obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
-      have h_target_D : Formula.and φ θ ∈ D :=
-        h_sup (Set.mem_union_left _ (Set.mem_singleton _))
-      -- Extract φ = ξ∧U(ξ,η) from (ξ∧U(ξ,η))∧¬η
-      have h_φ_D := conj_left_mcs h_D_mcs φ θ h_target_D
-      -- Extract ξ from ξ∧U(ξ,η)
-      have h_ξ_D := conj_left_mcs h_D_mcs ξ (Formula.untl ξ η) h_φ_D
-      exact ⟨D, h_D_mcs, h_ξ_D, fun w hw => h_sup (Set.mem_union_right _ hw)⟩
-
-    · -- ¬D3 ∈ A. From (D1∨D2)∨D3 and ¬D3, get D1∨D2.
-      -- h_disj : (D1.or D2).neg.imp D3' ∈ A where D3' = D3 above
-      -- Actually: h_disj is the full disjunction.
-      -- From ¬D3 and the outer or: (D1.or D2).or D3 and ¬D3 → D1.or D2
-      -- or X Y = X.neg.imp Y, so ((D1.or D2).or D3) = (D1.or D2).neg.imp D3
-      -- h_disj : (D1.or D2).neg.imp (Formula.untl (Formula.and φ χ) (Formula.and φ θ)) ∈ A
-      -- Wait, h_disj has the ORIGINAL formula from BX7:
-      -- Formula.or (Formula.or D1 D2) D3
-      -- = (Formula.or D1 D2).neg.imp D3
-      -- So h_disj : ¬(D1 ∨ D2) → D3 ∈ A
-      -- From ¬D3 and ¬(D1 ∨ D2) → D3: ¬¬(D1 ∨ D2) by contrapositive
-      -- Then by DNE: D1 ∨ D2.
-      -- D1 ∨ D2 and ¬D1: D2.
-
-      -- D2 = U(φ∧χ, ψ∧χ) = U(φ∧⊤, η∧⊤)
-      -- BX9: (φ∧⊤) ∨ (η∧⊤) ∈ A
-      -- BX10: F(η∧⊤) ∈ A
-      -- From BX9: if φ∧⊤ ∈ A then φ ∈ A, so ξ∧U(ξ,η) ∈ A, so ξ ∈ A.
-      -- If η∧⊤ ∈ A then η ∈ A. Either way we get F(something with ξ).
-      -- BX4 on ξ: ξ → G(P(ξ)). So P(ξ) ∈ g_content(A).
-      -- But we need ξ in a FUTURE MCS D, and P(ξ) at D doesn't give ξ at D.
-
-      -- Actually, for D2: U(φ∧⊤, η∧⊤) ∈ A.
-      -- BX5 on this: U((φ∧⊤)∧U(φ∧⊤,η∧⊤), η∧⊤) ∈ A.
-      -- BX10: F(η∧⊤) ∈ A.
-      -- At the witness point: η∧⊤ holds. But we need ξ at intermediate point.
-      -- The guard (φ∧⊤) contains ξ (via φ = ξ∧U(ξ,η)).
-      -- By BX9 on D2: (φ∧⊤) ∈ A or (η∧⊤) ∈ A.
-
-      -- Let me use a simpler approach: D2 gives U(_, η∧⊤).
-      -- BX10: F(η∧⊤) ∈ A. Actually, η∧⊤ simplifies...
-      -- The guard is φ∧⊤ which contains ξ.
-      -- If BX9 gives φ∧⊤ ∈ A: then ξ ∈ A (via conj_left twice).
-      -- If BX9 gives η∧⊤ ∈ A: then η ∈ A.
-      -- In either case, we can use enriched_resolving_seed_consistent.
-
-      -- For this case, we need F(ξ ∧ something) or F(η ∧ something).
-      -- We know ¬D3 ∈ A and ¬D1 ∈ A, so from the full disjunction: D2 ∈ A.
-
-      -- First derive D2 ∈ A from ¬D1, ¬D3, and the disjunction.
-      -- The outer or: (D1∨D2) ∨ D3 = (D1∨D2).neg → D3
-      -- Contrapositive: ¬D3 → ¬¬(D1∨D2) → (D1∨D2) (by DNE)
-      -- Then D1∨D2 and ¬D1 → D2.
-      -- h_disj is (or (or D1 D2) D3) ∈ A
-      -- From ¬D3 (h_neg_D3) and h_disj: (D1 ∨ D2) ∈ A? Not directly.
-      -- Actually: (or X Y) = X.neg.imp Y.
-      -- So h_disj : (or D1 D2).neg.imp D3_formula ∈ A
-      -- where D3_formula = Formula.untl (Formula.and φ χ) (Formula.and φ θ)
-      -- Wait, the structure is:
-      -- h_disj : (Formula.or (Formula.or D1_f D2_f) D3_f) ∈ A
-      -- = ((Formula.or D1_f D2_f).neg.imp D3_f) ∈ A
-      -- h_neg_D3 : D3_f.neg ∈ A
-      -- We want: (Formula.or D1_f D2_f) ∈ A
-      -- If (Formula.or D1_f D2_f).neg ∈ A: from h_disj (MP): D3_f ∈ A
-      --   But D3_f.neg ∈ A (h_neg_D3), contradiction.
-      -- So (Formula.or D1_f D2_f).neg ∉ A, hence (Formula.or D1_f D2_f) ∈ A.
-
-      have h_D1_or_D2 : Formula.or (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)) ∈ A := by
-        rcases SetMaximalConsistent.negation_complete h_mcs_A
-          (Formula.or (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-            (Formula.untl (Formula.and φ χ) (Formula.and ψ χ))) with h | h_neg
-        · exact h
-        · -- ¬(D1∨D2) ∈ A. From h_disj ((D1∨D2)∨D3): ¬(D1∨D2) → D3.
-          -- MP: D3 ∈ A. But ¬D3 ∈ A. Contradiction.
-          have h_D3' := SetMaximalConsistent.implication_property h_mcs_A h_disj h_neg
-          exact absurd h_D3' (SetMaximalConsistent.neg_excludes h_mcs_A _ h_neg_D3)
-
-      -- Now from D1∨D2 and ¬D1, get D2.
-      have h_D2 : Formula.untl (Formula.and φ χ) (Formula.and ψ χ) ∈ A :=
-        SetMaximalConsistent.implication_property h_mcs_A h_D1_or_D2 h_neg_D1
-
-      -- D2 = U(φ∧⊤, η∧⊤) ∈ A. By BX10: F(η∧⊤) ∈ A.
-      have h_F_D2_wit := until_F_mcs h_mcs_A (Formula.and φ χ) (Formula.and ψ χ) h_D2
-      -- BX9 on D2: (φ∧⊤) ∈ A ∨ (η∧⊤) ∈ A
-      rcases until_elim_mcs h_mcs_A (Formula.and φ χ) (Formula.and ψ χ) h_D2 with h_guard | h_wit
-      · -- Guard φ∧⊤ ∈ A: extract ξ∧U(ξ,η) from φ∧⊤, then ξ from ξ∧U(ξ,η)
-        have h_φ := conj_left_mcs h_mcs_A φ χ h_guard
-        have h_ξ := conj_left_mcs h_mcs_A ξ (Formula.untl ξ η) h_φ
-        -- ξ ∈ A. BX4: G(P(ξ)) ∈ A. P(ξ) ∈ g_content(A).
-        -- But we need ξ at a FUTURE point D with g_content(A) ⊆ D.
-        -- P(ξ) ∈ D doesn't give ξ ∈ D.
-        -- However: we also have U(ξ∧U(ξ,η), η) ∈ A (h_self_accum).
-        -- At D (future of A), if η ∉ D (which we can't guarantee from D2),
-        -- BX9 gives ξ∧U(ξ,η) ∈ D or η ∈ D... but U(ξ∧U(ξ,η), η) needs
-        -- to be in D first, which requires g_content propagation.
-        -- U(...) is NOT in g_content(A) (Until formulas aren't G-formulas).
-        -- So we can't use g_content to propagate Until.
-        --
-        -- Alternative: use the enriched seed.
-        -- We have F(η∧⊤) ∈ A (from D2 via BX10). And ξ ∈ A.
-        -- enriched_resolving_seed_consistent: F(ψ ∧ α) ∈ A → {ψ, α} ∪ g_content consistent
-        -- We'd need F(ξ ∧ something) or to build ξ into the seed directly.
-        -- Actually: we have D2 = U(φ∧⊤, η∧⊤). Apply BX5 to D2:
-        -- U((φ∧⊤)∧U(φ∧⊤,η∧⊤), η∧⊤) ∈ A.
-        -- BX10: F(η∧⊤) ∈ A. The guard (φ∧⊤)∧U(φ∧⊤,η∧⊤) contains φ,
-        -- which contains ξ.
-        -- enriched_resolving_seed_consistent on U(guard, η∧⊤):
-        -- F((η∧⊤) ∧ guard)? We need F of the conjunction.
-        -- temp_linearity can get F(η∧⊤ ∧ guard) but this is complex.
-        --
-        -- Simplest: F(η∧⊤) ∈ A. Use forward_temporal_witness for η∧⊤.
-        -- Get MCS D with (η∧⊤) ∈ D and g_content(A) ⊆ D.
-        -- Then η ∈ D. But we wanted ξ ∈ D, not η ∈ D.
-        --
-        -- This case requires showing that the GUARD ξ persists to the
-        -- intermediate point. This is precisely the hard part of Lemma 2.7.
-        -- Under strict semantics, the guard only covers [t,s), and we're
-        -- looking for ξ at a point between A and the η-witness.
-        --
-        -- The guard (φ∧⊤) is at the current point A. For future points,
-        -- we need the self-accumulated Until's guard.
-        -- But the Until doesn't propagate via g_content.
-        --
-        -- This is the FUNDAMENTAL challenge of Lemma 2.7 under strict semantics.
-        -- The BX7 argument in the D3 case works because it directly gives
-        -- F(φ∧¬η) which contains ξ. The D2 case is harder.
-        --
-        -- For the D2 case: we use BX7 AGAIN on D2 and (⊤ U ¬η).
-        -- But we already did that and got into this case.
-        -- The issue is that D2 is the case where η comes BEFORE ¬η.
-        -- So at intermediate points between A and the η-witness, the guard
-        -- φ∧⊤ holds, giving ξ. BUT: between the η-witness and the ¬η-witness,
-        -- the guard might not hold anymore.
-        -- However, we just need ONE point with ξ, and the intermediate
-        -- points before η have the guard.
-        --
-        -- OK, I think we need to use BX5 on D2 and then BX10 to get
-        -- F((φ∧⊤)∧(η∧⊤)) or similar. Let me try:
-        -- BX5 on D2: U((φ∧⊤)∧D2, η∧⊤) where D2 = U(φ∧⊤, η∧⊤)
-        -- BX10: F(η∧⊤).
-        -- temp_linearity on F(η∧⊤) and F(¬η):
-        -- F((η∧⊤)∧¬η) ∨ F((η∧⊤)∧F(¬η)) ∨ F(F(η∧⊤)∧¬η)
-        -- The first is absurd (η∧¬η essentially).
-        -- The second: F(η∧⊤∧F(¬η)). At this point, η holds AND F(¬η) holds.
-        --   i.e., η now and ¬η later.
-        -- The third: F(F(η∧⊤)∧¬η). At this point, ¬η holds AND F(η∧⊤) ahead.
-        --   i.e., ¬η now and η later.
-        -- In case 3: ¬η ∈ D and F(η∧⊤) ∈ D. The original D2 U-formula
-        -- had guard φ∧⊤ containing ξ. At D's time, ¬η holds, so D is
-        -- in the guard interval of D2 (between A and the η-witness).
-        -- Therefore φ∧⊤ should hold at D, giving ξ.
-        -- BUT this is a semantic argument! Syntactically, we don't have
-        -- the Until formula at D.
-        --
-        -- This analysis shows that Lemma 2.7 in the D2 case genuinely
-        -- requires a complex chain of BX axiom applications. The D3 case
-        -- is the clean one.
-        --
-        -- For now, sorry this case.
-        sorry
-
-      · -- Witness η∧⊤ ∈ A: η ∈ A
-        -- Similar analysis. η ∈ A and U(ξ,η) ∈ A.
-        -- Under strict Until: U(ξ,η) at t means ∃s>t, η(s), ξ on [t,s).
-        -- η at t is consistent with U(ξ,η) at t.
-        -- We still need ξ at a future point.
-        sorry
-
-/-! ## Lemma 2.8: Variant with Neg-Disjunction at C
-
-Given U(ξ, η) ∈ A and ¬(ξ ∨ (η ∧ U(ξ,η))) ∈ C with g_content(A) ⊆ C,
-insert D between A and C with ξ ∈ D.
-
-The condition ¬(ξ ∨ (η ∧ U(ξ,η))) ∈ C decomposes (via MCS properties) to:
-- ξ ∉ C (so ξ fails at C)
-- η ∉ C or U(ξ,η) ∉ C
-
-When η ∉ C, this reduces to Lemma 2.7 directly.
--/
-
-/--
-**Lemma 2.8** (adapted): Given U(ξ, η) ∈ A and
-¬(ξ ∨ (η ∧ U(ξ,η))) ∈ C with g_content(A) ⊆ C,
-there exists MCS D with ξ ∈ D and g_content(A) ⊆ D.
-
-Under strict semantics, the neg-disjunction condition ensures that
-at C, neither ξ nor the conjunction η∧U(ξ,η) holds. This means the
-Until U(ξ,η) is still "unresolved" relative to C, guaranteeing that
-the guard ξ must hold at intermediate points.
--/
-noncomputable def lemma_2_8 {A C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
-    (h_g_AC : g_content A ⊆ C)
-    (ξ η : Formula)
-    (h_until : Formula.untl ξ η ∈ A)
-    (h_neg_disj : (ξ.or (η.and (Formula.untl ξ η))).neg ∈ C) :
-    ∃ D : Set Formula, SetMaximalConsistent D ∧
-      ξ ∈ D ∧ g_content A ⊆ D := by
-  -- The neg_disj condition: ¬(ξ ∨ (η ∧ U(ξ,η))) ∈ C
-  -- or = neg.imp, so this is ¬(ξ.neg → (η ∧ U(ξ,η))) ∈ C
-  -- For MCS: ¬(A → B) ∈ M iff A ∈ M and B ∉ M
-  -- So: ξ.neg ∈ C (i.e., ξ ∉ C) and (η ∧ U(ξ,η)) ∉ C
-
-  -- First: ξ ∉ C
-  have h_or_not_C : (ξ.or (η.and (Formula.untl ξ η))) ∉ C :=
-    SetMaximalConsistent.neg_excludes h_mcs_C _ h_neg_disj
-
-  -- ξ ∉ C implies η ∉ C (we'll show this or handle both cases)
-  -- Actually: from ¬(ξ ∨ (η∧U(ξ,η))) ∈ C, the neg-or decomposes to:
-  -- ¬ξ ∈ C AND ¬(η∧U(ξ,η)) ∈ C (De Morgan for MCS)
-  -- More precisely: ξ.neg ∈ C. Since or X Y = X.neg.imp Y, and
-  -- ¬(X.neg.imp Y) ∈ C iff X.neg ∈ C and Y ∉ C (by MCS implication property).
-  -- So: ξ.neg ∈ C (hence ξ ∉ C) and (η.and (Formula.untl ξ η)) ∉ C.
-
-  -- Extract ξ.neg ∈ C
-  have h_ξ_neg_C : ξ.neg ∈ C := by
-    -- ¬(ξ.neg.imp (η.and (Formula.untl ξ η))) ∈ C
-    -- By MCS property: if ξ.neg ∉ C, then ¬ξ.neg ∈ C, i.e., ξ.neg.neg ∈ C.
-    -- Then ξ.neg.imp anything ∈ C (by implication vacuity? No.)
-    -- Actually: ¬(A → B) ∈ M means A ∈ M. Here A = ξ.neg.
-    -- ¬(ξ.neg.imp (η.and (Formula.untl ξ η))).neg is just h_neg_disj already.
-    -- neg_disj = (ξ.neg.imp (η.and (Formula.untl ξ η))).imp bot ∈ C
-    -- By MCS: if ξ.neg.imp (η.and ...) ∈ C, then its neg ∉ C. Contradiction.
-    -- So ξ.neg.imp (η.and ...) ∉ C.
-    -- By MCS negation complete: ¬(ξ.neg.imp (η.and ...)) ∈ C. That's h_neg_disj.
-    -- Now: ¬(A → B) ∈ M implies A ∈ M.
-    -- Proof: ¬(A → B) = (A → B) → ⊥ ∈ M.
-    -- Suppose A ∉ M. Then ¬A ∈ M. But ¬A → (A → B) is provable (ex falso on A).
-    -- So (A → B) ∈ M. Then (A → B) → ⊥ and (A → B) both in M: contradiction.
-    -- Therefore A ∈ M.
-    by_contra h_ξ_neg_not
-    rcases SetMaximalConsistent.negation_complete h_mcs_C ξ.neg with h | h
-    · exact h_ξ_neg_not h
-    · -- ξ.neg.neg ∈ C, i.e., ¬¬ξ ∈ C
-      -- From ¬¬ξ, derive ξ (by DNE), then ξ → (ξ ∨ (η∧U(ξ,η))) is provable
-      -- (left disjunction introduction). So ξ ∈ C → ξ ∨ ... ∈ C.
-      -- But we have ¬(ξ ∨ ...) ∈ C, contradiction.
-      -- Actually, we don't directly have ξ ∈ C, we have ξ.neg.neg ∈ C.
-      -- ξ.neg.neg = (ξ.imp bot).imp bot. DNE gives (ξ.neg.neg → ξ).
-      have h_dne : DerivationTree [] (ξ.neg.neg.imp ξ) :=
-        Bimodal.Theorems.Propositional.double_negation ξ
-      have h_ξ_C := SetMaximalConsistent.implication_property h_mcs_C
-        (theorem_in_mcs h_mcs_C h_dne) h
-      -- ξ ∈ C. Now ξ → (ξ ∨ (η∧U(ξ,η))).
-      -- or X Y = X.neg.imp Y. So ξ.or Z = ξ.neg.imp Z.
-      -- ξ → ξ.neg.imp Z: suppose ξ. Then ξ.neg → Z (ex falso from ξ and ξ.neg).
-      -- Hmm, ξ → (ξ.neg → Z). This is: ξ → ¬ξ → Z. In classical logic this
-      -- is valid: if ξ and ¬ξ, then anything.
-      -- Derivation: from ξ and ξ.neg (= ξ → ⊥), get ⊥, then Z by ex_falso.
-      -- So ⊢ ξ → (ξ.neg → Z) for any Z. i.e., ⊢ ξ → ξ.or Z.
-      -- This means ξ.or (η.and ...) ∈ C from ξ ∈ C.
-      -- But ¬(ξ.or ...) ∈ C: contradiction.
-      have h_disj_intro : DerivationTree [] (ξ.imp (ξ.or (η.and (Formula.untl ξ η)))) := by
-        -- ξ → (ξ.neg → (η.and ...)) which is ξ → ξ.or (η.and ...)
-        -- This is the same as: ξ → ¬ξ → Z
-        -- Use context [ξ.neg, ξ] (matching deduction_theorem [ξ] ξ.neg)
-        let Z := η.and (Formula.untl ξ η)
-        have h1 : DerivationTree [ξ.neg, ξ] Formula.bot :=
-          DerivationTree.modus_ponens [ξ.neg, ξ] ξ Formula.bot
-            (DerivationTree.assumption [ξ.neg, ξ] ξ.neg (by simp))
-            (DerivationTree.assumption [ξ.neg, ξ] ξ (by simp))
-        have h2 : DerivationTree [ξ.neg, ξ] Z :=
-          DerivationTree.modus_ponens [ξ.neg, ξ] Formula.bot _
-            (DerivationTree.weakening [] [ξ.neg, ξ] _ (DerivationTree.axiom [] _
-              (Axiom.ex_falso Z)) (List.nil_subset _))
-            h1
-        have h3 : DerivationTree [ξ] (ξ.neg.imp Z) :=
-          deduction_theorem [ξ] ξ.neg _ h2
-        exact deduction_theorem [] ξ _ h3
-      have h_or_C := SetMaximalConsistent.implication_property h_mcs_C
-        (theorem_in_mcs h_mcs_C h_disj_intro) h_ξ_C
-      exact absurd h_or_C h_or_not_C
-
-  -- ξ ∉ C (from ξ.neg ∈ C)
-  have h_ξ_not_C : ξ ∉ C :=
-    SetMaximalConsistent.neg_excludes h_mcs_C ξ h_ξ_neg_C
-
-  -- Now case split on whether η ∈ C
-  by_cases h_η_C : η ∈ C
-  · -- η ∈ C: then (η.and (Formula.untl ξ η)) ∉ C, so U(ξ,η) ∉ C.
-    -- G(U(ξ,η)) ∉ A (otherwise U(ξ,η) ∈ g_content(A) ⊆ C).
-    -- F(¬U(ξ,η)) ∈ A.
-    -- But we need ξ at an intermediate point, not ¬U(ξ,η).
-    -- From U(ξ,η) ∈ A and F(¬U(ξ,η)) ∈ A:
-    -- BX7 applied to U(ξ,η) and (⊤ U ¬U(ξ,η))...
-    -- This leads to a complex analysis similar to Lemma 2.7.
-    -- For now, sorry this case (the η ∉ C case below is the main case).
-    sorry
-  · -- η ∉ C: reduces to lemma_2_7
-    exact lemma_2_7 h_mcs_A h_mcs_C h_g_AC ξ η h_until h_η_C
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

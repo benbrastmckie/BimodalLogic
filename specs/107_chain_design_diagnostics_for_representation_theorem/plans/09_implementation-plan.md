@@ -185,7 +185,7 @@ Prior plans: `plans/08_implementation-plan.md` (v2), `plans/09_implementation-pl
 
 ---
 
-### Phase 3: Withdraw False Lemmas and Reformulate for Strict Semantics [NOT STARTED]
+### Phase 3: Withdraw False Lemmas and Reformulate for Strict Semantics [COMPLETED]
 
 **Goal**: Remove the 4 sorry sites in PointInsertion.lean by **withdrawing false lemma statements** and replacing them with correct reformulations that are provable under strict (irreflexive) semantics. This phase REMOVES sorry sites by deleting false code, not by proving false statements.
 
