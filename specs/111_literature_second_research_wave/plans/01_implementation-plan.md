@@ -92,7 +92,7 @@ This task advances documentation and literature collection. No direct roadmap it
 
 ---
 
-### Phase 2: Add Second Research Wave Section [NOT STARTED]
+### Phase 2: Add Second Research Wave Section [COMPLETED]
 
 **Goal**: Add a comprehensive new section to `literature/README.md` documenting all sources identified in the second research wave
 
@@ -121,7 +121,7 @@ This task advances documentation and literature collection. No direct roadmap it
 
 ---
 
-### Phase 3: Update Existing README Entries [NOT STARTED]
+### Phase 3: Update Existing README Entries [IN PROGRESS]
 
 **Goal**: Apply corrections and priority changes to existing entries based on research findings
 
