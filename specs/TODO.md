@@ -69,6 +69,16 @@ technical_debt:
 
 ## Tasks
 
+### 112. Systematic literature study for task 107 representation theorem
+- **Effort**: medium
+- **Status**: [RESEARCHED]
+- **Task Type**: formal
+- **Research**: [specs/112_literature_study_representation_theorem/reports/01_team-research.md]
+
+**Description**: Review 5 non-original literature sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to the task 107 representation theorem. Assess how each source's techniques relate to the three-layer infrastructure problem (g-function, guard conventions, domain extension) and the hybrid approach identified in task 107 research round 15.
+
+---
+
 ### 111. Identify and add literature sources from task 107 research to literature/README.md
 - **Effort**: medium
 - **Status**: [COMPLETED]
