@@ -173,7 +173,7 @@ Prior plans: `plans/08_implementation-plan.md` (v2, 7 phases) and `plans/09_impl
 
 ---
 
-### Phase 3: Close PointInsertion Sorry Sites (Lemmas 2.6-2.8) [NOT STARTED]
+### Phase 3: Close PointInsertion Sorry Sites (Lemmas 2.6-2.8) [BLOCKED]
 
 **Goal**: Close the 4 PointInsertion sorry sites that implement the core between-point insertion machinery. These lemmas are prerequisites for C4 elimination (Phase 4) and C5 redesign (Phase 4), which use lemma_2_6/2_7/2_8 to insert points between existing domain points.
 
