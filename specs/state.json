@@ -8,11 +8,20 @@
     {
       "project_number": 112,
       "project_name": "literature_study_representation_theorem",
-      "status": "researching",
+      "status": "researched",
       "task_type": "formal",
       "created": "2026-04-24T20:47:00Z",
-      "last_updated": "2026-04-24T20:53:17Z",
-      "session_id": "sess_1777063984_92a238"
+      "last_updated": "2026-04-24T20:59:46Z",
+      "session_id": "sess_1777063984_92a238",
+      "researched": "2026-04-24T20:59:46Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/112_literature_study_representation_theorem/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates"
+        }
+      ]
     },
     {
       "project_number": 111,
