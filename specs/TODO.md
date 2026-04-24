@@ -47,7 +47,7 @@ technical_debt:
 
 ### 4. Experimental / Research
 
-- **112** [NOT STARTED] — Systematic literature study: review 5 non-original sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to task 107 representation theorem
+- **112** [RESEARCHED] — Systematic literature study: review 5 non-original sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to task 107 representation theorem
 
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
 - **64** [RESEARCHED] — Critical path review (reference only)
