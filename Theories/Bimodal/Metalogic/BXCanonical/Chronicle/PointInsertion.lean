@@ -447,4 +447,112 @@ appropriate formulas and handling only the D1 (absurd) and D3 (witness) branches
 with an additional hypothesis or case analysis that ensures D2 does not arise.
 -/
 
+/-! ## G/H Implies F/P (Seriality + BX3 + BX10/BX12)
+
+Key lemma for g_content chain property: G(α) in an MCS implies F(α) in the same MCS.
+This is NOT immediate under irreflexive semantics (there is no axiom G(α) → α),
+but it IS derivable using seriality, BX3 (right monotonicity), BX10, and BX12.
+
+Proof sketch: G(α) → G(⊤ → α)   (weakening under G, via temporal necessitation)
+              F(⊤) → (⊤ U ⊤)    (BX12, seriality gives F(⊤))
+              G(⊤ → α) → ((⊤ U ⊤) → (⊤ U α))  (BX3)
+              (⊤ U α) → F(α)    (BX10)
+-/
+
+/-- In an MCS, G(α) implies F(α). Uses seriality + BX3 + BX10 + BX12. -/
+theorem G_implies_F_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_G : Formula.all_future α ∈ A) :
+    Formula.some_future α ∈ A := by
+  -- Step 1: G(⊤ �� α) ∈ A from G(α)
+  -- ⊢ α → (⊤ → α) by prop_s
+  set top := Formula.bot.imp Formula.bot with top_def
+  have h_weak : DerivationTree [] (Formula.imp α (Formula.imp top α)) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s α top)
+  have h_G_top_α : Formula.all_future (Formula.imp top α) ∈ A := by
+    have h1 := theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_weak)
+    have h2 := theorem_in_mcs h_mcs
+      (DerivationTree.axiom [] _ (Axiom.temp_k_dist α (Formula.imp top α)))
+    exact SetMaximalConsistent.implication_property h_mcs
+      (SetMaximalConsistent.implication_property h_mcs h2 h1) h_G
+  -- Step 2: F(⊤) ∈ A by seriality
+  have h_top_in : top ∈ A :=
+    theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.identity Formula.bot)
+  have h_F_top : Formula.some_future top ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.serial_future)) h_top_in
+  -- Step 3: (⊤ U ⊤) ∈ A by BX12
+  have h_TUT : Formula.untl top top ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.F_until_equiv top))) h_F_top
+  -- Step 4: (⊤ U α) ∈ A by BX3: G(⊤ → α) → ((⊤ U ⊤) → (⊤ U α))
+  have h_TUα : Formula.untl top α ∈ A := by
+    have h1 := SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_until top α top)))
+      h_G_top_α
+    exact SetMaximalConsistent.implication_property h_mcs h1 h_TUT
+  -- Step 5: F(α) ∈ A by BX10
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.until_F top α))) h_TUα
+
+/-- In an MCS, H(α) implies P(α). Mirror of G_implies_F_mcs using past axioms. -/
+theorem H_implies_P_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_H : Formula.all_past α ∈ A) :
+    Formula.some_past α ∈ A := by
+  set top := Formula.bot.imp Formula.bot with top_def
+  -- H(⊤ → α) ∈ A
+  have h_weak : DerivationTree [] (Formula.imp α (Formula.imp top α)) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s α top)
+  have h_H_top_α : Formula.all_past (Formula.imp top α) ∈ A := by
+    have h1 := theorem_in_mcs h_mcs (Bimodal.Theorems.past_necessitation _ h_weak)
+    have h2 := theorem_in_mcs h_mcs (Bimodal.Theorems.past_k_dist α (Formula.imp top α))
+    exact SetMaximalConsistent.implication_property h_mcs
+      (SetMaximalConsistent.implication_property h_mcs h2 h1) h_H
+  -- P(⊤) ∈ A by seriality
+  have h_top_in : top ∈ A :=
+    theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.identity Formula.bot)
+  have h_P_top : Formula.some_past top ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.serial_past)) h_top_in
+  -- (⊤ S ⊤) ∈ A by BX12'
+  have h_TST : Formula.snce top top ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.P_since_equiv top))) h_P_top
+  -- BX3': H(⊤ → α) → ((⊤ S ⊤) → (⊤ S α))
+  have h_TSα : Formula.snce top α ∈ A := by
+    have h1 := SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_since top α top)))
+      h_H_top_α
+    exact SetMaximalConsistent.implication_property h_mcs h1 h_TST
+  -- BX10': (⊤ S α) → P(α)
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.since_P top α))) h_TSα
+
+/--
+G-propagation seed consistency: if G(α) ∈ MCS A, then {α} ∪ g_content(A) is consistent.
+
+Proof: G(α) → F(α) (by `G_implies_F_mcs`), then apply `forward_temporal_witness_seed_consistent`.
+-/
+theorem g_propagation_seed_consistent {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_G : Formula.all_future α ∈ A) :
+    SetConsistent (forward_temporal_witness_seed A α) := by
+  exact forward_temporal_witness_seed_consistent A h_mcs α (G_implies_F_mcs h_mcs α h_G)
+
+/--
+G-propagation insertion: given G(α) ∈ f(x) (an MCS), produce an MCS D with α ∈ D
+and g_content(f(x)) ⊆ D.
+
+This is the key building block for G-propagation counterexample elimination.
+-/
+noncomputable def g_propagation_witness {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (α : Formula)
+    (h_G : Formula.all_future α ∈ A) :
+    ∃ D : Set Formula, SetMaximalConsistent D ∧ α ∈ D ∧ g_content A ⊆ D := by
+  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ (g_propagation_seed_consistent h_mcs α h_G)
+  exact ⟨D, h_D_mcs,
+    h_sup (Set.mem_union_left _ (Set.mem_singleton _)),
+    fun χ hχ => h_sup (Set.mem_union_right _ hχ)⟩
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
