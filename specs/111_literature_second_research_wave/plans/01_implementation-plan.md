@@ -1,7 +1,7 @@
 # Implementation Plan: Literature Second Research Wave
 
 - **Task**: 111 - Identify and add literature sources from task 107 research to literature/README.md
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None (task 107 research reports already exist)
 - **Research Inputs**: specs/111_literature_second_research_wave/reports/01_team-research.md
@@ -64,7 +64,7 @@ This task advances documentation and literature collection. No direct roadmap it
 | 2 | 2 | 1 |
 | 3 | 3 | 2 |
 
-### Phase 1: Download Free PDFs [NOT STARTED]
+### Phase 1: Download Free PDFs [COMPLETED]
 
 **Goal**: Obtain the 3 freely available PDFs and save them to `literature/`
 
