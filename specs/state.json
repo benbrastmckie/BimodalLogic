@@ -567,7 +567,7 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
@@ -634,7 +634,7 @@
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/09_implementation-plan.md",
           "type": "plan",
-          "summary": "Rewritten 8-phase plan: PointInsertion before C5 redesign, linear chain 3→4→5→6→7→8"
+          "summary": "v4: false lemma statements withdrawn, C5 elimination restructured around D3 case, 8-phase plan"
         }
       ],
       "session_id": "sess_1777009057_f6b46c"
