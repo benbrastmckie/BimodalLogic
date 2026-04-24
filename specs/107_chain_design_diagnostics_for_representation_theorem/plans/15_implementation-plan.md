@@ -78,7 +78,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Fix g-Function Infrastructure (Layer 1) [NOT STARTED]
+### Phase 1: Fix g-Function Infrastructure (Layer 1) [PARTIAL]
 
 **Goal**: Make the chronicle's interval function g non-trivial by defining how g is initialized during point insertion, updated through the omega-chain, and carried to the limit. This is the deepest infrastructure gap and prerequisite for everything downstream.
 
