@@ -8,11 +8,11 @@
     {
       "project_number": 111,
       "project_name": "literature_second_research_wave",
-      "status": "researched",
+      "status": "planning",
       "task_type": "general",
       "created": "2026-04-24T18:13:55Z",
-      "last_updated": "2026-04-24T18:26:56Z",
-      "session_id": "sess_1777054593_4c2417",
+      "last_updated": "2026-04-24T18:28:32Z",
+      "session_id": "sess_1777055295_4ba687",
       "researched": "2026-04-24T18:26:56Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -591,13 +591,13 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-24T18:13:25Z",
+      "last_updated": "2026-04-24T17:30:00Z",
       "researched": "2026-04-24T04:22:39Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 10,
+      "next_artifact_number": 11,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -653,6 +653,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/09_implementation-plan.md",
           "type": "plan",
           "summary": "v4: false lemma statements withdrawn, C5 elimination restructured around D3 case, 8-phase plan"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/10_team-research.md",
+          "type": "report",
+          "summary": "Team research: domain extension decision (4 teammates, dense domain recommended, guard mismatch identified)"
         }
       ],
       "session_id": "sess_1777044968_6647f2"
