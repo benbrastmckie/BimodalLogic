@@ -186,7 +186,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Integration -- Replace RootScopedChain Sorry Sites [NOT STARTED]
+### Phase 5: Integration -- Replace RootScopedChain Sorry Sites [COMPLETED]
 
 **Goal**: Wire the Burgess chronicle into the existing `dd_countermodel` pathway, replacing the 3 sorry sites in `RootScopedChain.lean`.
 

@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.BXCanonical.RootScopedChain
+import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import Bimodal.Semantics.Validity
 
 /-!
@@ -25,11 +26,13 @@ theorem bx_completeness (φ : Formula) :
 
 ## Status
 
-The completeness proof is wired through `dd_countermodel` from CanonicalModel.lean.
-The sorry at the proof site has been replaced with a proof using the BXCanonical
-canonical model construction and parametric algebraic representation theorem.
+The completeness proof is wired through `dd_countermodel_chronicle` from
+Chronicle/ChronicleToCountermodel.lean, which uses the Burgess 1982 chronicle
+construction over Rat instead of the schedule-based Int chain. This bypasses the
+3 sorry sites in RootScopedChain.lean (which remain as dead code).
 
-Remaining leaf sorries are in CanonicalModel.lean and RootScopedChain.lean (chain construction coherence proofs).
+Remaining leaf sorries are in the Chronicle/ modules (FMCS G/H coherence,
+chronicle construction C5/C5' satisfaction, counterexample enumeration).
 
 ## References
 
@@ -113,12 +116,14 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 1. Assume φ is not derivable
 2. By `neg_consistent_of_not_derivable`: {¬φ} is consistent
 3. By Lindenbaum: extend to MCS w₀ with ¬φ ∈ w₀
-4. Build canonical model via `dd_countermodel` (CanonicalModel.lean)
+4. Build canonical model via `dd_countermodel_chronicle` (Chronicle/ChronicleToCountermodel.lean)
 5. By parametric truth lemma: φ is false at the canonical evaluation point
 6. Instantiate `valid φ` at the canonical model to get truth, contradiction
 
-**Status**: Proof completed via `dd_countermodel`. Remaining leaf sorries
-are in CanonicalModel.lean and RootScopedChain.lean (chain construction coherence).
+**Status**: Proof completed via `dd_countermodel_chronicle` (Burgess chronicle).
+Remaining leaf sorries are in the Chronicle/ modules (FMCS coherence, chronicle
+construction). The RootScopedChain.lean sorry sites are no longer on the critical
+path -- the chronicle bypasses them entirely.
 -/
 theorem bx_completeness (φ : Formula) :
     valid φ → Nonempty (DerivationTree [] φ) := by
@@ -137,8 +142,10 @@ theorem bx_completeness (φ : Formula) :
   -- φ ∉ M (since ¬φ ∈ M and M is MCS)
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
   -- Build canonical model and derive contradiction
+  -- Uses the chronicle-based countermodel (Burgess 1982), bypassing
+  -- the sorry-laden dd_countermodel from RootScopedChain.lean.
   obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-    dd_countermodel M hM_mcs φ h_neg_in
+    Chronicle.dd_countermodel_chronicle M hM_mcs φ h_neg_in
   -- valid φ gives truth at every point, including the countermodel point
   exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
@@ -170,26 +177,35 @@ Captured during Phase 0 of task 109 (2026-04-20).
 - `Lean.ofReduceBool`, `Lean.trustCompiler` — introduced by `native_decide` in Syntax layer
   (Formula.lean, SignedFormula.lean); these are acceptable, not sorry-related
 
-### Sorry Dependency Tree
+### Sorry Dependency Tree (Post-Phase 5 Rewiring)
 
-The `sorryAx` dependency traces through `dd_countermodel` → `dd_bfmcs` in RootScopedChain.lean.
+The `sorryAx` dependency now traces through `dd_countermodel_chronicle` →
+`chronicle_bfmcs` in Chronicle/ChronicleToCountermodel.lean, which uses the
+Burgess chronicle construction instead of the Int chain.
 
-**Dead code sorries** (CanonicalModel.lean, not on critical path — Phase 1 deletes these):
-1. `enriched_seed_consistent` (line ~54) — dead code
-2. `fwd_succ_f_carry` (line ~98) — dead code
-3. `enriched_past_seed_consistent` (line ~113) — dead code
-4. `bwd_pred_p_carry` (line ~164) — dead code
+**Chronicle FMCS sorries** (ChronicleToCountermodel.lean):
+1. `chronicle_fmcs.forward_G` — G-formula propagation across chronicle points
+2. `chronicle_fmcs.backward_H` — H-formula propagation across chronicle points
+3. `box_stable_in_chronicle_fmcs` — Box stability along chronicle FMCS
 
-**Reflexive base case sorries** (CanonicalModel.lean — Phase 2 eliminates by switching to strict ordering):
-5. `g_content_subset_self` (line ~205) — reflexive base case for `fwd_chain_g_content_trans`
-6. `h_content_subset_self` (line ~211) — reflexive base case for `bwd_chain_h_content_trans`
+**Chronicle coherence sorries** (ChronicleToCountermodel.lean):
+4. `chronicle_bfmcs_restricted_tc` (F-resolution) — uses chronicle C5
+5. `chronicle_bfmcs_restricted_tc` (P-resolution) — uses chronicle C5'
+6. `chronicle_bfmcs_restricted_buc` (backward Until) — witness pattern → membership
+7. `chronicle_bfmcs_restricted_buc` (backward Since) — witness pattern → membership
+8. `chronicle_bfmcs_restricted_fuc` (forward Until) — uses chronicle C5
+9. `chronicle_bfmcs_restricted_fuc` (forward Since) — uses chronicle C5'
 
-**Chain construction coherence sorries** (RootScopedChain.lean — Phases 3-5):
-7. `fwd_chain_forward_F` (line ~1044) — F-obligation resolution in forward chain
-8. `dd_bfmcs_restricted_tc` forward t-s<0 case (line ~1092) — backward F-resolution
-9. `dd_bfmcs_restricted_tc` backward direction (line ~1099) — P-preservation
-10. `dd_bfmcs_restricted_buc` (line ~1107) — backward Until coherence
-11. `dd_bfmcs_restricted_fuc` (line ~1114) — forward Until coherence
+**Chronicle construction sorries** (Phases 2-4, upstream):
+10. `counterexample_enum` — countability enumeration (ChronicleConstruction.lean)
+11. `counterexample_enum_surjective` — enumeration surjectivity
+12. `limit_satisfies_c5_weak` — C5 in limit (ChronicleConstruction.lean)
+13. `limit_satisfies_c5'_weak` — C5' in limit
+14. Various Phase 2-4 sorry sites in PointInsertion, RRelation, CounterexampleElimination
+
+**Dead code** (no longer on critical path):
+- All sorry sites in RootScopedChain.lean (bx_bfmcs_restricted_tc/buc/fuc)
+- Dead code sorries in CanonicalModel.lean (enriched_seed_consistent, etc.)
 
 ### Target State
 
@@ -202,5 +218,6 @@ and are not removable without changing the decidability infrastructure.)
 
 #print axioms Bimodal.Metalogic.BXCanonical.bx_completeness
 #print axioms Bimodal.Metalogic.BXCanonical.dd_countermodel
+#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle
 
 end Bimodal.Metalogic.BXCanonical
