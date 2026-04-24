@@ -69,8 +69,9 @@ technical_debt:
 
 ### 111. Identify and add literature sources from task 107 research to literature/README.md
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
+- **Research**: [specs/111_literature_second_research_wave/reports/01_team-research.md]
 
 **Description**: Look through task 107 research reports (04_literature-sources.md and 03_team-research.md) to identify sources not yet included in literature/README.md. Add these under a 'Second Research Wave' section with links to journal websites or PDFs, copying PDFs into the literature/ directory where available
 
