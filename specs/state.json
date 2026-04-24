@@ -602,13 +602,13 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-24T20:00:00Z",
+      "last_updated": "2026-04-24T22:00:00Z",
       "researched": "2026-04-24T04:22:39Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 13,
+      "next_artifact_number": 14,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -679,6 +679,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/12_taskframe-refactoring-scope.md",
           "type": "report",
           "summary": "Scoping: AddCommGroup is load-bearing in 7 files (~690 lines), big-bang refactor needed, 15-25 days, breaks 3000 lines of sorry-free proofs"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/13_team-research.md",
+          "type": "report",
+          "summary": "Team research: order-iso NOT viable, direct chronicle truth lemma (Option 4) is the recommended path — 3-5 days, ~200-400 new lines, preserves generality"
         }
       ],
       "session_id": "sess_1777044968_6647f2"
