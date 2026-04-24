@@ -414,18 +414,43 @@ structure PotentialCounterexample where
   kind : PotentialCounterexampleKind
 
 /--
+Result type for `eliminate_potential_counterexample`, bundling the core
+properties (domain extension, C0, f-agreement) together with the
+C5/C5' witness guarantees needed by the limit construction.
+
+The `c5_forward_witness` field states: if the input counterexample is c5_forward
+and the point x is in the domain with U(ξ,η) ∈ f(x), then a witness exists
+in the result domain. Similarly for `c5_backward_witness` and Since.
+-/
+structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) where
+  val : Chronicle
+  dom_sub : χ.dom ⊆ val.dom
+  c0 : val.c0
+  f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
+  c5_forward_witness : pc.kind = .c5_forward → pc.x ∈ χ.dom →
+    Formula.untl pc.ξ pc.η ∈ χ.f pc.x →
+    ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y
+  c5_backward_witness : pc.kind = .c5_backward → pc.x ∈ χ.dom →
+    Formula.snce pc.ξ pc.η ∈ χ.f pc.x →
+    ∃ y ∈ val.dom, y < pc.x ∧ pc.η ∈ val.f y
+
+/--
 Attempt to eliminate a potential counterexample. If it is not an actual
 counterexample for the current chronicle, the chronicle is returned unchanged.
 Otherwise, a new chronicle with the counterexample eliminated is returned.
 
-Returns: a chronicle chi' with dom extends, C0, and f agreement on old points.
+Returns an `EliminationResult` bundling domain extension, C0, f-agreement,
+and C5/C5' witness guarantees.
 -/
 noncomputable def eliminate_potential_counterexample
     (χ : Chronicle) (h_c0 : χ.c0)
     (pc : PotentialCounterexample) :
-    { χ' : Chronicle // χ.dom ⊆ χ'.dom ∧ χ'.c0 ∧
-      (∀ x ∈ χ.dom, χ'.f x = χ.f x) } := by
-  match pc.kind with
+    EliminationResult χ pc := by
+  -- Helper for impossible kind discriminants
+  have absurd_kind {k : PotentialCounterexampleKind} {P : Prop}
+      (h : k = .c5_forward) (hk : k = .c4_forward ∨ k = .c4_backward ∨ k = .c5_backward) : P :=
+    by rcases hk with rfl | rfl | rfl <;> exact absurd h (by decide)
+  match h_kind : pc.kind with
   | .c5_forward =>
     -- Forward (Until) C5 case
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.untl pc.ξ pc.η ∈ χ.f pc.x ∧
@@ -433,12 +458,27 @@ noncomputable def eliminate_potential_counterexample
           ∀ z ∈ χ.dom, pc.x < z → z < y →
             pc.ξ ∈ χ.f z ∧ Formula.untl pc.ξ pc.η ∈ χ.f z
     · obtain ⟨h_mem, h_until, h_no_wit⟩ := h_actual
-      have ce : C5Counterexample χ := ⟨pc.x, h_mem, pc.ξ, pc.η, h_until, h_no_wit⟩
-      have h_elim := eliminate_C5_counterexample h_c0 ce
+      have h_elim := eliminate_C5_counterexample h_c0
+        (⟨pc.x, h_mem, pc.ξ, pc.η, h_until, h_no_wit⟩ : C5Counterexample χ)
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
-      exact ⟨χ', h_prop.1, h_prop.2.2.1, h_prop.2.1⟩
-    · exact ⟨χ, Finset.Subset.refl _, h_c0, fun _ _ => rfl⟩
+      exact { val := χ'
+              dom_sub := h_prop.1
+              c0 := h_prop.2.2.1
+              f_agrees := h_prop.2.1
+              c5_forward_witness := by
+                intro _ _ _; exact h_prop.2.2.2.1
+              c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide)) }
+    · exact { val := χ
+              dom_sub := Finset.Subset.refl _
+              c0 := h_c0
+              f_agrees := fun _ _ => rfl
+              c5_forward_witness := by
+                intro _ h_mem h_until
+                push_neg at h_actual
+                obtain ⟨y, hy_dom, hy_lt, hy_η, _⟩ := h_actual h_mem h_until
+                exact ⟨y, hy_dom, hy_lt, hy_η⟩
+              c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide)) }
   | .c5_backward =>
     -- Backward (Since) C5' case
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.snce pc.ξ pc.η ∈ χ.f pc.x ∧
@@ -446,14 +486,29 @@ noncomputable def eliminate_potential_counterexample
           ∀ z ∈ χ.dom, y < z → z < pc.x →
             pc.ξ ∈ χ.f z ∧ Formula.snce pc.ξ pc.η ∈ χ.f z
     · obtain ⟨h_mem, h_since, h_no_wit⟩ := h_actual
-      have ce : C5'Counterexample χ := ⟨pc.x, h_mem, pc.ξ, pc.η, h_since, h_no_wit⟩
-      have h_elim := eliminate_C5'_counterexample h_c0 ce
+      have h_elim := eliminate_C5'_counterexample h_c0
+        (⟨pc.x, h_mem, pc.ξ, pc.η, h_since, h_no_wit⟩ : C5'Counterexample χ)
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
-      exact ⟨χ', h_prop.1, h_prop.2.2.1, h_prop.2.1⟩
-    · exact ⟨χ, Finset.Subset.refl _, h_c0, fun _ _ => rfl⟩
+      exact { val := χ'
+              dom_sub := h_prop.1
+              c0 := h_prop.2.2.1
+              f_agrees := h_prop.2.1
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := by
+                intro _ _ _; exact h_prop.2.2.2.1 }
+    · exact { val := χ
+              dom_sub := Finset.Subset.refl _
+              c0 := h_c0
+              f_agrees := fun _ _ => rfl
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := by
+                intro _ h_mem h_since
+                push_neg at h_actual
+                obtain ⟨y, hy_dom, hy_lt, hy_η, _⟩ := h_actual h_mem h_since
+                exact ⟨y, hy_dom, hy_lt, hy_η⟩ }
   | .c4_forward =>
-    -- Forward C4 case: ¬(ξ U η) ∈ f(x) and ξ ∈ f(y) with x,y adjacent
+    -- Forward C4 case
     by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
         Adjacent χ.dom pc.x pc.y ∧
         (Formula.untl pc.ξ pc.η).neg ∈ χ.f pc.x ∧
@@ -465,10 +520,20 @@ noncomputable def eliminate_potential_counterexample
       have h_elim := eliminate_C4_counterexample h_c0 ce
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
-      exact ⟨χ', h_prop.1, h_prop.2.2.1, h_prop.2.1⟩
-    · exact ⟨χ, Finset.Subset.refl _, h_c0, fun _ _ => rfl⟩
+      exact { val := χ'
+              dom_sub := h_prop.1
+              c0 := h_prop.2.2.1
+              f_agrees := h_prop.2.1
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
+    · exact { val := χ
+              dom_sub := Finset.Subset.refl _
+              c0 := h_c0
+              f_agrees := fun _ _ => rfl
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c4_backward =>
-    -- Backward C4' case: ¬(ξ S η) ∈ f(x) and ξ ∈ f(y) with y,x adjacent (y < x)
+    -- Backward C4' case
     by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
         Adjacent χ.dom pc.y pc.x ∧
         (Formula.snce pc.ξ pc.η).neg ∈ χ.f pc.x ∧
@@ -480,7 +545,17 @@ noncomputable def eliminate_potential_counterexample
       have h_elim := eliminate_C4'_counterexample h_c0 ce
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
-      exact ⟨χ', h_prop.1, h_prop.2.2.1, h_prop.2.1⟩
-    · exact ⟨χ, Finset.Subset.refl _, h_c0, fun _ _ => rfl⟩
+      exact { val := χ'
+              dom_sub := h_prop.1
+              c0 := h_prop.2.2.1
+              f_agrees := h_prop.2.1
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
+    · exact { val := χ
+              dom_sub := Finset.Subset.refl _
+              c0 := h_c0
+              f_agrees := fun _ _ => rfl
+              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
