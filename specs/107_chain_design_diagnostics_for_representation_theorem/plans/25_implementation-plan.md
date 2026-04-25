@@ -139,7 +139,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove forward_G/backward_H from Correct C4 + C0 [BLOCKED]
+### Phase 3: Prove forward_G/backward_H from Correct C4 + C0 [BLOCKED — STRUCTURAL]
 
 **Goal**: Prove that G(phi) in f(x) implies phi in f(y) for all x < y in the limit domain, using the correct C4 + C0 contradiction argument. This replaces the deleted g_ordered approach entirely.
 
