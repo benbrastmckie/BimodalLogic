@@ -132,7 +132,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 2.6 (DCS Three-Way Decomposition) [NOT STARTED]
+### Phase 2: Lemma 2.6 (DCS Three-Way Decomposition) [BLOCKED]
 
 **Goal**: Implement Burgess Lemma 2.6: given R(A, B, C) and ~delta not in B, produce B', D, B'' such that ~delta in D and R(A, B', D), R(D, B'', C), and B = B' intersect D intersect B''. This is the workhorse of C4 elimination.
 
