@@ -1,8 +1,8 @@
-# Implementation Plan: Task #107 (v13 -- Cantor Isomorphism + Lemma 2.6 Under Strict Semantics)
+# Implementation Plan: Task #107 (v14 -- Close 4 Active Sorry Sites)
 
 - **Task**: 107 - Burgess chronicle construction for BX representation theorem
-- **Status**: [NOT STARTED]
-- **Effort**: 20 hours
+- **Status**: [IN PROGRESS]
+- **Effort**: 12 hours (remaining)
 - **Dependencies**: None (irr_until branch)
 - **Research Inputs**: [reports/27_team-research.md]
 - **Artifacts**: plans/27_implementation-plan.md (this file)
@@ -12,49 +12,46 @@
 
 ## Overview
 
-Two independent workstreams close the remaining 11 sorry sites in the Chronicle module. Workstream A (8 sorry sites) uses Mathlib's `Order.iso_of_countable_dense` to build a Cantor isomorphism from `limit_dom` to the rationals, making every rational a domain point and eliminating the non-domain extension problem. Workstream B (3 sorry sites) reproves Burgess's Lemma 2.6 seed consistency using BX axioms instead of A4a (which is not sound under strict semantics). Definition of done: sorry-free `dd_countermodel_chronicle` with clean `#print axioms`.
+Four active sorry sites remain after partial implementation (v10, phases 0-5 partial). Two are in `cantor_bfmcs_restricted_fuc` (forward Until/Since coherence, ChronicleToCountermodel.lean:964,968), blocked on the placeholder `limit_g` not satisfying C3. Two are in the C4/C4' hard sub-case (CounterexampleElimination.lean:329,439), the G(gamma) in f(x) AND H(gamma) in f(y) configuration. Definition of done: sorry-free `dd_countermodel_chronicle` with clean `#print axioms`.
 
 ### Research Integration
 
-Report 27 (team research, 4 teammates, Opus): Unanimous that Cantor isomorphism is the correct and lowest-effort solution for the non-domain extension problem. Critical finding: Burgess's Lemma 2.6 proof uses axiom A4a, which is NOT sound under strict semantics -- the seed consistency argument must be reproved using BX5/BX6/BX7 or by deriving A4a from BX. All Cantor iso prerequisites (Countable, DenselyOrdered, NoMinOrder, NoMaxOrder, Nonempty) are provable from sorry-free infrastructure.
+Report 27 (team research): Cantor isomorphism approach validated and implemented. A4a unsoundness resolved via R3Maximal_is_mcs. Remaining work is infrastructure (limit_g) and case analysis (C4 hard sub-case).
 
 ### Prior Plan Reference
 
-Plan v12 (artifact 26): Phases 1 and 4 completed successfully (C4/C4' argument swap, Adjacent removal, forward_G/backward_H proved sorry-free). Phases 2-3 (Lemma 2.6 + Lemma 2.9 induction) NOT STARTED. Phase 5 BLOCKED by non-domain extension. Effort calibration: forward_G proof was faster than estimated (Phase 4 in 2h vs 4h planned). The v12 plan did not anticipate the A4a unsoundness problem in Lemma 2.6.
+Plan v13 (artifact 27): Phases 0, 1, 2, 4 completed. Phase 3 partially completed (restricted_tc and restricted_buc closed; restricted_fuc still sorry'd). Phase 5 partially completed (2 of 3 C4 sub-cases closed; hard sub-case still sorry'd). Phase 6 (cleanup) not started. The current revision restructures the remaining work into 3 focused phases.
 
 ### Roadmap Alignment
 
 - Advances: "TM is complete with respect to TaskFrames over totally ordered abelian groups" (representation theorem)
 - Chronicle pathway is the primary completeness path (ROADMAP Section 2)
-- Closing all 11 sorry sites achieves the chronicle sorry-free milestone
+- Closing the final 4 sorry sites achieves the chronicle sorry-free milestone
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Build Cantor isomorphism `limit_dom ≃o Q` via `Order.iso_of_countable_dense`
-- Define `cantor_f` and `cantor_fmcs` so every rational is a domain point
-- Close all 8 ChronicleToCountermodel sorry sites via Cantor-based FMCS
-- Investigate A4a derivability from BX axioms
-- Implement Lemma 2.6 full seed using BX-compatible proof
-- Close C4/C4' hard cases in CounterexampleElimination
+- Implement proper `limit_g` as union of finite-stage g values
+- Prove C3 at the limit via g-immutability and f-immutability
+- Close 2 restricted_fuc sorry sites using limit_g + C3 + c3_interval_subset_point
+- Close 2 C4/C4' hard sub-case sorry sites using C2' + R3Maximal_is_mcs
 - Achieve sorry-free `dd_countermodel_chronicle`
 - Maintain lake build at each phase boundary
 
 **Non-Goals**:
 - General completeness for all strict linear orders (separate task)
-- Fixing sorry sites outside Chronicle/ directory (task 109 scope)
-- Lemma 2.9 non-adjacent induction (generalized C4 already proved at limit; induction only needed for omega chain steps, not the final countermodel)
-- Reintroduction of g_ordered or two-sided seeds (dead ends)
+- Fixing sorry sites outside Chronicle/ directory
+- Dead code cleanup (deferred to final validation)
+- Reintroduction of g_ordered or two-sided seeds
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Cantor iso instance prerequisites harder than expected (e.g., NoMinOrder requires seriality chain) | M | L | All prerequisites have sorry-free foundations: limit_dom_dense, zero_mem_limit_dom, seriality axioms. Fall back to manual Countable+Dense proof if typeclass inference fails. |
-| A4a is NOT derivable from BX, requiring full reproof of Lemma 2.6 seed | H | M | Three options: (1) derive A4a from BX5+BX6+BX7 (8h), (2) use r3Maximal_neg_of_not_mem + dcs_neg_union_consistent incrementally (6h), (3) leave Workstream B sorry'd and ship Workstream A (8/11 sorry sites closed). |
-| restricted_buc/restricted_fuc need truth lemma arguments beyond simple domain transfer | M | M | Research identified 3 categories: forward_G/backward_H (trivial), restricted_tc (limit_F/P_resolution), restricted_buc/fuc (C4+C5 arguments). The C4+C5 infrastructure is sorry-free; the wiring is mechanical. |
-| Cantor iso shifts evaluation point (cantor_zero differs from 0) | L | L | The iso is order-preserving. cantor_zero = iso(zero_mem_limit_dom). The eval point shifts but all structural properties transfer. The root MCS assignment uses cantor_f(cantor_zero). |
-| Lean4 OrderIso API friction (coercions, simp lemmas) | M | M | Mathlib's OrderIso API is well-developed. Use `OrderIso.symm`, `.toFun`, `.map_rel_iff` for core properties. Budget 1h for API exploration. |
+| Proper limit_g requires omega chain redesign to track g values at each stage | H | M | The omega chain already tracks chi_n with g fields. limit_g = chi_n.g(x,y) for first n with x,y in dom_n. No structural redesign needed, just a new definition + well-definedness proof using g-immutability. |
+| C3 at the limit harder than expected (g-immutability proof complex) | M | L | g-immutability follows from the chain extension pattern: new stages only ADD points and set g for NEW pairs, never overwriting existing g values. This is already implicit in the construction. |
+| C4 hard sub-case gamma in g(x,y) sub-sub-case is genuinely unreachable but hard to prove | H | M | Two fallback strategies: (a) show the configuration is contradictory using BX axioms (G(gamma) at x with neg(untl(gamma,delta)) at x is contradictory if we can derive gamma U delta from G(gamma) + endpoint witness), (b) use induction on the omega chain stage where the counterexample was first introduced. |
+| Passing C2' (ChronicleInvariant) into eliminate_C4_counterexample breaks existing signatures | M | L | The function already takes h_c0 (C0). Adding h_c2' is a signature extension. All call sites in the omega chain have access to the full ChronicleInvariant. Mechanical refactoring. |
 
 ## Implementation Phases
 
@@ -62,11 +59,9 @@ Plan v12 (artifact 26): Phases 1 and 4 completed successfully (C4/C4' argument s
 
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 0 | 0 | -- |
-| 1 | 1, 4 | 0 |
-| 2 | 2, 5 | 1, 4 |
-| 3 | 3 | 2 |
-| 4 | 6 | 3, 5 |
+| 0 | 0, 1, 2, 3, 4 | -- (completed) |
+| 1 | 5, 6 | 0-4 (independent of each other) |
+| 2 | 7 | 5, 6 |
 
 Phases within the same wave can execute in parallel.
 
@@ -104,23 +99,19 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 1: Prove limit_dom Typeclass Instances [COMPLETED]
 
-**Goal**: Establish the typeclass prerequisites for `Order.iso_of_countable_dense` on `limit_dom` as a subtype of the rationals.
+**Goal**: Establish the typeclass prerequisites for `Order.iso_of_countable_dense` on `limit_dom`.
 
 **Tasks**:
-- [ ] Define `LimitDomSubtype` as `{q : Q // q ∈ limit_dom}` with inherited LinearOrder
-- [ ] Prove `Countable LimitDomSubtype`: limit_dom is a countable union of finite sets (each `chi_n.dom` is a Finset)
-- [ ] Prove `DenselyOrdered LimitDomSubtype`: from sorry-free `limit_dom_dense`
-- [ ] Prove `NoMinOrder LimitDomSubtype`: from BX seriality + `limit_P_resolution` (for any x in limit_dom, there exists y < x in limit_dom)
-- [ ] Prove `NoMaxOrder LimitDomSubtype`: from BX seriality + `limit_F_resolution`
-- [ ] Prove `Nonempty LimitDomSubtype`: from `zero_mem_limit_dom`
-- [ ] Run lake build and verify
+- [x] Define `LimitDomSubtype` with inherited LinearOrder
+- [x] Prove `Countable`, `DenselyOrdered`, `NoMinOrder`, `NoMaxOrder`, `Nonempty`
+- [x] Run lake build and verify
 
-**Timing**: 2 hours
+**Timing**: 2 hours (actual)
 
 **Depends on**: Phase 0
 
-**Files to modify**:
-- `Chronicle/ChronicleToCountermodel.lean` -- new section for limit_dom instances
+**Files modified**:
+- `Chronicle/ChronicleToCountermodel.lean` -- limit_dom instances
 
 **Verification**:
 - All 5 typeclass instances compile without sorry
@@ -130,24 +121,14 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 2: Build Cantor Isomorphism and cantor_fmcs [COMPLETED]
 
-**Goal**: Extract the order isomorphism `limit_dom ≃o Q` and define the Cantor-based FMCS where every rational is a domain point.
+**Goal**: Extract order isomorphism `limit_dom ≃o Q` and define Cantor-based FMCS where every rational is a domain point.
 
 **Tasks**:
 - [x] Apply `Order.iso_of_countable_dense` to get `cantor_iso : LimitDomSubtype ≃o Q`
-- [x] Define `cantor_f : Q -> MCS` as `fun q => limit_f (cantor_iso.symm q).val`
-- [x] Define `cantor_zero : Q` as `cantor_iso (zero_mem_limit_dom_subtype)`
-- [x] Define `cantor_fmcs : FMCS Rat` with sorry-free forward_G and backward_H
-  - forward_G: reduces to limit_forward_G via cantor_iso.symm.strictMono
-  - backward_H: mirror via cantor_iso.symm.strictMono
-- [x] Prove cantor_f_is_mcs: every rational maps to an MCS
-- [x] Prove cantor_f_at_zero: cantor_f(cantor_zero) = A (root MCS)
-- [x] Define shifted_cantor_fmcs: time-shifted version for bundle construction
-- [x] Define rooted_cantor_fmcs: convenience wrapper placing root at s
-- [x] Prove rooted_cantor_fmcs_at_s: mcs(s) = A
-- [x] Prove box_stable_in_rooted_cantor_fmcs: sorry-free box stability via sorry-free forward_G/backward_H
-- [x] Define cantor_bfmcs: sorry-free BFMCS Rat bundle with modal_forward/backward
-- [x] Define cantor-based restricted coherence theorems (sorry'd -- Phase 3 scope)
-- [x] Rewire dd_countermodel_chronicle to use cantor_bfmcs instead of chronicle_bfmcs
+- [x] Define `cantor_f`, `cantor_zero`, `cantor_fmcs` (sorry-free forward_G/backward_H)
+- [x] Define `rooted_cantor_fmcs`, `cantor_bfmcs` (sorry-free BFMCS)
+- [x] Prove `box_stable_in_rooted_cantor_fmcs` sorry-free
+- [x] Rewire `dd_countermodel_chronicle` to use `cantor_bfmcs`
 - [x] Run lake build -- passes (1097 jobs)
 
 **Timing**: 1 hour (actual)
@@ -155,129 +136,163 @@ Phases within the same wave can execute in parallel.
 **Depends on**: Phase 1
 
 **Files modified**:
-- `Chronicle/ChronicleToCountermodel.lean` -- cantor_fmcs, shifted_cantor_fmcs, rooted_cantor_fmcs, box_stable_in_rooted_cantor_fmcs, cantor_bfmcs, cantor-based restricted coherence theorems, dd_countermodel_chronicle rewired
+- `Chronicle/ChronicleToCountermodel.lean` -- cantor_fmcs, cantor_bfmcs, dd_countermodel_chronicle rewired
 
 **Verification**:
-- cantor_fmcs: sorry-free (forward_G, backward_H proved via cantor_iso.symm.strictMono + limit_forward_G/backward_H)
-- cantor_bfmcs: sorry-free (modal_forward, modal_backward proved via box_stable_in_rooted_cantor_fmcs)
-- box_stable_in_rooted_cantor_fmcs: sorry-free
-- dd_countermodel_chronicle: rewired to cantor_bfmcs (remaining sorries are restricted coherence -- Phase 3)
+- cantor_fmcs sorry-free (forward_G, backward_H)
+- cantor_bfmcs sorry-free (modal_forward, modal_backward)
+- dd_countermodel_chronicle rewired to cantor_bfmcs
 - lake build succeeds
-- Sorry status: 2 legacy (chronicle_fmcs forward_G/backward_H) + 6 cantor-based restricted coherence = 8 sorry sites in file. The 2 legacy sorries are now dead code (dd_countermodel_chronicle no longer routes through chronicle_fmcs).
 
 ---
 
-### Phase 3: Close ChronicleToCountermodel Sorry Sites [NOT STARTED]
+### Phase 3: Close restricted_tc and restricted_buc [COMPLETED]
 
-**Goal**: Rewire `dd_countermodel_chronicle` to use `cantor_fmcs` and close all 8 sorry sites. With Cantor iso, every rational is a domain point, so all coherence conditions reduce to limit-level properties.
+**Goal**: Close the 4 sorry sites for temporal F/P resolution and backward Until/Since coherence.
 
 **Tasks**:
-- [ ] Close chronicle_fmcs.forward_G (line 195): replace with cantor_fmcs.forward_G
-- [ ] Close chronicle_fmcs.backward_H (line 200): replace with cantor_fmcs.backward_H
-- [ ] Close restricted_tc forward (line 372): F(phi) resolution -- limit_F_resolution applies at every point (all are domain)
-- [ ] Close restricted_tc backward (line 375): P(phi) resolution -- limit_P_resolution applies at every point
-- [ ] Close restricted_buc Until (line 394): backward Until coherence -- use C4 completeness at limit + truth lemma structure (C4 gives the guard witness between any two points)
-- [ ] Close restricted_buc Since (line 397): mirror using C4'
-- [ ] Close restricted_fuc Until (line 426): forward Until coherence -- use C5 witness existence + C3 interval containment
-- [ ] Close restricted_fuc Since (line 429): mirror using C5'
-- [ ] Verify dd_countermodel_chronicle compiles (may still have sorry from Workstream B dependency, but the 8 ChronicleToCountermodel sorry sites should be closed)
-- [ ] Run `#print axioms` on the reachable definitions
-- [ ] Run lake build and verify
+- [x] Close restricted_tc forward (F resolution via limit_F_resolution at every Cantor point)
+- [x] Close restricted_tc backward (P resolution via limit_P_resolution)
+- [x] Close restricted_buc Until (backward Until via C4 contrapositive)
+- [x] Close restricted_buc Since (mirror via C4')
+- [x] Run lake build and verify
 
-**Timing**: 2 hours
+**Timing**: 2 hours (actual)
 
 **Depends on**: Phase 2
 
-**Files to modify**:
-- `Chronicle/ChronicleToCountermodel.lean` -- close all 8 sorry sites, rewire to cantor_fmcs
+**Files modified**:
+- `Chronicle/ChronicleToCountermodel.lean` -- restricted_tc, restricted_buc proofs
 
 **Verification**:
-- ChronicleToCountermodel.lean sorry-free
-- All 8 sorry sites closed
+- restricted_tc sorry-free
+- restricted_buc sorry-free
 - lake build succeeds
-- Sorry count reduction: -8
 
 ---
 
-### Phase 4: Investigate A4a Derivability and Lemma 2.6 Proof Strategy [COMPLETED]
+### Phase 4: A4a Investigation and Lemma 2.6 [COMPLETED]
 
-**Goal**: Determine whether axiom A4a (`U(p,q) AND NOT U(p,r) -> U(q AND NOT r, q)`) is derivable from BX axioms. If yes, Burgess's Lemma 2.6 proof can be used directly. If not, design an alternative seed consistency argument using BX5/BX6/BX7.
+**Goal**: Resolve A4a derivability and close lemma_2_6_full.
 
 **Results**:
-- [x] A4a is NOT derivable from BX (not sound under strict semantics, while all BX axioms are)
-- [x] Key discovery: R3Maximal forces B to be an MCS (r3Relation monotone in B via r3Relation_subset)
-- [x] Proved `R3Maximal_is_mcs`, `mcs_no_proper_dcs_extension`, `rRelation_self_mcs`, `rRelationSince_self_mcs`
-- [x] Closed `lemma_2_6_full` sorry-free (D=B'=B''=B since B is MCS, neg(delta) by negation completeness)
-- [x] lake build passes (1066 jobs), PointInsertion.lean sorry-free, sorry count -1
+- [x] A4a NOT derivable from BX (not sound under strict semantics)
+- [x] R3Maximal_is_mcs discovered: forces B to be MCS, collapsing the problem
+- [x] lemma_2_6_full proved sorry-free
+- [x] C4 hard case: 2 of 3 sub-cases closed (G(gamma) not in f(x) and H(gamma) not in f(y))
+- [x] lake build passes (1066 jobs)
 
-**Strategy for Phase 5**: C4/C4' hard cases apply `lemma_2_6_full` directly. Since R3Maximal forces B to be MCS, the decomposition is trivial.
+**Timing**: 3 hours (actual, phases 4+5 partial from v13)
 
-**Timing**: 1 hour (actual, vs 2 estimated -- key discovery simplified everything)
-
-**Depends on**: Phase 0 (only needs existing infrastructure, independent of Cantor iso)
+**Depends on**: Phase 0
 
 **Files modified**:
-- `Chronicle/PointInsertion.lean` -- 4 helper theorems + lemma_2_6_full proof (was sorry)
-
-**Verification**:
-- [x] A4a NOT derivable (semantic argument: not sound under strict semantics)
-- [x] Alternative: R3Maximal_is_mcs collapses the problem
-- [x] `lemma_2_6_full` compiles sorry-free
-- [x] lake build passes
-
----
-
-### Phase 5: Implement Lemma 2.6 Full Seed and Close C4 Hard Cases [NOT STARTED]
-
-**Goal**: Close the 3 Workstream B sorry sites: `lemma_2_6_full` (PointInsertion.lean:762), C4 hard case (CounterexampleElimination.lean:319), C4' hard case (CounterexampleElimination.lean:383).
-
-**Tasks**:
-- [ ] Implement `lemma_2_6_full` using the strategy from Phase 4:
-  - If A4a derived: follow Burgess's proof directly, applying `a4a_from_bx` where Burgess uses A4a
-  - If A4a not derived: implement the alternative seed construction, prove consistency via R3Maximality
-- [ ] Construct the seed set and prove its consistency
-- [ ] Apply Lindenbaum extension to get MCS D from the seed
-- [ ] Prove the required R3Maximal properties of D
-- [ ] Close the C4 hard case sorry (CounterexampleElimination.lean:319): apply lemma_2_6_full
-- [ ] Close the C4' hard case sorry (CounterexampleElimination.lean:383): mirror
-- [ ] Run lake build and verify
-
-**Timing**: 2 hours (if A4a derivable) or 2 hours (if alternative seed, paper proof already done in Phase 4)
-
-**Depends on**: Phase 4
-
-**Files to modify**:
-- `Chronicle/PointInsertion.lean` -- lemma_2_6_full implementation
-- `Chronicle/CounterexampleElimination.lean` -- C4/C4' hard case closure
+- `Chronicle/PointInsertion.lean` -- R3Maximal_is_mcs, lemma_2_6_full
+- `Chronicle/CounterexampleElimination.lean` -- C4 sub-cases (2 of 3)
 
 **Verification**:
 - lemma_2_6_full sorry-free
-- C4 hard case sorry-free
-- C4' hard case sorry-free
+- 2 of 3 C4 sub-cases closed
 - lake build succeeds
-- Sorry count reduction: -3
 
 ---
 
-### Phase 6: Final Validation and Cleanup [NOT STARTED]
+### Phase 5: Proper limit_g and restricted_fuc Closure [NOT STARTED]
+
+**Goal**: Replace the placeholder `limit_g` with the correct definition and close the 2 restricted_fuc sorry sites (ChronicleToCountermodel.lean:964,968).
+
+**Tasks**:
+- [ ] Define proper `limit_g(x,y) = (omega_chain_val n).g x y` where n is the first stage with x,y in dom_n
+  - Use `Nat.find` with decidability of `x ∈ (omega_chain_val k).dom ∧ y ∈ (omega_chain_val k).dom`
+  - Prove well-definedness: for any x,y in limit_dom, such n exists (both enter dom at some finite stage)
+- [ ] Prove g-immutability: for m >= n >= first_stage(x,y), `(omega_chain_val m).g x y = (omega_chain_val n).g x y`
+  - This follows from the chain extension pattern: each `eliminate_and_extend` only sets g for the NEW point z, leaving existing g values unchanged
+- [ ] Prove limit_c3 (C3 at the limit): `limit_g(x,z) = limit_g(x,y) ∩ limit_f(y) ∩ limit_g(y,z)` for x < y < z in limit_dom
+  - Reduce to C3 at finite stage: take n = max(first_stage(x,y), first_stage(y,z), first_stage(x,z))
+  - At stage n, C3 holds by ChronicleInvariant.c3; by g-immutability and f-immutability, the equation lifts to the limit
+- [ ] Prove `c3_interval_subset_point` at the limit: for x < y < z, `limit_g(x,z) ⊆ limit_f(y)`
+  - Immediate from limit_c3 (f(y) is a factor in the three-way intersection)
+- [ ] Close restricted_fuc Until (line 964):
+  - Given `untl(gamma,delta) ∈ f(t)`, use C5 to get endpoint y > t with delta in f(y)
+  - For intermediate z with t < z < y: by c3_interval_subset_point, limit_g(t,y) ⊆ limit_f(z)
+  - C5 also gives gamma in limit_g(t,y) (the guard witness from the C5 elimination)
+  - Therefore gamma in f(z) for all intermediate z
+  - Transfer through Cantor iso
+- [ ] Close restricted_fuc Since (line 968): mirror using C5' and backward interval function
+- [ ] Run lake build and verify
+
+**Timing**: 5 hours
+
+**Depends on**: Phases 0-4
+
+**Files to modify**:
+- `Chronicle/ChronicleConstruction.lean` -- proper limit_g definition, g-immutability, limit_c3
+- `Chronicle/ChronicleToCountermodel.lean` -- restricted_fuc Until/Since proofs
+
+**Verification**:
+- limit_g definition uses omega_chain_val, not placeholder
+- limit_c3 proved sorry-free
+- c3_interval_subset_point at limit proved sorry-free
+- restricted_fuc Until sorry-free (line 964 closed)
+- restricted_fuc Since sorry-free (line 968 closed)
+- lake build succeeds
+- Sorry count reduction: -2
+
+---
+
+### Phase 6: C4/C4' Hard Sub-Case Closure [NOT STARTED]
+
+**Goal**: Close the 2 remaining sorry sites in CounterexampleElimination.lean (lines 329, 439) -- the G(gamma) in f(x) AND H(gamma) in f(y) configuration.
+
+**Tasks**:
+- [ ] Extend `eliminate_C4_counterexample` signature to accept C2' (ChronicleInvariant or at least the c2' component providing R3Maximal for adjacent pairs)
+  - Update all call sites in the omega chain construction to pass the invariant
+- [ ] Extract g(x,y) via C2': the chronicle invariant guarantees R3Maximal between adjacent domain pairs
+  - Use `R3Maximal_is_mcs` to establish g(x,y) is an MCS
+- [ ] Case split on gamma in g(x,y) vs gamma not in g(x,y) (negation completeness of MCS):
+  - **Case gamma not in g(x,y)**: gamma.neg in g(x,y) by MCS negation completeness. Use g(x,y) as the seed for point z between x and y. g(x,y) already has the required R3 properties (it IS the interval function). Construct f(z) = g(x,y), which contains gamma.neg.
+  - **Case gamma in g(x,y)**: G(gamma) in f(x) means gamma in g_content(f(x)), so gamma in g(x,y) (by C2 monotonicity). H(gamma) in f(y) means gamma in h_content(f(y)), so gamma in g(x,y) (by duality). This sub-sub-case: gamma in g(x,y) AND gamma in f(x) AND gamma in f(y). Use the neg(untl(gamma,delta)) in f(x) hypothesis -- by BX5 (Until induction), neg(untl(gamma,delta)) AND gamma implies neg(delta) AND G(neg(untl(gamma,delta))). Since gamma in g(x,y) and neg(untl(gamma,delta)) propagates forward, the Until unwinding eventually contradicts delta in f(y) at the endpoint. Alternatively, this case may be provably unreachable.
+- [ ] Close C4' hard sub-case (line 439): mirror of C4 with H/G and Since/Until swapped
+- [ ] Run lake build and verify
+
+**Timing**: 5 hours
+
+**Depends on**: Phases 0-4 (independent of Phase 5)
+
+**Files to modify**:
+- `Chronicle/CounterexampleElimination.lean` -- C4/C4' hard sub-case proofs, signature extension
+- `Chronicle/ChronicleConstruction.lean` -- update call sites to pass C2'
+
+**Verification**:
+- C4 hard sub-case sorry-free (line 329 closed)
+- C4' hard sub-case sorry-free (line 439 closed)
+- All call sites updated for new signature
+- lake build succeeds
+- Sorry count reduction: -2
+
+---
+
+### Phase 7: Final Validation and Cleanup [NOT STARTED]
 
 **Goal**: Verify sorry-free `dd_countermodel_chronicle`, clean up dead code, confirm no regressions.
 
 **Tasks**:
 - [ ] Run `#print axioms dd_countermodel_chronicle` and verify only Lean axioms (propfunext, Quot.sound, Classical.choice)
 - [ ] Verify zero sorry sites in Chronicle/ directory
+- [ ] Remove dead code: old `chronicle_fmcs`, `chronicle_bfmcs`, legacy coherence conditions
+- [ ] Remove placeholder `limit_g` comment artifacts
 - [ ] Remove unused `extended_limit_f` and related non-domain extension code
-- [ ] Clean up dead code from earlier approaches (old chronicle_fmcs definition if replaced)
-- [ ] Remove Adjacent-related dead comments throughout Chronicle/
+- [ ] Clean up Adjacent-related dead comments
 - [ ] Verify no regressions: full lake build
 - [ ] Verify Soundness, FMP, ParametricTruthLemma remain sorry-free
 
 **Timing**: 2 hours
 
-**Depends on**: Phase 3 (Workstream A complete), Phase 5 (Workstream B complete)
+**Depends on**: Phases 5, 6
 
 **Files to modify**:
 - `Chronicle/ChronicleToCountermodel.lean` -- dead code removal
+- `Chronicle/ChronicleConstruction.lean` -- comment cleanup, placeholder removal
 - `Chronicle/ChronicleTypes.lean` -- comment cleanup
 - `Chronicle/CounterexampleElimination.lean` -- comment cleanup
 
@@ -289,28 +304,28 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] lake build succeeds at each phase boundary (7 checkpoints including Phase 0)
-- [ ] Phase 0: C4/C4' definitions corrected; forward_G/backward_H sorry-free [DONE]
-- [ ] Phase 1: All 5 typeclass instances for limit_dom subtype compile sorry-free
-- [ ] Phase 2: cantor_fmcs definition compiles with forward_G/backward_H sorry-free
-- [ ] Phase 3: All 8 ChronicleToCountermodel sorry sites closed
-- [ ] Phase 4: A4a derivability determination with proof or alternative strategy
-- [ ] Phase 5: lemma_2_6_full + C4/C4' hard cases sorry-free
-- [ ] Phase 6: `#print axioms dd_countermodel_chronicle` clean; zero sorry in Chronicle/
+- [x] Phase 0: C4/C4' definitions corrected; forward_G/backward_H sorry-free
+- [x] Phase 1: All 5 typeclass instances compile sorry-free
+- [x] Phase 2: cantor_fmcs/cantor_bfmcs sorry-free; dd_countermodel_chronicle rewired
+- [x] Phase 3: restricted_tc and restricted_buc sorry-free
+- [x] Phase 4: lemma_2_6_full sorry-free; 2 of 3 C4 sub-cases closed
+- [ ] Phase 5: limit_g proper + restricted_fuc sorry-free (-2 sorry sites)
+- [ ] Phase 6: C4/C4' hard sub-case sorry-free (-2 sorry sites)
+- [ ] Phase 7: `#print axioms dd_countermodel_chronicle` clean; zero sorry in Chronicle/
 - [ ] No regression in existing sorry-free modules (Soundness, FMP, ParametricTruthLemma)
+- [ ] lake build succeeds at each phase boundary
 
 ## Artifacts & Outputs
 
 - `specs/107_.../plans/27_implementation-plan.md` (this file)
-- Modified: `Chronicle/ChronicleToCountermodel.lean` (Cantor iso, cantor_fmcs, close 8 sorry sites)
-- Modified: `Chronicle/PointInsertion.lean` (lemma_2_6_full implementation)
-- Modified: `Chronicle/CounterexampleElimination.lean` (C4/C4' hard case closure)
-- Possibly new: `Theorems/A4a.lean` or helper in PointInsertion (if A4a derivation)
+- Modified: `Chronicle/ChronicleConstruction.lean` (proper limit_g, g-immutability, limit_c3)
+- Modified: `Chronicle/ChronicleToCountermodel.lean` (restricted_fuc closure, dead code removal)
+- Modified: `Chronicle/CounterexampleElimination.lean` (C4/C4' hard sub-case closure)
 
 ## Rollback/Contingency
 
 - **Git safety**: The irr_until branch preserves the current state. All changes can be reverted to HEAD.
-- **Phase 1-3 contingency (Cantor iso)**: If `Order.iso_of_countable_dense` is hard to apply (e.g., universe issues), fall back to manually constructing the bijection using a back-and-forth argument on the countable dense linear orders. This is more work (~4h) but mathematically straightforward.
-- **Phase 4-5 contingency (Lemma 2.6)**: If A4a is not derivable AND the alternative seed is intractable, leave the 3 Workstream B sorry sites and ship Workstream A alone. This closes 8 of 11 sorry sites. The C4 hard cases only affect the omega chain's ability to eliminate ALL counterexamples at finite stages; the limit-level C4 is already proved and forward_G works.
-- **Budget overrun**: Workstream A (Phases 1-3, 6h) alone closes 8 sorry sites and is well-understood. Workstream B (Phases 4-5, 4h) can be deferred to a subsequent plan if needed.
-- **Partial shipping**: If only Workstream A completes, `dd_countermodel_chronicle` still has 3 sorry sites (all in omega chain/PointInsertion), but the critical countermodel wiring is sorry-free.
+- **Phase 5 contingency (limit_g)**: If proper limit_g is difficult to define (e.g., decidability of domain membership at finite stages), fall back to carrying the guard witness directly from the C5 elimination result type. The EliminationResult already checks the guard in eliminate_potential_counterexample but discards it -- threading it through the result type avoids needing limit_g entirely.
+- **Phase 6 contingency (C4 hard sub-case)**: If the gamma-in-g(x,y) sub-sub-case proves intractable, three fallbacks: (a) show the configuration is unreachable by deriving a contradiction from G(gamma) in f(x) + neg(untl(gamma,delta)) in f(x) + gamma in g(x,y), (b) strengthen the omega chain to never create this configuration (add a pre-check), (c) leave the 2 sorry sites and ship with dd_countermodel_chronicle depending on them -- the limit-level C4 is proved by a separate path.
+- **Phase 5 and 6 are independent**: Either can be completed and shipped without the other. Phase 5 alone closes the countermodel wiring sorry sites. Phase 6 alone closes the omega chain sorry sites.
+- **Budget overrun**: If either phase exceeds its estimate, ship the other phase's results and defer the blocked phase to a subsequent plan.
