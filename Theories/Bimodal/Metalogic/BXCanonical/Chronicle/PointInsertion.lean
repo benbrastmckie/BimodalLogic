@@ -110,6 +110,37 @@ theorem F_neg_of_G_not {A : Set Formula}
   · exact absurd h h_G_nnφ_not
   · exact h
 
+/-- If H(φ) ∉ MCS A, then P(¬φ) ∈ A.
+
+Dual of `F_neg_of_G_not`. Proof: H(φ) ∉ A. Suppose H(¬¬φ) ∈ A.
+By past necessitation of DNE and past_k_dist, H(¬¬φ) → H(φ).
+So H(φ) ∈ A, contradiction. Therefore H(¬¬φ) ∉ A, i.e.,
+¬H(¬¬φ) ∈ A = P(¬φ) ∈ A. -/
+theorem P_neg_of_H_not {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (φ : Formula)
+    (h_Hφ_not : Formula.all_past φ ∉ A) :
+    Formula.some_past φ.neg ∈ A := by
+  -- Show H(¬¬φ) ∉ A
+  have h_H_nnφ_not : Formula.all_past φ.neg.neg ∉ A := by
+    intro h_H_nnφ
+    have h_dne : DerivationTree [] (φ.neg.neg.imp φ) :=
+      Bimodal.Theorems.Propositional.double_negation φ
+    have h_H_dne : DerivationTree [] (Formula.all_past (φ.neg.neg.imp φ)) :=
+      Bimodal.Theorems.past_necessitation _ h_dne
+    have h_kd : DerivationTree [] ((φ.neg.neg.imp φ).all_past.imp
+        (φ.neg.neg.all_past.imp φ.all_past)) :=
+      Bimodal.Theorems.past_k_dist φ.neg.neg φ
+    have h1 := theorem_in_mcs h_mcs h_H_dne
+    have h2 := theorem_in_mcs h_mcs h_kd
+    have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
+    have h_Hφ := SetMaximalConsistent.implication_property h_mcs h3 h_H_nnφ
+    exact h_Hφ_not h_Hφ
+  -- ¬H(¬¬φ) ∈ A by negation completeness
+  rcases SetMaximalConsistent.negation_complete h_mcs
+      (Formula.all_past φ.neg.neg) with h | h
+  · exact absurd h h_H_nnφ_not
+  · exact h
+
 /-! ## Lemma 2.4: Until Witness Endpoint Construction
 
 Given MCS A with U(γ, β) ∈ A, construct an MCS C (the "endpoint") with:
