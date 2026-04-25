@@ -4,6 +4,8 @@ import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import Mathlib.Algebra.Order.Ring.Rat
+import Mathlib.Order.CountableDenseLinearOrder
+import Mathlib.Data.Rat.Encodable
 
 /-!
 # Chronicle-to-Countermodel Integration (Phase 5)
@@ -67,6 +69,106 @@ open Bimodal.Theorems.Combinators
 open Bimodal.Theorems.Perpetuity
 open Bimodal.Metalogic.BXCanonical
 open Classical
+
+/-! ## Limit Domain Subtype and Typeclass Instances
+
+The subtype `{q : Rat // q ∈ limit_dom A h_mcs}` inherits `LinearOrder` from `Rat`.
+We prove the five typeclass prerequisites for `Order.iso_of_countable_dense`:
+`Countable`, `DenselyOrdered`, `NoMinOrder`, `NoMaxOrder`, `Nonempty`.
+-/
+
+/-- The limit domain as a subtype of the rationals. -/
+abbrev LimitDomSubtype (A : Set Formula) (h_mcs : SetMaximalConsistent A) :=
+  {q : Rat // q ∈ limit_dom A h_mcs}
+
+/--
+`LimitDomSubtype` is countable: `limit_dom` is a countable union of finite sets
+(each `omega_chain_val(n).dom` is a `Finset Rat`).
+-/
+instance limitDomSubtype_countable (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    Countable (LimitDomSubtype A h_mcs) :=
+  Subtype.countable
+
+/--
+`LimitDomSubtype` is densely ordered: from the sorry-free `limit_dom_dense`.
+-/
+instance limitDomSubtype_denselyOrdered (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    DenselyOrdered (LimitDomSubtype A h_mcs) where
+  dense := by
+    intro ⟨a, ha⟩ ⟨b, hb⟩ hab
+    obtain ⟨z, hz, haz, hzb⟩ := limit_dom_dense A h_mcs a b ha hb hab
+    exact ⟨⟨z, hz⟩, haz, hzb⟩
+
+/--
+Helper: for any x in `limit_dom`, there exists y > x in `limit_dom`.
+
+Proof: The seriality axiom `serial_future` gives `F(top)` in every MCS.
+Since `limit_c0` assigns an MCS to x, we have `F(top) ∈ limit_f(x)`.
+Then `limit_F_resolution` produces y > x in `limit_dom`.
+-/
+theorem limit_dom_no_max (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x : Rat) (hx : x ∈ limit_dom A h_mcs) :
+    ∃ y ∈ limit_dom A h_mcs, x < y := by
+  have h_mcs_x := limit_c0 A h_mcs x hx
+  -- top = bot.imp bot is a theorem, hence in every MCS
+  have h_top : (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
+    theorem_in_mcs h_mcs_x (Bimodal.Theorems.Combinators.identity Formula.bot)
+  -- serial_future: top -> F(top)
+  have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
+    SetMaximalConsistent.implication_property h_mcs_x
+      (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.serial_future)) h_top
+  -- limit_F_resolution gives y > x in limit_dom
+  obtain ⟨y, hy, hxy, _⟩ := limit_F_resolution A h_mcs x hx _ h_F_top
+  exact ⟨y, hy, hxy⟩
+
+/--
+Helper: for any x in `limit_dom`, there exists y < x in `limit_dom`.
+
+Proof: The seriality axiom `serial_past` gives `P(top)` in every MCS.
+Since `limit_c0` assigns an MCS to x, we have `P(top) ∈ limit_f(x)`.
+Then `limit_P_resolution` produces y < x in `limit_dom`.
+-/
+theorem limit_dom_no_min (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x : Rat) (hx : x ∈ limit_dom A h_mcs) :
+    ∃ y ∈ limit_dom A h_mcs, y < x := by
+  have h_mcs_x := limit_c0 A h_mcs x hx
+  -- top = bot.imp bot is a theorem, hence in every MCS
+  have h_top : (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
+    theorem_in_mcs h_mcs_x (Bimodal.Theorems.Combinators.identity Formula.bot)
+  -- serial_past: top -> P(top)
+  have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ limit_f A h_mcs x :=
+    SetMaximalConsistent.implication_property h_mcs_x
+      (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.serial_past)) h_top
+  -- limit_P_resolution gives y < x in limit_dom
+  obtain ⟨y, hy, hyx, _⟩ := limit_P_resolution A h_mcs x hx _ h_P_top
+  exact ⟨y, hy, hyx⟩
+
+/--
+`LimitDomSubtype` has no maximum element: from seriality + `limit_F_resolution`.
+-/
+instance limitDomSubtype_noMaxOrder (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    NoMaxOrder (LimitDomSubtype A h_mcs) where
+  exists_gt := by
+    intro ⟨a, ha⟩
+    obtain ⟨y, hy, hay⟩ := limit_dom_no_max A h_mcs a ha
+    exact ⟨⟨y, hy⟩, hay⟩
+
+/--
+`LimitDomSubtype` has no minimum element: from seriality + `limit_P_resolution`.
+-/
+instance limitDomSubtype_noMinOrder (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    NoMinOrder (LimitDomSubtype A h_mcs) where
+  exists_lt := by
+    intro ⟨a, ha⟩
+    obtain ⟨y, hy, hya⟩ := limit_dom_no_min A h_mcs a ha
+    exact ⟨⟨y, hy⟩, hya⟩
+
+/--
+`LimitDomSubtype` is nonempty: from `zero_mem_limit_dom`.
+-/
+instance limitDomSubtype_nonempty (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    Nonempty (LimitDomSubtype A h_mcs) :=
+  ⟨⟨0, zero_mem_limit_dom A h_mcs⟩⟩
 
 /-! ## Chronicle FMCS Construction
 

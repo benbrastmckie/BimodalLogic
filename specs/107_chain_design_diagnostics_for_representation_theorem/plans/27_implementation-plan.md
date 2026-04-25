@@ -102,7 +102,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Prove limit_dom Typeclass Instances [NOT STARTED]
+### Phase 1: Prove limit_dom Typeclass Instances [COMPLETED]
 
 **Goal**: Establish the typeclass prerequisites for `Order.iso_of_countable_dense` on `limit_dom` as a subtype of the rationals.
 
@@ -189,33 +189,31 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Investigate A4a Derivability and Lemma 2.6 Proof Strategy [NOT STARTED]
+### Phase 4: Investigate A4a Derivability and Lemma 2.6 Proof Strategy [COMPLETED]
 
 **Goal**: Determine whether axiom A4a (`U(p,q) AND NOT U(p,r) -> U(q AND NOT r, q)`) is derivable from BX axioms. If yes, Burgess's Lemma 2.6 proof can be used directly. If not, design an alternative seed consistency argument using BX5/BX6/BX7.
 
-**Tasks**:
-- [ ] Paper-proof attempt: derive A4a from BX5 (self_accum_until), BX6 (absorb_until), BX7 (linear_until), BX9 (until_elim), BX10 (until_F)
-  - Key idea: BX5 gives `(pUq) -> ((p AND pUq) U q)`. BX7 gives linearity. Try to derive the splitting.
-- [ ] If A4a is derivable: formalize the derivation in Lean as `theorem a4a_from_bx : ...`
-- [ ] If A4a is NOT derivable: design alternative seed S = {neg gamma} union B union extra formulas
-  - Use `r3Maximal_neg_of_not_mem` (sorry-free): delta not in B implies delta.neg in B
-  - Use `dcs_neg_union_consistent` (sorry-free): {neg delta} union B is consistent
-  - Extend to full seed using R3Maximality of B
-- [ ] Document the chosen proof strategy in a short note for Phase 5
-- [ ] Run lake build (no sorry changes expected in this phase)
+**Results**:
+- [x] A4a is NOT derivable from BX (not sound under strict semantics, while all BX axioms are)
+- [x] Key discovery: R3Maximal forces B to be an MCS (r3Relation monotone in B via r3Relation_subset)
+- [x] Proved `R3Maximal_is_mcs`, `mcs_no_proper_dcs_extension`, `rRelation_self_mcs`, `rRelationSince_self_mcs`
+- [x] Closed `lemma_2_6_full` sorry-free (D=B'=B''=B since B is MCS, neg(delta) by negation completeness)
+- [x] lake build passes (1066 jobs), PointInsertion.lean sorry-free, sorry count -1
 
-**Timing**: 2 hours
+**Strategy for Phase 5**: C4/C4' hard cases apply `lemma_2_6_full` directly. Since R3Maximal forces B to be MCS, the decomposition is trivial.
+
+**Timing**: 1 hour (actual, vs 2 estimated -- key discovery simplified everything)
 
 **Depends on**: Phase 0 (only needs existing infrastructure, independent of Cantor iso)
 
-**Files to modify**:
-- `Chronicle/PointInsertion.lean` -- A4a derivation attempt or alternative seed design (may add helper lemmas)
-- Possibly `Theorems/` -- if A4a derivation goes in the general theorem library
+**Files modified**:
+- `Chronicle/PointInsertion.lean` -- 4 helper theorems + lemma_2_6_full proof (was sorry)
 
 **Verification**:
-- Clear determination: A4a derivable (with proof) or not (with counterexample/argument)
-- If derivable: `a4a_from_bx` compiles sorry-free
-- If not: alternative seed strategy documented and paper-proved
+- [x] A4a NOT derivable (semantic argument: not sound under strict semantics)
+- [x] Alternative: R3Maximal_is_mcs collapses the problem
+- [x] `lemma_2_6_full` compiles sorry-free
+- [x] lake build passes
 
 ---
 
