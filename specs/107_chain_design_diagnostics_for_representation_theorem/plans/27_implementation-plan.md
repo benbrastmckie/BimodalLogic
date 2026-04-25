@@ -197,7 +197,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Proper limit_g and restricted_fuc Closure [NOT STARTED]
+### Phase 5: Proper limit_g and restricted_fuc Closure [BLOCKED]
 
 **Goal**: Replace the placeholder `limit_g` with the correct definition and close the 2 restricted_fuc sorry sites (ChronicleToCountermodel.lean:964,968).
 
