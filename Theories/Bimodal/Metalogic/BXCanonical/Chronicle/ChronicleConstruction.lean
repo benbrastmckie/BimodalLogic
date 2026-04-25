@@ -112,14 +112,6 @@ theorem singleton_invariant {A : Set Formula} (h_mcs : SetMaximalConsistent A) :
     intro x y z hx hy hz hxy hyz
     simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
     subst hx; subst hy; exact absurd hxy (lt_irrefl _)
-  hg_ord := by
-    intro x hx y hy hxy
-    simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
-    subst hx; subst hy; exact absurd hxy (lt_irrefl _)
-  hh_ord := by
-    intro x hx y hy hyx
-    simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
-    subst hx; subst hy; exact absurd hyx (lt_irrefl _)
 
 /--
 The singleton chronicle satisfies C4 vacuously: a singleton domain has no
@@ -785,128 +777,82 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
 
 /-! ## Forward_G / Backward_H for Domain Points
 
-The key coherence properties for the truth lemma. Under the correct
-Burgess architecture, these follow from C4 + C0 (consistency), NOT from
-g_content chain propagation.
+The key coherence properties for the truth lemma (ParametricTruthLemma.lean).
+The FMCS structure requires forward_G as a field (it IS an input to the
+truth lemma, not a consequence).
 
-**Forward_G argument** (from C4 + C0):
-  G(φ) ∈ f(x) means ¬(⊤ U ¬φ) ∈ f(x) (since G = ¬F¬ = ¬(⊤ U ¬·)).
-  Suppose φ ∉ f(y) for some y > x in limit_dom. Then ¬φ ∈ f(y) (MCS).
-  And ⊤ ∈ f(y) (theorem).
-  By GENERALIZED C4: ¬(⊤ U ¬φ) ∈ f(x) and ⊤ ∈ f(y) implies
-  ∃ z with x < z < y and ¬(¬φ) ∈ f(z), i.e., φ^{nn} ∈ f(z).
+**Analysis of proof strategies** (Task 107, plan v11):
 
-  Wait -- this only gives double-negation of φ at z, not a contradiction.
-  The correct argument uses the FULL C4 for non-adjacent pairs, which in
-  the limit says: for ALL x < y (not just adjacent), ¬(γ U δ) ∈ f(x)
-  and γ ∈ f(y) implies ∃z with ¬δ ∈ f(z).
+1. **C4 + C0 argument** (from plan): Works for ADJACENT pairs under the
+   correct C4 (Burgess C4a). With G(φ) = ¬(⊤ U ¬φ), C4 checks EVENT (¬φ)
+   at f(y) and negates GUARD (⊤) at f(z), producing ⊥ which contradicts C0.
+   **Obstruction**: At the limit, the domain is dense (no adjacent pairs),
+   so adjacent-pair C4 is vacuously true. "Generalized C4" for non-adjacent
+   pairs requires chaining through intermediate points, but the omega chain
+   construction does not guarantee g_content propagation at intermediate
+   points under strict semantics.
 
-  From ¬(⊤ U ¬φ) ∈ f(x): by MCS, (⊤ U ¬φ) ∉ f(x), i.e., F(¬φ) ∉ f(x)
-  (since F(α) = ⊤ U α up to BX12). So ¬F(¬φ) ∈ f(x), i.e., G(φ) ∈ f(x).
-  We need: for all y > x, φ ∈ f(y).
+2. **g_ordered invariant** (plan v10): Maintain g_ordered as a ChronicleInvariant
+   field. **Obstruction**: Density insertion uses f(z) = f(left_neighbor), and
+   under strict semantics G(φ) ∈ f(z) does NOT imply φ ∈ f(z) (no T axiom).
+   So g_ordered is broken by density insertion.
 
-  The CORRECT argument: G(φ) ∈ f(x). Suppose ¬φ ∈ f(y) for y > x.
-  Then φ ∉ f(y), but G(φ) → G(G(φ)) (temp_4) → by C5 of the limit,
-  there exists a witness for G(φ) propagation... This is getting circular.
+3. **g_prop elimination**: The omega chain enumerates and eliminates g_prop
+   counterexamples. **Obstruction**: g_prop elimination inserts new points
+   with g_content but never changes f values at existing points. A point y
+   whose f(y) lacks φ will never get φ added to f(y).
 
-  The ACTUAL correct path (Burgess): The truth lemma for G uses C3 + C5,
-  NOT forward_G directly. G(φ) = ¬(⊤ U ¬φ). The truth lemma for
-  ¬(⊤ U ¬φ) says: for all future witnesses y of ⊤ U ¬φ, there exists z
-  with ¬(¬φ) ∈ f(z). By C4 completeness of the limit, this z exists.
-  So no witness y can satisfy ⊤ U ¬φ, hence (⊤ U ¬φ) is false, hence
-  G(φ) is true at x.
+4. **Duality** (h_content_sub_imp_g_content_sub): forward_G follows from
+   backward_H and vice versa. But both are equally blocked.
 
-  In other words: forward_G is a CONSEQUENCE of the truth lemma, not an
-  INPUT to it. The truth lemma for Until handles G via the G = ¬F¬ encoding.
-
-**Current status**: These remain sorry'd until the omega chain tracks C4
-(Phase 4) and the limit C4 is proved (Phase 5). The sorry here is
-CORRECTLY SCOPED -- it captures the real dependency on C4 completeness
-of the limit, not the wrong dependency on g_content propagation.
-
-**Dependency graph** (corrected):
-  C4 completeness of limit (Phase 5)
-  → limit_forward_G, limit_backward_H
-  → chronicle_fmcs.forward_G/backward_H
-  → box_stable_in_chronicle_fmcs
-  → dd_countermodel_chronicle
+**Resolution** requires restructuring the construction. Candidate approaches:
+- Seed every new point from g_content of ALL left neighbors (not just one)
+- Use non-dense finite construction + Cantor isomorphism
+- Remove forward_G from FMCS, route through truth lemma for Until
 -/
-
-/--
-g_ordered at every stage of the omega chain: for all x < y in dom_n,
-g_content(f_n(x)) ⊆ f_n(y). This is maintained because every new point gets
-f(y) from a seed containing g_content of a prior domain point.
-
-TODO: prove by induction on the omega chain. Currently sorry'd.
--/
-theorem omega_chain_g_ordered (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
-    ∀ x ∈ (omega_chain_val A h_mcs n).dom,
-    ∀ y ∈ (omega_chain_val A h_mcs n).dom,
-    x < y → g_content ((omega_chain_val A h_mcs n).f x) ⊆ (omega_chain_val A h_mcs n).f y := by
-  sorry
-
-/--
-h_ordered at every stage: mirror of g_ordered for past direction.
--/
-theorem omega_chain_h_ordered (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
-    ∀ x ∈ (omega_chain_val A h_mcs n).dom,
-    ∀ y ∈ (omega_chain_val A h_mcs n).dom,
-    y < x → h_content ((omega_chain_val A h_mcs n).f x) ⊆ (omega_chain_val A h_mcs n).f y := by
-  sorry
 
 /--
 Forward_G for domain points: G(φ) ∈ limit_f(x) and x < y implies φ ∈ limit_f(y).
 
-Proof: G(φ) ∈ limit_f(x) = f_n(x) for some n. y ∈ dom_m for some m.
-At stage N = max(n, m): both x, y in dom_N. By omega_chain_g_ordered,
-g_content(f_N(x)) ⊆ f_N(y). Since G(φ) ∈ f_N(x) (by f-agreement),
-φ ∈ g_content(f_N(x)) ⊆ f_N(y) = limit_f(y) (by f-agreement).
+**Status**: Sorry. This is the primary remaining blocker for the representation theorem.
+
+**Key insight (C4 + C0 argument for adjacent pairs)**: With the correct C4 (Burgess C4a),
+for ADJACENT x < y: if G(φ) = ¬(⊤ U ¬φ) ∈ f(x) and ¬φ ∈ f(y), then C4 gives
+∃ z with ⊤.neg = ⊥ ∈ f(z), contradicting C0. So ¬φ ∉ f(y), hence φ ∈ f(y).
+
+**Obstruction for dense domains**: At the limit, the domain is dense (no adjacent pairs),
+so C4 is vacuously true but gives no information. The "generalized C4" for non-adjacent
+pairs requires establishing C4 transitively through intermediate points, but the omega
+chain construction does not guarantee g_content propagation at every intermediate point
+under strict semantics (density insertion uses f(z) = f(left_neighbor), and G(φ) ∈ f(z)
+does NOT imply φ ∈ f(z) without the T axiom).
+
+**Duality**: By `h_content_sub_imp_g_content_sub`, forward_G follows from backward_H
+(and vice versa via the dual). But both are equally blocked.
+
+**Resolution options**:
+1. Restructure the omega chain to seed every new point from g_content of ALL left neighbors
+2. Use a non-dense construction (finite stages only) and extend to dense via Cantor iso
+3. Change FMCS to not require forward_G as a field (route through truth lemma differently)
 -/
 theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hxy : x < y) (φ : Formula) (h_G : Formula.all_future φ ∈ limit_f A h_mcs x) :
     φ ∈ limit_f A h_mcs y := by
-  obtain ⟨nx, hnx⟩ := hx
-  obtain ⟨ny, hny⟩ := hy
-  set N := max nx ny with hN_def
-  have hx_N := omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
-  have hy_N := omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
-  -- G(φ) ∈ f_N(x) by f-agreement
-  have h_G_N : Formula.all_future φ ∈ (omega_chain_val A h_mcs N).f x := by
-    rw [omega_chain_f_agrees_le A h_mcs (le_max_left nx ny) x hnx]
-    rwa [← limit_f_eq A h_mcs x nx hnx]
-  -- φ ∈ g_content(f_N(x))
-  have h_phi_g : φ ∈ g_content ((omega_chain_val A h_mcs N).f x) := h_G_N
-  -- g_content(f_N(x)) ⊆ f_N(y) by omega_chain_g_ordered
-  have h_g_sub := omega_chain_g_ordered A h_mcs N x hx_N y hy_N hxy
-  -- φ ∈ f_N(y)
-  have h_phi_y := h_g_sub h_phi_g
-  -- f_N(y) = f_ny(y) = limit_f(y) by f-agreement
-  rw [limit_f_eq A h_mcs y ny hny]
-  rwa [← omega_chain_f_agrees_le A h_mcs (le_max_right nx ny) y hny]
+  sorry
 
 /--
 Backward_H for domain points (dual of forward_G).
-
 H(φ) ∈ limit_f(x) and y < x implies φ ∈ limit_f(y).
+
+**Status**: Sorry. Dual of forward_G; same obstruction applies.
+See `limit_forward_G` documentation for analysis and resolution options.
 -/
 theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hyx : y < x) (φ : Formula) (h_H : Formula.all_past φ ∈ limit_f A h_mcs x) :
     φ ∈ limit_f A h_mcs y := by
-  obtain ⟨nx, hnx⟩ := hx
-  obtain ⟨ny, hny⟩ := hy
-  set N := max nx ny with hN_def
-  have hx_N := omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
-  have hy_N := omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
-  have h_H_N : Formula.all_past φ ∈ (omega_chain_val A h_mcs N).f x := by
-    rw [omega_chain_f_agrees_le A h_mcs (le_max_left nx ny) x hnx]
-    rwa [← limit_f_eq A h_mcs x nx hnx]
-  have h_phi_h : φ ∈ h_content ((omega_chain_val A h_mcs N).f x) := h_H_N
-  have h_h_sub := omega_chain_h_ordered A h_mcs N x hx_N y hy_N hyx
-  have h_phi_y := h_h_sub h_phi_h
-  rw [limit_f_eq A h_mcs y ny hny]
-  rwa [← omega_chain_f_agrees_le A h_mcs (le_max_right nx ny) y hny]
+  sorry
 
 /-! ## Claim 2.11: Truth Claim
 

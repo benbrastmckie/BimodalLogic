@@ -199,8 +199,11 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
 /-! ## C4/C4' Counterexample Structures -/
 
 /--
-A **C4 counterexample** for a chronicle: adjacent points x < y with
-`¬(γ U δ) ∈ f(x)` and `γ ∈ f(y)`, but no intermediate z in dom with `¬δ ∈ f(z)`.
+A **C4 counterexample** for a chronicle (Burgess C4a): adjacent points x < y with
+`¬(γ U δ) ∈ f(x)` and `δ ∈ f(y)` (EVENT at y), but no intermediate z in dom
+with `¬γ ∈ f(z)` (negated GUARD at z).
+
+In `untl γ δ`: γ = GUARD, δ = EVENT.
 -/
 structure C4Counterexample (χ : Chronicle) where
   x : Rat
@@ -211,12 +214,15 @@ structure C4Counterexample (χ : Chronicle) where
   γ : Formula
   δ : Formula
   neg_until_mem : (Formula.untl γ δ).neg ∈ χ.f x
-  guard_mem : γ ∈ χ.f y
-  no_witness : ¬∃ z ∈ χ.dom, x < z ∧ z < y ∧ δ.neg ∈ χ.f z
+  event_mem : δ ∈ χ.f y
+  no_witness : ¬∃ z ∈ χ.dom, x < z ∧ z < y ∧ γ.neg ∈ χ.f z
 
 /--
-A **C4' counterexample** (Since mirror): adjacent points y < x with
-`¬(γ S δ) ∈ f(x)` and `γ ∈ f(y)`, but no intermediate z with `¬δ ∈ f(z)`.
+A **C4' counterexample** (Since mirror, Burgess C4b): adjacent points y < x with
+`¬(γ S δ) ∈ f(x)` and `δ ∈ f(y)` (EVENT at y), but no intermediate z
+with `¬γ ∈ f(z)` (negated GUARD at z).
+
+In `snce γ δ`: γ = GUARD, δ = EVENT.
 -/
 structure C4'Counterexample (χ : Chronicle) where
   x : Rat
@@ -227,27 +233,21 @@ structure C4'Counterexample (χ : Chronicle) where
   γ : Formula
   δ : Formula
   neg_since_mem : (Formula.snce γ δ).neg ∈ χ.f x
-  guard_mem : γ ∈ χ.f y
-  no_witness : ¬∃ z ∈ χ.dom, y < z ∧ z < x ∧ δ.neg ∈ χ.f z
+  event_mem : δ ∈ χ.f y
+  no_witness : ¬∃ z ∈ χ.dom, y < z ∧ z < x ∧ γ.neg ∈ χ.f z
 
 /-! ## Lemma 2.9: C4 Counterexample Elimination -/
 
 /--
-**Lemma 2.9** (C4 Counterexample Elimination): Given a chronicle satisfying C0
-and a C4 counterexample (x, y, gamma, delta), eliminate it by inserting a new
-point z = (x + y) / 2 between x and y with `¬δ ∈ f(z)`.
+**Lemma 2.9** (C4 Counterexample Elimination, Burgess C4a): Given a chronicle
+satisfying C0 and a C4 counterexample (x, y, γ, δ), eliminate it by inserting
+a new point z = (x + y) / 2 between x and y with `¬γ ∈ f(z)` (negated GUARD).
 
-The proof proceeds by case analysis on MCS negation completeness:
+With the correct C4 (check EVENT δ at f(y), negate GUARD γ at f(z)):
 
-- If `¬δ ∈ f(x)`: assign f(z) = f(x), which is already an MCS with ¬δ.
-- If `δ ∈ f(x)` but `¬δ ∈ f(y)`: assign f(z) = f(y).
-- If `δ ∈ f(x)` and `δ ∈ f(y)`: requires an independent MCS with ¬δ.
-  This sub-case needs g_content(f(x)) ⊆ f(y) (from C3) to derive
-  G(δ) ∉ f(x), enabling `lemma_2_6`. The full proof is deferred to
-  Phase 5 when the omega-chain tracks C3 invariants.
-
-The construction preserves C0 (every point maps to an MCS) and ensures
-f agreement on all old domain points.
+- If `¬γ ∈ f(x)`: assign f(z) = f(x), which already has ¬γ.
+- If `γ ∈ f(x)` but `¬γ ∈ f(y)`: assign f(z) = f(y).
+- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires Lemma 2.6 (Phase 2).
 -/
 noncomputable def eliminate_C4_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
@@ -256,7 +256,7 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       χ.dom ⊆ χ'.dom ∧
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
       χ'.c0 ∧
-      (∃ z ∈ χ'.dom, ce.x < z ∧ z < ce.y ∧ ce.δ.neg ∈ χ'.f z) ∧
+      (∃ z ∈ χ'.dom, ce.x < z ∧ z < ce.y ∧ ce.γ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom := by
   -- Step 1: Get the midpoint z = (x + y) / 2, which is not in dom
   -- since x and y are adjacent (no domain points strictly between them).
@@ -267,20 +267,18 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
   have hz_notin : z ∉ χ.dom := by
     intro h_mem
     exact ce.adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
-  -- Step 2: Find an MCS D containing ¬δ.
-  -- By MCS negation completeness: either δ ∈ f(x) or ¬δ ∈ f(x).
+  -- Step 2: Find an MCS D containing ¬γ (negated GUARD).
+  -- By MCS negation completeness: either γ ∈ f(x) or ¬γ ∈ f(x).
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_mcs_y := h_c0 ce.y ce.y_mem
-  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.δ with h_δ_x | h_neg_δ_x
-  · -- Case 1: δ ∈ f(x). Check f(y) for ¬δ.
-    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.δ with h_δ_y | h_neg_δ_y
-    · -- Sub-case 1a: δ ∈ f(x) and δ ∈ f(y). Both endpoints contain δ.
-      -- Resolution requires ChronicleInvariant (C2'): R3Maximal(f(x), g(x,y), f(y))
-      -- gives r3Maximal_neg_of_not_mem when δ ∉ g(x,y). The sub-case δ ∈ g(x,y)
-      -- requires the full Lemma 2.6 richer seed. Both paths need C2' which is
-      -- maintained by the omega chain (Phase 4). Deferred.
+  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ with h_γ_x | h_neg_γ_x
+  · -- Case 1: γ ∈ f(x). Check f(y) for ¬γ.
+    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
+    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Both endpoints contain γ (GUARD).
+      -- Hard case: requires R3Maximality (C2') and Lemma 2.6 richer seed.
+      -- Deferred to Phase 2.
       sorry
-    · -- Sub-case 1b: δ ∈ f(x) and ¬δ ∈ f(y). Use D = f(y).
+    · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
         Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
       · intro x hx
@@ -294,8 +292,8 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
           simp only [h_ne, ite_false]; exact h_c0 x hx
       · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
         simp only [ite_true]
-        exact h_neg_δ_y
-  · -- Case 2: ¬δ ∈ f(x). Use D = f(x).
+        exact h_neg_γ_y
+  · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
     refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
       Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
     · -- f agrees on old points
@@ -309,15 +307,18 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       · simp only [ite_true]; exact h_mcs_x
       · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
         simp only [h_ne, ite_false]; exact h_c0 x hx
-    · -- Witness: z is between x and y with ¬δ ∈ f'(z) = f(x)
+    · -- Witness: z is between x and y with ¬γ ∈ f'(z) = f(x)
       refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
       simp only [ite_true]
-      exact h_neg_δ_x
+      exact h_neg_γ_x
 
 /--
-**Lemma 2.9'** (C4' Counterexample Elimination): Mirror of Lemma 2.9 for Since.
-Same case structure: two cases fully proven (¬δ ∈ f(x) or ¬δ ∈ f(y)),
-one sub-case (δ ∈ both f(x) and f(y)) deferred to Phase 5.
+**Lemma 2.9'** (C4' Counterexample Elimination, Burgess C4b): Mirror of Lemma 2.9
+for Since. Insert z between y and x with `¬γ ∈ f(z)` (negated GUARD).
+
+- If `¬γ ∈ f(x)`: assign f(z) = f(x).
+- If `γ ∈ f(x)` but `¬γ ∈ f(y)`: assign f(z) = f(y).
+- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case (Phase 2).
 -/
 noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
@@ -326,7 +327,7 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       χ.dom ⊆ χ'.dom ∧
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
       χ'.c0 ∧
-      (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.δ.neg ∈ χ'.f z) ∧
+      (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.γ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom := by
   -- Mirror of C4 elimination for Since direction.
   -- Adjacent(dom, y, x) means y < x with no domain points between them.
@@ -339,14 +340,15 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
     exact ce.adj.2.2.2 z h_mem ⟨hy_lt_z, hz_lt_x⟩
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_mcs_y := h_c0 ce.y ce.y_mem
-  -- Case split on δ ∈ f(x) vs ¬δ ∈ f(x), then on f(y).
-  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.δ with h_δ_x | h_neg_δ_x
-  · -- Case 1: δ ∈ f(x). Check f(y).
-    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.δ with h_δ_y | h_neg_δ_y
-    · -- Sub-case 1a: δ ∈ f(x) and δ ∈ f(y). Mirror of C4 hard case.
-      -- Resolution requires ChronicleInvariant (C2'). See C4 case discussion.
+  -- Case split on γ ∈ f(x) vs ¬γ ∈ f(x), then on f(y).
+  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ with h_γ_x | h_neg_γ_x
+  · -- Case 1: γ ∈ f(x). Check f(y).
+    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
+    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Mirror of C4 hard case.
+      -- Hard case: requires R3Maximality (C2') and Lemma 2.6.
+      -- Deferred to Phase 2.
       sorry
-    · -- Sub-case 1b: δ ∈ f(x) and ¬δ ∈ f(y). Use D = f(y).
+    · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
         Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
       · intro x hx
@@ -360,8 +362,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
           simp only [h_ne, ite_false]; exact h_c0 x hx
       · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
         simp only [ite_true]
-        exact h_neg_δ_y
-  · -- Case 2: ¬δ ∈ f(x). Use D = f(x).
+        exact h_neg_γ_y
+  · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
     refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
       Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
     · intro x hx
@@ -375,7 +377,7 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
         simp only [h_ne, ite_false]; exact h_c0 x hx
     · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
       simp only [ite_true]
-      exact h_neg_δ_x
+      exact h_neg_γ_x
 
 /-! ## G-Propagation Counterexample Elimination
 
@@ -528,7 +530,8 @@ be a C4/C4'/C5/C5' counterexample depending on the current chronicle state.
 
 - For C5/C5' counterexamples: only `x`, `ξ`, `η` are relevant; `y` is ignored.
 - For C4/C4' counterexamples: both `x` and `y` identify the adjacent pair,
-  `γ = ξ` is the guard formula, and `δ = η` is the eventuality formula.
+  `γ = ξ` is the GUARD formula, and `δ = η` is the EVENT formula.
+  C4 checks EVENT (η) at f(y) and negates GUARD (ξ) at f(z).
 -/
 structure PotentialCounterexample where
   x : Rat
@@ -639,15 +642,15 @@ noncomputable def eliminate_potential_counterexample
                 exact ⟨y, hy_dom, hy_lt, hy_η⟩
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c4_forward =>
-    -- Forward C4 case
+    -- Forward C4 case (corrected Burgess C4a: check EVENT η at f(y), negate GUARD ξ at f(z))
     by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
         Adjacent χ.dom pc.x pc.y ∧
         (Formula.untl pc.ξ pc.η).neg ∈ χ.f pc.x ∧
-        pc.ξ ∈ χ.f pc.y ∧
-        ¬∃ z ∈ χ.dom, pc.x < z ∧ z < pc.y ∧ pc.η.neg ∈ χ.f z
-    · obtain ⟨h_xm, h_ym, h_adj, h_neg_until, h_guard, h_no_wit⟩ := h_actual
+        pc.η ∈ χ.f pc.y ∧
+        ¬∃ z ∈ χ.dom, pc.x < z ∧ z < pc.y ∧ pc.ξ.neg ∈ χ.f z
+    · obtain ⟨h_xm, h_ym, h_adj, h_neg_until, h_event, h_no_wit⟩ := h_actual
       have ce : C4Counterexample χ :=
-        ⟨pc.x, pc.y, h_xm, h_ym, h_adj, pc.ξ, pc.η, h_neg_until, h_guard, h_no_wit⟩
+        ⟨pc.x, pc.y, h_xm, h_ym, h_adj, pc.ξ, pc.η, h_neg_until, h_event, h_no_wit⟩
       have h_elim := eliminate_C4_counterexample h_c0 ce
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
@@ -666,15 +669,15 @@ noncomputable def eliminate_potential_counterexample
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c4_backward =>
-    -- Backward C4' case
+    -- Backward C4' case (corrected Burgess C4b: check EVENT η at f(y), negate GUARD ξ at f(z))
     by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
         Adjacent χ.dom pc.y pc.x ∧
         (Formula.snce pc.ξ pc.η).neg ∈ χ.f pc.x ∧
-        pc.ξ ∈ χ.f pc.y ∧
-        ¬∃ z ∈ χ.dom, pc.y < z ∧ z < pc.x ∧ pc.η.neg ∈ χ.f z
-    · obtain ⟨h_xm, h_ym, h_adj, h_neg_since, h_guard, h_no_wit⟩ := h_actual
+        pc.η ∈ χ.f pc.y ∧
+        ¬∃ z ∈ χ.dom, pc.y < z ∧ z < pc.x ∧ pc.ξ.neg ∈ χ.f z
+    · obtain ⟨h_xm, h_ym, h_adj, h_neg_since, h_event, h_no_wit⟩ := h_actual
       have ce : C4'Counterexample χ :=
-        ⟨pc.x, pc.y, h_xm, h_ym, h_adj, pc.ξ, pc.η, h_neg_since, h_guard, h_no_wit⟩
+        ⟨pc.x, pc.y, h_xm, h_ym, h_adj, pc.ξ, pc.η, h_neg_since, h_event, h_no_wit⟩
       have h_elim := eliminate_C4'_counterexample h_c0 ce
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
