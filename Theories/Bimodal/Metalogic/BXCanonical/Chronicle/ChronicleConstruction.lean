@@ -565,6 +565,68 @@ theorem limit_P_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   -- Apply C5'_weak
   exact limit_satisfies_c5'_weak A h_mcs x hx _ φ h_since
 
+/-! ## Limit Domain Density
+
+The limit domain is dense: between any two domain points there exists another.
+This follows from the density counterexample enumeration: for any adjacent pair
+(x, y) in dom_n, the density counterexample ⟨x, y, bot, bot, .density⟩ is
+eventually processed, inserting z = (x+y)/2.
+
+Density makes C4/C4' vacuously true at the limit (no adjacent pairs exist),
+which is the key to proving forward_G and backward_H.
+-/
+
+/--
+The limit domain is dense: for any x < y in limit_dom, there exists z in
+limit_dom with x < z < y.
+
+Proof: x enters dom at stage n₀, y at stage m₀. At stage max(n₀, m₀), both
+are in the domain. The density counterexample ⟨x, y, bot, bot, .density⟩ is
+enumerated at some step n ≥ max(n₀, m₀). At step n+1, if x and y are adjacent
+in dom_n, z = (x+y)/2 is inserted. If not adjacent, some w already exists
+between them in dom_n ⊆ limit_dom.
+-/
+theorem limit_dom_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
+    (hxy : x < y) :
+    ∃ z ∈ limit_dom A h_mcs, x < z ∧ z < y := by
+  -- Get stages where x and y enter the domain
+  obtain ⟨nx, hnx⟩ := hx
+  obtain ⟨ny, hny⟩ := hy
+  set n₀ := max nx ny with hn₀_def
+  have hx_n₀ : x ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
+  have hy_n₀ : y ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
+  -- At stage n₀, either x and y are adjacent or there's already a point between them
+  -- Find step n ≥ n₀ where density counterexample ⟨x, y, bot, bot, .density⟩ is processed
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, y, Formula.bot, Formula.bot, .density⟩ n₀
+  -- At step n, x and y are still in the domain
+  have hx_n : x ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hx_n₀
+  have hy_n : y ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hy_n₀
+  -- The elimination result at step n+1 uses the density_witness field
+  set pc := counterexample_enum (Nat.unpair n).2 with hpc_def
+  set result := eliminate_potential_counterexample
+    (omega_chain_val A h_mcs n)
+    (omega_chain_c0 A h_mcs n)
+    pc with hresult_def
+  -- Extract key properties from the pc = ⟨x, y, bot, bot, .density⟩ encoding
+  have h_kind : pc.kind = .density := by rw [hn_eq]
+  have h_pc_x : pc.x = x := by rw [hn_eq]
+  have h_pc_y : pc.y = y := by rw [hn_eq]
+  have h_mem_x : pc.x ∈ (omega_chain_val A h_mcs n).dom := h_pc_x ▸ hx_n
+  have h_mem_y : pc.y ∈ (omega_chain_val A h_mcs n).dom := h_pc_y ▸ hy_n
+  have h_lt : pc.x < pc.y := h_pc_x ▸ h_pc_y ▸ hxy
+  -- Use the density_witness field of the elimination result
+  obtain ⟨z, hz_dom, hxz, hzy⟩ := result.density_witness h_kind h_mem_x h_mem_y h_lt
+  -- omega_chain_val(n+1) = result.val
+  have h_step : omega_chain_val A h_mcs (n + 1) = result.val := rfl
+  exact ⟨z, ⟨n + 1, h_step ▸ hz_dom⟩, h_pc_x ▸ hxz, h_pc_y ▸ hzy⟩
+
+
 /-! ## Limit Interval Function
 
 The limit interval function assigns a deductively closed set to each pair

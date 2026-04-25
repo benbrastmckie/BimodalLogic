@@ -186,7 +186,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: ChronicleInvariant + Modified Omega Chain [NOT STARTED]
+### Phase 4: ChronicleInvariant + Modified Omega Chain [PARTIAL]
 
 **Goal**: Implement ChronicleInvariant bundle, modify C4/C5 elimination to track g values, rebuild the omega chain to maintain C0/C1/C2'/C3 at every stage. Add density counterexamples to the enumeration.
 
