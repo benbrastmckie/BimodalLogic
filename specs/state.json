@@ -614,13 +614,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-25T16:37:10Z",
+      "last_updated": "2026-04-25T16:43:12Z",
       "researched": "2026-04-25T16:37:10Z",
       "related_tasks": [
         93
@@ -764,11 +764,6 @@
           "summary": "Three blockers resolved: A6a=BX6 (notation swap), forward_G from C4+C0, Cantor iso for non-domain. A4a needs verification."
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/23_implementation-plan.md",
-          "type": "plan",
-          "summary": "v10: 8 phases, 30h. Three-way C3 + A6a=BX6 + forward_G from C4+C0 + Cantor iso. All blockers resolved."
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/23_implementation-summary.md",
           "type": "summary",
           "summary": "Phase 2 partial: ChronicleInvariant + Burgess r-relation + Lemma 2.5 absorption (sorry-free). g_content_chain_property DELETED."
@@ -782,9 +777,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/25_team-research.md",
           "type": "report",
           "summary": "BREAKTHROUGH: C4 definition has arguments swapped. Correct C4 gives forward_G in one step. g_ordered unnecessary."
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/25_implementation-plan.md",
+          "type": "plan",
+          "summary": "v11: C4 definition fix, delete g_ordered, 6 phases, 18h"
         }
       ],
-      "session_id": "sess_1777132417_a3f143",
+      "session_id": "sess_1777135085_f03aa5",
       "started": "2026-04-25T03:59:11Z"
     }
   ],
