@@ -293,30 +293,35 @@ def Chronicle.c3 (χ : Chronicle) : Prop :=
   ∀ x y z : Rat, x ∈ χ.dom → y ∈ χ.dom → z ∈ χ.dom →
     x < y → y < z → χ.g x z = χ.g x y ∩ χ.f y ∩ χ.g y z
 
-/-- **C4**: Backward counterexample condition for Until (Burgess 1982).
-For all x, y in dom with x < y adjacent: if `¬(γ U δ) ∈ f(x)` and `γ ∈ f(y)`,
-then there exists z in dom with `x < z < y` and `¬δ ∈ f(z)`.
+/-- **C4**: Backward counterexample condition for Until (Burgess 1982, C4a).
+For all x, y in dom with x < y adjacent: if `¬(γ U δ) ∈ f(x)` and `δ ∈ f(y)`,
+then there exists z in dom with `x < z < y` and `¬γ ∈ f(z)`.
 
-Intuition: If Until(γ,δ) is false at x but the guard γ still holds at the next
-point y, then the negation of the eventuality δ must be witnessed somewhere
-between x and y. This is the "backward counterexample" condition: from the
-perspective of y looking backward, we need evidence that δ failed. -/
+In `untl γ δ`: γ is the GUARD, δ is the EVENT.
+Burgess C4a checks the EVENT (δ) at f(y) and negates the GUARD (γ) at f(z).
+
+Intuition: If Until(γ,δ) is false at x but the eventuality δ holds at the next
+point y, then the guard γ must have failed somewhere between x and y --
+otherwise γ would hold throughout [x,y) and δ at y, satisfying Until. -/
 def Chronicle.c4 (χ : Chronicle) : Prop :=
   ∀ x y : Rat, Adjacent χ.dom x y →
     ∀ (γ δ : Formula),
       (Formula.untl γ δ).neg ∈ χ.f x →
-      γ ∈ χ.f y →
-      ∃ z ∈ χ.dom, x < z ∧ z < y ∧ δ.neg ∈ χ.f z
+      δ ∈ χ.f y →
+      ∃ z ∈ χ.dom, x < z ∧ z < y ∧ γ.neg ∈ χ.f z
 
-/-- **C4'**: Backward counterexample condition for Since (mirror of C4).
-For all x, y in dom with y < x adjacent: if `¬(γ S δ) ∈ f(x)` and `γ ∈ f(y)`,
-then there exists z in dom with `y < z < x` and `¬δ ∈ f(z)`. -/
+/-- **C4'**: Backward counterexample condition for Since (mirror of C4, Burgess C4b).
+For all x, y in dom with y < x adjacent: if `¬(γ S δ) ∈ f(x)` and `δ ∈ f(y)`,
+then there exists z in dom with `y < z < x` and `¬γ ∈ f(z)`.
+
+In `snce γ δ`: γ is the GUARD, δ is the EVENT.
+Checks EVENT (δ) at f(y), negates GUARD (γ) at f(z). -/
 def Chronicle.c4' (χ : Chronicle) : Prop :=
   ∀ x y : Rat, Adjacent χ.dom y x →
     ∀ (γ δ : Formula),
       (Formula.snce γ δ).neg ∈ χ.f x →
-      γ ∈ χ.f y →
-      ∃ z ∈ χ.dom, y < z ∧ z < x ∧ δ.neg ∈ χ.f z
+      δ ∈ χ.f y →
+      ∃ z ∈ χ.dom, y < z ∧ z < x ∧ γ.neg ∈ χ.f z
 
 /-- **C5**: Forward Until witness condition.
 For x in dom: if `gamma U delta in f(x)`, then there exists y in dom
@@ -434,17 +439,6 @@ structure ChronicleInvariant (χ : Chronicle) : Prop where
   hc2' : χ.c2'
   /-- C3: Three-way interval decomposition -/
   hc3 : χ.c3
-  /-- g_ordered: g_content chain ordering (forward G-propagation).
-  For all x < y in dom, G(phi) in f(x) implies phi in f(y).
-  This is essential for the truth lemma: the FMCS forward_G field at the
-  limit is derived from this invariant. Maintained by construction:
-  every new point y gets f(y) from a seed containing g_content(f(x))
-  for the relevant prior domain point x. -/
-  hg_ord : ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, x < y → g_content (χ.f x) ⊆ χ.f y
-  /-- h_ordered: h_content chain ordering (backward H-propagation).
-  For all y < x in dom, H(phi) in f(x) implies phi in f(y).
-  Mirror of g_ordered for the past direction. -/
-  hh_ord : ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, y < x → h_content (χ.f x) ⊆ χ.f y
 
 /-! ## g_content Chain Ordering (DEPRECATED)
 

@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Fix C4/C4' Definitions and Delete g_ordered [NOT STARTED]
+### Phase 1: Fix C4/C4' Definitions and Delete g_ordered [COMPLETED]
 
 **Goal**: Swap the C4/C4' definitions to match Burgess 1982 and remove g_ordered/h_ordered from ChronicleInvariant.
 
@@ -139,7 +139,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove forward_G/backward_H from Correct C4 + C0 [NOT STARTED]
+### Phase 3: Prove forward_G/backward_H from Correct C4 + C0 [BLOCKED]
 
 **Goal**: Prove that G(phi) in f(x) implies phi in f(y) for all x < y in the limit domain, using the correct C4 + C0 contradiction argument. This replaces the deleted g_ordered approach entirely.
 
