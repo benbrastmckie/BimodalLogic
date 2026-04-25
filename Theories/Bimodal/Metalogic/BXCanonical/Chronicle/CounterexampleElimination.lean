@@ -314,9 +314,61 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
   · -- Case 1: γ ∈ f(x). Check f(y) for ¬γ.
     rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
     · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Both endpoints contain γ (GUARD).
-      -- Hard case: requires R3Maximality (C2') and Lemma 2.6 richer seed.
-      -- Deferred to Phase 2.
-      sorry
+      -- Strategy: split on G(γ) ∈ f(x), then H(γ) ∈ f(y).
+      -- If G(γ) ∉ f(x): F(¬γ) ∈ f(x), seed {¬γ} ∪ g_content(f(x)) consistent.
+      -- If H(γ) ∉ f(y): P(¬γ) ∈ f(y), seed {¬γ} ∪ h_content(f(y)) consistent.
+      rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ.all_future with h_Gγ_x | h_nGγ_x
+      · -- G(γ) ∈ f(x). Check H(γ) ∈ f(y).
+        rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ.all_past with h_Hγ_y | h_nHγ_y
+        · -- G(γ) ∈ f(x) and H(γ) ∈ f(y). Genuinely hard sub-case.
+          -- Requires guard-strengthening for Until (not available in BX without A4a).
+          -- This case is contradictory in any sound model (G(γ) at x with x < y
+          -- means γ everywhere between x and y, but ¬(γ U δ) at x with δ at y
+          -- requires ¬γ somewhere between). Resolving syntactically needs
+          -- additional axioms or g_ordered invariant from the omega chain.
+          sorry
+        · -- G(γ) ∈ f(x) but H(γ) ∉ f(y). Use P(¬γ) ∈ f(y) via P_neg_of_H_not.
+          have h_Hγ_not : ce.γ.all_past ∉ χ.f ce.y :=
+            SetMaximalConsistent.neg_excludes h_mcs_y _ h_nHγ_y
+          have h_P_neg := P_neg_of_H_not h_mcs_y ce.γ h_Hγ_not
+          have h_seed := past_temporal_witness_seed_consistent (χ.f ce.y) h_mcs_y ce.γ.neg h_P_neg
+          obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
+          have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+          refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
+            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+          · intro x hx
+            have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+            exact if_neg h_ne
+          · intro x hx
+            simp only [Finset.mem_insert] at hx
+            rcases hx with rfl | hx
+            · simp only [ite_true]; exact h_D_mcs
+            · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+              simp only [h_ne, ite_false]; exact h_c0 x hx
+          · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
+            simp only [ite_true]
+            exact h_neg_γ_D
+      · -- G(γ) ∉ f(x). Use F(¬γ) ∈ f(x) via F_neg_of_G_not.
+        have h_Gγ_not : ce.γ.all_future ∉ χ.f ce.x :=
+          SetMaximalConsistent.neg_excludes h_mcs_x _ h_nGγ_x
+        have h_F_neg := F_neg_of_G_not h_mcs_x ce.γ h_Gγ_not
+        have h_seed := forward_temporal_witness_seed_consistent (χ.f ce.x) h_mcs_x ce.γ.neg h_F_neg
+        obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
+        have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+        refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
+          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+        · intro x hx
+          have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+          exact if_neg h_ne
+        · intro x hx
+          simp only [Finset.mem_insert] at hx
+          rcases hx with rfl | hx
+          · simp only [ite_true]; exact h_D_mcs
+          · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+            simp only [h_ne, ite_false]; exact h_c0 x hx
+        · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
+          simp only [ite_true]
+          exact h_neg_γ_D
     · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
         Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
@@ -378,9 +430,55 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
   · -- Case 1: γ ∈ f(x). Check f(y).
     rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
     · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Mirror of C4 hard case.
-      -- Hard case: requires R3Maximality (C2') and Lemma 2.6.
-      -- Deferred to Phase 2.
-      sorry
+      -- Strategy: split on H(γ) at f(x), then G(γ) at f(y).
+      rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ.all_past with h_Hγ_x | h_nHγ_x
+      · -- H(γ) ∈ f(x). Check G(γ) ∈ f(y).
+        rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ.all_future with h_Gγ_y | h_nGγ_y
+        · -- H(γ) ∈ f(x) and G(γ) ∈ f(y). Genuinely hard sub-case (mirror).
+          -- See C4 hard case comment: requires A4a-equivalent or g_ordered.
+          sorry
+        · -- H(γ) ∈ f(x) but G(γ) ∉ f(y). Use F(¬γ) ∈ f(y) via F_neg_of_G_not.
+          have h_Gγ_not : ce.γ.all_future ∉ χ.f ce.y :=
+            SetMaximalConsistent.neg_excludes h_mcs_y _ h_nGγ_y
+          have h_F_neg := F_neg_of_G_not h_mcs_y ce.γ h_Gγ_not
+          have h_seed := forward_temporal_witness_seed_consistent (χ.f ce.y) h_mcs_y ce.γ.neg h_F_neg
+          obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
+          have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+          refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
+            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+          · intro x hx
+            have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+            exact if_neg h_ne
+          · intro x hx
+            simp only [Finset.mem_insert] at hx
+            rcases hx with rfl | hx
+            · simp only [ite_true]; exact h_D_mcs
+            · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+              simp only [h_ne, ite_false]; exact h_c0 x hx
+          · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
+            simp only [ite_true]
+            exact h_neg_γ_D
+      · -- H(γ) ∉ f(x). Use P(¬γ) ∈ f(x) via P_neg_of_H_not.
+        have h_Hγ_not : ce.γ.all_past ∉ χ.f ce.x :=
+          SetMaximalConsistent.neg_excludes h_mcs_x _ h_nHγ_x
+        have h_P_neg := P_neg_of_H_not h_mcs_x ce.γ h_Hγ_not
+        have h_seed := past_temporal_witness_seed_consistent (χ.f ce.x) h_mcs_x ce.γ.neg h_P_neg
+        obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
+        have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+        refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
+          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+        · intro x hx
+          have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+          exact if_neg h_ne
+        · intro x hx
+          simp only [Finset.mem_insert] at hx
+          rcases hx with rfl | hx
+          · simp only [ite_true]; exact h_D_mcs
+          · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+            simp only [h_ne, ite_false]; exact h_c0 x hx
+        · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
+          simp only [ite_true]
+          exact h_neg_γ_D
     · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
         Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩

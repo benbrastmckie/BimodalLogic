@@ -265,6 +265,161 @@ noncomputable def cantor_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       ((cantor_iso A h_mcs).symm t').property
       h_lt_dom φ h_H
 
+/-! ## Shifted Cantor FMCS
+
+The shifted version places the root MCS at an arbitrary time offset s,
+using `cantor_zero` to compute where 0 maps in the Cantor isomorphism.
+-/
+
+/--
+Shifted cantor FMCS: places the root MCS at time offset s.
+The time translation uses `cantor_zero` to find where the chronicle's
+origin (0 in limit_dom) maps in the Cantor domain.
+-/
+noncomputable def shifted_cantor_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (s : Rat) : FMCS Rat where
+  mcs t := (cantor_fmcs A h_mcs).mcs (t - s)
+  is_mcs t := (cantor_fmcs A h_mcs).is_mcs (t - s)
+  forward_G t t' φ h_lt h_G := (cantor_fmcs A h_mcs).forward_G (t - s) (t' - s) φ
+    (by exact sub_lt_sub_right h_lt s) h_G
+  backward_H t t' φ h_lt h_H := (cantor_fmcs A h_mcs).backward_H (t - s) (t' - s) φ
+    (by exact sub_lt_sub_right h_lt s) h_H
+
+/--
+The shifted cantor FMCS at offset s has mcs(s) = cantor_f(0).
+Since cantor_f(0) = limit_f(cantor_iso.symm(0).val), which is NOT necessarily A
+(the root MCS lives at cantor_zero, not 0).
+
+For the root to be at time s, we shift by `s - cantor_zero` so that
+`mcs(s) = cantor_f(s - (s - cantor_zero)) = cantor_f(cantor_zero) = A`.
+-/
+theorem shifted_cantor_fmcs_at_root (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (s : Rat) :
+    (shifted_cantor_fmcs A h_mcs (s - cantor_zero A h_mcs)).mcs s = A := by
+  simp [shifted_cantor_fmcs, sub_sub_cancel]
+  exact cantor_f_at_zero A h_mcs
+
+/--
+Convenience: shifted_cantor_fmcs with the correct offset to place root at s.
+This is `shifted_cantor_fmcs A h_mcs (s - cantor_zero A h_mcs)`.
+-/
+noncomputable def rooted_cantor_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (s : Rat) : FMCS Rat :=
+  shifted_cantor_fmcs A h_mcs (s - cantor_zero A h_mcs)
+
+/--
+The rooted cantor FMCS at s has mcs(s) = A.
+-/
+theorem rooted_cantor_fmcs_at_s (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (s : Rat) : (rooted_cantor_fmcs A h_mcs s).mcs s = A :=
+  shifted_cantor_fmcs_at_root A h_mcs s
+
+/-! ## Box Stability (Cantor-based)
+
+Box formulas are stable along the cantor FMCS: Box φ ∈ cantor_fmcs(t) iff Box φ ∈ A.
+This is sorry-free because cantor_fmcs.forward_G and backward_H are sorry-free.
+-/
+
+/--
+Box stability for rooted_cantor_fmcs: Box φ ∈ rooted_cantor_fmcs(t) ↔ Box φ ∈ A.
+-/
+theorem box_stable_in_rooted_cantor_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (φ : Formula) (s t : Rat) :
+    Formula.box φ ∈ (rooted_cantor_fmcs A h_mcs s).mcs t ↔
+    Formula.box φ ∈ A := by
+  -- rooted_cantor_fmcs.mcs t = cantor_fmcs.mcs (t - (s - cantor_zero))
+  -- cantor_fmcs.mcs q = cantor_f q = limit_f(iso.symm(q).val) for all q
+  -- At cantor_zero: cantor_f(cantor_zero) = A
+  have h_at_root : (cantor_fmcs A h_mcs).mcs (cantor_zero A h_mcs) = A :=
+    cantor_f_at_zero A h_mcs
+  -- Helper: propagate Box from any point to cantor_zero (hence to A)
+  have box_to_A : ∀ q, Formula.box φ ∈ (cantor_fmcs A h_mcs).mcs q → Formula.box φ ∈ A := by
+    intro q h_box
+    have h_mcs_q := (cantor_fmcs A h_mcs).is_mcs q
+    have h_bb := SetMaximalConsistent.implication_property h_mcs_q
+      (theorem_in_mcs h_mcs_q (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box
+    rcases lt_trichotomy q (cantor_zero A h_mcs) with hq | rfl | hq
+    · have h_G := SetMaximalConsistent.implication_property h_mcs_q
+        (theorem_in_mcs h_mcs_q (Bimodal.Theorems.Perpetuity.box_to_future (Formula.box φ))) h_bb
+      have := (cantor_fmcs A h_mcs).forward_G q (cantor_zero A h_mcs) (Formula.box φ) hq h_G
+      rwa [h_at_root] at this
+    · rwa [h_at_root] at h_box
+    · have h_H := SetMaximalConsistent.implication_property h_mcs_q
+        (theorem_in_mcs h_mcs_q (Bimodal.Theorems.Perpetuity.box_to_past (Formula.box φ))) h_bb
+      have := (cantor_fmcs A h_mcs).backward_H q (cantor_zero A h_mcs) (Formula.box φ) hq h_H
+      rwa [h_at_root] at this
+  -- Helper: propagate Box from A (hence cantor_zero) to any point
+  have box_from_A : ∀ q, Formula.box φ ∈ A → Formula.box φ ∈ (cantor_fmcs A h_mcs).mcs q := by
+    intro q h_box_A
+    have h_box_cz : Formula.box φ ∈ (cantor_fmcs A h_mcs).mcs (cantor_zero A h_mcs) := by
+      rw [h_at_root]; exact h_box_A
+    have h_mcs_cz := (cantor_fmcs A h_mcs).is_mcs (cantor_zero A h_mcs)
+    have h_bb := SetMaximalConsistent.implication_property h_mcs_cz
+      (theorem_in_mcs h_mcs_cz (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box_cz
+    rcases lt_trichotomy q (cantor_zero A h_mcs) with hq | rfl | hq
+    · have h_H := SetMaximalConsistent.implication_property h_mcs_cz
+        (theorem_in_mcs h_mcs_cz (Bimodal.Theorems.Perpetuity.box_to_past (Formula.box φ))) h_bb
+      exact (cantor_fmcs A h_mcs).backward_H (cantor_zero A h_mcs) q (Formula.box φ) hq h_H
+    · exact h_box_cz
+    · have h_G := SetMaximalConsistent.implication_property h_mcs_cz
+        (theorem_in_mcs h_mcs_cz (Bimodal.Theorems.Perpetuity.box_to_future (Formula.box φ))) h_bb
+      exact (cantor_fmcs A h_mcs).forward_G (cantor_zero A h_mcs) q (Formula.box φ) hq h_G
+  -- Main result: shift the q argument
+  exact ⟨box_to_A _, box_from_A _⟩
+
+/-! ## Cantor-Based BFMCS Construction
+
+Build a BFMCS Rat using rooted_cantor_fmcs families,
+one for each box-equivalent MCS. This is sorry-free for forward_G/backward_H.
+-/
+
+/--
+The cantor-based BFMCS: a bundle of rooted cantor FMCS families,
+one for each box-equivalent MCS.
+-/
+noncomputable def cantor_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
+    BFMCS Rat where
+  families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N) (s : Rat),
+    (∀ φ, Formula.box φ ∈ M₀ ↔ Formula.box φ ∈ N) ∧
+    fam = rooted_cantor_fmcs N h_N s }
+  nonempty := ⟨rooted_cantor_fmcs M₀ h₀ 0, M₀, h₀, 0, fun _ => Iff.rfl, rfl⟩
+  modal_forward := by
+    intro fam hfam φ t h_box fam' hfam'
+    obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
+    obtain ⟨N', h_N', s', h_eqN', rfl⟩ := hfam'
+    have h_box_M0 : Formula.box φ ∈ M₀ :=
+      (h_eqN φ).mpr ((box_stable_in_rooted_cantor_fmcs N h_N φ s t).mp h_box)
+    have h_box_t' : Formula.box φ ∈ (rooted_cantor_fmcs N' h_N' s').mcs t :=
+      (box_stable_in_rooted_cantor_fmcs N' h_N' φ s' t).mpr ((h_eqN' φ).mp h_box_M0)
+    exact SetMaximalConsistent.implication_property
+      ((rooted_cantor_fmcs N' h_N' s').is_mcs t)
+      (theorem_in_mcs ((rooted_cantor_fmcs N' h_N' s').is_mcs t)
+        (DerivationTree.axiom [] _ (Axiom.modal_t φ))) h_box_t'
+  modal_backward := by
+    intro fam hfam φ t h_all
+    obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
+    suffices h_box_M0 : Formula.box φ ∈ M₀ from
+      (box_stable_in_rooted_cantor_fmcs N h_N φ s t).mpr ((h_eqN φ).mp h_box_M0)
+    by_contra h_not_box
+    have h_neg_box : (Formula.box φ).neg ∈ M₀ := by
+      rcases SetMaximalConsistent.negation_complete h₀ (Formula.box φ) with h | h
+      · exact absurd h h_not_box
+      · exact h
+    have h_diamond_neg : (Formula.neg φ).diamond ∈ M₀ :=
+      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h₀
+        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
+    obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨M₀, h₀⟩ (Formula.neg φ) h_diamond_neg
+    have h_fam_v_mem : rooted_cantor_fmcs v.formulas v.is_mcs t ∈
+        { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N) (s : Rat),
+          (∀ ψ, Formula.box ψ ∈ M₀ ↔ Formula.box ψ ∈ N) ∧
+          fam = rooted_cantor_fmcs N h_N s } :=
+      ⟨v.formulas, v.is_mcs, t, fun ψ => h_equiv ψ, rfl⟩
+    have h_phi_v_t := h_all (rooted_cantor_fmcs v.formulas v.is_mcs t) h_fam_v_mem
+    rw [rooted_cantor_fmcs_at_s] at h_phi_v_t
+    exact set_consistent_not_both v.is_mcs.1 φ h_phi_v_t h_neg_phi_v
+  eval_family := rooted_cantor_fmcs M₀ h₀ 0
+  eval_family_mem := ⟨M₀, h₀, 0, fun _ => Iff.rfl, rfl⟩
+
 /-! ## Extended Limit Function (Legacy)
 
 The `extended_limit_f` construction below is retained for downstream definitions
@@ -614,10 +769,84 @@ theorem chronicle_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalCo
     intro t φ ψ _h_sub h_since
     sorry
 
+/-! ## Cantor-Based Restricted Coherence Conditions
+
+These are the three conditions needed by the parametric representation
+theorem, using cantor_bfmcs (sorry-free FMCS/BFMCS) instead of chronicle_bfmcs.
+The temporal and Until/Since coherence still have sorry sites pending
+the chronicle C5/C5' transfer through the Cantor isomorphism.
+-/
+
+/--
+Restricted temporal coherence for the cantor BFMCS.
+
+F(φ) ∈ fam.mcs(t) → ∃ s > t, φ ∈ fam.mcs(s) and symmetric for P.
+The Cantor isomorphism makes all rationals domain points, so
+limit_F_resolution/limit_P_resolution apply directly after transferring
+through cantor_iso.symm.
+-/
+theorem cantor_bfmcs_restricted_tc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (root : Formula)
+    (h_sub : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList) :
+    (cantor_bfmcs M₀ h₀).restricted_temporally_coherent root := by
+  intro fam hfam
+  obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
+  constructor
+  · -- Forward F-resolution: F(φ) ∈ mcs(t) → ∃ s' > t, φ ∈ mcs(s')
+    intro t φ _h_dc h_F
+    -- h_F : F(φ) ∈ (rooted_cantor_fmcs N h_N s).mcs t
+    --      = F(φ) ∈ cantor_f N h_N (t - (s - cantor_zero N h_N))
+    --      = F(φ) ∈ limit_f N h_N (cantor_iso.symm(t - offset).val)
+    -- cantor_iso.symm(t - offset) is in limit_dom, so limit_F_resolution gives
+    -- a witness y > cantor_iso.symm(t - offset) in limit_dom with φ ∈ limit_f(y)
+    -- Then cantor_iso(y) is a rational with cantor_iso(y) > t - offset,
+    -- so cantor_iso(y) + offset > t in the shifted FMCS.
+    sorry
+  · -- Backward P-resolution: mirror of forward case
+    intro t φ _h_dc h_P
+    sorry
+
+/--
+Restricted backward Until/Since coherence for the cantor BFMCS.
+-/
+theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (root : Formula) :
+    (cantor_bfmcs M₀ h₀).restricted_backward_until_since_coherent root := by
+  intro fam hfam
+  obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
+  constructor
+  · -- Backward Until: witness pattern → U(φ,ψ) ∈ mcs(t)
+    intro t φ ψ _h_sub ⟨s_wit, h_lt, h_ψ, h_guard⟩
+    sorry
+  · -- Backward Since: witness pattern → S(φ,ψ) ∈ mcs(t)
+    intro t φ ψ _h_sub ⟨s_wit, h_lt, h_ψ, h_guard⟩
+    sorry
+
+/--
+Restricted forward Until/Since coherence for the cantor BFMCS.
+-/
+theorem cantor_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
+    (root : Formula) :
+    (cantor_bfmcs M₀ h₀).restricted_forward_until_since_coherent root := by
+  intro fam hfam
+  obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
+  constructor
+  · -- Forward Until: U(φ,ψ) ∈ mcs(t) → ∃ s > t, ψ ∈ mcs(s) ∧ guard
+    intro t φ ψ _h_sub h_until
+    sorry
+  · -- Forward Since: S(φ,ψ) ∈ mcs(t) → ∃ s < t, ψ ∈ mcs(s) ∧ guard
+    intro t φ ψ _h_sub h_since
+    sorry
+
 /-! ## Chronicle-Based Countermodel
 
 The main integration theorem: constructs a countermodel from any MCS
-containing ¬φ, using the chronicle instead of the Int chain.
+containing ¬φ, using the Cantor-based chronicle construction.
+
+This uses `cantor_bfmcs` (sorry-free FMCS/BFMCS) instead of `chronicle_bfmcs`
+(which had sorry'd forward_G/backward_H from the extended_limit_f approach).
+The remaining sorry sites are in the restricted coherence conditions
+(temporal F/P resolution, Until/Since coherence).
 -/
 
 /--
@@ -625,11 +854,13 @@ Chronicle-based countermodel construction.
 
 Given an MCS M containing ¬φ, build a countermodel over Rat where φ is false.
 This replaces `dd_countermodel` from RootScopedChain.lean, bypassing the
-three sorry sites for temporal/Until/Since coherence.
+sorry sites for forward_G/backward_H coherence entirely (those are now
+sorry-free via the Cantor isomorphism).
 
-The proof structure mirrors `dd_countermodel` but uses `chronicle_bfmcs`
-(which goes through the Burgess chronicle) instead of `bx_bfmcs`
-(which goes through the schedule-based Int chain).
+The remaining sorry sites are:
+- `cantor_bfmcs_restricted_tc`: F/P resolution (needs C5 transfer)
+- `cantor_bfmcs_restricted_buc`: backward Until/Since coherence
+- `cantor_bfmcs_restricted_fuc`: forward Until/Since coherence (needs C5 transfer)
 -/
 theorem dd_countermodel_chronicle (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_neg_in : φ.neg ∈ M) :
@@ -640,22 +871,22 @@ theorem dd_countermodel_chronicle (M : Set Formula) (h_mcs : SetMaximalConsisten
       ¬truth_at TM Omega τ t φ := by
   refine ⟨Rat, inferInstance, inferInstance, inferInstance, inferInstance,
     ParametricCanonicalTaskFrame Rat, ParametricCanonicalTaskModel Rat,
-    ShiftClosedParametricCanonicalOmega (chronicle_bfmcs M h_mcs),
+    ShiftClosedParametricCanonicalOmega (cantor_bfmcs M h_mcs),
     shiftClosedParametricCanonicalOmega_is_shift_closed _,
-    parametric_to_history (shifted_chronicle_fmcs M h_mcs 0),
+    parametric_to_history (rooted_cantor_fmcs M h_mcs 0),
     parametricCanonicalOmega_subset_shiftClosed _
-      ⟨shifted_chronicle_fmcs M h_mcs 0,
+      ⟨rooted_cantor_fmcs M h_mcs 0,
        ⟨M, h_mcs, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
     0, ?_⟩
-  have h_neg_fam : φ.neg ∈ (shifted_chronicle_fmcs M h_mcs 0).mcs 0 := by
-    rw [shifted_chronicle_fmcs_at_s]; exact h_neg_in
+  have h_neg_fam : φ.neg ∈ (rooted_cantor_fmcs M h_mcs 0).mcs 0 := by
+    rw [rooted_cantor_fmcs_at_s]; exact h_neg_in
   exact fully_restricted_parametric_representation_from_neg_membership
-    (chronicle_bfmcs M h_mcs) φ
-    (chronicle_bfmcs_restricted_tc M h_mcs φ
+    (cantor_bfmcs M h_mcs) φ
+    (cantor_bfmcs_restricted_tc M h_mcs φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (chronicle_bfmcs_restricted_buc M h_mcs φ)
-    (chronicle_bfmcs_restricted_fuc M h_mcs φ)
+    (cantor_bfmcs_restricted_buc M h_mcs φ)
+    (cantor_bfmcs_restricted_fuc M h_mcs φ)
     φ (self_mem_subformulaClosure φ)
-    (shifted_chronicle_fmcs M h_mcs 0) ⟨M, h_mcs, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
+    (rooted_cantor_fmcs M h_mcs 0) ⟨M, h_mcs, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
