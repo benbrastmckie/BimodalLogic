@@ -103,10 +103,6 @@ theorem singleton_invariant {A : Set Formula} (h_mcs : SetMaximalConsistent A) :
     intro x y hx hy hxy
     simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
     subst hx; subst hy; exact absurd hxy (lt_irrefl _)
-  hc2 := by
-    intro x y hx hy hxy
-    simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
-    subst hx; subst hy; exact absurd hxy (lt_irrefl _)
   hc2' := by
     intro x y hadj
     obtain ⟨hx, hy, hxy, _⟩ := hadj
