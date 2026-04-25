@@ -598,7 +598,51 @@ theorem dcs_neg_union_consistent {S : Set Formula} (h_dcs : SetDeductivelyClosed
     -- we can weaken from L_filtered to L (adding φ.neg back won't help, but
     -- φ.neg ∈ S or φ.neg ∉ S doesn't matter because we derive φ.neg.neg).
     -- Actually, let's just sorry this step and focus on the structure.
-    sorry
+    -- From d_imp (L ⊢ φ.neg.neg) and DNE, derive L ⊢ φ
+    have h_dne : DerivationTree [] (φ.neg.neg.imp φ) :=
+      Bimodal.Theorems.Propositional.double_negation φ
+    have d_phi : DerivationTree L φ :=
+      DerivationTree.modus_ponens L φ.neg.neg φ
+        (DerivationTree.weakening [] L (φ.neg.neg.imp φ) h_dne (List.nil_subset L)) d_imp
+    -- Let M = L.filter (· ≠ φ.neg), the S-elements of L
+    set M := L.filter (fun x => !decide (x = φ.neg)) with hM_def
+    have hM_sub_S : ∀ ψ ∈ M, ψ ∈ S := by
+      intro ψ hψ; rw [hM_def] at hψ
+      have h_mem := List.mem_filter.mp hψ
+      have h1 : ψ ∈ L := h_mem.1
+      have h2 : ψ ≠ φ.neg := by simp at h_mem; exact h_mem.2
+      rcases hL ψ h1 with h_sing | h_S
+      · exact absurd (Set.mem_singleton_iff.mp h_sing) h2
+      · exact h_S
+    have hL_sub : L ⊆ φ.neg :: M := by
+      intro x hx
+      by_cases heq : x = φ.neg
+      · subst heq; exact .head M
+      · exact .tail _ (List.mem_filter.mpr ⟨hx, by simp; exact heq⟩)
+    have d_phi_w : DerivationTree (φ.neg :: M) φ :=
+      DerivationTree.weakening L (φ.neg :: M) φ d_phi hL_sub
+    have d_neg_imp : DerivationTree M (φ.neg.imp φ) :=
+      deduction_theorem M φ.neg φ d_phi_w
+    -- Peirce: [] ⊢ (φ.neg → φ) → φ
+    have h_peirce : DerivationTree [] ((φ.neg.imp φ).imp φ) := by
+      have s1 : DerivationTree [φ.neg, φ.neg.imp φ] φ :=
+        DerivationTree.modus_ponens [φ.neg, φ.neg.imp φ] φ.neg φ
+          (DerivationTree.assumption _ (φ.neg.imp φ) (by simp))
+          (DerivationTree.assumption _ φ.neg (by simp))
+      have s2 : DerivationTree [φ.neg, φ.neg.imp φ] Formula.bot :=
+        DerivationTree.modus_ponens [φ.neg, φ.neg.imp φ] φ Formula.bot
+          (DerivationTree.assumption _ φ.neg (by simp)) s1
+      have s3 := deduction_theorem [φ.neg.imp φ] φ.neg Formula.bot s2
+      have s4 : DerivationTree [φ.neg.imp φ] φ :=
+        DerivationTree.modus_ponens [φ.neg.imp φ] φ.neg.neg φ
+          (DerivationTree.weakening [] [φ.neg.imp φ] (φ.neg.neg.imp φ) h_dne (List.nil_subset _)) s3
+      exact deduction_theorem [] (φ.neg.imp φ) φ s4
+    -- MP: M ⊢ φ
+    have d_phi_M : DerivationTree M φ :=
+      DerivationTree.modus_ponens M (φ.neg.imp φ) φ
+        (DerivationTree.weakening [] M ((φ.neg.imp φ).imp φ) h_peirce (List.nil_subset M)) d_neg_imp
+    -- DCS closure: M ⊆ S and M ⊢ φ gives φ ∈ S
+    exact h_dcs.2 M φ hM_sub_S d_phi_M
   · -- φ.neg ∉ L, so all elements of L are in S
     have hL_S : ∀ ψ ∈ L, ψ ∈ S := by
       intro ψ hψ
@@ -609,6 +653,50 @@ theorem dcs_neg_union_consistent {S : Set Formula} (h_dcs : SetDeductivelyClosed
         exact absurd (this ▸ hψ) h_neg_in_L
       · exact h_S
     exact absurd (h_dcs.1 L hL_S ⟨d⟩) (not_false)
+
+/-! ## R3Maximal Negation Completeness
+
+Key property: R3Maximal DCS have a weak form of negation completeness.
+If δ ∉ B and R3Maximal(A, B, C), then ¬δ ∈ B.
+
+This follows from maximality: if ¬δ ∉ B, then {¬δ} ∪ B is consistent
+(by dcs_neg_union_consistent since δ ∉ B), and deductiveClosure({¬δ} ∪ B)
+properly extends B while preserving r3Relation(A, -, C). This contradicts
+the maximality of B.
+-/
+
+/--
+**R3Maximal negation completeness**: If B is R3Maximal(A, B, C) and δ ∉ B,
+then δ.neg ∈ B.
+
+This is the key lemma that makes the C4 hard case provable: when
+R3Maximal(f(x), g(x,y), f(y)) and δ ∉ g(x,y), we get ¬δ ∈ g(x,y),
+which gives ¬δ at any intermediate point z (by C3: g(x,y) ⊆ f(z)).
+-/
+theorem r3Maximal_neg_of_not_mem {A B C : Set Formula}
+    (h_R3 : R3Maximal A B C) (δ : Formula) (h_not : δ ∉ B) :
+    δ.neg ∈ B := by
+  by_contra h_neg_not
+  -- ¬δ ∉ B and δ ∉ B. Show deductiveClosure({¬δ} ∪ B) properly extends B
+  -- and satisfies r3Relation, contradicting R3Maximal.
+  -- Step 1: {¬δ} ∪ B is consistent (since δ ∉ B and B is DCS)
+  have h_cons := dcs_neg_union_consistent h_R3.1 h_not
+  -- Step 2: deductiveClosure({¬δ} ∪ B) is a DCS
+  have h_dc_dcs := deductiveClosure_is_dcs h_cons
+  -- Step 3: B ⊆ deductiveClosure({¬δ} ∪ B)
+  have h_B_sub : B ⊆ deductiveClosure ({δ.neg} ∪ B) :=
+    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+  -- Step 4: ¬δ ∈ deductiveClosure({¬δ} ∪ B) but ¬δ ∉ B, so proper extension
+  have h_neg_in : δ.neg ∈ deductiveClosure ({δ.neg} ∪ B) :=
+    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton δ.neg))
+  have h_proper : B ⊂ deductiveClosure ({δ.neg} ∪ B) :=
+    ⟨h_B_sub, fun h_eq => h_neg_not (h_eq h_neg_in)⟩
+  -- Step 5: r3Relation(A, deductiveClosure({¬δ} ∪ B), C) holds
+  -- by monotonicity: B ⊆ ext and r3Relation(A, B, C)
+  have h_r3 : r3Relation A (deductiveClosure ({δ.neg} ∪ B)) C :=
+    r3Relation_subset h_R3.2.1 h_B_sub
+  -- Step 6: Contradiction with R3Maximal
+  exact h_R3.2.2 _ h_dc_dcs h_proper h_r3
 
 /-! ## Full Lemma 2.6: Three-Way Decomposition (Burgess 1982)
 

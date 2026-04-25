@@ -274,18 +274,11 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
   rcases SetMaximalConsistent.negation_complete h_mcs_x ce.δ with h_δ_x | h_neg_δ_x
   · -- Case 1: δ ∈ f(x). Check f(y) for ¬δ.
     rcases SetMaximalConsistent.negation_complete h_mcs_y ce.δ with h_δ_y | h_neg_δ_y
-    · -- Sub-case 1a: δ ∈ f(x) and δ ∈ f(y). Both contain δ.
-      -- We need an independent MCS with ¬δ. This requires ¬δ to be consistent,
-      -- which holds iff δ is not provable. From ¬(γ U δ) ∈ f(x) (an MCS),
-      -- we know f(x) is consistent and contains ¬(γ U δ). If δ were provable
-      -- (⊢ δ), then by temporal necessitation ⊢ G(δ), so G(δ) ∈ f(x).
-      -- This is consistent with ¬(γ U δ) ∈ f(x) in general, so we cannot
-      -- derive a contradiction. However, the Burgess omega-chain construction
-      -- maintains C3 (g_content(f(x)) ⊆ g(x,y) ⊆ f(y) for adjacent x < y),
-      -- which together with the r-relation structure prevents this sub-case
-      -- from arising: δ ∉ f(y) follows from C3 + ¬(γ U δ) ∈ f(x).
-      -- This sorry will be resolved when the full chronicle invariants are
-      -- propagated through the omega-chain (Phase 5+).
+    · -- Sub-case 1a: δ ∈ f(x) and δ ∈ f(y). Both endpoints contain δ.
+      -- Resolution requires ChronicleInvariant (C2'): R3Maximal(f(x), g(x,y), f(y))
+      -- gives r3Maximal_neg_of_not_mem when δ ∉ g(x,y). The sub-case δ ∈ g(x,y)
+      -- requires the full Lemma 2.6 richer seed. Both paths need C2' which is
+      -- maintained by the omega chain (Phase 4). Deferred.
       sorry
     · -- Sub-case 1b: δ ∈ f(x) and ¬δ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
@@ -351,7 +344,7 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
   · -- Case 1: δ ∈ f(x). Check f(y).
     rcases SetMaximalConsistent.negation_complete h_mcs_y ce.δ with h_δ_y | h_neg_δ_y
     · -- Sub-case 1a: δ ∈ f(x) and δ ∈ f(y). Mirror of C4 hard case.
-      -- See comment in eliminate_C4_counterexample for discussion.
+      -- Resolution requires ChronicleInvariant (C2'). See C4 case discussion.
       sorry
     · -- Sub-case 1b: δ ∈ f(x) and ¬δ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
