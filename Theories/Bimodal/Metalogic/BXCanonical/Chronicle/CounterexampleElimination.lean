@@ -105,6 +105,52 @@ theorem exists_rat_lt_finset (S : Finset Rat) :
     subst h
     exact ⟨0, fun s hs => absurd hs (Finset.not_mem_empty s), Finset.not_mem_empty 0⟩
 
+/--
+There exists a rational strictly between x and y that is NOT in a finite set S.
+Since S is finite and Q is dense, the open interval (x,y) is infinite while
+S ∩ (x,y) is finite, so there must be a point outside S.
+
+We construct it explicitly: take z = (x + y) / 2. If z ∉ S, done. Otherwise,
+the interval (x, z) still has no elements of S strictly between x and z that
+block finding a midpoint — but we use a simpler argument: among the finitely
+many points of S in [x,y], there must be a gap, and the midpoint of that gap
+works. We use the simpler approach: (x + y) / 2 works when Adjacent, and for
+the general case we find any gap in the finite set S within (x,y).
+-/
+theorem exists_rat_between_not_in_finset (S : Finset Rat) (x y : Rat) (hxy : x < y) :
+    ∃ z : Rat, x < z ∧ z < y ∧ z ∉ S := by
+  -- The set of S-elements strictly between x and y
+  set T := S.filter (fun s => x < s ∧ s < y) with hT_def
+  by_cases hT : T.Nonempty
+  · -- There are S-elements between x and y. Find the minimum, take midpoint with x.
+    set t := T.min' hT with ht_def
+    have ht_mem : t ∈ T := Finset.min'_mem T hT
+    have ht_prop : x < t ∧ t < y := by
+      rw [hT_def] at ht_mem; exact (Finset.mem_filter.mp ht_mem).2
+    -- z = (x + t) / 2 is strictly between x and t, hence between x and y
+    set z := (x + t) / 2 with hz_def
+    have hxz : x < z := by linarith
+    have hzt : z < t := by linarith
+    have hzy : z < y := lt_trans hzt ht_prop.2
+    refine ⟨z, hxz, hzy, ?_⟩
+    -- z ∉ S because z < t = min of S-elements in (x,y), and z > x
+    intro hz_mem
+    have hz_in_T : z ∈ T := by
+      rw [hT_def]; exact Finset.mem_filter.mpr ⟨hz_mem, hxz, hzy⟩
+    have : t ≤ z := Finset.min'_le T z hz_in_T
+    linarith
+  · -- No S-elements between x and y. Midpoint works.
+    rw [Finset.not_nonempty_iff_eq_empty] at hT
+    set z := (x + y) / 2 with hz_def
+    have hxz : x < z := by linarith
+    have hzy : z < y := by linarith
+    refine ⟨z, hxz, hzy, ?_⟩
+    intro hz_mem
+    have : z ∈ T := by
+      rw [hT_def]; exact Finset.mem_filter.mpr ⟨hz_mem, hxz, hzy⟩
+    rw [hT] at this
+    exact Finset.not_mem_empty z this
+
 /-! ## Lemma 2.10: C5 Counterexample Elimination -/
 
 /--
@@ -199,7 +245,7 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
 /-! ## C4/C4' Counterexample Structures -/
 
 /--
-A **C4 counterexample** for a chronicle (Burgess C4a): adjacent points x < y with
+A **C4 counterexample** for a chronicle (Burgess C4a): points x < y in dom with
 `¬(γ U δ) ∈ f(x)` and `δ ∈ f(y)` (EVENT at y), but no intermediate z in dom
 with `¬γ ∈ f(z)` (negated GUARD at z).
 
@@ -210,7 +256,7 @@ structure C4Counterexample (χ : Chronicle) where
   y : Rat
   x_mem : x ∈ χ.dom
   y_mem : y ∈ χ.dom
-  adj : Adjacent χ.dom x y
+  hxy : x < y
   γ : Formula
   δ : Formula
   neg_until_mem : (Formula.untl γ δ).neg ∈ χ.f x
@@ -218,7 +264,7 @@ structure C4Counterexample (χ : Chronicle) where
   no_witness : ¬∃ z ∈ χ.dom, x < z ∧ z < y ∧ γ.neg ∈ χ.f z
 
 /--
-A **C4' counterexample** (Since mirror, Burgess C4b): adjacent points y < x with
+A **C4' counterexample** (Since mirror, Burgess C4b): points y < x in dom with
 `¬(γ S δ) ∈ f(x)` and `δ ∈ f(y)` (EVENT at y), but no intermediate z
 with `¬γ ∈ f(z)` (negated GUARD at z).
 
@@ -229,7 +275,7 @@ structure C4'Counterexample (χ : Chronicle) where
   y : Rat
   x_mem : x ∈ χ.dom
   y_mem : y ∈ χ.dom
-  adj : Adjacent χ.dom y x
+  hyx : y < x
   γ : Formula
   δ : Formula
   neg_since_mem : (Formula.snce γ δ).neg ∈ χ.f x
@@ -258,15 +304,8 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, ce.x < z ∧ z < ce.y ∧ ce.γ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom := by
-  -- Step 1: Get the midpoint z = (x + y) / 2, which is not in dom
-  -- since x and y are adjacent (no domain points strictly between them).
-  set z := (ce.x + ce.y) / 2 with hz_def
-  have hxy := ce.adj.2.2.1  -- x < y
-  have hz_lt_y : z < ce.y := by linarith
-  have hx_lt_z : ce.x < z := by linarith
-  have hz_notin : z ∉ χ.dom := by
-    intro h_mem
-    exact ce.adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
+  -- Step 1: Find a fresh rational z between x and y, not in the finite domain.
+  obtain ⟨z, hx_lt_z, hz_lt_y, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.x ce.y ce.hxy
   -- Step 2: Find an MCS D containing ¬γ (negated GUARD).
   -- By MCS negation completeness: either γ ∈ f(x) or ¬γ ∈ f(x).
   have h_mcs_x := h_c0 ce.x ce.x_mem
@@ -330,14 +369,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.γ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom := by
   -- Mirror of C4 elimination for Since direction.
-  -- Adjacent(dom, y, x) means y < x with no domain points between them.
-  set z := (ce.y + ce.x) / 2 with hz_def
-  have hyx := ce.adj.2.2.1  -- y < x
-  have hz_lt_x : z < ce.x := by linarith
-  have hy_lt_z : ce.y < z := by linarith
-  have hz_notin : z ∉ χ.dom := by
-    intro h_mem
-    exact ce.adj.2.2.2 z h_mem ⟨hy_lt_z, hz_lt_x⟩
+  -- Find a fresh rational z between y and x, not in the finite domain.
+  obtain ⟨z, hy_lt_z, hz_lt_x, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.y ce.x ce.hyx
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_mcs_y := h_c0 ce.y ce.y_mem
   -- Case split on γ ∈ f(x) vs ¬γ ∈ f(x), then on f(y).
@@ -643,14 +676,15 @@ noncomputable def eliminate_potential_counterexample
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c4_forward =>
     -- Forward C4 case (corrected Burgess C4a: check EVENT η at f(y), negate GUARD ξ at f(z))
+    -- Now checks ALL pairs x < y, not just adjacent pairs.
     by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
-        Adjacent χ.dom pc.x pc.y ∧
+        pc.x < pc.y ∧
         (Formula.untl pc.ξ pc.η).neg ∈ χ.f pc.x ∧
         pc.η ∈ χ.f pc.y ∧
         ¬∃ z ∈ χ.dom, pc.x < z ∧ z < pc.y ∧ pc.ξ.neg ∈ χ.f z
-    · obtain ⟨h_xm, h_ym, h_adj, h_neg_until, h_event, h_no_wit⟩ := h_actual
+    · obtain ⟨h_xm, h_ym, h_lt, h_neg_until, h_event, h_no_wit⟩ := h_actual
       have ce : C4Counterexample χ :=
-        ⟨pc.x, pc.y, h_xm, h_ym, h_adj, pc.ξ, pc.η, h_neg_until, h_event, h_no_wit⟩
+        ⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_until, h_event, h_no_wit⟩
       have h_elim := eliminate_C4_counterexample h_c0 ce
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
@@ -670,14 +704,15 @@ noncomputable def eliminate_potential_counterexample
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c4_backward =>
     -- Backward C4' case (corrected Burgess C4b: check EVENT η at f(y), negate GUARD ξ at f(z))
+    -- Now checks ALL pairs y < x, not just adjacent pairs.
     by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧
-        Adjacent χ.dom pc.y pc.x ∧
+        pc.y < pc.x ∧
         (Formula.snce pc.ξ pc.η).neg ∈ χ.f pc.x ∧
         pc.η ∈ χ.f pc.y ∧
         ¬∃ z ∈ χ.dom, pc.y < z ∧ z < pc.x ∧ pc.ξ.neg ∈ χ.f z
-    · obtain ⟨h_xm, h_ym, h_adj, h_neg_since, h_event, h_no_wit⟩ := h_actual
+    · obtain ⟨h_xm, h_ym, h_lt, h_neg_since, h_event, h_no_wit⟩ := h_actual
       have ce : C4'Counterexample χ :=
-        ⟨pc.x, pc.y, h_xm, h_ym, h_adj, pc.ξ, pc.η, h_neg_since, h_event, h_no_wit⟩
+        ⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_since, h_event, h_no_wit⟩
       have h_elim := eliminate_C4'_counterexample h_c0 ce
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
