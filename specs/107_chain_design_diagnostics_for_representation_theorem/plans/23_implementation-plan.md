@@ -159,7 +159,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Verify A4a + Implement Full Lemma 2.6 [NOT STARTED]
+### Phase 3: Verify A4a + Implement Full Lemma 2.6 [PARTIAL]
 
 **Goal**: Verify A4a derivability from BX axioms, then implement the full Lemma 2.6 (DCS three-way decomposition) needed for C4 elimination. A4a is the separation axiom: (q U p) and not(r U p) implies q U (q and not r). Burgess uses it in Lemma 2.6.
 

@@ -315,14 +315,17 @@ theorem chronicle_bfmcs_restricted_tc (M₀ : Set Formula) (h₀ : SetMaximalCon
   intro fam hfam
   obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
   constructor
-  · -- Forward F-resolution: F(φ) ∈ mcs(t) → ∃ s > t, φ ∈ mcs(s)
+  · -- Forward F-resolution: F(φ) ∈ mcs(t) → ∃ s' > t, φ ∈ mcs(s')
     intro t φ _h_dc h_F
-    -- F(φ) in shifted_chronicle_fmcs at t means F(φ) in chronicle_fmcs at (t-s)
-    -- which means F(φ) in extended_limit_f at (t-s)
-    -- If (t-s) is in limit_dom, the chronicle's C5 gives us a witness
-    -- If not, F(φ) ∈ N (the root), and the chronicle built from N resolves it
+    -- F(φ) in shifted_chronicle_fmcs at t means F(φ) in extended_limit_f at (t-s).
+    -- For DOMAIN points (t-s) ∈ limit_dom: limit_F_resolution gives a witness.
+    -- For NON-DOMAIN points: extended_limit_f returns N, and F(φ) ∈ N gives a
+    -- witness y > 0 via the chronicle, but we need y > (t-s) which may fail.
+    -- Resolution requires: either (a) Cantor isomorphism making all rationals
+    -- domain points (Phase 5), or (b) forward_G to propagate F(φ) to domain
+    -- points above (t-s). Both are sorry'd pending Phase 5.
     sorry
-  · -- Backward P-resolution: P(φ) ∈ mcs(t) → ∃ s < t, φ ∈ mcs(s)
+  · -- Backward P-resolution: mirror of forward case
     intro t φ _h_dc h_P
     sorry
 
