@@ -616,4 +616,83 @@ theorem burgessRSet_absorption {A D C : Set Formula} {B : Set Formula}
   exact burgessR_absorption h_mcs_A h_mcs_D β (h_sub_D h_β_B)
     (h_rAD β h_β_B) (h_rDC β h_β_B)
 
+/-! ## Since-Direction Absorption (Mirror) -/
+
+/--
+**Lemma 2.5 absorption for Since (single element)**: Mirror of `burgessR_absorption`
+using BX6' (absorb_since): (β S (β ∧ (β S γ))) → (β S γ).
+-/
+theorem burgessRSince_absorption {A D C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_D : SetMaximalConsistent D)
+    (β : Formula)
+    (h_β_D : β ∈ D)
+    (h_rAD : burgessRSince A β D)
+    (h_rDC : burgessRSince D β C) :
+    burgessRSince A β C := by
+  intro γ h_γ_C
+  -- Step 1: (β S γ) ∈ D
+  have h1 : Formula.snce β γ ∈ D := h_rDC γ h_γ_C
+  -- Step 2: β ∧ (β S γ) ∈ D
+  have h2 : Formula.and β (Formula.snce β γ) ∈ D :=
+    dcs_conj_closed (mcs_is_dcs h_mcs_D) h_β_D h1
+  -- Step 3: (β S (β ∧ (β S γ))) ∈ A
+  have h3 : Formula.snce β (Formula.and β (Formula.snce β γ)) ∈ A :=
+    h_rAD (Formula.and β (Formula.snce β γ)) h2
+  -- Step 4: BX6' → (β S γ) ∈ A
+  have h_bx6' : DerivationTree []
+      ((Formula.snce β (Formula.and β (Formula.snce β γ))).imp (Formula.snce β γ)) :=
+    DerivationTree.axiom [] _ (Axiom.absorb_since β γ)
+  exact SetMaximalConsistent.implication_property h_mcs_A
+    (theorem_in_mcs h_mcs_A h_bx6') h3
+
+/--
+**Lemma 2.5 absorption for Since (set version)**.
+-/
+theorem burgessRSetSince_absorption {A D C : Set Formula} {B : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_D : SetMaximalConsistent D)
+    (h_sub_D : B ⊆ D)
+    (h_rAD : burgessRSetSince A B D)
+    (h_rDC : burgessRSetSince D B C) :
+    burgessRSetSince A B C := by
+  intro β h_β_B
+  exact burgessRSince_absorption h_mcs_A h_mcs_D β (h_sub_D h_β_B)
+    (h_rAD β h_β_B) (h_rDC β h_β_B)
+
+/-! ## Combined Burgess r3 Absorption
+
+The full Lemma 2.5 for the three-argument case: if g(w,y) = g(w,x) ∩ f(x) ∩ B
+where burgessR3(f(w), g(w,x), f(x)) and burgessR3(f(x), B, C), then
+burgessR3(f(w), g(w,y), C).
+-/
+
+/--
+**Lemma 2.5 (full three-argument absorption)**: Given:
+- burgessR3(A, B₁, D) (B₁ relates A to intermediate D)
+- burgessR3(D, B₂, C) (B₂ relates intermediate D to C)
+- B₁₂ ⊆ B₁ ∩ D ∩ B₂ (the three-way intersection)
+- A, D, C are MCS
+
+Then burgessR3(A, B₁₂, C).
+
+This is the combined forward + backward absorption that proves the
+Burgess r-relation holds for non-adjacent pairs defined by C3.
+-/
+theorem burgessR3_absorption {A D C : Set Formula} {B₁ B₂ B₁₂ : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_D : SetMaximalConsistent D)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_sub_B₁ : B₁₂ ⊆ B₁) (h_sub_D : B₁₂ ⊆ D) (h_sub_B₂ : B₁₂ ⊆ B₂)
+    (h_r3_AD : burgessR3 A B₁ D)
+    (h_r3_DC : burgessR3 D B₂ C) :
+    burgessR3 A B₁₂ C := by
+  constructor
+  · have h_rAD : burgessRSet A B₁₂ D := fun β hβ => h_r3_AD.1 β (h_sub_B₁ hβ)
+    have h_rDC : burgessRSet D B₁₂ C := fun β hβ => h_r3_DC.1 β (h_sub_B₂ hβ)
+    exact burgessRSet_absorption h_mcs_A h_mcs_D h_sub_D h_rAD h_rDC
+  · have h_rCD : burgessRSetSince C B₁₂ D := fun β hβ => h_r3_DC.2 β (h_sub_B₂ hβ)
+    have h_rDA : burgessRSetSince D B₁₂ A := fun β hβ => h_r3_AD.2 β (h_sub_B₁ hβ)
+    exact burgessRSetSince_absorption h_mcs_C h_mcs_D h_sub_D h_rCD h_rDA
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
