@@ -434,6 +434,17 @@ structure ChronicleInvariant (χ : Chronicle) : Prop where
   hc2' : χ.c2'
   /-- C3: Three-way interval decomposition -/
   hc3 : χ.c3
+  /-- g_ordered: g_content chain ordering (forward G-propagation).
+  For all x < y in dom, G(phi) in f(x) implies phi in f(y).
+  This is essential for the truth lemma: the FMCS forward_G field at the
+  limit is derived from this invariant. Maintained by construction:
+  every new point y gets f(y) from a seed containing g_content(f(x))
+  for the relevant prior domain point x. -/
+  hg_ord : ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, x < y → g_content (χ.f x) ⊆ χ.f y
+  /-- h_ordered: h_content chain ordering (backward H-propagation).
+  For all y < x in dom, H(phi) in f(x) implies phi in f(y).
+  Mirror of g_ordered for the past direction. -/
+  hh_ord : ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, y < x → h_content (χ.f x) ⊆ χ.f y
 
 /-! ## g_content Chain Ordering (DEPRECATED)
 
