@@ -593,6 +593,16 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
   c5_backward_witness : pc.kind = .c5_backward → pc.x ∈ χ.dom →
     Formula.snce pc.ξ pc.η ∈ χ.f pc.x →
     ∃ y ∈ val.dom, y < pc.x ∧ pc.η ∈ val.f y
+  c4_forward_witness : pc.kind = .c4_forward → pc.x ∈ χ.dom → pc.y ∈ χ.dom →
+    pc.x < pc.y →
+    (Formula.untl pc.ξ pc.η).neg ∈ χ.f pc.x →
+    pc.η ∈ χ.f pc.y →
+    ∃ z ∈ val.dom, pc.x < z ∧ z < pc.y ∧ pc.ξ.neg ∈ val.f z
+  c4_backward_witness : pc.kind = .c4_backward → pc.x ∈ χ.dom → pc.y ∈ χ.dom →
+    pc.y < pc.x →
+    (Formula.snce pc.ξ pc.η).neg ∈ χ.f pc.x →
+    pc.η ∈ χ.f pc.y →
+    ∃ z ∈ val.dom, pc.y < z ∧ z < pc.x ∧ pc.ξ.neg ∈ val.f z
   density_witness : pc.kind = .density → pc.x ∈ χ.dom → pc.y ∈ χ.dom →
     pc.x < pc.y →
     ∃ z ∈ val.dom, pc.x < z ∧ z < pc.y
@@ -631,7 +641,9 @@ noncomputable def eliminate_potential_counterexample
               f_agrees := h_prop.2.1
               c5_forward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
-              c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide)) 
+              c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
@@ -642,7 +654,9 @@ noncomputable def eliminate_potential_counterexample
                 push_neg at h_actual
                 obtain ⟨y, hy_dom, hy_lt, hy_η, _⟩ := h_actual h_mem h_until
                 exact ⟨y, hy_dom, hy_lt, hy_η⟩
-              c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide)) 
+              c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c5_backward =>
     -- Backward (Since) C5' case
@@ -662,6 +676,8 @@ noncomputable def eliminate_potential_counterexample
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
@@ -673,6 +689,8 @@ noncomputable def eliminate_potential_counterexample
                 push_neg at h_actual
                 obtain ⟨y, hy_dom, hy_lt, hy_η, _⟩ := h_actual h_mem h_since
                 exact ⟨y, hy_dom, hy_lt, hy_η⟩
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c4_forward =>
     -- Forward C4 case (corrected Burgess C4a: check EVENT η at f(y), negate GUARD ξ at f(z))
@@ -683,9 +701,8 @@ noncomputable def eliminate_potential_counterexample
         pc.η ∈ χ.f pc.y ∧
         ¬∃ z ∈ χ.dom, pc.x < z ∧ z < pc.y ∧ pc.ξ.neg ∈ χ.f z
     · obtain ⟨h_xm, h_ym, h_lt, h_neg_until, h_event, h_no_wit⟩ := h_actual
-      have ce : C4Counterexample χ :=
-        ⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_until, h_event, h_no_wit⟩
-      have h_elim := eliminate_C4_counterexample h_c0 ce
+      have h_elim := eliminate_C4_counterexample h_c0
+        (⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_until, h_event, h_no_wit⟩ : C4Counterexample χ)
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
       exact { val := χ'
@@ -693,14 +710,21 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun _ _ _ _ _ _ => h_prop.2.2.2.1
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := by
+                intro _ h_xm' h_ym' h_lt' h_neg_until' h_event'
+                push_neg at h_actual
+                exact h_actual h_xm' h_ym' h_lt' h_neg_until' h_event'
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .c4_backward =>
     -- Backward C4' case (corrected Burgess C4b: check EVENT η at f(y), negate GUARD ξ at f(z))
@@ -711,9 +735,8 @@ noncomputable def eliminate_potential_counterexample
         pc.η ∈ χ.f pc.y ∧
         ¬∃ z ∈ χ.dom, pc.y < z ∧ z < pc.x ∧ pc.ξ.neg ∈ χ.f z
     · obtain ⟨h_xm, h_ym, h_lt, h_neg_since, h_event, h_no_wit⟩ := h_actual
-      have ce : C4'Counterexample χ :=
-        ⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_since, h_event, h_no_wit⟩
-      have h_elim := eliminate_C4'_counterexample h_c0 ce
+      have h_elim := eliminate_C4'_counterexample h_c0
+        (⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_since, h_event, h_no_wit⟩ : C4'Counterexample χ)
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
       exact { val := χ'
@@ -721,14 +744,21 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun _ _ _ _ _ _ => h_prop.2.2.2.1
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := by
+                intro _ h_xm' h_ym' h_lt' h_neg_since' h_event'
+                push_neg at h_actual
+                exact h_actual h_xm' h_ym' h_lt' h_neg_since' h_event'
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .g_prop_forward =>
     -- G-propagation forward: G(η) ∈ f(x), η ∉ f(y), x < y adjacent
@@ -746,14 +776,18 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .g_prop_backward =>
     -- H-propagation backward: H(η) ∈ f(x), η ∉ f(y), y < x adjacent
@@ -770,14 +804,18 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) 
+              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
   | .density =>
     -- Density: if x and y are adjacent in dom, insert midpoint z = (x+y)/2
@@ -805,6 +843,8 @@ noncomputable def eliminate_potential_counterexample
                 exact if_neg h_ne
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := by
                 intro _ _ _ h_lt
                 exact ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y⟩ }
@@ -814,6 +854,8 @@ noncomputable def eliminate_potential_counterexample
               f_agrees := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := by
                 intro _ h_xm h_ym h_lt
                 -- h_actual : ¬(x ∈ dom ∧ y ∈ dom ∧ Adjacent dom x y)
