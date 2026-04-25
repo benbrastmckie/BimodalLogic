@@ -794,20 +794,52 @@ theorem cantor_bfmcs_restricted_tc (M₀ : Set Formula) (h₀ : SetMaximalConsis
   constructor
   · -- Forward F-resolution: F(φ) ∈ mcs(t) → ∃ s' > t, φ ∈ mcs(s')
     intro t φ _h_dc h_F
-    -- h_F : F(φ) ∈ (rooted_cantor_fmcs N h_N s).mcs t
-    --      = F(φ) ∈ cantor_f N h_N (t - (s - cantor_zero N h_N))
-    --      = F(φ) ∈ limit_f N h_N (cantor_iso.symm(t - offset).val)
-    -- cantor_iso.symm(t - offset) is in limit_dom, so limit_F_resolution gives
-    -- a witness y > cantor_iso.symm(t - offset) in limit_dom with φ ∈ limit_f(y)
-    -- Then cantor_iso(y) is a rational with cantor_iso(y) > t - offset,
-    -- so cantor_iso(y) + offset > t in the shifted FMCS.
-    sorry
+    -- h_F definitionally unfolds to F(φ) ∈ limit_f(cantor_iso.symm(t - offset).val)
+    -- where offset = s - cantor_zero. Since cantor_iso.symm(q) is always in limit_dom,
+    -- limit_F_resolution gives a witness y > iso.symm(q) with φ ∈ limit_f(y).
+    -- Transfer back: cantor_iso(⟨y, hy⟩) + offset > t in the shifted FMCS.
+    have h_F' : φ.some_future ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).val := h_F
+    have h_dom := ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).property
+    obtain ⟨y, hy_dom, hy_gt, hy_phi⟩ := limit_F_resolution N h_N _ h_dom φ h_F'
+    set offset := s - cantor_zero N h_N
+    refine ⟨(cantor_iso N h_N) ⟨y, hy_dom⟩ + offset, ?_, ?_⟩
+    · have h_lt : (cantor_iso N h_N).symm (t - offset) < ⟨y, hy_dom⟩ := hy_gt
+      have := (cantor_iso N h_N).strictMono h_lt
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    · -- φ ∈ rooted_cantor_fmcs.mcs(cantor_iso(⟨y,_⟩) + offset) = φ ∈ limit_f(y)
+      show φ ∈ limit_f N h_N ((cantor_iso N h_N).symm
+        ((cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N))).val
+      have : (cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N) =
+          (cantor_iso N h_N) ⟨y, hy_dom⟩ := by simp [offset]
+      rw [this, OrderIso.symm_apply_apply]
+      exact hy_phi
   · -- Backward P-resolution: mirror of forward case
     intro t φ _h_dc h_P
-    sorry
+    have h_P' : φ.some_past ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).val := h_P
+    have h_dom := ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).property
+    obtain ⟨y, hy_dom, hy_lt, hy_phi⟩ := limit_P_resolution N h_N _ h_dom φ h_P'
+    set offset := s - cantor_zero N h_N
+    refine ⟨(cantor_iso N h_N) ⟨y, hy_dom⟩ + offset, ?_, ?_⟩
+    · have h_lt' : ⟨y, hy_dom⟩ < (cantor_iso N h_N).symm (t - offset) := hy_lt
+      have := (cantor_iso N h_N).strictMono h_lt'
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    · show φ ∈ limit_f N h_N ((cantor_iso N h_N).symm
+        ((cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N))).val
+      have : (cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N) =
+          (cantor_iso N h_N) ⟨y, hy_dom⟩ := by simp [offset]
+      rw [this, OrderIso.symm_apply_apply]
+      exact hy_phi
 
 /--
 Restricted backward Until/Since coherence for the cantor BFMCS.
+
+The backward direction: given the semantic Until/Since witness pattern
+(endpoint + guard at intermediate points), derive syntactic Until/Since
+membership. Proved by contradiction using C4/C4': if ¬U ∈ f(t), then
+C4 finds an intermediate point where the guard fails, contradicting the
+hypothesis.
 -/
 theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (root : Formula) :
@@ -816,14 +848,107 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
   obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
   constructor
   · -- Backward Until: witness pattern → U(φ,ψ) ∈ mcs(t)
+    -- By contradiction: if ¬U(φ,ψ) ∈ f(t) and ψ ∈ f(s_wit) with t < s_wit,
+    -- then C4 gives z with t < z < s_wit and φ.neg ∈ f(z). But the guard
+    -- says φ ∈ f(z) (since t ≤ z < s_wit), contradiction.
     intro t φ ψ _h_sub ⟨s_wit, h_lt, h_ψ, h_guard⟩
-    sorry
+    by_contra h_not
+    set offset := s - cantor_zero N h_N
+    have h_mcs_t := (rooted_cantor_fmcs N h_N s).is_mcs t
+    have h_neg : (φ.untl ψ).neg ∈ (rooted_cantor_fmcs N h_N s).mcs t := by
+      rcases SetMaximalConsistent.negation_complete h_mcs_t (φ.untl ψ) with h | h
+      · exact absurd h h_not
+      · exact h
+    -- Transfer to limit_f coordinates
+    have h_neg' : (φ.untl ψ).neg ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (t - offset)).val := h_neg
+    have h_psi' : ψ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (s_wit - offset)).val := h_ψ
+    have h_dom_t := ((cantor_iso N h_N).symm (t - offset)).property
+    have h_dom_s := ((cantor_iso N h_N).symm (s_wit - offset)).property
+    have h_lt' : ((cantor_iso N h_N).symm (t - offset)).val <
+        ((cantor_iso N h_N).symm (s_wit - offset)).val :=
+      (cantor_iso N h_N).symm.strictMono (show t - offset < s_wit - offset by linarith)
+    -- C4 gives guard violation
+    obtain ⟨z, hz_dom, hz_gt, hz_lt, hz_neg⟩ :=
+      limit_satisfies_c4 N h_N _ _ h_dom_t h_dom_s h_lt' φ ψ h_neg' h_psi'
+    -- Transfer z back to rational coordinates
+    set z_rat := (cantor_iso N h_N) ⟨z, hz_dom⟩ + offset
+    have hz_rat_gt : t < z_rat := by
+      have : (cantor_iso N h_N).symm (t - offset) < ⟨z, hz_dom⟩ := hz_gt
+      have := (cantor_iso N h_N).strictMono this
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    have hz_rat_lt : z_rat < s_wit := by
+      have : ⟨z, hz_dom⟩ < (cantor_iso N h_N).symm (s_wit - offset) := hz_lt
+      have := (cantor_iso N h_N).strictMono this
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    -- Guard gives φ ∈ f(z_rat), C4 gives φ.neg ∈ f(z)
+    have h_phi_z := h_guard z_rat (le_of_lt hz_rat_gt) hz_rat_lt
+    have h_phi_z' : φ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (z_rat - offset)).val := h_phi_z
+    have h_eq : ((cantor_iso N h_N).symm (z_rat - offset)).val = z := by
+      simp [z_rat, add_sub_cancel_right, OrderIso.symm_apply_apply]
+    rw [h_eq] at h_phi_z'
+    exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 φ h_phi_z' hz_neg
   · -- Backward Since: witness pattern → S(φ,ψ) ∈ mcs(t)
+    -- Mirror of Until case, using C4' instead of C4.
     intro t φ ψ _h_sub ⟨s_wit, h_lt, h_ψ, h_guard⟩
-    sorry
+    by_contra h_not
+    set offset := s - cantor_zero N h_N
+    have h_mcs_t := (rooted_cantor_fmcs N h_N s).is_mcs t
+    have h_neg : (φ.snce ψ).neg ∈ (rooted_cantor_fmcs N h_N s).mcs t := by
+      rcases SetMaximalConsistent.negation_complete h_mcs_t (φ.snce ψ) with h | h
+      · exact absurd h h_not
+      · exact h
+    -- Transfer to limit_f coordinates
+    have h_neg' : (φ.snce ψ).neg ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (t - offset)).val := h_neg
+    have h_psi' : ψ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (s_wit - offset)).val := h_ψ
+    have h_dom_t := ((cantor_iso N h_N).symm (t - offset)).property
+    have h_dom_s := ((cantor_iso N h_N).symm (s_wit - offset)).property
+    have h_lt' : ((cantor_iso N h_N).symm (s_wit - offset)).val <
+        ((cantor_iso N h_N).symm (t - offset)).val :=
+      (cantor_iso N h_N).symm.strictMono (show s_wit - offset < t - offset by linarith)
+    -- C4' gives guard violation
+    obtain ⟨z, hz_dom, hz_gt, hz_lt, hz_neg⟩ :=
+      limit_satisfies_c4' N h_N _ _ h_dom_t h_dom_s h_lt' φ ψ h_neg' h_psi'
+    -- Transfer z back to rational coordinates
+    set z_rat := (cantor_iso N h_N) ⟨z, hz_dom⟩ + offset
+    have hz_rat_gt : s_wit < z_rat := by
+      have : (cantor_iso N h_N).symm (s_wit - offset) < ⟨z, hz_dom⟩ := hz_gt
+      have := (cantor_iso N h_N).strictMono this
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    have hz_rat_lt : z_rat < t := by
+      have : ⟨z, hz_dom⟩ < (cantor_iso N h_N).symm (t - offset) := hz_lt
+      have := (cantor_iso N h_N).strictMono this
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    -- Guard gives φ ∈ f(z_rat), C4' gives φ.neg ∈ f(z)
+    have h_phi_z := h_guard z_rat hz_rat_gt (le_of_lt hz_rat_lt)
+    have h_phi_z' : φ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (z_rat - offset)).val := h_phi_z
+    have h_eq : ((cantor_iso N h_N).symm (z_rat - offset)).val = z := by
+      simp [z_rat, add_sub_cancel_right, OrderIso.symm_apply_apply]
+    rw [h_eq] at h_phi_z'
+    exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 φ h_phi_z' hz_neg
 
 /--
 Restricted forward Until/Since coherence for the cantor BFMCS.
+
+The forward direction: U(φ,ψ) ∈ f(t) → ∃ s > t, ψ ∈ f(s) ∧ ∀ r ∈ [t,s), φ ∈ f(r).
+
+**Blocker**: Requires `limit_satisfies_c5_full` (C5 with guard), which in turn
+requires either:
+(a) The real interval function g (replacing the placeholder `limit_g`) with C3
+    three-way property: g(x,z) ⊆ f(y) for x < y < z. Then C5 elimination
+    guarantees ξ ∈ f(z) at intermediate z via g(x,y) ⊆ f(z).
+(b) Strengthening `EliminationResult.c5_forward_witness` to include guard info
+    (the guard IS checked in `eliminate_potential_counterexample` at line 728
+    but discarded from the result type).
+
+**Note**: The endpoint witness (∃ y > t, ψ ∈ f(y)) is available via
+`limit_satisfies_c5_weak`. Only the guard at intermediate points is missing.
+The backward direction (BUC) was proved using C4's contrapositive.
 -/
 theorem cantor_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (root : Formula) :
@@ -832,9 +957,13 @@ theorem cantor_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsi
   obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
   constructor
   · -- Forward Until: U(φ,ψ) ∈ mcs(t) → ∃ s > t, ψ ∈ mcs(s) ∧ guard
+    -- BLOCKER: Requires full C5 with guard (limit_satisfies_c5_full).
+    -- C5_weak gives the endpoint ψ ∈ f(y), but the guard φ ∈ f(r) for
+    -- intermediate r requires the real interval function g with C3.
     intro t φ ψ _h_sub h_until
     sorry
   · -- Forward Since: S(φ,ψ) ∈ mcs(t) → ∃ s < t, ψ ∈ mcs(s) ∧ guard
+    -- BLOCKER: Mirror of forward Until, requires full C5' with guard.
     intro t φ ψ _h_sub h_since
     sorry
 
