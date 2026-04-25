@@ -93,7 +93,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 22 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
