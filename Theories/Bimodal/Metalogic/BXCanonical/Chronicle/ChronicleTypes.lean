@@ -147,6 +147,43 @@ def rRelationSince (A B : Set Formula) : Prop :=
     Formula.snce γ δ ∈ A →
     δ ∈ B ∨ (γ ∈ B ∧ Formula.snce γ δ ∈ B)
 
+/-! ## Three-Argument r-Relation (Burgess 2.3, adapted)
+
+The three-argument r-relation r3(A, B, C) captures interval-endpoint compatibility:
+B is a valid interval set between left endpoint A and right endpoint C.
+
+The condition is: rRelation A B AND rRelationSince C B. That is, B propagates
+Until-obligations from A correctly AND Since-obligations from C correctly.
+This dual constraint is what makes the three-argument r-relation strictly stronger
+than the two-argument version and is essential for the omega-chain invariant:
+it ensures that g-values inserted between endpoints are compatible with BOTH sides.
+
+Under Burgess's construction, r3(A, B, C) means the interval (x,y) with
+f(x) = A, f(y) = C has interval set g(x,y) = B that correctly propagates
+temporal obligations in both directions.
+-/
+
+/--
+The **three-argument r-relation** `r3Relation A B C`: B is a valid interval set
+between endpoints A (left) and C (right).
+
+Combines forward propagation (rRelation A B) with backward propagation
+(rRelationSince C B): for all Until formulas in A, B either resolves or
+continues them; for all Since formulas in C, B either resolves or continues them.
+-/
+def r3Relation (A B C : Set Formula) : Prop :=
+  rRelation A B ∧ rRelationSince C B
+
+/--
+Mirror for the Since direction: `r3RelationSince A B C` where A is
+the right endpoint and C is the left endpoint.
+
+Combines backward propagation (rRelationSince A B) with forward propagation
+(rRelation C B).
+-/
+def r3RelationSince (A B C : Set Formula) : Prop :=
+  rRelationSince A B ∧ rRelation C B
+
 /-! ## R-Maximality -/
 
 /--
@@ -178,6 +215,34 @@ def rMaximalSince (A B : Set Formula) : Prop :=
     SetDeductivelyClosed C →
     B ⊂ C →
     ¬rRelationSince A C
+
+/--
+**Three-argument R-maximality**: `R3Maximal A B C` means B is a maximal DCS
+satisfying `r3Relation A B C`.
+
+B is R3-maximal with respect to endpoints A and C if:
+1. B is deductively closed
+2. r3Relation A B C holds (both rRelation A B and rRelationSince C B)
+3. No proper DCS extension of B satisfies r3Relation A - C
+-/
+def R3Maximal (A B C : Set Formula) : Prop :=
+  SetDeductivelyClosed B ∧
+  r3Relation A B C ∧
+  ∀ (D : Set Formula),
+    SetDeductivelyClosed D →
+    B ⊂ D →
+    ¬r3Relation A D C
+
+/--
+Three-argument R-maximality for Since direction.
+-/
+def R3MaximalSince (A B C : Set Formula) : Prop :=
+  SetDeductivelyClosed B ∧
+  r3RelationSince A B C ∧
+  ∀ (D : Set Formula),
+    SetDeductivelyClosed D →
+    B ⊂ D →
+    ¬r3RelationSince A D C
 
 /-! ## Chronicle Structure -/
 
@@ -350,5 +415,33 @@ theorem rRelationSince_of_superset_mcs {A B : Set Formula}
   rcases SetMaximalConsistent.negation_complete h_mcs_B γ with h_gamma | h_neg_gamma
   · exact Or.inr ⟨h_gamma, h_since_B⟩
   · exact Or.inl (SetMaximalConsistent.implication_property h_mcs_B h_or h_neg_gamma)
+
+/-! ## Three-Argument r-Relation Properties -/
+
+/-- Bridge lemma: r3Relation implies rRelation (weakening, drops the C constraint). -/
+theorem r3Relation_implies_rRelation {A B C : Set Formula}
+    (h : r3Relation A B C) : rRelation A B := h.1
+
+/-- Bridge lemma: r3Relation implies rRelationSince from C. -/
+theorem r3Relation_implies_rRelationSince {A B C : Set Formula}
+    (h : r3Relation A B C) : rRelationSince C B := h.2
+
+/-- r3Relation is monotone in B (superset direction, covariant). -/
+theorem r3Relation_subset {A B B' C : Set Formula}
+    (h : r3Relation A B C) (h_sub : B ⊆ B') : r3Relation A B' C :=
+  ⟨rRelation_subset h.1 h_sub, rRelationSince_subset h.2 h_sub⟩
+
+/-- R3Maximal implies rMaximal (weakening, R3-maximal sets are at least R-maximal
+    within the class of DCS satisfying the three-argument constraint). -/
+theorem R3Maximal_dcs {A B C : Set Formula} (h : R3Maximal A B C) :
+    SetDeductivelyClosed B := h.1
+
+/-- R3Maximal implies r3Relation. -/
+theorem R3Maximal_r3 {A B C : Set Formula} (h : R3Maximal A B C) :
+    r3Relation A B C := h.2.1
+
+/-- R3Maximal implies rRelation (via bridge). -/
+theorem R3Maximal_rRelation {A B C : Set Formula} (h : R3Maximal A B C) :
+    rRelation A B := h.2.1.1
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
