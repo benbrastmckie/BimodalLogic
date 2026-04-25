@@ -620,13 +620,13 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-25T16:08:34Z",
-      "researched": "2026-04-25T16:08:34Z",
+      "last_updated": "2026-04-25T16:37:10Z",
+      "researched": "2026-04-25T16:37:10Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 25,
+      "next_artifact_number": 26,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -777,6 +777,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/24_team-research.md",
           "type": "report",
           "summary": "Team research: C4+C0 DEBUNKED, two-sided seeds+duality is viable path, Cantor iso complementary"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/25_team-research.md",
+          "type": "report",
+          "summary": "BREAKTHROUGH: C4 definition has arguments swapped. Correct C4 gives forward_G in one step. g_ordered unnecessary."
         }
       ],
       "session_id": "sess_1777132417_a3f143",
