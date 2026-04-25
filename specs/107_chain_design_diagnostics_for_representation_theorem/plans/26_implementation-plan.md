@@ -206,7 +206,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Close ChronicleToCountermodel Sorry Sites [NOT STARTED]
+### Phase 5: Close ChronicleToCountermodel Sorry Sites [BLOCKED]
 
 **Goal**: Close all 8 remaining sorry sites in ChronicleToCountermodel.lean. With forward_G/backward_H proved and C5/C5' established, these are mechanical wiring to limit chronicle properties.
 
