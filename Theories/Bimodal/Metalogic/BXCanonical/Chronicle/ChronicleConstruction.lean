@@ -115,28 +115,25 @@ theorem singleton_invariant {A : Set Formula} (h_mcs : SetMaximalConsistent A) :
 
 /--
 The singleton chronicle satisfies C4 vacuously: a singleton domain has no
-adjacent pairs, so the universal quantifier over adjacent pairs is vacuously true.
+pairs x < y, so the universal quantifier is vacuously true.
 -/
 theorem singleton_c4 (A : Set Formula) :
     (singleton_chronicle A).c4 := by
-  intro x y h_adj
-  -- Adjacent requires x ∈ dom ∧ y ∈ dom ∧ x < y ∧ ...
-  -- But dom = {0}, so x = 0 and y = 0, contradicting x < y
-  obtain ⟨hx, hy, hxy, _⟩ := h_adj
+  intro x y hx hy hxy
+  -- dom = {0}, so x = 0 and y = 0, contradicting x < y
   simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
   subst hx; subst hy
-  simp at hxy
+  exact absurd hxy (lt_irrefl _)
 
 /--
 The singleton chronicle satisfies C4' vacuously (mirror of C4).
 -/
 theorem singleton_c4' (A : Set Formula) :
     (singleton_chronicle A).c4' := by
-  intro x y h_adj
-  obtain ⟨hx, hy, hxy, _⟩ := h_adj
+  intro x y hx hy hyx
   simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
   subst hx; subst hy
-  simp at hxy
+  exact absurd hyx (lt_irrefl _)
 
 /-! ## Countability of Potential Counterexamples
 
@@ -572,8 +569,9 @@ This follows from the density counterexample enumeration: for any adjacent pair
 (x, y) in dom_n, the density counterexample ⟨x, y, bot, bot, .density⟩ is
 eventually processed, inserting z = (x+y)/2.
 
-Density makes C4/C4' vacuously true at the limit (no adjacent pairs exist),
-which is the key to proving forward_G and backward_H.
+With the generalized C4 (all pairs x < y, not just adjacent), density ensures
+that C4 counterexamples are properly handled: at any finite stage the domain is
+finite, so counterexamples can be enumerated and eliminated.
 -/
 
 /--
@@ -814,26 +812,37 @@ truth lemma, not a consequence).
 /--
 Forward_G for domain points: G(φ) ∈ limit_f(x) and x < y implies φ ∈ limit_f(y).
 
-**Status**: Sorry. This is the primary remaining blocker for the representation theorem.
+**Status**: Sorry. Structural blocker for the representation theorem.
 
-**Key insight (C4 + C0 argument for adjacent pairs)**: With the correct C4 (Burgess C4a),
-for ADJACENT x < y: if G(φ) = ¬(⊤ U ¬φ) ∈ f(x) and ¬φ ∈ f(y), then C4 gives
-∃ z with ⊤.neg = ⊥ ∈ f(z), contradicting C0. So ¬φ ∉ f(y), hence φ ∈ f(y).
+**Root cause (task 107, plan v11 Phase 3 analysis)**:
 
-**Obstruction for dense domains**: At the limit, the domain is dense (no adjacent pairs),
-so C4 is vacuously true but gives no information. The "generalized C4" for non-adjacent
-pairs requires establishing C4 transitively through intermediate points, but the omega
-chain construction does not guarantee g_content propagation at every intermediate point
-under strict semantics (density insertion uses f(z) = f(left_neighbor), and G(φ) ∈ f(z)
-does NOT imply φ ∈ f(z) without the T axiom).
+The omega chain construction does NOT guarantee forward_G because of a seeding
+asymmetry. Points inserted in the FORWARD direction (C5, g_prop) are seeded with
+g_content(f(left_neighbor)), which propagates G-formulas via BX6. But points
+inserted in the BACKWARD direction (C5', h_prop) are seeded with
+h_content(f(right_neighbor)), which does NOT propagate g_content from points
+to the LEFT.
 
-**Duality**: By `h_content_sub_imp_g_content_sub`, forward_G follows from backward_H
-(and vice versa via the dual). But both are equally blocked.
+Concrete counterexample scenario:
+- w = -10 enters dom with G(α) ∈ f(-10)
+- x = 5 enters dom
+- C5' at x=5 inserts y=3 with f(3) seeded from h_content(f(5))
+- G(α) ∈ f(-10) but α might not be in f(3), violating forward_G at (-10, 3)
+- g_prop elimination for (-10, 3) inserts points with G(α) between them,
+  but f(3) is immutable — α is never added to f(3)
+
+The C4 + C0 argument (G(φ) → ¬(⊤ U ¬φ), then C4 gives ⊥ ∈ f(z), contradicting
+C0) works only for ADJACENT pairs. At the limit, the domain is dense (no adjacent
+pairs), so C4 is vacuously satisfied but gives no information. "Generalized C4"
+for non-adjacent pairs cannot be proved by induction through intermediate points
+because ¬(γ U δ) does not propagate forward through the domain.
 
 **Resolution options**:
-1. Restructure the omega chain to seed every new point from g_content of ALL left neighbors
-2. Use a non-dense construction (finite stages only) and extend to dense via Cantor iso
-3. Change FMCS to not require forward_G as a field (route through truth lemma differently)
+1. Modify C5'/h_prop insertion to also seed with g_content(f(left_neighbor)),
+   ensuring ALL points inherit G-propagation. Requires proving consistency
+   of the combined seed {η} ∪ h_content(f(right)) ∪ g_content(f(left)).
+2. Use a non-dense construction (finite stages only) and extend via Cantor iso.
+3. Remove forward_G from FMCS; route truth lemma through binary g + C3 directly.
 -/
 theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
@@ -845,8 +854,12 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 Backward_H for domain points (dual of forward_G).
 H(φ) ∈ limit_f(x) and y < x implies φ ∈ limit_f(y).
 
-**Status**: Sorry. Dual of forward_G; same obstruction applies.
-See `limit_forward_G` documentation for analysis and resolution options.
+**Status**: Sorry. Mirror of forward_G blocker.
+
+Points inserted in the FORWARD direction (C5, g_prop) are seeded with
+g_content(f(left_neighbor)) but NOT h_content(f(right_neighbor)). So a point
+y > x inserted by C5 for some trigger to its left may not have H-propagation
+from points to its right. See `limit_forward_G` for the full analysis.
 -/
 theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)

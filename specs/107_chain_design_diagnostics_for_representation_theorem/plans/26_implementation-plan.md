@@ -73,7 +73,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Remove Adjacent Restriction from C4/C4' [NOT STARTED]
+### Phase 1: Remove Adjacent Restriction from C4/C4' [COMPLETED]
 
 **Goal**: Change C4/C4' definitions from `Adjacent χ.dom x y` to `x ∈ χ.dom -> y ∈ χ.dom -> x < y`, matching Burgess 1982. Update all dependent structures and the omega chain enumeration.
 

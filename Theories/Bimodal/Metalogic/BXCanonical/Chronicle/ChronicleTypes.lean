@@ -294,30 +294,36 @@ def Chronicle.c3 (χ : Chronicle) : Prop :=
     x < y → y < z → χ.g x z = χ.g x y ∩ χ.f y ∩ χ.g y z
 
 /-- **C4**: Backward counterexample condition for Until (Burgess 1982, C4a).
-For all x, y in dom with x < y adjacent: if `¬(γ U δ) ∈ f(x)` and `δ ∈ f(y)`,
+For all x, y in dom with x < y: if `¬(γ U δ) ∈ f(x)` and `δ ∈ f(y)`,
 then there exists z in dom with `x < z < y` and `¬γ ∈ f(z)`.
 
 In `untl γ δ`: γ is the GUARD, δ is the EVENT.
 Burgess C4a checks the EVENT (δ) at f(y) and negates the GUARD (γ) at f(z).
 
-Intuition: If Until(γ,δ) is false at x but the eventuality δ holds at the next
-point y, then the guard γ must have failed somewhere between x and y --
-otherwise γ would hold throughout [x,y) and δ at y, satisfying Until. -/
+Intuition: If Until(γ,δ) is false at x but the eventuality δ holds at some
+future point y, then the guard γ must have failed somewhere between x and y --
+otherwise γ would hold throughout [x,y) and δ at y, satisfying Until.
+
+Note: Burgess C4a applies to ALL pairs x < y in the domain, not just adjacent
+pairs. The adjacency restriction was a transcription error that made C4
+vacuously true at the dense limit (where no adjacent pairs exist). -/
 def Chronicle.c4 (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom x y →
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y →
     ∀ (γ δ : Formula),
       (Formula.untl γ δ).neg ∈ χ.f x →
       δ ∈ χ.f y →
       ∃ z ∈ χ.dom, x < z ∧ z < y ∧ γ.neg ∈ χ.f z
 
 /-- **C4'**: Backward counterexample condition for Since (mirror of C4, Burgess C4b).
-For all x, y in dom with y < x adjacent: if `¬(γ S δ) ∈ f(x)` and `δ ∈ f(y)`,
+For all x, y in dom with y < x: if `¬(γ S δ) ∈ f(x)` and `δ ∈ f(y)`,
 then there exists z in dom with `y < z < x` and `¬γ ∈ f(z)`.
 
 In `snce γ δ`: γ is the GUARD, δ is the EVENT.
-Checks EVENT (δ) at f(y), negates GUARD (γ) at f(z). -/
+Checks EVENT (δ) at f(y), negates GUARD (γ) at f(z).
+
+Note: Like C4, this applies to ALL pairs y < x, not just adjacent pairs. -/
 def Chronicle.c4' (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom y x →
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → y < x →
     ∀ (γ δ : Formula),
       (Formula.snce γ δ).neg ∈ χ.f x →
       δ ∈ χ.f y →
