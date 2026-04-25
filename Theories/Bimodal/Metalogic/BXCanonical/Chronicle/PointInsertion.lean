@@ -698,6 +698,80 @@ theorem r3Maximal_neg_of_not_mem {A B C : Set Formula}
   -- Step 6: Contradiction with R3Maximal
   exact h_R3.2.2 _ h_dc_dcs h_proper h_r3
 
+/-! ## R3Maximal Forces MCS (Key Discovery)
+
+The codebase's r3Relation is **monotone** in B: if r3Relation(A, B, C) and B ⊆ B',
+then r3Relation(A, B', C) (by `r3Relation_subset`). This is because rRelation and
+rRelationSince only require membership conditions (δ ∈ B or γ ∈ B ∧ ...), which
+are preserved by supersets.
+
+Combined with R3Maximal (which says no proper DCS extension of B satisfies r3Relation),
+this forces B to be an MCS: any non-MCS DCS B has a proper DCS extension
+(via `dcs_neg_union_consistent` + `deductiveClosure_is_dcs`), and that extension
+would satisfy r3Relation by monotonicity, contradicting R3Maximal.
+
+This simplifies Lemma 2.6 dramatically: since B is an MCS, δ ∉ B implies ¬δ ∈ B
+by negation completeness, and we can set D = B' = B'' = B.
+
+**Note**: This is a departure from Burgess's formalization where r(A, B, C) uses
+the Burgess r-relation (content-based: ∀β∈B, ∀γ∈C, (β U γ)∈A), which is NOT
+monotone in B. The codebase's r3Relation is obligation-propagation-based, which
+happens to be monotone. Burgess's R-maximality produces genuinely non-MCS DCS;
+the codebase's R3Maximal collapses to MCS.
+-/
+
+/--
+**R3Maximal forces MCS**: Any DCS B that is R3-maximal between MCS A and C
+must itself be a maximal consistent set.
+
+The proof exploits monotonicity of r3Relation: for any formula φ ∉ B,
+`dcs_neg_union_consistent` gives a consistent seed {φ.neg} ∪ B, whose
+deductive closure is a proper DCS extension of B that still satisfies
+r3Relation(A, -, C) by `r3Relation_subset`. This contradicts R3Maximal.
+-/
+theorem R3Maximal_is_mcs {A B C : Set Formula}
+    (h_R3 : R3Maximal A B C) : SetMaximalConsistent B := by
+  refine ⟨h_R3.1.1, ?_⟩
+  intro φ h_not_φ h_cons_insert
+  have h_cons : SetConsistent ({φ} ∪ B) := by rwa [Set.insert_eq] at h_cons_insert
+  have h_dc_dcs := deductiveClosure_is_dcs h_cons
+  have h_B_sub : B ⊆ deductiveClosure ({φ} ∪ B) :=
+    fun ψ hψ => subset_deductiveClosure _ (Set.mem_union_right _ hψ)
+  have h_φ_in : φ ∈ deductiveClosure ({φ} ∪ B) :=
+    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton φ))
+  exact h_R3.2.2 _ h_dc_dcs ⟨h_B_sub, fun h_eq => h_not_φ (h_eq h_φ_in)⟩
+    (r3Relation_subset h_R3.2.1 h_B_sub)
+
+/-- An MCS has no proper DCS extension (any DCS extending an MCS is inconsistent
+    or equal to it). Used for R3Maximal closure. -/
+theorem mcs_no_proper_dcs_extension {B D : Set Formula}
+    (h_mcs : SetMaximalConsistent B) (h_dcs : SetDeductivelyClosed D)
+    (hBD : B ⊂ D) : False := by
+  obtain ⟨φ, h_φ_D, h_φ_not_B⟩ := Set.not_subset.mp hBD.2
+  have h_incons := h_mcs.2 φ h_φ_not_B
+  apply h_incons
+  intro L hL ⟨d⟩
+  exact h_dcs.1 L (fun ψ hψ => (Set.insert_subset h_φ_D hBD.1) (hL ψ hψ)) ⟨d⟩
+
+/-- rRelation is reflexive for MCS: any Until formula γ U δ in B has either
+    δ ∈ B or (γ ∈ B ∧ γ U δ ∈ B), which follows from BX9 and MCS completeness. -/
+theorem rRelation_self_mcs {B : Set Formula}
+    (h_mcs : SetMaximalConsistent B) : rRelation B B := by
+  intro γ δ h_until
+  rcases SetMaximalConsistent.negation_complete h_mcs γ with h_γ | h_neg_γ
+  · exact Or.inr ⟨h_γ, h_until⟩
+  · exact Or.inl (SetMaximalConsistent.implication_property h_mcs
+      (until_disjunction_in_mcs h_mcs h_until) h_neg_γ)
+
+/-- rRelationSince is reflexive for MCS: mirror of rRelation_self_mcs using BX9'. -/
+theorem rRelationSince_self_mcs {B : Set Formula}
+    (h_mcs : SetMaximalConsistent B) : rRelationSince B B := by
+  intro γ δ h_since
+  rcases SetMaximalConsistent.negation_complete h_mcs γ with h_γ | h_neg_γ
+  · exact Or.inr ⟨h_γ, h_since⟩
+  · exact Or.inl (SetMaximalConsistent.implication_property h_mcs
+      (since_disjunction_in_mcs h_mcs h_since) h_neg_γ)
+
 /-! ## Full Lemma 2.6: Three-Way Decomposition (Burgess 1982)
 
 The full Lemma 2.6 is the key to C4 counterexample elimination with g-value tracking.
@@ -705,21 +779,20 @@ Given R3Maximal(A, B, C) and delta not in B, it produces a three-way decompositi
 - MCS D with neg(delta) in D
 - R3Maximal(A, B', D) with B subset B'
 - R3Maximal(D, B'', C) with B subset B''
-- B = B' inter D inter B''
 
-The proof uses:
-1. R3-maximality of B: since B is maximal DCS with r3Relation(A, B, C),
-   extending B with delta would break r3Relation. This gives a formula
-   witness (gamma U alpha or gamma S alpha in A or C) where delta forces
-   a violation.
-2. Seed construction: neg(delta) union B union appropriate r-relation formulas
-   is consistent (using the maximality failure witness).
-3. Lindenbaum extension to MCS D.
-4. R3-maximal extensions B' and B'' exist by Zorn's lemma.
-5. B = B' inter D inter B'' by Lemma 2.5 (absorption).
+**Proof strategy (simplified by R3Maximal_is_mcs)**:
 
-**Status**: The seed consistency (step 2) is the technically challenging part.
-The remaining steps are proved sorry-free.
+Since r3Relation is monotone in B (via r3Relation_subset), R3Maximal forces B to
+be an MCS. Therefore delta not in B implies neg(delta) in B by MCS negation
+completeness. Setting D = B' = B'' = B satisfies all conditions:
+- neg(delta) in D = B (negation completeness)
+- B subset D = B (reflexivity)
+- R3Maximal(A, B, B) (rRelation from original, rRelationSince reflexive, MCS maximality)
+- R3Maximal(B, B, C) (rRelation reflexive, rRelationSince from original, MCS maximality)
+
+This bypasses the need for Burgess's axiom A4a entirely, since the codebase's
+R3Maximal is a stronger condition than Burgess's (forcing B to be an MCS rather
+than merely a maximal DCS in the Burgess r-relation sense).
 -/
 
 /--
@@ -727,15 +800,15 @@ The remaining steps are proved sorry-free.
 
 Given R3Maximal(A, B, C) and δ ∉ B, produces:
 - MCS D with ¬δ ∈ D
-- DCS B' with B ⊆ B' and R3Maximal(A, B', D)
-- DCS B'' with B ⊆ B'' and R3Maximal(D, B'', C)
+- B ⊆ D, B ⊆ B', B ⊆ B''
+- R3Maximal(A, B', D) and R3Maximal(D, B'', C)
 
-This provides the g-values needed for C4 counterexample elimination:
-when inserting z between adjacent x and y, f(z) = D, g(x,z) = B', g(z,y) = B''.
+The proof is simplified by the discovery that R3Maximal forces B to be an MCS
+(see `R3Maximal_is_mcs`). All witnesses are B itself.
 -/
 noncomputable def lemma_2_6_full {A C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
+    (_h_mcs_A : SetMaximalConsistent A)
+    (_h_mcs_C : SetMaximalConsistent C)
     {B : Set Formula}
     (h_R3 : R3Maximal A B C)
     (δ : Formula)
@@ -748,17 +821,21 @@ noncomputable def lemma_2_6_full {A C : Set Formula}
       B ⊆ B'' ∧
       R3Maximal A B' D ∧
       R3Maximal D B'' C := by
-  -- The full proof requires:
-  -- 1. A richer seed D₀ = {neg delta} ∪ B ∪ {beta U gamma | beta ∈ B, gamma ∈ C}
-  --    ∪ {beta S gamma | beta ∈ B, gamma ∈ A} to ensure the r-relation properties.
-  -- 2. Consistency of D₀ using R3-maximality of B (the key argument: if B + delta
-  --    broke r3Relation, the maximality witness helps show neg(delta) is consistent
-  --    with the seed).
-  -- 3. Lindenbaum extension to MCS D.
-  -- 4. R3-maximal extensions B' and B'' by Zorn's lemma.
-  -- See research report 22 (Teammate B) for the complete paper proof.
-  -- The dcs_neg_union_consistent helper (proved above) handles step 1 partially:
-  -- {neg delta} ∪ B is consistent. The richer seed needs additional argument.
-  sorry
+  -- Key insight: R3Maximal forces B to be an MCS (r3Relation is monotone in B)
+  have h_mcs_B := R3Maximal_is_mcs h_R3
+  -- δ ∉ B implies δ.neg ∈ B by MCS negation completeness
+  have h_neg_δ : δ.neg ∈ B := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_B δ with h | h
+    · exact absurd h h_δ_not_B
+    · exact h
+  -- Set D = B, B' = B, B'' = B
+  have h_dcs := mcs_is_dcs h_mcs_B
+  refine ⟨B, B, B, h_mcs_B, h_neg_δ, le_refl _, le_refl _, le_refl _, ?_, ?_⟩
+  · -- R3Maximal A B B: rRelation from original R3Maximal, rRelationSince reflexive
+    exact ⟨h_dcs, ⟨h_R3.2.1.1, rRelationSince_self_mcs h_mcs_B⟩,
+      fun D hD_dcs hBD _ => mcs_no_proper_dcs_extension h_mcs_B hD_dcs hBD⟩
+  · -- R3Maximal B B C: rRelation reflexive, rRelationSince from original R3Maximal
+    exact ⟨h_dcs, ⟨rRelation_self_mcs h_mcs_B, h_R3.2.1.2⟩,
+      fun D hD_dcs hBD _ => mcs_no_proper_dcs_extension h_mcs_B hD_dcs hBD⟩
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
