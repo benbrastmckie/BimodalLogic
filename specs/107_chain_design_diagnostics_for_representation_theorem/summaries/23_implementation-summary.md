@@ -1,41 +1,52 @@
-# Implementation Summary: Task 107 (Session sess_1777090406_4d459b)
+# Implementation Summary: Task 107 (Sessions sess_1777090406_4d459b, sess_1777091942_6946de)
 
-## Status: PARTIAL (Phase 2 complete, Phase 3 partial)
+## Status: PARTIAL (Phases 0-2 complete, Phase 3 in progress)
 
 ## Completed Work
 
-### Phase 2: Complete Three-Way C3 Integration [COMPLETED]
-- Simplified `ChronicleInvariant` by removing `hc2` field (C2 for all pairs)
-- C2 for non-adjacent pairs is derivable at the limit from C2' + C3 + density
-- The finite-stage invariant now tracks only: C0, C1, C2', C3
-- Updated `singleton_invariant` proof
-- Build passes, no sorry changes
+### Session 1 (sess_1777090406_4d459b)
 
-### Phase 3: Verify A4a + Implement Full Lemma 2.6 [PARTIAL]
-- Analyzed A4a derivability: NOT clearly derivable from BX under strict semantics
-- Added `dcs_neg_union_consistent` helper (partially proved, 1 sorry for List.filter handling)
-- Added `lemma_2_6_full` scaffold with complete type signature (entirely sorry'd)
-- Identified critical finding: simple {neg delta} union B seed insufficient for full Lemma 2.6
-- Documented the richer Burgess seed construction needed
+- Phase 0 [COMPLETED]: ROADMAP update
+- Phase 1 [COMPLETED]: Three-argument r-relation
+- Phase 2 [COMPLETED]: Three-way C3, ChronicleInvariant, Lemma 2.5 absorption
+- Phase 3 [PARTIAL]: A4a analysis, dcs_neg_union_consistent partial, lemma_2_6_full scaffold
 
-## Sorry Count
+### Session 2 (sess_1777091942_6946de)
 
-Chronicle directory: 15 sorries (was 13, +2 from new infrastructure)
-- 2 new: dcs_neg_union_consistent (1), lemma_2_6_full (1)
-- 13 existing: unchanged
+Phase 3 continued:
 
-## Key Findings
+1. **Closed `dcs_neg_union_consistent` sorry** (PointInsertion.lean line 601)
+   - Full proof using List.filter to extract S-elements, deduction theorem, Peirce's law
+   - No sorry remains in this theorem
 
-1. **ChronicleInvariant simplification**: C2 for all pairs is unnecessary at finite stages. The finite invariant (C0, C1, C2', C3) suffices because C2 for non-adjacent pairs follows from Lemma 2.5 absorption at the limit.
+2. **Proved `r3Maximal_neg_of_not_mem`** (PointInsertion.lean)
+   - Key theorem: R3Maximal(A, B, C) and delta not in B implies neg(delta) in B
+   - Proof: maximality contradiction using deductiveClosure({neg delta} union B)
+   - r3Relation_subset provides monotonicity; B proper subset gives contradiction
 
-2. **Simple seed insufficient**: The naive Lindenbaum extension of {neg delta} union B does not provide the r-relation properties needed for R3Maximal extensions. The Burgess construction requires a richer seed including Until/Since formulas from the r-relation.
+3. **Refined C4/C4' hard case analysis** (CounterexampleElimination.lean)
+   - Split into delta-in-g and delta-not-in-g sub-cases
+   - delta-not-in-g: solvable via r3Maximal_neg_of_not_mem (needs C2' from Phase 4)
+   - delta-in-g: needs full Lemma 2.6 or alternative (deferred)
 
-3. **All downstream sorry sites depend on Lemma 2.6**: The C4 elimination, limit forward_G/backward_H, and all ChronicleToCountermodel coherence conditions form a dependency chain rooted at Lemma 2.6.
+## Sorry Count: 14
 
-## Blocking Issue
+| File | Sorries | Notes |
+|------|---------|-------|
+| PointInsertion.lean | 1 | lemma_2_6_full (scaffold, not called) |
+| CounterexampleElimination.lean | 2 | C4/C4' hard case (needs Phase 4 C2') |
+| ChronicleConstruction.lean | 2 | limit_forward_G/backward_H (needs Phase 5) |
+| ChronicleToCountermodel.lean | 9 | All downstream (needs Phase 5-6) |
 
-The full Lemma 2.6 (three-way decomposition) requires proving that a seed including B, neg(delta), and r-relation content is consistent. This uses R3-maximality: extending B with delta breaks r3Relation, and the failure witness enables the consistency argument. Formalizing this requires careful handling of the Burgess r-relation (different from the codebase r-relation).
+## Next Steps
 
-## Handoff
+Phase 4 (ChronicleInvariant + Modified Omega Chain) is the critical path:
+1. Modify omega_chain to maintain ChronicleInvariant instead of just C0
+2. Pass C2' to eliminate_C4_counterexample for the delta-not-in-g case
+3. Handle g-value construction during point insertion
+4. Add density counterexamples to the enumeration
 
-Detailed handoff at: `specs/107_.../handoffs/23_phase3-handoff.md`
+## Files Modified
+
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean`
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean`
