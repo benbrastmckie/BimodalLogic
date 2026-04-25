@@ -614,19 +614,19 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-25T03:10:14Z",
-      "researched": "2026-04-25T02:30:46Z",
+      "last_updated": "2026-04-25T03:52:25Z",
+      "researched": "2026-04-25T03:52:25Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 23,
+      "next_artifact_number": 24,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -762,9 +762,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/22_implementation-summary.md",
           "type": "summary",
           "summary": "Phase 2 partial: C3 redefined as three-way, blocked on A6a derivation + omega-chain redesign"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/23_team-research.md",
+          "type": "report",
+          "summary": "Three blockers resolved: A6a=BX6 (notation swap), forward_G from C4+C0, Cantor iso for non-domain. A4a needs verification."
         }
       ],
-      "session_id": "sess_1777085429_2f8e4a",
+      "session_id": "sess_1777088561_c1f855",
       "started": "2026-04-25T02:50:44Z"
     }
   ],
