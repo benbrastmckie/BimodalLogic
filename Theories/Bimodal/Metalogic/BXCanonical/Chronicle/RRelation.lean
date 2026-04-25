@@ -342,4 +342,130 @@ theorem rMaximalSince_extension_exists {A : Set Formula}
     ⟨Set.Subset.trans hSB hBC.1, hC_dcs, hC_r⟩
   exact hBC.2 (hB_max hC_in hBC.1)
 
+/-! ## Three-Argument R-Maximal Extension Existence -/
+
+/--
+The set of DCS extending S that satisfy r3Relation A - C.
+-/
+def r3DCSExtensions (A S C : Set Formula) : Set (Set Formula) :=
+  {B | S ⊆ B ∧ SetDeductivelyClosed B ∧ r3Relation A B C}
+
+/--
+Given MCS A and C, and a DCS S with r3Relation A S C, there exists an
+R3-maximal DCS B with S ⊆ B and R3Maximal A B C.
+
+The proof is identical in structure to `rMaximal_extension_exists`:
+Zorn's lemma on the set of DCS extending S satisfying r3Relation A - C.
+Every chain has an upper bound (its union), which preserves both the
+rRelation A - and rRelationSince C - conditions.
+-/
+theorem r3Maximal_extension_exists {A C : Set Formula}
+    (_h_mcs_A : SetMaximalConsistent A) (_h_mcs_C : SetMaximalConsistent C)
+    {S : Set Formula} (h_dcs : SetDeductivelyClosed S) (h_r3 : r3Relation A S C) :
+    ∃ B : Set Formula, S ⊆ B ∧ R3Maximal A B C := by
+  have h_S_in : S ∈ r3DCSExtensions A S C := ⟨Set.Subset.refl _, h_dcs, h_r3⟩
+  obtain ⟨B, hB_in, hB_max⟩ := zorn_subset (r3DCSExtensions A S C) (by
+    intro c hc_sub hc_chain
+    by_cases hc_empty : c = ∅
+    · exact ⟨S, h_S_in, by intro t ht; exact absurd ht (by rw [hc_empty]; exact Set.notMem_empty _)⟩
+    · obtain ⟨T₀, hT₀⟩ := Set.nonempty_iff_ne_empty.mpr hc_empty
+      refine ⟨⋃₀ c, ?_, fun t ht => Set.subset_sUnion_of_mem ht⟩
+      refine ⟨Set.subset_sUnion_of_subset c T₀ (hc_sub hT₀).1 hT₀, ?_, ?_⟩
+      · -- ⋃₀ c is a DCS (same argument as rMaximal case)
+        constructor
+        · intro L hL ⟨d⟩
+          obtain ⟨T, hTc, hLT⟩ := rMaximal_extension_exists.chain_finite_subset_in_element
+            hc_chain hT₀ L (fun φ hφ => hL φ hφ)
+          exact (hc_sub hTc).2.1.1 L hLT ⟨d⟩
+        · intro L φ hL d
+          obtain ⟨T, hTc, hLT⟩ := rMaximal_extension_exists.chain_finite_subset_in_element
+            hc_chain hT₀ L (fun ψ hψ => hL ψ hψ)
+          exact Set.mem_sUnion.mpr ⟨T, hTc, (hc_sub hTc).2.1.2 L φ hLT d⟩
+      · -- r3Relation A (⋃₀ c) C: both rRelation A - and rRelationSince C - hold
+        constructor
+        · -- rRelation A (⋃₀ c)
+          intro γ δ h_until
+          rcases (hc_sub hT₀).2.2.1 γ δ h_until with h_d | ⟨h_g, h_u⟩
+          · exact Or.inl (Set.mem_sUnion.mpr ⟨T₀, hT₀, h_d⟩)
+          · exact Or.inr ⟨Set.mem_sUnion.mpr ⟨T₀, hT₀, h_g⟩,
+                           Set.mem_sUnion.mpr ⟨T₀, hT₀, h_u⟩⟩
+        · -- rRelationSince C (⋃₀ c)
+          intro γ δ h_since
+          rcases (hc_sub hT₀).2.2.2 γ δ h_since with h_d | ⟨h_g, h_s⟩
+          · exact Or.inl (Set.mem_sUnion.mpr ⟨T₀, hT₀, h_d⟩)
+          · exact Or.inr ⟨Set.mem_sUnion.mpr ⟨T₀, hT₀, h_g⟩,
+                           Set.mem_sUnion.mpr ⟨T₀, hT₀, h_s⟩⟩)
+  obtain ⟨hSB, hB_dcs, hB_r3⟩ := hB_in
+  refine ⟨B, hSB, hB_dcs, hB_r3, ?_⟩
+  intro D hD_dcs hBD hD_r3
+  have hD_in : D ∈ r3DCSExtensions A S C :=
+    ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
+  exact hBD.2 (hB_max hD_in hBD.1)
+
+/--
+Mirror: R3-maximal Since extensions exist.
+-/
+theorem r3MaximalSince_extension_exists {A C : Set Formula}
+    (_h_mcs_A : SetMaximalConsistent A) (_h_mcs_C : SetMaximalConsistent C)
+    {S : Set Formula} (h_dcs : SetDeductivelyClosed S) (h_r3 : r3RelationSince A S C) :
+    ∃ B : Set Formula, S ⊆ B ∧ R3MaximalSince A B C := by
+  have h_S_in : S ∈ {B | S ⊆ B ∧ SetDeductivelyClosed B ∧ r3RelationSince A B C} :=
+    ⟨Set.Subset.refl _, h_dcs, h_r3⟩
+  obtain ⟨B, hB_in, hB_max⟩ := zorn_subset {B | S ⊆ B ∧ SetDeductivelyClosed B ∧ r3RelationSince A B C} (by
+    intro c hc_sub hc_chain
+    by_cases hc_empty : c = ∅
+    · exact ⟨S, h_S_in, by intro t ht; exact absurd ht (by rw [hc_empty]; exact Set.notMem_empty _)⟩
+    · obtain ⟨T₀, hT₀⟩ := Set.nonempty_iff_ne_empty.mpr hc_empty
+      refine ⟨⋃₀ c, ?_, fun t ht => Set.subset_sUnion_of_mem ht⟩
+      refine ⟨Set.subset_sUnion_of_subset c T₀ (hc_sub hT₀).1 hT₀, ?_, ?_⟩
+      · constructor
+        · intro L hL ⟨d⟩
+          obtain ⟨T, hTc, hLT⟩ := rMaximal_extension_exists.chain_finite_subset_in_element
+            hc_chain hT₀ L (fun φ hφ => hL φ hφ)
+          exact (hc_sub hTc).2.1.1 L hLT ⟨d⟩
+        · intro L φ hL d
+          obtain ⟨T, hTc, hLT⟩ := rMaximal_extension_exists.chain_finite_subset_in_element
+            hc_chain hT₀ L (fun ψ hψ => hL ψ hψ)
+          exact Set.mem_sUnion.mpr ⟨T, hTc, (hc_sub hTc).2.1.2 L φ hLT d⟩
+      · -- r3RelationSince A (⋃₀ c) C
+        constructor
+        · -- rRelationSince A (⋃₀ c)
+          intro γ δ h_since
+          rcases (hc_sub hT₀).2.2.1 γ δ h_since with h_d | ⟨h_g, h_s⟩
+          · exact Or.inl (Set.mem_sUnion.mpr ⟨T₀, hT₀, h_d⟩)
+          · exact Or.inr ⟨Set.mem_sUnion.mpr ⟨T₀, hT₀, h_g⟩,
+                           Set.mem_sUnion.mpr ⟨T₀, hT₀, h_s⟩⟩
+        · -- rRelation C (⋃₀ c)
+          intro γ δ h_until
+          rcases (hc_sub hT₀).2.2.2 γ δ h_until with h_d | ⟨h_g, h_u⟩
+          · exact Or.inl (Set.mem_sUnion.mpr ⟨T₀, hT₀, h_d⟩)
+          · exact Or.inr ⟨Set.mem_sUnion.mpr ⟨T₀, hT₀, h_g⟩,
+                           Set.mem_sUnion.mpr ⟨T₀, hT₀, h_u⟩⟩)
+  obtain ⟨hSB, hB_dcs, hB_r3⟩ := hB_in
+  refine ⟨B, hSB, hB_dcs, hB_r3, ?_⟩
+  intro D hD_dcs hBD hD_r3
+  have hD_in : D ∈ {B | S ⊆ B ∧ SetDeductivelyClosed B ∧ r3RelationSince A B C} :=
+    ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
+  exact hBD.2 (hB_max hD_in hBD.1)
+
+/--
+Any MCS B such that A ⊆ B and C ⊆ B satisfies r3Relation A B C.
+This is because rRelation A B holds (from A ⊆ B) and rRelationSince C B holds
+(from C ⊆ B).
+-/
+theorem r3Relation_of_superset_mcs {A B C : Set Formula}
+    (h_mcs_B : SetMaximalConsistent B)
+    (h_sub_A : A ⊆ B) (h_sub_C : C ⊆ B) : r3Relation A B C :=
+  ⟨rRelation_of_superset_mcs h_mcs_B h_sub_A,
+   rRelationSince_of_superset_mcs h_mcs_B h_sub_C⟩
+
+/--
+A deductive closure seed for r3-relation: given the r-relation seed from
+rRelation_of_superset_mcs applied to a superset MCS, the three-argument
+version holds automatically.
+-/
+theorem r3_seed_from_rRelation {A B C : Set Formula}
+    (h_r : rRelation A B) (h_rS : rRelationSince C B) : r3Relation A B C :=
+  ⟨h_r, h_rS⟩
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
