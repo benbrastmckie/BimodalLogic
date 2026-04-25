@@ -468,4 +468,152 @@ theorem r3_seed_from_rRelation {A B C : Set Formula}
     (h_r : rRelation A B) (h_rS : rRelationSince C B) : r3Relation A B C :=
   ⟨h_r, h_rS⟩
 
+/-! ## Burgess r-Relation (Content-Based)
+
+Burgess's r-relation is fundamentally different from the codebase's `rRelation`:
+
+- **Codebase rRelation(A, B)**: For all γ U δ ∈ A, either δ ∈ B or (γ ∈ B ∧ γ U δ ∈ B).
+  This is an OBLIGATION PROPAGATION relation: Until formulas from A propagate to B.
+
+- **Burgess r(A, β, C)**: For all γ ∈ C, (γ U β) ∈ A.
+  This is a CONTENT relation: β is an element such that any formula from C
+  can serve as the event with β as guard in an Until formula in A.
+
+Note on notation: Burgess writes U(event, guard), codebase writes guard U event.
+So Burgess's "for all gamma in C, U_B(gamma, beta) in A" becomes
+"for all gamma in C, (beta U gamma) in A" in codebase notation, i.e.,
+`Formula.untl β γ ∈ A` (guard=β, event=γ).
+
+Wait, let me be more precise:
+- Burgess: U_B(gamma, beta) where gamma = event, beta = guard
+- Codebase: Formula.untl phi psi where phi = guard, psi = event
+- Translation: U_B(gamma, beta) = Formula.untl beta gamma
+
+So Burgess r(A, beta, C) = for all gamma in C, Formula.untl beta gamma in A.
+
+The Lemma 2.5 absorption argument uses this relation.
+-/
+
+/--
+**Burgess r-relation for a single element**: `burgessR A β C` holds when
+for all γ ∈ C, `(β U γ) ∈ A`.
+
+This is Burgess's r(A, β, C) after translating his U(event, guard) convention
+to the codebase's guard U event convention.
+
+Intuition: β is a valid "guard" for the interval between A and C. Any formula
+γ that holds at the right endpoint C can be combined with guard β into an
+Until formula β U γ that holds at the left endpoint A.
+-/
+def burgessR (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
+  ∀ γ ∈ C, Formula.untl β γ ∈ A
+
+/--
+**Burgess r-relation for a set**: `burgessRSet A B C` holds when
+for all β ∈ B, `burgessR A β C`.
+
+This is Burgess's r(A, B, C): every element of the interval set B serves
+as a valid guard between endpoints A and C.
+-/
+def burgessRSet (A B C : Set Formula) : Prop :=
+  ∀ β ∈ B, burgessR A β C
+
+/--
+**Burgess r-relation for Since (single element)**: `burgessRSince A β C` holds when
+for all γ ∈ C, `(β S γ) ∈ A`.
+-/
+def burgessRSince (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
+  ∀ γ ∈ C, Formula.snce β γ ∈ A
+
+/--
+**Burgess r-relation for Since (set)**: `burgessRSetSince A B C` holds when
+for all β ∈ B, `burgessRSince A β C`.
+-/
+def burgessRSetSince (A B C : Set Formula) : Prop :=
+  ∀ β ∈ B, burgessRSince A β C
+
+/--
+**Combined Burgess r-relation**: `burgessR3 A B C` holds when
+burgessRSet(A, B, C) AND burgessRSetSince(C, B, A).
+
+This captures both forward (Until from A through B to C) and backward
+(Since from C through B to A) relationships.
+-/
+def burgessR3 (A B C : Set Formula) : Prop :=
+  burgessRSet A B C ∧ burgessRSetSince C B A
+
+/-! ## Lemma 2.5: Absorption / Intersection Identity
+
+The key lemma for the chronicle construction: if we have r3-maximality for
+adjacent pairs and define non-adjacent g values by C3 (three-way intersection),
+then the Burgess r-relation holds for the non-adjacent pairs via BX6 absorption.
+
+**The argument**: Given β ∈ g(w,x) ∩ f(x) ∩ B and γ ∈ C:
+1. β ∈ B and burgessR(f(x), B, C): (β U γ) ∈ f(x)
+2. β ∈ f(x): β ∧ (β U γ) ∈ f(x) (conjunction in MCS)
+3. β ∈ g(w,x) and burgessR(f(w), g(w,x), f(x)):
+   ((β ∧ (β U γ)) U β) ∈ f(w) -- using β ∧ (β U γ) ∈ f(x) as the "event"
+   Wait, that's not right. Let me re-derive.
+
+Actually, burgessR(f(w), β, f(x)) means: for all α ∈ f(x), (β U α) ∈ f(w).
+So from β ∧ (β U γ) ∈ f(x): (β U (β ∧ (β U γ))) ∈ f(w).
+By BX6 (absorb_until): (β U (β ∧ (β U γ))) → (β U γ).
+So (β U γ) ∈ f(w).
+
+This is exactly the Lemma 2.5 argument!
+-/
+
+/--
+**Lemma 2.5 absorption (single element)**: Given burgessR(A, β, D) where β ∈ D,
+burgessR(D, β, C), and D is an MCS, then burgessR(A, β, C).
+
+Uses BX6 (absorb_until): (β U (β ∧ (β U γ))) → (β U γ).
+
+Proof:
+1. γ ∈ C and burgessR(D, β, C): (β U γ) ∈ D
+2. β ∈ D: β ∧ (β U γ) ∈ D (conjunction in MCS)
+3. β ∧ (β U γ) ∈ D and burgessR(A, β, D): (β U (β ∧ (β U γ))) ∈ A
+4. BX6: (β U (β ∧ (β U γ))) → (β U γ), so (β U γ) ∈ A.
+-/
+theorem burgessR_absorption {A D C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_D : SetMaximalConsistent D)
+    (β : Formula)
+    (h_β_D : β ∈ D)
+    (h_rAD : burgessR A β D)
+    (h_rDC : burgessR D β C) :
+    burgessR A β C := by
+  intro γ h_γ_C
+  -- Step 1: (β U γ) ∈ D
+  have h1 : Formula.untl β γ ∈ D := h_rDC γ h_γ_C
+  -- Step 2: β ∧ (β U γ) ∈ D
+  have h2 : Formula.and β (Formula.untl β γ) ∈ D :=
+    dcs_conj_closed (mcs_is_dcs h_mcs_D) h_β_D h1
+  -- Step 3: (β U (β ∧ (β U γ))) ∈ A
+  have h3 : Formula.untl β (Formula.and β (Formula.untl β γ)) ∈ A :=
+    h_rAD (Formula.and β (Formula.untl β γ)) h2
+  -- Step 4: BX6 → (β U γ) ∈ A
+  have h_bx6 : DerivationTree []
+      ((Formula.untl β (Formula.and β (Formula.untl β γ))).imp (Formula.untl β γ)) :=
+    DerivationTree.axiom [] _ (Axiom.absorb_until β γ)
+  exact SetMaximalConsistent.implication_property h_mcs_A
+    (theorem_in_mcs h_mcs_A h_bx6) h3
+
+/--
+**Lemma 2.5 absorption (set version)**: Given burgessRSet(A, B∩D, D) where B∩D ⊆ D,
+burgessRSet(D, B∩D, C), and D is MCS, A is MCS, then burgessRSet(A, B∩D, C).
+
+This is the set-level version used for the three-way intersection.
+-/
+theorem burgessRSet_absorption {A D C : Set Formula} {B : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_D : SetMaximalConsistent D)
+    (h_sub_D : B ⊆ D)
+    (h_rAD : burgessRSet A B D)
+    (h_rDC : burgessRSet D B C) :
+    burgessRSet A B C := by
+  intro β h_β_B
+  exact burgessR_absorption h_mcs_A h_mcs_D β (h_sub_D h_β_B)
+    (h_rAD β h_β_B) (h_rDC β h_β_B)
+
 end Bimodal.Metalogic.BXCanonical.Chronicle

@@ -403,22 +403,52 @@ theorem c3_interval_subset_right (χ : Chronicle) (h_c3 : χ.c3)
   rw [h_eq] at hφ
   exact hφ.2
 
-/-! ## g_content Chain Ordering -/
+/-! ## ChronicleInvariant Bundle -/
+
+/--
+Bundle of chronicle invariants maintained at every finite stage of the
+omega-chain construction. This replaces the previous approach of tracking
+only C0.
+
+The key insight (Burgess 1982): maintaining C0-C3 at every finite stage
+enables the limit to satisfy C4/C5 (which are ensured by counterexample
+elimination), and the truth lemma follows from C3 alone (no need for
+g_content_chain_property).
+-/
+structure ChronicleInvariant (χ : Chronicle) : Prop where
+  /-- C0: Every domain point maps to an MCS -/
+  hc0 : χ.c0
+  /-- C1: Every pair x < y maps to a DCS -/
+  hc1 : χ.c1
+  /-- C2: r3Relation for all pairs -/
+  hc2 : χ.c2
+  /-- C2': R3-maximality for adjacent pairs -/
+  hc2' : χ.c2'
+  /-- C3: Three-way interval decomposition -/
+  hc3 : χ.c3
+
+/-! ## g_content Chain Ordering (DEPRECATED)
+
+These definitions are retained for backward compatibility but are NOT
+needed for the chronicle construction. The truth lemma routes through
+C3 (three-way intersection) instead of g_content propagation.
+See report 22 (Teammate B) for the complete argument.
+-/
 
 /--
 A chronicle has **g_content chain ordering** if for all domain points x < y,
 g_content(f(x)) ⊆ f(y). This means G(φ) ∈ f(x) implies φ ∈ f(y) for all
 y > x in the domain.
 
-This is the key inductive invariant maintained through the omega-chain
-construction. Together with C0, it ensures the limit chronicle has
-g_content propagation across all domain point pairs.
+**DEPRECATED**: This property is NOT needed for the truth lemma. The correct
+path uses C3 (three-way interval decomposition) to get g(x,y) ⊆ f(z) for
+intermediate z, which is the actual property needed. See `c3_interval_subset_point`.
 -/
 def Chronicle.g_ordered (χ : Chronicle) : Prop :=
   ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, x < y → g_content (χ.f x) ⊆ χ.f y
 
 /--
-Mirror: h_content chain ordering (backward direction).
+Mirror: h_content chain ordering (backward direction). **DEPRECATED**.
 -/
 def Chronicle.h_ordered (χ : Chronicle) : Prop :=
   ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, y < x → h_content (χ.f x) ⊆ χ.f y
@@ -509,5 +539,70 @@ theorem R3Maximal_r3 {A B C : Set Formula} (h : R3Maximal A B C) :
 /-- R3Maximal implies rRelation (via bridge). -/
 theorem R3Maximal_rRelation {A B C : Set Formula} (h : R3Maximal A B C) :
     rRelation A B := h.2.1.1
+
+/-! ## DCS Intersection Properties -/
+
+/--
+The intersection of two DCS is deductively closed (when consistent).
+If S₁ and S₂ are both deductively closed and their intersection is consistent,
+then S₁ ∩ S₂ is deductively closed.
+
+Proof: If all premises of a derivation are in S₁ ∩ S₂, they are in both S₁ and S₂.
+Since both are closed under derivation, the conclusion is in both, hence in the
+intersection.
+-/
+theorem dcs_inter_dcs {S₁ S₂ : Set Formula}
+    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetDeductivelyClosed S₂)
+    (h_cons : SetConsistent (S₁ ∩ S₂)) :
+    SetDeductivelyClosed (S₁ ∩ S₂) := by
+  constructor
+  · exact h_cons
+  · intro L φ hL hd
+    constructor
+    · exact h₁.2 L φ (fun ψ hψ => (hL ψ hψ).1) hd
+    · exact h₂.2 L φ (fun ψ hψ => (hL ψ hψ).2) hd
+
+/--
+The intersection of a DCS with an MCS is deductively closed (when consistent).
+-/
+theorem dcs_inter_mcs {S₁ S₂ : Set Formula}
+    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent S₂)
+    (h_cons : SetConsistent (S₁ ∩ S₂)) :
+    SetDeductivelyClosed (S₁ ∩ S₂) :=
+  dcs_inter_dcs h₁ (mcs_is_dcs h₂) h_cons
+
+/--
+A subset of a consistent set is consistent (for derivation-based consistency).
+If S ⊆ T and T is consistent, then S is consistent.
+-/
+theorem SetConsistent_of_subset {S T : Set Formula}
+    (h_sub : S ⊆ T) (h_cons : SetConsistent T) : SetConsistent S := by
+  intro L hL hd
+  exact h_cons L (fun ψ hψ => h_sub (hL ψ hψ)) hd
+
+/--
+The three-way intersection g(w,x) ∩ f(x) ∩ B is consistent when it is
+a subset of a consistent set (e.g., B).
+-/
+theorem three_way_inter_consistent {S₁ S₂ S₃ : Set Formula}
+    (h₃_cons : SetConsistent S₃) :
+    SetConsistent (S₁ ∩ S₂ ∩ S₃) :=
+  SetConsistent_of_subset (fun _ h => h.2) h₃_cons
+
+/--
+The three-way intersection of two DCS and an MCS is deductively closed.
+Used for C1 verification when defining g values by C3.
+-/
+theorem dcs_inter_mcs_inter_dcs {S₁ S₂ S₃ : Set Formula}
+    (h₁ : SetDeductivelyClosed S₁) (h₂ : SetMaximalConsistent S₂)
+    (h₃ : SetDeductivelyClosed S₃)
+    (h_cons : SetConsistent (S₁ ∩ S₂ ∩ S₃)) :
+    SetDeductivelyClosed (S₁ ∩ S₂ ∩ S₃) := by
+  constructor
+  · exact h_cons
+  · intro L φ hL hd
+    refine ⟨⟨h₁.2 L φ (fun ψ hψ => (hL ψ hψ).1.1) hd,
+            (mcs_is_dcs h₂).2 L φ (fun ψ hψ => (hL ψ hψ).1.2) hd⟩,
+            h₃.2 L φ (fun ψ hψ => (hL ψ hψ).2) hd⟩
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
