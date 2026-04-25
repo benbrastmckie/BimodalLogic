@@ -5,6 +5,7 @@ import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Order.CountableDenseLinearOrder
+import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Data.Rat.Encodable
 
 /-!
@@ -170,14 +171,105 @@ instance limitDomSubtype_nonempty (A : Set Formula) (h_mcs : SetMaximalConsisten
     Nonempty (LimitDomSubtype A h_mcs) :=
   ⟨⟨0, zero_mem_limit_dom A h_mcs⟩⟩
 
-/-! ## Chronicle FMCS Construction
+/-! ## Cantor Isomorphism
 
-Build an FMCS over Rat from the chronicle's limit construction.
+By `Order.iso_of_countable_dense`, the subtype `LimitDomSubtype` (which is
+Countable, DenselyOrdered, NoMinOrder, NoMaxOrder, Nonempty) is order-isomorphic
+to `Rat`. We extract a concrete `OrderIso` via `Classical.choice`.
 
-For domain points x ∈ limit_dom, we use limit_f(x) directly.
-For non-domain points, we extend using Lindenbaum extension of
-g_content(A) where A is the root MCS, ensuring forward_G/backward_H
-coherence.
+This iso makes EVERY rational a domain point: `cantor_f(q) = limit_f(iso.symm(q).val)`.
+The non-domain extension problem disappears entirely.
+-/
+
+/--
+The Cantor order isomorphism: `LimitDomSubtype ≃o Rat`.
+Exists by `Order.iso_of_countable_dense` since both types are countable,
+densely ordered, unbounded linear orders.
+-/
+noncomputable def cantor_iso (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    LimitDomSubtype A h_mcs ≃o Rat :=
+  Classical.choice (Order.iso_of_countable_dense (LimitDomSubtype A h_mcs) Rat)
+
+/--
+The Cantor-based MCS assignment: every rational maps to an MCS via the
+inverse of the Cantor isomorphism composed with `limit_f`.
+
+`cantor_f(q) = limit_f(cantor_iso.symm(q).val)`
+
+Since `cantor_iso.symm(q)` is a subtype element of `limit_dom`, its `.val`
+is always in `limit_dom`, so `limit_f` is well-defined at that point.
+-/
+noncomputable def cantor_f (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    Rat → Set Formula :=
+  fun q => limit_f A h_mcs ((cantor_iso A h_mcs).symm q).val
+
+/--
+The Cantor zero point: the rational corresponding to 0 in the limit domain.
+-/
+noncomputable def cantor_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) : Rat :=
+  (cantor_iso A h_mcs) ⟨0, zero_mem_limit_dom A h_mcs⟩
+
+/--
+`cantor_f` at `cantor_zero` equals A (the root MCS).
+-/
+theorem cantor_f_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    cantor_f A h_mcs (cantor_zero A h_mcs) = A := by
+  unfold cantor_f cantor_zero
+  simp [OrderIso.symm_apply_apply]
+  exact limit_f_zero A h_mcs
+
+/--
+Every rational maps to an MCS under `cantor_f`.
+-/
+theorem cantor_f_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (q : Rat) : SetMaximalConsistent (cantor_f A h_mcs q) := by
+  unfold cantor_f
+  exact limit_c0 A h_mcs _ ((cantor_iso A h_mcs).symm q).property
+
+/--
+The Cantor-based FMCS: an FMCS over Rat where every rational is a domain point.
+
+- `forward_G`: `G(phi) in cantor_f(t)` and `t < t'` implies `phi in cantor_f(t')`.
+  Since `cantor_iso.symm` is strictly monotone, `t < t'` gives
+  `cantor_iso.symm(t) < cantor_iso.symm(t')`, and both are in `limit_dom`.
+  Then `limit_forward_G` applies directly.
+
+- `backward_H`: symmetric argument using `limit_backward_H`.
+-/
+noncomputable def cantor_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    FMCS Rat where
+  mcs := cantor_f A h_mcs
+  is_mcs := cantor_f_is_mcs A h_mcs
+  forward_G := by
+    intro t t' φ h_lt h_G
+    -- h_G : G(φ) ∈ cantor_f(t) = G(φ) ∈ limit_f(iso.symm(t).val)
+    -- Need: φ ∈ cantor_f(t') = φ ∈ limit_f(iso.symm(t').val)
+    -- iso.symm is strictly monotone: t < t' → iso.symm(t) < iso.symm(t')
+    have h_lt_dom := (cantor_iso A h_mcs).symm.strictMono h_lt
+    exact limit_forward_G A h_mcs
+      ((cantor_iso A h_mcs).symm t).val
+      ((cantor_iso A h_mcs).symm t').val
+      ((cantor_iso A h_mcs).symm t).property
+      ((cantor_iso A h_mcs).symm t').property
+      h_lt_dom φ h_G
+  backward_H := by
+    intro t t' φ h_lt h_H
+    -- h_H : H(φ) ∈ cantor_f(t) = H(φ) ∈ limit_f(iso.symm(t).val)
+    -- Need: φ ∈ cantor_f(t') = φ ∈ limit_f(iso.symm(t').val)
+    -- iso.symm is strictly monotone: t' < t → iso.symm(t') < iso.symm(t)
+    have h_lt_dom := (cantor_iso A h_mcs).symm.strictMono h_lt
+    exact limit_backward_H A h_mcs
+      ((cantor_iso A h_mcs).symm t).val
+      ((cantor_iso A h_mcs).symm t').val
+      ((cantor_iso A h_mcs).symm t).property
+      ((cantor_iso A h_mcs).symm t').property
+      h_lt_dom φ h_H
+
+/-! ## Extended Limit Function (Legacy)
+
+The `extended_limit_f` construction below is retained for downstream definitions
+(`chronicle_fmcs`, `shifted_chronicle_fmcs`, etc.) that still reference it.
+Phase 3 will rewire these to use `cantor_fmcs` instead.
 -/
 
 /--
@@ -186,17 +278,9 @@ Extended chronicle function: assigns an MCS to EVERY rational.
 For x ∈ limit_dom: uses limit_f(x) (the chronicle's assignment).
 For x ∉ limit_dom: uses the root MCS M₀.
 
-The non-domain assignment to M₀ is a simplification. The restricted
-coherence conditions only need to hold for formulas in deferralClosure(root),
-and the proof will show that the non-domain assignments don't create
-counterexamples because F/P obligations at non-domain points are handled
-by the chronicle's density.
-
-Design note: a more careful construction would assign g_content/h_content-
-derived MCS to non-domain points. The M₀ assignment works because:
-1. The evaluation family uses limit_f, which DOES cover the evaluation point (0)
-2. Restricted coherence quantifies over families, but we use limit_f-based families
-3. Non-domain points in limit_f-based families use M₀ as fallback
+NOTE: This is superseded by `cantor_f` which uses the Cantor isomorphism
+to make every rational a domain point. Retained for downstream compatibility
+until Phase 3 rewires `chronicle_fmcs` to use `cantor_fmcs`.
 -/
 noncomputable def extended_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
     Rat → Set Formula :=
