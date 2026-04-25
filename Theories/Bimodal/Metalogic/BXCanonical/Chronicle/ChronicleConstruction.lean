@@ -360,6 +360,96 @@ theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
   · rwa [hpc_x] at hy_lt
   · rwa [hpc_η] at hy_η
 
+/--
+C4 witness at step n+1: if `counterexample_enum (Nat.unpair n).2` is a c4_forward
+counterexample with x, y ∈ dom(n), x < y, neg(untl(ξ,η)) ∈ f_n(x), η ∈ f_n(y),
+then a witness z with ξ.neg ∈ f_{n+1}(z) exists in dom(n+1).
+-/
+theorem omega_chain_c4_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (n : Nat) (x y : Rat) (ξ η : Formula)
+    (hx : x ∈ (omega_chain_val A h_mcs n).dom)
+    (hy : y ∈ (omega_chain_val A h_mcs n).dom)
+    (hxy : x < y)
+    (h_neg_until : (Formula.untl ξ η).neg ∈ (omega_chain_val A h_mcs n).f x)
+    (h_event : η ∈ (omega_chain_val A h_mcs n).f y)
+    (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, y, ξ, η, .c4_forward⟩) :
+    ∃ z ∈ (omega_chain_val A h_mcs (n + 1)).dom,
+      x < z ∧ z < y ∧ ξ.neg ∈ (omega_chain_val A h_mcs (n + 1)).f z := by
+  set pc := counterexample_enum (Nat.unpair n).2 with hpc_def
+  set result := eliminate_potential_counterexample
+    (omega_chain_val A h_mcs n)
+    (omega_chain_c0 A h_mcs n)
+    pc with hresult_def
+  have h_eq : omega_chain_val A h_mcs (n + 1) = result.val := rfl
+  rw [h_eq]
+  have h_kind : pc.kind = .c4_forward := by rw [hn_eq]
+  have h_mem_x : pc.x ∈ (omega_chain_val A h_mcs n).dom := by
+    rw [show pc.x = x from by rw [hn_eq]]; exact hx
+  have h_mem_y : pc.y ∈ (omega_chain_val A h_mcs n).dom := by
+    rw [show pc.y = y from by rw [hn_eq]]; exact hy
+  have h_lt : pc.x < pc.y := by
+    rw [show pc.x = x from by rw [hn_eq], show pc.y = y from by rw [hn_eq]]; exact hxy
+  have h_nu : (Formula.untl pc.ξ pc.η).neg ∈ (omega_chain_val A h_mcs n).f pc.x := by
+    rw [show pc.ξ = ξ from by rw [hn_eq], show pc.η = η from by rw [hn_eq],
+        show pc.x = x from by rw [hn_eq]]
+    exact h_neg_until
+  have h_ev : pc.η ∈ (omega_chain_val A h_mcs n).f pc.y := by
+    rw [show pc.η = η from by rw [hn_eq], show pc.y = y from by rw [hn_eq]]
+    exact h_event
+  obtain ⟨z, hz_dom, hxz, hzy, hz_neg⟩ :=
+    result.c4_forward_witness h_kind h_mem_x h_mem_y h_lt h_nu h_ev
+  have hpc_x : pc.x = x := by rw [hn_eq]
+  have hpc_y : pc.y = y := by rw [hn_eq]
+  have hpc_ξ : pc.ξ = ξ := by rw [hn_eq]
+  refine ⟨z, hz_dom, ?_, ?_, ?_⟩
+  · rwa [hpc_x] at hxz
+  · rwa [hpc_y] at hzy
+  · rwa [hpc_ξ] at hz_neg
+
+/--
+C4' witness at step n+1 (mirror for Since).
+-/
+theorem omega_chain_c4'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (n : Nat) (x y : Rat) (ξ η : Formula)
+    (hx : x ∈ (omega_chain_val A h_mcs n).dom)
+    (hy : y ∈ (omega_chain_val A h_mcs n).dom)
+    (hyx : y < x)
+    (h_neg_since : (Formula.snce ξ η).neg ∈ (omega_chain_val A h_mcs n).f x)
+    (h_event : η ∈ (omega_chain_val A h_mcs n).f y)
+    (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, y, ξ, η, .c4_backward⟩) :
+    ∃ z ∈ (omega_chain_val A h_mcs (n + 1)).dom,
+      y < z ∧ z < x ∧ ξ.neg ∈ (omega_chain_val A h_mcs (n + 1)).f z := by
+  set pc := counterexample_enum (Nat.unpair n).2 with hpc_def
+  set result := eliminate_potential_counterexample
+    (omega_chain_val A h_mcs n)
+    (omega_chain_c0 A h_mcs n)
+    pc with hresult_def
+  have h_eq : omega_chain_val A h_mcs (n + 1) = result.val := rfl
+  rw [h_eq]
+  have h_kind : pc.kind = .c4_backward := by rw [hn_eq]
+  have h_mem_x : pc.x ∈ (omega_chain_val A h_mcs n).dom := by
+    rw [show pc.x = x from by rw [hn_eq]]; exact hx
+  have h_mem_y : pc.y ∈ (omega_chain_val A h_mcs n).dom := by
+    rw [show pc.y = y from by rw [hn_eq]]; exact hy
+  have h_lt : pc.y < pc.x := by
+    rw [show pc.x = x from by rw [hn_eq], show pc.y = y from by rw [hn_eq]]; exact hyx
+  have h_ns : (Formula.snce pc.ξ pc.η).neg ∈ (omega_chain_val A h_mcs n).f pc.x := by
+    rw [show pc.ξ = ξ from by rw [hn_eq], show pc.η = η from by rw [hn_eq],
+        show pc.x = x from by rw [hn_eq]]
+    exact h_neg_since
+  have h_ev : pc.η ∈ (omega_chain_val A h_mcs n).f pc.y := by
+    rw [show pc.η = η from by rw [hn_eq], show pc.y = y from by rw [hn_eq]]
+    exact h_event
+  obtain ⟨z, hz_dom, hyz, hzx, hz_neg⟩ :=
+    result.c4_backward_witness h_kind h_mem_x h_mem_y h_lt h_ns h_ev
+  have hpc_x : pc.x = x := by rw [hn_eq]
+  have hpc_y : pc.y = y := by rw [hn_eq]
+  have hpc_ξ : pc.ξ = ξ := by rw [hn_eq]
+  refine ⟨z, hz_dom, ?_, ?_, ?_⟩
+  · rwa [hpc_y] at hyz
+  · rwa [hpc_x] at hzx
+  · rwa [hpc_ξ] at hz_neg
+
 /-! ## Limit Chronicle
 
 The limit of the omega-chain is defined by taking:
@@ -624,6 +714,94 @@ theorem limit_dom_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   have h_step : omega_chain_val A h_mcs (n + 1) = result.val := rfl
   exact ⟨z, ⟨n + 1, h_step ▸ hz_dom⟩, h_pc_x ▸ hxz, h_pc_y ▸ hzy⟩
 
+/-! ## C4 Satisfaction in the Limit
+
+The limit chronicle satisfies C4: for any x < y in limit_dom, if
+neg(untl(gamma, delta)) in limit_f(x) and delta in limit_f(y), then
+there exists z in limit_dom with x < z < y and gamma.neg in limit_f(z).
+
+The proof parallels limit_satisfies_c5_weak: use surjectivity of the
+counterexample enumeration to find a step where the counterexample is
+processed. At that step, either the witness already exists or one is
+inserted by eliminate_C4_counterexample.
+-/
+
+/--
+The limit chronicle satisfies C4 (generalized Burgess C4a): for all x < y in
+limit_dom, if neg(untl(ξ,η)) in limit_f(x) and η in limit_f(y), then there
+exists z in limit_dom with x < z < y and ξ.neg in limit_f(z).
+-/
+theorem limit_satisfies_c4 (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
+    (hxy : x < y) (ξ η : Formula)
+    (h_neg_until : (Formula.untl ξ η).neg ∈ limit_f A h_mcs x)
+    (h_event : η ∈ limit_f A h_mcs y) :
+    ∃ z ∈ limit_dom A h_mcs, x < z ∧ z < y ∧ ξ.neg ∈ limit_f A h_mcs z := by
+  -- Get stages where x and y enter the domain
+  obtain ⟨nx, hnx⟩ := hx
+  obtain ⟨ny, hny⟩ := hy
+  set n₀ := max nx ny with hn₀_def
+  have hx_n₀ : x ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
+  have hy_n₀ : y ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
+  -- Find step n ≥ n₀ where the C4 counterexample ⟨x, y, ξ, η, .c4_forward⟩ is processed
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, y, ξ, η, .c4_forward⟩ n₀
+  have hx_n : x ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hx_n₀
+  have hy_n : y ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hy_n₀
+  -- Transfer formula membership to stage n using f-agreement
+  have h_nu_n : (Formula.untl ξ η).neg ∈ (omega_chain_val A h_mcs n).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs hn_ge x hx_n₀]
+    rw [omega_chain_f_agrees_le A h_mcs (le_max_left nx ny) x hnx]
+    rwa [← limit_f_eq A h_mcs x nx hnx]
+  have h_ev_n : η ∈ (omega_chain_val A h_mcs n).f y := by
+    rw [omega_chain_f_agrees_le A h_mcs hn_ge y hy_n₀]
+    rw [omega_chain_f_agrees_le A h_mcs (le_max_right nx ny) y hny]
+    rwa [← limit_f_eq A h_mcs y ny hny]
+  -- Apply omega_chain_c4_witness
+  obtain ⟨z, hz_dom, hxz, hzy, hz_neg⟩ :=
+    omega_chain_c4_witness A h_mcs n x y ξ η hx_n hy_n hxy h_nu_n h_ev_n hn_eq
+  -- Transfer to the limit
+  exact ⟨z, ⟨n + 1, hz_dom⟩, hxz, hzy,
+    by rw [limit_f_eq A h_mcs z (n + 1) hz_dom]; exact hz_neg⟩
+
+/--
+Mirror: the limit chronicle satisfies C4' (Since).
+-/
+theorem limit_satisfies_c4' (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
+    (hyx : y < x) (ξ η : Formula)
+    (h_neg_since : (Formula.snce ξ η).neg ∈ limit_f A h_mcs x)
+    (h_event : η ∈ limit_f A h_mcs y) :
+    ∃ z ∈ limit_dom A h_mcs, y < z ∧ z < x ∧ ξ.neg ∈ limit_f A h_mcs z := by
+  obtain ⟨nx, hnx⟩ := hx
+  obtain ⟨ny, hny⟩ := hy
+  set n₀ := max nx ny with hn₀_def
+  have hx_n₀ : x ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
+  have hy_n₀ : y ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, y, ξ, η, .c4_backward⟩ n₀
+  have hx_n : x ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hx_n₀
+  have hy_n : y ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hy_n₀
+  have h_ns_n : (Formula.snce ξ η).neg ∈ (omega_chain_val A h_mcs n).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs hn_ge x hx_n₀]
+    rw [omega_chain_f_agrees_le A h_mcs (le_max_left nx ny) x hnx]
+    rwa [← limit_f_eq A h_mcs x nx hnx]
+  have h_ev_n : η ∈ (omega_chain_val A h_mcs n).f y := by
+    rw [omega_chain_f_agrees_le A h_mcs hn_ge y hy_n₀]
+    rw [omega_chain_f_agrees_le A h_mcs (le_max_right nx ny) y hny]
+    rwa [← limit_f_eq A h_mcs y ny hny]
+  obtain ⟨z, hz_dom, hyz, hzx, hz_neg⟩ :=
+    omega_chain_c4'_witness A h_mcs n x y ξ η hx_n hy_n hyx h_ns_n h_ev_n hn_eq
+  exact ⟨z, ⟨n + 1, hz_dom⟩, hyz, hzx,
+    by rw [limit_f_eq A h_mcs z (n + 1) hz_dom]; exact hz_neg⟩
 
 /-! ## Limit Interval Function
 
@@ -848,7 +1026,63 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hxy : x < y) (φ : Formula) (h_G : Formula.all_future φ ∈ limit_f A h_mcs x) :
     φ ∈ limit_f A h_mcs y := by
-  sorry
+  -- Proof by contradiction using generalized C4 + C0.
+  by_contra h_not
+  have h_mcs_x := limit_c0 A h_mcs x hx
+  have h_mcs_y := limit_c0 A h_mcs y hy
+  -- φ ∉ limit_f(y), so φ.neg ∈ limit_f(y) by MCS negation completeness
+  have h_neg_phi : φ.neg ∈ limit_f A h_mcs y := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_y φ with h | h
+    · exact absurd h h_not
+    · exact h
+  -- Step 1: G(φ) ∈ f(x) implies G(φ^{nn}) ∈ f(x) by DNI + temporal necessitation + K
+  have h_dni : DerivationTree [] (φ.imp φ.neg.neg) :=
+    Bimodal.Theorems.Combinators.dni φ
+  have h_G_dni : DerivationTree [] (Formula.all_future (φ.imp φ.neg.neg)) :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_G_dist : DerivationTree [] ((Formula.all_future (φ.imp φ.neg.neg)).imp
+      (Formula.all_future φ |>.imp (Formula.all_future φ.neg.neg))) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist φ φ.neg.neg)
+  have h_G_nn : Formula.all_future φ.neg.neg ∈ limit_f A h_mcs x := by
+    have h1 := theorem_in_mcs h_mcs_x h_G_dni
+    have h2 := theorem_in_mcs h_mcs_x h_G_dist
+    have h3 := SetMaximalConsistent.implication_property h_mcs_x h2 h1
+    exact SetMaximalConsistent.implication_property h_mcs_x h3 h_G
+  -- Step 2: G(φ^{nn}) ∈ f(x) means F(φ.neg) ∉ f(x)
+  -- Because F(φ.neg) = φ.neg.neg.all_future.neg = neg(G(φ^{nn}))
+  -- (some_future psi = psi.neg.all_future.neg, so some_future φ.neg = φ.neg.neg.all_future.neg)
+  have h_F_not : Formula.some_future φ.neg ∉ limit_f A h_mcs x := by
+    -- some_future φ.neg = φ.neg.neg.all_future.neg definitionally
+    -- and h_G_nn : φ.neg.neg.all_future ∈ limit_f x
+    show φ.neg.neg.all_future.neg ∉ limit_f A h_mcs x
+    intro h_abs
+    exact set_consistent_not_both h_mcs_x.1 (φ.neg.neg.all_future) h_G_nn h_abs
+  -- Step 3: (⊤ U φ.neg) ∉ f(x) by BX10: (⊤ U φ.neg) → F(φ.neg)
+  set top := Formula.bot.imp Formula.bot with htop_def
+  have h_bx10 : DerivationTree [] ((Formula.untl top φ.neg).imp (Formula.some_future φ.neg)) :=
+    DerivationTree.axiom [] _ (Axiom.until_F top φ.neg)
+  have h_until_not : Formula.untl top φ.neg ∉ limit_f A h_mcs x := by
+    intro h_in
+    exact h_F_not (SetMaximalConsistent.implication_property h_mcs_x
+      (theorem_in_mcs h_mcs_x h_bx10) h_in)
+  -- Step 4: neg(⊤ U φ.neg) ∈ f(x) by MCS negation completeness
+  have h_neg_until : (Formula.untl top φ.neg).neg ∈ limit_f A h_mcs x := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_x (Formula.untl top φ.neg) with h | h
+    · exact absurd h h_until_not
+    · exact h
+  -- Step 5: Apply generalized C4 with γ = ⊤, δ = φ.neg
+  -- neg(untl(⊤, φ.neg)) ∈ f(x), φ.neg ∈ f(y), x < y
+  -- → ∃ z ∈ limit_dom, x < z < y, ⊤.neg ∈ f(z)
+  obtain ⟨z, hz_dom, _hxz, _hzy, h_top_neg⟩ :=
+    limit_satisfies_c4 A h_mcs x y hx hy hxy top φ.neg h_neg_until h_neg_phi
+  -- Step 6: ⊤.neg ∈ f(z) contradicts C0 (f(z) is MCS hence consistent)
+  have h_mcs_z := limit_c0 A h_mcs z hz_dom
+  -- ⊤ = bot → bot is a theorem, hence ⊤ ∈ f(z)
+  have h_top_in : top ∈ limit_f A h_mcs z := by
+    apply theorem_in_mcs h_mcs_z
+    exact DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+  -- ⊤ ∈ f(z) and ⊤.neg ∈ f(z) contradicts consistency
+  exact set_consistent_not_both h_mcs_z.1 top h_top_in h_top_neg
 
 /--
 Backward_H for domain points (dual of forward_G).
@@ -865,7 +1099,52 @@ theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hyx : y < x) (φ : Formula) (h_H : Formula.all_past φ ∈ limit_f A h_mcs x) :
     φ ∈ limit_f A h_mcs y := by
-  sorry
+  -- Mirror of forward_G using C4' + C0.
+  by_contra h_not
+  have h_mcs_x := limit_c0 A h_mcs x hx
+  have h_mcs_y := limit_c0 A h_mcs y hy
+  have h_neg_phi : φ.neg ∈ limit_f A h_mcs y := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_y φ with h | h
+    · exact absurd h h_not
+    · exact h
+  -- H(φ) → H(φ^{nn}) by DNI + past necessitation + past K
+  have h_dni : DerivationTree [] (φ.imp φ.neg.neg) :=
+    Bimodal.Theorems.Combinators.dni φ
+  have h_H_dni : DerivationTree [] (Formula.all_past (φ.imp φ.neg.neg)) :=
+    Bimodal.Theorems.past_necessitation _ h_dni
+  have h_H_dist : DerivationTree [] ((Formula.all_past (φ.imp φ.neg.neg)).imp
+      (Formula.all_past φ |>.imp (Formula.all_past φ.neg.neg))) :=
+    Bimodal.Theorems.past_k_dist φ φ.neg.neg
+  have h_H_nn : Formula.all_past φ.neg.neg ∈ limit_f A h_mcs x := by
+    have h1 := theorem_in_mcs h_mcs_x h_H_dni
+    have h2 := theorem_in_mcs h_mcs_x h_H_dist
+    have h3 := SetMaximalConsistent.implication_property h_mcs_x h2 h1
+    exact SetMaximalConsistent.implication_property h_mcs_x h3 h_H
+  -- P(φ.neg) ∉ f(x) because P(φ.neg) = φ.neg.neg.all_past.neg = neg(H(φ^{nn}))
+  have h_P_not : Formula.some_past φ.neg ∉ limit_f A h_mcs x := by
+    show φ.neg.neg.all_past.neg ∉ limit_f A h_mcs x
+    intro h_abs
+    exact set_consistent_not_both h_mcs_x.1 (φ.neg.neg.all_past) h_H_nn h_abs
+  -- (⊤ S φ.neg) ∉ f(x) by BX10': (⊤ S φ.neg) → P(φ.neg)
+  set top := Formula.bot.imp Formula.bot with htop_def
+  have h_bx10' : DerivationTree [] ((Formula.snce top φ.neg).imp (Formula.some_past φ.neg)) :=
+    DerivationTree.axiom [] _ (Axiom.since_P top φ.neg)
+  have h_since_not : Formula.snce top φ.neg ∉ limit_f A h_mcs x := by
+    intro h_in
+    exact h_P_not (SetMaximalConsistent.implication_property h_mcs_x
+      (theorem_in_mcs h_mcs_x h_bx10') h_in)
+  have h_neg_since : (Formula.snce top φ.neg).neg ∈ limit_f A h_mcs x := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_x (Formula.snce top φ.neg) with h | h
+    · exact absurd h h_since_not
+    · exact h
+  -- Apply C4' with γ = ⊤, δ = φ.neg, at (x, y) with y < x
+  obtain ⟨z, hz_dom, _hyz, _hzx, h_top_neg⟩ :=
+    limit_satisfies_c4' A h_mcs x y hx hy hyx top φ.neg h_neg_since h_neg_phi
+  have h_mcs_z := limit_c0 A h_mcs z hz_dom
+  have h_top_in : top ∈ limit_f A h_mcs z := by
+    apply theorem_in_mcs h_mcs_z
+    exact DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+  exact set_consistent_not_both h_mcs_z.1 top h_top_in h_top_neg
 
 /-! ## Claim 2.11: Truth Claim
 

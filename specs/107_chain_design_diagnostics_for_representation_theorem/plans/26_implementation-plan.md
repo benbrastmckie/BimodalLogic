@@ -175,7 +175,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Prove forward_G/backward_H from Generalized C4 + C0 [NOT STARTED]
+### Phase 4: Prove forward_G/backward_H from Generalized C4 + C0 [COMPLETED]
 
 **Goal**: With the omega chain now eliminating ALL C4 counterexamples, prove that at the limit every C4 condition is satisfied for ALL pairs. Then prove forward_G via the C4 + C0 contradiction argument.
 
