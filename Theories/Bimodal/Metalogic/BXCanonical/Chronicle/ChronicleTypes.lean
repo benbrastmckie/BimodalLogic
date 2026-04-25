@@ -357,6 +357,26 @@ structure ValidChronicle extends Chronicle where
   /-- C5': Backward Since witnesses -/
   hc5' : toChronicle.c5'
 
+/-! ## g_content Chain Ordering -/
+
+/--
+A chronicle has **g_content chain ordering** if for all domain points x < y,
+g_content(f(x)) ⊆ f(y). This means G(φ) ∈ f(x) implies φ ∈ f(y) for all
+y > x in the domain.
+
+This is the key inductive invariant maintained through the omega-chain
+construction. Together with C0, it ensures the limit chronicle has
+g_content propagation across all domain point pairs.
+-/
+def Chronicle.g_ordered (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, x < y → g_content (χ.f x) ⊆ χ.f y
+
+/--
+Mirror: h_content chain ordering (backward direction).
+-/
+def Chronicle.h_ordered (χ : Chronicle) : Prop :=
+  ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, y < x → h_content (χ.f x) ⊆ χ.f y
+
 /-! ## Basic Properties -/
 
 /-- The r-relation is monotone in the second argument: if B subset C and r(A, C),
