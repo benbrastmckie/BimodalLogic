@@ -614,13 +614,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-25T01:12:18Z",
+      "last_updated": "2026-04-25T01:18:13Z",
       "researched": "2026-04-25T01:12:18Z",
       "related_tasks": [
         93
@@ -719,11 +719,6 @@
           "summary": "g_content chain resolution: binary g function (Burgess) is the fix, current unary g is architecturally wrong"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/17_implementation-plan.md",
-          "type": "plan",
-          "summary": "v7: 6 phases (0-5), 102h. Phase 0: ROADMAP update. Phase 1: rebuild binary g(x,y). Phases 2-5: guard, C4, Rat completeness, general completeness."
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/17_implementation-summary.md",
           "type": "summary",
           "summary": "Phase 0 complete, Phase 1 partial: g_content_chain_property blocked by Lindenbaum opacity"
@@ -742,9 +737,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/20_team-research.md",
           "type": "report",
           "summary": "BREAKTHROUGH: Burgess paper read — C3 definitional, 3-arg r-relation, Lemma 2.6 missing, deterministic chain dead (14+ sorries)"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/20_implementation-plan.md",
+          "type": "plan",
+          "summary": "v8: three-argument r-relation, Lemma 2.6, C0-C3 invariants, 6 phases, 85h"
         }
       ],
-      "session_id": "sess_1777078993_7b41d6"
+      "session_id": "sess_1777079578_ba5f9a"
     }
   ],
   "next_project_number": 113,
