@@ -252,9 +252,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Wire ChronicleToCountermodel Sorry Sites [NOT STARTED]
+### Phase 6: Wire ChronicleToCountermodel Sorry Sites [PARTIAL]
 
-**Goal**: Close all 9 sorry sites in ChronicleToCountermodel.lean. With the correct C0-C3 invariants, forward_G/backward_H, and the Cantor isomorphism, the FMCS/BFMCS construction compiles sorry-free.
+**Goal**: Close all sorry sites in ChronicleToCountermodel.lean. With the correct C0-C3 invariants, forward_G/backward_H, and the Cantor isomorphism, the FMCS/BFMCS construction compiles sorry-free.
+
+**Progress (Phase 3 of outer orchestration)**:
+- [x] **Closed `cantor_bfmcs_restricted_tc`** (2 sorry sites): F/P resolution via `limit_F_resolution`/`limit_P_resolution` transferred through Cantor iso. Sorry-free.
+- [x] **Closed `cantor_bfmcs_restricted_buc`** (2 sorry sites): Backward Until/Since coherence via C4/C4' contradiction. If `¬U(φ,ψ) ∈ f(t)` and `ψ ∈ f(s)` with `t < s`, C4 gives guard violation `φ.neg ∈ f(z)` contradicting the guard hypothesis. Sorry-free.
+- [ ] **`cantor_bfmcs_restricted_fuc`** (2 sorry sites): Forward Until/Since coherence BLOCKED. Requires `limit_satisfies_c5_full` (C5 with guard at intermediate points). Current `limit_satisfies_c5_weak` only provides endpoint witness. The guard needs either: (a) real interval function g with C3, or (b) strengthened `EliminationResult.c5_forward_witness` to carry guard info (guard IS checked at line 728 of CounterexampleElimination.lean but discarded from result type).
+- 8 legacy sorry sites (chronicle_fmcs, chronicle_bfmcs) are dead code -- `dd_countermodel_chronicle` uses `cantor_bfmcs` exclusively.
 
 **Tasks**:
 - [ ] **Prove forward_G for FMCS (line 195)**: Use the forward_G from Phase 5 transferred through the Cantor isomorphism. For all t < t' in Rat: cantor_iso.symm preserves order, so limit_f(cantor_iso.symm(t)) to limit_f(cantor_iso.symm(t')) satisfies g-content propagation.
