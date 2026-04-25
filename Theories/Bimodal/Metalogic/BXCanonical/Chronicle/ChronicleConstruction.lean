@@ -112,6 +112,14 @@ theorem singleton_invariant {A : Set Formula} (h_mcs : SetMaximalConsistent A) :
     intro x y z hx hy hz hxy hyz
     simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
     subst hx; subst hy; exact absurd hxy (lt_irrefl _)
+  hg_ord := by
+    intro x hx y hy hxy
+    simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
+    subst hx; subst hy; exact absurd hxy (lt_irrefl _)
+  hh_ord := by
+    intro x hx y hy hyx
+    simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
+    subst hx; subst hy; exact absurd hyx (lt_irrefl _)
 
 /--
 The singleton chronicle satisfies C4 vacuously: a singleton domain has no
@@ -825,41 +833,80 @@ of the limit, not the wrong dependency on g_content propagation.
 -/
 
 /--
+g_ordered at every stage of the omega chain: for all x < y in dom_n,
+g_content(f_n(x)) ⊆ f_n(y). This is maintained because every new point gets
+f(y) from a seed containing g_content of a prior domain point.
+
+TODO: prove by induction on the omega chain. Currently sorry'd.
+-/
+theorem omega_chain_g_ordered (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
+    ∀ x ∈ (omega_chain_val A h_mcs n).dom,
+    ∀ y ∈ (omega_chain_val A h_mcs n).dom,
+    x < y → g_content ((omega_chain_val A h_mcs n).f x) ⊆ (omega_chain_val A h_mcs n).f y := by
+  sorry
+
+/--
+h_ordered at every stage: mirror of g_ordered for past direction.
+-/
+theorem omega_chain_h_ordered (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
+    ∀ x ∈ (omega_chain_val A h_mcs n).dom,
+    ∀ y ∈ (omega_chain_val A h_mcs n).dom,
+    y < x → h_content ((omega_chain_val A h_mcs n).f x) ⊆ (omega_chain_val A h_mcs n).f y := by
+  sorry
+
+/--
 Forward_G for domain points: G(φ) ∈ limit_f(x) and x < y implies φ ∈ limit_f(y).
 
-This follows from the limit chronicle satisfying C4 (backward counterexample
-condition). The proof uses: G(φ) = ¬F(¬φ) = ¬(⊤ U ¬φ). If ¬φ ∈ f(y) for
-y > x, then by C4 there exists z with ¬(¬φ) ∈ f(z) = φ^{nn} ∈ f(z), which
-combined with DNE in MCS gives φ ∈ f(z). Iterating, the C4 condition prevents
-any future point from containing ¬φ.
-
-Requires: limit C4 completeness (Phase 5).
+Proof: G(φ) ∈ limit_f(x) = f_n(x) for some n. y ∈ dom_m for some m.
+At stage N = max(n, m): both x, y in dom_N. By omega_chain_g_ordered,
+g_content(f_N(x)) ⊆ f_N(y). Since G(φ) ∈ f_N(x) (by f-agreement),
+φ ∈ g_content(f_N(x)) ⊆ f_N(y) = limit_f(y) (by f-agreement).
 -/
 theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hxy : x < y) (φ : Formula) (h_G : Formula.all_future φ ∈ limit_f A h_mcs x) :
     φ ∈ limit_f A h_mcs y := by
-  -- Requires limit C4 completeness (Phase 5).
-  -- The argument: G(φ) ∈ f(x) means ¬F(¬φ) ∈ f(x). Suppose ¬φ ∈ f(y).
-  -- Then F(¬φ) ∈ f(x) (by seriality + forward propagation), contradicting
-  -- ¬F(¬φ) ∈ f(x). The key step is showing F(¬φ) ∈ f(x) from ¬φ ∈ f(y),
-  -- which requires the chronicle's C4 completeness in the limit.
-  sorry
+  obtain ⟨nx, hnx⟩ := hx
+  obtain ⟨ny, hny⟩ := hy
+  set N := max nx ny with hN_def
+  have hx_N := omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
+  have hy_N := omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
+  -- G(φ) ∈ f_N(x) by f-agreement
+  have h_G_N : Formula.all_future φ ∈ (omega_chain_val A h_mcs N).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs (le_max_left nx ny) x hnx]
+    rwa [← limit_f_eq A h_mcs x nx hnx]
+  -- φ ∈ g_content(f_N(x))
+  have h_phi_g : φ ∈ g_content ((omega_chain_val A h_mcs N).f x) := h_G_N
+  -- g_content(f_N(x)) ⊆ f_N(y) by omega_chain_g_ordered
+  have h_g_sub := omega_chain_g_ordered A h_mcs N x hx_N y hy_N hxy
+  -- φ ∈ f_N(y)
+  have h_phi_y := h_g_sub h_phi_g
+  -- f_N(y) = f_ny(y) = limit_f(y) by f-agreement
+  rw [limit_f_eq A h_mcs y ny hny]
+  rwa [← omega_chain_f_agrees_le A h_mcs (le_max_right nx ny) y hny]
 
 /--
 Backward_H for domain points (dual of forward_G).
 
 H(φ) ∈ limit_f(x) and y < x implies φ ∈ limit_f(y).
-
-Requires: limit C4' completeness (Phase 5).
 -/
 theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hyx : y < x) (φ : Formula) (h_H : Formula.all_past φ ∈ limit_f A h_mcs x) :
     φ ∈ limit_f A h_mcs y := by
-  -- Requires limit C4' completeness (Phase 5).
-  -- Mirror of limit_forward_G using Since/H instead of Until/G.
-  sorry
+  obtain ⟨nx, hnx⟩ := hx
+  obtain ⟨ny, hny⟩ := hy
+  set N := max nx ny with hN_def
+  have hx_N := omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
+  have hy_N := omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
+  have h_H_N : Formula.all_past φ ∈ (omega_chain_val A h_mcs N).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs (le_max_left nx ny) x hnx]
+    rwa [← limit_f_eq A h_mcs x nx hnx]
+  have h_phi_h : φ ∈ h_content ((omega_chain_val A h_mcs N).f x) := h_H_N
+  have h_h_sub := omega_chain_h_ordered A h_mcs N x hx_N y hy_N hyx
+  have h_phi_y := h_h_sub h_phi_h
+  rw [limit_f_eq A h_mcs y ny hny]
+  rwa [← omega_chain_f_agrees_le A h_mcs (le_max_right nx ny) y hny]
 
 /-! ## Claim 2.11: Truth Claim
 

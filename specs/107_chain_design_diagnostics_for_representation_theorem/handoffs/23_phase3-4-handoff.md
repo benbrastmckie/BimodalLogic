@@ -70,13 +70,35 @@ Extensive analysis showed that the full Lemma 2.6 (three-way DCS decomposition) 
    - All follow from the Cantor iso redesign
 ```
 
-## Key Insight for limit_forward_G
+## CRITICAL FINDING: limit_forward_G Is FALSE
 
-The g_prop_forward counterexamples, combined with density, give us: at every finite stage n, for every adjacent pair (x, y) in dom_n with G(alpha) in f_n(x) and alpha not in f_n(y), a midpoint z is inserted with:
-- alpha in f(z)
-- g_content(f(x)) subset f(z) (including G(G(phi)) -> G(phi) in f(z))
+Analysis showed that `limit_forward_G` (G(phi) in f(x), x < y => phi in f(y)) is **FALSE** for the current omega chain construction.
 
-So G propagates to the midpoint. By repetition (density), G propagates to ALL future domain points in the limit. The formal proof needs careful induction on the omega chain stages.
+**Root cause**: f(y) is fixed when y enters the domain. The g_prop_forward counterexamples insert midpoints between x and y, but never modify f(y). Even with infinitely many midpoints approaching y, phi never enters f(y).
+
+**Why G(phi) doesn't give phi at y**: G(phi) in f(x) => phi in g_content(f(x)). When g_content(f(x)) subset f(y') for new points y', phi in f(y'). But g_content(f(x)) is NOT a subset of f(y) in general. And even when G(phi) propagates to f(y) (i.e., G(phi) in f(y)), this does NOT give phi in f(y) under strict semantics (no G(phi) -> phi axiom).
+
+**Impact**: The restricted parametric truth lemma DIRECTLY uses forward_G at line 196 of RestrictedParametricTruthLemma.lean. There is no way to close the truth lemma for G without forward_G.
+
+**Possible fixes** (in order of difficulty):
+
+1. **Modify omega chain to propagate G-content**: When constructing f(y) for any new point y, ensure that for ALL domain points x < y, g_content(f(x)) subset f(y), and for ALL x > y, h_content(f(x)) subset f(y). This is equivalent to constructing f(y) from a seed that includes g_content of all prior points and h_content of all future points. This would require a fundamentally different construction.
+
+2. **Rewrite the truth lemma to avoid forward_G**: Route the G case through G(psi) = neg(some_future(neg(psi).neg)). This requires showing the equivalence through BX axioms + DNE, then using the Until truth lemma for the Some_future part. This would be a significant change to RestrictedParametricTruthLemma.lean.
+
+3. **Use a different completeness architecture**: Instead of FMCS + BFMCS, use the Burgess construction directly to build a task frame model. This would bypass the need for forward_G entirely but requires rewriting the completeness theorem.
+
+## Recommended Next Step
+
+Option 1 is the most self-contained: modify the omega chain so that every new point y gets f(y) constructed from a seed including g_content of ALL prior domain points and h_content of ALL future domain points. The seed construction is:
+
+```
+seed(y) = {phi} ∪ (⋃_{x ∈ dom, x < y} g_content(f(x))) ∪ (⋃_{x ∈ dom, y < x} h_content(f(x)))
+```
+
+where phi is the formula needed at y (the Until/Since witness or density midpoint). Consistency follows from: g_content(f(x)) subset f(z) for all x < z (by the g_prop forward counterexamples), and the chain structure ensures compatibility. Lindenbaum extension gives an MCS containing the seed.
+
+This requires reworking eliminate_C5_counterexample and eliminate_density_counterexample to use the enriched seed.
 
 ## Files Modified
 - `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` - density kind + density_witness + eliminate_density_counterexample
