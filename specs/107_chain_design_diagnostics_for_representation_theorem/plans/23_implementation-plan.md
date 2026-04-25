@@ -221,7 +221,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Limit Construction + Cantor Isomorphism [NOT STARTED]
+### Phase 5: Limit Construction + Cantor Isomorphism [PARTIAL]
 
 **Goal**: Redefine limit_g correctly, prove limit_dom density properties, apply Cantor isomorphism to map every rational to a domain point. Close limit_backward_H sorry and delete limit_g's reliance on g_content_chain_property.
 

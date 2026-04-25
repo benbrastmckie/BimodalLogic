@@ -235,7 +235,52 @@ theorem box_stable_in_chronicle_fmcs (A : Set Formula) (h_mcs : SetMaximalConsis
     (φ : Formula) (s t : Rat) :
     Formula.box φ ∈ (shifted_chronicle_fmcs A h_mcs s).mcs t ↔
     Formula.box φ ∈ A := by
-  sorry
+  -- shifted_chronicle_fmcs.mcs t = chronicle_fmcs.mcs (t - s) = extended_limit_f (t - s)
+  -- The FMCS has forward_G and backward_H which propagate Box formulas.
+  -- chronicle_fmcs.mcs q = extended_limit_f q (definitionally)
+  -- extended_limit_f 0 = A by extended_limit_f_zero
+  have h_mcs_eq : ∀ q, (chronicle_fmcs A h_mcs).mcs q = extended_limit_f A h_mcs q := fun _ => rfl
+  have h_at_zero : (chronicle_fmcs A h_mcs).mcs 0 = A := by
+    rw [h_mcs_eq]; exact extended_limit_f_zero A h_mcs
+  -- Helper: propagate Box from any point to 0 (hence to A)
+  have box_to_A : ∀ q, Formula.box φ ∈ (chronicle_fmcs A h_mcs).mcs q → Formula.box φ ∈ A := by
+    intro q h_box
+    have h_mcs_q := (chronicle_fmcs A h_mcs).is_mcs q
+    -- □□φ by modal_4
+    have h_bb := SetMaximalConsistent.implication_property h_mcs_q
+      (theorem_in_mcs h_mcs_q (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box
+    rcases lt_trichotomy q 0 with hq | rfl | hq
+    · -- q < 0: G(□φ) at q, forward_G to 0
+      have h_G := SetMaximalConsistent.implication_property h_mcs_q
+        (theorem_in_mcs h_mcs_q (Bimodal.Theorems.Perpetuity.box_to_future (Formula.box φ))) h_bb
+      have := (chronicle_fmcs A h_mcs).forward_G q 0 (Formula.box φ) (by linarith) h_G
+      rwa [h_at_zero] at this
+    · -- q = 0
+      rwa [h_at_zero] at h_box
+    · -- q > 0: H(□φ) at q, backward_H to 0
+      have h_H := SetMaximalConsistent.implication_property h_mcs_q
+        (theorem_in_mcs h_mcs_q (Bimodal.Theorems.Perpetuity.box_to_past (Formula.box φ))) h_bb
+      have := (chronicle_fmcs A h_mcs).backward_H q 0 (Formula.box φ) (by linarith) h_H
+      rwa [h_at_zero] at this
+  -- Helper: propagate Box from A (hence 0) to any point
+  have box_from_A : ∀ q, Formula.box φ ∈ A → Formula.box φ ∈ (chronicle_fmcs A h_mcs).mcs q := by
+    intro q h_box_A
+    have h_box_0 : Formula.box φ ∈ (chronicle_fmcs A h_mcs).mcs 0 := by
+      rw [h_at_zero]; exact h_box_A
+    have h_mcs_0 := (chronicle_fmcs A h_mcs).is_mcs 0
+    have h_bb := SetMaximalConsistent.implication_property h_mcs_0
+      (theorem_in_mcs h_mcs_0 (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box_0
+    rcases lt_trichotomy q 0 with hq | rfl | hq
+    · -- q < 0: H(□φ) at 0, backward_H to q
+      have h_H := SetMaximalConsistent.implication_property h_mcs_0
+        (theorem_in_mcs h_mcs_0 (Bimodal.Theorems.Perpetuity.box_to_past (Formula.box φ))) h_bb
+      exact (chronicle_fmcs A h_mcs).backward_H 0 q (Formula.box φ) (by linarith) h_H
+    · exact h_box_0
+    · -- q > 0: G(□φ) at 0, forward_G to q
+      have h_G := SetMaximalConsistent.implication_property h_mcs_0
+        (theorem_in_mcs h_mcs_0 (Bimodal.Theorems.Perpetuity.box_to_future (Formula.box φ))) h_bb
+      exact (chronicle_fmcs A h_mcs).forward_G 0 q (Formula.box φ) (by linarith) h_G
+  exact ⟨box_to_A (t - s), box_from_A (t - s)⟩
 
 /-! ## Chronicle BFMCS Construction
 
