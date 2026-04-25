@@ -126,7 +126,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Complete Three-Way C3 Integration [PARTIAL]
+### Phase 2: Complete Three-Way C3 Integration [COMPLETED]
 
 **Goal**: Finish the three-way C3 integration. The C3 definition, C2/C2' updates, and ValidChronicle structure are already in place. Remaining: define g for non-adjacent pairs via C3, prove Lemma 2.5 absorption using BX6 (absorb_until), delete g_content_chain_property.
 

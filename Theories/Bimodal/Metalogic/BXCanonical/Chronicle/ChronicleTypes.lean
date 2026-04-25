@@ -410,19 +410,27 @@ Bundle of chronicle invariants maintained at every finite stage of the
 omega-chain construction. This replaces the previous approach of tracking
 only C0.
 
-The key insight (Burgess 1982): maintaining C0-C3 at every finite stage
-enables the limit to satisfy C4/C5 (which are ensured by counterexample
-elimination), and the truth lemma follows from C3 alone (no need for
-g_content_chain_property).
+The key insight (Burgess 1982): maintaining C0, C1, C2' (adjacent), and C3
+at every finite stage enables the limit to satisfy C4/C5 (which are ensured
+by counterexample elimination), and the truth lemma follows from C3 alone
+(no need for g_content_chain_property).
+
+Note: C2 (r3Relation for ALL pairs) is NOT maintained at finite stages.
+It is derivable at the limit from C2' + C3 + density via Lemma 2.5
+absorption (see `burgessR3_absorption` in RRelation.lean). The finite-stage
+invariant only needs C2' because non-adjacent g values are defined by C3
+and the r-relation for non-adjacent pairs follows from Lemma 2.5.
 -/
 structure ChronicleInvariant (χ : Chronicle) : Prop where
   /-- C0: Every domain point maps to an MCS -/
   hc0 : χ.c0
   /-- C1: Every pair x < y maps to a DCS -/
   hc1 : χ.c1
-  /-- C2: r3Relation for all pairs -/
-  hc2 : χ.c2
-  /-- C2': R3-maximality for adjacent pairs -/
+  /-- C2': R3-maximality for adjacent pairs.
+  C2 (r3Relation for ALL pairs) is derivable at the limit from C2' + C3 + density,
+  but is not maintained at finite stages because the Burgess r-relation absorption
+  (Lemma 2.5) requires MCS endpoints which are only guaranteed at domain points.
+  The finite-stage invariant only needs C2' for adjacent pairs. -/
   hc2' : χ.c2'
   /-- C3: Three-way interval decomposition -/
   hc3 : χ.c3
