@@ -4,7 +4,7 @@
 
 TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-04-24 (chronicle binary g rebuild).
+state of the completeness effort as of 2026-04-25 (C4 definition fix, g_ordered eliminated).
 
 **Architecture**: The proof system has 35 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
@@ -18,8 +18,10 @@ completeness paths:
    #34-#36). Task 109 tracks these.
 2. **Chronicle** (`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`): Burgess 1982
    chronicle construction using controlled PointInsertion to escape Lindenbaum opacity.
-   Task 107 (active) is rebuilding the chronicle with binary g(x,y) to close 12 sorry
-   sites and achieve the representation theorem. This is the primary completeness path.
+   Task 107 (active) identified a C4 definition error (arguments swapped relative to
+   Burgess 1982) that was the root cause of 25 research rounds. C4 now fixed, g_ordered
+   deleted (unnecessary with correct C4). 13 sorry sites remain across 4 files.
+   This is the primary completeness path.
 
 **Sorry summary**: The BXCanonical module has **19 sorry proofs** across 7 files,
 plus the Chronicle sub-module has **12 sorry proofs** across 3 files.
@@ -42,20 +44,25 @@ irreflexive semantics.
 
 **BXCanonical dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
 
-Chronicle sorries (task 107):
+Chronicle sorries (task 107, updated 2026-04-25):
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
-| **g_content chain** (blocking limit_backward_H) | 1 | `ChronicleConstruction.lean` | **OPEN** (root cause: unary g) |
-| **C4 sub-cases** (blocking sorry-free elimination) | 2 | `CounterexampleElimination.lean` | **OPEN** |
-| **Countermodel wiring** (temporal/Until/Since coherence) | 9 | `ChronicleToCountermodel.lean` | **OPEN** |
-| **Total Chronicle** | **12** | 3 files | |
+| **forward_G/backward_H** (limit temporal propagation) | 2 | `ChronicleConstruction.lean` | **IN PROGRESS** (C4+C0 proof) |
+| **C4 hard cases** (counterexample elimination) | 2 | `CounterexampleElimination.lean` | **OPEN** |
+| **Lemma 2.6 full** (three-way decomposition) | 1 | `PointInsertion.lean` | **OPEN** |
+| **Countermodel wiring** (FMCS coherence) | 8 | `ChronicleToCountermodel.lean` | **OPEN** |
+| **Total Chronicle** | **13** | 4 files | |
 
-The chronicle's `g_content_chain_property` sorry is the critical bottleneck (task 107 report 17):
-the current codebase defines g as a **unary** function `limit_g(x,y) = deductiveClosure(g_content(limit_f(x)))`,
-which is a function of x only. Burgess 1982 uses a **binary** interval function g(x,y) maintained
-through the omega-chain with the C3 decomposition identity: `g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z)`.
-Task 107 is rebuilding the chronicle with binary g to close all 12 sorry sites.
+**Key finding (task 107 report 25, 2026-04-25)**: The codebase's C4 definition had its arguments
+SWAPPED relative to Burgess 1982 C4a. Burgess checks the EVENT (first arg of U) at f(y) and
+negates the GUARD (second arg) at f(z). The codebase was checking the GUARD and negating the EVENT.
+This caused forward_G to be unprovable from C4+C0 (producing φ.neg.neg instead of ⊥), leading to
+25 rounds of workaround attempts involving g_ordered, two-sided seeds, and duality arguments.
+
+With the corrected C4: G(φ) = ¬(⊤ U ¬φ). C4 checks ¬φ (EVENT) at f(y), gives ⊤.neg = ⊥ at f(z).
+⊥ in MCS contradicts C0. **One-step proof of forward_G.** g_ordered is unnecessary and has been
+deleted from ChronicleInvariant. The `g_content_chain_property` blocker (report 17) is resolved.
 
 **Key finding -- density axiom** (task 107 report 11): Dense domains (e.g., Q) are WRONG for
 general completeness. GGp->Gp is valid on Q but not derivable in BX. Burgess uses sparse
@@ -1026,16 +1033,14 @@ local to one MCS). Lindenbaum extensions via `Classical.choose` are non-construc
 and provide no inter-step structural guarantees. The chronicle avoids this by building
 MCS via PointInsertion with explicit control over the seed content.
 
-**Chronicle approach (task 107, plan v7)**:
-1. **Binary g(x,y)**: Rebuild chronicle with Burgess's binary interval function g(x,y)
-   maintained through the omega-chain. C3 decomposition: g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
-2. **g-splitting**: When C4 elimination inserts z between adjacent x and y, g(x,y) splits
-   into g(x,z) and g(z,y) preserving C2/C3 invariants.
-3. **limit_g**: Define as the limit of binary g through the omega-chain. g_content_chain_property
-   then follows from C2+C3.
-4. **Guard resolution**: BX9 bridge converts open guards (C5) to half-open guards (truth semantics).
-5. **Representation theorem**: sorry-free `dd_countermodel_chronicle` over D=Rat.
-6. **General completeness**: Direct BFMCS truth lemma over sparse X for all strict linear orders.
+**Chronicle approach (task 107, plan v11 — C4 fix)**:
+1. **C4 definition fix**: C4/C4' swapped to match Burgess 1982 (check EVENT, negate GUARD). DONE.
+2. **g_ordered eliminated**: Deleted from ChronicleInvariant. Unnecessary with correct C4. DONE.
+3. **forward_G from C4+C0**: One-step proof at the limit via generalized C4. IN PROGRESS.
+4. **C4 hard case rewrite**: Counterexample elimination with correct argument roles. TODO.
+5. **Lemma 2.6 full seed**: Burgess's two-sided seed for C4 hard case. TODO.
+6. **Countermodel wiring**: Close 8 ChronicleToCountermodel sorry sites. TODO.
+7. **Representation theorem**: sorry-free `dd_countermodel_chronicle` over D=Rat.
 
 **The hybrid Int-chain + enriched seed approach should NOT be revisited** (dead ends
 #7, #13, #23, #31). The chronicle construction is confirmed to be the right path
