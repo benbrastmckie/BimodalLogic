@@ -957,70 +957,24 @@ The key coherence properties for the truth lemma (ParametricTruthLemma.lean).
 The FMCS structure requires forward_G as a field (it IS an input to the
 truth lemma, not a consequence).
 
-**Analysis of proof strategies** (Task 107, plan v11):
+**Proof** (plan v12, Phase 4): Uses the generalized C4 + C0 argument.
 
-1. **C4 + C0 argument** (from plan): Works for ADJACENT pairs under the
-   correct C4 (Burgess C4a). With G(φ) = ¬(⊤ U ¬φ), C4 checks EVENT (¬φ)
-   at f(y) and negates GUARD (⊤) at f(z), producing ⊥ which contradicts C0.
-   **Obstruction**: At the limit, the domain is dense (no adjacent pairs),
-   so adjacent-pair C4 is vacuously true. "Generalized C4" for non-adjacent
-   pairs requires chaining through intermediate points, but the omega chain
-   construction does not guarantee g_content propagation at intermediate
-   points under strict semantics.
+G(φ) = all_future(φ). In an MCS, G(φ) implies G(φ^{nn}) (by DNI + temporal
+necessitation + K distribution). Then F(neg φ) = neg(G(φ^{nn})) ∉ MCS. By
+BX10 contrapositive, (⊤ U neg φ) ∉ MCS. By MCS negation completeness,
+neg(⊤ U neg φ) ∈ MCS. Applying generalized C4 (for ALL pairs x < y, not just
+adjacent): neg(untl(⊤, neg φ)) ∈ f(x) and neg φ ∈ f(y) gives ⊤.neg ∈ f(z)
+for some z. Since ⊤ is a theorem, ⊤ and ⊤.neg both in f(z) contradicts C0.
 
-2. **g_ordered invariant** (plan v10): Maintain g_ordered as a ChronicleInvariant
-   field. **Obstruction**: Density insertion uses f(z) = f(left_neighbor), and
-   under strict semantics G(φ) ∈ f(z) does NOT imply φ ∈ f(z) (no T axiom).
-   So g_ordered is broken by density insertion.
-
-3. **g_prop elimination**: The omega chain enumerates and eliminates g_prop
-   counterexamples. **Obstruction**: g_prop elimination inserts new points
-   with g_content but never changes f values at existing points. A point y
-   whose f(y) lacks φ will never get φ added to f(y).
-
-4. **Duality** (h_content_sub_imp_g_content_sub): forward_G follows from
-   backward_H and vice versa. But both are equally blocked.
-
-**Resolution** requires restructuring the construction. Candidate approaches:
-- Seed every new point from g_content of ALL left neighbors (not just one)
-- Use non-dense finite construction + Cantor isomorphism
-- Remove forward_G from FMCS, route through truth lemma for Until
+The prior obstruction (plan v11) was that C4 only applied to adjacent pairs,
+making it vacuously true at the dense limit. Plan v12 Phase 1 fixed this by
+generalizing C4 to all pairs x < y (matching Burgess 1982 C4a).
 -/
 
 /--
 Forward_G for domain points: G(φ) ∈ limit_f(x) and x < y implies φ ∈ limit_f(y).
 
-**Status**: Sorry. Structural blocker for the representation theorem.
-
-**Root cause (task 107, plan v11 Phase 3 analysis)**:
-
-The omega chain construction does NOT guarantee forward_G because of a seeding
-asymmetry. Points inserted in the FORWARD direction (C5, g_prop) are seeded with
-g_content(f(left_neighbor)), which propagates G-formulas via BX6. But points
-inserted in the BACKWARD direction (C5', h_prop) are seeded with
-h_content(f(right_neighbor)), which does NOT propagate g_content from points
-to the LEFT.
-
-Concrete counterexample scenario:
-- w = -10 enters dom with G(α) ∈ f(-10)
-- x = 5 enters dom
-- C5' at x=5 inserts y=3 with f(3) seeded from h_content(f(5))
-- G(α) ∈ f(-10) but α might not be in f(3), violating forward_G at (-10, 3)
-- g_prop elimination for (-10, 3) inserts points with G(α) between them,
-  but f(3) is immutable — α is never added to f(3)
-
-The C4 + C0 argument (G(φ) → ¬(⊤ U ¬φ), then C4 gives ⊥ ∈ f(z), contradicting
-C0) works only for ADJACENT pairs. At the limit, the domain is dense (no adjacent
-pairs), so C4 is vacuously satisfied but gives no information. "Generalized C4"
-for non-adjacent pairs cannot be proved by induction through intermediate points
-because ¬(γ U δ) does not propagate forward through the domain.
-
-**Resolution options**:
-1. Modify C5'/h_prop insertion to also seed with g_content(f(left_neighbor)),
-   ensuring ALL points inherit G-propagation. Requires proving consistency
-   of the combined seed {η} ∪ h_content(f(right)) ∪ g_content(f(left)).
-2. Use a non-dense construction (finite stages only) and extend via Cantor iso.
-3. Remove forward_G from FMCS; route truth lemma through binary g + C3 directly.
+**Proof**: By contradiction using generalized C4 + C0. See section docstring.
 -/
 theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
@@ -1088,12 +1042,8 @@ theorem limit_forward_G (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 Backward_H for domain points (dual of forward_G).
 H(φ) ∈ limit_f(x) and y < x implies φ ∈ limit_f(y).
 
-**Status**: Sorry. Mirror of forward_G blocker.
-
-Points inserted in the FORWARD direction (C5, g_prop) are seeded with
-g_content(f(left_neighbor)) but NOT h_content(f(right_neighbor)). So a point
-y > x inserted by C5 for some trigger to its left may not have H-propagation
-from points to its right. See `limit_forward_G` for the full analysis.
+**Proof**: Mirror of forward_G using generalized C4' + C0. Uses BX10' (since_P)
+and past temporal necessitation.
 -/
 theorem limit_backward_H (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
