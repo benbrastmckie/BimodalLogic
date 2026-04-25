@@ -1,7 +1,7 @@
 # Implementation Plan: Task #107 (v11 -- C4 Definition Fix, Clean Redesign)
 
 - **Task**: 107 - Burgess chronicle construction for BX representation theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 18 hours
 - **Dependencies**: None (irr_until branch)
 - **Research Inputs**: [reports/25_team-research.md]
@@ -143,18 +143,18 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove that G(phi) in f(x) implies phi in f(y) for all x < y in the limit domain, using the correct C4 + C0 contradiction argument. This replaces the deleted g_ordered approach entirely.
 
+**Architecture**: The omega chain construction enumerates ALL potential C4 counterexamples (x, y, gamma, delta) and eliminates each one via Lemma 2.9. At the limit, EVERY C4 condition is satisfied for ALL pairs (not just adjacent) — because every counterexample was eliminated at some finite stage. The "adjacent C4 is vacuously true in dense domains" observation is irrelevant; what matters is that the omega chain construction guarantees C4 for ALL pairs at the limit (Burgess Lemma 2.9 handles arbitrary n intermediate points by induction).
+
 **Tasks**:
-- [ ] Prove generalized C4 for non-adjacent pairs at the limit:
-  - Lemma: for any x < y in limit_dom (not necessarily adjacent), if neg(untl(gamma, delta)) in limit_f(x) and delta in limit_f(y), then exists z in limit_dom with gamma.neg in limit_f(z) and x < z < y
-  - Proof by induction on the number of limit_dom points between x and y:
-    - Base (adjacent): directly from limit C4
-    - Step: density gives intermediate w. Either delta in limit_f(w) (apply induction on (x,w)) or delta.neg in limit_f(w) (done, z=w). But w is in an MCS so exactly one holds.
-- [ ] Prove limit_forward_G using generalized C4 + C0:
-  - G(phi) = neg(untl(top, phi.neg)) in f(x), so neg(untl(top, phi.neg)) in f(x)
-  - Suppose phi.neg in f(y) for some y > x (toward contradiction)
+- [ ] Prove limit_C4_generalized: for any x < y in limit_dom, if neg(untl(gamma, delta)) in limit_f(x) and delta in limit_f(y), then exists z in limit_dom with gamma.neg in limit_f(z) and x < z < y.
+  - Proof: x and y both enter the domain at some finite stage. The counterexample (x, y, gamma, delta) is enumerated and eliminated at some stage N. At stage N, z is inserted with gamma.neg in f_N(z). By f-immutability, gamma.neg in limit_f(z). By dom monotonicity, z in limit_dom.
+  - Key: the omega chain enumeration must cover ALL (x, y, gamma, delta) tuples where x, y are domain points and gamma, delta are formulas. Verify the current enumeration does this.
+- [ ] Prove limit_forward_G using limit_C4_generalized + C0:
+  - G(phi) = neg(untl(top, phi.neg)) in f(x)
+  - Suppose phi.neg in f(y) for some y > x
   - phi.neg is the EVENT of untl(top, phi.neg)
-  - By generalized C4: exists z with top.neg = bot in f(z)
-  - bot in MCS contradicts C0. Contradiction. So phi in f(y).
+  - By limit_C4_generalized: exists z with top.neg = bot in f(z)
+  - bot in MCS contradicts C0. QED.
 - [ ] Prove limit_backward_H (mirror using C4' and H = neg(snce(top, phi.neg)))
 - [ ] Run lake build and verify
 
@@ -163,15 +163,15 @@ Phases within the same wave can execute in parallel.
 **Depends on**: Phase 1 (correct C4 definition, limit_forward_G/backward_H stubs)
 
 **Files to modify**:
-- `Chronicle/ChronicleConstruction.lean` -- limit_forward_G, limit_backward_H, generalized_C4 lemma
+- `Chronicle/ChronicleConstruction.lean` -- limit_forward_G, limit_backward_H, limit_C4_generalized lemma
 
 **Verification**:
 - lake build succeeds
 - limit_forward_G sorry-free
 - limit_backward_H sorry-free
-- Sorry count: 9 -> 7 (net -2, closing the placeholder sorries from Phase 1)
+- Sorry count: 11 -> 9 (net -2, closing the placeholder sorries from Phase 1)
 
-**Note**: This phase does NOT depend on Phase 2 (C4 elimination). The generalized C4 at the limit follows from: (a) adjacent C4 is vacuously true in the dense limit (no adjacent pairs), OR (b) generalized C4 is proved directly from density + C4-completeness of the omega chain. The key insight is that in the dense limit domain, for any x < y there exists z between them, so the C4 property extends by density induction.
+**Note**: This phase does NOT depend on Phase 2 (C4 elimination rewrite). The limit C4 follows from the omega chain's counterexample elimination, not from adjacent C4 at finite stages.
 
 ---
 
