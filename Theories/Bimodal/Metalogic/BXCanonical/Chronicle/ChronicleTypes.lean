@@ -269,23 +269,29 @@ structure Chronicle where
 def Chronicle.c0 (χ : Chronicle) : Prop :=
   ∀ x ∈ χ.dom, SetMaximalConsistent (χ.f x)
 
-/-- **C1**: Every adjacent pair maps to a DCS. -/
+/-- **C1**: Every pair x < y in the domain maps to a DCS. -/
 def Chronicle.c1 (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom x y → SetDeductivelyClosed (χ.g x y)
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → SetDeductivelyClosed (χ.g x y)
 
-/-- **C2**: The r-relation holds between point and interval assignments.
-For adjacent x < y, r(f(x), g(x,y)) holds. -/
+/-- **C2**: The three-argument r-relation holds for all pairs x < y in the domain.
+For x < y in dom, r3Relation(f(x), g(x,y), f(y)) holds. -/
 def Chronicle.c2 (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom x y → rRelation (χ.f x) (χ.g x y)
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → r3Relation (χ.f x) (χ.g x y) (χ.f y)
 
-/-- **C2'**: R-maximality for adjacent pairs. -/
+/-- **C2'**: R3-maximality for adjacent pairs. -/
 def Chronicle.c2' (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom x y → rMaximal (χ.f x) (χ.g x y)
+  ∀ x y : Rat, Adjacent χ.dom x y → R3Maximal (χ.f x) (χ.g x y) (χ.f y)
 
-/-- **C3**: Interval decomposition -- g_content(f(x)) subset of g(x,y) for adjacent x,y.
-This captures that universal future formulas (under G) at x also hold in the interval. -/
+/-- **C3**: Three-way interval decomposition (Burgess 1982, p. 372).
+For all x < y < z in dom, g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
+
+This is the CORRECT C3 from Burgess. The three-way intersection including f(y)
+is essential: it gives g(x,z) ⊆ f(y) immediately, which is the key property
+for the truth lemma. The earlier two-way version (omitting f(y)) was a
+transcription error that blocked 21 research rounds. -/
 def Chronicle.c3 (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom x y → g_content (χ.f x) ⊆ χ.g x y
+  ∀ x y z : Rat, x ∈ χ.dom → y ∈ χ.dom → z ∈ χ.dom →
+    x < y → y < z → χ.g x z = χ.g x y ∩ χ.f y ∩ χ.g y z
 
 /-- **C4**: Backward counterexample condition for Until (Burgess 1982).
 For all x, y in dom with x < y adjacent: if `¬(γ U δ) ∈ f(x)` and `γ ∈ f(y)`,
@@ -340,13 +346,13 @@ This is the target state after the omega-chain construction in Phase 4.
 structure ValidChronicle extends Chronicle where
   /-- C0: Points map to MCS -/
   hc0 : toChronicle.c0
-  /-- C1: Adjacent intervals map to DCS -/
+  /-- C1: All pairs map to DCS -/
   hc1 : toChronicle.c1
-  /-- C2: r-relation holds -/
+  /-- C2: Three-argument r-relation for all pairs -/
   hc2 : toChronicle.c2
-  /-- C2': R-maximality for adjacent pairs -/
+  /-- C2': R3-maximality for adjacent pairs -/
   hc2' : toChronicle.c2'
-  /-- C3: g_content propagation -/
+  /-- C3: Three-way interval decomposition -/
   hc3 : toChronicle.c3
   /-- C4: Backward counterexample for Until -/
   hc4 : toChronicle.c4
@@ -356,6 +362,46 @@ structure ValidChronicle extends Chronicle where
   hc5 : toChronicle.c5
   /-- C5': Backward Since witnesses -/
   hc5' : toChronicle.c5'
+
+/-! ## C3 Consequences -/
+
+/--
+Key consequence of three-way C3: g(x,z) ⊆ f(y) for x < y < z in dom.
+Since g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z), the intersection is contained in f(y).
+This is the critical property for the truth lemma.
+-/
+theorem c3_interval_subset_point (χ : Chronicle) (h_c3 : χ.c3)
+    {x y z : Rat} (hx : x ∈ χ.dom) (hy : y ∈ χ.dom) (hz : z ∈ χ.dom)
+    (hxy : x < y) (hyz : y < z) :
+    χ.g x z ⊆ χ.f y := by
+  have h_eq := h_c3 x y z hx hy hz hxy hyz
+  intro φ hφ
+  rw [h_eq] at hφ
+  exact hφ.1.2
+
+/--
+C3 implies g(x,z) ⊆ g(x,y) for x < y < z in dom.
+-/
+theorem c3_interval_subset_left (χ : Chronicle) (h_c3 : χ.c3)
+    {x y z : Rat} (hx : x ∈ χ.dom) (hy : y ∈ χ.dom) (hz : z ∈ χ.dom)
+    (hxy : x < y) (hyz : y < z) :
+    χ.g x z ⊆ χ.g x y := by
+  have h_eq := h_c3 x y z hx hy hz hxy hyz
+  intro φ hφ
+  rw [h_eq] at hφ
+  exact hφ.1.1
+
+/--
+C3 implies g(x,z) ⊆ g(y,z) for x < y < z in dom.
+-/
+theorem c3_interval_subset_right (χ : Chronicle) (h_c3 : χ.c3)
+    {x y z : Rat} (hx : x ∈ χ.dom) (hy : y ∈ χ.dom) (hz : z ∈ χ.dom)
+    (hxy : x < y) (hyz : y < z) :
+    χ.g x z ⊆ χ.g y z := by
+  have h_eq := h_c3 x y z hx hy hz hxy hyz
+  intro φ hφ
+  rw [h_eq] at hφ
+  exact hφ.2
 
 /-! ## g_content Chain Ordering -/
 

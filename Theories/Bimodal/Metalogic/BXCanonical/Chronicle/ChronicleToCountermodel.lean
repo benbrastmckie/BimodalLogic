@@ -188,11 +188,15 @@ noncomputable def chronicle_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent
   forward_G := by
     intro t t' φ h_lt h_G
     -- G(φ) ∈ extended_limit_f(t), need φ ∈ extended_limit_f(t')
-    -- Case analysis on whether t and t' are in the domain
+    -- Depends on: (1) g_content_chain_property for domain-to-domain pairs
+    -- (2) correct non-domain extension (current design uses A, which requires
+    --     G(φ) → φ at non-domain points -- NOT valid under strict semantics).
+    -- Resolution: redesign extended_limit_f or restrict to domain-only completeness.
     sorry
   backward_H := by
     intro t t' φ h_lt h_H
     -- H(φ) ∈ extended_limit_f(t), need φ ∈ extended_limit_f(t')
+    -- Same dependencies as forward_G (via g/h content duality).
     sorry
 
 /--

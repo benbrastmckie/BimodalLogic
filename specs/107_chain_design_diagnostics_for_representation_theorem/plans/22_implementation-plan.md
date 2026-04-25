@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Redefine C3 and Extend g to All Pairs [NOT STARTED]
+### Phase 2: Redefine C3 and Extend g to All Pairs [PARTIAL]
 
 **Goal**: Replace the current wrong C3 definition with the correct three-way intersection. Extend g from adjacent-only to all pairs, with non-adjacent g values defined by C3. This is the foundational change that unblocks everything.
 

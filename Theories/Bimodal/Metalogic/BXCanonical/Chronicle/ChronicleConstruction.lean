@@ -547,34 +547,39 @@ theorem limit_P_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 /-! ## Limit Interval Function (g-Function Infrastructure)
 
 The limit interval function assigns a deductively closed set to each pair
-of adjacent domain points. This is the g-function infrastructure identified
-as the deepest gap in the chronicle construction (Task 107, Report 15).
+of domain points x < y. Under the correct three-way C3 (Burgess 1982 p. 372):
 
-**Design**: For adjacent x < y in limit_dom, we define:
-  limit_g(x, y) = deductiveClosure(g_content(limit_f(x)))
+  g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z)  for all x < y < z in dom
 
-This gives C3 trivially: g_content(limit_f(x)) ⊆ deductiveClosure(g_content(limit_f(x))).
+The g values for ADJACENT pairs (x,y) are constructed during point insertion
+(Lemmas 2.4, 2.6 produce R3-maximal DCS). The g values for NON-ADJACENT
+pairs are DEFINED by C3: g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
 
-**Critical Gap (forward_G)**: To derive forward_G from this infrastructure,
-we additionally need g_content(limit_f(x)) ⊆ limit_f(y) for adjacent x < y
-in limit_dom. This is NOT a consequence of the current omega-chain construction:
-the elimination functions insert points via Lindenbaum extensions that include
-g_content of the TRIGGERING point, not necessarily of the adjacent predecessor.
+**Current Design (placeholder)**: limit_g uses deductiveClosure(g_content(limit_f(x)))
+as a placeholder. This does NOT satisfy the true three-way C3. The correct
+design requires the omega-chain to track g values at each stage.
 
-The correct fix requires modifying the omega-chain to maintain this invariant.
-See `g_content_chain_property` below for the precise statement needed.
+**Key Consequence of True C3**: g(x,z) ⊆ f(y) for all x < y < z in dom.
+This is IMMEDIATE from the three-way intersection (f(y) is a factor).
+Combined with C5 (U(beta,gamma) in f(x) gives gamma in f(y), beta in g(x,y)),
+the truth lemma follows: beta in g(x,y) and g(x,y) ⊆ f(z) for intermediate z
+gives beta in f(z), which is the guard at intermediate points.
+
+**Blocking Issue**: The omega-chain does not track g values. The
+g_content_chain_property below is the key sorry that, once resolved, enables
+the truth lemma to work. Resolving it requires either (a) redesigning the
+omega-chain to track g values and maintain C0-C3, or (b) proving that the
+current construction implicitly satisfies g_content(f(x)) ⊆ f(y) for all
+x < y in limit_dom.
 -/
 
 /--
-The **limit interval function**: for each pair (x, y) of rationals, assigns
-the deductive closure of g_content(limit_f(x)).
+The **limit interval function** (placeholder): for each pair (x, y) of rationals,
+assigns the deductive closure of g_content(limit_f(x)).
 
-For adjacent domain points x < y, this captures the set of formulas that
-"hold throughout the interval (x, y)" in the sense of being derivable from
-the G-content of the left endpoint.
-
-For non-adjacent or non-domain pairs, the value is mathematically irrelevant
-(the chronicle conditions only reference g at adjacent pairs).
+NOTE: This definition ignores y and does NOT satisfy the true three-way C3.
+It will be replaced when the omega-chain is redesigned to track g values.
+The correct limit_g should be the union of g_n values from finite stages.
 -/
 noncomputable def limit_g (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
     Rat → Rat → Set Formula :=
@@ -588,14 +593,6 @@ theorem limit_c1_at_domain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     SetDeductivelyClosed (limit_g A h_mcs x y) := by
   unfold limit_g
   exact deductiveClosure_is_dcs (g_content_set_consistent (limit_c0 A h_mcs x _hx))
-
-/--
-The limit chronicle satisfies C3: g_content(limit_f(x)) ⊆ limit_g(x, y).
--/
-theorem limit_c3 (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (x y : Rat) :
-    g_content (limit_f A h_mcs x) ⊆ limit_g A h_mcs x y := by
-  exact subset_deductiveClosure (g_content (limit_f A h_mcs x))
 
 /-! ## g_content / h_content Duality
 
@@ -701,45 +698,41 @@ theorem h_content_sub_imp_g_content_sub {A B : Set Formula}
   exact h_G_nn_not h_G_nn
 
 /--
-**The g_content chain property**: The key invariant needed for forward_G.
+**The g_content chain property**: The SINGLE remaining blocker for completeness.
 
-This states: for any x < y both in limit_dom, g_content(limit_f(x)) ⊆ limit_f(y).
+States: for any x < y both in limit_dom, g_content(limit_f(x)) ⊆ limit_f(y).
+Equivalently: G(φ) ∈ limit_f(x) → φ ∈ limit_f(y) for all x < y in limit_dom.
 
-**Status**: OPEN. The current omega-chain construction does NOT maintain this
-invariant because C5-forward elimination places new points beyond ALL domain
-points with a seed containing only g_content of the triggering point.
+**Why this matters**: This is the formal core of the truth lemma. With three-way
+C3 (g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z)), g(x,y) ⊆ f(z) for intermediate z
+follows immediately. But the truth lemma needs "beta ∈ g(x,y)" from C5, which
+in turn requires g to be tracked. In the CURRENT design (g not tracked), this
+property provides the EQUIVALENT guarantee: formulas under G at x propagate to
+all future domain points.
 
-**Analysis (v6 session)**: Three approaches were evaluated:
+**Status**: OPEN. All 12 sorry sites in the Chronicle directory depend on this
+(directly or through forward_G/backward_H/box_stable).
 
-1. **Enlarged seed** (plan v6 approach): Include g_content of ALL predecessor
-   domain points in the seed. BLOCKED: the enlarged seed
-   {η} ∪ ⋃_{x ∈ dom} g_content(f(x)) reduces to {η} ∪ g_content(f(m))
-   (where m = max(dom)) via temp_4 and the inductive invariant. But this
-   requires F(η) ∈ f(m), which fails when the triggering point t < m
-   because F(η) (existential) does not propagate forward through g_content.
+**Root Cause**: The omega-chain only tracks f and dom, not g. When a new point y
+is inserted via C5 elimination, f(y) contains g_content(f(trigger)) but NOT
+g_content(f(w)) for other predecessors w. Since f values are immutable once set,
+g_content(f(w)) ⊆ f(y) cannot be established retroactively.
 
-2. **Modified insertion position**: Place new points adjacent to the
-   triggering point instead of beyond all domain points. Fixes the forward
-   direction but breaks the backward direction (g_content(f(y)) ⊆ f(x)
-   for existing x > y).
+**Resolution Path**: Modify C5 elimination to place new points ADJACENT to the
+trigger (not beyond max), with seed {eta} ∪ g_content(f(trigger)). Then
+g_content(f(w)) ⊆ f(y) for w < trigger follows from the inductive invariant
+(g_content(f(w)) ⊆ f(trigger) by invariant, then G(φ) ∈ f(w) → G(G(φ)) ∈ f(w)
+→ G(φ) ∈ f(trigger) → φ ∈ g_content(f(trigger)) ⊆ f(y)). The backward
+direction (trigger < w < y) requires additional care but follows from the
+g/h duality bridge (`g_content_sub_imp_h_content_sub`, proven sorry-free).
 
-3. **Duality bridge** (new, proven here): `g_content_sub_imp_h_content_sub`
-   shows g_content(A) ⊆ B ↔ h_content(B) ⊆ A for MCS A, B. This means
-   proving ONE direction of the chain property gives BOTH. But the
-   fundamental construction issue (ensuring g_content propagation at
-   insertion time) remains.
-
-**Recommended next step**: Modify the omega-chain to use a two-pass approach:
-(a) insert witness point via current C5 elimination, then (b) at the same
-step, propagate g_content to the new point using a secondary Lindenbaum
-extension that extends the witness MCS to include g_content of all
-predecessors. The secondary extension maintains consistency because the
-predecessors' g_content is contained in g_content of the max point (by
-temp_4 + invariant), and the max point has a consistent g_content by
-g_content_set_consistent.
-
-**Key dependency**: limit_backward_H now uses this lemma via the duality
-bridge, so closing this sorry also closes limit_backward_H.
+**Dependency graph**: g_content_chain_property
+  → limit_forward_G, limit_backward_H (via duality)
+  → chronicle_fmcs.forward_G/backward_H (+ non-domain extension fix)
+  → box_stable_in_chronicle_fmcs
+  → chronicle_bfmcs construction
+  → restricted_tc, restricted_buc, restricted_fuc
+  → dd_countermodel_chronicle
 -/
 theorem g_content_chain_property (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
