@@ -198,7 +198,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Populate g-values in All Elimination Functions [NOT STARTED]
+### Phase 3: Populate g-values in All Elimination Functions [BLOCKED]
 
 **Goal**: Every elimination function (C5, C5', C4, C4', density, g_prop, h_prop) produces BurgessR3Maximal g-values for adjacent pairs. The singleton_chronicle also gets a proper g-construction. After this phase, g-values are non-empty at every finite stage.
 
