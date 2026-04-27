@@ -270,6 +270,20 @@ theorem omega_chain_f_agrees (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (counterexample_enum (Nat.unpair n).2)).f_agrees x hx
 
 /--
+The interval function agrees on old domain pairs across the chain.
+-/
+theorem omega_chain_g_agrees (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (n : Nat) (a b : Rat)
+    (ha : a ∈ (omega_chain_val A h_mcs n).dom)
+    (hb : b ∈ (omega_chain_val A h_mcs n).dom) :
+    (omega_chain_val A h_mcs (n + 1)).g a b = (omega_chain_val A h_mcs n).g a b := by
+  simp only [omega_chain_val, omega_chain]
+  exact (eliminate_potential_counterexample
+    (omega_chain A h_mcs n).val
+    (omega_chain A h_mcs n).property
+    (counterexample_enum (Nat.unpair n).2)).g_agrees a b ha hb
+
+/--
 Domain monotonicity extends transitively: for m ≤ n, dom(m) ⊆ dom(n).
 -/
 theorem omega_chain_dom_mono_le (A : Set Formula) (h_mcs : SetMaximalConsistent A)
@@ -290,6 +304,24 @@ theorem omega_chain_f_agrees_le (A : Set Formula) (h_mcs : SetMaximalConsistent 
   | refl => rfl
   | step h ih =>
     rw [omega_chain_f_agrees A h_mcs _ x (omega_chain_dom_mono_le A h_mcs h hx)]
+    exact ih
+
+/--
+g agreement extends transitively: for m ≤ n and a,b in dom(m), g_n(a,b) = g_m(a,b).
+This is the g-immutability property at the omega chain level: once a g-value is set
+for a pair of domain points, it never changes in subsequent stages.
+-/
+theorem omega_chain_g_agrees_le (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    {m n : Nat} (h : m ≤ n) (a b : Rat)
+    (ha : a ∈ (omega_chain_val A h_mcs m).dom)
+    (hb : b ∈ (omega_chain_val A h_mcs m).dom) :
+    (omega_chain_val A h_mcs n).g a b = (omega_chain_val A h_mcs m).g a b := by
+  induction h with
+  | refl => rfl
+  | step h ih =>
+    rw [omega_chain_g_agrees A h_mcs _ a b
+      (omega_chain_dom_mono_le A h_mcs h ha)
+      (omega_chain_dom_mono_le A h_mcs h hb)]
     exact ih
 
 /--

@@ -172,7 +172,8 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
       χ'.c0 ∧
       (∃ y ∈ χ'.dom, ce.x < y ∧ ce.η ∈ χ'.f y) ∧
-      χ.dom ⊂ χ'.dom := by
+      χ.dom ⊂ χ'.dom ∧
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
   -- Step 1: Get a fresh point y > all domain points
   obtain ⟨y, hy_gt, hy_notin⟩ := exists_rat_gt_finset χ.dom
   -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x))
@@ -183,7 +184,8 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
   -- f' agrees with f on old domain, assigns C to y
   -- g' is unchanged (placeholder; full interval assignment in ChronicleConstruction)
   refine ⟨⟨fun q => if q = y then C else χ.f q, χ.g, insert y χ.dom⟩,
-    Finset.subset_insert y χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hy_notin⟩
+    Finset.subset_insert y χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hy_notin,
+    fun _ _ _ _ => rfl⟩
   · -- f agrees on old points
     intro x hx
     have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
@@ -213,7 +215,8 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
       χ'.c0 ∧
       (∃ y ∈ χ'.dom, y < ce.x ∧ ce.η ∈ χ'.f y) ∧
-      χ.dom ⊂ χ'.dom := by
+      χ.dom ⊂ χ'.dom ∧
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
   -- Step 1: Get a fresh point y < all domain points
   obtain ⟨y, hy_lt, hy_notin⟩ := exists_rat_lt_finset χ.dom
   -- Step 2: Construct MCS with eta via BX10' (since_P)
@@ -228,7 +231,8 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
   have h_η_C : ce.η ∈ C := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
   -- Step 3: Build new chronicle
   refine ⟨⟨fun q => if q = y then C else χ.f q, χ.g, insert y χ.dom⟩,
-    Finset.subset_insert y χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hy_notin⟩
+    Finset.subset_insert y χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hy_notin,
+    fun _ _ _ _ => rfl⟩
   · intro x hx
     have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
     exact if_neg h_ne
@@ -303,7 +307,8 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, ce.x < z ∧ z < ce.y ∧ ce.γ.neg ∈ χ'.f z) ∧
-      χ.dom ⊂ χ'.dom := by
+      χ.dom ⊂ χ'.dom ∧
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
   -- Step 1: Find a fresh rational z between x and y, not in the finite domain.
   obtain ⟨z, hx_lt_z, hz_lt_y, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.x ce.y ce.hxy
   -- Step 2: Find an MCS D containing ¬γ (negated GUARD).
@@ -335,7 +340,8 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
           obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
           have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
           refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+            fun _ _ _ _ => rfl⟩
           · intro x hx
             have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
             exact if_neg h_ne
@@ -356,7 +362,8 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
         obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
         have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
         refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+          fun _ _ _ _ => rfl⟩
         · intro x hx
           have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
           exact if_neg h_ne
@@ -371,7 +378,8 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
           exact h_neg_γ_D
     · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
-        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+        fun _ _ _ _ => rfl⟩
       · intro x hx
         have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
         exact if_neg h_ne
@@ -386,7 +394,8 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
         exact h_neg_γ_y
   · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
     refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
-      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+      fun _ _ _ _ => rfl⟩
     · -- f agrees on old points
       intro x hx
       have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
@@ -419,7 +428,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.γ.neg ∈ χ'.f z) ∧
-      χ.dom ⊂ χ'.dom := by
+      χ.dom ⊂ χ'.dom ∧
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
   -- Mirror of C4 elimination for Since direction.
   -- Find a fresh rational z between y and x, not in the finite domain.
   obtain ⟨z, hy_lt_z, hz_lt_x, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.y ce.x ce.hyx
@@ -445,7 +455,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
           obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
           have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
           refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+            fun _ _ _ _ => rfl⟩
           · intro x hx
             have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
             exact if_neg h_ne
@@ -466,7 +477,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
         obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
         have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
         refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+          fun _ _ _ _ => rfl⟩
         · intro x hx
           have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
           exact if_neg h_ne
@@ -481,7 +493,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
           exact h_neg_γ_D
     · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
       refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
-        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+        fun _ _ _ _ => rfl⟩
       · intro x hx
         have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
         exact if_neg h_ne
@@ -496,7 +509,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
         exact h_neg_γ_y
   · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
     refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
-      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+      fun _ _ _ _ => rfl⟩
     · intro x hx
       have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
       exact if_neg h_ne
@@ -536,7 +550,8 @@ noncomputable def eliminate_g_prop_counterexample {χ : Chronicle}
       χ.dom ⊆ χ'.dom ∧
       (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
       χ'.c0 ∧
-      χ.dom ⊂ χ'.dom := by
+      χ.dom ⊂ χ'.dom ∧
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
   set z := (x + y) / 2 with hz_def
   have hxy := h_adj.2.2.1
   have hz_lt_y : z < y := by linarith
@@ -547,7 +562,8 @@ noncomputable def eliminate_g_prop_counterexample {χ : Chronicle}
   -- Use g_propagation_witness to get an MCS D with α ∈ D and g_content(f(x)) ⊆ D
   obtain ⟨D, h_D_mcs, h_α_D, _h_g_sub⟩ := g_propagation_witness h_mcs_x α h_G
   refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-    Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+    Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin,
+    fun _ _ _ _ => rfl⟩
   · intro q hq
     have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
     exact if_neg h_ne
@@ -573,7 +589,8 @@ noncomputable def eliminate_h_prop_counterexample {χ : Chronicle}
       χ.dom ⊆ χ'.dom ∧
       (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
       χ'.c0 ∧
-      χ.dom ⊂ χ'.dom := by
+      χ.dom ⊂ χ'.dom ∧
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
   set z := (y + x) / 2 with hz_def
   have hyx := h_adj.2.2.1
   have hz_lt_x : z < x := by linarith
@@ -587,7 +604,8 @@ noncomputable def eliminate_h_prop_counterexample {χ : Chronicle}
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
   have h_α_D : α ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
   refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-    Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+    Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin,
+    fun _ _ _ _ => rfl⟩
   · intro q hq
     have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
     exact if_neg h_ne
@@ -618,7 +636,8 @@ noncomputable def eliminate_density_counterexample {χ : Chronicle}
       (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, x < z ∧ z < y) ∧
-      χ.dom ⊂ χ'.dom := by
+      χ.dom ⊂ χ'.dom ∧
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
   set z := (x + y) / 2 with hz_def
   have hxy := h_adj.2.2.1
   have hz_lt_y : z < y := by linarith
@@ -626,7 +645,8 @@ noncomputable def eliminate_density_counterexample {χ : Chronicle}
   have hz_notin : z ∉ χ.dom := by
     intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
   refine ⟨⟨fun q => if q = z then χ.f x else χ.f q, χ.g, insert z χ.dom⟩,
-    Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin⟩
+    Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+    fun _ _ _ _ => rfl⟩
   · intro q hq
     have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
     exact if_neg h_ne
@@ -685,6 +705,7 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
   dom_sub : χ.dom ⊆ val.dom
   c0 : val.c0
   f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
+  g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → val.g a b = χ.g a b
   c5_forward_witness : pc.kind = .c5_forward → pc.x ∈ χ.dom →
     Formula.untl pc.ξ pc.η ∈ χ.f pc.x →
     ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y
@@ -737,6 +758,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
+              g_agrees := h_prop.2.2.2.2.2
               c5_forward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
@@ -747,6 +769,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := by
                 intro _ h_mem h_until
                 push_neg at h_actual
@@ -771,6 +794,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
+              g_agrees := h_prop.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
@@ -781,6 +805,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ h_mem h_since
@@ -807,6 +832,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
+              g_agrees := h_prop.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun _ _ _ _ _ _ => h_prop.2.2.2.1
@@ -816,6 +842,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := by
@@ -841,6 +868,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
+              g_agrees := h_prop.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -850,6 +878,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -873,6 +902,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
+              g_agrees := h_prop.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -882,6 +912,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -901,6 +932,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
+              g_agrees := h_prop.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -910,6 +942,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -939,6 +972,7 @@ noncomputable def eliminate_potential_counterexample
                 intro q hq
                 have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
                 exact if_neg h_ne
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -950,6 +984,7 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
               f_agrees := fun _ _ => rfl
+              g_agrees := fun _ _ _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)

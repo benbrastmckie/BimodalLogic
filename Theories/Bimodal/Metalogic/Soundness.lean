@@ -751,6 +751,26 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
 -- BX8/BX8' (until_step_valid/since_step_valid) REMOVED.
 -- These axioms are not sound under the half-open guard convention.
 
+/-- Until guard: `(φ U ψ) → φ`.
+Under half-open guard [t, s): φ U ψ at t has witness s > t with ψ(s) and φ on [t,s).
+Since t ≤ t and t < s, the guard gives φ(t) directly. -/
+theorem until_guard_valid (φ ψ : Formula) :
+    ⊨ ((Formula.untl φ ψ).imp φ) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, hts, _h_ψs, h_guard⟩
+  exact h_guard t le_rfl hts
+
+/-- Since guard: `(φ S ψ) → φ`.
+Under half-open guard (s, t]: φ S ψ at t has witness s < t with ψ(s) and φ on (s,t].
+Since s < t and t ≤ t, the guard gives φ(t) directly. -/
+theorem since_guard_valid (φ ψ : Formula) :
+    ⊨ ((Formula.snce φ ψ).imp φ) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, hst, _h_ψs, h_guard⟩
+  exact h_guard t hst le_rfl
+
 /-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
 Under half-open guard [t, s): φ U ψ at t has witness s > t with ψ(s) and φ on [t,s).
 Since t ∈ [t,s) (because t ≤ t and t < s), the guard gives φ(t). So φ ∨ ψ via Left. -/
@@ -845,6 +865,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact F_until_equiv_valid φ
   | P_since_equiv φ => exact P_since_equiv_valid φ
+  | until_guard φ ψ => exact until_guard_valid φ ψ
+  | since_guard φ ψ => exact since_guard_valid φ ψ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
 
@@ -886,6 +908,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | temp_linearity_past φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_past_valid φ ψ)
   | F_until_equiv φ => exact Validity.valid_implies_valid_dense (F_until_equiv_valid φ)
   | P_since_equiv φ => exact Validity.valid_implies_valid_dense (P_since_equiv_valid φ)
+  | until_guard φ ψ => exact Validity.valid_implies_valid_dense (until_guard_valid φ ψ)
+  | since_guard φ ψ => exact Validity.valid_implies_valid_dense (since_guard_valid φ ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_dense (temp_future_valid ψ)
 
@@ -928,6 +952,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | temp_linearity_past φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_past_valid φ ψ)
   | F_until_equiv φ => exact Validity.valid_implies_valid_discrete (F_until_equiv_valid φ)
   | P_since_equiv φ => exact Validity.valid_implies_valid_discrete (P_since_equiv_valid φ)
+  | until_guard φ ψ => exact Validity.valid_implies_valid_discrete (until_guard_valid φ ψ)
+  | since_guard φ ψ => exact Validity.valid_implies_valid_discrete (since_guard_valid φ ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_discrete (temp_future_valid ψ)
 
@@ -1024,6 +1050,8 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ D F M Omega h_sc τ h_mem t
     | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
+    | until_guard φ ψ => exact until_guard_valid φ ψ D F M Omega h_sc τ h_mem t
+    | since_guard φ ψ => exact since_guard_valid φ ψ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
@@ -1188,6 +1216,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ D F M Omega h_sc τ h_mem t
     | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
+    | until_guard φ ψ => exact until_guard_valid φ ψ D F M Omega h_sc τ h_mem t
+    | since_guard φ ψ => exact since_guard_valid φ ψ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>

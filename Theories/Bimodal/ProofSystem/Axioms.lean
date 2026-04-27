@@ -32,7 +32,7 @@ requiring successor-chain constructions.
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 35 axiom constructors
+**Total**: 37 axiom constructors
 
 ### Key Properties
 
@@ -56,7 +56,7 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-35 constructors organized into four layers:
+37 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (26): Burgess-Xu axioms for Until/Since on linear orders
@@ -256,6 +256,22 @@ inductive Axiom : Formula → Type where
   Past dual of BX12. -/
   | P_since_equiv (φ : Formula) :
       Axiom ((Formula.some_past φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ))
+
+  -- Layer 3c: Until/Since Guard Axioms (2)
+  -- Under half-open guard semantics, (φ U ψ) at t has guard φ on [t,s).
+  -- Since t ∈ [t,s), the guard gives φ(t) directly.
+
+  /-- Until guard: `(φ U ψ) → φ`.
+  Under half-open guard [t,s): φ U ψ at t has witness s > t with ψ(s) and φ on [t,s).
+  Since t ≤ t and t < s, the guard gives φ(t). Strictly stronger than BX9 (until_elim). -/
+  | until_guard (φ ψ : Formula) :
+      Axiom ((Formula.untl φ ψ).imp φ)
+
+  /-- Since guard: `(φ S ψ) → φ`.
+  Under half-open guard (s,t]: φ S ψ at t has witness s < t with ψ(s) and φ on (s,t].
+  Since s < t and t ≤ t, the guard gives φ(t). -/
+  | since_guard (φ ψ : Formula) :
+      Axiom ((Formula.snce φ ψ).imp φ)
 
   -- Layer 4: Modal-Temporal Interaction (2)
 
