@@ -614,13 +614,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-27T06:22:31Z",
+      "last_updated": "2026-04-27T13:11:23Z",
       "researched": "2026-04-25T22:26:54Z",
       "related_tasks": [
         93
@@ -839,14 +839,14 @@
           "summary": "Team research: FUC independent of C4, g(x,y) need not be MCS, parallel workstreams viable"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/31_implementation-plan.md",
-          "type": "plan",
-          "summary": "v18: parallel workstreams for team implementation"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/32_team-research.md",
           "type": "report",
           "summary": "Team research: seed from Lemma 2.4 eta, no general existence needed, context-specific construction"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/32_implementation-plan.md",
+          "type": "plan",
+          "summary": "v19: context-specific seed from Lemma 2.4 eta"
         }
       ],
       "session_id": "sess_1777270939_a91a7c",
