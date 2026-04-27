@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 113,
+      "project_name": "literature_review_completeness_techniques",
+      "status": "not_started",
+      "task_type": "formal",
+      "description": "Review newly obtained literature (Xu 1988, Reynolds 1992, Caleiro-Vigano-Volpe 2013) against current BX completeness proof state to identify transferable techniques. Structured around three-phase completeness roadmap: (1) base TM logic with H, G, Box over booleans; (2) extension to U and S; (3) dense and discrete specializations. Cross-reference against active sorry sites in Chronicle/ modules and blocked tasks (18, 68).",
+      "created": "2026-04-27T17:16:06Z",
+      "last_updated": "2026-04-27T17:16:06Z"
+    },
+    {
       "project_number": 112,
       "project_name": "literature_study_representation_theorem",
       "status": "researched",
@@ -858,7 +867,7 @@
       "started": "2026-04-25T19:11:01Z"
     }
   ],
-  "next_project_number": 113,
+  "next_project_number": 114,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
