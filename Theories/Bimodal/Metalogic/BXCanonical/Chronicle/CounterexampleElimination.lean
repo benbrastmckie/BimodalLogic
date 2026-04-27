@@ -729,13 +729,9 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
   val : Chronicle
   dom_sub : χ.dom ⊆ val.dom
   c0 : val.c0
+  c2' : val.c2'
   f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
   g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → val.g a b = χ.g a b
-  /-- The g function is extensionally equal: val.g = χ.g as functions.
-  This is stronger than g_agrees (which only covers old domain pairs) and
-  is needed for the omega-chain C3 preservation proof. Every elimination
-  function preserves the g function unchanged. -/
-  g_ext : ∀ a b, val.g a b = χ.g a b
   c5_forward_witness : pc.kind = .c5_forward → pc.x ∈ χ.dom →
     Formula.untl pc.ξ pc.η ∈ χ.f pc.x →
     ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y
@@ -787,9 +783,9 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
+              c2' := sorry -- Phase 3: direct g-construction for new adjacent pair (x_max, y)
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
-              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
@@ -799,9 +795,9 @@ noncomputable def eliminate_potential_counterexample
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
+              c2' := h_c2'
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := by
                 intro _ h_mem h_until
                 push_neg at h_actual
@@ -825,9 +821,9 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
+              c2' := sorry -- Phase 3: direct g-construction for new adjacent pair (y, x_min)
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
-              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
@@ -837,9 +833,9 @@ noncomputable def eliminate_potential_counterexample
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
+              c2' := h_c2'
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ h_mem h_since
@@ -865,9 +861,9 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
+              c2' := sorry -- Phase 3: split g via burgessR3_absorption for new adjacent pairs
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
-              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun _ _ _ _ _ _ => h_prop.2.2.2.1
@@ -876,9 +872,9 @@ noncomputable def eliminate_potential_counterexample
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
+              c2' := h_c2'
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := by
@@ -903,9 +899,9 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
+              c2' := sorry -- Phase 3: split g via burgessR3_absorption (mirror)
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
-              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -914,9 +910,9 @@ noncomputable def eliminate_potential_counterexample
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
+              c2' := h_c2'
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -939,9 +935,9 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
+              c2' := sorry -- Phase 3: g-construction from g(x, x_next) via absorption
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.1
-              g_ext := h_prop.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -950,9 +946,9 @@ noncomputable def eliminate_potential_counterexample
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
+              c2' := h_c2'
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -971,9 +967,9 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
+              c2' := sorry -- Phase 3: g-construction from g(z_prev, y) via absorption
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.1
-              g_ext := h_prop.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -982,9 +978,9 @@ noncomputable def eliminate_potential_counterexample
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
+              c2' := h_c2'
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -1010,12 +1006,12 @@ noncomputable def eliminate_potential_counterexample
                 · simp only [ite_true]; exact h_c0 pc.x h_xm
                 · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
                   simp only [h_ne, ite_false]; exact h_c0 q hq
+              c2' := sorry -- Phase 3: split g(x,y) into g(x,z) and g(z,y) via absorption
               f_agrees := by
                 intro q hq
                 have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
                 exact if_neg h_ne
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -1026,9 +1022,9 @@ noncomputable def eliminate_potential_counterexample
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
+              c2' := h_c2'
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)

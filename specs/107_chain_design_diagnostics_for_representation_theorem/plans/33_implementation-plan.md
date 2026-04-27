@@ -203,7 +203,7 @@ All phases are strictly sequential (shared files: ChronicleConstruction.lean, Co
 
 ---
 
-### Phase 3: Remove rebuild_g, Direct g-Construction in Elimination Functions [NOT STARTED]
+### Phase 3: Remove rebuild_g, Direct g-Construction in Elimination Functions [PARTIAL]
 
 **Goal**: Delete all rebuild_g infrastructure and the false `burgessR3Maximal_exists_general`. Add `c2'` field to EliminationResult. Modify all 7 elimination functions to construct g-values for new adjacent pairs directly: C5/C5' via `burgessR3Maximal_exists_from_seed` with Lemma 2.4 eta, C4/C4'/density/g_prop/h_prop via `burgessR3_absorption` on existing g-values. Preserve g for old pairs. omega_chain returns `{chi // chi.c0 AND chi.c2'}` using EliminationResult.c2' directly (no rebuild_g wrapper).
 
