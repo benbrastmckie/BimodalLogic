@@ -1210,4 +1210,104 @@ theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
   obtain ⟨B, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_dcs h_dc_r3
   exact ⟨B, h_B3M⟩
 
+/-! ## Until/Since Nested Absorption
+
+Key syntactic lemma: `untl(γ, untl(γ,δ)) → untl(γ,δ)`.
+
+Proof:
+1. until_guard: `untl(γ,δ) → γ` (BX_guard)
+2. identity: `untl(γ,δ) → untl(γ,δ)` (trivial)
+3. Therefore: `untl(γ,δ) → γ ∧ untl(γ,δ)` (conjunction)
+4. By temporal necessitation: `G(untl(γ,δ) → γ ∧ untl(γ,δ))`
+5. By BX3 (right_mono_until): `untl(γ, untl(γ,δ)) → untl(γ, γ ∧ untl(γ,δ))`
+6. By BX6 (absorb_until): `untl(γ, γ ∧ untl(γ,δ)) → untl(γ,δ)`
+7. Chain (5) and (6): `untl(γ, untl(γ,δ)) → untl(γ,δ)`
+-/
+
+/--
+**Nested Until absorption**: `untl(γ, untl(γ,δ)) → untl(γ,δ)`.
+Used in the C4 hard case to show that if γ ∈ g(x,y) and untl(γ,δ) ∈ f(y),
+then untl(γ,δ) ∈ f(x) (via burgessR3), contradicting neg(untl(γ,δ)) ∈ f(x).
+-/
+noncomputable def untl_absorb_nested (γ δ : Formula) :
+    DerivationTree [] ((Formula.untl γ (Formula.untl γ δ)).imp (Formula.untl γ δ)) := by
+  -- Step 1: untl(γ,δ) → γ ∧ untl(γ,δ)
+  have h_guard : DerivationTree [] ((Formula.untl γ δ).imp γ) :=
+    DerivationTree.axiom [] _ (Axiom.until_guard γ δ)
+  have h_id : DerivationTree [] ((Formula.untl γ δ).imp (Formula.untl γ δ)) :=
+    Bimodal.Theorems.Combinators.identity (Formula.untl γ δ)
+  have h_conj_intro : DerivationTree [] ((Formula.untl γ δ).imp (Formula.and γ (Formula.untl γ δ))) :=
+    Bimodal.Theorems.Combinators.combine_imp_conj h_guard h_id
+  -- Step 2: G(untl(γ,δ) → γ ∧ untl(γ,δ)) by temporal necessitation
+  have h_G := DerivationTree.temporal_necessitation _ h_conj_intro
+  -- Step 3: BX3: G(α → β) → (untl(γ,α) → untl(γ,β))
+  have h_bx3 := DerivationTree.axiom [] _
+    (Axiom.right_mono_until (Formula.untl γ δ) (Formula.and γ (Formula.untl γ δ)) γ)
+  -- MP: untl(γ, untl(γ,δ)) → untl(γ, γ ∧ untl(γ,δ))
+  have h_mono := DerivationTree.modus_ponens [] _ _ h_bx3 h_G
+  -- Step 4: BX6: untl(γ, γ ∧ untl(γ,δ)) → untl(γ,δ)
+  have h_bx6 := DerivationTree.axiom [] _ (Axiom.absorb_until γ δ)
+  -- Chain: untl(γ, untl(γ,δ)) → untl(γ, γ ∧ untl(γ,δ)) → untl(γ,δ)
+  exact Bimodal.Theorems.Combinators.imp_trans h_mono h_bx6
+
+/--
+**Nested Since absorption**: `snce(γ, snce(γ,δ)) → snce(γ,δ)`.
+Mirror of `untl_absorb_nested` for the Since direction.
+-/
+noncomputable def snce_absorb_nested (γ δ : Formula) :
+    DerivationTree [] ((Formula.snce γ (Formula.snce γ δ)).imp (Formula.snce γ δ)) := by
+  have h_guard : DerivationTree [] ((Formula.snce γ δ).imp γ) :=
+    DerivationTree.axiom [] _ (Axiom.since_guard γ δ)
+  have h_id : DerivationTree [] ((Formula.snce γ δ).imp (Formula.snce γ δ)) :=
+    Bimodal.Theorems.Combinators.identity (Formula.snce γ δ)
+  have h_conj_intro : DerivationTree [] ((Formula.snce γ δ).imp (Formula.and γ (Formula.snce γ δ))) :=
+    Bimodal.Theorems.Combinators.combine_imp_conj h_guard h_id
+  have h_H := Bimodal.Theorems.past_necessitation _ h_conj_intro
+  have h_bx3' := DerivationTree.axiom [] _
+    (Axiom.right_mono_since (Formula.snce γ δ) (Formula.and γ (Formula.snce γ δ)) γ)
+  have h_mono := DerivationTree.modus_ponens [] _ _ h_bx3' h_H
+  have h_bx6' := DerivationTree.axiom [] _ (Axiom.absorb_since γ δ)
+  exact Bimodal.Theorems.Combinators.imp_trans h_mono h_bx6'
+
+/--
+**Generalized C4 bridging**: If burgessR3(A, B, C) and neg(untl(γ,δ)) ∈ A
+and untl(γ,δ) ∈ C, then γ ∉ B.
+
+This is the key lemma for the non-adjacent C4 hard case: when the next domain
+point after w_max has untl(γ,δ) (rather than δ), we use the absorption
+`untl(γ, untl(γ,δ)) → untl(γ,δ)` to derive the contradiction.
+-/
+theorem burgessR3_gamma_not_in_B_nested {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_r3 : burgessR3 A B C)
+    {γ δ : Formula}
+    (h_neg_until : (Formula.untl γ δ).neg ∈ A)
+    (h_until_C : Formula.untl γ δ ∈ C) :
+    γ ∉ B := by
+  intro h_gamma
+  -- γ ∈ B and untl(γ,δ) ∈ C → untl(γ, untl(γ,δ)) ∈ A (by burgessR3)
+  have h1 := h_r3.1 γ h_gamma (Formula.untl γ δ) h_until_C
+  -- untl(γ, untl(γ,δ)) → untl(γ,δ) by nested absorption
+  have h2 := theorem_in_mcs h_mcs_A (untl_absorb_nested γ δ)
+  have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
+  -- untl(γ,δ) and neg(untl(γ,δ)) in MCS A → contradiction
+  exact set_consistent_not_both h_mcs_A.1 (Formula.untl γ δ) h3 h_neg_until
+
+/--
+**Generalized C4' bridging (Since)**: If burgessR3(A, B, C) and neg(snce(γ,δ)) ∈ C
+and snce(γ,δ) ∈ A, then γ ∉ B.
+-/
+theorem burgessR3_gamma_not_in_B_since_nested {A B C : Set Formula}
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3 : burgessR3 A B C)
+    {γ δ : Formula}
+    (h_neg_since : (Formula.snce γ δ).neg ∈ C)
+    (h_since_A : Formula.snce γ δ ∈ A) :
+    γ ∉ B := by
+  intro h_gamma
+  have h1 := h_r3.2 γ h_gamma (Formula.snce γ δ) h_since_A
+  have h2 := theorem_in_mcs h_mcs_C (snce_absorb_nested γ δ)
+  have h3 := SetMaximalConsistent.implication_property h_mcs_C h2 h1
+  exact set_consistent_not_both h_mcs_C.1 (Formula.snce γ δ) h3 h_neg_since
+
 end Bimodal.Metalogic.BXCanonical.Chronicle

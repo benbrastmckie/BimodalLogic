@@ -173,7 +173,8 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
       χ'.c0 ∧
       (∃ y ∈ χ'.dom, ce.x < y ∧ ce.η ∈ χ'.f y) ∧
       χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
+      (∀ a b, χ'.g a b = χ.g a b) := by
   -- Step 1: Get a fresh point y > all domain points
   obtain ⟨y, hy_gt, hy_notin⟩ := exists_rat_gt_finset χ.dom
   -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x))
@@ -185,7 +186,7 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
   -- g' is unchanged (placeholder; full interval assignment in ChronicleConstruction)
   refine ⟨⟨fun q => if q = y then C else χ.f q, χ.g, insert y χ.dom⟩,
     Finset.subset_insert y χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hy_notin,
-    fun _ _ _ _ => rfl⟩
+    fun _ _ _ _ => rfl, fun _ _ => rfl⟩
   · -- f agrees on old points
     intro x hx
     have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
@@ -216,7 +217,8 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
       χ'.c0 ∧
       (∃ y ∈ χ'.dom, y < ce.x ∧ ce.η ∈ χ'.f y) ∧
       χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
+      (∀ a b, χ'.g a b = χ.g a b) := by
   -- Step 1: Get a fresh point y < all domain points
   obtain ⟨y, hy_lt, hy_notin⟩ := exists_rat_lt_finset χ.dom
   -- Step 2: Construct MCS with eta via BX10' (since_P)
@@ -232,7 +234,7 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
   -- Step 3: Build new chronicle
   refine ⟨⟨fun q => if q = y then C else χ.f q, χ.g, insert y χ.dom⟩,
     Finset.subset_insert y χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hy_notin,
-    fun _ _ _ _ => rfl⟩
+    fun _ _ _ _ => rfl, fun _ _ => rfl⟩
   · intro x hx
     have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
     exact if_neg h_ne
@@ -300,7 +302,7 @@ With the correct C4 (check EVENT δ at f(y), negate GUARD γ at f(z)):
 - If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires burgessR3 bridging + Lemma 2.6.
 -/
 noncomputable def eliminate_C4_counterexample {χ : Chronicle}
-    (h_c0 : χ.c0)
+    (h_c0 : χ.c0) (h_c2' : χ.c2')
     (ce : C4Counterexample χ) :
     ∃ χ' : Chronicle,
       χ.dom ⊆ χ'.dom ∧
@@ -308,107 +310,127 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, ce.x < z ∧ z < ce.y ∧ ce.γ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
+      (∀ a b, χ'.g a b = χ.g a b) := by
   -- Step 1: Find a fresh rational z between x and y, not in the finite domain.
   obtain ⟨z, hx_lt_z, hz_lt_y, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.x ce.y ce.hxy
   -- Step 2: Find an MCS D containing ¬γ (negated GUARD).
   -- By MCS negation completeness: either γ ∈ f(x) or ¬γ ∈ f(x).
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_mcs_y := h_c0 ce.y ce.y_mem
+  -- Helper: build chronicle from MCS D and close goals
+  suffices ∃ D : Set Formula, SetMaximalConsistent D ∧ ce.γ.neg ∈ D by
+    obtain ⟨D, h_D_mcs, h_neg_γ_D⟩ := this
+    refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
+      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
+      fun _ _ _ _ => rfl, fun _ _ => rfl⟩
+    · intro x hx
+      have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+      exact if_neg h_ne
+    · intro x hx
+      simp only [Finset.mem_insert] at hx
+      rcases hx with rfl | hx
+      · simp only [ite_true]; exact h_D_mcs
+      · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
+        simp only [h_ne, ite_false]; exact h_c0 x hx
+    · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
+      simp only [ite_true]
+      exact h_neg_γ_D
+  -- Now find an MCS D with ce.γ.neg ∈ D.
   rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ with h_γ_x | h_neg_γ_x
   · -- Case 1: γ ∈ f(x). Check f(y) for ¬γ.
     rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
-    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Both endpoints contain γ (GUARD).
-      -- Strategy: split on G(γ) ∈ f(x), then H(γ) ∈ f(y).
-      -- If G(γ) ∉ f(x): F(¬γ) ∈ f(x), seed {¬γ} ∪ g_content(f(x)) consistent.
-      -- If H(γ) ∉ f(y): P(¬γ) ∈ f(y), seed {¬γ} ∪ h_content(f(y)) consistent.
-      rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ.all_future with h_Gγ_x | h_nGγ_x
-      · -- G(γ) ∈ f(x). Check H(γ) ∈ f(y).
-        rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ.all_past with h_Hγ_y | h_nHγ_y
-        · -- G(γ) ∈ f(x) and H(γ) ∈ f(y). Genuinely hard sub-case.
-          -- Resolution: use burgessR3 bridging lemma to show γ ∉ g(x,y),
-          -- hence γ.neg ∈ g(x,y) (MCS), then C3 gives γ.neg ∈ f(z).
-          -- Requires BurgessR3Maximal g-values (Phase 5).
-          sorry
-        · -- G(γ) ∈ f(x) but H(γ) ∉ f(y). Use P(¬γ) ∈ f(y) via P_neg_of_H_not.
-          have h_Hγ_not : ce.γ.all_past ∉ χ.f ce.y :=
-            SetMaximalConsistent.neg_excludes h_mcs_y _ h_nHγ_y
-          have h_P_neg := P_neg_of_H_not h_mcs_y ce.γ h_Hγ_not
-          have h_seed := past_temporal_witness_seed_consistent (χ.f ce.y) h_mcs_y ce.γ.neg h_P_neg
-          obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
-          have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
-          refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-            fun _ _ _ _ => rfl⟩
-          · intro x hx
-            have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-            exact if_neg h_ne
-          · intro x hx
-            simp only [Finset.mem_insert] at hx
-            rcases hx with rfl | hx
-            · simp only [ite_true]; exact h_D_mcs
-            · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-              simp only [h_ne, ite_false]; exact h_c0 x hx
-          · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
-            simp only [ite_true]
-            exact h_neg_γ_D
-      · -- G(γ) ∉ f(x). Use F(¬γ) ∈ f(x) via F_neg_of_G_not.
-        have h_Gγ_not : ce.γ.all_future ∉ χ.f ce.x :=
-          SetMaximalConsistent.neg_excludes h_mcs_x _ h_nGγ_x
-        have h_F_neg := F_neg_of_G_not h_mcs_x ce.γ h_Gγ_not
-        have h_seed := forward_temporal_witness_seed_consistent (χ.f ce.x) h_mcs_x ce.γ.neg h_F_neg
-        obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
-        have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
-        refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-          fun _ _ _ _ => rfl⟩
-        · intro x hx
-          have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-          exact if_neg h_ne
-        · intro x hx
-          simp only [Finset.mem_insert] at hx
-          rcases hx with rfl | hx
-          · simp only [ite_true]; exact h_D_mcs
-          · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-            simp only [h_ne, ite_false]; exact h_c0 x hx
-        · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
-          simp only [ite_true]
-          exact h_neg_γ_D
+    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Hard case: use burgessR3 bridging.
+      -- Find the successor of x in dom ∩ [x+1, y]. Let x_next be the smallest
+      -- domain element > x that is ≤ y. Then (x, x_next) is adjacent.
+      -- We have neg(untl(γ,δ)) ∈ f(x). At x_next:
+      --   If x_next = y: δ ∈ f(y), use burgessR3_gamma_not_in_B.
+      --   If x_next < y: no_witness gives γ ∈ f(x_next) (so γ.neg ∉ f(x_next)).
+      --     By MCS: untl(γ,δ) ∈ f(x_next) or neg(untl(γ,δ)) ∈ f(x_next).
+      --     We find the max w with neg(untl(γ,δ)) ∈ f(w), w < y, w ≥ x.
+      --     Its successor w_next has untl(γ,δ) (or w_next = y with δ).
+      --     Use burgessR3_gamma_not_in_B or burgessR3_gamma_not_in_B_nested.
+      --
+      -- Strategy: find w_max = max {w ∈ dom | x ≤ w < y ∧ neg(untl(γ,δ)) ∈ f(w)}.
+      -- Then the successor w_next of w_max has:
+      --   w_next = y → δ ∈ f(y), or
+      --   w_next < y → untl(γ,δ) ∈ f(w_next) (since w_max is the max with neg-until).
+      -- Use: the adjacent pair (w_max, w_next) with c2' for bridging.
+      --
+      -- We use Classical reasoning to avoid explicit Finset max construction.
+      -- First, establish that x is a valid candidate:
+      have h_x_cand : ce.x ∈ χ.dom ∧ ce.x < ce.y ∧ (Formula.untl ce.γ ce.δ).neg ∈ χ.f ce.x :=
+        ⟨ce.x_mem, ce.hxy, ce.neg_until_mem⟩
+      -- Among all domain points w with x ≤ w < y and neg(untl(γ,δ)) ∈ f(w),
+      -- pick one w such that no domain point strictly between w and y has neg(untl(γ,δ)).
+      -- This is w_max (the rightmost such point).
+      have h_exists_rightmost : ∃ w ∈ χ.dom, w < ce.y ∧
+          (Formula.untl ce.γ ce.δ).neg ∈ χ.f w ∧
+          (∀ v ∈ χ.dom, w < v → v < ce.y → (Formula.untl ce.γ ce.δ).neg ∉ χ.f v) := by
+        -- The set of candidates is finite (subset of dom). Take the max.
+        haveI : DecidablePred (fun w => w < ce.y ∧
+            (Formula.untl ce.γ ce.δ).neg ∈ χ.f w) :=
+          fun w => Classical.dec _
+        set S := χ.dom.filter (fun w => w < ce.y ∧ (Formula.untl ce.γ ce.δ).neg ∈ χ.f w)
+        have hS_ne : S.Nonempty := by
+          refine ⟨ce.x, Finset.mem_filter.mpr ⟨ce.x_mem, ce.hxy, ce.neg_until_mem⟩⟩
+        refine ⟨S.max' hS_ne, ?_, ?_, ?_, ?_⟩
+        · exact (Finset.mem_filter.mp (Finset.max'_mem S hS_ne)).1
+        · exact (Finset.mem_filter.mp (Finset.max'_mem S hS_ne)).2.1
+        · exact (Finset.mem_filter.mp (Finset.max'_mem S hS_ne)).2.2
+        · intro v hv hwv hvy h_neg_v
+          have hv_in_S : v ∈ S := Finset.mem_filter.mpr ⟨hv, hvy, h_neg_v⟩
+          have := Finset.le_max' S v hv_in_S
+          linarith
+      obtain ⟨w, hw_mem, hw_lt_y, hw_neg_until, hw_rightmost⟩ := h_exists_rightmost
+      -- Find the successor of w in dom (the smallest domain element > w that is ≤ y).
+      -- Such an element exists because y ∈ dom and y > w.
+      have h_exists_succ : ∃ w_next ∈ χ.dom, w < w_next ∧ w_next ≤ ce.y ∧
+          Adjacent χ.dom w w_next := by
+        -- The set of domain elements > w is nonempty (contains y).
+        set T := χ.dom.filter (fun v => decide (w < v))
+        have hT_ne : T.Nonempty := ⟨ce.y, Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hw_lt_y]⟩⟩
+        set w_next := T.min' hT_ne
+        have hw_next_mem_T := Finset.min'_mem T hT_ne
+        have hw_next_dom : w_next ∈ χ.dom := (Finset.mem_filter.mp hw_next_mem_T).1
+        have hw_lt_next : w < w_next := by
+          have := (Finset.mem_filter.mp hw_next_mem_T).2
+          simp only [decide_eq_true_eq] at this; exact this
+        have hw_next_le_y : w_next ≤ ce.y := by
+          have : ce.y ∈ T := Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hw_lt_y]⟩
+          exact Finset.min'_le T ce.y this
+        refine ⟨w_next, hw_next_dom, hw_lt_next, hw_next_le_y, hw_mem, hw_next_dom, hw_lt_next, ?_⟩
+        intro u hu ⟨hwu, hu_next⟩
+        have hu_T : u ∈ T := Finset.mem_filter.mpr ⟨hu, by simp [hwu]⟩
+        have := Finset.min'_le T u hu_T
+        linarith
+      obtain ⟨w_next, hw_next_mem, hw_lt_next, hw_next_le_y, h_adj⟩ := h_exists_succ
+      -- BurgessR3Maximal(f(w), g(w, w_next), f(w_next)) from c2'
+      have h_R3M := h_c2' w w_next h_adj
+      have h_mcs_w := h_c0 w hw_mem
+      -- Show γ ∉ g(w, w_next) by bridging
+      have h_γ_not_g : ce.γ ∉ χ.g w w_next := by
+        rcases eq_or_lt_of_le hw_next_le_y with rfl | hw_next_lt_y
+        · -- w_next = y: use burgessR3_gamma_not_in_B with δ ∈ f(y)
+          exact burgessR3_gamma_not_in_B h_mcs_w h_R3M.2.1 hw_neg_until ce.event_mem
+        · -- w_next < y: w_next has untl(γ,δ) ∈ f(w_next) (no neg-until by rightmost)
+          have h_no_neg : (Formula.untl ce.γ ce.δ).neg ∉ χ.f w_next :=
+            hw_rightmost w_next hw_next_mem hw_lt_next hw_next_lt_y
+          have h_mcs_next := h_c0 w_next hw_next_mem
+          rcases SetMaximalConsistent.negation_complete h_mcs_next (Formula.untl ce.γ ce.δ) with h | h
+          · -- untl(γ,δ) ∈ f(w_next): use burgessR3_gamma_not_in_B_nested
+            exact burgessR3_gamma_not_in_B_nested h_mcs_w h_R3M.2.1 hw_neg_until h
+          · exact absurd h h_no_neg
+      -- γ ∉ g(w, w_next) and g(w, w_next) is DCS → {γ.neg} ∪ g(w, w_next) consistent
+      have h_dcs := h_R3M.1
+      have h_cons := dcs_neg_insert_consistent h_dcs h_γ_not_g
+      -- Lindenbaum extension gives D with γ.neg ∈ D
+      obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_cons
+      exact ⟨D, h_D_mcs, h_sup (Set.mem_insert _ _)⟩
     · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
-      refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
-        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-        fun _ _ _ _ => rfl⟩
-      · intro x hx
-        have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-        exact if_neg h_ne
-      · intro x hx
-        simp only [Finset.mem_insert] at hx
-        rcases hx with rfl | hx
-        · simp only [ite_true]; exact h_mcs_y
-        · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-          simp only [h_ne, ite_false]; exact h_c0 x hx
-      · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
-        simp only [ite_true]
-        exact h_neg_γ_y
+      exact ⟨χ.f ce.y, h_mcs_y, h_neg_γ_y⟩
   · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
-    refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
-      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-      fun _ _ _ _ => rfl⟩
-    · -- f agrees on old points
-      intro x hx
-      have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-      exact if_neg h_ne
-    · -- C0: every point maps to MCS
-      intro x hx
-      simp only [Finset.mem_insert] at hx
-      rcases hx with rfl | hx
-      · simp only [ite_true]; exact h_mcs_x
-      · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-        simp only [h_ne, ite_false]; exact h_c0 x hx
-    · -- Witness: z is between x and y with ¬γ ∈ f'(z) = f(x)
-      refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
-      simp only [ite_true]
-      exact h_neg_γ_x
+    exact ⟨χ.f ce.x, h_mcs_x, h_neg_γ_x⟩
 
 /--
 **Lemma 2.9'** (C4' Counterexample Elimination, Burgess C4b): Mirror of Lemma 2.9
@@ -419,7 +441,7 @@ for Since. Insert z between y and x with `¬γ ∈ f(z)` (negated GUARD).
 - If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires burgessR3 bridging (Since).
 -/
 noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
-    (h_c0 : χ.c0)
+    (h_c0 : χ.c0) (h_c2' : χ.c2')
     (ce : C4'Counterexample χ) :
     ∃ χ' : Chronicle,
       χ.dom ⊆ χ'.dom ∧
@@ -427,101 +449,102 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.γ.neg ∈ χ'.f z) ∧
       χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
+      (∀ a b, χ'.g a b = χ.g a b) := by
   -- Mirror of C4 elimination for Since direction.
-  -- Find a fresh rational z between y and x, not in the finite domain.
   obtain ⟨z, hy_lt_z, hz_lt_x, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.y ce.x ce.hyx
   have h_mcs_x := h_c0 ce.x ce.x_mem
   have h_mcs_y := h_c0 ce.y ce.y_mem
-  -- Case split on γ ∈ f(x) vs ¬γ ∈ f(x), then on f(y).
-  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ with h_γ_x | h_neg_γ_x
-  · -- Case 1: γ ∈ f(x). Check f(y).
-    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
-    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Mirror of C4 hard case.
-      -- Strategy: split on H(γ) at f(x), then G(γ) at f(y).
-      rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ.all_past with h_Hγ_x | h_nHγ_x
-      · -- H(γ) ∈ f(x). Check G(γ) ∈ f(y).
-        rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ.all_future with h_Gγ_y | h_nGγ_y
-        · -- H(γ) ∈ f(x) and G(γ) ∈ f(y). Genuinely hard sub-case (mirror).
-          -- Resolution: use burgessR3 bridging lemma (Since direction).
-          -- Requires BurgessR3Maximal g-values (Phase 5).
-          sorry
-        · -- H(γ) ∈ f(x) but G(γ) ∉ f(y). Use F(¬γ) ∈ f(y) via F_neg_of_G_not.
-          have h_Gγ_not : ce.γ.all_future ∉ χ.f ce.y :=
-            SetMaximalConsistent.neg_excludes h_mcs_y _ h_nGγ_y
-          have h_F_neg := F_neg_of_G_not h_mcs_y ce.γ h_Gγ_not
-          have h_seed := forward_temporal_witness_seed_consistent (χ.f ce.y) h_mcs_y ce.γ.neg h_F_neg
-          obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
-          have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
-          refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-            Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-            fun _ _ _ _ => rfl⟩
-          · intro x hx
-            have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-            exact if_neg h_ne
-          · intro x hx
-            simp only [Finset.mem_insert] at hx
-            rcases hx with rfl | hx
-            · simp only [ite_true]; exact h_D_mcs
-            · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-              simp only [h_ne, ite_false]; exact h_c0 x hx
-          · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
-            simp only [ite_true]
-            exact h_neg_γ_D
-      · -- H(γ) ∉ f(x). Use P(¬γ) ∈ f(x) via P_neg_of_H_not.
-        have h_Hγ_not : ce.γ.all_past ∉ χ.f ce.x :=
-          SetMaximalConsistent.neg_excludes h_mcs_x _ h_nHγ_x
-        have h_P_neg := P_neg_of_H_not h_mcs_x ce.γ h_Hγ_not
-        have h_seed := past_temporal_witness_seed_consistent (χ.f ce.x) h_mcs_x ce.γ.neg h_P_neg
-        obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
-        have h_neg_γ_D : ce.γ.neg ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
-        refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-          Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-          fun _ _ _ _ => rfl⟩
-        · intro x hx
-          have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-          exact if_neg h_ne
-        · intro x hx
-          simp only [Finset.mem_insert] at hx
-          rcases hx with rfl | hx
-          · simp only [ite_true]; exact h_D_mcs
-          · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-            simp only [h_ne, ite_false]; exact h_c0 x hx
-        · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
-          simp only [ite_true]
-          exact h_neg_γ_D
-    · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
-      refine ⟨⟨fun q => if q = z then χ.f ce.y else χ.f q, χ.g, insert z χ.dom⟩,
-        Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-        fun _ _ _ _ => rfl⟩
-      · intro x hx
-        have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-        exact if_neg h_ne
-      · intro x hx
-        simp only [Finset.mem_insert] at hx
-        rcases hx with rfl | hx
-        · simp only [ite_true]; exact h_mcs_y
-        · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-          simp only [h_ne, ite_false]; exact h_c0 x hx
-      · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
-        simp only [ite_true]
-        exact h_neg_γ_y
-  · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
-    refine ⟨⟨fun q => if q = z then χ.f ce.x else χ.f q, χ.g, insert z χ.dom⟩,
+  -- Factor out chronicle construction
+  suffices ∃ D : Set Formula, SetMaximalConsistent D ∧ ce.γ.neg ∈ D by
+    obtain ⟨D, h_D_mcs, h_neg_γ_D⟩ := this
+    refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
       Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-      fun _ _ _ _ => rfl⟩
+      fun _ _ _ _ => rfl, fun _ _ => rfl⟩
     · intro x hx
       have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
       exact if_neg h_ne
     · intro x hx
       simp only [Finset.mem_insert] at hx
       rcases hx with rfl | hx
-      · simp only [ite_true]; exact h_mcs_x
+      · simp only [ite_true]; exact h_D_mcs
       · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
         simp only [h_ne, ite_false]; exact h_c0 x hx
     · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
       simp only [ite_true]
-      exact h_neg_γ_x
+      exact h_neg_γ_D
+  -- Find MCS D with ce.γ.neg ∈ D.
+  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ with h_γ_x | h_neg_γ_x
+  · rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
+    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Hard case (Since direction).
+      -- Mirror of C4 approach: find the leftmost w > y with neg(snce(γ,δ)) ∈ f(w),
+      -- then its predecessor w_prev has snce(γ,δ) or w_prev = y with δ.
+      -- For C4': neg(snce(γ,δ)) ∈ f(x), δ ∈ f(y), interval is (y, x).
+      -- Find w_min = min {w ∈ dom | y < w ∧ neg(snce(γ,δ)) ∈ f(w)}.
+      -- x is a candidate. The predecessor of w_min in dom has snce(γ,δ) or is y.
+      have h_exists_leftmost : ∃ w ∈ χ.dom, ce.y < w ∧
+          (Formula.snce ce.γ ce.δ).neg ∈ χ.f w ∧
+          (∀ v ∈ χ.dom, ce.y < v → v < w → (Formula.snce ce.γ ce.δ).neg ∉ χ.f v) := by
+        haveI : DecidablePred (fun w => ce.y < w ∧
+            (Formula.snce ce.γ ce.δ).neg ∈ χ.f w) :=
+          fun w => Classical.dec _
+        set S := χ.dom.filter (fun w => ce.y < w ∧ (Formula.snce ce.γ ce.δ).neg ∈ χ.f w)
+        have hS_ne : S.Nonempty := by
+          refine ⟨ce.x, Finset.mem_filter.mpr ⟨ce.x_mem, ce.hyx, ce.neg_since_mem⟩⟩
+        refine ⟨S.min' hS_ne, ?_, ?_, ?_, ?_⟩
+        · exact (Finset.mem_filter.mp (Finset.min'_mem S hS_ne)).1
+        · exact (Finset.mem_filter.mp (Finset.min'_mem S hS_ne)).2.1
+        · exact (Finset.mem_filter.mp (Finset.min'_mem S hS_ne)).2.2
+        · intro v hv hyv hvw h_neg_v
+          have hv_in_S : v ∈ S := Finset.mem_filter.mpr ⟨hv, hyv, h_neg_v⟩
+          have := Finset.min'_le S v hv_in_S
+          linarith
+      obtain ⟨w, hw_mem, hy_lt_w, hw_neg_since, hw_leftmost⟩ := h_exists_leftmost
+      -- Find the predecessor of w in dom (the largest domain element < w that is ≥ y).
+      have h_exists_pred : ∃ w_prev ∈ χ.dom, ce.y ≤ w_prev ∧ w_prev < w ∧
+          Adjacent χ.dom w_prev w := by
+        set T := χ.dom.filter (fun v => decide (v < w))
+        have hT_ne : T.Nonempty := ⟨ce.y, Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hy_lt_w]⟩⟩
+        set w_prev := T.max' hT_ne
+        have hw_prev_mem_T := Finset.max'_mem T hT_ne
+        have hw_prev_dom : w_prev ∈ χ.dom := (Finset.mem_filter.mp hw_prev_mem_T).1
+        have hw_prev_lt : w_prev < w := by
+          have := (Finset.mem_filter.mp hw_prev_mem_T).2
+          simp only [decide_eq_true_eq] at this; exact this
+        have hy_le_prev : ce.y ≤ w_prev := by
+          have : ce.y ∈ T := Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hy_lt_w]⟩
+          exact Finset.le_max' T ce.y this
+        refine ⟨w_prev, hw_prev_dom, hy_le_prev, hw_prev_lt, hw_prev_dom, hw_mem, hw_prev_lt, ?_⟩
+        intro u hu ⟨hpu, huw⟩
+        have hu_T : u ∈ T := Finset.mem_filter.mpr ⟨hu, by simp [huw]⟩
+        have := Finset.le_max' T u hu_T
+        linarith
+      obtain ⟨w_prev, hw_prev_mem, hy_le_prev, hw_prev_lt, h_adj⟩ := h_exists_pred
+      -- BurgessR3Maximal(f(w_prev), g(w_prev, w), f(w)) from c2'
+      have h_R3M := h_c2' w_prev w h_adj
+      have h_mcs_w := h_c0 w hw_mem
+      -- Show γ ∉ g(w_prev, w) by Since bridging
+      have h_γ_not_g : ce.γ ∉ χ.g w_prev w := by
+        rcases eq_or_lt_of_le hy_le_prev with rfl | hy_lt_prev
+        · -- w_prev = y: use burgessR3_gamma_not_in_B_since with δ ∈ f(y) = A
+          exact burgessR3_gamma_not_in_B_since h_mcs_w h_R3M.2.1 hw_neg_since ce.event_mem
+        · -- w_prev > y: w_prev has snce(γ,δ) (no neg-since by leftmost)
+          have h_no_neg : (Formula.snce ce.γ ce.δ).neg ∉ χ.f w_prev :=
+            hw_leftmost w_prev hw_prev_mem hy_lt_prev hw_prev_lt
+          have h_mcs_prev := h_c0 w_prev hw_prev_mem
+          rcases SetMaximalConsistent.negation_complete h_mcs_prev (Formula.snce ce.γ ce.δ) with h | h
+          · -- snce(γ,δ) ∈ f(w_prev): use burgessR3_gamma_not_in_B_since_nested
+            exact burgessR3_gamma_not_in_B_since_nested h_mcs_w h_R3M.2.1 hw_neg_since h
+          · exact absurd h h_no_neg
+      -- γ ∉ g(w_prev, w) and g is DCS → {γ.neg} ∪ g consistent → Lindenbaum
+      have h_dcs := h_R3M.1
+      have h_cons := dcs_neg_insert_consistent h_dcs h_γ_not_g
+      obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_cons
+      exact ⟨D, h_D_mcs, h_sup (Set.mem_insert _ _)⟩
+    · -- Sub-case 1b: ¬γ ∈ f(y). Use D = f(y).
+      exact ⟨χ.f ce.y, h_mcs_y, h_neg_γ_y⟩
+  · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
+    exact ⟨χ.f ce.x, h_mcs_x, h_neg_γ_x⟩
 
 /-! ## G-Propagation Counterexample Elimination
 
@@ -550,7 +573,8 @@ noncomputable def eliminate_g_prop_counterexample {χ : Chronicle}
       (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
       χ'.c0 ∧
       χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
+      (∀ a b, χ'.g a b = χ.g a b) := by
   set z := (x + y) / 2 with hz_def
   have hxy := h_adj.2.2.1
   have hz_lt_y : z < y := by linarith
@@ -562,7 +586,7 @@ noncomputable def eliminate_g_prop_counterexample {χ : Chronicle}
   obtain ⟨D, h_D_mcs, h_α_D, _h_g_sub⟩ := g_propagation_witness h_mcs_x α h_G
   refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
     Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin,
-    fun _ _ _ _ => rfl⟩
+    fun _ _ _ _ => rfl, fun _ _ => rfl⟩
   · intro q hq
     have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
     exact if_neg h_ne
@@ -589,7 +613,8 @@ noncomputable def eliminate_h_prop_counterexample {χ : Chronicle}
       (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
       χ'.c0 ∧
       χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
+      (∀ a b, χ'.g a b = χ.g a b) := by
   set z := (y + x) / 2 with hz_def
   have hyx := h_adj.2.2.1
   have hz_lt_x : z < x := by linarith
@@ -604,7 +629,7 @@ noncomputable def eliminate_h_prop_counterexample {χ : Chronicle}
   have h_α_D : α ∈ D := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
   refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
     Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin,
-    fun _ _ _ _ => rfl⟩
+    fun _ _ _ _ => rfl, fun _ _ => rfl⟩
   · intro q hq
     have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
     exact if_neg h_ne
@@ -636,7 +661,8 @@ noncomputable def eliminate_density_counterexample {χ : Chronicle}
       χ'.c0 ∧
       (∃ z ∈ χ'.dom, x < z ∧ z < y) ∧
       χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) := by
+      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
+      (∀ a b, χ'.g a b = χ.g a b) := by
   set z := (x + y) / 2 with hz_def
   have hxy := h_adj.2.2.1
   have hz_lt_y : z < y := by linarith
@@ -645,7 +671,7 @@ noncomputable def eliminate_density_counterexample {χ : Chronicle}
     intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
   refine ⟨⟨fun q => if q = z then χ.f x else χ.f q, χ.g, insert z χ.dom⟩,
     Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-    fun _ _ _ _ => rfl⟩
+    fun _ _ _ _ => rfl, fun _ _ => rfl⟩
   · intro q hq
     have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
     exact if_neg h_ne
@@ -705,6 +731,11 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
   c0 : val.c0
   f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
   g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → val.g a b = χ.g a b
+  /-- The g function is extensionally equal: val.g = χ.g as functions.
+  This is stronger than g_agrees (which only covers old domain pairs) and
+  is needed for the omega-chain C3 preservation proof. Every elimination
+  function preserves the g function unchanged. -/
+  g_ext : ∀ a b, val.g a b = χ.g a b
   c5_forward_witness : pc.kind = .c5_forward → pc.x ∈ χ.dom →
     Formula.untl pc.ξ pc.η ∈ χ.f pc.x →
     ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y
@@ -734,7 +765,7 @@ Returns an `EliminationResult` bundling domain extension, C0, f-agreement,
 and C5/C5' witness guarantees.
 -/
 noncomputable def eliminate_potential_counterexample
-    (χ : Chronicle) (h_c0 : χ.c0)
+    (χ : Chronicle) (h_c0 : χ.c0) (h_c2' : χ.c2')
     (pc : PotentialCounterexample) :
     EliminationResult χ pc := by
   -- Helper for impossible kind discriminants
@@ -757,7 +788,8 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2.2
+              g_agrees := h_prop.2.2.2.2.2.1
+              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
@@ -769,6 +801,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := by
                 intro _ h_mem h_until
                 push_neg at h_actual
@@ -793,7 +826,8 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2.2
+              g_agrees := h_prop.2.2.2.2.2.1
+              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
@@ -805,6 +839,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ h_mem h_since
@@ -823,7 +858,7 @@ noncomputable def eliminate_potential_counterexample
         pc.η ∈ χ.f pc.y ∧
         ¬∃ z ∈ χ.dom, pc.x < z ∧ z < pc.y ∧ pc.ξ.neg ∈ χ.f z
     · obtain ⟨h_xm, h_ym, h_lt, h_neg_until, h_event, h_no_wit⟩ := h_actual
-      have h_elim := eliminate_C4_counterexample h_c0
+      have h_elim := eliminate_C4_counterexample h_c0 h_c2'
         (⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_until, h_event, h_no_wit⟩ : C4Counterexample χ)
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
@@ -831,7 +866,8 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2.2
+              g_agrees := h_prop.2.2.2.2.2.1
+              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun _ _ _ _ _ _ => h_prop.2.2.2.1
@@ -842,6 +878,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := by
@@ -859,7 +896,7 @@ noncomputable def eliminate_potential_counterexample
         pc.η ∈ χ.f pc.y ∧
         ¬∃ z ∈ χ.dom, pc.y < z ∧ z < pc.x ∧ pc.ξ.neg ∈ χ.f z
     · obtain ⟨h_xm, h_ym, h_lt, h_neg_since, h_event, h_no_wit⟩ := h_actual
-      have h_elim := eliminate_C4'_counterexample h_c0
+      have h_elim := eliminate_C4'_counterexample h_c0 h_c2'
         (⟨pc.x, pc.y, h_xm, h_ym, h_lt, pc.ξ, pc.η, h_neg_since, h_event, h_no_wit⟩ : C4'Counterexample χ)
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
@@ -867,7 +904,8 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2.2
+              g_agrees := h_prop.2.2.2.2.2.1
+              g_ext := h_prop.2.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -878,6 +916,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -901,7 +940,8 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2
+              g_agrees := h_prop.2.2.2.2.1
+              g_ext := h_prop.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -912,6 +952,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -931,7 +972,8 @@ noncomputable def eliminate_potential_counterexample
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2
+              g_agrees := h_prop.2.2.2.2.1
+              g_ext := h_prop.2.2.2.2.2
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -942,6 +984,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -972,6 +1015,7 @@ noncomputable def eliminate_potential_counterexample
                 have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
                 exact if_neg h_ne
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -984,6 +1028,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              g_ext := fun _ _ => rfl
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
