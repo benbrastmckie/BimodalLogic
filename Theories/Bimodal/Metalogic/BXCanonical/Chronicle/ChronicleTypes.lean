@@ -343,14 +343,18 @@ For x < y in dom, r3Relation(f(x), g(x,y), f(y)) holds. -/
 def Chronicle.c2 (χ : Chronicle) : Prop :=
   ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → r3Relation (χ.f x) (χ.g x y) (χ.f y)
 
-/-- **C2'**: BurgessR3-maximality for adjacent pairs (Burgess Definition 2.5).
+/-- **C2'**: Deductively-closed burgessR3 for adjacent pairs.
 
-Uses BurgessR3Maximal (content-based r-relation) rather than R3Maximal
-(obligation-propagation r-relation). This is the correct relation for the
-C4 hard case: gamma in g(x,y) and delta in f(y) forces untl(gamma, delta)
-in f(x), which gives the needed contradiction. -/
+At finite stages, g(x,y) must be a DCS satisfying burgessR3(f(x), g(x,y), f(y))
+for adjacent pairs (x,y). This is the weakened version that omits the maximality
+requirement of BurgessR3Maximal. The C4 hard case only needs DCS + burgessR3
+(not maximality): gamma in g(x,y) and delta in f(y) forces untl(gamma, delta)
+in f(x), which gives the needed contradiction. At the limit, the domain is dense
+(no adjacent pairs), so c2' is vacuously true and can be upgraded to full
+BurgessR3Maximal if needed. -/
 def Chronicle.c2' (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom x y → BurgessR3Maximal (χ.f x) (χ.g x y) (χ.f y)
+  ∀ x y : Rat, Adjacent χ.dom x y →
+    SetDeductivelyClosed (χ.g x y) ∧ burgessR3 (χ.f x) (χ.g x y) (χ.f y)
 
 /-- **C3**: Three-way interval decomposition (Burgess 1982, p. 372).
 For all x < y < z in dom, g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
