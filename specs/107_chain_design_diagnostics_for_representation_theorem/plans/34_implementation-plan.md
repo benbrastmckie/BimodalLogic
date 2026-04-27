@@ -91,36 +91,46 @@ All phases are strictly sequential (shared files: PointInsertion.lean, Counterex
 
 ### Phase 1: Formalize Burgess Lemma 2.6 for BurgessR3Maximal [PARTIAL]
 
-**Goal**: Prove the BurgessR3Maximal splitting lemma: given `BurgessR3Maximal(A, B, C)` and `delta not in B`, construct a fresh MCS D with `neg(delta) in D`, plus DCS B' and B'' with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)`. This is the single most important missing piece of infrastructure.
+**Goal**: Prove the BurgessR3Maximal splitting lemma: given `BurgessR3Maximal(A, B, C)` and `delta not in B`, construct a fresh MCS D with `neg(delta) in D`, plus DCS B' and B'' with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)`. This is the single most important missing piece of infrastructure. The output MUST be BurgessR3Maximal (not just burgessR3), because Phase 2 feeds g-values back into Lemma 2.6 at later omega-chain steps.
+
+**NOTE**: A previous "theorems-as-interval" shortcut was attempted and REVERTED. It produced only non-maximal burgessR3, which breaks Phase 2 (Lemma 2.6 requires BurgessR3Maximal input). The correct approach follows Burgess's original D₀ seed construction.
 
 **Tasks**:
-- [ ] **1.1** Prove seed consistency for Lemma 2.6: show that `S_left(A, B) union B union {neg(delta)} union S_right(C, B)` is consistent, where `S_left(A, B) = {S(alpha, beta) : alpha in A, beta in B}` captures "Until obligations from A resolved through B" and `S_right(C, B) = {U(gamma, beta) : gamma in C, beta in B}` captures "Since obligations from C resolved through B". The key argument: if this set is inconsistent, derive a contradiction using BX5+BX6+BX7 (subsuming A4a's role) and BX4+BX5 (subsuming A3a's role). Follow the pattern of `until_witness_seed_consistent` and `forward_temporal_witness_seed_consistent` in PointInsertion.lean.
+- [x] **1.1** Maximality infrastructure (4 sorry-free theorems, ~120 lines):
+  - `dc_delta_B_controlled`: Decomposes DC({delta} union B) elements for BX2 transfer
+  - `BurgessR3Maximal_extension_fails`: Proper consistent DCS extensions cannot satisfy burgessR3
+  - `dc_delta_B_burgessR3`: Combined Until+Since extension conditions satisfy burgessR3
+  - `BurgessR3Maximal_maximality_combined`: Key result -- if delta not in B and BurgessR3Maximal(A,B,C), the extension conditions fail (maximality witness extraction)
+  - All verified sorry-free via `lean_verify`.
+
+- [ ] **1.2** Prove seed consistency for Lemma 2.6: show that `D₀ = {S(alpha, beta) : alpha in A, beta in B} union B union {neg(delta)} union {U(gamma, beta) : gamma in C, beta in B}` is consistent. The key argument: for any particular zeta = S(alpha,beta) AND beta AND neg(delta) AND U(gamma,beta) with alpha in A, beta in B, gamma in C, show zeta is consistent. Uses `BurgessR3Maximal_maximality_combined` to get witness beta₀, gamma₀ with neg(U(gamma₀, beta₀ AND delta)) in A. Then chain BX5 (self_accum) + BX7 (linear_until) to derive U(beta AND U(gamma,beta) AND neg(delta), beta) in A, then BX4 (connect_future) for the Since part, and apply 2.2 consistency criterion.
   - Files: `Chronicle/PointInsertion.lean` (~100 lines)
   - Estimate: 10 hours
 
-- [ ] **1.2** Construct MCS D via Lindenbaum extension of the consistent seed. Prove `neg(delta) in D`, `g_content(A) subset D`, and `h_content(C) subset D`.
+- [ ] **1.3** Construct MCS D via Lindenbaum extension of the consistent seed D₀. Prove `neg(delta) in D`, `B subset D`, `{S(alpha,beta) : alpha in A, beta in B} subset D`, `{U(gamma,beta) : gamma in C, beta in B} subset D`.
   - Files: `Chronicle/PointInsertion.lean` (~40 lines)
   - Estimate: 2 hours
 
-- [ ] **1.3** Construct B' (left interval): From the seed consistency and D, show `burgessR3(A, S_left(A,B) inter B inter D, D)` holds, then extend to `BurgessR3Maximal(A, B', D)` via `burgessR3Maximal_extension_exists`. Similarly construct B'' (right interval) with `BurgessR3Maximal(D, B'', C)`.
+- [ ] **1.4** Construct B' (left interval): Show `burgessR3(A, B, D)` holds (from B subset D and the S/U obligations in D), then extend to `BurgessR3Maximal(A, B', D)` via Zorn / `burgessR3Maximal_exists_from_seed`. Similarly construct B'' with `BurgessR3Maximal(D, B'', C)`. Show `B = B' inter D inter B''` using Lemma 2.5.
   - Files: `Chronicle/PointInsertion.lean` (~80 lines), `Chronicle/RRelation.lean` (helper lemmas)
   - Estimate: 8 hours
 
-- [ ] **1.4** Assemble the full `burgess_lemma_2_6_content` theorem statement and proof:
-  ```lean
+- [ ] **1.5** Assemble the full `burgess_lemma_2_6_content` theorem:
+  ```
   theorem burgess_lemma_2_6_content (A B C : Set Formula)
       (h_A : SetMaximalConsistent A) (h_C : SetMaximalConsistent C)
       (h_R : BurgessR3Maximal A B C) (delta : Formula) (h_notin : delta not_in B) :
-      exists D B' B'', SetMaximalConsistent D ∧ delta.neg in D ∧
-        BurgessR3Maximal A B' D ∧ BurgessR3Maximal D B'' C
+      exists D B' B'', SetMaximalConsistent D AND delta.neg in D AND
+        BurgessR3Maximal A B' D AND BurgessR3Maximal D B'' C AND
+        B = B' inter D inter B''
   ```
   - Files: `Chronicle/PointInsertion.lean` (~30 lines)
   - Estimate: 2 hours
 
-- [ ] **1.5** Run `lake build` and verify no regressions. The new lemma should be additive (no existing code modified).
+- [ ] **1.6** Run `lake build` and verify no regressions.
   - Estimate: 1 hour
 
-**Timing**: 23 hours
+**Timing**: ~23 hours total (~3-4 hours done via task 1.1, ~19-20 hours remaining)
 
 **Depends on**: none (completed phases only)
 
@@ -129,7 +139,7 @@ All phases are strictly sequential (shared files: PointInsertion.lean, Counterex
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` -- possible helper lemmas for burgessR3/burgessRSet properties (~50 lines)
 
 **Verification**:
-- `burgess_lemma_2_6_content` compiles sorry-free
+- `burgess_lemma_2_6_content` compiles sorry-free with BurgessR3Maximal output
 - All existing sorry-free lemmas remain sorry-free
 - `lake build` succeeds
 
@@ -137,12 +147,14 @@ All phases are strictly sequential (shared files: PointInsertion.lean, Counterex
 
 The consistency argument is the crux. Burgess's proof (Lemma 2.6) argues by contradiction: assume the seed set is inconsistent. Then there exist finite subsets of each component that together derive bot. By chaining BX axioms:
 
-1. From `S_left(A, B)`: these are `untl(beta, alpha)` for `alpha in A`, `beta in B`. If finitely many enter the derivation, their conjunction is in A (MCS closure).
+1. From `S_left(A, B)`: these are `S(alpha, beta)` for `alpha in A`, `beta in B`. If finitely many enter the derivation, their conjunction is in A (MCS closure) and B (DCS closure).
 2. From B: finitely many elements, their conjunction is in B (DCS closure).
 3. From `{neg(delta)}`: exactly `neg(delta)`.
-4. From `S_right(C, B)`: these are `snce(beta, gamma)` for `gamma in C`, `beta in B`. If finitely many enter the derivation, their conjunction is in C (MCS closure).
-5. Combine using BX5 (self_accum_until) to accumulate guards, BX6 (absorb_until) to absorb, BX7 (linear_until) for linearity, and BX4 (connect_future) for connection. The existing `lemma_2_4` seed consistency proof provides the template.
-6. Reach a contradiction with `delta not_in B` (since B is DCS and `neg(delta) not_in B` by BurgessR3Maximal negation completeness, yet the derivation forces `delta in B`).
+4. From `S_right(C, B)`: these are `U(gamma, beta)` for `gamma in C`, `beta in B`. If finitely many enter the derivation, their conjunction is in C (MCS closure) and B (DCS closure).
+5. Use `BurgessR3Maximal_maximality_combined`: since delta not in B, there exist beta₀ in B, gamma₀ in C with neg(U(gamma₀, beta₀ AND delta)) in A.
+6. Chain BX5 (self_accum_until) to get U(beta AND U(gamma,beta), beta) in A, then BX7 (linear_until) with neg(U(gamma, beta AND delta)) to eliminate two disjuncts, leaving U(beta AND U(gamma,beta) AND neg(delta), beta) in A.
+7. Apply BX4 (connect_future) to get S(alpha, beta) into the future MCS via alpha in A implies G(P(alpha)) in A.
+8. Apply 2.2 consistency criterion to conclude zeta is consistent.
 
 ---
 
