@@ -298,7 +298,7 @@ Phases within the same wave can execute in parallel. Workstream A = phases 4A, 5
 
 ---
 
-### Phase 5B: Close restricted_fuc (Workstream B, Part 2) [NOT STARTED]
+### Phase 5B: Close restricted_fuc (Workstream B, Part 2) [BLOCKED]
 
 **Goal**: Close the 2 restricted_fuc sorry sites (lines 615, 619) using until_guard + C5-with-guard + C3 interval containment.
 
