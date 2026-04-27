@@ -614,13 +614,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-27T02:02:40Z",
+      "last_updated": "2026-04-27T04:16:36Z",
       "researched": "2026-04-25T22:26:54Z",
       "related_tasks": [
         93
@@ -794,11 +794,6 @@
           "summary": "Empty g-field must be fixed. g_prop invalid. until_guard axiom needed. 18-24h remaining."
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/28_implementation-plan.md",
-          "type": "plan",
-          "summary": "v14: Populate g-values, until_guard axiom, 6 phases, 20h"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/28_phase2-handoff.md",
           "type": "handoff",
           "summary": "Phase 2 handoff: g_agrees infrastructure added, full g-population pending"
@@ -812,6 +807,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/29_team-research.md",
           "type": "report",
           "summary": "Team research: circularity is NOT real, density axioms NOT needed, g-population is correct path"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/29_implementation-plan.md",
+          "type": "plan",
+          "summary": "v16: Lemma 2.6 direct approach, no density axioms, r-relation bridging lemma"
         }
       ],
       "session_id": "sess_1777255345_829549",
