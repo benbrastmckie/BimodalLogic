@@ -1103,51 +1103,111 @@ theorem snce_left_mono_thm {A : Set Formula}
   have h5 := SetMaximalConsistent.implication_property h_mcs h4 h3
   exact SetMaximalConsistent.implication_property h_mcs h5 h_snce
 
+/-! ## Helper: Derivation from Singleton Set Implies Implication Theorem
+
+If φ ∈ deductiveClosure({η}), then ⊢ η → φ. This is the key link between
+deductive closure membership and the deduction theorem.
+-/
+
 /--
-**BurgessR3Maximal existence (seedless)**: For any MCS A and C, there exists B with
+If L consists entirely of copies of η and L ⊢ φ, then [η] ⊢ φ.
+By weakening from L to [η] (since every element of L is η).
+-/
+noncomputable def derivation_from_singleton_list {η φ : Formula} {L : List Formula}
+    (hL : ∀ ψ ∈ L, ψ = η) (d : DerivationTree L φ) :
+    DerivationTree [η] φ :=
+  DerivationTree.weakening L [η] φ d (fun ψ hψ => by rw [hL ψ hψ]; simp)
+
+/--
+If φ ∈ deductiveClosure({η}), then there exists a derivation ⊢ η → φ.
+This follows from: φ ∈ DC({η}) means ∃ L ⊆ {η}, L ⊢ φ, hence [η] ⊢ φ
+by weakening, hence ⊢ η → φ by the deduction theorem.
+-/
+theorem deductiveClosure_singleton_imp {η φ : Formula}
+    (hφ : φ ∈ deductiveClosure ({η} : Set Formula)) :
+    Nonempty (DerivationTree [] (η.imp φ)) := by
+  obtain ⟨L, hL_sub, ⟨d⟩⟩ := hφ
+  have hL_eq : ∀ ψ ∈ L, ψ = η := fun ψ hψ => Set.mem_singleton_iff.mp (hL_sub ψ hψ)
+  exact ⟨deduction_theorem [] η φ (derivation_from_singleton_list hL_eq d)⟩
+
+/--
+**burgessR propagation through deductive closure**: If burgessR(A, η, C) and
+φ ∈ deductiveClosure({η}), then burgessR(A, φ, C).
+
+Proof: φ ∈ DC({η}) gives ⊢ η → φ. By untl_left_mono_thm (BX2), for any
+γ ∈ C: untl(η, γ) ∈ A implies untl(φ, γ) ∈ A.
+-/
+theorem burgessR_of_deductiveClosure_singleton {A C : Set Formula} {η : Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_burgessR : burgessR A η C) (φ : Formula)
+    (hφ : φ ∈ deductiveClosure ({η} : Set Formula)) :
+    burgessR A φ C := by
+  obtain ⟨d⟩ := deductiveClosure_singleton_imp hφ
+  intro γ hγ
+  exact untl_left_mono_thm h_mcs_A d (h_burgessR γ hγ)
+
+/--
+**burgessRSince propagation through deductive closure**: Mirror of
+`burgessR_of_deductiveClosure_singleton` for the Since direction.
+-/
+theorem burgessRSince_of_deductiveClosure_singleton {A C : Set Formula} {η : Formula}
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_burgessRSince : burgessRSince C η A) (φ : Formula)
+    (hφ : φ ∈ deductiveClosure ({η} : Set Formula)) :
+    burgessRSince C φ A := by
+  obtain ⟨d⟩ := deductiveClosure_singleton_imp hφ
+  intro γ hγ
+  exact snce_left_mono_thm h_mcs_C d (h_burgessRSince γ hγ)
+
+/-! ## BurgessR3Maximal Existence from Seed -/
+
+/--
+**BurgessR3Maximal existence from seed**: Given an element η satisfying both
+burgessR(A, η, C) and burgessRSince(C, η, A), there exists B with
 BurgessR3Maximal(A, B, C).
 
-This is the key existence theorem for the chronicle construction. It guarantees that
-for any pair of MCS endpoints, a maximal interval set satisfying the Burgess
-r-relation exists.
+This is the CORRECT existence theorem for the chronicle construction. Rather
+than constructing a seed from scratch (which fails under strict semantics),
+it takes an explicit seed element η that arises from context:
+- In C5 elimination: η comes from Lemma 2.4 (the Until guard)
+- In C4 splitting: no new seed needed (burgessR3_absorption)
 
-The proof constructs a kernel set K = {β | burgessR(A,β,C) ∧ burgessRSince(C,β,A)},
-shows K ⊆ A (via until_guard), and applies burgessR3Maximal_extension_exists from
-deductiveClosure(K) when K is non-empty, or uses the BX7+BX2 guard algebra to
-handle the general case.
+Proof:
+1. η ∈ A (from burgessR(A, η, C) via until_guard)
+2. {η} is consistent (subset of A)
+3. deductiveClosure({η}) is a DCS
+4. deductiveClosure({η}) satisfies burgessR3(A, -, C):
+   For any φ ∈ DC({η}), ⊢ η → φ, so by BX2 (untl_left_mono_thm),
+   burgessR(A, η, C) gives burgessR(A, φ, C). Similarly for Since.
+5. Apply burgessR3Maximal_extension_exists with this seed
 -/
-theorem burgessR3Maximal_exists (A C : Set Formula)
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C) :
+theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_burgessR : burgessR A η C)
+    (h_burgessRSince : burgessRSince C η A) :
     ∃ B : Set Formula, BurgessR3Maximal A B C := by
-  -- Define kernel set K
-  set K : Set Formula := {β | burgessR A β C ∧ burgessRSince C β A}
-  -- K ⊆ A: for β ∈ K, pick theorem γ₀ ∈ C, then untl(β, γ₀) ∈ A → β ∈ A by until_guard
-  have h_K_sub_A : K ⊆ A := by
-    intro β hβ
+  -- Step 1: η ∈ A (via until_guard on untl(η, γ₀) for any theorem γ₀ ∈ C)
+  have h_η_A : η ∈ A := by
     have h_top_C : (Formula.bot.imp Formula.bot) ∈ C := theorem_in_mcs h_mcs_C
       (DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot))
-    exact until_guard_in_mcs h_mcs_A (hβ.1 _ h_top_C)
-  -- K is consistent
-  have h_K_cons : SetConsistent K := SetConsistent_of_subset h_K_sub_A h_mcs_A.1
-  -- K satisfies burgessR3 by construction
-  have h_K_r3 : burgessR3 A K C := ⟨fun β hβ => hβ.1, fun β hβ => hβ.2⟩
-  -- If K is non-empty, DC(K) works as seed via BX7+BX2 algebra.
-  -- If K is empty, DC(K) = Thm which may not satisfy burgessR3.
-  -- In the empty case, use a direct Zorn argument on consistent sets.
-  -- For now, we construct the result via Zorn on consistent sets satisfying burgessR3.
-  -- The key is that the family {B | consistent B ∧ burgessR3(A, B, C)} is non-empty (∅)
-  -- and any maximal consistent set satisfying burgessR3 is necessarily a DCS
-  -- (since closure under derivation preserves burgessR3 by BX7+BX2).
-  --
-  -- The BX7+BX2 argument: if L ⊆ B and L ⊢ φ, and every ψ ∈ B satisfies
-  -- burgessR(A,ψ,C) and burgessRSince(C,ψ,A), then:
-  -- 1. By untl_conj_guard (BX7): the conjunction of L-elements satisfies burgessR
-  -- 2. By untl_left_mono_thm (BX2): φ also satisfies burgessR
-  -- So adding φ preserves burgessR3, hence φ was added during Lindenbaum extension.
-  --
-  -- This is a Lindenbaum-with-side-condition argument. The side condition (burgessR3)
-  -- is preserved by deductive closure due to BX7+BX2.
-  sorry
+    exact until_guard_in_mcs h_mcs_A (h_burgessR _ h_top_C)
+  -- Step 2: {η} is consistent (subset of A)
+  have h_singleton_cons : SetConsistent ({η} : Set Formula) :=
+    SetConsistent_of_subset (Set.singleton_subset_iff.mpr h_η_A) h_mcs_A.1
+  -- Step 3: deductiveClosure({η}) is a DCS
+  have h_dc_dcs : SetDeductivelyClosed (deductiveClosure ({η} : Set Formula)) :=
+    deductiveClosure_is_dcs h_singleton_cons
+  -- Step 4: deductiveClosure({η}) satisfies burgessR3(A, -, C)
+  have h_dc_r3 : burgessR3 A (deductiveClosure ({η} : Set Formula)) C := by
+    constructor
+    · -- burgessRSet: for all φ ∈ DC({η}), burgessR(A, φ, C)
+      intro φ hφ
+      exact burgessR_of_deductiveClosure_singleton h_mcs_A h_burgessR φ hφ
+    · -- burgessRSetSince: for all φ ∈ DC({η}), burgessRSince(C, φ, A)
+      intro φ hφ
+      exact burgessRSince_of_deductiveClosure_singleton h_mcs_C h_burgessRSince φ hφ
+  -- Step 5: Apply Zorn extension
+  obtain ⟨B, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_dcs h_dc_r3
+  exact ⟨B, h_B3M⟩
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

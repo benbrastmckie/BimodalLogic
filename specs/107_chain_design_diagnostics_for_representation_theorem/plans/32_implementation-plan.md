@@ -177,7 +177,7 @@ Phases within the same wave can execute in parallel. Workstream A = phases 4A, 5
 - [x] `limit_g_eq` theorem proving well-definedness (ChronicleConstruction.lean)
 
 **Remaining tasks**:
-- [ ] Prove `burgessR3Maximal_exists_from_seed`: given `(A C : Set Formula) (eta : Formula) (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) (h_burgessR : burgessR A eta C) (h_burgessRSince : burgessRSince C eta A)`, construct `deductiveClosure({eta})` as seed DCS satisfying burgessR3, then apply Zorn extension to produce `BurgessR3Maximal A B C`. Proof of burgessR3 for the seed uses induction on deductive closure membership: base case from h_burgessR, conjunction from `untl_conj_guard` (BX7), implication from `untl_left_mono_thm` (BX2)
+- [x] Prove `burgessR3Maximal_exists_from_seed`: given `(A C : Set Formula) (eta : Formula) (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) (h_burgessR : burgessR A eta C) (h_burgessRSince : burgessRSince C eta A)`, construct `deductiveClosure({eta})` as seed DCS satisfying burgessR3, then apply Zorn extension to produce `BurgessR3Maximal A B C`. Proof uses deduction theorem: phi in DC({eta}) gives [] |- eta -> phi, then BX2 (untl_left_mono_thm) propagates burgessR
 - [ ] Verify Lemma 2.4 output: inspect `lemma_2_4` to confirm it produces endpoint C with eta satisfying `burgessR(A, eta, C)` and `burgessRSince(C, eta, A)`. If the return type does not expose these witnesses, strengthen it to carry them
 - [ ] Thread seed through C5 elimination: call `burgessR3Maximal_exists_from_seed` with the eta from Lemma 2.4 to produce g-values for the new endpoint pair
 - [ ] C5' elimination: mirror of C5 using Since direction with `snce_conj_guard` and `snce_left_mono_thm`
@@ -186,8 +186,8 @@ Phases within the same wave can execute in parallel. Workstream A = phases 4A, 5
 - [ ] Density/g_prop/h_prop elimination: use `burgessR3_absorption` for sub-interval g-values
 - [ ] Prove g-preservation: for pairs (a,b) already in domain, new_chi.g(a,b) = chi.g(a,b)
 - [ ] Prove g-agreement: all new g-values satisfy BurgessR3Maximal
-- [ ] Delete general `burgessR3Maximal_exists` sorry from RRelation.lean
-- [ ] Run lake build and verify
+- [x] Delete general `burgessR3Maximal_exists` sorry from RRelation.lean
+- [x] Run lake build and verify (0 sorries in RRelation.lean, 4 in Chronicle/ total)
 
 **Timing**: 3 hours (reduced from 4; guard algebra and limit_g already done)
 
