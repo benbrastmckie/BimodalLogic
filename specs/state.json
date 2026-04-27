@@ -626,7 +626,7 @@
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 31,
+      "next_artifact_number": 32,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -837,6 +837,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/30_implementation-handoff.md",
           "type": "handoff",
           "summary": "Phase 2 handoff: BurgessR3Maximal infrastructure complete, Phases 3-6 remain"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/31_team-research.md",
+          "type": "report",
+          "summary": "Team research: FUC independent of C4, g(x,y) need not be MCS, parallel workstreams viable"
         }
       ],
       "session_id": "sess_1777267992_06a2c3",
