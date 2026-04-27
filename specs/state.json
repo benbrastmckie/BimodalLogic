@@ -614,13 +614,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-27T04:18:02Z",
+      "last_updated": "2026-04-27T05:06:25Z",
       "researched": "2026-04-25T22:26:54Z",
       "related_tasks": [
         93
@@ -809,11 +809,6 @@
           "summary": "Team research: circularity is NOT real, density axioms NOT needed, g-population is correct path"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/29_implementation-plan.md",
-          "type": "plan",
-          "summary": "v16: Lemma 2.6 direct approach, no density axioms, r-relation bridging lemma"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/29_implementation-summary.md",
           "type": "summary",
           "summary": "Phase 6 partial: dead code deleted (8 sorries removed), key syntactic lemmas proved, r-relation gap identified"
@@ -827,6 +822,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/30_team-research.md",
           "type": "report",
           "summary": "Team research: r-relation gap confirmed, burgessR3 as primary, cruft audit, Burgess lemma map"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/30_implementation-plan.md",
+          "type": "plan",
+          "summary": "v17: burgessR3 as primary, cruft purge, BurgessR3Maximal"
         }
       ],
       "session_id": "sess_1777263459_9b9e00",
