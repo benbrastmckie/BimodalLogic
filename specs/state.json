@@ -626,7 +626,7 @@
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 30,
+      "next_artifact_number": 31,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -822,6 +822,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/29_implementation-handoff.md",
           "type": "handoff",
           "summary": "Implementation handoff: BurgessR3Maximal needed to bridge rRelation gap"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/30_team-research.md",
+          "type": "report",
+          "summary": "Team research: r-relation gap confirmed, burgessR3 as primary, cruft audit, Burgess lemma map"
         }
       ],
       "session_id": "sess_1777263459_9b9e00",
