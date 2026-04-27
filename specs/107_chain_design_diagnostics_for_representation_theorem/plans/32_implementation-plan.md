@@ -210,7 +210,7 @@ Phases within the same wave can execute in parallel. Workstream A = phases 4A, 5
 
 ---
 
-### Phase 4A: Close C4/C4' Hard Sub-Case (Workstream A) [NOT STARTED]
+### Phase 4A: Close C4/C4' Hard Sub-Case (Workstream A) [COMPLETED]
 
 **Goal**: Close the 2 sorry sites at CounterexampleElimination.lean (C4 hard case lines 332, 448) using burgessR3 contradiction + Lemma 2.6. This is the finite-stage C4 proof per Burgess's architecture.
 
@@ -241,7 +241,7 @@ Phases within the same wave can execute in parallel. Workstream A = phases 4A, 5
 
 ---
 
-### Phase 4B: Prove g-Immutability and Define limit_g with C3 (Workstream B, Part 1) [NOT STARTED]
+### Phase 4B: Prove g-Immutability and Define limit_g with C3 (Workstream B, Part 1) [COMPLETED]
 
 **Goal**: Prove g-values are immutable once set, define limit_g as the stable finite-stage value, and prove C2' (BurgessR3Maximal) and C3 at the limit. This is the foundation for FUC closure.
 
