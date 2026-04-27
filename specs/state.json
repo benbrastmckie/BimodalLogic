@@ -626,7 +626,7 @@
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 33,
+      "next_artifact_number": 34,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -847,6 +847,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/32_implementation-plan.md",
           "type": "plan",
           "summary": "v19: context-specific seed from Lemma 2.4 eta"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/33_team-research.md",
+          "type": "report",
+          "summary": "Team research: remove rebuild_g, direct g-construction per Burgess, revert limit_g to stage-based"
         }
       ],
       "session_id": "sess_1777295527_496249",
