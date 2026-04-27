@@ -1310,4 +1310,41 @@ theorem burgessR3_gamma_not_in_B_since_nested {A B C : Set Formula}
   have h3 := SetMaximalConsistent.implication_property h_mcs_C h2 h1
   exact set_consistent_not_both h_mcs_C.1 (Formula.snce γ δ) h3 h_neg_since
 
+/-! ## BurgessR3Maximal General Existence
+
+For any two MCS A and C, there exists a DCS B with BurgessR3Maximal(A, B, C).
+
+Under Burgess's reflexive semantics, this is trivial: for β ∈ A and γ ∈ C,
+untl(β, γ) ∈ A holds by taking the reflexive witness. Under strict semantics,
+the proof requires a careful seed construction using the BX axiom system.
+
+The key argument (Burgess 1982, implicit in Section 2): The set
+  S = {φ | ∃ γ ∈ C, ⊢ φ → γ} ∩ {φ | ∀ γ ∈ C, untl(φ, γ) ∈ A}
+contains all theorems β with F(γ) → untl(β, γ) (by BX12 + BX2), and is
+closed under the guard algebra (BX7, BX2). The deductive closure of any
+non-empty consistent subset satisfying burgessR3 extends to BurgessR3Maximal
+via Zorn (burgessR3Maximal_extension_exists).
+
+The full formalization of the seed construction for arbitrary MCS pairs
+under strict semantics requires showing that the BX axiom system
+(specifically BX4 connect_future, BX5 self_accum_until, BX12 F_until_equiv)
+provides sufficient structure to guarantee a non-trivial seed exists.
+This is deferred to a focused follow-up task.
+-/
+
+/--
+**BurgessR3Maximal general existence**: For any two MCS A and C, there
+exists a DCS B with BurgessR3Maximal(A, B, C).
+
+This is the central existence theorem for the chronicle construction.
+Every adjacent pair (x, y) in the omega chain needs a g-value satisfying
+BurgessR3Maximal(f(x), g(x,y), f(y)). The proof uses the BX axiom system
+to construct a seed satisfying burgessR3 from the temporal structure
+connecting A and C.
+-/
+theorem burgessR3Maximal_exists_general (A C : Set Formula)
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) :
+    ∃ B : Set Formula, BurgessR3Maximal A B C := by
+  sorry
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
