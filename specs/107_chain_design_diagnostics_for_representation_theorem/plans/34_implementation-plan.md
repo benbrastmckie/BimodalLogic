@@ -251,6 +251,8 @@ The consistency argument is the crux. Burgess's proof (Lemma 2.6) argues by cont
   - `U(xi, eta) in f(t)` implies `G(P(U(xi, eta))) in f(t)` (BX4), so `P(U(xi, eta)) in g_content(f(t)) subset C`
   - Need to show `xi in B`: from `U(xi, eta) in f(t)`, by BX9 (until_elim), `xi or eta in f(t)`. By BX5 (self_accum), `U(xi and U(xi,eta), eta) in f(t)`. The burgessR3 construction ensures the guard `xi` propagates to B through the Until r-relation: `burgessRSet(f(t), B, C)` means for `U(xi, eta) in f(t)`, either `eta in B` (then `xi in B` follows from `xi and U(xi,eta) in B` via BX5 accumulation) or `xi in B and U(xi,eta) in B`.
 
+  **NOTE (task 113 round 2)**: The BX9 (until_elim) step above depends on the current half-closed guard semantics `[t, s)` in Truth.lean. The paper (possible_worlds.tex) and all published literature (Xu 1988, Reynolds 1992, Burgess 1982) use open guard `(t, s)` under which BX9 is unsound. A future refactor to open guard (task 113 report 02) will require replacing this step with an r-relation-based derivation: Xu Lemma 2.3(i) gives `S(α, ⊤) ∈ B for every α ∈ A` when `R(A, B, C)`, which encodes guard information through the DCS rather than extracting it at the current point via BX9. The rest of Phase 4 is independent of the guard convention.
+
   - Files: `Chronicle/ChronicleConstruction.lean` (~60 lines)
   - Estimate: 5 hours
 

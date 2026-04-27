@@ -156,6 +156,42 @@ Switch to open guard but add replacement axioms that recover some of BX9's proof
 
 **Assessment**: Likely unnecessary — Xu's completeness proof works without BX9 at all, suggesting the axiom is not needed for the representation theorem.
 
+## Interaction with Task 107 (Plan v21)
+
+Task 107's implementation plan (artifact 34) has 5 phases for closing 9 chronicle sorry sites. The guard semantics change interacts with exactly one step.
+
+### Independent Phases (no wasted work if refactored later)
+
+- **Phase 1** (Lemma 2.6 seed consistency): Uses BX5, BX6, BX7, BX4. None depend on the guard convention.
+- **Phase 2** (7 c2' sorry sites): Constructs g-values via BurgessR3Maximal and the r-relation. The DCS construction is about r-relation structure, not guard extraction at the current point.
+- **Phase 3** (g-immutability): Pure structural properties about g-values across omega-chain stages.
+- **Phase 5** (cleanup): No axiom dependency.
+
+### One Interaction Point in Phase 4
+
+Phase 4.1 (guard-at-intermediate-points lemma) contains:
+
+> "from U(xi, eta) in f(t), by BX9 (until_elim), xi or eta in f(t)"
+
+BX9 is one of the 4 axioms that would be removed under open guard. This single derivation step would need replacement. The rest of Phase 4 (C3 interval containment, limit_g_contains_finite_stage, Cantor isomorphism transfer) is independent.
+
+**Replacement under open guard**: Instead of extracting the guard at the current point via BX9, derive guard membership in g(t,s) through the r-relation at the finite stage where C5 elimination occurs. Xu Lemma 2.3(i) — `S(α, ⊤) ∈ B for every α ∈ A` when `R(A, B, C)` — provides the mechanism. The guard enters g_n(t,s) through the BurgessR3Maximal construction, then lifts to limit_g via Phase 3.3's `limit_g_contains_finite_stage`.
+
+### Existing Infrastructure Dependency
+
+`until_guard_in_mcs` in RRelation.lean (lines 86-104) is used ~10 times in the r-relation infrastructure that plan v21 builds on top of. Plan v21 does NOT add new calls to `until_guard_in_mcs` in Phases 1-3 — the Lemma 2.6 and c2' constructions work through BurgessR3Maximal, not guard extraction. One existing use in PointInsertion.lean:673 (⊥ U ⊥ contradiction) would need a different contradiction argument under open guard, but this is existing code that plan v21 does not modify.
+
+### Recommended Sequencing
+
+**Finish plan v21 first, then refactor to open guard as a separate task.**
+
+1. Phases 1-3 produce no wasted work regardless of guard convention.
+2. Phase 4 has exactly one step using BX9. When later refactoring, replace that step with an r-relation derivation — the surrounding 95% of Phase 4 survives intact.
+3. Doing both simultaneously doubles risk — two large cross-cutting changes interacting unpredictably.
+4. Closing the chronicle sorries first yields a working completeness theorem under current semantics. The guard refactor becomes a clean follow-up.
+
+A note has been added to plan v21 Phase 4.1 flagging the BX9 dependency for future replacement.
+
 ## References
 
 - Xu, M. (1988). "On some U,S-tense logics." JPL 17(2), 181-202. Section 2, line 31 (open guard semantics), Lemma 2.3(i) (r-relation guard propagation).
