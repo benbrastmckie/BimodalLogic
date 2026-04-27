@@ -160,7 +160,7 @@ Phases within the same wave can execute in parallel. Workstream A = phases 4A, 5
 
 ---
 
-### Phase 3: Populate g-values in All Elimination Functions [NOT STARTED]
+### Phase 3: Populate g-values in All Elimination Functions [PARTIAL]
 
 **Goal**: Every elimination function produces BurgessR3Maximal g-values for adjacent pairs. This is the shared prerequisite for both parallel workstreams. After this phase, g-values are non-empty and satisfy burgessR3 at every finite stage.
 
