@@ -771,6 +771,52 @@ More precisely: the Until formulas U(β,γ) are in A, the Since formulas
 S(β,α) are in C. These are NOT directly in B. The consistency proof must
 show that combining elements from B with elements that are theorems relative
 to A/C cannot produce ⊥ while the individual sets remain consistent. -/
+-- B ⊆ A when burgessR3(A, B, C) and C is nonempty MCS.
+-- Proof: pick any γ₀ ∈ C. For β ∈ B: untl(β, γ₀) ∈ A (burgessRSet).
+-- By until_guard: β ∈ A.
+theorem B_sub_A_of_burgessR3 {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3 : burgessR3 A B C) :
+    B ⊆ A := by
+  -- C is an MCS so it's nonempty: ⊤ ∈ C (where ⊤ = ⊥ → ⊥)
+  have h_top_C : (Formula.bot.imp Formula.bot) ∈ C :=
+    theorem_in_mcs h_mcs_C (Bimodal.Theorems.Combinators.identity Formula.bot)
+  intro β hβ
+  have h_untl := h_r3.1 β hβ _ h_top_C
+  exact until_guard_in_mcs h_mcs_A h_untl
+
+-- B ⊆ C when burgessR3(A, B, C) and A is nonempty MCS.
+theorem B_sub_C_of_burgessR3 {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3 : burgessR3 A B C) :
+    B ⊆ C := by
+  have h_top_A : (Formula.bot.imp Formula.bot) ∈ A :=
+    theorem_in_mcs h_mcs_A (Bimodal.Theorems.Combinators.identity Formula.bot)
+  intro β hβ
+  have h_snce := h_r3.2 β hβ _ h_top_A
+  exact since_guard_in_mcs h_mcs_C h_snce
+
+/-- Every element of D₀ except ¬δ is either in A or in C.
+More precisely: elements from B and Until components are in A,
+elements from B and Since components are in C. -/
+theorem burgess_D0_elem_in_A_or_C {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3 : burgessR3 A B C) {delta φ : Formula}
+    (hφ : φ ∈ burgess_D0 A B C delta) (hφ_ne : φ ≠ delta.neg) :
+    φ ∈ A ∨ φ ∈ C := by
+  have h_B_A := B_sub_A_of_burgessR3 h_mcs_A h_mcs_C h_r3
+  have h_B_C := B_sub_C_of_burgessR3 h_mcs_A h_mcs_C h_r3
+  simp only [burgess_D0, Set.mem_union, Set.mem_setOf_eq, Set.mem_singleton_iff] at hφ
+  rcases hφ with ⟨⟨α, hα, β, hβ, rfl⟩ | hφ_B⟩ | hφ_neg | ⟨β, hβ, γ, hγ, rfl⟩
+  · -- Since formula S(β, α): in C by burgessRSetSince
+    exact Or.inr (h_r3.2 β hβ α hα)
+  · -- B element: in both A and C
+    exact Or.inl (h_B_A hφ_B)
+  · -- ¬δ: excluded by hypothesis
+    exact absurd hφ_neg hφ_ne
+  · -- Until formula U(β, γ): in A by burgessRSet
+    exact Or.inl (h_r3.1 β hβ γ hγ)
+
 theorem burgess_D0_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
     (h_R3M : BurgessR3Maximal A B C)
