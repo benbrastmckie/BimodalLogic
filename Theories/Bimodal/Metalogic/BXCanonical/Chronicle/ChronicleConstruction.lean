@@ -420,8 +420,19 @@ theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
     ∃ y ∈ (omega_chain_val A h_mcs (n + 1)).dom,
       x < y ∧ η ∈ (omega_chain_val A h_mcs (n + 1)).f y := by
   -- rebuild_g preserves f and dom; witness comes from elimination result.
-  -- Mechanical rewrite through rebuild_g layer.
-  sorry
+  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim]
+  have key := (omega_chain_elim_result A h_mcs n).c5_forward_witness
+    (show (counterexample_enum (Nat.unpair n).2).kind = .c5_forward by rw [hn_eq])
+    (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hx)
+    (show Formula.untl (counterexample_enum (Nat.unpair n).2).ξ
+        (counterexample_enum (Nat.unpair n).2).η ∈
+        (omega_chain_val A h_mcs n).f (counterexample_enum (Nat.unpair n).2).x
+      by rw [hn_eq]; exact h_until)
+  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ := key
+  refine ⟨y, hy_dom, ?_, ?_⟩
+  · simp only [hn_eq] at hy_lt; exact hy_lt
+  · simp only [hn_eq] at hy_η; exact hy_η
 
 /--
 C5' witness at step n+1 (mirror for Since).
@@ -433,8 +444,19 @@ theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
     (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_backward⟩) :
     ∃ y ∈ (omega_chain_val A h_mcs (n + 1)).dom,
       y < x ∧ η ∈ (omega_chain_val A h_mcs (n + 1)).f y := by
-  -- rebuild_g preserves f and dom; witness comes from elimination result.
-  sorry
+  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim]
+  have key := (omega_chain_elim_result A h_mcs n).c5_backward_witness
+    (show (counterexample_enum (Nat.unpair n).2).kind = .c5_backward by rw [hn_eq])
+    (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hx)
+    (show Formula.snce (counterexample_enum (Nat.unpair n).2).ξ
+        (counterexample_enum (Nat.unpair n).2).η ∈
+        (omega_chain_val A h_mcs n).f (counterexample_enum (Nat.unpair n).2).x
+      by rw [hn_eq]; exact h_since)
+  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ := key
+  refine ⟨y, hy_dom, ?_, ?_⟩
+  · simp only [hn_eq] at hy_lt; exact hy_lt
+  · simp only [hn_eq] at hy_η; exact hy_η
 
 /--
 C4 witness at step n+1.
@@ -449,8 +471,27 @@ theorem omega_chain_c4_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
     (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, y, ξ, η, .c4_forward⟩) :
     ∃ z ∈ (omega_chain_val A h_mcs (n + 1)).dom,
       x < z ∧ z < y ∧ ξ.neg ∈ (omega_chain_val A h_mcs (n + 1)).f z := by
-  -- rebuild_g preserves f and dom; witness comes from elimination result.
-  sorry
+  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim]
+  have key := (omega_chain_elim_result A h_mcs n).c4_forward_witness
+    (show (counterexample_enum (Nat.unpair n).2).kind = .c4_forward by rw [hn_eq])
+    (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hx)
+    (show (counterexample_enum (Nat.unpair n).2).y ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hy)
+    (show (counterexample_enum (Nat.unpair n).2).x < (counterexample_enum (Nat.unpair n).2).y
+      by rw [hn_eq]; exact hxy)
+    (show (Formula.untl (counterexample_enum (Nat.unpair n).2).ξ
+        (counterexample_enum (Nat.unpair n).2).η).neg ∈
+        (omega_chain_val A h_mcs n).f (counterexample_enum (Nat.unpair n).2).x
+      by rw [hn_eq]; exact h_neg_until)
+    (show (counterexample_enum (Nat.unpair n).2).η ∈
+        (omega_chain_val A h_mcs n).f (counterexample_enum (Nat.unpair n).2).y
+      by rw [hn_eq]; exact h_event)
+  obtain ⟨z, hz_dom, hxz, hzy, hz_neg⟩ := key
+  refine ⟨z, hz_dom, ?_, ?_, ?_⟩
+  · simp only [hn_eq] at hxz; exact hxz
+  · simp only [hn_eq] at hzy; exact hzy
+  · simp only [hn_eq] at hz_neg; exact hz_neg
 
 /--
 C4' witness at step n+1 (mirror for Since).
@@ -465,8 +506,27 @@ theorem omega_chain_c4'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
     (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, y, ξ, η, .c4_backward⟩) :
     ∃ z ∈ (omega_chain_val A h_mcs (n + 1)).dom,
       y < z ∧ z < x ∧ ξ.neg ∈ (omega_chain_val A h_mcs (n + 1)).f z := by
-  -- rebuild_g preserves f and dom; witness comes from elimination result.
-  sorry
+  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim]
+  have key := (omega_chain_elim_result A h_mcs n).c4_backward_witness
+    (show (counterexample_enum (Nat.unpair n).2).kind = .c4_backward by rw [hn_eq])
+    (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hx)
+    (show (counterexample_enum (Nat.unpair n).2).y ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hy)
+    (show (counterexample_enum (Nat.unpair n).2).y < (counterexample_enum (Nat.unpair n).2).x
+      by rw [hn_eq]; exact hyx)
+    (show (Formula.snce (counterexample_enum (Nat.unpair n).2).ξ
+        (counterexample_enum (Nat.unpair n).2).η).neg ∈
+        (omega_chain_val A h_mcs n).f (counterexample_enum (Nat.unpair n).2).x
+      by rw [hn_eq]; exact h_neg_since)
+    (show (counterexample_enum (Nat.unpair n).2).η ∈
+        (omega_chain_val A h_mcs n).f (counterexample_enum (Nat.unpair n).2).y
+      by rw [hn_eq]; exact h_event)
+  obtain ⟨z, hz_dom, hyz, hzx, hz_neg⟩ := key
+  refine ⟨z, hz_dom, ?_, ?_, ?_⟩
+  · simp only [hn_eq] at hyz; exact hyz
+  · simp only [hn_eq] at hzx; exact hzx
+  · simp only [hn_eq] at hz_neg; exact hz_neg
 
 /-! ## Limit Chronicle
 
@@ -696,8 +756,37 @@ theorem limit_dom_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
     (hxy : x < y) :
     ∃ z ∈ limit_dom A h_mcs, x < z ∧ z < y := by
-  -- rebuild_g preserves dom; density witness comes from elimination result.
-  sorry
+  -- x ∈ limit_dom means x ∈ dom(nx) for some nx, similarly y ∈ dom(ny)
+  obtain ⟨nx, hnx⟩ := hx
+  obtain ⟨ny, hny⟩ := hy
+  set n₀ := max nx ny with hn₀_def
+  have hx_n₀ : x ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
+  have hy_n₀ : y ∈ (omega_chain_val A h_mcs n₀).dom :=
+    omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
+  -- Find step n ≥ n₀ where density counterexample ⟨x, y, bot, bot, .density⟩ is processed
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, y, Formula.bot, Formula.bot, .density⟩ n₀
+  have hx_n : x ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hx_n₀
+  have hy_n : y ∈ (omega_chain_val A h_mcs n).dom :=
+    omega_chain_dom_mono_le A h_mcs hn_ge hy_n₀
+  -- Get density witness from the elimination result at step n
+  have key := (omega_chain_elim_result A h_mcs n).density_witness
+    (show (counterexample_enum (Nat.unpair n).2).kind = .density by rw [hn_eq])
+    (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hx_n)
+    (show (counterexample_enum (Nat.unpair n).2).y ∈ (omega_chain_val A h_mcs n).dom
+      by rw [hn_eq]; exact hy_n)
+    (show (counterexample_enum (Nat.unpair n).2).x < (counterexample_enum (Nat.unpair n).2).y
+      by rw [hn_eq]; exact hxy)
+  obtain ⟨z, hz_dom, hxz, hzy⟩ := key
+  -- The witness z is in elim.val.dom = omega_chain_val(n+1).dom (rebuild_g preserves dom)
+  have hz_dom' : z ∈ (omega_chain_val A h_mcs (n + 1)).dom := by
+    rw [omega_chain_dom_eq_elim]; exact hz_dom
+  exact ⟨z, ⟨n + 1, hz_dom'⟩,
+    by simp only [hn_eq] at hxz; exact hxz,
+    by simp only [hn_eq] at hzy; exact hzy⟩
 
 /-! ## C4 Satisfaction in the Limit
 
