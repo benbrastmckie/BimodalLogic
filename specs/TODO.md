@@ -74,7 +74,9 @@ technical_debt:
 - **Effort**: medium
 - **Status**: [RESEARCHED]
 - **Task Type**: formal
-- **Research**: [specs/113_literature_review_completeness_techniques/reports/01_team-research.md]
+- **Research**:
+  - [specs/113_literature_review_completeness_techniques/reports/01_team-research.md]
+  - [specs/113_literature_review_completeness_techniques/reports/02_until-since-guard-semantics.md]
 
 **Description**: Review newly obtained literature (Xu 1988, Reynolds 1992, Caleiro-Vigano-Volpe 2013) against current BX completeness proof state to identify transferable techniques. Structured around the three-phase completeness roadmap: (1) base TM logic with H, G, and Box over boolean operators -- identify what Xu 1988's canonical model construction and Caleiro et al.'s mosaic method offer for the base case; (2) extension to U and S -- identify how Reynolds 1992's IRR-free completeness technique and Xu 1988's expressibility results (Section 4, showing irreflexivity is not U,S-definable) bear on the Until/Since extension, especially the chronicle construction sorry sites in CounterexampleElimination.lean and ChronicleToCountermodel.lean; (3) dense and discrete specializations -- identify how Reynolds 1992's rational-to-real transfer via Doets's theorem and Venema 1993's strict/discrete framework apply to the dense_completeness_fc (task 68) and discrete pipelines. Cross-reference against the ~9 active sorry sites in the Chronicle/ modules and the blocked task 18 (dense representation theorem).
 

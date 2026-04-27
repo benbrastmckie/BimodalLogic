@@ -15,12 +15,17 @@
       "last_updated": "2026-04-27T17:53:24Z",
       "session_id": "sess_1777310907_cf5ce7",
       "researched": "2026-04-27T17:53:24Z",
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/113_literature_review_completeness_techniques/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: Xu 1988, Reynolds 1992, CVV 2013 vs BX completeness"
+        },
+        {
+          "path": "specs/113_literature_review_completeness_techniques/reports/02_until-since-guard-semantics.md",
+          "type": "research",
+          "summary": "Until/Since guard semantics: open vs half-closed, Next/Previous definability, blast radius"
         }
       ]
     },
