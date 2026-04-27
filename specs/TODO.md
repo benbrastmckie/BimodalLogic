@@ -104,7 +104,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
@@ -127,7 +127,7 @@ technical_debt:
 
 ### 109. Close chain construction sorries for sorry-free completeness
 - **Effort**: 20-40 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-20
@@ -239,7 +239,7 @@ technical_debt:
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Tasks 15, 18
 - **Plan**: [01_tech-debt-cleanup-plan.md](021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md) — 6 phases: axiom elimination, dead-code resolution, documentation
