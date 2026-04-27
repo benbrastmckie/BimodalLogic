@@ -895,9 +895,20 @@
       ],
       "session_id": "sess_1777313875_bfebeb",
       "started": "2026-04-25T19:11:01Z"
+    },
+    {
+      "project_number": 114,
+      "project_name": "plan_compliance_rule_for_implementation_agents",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Add a .claude/rules/ rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a theorems-as-interval shortcut for task 107 Phase 1 instead of following the planned Burgess D0 seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan approach. The rule must state: (1) agents MUST implement the plan specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending /revise and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.",
+      "created": "2026-04-27T00:00:00Z",
+      "last_updated": "2026-04-27T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 114,
+  "next_project_number": 115,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

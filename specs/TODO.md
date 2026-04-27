@@ -70,6 +70,16 @@ technical_debt:
 
 ## Tasks
 
+### 114. Add plan-compliance rule for implementation agents
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Priority**: high
+
+**Description**: Add a `.claude/rules/` rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a "theorems-as-interval" shortcut for task 107 Phase 1 instead of following the planned Burgess D₀ seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan's specified approach. The rule must state: (1) agents MUST implement the plan's specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending `/revise` and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.
+
+---
+
 ### 113. Review new literature for completeness techniques across three-phase roadmap
 - **Effort**: medium
 - **Status**: [PLANNED]
