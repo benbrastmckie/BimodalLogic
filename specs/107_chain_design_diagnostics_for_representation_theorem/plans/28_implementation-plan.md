@@ -106,7 +106,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Extend EliminationResult and Populate g in C5/C5' Elimination [IN PROGRESS]
+### Phase 2: Extend EliminationResult and Populate g in C5/C5' Elimination [BLOCKED]
 
 **Goal**: Extend the EliminationResult structure to carry g-agreement conditions, and implement g-population for C5/C5' elimination (the simplest case, providing a template for C4).
 
