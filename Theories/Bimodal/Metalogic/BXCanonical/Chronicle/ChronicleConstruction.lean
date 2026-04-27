@@ -28,9 +28,6 @@ producing in the limit a chronicle satisfying all conditions C0-C5/C5'.
 - `limit_satisfies_c5`: The limit chronicle satisfies C5 (all Until obligations
   have witnesses).
 
-- `claim_2_11`: The truth claim -- the valuation V(alpha) = {x : alpha in f(x)}
-  defines a model satisfying (+) for all formulas.
-
 ## Design Notes
 
 The omega-chain construction uses the countability of potential counterexamples.
@@ -1145,30 +1142,6 @@ on formula complexity:
   Backward direction: from the semantic condition, phi U psi in f(x) by C5-completeness
 - Since: Mirror of Until
 -/
-
-/--
-**Claim 2.11** (Truth Claim): For any formula alpha and point x in the limit
-domain, alpha in limit_f(x) iff alpha holds at x under the canonical valuation.
-
-This is stated abstractly: the limit point function is "truth-correct" in the
-sense that membership in f(x) corresponds to truth at x for all formulas.
-
-The full proof requires the complete chronicle construction including the
-interval function g. Here we state it as a theorem with sorry, establishing
-the proof obligation for Phase 5 integration.
--/
-theorem claim_2_11 (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (x : Rat) (_hx : x ∈ limit_dom A h_mcs) (φ : Formula) :
-    φ ∈ limit_f A h_mcs x ↔
-      φ ∈ limit_f A h_mcs x := by
-  -- Trivially true as stated; the real content is the equivalence with
-  -- semantic truth, which requires the TaskFrame integration in Phase 5.
-  -- The key ingredients are:
-  -- 1. limit_c0: f(x) is MCS (handles atom, bot, imp, box cases)
-  -- 2. limit_satisfies_c5_weak: Until witnesses exist (handles Until forward)
-  -- 3. limit_satisfies_c5'_weak: Since witnesses exist (handles Since forward)
-  -- 4. g_content_chain_property: G/H truth (requires omega-chain fix)
-  exact Iff.rfl
 
 /-! ## Chronicle Model Construction
 

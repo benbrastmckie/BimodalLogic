@@ -34,11 +34,9 @@ with β and g_content(A), plus evidence that U(γ,β) was active in the past
 (via BX4: connect_future). The guard γ is handled by the interval DCS
 construction in Phase 4.
 
-## Definitions (local, pending Phase 2)
+## Definitions
 
-Phase 2 defines `ChronicleTypes.lean` and `RRelation.lean` in parallel. We define
-local versions of needed concepts here. These will be unified with Phase 2 when
-both phases are complete.
+Local definitions used for point insertion lemmas.
 
 ## Main Results
 

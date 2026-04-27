@@ -494,79 +494,12 @@ theorem r3_seed_from_rRelation {A B C : Set Formula}
     (h_r : rRelation A B) (h_rS : rRelationSince C B) : r3Relation A B C :=
   ⟨h_r, h_rS⟩
 
-/-! ## Burgess r-Relation (Content-Based)
+/-! ## Burgess r-Relation Lemmas
 
-Burgess's r-relation is fundamentally different from the codebase's `rRelation`:
-
-- **Codebase rRelation(A, B)**: For all γ U δ ∈ A, either δ ∈ B or (γ ∈ B ∧ γ U δ ∈ B).
-  This is an OBLIGATION PROPAGATION relation: Until formulas from A propagate to B.
-
-- **Burgess r(A, β, C)**: For all γ ∈ C, (γ U β) ∈ A.
-  This is a CONTENT relation: β is an element such that any formula from C
-  can serve as the event with β as guard in an Until formula in A.
-
-Note on notation: Burgess writes U(event, guard), codebase writes guard U event.
-So Burgess's "for all gamma in C, U_B(gamma, beta) in A" becomes
-"for all gamma in C, (beta U gamma) in A" in codebase notation, i.e.,
-`Formula.untl β γ ∈ A` (guard=β, event=γ).
-
-Wait, let me be more precise:
-- Burgess: U_B(gamma, beta) where gamma = event, beta = guard
-- Codebase: Formula.untl phi psi where phi = guard, psi = event
-- Translation: U_B(gamma, beta) = Formula.untl beta gamma
-
-So Burgess r(A, beta, C) = for all gamma in C, Formula.untl beta gamma in A.
-
-The Lemma 2.5 absorption argument uses this relation.
+The burgessR, burgessRSet, burgessRSince, burgessRSetSince, burgessR3, and
+BurgessR3Maximal definitions are in ChronicleTypes.lean (to avoid circular imports).
+This section contains the LEMMAS about these relations.
 -/
-
-/--
-**Burgess r-relation for a single element**: `burgessR A β C` holds when
-for all γ ∈ C, `(β U γ) ∈ A`.
-
-This is Burgess's r(A, β, C) after translating his U(event, guard) convention
-to the codebase's guard U event convention.
-
-Intuition: β is a valid "guard" for the interval between A and C. Any formula
-γ that holds at the right endpoint C can be combined with guard β into an
-Until formula β U γ that holds at the left endpoint A.
--/
-def burgessR (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
-  ∀ γ ∈ C, Formula.untl β γ ∈ A
-
-/--
-**Burgess r-relation for a set**: `burgessRSet A B C` holds when
-for all β ∈ B, `burgessR A β C`.
-
-This is Burgess's r(A, B, C): every element of the interval set B serves
-as a valid guard between endpoints A and C.
--/
-def burgessRSet (A B C : Set Formula) : Prop :=
-  ∀ β ∈ B, burgessR A β C
-
-/--
-**Burgess r-relation for Since (single element)**: `burgessRSince A β C` holds when
-for all γ ∈ C, `(β S γ) ∈ A`.
--/
-def burgessRSince (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
-  ∀ γ ∈ C, Formula.snce β γ ∈ A
-
-/--
-**Burgess r-relation for Since (set)**: `burgessRSetSince A B C` holds when
-for all β ∈ B, `burgessRSince A β C`.
--/
-def burgessRSetSince (A B C : Set Formula) : Prop :=
-  ∀ β ∈ B, burgessRSince A β C
-
-/--
-**Combined Burgess r-relation**: `burgessR3 A B C` holds when
-burgessRSet(A, B, C) AND burgessRSetSince(C, B, A).
-
-This captures both forward (Until from A through B to C) and backward
-(Since from C through B to A) relationships.
--/
-def burgessR3 (A B C : Set Formula) : Prop :=
-  burgessRSet A B C ∧ burgessRSetSince C B A
 
 /-! ## Lemma 2.5: Absorption / Intersection Identity
 
@@ -821,5 +754,212 @@ theorem c4'_hard_case_H_neg_delta {A : Set Formula}
   have h_neg_P := mcs_contrapositive_mem h_mcs h_bx12' h_neg_top_since
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (Bimodal.Theorems.Perpetuity.dne δ.neg.all_past)) h_neg_P
+
+/-! ## BurgessR3Maximal Existence and Properties
+
+BurgessR3Maximal (defined in ChronicleTypes.lean) is the CORRECT maximality notion
+for the chronicle construction. Key difference from R3Maximal: burgessR3 is
+ANTI-monotone in B, so maximality is genuine (not collapsing to MCS via monotonicity).
+-/
+
+/--
+The set of DCS extending S that satisfy burgessR3(A, -, C).
+Used for the Zorn's lemma argument in BurgessR3Maximal existence.
+-/
+def burgessR3DCSExtensions (A S C : Set Formula) : Set (Set Formula) :=
+  {B | S ⊆ B ∧ SetDeductivelyClosed B ∧ burgessR3 A B C}
+
+/--
+**BurgessR3Maximal existence**: Given MCS A, C and a DCS S with burgessR3(A, S, C),
+there exists a BurgessR3Maximal B with S ⊆ B.
+
+Proof: Zorn's lemma on the set of DCS extending S and satisfying burgessR3.
+Chain unions preserve burgessR3 because: if beta is in the union, it is in some
+chain element B_i, and burgessR3(A, B_i, C) gives the required Until/Since
+formulas in A and C respectively.
+-/
+theorem burgessR3Maximal_extension_exists {A C : Set Formula}
+    (_h_mcs_A : SetMaximalConsistent A) (_h_mcs_C : SetMaximalConsistent C)
+    {S : Set Formula} (h_dcs : SetDeductivelyClosed S) (h_r3 : burgessR3 A S C) :
+    ∃ B : Set Formula, S ⊆ B ∧ BurgessR3Maximal A B C := by
+  have h_S_in : S ∈ burgessR3DCSExtensions A S C := ⟨Set.Subset.refl _, h_dcs, h_r3⟩
+  obtain ⟨B, hB_in, hB_max⟩ := zorn_subset (burgessR3DCSExtensions A S C) (by
+    intro c hc_sub hc_chain
+    by_cases hc_empty : c = ∅
+    · exact ⟨S, h_S_in, by intro t ht; exact absurd ht (by rw [hc_empty]; exact Set.notMem_empty _)⟩
+    · obtain ⟨T₀, hT₀⟩ := Set.nonempty_iff_ne_empty.mpr hc_empty
+      refine ⟨⋃₀ c, ?_, fun t ht => Set.subset_sUnion_of_mem ht⟩
+      refine ⟨Set.subset_sUnion_of_subset c T₀ (hc_sub hT₀).1 hT₀, ?_, ?_⟩
+      · -- ⋃₀ c is a DCS
+        constructor
+        · -- Consistency
+          intro L hL ⟨d⟩
+          obtain ⟨T, hTc, hLT⟩ := rMaximal_extension_exists.chain_finite_subset_in_element
+            hc_chain hT₀ L (fun φ hφ => hL φ hφ)
+          exact (hc_sub hTc).2.1.1 L hLT ⟨d⟩
+        · -- Closure under derivation
+          intro L φ hL d
+          obtain ⟨T, hTc, hLT⟩ := rMaximal_extension_exists.chain_finite_subset_in_element
+            hc_chain hT₀ L (fun ψ hψ => hL ψ hψ)
+          exact Set.mem_sUnion.mpr ⟨T, hTc, (hc_sub hTc).2.1.2 L φ hLT d⟩
+      · -- burgessR3(A, ⋃₀ c, C)
+        constructor
+        · -- burgessRSet(A, ⋃₀ c, C): for beta in union, beta in some T_i
+          intro β hβ
+          obtain ⟨T, hTc, hβT⟩ := Set.mem_sUnion.mp hβ
+          exact (hc_sub hTc).2.2.1 β hβT
+        · -- burgessRSetSince(C, ⋃₀ c, A): same argument
+          intro β hβ
+          obtain ⟨T, hTc, hβT⟩ := Set.mem_sUnion.mp hβ
+          exact (hc_sub hTc).2.2.2 β hβT)
+  obtain ⟨hSB, hB_dcs, hB_r3⟩ := hB_in
+  refine ⟨B, hSB, hB_dcs, hB_r3, ?_⟩
+  intro D hD_dcs hBD hD_r3
+  have hD_in : D ∈ burgessR3DCSExtensions A S C :=
+    ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
+  exact hBD.2 (hB_max hD_in hBD.1)
+
+/-! ## BurgessR3Maximal Accessor Lemmas -/
+
+/--
+**BurgessR3Maximal implies DCS** (trivial from definition).
+-/
+theorem BurgessR3Maximal_dcs' {A B C : Set Formula} (h : BurgessR3Maximal A B C) :
+    SetDeductivelyClosed B := h.1
+
+/--
+**BurgessR3Maximal implies burgessR3** (trivial from definition).
+-/
+theorem BurgessR3Maximal_burgessR3 {A B C : Set Formula} (h : BurgessR3Maximal A B C) :
+    burgessR3 A B C := h.2.1
+
+/--
+**BurgessR3Maximal implies burgessRSet** (forward Until direction).
+-/
+theorem BurgessR3Maximal_burgessRSet {A B C : Set Formula} (h : BurgessR3Maximal A B C) :
+    burgessRSet A B C := h.2.1.1
+
+/--
+**BurgessR3Maximal implies burgessRSetSince** (backward Since direction).
+-/
+theorem BurgessR3Maximal_burgessRSetSince {A B C : Set Formula} (h : BurgessR3Maximal A B C) :
+    burgessRSetSince C B A := h.2.1.2
+
+/-! ## BurgessR3 Bridging Lemmas for C4
+
+These are the KEY lemmas for closing the C4 hard case. They use the content-based
+nature of burgessR3 to derive gamma ∉ g(x,y) from neg(untl(gamma, delta)) ∈ f(x)
+and delta ∈ f(y).
+-/
+
+/--
+**BurgessR3 bridging lemma (Until direction)**:
+If burgessR3(A, B, C) and gamma ∈ B and delta ∈ C, then untl(gamma, delta) ∈ A.
+
+This is IMMEDIATE from the definition of burgessRSet: for all beta ∈ B,
+for all gamma ∈ C, untl(beta, gamma) ∈ A.
+
+Note: In this lemma, the first argument to burgessR3 is A (left endpoint),
+B is the interval set, C is the right endpoint.
+-/
+theorem burgessR3_untl_in {A B C : Set Formula}
+    (h : burgessR3 A B C) {β : Formula} (hβ : β ∈ B) {γ : Formula} (hγ : γ ∈ C) :
+    Formula.untl β γ ∈ A :=
+  h.1 β hβ γ hγ
+
+/--
+**BurgessR3 bridging lemma (Since direction)**:
+If burgessR3(A, B, C) and beta ∈ B and gamma ∈ A, then snce(beta, gamma) ∈ C.
+-/
+theorem burgessR3_snce_in {A B C : Set Formula}
+    (h : burgessR3 A B C) {β : Formula} (hβ : β ∈ B) {γ : Formula} (hγ : γ ∈ A) :
+    Formula.snce β γ ∈ C :=
+  h.2 β hβ γ hγ
+
+/--
+**C4 hard case bridging**: If BurgessR3Maximal(A, B, C) and untl(gamma, delta).neg ∈ A
+and delta ∈ C, then gamma ∉ B.
+
+Proof: Suppose gamma ∈ B. By burgessR3, untl(gamma, delta) ∈ A. But A is a DCS
+(actually an MCS endpoint), so untl(gamma, delta) and untl(gamma, delta).neg cannot
+both be in A. Contradiction.
+
+This is THE key lemma for the C4 hard case: it shows gamma ∉ g(x,y), from which
+gamma.neg ∈ g(x,y) (by negation completeness of MCS), and then C3 gives
+gamma.neg ∈ f(z) for intermediate z.
+-/
+theorem burgessR3_gamma_not_in_B {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_r3 : burgessR3 A B C)
+    {γ δ : Formula}
+    (h_neg_until : (Formula.untl γ δ).neg ∈ A)
+    (h_delta : δ ∈ C) :
+    γ ∉ B := by
+  intro h_gamma
+  have h_until := h_r3.1 γ h_gamma δ h_delta
+  exact set_consistent_not_both h_mcs_A.1 (Formula.untl γ δ) h_until h_neg_until
+
+/--
+**C4' hard case bridging (Since direction)**: If BurgessR3Maximal(A, B, C) and
+snce(gamma, delta).neg ∈ C and delta ∈ A, then gamma ∉ B.
+-/
+theorem burgessR3_gamma_not_in_B_since {A B C : Set Formula}
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3 : burgessR3 A B C)
+    {γ δ : Formula}
+    (h_neg_since : (Formula.snce γ δ).neg ∈ C)
+    (h_delta : δ ∈ A) :
+    γ ∉ B := by
+  intro h_gamma
+  have h_since := h_r3.2 γ h_gamma δ h_delta
+  exact set_consistent_not_both h_mcs_C.1 (Formula.snce γ δ) h_since h_neg_since
+
+/-! ## DCS Non-Membership Implies Negation Consistency
+
+Key lemma for the C4 hard case: if gamma ∉ B and B is DCS, then
+{gamma.neg} ∪ B is consistent. This allows Lindenbaum extension to an MCS
+containing gamma.neg.
+-/
+
+/--
+If phi ∉ B and B is DCS, then {phi.neg} ∪ B is consistent.
+
+Proof: Suppose not. Then some L ⊆ {phi.neg} ∪ B derives ⊥.
+By weakening, (phi.neg :: L') ⊢ ⊥ where L' ⊆ B.
+By deduction theorem, L' ⊢ phi.neg → ⊥ = phi.
+Since B is DCS and L' ⊆ B, phi ∈ B. Contradiction.
+-/
+theorem dcs_neg_insert_consistent {B : Set Formula} (h_dcs : SetDeductivelyClosed B)
+    {φ : Formula} (h_not_in : φ ∉ B) :
+    SetConsistent (insert φ.neg B) := by
+  intro L hL ⟨d⟩
+  -- Strategy: filter L to B-only premises, weaken d, use deduction theorem + DNE.
+  haveI : ∀ ψ : Formula, Decidable (ψ ∈ B) := fun ψ => Classical.propDecidable _
+  let L_B := L.filter (· ∈ B)
+  have h_L_sub : L ⊆ φ.neg :: L_B := by
+    intro ψ hψ
+    have h := hL ψ hψ
+    simp only [Set.mem_insert_iff] at h
+    rcases h with rfl | h_B
+    · simp
+    · exact List.mem_cons_of_mem _ (List.mem_filter.mpr ⟨hψ, by exact decide_eq_true_eq.mpr h_B⟩)
+  -- Weaken d to (φ.neg :: L_B) ⊢ ⊥
+  have d_w : DerivationTree (φ.neg :: L_B) Formula.bot :=
+    DerivationTree.weakening L (φ.neg :: L_B) Formula.bot d h_L_sub
+  -- Deduction theorem: L_B ⊢ ¬¬φ
+  have d_nn : DerivationTree L_B (φ.neg.imp Formula.bot) :=
+    deduction_theorem L_B φ.neg Formula.bot d_w
+  -- L_B ⊆ B
+  have h_LB_sub : ∀ ψ ∈ L_B, ψ ∈ B := by
+    intro ψ hψ
+    exact decide_eq_true_eq.mp (List.mem_filter.mp hψ).2
+  -- ¬¬φ ∈ B by DCS
+  have h_nn_B : φ.neg.imp Formula.bot ∈ B := h_dcs.2 L_B _ h_LB_sub d_nn
+  -- DNE theorem in B: (¬¬φ → φ) ∈ B
+  have h_dne_B : φ.neg.neg.imp φ ∈ B :=
+    dcs_contains_theorems h_dcs (Bimodal.Theorems.Propositional.double_negation φ)
+  -- Modus ponens in B: φ ∈ B
+  have h_phi_B : φ ∈ B := dcs_modus_ponens h_dcs h_dne_B h_nn_B
+  exact h_not_in h_phi_B
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
