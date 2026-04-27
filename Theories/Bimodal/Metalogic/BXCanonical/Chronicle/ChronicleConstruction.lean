@@ -845,11 +845,7 @@ pairs are DEFINED by C3: g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
 
 **Design**: The correct limit_g retrieves g_n(x,y) from the first stage n
 where both x and y are in dom_n. This is well-defined because g values are
-immutable once set (g-immutability from Phase 4).
-
-**Current Design (placeholder)**: Until the omega-chain is rebuilt to track
-g values (Phase 4), limit_g uses deductiveClosure(g_content(limit_f(x)))
-as a placeholder. This does NOT satisfy the true three-way C3.
+immutable once set (g-immutability from omega_chain_g_agrees_le).
 
 **Key Consequence of True C3**: g(x,z) ⊆ f(y) for all x < y < z in dom.
 This is IMMEDIATE from the three-way intersection (f(y) is a factor).
@@ -857,25 +853,41 @@ See `c3_interval_subset_point` in ChronicleTypes.lean.
 -/
 
 /--
-The **limit interval function** (placeholder): for each pair (x, y) of rationals,
-assigns the deductive closure of g_content(limit_f(x)).
+The **limit interval function**: for each pair (x, y) of rationals,
+retrieves g_n(x,y) from the first stage n where both x and y are in dom_n.
 
-NOTE: This definition ignores y and does NOT satisfy the true three-way C3.
-It will be replaced when the omega-chain is redesigned to track g values.
-The correct limit_g should be: g_n(x,y) for the first n where both x,y ∈ dom_n.
+This is well-defined because omega_chain_g_agrees_le ensures g values are
+immutable once set: for m ≤ n with x,y ∈ dom(m), g_n(x,y) = g_m(x,y).
 -/
 noncomputable def limit_g (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
     Rat → Rat → Set Formula :=
-  fun x _y => deductiveClosure (g_content (limit_f A h_mcs x))
+  fun x y =>
+    have : Decidable (∃ n, x ∈ (omega_chain_val A h_mcs n).dom ∧
+                           y ∈ (omega_chain_val A h_mcs n).dom) :=
+      Classical.dec _
+    if h : ∃ n, x ∈ (omega_chain_val A h_mcs n).dom ∧
+                 y ∈ (omega_chain_val A h_mcs n).dom
+    then (omega_chain_val A h_mcs h.choose).g x y
+    else ∅
 
 /--
-The limit interval function satisfies C1 (DCS) at domain points.
+The limit g is well-defined: for any n with x,y in dom(n), g_n(x,y) equals
+the limit value.
 -/
-theorem limit_c1_at_domain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (x : Rat) (_hx : x ∈ limit_dom A h_mcs) (y : Rat) :
-    SetDeductivelyClosed (limit_g A h_mcs x y) := by
+theorem limit_g_eq (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (x y : Rat) (n : Nat)
+    (hx : x ∈ (omega_chain_val A h_mcs n).dom)
+    (hy : y ∈ (omega_chain_val A h_mcs n).dom) :
+    limit_g A h_mcs x y = (omega_chain_val A h_mcs n).g x y := by
   unfold limit_g
-  exact deductiveClosure_is_dcs (g_content_set_consistent (limit_c0 A h_mcs x _hx))
+  have h_ex : ∃ m, x ∈ (omega_chain_val A h_mcs m).dom ∧
+                    y ∈ (omega_chain_val A h_mcs m).dom := ⟨n, hx, hy⟩
+  simp only [h_ex, dite_true]
+  set m := Classical.choose h_ex with hm_def
+  have hm := Classical.choose_spec h_ex
+  have h1 := omega_chain_g_agrees_le A h_mcs (Nat.le_max_left m n) x y hm.1 hm.2
+  have h2 := omega_chain_g_agrees_le A h_mcs (Nat.le_max_right m n) x y hx hy
+  rw [← h2, h1]
 
 /-! ## g_content / h_content Duality
 
