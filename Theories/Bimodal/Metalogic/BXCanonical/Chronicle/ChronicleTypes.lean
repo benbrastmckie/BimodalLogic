@@ -244,6 +244,71 @@ def R3MaximalSince (A B C : Set Formula) : Prop :=
     B ⊂ D →
     ¬r3RelationSince A D C
 
+/-! ## Burgess r-Relation (Content-Based)
+
+Burgess's r-relation is fundamentally different from the codebase's `rRelation`:
+
+- **Codebase rRelation(A, B)**: For all gamma U delta in A, either delta in B or
+  (gamma in B and gamma U delta in B). This is OBLIGATION PROPAGATION: Until
+  formulas from A propagate to B. MONOTONE in B.
+
+- **Burgess r(A, beta, C)**: For all gamma in C, untl(beta, gamma) in A.
+  This is CONTENT: beta is a guard such that any formula from C can serve as
+  the event in an Until formula in A. ANTI-MONOTONE in B (at set level).
+
+Neither implies the other in general.
+-/
+
+/--
+**Burgess r-relation for a single element**: `burgessR A beta C` holds when
+for all gamma in C, `untl(beta, gamma) in A`.
+-/
+def burgessR (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
+  ∀ γ ∈ C, Formula.untl β γ ∈ A
+
+/--
+**Burgess r-relation for a set**: `burgessRSet A B C` holds when
+for all beta in B, `burgessR A beta C`.
+-/
+def burgessRSet (A B C : Set Formula) : Prop :=
+  ∀ β ∈ B, burgessR A β C
+
+/--
+**Burgess r-relation for Since (single element)**: `burgessRSince A beta C` holds
+when for all gamma in C, `snce(beta, gamma) in A`.
+-/
+def burgessRSince (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
+  ∀ γ ∈ C, Formula.snce β γ ∈ A
+
+/--
+**Burgess r-relation for Since (set)**: `burgessRSetSince A B C` holds when
+for all beta in B, `burgessRSince A beta C`.
+-/
+def burgessRSetSince (A B C : Set Formula) : Prop :=
+  ∀ β ∈ B, burgessRSince A β C
+
+/--
+**Combined Burgess r-relation**: `burgessR3 A B C` holds when
+burgessRSet(A, B, C) AND burgessRSetSince(C, B, A).
+
+This captures both forward (Until from A through B to C) and backward
+(Since from C through B to A) relationships.
+-/
+def burgessR3 (A B C : Set Formula) : Prop :=
+  burgessRSet A B C ∧ burgessRSetSince C B A
+
+/--
+**BurgessR3Maximal**: B is a maximal DCS satisfying `burgessR3(A, B, C)`.
+
+This is Burgess's Definition 2.5 (R-maximality) using the correct content-based
+r-relation. B is maximal in the sense that no proper DCS extension of B also
+satisfies burgessR3 with the same endpoints A and C.
+-/
+def BurgessR3Maximal (A B C : Set Formula) : Prop :=
+  SetDeductivelyClosed B ∧
+  burgessR3 A B C ∧
+  ∀ D, SetDeductivelyClosed D → B ⊂ D → ¬burgessR3 A D C
+
 /-! ## Chronicle Structure -/
 
 /--
@@ -278,9 +343,14 @@ For x < y in dom, r3Relation(f(x), g(x,y), f(y)) holds. -/
 def Chronicle.c2 (χ : Chronicle) : Prop :=
   ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → r3Relation (χ.f x) (χ.g x y) (χ.f y)
 
-/-- **C2'**: R3-maximality for adjacent pairs. -/
+/-- **C2'**: BurgessR3-maximality for adjacent pairs (Burgess Definition 2.5).
+
+Uses BurgessR3Maximal (content-based r-relation) rather than R3Maximal
+(obligation-propagation r-relation). This is the correct relation for the
+C4 hard case: gamma in g(x,y) and delta in f(y) forces untl(gamma, delta)
+in f(x), which gives the needed contradiction. -/
 def Chronicle.c2' (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, Adjacent χ.dom x y → R3Maximal (χ.f x) (χ.g x y) (χ.f y)
+  ∀ x y : Rat, Adjacent χ.dom x y → BurgessR3Maximal (χ.f x) (χ.g x y) (χ.f y)
 
 /-- **C3**: Three-way interval decomposition (Burgess 1982, p. 372).
 For all x < y < z in dom, g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
@@ -437,40 +507,13 @@ structure ChronicleInvariant (χ : Chronicle) : Prop where
   hc0 : χ.c0
   /-- C1: Every pair x < y maps to a DCS -/
   hc1 : χ.c1
-  /-- C2': R3-maximality for adjacent pairs.
-  C2 (r3Relation for ALL pairs) is derivable at the limit from C2' + C3 + density,
-  but is not maintained at finite stages because the Burgess r-relation absorption
-  (Lemma 2.5) requires MCS endpoints which are only guaranteed at domain points.
+  /-- C2': BurgessR3-maximality for adjacent pairs.
+  Uses the content-based Burgess r-relation (burgessR3) for maximality.
+  C2 (r3Relation for ALL pairs) is derivable at the limit via Lemma 2.5 absorption.
   The finite-stage invariant only needs C2' for adjacent pairs. -/
   hc2' : χ.c2'
   /-- C3: Three-way interval decomposition -/
   hc3 : χ.c3
-
-/-! ## g_content Chain Ordering (DEPRECATED)
-
-These definitions are retained for backward compatibility but are NOT
-needed for the chronicle construction. The truth lemma routes through
-C3 (three-way intersection) instead of g_content propagation.
-See report 22 (Teammate B) for the complete argument.
--/
-
-/--
-A chronicle has **g_content chain ordering** if for all domain points x < y,
-g_content(f(x)) ⊆ f(y). This means G(φ) ∈ f(x) implies φ ∈ f(y) for all
-y > x in the domain.
-
-**DEPRECATED**: This property is NOT needed for the truth lemma. The correct
-path uses C3 (three-way interval decomposition) to get g(x,y) ⊆ f(z) for
-intermediate z, which is the actual property needed. See `c3_interval_subset_point`.
--/
-def Chronicle.g_ordered (χ : Chronicle) : Prop :=
-  ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, x < y → g_content (χ.f x) ⊆ χ.f y
-
-/--
-Mirror: h_content chain ordering (backward direction). **DEPRECATED**.
--/
-def Chronicle.h_ordered (χ : Chronicle) : Prop :=
-  ∀ x ∈ χ.dom, ∀ y ∈ χ.dom, y < x → h_content (χ.f x) ⊆ χ.f y
 
 /-! ## Basic Properties -/
 

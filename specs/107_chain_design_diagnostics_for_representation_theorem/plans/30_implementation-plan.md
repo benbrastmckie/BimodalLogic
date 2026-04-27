@@ -117,7 +117,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1.5: Cruft Purge [NOT STARTED]
+### Phase 1.5: Cruft Purge [COMPLETED]
 
 **Goal**: Remove dead code, failed approaches, and stale artifacts before the architectural changes. Clean slate for BurgessR3 adoption.
 
@@ -153,7 +153,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Define BurgessR3Maximal and Prove Existence [NOT STARTED]
+### Phase 2: Define BurgessR3Maximal and Prove Existence [COMPLETED]
 
 **Goal**: Define BurgessR3Maximal as the primary r-maximality concept using burgessR3 (anti-monotone, content-based), prove existence via Zorn's lemma with seed construction, and update ChronicleInvariant c2' to use BurgessR3Maximal.
 

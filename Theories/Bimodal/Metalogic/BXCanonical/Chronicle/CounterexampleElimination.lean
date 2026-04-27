@@ -297,7 +297,7 @@ With the correct C4 (check EVENT δ at f(y), negate GUARD γ at f(z)):
 
 - If `¬γ ∈ f(x)`: assign f(z) = f(x), which already has ¬γ.
 - If `γ ∈ f(x)` but `¬γ ∈ f(y)`: assign f(z) = f(y).
-- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires Lemma 2.6 (Phase 2).
+- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires burgessR3 bridging + Lemma 2.6.
 -/
 noncomputable def eliminate_C4_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
@@ -326,11 +326,9 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       · -- G(γ) ∈ f(x). Check H(γ) ∈ f(y).
         rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ.all_past with h_Hγ_y | h_nHγ_y
         · -- G(γ) ∈ f(x) and H(γ) ∈ f(y). Genuinely hard sub-case.
-          -- Requires guard-strengthening for Until (not available in BX without A4a).
-          -- This case is contradictory in any sound model (G(γ) at x with x < y
-          -- means γ everywhere between x and y, but ¬(γ U δ) at x with δ at y
-          -- requires ¬γ somewhere between). Resolving syntactically needs
-          -- additional axioms or g_ordered invariant from the omega chain.
+          -- Resolution: use burgessR3 bridging lemma to show γ ∉ g(x,y),
+          -- hence γ.neg ∈ g(x,y) (MCS), then C3 gives γ.neg ∈ f(z).
+          -- Requires BurgessR3Maximal g-values (Phase 5).
           sorry
         · -- G(γ) ∈ f(x) but H(γ) ∉ f(y). Use P(¬γ) ∈ f(y) via P_neg_of_H_not.
           have h_Hγ_not : ce.γ.all_past ∉ χ.f ce.y :=
@@ -418,7 +416,7 @@ for Since. Insert z between y and x with `¬γ ∈ f(z)` (negated GUARD).
 
 - If `¬γ ∈ f(x)`: assign f(z) = f(x).
 - If `γ ∈ f(x)` but `¬γ ∈ f(y)`: assign f(z) = f(y).
-- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case (Phase 2).
+- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires burgessR3 bridging (Since).
 -/
 noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
@@ -445,7 +443,8 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
       · -- H(γ) ∈ f(x). Check G(γ) ∈ f(y).
         rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ.all_future with h_Gγ_y | h_nGγ_y
         · -- H(γ) ∈ f(x) and G(γ) ∈ f(y). Genuinely hard sub-case (mirror).
-          -- See C4 hard case comment: requires A4a-equivalent or g_ordered.
+          -- Resolution: use burgessR3 bridging lemma (Since direction).
+          -- Requires BurgessR3Maximal g-values (Phase 5).
           sorry
         · -- H(γ) ∈ f(x) but G(γ) ∉ f(y). Use F(¬γ) ∈ f(y) via F_neg_of_G_not.
           have h_Gγ_not : ce.γ.all_future ∉ χ.f ce.y :=
