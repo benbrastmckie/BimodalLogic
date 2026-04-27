@@ -80,6 +80,32 @@ theorem until_disjunction_in_mcs {A : Set Formula}
     (theorem_in_mcs h_mcs h_elim) h_until
 
 /--
+`gamma U delta in A` implies `gamma in A` (by until_guard axiom).
+Under half-open guard [t,s), the guard holds at the base point t.
+-/
+theorem until_guard_in_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
+    (h_until : Formula.untl γ δ ∈ A) :
+    γ ∈ A := by
+  have h_guard : DerivationTree [] ((Formula.untl γ δ).imp γ) :=
+    DerivationTree.axiom [] _ (Axiom.until_guard γ δ)
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_guard) h_until
+
+/--
+`gamma S delta in A` implies `gamma in A` (by since_guard axiom).
+Under half-open guard (s,t], the guard holds at the base point t.
+-/
+theorem since_guard_in_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
+    (h_since : Formula.snce γ δ ∈ A) :
+    γ ∈ A := by
+  have h_guard : DerivationTree [] ((Formula.snce γ δ).imp γ) :=
+    DerivationTree.axiom [] _ (Axiom.since_guard γ δ)
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_guard) h_since
+
+/--
 `gamma U delta in A` implies `F(delta) in A` (by BX10).
 -/
 theorem until_implies_F_in_mcs {A : Set Formula}

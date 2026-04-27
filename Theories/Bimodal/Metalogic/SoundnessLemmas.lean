@@ -789,6 +789,18 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
         (fun h_neg => h_neg s1 h_gt h_φs1) h_ψs2)
   | F_until_equiv φ => exact swap_axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact swap_axiom_P_since_equiv_valid φ
+  | until_guard φ ψ =>
+    -- Swap of (φ U ψ) → φ is (φ' S ψ') → φ', which is since_guard
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hst, _h_ψs, h_guard⟩
+    exact h_guard t hst le_rfl
+  | since_guard φ ψ =>
+    -- Swap of (φ S ψ) → φ is (φ' U ψ') → φ', which is until_guard
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hts, _h_ψs, h_guard⟩
+    exact h_guard t le_rfl hts
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 /-! ## Axiom Validity (Local)
@@ -1259,6 +1271,16 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
+  | until_guard φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_ψs, h_guard⟩
+    exact h_guard t le_rfl hts
+  | since_guard φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hst, _h_ψs, h_guard⟩
+    exact h_guard t hst le_rfl
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 /-! ## Rule Preservation for Local Validity
@@ -1664,6 +1686,18 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
     exact axiom_P_since_equiv_valid φ.swap_temporal
   | P_since_equiv φ =>
     exact axiom_F_until_equiv_valid φ.swap_temporal
+  | until_guard φ ψ =>
+    -- swap of (φ U ψ) → φ is (φ' S ψ') → φ' = since_guard
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hst, _h_ψs, h_guard⟩
+    exact h_guard t hst le_rfl
+  | since_guard φ ψ =>
+    -- swap of (φ S ψ) → φ is (φ' U ψ') → φ' = until_guard
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hts, _h_ψs, h_guard⟩
+    exact h_guard t le_rfl hts
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
@@ -1860,6 +1894,16 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
+  | until_guard φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_ψs, h_guard⟩
+    exact h_guard t le_rfl hts
+  | since_guard φ ψ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hst, _h_ψs, h_guard⟩
+    exact h_guard t hst le_rfl
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 

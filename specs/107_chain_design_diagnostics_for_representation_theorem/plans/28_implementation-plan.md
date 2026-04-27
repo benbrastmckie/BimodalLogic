@@ -74,7 +74,8 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add until_guard / since_guard Axioms [NOT STARTED]
+### Phase 1: Add until_guard / since_guard Axioms [COMPLETED]
+<!-- Completed in prior session -->
 
 **Goal**: Add sound axioms `until_guard : untl phi psi -> phi` and `since_guard : snce phi psi -> phi` to the BX axiom system, with soundness proofs.
 
@@ -105,7 +106,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Extend EliminationResult and Populate g in C5/C5' Elimination [NOT STARTED]
+### Phase 2: Extend EliminationResult and Populate g in C5/C5' Elimination [IN PROGRESS]
 
 **Goal**: Extend the EliminationResult structure to carry g-agreement conditions, and implement g-population for C5/C5' elimination (the simplest case, providing a template for C4).
 
