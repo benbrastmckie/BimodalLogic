@@ -203,7 +203,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Close C4/C4' Hard Sub-Case via Lemma 2.6 (2 Sorry Sites) [NOT STARTED]
+### Phase 5: Close C4/C4' Hard Sub-Case via Lemma 2.6 (2 Sorry Sites) [IN PROGRESS]
 
 **Goal**: Close the 2 sorry sites at CounterexampleElimination.lean:334 and 449 using Lemma 2.6 directly, following Burgess Lemma 2.9. No case split on G(gamma)/H(gamma). The key is the r-relation bridging lemma showing gamma is not in g(x,y).
 
@@ -238,7 +238,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Close restricted_fuc, Delete Dead Code, Final Validation (2 Sorry Sites + Cleanup) [NOT STARTED]
+### Phase 6: Close restricted_fuc, Delete Dead Code, Final Validation (2 Sorry Sites + Cleanup) [IN PROGRESS]
 
 **Goal**: Close the 2 restricted_fuc sorry sites using until_guard (base point) + limit_g + C3 (intermediates), delete dead code, and validate sorry-free dd_countermodel_chronicle.
 

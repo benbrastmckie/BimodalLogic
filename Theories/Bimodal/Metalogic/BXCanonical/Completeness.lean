@@ -180,32 +180,24 @@ Captured during Phase 0 of task 109 (2026-04-20).
 ### Sorry Dependency Tree (Post-Phase 5 Rewiring)
 
 The `sorryAx` dependency now traces through `dd_countermodel_chronicle` →
-`chronicle_bfmcs` in Chronicle/ChronicleToCountermodel.lean, which uses the
-Burgess chronicle construction instead of the Int chain.
+`cantor_bfmcs` in Chronicle/ChronicleToCountermodel.lean, which uses the
+Burgess chronicle construction with a Cantor isomorphism to embed all
+rationals into the limit domain.
 
-**Chronicle FMCS sorries** (ChronicleToCountermodel.lean):
-1. `chronicle_fmcs.forward_G` — G-formula propagation across chronicle points
-2. `chronicle_fmcs.backward_H` — H-formula propagation across chronicle points
-3. `box_stable_in_chronicle_fmcs` — Box stability along chronicle FMCS
-
-**Chronicle coherence sorries** (ChronicleToCountermodel.lean):
-4. `chronicle_bfmcs_restricted_tc` (F-resolution) — uses chronicle C5
-5. `chronicle_bfmcs_restricted_tc` (P-resolution) — uses chronicle C5'
-6. `chronicle_bfmcs_restricted_buc` (backward Until) — witness pattern → membership
-7. `chronicle_bfmcs_restricted_buc` (backward Since) — witness pattern → membership
-8. `chronicle_bfmcs_restricted_fuc` (forward Until) — uses chronicle C5
-9. `chronicle_bfmcs_restricted_fuc` (forward Since) — uses chronicle C5'
-
-**Chronicle construction sorries** (Phases 2-4, upstream):
-10. `counterexample_enum` — countability enumeration (ChronicleConstruction.lean)
-11. `counterexample_enum_surjective` — enumeration surjectivity
-12. `limit_satisfies_c5_weak` — C5 in limit (ChronicleConstruction.lean)
-13. `limit_satisfies_c5'_weak` — C5' in limit
-14. Various Phase 2-4 sorry sites in PointInsertion, RRelation, CounterexampleElimination
+**Active sorry sites** (4 total, on critical path):
+1. `eliminate_C4_counterexample` hard case (CounterexampleElimination.lean:334)
+   — G(gamma) in f(x), H(gamma) in f(y), requires g-function infrastructure
+2. `eliminate_C4'_counterexample` hard case (CounterexampleElimination.lean:449)
+   — Mirror of C4 for Since direction
+3. `cantor_bfmcs_restricted_fuc` Until (ChronicleToCountermodel.lean)
+   — Forward Until coherence guard at intermediate points, requires C3 + limit_g
+4. `cantor_bfmcs_restricted_fuc` Since (ChronicleToCountermodel.lean)
+   — Forward Since coherence guard, mirror of Until case
 
 **Dead code** (no longer on critical path):
 - All sorry sites in RootScopedChain.lean (bx_bfmcs_restricted_tc/buc/fuc)
 - Dead code sorries in CanonicalModel.lean (enriched_seed_consistent, etc.)
+- chronicle_fmcs, chronicle_bfmcs and their coherence theorems (DELETED, task 107)
 
 ### Target State
 
