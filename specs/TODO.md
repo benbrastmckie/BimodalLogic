@@ -37,7 +37,7 @@ technical_debt:
 107 → 95
 ```
 
-1. **107** [IMPLEMENTING] — Burgess chronicle construction for BX representation theorem (irr_until branch)
+1. **107** [RESEARCHED] — Burgess chronicle construction for BX representation theorem (irr_until branch)
 2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
 
 ### 3. Independent Completeness Paths (parallel)
@@ -104,7 +104,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
@@ -114,6 +114,7 @@ technical_debt:
   - [107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md]
   - [107_chain_design_diagnostics_for_representation_theorem/reports/08_verbrugge-step-by-step.md]
   - [107_chain_design_diagnostics_for_representation_theorem/reports/09_team-research.md]
+  - [107_chain_design_diagnostics_for_representation_theorem/reports/34_team-research.md]
 - **Plan**:
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/06_implementation-plan.md]
   - [107_chain_design_diagnostics_for_representation_theorem/plans/08_implementation-plan.md]
