@@ -721,4 +721,105 @@ theorem burgessR3_absorption {A D C : Set Formula} {B₁ B₂ B₁₂ : Set Form
     have h_rDA : burgessRSetSince D B₁₂ A := fun β hβ => h_r3_AD.2 β (h_sub_B₁ hβ)
     exact burgessRSetSince_absorption h_mcs_C h_mcs_D h_sub_D h_rCD h_rDA
 
+/-! ## MCS Contrapositive and C4 Hard Case Derivations -/
+
+/--
+Contrapositive in an MCS from membership: if (A -> B) in S and neg(B) in S,
+then neg(A) in S. This is the MCS-internal version of the logical contrapositive.
+-/
+theorem mcs_contrapositive_mem {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    {A B : Formula} (h_impl : A.imp B ∈ S) (h_negB : B.neg ∈ S) : A.neg ∈ S := by
+  rcases SetMaximalConsistent.negation_complete h_mcs A with h_A | h_negA
+  · have h_B := SetMaximalConsistent.implication_property h_mcs h_impl h_A
+    exact absurd (set_consistent_not_both h_mcs.1 B h_B h_negB) id
+  · exact h_negA
+
+/--
+Key syntactic derivation for the C4 hard case (Burgess Lemma 2.9):
+from G(gamma) in A and neg(untl(gamma, delta)) in A, derive G(neg(delta)) in A.
+
+This shows that in the hard case of C4 elimination (where gamma in f(x),
+G(gamma) in f(x), and neg(gamma U delta) in f(x)), all future points
+must satisfy neg(delta). The derivation uses BX2 (left monotonicity of Until)
+and BX12 (F(delta) <-> top U delta).
+
+Steps:
+1. gamma -> (top -> gamma) by prop_s (weakening)
+2. G(top -> gamma) from G(gamma) by temporal necessitation + distribution
+3. BX2: (top -> gamma) AND G(top -> gamma) implies (top U delta -> gamma U delta)
+4. Contrapositive with neg(gamma U delta): neg(top U delta) in A
+5. BX12 contrapositive: neg(F(delta)) in A, i.e., G(neg(delta)) in A
+-/
+theorem c4_hard_case_G_neg_delta {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A)
+    {γ δ : Formula}
+    (h_γ : γ ∈ A)
+    (h_Gγ : Formula.all_future γ ∈ A)
+    (h_neg_until : (Formula.untl γ δ).neg ∈ A) :
+    Formula.all_future δ.neg ∈ A := by
+  set top := Formula.bot.imp Formula.bot with htop_def
+  -- (top -> gamma) in A from gamma + prop_s
+  have h_top_gamma : top.imp γ ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.prop_s γ top))) h_γ
+  -- G(top -> gamma) in A by temporal necessitation of prop_s + G distribution
+  have h_G_top_gamma : Formula.all_future (top.imp γ) ∈ A := by
+    have h_G_ps := theorem_in_mcs h_mcs
+      (DerivationTree.temporal_necessitation _ (DerivationTree.axiom [] _ (Axiom.prop_s γ top)))
+    have h_dist := theorem_in_mcs h_mcs
+      (DerivationTree.axiom [] _ (Axiom.temp_k_dist γ (top.imp γ)))
+    exact SetMaximalConsistent.implication_property h_mcs
+      (SetMaximalConsistent.implication_property h_mcs h_dist h_G_ps) h_Gγ
+  -- BX2: (top -> gamma) AND G(top -> gamma) -> (top U delta -> gamma U delta)
+  have h_bx2 := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.left_mono_until top δ γ))
+  have h_conj := dcs_conj_closed (mcs_is_dcs h_mcs) h_top_gamma h_G_top_gamma
+  have h_mono : (Formula.untl top δ).imp (Formula.untl γ δ) ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs h_bx2 h_conj
+  -- Contrapositive: neg(gamma U delta) -> neg(top U delta)
+  have h_neg_top_until := mcs_contrapositive_mem h_mcs h_mono h_neg_until
+  -- BX12 contrapositive: neg(top U delta) -> neg(F(delta))
+  have h_bx12 := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.F_until_equiv δ))
+  have h_neg_F := mcs_contrapositive_mem h_mcs h_bx12 h_neg_top_until
+  -- DNE: neg(neg(G(neg(delta)))) -> G(neg(delta))
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (Bimodal.Theorems.Perpetuity.dne δ.neg.all_future)) h_neg_F
+
+/--
+Mirror of `c4_hard_case_G_neg_delta` for the Since direction (C4' hard case):
+from H(gamma) in A and neg(snce(gamma, delta)) in A, derive H(neg(delta)) in A.
+
+Uses BX2' (left monotonicity of Since) and BX12' (P(delta) <-> top S delta).
+-/
+theorem c4'_hard_case_H_neg_delta {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A)
+    {γ δ : Formula}
+    (h_γ : γ ∈ A)
+    (h_Hγ : Formula.all_past γ ∈ A)
+    (h_neg_since : (Formula.snce γ δ).neg ∈ A) :
+    Formula.all_past δ.neg ∈ A := by
+  set top := Formula.bot.imp Formula.bot with htop_def
+  have h_top_gamma : top.imp γ ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.prop_s γ top))) h_γ
+  have h_H_top_gamma : Formula.all_past (top.imp γ) ∈ A := by
+    have h_H_ps := theorem_in_mcs h_mcs
+      (Bimodal.Theorems.past_necessitation _ (DerivationTree.axiom [] _ (Axiom.prop_s γ top)))
+    have h_dist := theorem_in_mcs h_mcs
+      (Bimodal.Theorems.past_k_dist γ (top.imp γ))
+    exact SetMaximalConsistent.implication_property h_mcs
+      (SetMaximalConsistent.implication_property h_mcs h_dist h_H_ps) h_Hγ
+  have h_bx2' := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.left_mono_since top δ γ))
+  have h_conj := dcs_conj_closed (mcs_is_dcs h_mcs) h_top_gamma h_H_top_gamma
+  have h_mono : (Formula.snce top δ).imp (Formula.snce γ δ) ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs h_bx2' h_conj
+  have h_neg_top_since := mcs_contrapositive_mem h_mcs h_mono h_neg_since
+  have h_bx12' := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.P_since_equiv δ))
+  have h_neg_P := mcs_contrapositive_mem h_mcs h_bx12' h_neg_top_since
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs (Bimodal.Theorems.Perpetuity.dne δ.neg.all_past)) h_neg_P
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
