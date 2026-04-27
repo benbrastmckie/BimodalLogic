@@ -89,7 +89,7 @@ All phases are strictly sequential (shared files: PointInsertion.lean, Counterex
 
 ---
 
-### Phase 1: Formalize Burgess Lemma 2.6 for BurgessR3Maximal [PARTIAL]
+### Phase 1: Formalize Burgess Lemma 2.6 for BurgessR3Maximal [IN PROGRESS]
 
 **Goal**: Prove the BurgessR3Maximal splitting lemma: given `BurgessR3Maximal(A, B, C)` and `delta not in B`, construct a fresh MCS D with `neg(delta) in D`, plus DCS B' and B'' with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)`. This is the single most important missing piece of infrastructure. The output MUST be BurgessR3Maximal (not just burgessR3), because Phase 2 feeds g-values back into Lemma 2.6 at later omega-chain steps.
 

@@ -807,7 +807,7 @@ theorem burgess_D0_elem_in_A_or_C {A B C : Set Formula}
   have h_B_A := B_sub_A_of_burgessR3 h_mcs_A h_mcs_C h_r3
   have h_B_C := B_sub_C_of_burgessR3 h_mcs_A h_mcs_C h_r3
   simp only [burgess_D0, Set.mem_union, Set.mem_setOf_eq, Set.mem_singleton_iff] at hφ
-  rcases hφ with ⟨⟨α, hα, β, hβ, rfl⟩ | hφ_B⟩ | hφ_neg | ⟨β, hβ, γ, hγ, rfl⟩
+  rcases hφ with ((⟨α, hα, β, hβ, rfl⟩ | hφ_B) | hφ_neg) | ⟨β, hβ, γ, hγ, rfl⟩
   · -- Since formula S(β, α): in C by burgessRSetSince
     exact Or.inr (h_r3.2 β hβ α hα)
   · -- B element: in both A and C
