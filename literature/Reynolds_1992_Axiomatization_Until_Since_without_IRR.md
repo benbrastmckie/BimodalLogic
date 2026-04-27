@@ -1,0 +1,789 @@
+# An Axiomatization for Until and Since over the Reals without the IRR Rule
+
+**Mark Reynolds**
+
+*Studia Logica* 51: 165--193, 1992.
+
+(c) 1992 Kluwer Academic Publishers. Printed in the Netherlands.
+
+---
+
+**Abstract.** We give a Hilbert style axiomatization for the set of formulas in the temporal language with *Until* and *Since* which are valid over the real number flow of time. The axiomatization, which is orthodox in the sense of only having the usual temporal rules of inference, is complete with respect to single formulas.
+
+---
+
+## 1 Introduction
+
+We continue a long tradition of axiomatizing temporal logics. Variations on the theme have been achieved by varying the language used to talk about events in time and by varying the assumptions made about the nature of time. In this paper we consider the particularly interesting case of the language with "until" and "since" over real number time.
+
+Early axiomatization results were for the language with two temporal connectives: $F$ for "will" and $P$ for "was". Completeness of axiomatizations for this language over various flows of time can be proved by tinkering with Henkin constructions (see for example [1]).
+
+The stronger, more expressive, language with "until" ($U$) and "since" ($S$) presents more difficulties. Burgess [2] gives a more complicated Henkin construction which is sufficient to prove completeness when we consider certain whole classes of flows of time such as linear flows.
+
+Axiomatization over the rational numbers fall out of Burgess' work easily. However, it is generally more difficult again to get completeness results for specific flows of time. Although axioms for $U$ over the more "useful" natural numbers flow appear with an involved proof in [10] an axiomatization of $U$ and $S$ over the natural numbers flow (along with other classes of well-orderings) has only just been given in [17].
+
+No published axiomatizations of $U$ and $S$ over the integers appear to exist although the techniques of [8], as described below, could probably be used.
+
+> *The author would like to thank Dov Gabbay, Yde Venema, the referee and especially Ian Hodkinson for helpful comments during the development of this work. The work was supported by the U.K. Science and Engineering Research Council under the Metatem project (GR/F/28526).*
+
+This brings us to the case of real numbers time: an example of interest to both philosophy and computer science. A complete axiomatization is given in [8]. As well as involving an interesting proof -- going back to using an $F$ and $P$ type Henkin construction and bringing in some new work of Gurevich and Doets on models over the reals -- their result is interesting for two reasons:
+
+- they show that only a weak form of completeness result can be achieved and
+- they use what we may call an unorthodox inference rule -- the IRR rule of [6].
+
+In this paper we also give a weak completeness result. In the next section we define our language, its syntax and semantics, we present the axiomatization, we prove soundness and we discuss the two forms of completeness. It will be seen that the weak form of completeness is still very useful: in fact the distinction between weak and strong here is subtle enough to be often ignored.
+
+Unlike that in [8] our axiomatization does not use any unorthodox rules and this, we claim, is the import of the paper. In section 3, we discuss the IRR rule and compare our proof with that in [8], arguing why it is important to show that IRR is not necessary.
+
+In most of the rest of the paper we prove the completeness result devoting sections to finding a rational-flowed model, proving expressive completeness, proving Dedekind completeness for a certain type of definable equivalence, examining such equivalences in even more detail, finding a real-flowed model and concluding the proof.
+
+As an added extra, in section 10, we are able to use a similar but much less complicated version of the technique to give an orthodox axiomatization for $U$ and $S$ over the integers.
+
+It is worth mentioning the related work in [3] where a decidability result is proved for the universal monadic theory of the reals. Using some of the techniques that we also use, it is shown that this theory is decidable. From this we can deduce that the validity of until and since formulas over real flows is also decidable. Despite the fact that such a result is in many ways more useful than an axiomatization, it is still interesting to present a complete system of rules and axioms.
+
+## 2 The Axiomatization
+
+In this paper temporal structures, which we will often just call structures, will be linear. Thus they consist of a domain $T$, an irreflexive linear order $<$ on $T$ and a valuation $h$ assigning each $p$ of a countable set of atoms to a subset $h(p) \subseteq T$. The underlying linear order $(T, <)$ of a structure $(T, <, h)$ is called the *flow of time* of $(T, <, h)$.
+
+The temporal language will usually be that generated by the connectives $U$ and $S$. The set of formulas is defined recursively to contain the atoms, $\top$ and $\bot$ and for formulas $A$ and $B$, we include $\neg A$ and $A \wedge B$ along with $U(A, B)$ and $S(A, B)$. $U(A, B)$ is read "until $A$, $B$" or "$B$ until $A$". Similarly $S$ is to be read as "since".
+
+Formulas are evaluated at points of the flow of time. The readings above suggest the semantics but more formally truth is defined recursively as follows. Suppose that, inductively, we have defined the truth of formulas $A$ and $B$ in a structure $(T, <, h)$ at all points $t$: now define
+
+$$\begin{aligned}
+(T, <, h) \models p(t) &\quad \text{iff} \quad t \in h(p), \text{ for } p \text{ atomic} \\
+(T, <, h) \models \top(t) & \\
+(T, <, h) \not\models \bot(t) & \\
+(T, <, h) \models (\neg A)(t) &\quad \text{iff} \quad (T, <, h) \not\models A(t) \\
+(T, <, h) \models (A \wedge B)(t) &\quad \text{iff} \quad (T, <, h) \models A(t) \text{ and } (T, <, h) \models B(t) \\
+(T, <, h) \models U(A, B)(t) &\quad \text{iff} \quad \text{there is } s > t \text{ such that} \\
+&\qquad (T, <, h) \models A(s) \text{ and} \\
+&\qquad \text{for all } u \in T, \text{ if } t < u < s \\
+&\qquad \text{then } (T, <, h) \models B(u) \\
+(T, <, h) \models S(A, B)(t) &\quad \text{iff} \quad \text{there is } s < t \text{ such that} \\
+&\qquad (T, <, h) \models A(s) \text{ and} \\
+&\qquad \text{for all } u \in T, \text{ if } s < u < t \\
+&\qquad \text{then } (T, <, h) \models B(u)
+\end{aligned}$$
+
+Often, because of the symmetry of their definitions, results involving $U$ and/or $S$ have *dual* or *mirror* versions which can be stated and proven by simply swapping $U$ and $S$ for each other and swapping $<$ and $>$ in the original. We mention these frequently but, of course, never bother to prove them.
+
+As usual we have all sorts of abbreviations: the classical ones $\vee$, $\to$ and $\leftrightarrow$ along with
+
+| Abbreviation | Definition | Reading |
+|---|---|---|
+| $FA$ | for $U(A, \top)$ | $A$ will be true |
+| $PA$ | for $S(A, \top)$ | $A$ was true |
+| $GA$ | for $\neg F \neg A$ | $A$ will always be true |
+| $HA$ | for $\neg P \neg A$ | $A$ was always true |
+| $K^+ A$ | for $\neg U(\top, \neg A)$ | $A$ will be true arbitrarily soon |
+| $K^- A$ | for $\neg S(\top, \neg A)$ | $A$ was true arbitrarily recently |
+
+We are going to axiomatise the temporal formulas from this language which are valid in all structures whose flow of time is the real numbers: i.e. we are to axiomatise
+
+$$\{A \mid \text{for all valuations } h, \text{ for all } t \in \mathbb{R}, (\mathbb{R}, <, h) \models A(t)\}.$$
+
+Our system **US/R** has the usual rules for a temporal logic: i.e. modus ponens, generalizations and substitution:
+
+$$\frac{A, \quad A \to B}{B} \qquad \frac{A}{GA} \qquad \frac{A}{HA} \qquad \frac{A(q)}{A(q/B)}$$
+
+The axioms of **US/R** are:
+
+- all classical tautologies,
+- the six Burgess--Xu axioms
+
+$$G(p \to q) \to (U(p, r) \to U(q, r))$$
+
+$$G(p \to q) \to (U(r, p) \to U(r, q))$$
+
+$$p \wedge U(q, r) \to U(q \wedge S(p, r), r)$$
+
+$$U(p, q) \to U(p, q \wedge U(p, q))$$
+
+$$U(q \wedge U(p, q), q) \to U(p, q)$$
+
+$$U(p, q) \wedge U(r, s) \to U(p \wedge r, q \wedge s) \vee U(p \wedge s, q \wedge s) \vee U(q \wedge r, q \wedge s)$$
+
+along with each of their duals,
+
+- plus axioms for density and no end points:
+
+$$K^+ \top, \quad K^- \top, \quad F\top \quad \text{and} \quad P\top$$
+
+- and the three important ones:
+
+$$\text{Prior-U:} \quad U(\top, p) \wedge F\neg p \to U(\neg p \vee K^+(\neg p), p)$$
+
+$$\text{Prior-S:} \quad S(\top, p) \wedge P\neg p \to S(\neg p \vee K^-(\neg p), p)$$
+
+$$\text{Sep:} \quad K^+ p \wedge \neg K^+(p \wedge U(p, \neg p)) \to K^+(K^+ p \wedge K^- p)$$
+
+The six Burgess--Xu axioms first appeared in [2] along with another one. In [18] we are rid of the extra one. We will see in section 5 that, along with the density and no-end points axioms, they enforce the existence of a rational-flowed model. It is clear that all these axioms are valid over the reals.
+
+Prior-U and Prior-S are loosely based on the Prior axioms (see for example [8]) for the language with $F$ and $P$ but, as we will see in section 6, are more powerful. They have to do with gaps in a structure. In this paper we identify *gaps* in a structure with supremum-less non-empty proper initial segments of the flow. We will assume that gaps fit into the order at the appropriate place. An order is *Dedekind complete* if it has no gaps. The Prior axioms enforce a *definably* Dedekind complete model. This means that there may be gaps in the order but that, as we make precise later, you wouldn't know that just looking at the behaviour of temporal formulas. The axioms are valid in structures over the reals because there are no gaps at all so no definable ones.
+
+Axiom Sep is based on Sep in [8] but is a neater version developed by Ian Hodkinson in [12]. It is associated with the *separability* of $\mathbb{R}$, i.e. with the fact that $\mathbb{R}$ has a countable dense suborder. We investigate this axiom in more detail in section 7 and defer proving its validity in $\mathbb{R}$ until lemma 10 there.
+
+Putting all these individual validity results together in the usual easy induction (see for example [8]) on the lengths of proofs gives us
+
+**Lemma 1.** *The system **US/R** is sound for the semantics over real flows of time.*
+
+Now for completeness. Often, (for example in [2] and [18]), an axiom system is taken to be complete for some semantics if and only if each formula consistent with the system is satisfiable. This is in fact what we are able to do with our system and the semantics of real-flowed time. However, completeness can be taken to mean something stronger. Let us be more precise but we will be brief because the same issues arose and were discussed ably in the very similar circumstances in [8].
+
+We say that a set of formulas is **US/R**-*consistent* if and only if we can not prove $\bot$ from it using the axioms and rules of **US/R**. A set of formulas $\Gamma$ is *satisfiable* in our semantics if and only if there is some valuation $h$ of atoms in $\mathbb{R}$ and some point $r \in \mathbb{R}$ such that for all formulas $A \in \Gamma$, $(\mathbb{R}, <, h) \models A(r)$.
+
+Any system is *strongly complete* if and only if every consistent set of formulas is satisfiable. It is *weakly* (or *finitely*) *complete* if and only if every finite consistent set of formulas, or equivalently every single consistent formula, is satisfiable.
+
+As shown in [8], not only are these notions not equivalent, but in the case of $U$ and $S$ over the reals, there can be no strongly complete axiomatization (at least not one in which the inference rules have finite premises). This is because the compactness property fails for the $\{U, S\}$ logic for $\mathbb{R}$ i.e. there is an unsatisfiable set of formulas, each finite subset of which is satisfiable.
+
+We are able to give a weak completeness result for the logic. In the next section we outline our strategy and finally, in section 9 we state and prove the result.
+
+## 3 IRR
+
+There does already exist a weakly complete axiomatization of $U$ and $S$ over the reals. However Gabbay and Hodkinson in [8] use an extra rule as well as the usual four inference rules along with their axioms. Let us try and argue the worth of presenting yet another axiomatization just so that we do not have to use this *irreflexivity rule* (IRR).
+
+Recall that a binary relation $<$ on a set $T$ is irreflexive if we do not have $t < t$ for any $t \in T$.
+
+Gabbay introduced IRR in [6]. It allows
+
+$$\frac{q \wedge H(\neg q) \to A}{A} \quad \text{provided that the atom } q \text{ does not appear in } A.$$
+
+A short proof (see for example [8], Proposition 2.2.1) establishes that, if $\mathcal{I}$ is a class of irreflexive partial orders, then IRR is a valid rule in the class of all structures whose underlying flow of time comes from $\mathcal{I}$.
+
+The original motivation for the use of this rule concerned the impossibility of writing an axiom to enforce irreflexivity of flows (see for example [1]). The usual technique in a completeness proof is to construct some model of a consistent formula and then turn it into an irreflexive model. IRR allows immediate construction of an irreflexive model. This is because it is always consistent to posit the truth of $q \wedge H(\neg q)$ (for some 'new' atom $q$) at any point as we do the construction.
+
+The benefits of this rule for doing a completeness proof are enormous. Much use of it is made in [7]. Venema [16] gives a long list of results proved using IRR or similar rules: examples include branching time logics [19] and two-dimensional modal logics [14].
+
+In fact, the major benefit of IRR is a side-effect of its purpose. Not only can we construct a model which is irreflexive but we can construct a model in which each point has a unique name (as the first point where a certain atom holds). To see how this helps, and because our proof follows theirs closely in some parts, let us look at the completeness proof in [8].
+
+Most of the axioms of [8] are the axioms for $F$ and $P$ over the rationals. This is because, if you have a unique name of the form $r \wedge H(\neg r)$ for each point then their axiom
+
+$$(UU) \quad r \wedge H(\neg r) \to [U(p, q) \leftrightarrow F(p \wedge H[Pr \to q])]$$
+
+and its dual (SS) essentially define $U$ and $S$ in terms of $F$ and $P$.
+
+Thus [8] can use the usual Henkin construction with $F$ and $P$ to find a rational-flowed model for their consistent formula, while because we want to start in the same way, but in the absence of names, $U$ and $S$ are not definable in terms of $F$ and $P$, the more complicated $U$ and $S$ construction of Burgess [2] (see section 4) is necessary for us.
+
+Ensuring definable Dedekind completeness can be done by the Prior axioms,
+
+$$FGq \wedge F\neg q \to F(Gq \wedge \neg PGq)$$
+
+and its dual, if names are available, or by our stronger Prior-U and Prior-S if not.
+
+Both [8] and us then arrive at a model of the formula, which has a rational flow of time but which is definably Dedekind complete and in which all substitution instances of the respective Sep axioms are valid.
+
+Both proofs then finish off by applying a result of Kees Doets in [4] for finding a real-flowed model of the formula. We do this in section 8. An important prerequisite for using this theorem is showing that the equivalence classes of a certain type of definable equivalence relation do not end at gaps. This is much the same as showing definable Dedekind completeness for sets defined by a first-order formula with one parameter. This follows immediately if your parameter has a temporal name but as will be seen in section 6, working nameless we have to work much harder.
+
+Now the IRR rule, as well as making the completeness proof easier, also arguably makes proving from a set of axioms easier. This is because, being able to consistently introduce names for points into an axiomatic proof makes the temporal system more like the perhaps more intuitive first-order one. There are none of the problems such as with losing track of "now".
+
+So given all these recommendations one is brought back to the question of why is it useful to do away with IRR. The growing body of theoretical work (see for example [16], [17]) trying to formalise conditions under which the orthodox (to use Venema's term) system of rules needs to be augmented by something like IRR can be justified as follows:
+
+- adding a new rule of inference to the usual temporal ones is arguably a much more drastic step than adding axioms and it is always important to question whether such additions are necessary;
+- (as pointed out by the referee), in making an unorthodox derivation one may need to go beyond the original language in order to prove a theorem, which makes such axiomatizations less attractive from the point of view of 'resource awareness';
+- (as argued in [17]), using an atom to perform the naming task of an individual variable in predicate logic is not really in the spirit of temporal/modal logic; and
+- (also as mentioned in [17]), unorthodox axiomatizations do not have some of the nice mathematical properties that orthodox systems have.
+
+This paper contributes an interesting and potentially useful negative example to these investigations.
+
+## 4 The Burgess--Xu Result
+
+Our task in this section is to find a rational flow model of our formula and, in particular, one in which all substitution instances of the Prior axioms and Sep are valid. Fortunately, most of the work has been done already. Burgess in [2] proves soundness and completeness of a set of axioms for linear time. Xu, in [18], simplifies the set of axioms and the proof.
+
+**Theorem 1.** *The Burgess--Xu system (the six axioms and duals, propositional tautologies and the four rules) is sound and strongly complete for the US logic on the class of all linear frames.*
+
+Although neither Burgess nor Xu mention *strong* completeness their proofs do establish that. This is just as well for we need strong completeness. For details of the proof see [2] and comments on it in [18]. Soundness is just the usual easy induction: let us outline the basic idea of the completeness part.
+
+We use the rationals as a base board on which we successively place whole maximal consistent sets of formulas as points which will eventually make up a flow of time.
+
+Starting with our given maximal consistent set placed at zero say, we look for counter-examples to either of the following rules:
+
+1. if $U(A, B) \in \Gamma$ placed at $t$ then there should be some $\Delta$ placed at $s > t$ with $A \in \Delta$ and so that theories placed in between $t$ and $s$ all contain $B$
+
+2. if $\neg U(A, B) \in \Gamma$ placed at $t$ and $A \in \Delta$ placed at $s > t$ then there should be $\Xi$ placed somewhere in between with $\neg B \in \Xi$.
+
+By carefully choosing a single maximal consistent set to right the counter-example and satisfy some other stringent conditions kept holding throughout the construction, we can ensure that the particular tuple $(t, U(A, B))$ or $(t, s, \neg U(A, B))$ never again forms a counter-example. Because there are only countable numbers of points and formulas involved, in the limit we can effect that we end up with a counter-example-free arrangements of sets. This is so nice that if we define a valuation on the order of sets by
+
+$$M \models p(\Gamma) \quad \text{iff} \quad p \in \Gamma$$
+
+then the flow of time consisting of those sets becomes a structure $M$ satisfying, for all $\Gamma \in M$, for all $A \in \Gamma$,
+
+$$M \models A(\Gamma) \quad \text{iff} \quad A \in \Gamma.$$
+
+This is thus our model.
+
+Let us see how we can use this theorem.
+
+Now suppose that we have a set $\Gamma$ of formulas consistent with the system **US/R**. Without loss of generality $\Gamma$ is maximal consistent.
+
+By the theorem, since $\Gamma$ is also consistent with the Burgess--Xu system, there will be a linear model for $\Gamma$: i.e. a linear structure in which there is a point, $t$ say, at which all the formulas in $\Gamma$ hold.
+
+By looking at Burgess's construction (or using Lowenheim--Skolem) we can suppose that the structure is countable.
+
+Since $F\top \wedge GF\top$ and its mirror must be true at $t$, the order does not have end points. Since $H(K^- \top \wedge K^+ \top) \wedge (K^- \top \wedge K^+ \top) \wedge G(K^- \top \wedge K^+ \top)$ is true at $t$, the order is dense. Thus, by Cantor's theorem, the underlying flow of time may as well be the rationals, $t$ may as well be 0.
+
+Because it says so in $\Gamma$, all the substitution instances of the other axioms hold everywhere so we have...
+
+**Corollary 1.** *For every **US/R**-consistent set $\Gamma$ of formulas, there is a temporal structure $M$ such that*
+
+1. *the flow of time of $M$ is the rationals,*
+2. *for all $A \in \Gamma$, $M \models A(0)$ and*
+3. *all substitution instances of the axioms Prior-U, Prior-S and Sep are valid in $M$.*
+
+## 5 Expressive and Dedekind Completeness
+
+An important technique in our proof is that of switching between the temporal language and an associated first-order one. Let us introduce the concepts and results needed.
+
+We will associate a temporal language with a first-order one called the *monadic* language because it is built from a signature containing only 1-ary predicate symbols along with the binary $<$ predicate symbol. Each atom $p$ in the temporal language corresponds to a predicate symbol $P$. We can make a temporal structure $(T, <, h)$ into a first-order structure in the monadic language, by interpreting $<$ as $<$ and each $P$ as being true of exactly those points in $h(p)$.
+
+If, as will later be the case, we restrict to a temporal language with a finite number of atoms then the monadic signature is finite but otherwise it will contain a countable number of 1-ary predicate symbols.
+
+It turns out, unsurprisingly, that the temporal formula $U(p, q)$ is true at exactly those points in a structure where the monadic formula
+
+$$\psi_{U(p,q)}(t) = \exists s > t(P(s) \wedge \forall u(t < u \wedge u < s \to Q(u)))$$
+
+holds. A simple induction, (see for example [9]), establishes that all temporal formulas $A$ have a corresponding monadic formula $\psi_A$ in one free variable such that, for all structures $(T, <)$, for all valuations $h$, for all $t \in T$,
+
+$$(T, <, h) \models A(t) \quad \text{iff} \quad (T, <, h) \models \psi_A(t).$$
+
+We call $\psi_A$ the *table* of $A$. The induction generalises to show that provided the connectives of the language have first-order tables, as $U$ and $S$ do, then all the temporal formulas of any temporal language have first-order tables.
+
+One may ask whether all first-order formulas with one free variable can be got as tables of temporal formulas. This, of course, depends on the temporal connectives used in the language, but it also depends on what class of structures we restrict attention to. Let us be more precise. Suppose that $\mathcal{S}$ is a class of temporal structures. We say that a temporal language is *expressively complete* over $\mathcal{S}$ if and only if for each monadic formula $\phi(t)$ with one free variable, there is a temporal formula $A$ of the temporal language such that for all $(T, <, h) \in \mathcal{S}$, for all $t \in T$,
+
+$$(T, <, h) \models \phi(t) \quad \text{iff} \quad (T, <, h) \models A(t).$$
+
+Note the uniformity of the translation over the whole of $\mathcal{S}$.
+
+One of the first expressive completeness results was that of Kamp's in [13]. Kamp showed expressive completeness for (the language with) $U$ and $S$ over the class of all structures whose underlying flow of time is Dedekind complete.
+
+As shown in [9], $U$ and $S$ are still expressively complete even if we allow isolated gaps in the structure but as has been known for a while, and as is shown in [9], lemma 3, over the whole class of structures whose underlying flow of time is linear, $U$ and $S$ are not expressively complete. The problem is intimately connected with the possibility of definable gaps. Given a temporal formula $A$, we can define a connective $\gamma^+$ by saying that $\gamma^+(A)$ holds exactly when $A$ remains true for a while after now but only up until a gap after which $A$ is arbitrarily soon false. If $\gamma^+(A)$ is true anywhere we call the indicated gap an $A$ *left gap* and more generally a *definable gap*. Dually there is $\gamma^-$ and *right gaps*.
+
+The connective $\gamma^+$ has a first-order table, in fact it can be defined in terms of $U$ by
+
+$$\gamma^+(A) \leftrightarrow (U(\neg A, \top) \wedge U(A, A) \wedge \neg U(\neg A, A) \wedge \neg U(\neg U(\top, A), A)).$$
+
+We can go on to define the closely related *isolated gap* connective $\gamma_0^+$ by writing $\gamma_0^+(A)$ whenever $\gamma^+(A)$ holds but after the gap $\gamma^+(A)$ doesn't hold for a while. In [9], lemma 3, this is shown to be not expressible in terms of $U$ and $S$ but, as is not hard to do, it can be shown to have a first-order table.
+
+In fact by adding $\gamma_0^+$ and $\gamma_0^-$ to $U$ and $S$ we end up with a language which is expressively complete over the class of all structures with linear flows. However, such a language had been achieved before when the so called Stavi connectives $U'$ and $S'$ were defined in [10]. $U'(A, B)$ holds if $B$ is true from now until a gap in time after which $B$ is arbitrarily soon false but after which $A$ is true for a while: $U'(A, B)$ is as pictured
+
+$$\underset{\text{now}}{\longleftarrow} \quad B \quad \overset{\longleftarrow \cdots}{\underset{\text{a gap}}{\longleftarrow}} \quad \neg B \quad () \quad A$$
+
+$S'$ is defined dually. Despite involving a gap, $U'$ is in fact a first-order connective and its table is given by:
+
+$$U'(p, q) \equiv \exists s\ t < s \wedge \forall u\ (t < u < s \to$$
+$$\quad ([\neg \exists v(u < v \wedge \forall w(t < w < v \to q(w)))]$$
+$$\quad \vee [\forall w(u < w < s \to p(w)) \wedge \exists v(t < v < u \wedge \neg q(v))]))$$
+$$\quad \wedge \exists u[t < u < s \wedge \neg q(u)]$$
+$$\quad \wedge \neg \exists u[t < u < s \wedge \forall v(t < v < u \to q(v))]$$
+
+We have
+
+**Theorem 2.** *The language with $\{U, S, U', S'\}$ is expressively complete for the class of structures with linear flow of time.*
+
+This result is mentioned in [10] without proof. The first published proof -- a direct proof -- is in [9]. In [11] is a proof using the separation technique of Gabbay (see [7]).
+
+Obviously there is some connection between definable gaps and our Prior axioms. Call a linear temporal structure a *Prior structure* if it satisfies all substitution instances of Prior-U and Prior-S. It is easy to see that then there are no definable gaps. Note that this result does not hold for the original Prior axioms in the language of $F$ and $P$. It is now not hard to prove the following (see [8], proposition 4.2).
+
+**Theorem 3.** *The language with $U$ and $S$ is expressively complete for the class of Prior structures.*
+
+**Proof.** By the expressive completeness of $\{U, S, U', S'\}$ over all linear structures, it suffices to prove that for any $\{U, S, U', S'\}$-formula $B'$, there is a $\{U, S\}$-formula $B$ such that $B' \leftrightarrow B$ is valid in all Prior structures.
+
+This can be achieved by a simple induction on the construction of such $B'$. The cases of atoms and $\wedge$, $\neg$, $U$ and $S$ are immediate. Let us look at $U'(A, B)$ when, by induction, we can suppose that $A$ and $B$ are $US$-formulas. We claim that $U'(A, B) \leftrightarrow \bot$ is valid in all Prior structures.
+
+Suppose for contradiction that $M \models U'(A, B)(t)$ in some Prior structure $M$. Thus $B$ holds for a while up until a gap after which $\neg B$ is true arbitrarily soon. By Prior-U applied to $B$ we have $M \models U(\neg B \vee K^+(\neg B), B)(t)$ which is the contradiction.
+
+The case of $S'$ is similar. $\blacksquare$
+
+## 6 No gaps between equivalence classes
+
+We know that the Prior axioms ensure that there will not be any definable gaps in a model. To show that our model can be made into a model over the reals we actually need a stronger result. We need to know that a certain type of definable equivalence relation also does not have its equivalence classes ending at gaps. First some definitions.
+
+The *intervals* of a structure $M$ are just the convex subsets of $M$ and we will use the usual $(a, b]$, etc., notation for them.
+
+If $S$ is a subset of the domain of a temporal structure $M$ (usually $S$ will be an interval here) then we write $M \mid S$ for the temporal structure with domain $S$, ordering as in $M$ and interpretation of atoms just the restrictions of the interpretations in $M$ to $S$. $M \mid S$ is called the *substructure* of $M$ with domain $S$.
+
+Suppose that $\varepsilon(x, y)$ is a monadic formula with two free variables $x$ and $y$. We say that $\varepsilon$ defines a *contemporaneous equivalence relation* if and only if on any temporal structure $M$, if we define the binary relation $\sim_M$ by
+
+$$a \sim_M b \quad \text{iff} \quad M \models \varepsilon(a, b),$$
+
+then
+
+- $\sim_M$ is an equivalence relation on the domain of $M$,
+- $\sim_M$ partitions $M$ into intervals and
+- $\varepsilon$ depends only on contemporary properties: i.e. for all $a, b \in M$,
+$$M \models \varepsilon(a, b) \quad \text{iff} \quad M \mid [a, b] \models \varepsilon(a, b).$$
+
+A binary relation $\sim$ on a structure $M$ is called a *contemporaneous equivalence relation* if and only if it is defined as $\sim_M$ by such an $\varepsilon$.
+
+We prove that no so defined contemporaneous equivalence relation has equivalence classes ending at gaps in any Prior structures.
+
+Given such an $\varepsilon$, define $\rho(x)$ as
+
+$$\exists y > x\ \neg\varepsilon(x, y) \wedge \neg\exists z(x < z \wedge \varepsilon(x, z) \wedge \forall y(x < y < z \to \varepsilon(x, y)))$$
+
+This says that $x$'s $\sim$-class ends in a gap on the right. Dually we can define $\lambda(x)$ about left ends. Note that the end of the whole structure is not a gap and that $\rho$ will not hold of points in the last $\sim_M$ class (if there is such a class).
+
+Now by the expressive completeness of $U$ and $S$ there is temporal $R$ true in any Prior structure exactly where $\rho(x)$ is.
+
+**Lemma 2.** *Suppose that $\varepsilon$ defines the contemporaneous equivalence relation $\sim_N$ on any structure $N$.*
+
+*Then there is a $US$-formula $R$ which holds in any Prior structure $N$ exactly at those points whose $\sim_N$-class ends in a gap on the right.*
+
+Dually $L$.
+
+Now suppose that $M$ is a Prior structure and that $\sim = \sim_M$ is a contemporaneous equivalence relation defined by $\varepsilon$. Although we will only need to consider densely ordered $M$ for the real numbers proof, it will be seen that we prove the result for any Prior structure.
+
+**Lemma 3.** *The maximal intervals in which $R$ holds are open intervals which, if bounded, have elements of $M$ as their (excluded) end points.*
+
+**Proof.** Suppose that $R$ holds at $t \in M$. Clearly $\rho$ holding at $t$ implies that $R$ will hold for a while after $t$: up until a gap in fact. Thus $t$ is in a non-singleton interval of $R$. It is possible that $R$ holds for ever after $t$.
+
+If $R$ does not hold for ever after $t$ then Prior-U applied to $R$ implies that $M$ contains a last point of this stretch of $R$ (plainly impossible given $\rho$) or a first point of $\neg R$. This is as claimed.
+
+Now look to the left of $t$. Looking back from just after $t$ we can use Prior-S and see that either $R$ is true always before $t$, there is a last point of $\neg R$ just before this stretch of $R$ or there is no last point of $\neg R$, but instead a first point of $R$. We must rule out the third case. Note that in the case of $M$ not being dense there may be both a last point of $\neg R$ and a first point of $R$: this possibility, subsumed in the second case above, is acceptable in that it implies an excluded end point.
+
+Suppose, for contradiction, that $s$ is this first point of $R$ so that $M \models (R \wedge K^-(\neg R))(s)$. The $\sim$-class containing $s$ can not stretch for ever into the future for then it does not end in a gap. Neither can it stretch to the end of the maximal interval of $R$ as it would again not end at a gap.
+
+Thus there are other classes in this interval continuing on the other side of the gap which ends $s$'s. And for a while after the gap $R$ continues to be true: we have not reached the end of the interval yet. Thus $R \wedge K^-(\neg R)$ does not hold at the left hand end of any of these classes.
+
+Let $B$ be the temporal formula saying that the $\sim$-class we are now in begins with a point satisfying $R \wedge K^-(\neg R)$. $B$ exists by expressive completeness. $B$ holds in $s$'s class up to the gap and is false arbitrarily soon after the gap. This contradicts Prior-U applied to $B$. $\blacksquare$
+
+**Lemma 4.** *There is no last class and no first class in any maximal interval of $R$.*
+
+**Proof.** The last class in a maximal interval of $R$ wouldn't end in a gap.
+
+By expressive completeness, the formula
+
+$$\rho(x) \wedge \forall y < x\ (y < z < x \wedge \varepsilon(y, z))$$
+
+has a temporal equivalent which is true only in the first classes of maximal intervals of $R$. If there is a first class then no immediately subsequent classes satisfy this and so we have this formula holding up to a gap and false arbitrarily soon afterwards. This contradicts Prior-U. $\blacksquare$
+
+**Lemma 5.** *If a temporal formula holds somewhere in one $\sim$-class in a maximal interval of $R$, then it holds somewhere in each $\sim$-class in the interval.*
+
+*Furthermore, each pair of the $\sim$-classes in a maximal interval of $R$ are elementarily equivalent (taken as substructures of $M$).*
+
+**Proof.** For a contradiction to the first statement, suppose that $A$ holds in one class but not anywhere in some other class in the same maximal interval of $R$.
+
+Using expressive completeness and $\varepsilon$, find $B$ which is true at points only if $A$ occurs somewhere in their $\sim$-class. By using $\neg B$ instead if necessary we may suppose that we have $B$ holding throughout one $\sim$-class in our maximal interval of $R$ and false throughout a later class. Choose a point $t$ in this former class in which $B$ holds. $B$ holds in the whole of a class if it is true anywhere at all in the class so it continues for a while after $t$. By Prior-U there is either a last point where $B$ holds after $t$ (not possible as $B$ must continue for a while) or a first point $s > t$ where $\neg B \wedge K^-(B)$ holds.
+
+So $s$ must be the left hand end point of its $\sim$-class. Look at the gap at the right hand end of this class. We can not have $B$ arbitrarily soon after the gap because of Prior-U. Thus for a while after this class $B$ stays false.
+
+Let $C$ be the temporal formula saying that we are now in a class whose left hand end point is also in the class and at that point $K^-(B)$ holds. Now $C$ is true in $s$'s class but false afterwards contradicting Prior-U.
+
+Now consider the second statement in the lemma. Given a monadic sentence $\phi$, we relativise it by restricting quantifiers to where $\varepsilon(x, -)$ holds. We get a formula $\phi'$ of one free variable. By expressive completeness this is equivalent to a temporal formula. This is true exactly throughout $\sim$-classes which model $\phi$. Then, by the first part of the lemma, it can't be true somewhere and false elsewhere in the interval. $\blacksquare$
+
+We define a *bad point* to be where $R \vee L$ holds. We define a *bad interval* as a non-empty and maximal one in which $R \vee L$ holds throughout.
+
+**Lemma 6.** *Bad points only occur in non-singleton bad intervals.*
+
+*In any bad interval both $R$ and $L$ hold throughout. Any bad interval, if bounded, has excluded end points in $M$ (neither $R$ nor $L$ holds at these end points).*
+
+**Proof.** We first show that $L$ holds wherever $R$ does. Suppose for contradiction that we have a maximal interval of $R$ in which $L$ fails to hold somewhere. So $\neg L$ holds throughout at least one $\sim$-class. By the definition of $L$, there are two cases. Either this particular $\sim$-class is one which includes its left hand end point or it is one which begins just after some point of $M$. The class can not be unbounded below for then it would be first in this bad interval.
+
+In fact we can not have a class beginning just after a point $r$ of $M$. Since the class can not be first in the bad interval $r$ itself must be in a $\sim$-class in the bad interval. But $r$'s class can not end in a gap on the right when $r$ must be its right hand end point.
+
+Thus we have a class in the bad interval which includes its left hand end point. It's not hard to use the previous result to show that throughout the bad interval all classes include their left hand end points.
+
+Let $B$ be a temporal formula true at times which are not left hand end points of their $\sim$-classes. $B$ is then true continuously in any class from just after the left hand end point up until the gap at the right hand end point. $B$ must be false arbitrarily soon after the gap contradicting Prior-U.
+
+Using mirror images of the above and previous results we get our proof. $\blacksquare$
+
+**Lemma 7.** *If a formula $B$ is true for a while at the start of a $\sim$-class in a bad interval then it holds throughout the bad interval. Similarly at the end.*
+
+*If a formula is true anywhere in a bad interval it is true arbitrarily close to each end of each class in the interval.*
+
+**Proof.** Suppose that $\gamma < \delta$ are gaps and that $(\gamma, \delta)$ is a $\sim$-class within a bad interval.
+
+Suppose that $B$ holds for a while after $\gamma$ but that $\neg B$ holds somewhere in the bad interval. By lemma 5, $\neg B$ also holds somewhere in $(\gamma, \delta)$.
+
+Using $\varepsilon$ and expressive completeness we can find a temporal formula $C$ which is true only at points within a $\sim$-class after some $\neg B$ in that class. $C$ will be false for a while at the beginning of each class and then true for a while at the end.
+
+In fact $C$ is true for a while up to the gap at the end and false arbitrarily soon after the gap. This contradicts Prior-U.
+
+Applying the above to the negation of a formula gives us the second part. $\blacksquare$
+
+Let us see what happens if we interfere with $M$ by replacing a whole bad interval by one of its $\sim$-classes.
+
+Let $Q^-$ be the subset of the domain of $M$ being all that precedes the bad interval. Let $Q^+$ be all that follows. Either or both of these may be empty. Let $Q_0$ be the bad interval itself and $I$ be any one of its $\sim$-classes.
+
+We look at $N$, the substructure of $M$ whose domain is just $Q^- \cup I \cup Q^+$.
+
+**Lemma 8.** *For all temporal formulas $A$, for all $t \in N$,*
+
+$$M \models A(t) \quad \text{iff} \quad N \models A(t)$$
+
+**Proof.** We proceed by induction on the construction of $A$. The cases of atomic and boolean $A$ are immediate. Now consider $U(A, B)$: $S(A, B)$ is similar.
+
+$(\Rightarrow)$: Consider then when $M \models U(A, B)(t)$ with $t \in N$. Say that $s \in M$, that $t < s$, that $M \models A(s)$ and for all $u \in M$, if $t < u < s$ then $M \models B(u)$.
+
+There are several cases.
+
+1. $t < s \in Q^-$: Apply the induction hypothesis to $A$ and $B$ at $s$ and at all points in between.
+
+2. $t \in Q^-$ and $s \in Q_0$: $A$ holds somewhere in $Q_0$ so somewhere in $I$ (by lemma 7). So holds there in $I$ in $N$. $B$ holds for a while into $Q_0$ so, by lemma 7, holds everywhere in $Q_0$. By the induction hypothesis, $B$ holds everywhere in $I$ in $N$. Hence result.
+
+3. $t \in Q^-$ and $s \in Q^+$: We can deduce that $B$ holds throughout $I$ in both $M$ and $N$ and get the result.
+
+4. $t < s \in I$: Straightforward use of inductive hypothesis.
+
+5. $t \in I$ and $s$ later in $Q_0$: Again by lemma 7 we have $B$ true throughout $I$ in $M$ and so in $N$. Since $A$ is true somewhere in $Q_0$ in $M$, lemma 7 tells us that $A$ is true arbitrarily close to the end of $I$ in $M$ and so in $N$. This gives us our result.
+
+6. $t \in I$ and $s \in Q^+$: $B$ is true throughout $I$ and we have our result.
+
+7. $t < s \in Q^+$: Apply induction hypothesis to $A$ and $B$ at $s$ and at all points in between.
+
+$(\Leftarrow)$: Consider then when $N \models U(A, B)(t)$. Say that $t < s$, that $N \models A(s)$ and for all $u \in N$, if $t < u < s$ then $N \models B(u)$.
+
+Again there are several cases:
+
+1. $t < s \in Q^-$: Apply induction hypothesis to $A$ and $B$ at $s$ and at all points in between.
+
+2. $t \in Q^-$ and $s \in I$: $B$ holds from $t$ up until the end of $Q^-$ in both $M$ and $N$. $B$ holds at the beginning of $I$ in $N$ and so in $M$. By lemma 7 $B$ holds throughout $Q_0$. $A$ holds in $I$ in $N$ and so in $M$ and we have our result.
+
+3. $t \in Q^-$ and $s \in Q^+$: $B$ holds throughout $I$ in $N$ and so in $M$. Lemma 7 tells us $B$ holds throughout $Q_0$ in $M$.
+
+4. $t < s \in I$: Straightforward use of inductive hypothesis.
+
+5. $t \in I$ and $s \in Q^+$: $B$ is true throughout $I$ and we have our result.
+
+6. $t < s \in Q^+$: Apply induction hypothesis to $A$ and $B$ at $s$ and at all points in between. $\blacksquare$
+
+**Lemma 9.** *In fact there can't have been any bad points anyway.*
+
+**Proof.** By lemma 8, $R$ holds in $I$ in $N$.
+
+But by lemma 2, $R$ holds at a point in any Prior structure (not just $M$) if and only if the $\sim$-class of the point ends in a gap (where $\sim$ is the appropriate equivalence relation for the structure). And $N$ is a Prior structure: we still have all the instances of Prior-U/S continuing to hold as any counterexample point in $N$ is also one in $M$.
+
+By the contemporaneity of $\varepsilon$, $I$ as a subset of $N$, like $I$ as a subset of $M$, is all in one $\sim_N$-class. Could the class be bigger now?
+
+$R$ is true of this class so that it is bounded above amongst other things. Thus $Q^+$ is non-empty and by lemma 6 begins with a point $q$ say. Also by lemma 6 $\neg R$ holds at $q$ in $M$ and so in $N$. Clearly $q$ is not in the class of $I$ in $N$. Thus the class ends just before $q$.
+
+$R$ can not have been true in this class after all. $\blacksquare$
+
+Thus we have proven...
+
+**Theorem 4.** *Suppose that $\sim$ is a contemporaneous equivalence relation on a Prior structure $M$.*
+
+*Then the $\sim$-classes do not end at gaps.*
+
+## 7 Separability
+
+Before bringing the axiom Sep into the proof, we might as well first discharge the promise of a validity result for it. We use a lemma (K2) from [12] (based on a result of Doets's, see also [8] Proposition 4.3) to establish its validity over real flows of time.
+
+**Lemma 10.** *Axiom Sep is valid in the class of all structures with real flow.*
+
+**Proof.** Suppose that $R = (\mathbb{R}, <, h)$ is a structure in which Sep does not hold at $t \in \mathbb{R}$. We can choose $s > t$ and put $S = h(p) \cap (t, s)$ so that
+
+- $S$ has neither a first nor a last point,
+- $S$ is relatively dense -- i.e. between any two points of $S$ is another -- and
+- for each $u \in (t, s)$, there is a (non-singleton) interval $I_u \subseteq (t, s)$ disjoint from $S$ but ending at $u$ on the left or right.
+
+By recursively choosing $\omega$ points from $S$ we can without loss of generality suppose that $S$ is countable and satisfies the three conditions above. As a suborder of $\mathbb{R}$, $S$ is thus isomorphic to $\mathbb{Q}$.
+
+Thus the order $(S, <)$ has an uncountable order $(G, <)$ of gaps. Define a map $r : G \to \mathbb{R}$ as follows: given a gap $\gamma$ in $S$, let $X = \{s \in S \mid s < \gamma\}$. Let $r(\gamma) = \sup(X)$ which exists as $X \subseteq \mathbb{R}$. Clearly $r$ is order preserving and one-to-one.
+
+Furthermore, if $\gamma < \delta$ are gaps of $S$ then there is $u \in S$ between them. Thus $t < r(\gamma) < u < r(\delta) < s$ and $u$ must also be strictly between $I_{r(\gamma)}$ and $I_{r(\delta)}$. These two intervals must be disjoint.
+
+Thus $\{I_{r(\gamma)} \mid \gamma \in G\}$ is an uncountable set of pairwise disjoint non-singleton intervals of $\mathbb{R}$. Impossible. $\blacksquare$
+
+It can be seen from the proof of the lemma that axiom Sep will also be valid in any structure whose underlying flow of time only has open intervals beginning with a copy of the reals. For example, structures with flow the 'long line' of [3], i.e. the open interval $(0, 1)$ followed by $\omega_1$ copies of $[0, 1)$, satisfy Sep. This is not surprising as Burgess and Gurevich show (in [3]) that the 'long line' is a model of the universal monadic theory of the reals but it does mean that Sep does not characterise separability. Nevertheless, returning to the trail of the completeness result and following proposition M8 of [12] we can show a sort of converse.
+
+**Theorem 5.** *Suppose that $M$ is a Prior structure which also satisfies every substitution instance of axiom Sep.*
+
+*Then for every contemporaneous equivalence relation $\sim$ such that $M / {\sim}$ is densely ordered, $M / {\sim}$ has a dense set of singletons.*
+
+**Proof.** From the preceding theorem 4 we know that the $\sim$-classes do not end at gaps. In fact the classes must be closed intervals: if a class has an excluded end point then this point is in the next class and this contradicts density.
+
+Suppose that $c < d$ in $M$ such that $c \not\sim d$. We must show that there is a singleton class between the classes of $c$ and $d$. Without loss of generality, $c$ is the right hand end point of its class.
+
+Let the temporal formula $C$ be true exactly at points who are the left hand end points of their classes. This includes the case of a singleton class. We use expressive completeness here.
+
+Now $C \wedge U(C, \neg C)$ never holds in $M$, so it certainly does not hold soon after $c$, and so $\neg K^+(C \wedge U(C, \neg C))$ holds at $c$.
+
+Also $K^+(C)$ holds at $c$ so we can use axiom Sep to deduce that $K^+(K^+ C \wedge K^- C)$ holds at $c$.
+
+Certainly $K^+ C \wedge K^- C$ must hold at some $e$ between $c$ and $d$ but clearly $e$ must be in a class of its own. $\blacksquare$
+
+## 8 Doets' Theorem
+
+To explain why we need such strange results as those proved in the last two sections let us state an ever so slightly stronger result to that of Doets 3.3.9 in his thesis [4].
+
+**Theorem 6.** *Suppose that $M$ is a temporal structure in a finite language whose flow of time is countable, dense and without end points.*
+
+*Suppose further that for any contemporaneous equivalence relation $\sim$ on $M$,*
+
+**D1):** *the $\sim$ classes do not end in gaps and*
+
+**D2):** *if $M / {\sim}$ is densely ordered, then $M / {\sim}$ has a dense set of singletons.*
+
+*Then for all $k < \omega$, there is a temporal structure with flow of time the real numbers satisfying the same monadic first-order sentences of quantifier depth at most $k$ as $M$ does.*
+
+Doets' result appeared in [4] and [5] but Burgess and Gurevich had used similar techniques in [3]. We closely follow the excellent expositions in [12] and [8] but our statement is slightly stronger and our proof a little different because we use our notion of contemporaneity.
+
+First some preliminaries. Fix $k \geq 2$.
+
+Here a *structure* will mean a linear temporal structure in our finite language.
+
+If $M$ and $N$ are structures we write $M \equiv_k N$ if and only if $M$ and $N$ agree on the truth of monadic sentences of quantifier depth at most $k$. Note that since $k \geq 2$, if $M \equiv_k N$ then $M$ and $N$ either both have a right (respectively left) hand end point or both do not have a right (resp. left) hand end point.
+
+Say that $M$ is *good* if and only if there is some $N \equiv_k M$ such that the flow of time of $N$ is an interval of the reals.
+
+Say that $M$ is *very good* if and only if, for all $t < u$ in $M$, the substructure $M \mid (t, u)$ is non-empty and good.
+
+Next a couple of results from [15]. First, if $(I, <)$ is a linear order then define the *lexicographic sum* $\Sigma_{i \in I} N_i$ of a collection $\{N_i \mid i \in I\}$ of structures $N_i$ by sticking copies of the $N_i$ together end to end in accordance with the ordering of $I$. Clearly, if some of the $N_i$'s are the same (for different $i$'s) then we need disjoint copies of their domains to form the sum's domain. If the index set is finite, we may use the $+$ notation for sums.
+
+It can be shown, using a simple game-theoretic argument (see [15] lemma 6.5) that lexicographic sums (over the same index set) of $k$-equivalent structures are themselves $k$-equivalent.
+
+We will make crucial use of a special type of sum. Now suppose that $S$ is a finite set of structures. Let $\pi : \mathbb{Q} \to S$ be any map such that for any $M \in S$, for any $r, s \in \mathbb{Q}$, there is $t \in \mathbb{Q}$ such that $r < t < s$ and $\pi(t) = M$. We call the structure $\Sigma_{t \in \mathbb{Q}} \pi(t)$ the *shuffle* over $S$. It can be shown to be well defined up to isomorphism.
+
+**Lemma 11** ([8] lemma 6.4). *If $N$ is countable and very good then it is good.*
+
+**Proof.** All one point structures are good and no bigger but finite structures are very good so suppose that $N$ has countably infinite domain. First the case when $N$ has no end points.
+
+Choose $a_i \in N$ for each integer $i$ such that $i < j$ implies $a_i < a_j$ and for all $t \in N$, there is $i, j$ such that $a_i < t < a_j$. Since $N$ is very good, $N \mid (a_i, a_{i+1})$ is good. Take $R_i \equiv_k N \mid (a_i, a_{i+1})$ with an open interval of $\mathbb{R}$ as a flow.
+
+Because $\equiv_k$ is preserved under lexicographic sums,
+
+$$N \equiv_k \Sigma_{i \in \mathbb{Z}}(N \mid \{a_i\} + R_i)$$
+
+and this latter has flow isomorphic to $\mathbb{R}$.
+
+Now if $N$ has one or two end points, then, by the very goodness of $N$, its interior does not have end points so we can use the above result and then use the lexicographic sum result to add appropriate singleton structures to the end(s). $\blacksquare$
+
+Define $\sim_M$ on a temporal structure $M$ by, for any $a, b \in M$, $a \sim_M b$ if and only if
+
+- $a = b$,
+- $a < b$ and $M \mid (a, b)$ is very good or
+- $b < a$ and $M \mid (b, a)$ is very good.
+
+**Lemma 12.** *There is a monadic formula $\varepsilon(x, y)$ which defines $\sim_M$ as a contemporaneous equivalence relation on the domain of any $M$.*
+
+*Furthermore, there is a finite set $\{\gamma_i \mid i = 1, \ldots, s\}$ of sentences such that $M$ is good if and only if $M \models \gamma_i$ for some $i$.*
+
+**Proof.** There are only finitely many logically inequivalent maximal consistent conjunctions $\gamma$ of sentences of quantifier depth $\leq k$. Any structure is a model of just one such $\gamma$, so if $N_1 \models \gamma$ then $N_2 \equiv_k N_1$ iff $N_2 \models \gamma$. Only some will be true of good structures -- $\{\gamma_1, \ldots, \gamma_s\}$ say. $N$ is good iff $N \models \bigvee_{i \leq s} \gamma_i$.
+
+Let $\gamma(z, t)$ be the result of relativising the quantifiers of $\bigvee_{i \leq s} \gamma_i$ to $(z, t)$, where $z$ and $t$ are new variables. Put $\gamma'(z, t) = \gamma(z, t) \wedge (\exists u(z < u < t))$.
+
+Then
+
+$$\varepsilon(x, y) = \quad x < y \to \forall z t(x < z < t < y \to \gamma'(z, t))$$
+$$\quad \wedge \quad y < x \to \forall z t(y < z < t < x \to \gamma'(z, t))$$
+
+is a formula defining $\sim_M$.
+
+To show that $\sim$ is contemporaneous, we first show that it is an equivalence relation. The difficult part is transitivity. Suppose that $a < b < c$ are in $M$ and $a \sim_M b$ and $b \sim_M c$. We show that $M \mid (a, c)$ is very good by showing that if $a < t < u < c$ then $M \mid (t, u)$ is non-empty and good.
+
+If $t$ and $u$ are on the same side of $b$ then this is clear. If $b = t$ or $b = u$ then use a lexicographic sum.
+
+So assume that $a < t < b < u < c$. Now $M \mid (t, b)$ and $M \mid (b, u)$ are both very good so are good. Choose $R_1 \equiv_k M \mid (t, b)$, $R_2 = M \mid \{b\}$ and $R_3 \equiv_k M \mid (b, u)$ each with flow a subset of $\mathbb{R}$. Then we know that $M \mid (t, u) \equiv_k R_1 + R_2 + R_3$ whose flow is isomorphic to $\mathbb{R}$ itself.
+
+That the $\sim_M$ classes are intervals follows from the fact that very goodness is inherited by substructures on subintervals.
+
+Contemporaneity then follows from the fact that the definition of $\sim_M$ is in terms of exactly the right substructure. $\blacksquare$
+
+**Lemma 13.** *For any structure $M$, if there are no $\sim_M$ classes ending at gaps then they are all closed intervals, i.e. of forms $(-\infty, +\infty)$, $(-\infty, b]$, $[b, +\infty)$ or $[b, b']$.*
+
+**Proof.** We know that the classes are intervals, we must rule out the case of a $\sim_M$-class ending at an excluded point of $M$. By considering mirrors we may as well, for contradiction, suppose that $b \in M$ is the right hand end point of $c$'s class $E$ but that $b \notin E$.
+
+Clearly $M \mid E$ is very good so that its substructure $M \mid (c, b)$ is too. This is the contradiction. $\blacksquare$
+
+Now let us turn to the proof of Doets' theorem.
+
+**Proof.** Without loss of generality, $k \geq 2$ as required by the preliminaries. If $M$ is good we are done -- any interval of the reals which does not include its end points is isomorphic to the reals itself. So suppose, for contradiction, that $M$ is not good. By lemma 11, we know that there are at least two $\sim$-classes.
+
+By lemma 13 and D1, we know that between any such classes is a third. Thus we have density of $M / {\sim}$ and D2 says that we have density of singleton classes.
+
+Now for any $\sim$-class $E \subseteq \mathbb{Q}$, $E$ is very good so $E$ is good. Thus there is $i = 1, \ldots, s$ such that $M \mid E \models \gamma_i$. The following choice makes sense.
+
+Choose $a < b$ from $M$ such that
+
+- $a \not\sim b$ and
+- $G = \{\gamma_i \mid i = 1, \ldots, s \text{ and } \exists\ \sim\text{-class } E \text{ strictly between } a \text{ and } b \text{ such that } M \mid E \models \gamma_i\}$ has minimal size.
+
+We are going to show that $M \mid (a, b)$ is very good thus producing a contradiction.
+
+So suppose that $a < c < d < b$. We need only show that $M \mid (c, d)$ is good. If $c \sim d$ then this follows from lemma 11. So suppose not.
+
+Since we have density of $M / {\sim}$, the classes in $I = \{E \mid E \text{ is a } \sim\text{-class strictly between } c \text{ and } d\}$ have order type $\mathbb{Q}$. Also, by minimality of $G$, all the $\gamma_i$'s in $G$ are satisfied densely in $I$. This means that as far as $\equiv_k$ is concerned $\bigcup I$ might as well be a shuffle as we now proceed to define.
+
+For each $\gamma \in G$, choose an $N_\gamma \models \gamma$ with flow of time an interval of $\mathbb{R}$. It is clear that for any $E \in I$, $M \mid E \equiv_k N_\gamma$ for one of the $\gamma$'s in $G$. Since lexicographic sums preserve $k$-equivalence we can choose $\sigma : \mathbb{Q} \to \{N_\gamma \mid \gamma \in G\}$ appropriately so that
+
+$$M \mid (\bigcup I) = \Sigma_{E \in I} M \mid E \equiv_k \Sigma_{q \in \mathbb{Q}} \sigma(q),$$
+
+the latter structure being a shuffle over $\{N_\gamma \mid \gamma \in G\}$.
+
+Another simple game argument can be used to show that we can mix into a shuffle many more copies of the same structures without disturbing $k$-equivalence. In particular we will use lots of copies of a degenerate structure. We know that there are singleton classes dense in $M / {\sim}$. Suppose that $\gamma_1$ say appears in $G$ and that $N \models \gamma_1$ only if $N$ has a one-point domain. Now extend $\sigma$ to $\sigma^* : \mathbb{R} \to \{N_\gamma \mid \gamma \in G\}$ by $\sigma^*(i) = N_{\gamma_1}$ if $i \in \mathbb{R} - \mathbb{Q}$. A game will show that $\Sigma_{q \in \mathbb{Q}} \sigma(q) \equiv_k \Sigma_{r \in \mathbb{R}} \sigma^*(r)$.
+
+Let $\mathcal{R} = \Sigma_{r \in \mathbb{R}} \sigma^*(r)$ and let $R$ be the flow of time of $\mathcal{R}$. It is clear that $R$ is dense and does not have end points.
+
+In fact $R$ is Dedekind complete. This is true because any subset bounded above intersects a last summand. Because the $\gamma_i$'s say so the summands themselves are closed intervals of the reals so the supremum of the set exists in this class.
+
+We can also show that $R$ has a countable dense subflow. For each $q \in \mathbb{Q}$ just include the point $\sigma^*(q)$ itself if $\sigma^*(q)$ is a singleton. Otherwise, $\sigma^*(q)$ is an interval and we can find a countable dense subset of this set to include. It turns out that since irrational $r$'s only have singleton $\sigma^*(r)$'s and since $\mathbb{Q}$ is dense in $\mathbb{R}$ we have our claim.
+
+But then $R$ being Dedekind complete, dense, without end points and with a countable dense subset must be isomorphic to the reals.
+
+This is enough to show that $M \mid (c, d)$ is good and finish our proof. Let $c'$ be the right hand end point of $c$'s $\sim$-class and $d'$ be the left hand end point of $d$'s. Thus
+
+$$M \mid (c, d) = M \mid (c, c'] + M \mid \bigcup I + M \mid [d', d).$$
+
+As $c \sim c'$, there is $X \equiv_k M \mid (c, c']$ with flow isomorphic to an interval of $\mathbb{R}$ and similarly there is $Y \equiv_k M \mid [d', d)$. Then
+
+$$M \mid (c, d) \equiv_k X + \mathcal{R} + Y$$
+
+and this latter has flow of time isomorphic to $\mathbb{R}$ as required. $\blacksquare$
+
+## 9 Completeness
+
+Finally
+
+**Theorem 7.** *The system **US/R** is sound and weakly complete for the semantics over structures with real flow.*
+
+**Proof.** Soundness has been proven in lemma 1.
+
+To show weak completeness, we suppose that we are given a formula $A_0$ consistent with **US/R**. We will find a model of it with flow of time the real numbers.
+
+First use Burgess--Xu Corollary 1 to furnish us with a structure $M_0$ such that
+
+1. the flow of time of $M_0$ is the rationals,
+2. $M_0 \models A_0(0)$ and
+3. all substitution instances of the axioms Prior-U, Prior-S and Sep are valid in $M_0$.
+
+By ignoring all the atoms which don't appear in $A_0$ we have a temporal structure $M$ from a finite language. $M$ is still a model of $A_0$.
+
+The flow of time of $M$ is countable, dense and without end points and D1 and D2 follow from the theorems 4 and 5. Thus we can apply Doets' theorem. Let $k$ be one greater than the quantifier depth of the table $\alpha(t)$ of $A_0$. We have a temporal structure $\mathcal{R}$, with flow of time the reals, satisfying the same monadic sentences of quantifier depth at most $k$ as $M$ does.
+
+Thus $\mathcal{R}$ like $M$ is a model of $\exists t\, \alpha(t)$. Say $b \in \mathcal{R}$ and $\mathcal{R} \models \alpha(b)$.
+
+We have $\mathcal{R} \models A_0(b)$ as promised. $\blacksquare$
+
+## 10 Using Contemporaneity on the Integers
+
+As another application of our main theorem 5 on Prior structures we shall use the technique to axiomatize the integers.
+
+The system **US/Z** has the orthodox rules as well as the following axioms:
+
+- all classical tautologies,
+- the six Burgess--Xu axioms along with each of their duals,
+- plus axioms for discreteness and no end points:
+  $U(\top, \bot)$ and $S(\top, \bot)$,
+- and suitable versions of Prior:
+
+$$\text{Prior-UZ:} \quad Fp \to U(p, \neg p)$$
+
+$$\text{Prior-SZ:} \quad Pp \to S(p, \neg p)$$
+
+**Theorem 8.** *The system **US/Z** is sound and weakly complete for the semantics of until and since over the integers.*
+
+**Proof.** The proof follows closely that for the reals. Soundness is clear. To show completeness we just put together the steps as before with the observation that we can build a Prior structure and then use the following counterpart of Doets' theorem. $\blacksquare$
+
+**Theorem 9.** *Suppose that $M$ is a temporal structure in a finite language whose flow of time is countable, discrete and without end points.*
+
+*Suppose further that for any contemporaneous equivalence relation $\sim$ on $M$, the $\sim$ classes do not end in gaps.*
+
+*Then for all $k < \omega$, there is a temporal structure with flow of time the integers satisfying the same monadic first-order sentences of quantifier depth at most $k$ as $M$ does.*
+
+**Proof.** First some preliminaries. Fix $k \geq 3$.
+
+Here a *structure* will mean a linear temporal structure in our finite language.
+
+If $M$ and $N$ are structures we write $M \equiv_k N$ if and only if $M$ and $N$ agree on the truth of monadic sentences of quantifier depth at most $k$. Note that since $k \geq 3$, if $M \equiv_k N$ then $M$ and $N$ either both have a right (respectively left) hand end point or both do not have a right (resp. left) hand end point. Discreteness is also preserved.
+
+If $a$ is an element of a discrete structure $M$ then we write $a - 1$ for its immediate predecessor if it has one and $a + 1$ for its immediate successor, if it has one.
+
+Say that $M$ is *good* if and only if there is some $N \equiv_k M$ such that the flow of time of $N$ is an interval of the integers.
+
+Say that $M$ is *very good* if and only if, for all $t \leq u$ in $M$, the substructure $M \mid [t, u]$ is good.
+
+**Lemma 14.** *If $N$ is countable and very good then it is good.*
+
+**Proof.** All finite structures are good so suppose that $N$ has countably infinite domain. If $N$ has two end points then it is clearly good. First consider the case when $N$ has a beginning $a_0$ but no (right hand) end.
+
+Choose $a_i \in N$ for each positive integer $i$ such that $i < j$ implies $a_i < a_j$ and for all $t \in N$, there is $j$ such that $t < a_j$. Since $N$ is very good, $N \mid [a_i, a_{i+1} - 1]$ is good. For $i = 0, 1, \ldots$, take $Z_i \equiv_k N \mid [a_i, a_{i+1} - 1]$ with a finite interval of $\mathbb{Z}$ as a flow.
+
+Because $\equiv_k$ is preserved under lexicographic sums,
+
+$$N \equiv_k \Sigma_{i \in \mathbb{N}} Z_i$$
+
+the latter having flow isomorphic to a (half) subinterval of $\mathbb{Z}$.
+
+If $N$ has an end but no beginning then the proof is similar. If $N$ has no end points then choose $a_0 \in N$, use the above arguments on $(-\infty, a_0]$ and $[a_0 + 1, +\infty)$, and then use the lexicographic sum result to add appropriate structures together. $\blacksquare$
+
+Define $\sim_M$ on a temporal structure $M$ by, for any $a, b \in M$, $a \sim_M b$ if and only if
+
+- $a = b$,
+- $a < b$ and $M \mid [a, b]$ is very good or
+- $b < a$ and $M \mid [b, a]$ is very good.
+
+**Lemma 15.** *$\sim_M$ is a contemporaneous equivalence relation on the domain of any $M$.*
+
+**Proof.** There are only finitely many logically inequivalent maximal consistent conjunctions $\gamma$ of sentences of quantifier depth $\leq k$. Any structure is a model of just one such $\gamma$, so if $N_1 \models \gamma$ then $N_2 \equiv_k N_1$ iff $N_2 \models \gamma$. Only some will be true of good structures -- $\{\gamma_1, \ldots, \gamma_s\}$ say. $N$ is good iff $N \models \bigvee_{i \leq s} \gamma_i$.
+
+Let $\gamma(z, t)$ be the result of relativising the quantifiers of $\bigvee_{i \leq s} \gamma_i$ to $[z, t]$, where $z$ and $t$ are new variables.
+
+Then
+
+$$\varepsilon(x, y) = \quad x < y \to \forall z t(x \leq z \leq t \leq y \to \gamma(z, t))$$
+$$\quad \wedge \quad y < x \to \forall z t(y \leq z \leq t \leq x \to \gamma(z, t))$$
+
+is a formula defining $\sim_M$.
+
+To show that $\sim$ is contemporaneous, we first show that it is an equivalence relation. The difficult part is transitivity. Suppose that $a < b < c$ are in $M$ and $a \sim_M b$ and $b \sim_M c$. We show that $M \mid [a, c]$ is very good by showing that if $a \leq t < u \leq c$ then $M \mid [t, u]$ is good.
+
+If $t$ and $u$ are on the same side of $b$ then this is clear. If $b = t$ or $b = u$ then use a lexicographic sum.
+
+So assume that $a \leq t < b < u \leq c$. Now $M \mid [t, b]$ and $M \mid [b + 1, u]$ are both good. Choose $Z_1 \equiv_k M \mid [t, b]$ and $Z_2 \equiv_k M \mid [b + 1, u]$ each with flow a subset of $\mathbb{Z}$. Then we know that $M \mid [t, u] \equiv_k Z_1 + Z_2$ whose flow is isomorphic to an interval of $\mathbb{Z}$.
+
+That the $\sim_M$ classes are intervals follows from the fact that very goodness is inherited by substructures on subintervals.
+
+Contemporaneity then follows from the fact that the definition of $\sim_M$ is in terms of exactly the right substructure. $\blacksquare$
+
+Now let us turn to the proof of the main theorem.
+
+If $M$ is good then we are done. So suppose not. Thus $M$ is not very good. So there is $a < b \in M$ such that $M \mid [a, b]$ is not good. Thus $M \mid [a, b]$ is not very good and we have two disjoint $\sim$ classes.
+
+Now $a$'s class can not end at a gap on the right so it must include a point $c$ but not the successor $c + 1$ of $c$. This can not be because $M \mid [c, c + 1]$, like all finite structures, is very good and $\sim$ is transitive. $\blacksquare$
+
+Axiomatizing $U$ and $S$ over the natural numbers can be done in a similar manner.
+
+## References
+
+[1] Johan van Benthem, *The Logic of Time*, Reidel, Dordrecht, 1982.
+
+[2] J.P. Burgess, *Axioms for tense logic I: "Since" and "Until"*, Notre Dame J. Formal Logic 23 no. 2 (1982) 367--374.
+
+[3] J.P. Burgess and Y. Gurevich, *The decision problem for linear temporal logic*, Notre Dame J. Formal Logic 26 no. 2 (1985) 115--128.
+
+[4] Kees Doets, *Completeness and Definability*, Dissertation, Mathematical Institute, Univ. of Amsterdam, 1987.
+
+[5] Kees Doets, *Monadic $\Pi_1^1$-theories of $\Pi_1^1$-properties*, Notre Dame J. Formal Logic 30 no. 2 (1989), 224--240.
+
+[6] D.M. Gabbay, *An irreflexivity lemma*, in: Aspects of Philosophical Logic, ed. U. Monnich, Reidel, Dordrecht, 1981, 67--89.
+
+[7] D.M. Gabbay in collaboration with I.M. Hodkinson and M.A. Reynolds, *Temporal Logic: Mathematical Foundations and Computational Aspects*, O.U.P. to be published 1992.
+
+[8] D.M. Gabbay and I.M. Hodkinson, *An axiomatization of the temporal logic with Until and Since over the real numbers*, J. Logic and Computation 1 (1990) 229--259.
+
+[9] D.M. Gabbay, I.M. Hodkinson and M.A. Reynolds, *Temporal expressive completeness in the presence of gaps*, in Proceedings ASL European Meeting, 1990, Helsinki, vol 1 of Lecture Notes in Logic, Springer-Verlag 1991.
+
+[10] D.M. Gabbay, A. Pnueli, S. Shelah and J. Stavi, *On the temporal analysis of fairness*, 7th ACM Symposium on Principles of Programming Languages, Las Vegas, 1980, 163--173.
+
+[11] D.M. Gabbay and M.A. Reynolds, *Inheriting expressive completeness*, Logic and Computation Research Report, Dept Comp., Imperial College, in preparation.
+
+[12] I.M. Hodkinson, *Notes on the irreflexivity rule*, Logic and Computation Research Report, Dept Comp., Imperial College, in preparation.
+
+[13] J.A.W. Kamp, *Tense Logic and the theory of linear order*, Ph.D. Thesis, University of California, 1968.
+
+[14] S. Kuhn, *The domino relation: flattening a two-dimensional logic*, Journal of Philosophical Logic, 18 (1989) 173--195.
+
+[15] J.G. Rosenstein, *Linear Orderings*, Academic Press, New York, 1982.
+
+[16] Y. Venema, *Modal derivation rules*, ITLI prepublication, Instit. for Lang., Logic and Information, University of Amsterdam, 1991.
+
+[17] Y. Venema, *Completeness via Completeness: Since and Until*, in: Colloquium on Modal Logic 1991, ed. M. de Rijke, ITLI-Network Publication, Instit. for Lang., Logic and Information, University of Amsterdam, to appear.
+
+[18] M. Xu, *On some U,S-tense logics*, J. of Philosophical Logic 17 (1988) 181--202.
+
+[19] A. Zanardo, *A complete deductive system for Since-Until branching time logic*, J. of Philosophical Logic 20 (1991) 131--148.
+
+---
+
+Department of Computing, Imperial College, London SW7 2BZ, United Kingdom.
+
+*Received October 22, 1991*

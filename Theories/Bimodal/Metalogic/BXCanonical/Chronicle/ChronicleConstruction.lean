@@ -120,67 +120,17 @@ theorem singleton_c2' {A : Set Formula} (h_mcs : SetMaximalConsistent A) :
   simp only [singleton_chronicle, Finset.mem_singleton] at hx hy
   subst hx; subst hy; exact absurd hxy (lt_irrefl _)
 
-/-! ## G-Value Reconstruction
+/-! ## G-Value Construction
 
-After each elimination step (which preserves g unchanged), we rebuild g-values
-for all adjacent pairs using BurgessR3Maximal existence. This ensures c2' is
-maintained as an invariant throughout the omega chain.
+Each elimination step now carries c2' directly: the EliminationResult includes
+a proof that the result chronicle satisfies BurgessR3Maximal for all adjacent
+pairs. No separate g-rebuild pass is needed.
 
-The key function `rebuild_g` takes a chronicle with c0, assigns BurgessR3Maximal
-g-values to adjacent pairs (using `burgessR3Maximal_exists_general`), and defines
-g for non-adjacent pairs via C3 (three-way intersection).
+Previously, a `rebuild_g` function reassigned g-values at every step using
+`burgessR3Maximal_exists_general`. That theorem was FALSE (counterexample:
+arbitrary MCS A with G(p), C with p.neg). The correct approach is
+context-specific seed construction within each elimination function.
 -/
-
-/--
-**Rebuild g-values**: Given a chronicle with c0, construct a new chronicle with
-the same f and dom but g-values assigned as follows:
-- For adjacent pairs (x,y): g(x,y) = some BurgessR3Maximal(f(x), -, f(y))
-- For all other pairs: g(x,y) = ∅ (will be defined by C3 at the limit)
-
-The existence of BurgessR3Maximal sets is guaranteed by
-`burgessR3Maximal_exists_general`.
--/
-noncomputable def rebuild_g (χ : Chronicle) (h_c0 : χ.c0) : Chronicle :=
-  { f := χ.f
-    g := fun x y =>
-      have : Decidable (Adjacent χ.dom x y) := Classical.dec _
-      if h : Adjacent χ.dom x y then
-        (burgessR3Maximal_exists_general (χ.f x) (χ.f y)
-          (h_c0 x h.1) (h_c0 y h.2.1)).choose
-      else ∅
-    dom := χ.dom }
-
-/--
-rebuild_g preserves c0.
--/
-theorem rebuild_g_c0 {χ : Chronicle} (h_c0 : χ.c0) :
-    (rebuild_g χ h_c0).c0 := h_c0
-
-/--
-rebuild_g preserves f.
--/
-theorem rebuild_g_f {χ : Chronicle} (h_c0 : χ.c0) :
-    (rebuild_g χ h_c0).f = χ.f := rfl
-
-/--
-rebuild_g preserves dom.
--/
-theorem rebuild_g_dom {χ : Chronicle} (h_c0 : χ.c0) :
-    (rebuild_g χ h_c0).dom = χ.dom := rfl
-
-/--
-rebuild_g satisfies c2': for every adjacent pair (x,y), the g-value is
-BurgessR3Maximal(f(x), g(x,y), f(y)).
--/
-theorem rebuild_g_c2' {χ : Chronicle} (h_c0 : χ.c0) :
-    (rebuild_g χ h_c0).c2' := by
-  intro x y h_adj
-  -- h_adj : Adjacent (rebuild_g χ h_c0).dom x y
-  -- rebuild_g preserves dom, so this is Adjacent χ.dom x y
-  have h_adj' : Adjacent χ.dom x y := h_adj
-  simp only [rebuild_g, h_adj', dite_true]
-  exact (burgessR3Maximal_exists_general (χ.f x) (χ.f y)
-    (h_c0 x h_adj'.1) (h_c0 y h_adj'.2.1)).choose_spec
 
 /--
 The singleton chronicle satisfies C4 vacuously: a singleton domain has no
@@ -293,16 +243,12 @@ The invariant maintained at every stage is `c0 ∧ c2'`:
 - c0: every domain point maps to an MCS
 - c2': every adjacent pair has a BurgessR3Maximal g-value
 
-Each step:
-1. Eliminates a potential counterexample (extending domain, preserving f on old points)
-2. Assigns g-values for all adjacent pairs via `rebuild_g` to maintain c2'
-
-The g-values at each step are independently constructed (not carried from the
-previous step). This is correct because the limit g is defined by C3 for the
-dense limit domain, where no adjacent pairs exist.
+Each step calls `eliminate_potential_counterexample` which directly produces
+a chronicle with c0 and c2' (g-values for new adjacent pairs are constructed
+within each elimination function using context-specific seeds).
 
 - omega_chain 0 = singleton_chronicle A (with vacuous c2')
-- omega_chain (n+1) = rebuild_g (eliminate(omega_chain n, enum (unpair n).2))
+- omega_chain (n+1) = eliminate(omega_chain n, enum (unpair n).2)
 -/
 noncomputable def omega_chain (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
     (n : Nat) → { χ : Chronicle // χ.c0 ∧ χ.c2' }
@@ -311,8 +257,7 @@ noncomputable def omega_chain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     let prev := omega_chain A h_mcs n
     let pc := counterexample_enum (Nat.unpair n).2
     let elim := eliminate_potential_counterexample prev.val prev.property.1 prev.property.2 pc
-    let rebuilt := rebuild_g elim.val elim.c0
-    ⟨rebuilt, rebuild_g_c0 elim.c0, rebuild_g_c2' elim.c0⟩
+    ⟨elim.val, elim.c0, elim.c2'⟩
 
 /--
 Extract the chronicle at step n.
@@ -348,19 +293,17 @@ noncomputable def omega_chain_elim_result (A : Set Formula) (h_mcs : SetMaximalC
 
 /--
 The f function at step n+1 is the same as the elimination result's f function.
-This is because rebuild_g preserves f.
 -/
 theorem omega_chain_f_eq_elim (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
     (omega_chain_val A h_mcs (n + 1)).f = (omega_chain_elim_result A h_mcs n).val.f := by
-  simp only [omega_chain_val, omega_chain, omega_chain_elim_result, rebuild_g]
+  simp only [omega_chain_val, omega_chain, omega_chain_elim_result]
 
 /--
 The dom at step n+1 is the same as the elimination result's dom.
-This is because rebuild_g preserves dom.
 -/
 theorem omega_chain_dom_eq_elim (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
     (omega_chain_val A h_mcs (n + 1)).dom = (omega_chain_elim_result A h_mcs n).val.dom := by
-  simp only [omega_chain_val, omega_chain, omega_chain_elim_result, rebuild_g]
+  simp only [omega_chain_val, omega_chain, omega_chain_elim_result]
 
 /--
 The domain is monotonically increasing along the omega-chain.
@@ -410,7 +353,7 @@ counterexample with x ∈ dom(n) and U(ξ,η) ∈ f_n(x), then a witness exists 
 
 This directly exposes the `c5_forward_witness` field of `EliminationResult`.
 The proof uses `omega_chain_elim_result` and bridges to omega_chain_val via
-f/dom equality (rebuild_g preserves both).
+f/dom equality.
 -/
 theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (n : Nat) (x : Rat) (ξ η : Formula)
@@ -419,7 +362,7 @@ theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
     (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_forward⟩) :
     ∃ y ∈ (omega_chain_val A h_mcs (n + 1)).dom,
       x < y ∧ η ∈ (omega_chain_val A h_mcs (n + 1)).f y := by
-  -- rebuild_g preserves f and dom; witness comes from elimination result.
+  -- omega_chain(n+1) = elimination result directly
   rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim]
   have key := (omega_chain_elim_result A h_mcs n).c5_forward_witness
     (show (counterexample_enum (Nat.unpair n).2).kind = .c5_forward by rw [hn_eq])
@@ -781,7 +724,7 @@ theorem limit_dom_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (show (counterexample_enum (Nat.unpair n).2).x < (counterexample_enum (Nat.unpair n).2).y
       by rw [hn_eq]; exact hxy)
   obtain ⟨z, hz_dom, hxz, hzy⟩ := key
-  -- The witness z is in elim.val.dom = omega_chain_val(n+1).dom (rebuild_g preserves dom)
+  -- The witness z is in elim.val.dom = omega_chain_val(n+1).dom
   have hz_dom' : z ∈ (omega_chain_val A h_mcs (n + 1)).dom := by
     rw [omega_chain_dom_eq_elim]; exact hz_dom
   exact ⟨z, ⟨n + 1, hz_dom'⟩,
@@ -1006,7 +949,7 @@ theorem no_adjacent_in_dense {D : Set Rat}
 -- NOTE: limit_c2'_vacuous and limit_g_is_mcs_vacuous have been deleted.
 -- The limit domain is dense (no adjacent pairs), so C2' at the limit is
 -- vacuously true. These were placeholder proofs that depended on empty g-values.
--- With real g-values via rebuild_g, they are no longer needed.
+-- With direct g-construction in elimination functions, they are no longer needed.
 
 /-! ## g_content / h_content Duality
 
