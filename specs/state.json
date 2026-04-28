@@ -654,13 +654,13 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-27T18:18:20Z",
+      "last_updated": "2026-04-28T00:06:00Z",
       "researched": "2026-04-27T18:02:35Z",
       "related_tasks": [
         93
       ],
       "dependencies": [],
-      "next_artifact_number": 35,
+      "next_artifact_number": 36,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -891,9 +891,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/34_implementation-plan.md",
           "type": "plan",
           "summary": "v21: 5 phases (Lemma 2.6 for BurgessR3Maximal, elimination g-construction, g-immutability, FUC closure, cleanup). 55h total."
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/35_team-research.md",
+          "type": "report",
+          "summary": "Convention mismatch is FALSE ALARM. B=GUARD in all conventions. No swap needed. BX5+BX7 path confirmed."
         }
       ],
-      "session_id": "sess_1777313875_bfebeb",
+      "session_id": "sess_1777333301_7ec1e7",
       "started": "2026-04-25T19:11:01Z"
     },
     {
