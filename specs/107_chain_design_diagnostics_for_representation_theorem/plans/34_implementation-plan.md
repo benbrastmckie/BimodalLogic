@@ -103,9 +103,36 @@ All phases are strictly sequential (shared files: PointInsertion.lean, Counterex
   - `BurgessR3Maximal_maximality_combined`: Key result -- if delta not in B and BurgessR3Maximal(A,B,C), the extension conditions fail (maximality witness extraction)
   - All verified sorry-free via `lean_verify`.
 
-- [ ] **1.2** Prove seed consistency for Lemma 2.6: show that `D₀ = {S(alpha, beta) : alpha in A, beta in B} union B union {neg(delta)} union {U(gamma, beta) : gamma in C, beta in B}` is consistent. The key argument: for any particular zeta = S(alpha,beta) AND beta AND neg(delta) AND U(gamma,beta) with alpha in A, beta in B, gamma in C, show zeta is consistent. Uses `BurgessR3Maximal_maximality_combined` to get witness beta₀, gamma₀ with neg(U(gamma₀, beta₀ AND delta)) in A. Then chain BX5 (self_accum) + BX7 (linear_until) to derive U(beta AND U(gamma,beta) AND neg(delta), beta) in A, then BX4 (connect_future) for the Since part, and apply 2.2 consistency criterion.
+- [ ] **1.2** Prove `burgess_D0_consistent`: show `burgess_D0 A B C delta` is `SetConsistent`.
+
+  **NOTE (report 35)**: The previous handoff claimed a "guard/event convention mismatch" blocking this proof. This was a FALSE ALARM — B-elements are GUARDS in all conventions (Burgess, Xu, ours). The arg ORDER differs (Burgess: event-first; ours: guard-first/Kamp standard) but the ROLE of B is identical. No convention swap is needed.
+
+  **D₀ definition** (already in code at PointInsertion.lean line 726):
+  ```
+  D₀ = {snce(β,α) : α∈A, β∈B} ∪ B ∪ {¬δ} ∪ {untl(β,γ) : β∈B, γ∈C}
+  ```
+  All formulas use our convention: β (from B) in GUARD position (first arg of untl/snce).
+
+  **Proof strategy** (Burgess Lemma 2.6, translated to our convention):
+
+  Show any particular `ζ = snce(β,α) ∧ β ∧ ¬δ ∧ untl(β,γ)` with α∈A, β∈B, γ∈C is consistent:
+
+  1. `BurgessR3Maximal_maximality_combined` (line ~641): since δ∉B, extract witness — specifically, the Until extension condition fails: ∃β₀∈B, γ₀∈C such that `¬untl(β₀∧δ, γ₀) ∈ A`. (In our convention: guard-strengthening by δ fails.)
+  2. WLOG β₀=β, γ₀=γ (replace by conjunctions; A,C are MCS so closed under ∧).
+  3. From burgessR3: `untl(β, γ) ∈ A` (β∈B is guard, γ∈C is event).
+  4. **BX5** (self_accum_until): `untl(β, γ) → untl(β ∧ untl(β,γ), γ)`. So `untl(β ∧ untl(β,γ), γ) ∈ A`.
+  5. **BX7** (linear_until) applied to `untl(β ∧ untl(β,γ), γ)` and `¬untl(β∧δ, γ)`:
+     - BX7 gives three disjuncts from two Until formulas with the same event γ.
+     - Two disjuncts imply `untl(β∧δ, γ) ∈ A` (via guard weakening BX2), contradicting `¬untl(β∧δ, γ) ∈ A`.
+     - Surviving disjunct: contains `β ∧ untl(β,γ) ∧ ¬(β∧δ)` in the guard position. Since β∈A (from `B_sub_A_of_burgessR3`), the term `β ∧ ¬(β∧δ)` simplifies to `β ∧ ¬δ` in any MCS containing β.
+  6. **BX10** (until_F): extract `F(β ∧ ¬δ)` or directly get the Until witness formula containing ¬δ.
+  7. Apply **BX4** (connect_future: `α → G(P(α))`): from α∈A, get `S(β, α)` into the Since direction.
+  8. Apply **consistency criterion** (Lemma 2.2): `untl(guard, event) ∈ A` implies `guard` is consistent. The surviving Until formula from step 5 contains all components of ζ, proving ζ is consistent.
+
+  **Existing infrastructure**: `B_sub_A_of_burgessR3` (β∈B → β∈A), `B_sub_C_of_burgessR3` (β∈B → β∈C), `burgess_D0_elem_in_A_or_C`, `BurgessR3Maximal_maximality_combined`.
+
   - Files: `Chronicle/PointInsertion.lean` (~100 lines)
-  - Estimate: 10 hours
+  - Estimate: 8-12 hours
 
 - [ ] **1.3** Construct MCS D via Lindenbaum extension of the consistent seed D₀. Prove `neg(delta) in D`, `B subset D`, `{S(alpha,beta) : alpha in A, beta in B} subset D`, `{U(gamma,beta) : gamma in C, beta in B} subset D`.
   - Files: `Chronicle/PointInsertion.lean` (~40 lines)
@@ -143,18 +170,20 @@ All phases are strictly sequential (shared files: PointInsertion.lean, Counterex
 - All existing sorry-free lemmas remain sorry-free
 - `lake build` succeeds
 
-**Mathematical Detail**:
+**Mathematical Detail** (corrected per report 35 — false alarm on convention mismatch):
 
-The consistency argument is the crux. Burgess's proof (Lemma 2.6) argues by contradiction: assume the seed set is inconsistent. Then there exist finite subsets of each component that together derive bot. By chaining BX axioms:
+**Convention note**: Burgess writes `U(event, guard)` (event-first). Our code writes `untl(guard, event)` (guard-first, Kamp standard). B-elements are GUARDS in both conventions. When translating Burgess axioms, swap argument positions but keep semantic roles.
 
-1. From `S_left(A, B)`: these are `S(alpha, beta)` for `alpha in A`, `beta in B`. If finitely many enter the derivation, their conjunction is in A (MCS closure) and B (DCS closure).
-2. From B: finitely many elements, their conjunction is in B (DCS closure).
-3. From `{neg(delta)}`: exactly `neg(delta)`.
-4. From `S_right(C, B)`: these are `U(gamma, beta)` for `gamma in C`, `beta in B`. If finitely many enter the derivation, their conjunction is in C (MCS closure) and B (DCS closure).
-5. Use `BurgessR3Maximal_maximality_combined`: since delta not in B, there exist beta₀ in B, gamma₀ in C with neg(U(gamma₀, beta₀ AND delta)) in A.
-6. Chain BX5 (self_accum_until) to get U(beta AND U(gamma,beta), beta) in A, then BX7 (linear_until) with neg(U(gamma, beta AND delta)) to eliminate two disjuncts, leaving U(beta AND U(gamma,beta) AND neg(delta), beta) in A.
-7. Apply BX4 (connect_future) to get S(alpha, beta) into the future MCS via alpha in A implies G(P(alpha)) in A.
-8. Apply 2.2 consistency criterion to conclude zeta is consistent.
+The consistency argument (Burgess Lemma 2.6, in our convention):
+
+1. **Goal**: Show `ζ = snce(β,α) ∧ β ∧ ¬δ ∧ untl(β,γ)` is consistent for any α∈A, β∈B, γ∈C.
+2. **Maximality witness**: `BurgessR3Maximal_maximality_combined` gives ¬untl(β₀∧δ, γ₀) ∈ A for some β₀∈B, γ₀∈C. WLOG β₀=β, γ₀=γ (MCS closed under ∧).
+3. **From burgessR3**: untl(β, γ) ∈ A (β∈B guard, γ∈C event).
+4. **BX5** (self_accum): untl(β, γ) → untl(β ∧ untl(β,γ), γ). Enriches GUARD.
+5. **BX7** (linearity) on untl(β ∧ untl(β,γ), γ) and ¬untl(β∧δ, γ): three disjuncts. Two imply untl(β∧δ, γ) (contradiction). Survivor contains ¬δ.
+6. **BX10** (until_F): extract F(β ∧ ¬δ) ∈ A, or use the Until formula directly.
+7. **BX4** (connect_future): α∈A → G(P(α))∈A → P(α)∈g_content(A). Combined with burgessR3, get snce(β,α) into C.
+8. **Consistency criterion** (Lemma 2.2): The Until formula from step 5 contains β, ¬δ, and untl(β,γ) in its guard. By 2.2, its guard is consistent. Combined with Since direction, ζ is consistent.
 
 ---
 
