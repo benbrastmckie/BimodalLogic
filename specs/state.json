@@ -8,12 +8,12 @@
     {
       "project_number": 113,
       "project_name": "literature_review_completeness_techniques",
-      "status": "researched",
+      "status": "planned",
       "task_type": "formal",
       "description": "Review newly obtained literature (Xu 1988, Reynolds 1992, Caleiro-Vigano-Volpe 2013) against current BX completeness proof state to identify transferable techniques. Structured around three-phase completeness roadmap: (1) base TM logic with H, G, Box over booleans; (2) extension to U and S; (3) dense and discrete specializations. Cross-reference against active sorry sites in Chronicle/ modules and blocked tasks (18, 68).",
       "created": "2026-04-27T17:16:06Z",
-      "last_updated": "2026-04-28T09:24:59Z",
-      "session_id": "sess_1777359354_f64100",
+      "last_updated": "2026-04-28T09:39:32Z",
+      "session_id": "sess_1777368892_6e1922",
       "researched": "2026-04-28T09:24:59Z",
       "next_artifact_number": 5,
       "artifacts": [
@@ -33,14 +33,14 @@
           "summary": "Systematic open guard refactoring plan: 4 axioms removed, 5-phase rebuild, sequencing analysis"
         },
         {
-          "path": "specs/113_literature_review_completeness_techniques/plans/03_open-guard-refactor.md",
-          "type": "plan",
-          "summary": "5-phase open guard refactoring plan: remove 4 axioms, archive to Boneyard, rebuild soundness+chronicle"
-        },
-        {
           "path": "specs/113_literature_review_completeness_techniques/reports/04_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): r-relation redesign for open guard, archive vs restructure classification"
+        },
+        {
+          "path": "specs/113_literature_review_completeness_techniques/plans/04_open-guard-refactor.md",
+          "type": "plan",
+          "summary": "Revised 5-phase open guard refactoring plan (v04): archive invalid+dead code, restructure 2 proofs"
         }
       ],
       "started": "2026-04-28T04:50:57Z"
