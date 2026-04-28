@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-28T23:03:19Z",
+      "last_updated": "2026-04-28T23:12:08Z",
       "researched": "2026-04-28T23:03:19Z",
       "related_tasks": [
         93
@@ -923,17 +923,17 @@
           "summary": "Team research (4 teammates): literature-based analysis — all 11 sorries trace to 3 deviations from Burgess/Xu, no new math needed"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/39_implementation-plan.md",
-          "type": "plan",
-          "summary": "v22: 8 phases, 52h — faithful Burgess/Xu chronicle construction replacing invalidated v21"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/40_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): A3a IS valid under open guard — counterexample was wrong, add as BX axiom to unblock entire construction"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/40_implementation-plan.md",
+          "type": "plan",
+          "summary": "v23: 6 phases, 40h — doc cleanup + A3a axiom addition + chronicle sorry closure"
         }
       ],
-      "session_id": "sess_1777416289_a7895f",
+      "session_id": "sess_1777417584_4489ee",
       "started": "2026-04-25T19:11:01Z"
     },
     {
