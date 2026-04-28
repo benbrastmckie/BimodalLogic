@@ -467,15 +467,15 @@ def BFMCS.until_since_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.untl φ ψ ∈ fam.mcs t →
-      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) ∧
+      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) →
+      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) →
       Formula.untl φ ψ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.snce φ ψ ∈ fam.mcs t →
-      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) ∧
+      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) →
+      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) →
       Formula.snce φ ψ ∈ fam.mcs t)
 
 /-!
@@ -503,10 +503,10 @@ the Until/Since formula membership at the target time.
 def BFMCS.backward_until_since_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
-      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) →
+      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) →
       Formula.untl φ ψ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) →
+      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) →
       Formula.snce φ ψ ∈ fam.mcs t)
 
 /--
@@ -519,10 +519,10 @@ def BFMCS.forward_until_since_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.untl φ ψ ∈ fam.mcs t →
-      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) ∧
+      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.snce φ ψ ∈ fam.mcs t →
-      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r)
+      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r)
 
 /--
 Restricted forward Until/Since coherence: conjuncts 1 and 3 of `until_since_coherent`,
@@ -537,11 +537,11 @@ def BFMCS.restricted_forward_until_since_coherent (B : BFMCS D) (root : Formula)
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.untl φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
       Formula.untl φ ψ ∈ fam.mcs t →
-      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) ∧
+      ∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.snce φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
       Formula.snce φ ψ ∈ fam.mcs t →
-      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r)
+      ∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r)
 
 omit [Zero D] in
 /--
@@ -566,11 +566,11 @@ def BFMCS.restricted_backward_until_since_coherent (B : BFMCS D) (root : Formula
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.untl φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
-      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t ≤ r → r < s → φ ∈ fam.mcs r) →
+      (∃ s : D, t < s ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → φ ∈ fam.mcs r) →
       Formula.untl φ ψ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.snce φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
-      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r ≤ t → φ ∈ fam.mcs r) →
+      (∃ s : D, s < t ∧ ψ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → φ ∈ fam.mcs r) →
       Formula.snce φ ψ ∈ fam.mcs t)
 
 omit [Zero D] in

@@ -34,11 +34,12 @@ technical_debt:
 ### 1. Critical Path — BXCanonical Completeness
 
 ```
-107 → 95
+113 → 107 → 95
 ```
 
-1. **107** [RESEARCHED] — Burgess chronicle construction for BX representation theorem (irr_until branch)
-2. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
+1. **113** [IMPLEMENTING] — Open guard refactoring for Until/Since semantics
+2. **107** [RESEARCHED] — Burgess chronicle construction for BX representation theorem (depends on 113)
+3. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
 
 ### 3. Independent Completeness Paths (parallel)
 
@@ -47,7 +48,7 @@ technical_debt:
 
 ### 4. Experimental / Research
 
-- **113** [PLANNED] — Review new literature (Xu 1988, Reynolds 1992, Caleiro et al. 2013) for completeness techniques across three-phase roadmap (base TM, U/S extension, dense/discrete)
+- **113** [IMPLEMENTING] — Review new literature (Xu 1988, Reynolds 1992, Caleiro et al. 2013) for completeness techniques across three-phase roadmap (base TM, U/S extension, dense/discrete)
 - **112** [RESEARCHED] — Systematic literature study: review 5 non-original sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to task 107 representation theorem
 
 - **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
@@ -82,7 +83,7 @@ technical_debt:
 
 ### 113. Review new literature for completeness techniques across three-phase roadmap
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Research**:
   - [specs/113_literature_review_completeness_techniques/reports/01_team-research.md]
@@ -122,7 +123,7 @@ technical_debt:
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
-- **Dependencies**: None
+- **Dependencies**: 113
 - **Related**: 93, 109
 - **Research**:
   - [107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md]

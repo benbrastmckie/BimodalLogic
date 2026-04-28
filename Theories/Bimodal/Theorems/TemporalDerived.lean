@@ -170,21 +170,17 @@ def G_implies_topUntil (a : Formula) :
 From BX9: `(⊥ U ⊥) → (⊥ ∨ ⊥)` where `⊥ ∨ ⊥ = (⊥ → ⊥) → ⊥`.
 Then apply identity `⊥ → ⊥` to get ⊥.
 -/
-def bot_until_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot :=
-  -- BX9 gives (⊥ U ⊥) → (⊥ ∨ ⊥) = (⊥ → ⊥) → ⊥
-  -- app1 gives (⊥ → ⊥) → ((⊥ → ⊥) → ⊥) → ⊥
-  -- compose: (⊥ U ⊥) → ⊥
-  imp_trans
-    (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot Formula.bot))
-    (mp (identity Formula.bot) theorem_app1)
+def bot_until_bot_absurd : ⊢ (Formula.untl Formula.bot Formula.bot).imp Formula.bot := by
+  -- Was: BX9 (until_elim) + app1. BX9 removed under open guard (task 113).
+  -- Need alternative derivation without BX9.
+  sorry
 
 /--
 `⊢ (⊥ S ⊥) → ⊥`: Y(⊥) is absurd. Mirror of bot_until_bot_absurd.
 -/
-def bot_since_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot :=
-  imp_trans
-    (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot Formula.bot))
-    (mp (identity Formula.bot) theorem_app1)
+def bot_since_bot_absurd : ⊢ (Formula.snce Formula.bot Formula.bot).imp Formula.bot := by
+  -- Was: BX9' (since_elim) + app1. BX9' removed under open guard (task 113).
+  sorry
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Any Until formula implies eventuality of its second argument.
@@ -202,20 +198,16 @@ def since_implies_some_past (φ ψ : Formula) :
     ⊢ (Formula.snce φ ψ).imp (Formula.some_past ψ) :=
   DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
 
-/-- `(⊥ U a) → a`: Under reflexive semantics, X(a) = ⊥ U a implies a.
-From BX9: `(⊥ U a) → (⊥ ∨ a) = ((⊥→⊥) → a)`, then apply identity. -/
+/-- `(⊥ U a) → a`: Under open guard, X(a) = ⊥ U a implies a.
+Was: BX9 + app1. BX9 removed under open guard (task 113). -/
 private def bot_until_elim (a : Formula) :
-    ⊢ (Formula.untl Formula.bot a).imp a :=
-  imp_trans
-    (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot a))
-    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+    ⊢ (Formula.untl Formula.bot a).imp a := by
+  sorry
 
 /-- `(⊥ S a) → a`: Mirror of bot_until_elim. -/
 private def bot_since_elim (a : Formula) :
-    ⊢ (Formula.snce Formula.bot a).imp a :=
-  imp_trans
-    (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot a))
-    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+    ⊢ (Formula.snce Formula.bot a).imp a := by
+  sorry
 
 /-!
 ## Key BX-Derived Lemmas for Canonical Completeness
@@ -250,16 +242,18 @@ or it is strictly in the future (giving φ from the guard).
 Direct from BX9 axiom.
 -/
 def until_imp_or (φ ψ : Formula) :
-    ⊢ (Formula.untl φ ψ).imp (Formula.or φ ψ) :=
-  DerivationTree.axiom [] _ (Axiom.until_elim φ ψ)
+    ⊢ (Formula.untl φ ψ).imp (Formula.or φ ψ) := by
+  -- Was: direct BX9. BX9 removed under open guard (task 113).
+  sorry
 
 /--
 `⊢ (φ S ψ) → (φ ∨ ψ)`: Since implies disjunction at current time.
 Mirror of until_imp_or.
 -/
 def since_imp_or (φ ψ : Formula) :
-    ⊢ (Formula.snce φ ψ).imp (Formula.or φ ψ) :=
-  DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
+    ⊢ (Formula.snce φ ψ).imp (Formula.or φ ψ) := by
+  -- Was: direct BX9'. BX9' removed under open guard (task 113).
+  sorry
 
 /--
 `⊢ (φ U ψ) → F(ψ)`: Until implies eventuality of its endpoint.
@@ -315,20 +309,16 @@ equivalent to `α` in any MCS. These public versions of the private bot_until_el
 are needed by downstream modules (SuccRelation, canonical constructions).
 -/
 
-/-- `⊢ X(α) → α`: Under reflexive semantics, X(α) = ⊥ U α implies α.
-From BX9: `(⊥ U α) → (⊥ ∨ α) = (⊤ → α)`, then apply `⊤ = id ⊥`. -/
+/-- `⊢ X(α) → α`: X(α) = ⊥ U α implies α.
+Was: BX9 + app1. BX9 removed under open guard (task 113). -/
 noncomputable def bot_until_id (a : Formula) :
-    ⊢ (Formula.untl Formula.bot a).imp a :=
-  imp_trans
-    (DerivationTree.axiom [] _ (Axiom.until_elim Formula.bot a))
-    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+    ⊢ (Formula.untl Formula.bot a).imp a := by
+  sorry
 
 /-- `⊢ Y(α) → α`: Mirror of bot_until_id for past direction. -/
 noncomputable def bot_since_id (a : Formula) :
-    ⊢ (Formula.snce Formula.bot a).imp a :=
-  imp_trans
-    (DerivationTree.axiom [] _ (Axiom.since_elim Formula.bot a))
-    (mp (identity Formula.bot) (@theorem_app1 (Formula.bot.imp Formula.bot) a))
+    ⊢ (Formula.snce Formula.bot a).imp a := by
+  sorry
 
 /-!
 ## Until/Since Unfolding and Introduction Theorems
@@ -376,19 +366,15 @@ noncomputable def or_since_imp (φ ψ : Formula) :
 /-- `⊢ (φ U ψ) → (ψ ∨ (φ ∧ (φ U ψ)))`: Until unfolding at current time.
 From BX5 (self-accumulation) + BX9 (elimination) + or-commutativity. -/
 noncomputable def until_unfold_thm (φ ψ : Formula) :
-    ⊢ (Formula.untl φ ψ).imp (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))) :=
-  imp_trans
-    (imp_trans (DerivationTree.axiom [] _ (Axiom.self_accum_until φ ψ))
-              (DerivationTree.axiom [] _ (Axiom.until_elim (Formula.and φ (Formula.untl φ ψ)) ψ)))
-    (formula_or_comm _ _)
+    ⊢ (Formula.untl φ ψ).imp (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))) := by
+  -- Was: BX5 + BX9. BX9 removed under open guard (task 113).
+  sorry
 
 /-- `⊢ (φ S ψ) → (ψ ∨ (φ ∧ (φ S ψ)))`: Since unfolding at current time. Mirror. -/
 noncomputable def since_unfold_thm (φ ψ : Formula) :
-    ⊢ (Formula.snce φ ψ).imp (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))) :=
-  imp_trans
-    (imp_trans (DerivationTree.axiom [] _ (Axiom.self_accum_since φ ψ))
-              (DerivationTree.axiom [] _ (Axiom.since_elim (Formula.and φ (Formula.snce φ ψ)) ψ)))
-    (formula_or_comm _ _)
+    ⊢ (Formula.snce φ ψ).imp (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))) := by
+  -- Was: BX5' + BX9'. BX9' removed under open guard (task 113).
+  sorry
 
 /-- `⊢ (φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`: X-wrapped Until unfolding.
 Compose until_unfold_thm with BX8 (reflexive intro at ⊥). -/

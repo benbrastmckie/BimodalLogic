@@ -685,15 +685,8 @@ noncomputable def bx_until_eventuality_resolution
       (theorem_in_mcs w.is_mcs h_ax) h_until
   -- By bx_forward_witness: get v with bx_le w v and ψ ∈ v
   obtain ⟨v, h_wv, h_ψv⟩ := bx_forward_witness w ψ h_F_psi
-  -- By BX9: φ ∈ w (since φ U ψ ∈ w and ψ ∉ w)
-  have h_φw : φ ∈ w.formulas := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.until_elim φ ψ)
-    have h_or := SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h_until
-    cases SetMaximalConsistent.negation_complete w.is_mcs φ with
-    | inl h => exact h
-    | inr h_neg_phi =>
-      exact absurd (SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi) h_not_psi
+  -- Was: BX9 (until_elim) gave φ ∈ w. BX9 removed under open guard (task 113).
+  have h_φw : φ ∈ w.formulas := by sorry
   exact ⟨v, h_wv, h_ψv, h_φw⟩
 
 /--
@@ -712,15 +705,8 @@ noncomputable def bx_since_eventuality_resolution
       (theorem_in_mcs w.is_mcs h_ax) h_since
   -- By bx_backward_witness: get v with bx_le v w and ψ ∈ v
   obtain ⟨v, h_vw, h_ψv⟩ := bx_backward_witness w ψ h_P_psi
-  -- By BX9': φ ∈ w (since φ S ψ ∈ w and ψ ∉ w)
-  have h_φw : φ ∈ w.formulas := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
-    have h_or := SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h_since
-    cases SetMaximalConsistent.negation_complete w.is_mcs φ with
-    | inl h => exact h
-    | inr h_neg_phi =>
-      exact absurd (SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi) h_not_psi
+  -- Was: BX9' (since_elim) gave φ ∈ w. BX9' removed under open guard (task 113).
+  have h_φw : φ ∈ w.formulas := by sorry
   exact ⟨v, h_vw, h_ψv, h_φw⟩
 
 end Bimodal.Metalogic.BXCanonical

@@ -548,35 +548,16 @@ theorem rRelation_of_superset_mcs {A B : Set Formula}
     (h_mcs_B : SetMaximalConsistent B)
     (h_sub : A ⊆ B) : rRelation A B := by
   intro γ δ h_until
-  have h_until_B : Formula.untl γ δ ∈ B := h_sub h_until
-  -- By BX9: (γ U δ) → (γ ∨ δ), i.e., (γ U δ) → (¬γ → δ)
-  have h_elim : DerivationTree [] ((Formula.untl γ δ).imp (Formula.or γ δ)) :=
-    DerivationTree.axiom [] _ (Axiom.until_elim γ δ)
-  have h_or : Formula.or γ δ ∈ B :=
-    SetMaximalConsistent.implication_property h_mcs_B
-      (theorem_in_mcs h_mcs_B h_elim) h_until_B
-  -- Formula.or γ δ = γ.neg.imp δ
-  -- Either γ ∈ B or ¬γ ∈ B
-  rcases SetMaximalConsistent.negation_complete h_mcs_B γ with h_gamma | h_neg_gamma
-  · -- γ ∈ B: right disjunct
-    exact Or.inr ⟨h_gamma, h_until_B⟩
-  · -- ¬γ ∈ B: from ¬γ → δ (which is or γ δ) and ¬γ, get δ
-    exact Or.inl (SetMaximalConsistent.implication_property h_mcs_B h_or h_neg_gamma)
+  -- Was: BX9 (until_elim). BX9 removed under open guard (task 113).
+  sorry
 
 /-- Similarly for Since. -/
 theorem rRelationSince_of_superset_mcs {A B : Set Formula}
     (h_mcs_B : SetMaximalConsistent B)
     (h_sub : A ⊆ B) : rRelationSince A B := by
   intro γ δ h_since
-  have h_since_B : Formula.snce γ δ ∈ B := h_sub h_since
-  have h_elim : DerivationTree [] ((Formula.snce γ δ).imp (Formula.or γ δ)) :=
-    DerivationTree.axiom [] _ (Axiom.since_elim γ δ)
-  have h_or : Formula.or γ δ ∈ B :=
-    SetMaximalConsistent.implication_property h_mcs_B
-      (theorem_in_mcs h_mcs_B h_elim) h_since_B
-  rcases SetMaximalConsistent.negation_complete h_mcs_B γ with h_gamma | h_neg_gamma
-  · exact Or.inr ⟨h_gamma, h_since_B⟩
-  · exact Or.inl (SetMaximalConsistent.implication_property h_mcs_B h_or h_neg_gamma)
+  -- Was: BX9' (since_elim). BX9' removed under open guard (task 113).
+  sorry
 
 /-! ## Three-Argument r-Relation Properties -/
 

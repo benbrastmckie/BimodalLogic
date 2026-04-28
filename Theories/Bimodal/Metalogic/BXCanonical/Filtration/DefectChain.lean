@@ -57,20 +57,13 @@ theorem sigma_defect_count_bounded (w : BXPoint) (Sigma : Finset Formula) :
 
 /-! ## Defect Step Properties -/
 
-/-- If φ U ψ ∈ w and ψ ∉ w, then φ ∈ w (from BX9: Until elimination). -/
+/-- If φ U ψ ∈ w and ψ ∉ w, then φ ∈ w.
+Was: BX9 (until_elim). BX9 removed under open guard (task 113). -/
 theorem defect_step_phi {w : BXPoint} {φ ψ : Formula}
     (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     φ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.until_elim φ ψ)
-  have h_or := SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h_until
-  -- φ ∨ ψ ∈ w. Since ψ ∉ w: φ ∈ w.
-  cases SetMaximalConsistent.negation_complete w.is_mcs φ with
-  | inl h => exact h
-  | inr h_neg_phi =>
-    have h_psi := SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi
-    exact absurd h_psi h_not_psi
+  sorry
 
 /-- If φ U ψ ∈ w, then F(ψ) ∈ w (from BX10: eventuality extraction). -/
 theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
@@ -104,19 +97,13 @@ noncomputable def sigma_since_defect_count (w : BXPoint) (Sigma : Finset Formula
     f ∈ w.formulas ∧
     ∃ φ ψ : Formula, f = Formula.snce φ ψ ∧ ψ ∉ w.formulas)).card
 
-/-- If φ S ψ ∈ w and ψ ∉ w, then φ ∈ w (from BX9': Since elimination). -/
+/-- If φ S ψ ∈ w and ψ ∉ w, then φ ∈ w.
+Was: BX9' (since_elim). BX9' removed under open guard (task 113). -/
 theorem since_defect_step_phi {w : BXPoint} {φ ψ : Formula}
     (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     φ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
-  have h_or := SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h_since
-  cases SetMaximalConsistent.negation_complete w.is_mcs φ with
-  | inl h => exact h
-  | inr h_neg_phi =>
-    have h_psi := SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi
-    exact absurd h_psi h_not_psi
+  sorry
 
 /-- If φ S ψ ∈ w, then P(ψ) ∈ w (from BX10': eventuality extraction). -/
 theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}

@@ -26,13 +26,13 @@ requiring successor-chain constructions.
    - BX6/BX6': absorb_until/since (absorption)
    - BX7/BX7': linear_until/since (linearity)
    - BX8/BX8': REMOVED (until_step/since_step not sound under half-open guard)
-   - BX9/BX9': until_elim/since_elim (current-time elimination)
+   - BX9/BX9': REMOVED (until_elim/since_elim unsound under open guard)
    - BX10/BX10': until_F/since_P (eventuality extraction)
    - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 37 axiom constructors
+**Total**: 33 axiom constructors
 
 ### Key Properties
 
@@ -201,17 +201,8 @@ inductive Axiom : Formula → Type where
 
   -- NOTE: BX8/BX8' (until_step/since_step) removed -- not sound under half-open guard.
 
-  /-- BX9: Until elimination: `(φ U ψ) → (φ ∨ ψ)`.
-  Under irreflexive Until semantics with A2 guard, `φ U ψ` at t has witness s > t
-  with ψ(s) and guard φ on [t,s). Since t ∈ [t,s), φ(t) holds. So φ ∨ ψ at t. -/
-  | until_elim (φ ψ : Formula) :
-      Axiom ((Formula.untl φ ψ).imp (Formula.or φ ψ))
-
-  /-- BX9': Since elimination: `(φ S ψ) → (φ ∨ ψ)`.
-  Under irreflexive Since, `φ S ψ` at t has witness s < t with ψ(s) and guard φ
-  on (s,t]. Since t ∈ (s,t], φ(t) holds. So φ ∨ ψ at t. -/
-  | since_elim (φ ψ : Formula) :
-      Axiom ((Formula.snce φ ψ).imp (Formula.or φ ψ))
+  -- NOTE: BX9/BX9' (until_elim/since_elim) removed -- unsound under open guard (t,s).
+  -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
 
   /-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
   Under reflexive Until semantics, `φ U ψ` at t has witness s ≥ t with ψ(s),
@@ -257,21 +248,8 @@ inductive Axiom : Formula → Type where
   | P_since_equiv (φ : Formula) :
       Axiom ((Formula.some_past φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ))
 
-  -- Layer 3c: Until/Since Guard Axioms (2)
-  -- Under half-open guard semantics, (φ U ψ) at t has guard φ on [t,s).
-  -- Since t ∈ [t,s), the guard gives φ(t) directly.
-
-  /-- Until guard: `(φ U ψ) → φ`.
-  Under half-open guard [t,s): φ U ψ at t has witness s > t with ψ(s) and φ on [t,s).
-  Since t ≤ t and t < s, the guard gives φ(t). Strictly stronger than BX9 (until_elim). -/
-  | until_guard (φ ψ : Formula) :
-      Axiom ((Formula.untl φ ψ).imp φ)
-
-  /-- Since guard: `(φ S ψ) → φ`.
-  Under half-open guard (s,t]: φ S ψ at t has witness s < t with ψ(s) and φ on (s,t].
-  Since s < t and t ≤ t, the guard gives φ(t). -/
-  | since_guard (φ ψ : Formula) :
-      Axiom ((Formula.snce φ ψ).imp φ)
+  -- NOTE: Layer 3c (until_guard/since_guard) removed -- unsound under open guard (t,s).
+  -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
 
   -- Layer 4: Modal-Temporal Interaction (2)
 

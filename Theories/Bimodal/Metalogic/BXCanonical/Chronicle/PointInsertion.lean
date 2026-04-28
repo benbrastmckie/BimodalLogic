@@ -163,19 +163,13 @@ noncomputable def lemma_2_4 {A : Set Formula}
 
 /-! ## BX9 Guard Extraction -/
 
-/-- BX9 at MCS level: U(γ,β) ∈ A implies either γ ∈ A or β ∈ A. -/
+/-- U(γ,β) ∈ A implies either γ ∈ A or β ∈ A.
+Was: BX9 (until_elim). BX9 removed under open guard (task 113). -/
 theorem until_elim_mcs {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) (γ β : Formula)
     (h_until : Formula.untl γ β ∈ A) :
     γ ∈ A ∨ β ∈ A := by
-  have h_ax : DerivationTree [] ((Formula.untl γ β).imp (Formula.or γ β)) :=
-    DerivationTree.axiom [] _ (Axiom.until_elim γ β)
-  have h_or : Formula.or γ β ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs h_ax) h_until
-  rcases SetMaximalConsistent.negation_complete h_mcs γ with h_γ | h_neg_γ
-  · exact Or.inl h_γ
-  · exact Or.inr (SetMaximalConsistent.implication_property h_mcs h_or h_neg_γ)
+  sorry
 
 /-- BX10 at MCS level: U(γ,β) ∈ A implies F(β) ∈ A. -/
 theorem until_F_mcs {A : Set Formula}
@@ -817,6 +811,121 @@ theorem burgess_D0_elem_in_A_or_C {A B C : Set Formula}
   · -- Until formula U(β, γ): in A by burgessRSet
     exact Or.inl (h_r3.1 β hβ γ hγ)
 
+/-- F-monotonicity at MCS level: if ⊢ X → Y and F(X) ∈ A then F(Y) ∈ A. -/
+theorem F_mono_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {X Y : Formula}
+    (h_impl : DerivationTree [] (X.imp Y))
+    (h_FX : X.some_future ∈ A) :
+    Y.some_future ∈ A := by
+  -- F(X) ∈ A means ¬G(¬X) ∈ A, i.e. G(¬X) ∉ A.
+  -- From ⊢ X → Y: contrapositive ⊢ ¬Y → ¬X.
+  -- By temporal necessitation: ⊢ G(¬Y → ¬X).
+  -- By temporal K: ⊢ G(¬Y → ¬X) → (G(¬Y) → G(¬X)).
+  -- So G(¬Y) → G(¬X) ∈ A. Since G(¬X) ∉ A → G(¬Y) ∉ A, i.e., F(Y) ∈ A.
+  -- We use F_neg_of_G_not: G(Y) ∉ A → F(¬Y) ∈ A.
+  -- But we need a different form. Let's go through Until.
+  -- BX12: F(X) → ⊤ U X
+  -- BX3: G(X → Y) → ((⊤ U X) → (⊤ U Y))
+  -- BX10: (⊤ U Y) → F(Y)
+  set top := Formula.bot.imp Formula.bot
+  -- Step 1: F(X) → (⊤ U X)
+  have h_f_to_u : X.some_future.imp (Formula.untl top X) ∈ A :=
+    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.F_until_equiv X))
+  have h_tux : Formula.untl top X ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs h_f_to_u h_FX
+  -- Step 2: G(X → Y) ∈ A
+  have h_G_impl : (X.imp Y).all_future ∈ A :=
+    theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_impl)
+  -- Step 3: BX3: G(X → Y) → ((⊤ U X) → (⊤ U Y))
+  have h_bx3 : (X.imp Y).all_future.imp ((Formula.untl top X).imp (Formula.untl top Y)) ∈ A :=
+    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_until X Y top))
+  have h_chain : (Formula.untl top X).imp (Formula.untl top Y) ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs h_bx3 h_G_impl
+  have h_tuy : Formula.untl top Y ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs h_chain h_tux
+  -- Step 4: BX10: (⊤ U Y) → F(Y)
+  have h_u_to_f : (Formula.untl top Y).imp Y.some_future ∈ A :=
+    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.until_F top Y))
+  exact SetMaximalConsistent.implication_property h_mcs h_u_to_f h_tuy
+
+/-- Left-mono contrapositive at MCS level: if untl(β,γ) ∈ A and untl(β∧δ,γ) ∉ A,
+then ¬δ ∈ A or F(¬δ) ∈ A.
+
+The proof uses BX2 (left monotonicity) contrapositively: if the guard cannot be
+strengthened from β to β∧δ, then either (β→δ) fails now (giving ¬δ since β∈A)
+or G(β→δ) fails (giving F(¬δ) by temporal duality). -/
+theorem left_mono_contrapositive_neg_delta {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {β γ delta : Formula}
+    (h_untl : Formula.untl β γ ∈ A)
+    (h_neg_untl : Formula.untl (Formula.and β delta) γ ∉ A) :
+    delta.neg ∈ A ∨ delta.neg.some_future ∈ A := by
+  -- BX2: (β→β∧δ) ∧ G(β→β∧δ) → (untl(β,γ) → untl(β∧δ,γ))
+  set θ := β.imp (β.and delta) with θ_def
+  -- The full BX2 instance
+  have h_bx2 : DerivationTree [] (Formula.and θ θ.all_future |>.imp
+      ((Formula.untl β γ).imp (Formula.untl (Formula.and β delta) γ))) :=
+    DerivationTree.axiom [] _ (Axiom.left_mono_until β γ (Formula.and β delta))
+  -- θ ∧ G(θ) → untl(β∧δ,γ), using untl(β,γ) ∈ A via flip
+  -- BX2 has the form: (θ∧G(θ)) → (untl(β,γ) → untl(β∧δ,γ))
+  -- By flip: untl(β,γ) → ((θ∧G(θ)) → untl(β∧δ,γ))
+  -- Apply with h_untl: (θ∧G(θ)) → untl(β∧δ,γ)
+  have h_flipped : (Formula.untl β γ).imp
+      ((Formula.and θ θ.all_future).imp (Formula.untl (Formula.and β delta) γ)) ∈ A := by
+    have h1 := theorem_in_mcs h_mcs h_bx2
+    have h_flip := theorem_in_mcs h_mcs
+      (@Bimodal.Theorems.Combinators.theorem_flip
+        (Formula.and θ θ.all_future) (Formula.untl β γ) (Formula.untl (Formula.and β delta) γ))
+    exact SetMaximalConsistent.implication_property h_mcs h_flip h1
+  have h_ant_imp : (Formula.and θ θ.all_future).imp (Formula.untl (Formula.and β delta) γ) ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs h_flipped h_untl
+  -- Since untl(β∧δ,γ) ∉ A, by modus tollens: ¬(θ ∧ G(θ)) ∈ A
+  have h_neg_ant : (Formula.and θ θ.all_future).neg ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.and θ θ.all_future) with h | h
+    · exact absurd (SetMaximalConsistent.implication_property h_mcs h_ant_imp h) h_neg_untl
+    · exact h
+  -- De Morgan: either θ ∉ A or G(θ) ∉ A
+  -- We case split on θ ∈ A
+  rcases SetMaximalConsistent.negation_complete h_mcs θ with h_θ | h_neg_θ
+  · -- θ ∈ A: then G(θ) ∉ A (otherwise θ ∧ G(θ) ∈ A, contradicting h_neg_ant)
+    have h_Gθ_not : θ.all_future ∉ A := by
+      intro h_Gθ
+      have h_conj := conj_mcs h_mcs θ θ.all_future h_θ h_Gθ
+      exact SetMaximalConsistent.neg_excludes h_mcs _ h_neg_ant h_conj
+    -- G(θ) ∉ A → F(¬θ) ∈ A
+    have h_F_neg_θ := F_neg_of_G_not h_mcs θ h_Gθ_not
+    -- F(¬θ) ∈ A, and ⊢ ¬θ → ¬δ (propositional): F(¬δ) ∈ A
+    right
+    apply F_mono_mcs h_mcs _ h_F_neg_θ
+    -- Need: ⊢ θ.neg → delta.neg
+    -- θ = β → β∧δ. θ.neg = ¬(β → β∧δ).
+    -- ¬(β → β∧δ) → ¬δ is propositional:
+    -- From ¬(β → β∧δ): β and ¬(β∧δ). From ¬(β∧δ): ¬β ∨ ¬δ. With β: ¬δ.
+    -- Need: ⊢ θ.neg → delta.neg, i.e. ⊢ ¬(β → β∧δ) → ¬δ
+    -- Proof: δ → (β → β∧δ) by flip of pairing; contrapositive gives the result.
+    have h_d_imp_θ : DerivationTree [] (delta.imp θ) :=
+      Bimodal.Theorems.Combinators.mp
+        (Bimodal.Theorems.Combinators.pairing β delta)
+        (@Bimodal.Theorems.Combinators.theorem_flip β delta (Formula.and β delta))
+    exact Bimodal.Theorems.Combinators.mp h_d_imp_θ
+      (Bimodal.Theorems.TemporalDerived.contrapositive delta θ)
+  · -- ¬θ ∈ A: θ.neg ∈ A, meaning ¬(β → β∧δ) ∈ A.
+    left
+    have h_d_imp_θ : DerivationTree [] (delta.imp θ) :=
+      Bimodal.Theorems.Combinators.mp
+        (Bimodal.Theorems.Combinators.pairing β delta)
+        (@Bimodal.Theorems.Combinators.theorem_flip β delta (Formula.and β delta))
+    have h_neg_δ_deriv : DerivationTree [] (θ.neg.imp delta.neg) :=
+      Bimodal.Theorems.Combinators.mp h_d_imp_θ
+        (Bimodal.Theorems.TemporalDerived.contrapositive delta θ)
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_neg_δ_deriv) h_neg_θ
+
+/-- **D₀ seed consistency**: The Burgess D₀ seed is consistent.
+
+The proof uses the BurgessR3Maximal maximality witness and BX2 (left monotonicity)
+contrapositive to derive ¬δ ∈ A or F(¬δ) ∈ A, then shows D₀ is contained in a
+consistent superset.
+-/
 theorem burgess_D0_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
     (h_R3M : BurgessR3Maximal A B C)

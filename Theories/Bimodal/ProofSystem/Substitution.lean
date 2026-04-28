@@ -283,12 +283,12 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | temp_4 a =>
     simp only [subst_imp, subst_all_future]
     exact Axiom.temp_4 (a.subst q r)
-  | temp_t_future a =>
-    simp only [subst_imp, subst_all_future]
-    exact Axiom.temp_t_future (a.subst q r)
-  | temp_t_past a =>
-    simp only [subst_imp, subst_all_past]
-    exact Axiom.temp_t_past (a.subst q r)
+  | serial_future =>
+    simp only [subst_imp, subst_some_future, subst_neg, subst_all_future, subst_bot]
+    exact Axiom.serial_future
+  | serial_past =>
+    simp only [subst_imp, subst_some_past, subst_neg, subst_all_past, subst_bot]
+    exact Axiom.serial_past
   | left_mono_until a b c =>
     simp only [subst_imp, subst_all_future, subst_untl]
     exact Axiom.left_mono_until (a.subst q r) (b.subst q r) (c.subst q r)
@@ -325,24 +325,26 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | linear_since a b c d =>
     simp only [subst_imp, subst_and, subst_or, subst_snce]
     exact Axiom.linear_since (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
-  | refl_intro_until a b =>
-    simp only [subst_imp, subst_untl]
-    exact Axiom.refl_intro_until (a.subst q r) (b.subst q r)
-  | refl_intro_since a b =>
-    simp only [subst_imp, subst_snce]
-    exact Axiom.refl_intro_since (a.subst q r) (b.subst q r)
-  | until_elim a b =>
-    simp only [subst_imp, subst_untl, subst_or]
-    exact Axiom.until_elim (a.subst q r) (b.subst q r)
-  | since_elim a b =>
-    simp only [subst_imp, subst_snce, subst_or]
-    exact Axiom.since_elim (a.subst q r) (b.subst q r)
+  -- NOTE: refl_intro_until / refl_intro_since / until_elim / since_elim removed (task 113)
+  -- NOTE: until_guard / since_guard removed (task 113)
   | until_F a b =>
     simp only [subst_imp, subst_untl, subst_some_future]
     exact Axiom.until_F (a.subst q r) (b.subst q r)
   | since_P a b =>
     simp only [subst_imp, subst_snce, subst_some_past]
     exact Axiom.since_P (a.subst q r) (b.subst q r)
+  | temp_linearity a b =>
+    simp only [subst_imp, subst_and, subst_or, subst_some_future]
+    exact Axiom.temp_linearity (a.subst q r) (b.subst q r)
+  | temp_linearity_past a b =>
+    simp only [subst_imp, subst_and, subst_or, subst_some_past]
+    exact Axiom.temp_linearity_past (a.subst q r) (b.subst q r)
+  | F_until_equiv a =>
+    simp only [subst_imp, subst_some_future, subst_untl, subst_bot]
+    exact Axiom.F_until_equiv (a.subst q r)
+  | P_since_equiv a =>
+    simp only [subst_imp, subst_some_past, subst_snce, subst_bot]
+    exact Axiom.P_since_equiv (a.subst q r)
   | modal_future a =>
     simp only [subst_imp, subst_box, subst_all_future]
     exact Axiom.modal_future (a.subst q r)

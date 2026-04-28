@@ -74,36 +74,32 @@ theorem until_disjunction_in_mcs {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
     (h_until : Formula.untl γ δ ∈ A) :
     Formula.or γ δ ∈ A := by
-  have h_elim : DerivationTree [] ((Formula.untl γ δ).imp (Formula.or γ δ)) :=
-    DerivationTree.axiom [] _ (Axiom.until_elim γ δ)
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs h_elim) h_until
+  -- Was: BX9 (until_elim). BX9 removed under open guard (task 113).
+  sorry
 
 /--
-`gamma U delta in A` implies `gamma in A` (by until_guard axiom).
-Under half-open guard [t,s), the guard holds at the base point t.
+`gamma U delta in A` implies `gamma in A`.
+INVALID under open guard: the guard (t,s) does not include t.
+Kept as sorry stub for downstream compatibility (task 113).
 -/
 theorem until_guard_in_mcs {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
     (h_until : Formula.untl γ δ ∈ A) :
     γ ∈ A := by
-  have h_guard : DerivationTree [] ((Formula.untl γ δ).imp γ) :=
-    DerivationTree.axiom [] _ (Axiom.until_guard γ δ)
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs h_guard) h_until
+  -- Was: until_guard axiom. Removed under open guard (task 113).
+  sorry
 
 /--
-`gamma S delta in A` implies `gamma in A` (by since_guard axiom).
-Under half-open guard (s,t], the guard holds at the base point t.
+`gamma S delta in A` implies `gamma in A`.
+INVALID under open guard: the guard (s,t) does not include t.
+Kept as sorry stub for downstream compatibility (task 113).
 -/
 theorem since_guard_in_mcs {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
     (h_since : Formula.snce γ δ ∈ A) :
     γ ∈ A := by
-  have h_guard : DerivationTree [] ((Formula.snce γ δ).imp γ) :=
-    DerivationTree.axiom [] _ (Axiom.since_guard γ δ)
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs h_guard) h_since
+  -- Was: since_guard axiom. Removed under open guard (task 113).
+  sorry
 
 /--
 `gamma U delta in A` implies `F(delta) in A` (by BX10).
@@ -139,10 +135,8 @@ theorem since_disjunction_in_mcs {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
     (h_since : Formula.snce γ δ ∈ A) :
     Formula.or γ δ ∈ A := by
-  have h_elim : DerivationTree [] ((Formula.snce γ δ).imp (Formula.or γ δ)) :=
-    DerivationTree.axiom [] _ (Axiom.since_elim γ δ)
-  exact SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs h_elim) h_since
+  -- Was: BX9' (since_elim). BX9' removed under open guard (task 113).
+  sorry
 
 /--
 `gamma S delta in A` implies `P(delta) in A` (by BX10').
@@ -1231,24 +1225,9 @@ then untl(γ,δ) ∈ f(x) (via burgessR3), contradicting neg(untl(γ,δ)) ∈ f(
 -/
 noncomputable def untl_absorb_nested (γ δ : Formula) :
     DerivationTree [] ((Formula.untl γ (Formula.untl γ δ)).imp (Formula.untl γ δ)) := by
-  -- Step 1: untl(γ,δ) → γ ∧ untl(γ,δ)
-  have h_guard : DerivationTree [] ((Formula.untl γ δ).imp γ) :=
-    DerivationTree.axiom [] _ (Axiom.until_guard γ δ)
-  have h_id : DerivationTree [] ((Formula.untl γ δ).imp (Formula.untl γ δ)) :=
-    Bimodal.Theorems.Combinators.identity (Formula.untl γ δ)
-  have h_conj_intro : DerivationTree [] ((Formula.untl γ δ).imp (Formula.and γ (Formula.untl γ δ))) :=
-    Bimodal.Theorems.Combinators.combine_imp_conj h_guard h_id
-  -- Step 2: G(untl(γ,δ) → γ ∧ untl(γ,δ)) by temporal necessitation
-  have h_G := DerivationTree.temporal_necessitation _ h_conj_intro
-  -- Step 3: BX3: G(α → β) → (untl(γ,α) → untl(γ,β))
-  have h_bx3 := DerivationTree.axiom [] _
-    (Axiom.right_mono_until (Formula.untl γ δ) (Formula.and γ (Formula.untl γ δ)) γ)
-  -- MP: untl(γ, untl(γ,δ)) → untl(γ, γ ∧ untl(γ,δ))
-  have h_mono := DerivationTree.modus_ponens [] _ _ h_bx3 h_G
-  -- Step 4: BX6: untl(γ, γ ∧ untl(γ,δ)) → untl(γ,δ)
-  have h_bx6 := DerivationTree.axiom [] _ (Axiom.absorb_until γ δ)
-  -- Chain: untl(γ, untl(γ,δ)) → untl(γ, γ ∧ untl(γ,δ)) → untl(γ,δ)
-  exact Bimodal.Theorems.Combinators.imp_trans h_mono h_bx6
+  -- Was: uses until_guard axiom. Removed under open guard (task 113).
+  -- Needs rederivation without until_guard.
+  sorry
 
 /--
 **Nested Since absorption**: `snce(γ, snce(γ,δ)) → snce(γ,δ)`.
@@ -1256,18 +1235,8 @@ Mirror of `untl_absorb_nested` for the Since direction.
 -/
 noncomputable def snce_absorb_nested (γ δ : Formula) :
     DerivationTree [] ((Formula.snce γ (Formula.snce γ δ)).imp (Formula.snce γ δ)) := by
-  have h_guard : DerivationTree [] ((Formula.snce γ δ).imp γ) :=
-    DerivationTree.axiom [] _ (Axiom.since_guard γ δ)
-  have h_id : DerivationTree [] ((Formula.snce γ δ).imp (Formula.snce γ δ)) :=
-    Bimodal.Theorems.Combinators.identity (Formula.snce γ δ)
-  have h_conj_intro : DerivationTree [] ((Formula.snce γ δ).imp (Formula.and γ (Formula.snce γ δ))) :=
-    Bimodal.Theorems.Combinators.combine_imp_conj h_guard h_id
-  have h_H := Bimodal.Theorems.past_necessitation _ h_conj_intro
-  have h_bx3' := DerivationTree.axiom [] _
-    (Axiom.right_mono_since (Formula.snce γ δ) (Formula.and γ (Formula.snce γ δ)) γ)
-  have h_mono := DerivationTree.modus_ponens [] _ _ h_bx3' h_H
-  have h_bx6' := DerivationTree.axiom [] _ (Axiom.absorb_since γ δ)
-  exact Bimodal.Theorems.Combinators.imp_trans h_mono h_bx6'
+  -- Was: uses since_guard axiom. Removed under open guard (task 113).
+  sorry
 
 /--
 **Generalized C4 bridging**: If burgessR3(A, B, C) and neg(untl(γ,δ)) ∈ A

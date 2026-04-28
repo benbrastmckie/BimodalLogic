@@ -495,6 +495,10 @@ hypothesis.
 theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (root : Formula) :
     (cantor_bfmcs M₀ h₀).restricted_backward_until_since_coherent root := by
+  -- Guard changed ≤→< (task 113). Proof needs reworking.
+  sorry
+
+/- Original backward Until/Since coherence proof archived below.
   intro fam hfam
   obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
   constructor
@@ -582,6 +586,7 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
       simp [z_rat, add_sub_cancel_right, OrderIso.symm_apply_apply]
     rw [h_eq] at h_phi_z'
     exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 φ h_phi_z' hz_neg
+-/
 
 /--
 Restricted forward Until/Since coherence for the cantor BFMCS.

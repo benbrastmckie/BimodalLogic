@@ -109,21 +109,12 @@ BX axioms applied at the MCS level, then projected to Sigma-signatures. -/
 -- For the construction phase, we establish the key intermediate lemmas that
 -- the BX axioms give us at the MCS level.
 
-/-- Key lemma: BX9 applied at MCS level.
-    If φ U ψ ∈ w.formulas, then φ ∈ w.formulas ∨ ψ ∈ w.formulas. -/
+/-- If φ U ψ ∈ w.formulas, then φ ∈ w.formulas ∨ ψ ∈ w.formulas.
+Was: BX9 (until_elim). BX9 removed under open guard (task 113). -/
 theorem until_elim_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
     φ ∈ w.formulas ∨ ψ ∈ w.formulas := by
-  -- BX9: (φ U ψ) → (φ ∨ ψ), where ∨ is ¬φ → ψ
-  have h_ax := DerivationTree.axiom [] _ (Axiom.until_elim φ ψ)
-  have h_or : Formula.or φ ψ ∈ w.formulas :=
-    SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h
-  -- or is ¬φ → ψ. If φ ∈ w, done. If φ ∉ w, then ¬φ ∈ w, so ψ ∈ w.
-  rcases SetMaximalConsistent.negation_complete w.is_mcs φ with h_phi | h_neg_phi
-  · left; exact h_phi
-  · right
-    exact SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi
+  sorry
 
 /-- Key lemma: BX5 self-accumulation at MCS level.
     If φ U ψ ∈ w.formulas, then (φ ∧ (φ U ψ)) U ψ ∈ w.formulas. -/
@@ -162,18 +153,11 @@ theorem refl_intro_until_mcs {w : BXPoint} {φ ψ : Formula}
 
 /-! ## Since-direction MCS lemmas -/
 
-/-- BX9' at MCS level. -/
+/-- Was: BX9' at MCS level. BX9' removed under open guard (task 113). -/
 theorem since_elim_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
     φ ∈ w.formulas ∨ ψ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.since_elim φ ψ)
-  have h_or : Formula.or φ ψ ∈ w.formulas :=
-    SetMaximalConsistent.implication_property w.is_mcs
-      (theorem_in_mcs w.is_mcs h_ax) h
-  rcases SetMaximalConsistent.negation_complete w.is_mcs φ with h_phi | h_neg_phi
-  · left; exact h_phi
-  · right
-    exact SetMaximalConsistent.implication_property w.is_mcs h_or h_neg_phi
+  sorry
 
 /-- BX5' at MCS level. -/
 theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}

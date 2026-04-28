@@ -554,25 +554,11 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     obtain ⟨s, hts⟩ := exists_gt t
     exact h_all_neg s hts (fun h => h)
   | left_mono_until φ ψ χ =>
-    -- swap: (φ'→χ') ∧ H(φ'→χ') → (φ' S ψ') → (χ' S ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_past⟩ := and_extract h_conj
-    refine ⟨s, hst, h_ψs, fun r hsr hrt => ?_⟩
-    rcases eq_or_lt_of_le hrt with h_eq | h_lt
-    · subst h_eq; exact h_at_t (h_guard r hsr hrt)
-    · exact h_past r h_lt (h_guard r hsr hrt)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | left_mono_since φ ψ χ =>
-    -- swap: (φ'→χ') ∧ G(φ'→χ') → (φ' U ψ') → (χ' U ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_future⟩ := and_extract h_conj
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    rcases eq_or_lt_of_le htr with h_eq | h_lt
-    · exact (h_eq ▸ h_at_t) (h_guard r htr hrs)
-    · exact h_future r h_lt (h_guard r htr hrs)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | right_mono_until φ ψ χ =>
     -- swap: G(φ'→χ') → (φ' S ψ') → (χ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -596,135 +582,24 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro h_φt s hts h_H_neg
     exact h_H_neg t hts h_φt
   | self_accum_until φ ψ =>
-    -- swap: (φ' S ψ') → (φ' ∧ (φ' S ψ')) S ψ'
-    -- Since semantics: ∃ s < t, ψ'(s) ∧ ∀ r ∈ (s,t], φ'(r)
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hst, h_ψs, h_guard⟩
-    refine ⟨s, hst, h_ψs, fun r hsr hrt => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r hsr hrt)
-      ⟨s, hsr, h_ψs, fun q hqs hqr => h_guard q hqs (le_trans hqr hrt)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | self_accum_since φ ψ =>
-    -- swap: (φ' U ψ') → (φ' ∧ (φ' U ψ')) U ψ'
-    -- Until semantics: ∃ s > t, ψ'(s) ∧ ∀ r ∈ [t,s), φ'(r)
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hts, h_ψs, h_guard⟩
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r htr hrs)
-      ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (le_trans htr hqr) hqs⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_until φ ψ =>
-    -- swap: (φ' ∧ (φ' S ψ')) S ψ' → (φ' S ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hs1t, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s2 < s1 ∧ truth_at M Omega τ s2 ψ.swap_temporal ∧
-        ∀ r, s2 < r → r ≤ s1 → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun _ h_S => h_not h_S)
-    obtain ⟨s2, hs2s1, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hs2s1 hs1t, h_ψs2, fun r hrs2 hrt => ?_⟩
-    rcases lt_or_ge s1 r with h_lt | h_ge
-    · exact h_outer_guard r h_lt hrt
-    · exact h_inner_guard r hrs2 h_ge
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_since φ ψ =>
-    -- swap: (φ' ∧ (φ' U ψ')) U ψ' → (φ' U ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hts1, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s1 < s2 ∧ truth_at M Omega τ s2 ψ.swap_temporal ∧
-        ∀ r, s1 ≤ r → r < s2 → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun _ h_U => h_not h_U)
-    obtain ⟨s2, hs1s2, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hts1 hs1s2, h_ψs2, fun r htr hrs2 => ?_⟩
-    rcases lt_or_ge r s1 with h_lt | h_ge
-    · exact h_outer_guard r htr h_lt
-    · exact h_inner_guard r h_ge hrs2
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_until φ ψ χ θ =>
-    -- swap: ((φ' S ψ') ∧ (χ' S θ')) → ((φ'∧χ') S (ψ'∧θ')) ∨ ...
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_S1 : ∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_S2 : ∃ s, s < t ∧ truth_at M Omega τ s θ.swap_temporal ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
-    obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
-    rcases le_or_lt s2 s1 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s2, hs2t,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r hrs hrt)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hs1t,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt (le_of_lt hs1t)),
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
-    · intro _
-      exact ⟨s2, hs2t,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt (le_of_lt hs2t)) h_θs2,
-        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_since φ ψ χ θ =>
-    -- swap: ((φ' U ψ') ∧ (χ' U θ')) → ((φ'∧χ') U (ψ'∧θ')) ∨ ...
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_U1 : ∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_U2 : ∃ s, t < s ∧ truth_at M Omega τ s θ.swap_temporal ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
-    obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
-    rcases le_or_lt s1 s2 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr hrs)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 (le_of_lt hts1) h_lt),
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
-    · intro _
-      exact ⟨s2, hts2,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 (le_of_lt hts2) h_lt) h_θs2,
-        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
-  | until_elim φ ψ =>
-    -- swap: (φ' S ψ') → (φ' ∨ ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hst, h_ψs, h_guard⟩
-    intro h_not_φ
-    exact absurd (h_guard t hst (le_refl t)) h_not_φ
-  | since_elim φ ψ =>
-    -- swap: (φ' U ψ') → (φ' ∨ ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hts, h_ψs, h_guard⟩
-    intro h_not_φ
-    exact absurd (h_guard t (le_refl t) hts) h_not_φ
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
+  -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
   | until_F φ ψ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg]
@@ -789,18 +664,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
         (fun h_neg => h_neg s1 h_gt h_φs1) h_ψs2)
   | F_until_equiv φ => exact swap_axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact swap_axiom_P_since_equiv_valid φ
-  | until_guard φ ψ =>
-    -- Swap of (φ U ψ) → φ is (φ' S ψ') → φ', which is since_guard
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro ⟨s, hst, _h_ψs, h_guard⟩
-    exact h_guard t hst le_rfl
-  | since_guard φ ψ =>
-    -- Swap of (φ S ψ) → φ is (φ' U ψ') → φ', which is until_guard
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro ⟨s, hts, _h_ψs, h_guard⟩
-    exact h_guard t le_rfl hts
+  -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 /-! ## Axiom Validity (Local)
@@ -1106,23 +970,11 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     obtain ⟨s, hst⟩ := exists_lt t
     exact h_all_neg s hst (fun h => h)
   | left_mono_until φ ψ χ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_future⟩ := and_extract h_conj
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    rcases eq_or_lt_of_le htr with h_eq | h_lt
-    · exact (h_eq ▸ h_at_t) (h_guard r htr hrs)
-    · exact h_future r h_lt (h_guard r htr hrs)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | left_mono_since φ ψ χ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_past⟩ := and_extract h_conj
-    refine ⟨s, hst, h_ψs, fun r hsr hrt => ?_⟩
-    rcases eq_or_lt_of_le hrt with h_eq | h_lt
-    · subst h_eq; exact h_at_t (h_guard r hsr hrt)
-    · exact h_past r h_lt (h_guard r hsr hrt)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | right_mono_until φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
@@ -1144,119 +996,24 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     intro h_φt s hst h_G_neg
     exact h_G_neg t hst h_φt
   | self_accum_until φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hts, h_ψs, h_guard⟩
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r htr hrs)
-      ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (le_trans htr hqr) hqs⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | self_accum_since φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hst, h_ψs, h_guard⟩
-    refine ⟨s, hst, h_ψs, fun r hrs hrt => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r hrs hrt)
-      ⟨s, hrs, h_ψs, fun q hqs hqr => h_guard q hqs (le_trans hqr hrt)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_until φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hts1, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ := by
-      by_contra h_not; exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s1 < s2 ∧ truth_at M Omega τ s2 ψ ∧
-        ∀ r, s1 ≤ r → r < s2 → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_endpoint (fun _ h_U => h_not h_U)
-    obtain ⟨s2, hs1s2, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hts1 hs1s2, h_ψs2, fun r htr hrs2 => ?_⟩
-    rcases lt_or_ge r s1 with h_lt | h_ge
-    · exact h_outer_guard r htr h_lt
-    · exact h_inner_guard r h_ge hrs2
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_since φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hs1t, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ := by
-      by_contra h_not; exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s2 < s1 ∧ truth_at M Omega τ s2 ψ ∧
-        ∀ r, s2 < r → r ≤ s1 → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_endpoint (fun _ h_S => h_not h_S)
-    obtain ⟨s2, hs2s1, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hs2s1 hs1t, h_ψs2, fun r hrs2 hrt => ?_⟩
-    rcases lt_or_ge s1 r with h_lt | h_ge
-    · exact h_outer_guard r h_lt hrt
-    · exact h_inner_guard r hrs2 h_ge
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_until φ ψ χ θ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_U1 : ∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_U2 : ∃ s, t < s ∧ truth_at M Omega τ s θ ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
-    obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
-    rcases le_or_lt s1 s2 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr hrs)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 (le_of_lt hts1) h_lt),
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
-    · intro _
-      exact ⟨s2, hts2,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 (le_of_lt hts2) h_lt) h_θs2,
-        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_since φ ψ χ θ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_S1 : ∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_S2 : ∃ s, s < t ∧ truth_at M Omega τ s θ ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
-    obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
-    rcases le_or_lt s2 s1 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s2, hs2t,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r hrs hrt)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hs1t,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt (le_of_lt hs1t)),
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
-    · intro _
-      exact ⟨s2, hs2t,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt (le_of_lt hs2t)) h_θs2,
-        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
-  | until_elim φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hts, h_ψs, h_guard⟩ h_not_φ
-    exact absurd (h_guard t (le_refl t) hts) h_not_φ
-  | since_elim φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hst, h_ψs, h_guard⟩ h_not_φ
-    exact absurd (h_guard t hst (le_refl t)) h_not_φ
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
+  -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
   | until_F φ ψ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at, Formula.some_future, Formula.neg]
@@ -1271,16 +1028,7 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
-  | until_guard φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at]
-    intro ⟨s, hts, _h_ψs, h_guard⟩
-    exact h_guard t le_rfl hts
-  | since_guard φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at]
-    intro ⟨s, hst, _h_ψs, h_guard⟩
-    exact h_guard t hst le_rfl
+  -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 /-! ## Rule Preservation for Local Validity
@@ -1495,25 +1243,11 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
     obtain ⟨s, hts⟩ := exists_gt t
     exact h_all_neg s hts (fun h => h)
   | left_mono_until φ ψ χ =>
-    -- swap: (φ'→χ') ∧ H(φ'→χ') → (φ' S ψ') → (χ' S ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_past⟩ := and_extract h_conj
-    refine ⟨s, hst, h_ψs, fun r hsr hrt => ?_⟩
-    rcases eq_or_lt_of_le hrt with h_eq | h_lt
-    · subst h_eq; exact h_at_t (h_guard r hsr hrt)
-    · exact h_past r h_lt (h_guard r hsr hrt)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | left_mono_since φ ψ χ =>
-    -- swap: (φ'→χ') ∧ G(φ'→χ') → (φ' U ψ') → (χ' U ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_future⟩ := and_extract h_conj
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    rcases eq_or_lt_of_le htr with h_eq | h_lt
-    · exact (h_eq ▸ h_at_t) (h_guard r htr hrs)
-    · exact h_future r h_lt (h_guard r htr hrs)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | right_mono_until φ ψ χ =>
     -- swap: H(φ'→χ') → (φ' S ψ') → (χ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1537,133 +1271,24 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
     intro h_φt s hts h_H_neg
     exact h_H_neg t hts h_φt
   | self_accum_until φ ψ =>
-    -- swap: (φ' S ψ') → (φ' ∧ (φ' S ψ')) S ψ'
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hst, h_ψs, h_guard⟩
-    refine ⟨s, hst, h_ψs, fun r hsr hrt => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r hsr hrt)
-      ⟨s, hsr, h_ψs, fun q hqs hqr => h_guard q hqs (le_trans hqr hrt)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | self_accum_since φ ψ =>
-    -- swap: (φ' U ψ') → (φ' ∧ (φ' U ψ')) U ψ'
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hts, h_ψs, h_guard⟩
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r htr hrs)
-      ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (le_trans htr hqr) hqs⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_until φ ψ =>
-    -- swap: (φ' ∧ (φ' S ψ')) S ψ' → (φ' S ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hs1t, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s2 < s1 ∧ truth_at M Omega τ s2 ψ.swap_temporal ∧
-        ∀ r, s2 < r → r ≤ s1 → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun _ h_S => h_not h_S)
-    obtain ⟨s2, hs2s1, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hs2s1 hs1t, h_ψs2, fun r hrs2 hrt => ?_⟩
-    rcases lt_or_ge s1 r with h_lt | h_ge
-    · exact h_outer_guard r h_lt hrt
-    · exact h_inner_guard r hrs2 h_ge
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_since φ ψ =>
-    -- swap: (φ' ∧ (φ' U ψ')) U ψ' → (φ' U ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hts1, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s1 < s2 ∧ truth_at M Omega τ s2 ψ.swap_temporal ∧
-        ∀ r, s1 ≤ r → r < s2 → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not
-      exact h_endpoint (fun _ h_U => h_not h_U)
-    obtain ⟨s2, hs1s2, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hts1 hs1s2, h_ψs2, fun r htr hrs2 => ?_⟩
-    rcases lt_or_ge r s1 with h_lt | h_ge
-    · exact h_outer_guard r htr h_lt
-    · exact h_inner_guard r h_ge hrs2
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_until φ ψ χ θ =>
-    -- swap: ((φ' S ψ') ∧ (χ' S θ')) → ((φ'∧χ') S (ψ'∧θ')) ∨ ...
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_S1 : ∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_S2 : ∃ s, s < t ∧ truth_at M Omega τ s θ.swap_temporal ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
-    obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
-    rcases le_or_lt s2 s1 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s2, hs2t,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r hrs hrt)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hs1t,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt (le_of_lt hs1t)),
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
-    · intro _
-      exact ⟨s2, hs2t,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt (le_of_lt hs2t)) h_θs2,
-        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_since φ ψ χ θ =>
-    -- swap: ((φ' U ψ') ∧ (χ' U θ')) → ((φ'∧χ') U (ψ'∧θ')) ∨ ...
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_U1 : ∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ.swap_temporal := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_U2 : ∃ s, t < s ∧ truth_at M Omega τ s θ.swap_temporal ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
-    obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
-    rcases le_or_lt s1 s2 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr hrs)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 (le_of_lt hts1) h_lt),
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
-    · intro _
-      exact ⟨s2, hts2,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 (le_of_lt hts2) h_lt) h_θs2,
-        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
-  | until_elim φ ψ =>
-    -- swap: (φ' S ψ') → (φ' ∨ ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hst, h_ψs, h_guard⟩
-    intro h_not_φ
-    exact absurd (h_guard t hst (le_refl t)) h_not_φ
-  | since_elim φ ψ =>
-    -- swap: (φ' U ψ') → (φ' ∨ ψ')
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hts, h_ψs, h_guard⟩
-    intro h_not_φ
-    exact absurd (h_guard t (le_refl t) hts) h_not_φ
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
+  -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
   | until_F φ ψ =>
     -- swap of ((φ U ψ) → F(ψ)) is ((φ' S ψ') → P(ψ'))
     intro F M Omega _h_sc τ _h_mem t
@@ -1686,18 +1311,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
     exact axiom_P_since_equiv_valid φ.swap_temporal
   | P_since_equiv φ =>
     exact axiom_F_until_equiv_valid φ.swap_temporal
-  | until_guard φ ψ =>
-    -- swap of (φ U ψ) → φ is (φ' S ψ') → φ' = since_guard
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro ⟨s, hst, _h_ψs, h_guard⟩
-    exact h_guard t hst le_rfl
-  | since_guard φ ψ =>
-    -- swap of (φ S ψ) → φ is (φ' U ψ') → φ' = until_guard
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, truth_at]
-    intro ⟨s, hts, _h_ψs, h_guard⟩
-    exact h_guard t le_rfl hts
+  -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
 
@@ -1729,23 +1343,11 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     obtain ⟨s, hst⟩ := exists_lt t
     exact h_all_neg s hst (fun h => h)
   | left_mono_until φ ψ χ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_future⟩ := and_extract h_conj
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    rcases eq_or_lt_of_le htr with h_eq | h_lt
-    · exact (h_eq ▸ h_at_t) (h_guard r htr hrs)
-    · exact h_future r h_lt (h_guard r htr hrs)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | left_mono_since φ ψ χ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have ⟨h_at_t, h_past⟩ := and_extract h_conj
-    refine ⟨s, hst, h_ψs, fun r hsr hrt => ?_⟩
-    rcases eq_or_lt_of_le hrt with h_eq | h_lt
-    · subst h_eq; exact h_at_t (h_guard r hsr hrt)
-    · exact h_past r h_lt (h_guard r hsr hrt)
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | right_mono_until φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
@@ -1767,119 +1369,24 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     intro h_φt s hst h_G_neg
     exact h_G_neg t hst h_φt
   | self_accum_until φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hts, h_ψs, h_guard⟩
-    refine ⟨s, hts, h_ψs, fun r htr hrs => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r htr hrs)
-      ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (le_trans htr hqr) hqs⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | self_accum_since φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s, hst, h_ψs, h_guard⟩
-    refine ⟨s, hst, h_ψs, fun r hrs hrt => ?_⟩
-    intro h_neg
-    exact h_neg (h_guard r hrs hrt)
-      ⟨s, hrs, h_ψs, fun q hqs hqr => h_guard q hqs (le_trans hqr hrt)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_until φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hts1, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ := by
-      by_contra h_not; exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s1 < s2 ∧ truth_at M Omega τ s2 ψ ∧
-        ∀ r, s1 ≤ r → r < s2 → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_endpoint (fun _ h_U => h_not h_U)
-    obtain ⟨s2, hs1s2, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hts1 hs1s2, h_ψs2, fun r htr hrs2 => ?_⟩
-    rcases lt_or_ge r s1 with h_lt | h_ge
-    · exact h_outer_guard r htr h_lt
-    · exact h_inner_guard r h_ge hrs2
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | absorb_since φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro ⟨s1, hs1t, h_endpoint, h_outer_guard⟩
-    have h_φs1 : truth_at M Omega τ s1 φ := by
-      by_contra h_not; exact h_endpoint (fun h => absurd h h_not)
-    have h_inner : ∃ s2, s2 < s1 ∧ truth_at M Omega τ s2 ψ ∧
-        ∀ r, s2 < r → r ≤ s1 → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_endpoint (fun _ h_S => h_not h_S)
-    obtain ⟨s2, hs2s1, h_ψs2, h_inner_guard⟩ := h_inner
-    refine ⟨s2, lt_trans hs2s1 hs1t, h_ψs2, fun r hrs2 hrt => ?_⟩
-    rcases lt_or_ge s1 r with h_lt | h_ge
-    · exact h_outer_guard r h_lt hrt
-    · exact h_inner_guard r hrs2 h_ge
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_until φ ψ χ θ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_U1 : ∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_U2 : ∃ s, t < s ∧ truth_at M Omega τ s θ ∧
-        ∀ r, t ≤ r → r < s → truth_at M Omega τ r χ := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hts1, h_ψs1, h_guard1⟩ := h_U1
-    obtain ⟨s2, hts2, h_θs2, h_guard2⟩ := h_U2
-    rcases le_or_lt s1 s2 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr hrs)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hts1,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 (le_of_lt hts1) h_lt),
-          fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr hrs) (h_guard2 r htr (lt_trans hrs h_lt))⟩
-    · intro _
-      exact ⟨s2, hts2,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 (le_of_lt hts2) h_lt) h_θs2,
-        fun r htr hrs h_neg_g => h_neg_g (h_guard1 r htr (lt_trans hrs h_lt)) (h_guard2 r htr hrs)⟩
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
   | linear_since φ ψ χ θ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_and
-    have h_S1 : ∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r φ := by
-      by_contra h_not; exact h_and (fun h _ => h_not h)
-    have h_S2 : ∃ s, s < t ∧ truth_at M Omega τ s θ ∧
-        ∀ r, s < r → r ≤ t → truth_at M Omega τ r χ := by
-      by_contra h_not; exact h_and (fun _ h => h_not h)
-    obtain ⟨s1, hs1t, h_ψs1, h_guard1⟩ := h_S1
-    obtain ⟨s2, hs2t, h_θs2, h_guard2⟩ := h_S2
-    rcases le_or_lt s2 s1 with h_le | h_lt
-    · rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · subst h_eq
-        intro h_neg_outer
-        exfalso; apply h_neg_outer; intro h_neg_first
-        exfalso; apply h_neg_first
-        exact ⟨s2, hs2t,
-          fun h_neg_ep => h_neg_ep h_ψs1 h_θs2,
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r hrs hrt)⟩
-      · intro h_neg_outer
-        exfalso; apply h_neg_outer; intro _
-        exact ⟨s1, hs1t,
-          fun h_neg_ep => h_neg_ep h_ψs1 (h_guard2 s1 h_lt (le_of_lt hs1t)),
-          fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r hrs hrt) (h_guard2 r (lt_trans h_lt hrs) hrt)⟩
-    · intro _
-      exact ⟨s2, hs2t,
-        fun h_neg_ep => h_neg_ep (h_guard1 s2 h_lt (le_of_lt hs2t)) h_θs2,
-        fun r hrs hrt h_neg_g => h_neg_g (h_guard1 r (lt_trans h_lt hrs) hrt) (h_guard2 r hrs hrt)⟩
-  | until_elim φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hts, h_ψs, h_guard⟩ h_not_φ
-    exact absurd (h_guard t (le_refl t) hts) h_not_φ
-  | since_elim φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at, Formula.or, Formula.neg]
-    intro ⟨s, hst, h_ψs, h_guard⟩ h_not_φ
-    exact absurd (h_guard t hst (le_refl t)) h_not_φ
+    -- Guard changed ≤→< (task 113). Proof needs reworking.
+    sorry
+  -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
   | until_F φ ψ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at, Formula.some_future, Formula.neg]
@@ -1894,16 +1401,7 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
-  | until_guard φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at]
-    intro ⟨s, hts, _h_ψs, h_guard⟩
-    exact h_guard t le_rfl hts
-  | since_guard φ ψ =>
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [truth_at]
-    intro ⟨s, hst, _h_ψs, h_guard⟩
-    exact h_guard t hst le_rfl
+  -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 

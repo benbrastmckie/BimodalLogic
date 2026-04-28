@@ -3,7 +3,7 @@
 - **Task**: 113 - Open Guard Refactoring for Until/Since Semantics
 - **Status**: [NOT STARTED]
 - **Effort**: 32 hours
-- **Dependencies**: Task 107 Phase 1 must be complete (sorry-free, `lake build` clean)
+- **Dependencies**: None
 - **Research Inputs**: specs/113_literature_review_completeness_techniques/reports/03_team-research.md
 - **Artifacts**: plans/03_open-guard-refactor.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -77,7 +77,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Foundation -- Semantic Change, Axiom Removal, Boneyard Archive [NOT STARTED]
+### Phase 1: Foundation -- Semantic Change, Axiom Removal, Boneyard Archive [COMPLETED]
 
 **Goal**: Change the 2 guard characters in Truth.lean, remove 4 axiom constructors from Axioms.lean, create Boneyard archive files, and introduce sorry stubs in downstream files so that `lake build` succeeds.
 
