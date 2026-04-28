@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-28T14:27:33Z",
+      "last_updated": "2026-04-28T14:37:54Z",
       "researched": "2026-04-28T14:27:33Z",
       "related_tasks": [
         93
@@ -898,11 +898,6 @@
           "summary": "Team research: root cause analysis — all 9 sorries trace to missing g-construction + wrong density f(z)=f(x). Lemma 2.6 for BurgessR3Maximal is the blocker."
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/34_implementation-plan.md",
-          "type": "plan",
-          "summary": "v21: 5 phases (Lemma 2.6 for BurgessR3Maximal, elimination g-construction, g-immutability, FUC closure, cleanup). 55h total."
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/35_team-research.md",
           "type": "report",
           "summary": "Convention mismatch is FALSE ALARM. B=GUARD in all conventions. No swap needed. BX5+BX7 path confirmed."
@@ -926,9 +921,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/39_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): literature-based analysis — all 11 sorries trace to 3 deviations from Burgess/Xu, no new math needed"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/39_implementation-plan.md",
+          "type": "plan",
+          "summary": "v22: 8 phases, 52h — faithful Burgess/Xu chronicle construction replacing invalidated v21"
         }
       ],
-      "session_id": "sess_1777385968_27e5ce",
+      "session_id": "sess_1777386722_2ea1a9",
       "started": "2026-04-25T19:11:01Z"
     },
     {
