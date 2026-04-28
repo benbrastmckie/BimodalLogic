@@ -662,15 +662,15 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-28T04:34:11Z",
-      "researched": "2026-04-28T04:34:11Z",
+      "last_updated": "2026-04-28T10:43:02Z",
+      "researched": "2026-04-28T10:43:02Z",
       "related_tasks": [
         93
       ],
       "dependencies": [
         113
       ],
-      "next_artifact_number": 37,
+      "next_artifact_number": 38,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -911,9 +911,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/36_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): guard semantics root cause identified — half-open vs open intervals invalidate A3a/A4a. Three strategic options."
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/37_post-113-plan-review.md",
+          "type": "report",
+          "summary": "Post-113 plan review: Phase 1 critically broken, 11 chronicle sorries, B_sub_A invalid, paper doesn't need completeness"
         }
       ],
-      "session_id": "sess_1777349941_ed4386",
+      "session_id": "sess_1777372629_41e7e5",
       "started": "2026-04-25T19:11:01Z"
     },
     {
