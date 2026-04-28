@@ -495,17 +495,13 @@ hypothesis.
 theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (root : Formula) :
     (cantor_bfmcs M₀ h₀).restricted_backward_until_since_coherent root := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
-
-/- Original backward Until/Since coherence proof archived below.
   intro fam hfam
   obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
   constructor
   · -- Backward Until: witness pattern → U(φ,ψ) ∈ mcs(t)
     -- By contradiction: if ¬U(φ,ψ) ∈ f(t) and ψ ∈ f(s_wit) with t < s_wit,
     -- then C4 gives z with t < z < s_wit and φ.neg ∈ f(z). But the guard
-    -- says φ ∈ f(z) (since t ≤ z < s_wit), contradiction.
+    -- says φ ∈ f(z) (since t < z < s_wit under open guard), contradiction.
     intro t φ ψ _h_sub ⟨s_wit, h_lt, h_ψ, h_guard⟩
     by_contra h_not
     set offset := s - cantor_zero N h_N
@@ -537,8 +533,8 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
       have : ⟨z, hz_dom⟩ < (cantor_iso N h_N).symm (s_wit - offset) := hz_lt
       have := (cantor_iso N h_N).strictMono this
       simp [OrderIso.apply_symm_apply] at this; linarith
-    -- Guard gives φ ∈ f(z_rat), C4 gives φ.neg ∈ f(z)
-    have h_phi_z := h_guard z_rat (le_of_lt hz_rat_gt) hz_rat_lt
+    -- Guard gives φ ∈ f(z_rat): open guard uses strict t < z_rat and z_rat < s_wit
+    have h_phi_z := h_guard z_rat hz_rat_gt hz_rat_lt
     have h_phi_z' : φ ∈ limit_f N h_N
         ((cantor_iso N h_N).symm (z_rat - offset)).val := h_phi_z
     have h_eq : ((cantor_iso N h_N).symm (z_rat - offset)).val = z := by
@@ -578,15 +574,14 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
       have : ⟨z, hz_dom⟩ < (cantor_iso N h_N).symm (t - offset) := hz_lt
       have := (cantor_iso N h_N).strictMono this
       simp [OrderIso.apply_symm_apply] at this; linarith
-    -- Guard gives φ ∈ f(z_rat), C4' gives φ.neg ∈ f(z)
-    have h_phi_z := h_guard z_rat hz_rat_gt (le_of_lt hz_rat_lt)
+    -- Guard gives φ ∈ f(z_rat): open guard uses strict s_wit < z_rat and z_rat < t
+    have h_phi_z := h_guard z_rat hz_rat_gt hz_rat_lt
     have h_phi_z' : φ ∈ limit_f N h_N
         ((cantor_iso N h_N).symm (z_rat - offset)).val := h_phi_z
     have h_eq : ((cantor_iso N h_N).symm (z_rat - offset)).val = z := by
       simp [z_rat, add_sub_cancel_right, OrderIso.symm_apply_apply]
     rw [h_eq] at h_phi_z'
     exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 φ h_phi_z' hz_neg
--/
 
 /--
 Restricted forward Until/Since coherence for the cantor BFMCS.

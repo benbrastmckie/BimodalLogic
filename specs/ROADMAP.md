@@ -122,16 +122,15 @@ and removes BX8/BX8' (not sound under irreflexive Until/Since).
 | BX6' `absorb_since` | Axioms.lean:177 | mirror for S | |
 | BX7 `linear_until` | Axioms.lean:184 | four-formula linearity disjunction | Linearity of U witnesses |
 | BX7' `linear_since` | Axioms.lean:194 | mirror for S | |
-| BX9 `until_elim` | Axioms.lean:207 | `(φUψ) → (φ ∨ ψ)` | Guard extraction |
-| BX9' `since_elim` | Axioms.lean:213 | mirror for S | |
-| BX10 `until_F` | Axioms.lean:220 | `(φUψ) → F(ψ)` | Eventuality extraction |
-| BX10' `since_P` | Axioms.lean:225 | mirror for S | |
-| BX11 `temp_linearity` | Axioms.lean:234 | F-witness linearity disjunction | Linear order on F witnesses |
-| BX11' `temp_linearity_past` | Axioms.lean:243 | mirror for P | |
-| BX12 `F_until_equiv` | Axioms.lean:252 | `F(φ) → (⊤Uφ)` | Bridges F to U |
-| BX12' `P_since_equiv` | Axioms.lean:257 | `P(φ) → (⊤Sφ)` | Mirror |
+| BX10 `until_F` | Axioms.lean:211 | `(φUψ) → F(ψ)` | Eventuality extraction |
+| BX10' `since_P` | Axioms.lean:216 | mirror for S | |
+| BX11 `temp_linearity` | Axioms.lean:225 | F-witness linearity disjunction | Linear order on F witnesses |
+| BX11' `temp_linearity_past` | Axioms.lean:234 | mirror for P | |
+| BX12 `F_until_equiv` | Axioms.lean:243 | `F(φ) → (⊤Uφ)` | Bridges F to U |
+| BX12' `P_since_equiv` | Axioms.lean:248 | `P(φ) → (⊤Sφ)` | Mirror |
 
-*Note: BX8/BX8' (until_step/since_step) were removed -- not sound under irreflexive semantics.*
+*Note: BX8/BX8' (until_step/since_step) removed -- not sound under irreflexive semantics.*
+*Note: BX9/BX9' (until_elim/since_elim) and until_guard/since_guard removed -- not sound under open guard `(t,s)` semantics (task 113).*
 
 ### Layer 4: Modal-Temporal Interaction (2)
 
@@ -691,9 +690,9 @@ Until-structure of formulas, using the following axioms:
 5. **BX6 (`absorb_until`)**: `(φU(φ ∧ (φUψ))) → (φUψ)` — prevents the
    self-accumulation from producing nested deferrals; the two-step resolution
    collapses.
-6. **BX9 (`until_elim`)**: `(φUψ) → (φ ∨ ψ)`. Under irreflexive semantics
-   with A2 guard, `φ U ψ` at `t` has witness `s > t` with `ψ(s)` and guard
-   `φ` on `[t, s)`. Since `t ∈ [t, s)`, `φ(t)` holds. So `φ ∨ ψ` at `t`.
+6. **BX9 (`until_elim`)**: REMOVED (task 113). Was `(φUψ) → (φ ∨ ψ)`.
+   Under open guard `(t,s)`, `t ∉ (t,s)` so `φ(t)` is not guaranteed.
+   Not sound under open guard semantics.
 7. **BX4 (`connect_future`)**: `φ → G(P(φ))` is used in the backward direction
    to propagate `¬(φUψ)` forward and derive a contradiction with the guard.
 8. **BX1 (`serial_future`)**: `T → F(T)` (seriality). Replaces the former

@@ -649,10 +649,11 @@ preorder admitting "junk points" from unrelated Lindenbaum extensions.
 The chain-based guard matches what the TruthLemma actually needs: guard
 properties at chain positions, not arbitrary BXPoints.
 
-The forward direction constructs a 2-element chain [w, v] using:
-- BX9 (Until elimination) for φ ∈ w
+The forward direction constructs a witness v using:
 - BX10 (eventuality extraction) for F(ψ) ∈ w
 - bx_forward_witness for the witness v with ψ ∈ v
+Note: BX9 (Until elimination for φ ∈ w) was removed — unsound under open guard (task 113).
+The return type no longer claims φ ∈ w.
 
 The backward direction derives φ U ψ ∈ w from a chain witness. This
 requires Until induction along the chain, which is structurally difficult
@@ -667,46 +668,43 @@ without a deterministic successor relation.
 
 /--
 Forward Until eventuality resolution: given φ U ψ ∈ w and ψ ∉ w,
-construct v ≥ w with ψ ∈ v and φ ∈ w.
+construct v ≥ w with ψ ∈ v.
 
-The guard property (φ ∈ w) is the chain-member guard for a 2-element
-chain [w, v]. This replaces the unprovable universal guard over all
-BXPoints in the bx_le interval.
+Under open guard semantics (task 113), the guard interval (t,s) does NOT
+include the evaluation point t, so φ ∈ w cannot be derived from φ U ψ ∈ w.
+The return type no longer claims φ ∈ w (BX9 was removed as unsound).
+The witness v with ψ ∈ v comes from BX10 (until_F) + bx_forward_witness.
 -/
 noncomputable def bx_until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas := by
+    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas := by
   -- By BX10: F(ψ) ∈ w
   have h_F_psi : Formula.some_future ψ ∈ w.formulas := by
     have h_ax := DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
     exact SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_ax) h_until
   -- By bx_forward_witness: get v with bx_le w v and ψ ∈ v
-  obtain ⟨v, h_wv, h_ψv⟩ := bx_forward_witness w ψ h_F_psi
-  -- Was: BX9 (until_elim) gave φ ∈ w. BX9 removed under open guard (task 113).
-  have h_φw : φ ∈ w.formulas := by sorry
-  exact ⟨v, h_wv, h_ψv, h_φw⟩
+  exact bx_forward_witness w ψ h_F_psi
 
 /--
 Forward Since eventuality resolution: mirror of bx_until_eventuality_resolution
 for the past direction, using h_content instead of g_content.
+
+Under open guard semantics, the return type does not claim φ ∈ w (BX9' removed).
 -/
 noncomputable def bx_since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas := by
+    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas := by
   -- By BX10': P(ψ) ∈ w
   have h_P_psi : Formula.some_past ψ ∈ w.formulas := by
     have h_ax := DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
     exact SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_ax) h_since
   -- By bx_backward_witness: get v with bx_le v w and ψ ∈ v
-  obtain ⟨v, h_vw, h_ψv⟩ := bx_backward_witness w ψ h_P_psi
-  -- Was: BX9' (since_elim) gave φ ∈ w. BX9' removed under open guard (task 113).
-  have h_φw : φ ∈ w.formulas := by sorry
-  exact ⟨v, h_vw, h_ψv, h_φw⟩
+  exact bx_backward_witness w ψ h_P_psi
 
 end Bimodal.Metalogic.BXCanonical

@@ -117,7 +117,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Soundness Rebuild [NOT STARTED]
+### Phase 2: Soundness Rebuild [COMPLETED]
 
 **Goal**: Rebuild all soundness proofs that referenced the removed axioms, adapting `le`-based arguments to `lt`-based arguments for the remaining 33 axioms.
 
@@ -147,7 +147,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Chronicle Infrastructure Rebuild (RRelation + PointInsertion) [NOT STARTED]
+### Phase 3: Chronicle Infrastructure Rebuild (RRelation + PointInsertion) [COMPLETED]
 
 **Goal**: Rebuild the chronicle r-relation infrastructure and point insertion lemmas to work without `until_guard_in_mcs`, `since_guard_in_mcs`, and `until_elim_mcs`, using Xu 2.3(i) and BX10 as replacements.
 
@@ -183,7 +183,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Quasimodel, Filtration, and Frame Rebuild [NOT STARTED]
+### Phase 4: Quasimodel, Filtration, and Frame Rebuild [COMPLETED]
 
 **Goal**: Rebuild the quasimodel Construction.lean `until_elim_mcs`/`since_elim_mcs`, the filtration DefectChain.lean `until_elim_mcs_or`, and Frame.lean `until_elim`/`since_elim` usages to work without BX9.
 
@@ -213,7 +213,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: TemporalDerived, Substitution, and Final Cleanup [NOT STARTED]
+### Phase 5: TemporalDerived, Substitution, and Final Cleanup [COMPLETED]
 
 **Goal**: Archive the dead BX8-dependent theorem chain in TemporalDerived.lean, rebuild Substitution.lean, update all ROADMAP documentation, and verify the full refactor achieves zero sorry increase.
 

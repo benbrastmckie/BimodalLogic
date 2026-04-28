@@ -8,38 +8,47 @@ import Bimodal.Theorems.Propositional
 # Temporal Derived Theorems from BX Axioms
 
 This module contains temporal theorems derived from the Burgess-Xu (BX) axiom system
-under all-reflexive semantics.
+under open guard semantics `(t,s)` (task 113).
 
-## BX-Derivable Results (sorry-free)
+## Status After Open Guard Refactoring (Task 113)
 
-- `G_bot_absurd`: `⊢ G(⊥) → ⊥` (from BX1)
-- `H_bot_absurd`: `⊢ H(⊥) → ⊥` (from BX1')
-- `G_distribution`: `⊢ G(φ → ψ) → (G(φ) → G(ψ))` (temp_k_dist axiom)
-- `G_transitivity`: `⊢ G(φ) → G(G(φ))` (temp_4 axiom)
-- `connect_future_thm`: `⊢ φ → G(P(φ))` (BX4 axiom)
-- `connect_past_thm`: `⊢ φ → H(F(φ))` (BX4' axiom)
-- `density_derivable`: `⊢ G(G(φ)) → G(φ)` (from BX1)
+BX8/BX8' (until_step/since_step) and BX9/BX9' (until_elim/since_elim) were removed
+because they are not sound under open guard semantics. Several theorems that depended
+on these axioms are now sorry-stubbed pending replacement derivations:
 
-## BX8-BX10 Derived Results (sorry-free)
+### NOT VALID under open guard (sorry-stubbed, may be unprovable):
+- `psi_imp_until`, `psi_imp_since`: ψ → (φ U ψ) requires reflexive witness
+- `until_imp_or`, `since_imp_or`: Direct BX9 (removed)
+- `until_unfold_thm`, `since_unfold_thm`: Used BX5 + BX9
+- `until_unfold_wrapped`, `since_unfold_wrapped`: Depends on above
+- `refl_F`, `refl_P`: α → F(α) requires reflexive future/past
+- `until_F_expansion`, `since_P_expansion`: Depends on above
+- `bot_until_bot_absurd`, `bot_since_bot_absurd`: Used BX9
+- `bot_until_elim`, `bot_since_elim`: Used BX9
+- `bot_until_id`, `bot_since_id`: Used BX9
+- `or_until_imp`, `or_since_imp`: Depends on psi_imp_until (invalid)
+- `until_intro`, `since_intro`: Depends on bot_until_id + or_until_imp
 
-These theorems use the reflexive Until/Since introduction (BX8/BX8'),
-elimination (BX9/BX9'), and eventuality extraction (BX10/BX10') axioms.
+Original proofs archived in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`.
 
-- `bot_until_bot_absurd`, `bot_since_bot_absurd`: (⊥ U ⊥) → ⊥, (⊥ S ⊥) → ⊥
+### Pre-existing sorry (NOT related to guard change):
+- `G_bot_absurd`, `H_bot_absurd`: Requires seriality under irreflexive G/H
+- `G_implies_topUntil`: Requires BX8 (removed)
+
+### Still valid (sorry-free):
+- `G_distribution`: Direct axiom (temp_k_dist)
+- `G_transitivity`: Direct axiom (temp_4)
+- `connect_future_thm`, `connect_past_thm`: Direct BX4/BX4'
+- `density_derivable`: From BX1
 - `until_implies_some_future`, `since_implies_some_past`: Direct BX10/BX10'
-- `bot_until_elim`, `bot_since_elim`: (⊥ U a) → a, (⊥ S a) → a (private)
-- `bot_until_id`, `bot_since_id`: Public versions of the above
-
-## Key BX-Derived Lemmas for Canonical Completeness
-
-- `psi_imp_until`, `psi_imp_since`: Direct BX8/BX8'
-- `until_imp_or`, `since_imp_or`: Direct BX9/BX9'
 - `until_imp_F`, `since_imp_P`: Direct BX10/BX10'
+- `contrapositive`, `formula_or_comm`: Pure propositional
 
 ## References
 
 - Burgess 1982/84: Until-Since temporal logic axiomatization
 - Task 83: BX axiom system refactor
+- Task 113: Open guard refactoring
 -/
 
 namespace Bimodal.Theorems.TemporalDerived
@@ -52,9 +61,10 @@ open Bimodal.Theorems.Combinators
 private abbrev top : Formula := Formula.neg Formula.bot  -- ⊤ = ¬⊥
 
 /-!
-## BX-Derivable Temporal Theorems (sorry-free)
+## BX-Derivable Temporal Theorems
 
-These theorems are directly derivable from the BX axiom system.
+These theorems are directly derivable from the remaining BX axiom system.
+Some require seriality (G_bot_absurd, H_bot_absurd) which is pre-existing.
 -/
 
 /--
@@ -152,10 +162,10 @@ def G_implies_G_id (a : Formula) :
      (DerivationTree.axiom [] _ (Axiom.prop_s (a.imp a).all_future a.all_future))
 
 /-!
-## BX8-BX10 Derived Theorems (sorry-free)
+## BX10-Derived Theorems
 
-These theorems use the reflexive Until/Since axioms (BX8-BX10).
-Under reflexive semantics, X(a) = ⊥ U a ↔ a (witness s = t, guard [t,t) empty).
+Under open guard semantics, only BX10/BX10' (eventuality extraction) remain.
+BX8/BX9 theorems below are sorry-stubbed (not valid under open guard).
 -/
 
 /--

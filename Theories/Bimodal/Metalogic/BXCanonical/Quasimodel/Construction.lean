@@ -109,12 +109,10 @@ BX axioms applied at the MCS level, then projected to Sigma-signatures. -/
 -- For the construction phase, we establish the key intermediate lemmas that
 -- the BX axioms give us at the MCS level.
 
-/-- If φ U ψ ∈ w.formulas, then φ ∈ w.formulas ∨ ψ ∈ w.formulas.
-Was: BX9 (until_elim). BX9 removed under open guard (task 113). -/
-theorem until_elim_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : Formula.untl φ ψ ∈ w.formulas) :
-    φ ∈ w.formulas ∨ ψ ∈ w.formulas := by
-  sorry
+-- NOTE: `until_elim_mcs` (BX9 at MCS level) removed — unsound under open guard (task 113).
+-- Under open guard (t,s), the evaluation point t is NOT in the guard interval,
+-- so φ U ψ ∈ w does NOT imply φ ∈ w ∨ ψ ∈ w.
+-- Use `until_F_mcs` (BX10) for eventuality extraction: φ U ψ ∈ w → F(ψ) ∈ w.
 
 /-- Key lemma: BX5 self-accumulation at MCS level.
     If φ U ψ ∈ w.formulas, then (φ ∧ (φ U ψ)) U ψ ∈ w.formulas. -/
@@ -153,11 +151,8 @@ theorem refl_intro_until_mcs {w : BXPoint} {φ ψ : Formula}
 
 /-! ## Since-direction MCS lemmas -/
 
-/-- Was: BX9' at MCS level. BX9' removed under open guard (task 113). -/
-theorem since_elim_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : Formula.snce φ ψ ∈ w.formulas) :
-    φ ∈ w.formulas ∨ ψ ∈ w.formulas := by
-  sorry
+-- NOTE: `since_elim_mcs` (BX9' at MCS level) removed — unsound under open guard (task 113).
+-- Mirror of until_elim_mcs removal. Use `since_P_mcs` (BX10') instead.
 
 /-- BX5' at MCS level. -/
 theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}

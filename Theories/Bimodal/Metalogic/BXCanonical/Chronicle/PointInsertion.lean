@@ -21,18 +21,24 @@ Burgess uses axioms A3a and A4a which are **not valid** under strict semantics
 - **A4a's role** (Lemma 2.6 point insertion): BX5 + BX6 (`absorb_until`)
   + BX7 (`linear_until`) provide the needed structural properties.
 
-## Strict Semantics Considerations
+## Open Guard Semantics (Task 113)
 
-Under strict Until semantics with half-open guard [t,s):
-- U(γ,β) at t means ∃s>t, β(s) ∧ ∀u∈[t,s), γ(u)
-- The guard γ covers the current point t but NOT the witness point s
-- BX9 (until_elim) gives γ ∨ β at t (guard covers current point)
-- The witness point only has β, not necessarily γ
+Under open guard semantics with guard interval (t,s):
+- U(γ,β) at t means ∃s>t, β(s) ∧ ∀u∈(t,s), γ(u)
+- The guard γ does NOT cover the current point t (open interval)
+- BX9 (until_elim) is REMOVED: γ ∨ β at t is not guaranteed
+- The until_guard axiom is REMOVED: γ at t is not guaranteed
+- BX10 (until_F: γ U β → F(β)) remains valid
 
-This means Burgess's Lemma 2.4 must be adapted: we produce an endpoint MCS
-with β and g_content(A), plus evidence that U(γ,β) was active in the past
-(via BX4: connect_future). The guard γ is handled by the interval DCS
-construction in Phase 4.
+Several lemmas in this file are INVALID under open guard and retained as
+sorry stubs with documentation. Key valid tools:
+- BX10: γ U β → F(β) (eventuality extraction)
+- BX5: γ U β → (γ ∧ (γ U β)) U β (self-accumulation)
+- BX4: φ → G(P(φ)) (connect_future)
+
+Burgess's Lemma 2.4 produces an endpoint MCS with β and g_content(A),
+plus evidence that U(γ,β) was active in the past (via BX4). The guard γ
+is handled by the interval DCS construction in Phase 4.
 
 ## Definitions
 
@@ -43,8 +49,8 @@ Local definitions used for point insertion lemmas.
 - `lemma_2_4`: Until witness endpoint construction
 - `lemma_2_5b`: Composition of g_content ordering (transitivity)
 - `lemma_2_6`: Counterexample insertion (delta not in C -> insert D with neg delta)
-- `lemma_2_7_guard`: Guard extraction at current point from Until
-- `BurgessR3Maximal_maximality_combined`: Maximality witness for content-based splitting
+- `dc_delta_B_burgessR3`: Extension of B by delta preserves burgessR3
+- `BurgessR3Maximal_extension_fails`: Maximality prevents consistent proper extensions
 
 ### Withdrawn (Phase 3, Task 107)
 
@@ -161,15 +167,8 @@ noncomputable def lemma_2_4 {A : Set Formula}
     h_g_sub h_GP
   exact ⟨C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C⟩
 
-/-! ## BX9 Guard Extraction -/
-
-/-- U(γ,β) ∈ A implies either γ ∈ A or β ∈ A.
-Was: BX9 (until_elim). BX9 removed under open guard (task 113). -/
-theorem until_elim_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
-    (h_until : Formula.untl γ β ∈ A) :
-    γ ∈ A ∨ β ∈ A := by
-  sorry
+-- until_elim_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Use until_F_mcs (BX10) instead.
 
 /-- BX10 at MCS level: U(γ,β) ∈ A implies F(β) ∈ A. -/
 theorem until_F_mcs {A : Set Formula}
@@ -262,15 +261,8 @@ noncomputable def lemma_2_6 {A C : Set Formula}
 See module docstring for details on withdrawn lemma_2_6_strong, lemma_2_7, lemma_2_8.
 -/
 
-/-- Guard extraction: U(ξ,η) ∈ A with η ∉ A implies ξ ∈ A. -/
-theorem lemma_2_7_guard {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) (ξ η : Formula)
-    (h_until : Formula.untl ξ η ∈ A)
-    (h_η_not : η ∉ A) :
-    ξ ∈ A := by
-  rcases until_elim_mcs h_mcs ξ η h_until with h | h
-  · exact h
-  · exact absurd h h_η_not
+-- lemma_2_7_guard: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Depended on removed until_elim_mcs.
 
 /-- Conjunction membership gives left component in MCS. -/
 theorem conj_left_mcs {A : Set Formula}
@@ -474,54 +466,15 @@ theorem mcs_no_proper_dcs_extension {B D : Set Formula}
   intro L hL ⟨d⟩
   exact h_dcs.1 L (fun ψ hψ => (Set.insert_subset h_φ_D hBD.1) (hL ψ hψ)) ⟨d⟩
 
-/-- rRelation is reflexive for MCS. -/
-theorem rRelation_self_mcs {B : Set Formula}
-    (h_mcs : SetMaximalConsistent B) : rRelation B B := by
-  intro γ δ h_until
-  rcases SetMaximalConsistent.negation_complete h_mcs γ with h_γ | h_neg_γ
-  · exact Or.inr ⟨h_γ, h_until⟩
-  · exact Or.inl (SetMaximalConsistent.implication_property h_mcs
-      (until_disjunction_in_mcs h_mcs h_until) h_neg_γ)
+-- rRelation_self_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Depended on removed until_disjunction_in_mcs.
 
-/-- rRelationSince is reflexive for MCS. -/
-theorem rRelationSince_self_mcs {B : Set Formula}
-    (h_mcs : SetMaximalConsistent B) : rRelationSince B B := by
-  intro γ δ h_since
-  rcases SetMaximalConsistent.negation_complete h_mcs γ with h_γ | h_neg_γ
-  · exact Or.inr ⟨h_γ, h_since⟩
-  · exact Or.inl (SetMaximalConsistent.implication_property h_mcs
-      (since_disjunction_in_mcs h_mcs h_since) h_neg_γ)
+-- rRelationSince_self_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Depended on removed since_disjunction_in_mcs.
 
-/-! ## Full Lemma 2.6: Three-Way Decomposition (for obligation-based R3Maximal) -/
-
-/-- **Full Lemma 2.6** (Burgess 1982): Three-way decomposition for R3Maximal.
-Simplified by R3Maximal_is_mcs: all witnesses are B itself. -/
-noncomputable def lemma_2_6_full {A C : Set Formula}
-    (_h_mcs_A : SetMaximalConsistent A)
-    (_h_mcs_C : SetMaximalConsistent C)
-    {B : Set Formula}
-    (h_R3 : R3Maximal A B C)
-    (δ : Formula)
-    (h_δ_not_B : δ ∉ B) :
-    ∃ (D B' B'' : Set Formula),
-      SetMaximalConsistent D ∧
-      δ.neg ∈ D ∧
-      B ⊆ D ∧
-      B ⊆ B' ∧
-      B ⊆ B'' ∧
-      R3Maximal A B' D ∧
-      R3Maximal D B'' C := by
-  have h_mcs_B := R3Maximal_is_mcs h_R3
-  have h_neg_δ : δ.neg ∈ B := by
-    rcases SetMaximalConsistent.negation_complete h_mcs_B δ with h | h
-    · exact absurd h h_δ_not_B
-    · exact h
-  have h_dcs := mcs_is_dcs h_mcs_B
-  refine ⟨B, B, B, h_mcs_B, h_neg_δ, le_refl _, le_refl _, le_refl _, ?_, ?_⟩
-  · exact ⟨h_dcs, ⟨h_R3.2.1.1, rRelationSince_self_mcs h_mcs_B⟩,
-      fun D hD_dcs hBD _ => mcs_no_proper_dcs_extension h_mcs_B hD_dcs hBD⟩
-  · exact ⟨h_dcs, ⟨rRelation_self_mcs h_mcs_B, h_R3.2.1.2⟩,
-      fun D hD_dcs hBD _ => mcs_no_proper_dcs_extension h_mcs_B hD_dcs hBD⟩
+-- lemma_2_6_full: REMOVED (task 113 Phase 3). Dead code (no callers).
+-- Depended on removed rRelation_self_mcs / rRelationSince_self_mcs.
+-- The codebase now uses BurgessR3Maximal (content-based) instead.
 
 /-! ## Burgess Lemma 2.6 for BurgessR3Maximal (Content-Based)
 
@@ -626,311 +579,18 @@ theorem dc_delta_B_burgessR3 {A B C : Set Formula}
     · exact h_r3.2 phi h_B alpha halpha
     · exact snce_left_mono_thm h_mcs_C h_impl (h_since_all beta hbeta alpha halpha)
 
-/--
-**BurgessR3Maximal maximality witness**: If BurgessR3Maximal(A, B, C) and delta not in B,
-then NOT both of:
-- for all beta in B, gamma in C: untl(beta AND delta, gamma) in A
-- for all beta in B, alpha in A: snce(beta AND delta, alpha) in C
--/
-theorem BurgessR3Maximal_maximality_combined {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_R3M : BurgessR3Maximal A B C)
-    {delta : Formula} (h_delta_not : delta ∉ B) :
-    ¬((∀ beta ∈ B, ∀ gamma ∈ C, Formula.untl (Formula.and beta delta) gamma ∈ A) ∧
-      (∀ beta ∈ B, ∀ alpha ∈ A, Formula.snce (Formula.and beta delta) alpha ∈ C)) := by
-  intro ⟨h_until_all, h_since_all⟩
-  have h_dcs := h_R3M.1
-  by_cases h_neg_delta_B : delta.neg ∈ B
-  · -- delta.neg in B: untl(delta.neg AND delta, gamma) in A for all gamma in C.
-    -- Since (delta.neg AND delta) derives bot, by BX2: untl(bot, gamma) in A.
-    -- By until_guard: bot in A, contradiction.
-    have h_contr : DerivationTree [] ((Formula.and delta.neg delta).imp Formula.bot) := by
-      have d1 : DerivationTree [Formula.and delta.neg delta] delta.neg :=
-        DerivationTree.modus_ponens [Formula.and delta.neg delta]
-          (Formula.and delta.neg delta) delta.neg
-          (DerivationTree.weakening [] [Formula.and delta.neg delta] _
-            (Bimodal.Theorems.Propositional.lce_imp delta.neg delta) (List.nil_subset _))
-          (DerivationTree.assumption _ _ (by simp))
-      have d2 : DerivationTree [Formula.and delta.neg delta] delta :=
-        DerivationTree.modus_ponens [Formula.and delta.neg delta]
-          (Formula.and delta.neg delta) delta
-          (DerivationTree.weakening [] [Formula.and delta.neg delta] _
-            (Bimodal.Theorems.Propositional.rce_imp delta.neg delta) (List.nil_subset _))
-          (DerivationTree.assumption _ _ (by simp))
-      have d3 : DerivationTree [Formula.and delta.neg delta] Formula.bot :=
-        DerivationTree.modus_ponens [Formula.and delta.neg delta] delta Formula.bot d1 d2
-      exact deduction_theorem [] (Formula.and delta.neg delta) Formula.bot d3
-    have h_top_C : (Formula.bot.imp Formula.bot) ∈ C :=
-      theorem_in_mcs h_mcs_C (Bimodal.Theorems.Combinators.identity Formula.bot)
-    have h_utl := h_until_all delta.neg h_neg_delta_B _ h_top_C
-    have h_utl_bot := untl_left_mono_thm h_mcs_A h_contr h_utl
-    have h_bot : Formula.bot ∈ A := until_guard_in_mcs h_mcs_A h_utl_bot
-    exact h_mcs_A.1 [Formula.bot]
-      (fun psi hpsi => by simp at hpsi; exact hpsi ▸ h_bot)
-      ⟨DerivationTree.assumption _ _ (by simp)⟩
-  · -- delta.neg not in B: {delta} union B is consistent
-    have h_cons : SetConsistent ({delta} ∪ B) := by
-      haveI : ∀ x : Formula, Decidable (x ∈ B) := fun x => Classical.propDecidable _
-      intro L hL_sub ⟨d⟩
-      by_cases h_delta_L : delta ∈ L
-      · let L_B := L.filter (· ∈ B)
-        have hL_sub' : L ⊆ delta :: L_B := by
-          intro psi hpsi
-          by_cases h_B : psi ∈ B
-          · exact List.mem_cons_of_mem _
-              (List.mem_filter.mpr ⟨hpsi, decide_eq_true_eq.mpr h_B⟩)
-          · rcases hL_sub psi hpsi with h | h
-            · rw [Set.mem_singleton_iff.mp h]; exact .head _
-            · exact absurd h h_B
-        have d_w := DerivationTree.weakening L (delta :: L_B) Formula.bot d hL_sub'
-        have d_neg := deduction_theorem L_B delta Formula.bot d_w
-        have hLB_sub : ∀ psi ∈ L_B, psi ∈ B := by
-          intro psi hpsi; exact decide_eq_true_eq.mp (List.mem_filter.mp hpsi).2
-        exact h_neg_delta_B (h_dcs.2 L_B _ hLB_sub d_neg)
-      · have hL_B : ∀ psi ∈ L, psi ∈ B := by
-          intro psi hpsi
-          rcases hL_sub psi hpsi with h | h
-          · exact absurd (Set.mem_singleton_iff.mp h ▸ hpsi) h_delta_L
-          · exact h
-        exact h_dcs.1 L hL_B ⟨d⟩
-    have h_dc_r3 := dc_delta_B_burgessR3 h_mcs_A h_mcs_C h_dcs h_R3M.2.1
-      h_until_all h_since_all
-    exact BurgessR3Maximal_extension_fails h_R3M h_delta_not h_cons h_dc_r3
+-- BurgessR3Maximal_maximality_combined: REMOVED (task 113 Phase 3). Dead code (no callers).
+-- The delta.neg ∈ B case is INVALID under open guard (needs until_guard_in_mcs
+-- to derive bot from bot U gamma). The codebase uses BurgessR3Maximal directly.
+-- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
-/-! ## Burgess Lemma 2.6: Full D₀ Seed Construction
-
-The content-based splitting lemma following Burgess 1982. Given BurgessR3Maximal(A, B, C)
-and delta ∉ B, construct MCS D with ¬delta ∈ D and BurgessR3Maximal(A, B', D),
-BurgessR3Maximal(D, B'', C) with B ⊆ B', B ⊆ B''.
-
-**D₀ Seed**: The full Burgess seed is
-  D₀ = {S(β,α) : α∈A, β∈B} ∪ B ∪ {¬δ} ∪ {U(β,γ) : β∈B, γ∈C}
-
-This ensures B ⊆ D₀ (hence B ⊆ D after Lindenbaum), and the Until/Since
-formulas ensure burgessR3(A, B, D) and burgessR3(D, B, C) hold for the
-seed's content. Zorn extension then gives BurgessR3Maximal.
-
-**Consistency Argument**: Uses BurgessR3Maximal_maximality_combined. For any
-finite subset L of D₀, the elements from the Until/Since parts are already
-in A/C respectively, and B is consistent. The ¬delta part is handled by
-showing delta cannot be derived from the rest (since delta ∉ B and B ⊆ DC(D₀)).
--/
-
-/-- The full Burgess D₀ seed for Lemma 2.6. -/
-def burgess_D0 (A B C : Set Formula) (delta : Formula) : Set Formula :=
-  {φ | ∃ α ∈ A, ∃ β ∈ B, φ = Formula.snce β α} ∪
-  B ∪
-  ({delta.neg} : Set Formula) ∪
-  {φ | ∃ β ∈ B, ∃ γ ∈ C, φ = Formula.untl β γ}
-
-/-- B is a subset of the D₀ seed. -/
-theorem B_subset_burgess_D0 {A B C : Set Formula} {delta : Formula} :
-    B ⊆ burgess_D0 A B C delta := by
-  intro φ hφ
-  exact Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_union_right _ hφ))
-
-/-- ¬delta is in the D₀ seed. -/
-theorem neg_delta_in_burgess_D0 {A B C : Set Formula} {delta : Formula} :
-    delta.neg ∈ burgess_D0 A B C delta := by
-  exact Set.mem_union_left _
-    (Set.mem_union_right _ (Set.mem_singleton delta.neg))
-
-/-- Until formulas U(β,γ) for β ∈ B, γ ∈ C are in the D₀ seed. -/
-theorem untl_in_burgess_D0 {A B C : Set Formula} {delta : Formula}
-    {β : Formula} (hβ : β ∈ B) {γ : Formula} (hγ : γ ∈ C) :
-    Formula.untl β γ ∈ burgess_D0 A B C delta :=
-  Set.mem_union_right _ ⟨β, hβ, γ, hγ, rfl⟩
-
-/-- Since formulas S(β,α) for β ∈ B, α ∈ A are in the D₀ seed. -/
-theorem snce_in_burgess_D0 {A B C : Set Formula} {delta : Formula}
-    {α : Formula} (hα : α ∈ A) {β : Formula} (hβ : β ∈ B) :
-    Formula.snce β α ∈ burgess_D0 A B C delta :=
-  Set.mem_union_left _
-    (Set.mem_union_left _
-      (Set.mem_union_left _ ⟨α, hα, β, hβ, rfl⟩))
-
-/-- **D₀ seed consistency**: The full Burgess seed is consistent.
-
-The key argument: any finite L ⊆ D₀ with L ⊢ ⊥ would enable constructing
-a proper DCS extension of B satisfying burgessR3(A, -, C), contradicting
-the maximality of B in BurgessR3Maximal(A, B, C).
-
-Specifically: if L ⊢ ⊥ and we separate ¬delta from L, we get L' ⊢ delta
-where L' ⊆ D₀ \ {¬delta}. But D₀ \ {¬delta} ⊆ DC(B ∪ Until_part ∪ Since_part),
-and all Until/Since elements are already derivable from B (via burgessR3
-conditions). So delta ∈ DC(B), meaning delta ∈ B (since B is a DCS),
-contradicting delta ∉ B.
-
-More precisely: the Until formulas U(β,γ) are in A, the Since formulas
-S(β,α) are in C. These are NOT directly in B. The consistency proof must
-show that combining elements from B with elements that are theorems relative
-to A/C cannot produce ⊥ while the individual sets remain consistent. -/
--- B ⊆ A when burgessR3(A, B, C) and C is nonempty MCS.
--- Proof: pick any γ₀ ∈ C. For β ∈ B: untl(β, γ₀) ∈ A (burgessRSet).
--- By until_guard: β ∈ A.
-theorem B_sub_A_of_burgessR3 {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_r3 : burgessR3 A B C) :
-    B ⊆ A := by
-  -- C is an MCS so it's nonempty: ⊤ ∈ C (where ⊤ = ⊥ → ⊥)
-  have h_top_C : (Formula.bot.imp Formula.bot) ∈ C :=
-    theorem_in_mcs h_mcs_C (Bimodal.Theorems.Combinators.identity Formula.bot)
-  intro β hβ
-  have h_untl := h_r3.1 β hβ _ h_top_C
-  exact until_guard_in_mcs h_mcs_A h_untl
-
--- B ⊆ C when burgessR3(A, B, C) and A is nonempty MCS.
-theorem B_sub_C_of_burgessR3 {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_r3 : burgessR3 A B C) :
-    B ⊆ C := by
-  have h_top_A : (Formula.bot.imp Formula.bot) ∈ A :=
-    theorem_in_mcs h_mcs_A (Bimodal.Theorems.Combinators.identity Formula.bot)
-  intro β hβ
-  have h_snce := h_r3.2 β hβ _ h_top_A
-  exact since_guard_in_mcs h_mcs_C h_snce
-
-/-- Every element of D₀ except ¬δ is either in A or in C.
-More precisely: elements from B and Until components are in A,
-elements from B and Since components are in C. -/
-theorem burgess_D0_elem_in_A_or_C {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_r3 : burgessR3 A B C) {delta φ : Formula}
-    (hφ : φ ∈ burgess_D0 A B C delta) (hφ_ne : φ ≠ delta.neg) :
-    φ ∈ A ∨ φ ∈ C := by
-  have h_B_A := B_sub_A_of_burgessR3 h_mcs_A h_mcs_C h_r3
-  have h_B_C := B_sub_C_of_burgessR3 h_mcs_A h_mcs_C h_r3
-  simp only [burgess_D0, Set.mem_union, Set.mem_setOf_eq, Set.mem_singleton_iff] at hφ
-  rcases hφ with ((⟨α, hα, β, hβ, rfl⟩ | hφ_B) | hφ_neg) | ⟨β, hβ, γ, hγ, rfl⟩
-  · -- Since formula S(β, α): in C by burgessRSetSince
-    exact Or.inr (h_r3.2 β hβ α hα)
-  · -- B element: in both A and C
-    exact Or.inl (h_B_A hφ_B)
-  · -- ¬δ: excluded by hypothesis
-    exact absurd hφ_neg hφ_ne
-  · -- Until formula U(β, γ): in A by burgessRSet
-    exact Or.inl (h_r3.1 β hβ γ hγ)
-
-/-- F-monotonicity at MCS level: if ⊢ X → Y and F(X) ∈ A then F(Y) ∈ A. -/
-theorem F_mono_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {X Y : Formula}
-    (h_impl : DerivationTree [] (X.imp Y))
-    (h_FX : X.some_future ∈ A) :
-    Y.some_future ∈ A := by
-  -- F(X) ∈ A means ¬G(¬X) ∈ A, i.e. G(¬X) ∉ A.
-  -- From ⊢ X → Y: contrapositive ⊢ ¬Y → ¬X.
-  -- By temporal necessitation: ⊢ G(¬Y → ¬X).
-  -- By temporal K: ⊢ G(¬Y → ¬X) → (G(¬Y) → G(¬X)).
-  -- So G(¬Y) → G(¬X) ∈ A. Since G(¬X) ∉ A → G(¬Y) ∉ A, i.e., F(Y) ∈ A.
-  -- We use F_neg_of_G_not: G(Y) ∉ A → F(¬Y) ∈ A.
-  -- But we need a different form. Let's go through Until.
-  -- BX12: F(X) → ⊤ U X
-  -- BX3: G(X → Y) → ((⊤ U X) → (⊤ U Y))
-  -- BX10: (⊤ U Y) → F(Y)
-  set top := Formula.bot.imp Formula.bot
-  -- Step 1: F(X) → (⊤ U X)
-  have h_f_to_u : X.some_future.imp (Formula.untl top X) ∈ A :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.F_until_equiv X))
-  have h_tux : Formula.untl top X ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs h_f_to_u h_FX
-  -- Step 2: G(X → Y) ∈ A
-  have h_G_impl : (X.imp Y).all_future ∈ A :=
-    theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_impl)
-  -- Step 3: BX3: G(X → Y) → ((⊤ U X) → (⊤ U Y))
-  have h_bx3 : (X.imp Y).all_future.imp ((Formula.untl top X).imp (Formula.untl top Y)) ∈ A :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.right_mono_until X Y top))
-  have h_chain : (Formula.untl top X).imp (Formula.untl top Y) ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs h_bx3 h_G_impl
-  have h_tuy : Formula.untl top Y ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs h_chain h_tux
-  -- Step 4: BX10: (⊤ U Y) → F(Y)
-  have h_u_to_f : (Formula.untl top Y).imp Y.some_future ∈ A :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.until_F top Y))
-  exact SetMaximalConsistent.implication_property h_mcs h_u_to_f h_tuy
-
-/-- Left-mono contrapositive at MCS level: if untl(β,γ) ∈ A and untl(β∧δ,γ) ∉ A,
-then ¬δ ∈ A or F(¬δ) ∈ A.
-
-The proof uses BX2 (left monotonicity) contrapositively: if the guard cannot be
-strengthened from β to β∧δ, then either (β→δ) fails now (giving ¬δ since β∈A)
-or G(β→δ) fails (giving F(¬δ) by temporal duality). -/
-theorem left_mono_contrapositive_neg_delta {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {β γ delta : Formula}
-    (h_untl : Formula.untl β γ ∈ A)
-    (h_neg_untl : Formula.untl (Formula.and β delta) γ ∉ A) :
-    delta.neg ∈ A ∨ delta.neg.some_future ∈ A := by
-  -- BX2: (β→β∧δ) ∧ G(β→β∧δ) → (untl(β,γ) → untl(β∧δ,γ))
-  set θ := β.imp (β.and delta) with θ_def
-  -- The full BX2 instance
-  have h_bx2 : DerivationTree [] (Formula.and θ θ.all_future |>.imp
-      ((Formula.untl β γ).imp (Formula.untl (Formula.and β delta) γ))) :=
-    DerivationTree.axiom [] _ (Axiom.left_mono_until β γ (Formula.and β delta))
-  -- θ ∧ G(θ) → untl(β∧δ,γ), using untl(β,γ) ∈ A via flip
-  -- BX2 has the form: (θ∧G(θ)) → (untl(β,γ) → untl(β∧δ,γ))
-  -- By flip: untl(β,γ) → ((θ∧G(θ)) → untl(β∧δ,γ))
-  -- Apply with h_untl: (θ∧G(θ)) → untl(β∧δ,γ)
-  have h_flipped : (Formula.untl β γ).imp
-      ((Formula.and θ θ.all_future).imp (Formula.untl (Formula.and β delta) γ)) ∈ A := by
-    have h1 := theorem_in_mcs h_mcs h_bx2
-    have h_flip := theorem_in_mcs h_mcs
-      (@Bimodal.Theorems.Combinators.theorem_flip
-        (Formula.and θ θ.all_future) (Formula.untl β γ) (Formula.untl (Formula.and β delta) γ))
-    exact SetMaximalConsistent.implication_property h_mcs h_flip h1
-  have h_ant_imp : (Formula.and θ θ.all_future).imp (Formula.untl (Formula.and β delta) γ) ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs h_flipped h_untl
-  -- Since untl(β∧δ,γ) ∉ A, by modus tollens: ¬(θ ∧ G(θ)) ∈ A
-  have h_neg_ant : (Formula.and θ θ.all_future).neg ∈ A := by
-    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.and θ θ.all_future) with h | h
-    · exact absurd (SetMaximalConsistent.implication_property h_mcs h_ant_imp h) h_neg_untl
-    · exact h
-  -- De Morgan: either θ ∉ A or G(θ) ∉ A
-  -- We case split on θ ∈ A
-  rcases SetMaximalConsistent.negation_complete h_mcs θ with h_θ | h_neg_θ
-  · -- θ ∈ A: then G(θ) ∉ A (otherwise θ ∧ G(θ) ∈ A, contradicting h_neg_ant)
-    have h_Gθ_not : θ.all_future ∉ A := by
-      intro h_Gθ
-      have h_conj := conj_mcs h_mcs θ θ.all_future h_θ h_Gθ
-      exact SetMaximalConsistent.neg_excludes h_mcs _ h_neg_ant h_conj
-    -- G(θ) ∉ A → F(¬θ) ∈ A
-    have h_F_neg_θ := F_neg_of_G_not h_mcs θ h_Gθ_not
-    -- F(¬θ) ∈ A, and ⊢ ¬θ → ¬δ (propositional): F(¬δ) ∈ A
-    right
-    apply F_mono_mcs h_mcs _ h_F_neg_θ
-    -- Need: ⊢ θ.neg → delta.neg
-    -- θ = β → β∧δ. θ.neg = ¬(β → β∧δ).
-    -- ¬(β → β∧δ) → ¬δ is propositional:
-    -- From ¬(β → β∧δ): β and ¬(β∧δ). From ¬(β∧δ): ¬β ∨ ¬δ. With β: ¬δ.
-    -- Need: ⊢ θ.neg → delta.neg, i.e. ⊢ ¬(β → β∧δ) → ¬δ
-    -- Proof: δ → (β → β∧δ) by flip of pairing; contrapositive gives the result.
-    have h_d_imp_θ : DerivationTree [] (delta.imp θ) :=
-      Bimodal.Theorems.Combinators.mp
-        (Bimodal.Theorems.Combinators.pairing β delta)
-        (@Bimodal.Theorems.Combinators.theorem_flip β delta (Formula.and β delta))
-    exact Bimodal.Theorems.Combinators.mp h_d_imp_θ
-      (Bimodal.Theorems.TemporalDerived.contrapositive delta θ)
-  · -- ¬θ ∈ A: θ.neg ∈ A, meaning ¬(β → β∧δ) ∈ A.
-    left
-    have h_d_imp_θ : DerivationTree [] (delta.imp θ) :=
-      Bimodal.Theorems.Combinators.mp
-        (Bimodal.Theorems.Combinators.pairing β delta)
-        (@Bimodal.Theorems.Combinators.theorem_flip β delta (Formula.and β delta))
-    have h_neg_δ_deriv : DerivationTree [] (θ.neg.imp delta.neg) :=
-      Bimodal.Theorems.Combinators.mp h_d_imp_θ
-        (Bimodal.Theorems.TemporalDerived.contrapositive delta θ)
-    exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs h_neg_δ_deriv) h_neg_θ
-
-/-- **D₀ seed consistency**: The Burgess D₀ seed is consistent.
-
-The proof uses the BurgessR3Maximal maximality witness and BX2 (left monotonicity)
-contrapositive to derive ¬δ ∈ A or F(¬δ) ∈ A, then shows D₀ is contained in a
-consistent superset.
--/
-theorem burgess_D0_consistent {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_R3M : BurgessR3Maximal A B C)
-    {delta : Formula} (h_delta_not : delta ∉ B) :
-    SetConsistent (burgess_D0 A B C delta) := by
-  sorry
+-- burgess_D0, B_subset_burgess_D0, neg_delta_in_burgess_D0, untl_in_burgess_D0,
+-- snce_in_burgess_D0: REMOVED (task 113 Phase 3). Dead code (no callers).
+-- B_sub_A_of_burgessR3, B_sub_C_of_burgessR3, burgess_D0_elem_in_A_or_C:
+-- REMOVED (task 113 Phase 3). INVALID under open guard.
+-- F_mono_mcs, left_mono_contrapositive_neg_delta: REMOVED (task 113 Phase 3).
+-- Dead code (only called by removed BurgessR3Maximal_maximality_combined).
+-- burgess_D0_consistent: REMOVED (task 113 Phase 3). Dead code (no callers).
+-- All archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

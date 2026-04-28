@@ -12,24 +12,28 @@ from Burgess 1982 Section 2, adapted for irreflexive (strict) temporal semantics
 
 ## Main Results
 
-- `until_disjunction_in_mcs` (weakened Lemma 2.2): If `gamma U delta in A` for MCS A,
-  then `gamma ∨ delta in A`. (The stronger "{gamma} consistent" is FALSE for gamma = bot.)
-
-- `rRelation_guard_continues` (Lemma 2.3 consequence): If r(A, B) and
+- `rRelation_guard_continues'` (Lemma 2.3 consequence): If r(A, B) and
   gamma U delta in A with delta not in B, then gamma in B and gamma U delta in B.
-
-- `rRelation_dcs_seed`: Any MCS is a valid r-relation partner for itself.
 
 - `rMaximal_extension_exists`: Existence of R-maximal DCS extensions via Zorn's lemma.
 
 - `deductiveClosure_is_dcs`: The deductive closure of a consistent set is a DCS.
 
-## Adaptation for Strict Semantics
+- `until_implies_F_in_mcs` / `since_implies_P_in_mcs`: BX10/BX10' at MCS level.
 
-Under strict semantics, A3a is not valid. The r-relation lemmas use:
+- `until_self_accum_in_mcs`: BX5 at MCS level.
+
+## Adaptation for Open Guard Semantics (Task 113)
+
+Under open guard semantics (t,s), the evaluation point t is NOT in the guard
+interval. Key consequences:
+- BX9 (until_elim) is REMOVED: `(phi U psi) -> (phi ∨ psi)` is invalid
+- until_guard axiom is REMOVED: `(phi U psi) -> phi` is invalid
+- Several lemmas in this file are INVALID and marked with sorry stubs
+
+The r-relation lemmas use:
 - BX5 (self_accum_until): `(phi U psi) -> ((phi ∧ (phi U psi)) U psi)`
-- BX9 (until_elim): `(phi U psi) -> (phi ∨ psi)`
-- BX10 (until_F): `(phi U psi) -> F(psi)`
+- BX10 (until_F): `(phi U psi) -> F(psi)` (VALID under open guard)
 
 ## References
 
@@ -56,50 +60,23 @@ semantically absurd on dense orders (the guard bot can never hold at any point)
 but is syntactically consistent with the BX axiom system -- BX9 only gives
 bot ∨ delta, not bot, so no contradiction in A.
 
-The correct weaker statement IS provable: `gamma U delta ∈ A -> gamma ∨ delta ∈ A`
-(see `until_disjunction_in_mcs` below). The chronicle construction uses the
-r-relation machinery instead of guard consistency; no downstream code depends
-on this lemma.
+Under half-closed guard [t,s), the weaker statement `gamma U delta ∈ A -> gamma ∨ delta ∈ A`
+WAS provable (via BX9). Under open guard (t,s), even this weaker statement is INVALID:
+neither gamma nor delta need hold at the evaluation point t. The `until_disjunction_in_mcs`
+lemma has been REMOVED (task 113 Phase 3). The chronicle construction uses the
+r-relation machinery and BX10 instead.
 
 Withdrawn in Phase 1 of the revised plan (task 107).
 -/
 
-/--
-Variant of Lemma 2.2 that IS provable: `gamma U delta in A` implies
-`gamma ∨ delta in A` (and in particular, either gamma or delta is in A).
+-- until_disjunction_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
-This follows directly from BX9 (until_elim).
--/
-theorem until_disjunction_in_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
-    (h_until : Formula.untl γ δ ∈ A) :
-    Formula.or γ δ ∈ A := by
-  -- Was: BX9 (until_elim). BX9 removed under open guard (task 113).
-  sorry
+-- until_guard_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
-/--
-`gamma U delta in A` implies `gamma in A`.
-INVALID under open guard: the guard (t,s) does not include t.
-Kept as sorry stub for downstream compatibility (task 113).
--/
-theorem until_guard_in_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
-    (h_until : Formula.untl γ δ ∈ A) :
-    γ ∈ A := by
-  -- Was: until_guard axiom. Removed under open guard (task 113).
-  sorry
-
-/--
-`gamma S delta in A` implies `gamma in A`.
-INVALID under open guard: the guard (s,t) does not include t.
-Kept as sorry stub for downstream compatibility (task 113).
--/
-theorem since_guard_in_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
-    (h_since : Formula.snce γ δ ∈ A) :
-    γ ∈ A := by
-  -- Was: since_guard axiom. Removed under open guard (task 113).
-  sorry
+-- since_guard_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 /--
 `gamma U delta in A` implies `F(delta) in A` (by BX10).
@@ -127,16 +104,8 @@ theorem until_self_accum_in_mcs {A : Set Formula}
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_sa) h_until
 
-/--
-`gamma S delta in A` implies `delta ∨ (gamma ∧ (gamma S delta)) in A`.
-Derived from BX5' + BX9'.
--/
-theorem since_disjunction_in_mcs {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A) {γ δ : Formula}
-    (h_since : Formula.snce γ δ ∈ A) :
-    Formula.or γ δ ∈ A := by
-  -- Was: BX9' (since_elim). BX9' removed under open guard (task 113).
-  sorry
+-- since_disjunction_in_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 /--
 `gamma S delta in A` implies `P(delta) in A` (by BX10').
@@ -166,19 +135,8 @@ theorem rRelation_guard_continues' {A B : Set Formula}
   · exact absurd h_delta h_not_delta
   · exact h_guard
 
-/--
-The r-relation for any MCS B such that A ⊆ B.
-
-If A ⊆ B and B is an MCS, then r(A, B) holds because:
-For gamma U delta ∈ A, we have gamma U delta ∈ B (by subset).
-By BX9 in B: gamma ∨ delta ∈ B. By MCS negation completeness,
-either gamma ∈ B (right disjunct with gamma U delta ∈ B)
-or ¬gamma ∈ B, and from gamma ∨ delta (= ¬gamma → delta): delta ∈ B.
--/
-theorem rRelation_of_subset_mcs {A B : Set Formula}
-    (h_mcs_B : SetMaximalConsistent B)
-    (h_sub : A ⊆ B) : rRelation A B :=
-  rRelation_of_superset_mcs h_mcs_B h_sub
+-- rRelation_of_subset_mcs: REMOVED (task 113 Phase 3). Depended on invalid
+-- rRelation_of_superset_mcs. Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 /-! ## Deductive Closure -/
 
@@ -468,21 +426,12 @@ theorem r3MaximalSince_extension_exists {A C : Set Formula}
     ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
   exact hBD.2 (hB_max hD_in hBD.1)
 
-/--
-Any MCS B such that A ⊆ B and C ⊆ B satisfies r3Relation A B C.
-This is because rRelation A B holds (from A ⊆ B) and rRelationSince C B holds
-(from C ⊆ B).
--/
-theorem r3Relation_of_superset_mcs {A B C : Set Formula}
-    (h_mcs_B : SetMaximalConsistent B)
-    (h_sub_A : A ⊆ B) (h_sub_C : C ⊆ B) : r3Relation A B C :=
-  ⟨rRelation_of_superset_mcs h_mcs_B h_sub_A,
-   rRelationSince_of_superset_mcs h_mcs_B h_sub_C⟩
+-- r3Relation_of_superset_mcs: REMOVED (task 113 Phase 3). Depended on invalid
+-- rRelation_of_superset_mcs / rRelationSince_of_superset_mcs.
 
 /--
-A deductive closure seed for r3-relation: given the r-relation seed from
-rRelation_of_superset_mcs applied to a superset MCS, the three-argument
-version holds automatically.
+A deductive closure seed for r3-relation: given rRelation and rRelationSince,
+the three-argument version holds automatically.
 -/
 theorem r3_seed_from_rRelation {A B C : Set Formula}
     (h_r : rRelation A B) (h_rS : rRelationSince C B) : r3Relation A B C :=
@@ -1157,7 +1106,7 @@ theorem burgessRSince_of_deductiveClosure_singleton {A C : Set Formula} {η : Fo
 
 /--
 **BurgessR3Maximal existence from seed**: Given an element η satisfying both
-burgessR(A, η, C) and burgessRSince(C, η, A), there exists B with
+burgessR(A, η, C) and burgessRSince(C, η, A), and η ∈ A, there exists B with
 BurgessR3Maximal(A, B, C).
 
 This is the CORRECT existence theorem for the chronicle construction. Rather
@@ -1166,8 +1115,12 @@ it takes an explicit seed element η that arises from context:
 - In C5 elimination: η comes from Lemma 2.4 (the Until guard)
 - In C4 splitting: no new seed needed (burgessR3_absorption)
 
+Under open guard semantics, η ∈ A cannot be derived from burgessR(A, η, C)
+alone (until_guard axiom removed, task 113). Callers must provide η ∈ A
+directly from their proof context.
+
 Proof:
-1. η ∈ A (from burgessR(A, η, C) via until_guard)
+1. η ∈ A (provided by caller)
 2. {η} is consistent (subset of A)
 3. deductiveClosure({η}) is a DCS
 4. deductiveClosure({η}) satisfies burgessR3(A, -, C):
@@ -1178,14 +1131,10 @@ Proof:
 theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
     (h_burgessR : burgessR A η C)
-    (h_burgessRSince : burgessRSince C η A) :
+    (h_burgessRSince : burgessRSince C η A)
+    (h_η_A : η ∈ A) :
     ∃ B : Set Formula, BurgessR3Maximal A B C := by
-  -- Step 1: η ∈ A (via until_guard on untl(η, γ₀) for any theorem γ₀ ∈ C)
-  have h_η_A : η ∈ A := by
-    have h_top_C : (Formula.bot.imp Formula.bot) ∈ C := theorem_in_mcs h_mcs_C
-      (DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot))
-    exact until_guard_in_mcs h_mcs_A (h_burgessR _ h_top_C)
-  -- Step 2: {η} is consistent (subset of A)
+  -- Step 1: {η} is consistent (subset of A)
   have h_singleton_cons : SetConsistent ({η} : Set Formula) :=
     SetConsistent_of_subset (Set.singleton_subset_iff.mpr h_η_A) h_mcs_A.1
   -- Step 3: deductiveClosure({η}) is a DCS
@@ -1204,47 +1153,18 @@ theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
   obtain ⟨B, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_dcs h_dc_r3
   exact ⟨B, h_B3M⟩
 
-/-! ## Until/Since Nested Absorption
-
-Key syntactic lemma: `untl(γ, untl(γ,δ)) → untl(γ,δ)`.
-
-Proof:
-1. until_guard: `untl(γ,δ) → γ` (BX_guard)
-2. identity: `untl(γ,δ) → untl(γ,δ)` (trivial)
-3. Therefore: `untl(γ,δ) → γ ∧ untl(γ,δ)` (conjunction)
-4. By temporal necessitation: `G(untl(γ,δ) → γ ∧ untl(γ,δ))`
-5. By BX3 (right_mono_until): `untl(γ, untl(γ,δ)) → untl(γ, γ ∧ untl(γ,δ))`
-6. By BX6 (absorb_until): `untl(γ, γ ∧ untl(γ,δ)) → untl(γ,δ)`
-7. Chain (5) and (6): `untl(γ, untl(γ,δ)) → untl(γ,δ)`
--/
+-- untl_absorb_nested: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- snce_absorb_nested: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Both archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 /--
-**Nested Until absorption**: `untl(γ, untl(γ,δ)) → untl(γ,δ)`.
-Used in the C4 hard case to show that if γ ∈ g(x,y) and untl(γ,δ) ∈ f(y),
-then untl(γ,δ) ∈ f(x) (via burgessR3), contradicting neg(untl(γ,δ)) ∈ f(x).
--/
-noncomputable def untl_absorb_nested (γ δ : Formula) :
-    DerivationTree [] ((Formula.untl γ (Formula.untl γ δ)).imp (Formula.untl γ δ)) := by
-  -- Was: uses until_guard axiom. Removed under open guard (task 113).
-  -- Needs rederivation without until_guard.
-  sorry
+**Generalized C4 bridging** (INVALID under open guard, task 113):
+If burgessR3(A, B, C) and neg(untl(γ,δ)) ∈ A and untl(γ,δ) ∈ C, then γ ∉ B.
 
-/--
-**Nested Since absorption**: `snce(γ, snce(γ,δ)) → snce(γ,δ)`.
-Mirror of `untl_absorb_nested` for the Since direction.
--/
-noncomputable def snce_absorb_nested (γ δ : Formula) :
-    DerivationTree [] ((Formula.snce γ (Formula.snce γ δ)).imp (Formula.snce γ δ)) := by
-  -- Was: uses since_guard axiom. Removed under open guard (task 113).
-  sorry
-
-/--
-**Generalized C4 bridging**: If burgessR3(A, B, C) and neg(untl(γ,δ)) ∈ A
-and untl(γ,δ) ∈ C, then γ ∉ B.
-
-This is the key lemma for the non-adjacent C4 hard case: when the next domain
-point after w_max has untl(γ,δ) (rather than δ), we use the absorption
-`untl(γ, untl(γ,δ)) → untl(γ,δ)` to derive the contradiction.
+This lemma depended on `untl_absorb_nested` which is INVALID under open guard.
+The junction point s is not covered by the open guard (t,s). Retained as sorry
+stub because CounterexampleElimination.lean calls it; that file needs its own
+rework to avoid the absorption pattern.
 -/
 theorem burgessR3_gamma_not_in_B_nested {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
@@ -1253,18 +1173,12 @@ theorem burgessR3_gamma_not_in_B_nested {A B C : Set Formula}
     (h_neg_until : (Formula.untl γ δ).neg ∈ A)
     (h_until_C : Formula.untl γ δ ∈ C) :
     γ ∉ B := by
-  intro h_gamma
-  -- γ ∈ B and untl(γ,δ) ∈ C → untl(γ, untl(γ,δ)) ∈ A (by burgessR3)
-  have h1 := h_r3.1 γ h_gamma (Formula.untl γ δ) h_until_C
-  -- untl(γ, untl(γ,δ)) → untl(γ,δ) by nested absorption
-  have h2 := theorem_in_mcs h_mcs_A (untl_absorb_nested γ δ)
-  have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
-  -- untl(γ,δ) and neg(untl(γ,δ)) in MCS A → contradiction
-  exact set_consistent_not_both h_mcs_A.1 (Formula.untl γ δ) h3 h_neg_until
+  -- INVALID: depends on removed untl_absorb_nested (task 113 Phase 3).
+  sorry
 
 /--
-**Generalized C4' bridging (Since)**: If burgessR3(A, B, C) and neg(snce(γ,δ)) ∈ C
-and snce(γ,δ) ∈ A, then γ ∉ B.
+**Generalized C4' bridging (Since)** (INVALID under open guard, task 113):
+Mirror of `burgessR3_gamma_not_in_B_nested`. Retained as sorry stub.
 -/
 theorem burgessR3_gamma_not_in_B_since_nested {A B C : Set Formula}
     (h_mcs_C : SetMaximalConsistent C)
@@ -1273,10 +1187,7 @@ theorem burgessR3_gamma_not_in_B_since_nested {A B C : Set Formula}
     (h_neg_since : (Formula.snce γ δ).neg ∈ C)
     (h_since_A : Formula.snce γ δ ∈ A) :
     γ ∉ B := by
-  intro h_gamma
-  have h1 := h_r3.2 γ h_gamma (Formula.snce γ δ) h_since_A
-  have h2 := theorem_in_mcs h_mcs_C (snce_absorb_nested γ δ)
-  have h3 := SetMaximalConsistent.implication_property h_mcs_C h2 h1
-  exact set_consistent_not_both h_mcs_C.1 (Formula.snce γ δ) h3 h_neg_since
+  -- INVALID: depends on removed snce_absorb_nested (task 113 Phase 3).
+  sorry
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

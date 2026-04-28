@@ -268,7 +268,10 @@ theorem P_from_witness {w v : BXPoint} {ψ : Formula}
 
 /--
 Until truth in MCS (forward): (φ U ψ) ∈ w implies either ψ ∈ w (reflexive
-witness) or there exists v > w with ψ ∈ v and φ ∈ w.
+witness) or there exists v > w with ψ ∈ v.
+
+Under open guard semantics (task 113), the return type no longer claims φ ∈ w,
+because the guard interval (t,s) does not include the evaluation point t.
 
 This is the forward half of the truth lemma for Until. The backward half
 (deriving φ U ψ from witnesses) requires Until induction which is
@@ -277,7 +280,7 @@ structurally difficult without a deterministic successor relation.
 theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas) :
     ψ ∈ w.formulas ∨
-      (∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas) := by
+      (∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas) := by
   by_cases h_ψ : ψ ∈ w.formulas
   · exact Or.inl h_ψ
   · exact Or.inr (bx_until_eventuality_resolution w φ ψ h_until h_ψ)
@@ -294,14 +297,15 @@ theorem until_backward_refl_mcs (w : BXPoint) (φ ψ : Formula)
 
 /--
 Since forward: (φ S ψ) ∈ w implies either ψ ∈ w or there exists v < w
-with ψ ∈ v and φ ∈ w.
+with ψ ∈ v.
 
+Under open guard semantics (task 113), the return type no longer claims φ ∈ w.
 Mirror of until_forward_mcs for the past direction.
 -/
 theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas) :
     ψ ∈ w.formulas ∨
-      (∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas) := by
+      (∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas) := by
   by_cases h_ψ : ψ ∈ w.formulas
   · exact Or.inl h_ψ
   · exact Or.inr (bx_since_eventuality_resolution w φ ψ h_since h_ψ)

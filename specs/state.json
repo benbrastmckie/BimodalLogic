@@ -8,12 +8,12 @@
     {
       "project_number": 113,
       "project_name": "literature_review_completeness_techniques",
-      "status": "planned",
+      "status": "completed",
       "task_type": "formal",
       "description": "Review newly obtained literature (Xu 1988, Reynolds 1992, Caleiro-Vigano-Volpe 2013) against current BX completeness proof state to identify transferable techniques. Structured around three-phase completeness roadmap: (1) base TM logic with H, G, Box over booleans; (2) extension to U and S; (3) dense and discrete specializations. Cross-reference against active sorry sites in Chronicle/ modules and blocked tasks (18, 68).",
       "created": "2026-04-27T17:16:06Z",
-      "last_updated": "2026-04-28T09:39:32Z",
-      "session_id": "sess_1777368892_6e1922",
+      "last_updated": "2026-04-28T10:30:34Z",
+      "session_id": "sess_1777369360_7a1114",
       "researched": "2026-04-28T09:24:59Z",
       "next_artifact_number": 5,
       "artifacts": [
@@ -43,7 +43,9 @@
           "summary": "Revised 5-phase open guard refactoring plan (v04): archive invalid+dead code, restructure 2 proofs"
         }
       ],
-      "started": "2026-04-28T04:50:57Z"
+      "started": "2026-04-28T04:50:57Z",
+      "completed": "2026-04-28T10:30:34Z",
+      "completion_summary": "Open guard refactoring complete: Until/Since semantics changed from half-closed [t,s) to open (t,s), 4 unsound axioms removed, 32+8=40 sorries eliminated in soundness/chronicle/frame, 8 invalid lemmas archived to Boneyard, Truth.lean time_shift fixed, ROADMAP updated. Build clean."
     },
     {
       "project_number": 112,

@@ -496,20 +496,28 @@ Recall the reflexive semantics:
 -/
 
 /-- BX2: Left monotonicity of Until: `(φ→χ) ∧ G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
-Under half-open guard [t,s): (φ→χ)(t) covers t, G(φ→χ) covers (t,s). Together cover [t,s). -/
+Under open guard (t,s): G(φ→χ) covers all r ∈ (t,s), which is exactly the guard range. -/
 theorem left_mono_until_valid (φ ψ χ : Formula) :
     ⊨ (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
       ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_conj ⟨s, hts, h_ψs, h_guard⟩
+  have h_G : ∀ r, t < r → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
+    by_contra h_neg; exact h_conj (fun _ h => h_neg h)
+  exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
 
 /-- BX2': Left monotonicity of Since: `(φ→χ) ∧ H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
-Under half-open guard (s,t]: (φ→χ)(t) covers t, H(φ→χ) covers (s,t). Together cover (s,t]. -/
+Under open guard (s,t): H(φ→χ) covers all r ∈ (s,t), which is exactly the guard range. -/
 theorem left_mono_since_valid (φ ψ χ : Formula) :
     ⊨ (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
       ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_conj ⟨s, hst, h_ψs, h_guard⟩
+  have h_H : ∀ r, r < t → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
+    by_contra h_neg; exact h_conj (fun _ h => h_neg h)
+  exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
 
 /-- BX3: Right monotonicity of Until: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
 Same witness s; φ(s) and (φ → ψ)(s) give ψ(s). Guard is unchanged. -/
@@ -556,26 +564,60 @@ Guard at r ∈ [t, s): need φ(r) ∧ (φ U ψ)(r).
 theorem self_accum_until_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ ψ).imp
       (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro ⟨s, hts, h_ψs, h_guard⟩
+  refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
+  exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hqr hqs => h_guard q (lt_trans htr hqr) hqs⟩
 
 /-- BX5': Self-accumulation of Since: `(φ S ψ) → ((φ ∧ (φ S ψ)) S ψ)`. -/
 theorem self_accum_since_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ ψ).imp
       (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ)) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro ⟨s, hst, h_ψs, h_guard⟩
+  refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
+  exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
 
 theorem absorb_until_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ)) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
+  -- Extract φ(s₁) and (φ U ψ)(s₁) from the conjunction (encoded as double negation)
+  have h_φs₁_and_until : truth_at M Omega τ s₁ φ ∧
+      (∃ s₂, s₁ < s₂ ∧ truth_at M Omega τ s₂ ψ ∧
+        ∀ q, s₁ < q → q < s₂ → truth_at M Omega τ q φ) := by
+    constructor
+    · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
+    · by_contra h_neg; exact h_conj (fun _ h_until => h_neg h_until)
+  obtain ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩ := h_φs₁_and_until
+  -- Witness s₂ for the result. Guard covers (t, s₂) via three zones.
+  refine ⟨s₂, lt_trans hts₁ hs₁s₂, h_ψs₂, fun q htq hqs₂ => ?_⟩
+  rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
+  · exact h_guard₁ q htq h_lt
+  · exact h_eq ▸ h_φs₁
+  · exact h_guard₂ q h_gt hqs₂
 
 /-- BX6': Absorption of Since: `(φ S (φ ∧ (φ S ψ))) → (φ S ψ)`. -/
 theorem absorb_since_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ)) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
+  have h_φs₁_and_since : truth_at M Omega τ s₁ φ ∧
+      (∃ s₂, s₂ < s₁ ∧ truth_at M Omega τ s₂ ψ ∧
+        ∀ q, s₂ < q → q < s₁ → truth_at M Omega τ q φ) := by
+    constructor
+    · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
+    · by_contra h_neg; exact h_conj (fun _ h_since => h_neg h_since)
+  obtain ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩ := h_φs₁_and_since
+  refine ⟨s₂, lt_trans hs₂s₁ hs₁t, h_ψs₂, fun q hs₂q hqt => ?_⟩
+  rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
+  · exact h_guard₂ q hs₂q h_lt
+  · exact h_eq ▸ h_φs₁
+  · exact h_guard₁ q h_gt hqt
 
 /-- BX7: Linearity of Until:
 `(φ U ψ) ∧ (χ U θ) → ((φ ∧ χ) U (ψ ∧ θ)) ∨ ((φ ∧ χ) U (ψ ∧ χ)) ∨ ((φ ∧ χ) U (φ ∧ θ))`.
@@ -590,8 +632,34 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
           (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
           (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
         (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+  intro h_conj
+  -- Extract both Until hypotheses from the conjunction encoding
+  have h_both : (∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
+      ∀ r, t < r → r < s → truth_at M Omega τ r φ) ∧
+    (∃ s, t < s ∧ truth_at M Omega τ s θ ∧
+      ∀ r, t < r → r < s → truth_at M Omega τ r χ) := by
+    constructor
+    · by_contra h; exact h_conj (fun h1 _ => h h1)
+    · by_contra h; exact h_conj (fun _ h2 => h h2)
+  obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · -- s₁ < s₂: second disjunct with witness s₁ (ψ(s₁) ∧ χ(s₁))
+    intro h_neg; exfalso; apply h_neg; intro _
+    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
+    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
+  · -- s₁ = s₂: first disjunct with witness s₁ (ψ(s₁) ∧ θ(s₁))
+    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
+  · -- s₂ < s₁: third disjunct with witness s₂ (φ(s₂) ∧ θ(s₂))
+    intro _
+    refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
+    · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
+    · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
 
 theorem linear_since_valid (φ ψ χ θ : Formula) :
     ⊨ (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
@@ -600,8 +668,36 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
           (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
           (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
         (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) := by
-  -- Guard changed ≤→< (task 113). Proof needs reworking.
-  sorry
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+  intro h_conj
+  have h_both : (∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
+      ∀ r, s < r → r < t → truth_at M Omega τ r φ) ∧
+    (∃ s, s < t ∧ truth_at M Omega τ s θ ∧
+      ∀ r, s < r → r < t → truth_at M Omega τ r χ) := by
+    constructor
+    · by_contra h; exact h_conj (fun h1 _ => h h1)
+    · by_contra h; exact h_conj (fun _ h2 => h h2)
+  obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
+    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₃, just intro and prove D₃.
+    intro _
+    refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
+    · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
+    · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
+  · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
+    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₁: intro h; exfalso; apply h; intro h2; exfalso; apply h2
+    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
+  · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
+    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₂: intro h; exfalso; apply h; intro _; prove D₂
+    intro h_outer; exfalso; apply h_outer; intro _
+    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
+    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
 
 -- BX8/BX8' (until_step_valid/since_step_valid) REMOVED.
 -- BX9/BX9' (until_elim_valid/since_elim_valid) REMOVED.

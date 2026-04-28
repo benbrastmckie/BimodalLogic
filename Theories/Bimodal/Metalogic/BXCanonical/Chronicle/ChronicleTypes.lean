@@ -34,12 +34,19 @@ are resolved vs. continuing in the interval set B. This is exactly why the
 chronicle needs a binary interval function g(x,y) rather than the unary
 g_content approach used in the existing chain construction.
 
-## Adaptation for Strict Semantics
+## Adaptation for Open Guard Semantics (Task 113)
 
-Under strict (irreflexive) semantics, the Until operator `phi U psi` at time t
-requires a witness s > t (strict) with psi(s) and guard phi on [t,s) (half-open).
-The Burgess construction's use of A3a is replaced by direct application of
-BX4 (connect_future), BX5 (self_accum_until), and BX9 (until_elim).
+Under open guard semantics, the Until operator `phi U psi` at time t requires
+a witness s > t (strict) with psi(s) and guard phi on (t,s) (open interval).
+The evaluation point t is NOT in the guard interval.
+
+Key consequences:
+- BX9 (until_elim) is REMOVED: `(phi U psi) -> (phi ∨ psi)` is invalid
+- until_guard axiom is REMOVED: `(phi U psi) -> phi` is invalid
+- `rRelation_of_superset_mcs` and `rRelationSince_of_superset_mcs` are REMOVED (invalid)
+
+The Burgess construction uses BX4 (connect_future), BX5 (self_accum_until),
+and BX10 (until_F: phi U psi -> F(psi)) as replacements.
 
 ## References
 
@@ -127,9 +134,10 @@ This captures: B is a valid continuation of A with respect to Until-obligations.
 At B, either the Until-eventuality is resolved (delta holds) or the guard
 continues (gamma holds and the Until persists).
 
-Under strict semantics, this connects to:
+Under open guard semantics, this connects to:
 - BX5 (self_accum_until): phi U psi -> (phi ∧ (phi U psi)) U psi
-- BX9 (until_elim): phi U psi -> phi ∨ psi
+- BX10 (until_F): phi U psi -> F(psi)
+Note: BX9 (until_elim: phi U psi -> phi ∨ psi) has been REMOVED (task 113).
 -/
 def rRelation (A B : Set Formula) : Prop :=
   ∀ (γ δ : Formula),
@@ -539,25 +547,9 @@ theorem rRelationSince_subset {A B C : Set Formula}
   · exact Or.inl (h_sub h_delta)
   · exact Or.inr ⟨h_sub h_gamma, h_sub h_s⟩
 
-/-- The r-relation holds for any MCS B that extends A (when A is an MCS).
-If A subset B (as MCS), then trivially r(A, B) holds since gamma U delta in A
-implies gamma U delta in B, and by BX9 (until_elim) in B: gamma ∨ delta in B,
-which means either delta in B or gamma in B. In the latter case,
-gamma U delta in B by hypothesis. -/
-theorem rRelation_of_superset_mcs {A B : Set Formula}
-    (h_mcs_B : SetMaximalConsistent B)
-    (h_sub : A ⊆ B) : rRelation A B := by
-  intro γ δ h_until
-  -- Was: BX9 (until_elim). BX9 removed under open guard (task 113).
-  sorry
-
-/-- Similarly for Since. -/
-theorem rRelationSince_of_superset_mcs {A B : Set Formula}
-    (h_mcs_B : SetMaximalConsistent B)
-    (h_sub : A ⊆ B) : rRelationSince A B := by
-  intro γ δ h_since
-  -- Was: BX9' (since_elim). BX9' removed under open guard (task 113).
-  sorry
+-- rRelation_of_superset_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- rRelationSince_of_superset_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
+-- Both archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 /-! ## Three-Argument r-Relation Properties -/
 

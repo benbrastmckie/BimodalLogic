@@ -14,15 +14,14 @@ and delegation bridges from Realization.lean to Frame.lean.
 - `left_mono_until_mcs`: BX2 at MCS level ((φ→χ) ∧ G(φ→χ) → (φ U ψ → χ U ψ))
 - `left_mono_since_mcs`: BX2' at MCS level ((φ→χ) ∧ H(φ→χ) → (φ S ψ → χ S ψ))
 
-## Eventuality Resolution Status (Task 102, v6)
+## Eventuality Resolution Status (Task 113 open guard refactor)
 
 The Frame.lean forward eventuality resolution functions are proved:
-- `bx_until_eventuality_resolution`: Forward Until (proved via BX9 + BX10 + bx_forward_witness)
-- `bx_since_eventuality_resolution`: Forward Since (proved via BX9' + BX10' + bx_backward_witness)
+- `bx_until_eventuality_resolution`: Forward Until (via BX10 + bx_forward_witness)
+- `bx_since_eventuality_resolution`: Forward Since (via BX10' + bx_backward_witness)
 
-The backward functions (`bx_until_backward`, `bx_since_backward`) were removed
-in v6: their signatures were semantically unsound (φ ∈ w alone does not entail
-the full interval guard for φ U ψ ∈ w) and they had no downstream consumers.
+Under open guard (task 113), the return types no longer claim φ ∈ w
+(BX9/BX9' removed as unsound). The delegation bridges are updated to match.
 
 ## References
 
@@ -39,8 +38,8 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.BXCanonical.Filtration
 
--- NOTE: psi_imp_until_mcs / psi_imp_since_mcs REMOVED.
--- These corresponded to BX8/BX8' which are invalid under half-open guard.
+-- NOTE: psi_imp_until_mcs / psi_imp_since_mcs REMOVED (task 113).
+-- These corresponded to BX8/BX8' which are invalid under open guard (t,s).
 
 /-! ## BX12 at MCS level: F(ψ) → ⊤ U ψ -/
 
@@ -141,20 +140,22 @@ resolution functions. These bridges match the weakened signatures
 (chain-member guard instead of universal BXPoint guard). -/
 
 /-- Delegation bridge: Realization.until_eventuality_resolution can call
-    Frame.bx_until_eventuality_resolution. -/
+    Frame.bx_until_eventuality_resolution.
+    Under open guard (task 113), return type no longer claims φ ∈ w. -/
 theorem delegation_until_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
+    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
-/-- Delegation bridge for Since eventuality. -/
+/-- Delegation bridge for Since eventuality.
+    Under open guard (task 113), return type no longer claims φ ∈ w. -/
 theorem delegation_since_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas ∧ φ ∈ w.formulas :=
+    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
 
 end Bimodal.Metalogic.BXCanonical
