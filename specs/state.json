@@ -662,15 +662,15 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-28T14:08:36Z",
-      "researched": "2026-04-28T14:08:36Z",
+      "last_updated": "2026-04-28T14:27:33Z",
+      "researched": "2026-04-28T14:27:33Z",
       "related_tasks": [
         93
       ],
       "dependencies": [
         113
       ],
-      "next_artifact_number": 39,
+      "next_artifact_number": 40,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -921,9 +921,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/38_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): B_sub_A irrecoverable, D0 dead, bypass via burgessR3Maximal_exists_from_seed, FUC needs C5 strengthening, sorry count 30 not 23"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/39_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): literature-based analysis — all 11 sorries trace to 3 deviations from Burgess/Xu, no new math needed"
         }
       ],
-      "session_id": "sess_1777373132_db46fb",
+      "session_id": "sess_1777385968_27e5ce",
       "started": "2026-04-25T19:11:01Z"
     },
     {
