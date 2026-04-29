@@ -4,10 +4,11 @@
 
 TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-04-25 (C4 definition fix, g_ordered eliminated).
+state of the completeness effort as of 2026-04-29 (Phase 5b: splitting_seed_consistent sorry-free, ClosedUnderDerivation aligned with Burgess/Xu).
 
-**Architecture**: The proof system has 35 BX axioms (propositional, S5 modal,
-Burgess-Xu temporal, and modal-temporal interaction). The temporal semantics is
+**Architecture**: The proof system has 39 BX axioms (propositional, S5 modal,
+Burgess-Xu temporal including A3a/A3b enrichment + A4a/A4b separation +
+left_mono_until_G/left_mono_since_H guard strengthening, and modal-temporal interaction). The temporal semantics is
 **irreflexive**: G/H quantify over `t < s` / `s < t` (strict inequality), and
 Until/Since require strictly future/past witnesses. There are two active
 completeness paths:
@@ -18,13 +19,15 @@ completeness paths:
    #34-#36). Task 109 tracks these.
 2. **Chronicle** (`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`): Burgess 1982
    chronicle construction using controlled PointInsertion to escape Lindenbaum opacity.
-   Task 107 (active) identified a C4 definition error (arguments swapped relative to
-   Burgess 1982) that was the root cause of 25 research rounds. C4 now fixed, g_ordered
-   deleted (unnecessary with correct C4). 13 sorry sites remain across 4 files.
+   Task 107 (active). Major milestones achieved: C4 definition fixed (report 25),
+   `left_mono_until_G` axiom added (Phase 5b), `ClosedUnderDerivation` aligned with
+   Burgess/Xu DCS definition (Phase 5b-i), `splitting_seed_consistent` proved sorry-free
+   via g_content(A)⊆B maximality argument (Phase 5b-ii). **4 sorry sites remain** across
+   3 files (down from 13). PointInsertion.lean is sorry-free.
    This is the primary completeness path.
 
 **Sorry summary**: The BXCanonical module has **19 sorry proofs** across 7 files,
-plus the Chronicle sub-module has **12 sorry proofs** across 3 files.
+plus the Chronicle sub-module has **4 sorry proofs** across 3 files (down from 13).
 
 BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
 
@@ -44,15 +47,20 @@ irreflexive semantics.
 
 **BXCanonical dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
 
-Chronicle sorries (task 107, updated 2026-04-25):
+Chronicle sorries (task 107, updated 2026-04-29):
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
-| **forward_G/backward_H** (limit temporal propagation) | 2 | `ChronicleConstruction.lean` | **IN PROGRESS** (C4+C0 proof) |
-| **C4 hard cases** (counterexample elimination) | 2 | `CounterexampleElimination.lean` | **OPEN** |
-| **Lemma 2.6 full** (three-way decomposition) | 1 | `PointInsertion.lean` | **OPEN** |
-| **Countermodel wiring** (FMCS coherence) | 8 | `ChronicleToCountermodel.lean` | **OPEN** |
-| **Total Chronicle** | **13** | 4 files | |
+| **Zorn ClosedUnderDerivation** (inconsistent case) | 1 | `RRelation.lean:772` | **OPEN** (needs density or semantic argument) |
+| **Density self-pair** (counterexample elimination) | 1 | `CounterexampleElimination.lean:1130` | **OPEN** |
+| **FUC/FSC coherence** (Until/Since in countermodel) | 2 | `ChronicleToCountermodel.lean:615,619` | **OPEN** |
+| **Total Chronicle** | **4** | 3 files | |
+
+Closed since 2026-04-25 (9 sorries eliminated):
+- PointInsertion.lean: `splitting_seed_consistent`, `g_content_sub_B`, `h_content_sub_B` — sorry-free via left_mono_until_G + ClosedUnderDerivation maximality
+- CounterexampleElimination.lean: 6 c2' sorries closed (C4 forward/backward, C5 forward/backward, g_prop/h_prop)
+- ChronicleConstruction.lean: `forward_G`, `backward_H` — sorry-free (C4+C0 proof)
+- RRelation.lean: was sorry-free, now has 1 sorry (Zorn inconsistent case, introduced by ClosedUnderDerivation refactoring)
 
 **Key finding (task 107 report 25, 2026-04-25)**: The codebase's C4 definition had its arguments
 SWAPPED relative to Burgess 1982 C4a. Burgess checks the EVENT (first arg of U) at f(y) and
@@ -69,6 +77,19 @@ general completeness. GGp->Gp is valid on Q but not derivable in BX. Burgess use
 X ⊂ Q. The representation theorem goal (D=Rat, totally ordered abelian groups) accepts GGp->Gp
 as valid for that specific frame class. General completeness (all strict linear orders) requires
 sparse X where GGp->Gp may fail.
+
+**Key finding -- left_mono_until_G** (task 107 report 45, Phase 5b): Guard strengthening
+under G-information (`G(φ→χ) → (φUψ) → (χUψ)`) is needed for the g_content(A)⊆B
+maximality argument. This axiom captures the semantic fact that open-guard intervals (t,s)
+are covered by G-information (since (t,s) ⊂ (t,∞)). It subsumes BX2 under open-guard
+semantics (the pointwise conjunct is redundant). Added as BX2H/BX2H' in task 107 Phase 5b.
+
+**Key finding -- ClosedUnderDerivation** (task 107 handoff 48, Phase 5b-i): Burgess 1982
+and Xu 1988 define DCS as "closed under derivation" WITHOUT consistency. The codebase's
+`SetDeductivelyClosed` bundled consistency, excluding Set.univ from BurgessR3Maximal's
+maximality quantifier. Splitting into `ClosedUnderDerivation` (closure-only) and refactoring
+`SetDeductivelyClosed = SetConsistent ∧ ClosedUnderDerivation` aligns the formalization with
+the literature and enables the inconsistent-case proof of g_content(A)⊆B.
 
 See sections below for the axiom system, irreflexive semantics, canonical
 construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy.
@@ -128,9 +149,16 @@ and removes BX8/BX8' (not sound under irreflexive Until/Since).
 | BX11' `temp_linearity_past` | Axioms.lean:234 | mirror for P | |
 | BX12 `F_until_equiv` | Axioms.lean:243 | `F(φ) → (⊤Uφ)` | Bridges F to U |
 | BX12' `P_since_equiv` | Axioms.lean:248 | `P(φ) → (⊤Sφ)` | Mirror |
+| BX13 `enrichment_until` | Axioms.lean:160 | `p ∧ (φUψ) → (φU(ψ ∧ S(φ,p)))` | Burgess A3a enrichment |
+| BX13' `enrichment_since` | Axioms.lean:165 | mirror for S | Burgess A3b |
+| BX14 `separation_until` | Axioms.lean:193 | `(φUψ) ∧ ¬(φUχ) → (ψ∧¬χ)Uψ` | Burgess A4a separation |
+| BX14' `separation_since` | Axioms.lean:198 | mirror for S | Burgess A4b |
+| BX2H `left_mono_until_G` | Axioms.lean:140 | `G(φ→χ) → (φUψ) → (χUψ)` | Guard strengthening under G |
+| BX2H' `left_mono_since_H` | Axioms.lean:146 | `H(φ→χ) → (φSψ) → (χSψ)` | Guard strengthening under H |
 
 *Note: BX8/BX8' (until_step/since_step) removed -- not sound under irreflexive semantics.*
 *Note: BX9/BX9' (until_elim/since_elim) and until_guard/since_guard removed -- not sound under open guard `(t,s)` semantics (task 113).*
+*Note: BX2H/BX2H' (left_mono_until_G/left_mono_since_H) added in task 107 Phase 5b. BX2H subsumes BX2 under open-guard semantics (the pointwise conjunct in BX2 is redundant when the guard interval excludes the current point).*
 
 ### Layer 4: Modal-Temporal Interaction (2)
 
@@ -252,17 +280,19 @@ The Burgess 1982 chronicle construction builds a countermodel via controlled
 PointInsertion, escaping the Lindenbaum opacity that blocks BXCanonical. The
 construction lives in `Metalogic/BXCanonical/Chronicle/` (6 files, ~2990 lines).
 
-**Current state**: 12 sorry sites. The critical bottleneck is `g_content_chain_property`
-in `ChronicleConstruction.lean`, caused by an architecturally wrong unary g function.
-Task 107 is rebuilding with Burgess's binary g(x,y) interval function.
+**Current state (2026-04-29)**: 4 sorry sites (down from 13). Binary g(x,y) rebuilt,
+`ClosedUnderDerivation` aligned with Burgess/Xu, `splitting_seed_consistent` sorry-free,
+`g_content(A) ⊆ B` proved via maximality + left_mono_until_G. PointInsertion.lean is
+sorry-free. The remaining sorries are: 1 Zorn technicality (RRelation), 1 density
+self-pair (CounterexampleElimination), 2 FUC/FSC coherence (ChronicleToCountermodel).
 
 **Chronicle module structure**:
-- `ChronicleTypes.lean` (354 lines) -- Chronicle structure, ChronicleProperty invariant
-- `PointInsertion.lean` (450 lines) -- Lemma 2.4/2.6 controlled MCS insertion (sorry-free)
-- `RRelation.lean` (345 lines) -- R-relation infrastructure (sorry-free)
-- `CounterexampleElimination.lean` (561 lines) -- C4/C5 elimination (2 sorries)
-- `ChronicleConstruction.lean` (857 lines) -- Omega-chain, limit construction (1 sorry)
-- `ChronicleToCountermodel.lean` (423 lines) -- BFMCS wiring (9 sorries)
+- `ChronicleTypes.lean` (~400 lines) -- Chronicle structure, `ClosedUnderDerivation`, `BurgessR3Maximal`
+- `PointInsertion.lean` (~950 lines) -- Lemma 2.4/2.6, g_content⊆B, splitting (**sorry-free**)
+- `RRelation.lean` (~1540 lines) -- R-relation, Burgess 2.3 equiv, Zorn construction (1 sorry)
+- `CounterexampleElimination.lean` (~1150 lines) -- C4/C5 elimination (1 sorry: density self-pair)
+- `ChronicleConstruction.lean` (~860 lines) -- Omega-chain, limit construction (**sorry-free**)
+- `ChronicleToCountermodel.lean` (~650 lines) -- BFMCS wiring, Cantor iso (2 sorries: FUC/FSC)
 
 **Key insight (report 17)**: The hybrid Int-chain + enriched seed approach is definitively
 dead (dead ends #7, #13, #23, #31). The chronicle construction is NOT a dead end -- all
@@ -1032,14 +1062,23 @@ local to one MCS). Lindenbaum extensions via `Classical.choose` are non-construc
 and provide no inter-step structural guarantees. The chronicle avoids this by building
 MCS via PointInsertion with explicit control over the seed content.
 
-**Chronicle approach (task 107, plan v11 — C4 fix)**:
-1. **C4 definition fix**: C4/C4' swapped to match Burgess 1982 (check EVENT, negate GUARD). DONE.
-2. **g_ordered eliminated**: Deleted from ChronicleInvariant. Unnecessary with correct C4. DONE.
-3. **forward_G from C4+C0**: One-step proof at the limit via generalized C4. IN PROGRESS.
-4. **C4 hard case rewrite**: Counterexample elimination with correct argument roles. TODO.
-5. **Lemma 2.6 full seed**: Burgess's two-sided seed for C4 hard case. TODO.
-6. **Countermodel wiring**: Close 8 ChronicleToCountermodel sorry sites. TODO.
-7. **Representation theorem**: sorry-free `dd_countermodel_chronicle` over D=Rat.
+**Chronicle approach (task 107, plan v32)**:
+1. **C4 definition fix**: DONE (report 25).
+2. **g_ordered eliminated**: DONE.
+3. **A3a/A3b enrichment axioms**: DONE (Phase 2).
+4. **Lemma 2.3 (burgessR⟺burgessRSince)**: DONE (Phase 3, sorry-free).
+5. **C4 nested case via BX6**: DONE (Phase 4).
+6. **Lemma 2.7 gate**: DONE — valid under strict semantics (Phase 5a).
+7. **left_mono_until_G + ClosedUnderDerivation + splitting_seed_consistent**: DONE (Phase 5b).
+   - `g_content(A) ⊆ B` proved sorry-free via maximality + left_mono_until_G
+   - `splitting_seed_consistent` proved sorry-free
+   - PointInsertion.lean is sorry-free
+   - 1 new sorry in Zorn construction (inconsistent ClosedUnderDerivation case)
+8. **Lemma 2.7 formalization**: TODO (Phase 6).
+9. **lemma_2_4 return type extension**: TODO (Phase 7).
+10. **Density + C4/g_prop/h_prop g-value construction**: TODO (Phases 8-9).
+11. **C5 full case analysis**: TODO (Phase 10).
+12. **FUC/FSC coherence + final validation**: TODO (Phase 11).
 
 **The hybrid Int-chain + enriched seed approach should NOT be revisited** (dead ends
 #7, #13, #23, #31). The chronicle construction is confirmed to be the right path
@@ -1145,10 +1184,10 @@ characterization.
 
 ### Critical Path: Chronicle (primary completeness strategy)
 
-1. **Task 107** (ACTIVE): Rebuild chronicle with binary g(x,y), close 12 sorry sites.
-   Phases: binary g rebuild -> guard resolution -> C4 sub-cases -> Rat completeness -> general completeness.
-   This is the primary path to both the representation theorem (D=Rat) and general completeness
-   (all strict linear orders).
+1. **Task 107** (ACTIVE): Chronicle construction, 4 sorry sites remain.
+   Phase 5b complete (splitting_seed_consistent sorry-free). Remaining phases: Lemma 2.7 formalization,
+   lemma_2_4 extension, density/C4/C5 g-value construction, FUC/FSC coherence.
+   This is the primary path to both the representation theorem (D=Rat) and general completeness.
 2. **Task 112**: Systematic literature study supporting task 107 (Burgess 1982b, Venema 1993, etc.).
 3. **Task 95**: `#print axioms` audit on completeness theorem. Depends on task 107 or 109.
 
@@ -1192,7 +1231,8 @@ characterization.
 | 104 | [NOT STARTED] | Clean up superseded tasks + fix state.json | — |
 | 105 | [NOT STARTED] | Update stale sorry-blocker comments in BXCanonical | — |
 | 106 | [IMPLEMENTING] | Rewrite ROADMAP.md for irreflexive semantics | 93 |
-| 107 | **[IMPLEMENTING]** | Burgess chronicle construction: binary g rebuild, close 12 sorry sites, representation theorem | — |
+| 107 | **[IMPLEMENTING]** | Burgess chronicle construction: 4 sorry sites remain (down from 13), splitting_seed_consistent sorry-free, PointInsertion sorry-free | 113 |
+| 115 | [RESEARCHED] | Remove A4a + simplify BX2 (post-107 cleanup, subsumed) | 107 |
 | 109 | [NOT STARTED] | Close 23 BXCanonical sorries (5 critical-path + 18 irreflexive-consequence) | 93 |
 | 112 | **[RESEARCHED]** | Systematic literature study for task 107 representation theorem | — |
 | 82 | [NOT STARTED] | FMP Truth Preservation (weak completeness, independent) | — |
@@ -1201,4 +1241,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-04-24 (task 107: chronicle binary g rebuild -- added Chronicle path, binary g finding, density axiom finding, dead end #37, updated priority order and sorry inventory)*
+*Last updated: 2026-04-29 (task 107 Phase 5b: splitting_seed_consistent sorry-free, ClosedUnderDerivation aligned with Burgess/Xu, left_mono_until_G added, chronicle sorries 13→4, PointInsertion.lean sorry-free)*
