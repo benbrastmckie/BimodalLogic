@@ -166,7 +166,7 @@ Phases 5b and 6 can execute in parallel (Xu splitting vs Lemma 2.7 splitting). P
 
 ---
 
-### Phase 5b: Xu Lemma 2.4 Splitting -- No A4a Dependency [NOT STARTED]
+### Phase 5b: Xu Lemma 2.4 Splitting -- No A4a Dependency [BLOCKED]
 
 **Goal**: Formalize the Xu Lemma 2.4 splitting theorem: given `BurgessR3Maximal(A, B, C)` with `beta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `neg beta in D`. This replaces Burgess's Lemma 2.6 which requires A4a. The Xu approach uses only BX1/BX2 + BX13 (already in the axiom system).
 
