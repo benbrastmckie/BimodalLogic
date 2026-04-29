@@ -656,21 +656,21 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-29T03:13:27Z",
-      "researched": "2026-04-29T02:21:43Z",
+      "last_updated": "2026-04-29T03:41:37Z",
+      "researched": "2026-04-29T03:41:37Z",
       "related_tasks": [
         93
       ],
       "dependencies": [
         113
       ],
-      "next_artifact_number": 43,
+      "next_artifact_number": 44,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -976,9 +976,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase5-g-content-ordering.md",
           "type": "handoff",
           "summary": "Phase 5 blocker: g_content ordering for new adjacent pairs, 4 proposed solutions"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/43_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): density self-pair impossible, two strategies — full Burgess alignment vs remove c2' from finite stages"
         }
       ],
-      "session_id": "sess_1777430894_36ad0b",
+      "session_id": "sess_1777433619_e48da8",
       "started": "2026-04-25T19:11:01Z"
     },
     {
