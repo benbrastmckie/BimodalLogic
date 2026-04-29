@@ -239,25 +239,25 @@ because a counterexample (x, ξ, η) can only be eliminated when x is already in
 domain, and x may enter the domain at a later step than the counterexample's first
 enumeration index.
 
-The invariant maintained at every stage is `c0 ∧ c2'`:
+The invariant maintained at every stage is `c0`:
 - c0: every domain point maps to an MCS
-- c2': every adjacent pair has a BurgessR3Maximal g-value
 
-Each step calls `eliminate_potential_counterexample` which directly produces
-a chronicle with c0 and c2' (g-values for new adjacent pairs are constructed
-within each elimination function using context-specific seeds).
+Each step calls `eliminate_potential_counterexample` which produces
+a chronicle with c0. The c2' invariant is no longer threaded through
+finite stages (Phase 7 change); it is vacuously true at the limit
+since the limit domain is dense with no adjacent pairs.
 
-- omega_chain 0 = singleton_chronicle A (with vacuous c2')
+- omega_chain 0 = singleton_chronicle A
 - omega_chain (n+1) = eliminate(omega_chain n, enum (unpair n).2)
 -/
 noncomputable def omega_chain (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
-    (n : Nat) → { χ : Chronicle // χ.c0 ∧ χ.c2' }
-  | 0 => ⟨singleton_chronicle A, singleton_c0 h_mcs, singleton_c2' h_mcs⟩
+    (n : Nat) → { χ : Chronicle // χ.c0 }
+  | 0 => ⟨singleton_chronicle A, singleton_c0 h_mcs⟩
   | n + 1 =>
     let prev := omega_chain A h_mcs n
     let pc := counterexample_enum (Nat.unpair n).2
-    let elim := eliminate_potential_counterexample prev.val prev.property.1 prev.property.2 pc
-    ⟨elim.val, elim.c0, elim.c2'⟩
+    let elim := eliminate_potential_counterexample prev.val prev.property pc
+    ⟨elim.val, elim.c0⟩
 
 /--
 Extract the chronicle at step n.
@@ -271,14 +271,7 @@ The chronicle at step n satisfies C0.
 -/
 theorem omega_chain_c0 (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
     (omega_chain_val A h_mcs n).c0 :=
-  (omega_chain A h_mcs n).property.1
-
-/--
-The chronicle at step n satisfies C2'.
--/
-theorem omega_chain_c2' (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
-    (omega_chain_val A h_mcs n).c2' :=
-  (omega_chain A h_mcs n).property.2
+  (omega_chain A h_mcs n).property
 
 /--
 The elimination result at step n (the intermediate chronicle before g-rebuild).
@@ -287,8 +280,7 @@ noncomputable def omega_chain_elim_result (A : Set Formula) (h_mcs : SetMaximalC
     (n : Nat) : EliminationResult (omega_chain A h_mcs n).val (counterexample_enum (Nat.unpair n).2) :=
   eliminate_potential_counterexample
     (omega_chain A h_mcs n).val
-    (omega_chain A h_mcs n).property.1
-    (omega_chain A h_mcs n).property.2
+    (omega_chain A h_mcs n).property
     (counterexample_enum (Nat.unpair n).2)
 
 /--

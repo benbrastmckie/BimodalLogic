@@ -1,7 +1,7 @@
 # Implementation Plan: Task #107 -- Burgess Chronicle Construction (v33)
 
 - **Task**: 107 - Burgess chronicle construction for BX representation theorem
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 30 hours (estimated 18 remaining)
 - **Dependencies**: Task 113 [COMPLETED] (open-guard semantics)
 - **Research Inputs**: [reports/42_team-research.md], [reports/43_team-research.md], [reports/44_team-research.md], [reports/45_team-research.md], [reports/47_team-research.md]
@@ -167,7 +167,7 @@ Phases within the same wave can execute in parallel. Phases 6, 7, and 8 are all 
 
 ---
 
-### Phase 6: Rewrite Lemma 2.7 Using Burgess's Direct Seed Argument [NOT STARTED]
+### Phase 6: Rewrite Lemma 2.7 Using Burgess's Direct Seed Argument [IN PROGRESS]
 
 **Goal**: Delete the current Case 1/Case 2 approach to Lemma 2.7 and implement Burgess's actual proof from 1982 p. 371. The proof is a single unified seed consistency argument, not a case split on {eta} union B consistency.
 
@@ -209,7 +209,7 @@ Phases within the same wave can execute in parallel. Phases 6, 7, and 8 are all 
 
 ---
 
-### Phase 7: Remove c2' from EliminationResult (Option B) [NOT STARTED]
+### Phase 7: Remove c2' from EliminationResult (Option B) [COMPLETED]
 
 **Goal**: Remove c2' from the finite-stage EliminationResult structure and update all callers. This eliminates 6 sorry sites in CounterexampleElimination.lean (lines 830, 868, 908, 946, 982, 1014) in one architectural change. Also remove g_prop/h_prop counterexample cases entirely (they are not in Burgess's construction and exist only because the codebase uses forward_G in FMCS).
 
