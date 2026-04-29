@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-29T02:21:43Z",
+      "last_updated": "2026-04-29T02:31:18Z",
       "researched": "2026-04-29T02:21:43Z",
       "related_tasks": [
         93
@@ -971,9 +971,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/42_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): g-value construction is the fix — restructure elimination to match Burgess Lemma 2.6 splitting"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/42_implementation-plan.md",
+          "type": "plan",
+          "summary": "v25: 10 phases (4 done, 6 new), 50h — g-value construction fix via Lemma 2.4/2.6 restructuring"
         }
       ],
-      "session_id": "sess_1777428819_57c6d5",
+      "session_id": "sess_1777429507_755198",
       "started": "2026-04-25T19:11:01Z"
     },
     {
