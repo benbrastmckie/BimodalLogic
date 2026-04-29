@@ -193,9 +193,12 @@ Phase 5b is the critical path: add A4a axiom + Lemma 2.6. Phases 6 and 7 can exe
 - [x] Add `separation_since` constructor (dual) to Axioms.lean
 - [x] Prove soundness of `separation_until` in Soundness.lean (~30 lines, following the 6-step argument)
 - [x] Prove soundness of `separation_since` in Soundness.lean (symmetric argument)
-- [ ] Formalize Lemma 2.6 consistency argument using A4a:
+- [~] Formalize Lemma 2.6 consistency argument using A4a (IN PROGRESS):
   - Input: `h_r3m : BurgessR3Maximal A B C`, `h_beta : beta not in B`, `h_mcs_A : SetMaximalConsistent A`, `h_mcs_C : SetMaximalConsistent C`
   - Output: `exists B' D B'', BurgessR3Maximal A B' D /\ BurgessR3Maximal D B'' C /\ SetMaximalConsistent D /\ neg beta in D`
+  - **Done**: `lemma_2_6_splitting` proof body (steps 2-7) type-checks with 1 sorry at `splitting_seed_consistent`
+  - **Remaining sorry**: `SetConsistent ({beta.neg} ∪ g_content A ∪ h_content C)` — needs Burgess separation argument with A4a
+  - **Key insight found**: `burgessR_implies_burgessRSince` makes burgessR3 automatic from burgessRSet alone; guard enrichment via `untl(β₁∧φ, γ) ∈ A` from `untl(β₁, γ) ∈ A ∧ G(φ) ∈ A` may enable showing DC({φ}∪B) satisfies burgessR3 (contradicting maximality when φ ∉ B), proving g_content(A) ⊆ B
 - [ ] Package as `lemma_2_6` theorem in PointInsertion.lean
 - [ ] Run `lake build`
 
