@@ -597,6 +597,58 @@ theorem enrichment_since_valid (φ ψ p : Formula) :
   intro h_imp
   exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
 
+/-- BX14: Separation of Until (Burgess A4a):
+`untl(q, p) → ¬untl(r, p) → untl(q, q ∧ ¬r)`.
+From untl(q,p) at t: witness s0 > t with p(s0), q on (t,s0).
+Apply ¬untl(r,p) to s0: since p(s0), ∃u0 ∈ (t,s0) with ¬r(u0).
+q(u0) from guard. u0 witnesses untl(q, q ∧ ¬r). -/
+theorem separation_until_valid (p q r : Formula) :
+    ⊨ (Formula.untl q p |>.imp
+      ((Formula.untl r p).neg.imp (Formula.untl q (q.and r.neg)))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro ⟨s0, hts0, h_ps0, h_guard_q⟩ h_not_until_r
+  -- From ¬untl(r,p) at t, applied to witness s0:
+  -- s0 > t and p(s0), so ∃ u0 ∈ (t,s0) with ¬r(u0)
+  have h_neg_until : ¬(∃ s, t < s ∧ truth_at M Omega τ s p ∧
+      ∀ v, t < v → v < s → truth_at M Omega τ v r) := h_not_until_r
+  have h_not_all_r : ¬(∀ v, t < v → v < s0 → truth_at M Omega τ v r) := by
+    intro h_all
+    exact h_neg_until ⟨s0, hts0, h_ps0, h_all⟩
+  push_neg at h_not_all_r
+  obtain ⟨u0, htu0, hu0s0, h_not_r_u0⟩ := h_not_all_r
+  -- u0 witnesses untl(q, q ∧ ¬r): u0 > t, (q ∧ ¬r)(u0), q on (t,u0)
+  refine ⟨u0, htu0, ?_, fun v htv vlu0 => h_guard_q v htv (lt_trans vlu0 hu0s0)⟩
+  -- Show (q ∧ ¬r)(u0), i.e. ¬(q(u0) → ¬r(u0) → False)
+  intro h_imp
+  exact h_imp (h_guard_q u0 htu0 hu0s0) h_not_r_u0
+
+/-- BX14': Separation of Since (Burgess A4b, dual of A4a):
+`snce(q, p) → ¬snce(r, p) → snce(q, q ∧ ¬r)`.
+Mirror of separation_until for the Since direction. -/
+theorem separation_since_valid (p q r : Formula) :
+    ⊨ (Formula.snce q p |>.imp
+      ((Formula.snce r p).neg.imp (Formula.snce q (q.and r.neg)))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro ⟨s0, hs0t, h_ps0, h_guard_q⟩ h_not_since_r
+  have h_neg_since : ¬(∃ s, s < t ∧ truth_at M Omega τ s p ∧
+      ∀ v, s < v → v < t → truth_at M Omega τ v r) := h_not_since_r
+  have h_not_all_r : ¬(∀ v, s0 < v → v < t → truth_at M Omega τ v r) := by
+    intro h_all
+    exact h_neg_since ⟨s0, hs0t, h_ps0, h_all⟩
+  push_neg at h_not_all_r
+  obtain ⟨u0, hs0u0, hu0t, h_not_r_u0⟩ := h_not_all_r
+  refine ⟨u0, hu0t, ?_, fun v hvu0 vlt => h_guard_q v (lt_trans hs0u0 hvu0) vlt⟩
+  -- Show (q ∧ ¬r)(u0)
+  -- Wait - the Since witness needs s < t, and we have u0 < t. But the guard is on (u0, t).
+  -- Actually snce(q, q ∧ ¬r) at t: ∃ u0, u0 < t ∧ (q ∧ ¬r)(u0) ∧ ∀ v, u0 < v → v < t → q(v)
+  -- Guard on (u0, t): for v in (u0, t), v is in (s0, t) since s0 < u0, so q(v) from original guard.
+  -- But wait, the guard for snce(q, q ∧ ¬r) is on (u0, t), not (s0, t). We need q on (u0, t).
+  -- For v in (u0, t): s0 < u0 < v < t, so s0 < v < t, so q(v) from original guard. ✓
+  intro h_imp
+  exact h_imp (h_guard_q u0 hs0u0 hu0t) h_not_r_u0
+
 /-- BX5: Self-accumulation of Until: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`.
 Given φ U ψ with witness s ≥ t: same witness s. Endpoint ψ(s) is unchanged.
 Guard at r ∈ (t, s): need φ(r) ∧ (φ U ψ)(r).
@@ -806,6 +858,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | connect_past _ => exact connect_past_valid _
   | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p
   | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p
+  | separation_until p q r => exact separation_until_valid p q r
+  | separation_since p q r => exact separation_since_valid p q r
   | self_accum_until φ ψ => exact self_accum_until_valid φ ψ
   | self_accum_since φ ψ => exact self_accum_since_valid φ ψ
   | absorb_until φ ψ => exact absorb_until_valid φ ψ
@@ -848,6 +902,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | connect_past _ => exact Validity.valid_implies_valid_dense (connect_past_valid _)
   | enrichment_until φ ψ p => exact Validity.valid_implies_valid_dense (enrichment_until_valid φ ψ p)
   | enrichment_since φ ψ p => exact Validity.valid_implies_valid_dense (enrichment_since_valid φ ψ p)
+  | separation_until p q r => exact Validity.valid_implies_valid_dense (separation_until_valid p q r)
+  | separation_since p q r => exact Validity.valid_implies_valid_dense (separation_since_valid p q r)
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_dense (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_dense (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_dense (absorb_until_valid φ ψ)
@@ -891,6 +947,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | connect_past _ => exact Validity.valid_implies_valid_discrete (connect_past_valid _)
   | enrichment_until φ ψ p => exact Validity.valid_implies_valid_discrete (enrichment_until_valid φ ψ p)
   | enrichment_since φ ψ p => exact Validity.valid_implies_valid_discrete (enrichment_since_valid φ ψ p)
+  | separation_until p q r => exact Validity.valid_implies_valid_discrete (separation_until_valid p q r)
+  | separation_since p q r => exact Validity.valid_implies_valid_discrete (separation_since_valid p q r)
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_discrete (absorb_until_valid φ ψ)
@@ -988,6 +1046,8 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
     | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p D F M Omega h_sc τ h_mem t
     | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p D F M Omega h_sc τ h_mem t
+    | separation_until p q r => exact separation_until_valid p q r D F M Omega h_sc τ h_mem t
+    | separation_since p q r => exact separation_since_valid p q r D F M Omega h_sc τ h_mem t
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1153,6 +1213,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
     | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p D F M Omega h_sc τ h_mem t
     | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p D F M Omega h_sc τ h_mem t
+    | separation_until p q r => exact separation_until_valid p q r D F M Omega h_sc τ h_mem t
+    | separation_since p q r => exact separation_since_valid p q r D F M Omega h_sc τ h_mem t
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t

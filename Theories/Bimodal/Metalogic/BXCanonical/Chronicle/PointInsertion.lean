@@ -258,6 +258,86 @@ noncomputable def lemma_2_6 {A C : Set Formula}
     h_sup (Set.mem_union_left _ (Set.mem_singleton _)),
     fun χ hχ => h_sup (Set.mem_union_right _ hχ)⟩
 
+/-! ## Lemma 2.6 Splitting: BurgessR3Maximal Interval Insertion
+
+Given `BurgessR3Maximal(A, B, C)` with `β ∉ B` and `g_content(A) ⊆ C`,
+produce MCS D with `¬β ∈ D` and `BurgessR3Maximal(A, B', D)` and
+`BurgessR3Maximal(D, B'', C)`.
+
+The hypothesis `g_content(A) ⊆ C` is always available in the chronicle
+context (maintained by the construction). It gives `h_content(C) ⊆ A` by
+duality (`g_content_sub_imp_h_content_sub`).
+
+**Proof**: Construct MCS D extending `{β.neg} ∪ g_content(A) ∪ h_content(C)`.
+Then `g_content(A) ⊆ D` enables `burgessR3Maximal_from_g_content_sub(A, D)`,
+and `h_content(C) ⊆ D` gives `g_content(D) ⊆ C` by duality, enabling
+`burgessR3Maximal_from_g_content_sub(D, C)`.
+
+The seed consistency argument uses BX14 (separation_until / A4a) via the
+Burgess 1982 Lemma 2.6 construction. The key step: from `β ∉ B` and
+R3-maximality of B, the set `B ∪ {β.neg}` is consistent. Then
+`g_content(A) ∪ h_content(C) ∪ B ∪ {β.neg}` is consistent because
+B already embeds the g_content/h_content relationship through R3.
+-/
+
+/-- Seed consistency for Lemma 2.6 splitting: `{β.neg} ∪ g_content(A) ∪ h_content(C)`
+is consistent when `BurgessR3Maximal(A, B, C)` and `β ∉ B` and `g_content(A) ⊆ C`.
+
+This is the core mathematical step. The proof requires BX14 (separation_until / A4a).
+Semantically: g_content(A) holds at all future times of A, h_content(C) holds at all
+past times of C, and β ∉ B means ¬β holds at some intermediate time. At that time,
+all three sets are satisfied. The syntactic proof follows Burgess 1982 Lemma 2.6,
+adapted for the content-based BurgessR3Maximal:
+1. From β ∉ B and maximality, extract an Until or Since failure witness.
+2. Apply separation_until/since (A4a/A4b) with the failure witness to derive an
+   Until formula untl(β₀, ¬β) ∈ A (or Since analog in C).
+3. Use enrichment_until (A3a) to enrich the Until event with h_content(C) elements.
+4. Use right_mono_until with G(gᵢ) ∈ A to enrich with g_content(A) elements.
+5. The enriched Until formula in A guarantees F of the full conjunction, giving
+   consistency of the combined seed. -/
+private theorem splitting_seed_consistent {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C)
+    (β : Formula)
+    (h_β_not_B : β ∉ B) :
+    SetConsistent ({β.neg} ∪ g_content A ∪ h_content C) := by
+  sorry
+
+theorem lemma_2_6_splitting {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C)
+    (β : Formula)
+    (h_β_not_B : β ∉ B) :
+    ∃ B' D B'', BurgessR3Maximal A B' D ∧
+      BurgessR3Maximal D B'' C ∧
+      SetMaximalConsistent D ∧ β.neg ∈ D := by
+  -- Step 1: Seed consistency
+  have h_seed := splitting_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc β h_β_not_B
+  -- Step 2: h_content(C) ⊆ A by duality
+  have h_hc : h_content C ⊆ A :=
+    g_content_subset_implies_h_content_reverse A C h_mcs_A h_mcs_C h_gc
+  -- Step 3: Extend seed to MCS D via Lindenbaum
+  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
+  -- Step 4: Extract properties of D
+  have h_neg_β_D : β.neg ∈ D :=
+    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton _)))
+  have h_gc_AD : g_content A ⊆ D :=
+    fun φ hφ => h_sup (Set.mem_union_left _ (Set.mem_union_right _ hφ))
+  have h_hc_CD : h_content C ⊆ D :=
+    fun φ hφ => h_sup (Set.mem_union_right _ hφ)
+  -- Step 5: g_content(D) ⊆ C by duality from h_content(C) ⊆ D
+  have h_gc_DC : g_content D ⊆ C :=
+    h_content_subset_implies_g_content_reverse C D h_mcs_C h_D_mcs h_hc_CD
+  -- Step 6: BurgessR3Maximal(A, B', D) via g_content(A) ⊆ D
+  obtain ⟨B', h_B'⟩ := burgessR3Maximal_from_g_content_sub h_mcs_A h_D_mcs h_gc_AD
+  -- Step 7: BurgessR3Maximal(D, B'', C) via g_content(D) ⊆ C
+  obtain ⟨B'', h_B''⟩ := burgessR3Maximal_from_g_content_sub h_D_mcs h_mcs_C h_gc_DC
+  exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_neg_β_D⟩
+
 /-! ### Withdrawn and Re-assessed Lemmas
 
 - `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) ≤ C unprovable).

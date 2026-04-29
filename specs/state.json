@@ -662,7 +662,7 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-29T14:01:32Z",
+      "last_updated": "2026-04-29T15:09:46Z",
       "researched": "2026-04-29T05:28:07Z",
       "related_tasks": [
         93
@@ -1001,6 +1001,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/44_implementation-plan.md",
           "type": "plan",
           "summary": "v29: 11 phases, 42h — A4a axiom + Burgess Lemma 2.6 direct path"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/02_phase5b-seed-consistency.md",
+          "type": "handoff",
+          "summary": "Phase 5b partial: splitting_seed_consistent sorry — bidirectional seed consistency under irreflexive semantics"
         }
       ],
       "session_id": "sess_1777471285_c27297",

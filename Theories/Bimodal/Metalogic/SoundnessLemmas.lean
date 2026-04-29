@@ -619,6 +619,32 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     refine ⟨s, hts, ?_, h_guard⟩
     intro h_imp
     exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
+  | separation_until p q r =>
+    -- Swap of separation_until: snce(q', p') → ¬snce(r', p') → snce(q', q' ∧ ¬r')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hs0t, h_ps0, h_guard_q⟩ h_not_since_r
+    have h_not_all_r : ¬(∀ v, s0 < v → v < t → truth_at M Omega τ v r.swap_temporal) := by
+      intro h_all
+      exact h_not_since_r ⟨s0, hs0t, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, hs0u0, hu0t, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, hu0t, ?_, fun v hvu0 vlt => h_guard_q v (lt_trans hs0u0 hvu0) vlt⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 hs0u0 hu0t) h_not_r_u0
+  | separation_since p q r =>
+    -- Swap of separation_since: untl(q', p') → ¬untl(r', p') → untl(q', q' ∧ ¬r')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hts0, h_ps0, h_guard_q⟩ h_not_until_r
+    have h_not_all_r : ¬(∀ v, t < v → v < s0 → truth_at M Omega τ v r.swap_temporal) := by
+      intro h_all
+      exact h_not_until_r ⟨s0, hts0, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, htu0, hu0s0, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, htu0, ?_, fun v htv vlu0 => h_guard_q v htv (lt_trans vlu0 hu0s0)⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 htu0 hu0s0) h_not_r_u0
   | self_accum_until φ ψ =>
     -- Swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1159,6 +1185,32 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     refine ⟨s, hst, ?_, h_guard⟩
     intro h_imp
     exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
+  | separation_until p q r =>
+    -- Direct: untl(q, p) → ¬untl(r, p) → untl(q, q ∧ ¬r)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hts0, h_ps0, h_guard_q⟩ h_not_until_r
+    have h_not_all_r : ¬(∀ v, t < v → v < s0 → truth_at M Omega τ v r) := by
+      intro h_all
+      exact h_not_until_r ⟨s0, hts0, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, htu0, hu0s0, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, htu0, ?_, fun v htv vlu0 => h_guard_q v htv (lt_trans vlu0 hu0s0)⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 htu0 hu0s0) h_not_r_u0
+  | separation_since p q r =>
+    -- Direct: snce(q, p) → ¬snce(r, p) → snce(q, q ∧ ¬r)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hs0t, h_ps0, h_guard_q⟩ h_not_since_r
+    have h_not_all_r : ¬(∀ v, s0 < v → v < t → truth_at M Omega τ v r) := by
+      intro h_all
+      exact h_not_since_r ⟨s0, hs0t, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, hs0u0, hu0t, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, hu0t, ?_, fun v hvu0 vlt => h_guard_q v (lt_trans hs0u0 hvu0) vlt⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 hs0u0 hu0t) h_not_r_u0
   | self_accum_until φ ψ =>
     -- Direct: (φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)
     intro F M Omega _h_sc τ _h_mem t
@@ -1560,6 +1612,32 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
     refine ⟨s, hts, ?_, h_guard⟩
     intro h_imp
     exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
+  | separation_until p q r =>
+    -- Swap of separation_until: snce(q', p') → ¬snce(r', p') → snce(q', q' ∧ ¬r')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hs0t, h_ps0, h_guard_q⟩ h_not_since_r
+    have h_not_all_r : ¬(∀ v, s0 < v → v < t → truth_at M Omega τ v r.swap_temporal) := by
+      intro h_all
+      exact h_not_since_r ⟨s0, hs0t, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, hs0u0, hu0t, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, hu0t, ?_, fun v hvu0 vlt => h_guard_q v (lt_trans hs0u0 hvu0) vlt⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 hs0u0 hu0t) h_not_r_u0
+  | separation_since p q r =>
+    -- Swap of separation_since: untl(q', p') → ¬untl(r', p') → untl(q', q' ∧ ¬r')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hts0, h_ps0, h_guard_q⟩ h_not_until_r
+    have h_not_all_r : ¬(∀ v, t < v → v < s0 → truth_at M Omega τ v r.swap_temporal) := by
+      intro h_all
+      exact h_not_until_r ⟨s0, hts0, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, htu0, hu0s0, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, htu0, ?_, fun v htv vlu0 => h_guard_q v htv (lt_trans vlu0 hu0s0)⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 htu0 hu0s0) h_not_r_u0
   | self_accum_until φ ψ =>
     -- Swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1784,6 +1862,32 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     refine ⟨s, hst, ?_, h_guard⟩
     intro h_imp
     exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
+  | separation_until p q r =>
+    -- Direct: untl(q, p) → ¬untl(r, p) → untl(q, q ∧ ¬r)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hts0, h_ps0, h_guard_q⟩ h_not_until_r
+    have h_not_all_r : ¬(∀ v, t < v → v < s0 → truth_at M Omega τ v r) := by
+      intro h_all
+      exact h_not_until_r ⟨s0, hts0, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, htu0, hu0s0, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, htu0, ?_, fun v htv vlu0 => h_guard_q v htv (lt_trans vlu0 hu0s0)⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 htu0 hu0s0) h_not_r_u0
+  | separation_since p q r =>
+    -- Direct: snce(q, p) → ¬snce(r, p) → snce(q, q ∧ ¬r)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro ⟨s0, hs0t, h_ps0, h_guard_q⟩ h_not_since_r
+    have h_not_all_r : ¬(∀ v, s0 < v → v < t → truth_at M Omega τ v r) := by
+      intro h_all
+      exact h_not_since_r ⟨s0, hs0t, h_ps0, h_all⟩
+    push_neg at h_not_all_r
+    obtain ⟨u0, hs0u0, hu0t, h_not_r_u0⟩ := h_not_all_r
+    refine ⟨u0, hu0t, ?_, fun v hvu0 vlt => h_guard_q v (lt_trans hs0u0 hvu0) vlt⟩
+    intro h_imp
+    exact h_imp (h_guard_q u0 hs0u0 hu0t) h_not_r_u0
   | self_accum_until φ ψ =>
     -- Direct: (φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)
     intro F M Omega _h_sc τ _h_mem t

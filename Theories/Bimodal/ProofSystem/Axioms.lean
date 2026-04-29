@@ -56,7 +56,7 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-37 constructors organized into four layers:
+39 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (26 + 2 enrichment): Burgess-Xu axioms for Until/Since on linear orders
@@ -171,6 +171,23 @@ inductive Axiom : Formula → Type where
   | enrichment_since (φ ψ p : Formula) :
       Axiom (Formula.and p (Formula.snce φ ψ) |>.imp
         (Formula.snce φ (Formula.and ψ (Formula.untl φ p))))
+
+  /-- BX14: Separation of Until (Burgess A4a):
+  `untl(q, p) ∧ ¬untl(r, p) → untl(q, q ∧ ¬r)`.
+  If U(p,q) holds but U(p,r) does not, then U(q ∧ ¬r, q) holds.
+  Valid under open guard (t,s): from untl(q,p) get witness s0 with p(s0) and q on (t,s0).
+  Apply ¬untl(r,p) to s0: since p(s0), ∃u0 ∈ (t,s0) with ¬r(u0). Since u0 ∈ (t,s0),
+  q(u0) holds. So (q ∧ ¬r)(u0). Guard q on (t,u0) ⊆ (t,s0). -/
+  | separation_until (p q r : Formula) :
+      Axiom (Formula.untl q p |>.imp
+        ((Formula.untl r p).neg.imp (Formula.untl q (q.and r.neg))))
+
+  /-- BX14': Separation of Since (Burgess A4b, dual of A4a):
+  `snce(q, p) ∧ ¬snce(r, p) → snce(q, q ∧ ¬r)`.
+  Mirror of separation_until for the Since direction. -/
+  | separation_since (p q r : Formula) :
+      Axiom (Formula.snce q p |>.imp
+        ((Formula.snce r p).neg.imp (Formula.snce q (q.and r.neg))))
 
   /-- BX5: Self-accumulation of Until: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`.
   The eventuality enriches its own guard: at intermediate points, both φ holds

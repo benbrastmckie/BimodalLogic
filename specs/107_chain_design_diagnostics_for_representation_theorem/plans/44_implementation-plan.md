@@ -169,7 +169,7 @@ Phase 5b is the critical path: add A4a axiom + Lemma 2.6. Phases 6 and 7 can exe
 
 ---
 
-### Phase 5b: Add A4a/A4b Axioms and Formalize Lemma 2.6 [NOT STARTED]
+### Phase 5b: Add A4a/A4b Axioms and Formalize Lemma 2.6 [PARTIAL]
 
 **Goal**: Add `separation_until` (A4a) and `separation_since` (A4b) as new BX axiom constructors, prove their soundness, and formalize Burgess Lemma 2.6 (splitting via A4a). This replaces the BLOCKED Xu splitting approach from v28.
 
@@ -189,13 +189,10 @@ Phase 5b is the critical path: add A4a axiom + Lemma 2.6. Phases 6 and 7 can exe
 **Lemma 2.6 formalization** (Burgess 1982): Given `BurgessR3Maximal(A, B, C)` with `beta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `neg beta in D`. The proof constructs a consistent set using A4a at step 5 (the only point where A4a is needed), then extends via Lindenbaum to MCS D, and applies `burgessR3Maximal_exists_from_seed` for both directions.
 
 **Tasks**:
-- [ ] Add `separation_until` constructor to `BXAxiom` inductive in Axioms.lean:
-  ```
-  | separation_until (p q r : Formula) : BXAxiom (untl q p ⟹ ∼(untl r p) ⟹ untl q (q ⋀ ∼r))
-  ```
-- [ ] Add `separation_since` constructor (dual) to Axioms.lean
-- [ ] Prove soundness of `separation_until` in Soundness.lean (~30 lines, following the 6-step argument)
-- [ ] Prove soundness of `separation_since` in Soundness.lean (symmetric argument)
+- [x] Add `separation_until` constructor to `BXAxiom` inductive in Axioms.lean
+- [x] Add `separation_since` constructor (dual) to Axioms.lean
+- [x] Prove soundness of `separation_until` in Soundness.lean (~30 lines, following the 6-step argument)
+- [x] Prove soundness of `separation_since` in Soundness.lean (symmetric argument)
 - [ ] Formalize Lemma 2.6 consistency argument using A4a:
   - Input: `h_r3m : BurgessR3Maximal A B C`, `h_beta : beta not in B`, `h_mcs_A : SetMaximalConsistent A`, `h_mcs_C : SetMaximalConsistent C`
   - Output: `exists B' D B'', BurgessR3Maximal A B' D /\ BurgessR3Maximal D B'' C /\ SetMaximalConsistent D /\ neg beta in D`
