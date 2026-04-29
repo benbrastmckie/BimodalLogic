@@ -1,10 +1,10 @@
-# Implementation Plan: Task #107 -- Burgess Chronicle g-Value Construction (v31)
+# Implementation Plan: Task #107 -- Burgess Chronicle g-Value Construction (v32)
 
 - **Task**: 107 - Burgess chronicle construction for BX representation theorem
 - **Status**: [NOT STARTED]
-- **Effort**: 34 hours
+- **Effort**: 36 hours
 - **Dependencies**: Task 113 [COMPLETED] (open-guard semantics)
-- **Research Inputs**: [reports/42_team-research.md], [reports/43_team-research.md], [reports/44_team-research.md], [reports/45_team-research.md], [reports/47_inconsistent-case-resolution.md]
+- **Research Inputs**: [reports/42_team-research.md], [reports/43_team-research.md], [reports/44_team-research.md], [reports/45_team-research.md], [reports/47_inconsistent-case-resolution.md], [handoffs/48_inconsistent-case-dcs-gap.md]
 - **Artifacts**: plans/46_implementation-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -12,9 +12,9 @@
 
 ## Overview
 
-Plan v31 updates Phase 5b to incorporate Report 47's resolution of the inconsistent case blocker. The `g_content(A) subset B` proof was PARTIAL: the consistent case was proved (PointInsertion.lean lines 353-386) but the inconsistent case was sorry'd (line 676). Report 47 shows that when {phi} union B is inconsistent, DC(B union {phi}) = Set.univ, which is a DCS strictly containing B. Since burgessR3(A, Set.univ, C) holds (via ex-falso + left_mono_until_G), BurgessR3Maximal's maximality gives a contradiction directly -- no density needed. The error was relying on `BurgessR3Maximal_extension_fails` (which requires consistency) instead of using the BurgessR3Maximal definition directly.
+Plan v32 addresses the DCS definition gap discovered in Handoff 48. The codebase's `SetDeductivelyClosed` bundles consistency (`SetConsistent S`) with closure, but Burgess 1982 and Xu 1988 define DCS as closure-only. This means `Set.univ` is NOT `SetDeductivelyClosed` in our framework, breaking Report 47's maximality argument for the inconsistent case. The fix introduces `ClosedUnderDerivation` (closure without consistency) and updates `BurgessR3Maximal`'s maximality clause to quantify over `ClosedUnderDerivation` sets instead of `SetDeductivelyClosed` sets. This aligns with the Burgess/Xu definition and enables `Set.univ` as a valid candidate in the maximality contradiction.
 
-Phase 5b status changes from [BLOCKED] to [PARTIAL] (axioms added, consistent case done, inconsistent case sorry remains). The remaining Phase 5b tasks are: 3 helper lemmas, close the inconsistent case sorry, close the h_content dual, close splitting_seed_consistent, and verify. Phases 1-5a remain [COMPLETED]. Phases 6-11 remain [NOT STARTED] and unchanged (independent of axiom choice).
+Phase 5b from v31 is split into Phase 5b-i (definition refactoring) and Phase 5b-ii (close inconsistent case). Phases 1-5a remain [COMPLETED]. Phases 6-11 remain [NOT STARTED] and unchanged.
 
 Definition of done: all 10 Chronicle sorry sites closed, `#print axioms dd_countermodel_chronicle` clean, `lake build` succeeds.
 
@@ -24,11 +24,12 @@ Definition of done: all 10 Chronicle sorry sites closed, `#print axioms dd_count
 - **Report 43 (team research)**: Density self-pair impossible, C5 n=0 via g_content, Lemma 2.7 gating question. Integrated in plan v27.
 - **Report 44 (team research)**: A4a is valid but not needed for splitting. Integrated in plan v29.
 - **Report 45 (team research)**: Breakthrough -- left_mono_until_G + g_content(A) subset B via maximality makes splitting_seed_consistent trivial. 3-step solution replaces blocked Phase 5b. Corrected sorry count to 10. Integrated in plan v30.
-- **Report 47 (inconsistent case resolution)**: Resolves the Phase 5b inconsistent case blocker. Set.univ is a valid DCS for maximality contradiction when {phi} union B is inconsistent. No density needed. Use BurgessR3Maximal definition directly instead of BurgessR3Maximal_extension_fails. Integrated in this plan (v31).
+- **Report 47 (inconsistent case resolution)**: Resolves the Phase 5b inconsistent case blocker. Set.univ is a valid DCS for maximality contradiction when {phi} union B is inconsistent. No density needed. Use BurgessR3Maximal definition directly instead of BurgessR3Maximal_extension_fails. Integrated in plan v31.
+- **Handoff 48 (DCS definition gap)**: Reveals that `SetDeductivelyClosed` bundles consistency, unlike Burgess/Xu. `Set.univ` fails the `SetConsistent` conjunct. Fix: split into `ClosedUnderDerivation` (closure-only) and update `BurgessR3Maximal` maximality clause. Integrated in this plan (v32).
 
 ### Prior Plan Reference
 
-Plan v30 had 11 phases, 36 hours. Phases 1-5a completed. Phase 5b was BLOCKED: the consistent case of g_content(A) subset B was proved but the inconsistent case was sorry'd. Reports 45-46 incorrectly concluded that density was needed for the inconsistent case. Report 47 shows the inconsistent case resolves via Set.univ maximality contradiction -- no density, no new axioms. v31 updates Phase 5b from [BLOCKED] to [PARTIAL] with concrete tasks to close the remaining sorries.
+Plan v31 had 11 phases, 34 hours. Phases 1-5a completed. Phase 5b was [PARTIAL]: consistent case proved, inconsistent case sorry'd. Handoff 48 showed Report 47's argument fails because our `SetDeductivelyClosed` includes consistency. v32 splits Phase 5b into two sub-phases: 5b-i (refactor DCS definition, update BurgessR3Maximal) and 5b-ii (close inconsistent case using refactored definitions).
 
 ### Roadmap Alignment
 
@@ -40,10 +41,13 @@ Plan v30 had 11 phases, 36 hours. Phases 1-5a completed. Phase 5b was BLOCKED: t
 ## Goals & Non-Goals
 
 **Goals**:
-- Close the inconsistent case sorry in `g_content_sub_B_of_BurgessR3Maximal` (PointInsertion.lean line 676)
-- Three helper lemmas: `deductiveClosure_inconsistent_eq_univ`, `set_univ_deductively_closed`, `burgessR3_univ_from_inconsistent_extension`
-- Close dual `h_content_sub_B` sorry (line 684)
-- Close `splitting_seed_consistent` sorry (line 729) via subset + `dcs_neg_union_consistent`
+- Add `ClosedUnderDerivation` predicate (closure without consistency) to ChronicleTypes.lean
+- Refactor `SetDeductivelyClosed` to use `ClosedUnderDerivation`: `SetDeductivelyClosed S = SetConsistent S /\ ClosedUnderDerivation S`
+- Update `BurgessR3Maximal` maximality clause to quantify over `ClosedUnderDerivation` (not `SetDeductivelyClosed`)
+- Fix all downstream compilation errors from the definition change
+- Close the inconsistent case sorry in `g_content_sub_B_of_BurgessR3Maximal`
+- Close dual `h_content_sub_B` sorry
+- Close `splitting_seed_consistent` sorry via subset + `dcs_neg_union_consistent`
 - Verify `lemma_2_6_splitting` is sorry-free
 - Formalize Lemma 2.7 splitting (BX5 + BX7 + BX13, independent of axiom choice)
 - Extend `lemma_2_4` to return both B and C
@@ -65,9 +69,10 @@ Plan v30 had 11 phases, 36 hours. Phases 1-5a completed. Phase 5b was BLOCKED: t
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| `deductiveClosure_inconsistent_eq_univ` needs careful API usage for SetConsistent/deductiveClosure | L | L | Standard set-theory argument; Mathlib's Set.univ lemmas available |
-| Ex-falso argument in `burgessR3_univ_from_inconsistent_extension` has non-trivial Lean encoding | M | M | The proof sketch is concrete (Report 47); each step uses existing infrastructure (dc_delta_B_controlled, left_mono_until_G, burgessR3) |
-| Density self-pair sorry (line 1130) has a structural subtlety not captured by Lemma 2.6 | M | M | Inspect with lean_goal first; may need special-case argument for burgessR3(f(x), g(x,y), f(x)) when f(z)=f(x) |
+| `ClosedUnderDerivation` refactoring causes widespread breakage | M | M | `SetDeductivelyClosed` is refactored to use `ClosedUnderDerivation` internally, so most call sites only need `.2` replaced with `.closedUnderDerivation` or similar. Grep for all usages first. |
+| Zorn construction (`burgessR3Maximal_extension_exists`) breaks under new maximality | H | L | The Zorn construction produces B maximal among consistent+closed extensions. For ClosedUnderDerivation maximality: if D is ClosedUnderDerivation and B strictly contained in D, either D is consistent (covered by Zorn) or D is inconsistent. If D inconsistent, D contains bot, so burgessR3(A,D,C) fails only if... actually it holds (ex falso). But B itself is consistent, so B is not Set.univ, so the Zorn chain union argument still works because chain of consistent sets stays consistent. |
+| `BurgessR3Maximal_extension_fails` callers need updating | M | M | This lemma's type signature changes: its D hypothesis becomes `ClosedUnderDerivation D` instead of `SetDeductivelyClosed D`. Callers that passed `SetDeductivelyClosed` can extract the `.2` component. |
+| Density self-pair sorry (line 1130) has a structural subtlety | M | M | Inspect with lean_goal first; may need special-case argument |
 | C5 n>0 recursive case analysis adds significant complexity | H | M | Start with n=0 (straightforward); n>0 sub-case 3 uses Lemma 2.7 which is independent |
 | FUC/FSC coherence requires threading g through Cantor isomorphism | M | M | Phase is independent; partial progress still reduces sorry count |
 
@@ -78,13 +83,14 @@ Plan v30 had 11 phases, 36 hours. Phases 1-5a completed. Phase 5b was BLOCKED: t
 | Wave | Phases | Blocked by |
 |------|--------|------------|
 | -- | 1, 2, 3, 4, 5a | (already completed from v24/v27) |
-| 1 | 5b | -- (no dependencies beyond completed phases) |
-| 2 | 6, 7 | 5b |
-| 3 | 8, 9 | 7 |
-| 4 | 10 | 8, 9 |
-| 5 | 11 | 10 |
+| 1 | 5b-i | -- (no dependencies beyond completed phases) |
+| 2 | 5b-ii | 5b-i |
+| 3 | 6, 7 | 5b-ii |
+| 4 | 8, 9 | 7 |
+| 5 | 10 | 8, 9 |
+| 6 | 11 | 10 |
 
-Phases within the same wave can execute in parallel. Phase 5b is the critical path entry point. Phases 6 and 7 can run in parallel once 5b completes.
+Phases within the same wave can execute in parallel. Phase 5b-i is the critical path entry point. Phases 6 and 7 can run in parallel once 5b-ii completes.
 
 ---
 
@@ -173,52 +179,86 @@ Phases within the same wave can execute in parallel. Phase 5b is the critical pa
 
 ---
 
-### Phase 5b: Close g_content subset B + splitting_seed_consistent [PARTIAL]
+### Phase 5b-i: Split DCS Definition + Update BurgessR3Maximal [NOT STARTED]
 
-**Goal**: Prove `g_content(A) subset B` when `BurgessR3Maximal(A, B, C)` via maximality contradiction (both consistent and inconsistent cases), prove dual `h_content(C) subset B`, and close the `splitting_seed_consistent` sorry.
+**Goal**: Introduce `ClosedUnderDerivation` predicate (closure without consistency), refactor `SetDeductivelyClosed` to use it, and update `BurgessR3Maximal`'s maximality clause to quantify over `ClosedUnderDerivation` sets. This aligns the formalization with Burgess 1982 / Xu 1988 where DCS = closure-only.
 
-**Status**: left_mono_until_G and left_mono_since_H axioms already added with soundness proofs. The consistent case of g_content(A) subset B is proved (PointInsertion.lean lines 353-386). The inconsistent case is sorry'd at line 676.
-
-**Resolution** (from Report 47):
-
-The inconsistent case when {phi} union B is inconsistent:
-1. DC(B union {phi}) = Set.univ (deductive closure of inconsistent set)
-2. Set.univ is SetDeductivelyClosed (trivially)
-3. B is a strict subset of Set.univ (since phi not in B but phi in Set.univ)
-4. burgessR3(A, Set.univ, C) holds: for any psi and gamma in C, exists beta0 in B with theorem (beta0 AND phi) implies bot (from inconsistency). Ex falso gives theorem (beta0 AND phi) implies psi. From G(phi) in A and TG: G(beta0 implies psi) in A. left_mono_until_G: untl(beta0, gamma) implies untl(psi, gamma). Since burgessR3(A, B, C) and beta0 in B: untl(beta0, gamma) in A. So untl(psi, gamma) in A.
-5. BurgessR3Maximal maximality (line 318): for D = Set.univ, SetDeductivelyClosed D and B strictly contained in D implies not burgessR3(A, D, C). But we proved burgessR3(A, Set.univ, C). Contradiction.
-
-Key insight: use the BurgessR3Maximal definition directly, not `BurgessR3Maximal_extension_fails` (which unnecessarily requires consistency).
+**Motivation** (Handoff 48): `SetDeductivelyClosed` at ChronicleTypes.lean:75 bundles `SetConsistent S /\ closure`. Burgess and Xu define DCS as closure-only. `Set.univ` is closed under derivation but NOT `SetConsistent`. `BurgessR3Maximal`'s maximality clause quantifies over `SetDeductivelyClosed D`, which excludes `Set.univ`, breaking the inconsistent case argument.
 
 **Tasks**:
-- [x] Add `left_mono_until_G` constructor to `BXAxiom` in Axioms.lean
-- [x] Add `left_mono_since_H` constructor (dual) to Axioms.lean
-- [x] Prove soundness of `left_mono_until_G` in Soundness.lean
-- [x] Prove soundness of `left_mono_since_H` in Soundness.lean
-- [x] Prove consistent case of `g_content_sub_B_of_BurgessR3Maximal` (lines 353-386)
-- [ ] Helper: `deductiveClosure_inconsistent_eq_univ` -- if not SetConsistent S then deductiveClosure S = Set.univ (~10 lines)
-- [ ] Helper: `set_univ_deductively_closed` -- Set.univ is SetDeductivelyClosed (~5 lines)
-- [ ] Helper: `burgessR3_univ_from_inconsistent_extension` -- ex-falso argument showing burgessR3(A, Set.univ, C) when exists beta0 in B with (beta0 AND phi) implies bot provable and G(phi) in A (~30 lines)
-- [ ] Close inconsistent case sorry at line 676 using helpers + BurgessR3Maximal definition directly
-- [ ] Close `h_content_sub_B` dual sorry (line 684)
-- [ ] Close `splitting_seed_consistent` sorry (line 729) -- seed subset of {beta.neg} union B, consistent by dcs_neg_union_consistent
-- [ ] Verify `lemma_2_6_splitting` is sorry-free
-- [ ] Run `lake build`
+- [ ] Add `ClosedUnderDerivation` predicate to ChronicleTypes.lean:
+  ```
+  def ClosedUnderDerivation (S : Set Formula) : Prop :=
+    forall (L : List Formula) (phi : Formula),
+      (forall psi in L, psi in S) -> (DerivationTree L phi) -> phi in S
+  ```
+- [ ] Refactor `SetDeductivelyClosed` to use `ClosedUnderDerivation`:
+  ```
+  def SetDeductivelyClosed (S : Set Formula) : Prop :=
+    SetConsistent S /\ ClosedUnderDerivation S
+  ```
+- [ ] Update `BurgessR3Maximal` maximality clause to use `ClosedUnderDerivation`:
+  ```
+  def BurgessR3Maximal (A B C : Set Formula) : Prop :=
+    SetDeductivelyClosed B /\
+    burgessR3 A B C /\
+    forall D, ClosedUnderDerivation D -> B subset D -> not burgessR3 A D C
+  ```
+- [ ] Update `BurgessR3Maximal_extension_fails` signature: change `SetDeductivelyClosed D` hypothesis to `ClosedUnderDerivation D`
+- [ ] Update `burgessR3Maximal_extension_exists` (Zorn construction): verify the Zorn-maximal B is also maximal among all `ClosedUnderDerivation` extensions (the chain union of consistent DCS sets remains consistent; if any `ClosedUnderDerivation D` strictly contains B and `burgessR3(A,D,C)`, then either D is consistent -- contradicting Zorn maximality -- or D is inconsistent, which is handled by Phase 5b-ii)
+- [ ] Grep for all usages of `SetDeductivelyClosed` and `BurgessR3Maximal` across the codebase and fix compilation errors
+- [ ] Run `lake build` -- must succeed (possibly with existing sorry warnings, but no new errors)
 
-**Timing**: 4 hours (remaining work ~2-3 hours)
+**Timing**: 2-3 hours
 
 **Depends on**: none (phases 1-5a already completed)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- helper lemmas + close 3 sorry sites (~80 lines new code)
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean` -- add `ClosedUnderDerivation`, refactor `SetDeductivelyClosed`, update `BurgessR3Maximal`
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- update `BurgessR3Maximal_extension_fails` and callers
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ZornConstruction.lean` (or wherever `burgessR3Maximal_extension_exists` lives) -- verify Zorn argument
+- Any other files that reference `SetDeductivelyClosed` or `BurgessR3Maximal`
 
 **Verification**:
-- `deductiveClosure_inconsistent_eq_univ` compiles sorry-free
-- `set_univ_deductively_closed` compiles sorry-free
-- `burgessR3_univ_from_inconsistent_extension` compiles sorry-free
-- Inconsistent case sorry at line 676 closed
-- `h_content_sub_B` sorry at line 684 closed
-- `splitting_seed_consistent` sorry at line 729 closed
+- `ClosedUnderDerivation` definition compiles
+- `SetDeductivelyClosed` refactored to use `ClosedUnderDerivation` and compiles
+- `BurgessR3Maximal` updated and compiles
+- `BurgessR3Maximal_extension_fails` compiles with new signature
+- `burgessR3Maximal_extension_exists` compiles (Zorn argument still valid)
+- `lake build` succeeds (no new errors beyond pre-existing sorries)
+
+---
+
+### Phase 5b-ii: Close Inconsistent Case + splitting_seed_consistent [NOT STARTED]
+
+**Goal**: With `ClosedUnderDerivation` in place and `BurgessR3Maximal` maximality now covering `Set.univ`, close the inconsistent case of `g_content_sub_B_of_BurgessR3Maximal`, the dual `h_content_sub_B`, and `splitting_seed_consistent`.
+
+**Tasks**:
+- [ ] Helper: `set_univ_closed_under_derivation` -- `Set.univ` is `ClosedUnderDerivation` (~5 lines, trivial: all formulas are in `Set.univ`)
+- [ ] Helper: `burgessR3_univ_of_inconsistent_ext` -- when {phi} union B is inconsistent and G(phi) in A, `burgessR3(A, Set.univ, C)` holds (~30 lines, ex-falso argument: exists beta0 in B with derivation of (beta0 /\ phi) -> bot; ex falso gives (beta0 /\ phi) -> psi; G distribution + left_mono_until_G chain gives untl(psi, gamma) in A for any psi, gamma in C)
+- [ ] Close inconsistent case of `g_content_sub_B_of_BurgessR3Maximal` using:
+  1. `set_univ_closed_under_derivation` gives `ClosedUnderDerivation Set.univ`
+  2. B strictly contained in Set.univ (phi not in B but phi in Set.univ)
+  3. `burgessR3_univ_of_inconsistent_ext` gives `burgessR3(A, Set.univ, C)`
+  4. `BurgessR3Maximal` maximality (now over `ClosedUnderDerivation`) gives contradiction
+- [ ] Close `h_content_sub_B_of_BurgessR3Maximal` dual (mirror argument with H, Since)
+- [ ] Close `splitting_seed_consistent` -- seed subset of {beta.neg} union B, consistent by `dcs_neg_union_consistent`
+- [ ] Verify `lemma_2_6_splitting` is sorry-free
+- [ ] Run `lake build`
+
+**Timing**: 1-2 hours
+
+**Depends on**: 5b-i
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- helper lemmas + close 3 sorry sites (~50 lines new code)
+
+**Verification**:
+- `set_univ_closed_under_derivation` compiles sorry-free
+- `burgessR3_univ_of_inconsistent_ext` compiles sorry-free
+- Inconsistent case of `g_content_sub_B_of_BurgessR3Maximal` closed
+- `h_content_sub_B_of_BurgessR3Maximal` closed (both cases)
+- `splitting_seed_consistent` closed
 - `lemma_2_6_splitting` sorry-free
 - PointInsertion.lean sorry count: 0
 - `lake build` succeeds
@@ -239,7 +279,7 @@ Key insight: use the BurgessR3Maximal definition directly, not `BurgessR3Maximal
 
 **Timing**: 6 hours
 
-**Depends on**: 5b
+**Depends on**: 5b-ii
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- add Lemma 2.7 splitting (~100 lines)
@@ -261,7 +301,7 @@ Key insight: use the BurgessR3Maximal definition directly, not `BurgessR3Maximal
 
 **Timing**: 4 hours
 
-**Depends on**: 5b
+**Depends on**: 5b-ii
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- extend lemma_2_4 (~30 lines)
@@ -396,22 +436,27 @@ Key insight: use the BurgessR3Maximal definition directly, not `BurgessR3Maximal
 ## Testing & Validation
 
 - [ ] `lake build` succeeds at each phase boundary
-- [ ] `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` returns no actual sorry usages after Phase 11
-- [ ] `#print axioms dd_countermodel_chronicle` shows no `sorryAx`
-- [ ] All previously sorry-free lemmas remain sorry-free (no regressions)
-- [ ] `left_mono_until_G` and `left_mono_since_H` axiom constructors compile and pass soundness
+- [ ] `ClosedUnderDerivation` predicate compiles and is used correctly throughout
+- [ ] `SetDeductivelyClosed` refactored without breaking existing sorry-free proofs
+- [ ] `BurgessR3Maximal` updated maximality clause compiles
+- [ ] `set_univ_closed_under_derivation` compiles sorry-free
+- [ ] `burgessR3_univ_of_inconsistent_ext` compiles sorry-free
 - [ ] `g_content_sub_B_of_BurgessR3Maximal` compiles sorry-free (both consistent and inconsistent cases)
 - [ ] `splitting_seed_consistent` closed via subset + `dcs_neg_union_consistent`
 - [ ] Lemma 2.6 splitting (`lemma_2_6_splitting`) compiles sorry-free
 - [ ] Lemma 2.7 splitting compiles sorry-free
 - [ ] Extended `lemma_2_4` compiles sorry-free with new return type
+- [ ] `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` returns no actual sorry usages after Phase 11
+- [ ] `#print axioms dd_countermodel_chronicle` shows no `sorryAx`
+- [ ] All previously sorry-free lemmas remain sorry-free (no regressions)
 - [ ] Open-guard compatibility verified for all new infrastructure
 - [ ] Each elimination function's g-function correctly handles new and old adjacent pairs
 
 ## Artifacts & Outputs
 
 - `plans/46_implementation-plan.md` (this file)
-- Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` (3 helper lemmas, inconsistent case closed, h_content dual closed, splitting_seed_consistent closed, extended lemma_2_4, Lemma 2.7)
+- Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean` (add `ClosedUnderDerivation`, refactor `SetDeductivelyClosed`, update `BurgessR3Maximal`)
+- Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` (update callers, helper lemmas, inconsistent case closed, h_content dual closed, splitting_seed_consistent closed, extended lemma_2_4, Lemma 2.7)
 - Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` (7 c2' sorries + 1 density sorry closed)
 - Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` (2 FUC/FSC sorry sites closed)
 - Modified `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` (documentation)
@@ -419,10 +464,11 @@ Key insight: use the BurgessR3Maximal definition directly, not `BurgessR3Maximal
 
 ## Rollback/Contingency
 
-- **Inconsistent case helper harder than expected**: The proof sketch in Report 47 is concrete. If `deductiveClosure_inconsistent_eq_univ` is tricky, use `SetInconsistent_iff` or equivalent API. The Set.univ argument is mathematically sound.
-- **Ex-falso argument encoding**: If the Lean encoding of the ex-falso + G distribution chain is complex, break into smaller lemmas (currying step, TG application, K distribution, modus ponens).
+- **ClosedUnderDerivation refactoring causes cascading breakage**: The change is designed to be minimally invasive. `SetDeductivelyClosed S` becomes `SetConsistent S /\ ClosedUnderDerivation S`, so existing destructuring with `.1` and `.2` still works (`.1` = `SetConsistent`, `.2` = `ClosedUnderDerivation`). If breakage is severe, revert ChronicleTypes.lean changes and pursue Option B from Handoff 48 (prove inconsistent case cannot occur).
+- **Zorn construction fails under new maximality**: The Zorn argument produces a B that is maximal among consistent+closed sets. If the stronger maximality (over all `ClosedUnderDerivation` sets) breaks Zorn, add a separate lemma proving that the Zorn-maximal B is also maximal among all closed sets (via the inconsistent case argument in Phase 5b-ii).
+- **Inconsistent case helper harder than expected**: The proof sketch is concrete. If `burgessR3_univ_of_inconsistent_ext` is complex, break into smaller lemmas (ex-falso step, G distribution step, left_mono_until_G step).
 - **Lemma 2.7 formalization blocked**: Use only Lemma 2.6 for C5 n>0 sub-case 3 (losing xi/eta placement guarantees, but still achieving the split).
 - **Density self-pair subtlety**: If burgessR3(f(x), g(x,y), f(x)) when f(z)=f(x) has a structural issue, inspect the exact proof state and adapt the Lemma 2.6 application accordingly.
-- All changes are additive (new lemmas, proof completions) -- no destructive modifications to existing sorry-free code.
+- All changes are additive (new lemmas, proof completions) -- no destructive modifications to existing sorry-free code (except the DCS definition refactoring in Phase 5b-i, which is carefully structured to preserve existing API).
 - Git history preserves all prior states; each phase is independently committable.
 - The BXCanonical path (task 109) remains as an independent backup completeness route.
