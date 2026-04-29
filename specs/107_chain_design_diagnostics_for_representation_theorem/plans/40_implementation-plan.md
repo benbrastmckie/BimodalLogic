@@ -12,7 +12,7 @@
 
 ## Overview
 
-Research report 40 identified that the A3a axiom (p AND U(q,r) -> U(q AND S(p,r), r)) IS semantically valid under our open-guard (t,s) semantics -- the counterexample that led to its exclusion was wrong. Adding A3a/A3b as new BX axioms immediately unblocks Burgess Lemma 2.3, Xu's Lemma 3.2.1, and the entire chronicle construction. This plan begins by fixing stale documentation (half-open guard references), adds A3a/A3b with soundness proofs, then closes all 15 remaining sorry sites: 4 in RRelation.lean, 9 in CounterexampleElimination.lean, and 2 in ChronicleToCountermodel.lean. Definition of done: all Chronicle/ sorry sites closed, `#print axioms dd_countermodel_chronicle` clean, `lake build` succeeds.
+Research report 40 identified that the A3a axiom (p AND U(q,r) -> U(q AND S(p,r), r)) IS semantically valid under our open-guard (t,s) semantics -- the counterexample that led to its exclusion was wrong. Adding A3a/A3b as new BX axioms immediately unblocks Burgess Lemma 2.3 and the entire chronicle construction. This plan begins by fixing stale documentation (half-open guard references), adds A3a/A3b with soundness proofs, then closes the 11 remaining sorry sites: 9 in CounterexampleElimination.lean and 2 in ChronicleToCountermodel.lean. Xu's Lemma 3.2.1 (2 sorry sites in RRelation.lean) archived to Boneyard/ — blocked by consistency gap and not used downstream. Definition of done: all Chronicle/ sorry sites closed, `#print axioms dd_countermodel_chronicle` clean, `lake build` succeeds.
 
 ### Research Integration
 
@@ -156,25 +156,23 @@ Phases 4 and 5 can execute in parallel (independent files: RRelation.lean vs Cou
 
 ---
 
-### Phase 3: Close Lemma 2.3 and Xu 3.2.1 Sorry Sites in RRelation.lean [PARTIAL]
+### Phase 3: Close Lemma 2.3 Sorry Sites in RRelation.lean [COMPLETED]
 
-**Goal**: Using the new A3a/A3b axioms, close all 4 sorry sites in RRelation.lean: Lemma 2.3 forward (line 1210), Lemma 2.3 backward (line 1243), Xu 3.2.1 Until (line 1415), and Xu 3.2.1 Since (line 1428).
+**Goal**: Using the new A3a/A3b axioms, close Lemma 2.3 sorry sites in RRelation.lean. Xu 3.2.1 theorems archived to Boneyard/ (blocked by consistency gap, not used downstream).
 
 **Tasks**:
-- [ ] Close `burgessR_implies_burgessRSince` sorry (line 1210): The proof already has P(alpha) in C. The gap is from P(alpha) to snce(beta, alpha). Apply enrichment_until (A3a): from alpha in A and untl(beta, gamma) in A (for any gamma in C via burgessR), get untl(beta, gamma AND snce(beta, alpha)) in A. Extract snce(beta, alpha) from the conjunction.
-  Actually, the Burgess proof is simpler: from P(alpha) in C, use BX12' to get (T S alpha) in C. From beta in B and the Since (T S alpha), apply enrichment_since (A3b) to get (T AND U(T, beta)) S alpha in C. Since U(T, beta) follows from BX12+F(beta), simplify. Or most directly: apply the derived Lemma from A3a that P(alpha) AND burgessR => snce(beta, alpha) in C.
-  The exact proof strategy: use A3a at the MCS level. Inspect each sorry site with `lean_goal`, apply the A3a axiom via `DerivationTree.axiom` and `SetMaximalConsistent.implication_property`.
-- [ ] Close `burgessRSince_implies_burgessR` sorry (line 1243): Mirror of forward direction using A3b (enrichment_since)
-- [ ] Close `burgessR3Maximal_untl_mem_B` sorry (line 1415): This is Xu's Lemma 3.2.1(i). Uses BX5 (self_accum_until) + maximality of B + the now-provable Lemma 2.3 equivalence. The proof by contradiction: assume untl(beta, gamma) not in B, then B union {untl(beta, gamma)} extends B while preserving burgessR3(A, -, C), contradicting maximality.
-- [ ] Close `burgessR3Maximal_snce_mem_B` sorry (line 1428): Mirror of 3.2.1(i) using BX5' and Since direction
-- [ ] Run `lake build`
+- [x] Close `burgessR_implies_burgessRSince` sorry: Proved sorry-free using A3a enrichment via contradiction argument
+- [x] Close `burgessRSince_implies_burgessR` sorry: Mirror proof using A3b enrichment
+- [x] Archive `burgessR3Maximal_untl_mem_B` and `burgessR3Maximal_snce_mem_B` to `Boneyard/XuLemma321.lean` — blocked by inconsistency case (`untl(⊥, δ)` satisfiable on discrete orders without BX9), not referenced downstream
+- [x] Run `lake build`
 
-**Timing**: 6 hours
+**Timing**: 3 hours (reduced from 6 — Xu 3.2.1 archived instead of proved)
 
 **Depends on**: 2
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` -- close 4 sorry sites (~80 lines of proof)
+**Files modified**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` -- 2 sorry sites closed, 2 archived to Boneyard
+- `Boneyard/XuLemma321.lean` -- archived Xu 3.2.1 with recovery notes
 
 **Verification**:
 - `grep -cn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` returns 0
