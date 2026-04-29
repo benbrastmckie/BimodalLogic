@@ -147,7 +147,7 @@ Phases 6 and 7 can execute in parallel (C5 g-values vs density fix). Phases 8 an
 
 ---
 
-### Phase 5: g-Value Infrastructure -- Extend lemma_2_4 to Return B and Formalize Lemma 2.6 Splitting [NOT STARTED]
+### Phase 5: g-Value Infrastructure -- Extend lemma_2_4 to Return B and Formalize Lemma 2.6 Splitting [PARTIAL]
 
 **Goal**: Build the mathematical infrastructure that produces `BurgessR3Maximal` values as DATA. Extended `lemma_2_4` returns both B (the DCS interval set) and C (the MCS endpoint) so that B can be directly assigned as a g-value. Lemma 2.6 splits an existing `BurgessR3Maximal(A, B, C)` into two halves around a new intermediate point.
 

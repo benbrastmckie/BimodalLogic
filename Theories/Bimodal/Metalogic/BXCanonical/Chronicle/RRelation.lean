@@ -1416,4 +1416,86 @@ theorem burgessR3_untl_conj_in_A {A B C : Set Formula}
     (theorem_in_mcs h_mcs_A (DerivationTree.modus_ponens [] _ _ h_bx3' h_G_event_weak2))
     h_weak_guard
 
+/-! ## BurgessR3Maximal Existence from g_content Inclusion
+
+When g_content(A) ⊆ C (the canonical temporal ordering A ≤ C), we can
+construct BurgessR3Maximal(A, B, C) using ⊤ as a seed:
+
+1. For all γ ∈ C: G(¬γ) ∈ A would give ¬γ ∈ C (by g_content ⊆ C),
+   contradicting γ ∈ C. So G(¬γ) ∉ A, hence F(γ) ∈ A (MCS).
+   By F_until_equiv: U(⊤, γ) ∈ A. This gives burgessR(A, ⊤, C).
+
+2. For all α ∈ A: BX4 gives G(P(α)) ∈ A, so P(α) ∈ g_content(A) ⊆ C.
+   By P_since_equiv: S(⊤, α) ∈ C. This gives burgessRSince(C, ⊤, A).
+
+3. ⊤ ∈ A (theorem in MCS). Apply burgessR3Maximal_exists_from_seed.
+-/
+
+/-- F(γ) ∈ A for all γ ∈ C when g_content(A) ⊆ C. -/
+theorem F_mem_of_g_content_sub {A C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_gc : g_content A ⊆ C) (γ : Formula) (h_γ : γ ∈ C) :
+    Formula.some_future γ ∈ A := by
+  -- If G(¬γ) ∈ A, then ¬γ ∈ g_content(A) ⊆ C, contradicting γ ∈ C (MCS)
+  by_contra h_not_F
+  -- ¬F(γ) ∈ A means F(γ) ∉ A, so G(¬γ) ∈ A (since F(γ) = ¬G(¬γ))
+  have h_G_neg : Formula.all_future γ.neg ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_A (Formula.all_future γ.neg) with h | h
+    · exact h
+    · -- ¬G(¬γ) ∈ A means F(γ) ∈ A, contradiction
+      exact absurd h h_not_F
+  -- G(¬γ) ∈ A gives ¬γ ∈ g_content(A) ⊆ C
+  have h_neg_C : γ.neg ∈ C := h_gc h_G_neg
+  -- γ ∈ C and ¬γ ∈ C contradicts C being MCS (consistent)
+  exact SetMaximalConsistent.neg_excludes h_mcs_C γ h_neg_C h_γ
+
+/-- P(α) ∈ C for all α ∈ A when g_content(A) ⊆ C. Uses BX4 (connect_future). -/
+theorem P_mem_of_g_content_sub {A C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_gc : g_content A ⊆ C) (α : Formula) (h_α : α ∈ A) :
+    Formula.some_past α ∈ C := by
+  -- BX4: α ∈ A → G(P(α)) ∈ A
+  have h_GP : Formula.all_future (Formula.some_past α) ∈ A := by
+    have h_ax : DerivationTree [] (α.imp (Formula.all_future (Formula.some_past α))) :=
+      DerivationTree.axiom [] _ (Axiom.connect_future α)
+    exact SetMaximalConsistent.implication_property h_mcs_A
+      (theorem_in_mcs h_mcs_A h_ax) h_α
+  -- G(P(α)) ∈ A gives P(α) ∈ g_content(A) ⊆ C
+  exact h_gc h_GP
+
+/-- **BurgessR3Maximal existence from g_content inclusion**: Given MCS A, C with
+g_content(A) ⊆ C, there exists B with BurgessR3Maximal(A, B, C).
+
+This is the key infrastructure lemma enabling g-value construction in the
+chronicle elimination functions. The seed is ⊤ (tautology), which satisfies
+both burgessR(A, ⊤, C) and burgessRSince(C, ⊤, A) when g_content(A) ⊆ C. -/
+theorem burgessR3Maximal_from_g_content_sub {A C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_gc : g_content A ⊆ C) :
+    ∃ B : Set Formula, BurgessR3Maximal A B C := by
+  set top := Formula.bot.imp Formula.bot with top_def
+  -- ⊤ ∈ A (theorem in MCS)
+  have h_top_A : top ∈ A :=
+    theorem_in_mcs h_mcs_A (Bimodal.Theorems.Combinators.identity Formula.bot)
+  -- burgessR(A, ⊤, C): ∀ γ ∈ C, U(⊤, γ) ∈ A
+  have h_bR : burgessR A top C := by
+    intro γ hγ
+    have h_F := F_mem_of_g_content_sub h_mcs_A h_mcs_C h_gc γ hγ
+    -- F(γ) → U(⊤, γ) by F_until_equiv
+    have h_bx12 : DerivationTree [] ((Formula.some_future γ).imp (Formula.untl top γ)) :=
+      DerivationTree.axiom [] _ (Axiom.F_until_equiv γ)
+    exact SetMaximalConsistent.implication_property h_mcs_A
+      (theorem_in_mcs h_mcs_A h_bx12) h_F
+  -- burgessRSince(C, ⊤, A): ∀ α ∈ A, S(⊤, α) ∈ C
+  have h_bRS : burgessRSince C top A := by
+    intro α hα
+    have h_P := P_mem_of_g_content_sub h_mcs_A h_gc α hα
+    -- P(α) → S(⊤, α) by P_since_equiv
+    have h_bx12' : DerivationTree [] ((Formula.some_past α).imp (Formula.snce top α)) :=
+      DerivationTree.axiom [] _ (Axiom.P_since_equiv α)
+    exact SetMaximalConsistent.implication_property h_mcs_C
+      (theorem_in_mcs h_mcs_C h_bx12') h_P
+  -- Apply burgessR3Maximal_exists_from_seed
+  exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
