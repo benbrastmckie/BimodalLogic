@@ -181,7 +181,7 @@ Phases 4 and 5 can execute in parallel (independent files: RRelation.lean vs Cou
 
 ---
 
-### Phase 4: Close CounterexampleElimination Sorry Sites [NOT STARTED]
+### Phase 4: Close CounterexampleElimination Sorry Sites [BLOCKED]
 
 **Goal**: Close all 9 sorry sites in CounterexampleElimination.lean. These are all c2' construction sites that need BurgessR3Maximal g-values for newly created adjacent pairs during counterexample elimination.
 

@@ -941,6 +941,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/04_lemma23-complete-xu321-blocked.md",
           "type": "handoff",
           "summary": "Handoff: Lemma 2.3 complete, Xu 3.2.1 blocked by consistency gap"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/04_phase4-blocker-analysis.md",
+          "type": "handoff",
+          "summary": "Phase 4 blocker: 9 sorry sites require structural redesign (g-value construction, C4 nested case)"
         }
       ],
       "session_id": "sess_1777417584_4489ee",
