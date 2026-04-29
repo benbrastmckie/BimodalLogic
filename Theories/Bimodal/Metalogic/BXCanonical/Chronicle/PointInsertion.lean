@@ -52,11 +52,13 @@ Local definitions used for point insertion lemmas.
 - `dc_delta_B_burgessR3`: Extension of B by delta preserves burgessR3
 - `BurgessR3Maximal_extension_fails`: Maximality prevents consistent proper extensions
 
-### Withdrawn (Phase 3, Task 107)
+### Withdrawn (Phase 3, Task 107) / Re-assessed (Phase 5, Task 107)
 
 - `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) <= C unprovable)
-- `lemma_2_7`: FALSE under strict semantics (D2 branch cannot produce xi at future MCS)
-- `lemma_2_8`: Depends on `lemma_2_7`; also has false D2-style reasoning
+- `lemma_2_7`: Re-assessed as VALID (Phase 5, plan v27). The earlier "FALSE"
+  assessment was for a D2-branch proof that predated BX13. Burgess's original
+  proof using BX5+BX7+BX13 works under strict/open-guard semantics.
+- `lemma_2_8`: Depends on D2-style reasoning; may be recoverable but not needed
 
 ## References
 
@@ -256,13 +258,29 @@ noncomputable def lemma_2_6 {A C : Set Formula}
     h_sup (Set.mem_union_left _ (Set.mem_singleton _)),
     fun χ hχ => h_sup (Set.mem_union_right _ hχ)⟩
 
-/-! ### Withdrawn Lemmas
+/-! ### Withdrawn and Re-assessed Lemmas
 
-See module docstring for details on withdrawn lemma_2_6_strong, lemma_2_7, lemma_2_8.
+- `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) ≤ C unprovable).
+  Remains withdrawn.
+
+- `lemma_2_7`: Previously marked FALSE under strict semantics (Phase 3, task 107),
+  but that assessment was for a "D2 branch" proof approach that predated BX13
+  (enrichment_until, Burgess A3a). With BX13 now available (Phase 2, task 107),
+  Burgess's ORIGINAL proof of Lemma 2.7 is valid:
+  1. BX5 (self_accum_until) enriches the Until guard
+  2. BX7 (linear_until) provides the three-way disjunction
+  3. BX13 (enrichment_until) simplifies the surviving disjunct
+  4. BX1/BX2 (monotonicity) rule out two disjuncts
+  None of these axioms depend on BX9 (removed) or the T-axiom.
+  **Gate verdict (Phase 5, plan v27): VALID. Proceed with Strategy 1.**
+
+- `lemma_2_8`: May also be recoverable with BX13, but Lemma 2.7 suffices
+  for the C5 n>0 sub-case 3 (Burgess Lemma 2.10). Not needed if 2.7 works.
 -/
 
 -- lemma_2_7_guard: REMOVED (task 113 Phase 3). INVALID under open guard.
--- Depended on removed until_elim_mcs.
+-- Depended on removed until_elim_mcs. (This was the old "D2 branch" approach,
+-- NOT Burgess's original proof which uses BX5+BX7+BX13.)
 
 /-- Conjunction membership gives left component in MCS. -/
 theorem conj_left_mcs {A : Set Formula}

@@ -827,7 +827,7 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
-              c2' := sorry -- Phase 3: direct g-construction for new adjacent pair (x_max, y)
+              c2' := sorry -- Phase 9: C5 g-construction (n=0 via burgessR3Maximal_from_g_content_sub, n>0 via Lemma 2.7)
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
               c5_forward_witness := by
@@ -865,7 +865,7 @@ noncomputable def eliminate_potential_counterexample
       exact { val := χ'
               dom_sub := h_prop.1
               c0 := h_prop.2.2.1
-              c2' := sorry -- Phase 3: direct g-construction for new adjacent pair (y, x_min)
+              c2' := sorry -- Phase 9: C5' g-construction (mirror, n=0 via h_content, n>0 via Lemma 2.7)
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)

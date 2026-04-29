@@ -151,7 +151,7 @@ Phases 6 and 7 can execute in parallel (Lemma 2.6 vs Lemma 2.7). Phases 10 and 1
 
 ---
 
-### Phase 5: GATE -- Verify Lemma 2.7 Validity Under Strict Semantics [NOT STARTED]
+### Phase 5: GATE -- Verify Lemma 2.7 Validity Under Strict Semantics [COMPLETED]
 
 **Goal**: Determine whether Lemma 2.7 (Until-formula splitting) holds under strict/open-guard semantics. This is a GATE: if Lemma 2.7 is valid, the plan proceeds with Strategy 1 (full Burgess alignment, maintaining c2' at finite stages). If invalid, the entire plan must be revised to Strategy 2 (remove c2' from finite stages, construct g at limit only).
 
@@ -181,7 +181,7 @@ Phases 6 and 7 can execute in parallel (Lemma 2.6 vs Lemma 2.7). Phases 10 and 1
 
 ---
 
-### Phase 6: Formalize Lemma 2.6 Splitting [NOT STARTED]
+### Phase 6: Formalize Lemma 2.6 Splitting [BLOCKED]
 
 **Goal**: Formalize Lemma 2.6 (counterexample splitting): given `BurgessR3Maximal(A, B, C)` and `delta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `delta.neg in D`. This is the workhorse lemma used by C4/g_prop/h_prop (Phase 11) and density (Phase 10).
 
