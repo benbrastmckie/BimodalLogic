@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-29T13:28:05Z",
+      "last_updated": "2026-04-29T13:48:16Z",
       "researched": "2026-04-29T05:28:07Z",
       "related_tasks": [
         93
@@ -993,14 +993,14 @@
           "summary": "Team research (4 teammates): A4a IS valid (convention error resolved), add as axiom OR use Xu Lemma 2.4 alternative"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/44_implementation-plan.md",
-          "type": "plan",
-          "summary": "v28: 11 phases (4 done, 1 partial, 6 new), 50h — Xu Lemma 2.4 splitting, no A4a dependency"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/02_phase5b-blocker.md",
           "type": "handoff",
           "summary": "Phase 5b blocked: guard strengthening axiom needed for Xu splitting"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/44_implementation-plan.md",
+          "type": "plan",
+          "summary": "v29: 11 phases, 42h — A4a axiom + Burgess Lemma 2.6 direct path"
         }
       ],
       "session_id": "sess_1777467484_0f48f6",

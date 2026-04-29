@@ -1,8 +1,8 @@
-# Implementation Plan: Task #107 -- Burgess Chronicle g-Value Construction (v28)
+# Implementation Plan: Task #107 -- Burgess Chronicle g-Value Construction (v29)
 
 - **Task**: 107 - Burgess chronicle construction for BX representation theorem
 - **Status**: [NOT STARTED]
-- **Effort**: 50 hours
+- **Effort**: 42 hours
 - **Dependencies**: Task 113 [COMPLETED] (open-guard semantics)
 - **Research Inputs**: [reports/42_team-research.md], [reports/43_team-research.md], [reports/44_team-research.md]
 - **Artifacts**: plans/44_implementation-plan.md (this file)
@@ -12,17 +12,17 @@
 
 ## Overview
 
-Plan v28 revises v27 to incorporate Report 44 findings: the A4a axiom (`U(p,q) AND NOT U(p,r) -> U(q AND NOT r, q)`) IS semantically valid under open-guard semantics but is NOT derivable from BX axioms. Rather than adding A4a as a new axiom, v28 adopts Path 2 -- Xu's 1988 Lemma 2.4 alternative, which achieves the full splitting without A4a using only BX1/BX2 + BX13. This replaces Phase 6 (Lemma 2.6 via Burgess's A4a-dependent proof) with Xu Lemma 2.4 splitting. The Xu approach: given `BurgessR3Maximal(A, B, C)` with `beta not in B`, extend `B union {neg beta}` to MCS D via Lindenbaum, then use `burgessR3Maximal_exists_from_seed` for both B' (between A and D) and B'' (between D and C). All downstream phases (C5 n>0, density, C4/g_prop/h_prop) use Xu splitting instead of Burgess Lemma 2.6. Density uses Xu splitting on `BurgessR3Maximal(f(x), g(x,y), f(y))` to produce a fresh intermediate D, avoiding the self-pair problem entirely. Definition of done: all Chronicle/ sorry sites closed, `#print axioms dd_countermodel_chronicle` clean, `lake build` succeeds.
+Plan v29 revises v28 to adopt the user's chosen Option C: add A4a as a new `separation_until` axiom. Report 44 confirmed A4a (`untl(q,p) AND NOT untl(r,p) -> untl(q, q AND NOT r)` in BX convention) is semantically valid under open-guard semantics. Adding it as a BX axiom is sound and enables the direct Burgess Lemma 2.6 consistency proof, eliminating the need for Xu's Lemma 2.4 workaround. Phase 5b (Xu splitting, BLOCKED in v28) is replaced with a streamlined Phase 5b that adds the axiom, proves soundness, and formalizes Lemma 2.6. The Xu splitting and `left_mono_until_G` approaches are dropped entirely. Downstream phases (density, C4/g_prop/h_prop, C5) now use Burgess Lemma 2.6 splitting instead of Xu splitting. Definition of done: all Chronicle/ sorry sites closed, `#print axioms dd_countermodel_chronicle` clean, `lake build` succeeds.
 
 ### Research Integration
 
 - **Report 42 (team research, 4 teammates)**: Root cause diagnosis -- g-values never constructed. Only viable path: restructure elimination functions to produce g-values matching Burgess's Lemmas 2.4/2.6. Integrated in plan v26.
 - **Report 43 (team research, 4 teammates)**: Three critical findings: (a) density self-pair impossible under irreflexive semantics, (b) C5 n=0 works via g_content but n>0 needs full Lemma 2.10, (c) Lemma 2.7 validity is the gating question for Strategy 1 vs Strategy 2. Integrated in plan v27.
-- **Report 44 (team research, 4 teammates)**: A4a is semantically valid but NOT derivable from BX axioms. User chose Path 2: Xu Lemma 2.4 alternative (no new axiom). Xu proves full splitting without A4a using only BX1/BX2+BX13. Removes A4a dependency entirely. Integrated in this plan (v28).
+- **Report 44 (team research, 4 teammates)**: A4a is semantically valid but NOT derivable from BX axioms. User chose Option C: add A4a as `separation_until` axiom. Enables direct Burgess Lemma 2.6. Replaces Xu splitting approach (v28). Integrated in this plan (v29).
 
 ### Prior Plan Reference
 
-Plan v27 (artifact 43) had 12 phases, 58 hours. Phases 1-5 completed (documentation, A3a/A3b axioms, Lemma 2.3 closure, C4 nested case via BX6, Lemma 2.7 GATE passed). Phase 6 was BLOCKED on A4a derivability -- Burgess's Lemma 2.6 consistency proof uses A4a which is not in the BX system. Report 44 resolves this blocker by providing the Xu alternative.
+Plan v28 (this file, previous version) had 11 phases, 50 hours. Phases 1-5a completed (documentation, A3a/A3b axioms, Lemma 2.3 closure, C4 nested case via BX6, Lemma 2.7 GATE passed). Phase 5b was BLOCKED on Xu splitting -- the DCS consistency argument required a guard strengthening axiom not derivable from BX. v29 replaces Phase 5b entirely: instead of the Xu workaround, add A4a directly as a sound axiom and use Burgess's original Lemma 2.6 proof. This simplifies the plan by ~8 hours and removes all Xu-related complexity.
 
 ### Roadmap Alignment
 
@@ -34,18 +34,21 @@ Plan v27 (artifact 43) had 12 phases, 58 hours. Phases 1-5 completed (documentat
 ## Goals & Non-Goals
 
 **Goals**:
-- Formalize Xu Lemma 2.4 splitting: R(A,B,C) + beta not in B produces B', D, B'' with R(A,B',D) and R(D,B'',C) -- NO A4a dependency
+- Add `separation_until` (A4a) and `separation_since` (A4b) axiom constructors to the BX system
+- Prove soundness of A4a/A4b (~30 lines, using Teammate A's semantic argument from Report 44)
+- Formalize Burgess Lemma 2.6: R(A,B,C) + beta not in B -> exists B', D, B'' with R(A,B',D) and R(D,B'',C) and neg beta in D -- using A4a directly
 - Extend `lemma_2_4` to return both B (DCS interval set) and C (MCS endpoint)
-- Formalize Lemma 2.7 splitting: R(A,B,C) + U(xi,eta) in A + eta not in B produces B', D, B'' with xi in D, eta in B'
-- Close 2 C5 sorry sites: n=0 via g_content, n>0 via Lemma 2.10 recursive case analysis (using Xu splitting for sub-case 3)
-- Close 1 density sorry site via Xu splitting (fresh D, NOT self-pair)
-- Close 4 C4/g_prop/h_prop sorry sites via Xu splitting
+- Formalize Lemma 2.7 splitting: R(A,B,C) + U(xi,eta) in A + eta not in B -> exists B', D, B'' with xi in D, eta in B'
+- Close 2 C5 sorry sites: n=0 via g_content, n>0 via Lemma 2.10 recursive case analysis (using Lemma 2.7 for sub-case 3)
+- Close 1 density sorry site via Lemma 2.6 splitting (fresh D, NOT self-pair)
+- Close 4 C4/g_prop/h_prop sorry sites via Lemma 2.6 splitting
 - Close 2 FUC/FSC sorry sites in ChronicleToCountermodel.lean
 - Achieve sorry-free `dd_countermodel_chronicle`
 - Maintain `lake build` at each phase boundary
 
 **Non-Goals**:
-- Adding A4a as a new axiom (explicitly rejected in favor of Xu approach)
+- Xu Lemma 2.4 workaround (explicitly dropped in favor of A4a axiom)
+- `left_mono_until_G` axiom approach (dropped)
 - BXCanonical sorry closure (task 109)
 - BX2 redundant conjunct cleanup (separate task)
 - BX4 redundancy investigation (separate task)
@@ -57,11 +60,11 @@ Plan v27 (artifact 43) had 12 phases, 58 hours. Phases 1-5 completed (documentat
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Xu splitting consistency proof is harder than expected (B union {neg beta} consistency requires careful DCS argument) | M | M | DCS property already provides consistency of proper subsets; Lindenbaum extension is standard |
-| `burgessR3Maximal_exists_from_seed` seed construction for A-to-D and D-to-C directions is non-trivial | M | M | The seed construction follows from burgessRSet membership; detailed construction in Phase 5b description |
+| A4a soundness proof harder than expected in Lean formalization | L | L | Semantic argument is straightforward (6 steps, Report 44 Teammate A); only open-guard interval reasoning needed |
+| Burgess Lemma 2.6 consistency proof requires careful A4a application | M | M | The proof uses A4a at exactly one point (step 5); rest follows from BX1/BX2+BX13 already in codebase |
 | Extended lemma_2_4 return type causes cascading call-site changes | M | L | Current lemma_2_4 is called from CounterexampleElimination.lean only; changes are local |
 | C5 n>0 recursive reduction adds significant structural complexity | H | M | Start with n=0 case (straightforward), then tackle n>0; partial progress still closes 2 sorry sites |
-| Density restructuring changes f(z) from f(x) copy to fresh MCS, affecting downstream proofs | M | M | Fresh D from Xu splitting satisfies all c1-c5 properties by construction; downstream proofs should be simpler |
+| Density restructuring changes f(z) from f(x) copy to fresh MCS, affecting downstream proofs | M | M | Fresh D from Lemma 2.6 splitting satisfies all c1-c5 properties by construction |
 | ChronicleToCountermodel FUC/FSC requires threading g through Cantor isomorphism | M | M | This phase is independent; partial progress still reduces sorry count |
 
 ## Implementation Phases
@@ -71,13 +74,13 @@ Plan v27 (artifact 43) had 12 phases, 58 hours. Phases 1-5 completed (documentat
 | Wave | Phases | Blocked by |
 |------|--------|------------|
 | -- | 1, 2, 3, 4, 5a | (already completed from v24/v27) |
-| 1 | 5b, 6 | -- (independent of each other) |
-| 2 | 7 | 5b, 6 |
+| 1 | 5b | -- (no dependencies beyond completed phases) |
+| 2 | 6, 7 | 5b |
 | 3 | 8, 9 | 7 |
 | 4 | 10 | 8, 9 |
 | 5 | 11 | 10 |
 
-Phases 5b and 6 can execute in parallel (Xu splitting vs Lemma 2.7 splitting). Phases 8 and 9 can execute in parallel (density vs C4/g_prop/h_prop). Phase 10 depends only on Phase 7 (C5 n=0 needs extended lemma_2_4 but not splitting lemmas directly).
+Phase 5b is the critical path: add A4a axiom + Lemma 2.6. Phases 6 and 7 can execute in parallel once 5b completes (Lemma 2.7 splitting vs lemma_2_4 extension). Phases 8 and 9 can execute in parallel (density vs C4/g_prop/h_prop).
 
 ---
 
@@ -166,57 +169,61 @@ Phases 5b and 6 can execute in parallel (Xu splitting vs Lemma 2.7 splitting). P
 
 ---
 
-### Phase 5b: Xu Lemma 2.4 Splitting -- No A4a Dependency [BLOCKED]
+### Phase 5b: Add A4a/A4b Axioms and Formalize Lemma 2.6 [NOT STARTED]
 
-**Goal**: Formalize the Xu Lemma 2.4 splitting theorem: given `BurgessR3Maximal(A, B, C)` with `beta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `neg beta in D`. This replaces Burgess's Lemma 2.6 which requires A4a. The Xu approach uses only BX1/BX2 + BX13 (already in the axiom system).
+**Goal**: Add `separation_until` (A4a) and `separation_since` (A4b) as new BX axiom constructors, prove their soundness, and formalize Burgess Lemma 2.6 (splitting via A4a). This replaces the BLOCKED Xu splitting approach from v28.
 
-**Construction outline** (Xu 1988, adapted):
-1. Given `BurgessR3Maximal(A, B, C)` with `beta not in B`
-2. Since B is a DCS and `beta not in B`, the set `B union {neg beta}` is consistent (DCS property: B is deductively closed under the restricted language, and if `beta not in B` then `neg beta` is consistent with B)
-3. Extend `B union {neg beta}` to MCS D via Lindenbaum lemma
-4. `B subset D` (so D inherits all the r-relation properties from B)
-5. **A-to-D direction**: Since `top in C` (C is MCS) and `burgessRSet(A, B, C)` gives `U(top, delta) in A` for all `delta in B subset D` (i.e., `F(delta) in A`), establish `burgessR(A, top, D)`. Combined with `burgessRSince(D, top, A)` via BX4 (connect_future), use `burgessR3Maximal_exists_from_seed` to get `BurgessR3Maximal(A, B', D)`.
-6. **D-to-C direction**: Since `U(gamma, top) in B subset D` for all `gamma in C` (from `burgessRSet`, giving `P(gamma) in D`), establish `burgessR(D, top, C)`. Use `burgessR3Maximal_exists_from_seed` to get `BurgessR3Maximal(D, B'', C)`.
+**A4a in BX convention**: `untl(q,p) AND NOT untl(r,p) -> untl(q, q AND NOT r)`
+(Burgess convention: `U(p,q) AND NOT U(p,r) -> U(q AND NOT r, q)` where U(event, guard))
 
-**Key dependencies** (all already available in codebase):
-- `burgessR3Maximal_exists_from_seed` (sorry-free)
-- Lindenbaum extension to MCS
-- BX4 (`connect_future`) for the Since direction
-- DCS consistency properties
+**A4b (Since dual)**: `snce(q,p) AND NOT snce(r,p) -> snce(q, q AND NOT r)`
+
+**Soundness proof outline** (from Report 44, Teammate A):
+1. From `untl(q,p)` at t: witness s0 > t with p(s0), guard q on (t,s0)
+2. From `NOT untl(r,p)` at t applied to s0: since p(s0), exists u0 in (t,s0) with NOT r(u0)
+3. u0 in (t,s0) implies q(u0) from step 1's guard
+4. (q AND NOT r)(u0) holds
+5. For v in (t,u0): v in (t,s0) implies q(v) from step 1's guard
+6. u0 witnesses `untl(q, q AND NOT r)` at t
+
+**Lemma 2.6 formalization** (Burgess 1982): Given `BurgessR3Maximal(A, B, C)` with `beta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `neg beta in D`. The proof constructs a consistent set using A4a at step 5 (the only point where A4a is needed), then extends via Lindenbaum to MCS D, and applies `burgessR3Maximal_exists_from_seed` for both directions.
 
 **Tasks**:
-- [ ] Verify `B union {neg beta}` consistency from DCS properties: since B is a DCS and `beta not in B`, prove that adding `neg beta` does not create a contradiction
-- [ ] Formalize Lindenbaum extension of `B union {neg beta}` to MCS D
-- [ ] Prove `B subset D` (direct from extension)
-- [ ] Construct seed for A-to-D: establish `burgessR(A, top, D)` using the F-membership inherited from `B subset D`
-- [ ] Establish `burgessRSince(D, top, A)` via BX4 (connect_future)
-- [ ] Apply `burgessR3Maximal_exists_from_seed` to get `BurgessR3Maximal(A, B', D)`
-- [ ] Construct seed for D-to-C: establish `burgessR(D, top, C)` using the P-membership inherited from `B subset D`
-- [ ] Apply `burgessR3Maximal_exists_from_seed` to get `BurgessR3Maximal(D, B'', C)`
-- [ ] Package into a single theorem: `xu_splitting` with signature:
+- [ ] Add `separation_until` constructor to `BXAxiom` inductive in Axioms.lean:
+  ```
+  | separation_until (p q r : Formula) : BXAxiom (untl q p ⟹ ∼(untl r p) ⟹ untl q (q ⋀ ∼r))
+  ```
+- [ ] Add `separation_since` constructor (dual) to Axioms.lean
+- [ ] Prove soundness of `separation_until` in Soundness.lean (~30 lines, following the 6-step argument)
+- [ ] Prove soundness of `separation_since` in Soundness.lean (symmetric argument)
+- [ ] Formalize Lemma 2.6 consistency argument using A4a:
   - Input: `h_r3m : BurgessR3Maximal A B C`, `h_beta : beta not in B`, `h_mcs_A : SetMaximalConsistent A`, `h_mcs_C : SetMaximalConsistent C`
   - Output: `exists B' D B'', BurgessR3Maximal A B' D /\ BurgessR3Maximal D B'' C /\ SetMaximalConsistent D /\ neg beta in D`
+- [ ] Package as `lemma_2_6` theorem in PointInsertion.lean
 - [ ] Run `lake build`
 
-**Timing**: 8 hours
+**Timing**: 6 hours
 
 **Depends on**: none (phases 1-5a already completed)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- add Xu splitting theorem (~100 lines)
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` -- possibly new seed infrastructure (~40 lines)
+- `Theories/Bimodal/ProofSystem/Axioms.lean` -- add 2 constructors (~10 lines)
+- `Theories/Bimodal/Metalogic/Soundness.lean` -- add 2 soundness proofs (~60 lines)
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- add Lemma 2.6 (~80 lines)
 
 **Verification**:
-- `xu_splitting` compiles sorry-free
+- `separation_until` and `separation_since` constructors compile
+- Soundness proofs compile sorry-free
+- `lemma_2_6` compiles sorry-free
 - `lake build` succeeds
 
 ---
 
 ### Phase 6: Formalize Lemma 2.7 Splitting [NOT STARTED]
 
-**Goal**: Formalize Lemma 2.7 (Until-formula splitting): given `BurgessR3Maximal(A, B, C)` with `U(xi, eta) in A` and `eta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `xi in D` and `eta in B'`. This is needed for C5 n>0 sub-case 3 (Phase 8).
+**Goal**: Formalize Lemma 2.7 (Until-formula splitting): given `BurgessR3Maximal(A, B, C)` with `U(xi, eta) in A` and `eta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `xi in D` and `eta in B'`. This is needed for C5 n>0 sub-case 3 (Phase 10).
 
-**Difference from Xu splitting (Phase 5b)**: Xu splitting only guarantees `neg beta in D`. Lemma 2.7 additionally guarantees `xi in D` and `eta in B'` (the Until formula's components are placed in specific locations). The construction uses BX5 (self-accumulation) to ensure xi propagates to D, and BX7 (linearity) to steer eta into B'.
+**Difference from Lemma 2.6 (Phase 5b)**: Lemma 2.6 only guarantees `neg beta in D`. Lemma 2.7 additionally guarantees `xi in D` and `eta in B'` (the Until formula's components are placed in specific locations). The construction uses BX5 (self-accumulation) to ensure xi propagates to D, and BX7 (linearity) to steer eta into B'.
 
 **Note**: Lemma 2.7 does NOT depend on A4a (confirmed in Report 44). It uses only BX5 + BX7 + BX13.
 
@@ -230,7 +237,7 @@ Phases 5b and 6 can execute in parallel (Xu splitting vs Lemma 2.7 splitting). P
 
 **Timing**: 6 hours
 
-**Depends on**: none (phases 1-5a already completed)
+**Depends on**: 5b
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- add Lemma 2.7 splitting (~100 lines)
@@ -252,7 +259,7 @@ Phases 5b and 6 can execute in parallel (Xu splitting vs Lemma 2.7 splitting). P
 
 **Timing**: 4 hours
 
-**Depends on**: 5b, 6
+**Depends on**: 5b
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- extend lemma_2_4 (~30 lines)
@@ -265,14 +272,14 @@ Phases 5b and 6 can execute in parallel (Xu splitting vs Lemma 2.7 splitting). P
 
 ---
 
-### Phase 8: Density Fix -- Xu Splitting Instead of Self-Pair [NOT STARTED]
+### Phase 8: Density Fix -- Lemma 2.6 Splitting Instead of Self-Pair [NOT STARTED]
 
-**Goal**: Fix the density sorry site by using Xu splitting (Phase 5b) on the existing `BurgessR3Maximal(f(x), g(x,y), f(y))` to produce an intermediate D (a fresh MCS, distinct from both f(x) and f(y)). The formula to negate is chosen from `g(x,y)` -- any formula whose negation is consistent with `g(x,y)` (exists because `g(x,y)` is a proper DCS, not the full formula set).
+**Goal**: Fix the density sorry site by using Lemma 2.6 (Phase 5b) on the existing `BurgessR3Maximal(f(x), g(x,y), f(y))` to produce an intermediate D (a fresh MCS, distinct from both f(x) and f(y)). The formula to negate is chosen from `g(x,y)` -- any formula whose negation is consistent with `g(x,y)` (exists because `g(x,y)` is a proper DCS, not the full formula set).
 
 **Construction**: The density case inserts z between adjacent (x, y).
 ```
--- Xu splitting approach:
--- Apply xu_splitting to BurgessR3Maximal(f(x), g(x,y), f(y)) with some beta not in g(x,y)
+-- Lemma 2.6 approach:
+-- Apply lemma_2_6 to BurgessR3Maximal(f(x), g(x,y), f(y)) with some beta not in g(x,y)
 -- (beta exists because g(x,y) is a proper DCS, not the full formula set)
 -- Produces B', D, B'' with BurgessR3Maximal(f(x), B', D) and BurgessR3Maximal(D, B'', f(y))
 f' w := if w = z then D else chi.f w
@@ -282,16 +289,16 @@ g' a b :=
   else chi.g a b
 ```
 
-c2' for new pairs: `BurgessR3Maximal(f(x), B', D)` = `BurgessR3Maximal(f'(x), g'(x,z), f'(z))` holds by Xu splitting output. `BurgessR3Maximal(D, B'', f(y))` = `BurgessR3Maximal(f'(z), g'(z,y), f'(y))` holds by Xu splitting output.
+c2' for new pairs: `BurgessR3Maximal(f(x), B', D)` = `BurgessR3Maximal(f'(x), g'(x,z), f'(z))` holds by Lemma 2.6 output. `BurgessR3Maximal(D, B'', f(y))` = `BurgessR3Maximal(f'(z), g'(z,y), f'(y))` holds by Lemma 2.6 output.
 
 **Tasks**:
 - [ ] Inspect density sorry site with `lean_goal` to understand exact constraint
 - [ ] Identify a formula beta guaranteed not in g(x,y) (any formula not in the DCS; existence follows from g(x,y) being proper)
-- [ ] Apply `xu_splitting` (from Phase 5b) to `BurgessR3Maximal(f(x), g(x,y), f(y))` with beta
+- [ ] Apply `lemma_2_6` (from Phase 5b) to `BurgessR3Maximal(f(x), g(x,y), f(y))` with beta
 - [ ] Replace density f-function: `f'(z) = D` (fresh MCS from splitting, NOT f(x))
 - [ ] Replace density g-function: `g'(x,z) = B'`, `g'(z,y) = B''` (from splitting output)
-- [ ] Prove c2' for new pairs using Xu splitting output directly
-- [ ] Verify c1 (MCS property) for f'(z) = D (holds since D is MCS by Xu splitting)
+- [ ] Prove c2' for new pairs using Lemma 2.6 output directly
+- [ ] Verify c1 (MCS property) for f'(z) = D (holds since D is MCS by Lemma 2.6)
 - [ ] Verify c5 (Until/Since witnesses) still holds for f'(z) -- may need additional argument
 - [ ] Close density sorry site
 - [ ] Run `lake build`
@@ -309,20 +316,20 @@ c2' for new pairs: `BurgessR3Maximal(f(x), B', D)` = `BurgessR3Maximal(f'(x), g'
 
 ---
 
-### Phase 9: C4/g_prop/h_prop g-Value Construction via Xu Splitting [NOT STARTED]
+### Phase 9: C4/g_prop/h_prop g-Value Construction via Lemma 2.6 Splitting [NOT STARTED]
 
-**Goal**: Close the 4 harder c2' sorry sites (C4 forward, C4 backward, g_prop forward, h_prop backward) by constructing g-values via Xu splitting. These insert a new point z BETWEEN existing adjacent points (x, y) and need g-values for TWO new adjacent pairs: (x, z) and (z, y).
+**Goal**: Close the 4 harder c2' sorry sites (C4 forward, C4 backward, g_prop forward, h_prop backward) by constructing g-values via Lemma 2.6 splitting. These insert a new point z BETWEEN existing adjacent points (x, y) and need g-values for TWO new adjacent pairs: (x, z) and (z, y).
 
 **Data flow**: Same pattern as density (Phase 8) but with a specific counterexample formula beta:
 1. Input: `h_c2' : BurgessR3Maximal(f(x), chi.g(x, x_next), f(x_next))` from `chi.c2'`
 2. Input: `beta` (the counterexample formula) with `beta not in chi.g(x, x_next)`
-3. Apply `xu_splitting`: produces B', D, B'' with `BurgessR3Maximal(f(x), B', D)` and `BurgessR3Maximal(D, B'', f(x_next))`
+3. Apply `lemma_2_6`: produces B', D, B'' with `BurgessR3Maximal(f(x), B', D)` and `BurgessR3Maximal(D, B'', f(x_next))`
 4. Set: `f'(z) = D`, `g'(x, z) = B'`, `g'(z, x_next) = B''`
 5. c2' follows directly from splitting output
 
 **Tasks**:
 - [ ] Inspect all 4 sorry sites with `lean_goal` to understand exact proof states
-- [ ] For C4 forward: extract `h_c2'_xy := chi.c2' x x_next h_adj`, apply `xu_splitting` with the C4 counterexample formula, construct g-function with B' and B''
+- [ ] For C4 forward: extract `h_c2'_xy := chi.c2' x x_next h_adj`, apply `lemma_2_6` with the C4 counterexample formula, construct g-function with B' and B''
 - [ ] Close C4 forward sorry site
 - [ ] For C4 backward: mirror using Since-direction splitting
 - [ ] Close C4 backward sorry site
@@ -332,7 +339,7 @@ c2' for new pairs: `BurgessR3Maximal(f(x), B', D)` = `BurgessR3Maximal(f'(x), g'
 - [ ] Close h_prop backward sorry site
 - [ ] Run `lake build`
 
-**Timing**: 8 hours
+**Timing**: 6 hours
 
 **Depends on**: 7
 
@@ -377,7 +384,7 @@ c2' for new pairs: `BurgessR3Maximal(f(x), B', D)` = `BurgessR3Maximal(f'(x), g'
 - [ ] Close C5 backward sorry site
 - [ ] Run `lake build`
 
-**Timing**: 10 hours
+**Timing**: 8 hours
 
 **Depends on**: 8, 9
 
@@ -409,7 +416,7 @@ c2' for new pairs: `BurgessR3Maximal(f(x), B', D)` = `BurgessR3Maximal(f'(x), g'
 - [ ] Clean up temporary scaffolding, commented-out code, or outdated TODOs in Chronicle/ files
 - [ ] Update sorry counts in file-level documentation headers
 
-**Timing**: 7 hours
+**Timing**: 5 hours
 
 **Depends on**: 10
 
@@ -433,29 +440,31 @@ c2' for new pairs: `BurgessR3Maximal(f(x), B', D)` = `BurgessR3Maximal(f'(x), g'
 - [ ] `#print axioms dd_countermodel_chronicle` shows no `sorryAx`
 - [ ] All previously sorry-free lemmas remain sorry-free (no regressions)
 - [ ] Extended `lemma_2_4` compiles sorry-free with new return type (returns both B and C)
-- [ ] Xu splitting theorem (`xu_splitting`) compiles sorry-free -- no A4a dependency
+- [ ] `separation_until` and `separation_since` axiom constructors compile and pass soundness
+- [ ] Lemma 2.6 splitting theorem (`lemma_2_6`) compiles sorry-free -- uses A4a at exactly one point
 - [ ] Lemma 2.7 splitting theorem compiles sorry-free
 - [ ] `burgessR3Maximal_exists_from_seed` remains sorry-free throughout
 - [ ] Open-guard compatibility verified for all new infrastructure
 - [ ] Density case uses fresh MCS D (NOT f(x) copy) -- no self-pair
 - [ ] Each elimination function's g-function correctly handles: new adjacent pairs (explicit B/B' values from splitting), old adjacent pairs (chi.g pass-through)
-- [ ] No A4a axiom added to the BX system
 
 ## Artifacts & Outputs
 
 - `plans/44_implementation-plan.md` (this file)
-- Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` (extended lemma_2_4, Xu splitting, Lemma 2.7 splitting)
+- Modified `Theories/Bimodal/ProofSystem/Axioms.lean` (separation_until, separation_since constructors)
+- Modified `Theories/Bimodal/Metalogic/Soundness.lean` (A4a/A4b soundness proofs)
+- Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` (extended lemma_2_4, Lemma 2.6, Lemma 2.7 splitting)
 - Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` (7 c2' sorries + 1 density sorry closed via g-function construction)
 - Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` (2 FUC/FSC sorry sites closed)
-- Modified `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` (possible new splitting infrastructure)
 - Modified `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` (documentation)
 - Sorry-free `dd_countermodel_chronicle`
 
 ## Rollback/Contingency
 
-- **Xu splitting harder than expected**: Fall back to Path 1 (add A4a as `separation_until` axiom). Report 44 confirms A4a is semantically valid, so adding it is sound. This is a ~2 hour fallback.
-- **Lemma 2.7 formalization blocked**: Use only Xu splitting for C5 n>0 sub-case 3 (losing the xi/eta placement guarantees, but still achieving the split). BX6 absorption (Phase 4) may handle sub-cases that would otherwise need Lemma 2.7.
-- All changes are additive (new lemmas, proof completions, return type extensions) -- no destructive modifications to existing sorry-free code.
+- **A4a soundness harder than expected**: Unlikely -- the semantic argument is 6 lines (Report 44). Fallback: add as `sorry` temporarily, close later.
+- **Lemma 2.6 formalization blocked**: The proof uses A4a at exactly one step. If the Lean encoding is tricky, isolate that step as a separate lemma and iterate.
+- **Lemma 2.7 formalization blocked**: Use only Lemma 2.6 for C5 n>0 sub-case 3 (losing the xi/eta placement guarantees, but still achieving the split). BX6 absorption (Phase 4) may handle sub-cases that would otherwise need Lemma 2.7.
+- All changes are additive (new axioms, new lemmas, proof completions, return type extensions) -- no destructive modifications to existing sorry-free code.
 - Git history preserves all prior states; each phase is independently committable.
 - If C5 n>0 case analysis is harder than expected (Phase 10), the n=0 case still closes sorry sites for the domain-max configuration.
 - If density restructuring (Phase 8) has unexpected downstream effects, it is independent of C4/g_prop/h_prop (Phase 9).
