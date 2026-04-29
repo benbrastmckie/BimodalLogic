@@ -73,9 +73,10 @@ technical_debt:
 
 ### 115. Replace A4a (separation_until) with left_mono_until_G (Xu path)
 - **Effort**: 8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Related**: 107
+- **Research**: [specs/115_replace_a4a_with_left_mono_until_g/reports/01_a4a-vs-left-mono.md]
 
 **Description**: Replace the A4a (separation_until) axiom with left_mono_until_G: G(φ → χ) → (U(φ, ψ) → U(χ, ψ)). A4a enables the direct Burgess Lemma 2.6 path; left_mono_until_G enables the Xu Lemma 2.4 path instead. Both are semantically valid under open-guard semantics. If task 107 succeeds with A4a, this task provides an alternative axiom choice that may be more natural for the open-guard setting. Scope: add left_mono_until_G axiom, prove soundness, remove separation_until, rewrite Lemma 2.6 splitting via Xu approach, verify chronicle sorry sites still close.
 

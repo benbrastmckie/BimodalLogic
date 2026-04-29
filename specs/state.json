@@ -662,7 +662,7 @@
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-29T15:09:46Z",
+      "last_updated": "2026-04-29T15:17:28Z",
       "researched": "2026-04-29T05:28:07Z",
       "related_tasks": [
         93
@@ -1008,7 +1008,7 @@
           "summary": "Phase 5b partial: splitting_seed_consistent sorry — bidirectional seed consistency under irreflexive semantics"
         }
       ],
-      "session_id": "sess_1777471285_c27297",
+      "session_id": "sess_1777475840_92906b",
       "started": "2026-04-25T19:11:01Z"
     },
     {
@@ -1025,16 +1025,18 @@
     {
       "project_number": 115,
       "project_name": "replace_a4a_with_left_mono_until_g",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Replace the A4a (separation_until) axiom with left_mono_until_G: G(phi -> chi) -> (untl(phi, psi) -> untl(chi, psi)). A4a enables the direct Burgess Lemma 2.6 path; left_mono_until_G enables the Xu Lemma 2.4 path instead. Both are semantically valid under open-guard semantics. The Xu path avoids A4a entirely, using only BX1/BX2+BX13. If task 107 succeeds with A4a, this task provides an alternative axiom choice that may be more natural for the open-guard setting. Scope: (1) Add left_mono_until_G/left_mono_since_H axiom constructors to Axioms.lean, (2) Prove soundness, (3) Remove separation_until/separation_since, (4) Rewrite Lemma 2.6 splitting using Xu approach with the new axiom, (5) Verify all chronicle sorry sites still close.",
       "created": "2026-04-29T14:32:51Z",
-      "last_updated": "2026-04-29T14:32:51Z",
+      "last_updated": "2026-04-29T16:17:54Z",
       "language": "lean4",
       "related_tasks": [
         107
       ],
-      "next_artifact_number": 1
+      "next_artifact_number": 2,
+      "session_id": "sess_1777479139_de118c",
+      "researched": "2026-04-29T16:17:54Z"
     }
   ],
   "next_project_number": 116,
