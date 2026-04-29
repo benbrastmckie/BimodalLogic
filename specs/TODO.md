@@ -71,14 +71,15 @@ technical_debt:
 
 ## Tasks
 
-### 115. Replace A4a (separation_until) with left_mono_until_G (Xu path)
-- **Effort**: 8 hours
+### 115. Remove A4a and simplify BX2 after task 107 adds left_mono_until_G
+- **Effort**: 1-2 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
+- **Dependencies**: 107
 - **Related**: 107
 - **Research**: [specs/115_replace_a4a_with_left_mono_until_g/reports/01_a4a-vs-left-mono.md]
 
-**Description**: Replace the A4a (separation_until) axiom with left_mono_until_G: G(φ → χ) → (U(φ, ψ) → U(χ, ψ)). A4a enables the direct Burgess Lemma 2.6 path; left_mono_until_G enables the Xu Lemma 2.4 path instead. Both are semantically valid under open-guard semantics. If task 107 succeeds with A4a, this task provides an alternative axiom choice that may be more natural for the open-guard setting. Scope: add left_mono_until_G axiom, prove soundness, remove separation_until, rewrite Lemma 2.6 splitting via Xu approach, verify chronicle sorry sites still close.
+**Description**: Post-task-107 cleanup: remove A4a (separation_until/separation_since) axioms now that left_mono_until_G is in the system (added by task 107 Phase 5b). Optionally simplify BX2 by removing the redundant pointwise conjunct (left_mono_until_G subsumes it under open-guard semantics). Update SoundnessLemmas.lean match arms, remove A4a references from documentation.
 
 ---
 
@@ -132,7 +133,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
