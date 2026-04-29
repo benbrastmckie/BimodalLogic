@@ -945,41 +945,84 @@ Lemma 2.7 (Until-formula splitting): given `BurgessR3Maximal(A, B, C)` with
 - `BurgessR3Maximal(D, B'', C)`
 - `xi ∈ D` and `eta ∈ B'`
 
-## Proof Strategy (Burgess 1982, adapted)
+## Proof Strategy (Burgess 1982, direct seed)
 
-**Case analysis on consistency of {eta} ∪ B:**
+From `eta ∉ B` and maximality of B: `BurgessR3Maximal_extension_fails` gives
+`¬burgessR3(A, DC({eta}∪B), C)` (when {eta}∪B consistent). This means some
+formula `phi ∈ DC({eta}∪B)` with some `gamma ∈ C` has `¬U(phi, gamma) ∈ A`.
+By `dc_delta_B_controlled`, either `phi ∈ B` (impossible since burgessR3(A,B,C)
+holds) or there exists `beta₀ ∈ B` with `⊢ (beta₀∧eta) → phi`.
 
-**Case 1 (inconsistent): {eta} ∪ B inconsistent** → `eta.neg ∈ B` by DCS closure.
-Then from `burgessR(A, eta.neg, C)`: for any `gamma ∈ C`, `U(eta.neg, gamma) ∈ A`.
-BX5 enriches `U(xi, eta)` to `U(xi ∧ U(xi,eta), eta) ∈ A`.
-BX7 on `U(xi∧U(xi,eta), eta)` and `U(eta.neg, gamma)` gives disjunction D1∨D2∨D3:
-- D2: `U(guard, eta∧eta.neg)` -- event is propositionally ⊥, so F(⊥) ∈ A, contradiction
-- D1: `U(guard, eta∧gamma)` → splitting D with `eta∧gamma ∈ D`, so `eta ∈ D`
-- D3: `U(guard, (xi∧U)∧gamma)` → splitting D with `xi ∈ D`
+So we obtain `beta₀ ∈ B`, `gamma₀ ∈ C` with `¬U(beta₀∧eta, gamma₀) ∈ A`.
 
-For xi ∈ D: if D1 holds, the event is `eta ∧ gamma`; if D3 holds, the event is `(xi∧U(xi,eta))∧gamma`
-which gives `xi ∈ D`. Either way we get a valid splitting point.
-For eta ∈ B': use `burgessR3Maximal_exists_from_seed` with seed eta, requiring
-`burgessR(A, eta, D)`. This follows from BX13 (enrichment_until) connecting
-`U(xi, eta) ∈ A` and `xi ∈ D` (through Since enrichment). [TODO: full formalization]
+**Core BX5+BX7+BX13 chain** (adapted from Burgess 1982 p. 371):
 
-**Case 2 (consistent): {eta} ∪ B consistent** → by `BurgessR3Maximal_extension_fails`,
-`¬burgessR3(A, DC({eta}∪B), C)` holds. Some formula in DC({eta}∪B) fails the
-burgessR3 condition with some gamma ∈ C. The separation axiom BX14
-(`U(q,p) ∧ ¬U(r,p) → U(q, q∧¬r)`) then gives a splitting point.
-[TODO: full formalization]
-
-## Sorry Status
-
-This theorem is partially formalized. The outer structure is correct and the
-theorem type is valid. The inner proof steps use `sorry` for the complex
-Until-splitting arguments. Key missing pieces:
-1. Extracting a specific gamma ∈ C from the BX7 argument
-2. Showing D2 is not in A via the propositional contradiction argument
-3. Showing `burgessR(A, eta, D)` for the constructed D using BX13
-
-See handoff `05_phase6-lemma27-handoff.md` for detailed analysis.
+1. BX5 on `U(xi, eta)`: get `U(xi∧U(xi,eta), eta) ∈ A`
+2. BX5 on `U(beta₀, gamma₀)` (from burgessR3): get `U(beta₀∧U(beta₀,gamma₀), gamma₀) ∈ A`
+3. BX7 on these two enriched Until formulas → three-way disjunction D1∨D2∨D3
+4. Eliminate D1 and D2 using `¬U(beta₀∧eta, gamma₀) ∈ A` + left_mono_until
+5. D3 survives: `U(phi₁∧phi₂, phi₁∧gamma₀) ∈ A` where phi₁ = xi∧U(xi,eta)
+6. BX10 gives F(phi₁∧gamma₀) ∈ A, so `{phi₁∧gamma₀} ∪ g_content(A) ∪ h_content(C)` consistent
+7. Lindenbaum → MCS D with `xi ∈ D`, `g_content(A) ⊆ D`, `g_content(D) ⊆ C`
+8. `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` from g_content
+9. `eta ∈ B'` from `U(xi, beta∧eta) ∈ A` for all beta ∈ B, plus maximality
 -/
+
+/-- Helper: BX3 (right_mono_until) at MCS level. If ⊢ ψ → χ and
+U(φ, ψ) ∈ A, then U(φ, χ) ∈ A. -/
+private theorem right_mono_until_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {φ ψ χ : Formula}
+    (h_impl : DerivationTree [] (ψ.imp χ))
+    (h_untl : Formula.untl φ ψ ∈ A) :
+    Formula.untl φ χ ∈ A := by
+  -- G(ψ → χ) ∈ A from temporal necessitation
+  have h_G_impl : Formula.all_future (ψ.imp χ) ∈ A :=
+    theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_impl)
+  -- BX3: G(ψ → χ) → U(φ, ψ) → U(φ, χ)
+  have h_bx3 := DerivationTree.axiom [] _ (Axiom.right_mono_until ψ χ φ)
+  exact SetMaximalConsistent.implication_property h_mcs
+    (SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_bx3) h_G_impl) h_untl
+
+/-- Helper: U(xi, beta∧eta) ∈ A for all beta with G(beta) ∈ A, from U(xi, eta) ∈ A.
+Uses BX3 (right_mono_until): G(eta → beta∧eta) follows from G(beta) ∈ A.
+This holds in particular for beta ∈ g_content(A) (where G(beta) ∈ A by definition). -/
+private theorem untl_conj_eta_of_g_content {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {xi eta : Formula}
+    (h_untl : Formula.untl xi eta ∈ A) (beta : Formula)
+    (h_Gbeta : Formula.all_future beta ∈ A) :
+    Formula.untl xi (Formula.and beta eta) ∈ A := by
+  -- First get U(xi, eta∧beta) via BX3: G(eta → eta∧beta) and U(xi, eta) → U(xi, eta∧beta)
+  -- G(eta → eta∧beta) follows from G(beta) via ⊢ beta → (eta → eta∧beta) + TG + K_dist
+  have h_conj_intro := conj_intro_curried eta beta
+  -- G(beta → (eta → eta∧beta)) ∈ A
+  have h_G_ci : Formula.all_future (beta.imp (eta.imp (Formula.and eta beta))) ∈ A :=
+    theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_conj_intro)
+  -- G(eta → eta∧beta) ∈ A by K_dist on G(beta) and G(beta → (eta → eta∧beta))
+  have h_kd := DerivationTree.axiom [] _ (Axiom.temp_k_dist beta (eta.imp (Formula.and eta beta)))
+  have h1 := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_kd) h_G_ci
+  have h_G_eta_conj : Formula.all_future (eta.imp (Formula.and eta beta)) ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs h1 h_Gbeta
+  -- BX3: G(eta → eta∧beta) → U(xi, eta) → U(xi, eta∧beta)
+  have h_u_eta_beta : Formula.untl xi (Formula.and eta beta) ∈ A := by
+    have h_bx3 := DerivationTree.axiom [] _ (Axiom.right_mono_until eta (Formula.and eta beta) xi)
+    exact SetMaximalConsistent.implication_property h_mcs
+      (SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs h_bx3) h_G_eta_conj) h_untl
+  -- Now swap: U(xi, eta∧beta) → U(xi, beta∧eta) by right_mono with ⊢ eta∧beta → beta∧eta
+  have h_swap : DerivationTree [] ((Formula.and eta beta).imp (Formula.and beta eta)) := by
+    have s1 : DerivationTree [Formula.and eta beta] beta :=
+      DerivationTree.modus_ponens _ _ _ (DerivationTree.weakening [] _ _ (rce_imp eta beta) (List.nil_subset _))
+        (DerivationTree.assumption _ _ (by simp))
+    have s2 : DerivationTree [Formula.and eta beta] eta :=
+      DerivationTree.modus_ponens _ _ _ (DerivationTree.weakening [] _ _ (lce_imp eta beta) (List.nil_subset _))
+        (DerivationTree.assumption _ _ (by simp))
+    have s3 : DerivationTree [Formula.and eta beta] (Formula.and beta eta) :=
+      DerivationTree.modus_ponens _ _ _ (DerivationTree.modus_ponens _ _ _
+        (DerivationTree.weakening [] _ _ (pairing beta eta) (List.nil_subset _)) s1) s2
+    exact deduction_theorem [] (Formula.and eta beta) (Formula.and beta eta) s3
+  exact right_mono_until_mcs h_mcs h_swap h_u_eta_beta
 
 /-- **Lemma 2.7** (Burgess 1982, Until-formula splitting):
 Given `BurgessR3Maximal(A, B, C)` with MCS endpoints A, C and `g_content(A) ⊆ C`,
@@ -1005,92 +1048,13 @@ theorem lemma_2_7 {A B C : Set Formula}
       SetMaximalConsistent D ∧
       xi ∈ D ∧
       eta ∈ B' := by
-  -- Abbreviation for BX5-enriched Until: U(xi∧U(xi,eta), eta) ∈ A
-  have h_bx5 : Formula.untl (Formula.and xi (Formula.untl xi eta)) eta ∈ A :=
-    self_accum_until_mcs h_mcs_A xi eta h_until
-  -- Set alpha := xi ∧ U(xi, eta) (the BX5-enriched guard)
-  set alpha := Formula.and xi (Formula.untl xi eta) with alpha_def
-  -- Pick a concrete formula in C: top ∈ C (since it's a theorem and C is an MCS/DCS)
-  have h_top_C : Formula.bot.imp Formula.bot ∈ C :=
-    theorem_in_mcs h_mcs_C (Bimodal.Theorems.Combinators.identity Formula.bot)
-  -- Case analysis on consistency of {eta} ∪ B
-  by_cases h_cons : SetConsistent ({eta} ∪ B)
-  · -- Case 2: {eta} ∪ B is consistent
-    -- By BurgessR3Maximal_extension_fails: ¬burgessR3(A, DC({eta}∪B), C)
-    -- This gives a formula phi ∈ DC({eta}∪B) and gamma ∈ C with U(phi, gamma) ∉ A.
-    -- By dc_delta_B_controlled, either phi ∈ B (contradicting burgessR3(A,B,C)) or
-    -- phi = consequence of eta∧beta for some beta ∈ B. In either case, separation_until
-    -- produces U(xi, xi∧eta.neg) ∈ A. Then Lindenbaum extension gives D with xi ∈ D.
-    -- For eta ∈ B': use burgessR3Maximal_exists_from_seed with seed eta and BX13.
-    -- TODO: Full formalization
-    sorry
-  · -- Case 1: {eta} ∪ B is inconsistent → eta.neg ∈ B (by DCS closure)
-    have h_eta_neg_B : eta.neg ∈ B := neg_mem_of_inconsistent_union h_r3m.1 h_cons
-    -- burgessR(A, eta.neg, C): for all gamma ∈ C, U(eta.neg, gamma) ∈ A
-    -- Use top ∈ C to get U(eta.neg, top) ∈ A
-    have h_u_eta_neg_top : Formula.untl eta.neg (Formula.bot.imp Formula.bot) ∈ A :=
-      h_r3m.2.1.1 eta.neg h_eta_neg_B _ h_top_C
-    -- BX7 on U(alpha, eta) ∈ A and U(eta.neg, top) ∈ A
-    -- Gives: U(alpha∧eta.neg, eta∧top) ∨ U(alpha∧eta.neg, eta∧eta.neg) ∨ U(alpha∧eta.neg, alpha∧top)
-    -- Simplified: D1 ∨ D2 ∨ D3 where
-    -- D1 = U(alpha∧eta.neg, eta∧top) ~ U(alpha∧eta.neg, eta) [since top is trivial]
-    -- D2 = U(alpha∧eta.neg, eta∧eta.neg) -- event is propositionally ⊥ → F(⊥) ∈ A → absurd
-    -- D3 = U(alpha∧eta.neg, alpha∧top) ~ U(alpha∧eta.neg, alpha) -- event has xi!
-    set guard := Formula.and alpha eta.neg with guard_def
-    set top := Formula.bot.imp Formula.bot with top_def
-    have h_bx7_ax : DerivationTree []
-        ((Formula.and (Formula.untl alpha eta) (Formula.untl eta.neg top)).imp
-          (Formula.or (Formula.or
-            (Formula.untl guard (Formula.and eta top))
-            (Formula.untl guard (Formula.and eta eta.neg)))
-            (Formula.untl guard (Formula.and alpha top)))) :=
-      DerivationTree.axiom [] _ (Axiom.linear_until alpha eta eta.neg top)
-    have h_conj_A : Formula.and (Formula.untl alpha eta) (Formula.untl eta.neg top) ∈ A :=
-      conj_mcs h_mcs_A _ _ h_bx5 h_u_eta_neg_top
-    have h_disj_A : Formula.or (Formula.or
-        (Formula.untl guard (Formula.and eta top))
-        (Formula.untl guard (Formula.and eta eta.neg)))
-        (Formula.untl guard (Formula.and alpha top)) ∈ A :=
-      SetMaximalConsistent.implication_property h_mcs_A
-        (theorem_in_mcs h_mcs_A h_bx7_ax) h_conj_A
-    -- Show D2 = U(guard, eta∧eta.neg) ∉ A
-    -- Proof: D2 ∈ A → F(eta∧eta.neg) ∈ A (BX10), but G(¬(eta∧eta.neg)) ∈ A (theorem),
-    -- contradicting F(eta∧eta.neg) = ¬G(¬(eta∧eta.neg)) in consistent MCS A.
-    have h_D2_not_A : Formula.untl guard (Formula.and eta eta.neg) ∉ A := by
-      intro h_D2
-      -- BX10: U(guard, eta∧eta.neg) → F(eta∧eta.neg)
-      have h_F_event : (Formula.and eta eta.neg).some_future ∈ A :=
-        until_F_mcs h_mcs_A _ _ h_D2
-      -- ⊢ ¬(eta∧eta.neg) is a propositional theorem (from lce+rce+modus_ponens)
-      have h_neg_conj : DerivationTree [] (Formula.and eta eta.neg).neg :=
-        deduction_theorem [] (Formula.and eta eta.neg) Formula.bot (by
-          have h_eta : DerivationTree [Formula.and eta eta.neg] eta :=
-            DerivationTree.modus_ponens _ (Formula.and eta eta.neg) eta
-              (DerivationTree.weakening [] _ _ (lce_imp eta eta.neg) (List.nil_subset _))
-              (DerivationTree.assumption _ _ (by simp))
-          have h_eta_neg : DerivationTree [Formula.and eta eta.neg] eta.neg :=
-            DerivationTree.modus_ponens _ (Formula.and eta eta.neg) eta.neg
-              (DerivationTree.weakening [] _ _ (rce_imp eta eta.neg) (List.nil_subset _))
-              (DerivationTree.assumption _ _ (by simp))
-          exact DerivationTree.modus_ponens _ eta Formula.bot h_eta_neg h_eta)
-      -- G(¬(eta∧eta.neg)) ∈ A by temporal_necessitation
-      have h_G_neg_conj : (Formula.and eta eta.neg).neg.all_future ∈ A :=
-        theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_neg_conj)
-      -- F(eta∧eta.neg) = ¬G(¬(eta∧eta.neg)) ∈ A contradicts G(¬(eta∧eta.neg)) ∈ A
-      exact set_consistent_not_both h_mcs_A.1 (Formula.and eta eta.neg).neg.all_future
-        h_G_neg_conj h_F_event
-    -- From h_disj_A and h_D2_not_A: either D1 or D3 is in A.
-    -- D3 = U(guard, alpha∧top) where alpha = xi∧U(xi,eta) → event contains xi.
-    -- D1 = U(guard, eta∧top) → event contains eta.
-    -- Either way, BX10 gives F(event) ∈ A. The splitting point D comes from
-    -- Lindenbaum extension of {event} ∪ g_content(A), giving xi ∈ D (D3 case)
-    -- or eta ∈ D (D1 case) plus P(U(guard,...)) ∈ D (via BX4).
-    -- TODO (Phase 6, Task 107): Formalize D1/D3 case split and construct:
-    -- (a) D with xi ∈ D via Lindenbaum extension of D3 event
-    -- (b) BurgessR3Maximal(A, B', D) and BurgessR3Maximal(D, B'', C)
-    -- (c) eta ∈ B' via burgessR3Maximal_exists_from_seed with seed eta
-    -- The key blocker is showing burgessR(A, eta, D) for the constructed D.
-    sorry
+  -- The proof uses BX5 + BX7 + BX13 chain adapted from Burgess 1982.
+  -- Key insight: for all beta ∈ g_content(A), U(xi, beta∧eta) ∈ A
+  -- (from right_mono_until using G(beta) ∈ A).
+  -- The full proof requires showing seed consistency for D₀ that includes
+  -- both g_content(A) and h_content(C), and then deriving eta ∈ B' from
+  -- maximality. See handoff 08_phase6-burgess-seed-handoff.md.
+  sorry
 
 -- BurgessR3Maximal_maximality_combined: REMOVED (task 113 Phase 3). Dead code (no callers).
 -- The delta.neg ∈ B case is INVALID under open guard (needs until_guard_in_mcs

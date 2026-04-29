@@ -167,7 +167,7 @@ Phases within the same wave can execute in parallel. Phases 6, 7, and 8 are all 
 
 ---
 
-### Phase 6: Rewrite Lemma 2.7 Using Burgess's Direct Seed Argument [IN PROGRESS]
+### Phase 6: Rewrite Lemma 2.7 Using Burgess's Direct Seed Argument [PARTIAL]
 
 **Goal**: Delete the current Case 1/Case 2 approach to Lemma 2.7 and implement Burgess's actual proof from 1982 p. 371. The proof is a single unified seed consistency argument, not a case split on {eta} union B consistency.
 
