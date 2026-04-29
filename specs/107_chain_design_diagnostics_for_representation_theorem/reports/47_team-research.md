@@ -55,17 +55,36 @@ Team research resolves three implementation blockers by returning to the primary
 - Eliminates more sorry sites at once
 - The density-at-limit proof is straightforward (every adjacent pair is eventually resolved by the omega-chain enumeration)
 
-### 3. lemma_2_6_splitting Return Type Extension Is Correct and Necessary (Unanimous)
+### 3. Xu 1988 Provides Simpler Splitting That Bypasses h_gc Entirely (A, B)
+
+Xu's Lemma 2.4 offers a cleaner splitting construction than Burgess's Lemma 2.6:
+
+> Given `r(A, B, C)`, `¬U(γ, β) ∈ A` and `γ ∈ C`, produce `B', D, B''` with `R(A, B', D)`, `R(D, B'', C)` and `B ∪ {¬β} ⊆ D`.
+
+**The key insight**: Xu's proof builds D from `B* ∪ {¬β}` where B* is the R-maximal extension of B. This does NOT require `g_content A ⊆ C` (the `h_gc` hypothesis). Instead:
+
+- B* already contains all U/S-formulas needed: `U(γ, ⊤) ∈ B*` for all `γ ∈ C` and `S(α, ⊤) ∈ B*` for all `α ∈ A` (Xu's Lemma 2.3)
+- Since D ⊇ B*, we get `r(A, ⊤, D)` and `r(D, ⊤, C)` automatically
+- β ∉ B* (since `¬U(γ,β) ∈ A` and `γ ∈ C` would contradict the r-relation), so `B* ∪ {¬β}` is consistent
+- B' and B'' follow by maximalization
+
+**Why this matters**: The codebase's seed construction diverged from Xu's pattern. Instead of `B* ∪ {¬β}` (which needs no preconditions beyond r(A,B,C)), the codebase uses `{β.neg} ∪ g_content(A) ∪ h_content(C)`, which introduced the `h_gc` dependency. Xu's approach avoids the blocker entirely.
+
+**Additional finding (Teammate B)**: Xu's framework has no n=0 vs n>0 case split for C5 elimination. Xu handles Until-witness insertion directly via Lemma 2.4 without Burgess's Lemma 2.7 induction. Under Option B (remove c2'), Lemma 2.7 may be avoidable for the critical path, though it remains mathematically valuable to formalize.
+
+**Xu's Lemma 2.3** (the enabling result) shows that `R(A, B, C)` implies `U(γ, ⊤) ∈ B` for all `γ ∈ C` and `S(α, ⊤) ∈ B` for all `α ∈ A`. This is partially formalized in the codebase already (the existing `lemma_2_4` in PointInsertion.lean) but the full power of Xu's construction has not been exploited.
+
+### 4. lemma_2_6_splitting Return Type Extension Is Correct and Necessary (Unanimous)
 
 The Phase 6 agent already extended `lemma_2_6_splitting` to return `g_content A ⊆ D ∧ g_content D ⊆ C`. All four teammates confirm this is correct — the proofs already exist internally (`h_gc_AD`, `h_gc_DC` at lines 923-933 of PointInsertion.lean). This extension is already committed and sorry-free.
 
-### 4. g_prop/h_prop Cases Are Not in Burgess's Construction (A, C)
+### 5. g_prop/h_prop Cases Are Not in Burgess's Construction (A, C)
 
 Teammates A and C independently confirm that Burgess does NOT have "g_prop counterexample elimination." Burgess only eliminates C4 (adjacent pair splitting) and C5 (Until witness insertion) counterexamples. The g_prop/h_prop cases in the codebase exist because the truth lemma uses `forward_G` as an explicit FMCS requirement, which is a deviation from Burgess's architecture (where the truth lemma uses C4 for all pairs).
 
 Under Option B, these cases become moot — the EliminationResult no longer requires c2', so the g_prop/h_prop sorry sites disappear.
 
-### 5. Strategic Assessment: Chronicle Path Is Correct, Plan Revision Needed (D)
+### 6. Strategic Assessment: Chronicle Path Is Correct, Plan Revision Needed (D)
 
 - Chronicle path is the only viable path to completeness (3 independent BXCanonical paths are documented-dead)
 - 0-sorry target is correct (no partial result serves the representation theorem)
@@ -73,7 +92,7 @@ Under Option B, these cases become moot — the EliminationResult no longer requ
 - Plan revision (v33) is essential before the next implementation session
 - Estimated remaining effort: 14-20 hours (vs 22 in current plan)
 
-### 6. Zorn Sorry (RRelation.lean:772) May Be Easy (D)
+### 7. Zorn Sorry (RRelation.lean:772) May Be Easy (D)
 
 The Zorn sorry requires `¬burgessR3(A, Set.univ, C)`. Since `burgessR3` requires the middle argument to be a DCS (which includes `SetConsistent`), and `Set.univ` is NOT consistent (it contains `⊥`), this may be a straightforward proof. Needs verification against the exact `burgessR3` definition.
 
