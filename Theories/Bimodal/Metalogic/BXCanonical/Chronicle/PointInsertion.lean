@@ -273,11 +273,9 @@ Then `g_content(A) ⊆ D` enables `burgessR3Maximal_from_g_content_sub(A, D)`,
 and `h_content(C) ⊆ D` gives `g_content(D) ⊆ C` by duality, enabling
 `burgessR3Maximal_from_g_content_sub(D, C)`.
 
-The seed consistency argument uses BX14 (separation_until / A4a) via the
-Burgess 1982 Lemma 2.6 construction. The key step: from `β ∉ B` and
-R3-maximality of B, the set `B ∪ {β.neg}` is consistent. Then
-`g_content(A) ∪ h_content(C) ∪ B ∪ {β.neg}` is consistent because
-B already embeds the g_content/h_content relationship through R3.
+The seed consistency argument: g_content(A) ⊆ B and h_content(C) ⊆ B
+(from BurgessR3Maximal), so the seed {β.neg} ∪ g_content(A) ∪ h_content(C) ⊆
+{β.neg} ∪ B, which is consistent by dcs_neg_union_consistent.
 -/
 
 /-- Seed consistency for Lemma 2.6 splitting: `{β.neg} ∪ g_content(A) ∪ h_content(C)`
@@ -676,6 +674,36 @@ theorem dc_delta_B_burgessR3 {A B C : Set Formula}
     rcases dc_delta_B_controlled h_dcs hL_sub d with h_B | ⟨beta, hbeta, ⟨h_impl⟩⟩
     · exact h_r3.2 phi h_B alpha halpha
     · exact snce_left_mono_thm h_mcs_C h_impl (h_since_all beta hbeta alpha halpha)
+
+/-! ## g_content(A) ⊆ B from BurgessR3Maximal
+
+Given `BurgessR3Maximal(A, B, C)` with A, C MCS and g_content(A) ⊆ C,
+every φ ∈ g_content(A) (i.e., G(φ) ∈ A) must also be in B.
+
+**Status**: BLOCKED. The consistent case ({φ}∪B consistent) is proved via
+`dc_delta_B_controlled` + `BurgessR3Maximal_extension_fails`. The inconsistent
+case ({φ}∪B inconsistent, φ.neg ∈ B) leads to `untl(⊥, γ) ∈ A` which is not
+syntactically refutable in the base BX system (requires density). See handoff
+`45_phase5b-inconsistent-case-blocker.md` for full analysis.
+-/
+
+/-- g_content(A) ⊆ B when BurgessR3Maximal(A, B, C).
+BLOCKED: inconsistent case requires density. See task 107 handoff. -/
+theorem g_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C) :
+    g_content A ⊆ B := by
+  sorry
+
+/-- h_content(C) ⊆ B when BurgessR3Maximal(A, B, C) (dual).
+BLOCKED: depends on g_content_sub_B. -/
+theorem h_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C) :
+    h_content C ⊆ B := by
+  sorry
 
 -- BurgessR3Maximal_maximality_combined: REMOVED (task 113 Phase 3). Dead code (no callers).
 -- The delta.neg ∈ B case is INVALID under open guard (needs until_guard_in_mcs

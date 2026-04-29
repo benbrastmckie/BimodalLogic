@@ -569,6 +569,18 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     have h_G : ∀ r, t < r → truth_at M Omega τ r φ.swap_temporal → truth_at M Omega τ r χ.swap_temporal := by
       by_contra h_neg; exact h_conj (fun _ h => h_neg h)
     exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  | left_mono_until_G φ χ ψ =>
+    -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H ⟨s, hst, h_ψs, h_guard⟩
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  | left_mono_since_H φ χ ψ =>
+    -- Swap of left_mono_since_H: G(φ'→χ') → untl(φ',ψ') → untl(χ',ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_G ⟨s, hts, h_ψs, h_guard⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
   | right_mono_until φ ψ χ =>
     -- swap: G(φ'→χ') → (φ' S ψ') → (χ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1137,6 +1149,18 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     have h_H : ∀ r, r < t → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
       by_contra h_neg; exact h_conj (fun _ h => h_neg h)
     exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  | left_mono_until_G φ χ ψ =>
+    -- Direct: G(φ→χ) → untl(φ,ψ) → untl(χ,ψ)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_G ⟨s, hts, h_ψs, h_guard⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  | left_mono_since_H φ χ ψ =>
+    -- Direct: H(φ→χ) → snce(φ,ψ) → snce(χ,ψ)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_H ⟨s, hst, h_ψs, h_guard⟩
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
   | right_mono_until φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
@@ -1562,6 +1586,18 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
     have h_G : ∀ r, t < r → truth_at M Omega τ r φ.swap_temporal → truth_at M Omega τ r χ.swap_temporal := by
       by_contra h_neg; exact h_conj (fun _ h => h_neg h)
     exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  | left_mono_until_G φ χ ψ =>
+    -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_H ⟨s, hst, h_ψs, h_guard⟩
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  | left_mono_since_H φ χ ψ =>
+    -- Swap of left_mono_since_H: G(φ'→χ') → untl(φ',ψ') → untl(χ',ψ')
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro h_G ⟨s, hts, h_ψs, h_guard⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
   | right_mono_until φ ψ χ =>
     -- swap: H(φ'→χ') → (φ' S ψ') → (χ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1813,6 +1849,18 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     intro h_conj ⟨s, hst, h_ψs, h_guard⟩
     have h_H : ∀ r, r < t → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
       by_contra h_neg; exact h_conj (fun _ h => h_neg h)
+    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  | left_mono_until_G φ χ ψ =>
+    -- Direct: G(φ→χ) → untl(φ,ψ) → untl(χ,ψ)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_G ⟨s, hts, h_ψs, h_guard⟩
+    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  | left_mono_since_H φ χ ψ =>
+    -- Direct: H(φ→χ) → snce(φ,ψ) → snce(χ,ψ)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro h_H ⟨s, hst, h_ψs, h_guard⟩
     exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
   | right_mono_until φ ψ χ =>
     intro F M Omega _h_sc τ _h_mem t

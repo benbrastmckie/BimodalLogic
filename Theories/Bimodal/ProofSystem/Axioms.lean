@@ -56,7 +56,7 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-39 constructors organized into four layers:
+41 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (26 + 2 enrichment): Burgess-Xu axioms for Until/Since on linear orders
@@ -133,6 +133,18 @@ inductive Axiom : Formula → Type where
   | left_mono_since (φ ψ χ : Formula) :
       Axiom (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
         ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
+
+  /-- BX2G: Left monotonicity of Until under G: `G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
+  Under open guard (t,s): G(φ→χ) covers all r > t, which includes (t,s).
+  Unlike BX2, the pointwise (φ→χ) at t is not needed since t ∉ (t,s). -/
+  | left_mono_until_G (φ χ ψ : Formula) :
+      Axiom ((φ.imp χ).all_future.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ)))
+
+  /-- BX2H: Left monotonicity of Since under H: `H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
+  Under open guard (s,t): H(φ→χ) covers all r < t, which includes (s,t).
+  Unlike BX2', the pointwise (φ→χ) at t is not needed since t ∉ (s,t). -/
+  | left_mono_since_H (φ χ ψ : Formula) :
+      Axiom ((φ.imp χ).all_past.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
 
   /-- BX3: Right monotonicity of Until: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
   If φ implies ψ at all times, then χ U φ implies χ U ψ. -/

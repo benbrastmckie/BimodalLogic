@@ -1046,6 +1046,37 @@ theorem snce_left_mono_thm {A : Set Formula}
   have h5 := SetMaximalConsistent.implication_property h_mcs h4 h3
   exact SetMaximalConsistent.implication_property h_mcs h5 h_snce
 
+/--
+**Left monotonicity for Until via G**: If G(β₁ → β₂) ∈ A and untl(β₁, γ) ∈ A,
+then untl(β₂, γ) ∈ A. Uses BX2G (left_mono_until_G).
+Unlike `untl_left_mono_thm`, does NOT require the pointwise (β₁ → β₂) at A.
+-/
+theorem untl_left_mono_G {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A)
+    {β₁ β₂ γ : Formula}
+    (h_G_impl : (β₁.imp β₂).all_future ∈ A)
+    (h_untl : Formula.untl β₁ γ ∈ A) :
+    Formula.untl β₂ γ ∈ A := by
+  have h_ax := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.left_mono_until_G β₁ β₂ γ))
+  have h_step := SetMaximalConsistent.implication_property h_mcs h_ax h_G_impl
+  exact SetMaximalConsistent.implication_property h_mcs h_step h_untl
+
+/--
+**Left monotonicity for Since via H**: If H(β₁ → β₂) ∈ A and snce(β₁, γ) ∈ A,
+then snce(β₂, γ) ∈ A. Uses BX2H (left_mono_since_H).
+-/
+theorem snce_left_mono_H {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A)
+    {β₁ β₂ γ : Formula}
+    (h_H_impl : (β₁.imp β₂).all_past ∈ A)
+    (h_snce : Formula.snce β₁ γ ∈ A) :
+    Formula.snce β₂ γ ∈ A := by
+  have h_ax := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.left_mono_since_H β₁ β₂ γ))
+  have h_step := SetMaximalConsistent.implication_property h_mcs h_ax h_H_impl
+  exact SetMaximalConsistent.implication_property h_mcs h_step h_snce
+
 /-! ## Helper: Derivation from Singleton Set Implies Implication Theorem
 
 If φ ∈ deductiveClosure({η}), then ⊢ η → φ. This is the key link between

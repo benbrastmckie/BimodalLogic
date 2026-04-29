@@ -284,17 +284,23 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
     simp only [subst_imp, subst_all_future]
     exact Axiom.temp_4 (a.subst q r)
   | serial_future =>
-    simp only [subst_imp, subst_some_future, subst_neg, subst_all_future, subst_bot]
+    simp only [subst_imp, subst_some_future, subst_bot]
     exact Axiom.serial_future
   | serial_past =>
-    simp only [subst_imp, subst_some_past, subst_neg, subst_all_past, subst_bot]
+    simp only [subst_imp, subst_some_past, subst_bot]
     exact Axiom.serial_past
   | left_mono_until a b c =>
-    simp only [subst_imp, subst_all_future, subst_untl]
+    simp only [subst_imp, subst_untl]
     exact Axiom.left_mono_until (a.subst q r) (b.subst q r) (c.subst q r)
   | left_mono_since a b c =>
-    simp only [subst_imp, subst_all_past, subst_snce]
+    simp only [subst_imp, subst_snce]
     exact Axiom.left_mono_since (a.subst q r) (b.subst q r) (c.subst q r)
+  | left_mono_until_G a b c =>
+    simp only [subst_imp, subst_all_future, subst_untl]
+    exact Axiom.left_mono_until_G (a.subst q r) (b.subst q r) (c.subst q r)
+  | left_mono_since_H a b c =>
+    simp only [subst_imp, subst_all_past, subst_snce]
+    exact Axiom.left_mono_since_H (a.subst q r) (b.subst q r) (c.subst q r)
   | right_mono_until a b c =>
     simp only [subst_imp, subst_all_future, subst_untl]
     exact Axiom.right_mono_until (a.subst q r) (b.subst q r) (c.subst q r)
@@ -307,6 +313,18 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | connect_past a =>
     simp only [subst_imp, subst_all_past, subst_some_future]
     exact Axiom.connect_past (a.subst q r)
+  | enrichment_until a b c =>
+    simp only [subst_imp, subst_and, subst_untl, subst_snce]
+    exact Axiom.enrichment_until (a.subst q r) (b.subst q r) (c.subst q r)
+  | enrichment_since a b c =>
+    simp only [subst_imp, subst_and, subst_snce, subst_untl]
+    exact Axiom.enrichment_since (a.subst q r) (b.subst q r) (c.subst q r)
+  | separation_until a b c =>
+    simp only [subst_imp, subst_untl, subst_neg, subst_and]
+    exact Axiom.separation_until (a.subst q r) (b.subst q r) (c.subst q r)
+  | separation_since a b c =>
+    simp only [subst_imp, subst_snce, subst_neg, subst_and]
+    exact Axiom.separation_since (a.subst q r) (b.subst q r) (c.subst q r)
   | self_accum_until a b =>
     simp only [subst_imp, subst_untl, subst_and]
     exact Axiom.self_accum_until (a.subst q r) (b.subst q r)

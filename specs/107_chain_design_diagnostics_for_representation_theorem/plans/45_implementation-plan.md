@@ -169,7 +169,7 @@ Phases within the same wave can execute in parallel. Phase 5b is the critical pa
 
 ---
 
-### Phase 5b: left_mono_until_G + g_content subset B + splitting_seed_consistent [NOT STARTED]
+### Phase 5b: left_mono_until_G + g_content subset B + splitting_seed_consistent [BLOCKED]
 
 **Goal**: Add `left_mono_until_G` and `left_mono_since_H` axioms, prove `g_content(A) subset B` when `BurgessR3Maximal(A, B, C)` via maximality, and close the `splitting_seed_consistent` sorry (PointInsertion.lean line 306). This replaces the A4a-based approach from v29.
 

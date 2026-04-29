@@ -518,6 +518,26 @@ theorem left_mono_since_valid (φ ψ χ : Formula) :
     by_contra h_neg; exact h_conj (fun _ h => h_neg h)
   exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
 
+/-- BX2G: Left monotonicity of Until under G: `G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
+Under open guard (t,s): G(φ→χ) gives (φ→χ) at all r > t, covering guard interval (t,s).
+No pointwise condition at t needed since the guard is the open interval (t,s). -/
+theorem left_mono_until_G_valid (φ χ ψ : Formula) :
+    ⊨ ((φ.imp χ).all_future.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro h_G ⟨s, hts, h_ψs, h_guard⟩
+  exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+
+/-- BX2H: Left monotonicity of Since under H: `H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
+Under open guard (s,t): H(φ→χ) gives (φ→χ) at all r < t, covering guard interval (s,t).
+No pointwise condition at t needed since the guard is the open interval (s,t). -/
+theorem left_mono_since_H_valid (φ χ ψ : Formula) :
+    ⊨ ((φ.imp χ).all_past.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro h_H ⟨s, hst, h_ψs, h_guard⟩
+  exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+
 /-- BX3: Right monotonicity of Until: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
 Same witness s; φ(s) and (φ → ψ)(s) give ψ(s). Guard is unchanged. -/
 theorem right_mono_until_valid (φ ψ χ : Formula) :
@@ -852,6 +872,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | serial_past => exact serial_past_axiom_valid
   | left_mono_until φ ψ χ => exact left_mono_until_valid φ ψ χ
   | left_mono_since φ ψ χ => exact left_mono_since_valid φ ψ χ
+  | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ
+  | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ
   | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ
   | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ
   | connect_future _ => exact connect_future_valid _
@@ -896,6 +918,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | serial_past => exact Validity.valid_implies_valid_dense serial_past_axiom_valid
   | left_mono_until φ ψ χ => exact Validity.valid_implies_valid_dense (left_mono_until_valid φ ψ χ)
   | left_mono_since φ ψ χ => exact Validity.valid_implies_valid_dense (left_mono_since_valid φ ψ χ)
+  | left_mono_until_G φ χ ψ => exact Validity.valid_implies_valid_dense (left_mono_until_G_valid φ χ ψ)
+  | left_mono_since_H φ χ ψ => exact Validity.valid_implies_valid_dense (left_mono_since_H_valid φ χ ψ)
   | right_mono_until φ ψ χ => exact Validity.valid_implies_valid_dense (right_mono_until_valid φ ψ χ)
   | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_dense (right_mono_since_valid φ ψ χ)
   | connect_future _ => exact Validity.valid_implies_valid_dense (connect_future_valid _)
@@ -941,6 +965,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | serial_past => exact Validity.valid_implies_valid_discrete serial_past_axiom_valid
   | left_mono_until φ ψ χ => exact Validity.valid_implies_valid_discrete (left_mono_until_valid φ ψ χ)
   | left_mono_since φ ψ χ => exact Validity.valid_implies_valid_discrete (left_mono_since_valid φ ψ χ)
+  | left_mono_until_G φ χ ψ => exact Validity.valid_implies_valid_discrete (left_mono_until_G_valid φ χ ψ)
+  | left_mono_since_H φ χ ψ => exact Validity.valid_implies_valid_discrete (left_mono_since_H_valid φ χ ψ)
   | right_mono_until φ ψ χ => exact Validity.valid_implies_valid_discrete (right_mono_until_valid φ ψ χ)
   | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_discrete (right_mono_since_valid φ ψ χ)
   | connect_future _ => exact Validity.valid_implies_valid_discrete (connect_future_valid _)
@@ -1040,6 +1066,8 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | serial_past => exact serial_past_axiom_valid D F M Omega h_sc τ h_mem t
     | left_mono_until φ ψ χ => exact left_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | left_mono_since φ ψ χ => exact left_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
+    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ D F M Omega h_sc τ h_mem t
+    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ D F M Omega h_sc τ h_mem t
     | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | connect_future φ => exact connect_future_valid φ D F M Omega h_sc τ h_mem t
@@ -1207,6 +1235,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | serial_past => exact serial_past_axiom_valid D F M Omega h_sc τ h_mem t
     | left_mono_until φ ψ χ => exact left_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | left_mono_since φ ψ χ => exact left_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
+    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ D F M Omega h_sc τ h_mem t
+    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ D F M Omega h_sc τ h_mem t
     | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | connect_future φ => exact connect_future_valid φ D F M Omega h_sc τ h_mem t
