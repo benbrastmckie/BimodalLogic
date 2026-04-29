@@ -656,21 +656,21 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-29T16:43:11Z",
-      "researched": "2026-04-29T16:32:24Z",
+      "last_updated": "2026-04-29T17:46:39Z",
+      "researched": "2026-04-29T17:46:39Z",
       "related_tasks": [
         93
       ],
       "dependencies": [
         113
       ],
-      "next_artifact_number": 46,
+      "next_artifact_number": 47,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -1011,9 +1011,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/45_implementation-plan.md",
           "type": "plan",
           "summary": "v30: 11 phases, 36h — left_mono_until_G + g_content⊆B approach"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/46_team-research.md",
+          "type": "report",
+          "summary": "Team research: inconsistent case blocker — all syntactic paths fail, Option D (soundness) or Option A (density) recommended"
         }
       ],
-      "session_id": "sess_1777480968_574cb2",
+      "session_id": "sess_1777484344_568000",
       "started": "2026-04-25T19:11:01Z"
     },
     {
