@@ -928,11 +928,6 @@
           "summary": "Team research (4 teammates): A3a IS valid under open guard — counterexample was wrong, add as BX axiom to unblock entire construction"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/40_implementation-plan.md",
-          "type": "plan",
-          "summary": "v23: 6 phases, 40h — doc cleanup + A3a axiom addition + chronicle sorry closure"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/40_implementation-summary.md",
           "type": "summary",
           "summary": "Phase 3 partial: Lemma 2.3 proved sorry-free, Xu 3.2.1 blocked, 13 sorries remain"
@@ -953,11 +948,6 @@
           "summary": "Team research (4 teammates): BREAKTHROUGH — BX6 resolves C4 nested case, c2' tiered, 40-55h revised estimate"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/41_implementation-plan.md",
-          "type": "plan",
-          "summary": "v24: 9 phases (3 done, 6 new), 45h — BX6 C4 fix + tiered c2' + density fix + ChronicleToCountermodel"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/41_implementation-summary.md",
           "type": "summary",
           "summary": "Phase 4 complete: C4 nested case closed via BX6. Phases 5-8 blocked by g-value seed gap."
@@ -975,7 +965,7 @@
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/42_implementation-plan.md",
           "type": "plan",
-          "summary": "v25: 10 phases (4 done, 6 new), 50h — g-value construction fix via Lemma 2.4/2.6 restructuring"
+          "summary": "v26: 10 phases (4 done, 6 new), 52h — g-function DATA construction per Burgess, c2 as consequence"
         }
       ],
       "session_id": "sess_1777429507_755198",
