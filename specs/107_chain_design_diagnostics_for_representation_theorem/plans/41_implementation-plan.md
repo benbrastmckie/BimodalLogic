@@ -127,7 +127,7 @@ Phases 5 and 6 can execute in parallel (Tier 1 c2' vs density fix). Phases 7 and
 
 ---
 
-### Phase 4: C4 Nested Case Fix via BX6 [NOT STARTED]
+### Phase 4: C4 Nested Case Fix via BX6 [COMPLETED]
 
 **Goal**: Add a new lemma using BX6 (`absorb_until`) to close the C4 nested case sorry sites (lines 425, 543). This is the breakthrough from report 41 -- a direct contradiction argument that sidesteps the previously-assumed need for `untl_absorb_nested`.
 
@@ -158,7 +158,7 @@ Phases 5 and 6 can execute in parallel (Tier 1 c2' vs density fix). Phases 7 and
 
 ---
 
-### Phase 5: Tier 1 c2' -- C5 Forward/Backward Cases [NOT STARTED]
+### Phase 5: Tier 1 c2' -- C5 Forward/Backward Cases [BLOCKED]
 
 **Goal**: Close the 2 easier c2' sorry sites (C5 forward at line 792, C5 backward at line 830). These cases append a new point beyond all existing domain, and Lemma 2.4 provides seed material via `g_content`.
 

@@ -420,9 +420,28 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
             hw_rightmost w_next hw_next_mem hw_lt_next hw_next_lt_y
           have h_mcs_next := h_c0 w_next hw_next_mem
           rcases SetMaximalConsistent.negation_complete h_mcs_next (Formula.untl ce.γ ce.δ) with h | h
-          · -- untl(γ,δ) ∈ f(w_next): PLACEHOLDER (task 107 Phase 4 restructures C4)
-            -- Previously used burgessR3_gamma_not_in_B_nested (INVALID, deleted)
-            sorry
+          · -- untl(γ,δ) ∈ f(w_next): BX6 absorption argument
+            -- γ ∈ f(w_next) from no_witness: w_next is between x and y
+            have h_x_le_w : ce.x ≤ w := by
+              by_contra hc
+              push_neg at hc
+              exact hw_rightmost ce.x ce.x_mem hc ce.hxy ce.neg_until_mem
+            have h_x_lt_next : ce.x < w_next := lt_of_le_of_lt h_x_le_w hw_lt_next
+            have h_γ_next : ce.γ ∈ χ.f w_next := by
+              have h_neg_not : ce.γ.neg ∉ χ.f w_next := by
+                intro h_neg
+                exact ce.no_witness ⟨w_next, hw_next_mem, h_x_lt_next, hw_next_lt_y, h_neg⟩
+              exact (SetMaximalConsistent.negation_complete h_mcs_next ce.γ).resolve_right h_neg_not
+            -- γ ∧ untl(γ,δ) ∈ f(w_next) by MCS conjunction
+            have h_conj : Formula.and ce.γ (Formula.untl ce.γ ce.δ) ∈ χ.f w_next :=
+              dcs_conj_closed (mcs_is_dcs h_mcs_next) h_γ_next h
+            -- Contradiction: assume γ ∈ g(w, w_next), derive untl(γ,δ) ∈ f(w) via BX6
+            intro h_gamma_B
+            have h_untl_absorb := h_r3_wn.1 ce.γ h_gamma_B (Formula.and ce.γ (Formula.untl ce.γ ce.δ)) h_conj
+            have h_bx6 : DerivationTree [] ((Formula.untl ce.γ (Formula.and ce.γ (Formula.untl ce.γ ce.δ))).imp (Formula.untl ce.γ ce.δ)) :=
+              DerivationTree.axiom [] _ (Axiom.absorb_until ce.γ ce.δ)
+            have h_until_w := SetMaximalConsistent.implication_property h_mcs_w (theorem_in_mcs h_mcs_w h_bx6) h_untl_absorb
+            exact set_consistent_not_both h_mcs_w.1 (Formula.untl ce.γ ce.δ) h_until_w hw_neg_until
           · exact absurd h h_no_neg
       -- γ ∉ g(w, w_next) and g(w, w_next) is DCS → {γ.neg} ∪ g(w, w_next) consistent
       have h_dcs := h_dcs_wn
@@ -538,9 +557,28 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
             hw_leftmost w_prev hw_prev_mem hy_lt_prev hw_prev_lt
           have h_mcs_prev := h_c0 w_prev hw_prev_mem
           rcases SetMaximalConsistent.negation_complete h_mcs_prev (Formula.snce ce.γ ce.δ) with h | h
-          · -- snce(γ,δ) ∈ f(w_prev): PLACEHOLDER (task 107 Phase 4 restructures C4')
-            -- Previously used burgessR3_gamma_not_in_B_since_nested (INVALID, deleted)
-            sorry
+          · -- snce(γ,δ) ∈ f(w_prev): BX6' absorption argument (Since mirror)
+            -- γ ∈ f(w_prev) from no_witness: w_prev is between y and x
+            have h_w_le_x : w ≤ ce.x := by
+              by_contra hc
+              push_neg at hc
+              exact hw_leftmost ce.x ce.x_mem ce.hyx hc ce.neg_since_mem
+            have h_prev_lt_x : w_prev < ce.x := lt_of_lt_of_le hw_prev_lt h_w_le_x
+            have h_γ_prev : ce.γ ∈ χ.f w_prev := by
+              have h_neg_not : ce.γ.neg ∉ χ.f w_prev := by
+                intro h_neg
+                exact ce.no_witness ⟨w_prev, hw_prev_mem, hy_lt_prev, h_prev_lt_x, h_neg⟩
+              exact (SetMaximalConsistent.negation_complete h_mcs_prev ce.γ).resolve_right h_neg_not
+            -- γ ∧ snce(γ,δ) ∈ f(w_prev) by MCS conjunction
+            have h_conj : Formula.and ce.γ (Formula.snce ce.γ ce.δ) ∈ χ.f w_prev :=
+              dcs_conj_closed (mcs_is_dcs h_mcs_prev) h_γ_prev h
+            -- Contradiction: assume γ ∈ g(w_prev, w), derive snce(γ,δ) ∈ f(w) via BX6'
+            intro h_gamma_B
+            have h_snce_absorb := h_r3_pw.2 ce.γ h_gamma_B (Formula.and ce.γ (Formula.snce ce.γ ce.δ)) h_conj
+            have h_bx6' : DerivationTree [] ((Formula.snce ce.γ (Formula.and ce.γ (Formula.snce ce.γ ce.δ))).imp (Formula.snce ce.γ ce.δ)) :=
+              DerivationTree.axiom [] _ (Axiom.absorb_since ce.γ ce.δ)
+            have h_since_w := SetMaximalConsistent.implication_property h_mcs_w (theorem_in_mcs h_mcs_w h_bx6') h_snce_absorb
+            exact set_consistent_not_both h_mcs_w.1 (Formula.snce ce.γ ce.δ) h_since_w hw_neg_since
           · exact absurd h h_no_neg
       -- γ ∉ g(w_prev, w) and g is DCS → {γ.neg} ∪ g consistent → Lindenbaum
       have h_dcs := h_dcs_pw
