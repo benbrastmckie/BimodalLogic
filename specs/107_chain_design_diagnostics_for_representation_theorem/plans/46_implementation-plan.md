@@ -306,7 +306,7 @@ Phases within the same wave can execute in parallel. Phase 5b-i is the critical 
 
 ---
 
-### Phase 8: Density Fix -- Lemma 2.6 Splitting Instead of Self-Pair [NOT STARTED]
+### Phase 8: Density Fix -- Lemma 2.6 Splitting Instead of Self-Pair [IN PROGRESS]
 
 **Goal**: Fix the density sorry site (CounterexampleElimination.lean line 1130) by using Lemma 2.6 on the existing `BurgessR3Maximal(f(x), g(x,y), f(y))` to produce an intermediate D (a fresh MCS, distinct from both f(x) and f(y)).
 
@@ -334,7 +334,7 @@ Phases within the same wave can execute in parallel. Phase 5b-i is the critical 
 
 ---
 
-### Phase 9: C4/g_prop/h_prop g-Value Construction via Lemma 2.6 Splitting [NOT STARTED]
+### Phase 9: C4/g_prop/h_prop g-Value Construction via Lemma 2.6 Splitting [BLOCKED]
 
 **Goal**: Close the 4 c2' sorry sites (C4 forward line 908, C4 backward line 946, g_prop forward line 982, h_prop backward line 1014) by constructing g-values via Lemma 2.6 splitting. Each inserts a new point z between existing points and needs g-values for two new adjacent pairs.
 
