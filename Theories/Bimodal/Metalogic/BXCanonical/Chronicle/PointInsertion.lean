@@ -573,7 +573,7 @@ theorem BurgessR3Maximal_extension_fails {A B C : Set Formula}
     subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton delta))
   have h_proper : B ⊂ deductiveClosure ({delta} ∪ B) :=
     ⟨h_sub, fun h_eq => h_delta_not (h_eq h_delta_in)⟩
-  exact h_R3M.2.2 _ h_dc h_proper h_r3
+  exact h_R3M.2.2 _ h_dc.2 h_proper h_r3
 
 /-- If both until and since conditions hold for delta extension of B,
 then DC({delta} union B) satisfies burgessR3(A, -, C). -/
@@ -597,21 +597,160 @@ theorem dc_delta_B_burgessR3 {A B C : Set Formula}
     · exact h_r3.2 phi h_B alpha halpha
     · exact snce_left_mono_thm h_mcs_C h_impl (h_since_all beta hbeta alpha halpha)
 
+/-! ## Set.univ is ClosedUnderDerivation -/
+
+/-- `Set.univ` is `ClosedUnderDerivation` -- every formula is in `Set.univ`. -/
+theorem set_univ_closed_under_derivation : ClosedUnderDerivation (Set.univ : Set Formula) :=
+  fun _ _ _ _ => Set.mem_univ _
+
+/-! ## Inconsistent case helpers for g_content/h_content ⊆ B
+
+When `{φ} ∪ B` is inconsistent and `G(φ) ∈ A` with `burgessR3(A, B, C)`,
+we show `burgessR3(A, Set.univ, C)` using ex-falso propagation through
+`left_mono_until_G`. The maximality clause of `BurgessR3Maximal` (now over
+`ClosedUnderDerivation`) then gives a contradiction via `Set.univ`.
+-/
+
+/-- Helper: `⊢ φ → (φ.neg → ψ)` for any ψ (ex falso from assumption). -/
+private noncomputable def ex_falso_from_assumption (φ ψ : Formula) :
+    DerivationTree [] (φ.imp (φ.neg.imp ψ)) := by
+  -- [φ.neg, φ] ⊢ ⊥ via modus ponens (φ.neg = φ → ⊥)
+  have h1 : DerivationTree [φ.neg, φ] Formula.bot :=
+    DerivationTree.modus_ponens [φ.neg, φ] φ Formula.bot
+      (DerivationTree.assumption _ φ.neg (by simp))
+      (DerivationTree.assumption _ φ (by simp))
+  -- [φ.neg, φ] ⊢ ψ via ex falso
+  have h2 : DerivationTree [φ.neg, φ] ψ :=
+    DerivationTree.modus_ponens [φ.neg, φ] Formula.bot ψ
+      (DerivationTree.weakening [] [φ.neg, φ] (Formula.bot.imp ψ)
+        (Bimodal.Theorems.Propositional.efq_axiom ψ) (List.nil_subset _))
+      h1
+  -- Discharge φ.neg then φ: [φ] ⊢ φ.neg → ψ, then [] ⊢ φ → (φ.neg → ψ)
+  exact deduction_theorem [] φ _ (deduction_theorem [φ] φ.neg ψ h2)
+
+/-- Helper: G(φ.neg → ψ) ∈ A from G(φ) ∈ A, using ex_falso_from_assumption + TG + temp_k_dist. -/
+private theorem G_ex_falso_strengthen {A : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (φ ψ : Formula)
+    (h_Gφ : Formula.all_future φ ∈ A) :
+    (φ.neg.imp ψ).all_future ∈ A := by
+  have d_ef := ex_falso_from_assumption φ ψ
+  exact SetMaximalConsistent.implication_property h_mcs_A
+    (SetMaximalConsistent.implication_property h_mcs_A
+      (theorem_in_mcs h_mcs_A (DerivationTree.axiom [] _ (Axiom.temp_k_dist φ (φ.neg.imp ψ))))
+      (theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ d_ef)))
+    h_Gφ
+
+/-- Helper: H(ψ.neg → χ) ∈ C from H(ψ) ∈ C, using ex_falso_from_assumption + past_necessitation + past_k_dist. -/
+private theorem H_ex_falso_strengthen {C : Set Formula}
+    (h_mcs_C : SetMaximalConsistent C) (ψ χ : Formula)
+    (h_Hψ : Formula.all_past ψ ∈ C) :
+    (ψ.neg.imp χ).all_past ∈ C := by
+  have d_ef := ex_falso_from_assumption ψ χ
+  exact SetMaximalConsistent.implication_property h_mcs_C
+    (SetMaximalConsistent.implication_property h_mcs_C
+      (theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_k_dist ψ (ψ.neg.imp χ)))
+      (theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ d_ef)))
+    h_Hψ
+
+/-- When {φ} ∪ B is inconsistent with DCS B, we have φ.neg ∈ B.
+Proof: ¬SetConsistent means ∃ derivation of ⊥ from {φ} ∪ B.
+By deduction theorem: derivation of φ.neg from B. By closure: φ.neg ∈ B. -/
+private theorem neg_mem_of_inconsistent_union {B : Set Formula}
+    (h_dcs : SetDeductivelyClosed B)
+    {φ : Formula} (h_not_cons : ¬SetConsistent ({φ} ∪ B)) :
+    φ.neg ∈ B := by
+  -- ¬SetConsistent means ∃ L ⊆ {φ} ∪ B with Nonempty (DerivationTree L ⊥)
+  -- SetConsistent S = ∀ L, (∀ ψ ∈ L, ψ ∈ S) → ¬Nonempty (DerivationTree L ⊥)
+  -- Use classical logic to extract witness
+  by_contra h_neg_not_B
+  apply h_not_cons
+  -- If φ.neg ∉ B, then {φ.neg.neg} ∪ B would extend B... Actually, use dcs_neg_union_consistent
+  -- The contrapositive: if {φ} ∪ B is inconsistent, then φ ∉ B (already known) and φ.neg ∈ B.
+  -- We prove: if φ.neg ∉ B, then {φ} ∪ B IS consistent.
+  -- Since B is DCS and φ.neg ∉ B, by dcs_neg_union_consistent: {φ.neg.neg} ∪ B is consistent.
+  -- And φ.neg.neg → φ (double negation elimination), so {φ} ∪ B ⊆ DC({φ.neg.neg} ∪ B).
+  -- Any subset of a consistent set is consistent.
+  -- Actually, we can be more direct: if φ.neg ∉ B and B is DCS, then for any L ⊆ {φ} ∪ B,
+  -- if we had DerivationTree L ⊥, we could derive φ.neg from B (contradiction).
+  intro L hL ⟨d⟩
+  -- L ⊆ {φ} ∪ B and DerivationTree L ⊥.
+  -- Partition L: separate φ occurrences from B elements.
+  set M := L.filter (fun x => !decide (x = φ)) with hM_def
+  have hM_sub_B : ∀ ψ ∈ M, ψ ∈ B := by
+    intro ψ hψ; rw [hM_def] at hψ
+    have h_mem := List.mem_filter.mp hψ
+    have h1 : ψ ∈ L := h_mem.1
+    have h2 : ψ ≠ φ := by simp at h_mem; exact h_mem.2
+    rcases hL ψ h1 with h | h
+    · exact absurd (Set.mem_singleton_iff.mp h) h2
+    · exact h
+  have hL_sub_φM : L ⊆ φ :: M := by
+    intro x hx
+    by_cases heq : x = φ
+    · subst heq; exact .head M
+    · exact .tail _ (List.mem_filter.mpr ⟨hx, by simp; exact heq⟩)
+  have d_w : DerivationTree (φ :: M) Formula.bot :=
+    DerivationTree.weakening L (φ :: M) Formula.bot d hL_sub_φM
+  -- By deduction theorem: M ⊢ φ → ⊥ = φ.neg
+  have d_neg : DerivationTree M φ.neg := deduction_theorem M φ Formula.bot d_w
+  -- By DCS closure: φ.neg ∈ B — contradiction
+  exact h_neg_not_B (h_dcs.2 M φ.neg hM_sub_B d_neg)
+
+/-- B is a proper subset of Set.univ when B is consistent. -/
+private theorem dcs_ssubset_univ {B : Set Formula}
+    (h_dcs : SetDeductivelyClosed B) :
+    B ⊂ (Set.univ : Set Formula) := by
+  constructor
+  · exact Set.subset_univ B
+  · intro h_eq
+    -- If B = Set.univ, then ⊥ ∈ B, contradicting consistency
+    have h_bot : Formula.bot ∈ B := h_eq (Set.mem_univ Formula.bot)
+    exact h_dcs.1 [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot)
+      ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+
+/-- When {φ} ∪ B is inconsistent, φ.neg ∈ B, G(φ) ∈ A, and burgessR3(A, B, C),
+then burgessR3(A, Set.univ, C). The argument: from φ.neg ∈ B and G(φ) ∈ A,
+for any ψ: G(φ.neg → ψ) ∈ A (ex falso), then untl_left_mono_G gives
+untl(ψ, γ) ∈ A from untl(φ.neg, γ) ∈ A. This gives burgessRSet for Set.univ.
+burgessR_implies_burgessRSince gives the Since direction. -/
+private theorem burgessR3_univ_of_inconsistent_ext {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3 : burgessR3 A B C)
+    {φ : Formula} (h_Gφ : Formula.all_future φ ∈ A)
+    (h_neg_in_B : φ.neg ∈ B) :
+    burgessR3 A Set.univ C := by
+  constructor
+  · -- burgessRSet(A, Set.univ, C): for any ψ ∈ Set.univ, for any γ ∈ C, untl(ψ, γ) ∈ A
+    intro ψ _ γ hγ
+    -- untl(φ.neg, γ) ∈ A from burgessR3(A, B, C) and φ.neg ∈ B
+    have h_untl_neg := h_r3.1 φ.neg h_neg_in_B γ hγ
+    -- G(φ.neg → ψ) ∈ A from G(φ) ∈ A
+    have h_G_impl := G_ex_falso_strengthen h_mcs_A φ ψ h_Gφ
+    -- untl_left_mono_G: G(φ.neg → ψ) and untl(φ.neg, γ) give untl(ψ, γ)
+    exact untl_left_mono_G h_mcs_A h_G_impl h_untl_neg
+  · -- burgessRSetSince(C, Set.univ, A): for any ψ ∈ Set.univ, for any α ∈ A, snce(ψ, α) ∈ C
+    intro ψ _ α hα
+    -- burgessR(A, ψ, C) from the Until direction above
+    have h_burgessR : burgessR A ψ C := fun γ hγ => by
+      have h_untl_neg := h_r3.1 φ.neg h_neg_in_B γ hγ
+      have h_G_impl := G_ex_falso_strengthen h_mcs_A φ ψ h_Gφ
+      exact untl_left_mono_G h_mcs_A h_G_impl h_untl_neg
+    -- burgessR_implies_burgessRSince gives snce(ψ, α) ∈ C
+    exact burgessR_implies_burgessRSince h_mcs_A h_mcs_C h_burgessR α hα
+
 /-! ## g_content(A) ⊆ B from BurgessR3Maximal
 
 Given `BurgessR3Maximal(A, B, C)` with A, C MCS and g_content(A) ⊆ C,
 every φ ∈ g_content(A) (i.e., G(φ) ∈ A) must also be in B.
 
-**Proof** (Report 47, task 107 Phase 5b v31):
+**Proof** (Report 47, task 107 Phase 5b v31, corrected v32):
 - **Consistent case** ({φ}∪B consistent): `dc_delta_B_burgessR3` shows
   burgessR3(A, DC({φ}∪B), C) using left_mono_until_G/since_H. But
   `BurgessR3Maximal_extension_fails` gives ¬burgessR3. Contradiction.
-- **Inconsistent case** ({φ}∪B inconsistent): Set.univ is a DCS strictly
-  containing B (since φ ∉ B but φ ∈ Set.univ). We show burgessR3(A, Set.univ, C)
-  via ex-falso: from inconsistency ∃β₀∈B with ⊢(β₀∧φ)→⊥, so ⊢φ→(β₀→ψ).
-  TG + temp_k_dist give G(β₀→ψ) ∈ A, then left_mono_until_G gives untl(ψ,γ) ∈ A.
-  burgessR_implies_burgessRSince gives the Since direction.
-  BurgessR3Maximal maximality on Set.univ gives ¬burgessR3. Contradiction.
+- **Inconsistent case** ({φ}∪B inconsistent): φ.neg ∈ B (by DCS closure).
+  `burgessR3_univ_of_inconsistent_ext` gives burgessR3(A, Set.univ, C).
+  Set.univ is ClosedUnderDerivation. B ⊂ Set.univ (B is consistent).
+  BurgessR3Maximal maximality (over ClosedUnderDerivation) gives contradiction.
 -/
 
 /-- Helper: ⊢ φ → (β → (β ∧ φ)). Conjunction introduction curried. -/
@@ -674,10 +813,11 @@ private theorem H_conj_strengthen {C : Set Formula}
 The consistent case ({φ}∪B consistent) is proved via left_mono_until_G +
 dc_delta_B_burgessR3 + BurgessR3Maximal_extension_fails.
 
-The inconsistent case ({φ}∪B inconsistent) requires resolving a gap in Report 47:
-Set.univ is NOT SetDeductivelyClosed (it's not consistent), so the maximality
-argument against Set.univ doesn't apply. This case remains sorry'd pending
-a corrected proof strategy. -/
+The inconsistent case ({φ}∪B inconsistent, Plan v32 Phase 5b-ii):
+φ.neg ∈ B (by DCS closure). From G(φ) ∈ A and φ.neg ∈ B,
+burgessR3_univ_of_inconsistent_ext gives burgessR3(A, Set.univ, C).
+Set.univ is ClosedUnderDerivation, B ⊂ Set.univ (B is consistent).
+BurgessR3Maximal maximality (over ClosedUnderDerivation) gives contradiction. -/
 theorem g_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
@@ -689,11 +829,11 @@ theorem g_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
   · -- Consistent case
     exact BurgessR3Maximal_extension_fails h_r3m h_not_B h_cons
       (g_content_consistent_case h_mcs_A h_mcs_C h_r3m h_gc hφ h_cons)
-  · -- Inconsistent case: {φ}∪B inconsistent, φ.neg ∈ B
-    -- Report 47's Set.univ argument is invalid (Set.univ is not a DCS).
-    -- The inconsistent case may be provable by showing it cannot occur,
-    -- or by finding a proper consistent DCS extension of B.
-    sorry
+  · -- Inconsistent case: {φ}∪B inconsistent → φ.neg ∈ B → burgessR3(A, Set.univ, C)
+    have h_neg_in_B := neg_mem_of_inconsistent_union h_r3m.1 h_cons
+    have h_r3_univ := burgessR3_univ_of_inconsistent_ext h_mcs_A h_mcs_C h_r3m.2.1 hφ h_neg_in_B
+    exact h_r3m.2.2 Set.univ set_univ_closed_under_derivation
+      (dcs_ssubset_univ h_r3m.1) h_r3_univ
 
 /-- h_content(C) ⊆ B when BurgessR3Maximal(A, B, C) (dual). -/
 theorem h_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
@@ -715,8 +855,25 @@ theorem h_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
     · -- Since: ∀ β ∈ B, ∀ α ∈ A, snce(β ∧ ψ, α) ∈ C
       intro β hβ α hα
       exact snce_left_mono_H h_mcs_C (H_conj_strengthen h_mcs_C β ψ hψ) (h_r3m.2.1.2 β hβ α hα)
-  · -- Inconsistent case: same gap as g_content_sub_B
-    sorry
+  · -- Inconsistent case (dual): ψ.neg ∈ B, H(ψ) ∈ C → burgessR3(A, Set.univ, C)
+    have h_neg_in_B := neg_mem_of_inconsistent_union h_r3m.1 h_cons
+    -- burgessR3(A, Set.univ, C) via the Since direction
+    have h_r3_univ : burgessR3 A Set.univ C := by
+      constructor
+      · -- burgessRSet(A, Set.univ, C): derive from Since via burgessRSince_implies_burgessR
+        intro χ _ γ hγ
+        have h_burgessRSince : burgessRSince C χ A := fun α hα => by
+          have h_snce_neg := h_r3m.2.1.2 ψ.neg h_neg_in_B α hα
+          have h_H_impl := H_ex_falso_strengthen h_mcs_C ψ χ hψ
+          exact snce_left_mono_H h_mcs_C h_H_impl h_snce_neg
+        exact burgessRSince_implies_burgessR h_mcs_A h_mcs_C h_burgessRSince γ hγ
+      · -- burgessRSetSince(C, Set.univ, A)
+        intro χ _ α hα
+        have h_snce_neg := h_r3m.2.1.2 ψ.neg h_neg_in_B α hα
+        have h_H_impl := H_ex_falso_strengthen h_mcs_C ψ χ hψ
+        exact snce_left_mono_H h_mcs_C h_H_impl h_snce_neg
+    exact h_r3m.2.2 Set.univ set_univ_closed_under_derivation
+      (dcs_ssubset_univ h_r3m.1) h_r3_univ
 
 /-! ## Lemma 2.6 Splitting: BurgessR3Maximal Interval Insertion
 

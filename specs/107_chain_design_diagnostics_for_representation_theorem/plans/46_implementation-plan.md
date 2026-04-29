@@ -179,7 +179,7 @@ Phases within the same wave can execute in parallel. Phase 5b-i is the critical 
 
 ---
 
-### Phase 5b-i: Split DCS Definition + Update BurgessR3Maximal [NOT STARTED]
+### Phase 5b-i: Split DCS Definition + Update BurgessR3Maximal [COMPLETED]
 
 **Goal**: Introduce `ClosedUnderDerivation` predicate (closure without consistency), refactor `SetDeductivelyClosed` to use it, and update `BurgessR3Maximal`'s maximality clause to quantify over `ClosedUnderDerivation` sets. This aligns the formalization with Burgess 1982 / Xu 1988 where DCS = closure-only.
 
@@ -229,7 +229,7 @@ Phases within the same wave can execute in parallel. Phase 5b-i is the critical 
 
 ---
 
-### Phase 5b-ii: Close Inconsistent Case + splitting_seed_consistent [NOT STARTED]
+### Phase 5b-ii: Close Inconsistent Case + splitting_seed_consistent [PARTIAL]
 
 **Goal**: With `ClosedUnderDerivation` in place and `BurgessR3Maximal` maximality now covering `Set.univ`, close the inconsistent case of `g_content_sub_B_of_BurgessR3Maximal`, the dual `h_content_sub_B`, and `splitting_seed_consistent`.
 

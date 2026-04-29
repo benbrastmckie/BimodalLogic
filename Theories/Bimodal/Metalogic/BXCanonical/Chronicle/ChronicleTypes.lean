@@ -63,6 +63,13 @@ open Bimodal.Metalogic.Bundle
 
 /-! ## Deductively Closed Sets (DCS) -/
 
+/-- A set is closed under derivation if every consequence of its elements is also in it.
+This is Burgess 1982's definition of "deductively closed set" (DCS).
+Note: does NOT require consistency. `Set.univ` is `ClosedUnderDerivation`. -/
+def ClosedUnderDerivation (S : Set Formula) : Prop :=
+  ∀ (L : List Formula) (φ : Formula),
+    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree L φ) → φ ∈ S
+
 /--
 A set of formulas is **deductively closed** if it is consistent and closed
 under derivation: whenever all premises of a derivation are in the set,
@@ -73,9 +80,7 @@ DCS are used for the interval function `g(x,y)` in the chronicle,
 which describes the formulas that hold throughout an interval.
 -/
 def SetDeductivelyClosed (S : Set Formula) : Prop :=
-  SetConsistent S ∧
-  ∀ (L : List Formula) (φ : Formula),
-    (∀ ψ ∈ L, ψ ∈ S) → (DerivationTree L φ) → φ ∈ S
+  SetConsistent S ∧ ClosedUnderDerivation S
 
 /-- Every MCS is deductively closed. -/
 theorem mcs_is_dcs {S : Set Formula} (h : SetMaximalConsistent S) :
@@ -315,7 +320,7 @@ satisfies burgessR3 with the same endpoints A and C.
 def BurgessR3Maximal (A B C : Set Formula) : Prop :=
   SetDeductivelyClosed B ∧
   burgessR3 A B C ∧
-  ∀ D, SetDeductivelyClosed D → B ⊂ D → ¬burgessR3 A D C
+  ∀ D, ClosedUnderDerivation D → B ⊂ D → ¬burgessR3 A D C
 
 /-! ## Chronicle Structure -/
 
