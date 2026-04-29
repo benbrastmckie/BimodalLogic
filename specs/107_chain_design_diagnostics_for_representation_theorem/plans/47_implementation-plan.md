@@ -245,7 +245,7 @@ Phases within the same wave can execute in parallel. Phases 6, 7, and 8 are all 
 
 ---
 
-### Phase 8: Close Zorn Sorry + Density Sorry [NOT STARTED]
+### Phase 8: Close Zorn Sorry + Density Sorry [IN PROGRESS]
 
 **Goal**: Close the Zorn sorry (RRelation.lean:772) and the density self-pair sorry (CounterexampleElimination.lean:1130).
 
