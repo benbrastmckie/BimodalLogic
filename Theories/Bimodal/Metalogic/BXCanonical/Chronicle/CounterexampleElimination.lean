@@ -177,9 +177,9 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
       (∀ a b, χ'.g a b = χ.g a b) := by
   -- Step 1: Get a fresh point y > all domain points
   obtain ⟨y, hy_gt, hy_notin⟩ := exists_rat_gt_finset χ.dom
-  -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x))
+  -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x)), plus interval DCS B
   have h_mcs_x := h_c0 ce.x ce.x_mem
-  obtain ⟨C, h_C_mcs, h_η_C, _, _⟩ :=
+  obtain ⟨_B, C, h_C_mcs, h_η_C, _, _, _⟩ :=
     lemma_2_4 h_mcs_x ce.ξ ce.η ce.until_mem
   -- Step 3: Build the new chronicle
   -- f' agrees with f on old domain, assigns C to y

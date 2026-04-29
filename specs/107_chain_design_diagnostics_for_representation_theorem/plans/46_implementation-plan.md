@@ -254,7 +254,7 @@ Phases within the same wave can execute in parallel. Phase 5b-i is the critical 
 
 ---
 
-### Phase 6: Formalize Lemma 2.7 Splitting [NOT STARTED]
+### Phase 6: Formalize Lemma 2.7 Splitting [IN PROGRESS]
 
 **Goal**: Formalize Lemma 2.7 (Until-formula splitting): given `BurgessR3Maximal(A, B, C)` with `U(xi, eta) in A` and `eta not in B`, produce `B', D, B''` with `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` where `xi in D` and `eta in B'`. Needed for C5 n>0 sub-case 3 (Phase 10).
 
@@ -279,7 +279,7 @@ Phases within the same wave can execute in parallel. Phase 5b-i is the critical 
 
 ---
 
-### Phase 7: Extend lemma_2_4 Return Type [NOT STARTED]
+### Phase 7: Extend lemma_2_4 Return Type [COMPLETED]
 
 **Goal**: Extend `lemma_2_4` to return both B (the DCS interval set) and C (the MCS endpoint) so that B can be directly assigned as a g-value.
 

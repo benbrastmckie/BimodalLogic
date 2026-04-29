@@ -148,13 +148,15 @@ theorem until_witness_seed_consistent {A : Set Formula}
   exact forward_temporal_witness_seed_consistent A h_mcs β h_F_β
 
 /-- **Lemma 2.4** (adapted for strict semantics): Given MCS A with U(γ, β) ∈ A,
-there exists MCS C with β ∈ C, g_content(A) ⊆ C, and P(U(γ,β)) ∈ C. -/
+there exists MCS C with β ∈ C, g_content(A) ⊆ C, P(U(γ,β)) ∈ C, and
+a DCS interval set B with BurgessR3Maximal(A, B, C). -/
 noncomputable def lemma_2_4 {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) (γ β : Formula)
     (h_until : Formula.untl γ β ∈ A) :
-    ∃ C : Set Formula, SetMaximalConsistent C ∧
+    ∃ B C : Set Formula, SetMaximalConsistent C ∧
       β ∈ C ∧ g_content A ⊆ C ∧
-      Formula.some_past (Formula.untl γ β) ∈ C := by
+      Formula.some_past (Formula.untl γ β) ∈ C ∧
+      BurgessR3Maximal A B C := by
   have h_seed_cons := until_witness_seed_consistent h_mcs γ β h_until
   obtain ⟨C, h_sup, h_C_mcs⟩ := set_lindenbaum _ h_seed_cons
   have h_β_C : β ∈ C := h_sup (Set.mem_union_left _ (Set.mem_singleton β))
@@ -167,7 +169,8 @@ noncomputable def lemma_2_4 {A : Set Formula}
       (theorem_in_mcs h_mcs h_ax) h_until
   have h_P_until_C : Formula.some_past (Formula.untl γ β) ∈ C :=
     h_g_sub h_GP
-  exact ⟨C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C⟩
+  obtain ⟨B, h_B⟩ := burgessR3Maximal_from_g_content_sub h_mcs h_C_mcs h_g_sub
+  exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_B⟩
 
 -- until_elim_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
 -- Use until_F_mcs (BX10) instead.
