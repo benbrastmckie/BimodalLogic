@@ -25,14 +25,14 @@ requiring successor-chain constructions.
    - BX5/BX5': self_accum_until/since (self-accumulation)
    - BX6/BX6': absorb_until/since (absorption)
    - BX7/BX7': linear_until/since (linearity)
-   - BX8/BX8': REMOVED (until_step/since_step not sound under half-open guard)
+   - BX8/BX8': REMOVED (until_step/since_step not sound under open guard)
    - BX9/BX9': REMOVED (until_elim/since_elim unsound under open guard)
    - BX10/BX10': until_F/since_P (eventuality extraction)
    - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 33 axiom constructors
+**Total**: 35 axiom constructors
 
 ### Key Properties
 
@@ -59,7 +59,7 @@ Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 37 constructors organized into four layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (26): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (26 + 2 enrichment): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (2): Modal-temporal interaction axioms
 
 All axioms are valid on all linear temporal orders (base frame class).
@@ -123,13 +123,13 @@ inductive Axiom : Formula → Type where
     Axiom ((Formula.bot.imp Formula.bot).imp (Formula.some_past (Formula.bot.imp Formula.bot)))
 
   /-- BX2: Left monotonicity of Until: `(φ→χ) ∧ G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
-  Under half-open guard [t,s): (φ→χ)(t) covers t, G(φ→χ) covers (t,s). Together cover [t,s). -/
+  Under open guard (t,s): G(φ→χ) covers (t,s), so guard monotonicity follows directly. -/
   | left_mono_until (φ ψ χ : Formula) :
       Axiom (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
         ((Formula.untl φ ψ).imp (Formula.untl χ ψ)))
 
   /-- BX2': Left monotonicity of Since: `(φ→χ) ∧ H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
-  Under half-open guard (s,t]: (φ→χ)(t) covers t, H(φ→χ) covers (s,t). Together cover (s,t]. -/
+  Under open guard (s,t): H(φ→χ) covers (s,t), so guard monotonicity follows directly. -/
   | left_mono_since (φ ψ χ : Formula) :
       Axiom (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
         ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
@@ -145,8 +145,7 @@ inductive Axiom : Formula → Type where
 
   /-- BX4: Temporal connectedness (future): `φ → G(P(φ))`.
   If φ holds now, then at all future times, P(φ) holds — the present is
-  always in the past of the future. This replaces the Burgess-Xu Until-Since
-  connectedness axiom, which is not valid under half-open guard semantics. -/
+  always in the past of the future. -/
   | connect_future (φ : Formula) :
       Axiom (φ.imp (φ.some_past.all_future))
 
@@ -154,6 +153,24 @@ inductive Axiom : Formula → Type where
   Mirror of BX4: the present is always in the future of the past. -/
   | connect_past (φ : Formula) :
       Axiom (φ.imp (φ.some_future.all_past))
+
+  /-- BX13: Until-Since enrichment (Burgess A3a, Xu axiom (3)):
+  `p ∧ (φ U ψ) → (φ ∧ S(φ, p)) U ψ` (in our guard-first convention:
+  `p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))`).
+  Enriches the Until event with Since information from the current point.
+  Valid under open guard (t,s): the Until guard interval (t,s) provides
+  the Since guard at the witness s, since both intervals are identical. -/
+  | enrichment_until (φ ψ p : Formula) :
+      Axiom (Formula.and p (Formula.untl φ ψ) |>.imp
+        (Formula.untl φ (Formula.and ψ (Formula.snce φ p))))
+
+  /-- BX13': Since-Until enrichment (Burgess A3b, Xu axiom (4)):
+  `p ∧ (φ S ψ) → (φ ∧ U(φ, p)) S ψ` (in our guard-first convention:
+  `p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))`).
+  Mirror of enrichment_until for the Since direction. -/
+  | enrichment_since (φ ψ p : Formula) :
+      Axiom (Formula.and p (Formula.snce φ ψ) |>.imp
+        (Formula.snce φ (Formula.and ψ (Formula.untl φ p))))
 
   /-- BX5: Self-accumulation of Until: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`.
   The eventuality enriches its own guard: at intermediate points, both φ holds
@@ -199,7 +216,7 @@ inductive Axiom : Formula → Type where
             (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
 
-  -- NOTE: BX8/BX8' (until_step/since_step) removed -- not sound under half-open guard.
+  -- NOTE: BX8/BX8' (until_step/since_step) removed -- not sound under open guard.
 
   -- NOTE: BX9/BX9' (until_elim/since_elim) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.

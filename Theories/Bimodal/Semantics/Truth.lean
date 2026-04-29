@@ -11,9 +11,9 @@ This module defines truth evaluation for TM formulas in task models.
 and H (all_past) use STRICT semantics (< instead of ≤), meaning "all strictly
 future/past times" (excluding the present). Under irreflexive semantics, the
 T-axioms (Gφ → φ, Hφ → φ) are NOT valid. Until uses strict witness (s > t) with
-half-open guard [t, s). Since uses strict witness (s < t) with half-open guard (s, t].
+open guard (t, s). Since uses strict witness (s < t) with open guard (s, t).
 
-This is the A2 guard convention: strict witness, half-open guard. The seriality
+This is the open guard convention: strict witness, open guard. The seriality
 axioms (⊤ → F(⊤), ⊤ → P(⊤)) replace the T-axioms (BX1/BX1').
 
 ## Paper Specification Reference
@@ -69,7 +69,7 @@ See SoundnessLemmas.lean for details on the module hierarchy restructuring.
 - Truth is defined recursively on formula structure
 - Modal box quantifies over all world histories at current time
 - Temporal past/future quantify over ALL strictly past/future times in D excluding now (irreflexive)
-- Until/Since use strict witness (s > t / s < t) with half-open guards [t,s) / (s,t]
+- Until/Since use strict witness (s > t / s < t) with open guards (t,s) / (s,t)
 - Atoms are false at times outside the history's domain
 
 ## References

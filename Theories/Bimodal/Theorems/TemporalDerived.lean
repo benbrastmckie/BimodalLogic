@@ -510,30 +510,19 @@ noncomputable def since_P_expansion (φ ψ : Formula) :
   exact ctx_mp (ctx_mp (ctx_thm (pairing φ (Formula.snce φ ψ).some_past)) h_phi) h_P'
 
 /-!
-## A3a/A4a: Not Valid Under Strict Semantics
+## A3a/A3b: Valid Under Open Guard Semantics
 
-Burgess 1982 axioms A3a and A4a are NOT valid under irreflexive (strict) temporal semantics.
+Burgess 1982 axioms A3a and A3b (Until-Since enrichment) ARE semantically valid under
+our open guard (t,s) semantics. The counterexample previously documented here was WRONG --
+it evaluated S(p,r) at the current time t instead of at the Until witness s. Under open
+guard, the Until interval (t,s) and the Since interval (t,s) at the witness are identical,
+so A3a is valid. A3a/A3b are added as BX13/BX13' (enrichment_until/enrichment_since) in
+Axioms.lean.
 
-### A3a: `p ∧ U(q,r) → U(q ∧ S(p,r), r)`
+A3a: `p ∧ U(q,r) → U(q ∧ S(p,r), r)` (Burgess convention: U(event, guard))
+A3b: `p ∧ S(q,r) → S(q ∧ U(r,p), r)` (mirror)
 
-**Counterexample**: Consider times {0, 1, 2} with p true only at 0, q true at 0 and 1,
-r true at 2. At time 0: p ∧ U(q,r) holds (p at 0; witness s=2, r(2), q on [0,2)).
-But U(q ∧ S(p,r), r) fails at 0: the guard requires S(p,r) at u=0, which needs
-∃ v < 0, r(v). No such v exists under strict Since, so S(p,r) is false at 0.
-
-### A4a: `U(p,q) ∧ ¬U(p,r) → U(q ∧ ¬r, q)`
-
-Similarly not derivable under strict semantics.
-
-### Impact on Chronicle Construction
-
-The Burgess chronicle construction (Phases 2-5) uses A3a in Lemma 2.3 and A4a in
-Lemma 2.6. Under strict semantics, the algebraic content of these axioms is provided
-directly by the BX axioms:
-- BX4 (connect_future: φ → G(P(φ))) + BX5 (self_accum_until) subsume A3a's role
-- BX5 + BX6 (absorb_until) + BX7 (linear_until) subsume A4a's role
-
-The chronicle construction should use these BX axioms directly instead of A3a/A4a.
+See Axioms.lean for the precise Lean formulation and Soundness.lean for the validity proof.
 -/
 
 end Bimodal.Theorems.TemporalDerived

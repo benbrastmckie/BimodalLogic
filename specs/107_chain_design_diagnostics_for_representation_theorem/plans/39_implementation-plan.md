@@ -82,7 +82,7 @@ Phases 3 and 4 can execute in parallel (independent files). All other phases are
 
 ---
 
-### Phase 1: Review and Snapshot ROADMAP.md [NOT STARTED]
+### Phase 1: Review and Snapshot ROADMAP.md [COMPLETED]
 
 **Goal**: Record the current state of ROADMAP.md before any changes, identifying which items this task will advance and documenting the before-state for comparison.
 
@@ -104,7 +104,7 @@ Phases 3 and 4 can execute in parallel (independent files). All other phases are
 
 ---
 
-### Phase 2: Cleanup — Archive Dead Code and Delete Sorry Stubs [NOT STARTED]
+### Phase 2: Cleanup — Archive Dead Code and Delete Sorry Stubs [COMPLETED]
 
 **Goal**: Remove dead code from the closed-guard era and mistaken approaches before rebuilding. Archive recoverable code to Boneyard, delete provably invalid sorry stubs.
 
@@ -133,7 +133,7 @@ Phases 3 and 4 can execute in parallel (independent files). All other phases are
 
 ---
 
-### Phase 3: Upgrade C2' to BurgessR3Maximal and Implement Xu's Lemma 3.2.1 [NOT STARTED]
+### Phase 3: Upgrade C2' to BurgessR3Maximal and Implement Xu's Lemma 3.2.1 [BLOCKED]
 
 **Goal**: Upgrade the c2' chronicle condition to require BurgessR3Maximal (matching Burgess's R-maximality in C2'), and implement Xu's Lemma 3.2.1 as the replacement for the failed B_sub_A/D0 approach.
 

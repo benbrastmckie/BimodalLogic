@@ -591,6 +591,34 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg]
     intro h_φt s hts h_H_neg
     exact h_H_neg t hts h_φt
+  | enrichment_until φ ψ p =>
+    -- Swap of enrichment_until: p ∧ snce(φ', ψ') → snce(φ', ψ' ∧ untl(φ', p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_since : ∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
+    obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
+    refine ⟨s, hst, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
+  | enrichment_since φ ψ p =>
+    -- Swap of enrichment_since: p ∧ untl(φ', ψ') → untl(φ', ψ' ∧ snce(φ', p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_until : ∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
+    obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
+    refine ⟨s, hts, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
   | self_accum_until φ ψ =>
     -- Swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1103,6 +1131,34 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     simp only [truth_at, Formula.some_future, Formula.neg]
     intro h_φt s hst h_G_neg
     exact h_G_neg t hst h_φt
+  | enrichment_until φ ψ p =>
+    -- Direct: p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_until : ∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ := by
+      by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
+    obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
+    refine ⟨s, hts, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
+  | enrichment_since φ ψ p =>
+    -- Direct: p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_since : ∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ := by
+      by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
+    obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
+    refine ⟨s, hst, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
   | self_accum_until φ ψ =>
     -- Direct: (φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)
     intro F M Omega _h_sc τ _h_mem t
@@ -1476,6 +1532,34 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
     simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.neg]
     intro h_φt s hts h_H_neg
     exact h_H_neg t hts h_φt
+  | enrichment_until φ ψ p =>
+    -- Swap of enrichment_until: p ∧ snce(φ', ψ') → snce(φ', ψ' ∧ untl(φ', p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_since : ∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
+    obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
+    refine ⟨s, hst, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
+  | enrichment_since φ ψ p =>
+    -- Swap of enrichment_since: p ∧ untl(φ', ψ') → untl(φ', ψ' ∧ snce(φ', p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_until : ∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ.swap_temporal := by
+      by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
+    obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
+    refine ⟨s, hts, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
   | self_accum_until φ ψ =>
     -- Swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1672,6 +1756,34 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     simp only [truth_at, Formula.some_future, Formula.neg]
     intro h_φt s hst h_G_neg
     exact h_G_neg t hst h_φt
+  | enrichment_until φ ψ p =>
+    -- Direct: p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_until : ∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ := by
+      by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
+    obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
+    refine ⟨s, hts, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
+  | enrichment_since φ ψ p =>
+    -- Direct: p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.neg, truth_at]
+    intro h_conj
+    have h_pt : truth_at M Omega τ t p := by
+      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+    have h_since : ∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ := by
+      by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
+    obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
+    refine ⟨s, hst, ?_, h_guard⟩
+    intro h_imp
+    exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
   | self_accum_until φ ψ =>
     -- Direct: (φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)
     intro F M Omega _h_sc τ _h_mem t

@@ -351,18 +351,22 @@ For x < y in dom, r3Relation(f(x), g(x,y), f(y)) holds. -/
 def Chronicle.c2 (χ : Chronicle) : Prop :=
   ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → r3Relation (χ.f x) (χ.g x y) (χ.f y)
 
-/-- **C2'**: Deductively-closed burgessR3 for adjacent pairs.
+/-- **C2'**: BurgessR3Maximal for adjacent pairs (Burgess Definition 2.5).
 
-At finite stages, g(x,y) must be a DCS satisfying burgessR3(f(x), g(x,y), f(y))
-for adjacent pairs (x,y). This is the weakened version that omits the maximality
-requirement of BurgessR3Maximal. The C4 hard case only needs DCS + burgessR3
-(not maximality): gamma in g(x,y) and delta in f(y) forces untl(gamma, delta)
-in f(x), which gives the needed contradiction. At the limit, the domain is dense
-(no adjacent pairs), so c2' is vacuously true and can be upgraded to full
-BurgessR3Maximal if needed. -/
+At finite stages, g(x,y) must be a maximal DCS satisfying burgessR3(f(x), g(x,y), f(y))
+for adjacent pairs (x,y). This is the CORRECT formulation matching Burgess 1982's
+R-maximality requirement in C2'. Maximality ensures the interval sets contain as many
+formulas as possible while maintaining the r-relation, which is needed for:
+1. The C4 hard case (gamma not in g implies gamma.neg in an MCS extending g)
+2. Xu's Lemma 3.2.1 (closure of B under Until/Since formation)
+3. The truth lemma (g-values faithfully represent interval truth)
+
+At the limit, the domain is dense (no adjacent pairs), so c2' is vacuously true.
+The `burgessR3Maximal_exists_from_seed` theorem in RRelation.lean produces maximal
+DCS from seed elements. -/
 def Chronicle.c2' (χ : Chronicle) : Prop :=
   ∀ x y : Rat, Adjacent χ.dom x y →
-    SetDeductivelyClosed (χ.g x y) ∧ burgessR3 (χ.f x) (χ.g x y) (χ.f y)
+    BurgessR3Maximal (χ.f x) (χ.g x y) (χ.f y)
 
 /-- **C3**: Three-way interval decomposition (Burgess 1982, p. 372).
 For all x < y < z in dom, g(x,z) = g(x,y) ∩ f(y) ∩ g(y,z).
@@ -519,8 +523,8 @@ structure ChronicleInvariant (χ : Chronicle) : Prop where
   hc0 : χ.c0
   /-- C1: Every pair x < y maps to a DCS -/
   hc1 : χ.c1
-  /-- C2': BurgessR3-maximality for adjacent pairs.
-  Uses the content-based Burgess r-relation (burgessR3) for maximality.
+  /-- C2': BurgessR3Maximal for adjacent pairs (Burgess Definition 2.5).
+  Uses the content-based Burgess r-relation (burgessR3) with maximality.
   C2 (r3Relation for ALL pairs) is derivable at the limit via Lemma 2.5 absorption.
   The finite-stage invariant only needs C2' for adjacent pairs. -/
   hc2' : χ.c2'

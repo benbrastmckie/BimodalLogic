@@ -381,7 +381,7 @@ theorem temp_linearity_past_valid (φ ψ : Formula) :
 `F(φ) → (⊤ U φ)` is valid. Here ⊤ = ⊥ → ⊥.
 
 If F(φ) holds at t, there exists s ≥ t with φ(s). Take this s as the Until witness.
-The guard ⊤ is trivially satisfied on [t, s). -/
+The guard ⊤ is trivially satisfied on (t, s). -/
 theorem F_until_equiv_valid (φ : Formula) :
     ⊨ ((Formula.some_future φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
@@ -481,12 +481,11 @@ theorem seriality_past_valid (φ : Formula) :
 These lemmas prove validity of the Burgess-Xu axioms BX2-BX7 (and their Since mirrors)
 on all linear temporal orders with reflexive Until/Since semantics.
 
-**Note on BX4**: The standard Burgess-Xu BX4 (`φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`)
-is not valid under the half-open guard convention [t, s) / (s, t] used here because
-the Since guard at the Until witness s requires χ(s), which the half-open Until guard
-excludes. We replace it with temporal connectedness: `φ → G(P(φ))` and `φ → H(F(φ))`,
-which are provably valid and capture the same mathematical content (temporal connectedness
-between present, future, and past).
+**Note on BX4**: Our BX4 is temporal connectedness (`φ → G(P(φ))` and `φ → H(F(φ))`),
+which is provably valid under open guard (t,s) semantics. The standard Burgess-Xu A3a
+(`φ ∧ (χ U ψ) → χ U (ψ ∧ (χ S φ))`) IS also valid under open guard semantics --
+the Until guard interval (t,s) provides the Since guard at the witness since both
+intervals are identical. A3a is added separately as BX13 (enrichment_until/since).
 
 Recall the reflexive semantics:
 - `φ U ψ` at `t`: ∃ s ≥ t, ψ(s) ∧ ∀ r, t ≤ r < s → φ(r)
@@ -556,11 +555,53 @@ theorem connect_past_valid (φ : Formula) :
   intro h_φt s hst h_G_neg
   exact h_G_neg t hst h_φt
 
+/-- BX13: Until-Since enrichment (Burgess A3a, Xu axiom (3)):
+`p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))`.
+Valid under open guard (t,s): given p(t) and untl(φ, ψ) at t with witness s > t,
+ψ(s), and φ on (t,s). Take same witness s for the conclusion.
+- ψ(s) holds (from hypothesis).
+- snce(φ, p)(s): take u = t as Since witness. t < s, p(t), and φ on (t,s) = the Until guard.
+- Guard φ on (t,s): same as the hypothesis guard. -/
+theorem enrichment_until_valid (φ ψ p : Formula) :
+    ⊨ (Formula.and p (Formula.untl φ ψ) |>.imp
+      (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_conj
+  have h_pt : truth_at M Omega τ t p := by
+    by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+  have h_until : ∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
+      ∀ r, t < r → r < s → truth_at M Omega τ r φ := by
+    by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
+  obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
+  refine ⟨s, hts, ?_, h_guard⟩
+  intro h_imp
+  exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
+
+/-- BX13': Since-Until enrichment (Burgess A3b, Xu axiom (4)):
+`p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))`.
+Mirror of enrichment_until for the Since direction. -/
+theorem enrichment_since_valid (φ ψ p : Formula) :
+    ⊨ (Formula.and p (Formula.snce φ ψ) |>.imp
+      (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.neg, truth_at]
+  intro h_conj
+  have h_pt : truth_at M Omega τ t p := by
+    by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+  have h_since : ∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
+      ∀ r, s < r → r < t → truth_at M Omega τ r φ := by
+    by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
+  obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
+  refine ⟨s, hst, ?_, h_guard⟩
+  intro h_imp
+  exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
+
 /-- BX5: Self-accumulation of Until: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`.
 Given φ U ψ with witness s ≥ t: same witness s. Endpoint ψ(s) is unchanged.
-Guard at r ∈ [t, s): need φ(r) ∧ (φ U ψ)(r).
+Guard at r ∈ (t, s): need φ(r) ∧ (φ U ψ)(r).
 φ(r) comes from original guard. (φ U ψ)(r) uses same witness s:
-ψ(s), and guard ∀ q ∈ [r, s) is a subset of [t, s). -/
+ψ(s), and guard ∀ q ∈ (r, s) is a subset of (t, s). -/
 theorem self_accum_until_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ ψ).imp
       (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)) := by
@@ -763,6 +804,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ
   | connect_future _ => exact connect_future_valid _
   | connect_past _ => exact connect_past_valid _
+  | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p
+  | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p
   | self_accum_until φ ψ => exact self_accum_until_valid φ ψ
   | self_accum_since φ ψ => exact self_accum_since_valid φ ψ
   | absorb_until φ ψ => exact absorb_until_valid φ ψ
@@ -803,6 +846,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_dense (right_mono_since_valid φ ψ χ)
   | connect_future _ => exact Validity.valid_implies_valid_dense (connect_future_valid _)
   | connect_past _ => exact Validity.valid_implies_valid_dense (connect_past_valid _)
+  | enrichment_until φ ψ p => exact Validity.valid_implies_valid_dense (enrichment_until_valid φ ψ p)
+  | enrichment_since φ ψ p => exact Validity.valid_implies_valid_dense (enrichment_since_valid φ ψ p)
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_dense (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_dense (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_dense (absorb_until_valid φ ψ)
@@ -844,6 +889,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_discrete (right_mono_since_valid φ ψ χ)
   | connect_future _ => exact Validity.valid_implies_valid_discrete (connect_future_valid _)
   | connect_past _ => exact Validity.valid_implies_valid_discrete (connect_past_valid _)
+  | enrichment_until φ ψ p => exact Validity.valid_implies_valid_discrete (enrichment_until_valid φ ψ p)
+  | enrichment_since φ ψ p => exact Validity.valid_implies_valid_discrete (enrichment_since_valid φ ψ p)
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_discrete (absorb_until_valid φ ψ)
@@ -939,6 +986,8 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | connect_future φ => exact connect_future_valid φ D F M Omega h_sc τ h_mem t
     | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
+    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p D F M Omega h_sc τ h_mem t
+    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p D F M Omega h_sc τ h_mem t
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1102,6 +1151,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | connect_future φ => exact connect_future_valid φ D F M Omega h_sc τ h_mem t
     | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
+    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p D F M Omega h_sc τ h_mem t
+    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p D F M Omega h_sc τ h_mem t
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t

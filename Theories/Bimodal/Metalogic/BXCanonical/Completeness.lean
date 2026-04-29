@@ -184,15 +184,13 @@ The `sorryAx` dependency now traces through `dd_countermodel_chronicle` →
 Burgess chronicle construction with a Cantor isomorphism to embed all
 rationals into the limit domain.
 
-**Active sorry sites** (4 total, on critical path):
-1. `eliminate_C4_counterexample` hard case (CounterexampleElimination.lean:334)
-   — G(gamma) in f(x), H(gamma) in f(y), requires g-function infrastructure
-2. `eliminate_C4'_counterexample` hard case (CounterexampleElimination.lean:449)
-   — Mirror of C4 for Since direction
-3. `cantor_bfmcs_restricted_fuc` Until (ChronicleToCountermodel.lean)
-   — Forward Until coherence guard at intermediate points, requires C3 + limit_g
-4. `cantor_bfmcs_restricted_fuc` Since (ChronicleToCountermodel.lean)
-   — Forward Since coherence guard, mirror of Until case
+**Active sorry sites** (11 total, on critical path):
+- 7 c2' sorry sites in CounterexampleElimination.lean (c2' g-construction for
+  C4/C4'/C5/C5'/density elimination cases)
+- 2 c4 hard case sorry sites in CounterexampleElimination.lean (nested bridging,
+  requires restructuring to induction + BX6 per Burgess Lemma 2.9)
+- 2 FUC sorry sites in ChronicleToCountermodel.lean (forward Until/Since
+  coherence guard at intermediate points, requires C5 with guard via C3 + limit_g)
 
 **Dead code** (no longer on critical path):
 - All sorry sites in RootScopedChain.lean (bx_bfmcs_restricted_tc/buc/fuc)

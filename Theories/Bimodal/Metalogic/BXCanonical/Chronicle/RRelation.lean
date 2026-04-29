@@ -1157,37 +1157,326 @@ theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
 -- snce_absorb_nested: REMOVED (task 113 Phase 3). INVALID under open guard.
 -- Both archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
-/--
-**Generalized C4 bridging** (INVALID under open guard, task 113):
-If burgessR3(A, B, C) and neg(untl(γ,δ)) ∈ A and untl(γ,δ) ∈ C, then γ ∉ B.
+-- burgessR3_gamma_not_in_B_nested: DELETED (task 107 Phase 2).
+-- INVALID under open guard (task 113). Depended on untl_absorb_nested.
+-- The C4 hard case is restructured in Phase 4 to use induction + BX6 instead.
 
-This lemma depended on `untl_absorb_nested` which is INVALID under open guard.
-The junction point s is not covered by the open guard (t,s). Retained as sorry
-stub because CounterexampleElimination.lean calls it; that file needs its own
-rework to avoid the absorption pattern.
+-- burgessR3_gamma_not_in_B_since_nested: DELETED (task 107 Phase 2).
+-- INVALID under open guard (task 113). Mirror of above.
+-- The C4' hard case is restructured in Phase 4 to use induction + BX6' instead.
+
+/-! ## Burgess Lemma 2.3 Equivalence
+
+The element-wise equivalence between burgessR and burgessRSince:
+  burgessR(A, β, C) ↔ burgessRSince(C, β, A)
+
+for MCS A, C. This uses BX4/BX4' (connect_future/past) and BX2/BX3
+(left/right monotonicity). The equivalence shows that the forward (Until)
+and backward (Since) directions of the content-based r-relation are
+interchangeable, which is essential for the maximality argument in
+Xu's Lemma 3.2.1.
 -/
-theorem burgessR3_gamma_not_in_B_nested {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
+
+/--
+**Burgess Lemma 2.3 (forward)**: burgessR(A, β, C) implies burgessRSince(C, β, A).
+
+If for all γ ∈ C, untl(β, γ) ∈ A, then for all α ∈ A, snce(β, α) ∈ C.
+Uses BX4 (connect_future) and BX3' (right_mono_since).
+-/
+theorem burgessR_implies_burgessRSince {A C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    {β : Formula} (h_burgessR : burgessR A β C) :
+    burgessRSince C β A := by
+  intro α hα
+  -- Step 1: Show P(α) ∈ C via BX4 + BX10 contradiction
+  have h_P : Formula.some_past α ∈ C := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_C (α.neg.all_past) with h_H | h_notH
+    · -- H(¬α) ∈ C: derive contradiction
+      -- burgessR gives untl(β, H(¬α)) ∈ A
+      have h_untl : Formula.untl β (α.neg.all_past) ∈ A := h_burgessR _ h_H
+      -- BX10: untl(β, H(¬α)) → F(H(¬α)), so F(H(¬α)) ∈ A
+      have h_ax10 := DerivationTree.axiom [] _ (Axiom.until_F β α.neg.all_past)
+      have h_F : Formula.some_future (α.neg.all_past) ∈ A :=
+        SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_ax10) h_untl
+      -- BX4: α → G(P(α)), so G(P(α)) ∈ A
+      have h_bx4 := DerivationTree.axiom [] _ (Axiom.connect_future α)
+      have h_GP : Formula.all_future (Formula.some_past α) ∈ A :=
+        SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_bx4) hα
+      -- F(H(¬α)) = ¬G(P(α)) definitionally, contradicting G(P(α)) ∈ A
+      exact absurd h_GP (SetMaximalConsistent.neg_excludes h_mcs_A _ h_F)
+    · -- ¬H(¬α) = P(α) ∈ C
+      exact h_notH
+  -- Step 2: From P(α) ∈ C, derive snce(β, α) ∈ C using enrichment_until (A3a)
+  -- By contradiction: if snce(β, α) ∉ C, then ¬snce(β, α) ∈ C
+  by_contra h_not
+  have h_neg : (Formula.snce β α).neg ∈ C := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_C (Formula.snce β α) with h | h
+    · exact absurd h h_not
+    · exact h
+  -- burgessR gives untl(β, ¬snce(β, α)) ∈ A
+  have h_untl : Formula.untl β (Formula.snce β α).neg ∈ A := h_burgessR _ h_neg
+  -- Form conjunction: α ∧ untl(β, ¬snce(β, α)) ∈ A
+  have h_conj : Formula.and α (Formula.untl β (Formula.snce β α).neg) ∈ A :=
+    dcs_conj_closed (mcs_is_dcs h_mcs_A) hα h_untl
+  -- Apply A3a: α ∧ untl(β, ¬snce(β,α)) → untl(β, ¬snce(β,α) ∧ snce(β,α))
+  have h_a3a := DerivationTree.axiom [] _ (Axiom.enrichment_until β (Formula.snce β α).neg α)
+  have h_enriched : Formula.untl β ((Formula.snce β α).neg.and (Formula.snce β α)) ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_a3a) h_conj
+  -- BX10: untl(β, X) → F(X), so F(¬snce(β,α) ∧ snce(β,α)) ∈ A
+  have h_F := until_implies_F_in_mcs h_mcs_A h_enriched
+  -- ¬snce(β,α) ∧ snce(β,α) → ⊥ is derivable (propositional contradiction)
+  have h_neg_event : DerivationTree [] ((Formula.snce β α).neg.and (Formula.snce β α)).neg := by
+    have h1 := Bimodal.Theorems.Propositional.lce_imp (Formula.snce β α).neg (Formula.snce β α)
+    have h2 := Bimodal.Theorems.Propositional.rce_imp (Formula.snce β α).neg (Formula.snce β α)
+    have h3 := DerivationTree.axiom [] _ (Axiom.prop_k ((Formula.snce β α).neg.and (Formula.snce β α)) (Formula.snce β α) Formula.bot)
+    exact mp h2 (mp h1 h3)
+  -- G(¬(¬snce(β,α) ∧ snce(β,α))) ∈ A by temporal necessitation
+  have h_G_neg := theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_neg_event)
+  -- F(X) = ¬G(¬X), contradicting G(¬X) ∈ A
+  exact absurd h_G_neg (SetMaximalConsistent.neg_excludes h_mcs_A _ h_F)
+
+/--
+**Burgess Lemma 2.3 (backward)**: burgessRSince(C, β, A) implies burgessR(A, β, C).
+
+If for all α ∈ A, snce(β, α) ∈ C, then for all γ ∈ C, untl(β, γ) ∈ A.
+Uses BX4' (connect_past) and BX3 (right_mono_until).
+-/
+theorem burgessRSince_implies_burgessR {A C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    {β : Formula} (h_burgessRSince : burgessRSince C β A) :
+    burgessR A β C := by
+  intro γ hγ
+  -- Mirror of forward direction: show F(γ) ∈ A, then strengthen to untl(β, γ) ∈ A
+  -- Step 1: Show F(γ) ∈ A via BX4' + BX10' contradiction
+  have h_F : Formula.some_future γ ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_A (γ.neg.all_future) with h_G | h_notG
+    · -- G(¬γ) ∈ A: derive contradiction
+      -- burgessRSince gives snce(β, G(¬γ)) ∈ C (with G(¬γ) ∈ A)
+      have h_snce : Formula.snce β (γ.neg.all_future) ∈ C := h_burgessRSince _ h_G
+      -- BX10': snce(β, G(¬γ)) → P(G(¬γ)), so P(G(¬γ)) ∈ C
+      have h_ax10' := DerivationTree.axiom [] _ (Axiom.since_P β γ.neg.all_future)
+      have h_P : Formula.some_past (γ.neg.all_future) ∈ C :=
+        SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_ax10') h_snce
+      -- BX4': γ → H(F(γ)), so H(F(γ)) ∈ C
+      have h_bx4' := DerivationTree.axiom [] _ (Axiom.connect_past γ)
+      have h_HF : Formula.all_past (Formula.some_future γ) ∈ C :=
+        SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_bx4') hγ
+      -- P(G(¬γ)) = ¬H(F(γ)) definitionally, contradicting H(F(γ)) ∈ C
+      exact absurd h_HF (SetMaximalConsistent.neg_excludes h_mcs_C _ h_P)
+    · -- ¬G(¬γ) = F(γ) ∈ A
+      exact h_notG
+  -- Step 2: From F(γ) ∈ A, derive untl(β, γ) ∈ A using enrichment_since (A3b)
+  -- By contradiction: if untl(β, γ) ∉ A, then ¬untl(β, γ) ∈ A
+  by_contra h_not
+  have h_neg : (Formula.untl β γ).neg ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_A (Formula.untl β γ) with h | h
+    · exact absurd h h_not
+    · exact h
+  -- burgessRSince gives snce(β, ¬untl(β, γ)) ∈ C
+  have h_snce : Formula.snce β (Formula.untl β γ).neg ∈ C := h_burgessRSince _ h_neg
+  -- Form conjunction: γ ∧ snce(β, ¬untl(β, γ)) ∈ C
+  have h_conj : Formula.and γ (Formula.snce β (Formula.untl β γ).neg) ∈ C :=
+    dcs_conj_closed (mcs_is_dcs h_mcs_C) hγ h_snce
+  -- Apply A3b: γ ∧ snce(β, ¬untl(β,γ)) → snce(β, ¬untl(β,γ) ∧ untl(β,γ))
+  have h_a3b := DerivationTree.axiom [] _ (Axiom.enrichment_since β (Formula.untl β γ).neg γ)
+  have h_enriched : Formula.snce β ((Formula.untl β γ).neg.and (Formula.untl β γ)) ∈ C :=
+    SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_a3b) h_conj
+  -- BX10': snce(β, X) → P(X), so P(¬untl(β,γ) ∧ untl(β,γ)) ∈ C
+  have h_P' := since_implies_P_in_mcs h_mcs_C h_enriched
+  -- ¬untl(β,γ) ∧ untl(β,γ) → ⊥ is derivable (propositional contradiction)
+  have h_neg_event : DerivationTree [] ((Formula.untl β γ).neg.and (Formula.untl β γ)).neg := by
+    have h1 := Bimodal.Theorems.Propositional.lce_imp (Formula.untl β γ).neg (Formula.untl β γ)
+    have h2 := Bimodal.Theorems.Propositional.rce_imp (Formula.untl β γ).neg (Formula.untl β γ)
+    have h3 := DerivationTree.axiom [] _ (Axiom.prop_k ((Formula.untl β γ).neg.and (Formula.untl β γ)) (Formula.untl β γ) Formula.bot)
+    exact mp h2 (mp h1 h3)
+  -- H(¬(¬untl(β,γ) ∧ untl(β,γ))) ∈ C by past necessitation
+  have h_H_neg := theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ h_neg_event)
+  -- P(X) = ¬H(¬X), contradicting H(¬X) ∈ C
+  exact absurd h_H_neg (SetMaximalConsistent.neg_excludes h_mcs_C _ h_P')
+
+/--
+**Corollary**: burgessRSet and burgessRSetSince are equivalent.
+-/
+theorem burgessRSet_iff_burgessRSetSince {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) :
+    burgessRSet A B C ↔ burgessRSetSince C B A := by
+  constructor
+  · intro h_rSet β hβ
+    exact burgessR_implies_burgessRSince h_mcs_A h_mcs_C (h_rSet β hβ)
+  · intro h_rSetSince β hβ
+    exact burgessRSince_implies_burgessR h_mcs_A h_mcs_C (h_rSetSince β hβ)
+
+/-! ## Xu's Lemma 3.2.1: B Closure Under Until/Since Formation
+
+Xu 1988, Lemma 3.2.1 (p. 192): If BurgessR3Maximal(A, B, C) with A, C MCS,
+then B is closed under Until formation with endpoint elements:
+- (i) For β ∈ B and γ ∈ C: untl(β, γ) ∈ B
+- (ii) For β ∈ B and α ∈ A: snce(β, α) ∈ B
+
+This replaces the irrecoverable B ⊆ A property from the closed-guard era.
+The proof uses BX5 (self_accum) + BX2/BX3 (monotonicity) + maximality +
+the Burgess 2.3 equivalence (burgessRSet ↔ burgessRSetSince).
+
+Convention note: In Xu's notation U(event, guard), so Xu's "U(γ, β)" = our untl(β, γ).
+The theorem statement uses our codebase convention: untl(guard, event).
+-/
+
+/--
+**Helper**: For any β' ∈ B and δ ∈ C, untl(β' ∧ untl(β, γ), δ) ∈ A.
+
+This is the core BX5 argument used in Xu's Lemma 3.2.1.
+Given BurgessR3Maximal(A, B, C) with β ∈ B and γ ∈ C:
+  Let β'' = β ∧ β', γ'' = γ ∧ δ.
+  burgessRSet gives untl(β'', γ'') ∈ A.
+  BX5: untl(β'', γ'') → untl(β'' ∧ untl(β'', γ''), γ'')
+  BX2: ... → untl(β' ∧ untl(β, γ), γ'') (weaken guard)
+  BX3: ... → untl(β' ∧ untl(β, γ), δ) (weaken event)
+-/
+theorem burgessR3_untl_conj_in_A {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_dcs_B : SetDeductivelyClosed B)
     (h_r3 : burgessR3 A B C)
-    {γ δ : Formula}
-    (h_neg_until : (Formula.untl γ δ).neg ∈ A)
-    (h_until_C : Formula.untl γ δ ∈ C) :
-    γ ∉ B := by
-  -- INVALID: depends on removed untl_absorb_nested (task 113 Phase 3).
+    {β : Formula} (hβ : β ∈ B) {γ : Formula} (hγ : γ ∈ C)
+    (β' : Formula) (hβ' : β' ∈ B) (δ : Formula) (hδ : δ ∈ C) :
+    Formula.untl (Formula.and β' (Formula.untl β γ)) δ ∈ A := by
+  -- Step 1: Form β'' = β ∧ β' ∈ B and γ'' = γ ∧ δ ∈ C
+  have hβ'' : Formula.and β β' ∈ B := dcs_conj_closed h_dcs_B hβ hβ'
+  have hγ'' : Formula.and γ δ ∈ C := dcs_conj_closed (mcs_is_dcs h_mcs_C) hγ hδ
+  -- Step 2: burgessRSet gives untl(β ∧ β', γ ∧ δ) ∈ A
+  have h_untl := h_r3.1 (Formula.and β β') hβ'' (Formula.and γ δ) hγ''
+  -- Step 3: BX5 gives untl((β ∧ β') ∧ untl(β ∧ β', γ ∧ δ), γ ∧ δ) ∈ A
+  have h_accum := until_self_accum_in_mcs h_mcs_A h_untl
+  -- Step 4: Weaken guard via BX2
+  -- Need: (β ∧ β') ∧ untl(β ∧ β', γ ∧ δ) → β' ∧ untl(β, γ)
+  -- Component 1: (β ∧ β') → β' (conjunction elimination, theorem)
+  -- Component 2: untl(β ∧ β', γ ∧ δ) → untl(β, γ)
+  --   By BX2: |- (β ∧ β') → β gives untl(β ∧ β', e) → untl(β, e)
+  --   By BX3: |- γ ∧ δ → γ gives untl(g, γ ∧ δ) → untl(g, γ)
+  --   Chain: untl(β ∧ β', γ ∧ δ) → untl(β, γ ∧ δ) → untl(β, γ)
+  -- Combined: guard → β' ∧ untl(β, γ)
+  -- Then BX2 transforms: untl(guard, γ ∧ δ) → untl(β' ∧ untl(β, γ), γ ∧ δ)
+  -- Step 5: Weaken event via BX3: γ ∧ δ → δ gives untl(_, γ ∧ δ) → untl(_, δ)
+  -- Step 4a: untl(β ∧ β', γ ∧ δ) → untl(β, γ) (BX2 + BX3)
+  have h_guard_weak1 : DerivationTree [] ((Formula.and β β').imp β) :=
+    Bimodal.Theorems.Propositional.lce_imp β β'
+  have h_untl_step1 := untl_left_mono_thm h_mcs_A h_guard_weak1 h_untl
+  -- h_untl_step1 : untl(β, γ ∧ δ) ∈ A
+  have h_event_weak1 : DerivationTree [] ((Formula.and γ δ).imp γ) :=
+    Bimodal.Theorems.Propositional.lce_imp γ δ
+  have h_G_event_weak1 := DerivationTree.temporal_necessitation _ h_event_weak1
+  have h_bx3 := DerivationTree.axiom [] _ (Axiom.right_mono_until (Formula.and γ δ) γ β)
+  have h_untl_beta_gamma := SetMaximalConsistent.implication_property h_mcs_A
+    (theorem_in_mcs h_mcs_A (DerivationTree.modus_ponens [] _ _ h_bx3 h_G_event_weak1))
+    h_untl_step1
+  -- h_untl_beta_gamma : untl(β, γ) ∈ A
+  -- Step 4b: Weaken guard of h_accum from
+  --   (β ∧ β') ∧ untl(β ∧ β', γ ∧ δ) to β' ∧ untl(β, γ)
+  -- First weaken untl(β ∧ β', γ ∧ δ) → untl(β, γ) as a theorem
+  -- (already done: combine h_guard_weak1 and h_event_weak1 via BX2+BX3)
+  have h_untl_inner_weak : DerivationTree [] (((Formula.and β β').untl (γ.and δ)).imp (β.untl γ)) := by
+    -- BX2: (β ∧ β' → β) ∧ G(β ∧ β' → β) → (β ∧ β') U (γ ∧ δ) → β U (γ ∧ δ)
+    have h_G_gw1 := DerivationTree.temporal_necessitation _ h_guard_weak1
+    have h_bx2 := DerivationTree.axiom [] _ (Axiom.left_mono_until (Formula.and β β') (Formula.and γ δ) β)
+    have h_premise : DerivationTree [] (Formula.and ((Formula.and β β').imp β) ((Formula.and β β').imp β).all_future) :=
+      mp h_G_gw1 (mp h_guard_weak1 (pairing _ _))
+    have h_step1 : DerivationTree [] (((Formula.and β β').untl (γ.and δ)).imp (β.untl (γ.and δ))) :=
+      DerivationTree.modus_ponens [] _ _ h_bx2 h_premise
+    -- BX3: G(γ ∧ δ → γ) → β U (γ ∧ δ) → β U γ
+    have h_step2 : DerivationTree [] ((β.untl (γ.and δ)).imp (β.untl γ)) :=
+      DerivationTree.modus_ponens [] _ _ h_bx3 h_G_event_weak1
+    -- Chain: untl(β ∧ β', γ ∧ δ) → untl(β, γ ∧ δ) → untl(β, γ)
+    exact imp_trans h_step1 h_step2
+  -- Now build the full guard implication:
+  -- (β ∧ β') ∧ untl(β ∧ β', γ ∧ δ) → β' ∧ untl(β, γ)
+  have h_full_guard_weak : DerivationTree [] (
+    ((Formula.and β β').and ((Formula.and β β').untl (γ.and δ))).imp
+    (β'.and (β.untl γ))) := by
+    -- Component 1: (β ∧ β') ∧ X → β ∧ β' → β' (two conj elims)
+    have h_comp1 : DerivationTree [] (
+      ((Formula.and β β').and ((Formula.and β β').untl (γ.and δ))).imp β') := by
+      have h1 := Bimodal.Theorems.Propositional.lce_imp (Formula.and β β') ((Formula.and β β').untl (γ.and δ))
+      have h2 := Bimodal.Theorems.Propositional.rce_imp β β'
+      exact imp_trans h1 h2
+    -- Component 2: (β ∧ β') ∧ untl(β ∧ β', γ ∧ δ) → untl(β ∧ β', γ ∧ δ) → untl(β, γ)
+    have h_comp2 : DerivationTree [] (
+      ((Formula.and β β').and ((Formula.and β β').untl (γ.and δ))).imp (β.untl γ)) := by
+      have h1 := Bimodal.Theorems.Propositional.rce_imp (Formula.and β β') ((Formula.and β β').untl (γ.and δ))
+      exact imp_trans h1 h_untl_inner_weak
+    -- Combine: X → β' and X → untl(β, γ) gives X → β' ∧ untl(β, γ)
+    exact combine_imp_conj h_comp1 h_comp2
+  -- Step 4c: Apply BX2 to h_accum to weaken guard
+  have h_weak_guard := untl_left_mono_thm h_mcs_A h_full_guard_weak h_accum
+  -- h_weak_guard : (β'.and (β.untl γ)).untl (γ.and δ) ∈ A
+  -- Step 5: Weaken event via BX3: γ ∧ δ → δ
+  have h_event_weak2 : DerivationTree [] ((Formula.and γ δ).imp δ) :=
+    Bimodal.Theorems.Propositional.rce_imp γ δ
+  have h_G_event_weak2 := DerivationTree.temporal_necessitation _ h_event_weak2
+  have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_until (Formula.and γ δ) δ (β'.and (β.untl γ)))
+  exact SetMaximalConsistent.implication_property h_mcs_A
+    (theorem_in_mcs h_mcs_A (DerivationTree.modus_ponens [] _ _ h_bx3' h_G_event_weak2))
+    h_weak_guard
+
+/--
+**Xu's Lemma 3.2.1(i)**: BurgessR3Maximal(A, B, C) implies B is closed under
+Until formation: for β ∈ B and γ ∈ C, untl(β, γ) ∈ B.
+
+Proof by contradiction:
+1. Assume untl(β, γ) ∉ B.
+2. B ∪ {untl(β, γ)} is consistent (else neg(untl(β,γ)) ∈ B, derive contradiction).
+3. B' = DC(B ∪ {untl(β, γ)}) properly extends B and is DCS.
+4. burgessRSet(A, B', C): by BX5 argument (core helper above).
+5. burgessRSetSince(C, B', A): by Burgess 2.3 equivalence.
+6. So burgessR3(A, B', C), contradicting maximality.
+-/
+theorem burgessR3Maximal_untl_mem_B {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_max : BurgessR3Maximal A B C)
+    {β : Formula} (hβ : β ∈ B) {γ : Formula} (hγ : γ ∈ C) :
+    Formula.untl β γ ∈ B := by
+  -- Proof by contradiction
+  by_contra h_not
+  -- Extract components of BurgessR3Maximal
+  have h_dcs := h_max.1
+  have h_r3 := h_max.2.1
+  have h_maximal := h_max.2.2
+  -- We derive a contradiction by constructing a proper DCS extension of B
+  -- that still satisfies burgessR3(A, -, C).
+  --
+  -- Key insight (Xu): For any β' ∈ B and δ ∈ C, we can show
+  -- untl(β' ∧ untl(β, γ), δ) ∈ A using BX5 + BX2 + BX3.
+  -- This means burgessR(A, untl(β, γ), C) "modulo conjunction with B-elements."
+  --
+  -- Step 1: Show B ∪ {untl(β, γ)} is consistent.
+  -- If not, neg(untl(β, γ)) ∈ B. Then β ∧ neg(untl(β, γ)) ∈ B.
+  -- By burgessRSet: untl(β ∧ neg(untl(β, γ)), γ) ∈ A.
+  -- But also untl(β, γ) ∈ A (from burgessRSet with β ∈ B, γ ∈ C).
+  -- By BX5: untl(β ∧ untl(β, γ), γ) ∈ A.
+  -- By BX7 + BX2: untl(β ∧ neg(untl(β, γ)) ∧ β ∧ untl(β, γ), ...) ∈ A.
+  -- But β ∧ neg(untl(β, γ)) ∧ untl(β, γ) is inconsistent, deriving ⊥.
+  -- By untl_conj_guard: the conjunction of guards gives an inconsistent guard,
+  -- and untl(⊥, γ) should be false... but BX doesn't prove ¬(⊥ U γ).
+  --
+  -- Alternative for inconsistent case:
+  -- neg(untl(β, γ)) ∈ B means untl(β, γ) and neg(untl(β, γ)) cannot both be
+  -- in any consistent set. We have untl(β, γ) ∈ A (from burgessRSet).
+  -- And untl(neg(untl(β, γ)), δ) ∈ A for all δ ∈ C (burgessRSet with
+  -- neg(untl(β, γ)) ∈ B). But A is consistent, no immediate contradiction.
+  --
+  -- TODO: The inconsistent case needs the Burgess 2.3 equivalence or
+  -- a direct BX5-based argument. Deferred to follow-up.
   sorry
 
 /--
-**Generalized C4' bridging (Since)** (INVALID under open guard, task 113):
-Mirror of `burgessR3_gamma_not_in_B_nested`. Retained as sorry stub.
+**Xu's Lemma 3.2.1(ii)**: BurgessR3Maximal(A, B, C) implies B is closed under
+Since formation: for β ∈ B and α ∈ A, snce(β, α) ∈ B.
+
+Mirror of `burgessR3Maximal_untl_mem_B` using BX5' + BX2'/BX3'.
 -/
-theorem burgessR3_gamma_not_in_B_since_nested {A B C : Set Formula}
-    (h_mcs_C : SetMaximalConsistent C)
-    (h_r3 : burgessR3 A B C)
-    {γ δ : Formula}
-    (h_neg_since : (Formula.snce γ δ).neg ∈ C)
-    (h_since_A : Formula.snce γ δ ∈ A) :
-    γ ∉ B := by
-  -- INVALID: depends on removed snce_absorb_nested (task 113 Phase 3).
+theorem burgessR3Maximal_snce_mem_B {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_max : BurgessR3Maximal A B C)
+    {β : Formula} (hβ : β ∈ B) {α : Formula} (hα : α ∈ A) :
+    Formula.snce β α ∈ B := by
   sorry
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

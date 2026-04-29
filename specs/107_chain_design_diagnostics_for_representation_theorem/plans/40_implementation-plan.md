@@ -75,7 +75,7 @@ Phases 4 and 5 can execute in parallel (independent files: RRelation.lean vs Cou
 
 ---
 
-### Phase 1: Documentation Cleanup -- Fix Stale Half-Open Guard References [NOT STARTED]
+### Phase 1: Documentation Cleanup -- Fix Stale Half-Open Guard References [COMPLETED]
 
 **Goal**: Fix all stale documentation claiming "half-open guard [t,s)" to correctly state "open guard (t,s)", and remove the wrong A3a counterexample from TemporalDerived.lean. This establishes a clean documentation baseline before adding new axioms.
 
@@ -110,7 +110,7 @@ Phases 4 and 5 can execute in parallel (independent files: RRelation.lean vs Cou
 
 ---
 
-### Phase 2: Add A3a/A3b Axioms with Soundness Proofs [NOT STARTED]
+### Phase 2: Add A3a/A3b Axioms with Soundness Proofs [COMPLETED]
 
 **Goal**: Add enrichment_until (A3a) and enrichment_since (A3b) as new BX axiom constructors in Axioms.lean, then prove their soundness in Soundness.lean. This is the prerequisite that unblocks all downstream phases.
 
@@ -156,7 +156,7 @@ Phases 4 and 5 can execute in parallel (independent files: RRelation.lean vs Cou
 
 ---
 
-### Phase 3: Close Lemma 2.3 and Xu 3.2.1 Sorry Sites in RRelation.lean [NOT STARTED]
+### Phase 3: Close Lemma 2.3 and Xu 3.2.1 Sorry Sites in RRelation.lean [PARTIAL]
 
 **Goal**: Using the new A3a/A3b axioms, close all 4 sorry sites in RRelation.lean: Lemma 2.3 forward (line 1210), Lemma 2.3 backward (line 1243), Xu 3.2.1 Until (line 1415), and Xu 3.2.1 Since (line 1428).
 

@@ -349,7 +349,7 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
       --     By MCS: untl(γ,δ) ∈ f(x_next) or neg(untl(γ,δ)) ∈ f(x_next).
       --     We find the max w with neg(untl(γ,δ)) ∈ f(w), w < y, w ≥ x.
       --     Its successor w_next has untl(γ,δ) (or w_next = y with δ).
-      --     Use burgessR3_gamma_not_in_B or burgessR3_gamma_not_in_B_nested.
+      --     Use burgessR3_gamma_not_in_B (or induction + BX6 for nested case).
       --
       -- Strategy: find w_max = max {w ∈ dom | x ≤ w < y ∧ neg(untl(γ,δ)) ∈ f(w)}.
       -- Then the successor w_next of w_max has:
@@ -405,8 +405,10 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
         have := Finset.min'_le T u hu_T
         linarith
       obtain ⟨w_next, hw_next_mem, hw_lt_next, hw_next_le_y, h_adj⟩ := h_exists_succ
-      -- DCS + burgessR3 for (f(w), g(w, w_next), f(w_next)) from c2'
-      obtain ⟨h_dcs_wn, h_r3_wn⟩ := h_c2' w w_next h_adj
+      -- BurgessR3Maximal for (f(w), g(w, w_next), f(w_next)) from c2'
+      have h_r3m_wn := h_c2' w w_next h_adj
+      have h_dcs_wn := h_r3m_wn.1
+      have h_r3_wn := h_r3m_wn.2.1
       have h_mcs_w := h_c0 w hw_mem
       -- Show γ ∉ g(w, w_next) by bridging
       have h_γ_not_g : ce.γ ∉ χ.g w w_next := by
@@ -418,8 +420,9 @@ noncomputable def eliminate_C4_counterexample {χ : Chronicle}
             hw_rightmost w_next hw_next_mem hw_lt_next hw_next_lt_y
           have h_mcs_next := h_c0 w_next hw_next_mem
           rcases SetMaximalConsistent.negation_complete h_mcs_next (Formula.untl ce.γ ce.δ) with h | h
-          · -- untl(γ,δ) ∈ f(w_next): use burgessR3_gamma_not_in_B_nested
-            exact burgessR3_gamma_not_in_B_nested h_mcs_w h_r3_wn hw_neg_until h
+          · -- untl(γ,δ) ∈ f(w_next): PLACEHOLDER (task 107 Phase 4 restructures C4)
+            -- Previously used burgessR3_gamma_not_in_B_nested (INVALID, deleted)
+            sorry
           · exact absurd h h_no_neg
       -- γ ∉ g(w, w_next) and g(w, w_next) is DCS → {γ.neg} ∪ g(w, w_next) consistent
       have h_dcs := h_dcs_wn
@@ -520,8 +523,10 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
         have := Finset.le_max' T u hu_T
         linarith
       obtain ⟨w_prev, hw_prev_mem, hy_le_prev, hw_prev_lt, h_adj⟩ := h_exists_pred
-      -- DCS + burgessR3 for (f(w_prev), g(w_prev, w), f(w)) from c2'
-      obtain ⟨h_dcs_pw, h_r3_pw⟩ := h_c2' w_prev w h_adj
+      -- BurgessR3Maximal for (f(w_prev), g(w_prev, w), f(w)) from c2'
+      have h_r3m_pw := h_c2' w_prev w h_adj
+      have h_dcs_pw := h_r3m_pw.1
+      have h_r3_pw := h_r3m_pw.2.1
       have h_mcs_w := h_c0 w hw_mem
       -- Show γ ∉ g(w_prev, w) by Since bridging
       have h_γ_not_g : ce.γ ∉ χ.g w_prev w := by
@@ -533,8 +538,9 @@ noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
             hw_leftmost w_prev hw_prev_mem hy_lt_prev hw_prev_lt
           have h_mcs_prev := h_c0 w_prev hw_prev_mem
           rcases SetMaximalConsistent.negation_complete h_mcs_prev (Formula.snce ce.γ ce.δ) with h | h
-          · -- snce(γ,δ) ∈ f(w_prev): use burgessR3_gamma_not_in_B_since_nested
-            exact burgessR3_gamma_not_in_B_since_nested h_mcs_w h_r3_pw hw_neg_since h
+          · -- snce(γ,δ) ∈ f(w_prev): PLACEHOLDER (task 107 Phase 4 restructures C4')
+            -- Previously used burgessR3_gamma_not_in_B_since_nested (INVALID, deleted)
+            sorry
           · exact absurd h h_no_neg
       -- γ ∉ g(w_prev, w) and g is DCS → {γ.neg} ∪ g consistent → Lindenbaum
       have h_dcs := h_dcs_pw
