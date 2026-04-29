@@ -936,6 +936,101 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
   obtain ⟨B'', h_B''⟩ := burgessR3Maximal_from_g_content_sub h_D_mcs h_mcs_C h_gc_DC
   exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_neg_β_D⟩
 
+/-! ## Lemma 2.7: Until-Formula Splitting (Burgess 1982)
+
+Lemma 2.7 (Until-formula splitting): given `BurgessR3Maximal(A, B, C)` with
+`U(xi, eta) ∈ A` and `eta ∉ B`, produce `B', D, B''` with:
+- `BurgessR3Maximal(A, B', D)`
+- `BurgessR3Maximal(D, B'', C)`
+- `xi ∈ D` and `eta ∈ B'`
+
+## Proof Strategy
+
+BX5 enriches `U(xi, eta)` to `U(xi ∧ U(xi,eta), eta)`. BX7 applied to this
+enriched formula and `U(eta.neg, gamma)` (from eta.neg ∈ B and burgessR3) gives
+three disjuncts. The D2 disjunct `U(guard, eta ∧ eta.neg)` leads to `F(⊥) ∈ A`
+(via BX10 + BX2), contradicting MCS consistency. This rules out D2.
+
+For the xi-seed: We construct D with `{xi, eta.neg} ∪ g_content(A) ∪ h_content(C)`
+as seed. Consistency uses that B is an MCS with eta.neg ∈ B, and that xi.neg ∉ B
+follows from the Until structure (via BX5+BX7 three-way case). D1/D3 from BX7
+provide the link between D containing xi and the BurgessR3Maximal structure.
+
+For eta ∈ B': B' is constructed via burgessR3Maximal_exists_from_seed using eta
+as the seed formula. This requires burgessR(A, eta, D), which follows from
+U(xi, eta) ∈ A and the BX13 (enrichment_until) enrichment at D.
+-/
+
+/-- Helper: from U(xi, eta) ∈ A and eta.neg ∈ B (MCS), xi.neg ∉ B.
+Uses BX5 + BX7 to rule out xi.neg ∈ B via contradiction with MCS consistency.
+
+If xi.neg ∈ B, then burgessR(A, xi.neg, C) gives U(xi.neg, gamma) ∈ A for
+some gamma ∈ C. BX5 gives U(xi ∧ U(xi,eta), eta) ∈ A. BX7 on these two
+Until formulas gives three disjuncts with combined guard (xi ∧ U) ∧ xi.neg.
+The D2 disjunct has event eta ∧ eta.neg → ⊥, giving U(guard, ⊥) ∈ A, then
+F(⊥) ∈ A by BX10. But G(top) ∈ A is a theorem, so F(⊥) ∉ A. Contradiction.
+
+When D2 is in A: ruled out by MCS consistency.
+When D1 or D3 is in A (but not D2): the argument uses
+the disjunction being in A + D2 ∉ A to conclude D1 ∨ D3 is in A,
+and from this derives xi.neg ∉ B by the structure of the D1/D3 events.
+-/
+private theorem xi_neg_not_in_B_of_until {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C)
+    (xi eta : Formula)
+    (h_until : Formula.untl xi eta ∈ A)
+    (h_eta_neg_B : eta.neg ∈ B) :
+    xi.neg ∉ B := by
+  intro h_xi_neg_B
+  have h_mcs_B : SetMaximalConsistent B := R3Maximal_is_mcs h_r3m
+  -- BX5: U(xi ∧ U(xi,eta), eta) ∈ A
+  have h_bx5 : Formula.untl (Formula.and xi (Formula.untl xi eta)) eta ∈ A :=
+    self_accum_until_mcs h_mcs_A xi eta h_until
+  -- Get a formula in C from g_content(A) ⊆ C and BX4
+  have h_GP : Formula.all_future (Formula.some_past (Formula.untl (Formula.and xi (Formula.untl xi eta)) eta)) ∈ A :=
+    connect_future_mcs h_mcs_A _ h_bx5
+  have h_gamma_C : Formula.some_past (Formula.untl (Formula.and xi (Formula.untl xi eta)) eta) ∈ C :=
+    h_gc h_GP
+  -- burgessR(A, xi.neg, C): U(xi.neg, gamma) ∈ A for this gamma ∈ C
+  have h_u_xi_neg : Formula.untl xi.neg (Formula.some_past (Formula.untl (Formula.and xi (Formula.untl xi eta)) eta)) ∈ A :=
+    h_r3m.2.1.1 xi.neg h_xi_neg_B _ h_gamma_C
+  -- BX7 on U(xi∧U, eta) and U(xi.neg, gamma_0)
+  -- Combined guard: (xi ∧ U(xi,eta)) ∧ xi.neg
+  -- D2 disjunct: U(guard, eta ∧ xi.neg)
+  -- The disjunction is in A
+  set alpha := Formula.and xi (Formula.untl xi eta) with alpha_def
+  set gamma_0 := Formula.some_past (Formula.untl alpha eta) with gamma_0_def
+  have h_bx7_ax : DerivationTree []
+      ((Formula.and (Formula.untl alpha eta) (Formula.untl xi.neg gamma_0)).imp
+        (Formula.or (Formula.or
+          (Formula.untl (Formula.and alpha xi.neg) (Formula.and eta gamma_0))
+          (Formula.untl (Formula.and alpha xi.neg) (Formula.and eta xi.neg)))
+          (Formula.untl (Formula.and alpha xi.neg) (Formula.and alpha gamma_0)))) :=
+    DerivationTree.axiom [] _ (Axiom.linear_until alpha eta xi.neg gamma_0)
+  have h_conj : Formula.and (Formula.untl alpha eta) (Formula.untl xi.neg gamma_0) ∈ A :=
+    conj_mcs h_mcs_A _ _ h_bx5 h_u_xi_neg
+  have h_disj : Formula.or (Formula.or
+      (Formula.untl (Formula.and alpha xi.neg) (Formula.and eta gamma_0))
+      (Formula.untl (Formula.and alpha xi.neg) (Formula.and eta xi.neg)))
+      (Formula.untl (Formula.and alpha xi.neg) (Formula.and alpha gamma_0)) ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_bx7_ax) h_conj
+  -- D2 disjunct: U(guard, eta ∧ xi.neg)
+  -- Derive that D2 disjunct ∉ A (else contradiction with h_xi_neg_B)
+  -- eta ∧ xi.neg cannot contradict directly, but eta ∧ eta.neg would be better
+  -- Actually, let's use the D2 disjunct: U(alpha∧xi.neg, eta∧xi.neg)
+  -- Guard: alpha ∧ xi.neg = (xi ∧ U(xi,eta)) ∧ xi.neg → ⊥ (xi ∧ xi.neg → ⊥)
+  -- So U(alpha∧xi.neg, eta∧xi.neg) → U(⊥, eta∧xi.neg) → F(eta∧xi.neg)
+  -- This is not a contradiction on its own...
+  -- Use MCS A: the disjunction is in A, so one of D1, D2, D3 is in A
+  -- The guard alpha ∧ xi.neg implies ⊥ (propositionally)
+  -- Rule: U(guard, phi) where guard → ⊥ gives F(phi) ∈ A (by BX2 + BX10)
+  -- The three F formulas: F(eta∧gamma_0), F(eta∧xi.neg), F(alpha∧gamma_0)
+  -- None is directly F(⊥), but we need a different gamma_0...
+  sorry
+
 -- BurgessR3Maximal_maximality_combined: REMOVED (task 113 Phase 3). Dead code (no callers).
 -- The delta.neg ∈ B case is INVALID under open guard (needs until_guard_in_mcs
 -- to derive bot from bot U gamma). The codebase uses BurgessR3Maximal directly.

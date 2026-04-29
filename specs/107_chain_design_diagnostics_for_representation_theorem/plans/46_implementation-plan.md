@@ -261,9 +261,12 @@ Phases within the same wave can execute in parallel. Phase 5b-i is the critical 
 **Note**: Lemma 2.7 does NOT depend on A4a or left_mono_until_G. It uses only BX5 + BX7 + BX13.
 
 **Tasks**:
-- [ ] Build on the Lemma 2.7 proof structure verified in Phase 5a
-- [ ] Formalize the full splitting theorem in PointInsertion.lean
-- [ ] Connect to BX5 and BX7 axiom infrastructure
+- [x] Study existing infrastructure: lemma_2_6_splitting, BurgessR3Maximal, BX5/BX7/BX13 axioms
+- [x] Read Phase 5a gate report for validated proof sketch
+- [ ] Design Lemma 2.7 proof: splitting with xi ∈ D and eta ∈ B' guarantees
+- [ ] Formalize the full splitting theorem in PointInsertion.lean (~100 lines)
+- [ ] Connect to BX5 (guard_until) and BX7 (guard_since) axiom infrastructure
+- [ ] Verify theorem compiles sorry-free
 - [ ] Run `lake build`
 
 **Timing**: 6 hours
