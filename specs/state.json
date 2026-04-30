@@ -656,21 +656,21 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-29T23:16:29Z",
-      "researched": "2026-04-29T22:55:59Z",
+      "last_updated": "2026-04-30T00:10:38Z",
+      "researched": "2026-04-30T00:10:38Z",
       "related_tasks": [
         93
       ],
       "dependencies": [
         113
       ],
-      "next_artifact_number": 48,
+      "next_artifact_number": 49,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -1026,9 +1026,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/47_implementation-plan.md",
           "type": "plan",
           "summary": "v33: Burgess direct seed for Lemma 2.7, remove c2' from EliminationResult (Option B), 5 new phases"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/48_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): BX7≠A7a root cause, Zorn fix via DCS revert, C4 needs c2'+lemma_2_6 not lemma_2_7"
         }
       ],
-      "session_id": "sess_1777504537_1d1fdf",
+      "session_id": "sess_1777507213_35f648",
       "started": "2026-04-25T19:11:01Z"
     },
     {
