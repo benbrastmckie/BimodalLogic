@@ -180,7 +180,7 @@ Phases within the same wave can execute in parallel. Phases 8a and 8b are indepe
 
 ---
 
-### Phase 8a: Revert BurgessR3Maximal to DCS Maximality [NOT STARTED]
+### Phase 8a: Revert BurgessR3Maximal to DCS Maximality [PARTIAL]
 
 **Goal**: Revert the maximality clause in `BurgessR3Maximal` from `ClosedUnderDerivation` back to `SetDeductivelyClosed`, matching Burgess's original definition. This eliminates the Zorn sorry (RRelation.lean:772) because the inconsistent case (`neg SetConsistent D`) never arises -- `SetDeductivelyClosed D` requires `SetConsistent D`. Then re-prove the `g_content_sub_B_of_BurgessR3Maximal` inconsistent case using a G(phi)/F(phi.neg) contradiction instead of the Set.univ witness.
 
@@ -211,7 +211,7 @@ Phases within the same wave can execute in parallel. Phases 8a and 8b are indepe
 
 ---
 
-### Phase 8b: Replace BX7 with Burgess A7a [BLOCKED]
+### Phase 8b: Replace BX7 with Burgess A7a [PARTIAL]
 
 **Goal**: Replace the codebase's `Axiom.linear_until` (BX7) with Burgess's A7a form. BX7 has fixed guard (phi AND chi) with varying events; A7a has varying guards with fixed event (psi AND theta). This is a one-time axiom-level refactoring that permanently aligns the proof system with Burgess's architecture.
 
