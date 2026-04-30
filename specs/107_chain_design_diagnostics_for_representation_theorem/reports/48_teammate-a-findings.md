@@ -683,3 +683,146 @@ either:
 
 Xu's approach (Option C from the handoff) remains the most viable path given the BX7/A7a
 discrepancy.
+
+---
+
+## Addendum: Verification and Clarification of Core Findings
+
+### A1. Exact Burgess A7a vs Codebase BX7 Statement Comparison
+
+Verified against Burgess 1982 p. 369 and Axioms.lean lines 226-236:
+
+**Burgess A7a** (event-first convention: U(guard, event)):
+```
+U(p,q) ∧ U(r,s) → U(p∧r, q∧s) ∨ U(p∧s, q∧s) ∨ U(q∧r, q∧s)
+```
+
+**Codebase BX7** (guard-first convention, `linear_until φ ψ χ θ`):
+```
+U(φ,ψ) ∧ U(χ,θ) → U(φ∧χ, ψ∧θ) ∨ U(φ∧χ, ψ∧χ) ∨ U(φ∧χ, φ∧θ)
+```
+
+Translating codebase to Burgess convention (φ=guard₁=p, ψ=event₁=q, χ=guard₂=r, θ=event₂=s):
+- C1 = U(p∧r, q∧s) — same as Burgess D1 ✓
+- C2 = U(p∧r, q∧r) — guard p∧r, event q∧r (Burgess D2 would be U(p∧s, q∧s))
+- C3 = U(p∧r, p∧s) — guard p∧r, event p∧s (Burgess D3 would be U(q∧r, q∧s))
+
+The codebase BX7 always uses guard `p∧r` in all three disjuncts. Burgess A7a uses guards
+`p∧r`, `p∧s`, `q∧r`. These are genuinely different axiom schemas.
+
+### A2. Semantic Validity of Both Forms
+
+**Codebase BX7 semantic justification** (from Axioms.lean docstring): "If two Until formulas
+hold simultaneously, their witnesses are linearly ordered. The three disjuncts correspond to:
+witnesses coincide, first comes first, second comes first."
+
+**Burgess A7a semantic justification**: Same intuition but different syntactic encoding. Both
+are valid under open-guard semantics. The codebase BX7 was PROVEN sound (in the soundness theorem),
+so it is correct — it just has a different presentation.
+
+**Key question**: Are BX7 and Burgess A7a logically equivalent (derivable from each other)?
+
+Attempting to derive Burgess D2 = `U(p∧s, q∧s)` from codebase C2 = `U(p∧r, q∧r)`:
+- From C2: by BX1 (left_mono_until, since p∧r → p): `U(p, q∧r) ∈ A`. Guard reduces.
+- We also have `U(r,s) ∈ A`. From `U(p, q∧r)` and `U(r,s)`: apply BX7 again... this recurses.
+- Alternatively from C2 and U(r,s): BX3 with q∧r → r: `U(p∧r, r) ∈ A`. Then BX7 with
+  `U(p∧r, r)` and `U(r,s)` gives new disjuncts including `U(p∧r∧r, r∧s) = U(p∧r, r∧s)`.
+  This gives U(p∧r, r∧s) which implies U(p∧r, s) by BX2. Combined with U(p,q) (BX1 from U(p∧r,q∧r)):
+  applying BX7 to U(p,q) and U(r,s)... circular.
+
+**Conclusion**: Deriving Burgess A7a from codebase BX7 is non-trivial and may require BX6 (absorb_until).
+This should be a separate investigation task.
+
+### A3. What Does Work with Codebase BX7
+
+From the analysis, codebase C1 = `U(p∧r, q∧s)` matches Burgess D1, which IS ruled out.
+
+For the remaining two (C2, C3): neither directly gives `U(xi, beta∧eta)`.
+
+**However**: from codebase C3 = `U(p∧r, p∧s) = U(phi₁∧phi₂, phi₁∧eta)`:
+- phi₁ = gamma₀∧U(gamma₀,beta₀), phi₂ = xi∧U(xi,eta)
+- phi₁∧phi₂ implies xi (via phi₂) and implies gamma₀ (via phi₁)
+- Event: phi₁∧eta = gamma₀∧U(gamma₀,beta₀)∧eta
+- By BX1 (guard → xi): `U(xi, gamma₀∧U(gamma₀,beta₀)∧eta) ∈ A`
+- By BX2 (event → eta): `U(xi, eta) ∈ A` — circular (we already knew this)
+- By BX3 with event → beta₀? No, gamma₀∧U(gamma₀,beta₀)∧eta does NOT imply beta₀.
+
+From codebase C2 = `U(phi₁∧phi₂, phi₁∧phi₂) = U(phi₁∧phi₂, beta₀∧phi₂) = U(phi₁∧phi₂, beta₀∧xi∧U(xi,eta))`:
+Wait — C2 is U(p∧r, q∧r) = U(phi₁∧phi₂, psi₁∧phi₂) = U(phi₁∧phi₂, beta₀∧phi₂) = U(phi₁∧phi₂, beta₀∧xi∧U(xi,eta)).
+- By BX1 (guard → xi): `U(xi, beta₀∧xi∧U(xi,eta)) ∈ A`
+- By BX2 (event → beta₀): `U(xi, beta₀) ∈ A`
+- Combined with `U(xi, eta) ∈ A` (hypothesis), by BX7: U(xi∧xi, beta₀∧eta) ∨ ...
+  = U(xi, beta₀∧eta) ∨ ...
+  **Yes! Codebase BX7 applied to U(xi, beta₀) and U(xi, eta) gives U(xi∧xi, beta₀∧eta) = U(xi, beta₀∧eta)!**
+
+This is the key: from codebase C2, by BX1 reduce to `U(xi, beta₀∧xi∧U(xi,eta))`, then by BX2 reduce to `U(xi, beta₀)`, then apply BX7 to `U(xi, beta₀)` and `U(xi, eta)` to get `U(xi, beta₀∧eta)` (as the first disjunct, since both have the same guard xi).
+
+**This works! And it avoids needing Burgess A7a.**
+
+The complete chain using only codebase BX7:
+
+1. BX5: `U(xi, eta) → U(xi∧U(xi,eta), eta)` — get enriched U.
+2. BX5: `U(gamma₀, beta₀) → U(gamma₀∧U(gamma₀,beta₀), beta₀)` — get enriched U.
+3. BX7 (codebase) on the two enriched formulas:
+   - C1 = `U(phi₁∧phi₂, beta₀∧eta)` — ruled out by `¬U(gamma₀, beta₀∧eta)` + BX1.
+   - C2 = `U(phi₁∧phi₂, beta₀∧phi₂)` = `U(phi₁∧phi₂, beta₀∧xi∧U(xi,eta))`.
+   - C3 = `U(phi₁∧phi₂, phi₁∧eta)` = `U(phi₁∧phi₂, gamma₀∧U(gamma₀,beta₀)∧eta)`.
+4. **For C2**: By BX1 (phi₁∧phi₂ → xi): `U(xi, beta₀∧xi∧U(xi,eta)) ∈ A`.
+   By BX2 (beta₀∧xi∧U(xi,eta) → beta₀): `U(xi, beta₀) ∈ A`.
+   Now apply BX7 to `U(xi, beta₀) ∈ A` and `U(xi, eta) ∈ A`:
+   First disjunct: `U(xi∧xi, beta₀∧eta) = U(xi, beta₀∧eta) ∈ A`. ✓
+   (Note: both guards are xi, so D1 from this second BX7 application = U(xi, beta₀∧eta) is not ruled out — we WANT it.)
+5. **For C3**: By BX1 (phi₁∧phi₂ → xi): `U(xi, gamma₀∧U(gamma₀,beta₀)∧eta) ∈ A`.
+   By BX2 (gamma₀∧U(gamma₀,beta₀)∧eta → beta₀? — NO, this fails for same reason as before).
+   Alternative: By BX2 (event → U(gamma₀,beta₀)): `U(xi, U(gamma₀,beta₀)) ∈ A`. Then BX7
+   on `U(xi, U(gamma₀,beta₀))` and `U(gamma₀, beta₀)`: gives `U(xi∧gamma₀, U(gamma₀,beta₀)∧beta₀)` etc.
+   Then `U(gamma₀,beta₀)∧beta₀ → beta₀`, by BX2: `U(xi∧gamma₀, beta₀)`. Then BX7 on this and
+   `U(xi,eta)`: `U(xi∧gamma₀∧xi, beta₀∧eta) = U(xi∧gamma₀, beta₀∧eta)`. Then BX1 (xi∧gamma₀ → xi):
+   `U(xi, beta₀∧eta) ∈ A`. ✓
+
+**Both C2 and C3 can be used to derive `U(xi, beta₀∧eta) ∈ A` via codebase axioms.**
+
+### A4. Corrected Proof Strategy for Lemma 2.7
+
+The complete working proof using only codebase BX axioms (no Burgess A7a needed):
+
+**Goal**: Given `R(A,B,C)`, `U(xi,eta) ∈ A`, `eta ∉ B`, produce D with `xi ∈ D`.
+
+**Step 1**: From `eta ∉ B` and maximality, get `beta₀ ∈ B`, `gamma₀ ∈ C` with `¬U(gamma₀, beta₀∧eta) ∈ A`.
+
+**Step 2**: BX5 on `U(gamma₀, beta₀)` and `U(xi, eta)`.
+
+**Step 3**: Apply codebase BX7 to get C1 ∨ C2 ∨ C3. Rule out C1 via BX1+contradiction.
+
+**Step 4 (C2 case)**: `U(phi₁∧phi₂, beta₀∧phi₂)` → BX1 to `U(xi, beta₀∧phi₂)` → BX2 to `U(xi, beta₀)` → BX7 with `U(xi,eta)` → `U(xi, beta₀∧eta) ∈ A`.
+
+**Step 5 (C3 case)**: `U(phi₁∧phi₂, phi₁∧eta)` → BX1 to `U(xi, phi₁∧eta)` → BX2 to `U(xi, U(gamma₀,beta₀))` → BX7 with `U(gamma₀,beta₀)` → reduce → BX7 with `U(xi,eta)` → `U(xi, beta₀∧eta) ∈ A`.
+
+**Step 6**: Once `U(xi, beta₀∧eta) ∈ A`, by BX10: `F(beta₀∧eta) ∈ A`. By `forward_temporal_witness_seed_consistent`: `{beta₀∧eta} ∪ g_content(A)` is consistent.
+
+**But**: the seed D₀ = `{S(alpha, beta∧eta)} ∪ B ∪ {xi} ∪ {U(gamma,beta)}` is larger than `{beta₀∧eta} ∪ g_content(A)`. The above only shows ONE formula from D₀ is consistent. The full consistency of D₀ requires ALL finite conjunctions ζ to be consistent.
+
+For each ζ = `S(alpha, beta∧eta) ∧ beta ∧ xi ∧ U(gamma, beta)` (not just the specific beta₀, gamma₀):
+- Replace beta with beta∧beta₀, gamma with gamma∧gamma₀ (WLOG).
+- Then `¬U(gamma, beta∧eta) ∈ A` (since beta∧beta₀ → beta₀ implies ¬U(gamma, (beta∧beta₀)∧eta) via BX1).
+- Apply the same chain: get `U(xi, beta∧eta) ∈ A` for the specific beta.
+
+This argument works for EACH ζ independently. The consistency of the full seed D₀ then follows from the finitary consistency of each ζ.
+
+**However**: to show `xi ∈ D` (the Lindenbaum extension), we need D₀ to contain xi explicitly AND D₀ to be consistent. The consistency proof shows each finite subset is consistent (via the ζ argument). Once D₀ is shown consistent, Lindenbaum gives MCS D with D₀ ⊆ D, hence xi ∈ D (since xi ∈ D₀).
+
+**The consistency of D₀ as a whole**: Each finite subset of D₀ is a conjunction of formulas of the four types. By the ζ-by-ζ consistency (as done above), each finite subset IS consistent. So D₀ itself is consistent by propositional compactness (which Lindenbaum uses).
+
+### A5. Summary of Corrected Understanding
+
+The report above (Section 5-7) correctly identifies that codebase BX7 ≠ Burgess A7a in general form, but the ADDENDUM (A3) shows that despite this difference, the key derived formula `U(xi, beta₀∧eta) ∈ A` is STILL obtainable from codebase BX7 via a two-step BX7 application (BX7 → reduce via BX1/BX2 → second BX7). The proof is more steps than Burgess's but uses only codebase axioms.
+
+**The BX7 vs A7a difference is NOT a fundamental blocker** — it requires additional steps but is resolvable within the codebase axiom system.
+
+**The actual implementation challenge** is structuring the seed consistency proof in Lean, which requires:
+1. A `burgess_until_from_D3` lemma: given C2 or C3 from BX7, derive `U(xi, beta∧eta) ∈ A`.
+2. A finitary consistency argument over D₀.
+3. The Lindenbaum step to get MCS D with xi ∈ D.
+4. The eta ∈ B' argument via the S-formulas in D₀.
+
+None of these require Burgess A7a as a primitive. The codebase is sufficient.
