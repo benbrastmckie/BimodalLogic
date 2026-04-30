@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-30T02:44:17Z",
+      "last_updated": "2026-04-30T02:51:49Z",
       "researched": "2026-04-30T02:44:17Z",
       "related_tasks": [
         93
@@ -1028,17 +1028,17 @@
           "summary": "Team research (4 teammates): BX7≠A7a root cause, Zorn fix via DCS revert, C4 needs c2'+lemma_2_6 not lemma_2_7"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/48_implementation-plan.md",
-          "type": "plan",
-          "summary": "v34: A7a axiom replacement, DCS maximality revert, Burgess Lemma 2.7 direct proof"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/49_burgess-alignment-audit.md",
           "type": "report",
           "summary": "Burgess alignment audit: seed restructuring plan, archive candidates, Lemma 2.4-2.11 mapping"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/49_implementation-plan.md",
+          "type": "plan",
+          "summary": "v35: 9 phases — SoundnessLemmas fix, Burgess D0 seed restructuring, dead code archival, sorry closure"
         }
       ],
-      "session_id": "sess_1777516628_acef45",
+      "session_id": "sess_1777517194_fb0f29",
       "started": "2026-04-25T19:11:01Z"
     },
     {
