@@ -812,83 +812,8 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
     · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
     · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
 
-theorem linear_until_a7a_valid (φ ψ χ θ : Formula) :
-    ⊨ (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
-      |>.imp (Formula.or
-        (Formula.or
-          (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.untl (Formula.and φ θ) (Formula.and ψ θ)))
-        (Formula.untl (Formula.and χ ψ) (Formula.and ψ θ)))) := by
-  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
-  intro h_conj
-  have h_both : (∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
-      ∀ r, t < r → r < s → truth_at M Omega τ r φ) ∧
-    (∃ s, t < s ∧ truth_at M Omega τ s θ ∧
-      ∀ r, t < r → r < s → truth_at M Omega τ r χ) := by
-    constructor
-    · by_contra h; exact h_conj (fun h1 _ => h h1)
-    · by_contra h; exact h_conj (fun _ h2 => h h2)
-  obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
-  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-  · -- s₁ < s₂: D2 = U(φ∧θ, ψ∧θ) with witness s₁
-    -- Event: ψ(s₁) from h_ψs₁, θ(s₁) from guard₂ (t < s₁ < s₂)
-    -- Guard: φ(r) from guard₁ (t < r < s₁), θ(r) from guard₂ (t < r < s₂, r < s₁ < s₂)
-    intro h_neg; exfalso; apply h_neg; intro _
-    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
-    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
-  · -- s₁ = s₂: D1 = U(φ∧χ, ψ∧θ) with witness s₁
-    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
-    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
-    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-  · -- s₂ < s₁: D3 = U(χ∧ψ, ψ∧θ) with witness s₂
-    -- Event: ψ(s₂) from guard₁ (t < s₂ < s₁), θ(s₂) from h_θs₂
-    -- Guard: χ(r) from guard₂ (t < r < s₂), ψ(r) from guard₁ (t < r < s₁, r < s₂ < s₁)
-    intro _
-    refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
-    · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
-    · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
-
-theorem linear_since_a7a_valid (φ ψ χ θ : Formula) :
-    ⊨ (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
-      |>.imp (Formula.or
-        (Formula.or
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.snce (Formula.and φ θ) (Formula.and ψ θ)))
-        (Formula.snce (Formula.and χ ψ) (Formula.and ψ θ)))) := by
-  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.neg, truth_at]
-  intro h_conj
-  have h_both : (∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
-      ∀ r, s < r → r < t → truth_at M Omega τ r φ) ∧
-    (∃ s, s < t ∧ truth_at M Omega τ s θ ∧
-      ∀ r, s < r → r < t → truth_at M Omega τ r χ) := by
-    constructor
-    · by_contra h; exact h_conj (fun h1 _ => h h1)
-    · by_contra h; exact h_conj (fun _ h2 => h h2)
-  obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
-  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-  · -- s₁ < s₂ < t: D3 = (χ∧ψ) S (ψ∧θ) with witness s₂
-    -- Event: ψ(s₂) from guard₁ (s₁ < s₂), θ(s₂) from h_θs₂
-    -- Guard: χ(r) from guard₂ (s₂ < r < t), ψ(r) from guard₁ (s₁ < r, s₁ < s₂ so s₂ < r)
-    intro _
-    refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
-    · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-    · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
-  · -- s₁ = s₂: D1 = (φ∧χ) S (ψ∧θ) with witness s₁
-    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
-    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
-    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-  · -- s₂ < s₁ < t: D2 = (φ∧θ) S (ψ∧θ) with witness s₁
-    -- Event: ψ(s₁) from h_ψs₁, θ(s₁) from guard₂ (s₂ < s₁)
-    -- Guard: φ(r) from guard₁ (s₁ < r < t), θ(r) from guard₂ (s₂ < r, s₂ < s₁ so s₁ < r)
-    intro h_outer; exfalso; apply h_outer; intro _
-    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
-    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
+-- BX7a/BX7a' (linear_until_a7a_valid/linear_since_a7a_valid) REMOVED.
+-- Unsound under open guard semantics. See Axioms.lean note.
 
 -- BX8/BX8' (until_step_valid/since_step_valid) REMOVED.
 -- BX9/BX9' (until_elim_valid/since_elim_valid) REMOVED.
@@ -966,8 +891,7 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | absorb_since φ ψ => exact absorb_since_valid φ ψ
   | linear_until _ _ _ _ => exact linear_until_valid _ _ _ _
   | linear_since _ _ _ _ => exact linear_since_valid _ _ _ _
-  | linear_until_a7a _ _ _ _ => exact linear_until_a7a_valid _ _ _ _
-  | linear_since_a7a _ _ _ _ => exact linear_since_a7a_valid _ _ _ _
+  -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
   -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
   | until_F φ ψ => exact until_F_valid φ ψ
   | since_P φ ψ => exact since_P_valid φ ψ
@@ -1014,8 +938,6 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | absorb_since φ ψ => exact Validity.valid_implies_valid_dense (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_since_valid _ _ _ _)
-  | linear_until_a7a _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_until_a7a_valid _ _ _ _)
-  | linear_since_a7a _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_since_a7a_valid _ _ _ _)
   -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
   | until_F φ ψ => exact Validity.valid_implies_valid_dense (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_dense (since_P_valid φ ψ)
@@ -1063,8 +985,6 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | absorb_since φ ψ => exact Validity.valid_implies_valid_discrete (absorb_since_valid φ ψ)
   | linear_until _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_until_valid _ _ _ _)
   | linear_since _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_since_valid _ _ _ _)
-  | linear_until_a7a _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_until_a7a_valid _ _ _ _)
-  | linear_since_a7a _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_since_a7a_valid _ _ _ _)
   -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
   | until_F φ ψ => exact Validity.valid_implies_valid_discrete (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_discrete (since_P_valid φ ψ)
@@ -1166,8 +1086,6 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    | linear_until_a7a φ ψ χ θ => exact linear_until_a7a_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    | linear_since_a7a φ ψ χ θ => exact linear_since_a7a_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1337,8 +1255,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | absorb_since φ ψ => exact absorb_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    | linear_until_a7a φ ψ χ θ => exact linear_until_a7a_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
-    | linear_since_a7a φ ψ χ θ => exact linear_since_a7a_valid φ ψ χ θ D F M Omega h_sc τ h_mem t
     -- NOTE: until_elim / since_elim / until_guard / since_guard removed (task 113)
     | until_F φ ψ => exact until_F_valid φ ψ D F M Omega h_sc τ h_mem t
     | since_P φ ψ => exact since_P_valid φ ψ D F M Omega h_sc τ h_mem t

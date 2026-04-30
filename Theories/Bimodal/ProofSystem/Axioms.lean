@@ -245,28 +245,12 @@ inductive Axiom : Formula → Type where
             (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
 
-  /-- BX7a (Burgess A7a): Alternative linearity of Until with fixed event:
-  `(φ U ψ) ∧ (χ U θ) → ((φ ∧ χ) U (ψ ∧ θ)) ∨ ((φ ∧ θ) U (ψ ∧ θ)) ∨ ((χ ∧ ψ) U (ψ ∧ θ))`.
-  All three disjuncts share the same event (ψ ∧ θ); the guards vary.
-  D1 (witnesses coincide): guard φ∧χ. D2 (s₁<s₂): guard φ∧θ. D3 (s₂<s₁): guard χ∧ψ.
-  Used in Burgess's Lemma 2.7 proof where ruling out D1+D2 requires fixed event. -/
-  | linear_until_a7a (φ ψ χ θ : Formula) :
-      Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
-        |>.imp (Formula.or
-          (Formula.or
-            (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-            (Formula.untl (Formula.and φ θ) (Formula.and ψ θ)))
-          (Formula.untl (Formula.and χ ψ) (Formula.and ψ θ))))
-
-  /-- BX7a' (Burgess A7a'): Alternative linearity of Since with fixed event:
-  `(φ S ψ) ∧ (χ S θ) → ((φ ∧ χ) S (ψ ∧ θ)) ∨ ((φ ∧ θ) S (ψ ∧ θ)) ∨ ((χ ∧ ψ) S (ψ ∧ θ))`. -/
-  | linear_since_a7a (φ ψ χ θ : Formula) :
-      Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
-        |>.imp (Formula.or
-          (Formula.or
-            (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
-            (Formula.snce (Formula.and φ θ) (Formula.and ψ θ)))
-          (Formula.snce (Formula.and χ ψ) (Formula.and ψ θ))))
+  -- NOTE: BX7a/BX7a' (linear_until_a7a/linear_since_a7a) removed -- unsound under open guard.
+  -- Burgess's A7a has fixed event (ψ∧θ) in all disjuncts, but with strict/open guard
+  -- semantics (t < r < s), the two Until witnesses s₁, s₂ cannot both contribute their
+  -- events at a single point when s₁ ≠ s₂. Countermodel: φ=χ=⊤, ψ true only at s₁,
+  -- θ true only at s₂ with s₁≠s₂ -- no point satisfies ψ∧θ.
+  -- A7a may be valid under Burgess's closed-guard semantics (t ≤ r ≤ s) but not here.
 
   -- NOTE: BX8/BX8' (until_step/since_step) removed -- not sound under open guard.
 

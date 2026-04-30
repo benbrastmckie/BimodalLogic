@@ -97,7 +97,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix SoundnessLemmas.lean Build Errors [NOT STARTED]
+### Phase 2: Fix SoundnessLemmas.lean Build Errors [COMPLETED]
 
 **Goal**: Fix the build-breaking A7a match arm issues in SoundnessLemmas.lean so that `lake build` succeeds. The handoff identifies 6 missing match arms across functions 2-4; report 49 identifies 2 type errors (guard swap) in functions 3-4.
 
