@@ -25,10 +25,19 @@ Burgess A7a has **varying guards, fixed event** (always q∧s). Codebase BX7 has
 
 **Why this matters**: Burgess's Lemma 2.7 proof rules out D1 and D2 using `¬U(γ₀, β₀∧η) ∈ A`. In Burgess's A7a, both D1 and D2 have event `β₀∧η`, so the ruling-out works. In codebase BX7, D2 has event `β₀∧(ξ∧U(ξ,η))` which does NOT imply `β₀∧η` (because `U(ξ,η) ↛ η`). So D2 cannot be ruled out using the codebase BX7.
 
-**Resolution options**:
-- **Option 1**: Derive Burgess A7a form as a lemma from codebase axioms (BX7 + BX1/BX2). ~20-30 lines. If successful, Burgess's proof works verbatim.
-- **Option 2**: Use Xu's Lemma 2.4 which avoids the A7a application entirely (see Finding 3).
-- **Option 3**: Adapt the proof to work with codebase BX7's D3 disjunct (guard p∧r, event p∧s = φ₁∧η), extracting `U(ξ, η) ∈ A` (but this is just the hypothesis back — circular).
+**Resolution: Replace BX7 with Burgess's A7a in the axiom system.**
+
+The codebase's axiom system should reflect the mathematics it formalizes. BX7 is a different presentation of the same semantic case split as A7a — both are sound for strict linear orders — but BX7's form does not serve Burgess's proof structure. Rather than deriving A7a from BX7 as a workaround (which obscures the mathematical argument) or adopting Xu's weaker result (which sacrifices fine-grained formula placement needed for future extensions), the correct long-term fix is to replace `Axiom.linear_until` with Burgess's A7a form directly. This is a one-time refactoring cost that aligns the axiom system with the proof architecture.
+
+A late-arriving research agent confirmed that `U(ξ, β₀∧η) ∈ A` IS derivable from the current BX7 via a two-step application chain (BX7 → BX1 → BX2 → second BX7). This serves as fallback insurance — if the A7a replacement has unexpected cascading effects, the old axiom can still reach the same conclusion — but it is not the recommended approach because multi-step workarounds obscure the mathematical structure and accumulate technical debt.
+
+**Design principle**: The aim is an ideal proof, not merely a complete one. In the long term, higher-quality takes less effort. Workarounds that will only need to be removed should be avoided.
+
+**Concrete steps**:
+1. Replace `Axiom.linear_until` with Burgess's A7a form in Axioms.lean
+2. Re-prove soundness for the new form (both are sound, just different presentations)
+3. Update callers of BX7 (grep for `linear_until`)
+4. Burgess's Lemma 2.7 proof then goes through directly: D1 and D2 both have event β₀∧η, both ruled out by ¬U(γ₀, β₀∧η) ∈ A, D3 survives with the right guard
 
 ### 2. Zorn Sorry Is Fixable: Revert to DCS Maximality (B, C)
 
@@ -109,25 +118,29 @@ The current `lemma_2_7` signature correctly produces `ξ ∈ D` and `η ∈ B'` 
 - Fix `h_content_sub_B_of_BurgessR3Maximal` dual
 - This closes RRelation.lean:772 and removes a load-bearing sorry from the entire construction
 
-**Priority 2: Close C4 sorry sites (lines 412, 510)**
-- These need `c2'` for the adjacent pair. Two sub-options:
-  - (a) Restore c2' as omega_chain invariant for the specific pairs needed
-  - (b) Prove c2' for the newly-inserted adjacent pairs using `lemma_2_6_splitting` + the extended return type
-- Use `lemma_2_6_splitting` (already sorry-free and extended) to produce the splitting
+**Priority 2: Replace BX7 with Burgess A7a (unblocks Lemma 2.7)**
+- Replace `Axiom.linear_until` in Axioms.lean with Burgess's A7a form
+- Re-prove soundness (same semantic case split, different presentation)
+- Update all callers of `linear_until`
+- This is a one-time axiom-level refactoring that permanently aligns the proof system with Burgess's architecture
 
-**Priority 3: Lemma 2.7 (for C5 n>0, non-blocking)**
-- Either derive Burgess A7a from BX7 (Option 1) or use Xu's Lemma 2.4 (Option 2)
-- Not on the critical path for the C4 sorry sites
-- Needed eventually for full C5 elimination
+**Priority 3: Implement Lemma 2.7 using Burgess's direct proof (now possible with A7a)**
+- Delete current partial code; implement Burgess's seed D₀ = {S(α,β∧η)} ∪ B ∪ {ξ} ∪ {U(γ,β)}
+- D1/D2 elimination via ¬U(γ₀, β₀∧η) ∈ A works directly with A7a
+- D3 → A3a → U(ξ, β∧η) ∈ A → seed consistency → Lindenbaum → ξ ∈ D, η ∈ B'
 
-**Priority 4: FUC/FSC coherence (Phase 10)**
-- Depends on all sorry sites in the construction being closed
+**Priority 4: Close C4 sorry sites (lines 412, 510)**
+- These need `c2'` for the adjacent pair + `lemma_2_6_splitting`
+- Determine whether c2' should be restored as omega_chain invariant or proved per-insertion
+
+**Priority 5: FUC/FSC coherence**
 - ChronicleToCountermodel.lean:615, 619
+- Depends on all construction sorry sites being closed
 
 ### Gaps Identified
 
-1. Whether Burgess A7a is derivable from codebase BX7 — needs a proof attempt or countermodel
-2. Whether c2' can be restored for specific adjacent pairs without re-introducing the Phase 7 architectural issues
+1. Whether replacing BX7 with A7a has cascading effects on existing proofs (grep for all `linear_until` usage; the two-step BX7 derivation serves as fallback)
+2. Whether c2' needs to be restored for C4 sorry sites, and if so, how to maintain it without re-introducing the Phase 7 architectural issues
 3. The exact sorry chain from C5 elimination to `dd_countermodel_chronicle` — is Lemma 2.7 actually invoked?
 
 ## Teammate Contributions
