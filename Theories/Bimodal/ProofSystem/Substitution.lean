@@ -343,6 +343,12 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | linear_since a b c d =>
     simp only [subst_imp, subst_and, subst_or, subst_snce]
     exact Axiom.linear_since (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
+  | linear_until_a7a a b c d =>
+    simp only [subst_imp, subst_and, subst_or, subst_untl]
+    exact Axiom.linear_until_a7a (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
+  | linear_since_a7a a b c d =>
+    simp only [subst_imp, subst_and, subst_or, subst_snce]
+    exact Axiom.linear_since_a7a (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
   -- NOTE: refl_intro_until / refl_intro_since / until_elim / since_elim removed (task 113)
   -- NOTE: until_guard / since_guard removed (task 113)
   | until_F a b =>

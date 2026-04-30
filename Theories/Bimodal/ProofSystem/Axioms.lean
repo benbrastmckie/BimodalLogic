@@ -223,13 +223,34 @@ inductive Axiom : Formula → Type where
   | absorb_since (φ ψ : Formula) :
       Axiom ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ))
 
-  /-- BX7 (Burgess A7a): Linearity of Until:
-  `(φ U ψ) ∧ (χ U θ) → ((φ ∧ χ) U (ψ ∧ θ)) ∨ ((φ ∧ θ) U (ψ ∧ θ)) ∨ ((χ ∧ ψ) U (ψ ∧ θ))`.
+  /-- BX7: Linearity of Until:
+  `(φ U ψ) ∧ (χ U θ) → ((φ ∧ χ) U (ψ ∧ θ)) ∨ ((φ ∧ χ) U (ψ ∧ χ)) ∨ ((φ ∧ χ) U (φ ∧ θ))`.
   If two Until formulas hold simultaneously, their witnesses are linearly ordered.
-  All three disjuncts share the same event (ψ ∧ θ); the guards vary.
-  D1 (witnesses coincide): guard φ∧χ. D2 (φ-witness first, s₁<s₂): guard φ∧θ (θ holds
-  on (t,s₁) since θ-witness s₂>s₁). D3 (χ-witness first, s₂<s₁): guard χ∧ψ. -/
+  The three disjuncts correspond to: witnesses coincide, first comes first, second comes first. -/
   | linear_until (φ ψ χ θ : Formula) :
+      Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
+        |>.imp (Formula.or
+          (Formula.or
+            (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
+            (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
+          (Formula.untl (Formula.and φ χ) (Formula.and φ θ))))
+
+  /-- BX7': Linearity of Since:
+  `(φ S ψ) ∧ (χ S θ) → ((φ ∧ χ) S (ψ ∧ θ)) ∨ ((φ ∧ χ) S (ψ ∧ χ)) ∨ ((φ ∧ χ) S (φ ∧ θ))`. -/
+  | linear_since (φ ψ χ θ : Formula) :
+      Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
+        |>.imp (Formula.or
+          (Formula.or
+            (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
+            (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
+          (Formula.snce (Formula.and φ χ) (Formula.and φ θ))))
+
+  /-- BX7a (Burgess A7a): Alternative linearity of Until with fixed event:
+  `(φ U ψ) ∧ (χ U θ) → ((φ ∧ χ) U (ψ ∧ θ)) ∨ ((φ ∧ θ) U (ψ ∧ θ)) ∨ ((χ ∧ ψ) U (ψ ∧ θ))`.
+  All three disjuncts share the same event (ψ ∧ θ); the guards vary.
+  D1 (witnesses coincide): guard φ∧χ. D2 (s₁<s₂): guard φ∧θ. D3 (s₂<s₁): guard χ∧ψ.
+  Used in Burgess's Lemma 2.7 proof where ruling out D1+D2 requires fixed event. -/
+  | linear_until_a7a (φ ψ χ θ : Formula) :
       Axiom (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
         |>.imp (Formula.or
           (Formula.or
@@ -237,9 +258,9 @@ inductive Axiom : Formula → Type where
             (Formula.untl (Formula.and φ θ) (Formula.and ψ θ)))
           (Formula.untl (Formula.and χ ψ) (Formula.and ψ θ))))
 
-  /-- BX7' (Burgess A7a'): Linearity of Since:
+  /-- BX7a' (Burgess A7a'): Alternative linearity of Since with fixed event:
   `(φ S ψ) ∧ (χ S θ) → ((φ ∧ χ) S (ψ ∧ θ)) ∨ ((φ ∧ θ) S (ψ ∧ θ)) ∨ ((χ ∧ ψ) S (ψ ∧ θ))`. -/
-  | linear_since (φ ψ χ θ : Formula) :
+  | linear_since_a7a (φ ψ χ θ : Formula) :
       Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
         |>.imp (Formula.or
           (Formula.or

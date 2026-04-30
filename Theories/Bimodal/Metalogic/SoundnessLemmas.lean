@@ -719,17 +719,17 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂ < t: third disjunct (χ∧ψ) S (ψ∧θ) with witness s₂
+    · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
       intro _
       refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+      · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
     · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
       intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-    · -- s₂ < s₁ < t: second disjunct (φ∧θ) S (ψ∧θ) with witness s₁
+    · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
@@ -748,7 +748,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂: second disjunct (φ∧θ) U (ψ∧θ) with witness s₁
+    · -- s₁ < s₂: second disjunct (φ∧χ) U (ψ∧χ) with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
@@ -758,8 +758,60 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-    · -- s₂ < s₁: third disjunct (χ∧ψ) U (ψ∧θ) with witness s₂
+    · -- s₂ < s₁: third disjunct (φ∧χ) U (φ∧θ) with witness s₂
       intro _
+      refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
+      · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
+  | linear_until_a7a φ ψ χ θ =>
+    -- Swap: A7a Since-based linearity with swapped subformulas
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ.swap_temporal) ∧
+      (∃ s, s < t ∧ truth_at M Omega τ s θ.swap_temporal ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r χ.swap_temporal) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro _
+      refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
+      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
+    · intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
+  | linear_since_a7a φ ψ χ θ =>
+    -- Swap: A7a Until-based linearity with swapped subformulas
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ.swap_temporal) ∧
+      (∃ s, t < s ∧ truth_at M Omega τ s θ.swap_temporal ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r χ.swap_temporal) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
+    · intro _
       refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
       · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
@@ -1297,7 +1349,7 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂: second disjunct (φ∧θ) U (ψ∧θ) with witness s₁
+    · -- s₁ < s₂: second disjunct with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
@@ -1307,11 +1359,11 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-    · -- s₂ < s₁: third disjunct (χ∧ψ) U (ψ∧θ) with witness s₂
+    · -- s₂ < s₁: third disjunct with witness s₂
       intro _
       refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
-      · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
+      · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
   | linear_since φ ψ χ θ =>
     -- Direct: Since-based linearity
     intro F M Omega _h_sc τ _h_mem t
@@ -1326,18 +1378,70 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂: third disjunct (χ∧ψ) S (ψ∧θ) with witness s₂
+    · -- s₁ < s₂: third disjunct with witness s₂
       intro _
       refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+      · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
     · -- s₁ = s₂: first disjunct with witness s₁
       intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-    · -- s₁ > s₂: second disjunct (φ∧θ) S (ψ∧θ) with witness s₁
+    · -- s₁ > s₂: second disjunct with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
+  | linear_until_a7a φ ψ χ θ =>
+    -- A7a Until-based linearity (direct)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ) ∧
+      (∃ s, t < s ∧ truth_at M Omega τ s θ ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r χ) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
+    · intro _
+      refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
+      · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
+  | linear_since_a7a φ ψ χ θ =>
+    -- A7a Since-based linearity (direct)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ) ∧
+      (∃ s, s < t ∧ truth_at M Omega τ s θ ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r χ) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro _
+      refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
+      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
+    · intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
@@ -1736,17 +1840,17 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂ < t: third disjunct (χ∧ψ) S (ψ∧θ) with witness s₂
+    · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
       intro _
       refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+      · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
     · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
       intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-    · -- s₂ < s₁ < t: second disjunct (φ∧θ) S (ψ∧θ) with witness s₁
+    · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
@@ -1765,7 +1869,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂: second disjunct (φ∧θ) U (ψ∧θ) with witness s₁
+    · -- s₁ < s₂: second disjunct (φ∧χ) U (ψ∧χ) with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
@@ -1775,8 +1879,58 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-    · -- s₂ < s₁: third disjunct (χ∧ψ) U (ψ∧θ) with witness s₂
+    · -- s₂ < s₁: third disjunct (φ∧χ) U (φ∧θ) with witness s₂
       intro _
+      refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
+      · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
+  | linear_until_a7a φ ψ χ θ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ.swap_temporal) ∧
+      (∃ s, s < t ∧ truth_at M Omega τ s θ.swap_temporal ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r χ.swap_temporal) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro _
+      refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
+      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
+    · intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
+  | linear_since_a7a φ ψ χ θ =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ.swap_temporal) ∧
+      (∃ s, t < s ∧ truth_at M Omega τ s θ.swap_temporal ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r χ.swap_temporal) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
+    · intro _
       refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
       · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
@@ -1998,7 +2152,7 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂: second disjunct (φ∧θ) U (ψ∧θ) with witness s₁
+    · -- s₁ < s₂: second disjunct with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
@@ -2008,11 +2162,11 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-    · -- s₂ < s₁: third disjunct (χ∧ψ) U (ψ∧θ) with witness s₂
+    · -- s₂ < s₁: third disjunct with witness s₂
       intro _
       refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
-      · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
+      · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
   | linear_since φ ψ χ θ =>
     -- Direct: Since-based linearity
     intro F M Omega _h_sc τ _h_mem t
@@ -2027,18 +2181,70 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       · by_contra h; exact h_conj (fun _ h2 => h h2)
     obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
     rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂: third disjunct (χ∧ψ) S (ψ∧θ) with witness s₂
+    · -- s₁ < s₂: third disjunct with witness s₂
       intro _
       refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+      · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
     · -- s₁ = s₂: first disjunct with witness s₁
       intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-    · -- s₁ > s₂: second disjunct (φ∧θ) S (ψ∧θ) with witness s₁
+    · -- s₁ > s₂: second disjunct with witness s₁
       intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
+  | linear_until_a7a φ ψ χ θ =>
+    -- A7a Until-based linearity (direct)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, t < s ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r φ) ∧
+      (∃ s, t < s ∧ truth_at M Omega τ s θ ∧
+        ∀ r, t < r → r < s → truth_at M Omega τ r χ) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro h_neg; exfalso; apply h_neg; intro _
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
+    · intro _
+      refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
+      · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
+  | linear_since_a7a φ ψ χ θ =>
+    -- A7a Since-based linearity (direct)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.and, Formula.or, Formula.neg, truth_at]
+    intro h_conj
+    have h_both : (∃ s, s < t ∧ truth_at M Omega τ s ψ ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r φ) ∧
+      (∃ s, s < t ∧ truth_at M Omega τ s θ ∧
+        ∀ r, s < r → r < t → truth_at M Omega τ r χ) := by
+      constructor
+      · by_contra h; exact h_conj (fun h1 _ => h h1)
+      · by_contra h; exact h_conj (fun _ h2 => h h2)
+    obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
+    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+    · intro _
+      refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
+      · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+    · intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
+    · intro h_neg; exfalso; apply h_neg; intro _
       refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)

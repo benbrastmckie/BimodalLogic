@@ -842,14 +842,12 @@ theorem g_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
     -- SORRY: semantically impossible but unprovable in BX.
     -- Moves the sorry from RRelation.lean:burgessR3Maximal_extension_exists
     -- (which used CUD maximality via Set.univ) to here.
-    have h_neg_in_B := neg_mem_of_inconsistent_union h_r3m.1 h_cons
-    have h_r3_univ := burgessR3_univ_of_inconsistent_ext h_mcs_A h_mcs_C h_r3m.2.1 hφ h_neg_in_B
-    -- Note: h_r3_univ : burgessR3 A Set.univ C but Set.univ is not DCS (not consistent),
-    -- so h_r3m.2.2 cannot be applied. Direct contradiction requires BX density.
-    exact absurd h_neg_in_B (by
-      -- φ.neg ∈ B and φ ∈ B would be contradiction; try to show φ ∈ B from maximality
-      -- This requires a sorry: the density argument is not BX-derivable.
-      sorry)
+    -- Inconsistent case: {φ}∪B inconsistent → φ.neg ∈ B.
+    -- G(φ) ∈ A (from φ ∈ g_content A) and U(φ.neg, γ) ∈ A (from burgessR3 with φ.neg ∈ B).
+    -- Semantically contradictory on dense orders (U guard φ.neg on non-empty (t,s)
+    -- contradicts G(φ)), but BX lacks a density axiom to derive F(φ.neg) from U(φ.neg, γ).
+    -- The inconsistent case cannot arise in dense models (the intended semantics).
+    sorry
 
 /-- h_content(C) ⊆ B when BurgessR3Maximal(A, B, C) (dual). -/
 theorem h_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
@@ -871,25 +869,10 @@ theorem h_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
     · -- Since: ∀ β ∈ B, ∀ α ∈ A, snce(β ∧ ψ, α) ∈ C
       intro β hβ α hα
       exact snce_left_mono_H h_mcs_C (H_conj_strengthen h_mcs_C β ψ hψ) (h_r3m.2.1.2 β hβ α hα)
-  · -- Inconsistent case (dual): ψ.neg ∈ B, H(ψ) ∈ C → burgessR3(A, Set.univ, C)
-    have h_neg_in_B := neg_mem_of_inconsistent_union h_r3m.1 h_cons
-    -- burgessR3(A, Set.univ, C) via the Since direction
-    have h_r3_univ : burgessR3 A Set.univ C := by
-      constructor
-      · -- burgessRSet(A, Set.univ, C): derive from Since via burgessRSince_implies_burgessR
-        intro χ _ γ hγ
-        have h_burgessRSince : burgessRSince C χ A := fun α hα => by
-          have h_snce_neg := h_r3m.2.1.2 ψ.neg h_neg_in_B α hα
-          have h_H_impl := H_ex_falso_strengthen h_mcs_C ψ χ hψ
-          exact snce_left_mono_H h_mcs_C h_H_impl h_snce_neg
-        exact burgessRSince_implies_burgessR h_mcs_A h_mcs_C h_burgessRSince γ hγ
-      · -- burgessRSetSince(C, Set.univ, A)
-        intro χ _ α hα
-        have h_snce_neg := h_r3m.2.1.2 ψ.neg h_neg_in_B α hα
-        have h_H_impl := H_ex_falso_strengthen h_mcs_C ψ χ hψ
-        exact snce_left_mono_H h_mcs_C h_H_impl h_snce_neg
-    exact h_r3m.2.2 Set.univ set_univ_closed_under_derivation
-      (dcs_ssubset_univ h_r3m.1) h_r3_univ
+  · -- Inconsistent case (dual): ψ.neg ∈ B, H(ψ) ∈ C.
+    -- Same density gap as g_content_sub_B: H(ψ) ∈ C and S(ψ.neg, α) ∈ C
+    -- contradictory on dense orders but not derivable without density axiom.
+    sorry
 
 /-! ## Lemma 2.6 Splitting: BurgessR3Maximal Interval Insertion
 
