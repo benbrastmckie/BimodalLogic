@@ -743,8 +743,8 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
       |>.imp (Formula.or
         (Formula.or
           (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) := by
+          (Formula.untl (Formula.and φ θ) (Formula.and ψ θ)))
+        (Formula.untl (Formula.and χ ψ) (Formula.and ψ θ)))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, truth_at]
   intro h_conj
@@ -758,29 +758,35 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
     · by_contra h; exact h_conj (fun _ h2 => h h2)
   obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
   rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-  · -- s₁ < s₂: second disjunct with witness s₁ (ψ(s₁) ∧ χ(s₁))
+  · -- s₁ < s₂: second disjunct (φ∧θ) U (ψ∧θ) with witness s₁.
+    -- Guard: φ holds on (t,s₁) from guard₁; θ holds on (t,s₁) since guard₂ covers (t,s₂) and s₁<s₂.
+    -- Event: ψ(s₁) from h_ψs₁; θ(s₁) from guard₂ at s₁ (t<s₁<s₂).
     intro h_neg; exfalso; apply h_neg; intro _
     refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
     · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
     · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
-  · -- s₁ = s₂: first disjunct with witness s₁ (ψ(s₁) ∧ θ(s₁))
+  · -- s₁ = s₂: first disjunct (φ∧χ) U (ψ∧θ) with witness s₁.
+    -- Guard: φ on (t,s₁) from guard₁; χ on (t,s₁) from guard₂ (s₁=s₂).
+    -- Event: ψ(s₁); θ(s₁) = θ(s₂) by h_eq.
     intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
     refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
     · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
     · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-  · -- s₂ < s₁: third disjunct with witness s₂ (φ(s₂) ∧ θ(s₂))
+  · -- s₂ < s₁: third disjunct (χ∧ψ) U (ψ∧θ) with witness s₂.
+    -- Guard: χ holds on (t,s₂) from guard₂; ψ holds on (t,s₂) since guard₁ covers (t,s₁) and s₂<s₁.
+    -- Event: ψ(s₂) from guard₁ at s₂ (t<s₂<s₁); θ(s₂) from h_θs₂.
     intro _
     refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
     · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
-    · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
+    · exact h_imp (h_guard₂ r htr hrs) (h_guard₁ r htr (lt_trans hrs h_gt))
 
 theorem linear_since_valid (φ ψ χ θ : Formula) :
     ⊨ (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
       |>.imp (Formula.or
         (Formula.or
           (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) := by
+          (Formula.snce (Formula.and φ θ) (Formula.and ψ θ)))
+        (Formula.snce (Formula.and χ ψ) (Formula.and ψ θ)))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, truth_at]
   intro h_conj
@@ -793,20 +799,23 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
     · by_contra h; exact h_conj (fun _ h2 => h h2)
   obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
   rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-  · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
-    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₃, just intro and prove D₃.
+  · -- s₁ < s₂ < t: third disjunct (χ∧ψ) S (ψ∧θ) with witness s₂.
+    -- Guard: χ on (s₂,t) from guard₂; ψ on (s₂,t) since guard₁ covers (s₁,t) and s₁<s₂.
+    -- Event: ψ(s₂) from guard₁ at s₂ (s₁<s₂<t); θ(s₂) from h_θs₂.
     intro _
     refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
     · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-    · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
-  · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
-    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₁: intro h; exfalso; apply h; intro h2; exfalso; apply h2
+    · exact h_imp (h_guard₂ r hs₂r hrt) (h_guard₁ r (lt_trans h_lt hs₂r) hrt)
+  · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁.
+    -- Guard: φ on (s₁,t) from guard₁; χ on (s₁,t) from guard₂ (s₁=s₂).
+    -- Event: ψ(s₁); θ(s₁) = θ(s₂) by h_eq.
     intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
     refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
     · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
     · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-  · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
-    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₂: intro h; exfalso; apply h; intro _; prove D₂
+  · -- s₂ < s₁ < t: second disjunct (φ∧θ) S (ψ∧θ) with witness s₁.
+    -- Guard: φ on (s₁,t) from guard₁; θ on (s₁,t) since guard₂ covers (s₂,t) and s₂<s₁.
+    -- Event: ψ(s₁) from h_ψs₁; θ(s₁) from guard₂ at s₁ (s₂<s₁<t).
     intro h_outer; exfalso; apply h_outer; intro _
     refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
     · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
