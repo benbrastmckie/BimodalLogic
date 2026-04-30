@@ -757,19 +757,12 @@ theorem burgessR3Maximal_extension_exists {A C : Set Formula}
           exact (hc_sub hTc).2.2.2 β hβT)
   obtain ⟨hSB, hB_dcs, hB_r3⟩ := hB_in
   refine ⟨B, hSB, hB_dcs, hB_r3, ?_⟩
-  -- Maximality over ClosedUnderDerivation (stronger than SetDeductivelyClosed).
-  -- Split into consistent vs inconsistent D.
-  intro D hD_cud hBD hD_r3
-  by_cases hD_cons : SetConsistent D
-  · -- D is consistent + ClosedUnderDerivation = SetDeductivelyClosed
-    have hD_dcs : SetDeductivelyClosed D := ⟨hD_cons, hD_cud⟩
-    have hD_in : D ∈ burgessR3DCSExtensions A S C :=
-      ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
-    exact hBD.2 (hB_max hD_in hBD.1)
-  · -- D is inconsistent + ClosedUnderDerivation: D = Set.univ.
-    -- burgessR3(A, Set.univ, C) leads to contradiction (Phase 5b-ii).
-    -- For now, the inconsistent ClosedUnderDerivation case is sorry'd.
-    sorry
+  -- Maximality over SetDeductivelyClosed (consistent + closed under derivation).
+  -- D is DCS, so it's consistent. Direct contradiction via Zorn maximality.
+  intro D hD_dcs hBD hD_r3
+  have hD_in : D ∈ burgessR3DCSExtensions A S C :=
+    ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
+  exact hBD.2 (hB_max hD_in hBD.1)
 
 /-! ## BurgessR3Maximal Accessor Lemmas -/
 

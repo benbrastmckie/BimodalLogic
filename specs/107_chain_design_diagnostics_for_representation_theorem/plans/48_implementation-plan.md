@@ -211,7 +211,7 @@ Phases within the same wave can execute in parallel. Phases 8a and 8b are indepe
 
 ---
 
-### Phase 8b: Replace BX7 with Burgess A7a [NOT STARTED]
+### Phase 8b: Replace BX7 with Burgess A7a [BLOCKED]
 
 **Goal**: Replace the codebase's `Axiom.linear_until` (BX7) with Burgess's A7a form. BX7 has fixed guard (phi AND chi) with varying events; A7a has varying guards with fixed event (psi AND theta). This is a one-time axiom-level refactoring that permanently aligns the proof system with Burgess's architecture.
 

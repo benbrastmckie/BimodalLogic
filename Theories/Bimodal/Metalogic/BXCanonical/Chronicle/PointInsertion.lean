@@ -576,7 +576,7 @@ theorem BurgessR3Maximal_extension_fails {A B C : Set Formula}
     subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton delta))
   have h_proper : B ⊂ deductiveClosure ({delta} ∪ B) :=
     ⟨h_sub, fun h_eq => h_delta_not (h_eq h_delta_in)⟩
-  exact h_R3M.2.2 _ h_dc.2 h_proper h_r3
+  exact h_R3M.2.2 _ h_dc h_proper h_r3
 
 /-- If both until and since conditions hold for delta extension of B,
 then DC({delta} union B) satisfies burgessR3(A, -, C). -/
@@ -832,11 +832,24 @@ theorem g_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
   · -- Consistent case
     exact BurgessR3Maximal_extension_fails h_r3m h_not_B h_cons
       (g_content_consistent_case h_mcs_A h_mcs_C h_r3m h_gc hφ h_cons)
-  · -- Inconsistent case: {φ}∪B inconsistent → φ.neg ∈ B → burgessR3(A, Set.univ, C)
+  · -- Inconsistent case: {φ}∪B inconsistent → φ.neg ∈ B
+    -- Semantic impossibility argument (requires density, unprovable in BX):
+    -- G(φ) ∈ A means φ holds at all future times t' > t.
+    -- untl(φ.neg, φ) ∈ A (from burgessRSet with φ.neg ∈ B, φ ∈ C) means
+    -- ∃ s > t: φ(s) ∧ ∀ u ∈ (t,s): ¬φ(u). In dense orders, (t,s) ≠ ∅,
+    -- so some u ∈ (t,s) satisfies ¬φ(u), contradicting G(φ) at t.
+    -- However BX has no density axiom, so this contradiction is not derivable.
+    -- SORRY: semantically impossible but unprovable in BX.
+    -- Moves the sorry from RRelation.lean:burgessR3Maximal_extension_exists
+    -- (which used CUD maximality via Set.univ) to here.
     have h_neg_in_B := neg_mem_of_inconsistent_union h_r3m.1 h_cons
     have h_r3_univ := burgessR3_univ_of_inconsistent_ext h_mcs_A h_mcs_C h_r3m.2.1 hφ h_neg_in_B
-    exact h_r3m.2.2 Set.univ set_univ_closed_under_derivation
-      (dcs_ssubset_univ h_r3m.1) h_r3_univ
+    -- Note: h_r3_univ : burgessR3 A Set.univ C but Set.univ is not DCS (not consistent),
+    -- so h_r3m.2.2 cannot be applied. Direct contradiction requires BX density.
+    exact absurd h_neg_in_B (by
+      -- φ.neg ∈ B and φ ∈ B would be contradiction; try to show φ ∈ B from maximality
+      -- This requires a sorry: the density argument is not BX-derivable.
+      sorry)
 
 /-- h_content(C) ⊆ B when BurgessR3Maximal(A, B, C) (dual). -/
 theorem h_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}

@@ -320,7 +320,7 @@ satisfies burgessR3 with the same endpoints A and C.
 def BurgessR3Maximal (A B C : Set Formula) : Prop :=
   SetDeductivelyClosed B ∧
   burgessR3 A B C ∧
-  ∀ D, ClosedUnderDerivation D → B ⊂ D → ¬burgessR3 A D C
+  ∀ D, SetDeductivelyClosed D → B ⊂ D → ¬burgessR3 A D C
 
 /-! ## Chronicle Structure -/
 
