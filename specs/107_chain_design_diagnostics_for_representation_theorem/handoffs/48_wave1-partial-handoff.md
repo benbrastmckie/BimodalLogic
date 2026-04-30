@@ -7,7 +7,7 @@
 
 ## Status
 
-Wave 1 (Phases 8a + 8b) is PARTIAL. Key wins achieved, two blockers remain.
+Wave 1 (Phases 8a + 8b) is PARTIAL. Key wins achieved, two issues remain.
 
 ## Phase 8a: DCS Maximality Revert — PARTIAL
 
@@ -18,72 +18,76 @@ Wave 1 (Phases 8a + 8b) is PARTIAL. Key wins achieved, two blockers remain.
 - [x] `BurgessR3Maximal_extension_fails` updated to use DCS
 
 ### Blocked: g_content_sub_B inconsistent case (2 sorries)
-- **PointInsertion.lean:851**: `g_content_sub_B_of_BurgessR3Maximal` inconsistent case
+- **PointInsertion.lean:~850**: `g_content_sub_B_of_BurgessR3Maximal` inconsistent case
 - **PointInsertion.lean:~875**: `h_content_sub_B_of_BurgessR3Maximal` dual
 
-**Root cause**: The plan proposed using G(φ)/F(φ.neg) contradiction, but this requires density:
-- G(φ) ∈ A means ¬F(φ.neg) ∈ A
-- U(φ.neg, γ) ∈ A (from burgessR3 with φ.neg ∈ B, γ ∈ C)
-- To derive F(φ.neg), we need a non-empty open interval (t,s) where the U-guard φ.neg holds
-- BX has no density axiom, so F(φ.neg) is NOT derivable from U(φ.neg, γ)
-- The contradiction is semantically valid on dense orders but NOT provable in BX
+**Root cause**: With DCS maximality, the old Set.univ trick (which used CUD) no longer works since Set.univ is not DCS. The G(φ)/F(φ.neg) contradiction approach from the plan does NOT work without density: U(φ.neg, γ) ∧ G(φ) is consistent in models where the open guard interval (t,s) is empty (discrete models). Burgess does NOT assume density.
 
-**Options for resolution**:
-1. Add a density axiom to BX (changes the proof system)
-2. Accept the sorry (well-understood gap, doesn't block semantic completeness for dense models)
-3. Find a density-free proof (unknown if possible)
-4. Revert to CUD maximality (brings back Zorn sorry at RRelation.lean:772)
+**Proposed fix (seed refactoring)**: Instead of proving g_content ⊆ B as a general property of BurgessR3Maximal, modify `burgessR3Maximal_from_g_content_sub` to include g_content(A) ∪ h_content(C) in the Zorn seed. Then g_content ⊆ B follows trivially from seed ⊆ B. This requires:
+1. Proving g_content(A) ∪ h_content(C) is consistent (g_content alone IS provably consistent via G-distribution in MCS)
+2. Proving DC(g_content(A) ∪ h_content(C)) satisfies burgessR3(A, -, C)
+3. Restructuring callers to use the enriched construction
 
-**Recommendation**: Option 2 for now. The sorry is well-contained and the density gap is a known limitation of BX for non-dense orders.
+This eliminates g_content_sub_B_of_BurgessR3Maximal entirely (no longer needed as a general theorem).
 
 ## Phase 8b: A7a Axiom — PARTIAL
 
 ### Design Change from Plan
 The plan called for REPLACING BX7 with A7a. This caused cascading failures:
-- `untl_conj_guard` and `snce_conj_guard` in RRelation.lean rely on BX7's fixed-guard structure
-- 32+ errors in SoundnessLemmas.lean across 4 copies of axiom swap/local validity proofs
-- A7a's fixed-event form cannot derive BX7 without left_mono_until (which weakens guards, opposite direction needed)
+- 32+ errors in SoundnessLemmas.lean — the `axiom_swap_valid` and `axiom_locally_valid` functions have 4 copies of the linearity proof that all need restructuring
+- `untl_conj_guard`/`snce_conj_guard` in RRelation.lean rely on BX7's fixed-guard structure (dead code, but still compile)
 
 ### Actual Implementation
 Added A7a as a SEPARATE axiom alongside BX7:
 - `Axiom.linear_until_a7a` / `Axiom.linear_since_a7a` — new constructors in Axioms.lean
 - Substitution cases added (Substitution.lean)
-- Soundness proofs added (Soundness.lean) — `linear_until_a7a_valid`, `linear_since_a7a_valid`
-- Soundness.lean match arms added for all validity functions (6 sites)
-- BX7 (`Axiom.linear_until`) preserved — all existing callers unchanged
+- Soundness proofs added and verified (Soundness.lean) — `linear_until_a7a_valid`, `linear_since_a7a_valid`
+- All Soundness.lean match arms added (6 sites across axiom_valid, valid_dense, valid_discrete, etc.)
 
-### Remaining Work
-- SoundnessLemmas.lean: 8 new match arms needed across 4 functions (agent in progress)
-  - `axiom_swap_valid` (function 1): DONE
-  - `axiom_locally_valid` (function 2): IN PROGRESS (agent)
-  - `axiom_swap_valid_general` (function 3): IN PROGRESS (agent)
-  - `axiom_locally_valid_general` (function 4): IN PROGRESS (agent)
+### Remaining: SoundnessLemmas.lean (6 missing match arms)
+The file has 4 functions that exhaustively match on `Axiom`:
+1. `axiom_swap_valid` (line ~766): A7a cases ADDED ✓
+2. `axiom_locally_valid` (line ~1396): MISSING linear_until_a7a, linear_since_a7a
+3. `axiom_swap_valid_general` (line ~1887): MISSING linear_until_a7a, linear_since_a7a
+4. `axiom_locally_valid_general` (line ~2199): MISSING linear_until_a7a, linear_since_a7a
+
+For functions 2 and 4 (direct validity): copy the proof from `axiom_locally_valid` function 1's `linear_until`/`linear_since` cases but with A7a's disjunct structure (D3 guard order swapped: `h_guard₂ r ... h_guard₁ r ...` instead of `h_guard₁ r ... h_guard₂ r ...`).
+
+For functions 1 and 3 (swap validity): copy the swap proof from function 1's `linear_since`/`linear_until` cases but with same D3 guard swap.
+
+**Key insight**: After `simp only [Formula.and, Formula.or, Formula.neg, truth_at]`, the formula encoding makes A7a proof terms nearly identical to BX7 — only the D3 case needs `(h_guard₂ r ...) (h_guard₁ r ...)` instead of `(h_guard₁ r ...) (h_guard₂ r ...)`.
+
+## Build Status
+
+**Build FAILS** on:
+- `SoundnessLemmas.lean`: 6 missing `linear_until_a7a`/`linear_since_a7a` match arms
+- `PointInsertion.lean`: 2 sorry sites (g_content_sub_B density gap)
+
+Soundness.lean, Axioms.lean, Substitution.lean, RRelation.lean, ChronicleTypes.lean all compile clean.
 
 ## Current Sorry Count
 
 | File | Sorries | Notes |
 |------|---------|-------|
-| PointInsertion.lean | 3 | 2 density-gap (g/h_content_sub_B), 1 lemma_2_7 |
+| PointInsertion.lean | 3 | 2 g/h_content_sub_B (seed refactoring needed), 1 lemma_2_7 |
 | CounterexampleElimination.lean | 2 | C4/C4' (Phase 9) |
 | ChronicleToCountermodel.lean | 2 | FUC/FSC (Phase 10) |
-| **Total** | **7** | Down from ~13 before Phase 8a |
-
-## Build Status
-
-Last build: FAILS on SoundnessLemmas.lean (missing match arms) and PointInsertion.lean (2 density sorries use wrong proof term — now cleaned to `sorry`)
+| **Total** | **7** | Down from ~13 before this session |
 
 ## Resume Instructions
 
-1. Wait for SoundnessLemmas agent to complete, or manually add remaining 6 match arms
-2. Run `lake build` to verify
-3. Commit
-4. Proceed to Wave 2: Phase 6 (Lemma 2.7 with A7a) + Phase 9 (C4 via lemma_2_6)
-5. Phase 6 should use `Axiom.linear_until_a7a` (the new A7a axiom) for the three-way disjunction
+1. **Fix SoundnessLemmas.lean**: Add 6 missing match arms (3 functions × 2 cases each). Pattern: find `-- NOTE: until_elim / since_elim match arms removed` after `linear_since` cases, insert A7a cases before. Use `axiom_swap_valid` function 1's A7a cases (already present at ~line 766) as the template.
 
-## Key Decisions for Next Session
+2. **Run `lake build`** to verify SoundnessLemmas compiles.
 
-1. **Phase 6 (Lemma 2.7)**: Uses `Axiom.linear_until_a7a` directly. The fixed-event property means D1+D2 can be eliminated by `neg U(gamma_0, beta_0 AND eta)`. This was the whole motivation for A7a.
+3. **Research seed refactoring** for g_content_sub_B: investigate including g_content(A) in the Zorn seed instead of proving g_content ⊆ B from maximality. Key question: is g_content(A) ∪ h_content(C) provably consistent?
 
-2. **Density gap**: Accept 2 sorries in g/h_content_sub_B? Or investigate density axiom? This blocks the sorry-free milestone but NOT the proof structure.
+4. **Proceed to Wave 2**: Phase 6 (Lemma 2.7 using `Axiom.linear_until_a7a`) and Phase 9 (C4 via lemma_2_6).
 
-3. **A7a soundness in SoundnessLemmas**: The proof terms follow the same structure as BX7 cases — the simp+truth_at expansion makes the formula structure opaque enough that guard₁/guard₂ positions work identically.
+## Key Decisions
+
+1. **A7a is additive, not replacing BX7**: Both axioms coexist. A7a is used for Lemma 2.7. BX7 is used for guard conjunction. Both are sound.
+
+2. **g_content_sub_B needs architectural fix, not density**: The correct approach is seed enrichment (include g_content in Zorn seed), not assuming density axioms. Burgess's completeness covers all irreflexive linear orders including discrete.
+
+3. **Plan v34 needs revision**: Phase 8b's "replace BX7" goal should be changed to "add A7a alongside BX7". Phase 8a's g_content approach needs the seed refactoring research.
