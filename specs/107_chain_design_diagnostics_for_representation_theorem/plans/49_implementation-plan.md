@@ -67,8 +67,8 @@ Plan v34 had phases 1-5b-ii and 7 [COMPLETED], phases 8a and 8b [PARTIAL], phase
 | Wave | Phases | Blocked by |
 |------|--------|------------|
 | 1 | 1, 2 | -- |
-| 2 | 3, 4 | 1 |
-| 3 | 5 | 3 |
+| 2 | 3 | 2 |
+| 3 | 4, 5 | 3 |
 | 4 | 6, 7 | 3, 5 |
 | 5 | 8 | 6, 7 |
 | 6 | 9 | 8 |
@@ -121,7 +121,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Restructure Lemma 2.6 with Burgess D0 Seed [NOT STARTED]
+### Phase 3: Restructure Lemma 2.6 with Burgess D0 Seed [PARTIAL]
 
 **Goal**: Replace the non-Burgess seed in `splitting_seed_consistent` and `lemma_2_6_splitting` with Burgess's actual D0 seed. This eliminates the need for `g_content_sub_B_of_BurgessR3Maximal` and `h_content_sub_B_of_BurgessR3Maximal` entirely, closing 2 sorry sites.
 

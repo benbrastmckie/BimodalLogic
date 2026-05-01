@@ -670,7 +670,7 @@
       "dependencies": [
         113
       ],
-      "next_artifact_number": 50,
+      "next_artifact_number": 51,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -1036,6 +1036,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/49_implementation-plan.md",
           "type": "plan",
           "summary": "v35: 9 phases — SoundnessLemmas fix, Burgess D0 seed restructuring, dead code archival, sorry closure"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/50_sorry-architecture-audit.md",
+          "type": "report",
+          "summary": "Sorry architecture audit: plan v35 misaligned, lemma_2_6/2_7 have zero callers, 4 actual blockers identified"
         }
       ],
       "session_id": "sess_1777517819_d6f920",
