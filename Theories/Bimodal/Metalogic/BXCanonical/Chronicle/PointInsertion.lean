@@ -768,143 +768,17 @@ private noncomputable def conj_intro_curried (β φ : Formula) :
       (DerivationTree.assumption _ φ (by simp))
   exact deduction_theorem [] φ _ (deduction_theorem [φ] β _ h1)
 
-/-- Helper: G(β → β∧φ) ∈ A from G(φ) ∈ A, using conj_intro_curried + TG + temp_k_dist. -/
-private theorem G_conj_strengthen {A : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (β φ : Formula)
-    (h_Gφ : Formula.all_future φ ∈ A) :
-    (β.imp (Formula.and β φ)).all_future ∈ A := by
-  have d_conj := conj_intro_curried β φ
-  exact SetMaximalConsistent.implication_property h_mcs_A
-    (SetMaximalConsistent.implication_property h_mcs_A
-      (theorem_in_mcs h_mcs_A (DerivationTree.axiom [] _ (Axiom.temp_k_dist φ (β.imp (Formula.and β φ)))))
-      (theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ d_conj)))
-    h_Gφ
-
-/-- Consistent case helper for g_content_sub_B: when {φ}∪B consistent and G(φ) ∈ A,
-    dc_delta_B_burgessR3 produces burgessR3(A, DC({φ}∪B), C). -/
-private theorem g_content_consistent_case {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_r3m : BurgessR3Maximal A B C)
-    (h_gc : g_content A ⊆ C)
-    {φ : Formula} (h_Gφ : Formula.all_future φ ∈ A)
-    (h_cons : SetConsistent ({φ} ∪ B)) :
-    burgessR3 A (deductiveClosure ({φ} ∪ B)) C := by
-  apply dc_delta_B_burgessR3 h_mcs_A h_mcs_C h_r3m.1 h_r3m.2.1
-  · -- Until: ∀ β ∈ B, ∀ γ ∈ C, untl(β ∧ φ, γ) ∈ A
-    intro β hβ γ hγ
-    exact untl_left_mono_G h_mcs_A (G_conj_strengthen h_mcs_A β φ h_Gφ) (h_r3m.2.1.1 β hβ γ hγ)
-  · -- Since: ∀ β ∈ B, ∀ α ∈ A, snce(β ∧ φ, α) ∈ C via burgessR_implies_burgessRSince
-    intro β hβ α hα
-    have h_burgessR : burgessR A (Formula.and β φ) C := fun γ hγ =>
-      untl_left_mono_G h_mcs_A (G_conj_strengthen h_mcs_A β φ h_Gφ) (h_r3m.2.1.1 β hβ γ hγ)
-    exact burgessR_implies_burgessRSince h_mcs_A h_mcs_C h_burgessR α hα
-
-/-- Helper: H(β → β∧ψ) ∈ C from H(ψ) ∈ C, using conj_intro_curried + past_necessitation + past_k_dist. -/
-private theorem H_conj_strengthen {C : Set Formula}
-    (h_mcs_C : SetMaximalConsistent C) (β ψ : Formula)
-    (h_Hψ : Formula.all_past ψ ∈ C) :
-    (β.imp (Formula.and β ψ)).all_past ∈ C := by
-  have d_conj := conj_intro_curried β ψ
-  exact SetMaximalConsistent.implication_property h_mcs_C
-    (SetMaximalConsistent.implication_property h_mcs_C
-      (theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_k_dist ψ (β.imp (Formula.and β ψ))))
-      (theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ d_conj)))
-    h_Hψ
-
-/-- g_content(A) ⊆ B when BurgessR3Maximal(A, B, C).
-
-The consistent case ({φ}∪B consistent) is proved via left_mono_until_G +
-dc_delta_B_burgessR3 + BurgessR3Maximal_extension_fails.
-
-The inconsistent case ({φ}∪B inconsistent, Plan v32 Phase 5b-ii):
-φ.neg ∈ B (by DCS closure). From G(φ) ∈ A and φ.neg ∈ B,
-burgessR3_univ_of_inconsistent_ext gives burgessR3(A, Set.univ, C).
-Set.univ is ClosedUnderDerivation, B ⊂ Set.univ (B is consistent).
-BurgessR3Maximal maximality (over ClosedUnderDerivation) gives contradiction. -/
-theorem g_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_r3m : BurgessR3Maximal A B C)
-    (h_gc : g_content A ⊆ C) :
-    g_content A ⊆ B := by
-  intro φ hφ
-  by_contra h_not_B
-  by_cases h_cons : SetConsistent ({φ} ∪ B)
-  · -- Consistent case
-    exact BurgessR3Maximal_extension_fails h_r3m h_not_B h_cons
-      (g_content_consistent_case h_mcs_A h_mcs_C h_r3m h_gc hφ h_cons)
-  · -- Inconsistent case: {φ}∪B inconsistent → φ.neg ∈ B
-    -- Semantic impossibility argument (requires density, unprovable in BX):
-    -- G(φ) ∈ A means φ holds at all future times t' > t.
-    -- untl(φ.neg, φ) ∈ A (from burgessRSet with φ.neg ∈ B, φ ∈ C) means
-    -- ∃ s > t: φ(s) ∧ ∀ u ∈ (t,s): ¬φ(u). In dense orders, (t,s) ≠ ∅,
-    -- so some u ∈ (t,s) satisfies ¬φ(u), contradicting G(φ) at t.
-    -- However BX has no density axiom, so this contradiction is not derivable.
-    -- SORRY: semantically impossible but unprovable in BX.
-    -- Moves the sorry from RRelation.lean:burgessR3Maximal_extension_exists
-    -- (which used CUD maximality via Set.univ) to here.
-    -- Inconsistent case: {φ}∪B inconsistent → φ.neg ∈ B.
-    -- G(φ) ∈ A (from φ ∈ g_content A) and U(φ.neg, γ) ∈ A (from burgessR3 with φ.neg ∈ B).
-    -- Semantically contradictory on dense orders (U guard φ.neg on non-empty (t,s)
-    -- contradicts G(φ)), but BX lacks a density axiom to derive F(φ.neg) from U(φ.neg, γ).
-    -- The inconsistent case cannot arise in dense models (the intended semantics).
-    sorry
-
-/-- h_content(C) ⊆ B when BurgessR3Maximal(A, B, C) (dual). -/
-theorem h_content_sub_B_of_BurgessR3Maximal {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_r3m : BurgessR3Maximal A B C)
-    (h_gc : g_content A ⊆ C) :
-    h_content C ⊆ B := by
-  intro ψ hψ
-  by_contra h_not_B
-  by_cases h_cons : SetConsistent ({ψ} ∪ B)
-  · -- Consistent case
-    apply BurgessR3Maximal_extension_fails h_r3m h_not_B h_cons
-    apply dc_delta_B_burgessR3 h_mcs_A h_mcs_C h_r3m.1 h_r3m.2.1
-    · -- Until: ∀ β ∈ B, ∀ γ ∈ C, untl(β ∧ ψ, γ) ∈ A
-      intro β hβ γ hγ
-      have h_burgessRSince : burgessRSince C (Formula.and β ψ) A := fun α hα =>
-        snce_left_mono_H h_mcs_C (H_conj_strengthen h_mcs_C β ψ hψ) (h_r3m.2.1.2 β hβ α hα)
-      exact burgessRSince_implies_burgessR h_mcs_A h_mcs_C h_burgessRSince γ hγ
-    · -- Since: ∀ β ∈ B, ∀ α ∈ A, snce(β ∧ ψ, α) ∈ C
-      intro β hβ α hα
-      exact snce_left_mono_H h_mcs_C (H_conj_strengthen h_mcs_C β ψ hψ) (h_r3m.2.1.2 β hβ α hα)
-  · -- Inconsistent case (dual): ψ.neg ∈ B, H(ψ) ∈ C.
-    -- Same density gap as g_content_sub_B: H(ψ) ∈ C and S(ψ.neg, α) ∈ C
-    -- contradictory on dense orders but not derivable without density axiom.
-    sorry
-
 /-! ## Lemma 2.6 Splitting: BurgessR3Maximal Interval Insertion
 
 Given `BurgessR3Maximal(A, B, C)` with `β ∉ B` and `g_content(A) ⊆ C`,
 produce MCS D with `¬β ∈ D` and `BurgessR3Maximal(A, B', D)` and
 `BurgessR3Maximal(D, B'', C)`.
 
-The seed consistency argument: g_content(A) ⊆ B and h_content(C) ⊆ B
-(from g_content_sub_B_of_BurgessR3Maximal / h_content_sub_B_of_BurgessR3Maximal),
-so the seed {β.neg} ∪ g_content(A) ∪ h_content(C) ⊆ {β.neg} ∪ B,
-which is consistent by dcs_neg_union_consistent.
+The old non-Burgess seed approach (g_content_sub_B / h_content_sub_B /
+splitting_seed_consistent) had unprovable density gap sorry sites and was
+removed in task 107 Phase 0. The correct approach uses the Burgess D0 seed
+with BX5 + BX7 + BX13/BX14 axiom chain (to be implemented in Phase 2).
 -/
-
-/-- Seed consistency for Lemma 2.6 splitting. -/
-private theorem splitting_seed_consistent {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
-    (h_r3m : BurgessR3Maximal A B C)
-    (h_gc : g_content A ⊆ C)
-    (β : Formula)
-    (h_β_not_B : β ∉ B) :
-    SetConsistent ({β.neg} ∪ g_content A ∪ h_content C) := by
-  have h_gc_B := g_content_sub_B_of_BurgessR3Maximal h_mcs_A h_mcs_C h_r3m h_gc
-  have h_hc_B := h_content_sub_B_of_BurgessR3Maximal h_mcs_A h_mcs_C h_r3m h_gc
-  have h_sub : {β.neg} ∪ g_content A ∪ h_content C ⊆ {β.neg} ∪ B := by
-    intro φ hφ
-    rcases hφ with (hφ | hφ) | hφ
-    · exact Set.mem_union_left _ hφ
-    · exact Set.mem_union_right _ (h_gc_B hφ)
-    · exact Set.mem_union_right _ (h_hc_B hφ)
-  have h_cons := dcs_neg_union_consistent h_r3m.1 h_β_not_B
-  exact fun L hL hd => h_cons L (fun ψ hψ => h_sub (hL ψ hψ)) hd
 
 theorem lemma_2_6_splitting {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
@@ -917,21 +791,7 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
       BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧ β.neg ∈ D ∧
       g_content A ⊆ D ∧ g_content D ⊆ C := by
-  have h_seed := splitting_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc β h_β_not_B
-  have h_hc : h_content C ⊆ A :=
-    g_content_subset_implies_h_content_reverse A C h_mcs_A h_mcs_C h_gc
-  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
-  have h_neg_β_D : β.neg ∈ D :=
-    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton _)))
-  have h_gc_AD : g_content A ⊆ D :=
-    fun φ hφ => h_sup (Set.mem_union_left _ (Set.mem_union_right _ hφ))
-  have h_hc_CD : h_content C ⊆ D :=
-    fun φ hφ => h_sup (Set.mem_union_right _ hφ)
-  have h_gc_DC : g_content D ⊆ C :=
-    h_content_subset_implies_g_content_reverse C D h_mcs_C h_D_mcs h_hc_CD
-  obtain ⟨B', h_B'⟩ := burgessR3Maximal_from_g_content_sub h_mcs_A h_D_mcs h_gc_AD
-  obtain ⟨B'', h_B''⟩ := burgessR3Maximal_from_g_content_sub h_D_mcs h_mcs_C h_gc_DC
-  exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_neg_β_D, h_gc_AD, h_gc_DC⟩
+  sorry
 
 /-! ## Lemma 2.7: Until-Formula Splitting (Burgess 1982)
 
@@ -1051,19 +911,5 @@ theorem lemma_2_7 {A B C : Set Formula}
   -- both g_content(A) and h_content(C), and then deriving eta ∈ B' from
   -- maximality. See handoff 08_phase6-burgess-seed-handoff.md.
   sorry
-
--- BurgessR3Maximal_maximality_combined: REMOVED (task 113 Phase 3). Dead code (no callers).
--- The delta.neg ∈ B case is INVALID under open guard (needs until_guard_in_mcs
--- to derive bot from bot U gamma). The codebase uses BurgessR3Maximal directly.
--- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
-
--- burgess_D0, B_subset_burgess_D0, neg_delta_in_burgess_D0, untl_in_burgess_D0,
--- snce_in_burgess_D0: REMOVED (task 113 Phase 3). Dead code (no callers).
--- B_sub_A_of_burgessR3, B_sub_C_of_burgessR3, burgess_D0_elem_in_A_or_C:
--- REMOVED (task 113 Phase 3). INVALID under open guard.
--- F_mono_mcs, left_mono_contrapositive_neg_delta: REMOVED (task 113 Phase 3).
--- Dead code (only called by removed BurgessR3Maximal_maximality_combined).
--- burgess_D0_consistent: REMOVED (task 113 Phase 3). Dead code (no callers).
--- All archived in Boneyard/ClosedGuardLegacy/ClosedGuardRRelation.lean.
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

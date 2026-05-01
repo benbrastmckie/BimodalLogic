@@ -88,7 +88,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Clean Non-Burgess Cruft [NOT STARTED]
+### Phase 0: Clean Non-Burgess Cruft [COMPLETED]
 
 **Goal**: Remove dead code and stale comments that caused confusion during previous implementation attempts, establishing a clean working baseline. This was specifically requested by the user to avoid distractions.
 
@@ -118,7 +118,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Verify BX Axiom Sufficiency for D0 Seed [NOT STARTED]
+### Phase 1: Verify BX Axiom Sufficiency for D0 Seed [COMPLETED]
 
 **Goal**: Confirm that BX13 (enrichment_until) and BX14 (separation_until) provide the roles of Burgess's A3a and A4a in the D0 seed consistency proof, before committing to implementation.
 
