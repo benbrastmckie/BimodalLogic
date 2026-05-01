@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-01T15:08:04Z",
+      "last_updated": "2026-05-01T18:30:46Z",
       "researched": "2026-05-01T15:08:04Z",
       "related_tasks": [
         93
@@ -1033,11 +1033,6 @@
           "summary": "Burgess alignment audit: seed restructuring plan, archive candidates, Lemma 2.4-2.11 mapping"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/49_implementation-plan.md",
-          "type": "plan",
-          "summary": "v35: 9 phases — SoundnessLemmas fix, Burgess D0 seed restructuring, dead code archival, sorry closure"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/50_sorry-architecture-audit.md",
           "type": "report",
           "summary": "Sorry architecture audit: plan v35 misaligned, lemma_2_6/2_7 have zero callers, 4 actual blockers identified"
@@ -1046,9 +1041,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/51_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): dead code refutation, g-function phantom, C5 incomplete, Burgess D0 seed path, 11-15h plan"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/51_implementation-plan.md",
+          "type": "plan",
+          "summary": "v36: 7 phases — cruft cleanup, BX axiom verification, D0 seed rewrite, C4/C4' closure, C5 strengthening, FUC/FSC closure, audit + ROADMAP"
         }
       ],
-      "session_id": "sess_1777647307_47462b",
+      "session_id": "sess_1777659876_c3bf72",
       "started": "2026-04-25T19:11:01Z"
     },
     {
