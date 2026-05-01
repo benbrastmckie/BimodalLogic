@@ -656,21 +656,21 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-04-30T02:57:32Z",
-      "researched": "2026-04-30T02:44:17Z",
+      "last_updated": "2026-05-01T15:08:04Z",
+      "researched": "2026-05-01T15:08:04Z",
       "related_tasks": [
         93
       ],
       "dependencies": [
         113
       ],
-      "next_artifact_number": 51,
+      "next_artifact_number": 52,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -1041,9 +1041,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/50_sorry-architecture-audit.md",
           "type": "report",
           "summary": "Sorry architecture audit: plan v35 misaligned, lemma_2_6/2_7 have zero callers, 4 actual blockers identified"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/51_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): dead code refutation, g-function phantom, C5 incomplete, Burgess D0 seed path, 11-15h plan"
         }
       ],
-      "session_id": "sess_1777517819_d6f920",
+      "session_id": "sess_1777647307_47462b",
       "started": "2026-04-25T19:11:01Z"
     },
     {
