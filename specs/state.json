@@ -1045,7 +1045,7 @@
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/51_implementation-plan.md",
           "type": "plan",
-          "summary": "v36: 7 phases — cruft cleanup, BX axiom verification, D0 seed rewrite, C4/C4' closure, C5 strengthening, FUC/FSC closure, audit + ROADMAP"
+          "summary": "v37: 9 phases, 20h — Burgess-faithful: extend g during insertion, thread c2' through omega_chain, FUC/FSC via Claim 2.11"
         }
       ],
       "session_id": "sess_1777659876_c3bf72",
