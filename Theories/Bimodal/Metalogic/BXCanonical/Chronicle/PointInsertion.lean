@@ -768,17 +768,110 @@ private noncomputable def conj_intro_curried (β φ : Formula) :
       (DerivationTree.assumption _ φ (by simp))
   exact deduction_theorem [] φ _ (deduction_theorem [φ] β _ h1)
 
+/-! ## Duality: h_content(C) ⊆ D implies g_content(D) ⊆ C
+
+Local proof of the duality theorem needed for Lemma 2.6 splitting.
+(The canonical version lives in ChronicleConstruction.lean which imports
+this file, so we reproduce it here to avoid circular imports.)
+-/
+
+/-- h_content(B) ⊆ A implies g_content(A) ⊆ B for MCS A, B.
+Proof: Suppose G(ψ) ∈ A and ψ ∉ B. Then ¬ψ ∈ B (MCS). By BX4' (connect_past):
+¬ψ → H(F(¬ψ)), so H(F(¬ψ)) ∈ B, hence F(¬ψ) ∈ h_content(B) ⊆ A.
+But F(¬ψ) = ¬G(ψ^{nn}), so G(ψ^{nn}) ∉ A. Yet G(ψ) → G(ψ^{nn}) by DNI
++ temporal necessitation + K distribution, contradiction. -/
+private theorem h_content_sub_imp_g_content_sub' {A B : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_B : SetMaximalConsistent B)
+    (h_hBA : h_content B ⊆ A) :
+    g_content A ⊆ B := by
+  intro ψ hψ
+  by_contra h_not
+  have h_neg_ψ : ψ.neg ∈ B := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_B ψ with h | h
+    · exact absurd h h_not
+    · exact h
+  have h_ax : DerivationTree [] (ψ.neg.imp (ψ.neg.some_future.all_past)) :=
+    DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg)
+  have h_HF : Formula.all_past (Formula.some_future ψ.neg) ∈ B :=
+    SetMaximalConsistent.implication_property h_mcs_B
+      (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
+  have h_F_neg_ψ_A : Formula.some_future ψ.neg ∈ A := h_hBA h_HF
+  have h_G_nn_not : Formula.all_future ψ.neg.neg ∉ A :=
+    SetMaximalConsistent.neg_excludes h_mcs_A _ h_F_neg_ψ_A
+  have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
+    Bimodal.Theorems.Combinators.dni ψ
+  have h_G_dni : DerivationTree [] (Formula.all_future (ψ.imp ψ.neg.neg)) :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_G_dist : DerivationTree [] ((Formula.all_future (ψ.imp ψ.neg.neg)).imp
+      (Formula.all_future ψ |>.imp (Formula.all_future ψ.neg.neg))) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ ψ.neg.neg)
+  have h_G_nn : Formula.all_future ψ.neg.neg ∈ A := by
+    have h1 := theorem_in_mcs h_mcs_A h_G_dni
+    have h2 := theorem_in_mcs h_mcs_A h_G_dist
+    have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
+    exact SetMaximalConsistent.implication_property h_mcs_A h3 hψ
+  exact h_G_nn_not h_G_nn
+
+/-- g_content(A) ⊆ B implies h_content(B) ⊆ A for MCS A, B. Dual of above. -/
+private theorem g_content_sub_imp_h_content_sub' {A B : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_B : SetMaximalConsistent B)
+    (h_gAB : g_content A ⊆ B) :
+    h_content B ⊆ A := by
+  intro ψ hψ
+  by_contra h_not
+  have h_neg_ψ : ψ.neg ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_A ψ with h | h
+    · exact absurd h h_not
+    · exact h
+  have h_GP : Formula.all_future (Formula.some_past ψ.neg) ∈ A :=
+    connect_future_mcs h_mcs_A ψ.neg h_neg_ψ
+  have h_P_neg_ψ_B : Formula.some_past ψ.neg ∈ B := h_gAB h_GP
+  have h_H_nn_not : Formula.all_past ψ.neg.neg ∉ B :=
+    SetMaximalConsistent.neg_excludes h_mcs_B _ h_P_neg_ψ_B
+  have h_dni : DerivationTree [] (ψ.imp ψ.neg.neg) :=
+    Bimodal.Theorems.Combinators.dni ψ
+  have h_H_dni : DerivationTree [] (Formula.all_past (ψ.imp ψ.neg.neg)) :=
+    Bimodal.Theorems.past_necessitation _ h_dni
+  have h_H_dist : DerivationTree [] ((Formula.all_past (ψ.imp ψ.neg.neg)).imp
+      (Formula.all_past ψ |>.imp (Formula.all_past ψ.neg.neg))) :=
+    Bimodal.Theorems.past_k_dist ψ ψ.neg.neg
+  have h_H_nn : Formula.all_past ψ.neg.neg ∈ B := by
+    have h1 := theorem_in_mcs h_mcs_B h_H_dni
+    have h2 := theorem_in_mcs h_mcs_B h_H_dist
+    have h3 := SetMaximalConsistent.implication_property h_mcs_B h2 h1
+    exact SetMaximalConsistent.implication_property h_mcs_B h3 hψ
+  exact h_H_nn_not h_H_nn
+
 /-! ## Lemma 2.6 Splitting: BurgessR3Maximal Interval Insertion
 
 Given `BurgessR3Maximal(A, B, C)` with `β ∉ B` and `g_content(A) ⊆ C`,
 produce MCS D with `¬β ∈ D` and `BurgessR3Maximal(A, B', D)` and
 `BurgessR3Maximal(D, B'', C)`.
 
-The old non-Burgess seed approach (g_content_sub_B / h_content_sub_B /
-splitting_seed_consistent) had unprovable density gap sorry sites and was
-removed in task 107 Phase 0. The correct approach uses the Burgess D0 seed
-with BX5 + BX7 + BX13/BX14 axiom chain (to be implemented in Phase 2).
+The Burgess D0 seed approach uses `{β.neg} ∪ g_content(A) ∪ h_content(C)`
+as the seed, with consistency proved via generalized temporal K distribution
+in both G and H directions combined with burgessR3 Until/Since formulas.
 -/
+
+/-- The D0 splitting seed: `{β.neg} ∪ g_content(A) ∪ h_content(C)`. -/
+private def splitting_seed (A C : Set Formula) (β : Formula) : Set Formula :=
+  {β.neg} ∪ g_content A ∪ h_content C
+
+/-- The splitting seed `{β.neg} ∪ g_content(A) ∪ h_content(C)` is consistent
+when `BurgessR3Maximal(A, B, C)`, `g_content(A) ⊆ C`, and `β ∉ B`.
+
+The proof reduces seed inconsistency to a contradiction in A or C using
+the generalized temporal K distribution in both the G and H directions,
+combined with the Until/Since formulas from burgessR3. -/
+private theorem splitting_seed_consistent {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C)
+    (β : Formula)
+    (h_β_not_B : β ∉ B) :
+    SetConsistent (splitting_seed A C β) := by
+  sorry
 
 theorem lemma_2_6_splitting {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
@@ -791,7 +884,24 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
       BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧ β.neg ∈ D ∧
       g_content A ⊆ D ∧ g_content D ⊆ C := by
-  sorry
+  -- Step 1: The seed is consistent
+  have h_seed_cons := splitting_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc β h_β_not_B
+  -- Step 2: Lindenbaum-extend to MCS D
+  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
+  -- Step 3: Extract seed membership
+  have h_β_neg_D : β.neg ∈ D :=
+    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton _)))
+  have h_g_sub_D : g_content A ⊆ D := fun φ hφ =>
+    h_sup (Set.mem_union_left _ (Set.mem_union_right _ hφ))
+  have h_h_sub_D : h_content C ⊆ D := fun φ hφ =>
+    h_sup (Set.mem_union_right _ hφ)
+  -- Step 4: Derive g_content(D) ⊆ C from h_content(C) ⊆ D
+  have h_g_D_C : g_content D ⊆ C :=
+    h_content_sub_imp_g_content_sub' h_D_mcs h_mcs_C h_h_sub_D
+  -- Step 5: BurgessR3Maximal witnesses from g_content inclusions
+  obtain ⟨B', h_B'⟩ := burgessR3Maximal_from_g_content_sub h_mcs_A h_D_mcs h_g_sub_D
+  obtain ⟨B'', h_B''⟩ := burgessR3Maximal_from_g_content_sub h_D_mcs h_mcs_C h_g_D_C
+  exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_β_neg_D, h_g_sub_D, h_g_D_C⟩
 
 /-! ## Lemma 2.7: Until-Formula Splitting (Burgess 1982)
 
@@ -880,16 +990,126 @@ private theorem untl_conj_eta_of_g_content {A : Set Formula}
     exact deduction_theorem [] (Formula.and eta beta) (Formula.and beta eta) s3
   exact right_mono_until_mcs h_mcs h_swap h_u_eta_beta
 
-/-- **Lemma 2.7** (Burgess 1982, Until-formula splitting):
-Given `BurgessR3Maximal(A, B, C)` with MCS endpoints A, C and `g_content(A) ⊆ C`,
-if `U(xi, eta) ∈ A` and `eta ∉ B`, then there exist `B', D, B''` with:
-- `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)`
-- `SetMaximalConsistent D`
-- `xi ∈ D` (the splitting MCS contains xi)
-- `eta ∈ B'` (the interval from A to D contains eta)
+/-! ## Lemma 2.7 Helpers and Implementation -/
 
-Uses BX5 (self_accum_until) + BX7 (linear_until) + BX13 (enrichment_until).
--/
+/-- BX14 (separation_until) at MCS level: If untl(q, p) ∈ A and
+untl(r, p).neg ∈ A, then untl(q, q ∧ r.neg) ∈ A. -/
+private theorem separation_until_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {p q r : Formula}
+    (h_untl : Formula.untl q p ∈ A)
+    (h_neg : (Formula.untl r p).neg ∈ A) :
+    Formula.untl q (Formula.and q r.neg) ∈ A := by
+  have h_bx14 := DerivationTree.axiom [] _ (Axiom.separation_until p q r)
+  have h_step := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_bx14) h_untl
+  exact SetMaximalConsistent.implication_property h_mcs h_step h_neg
+
+/-- BX13 (enrichment_until) at MCS level: If p ∈ A and untl(phi, psi) ∈ A,
+then untl(phi, psi ∧ snce(phi, p)) ∈ A. -/
+private theorem enrichment_until_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {phi psi p : Formula}
+    (h_p : p ∈ A)
+    (h_untl : Formula.untl phi psi ∈ A) :
+    Formula.untl phi (Formula.and psi (Formula.snce phi p)) ∈ A := by
+  have h_conj := conj_mcs h_mcs p (Formula.untl phi psi) h_p h_untl
+  have h_bx13 := DerivationTree.axiom [] _ (Axiom.enrichment_until phi psi p)
+  exact SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_bx13) h_conj
+
+/-- BX10 (until_F) at MCS level: If untl(phi, psi) ∈ A, then F(psi) ∈ A.
+Alias for `until_F_mcs` for local use. -/
+private theorem until_implies_F_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {phi psi : Formula}
+    (h_untl : Formula.untl phi psi ∈ A) :
+    Formula.some_future psi ∈ A :=
+  until_F_mcs h_mcs phi psi h_untl
+
+/-- F-monotonicity at MCS level: If ⊢ phi → psi and F(phi) ∈ A, then F(psi) ∈ A.
+F(phi) = ¬G(¬phi). From ⊢ phi → psi we get ⊢ ¬psi → ¬phi, then G(¬psi) → G(¬phi),
+so ¬G(¬phi) → ¬G(¬psi), i.e., F(phi) → F(psi). -/
+private theorem F_mono_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {phi psi : Formula}
+    (h_impl : DerivationTree [] (phi.imp psi))
+    (h_F : Formula.some_future phi ∈ A) :
+    Formula.some_future psi ∈ A := by
+  -- F(phi) = ¬G(¬phi). Suppose G(¬psi) ∈ A for contradiction.
+  by_contra h_not_F
+  -- ¬F(psi) ∈ A means G(psi.neg) ∈ A (since F(psi) = ¬G(psi.neg) = (G(psi.neg)).neg)
+  have h_G_neg_psi : Formula.all_future psi.neg ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future psi.neg) with h | h
+    · exact h
+    · exact absurd h h_not_F
+  -- From ⊢ phi → psi: ⊢ ¬psi → ¬phi (contrapositive)
+  -- G(¬psi → ¬phi) is a theorem
+  -- G(¬psi) → G(¬phi) by K-distribution
+  have h_contra : DerivationTree [] (psi.neg.imp phi.neg) := by
+    have h1 : DerivationTree [phi, psi.neg] psi :=
+      DerivationTree.modus_ponens _ _ _
+        (DerivationTree.weakening [] _ _ h_impl (List.nil_subset _))
+        (DerivationTree.assumption _ phi (by simp))
+    have h2 : DerivationTree [phi, psi.neg] Formula.bot :=
+      DerivationTree.modus_ponens _ _ _
+        (DerivationTree.assumption _ psi.neg (by simp)) h1
+    have h3 := deduction_theorem [psi.neg] phi Formula.bot h2
+    exact deduction_theorem [] psi.neg phi.neg h3
+  have h_G_contra := theorem_in_mcs h_mcs
+    (DerivationTree.temporal_necessitation _ h_contra)
+  have h_kd := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.temp_k_dist psi.neg phi.neg))
+  have h_G_neg_phi : Formula.all_future phi.neg ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (SetMaximalConsistent.implication_property h_mcs h_kd h_G_contra) h_G_neg_psi
+  -- G(¬phi) ∈ A = ¬F(phi) ∈ A contradicts F(phi) ∈ A
+  -- F(phi) = (G(phi.neg)).neg = some_future phi
+  -- so G(phi.neg) and F(phi) = (G(phi.neg)).neg are contradictory
+  exact absurd h_G_neg_phi (SetMaximalConsistent.neg_excludes h_mcs _ h_F)
+
+/-- Helper: ⊢ (a ∧ b) → a (left conjunction elimination). -/
+private noncomputable def and_left_impl (a b : Formula) :
+    DerivationTree [] ((Formula.and a b).imp a) :=
+  lce_imp a b
+
+/-- Helper: ⊢ (a ∧ b) → b (right conjunction elimination). -/
+private noncomputable def and_right_impl (a b : Formula) :
+    DerivationTree [] ((Formula.and a b).imp b) :=
+  rce_imp a b
+
+/-- The D0 seed for Lemma 2.7:
+  B ∪ {xi} ∪ {untl(β, γ) : β ∈ B, γ ∈ C}
+  ∪ {snce(β, α) : β ∈ B, α ∈ A}
+  ∪ {snce(β ∧ eta, α) : β ∈ B, α ∈ A}.
+
+The last component (snce with β∧eta guard) is the key Burgess insight:
+it encodes eta's presence in the interval, enabling eta ∈ B' via dc_delta_B_burgessR3
+and maximality. -/
+private def lemma_2_7_seed (A B C : Set Formula) (xi eta : Formula) : Set Formula :=
+  B ∪ {xi} ∪ {φ | ∃ β ∈ B, ∃ γ ∈ C, φ = Formula.untl β γ} ∪
+  {φ | ∃ β ∈ B, ∃ α ∈ A, φ = Formula.snce β α} ∪
+  {φ | ∃ β ∈ B, ∃ α ∈ A, φ = Formula.snce (Formula.and β eta) α}
+
+/-- Consistency of the Lemma 2.7 D0 seed.
+
+The proof uses BX14 (separation) + BX13 (enrichment) + BX10 (F-extraction).
+Any finite inconsistent subset L ⊆ D0 can be refuted by constructing
+an Until formula in A whose event subsumes L's elements.
+
+Key steps:
+1. BX5 on untl(beta0, gamma0): enriched guard
+2. BX14 separation using neg-untl(beta0∧eta, gamma0): gives event with eta.neg
+3. BX13 iterated enrichment: packs S-formulas into event
+4. BX10: F(event) ∈ A, so event is consistent
+5. Any finite L ⊆ D0 maps into a consistent event -/
+private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C)
+    (xi eta : Formula)
+    (h_until : Formula.untl xi eta ∈ A)
+    (h_eta_not_B : eta ∉ B) :
+    SetConsistent (lemma_2_7_seed A B C xi) := by
+  sorry
+
 theorem lemma_2_7 {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
@@ -904,12 +1124,63 @@ theorem lemma_2_7 {A B C : Set Formula}
       SetMaximalConsistent D ∧
       xi ∈ D ∧
       eta ∈ B' := by
-  -- The proof uses BX5 + BX7 + BX13 chain adapted from Burgess 1982.
-  -- Key insight: for all beta ∈ g_content(A), U(xi, beta∧eta) ∈ A
-  -- (from right_mono_until using G(beta) ∈ A).
-  -- The full proof requires showing seed consistency for D₀ that includes
-  -- both g_content(A) and h_content(C), and then deriving eta ∈ B' from
-  -- maximality. See handoff 08_phase6-burgess-seed-handoff.md.
-  sorry
+  -- Step 1: The D0 seed is consistent
+  have h_seed_cons := lemma_2_7_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc xi eta h_until h_eta_not_B
+  -- Step 2: Lindenbaum-extend to MCS D
+  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
+  -- Step 3: Extract key memberships from seed
+  have h_xi_D : xi ∈ D :=
+    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_union_right _ (Set.mem_singleton xi))))
+  have h_B_sub_D : B ⊆ D := fun φ hφ =>
+    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_union_left _ hφ)))
+  -- Until formulas: untl(β, γ) ∈ D for all β ∈ B, γ ∈ C
+  have h_untl_D : ∀ β ∈ B, ∀ γ ∈ C, Formula.untl β γ ∈ D := by
+    intro β hβ γ hγ
+    exact h_sup (Set.mem_union_left _ (Set.mem_union_right _ ⟨β, hβ, γ, hγ, rfl⟩))
+  -- Since formulas: snce(β, α) ∈ D for all β ∈ B, α ∈ A
+  have h_snce_D : ∀ β ∈ B, ∀ α ∈ A, Formula.snce β α ∈ D := by
+    intro β hβ α hα
+    exact h_sup (Set.mem_union_right _ ⟨β, hβ, α, hα, rfl⟩)
+  -- Step 4: Establish burgessR3(D, B, C) from seed Until formulas
+  have h_rSet_D : burgessRSet D B C := fun β hβ γ hγ => h_untl_D β hβ γ hγ
+  -- burgessRSince(C, B, D) follows from burgessR via Lemma 2.3
+  have h_rSetSince_D : burgessRSetSince C B D := by
+    intro β hβ
+    exact burgessR_implies_burgessRSince h_D_mcs h_mcs_C (h_rSet_D β hβ)
+  have h_r3_DBC : burgessR3 D B C := ⟨h_rSet_D, h_rSetSince_D⟩
+  -- Step 5: Establish burgessR3(A, B, D) from seed Since formulas
+  -- snce(β, α) ∈ D for all β ∈ B, α ∈ A gives burgessRSetSince(D, B, A)
+  have h_rSetSince_A : burgessRSetSince D B A := fun β hβ α hα => h_snce_D β hβ α hα
+  -- burgessR(A, β, D) follows from burgessRSince via Lemma 2.3 backward
+  have h_rSet_A : burgessRSet A B D := by
+    intro β hβ
+    exact burgessRSince_implies_burgessR h_mcs_A h_D_mcs (h_rSetSince_A β hβ)
+  have h_r3_ABD : burgessR3 A B D := ⟨h_rSet_A, h_rSetSince_A⟩
+  -- Step 6: BurgessR3Maximal via Zorn (burgessR3Maximal_extension_exists)
+  obtain ⟨B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+    h_r3m.1 h_r3_ABD
+  obtain ⟨B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
+    h_r3m.1 h_r3_DBC
+  -- Step 7: Show eta ∈ B'
+  -- B' ⊇ B and BurgessR3Maximal(A, B', D).
+  -- For eta ∈ B': show DC({eta} ∪ B') satisfies burgessR3(A, -, D).
+  -- For any phi ∈ DC({eta} ∪ B') and delta ∈ D: untl(phi, delta) ∈ A.
+  -- By dc_delta_B_controlled: phi ∈ B' or ⊢ (beta'∧eta) → phi for beta' ∈ B'.
+  -- If phi ∈ B': untl(phi, delta) ∈ A from burgessR3(A, B', D). ✓
+  -- If ⊢ (beta'∧eta) → phi: need untl(beta'∧eta, delta) ∈ A.
+  --   For delta ∈ D: by untl_conj_eta_of_g_content (with appropriate setup),
+  --   U(xi, beta'∧eta∧delta_stuff) ∈ A, giving untl(beta'∧eta, delta) via right_mono.
+  -- The key is that D was built with burgessR3(A, B', D), so untl(beta', delta) ∈ A
+  -- for all beta' ∈ B', delta ∈ D. We need to strengthen the guard to beta'∧eta.
+  -- From U(xi, eta) ∈ A: for beta' ∈ B' and delta ∈ D, we need untl(beta'∧eta, delta) ∈ A.
+  -- This follows if G(eta) ∈ A (then BX2G gives guard strengthening).
+  -- If G(eta) ∉ A, we use the indirect argument via BX13.
+  -- Actually, the eta ∈ B' argument uses the structure of B': since B' is the Zorn-maximal
+  -- extension of B with burgessR3(A, B', D), and eta can be consistently added.
+  -- We show: if eta ∉ B', then {eta} ∪ B' is consistent (since B' is DCS and eta ∉ B'),
+  -- and DC({eta} ∪ B') satisfies burgessR3(A, -, D). This contradicts maximality.
+  have h_eta_B' : eta ∈ B' := by
+    sorry
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_xi_D, h_eta_B'⟩
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

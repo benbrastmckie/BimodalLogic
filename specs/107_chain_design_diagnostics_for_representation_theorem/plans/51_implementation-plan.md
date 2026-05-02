@@ -146,7 +146,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed [NOT STARTED]
+### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed [IN PROGRESS]
 
 **Goal**: Replace the non-Burgess seed in `lemma_2_6_splitting` with Burgess's actual D0 seed, making it sorry-free. This also closes the `g_content_sub_B` and `h_content_sub_B` dependency chain (deleted in Phase 0).
 
@@ -195,7 +195,7 @@ D0 = {S(alpha, beta) : alpha in A, beta in B}
 
 ---
 
-### Phase 3: Implement lemma_2_7 (Until-Formula Splitting) [NOT STARTED]
+### Phase 3: Implement lemma_2_7 (Until-Formula Splitting) [IN PROGRESS]
 
 **Goal**: Implement the body of `lemma_2_7` (Burgess Lemma 2.7, p. 371), which handles Until-formula splitting. This is needed before Phase 6 because the C5 extension in the n>0 case (full Lemma 2.10) uses lemma_2_7 to split Until-formula witnesses.
 
