@@ -38,7 +38,7 @@ technical_debt:
 ```
 
 1. **113** [COMPLETED] — Open guard refactoring for Until/Since semantics
-2. **107** [RESEARCHED] — Burgess chronicle construction for BX representation theorem (depends on 113)
+2. **107** [PLANNED] — Burgess chronicle construction for BX representation theorem (depends on 113)
 3. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
 
 ### 3. Independent Completeness Paths (parallel)
@@ -132,8 +132,8 @@ technical_debt:
 ---
 
 ### 107. Burgess chronicle construction for BX representation theorem
-- **Effort**: 16 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 22 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
