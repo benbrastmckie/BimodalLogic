@@ -19,77 +19,184 @@ The architectural changes from v51 remain valid: (1) extend g during point inser
 
 Definition of done: `#print axioms dd_countermodel_chronicle` clean, `lake build` succeeds.
 
-### Research Integration
+### Current Sorry Census (2026-05-02)
 
-- **Report 52** (Phase 2 blocker analysis): **CRITICAL FINDING** - The Since condition proof is fundamentally blocked. `snce_left_mono_thm` requires `⊢ beta → (beta ∧ β)` which is false. No additional BX axiom can fix this without being semantically unsound. Solution: use Burgess's direct seed construction, bypassing `dc_delta_B_burgessR3` entirely.
-- **Report 51** (team research, 4 teammates): Overturned dead-code diagnosis, identified g-function phantom and incomplete C5 as root causes. Produced streamlined 6-phase plan. Confirmed C4/C4' and FUC/FSC are independent workstreams. Identified non-Burgess seed helpers as true dead code (~150 lines safe to delete).
-- **Report 50** (sorry architecture audit): Census of 22 sorry sites, 4 on critical path (correct for C4+FUC/FSC, but misses 3 upstream PointInsertion sorries that feed them). Dead-code diagnosis was wrong per report 51.
-- **Handoff 49** (phase 3 seed analysis): Proved `g_content_sub_B` is unprovable for MCS B in BX without density. Confirmed Burgess D0 seed bypass is the correct approach.
-- **Revision reason (v51->v52)**: Report 52 identified a fundamental blocker in the Phase 2 approach. The Since condition for deductive closure cannot be proved. New approach: direct seed construction following Burgess's original proof strategy.
+| # | Line | Theorem | Phase | Difficulty | Status |
+|---|------|---------|-------|-----------|--------|
+| 1 | ~1126 | `burgess_D0_finite_subset_consistent` | 2 | HARD (Burgess compression) | OPEN |
+| 2 | ~1150 | `burgess_D0_finite_subset_consistent_incons` | 2 | MEDIUM (same as #1 but simpler) | OPEN |
+| 3 | ~1586 | `lemma_2_7_seed_consistent` | 3 | HARD (same pattern as #1) | OPEN |
+| 4 | ~1659 | `h_eta_B'` in `lemma_2_7` | 3 | MEDIUM (BX7 + maximality) | **CLOSED** (2026-05-02) |
 
-### Prior Plan Reference
+**Total**: 3 sorry sites remain. Build passes. Site 4 closed via DC({eta}) Zorn restructure.
 
-Plan v51 had 9 phases (0-8). Phases 0, 1, 3-8 carry over unchanged. Phase 2 is **revised** based on Report 52 findings:
+---
 
-- **OLD Phase 2 approach**: Prove `dc_delta_B_burgessR3` showing `DC({β} ∪ B)` satisfies burgessR3, then extract Until/Since conditions.
-- **NEW Phase 2 approach**: Construct `burgess_D0_splitting` seed directly, prove consistency via BX5+BX14+BX10 chain, bypass Since condition entirely.
+## AGENT INSTRUCTIONS: Closing the 3 Remaining Sorry Sites
 
-Key insight from Report 52: Burgess does **NOT** prove `burgessR3` for `DC({β} ∪ B)`. Instead, he constructs D₀ directly and extends to MCS D via Lindenbaum. The B', B'' are extracted **after** D exists via Zorn, not constructed before.
+**READ THIS FIRST.** All 3 remaining sorry sites require the same proof. Previous agents wasted time on dead-end approaches. This section gives the EXACT correct argument. Do not deviate.
 
-### Roadmap Alignment
+### The Goal
 
-- Advances: "TM is complete with respect to TaskFrames over totally ordered abelian groups" (representation theorem)
-- Chronicle pathway is the primary completeness path (ROADMAP: Active Metalogic Paths)
-- Closing all chronicle sorry sites achieves the chronicle sorry-free milestone
-- Unblocks task 95 (#print axioms audit)
+Prove `SetConsistent (burgess_D0_seed A B C β)` where:
+```
+burgess_D0_seed A B C β = B ∪ {β.neg} ∪ {untl(β',γ) : β'∈B, γ∈C} ∪ {snce(β',α) : β'∈B, α∈A}
+```
 
-## Goals & Non-Goals
+`SetConsistent S` means: `∀ L : List Formula, (∀ φ ∈ L, φ ∈ S) → ¬Nonempty (DerivationTree L Formula.bot)`.
 
-**Goals**:
-- Clean non-Burgess cruft from PointInsertion.lean (user-requested first phase)
-- Verify BX13/BX14 provide A3a/A4a roles for Burgess D0 seed consistency proof
-- **REVISED**: Replace blocked approach in Phase 2 with Burgess's direct seed construction
-- Implement `burgess_D0_splitting` seed directly (already defined)
-- Prove `splitting_seed_consistent` using BX5+BX14+BX10 chain, bypassing `dc_delta_B_burgessR3`
-- Use Lindenbaum extension to MCS D, then extract B', B'' via Zorn (BurgessR3Maximal)
-- Verify `lemma_2_6_splitting` is sorry-free with new approach
-- Implement lemma_2_7 body (Burgess Lemma 2.7, Until-formula splitting)
-- Extend g during point insertion: modify EliminationResult to carry new g-values, update each elimination function (C4, C4', C5, C5', density) to assign proper B, B', B'' values from Lemmas 2.4, 2.6, 2.7
-- Thread c0+c2' through the omega_chain as joint invariant (not just c0)
-- Close C4/C4' sorry sites using lemma_2_6_splitting with c2' available from the omega_chain invariant
-- Implement full Lemma 2.10 (C5 with guard) including n>0 case via Lemma 2.7/2.8
-- Prove limit_satisfies_c5_full connecting finite g-values to limit_g
-- Close FUC/FSC via Burgess Claim 2.11: C5 gives eta in g(x,y), C3 gives g(x,y) subset f(z)
-- Achieve sorry-free `dd_countermodel_chronicle`
+### Dead Ends (DO NOT ATTEMPT)
+
+1. ❌ Show D₀ ⊆ single MCS (impossible: B⊄A, snce∈C not A)
+2. ❌ Show D₀ ⊆ {β.neg}∪g_content(A) (B⊄g_content(A) without density)
+3. ❌ Filter L into subsets and derive ⊥ from each (weakening goes wrong direction)
+4. ❌ D₀ ⊆ {β.neg}∪g_content(A)∪h_content(C) (seed can be genuinely inconsistent)
+5. ❌ Deduction theorem separation without the event construction (gives nothing useful)
+
+### The Correct Proof (Burgess 1982, p.370-371)
+
+**Structure**: Given finite `L ⊆ D₀` and `d : DerivationTree L ⊥`, derive `False`.
+
+**Step 1: Classify L elements.** Each φ∈L is one of:
+- (a) φ∈B (a B-element, call these b₁,...,bₖ)
+- (b) φ = β.neg
+- (c) φ = untl(β'ᵢ, γᵢ) with β'ᵢ∈B, γᵢ∈C (these are in A by burgessR3)
+- (d) φ = snce(β'ⱼ, αⱼ) with β'ⱼ∈B, αⱼ∈A (these are in C by burgessR3)
+
+**Step 2: Form the compressed conjunction.** Define:
+- `b = β₀ ∧ b₁ ∧ ... ∧ bₖ ∧ β'₁ ∧ ... ∧ β'ₘ` (conjunction of ALL B-guards from L, plus β₀ from maximality). Since B is DCS (closed under ∧): b∈B.
+- `γ̂ = γ₀ ∧ γ₁ ∧ ... ∧ γₙ` (conjunction of all C-events from Until formulas, plus γ₀ from maximality). Since C is MCS: γ̂∈C.
+- α₁,...,αₘ: the A-events from Since formulas (each αⱼ∈A).
+
+**Step 3: BX chain produces F(event)∈A.** Starting from:
+- `untl(b, γ̂) ∈ A` (from burgessR3: h_r3.1 b hb γ̂ hγ̂)
+- `¬untl(b∧β, γ̂) ∈ A` (from maximality, via left_mono contrapositive from ¬untl(β₀∧β, γ₀)∈A)
+
+Apply in sequence:
+1. **BX5** (`self_accum_until_mcs`): `untl(b∧untl(b,γ̂), γ̂) ∈ A`
+2. **BX14** (`separation_until_mcs`): `untl(q, q∧(b∧β).neg) ∈ A` where `q = b∧untl(b,γ̂)`
+3. **BX13** (`enrichment_until_mcs`) applied m times, once per αⱼ∈A:
+   - First: `untl(q, (q∧(b∧β).neg) ∧ snce(q, α₁)) ∈ A` (uses α₁∈A ← THIS IS THE KEY: p=αⱼ∈A, NOT snce(...)∈C)
+   - Second: `untl(q, event₁ ∧ snce(q, α₂)) ∈ A` (uses α₂∈A)
+   - ... repeat for each αⱼ
+4. **BX10** (`until_implies_F_mcs`): `F(big_event) ∈ A` where big_event = q∧(b∧β).neg∧snce(q,α₁)∧...∧snce(q,αₘ)
+
+### CRITICAL: Why BX13 Works Here
+
+BX13 (A3a): `p ∧ untl(guard, event) → untl(guard, event ∧ snce(guard, p))`
+
+The operand `p` is **α∈A** (the Since-event argument), NOT the snce-formula itself.
+- The snce-formula `snce(β',α)` lives in C
+- But the operand for BX13 is `α` which lives in A ✓
+- BX13 PRODUCES `snce(guard, α)` as part of the enriched event
+
+Previous agents confused "snce(β',α)∈C" with "p=snce(β',α) needs to be in A". WRONG. p=α∈A.
+
+**Step 4: big_event implies each element of L.** For each φ∈L, construct `DerivationTree [big_event] φ`:
+
+- **For bᵢ∈B**: big_event contains q = b∧untl(b,γ̂). Conjunction elimination: big_event⊢q⊢b⊢bᵢ (since b=∧...∧bᵢ∧...).
+- **For β.neg**: big_event contains (b∧β).neg. Combined with b (from q): big_event⊢β.neg. (Already proved as `h_event_implies_beta_neg` in the file!)
+- **For untl(β'ᵢ, γᵢ)**: big_event⊢q⊢untl(b,γ̂). Then:
+  - `left_mono` with ⊢b→β'ᵢ (conjunction elimination since b includes β'ᵢ): `untl(b,γ̂)→untl(β'ᵢ,γ̂)` 
+  - `right_mono` with ⊢γ̂→γᵢ (conjunction elimination since γ̂ includes γᵢ): `untl(β'ᵢ,γ̂)→untl(β'ᵢ,γᵢ)`
+  - Combined: big_event⊢untl(β'ᵢ,γᵢ) ✓
+- **For snce(β'ⱼ, αⱼ)**: big_event contains snce(q, αⱼ) (from BX13 step j). Then:
+  - `snce_left_mono` with ⊢q→β'ⱼ (q contains b which contains β'ⱼ): `snce(q,αⱼ)→snce(β'ⱼ,αⱼ)`
+  - Combined: big_event⊢snce(β'ⱼ,αⱼ) ✓
+
+**Step 5: Derive contradiction.**
+- From Step 4: `∀φ∈L, DerivationTree [big_event] φ`
+- Apply `derivation_from_implied [big_event] L ⊥ h_derives d` to get `DerivationTree [big_event] ⊥`
+- But `F(big_event)∈A` (Step 3), so big_event is consistent:
+  - If `⊢¬big_event` then `G(¬big_event)∈A` by TG, so `¬F(big_event)∈A`, contradicting `F(big_event)∈A`
+  - So `{big_event}` is consistent, meaning `¬Nonempty(DerivationTree [big_event] ⊥)`
+- Contradiction with `DerivationTree [big_event] ⊥`. QED.
+
+### Implementation Notes
+
+**Handling the finite list L**: The proof is parametric in L. You DON'T need to literally construct b, γ̂ from L at the term level. Instead:
+
+1. Use `Classical.choice` or `Finset` operations to extract the relevant guards/events from L
+2. Or: use the EXISTING β₀, γ₀ from the BX chain (already extracted in the file at lines ~1219-1232) and show they suffice. The key insight: β₀ is from maximality and γ₀∈C. For arbitrary L, we need b to include ALL B-guards. The simplest approach: take b = β₀ (already in B) and show the existing BX chain's event implies everything. This WON'T work for arbitrary B-elements in L.
+
+**Practical approach**: The proof needs to be parametric in L. Define helper:
+```lean
+private noncomputable def list_conj : List Formula → Formula
+  | [] => Formula.bot.imp Formula.bot  -- top (identity for ∧)
+  | [φ] => φ
+  | (φ :: rest) => Formula.and φ (list_conj rest)
+```
+
+Then prove:
+- `list_conj_mem_dcs`: If B is DCS and ∀φ∈L, φ∈B, then list_conj L ∈ B
+- `list_conj_implies_elem`: ∀φ∈L, DerivationTree [list_conj L] φ
+- `list_conj_mem_mcs`: If A is MCS and ∀φ∈L, φ∈A, then list_conj L ∈ A
+
+These are straightforward inductions on List.
+
+**For the inconsistent case** (site 2, β.neg∈B): Same proof but SIMPLER:
+- β.neg∈B means β.neg is just another B-element. No BX14 step needed.
+- Use untl(b, γ̂)∈A directly with BX5+BX13+BX10 (skip BX14).
+- The event is simpler: q∧snce(q,α₁)∧...∧snce(q,αₘ) where q=b∧untl(b,γ̂).
+- big_event⊢β.neg because β.neg∈B so β.neg is part of b (conjunction elimination).
+
+**For lemma_2_7_seed_consistent** (site 3): Same pattern but seed has 5th component `{snce(β∧eta, α) : β∈B, α∈A}`:
+- Additional snce formulas with guard β∧eta
+- Use BX13 with p=α∈A as before (same as sites 1-2)
+- The enriched event gets `snce(q, α)` which implies `snce(β∧eta, α)` via left_mono with ⊢q→(β∧eta) (since q contains b which contains β, and... wait, q may not contain eta)
+- For the 5th component: need snce(q, α)→snce(β∧eta, α). This requires ⊢q→(β∧eta). Since q=b∧untl(b,γ̂) and b includes β... but NOT eta. So need eta in q somehow.
+- Resolution: for lemma_2_7_seed, include xi (which is in the seed) and use the fact that untl(xi,eta)∈A to get F(eta)∈A, then include eta in the event via a slightly different chain. OR: include eta in b (but eta may not be in B).
+- Actually: the lemma_2_7 seed includes {xi} directly. And from untl(xi,eta)∈A + BX5+BX10: F(eta)∈A. Build a different event that includes eta. Alternatively: the left_mono for the 5th component uses ⊢q→β (not ⊢q→(β∧eta)), giving snce(q,α)→snce(β,α) but NOT snce(β∧eta,α).
+- CORRECT handling: Apply BX13 with p=α∈A TWICE for the 4th and 5th components, using different Until formulas. For the 5th component, start from `untl(xi∧b, eta∧γ̂)∈A` (derivable from BX7 on untl(xi,eta) and untl(b,γ̂)), then enrich from THAT chain. This gives snce(xi∧b, α) in the event, and ⊢(xi∧b)→(β∧eta) might not hold.
+- SIMPLEST correct handling: the 5th component formulas snce(β∧eta, α) can be derived from snce(q', α) where q' is a guard containing β∧eta. Build a SECOND BX13 chain from untl(xi∧b∧eta_stuff, ...) that produces snce with the right guard. This is complex but follows the same pattern.
+- For the FIRST implementation pass: handle sites 1 and 2 first (they don't have the 5th component issue). Site 3 can be deferred or handled similarly with appropriate guard choice.
+
+### Required Helper Lemmas (implement these FIRST)
+
+```lean
+-- 1. List conjunction (already may exist, search first)
+private noncomputable def list_conj : List Formula → Formula
+
+-- 2. Conjunction implies each element
+private theorem list_conj_implies_elem (L : List Formula) (φ : Formula) (h : φ ∈ L) :
+    DerivationTree [list_conj L] φ
+
+-- 3. DCS conjunction closure
+private theorem list_conj_mem_dcs {B : Set Formula} (h_dcs : SetDeductivelyClosed B)
+    (L : List Formula) (h : ∀ φ ∈ L, φ ∈ B) : list_conj L ∈ B
+
+-- 4. MCS conjunction closure
+private theorem list_conj_mem_mcs {A : Set Formula} (h_mcs : SetMaximalConsistent A)
+    (L : List Formula) (h : ∀ φ ∈ L, φ ∈ A) : list_conj L ∈ A
+
+-- 5. F(φ)∈A means {φ} is consistent (from seriality)
+private theorem consistent_of_F_mem {A : Set Formula} (h_mcs : SetMaximalConsistent A)
+    (φ : Formula) (h : Formula.some_future φ ∈ A) : ¬Nonempty (DerivationTree [φ] Formula.bot)
+
+-- 6. Bridge: consistent event + event implies all L elements → L consistent
+-- (This is derivation_from_implied + consistent_of_F_mem combined)
+```
+
+### Execution Order
+
+1. Implement helper lemmas 1-5 above
+2. Close sorry site 2 (inconsistent case — simpler, no BX14)
+3. Close sorry site 1 (consistent case — full BX chain)
+4. Close sorry site 3 (lemma_2_7 — same as site 1 with 5th component handling)
+
+---
+
+### Research Inputs
+
+Reports 50-52, Handoff 49. Key finding: Since condition for DC({β}∪B) is unprovable; use Burgess's direct D₀ construction instead. g_content ordering was a persistent distraction — proven wrong and archived.
+
+## Goals
+
+- Sorry-free `dd_countermodel_chronicle` (`#print axioms` clean)
 - Maintain `lake build` at each phase boundary
-- Update ROADMAP.md to reflect chronicle completion
-
-**Non-Goals**:
-- Proving Since condition for `DC({β} ∪ B)` (impossible per Report 52)
-- A4a removal (separate task 115, post-107 cleanup)
-- BXCanonical sorry closure (task 109, secondary path)
-- Removing BX7 (A7a coexists alongside BX7)
-- Full Burgess Lemma 2.8 formalization (only needed to the extent required by C5 n>0)
-- Density axiom addition (Burgess D0 bypasses the density gap entirely)
-
-## Risks & Mitigations
-
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| **Since condition unprovable** (Report 52) | H | H | **MITIGATED**: New approach bypasses `dc_delta_B_burgessR3` entirely. Use direct seed construction per Burgess 1982. |
-| BX5+BX14+BX10 chain translation is complex | H | M | Report 52 provides detailed axiom mapping. Direct construction is simpler than the blocked approach. Test each step incrementally. |
-| Lindenbaum extension after direct construction has gaps | M | L | The D0 seed includes all needed formulas: neg-δ from maximality, g_content(A), h_content(C). Standard Lindenbaum applies. |
-| BurgessR3Maximal extraction (B', B'') from D has issues | M | L | Zorn's lemma application is standard. B' = {φ : r(A, φ, D)}, B'' = {φ : r(D, φ, C)} via maximality. |
-| EliminationResult refactor breaks existing proofs | M | M | The refactor adds fields (c2', g-value witnesses) without removing existing ones. Existing proofs that use `g_agrees` will need updating to `g_agrees_old` (g agreement on old pairs only). Build at each step. |
-| Threading c2' through omega_chain is harder than c0 alone | H | M | Each elimination function must prove c2' for its output chronicle. The singleton satisfies c2' vacuously. For new adjacent pairs involving the inserted point, the g-value IS the B/B'/B'' from the insertion lemma. For old adjacent pairs, g is unchanged. |
-| Lemma 2.7 BX5+BX7+BX13 chain fails to compile | M | M | The helpers `right_mono_until_mcs` and `untl_conj_eta_of_g_content` already exist in PointInsertion.lean. The D0 pattern from Phase 2 (revised) serves as template. |
-| Full Lemma 2.10 with n>0 case requires Lemma 2.8 | M | L | Lemma 2.8 is the Since-direction mirror of Lemma 2.7. The structure is identical modulo Since/Until swap. If time-constrained, stub it with a clearly documented sorry. |
-| FUC/FSC Claim 2.11 argument requires connecting finite g-values to limit_g | H | M | The limit_g definition (ChronicleConstruction.lean:837) is {phi \| forall y in limit_dom, x < y < z -> phi in limit_f(y)}. With proper finite g-values threaded, limit_g(x,y) contains the guard phi because C5 elimination guarantees phi in g_n(x,y) at finite stage n, and g_n(x,y) subset f_n(z) for intermediate z via c2' + C3, which propagates to limit_f(z). |
-| Effort underestimation (20h budget for 9 phases) | M | M | Each phase independently committable. Phases 2 and 3 can run in parallel. Partial completion acceptable with sorry stubs clearly marking remaining work. |
+- Follow Burgess 1982 faithfully (not simplifications that break)
 
 ## Implementation Phases
-
-**Dependency Analysis**:
 
 | Wave | Phases | Blocked by |
 |------|--------|------------|
@@ -101,188 +208,37 @@ Key insight from Report 52: Burgess does **NOT** prove `burgessR3` for `DC({β} 
 | 6 | 7 | 6 |
 | 7 | 8 | 7 |
 
-Phases within the same wave can execute in parallel.
-
 ---
 
 ### Phase 0: Clean Non-Burgess Cruft [COMPLETED]
 
-**Goal**: Remove dead code and stale comments that caused confusion during previous implementation attempts, establishing a clean working baseline. This was specifically requested by the user to avoid distractions.
-
-**Tasks**:
-- [ ] Delete `g_content_sub_B` private theorem (PointInsertion.lean ~line 824-857) -- unprovable density gap sorry, replaced by Burgess D0 approach
-- [ ] Delete `h_content_sub_B` private theorem (PointInsertion.lean ~line 860-879) -- same density gap sorry
-- [ ] Delete `splitting_seed_consistent` (PointInsertion.lean ~line 889-907) -- uses non-Burgess seed depending on deleted helpers
-- [ ] Delete `G_conj_strengthen` helper (~line 772) -- only used by deleted g_content_sub_B
-- [ ] Delete `H_conj_strengthen` helper (~line 803) -- only used by deleted h_content_sub_B
-- [ ] Update stale docstring comments (lines 881-888) referencing the density gap
-- [ ] Remove stale comment block referencing prior archival (lines 1054-1061 area)
-- [ ] Ensure `lemma_2_6_splitting` and `lemma_2_7` stubs are preserved (these are rewrite targets, NOT dead code)
-- [ ] Run `lake build` to confirm no breakage
-
-**Timing**: 1 hour
-
-**Depends on**: none
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- delete ~150 lines of dead helpers, update comments
-
-**Verification**:
-- `lake build` succeeds
-- `lemma_2_6_splitting` and `lemma_2_7` stubs still present (with sorry)
-- No references to `g_content_sub_B`, `h_content_sub_B`, `splitting_seed_consistent`, `G_conj_strengthen`, `H_conj_strengthen` in active code
-- PointInsertion.lean line count reduced by ~150
+Deleted ~150 lines of dead helpers (g_content_sub_B, h_content_sub_B, splitting_seed_consistent, etc.).
 
 ---
 
-### Phase 1: Verify BX Axiom Sufficiency for D0 Seed [COMPLETED]
+### Phase 1: Verify BX Axiom Sufficiency [COMPLETED]
 
-**Goal**: Confirm that BX13 (enrichment_until) and BX14 (separation_until) provide the roles of Burgess's A3a and A4a in the D0 seed consistency proof, before committing to implementation.
-
-**Tasks**:
-- [ ] Use `lean_hover_info` on BX13 (`enrichment_until`) to check exact statement
-- [ ] Use `lean_hover_info` on BX14 (`separation_until`) to check exact statement
-- [ ] Map Burgess's D0 consistency proof steps to BX axioms:
-  - Step 1: R(A,B,C) with delta not in B gives beta0 in B, gamma0 in C with neg-U(gamma0, beta0 AND delta) in A
-  - Step 2: BX5 on U(gamma,beta): U(gamma AND U(gamma,beta), beta) in A
-  - Step 3: BX14 on step 2 output: separation step
-  - Step 4: BX10 (until_F) on step 3 output: eventuality step
-- [ ] Verify `burgessR3_gamma_not_in_B` (RRelation.lean:836) provides the maximality extraction needed for step 1
-- [ ] Document any gaps or adjustments needed in a brief note (inline comment or handoff)
-
-**Timing**: 0.5 hours
-
-**Depends on**: none
-
-**Files to modify**:
-- None (read-only verification). If gaps found, create handoff file.
-
-**Verification**:
-- BX13, BX14, BX10 confirmed sufficient (or gaps identified with mitigation)
-- Axiom mapping documented for use in Phase 2
+Confirmed BX5/BX13/BX14/BX10 map to Burgess's A5a/A3a/A4a/Lemma 2.2.
 
 ---
 
-### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed (REVISED per Report 52) [PARTIAL]
+### Phase 2: Burgess D₀ Seed Construction [PARTIAL]
 
-**Status**: Implementation attempted, blocker confirmed.
+**Status**: [PARTIAL] — Architecture complete. 2 sorry sites remain (seed consistency).
 
-**Blocker**: The Since condition proof is fundamentally blocked per Report 52. Attempting to use `dc_delta_B_burgessR3` requires `snce_left_mono_thm` with `⊢ beta → (beta ∧ β)` which is **false**.
+**Completed**: `burgess_D0_seed` defined, `lemma_2_6_splitting` body sorry-free (Lindenbaum + Lemma 2.3 + Zorn), g_content dead code archived, BX5+BX14+BX10 chain proved, `derivation_from_implied` proved, `{β.neg}∪B` consistent proved.
 
-**Solution**: Bypass `dc_delta_B_burgessR3` entirely. Use Burgess's direct D0 seed construction:
-1. Construct D0 = {S(α,β)} ∪ {¬δ} ∪ {U(γ,β)} directly
-2. Prove consistency via BX5+BX14+BX10 chain
-3. Lindenbaum extend to MCS D
-4. Extract B', B'' via Zorn AFTER D exists
-
-**Implementation needed**: Restructure `splitting_seed_consistent` to remove maximality contradiction argument and implement direct seed consistency proof.
-
-**Status**: **APPROACH CHANGED** per Report 52. The old approach attempting to prove `dc_delta_B_burgessR3` with Since condition is **fundamentally blocked**. New approach: direct seed construction following Burgess 1982, bypassing `dc_delta_B_burgessR3` entirely.
-
-**Critical Finding from Report 52**:
-- **Blocker**: Since condition for `dc_delta_B_burgessR3` requires `⊢ beta → (beta ∧ β)` which is **false**
-- **Root Cause**: `snce_left_mono_thm` and `snce_left_mono_H` cannot provide the needed strengthening
-- **Solution**: Burgess does NOT prove `burgessR3` for `DC({β} ∪ B)`. Instead, construct D₀ directly and extend via Lindenbaum.
-
-**Goal**: Replace the blocked approach with Burgess's direct seed construction, making `lemma_2_6_splitting` sorry-free. This also closes the dependency chain on unprovable Since condition.
-
-**Burgess D0 seed (Lemma 2.6, pp. 370-371)**:
-```
-D0 = {S(alpha, beta) : alpha in A, beta in B}
-     union {neg-delta}
-     union {U(gamma, beta) : gamma in C, beta in B}
-```
-
-**REVISED D0 consistency proof chain** (Report 52, Section 2.2):
-1. From R(A,B,C) with delta not in B: obtain beta0 in B, gamma0 in C with neg-U(gamma0, beta0 AND delta) in A (via `burgessR3_gamma_not_in_B` or maximality)
-2. WLOG beta0=beta, gamma0=gamma (replace with conjunctions via right_mono)
-3. **BX5 (self_accum_until)**: U(gamma0 AND U(gamma0, beta0), beta0) in A
-4. **BX14 (separation_until)**: U(beta0 AND U(gamma0, beta0) AND neg-delta, beta0) in A
-5. **BX10 (until_F)**: F(beta0 AND U(gamma0, beta0) AND neg-delta) in A
-6. **Key**: The event formula implies neg-delta, proving {neg-delta} ∪ g_content(A) is consistent
-7. **Lindenbaum extension** to MCS D with D0 subset D
-8. **Extract B', B''** via Zorn: B' = {φ : r(A, φ, D)}, B'' = {φ : r(D, φ, C)}
-
-**Why This Works** (Report 52, Section 3.3):
-- We do NOT need to prove `burgessR3` for `DC({β} ∪ B)`
-- We ONLY need: (1) MCS D with neg-δ ∈ D, (2) g_content(A) ⊆ D, (3) h_content(C) ⊆ D
-- Then construct B', B'' from D using Zorn
-- The seed consistency uses **direct construction**, not **deductive closure extension**
-
-**REVISED Tasks**:
-- [ ] **Case 1**: {β} ∪ B is inconsistent → β.neg ∈ B (easy case)
-- [ ] **Case 2**: {β} ∪ B is consistent → need Until failure witness
-  - [ ] Extract beta0 ∈ B, gamma0 ∈ C with neg-U(gamma0, beta0 ∧ β) ∈ A
-  - [ ] Apply BX5: U(beta0 ∧ U(beta0, gamma0), gamma0) in A
-  - [ ] Apply BX14 with neg-U(...): U(beta0 ∧ U(beta0, gamma0) ∧ β.neg, gamma0) in A
-  - [ ] Apply BX10: F(beta0 ∧ U(beta0, gamma0) ∧ β.neg) in A
-  - [ ] Prove event implies β.neg (propositional tautology)
-  - [ ] Prove {β.neg} ∪ g_content(A) consistent from F-event
-  - [ ] Prove h_content(C) ⊆ D (similar argument using duality)
-- [ ] Define `burgess_D0_splitting` computing D0 from A, B, C, delta
-- [ ] Prove `burgess_D0_splitting_consistent` following the revised BX5+BX14+BX10 chain
-- [ ] Rewrite `lemma_2_6_splitting` body:
-  - Lindenbaum extend D0 to MCS D
-  - Extract neg-delta in D (from seed)
-  - Derive burgessR3(A, -, D) from S-formulas in D
-  - Derive burgessR3(D, -, C) from U-formulas in D
-  - Obtain B', B'' via BurgessR3Maximal (Zorn) -- AFTER D exists
-- [ ] Verify `lemma_2_6_splitting` compiles sorry-free
-- [ ] Run `lake build`
-
-**Timing**: 5 hours (unchanged, but approach is now viable)
-
-**Depends on**: 1 (BX axiom sufficiency confirmed)
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- revised D0 seed consistency proof (~200 lines), rewritten lemma_2_6_splitting body (~50 lines)
-
-**Verification**:
-- `lemma_2_6_splitting` sorry-free
-- `splitting_seed_consistent` sorry-free
-- `lake build` succeeds
-- PointInsertion.lean sorry count: TBD (lemma_2_7 work remains)
+**Remaining**: `burgess_D0_finite_subset_consistent` (line ~1126) and `burgess_D0_finite_subset_consistent_incons` (line ~1150). **See AGENT INSTRUCTIONS section above for the exact proof.**
 
 ---
 
-### Phase 3: Implement lemma_2_7 (Until-Formula Splitting) [IN PROGRESS]
+### Phase 3: Implement lemma_2_7 (Until-Formula Splitting) [PARTIAL]
 
-**Status**: Proof strategy documented but NOT fully implemented. `lemma_2_7_seed_consistent` at line 1139 still has `sorry`. The `lemma_2_7` theorem body exists but several membership proofs were incorrectly replaced with `sorry` placeholders.
+**Status**: [PARTIAL] — 1 sorry site remains (`lemma_2_7_seed_consistent`, line ~1586).
 
-**Current State**:
-- `lemma_2_7_seed` definition exists
-- `lemma_2_7_seed_consistent` has proof strategy documented but not implemented
-- `lemma_2_7` body exists but has 5 sorry sites (lines 1161, 1162, 1164, 1166, 1206)
-- **BLOCKERS**: 
-  - `lemma_2_7_seed_consistent` sorry at line 1139
-  - Membership proofs in `lemma_2_7` need to be completed
+**Completed**: `lemma_2_7` body sorry-free (memberships, r-relations, Zorn, eta∈B' via DC({eta}) restructure). `h_eta_B'` **CLOSED** 2026-05-02.
 
-**Goal**: Implement the body of `lemma_2_7` (Burgess Lemma 2.7, p. 371), which handles Until-formula splitting. This is needed before Phase 6 because the C5 extension in the n>0 case (full Lemma 2.10) uses lemma_2_7 to split Until-formula witnesses.
-
-**Burgess Lemma 2.7**: Given BurgessR3Maximal(A, B, C) with U(xi, eta) in A and eta not in B, produce B', D, B'' with:
-- BurgessR3Maximal(A, B', D) and BurgessR3Maximal(D, B'', C)
-- SetMaximalConsistent D
-- xi in D (the splitting MCS contains the guard)
-- eta in B' (the interval from A to D contains the event)
-
-**D0 seed for Lemma 2.7**:
-```
-D0 = {S(alpha, beta AND eta) : alpha in A, beta in B}
-     union B
-     union {xi}
-     union {U(gamma, beta) : gamma in C, beta in B}
-```
-
-**Consistency proof uses BX5 + BX7 + BX13 chain** (Burgess p. 371):
-1. From eta not in B and maximality: obtain beta0 in B, gamma0 in C with neg-U(gamma0, beta0 AND eta) in A
-2. BX5 on U(xi, eta): U(xi AND U(xi,eta), eta) in A
-3. BX5 on U(beta0, gamma0): U(beta0 AND U(beta0,gamma0), gamma0) in A
-4. BX7 (linear_until) on these two enriched Until formulas: three-way disjunction D1 or D2 or D3
-5. Eliminate D1 and D2 using neg-U(beta0 AND eta, gamma0) in A + left_mono_until
-6. D3 survives: U(phi1 AND phi2, phi1 AND gamma0) in A where phi1 = xi AND U(xi,eta)
-7. BX10 gives F(phi1 AND gamma0) in A, so seed including xi and g_content(A) and h_content(C) is consistent
-8. Lindenbaum to MCS D with xi in D, g_content(A) subset D, g_content(D) subset C
-9. eta in B' from U(xi, beta AND eta) in A for all beta in B (via `untl_conj_eta_of_g_content`), plus maximality
+**Remaining**: `lemma_2_7_seed_consistent` — same Burgess compression as Phase 2 (see AGENT INSTRUCTIONS). Additional subtlety: 5th seed component `{snce(β∧eta, α)}` needs guard containing eta. See AGENT INSTRUCTIONS "For lemma_2_7_seed_consistent" subsection.
 
 **Tasks**:
 - [ ] Define `burgess_D0_until` computing D0 for Lemma 2.7
