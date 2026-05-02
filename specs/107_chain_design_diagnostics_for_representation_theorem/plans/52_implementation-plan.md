@@ -163,7 +163,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed (REVISED per Report 52) [IN PROGRESS]
+### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed (REVISED per Report 52) [IN PROGRESS - BLOCKED]
+
+**Status**: Implementation attempted, blocker confirmed.
+
+**Blocker**: The Since condition proof is fundamentally blocked per Report 52. Attempting to use `dc_delta_B_burgessR3` requires `snce_left_mono_thm` with `⊢ beta → (beta ∧ β)` which is **false**.
+
+**Solution**: Bypass `dc_delta_B_burgessR3` entirely. Use Burgess's direct D0 seed construction:
+1. Construct D0 = {S(α,β)} ∪ {¬δ} ∪ {U(γ,β)} directly
+2. Prove consistency via BX5+BX14+BX10 chain
+3. Lindenbaum extend to MCS D
+4. Extract B', B'' via Zorn AFTER D exists
+
+**Implementation needed**: Restructure `splitting_seed_consistent` to remove maximality contradiction argument and implement direct seed consistency proof.
 
 **Status**: **APPROACH CHANGED** per Report 52. The old approach attempting to prove `dc_delta_B_burgessR3` with Since condition is **fundamentally blocked**. New approach: direct seed construction following Burgess 1982, bypassing `dc_delta_B_burgessR3` entirely.
 
