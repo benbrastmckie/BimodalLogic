@@ -1,7 +1,7 @@
 # Implementation Plan: Task #107 -- Burgess Chronicle Construction (v37)
 
 - **Task**: 107 - Chain design diagnostics for representation theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 20 hours
 - **Dependencies**: Task 113 [COMPLETED] (open-guard semantics)
 - **Research Inputs**: [reports/51_team-research.md], [reports/50_sorry-architecture-audit.md], handoffs/49_phase3-seed-analysis.md
@@ -148,6 +148,14 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed [IN PROGRESS]
 
+**Status**: Proof strategy documented but NOT implemented. `splitting_seed_consistent` at line 902 still has `sorry`. Documentation for the BX5+BX14+BX13 chain approach is in place, but the actual proof implementation is pending.
+
+**Current State**:
+- `splitting_seed` definition exists
+- `splitting_seed_consistent` has full proof strategy documented in comments
+- `lemma_2_6_splitting` structure is correct but depends on unproven seed consistency
+- **BLOCKER**: `splitting_seed_consistent` sorry at line 902
+
 **Goal**: Replace the non-Burgess seed in `lemma_2_6_splitting` with Burgess's actual D0 seed, making it sorry-free. This also closes the `g_content_sub_B` and `h_content_sub_B` dependency chain (deleted in Phase 0).
 
 **Burgess D0 seed (Lemma 2.6, pp. 370-371)**:
@@ -190,12 +198,23 @@ D0 = {S(alpha, beta) : alpha in A, beta in B}
 
 **Verification**:
 - `lemma_2_6_splitting` sorry-free
+- `splitting_seed_consistent` sorry-free
 - `lake build` succeeds
-- PointInsertion.lean sorry count: 1 (only lemma_2_7 remains)
+- PointInsertion.lean sorry count: TBD (lemma_2_7 work remains)
 
 ---
 
 ### Phase 3: Implement lemma_2_7 (Until-Formula Splitting) [IN PROGRESS]
+
+**Status**: Proof strategy documented but NOT fully implemented. `lemma_2_7_seed_consistent` at line 1139 still has `sorry`. The `lemma_2_7` theorem body exists but several membership proofs were incorrectly replaced with `sorry` placeholders.
+
+**Current State**:
+- `lemma_2_7_seed` definition exists
+- `lemma_2_7_seed_consistent` has proof strategy documented but not implemented
+- `lemma_2_7` body exists but has 5 sorry sites (lines 1161, 1162, 1164, 1166, 1206)
+- **BLOCKERS**: 
+  - `lemma_2_7_seed_consistent` sorry at line 1139
+  - Membership proofs in `lemma_2_7` need to be completed
 
 **Goal**: Implement the body of `lemma_2_7` (Burgess Lemma 2.7, p. 371), which handles Until-formula splitting. This is needed before Phase 6 because the C5 extension in the n>0 case (full Lemma 2.10) uses lemma_2_7 to split Until-formula witnesses.
 
@@ -243,12 +262,22 @@ D0 = {S(alpha, beta AND eta) : alpha in A, beta in B}
 
 **Verification**:
 - `lemma_2_7` sorry-free
-- PointInsertion.lean sorry count: 0
+- PointInsertion.lean sorry count reduced (depends on Phase 2 completion)
 - `lake build` succeeds
 
 ---
 
 ### Phase 4: Extend g During Point Insertion + Thread c2' Through omega_chain [NOT STARTED]
+
+**Status**: Architectural design documented but NO implementation done. Previous attempt added documentation-only comments to `EliminationResult` which caused syntax errors (now reverted). Actual implementation of c2' field, g-value tracking, and threading through omega_chain is pending.
+
+**Prerequisites**: Phases 2 and 3 must be complete (lemma_2_6_splitting and lemma_2_7 sorry-free)
+
+**Required Changes**:
+1. **EliminationResult**: Add c2' field to track BurgessR3Maximal invariant
+2. **g_value tracking**: Track g-values for new adjacent pairs
+3. **c2'_preservation**: Prove old adjacent pairs maintain c2'
+4. **omega_chain**: Thread c0 AND c2' as joint invariant (currently only c0)
 
 **Goal**: Make g a first-class mathematical object by modifying EliminationResult to carry new g-values and updating each elimination function to assign proper B, B', B'' values. Thread c0+c2' as a joint omega_chain invariant.
 
