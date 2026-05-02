@@ -1167,7 +1167,6 @@ private theorem splitting_seed_consistent {A B C : Set Formula}
     -- simplifies to (beta0 ∧ U(beta0, gamma0) ∧ beta0.neg) ∨ (beta0 ∧ U(beta0, gamma0) ∧ β.neg)
     -- The first disjunct is contradictory, so the event implies β.neg
     have h_event_implies_beta_neg : DerivationTree [] ((Formula.and q r.neg).imp β.neg) := by
-      simp only [q, r]
       -- The event is (beta0 ∧ U(beta0, gamma0)) ∧ (beta0 ∧ β).neg
       -- We need to show this implies β.neg.
       -- Since (beta0 ∧ β).neg = beta0.neg ∨ β.neg (De Morgan),
@@ -1187,15 +1186,13 @@ private theorem splitting_seed_consistent {A B C : Set Formula}
       h_content_set_consistent h_mcs_C
     -- Combine to show full splitting seed is consistent
     -- The splitting seed is {β.neg} ∪ g_content(A) ∪ h_content(C)
-    -- We use the fact that F(β.neg) ∈ A implies the entire seed is consistent
-    -- The argument extends forward_temporal_witness_seed_consistent:
-    -- If L ⊆ {β.neg} ∪ g_content(A) ∪ h_content(C) derives ⊥,
-    -- we split L into L1 ⊆ {β.neg} ∪ g_content(A) and L2 ⊆ h_content(C).
-    -- From L1 deriving ⊥ would contradict F(β.neg) ∈ A (as before).
-    -- L2 formulas have H(phi) ∈ C, which doesn't interact with G-formulas from A.
-    -- Any derivation using both would need to bridge G and H modalities,
-    -- which requires specific temporal axioms not available in the seed.
-    -- Formal proof uses the subset property with the known consistent set.
+    -- The key insight is that F(β.neg) ∈ A ensures {β.neg} ∪ g_content(A) is consistent,
+    -- and h_content(C) formulas (H-formulas from C) don't interact with G-formulas
+    -- to produce contradictions without a bridge axiom.
+    --
+    -- We use a direct argument: the seed is consistent because any derivation
+    -- of ⊥ would require mixing G and H modalities, which requires a bridge
+    -- that doesn't exist in the seed (no point formulas in g_content or h_content).
     sorry
 
   · -- Case: {β} ∪ B is inconsistent, so β.neg ∈ B
@@ -1206,12 +1203,17 @@ private theorem splitting_seed_consistent {A B C : Set Formula}
     -- The seed {β.neg} ∪ g_content(A) ∪ h_content(C) contains β.neg from B.
     -- Since B is consistent (as part of BurgessR3Maximal) and g_content(A) ⊆ C,
     -- we need to show the union is consistent.
-    -- First, {β.neg} ⊆ B, so {β.neg} is consistent (subset of consistent B).
-    -- g_content(A) ⊆ C, and C is consistent, so g_content(A) is consistent.
-    -- h_content(C) is consistent as C is an MCS.
-    -- The key is showing these three consistent parts form a consistent union.
-    -- Since β.neg ∈ B and B is part of the burgessR3 structure with C,
-    -- and g_content(A) ⊆ C, the formulas are temporally compatible.
+    --
+    -- Key insight: Since β.neg ∈ B and B is deductively closed, β.neg is
+    -- "compatible" with the temporal structure. The g_content(A) and h_content(C)
+    -- formulas don't add contradictions because:
+    -- 1. g_content(A) ⊆ C by assumption, so these formulas are in C
+    -- 2. C is an MCS, so it's consistent
+    -- 3. h_content(C) formulas are H-formulas from C, consistent with each other
+    -- 4. G and H modalities don't directly interact without point formulas
+    --
+    -- So the full seed is consistent by the same argument as the consistent case:
+    -- any derivation of ⊥ would require a G/H bridge that doesn't exist.
     sorry
 
 /-- **Lemma 2.6 Splitting**: Given BurgessR3Maximal(A, B, C) with β ∉ B,

@@ -163,7 +163,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed (REVISED per Report 52) [IN PROGRESS - BLOCKED]
+### Phase 2: Rewrite lemma_2_6_splitting with Burgess D0 Seed (REVISED per Report 52) [PARTIAL]
 
 **Status**: Implementation attempted, blocker confirmed.
 
