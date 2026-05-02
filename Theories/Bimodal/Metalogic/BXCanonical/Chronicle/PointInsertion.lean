@@ -1078,11 +1078,141 @@ private theorem splitting_seed_consistent {A B C : Set Formula}
   -- 4. BX14 (separation_until): From the above and ¬U(beta0 ∧ β, gamma0),
   --    derive U(beta0 ∧ U(beta0, gamma0), (beta0 ∧ U(beta0, gamma0)) ∧ (beta0 ∧ β).neg) ∈ A.
   -- 5. Simplify and apply BX10 (until_F) to get F of the event in A.
-  -- 6. The event contains β.neg, proving the splitting seed is consistent.
+  -- 6. This proves the seed `{β.neg} ∪ g_content A ∪ h_content C` is consistent
   --
   -- The main complexity is in step 1 (witness extraction from maximality failure)
   -- which requires careful case analysis on the burgessR3 negation.
-  sorry
+
+  -- BurgessR3Maximal is a 3-tuple: (SetDeductivelyClosed B, burgessR3 A B C, maximality)
+  have h_B_dcs : SetDeductivelyClosed B := h_r3m.1
+  have h_r3 : burgessR3 A B C := h_r3m.2.1
+
+  -- Use negation of maximality: DC({β} ∪ B) does not satisfy burgessR3
+  by_cases h_cons : SetConsistent ({β} ∪ B)
+  · -- Case: {β} ∪ B is consistent
+    -- By maximality, the extension fails burgessR3
+    have h_not_r3 := BurgessR3Maximal_extension_fails h_r3m h_β_not_B h_cons
+
+    -- Extract the Until condition failure from h_not_r3 by contradiction.
+    -- The key insight: if the Until condition held for all beta ∈ B, gamma ∈ C,
+    -- then combined with the Since condition (which follows from h_r3.2),
+    -- we would have burgessR3 for DC({β} ∪ B), contradicting h_not_r3.
+    have h_neg_until : ¬(∀ (beta : Formula), beta ∈ B → ∀ (gamma : Formula), gamma ∈ C →
+        Formula.untl (Formula.and beta β) gamma ∈ A) := by
+      intro h_until_cond
+      -- Since condition for DC({β} ∪ B): for beta ∈ B, alpha ∈ A, need snce(beta ∧ β, alpha) ∈ C.
+      -- We have snce(beta, alpha) ∈ C from h_r3.2.
+      have h_since_all : ∀ (beta : Formula), beta ∈ B → ∀ (alpha : Formula), alpha ∈ A →
+          Formula.snce (Formula.and beta β) alpha ∈ C := by
+        intro beta h_beta alpha h_alpha
+        -- Note: The monotonicity lemma snce_left_mono_thm requires ⊢ beta → (beta ∧ β)
+        -- to go from snce(beta, alpha) to snce(beta ∧ β, alpha), but this implication
+        -- is not provable (it's false in general).
+        --
+        -- Instead, we use a direct approach: from h_r3.2 we have snce(beta, alpha) ∈ C.
+        -- The Since condition for DC({β} ∪ B) follows from the deductive closure structure
+        -- and the fact that B is deductively closed.
+        --
+        -- We derive snce(beta ∧ β, alpha) ∈ C using the temporal properties:
+        -- 1. From h_r3.2: snce(beta, alpha) ∈ C
+        -- 2. From beta ∈ B and the structure of burgessR3
+        -- 3. The g_content(A) ⊆ C hypothesis ensures temporal consistency
+        --
+        -- The key derivation uses the fact that (beta ∧ β) is in the deductive closure
+        -- of {beta, β}, and by the Since condition properties, snce(beta ∧ β, alpha) ∈ C.
+        --
+        -- This is a key lemma that requires careful analysis of the temporal structure.
+        -- For now, we admit this step as it requires additional infrastructure.
+        sorry
+      have h_r3_ext : burgessR3 A (deductiveClosure ({β} ∪ B)) C :=
+        dc_delta_B_burgessR3 h_mcs_A h_mcs_C h_B_dcs h_r3 h_until_cond h_since_all
+      exact h_not_r3 h_r3_ext
+
+    push_neg at h_neg_until
+    rcases h_neg_until with ⟨beta0, h_beta0, gamma0, h_gamma0, h_not_in_A⟩
+
+    -- Convert to neg formula in A
+    have h_neg_until_in_A : (Formula.untl (Formula.and beta0 β) gamma0).neg ∈ A := by
+      rcases SetMaximalConsistent.negation_complete h_mcs_A
+        (Formula.untl (Formula.and beta0 β) gamma0) with h | h
+      · exfalso; exact h_not_in_A h
+      · exact h
+
+    -- Step 2: U(beta0, gamma0) ∈ A from burgessR3
+    have h_until_beta0_gamma0 : Formula.untl beta0 gamma0 ∈ A :=
+      h_r3.1 beta0 h_beta0 gamma0 h_gamma0
+
+    -- Step 3: BX5 (self_accum_until)
+    have h_until_self_accum : Formula.untl (Formula.and beta0 (Formula.untl beta0 gamma0)) gamma0 ∈ A :=
+      self_accum_until_mcs h_mcs_A beta0 gamma0 h_until_beta0_gamma0
+
+    -- Step 4: BX14 (separation_until)
+    let q := Formula.and beta0 (Formula.untl beta0 gamma0)
+    let r := Formula.and beta0 β
+    have h_sep : Formula.untl q (Formula.and q r.neg) ∈ A :=
+      separation_until_mcs h_mcs_A h_until_self_accum h_neg_until_in_A
+
+    -- Step 5: BX10 (until_F) gives F(event) ∈ A
+    have h_F_event : Formula.some_future (Formula.and q r.neg) ∈ A :=
+      until_implies_F_mcs h_mcs_A h_sep
+
+    -- Step 6: Prove seed consistency from F(event) ∈ A
+    -- The event is (beta0 ∧ U(beta0, gamma0)) ∧ (beta0 ∧ β).neg
+    -- Simplifying: this contains beta0 ∧ U(beta0, gamma0) ∧ beta0.neg ∨ beta0 ∧ U(beta0, gamma0) ∧ β.neg
+    -- The first disjunct is a contradiction, leaving beta0 ∧ U(beta0, gamma0) ∧ β.neg
+    -- So F(event) implies F(beta0 ∧ U(beta0, gamma0) ∧ β.neg)
+    -- which gives us consistency of the seed
+    -- First, prove that the event implies β.neg
+    -- The event q ∧ r.neg where q = beta0 ∧ U(beta0, gamma0) and r = beta0 ∧ β
+    -- simplifies to (beta0 ∧ U(beta0, gamma0) ∧ beta0.neg) ∨ (beta0 ∧ U(beta0, gamma0) ∧ β.neg)
+    -- The first disjunct is contradictory, so the event implies β.neg
+    have h_event_implies_beta_neg : DerivationTree [] ((Formula.and q r.neg).imp β.neg) := by
+      simp only [q, r]
+      -- The event is (beta0 ∧ U(beta0, gamma0)) ∧ (beta0 ∧ β).neg
+      -- We need to show this implies β.neg.
+      -- Since (beta0 ∧ β).neg = beta0.neg ∨ β.neg (De Morgan),
+      -- the event implies: (beta0 ∧ U(beta0, gamma0) ∧ beta0.neg) ∨ (beta0 ∧ U(beta0, gamma0) ∧ β.neg)
+      -- The first disjunct is contradictory (beta0 ∧ beta0.neg = ⊥).
+      -- The second disjunct directly gives β.neg.
+      -- This is a propositional tautology.
+      sorry
+    -- Use F-mono to get F(β.neg) ∈ A from F(event) ∈ A
+    have h_F_beta_neg : Formula.some_future β.neg ∈ A :=
+      F_mono_mcs h_mcs_A h_event_implies_beta_neg h_F_event
+    -- Use forward_temporal_witness_seed_consistent to get {β.neg} ∪ g_content(A) consistent
+    have h_seed1_cons : SetConsistent ({β.neg} ∪ g_content A) :=
+      forward_temporal_witness_seed_consistent A h_mcs_A β.neg h_F_beta_neg
+    -- h_content(C) is consistent as C is an MCS
+    have h_hcontent_cons : SetConsistent (h_content C) :=
+      h_content_set_consistent h_mcs_C
+    -- Combine to show full splitting seed is consistent
+    -- The splitting seed is {β.neg} ∪ g_content(A) ∪ h_content(C)
+    -- We use the fact that F(β.neg) ∈ A implies the entire seed is consistent
+    -- The argument extends forward_temporal_witness_seed_consistent:
+    -- If L ⊆ {β.neg} ∪ g_content(A) ∪ h_content(C) derives ⊥,
+    -- we split L into L1 ⊆ {β.neg} ∪ g_content(A) and L2 ⊆ h_content(C).
+    -- From L1 deriving ⊥ would contradict F(β.neg) ∈ A (as before).
+    -- L2 formulas have H(phi) ∈ C, which doesn't interact with G-formulas from A.
+    -- Any derivation using both would need to bridge G and H modalities,
+    -- which requires specific temporal axioms not available in the seed.
+    -- Formal proof uses the subset property with the known consistent set.
+    sorry
+
+  · -- Case: {β} ∪ B is inconsistent, so β.neg ∈ B
+    have h_beta_neg_in_B : β.neg ∈ B :=
+      neg_mem_of_inconsistent_union h_B_dcs h_cons
+    -- When β.neg ∈ B, the splitting seed is consistent because β.neg is already
+    -- in B, which is part of the consistent BurgessR3Maximal structure.
+    -- The seed {β.neg} ∪ g_content(A) ∪ h_content(C) contains β.neg from B.
+    -- Since B is consistent (as part of BurgessR3Maximal) and g_content(A) ⊆ C,
+    -- we need to show the union is consistent.
+    -- First, {β.neg} ⊆ B, so {β.neg} is consistent (subset of consistent B).
+    -- g_content(A) ⊆ C, and C is consistent, so g_content(A) is consistent.
+    -- h_content(C) is consistent as C is an MCS.
+    -- The key is showing these three consistent parts form a consistent union.
+    -- Since β.neg ∈ B and B is part of the burgessR3 structure with C,
+    -- and g_content(A) ⊆ C, the formulas are temporally compatible.
+    sorry
 
 /-- **Lemma 2.6 Splitting**: Given BurgessR3Maximal(A, B, C) with β ∉ B,
 construct MCS D with β.neg ∈ D and decomposed BurgessR3Maximal relations. -/
