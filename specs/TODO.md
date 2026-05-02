@@ -133,7 +133,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
@@ -168,6 +168,8 @@ technical_debt:
   - [107_chain_design_diagnostics_for_representation_theorem/plans/49_implementation-plan.md]
   - [107_chain_design_diagnostics_for_representation_theorem/plans/51_implementation-plan.md]
   - [107_chain_design_diagnostics_for_representation_theorem/plans/52_implementation-plan.md]
+- **Latest Research**:
+  - [107_chain_design_diagnostics_for_representation_theorem/reports/broken-implementation-analysis.md] - Analysis of broken implementation: 2 syntax errors, 4 type mismatches, 5 sorry sites in PointInsertion.lean
 
 **Description**: Implement the Burgess 1982 chronicle construction for BX completeness on the `irr_until` branch. Fix 2 ParametricTruthLemma sorry sites, derive A3a/A4a from BX axioms, build chronicle types with r-relation (Lemmas 2.2-2.3), point insertion (Lemmas 2.4-2.8), counterexample elimination (Lemmas 2.9-2.11), and wire into dd_countermodel to replace 3 RootScopedChain sorry sites. Target: sorry-free bx_completeness.
 
