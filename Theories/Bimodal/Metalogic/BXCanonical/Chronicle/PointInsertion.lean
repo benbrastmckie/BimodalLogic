@@ -853,55 +853,32 @@ as the seed, with consistency proved via generalized temporal K distribution
 in both G and H directions combined with burgessR3 Until/Since formulas.
 -/
 
-/-- The D0 splitting seed: `{β.neg} ∪ g_content(A) ∪ h_content(C)`. -/
-private def splitting_seed (A C : Set Formula) (β : Formula) : Set Formula :=
-  {β.neg} ∪ g_content A ∪ h_content C
+/-! ## Lemma 2.6: Splitting Seed and Interval Insertion
 
-/-- The splitting seed `{β.neg} ∪ g_content(A) ∪ h_content(C)` is consistent
+The D0 splitting seed: `{β.neg} ∪ g_content(A) ∪ h_content(C)` is consistent
 when `BurgessR3Maximal(A, B, C)`, `g_content(A) ⊆ C`, and `β ∉ B`.
 
-The proof reduces seed inconsistency to a contradiction in A or C using
-the generalized temporal K distribution in both the G and H directions,
-combined with the Until/Since formulas from burgessR3. -/
-private theorem splitting_seed_consistent {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
-    (h_r3m : BurgessR3Maximal A B C)
-    (h_gc : g_content A ⊆ C)
-    (β : Formula)
-    (h_β_not_B : β ∉ B) :
-    SetConsistent (splitting_seed A C β) := by
-  sorry
+**Proof Strategy (Burgess D0 Seed)**:
 
-theorem lemma_2_6_splitting {A B C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A)
-    (h_mcs_C : SetMaximalConsistent C)
-    (h_r3m : BurgessR3Maximal A B C)
-    (h_gc : g_content A ⊆ C)
-    (β : Formula)
-    (h_β_not_B : β ∉ B) :
-    ∃ B' D B'', BurgessR3Maximal A B' D ∧
-      BurgessR3Maximal D B'' C ∧
-      SetMaximalConsistent D ∧ β.neg ∈ D ∧
-      g_content A ⊆ D ∧ g_content D ⊆ C := by
-  -- Step 1: The seed is consistent
-  have h_seed_cons := splitting_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc β h_β_not_B
-  -- Step 2: Lindenbaum-extend to MCS D
-  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
-  -- Step 3: Extract seed membership
-  have h_β_neg_D : β.neg ∈ D :=
-    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton _)))
-  have h_g_sub_D : g_content A ⊆ D := fun φ hφ =>
-    h_sup (Set.mem_union_left _ (Set.mem_union_right _ hφ))
-  have h_h_sub_D : h_content C ⊆ D := fun φ hφ =>
-    h_sup (Set.mem_union_right _ hφ)
-  -- Step 4: Derive g_content(D) ⊆ C from h_content(C) ⊆ D
-  have h_g_D_C : g_content D ⊆ C :=
-    h_content_sub_imp_g_content_sub' h_D_mcs h_mcs_C h_h_sub_D
-  -- Step 5: BurgessR3Maximal witnesses from g_content inclusions
-  obtain ⟨B', h_B'⟩ := burgessR3Maximal_from_g_content_sub h_mcs_A h_D_mcs h_g_sub_D
-  obtain ⟨B'', h_B''⟩ := burgessR3Maximal_from_g_content_sub h_D_mcs h_mcs_C h_g_D_C
-  exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_β_neg_D, h_g_sub_D, h_g_D_C⟩
+1. From `β ∉ B` and `BurgessR3Maximal(A, B, C)`, extract `beta0 ∈ B`, `gamma0 ∈ C`
+   with `¬U(beta0 ∧ β, gamma0) ∈ A`.
+
+2. From `burgessR3(A, B, C)` and `beta0 ∈ B`, `gamma0 ∈ C`: `U(beta0, gamma0) ∈ A`.
+
+3. **BX5 (self_accum_until)**: From `U(beta0, gamma0)`, get
+   `U(beta0 ∧ U(beta0, gamma0), gamma0)`.
+
+4. **BX14 (separation_until)**: From step 3 and `¬U(beta0 ∧ β, gamma0)`, get
+   `U(beta0 ∧ U(beta0, gamma0), (beta0 ∧ U(beta0, gamma0)) ∧ (beta0 ∧ β).neg)`.
+
+5. Simplify to get `F(beta0 ∧ U(beta0, gamma0) ∧ β.neg) ∈ A`, proving consistency.
+
+The implementations of `splitting_seed_consistent` and `lemma_2_6_splitting`
+are located after the helper lemmas (BX14, BX13, etc.) to access those tools.
+ -/
+
+private def splitting_seed (A C : Set Formula) (β : Formula) : Set Formula :=
+  {β.neg} ∪ g_content A ∪ h_content C
 
 /-! ## Lemma 2.7: Until-Formula Splitting (Burgess 1982)
 
@@ -1074,6 +1051,71 @@ private noncomputable def and_right_impl (a b : Formula) :
     DerivationTree [] ((Formula.and a b).imp b) :=
   rce_imp a b
 
+/-- The splitting seed `{β.neg} ∪ g_content(A) ∪ h_content(C)` is consistent
+when `BurgessR3Maximal(A, B, C)`, `g_content(A) ⊆ C`, and `β ∉ B`.
+
+Proof uses the BX5+BX14+BX10 chain (Burgess D0 seed strategy):
+1. Extract beta0 ∈ B, gamma0 ∈ C with ¬U(beta0 ∧ β, gamma0) ∈ A from maximality
+2. U(beta0, gamma0) ∈ A from burgessR3
+3. BX5: U(beta0 ∧ U(beta0, gamma0), gamma0) ∈ A
+4. BX14: U(beta0 ∧ U(beta0, gamma0), (beta0 ∧ U(beta0, gamma0)) ∧ (beta0 ∧ β).neg) ∈ A
+5. Simplify and extract F(beta0 ∧ U(beta0, gamma0) ∧ β.neg) ∈ A for seed consistency -/
+private theorem splitting_seed_consistent {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C)
+    (β : Formula)
+    (h_β_not_B : β ∉ B) :
+    SetConsistent (splitting_seed A C β) := by
+  -- Proof of the Burgess D0 seed consistency using the BX5+BX14+BX10 chain.
+  --
+  -- The key steps are:
+  -- 1. From β ∉ B and BurgessR3Maximal, extract beta0 ∈ B, gamma0 ∈ C
+  --    such that ¬U(beta0 ∧ β, gamma0) ∈ A (maximality failure witness).
+  -- 2. From burgessR3: U(beta0, gamma0) ∈ A.
+  -- 3. BX5 (self_accum_until): U(beta0 ∧ U(beta0, gamma0), gamma0) ∈ A.
+  -- 4. BX14 (separation_until): From the above and ¬U(beta0 ∧ β, gamma0),
+  --    derive U(beta0 ∧ U(beta0, gamma0), (beta0 ∧ U(beta0, gamma0)) ∧ (beta0 ∧ β).neg) ∈ A.
+  -- 5. Simplify and apply BX10 (until_F) to get F of the event in A.
+  -- 6. The event contains β.neg, proving the splitting seed is consistent.
+  --
+  -- The main complexity is in step 1 (witness extraction from maximality failure)
+  -- which requires careful case analysis on the burgessR3 negation.
+  sorry
+
+/-- **Lemma 2.6 Splitting**: Given BurgessR3Maximal(A, B, C) with β ∉ B,
+construct MCS D with β.neg ∈ D and decomposed BurgessR3Maximal relations. -/
+theorem lemma_2_6_splitting {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A)
+    (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_gc : g_content A ⊆ C)
+    (β : Formula)
+    (h_β_not_B : β ∉ B) :
+    ∃ B' D B'', BurgessR3Maximal A B' D ∧
+      BurgessR3Maximal D B'' C ∧
+      SetMaximalConsistent D ∧ β.neg ∈ D ∧
+      g_content A ⊆ D ∧ g_content D ⊆ C := by
+  -- Step 1: The seed is consistent
+  have h_seed_cons := splitting_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc β h_β_not_B
+  -- Step 2: Lindenbaum-extend to MCS D
+  obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
+  -- Step 3: Extract seed membership
+  have h_β_neg_D : β.neg ∈ D :=
+    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton _)))
+  have h_g_sub_D : g_content A ⊆ D := fun φ hφ =>
+    h_sup (Set.mem_union_left _ (Set.mem_union_right _ hφ))
+  have h_h_sub_D : h_content C ⊆ D := fun φ hφ =>
+    h_sup (Set.mem_union_right _ hφ)
+  -- Step 4: Derive g_content(D) ⊆ C from h_content(C) ⊆ D
+  have h_g_D_C : g_content D ⊆ C :=
+    h_content_sub_imp_g_content_sub' h_D_mcs h_mcs_C h_h_sub_D
+  -- Step 5: BurgessR3Maximal witnesses from g_content inclusions
+  obtain ⟨B', h_B'⟩ := burgessR3Maximal_from_g_content_sub h_mcs_A h_D_mcs h_g_sub_D
+  obtain ⟨B'', h_B''⟩ := burgessR3Maximal_from_g_content_sub h_D_mcs h_mcs_C h_g_D_C
+  exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_β_neg_D, h_g_sub_D, h_g_D_C⟩
+
 /-- The D0 seed for Lemma 2.7:
   B ∪ {xi} ∪ {untl(β, γ) : β ∈ B, γ ∈ C}
   ∪ {snce(β, α) : β ∈ B, α ∈ A}
@@ -1107,7 +1149,7 @@ private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
     (xi eta : Formula)
     (h_until : Formula.untl xi eta ∈ A)
     (h_eta_not_B : eta ∉ B) :
-    SetConsistent (lemma_2_7_seed A B C xi) := by
+    SetConsistent (lemma_2_7_seed A B C xi eta) := by
   sorry
 
 theorem lemma_2_7 {A B C : Set Formula}
@@ -1129,18 +1171,13 @@ theorem lemma_2_7 {A B C : Set Formula}
   -- Step 2: Lindenbaum-extend to MCS D
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
   -- Step 3: Extract key memberships from seed
-  have h_xi_D : xi ∈ D :=
-    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_union_right _ (Set.mem_singleton xi))))
-  have h_B_sub_D : B ⊆ D := fun φ hφ =>
-    h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_union_left _ hφ)))
+  -- TODO (Task 107 Phase 3): Fix membership proofs to match 5-component seed structure
+  have h_xi_D : xi ∈ D := sorry
+  have h_B_sub_D : B ⊆ D := sorry
   -- Until formulas: untl(β, γ) ∈ D for all β ∈ B, γ ∈ C
-  have h_untl_D : ∀ β ∈ B, ∀ γ ∈ C, Formula.untl β γ ∈ D := by
-    intro β hβ γ hγ
-    exact h_sup (Set.mem_union_left _ (Set.mem_union_right _ ⟨β, hβ, γ, hγ, rfl⟩))
+  have h_untl_D : ∀ β ∈ B, ∀ γ ∈ C, Formula.untl β γ ∈ D := sorry
   -- Since formulas: snce(β, α) ∈ D for all β ∈ B, α ∈ A
-  have h_snce_D : ∀ β ∈ B, ∀ α ∈ A, Formula.snce β α ∈ D := by
-    intro β hβ α hα
-    exact h_sup (Set.mem_union_right _ ⟨β, hβ, α, hα, rfl⟩)
+  have h_snce_D : ∀ β ∈ B, ∀ α ∈ A, Formula.snce β α ∈ D := sorry
   -- Step 4: Establish burgessR3(D, B, C) from seed Until formulas
   have h_rSet_D : burgessRSet D B C := fun β hβ γ hγ => h_untl_D β hβ γ hγ
   -- burgessRSince(C, B, D) follows from burgessR via Lemma 2.3
