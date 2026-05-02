@@ -1,1147 +1,431 @@
 {
-  "metadata": {
-    "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 24,
-    "last_sync": "2026-04-10T22:00:00Z"
-  },
-  "active_projects": [
-    {
-      "project_number": 113,
-      "project_name": "literature_review_completeness_techniques",
-      "status": "completed",
-      "task_type": "formal",
-      "description": "Review newly obtained literature (Xu 1988, Reynolds 1992, Caleiro-Vigano-Volpe 2013) against current BX completeness proof state to identify transferable techniques. Structured around three-phase completeness roadmap: (1) base TM logic with H, G, Box over booleans; (2) extension to U and S; (3) dense and discrete specializations. Cross-reference against active sorry sites in Chronicle/ modules and blocked tasks (18, 68).",
-      "created": "2026-04-27T17:16:06Z",
-      "last_updated": "2026-04-28T10:30:34Z",
-      "session_id": "sess_1777369360_7a1114",
-      "researched": "2026-04-28T09:24:59Z",
-      "next_artifact_number": 5,
-      "artifacts": [
-        {
-          "path": "specs/113_literature_review_completeness_techniques/reports/01_team-research.md",
-          "type": "research",
-          "summary": "Team research with 4 teammates: Xu 1988, Reynolds 1992, CVV 2013 vs BX completeness"
-        },
-        {
-          "path": "specs/113_literature_review_completeness_techniques/reports/02_until-since-guard-semantics.md",
-          "type": "research",
-          "summary": "Until/Since guard semantics: open vs half-closed, Next/Previous definability, blast radius"
-        },
-        {
-          "path": "specs/113_literature_review_completeness_techniques/reports/03_team-research.md",
-          "type": "research",
-          "summary": "Systematic open guard refactoring plan: 4 axioms removed, 5-phase rebuild, sequencing analysis"
-        },
-        {
-          "path": "specs/113_literature_review_completeness_techniques/reports/04_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): r-relation redesign for open guard, archive vs restructure classification"
-        },
-        {
-          "path": "specs/113_literature_review_completeness_techniques/plans/04_open-guard-refactor.md",
-          "type": "plan",
-          "summary": "Revised 5-phase open guard refactoring plan (v04): archive invalid+dead code, restructure 2 proofs"
-        }
-      ],
-      "started": "2026-04-28T04:50:57Z",
-      "completed": "2026-04-28T10:30:34Z",
-      "completion_summary": "Open guard refactoring complete: Until/Since semantics changed from half-closed [t,s) to open (t,s), 4 unsound axioms removed, 32+8=40 sorries eliminated in soundness/chronicle/frame, 8 invalid lemmas archived to Boneyard, Truth.lean time_shift fixed, ROADMAP updated. Build clean."
-    },
-    {
-      "project_number": 112,
-      "project_name": "literature_study_representation_theorem",
-      "status": "researched",
-      "task_type": "formal",
-      "created": "2026-04-24T20:47:00Z",
-      "last_updated": "2026-04-24T20:59:46Z",
-      "session_id": "sess_1777063984_92a238",
-      "researched": "2026-04-24T20:59:46Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/112_literature_study_representation_theorem/reports/01_team-research.md",
-          "type": "research",
-          "summary": "Team research with 4 teammates"
-        }
-      ]
-    },
-    {
-      "project_number": 111,
-      "project_name": "literature_second_research_wave",
-      "status": "completed",
-      "task_type": "general",
-      "created": "2026-04-24T18:13:55Z",
-      "last_updated": "2026-04-24T18:42:11Z",
-      "session_id": "sess_1777055708_0285de",
-      "researched": "2026-04-24T18:26:56Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/111_literature_second_research_wave/reports/01_team-research.md",
-          "type": "research",
-          "summary": "Team research with 4 teammates"
-        },
-        {
-          "path": "specs/111_literature_second_research_wave/plans/01_implementation-plan.md",
-          "type": "plan",
-          "summary": "3-phase plan: download 3 free PDFs, add Second Research Wave section to literature/README.md, update existing entries"
-        },
-        {
-          "path": "specs/111_literature_second_research_wave/summaries/01_execution-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: 3 PDFs downloaded, README updated with Second Research Wave section"
-        }
-      ],
-      "completion_summary": "Downloaded 3 freely available PDFs (Burgess 1982b, Venema 1993, Obendrauf 2024) and added a comprehensive Second Research Wave section to literature/README.md covering 15+ sources across strict-time extensions, bimodal combinations, and machine-checked formalizations. Updated 2 existing entries with priority and quality corrections."
-    },
-    {
-      "project_number": 95,
-      "project_name": "completeness_verification_audit",
-      "status": "not_started",
-      "language": "lean4",
-      "priority": "medium",
-      "description": "Verification pass to confirm sorry-free completeness. (1) Run #print axioms on bx_completeness; confirm output is exactly {propext, Classical.choice, Quot.sound}. (2) Classify all sorry occurrences in Soundness.lean and SoundnessLemmas.lean (real sorry vs docstring). (3) Confirm soundness, soundness_dense, soundness_discrete build with only standard axioms. (4) Audit for any custom Lean axiom declarations. (5) Produce audit report. Depends on task 109 (chain construction closure) for full completeness verification.",
-      "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-20T17:58:07Z",
-      "related_tasks": [
-        60,
-        93
-      ],
-      "dependencies": [
-        93,
-        109
-      ]
-    },
-    {
-      "project_number": 60,
-      "project_name": "remove_discrete_icc_finite_axiom",
-      "status": "not_started",
-      "language": "lean4",
-      "description": "discrete_Icc_finite_axiom was already eliminated (zero custom axioms confirmed). Remaining scope: clean up stale docstrings in FrameClass.lean and SuccExistence.lean that still reference the removed axiom.",
-      "effort": "1-2 hours",
-      "dependencies": [],
-      "created": "2026-03-24T19:43:21Z",
-      "last_updated": "2026-03-24T19:43:21Z"
-    },
-    {
-      "project_number": 39,
-      "project_name": "study_preorder_semantics_conformance",
-      "status": "researched",
-      "language": "lean4",
-      "created": "2026-03-23T05:40:43Z",
-      "last_updated": "2026-03-23T06:23:15Z",
-      "session_id": "sess_1774246740_11ad75",
-      "researched": "2026-03-23T06:23:15Z",
-      "artifacts": [
-        {
-          "path": "specs/039_study_preorder_semantics_conformance/reports/03_parametric-taskframe-research.md",
-          "type": "research",
-          "summary": "Research on ParametricCanonicalTaskFrame and W/D separation architecture"
-        },
-        {
-          "path": "specs/039_study_preorder_semantics_conformance/plans/01_conformance-validation-plan.md",
-          "type": "plan",
-          "summary": "4-phase documentation and validation plan for TaskFrame conformance"
-        },
-        {
-          "path": "specs/039_study_preorder_semantics_conformance/reports/04_unification-implementation-research.md",
-          "type": "research",
-          "summary": "Analysis of two-layer architecture unification and implementation roadmap"
-        }
-      ],
-      "planned": "2026-03-23T06:13:16Z"
-    },
-    {
-      "project_number": 18,
-      "project_name": "dense_representation_theorem_completion",
-      "status": "blocked",
-      "language": "lean4",
-      "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T21:44:14Z",
-      "dependencies": [
-        17,
-        27,
-        30,
-        31
-      ],
-      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
-      "artifacts": [
-        {
-          "path": "specs/018_dense_representation_theorem_completion/reports/01_dense-representation-research.md",
-          "type": "research_report",
-          "summary": "Complete analysis of dense representation theorem wiring strategy. Key finding: truth lemma gap over TimelineQuot. Resolution: build BFMCS indexed by TimelineQuot with forward_F/backward_P temporal coherence, then port truth lemma structure. Estimated 7-11 hours implementation."
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/reports/02_team-research.md",
-          "type": "research_report",
-          "summary": "Team research (2 teammates): Identified singleton BFMCS impossibility, CanonicalMCS domain confusion, m>2k staged construction gap. Recommends fresh closure-based multi-family BFMCS over TimelineQuot with temporal F-witness saturation."
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/reports/05_team-research.md",
-          "type": "research_report",
-          "summary": "Team research (2 teammates, run 5): 7 real sorries identified, dependency DAG, revised 4-phase plan A-D avoiding closure operator. Key insight: temporal coherence needs CanonicalR-to-TimelineQuot bridge, not new closure infrastructure."
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/reports/08_team-research.md",
-          "type": "research_report",
-          "summary": "Team research (3 teammates): closure fixpoint = CanonicalMCS, 3 viable approaches ranked by elegance"
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/reports/12_team-research.md",
-          "type": "research_report",
-          "summary": "Team research (2 teammates, run 12): CanonicalTask/ExistsTask perspective. Key finding: CanonicalR is the existential projection of CanonicalTask (ExistsTask alias recommended). Duration-coarse parametric_canonical_task_rel is acceptable for completeness. No new sorries; critical path from run 05 unchanged."
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/reports/12_team-research.md",
-          "type": "research_report",
-          "summary": "Team research (3 teammates): CanonicalTask vs CanonicalR analysis, ExistsTask refactoring, TaskFrame-based closure design"
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/summaries/03_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phases 1-2 complete (derive_F_to_FF, dovetailed coverage). Phase 3 blocked by DenseTimeline/DovetailedTimeline bridge."
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/reports/13_post-task27-analysis.md",
-          "type": "research_report",
-          "summary": "Post-task27 analysis: 4 localized sorries in j>0 termination, DovetailedTimelineQuot replaces DenseTimeline"
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/plans/04_dense-representation-v4.md",
-          "type": "plan",
-          "summary": "v4: Post-task27 revision using DovetailedTimelineQuot, 3 phases remaining"
-        },
-        {
-          "path": "specs/018_dense_representation_theorem_completion/summaries/04_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 3 partial: peeling lemmas for j>0 cases, termination sorries remain"
-        },
-        {
-          "path": "Theories/Bimodal/Metalogic/StagedConstruction/DovetailedTimelineQuotBFMCS.lean",
-          "type": "implementation",
-          "summary": "Multi-family BFMCS with modal_forward and modal_backward"
-        }
-      ],
-      "session_id": "sess_1774129435_e3b597",
-      "researched": "2026-03-21T19:07:01Z",
-      "planned": "2026-03-21T20:44:03Z",
-      "started": "2026-03-21T17:15:15Z",
-      "resume_phase": 5
-    },
-    {
-      "project_number": 19,
-      "project_name": "deprecate_old_discrete_pipeline",
-      "status": "not_started",
-      "language": "lean4",
-      "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
-      "dependencies": [
-        15
-      ],
-      "description": "Once discrete completeness is proved via Succ-chains (task 15), deprecate the old quotient-based pipeline: DiscreteTimelineElem, DiscreteTimelineQuot, SuccOrder/PredOrder construction, and the orderIsoIntOfLinearSuccPredArch pathway. Mark files as deprecated with doc comments pointing to the new Succ-chain approach. Tasks 989 (discrete algebraic completeness) and 974 (SuccOrder) can be marked [EXPANDED] into tasks 10-15.",
-      "artifacts": []
-    },
-    {
-      "project_number": 20,
-      "project_name": "audit_parametric_canonical_infrastructure",
-      "status": "not_started",
-      "language": "lean4",
-      "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
-      "dependencies": [
-        15,
-        18
-      ],
-      "description": "Review ParametricCanonical.lean, ParametricTruthLemma.lean, and ParametricRepresentation.lean. Determine whether the parametric infrastructure can be refactored to accept a generic task_rel parameter (not hardcoded duration-coarse relation), enabling both CanonicalTask and DenseTask as instantiations. If feasible, refactor; otherwise document the relationship between parametric (base) and specialized (discrete/dense) paths.",
-      "artifacts": []
-    },
-    {
-      "project_number": 8,
-      "project_name": "genuine_truth_at_completeness",
-      "status": "researched",
-      "language": "lean4",
-      "created": "2026-03-20T23:46:51Z",
-      "last_updated": "2026-03-21T03:23:50Z",
-      "dependencies": [
-        7
-      ],
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/008_genuine_truth_at_completeness/reports/01_completeness-architecture.md",
-          "summary": "Analysis of genuine completeness proof requirements using truth_at, identifying exact gaps and viable approaches"
-        },
-        {
-          "type": "plan",
-          "path": "specs/008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md",
-          "summary": "6-phase revised plan: corrects D=CanonicalMCS confusion, focuses on 3 real sorries (modal_backward, forward_F, backward_P)"
-        },
-        {
-          "type": "summary",
-          "path": "specs/008_genuine_truth_at_completeness/summaries/04_completeness-summary.md",
-          "summary": "Detailed analysis of 3 sorries in completeness pipeline, documenting architectural blockers"
-        },
-        {
-          "type": "research",
-          "path": "specs/008_genuine_truth_at_completeness/reports/02_completeness-blockers.md",
-          "summary": "Detailed mathematical analysis of 3 sorries blocking completeness: modal_backward, forward_F, backward_P"
-        },
-        {
-          "type": "research",
-          "path": "specs/008_genuine_truth_at_completeness/reports/03_team-research.md",
-          "summary": "Team research: 4 resolution paths analyzed, recommends FMP + generalized TaskFrame"
-        },
-        {
-          "path": "specs/008_genuine_truth_at_completeness/reports/04_team-research.md",
-          "type": "research",
-          "summary": "Team research: base TM vs dense/discrete completeness, recommends dense-first strategy"
-        }
-      ],
-      "session_id": "sess_1774063039_c87a2a",
-      "planned": "2026-03-21T00:33:31Z",
-      "started": "2026-03-21T00:34:44Z",
-      "researched": "2026-03-21T03:23:50Z"
-    },
-    {
-      "project_number": 998,
-      "project_name": "fmp_redesign_strict_temporal",
-      "status": "researching",
-      "language": "lean4",
-      "created": "2026-03-19T17:05:39Z",
-      "last_updated": "2026-03-19T17:05:39Z",
-      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
-    },
-    {
-      "project_number": 992,
-      "project_name": "shift_closed_tense_s5_algebra",
-      "status": "researched",
-      "language": "lean",
-      "created": "2026-03-18T20:24:23Z",
-      "last_updated": "2026-03-18T20:24:23Z",
-      "researched": "2026-03-18T20:24:23Z",
-      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with □, G, H, σ operators and interaction axioms. Lift temporal duality σ from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md",
-          "summary": "Comprehensive STSA design with axiom-to-equation translation, representation theorem architecture, and MF/TF interaction analysis"
-        }
-      ]
-    },
-    {
-      "project_number": 953,
-      "project_name": "refactor_proof_system_to_bilateral",
-      "status": "researched",
-      "language": "lean",
-      "priority": "medium",
-      "description": "Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with dual judgments: acceptance (Γ ⊢⁺ φ) and rejection (Γ ⊢⁻ φ). Parallel implementation with equivalence bridge.",
-      "created": "2026-03-03T00:00:00Z",
-      "last_updated": "2026-03-16T14:45:00Z",
-      "researched": "2026-03-16T14:45:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/953_refactor_proof_system_to_bilateral/reports/research-001.md",
-          "summary": "Detailed bilateral system design: BilateralDeriv type with acceptance/rejection rules, equivalence bridge to unilateral system, impact analysis on all downstream modules. Recommends parallel implementation preserving existing system."
-        },
-        {
-          "path": "specs/953_refactor_proof_system_to_bilateral/reports/research-002.md",
-          "type": "research",
-          "summary": "Dependency analysis confirms tasks 953/954/955 are independent; 953 should proceed first due to zero dependencies and lower risk while 954/955 are blocked on task 951"
-        },
-        {
-          "path": "specs/953_refactor_proof_system_to_bilateral/reports/research-003.md",
-          "type": "research",
-          "summary": "Cost-benefit analysis: 55-90 hours effort, low-medium benefit, recommend deferring until higher-priority tasks (981, 951) progress"
-        },
-        {
-          "path": "specs/953_refactor_proof_system_to_bilateral/reports/20_bilateral-submaximal.md",
-          "type": "research_report",
-          "summary": "Deep analysis of sub-maximal bilateral pairs: truth lemma backward implication requires negation completeness (maximality); 5+ showstoppers; deterministic Lindenbaum within MCS recommended instead"
-        }
-      ],
-      "session_id": "sess_1773878520_a3f2b1"
-    },
-    {
-      "project_number": 949,
-      "project_name": "update_demo_lean_bimodal_logic",
-      "status": "researched",
-      "language": "lean",
-      "created": "2026-02-28T01:08:27Z",
-      "last_updated": "2026-03-16T02:25:31Z",
-      "session_id": "sess_1773627748_1dbc71",
-      "researched": "2026-03-16T02:25:31Z",
-      "artifacts": [
-        {
-          "path": "specs/949_update_demo_lean_bimodal_logic/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of Demo.lean state, API survey, recommended updates (remove obsolete refs, add BFMCS truth lemma showcase, D construction via Cantor, shift-closure), implementation plan (4 phases, ~2 hours)"
-        }
-      ]
-    },
-    {
-      "project_number": 619,
-      "project_name": "agent_system_architecture_upgrade",
-      "status": "researched",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-19T20:33:57Z",
-      "last_updated": "2026-02-17T22:44:20Z",
-      "session_id": "sess_1771367274_22957f",
-      "researched": "2026-02-17T22:44:20Z",
-      "planned": "2026-01-19T21:36:36Z",
-      "blocked_reason": "Waiting for Anthropic to fix GitHub issue #16803: context:fork in skill frontmatter doesn't work (skill still runs inline). Issue confirmed still OPEN as of 2026-02-05 (v2.1.32). Current workaround: Task tool delegation (working). Re-check when #16803 is resolved.",
-      "artifacts": [
-        {
-          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report on agent system architecture improvements with 5 prioritized recommendations"
-        },
-        {
-          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-002.md",
-          "type": "research",
-          "summary": "Supplemental research on context:fork feature and official Claude Code skill documentation"
-        },
-        {
-          "path": "specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 3-phase plan for future context:fork migration after GitHub #16803 is fixed"
-        },
-        {
-          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-003.md",
-          "type": "research",
-          "summary": "Status check on GitHub #16803 revealing plugin vs user-level skill distinction for context:fork functionality"
-        },
-        {
-          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-004.md",
-          "type": "research",
-          "summary": "Context fork analysis for Lean direct execution skills post-Task 710 refactoring"
-        },
-        {
-          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-005.md",
-          "type": "research",
-          "summary": "Empirical validation of context:fork via test-lean-research confirming feature is non-functional (no isolation, unrestricted tools)"
-        },
-        {
-          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-006.md",
-          "type": "research",
-          "summary": "February 2026 status check: GitHub #16803 still OPEN as of v2.1.32, plugin vs user-level distinction confirmed"
-        },
-        {
-          "path": "specs/619_agent_system_architecture_upgrade/reports/research-007.md",
-          "type": "research",
-          "summary": "Comprehensive architecture analysis with Feb 2026 best practices comparison and 7 prioritized upgrade recommendations"
-        }
-      ]
-    },
-    {
-      "project_number": 21,
-      "project_name": "technical_debt_cleanup",
-      "status": "planned",
-      "language": "lean4",
-      "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:28:53Z",
-      "dependencies": [
-        15,
-        18
-      ],
-      "description": "Clean up technical debt accumulated across tasks 9-20 metalogic refactoring track. Remove dead code, unused helpers, deprecated wrappers, and bridge infrastructure. Consolidate compatibility layers. Audit based on 4-agent parallel research of all completed task artifacts and source files.",
-      "artifacts": [
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/01_tech-debt-audit.md",
-          "type": "report",
-          "summary": "Comprehensive 4-agent audit of tasks 9-20: dead code, bridges, axioms, sorries, deprecation candidates, and cleanup action plan"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_team-research.md",
-          "type": "research",
-          "summary": "Team research (3 teammates): axiom semantic validity, proof dependencies, frame condition theory"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_team-research.md",
-          "type": "report",
-          "summary": "Synthesized team research: axiom classification, derivation priorities, reconciled action plan"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-a-findings.md",
-          "type": "report",
-          "summary": "Axiom semantic validity analysis (11 axioms classified: 2 derivable, 2 unjustified, 5 valid-semantic, 2 valid-frame)"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-b-findings.md",
-          "type": "report",
-          "summary": "Axiom proof dependencies and derivation paths with priority matrix"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-c-findings.md",
-          "type": "report",
-          "summary": "Frame condition theory analysis of 19 proof system axioms + 11 Lean axiom declarations"
-        },
-        {
-          "path": "specs/021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for technical debt cleanup focusing on axiom elimination"
-        }
-      ],
-      "session_id": "sess_1774121152_2f49cc",
-      "researched": "2026-03-21T19:21:35Z",
-      "planned": "2026-03-21T19:28:53Z"
-    },
-    {
-      "project_number": 64,
-      "project_name": "critical_path_review",
-      "status": "researched",
-      "language": "lean4",
-      "last_updated": "2026-03-25T18:30:47Z",
-      "session_id": "sess_1774461365_0e8fc2",
-      "researched": "2026-03-25T18:30:47Z",
-      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + σ-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. τ proven impossible as global algebraic construction.",
-      "artifacts": [
-        {
-          "path": "specs/064_critical_path_review/reports/05_team-research.md",
-          "type": "research",
-          "summary": "Team research: root cause analysis of task 58 failures (3 teammates)"
-        },
-        {
-          "path": "specs/064_critical_path_review/reports/09_team-research.md",
-          "type": "research",
-          "summary": "Team research wave 2: BFMCS saturation, modal structure, omega-enumeration design (3 teammates)"
-        }
-      ]
-    },
-    {
-      "project_number": 68,
-      "project_name": "prove_dense_completeness_fc_via_rat",
-      "status": "researched",
-      "language": "lean4",
-      "description": "Eliminate the sorry in dense_completeness_fc (FrameConditions/Completeness.lean line 121) by constructing a canonical model over Rat. This requires: (1) either parameterizing construct_bfmcs_bundle over the domain or creating construct_bfmcs_bundle_rat, (2) proving the corresponding truth lemma for the Rat construction, (3) wiring dense_completeness_fc through completeness_over_Rat. Int cannot be used because Int is not densely ordered. Rat is countable, aligning with existing Lindenbaum/countable MCS machinery.",
-      "effort": "6-10 hours",
-      "parent_task": 58,
-      "dependencies": [
-        72
-      ],
-      "created": "2026-03-27T23:32:07Z",
-      "last_updated": "2026-03-27T23:32:07Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md",
-          "summary": "Spawn analysis from parent task 58"
-        }
-      ]
-    },
-    {
-      "project_number": 109,
-      "project_name": "close_chain_construction_sorries",
-      "status": "planned",
-      "task_type": "lean4",
-      "priority": "critical",
-      "description": "Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free bx_completeness. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93).",
-      "created": "2026-04-20T17:47:26Z",
-      "last_updated": "2026-04-21T17:21:44Z",
-      "dependencies": [
-        93
-      ],
-      "related_tasks": [
-        95,
-        106
-      ],
-      "next_artifact_number": 13,
-      "session_id": "sess_1776791649_5f253a",
-      "researched": "2026-04-21T16:58:20Z",
-      "artifacts": [
-        {
-          "path": "specs/109_close_chain_construction_sorries/summaries/02_implementation-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: phases 0-2 completed, phases 3-6 blocked by BX11 deferral obstacle"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/handoffs/01_phase3-analysis.md",
-          "type": "handoff",
-          "summary": "Deep analysis of F-defect resolution obstacle with recommended approaches"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/03_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): BX11 deferral analysis, two viable paths identified"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/summaries/03_chain-construction-summary.md",
-          "type": "summary",
-          "summary": "Partial implementation summary: 3 infrastructure lemmas added, phase 1 blocked on BX11 fold termination"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/handoffs/01_phase1-analysis.md",
-          "type": "handoff",
-          "summary": "Phase 1 gap analysis with 4 recommended approaches"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/04_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): deep analysis of BX11 termination blocker, 2 viable paths identified"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/handoffs/04_fwd-chain-analysis.md",
-          "type": "handoff",
-          "summary": "Deep analysis: fwd_chain_forward_F unprovable with current chain construction, 3 redesign paths identified"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/summaries/04_chain-construction-summary.md",
-          "type": "summary",
-          "summary": "Partial implementation summary: blocked at analysis, fundamental Lindenbaum opacity blocker identified"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/05_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): step-indexed forced resolution and Sigma-restricted tracking identified as viable paths"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/06_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): both approaches flawed, BX12 bridge and constructive discharge identified as viable"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/summaries/06_chain-construction-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary: BX12 bridge blocked, chain redesign required, 0/5 phases completed"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/handoffs/01_chain-redesign-handoff.md",
-          "type": "handoff",
-          "summary": "Handoff: chain redesign required for fwd_chain_forward_F, hybrid step approach proposed"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/07_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): breakthrough finding - rewire dd_countermodel to sorry-free bx_fmcs construction"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/summaries/07_chain-construction-summary.md",
-          "type": "summary",
-          "summary": "Partial implementation: phases 1-2 completed, 3-5 blocked. Sorries reduced 5->3, code 1556->229 lines."
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/08_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): structural impossibility confirmed, psi_imp_until foundation problem found, 2 viable paths identified"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/09_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): A2 convention non-standard, reflexive restoration recommended, 2 viable paths identified"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/10_reflexive-until-evaluation.md",
-          "type": "research",
-          "summary": "Reflexive Until + Irreflexive G evaluation: B1 convention optimal, enriched-seed chain viable, 28-45h estimate"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/11_team-research.md",
-          "type": "research",
-          "summary": "Team research (4 teammates): until branch 5 sorries from complete, no conservative extension for U/S, two-phase plan"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/reports/12_van-benthem-analysis.md",
-          "type": "research",
-          "summary": "Van Benthem irreflexivity undefinability: reconciled with same-validities claim, no obstruction to two-phase strategy"
-        },
-        {
-          "path": "specs/109_close_chain_construction_sorries/plans/12_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v8: 11 phases (reflexive completeness + irreflexive B1), 55h total"
-        }
-      ],
-      "started": "2026-04-21T00:26:07Z"
-    },
-    {
-      "project_number": 107,
-      "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
-      "language": "lean4",
-      "task_type": "lean4",
-      "priority": "critical",
-      "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
-      "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-02T17:37:10Z",
-      "researched": "2026-05-02T17:37:10Z",
-      "related_tasks": [
-        93
-      ],
-      "dependencies": [
-        113
-      ],
-      "next_artifact_number": 52,
-      "artifacts": [
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
-          "type": "report",
-          "summary": "Initial 7-area diagnostic analysis"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/02_chain-design-diagnostics.md",
-          "type": "report",
-          "summary": "24 Lean diagnostics: 9 dead ends, 3 viable paths"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/03_team-research.md",
-          "type": "report",
-          "summary": "Team research: 3 corrections, verified Until guard theorem, finite witness chains recommended"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/04_literature-sources.md",
-          "type": "report",
-          "summary": "Literature search: 8 papers, 4 free PDFs"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/05_team-research.md",
-          "type": "report",
-          "summary": "Literature study: Burgess chronicle with binary g(x,y) is the correct architecture"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/06_team-research.md",
-          "type": "report",
-          "summary": "Semantic design: strict G/H enables direct Burgess, Box+G+H quick win, phased adoption"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/06_implementation-summary.md",
-          "type": "summary",
-          "summary": "Team implementation: 5 phases, 2764 lines chronicle construction, 2 sorries eliminated, 20 new, critical path rewired"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md",
-          "type": "report",
-          "summary": "Post-implementation review: 3 critical architectural gaps (missing C4, broken extended_limit_f, vacuous C5), 35-55h estimate for 3-phase fix"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/08_verbrugge-step-by-step.md",
-          "type": "report",
-          "summary": "Verbrugge step-by-step vs Burgess chronicle: insert between points, add C4, dense domain. 5-phase fix plan (44-67h)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/09_team-research.md",
-          "type": "report",
-          "summary": "Density axioms NOT needed: Phase 3 misdiagnosis. BX-internal proofs exist for D2 cases. Burgess proves completeness for ALL linear orders without density."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/10_team-research.md",
-          "type": "report",
-          "summary": "Team research: domain extension decision (4 teammates, dense domain recommended, guard mismatch identified)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/11_team-research.md",
-          "type": "report",
-          "summary": "Team research: density/semantics — dense domain WRONG, Burgess uses sparse X⊂Q, FMCS Rat must be refactored"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/12_taskframe-refactoring-scope.md",
-          "type": "report",
-          "summary": "Scoping: AddCommGroup is load-bearing in 7 files (~690 lines), big-bang refactor needed, 15-25 days, breaks 3000 lines of sorry-free proofs"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/13_team-research.md",
-          "type": "report",
-          "summary": "Team research: order-iso NOT viable, direct chronicle truth lemma (Option 4) is the recommended path — 3-5 days, ~200-400 new lines, preserves generality"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/14_team-research.md",
-          "type": "report",
-          "summary": "Team research: direct truth lemma detailed study — Box case needs BFMCS, two viable paths (Rat milestone + general BFMCS-over-X)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/15_team-research.md",
-          "type": "report",
-          "summary": "Team research: critical infrastructure gaps — g function trivial, guard mismatch, AddCommGroup permeates semantic framework. Three-layer problem analysis."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/16_team-research.md",
-          "type": "report",
-          "summary": "Critical evaluation: chronicle viable but expensive (100h). Hybrid Int-chain approach (~24h) most promising alternative. Ship G/H/Box first."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/17_team-research.md",
-          "type": "report",
-          "summary": "g_content chain resolution: binary g function (Burgess) is the fix, current unary g is architecturally wrong"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/17_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 0 complete, Phase 1 partial: g_content_chain_property blocked by Lindenbaum opacity"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase1-v7-handoff.md",
-          "type": "handoff",
-          "summary": "4 approaches analyzed, all blocked by Lindenbaum opacity"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/19_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): dual blocker structure, seed-based propagation, deterministic chain alternative, C4 seed gap"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/20_team-research.md",
-          "type": "report",
-          "summary": "BREAKTHROUGH: Burgess paper read — C3 definitional, 3-arg r-relation, Lemma 2.6 missing, deterministic chain dead (14+ sorries)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/20_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 1 complete (r3Relation), Phases 2-5 blocked by mathematical analysis"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/21_team-research.md",
-          "type": "report",
-          "summary": "Options A/B blocked (unanimous). Option C: FMP bridge + Venema/Reynolds alternative proofs for strict logics"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/22_team-research.md",
-          "type": "report",
-          "summary": "BREAKTHROUGH: C3 is three-way (f(y) factor missed). g_content_chain_property not needed. Venema eliminated. Clear path to implementation."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/22_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 2 partial: C3 redefined as three-way, blocked on A6a derivation + omega-chain redesign"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/23_team-research.md",
-          "type": "report",
-          "summary": "Three blockers resolved: A6a=BX6 (notation swap), forward_G from C4+C0, Cantor iso for non-domain. A4a needs verification."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/23_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 2 partial: ChronicleInvariant + Burgess r-relation + Lemma 2.5 absorption (sorry-free). g_content_chain_property DELETED."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/24_team-research.md",
-          "type": "report",
-          "summary": "Team research: C4+C0 DEBUNKED, two-sided seeds+duality is viable path, Cantor iso complementary"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/25_team-research.md",
-          "type": "report",
-          "summary": "BREAKTHROUGH: C4 definition has arguments swapped. Correct C4 gives forward_G in one step. g_ordered unnecessary."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/26_team-research.md",
-          "type": "report",
-          "summary": "SECOND DEFINITION ERROR: C4 Adjacent restriction wrong. Burgess C4a is for ALL pairs. Lemma 2.9 induction needed."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/27_team-research.md",
-          "type": "report",
-          "summary": "Cantor iso for non-domain (8 sorries), A4a not sound for Lemma 2.6 (3 sorries)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/28_team-research.md",
-          "type": "report",
-          "summary": "Empty g-field must be fixed. g_prop invalid. until_guard axiom needed. 18-24h remaining."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/28_phase2-handoff.md",
-          "type": "handoff",
-          "summary": "Phase 2 handoff: g_agrees infrastructure added, full g-population pending"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/28_phase2-analysis-handoff.md",
-          "type": "handoff",
-          "summary": "Phase 2 BLOCKED: density axiom needed to break forward_G/C4 circularity"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/29_team-research.md",
-          "type": "report",
-          "summary": "Team research: circularity is NOT real, density axioms NOT needed, g-population is correct path"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/29_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 6 partial: dead code deleted (8 sorries removed), key syntactic lemmas proved, r-relation gap identified"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/29_implementation-handoff.md",
-          "type": "handoff",
-          "summary": "Implementation handoff: BurgessR3Maximal needed to bridge rRelation gap"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/30_team-research.md",
-          "type": "report",
-          "summary": "Team research: r-relation gap confirmed, burgessR3 as primary, cruft audit, Burgess lemma map"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/30_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phases 1.5+2: cruft purge + BurgessR3Maximal defined, existence proved, bridging lemmas sorry-free"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/30_implementation-handoff.md",
-          "type": "handoff",
-          "summary": "Phase 2 handoff: BurgessR3Maximal infrastructure complete, Phases 3-6 remain"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/31_team-research.md",
-          "type": "report",
-          "summary": "Team research: FUC independent of C4, g(x,y) need not be MCS, parallel workstreams viable"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/32_team-research.md",
-          "type": "report",
-          "summary": "Team research: seed from Lemma 2.4 eta, no general existence needed, context-specific construction"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/33_team-research.md",
-          "type": "report",
-          "summary": "Team research: remove rebuild_g, direct g-construction per Burgess, revert limit_g to stage-based"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/34_team-research.md",
-          "type": "report",
-          "summary": "Team research: root cause analysis — all 9 sorries trace to missing g-construction + wrong density f(z)=f(x). Lemma 2.6 for BurgessR3Maximal is the blocker."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/35_team-research.md",
-          "type": "report",
-          "summary": "Convention mismatch is FALSE ALARM. B=GUARD in all conventions. No swap needed. BX5+BX7 path confirmed."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/36_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): guard semantics root cause identified — half-open vs open intervals invalidate A3a/A4a. Three strategic options."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/37_post-113-plan-review.md",
-          "type": "report",
-          "summary": "Post-113 plan review: Phase 1 critically broken, 11 chronicle sorries, B_sub_A invalid, paper doesn't need completeness"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/38_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): B_sub_A irrecoverable, D0 dead, bypass via burgessR3Maximal_exists_from_seed, FUC needs C5 strengthening, sorry count 30 not 23"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/39_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): literature-based analysis — all 11 sorries trace to 3 deviations from Burgess/Xu, no new math needed"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/40_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): A3a IS valid under open guard — counterexample was wrong, add as BX axiom to unblock entire construction"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/40_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 3 partial: Lemma 2.3 proved sorry-free, Xu 3.2.1 blocked, 13 sorries remain"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/04_lemma23-complete-xu321-blocked.md",
-          "type": "handoff",
-          "summary": "Handoff: Lemma 2.3 complete, Xu 3.2.1 blocked by consistency gap"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/04_phase4-blocker-analysis.md",
-          "type": "handoff",
-          "summary": "Phase 4 blocker: 9 sorry sites require structural redesign (g-value construction, C4 nested case)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/41_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): BREAKTHROUGH — BX6 resolves C4 nested case, c2' tiered, 40-55h revised estimate"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/41_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 4 complete: C4 nested case closed via BX6. Phases 5-8 blocked by g-value seed gap."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/41_phase5-blocker-analysis.md",
-          "type": "handoff",
-          "summary": "Phase 5 blocker: c2 sorry sites require g-value construction infrastructure (4 resolution paths)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/42_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): g-value construction is the fix — restructure elimination to match Burgess Lemma 2.6 splitting"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/42_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 5 partial: burgessR3Maximal_from_g_content_sub added, blocked on g_content ordering"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase5-g-content-ordering.md",
-          "type": "handoff",
-          "summary": "Phase 5 blocker: g_content ordering for new adjacent pairs, 4 proposed solutions"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/43_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): density self-pair impossible, two strategies — full Burgess alignment vs remove c2' from finite stages"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/43_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 5 GATE passed: Lemma 2.7 valid. Phase 6 blocked on A4a axiom derivability."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase5-gate-complete.md",
-          "type": "handoff",
-          "summary": "Phase 5 gate complete, Phase 6 blocked: A4a needed for Lemma 2.6 consistency"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/44_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): A4a IS valid (convention error resolved), add as axiom OR use Xu Lemma 2.4 alternative"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/02_phase5b-blocker.md",
-          "type": "handoff",
-          "summary": "Phase 5b blocked: guard strengthening axiom needed for Xu splitting"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/02_phase5b-seed-consistency.md",
-          "type": "handoff",
-          "summary": "Phase 5b partial: splitting_seed_consistent sorry — bidirectional seed consistency under irreflexive semantics"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/45_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): left_mono_until_G + g_content(A)⊆B maximality = trivial splitting"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/46_team-research.md",
-          "type": "report",
-          "summary": "Team research: inconsistent case blocker — all syntactic paths fail, Option D (soundness) or Option A (density) recommended"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/47_inconsistent-case-resolution.md",
-          "type": "report",
-          "summary": "BREAKTHROUGH: inconsistent case resolves via Set.univ maximality — no density needed"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/47_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): Lemma 2.7 wrong strategy, remove c2' from EliminationResult, plan v33 needed"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/48_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): BX7≠A7a root cause, Zorn fix via DCS revert, C4 needs c2'+lemma_2_6 not lemma_2_7"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/49_burgess-alignment-audit.md",
-          "type": "report",
-          "summary": "Burgess alignment audit: seed restructuring plan, archive candidates, Lemma 2.4-2.11 mapping"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/50_sorry-architecture-audit.md",
-          "type": "report",
-          "summary": "Sorry architecture audit: plan v35 misaligned, lemma_2_6/2_7 have zero callers, 4 actual blockers identified"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/51_team-research.md",
-          "type": "report",
-          "summary": "Team research (4 teammates): dead code refutation, g-function phantom, C5 incomplete, Burgess D0 seed path, 11-15h plan"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/51_implementation-plan.md",
-          "type": "plan",
-          "summary": "v37: 9 phases, 20h — Burgess-faithful: extend g during insertion, thread c2' through omega_chain, FUC/FSC via Claim 2.11"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/52_phase2-research.md",
-          "type": "research",
-          "summary": "Research on Phase 2 Since condition blocker - solution: bypass dc_delta_B_burgessR3, use Burgess direct seed construction"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/52_implementation-plan.md",
-          "type": "plan",
-          "summary": "Revised implementation plan v52 - Phase 2 approach corrected per Report 52 findings (bypass dc_delta_B_burgessR3, use direct seed construction)"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 2 partial progress - Since condition blocker confirmed, solution path documented per Report 52"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/implementation-phase2-partial.md",
-          "type": "summary",
-          "summary": "Phase 2 partial - splitting_seed_consistent structure with BX5+BX14+BX10 chain, 14 sorry sites remain"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/broken-implementation-analysis.md",
-          "type": "report",
-          "summary": "Analysis of broken implementation: 2 syntax errors, 4 type mismatches, 5 sorry sites in PointInsertion.lean"
-        }
-      ],
-      "session_id": "sess_1777696621_abe53e",
-      "started": "2026-04-25T19:11:01Z",
-      "researching": "2026-05-02T17:32:46Z",
-      "implementing": "2026-05-02T02:16:25Z",
-      "resume_phase": 3
-    },
-    {
-      "project_number": 114,
-      "project_name": "plan_compliance_rule_for_implementation_agents",
-      "status": "not_started",
-      "task_type": "meta",
-      "description": "Add a .claude/rules/ rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a theorems-as-interval shortcut for task 107 Phase 1 instead of following the planned Burgess D0 seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan approach. The rule must state: (1) agents MUST implement the plan specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending /revise and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.",
-      "created": "2026-04-27T00:00:00Z",
-      "last_updated": "2026-04-27T00:00:00Z",
-      "next_artifact_number": 1,
-      "artifacts": []
-    },
-    {
-      "project_number": 115,
-      "project_name": "replace_a4a_with_left_mono_until_g",
-      "status": "researched",
-      "task_type": "lean4",
-      "description": "Post-task-107 cleanup: remove A4a (separation_until/separation_since) axioms now that left_mono_until_G is in the system (added by task 107 Phase 5b). Optionally simplify BX2 by removing the redundant pointwise conjunct (left_mono_until_G subsumes it under open-guard semantics). Update SoundnessLemmas.lean match arms, remove A4a references from documentation.",
-      "created": "2026-04-29T14:32:51Z",
-      "last_updated": "2026-04-29T16:45:40Z",
-      "language": "lean4",
-      "related_tasks": [
-        107
-      ],
-      "next_artifact_number": 2,
-      "session_id": "sess_1777479139_de118c",
-      "researched": "2026-04-29T16:17:54Z",
-      "dependencies": [
-        107
-      ]
-    }
+  "project_number": 107,
+  "project_name": "chain_design_diagnostics_for_representation_theorem",
+  "status": "partial",
+  "language": "lean4",
+  "task_type": "lean4",
+  "priority": "critical",
+  "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
+  "created": "2026-04-23T22:39:08Z",
+  "last_updated": "2026-05-02T18:21:21Z",
+  "researched": "2026-05-02T17:37:10Z",
+  "related_tasks": [
+    93
   ],
-  "next_project_number": 116,
+  "dependencies": [
+    113
+  ],
+  "next_artifact_number": 52,
   "artifacts": [
     {
-      "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
+      "type": "report",
+      "summary": "Initial 7-area diagnostic analysis"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/02_chain-design-diagnostics.md",
+      "type": "report",
+      "summary": "24 Lean diagnostics: 9 dead ends, 3 viable paths"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/03_team-research.md",
+      "type": "report",
+      "summary": "Team research: 3 corrections, verified Until guard theorem, finite witness chains recommended"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/04_literature-sources.md",
+      "type": "report",
+      "summary": "Literature search: 8 papers, 4 free PDFs"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/05_team-research.md",
+      "type": "report",
+      "summary": "Literature study: Burgess chronicle with binary g(x,y) is the correct architecture"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/06_team-research.md",
+      "type": "report",
+      "summary": "Semantic design: strict G/H enables direct Burgess, Box+G+H quick win, phased adoption"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/06_implementation-summary.md",
+      "type": "summary",
+      "summary": "Team implementation: 5 phases, 2764 lines chronicle construction, 2 sorries eliminated, 20 new, critical path rewired"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md",
+      "type": "report",
+      "summary": "Post-implementation review: 3 critical architectural gaps (missing C4, broken extended_limit_f, vacuous C5), 35-55h estimate for 3-phase fix"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/08_verbrugge-step-by-step.md",
+      "type": "report",
+      "summary": "Verbrugge step-by-step vs Burgess chronicle: insert between points, add C4, dense domain. 5-phase fix plan (44-67h)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/09_team-research.md",
+      "type": "report",
+      "summary": "Density axioms NOT needed: Phase 3 misdiagnosis. BX-internal proofs exist for D2 cases. Burgess proves completeness for ALL linear orders without density."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/10_team-research.md",
+      "type": "report",
+      "summary": "Team research: domain extension decision (4 teammates, dense domain recommended, guard mismatch identified)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/11_team-research.md",
+      "type": "report",
+      "summary": "Team research: density/semantics — dense domain WRONG, Burgess uses sparse X⊂Q, FMCS Rat must be refactored"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/12_taskframe-refactoring-scope.md",
+      "type": "report",
+      "summary": "Scoping: AddCommGroup is load-bearing in 7 files (~690 lines), big-bang refactor needed, 15-25 days, breaks 3000 lines of sorry-free proofs"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/13_team-research.md",
+      "type": "report",
+      "summary": "Team research: order-iso NOT viable, direct chronicle truth lemma (Option 4) is the recommended path — 3-5 days, ~200-400 new lines, preserves generality"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/14_team-research.md",
+      "type": "report",
+      "summary": "Team research: direct truth lemma detailed study — Box case needs BFMCS, two viable paths (Rat milestone + general BFMCS-over-X)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/15_team-research.md",
+      "type": "report",
+      "summary": "Team research: critical infrastructure gaps — g function trivial, guard mismatch, AddCommGroup permeates semantic framework. Three-layer problem analysis."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/16_team-research.md",
+      "type": "report",
+      "summary": "Critical evaluation: chronicle viable but expensive (100h). Hybrid Int-chain approach (~24h) most promising alternative. Ship G/H/Box first."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/17_team-research.md",
+      "type": "report",
+      "summary": "g_content chain resolution: binary g function (Burgess) is the fix, current unary g is architecturally wrong"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/17_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 0 complete, Phase 1 partial: g_content_chain_property blocked by Lindenbaum opacity"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase1-v7-handoff.md",
+      "type": "handoff",
+      "summary": "4 approaches analyzed, all blocked by Lindenbaum opacity"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/19_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): dual blocker structure, seed-based propagation, deterministic chain alternative, C4 seed gap"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/20_team-research.md",
+      "type": "report",
+      "summary": "BREAKTHROUGH: Burgess paper read — C3 definitional, 3-arg r-relation, Lemma 2.6 missing, deterministic chain dead (14+ sorries)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/20_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 1 complete (r3Relation), Phases 2-5 blocked by mathematical analysis"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/21_team-research.md",
+      "type": "report",
+      "summary": "Options A/B blocked (unanimous). Option C: FMP bridge + Venema/Reynolds alternative proofs for strict logics"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/22_team-research.md",
+      "type": "report",
+      "summary": "BREAKTHROUGH: C3 is three-way (f(y) factor missed). g_content_chain_property not needed. Venema eliminated. Clear path to implementation."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/22_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 2 partial: C3 redefined as three-way, blocked on A6a derivation + omega-chain redesign"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/23_team-research.md",
+      "type": "report",
+      "summary": "Three blockers resolved: A6a=BX6 (notation swap), forward_G from C4+C0, Cantor iso for non-domain. A4a needs verification."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/23_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 2 partial: ChronicleInvariant + Burgess r-relation + Lemma 2.5 absorption (sorry-free). g_content_chain_property DELETED."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/24_team-research.md",
+      "type": "report",
+      "summary": "Team research: C4+C0 DEBUNKED, two-sided seeds+duality is viable path, Cantor iso complementary"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/25_team-research.md",
+      "type": "report",
+      "summary": "BREAKTHROUGH: C4 definition has arguments swapped. Correct C4 gives forward_G in one step. g_ordered unnecessary."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/26_team-research.md",
+      "type": "report",
+      "summary": "SECOND DEFINITION ERROR: C4 Adjacent restriction wrong. Burgess C4a is for ALL pairs. Lemma 2.9 induction needed."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/27_team-research.md",
+      "type": "report",
+      "summary": "Cantor iso for non-domain (8 sorries), A4a not sound for Lemma 2.6 (3 sorries)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/28_team-research.md",
+      "type": "report",
+      "summary": "Empty g-field must be fixed. g_prop invalid. until_guard axiom needed. 18-24h remaining."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/28_phase2-handoff.md",
+      "type": "handoff",
+      "summary": "Phase 2 handoff: g_agrees infrastructure added, full g-population pending"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/28_phase2-analysis-handoff.md",
+      "type": "handoff",
+      "summary": "Phase 2 BLOCKED: density axiom needed to break forward_G/C4 circularity"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/29_team-research.md",
+      "type": "report",
+      "summary": "Team research: circularity is NOT real, density axioms NOT needed, g-population is correct path"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/29_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 6 partial: dead code deleted (8 sorries removed), key syntactic lemmas proved, r-relation gap identified"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/29_implementation-handoff.md",
+      "type": "handoff",
+      "summary": "Implementation handoff: BurgessR3Maximal needed to bridge rRelation gap"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/30_team-research.md",
+      "type": "report",
+      "summary": "Team research: r-relation gap confirmed, burgessR3 as primary, cruft audit, Burgess lemma map"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/30_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phases 1.5+2: cruft purge + BurgessR3Maximal defined, existence proved, bridging lemmas sorry-free"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/30_implementation-handoff.md",
+      "type": "handoff",
+      "summary": "Phase 2 handoff: BurgessR3Maximal infrastructure complete, Phases 3-6 remain"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/31_team-research.md",
+      "type": "report",
+      "summary": "Team research: FUC independent of C4, g(x,y) need not be MCS, parallel workstreams viable"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/32_team-research.md",
+      "type": "report",
+      "summary": "Team research: seed from Lemma 2.4 eta, no general existence needed, context-specific construction"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/33_team-research.md",
+      "type": "report",
+      "summary": "Team research: remove rebuild_g, direct g-construction per Burgess, revert limit_g to stage-based"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/34_team-research.md",
+      "type": "report",
+      "summary": "Team research: root cause analysis — all 9 sorries trace to missing g-construction + wrong density f(z)=f(x). Lemma 2.6 for BurgessR3Maximal is the blocker."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/35_team-research.md",
+      "type": "report",
+      "summary": "Convention mismatch is FALSE ALARM. B=GUARD in all conventions. No swap needed. BX5+BX7 path confirmed."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/36_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): guard semantics root cause identified — half-open vs open intervals invalidate A3a/A4a. Three strategic options."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/37_post-113-plan-review.md",
+      "type": "report",
+      "summary": "Post-113 plan review: Phase 1 critically broken, 11 chronicle sorries, B_sub_A invalid, paper doesn't need completeness"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/38_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): B_sub_A irrecoverable, D0 dead, bypass via burgessR3Maximal_exists_from_seed, FUC needs C5 strengthening, sorry count 30 not 23"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/39_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): literature-based analysis — all 11 sorries trace to 3 deviations from Burgess/Xu, no new math needed"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/40_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): A3a IS valid under open guard — counterexample was wrong, add as BX axiom to unblock entire construction"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/40_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 3 partial: Lemma 2.3 proved sorry-free, Xu 3.2.1 blocked, 13 sorries remain"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/04_lemma23-complete-xu321-blocked.md",
+      "type": "handoff",
+      "summary": "Handoff: Lemma 2.3 complete, Xu 3.2.1 blocked by consistency gap"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/04_phase4-blocker-analysis.md",
+      "type": "handoff",
+      "summary": "Phase 4 blocker: 9 sorry sites require structural redesign (g-value construction, C4 nested case)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/41_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): BREAKTHROUGH — BX6 resolves C4 nested case, c2' tiered, 40-55h revised estimate"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/41_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 4 complete: C4 nested case closed via BX6. Phases 5-8 blocked by g-value seed gap."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/41_phase5-blocker-analysis.md",
+      "type": "handoff",
+      "summary": "Phase 5 blocker: c2 sorry sites require g-value construction infrastructure (4 resolution paths)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/42_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): g-value construction is the fix — restructure elimination to match Burgess Lemma 2.6 splitting"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/42_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 5 partial: burgessR3Maximal_from_g_content_sub added, blocked on g_content ordering"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase5-g-content-ordering.md",
+      "type": "handoff",
+      "summary": "Phase 5 blocker: g_content ordering for new adjacent pairs, 4 proposed solutions"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/43_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): density self-pair impossible, two strategies — full Burgess alignment vs remove c2' from finite stages"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/43_implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 5 GATE passed: Lemma 2.7 valid. Phase 6 blocked on A4a axiom derivability."
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase5-gate-complete.md",
+      "type": "handoff",
+      "summary": "Phase 5 gate complete, Phase 6 blocked: A4a needed for Lemma 2.6 consistency"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/44_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): A4a IS valid (convention error resolved), add as axiom OR use Xu Lemma 2.4 alternative"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/02_phase5b-blocker.md",
+      "type": "handoff",
+      "summary": "Phase 5b blocked: guard strengthening axiom needed for Xu splitting"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/02_phase5b-seed-consistency.md",
+      "type": "handoff",
+      "summary": "Phase 5b partial: splitting_seed_consistent sorry — bidirectional seed consistency under irreflexive semantics"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/45_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): left_mono_until_G + g_content(A)⊆B maximality = trivial splitting"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/46_team-research.md",
+      "type": "report",
+      "summary": "Team research: inconsistent case blocker — all syntactic paths fail, Option D (soundness) or Option A (density) recommended"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/47_inconsistent-case-resolution.md",
+      "type": "report",
+      "summary": "BREAKTHROUGH: inconsistent case resolves via Set.univ maximality — no density needed"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/47_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): Lemma 2.7 wrong strategy, remove c2' from EliminationResult, plan v33 needed"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/48_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): BX7≠A7a root cause, Zorn fix via DCS revert, C4 needs c2'+lemma_2_6 not lemma_2_7"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/49_burgess-alignment-audit.md",
+      "type": "report",
+      "summary": "Burgess alignment audit: seed restructuring plan, archive candidates, Lemma 2.4-2.11 mapping"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/50_sorry-architecture-audit.md",
+      "type": "report",
+      "summary": "Sorry architecture audit: plan v35 misaligned, lemma_2_6/2_7 have zero callers, 4 actual blockers identified"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/51_team-research.md",
+      "type": "report",
+      "summary": "Team research (4 teammates): dead code refutation, g-function phantom, C5 incomplete, Burgess D0 seed path, 11-15h plan"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/51_implementation-plan.md",
       "type": "plan",
-      "summary": "2-phase plan: attempt proof completion first, remove incomplete exercises as fallback"
+      "summary": "v37: 9 phases, 20h — Burgess-faithful: extend g during insertion, thread c2' through omega_chain, FUC/FSC via Claim 2.11"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/52_phase2-research.md",
+      "type": "research",
+      "summary": "Research on Phase 2 Since condition blocker - solution: bypass dc_delta_B_burgessR3, use Burgess direct seed construction"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/52_implementation-plan.md",
+      "type": "plan",
+      "summary": "Revised implementation plan v52 - Phase 2 approach corrected per Report 52 findings (bypass dc_delta_B_burgessR3, use direct seed construction)"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/implementation-summary.md",
+      "type": "summary",
+      "summary": "Phase 2 partial progress - Since condition blocker confirmed, solution path documented per Report 52"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/implementation-phase2-partial.md",
+      "type": "summary",
+      "summary": "Phase 2 partial - splitting_seed_consistent structure with BX5+BX14+BX10 chain, 14 sorry sites remain"
+    },
+    {
+      "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/broken-implementation-analysis.md",
+      "type": "report",
+      "summary": "Analysis of broken implementation: 2 syntax errors, 4 type mismatches, 5 sorry sites in PointInsertion.lean"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean",
+      "type": "summary",
+      "summary": "Fixed syntax errors (misplaced docstrings) at lines 1161-1177 and 1332-1339; defined EnrichedEvent structure to fix iterated_enrichment type mismatch; updated burgess_zeta_consistent to use Sigma type instead of existential to avoid Prop/Type mismatch"
     }
   ],
-  "task_counts": {
-    "active": 16,
-    "not_started": 6,
-    "total": 853,
-    "abandoned": 75
-  },
-  "repository_health": {
-    "last_assessed": "2026-04-20T22:15:16Z",
-    "status": "healthy",
-    "build_errors": 0,
-    "sorry_counts": {
-      "non_boneyard": 129,
-      "boneyard": 171,
-      "total": 300,
-      "note": "Audited 2026-04-20: 129 non-Boneyard sorries, 11 active-path in CanonicalModel.lean (6) + RootScopedChain.lean (5), 4 genuinely false/unprovable. Task 94 archived 9 files (~107 sorries) to Boneyard/StrictSemanticsLegacy."
-    }
-  },
-  "last_updated": "2026-04-12T12:00:00Z",
-  "vault_count": 1,
-  "vault_history": [
-    {
-      "vault_number": 1,
-      "vault_dir": "specs/vault/01-vault/",
-      "created_at": "2026-03-21T03:01:33Z"
-    }
-  ]
+  "session_id": "sess_1777696621_abe53e",
+  "started": "2026-04-25T19:11:01Z",
+  "researching": "2026-05-02T17:32:46Z",
+  "implementing": "2026-05-02T18:06:59Z",
+  "resume_phase": 3
 }

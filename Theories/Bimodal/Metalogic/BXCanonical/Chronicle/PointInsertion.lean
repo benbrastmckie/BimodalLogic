@@ -1158,23 +1158,7 @@ private theorem inconsistent_singleton_false {φ : Formula}
     (d : DerivationTree [φ] Formula.bot) : False :=
   h_cons [φ] (fun ψ hψ => by simp [List.mem_singleton] at hψ; subst hψ; exact Set.mem_singleton φ) ⟨d⟩
 
-/-- **Burgess D₀ finite subset consistency** (consistent case):
-Given BurgessR3Maximal(A,B,C) with β∉B and {β}∪B consistent, any finite L ⊆ D₀
-is consistent.
 
-Proof (Burgess 1982, p.370-371): Any finite L ⊆ D₀ decomposes into:
-- L_B ⊆ {β.neg} ∪ B (base formulas)
-- L_U = {untl(β'₁,γ₁), ..., untl(β'ₖ,γₖ)} with each β'ᵢ∈B, γᵢ∈C (in A by burgessR3)
-- L_S = {snce(β'₁,α₁), ..., snce(β'ₘ,αₘ)} with each β'ⱼ∈B, αⱼ∈A (in C by burgessR3)
-
-Compress via DCS closure: b = ∧(B-elements of L) ∈ B, γ̂ = ∧γᵢ ∈ C, α̂ = ∧αⱼ ∈ A.
-The single conjunction ζ = b ∧ β.neg ∧ untl(b,γ̂) ∧ snce(b,α̂) implies all elements
-of L (via conjunction elimination + guard weakening A2a/A1b). So if L⊢⊥ then ζ⊢⊥.
-
-Prove ζ consistent via BX chain: BX5 on untl(b,γ̂)∈A gives untl(b∧untl(b,γ̂), γ̂)∈A.
-BX14 with ¬untl(b∧β, γ̂)∈A gives untl(q, q∧(b∧β).neg)∈A where q=b∧untl(b,γ̂).
-BX13 packs snce(q,α̂) into the event. BX10 gives F(event)∈A with event ⊢ ζ.
-F(event)∈A means event is consistent (seriality), hence ζ is consistent. -/
 /-- Derivation-level left_mono for Until: if ⊢ φ→χ then ⊢ untl(φ,ψ) → untl(χ,ψ).
 Uses BX2 (left_mono_until): (φ→χ)∧G(φ→χ) → untl(φ,ψ) → untl(χ,ψ). -/
 private noncomputable def untl_left_mono_deriv (φ ψ χ : Formula)
@@ -1216,10 +1200,17 @@ private noncomputable def untl_right_mono_deriv (φ ψ χ : Formula)
   have h_ax := DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ χ)
   exact DerivationTree.modus_ponens [] _ _ h_ax h_G
 
+/-- Structure to hold the result of iterated BX13 enrichment. -/
+structure EnrichedEvent (A : Set Formula) (guard event : Formula) (alphas : List Formula) where
+  event' : Formula
+  h_untl : Formula.untl guard event' ∈ A
+  h_impl : DerivationTree [] (event'.imp event)
+  h_snce : ∀ α ∈ alphas, DerivationTree [] (event'.imp (Formula.snce guard α))
+
 /-- Iterated BX13 enrichment: given untl(guard, event) ∈ A and a list of
 formulas each in A, enrich the event with snce(guard, αⱼ) for each αⱼ.
 
-Result: untl(guard, event') ∈ A where event' implies event and each snce(guard, αⱼ). -/
+Result: EnrichedEvent containing the new event and proofs. -/
 private noncomputable def iterated_enrichment {A : Set Formula}
     (h_mcs : SetMaximalConsistent A)
     (guard : Formula) :
@@ -1227,25 +1218,21 @@ private noncomputable def iterated_enrichment {A : Set Formula}
     (h_alphas : ∀ α ∈ alphas, α ∈ A) →
     (event : Formula) →
     Formula.untl guard event ∈ A →
-    { event' : Formula //
-      Formula.untl guard event' ∈ A ∧
-      (DerivationTree [] (event'.imp event)) ∧
-      (∀ α ∈ alphas, DerivationTree [] (event'.imp (Formula.snce guard α))) }
-  | [], _, event, h_untl => ⟨event, h_untl, identity event, fun _ h => absurd h (List.not_mem_nil _)⟩
+    EnrichedEvent A guard event alphas
+  | [], _, event, h_untl => EnrichedEvent.mk event h_untl (identity event) (fun _ h => absurd h (List.not_mem_nil _))
   | α :: rest, h_alphas, event, h_untl => by
     have h_α : α ∈ A := h_alphas α (List.mem_cons.mpr (Or.inl rfl))
     have h_enriched := enrichment_until_mcs h_mcs h_α h_untl
     have h_rest : ∀ α' ∈ rest, α' ∈ A := fun α' hα' =>
       h_alphas α' (List.mem_cons.mpr (Or.inr hα'))
-    let ⟨event', h_untl', h_impl', h_snce'⟩ :=
-      iterated_enrichment h_mcs guard rest h_rest
-        (Formula.and event (Formula.snce guard α)) h_enriched
-    exact ⟨event', h_untl',
-      imp_trans h_impl' (lce_imp event (Formula.snce guard α)),
-      fun α' hα' => by
+    let evt := iterated_enrichment h_mcs guard rest h_rest
+      (Formula.and event (Formula.snce guard α)) h_enriched
+    exact EnrichedEvent.mk evt.event' evt.h_untl
+      (imp_trans evt.h_impl (lce_imp event (Formula.snce guard α)))
+      (fun α' hα' => by
         rcases List.mem_cons.mp hα' with rfl | h
-        · exact imp_trans h_impl' (rce_imp event (Formula.snce guard α))
-        · exact h_snce' α' h⟩
+        · exact imp_trans evt.h_impl (rce_imp event (Formula.snce guard α))
+        · exact evt.h_snce α' h)⟩
 
 /-- **Burgess compression**: Show that any particular conjunction
 ζ = snce(b, α) ∧ b ∧ β.neg ∧ untl(b, γ) with b∈B, α∈A, γ∈C is consistent.
@@ -1267,11 +1254,12 @@ private theorem burgess_zeta_consistent {A B C : Set Formula}
     (h_neg_until : (Formula.untl (Formula.and b β) γ).neg ∈ A) :
     -- The event from the BX chain implies each component.
     -- We prove: there exists event with F(event)∈A and event implies each component.
-    ∃ event : Formula,
-      Formula.some_future event ∈ A ∧
-      DerivationTree [] (event.imp b) ∧
-      DerivationTree [] (event.imp β.neg) ∧
-      DerivationTree [] (event.imp (Formula.untl b γ)) ∧
+    -- Use Sigma type since fields are Type-valued (DerivationTree).
+    Σ event : Formula,
+      Formula.some_future event ∈ A ×
+      DerivationTree [] (event.imp b) ×
+      DerivationTree [] (event.imp β.neg) ×
+      DerivationTree [] (event.imp (Formula.untl b γ)) ×
       (∀ α ∈ alpha_list, DerivationTree [] (event.imp (Formula.snce b α))) := by
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   -- Step 1: untl(b, γ) ∈ A from burgessR3
@@ -1284,9 +1272,12 @@ private theorem burgess_zeta_consistent {A B C : Set Formula}
   have h_sep : Formula.untl q (Formula.and q (Formula.and b β).neg) ∈ A :=
     separation_until_mcs h_mcs_A h_bx5 h_neg_until
   -- Step 4: BX13 iterated enrichment with alpha_list
-  let ⟨event, h_untl_event, h_event_impl_base, h_event_impl_snce⟩ :=
-    iterated_enrichment h_mcs_A q alpha_list h_alphas
-      (Formula.and q (Formula.and b β).neg) h_sep
+  let evt := iterated_enrichment h_mcs_A q alpha_list h_alphas
+    (Formula.and q (Formula.and b β).neg) h_sep
+  let event := evt.event'
+  have h_untl_event := evt.h_untl
+  have h_event_impl_base := evt.h_impl
+  have h_event_impl_snce := evt.h_snce
   -- Step 5: BX10: F(event) ∈ A
   have h_F_event : Formula.some_future event ∈ A :=
     until_implies_F_mcs h_mcs_A h_untl_event
@@ -1342,17 +1333,9 @@ private theorem burgess_zeta_consistent {A B C : Set Formula}
     have h_q_to_b : DerivationTree [] (q.imp b) := lce_imp b (Formula.untl b γ)
     have h_mono := snce_left_mono_deriv q α b h_q_to_b
     exact imp_trans h_snce_q h_mono
-  exact ⟨event, h_F_event, h_event_impl_b, h_event_impl_beta_neg,
-    h_event_impl_untl, h_event_impl_snce_b⟩
+  exact ⟨event, (h_F_event, (h_event_impl_b, (h_event_impl_beta_neg,
+    (h_event_impl_untl, h_event_impl_snce_b)))⟩
 
-/-- **Burgess D₀ finite subset consistency** (consistent case):
-Given BurgessR3Maximal(A,B,C) with β∉B and {β}∪B consistent, any finite L ⊆ D₀
-is consistent.
-
-Proof (Burgess 1982, p.370-371): reduce to showing a single ζ is consistent
-by compressing all B-guards into b∈B, C-events into γ∈C, A-events into α∈A.
-Then the BX chain shows F(event)∈A with event implying ζ, hence ζ is consistent,
-hence L is consistent since ζ implies all of L. -/
 /-- Noncomputable extraction: for each φ ∈ D₀, return a B-guard formula in B.
 - For φ∈B (including Until/Since formulas that happen to be in B): guard = φ.
 - For untl(β',γ) with φ∉B: guard = β'.
@@ -1460,6 +1443,23 @@ private theorem collect_guards_mem_of_B {A B C : Set Formula}
       unfold d0_guard; simp [h_B]
     · right; exact collect_guards_mem_of_B h_dcs β rest _ φ h_rest h_B
 
+/-- **Burgess D₀ finite subset consistency** (consistent case):
+Given BurgessR3Maximal(A,B,C) with β∉B and {β}∪B consistent, any finite L ⊆ D₀
+is consistent.
+
+Proof (Burgess 1982, p.370-371): Any finite L ⊆ D₀ decomposes into:
+- L_B ⊆ {β.neg} ∪ B (base formulas)
+- L_U = {untl(β'₁,γ₁), ..., untl(β'ₖ,γₖ)} with each β'ᵢ∈B, γᵢ∈C (in A by burgessR3)
+- L_S = {snce(β'₁,α₁), ..., snce(β'ₘ,αₘ)} with each β'ⱼ∈B, αⱼ∈A (in C by burgessR3)
+
+Compress via DCS closure: b = ∧(B-elements of L) ∈ B, γ̂ = ∧γᵢ ∈ C, α̂ = ∧αⱼ ∈ A.
+The single conjunction ζ = b ∧ β.neg ∧ untl(b,γ̂) ∧ snce(b,α̂) implies all elements
+of L (via conjunction elimination + guard weakening A2a/A1b). So if L⊢⊥ then ζ⊢⊥.
+
+Prove ζ consistent via BX chain: BX5 on untl(b,γ̂)∈A gives untl(b∧untl(b,γ̂), γ̂)∈A.
+BX14 with ¬untl(b∧β, γ̂)∈A gives untl(q, q∧(b∧β).neg)∈A where q=b∧untl(b,γ̂).
+BX13 packs snce(q,α̂) into the event. BX10 gives F(event)∈A with event ⊢ ζ.
+F(event)∈A means event is consistent (seriality), hence ζ is consistent. -/
 private theorem burgess_D0_finite_subset_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
