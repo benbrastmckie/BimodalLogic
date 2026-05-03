@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-03T02:42:05Z",
+      "last_updated": "2026-05-03T15:41:15Z",
       "researched": "2026-05-02T21:54:57Z",
       "related_tasks": [
         93
@@ -701,11 +701,6 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/06_team-research.md",
           "type": "report",
           "summary": "Semantic design: strict G/H enables direct Burgess, Box+G+H quick win, phased adoption"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/06_implementation-summary.md",
-          "type": "summary",
-          "summary": "Team implementation: 5 phases, 2764 lines chronicle construction, 2 sorries eliminated, 20 new, critical path rewired"
         },
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md",
@@ -763,11 +758,6 @@
           "summary": "g_content chain resolution: binary g function (Burgess) is the fix, current unary g is architecturally wrong"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/17_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 0 complete, Phase 1 partial: g_content_chain_property blocked by Lindenbaum opacity"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase1-v7-handoff.md",
           "type": "handoff",
           "summary": "4 approaches analyzed, all blocked by Lindenbaum opacity"
@@ -783,11 +773,6 @@
           "summary": "BREAKTHROUGH: Burgess paper read — C3 definitional, 3-arg r-relation, Lemma 2.6 missing, deterministic chain dead (14+ sorries)"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/20_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 1 complete (r3Relation), Phases 2-5 blocked by mathematical analysis"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/21_team-research.md",
           "type": "report",
           "summary": "Options A/B blocked (unanimous). Option C: FMP bridge + Venema/Reynolds alternative proofs for strict logics"
@@ -798,19 +783,9 @@
           "summary": "BREAKTHROUGH: C3 is three-way (f(y) factor missed). g_content_chain_property not needed. Venema eliminated. Clear path to implementation."
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/22_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 2 partial: C3 redefined as three-way, blocked on A6a derivation + omega-chain redesign"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/23_team-research.md",
           "type": "report",
           "summary": "Three blockers resolved: A6a=BX6 (notation swap), forward_G from C4+C0, Cantor iso for non-domain. A4a needs verification."
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/23_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 2 partial: ChronicleInvariant + Burgess r-relation + Lemma 2.5 absorption (sorry-free). g_content_chain_property DELETED."
         },
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/24_team-research.md",
@@ -853,11 +828,6 @@
           "summary": "Team research: circularity is NOT real, density axioms NOT needed, g-population is correct path"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/29_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 6 partial: dead code deleted (8 sorries removed), key syntactic lemmas proved, r-relation gap identified"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/29_implementation-handoff.md",
           "type": "handoff",
           "summary": "Implementation handoff: BurgessR3Maximal needed to bridge rRelation gap"
@@ -866,11 +836,6 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/30_team-research.md",
           "type": "report",
           "summary": "Team research: r-relation gap confirmed, burgessR3 as primary, cruft audit, Burgess lemma map"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/30_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phases 1.5+2: cruft purge + BurgessR3Maximal defined, existence proved, bridging lemmas sorry-free"
         },
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/30_implementation-handoff.md",
@@ -928,11 +893,6 @@
           "summary": "Team research (4 teammates): A3a IS valid under open guard — counterexample was wrong, add as BX axiom to unblock entire construction"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/40_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 3 partial: Lemma 2.3 proved sorry-free, Xu 3.2.1 blocked, 13 sorries remain"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/04_lemma23-complete-xu321-blocked.md",
           "type": "handoff",
           "summary": "Handoff: Lemma 2.3 complete, Xu 3.2.1 blocked by consistency gap"
@@ -948,11 +908,6 @@
           "summary": "Team research (4 teammates): BREAKTHROUGH — BX6 resolves C4 nested case, c2' tiered, 40-55h revised estimate"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/41_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 4 complete: C4 nested case closed via BX6. Phases 5-8 blocked by g-value seed gap."
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/41_phase5-blocker-analysis.md",
           "type": "handoff",
           "summary": "Phase 5 blocker: c2 sorry sites require g-value construction infrastructure (4 resolution paths)"
@@ -963,11 +918,6 @@
           "summary": "Team research (4 teammates): g-value construction is the fix — restructure elimination to match Burgess Lemma 2.6 splitting"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/42_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 5 partial: burgessR3Maximal_from_g_content_sub added, blocked on g_content ordering"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase5-g-content-ordering.md",
           "type": "handoff",
           "summary": "Phase 5 blocker: g_content ordering for new adjacent pairs, 4 proposed solutions"
@@ -976,11 +926,6 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/43_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): density self-pair impossible, two strategies — full Burgess alignment vs remove c2' from finite stages"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/43_implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 5 GATE passed: Lemma 2.7 valid. Phase 6 blocked on A4a axiom derivability."
         },
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase5-gate-complete.md",
@@ -1048,16 +993,6 @@
           "summary": "Research on Phase 2 Since condition blocker - solution: bypass dc_delta_B_burgessR3, use Burgess direct seed construction"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/implementation-summary.md",
-          "type": "summary",
-          "summary": "Phase 2 partial progress - Since condition blocker confirmed, solution path documented per Report 52"
-        },
-        {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/implementation-phase2-partial.md",
-          "type": "summary",
-          "summary": "Phase 2 partial - splitting_seed_consistent structure with BX5+BX14+BX10 chain, 14 sorry sites remain"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/broken-implementation-analysis.md",
           "type": "report",
           "summary": "Analysis of broken implementation: 2 syntax errors, 4 type mismatches, 5 sorry sites in PointInsertion.lean"
@@ -1086,12 +1021,17 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/53_implementation-plan.md",
           "type": "plan",
           "summary": "Comprehensive 7-phase plan with 16 tasks to close all 16 sorry sites in Burgess chronicle construction"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/summaries/53_implementation-summary.md",
+          "type": "summary",
+          "summary": "Phase 3 partial: BX7 chain skeleton implemented, 6 sorries remain (1 Phase 2, 5 Phase 3)"
         }
       ],
       "session_id": "sess_1777762781_b2f826",
       "started": "2026-04-25T19:11:01Z",
       "researching": "2026-05-02T17:32:46Z",
-      "implementing": "2026-05-02T23:00:04Z",
+      "implementing": "2026-05-03T15:25:18Z",
       "resume_phase": 3,
       "planning": "2026-05-03T02:32:10Z",
       "planned": "2026-05-03T02:42:05Z"

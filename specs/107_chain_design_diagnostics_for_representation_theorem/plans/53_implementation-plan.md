@@ -94,88 +94,56 @@ Phases within the same wave can execute in parallel where marked as independent.
 
 ### Phase 2: Complete D0 Seed Consistency (Inconsistent Case) [PARTIAL]
 
-**Goal**: Close the 3 remaining sorries in `burgess_D0_finite_subset_consistent_incons` (lines 1411, 1858-1859) by restructuring L-membership proofs to avoid direct dependence on `h_ev_b` and `h_ev_untl`.
+**Status**: Partially completed - 2 sorries remain (non-blocking for Phase 3)
 
-**Tasks**:
-- [ ] **Task 2.1**: Complete `d0_a_event_list_mem` (line 1411) - Use pattern matching instead of `Classical.choose` to extract α' from `snce(beta', alpha') ∈ L`. Prove `α' ∈ A` directly via `d0_a_event_list_α_mem` helper.
+**Goal**: Close the remaining sorries in Phase 2. These are technical proofs involving Classical.choose reasoning and event construction.
 
-- [ ] **Task 2.2**: Restructure `h_ev_b` derivation (line 1858) - The enrichment provides `event → γ_hat`, but proof requires `event → b`. Strategy: Use `collect_guards_mem_of_B` to show `b ∈ collect_guards output`, then `list_conj_implies_elem` gives `b_list → b`, and by transitivity with `event → b_list` (via BX13 enrichment), we get `event → b`.
+**Remaining Tasks**:
+- [ ] **Task 2.1**: `d0_a_event_list_mem` (line ~1409) - Classical.choose extraction proof
+- [ ] **Task 2.2**: `burgess_D0_finite_subset_consistent_incons` (line ~1801) - Event construction for inconsistent case
 
-- [ ] **Task 2.3**: Restructure `h_ev_untl` derivation (line 1859) - Need `event → untl(b, γ_hat)`. Strategy: From BX5 (`self_accum_until_mcs`), we have `untl(b AND untl(b, γ_hat), γ_hat) ∈ A`. The event contains `b AND untl(b, γ_hat)` in its guard (via BX13 enrichment), so `event → untl(b AND untl(b, γ_hat), γ_hat)`. Apply `untl_left_mono_deriv` with `b → b` (refl) and `untl(b, γ_hat) → untl(b, γ_hat)` (from guard), then use `untl_right_mono_deriv` with `γ_hat → γ_hat` (refl).
+**Note**: These sorries are independent of Phase 3 (Lemma 2.7). The inconsistent case proof structure needs reworking of the event construction to properly derive `event → b` and `event → untl(b, γ_hat)` from the enrichment.
 
-- [ ] **Task 2.4**: Verify complete proof - Ensure `burgess_D0_finite_subset_consistent_incons` compiles sorry-free with all cases (β.neg ∈ B) working correctly.
+**Timing**: 4-6 hours (deferred)
 
-- [ ] **Task 2.5**: Run `lake build` - Verify no regressions in existing sorry-free lemmas (`lemma_2_6_splitting`, `lemma_2_6`, etc.).
-
-**Timing**: 4-6 hours
-
-**Depends on**: Phase 1 (helper lemmas, already COMPLETED)
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- complete `d0_a_event_list_mem` (~30 lines), restructure `h_ev_b` and `h_ev_untl` derivations (~80 lines)
-
-**Verification**:
-- `burgess_D0_finite_subset_consistent_incons` compiles sorry-free
-- `burgess_D0_seed_consistent` remains sorry-free
-- PointInsertion.lean sorry count: 1 (Phase 3: `lemma_2_7_seed_consistent`)
-- `lake build` succeeds
+**Depends on**: N/A - can proceed in parallel with Phase 3
 
 ---
 
-### Phase 3: Implement Lemma 2.7 with BX7 Chain [PARTIAL]
+### Phase 3: Implement Lemma 2.7 with BX7 Chain [IN PROGRESS]
 
-**Goal**: Close the sorry in `lemma_2_7_seed_consistent` (line 2400) using the full Burgess Lemma 2.7 proof with BX7 (linear_until) for the 5th seed component.
+**Goal**: Close the sorry in `lemma_2_7_seed_consistent` using the full Burgess Lemma 2.7 proof with BX7 (linear_until) for the 5th seed component.
 
-**Tasks**:
-- [ ] **Task 3.1**: Implement `lemma_2_7_neg_untl_exists` (~40 lines) - Extract β₀ ∈ B, γ₀ ∈ C with `¬untl(β₀ ∧ eta, γ₀) ∈ A` from `h_eta_not_B` and `BurgessR3Maximal_extension_fails`. Proof: By maximality of B with respect to r(A, -, C), since eta ∉ B, there exists β ∈ B such that r(A, β ∧ eta, C) fails. By criterion 2.3(a), there exists γ ∈ C with `¬U(γ, β ∧ eta) ∈ A`. Take β₀ = β, γ₀ = γ.
+**Status**: Skeleton implemented with 5 remaining sorries
 
-- [ ] **Task 3.2**: Implement `linear_until_mcs` (BX7 MCS wrapper, ~15 lines) - Given `untl(φ₁, ψ₁) ∈ A` and `untl(φ₂, ψ₂) ∈ A` with `SetMaximalConsistent A`, prove:
-  ```lean
-  theorem linear_until_mcs {A : Set Formula} (h_mcs : SetMaximalConsistent A)
-      {φ₁ ψ₁ φ₂ ψ₂ : Formula}
-      (h_u1 : Formula.untl φ₁ ψ₁ ∈ A) (h_u2 : Formula.untl φ₂ ψ₂ ∈ A) :
-      Formula.or (Formula.or
-        (Formula.untl (Formula.and φ₁ φ₂) (Formula.and ψ₁ ψ₂))
-        (Formula.untl (Formula.and φ₁ φ₂) (Formula.and ψ₁ φ₂)))
-        (Formula.untl (Formula.and φ₁ φ₂) (Formula.and φ₁ ψ₂)) ∈ A := by
-    have h_ax := DerivationTree.axiom [] _ (Axiom.linear_until φ₁ ψ₁ φ₂ ψ₂)
-    have h_and := DerivationTree.and_intro _ _ _ (DerivationTree.assumption _ _ _) (DerivationTree.assumption _ _ _)
-    exact DerivationTree.modus_ponens _ _ _ h_and h_ax
-  ```
+**Completed**:
+- [x] Created helper theorem stubs with correct types
+- [x] Structured the proof according to Burgess 1982 p.372
 
-- [ ] **Task 3.3**: Implement `lemma_2_7_disjunct_elim_D1` (~25 lines) - Show D1 (`untl(ξ∧γ, θ)` where θ contains eta) contradicts `¬untl(β₀∧eta, γ₀) ∈ A` via left/right monotonicity.
+**Remaining Tasks**:
+- [ ] **Task 3.1**: Implement `lemma_2_7_neg_untl_exists` - Extract β₀ ∈ B, γ₀ ∈ C with `¬untl(β₀ ∧ eta, γ₀) ∈ A` from maximality. Requires unfolding BurgessR3Maximal and using the negation of the Until condition.
 
-- [ ] **Task 3.4**: Implement `lemma_2_7_disjunct_elim_D2` (~25 lines) - Show D2 (`untl(ξ∧γ, ψ∧γ)`) contradicts `¬untl(β₀∧eta, γ₀) ∈ A` similarly.
+- [ ] **Task 3.2**: Implement `linear_until_mcs` - Apply BX7 axiom at MCS level. Uses `theorem_in_mcs` with `Axiom.linear_until` and conjunction closure.
 
-- [ ] **Task 3.5**: Implement main BX7 chain in `lemma_2_7_seed_consistent` (~80 lines):
-  1. Extract neg-until witness: `lemma_2_7_neg_untl_exists` → β₀ ∈ B, γ₀ ∈ C, `¬untl(β₀∧eta, γ₀) ∈ A`
-  2. BX5 on `untl(b, γ_hat)`: `untl(b ∧ untl(b, γ_hat), γ_hat) ∈ A` via `self_accum_until_mcs`
-  3. BX5 on `untl(xi, eta)`: `untl(xi ∧ untl(xi, eta), eta) ∈ A` via `self_accum_until_mcs`
-  4. BX7 three-way disjunction: `linear_until_mcs` on steps 2-3 → D1 ∨ D2 ∨ D3 ∈ A
-  5. Eliminate D1: `lemma_2_7_disjunct_elim_D1` → contradiction
-  6. Eliminate D2: `lemma_2_7_disjunct_elim_D2` → contradiction
-  7. Surviving D3: `untl(b ∧ untl(b, γ_hat) ∧ xi, θ) ∈ A` where θ = `b ∧ untl(b, γ_hat) ∧ xi ∧ eta`
-  8. BX14 separation (if needed): Separate neg(beta₀ ∧ eta) from the guard
-  9. BX13 iterated enrichment: Pack `snce(guard, alpha_j)` for each alpha_j ∈ a_list
-  10. BX10 F-extraction: `F(event) ∈ A` → event is consistent
-  11. Event implies all 5 seed components (component 5 uses guard containing eta from BX7)
+- [ ] **Task 3.3**: Implement `lemma_2_7_disjunct_elim_D1` - Show D1 contradicts neg-until witness. Uses right monotonicity: D1 gives `untl(xi∧b, eta∧γ_hat)` which with `eta∧γ_hat → eta` gives `untl(xi∧b, eta)`, contradicting `¬untl(beta0∧eta, gamma0)` via left monotonicity with `xi∧b → beta0∧eta` (from b containing beta0).
 
-- [ ] **Task 3.6**: Verify `lemma_2_7` theorem compiles sorry-free (depends on `lemma_2_7_seed_consistent`).
+- [ ] **Task 3.4**: Implement `lemma_2_7_disjunct_elim_D2` - Similar to D1 elimination. D2 = `untl(xi∧b, eta∧b)` and with `eta∧b → eta`, we get contradiction.
 
-- [ ] **Task 3.7**: Run `lake build` - Verify Phase 3 complete, PointInsertion.lean sorry count = 0.
+- [ ] **Task 3.5**: Complete `lemma_2_7_seed_consistent` - Main proof orchestrating the BX7 chain:
+  1. Extract neg-until witness
+  2. BX5 self-accumulation on both Until formulas
+  3. BX7 three-way disjunction
+  4. Eliminate D1 and D2
+  5. Use surviving D3 with BX13 enrichment and BX10
 
-**Timing**: 5-7 hours
+**Timing**: 5-7 hours remaining
 
-**Depends on**: Phase 2 (same helper infrastructure, D0 seed consistency proof pattern)
+**Depends on**: Phase 2 (infrastructure only - sorries are independent)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- add `lemma_2_7_neg_untl_exists` (~40 lines), `linear_until_mcs` (~15 lines), `lemma_2_7_disjunct_elim_D1/D2` (~50 lines), complete `lemma_2_7_seed_consistent` (~80 lines)
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean`
 
-**Verification**:
-- `lemma_2_7_seed_consistent` compiles sorry-free
-- `lemma_2_7` compiles sorry-free
-- PointInsertion.lean sorry count: 0
-- `lake build` succeeds
+**Current State**: 6 sorries total (1 Phase 2, 5 Phase 3)
 
 ---
 
