@@ -155,7 +155,7 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 3: Close PointInsertion Sorry Site 5 (Lemma 2.7 Seed Consistency via BX7) [PARTIAL]
 
-**Goal**: Close the sorry in `lemma_2_7_seed_consistent` (line 2050) using the full Burgess Lemma 2.7 proof with BX7 (linear_until) for the 5th seed component.
+**Goal**: Close the sorry in `lemma_2_7_seed_consistent` (line 2391) using the full Burgess Lemma 2.7 proof with BX7 (linear_until) for the 5th seed component.
 
 **Tasks**:
 - [ ] Implement `lemma_2_7_neg_untl_exists`: extract beta0 in B, gamma0 in C with `neg(untl(beta0 AND eta, gamma0)) in A` from `h_eta_not_B` and `BurgessR3Maximal_extension_fails`
@@ -175,22 +175,27 @@ Phases within the same wave can execute in parallel.
   - Component 4 (snce(beta', alpha)): same as Phase 2 pattern
   - Component 5 (snce(beta' AND eta, alpha)): event implies `snce(guard, alpha)` where guard contains both b and eta; apply `snce_left_mono_deriv` with `guard -> beta' AND eta` (since guard includes b which includes beta', and guard includes eta from BX7 third disjunct)
 - [ ] Wire `derivation_from_implied` + `consistent_of_F_mem` + `inconsistent_singleton_false` for the contradiction
-- [ ] Verify `lemma_2_7_seed_consistent` compiles sorry-free
-- [ ] Verify `lemma_2_7` remains sorry-free
-- [ ] Run `lake build`
+- [~] Verify `lemma_2_7_seed_consistent` compiles sorry-free - ⚠️ STILL HAS SORRY at line 2391
+- [x] Verify `lemma_2_7` remains sorry-free - ✓ compiles correctly
+- [x] Run `lake build` - ✓ passes (1097 jobs)
 
-**Timing**: 5 hours
+**Status**:
+- ⚠️ Partial progress - sorry at `lemma_2_7_seed_consistent` (line 2391) remains open
+- No BX7 chain proof implementation completed
+- Build infrastructure intact
+
+**Timing**: 5 hours (actual: ~2 hours partial work, 3 hours remaining)
 
 **Depends on**: 2 (reuses same helper infrastructure and same proof pattern as Phase 2)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- implement `lemma_2_7_neg_untl_exists` (~30 lines), `lemma_2_7_zeta_consistent` or inline BX7 chain (~150 lines), close sorry at line 2050 (~80 lines)
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- implement `lemma_2_7_neg_untl_exists` (~30 lines), `lemma_2_7_zeta_consistent` or inline BX7 chain (~150 lines), close sorry at line 2391 (~80 lines)
 
 **Verification**:
-- `lemma_2_7_seed_consistent` sorry-free
-- `lemma_2_7` sorry-free
-- PointInsertion.lean sorry count: 0
-- `lake build` succeeds
+- [ ] `lemma_2_7_seed_consistent` sorry-free - ⚠️ STILL BLOCKED
+- [x] `lemma_2_7` sorry-free ✓
+- PointInsertion.lean sorry count: 3 (lemma_2_7_seed_consistent + 2 helpers from Phase 2)
+- [x] `lake build` succeeds ✓
 
 ---
 
