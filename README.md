@@ -201,6 +201,22 @@ This project is licensed under GPL-3.0. See [LICENSE](LICENSE) for details.
 
 ---
 
+## Codebase Size
+
+| Metric | Count |
+|--------|-------|
+| Lean files | 162 |
+| Lines of code | ~30,000 |
+| Comment lines | ~24,000 |
+
+To get current numbers (excludes `.lake` dependencies and `Boneyard/`):
+
+```bash
+cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .
+```
+
+---
+
 ## Contributing
 
 Contributions welcome! See [Contributing Guide](docs/development/CONTRIBUTING.md) for guidelines.

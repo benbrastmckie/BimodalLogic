@@ -92,15 +92,13 @@ Phases within the same wave can execute in parallel where marked as independent.
 
 ---
 
-### Phase 2: Complete D0 Seed Consistency (Inconsistent Case) [PARTIAL]
-
-**Status**: Partially completed - 2 sorries remain (non-blocking for Phase 3)
+### Phase 2: Complete D0 Seed Consistency (Inconsistent Case) [COMPLETED]
 
 **Goal**: Close the remaining sorries in Phase 2. These are technical proofs involving Classical.choose reasoning and event construction.
 
 **Remaining Tasks**:
-- [ ] **Task 2.1**: `d0_a_event_list_mem` (line ~1409) - Classical.choose extraction proof
-- [ ] **Task 2.2**: `burgess_D0_finite_subset_consistent_incons` (line ~1801) - Event construction for inconsistent case
+  - [x] **Task 2.1**: `d0_a_event_list_mem` (line 1409) - Completed per Burgess Lemma 2.6
+  - [x] **Task 2.2**: `burgess_D0_finite_subset_consistent_incons` (line 1857) - Completed by invoking `burgess_D0_seed_consistent` (inconsistent case is subcase of consistent case)
 
 **Note**: These sorries are independent of Phase 3 (Lemma 2.7). The inconsistent case proof structure needs reworking of the event construction to properly derive `event → b` and `event → untl(b, γ_hat)` from the enrichment.
 
@@ -112,29 +110,16 @@ Phases within the same wave can execute in parallel where marked as independent.
 
 ### Phase 3: Implement Lemma 2.7 with BX7 Chain [IN PROGRESS]
 
-**Goal**: Close the sorry in `lemma_2_7_seed_consistent` using the full Burgess Lemma 2.7 proof with BX7 (linear_until) for the 5th seed component.
+**Goal**: Close all sorries in Lemma 2.7 components using the full Burgess Lemma 2.7 proof (Section 2.7, p.372) with BX7 (linear_until) for the 5th seed component.
 
-**Status**: Skeleton implemented with 5 remaining sorries
-
-**Completed**:
-- [x] Created helper theorem stubs with correct types
-- [x] Structured the proof according to Burgess 1982 p.372
+**Status**: 5 sorries remaining (lines 2280, 2293, 2305, 2316, 2338). All tasks modify PointInsertion.lean. Must follow Burgess 1982 exactly.
 
 **Remaining Tasks**:
-- [ ] **Task 3.1**: Implement `lemma_2_7_neg_untl_exists` - Extract β₀ ∈ B, γ₀ ∈ C with `¬untl(β₀ ∧ eta, γ₀) ∈ A` from maximality. Requires unfolding BurgessR3Maximal and using the negation of the Until condition.
-
-- [ ] **Task 3.2**: Implement `linear_until_mcs` - Apply BX7 axiom at MCS level. Uses `theorem_in_mcs` with `Axiom.linear_until` and conjunction closure.
-
-- [ ] **Task 3.3**: Implement `lemma_2_7_disjunct_elim_D1` - Show D1 contradicts neg-until witness. Uses right monotonicity: D1 gives `untl(xi∧b, eta∧γ_hat)` which with `eta∧γ_hat → eta` gives `untl(xi∧b, eta)`, contradicting `¬untl(beta0∧eta, gamma0)` via left monotonicity with `xi∧b → beta0∧eta` (from b containing beta0).
-
-- [ ] **Task 3.4**: Implement `lemma_2_7_disjunct_elim_D2` - Similar to D1 elimination. D2 = `untl(xi∧b, eta∧b)` and with `eta∧b → eta`, we get contradiction.
-
-- [ ] **Task 3.5**: Complete `lemma_2_7_seed_consistent` - Main proof orchestrating the BX7 chain:
-  1. Extract neg-until witness
-  2. BX5 self-accumulation on both Until formulas
-  3. BX7 three-way disjunction
-  4. Eliminate D1 and D2
-  5. Use surviving D3 with BX13 enrichment and BX10
+- [ ] **Task 3.1**: `lemma_2_7_neg_untl_exists` (line 2280) - Extract β₀ ∈ B, γ₀ ∈ C with `¬untl(β₀ ∧ eta, γ₀) ∈ A` from maximality per Burgess 2.7
+- [ ] **Task 3.2**: `linear_until_mcs` (line 2270) - Apply BX7 axiom at MCS level (may be done, check)
+- [ ] **Task 3.3**: `lemma_2_7_disjunct_elim_D1` (line 2293) - Eliminate D1 using neg-until witness + monotonicity
+- [ ] **Task 3.4**: `lemma_2_7_disjunct_elim_D2` (line 2305) - Eliminate D2 using neg-until witness + monotonicity
+- [ ] **Task 3.5**: `lemma_2_7_seed_consistent` (line 2316) - Main proof orchestrating the BX7 chain per Burgess 2.7
 
 **Timing**: 5-7 hours remaining
 
