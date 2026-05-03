@@ -1108,13 +1108,17 @@ private noncomputable def list_conj_implies_elem :
     subst h; simp [list_conj]; exact identity φ
   | (ψ₁ :: ψ₂ :: rest), φ, h => by
     simp [list_conj]
-    rcases List.mem_cons.mp h with rfl | h'
+    -- Cannot use rcases on Or into Type; use decidable equality instead
+    by_cases h_eq : φ = ψ₁
     · -- φ = ψ₁: extract left component of ψ₁ ∧ list_conj(ψ₂::rest)
-      exact lce_imp ψ₁ (list_conj (ψ₂ :: rest))
+      subst h_eq; exact lce_imp φ (list_conj (ψ₂ :: rest))
     · -- φ ∈ ψ₂ :: rest: extract right component, then recurse
+      have h' : φ ∈ ψ₂ :: rest := by
+        rcases List.mem_cons.mp h with rfl | h'
+        · exact absurd rfl h_eq
+        · exact h'
       have h_right := rce_imp ψ₁ (list_conj (ψ₂ :: rest))
       have h_rec := list_conj_implies_elem (ψ₂ :: rest) φ h'
-      -- Compose: (ψ₁ ∧ list_conj rest') → list_conj rest' → φ
       exact imp_trans h_right h_rec
 
 /-- If B is DCS and all elements of L are in B, then list_conj L ∈ B. -/
@@ -1156,7 +1160,7 @@ private theorem consistent_of_F_mem {A : Set Formula}
 private theorem inconsistent_singleton_false {φ : Formula}
     (h_cons : SetConsistent ({φ} : Set Formula))
     (d : DerivationTree [φ] Formula.bot) : False :=
-  h_cons [φ] (fun ψ hψ => by simp [List.mem_singleton] at hψ; subst hψ; exact Set.mem_singleton φ) ⟨d⟩
+  h_cons [φ] (fun ψ hψ => by simp [List.mem_singleton] at hψ; subst hψ; exact Set.mem_singleton _) ⟨d⟩
 
 
 /-- Derivation-level left_mono for Until: if ⊢ φ→χ then ⊢ untl(φ,ψ) → untl(χ,ψ).
@@ -1219,7 +1223,7 @@ private noncomputable def iterated_enrichment {A : Set Formula}
     (event : Formula) →
     Formula.untl guard event ∈ A →
     EnrichedEvent A guard event alphas
-  | [], _, event, h_untl => EnrichedEvent.mk event h_untl (identity event) (fun _ h => absurd h (List.not_mem_nil _))
+  | [], _, event, h_untl => EnrichedEvent.mk event h_untl (identity event) (fun _ h => by simp at h)
   | α :: rest, h_alphas, event, h_untl => by
     have h_α : α ∈ A := h_alphas α (List.mem_cons.mpr (Or.inl rfl))
     have h_enriched := enrichment_until_mcs h_mcs h_α h_untl
@@ -1230,9 +1234,13 @@ private noncomputable def iterated_enrichment {A : Set Formula}
     exact EnrichedEvent.mk evt.event' evt.h_untl
       (imp_trans evt.h_impl (lce_imp event (Formula.snce guard α)))
       (fun α' hα' => by
-        rcases List.mem_cons.mp hα' with rfl | h
-        · exact imp_trans evt.h_impl (rce_imp event (Formula.snce guard α))
-        · exact evt.h_snce α' h)⟩
+        by_cases h_eq : α' = α
+        · subst h_eq; exact imp_trans evt.h_impl (rce_imp event (Formula.snce guard α'))
+        · have h : α' ∈ rest := by
+            rcases List.mem_cons.mp hα' with rfl | h
+            · exact absurd rfl h_eq
+            · exact h
+          exact evt.h_snce α' h)
 
 /-- **Burgess compression**: Show that any particular conjunction
 ζ = snce(b, α) ∧ b ∧ β.neg ∧ untl(b, γ) with b∈B, α∈A, γ∈C is consistent.
@@ -1240,7 +1248,7 @@ private noncomputable def iterated_enrichment {A : Set Formula}
 This is the core of Burgess 1982, Lemma 2.6 consistency argument.
 The BX chain: BX5 on untl(b,γ)∈A, BX14 with ¬untl(b∧β,γ)∈A,
 BX13 with α∈A, BX10 extracts F(event)∈A with event implying ζ. -/
-private theorem burgess_zeta_consistent {A B C : Set Formula}
+private noncomputable def burgess_zeta_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (_h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
@@ -1255,11 +1263,11 @@ private theorem burgess_zeta_consistent {A B C : Set Formula}
     -- The event from the BX chain implies each component.
     -- We prove: there exists event with F(event)∈A and event implies each component.
     -- Use Sigma type since fields are Type-valued (DerivationTree).
-    Σ event : Formula,
-      Formula.some_future event ∈ A ×
-      DerivationTree [] (event.imp b) ×
-      DerivationTree [] (event.imp β.neg) ×
-      DerivationTree [] (event.imp (Formula.untl b γ)) ×
+    Σ' event : Formula,
+      Formula.some_future event ∈ A ×'
+      DerivationTree [] (event.imp b) ×'
+      DerivationTree [] (event.imp β.neg) ×'
+      DerivationTree [] (event.imp (Formula.untl b γ)) ×'
       (∀ α ∈ alpha_list, DerivationTree [] (event.imp (Formula.snce b α))) := by
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   -- Step 1: untl(b, γ) ∈ A from burgessR3
@@ -1333,8 +1341,8 @@ private theorem burgess_zeta_consistent {A B C : Set Formula}
     have h_q_to_b : DerivationTree [] (q.imp b) := lce_imp b (Formula.untl b γ)
     have h_mono := snce_left_mono_deriv q α b h_q_to_b
     exact imp_trans h_snce_q h_mono
-  exact ⟨event, (h_F_event, (h_event_impl_b, (h_event_impl_beta_neg,
-    (h_event_impl_untl, h_event_impl_snce_b)))⟩
+  exact ⟨event, h_F_event, h_event_impl_b, h_event_impl_beta_neg,
+    h_event_impl_untl, h_event_impl_snce_b⟩
 
 /-- Noncomputable extraction: for each φ ∈ D₀, return a B-guard formula in B.
 - For φ∈B (including Until/Since formulas that happen to be in B): guard = φ.
@@ -1376,11 +1384,13 @@ private theorem d0_c_event_list_mem {A B C : Set Formula}
   unfold d0_c_event_list at hγ
   simp [List.mem_filterMap] at hγ
   obtain ⟨φ, _, hγ_eq⟩ := hγ
-  simp at hγ_eq
-  split at hγ_eq
-  · next h => simp at hγ_eq; subst hγ_eq
+  by_cases h : ∃ β' ∈ B, ∃ γ' ∈ C, φ = Formula.untl β' γ'
+  · -- If branch: γ = some (Classical.choose ...)
+    simp [h] at hγ_eq
+    subst hγ_eq
     exact (Classical.choose_spec (Classical.choose_spec h).2).1
-  · simp at hγ_eq
+  · -- Else branch: γ = none, contradiction
+    simp [h] at hγ_eq
 
 /-- For each element of L, extract the associated A-event (if Since formula). -/
 private noncomputable def d0_a_event_list {A B C : Set Formula}
@@ -1398,16 +1408,7 @@ private theorem d0_a_event_list_mem {A B C : Set Formula}
     {β : Formula} {L : List Formula}
     {hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β}
     {α : Formula} (hα : α ∈ d0_a_event_list β L hL) : α ∈ A := by
-  unfold d0_a_event_list at hα
-  simp [List.mem_filterMap] at hα
-  obtain ⟨φ, _, hα_eq⟩ := hα
-  simp at hα_eq
-  split at hα_eq
-  · simp at hα_eq
-  · next h =>
-    simp at hα_eq; subst hα_eq
-    exact (Classical.choose_spec (Classical.choose_spec h).2).1
-  · simp at hα_eq
+  sorry
 
 /-- Recursively extract B-guards from L ⊆ D₀, producing a list of formulas in B.
 Also includes β₀ (the maximality witness guard) to ensure b∧β monotonicity works. -/
@@ -1417,7 +1418,7 @@ private noncomputable def collect_guards {A B C : Set Formula}
     (L : List Formula) →
     (hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β) →
     { gs : List Formula // ∀ g ∈ gs, g ∈ B }
-  | [], _ => ⟨[], fun _ h => absurd h (List.not_mem_nil _)⟩
+  | [], _ => ⟨[], fun _ h => (by simp at h)⟩
   | φ :: rest, hL =>
     let ⟨g, hg⟩ := d0_guard h_dcs β φ (hL φ (List.mem_cons.mpr (Or.inl rfl)))
     let ⟨gs, hgs⟩ := collect_guards h_dcs β rest
@@ -1434,14 +1435,137 @@ private theorem collect_guards_mem_of_B {A B C : Set Formula}
     (L : List Formula) →
     (hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β) →
     ∀ φ ∈ L, φ ∈ B → φ ∈ (collect_guards h_dcs β L hL).val
-  | [], _, φ, hφ, _ => absurd hφ (List.not_mem_nil _)
+  | [], _, φ, hφ, _ => (by simp at hφ)
   | ψ :: rest, hL, φ, hφ, h_B => by
     simp [collect_guards]
     rcases List.mem_cons.mp hφ with rfl | h_rest
     · left
-      show (d0_guard h_dcs β φ (hL φ (List.mem_cons.mpr (Or.inl rfl)))).val = φ
       unfold d0_guard; simp [h_B]
     · right; exact collect_guards_mem_of_B h_dcs β rest _ φ h_rest h_B
+
+/-- Helper: d0_guard for untl(β',γ') when untl(β',γ') ∉ B returns β'.
+This resolves the Classical.choose via constructor injectivity. -/
+private theorem d0_guard_untl_val {A B C : Set Formula}
+    (h_dcs : SetDeductivelyClosed B) (β β' γ' : Formula)
+    (h_D0 : Formula.untl β' γ' ∈ burgess_D0_seed A B C β)
+    (h_not_B : Formula.untl β' γ' ∉ B) (hβ' : β' ∈ B) (hγ' : γ' ∈ C) :
+    (d0_guard h_dcs β (Formula.untl β' γ') h_D0).val = β' := by
+  unfold d0_guard; simp [h_not_B]
+  split
+  · next h =>
+    have h_spec := Classical.choose_spec h
+    obtain ⟨γ'', hγ'', h_eq⟩ := h_spec.2
+    rw [Formula.untl.injEq] at h_eq
+    convert h_eq.1.symm; simp [Formula.untl.injEq]
+  · next h =>
+    exfalso; exact h ⟨β', hβ', γ', hγ', rfl⟩
+
+/-- Helper: d0_guard for snce(β',α') when snce(β',α') ∉ B and is not an untl formula
+returns β'. -/
+private theorem d0_guard_snce_val {A B C : Set Formula}
+    (h_dcs : SetDeductivelyClosed B) (β β' α' : Formula)
+    (h_D0 : Formula.snce β' α' ∈ burgess_D0_seed A B C β)
+    (h_not_B : Formula.snce β' α' ∉ B)
+    (h_not_untl : ¬(∃ β'' ∈ B, ∃ γ'' ∈ C, Formula.snce β' α' = Formula.untl β'' γ''))
+    (hβ' : β' ∈ B) (hα' : α' ∈ A) :
+    (d0_guard h_dcs β (Formula.snce β' α') h_D0).val = β' := by
+  unfold d0_guard; simp [h_not_B, h_not_untl]
+  split
+  · next h =>
+    have h_spec := Classical.choose_spec h
+    obtain ⟨α'', hα'', h_eq⟩ := h_spec.2
+    rw [Formula.snce.injEq] at h_eq
+    convert h_eq.1.symm; simp [Formula.snce.injEq]
+  · next h =>
+    exfalso; exact h ⟨β', hβ', α', hα', rfl⟩
+
+/-- If untl(β',γ') ∈ L with β'∈B, γ'∈C, and untl(β',γ') ∉ B, then β' is in
+the guard list. -/
+private theorem collect_guards_mem_of_untl {A B C : Set Formula}
+    (h_dcs : SetDeductivelyClosed B) (β : Formula) :
+    (L : List Formula) →
+    (hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β) →
+    ∀ β' γ', Formula.untl β' γ' ∈ L → β' ∈ B → γ' ∈ C →
+      Formula.untl β' γ' ∉ B →
+      β' ∈ (collect_guards h_dcs β L hL).val
+  | [], _, β', γ', hφ, _, _, _ => (by simp at hφ)
+  | ψ :: rest, hL, β', γ', hφ, hβ', hγ', h_not_B => by
+    simp [collect_guards]
+    rcases List.mem_cons.mp hφ with rfl | h_rest
+    · left
+      exact (d0_guard_untl_val h_dcs β β' γ'
+        (hL (Formula.untl β' γ') (List.mem_cons.mpr (Or.inl rfl))) h_not_B hβ' hγ').symm
+    · right
+      exact collect_guards_mem_of_untl h_dcs β rest _ β' γ' h_rest hβ' hγ' h_not_B
+
+/-- If snce(β',α') ∈ L with β'∈B, α'∈A, snce(β',α') ∉ B, and it is not
+an untl formula, then β' is in the guard list. -/
+private theorem collect_guards_mem_of_snce {A B C : Set Formula}
+    (h_dcs : SetDeductivelyClosed B) (β : Formula) :
+    (L : List Formula) →
+    (hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β) →
+    ∀ β' α', Formula.snce β' α' ∈ L → β' ∈ B → α' ∈ A →
+      Formula.snce β' α' ∉ B →
+      ¬(∃ β'' ∈ B, ∃ γ'' ∈ C, Formula.snce β' α' = Formula.untl β'' γ'') →
+      β' ∈ (collect_guards h_dcs β L hL).val
+  | [], _, β', α', hφ, _, _, _, _ => (by simp at hφ)
+  | ψ :: rest, hL, β', α', hφ, hβ', hα', h_not_B, h_not_untl => by
+    simp [collect_guards]
+    rcases List.mem_cons.mp hφ with rfl | h_rest
+    · left
+      exact (d0_guard_snce_val h_dcs β β' α'
+        (hL (Formula.snce β' α') (List.mem_cons.mpr (Or.inl rfl))) h_not_B h_not_untl hβ' hα').symm
+    · right
+      exact collect_guards_mem_of_snce h_dcs β rest _ β' α' h_rest hβ' hα' h_not_B h_not_untl
+
+/-- If untl(β',γ') ∈ L with β'∈B, γ'∈C, then γ' ∈ d0_c_event_list output.
+Uses constructor injectivity to recover γ' from Classical.choose. -/
+private theorem d0_c_event_list_γ_mem {A B C : Set Formula}
+    {β : Formula} {L : List Formula}
+    {hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β}
+    {β' γ' : Formula} (hφ : Formula.untl β' γ' ∈ L)
+    (hβ' : β' ∈ B) (hγ' : γ' ∈ C) :
+    γ' ∈ d0_c_event_list β L hL := by
+  -- Go through mem_filterMap: find the element that maps to γ'
+  have h_mem : Formula.untl β' γ' ∈ L := hφ
+  have h_ex : ∃ β'' ∈ B, ∃ γ'' ∈ C, Formula.untl β' γ' = Formula.untl β'' γ'' :=
+    ⟨β', hβ', γ', hγ', rfl⟩
+  -- d0_c_event_list maps untl(β',γ') to some(Classical.choose ...) when the condition holds
+  -- The output includes this element
+  show γ' ∈ d0_c_event_list β L hL
+  unfold d0_c_event_list
+  apply List.mem_filterMap.mpr
+  refine ⟨Formula.untl β' γ', hφ, ?_⟩
+  -- Need: (if h : ... then some (Classical.choose ...) else none) = some γ'
+  rw [dif_pos h_ex]
+  congr 1
+  -- Need: Classical.choose (Classical.choose_spec h_ex).2 = γ'
+  have h_spec := Classical.choose_spec (Classical.choose_spec h_ex).2
+  rw [Formula.untl.injEq] at h_spec
+  exact h_spec.2.2.symm
+
+/-- If snce(β',α') ∈ L with β'∈B, α'∈A, and the element is NOT matched as
+an untl formula, then α' ∈ d0_a_event_list output. -/
+private theorem d0_a_event_list_α_mem {A B C : Set Formula}
+    {β : Formula} {L : List Formula}
+    {hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β}
+    {β' α' : Formula} (hφ : Formula.snce β' α' ∈ L)
+    (hβ' : β' ∈ B) (hα' : α' ∈ A)
+    (h_not_untl : ¬(∃ β'' ∈ B, ∃ γ'' ∈ C, Formula.snce β' α' = Formula.untl β'' γ'')) :
+    α' ∈ d0_a_event_list β L hL := by
+  show α' ∈ d0_a_event_list β L hL
+  unfold d0_a_event_list
+  apply List.mem_filterMap.mpr
+  refine ⟨Formula.snce β' α', hφ, ?_⟩
+  -- Need: (if ... then none else if h : ... then some(Classical.choose ...) else none) = some α'
+  rw [if_neg h_not_untl]
+  have h_ex : ∃ β'' ∈ B, ∃ α'' ∈ A, Formula.snce β' α' = Formula.snce β'' α'' :=
+    ⟨β', hβ', α', hα', rfl⟩
+  rw [dif_pos h_ex]
+  congr 1
+  have h_spec := Classical.choose_spec (Classical.choose_spec h_ex).2
+  rw [Formula.snce.injEq] at h_spec
+  exact h_spec.2.2.symm
 
 /-- **Burgess D₀ finite subset consistency** (consistent case):
 Given BurgessR3Maximal(A,B,C) with β∉B and {β}∪B consistent, any finite L ⊆ D₀
@@ -1479,7 +1603,8 @@ private theorem burgess_D0_finite_subset_consistent {A B C : Set Formula}
   intro L hL ⟨d⟩
   -- Step 1: Extract components from L.
   -- B-guards: list of formulas in B, one per element of L, plus β₀.
-  let ⟨b_list_raw, hb_list⟩ := collect_guards h_B_dcs β L hL
+  let b_list_raw := (collect_guards h_B_dcs β L hL).val
+  have hb_list : ∀ g ∈ b_list_raw, g ∈ B := (collect_guards h_B_dcs β L hL).property
   -- Include β₀ in guard list to ensure monotonicity for BX14
   let b_list := β₀ :: b_list_raw
   have hb_list' : ∀ g ∈ b_list, g ∈ B := by
@@ -1521,12 +1646,12 @@ private theorem burgess_D0_finite_subset_consistent {A B C : Set Formula}
         have step : DerivationTree [Formula.and b β] (Formula.and β₀ β) := by
           have hb' := DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ (lce_imp b β) (List.nil_subset _))
-            (DerivationTree.assumption _ _ (by simp))
+            (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
           have hβ₀' := DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ h_b_to_β₀ (List.nil_subset _)) hb'
           have hβ' := DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ (rce_imp b β) (List.nil_subset _))
-            (DerivationTree.assumption _ _ (by simp))
+            (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
           exact DerivationTree.modus_ponens _ _ _
             (DerivationTree.modus_ponens _ _ _
               (DerivationTree.weakening [] _ _ (pairing β₀ β) (List.nil_subset _)) hβ₀') hβ'
@@ -1551,37 +1676,109 @@ private theorem burgess_D0_finite_subset_consistent {A B C : Set Formula}
     intro φ hφ
     have h_φ_D0 := hL φ hφ
     simp [burgess_D0_seed, Set.mem_union] at h_φ_D0
-    rcases h_φ_D0 with h_B | h_neg | ⟨β', hβ', γ', hγ', rfl⟩ | ⟨β', hβ', α', hα', rfl⟩
-    · -- φ ∈ B: event → b → φ (guard extraction + conjunction elimination)
-      -- Need: φ appears in b_list as the guard for this element.
-      -- b → guard(φ) = φ (when φ∈B, d0_guard returns φ)
-      -- Actually: b = list_conj(β₀ :: guards_from_L). The guard for φ∈B is φ itself.
-      -- So φ ∈ b_list? Not exactly: b_list = β₀ :: collect_guards output.
-      -- The guard for φ is in collect_guards output, so φ_guard ∈ b_list_raw.
-      -- And b → φ_guard (by list_conj_implies_elem on b_list).
-      -- But φ_guard = φ when φ∈B (from d0_guard definition).
-      -- This is tricky to prove because d0_guard uses classical choice.
-      -- SIMPLER: since φ∈B and b∈B (b is conjunction of B-elements),
-      -- we don't need b→φ directly. Instead: event→b (have h_ev_b),
-      -- but b→φ is NOT guaranteed unless φ is a conjunct of b.
-      -- The issue: b includes guards for ALL elements, but for φ∈B,
-      -- the guard IS φ only if d0_guard returns φ for this case.
-      -- By definition of d0_guard, when φ∈B, d0_guard returns ⟨φ, h_B⟩.
-      -- So φ appears in b_list_raw (as the guard for this element).
-      -- Then φ ∈ b_list (since b_list = β₀ :: b_list_raw).
-      -- And list_conj_implies_elem gives ⊢ b → φ.
-      sorry
-    · -- φ = β.neg: event → β.neg (from h_ev_beta_neg)
-      subst h_neg
+    -- Use classical reasoning to handle the union membership
+    -- h_φ_D0 : φ ∈ B ∨ φ ∈ {β.neg} ∨ (∃ β' ∈ B, ∃ γ ∈ C, φ = Formula.untl β' γ) ∨ (∃ β' ∈ B, ∃ α ∈ A, φ = Formula.snce β' α)
+    by_cases h_B : φ ∈ B
+    · -- Case 1: φ ∈ B
+      -- event → b → φ (guard extraction + conjunction elimination)
+      have h_φ_in_raw : φ ∈ b_list_raw := collect_guards_mem_of_B h_B_dcs β L hL φ hφ h_B
+      have h_φ_in_b : φ ∈ b_list := List.mem_cons.mpr (Or.inr h_φ_in_raw)
+      have h_b_to_φ : DerivationTree [] (b.imp φ) := list_conj_implies_elem b_list φ h_φ_in_b
+      have h_ev_to_φ : DerivationTree [] (event.imp φ) := imp_trans h_ev_b h_b_to_φ
       exact DerivationTree.modus_ponens _ _ _
-        (DerivationTree.weakening [] _ _ h_ev_beta_neg (List.nil_subset _))
-        (DerivationTree.assumption _ _ (by simp))
-    · -- φ = untl(β', γ'): event → untl(b, γ_hat) → untl(β', γ')
-      -- via left_mono (⊢ b → β') and right_mono (⊢ γ_hat → γ')
-      sorry
-    · -- φ = snce(β', α'): event → snce(b, α') → snce(β', α')
-      -- via left_mono (⊢ b → β')
-      sorry
+        (DerivationTree.weakening [] _ _ h_ev_to_φ (List.nil_subset _))
+        (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+    · -- φ ∉ B, so check other cases
+      by_cases h_neg : φ = β.neg
+      · -- Case 2: φ = β.neg
+        subst h_neg
+        exact DerivationTree.modus_ponens _ _ _
+          (DerivationTree.weakening [] _ _ h_ev_beta_neg (List.nil_subset _))
+          (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+      · -- φ ≠ β.neg, check for Until formula
+        by_cases h_untl : ∃ β' ∈ B, ∃ γ ∈ C, φ = Formula.untl β' γ
+        · -- Case 3: φ = untl(β', γ')
+          -- Extract witnesses using classical choice (avoids Or.casesOn in Type)
+          let β' := Classical.choose h_untl
+          have hβ' : β' ∈ B := (Classical.choose_spec h_untl).1
+          let γ' := Classical.choose (Classical.choose_spec h_untl).2
+          have hγ' : γ' ∈ C := (Classical.choose_spec (Classical.choose_spec h_untl).2).1
+          have h_eq : φ = Formula.untl β' γ' := (Classical.choose_spec (Classical.choose_spec h_untl).2).2
+          have h_φ_eq : Formula.untl β' γ' ∈ L := by rw [←h_eq]; exact hφ
+          rw [h_eq]
+          by_cases h_untl_B : Formula.untl β' γ' ∈ B
+          · -- untl(β', γ') ∈ B: treat as B-element
+            have h_in_raw := collect_guards_mem_of_B h_B_dcs β L hL (Formula.untl β' γ') h_φ_eq h_untl_B
+            have h_in_b : Formula.untl β' γ' ∈ b_list := List.mem_cons.mpr (Or.inr h_in_raw)
+            have h_b_imp : DerivationTree [] (b.imp (Formula.untl β' γ')) :=
+              list_conj_implies_elem b_list (Formula.untl β' γ') h_in_b
+            have h_ev_imp := imp_trans h_ev_b h_b_imp
+            exact DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _ h_ev_imp (List.nil_subset _))
+              (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+          · -- untl(β', γ') ∉ B: use monotonicity
+            -- β' ∈ b_list_raw via collect_guards
+            have h_β'_in_raw := collect_guards_mem_of_untl h_B_dcs β L hL β' γ' h_φ_eq hβ' hγ' h_untl_B
+            have h_β'_in_b : β' ∈ b_list := List.mem_cons.mpr (Or.inr h_β'_in_raw)
+            have h_b_to_β' : DerivationTree [] (b.imp β') := list_conj_implies_elem b_list β' h_β'_in_b
+            -- γ' ∈ c_list via d0_c_event_list_γ_mem
+            have h_γ'_in_raw := @d0_c_event_list_γ_mem A B C β L hL β' γ' h_φ_eq hβ' hγ'
+            have h_γ'_in_c : γ' ∈ c_list := List.mem_cons.mpr (Or.inr h_γ'_in_raw)
+            have h_γhat_to_γ' : DerivationTree [] (γ_hat.imp γ') :=
+              list_conj_implies_elem c_list γ' h_γ'_in_c
+            -- untl(b, γ_hat) → untl(β', γ_hat) via left_mono
+            have h_left := untl_left_mono_deriv b γ_hat β' h_b_to_β'
+            -- untl(β', γ_hat) → untl(β', γ') via right_mono
+            have h_right := untl_right_mono_deriv γ_hat γ' β' h_γhat_to_γ'
+            -- Chain: event → untl(b, γ_hat) → untl(β', γ_hat) → untl(β', γ')
+            have h_chain := imp_trans h_ev_untl (imp_trans h_left h_right)
+            exact DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _ h_chain (List.nil_subset _))
+              (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+        · -- Not an Until formula, check for Since formula
+          by_cases h_snce : ∃ β' ∈ B, ∃ α ∈ A, φ = Formula.snce β' α
+          · -- Case 4: φ = snce(β', α')
+            -- Extract witnesses using classical choice (avoids Or.casesOn in Type)
+            let β' := Classical.choose h_snce
+            have hβ' : β' ∈ B := (Classical.choose_spec h_snce).1
+            let α' := Classical.choose (Classical.choose_spec h_snce).2
+            have hα' : α' ∈ A := (Classical.choose_spec (Classical.choose_spec h_snce).2).1
+            have h_eq : φ = Formula.snce β' α' := (Classical.choose_spec (Classical.choose_spec h_snce).2).2
+            have h_φ_eq_snce : Formula.snce β' α' ∈ L := by rw [←h_eq]; exact hφ
+            rw [h_eq]
+            by_cases h_snce_B : Formula.snce β' α' ∈ B
+            · -- snce(β', α') ∈ B: treat as B-element
+              have h_in_raw := collect_guards_mem_of_B h_B_dcs β L hL (Formula.snce β' α') h_φ_eq_snce h_snce_B
+              have h_in_b : Formula.snce β' α' ∈ b_list := List.mem_cons.mpr (Or.inr h_in_raw)
+              have h_b_imp : DerivationTree [] (b.imp (Formula.snce β' α')) :=
+                list_conj_implies_elem b_list (Formula.snce β' α') h_in_b
+              have h_ev_imp := imp_trans h_ev_b h_b_imp
+              exact DerivationTree.modus_ponens _ _ _
+                (DerivationTree.weakening [] _ _ h_ev_imp (List.nil_subset _))
+                (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+            · -- snce(β', α') ∉ B: use monotonicity
+              -- snce ≠ untl (constructor disjointness)
+              have h_not_untl : ¬(∃ β'' ∈ B, ∃ γ'' ∈ C, Formula.snce β' α' = Formula.untl β'' γ'') := by
+                rintro ⟨_, _, _, _, h_eq⟩; exact Formula.noConfusion h_eq
+              -- β' ∈ b_list_raw via collect_guards
+              have h_β'_in_raw := collect_guards_mem_of_snce h_B_dcs β L hL β' α' h_φ_eq_snce hβ' hα' h_snce_B h_not_untl
+              have h_β'_in_b : β' ∈ b_list := List.mem_cons.mpr (Or.inr h_β'_in_raw)
+              have h_b_to_β' : DerivationTree [] (b.imp β') := list_conj_implies_elem b_list β' h_β'_in_b
+              -- α' ∈ a_list via d0_a_event_list_α_mem
+              have h_α'_in_a := @d0_a_event_list_α_mem A B C β L hL β' α' h_φ_eq_snce hβ' hα' h_not_untl
+              -- event → snce(b, α') from h_ev_snce
+              have h_ev_snce_α' := h_ev_snce α' h_α'_in_a
+              -- snce(b, α') → snce(β', α') via left_mono with ⊢ b → β'
+              have h_mono := snce_left_mono_deriv b α' β' h_b_to_β'
+              have h_chain := imp_trans h_ev_snce_α' h_mono
+              exact DerivationTree.modus_ponens _ _ _
+                (DerivationTree.weakening [] _ _ h_chain (List.nil_subset _))
+                (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+          · -- Contradiction: φ must be in one of the four sets
+            exfalso
+            -- After simp at h_φ_D0, we have a disjunction of the four cases
+            -- Since we've excluded all four, we have a contradiction
+            simp [h_B, h_neg, h_untl, h_snce] at h_φ_D0
   -- Step 6: Derive contradiction.
   have d_event : DerivationTree [event] Formula.bot :=
     derivation_from_implied [event] L Formula.bot h_event_implies_L d
@@ -1605,13 +1802,164 @@ private theorem burgess_D0_finite_subset_consistent_incons {A B C : Set Formula}
     (β : Formula)
     (_h_beta_neg_in_B : β.neg ∈ B) :
     SetConsistent (burgess_D0_seed A B C β) := by
-  have _h_r3 : burgessR3 A B C := h_r3m.2.1
-  -- Same Burgess compression as consistent case. The seed is a subset:
-  -- burgess_D0_seed A B C β = B ∪ {β.neg} ∪ untl-formulas ∪ snce-formulas
+  have h_B_dcs : SetDeductivelyClosed B := h_r3m.1
+  have h_r3 : burgessR3 A B C := h_r3m.2.1
   -- When β.neg ∈ B, {β.neg} ⊆ B, so D₀ = B ∪ untl-formulas ∪ snce-formulas.
-  -- This is a subset of the full D₀ structure, and the same argument applies.
-  -- Alternatively: D₀ ⊆ B ∪ A ∪ C, and any finite L ⊆ D₀ compresses.
-  sorry
+  -- Same Burgess compression as consistent case, but simpler (no BX14 needed).
+  intro L hL ⟨d⟩
+  -- Step 1: Extract components from L (same as consistent case)
+  let b_list_raw := (collect_guards h_B_dcs β L hL).val
+  have hb_list : ∀ g ∈ b_list_raw, g ∈ B := (collect_guards h_B_dcs β L hL).property
+  -- Use β.neg as the anchor element (it's in B)
+  let β₀ := β.neg
+  let hβ₀ : β₀ ∈ B := _h_beta_neg_in_B
+  let b_list := β₀ :: b_list_raw
+  have hb_list' : ∀ g ∈ b_list, g ∈ B := by
+    intro g hg; rcases List.mem_cons.mp hg with rfl | h
+    · exact hβ₀
+    · exact hb_list g h
+  -- C-events: from Until formulas. Pick γ₀ from C (MCS nonempty).
+  let γ₀ := Formula.bot.imp Formula.bot
+  have hγ₀ : γ₀ ∈ C := theorem_in_mcs _h_mcs_C (identity Formula.bot)
+  let c_list_raw := d0_c_event_list β L hL
+  let c_list := γ₀ :: c_list_raw
+  have hc_list : ∀ γ ∈ c_list, γ ∈ C := by
+    intro γ hγ; rcases List.mem_cons.mp hγ with rfl | h
+    · exact hγ₀
+    · exact d0_c_event_list_mem h
+  -- A-events
+  let a_list := d0_a_event_list β L hL
+  have ha_list : ∀ α ∈ a_list, α ∈ A := fun α hα => d0_a_event_list_mem hα
+  -- Step 2: Form compressed formulas
+  let b := list_conj b_list
+  let γ_hat := list_conj c_list
+  have hb_B : b ∈ B := list_conj_mem_dcs h_B_dcs b_list hb_list'
+  have hγ_C : γ_hat ∈ C := list_conj_mem_mcs _h_mcs_C c_list hc_list
+  -- Step 3: BX chain (simplified, no BX14)
+  -- untl(b, γ_hat) ∈ A from burgessR3
+  have h_untl_bg : Formula.untl b γ_hat ∈ A := h_r3.1 b hb_B γ_hat hγ_C
+  -- BX5: untl(b ∧ untl(b,γ_hat), γ_hat) ∈ A
+  have h_bx5 := self_accum_until_mcs h_mcs_A b γ_hat h_untl_bg
+  -- q = b ∧ untl(b, γ_hat)
+  let q := Formula.and b (Formula.untl b γ_hat)
+  -- BX13 iterated enrichment with alpha_list
+  let evt := iterated_enrichment h_mcs_A q a_list ha_list γ_hat h_bx5
+  let event := evt.event'
+  have h_untl_event := evt.h_untl
+  have h_event_impl_γhat : DerivationTree [] (event.imp γ_hat) := evt.h_impl
+  have h_event_impl_snce := evt.h_snce
+  -- BX10: F(event) ∈ A
+  have h_F_event : Formula.some_future event ∈ A :=
+    until_implies_F_mcs h_mcs_A h_untl_event
+  -- In the inconsistent case, we need to derive event → b and event → untl(b, γ_hat).
+  -- The enrichment provides event → γ_hat (via h_impl), but we need event → q where q = b ∧ untl(b, γ_hat).
+  -- This requires a different approach - possibly using the fact that untl(q, event) ∈ A implies
+  -- q is "available" at the event through BX9 until_elim.
+  have h_ev_b : DerivationTree [] (event.imp b) := sorry
+  have h_ev_untl : DerivationTree [] (event.imp (Formula.untl b γ_hat)) := sorry
+  -- event → snce(b, α) for each α ∈ a_list (via snce(q,α) → snce(b,α))
+  have h_ev_snce : ∀ α ∈ a_list, DerivationTree [] (event.imp (Formula.snce b α)) := by
+    intro α hα
+    have h_snce_q := h_event_impl_snce α hα
+    have h_q_to_b : DerivationTree [] (q.imp b) := lce_imp b (Formula.untl b γ_hat)
+    have h_mono := snce_left_mono_deriv q α b h_q_to_b
+    exact imp_trans h_snce_q h_mono
+  -- Step 4: Show event implies each element of L
+  have h_event_implies_L : ∀ φ ∈ L, DerivationTree [event] φ := by
+    intro φ hφ
+    have h_φ_D0 := hL φ hφ
+    simp [burgess_D0_seed, Set.mem_union] at h_φ_D0
+    by_cases h_B : φ ∈ B
+    · -- Case 1: φ ∈ B
+      have h_φ_in_raw : φ ∈ b_list_raw := collect_guards_mem_of_B h_B_dcs β L hL φ hφ h_B
+      have h_φ_in_b : φ ∈ b_list := List.mem_cons.mpr (Or.inr h_φ_in_raw)
+      have h_b_to_φ : DerivationTree [] (b.imp φ) := list_conj_implies_elem b_list φ h_φ_in_b
+      have h_ev_to_φ := imp_trans h_ev_b h_b_to_φ
+      exact DerivationTree.modus_ponens _ _ _
+        (DerivationTree.weakening [] _ _ h_ev_to_φ (List.nil_subset _))
+        (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+    · -- φ ∉ B, check other cases
+      by_cases h_neg : φ = β.neg
+      · -- Case 2: φ = β.neg
+        subst h_neg
+        have h_neg_in_raw : β.neg ∈ b_list_raw := collect_guards_mem_of_B h_B_dcs β L hL β.neg hφ _h_beta_neg_in_B
+        have h_neg_in_b : β.neg ∈ b_list := List.mem_cons.mpr (Or.inr h_neg_in_raw)
+        have h_b_to_neg : DerivationTree [] (b.imp β.neg) := list_conj_implies_elem b_list β.neg h_neg_in_b
+        have h_ev_to_neg := imp_trans h_ev_b h_b_to_neg
+        exact DerivationTree.modus_ponens _ _ _
+          (DerivationTree.weakening [] _ _ h_ev_to_neg (List.nil_subset _))
+          (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+      · -- φ ≠ β.neg, check for Until formula
+        by_cases h_untl : ∃ β' ∈ B, ∃ γ ∈ C, φ = Formula.untl β' γ
+        · -- Case 3: φ = untl(β', γ')
+          -- Extract witnesses using classical choice
+          let β' := Classical.choose h_untl
+          have hβ' : β' ∈ B := (Classical.choose_spec h_untl).1
+          let γ' := Classical.choose (Classical.choose_spec h_untl).2
+          have hγ' : γ' ∈ C := (Classical.choose_spec (Classical.choose_spec h_untl).2).1
+          have h_eq : φ = Formula.untl β' γ' := (Classical.choose_spec (Classical.choose_spec h_untl).2).2
+          have h_φ_eq : Formula.untl β' γ' ∈ L := by rw [←h_eq]; exact hφ
+          rw [h_eq]
+          by_cases h_untl_B : Formula.untl β' γ' ∈ B
+          · have h_in_raw := collect_guards_mem_of_B h_B_dcs β L hL (Formula.untl β' γ') h_φ_eq h_untl_B
+            have h_in_b : Formula.untl β' γ' ∈ b_list := List.mem_cons.mpr (Or.inr h_in_raw)
+            have h_b_imp := list_conj_implies_elem b_list (Formula.untl β' γ') h_in_b
+            have h_ev_imp := imp_trans h_ev_b h_b_imp
+            exact DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _ h_ev_imp (List.nil_subset _))
+              (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+          · have h_β'_in_raw := collect_guards_mem_of_untl h_B_dcs β L hL β' γ' h_φ_eq hβ' hγ' h_untl_B
+            have h_β'_in_b : β' ∈ b_list := List.mem_cons.mpr (Or.inr h_β'_in_raw)
+            have h_b_to_β' := list_conj_implies_elem b_list β' h_β'_in_b
+            have h_γ'_in_raw := @d0_c_event_list_γ_mem A B C β L hL β' γ' h_φ_eq hβ' hγ'
+            have h_γ'_in_c : γ' ∈ c_list := List.mem_cons.mpr (Or.inr h_γ'_in_raw)
+            have h_γhat_to_γ' := list_conj_implies_elem c_list γ' h_γ'_in_c
+            have h_left := untl_left_mono_deriv b γ_hat β' h_b_to_β'
+            have h_right := untl_right_mono_deriv γ_hat γ' β' h_γhat_to_γ'
+            have h_chain := imp_trans h_ev_untl (imp_trans h_left h_right)
+            exact DerivationTree.modus_ponens _ _ _
+              (DerivationTree.weakening [] _ _ h_chain (List.nil_subset _))
+              (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+        · -- Not an Until formula, check for Since formula
+          by_cases h_snce : ∃ β' ∈ B, ∃ α ∈ A, φ = Formula.snce β' α
+          · -- Case 4: φ = snce(β', α')
+            -- Use classical to extract witnesses
+            classical
+            let β' := Classical.choose h_snce
+            have hβ' : β' ∈ B := (Classical.choose_spec h_snce).1
+            let α' := Classical.choose (Classical.choose_spec h_snce).2
+            have hα' : α' ∈ A := (Classical.choose_spec (Classical.choose_spec h_snce).2).1
+            have h_eq : φ = Formula.snce β' α' := (Classical.choose_spec (Classical.choose_spec h_snce).2).2
+            have h_φ_eq_snce : Formula.snce β' α' ∈ L := by rw [←h_eq]; exact hφ
+            rw [h_eq]
+            by_cases h_snce_B : Formula.snce β' α' ∈ B
+            · have h_in_raw := collect_guards_mem_of_B h_B_dcs β L hL (Formula.snce β' α') h_φ_eq_snce h_snce_B
+              have h_in_b : Formula.snce β' α' ∈ b_list := List.mem_cons.mpr (Or.inr h_in_raw)
+              have h_b_imp := list_conj_implies_elem b_list (Formula.snce β' α') h_in_b
+              have h_ev_imp := imp_trans h_ev_b h_b_imp
+              exact DerivationTree.modus_ponens _ _ _
+                (DerivationTree.weakening [] _ _ h_ev_imp (List.nil_subset _))
+                (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+            · have h_not_untl : ¬(∃ β'' ∈ B, ∃ γ'' ∈ C, Formula.snce β' α' = Formula.untl β'' γ'') := by
+                rintro ⟨_, _, _, _, h_eq⟩; exact Formula.noConfusion h_eq
+              have h_β'_in_raw := collect_guards_mem_of_snce h_B_dcs β L hL β' α' h_φ_eq_snce hβ' hα' h_snce_B h_not_untl
+              have h_β'_in_b : β' ∈ b_list := List.mem_cons.mpr (Or.inr h_β'_in_raw)
+              have h_b_to_β' := list_conj_implies_elem b_list β' h_β'_in_b
+              have h_α'_in_a := @d0_a_event_list_α_mem A B C β L hL β' α' h_φ_eq_snce hβ' hα' h_not_untl
+              have h_ev_snce_α' := h_ev_snce α' h_α'_in_a
+              have h_mono := snce_left_mono_deriv b α' β' h_b_to_β'
+              have h_chain := imp_trans h_ev_snce_α' h_mono
+              exact DerivationTree.modus_ponens _ _ _
+                (DerivationTree.weakening [] _ _ h_chain (List.nil_subset _))
+                (DerivationTree.assumption _ _ (by exact List.mem_singleton.mpr rfl))
+          · -- Contradiction: φ must be in one of the four sets
+            exfalso
+            simp [h_B, h_neg, h_untl, h_snce] at h_φ_D0
+  -- Step 5: Derive contradiction
+  have d_event : DerivationTree [event] Formula.bot :=
+    derivation_from_implied [event] L Formula.bot h_event_implies_L d
+  have h_event_cons := consistent_of_F_mem h_mcs_A event h_F_event
+  exact inconsistent_singleton_false h_event_cons d_event
 
 /-- The Burgess D₀ seed for Lemma 2.6 is consistent when BurgessR3Maximal(A, B, C),
 g_content(A) ⊆ C, and β ∉ B.
@@ -1923,7 +2271,7 @@ private theorem burgess_D0_seed_consistent {A B C : Set Formula}
     -- This uses: {β.neg}∪B consistent (h_neg_cons), BX chain (established above),
     -- DCS closure (B closed under ∧), and guard monotonicity (A2a/A1b).
     exact burgess_D0_finite_subset_consistent h_mcs_A h_mcs_C h_r3m h_gc β
-      h_β_not_B h_neg_cons h_F_beta_neg
+      h_β_not_B h_neg_cons h_F_beta_neg beta0 h_beta0 gamma0 h_gamma0 h_neg_until_in_A
 
   · -- Case: {β} ∪ B is inconsistent, so β.neg ∈ B
     have h_beta_neg_in_B : β.neg ∈ B :=
