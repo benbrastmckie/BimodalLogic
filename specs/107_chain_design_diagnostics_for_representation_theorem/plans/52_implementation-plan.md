@@ -4,7 +4,7 @@
 - **Status**: [NOT STARTED]
 - **Effort**: 22 hours
 - **Dependencies**: Task 113 [COMPLETED] (open-guard semantics)
-- **Research Inputs**: [reports/52_team-research.md], [reports/52_teammate-a-findings.md], [reports/52_teammate-b-findings.md], [reports/52_teammate-c-findings.md], [reports/52_teammate-d-findings.md]
+- **Research Inputs**: [reports/52_team-research.md], [reports/52_teammate-a-findings.md], [reports/52_teammate-b-findings.md], [reports/52_teammate-c-findings.md], [reports/52_teammate-d-findings.md], [reports/53_team-research.md] (master synthesis of Phases 2-5)
 - **Artifacts**: plans/52_implementation-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
