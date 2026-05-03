@@ -153,7 +153,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close PointInsertion Sorry Site 5 (Lemma 2.7 Seed Consistency via BX7) [NOT STARTED]
+### Phase 3: Close PointInsertion Sorry Site 5 (Lemma 2.7 Seed Consistency via BX7) [PARTIAL]
 
 **Goal**: Close the sorry in `lemma_2_7_seed_consistent` (line 2050) using the full Burgess Lemma 2.7 proof with BX7 (linear_until) for the 5th seed component.
 
@@ -194,7 +194,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Extend g During Point Insertion and Thread c2' Through omega_chain [NOT STARTED]
+### Phase 4: Extend g During Point Insertion and Thread c2' Through omega_chain [PARTIAL]
 
 **Goal**: Make g a first-class mathematical object by modifying EliminationResult to carry c2' (BurgessR3Maximal at adjacent pairs), assign proper g-values in each elimination function, and thread c2' through the omega_chain construction. Close the C4/C4' sorry sites (CounterexampleElimination.lean lines 412, 510) as a byproduct.
 
@@ -245,6 +245,8 @@ Phases within the same wave can execute in parallel.
 ---
 
 ### Phase 5: Prove limit_satisfies_c5_full and Close FUC/FSC [NOT STARTED]
+
+**Status**: Blocked - requires Phase 3 (lemma_2_7_seed_consistent) and Phase 4 (c2' proofs) completion.
 
 **Goal**: Strengthen C5 from weak (endpoint only) to full (endpoint plus guard at intermediate points), then close the 2 sorry sites in ChronicleToCountermodel.lean (lines 615, 619) for forward Until and Since coherence via Burgess Claim 2.11.
 

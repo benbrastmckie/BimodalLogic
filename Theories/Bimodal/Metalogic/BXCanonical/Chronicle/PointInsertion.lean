@@ -2376,16 +2376,18 @@ private def lemma_2_7_seed (A B C : Set Formula) (xi eta : Formula) : Set Formul
 
 /-- Consistency of the Lemma 2.7 D0 seed.
 
-The proof uses BX14 (separation) + BX13 (enrichment) + BX10 (F-extraction).
-Any finite inconsistent subset L ⊆ D0 can be refuted by constructing
-an Until formula in A whose event subsumes L's elements.
-
-Key steps:
-1. BX5 on untl(beta0, gamma0): enriched guard
-2. BX14 separation using neg-untl(beta0∧eta, gamma0): gives event with eta.neg
-3. BX13 iterated enrichment: packs S-formulas into event
-4. BX10: F(event) ∈ A, so event is consistent
-5. Any finite L ⊆ D0 maps into a consistent event -/
+TODO (Phase 3): Implement BX7 (linear_until) chain per Burgess 1982 p.372.
+The proof structure:
+1. From h_eta_not_B, extract beta0 ∈ B, gamma0 ∈ C with ¬U(beta0∧eta, gamma0) ∈ A
+2. BX5 on U(xi, eta): get U(xi∧U(xi,eta), eta) ∈ A
+3. BX5 on U(beta0, gamma0): get U(beta0∧U(beta0,gamma0), gamma0) ∈ A
+4. BX7 linear_until: three-way disjunction D1∨D2∨D3
+5. Eliminate D1, D2 using ¬U(beta0∧eta, gamma0)
+6. Surviving D3 gives event with guard containing xi, U(xi,eta), beta0, and eta
+7. BX14 separation with ¬U(beta0∧eta, gamma0)
+8. BX13 iterated enrichment: packs S-formulas into event
+9. BX10: F(event) ∈ A, so event is consistent
+10. Event implies all 5 seed components -/
 private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)

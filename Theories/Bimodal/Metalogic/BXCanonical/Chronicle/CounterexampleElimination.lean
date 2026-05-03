@@ -696,6 +696,10 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
   c0 : val.c0
   f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
   g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → val.g a b = χ.g a b
+  /-- c2' is preserved: for all adjacent pairs in the new chronicle that were
+  also adjacent in the original, BurgessR3Maximal holds. New adjacent pairs
+  from the elimination also satisfy BurgessR3Maximal. -/
+  c2' : val.c2'
   c5_forward_witness : pc.kind = .c5_forward → pc.x ∈ χ.dom →
     Formula.untl pc.ξ pc.η ∈ χ.f pc.x →
     ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y
@@ -749,6 +753,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
+              c2' := by sorry -- TODO Phase 4: prove c2' from elimination
               c5_forward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
@@ -760,6 +765,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
               c5_forward_witness := by
                 intro _ h_mem h_until
                 push_neg at h_actual
@@ -785,6 +791,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
+              c2' := by sorry -- TODO Phase 4: prove c2' from C5' elimination
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ _ _; exact h_prop.2.2.2.1
@@ -796,6 +803,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ h_mem h_since
@@ -823,6 +831,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
+              c2' := by sorry -- TODO Phase 4: prove c2' from C4 elimination
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun _ _ _ _ _ _ => h_prop.2.2.2.1
@@ -833,6 +842,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := by
@@ -859,6 +869,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_prop.2.2.1
               f_agrees := h_prop.2.1
               g_agrees := h_prop.2.2.2.2.2.1
+              c2' := by sorry -- TODO Phase 4: prove c2' from C4' elimination
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -869,6 +880,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -903,6 +915,7 @@ noncomputable def eliminate_potential_counterexample
                 exact if_neg h_ne
               g_agrees := by
                 intro a b _ _; rfl
+              c2' := by sorry -- TODO Phase 4: prove c2' for density insertion
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -915,6 +928,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
+              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
