@@ -133,7 +133,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 37-47 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
@@ -161,6 +161,8 @@ technical_debt:
   - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-c-findings.md] - Phase 4 c2' threading
   - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-d-findings.md] - Phase 5 FUC/FSC coherence
 - **Plan**:
+  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md] - Revised 8-phase plan v56: populate g-values in eliminations, thread c2', prove limit C5a, close 29 sorries
+  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/55_implementation-plan.md] - Revised plan v55 based on 4-agent Burgess research; root cause: g-values never constructed
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/54_implementation-plan.md] - 11-phase plan v54 closing 22 sorries following Burgess 2.6-2.11
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/53_implementation-plan.md] - Comprehensive 7-phase plan with 16 tasks to close all sorry sites
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/52_implementation-plan.md]
