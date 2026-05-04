@@ -251,13 +251,13 @@ since the limit domain is dense with no adjacent pairs.
 - omega_chain (n+1) = eliminate(omega_chain n, enum (unpair n).2)
 -/
 noncomputable def omega_chain (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
-    (n : Nat) → { χ : Chronicle // χ.c0 }
-  | 0 => ⟨singleton_chronicle A, singleton_c0 h_mcs⟩
+    (n : Nat) → { χ : Chronicle // χ.c0 ∧ χ.c2' }
+  | 0 => ⟨singleton_chronicle A, ⟨singleton_c0 h_mcs, singleton_c2' h_mcs⟩⟩
   | n + 1 =>
     let prev := omega_chain A h_mcs n
     let pc := counterexample_enum (Nat.unpair n).2
-    let elim := eliminate_potential_counterexample prev.val prev.property pc
-    ⟨elim.val, elim.c0⟩
+    let elim := eliminate_potential_counterexample prev.val prev.property.1 prev.property.2 pc
+    ⟨elim.val, ⟨elim.c0, elim.c2'⟩⟩
 
 /--
 Extract the chronicle at step n.
@@ -271,7 +271,12 @@ The chronicle at step n satisfies C0.
 -/
 theorem omega_chain_c0 (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
     (omega_chain_val A h_mcs n).c0 :=
-  (omega_chain A h_mcs n).property
+  (omega_chain A h_mcs n).property.1
+
+/-- The chronicle at step n satisfies c2'. -/
+theorem omega_chain_c2' (A : Set Formula) (h_mcs : SetMaximalConsistent A) (n : Nat) :
+    (omega_chain_val A h_mcs n).c2' :=
+  (omega_chain A h_mcs n).property.2
 
 /--
 The elimination result at step n (the intermediate chronicle before g-rebuild).
@@ -280,7 +285,8 @@ noncomputable def omega_chain_elim_result (A : Set Formula) (h_mcs : SetMaximalC
     (n : Nat) : EliminationResult (omega_chain A h_mcs n).val (counterexample_enum (Nat.unpair n).2) :=
   eliminate_potential_counterexample
     (omega_chain A h_mcs n).val
-    (omega_chain A h_mcs n).property
+    (omega_chain A h_mcs n).property.1
+    (omega_chain A h_mcs n).property.2
     (counterexample_enum (Nat.unpair n).2)
 
 /--

@@ -765,7 +765,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
+              c2' := by exact h_c2'
               c5_forward_witness := by
                 intro _ h_mem h_until
                 push_neg at h_actual
@@ -803,7 +803,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
+              c2' := by exact h_c2'
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ h_mem h_since
@@ -842,7 +842,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
+              c2' := by exact h_c2'
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := by
@@ -880,7 +880,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
+              c2' := by exact h_c2'
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -928,7 +928,7 @@ noncomputable def eliminate_potential_counterexample
               c0 := h_c0
               f_agrees := fun _ _ => rfl
               g_agrees := fun _ _ _ _ => rfl
-              c2' := by sorry -- TODO Phase 4: c2' preserved when no elimination
+              c2' := by exact h_c2'
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
