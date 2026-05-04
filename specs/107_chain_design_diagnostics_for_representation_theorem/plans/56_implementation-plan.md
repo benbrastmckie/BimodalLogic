@@ -76,29 +76,45 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Close PointInsertion.lean Remaining Sorries [NOT STARTED]
+### Phase 1: Close PointInsertion.lean Remaining Sorries [BLOCKED]
 
 **(Previously Phase 3)**
 
-**Goal**: Close the 2 remaining sorries (lines ~1872, ~1873) in `lemma_2_6_splitting`.
+**Goal**: Close the 2 remaining sorries (lines ~1872, ~1873) in `burgess_D0_finite_subset_consistent_incons`.
+
+**Blocker**: The plan's approach (`guard_destruct` on `event → q`) is INCORRECT. The enrichment gives `event → γ_hat` (the base), NOT `event → q` (the guard). Under OPEN GUARD semantics (this codebase), the guard `q = b ∧ untl(b, γ_hat)` only holds at intermediate points, not at the event point. There is no `guard_destruct` function.
+
+The BX14 separation approach (used in the consistent case) requires `¬untl(b∧β, γ_hat) ∈ A`, which cannot be derived in the inconsistent case because `untl(⊥, γ_hat)` is satisfiable under open guard semantics (vacuously true in discrete orders where the open interval is empty). This differs from Burgess 1982 which uses CLOSED guard semantics where `untl(⊥, γ_hat)` is provably false.
+
+**Required fix**: Extract BX14 maximality witnesses (`β₀∈B, γ₀∈C, ¬untl(β₀∧β, γ₀) ∈ A`) for the inconsistent case. This requires a nontrivial by-contradiction argument: assuming all `untl(β₀∧β, γ₀) ∈ A`, derive `untl(φ, γ₀) ∈ A` for ALL φ via left_mono with `⊢(β.neg∧β)→⊥` and `⊢⊥→φ`, then find a consistent proper DCS extension of B satisfying burgessR3, contradicting BurgessR3Maximal. The witness extraction must handle the case where B is MCS (no consistent proper extension exists) separately, possibly requiring a fundamentally different proof strategy.
+
+**Refined Fix (from research round 2)**:
+
+Case split on MCS A membership: either `¬untl(b∧β, γ_hat) ∈ A` or `untl(b∧β, γ_hat) ∈ A`.
+
+- **Sub-case A** (`¬untl(b∧β, γ_hat) ∈ A`): Directly reuse `burgess_zeta_consistent` (line 1251).
+  This function takes `h_neg_until` and produces all five components (`event → b`, `event → β.neg`,
+  `event → untl(b, γ_hat)`, `event → snce(b, α)`, `F(event) ∈ A`). It does NOT require
+  `SetConsistent({β}∪B)` internally. Straightforward, ~1-2 hours.
+
+- **Sub-case B** (`untl(b∧β, γ_hat) ∈ A`): Research problem. Since `b → β.neg` implies
+  `⊢ (b∧β) → ⊥`, left_mono gives `untl(⊥, γ_hat) ∈ A` and hence `∀ψ, untl(ψ, γ_hat) ∈ A`
+  (via ex falso + left_mono). BX7 on this + `untl(q, γ_hat)` gives D1∨D2∨D3. D2 is eliminated
+  (event = `γ_hat ∧ (b∧β)` is provably ⊥, BX10 → F(⊥) ∈ A contradicts G(⊤) ∈ A). If D3
+  is in A, it gives `untl(⊥_equiv, q ∧ γ_hat) ∈ A`, then left_mono (ex falso) → `untl(b, q ∧ γ_hat) ∈ A`,
+  BX5 + BX13 enrichment → event with `event → q ∧ γ_hat → b`. **Gap**: BX7 doesn't force
+  D3 into A (D1 is trivially satisfied). Requires further research.
 
 **Tasks**:
-- [ ] **Task 1.1**: Close `h_ev_b` (line ~1872)
-  - Event guard is `q = b ∧ untl(b, γ_hat)`. Need `event → b`.
-  - Proof: `guard_destruct` on `event → q` to get `event → b` and `event → untl(b, γ_hat)`.
-  - Difficulty: Easy (~15 min)
+- [ ] **Task 1.1**: Implement Sub-case A (negation available → `burgess_zeta_consistent`)
+- [ ] **Task 1.2**: Research and implement Sub-case B (affirmative case)
 
-- [ ] **Task 1.2**: Close `h_ev_untl` (line ~1873)
-  - Same guard `q`. Need `event → untl(b, γ_hat)`.
-  - Proof: `guard_destruct` on `event → q`, second conjunct.
-  - Difficulty: Easy (~15 min)
+**Timing**: Sub-case A: 1-2 hours. Sub-case B: 4-8 hours (research + implementation).
 
-**Timing**: 1 hour
-
-**Depends on**: None (independent). Can execute in parallel with Phase 2.
+**Depends on**: Plan revision needed.
 
 **Verification**:
-- `lemma_2_6_splitting` compiles sorry-free (at least these 2 sorries).
+- `burgess_D0_finite_subset_consistent_incons` compiles sorry-free.
 - `lake build` succeeds.
 
 ---

@@ -656,21 +656,21 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-04T05:27:26Z",
-      "researched": "2026-05-03T22:03:08Z",
+      "last_updated": "2026-05-04T16:41:02Z",
+      "researched": "2026-05-04T16:41:02Z",
       "related_tasks": [
         93
       ],
       "dependencies": [
         113
       ],
-      "next_artifact_number": 53,
+      "next_artifact_number": 54,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
@@ -1026,11 +1026,21 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md",
           "type": "plan",
           "summary": "Revised 8-phase plan v56: populate g-values in eliminations, thread c2' through omega_chain, prove limit C5a, close 29 sorries"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/53_implementation-analysis.md",
+          "type": "report",
+          "summary": "Pre-implementation analysis: sorry inventory, Phase 1 plan error (guard_destruct non-existent), argument convention mapping, dependency graph"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/54_burgess-semantic-alignment.md",
+          "type": "report",
+          "summary": "Confirmed open-guard semantics match Burgess exactly; A3a/A4a (BX13/BX14) are valid and present; blockers are proof engineering, not semantics"
         }
       ],
       "session_id": "sess_1777762781_b2f826",
       "started": "2026-04-25T19:11:01Z",
-      "researching": "2026-05-03T21:52:36Z",
+      "researching": "2026-05-04T16:20:36Z",
       "implementing": "2026-05-04T05:27:26Z",
       "resume_phase": 3,
       "planning": "2026-05-04T05:11:25Z",
