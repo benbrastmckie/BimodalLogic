@@ -75,17 +75,17 @@ Phases 4 and 5 are parallel; Phase 2 is parallel to Phase 3.
 ## Phase 1: Foundation Audit and Interface Verification
 
 **Paper reference**: Burgess §2.1–2.5 (overall definitions)  
-**Status**: [NOT STARTED]  
+**Status**: [COMPLETED]  
 **Effort**: 2 hours
 
 **Purpose**: Verify that all existing infrastructure is correct before implementing. `lemma_2_4` (endpoint MCS + interval DCS) and `lemma_2_6_splitting` (B', D, B'') are already sorry-free. Audit each lemma's output interface to ensure callers can access all needed components.
 
 **Tasks**:
-- [ ] **Task 1.1**: Audit `lemma_2_4` — verify that the interval DCS `B` is returned and accessible. If return type buries `B` inside `exists_rat_gt_finset`'s output, restructure to expose it.
-- [ ] **Task 1.2**: Audit `lemma_2_6_splitting` — verify `B', D, B''` all accessible with `BurgessR3Maximal` proofs. Confirm callers can extract each.
-- [ ] **Task 1.3**: Verify BX axiom MCS-level wrappers exist: BX5 (`self_accum_until_mcs`), BX7 (`linear_until_mcs`), BX10 (`until_implies_F_mcs`), BX13 (enrichment), BX14 (separation), left/right monotonicity.
-- [ ] **Task 1.4**: Verify `iterated_enrichment` works for both Lemma 2.6 (packing snce-formulas via guard `q`) and Lemma 2.7 (packing snce-formulas with `β∧η` guards).
-- [ ] **Task 1.5**: Add argument-order convention comments at top of PointInsertion.lean, CounterexampleElimination.lean, ChronicleConstruction.lean.
+- [x] **Task 1.1**: Audit `lemma_2_4` — verify that the interval DCS `B` is returned and accessible. If return type buries `B` inside `exists_rat_gt_finset`'s output, restructure to expose it.
+- [x] **Task 1.2**: Audit `lemma_2_6_splitting` — verify `B', D, B''` all accessible with `BurgessR3Maximal` proofs. Confirm callers can extract each.
+- [x] **Task 1.3**: Verify BX axiom MCS-level wrappers exist: BX5 (`self_accum_until_mcs`), BX7 (`linear_until_mcs`), BX10 (`until_implies_F_mcs`), BX13 (enrichment), BX14 (separation), left/right monotonicity.
+- [x] **Task 1.4**: Verify `iterated_enrichment` works for both Lemma 2.6 (packing snce-formulas via guard `q`) and Lemma 2.7 (packing snce-formulas with `β∧η` guards).
+- [x] **Task 1.5**: Add argument-order convention comments at top of PointInsertion.lean, CounterexampleElimination.lean, ChronicleConstruction.lean.
 
 **Verification**: `lake build` passes. Audit results written to `reports/57_foundation-audit.md`.
 
