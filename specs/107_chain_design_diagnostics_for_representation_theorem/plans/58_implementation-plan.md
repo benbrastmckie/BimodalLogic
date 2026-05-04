@@ -71,7 +71,7 @@ Critical path: Phase 3 -> Phase 4 -> Phase 5 -> Phase 7 -> Phase 8 (20-27h).
 
 ---
 
-### Phase 1: Foundation Audit and Interface Verification [NOT STARTED]
+### Phase 1: Foundation Audit and Interface Verification [PARTIAL]
 
 - **Goal**: Verify that all existing infrastructure is correct and interfaces expose needed components before beginning implementation. Audit lemma outputs, BX axiom wrappers, and argument conventions.
 
@@ -89,7 +89,7 @@ Critical path: Phase 3 -> Phase 4 -> Phase 5 -> Phase 7 -> Phase 8 (20-27h).
 
 ---
 
-### Phase 2: Lemma 2.6 — Inconsistent Case [NOT STARTED]
+### Phase 2: Lemma 2.6 — Inconsistent Case [BLOCKED]
 
 - **Goal**: Close the 2 sorries `h_ev_b` and `h_ev_untl` at PointInsertion.lean lines 1872-1873 in `burgess_D0_finite_subset_consistent_incons`. These require proving that the enriched event formula implies the guard `b` and the accumulated Until `untl(b, gamma_hat)`.
 
