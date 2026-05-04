@@ -1021,6 +1021,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/54_implementation-plan.md",
           "type": "plan",
           "summary": "11-phase implementation plan v54 for closing 22 sorries across 3 files, following Burgess 1982 Sections 2.6-2.11"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase4a_in_progress.md",
+          "type": "handoff",
+          "summary": "Phase 4a in progress: c2' parameter added, ChronicleConstruction call sites need fixing"
         }
       ],
       "session_id": "sess_1777762781_b2f826",
