@@ -160,7 +160,7 @@ technical_debt:
   - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-b-findings.md] - Phase 3 Lemma 2.7 BX7 chain
   - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-c-findings.md] - Phase 4 c2' threading
   - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-d-findings.md] - Phase 5 FUC/FSC coherence
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/54_burgess-semantic-alignment.md] - Confirmed open-guard semantics match Burgess exactly; A3a/A4a (BX13/BX14) are valid and present; blockers are proof engineering, not semantics
+  - [107_chain_design_diagnostics_for_representation_theorem/reports/54_burgess-semantic-alignment.md] - Burgess uses open-guard (matches our code); A3a/A4a are valid; Path A (full Burgess D₀) strongly recommended over Xu-style seed (mathematically insufficient for r-relations)
 - **Plan**:
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md] - Revised 8-phase plan v56: populate g-values in eliminations, thread c2', prove limit C5a, close 29 sorries
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/55_implementation-plan.md] - Revised plan v55 based on 4-agent Burgess research; root cause: g-values never constructed

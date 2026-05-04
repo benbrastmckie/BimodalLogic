@@ -1035,7 +1035,7 @@
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/54_burgess-semantic-alignment.md",
           "type": "report",
-          "summary": "Confirmed open-guard semantics match Burgess exactly; A3a/A4a (BX13/BX14) are valid and present; blockers are proof engineering, not semantics"
+          "summary": "Open-guard confirmed; A3a/A4a valid; Path A (Burgess D0 chain) recommended over Xu-style seed (mathematically insufficient)"
         }
       ],
       "session_id": "sess_1777762781_b2f826",

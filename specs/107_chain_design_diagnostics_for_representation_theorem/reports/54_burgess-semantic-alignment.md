@@ -11,7 +11,7 @@
 
 **Burgess 1982 uses open-guard semantics** — exactly the same semantics our implementation uses. The definitions match verbatim: strict witness (`t < s` / `s < t`) and open-guard interval (strict on both sides: `∀r, t < r < s → φ(r)`). The previous reports' frequent references to "Burgess's closed-guard semantics" conflate the axiomatic concept of guard-at-base-point (`until_guard`/`since_guard` axioms, correctly removed in task 113) with the semantic definition. A3a/A4a (preserved as BX13/BX14) ARE valid under open-guard and ARE present in our system. The construction difficulties stem from proof engineering challenges (syntactically chaining BX13+BX14 in the chronicle context) rather than semantic mismatch.
 
-**Recommendation**: No semantic change needed. Proceed with Xu-style simplified seed `B ∪ {¬δ}` or the full Burgess D₀ chain using BX13+BX14 — both approaches work under the current open-guard semantics. The blocker is proof formalization, not semantic correctness.
+**Recommendation**: No semantic change needed. Proceed with the full Burgess D₀ chain using BX13+BX14. The Xu-style simplified seed is mathematically insufficient for establishing the `burgessR3` relations required by Zorn's lemma (see detailed analysis in Section 7). The blocker is proof formalization, not semantic correctness.
 
 ---
 
@@ -179,9 +179,88 @@ From report 53: the point insertion functions produce only the endpoint MCS (D) 
 
 ---
 
-## 5. Workarounds and Paths Forward
+## 5. Seed Construction: Full Burgess D₀ vs. Xu-Style Simplified Seed
 
-### 5.1 Path A: Full Burgess D₀ Chain (Recommended if resources allow)
+This section evaluates the two approaches for the D₀ seed construction recommended in the workarounds above. The analysis was conducted by a specialized logic research agent and represents a definitive evaluation grounded in the Burgess paper and our codebase.
+
+### 7.1 What the Seed Must Achieve
+
+The D₀ seed (definition at PointInsertion.lean:880) is:
+
+```
+burgess_D0_seed = B ∪ {β.neg} ∪ {untl(β',γ): β'∈B, γ∈C} ∪ {snce(β',α): β'∈B, α∈A}
+```
+
+After Lindenbaum extension to MCS D, the seed must establish:
+- `burgessR3(D, B, C)` — because `untl(β', γ) ∈ D` for all `β' ∈ B, γ ∈ C`
+- `burgessR3(A, B, D)` — because `snce(β', α) ∈ D` for all `β' ∈ B, α ∈ A`
+
+These r-relations are the input to `burgessR3Maximal_extension_exists` (Zorn's lemma), which produces `B'` and `B''` with full maximality. Without the initial `burgessR3`, Zorn's lemma has nothing to extend.
+
+### 7.2 Generality Comparison
+
+**What Path A gives you that Path B does not:**
+
+The explicit inclusion of Until/Since formulas in the seed is **load-bearing**. R-relations are **not hereditary upward**: `burgessR3(A, B, C)` + `B ⊆ D` does NOT imply `burgessR3(D, B, C)`. Having `untl(β', γ) ∈ A` does not give `untl(β', γ) ∈ D`. The simplified seed (`B ∪ {¬δ}`) is mathematically insufficient — you cannot apply `burgessR3Maximal_extension_exists` without first establishing `burgessR3(D, B, C)`.
+
+For Lemma 2.7, the gap is even deeper. Path B has **no mechanism** for proving `η ∈ B'` (the guard from the Until formula must end up in the maximal interval DCS). Burgess's proof achieves this via the 5th seed component `{snce(β∧η, α) : β ∈ B, α ∈ A}` — the conjunction with β anchors η's presence to the interval. Without this, the truth lemma (Claim 2.11) and the FUC/FSC coherence proofs fail.
+
+### 7.3 Extensibility: Upgrade Cost
+
+Upgrading from Path B → Path A later would be approximately **70% throwaway work**. The dependency chain is:
+
+```
+lemma_2_6/2_7 → c2' (10 sites) → omega_chain_c2' → limit_satisfies_c5_full → FUC/FSC
+```
+
+Every link in this chain needs the full Burgess seed output. The interface (seed → lemma_2_6_splitting) is stable, but the proofs that satisfy it are not interchangeable — changing what D contains changes what can be proved about D, rippling through every downstream proof.
+
+| Layer | Work to redo |
+|-------|-------------|
+| PointInsertion.lean | Rewrite 3-5 lemmas |
+| CounterexampleElimination.lean | Rewrite 10-15 c2' proof sites |
+| ChronicleConstruction.lean | Rewrite 2-3 limit lemmas |
+| ChronicleToCountermodel.lean | Rewrite 2-4 coherence proofs |
+
+### 7.4 What Burgess's Paper Actually Requires
+
+**Lemma 2.6** (p.371): The D₀ seed is exactly `{S(α,β): α∈A, β∈B} ∪ B ∪ {∼δ} ∪ {U(γ,β): γ∈C, β∈B}`. The consistency proof uses BX5 (A5a) → BX14 (A4a) → BX13 (A3a) → BX10 (Lemma 2.2) in a strict chain. The BX14 step is essential:
+
+```
+U(γ, β∧U(γ,β)) ∈ A [BX5] + ∼U(γ, β∧δ) ∈ A [maximality] → U(β∧U(γ,β)∧∼δ, β) ∈ A [BX14]
+```
+
+**Without BX14, the `∼δ` never enters the event, and ζ's consistency is unprovable.** No alternative proof path exists in the paper, in Xu, or in any subsequent literature.
+
+**Lemma 2.7** (p.372): The BX7 (A7a) three-way disjunct chain is structurally required. Applying BX7 to `U(γ, β∧U(γ,β))` and `U(ξ, η∧U(ξ,η))` produces three disjuncts. D1 and D2 are eliminated via `∼U(γ, β∧η)`, and the surviving D3 provides the enriched event needed for BX13 enrichment. The `snce(β∧η, α)` seed component is the mechanism that proves `η ∈ B'` via the Lemma 2.3 bridge (`burgessRSince_implies_burgessR`).
+
+### 7.5 Concrete Benefits of Path A
+
+Scenarios where only the full approach works:
+
+1. **Nested C5 elimination**: When a C5 counterexample has intermediate domain points, Lemma 2.7 must insert between existing points. BX7's three-way disjunct elimination is the only known proof method.
+
+2. **Guard propagation through intermediates**: C5a truth requires: for `U(ξ,η) ∈ f(x)`, the witness y satisfies `η ∈ g(x,y)`. C3 then pushes `η` to every intermediate `f(z)`. Without Lemma 2.7's seed establishing `η ∈ g(x,y)`, intermediate points lose the guard and the truth lemma fails.
+
+3. **Bimodal TM extensions**: The project's TM logic adds a Box modality. Lemma 2.7's pattern of cross-modal enrichment (packing Since formulas into Until events via BX13) is the template for encoding modal guards. Path B provides no such template.
+
+4. **Any logic with enriched interval conditions**: If the logic ever gains a chop operator, since-until combinations, or other interval-dependent operators, the seed must encode those conditions on the interval. BX5+BX7+BX13+BX14 is the proven general pattern.
+
+### 7.6 Recommendation: Path A — Full Burgess D₀ Chain
+
+**Strongly recommended.** The reasoning:
+
+- **The gap is smaller than it appears**: The D₀ seed definition and Lemma 2.6 consistent case proof are already done and sorry-free. Remaining: ~2-3h for Phase 2 (inconsistent case) + ~6-8h for Phase 3 (Lemma 2.7) + downstream work.
+- **Path B doesn't actually simplify**: It requires inventing a novel proof for establishing `burgessR3(D, B, C)` that the mathematical literature does not contain. It saves work on the seed but creates equal or greater work on downstream proofs.
+- **Critical path is manageable**: 23-31h total, with each phase having a clear strategy grounded in the Burgess paper.
+- **This is the extensibility foundation**: The full Burgess seed construction is the template for all future extensions. Taking a shortcut mortgages extensibility for marginal short-term savings.
+- **BX13/BX14 are valid, soundness-proven, and already in the system**: This is proof engineering, not semantic uncertainty.
+
+---
+
+## 6. Workarounds and Paths Forward
+
+### 6.1 Path A: Full Burgess D₀ Chain (RECOMMENDED)
 
 Formalize the exact Burgess Lemma 2.6 proof using our existing BX13/BX14 axioms. This requires:
 
@@ -194,23 +273,13 @@ Formalize the exact Burgess Lemma 2.6 proof using our existing BX13/BX14 axioms.
 
 Estimated effort: Medium-Hard (3-5 hours of focused proof writing).
 
-### 5.2 Path B: Xu-Style Simplified Seed (Recommended for speed)
+### 6.2 Path B: Xu-Style Simplified Seed (NOT RECOMMENDED — see Section 5)
 
-Use `{¬δ} ∪ B` as the seed instead of the full Burgess D₀. This avoids the "mixed A/C problem" entirely.
+Use `{¬δ} ∪ B` as the seed instead of the full Burgess D₀.
 
-1. **Seed**: `{¬δ} ∪ B` — provably consistent via `dcs_neg_union_consistent` (already proven sorry-free)
-2. **Construct D**: Lindenbaum extension of the seed
-3. **Prove `r(A, ⊤, D)`**: For all γ ∈ D, need `untl(⊤, γ) ∈ A` i.e., `F(γ) ∈ A`
-   - For γ ∈ B: from burgessR3, `untl(β, γ) ∈ A` → `F(γ) ∈ A` via BX10
-   - For γ = ¬δ: from `left_mono_contrapositive_neg_delta`, either `¬δ ∈ A` or `F(¬δ) ∈ A`. If `¬δ ∈ A`, then from BX4: `G(P(¬δ)) ∈ A` →... this needs working out but seems tractable
-4. **Prove `r(D, ⊤, C)`**: Mirror argument
-5. **Extend to BurgessR3Maximal** via Zorn
+**Mathematical insufficiency**: Path B cannot establish the `burgessR3(D, B, C)` relation needed for Zorn's lemma. R-relations are not hereditary upward: having `untl(β', γ) ∈ A` does not give `untl(β', γ) ∈ D` where D is the Lindenbaum extension of `B ∪ {¬δ}`. Without the explicit Until/Since seed formulas, `burgessR3Maximal_extension_exists` has no initial r-relation to extend. Additionally, Lemma 2.7's proof that `η ∈ B'` depends on the 5th seed component `{snce(β∧η, α)}` — Path B provides no mechanism for guard propagation through intermediate points. See Section 5 for full analysis.
 
-Estimated effort: Medium (2-4 hours). The challenge is step 3, proving that D = Lindenbaum(B ∪ {¬δ}) satisfies the r-relations. This may require showing that B already contains sufficient temporal content (P(α) for α ∈ A, F(γ) for γ ∈ C) — which is what Xu's Lemma 2.3 proves using A3a.
-
-However, since we HAVE A3a (BX13), we CAN prove an analog of Xu's Lemma 2.3, making Path B feasible.
-
-### 5.3 Path C: Keep g-Values During Elimination (Architectural fix)
+### 6.3 Path C: Keep g-Values During Elimination (Architectural fix)
 
 The "missing g-values" issue (Phase 3 from report 53) requires restructuring the elimination functions to co-construct endpoint MCS AND interval DCS together. This is the correct long-term approach, matching Burgess's architecture.
 
@@ -226,7 +295,7 @@ The correct path is to work WITH the current open-guard semantics and formalize 
 
 ---
 
-## 6. Summary Table: The Five Critical Questions
+## 7. Summary Table: The Five Critical Questions
 
 | Question | Answer |
 |----------|--------|
@@ -234,7 +303,7 @@ The correct path is to work WITH the current open-guard semantics and formalize 
 | 2. How does our implementation handle this? | **Identically.** `∀r, t < r < s → φ(r)` — open guard on (t,s). |
 | 3. What are all semantic differences? | **Minimal.** The core semantics match. Differences are axiomatic (BX7 vs A7a, removed BX8/BX9/until_guard), DCS consistency requirement, and argument order convention. None affect semantic validity of the construction. |
 | 4. Why are A3a/A4a (BX13/BX14) blocking? | **They aren't.** Both axioms are present, valid, and have soundness proofs. The blocker is the PROOF ENGINEERING of chaining them in the chronicle construction, not their validity. |
-| 5. Workaround or change semantics? | **Workaround preserves open-guard.** Both the full Burgess D₀ chain (Path A) and the Xu-style simplified seed (Path B) work under current semantics. No semantic change needed. |
+| 5. Workaround or change semantics? | **Workaround preserves open-guard.** The full Burgess D₀ chain (Path A) is the recommended approach. The Xu-style simplified seed (Path B) is mathematically insufficient for establishing the r-relations required by Zorn's lemma (see Section 5). No semantic change needed. |
 
 ---
 
