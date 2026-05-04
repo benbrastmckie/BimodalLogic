@@ -1,7 +1,7 @@
 # Implementation Plan: Task #107 — Burgess-Faithful Chronicle Construction (Revised)
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 28-38 hours
 - **Dependencies**: Plans 01-55 (iterative refinement); research reports
 - **Research Inputs**:
@@ -25,6 +25,21 @@ Four parallel research agents mapped every Burgess lemma to our Lean codebase. T
 - **Critical deviations (fixable)**: (1) g-values never constructed in eliminations, (2) C5 output misused (`η ∈ C` vs `η ∈ B`), (3) c2' removed from finite omega-chain, (4) `C5Counterexample` checks wrong condition.
 - **Root cause**: g-population is the structural fix that unblocks 22/29 sorries.
 
+## Phase Renumbering Note
+
+**This plan was reordered on 2026-05-03 to reflect actual dependency order.**
+
+| New Phase | Old Phase | Name |
+|---|---|---|
+| 1 | 3 | Close PointInsertion.lean Remaining Sorries |
+| 2 | 6 | Implement Lemma 2.7 Seed Consistency |
+| 3 | 1 | Populate g-Values in Elimination Functions |
+| 4 | 2 | Prove c2' for All Elimination Branches |
+| 5 | 4 | Close C4/C4' Hard Cases (C11/C12) |
+| 6 | 5 | Thread c2' Through omega_chain |
+| 7 | 7 | Prove limit_satisfies_c5_full and limit_satisfies_c5'_full |
+| 8 | 8 | Close FUC/FSC and Final Audit |
+
 ## Goals & Non-Goals
 
 **Goals**:
@@ -44,29 +59,98 @@ Four parallel research agents mapped every Burgess lemma to our Lean codebase. T
 |------|--------|------------|------------|
 | `guard_in_r_maximal` lemma is unprovable | Blocks Phase 7 | Medium | Prove a weaker variant sufficient for C5a; document gap if necessary |
 | g-value construction breaks function signatures | High build churn | High | Commit after each elimination function modification; fix call sites incrementally |
-| C4 Hard cases remain blocked even with g-populated | Delays Phase 4 | Low | Use `burgessR3_gamma_not_in_B` + `lemma_2_6_splitting` with β = γ |
+| C4 Hard cases remain blocked even with g-populated | Delays Phase 5 | Low | Use `burgessR3_gamma_not_in_B` + `lemma_2_6_splitting` with β = γ |
 
-## Implementation Phases
+## Dependency Analysis
 
-**Dependency Analysis**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 3, 6 | -- |
-| 2 | 1 | 6 |
-| 3 | 2, 4 | 1 |
-| 4 | 5 | 2 |
-| 5 | 7 | 5 |
+| 1 | 1, 2 | -- |
+| 2 | 3 | 2 |
+| 3 | 4, 5 | 3 |
+| 4 | 6 | 4 |
+| 5 | 7 | 6 |
 | 6 | 8 | 7 |
 
 Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Populate g-Values in Elimination Functions [IN PROGRESS]
+### Phase 1: Close PointInsertion.lean Remaining Sorries [NOT STARTED]
+
+**(Previously Phase 3)**
+
+**Goal**: Close the 2 remaining sorries (lines ~1872, ~1873) in `lemma_2_6_splitting`.
+
+**Tasks**:
+- [ ] **Task 1.1**: Close `h_ev_b` (line ~1872)
+  - Event guard is `q = b ∧ untl(b, γ_hat)`. Need `event → b`.
+  - Proof: `guard_destruct` on `event → q` to get `event → b` and `event → untl(b, γ_hat)`.
+  - Difficulty: Easy (~15 min)
+
+- [ ] **Task 1.2**: Close `h_ev_untl` (line ~1873)
+  - Same guard `q`. Need `event → untl(b, γ_hat)`.
+  - Proof: `guard_destruct` on `event → q`, second conjunct.
+  - Difficulty: Easy (~15 min)
+
+**Timing**: 1 hour
+
+**Depends on**: None (independent). Can execute in parallel with Phase 2.
+
+**Verification**:
+- `lemma_2_6_splitting` compiles sorry-free (at least these 2 sorries).
+- `lake build` succeeds.
+
+---
+
+### Phase 2: Implement Lemma 2.7 Seed Consistency [NOT STARTED]
+
+**(Previously Phase 6)**
+
+**Goal**: Close `lemma_2_7_seed_consistent` (line 2414) using the BX7 chain mapped exactly by research.
+
+**Tasks**:
+- [ ] **Task 2.1**: Implement `lemma_2_7_neg_untl_exists` (extract witness)
+  - Use `BurgessR3Maximal_extension_fails` + `dc_delta_B_controlled`.
+  - Burgess 2.7, witness extraction.
+  - Difficulty: Medium (~1.5h)
+
+- [ ] **Task 2.2**: Verify `linear_until_mcs` wrapper (trivial)
+  - Apply `theorem_in_mcs` + `conj_mcs` for BX7 at MCS level.
+  - Difficulty: Easy (~15 min)
+
+- [ ] **Task 2.3**: Implement `lemma_2_7_disjunct_elim_D1`
+  - D1 contains `γ_hat ∧ eta` in event. By right mono and witness, contradicts `¬untl(β₀∧eta, γ₀)`.
+  - Key: `gamma₀` is in the C-event list, so `γ_hat → gamma₀` via conjunction elimination.
+  - Burgess 2.7, A7a/BX7 disjunct elimination.
+  - Difficulty: Medium (~1.5h)
+
+- [ ] **Task 2.4**: Implement `lemma_2_7_disjunct_elim_D2` (mirror with `xi`)
+  - Uses same witness + monotonicity argument.
+  - Difficulty: Medium (~1.5h)
+
+- [ ] **Task 2.5**: Orchestrate `lemma_2_7_seed_consistent`
+  - Follow the TODO comment's 10-step structure (lines 2393-2403).
+  - Steps: (1) witness, (2) BX5 on `untl(b,γ_hat)`, (3) BX5 on `untl(xi,eta)`, (4) BX7, (5-6) eliminate D1/D2, (7) surviving D3, (8) BX14 separation, (9) BX13 enrichment + BX10, (10) seed consistency.
+  - Difficulty: Hard (~2-3h)
+
+**Timing**: 4-5 hours
+
+**Depends on**: None (independent, but needed for Phase 3 C5 inductive case).
+
+**Verification**:
+- `lemma_2_7_seed_consistent` compiles sorry-free.
+- `lake build` succeeds.
+
+---
+
+### Phase 3: Populate g-Values in Elimination Functions [IN PROGRESS]
+
+**(Previously Phase 1)**
 
 **Status**: Exploration completed; implementation NOT started.
 
-**What was actually done**:
+**What has been done**:
 - Phase marker changed to [IN PROGRESS] by subagent.
 - Subagent explored all 5 elimination functions and confirmed: **g-values are never populated** — every active branch returns `χ.g` unchanged.
 - `eliminate_potential_counterexample` signature correctly requires `h_c2'` parameter (structural prerequisite).
@@ -74,22 +158,21 @@ Phases within the same wave can execute in parallel.
 - Build passes.
 - **None of the actual g-population tasks below were implemented.**
 
-
 **Goal**: Make each elimination function construct g-values for new adjacent pairs, per Burgess Sections 2.9 (C4) and 2.10 (C5).
 
 **Tasks**:
-- [ ] **Task 1.1**: Modify `eliminate_C5_counterexample` (Burgess 2.10, C5a base case)
+- [ ] **Task 3.1**: Modify `eliminate_C5_counterexample` (Burgess 2.10, C5a base case)
   - Extract interval `B` (not endpoint `C`) from `lemma_2_4` output.
   - Construct `g'` where `g'(x,y) = B` for the NEW adjacent pair.
   - For OLD adjacent pairs, preserve `χ.g` via `h_c2'`.
   - Difficulty: Medium (~1.5h)
 
-- [ ] **Task 1.2**: Modify `eliminate_C5'_counterexample` (mirror for Since)
-  - Symmetric mirror of Task 1.1.
+- [ ] **Task 3.2**: Modify `eliminate_C5'_counterexample` (mirror for Since)
+  - Symmetric mirror of Task 3.1.
   - Burgess 2.10, C5b.
   - Difficulty: Medium (~1h)
 
-- [ ] **Task 1.3**: Modify `eliminate_C4_counterexample` (Burgess 2.9, C4a base case)
+- [ ] **Task 3.3**: Modify `eliminate_C4_counterexample` (Burgess 2.9, C4a base case)
   - When inserting midpoint `z`, construct `g'` where:
     - `g'(x,z) = B'` from `lemma_2_6_splitting`
     - `g'(z,y) = B''` from `lemma_2_6_splitting`
@@ -97,94 +180,81 @@ Phases within the same wave can execute in parallel.
     - For other pairs involving `z`, determine by C3.
   - Difficulty: Hard (~2.5h)
 
-- [ ] **Task 1.4**: Modify `eliminate_C4'_counterexample` (mirror)
-  - Symmetric mirror of Task 1.3.
+- [ ] **Task 3.4**: Modify `eliminate_C4'_counterexample` (mirror)
+  - Symmetric mirror of Task 3.3.
   - Difficulty: Hard (~1.5h)
 
-- [ ] **Task 1.5**: Handle density insertion g-population
+- [ ] **Task 3.5**: Handle density insertion g-population
   - Use `burgessR3Maximal_from_g_content_sub` to construct g-values for new adjacent pairs.
   - Burgess 2.9/2.10, density case (n = m + 1).
   - Difficulty: Medium (~1h)
 
-- [ ] **Task 1.6**: Verify old adjacent pair C3 consistency after splitting
+- [ ] **Task 3.6**: Verify old adjacent pair C3 consistency after splitting
   - When a new point splits an old adjacent pair `(x,y)`, adjacency is broken; `g(x,y)` should now be determined by C3 intersection.
   - Difficulty: Medium (~1h)
 
 **Timing**: 6-8 hours
 
-**Depends on**: Phase 6 (Lemma 2.7 seed provides C5 inductive case g-construction lemmas).
+**Depends on**: Phase 2 (Lemma 2.7 seed provides C5 inductive case g-construction lemmas).
 
 **Verification**:
 - Each elimination produces a `Chronicle` with populated g-values.
 - `lake build` succeeds after each modification (commit incrementally).
 
+**Sorries introduced by this incompletion**: 5 active-branch c2' sorries remain in `CounterexampleElimination.lean` (lines 756, 794, 834, 872, 918). These block Phase 4.
+
 ---
 
-### Phase 2: Prove c2' for All Elimination Branches [PARTIAL]
+### Phase 4: Prove c2' for All Elimination Branches [PARTIAL]
 
-**Status**: Task 2.1 completed by subagent (trivial branches only).
+**(Previously Phase 2)**
+
+**Status**: Task 4.1 completed by subagent (trivial branches only).
 
 **Completed**:
-- [x] **Task 2.1**: Trivial no-elimination c2' (5 sorries) — `by exact h_c2'`
+- [x] **Task 4.1**: Trivial no-elimination c2' (5 sorries) — `by exact h_c2'`
   - Done: CounterexampleElimination lines 768, 806, 845, 883, 931
   - Git commit: `18af0e06` "task 107: partial implementation — Phase 2 task 2.1 complete"
 
-**Remaining** (blocked by Phase 1 g-population):
-- [ ] **Task 2.2**: C5 forward elimination c2' — forward `lemma_2_4` output (BurgessR3Maximal)
-- [ ] **Task 2.3**: C5 backward elimination c2' — mirror
-- [ ] **Task 2.4**: C4 forward elimination c2' — forward `lemma_2_6_splitting` B' and B''
-- [ ] **Task 2.5**: C4 backward elimination c2' — mirror
-- [ ] **Task 2.6**: Density forward c2' — from `burgessR3Maximal_from_g_content_sub`
-- [ ] **Task 2.7**: Density backward c2' — mirror
+**Remaining** (blocked by Phase 3 g-population):
+- [ ] **Task 4.2**: C5 forward elimination c2' — forward `lemma_2_4` output (BurgessR3Maximal)
+- [ ] **Task 4.3**: C5 backward elimination c2' — mirror
+- [ ] **Task 4.4**: C4 forward elimination c2' — forward `lemma_2_6_splitting` B' and B''
+- [ ] **Task 4.5**: C4 backward elimination c2' — mirror
+- [ ] **Task 4.6**: Density forward c2' — from `burgessR3Maximal_from_g_content_sub`
+- [ ] **Task 4.7**: Density backward c2' — mirror
 
 **Blocker**: The 5 active elimination branches still lack g-population. The c2' sorries at lines 756, 794, 834, 872, 918 require g-values to be populated in the inner elimination functions first.
 
-**Depends on**: Phase 1 (g-values actually present in eliminations).
+**Timing**: ~2 hours once Phase 3 is complete.
 
----
-
-### Phase 3: Close PointInsertion.lean Remaining Sorries [NOT STARTED]
-
-**Goal**: Close the 2 remaining sorries (lines ~1872, ~1873) in `lemma_2_6_splitting`.
-
-**Tasks**:
-- [ ] **Task 3.1**: Close `h_ev_b` (line ~1872)
-  - Event guard is `q = b ∧ untl(b, γ_hat)`. Need `event → b`.
-  - Proof: `guard_destruct` on `event → q` to get `event → b` and `event → untl(b, γ_hat)`.
-  - Difficulty: Easy (~15 min)
-
-- [ ] **Task 3.2**: Close `h_ev_untl` (line ~1873)
-  - Same guard `q`. Need `event → untl(b, γ_hat)`.
-  - Proof: `guard_destruct` on `event → q`, second conjunct.
-  - Difficulty: Easy (~15 min)
-
-**Timing**: 1 hour
-
-**Depends on**: None (independent).
+**Depends on**: Phase 3 (g-values actually present in eliminations).
 
 **Verification**:
-- `lemma_2_6_splitting` compiles sorry-free.
+- All c2' sorries in `CounterexampleElimination.lean` closed.
 - `lake build` succeeds.
 
 ---
 
-### Phase 4: Close C4/C4' Hard Cases (C11/C12) [NOT STARTED]
+### Phase 5: Close C4/C4' Hard Cases (C11/C12) [NOT STARTED]
+
+**(Previously Phase 4)**
 
 **Goal**: Close 2 hard-case sorries (lines 412, 510) in `CounterexampleElimination.lean`.
 
 **Tasks**:
-- [ ] **Task 4.1**: Close C4 hard case (C11)
+- [ ] **Task 5.1**: Close C4 hard case (C11)
   - γ ∈ f(w) and γ ∈ f(w_next), `¬untl(γ,δ) ∈ f(w)`.
   - Use γ ∉ g(w, w_next) (now available from c2' + counterexample logic with populated g).
   - Apply `lemma_2_6_splitting` with β = γ.
   - Difficulty: Hard (~2h)
 
-- [ ] **Task 4.2**: Close C4' hard case (C12) (mirror)
+- [ ] **Task 5.2**: Close C4' hard case (C12) (mirror)
   - Difficulty: Hard (~2h)
 
 **Timing**: 3-4 hours
 
-**Depends on**: Phase 1 (g-values populated, c2' established for old adjacent pairs).
+**Depends on**: Phase 3 (g-values populated, c2' established for old adjacent pairs).
 
 **Verification**:
 - Hard-case sorries closed.
@@ -192,9 +262,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Thread c2' Through omega_chain [COMPLETED]
+### Phase 6: Thread c2' Through omega_chain [COMPLETED]
 
-**Status**: Successfully completed. Build passes.
+**(Previously Phase 5)**
+
+**Status**: Successfully completed and committed. Build passes.
 
 **Changes Made**:
 - Changed `omega_chain` return type from `{ χ : Chronicle // χ.c0 }` to `{ χ : Chronicle // χ.c0 ∧ χ.c2' }`
@@ -203,52 +275,17 @@ Phases within the same wave can execute in parallel.
 - Added `omega_chain_c2'` theorem for proof extraction
 - Fixed `omega_chain_elim_result` call site to include c2' from previous step
 
+**Git Commit**: `eb89fbff8` — "task 107: Phase 5 complete + Phase 2 Task 2.1"
+
 **Verification**:
 - `lake build` clean with `omega_chain_c2'` compiling
 - ChronicleConstruction.lean has 0 sorries
 
 ---
 
-### Phase 6: Implement Lemma 2.7 Seed Consistency [NOT STARTED]
-
-**Goal**: Close `lemma_2_7_seed_consistent` (line 2414) using the BX7 chain mapped exactly by research.
-
-**Tasks**:
-- [ ] **Task 6.1**: Implement `lemma_2_7_neg_untl_exists` (extract witness)
-  - Use `BurgessR3Maximal_extension_fails` + `dc_delta_B_controlled`.
-  - Burgess 2.7, witness extraction.
-  - Difficulty: Medium (~1.5h)
-
-- [ ] **Task 6.2**: Verify `linear_until_mcs` wrapper (trivial)
-  - Apply `theorem_in_mcs` + `conj_mcs` for BX7 at MCS level.
-  - Difficulty: Easy (~15 min)
-
-- [ ] **Task 6.3**: Implement `lemma_2_7_disjunct_elim_D1`
-  - D1 contains `γ_hat ∧ eta` in event. By right mono and witness, contradicts `¬untl(β₀∧eta, γ₀)`.
-  - Key: `gamma₀` is in the C-event list, so `γ_hat → gamma₀` via conjunction elimination.
-  - Burgess 2.7, A7a/BX7 disjunct elimination.
-  - Difficulty: Medium (~1.5h)
-
-- [ ] **Task 6.4**: Implement `lemma_2_7_disjunct_elim_D2` (mirror with `xi`)
-  - Uses same witness + monotonicity argument.
-  - Difficulty: Medium (~1.5h)
-
-- [ ] **Task 6.5**: Orchestrate `lemma_2_7_seed_consistent`
-  - Follow the TODO comment's 10-step structure (lines 2393-2403).
-  - Steps: (1) witness, (2) BX5 on `untl(b,γ_hat)`, (3) BX5 on `untl(xi,eta)`, (4) BX7, (5-6) eliminate D1/D2, (7) surviving D3, (8) BX14 separation, (9) BX13 enrichment + BX10, (10) seed consistency.
-  - Difficulty: Hard (~2-3h)
-
-**Timing**: 4-5 hours
-
-**Depends on**: None (independent, but needed for Phase 1 C5 inductive case).
-
-**Verification**:
-- `lemma_2_7_seed_consistent` compiles sorry-free.
-- `lake build` succeeds.
-
----
-
 ### Phase 7: Prove limit_satisfies_c5_full and limit_satisfies_c5'_full [NOT STARTED]
+
+**(Previously Phase 7)**
 
 **Goal**: Prove the full C5a/C5b properties at the limit, following Burgess Claim 2.11.
 
@@ -269,7 +306,7 @@ Phases within the same wave can execute in parallel.
 
 **Timing**: 6-8 hours
 
-**Depends on**: Phase 5 (c2' available at all finite stages via omega_chain).
+**Depends on**: Phase 6 (c2' available at all finite stages via omega_chain).
 
 **Verification**:
 - `limit_satisfies_c5_full` and `limit_satisfies_c5'_full` compile sorry-free.
@@ -278,6 +315,8 @@ Phases within the same wave can execute in parallel.
 ---
 
 ### Phase 8: Close FUC/FSC and Final Audit [NOT STARTED]
+
+**(Previously Phase 8)**
 
 **Goal**: Close remaining `ChronicleToCountermodel.lean` sorries and verify a fully sorry-free build.
 
@@ -320,8 +359,8 @@ Phases within the same wave can execute in parallel.
 ## Rollback/Contingency
 
 - **If `guard_in_r_maximal` is unprovable (Phase 7.1)**: Document the gap and mark the task partial. Fallback: prove intermediate guard propagation directly for limit C5a, bypassing g-values at the limit.
-- **If g-value construction becomes too invasive (Phase 1)**: Start with C5 forward only (critical path for Until formulas), use trivial g-values for other directions, and expand later.
-- **Build instability during Phase 1**: Commit after each elimination function modification. Fix call sites incrementally rather than in a single large batch.
+- **If g-value construction becomes too invasive (Phase 3)**: Start with C5 forward only (critical path for Until formulas), use trivial g-values for other directions, and expand later.
+- **Build instability during Phase 3**: Commit after each elimination function modification. Fix call sites incrementally rather than in a single large batch.
 
 ---
 
@@ -343,13 +382,13 @@ Phases within the same wave can execute in parallel.
 **To lean-implementation-agent**:
 
 1. **Follow Burgess exactly for proof structure**, but use our BX axiom replacements (BX2/BX3/BX5/BX7/BX10/BX13/BX14) for open-guard strict semantics.
-2. **Phase 1 is about CONSTRUCTING g-values**, not rewriting eliminations. Each branch must assign `g` at new adjacent pairs using lemma outputs.
+2. **Phase 3 is about CONSTRUCTING g-values**, not rewriting eliminations. Each branch must assign `g` at new adjacent pairs using lemma outputs.
 3. **Do NOT introduce new axioms or novel approaches.** Implement Burgess's method as mapped by research.
 4. **At each phase boundary**: verify with `lake build`, check sorry counts, update phase status in this plan file.
-5. **Critical path**: Phase 6 (Lemma 2.7) -> Phase 1 (g-population) -> Phase 2 (c2') -> Phase 5 (omega_chain) -> Phase 7 (limit C5a) -> Phase 8 (FUC/FSC).
+5. **Critical path**: Phase 2 (Lemma 2.7) -> Phase 3 (g-population) -> Phase 4 (c2') -> Phase 6 (already done: omega_chain) -> Phase 7 (limit C5a) -> Phase 8 (FUC/FSC).
 
-**Plan revised**: 2026-05-03
+**Plan revised**: 2026-05-03 (reordered by dependency)
 **Based on**: Research reports burgess-24-26, burgess-27, burgess-29-210, burgess-211
 **Previous plan**: v55 (superseded)
 **Estimated Total Effort**: 28-38 hours (aligned with research estimate)
-**Critical Path**: Phase 6 (4-5h) -> Phase 1 (6-8h) -> Phase 2 (3-4h) -> Phase 5 (2-3h) -> Phase 7 (6-8h) -> Phase 8 (3-4h)
+**Critical Path**: Phase 1 (1h) + Phase 2 (4-5h) -> Phase 3 (6-8h) -> Phase 4 (2h) -> Phase 5 (3-4h) -> Phase 7 (6-8h) -> Phase 8 (3-4h)
