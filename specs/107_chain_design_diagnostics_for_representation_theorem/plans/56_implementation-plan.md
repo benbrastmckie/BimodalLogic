@@ -62,7 +62,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Populate g-Values in Elimination Functions [NOT STARTED]
+### Phase 1: Populate g-Values in Elimination Functions [IN PROGRESS]
+
+**Status**: Exploration completed; implementation NOT started.
+
+**What was actually done**:
+- Phase marker changed to [IN PROGRESS] by subagent.
+- Subagent explored all 5 elimination functions and confirmed: **g-values are never populated** — every active branch returns `χ.g` unchanged.
+- `eliminate_potential_counterexample` signature correctly requires `h_c2'` parameter (structural prerequisite).
+- No-elimination branches preserve `c2'` via `exact h_c2'` (lines 768, 806, 845, 883, 931).
+- Build passes.
+- **None of the actual g-population tasks below were implemented.**
+
 
 **Goal**: Make each elimination function construct g-values for new adjacent pairs, per Burgess Sections 2.9 (C4) and 2.10 (C5).
 
@@ -109,12 +120,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove c2' for All Elimination Branches [NOT STARTED]
+### Phase 2: Prove c2' for All Elimination Branches [PARTIAL]
 
-**Goal**: Close all 10 c2' sorries once g-values are properly populated.
+**Status**: Task 2.1 completed by subagent (trivial branches only).
 
-**Tasks**:
-- [ ] **Task 2.1**: Trivial no-elimination c2' (4 sorries) — `by exact h_c2'`
+**Completed**:
+- [x] **Task 2.1**: Trivial no-elimination c2' (5 sorries) — `by exact h_c2'`
+  - Done: CounterexampleElimination lines 768, 806, 845, 883, 931
+  - Git commit: `18af0e06` "task 107: partial implementation — Phase 2 task 2.1 complete"
+
+**Remaining** (blocked by Phase 1 g-population):
 - [ ] **Task 2.2**: C5 forward elimination c2' — forward `lemma_2_4` output (BurgessR3Maximal)
 - [ ] **Task 2.3**: C5 backward elimination c2' — mirror
 - [ ] **Task 2.4**: C4 forward elimination c2' — forward `lemma_2_6_splitting` B' and B''
@@ -122,13 +137,9 @@ Phases within the same wave can execute in parallel.
 - [ ] **Task 2.6**: Density forward c2' — from `burgessR3Maximal_from_g_content_sub`
 - [ ] **Task 2.7**: Density backward c2' — mirror
 
-**Timing**: 3-4 hours
+**Blocker**: The 5 active elimination branches still lack g-population. The c2' sorries at lines 756, 794, 834, 872, 918 require g-values to be populated in the inner elimination functions first.
 
 **Depends on**: Phase 1 (g-values actually present in eliminations).
-
-**Verification**:
-- All 10 c2' sorries in `CounterexampleElimination.lean` closed.
-- `lake build` succeeds.
 
 ---
 
@@ -181,27 +192,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Thread c2' Through omega_chain [NOT STARTED]
+### Phase 5: Thread c2' Through omega_chain [COMPLETED]
 
-**Goal**: Change `omega_chain` return type to carry the C2' invariant through all finite stages, as Burgess threads it implicitly.
+**Status**: Successfully completed. Build passes.
 
-**Tasks**:
-- [ ] **Task 5.1**: Change `omega_chain` return type:
-  ```lean
-  (n : Nat) → { χ : Chronicle // χ.c0 ∧ χ.c2' }
-  ```
-- [ ] **Task 5.2**: Base case (n=0): singleton chronicle satisfies c2' vacuously (no adjacent pairs).
-- [ ] **Task 5.3**: Step case: extract `c2'` from `EliminationResult` (populated in Phase 1).
-- [ ] **Task 5.4**: Fix `omega_chain_elim_result` call site to include c2'.
-- [ ] **Task 5.5**: Fix `omega_chain` call sites in `ChronicleConstruction.lean` (lines 259, 281) to thread c2'.
-
-**Timing**: 2-3 hours
-
-**Depends on**: Phase 2 (all eliminations provide c2').
+**Changes Made**:
+- Changed `omega_chain` return type from `{ χ : Chronicle // χ.c0 }` to `{ χ : Chronicle // χ.c0 ∧ χ.c2' }`
+- Base case (n=0): singleton chronicle satisfies c2' vacuously (no adjacent pairs)
+- Step case: extracts c2' from EliminationResult projections
+- Added `omega_chain_c2'` theorem for proof extraction
+- Fixed `omega_chain_elim_result` call site to include c2' from previous step
 
 **Verification**:
-- `omega_chain_c2'` accessor compiles.
-- `lake build` succeeds.
+- `lake build` clean with `omega_chain_c2'` compiling
+- ChronicleConstruction.lean has 0 sorries
 
 ---
 
