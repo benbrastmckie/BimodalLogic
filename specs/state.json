@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-04T16:41:02Z",
+      "last_updated": "2026-05-04T18:13:34Z",
       "researched": "2026-05-04T16:41:02Z",
       "related_tasks": [
         93
@@ -1036,6 +1036,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/54_burgess-semantic-alignment.md",
           "type": "report",
           "summary": "Open-guard confirmed; A3a/A4a valid; Path A (Burgess D0 chain) recommended over Xu-style seed (mathematically insufficient)"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/57_burgess-aligned-plan.md",
+          "type": "plan",
+          "summary": "10-phase Burgess-aligned plan: full D₀ chain with co-constructed g-values, closing 12 sorries, 37-50h estimate"
         }
       ],
       "session_id": "sess_1777762781_b2f826",
@@ -1043,8 +1048,8 @@
       "researching": "2026-05-04T16:20:36Z",
       "implementing": "2026-05-04T05:27:26Z",
       "resume_phase": 3,
-      "planning": "2026-05-04T05:11:25Z",
-      "planned": "2026-05-04T05:15:56Z",
+      "planning": "2026-05-04T17:47:21Z",
+      "planned": "2026-05-04T18:13:34Z",
       "partial": "2026-05-04T04:50:23Z"
     },
     {

@@ -133,7 +133,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 37-47 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
@@ -162,6 +162,7 @@ technical_debt:
   - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-d-findings.md] - Phase 5 FUC/FSC coherence
   - [107_chain_design_diagnostics_for_representation_theorem/reports/54_burgess-semantic-alignment.md] - Burgess uses open-guard (matches our code); A3a/A4a are valid; Path A (full Burgess D₀) strongly recommended over Xu-style seed (mathematically insufficient for r-relations)
 - **Plan**:
+  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/57_burgess-aligned-plan.md] - 10-phase Burgess-aligned plan: full D₀ chain, co-constructed g-values, 37-50h estimate, no shortcuts
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md] - Revised 8-phase plan v56: populate g-values in eliminations, thread c2', prove limit C5a, close 29 sorries
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/55_implementation-plan.md] - Revised plan v55 based on 4-agent Burgess research; root cause: g-values never constructed
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/54_implementation-plan.md] - 11-phase plan v54 closing 22 sorries following Burgess 2.6-2.11
