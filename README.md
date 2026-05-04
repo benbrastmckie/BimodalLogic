@@ -2,7 +2,7 @@
 
 A Lean 4 implementation of bimodal logic combining S5 modal operators with linear temporal operators. This project provides a complete formal verification of the syntax, semantics, proof theory, and metalogic for TM logic, establishing **soundness, completeness, and decidability**.
 
-**Paper**: ["The Construction of Possible Worlds"](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf) (Brast-McKie, 2025) - Compositional semantics for bimodal logics with historical modals and tense operators
+**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) - Compositional semantics for bimodal logics with historical modals and tense operators
 
 **Specifications**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf)
 

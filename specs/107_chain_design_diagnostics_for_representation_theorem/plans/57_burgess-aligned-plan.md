@@ -94,7 +94,7 @@ Phases 4 and 5 are parallel; Phase 2 is parallel to Phase 3.
 ## Phase 2: Lemma 2.6 — Inconsistent Case (PointInsertion lines 1872-1873)
 
 **Paper reference**: Burgess §2.6, p.370–371 (D₀ seed consistency, inconsistent sub-case)  
-**Status**: [NOT STARTED]  
+**Status**: [IN PROGRESS]  
 **Effort**: 4–6 hours  
 **Depends on**: Phase 1
 
