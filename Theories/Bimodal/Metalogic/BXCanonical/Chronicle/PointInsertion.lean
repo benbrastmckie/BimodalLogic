@@ -1408,7 +1408,21 @@ private theorem d0_a_event_list_mem {A B C : Set Formula}
     {β : Formula} {L : List Formula}
     {hL : ∀ φ ∈ L, φ ∈ burgess_D0_seed A B C β}
     {α : Formula} (hα : α ∈ d0_a_event_list β L hL) : α ∈ A := by
-  sorry
+  unfold d0_a_event_list at hα
+  rcases List.mem_filterMap.mp hα with ⟨φ, hφL, h_eq⟩
+  -- h_eq : (if (∃ β' ∈ B, ∃ γ ∈ C, φ = Formula.untl β' γ) then none
+  --         else if h : (∃ β' ∈ B, ∃ α' ∈ A, φ = Formula.snce β' α')
+  --              then some (Classical.choose (Classical.choose_spec h).2) else none)
+  --        = some α
+  split at h_eq
+  · simp at h_eq
+  · split at h_eq
+    · next h_snce =>
+      simp at h_eq
+      -- h_eq : Classical.choose (Classical.choose_spec h_snce).2 = α
+      rw [← h_eq]
+      exact (Classical.choose_spec ((Classical.choose_spec h_snce).2)).1
+    · simp at h_eq
 
 /-- Recursively extract B-guards from L ⊆ D₀, producing a list of formulas in B.
 Also includes β₀ (the maximality witness guard) to ensure b∧β monotonicity works. -/

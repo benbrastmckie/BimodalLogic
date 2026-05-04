@@ -80,7 +80,7 @@ Phases within the same wave can execute in parallel. Waves 1-2 are shown as sequ
 
 ---
 
-### Phase 2: Close D0 Seed Inconsistent Case Sorries [NOT STARTED]
+### Phase 2: Close D0 Seed Inconsistent Case Sorries [IN PROGRESS]
 
 **Goal**: Close 3 sorries in PointInsertion.lean left incomplete from plan v53. These are the D0 seed inconsistency proof infrastructure.
 
@@ -179,7 +179,7 @@ Phases within the same wave can execute in parallel. Waves 1-2 are shown as sequ
 
 ---
 
-### Phase 4a: Refactor EliminationResult to Carry c2' [NOT STARTED]
+### Phase 4a: Refactor EliminationResult to Carry c2' [IN PROGRESS]
 
 **Goal**: Add `c2'` field to `EliminationResult` structure and thread `h_c2'` parameter through elimination functions, enabling proper BurgessR3Maximal tracking at adjacent pairs.
 

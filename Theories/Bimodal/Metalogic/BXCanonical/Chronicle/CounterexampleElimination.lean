@@ -729,7 +729,7 @@ Returns an `EliminationResult` bundling domain extension, C0, f-agreement,
 and C5/C5' witness guarantees.
 -/
 noncomputable def eliminate_potential_counterexample
-    (χ : Chronicle) (h_c0 : χ.c0)
+    (χ : Chronicle) (h_c0 : χ.c0) (h_c2' : χ.c2')
     (pc : PotentialCounterexample) :
     EliminationResult χ pc := by
   -- Helper for impossible kind discriminants
