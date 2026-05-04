@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-04T18:19:48Z",
+      "last_updated": "2026-05-04T20:38:37Z",
       "researched": "2026-05-04T16:41:02Z",
       "related_tasks": [
         93
@@ -1023,11 +1023,6 @@
           "summary": "Phase 4a in progress: c2' parameter added, ChronicleConstruction call sites need fixing"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md",
-          "type": "plan",
-          "summary": "Revised 8-phase plan v56: populate g-values in eliminations, thread c2' through omega_chain, prove limit C5a, close 29 sorries"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/53_implementation-analysis.md",
           "type": "report",
           "summary": "Pre-implementation analysis: sorry inventory, Phase 1 plan error (guard_destruct non-existent), argument convention mapping, dependency graph"
@@ -1038,14 +1033,14 @@
           "summary": "Open-guard confirmed; A3a/A4a valid; Path A (Burgess D0 chain) recommended over Xu-style seed (mathematically insufficient)"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/57_burgess-aligned-plan.md",
-          "type": "plan",
-          "summary": "10-phase Burgess-aligned plan: full D₀ chain with co-constructed g-values, closing 12 sorries, 37-50h estimate"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/55_burgess-construction-step-by-step.md",
           "type": "report",
           "summary": "Complete step-by-step Burgess (1982) construction: 2.1-2.11 decomposed into atomic implementable steps, with code status mapping"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/58_implementation-plan.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for Burgess 1982 chronicle construction on irr_until branch, closing all 12 sorries across PointInsertion.lean (3), CounterexampleElimination.lean (7), and ChronicleToCountermodel.lean (2)"
         }
       ],
       "session_id": "sess_1777762781_b2f826",
@@ -1053,8 +1048,8 @@
       "researching": "2026-05-04T16:20:36Z",
       "implementing": "2026-05-04T18:19:48Z",
       "resume_phase": 3,
-      "planning": "2026-05-04T17:47:21Z",
-      "planned": "2026-05-04T18:13:34Z",
+      "planning": "2026-05-04T20:28:12Z",
+      "planned": "2026-05-04T20:38:37Z",
       "partial": "2026-05-04T04:50:23Z"
     },
     {
