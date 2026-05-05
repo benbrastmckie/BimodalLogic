@@ -133,7 +133,7 @@ technical_debt:
 
 ### 107. Burgess chronicle construction for BX representation theorem
 - **Effort**: 37-47 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Priority**: critical
 - **Created**: 2026-04-23
@@ -168,7 +168,7 @@ technical_debt:
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md] - Revised 8-phase plan v56: populate g-values in eliminations, thread c2', prove limit C5a, close 29 sorries
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/55_implementation-plan.md] - Revised plan v55 based on 4-agent Burgess research; root cause: g-values never constructed
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/54_implementation-plan.md] - 11-phase plan v54 closing 22 sorries following Burgess 2.6-2.11
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/53_implementation-plan.md] - Comprehensive 7-phase plan with 16 tasks to close all sorry sites
+  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/60_implementation-plan.md] - Comprehensive 7-phase plan with 16 tasks to close all sorry sites
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/52_implementation-plan.md]
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/51_implementation-plan.md]
   - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/49_implementation-plan.md]
@@ -184,7 +184,7 @@ technical_debt:
 - **Latest Research**:
   - [107_chain_design_diagnostics_for_representation_theorem/reports/broken-implementation-analysis.md] - Analysis of broken implementation: 2 syntax errors, 4 type mismatches, 5 sorry sites in PointInsertion.lean
 - **Plan**:
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/53_implementation-plan.md] - Comprehensive 7-phase plan with 16 tasks to close all sorry sites in Burgess chronicle construction
+  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/60_implementation-plan.md] - Comprehensive 7-phase plan with 16 tasks to close all sorry sites in Burgess chronicle construction
 
 **Description**: Implement the Burgess 1982 chronicle construction for BX completeness on the `irr_until` branch. Fix 2 ParametricTruthLemma sorry sites, derive A3a/A4a from BX axioms, build chronicle types with r-relation (Lemmas 2.2-2.3), point insertion (Lemmas 2.4-2.8), counterexample elimination (Lemmas 2.9-2.11), and wire into dd_countermodel to replace 3 RootScopedChain sorry sites. Target: sorry-free bx_completeness.
 

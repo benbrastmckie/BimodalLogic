@@ -216,6 +216,60 @@ theorem conj_mcs {A : Set Formula}
     exact absurd h_ψ (SetMaximalConsistent.neg_excludes h_mcs _ h_neg_ψ)
   · exact h
 
+/-- MCS disjunction elimination (local version): If (φ ∨ ψ) ∈ A then φ ∈ A ∨ ψ ∈ A.
+Recall φ.or ψ = φ.neg.imp ψ. -/
+private theorem or_elim_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) {φ ψ : Formula}
+    (h : (φ.or ψ) ∈ A) : φ ∈ A ∨ ψ ∈ A := by
+  rcases SetMaximalConsistent.negation_complete h_mcs φ with h_φ | h_neg_φ
+  · exact Or.inl h_φ
+  · exact Or.inr (SetMaximalConsistent.implication_property h_mcs h h_neg_φ)
+
+/-- BX7 (linear_until) at MCS level: If U(φ,ψ) ∈ A and U(χ,θ) ∈ A,
+then one of three disjuncts holds:
+  D1: U(φ∧χ, ψ∧θ) ∈ A, or D2: U(φ∧χ, ψ∧χ) ∈ A, or D3: U(φ∧χ, φ∧θ) ∈ A. -/
+theorem linear_until_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (φ ψ χ θ : Formula)
+    (h_u1 : Formula.untl φ ψ ∈ A)
+    (h_u2 : Formula.untl χ θ ∈ A) :
+    Formula.untl (Formula.and φ χ) (Formula.and ψ θ) ∈ A ∨
+    Formula.untl (Formula.and φ χ) (Formula.and ψ χ) ∈ A ∨
+    Formula.untl (Formula.and φ χ) (Formula.and φ θ) ∈ A := by
+  -- Form the conjunction: U(φ,ψ) ∧ U(χ,θ) ∈ A
+  have h_conj := conj_mcs h_mcs _ _ h_u1 h_u2
+  -- Apply BX7 axiom
+  have h_bx7 := DerivationTree.axiom [] _ (Axiom.linear_until φ ψ χ θ)
+  have h_disj := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_bx7) h_conj
+  -- h_disj : (D1 ∨ D2) ∨ D3 ∈ A
+  -- Case split on the outer disjunction
+  rcases or_elim_mcs h_mcs h_disj with h12 | h3
+  · -- D1 ∨ D2 ∈ A
+    rcases or_elim_mcs h_mcs h12 with h1 | h2
+    · exact Or.inl h1
+    · exact Or.inr (Or.inl h2)
+  · exact Or.inr (Or.inr h3)
+
+/-- BX7' (linear_since) at MCS level: If S(φ,ψ) ∈ A and S(χ,θ) ∈ A,
+then one of three disjuncts holds:
+  D1: S(φ∧χ, ψ∧θ) ∈ A, or D2: S(φ∧χ, ψ∧χ) ∈ A, or D3: S(φ∧χ, φ∧θ) ∈ A. -/
+theorem linear_since_mcs {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (φ ψ χ θ : Formula)
+    (h_s1 : Formula.snce φ ψ ∈ A)
+    (h_s2 : Formula.snce χ θ ∈ A) :
+    Formula.snce (Formula.and φ χ) (Formula.and ψ θ) ∈ A ∨
+    Formula.snce (Formula.and φ χ) (Formula.and ψ χ) ∈ A ∨
+    Formula.snce (Formula.and φ χ) (Formula.and φ θ) ∈ A := by
+  have h_conj := conj_mcs h_mcs _ _ h_s1 h_s2
+  have h_bx7 := DerivationTree.axiom [] _ (Axiom.linear_since φ ψ χ θ)
+  have h_disj := SetMaximalConsistent.implication_property h_mcs
+    (theorem_in_mcs h_mcs h_bx7) h_conj
+  rcases or_elim_mcs h_mcs h_disj with h12 | h3
+  · rcases or_elim_mcs h_mcs h12 with h1 | h2
+    · exact Or.inl h1
+    · exact Or.inr (Or.inl h2)
+  · exact Or.inr (Or.inr h3)
+
 /-! ## Lemma 2.5: g_content Ordering Composition -/
 
 /-- **Lemma 2.5** (composition): g_content ordering is transitive. -/
@@ -2558,406 +2612,58 @@ theorem lemma_2_7 {A B C : Set Formula}
   have h_burgessRSince_xi : burgessRSince D xi A := h_snce_xi_D
   have h_burgessR_xi : burgessR A xi D :=
     burgessRSince_implies_burgessR h_mcs_A h_D_mcs h_burgessRSince_xi
-  -- h_burgessR_xi : ∀ δ ∈ D, untl(xi, δ) ∈ A
-  -- Step 6: Show {xi} is consistent (needed for DC({xi}) to be DCS)
-  -- From untl(xi, eta) ∈ A: F(eta) ∈ A (BX10). But we need {xi} consistent.
-  -- xi is the guard of the Until. From BX5: untl(xi∧untl(xi,eta), eta) ∈ A.
-  -- BX10 on that: F(eta) ∈ A (same event). Need F(xi) ∈ A for {xi} consistent.
-  -- Alternative: from burgessR(A, xi, D): ∀δ∈D, untl(xi,δ)∈A. Since D is MCS,
-  -- D is nonempty (contains ⊤). So untl(xi, ⊤) ∈ A where ⊤∈D. BX10: F(⊤) ∈ A.
-  -- But we need F(xi), not F(⊤). Use: untl(xi, eta) ∈ A. BX5: untl(xi∧untl(xi,eta), eta).
-  -- The guard xi∧untl(xi,eta) is consistent because F(eta) ∈ A → {eta} consistent →
-  -- {untl(xi,eta)} consistent (since untl(xi,eta)∈A) → {xi, untl(xi,eta)} might not be consistent.
-  -- Simplest: xi is consistent because if ⊢ xi → ⊥, then ⊢ G(xi → ⊥), hence G(¬xi) is thesis.
-  -- Then ¬F(¬¬xi) is thesis, i.e., ¬F(xi) is thesis (up to DNE). But untl(xi,eta) ∈ A gives
-  -- guard xi was somewhere true in the interval, hence F(xi) should be in A... but under
-  -- open guard, the guard holds on (t,s), not necessarily at t.
-  -- Actually: from untl(xi, eta) ∈ A, by BX5 we get untl(xi∧untl(xi,eta), eta) ∈ A.
-  -- Apply connect_future_mcs: xi ∈ A? No, connect_future is φ → G(P(φ)).
-  -- Simplest: if xi inconsistent (⊢ ¬xi), then untl(xi, eta) is inconsistent by BX:
-  -- ⊢ ¬xi → ⊢ G(¬xi) (TG). Then by left_mono contrapositive:
-  -- G(¬xi) → ¬untl(xi, anything). So ¬untl(xi, eta) is a thesis, contradicting
-  -- untl(xi, eta) ∈ A (MCS). Hence xi is consistent.
-  have h_xi_consistent : SetConsistent ({xi} : Set Formula) := by
-    intro L hL ⟨d⟩
-    have h_all_xi : ∀ ψ ∈ L, ψ = xi := fun ψ hψ => Set.mem_singleton_iff.mp (hL ψ hψ)
-    have h_L_sub_rep : ∀ ψ ∈ L, ψ ∈ [xi] := by
-      intro ψ hψ; simp [h_all_xi ψ hψ]
-    have d_xi : DerivationTree [xi] Formula.bot :=
-      DerivationTree.weakening L [xi] Formula.bot d h_L_sub_rep
-    have d_neg_xi : DerivationTree [] xi.neg := deduction_theorem [] xi Formula.bot d_xi
-    -- G(¬xi) is a thesis
-    have d_G_neg_xi : DerivationTree [] xi.neg.all_future :=
-      DerivationTree.temporal_necessitation _ d_neg_xi
-    -- left_mono: ⊢ ¬xi → ⊢ G(¬xi) → ¬untl(xi, eta) is derivable
-    -- Actually: from G(xi → ⊥), by BX2 left_mono: untl(xi, eta) → untl(⊥, eta).
-    -- But untl(⊥, eta) is unsatisfiable? Not obviously a theorem.
-    -- Alternative: from ⊢ ¬xi, BX2 gives ⊢ G(xi → ⊥) → (untl(xi,η) → untl(⊥,η)).
-    -- We have ⊢ G(xi → ⊥) (from TG on xi → ⊥).
-    -- So ⊢ untl(xi, η) → untl(⊥, η). And ⊢ ⊥ → anything, so by BX2 again...
-    -- Actually simpler: from ⊢ xi → ⊥, by deduction: ⊢ xi.neg. BX2 with φ=xi, ψ=eta, χ=⊥:
-    -- ⊢ (xi→⊥) → ⊢ G(xi→⊥) → untl(xi,eta) → untl(⊥,eta).
-    -- And from ⊢ ⊥ → ⊥.neg (explosion), BX2 gives untl(⊥,eta) → untl(⊥.neg, eta).
-    -- This doesn't obviously help.
-    -- Use until_implies_F_in_mcs: untl(xi, eta) ∈ A → F(eta) ∈ A.
-    -- And connect_future: F(eta) → G(P(F(eta)))... not helpful.
-    -- The correct argument: if ⊢ xi.neg, then G(xi.neg) is a thesis (TG).
-    -- G(xi.neg) ∈ A (theorem in MCS). F(eta) ∈ A (from BX10).
-    -- But we need: untl(xi, eta) ∈ A contradicts ⊢ xi.neg somehow.
-    -- From ⊢ xi.neg: ⊢ xi → ⊥. BX2: (xi→⊥) ∧ G(xi→⊥) → untl(xi,eta) → untl(⊥,eta).
-    -- We have both (xi→⊥) and G(xi→⊥). So untl(xi,eta) → untl(⊥,eta) is a thesis.
-    -- untl(xi,eta) ∈ A → untl(⊥, eta) ∈ A.
-    -- BX10 on untl(⊥, eta): F(eta) ∈ A. (Already known, no contradiction.)
-    -- But: is untl(⊥, eta) actually satisfiable?
-    -- untl(⊥, eta) at t: ∃s>t, eta(s) ∧ ∀r∈(t,s), ⊥(r). ⊥ never holds.
-    -- If (t,s) is empty (discrete, s=t+1): vacuously true. So it's satisfiable on discrete!
-    -- On dense orders: (t,s) always nonempty, so ⊥(r) fails. So untl(⊥,eta) ≡ ⊥ on dense.
-    -- We need an argument that works for ALL orders, not just dense.
-    -- Alternative: ⊢ G(⊥) is equivalent to ⊢ ⊥ (G preserves consistency).
-    -- Actually, G(⊥) is not a thesis (⊥ is not valid at all future points).
-    -- Hmm. ⊢ ⊥ → any formula. So untl(⊥, eta): guard is ⊥ which fails on non-empty intervals.
-    -- On discrete orders with s=t+1: guard interval (t,t+1) is empty, so vacuously true.
-    -- So untl(⊥, eta) IS satisfiable on discrete. Not a thesis that ¬untl(⊥, eta).
-    -- Therefore this approach doesn't give a contradiction from untl(xi,eta) ∈ A.
-    --
-    -- CORRECT APPROACH: Derive ⊥ directly from xi inconsistent + untl(xi,eta) ∈ A.
-    -- From ⊢ xi.neg (xi is inconsistent), TG gives ⊢ G(xi.neg).
-    -- G(xi.neg) ∈ A (theorem in MCS).
-    -- From untl(xi, eta) ∈ A, use a lemma that untl(xi,eta) ∧ G(¬xi) → ⊥.
-    -- This is NOT a theorem in general (dense: guard is vacuous for empty interval).
-    -- But BX10: untl(xi,eta) → F(eta). And from xi inconsistent: ⊢ ¬xi, so untl(xi,eta) →
-    -- is still satisfiable. So we cannot derive ⊥.
-    --
-    -- NEW APPROACH: Use the GUARD (xi) semantics differently.
-    -- untl(xi, eta) ∈ A. Consider: if ⊢ xi → ⊥, then for any model at time t,
-    -- if untl(xi,eta) holds, the guard ⊥ holds on the open interval (t,s).
-    -- On dense: (t,s) is nonempty, so ⊥ holds at some point → impossible. So untl(xi,eta)
-    -- is false at all points on dense orders. But on discrete: possible.
-    -- We need xi consistent for ALL orders.
-    --
-    -- SIMPLEST CORRECT APPROACH: use Lemma 2.2.
-    -- Burgess Lemma 2.2: if U(ξ,η) ∈ A (MCS), then ξ is consistent.
-    -- In our code: untl(xi, eta) ∈ A → {eta} consistent (event consistent).
-    -- And also: untl(xi, eta) ∈ A → xi is consistent?
-    -- This requires: if ⊢ ¬guard, then ¬untl(guard, event) is derivable.
-    -- In Burgess Lemma 2.2: "If γ is inconsistent, then ∼γ is a thesis, so G∼γ is a thesis
-    -- by TG, so ∼U(γ,⊤) = ∼Fγ is a thesis by 2.1, so ∼U(γ,δ) is a thesis using A2a"
-    -- Burgess's γ is the EVENT (first arg of U). So Lemma 2.2 says the EVENT is consistent.
-    -- In our code: untl(xi, eta). Event = eta. Lemma 2.2 says eta is consistent.
-    -- But we need xi (GUARD) consistent!
-    --
-    -- For the GUARD: Burgess doesn't explicitly prove guard consistency.
-    -- But looking at the construction: we need {xi} consistent because DC({xi}) is a DCS.
-    -- If xi is inconsistent, DC({xi}) = Set.univ (all formulas). Then burgessR3(A, Set.univ, D)
-    -- holds trivially (all formulas in Set.univ). And Zorn extends to maximal B' ⊇ Set.univ = Set.univ.
-    -- So B' = Set.univ, and xi ∈ B' trivially.
-    -- But B' = Set.univ is NOT a valid DCS in our framework (it's inconsistent).
-    -- Wait, in Burgess's framework, DCS doesn't require consistency! But ours does.
-    --
-    -- ALTERNATIVE: Don't use DC({xi}). Instead, use a different approach to get xi ∈ B'.
-    -- Actually, for the Zorn extension, we need burgessR3(A, some_DCS, D) with some_DCS ⊆ B'
-    -- and xi ∈ some_DCS. If xi is inconsistent, some_DCS = DC({xi}) = Set.univ is not a DCS
-    -- in our sense (we require consistency). So we'd need {xi} consistent.
-    --
-    -- CLAIM: from untl(xi, eta) ∈ A with xi = guard, xi IS consistent.
-    -- PROOF: Assume ⊢ ¬xi. Then G(¬xi) is a thesis (TG). G(¬xi) ∈ A.
-    -- From the self_accum BX5: untl(xi, eta) → untl(xi∧untl(xi,eta), eta).
-    -- So untl(xi∧untl(xi,eta), eta) ∈ A. BX10: F(eta) ∈ A.
-    -- Now: G(¬xi) → (∀t'>t, ¬xi at t'). untl(xi∧untl(xi,eta), eta) → ∃s>t,
-    -- eta(s) ∧ ∀r∈(t,s), (xi∧untl(xi,eta))(r).
-    -- If (t,s) nonempty (dense): some r with xi(r), contradicting G(¬xi). ⊥.
-    -- If (t,s) empty (discrete, s=t+1): guard vacuously true, no contradiction.
-    --
-    -- So on dense orders, guard is consistent. On discrete, not necessarily.
-    -- But completeness for ALL linear orders: we cannot assume density.
-    --
-    -- RESOLUTION: from h_xi_not_B (xi ∉ B), if xi is INconsistent (⊢ ¬xi):
-    -- Then xi.neg ∈ B (since ⊢ ¬xi is a theorem, and B is DCS, so ¬xi ∈ B).
-    -- Wait, ¬xi = xi.neg = xi → ⊥ (not the same formula as xi).
-    -- Actually: if ⊢ xi.neg, then xi.neg ∈ B (theorems are in every DCS).
-    -- But xi ∉ B. And if xi were inconsistent (⊢ xi.neg), would xi.neg.neg ∈ B?
-    -- xi.neg.neg = (xi → ⊥) → ⊥. Via DNE, ⊢ xi.neg.neg → xi. So if xi.neg.neg ∈ B,
-    -- then xi ∈ B (since B is DCS). Contradiction with xi ∉ B.
-    -- So xi.neg.neg ∉ B. But from ⊢ xi.neg (xi inconsistent): xi.neg ∈ B (theorem in DCS).
-    -- And from DCS negation property... wait, DCS is NOT MCS. DCS doesn't have xi∨xi.neg.
-    -- DCS only closes under derivation. So ⊢ xi.neg → xi.neg ∈ B (theorem in any DCS). ✓
-    -- And xi ∉ B by assumption. These don't contradict each other.
-    -- So xi could be inconsistent with xi ∉ B (since xi.neg ∈ B and xi ∉ B are compatible).
-    --
-    -- THEREFORE: xi might actually be inconsistent. The DC({xi}) = Set.univ approach fails.
-    -- We need a different mechanism to get xi ∈ B'.
-    --
-    -- NEW STRATEGY: Use burgessR3(A, B∪DC({xi}), D) if {xi}∪B is consistent.
-    -- If {xi}∪B is inconsistent: xi.neg.neg ∈ B (via neg_mem_of_inconsistent_union + DNE).
-    -- But B is only DCS, not MCS. neg_mem gives (xi.neg) ∈ B... hmm.
-    --
-    -- Wait. Let me check: from xi ∉ B, is {xi}∪B necessarily consistent?
-    -- xi ∉ B and B is DCS. If {xi}∪B inconsistent: from neg_mem_of_inconsistent_union,
-    -- xi.neg ∈ B. But that's fine, xi.neg can be in B while xi is not.
-    -- If {xi}∪B consistent: DC({xi}∪B) extends B, and we can check if burgessR3 holds.
-    -- From BurgessR3Maximal_extension_fails: since xi ∉ B and {xi}∪B consistent,
-    -- ¬burgessR3(A, DC({xi}∪B), C).
-    -- This is the MAXIMALITY argument that gives us the negation witness!
-    -- So {xi}∪B IS consistent (that's the case where maximality applies).
-    -- In the inconsistent case: xi.neg ∈ B, and the argument is simpler.
-    --
-    -- Actually, the same case split is already handled in burgess_D0_seed_consistent.
-    -- For the current proof, we just need xi consistent for the DC({xi}) → Zorn path.
-    -- If xi is INconsistent, we can't use DC({xi}) directly. But actually...
-    --
-    -- SIMPLEST: if {xi}∪B is consistent, then xi is consistent (any subset of a consistent
-    -- set is consistent). ✓ And we're in the consistent case (the maximality argument applies).
-    -- In the inconsistent case ({xi}∪B inconsistent): xi.neg ∈ B. Then xi.neg is a theorem
-    -- of B (derived from B). Then xi ∈ DC(B) = B (via DNE)? No: xi.neg ∈ B means
-    -- (xi→⊥) ∈ B, but getting xi ∈ B requires ⊢ xi, not ⊢ xi.neg.
-    -- So in the inconsistent case: xi.neg ∈ B, xi ∉ B. And the seed consistency proof
-    -- would need to handle this case separately.
-    --
-    -- FOR NOW: let me follow Burgess exactly. The main proof already case-splits
-    -- on {xi}∪B consistency in burgess_D0_seed_consistent. For lemma_2_7, the
-    -- seed consistency proof (sorry) handles everything. After that, the proof
-    -- assumes seed is consistent and builds D, B', B'' from it.
-    --
-    -- For xi ∈ B': The key is that snce(xi, α) ∈ D for all α ∈ A.
-    -- This gives burgessRSince(D, xi, A), hence burgessR(A, xi, D).
-    -- Then we need B' with burgessR3(A, B', D) and xi ∈ B'.
-    -- Zorn extends B to B' maximal with burgessR3(A, B', D).
-    -- For xi ∈ B': we need the Zorn base to include xi.
-    -- Currently the Zorn base is DC({xi}). For this to be a DCS, {xi} must be consistent.
-    -- If {xi} is INconsistent: DC({xi}) = Set.univ, not a valid DCS in our framework.
-    -- But then xi.neg is a theorem, so xi.neg is in every DCS including B.
-    -- From xi.neg ∈ B and xi ∉ B: consistent situation. But xi ∈ every MCS?
-    -- No, xi.neg is a theorem, so xi ∉ any consistent set. So xi ∈ D requires D inconsistent.
-    -- But D is MCS (consistent). So xi ∈ D requires xi consistent.
-    -- And xi ∈ D follows from the seed having xi? No, the seed has eta, not xi.
-    -- Wait — the seed has B ⊆ D, and xi ∉ B. But the seed also has snce(β∧xi, α) ∈ D.
-    -- From snce(β∧xi, α) ∈ D and D is MCS: β∧xi could be inconsistent without
-    -- snce(β∧xi, α) being inconsistent (since is about the past, not the guard's consistency).
-    --
-    -- OK, I think the simplest correct approach: if ⊢ ¬xi, then ¬xi is in every MCS and DCS.
-    -- From untl(xi, eta) ∈ A and ⊢ ¬xi:
-    -- left_mono with ⊢ xi → ⊥ (i.e., ⊢ xi.neg): untl(xi, eta) → untl(⊥, eta).
-    -- Wait, left_mono requires ⊢ xi → χ. Setting χ = ⊥: we need ⊢ xi → ⊥ = ⊢ xi.neg.
-    -- From our assumption that xi is inconsistent: ⊢ xi.neg. ✓
-    -- But left_mono gives untl(⊥, eta) ∈ A, NOT a contradiction directly.
-    -- We need: is untl(⊥, eta) ∈ A contradictory?
-    -- untl(⊥, eta) at t means ∃s>t, eta(s) ∧ ∀r∈(t,s), ⊥(r).
-    -- On dense orders: (t,s) nonempty, ⊥(r) fails. So untl(⊥,eta) = ⊥ on dense.
-    -- Hence ¬untl(⊥,eta) is valid on dense. If A is the canonical MCS for dense:
-    -- ¬untl(⊥,eta) ∈ A, contradicting untl(⊥,eta) ∈ A. ✓
-    -- But we're proving completeness for ALL linear orders, not just dense.
-    -- On discrete: untl(⊥, eta) at t means ∃s=t+1, eta(s) with vacuous guard. Satisfiable!
-    --
-    -- CONCLUSION: we cannot prove {xi} consistent in general from untl(xi, eta) ∈ A.
-    -- The Burgess proof doesn't need this — Burgess's DCS includes inconsistent ones.
-    -- Our framework requires consistent DCS, so we need a workaround.
-    --
-    -- WORKAROUND: Instead of Zorn from DC({xi}), do Zorn from B directly.
-    -- We already have burgessR3(A, B, D) (step h_r3_ABD).
-    -- From Zorn: ∃ B' maximal with B ⊆ B' and burgessR3(A, B', D).
-    -- Then xi ∈ B' follows if we can show {xi}∪B' is consistent
-    -- but ¬burgessR3(A, DC({xi}∪B'), D) — which is the maximality argument!
-    -- Wait: if xi ∉ B', then from maximality of B', either {xi}∪B' is inconsistent
-    -- or DC({xi}∪B') doesn't satisfy burgessR3. If {xi}∪B' is consistent and satisfies
-    -- burgessR3: contradicts maximality. If not: OK, xi ∉ B'.
-    -- But we need xi ∈ B'!
-    --
-    -- The key: burgessR3(A, DC({xi}), D) uses snce(xi, α) ∈ D to give burgessRSince.
-    -- And burgessR(A, xi, D) for the other direction.
-    -- So burgessR3(A, DC({xi}), D) holds.
-    -- Zorn extends from DC({xi}) (as base) to maximal B'.
-    -- For DC({xi}) to be a valid DCS, {xi} must be consistent.
-    --
-    -- Since we're stuck on xi consistency, let me use the same approach as
-    -- burgess_D0_seed_consistent: case split on {xi}∪B consistency.
-    -- If {xi}∪B consistent: xi is consistent (subset). ✓
-    -- If {xi}∪B inconsistent: xi.neg ∈ B. Then from snce(β₀∧xi, α) ∈ D with β₀ = xi.neg:
-    --   snce(xi.neg∧xi, α) ∈ D. And ⊢ (xi.neg∧xi) → xi via right conjunction.
-    --   snce_left_mono: snce(xi, α) ∈ D.
-    --   But also ⊢ (xi.neg∧xi) → ⊥ (contradiction). So snce(⊥, α) ∈ D via left_mono.
-    --   And from snce(⊥, α) ∈ D, left_mono with ⊢ ⊥ → xi (explosion): snce(xi, α) ∈ D. ✓
-    --   Wait, we already have snce(xi, α) ∈ D from step 5c. So this is fine.
-    --   The issue is getting xi ∈ B'. Even if xi.neg ∈ B and xi is inconsistent,
-    --   we need xi ∈ B' where B' is a maximal extension of some DCS.
-    --   If ⊢ xi.neg, then xi.neg ∈ D (theorem in MCS D). And xi ∉ D (MCS, consistent).
-    --   So xi ∉ D means xi ∉ B' (since B' ⊆ D? Actually B' is NOT necessarily ⊆ D).
-    --   Wait: B' is the interval DCS between A and D. B' ⊆ g_content or some constraint.
-    --   Actually B' has burgessR3(A, B', D) which means for all φ ∈ B', untl(φ, δ) ∈ A
-    --   for all δ ∈ D. If xi ∈ B', then untl(xi, δ) ∈ A for all δ ∈ D.
-    --   We already proved this! h_burgessR_xi : ∀ δ ∈ D, untl(xi, δ) ∈ A. ✓
-    --   So if {xi} is consistent, xi can be in B' via Zorn from DC({xi}).
-    --   If {xi} is inconsistent: xi can't be in any consistent DCS. But B' is a DCS
-    --   (consistent). So xi ∉ B'. Contradiction with the claim.
-    --
-    -- FUNDAMENTAL ISSUE: if the guard xi is inconsistent, the lemma as stated is FALSE!
-    -- Because xi can't be in any consistent DCS, hence can't be in B'.
-    --
-    -- But wait: Burgess's framework doesn't require DCS to be consistent. So in Burgess,
-    -- DCS can contain all formulas (inconsistent DCS = Set.univ). Hence xi ∈ Set.univ ∈ B'.
-    --
-    -- In our framework: DCS must be consistent. So xi ∈ B' requires B' consistent,
-    -- which requires xi consistent.
-    --
-    -- RESOLUTION: The lemma should have an additional hypothesis that xi is consistent,
-    -- OR we prove that the hypotheses (untl(xi,eta) ∈ A, xi ∉ B) imply xi is consistent.
-    --
-    -- Actually: if ⊢ ¬xi, then xi.neg ∈ B (theorem in every DCS). So ¬xi ∈ B.
-    -- And xi ∉ B. These are compatible.
-    -- But from maximality of B: if {xi}∪B is inconsistent, does BurgessR3Maximal give
-    -- us a useful witness? Let me check.
-    -- {xi}∪B inconsistent: xi.neg ∈ B (neg_mem). But xi ∉ B. This is the setup.
-    -- We DON'T call BurgessR3Maximal_extension_fails in this case (requires consistent ext).
-    -- Instead, in the inconsistent case, the seed consistency proof uses a simpler argument.
-    --
-    -- Wait, let me check: in the existing burgess_D0_seed_consistent (Lemma 2.6):
-    -- In the inconsistent case ({β}∪B inconsistent): β.neg ∈ B. The proof handles this
-    -- via burgess_D0_finite_subset_consistent_incons. And the Zorn extension uses
-    -- B as the base (not DC({β.neg})).
-    --
-    -- FOR LEMMA 2.7: if {xi}∪B inconsistent:
-    -- xi.neg ∈ B. Since B ⊆ D (from seed): xi.neg ∈ D. MCS D: xi ∉ D.
-    -- Then xi ∈ B' requires B' with xi ∈ B'. But xi inconsistent → xi ∉ any consistent set.
-    -- So if ⊢ ¬xi: lemma_2_7's conclusion xi ∈ B' is UNPROVABLE.
-    --
-    -- THEREFORE: we need {xi}∪B consistent, which happens iff the maximality argument
-    -- applies (BurgessR3Maximal_extension_fails needs consistent extension).
-    --
-    -- In practice: when lemma_2_7 is called during C5 elimination, xi = guard of the
-    -- counterexample Until. The guard is in B (the interval DCS) for non-counterexample
-    -- cases. If xi ∉ B, it's because the maximality prevented {xi}∪B from satisfying
-    -- burgessR3, which requires {xi}∪B consistent. So in the actual call site,
-    -- {xi}∪B IS consistent (otherwise xi.neg ∈ B and xi can be trivially excluded).
-    --
-    -- For robustness: we should prove {xi} consistent from the hypotheses.
-    -- Claim: from BurgessR3Maximal(A, B, C), untl(xi, eta) ∈ A, xi ∉ B:
-    --   {xi}∪B is consistent → {xi} is consistent.
-    -- And from our framework, the maximality argument is applied only when {xi}∪B is consistent.
-    --
-    -- SIMPLEST APPROACH: Add hypothesis or prove {xi}∪B is consistent → xi consistent.
-    -- {xi}∪B consistent → xi consistent (trivially, since {xi} ⊆ {xi}∪B).
-    -- And we can prove {xi}∪B consistent from xi ∉ B and B is DCS:
-    -- If {xi}∪B inconsistent: neg_mem_of_inconsistent_union gives xi.neg ∈ B.
-    -- xi.neg.neg ∈ DC(B) = B? Only if ⊢ xi.neg.neg → xi and ⊢ xi.neg.neg.
-    -- Actually xi.neg.neg = (xi → ⊥) → ⊥. And ⊢ xi.neg.neg → xi (DNE).
-    -- So if xi.neg.neg ∈ B, then xi ∈ B (DCS closure). Contradiction with xi ∉ B.
-    -- But does {xi}∪B inconsistent imply xi.neg.neg ∈ B? Let me check.
-    -- neg_mem_of_inconsistent_union: {φ}∪S inconsistent ∧ S DCS → φ.neg ∈ S.
-    -- So {xi}∪B inconsistent → xi.neg ∈ B. Then xi.neg.neg ∈ B? Only if ⊢ xi.neg.neg.
-    -- xi.neg = xi → ⊥. xi.neg.neg = (xi → ⊥) → ⊥. ⊢ xi.neg.neg is ⊢ (xi → ⊥) → ⊥.
-    -- This requires xi to be a theorem! Not generally true.
-    -- So xi.neg.neg ∉ B in general. And xi.neg ∈ B, xi ∉ B is consistent.
-    -- Hence {xi}∪B CAN be inconsistent without a contradiction in our hypotheses.
-    --
-    -- HOWEVER: if {xi}∪B is inconsistent, then xi.neg ∈ B, meaning ⊢ xi → ⊥ from B.
-    -- Can untl(xi, eta) ∈ A with all consequences of B in A?
-    -- Not necessarily: A and B are different sets. B ⊆ A is NOT generally true.
-    --
-    -- I think the cleanest resolution is to add an explicit hypothesis or prove it
-    -- case-by-case. For now, let me just use the same approach as Lemma 2.6:
-    -- case split on {xi}∪B consistency, and handle each case.
-    -- In the consistent case: {xi} ⊆ {xi}∪B consistent → {xi} consistent.
-    -- In the inconsistent case: xi.neg ∈ B. Need alternative path to get xi ∈ B'.
-    -- For the inconsistent case: if ⊢ (xi → ⊥) from B, we can still get the seed
-    -- consistent (using the same argument as Lemma 2.6 inconsistent case).
-    -- But xi ∈ B' fails. So lemma_2_7 needs to handle this case.
-    --
-    -- Actually, Burgess Lemma 2.7 is stated with η ∉ B (his convention). In the actual
-    -- usage (Lemma 2.10), η = guard of the counterexample Until. The counterexample
-    -- arises from C5: untl(guard, event) ∈ f(x) but the guard property fails at some
-    -- intermediate point. For the guard to appear in the counterexample, it must be
-    -- satisfiable (since untl(guard, event) ∈ f(x) which is an MCS).
-    -- On all orders: untl(guard, event) ∈ MCS → guard is consistent.
-    -- PROOF: if ⊢ ¬guard, then ⊢ G(¬guard) (TG). And left_mono gives
-    -- untl(guard, event) → untl(⊥, event). But also untl(guard, event) ∈ A.
-    -- So untl(⊥, event) ∈ A. BX10: F(event) ∈ A. This is not a contradiction.
-    -- Hmm. So guard consistency doesn't follow from untl(guard, event) ∈ MCS.
-    --
-    -- OK I think for general linear orders, the guard CAN be inconsistent and untl(guard,event)
-    -- can still be in an MCS (on discrete orders with empty interval).
-    -- But in that case: the lemma 2.7 conclusion xi ∈ B' is FALSE (xi can't be in any
-    -- consistent set). So the lemma itself would be vacuously true if we add the precondition
-    -- that {xi}∪B is consistent.
-    --
-    -- For the actual C5 elimination call site: the guard xi is a formula from g(x,x') = B.
-    -- Wait, no: if xi ∉ B, it's NOT from B. It's a formula that the maximality excludes.
-    -- And the counterexample is: untl(xi, eta) ∈ f(x) with "xi-property failing at
-    -- intermediate point". The xi here is whatever formula the Until uses as guard.
-    -- On discrete orders: guards can be vacuous. So xi could be anything, even inconsistent.
-    --
-    -- I think the right resolution is: for the actual completeness proof (which targets
-    -- ALL linear orders), we need xi to be consistent. And in the call site, xi is consistent
-    -- because it comes from an MCS via some chain.
-    --
-    -- For now: I'll prove xi is consistent from the hypotheses by checking
-    -- {xi}∪B consistency (same as Lemma 2.6).
-    by_cases h_cons : SetConsistent ({xi} ∪ B)
-    · exact SetConsistent_of_subset (Set.subset_union_left) h_cons
-    · exfalso
-      have h_xi_neg_B := neg_mem_of_inconsistent_union h_r3m.1 h_cons
-      -- xi.neg ∈ B. From DCS closure and ⊢ xi.neg.neg → xi (DNE):
-      -- if xi.neg.neg ∈ B then xi ∈ B. Contradiction.
-      -- But xi.neg.neg ∉ B necessarily. Instead: xi.neg ∈ B, xi ∉ B.
-      -- This is fine. But we need a contradiction.
-      -- From xi.neg ∈ B and B is DCS: OK.
-      -- From burgessR3: untl(xi.neg, gamma) ∈ A for all gamma ∈ C (since xi.neg ∈ B).
-      -- BX10: F(gamma) ∈ A for all gamma ∈ C. That's fine.
-      -- From untl(xi, eta) ∈ A and xi.neg ∈ B:
-      -- xi.neg ∈ B means ⊢ xi → ⊥ from some finite subset of B.
-      -- We need to derive a contradiction with untl(xi, eta) ∈ A.
-      -- Actually from xi.neg ∈ B: any context with xi + B-elements derives ⊥.
-      -- untl(xi, eta) ∈ A. If xi∧(something_from_B) → ⊥ is derivable, then
-      -- using left_mono: untl(xi, eta)∧G(xi→⊥) → untl(⊥, eta) ∈ A.
-      -- But untl(⊥, eta) might be in A (on discrete orders).
-      -- So no direct contradiction.
-      --
-      -- I think in the inconsistent case, the lemma 2.7 proof fails because
-      -- xi ∈ B' is unprovable. The correct approach is to add SetConsistent ({xi}∪B)
-      -- as a hypothesis, or to handle the inconsistent case separately at the call site.
-      --
-      -- For now: we handle this by observing that if {xi}∪B is inconsistent,
-      -- then xi.neg ∈ B. Since B is a maximal DCS with burgessR3(A,B,C), and
-      -- xi.neg ∈ B, we should be able to show this case doesn't arise in the
-      -- actual C5 elimination context.
-      -- TODO: handle this case or add precondition.
-      sorry
-  -- Step 7: Build burgessR3 A (DC({xi})) D
-  have h_dc_xi_dcs : SetDeductivelyClosed (deductiveClosure ({xi} : Set Formula)) :=
-    deductiveClosure_is_dcs h_xi_consistent
-  have h_dc_xi_r3 : burgessR3 A (deductiveClosure ({xi} : Set Formula)) D := by
-    constructor
-    · -- burgessRSet: ∀ φ ∈ DC({xi}), ∀ δ ∈ D, untl(φ, δ) ∈ A
-      intro φ hφ δ hδ
-      obtain ⟨L, hL_sub, ⟨d_phi⟩⟩ := hφ
-      have h_L_xi : ∀ ψ ∈ L, ψ = xi :=
-        fun ψ hψ => Set.mem_singleton_iff.mp (hL_sub ψ hψ)
-      have h_L_sub_rep : ∀ ψ ∈ L, ψ ∈ [xi] := by
-        intro ψ hψ; simp [h_L_xi ψ hψ]
-      have d_from_xi : DerivationTree [xi] φ :=
-        DerivationTree.weakening L [xi] φ d_phi h_L_sub_rep
-      have d_impl : DerivationTree [] (xi.imp φ) := deduction_theorem [] xi φ d_from_xi
-      exact untl_left_mono_thm h_mcs_A d_impl (h_burgessR_xi δ hδ)
-    · -- burgessRSetSince: ∀ φ ∈ DC({xi}), ∀ α ∈ A, snce(φ, α) ∈ D
-      intro φ hφ α hα
-      obtain ⟨L, hL_sub, ⟨d_phi⟩⟩ := hφ
-      have h_L_xi : ∀ ψ ∈ L, ψ = xi :=
-        fun ψ hψ => Set.mem_singleton_iff.mp (hL_sub ψ hψ)
-      have h_L_sub_rep : ∀ ψ ∈ L, ψ ∈ [xi] := by
-        intro ψ hψ; simp [h_L_xi ψ hψ]
-      have d_from_xi : DerivationTree [xi] φ :=
-        DerivationTree.weakening L [xi] φ d_phi h_L_sub_rep
-      have d_impl : DerivationTree [] (xi.imp φ) := deduction_theorem [] xi φ d_from_xi
-      exact snce_left_mono_thm h_D_mcs d_impl (h_snce_xi_D α hα)
-  -- Step 8: BurgessR3Maximal via Zorn from DC({xi})
-  obtain ⟨B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
-    h_dc_xi_dcs h_dc_xi_r3
-  -- Step 9: BurgessR3Maximal(D, B'', C) via Zorn from B
-  obtain ⟨B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
-    h_r3m.1 h_r3_DBC
-  -- Step 10: xi ∈ B' (since DC({xi}) ⊆ B' and xi ∈ DC({xi}))
-  have h_xi_B' : xi ∈ B' := by
-    have h_xi_dc : xi ∈ deductiveClosure ({xi} : Set Formula) :=
-      subset_deductiveClosure _ (Set.mem_singleton xi)
-    exact ‹deductiveClosure ({xi} : Set Formula) ⊆ B'› h_xi_dc
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_xi_B'⟩
+  -- Step 6: Case split on {xi} ∪ B consistency.
+  -- If consistent: {xi} is consistent (subset), proceed with DC({xi}) Zorn path.
+  -- If inconsistent: xi.neg ∈ B. The conclusion xi ∈ B' is unprovable in our
+  -- framework (DCS requires consistency). Deferred to Phase 5.
+  by_cases h_cons : SetConsistent ({xi} ∪ B)
+  · -- Consistent case: {xi} is consistent since {xi} ⊆ {xi} ∪ B
+    have h_xi_consistent : SetConsistent ({xi} : Set Formula) :=
+      SetConsistent_of_subset Set.subset_union_left h_cons
+    -- Step 7: Build burgessR3 A (DC({xi})) D
+    have h_dc_xi_dcs : SetDeductivelyClosed (deductiveClosure ({xi} : Set Formula)) :=
+      deductiveClosure_is_dcs h_xi_consistent
+    have h_dc_xi_r3 : burgessR3 A (deductiveClosure ({xi} : Set Formula)) D := by
+      constructor
+      · -- burgessRSet: ∀ φ ∈ DC({xi}), ∀ δ ∈ D, untl(φ, δ) ∈ A
+        intro φ hφ δ hδ
+        obtain ⟨L, hL_sub, ⟨d_phi⟩⟩ := hφ
+        have h_L_xi : ∀ ψ ∈ L, ψ = xi :=
+          fun ψ hψ => Set.mem_singleton_iff.mp (hL_sub ψ hψ)
+        have h_L_sub_rep : ∀ ψ ∈ L, ψ ∈ [xi] := by
+          intro ψ hψ; simp [h_L_xi ψ hψ]
+        have d_from_xi : DerivationTree [xi] φ :=
+          DerivationTree.weakening L [xi] φ d_phi h_L_sub_rep
+        have d_impl : DerivationTree [] (xi.imp φ) := deduction_theorem [] xi φ d_from_xi
+        exact untl_left_mono_thm h_mcs_A d_impl (h_burgessR_xi δ hδ)
+      · -- burgessRSetSince: ∀ φ ∈ DC({xi}), ∀ α ∈ A, snce(φ, α) ∈ D
+        intro φ hφ α hα
+        obtain ⟨L, hL_sub, ⟨d_phi⟩⟩ := hφ
+        have h_L_xi : ∀ ψ ∈ L, ψ = xi :=
+          fun ψ hψ => Set.mem_singleton_iff.mp (hL_sub ψ hψ)
+        have h_L_sub_rep : ∀ ψ ∈ L, ψ ∈ [xi] := by
+          intro ψ hψ; simp [h_L_xi ψ hψ]
+        have d_from_xi : DerivationTree [xi] φ :=
+          DerivationTree.weakening L [xi] φ d_phi h_L_sub_rep
+        have d_impl : DerivationTree [] (xi.imp φ) := deduction_theorem [] xi φ d_from_xi
+        exact snce_left_mono_thm h_D_mcs d_impl (h_snce_xi_D α hα)
+    -- Step 8: BurgessR3Maximal via Zorn from DC({xi})
+    obtain ⟨B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+      h_dc_xi_dcs h_dc_xi_r3
+    -- Step 9: BurgessR3Maximal(D, B'', C) via Zorn from B
+    obtain ⟨B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
+      h_r3m.1 h_r3_DBC
+    -- Step 10: xi ∈ B' (since DC({xi}) ⊆ B' and xi ∈ DC({xi}))
+    have h_xi_B' : xi ∈ B' := by
+      have h_xi_dc : xi ∈ deductiveClosure ({xi} : Set Formula) :=
+        subset_deductiveClosure _ (Set.mem_singleton xi)
+      exact ‹deductiveClosure ({xi} : Set Formula) ⊆ B'› h_xi_dc
+    exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_xi_B'⟩
+  · -- Inconsistent case: {xi} ∪ B is inconsistent → xi.neg ∈ B.
+    -- The conclusion xi ∈ B' requires B' consistent (our DCS requires consistency),
+    -- but xi is potentially inconsistent, making this unprovable in general.
+    -- Phase 5 will resolve: either prove consistency from hypotheses, add precondition,
+    -- or handle at the call site.
+    sorry
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
