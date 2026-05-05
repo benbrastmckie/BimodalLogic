@@ -157,8 +157,7 @@ extending the seed {β} ∪ g_content(A). This is needed because C is constructe
 internally and callers cannot know it in advance. -/
 noncomputable def lemma_2_4 {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) (γ β : Formula)
-    (h_until : Formula.untl γ β ∈ A)
-    (h_no_univ : NoUnivBurgessR3) :
+    (h_until : Formula.untl γ β ∈ A) :
     ∃ B C : Set Formula, SetMaximalConsistent C ∧
       β ∈ C ∧ g_content A ⊆ C ∧
       Formula.some_past (Formula.untl γ β) ∈ C ∧
@@ -175,7 +174,7 @@ noncomputable def lemma_2_4 {A : Set Formula}
       (theorem_in_mcs h_mcs h_ax) h_until
   have h_P_until_C : Formula.some_past (Formula.untl γ β) ∈ C :=
     h_g_sub h_GP
-  obtain ⟨B, h_B⟩ := burgessR3Maximal_from_g_content_sub h_mcs h_C_mcs h_g_sub h_no_univ
+  obtain ⟨B, h_B⟩ := burgessR3Maximal_from_g_content_sub h_mcs h_C_mcs h_g_sub
   exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_B⟩
 
 -- until_elim_mcs: REMOVED (task 113 Phase 3). INVALID under open guard.
@@ -621,27 +620,28 @@ theorem dc_delta_B_controlled {B : Set Formula} (h_dcs : SetDeductivelyClosed B)
       · exact h
     exact h_dcs.2 L phi hL_B hL_deriv
 
-/-- If BurgessR3Maximal(A, B, C) and delta ∉ B, the deductive closure of
-{delta} ∪ B does NOT satisfy burgessR3(A, -, C).
+/-- If BurgessR3Maximal(A, B, C) and delta ∉ B and {delta} ∪ B is consistent,
+the deductive closure of {delta} ∪ B does NOT satisfy burgessR3(A, -, C).
 
-With the strengthened maximality clause (over ClosedUnderDerivation, not just
-SetDeductivelyClosed), no consistency precondition is needed: DC({delta} ∪ B) is
-always ClosedUnderDerivation regardless of consistency. When {delta} ∪ B is
-inconsistent, DC({delta} ∪ B) = Set.univ, which is ClosedUnderDerivation. -/
+Requires consistency of {delta} ∪ B because the maximality clause in
+BurgessR3Maximal quantifies over SetDeductivelyClosed sets. When {delta} ∪ B
+is inconsistent, use `neg_mem_of_inconsistent_union` instead to get
+delta.neg ∈ B directly. -/
 theorem BurgessR3Maximal_extension_fails {A B C : Set Formula}
     (h_R3M : BurgessR3Maximal A B C)
-    {delta : Formula} (h_delta_not : delta ∉ B) :
+    {delta : Formula} (h_delta_not : delta ∉ B)
+    (h_cons : SetConsistent ({delta} ∪ B)) :
     ¬burgessR3 A (deductiveClosure ({delta} ∪ B)) C := by
   intro h_r3
-  have h_cud : ClosedUnderDerivation (deductiveClosure ({delta} ∪ B)) :=
-    deductiveClosure_closed_under_derivation _
+  have h_dcs : SetDeductivelyClosed (deductiveClosure ({delta} ∪ B)) :=
+    deductiveClosure_is_dcs h_cons
   have h_sub : B ⊆ deductiveClosure ({delta} ∪ B) :=
     fun phi hphi => subset_deductiveClosure _ (Set.mem_union_right _ hphi)
   have h_delta_in : delta ∈ deductiveClosure ({delta} ∪ B) :=
     subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton delta))
   have h_proper : B ⊂ deductiveClosure ({delta} ∪ B) :=
     ⟨h_sub, fun h_eq => h_delta_not (h_eq h_delta_in)⟩
-  exact h_R3M.2.2 _ h_cud h_proper h_r3
+  exact h_R3M.2.2 _ h_dcs h_proper h_r3
 
 /-- If both until and since conditions hold for delta extension of B,
 then DC({delta} union B) satisfies burgessR3(A, -, C). -/
@@ -768,30 +768,21 @@ private theorem neg_mem_of_inconsistent_union {B : Set Formula}
 EITHER delta.neg ∈ B (when {delta}∪B is inconsistent)
 OR ¬burgessR3(A, DC({delta}∪B), C) (when {delta}∪B is consistent).
 
-With the strengthened maximality (ClosedUnderDerivation), the right disjunct
-ALWAYS holds (extension_fails no longer needs consistency). The left branch
-is kept for callers that need delta.neg ∈ B. -/
+Case split on consistency of {delta} ∪ B:
+- Consistent: BurgessR3Maximal_extension_fails gives ¬burgessR3.
+- Inconsistent: neg_mem_of_inconsistent_union gives delta.neg ∈ B. -/
 theorem BurgessR3Maximal_neg_or_ext_fails {A B C : Set Formula}
     (h_R3M : BurgessR3Maximal A B C)
     {delta : Formula} (h_delta_not : delta ∉ B) :
     delta.neg ∈ B ∨ ¬burgessR3 A (deductiveClosure ({delta} ∪ B)) C := by
-  exact Or.inr (BurgessR3Maximal_extension_fails h_R3M h_delta_not)
+  by_cases h_cons : SetConsistent ({delta} ∪ B)
+  · exact Or.inr (BurgessR3Maximal_extension_fails h_R3M h_delta_not h_cons)
+  · exact Or.inl (neg_mem_of_inconsistent_union h_R3M.1 h_cons)
 
-/-- **Extract ¬burgessR3(A, Set.univ, C) from BurgessR3Maximal(A, B, C)**.
-Since B is SetDeductivelyClosed (consistent), B ⊂ Set.univ.
-The maximality clause (over ClosedUnderDerivation) with D = Set.univ gives
-¬burgessR3(A, Set.univ, C). -/
-theorem BurgessR3Maximal_not_univ {A B C : Set Formula}
-    (h_R3M : BurgessR3Maximal A B C) : ¬burgessR3 A Set.univ C := by
-  have h_B_dcs : SetDeductivelyClosed B := h_R3M.1
-  have h_proper : B ⊂ (Set.univ : Set Formula) := by
-    constructor
-    · exact Set.subset_univ B
-    · intro h_eq
-      have h_bot : Formula.bot ∈ B := h_eq (Set.mem_univ Formula.bot)
-      exact h_B_dcs.1 [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot)
-        ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
-  exact h_R3M.2.2 _ set_univ_closed_under_derivation h_proper
+-- BurgessR3Maximal_not_univ: REMOVED (task 107 Phase 1).
+-- No longer needed: the maximality clause in BurgessR3Maximal now uses
+-- SetDeductivelyClosed instead of ClosedUnderDerivation, so Set.univ
+-- (which is inconsistent) is automatically excluded from the quantifier.
 
 /-- B is a proper subset of Set.univ when B is consistent. -/
 private theorem dcs_ssubset_univ {B : Set Formula}
@@ -2090,7 +2081,7 @@ private theorem burgess_D0_finite_subset_consistent_incons {A B C : Set Formula}
     obtain ⟨delta', h_delta'_not_B, h_delta'_cons⟩ := h_not_mcs
     have h_delta'_cons' : SetConsistent ({delta'} ∪ B) := by rwa [Set.insert_eq] at h_delta'_cons
     -- From maximality: ¬burgessR3(A, DC({delta'}∪B), C)
-    have h_not_r3 := BurgessR3Maximal_extension_fails h_r3m h_delta'_not_B
+    have h_not_r3 := BurgessR3Maximal_extension_fails h_r3m h_delta'_not_B h_delta'_cons'
     -- Extract neg-until witness: ∃ beta0 ∈ B, gamma0 ∈ C, (untl(beta0∧delta', gamma0)).neg ∈ A
     have h_neg_until_exists : ∃ beta0 ∈ B, ∃ gamma0 ∈ C,
         Formula.untl (Formula.and beta0 delta') gamma0 ∉ A := by
@@ -2311,7 +2302,7 @@ private theorem burgess_D0_seed_consistent {A B C : Set Formula}
   by_cases h_cons : SetConsistent ({β} ∪ B)
   · -- Case: {β} ∪ B is consistent
     -- By maximality, DC({β} ∪ B) does not satisfy burgessR3
-    have h_not_r3 := BurgessR3Maximal_extension_fails h_r3m h_β_not_B
+    have h_not_r3 := BurgessR3Maximal_extension_fails h_r3m h_β_not_B h_cons
     -- Extract Until condition failure (the only thing that CAN fail is the Until direction,
     -- since the Since direction requires the unprovable condition).
     -- Actually, ¬burgessR3 means ¬(burgessRSet ∧ burgessRSetSince).
@@ -2638,8 +2629,7 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
     (h_r3m : BurgessR3Maximal A B C)
     (h_gc : g_content A ⊆ C)
     (β : Formula)
-    (h_β_not_B : β ∉ B)
-    (h_no_univ : NoUnivBurgessR3) :
+    (h_β_not_B : β ∉ B) :
     ∃ B' D B'', BurgessR3Maximal A B' D ∧ BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧ β.neg ∈ D := by
   -- Step 1: The Burgess D₀ seed is consistent
@@ -2678,9 +2668,9 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
   have h_r3_ABD : burgessR3 A B D := ⟨h_rSet_A, h_rSetSince_A⟩
   -- Step 6: BurgessR3Maximal via Zorn (burgessR3Maximal_extension_exists)
   obtain ⟨B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
-    h_r3m.1 h_r3_ABD h_no_univ
+    h_r3m.1 h_r3_ABD
   obtain ⟨B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
-    h_r3m.1 h_r3_DBC h_no_univ
+    h_r3m.1 h_r3_DBC
   exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_β_neg_D⟩
 
 /-- The D0 seed for Lemma 2.7 (Burgess 1982 p.372):
@@ -2757,8 +2747,7 @@ theorem lemma_2_7 {A B C : Set Formula}
     (h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_until : Formula.untl xi eta ∈ A)
-    (h_xi_not_B : xi ∉ B)
-    (h_no_univ : NoUnivBurgessR3) :
+    (h_xi_not_B : xi ∉ B) :
     ∃ B' D B'' : Set Formula,
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
@@ -2857,10 +2846,10 @@ theorem lemma_2_7 {A B C : Set Formula}
         exact snce_left_mono_thm h_D_mcs d_impl (h_snce_xi_D α hα)
     -- Step 8: BurgessR3Maximal via Zorn from DC({xi})
     obtain ⟨B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
-      h_dc_xi_dcs h_dc_xi_r3 h_no_univ
+      h_dc_xi_dcs h_dc_xi_r3
     -- Step 9: BurgessR3Maximal(D, B'', C) via Zorn from B
     obtain ⟨B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
-      h_r3m.1 h_r3_DBC h_no_univ
+      h_r3m.1 h_r3_DBC
     -- Step 10: xi ∈ B' (since DC({xi}) ⊆ B' and xi ∈ DC({xi}))
     have h_xi_B' : xi ∈ B' := by
       have h_xi_dc : xi ∈ deductiveClosure ({xi} : Set Formula) :=

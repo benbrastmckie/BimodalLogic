@@ -749,20 +749,18 @@ private theorem closed_under_derivation_inconsistent_eq_univ
 
 /--
 **BurgessR3Maximal existence**: Given MCS A, C and a DCS S with burgessR3(A, S, C),
-and the condition ¬burgessR3(A, Set.univ, C) (ruling out inconsistent extensions),
 there exists a BurgessR3Maximal B with S ⊆ B.
 
 Proof: Zorn's lemma on the set of DCS extending S and satisfying burgessR3.
 Chain unions preserve DCS and burgessR3. Zorn gives maximality over
-SetDeductivelyClosed sets. The hypothesis ¬burgessR3(A, Set.univ, C) upgrades
-this to maximality over ALL ClosedUnderDerivation sets (matching Burgess 1982):
-any inconsistent ClosedUnderDerivation D equals Set.univ, and the hypothesis
-rules out burgessR3 for Set.univ.
+SetDeductivelyClosed sets, which is exactly the maximality clause in
+BurgessR3Maximal. No `NoUnivBurgessR3` needed: the maximality clause
+only quantifies over consistent extensions, so inconsistent sets like
+`Set.univ` are automatically excluded.
 -/
 theorem burgessR3Maximal_extension_exists {A C : Set Formula}
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    {S : Set Formula} (h_dcs : SetDeductivelyClosed S) (h_r3 : burgessR3 A S C)
-    (h_no_univ : NoUnivBurgessR3) :
+    (_h_mcs_A : SetMaximalConsistent A) (_h_mcs_C : SetMaximalConsistent C)
+    {S : Set Formula} (h_dcs : SetDeductivelyClosed S) (h_r3 : burgessR3 A S C) :
     ∃ B : Set Formula, S ⊆ B ∧ BurgessR3Maximal A B C := by
   have h_S_in : S ∈ burgessR3DCSExtensions A S C := ⟨Set.Subset.refl _, h_dcs, h_r3⟩
   obtain ⟨B, hB_in, hB_max⟩ := zorn_subset (burgessR3DCSExtensions A S C) (by
@@ -796,19 +794,11 @@ theorem burgessR3Maximal_extension_exists {A C : Set Formula}
           exact (hc_sub hTc).2.2.2 β hβT)
   obtain ⟨hSB, hB_dcs, hB_r3⟩ := hB_in
   refine ⟨B, hSB, hB_dcs, hB_r3, ?_⟩
-  -- Maximality over ALL ClosedUnderDerivation sets (Burgess's original definition).
-  -- Two cases: D consistent or D inconsistent.
-  intro D hD_cud hBD hD_r3
-  by_cases hD_cons : SetConsistent D
-  · -- D is consistent → D is SetDeductivelyClosed → D in Zorn set → contradicts maximality
-    have hD_dcs : SetDeductivelyClosed D := ⟨hD_cons, hD_cud⟩
-    have hD_in : D ∈ burgessR3DCSExtensions A S C :=
-      ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
-    exact hBD.2 (hB_max hD_in hBD.1)
-  · -- D is inconsistent → D = Set.univ → burgessR3(A, Set.univ, C) contradicts NoUnivBurgessR3
-    have hD_univ := closed_under_derivation_inconsistent_eq_univ hD_cud hD_cons
-    rw [hD_univ] at hD_r3
-    exact h_no_univ A C h_mcs_A h_mcs_C hD_r3
+  -- Maximality over SetDeductivelyClosed sets: Zorn gives this directly.
+  intro D hD_dcs hBD hD_r3
+  have hD_in : D ∈ burgessR3DCSExtensions A S C :=
+    ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
+  exact hBD.2 (hB_max hD_in hBD.1)
 
 /-! ## BurgessR3Maximal Accessor Lemmas -/
 
@@ -1211,8 +1201,7 @@ theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
     (h_burgessR : burgessR A η C)
     (h_burgessRSince : burgessRSince C η A)
-    (h_η_A : η ∈ A)
-    (h_no_univ : NoUnivBurgessR3) :
+    (h_η_A : η ∈ A) :
     ∃ B : Set Formula, BurgessR3Maximal A B C := by
   -- Step 1: {η} is consistent (subset of A)
   have h_singleton_cons : SetConsistent ({η} : Set Formula) :=
@@ -1231,7 +1220,6 @@ theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
       exact burgessRSince_of_deductiveClosure_singleton h_mcs_C h_burgessRSince φ hφ
   -- Step 5: Apply Zorn extension
   obtain ⟨B, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_dcs h_dc_r3
-    h_no_univ
   exact ⟨B, h_B3M⟩
 
 -- untl_absorb_nested: REMOVED (task 113 Phase 3). INVALID under open guard.
@@ -1545,16 +1533,14 @@ theorem P_mem_of_g_content_sub {A C : Set Formula}
   exact h_gc h_GP
 
 /-- **BurgessR3Maximal existence from g_content inclusion**: Given MCS A, C with
-g_content(A) ⊆ C and ¬burgessR3(A, Set.univ, C), there exists B with
-BurgessR3Maximal(A, B, C).
+g_content(A) ⊆ C, there exists B with BurgessR3Maximal(A, B, C).
 
 This is the key infrastructure lemma enabling g-value construction in the
 chronicle elimination functions. The seed is ⊤ (tautology), which satisfies
 both burgessR(A, ⊤, C) and burgessRSince(C, ⊤, A) when g_content(A) ⊆ C. -/
 theorem burgessR3Maximal_from_g_content_sub {A C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_gc : g_content A ⊆ C)
-    (h_no_univ : NoUnivBurgessR3) :
+    (h_gc : g_content A ⊆ C) :
     ∃ B : Set Formula, BurgessR3Maximal A B C := by
   set top := Formula.bot.imp Formula.bot with top_def
   -- ⊤ ∈ A (theorem in MCS)
@@ -1579,6 +1565,6 @@ theorem burgessR3Maximal_from_g_content_sub {A C : Set Formula}
     exact SetMaximalConsistent.implication_property h_mcs_C
       (theorem_in_mcs h_mcs_C h_bx12') h_P
   -- Apply burgessR3Maximal_exists_from_seed
-  exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A h_no_univ
+  exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

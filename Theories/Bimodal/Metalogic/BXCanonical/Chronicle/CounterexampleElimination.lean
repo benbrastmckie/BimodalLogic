@@ -166,8 +166,7 @@ The new point y is placed beyond all current domain points.
 -/
 noncomputable def eliminate_C5_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
-    (ce : C5Counterexample χ)
-    (h_no_univ : NoUnivBurgessR3) :
+    (ce : C5Counterexample χ) :
     ∃ χ' : Chronicle,
       χ.dom ⊆ χ'.dom ∧
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
@@ -181,7 +180,7 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
   -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x)), plus interval DCS B
   have h_mcs_x := h_c0 ce.x ce.x_mem
   obtain ⟨_B, C, h_C_mcs, h_η_C, _, _, _⟩ :=
-    lemma_2_4 h_mcs_x ce.ξ ce.η ce.until_mem h_no_univ
+    lemma_2_4 h_mcs_x ce.ξ ce.η ce.until_mem
   -- Step 3: Build the new chronicle
   -- f' agrees with f on old domain, assigns C to y
   -- g' is unchanged (placeholder; full interval assignment in ChronicleConstruction)
@@ -731,8 +730,7 @@ and C5/C5' witness guarantees.
 -/
 noncomputable def eliminate_potential_counterexample
     (χ : Chronicle) (h_c0 : χ.c0) (h_c2' : χ.c2')
-    (pc : PotentialCounterexample)
-    (h_no_univ : NoUnivBurgessR3) :
+    (pc : PotentialCounterexample) :
     EliminationResult χ pc := by
   -- Helper for impossible kind discriminants
   have absurd_kind {k : PotentialCounterexampleKind} {P : Prop}
@@ -747,7 +745,7 @@ noncomputable def eliminate_potential_counterexample
             pc.ξ ∈ χ.f z ∧ Formula.untl pc.ξ pc.η ∈ χ.f z
     · obtain ⟨h_mem, h_until, h_no_wit⟩ := h_actual
       have h_elim := eliminate_C5_counterexample h_c0
-        (⟨pc.x, h_mem, pc.ξ, pc.η, h_until, h_no_wit⟩ : C5Counterexample χ) h_no_univ
+        (⟨pc.x, h_mem, pc.ξ, pc.η, h_until, h_no_wit⟩ : C5Counterexample χ)
       let χ' := h_elim.choose
       have h_prop := h_elim.choose_spec
       exact { val := χ'

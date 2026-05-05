@@ -76,7 +76,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Resolve NoUnivBurgessR3 (#13) [NOT STARTED]
+### Phase 1: Resolve NoUnivBurgessR3 (#13) [COMPLETED]
 
 **Goal**: Eliminate the root dependency sorry at Completeness.lean:152 where `NoUnivBurgessR3` (the property that `burgessR3(A, Set.univ, C)` never holds for any MCS A, C) is assumed without proof. This is the foundation on which the entire chronicle construction rests -- `dd_countermodel_chronicle` takes `NoUnivBurgessR3` as a parameter.
 
