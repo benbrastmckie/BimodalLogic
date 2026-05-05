@@ -145,12 +145,12 @@ Phases 3 and 4 can execute in parallel (both depend only on Phase 2). All other 
 - **Case B (B is MCS)**: B itself serves as the splitting MCS D. Since `beta.neg in B` and B is MCS, set D = B. Construct B' via `burgessR3Maximal_extension_exists` for `burgessR3(A, B', B)` and B'' for `burgessR3(B, B'', C)`. Return the splitting triple `(B', B, B'')` directly, bypassing D0 seed construction entirely.
 
 **Tasks**:
-- [ ] **Task 3.1**: Inspect the exact proof state at sorry #1 (line 1891) using `lean_goal`. Understand the goal type and all available hypotheses.
-- [ ] **Task 3.2**: Implement the `by_cases h_mcs_B : SetMaximalConsistent B` case split within the pos sub-case.
-- [ ] **Task 3.3**: Implement Case B (B is MCS) -- the fast path. Verify that `burgessR3Maximal_extension_exists` can construct B' and B'' when D = B.
-- [ ] **Task 3.4**: Implement Case A (B not MCS) -- extract delta' not in B with `{delta'} union B` consistent. Apply `BurgessR3Maximal_extension_fails` for the witness. Derive contradiction via left_mono + right_mono contrapositive.
-- [ ] **Task 3.5**: Handle edge cases. Verify that `not SetMaximalConsistent B` provides a usable delta' given that B is a DCS (hence consistent). The non-MCS condition means there exists phi where `phi not in B` and `phi.neg not in B`, giving us delta' = phi with `{phi} union B` consistent.
-- [ ] **Task 3.6**: Run `lake build`. Verify PointInsertion.lean sorry count drops by 1.
+- [x] **Task 3.1**: Inspect the exact proof state at sorry #1 (line 1891) using `lean_goal`. Understand the goal type and all available hypotheses.
+- [x] **Task 3.2**: Implement the `by_cases h_mcs_B : SetMaximalConsistent B` case split -- restructured to occur BEFORE c_list construction (not within pos sub-case) so gamma0 witness can be added to c_list.
+- [ ] **Task 3.3**: Implement Case B (B is MCS). BLOCKED: Burgess's maximality is over all ClosedUnderDerivation extensions (including inconsistent); our BurgessR3Maximal only considers SetDeductivelyClosed (consistent) extensions. When B is MCS, no consistent proper extension exists, so BurgessR3Maximal_extension_fails cannot be invoked. The pos sub-case remains sorry. See handoff phase3-case-a-complete.md for full analysis and 3 resolution options.
+- [x] **Task 3.4**: Implement Case A (B not MCS) -- extract delta' not in B with `{delta'} union B` consistent. Apply `BurgessR3Maximal_extension_fails` for the witness. Derive contradiction via left_mono + right_mono + neg_excludes. BOTH pos and neg sub-cases fully proved.
+- [x] **Task 3.5**: Handle edge cases. Verified that `not SetMaximalConsistent B` provides delta' via `insert_eq` conversion. Extraction of neg-until witness uses same pattern as `burgess_D0_seed_consistent` (by_contra + push_neg + dc_delta_B_controlled + burgessR_implies_burgessRSince).
+- [x] **Task 3.6**: Run `lake build`. Build passes. Sorry count unchanged (3 in PointInsertion) but sorry #1 narrowed from unconditional to conditional on B being MCS.
 
 **Timing**: 2-3 hours
 

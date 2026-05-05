@@ -1086,6 +1086,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase1-2-complete-phase3-analysis.md",
           "type": "handoff",
           "summary": "Phases 1-2 complete, Phase 3 deep analysis with detailed implementation strategy"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase3-case-a-complete.md",
+          "type": "handoff",
+          "summary": "Phase 3 Case A (B not MCS) fully proved, Case B (B is MCS) blocked by maximality gap"
         }
       ],
       "session_id": "sess_1777999912_7fcbe9",
