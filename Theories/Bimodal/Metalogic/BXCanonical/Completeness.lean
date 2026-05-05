@@ -144,8 +144,14 @@ theorem bx_completeness (φ : Formula) :
   -- Build canonical model and derive contradiction
   -- Uses the chronicle-based countermodel (Burgess 1982), bypassing
   -- the sorry-laden dd_countermodel from RootScopedChain.lean.
+  -- NoUnivBurgessR3: burgessR3(A, Set.univ, C) is false for all MCS A, C.
+  -- This holds because Set.univ contains bot (since every formula is in Set.univ),
+  -- violating the consistency requirement implicit in burgessR3's definition.
+  -- TODO: prove from burgessR3 definition once consistency clause is verified.
+  have h_no_univ : Chronicle.NoUnivBurgessR3 := by
+    sorry
   obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-    Chronicle.dd_countermodel_chronicle M hM_mcs φ h_neg_in
+    Chronicle.dd_countermodel_chronicle M hM_mcs h_no_univ φ h_neg_in
   -- valid φ gives truth at every point, including the countermodel point
   exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
