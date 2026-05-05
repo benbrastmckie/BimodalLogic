@@ -90,6 +90,8 @@ Critical path: Phase 3 -> Phase 4 -> Phase 5 -> Phase 7 -> Phase 8 (20-27h).
 ---
 
 ### Phase 2: Lemma 2.6 — Inconsistent Case [BLOCKED]
+<!-- BLOCKED: Report 59 research unanimously recommends skipping — inconsistent case is formalization artifact, not in Burgess -->
+
 
 - **Goal**: Close the 2 sorries `h_ev_b` and `h_ev_untl` at PointInsertion.lean lines 1872-1873 in `burgess_D0_finite_subset_consistent_incons`. These require proving that the enriched event formula implies the guard `b` and the accumulated Until `untl(b, gamma_hat)`.
 
@@ -115,7 +117,7 @@ Critical path: Phase 3 -> Phase 4 -> Phase 5 -> Phase 7 -> Phase 8 (20-27h).
 
 ---
 
-### Phase 3: Lemma 2.7 — Seed Consistency (C5 Nested Case) [NOT STARTED]
+### Phase 3: Lemma 2.7 — Seed Consistency (C5 Nested Case) [IN PROGRESS]
 
 - **Goal**: Implement the complete body of `lemma_2_7_seed_consistent` (PointInsertion.lean line 2405, currently fully sorry). This is the hardest single theorem in the chronicle construction.
 

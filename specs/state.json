@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-05T15:22:12Z",
+      "last_updated": "2026-05-05T15:32:41Z",
       "researched": "2026-05-05T14:40:44Z",
       "related_tasks": [
         93
@@ -1076,9 +1076,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/59_team-research.md",
           "type": "report",
           "summary": "Team research (4): case split is artifact, irr_until unsound, skip to Phases 3-7 recommended"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase3-convention-fix.md",
+          "type": "handoff",
+          "summary": "Phase 3 convention fix: swapped xi/eta roles in lemma_2_7 to match Burgess U(event,guard)=untl(guard,event)"
         }
       ],
-      "session_id": "sess_1777993306_6aa7f7",
+      "session_id": "sess_1777995146_d95bf9",
       "started": "2026-04-25T19:11:01Z",
       "researching": "2026-05-04T16:20:36Z",
       "implementing": "2026-05-04T18:19:48Z",
