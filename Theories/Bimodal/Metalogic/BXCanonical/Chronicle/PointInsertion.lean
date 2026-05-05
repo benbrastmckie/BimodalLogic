@@ -2771,16 +2771,250 @@ Proof structure (following Burgess exactly):
 10. BX13 iterated enrichment: packs snce(g1∧g2, α) for each α ∈ A
 11. BX10: F(event) ∈ A, so event is consistent
 12. Event implies all 5 seed components via left_mono/right_mono on snce/untl -/
+
+
 private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
-    (h_gc : g_content A ⊆ C)
+    (_h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_until : Formula.untl xi eta ∈ A)
     (h_xi_not_B : xi ∉ B) :
     SetConsistent (lemma_2_7_seed A B C xi eta) := by
-  sorry
+  have h_B_dcs : SetDeductivelyClosed B := h_r3m.1
+  have h_r3 : burgessR3 A B C := h_r3m.2.1
+  -- Step 1: Extract neg-until witness from xi ∉ B + BurgessR3Maximal
+  have h_not_r3_xi := BurgessR3Maximal_extension_fails h_r3m h_xi_not_B
+  have h_neg_until_exists : ∃ beta0 ∈ B, ∃ gamma0 ∈ C,
+      Formula.untl (Formula.and beta0 xi) gamma0 ∉ A := by
+    by_contra h_all_until
+    push_neg at h_all_until
+    have h_rset : burgessRSet A (deductiveClosure ({xi} ∪ B)) C := by
+      intro phi hphi gamma hgamma
+      obtain ⟨Ldc, hL_sub, ⟨ddc⟩⟩ := hphi
+      rcases dc_delta_B_controlled h_B_dcs hL_sub ddc with h_B_case | ⟨beta_w, hbeta_w, ⟨h_impl⟩⟩
+      · exact h_r3.1 phi h_B_case gamma hgamma
+      · exact untl_left_mono_thm h_mcs_A h_impl (h_all_until beta_w hbeta_w gamma hgamma)
+    have h_rsince : burgessRSetSince C (deductiveClosure ({xi} ∪ B)) A := by
+      intro phi hphi alpha halpha
+      obtain ⟨Ldc, hL_sub, ⟨ddc⟩⟩ := hphi
+      rcases dc_delta_B_controlled h_B_dcs hL_sub ddc with h_B_case | ⟨beta_w, hbeta_w, ⟨h_impl⟩⟩
+      · exact h_r3.2 phi h_B_case alpha halpha
+      · have h_burgessR_ext : burgessR A (Formula.and beta_w xi) C :=
+          fun gamma hgamma => h_all_until beta_w hbeta_w gamma hgamma
+        have h_snce_ext := burgessR_implies_burgessRSince h_mcs_A h_mcs_C h_burgessR_ext alpha halpha
+        exact snce_left_mono_thm h_mcs_C h_impl h_snce_ext
+    exact h_not_r3_xi ⟨h_rset, h_rsince⟩
+  obtain ⟨beta0, h_beta0, gamma0, h_gamma0, h_not_in_A⟩ := h_neg_until_exists
+  have h_neg_until_in_A : (Formula.untl (Formula.and beta0 xi) gamma0).neg ∈ A := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_A
+      (Formula.untl (Formula.and beta0 xi) gamma0) with h | h
+    · exfalso; exact h_not_in_A h
+    · exact h
+  -- Step 2: Suppose for contradiction some finite L ⊆ seed derives ⊥.
+  intro L hL ⟨d⟩
+  -- Step 3: Build b (B-guard conjunction), γ_hat (C-event conjunction), a_list (A-events)
+  -- from L elements. Key: b ∈ B (DCS closure), γ_hat ∈ C (MCS closure).
+  -- b_list = beta0 + all B-guards extracted from L's seed elements.
+  -- c_list = gamma0 + all C-events from untl formulas in L.
+  -- a_list = all A-events from snce formulas in L.
+  -- Use the collect_guards / d0_c_event_list infrastructure adapted for lemma_2_7_seed.
+  -- Rather than defining separate extractors, we use the existing ones by noting
+  -- that lemma_2_7_seed has a superset relationship with burgess_D0_seed.
+  -- DIRECT APPROACH: For any finite L ⊆ seed, every element φ ∈ L belongs to one of:
+  --   (1) φ ∈ B
+  --   (2) φ = eta
+  --   (3) φ = untl(β',γ') with β' ∈ B, γ' ∈ C
+  --   (4) φ = snce(β',α') with β' ∈ B, α' ∈ A
+  --   (5) φ = snce(β'∧xi, α') with β' ∈ B, α' ∈ A
+  -- For each such φ, extract its B-guard (β' or φ itself if in B).
+  -- We now use the BX5+BX7+BX13 chain with b = list_conj(b_list), γ_hat = list_conj(c_list).
+  -- The key BX7 chain gives D3 with event = (b∧untl(b,γ_hat))∧eta.
+  -- After BX13 enrichment, the event implies all components of L.
+  -- For the Lean formalization, we proceed by showing the event implies each φ∈L
+  -- via case analysis on the seed membership.
+  -- GENERALIZED HELPER: For any b ∈ B with ⊢ b → beta0, and γ_hat ∈ C with ⊢ γ_hat → gamma0,
+  -- and a_list with all elements in A, produce event with:
+  --   F(event) ∈ A, event → b, event → eta, event → untl(b, γ_hat),
+  --   event → snce(guard, α) for α ∈ a_list where guard = (b∧untl(b,γ_hat))∧(xi∧untl(xi,eta))
+  -- This reduces to: BX5+BX7 chain + D1/D2 elimination + BX13 enrichment.
+  -- For now, we implement a SIMPLIFIED version that handles the seed directly.
+  -- We show: {eta} ∪ A is consistent (as a superset of the "useful" content),
+  -- then show each L element is derivable from a consistent set.
+  -- Actually: from untl(beta0∧xi, eta) ∈ A and BX10: F(eta) ∈ A.
+  -- So {eta} is consistent. But the seed includes B-elements and snce(β∧xi,α)
+  -- which are NOT in A. We need a richer event.
+  -- IMPLEMENTATION: Apply the BX5+BX7+BX13 chain with generalized b and γ_hat.
+  -- Since proving list extraction properties is verbose, we factor the key steps.
+  -- KEY DERIVED FACT (from Steps 1-5 above applied with any b containing beta0):
+  -- For ANY b ∈ B with ⊢ b → beta0: untl(b∧xi, eta) ∈ A.
+  -- Proof: BX5 on untl(b,gamma0)∈A gives untl(b∧untl(b,gamma0), gamma0)∈A.
+  --   BX7 with untl(xi∧untl(xi,eta), eta)∈A eliminates D1/D2 (using ⊢guard→beta0∧xi).
+  --   D3: untl(guard, (b∧untl(b,gamma0))∧eta)∈A.
+  --   left_mono (guard→b∧xi) + right_mono ((b∧untl(b,gamma0))∧eta→eta): untl(b∧xi, eta)∈A.
+  -- From untl(b∧xi, eta), BX5 gives: untl((b∧xi)∧untl(b∧xi,eta), eta) ∈ A.
+  -- Let guard = (b∧xi)∧untl(b∧xi,eta). Then guard → b∧xi → b and guard → b∧xi → xi.
+  -- BX13 enrichment with a_list: event' → eta and event' → snce(guard, α).
+  -- BX10: F(event') ∈ A, so {event'} consistent.
+  -- event' implies:
+  --   eta (base of enrichment)
+  --   snce(guard, α) for each α ∈ a_list (from enrichment)
+  -- But event' does NOT imply b directly! The enrichment event is based on eta,
+  -- not on the guard. We need guard in the EVENT part.
+  -- CORRECTION: Use D3 directly (before reducing). D3 has event = (b∧untl(b,γ_hat))∧eta.
+  -- After BX13 on D3:
+  --   event' → (b∧untl(b,γ_hat))∧eta (base)
+  --   event' → snce(D3_guard, α) where D3_guard = (b∧untl(b,γ_hat))∧(xi∧untl(xi,eta))
+  -- And event' → base → b (via lce+lce), event' → base → untl(b,γ_hat) (via lce+rce),
+  -- event' → base → eta (via rce).
+  -- This is the correct approach. Implement it now.
+  -- STEP 3a: For the given L, define b and γ_hat.
+  -- We need: b ∈ B containing beta0 + all B-guards from L.
+  --          γ_hat ∈ C containing gamma0 + all C-events from L.
+  --          a_list ⊆ A containing all A-events from L.
+  -- Rather than complex extraction, observe: for each φ∈L in the seed,
+  -- one of the five cases holds. We handle each case in the derivation step.
+  -- For the BX chain, we use b = beta0, γ_hat = gamma0 (minimal).
+  -- Then for each φ∈L:
+  --   (1) φ ∈ B: need [event'] ⊢ φ. From event' → base → b = beta0. If φ = beta0, done.
+  --       Otherwise, φ ∈ B but φ ≠ beta0, and we can't derive φ from beta0.
+  -- PROBLEM: with b = beta0, we can only derive beta0 from the event, not arbitrary β'.
+  -- RESOLUTION: Use b = list_conj(beta0 :: L_B_elements) where L_B_elements = L ∩ B.
+  -- Since all elements of L_B_elements are in B and B is DCS, b ∈ B.
+  -- And ⊢ b → φ for each φ ∈ L_B_elements (conjunction elimination).
+  -- Similarly γ_hat = list_conj(gamma0 :: L_C_events) where L_C_events are the γ'
+  -- extracted from untl(β',γ') formulas in L.
+  -- STEP 3b: Define L_B = elements of L that are in B ++ B-guards from untl/snce
+  -- For simplicity, include ALL L elements as B-guards (the "wrong" ones will be
+  -- handled by the DCS property or ignored). Actually, define:
+  --   b_list_all = beta0 :: L (take entire L, then b = list_conj b_list_all)
+  --   This b might NOT be in B since L contains eta and untl/snce formulas.
+  -- We need b_list to contain ONLY B-elements. So we must filter.
+  -- The CLEANEST approach for Lean: just use L.filter (· ∈ B) for B-elements,
+  -- and separately handle each case in the final derivation step.
+  -- Actually, for the BX chain we only need a SINGLE b ∈ B. The issue is
+  -- making the event imply all B-elements from L. If we use a big b that
+  -- includes all L∩B elements, then event → b → each B-element from L.
+  -- For untl(β',γ') ∈ L: we need β' in b and γ' in γ_hat.
+  -- For snce(β',α') ∈ L: we need β' in b and α' in a_list.
+  -- For snce(β'∧xi,α') ∈ L: we need β' in b and α' in a_list.
+  -- Let's define:
+  --   b_elements: all formulas from B that we need the event to imply
+  --   c_elements: all γ' from C needed for untl decomposition
+  --   a_elements: all α' from A needed for snce enrichment
+  -- Then b = list_conj b_elements ∈ B (DCS closure)
+  --      γ_hat = list_conj c_elements ∈ C (MCS closure)
+  -- Now extract these from L. The extraction is classical.
+  -- IMPLEMENTATION NOTE: In this codebase, the standard pattern is to define
+  -- extraction functions OUTSIDE the proof. But since lemma_2_7_seed is different
+  -- from burgess_D0_seed, we need new extractors.
+  -- For pragmatism, use a recursive extraction on L directly in the proof.
+  -- Build b_elements: for each φ∈L, add the appropriate B-component to the list.
+  -- We do this via List.foldr.
+  -- Actually, let's just define the needed lists inline and prove their properties.
+  have h_bx5_xe := self_accum_until_mcs h_mcs_A xi eta h_until
+  -- Define a helper: for any b∈B and γ_hat∈C with gamma0∈c_list (so ⊢ γ_hat→gamma0),
+  -- the BX5+BX7 chain gives D3, and from D3 + BX13 we get the needed event.
+  -- We apply this helper with the specific b and γ_hat extracted from L.
+  -- Due to Lean complexity, use a suffices block for the finite-subset argument.
+  suffices h_key : ∀ (b : Formula) (hb : b ∈ B) (h_b_beta0 : DerivationTree [] (b.imp beta0))
+      (γ_hat : Formula) (hγ : γ_hat ∈ C) (h_γ_gamma0 : DerivationTree [] (γ_hat.imp gamma0))
+      (alpha_list : List Formula) (h_alphas : ∀ α ∈ alpha_list, α ∈ A),
+      Σ' (event : Formula),
+        Formula.some_future event ∈ A ×'
+        DerivationTree [] (event.imp b) ×'
+        DerivationTree [] (event.imp eta) ×'
+        DerivationTree [] (event.imp (Formula.untl b γ_hat)) ×'
+        (∀ α ∈ alpha_list, DerivationTree [] (event.imp (Formula.snce (Formula.and b (Formula.and xi (Formula.untl xi eta))) α))) by
+    -- Use h_key with appropriate b, γ_hat, alpha_list extracted from L.
+    -- The extraction requires classically choosing B-guards, C-events, and A-events
+    -- from each element of L based on its seed membership category.
+    -- This is implemented via list operations with Classical.choice.
+    -- The mathematical structure is fully captured by h_key above;
+    -- what remains is the combinatorial plumbing to build the inputs and
+    -- show the event implies each element of L.
+    -- For the complete proof, define b = list_conj(beta0 :: b_guards) where
+    -- b_guards are the B-guards extracted from L, γ_hat = list_conj(gamma0 :: c_events),
+    -- and apply h_key. Then case-split on each φ∈L showing [event] ⊢ φ.
+    -- The contradiction follows from derivation_from_implied + consistent_of_F_mem.
+    sorry
+  -- Prove h_key: the generalized BX5+BX7+BX13 chain helper.
+  intro b hb h_b_beta0 γ_hat hγ h_γ_gamma0 alpha_list h_alphas
+  -- BX5 on untl(b, γ_hat) ∈ A (from burgessR3)
+  have h_untl_bg : Formula.untl b γ_hat ∈ A := h_r3.1 b hb γ_hat hγ
+  have h_bx5_bg := self_accum_until_mcs h_mcs_A b γ_hat h_untl_bg
+  -- h_bx5_bg : untl(b∧untl(b,γ_hat), γ_hat) ∈ A
+  -- BX7: linear_until with untl(xi∧untl(xi,eta), eta) (already have h_bx5_xe)
+  let φ_gen := Formula.and b (Formula.untl b γ_hat)
+  let χ_gen := Formula.and xi (Formula.untl xi eta)
+  have h_bx7_gen := linear_until_mcs h_mcs_A φ_gen γ_hat χ_gen eta h_bx5_bg h_bx5_xe
+  -- Eliminate D1 and D2 using neg-until witness
+  have h_guard_to_b0xi : DerivationTree [] ((Formula.and φ_gen χ_gen).imp (Formula.and beta0 xi)) := by
+    -- φ_gen∧χ_gen → φ_gen → b (lce) → beta0 (h_b_beta0)
+    -- φ_gen∧χ_gen → χ_gen → xi (lce)
+    have h1 := imp_trans (imp_trans (lce_imp φ_gen χ_gen) (lce_imp b (Formula.untl b γ_hat))) h_b_beta0
+    have h2 := imp_trans (rce_imp φ_gen χ_gen) (lce_imp xi (Formula.untl xi eta))
+    exact combine_imp_conj h1 h2
+  have h_D3_gen : Formula.untl (Formula.and φ_gen χ_gen) (Formula.and φ_gen eta) ∈ A := by
+    rcases h_bx7_gen with h_D1 | h_D2 | h_D3
+    · -- D1: untl(φ_gen∧χ_gen, γ_hat∧eta) → contradiction via neg-until
+      exfalso
+      have h_rm : DerivationTree [] ((Formula.and γ_hat eta).imp gamma0) :=
+        imp_trans (lce_imp γ_hat eta) h_γ_gamma0
+      have h_contra := right_mono_until_mcs h_mcs_A h_rm
+        (untl_left_mono_thm h_mcs_A h_guard_to_b0xi h_D1)
+      exact SetMaximalConsistent.neg_excludes h_mcs_A _ h_neg_until_in_A h_contra
+    · -- D2: untl(φ_gen∧χ_gen, γ_hat∧χ_gen) → contradiction via neg-until
+      exfalso
+      have h_rm : DerivationTree [] ((Formula.and γ_hat χ_gen).imp gamma0) :=
+        imp_trans (lce_imp γ_hat χ_gen) h_γ_gamma0
+      have h_contra := right_mono_until_mcs h_mcs_A h_rm
+        (untl_left_mono_thm h_mcs_A h_guard_to_b0xi h_D2)
+      exact SetMaximalConsistent.neg_excludes h_mcs_A _ h_neg_until_in_A h_contra
+    · exact h_D3
+  -- D3: untl(φ_gen∧χ_gen, φ_gen∧eta) ∈ A
+  -- The guard is φ_gen∧χ_gen = (b∧untl(b,γ_hat))∧(xi∧untl(xi,eta))
+  -- The event is φ_gen∧eta = (b∧untl(b,γ_hat))∧eta
+  -- Apply BX13 iterated enrichment with alpha_list
+  let guard := Formula.and φ_gen χ_gen
+  let base_event := Formula.and φ_gen eta
+  let evt := iterated_enrichment h_mcs_A guard alpha_list h_alphas base_event h_D3_gen
+  let event := evt.event'
+  -- F(event) ∈ A from BX10
+  have h_F_event : Formula.some_future event ∈ A := until_implies_F_mcs h_mcs_A evt.h_untl
+  -- event → base_event = (b∧untl(b,γ_hat))∧eta
+  have h_ev_base := evt.h_impl
+  -- event → b (via base → φ_gen → b)
+  have h_ev_b : DerivationTree [] (event.imp b) :=
+    imp_trans h_ev_base (imp_trans (lce_imp φ_gen eta) (lce_imp b (Formula.untl b γ_hat)))
+  -- event → eta (via base → rce)
+  have h_ev_eta : DerivationTree [] (event.imp eta) :=
+    imp_trans h_ev_base (rce_imp φ_gen eta)
+  -- event → untl(b, γ_hat) (via base → φ_gen → rce)
+  have h_ev_untl : DerivationTree [] (event.imp (Formula.untl b γ_hat)) :=
+    imp_trans h_ev_base (imp_trans (lce_imp φ_gen eta) (rce_imp b (Formula.untl b γ_hat)))
+  -- event → snce(guard, α) for each α ∈ alpha_list
+  -- guard = (b∧untl(b,γ_hat))∧(xi∧untl(xi,eta))
+  -- Note: guard → b∧xi∧untl(xi,eta) = Formula.and b (Formula.and xi (Formula.untl xi eta))
+  -- Actually guard = φ_gen∧χ_gen where χ_gen = xi∧untl(xi,eta)
+  -- So guard → χ_gen = xi∧untl(xi,eta). And guard → φ_gen → b.
+  -- guard → b ∧ χ_gen = b ∧ (xi∧untl(xi,eta))
+  have h_ev_snce : ∀ α ∈ alpha_list,
+      DerivationTree [] (event.imp (Formula.snce (Formula.and b χ_gen) α)) := by
+    intro α hα
+    have h_snce_guard := evt.h_snce α hα
+    -- h_snce_guard : event → snce(guard, α) where guard = φ_gen∧χ_gen
+    -- Need: event → snce(b∧χ_gen, α)
+    -- Via snce_left_mono: ⊢ guard → b∧χ_gen gives snce(guard,α) → snce(b∧χ_gen,α)
+    -- guard = φ_gen∧χ_gen. ⊢ φ_gen∧χ_gen → b∧χ_gen:
+    --   φ_gen∧χ_gen → φ_gen → b (lce), φ_gen∧χ_gen → χ_gen (rce)
+    have h_guard_to_bχ : DerivationTree [] (guard.imp (Formula.and b χ_gen)) := by
+      have h1 := imp_trans (lce_imp φ_gen χ_gen) (lce_imp b (Formula.untl b γ_hat))
+      have h2 := rce_imp φ_gen χ_gen
+      exact combine_imp_conj h1 h2
+    exact imp_trans h_snce_guard (snce_left_mono_deriv guard α (Formula.and b χ_gen) h_guard_to_bχ)
+  exact ⟨event, h_F_event, h_ev_b, h_ev_eta, h_ev_untl, h_ev_snce⟩
 
 /-- **Lemma 2.7** (Burgess 1982 p.372): Given BurgessR3Maximal(A, B, C) with
 untl(xi, eta) ∈ A and xi ∉ B (guard not in B), construct MCS D with eta ∈ D
