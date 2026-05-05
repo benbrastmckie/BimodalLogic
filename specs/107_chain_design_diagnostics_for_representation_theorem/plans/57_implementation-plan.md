@@ -69,7 +69,7 @@ Critical path: Phase 1 (2-3h) -> Phase 3 (4-5h) -> Phase 4 (7-9h) -> Phase 5 (3-
 
 ---
 
-### Phase 1: Revert Definition and Restructure [NOT STARTED]
+### Phase 1: Revert Definition and Restructure [COMPLETED]
 
 **Goal**: Revert `BurgessR3Maximal` maximality clause back to `SetDeductivelyClosed D`, eliminating the unprovable sorry at RRelation.lean:801. Restructure `BurgessR3Maximal_extension_fails` to require a consistency hypothesis. Update call sites.
 

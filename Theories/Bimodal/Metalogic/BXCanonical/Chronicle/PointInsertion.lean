@@ -561,24 +561,24 @@ theorem dc_delta_B_controlled {B : Set Formula} (h_dcs : SetDeductivelyClosed B)
       · exact h
     exact h_dcs.2 L phi hL_B hL_deriv
 
-/-- If BurgessR3Maximal(A, B, C) and delta not in B, the deductive closure of
-{delta} union B does NOT satisfy burgessR3(A, -, C).
-This works WITHOUT requiring {delta}∪B to be consistent, because the
-strengthened maximality clause is over ClosedUnderDerivation (not SetDeductivelyClosed). -/
+/-- If BurgessR3Maximal(A, B, C), delta not in B, and {delta}∪B is consistent,
+the deductive closure of {delta} union B does NOT satisfy burgessR3(A, -, C).
+Requires consistency because the maximality clause is over SetDeductivelyClosed. -/
 theorem BurgessR3Maximal_extension_fails {A B C : Set Formula}
     (h_R3M : BurgessR3Maximal A B C)
-    {delta : Formula} (h_delta_not : delta ∉ B) :
+    {delta : Formula} (h_delta_not : delta ∉ B)
+    (h_cons : SetConsistent ({delta} ∪ B)) :
     ¬burgessR3 A (deductiveClosure ({delta} ∪ B)) C := by
   intro h_r3
-  have h_cud : ClosedUnderDerivation (deductiveClosure ({delta} ∪ B)) :=
-    deductiveClosure_closed_under_derivation _
+  have h_dcs : SetDeductivelyClosed (deductiveClosure ({delta} ∪ B)) :=
+    deductiveClosure_is_dcs h_cons
   have h_sub : B ⊆ deductiveClosure ({delta} ∪ B) :=
     fun phi hphi => subset_deductiveClosure _ (Set.mem_union_right _ hphi)
   have h_delta_in : delta ∈ deductiveClosure ({delta} ∪ B) :=
     subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton delta))
   have h_proper : B ⊂ deductiveClosure ({delta} ∪ B) :=
     ⟨h_sub, fun h_eq => h_delta_not (h_eq h_delta_in)⟩
-  exact h_R3M.2.2 _ h_cud h_proper h_r3
+  exact h_R3M.2.2 _ h_dcs h_proper h_r3
 
 /-- If both until and since conditions hold for delta extension of B,
 then DC({delta} union B) satisfies burgessR3(A, -, C). -/
@@ -700,6 +700,18 @@ private theorem neg_mem_of_inconsistent_union {B : Set Formula}
   have d_neg : DerivationTree M φ.neg := deduction_theorem M φ Formula.bot d_w
   -- By DCS closure: φ.neg ∈ B — contradiction
   exact h_neg_not_B (h_dcs.2 M φ.neg hM_sub_B d_neg)
+
+/-- **Unified interface**: Given BurgessR3Maximal(A, B, C) and delta ∉ B,
+EITHER delta.neg ∈ B (when {delta}∪B is inconsistent)
+OR ¬burgessR3(A, DC({delta}∪B), C) (when {delta}∪B is consistent).
+This handles both branches that callers need. -/
+theorem BurgessR3Maximal_neg_or_ext_fails {A B C : Set Formula}
+    (h_R3M : BurgessR3Maximal A B C)
+    {delta : Formula} (h_delta_not : delta ∉ B) :
+    delta.neg ∈ B ∨ ¬burgessR3 A (deductiveClosure ({delta} ∪ B)) C := by
+  by_cases h_cons : SetConsistent ({delta} ∪ B)
+  · exact Or.inr (BurgessR3Maximal_extension_fails h_R3M h_delta_not h_cons)
+  · exact Or.inl (neg_mem_of_inconsistent_union h_R3M.1 h_cons)
 
 /-- B is a proper subset of Set.univ when B is consistent. -/
 private theorem dcs_ssubset_univ {B : Set Formula}
@@ -2006,7 +2018,7 @@ private theorem burgess_D0_seed_consistent {A B C : Set Formula}
   by_cases h_cons : SetConsistent ({β} ∪ B)
   · -- Case: {β} ∪ B is consistent
     -- By maximality, DC({β} ∪ B) does not satisfy burgessR3
-    have h_not_r3 := BurgessR3Maximal_extension_fails h_r3m h_β_not_B
+    have h_not_r3 := BurgessR3Maximal_extension_fails h_r3m h_β_not_B h_cons
     -- Extract Until condition failure (the only thing that CAN fail is the Until direction,
     -- since the Since direction requires the unprovable condition).
     -- Actually, ¬burgessR3 means ¬(burgessRSet ∧ burgessRSetSince).
