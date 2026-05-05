@@ -656,13 +656,13 @@
     {
       "project_number": 107,
       "project_name": "chain_design_diagnostics_for_representation_theorem",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Design diagnostics for a modified chain construction that supports a mathematically correct representation theorem for TM bimodal logic. Six rounds of team research completed on until_alt branch, identifying Burgess 1982 chronicle construction as the correct approach. Key findings: (1) A3a/A4a NOT derivable under reflexive semantics, (2) strict G/H semantics (already on irr_until branch) enable direct application of Burgess proof, (3) Box+G+H-only representation theorem is a quick-win entry point (8-15h), (4) full Burgess chronicle construction for Until/Since estimated 60-90h additional.",
       "created": "2026-04-23T22:39:08Z",
-      "last_updated": "2026-05-05T00:02:50Z",
+      "last_updated": "2026-05-05T00:13:34Z",
       "researched": "2026-05-05T00:02:50Z",
       "related_tasks": [
         93
@@ -1038,11 +1038,6 @@
           "summary": "Complete step-by-step Burgess (1982) construction: 2.1-2.11 decomposed into atomic implementable steps, with code status mapping"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/58_implementation-plan.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan for Burgess 1982 chronicle construction on irr_until branch, closing all 12 sorries across PointInsertion.lean (3), CounterexampleElimination.lean (7), and ChronicleToCountermodel.lean (2)"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/01_phase2-mathematical-gap.md",
           "type": "handoff",
           "summary": "Phase 2 mathematical gap: Sub-case B contradiction approach invalid without density axiom"
@@ -1051,9 +1046,14 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/56_phase2-resolution.md",
           "type": "report",
           "summary": "Phase 2 resolution: strengthen BurgessR3Maximal maximality from SetDeductivelyClosed to ClosedUnderDerivation, matching Burgess 1982"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md",
+          "type": "plan",
+          "summary": "Revised 7-phase plan: definition fix, unified Lemma 2.6, Lemma 2.7 BX7, C4/C5 g-values, C4 hard cases, limit C5 full + FUC/FSC, final audit (22-30h)"
         }
       ],
-      "session_id": "sess_1777938108_72f75f",
+      "session_id": "sess_1777939482_1f2bf7",
       "started": "2026-04-25T19:11:01Z",
       "researching": "2026-05-04T16:20:36Z",
       "implementing": "2026-05-04T18:19:48Z",

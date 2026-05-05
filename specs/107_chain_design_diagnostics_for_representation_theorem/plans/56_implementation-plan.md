@@ -1,410 +1,308 @@
-# Implementation Plan: Task #107 — Burgess-Faithful Chronicle Construction (Revised)
+# Implementation Plan: Task #107 — Chronicle Construction (Revised with Definition Fix)
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
-- **Status**: [IN PROGRESS]
-- **Effort**: 28-38 hours
-- **Dependencies**: Plans 01-55 (iterative refinement); research reports
-- **Research Inputs**:
-  - `reports/burgess-24-26-analysis.md` — Lemma 2.4/2.6 exact mapping
-  - `reports/burgess-27-analysis.md` — Lemma 2.7 BX7 chain exact mapping
-  - `reports/burgess-29-210-analysis.md` — C4/C5 elimination exact mapping
-  - `reports/burgess-211-limit-analysis.md` — Limit construction & Claim 2.11 mapping
+- **Status**: [NOT STARTED]
+- **Effort**: 22-30 hours
+- **Dependencies**: None (self-contained within Chronicle/)
+- **Research Inputs**: reports/56_phase2-resolution.md (root cause analysis of Phase 2 blocker)
 - **Artifacts**: plans/56_implementation-plan.md (this file)
-- **Standards**: plan-format.md; status-markers.md; artifact-management.md; tasks.md
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
 
 ## Overview
 
-This revised plan addresses the single root cause identified by four-agent parallel research: **g-values are never populated during finite-stage elimination steps**. While our codebase's flat direct-construction approach for C4/C5 elimination is mathematically equivalent to Burgess's induction, the failure to assign `g` at new adjacent pairs breaks the C2' invariant, prevents C5a from being proved at the limit, and blocks FUC/FSC. The fix is strictly local: construct `g` at each elimination branch, thread C2', and prove limit properties following Burgess 1982 Sections 2.9-2.11. No elimination algorithm is rewritten.
+Close all 12 remaining sorries across PointInsertion.lean (3), CounterexampleElimination.lean (7), and ChronicleToCountermodel.lean (2) by first fixing the `BurgessR3Maximal` definition to match Burgess 1982 (strengthening the maximality clause from `SetDeductivelyClosed D` to `ClosedUnderDerivation D`), then implementing the uniform proof approach that eliminates the inconsistent case entirely. The definition fix unblocks Phase 2 from the prior plan by allowing `BurgessR3Maximal_extension_fails` to work without a consistency hypothesis, making BX14 witnesses available in all cases.
 
 ### Research Integration
 
-Four parallel research agents mapped every Burgess lemma to our Lean codebase. The synthesis confirms:
-- **What matches**: Lemma 2.4, 2.7 seed, limit domain/f, C3 at limit, BX axiom substitutions.
-- **Critical deviations (fixable)**: (1) g-values never constructed in eliminations, (2) C5 output misused (`η ∈ C` vs `η ∈ B`), (3) c2' removed from finite omega-chain, (4) `C5Counterexample` checks wrong condition.
-- **Root cause**: g-population is the structural fix that unblocks 22/29 sorries.
+Report 56 identifies the root cause of the Phase 2 blocker: the maximality clause in `BurgessR3Maximal` (ChronicleTypes.lean:323) restricts maximality to `SetDeductivelyClosed D` (which requires consistency), whereas Burgess 1982 Section 2.3 uses ALL deductively closed sets (including inconsistent ones like `Set.univ`). The fix: change `SetDeductivelyClosed D` to `ClosedUnderDerivation D` in the maximality clause. This makes the proof uniform -- no consistent/inconsistent case split is needed, and the `burgess_D0_finite_subset_consistent_incons` function (lines 1811-1976) becomes deletable.
 
-## Phase Renumbering Note
+### Prior Plan Reference
 
-**This plan was reordered on 2026-05-03 to reflect actual dependency order.**
+Plan 58 had 8 phases. Phase 1 (foundation audit) was marked [PARTIAL] and Phase 6 (omega_chain c2' threading) was [COMPLETED]. Phase 2 (Lemma 2.6 inconsistent case) was BLOCKED by the mathematical gap that research report 56 resolves. Effort calibration from plan 58: Lemma 2.7 is the hardest theorem at 4-5 hours; C4/C5 co-construction takes 6-8 hours; limit C5 full + FUC/FSC takes 6-8 hours. The validated approach for Phases 3-8 is preserved with adjustments. The omega_chain c2' threading (old Phase 6) is already done and does not need a new phase.
 
-| New Phase | Old Phase | Name |
-|---|---|---|
-| 1 | 3 | Close PointInsertion.lean Remaining Sorries |
-| 2 | 6 | Implement Lemma 2.7 Seed Consistency |
-| 3 | 1 | Populate g-Values in Elimination Functions |
-| 4 | 2 | Prove c2' for All Elimination Branches |
-| 5 | 4 | Close C4/C4' Hard Cases (C11/C12) |
-| 6 | 5 | Thread c2' Through omega_chain |
-| 7 | 7 | Prove limit_satisfies_c5_full and limit_satisfies_c5'_full |
-| 8 | 8 | Close FUC/FSC and Final Audit |
+### Roadmap Alignment
+
+No ROADMAP.md found.
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Populate g-values for all new adjacent pairs created during C4/C5/C4'/C5'/density elimination (Burgess 2.9, 2.10).
-- Thread the C2' invariant through the finite omega-chain (Burgess 2.10).
-- Prove `limit_satisfies_c5_full` and `limit_satisfies_c5'_full` using g-value persistence and C3 (Burgess 2.11).
-- Close all remaining 29 sorries in `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`.
+- Fix `BurgessR3Maximal` definition to match Burgess 1982 (maximality over `ClosedUnderDerivation`)
+- Close all 12 sorries: 3 in PointInsertion.lean, 7 in CounterexampleElimination.lean, 2 in ChronicleToCountermodel.lean
+- Delete the unnecessary `burgess_D0_finite_subset_consistent_incons` function (~170 lines)
+- Deliver fully sorry-free `dd_countermodel_chronicle`
 
 **Non-Goals**:
-- Rewrite C4/C5 elimination with Burgess's induction structure (flat approach is equivalent and preserved).
-- Introduce new axioms or novel proof approaches.
-- Modify limit domain/f construction or the existing sorry-free C3 proof.
+- Rewrite the elimination algorithm structure (flat approach is equivalent to Burgess's induction)
+- Introduce new axioms or change semantics
+- Modify limit_dom, limit_f, limit_g, limit_c3 (all already sorry-free)
+- Add Lemma 2.8 as a separate theorem (absorbed into Lemma 2.7 via strengthened gamma)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| `guard_in_r_maximal` lemma is unprovable | Blocks Phase 7 | Medium | Prove a weaker variant sufficient for C5a; document gap if necessary |
-| g-value construction breaks function signatures | High build churn | High | Commit after each elimination function modification; fix call sites incrementally |
-| C4 Hard cases remain blocked even with g-populated | Delays Phase 5 | Low | Use `burgessR3_gamma_not_in_B` + `lemma_2_6_splitting` with β = γ |
+| Zorn construction proof needs update for stronger maximality | Delays Phase 1 by 2-3h | Medium | Alternative: add `neg burgessR3 A Set.univ C` as hypothesis (provable at all call sites) |
+| Lemma 2.7 BX7 three-way combinatorially blocked | Delays Phase 3 by 3-5h | Medium | Use `lce_imp`/`rce_imp` for propositional simplifications; existing left/right mono tools |
+| g-value construction breaks all call sites | Build churn | High | Commit after each elimination function change; fix call sites incrementally |
+| `finite_stage_guard_in_g` lemma unprovable (Phase 6) | Blocks limit C5a | Low | Direct approach: use limit_g definition + c2' invariant to show guard universally present |
+| Downstream uses of BurgessR3Maximal broken by definition change | Build errors in Phase 1 | Low | The change is strictly MORE permissive in the maximality clause; all existing uses remain valid |
 
-## Dependency Analysis
+## Implementation Phases
+
+**Dependency Analysis**:
 
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 1, 2 | -- |
-| 2 | 3 | 2 |
-| 3 | 4, 5 | 3 |
-| 4 | 6 | 4 |
-| 5 | 7 | 6 |
-| 6 | 8 | 7 |
+| 1 | 1 | -- |
+| 2 | 2, 3 | 1 |
+| 3 | 4 | 2, 3 |
+| 4 | 5 | 4 |
+| 5 | 6 | 5 |
+| 6 | 7 | 6 |
 
-Phases within the same wave can execute in parallel.
+Phases within the same wave can execute in parallel. Phases 2 and 3 are independent (both only need Phase 1). Phases 4-7 are sequential on the critical path.
+
+Critical path: Phase 1 (2-3h) -> Phase 3 (4-5h) -> Phase 4 (7-9h) -> Phase 5 (3-4h) -> Phase 6 (5-7h) -> Phase 7 (1-2h) = 22-30h.
 
 ---
 
-### Phase 1: Close PointInsertion.lean Remaining Sorries [BLOCKED]
+### Phase 1: Definition Fix and Foundation [NOT STARTED]
 
-**(Previously Phase 3)**
-
-**Goal**: Close the 2 remaining sorries (lines ~1872, ~1873) in `burgess_D0_finite_subset_consistent_incons`.
-
-**Blocker**: The plan's approach (`guard_destruct` on `event → q`) is INCORRECT. The enrichment gives `event → γ_hat` (the base), NOT `event → q` (the guard). Under OPEN GUARD semantics (this codebase), the guard `q = b ∧ untl(b, γ_hat)` only holds at intermediate points, not at the event point. There is no `guard_destruct` function.
-
-The BX14 separation approach (used in the consistent case) requires `¬untl(b∧β, γ_hat) ∈ A`, which cannot be derived in the inconsistent case because `untl(⊥, γ_hat)` is satisfiable under open guard semantics (vacuously true in discrete orders where the open interval is empty). This differs from Burgess 1982 which uses CLOSED guard semantics where `untl(⊥, γ_hat)` is provably false.
-
-**Required fix**: Extract BX14 maximality witnesses (`β₀∈B, γ₀∈C, ¬untl(β₀∧β, γ₀) ∈ A`) for the inconsistent case. This requires a nontrivial by-contradiction argument: assuming all `untl(β₀∧β, γ₀) ∈ A`, derive `untl(φ, γ₀) ∈ A` for ALL φ via left_mono with `⊢(β.neg∧β)→⊥` and `⊢⊥→φ`, then find a consistent proper DCS extension of B satisfying burgessR3, contradicting BurgessR3Maximal. The witness extraction must handle the case where B is MCS (no consistent proper extension exists) separately, possibly requiring a fundamentally different proof strategy.
-
-**Refined Fix (from research round 2)**:
-
-Case split on MCS A membership: either `¬untl(b∧β, γ_hat) ∈ A` or `untl(b∧β, γ_hat) ∈ A`.
-
-- **Sub-case A** (`¬untl(b∧β, γ_hat) ∈ A`): Directly reuse `burgess_zeta_consistent` (line 1251).
-  This function takes `h_neg_until` and produces all five components (`event → b`, `event → β.neg`,
-  `event → untl(b, γ_hat)`, `event → snce(b, α)`, `F(event) ∈ A`). It does NOT require
-  `SetConsistent({β}∪B)` internally. Straightforward, ~1-2 hours.
-
-- **Sub-case B** (`untl(b∧β, γ_hat) ∈ A`): Research problem. Since `b → β.neg` implies
-  `⊢ (b∧β) → ⊥`, left_mono gives `untl(⊥, γ_hat) ∈ A` and hence `∀ψ, untl(ψ, γ_hat) ∈ A`
-  (via ex falso + left_mono). BX7 on this + `untl(q, γ_hat)` gives D1∨D2∨D3. D2 is eliminated
-  (event = `γ_hat ∧ (b∧β)` is provably ⊥, BX10 → F(⊥) ∈ A contradicts G(⊤) ∈ A). If D3
-  is in A, it gives `untl(⊥_equiv, q ∧ γ_hat) ∈ A`, then left_mono (ex falso) → `untl(b, q ∧ γ_hat) ∈ A`,
-  BX5 + BX13 enrichment → event with `event → q ∧ γ_hat → b`. **Gap**: BX7 doesn't force
-  D3 into A (D1 is trivially satisfied). Requires further research.
+**Goal**: Fix the `BurgessR3Maximal` definition, update the Zorn construction proof, remove the `h_cons` hypothesis from `BurgessR3Maximal_extension_fails`, add `deductiveClosure_closed_under_derivation` lemma, and verify the build passes with no regressions.
 
 **Tasks**:
-- [ ] **Task 1.1**: Implement Sub-case A (negation available → `burgess_zeta_consistent`)
-- [ ] **Task 1.2**: Research and implement Sub-case B (affirmative case)
+- [ ] **Task 1.1**: Change `BurgessR3Maximal` maximality clause (ChronicleTypes.lean:323) from `SetDeductivelyClosed D` to `ClosedUnderDerivation D`. The first two conjuncts remain unchanged (`SetDeductivelyClosed B` and `burgessR3 A B C`).
+- [ ] **Task 1.2**: Add lemma `deductiveClosure_closed_under_derivation` in RRelation.lean proving that `deductiveClosure S` is always `ClosedUnderDerivation` (regardless of consistency). Derive from existing `deductiveClosure_closed` (RRelation.lean:156-189).
+- [ ] **Task 1.3**: Update `burgessR3Maximal_extension_exists` (RRelation.lean:724-765) for the stronger maximality. The Zorn-maximal B over `burgessR3DCSExtensions` (consistent DCSs) must also be maximal over all `ClosedUnderDerivation` sets. Proof strategy: if D is `ClosedUnderDerivation` with `B subset D` and `burgessR3(A,D,C)`, case split on D's consistency. If D consistent: D is DCS, contradicts Zorn maximality. If D inconsistent: `burgessR3_univ_of_inconsistent_ext` (PointInsertion.lean:719, already proved) shows `burgessR3(A, Set.univ, C)` holds; `dcs_ssubset_univ` (line 703) gives `B subset Set.univ`; maximality over consistent DCSs gives contradiction (since any consistent DCS extending B would inherit burgessR3 from Set.univ by anti-monotonicity of burgessR3).
+- [ ] **Task 1.4**: Remove `h_cons` hypothesis from `BurgessR3Maximal_extension_fails` (PointInsertion.lean:566-579). New proof: `deductiveClosure ({delta} union B)` is `ClosedUnderDerivation` (from Task 1.2), and `B subset deductiveClosure({delta} union B)` proper (since delta in DC but not in B). Apply the strengthened maximality clause directly.
+- [ ] **Task 1.5**: Update all call sites of `BurgessR3Maximal_extension_fails` that currently pass `h_cons`. Remove the consistency argument at each site. Verify `lake build` passes.
+- [ ] **Task 1.6**: Verify the existing `g_content_sub_B` proof (PointInsertion.lean:744-756) still works -- it already uses the inconsistent-case strategy via `burgessR3_univ_of_inconsistent_ext` + `Set.univ` + maximality over `ClosedUnderDerivation`.
 
-**Timing**: Sub-case A: 1-2 hours. Sub-case B: 4-8 hours (research + implementation).
+**Timing**: 2-3 hours
 
-**Depends on**: Plan revision needed.
+**Depends on**: none
+
+**Files to modify**:
+- `ChronicleTypes.lean:323` - Change maximality clause
+- `RRelation.lean` - Add `deductiveClosure_closed_under_derivation`; update `burgessR3Maximal_extension_exists`
+- `PointInsertion.lean:566-579` - Remove `h_cons` from `BurgessR3Maximal_extension_fails`
+- `PointInsertion.lean` - Update call sites
 
 **Verification**:
-- `burgess_D0_finite_subset_consistent_incons` compiles sorry-free.
-- `lake build` succeeds.
+- `lake build` passes with no new errors
+- `BurgessR3Maximal_extension_fails` no longer requires consistency hypothesis
+- Existing proofs using BurgessR3Maximal compile unchanged (the change is strictly more permissive)
 
 ---
 
-### Phase 2: Implement Lemma 2.7 Seed Consistency [NOT STARTED]
+### Phase 2: Lemma 2.6 — Unified Seed Consistency [NOT STARTED]
 
-**(Previously Phase 6)**
+**Goal**: Close the 2 sorries at PointInsertion.lean:1872-1873 by eliminating the inconsistent case entirely. With the definition fix, `BurgessR3Maximal_extension_fails` works without `h_cons`, so the BX14 chain applies uniformly. Delete `burgess_D0_finite_subset_consistent_incons` (lines 1811-1976).
 
-**Goal**: Close `lemma_2_7_seed_consistent` (line 2414) using the BX7 chain mapped exactly by research.
+**Paper reference**: Burgess Section 2.6, p.370-371 (D0 seed consistency, now uniform)
 
 **Tasks**:
-- [ ] **Task 2.1**: Implement `lemma_2_7_neg_untl_exists` (extract witness)
-  - Use `BurgessR3Maximal_extension_fails` + `dc_delta_B_controlled`.
-  - Burgess 2.7, witness extraction.
-  - Difficulty: Medium (~1.5h)
+- [ ] **Task 2.1**: In `burgess_D0_seed_consistent` (line 1985-2004), remove the `by_cases h_cons` split. Replace with the single uniform proof path: call `BurgessR3Maximal_extension_fails` (no consistency argument needed) to get `neg burgessR3(A, DC({beta} union B), C)`, then extract Until-direction witness `beta0, gamma0` with `neg untl(beta0 and beta, gamma0) in A`.
+- [ ] **Task 2.2**: Chain BX5 + BX14 + BX13 + BX10 to produce the enriched event (same as current consistent case at lines 2044-2143). The event contains `b` and `untl(b, gamma_hat)` as components, so `h_ev_b` and `h_ev_untl` are trivial conjunction eliminations.
+- [ ] **Task 2.3**: Prove `SetConsistent ({beta.neg} union B)` for the `burgess_D0_finite_subset_consistent` call. Two sub-cases: if `{beta} union B` was consistent, then beta not in B and B DCS gives `beta.neg not in B` so `{beta.neg} union B` consistent by DNE argument; if `{beta} union B` was inconsistent, then `beta.neg in B` so `{beta.neg} union B = B` which is consistent.
+- [ ] **Task 2.4**: Delete `burgess_D0_finite_subset_consistent_incons` (lines 1811-1976) and its call site in `burgess_D0_seed_consistent`. Clean up any unused helper functions.
+- [ ] **Task 2.5**: Verify `lemma_2_6_splitting` (line 2328) still compiles and the sorry count for PointInsertion.lean drops from 3 to 1.
 
-- [ ] **Task 2.2**: Verify `linear_until_mcs` wrapper (trivial)
-  - Apply `theorem_in_mcs` + `conj_mcs` for BX7 at MCS level.
-  - Difficulty: Easy (~15 min)
+**Timing**: 2-3 hours
 
-- [ ] **Task 2.3**: Implement `lemma_2_7_disjunct_elim_D1`
-  - D1 contains `γ_hat ∧ eta` in event. By right mono and witness, contradicts `¬untl(β₀∧eta, γ₀)`.
-  - Key: `gamma₀` is in the C-event list, so `γ_hat → gamma₀` via conjunction elimination.
-  - Burgess 2.7, A7a/BX7 disjunct elimination.
-  - Difficulty: Medium (~1.5h)
+**Depends on**: 1
 
-- [ ] **Task 2.4**: Implement `lemma_2_7_disjunct_elim_D2` (mirror with `xi`)
-  - Uses same witness + monotonicity argument.
-  - Difficulty: Medium (~1.5h)
+**Files to modify**:
+- `PointInsertion.lean:1811-1976` - Delete `burgess_D0_finite_subset_consistent_incons`
+- `PointInsertion.lean:1985-2319` - Unify `burgess_D0_seed_consistent` to single path
 
-- [ ] **Task 2.5**: Orchestrate `lemma_2_7_seed_consistent`
-  - Follow the TODO comment's 10-step structure (lines 2393-2403).
-  - Steps: (1) witness, (2) BX5 on `untl(b,γ_hat)`, (3) BX5 on `untl(xi,eta)`, (4) BX7, (5-6) eliminate D1/D2, (7) surviving D3, (8) BX14 separation, (9) BX13 enrichment + BX10, (10) seed consistency.
-  - Difficulty: Hard (~2-3h)
+**Verification**:
+- `PointInsertion.lean` sorry count: 3 -> 1 (only `lemma_2_7_seed_consistent` remains)
+- `lake build` passes
+- `lemma_2_6_splitting` compiles
+
+---
+
+### Phase 3: Lemma 2.7 — Seed Consistency (BX7 Three-Way) [NOT STARTED]
+
+**Goal**: Implement `lemma_2_7_seed_consistent` (PointInsertion.lean:2414). This is the hardest single theorem -- the BX7 three-way disjunction with D1/D2 elimination.
+
+**Paper reference**: Burgess Section 2.7, p.372 (Until-formula splitting with BX7 three-way disjunction)
+
+**Tasks**:
+- [ ] **Task 3.1**: Implement witness extraction -- from `eta not in B` + BurgessR3Maximal (now with stronger maximality), call `BurgessR3Maximal_extension_fails` (no h_cons needed) to extract `beta0 in B, gamma0 in C` with `neg untl(beta0 and eta, gamma0) in A`. Use `dc_delta_B_controlled` for the extraction.
+- [ ] **Task 3.2**: Apply BX5 self-accumulation on both Until formulas: `untl(beta0 and untl(beta0,gamma0), gamma0) in A` and `untl(xi and untl(xi,eta), eta) in A`.
+- [ ] **Task 3.3**: Apply BX7 three-way disjunction (`linear_until_mcs`) to produce D1 or D2 or D3 in A (by MCS disjunction property).
+- [ ] **Task 3.4**: Eliminate D1 -- left_mono on event containing `eta and gamma0` reduces to `gamma0`, right_mono on guard theta to `beta0 and eta` gives `untl(gamma0, beta0 and eta) in A`, contradicting the witness.
+- [ ] **Task 3.5**: Eliminate D2 -- similar left_mono + right_mono argument (mirror of D1).
+- [ ] **Task 3.6**: Work with surviving D3. Apply right_mono to reduce guard from theta to `beta0 and eta`. Apply BX14 separation with witness `neg untl(gamma0, beta0 and eta) in A`, then BX13 iterated enrichment to pack snce-formulas, then BX10 for F(event) in A.
+- [ ] **Task 3.7**: Assemble proof: show event implies all 5 seed components (B-elements via b conjunction, xi from event component, untl/snce formulas via mono). Close `lemma_2_7_seed_consistent` and verify `lemma_2_7` (line 2416) compiles.
 
 **Timing**: 4-5 hours
 
-**Depends on**: None (independent, but needed for Phase 3 C5 inductive case).
+**Depends on**: 1
+
+**Files to modify**:
+- `PointInsertion.lean:2414` - Replace sorry with full proof
 
 **Verification**:
-- `lemma_2_7_seed_consistent` compiles sorry-free.
-- `lake build` succeeds.
+- `PointInsertion.lean` sorry count: 1 -> 0
+- `lemma_2_7` (line 2416) compiles
+- `lake build` passes
 
 ---
 
-### Phase 3: Populate g-Values in Elimination Functions [IN PROGRESS]
+### Phase 4: C4/C5 Elimination — Co-Constructed g-Values and c2' [NOT STARTED]
 
-**(Previously Phase 1)**
+**Goal**: Rewrite C4, C4', C5, C5' elimination functions in CounterexampleElimination.lean to populate g-values at new adjacent pairs, then close all 5 c2' sorries (lines 756, 794, 834, 872, 918). After this phase, g-values at new adjacent pairs satisfy `BurgessR3Maximal` and the c2' invariant is maintained.
 
-**Status**: Exploration completed; implementation NOT started.
-
-**What has been done**:
-- Phase marker changed to [IN PROGRESS] by subagent.
-- Subagent explored all 5 elimination functions and confirmed: **g-values are never populated** — every active branch returns `χ.g` unchanged.
-- `eliminate_potential_counterexample` signature correctly requires `h_c2'` parameter (structural prerequisite).
-- No-elimination branches preserve `c2'` via `exact h_c2'` (lines 768, 806, 845, 883, 931).
-- Build passes.
-- **None of the actual g-population tasks below were implemented.**
-
-**Goal**: Make each elimination function construct g-values for new adjacent pairs, per Burgess Sections 2.9 (C4) and 2.10 (C5).
+**Paper reference**: Burgess Sections 2.9 (p.373) and 2.10 (p.374)
 
 **Tasks**:
-- [ ] **Task 3.1**: Modify `eliminate_C5_counterexample` (Burgess 2.10, C5a base case)
-  - Extract interval `B` (not endpoint `C`) from `lemma_2_4` output.
-  - Construct `g'` where `g'(x,y) = B` for the NEW adjacent pair.
-  - For OLD adjacent pairs, preserve `χ.g` via `h_c2'`.
-  - Difficulty: Medium (~1.5h)
+- [ ] **Task 4.1**: Rewrite `eliminate_C5_counterexample` (line 167) -- extract B from `lemma_2_4`, set `g'(x, y) = B`. Update return type to allow g_changed for the new pair.
+- [ ] **Task 4.2**: Rewrite `eliminate_C5'_counterexample` -- mirror for Since.
+- [ ] **Task 4.3**: Rewrite `eliminate_C4_counterexample` (line 304) -- call `lemma_2_6_splitting`, set `g'(x,z)=B'`, `g'(z,y)=B''`. Handle easy cases with `burgessR3Maximal_singleton`.
+- [ ] **Task 4.4**: Rewrite `eliminate_C4'_counterexample` -- mirror for Since.
+- [ ] **Task 4.5**: Fix call sites in `eliminate_potential_counterexample` and `omega_chain`. Verify compilation.
+- [ ] **Task 4.6**: Close C5 forward c2' (line 756) -- use Task 4.1 output (BurgessR3Maximal from lemma_2_4).
+- [ ] **Task 4.7**: Close C5' backward c2' (line 794) -- mirror.
+- [ ] **Task 4.8**: Close C4 forward c2' (line 834) -- from lemma_2_6_splitting output, handle old pairs (inherit) and new pairs.
+- [ ] **Task 4.9**: Close C4' backward c2' (line 872) -- mirror.
+- [ ] **Task 4.10**: Close density c2' (line 918) -- new point copies f(x); prove maximality for both new adjacent pairs.
 
-- [ ] **Task 3.2**: Modify `eliminate_C5'_counterexample` (mirror for Since)
-  - Symmetric mirror of Task 3.1.
-  - Burgess 2.10, C5b.
-  - Difficulty: Medium (~1h)
+**Timing**: 7-9 hours
 
-- [ ] **Task 3.3**: Modify `eliminate_C4_counterexample` (Burgess 2.9, C4a base case)
-  - When inserting midpoint `z`, construct `g'` where:
-    - `g'(x,z) = B'` from `lemma_2_6_splitting`
-    - `g'(z,y) = B''` from `lemma_2_6_splitting`
-    - For OLD non-adjacent pair `(x,y)` now split, update via C3: `g'(x,y) = g'(x,z) ∩ f(z) ∩ g'(z,y)`.
-    - For other pairs involving `z`, determine by C3.
-  - Difficulty: Hard (~2.5h)
+**Depends on**: 2, 3
 
-- [ ] **Task 3.4**: Modify `eliminate_C4'_counterexample` (mirror)
-  - Symmetric mirror of Task 3.3.
-  - Difficulty: Hard (~1.5h)
-
-- [ ] **Task 3.5**: Handle density insertion g-population
-  - Use `burgessR3Maximal_from_g_content_sub` to construct g-values for new adjacent pairs.
-  - Burgess 2.9/2.10, density case (n = m + 1).
-  - Difficulty: Medium (~1h)
-
-- [ ] **Task 3.6**: Verify old adjacent pair C3 consistency after splitting
-  - When a new point splits an old adjacent pair `(x,y)`, adjacency is broken; `g(x,y)` should now be determined by C3 intersection.
-  - Difficulty: Medium (~1h)
-
-**Timing**: 6-8 hours
-
-**Depends on**: Phase 2 (Lemma 2.7 seed provides C5 inductive case g-construction lemmas).
+**Files to modify**:
+- `CounterexampleElimination.lean:167` - Rewrite C5 elimination
+- `CounterexampleElimination.lean:304` - Rewrite C4 elimination
+- `CounterexampleElimination.lean:756,794,834,872,918` - Close c2' sorries
 
 **Verification**:
-- Each elimination produces a `Chronicle` with populated g-values.
-- `lake build` succeeds after each modification (commit incrementally).
-
-**Sorries introduced by this incompletion**: 5 active-branch c2' sorries remain in `CounterexampleElimination.lean` (lines 756, 794, 834, 872, 918). These block Phase 4.
+- `CounterexampleElimination.lean` sorry count: 7 -> 2 (C4 hard cases remain)
+- All four elimination functions compile with populated g-values
+- `omega_chain` compiles with c2' invariant
 
 ---
 
-### Phase 4: Prove c2' for All Elimination Branches [PARTIAL]
+### Phase 5: C4 Hard Cases — BurgessR3 Bridging [NOT STARTED]
 
-**(Previously Phase 2)**
+**Goal**: Close the 2 hard-case sorries at CounterexampleElimination.lean lines 412 (C4 forward) and 510 (C4' backward).
 
-**Status**: Task 4.1 completed by subagent (trivial branches only).
-
-**Completed**:
-- [x] **Task 4.1**: Trivial no-elimination c2' (5 sorries) — `by exact h_c2'`
-  - Done: CounterexampleElimination lines 768, 806, 845, 883, 931
-  - Git commit: `18af0e06` "task 107: partial implementation — Phase 2 task 2.1 complete"
-
-**Remaining** (blocked by Phase 3 g-population):
-- [ ] **Task 4.2**: C5 forward elimination c2' — forward `lemma_2_4` output (BurgessR3Maximal)
-- [ ] **Task 4.3**: C5 backward elimination c2' — mirror
-- [ ] **Task 4.4**: C4 forward elimination c2' — forward `lemma_2_6_splitting` B' and B''
-- [ ] **Task 4.5**: C4 backward elimination c2' — mirror
-- [ ] **Task 4.6**: Density forward c2' — from `burgessR3Maximal_from_g_content_sub`
-- [ ] **Task 4.7**: Density backward c2' — mirror
-
-**Blocker**: The 5 active elimination branches still lack g-population. The c2' sorries at lines 756, 794, 834, 872, 918 require g-values to be populated in the inner elimination functions first.
-
-**Timing**: ~2 hours once Phase 3 is complete.
-
-**Depends on**: Phase 3 (g-values actually present in eliminations).
-
-**Verification**:
-- All c2' sorries in `CounterexampleElimination.lean` closed.
-- `lake build` succeeds.
-
----
-
-### Phase 5: Close C4/C4' Hard Cases (C11/C12) [NOT STARTED]
-
-**(Previously Phase 4)**
-
-**Goal**: Close 2 hard-case sorries (lines 412, 510) in `CounterexampleElimination.lean`.
+**Paper reference**: Burgess Section 2.9 (C4 hard case -- gamma in f(w) and f(w_next))
 
 **Tasks**:
-- [ ] **Task 5.1**: Close C4 hard case (C11)
-  - γ ∈ f(w) and γ ∈ f(w_next), `¬untl(γ,δ) ∈ f(w)`.
-  - Use γ ∉ g(w, w_next) (now available from c2' + counterexample logic with populated g).
-  - Apply `lemma_2_6_splitting` with β = γ.
-  - Difficulty: Hard (~2h)
-
-- [ ] **Task 5.2**: Close C4' hard case (C12) (mirror)
-  - Difficulty: Hard (~2h)
+- [ ] **Task 5.1**: Close C4 forward hard case (line 412) -- apply `BurgessR3Maximal_extension_fails` (no h_cons needed) at `(f(w), g(w,w_next))` with extension candidate `gamma`. Extract witness, derive contradiction with counterexample condition. Assemble output with new midpoint MCS D where `gamma.neg in D`.
+- [ ] **Task 5.2**: Close C4' backward hard case (line 510) -- mirror for Since using `BurgessR3MaximalSince_extension_fails`.
 
 **Timing**: 3-4 hours
 
-**Depends on**: Phase 3 (g-values populated, c2' established for old adjacent pairs).
+**Depends on**: 4
+
+**Files to modify**:
+- `CounterexampleElimination.lean:412` - Close C4 forward hard case
+- `CounterexampleElimination.lean:510` - Close C4' backward hard case
 
 **Verification**:
-- Hard-case sorries closed.
-- `lake build` succeeds.
+- `CounterexampleElimination.lean` sorry count: 2 -> 0
+- Both C4/C4' elimination functions fully sorry-free
+- `lake build` passes
 
 ---
 
-### Phase 6: Thread c2' Through omega_chain [COMPLETED]
+### Phase 6: Limit C5 Full + FUC/FSC [NOT STARTED]
 
-**(Previously Phase 5)**
+**Goal**: Prove `limit_satisfies_c5_full` and `limit_satisfies_c5'_full` in ChronicleConstruction.lean, then close the 2 FUC/FSC sorries in ChronicleToCountermodel.lean (lines 615, 619).
 
-**Status**: Successfully completed and committed. Build passes.
-
-**Changes Made**:
-- Changed `omega_chain` return type from `{ χ : Chronicle // χ.c0 }` to `{ χ : Chronicle // χ.c0 ∧ χ.c2' }`
-- Base case (n=0): singleton chronicle satisfies c2' vacuously (no adjacent pairs)
-- Step case: extracts c2' from EliminationResult projections
-- Added `omega_chain_c2'` theorem for proof extraction
-- Fixed `omega_chain_elim_result` call site to include c2' from previous step
-
-**Git Commit**: `eb89fbff8` — "task 107: Phase 5 complete + Phase 2 Task 2.1"
-
-**Verification**:
-- `lake build` clean with `omega_chain_c2'` compiling
-- ChronicleConstruction.lean has 0 sorries
-
----
-
-### Phase 7: Prove limit_satisfies_c5_full and limit_satisfies_c5'_full [NOT STARTED]
-
-**(Previously Phase 7)**
-
-**Goal**: Prove the full C5a/C5b properties at the limit, following Burgess Claim 2.11.
+**Paper reference**: Burgess Claim 2.11, p.375 (truth lemma -- forward Until/Since coherence at limit)
 
 **Tasks**:
-- [ ] **Task 7.1**: Prove or identify `guard_in_r_maximal` lemma
-  - If `U(ξ,η) ∈ f(x)` and `BurgessR3Maximal(f(x), g(x,y), f(y))`, does `ξ ∈ g(x,y)`?
-  - If unprovable, find weaker variant sufficient for C5a.
-  - Burgess 2.11, key step for limit property.
-  - Difficulty: Hard (research-dependent, 2-4h)
+- [ ] **Task 6.1**: Prove `finite_stage_guard_in_g` -- by induction on finite stage n, show that when witness y is added, guard xi is in every g-value for adjacent pairs between x and y. Uses c2' invariant (Phase 4/5) and the fact that Lemma 2.4's BurgessR3Maximal includes the guard in the interval DCS.
+- [ ] **Task 6.2**: Lift `finite_stage_guard_in_g` to `xi in limit_g(x,y)` using C3 at the limit (`limit_c3_interval_subset_point`).
+- [ ] **Task 6.3**: Assemble `limit_satisfies_c5_full` -- combine Tasks 6.1-6.2 with `limit_satisfies_c5_weak`.
+- [ ] **Task 6.4**: Mirror `limit_satisfies_c5'_full` for Since.
+- [ ] **Task 6.5**: Close FUC (ChronicleToCountermodel.lean:615) -- unpack hfam hypothesis to get Cantor preimages, apply `limit_satisfies_c5_full`, transfer back through isomorphism using `cantor_bfmcs` ordering/coherence properties.
+- [ ] **Task 6.6**: Close FSC (ChronicleToCountermodel.lean:619) -- mirror.
 
-- [ ] **Task 7.2**: Prove `limit_satisfies_c5_full`
-  - Use `omega_chain_c2'` + `guard_in_r_maximal` + `limit_c3_interval_subset_point`.
-  - Burgess 2.11, Claim (+) for Until.
-  - Difficulty: Hard (~3-4h, contingent on 7.1)
+**Timing**: 5-7 hours
 
-- [ ] **Task 7.3**: Mirror for Since: `limit_satisfies_c5'_full`
-  - Difficulty: Medium (~1-2h)
+**Depends on**: 5
 
-**Timing**: 6-8 hours
-
-**Depends on**: Phase 6 (c2' available at all finite stages via omega_chain).
+**Files to modify**:
+- `ChronicleConstruction.lean` - Add `finite_stage_guard_in_g`, `limit_satisfies_c5_full`, `limit_satisfies_c5'_full`
+- `ChronicleToCountermodel.lean:615,619` - Close FUC/FSC sorries
 
 **Verification**:
-- `limit_satisfies_c5_full` and `limit_satisfies_c5'_full` compile sorry-free.
-- `lake build` succeeds.
+- `ChronicleToCountermodel.lean` sorry count: 2 -> 0
+- `dd_countermodel_chronicle` fully sorry-free
+- `lake build` passes
 
 ---
 
-### Phase 8: Close FUC/FSC and Final Audit [NOT STARTED]
+### Phase 7: Final Audit and Integration [NOT STARTED]
 
-**(Previously Phase 8)**
-
-**Goal**: Close remaining `ChronicleToCountermodel.lean` sorries and verify a fully sorry-free build.
+**Goal**: Verify the entire Chronicle/ directory is sorry-free and the countermodel construction delivers the representation theorem.
 
 **Tasks**:
-- [ ] **Task 8.1**: Close FUC (line 615) using `limit_satisfies_c5_full` + Cantor transfer.
-- [ ] **Task 8.2**: Close FSC (line 619) mirror using `limit_satisfies_c5'_full`.
-- [ ] **Task 8.3**: Final audit: `#print axioms dd_countermodel_chronicle` shows no `sorryAx`.
-- [ ] **Task 8.4**: Verify `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` returns only comments.
-- [ ] **Task 8.5**: Full `lake build` clean.
-- [ ] **Task 8.6**: Create summary artifact: `specs/107_chain_design_diagnostics_for_representation_theorem/summaries/56_implementation-summary.md`.
+- [ ] **Task 7.1**: Run `#print axioms dd_countermodel_chronicle` -- verify no `sorryAx`.
+- [ ] **Task 7.2**: Run `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` -- verify only comment occurrences.
+- [ ] **Task 7.3**: Full `lake build` clean from scratch.
+- [ ] **Task 7.4**: Generate summary artifact: `specs/107_.../summaries/56_execution-summary.md` with verification results, axiom audit, and metrics (sorry count 12 -> 0).
 
-**Timing**: 3-4 hours
+**Timing**: 1-2 hours
 
-**Depends on**: Phase 7.
+**Depends on**: 6
+
+**Files to modify**:
+- None (verification only)
+- `specs/107_chain_design_diagnostics_for_representation_theorem/summaries/56_execution-summary.md` - Create summary artifact
 
 **Verification**:
-- Chronicle/ directory sorry count: 0.
-- Full `lake build` clean.
+- Chronicle/ sorry count: 0
+- `dd_countermodel_chronicle` has no `sorryAx` in its axioms
+- Full `lake build` clean
 
 ---
 
 ## Testing & Validation
 
-- [ ] `lake build` succeeds at the boundary of every phase.
-- [ ] `#print axioms dd_countermodel_chronicle` shows no `sorryAx` after Phase 8.
-- [ ] `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` returns only comment occurrences.
-- [ ] Each elimination function's `g`-field is non-empty for newly created adjacent pairs.
-- [ ] `omega_chain` type-checks with the `c2'` invariant.
+- [ ] `lake build` succeeds at every phase boundary
+- [ ] `#print axioms dd_countermodel_chronicle` -- no `sorryAx` after Phase 7
+- [ ] `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` -- only comment occurrences
+- [ ] `BurgessR3Maximal_extension_fails` compiles without `h_cons` parameter
+- [ ] All elimination functions' g-field non-empty for new adjacent pairs
+- [ ] `omega_chain` type-checks with c2' invariant
+- [ ] `limit_satisfies_c5_full` provable without circularity
+- [ ] FUC/FSC compile using `limit_satisfies_c5_full`
 
 ## Artifacts & Outputs
 
 - `plans/56_implementation-plan.md` (this file)
-- `summaries/56_implementation-summary.md` (produced in Phase 8)
-- Modified Lean source files in `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`:
-  - `PointInsertion.lean`
-  - `CounterexampleElimination.lean`
-  - `ChronicleConstruction.lean`
-  - `ChronicleToCountermodel.lean`
+- `summaries/56_execution-summary.md` (Phase 7)
+- Modified source files:
+  - `ChronicleTypes.lean` (Phase 1 -- definition fix)
+  - `RRelation.lean` (Phase 1 -- Zorn update, new lemma)
+  - `PointInsertion.lean` (Phases 1, 2, 3)
+  - `CounterexampleElimination.lean` (Phases 4, 5)
+  - `ChronicleConstruction.lean` (Phase 6)
+  - `ChronicleToCountermodel.lean` (Phase 6)
 
 ## Rollback/Contingency
 
-- **If `guard_in_r_maximal` is unprovable (Phase 7.1)**: Document the gap and mark the task partial. Fallback: prove intermediate guard propagation directly for limit C5a, bypassing g-values at the limit.
-- **If g-value construction becomes too invasive (Phase 3)**: Start with C5 forward only (critical path for Until formulas), use trivial g-values for other directions, and expand later.
-- **Build instability during Phase 3**: Commit after each elimination function modification. Fix call sites incrementally rather than in a single large batch.
+- **If Zorn construction update proves difficult (Phase 1 Task 1.3)**: Add `neg burgessR3 A Set.univ C` as an explicit hypothesis to `burgessR3Maximal_from_g_content_sub` and prove it at each call site. This sidesteps the need to prove the inconsistent D case inside the Zorn construction itself.
+- **If `finite_stage_guard_in_g` proves unprovable (Phase 6)**: Fall back to direct approach using limit_g definition + c2' invariant -- since limit_g is defined as formulas true at ALL intermediate points, guard propagation follows directly from the finite-stage c2' property.
+- **If g-value construction too invasive (Phase 4)**: Start with C5 forward only (critical path). Use trivial g-values for other directions, expand later.
+- **Build instability**: Commit after each task modification. Verify `lake build` incrementally.
 
----
+## Implementation Agent Notes
 
-## Reference: Axiom-to-Burgess Mapping
-
-| Burgess Axiom | Our Axiom | Used In | Soundness Proved |
-|---|---|---|---|
-| A1a (left mono) | BX2 (`left_mono_until`) | Lemma 2.7 disjunct elimination | SoundnessLemmas |
-| A2a (right mono) | BX3 (`right_mono_until`) | Lemma 2.7 disjunct elimination | SoundnessLemmas |
-| A3a (enrichment) | BX13 (`enrichment_until`) | Lemma 2.6, 2.7 seed | SoundnessLemmas |
-| A4a (separation) | BX14 (`separation_until`) | Lemma 2.6, 2.7 | SoundnessLemmas |
-| A5a (self-accum) | BX5 (`self_accum_until`) | Lemma 2.7 three-way | SoundnessLemmas |
-| A6a (converse) | BX16 | Lemma 2.6 | SoundnessLemmas |
-| A7a (three-way) | BX7 (`linear_until`) | Lemma 2.7 | SoundnessLemmas |
-| — | BX10 (`until_F`) | Lemma 2.6, 2.7 consistency | SoundnessLemmas |
-
-## Agent Instruction Notes
-
-**To lean-implementation-agent**:
-
-1. **Follow Burgess exactly for proof structure**, but use our BX axiom replacements (BX2/BX3/BX5/BX7/BX10/BX13/BX14) for open-guard strict semantics.
-2. **Phase 3 is about CONSTRUCTING g-values**, not rewriting eliminations. Each branch must assign `g` at new adjacent pairs using lemma outputs.
-3. **Do NOT introduce new axioms or novel approaches.** Implement Burgess's method as mapped by research.
-4. **At each phase boundary**: verify with `lake build`, check sorry counts, update phase status in this plan file.
-5. **Critical path**: Phase 2 (Lemma 2.7) -> Phase 3 (g-population) -> Phase 4 (c2') -> Phase 6 (already done: omega_chain) -> Phase 7 (limit C5a) -> Phase 8 (FUC/FSC).
-
-**Plan revised**: 2026-05-03 (reordered by dependency)
-**Based on**: Research reports burgess-24-26, burgess-27, burgess-29-210, burgess-211
-**Previous plan**: v55 (superseded)
-**Estimated Total Effort**: 28-38 hours (aligned with research estimate)
-**Critical Path**: Phase 1 (1h) + Phase 2 (4-5h) -> Phase 3 (6-8h) -> Phase 4 (2h) -> Phase 5 (3-4h) -> Phase 7 (6-8h) -> Phase 8 (3-4h)
+1. **Phase 1 is the keystone** -- the definition fix cascades through all later phases by eliminating the consistency requirement from `BurgessR3Maximal_extension_fails`. All subsequent phases become simpler.
+2. **Argument order convention**: `untl(guard, event)` in our code = `U(event, guard)` in Burgess. Arguments are SWAPPED.
+3. **Existing infrastructure already anticipates the fix**: `set_univ_closed_under_derivation` (line 606), `dcs_ssubset_univ` (line 703), `burgessR3_univ_of_inconsistent_ext` (line 719) are all in place for the Zorn update.
+4. **Commit after each phase**, verify `lake build`, update phase status.
+5. **Parallel opportunity**: Phases 2 and 3 are independent and can run in parallel after Phase 1.
+6. **omega_chain c2' threading is already done** (prior plan Phase 6 [COMPLETED]). No phase needed for this.
