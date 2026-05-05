@@ -314,28 +314,33 @@ def burgessR3 (A B C : Set Formula) : Prop :=
 **BurgessR3Maximal**: B is a maximal DCS satisfying `burgessR3(A, B, C)`.
 
 This is Burgess's Definition 2.5 (R-maximality) using the correct content-based
-r-relation. B is maximal among all `SetDeductivelyClosed` proper extensions.
+r-relation. B is maximal among all `ClosedUnderDerivation` proper extensions.
 
-The maximality clause uses `SetDeductivelyClosed` (consistent + closed under
-derivation). This avoids the need for `NoUnivBurgessR3`: inconsistent extensions
-like `Set.univ` are excluded by the consistency requirement. When `δ ∉ B` and
-`{δ} ∪ B` is inconsistent, `δ.neg ∈ B` follows from DCS closure (see
-`neg_mem_of_inconsistent_union`), providing the needed neg-until witnesses
-without requiring maximality over inconsistent sets.
+The maximality clause uses `ClosedUnderDerivation` (closed under derivation,
+possibly inconsistent), matching Burgess 1982 exactly. This is stronger than
+maximality over `SetDeductivelyClosed` sets: it also excludes inconsistent
+extensions like `Set.univ`. The key consequence: for ANY δ ∉ B (even when
+`{δ} ∪ B` is inconsistent), `DC(B ∪ {δ})` is `ClosedUnderDerivation` and
+strictly extends B, so `¬burgessR3(A, DC(B ∪ {δ}), C)`. This gives the
+neg-until witness `∃ β₀ ∈ B, ∃ γ₀ ∈ C, untl(β₀ ∧ δ, γ₀).neg ∈ A`
+(Burgess p.371: "else consider B' = consequences of B ∪ {δ}").
+
+The first conjunct retains `SetDeductivelyClosed B` (B is consistent + CUD).
 -/
 def BurgessR3Maximal (A B C : Set Formula) : Prop :=
   SetDeductivelyClosed B ∧
   burgessR3 A B C ∧
-  ∀ D, SetDeductivelyClosed D → B ⊂ D → ¬burgessR3 A D C
+  ∀ D, ClosedUnderDerivation D → B ⊂ D → ¬burgessR3 A D C
 
 /--
-**No universal burgessR3** (DEPRECATED): Previously required for the Zorn
-construction of `BurgessR3Maximal` when the maximality clause used
-`ClosedUnderDerivation`. Now that the maximality clause uses
-`SetDeductivelyClosed` (which excludes inconsistent sets like `Set.univ`),
-this condition is no longer needed anywhere.
+**No universal burgessR3**: Required for the Zorn construction of
+`BurgessR3Maximal` to upgrade SDC-maximality to CUD-maximality.
 
-Retained only for backwards compatibility; no longer on the critical path.
+Since the maximality clause uses `ClosedUnderDerivation`, the Zorn proof
+(over `SetDeductivelyClosed` family) needs this condition to also exclude
+`Set.univ` (the unique inconsistent `ClosedUnderDerivation` set).
+
+This is a hypothesis on the Zorn construction, threaded from call sites.
 -/
 def NoUnivBurgessR3 : Prop :=
   ∀ A C : Set Formula, SetMaximalConsistent A → SetMaximalConsistent C →

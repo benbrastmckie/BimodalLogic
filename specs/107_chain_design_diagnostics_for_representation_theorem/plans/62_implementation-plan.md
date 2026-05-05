@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 2.6 Case B (#1) and Lemma 2.7 Inconsistent Case (#3) [NOT STARTED]
+### Phase 2: Lemma 2.6 Case B (#1) and Lemma 2.7 Inconsistent Case (#3) [PARTIAL]
 
 **Goal**: Close sorry #1 (PointInsertion.lean:1977) and sorry #3 (PointInsertion.lean:2875) by removing the unnecessary case splits that Burgess never makes. These are formalization artifacts identified by the research: Burgess does not case-split on whether B is an MCS (#1) or whether {xi} union B is consistent (#3).
 
