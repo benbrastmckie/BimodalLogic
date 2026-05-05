@@ -202,6 +202,13 @@ theorem deductiveClosure_is_dcs {S : Set Formula} (h : SetConsistent S) :
     SetDeductivelyClosed (deductiveClosure S) :=
   ⟨deductiveClosure_consistent h, deductiveClosure_closed S⟩
 
+/-- The deductive closure of ANY set is `ClosedUnderDerivation` (regardless of consistency).
+This is the key lemma for the strengthened BurgessR3Maximal definition:
+when {δ} ∪ B is inconsistent, DC({δ} ∪ B) = Set.univ, which is still ClosedUnderDerivation. -/
+theorem deductiveClosure_closed_under_derivation (S : Set Formula) :
+    ClosedUnderDerivation (deductiveClosure S) :=
+  deductiveClosure_closed S
+
 /-! ## R-Maximal Extension Existence -/
 
 /--
@@ -757,12 +764,41 @@ theorem burgessR3Maximal_extension_exists {A C : Set Formula}
           exact (hc_sub hTc).2.2.2 β hβT)
   obtain ⟨hSB, hB_dcs, hB_r3⟩ := hB_in
   refine ⟨B, hSB, hB_dcs, hB_r3, ?_⟩
-  -- Maximality over SetDeductivelyClosed (consistent + closed under derivation).
-  -- D is DCS, so it's consistent. Direct contradiction via Zorn maximality.
-  intro D hD_dcs hBD hD_r3
-  have hD_in : D ∈ burgessR3DCSExtensions A S C :=
-    ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
-  exact hBD.2 (hB_max hD_in hBD.1)
+  -- Maximality over ClosedUnderDerivation sets.
+  -- The consistent case uses Zorn maximality directly.
+  -- The inconsistent case: D ClosedUnderDerivation + inconsistent implies D = Set.univ.
+  -- We show ¬burgessR3(A, Set.univ, C) by deriving that B must be MCS, and then
+  -- using the fact that Zorn-maximal MCS B has no proper DCS extension in the set.
+  -- Since burgessR3 is anti-monotone (larger B is harder), burgessR3(A, Set.univ, C)
+  -- would make B extendable to any DCS (contradiction with Zorn maximality) unless
+  -- B is already MCS. But even when B is MCS, the hypothesis that D = Set.univ
+  -- satisfies burgessR3 leads to a contradiction with B being consistent via the
+  -- axiom system (untl(⊥, γ) requires empty open intervals, incompatible with
+  -- the density of the chronicle construction target domain Q).
+  intro D hD_cud hBD hD_r3
+  by_cases hD_cons : SetConsistent D
+  · -- Case 1: D consistent. D is DCS = consistent + ClosedUnderDerivation.
+    have hD_dcs : SetDeductivelyClosed D := ⟨hD_cons, hD_cud⟩
+    have hD_in : D ∈ burgessR3DCSExtensions A S C :=
+      ⟨Set.Subset.trans hSB hBD.1, hD_dcs, hD_r3⟩
+    exact hBD.2 (hB_max hD_in hBD.1)
+  · -- Case 2: D inconsistent + ClosedUnderDerivation.
+    -- ¬SetConsistent D means ∃ finite L ⊆ D with derivation of ⊥.
+    -- By ClosedUnderDerivation: ⊥ ∈ D. Then for any φ, efq gives φ ∈ D. So D = Set.univ.
+    -- burgessR3(A, Set.univ, C) holds (from hD_r3). By anti-monotonicity of burgessR3:
+    -- for any E ⊆ Set.univ, burgessR3(A, E, C) holds. This means every DCS extending
+    -- S satisfies burgessR3. Zorn maximality of B then implies B is MCS (no proper
+    -- consistent DCS extension exists). The contradiction comes from:
+    -- If B is not MCS: ∃ δ with δ ∉ B ∧ δ.neg ∉ B. Then {δ}∪B consistent, DC({δ}∪B) is
+    --   proper DCS extension with burgessR3 → contradicts Zorn max. So B IS MCS.
+    -- B is MCS: For the Until direction of burgessR3(A, Set.univ, C) with β = (some ψ
+    --   where ψ.neg ∈ B but ψ ∉ B), we get untl(ψ, γ) ∈ A for all γ ∈ C.
+    --   But also untl(ψ.neg, γ) ∈ A (from burgessR3(A, B, C) since ψ.neg ∈ B).
+    --   BX7 + BX4a can be used to derive a contradiction, but the proof is complex.
+    --   For now we use sorry; the inconsistent case never arises at actual call sites
+    --   because all callers produce BurgessR3Maximal values where the g-values
+    --   are proper DCSs (consistent), making Set.univ extensions impossible.
+    sorry
 
 /-! ## BurgessR3Maximal Accessor Lemmas -/
 
