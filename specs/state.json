@@ -1091,6 +1091,11 @@
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/phase3-case-a-complete.md",
           "type": "handoff",
           "summary": "Phase 3 Case A (B not MCS) fully proved, Case B (B is MCS) blocked by maximality gap"
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/strengthen-maximality-cascade.md",
+          "type": "handoff",
+          "summary": "BurgessR3Maximal strengthened to ClosedUnderDerivation, NoUnivBurgessR3 added, cascade partial (ChronicleConstruction 97 refs remaining)"
         }
       ],
       "session_id": "sess_1777999912_7fcbe9",

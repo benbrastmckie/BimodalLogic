@@ -250,13 +250,14 @@ since the limit domain is dense with no adjacent pairs.
 - omega_chain 0 = singleton_chronicle A
 - omega_chain (n+1) = eliminate(omega_chain n, enum (unpair n).2)
 -/
-noncomputable def omega_chain (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+noncomputable def omega_chain (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_no_univ : NoUnivBurgessR3) :
     (n : Nat) → { χ : Chronicle // χ.c0 ∧ χ.c2' }
   | 0 => ⟨singleton_chronicle A, ⟨singleton_c0 h_mcs, singleton_c2' h_mcs⟩⟩
   | n + 1 =>
-    let prev := omega_chain A h_mcs n
+    let prev := omega_chain A h_mcs h_no_univ n
     let pc := counterexample_enum (Nat.unpair n).2
-    let elim := eliminate_potential_counterexample prev.val prev.property.1 prev.property.2 pc
+    let elim := eliminate_potential_counterexample prev.val prev.property.1 prev.property.2 pc h_no_univ
     ⟨elim.val, ⟨elim.c0, elim.c2'⟩⟩
 
 /--

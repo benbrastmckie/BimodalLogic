@@ -314,13 +314,40 @@ def burgessR3 (A B C : Set Formula) : Prop :=
 **BurgessR3Maximal**: B is a maximal DCS satisfying `burgessR3(A, B, C)`.
 
 This is Burgess's Definition 2.5 (R-maximality) using the correct content-based
-r-relation. B is maximal in the sense that no proper DCS extension of B also
-satisfies burgessR3 with the same endpoints A and C.
+r-relation. B is maximal among ALL `ClosedUnderDerivation` proper extensions
+(including inconsistent ones like `Set.univ`), matching Burgess 1982 exactly.
+
+The maximality clause uses `ClosedUnderDerivation` (not `SetDeductivelyClosed`)
+because Burgess's "deductively closed" does NOT require consistency. This is
+essential: when B is MCS, no *consistent* proper extension exists, but `Set.univ`
+is a `ClosedUnderDerivation` proper extension. The maximality clause must rule
+out `burgessR3(A, Set.univ, C)` to provide useful neg-until witnesses.
 -/
 def BurgessR3Maximal (A B C : Set Formula) : Prop :=
   SetDeductivelyClosed B ∧
   burgessR3 A B C ∧
-  ∀ D, SetDeductivelyClosed D → B ⊂ D → ¬burgessR3 A D C
+  ∀ D, ClosedUnderDerivation D → B ⊂ D → ¬burgessR3 A D C
+
+/--
+**No universal burgessR3**: For ANY pair of MCS A, C, `burgessR3(A, Set.univ, C)` fails.
+
+This is a structural property needed for the Zorn construction of `BurgessR3Maximal`:
+the strengthened maximality clause (over `ClosedUnderDerivation`) must rule out
+inconsistent extensions, which are all equal to `Set.univ`. Without this condition,
+the Zorn proof cannot establish maximality over `ClosedUnderDerivation` sets.
+
+**Semantic justification**: On any linear order with strict/open guard semantics,
+`untl(⊥, gamma)` requires ⊥ to hold at all intermediate points. On a dense order,
+there are always intermediate points, making ⊥ ∧ true impossible. So
+`untl(⊥, gamma) = ⊥` semantically, and `burgessR3(A, Set.univ, C)` fails.
+
+This condition is NOT derivable from J₀ axioms alone (since J₀ is also complete
+for discrete orders where `untl(⊥, gamma)` can hold vacuously). It is a property
+specific to the dense-order chronicle construction.
+-/
+def NoUnivBurgessR3 : Prop :=
+  ∀ A C : Set Formula, SetMaximalConsistent A → SetMaximalConsistent C →
+    ¬burgessR3 A Set.univ C
 
 /-! ## Chronicle Structure -/
 
