@@ -2,9 +2,9 @@
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
 - **Status**: [NOT STARTED]
-- **Effort**: 20-28 hours
+- **Effort**: 21-30 hours
 - **Dependencies**: None (self-contained within Chronicle/)
-- **Research Inputs**: reports/57_zorn-gap-resolution.md (proves RRelation.lean:801 sorry is unprovable, identifies correct fix)
+- **Research Inputs**: reports/57_zorn-gap-resolution.md (proves RRelation.lean:801 sorry is unprovable, identifies correct fix), reports/58_inconsistent-case-resolution.md (case-split approach for Phase 2 inconsistent sub-case)
 - **Artifacts**: plans/57_implementation-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -16,7 +16,9 @@ Close all 13 remaining sorries across RRelation.lean (1), PointInsertion.lean (3
 
 ### Research Integration
 
-Report 57 proves definitively that the sorry at RRelation.lean:801 is UNPROVABLE: `burgessR3(A, Set.univ, C)` is satisfiable on discrete linear orders (where `untl(bot, gamma)` holds vacuously). The BX axiom system has no density axiom and cannot derive a contradiction from this configuration. The root cause is that plan 56 Phase 1 changed the maximality clause from `SetDeductivelyClosed D` (Burgess's original, which requires consistency) to `ClosedUnderDerivation D` (which includes `Set.univ`). The correct fix is to revert this change. Burgess's proofs only ever construct consistent extensions, so maximality over consistent DCSs is sufficient.
+**Report 57** proves definitively that the sorry at RRelation.lean:801 is UNPROVABLE: `burgessR3(A, Set.univ, C)` is satisfiable on discrete linear orders (where `untl(bot, gamma)` holds vacuously). The BX axiom system has no density axiom and cannot derive a contradiction from this configuration. The root cause is that plan 56 Phase 1 changed the maximality clause from `SetDeductivelyClosed D` (Burgess's original, which requires consistency) to `ClosedUnderDerivation D` (which includes `Set.univ`). The correct fix is to revert this change. Burgess's proofs only ever construct consistent extensions, so maximality over consistent DCSs is sufficient.
+
+**Report 58** identifies the root cause of the two Phase 2 sorries (h_ev_b, h_ev_untl at PointInsertion.lean:1886-1887): the formalization's `SetDeductivelyClosed` includes a consistency requirement that Burgess's original "deductively closed" does not. This forces a case split on `SetConsistent ({beta} union B)` that doesn't exist in Burgess's proof. The inconsistent case lacks the BX14 step because the maximality witness is not obtainable. The fix: case-split on `(untl(b AND beta, gamma_hat)).neg in A`. Key discovery: `burgess_zeta_consistent` has an UNUSED parameter `h_F_beta_neg`, enabling direct call from the neg sub-case.
 
 ### Prior Plan Reference
 
@@ -45,7 +47,7 @@ No ROADMAP.md found.
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
 | Reverting definition breaks `g_content_sub_B` proof strategy | Blocks Phase 1 | Medium | Research identifies direct approach: inconsistent case uses `neg_mem_of_inconsistent_union` (φ.neg in B directly), no need for Set.univ maximality |
-| Lemma 2.6 event implication sorries harder than expected | Delays Phase 2 | Medium | The event is constructed from `iterated_enrichment` with q = b AND untl(b, gamma_hat); deconstruct via BX5 self-accumulation structure |
+| Lemma 2.6 pos sub-case (untl(b AND beta, gamma_hat) in A) requires novel proof | Delays Phase 2 | Medium | Three fallback strategies: (A) derive contradiction from inconsistency, (B) BX7 enrichment restart from q AND gamma_hat, (C) use irr_until axiom if available on branch. Neg sub-case is straightforward (direct burgess_zeta_consistent call). |
 | Lemma 2.7 BX7 three-way combinatorially blocked | Delays Phase 3 | Medium | Use `lce_imp`/`rce_imp` for propositional simplifications; left/right mono existing tools |
 | g-value construction breaks all call sites (Phase 4) | Build churn | High | Commit after each elimination function change; fix call sites incrementally |
 | `finite_stage_guard_in_g` lemma unprovable (Phase 6) | Blocks limit C5 | Low | Direct approach: use limit_g definition + c2' invariant to show guard universally present |
@@ -65,7 +67,7 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel. Phases 2 and 3 are independent (both only need Phase 1). Phases 4-7 are sequential on the critical path.
 
-Critical path: Phase 1 (2-3h) -> Phase 3 (4-5h) -> Phase 4 (7-9h) -> Phase 5 (3-4h) -> Phase 6 (5-7h) -> Phase 7 (1h) = 22-29h.
+Critical path: Phase 1 (2-3h) -> Phase 2 (3-4h) / Phase 3 (4-5h) -> Phase 4 (7-9h) -> Phase 5 (3-4h) -> Phase 6 (5-7h) -> Phase 7 (1h) = 21-30h (Phases 2/3 parallel).
 
 ---
 
@@ -99,30 +101,54 @@ Critical path: Phase 1 (2-3h) -> Phase 3 (4-5h) -> Phase 4 (7-9h) -> Phase 5 (3-
 
 ---
 
-### Phase 2: Lemma 2.6 — Event Implication Sorries [NOT STARTED]
+### Phase 2: Lemma 2.6 — Inconsistent Case Resolution [NOT STARTED]
 
-**Goal**: Close the 2 sorries at PointInsertion.lean:1874-1875 (`h_ev_b` and `h_ev_untl`). These require showing that the iterated enrichment event implies both `b` and `untl(b, gamma_hat)`.
+**Goal**: Close the 2 sorries at PointInsertion.lean:1886-1887 (`h_ev_b` and `h_ev_untl`) in `burgess_D0_finite_subset_consistent_incons` by restructuring the inconsistent sub-case with a case-split on `(untl(b AND beta, gamma_hat)).neg in A`.
 
-**Paper reference**: Burgess Section 2.6, p.370-371 (D0 seed consistency)
+**Paper reference**: Burgess Section 2.6, p.370-371 (D0 seed consistency). Report 58 analysis of why the inconsistent case fails and the fix via negation-complete case-split.
+
+**Root Cause** (from report 58): The formalization's `SetDeductivelyClosed` includes consistency (unlike Burgess's "deductively closed"). When `{beta} union B` is inconsistent, `deductiveClosure({beta} union B)` is NOT `SetDeductivelyClosed`, so `BurgessR3Maximal_extension_fails` cannot be called. The current enrichment starts from `gamma_hat` with guard `q = b AND untl(b, gamma_hat)`, producing an event that implies gamma_hat but NOT b or untl(b, gamma_hat).
+
+**Strategy**: Case-split on `(untl(b AND beta, gamma_hat)).neg in A` using MCS negation-completeness. The neg sub-case calls `burgess_zeta_consistent` directly (which has an unused `h_F_beta_neg` parameter). The pos sub-case uses BX7-based argument or derives contradiction from the inconsistency guard.
 
 **Tasks**:
-- [ ] **Task 2.1**: Analyze the iterated enrichment construction. The event is built from `q = b AND untl(b, gamma_hat)` via BX5 self-accumulation and BX13 iterated enrichment. The key insight: BX5 gives `untl(q AND untl(q, gamma_hat), gamma_hat) in A`, so the enrichment starts with `q` as the core formula. The event is `q AND snce1 AND snce2 AND ...`. Since `q = b AND untl(b, gamma_hat)`, event implies q implies both b and untl(b, gamma_hat).
-- [ ] **Task 2.2**: Prove `h_ev_b : DerivationTree [] (event.imp b)`. Chain: event -> q (from enrichment's h_impl structure or conjunction elimination) -> b (via `lce_imp`). The enrichment accumulates snce-formulas into the event as conjunctions, preserving q as a conjunct. Check whether `evt.h_impl` gives `event -> gamma_hat` or `event -> q`. If the former, need to trace back through the BX5 structure to recover `event -> q`.
-- [ ] **Task 2.3**: Prove `h_ev_untl : DerivationTree [] (event.imp (Formula.untl b gamma_hat))`. Chain: event -> q -> untl(b, gamma_hat) (via `rce_imp`).
-- [ ] **Task 2.4**: If the enrichment does NOT directly give `event -> q`, restructure the enrichment call. The fix: use `q` itself as the base of enrichment (not gamma_hat). Then `iterated_enrichment` yields `event` with `event -> q` as a structural property. This may require adjusting how `iterated_enrichment` is called (changing the `impl_target` parameter).
+- [ ] **Task 2.1**: Add case-split inside `burgess_D0_finite_subset_consistent_incons` after constructing `b` and `gamma_hat`:
+  ```lean
+  rcases SetMaximalConsistent.negation_complete h_mcs_A
+    (Formula.untl (Formula.and b β) γ_hat) with h_pos | h_neg
+  ```
+  This splits on whether `untl(b AND beta, gamma_hat)` or its negation is in A.
+
+- [ ] **Task 2.2**: Implement the **neg sub-case** (`h_neg : (untl(b AND beta, gamma_hat)).neg in A`). Call `burgess_zeta_consistent` directly:
+  - Derive `h_beta_not_B : beta not in B` from `beta.neg in B` + B consistent (since we are in the inconsistent case where `beta.neg in B`)
+  - Pass `h_neg` as the `h_neg_until` argument to `burgess_zeta_consistent`
+  - The `h_F_beta_neg` parameter is unused (report 58 Section 4), so pass any dummy or `sorry`-free witness
+  - Extract `event`, `h_F_event`, `h_ev_b`, `h_ev_untl`, `h_ev_snce` from the result
+  - This sub-case then proceeds exactly like the consistent case proof
+
+- [ ] **Task 2.3**: Implement the **pos sub-case** (`h_pos : untl(b AND beta, gamma_hat) in A`). Two strategies ordered by preference:
+  - **Strategy A (ex falso)**: Since `{beta} union B` is inconsistent AND `b in B`, we have `beta.neg in B`. Combined with `b AND beta` being derivably inconsistent (from b containing beta.neg components), show `untl(b AND beta, gamma_hat)` contradicts some element of A using BX axioms (e.g., if `G((b AND beta).neg)` is derivable, then `irr_until` or BX2G gives `(untl(b AND beta, gamma_hat)).neg in A`, contradicting h_pos).
+  - **Strategy B (BX7 enrichment restart)**: Apply BX7 to `untl(q, gamma_hat)` and `untl(gamma_hat.neg, gamma_hat)` to get D1/D2/D3. Eliminate D2 (target inconsistent). For D3 = `untl(q AND gamma_hat.neg, q AND gamma_hat)`: restart enrichment from `q AND gamma_hat` as initial event (which DOES imply q, hence b and untl(b, gamma_hat)). For D1: apply BX14 separation with different witnesses.
+  - **Strategy C (fallback)**: If `irr_until` axiom is available on this branch, it directly makes the pos sub-case unreachable since `G((b AND beta).neg) -> (untl(b AND beta, gamma_hat)).neg` forces h_neg always.
+
+- [ ] **Task 2.4**: Verify `h_F_beta_neg` unused status in `burgess_zeta_consistent` (lines 1265-1359). If confirmed unused, optionally mark with comment or remove parameter entirely. If removing breaks callers, keep parameter but document it as vestigial.
+
 - [ ] **Task 2.5**: Verify `lemma_2_6_splitting` (line 2328) still compiles and PointInsertion.lean sorry count drops from 3 to 1.
 
-**Timing**: 2-3 hours
+**Timing**: 3-4 hours (increased from 2-3h due to pos sub-case complexity)
 
 **Depends on**: 1
 
 **Files to modify**:
-- `PointInsertion.lean:1874-1875` - Close the two sorry sites with derivation proofs
+- `PointInsertion.lean:1886-1887` - Replace sorries with case-split proof
+- `PointInsertion.lean:1265-1359` - Optionally remove/document unused `h_F_beta_neg` parameter in `burgess_zeta_consistent`
 
 **Verification**:
 - `PointInsertion.lean` sorry count: 3 -> 1 (only `lemma_2_7_seed_consistent` remains)
 - `lake build` passes
 - `lemma_2_6_splitting` compiles
+- Neg sub-case calls `burgess_zeta_consistent` successfully
+- Pos sub-case resolved (either contradiction, BX7 restart, or irr_until)
 
 ---
 
@@ -295,6 +321,6 @@ Critical path: Phase 1 (2-3h) -> Phase 3 (4-5h) -> Phase 4 (7-9h) -> Phase 5 (3-
 ## Rollback/Contingency
 
 - **If g_content_sub_B restructuring difficult (Phase 1 Task 1.6)**: Use `g_formula_in_dcs` lemma (if it exists) or prove G(phi) in A -> phi in B for any DCS B satisfying burgessR3(A,B,C). Alternatively, bypass g_content_sub entirely if Lemma 2.6/2.7 seed consistency can be proved without it (Burgess's original proof uses BX5 + BX4a + BX3a + Lemma 2.2 directly).
-- **If iterated_enrichment event does not imply q (Phase 2)**: Restructure the call to use q as the base formula for enrichment instead of gamma_hat. The enrichment should accumulate snce-formulas while preserving q as a structural conjunct.
+- **If pos sub-case Strategy A fails (Phase 2)**: Fall back to Strategy B (BX7 enrichment restart from q AND gamma_hat as initial event). If D3 analysis is blocked, try Strategy C (irr_until axiom on this branch). If all three strategies fail, the pos sub-case may need a new axiom or restructuring of the formalization's SetDeductivelyClosed to remove the consistency requirement (matching Burgess exactly).
 - **If `finite_stage_guard_in_g` proves unprovable (Phase 6)**: Fall back to direct approach using limit_g definition + c2' invariant -- since limit_g is defined as formulas true at ALL intermediate points, guard propagation follows directly from the finite-stage c2' property.
 - **Build instability**: Commit after each task modification. Verify `lake build` incrementally.
