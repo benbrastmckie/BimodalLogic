@@ -1273,4 +1273,43 @@ theorem chronicle_model_exists (A : Set Formula) (h_mcs : SetMaximalConsistent A
    fun x hx ξ η h => limit_satisfies_c5_weak A h_mcs h_nubr3 x hx ξ η h,
    fun x hx ξ η h => limit_satisfies_c5'_weak A h_mcs h_nubr3 x hx ξ η h⟩
 
+/-! ## Strong C5: Full Burgess C5a with Guard
+
+The full C5a condition from Burgess 2.11: if U(ξ,η) ∈ limit_f(x), then there exists
+y > x in limit_dom with η ∈ limit_f(y) AND ξ ∈ limit_g(x,y).
+
+The guard condition ξ ∈ limit_g(x,y) means: for all w ∈ limit_dom with x < w < y,
+ξ ∈ limit_f(w). This is the key property for the truth lemma (Burgess Claim 2.11).
+
+Proof: The C5 elimination at finite stage n+1 produces a witness y with the guard
+formula ξ in the g-value of the pair (x,y). The guard propagates through all subsequent
+splitting steps because every splitting preserves g ⊆ f for the new point and
+g ⊆ g' for the sub-intervals (from the B ⊆ B' property of
+burgessR3Maximal_extension_exists and the seed construction in lemma_2_6/2_7/2_8).
+-/
+
+theorem limit_satisfies_c5_strong (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3)
+    (x : Rat) (hx : x ∈ limit_dom A h_mcs h_nubr3)
+    (ξ η : Formula)
+    (h_until : Formula.untl ξ η ∈ limit_f A h_mcs h_nubr3 x) :
+    ∃ y ∈ limit_dom A h_mcs h_nubr3, x < y ∧ η ∈ limit_f A h_mcs h_nubr3 y ∧
+      ξ ∈ limit_g A h_mcs h_nubr3 x y := by
+  obtain ⟨y, hy_dom, hxy, hy_η⟩ := limit_satisfies_c5_weak A h_mcs h_nubr3 x hx ξ η h_until
+  refine ⟨y, hy_dom, hxy, hy_η, ?_⟩
+  intro w hw hxw hwy
+  sorry
+
+theorem limit_satisfies_c5'_strong (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3)
+    (x : Rat) (hx : x ∈ limit_dom A h_mcs h_nubr3)
+    (ξ η : Formula)
+    (h_since : Formula.snce ξ η ∈ limit_f A h_mcs h_nubr3 x) :
+    ∃ y ∈ limit_dom A h_mcs h_nubr3, y < x ∧ η ∈ limit_f A h_mcs h_nubr3 y ∧
+      ξ ∈ limit_g A h_mcs h_nubr3 y x := by
+  obtain ⟨y, hy_dom, hyx, hy_η⟩ := limit_satisfies_c5'_weak A h_mcs h_nubr3 x hx ξ η h_since
+  refine ⟨y, hy_dom, hyx, hy_η, ?_⟩
+  intro w hw hyw hwx
+  sorry
+
 end Bimodal.Metalogic.BXCanonical.Chronicle

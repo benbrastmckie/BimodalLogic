@@ -1,7 +1,7 @@
 # Implementation Plan: Task #107 -- Close FUC/FSC via Guard-in-B (Burgess 2.4 Enrichment)
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (all prerequisite infrastructure exists)
 - **Research Inputs**: reports/63_team-research.md
@@ -39,9 +39,7 @@ Plan v62 had 6 phases (25-41h). Phases 1-3 completed: NoUnivBurgessR3 eliminated
 - Deliver fully sorry-free `bx_completeness` with no `sorryAx` dependency
 
 **Non-Goals**:
-- Modify CounterexampleElimination.lean (already sorry-free)
-- Restructure the omega chain or limit construction
-- Prove `omega_chain_g_stable` as a standalone lemma (the `limit_g` definition bypasses this)
+- Restructure the omega chain or limit construction beyond Burgess alignment
 - Generalize beyond D=Rat
 
 ## Risks & Mitigations
@@ -106,57 +104,65 @@ To get `γ ∈ B`, enrich the C seed to include `{snce(γ, α) : α ∈ A}`. Thi
 
 ---
 
-### Phase 2: Thread Guard Through EliminationResult and Omega Chain [PARTIAL]
+### Phase 2: Thread Guard Through EliminationResult and Omega Chain [COMPLETED]
 
-**Goal**: Propagate the `γ ∈ B` information from `lemma_2_4` through the C5 elimination path so that `omega_chain_c5_witness` (ChronicleConstruction.lean:363) includes guard membership in the g-value at the elimination stage. Also fix `lemma_2_7` to produce `B ⊆ B'` (matching Burgess 2.7) to enable guard propagation through all splitting operations.
+**Goal**: Propagate the `γ ∈ B` information from `lemma_2_4` through the C5 elimination path so that the guard is in g(x,y) at the elimination stage. Fix `lemma_2_7` to produce `B ⊆ B'` (matching Burgess 2.7). Align the forward/backward walk condition with Burgess 2.10's full condition (i) to ensure guard ∈ g at every walk step.
 
-**Paper reference**: Burgess 2.10 (p.374), Burgess 2.7 (p.372). When a C5 counterexample is eliminated, the guard must be in g(x,y). When `lemma_2_7` splits a pair, Burgess constructs B' with B ⊆ B' (our code deviated by using DC({xi}) seed instead of B seed).
+**Paper reference**: Burgess 2.7 (p.372): B' seeded from B gives B ⊆ B'. Burgess 2.10 (p.374): condition (i) requires BOTH `η ∧ U(ξ,η) ∈ f(x')` AND `η ∈ g(x,x')`. Our code was missing the second part, causing the forward walk to advance past points where guard ∉ g.
 
-**Completed work**:
+**Tasks**:
 - [x] **Task 2.A (Blocker fix)**: Fixed `lemma_2_7` — changed B' seed from DC({xi}) to B, giving `B ⊆ B'` instead of `xi ∈ B'`. Deleted ~120 lines of degenerate case code. (PointInsertion.lean:3616)
 - [x] **Task 2.B**: Enriched `lemma_2_7_since` — added `B ⊆ B'` to output type. (PointInsertion.lean:4364)
-- [x] **Task 2.C**: Updated 4 call sites in CounterexampleElimination.lean for new output tuples.
+- [x] **Task 2.C**: Updated 4 call sites in CounterexampleElimination.lean for new `lemma_2_7_since` 8-tuple output.
 - [x] **Task 2.D**: Added `omega_chain_g_eq_elim`, `omega_chain_g_agrees`, `omega_chain_g_agrees_le` to ChronicleConstruction.lean — g-value tracking infrastructure.
-- [x] **Task 2.E**: `lake build` passes. 2 sorry sites remain at CTC:634,638.
+- [x] **Task 2.E**: `lake build` passes after Tasks 2.A-D. 2 sorry sites remain at CTC:634,638.
+- [x] **Task 2.F (Burgess alignment)**: Aligned forward walk condition (i) with Burgess 2.10. Changed `h_cond_i` from `conj ∈ f(x')` to `conj ∈ f(x') ∧ guard ∈ g(x, x')` (CounterexampleElimination.lean:796). Updated 1 usage site in the negated branch where `h_cond_i` was used to derive `conj ∉ f(x')`. This ensures the walk only advances when guard ∈ g, so C3 propagation works at the limit.
+- [x] **Task 2.G (Since mirror)**: Applied same condition (i) fix to backward walk: `h_cond_i_back` now checks `conj_since ∈ f(x'') ∧ guard ∈ g(x'', pc.x)` (CounterexampleElimination.lean:1464). Updated 1 usage site.
+- [x] **Task 2.H**: `lake build` passes after Tasks 2.F-G. 2 sorry sites remain at CTC:634,638.
 
-**Remaining blocker — Forward walk guard gap**:
-- [ ] **Task 2.F**: Resolve the forward walk region gap. In the C5 n≥1 case, the forward walk gives `ξ ∈ f(w)` at walk points (from condition (i)), but NOT `ξ ∈ g(w, w')` for walk adjacent pairs. Points inserted between walk points later don't inherit the guard. See handoff `lemma27-fix-and-fuc-strategy.md` for 4 possible solutions. REQUIRES RESEARCH before implementation.
-- [ ] **Task 2.G**: Mirror all changes for the Since direction.
+**Completed**: 2026-05-06
 
-**Timing**: 2-3 hours
+**Timing**: 3 hours
 
 **Depends on**: 1
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` -- possibly add guard field to EliminationResult
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean` -- add omega_chain_c5_guard_witness or equivalent
+**Files modified**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` -- lemma_2_7 fix, lemma_2_7_since enrichment
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` -- call site updates, Burgess 2.10 condition (i) alignment (forward + backward)
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean` -- omega_chain_g_agrees infrastructure
 
 **Verification**:
-- Guard membership is available at the omega chain level
+- Guard membership propagates correctly through the walk via Burgess 2.10 condition (i)
+- All splitting lemmas produce B ⊆ B' (seed from B via Zorn)
+- All splitting lemmas produce B ⊆ D (seed includes B)
 - `lake build` passes
 - No new sorry sites
 
 ---
 
-### Phase 3: Prove Guard Propagation to Limit (omega_chain_guard_stable) [NOT STARTED]
+### Phase 3: Prove Guard Propagation to Limit (omega_chain_guard_stable) [IN PROGRESS]
 
 **Goal**: Prove that if `ξ ∈ g_n(x,y)` at the stage where y was created, then for any w inserted between x and y at a later stage m, `ξ ∈ f_m(w)`. This is the key step connecting finite-stage guard membership to the limit_g universal quantifier.
 
-**Paper reference**: Burgess 2.5 (absorption, p.370). When point z is inserted between x and y via Lemma 2.6 splitting, the new g-values satisfy B = B' ∩ D ∩ B'' where B = g(x,y), D = f(z). By Lemma 2.5, this is an equality (absorption), so g(x,y) ⊆ f(z).
+**Paper reference**: Burgess 2.5 (absorption, p.370) and 2.10 (p.374). With Burgess's full condition (i) aligned in Phase 2, the guard propagates via two mechanisms:
+1. **Walk region** (x to u_max): At each walk step, guard ∈ g(w, w') by condition (i). When a new point is inserted between walk-adjacent w and w', the seed B = g(w, w') contains guard, so guard ∈ D = f(new_point) (from B ⊆ D). And guard ∈ g(w, z) = B' (from B ⊆ B').
+2. **Splitting region** (u_max to y): guard ∈ g(u_max, y) from lemma_2_4/2_7 enrichment (Phase 1). Propagation through the splitting tree by B ⊆ B' and B ⊆ D at each level.
 
 **Strategy**:
 
-The argument proceeds by induction on the omega chain stages:
-1. At stage n+1 (when y was created): `ξ ∈ g_{n+1}(x,y)` from Phase 2.
-2. At stage m > n+1: if z is inserted between x and y, by c2' invariant `BurgessR3Maximal(f_m(x), g_m(x,y), f_m(y))` holds. Point insertion via `lemma_2_6_splitting` gives `g_m(x,z) = B'`, `f_m(z) = D`, `g_m(z,y) = B''` with `B = B' ∩ D ∩ B''`. By Lemma 2.5 absorption, `g_m(x,y) = g_{n+1}(x,y)` (g-values are preserved). Hence `ξ ∈ g_m(x,y) ⊆ f_m(z)`.
-3. Key tools: `burgessR3_absorption` (RRelation.lean:591), `omega_chain_f_agrees_le` (f-values don't change at existing points), `g_agrees` field of `EliminationResult`.
+By induction on the splitting tree within the omega chain:
+1. Base: At stage n+1 (when y was created), guard ∈ g(a, b) for all adjacent pairs (a, b) between x and y, where:
+   - For walk pairs: guard ∈ g(a, b) from Burgess condition (i) second part
+   - For the splitting pair (u_max, y): guard ∈ g(u_max, y) from lemma_2_4 enrichment
+2. Step: When (a, b) is split by inserting z: g(a, z) = B' with B ⊆ B', f(z) = D with B ⊆ D, g(z, b) = B'' with B ⊆ B''. So guard ∈ B ⊆ D = f(z), and guard ∈ B' = g(a, z), guard ∈ B'' = g(z, b).
+3. Lift to limit: `limit_g(x,y) = {φ | ∀ w ∈ limit_dom, x < w < y → φ ∈ limit_f(w)}`. For any w, w ∈ dom(m) for some m, and guard ∈ f_m(w) by the induction above. Since f_m(w) = limit_f(w), guard ∈ limit_f(w).
 
-Note: we may need `omega_chain_g_agrees_le` (g-values for old pairs are preserved). Check if `g_agrees` from `EliminationResult` lifts to this.
+Key tools: `omega_chain_g_agrees_le` (proved in Phase 2), `omega_chain_f_agrees_le`, `burgessR3_absorption` (RRelation.lean:591).
 
 **Tasks**:
-- [ ] **Task 3.1**: Verify `omega_chain_g_agrees_le`: for x, y ∈ dom(n) and m ≥ n, `g_m(x,y) = g_n(x,y)`. This should follow from the `g_agrees` field of each EliminationResult step.
-- [ ] **Task 3.2**: Prove `omega_chain_guard_stable`: if `ξ ∈ g_{n+1}(x,y)` and w ∈ dom(m) with x < w < y and m ≥ n+1, then `ξ ∈ f_m(w)`. Uses Task 3.1 + c2'/C3 at finite stages.
-- [ ] **Task 3.3**: Alternative approach: since `limit_g(x,y) = {φ | ∀ w ∈ limit_dom, x < w < y → φ ∈ limit_f(w)}`, prove `ξ ∈ limit_g(x,y)` directly by showing the universal property. For any w in limit_dom between x and y, w ∈ dom(m) for some m. Then `ξ ∈ g_m(x,y) ⊆ f_m(w)` by Task 3.2, and `f_m(w) = limit_f(w)` by `limit_f_eq`.
+- [x] **Task 3.1**: `omega_chain_g_agrees_le` proved in Phase 2 (Task 2.D). For x, y ∈ dom(n) and m ≥ n, `g_m(x,y) = g_n(x,y)`.
+- [ ] **Task 3.2**: Prove `omega_chain_guard_at_intermediate`: if ξ ∈ g_{n+1}(x,y) and (x,y) adjacent at stage n+1, and w ∈ dom(m) with x < w < y and m ≥ n+1, then ξ ∈ f_m(w). Proof by induction on m - (n+1), using g_agrees (g-values preserved for old pairs) and B ⊆ D (from seed of all splitting lemmas).
+- [ ] **Task 3.3**: Prove `omega_chain_guard_in_limit_g`: if ξ ∈ g_{n+1}(x,y) at stage n+1, then ξ ∈ limit_g(x,y). Uses Task 3.2 + limit_f_eq.
 - [ ] **Task 3.4**: Run `lake build` and verify.
 
 **Timing**: 2 hours
@@ -164,7 +170,7 @@ Note: we may need `omega_chain_g_agrees_le` (g-values for old pairs are preserve
 **Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean` -- add omega_chain_g_agrees_le, omega_chain_guard_stable or equivalent
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean` -- add omega_chain_guard_at_intermediate, omega_chain_guard_in_limit_g
 
 **Verification**:
 - Guard propagation lemma proved
@@ -173,7 +179,7 @@ Note: we may need `omega_chain_g_agrees_le` (g-values for old pairs are preserve
 
 ---
 
-### Phase 4: Prove limit_satisfies_c5_strong [NOT STARTED]
+### Phase 4: Prove limit_satisfies_c5_strong [PARTIAL]
 
 **Goal**: Prove the strengthened C5 at the limit: `untl(ξ,η) ∈ limit_f(x) → ∃ y > x, η ∈ limit_f(y) ∧ ξ ∈ limit_g(x,y)`. This is the full Burgess C5 with the guard condition.
 
@@ -211,7 +217,7 @@ Mirror: `limit_satisfies_c5'_strong` for Since.
 
 ---
 
-### Phase 5: Close FUC/FSC Sorries and Final Validation [NOT STARTED]
+### Phase 5: Close FUC/FSC Sorries and Final Validation [PARTIAL]
 
 **Goal**: Close the 2 remaining sorry sites at ChronicleToCountermodel.lean:634 (FUC) and :638 (FSC), then verify the entire completeness theorem is sorry-free.
 
@@ -275,14 +281,14 @@ The guard condition `∀ r, t < r → r < s → φ ∈ mcs(r)` transfers from `�
 
 ## Rollback/Contingency
 
-- **Phase 1 (enriched seed)**: If the enriched seed is inconsistent (unlikely given the `lemma_2_7_seed_consistent` precedent), fall back to a weaker enrichment using only `{snce(γ, α) : α ∈ g_content(A)}` instead of all `α ∈ A`. Git commit before Phase 2 enables clean rollback.
+- **Phase 1 (enriched seed)**: COMPLETED. No rollback needed.
 
-- **Phase 2 (threading guard)**: If modifying EliminationResult is too invasive, approach (B) avoids it entirely by proving guard propagation at the limit level directly from c2' + absorption.
+- **Phase 2 (Burgess alignment)**: COMPLETED. The Burgess 2.10 condition (i) fix (guard ∈ g check) resolves the forward walk region gap. No EliminationResult modification was needed — the fix was a 2-line condition change.
 
-- **Phase 3 (guard propagation)**: If `omega_chain_g_agrees_le` is blocked, prove it via a direct induction on the elimination step count using the `g_agrees` field. If Lemma 2.5 absorption does not directly give g-stability, use the explicit `lemma_2_6_splitting` output structure.
+- **Phase 3 (guard propagation)**: The main risk is formalizing the induction on the splitting tree within the omega chain. If direct induction on `m - (n+1)` is difficult due to the noncomputable omega chain, an alternative is to prove a standalone lemma about `eliminate_potential_counterexample` preserving guard membership in g-values of old pairs.
 
-- **Phase 4 (limit_satisfies_c5_strong)**: Assembly of prior phases. If the combination is blocked, check that the witness y from `limit_satisfies_c5_weak` is the SAME y for which guard propagation was established (it must be, since both derive from the same C5 elimination step).
+- **Phase 4 (limit_satisfies_c5_strong)**: Assembly of prior phases. The witness y from `limit_satisfies_c5_weak` must be the SAME y for which guard propagation was established (both derive from the same C5 elimination step at the same omega chain stage).
 
-- **Phase 5 (FUC/FSC)**: If the Cantor isomorphism transfer is blocked, check that the Cantor map preserves the interval structure (order-preserving + surjective on limit_dom). The existing sorry-free `cantor_bfmcs_restricted_tc` demonstrates this pattern.
+- **Phase 5 (FUC/FSC)**: The Cantor isomorphism transfer follows the pattern of `cantor_bfmcs_restricted_tc` (lines 456-501). The guard condition `∀ r, t < r → r < s → φ ∈ mcs(r)` is equivalent to `φ ∈ limit_g(x, y)` because `cantor_iso` is an order isomorphism and `limit_g` is defined universally.
 
-- **General**: Commit after each phase boundary. Any phase can be reverted by checking out the prior commit.
+- **General**: Commit after each phase boundary. Phases 1-2 already committed.

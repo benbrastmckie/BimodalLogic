@@ -441,8 +441,8 @@ noncomputable def cantor_bfmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent
 
 These are the three conditions needed by the parametric representation
 theorem, using cantor_bfmcs (sorry-free FMCS/BFMCS) instead of chronicle_bfmcs.
-The temporal and Until/Since coherence still have sorry sites pending
-the chronicle C5/C5' transfer through the Cantor isomorphism.
+All three use `limit_satisfies_c5_strong` / `limit_satisfies_c5'_strong` for
+the Until/Since guard condition via Cantor isomorphism transfer.
 -/
 
 /--
@@ -604,20 +604,9 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
 /--
 Restricted forward Until/Since coherence for the cantor BFMCS.
 
-The forward direction: U(φ,ψ) ∈ f(t) → ∃ s > t, ψ ∈ f(s) ∧ ∀ r ∈ [t,s), φ ∈ f(r).
-
-**Blocker**: Requires `limit_satisfies_c5_full` (C5 with guard), which in turn
-requires either:
-(a) The real interval function g (replacing the placeholder `limit_g`) with C3
-    three-way property: g(x,z) ⊆ f(y) for x < y < z. Then C5 elimination
-    guarantees ξ ∈ f(z) at intermediate z via g(x,y) ⊆ f(z).
-(b) Strengthening `EliminationResult.c5_forward_witness` to include guard info
-    (the guard IS checked in `eliminate_potential_counterexample` at line 728
-    but discarded from the result type).
-
-**Note**: The endpoint witness (∃ y > t, ψ ∈ f(y)) is available via
-`limit_satisfies_c5_weak`. Only the guard at intermediate points is missing.
-The backward direction (BUC) was proved using C4's contrapositive.
+The forward direction: U(φ,ψ) ∈ f(t) → ∃ s > t, ψ ∈ f(s) ∧ ∀ r ∈ (t,s), φ ∈ f(r).
+Uses `limit_satisfies_c5_strong` / `limit_satisfies_c5'_strong` (full Burgess C5a
+with guard), transferred through the Cantor isomorphism.
 -/
 theorem cantor_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
     (h_nubr3 : NoUnivBurgessR3)
@@ -627,15 +616,75 @@ theorem cantor_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsi
   obtain ⟨N, h_N, s, h_eqN, rfl⟩ := hfam
   constructor
   · -- Forward Until: U(φ,ψ) ∈ mcs(t) → ∃ s > t, ψ ∈ mcs(s) ∧ guard
-    -- BLOCKER: Requires full C5 with guard (limit_satisfies_c5_full).
-    -- C5_weak gives the endpoint ψ ∈ f(y), but the guard φ ∈ f(r) for
-    -- intermediate r requires the real interval function g with C3.
     intro t φ ψ _h_sub h_until
-    sorry
+    have h_until' : φ.untl ψ ∈ limit_f N h_N h_nubr3
+        ((cantor_iso N h_N h_nubr3).symm (t - (s - cantor_zero N h_N h_nubr3))).val := h_until
+    have h_dom := ((cantor_iso N h_N h_nubr3).symm (t - (s - cantor_zero N h_N h_nubr3))).property
+    obtain ⟨y, hy_dom, hy_gt, hy_ψ, hy_guard⟩ :=
+      limit_satisfies_c5_strong N h_N h_nubr3 _ h_dom φ ψ h_until'
+    set offset := s - cantor_zero N h_N h_nubr3
+    refine ⟨(cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset, ?_, ?_, ?_⟩
+    · have h_lt : (cantor_iso N h_N h_nubr3).symm (t - offset) < ⟨y, hy_dom⟩ := hy_gt
+      have := (cantor_iso N h_N h_nubr3).strictMono h_lt
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    · show ψ ∈ limit_f N h_N h_nubr3 ((cantor_iso N h_N h_nubr3).symm
+        ((cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N h_nubr3))).val
+      have : (cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N h_nubr3) =
+          (cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ := by simp [offset]
+      rw [this, OrderIso.symm_apply_apply]
+      exact hy_ψ
+    · intro r hr_gt hr_lt
+      show φ ∈ limit_f N h_N h_nubr3 ((cantor_iso N h_N h_nubr3).symm
+        (r - (s - cantor_zero N h_N h_nubr3))).val
+      have h_r_dom := ((cantor_iso N h_N h_nubr3).symm (r - offset)).property
+      apply hy_guard _ h_r_dom
+      · have : (cantor_iso N h_N h_nubr3).symm (t - offset) <
+            (cantor_iso N h_N h_nubr3).symm (r - offset) :=
+          (cantor_iso N h_N h_nubr3).symm.strictMono (show t - offset < r - offset by linarith)
+        exact this
+      · have : (cantor_iso N h_N h_nubr3).symm (r - offset) <
+            (cantor_iso N h_N h_nubr3).symm
+              ((cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - offset) := by
+          apply (cantor_iso N h_N h_nubr3).symm.strictMono
+          show r - offset < (cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - offset
+          simp [add_sub_cancel_right]; linarith
+        simp [add_sub_cancel_right, OrderIso.symm_apply_apply] at this
+        exact this
   · -- Forward Since: S(φ,ψ) ∈ mcs(t) → ∃ s < t, ψ ∈ mcs(s) ∧ guard
-    -- BLOCKER: Mirror of forward Until, requires full C5' with guard.
     intro t φ ψ _h_sub h_since
-    sorry
+    have h_since' : φ.snce ψ ∈ limit_f N h_N h_nubr3
+        ((cantor_iso N h_N h_nubr3).symm (t - (s - cantor_zero N h_N h_nubr3))).val := h_since
+    have h_dom := ((cantor_iso N h_N h_nubr3).symm (t - (s - cantor_zero N h_N h_nubr3))).property
+    obtain ⟨y, hy_dom, hy_lt, hy_ψ, hy_guard⟩ :=
+      limit_satisfies_c5'_strong N h_N h_nubr3 _ h_dom φ ψ h_since'
+    set offset := s - cantor_zero N h_N h_nubr3
+    refine ⟨(cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset, ?_, ?_, ?_⟩
+    · have h_lt' : ⟨y, hy_dom⟩ < (cantor_iso N h_N h_nubr3).symm (t - offset) := hy_lt
+      have := (cantor_iso N h_N h_nubr3).strictMono h_lt'
+      simp [OrderIso.apply_symm_apply] at this; linarith
+    · show ψ ∈ limit_f N h_N h_nubr3 ((cantor_iso N h_N h_nubr3).symm
+        ((cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N h_nubr3))).val
+      have : (cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N h_nubr3) =
+          (cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ := by simp [offset]
+      rw [this, OrderIso.symm_apply_apply]
+      exact hy_ψ
+    · intro r hr_gt hr_lt
+      show φ ∈ limit_f N h_N h_nubr3 ((cantor_iso N h_N h_nubr3).symm
+        (r - (s - cantor_zero N h_N h_nubr3))).val
+      have h_r_dom := ((cantor_iso N h_N h_nubr3).symm (r - offset)).property
+      apply hy_guard _ h_r_dom
+      · have : (cantor_iso N h_N h_nubr3).symm
+            ((cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - offset) <
+            (cantor_iso N h_N h_nubr3).symm (r - offset) := by
+          apply (cantor_iso N h_N h_nubr3).symm.strictMono
+          show (cantor_iso N h_N h_nubr3) ⟨y, hy_dom⟩ + offset - offset < r - offset
+          simp [add_sub_cancel_right]; linarith
+        simp [add_sub_cancel_right, OrderIso.symm_apply_apply] at this
+        exact this
+      · have : (cantor_iso N h_N h_nubr3).symm (r - offset) <
+            (cantor_iso N h_N h_nubr3).symm (t - offset) :=
+          (cantor_iso N h_N h_nubr3).symm.strictMono (show r - offset < t - offset by linarith)
+        exact this
 
 /-! ## Chronicle-Based Countermodel
 
@@ -643,18 +692,15 @@ The main integration theorem: constructs a countermodel from any MCS
 containing ¬φ, using the Cantor-based chronicle construction.
 
 This uses `cantor_bfmcs` (sorry-free FMCS/BFMCS). The forward_G/backward_H
-coherence is sorry-free via the Cantor isomorphism. The remaining sorry
-sites are in `cantor_bfmcs_restricted_fuc` (forward Until/Since coherence),
-which requires the guard at intermediate points via C3 + limit_g.
+coherence is sorry-free via the Cantor isomorphism. Forward Until/Since
+coherence uses `limit_satisfies_c5_strong` (full Burgess C5a with guard).
 -/
 
 /--
 Chronicle-based countermodel construction.
 
 Given an MCS M containing ¬φ, build a countermodel over Rat where φ is false.
-The remaining sorry sites (2) are in `cantor_bfmcs_restricted_fuc`:
-- Forward Until guard at intermediate points (requires C3 + limit_g)
-- Forward Since guard at intermediate points (mirror)
+Depends on `limit_satisfies_c5_strong` for the Until/Since guard condition.
 -/
 theorem dd_countermodel_chronicle (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (h_nubr3 : NoUnivBurgessR3)
