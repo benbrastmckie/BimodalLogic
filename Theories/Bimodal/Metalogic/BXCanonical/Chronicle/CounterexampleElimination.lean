@@ -658,10 +658,10 @@ noncomputable def eliminate_potential_counterexample
   match h_kind : pc.kind with
   | .c5_forward =>
     -- Forward (Until) C5 case
+    -- Burgess C5a counterexample check (g-value based per Burgess 2.10):
+    -- Actual counterexample iff NO y exists with event ∈ f(y) AND guard ∈ g(x,y).
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.untl pc.ξ pc.η ∈ χ.f pc.x ∧
-        ¬∃ y ∈ χ.dom, pc.x < y ∧ pc.η ∈ χ.f y ∧
-          ∀ z ∈ χ.dom, pc.x < z → z < y →
-            pc.ξ ∈ χ.f z ∧ Formula.untl pc.ξ pc.η ∈ χ.f z
+        ¬∃ y ∈ χ.dom, pc.x < y ∧ pc.η ∈ χ.f y ∧ pc.ξ ∈ χ.g pc.x y
     · obtain ⟨h_mem, h_until, h_no_wit⟩ := h_actual
       have h_mcs_x := h_c0 pc.x h_mem
       have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
@@ -796,19 +796,13 @@ noncomputable def eliminate_potential_counterexample
         -- Key fact: x' is NOT a C5 witness (eta ∉ f(x')), because x' is adjacent
         -- to pc.x so the guard condition is vacuous, and h_no_wit would be violated.
         have h_mcs_x' := h_c0 x' hx'_dom
-        have h_eta_not_x' : pc.η ∉ χ.f x' := by
-          intro h_eta
-          exact h_no_wit ⟨x', hx'_dom, hx_lt_x', h_eta, fun z hz hxz hzx' =>
-            absurd ⟨hxz, hzx'⟩ (h_adj_xx'.2.2.2 z hz)⟩
+        -- Burgess 2.10 (ii): guard ∈ g(x,x') implies event ∉ f(x')
+        have h_guard_implies_no_event : pc.ξ ∈ χ.g pc.x x' → pc.η ∉ χ.f x' :=
+          fun h_guard h_event => h_no_wit ⟨x', hx'_dom, hx_lt_x', h_event, h_guard⟩
         -- Get BurgessR3Maximal for the adjacent pair (pc.x, x') from c2'
         have h_r3m_adj := h_c2' pc.x x' h_adj_xx'
         have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x h_mcs_x'
         have h_gc_adj := BurgessR3Maximal_g_content_sub h_r3m_adj h_mcs_x h_mcs_x'
-        -- Since eta ∉ f(x') and f(x') is MCS: eta.neg ∈ f(x')
-        have h_eta_neg_x' : pc.η.neg ∈ χ.f x' := by
-          rcases SetMaximalConsistent.negation_complete h_mcs_x' pc.η with h | h
-          · exact absurd h h_eta_not_x'
-          · exact h
         -- Strategy: split the pair (pc.x, x') by inserting z between them.
         -- Use lemma_2_6_splitting with β = eta.neg (need eta.neg ∉ g(pc.x, x')),
         -- OR lemma_2_7 (need xi ∉ g(pc.x, x')),
@@ -1275,7 +1269,10 @@ noncomputable def eliminate_potential_counterexample
                       fun h_conj_f => h_cond_i ⟨h_conj_f, h_xi_g⟩
                     have h_neg_disj : (Formula.or pc.η (Formula.and pc.ξ (Formula.untl pc.ξ pc.η))).neg ∈ χ.f x' := by
                       have h_neg_conj : (pc.η.neg.and (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg) ∈ χ.f x' := by
-                        have h1 := h_eta_neg_x'
+                        have h1 : pc.η.neg ∈ χ.f x' := by
+                          rcases SetMaximalConsistent.negation_complete h_mcs_x' pc.η with h | h
+                          · exact absurd h (h_guard_implies_no_event h_xi_g)
+                          · exact h
                         have h2 : (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg ∈ χ.f x' := by
                           rcases SetMaximalConsistent.negation_complete h_mcs_x' (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) with h | h
                           · exact absurd h h_conj_not_f
@@ -1490,10 +1487,9 @@ noncomputable def eliminate_potential_counterexample
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
   | .c5_backward =>
     -- Backward (Since) C5' case
+    -- Burgess C5b counterexample check (g-value based, mirror of C5a):
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.snce pc.ξ pc.η ∈ χ.f pc.x ∧
-        ¬∃ y ∈ χ.dom, y < pc.x ∧ pc.η ∈ χ.f y ∧
-          ∀ z ∈ χ.dom, y < z → z < pc.x →
-            pc.ξ ∈ χ.f z ∧ Formula.snce pc.ξ pc.η ∈ χ.f z
+        ¬∃ y ∈ χ.dom, y < pc.x ∧ pc.η ∈ χ.f y ∧ pc.ξ ∈ χ.g y pc.x
     · obtain ⟨h_mem, h_since, h_no_wit⟩ := h_actual
       have h_mcs_x := h_c0 pc.x h_mem
       have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
@@ -1639,22 +1635,14 @@ noncomputable def eliminate_potential_counterexample
           have hu_T : u ∈ T_pred := Finset.mem_filter.mpr ⟨hu, by simp [hux]⟩
           have := Finset.le_max' T_pred u hu_T
           linarith
-        -- Key fact: x'' is NOT a C5' witness (eta ∉ f(x'')), since x'' is adjacent
-        -- to pc.x and the guard condition is vacuous.
         have h_mcs_x'' := h_c0 x'' hx''_dom
-        have h_eta_not_x'' : pc.η ∉ χ.f x'' := by
-          intro h_eta
-          exact h_no_wit ⟨x'', hx''_dom, hx''_lt_x, h_eta, fun z hz hx''z hzx =>
-            absurd ⟨hx''z, hzx⟩ (h_adj_x''x.2.2.2 z hz)⟩
+        -- Burgess 2.10' (ii): guard ∈ g(x'',x) implies event ∉ f(x'')
+        have h_guard_implies_no_event_back : pc.ξ ∈ χ.g x'' pc.x → pc.η ∉ χ.f x'' :=
+          fun h_guard h_event => h_no_wit ⟨x'', hx''_dom, hx''_lt_x, h_event, h_guard⟩
         -- Get BurgessR3Maximal for the adjacent pair (x'', pc.x)
         have h_r3m_adj := h_c2' x'' pc.x h_adj_x''x
         have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x'' h_mcs_x
         have h_gc_adj := BurgessR3Maximal_g_content_sub h_r3m_adj h_mcs_x'' h_mcs_x
-        -- eta ∉ f(x'') so eta.neg ∈ f(x'')
-        have h_eta_neg_x'' : pc.η.neg ∈ χ.f x'' := by
-          rcases SetMaximalConsistent.negation_complete h_mcs_x'' pc.η with h | h
-          · exact absurd h h_eta_not_x''
-          · exact h
         -- Backward condition (i) check: xi ∧ snce(xi, eta) ∈ f(x'') AND xi ∈ g(x'', pc.x)?
         -- Both parts needed for backward walk (Burgess 2.10 mirror).
         -- If yes, the Since counterexample persists backward. We walk backward.
@@ -2044,8 +2032,12 @@ noncomputable def eliminate_potential_counterexample
                             (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) with h | h
                           · exact absurd h h_conj_not_f_back
                           · exact h
+                        have h_eta_neg_x''_local : pc.η.neg ∈ χ.f x'' := by
+                          rcases SetMaximalConsistent.negation_complete h_mcs_x'' pc.η with h | h
+                          · exact absurd h (h_guard_implies_no_event_back h_xi_g)
+                          · exact h
                         exact conj_mcs h_mcs_x'' pc.η.neg
-                          (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg h_eta_neg_x'' h2
+                          (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg h_eta_neg_x''_local h2
                       exact SetMaximalConsistent.implication_property h_mcs_x''
                         (theorem_in_mcs h_mcs_x''
                           (Bimodal.Theorems.Propositional.demorgan_disj_neg_backward pc.η
