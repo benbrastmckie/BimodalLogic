@@ -670,7 +670,7 @@
       "dependencies": [
         113
       ],
-      "next_artifact_number": 55,
+      "next_artifact_number": 56,
       "artifacts": [
         {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/reports/01_chain-design-diagnostics.md",
