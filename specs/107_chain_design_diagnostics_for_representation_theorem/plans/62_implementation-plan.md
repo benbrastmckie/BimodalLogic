@@ -187,7 +187,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: c2' Co-Construction for All 5 Elimination Types (#6-10) [NOT STARTED]
+### Phase 4: c2' Co-Construction for All 5 Elimination Types (#6-10) [PARTIAL]
 
 **Goal**: Close the 5 inline c2' sorries at CounterexampleElimination.lean lines 758, 796, 836, 874, 920 by constructing g-values (BurgessR3Maximal intermediate sets) for new adjacent pairs created by each elimination step.
 

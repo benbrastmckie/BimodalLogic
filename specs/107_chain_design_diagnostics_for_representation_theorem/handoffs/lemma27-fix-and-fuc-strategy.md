@@ -121,7 +121,14 @@ This would be proved by induction on `m - n`, using `g_agrees` and the `B ⊆ D`
 - `omega_chain_g_agrees` (ChronicleConstruction.lean) — g-values preserved for old domain pairs
 - `omega_chain_g_agrees_le` (ChronicleConstruction.lean) — g-agrees extends transitively
 
-### Critical Discovery: Forward Walk Region Gap
+### Task D: Aligned walk condition with Burgess 2.10 (CounterexampleElimination.lean)
+- Forward walk (line 796): changed `h_cond_i` from `conj ∈ f(x')` to `conj ∈ f(x') ∧ guard ∈ g(x, x')`
+- Backward walk (line 1464): same fix for `h_cond_i_back`
+- Updated 2 usage sites where negation of condition (i) was used
+- This is the critical Burgess alignment: condition (i) requires BOTH parts
+- With this fix, the forward walk only advances when guard ∈ g(x, x'), ensuring C3 propagation
+
+### Previous Discovery (Now Resolved): Forward Walk Region Gap
 
 The guard propagation splits into TWO regions for the n>=1 walk case:
 

@@ -789,15 +789,16 @@ noncomputable def eliminate_potential_counterexample
           intro h_bot
           exact h_B_sdc.1 [Formula.bot] (fun φ hφ => by simp at hφ; rw [hφ]; exact h_bot)
             ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
-        -- Burgess 2.10: check condition (i) — does the conjunction persist into f(x')?
+        -- Burgess 2.10: check condition (i) — does the conjunction persist into f(x')
+        -- AND is the guard in g(x, x')? Both parts are needed for the forward walk.
         -- If condition (i) holds, splitting at (pc.x, x') fails; use forward walk.
         -- If not, the existing splitting lemmas handle all cases.
-        by_cases h_cond_i : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.f x'
-        · -- **Condition (i)**: xi∧U(xi,eta) ∈ f(x'), so U(xi,eta) ∈ f(x').
+        by_cases h_cond_i : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.f x' ∧ pc.ξ ∈ χ.g pc.x x'
+        · -- **Condition (i)**: xi∧U(xi,eta) ∈ f(x') and xi ∈ g(x,x'), so U(xi,eta) ∈ f(x').
           -- Forward walk: find the last domain point w ≥ pc.x where U(xi,eta) ∈ f(w),
           -- then either apply lemma_2_4 (if w = max_old) or split at (w, w_next).
           have h_untl_x' : Formula.untl pc.ξ pc.η ∈ χ.f x' :=
-            conj_right_mcs h_mcs_x' pc.ξ (Formula.untl pc.ξ pc.η) h_cond_i
+            conj_right_mcs h_mcs_x' pc.ξ (Formula.untl pc.ξ pc.η) h_cond_i.1
           -- Walk set U: domain points w ≥ pc.x with U(xi,eta) ∈ f(w)
           haveI : DecidablePred (fun w => pc.x ≤ w ∧ Formula.untl pc.ξ pc.η ∈ χ.f w) :=
             fun _ => Classical.dec _
@@ -1156,13 +1157,15 @@ noncomputable def eliminate_potential_counterexample
             · by_cases h_eta_neg_g : pc.η.neg ∈ χ.g pc.x x'
               · by_cases h_xi_g : pc.ξ ∈ χ.g pc.x x'
                 · by_cases h_conj_g : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.g pc.x x'
-                  · -- conj ∈ g but conj ∉ f(x') (h_cond_i is false): Lemma 2.8 applies.
+                  · -- conj ∈ g and xi ∈ g but condition (i) fails: conj ∉ f(x'). Lemma 2.8 applies.
+                    have h_conj_not_f : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∉ χ.f x' :=
+                      fun h_conj_f => h_cond_i ⟨h_conj_f, h_xi_g⟩
                     have h_neg_disj : (Formula.or pc.η (Formula.and pc.ξ (Formula.untl pc.ξ pc.η))).neg ∈ χ.f x' := by
                       have h_neg_conj : (pc.η.neg.and (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg) ∈ χ.f x' := by
                         have h1 := h_eta_neg_x'
                         have h2 : (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg ∈ χ.f x' := by
                           rcases SetMaximalConsistent.negation_complete h_mcs_x' (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) with h | h
-                          · exact absurd h h_cond_i
+                          · exact absurd h h_conj_not_f
                           · exact h
                         exact conj_mcs h_mcs_x' pc.η.neg (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg h1 h2
                       have h_dm := Bimodal.Theorems.Propositional.demorgan_disj_neg_backward pc.η (Formula.and pc.ξ (Formula.untl pc.ξ pc.η))
@@ -1455,14 +1458,15 @@ noncomputable def eliminate_potential_counterexample
           rcases SetMaximalConsistent.negation_complete h_mcs_x'' pc.η with h | h
           · exact absurd h h_eta_not_x''
           · exact h
-        -- Backward condition (i) check: xi ∧ snce(xi, eta) ∈ f(x'')?
+        -- Backward condition (i) check: xi ∧ snce(xi, eta) ∈ f(x'') AND xi ∈ g(x'', pc.x)?
+        -- Both parts needed for backward walk (Burgess 2.10 mirror).
         -- If yes, the Since counterexample persists backward. We walk backward.
         -- If no, splitting at (x'', pc.x) succeeds.
-        by_cases h_cond_i_back : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.f x''
-        · -- **Condition (i) backward**: conj_since ∈ f(x''), so snce(xi,eta) ∈ f(x'').
+        by_cases h_cond_i_back : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.f x'' ∧ pc.ξ ∈ χ.g x'' pc.x
+        · -- **Condition (i) backward**: conj_since ∈ f(x'') and xi ∈ g(x'',pc.x), so snce(xi,eta) ∈ f(x'').
           -- Backward walk: find leftmost w ≤ pc.x with snce(xi,eta) ∈ f(w)
           have h_snce_x'' : Formula.snce pc.ξ pc.η ∈ χ.f x'' :=
-            conj_right_mcs h_mcs_x'' pc.ξ (Formula.snce pc.ξ pc.η) h_cond_i_back
+            conj_right_mcs h_mcs_x'' pc.ξ (Formula.snce pc.ξ pc.η) h_cond_i_back.1
           haveI : DecidablePred (fun w => w ≤ pc.x ∧ Formula.snce pc.ξ pc.η ∈ χ.f w) :=
             fun _ => Classical.dec _
           set W := χ.dom.filter (fun w => w ≤ pc.x ∧ Formula.snce pc.ξ pc.η ∈ χ.f w) with W_def
@@ -1750,13 +1754,15 @@ noncomputable def eliminate_potential_counterexample
                 by_cases h_xi_g : pc.ξ ∈ χ.g x'' pc.x
                 · -- xi ∈ g: further split on conj_since = xi ∧ snce(xi, eta) ∈ g
                   by_cases h_conj_g : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.g x'' pc.x
-                  · -- conj_since ∈ g: lemma_2_8_since. Condition (i) is false so conj ∉ f(x'').
+                  · -- conj_since ∈ g and xi ∈ g but condition (i) fails: conj ∉ f(x''). Lemma_2_8_since applies.
+                    have h_conj_not_f_back : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∉ χ.f x'' :=
+                      fun h_conj_f => h_cond_i_back ⟨h_conj_f, h_xi_g⟩
                     have h_neg_disj_x'' : (Formula.or pc.η (Formula.and pc.ξ (Formula.snce pc.ξ pc.η))).neg ∈ χ.f x'' := by
                       have h_neg_conj_x'' : (pc.η.neg.and (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg) ∈ χ.f x'' := by
                         have h2 : (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg ∈ χ.f x'' := by
                           rcases SetMaximalConsistent.negation_complete h_mcs_x''
                             (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) with h | h
-                          · exact absurd h h_cond_i_back
+                          · exact absurd h h_conj_not_f_back
                           · exact h
                         exact conj_mcs h_mcs_x'' pc.η.neg
                           (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg h_eta_neg_x'' h2
