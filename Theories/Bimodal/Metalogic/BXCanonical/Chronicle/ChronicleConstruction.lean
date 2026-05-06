@@ -1273,6 +1273,146 @@ theorem chronicle_model_exists (A : Set Formula) (h_mcs : SetMaximalConsistent A
    fun x hx ξ η h => limit_satisfies_c5_weak A h_mcs h_nubr3 x hx ξ η h,
    fun x hx ξ η h => limit_satisfies_c5'_weak A h_mcs h_nubr3 x hx ξ η h⟩
 
+/-! ## Omega Chain Single-Point Insertion
+
+Each elimination step inserts at most one new domain point.
+-/
+
+theorem omega_chain_dom_new_unique (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (n : Nat)
+    (u v : Rat)
+    (hu : u ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom)
+    (hu_not : u ∉ (omega_chain_val A h_mcs h_nubr3 n).dom)
+    (hv : v ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom)
+    (hv_not : v ∉ (omega_chain_val A h_mcs h_nubr3 n).dom) :
+    u = v := by
+  sorry
+
+/-! ## Omega Chain g-value Lifting
+
+Lift EliminationResult.g_sub_f_insert and g_sub_g_new to the omega chain level.
+-/
+
+theorem omega_chain_g_sub_f_insert (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (n : Nat)
+    (a b : Rat) (h_adj : Adjacent (omega_chain_val A h_mcs h_nubr3 n).dom a b)
+    (w : Rat) (hw : w ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom)
+    (hw_not : w ∉ (omega_chain_val A h_mcs h_nubr3 n).dom)
+    (haw : a < w) (hwb : w < b) :
+    (omega_chain_val A h_mcs h_nubr3 n).g a b ⊆
+    (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w := by
+  have hw' : w ∈ (omega_chain_elim_result A h_mcs h_nubr3 n).val.dom := by
+    rw [← omega_chain_dom_eq_elim]; exact hw
+  intro φ hφ
+  have := (omega_chain_elim_result A h_mcs h_nubr3 n).g_sub_f_insert a b h_adj w hw' hw_not haw hwb hφ
+  rw [omega_chain_f_eq_elim]; exact this
+
+theorem omega_chain_g_sub_g_new (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (n : Nat)
+    (a b : Rat) (h_adj : Adjacent (omega_chain_val A h_mcs h_nubr3 n).dom a b)
+    (w : Rat) (hw : w ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom)
+    (hw_not : w ∉ (omega_chain_val A h_mcs h_nubr3 n).dom)
+    (haw : a < w) (hwb : w < b) :
+    (omega_chain_val A h_mcs h_nubr3 n).g a b ⊆
+    (omega_chain_val A h_mcs h_nubr3 (n + 1)).g a w ∧
+    (omega_chain_val A h_mcs h_nubr3 n).g a b ⊆
+    (omega_chain_val A h_mcs h_nubr3 (n + 1)).g w b := by
+  have hw' : w ∈ (omega_chain_elim_result A h_mcs h_nubr3 n).val.dom := by
+    rw [← omega_chain_dom_eq_elim]; exact hw
+  have key := (omega_chain_elim_result A h_mcs h_nubr3 n).g_sub_g_new a b h_adj w hw' hw_not haw hwb
+  constructor
+  · intro φ hφ
+    have := key.1 hφ
+    rw [omega_chain_g_eq_elim]; exact this
+  · intro φ hφ
+    have := key.2 hφ
+    rw [omega_chain_g_eq_elim]; exact this
+
+/-! ## Adjacent Pair g-value Propagation to Limit f-values
+
+The key bridge between finite-stage g-values and limit f-values:
+if φ ∈ g_k(a,b) for adjacent (a,b) in dom(k), then φ ∈ limit_f(w)
+for any w ∈ limit_dom with a < w < b.
+
+Proof: By strong induction on the first stage m where w enters the domain.
+At stage m, w was inserted between adjacent (a',b') in dom(m-1) with a' < w < b'.
+By g_sub_f_insert, g_{m-1}(a',b') ⊆ f_m(w). We show g_k(a,b) ⊆ g_{m-1}(a',b')
+by tracking g-value propagation through insertions via g_sub_g_new.
+-/
+
+private theorem adj_g_mem_f_at_stage (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) :
+    ∀ (d : Nat) (n : Nat) (a b : Rat),
+      Adjacent (omega_chain_val A h_mcs h_nubr3 n).dom a b →
+      ∀ φ, φ ∈ (omega_chain_val A h_mcs h_nubr3 n).g a b →
+      ∀ (w : Rat), w ∈ (omega_chain_val A h_mcs h_nubr3 (n + d)).dom →
+        a < w → w < b → φ ∈ (omega_chain_val A h_mcs h_nubr3 (n + d)).f w := by
+  intro d
+  induction d with
+  | zero =>
+    intro n a b h_adj _ _ w hw haw hwb
+    exact absurd hw (h_adj.2.2.2 w · ⟨haw, hwb⟩)
+  | succ d ih =>
+    intro n a b h_adj φ hφ w hw haw hwb
+    rw [show n + (d + 1) = (n + 1) + d from by omega] at hw ⊢
+    by_cases hz_ex : ∃ z, z ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom ∧
+        z ∉ (omega_chain_val A h_mcs h_nubr3 n).dom ∧ a < z ∧ z < b
+    · obtain ⟨z, hz_in, hz_not, haz, hzb⟩ := hz_ex
+      have h_gsub := omega_chain_g_sub_g_new A h_mcs h_nubr3 n a b h_adj z hz_in hz_not haz hzb
+      by_cases hwz : w = z
+      · subst hwz
+        have hφ_fw : φ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w :=
+          omega_chain_g_sub_f_insert A h_mcs h_nubr3 n a b h_adj w hz_in hz_not haw hwb hφ
+        have hw_n1 : w ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom := hz_in
+        rw [omega_chain_f_agrees_le A h_mcs h_nubr3 (by omega : n + 1 ≤ (n + 1) + d) w hw_n1]
+        exact hφ_fw
+      · rcases lt_or_gt_of_ne hwz with hwz_lt | hwz_gt
+        · have h_adj_az : Adjacent (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom a z := by
+            refine ⟨omega_chain_dom_mono A h_mcs h_nubr3 n h_adj.1, hz_in, haz, ?_⟩
+            intro u hu ⟨hau, huz⟩
+            have hu_old : u ∈ (omega_chain_val A h_mcs h_nubr3 n).dom := by
+              by_contra hu_not
+              have := omega_chain_dom_new_unique A h_mcs h_nubr3 n u z hu hu_not hz_in hz_not
+              linarith
+            exact h_adj.2.2.2 u hu_old ⟨hau, lt_trans huz hzb⟩
+          exact ih (n + 1) a z h_adj_az φ (h_gsub.1 hφ) w hw haw hwz_lt
+        · have h_adj_zb : Adjacent (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom z b := by
+            refine ⟨hz_in, omega_chain_dom_mono A h_mcs h_nubr3 n h_adj.2.1, hzb, ?_⟩
+            intro u hu ⟨hzu, hub⟩
+            have hu_old : u ∈ (omega_chain_val A h_mcs h_nubr3 n).dom := by
+              by_contra hu_not
+              have := omega_chain_dom_new_unique A h_mcs h_nubr3 n u z hu hu_not hz_in hz_not
+              linarith
+            exact h_adj.2.2.2 u hu_old ⟨lt_trans haz hzu, hub⟩
+          exact ih (n + 1) z b h_adj_zb φ (h_gsub.2 hφ) w hw hwz_gt hwb
+    · push_neg at hz_ex
+      have h_adj_n1 : Adjacent (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom a b := by
+        refine ⟨omega_chain_dom_mono A h_mcs h_nubr3 n h_adj.1,
+               omega_chain_dom_mono A h_mcs h_nubr3 n h_adj.2.1,
+               h_adj.2.2.1, ?_⟩
+        intro u hu ⟨hau, hub⟩
+        have hu_old : u ∈ (omega_chain_val A h_mcs h_nubr3 n).dom := by
+          by_contra hu_not
+          exact absurd hub (not_lt.mpr (hz_ex u hu hu_not hau))
+        exact h_adj.2.2.2 u hu_old ⟨hau, hub⟩
+      have hφ_n1 : φ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).g a b := by
+        rw [omega_chain_g_agrees A h_mcs h_nubr3 n a b h_adj.1 h_adj.2.1]; exact hφ
+      exact ih (n + 1) a b h_adj_n1 φ hφ_n1 w hw haw hwb
+
+theorem adj_g_mem_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (k : Nat)
+    (a b : Rat) (h_adj : Adjacent (omega_chain_val A h_mcs h_nubr3 k).dom a b)
+    (φ : Formula) (hφ : φ ∈ (omega_chain_val A h_mcs h_nubr3 k).g a b)
+    (w : Rat) (hw : w ∈ limit_dom A h_mcs h_nubr3) (haw : a < w) (hwb : w < b) :
+    φ ∈ limit_f A h_mcs h_nubr3 w := by
+  obtain ⟨m, hm⟩ := hw
+  have hkm : k ≤ m := by
+    by_contra h; push_neg at h
+    exact h_adj.2.2.2 w (omega_chain_dom_mono_le A h_mcs h_nubr3 (le_of_lt h) hm) ⟨haw, hwb⟩
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hkm
+  rw [limit_f_eq A h_mcs h_nubr3 w (k + d) hm]
+  exact adj_g_mem_f_at_stage A h_mcs h_nubr3 d k a b h_adj φ hφ w hm haw hwb
+
 /-! ## Strong C5: Full Burgess C5a with Guard
 
 The full C5a condition from Burgess 2.11: if U(ξ,η) ∈ limit_f(x), then there exists
