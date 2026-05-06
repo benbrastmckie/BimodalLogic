@@ -91,10 +91,10 @@ Phases within the same wave can execute in parallel.
 - **Option C (fallback)**: Add NoUnivBurgessR3 as a structural axiom with semantic justification.
 
 **Tasks**:
-- [ ] **Task 1.1**: Read the definition of `burgessR3` in ChronicleTypes.lean and all its usage sites. Determine whether `SetConsistent B` is already implied or easily added.
-- [ ] **Task 1.2**: Attempt Option B first -- check whether `burgessR3(A, Set.univ, C)` can be refuted from MCS properties of A alone. Specifically: `Set.univ` contains `bot`, so `burgessR3(A, Set.univ, C)` requires `untl(gamma, bot) in A` for all gamma in C, but `untl(gamma, bot)` implies `F(bot)` (by BX10), and `F(bot) = neg G(neg bot) = neg G(top)` contradicts seriality + consistency of A.
-- [ ] **Task 1.3**: If Option B works, prove `NoUnivBurgessR3` directly in Completeness.lean. If not, implement Option A: add `SetConsistent B` to `burgessR3` definition, audit cascade, and prove `NoUnivBurgessR3` trivially.
-- [ ] **Task 1.4**: Run `lake build` and verify no regressions. Sorry count: 13 -> 12.
+- [x] **Task 1.1**: Read the definition of `burgessR3` in ChronicleTypes.lean and all its usage sites. Determine whether `SetConsistent B` is already implied or easily added.
+- [x] **Task 1.2**: Attempt Option B first -- check whether `burgessR3(A, Set.univ, C)` can be refuted from MCS properties of A alone. Result: NOT provable from J0. Counterexample on 2-point discrete order.
+- [x] **Task 1.3**: Implemented Option A variant: reverted BurgessR3Maximal to SetDeductivelyClosed maximality, eliminating NoUnivBurgessR3 from ~450 sites.
+- [x] **Task 1.4**: Run `lake build` and verify no regressions. Sorry count: 13 -> 12.
 
 **Timing**: 2-4 hours
 
@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 2.6 Case B (#1) and Lemma 2.7 Inconsistent Case (#3) [PARTIAL]
+### Phase 2: Lemma 2.6 Case B (#1) and Lemma 2.7 Inconsistent Case (#3) [IN PROGRESS]
 
 **Goal**: Close sorry #1 (PointInsertion.lean:1977) and sorry #3 (PointInsertion.lean:2875) by removing the unnecessary case splits that Burgess never makes. These are formalization artifacts identified by the research: Burgess does not case-split on whether B is an MCS (#1) or whether {xi} union B is consistent (#3).
 
@@ -125,10 +125,10 @@ Phases within the same wave can execute in parallel.
 **Strategy for #3 (inconsistent case)**: The sorry is in `lemma_2_7` when `{xi} union B` is inconsistent. Research confirms this is a formalization artifact -- Burgess's proof of 2.7 does not case-split on consistency. Instead, follow Burgess directly: the inconsistent case means `xi.neg in B` (since B is deductively closed). Since `xi not in B` (hypothesis) and B is ClosedUnderDerivation, we can derive the needed splitting via BurgessR3Maximal without checking consistency of {xi} union B. Alternatively, use Zorn variant accepting ClosedUnderDerivation seed (not requiring consistency).
 
 **Tasks**:
-- [ ] **Task 2.1**: Inspect goal state at sorry #1 (PointInsertion.lean:1977) with `lean_goal`. Understand available hypotheses in the Case B (B is MCS) branch.
-- [ ] **Task 2.2**: Close sorry #1 by extracting maximality witness from DC(B union {beta}) + BX2 contrapositive. The ClosedUnderDerivation cascade already provides the needed infrastructure.
-- [ ] **Task 2.3**: Inspect goal state at sorry #3 (PointInsertion.lean:2875) with `lean_goal`. Understand the inconsistent case branch.
-- [ ] **Task 2.4**: Close sorry #3 by following Burgess directly -- either prove that `{xi} union B` is always consistent from the hypotheses (Option b from v60), or restructure to avoid the case split entirely using Zorn with ClosedUnderDerivation seed.
+- [x] **Task 2.1**: Inspect goal state at sorry #1 (PointInsertion.lean:1968). Understood Case B (B is MCS) branch.
+- [x] **Task 2.2**: Close sorry #1 via CUD maximality fix — changed maximality clause from SetDeductivelyClosed to ClosedUnderDerivation, then derived contradiction from EFQ + left_mono + right_mono when guard b∧β is inconsistent.
+- [x] **Task 2.3**: Inspect goal state at sorry #3 (PointInsertion.lean:3156). Understood inconsistent case — xi (guard) is itself inconsistent.
+- [ ] **Task 2.4**: Close sorry #3. Fix: change BurgessR3Maximal first conjunct from SetDeductivelyClosed to ClosedUnderDerivation, allowing B' = Set.univ when xi is inconsistent. Cascade through RRelation.lean, PointInsertion.lean. Use set_univ_closed_under_derivation.
 - [ ] **Task 2.5**: Run `lake build`. Verify PointInsertion.lean sorry count: 3 -> 1 (only sorry #2 remains).
 
 **Timing**: 3-5 hours
@@ -146,7 +146,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Lemma 2.7 Seed Consistency (#2) [NOT STARTED]
+### Phase 3: Lemma 2.7 Seed Consistency (#2) [IN PROGRESS]
 
 **Goal**: Close `lemma_2_7_seed_consistent` at PointInsertion.lean:2744 by implementing the full BX5+BX7+A3a chain per Burgess Section 2.7 (p.372). This is the single hardest sorry -- a 12-step axiomatic proof chain.
 
@@ -164,13 +164,13 @@ Phases within the same wave can execute in parallel.
 7. All three disjuncts lead to contradiction with MCS consistency of A.
 
 **Tasks**:
-- [ ] **Task 3.1**: Verify the exact `Axiom.linear_until` form and confirm D1, D2, D3 structure using `lean_hover_info` on `linear_until_mcs`.
-- [ ] **Task 3.2**: Implement Step 1: extract witness (beta0, gamma0) from BurgessR3Maximal + `xi not in B`.
-- [ ] **Task 3.3**: Implement Steps 2-3: BX5 self-accumulation + BX7 three-way disjunction.
-- [ ] **Task 3.4**: Implement Step 4: eliminate D1 via left_mono + right_mono -> contradiction.
-- [ ] **Task 3.5**: Implement Step 5: eliminate D2 via right_mono to eta + BX14 separation + BX13 enrichment + BX10.
-- [ ] **Task 3.6**: Implement Steps 6-7: eliminate D3 + assemble full proof.
-- [ ] **Task 3.7**: Run `lake build`. Verify PointInsertion.lean sorry count: 1 -> 0 (fully sorry-free).
+- [x] **Task 3.1**: Verified linear_until_mcs form and D1, D2, D3 structure.
+- [x] **Task 3.2**: Implemented Step 1: extract witness (beta0, gamma0) from BurgessR3Maximal CUD maximality.
+- [x] **Task 3.3**: Implemented Steps 2-3: BX5 self-accumulation + BX7 three-way disjunction.
+- [x] **Task 3.4**: Implemented Step 4: eliminate D1 via combine_imp_conj + left_mono + right_mono.
+- [x] **Task 3.5**: Implemented Step 5: eliminate D2 via right_mono + BX13 enrichment.
+- [x] **Task 3.6**: Implemented Steps 6-7: D3 survivor + BX13 iterated enrichment + BX10 F-extraction. h_key helper fully proved (~120 lines).
+- [ ] **Task 3.7**: Remaining: list extraction plumbing to connect h_key to finite-subset argument. Need `l27_collect_guards`, `l27_c_event_list`, `l27_a_event_list` extractors defined as private noncomputable defs (following collect_guards pattern at PI:1508). Then 5-way case split on seed membership, derivation_from_implied + inconsistent_singleton_false.
 
 **Timing**: 6-10 hours
 
