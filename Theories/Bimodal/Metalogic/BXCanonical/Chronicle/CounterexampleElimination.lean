@@ -265,6 +265,65 @@ theorem c2'_preserved_on_old_adjacent {χ χ' : Chronicle}
   rw [h_f_agrees a h_a_old, h_g_agrees a b h_a_old h_b_old, h_f_agrees b h_b_old]
   exact h_c2' a b h_adj_old
 
+/--
+**BurgessR3Maximal from h_content subset (backward direction)**:
+If h_content(C) ⊆ A (i.e., H(φ) ∈ C → φ ∈ A), then ∃ B, BurgessR3Maximal(A, B, C).
+
+This is the backward mirror of `burgessR3Maximal_from_g_content_sub`:
+- Forward: g_content(A) ⊆ C gives BurgessR3Maximal(A, _, C)
+- Backward: h_content(C) ⊆ A gives BurgessR3Maximal(A, _, C)
+
+Proof: Use η = ⊤ as the seed element.
+- burgessR(A, ⊤, C): F(γ) ∈ A for all γ ∈ C.
+  Proof: By BX4' (connect_past), γ → H(F(γ)), so γ ∈ C → H(F(γ)) ∈ C → F(γ) ∈ h_content(C) ⊆ A.
+  Then F(γ) → U(⊤, γ) by F_until_equiv.
+- burgessRSince(C, ⊤, A): P(α) ∈ C for all α ∈ A.
+  Proof: If H(α.neg) ∈ C, then α.neg ∈ h_content(C) ⊆ A, contradicting α ∈ A. So P(α) ∈ C.
+  Then P(α) → S(⊤, α) by P_since_equiv.
+-/
+theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_hc : h_content C ⊆ A)
+    (h_no_univ : ¬burgessR3 A Set.univ C) :
+    ∃ B : Set Formula, BurgessR3Maximal A B C := by
+  set top := Formula.bot.imp Formula.bot with top_def
+  have h_top_A : top ∈ A :=
+    theorem_in_mcs h_mcs_A (Bimodal.Theorems.Combinators.identity Formula.bot)
+  -- burgessR(A, ⊤, C): ∀ γ ∈ C, U(⊤, γ) ∈ A
+  have h_bR : burgessR A top C := by
+    intro γ hγ
+    -- BX4': γ → H(F(γ))
+    have h_ax_cp : DerivationTree [] (γ.imp (Formula.all_past (Formula.some_future γ))) :=
+      DerivationTree.axiom [] _ (Axiom.connect_past γ)
+    have h_HF : Formula.all_past (Formula.some_future γ) ∈ C :=
+      SetMaximalConsistent.implication_property h_mcs_C
+        (theorem_in_mcs h_mcs_C h_ax_cp) hγ
+    -- H(F(γ)) ∈ C → F(γ) ∈ h_content(C) ⊆ A
+    have h_F : Formula.some_future γ ∈ A := h_hc h_HF
+    -- F(γ) → U(⊤, γ) by F_until_equiv
+    have h_bx12 : DerivationTree [] ((Formula.some_future γ).imp (Formula.untl top γ)) :=
+      DerivationTree.axiom [] _ (Axiom.F_until_equiv γ)
+    exact SetMaximalConsistent.implication_property h_mcs_A
+      (theorem_in_mcs h_mcs_A h_bx12) h_F
+  -- burgessRSince(C, ⊤, A): ∀ α ∈ A, S(⊤, α) ∈ C
+  have h_bRS : burgessRSince C top A := by
+    intro α hα
+    -- If H(α.neg) ∈ C, then α.neg ∈ h_content(C) ⊆ A, contradicting α ∈ A
+    have h_P : Formula.some_past α ∈ C := by
+      by_contra h_not_P
+      have h_H_neg : Formula.all_past α.neg ∈ C := by
+        rcases SetMaximalConsistent.negation_complete h_mcs_C (Formula.all_past α.neg) with h | h
+        · exact h
+        · exact absurd h h_not_P
+      have h_neg_A : α.neg ∈ A := h_hc h_H_neg
+      exact SetMaximalConsistent.neg_excludes h_mcs_A α h_neg_A hα
+    -- P(α) → S(⊤, α) by P_since_equiv
+    have h_bx12' : DerivationTree [] ((Formula.some_past α).imp (Formula.snce top α)) :=
+      DerivationTree.axiom [] _ (Axiom.P_since_equiv α)
+    exact SetMaximalConsistent.implication_property h_mcs_C
+      (theorem_in_mcs h_mcs_C h_bx12') h_P
+  exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A h_no_univ
+
 /-! ## Lemma 2.10: C5 Counterexample Elimination -/
 
 /--
@@ -860,18 +919,120 @@ noncomputable def eliminate_potential_counterexample
           ∀ z ∈ χ.dom, pc.x < z → z < y →
             pc.ξ ∈ χ.f z ∧ Formula.untl pc.ξ pc.η ∈ χ.f z
     · obtain ⟨h_mem, h_until, h_no_wit⟩ := h_actual
-      have h_elim := eliminate_C5_counterexample h_c0
-        (⟨pc.x, h_mem, pc.ξ, pc.η, h_until, h_no_wit⟩ : C5Counterexample χ) h_nubr3
-      let χ' := h_elim.choose
-      have h_prop := h_elim.choose_spec
+      -- Inline construction with updated g for c2' preservation.
+      -- Step 1: Get a fresh point y > all domain points.
+      have h_fresh := exists_rat_gt_finset χ.dom
+      let y := h_fresh.choose
+      have hy_gt : ∀ s ∈ χ.dom, s < y := h_fresh.choose_spec.1
+      have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
+      -- Step 2: Use Lemma 2.4 to get B, C with BurgessR3Maximal(f(pc.x), B, C) and η ∈ C.
+      have h_mcs_x := h_c0 pc.x h_mem
+      have h_l24 := lemma_2_4 h_mcs_x pc.ξ pc.η h_until h_nubr3
+      let B := h_l24.choose
+      let C := h_l24.choose_spec.choose
+      have h_l24_prop := h_l24.choose_spec.choose_spec
+      have h_C_mcs : SetMaximalConsistent C := h_l24_prop.1
+      have h_η_C : pc.η ∈ C := h_l24_prop.2.1
+      have h_gc_sub : g_content (χ.f pc.x) ⊆ C := h_l24_prop.2.2.1
+      have h_r3m : BurgessR3Maximal (χ.f pc.x) B C := h_l24_prop.2.2.2.2
+      -- Step 3: Find the predecessor of y in the new domain (= max of old domain).
+      -- Since dom is nonempty (pc.x ∈ dom), max exists.
+      have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
+      set max_old := χ.dom.max' h_dom_ne with max_old_def
+      have h_max_mem : max_old ∈ χ.dom := Finset.max'_mem χ.dom h_dom_ne
+      have h_max_le : ∀ s ∈ χ.dom, s ≤ max_old := fun s hs => Finset.le_max' χ.dom s hs
+      have h_max_lt_y : max_old < y := hy_gt max_old h_max_mem
+      -- Step 4: Build g' that updates g(max_old, y) = B.
+      -- For the pair (pc.x, y): if pc.x = max_old, g'(pc.x, y) = B.
+      -- For other new pairs: we use B (which is valid since the only new
+      -- adjacent pair is (max_old, y)).
+      let g' := fun a b =>
+        if a = max_old ∧ b = y then B
+        else χ.g a b
+      -- Step 5: Build the new chronicle.
+      let χ' : Chronicle := ⟨fun q => if q = y then C else χ.f q, g', insert y χ.dom⟩
+      -- Step 6: Prove c2' for the new chronicle.
+      -- The only new adjacent pair is (max_old, y). All old adjacent pairs
+      -- remain adjacent (y is after all old points, so it doesn't split any pair).
+      have h_c2'_new : χ'.c2' := by
+        intro a b h_adj_new
+        obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
+        simp only [χ', Finset.mem_insert] at ha hb
+        rcases ha with rfl | ha <;> rcases hb with rfl | hb
+        · -- a = y, b = y: impossible
+          exact absurd hab (lt_irrefl _)
+        · -- a = y, b ∈ old dom: impossible since y > all old points
+          exact absurd hab (not_lt.mpr (le_of_lt (hy_gt b hb)))
+        · -- a ∈ old dom, b = y: must be (max_old, y)
+          have ha_eq : a = max_old := by
+            by_contra ha_ne
+            have ha_le : a ≤ max_old := h_max_le a ha
+            have ha_lt : a < max_old := lt_of_le_of_ne ha_le ha_ne
+            -- max_old is between a and y in new dom, contradicting adjacency
+            exact h_no_between max_old (Finset.mem_insert_of_mem h_max_mem) ⟨ha_lt, h_max_lt_y⟩
+          subst ha_eq
+          -- Adjacent pair (max_old, y): show BurgessR3Maximal(f(max_old), B, C)
+          show BurgessR3Maximal
+            (if max_old = y then C else χ.f max_old)
+            (g' max_old y)
+            (if y = y then C else χ.f y)
+          have hmax_ne_y : max_old ≠ y := ne_of_lt h_max_lt_y
+          simp only [hmax_ne_y, ite_false, ite_true, g']
+          simp only [and_self, ite_true]
+          -- Need BurgessR3Maximal(f(max_old), B, C).
+          -- If pc.x = max_old, this is exactly h_r3m.
+          -- If pc.x ≠ max_old, we need g_content(f(max_old)) ⊆ C for
+          -- burgessR3Maximal_from_g_content_sub. This requires the Burgess 2.10
+          -- induction (case n≥1) and is deferred.
+          by_cases h_eq : pc.x = max_old
+          · rw [← h_eq]; exact h_r3m
+          · -- Case pc.x ≠ max_old: Burgess 2.10 case n≥1 (induction needed)
+            sorry
+        · -- Both a, b ∈ old dom: old adjacent pair, preserved
+          have ha_ne : a ≠ y := fun h => hy_notin (h ▸ ha)
+          have hb_ne : b ≠ y := fun h => hy_notin (h ▸ hb)
+          show BurgessR3Maximal
+            (if a = y then C else χ.f a)
+            (g' a b)
+            (if b = y then C else χ.f b)
+          simp only [ha_ne, hb_ne, ite_false, ite_true]
+          -- g'(a,b) = χ.g(a,b) since b ≠ y
+          show BurgessR3Maximal (χ.f a)
+            (if a = max_old ∧ b = y then B else χ.g a b) (χ.f b)
+          rw [if_neg (fun ⟨_, hby⟩ => hb_ne hby)]
+          -- (a, b) was adjacent in old dom (y > all old points, no split)
+          have h_adj_old : Adjacent χ.dom a b := by
+            refine ⟨ha, hb, hab, ?_⟩
+            intro u hu ⟨hau, hub⟩
+            exact h_no_between u (Finset.mem_insert_of_mem hu) ⟨hau, hub⟩
+          exact h_c2' a b h_adj_old
       exact { val := χ'
-              dom_sub := h_prop.1
-              c0 := h_prop.2.2.1
-              f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2.2.1
-              c2' := by sorry -- TODO Phase 4: prove c2' from elimination
+              dom_sub := Finset.subset_insert y χ.dom
+              c0 := by
+                intro q hq
+                show SetMaximalConsistent (if q = y then C else χ.f q)
+                change q ∈ insert y χ.dom at hq
+                simp only [Finset.mem_insert] at hq
+                rcases hq with rfl | hq
+                · simp only [ite_true]; exact h_C_mcs
+                · have h_ne : q ≠ y := fun h => hy_notin (h ▸ hq)
+                  simp only [h_ne, ite_false]; exact h_c0 q hq
+              f_agrees := by
+                intro x hx
+                have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
+                exact if_neg h_ne
+              g_agrees := by
+                intro a b ha hb
+                show g' a b = χ.g a b
+                simp only [g']
+                have hb_ne : b ≠ y := fun h => hy_notin (h ▸ hb)
+                simp only [hb_ne, and_false, ite_false]
+              c2' := h_c2'_new
               c5_forward_witness := by
-                intro _ _ _; exact h_prop.2.2.2.1
+                intro _ _ _
+                refine ⟨y, Finset.mem_insert_self y χ.dom, hy_gt pc.x h_mem, ?_⟩
+                simp only [χ', ite_true]
+                exact h_η_C
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -898,19 +1059,123 @@ noncomputable def eliminate_potential_counterexample
           ∀ z ∈ χ.dom, y < z → z < pc.x →
             pc.ξ ∈ χ.f z ∧ Formula.snce pc.ξ pc.η ∈ χ.f z
     · obtain ⟨h_mem, h_since, h_no_wit⟩ := h_actual
-      have h_elim := eliminate_C5'_counterexample h_c0
-        (⟨pc.x, h_mem, pc.ξ, pc.η, h_since, h_no_wit⟩ : C5'Counterexample χ)
-      let χ' := h_elim.choose
-      have h_prop := h_elim.choose_spec
+      -- Inline construction with updated g for c2' preservation (backward mirror).
+      -- Step 1: Get a fresh point y < all domain points.
+      have h_fresh := exists_rat_lt_finset χ.dom
+      let y := h_fresh.choose
+      have hy_lt : ∀ s ∈ χ.dom, y < s := h_fresh.choose_spec.1
+      have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
+      -- Step 2: Construct MCS C with η ∈ C and h_content(f(pc.x)) ⊆ C.
+      have h_mcs_x := h_c0 pc.x h_mem
+      have h_P_η : Formula.some_past pc.η ∈ χ.f pc.x := by
+        have h_ax : DerivationTree [] ((Formula.snce pc.ξ pc.η).imp (Formula.some_past pc.η)) :=
+          DerivationTree.axiom [] _ (Axiom.since_P pc.ξ pc.η)
+        exact SetMaximalConsistent.implication_property h_mcs_x
+          (theorem_in_mcs h_mcs_x h_ax) h_since
+      have h_seed := past_temporal_witness_seed_consistent (χ.f pc.x) h_mcs_x pc.η h_P_η
+      have h_lind := set_lindenbaum _ h_seed
+      let C := h_lind.choose
+      have h_sup : past_temporal_witness_seed (χ.f pc.x) pc.η ⊆ C := h_lind.choose_spec.1
+      have h_C_mcs : SetMaximalConsistent C := h_lind.choose_spec.2
+      have h_η_C : pc.η ∈ C := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
+      have h_hc_sub : h_content (χ.f pc.x) ⊆ C :=
+        Set.Subset.trans (h_content_subset_past_temporal_witness_seed (χ.f pc.x) pc.η) h_sup
+      -- Step 3: Find min_old = min(χ.dom).
+      have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
+      set min_old := χ.dom.min' h_dom_ne with min_old_def
+      have h_min_mem : min_old ∈ χ.dom := Finset.min'_mem χ.dom h_dom_ne
+      have h_min_le : ∀ s ∈ χ.dom, min_old ≤ s := fun s hs => Finset.min'_le χ.dom s hs
+      have h_y_lt_min : y < min_old := hy_lt min_old h_min_mem
+      -- Step 4: Get B for the pair (y, min_old) via burgessR3Maximal_from_h_content_sub.
+      -- When pc.x = min_old: h_content(f(pc.x)) ⊆ C gives BurgessR3Maximal(C, _, f(pc.x)).
+      -- When pc.x ≠ min_old: Burgess 2.10' case n≥1 (induction needed, deferred).
+      have h_no_univ_C_min : ¬burgessR3 C Set.univ (χ.f min_old) :=
+        h_nubr3 C (χ.f min_old) h_C_mcs (h_c0 min_old h_min_mem)
+      -- Step 5: Build g' that updates g(y, min_old).
+      -- We need BurgessR3Maximal(C, B_new, f(min_old)).
+      -- When pc.x = min_old: use burgessR3Maximal_from_h_content_sub.
+      -- When pc.x ≠ min_old: sorry (case n≥1).
+      have h_B_exists : ∃ B_new : Set Formula, BurgessR3Maximal C B_new (χ.f min_old) := by
+        by_cases h_eq : pc.x = min_old
+        · rw [← h_eq]
+          exact burgessR3Maximal_from_h_content_sub h_C_mcs h_mcs_x h_hc_sub
+            (h_nubr3 C (χ.f pc.x) h_C_mcs h_mcs_x)
+        · -- Case pc.x ≠ min_old: Burgess 2.10' case n≥1 (induction needed)
+          sorry
+      let B_new := h_B_exists.choose
+      have h_B_new_r3m : BurgessR3Maximal C B_new (χ.f min_old) := h_B_exists.choose_spec
+      let g' := fun a b =>
+        if a = y ∧ b = min_old then B_new
+        else χ.g a b
+      let χ' : Chronicle := ⟨fun q => if q = y then C else χ.f q, g', insert y χ.dom⟩
+      -- Step 6: Prove c2'.
+      have h_c2'_new : χ'.c2' := by
+        intro a b h_adj_new
+        obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
+        simp only [χ', Finset.mem_insert] at ha hb
+        rcases ha with rfl | ha <;> rcases hb with rfl | hb
+        · exact absurd hab (lt_irrefl _)
+        · -- a = y, b ∈ old dom: must be (y, min_old)
+          have hb_eq : b = min_old := by
+            by_contra hb_ne
+            have hb_ge : min_old ≤ b := h_min_le b hb
+            have hb_gt : min_old < b := lt_of_le_of_ne hb_ge (Ne.symm hb_ne)
+            exact h_no_between min_old (Finset.mem_insert_of_mem h_min_mem) ⟨h_y_lt_min, hb_gt⟩
+          subst hb_eq
+          show BurgessR3Maximal
+            (if y = y then C else χ.f y)
+            (g' y min_old)
+            (if min_old = y then C else χ.f min_old)
+          have hmin_ne_y : min_old ≠ y := ne_of_gt h_y_lt_min
+          simp only [ite_true, hmin_ne_y, ite_false, g', and_self]
+          exact h_B_new_r3m
+        · -- a ∈ old dom, b = y: impossible since y < all old points
+          exact absurd hab (not_lt.mpr (le_of_lt (hy_lt a ha)))
+        · -- Both old: preserved
+          have ha_ne : a ≠ y := fun h => hy_notin (h ▸ ha)
+          have hb_ne : b ≠ y := fun h => hy_notin (h ▸ hb)
+          show BurgessR3Maximal
+            (if a = y then C else χ.f a)
+            (g' a b)
+            (if b = y then C else χ.f b)
+          simp only [ha_ne, hb_ne, ite_false, ite_true]
+          show BurgessR3Maximal (χ.f a)
+            (if a = y ∧ b = min_old then B_new else χ.g a b) (χ.f b)
+          rw [if_neg (fun ⟨hay, _⟩ => ha_ne hay)]
+          have h_adj_old : Adjacent χ.dom a b := by
+            refine ⟨ha, hb, hab, ?_⟩
+            intro u hu ⟨hau, hub⟩
+            exact h_no_between u (Finset.mem_insert_of_mem hu) ⟨hau, hub⟩
+          exact h_c2' a b h_adj_old
       exact { val := χ'
-              dom_sub := h_prop.1
-              c0 := h_prop.2.2.1
-              f_agrees := h_prop.2.1
-              g_agrees := h_prop.2.2.2.2.2.1
-              c2' := by sorry -- TODO Phase 4: prove c2' from C5' elimination
+              dom_sub := Finset.subset_insert y χ.dom
+              c0 := by
+                intro q hq
+                show SetMaximalConsistent (if q = y then C else χ.f q)
+                change q ∈ insert y χ.dom at hq
+                simp only [Finset.mem_insert] at hq
+                rcases hq with rfl | hq
+                · simp only [ite_true]; exact h_C_mcs
+                · have h_ne : q ≠ y := fun h => hy_notin (h ▸ hq)
+                  simp only [h_ne, ite_false]; exact h_c0 q hq
+              f_agrees := by
+                intro x hx
+                have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
+                exact if_neg h_ne
+              g_agrees := by
+                intro a b ha hb
+                show g' a b = χ.g a b
+                simp only [g']
+                have ha_ne : a ≠ y := fun h => hy_notin (h ▸ ha)
+                simp only [ha_ne, false_and, ite_false]
+              c2' := h_c2'_new
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
-                intro _ _ _; exact h_prop.2.2.2.1
+                intro _ _ _
+                refine ⟨y, Finset.mem_insert_self y χ.dom, hy_lt pc.x h_mem, ?_⟩
+                show pc.η ∈ (if y = y then C else χ.f y)
+                simp only [ite_true]
+                exact h_η_C
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide) }
