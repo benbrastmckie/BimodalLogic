@@ -87,19 +87,24 @@ theorem mcs_is_dcs {S : Set Formula} (h : SetMaximalConsistent S) :
     SetDeductivelyClosed S :=
   ⟨h.1, fun L _ hL hd => SetMaximalConsistent.closed_under_derivation h L hL hd⟩
 
+/-- A CUD set contains all theorems. -/
+theorem cud_contains_theorems {S : Set Formula} (h : ClosedUnderDerivation S)
+    {φ : Formula} (hd : DerivationTree [] φ) : φ ∈ S :=
+  h [] φ (fun _ h => absurd h List.not_mem_nil) hd
+
 /-- A DCS contains all theorems. -/
 theorem dcs_contains_theorems {S : Set Formula} (h : SetDeductivelyClosed S)
     {φ : Formula} (hd : DerivationTree [] φ) : φ ∈ S :=
-  h.2 [] φ (fun _ h => absurd h List.not_mem_nil) hd
+  cud_contains_theorems h.2 hd
 
 /-- A DCS is consistent. -/
 theorem dcs_consistent {S : Set Formula} (h : SetDeductivelyClosed S) :
     SetConsistent S := h.1
 
-/-- Modus ponens in a DCS: if phi -> psi and phi are in S, then psi is in S. -/
-theorem dcs_modus_ponens {S : Set Formula} (h : SetDeductivelyClosed S)
+/-- Modus ponens in a CUD set. -/
+theorem cud_modus_ponens {S : Set Formula} (h : ClosedUnderDerivation S)
     {φ ψ : Formula} (h_imp : φ.imp ψ ∈ S) (h_phi : φ ∈ S) : ψ ∈ S := by
-  apply h.2 [φ, φ.imp ψ] ψ
+  apply h [φ, φ.imp ψ] ψ
   · intro χ h_mem
     simp only [List.mem_cons, List.mem_nil_iff, or_false] at h_mem
     rcases h_mem with rfl | rfl
@@ -109,13 +114,21 @@ theorem dcs_modus_ponens {S : Set Formula} (h : SetDeductivelyClosed S)
       (DerivationTree.assumption _ (φ.imp ψ) (by simp))
       (DerivationTree.assumption _ φ (by simp))
 
+/-- Modus ponens in a DCS: if phi -> psi and phi are in S, then psi is in S. -/
+theorem dcs_modus_ponens {S : Set Formula} (h : SetDeductivelyClosed S)
+    {φ ψ : Formula} (h_imp : φ.imp ψ ∈ S) (h_phi : φ ∈ S) : ψ ∈ S :=
+  cud_modus_ponens h.2 h_imp h_phi
+
+/-- A CUD set is closed under conjunction. -/
+theorem cud_conj_closed {S : Set Formula} (h : ClosedUnderDerivation S)
+    {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S := by
+  have h_pair := cud_contains_theorems h (Bimodal.Theorems.Combinators.pairing φ ψ)
+  exact cud_modus_ponens h (cud_modus_ponens h h_pair h_phi) h_psi
+
 /-- A DCS is closed under conjunction: if phi, psi in S then phi ∧ psi in S. -/
 theorem dcs_conj_closed {S : Set Formula} (h : SetDeductivelyClosed S)
-    {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S := by
-  -- phi ∧ psi = ¬(phi → ¬psi)
-  -- We have ⊢ phi → (psi → phi ∧ psi) (pairing)
-  have h_pair := dcs_contains_theorems h (Bimodal.Theorems.Combinators.pairing φ ψ)
-  exact dcs_modus_ponens h (dcs_modus_ponens h h_pair h_phi) h_psi
+    {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S :=
+  cud_conj_closed h.2 h_phi h_psi
 
 /-! ## Adjacency predicate -/
 
@@ -325,7 +338,10 @@ strictly extends B, so `¬burgessR3(A, DC(B ∪ {δ}), C)`. This gives the
 neg-until witness `∃ β₀ ∈ B, ∃ γ₀ ∈ C, untl(β₀ ∧ δ, γ₀).neg ∈ A`
 (Burgess p.371: "else consider B' = consequences of B ∪ {δ}").
 
-The first conjunct retains `SetDeductivelyClosed B` (B is consistent + CUD).
+The first conjunct uses `SetDeductivelyClosed B` (consistent + CUD).
+When the guard formula xi is inconsistent, SetConsistent {xi} is derived from
+the BurgessR3Maximal context (xi inconsistent + untl(xi,eta) in A leads to
+burgessR3 A Set.univ C which is excluded by NoUnivBurgessR3).
 -/
 def BurgessR3Maximal (A B C : Set Formula) : Prop :=
   SetDeductivelyClosed B ∧

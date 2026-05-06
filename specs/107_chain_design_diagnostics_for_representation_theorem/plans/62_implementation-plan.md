@@ -170,7 +170,7 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 3.4**: Implemented Step 4: eliminate D1 via combine_imp_conj + left_mono + right_mono.
 - [x] **Task 3.5**: Implemented Step 5: eliminate D2 via right_mono + BX13 enrichment.
 - [x] **Task 3.6**: Implemented Steps 6-7: D3 survivor + BX13 iterated enrichment + BX10 F-extraction. h_key helper fully proved (~120 lines).
-- [ ] **Task 3.7**: Remaining: list extraction plumbing to connect h_key to finite-subset argument. Need `l27_collect_guards`, `l27_c_event_list`, `l27_a_event_list` extractors defined as private noncomputable defs (following collect_guards pattern at PI:1508). Then 5-way case split on seed membership, derivation_from_implied + inconsistent_singleton_false.
+- [x] **Task 3.7**: Closed sorry #2. Defined l27_guard, l27_collect_guards, l27_c_event_list, l27_a_event_list, formula_and_left_cancel as private noncomputable defs. 10 membership lemmas + 100-line plumbing proof with 5-way case split. PointInsertion.lean sorry count: 2 → 1.
 
 **Timing**: 6-10 hours
 
