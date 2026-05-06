@@ -1,4 +1,4 @@
-# Handoff: dom_new_unique closed, C5 guard analysis complete
+# Handoff: dom_new_unique closed, C5 guard root cause identified
 
 ## Status: 2 sorries remain (down from 3)
 
@@ -11,72 +11,70 @@
    - Proved `omega_chain_dom_new_unique` using the new field
    - Build passes
 
-2. **Analyzed the C5 strong guard problem in depth**
+2. **Identified the root cause of the C5 guard problem**
 
-### Why the C5 guard is hard
+### ROOT CAUSE: lemma_2_7 is missing `xi ∈ B'`
 
-The 2 remaining sorries are `limit_satisfies_c5_strong` (line 1445) and `limit_satisfies_c5'_strong` (line 1457).
+Burgess Lemma 2.7 conclusion states (in Burgess notation ξ=event, η=guard):
+> ∃ B', D, B'' such that **η ∈ B'**, ξ ∈ D, and R(A, B', D), R(D, B'', C) and B = B' ∩ D ∩ B''
 
-Goal: given `U(ξ,η) ∈ limit_f(x)`, find `y > x` with `η ∈ limit_f(y)` AND `ξ ∈ limit_f(w)` for all `w ∈ limit_dom` with `x < w < y`.
-
-**Three approaches were analyzed and all have obstacles:**
-
-#### Approach A: Add guard to EliminationResult.c5_forward_witness
-
-The previous agent attempted:
+The guard η ∈ B' is critical. Our `lemma_2_7` at PointInsertion.lean:3616 ONLY gives:
 ```
-∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b
+eta ∈ D ∧ B ⊆ B' ∧ B ⊆ D ∧ B ⊆ B''
 ```
+It does NOT give `xi ∈ B'` (guard ∈ B'). This is the missing piece.
 
-This CANNOT be proved for the "not actual counterexample" case and the "condition (i) with eta in u_next" case, because:
-- In those cases, val = χ (unchanged chronicle)
-- The witness y is already in χ.dom
-- The forward walk gives ξ ∈ f(z) for intermediate z, NOT ξ ∈ g(a,b) for adjacent pairs
-- g-values are independent sets (BurgessR3Maximal), not determined by f-values
+### Why xi ∈ B' is provable
 
-#### Approach B: Syntactic/axiomatic argument
+The seed `lemma_2_7_seed` already contains `snce(β ∧ xi, α)` for all β ∈ B, α ∈ A (line 2866). This gives:
 
-Attempted to use BX5 (self-accumulation) + C4 (contrapositive) to derive ξ ∈ limit_f(w) from U(ξ,η) ∈ limit_f(x).
+1. `burgessRSetSince(D, β ∧ xi, A)` for each β ∈ B
+2. By lemma 2.3: `burgessRSet(A, β ∧ xi, D)` for each β ∈ B  
+3. So `r(A, β ∧ xi, D)` for all β ∈ B
 
-**Blocked by**: BX9 (until_elim: U(ξ,η) → η ∨ ξ) was REMOVED as unsound under open guard semantics. Without BX9, U(ξ,η) at x does NOT imply ξ at x. The guard only holds at points STRICTLY between x and the witness.
+From step 3: `DC(B ∪ {xi})` satisfies `burgessR3(A, DC(B ∪ {xi}), D)`:
+- Any γ ∈ DC(B ∪ {xi}) is derivable from some β ∧ xi with β ∈ B (since B is DCS)
+- From `U(δ, β ∧ xi) ∈ A` and BX3 (right monotonicity with ⊢ β ∧ xi → γ): `U(δ, γ) ∈ A`
 
-#### Approach C: Multi-stage omega chain induction
+So if we start the Zorn construction from `DC(B ∪ {xi})` instead of `B`, the resulting B' will contain xi.
 
-The guard propagation happens across MULTIPLE omega chain stages, not in a single elimination step:
-1. Stage n: U(ξ,η) ∈ f_n(x). Condition (i) gives ξ ∈ g(x, x').
-2. Stage n+k: the sub-counterexample (x', ξ, η) is processed, giving ξ ∈ g(x', x'').
-3. Continue until the entire interval [x, y] is covered.
+### How to fix lemma_2_7
 
-This is the Burgess argument but formalized across the omega chain. It requires either:
-- Strengthening the "not actual counterexample" condition to check g-values (matching Burgess exactly)
-- Or proving a complex omega-chain-level induction tracking guard accumulation
+**Option A** (cleanest): Change the Zorn seed for B' from `B` to `DC(B ∪ {xi})`:
 
-### Recommended approach
-
-**Strengthen the counterexample condition** to match Burgess:
-
-Currently:
 ```lean
-¬∃ y ∈ χ.dom, pc.x < y ∧ pc.η ∈ χ.f y ∧
-  ∀ z ∈ χ.dom, pc.x < z → z < y →
-    pc.ξ ∈ χ.f z ∧ Formula.untl pc.ξ pc.η ∈ χ.f z
+-- Current (line 3692):
+obtain ⟨B', h_B_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+    h_B_dcs h_r3_ABD h_no_univ_AD
+
+-- New: start from DC(B ∪ {xi})
+have h_B_xi_dcs : SetDeductivelyClosed (DC(B ∪ {xi})) := ...
+have h_r3_ABxi_D : burgessR3 A (DC(B ∪ {xi})) D := ... -- from the snce seed
+obtain ⟨B', h_Bxi_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+    h_B_xi_dcs h_r3_ABxi_D h_no_univ_AD
+have h_xi_B' : xi ∈ B' := h_Bxi_sub_B' (mem_DC_right xi)
 ```
 
-Strengthen to include g-value check:
-```lean
-¬∃ y ∈ χ.dom, pc.x < y ∧ pc.η ∈ χ.f y ∧
-  ∀ a b, Adjacent χ.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ χ.g a b
-```
+**Option B** (post-hoc): Keep the current Zorn from B, then prove xi ∈ B' using maximality contradiction.
 
-With this:
-- "Not actual" case directly provides the guard
-- "Actual" case gets MORE situations to handle, but ALL involve inserting new points where the elimination explicitly sets g-values with ξ
+### Chain of fixes needed
 
-The "condition (i)" walk then becomes: at each walk step w → w', check ξ ∈ g(w, w') (which is exactly what condition (i) provides). If ξ ∈ g at every step, the walk continues. If not, the splitting handles it.
+1. **PointInsertion.lean**: Add `xi ∈ B'` to conclusion of `lemma_2_7` and `lemma_2_8`
+2. **CounterexampleElimination.lean**: 
+   - Strengthen `c5_forward_witness` to include `∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b`
+   - In each actual-counterexample case, prove the guard using `xi ∈ B'`:
+     - n=0: `ξ ∈ B` from `lemma_2_4_with_guard` (already done)
+     - Condition (i): `ξ ∈ g(x, x')` from condition (i), walk continues via reduction
+     - Splitting: `ξ ∈ B'` from the enhanced `lemma_2_7`/`lemma_2_8`
+   - In unchanged cases: push_neg gives g-value guard directly (with strengthened counterexample condition)
+3. **ChronicleConstruction.lean**: 
+   - Update `omega_chain_c5_witness` to extract the guard
+   - Close the 2 remaining sorries using `adj_g_mem_limit_f`
 
-This is a significant refactor of CounterexampleElimination.lean (~50-100 lines changed in the condition checks and case analysis).
+### Convention reminder
+Our `untl(guard=ξ, event=η)` = Burgess `U(event=ξ, guard=η)`. SWAPPED.
 
-### Files modified
+### Files modified so far
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean`: Added `dom_new_unique` field
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean`: Closed `omega_chain_dom_new_unique` sorry
 
