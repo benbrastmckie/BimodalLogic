@@ -724,7 +724,7 @@ private theorem H_ex_falso_strengthen {C : Set Formula}
 Proof: ¬SetConsistent means ∃ derivation of ⊥ from {φ} ∪ B.
 By deduction theorem: derivation of φ.neg from B. By closure: φ.neg ∈ B. -/
 private theorem neg_mem_of_inconsistent_union {B : Set Formula}
-    (h_dcs : SetDeductivelyClosed B)
+    (h_cud : ClosedUnderDerivation B)
     {φ : Formula} (h_not_cons : ¬SetConsistent ({φ} ∪ B)) :
     φ.neg ∈ B := by
   -- ¬SetConsistent means ∃ L ⊆ {φ} ∪ B with Nonempty (DerivationTree L ⊥)
@@ -762,7 +762,7 @@ private theorem neg_mem_of_inconsistent_union {B : Set Formula}
   -- By deduction theorem: M ⊢ φ → ⊥ = φ.neg
   have d_neg : DerivationTree M φ.neg := deduction_theorem M φ Formula.bot d_w
   -- By DCS closure: φ.neg ∈ B — contradiction
-  exact h_neg_not_B (h_dcs.2 M φ.neg hM_sub_B d_neg)
+  exact h_neg_not_B (h_cud M φ.neg hM_sub_B d_neg)
 
 /-- **Unified interface**: Given BurgessR3Maximal(A, B, C) and delta ∉ B,
 EITHER delta.neg ∈ B (when {delta}∪B is inconsistent)
@@ -1681,6 +1681,7 @@ private theorem burgess_D0_finite_subset_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
+    (h_B_dcs : SetDeductivelyClosed B)
     (_h_gc : g_content A ⊆ C)
     (β : Formula)
     (_h_β_not_B : β ∉ B)
@@ -1691,7 +1692,6 @@ private theorem burgess_D0_finite_subset_consistent {A B C : Set Formula}
     (γ₀ : Formula) (hγ₀ : γ₀ ∈ C)
     (h_neg_until₀ : (Formula.untl (Formula.and β₀ β) γ₀).neg ∈ A) :
     SetConsistent (burgess_D0_seed A B C β) := by
-  have h_B_dcs : SetDeductivelyClosed B := h_r3m.1
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   intro L hL ⟨d⟩
   -- Step 1: Extract components from L.
@@ -1898,11 +1898,11 @@ private theorem burgess_D0_finite_subset_consistent_incons {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (_h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
+    (h_B_dcs : SetDeductivelyClosed B)
     (_h_gc : g_content A ⊆ C)
     (β : Formula)
     (_h_beta_neg_in_B : β.neg ∈ B) :
     SetConsistent (burgess_D0_seed A B C β) := by
-  have h_B_dcs : SetDeductivelyClosed B := h_r3m.1
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   -- Derive β ∉ B (from β.neg ∈ B and B consistent).
   have h_β_not_B : β ∉ B := by
@@ -2329,11 +2329,11 @@ private theorem burgess_D0_seed_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
+    (h_B_dcs : SetDeductivelyClosed B)
     (h_gc : g_content A ⊆ C)
     (β : Formula)
     (h_β_not_B : β ∉ B) :
     SetConsistent (burgess_D0_seed A B C β) := by
-  have h_B_dcs : SetDeductivelyClosed B := h_r3m.1
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   -- Strategy: show D₀ ⊆ a known consistent superset.
   -- Key fact 1: {β.neg} ∪ g_content(A) is consistent (via BX5+BX14+BX10)
@@ -2607,7 +2607,7 @@ private theorem burgess_D0_seed_consistent {A B C : Set Formula}
     -- Therefore {β.neg}∪B IS consistent!
     have h_neg_cons : SetConsistent ({β.neg} ∪ B) := by
       intro L hL ⟨d⟩
-      have h_nnn := neg_mem_of_inconsistent_union h_B_dcs (show ¬SetConsistent ({β.neg} ∪ B) from
+      have h_nnn := neg_mem_of_inconsistent_union h_B_dcs.2 (show ¬SetConsistent ({β.neg} ∪ B) from
         fun h => h L hL ⟨d⟩)
       -- β.neg.neg ∈ B, and ⊢ β.neg.neg → β (DNE), so β ∈ B. Contradiction.
       have h_dne : DerivationTree [] (β.neg.neg.imp β) :=
@@ -2627,12 +2627,12 @@ private theorem burgess_D0_seed_consistent {A B C : Set Formula}
     -- elimination and guard weakening for U/S formulas), L is consistent.
     -- This uses: {β.neg}∪B consistent (h_neg_cons), BX chain (established above),
     -- DCS closure (B closed under ∧), and guard monotonicity (A2a/A1b).
-    exact burgess_D0_finite_subset_consistent h_mcs_A h_mcs_C h_r3m h_gc β
+    exact burgess_D0_finite_subset_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc β
       h_β_not_B h_neg_cons h_F_beta_neg beta0 h_beta0 gamma0 h_gamma0 h_neg_until_in_A
 
   · -- Case: {β} ∪ B is inconsistent, so β.neg ∈ B
     have h_beta_neg_in_B : β.neg ∈ B :=
-      neg_mem_of_inconsistent_union h_B_dcs h_cons
+      neg_mem_of_inconsistent_union h_B_dcs.2 h_cons
     -- When β.neg ∈ B, D₀ = B ∪ untl-formulas ∪ snce-formulas (β.neg already in B).
     -- The seed is a subset of the consistent case seed (same components, just β.neg
     -- is redundant). Use the same Burgess compression argument:
@@ -2658,7 +2658,7 @@ private theorem burgess_D0_seed_consistent {A B C : Set Formula}
     -- Simpler: we DON'T need F(β.neg)∈A for the inconsistent case!
     -- Since β.neg∈B, the seed D₀ ⊆ B∪{untl-formulas in A}∪{snce-formulas in C}.
     -- Use Burgess compression with the original untl(β₀,γ₀)∈A (from burgessR3 for any β₀∈B).
-    exact burgess_D0_finite_subset_consistent_incons h_mcs_A h_mcs_C h_r3m h_gc β
+    exact burgess_D0_finite_subset_consistent_incons h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc β
       h_beta_neg_in_B
 
 /-- **Lemma 2.6 Splitting** (Burgess 1982, Lemma 2.6): Given BurgessR3Maximal(A, B, C)
@@ -2672,13 +2672,14 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
+    (h_B_dcs : SetDeductivelyClosed B)
     (h_gc : g_content A ⊆ C)
     (β : Formula)
     (h_β_not_B : β ∉ B) :
     ∃ B' D B'', BurgessR3Maximal A B' D ∧ BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧ β.neg ∈ D := by
   -- Step 1: The Burgess D₀ seed is consistent
-  have h_seed_cons := burgess_D0_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc β h_β_not_B
+  have h_seed_cons := burgess_D0_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc β h_β_not_B
   -- Step 2: Lindenbaum-extend to MCS D
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
   -- Step 3: Extract seed memberships
@@ -2716,10 +2717,10 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
     sorry -- NoUnivBurgessR3: threaded from chronicle construction
   have h_no_univ_DC : ¬burgessR3 D Set.univ C := by
     sorry -- NoUnivBurgessR3: threaded from chronicle construction
-  obtain ⟨B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
-    h_r3m.1 h_r3_ABD h_no_univ_AD
-  obtain ⟨B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
-    h_r3m.1 h_r3_DBC h_no_univ_DC
+  obtain ⟨B', _, _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+    h_B_dcs h_r3_ABD h_no_univ_AD
+  obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
+    h_B_dcs h_r3_DBC h_no_univ_DC
   exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_β_neg_D⟩
 
 /-- The D0 seed for Lemma 2.7 (Burgess 1982 p.372):
@@ -3078,12 +3079,12 @@ private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
+    (h_B_dcs : SetDeductivelyClosed B)
     (_h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_until : Formula.untl xi eta ∈ A)
     (h_xi_not_B : xi ∉ B) :
     SetConsistent (lemma_2_7_seed A B C xi eta) := by
-  have h_B_dcs : SetDeductivelyClosed B := h_r3m.1
   have h_r3 : burgessR3 A B C := h_r3m.2.1
   -- Step 1: Extract neg-until witness from xi ∉ B + BurgessR3Maximal
   have h_not_r3_xi := BurgessR3Maximal_extension_fails h_r3m h_xi_not_B
@@ -3490,6 +3491,7 @@ theorem lemma_2_7 {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
+    (h_B_dcs : SetDeductivelyClosed B)
     (h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_until : Formula.untl xi eta ∈ A)
@@ -3501,7 +3503,7 @@ theorem lemma_2_7 {A B C : Set Formula}
       eta ∈ D ∧
       xi ∈ B' := by
   -- Step 1: The D0 seed is consistent
-  have h_seed_cons := lemma_2_7_seed_consistent h_mcs_A h_mcs_C h_r3m h_gc xi eta h_until h_xi_not_B
+  have h_seed_cons := lemma_2_7_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc xi eta h_until h_xi_not_B
   -- Step 2: Lindenbaum-extend to MCS D
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
   -- Step 3: Extract key memberships from seed
@@ -3542,7 +3544,7 @@ theorem lemma_2_7 {A B C : Set Formula}
   -- Step 5c: Derive snce(xi, α) ∈ D for all α ∈ A (via left_mono_since)
   -- From snce(β∧xi, α) ∈ D and ⊢ (β∧xi) → xi: snce(xi, α) ∈ D
   have h_B_nonempty : ∃ β₀ : Formula, β₀ ∈ B := by
-    exact ⟨Formula.bot.imp Formula.bot, dcs_contains_theorems h_r3m.1
+    exact ⟨Formula.bot.imp Formula.bot, cud_contains_theorems h_r3m.1
       (Bimodal.Theorems.Combinators.identity Formula.bot)⟩
   obtain ⟨β₀, hβ₀⟩ := h_B_nonempty
   have h_snce_xi_D : ∀ α ∈ A, Formula.snce xi α ∈ D := by
@@ -3594,28 +3596,98 @@ theorem lemma_2_7 {A B C : Set Formula}
       sorry -- NoUnivBurgessR3: threaded from chronicle construction
     have h_no_univ_DC : ¬burgessR3 D Set.univ C := by
       sorry -- NoUnivBurgessR3: threaded from chronicle construction
-    obtain ⟨B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+    obtain ⟨B', _, _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
       h_dc_xi_dcs h_dc_xi_r3 h_no_univ_AD
     -- Step 9: BurgessR3Maximal(D, B'', C) via Zorn from B
-    obtain ⟨B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
-      h_r3m.1 h_r3_DBC h_no_univ_DC
+    obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
+      h_B_dcs h_r3_DBC h_no_univ_DC
     -- Step 10: xi ∈ B' (since DC({xi}) ⊆ B' and xi ∈ DC({xi}))
     have h_xi_B' : xi ∈ B' := by
       have h_xi_dc : xi ∈ deductiveClosure ({xi} : Set Formula) :=
         subset_deductiveClosure _ (Set.mem_singleton xi)
       exact ‹deductiveClosure ({xi} : Set Formula) ⊆ B'› h_xi_dc
     exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_xi_B'⟩
-  · -- Degenerate case: {xi} is inconsistent (xi is a contradiction like p ∧ ¬p).
-    -- No consistent SetDeductivelyClosed set can contain xi. This requires either:
-    -- (a) Strengthening BurgessR3Maximal to use ClosedUnderDerivation (Burgess's
-    --     original definition, where B' = Set.univ is valid), or
-    -- (b) Adding SetConsistent ({xi}) as a hypothesis (provable in the dense-order
-    --     chronicle construction since untl(inconsistent_guard, event) is
-    --     unsatisfiable on dense orders).
-    -- In the chronicle construction over Q (dense), this case never arises because
-    -- untl(xi, eta) ∈ f(x) with xi inconsistent implies xi holds at intermediate
-    -- points, which is impossible on dense orders. So this sorry is unreachable
-    -- in the completeness proof.
-    sorry
+  · -- Degenerate case: {xi} is inconsistent.
+    -- With ClosedUnderDerivation in BurgessR3Maximal, B' = Set.univ works:
+    -- DC({xi}) = Set.univ (xi inconsistent), Set.univ is CUD,
+    -- burgessR3(A, Set.univ, D) holds (every φ ∈ DC({xi}) = Set.univ is a
+    -- consequence of xi, so untl/snce conditions transfer from xi),
+    -- and maximality is vacuous (no proper superset of Set.univ).
+    -- Step 7': burgessR3(A, Set.univ, D) from xi inconsistency
+    have h_r3_univ_D : burgessR3 A (Set.univ : Set Formula) D := by
+      constructor
+      · -- burgessRSet: ∀ φ ∈ Set.univ, ∀ δ ∈ D, untl(φ, δ) ∈ A
+        intro φ _ δ hδ
+        -- φ ∈ Set.univ = DC({xi}) since {xi} is inconsistent and CUD
+        -- So ⊢ xi → φ (from inconsistent xi, everything follows)
+        have h_xi_incons : ¬SetConsistent ({xi} : Set Formula) := h_xi_cons
+        -- From ¬SetConsistent {xi}: ∃ L ⊆ {xi}, DerivationTree L ⊥
+        -- Since L ⊆ {xi}, L = [] or L = [xi]. If L = [], then ⊢ ⊥ impossible in consistent logic.
+        -- So L = [xi] and DerivationTree [xi] ⊥, meaning ⊢ xi → ⊥ = xi.neg
+        have h_xi_neg_thm : Nonempty (DerivationTree [] xi.neg) := by
+          by_contra h_no_neg
+          apply h_xi_incons
+          intro L hL ⟨d⟩
+          -- Every element of L is xi
+          have hL_xi : ∀ ψ ∈ L, ψ = xi := fun ψ hψ => Set.mem_singleton_iff.mp (hL ψ hψ)
+          have hL_sub : ∀ ψ ∈ L, ψ ∈ [xi] := fun ψ hψ => by simp [hL_xi ψ hψ]
+          have d_w : DerivationTree [xi] Formula.bot :=
+            DerivationTree.weakening L [xi] Formula.bot d hL_sub
+          have d_neg : DerivationTree [] xi.neg := deduction_theorem [] xi Formula.bot d_w
+          exact h_no_neg ⟨d_neg⟩
+        obtain ⟨d_neg⟩ := h_xi_neg_thm
+        -- ⊢ xi.neg, so ⊢ xi → φ for any φ (ex falso from xi)
+        have d_impl : DerivationTree [] (xi.imp φ) := by
+          have d1 : DerivationTree [xi] Formula.bot :=
+            DerivationTree.modus_ponens [xi] xi Formula.bot
+              (DerivationTree.weakening [] [xi] xi.neg d_neg (List.nil_subset _))
+              (DerivationTree.assumption _ xi (by simp))
+          have d2 : DerivationTree [xi] φ :=
+            DerivationTree.modus_ponens [xi] Formula.bot φ
+              (DerivationTree.weakening [] [xi] (Formula.bot.imp φ)
+                (Bimodal.Theorems.Propositional.efq_axiom φ) (List.nil_subset _))
+              d1
+          exact deduction_theorem [] xi φ d2
+        exact untl_left_mono_thm h_mcs_A d_impl (h_burgessR_xi δ hδ)
+      · -- burgessRSetSince: ∀ φ ∈ Set.univ, ∀ α ∈ A, snce(φ, α) ∈ D
+        intro φ _ α hα
+        have h_xi_incons : ¬SetConsistent ({xi} : Set Formula) := h_xi_cons
+        have h_xi_neg_thm : Nonempty (DerivationTree [] xi.neg) := by
+          by_contra h_no_neg
+          apply h_xi_incons
+          intro L hL ⟨d⟩
+          have hL_xi : ∀ ψ ∈ L, ψ = xi := fun ψ hψ => Set.mem_singleton_iff.mp (hL ψ hψ)
+          have hL_sub : ∀ ψ ∈ L, ψ ∈ [xi] := fun ψ hψ => by simp [hL_xi ψ hψ]
+          have d_w : DerivationTree [xi] Formula.bot :=
+            DerivationTree.weakening L [xi] Formula.bot d hL_sub
+          have d_neg : DerivationTree [] xi.neg := deduction_theorem [] xi Formula.bot d_w
+          exact h_no_neg ⟨d_neg⟩
+        obtain ⟨d_neg⟩ := h_xi_neg_thm
+        have d_impl : DerivationTree [] (xi.imp φ) := by
+          have d1 : DerivationTree [xi] Formula.bot :=
+            DerivationTree.modus_ponens [xi] xi Formula.bot
+              (DerivationTree.weakening [] [xi] xi.neg d_neg (List.nil_subset _))
+              (DerivationTree.assumption _ xi (by simp))
+          have d2 : DerivationTree [xi] φ :=
+            DerivationTree.modus_ponens [xi] Formula.bot φ
+              (DerivationTree.weakening [] [xi] (Formula.bot.imp φ)
+                (Bimodal.Theorems.Propositional.efq_axiom φ) (List.nil_subset _))
+              d1
+          exact deduction_theorem [] xi φ d2
+        exact snce_left_mono_thm h_D_mcs d_impl (h_snce_xi_D α hα)
+    -- Step 8': BurgessR3Maximal(A, Set.univ, D) — direct construction
+    have h_B'_max : BurgessR3Maximal A (Set.univ : Set Formula) D := by
+      refine ⟨set_univ_closed_under_derivation, h_r3_univ_D, ?_⟩
+      -- Maximality: no proper superset of Set.univ exists
+      intro D' _ hBD' _
+      exact hBD'.2 (Set.subset_univ D')
+    -- Step 9': BurgessR3Maximal(D, B'', C) via Zorn from B
+    have h_no_univ_DC : ¬burgessR3 D Set.univ C := by
+      sorry -- NoUnivBurgessR3: threaded from chronicle construction
+    obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
+      h_B_dcs h_r3_DBC h_no_univ_DC
+    -- Step 10': xi ∈ Set.univ (trivial)
+    have h_xi_B' : xi ∈ (Set.univ : Set Formula) := Set.mem_univ xi
+    exact ⟨Set.univ, D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_xi_B'⟩
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

@@ -761,7 +761,7 @@ theorem burgessR3Maximal_extension_exists {A C : Set Formula}
     (_h_mcs_A : SetMaximalConsistent A) (_h_mcs_C : SetMaximalConsistent C)
     {S : Set Formula} (h_dcs : SetDeductivelyClosed S) (h_r3 : burgessR3 A S C)
     (h_no_univ : ¬burgessR3 A Set.univ C) :
-    ∃ B : Set Formula, S ⊆ B ∧ BurgessR3Maximal A B C := by
+    ∃ B : Set Formula, S ⊆ B ∧ SetDeductivelyClosed B ∧ BurgessR3Maximal A B C := by
   have h_S_in : S ∈ burgessR3DCSExtensions A S C := ⟨Set.Subset.refl _, h_dcs, h_r3⟩
   obtain ⟨B, hB_in, hB_max⟩ := zorn_subset (burgessR3DCSExtensions A S C) (by
     intro c hc_sub hc_chain
@@ -793,7 +793,7 @@ theorem burgessR3Maximal_extension_exists {A C : Set Formula}
           obtain ⟨T, hTc, hβT⟩ := Set.mem_sUnion.mp hβ
           exact (hc_sub hTc).2.2.2 β hβT)
   obtain ⟨hSB, hB_dcs, hB_r3⟩ := hB_in
-  refine ⟨B, hSB, hB_dcs, hB_r3, ?_⟩
+  refine ⟨B, hSB, hB_dcs, hB_dcs.2, hB_r3, ?_⟩
   -- Maximality over ClosedUnderDerivation sets: upgrade from SDC-Zorn + h_no_univ.
   intro D hD_cud hBD hD_r3
   by_cases hD_cons : SetConsistent D
@@ -810,10 +810,10 @@ theorem burgessR3Maximal_extension_exists {A C : Set Formula}
 /-! ## BurgessR3Maximal Accessor Lemmas -/
 
 /--
-**BurgessR3Maximal implies DCS** (trivial from definition).
+**BurgessR3Maximal implies CUD** (trivial from definition).
 -/
-theorem BurgessR3Maximal_dcs' {A B C : Set Formula} (h : BurgessR3Maximal A B C) :
-    SetDeductivelyClosed B := h.1
+theorem BurgessR3Maximal_cud {A B C : Set Formula} (h : BurgessR3Maximal A B C) :
+    ClosedUnderDerivation B := h.1
 
 /--
 **BurgessR3Maximal implies burgessR3** (trivial from definition).
@@ -1227,7 +1227,7 @@ theorem burgessR3Maximal_exists_from_seed (A C : Set Formula) (η : Formula)
       intro φ hφ
       exact burgessRSince_of_deductiveClosure_singleton h_mcs_C h_burgessRSince φ hφ
   -- Step 5: Apply Zorn extension
-  obtain ⟨B, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_dcs h_dc_r3
+  obtain ⟨B, _, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_dcs h_dc_r3
     h_no_univ
   exact ⟨B, h_B3M⟩
 

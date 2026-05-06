@@ -324,7 +324,7 @@ def burgessR3 (A B C : Set Formula) : Prop :=
   burgessRSet A B C ∧ burgessRSetSince C B A
 
 /--
-**BurgessR3Maximal**: B is a maximal DCS satisfying `burgessR3(A, B, C)`.
+**BurgessR3Maximal**: B is a maximal CUD set satisfying `burgessR3(A, B, C)`.
 
 This is Burgess's Definition 2.5 (R-maximality) using the correct content-based
 r-relation. B is maximal among all `ClosedUnderDerivation` proper extensions.
@@ -338,13 +338,18 @@ strictly extends B, so `¬burgessR3(A, DC(B ∪ {δ}), C)`. This gives the
 neg-until witness `∃ β₀ ∈ B, ∃ γ₀ ∈ C, untl(β₀ ∧ δ, γ₀).neg ∈ A`
 (Burgess p.371: "else consider B' = consequences of B ∪ {δ}").
 
-The first conjunct uses `SetDeductivelyClosed B` (consistent + CUD).
-When the guard formula xi is inconsistent, SetConsistent {xi} is derived from
-the BurgessR3Maximal context (xi inconsistent + untl(xi,eta) in A leads to
-burgessR3 A Set.univ C which is excluded by NoUnivBurgessR3).
+The first conjunct uses `ClosedUnderDerivation B` (Burgess's DCS = closed
+under derivation, no consistency requirement). This matches Burgess 1982
+exactly and allows B = Set.univ when the guard formula xi is inconsistent
+(DC({xi}) = Set.univ is CUD, enabling the degenerate case in Lemma 2.7).
+
+Note: B produced by `burgessR3Maximal_extension_exists` is always SDC
+(consistent + CUD) since the Zorn family consists of SDC sets. The
+`SetDeductivelyClosed B` fact is returned alongside `BurgessR3Maximal`
+by that function for callers that need consistency.
 -/
 def BurgessR3Maximal (A B C : Set Formula) : Prop :=
-  SetDeductivelyClosed B ∧
+  ClosedUnderDerivation B ∧
   burgessR3 A B C ∧
   ∀ D, ClosedUnderDerivation D → B ⊂ D → ¬burgessR3 A D C
 

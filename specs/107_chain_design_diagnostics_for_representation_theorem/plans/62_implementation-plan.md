@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 2.6 Case B (#1) and Lemma 2.7 Inconsistent Case (#3) [IN PROGRESS]
+### Phase 2: Lemma 2.6 Case B (#1) and Lemma 2.7 Inconsistent Case (#3) [COMPLETED]
 
 **Goal**: Close sorry #1 (PointInsertion.lean:1977) and sorry #3 (PointInsertion.lean:2875) by removing the unnecessary case splits that Burgess never makes. These are formalization artifacts identified by the research: Burgess does not case-split on whether B is an MCS (#1) or whether {xi} union B is consistent (#3).
 
@@ -128,8 +128,8 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 2.1**: Inspect goal state at sorry #1 (PointInsertion.lean:1968). Understood Case B (B is MCS) branch.
 - [x] **Task 2.2**: Close sorry #1 via CUD maximality fix — changed maximality clause from SetDeductivelyClosed to ClosedUnderDerivation, then derived contradiction from EFQ + left_mono + right_mono when guard b∧β is inconsistent.
 - [x] **Task 2.3**: Inspect goal state at sorry #3 (PointInsertion.lean:3156). Understood inconsistent case — xi (guard) is itself inconsistent.
-- [ ] **Task 2.4**: Close sorry #3. Fix: change BurgessR3Maximal first conjunct from SetDeductivelyClosed to ClosedUnderDerivation, allowing B' = Set.univ when xi is inconsistent. Cascade through RRelation.lean, PointInsertion.lean. Use set_univ_closed_under_derivation.
-- [ ] **Task 2.5**: Run `lake build`. Verify PointInsertion.lean sorry count: 3 -> 1 (only sorry #2 remains).
+- [x] **Task 2.4**: Closed sorry #3. Changed BurgessR3Maximal first conjunct from SetDeductivelyClosed to ClosedUnderDerivation. Cascaded through RRelation.lean (extended Zorn return type), PointInsertion.lean (added h_B_dcs params). Closed via BurgessR3Maximal(A, Set.univ, D) with ex falso from inconsistent xi.
+- [x] **Task 2.5**: `lake build` passes. PointInsertion.lean: 0 sorries on critical path.
 
 **Timing**: 3-5 hours
 
@@ -146,7 +146,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Lemma 2.7 Seed Consistency (#2) [IN PROGRESS]
+### Phase 3: Lemma 2.7 Seed Consistency (#2) [COMPLETED]
 
 **Goal**: Close `lemma_2_7_seed_consistent` at PointInsertion.lean:2744 by implementing the full BX5+BX7+A3a chain per Burgess Section 2.7 (p.372). This is the single hardest sorry -- a 12-step axiomatic proof chain.
 
