@@ -4828,4 +4828,163 @@ theorem lemma_2_8_since {A B C : Set Formula}
     h_B_dcs h_r3_DBC h_no_univ_DC
   exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D⟩
 
+/-! ## Lemma 2.4 with Guard: Enriched Seed Version (Burgess 2.4)
+
+Strengthens `lemma_2_4` to additionally return `γ ∈ B` (guard membership in the
+interval DCS). This matches Burgess 1982, Lemma 2.4 exactly: "there exist B, C
+such that β ∈ B, γ ∈ C, and R(A,B,C)". In our convention, γ is the guard
+(first arg of untl) and β is the event (second arg).
+
+The enriched seed `{β} ∪ g_content(A) ∪ {snce(γ, α) : α ∈ A}` ensures the
+Lindenbaum extension C satisfies burgessRSince(C, γ, A), enabling
+`burgessR3Maximal_with_guard` to produce B with γ ∈ B. -/
+
+/-- **Enriched Until witness seed consistency**: {β} ∪ g_content(A) ∪ {snce(γ, α) : α ∈ A}
+is consistent when untl(γ,β) ∈ MCS A.
+
+Proof (Burgess 2.4): For any finite L ⊆ seed with L ⊢ ⊥, extract α-witnesses
+from Since-obligations, form α* ∈ A, apply BX13 enrichment to get
+F(β ∧ snce(γ, α*)) ∈ A, then derive ⊥ from {β ∧ snce(γ, α*)} ∪ g_content(A),
+contradicting forward_temporal_witness_seed_consistent. -/
+theorem until_witness_enriched_seed_consistent {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_until : Formula.untl γ β ∈ A) :
+    SetConsistent ({β} ∪ g_content A ∪ {φ | ∃ α ∈ A, φ = Formula.snce γ α}) := by
+  intro L hL ⟨d⟩
+  have h_extract : ∀ φ ∈ L, (φ ∈ {β} ∪ g_content A) ∨ (∃ α ∈ A, φ = Formula.snce γ α) := by
+    intro φ hφ
+    have := hL φ hφ
+    simp only [Set.mem_union] at this
+    rcases this with (h | h) | h
+    · exact Or.inl (Set.mem_union_left _ h)
+    · exact Or.inl (Set.mem_union_right _ h)
+    · exact Or.inr h
+  haveI : ∀ φ : Formula, Decidable (∃ α ∈ A, φ = Formula.snce γ α) :=
+    fun φ => Classical.dec _
+  let get_alpha : Formula → Option Formula := fun φ =>
+    if h : ∃ α ∈ A, φ = Formula.snce γ α then some h.choose else none
+  let alpha_list := L.filterMap get_alpha
+  have h_get_alpha_some : ∀ (φ α : Formula),
+      get_alpha φ = some α → α ∈ A ∧ φ = Formula.snce γ α := by
+    intro φ α hga
+    simp only [get_alpha] at hga
+    split at hga
+    · rename_i h_ex; simp at hga; subst hga
+      exact ⟨h_ex.choose_spec.1, h_ex.choose_spec.2⟩
+    · simp at hga
+  have h_alphas_in_A : ∀ α ∈ alpha_list, α ∈ A := by
+    intro α hα
+    simp only [alpha_list, List.mem_filterMap] at hα
+    obtain ⟨φ, _, hga⟩ := hα
+    exact (h_get_alpha_some φ α hga).1
+  have h_since_extracted : ∀ φ ∈ L, (∃ α ∈ A, φ = Formula.snce γ α) →
+      ∃ α ∈ alpha_list, φ = Formula.snce γ α := by
+    intro φ hφ h_ex
+    have h_ga_ne_none : get_alpha φ ≠ none := by
+      simp only [get_alpha, dif_pos h_ex]; exact Option.some_ne_none _
+    obtain ⟨α', hα'⟩ := Option.ne_none_iff_exists'.mp h_ga_ne_none
+    have ⟨hα'_A, hφ_eq'⟩ := h_get_alpha_some φ α' hα'
+    exact ⟨α', List.mem_filterMap.mpr ⟨φ, hφ, hα'⟩, hφ_eq'⟩
+  by_cases h_empty : alpha_list = []
+  · have hL' : ∀ φ ∈ L, φ ∈ {β} ∪ g_content A := by
+      intro φ hφ
+      rcases h_extract φ hφ with h_cov | h_since
+      · exact h_cov
+      · exfalso
+        obtain ⟨α, hα_list, _⟩ := h_since_extracted φ hφ h_since
+        rw [h_empty] at hα_list; simp at hα_list
+    exact until_witness_seed_consistent h_mcs γ β h_until L hL' ⟨d⟩
+  · set α_star := list_conj alpha_list
+    have hα_star_A : α_star ∈ A := list_conj_mem_mcs h_mcs alpha_list h_alphas_in_A
+    have h_enriched := enrichment_until_mcs h_mcs hα_star_A h_until
+    have h_F := until_implies_F_mcs h_mcs h_enriched
+    set ψ_star := Formula.and β (Formula.snce γ α_star)
+    have h_cons := forward_temporal_witness_seed_consistent A h_mcs ψ_star h_F
+    suffices h_derives : ∀ φ ∈ L, φ ∈ g_content A ∨
+        (Nonempty (DerivationTree [] (ψ_star.imp φ))) by
+      haveI : DecidablePred (· ∈ g_content A) := fun φ => Classical.dec _
+      let Γ := L.map (fun φ => if φ ∈ g_content A then φ else ψ_star)
+      have hΓ_sub : ∀ ψ ∈ Γ, ψ ∈ {ψ_star} ∪ g_content A := by
+        intro ψ hψ
+        simp only [Γ, List.mem_map] at hψ
+        obtain ⟨φ, _, hψ_eq⟩ := hψ
+        split at hψ_eq
+        · subst hψ_eq; exact Set.mem_union_right _ ‹_›
+        · subst hψ_eq; exact Set.mem_union_left _ (Set.mem_singleton ψ_star)
+      have h_L_from_Γ : ∀ φ ∈ L, DerivationTree Γ φ := by
+        intro φ hφ
+        have h_d := h_derives φ hφ
+        by_cases h_gc : φ ∈ g_content A
+        · exact DerivationTree.assumption Γ φ
+            (List.mem_map.mpr ⟨φ, hφ, by simp [h_gc]⟩)
+        · have h_ne : Nonempty (DerivationTree [] (ψ_star.imp φ)) := by
+            rcases h_d with h | h
+            · exact absurd h h_gc
+            · exact h
+          let h_impl := h_ne.some
+          have hψ_in_Γ : ψ_star ∈ Γ := by
+            simp only [Γ, List.mem_map]
+            exact ⟨φ, hφ, by simp [h_gc]⟩
+          exact DerivationTree.modus_ponens Γ _ _
+            (DerivationTree.weakening [] Γ _ h_impl (List.nil_subset _))
+            (DerivationTree.assumption Γ ψ_star hψ_in_Γ)
+      exact h_cons Γ hΓ_sub ⟨derivation_from_implied Γ L Formula.bot h_L_from_Γ d⟩
+    intro φ hφ
+    rcases h_extract φ hφ with h_cov | h_since
+    · simp only [Set.mem_union, Set.mem_singleton_iff] at h_cov
+      rcases h_cov with h_eq | h_gc
+      · rw [h_eq]
+        exact Or.inr ⟨lce_imp β (Formula.snce γ α_star)⟩
+      · exact Or.inl h_gc
+    · obtain ⟨α, hα_list, hφ_eq⟩ := h_since_extracted φ hφ h_since
+      rw [hφ_eq]
+      have h_proj := list_conj_implies_elem alpha_list α hα_list
+      have h_H_proj := Bimodal.Theorems.past_necessitation _ h_proj
+      have h_bx3' := DerivationTree.axiom [] _ (Axiom.right_mono_since α_star α γ)
+      have h_snce_mono : DerivationTree [] ((Formula.snce γ α_star).imp (Formula.snce γ α)) :=
+        mp h_H_proj h_bx3'
+      exact Or.inr ⟨imp_trans (rce_imp β (Formula.snce γ α_star)) h_snce_mono⟩
+
+/-- **Lemma 2.4 with guard** (Burgess 2.4, full version): Given MCS A with
+untl(γ, β) ∈ A, there exist B, C such that β ∈ C, g_content(A) ⊆ C,
+γ ∈ B, and BurgessR3Maximal(A, B, C).
+
+This strengthens `lemma_2_4` by additionally returning `γ ∈ B`. The guard
+membership follows from enriching the seed with Since-obligations
+{snce(γ, α) : α ∈ A}, which gives burgessRSince(C, γ, A), then applying
+burgessR3Maximal_with_guard (RRelation.lean). -/
+noncomputable def lemma_2_4_with_guard {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_until : Formula.untl γ β ∈ A)
+    (h_nubr3 : NoUnivBurgessR3) :
+    ∃ B C : Set Formula, SetMaximalConsistent C ∧
+      β ∈ C ∧ g_content A ⊆ C ∧
+      Formula.some_past (Formula.untl γ β) ∈ C ∧
+      γ ∈ B ∧ BurgessR3Maximal A B C := by
+  have h_seed_cons := until_witness_enriched_seed_consistent h_mcs γ β h_until
+  obtain ⟨C, h_sup, h_C_mcs⟩ := set_lindenbaum _ h_seed_cons
+  -- β ∈ C from seed
+  have h_β_C : β ∈ C := h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton β)))
+  -- g_content(A) ⊆ C from seed
+  have h_g_sub : g_content A ⊆ C := fun χ hχ =>
+    h_sup (Set.mem_union_left _ (Set.mem_union_right _ hχ))
+  -- P(untl(γ,β)) ∈ C from g_content
+  have h_GP : Formula.all_future (Formula.some_past (Formula.untl γ β)) ∈ A := by
+    have h_ax : DerivationTree [] ((Formula.untl γ β).imp
+        (Formula.all_future (Formula.some_past (Formula.untl γ β)))) :=
+      DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl γ β))
+    exact SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_ax) h_until
+  have h_P_until_C : Formula.some_past (Formula.untl γ β) ∈ C := h_g_sub h_GP
+  -- snce(γ, α) ∈ C for all α ∈ A (from Since-obligation part of enriched seed)
+  have h_burgessRSince : burgessRSince C γ A := by
+    intro α hα
+    exact h_sup (Set.mem_union_right _ ⟨α, hα, rfl⟩)
+  -- burgessR(A, γ, C) from burgessRSince via Lemma 2.3 backward
+  have h_burgessR := burgessRSince_implies_burgessR h_mcs h_C_mcs h_burgessRSince
+  -- B with γ ∈ B and BurgessR3Maximal(A, B, C)
+  obtain ⟨B, h_γ_B, h_r3m⟩ := burgessR3Maximal_with_guard A C γ h_mcs h_C_mcs
+    h_burgessR h_burgessRSince h_nubr3
+  exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_γ_B, h_r3m⟩
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
