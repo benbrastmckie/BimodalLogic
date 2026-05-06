@@ -195,14 +195,11 @@ Combine `limit_satisfies_c5_weak` (already proved, ChronicleConstruction.lean:59
 Mirror: `limit_satisfies_c5'_strong` for Since.
 
 **Tasks**:
-- [ ] **Task 4.1**: State and prove `limit_satisfies_c5_strong`:
-  ```
-  untl ξ η ∈ limit_f(x) →
-  ∃ y ∈ limit_dom, x < y ∧ η ∈ limit_f(y) ∧ ξ ∈ limit_g(x,y)
-  ```
-  Proof: (1) Apply `limit_satisfies_c5_weak` for the witness y. (2) Apply Phase 3's guard propagation for `ξ ∈ limit_g(x,y)`.
-- [ ] **Task 4.2**: State and prove `limit_satisfies_c5'_strong` (Since mirror).
-- [ ] **Task 4.3**: Run `lake build` and verify.
+- [x] **Task 4.1**: Stated `limit_satisfies_c5_strong` (ChronicleConstruction.lean:1289). Structure complete: uses `limit_satisfies_c5_weak` for endpoint, sorry at guard step (`ξ ∈ limit_f(w)` for intermediate w). Guard step is ChronicleConstruction.lean:1301.
+- [x] **Task 4.2**: Stated `limit_satisfies_c5'_strong` (ChronicleConstruction.lean:1303). Since mirror. Sorry at guard step, ChronicleConstruction.lean:1313.
+- [ ] **Task 4.3**: Close guard sorry at line 1301 using Phase 3's `omega_chain_guard_in_limit_g`.
+- [ ] **Task 4.4**: Close guard sorry at line 1313 (Since mirror).
+- [ ] **Task 4.5**: Run `lake build` and verify 0 sorry sites in Chronicle/.
 
 **Timing**: 1-2 hours
 
@@ -234,12 +231,13 @@ The `mcs` function maps through the Cantor isomorphism to `limit_f`. Apply `limi
 The guard condition `∀ r, t < r → r < s → φ ∈ mcs(r)` transfers from `φ ∈ limit_g(x,y)` via the Cantor isomorphism's order-preservation and the `limit_c3_interval_subset_point` lemma.
 
 **Tasks**:
-- [ ] **Task 5.1**: Close FUC sorry (ChronicleToCountermodel.lean:634). Apply `limit_satisfies_c5_strong`, transfer through Cantor isomorphism.
-- [ ] **Task 5.2**: Close FSC sorry (ChronicleToCountermodel.lean:638). Mirror of Task 5.1 using `limit_satisfies_c5'_strong`.
-- [ ] **Task 5.3**: Final audit: run `#print axioms bx_completeness` and verify no `sorryAx`.
-- [ ] **Task 5.4**: Run `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` -- verify only comment/documentation occurrences.
-- [ ] **Task 5.5**: Run `grep -n "sorry" Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- verify only comment occurrences.
-- [ ] **Task 5.6**: Full `lake build` clean from scratch.
+- [x] **Task 5.1**: Rewrote `cantor_bfmcs_restricted_fuc` (ChronicleToCountermodel.lean) to use `limit_satisfies_c5_strong` + Cantor isomorphism transfer. FUC integration is sorry-free (depends on Phase 4 guard proof).
+- [x] **Task 5.2**: FSC integration also sorry-free using `limit_satisfies_c5'_strong` + mirror transfer.
+- [x] **Task 5.3**: ChronicleToCountermodel.lean is now completely sorry-free. Sorries consolidated to ChronicleConstruction.lean:1301,1313 (guard proof steps from Phase 4).
+- [ ] **Task 5.4**: Final audit: run `#print axioms bx_completeness` and verify no `sorryAx`. (After Phase 4 guard proofs complete.)
+- [ ] **Task 5.5**: Run `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` -- verify only comment/documentation occurrences.
+- [ ] **Task 5.6**: Run `grep -n "sorry" Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- verify only comment occurrences.
+- [ ] **Task 5.7**: Full `lake build` clean from scratch.
 
 **Timing**: 2 hours
 
