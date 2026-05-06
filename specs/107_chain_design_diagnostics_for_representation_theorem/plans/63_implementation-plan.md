@@ -160,10 +160,14 @@ By induction on the splitting tree within the omega chain:
 Key tools: `omega_chain_g_agrees_le` (proved in Phase 2), `omega_chain_f_agrees_le`, `burgessR3_absorption` (RRelation.lean:591).
 
 **Tasks**:
-- [x] **Task 3.1**: `omega_chain_g_agrees_le` proved in Phase 2 (Task 2.D). For x, y ∈ dom(n) and m ≥ n, `g_m(x,y) = g_n(x,y)`.
-- [ ] **Task 3.2**: Prove `omega_chain_guard_at_intermediate`: if ξ ∈ g_{n+1}(x,y) and (x,y) adjacent at stage n+1, and w ∈ dom(m) with x < w < y and m ≥ n+1, then ξ ∈ f_m(w). Proof by induction on m - (n+1), using g_agrees (g-values preserved for old pairs) and B ⊆ D (from seed of all splitting lemmas).
-- [ ] **Task 3.3**: Prove `omega_chain_guard_in_limit_g`: if ξ ∈ g_{n+1}(x,y) at stage n+1, then ξ ∈ limit_g(x,y). Uses Task 3.2 + limit_f_eq.
-- [ ] **Task 3.4**: Run `lake build` and verify.
+- [x] **Task 3.1**: `omega_chain_g_agrees_le` proved in Phase 2 (Task 2.D).
+- [x] **Task 3.2**: `g_sub_f_insert` proved for all 9 CE cases. Enriched 5 splitting lemma return types with `B ⊆ D`. All 9 `g_sub_f_insert := sorry` sites in CounterexampleElimination.lean closed. `omega_chain_g_sub_f_insert` available.
+- [ ] **Task 3.3**: Enrich splitting lemma returns with `B ⊆ B'` and `B ⊆ B''` (needed for `g_sub_g_new`). lemma_2_7 already returns B ⊆ B'. lemma_2_6_splitting, lemma_2_8, mirrors need enrichment.
+- [ ] **Task 3.4**: Add `g_sub_g_new` field to EliminationResult (or prove standalone): `g(a,b) ⊆ g(a,w)` and `g(a,b) ⊆ g(w,b)` when w inserted between adjacent (a,b).
+- [ ] **Task 3.5**: Prove `omega_chain_guard_invariant`: for all k ≥ n+1, for all adjacent (a,b) in dom(k) with x ≤ a < b ≤ y, ξ ∈ g_k(a,b). Induction on k using g_sub_g_new.
+- [ ] **Task 3.6**: Prove `omega_chain_guard_in_limit_g`: combine guard_invariant + g_sub_f_insert + limit_f_eq to get ξ ∈ limit_g(x,y).
+- [ ] **Task 3.7**: Also need C5 guard fact: ξ ∈ g_{n+1}(x, y) from the C5 elimination (base case for invariant). Requires threading guard from lemma_2_4_with_guard through the C5 elimination code.
+- [ ] **Task 3.8**: Run `lake build` and verify.
 
 **Timing**: 2 hours
 
