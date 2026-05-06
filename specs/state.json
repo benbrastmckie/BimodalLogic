@@ -1103,14 +1103,14 @@
           "summary": "Team research (4 teammates): 13 sorry inventory, NoUnivBurgessR3 not J₀-provable, Case B closable after cascade, plan v60 stale, 25-41h revised estimate"
         },
         {
-          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/62_implementation-plan.md",
-          "type": "plan",
-          "summary": "Revised implementation plan with 6 phases addressing all 13 sorry sites, NoUnivBurgessR3 as root dependency"
-        },
-        {
           "path": "specs/107_chain_design_diagnostics_for_representation_theorem/handoffs/62_phase1-noUnivR3-eliminated.md",
           "type": "handoff",
           "summary": "Phase 1 complete: NoUnivBurgessR3 eliminated by reverting BurgessR3Maximal to SetDeductivelyClosed maximality. Sorry 13→12."
+        },
+        {
+          "path": "specs/107_chain_design_diagnostics_for_representation_theorem/plans/55_implementation-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v55: 8 phases (0-7), Burgess alignment migration, EliminationResult restructuring"
         }
       ],
       "session_id": "sess_1778012000_12bf46",
