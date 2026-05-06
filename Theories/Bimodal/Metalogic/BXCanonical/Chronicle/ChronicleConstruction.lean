@@ -1286,7 +1286,11 @@ theorem omega_chain_dom_new_unique (A : Set Formula) (h_mcs : SetMaximalConsiste
     (hv : v ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom)
     (hv_not : v ∉ (omega_chain_val A h_mcs h_nubr3 n).dom) :
     u = v := by
-  sorry
+  have hu' : u ∈ (omega_chain_elim_result A h_mcs h_nubr3 n).val.dom := by
+    rw [← omega_chain_dom_eq_elim]; exact hu
+  have hv' : v ∈ (omega_chain_elim_result A h_mcs h_nubr3 n).val.dom := by
+    rw [← omega_chain_dom_eq_elim]; exact hv
+  exact (omega_chain_elim_result A h_mcs h_nubr3 n).dom_new_unique u v hu' hu_not hv' hv_not
 
 /-! ## Omega Chain g-value Lifting
 

@@ -636,6 +636,7 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
     a < w → w < b → χ.g a b ⊆ val.f w
   g_sub_g_new : ∀ a b, Adjacent χ.dom a b → ∀ w ∈ val.dom, w ∉ χ.dom →
     a < w → w < b → χ.g a b ⊆ val.g a w ∧ χ.g a b ⊆ val.g w b
+  dom_new_unique : ∀ u v, u ∈ val.dom → u ∉ χ.dom → v ∈ val.dom → v ∉ χ.dom → u = v
 
 /--
 Attempt to eliminate a potential counterexample. If it is not an actual
@@ -765,7 +766,15 @@ noncomputable def eliminate_potential_counterexample
                   simp only [χ', Finset.mem_insert] at hw
                   rcases hw with rfl | hw
                   · exact absurd hwb (not_lt.mpr (le_of_lt (hy_gt b h_adj.2.1)))
-                  · exact absurd hw hw_not }
+                  · exact absurd hw hw_not
+                dom_new_unique := by
+                  intro u v hu hu_not hv hv_not
+                  simp only [χ', Finset.mem_insert] at hu hv
+                  rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                  · rfl
+                  · exact absurd hv hv_not
+                  · exact absurd hu hu_not
+                  · exact absurd hu hu_not }
       · -- **Case n≥1**: pc.x is NOT the maximum. Burgess 2.10 induction case.
         -- Find x' = immediate successor of pc.x in dom.
         set T_succ := χ.dom.filter (fun v => decide (pc.x < v)) with T_succ_def
@@ -934,7 +943,15 @@ noncomputable def eliminate_potential_counterexample
                       simp only [χ', Finset.mem_insert] at hw
                       rcases hw with rfl | hw
                       · exact absurd hwb (not_lt.mpr (le_of_lt (hy_gt b h_adj.2.1)))
-                      · exact absurd hw hw_not }
+                      · exact absurd hw hw_not
+                    dom_new_unique := by
+                      intro u v hu hu_not hv hv_not
+                      simp only [χ', Finset.mem_insert] at hu hv
+                      rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                      · rfl
+                      · exact absurd hv hv_not
+                      · exact absurd hu hu_not
+                      · exact absurd hu hu_not }
           · -- **Walk Case B**: u_max < max_old. Find successor and split there.
             have h_u_lt_max : u_max < max_old :=
               lt_of_le_of_ne (h_max_le u_max hu_max_dom) h_u_is_max
@@ -989,7 +1006,8 @@ noncomputable def eliminate_potential_counterexample
                       c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                       density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                       g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-                      g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not }
+                      g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
+                      dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
             · -- eta ∉ f(u_next): split at (u_max, u_next). Condition (i) fails here.
               have h_eta_neg_u_next : pc.η.neg ∈ χ.f u_next := by
                 rcases SetMaximalConsistent.negation_complete h_mcs_u_next pc.η with h | h
@@ -1211,7 +1229,15 @@ noncomputable def eliminate_potential_counterexample
                               intro ⟨h1, _⟩; linarith
                             simp only [this, ite_false, and_self, ite_true]
                             exact h_g_sub_B''
-                        · exact absurd hw hw_not }
+                        · exact absurd hw hw_not
+                      dom_new_unique := by
+                        intro u v hu hu_not hv hv_not
+                        simp only [χ', Finset.mem_insert] at hu hv
+                        rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                        · rfl
+                        · exact absurd hv hv_not
+                        · exact absurd hu hu_not
+                        · exact absurd hu hu_not }
         · -- **Not condition (i)**: splitting at (pc.x, x') succeeds.
           -- Get the splitting result: B', D, B'' with eta ∈ D.
           -- Case split on eta ∈ g(pc.x, x'):
@@ -1435,7 +1461,15 @@ noncomputable def eliminate_potential_counterexample
                           intro ⟨h1, _⟩; linarith
                         simp only [this, ite_false, and_self, ite_true]
                         exact h_g_sub_B''
-                    · exact absurd hw hw_not }
+                    · exact absurd hw hw_not
+                  dom_new_unique := by
+                    intro u v hu hu_not hv hv_not
+                    simp only [χ', Finset.mem_insert] at hu hv
+                    rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                    · rfl
+                    · exact absurd hv hv_not
+                    · exact absurd hu hu_not
+                    · exact absurd hu hu_not }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
@@ -1452,7 +1486,8 @@ noncomputable def eliminate_potential_counterexample
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not }
+              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
+              dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
   | .c5_backward =>
     -- Backward (Since) C5' case
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.snce pc.ξ pc.η ∈ χ.f pc.x ∧
@@ -1575,7 +1610,17 @@ noncomputable def eliminate_potential_counterexample
                   simp only [Finset.mem_insert] at hw
                   rcases hw with rfl | hw
                   · exact absurd haw (not_lt.mpr (le_of_lt (hy_lt a h_adj.1)))
-                  · exact absurd hw hw_not }
+                  · exact absurd hw hw_not
+                dom_new_unique := by
+                  intro u v hu hu_not hv hv_not
+                  change u ∈ insert y χ.dom at hu
+                  change v ∈ insert y χ.dom at hv
+                  simp only [Finset.mem_insert] at hu hv
+                  rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                  · rfl
+                  · exact absurd hv hv_not
+                  · exact absurd hu hu_not
+                  · exact absurd hu hu_not }
       · -- **Case n≥1**: pc.x is NOT the minimum. Burgess 2.10' induction case (backward mirror).
         -- Find x'' = immediate predecessor of pc.x in dom.
         set T_pred := χ.dom.filter (fun v => decide (v < pc.x)) with T_pred_def
@@ -1721,7 +1766,17 @@ noncomputable def eliminate_potential_counterexample
                       simp only [Finset.mem_insert] at hw
                       rcases hw with rfl | hw
                       · exact absurd haw (not_lt.mpr (le_of_lt (hy_lt a h_adj.1)))
-                      · exact absurd hw hw_not }
+                      · exact absurd hw hw_not
+                    dom_new_unique := by
+                      intro u v hu hu_not hv hv_not
+                      change u ∈ insert y χ.dom at hu
+                      change v ∈ insert y χ.dom at hv
+                      simp only [Finset.mem_insert] at hu hv
+                      rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                      · rfl
+                      · exact absurd hv hv_not
+                      · exact absurd hu hu_not
+                      · exact absurd hu hu_not }
           · -- Walk Case B: w_min > min_old. Find predecessor and split.
             have h_w_gt_min : min_old < w_min :=
               lt_of_le_of_ne (h_min_le w_min hw_min_dom) (Ne.symm h_w_is_min)
@@ -1766,7 +1821,8 @@ noncomputable def eliminate_potential_counterexample
                       c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                       density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                       g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-                      g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not }
+                      g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
+                      dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
             · -- eta ∉ f(w_prev): split at (w_prev, w_min). Condition (i) fails here.
               have h_eta_neg_w_prev : pc.η.neg ∈ χ.f w_prev := by
                 rcases SetMaximalConsistent.negation_complete h_mcs_w_prev pc.η with h | h
@@ -1944,7 +2000,15 @@ noncomputable def eliminate_potential_counterexample
                               intro ⟨h1, _⟩; linarith
                             simp only [this, ite_false, and_self, ite_true]
                             exact h_g_sub_B''
-                        · exact absurd hw hw_not }
+                        · exact absurd hw hw_not
+                      dom_new_unique := by
+                        intro u v hu hu_not hv hv_not
+                        simp only [χ', Finset.mem_insert] at hu hv
+                        rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                        · rfl
+                        · exact absurd hv hv_not
+                        · exact absurd hu hu_not
+                        · exact absurd hu hu_not }
         · -- **Not condition (i) backward**: splitting at (x'', pc.x) succeeds.
           have h_bot_not_g : Formula.bot ∉ χ.g x'' pc.x := by
             intro h_bot
@@ -2158,7 +2222,15 @@ noncomputable def eliminate_potential_counterexample
                           intro ⟨h1, _⟩; linarith
                         simp only [this, ite_false, and_self, ite_true]
                         exact h_g_sub_B''
-                    · exact absurd hw hw_not }
+                    · exact absurd hw hw_not
+                  dom_new_unique := by
+                    intro u v hu hu_not hv hv_not
+                    simp only [χ', Finset.mem_insert] at hu hv
+                    rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                    · rfl
+                    · exact absurd hv hv_not
+                    · exact absurd hu hu_not
+                    · exact absurd hu hu_not }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
@@ -2175,7 +2247,8 @@ noncomputable def eliminate_potential_counterexample
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not }
+              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
+              dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
   | .c4_forward =>
     -- Forward C4 case (corrected Burgess C4a: check EVENT η at f(y), negate GUARD ξ at f(z))
     -- Now checks ALL pairs x < y, not just adjacent pairs.
@@ -2463,7 +2536,15 @@ noncomputable def eliminate_potential_counterexample
                       intro ⟨h1, _⟩; linarith
                     simp only [this, ite_false, and_self, ite_true]
                     exact h_g_sub_B''
-                · exact absurd hw0 hw0_not }
+                · exact absurd hw0 hw0_not
+              dom_new_unique := by
+                intro u v hu hu_not hv hv_not
+                simp only [χ', Finset.mem_insert] at hu hv
+                rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                · rfl
+                · exact absurd hv hv_not
+                · exact absurd hu hu_not
+                · exact absurd hu hu_not }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
@@ -2479,7 +2560,8 @@ noncomputable def eliminate_potential_counterexample
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not }
+              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
+              dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
   | .c4_backward =>
     -- Backward C4' case (corrected Burgess C4b: check EVENT η at f(y), negate GUARD ξ at f(z))
     -- Now checks ALL pairs y < x, not just adjacent pairs.
@@ -2753,7 +2835,15 @@ noncomputable def eliminate_potential_counterexample
                       intro ⟨h1, _⟩; linarith
                     simp only [this, ite_false, and_self, ite_true]
                     exact h_g_sub_B''
-                · exact absurd hw0 hw0_not }
+                · exact absurd hw0 hw0_not
+              dom_new_unique := by
+                intro u v hu hu_not hv hv_not
+                simp only [χ', Finset.mem_insert] at hu hv
+                rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                · rfl
+                · exact absurd hv hv_not
+                · exact absurd hu hu_not
+                · exact absurd hu hu_not }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
@@ -2769,7 +2859,8 @@ noncomputable def eliminate_potential_counterexample
                 exact h_actual h_xm' h_ym' h_lt' h_neg_since' h_event'
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not }
+              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
+              dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
   | .density =>
     -- Density: if x and y are adjacent in dom, insert midpoint z = (x+y)/2
     -- with f(z) = f(x) (any MCS will do; we just need to break adjacency).
@@ -2969,7 +3060,15 @@ noncomputable def eliminate_potential_counterexample
                       intro ⟨h1, _⟩; linarith
                     simp only [this, ite_false, and_self, ite_true]
                     exact h_g_sub_B''
-                · exact absurd hw0 hw0_not }
+                · exact absurd hw0 hw0_not
+              dom_new_unique := by
+                intro u v hu hu_not hv hv_not
+                simp only [Finset.mem_insert] at hu hv
+                rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                · rfl
+                · exact absurd hv hv_not
+                · exact absurd hu hu_not
+                · exact absurd hu hu_not }
     · exact { val := χ
               dom_sub := Finset.Subset.refl _
               c0 := h_c0
@@ -2992,6 +3091,7 @@ noncomputable def eliminate_potential_counterexample
                 exact h_not_adj ⟨h_xm, h_ym, h_lt, fun z hz ⟨hxz, hzy⟩ =>
                   absurd hzy (not_lt.mpr (h_no_w z hz hxz))⟩
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not }
+              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
+              dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
