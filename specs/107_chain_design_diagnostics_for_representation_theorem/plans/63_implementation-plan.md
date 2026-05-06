@@ -1,7 +1,7 @@
 # Implementation Plan: Task #107 -- Close FUC/FSC via Guard-in-B (Burgess 2.4 Enrichment)
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 10 hours
 - **Dependencies**: None (all prerequisite infrastructure exists)
 - **Research Inputs**: reports/63_team-research.md
@@ -69,7 +69,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Enrich lemma_2_4 to Produce Guard in B [NOT STARTED]
+### Phase 1: Enrich lemma_2_4 to Produce Guard in B [COMPLETED]
 
 **Goal**: Modify `lemma_2_4` (PointInsertion.lean:158) so its existential output includes `γ ∈ B` (the guard belongs to the interval set B), matching Burgess Lemma 2.4's guarantee.
 
@@ -81,13 +81,14 @@ The current `lemma_2_4` constructs C via Lindenbaum extension of `{β} ∪ g_con
 
 To get `γ ∈ B`, enrich the C seed to include `{snce(γ, α) : α ∈ A}`. This gives `burgessRSince(C, γ, A)` (Since direction). Combined with `burgessR(A, γ, C)` (derived from the enriched seed's Until formulas via Lemma 2.3), we can apply `burgessR3Maximal_with_guard` (RRelation.lean:1593) to obtain B with `γ ∈ B`.
 
+**Implementation note**: Created `lemma_2_4_with_guard` as a SEPARATE function (PointInsertion.lean:4832-4973) rather than modifying `lemma_2_4` directly, to avoid touching 3 callers that don't need guard. Phase 2 C5 callers use the new function.
+
 **Tasks**:
-- [ ] **Task 1.1**: Create `until_witness_enriched_seed` -- the enriched seed `{β} ∪ g_content(A) ∪ {snce(γ, α) : α ∈ A}` or equivalent. The Since-obligation terms ensure the Lindenbaum extension D has `burgessRSince(D, γ, A)`.
-- [ ] **Task 1.2**: Prove `until_witness_enriched_seed_consistent` -- consistency of the enriched seed. Use iterated BX13 enrichment (existing `iterated_enrichment` infrastructure at PointInsertion.lean:~1388) and the pattern from `lemma_2_7_seed_consistent` (PointInsertion.lean:3204, sorry-free). The key step: from `untl(γ, β) ∈ A`, apply BX13 enrichment to get `untl(γ, β ∧ S(γ, α)) ∈ A` for each `α ∈ A`, then BX10 to extract `F(β ∧ S(γ, α))` into the forward temporal witness seed.
-- [ ] **Task 1.3**: Modify `lemma_2_4` to use the enriched seed. After Lindenbaum extension to MCS C: extract `snce(γ, α) ∈ C` for all `α ∈ A` from the seed. Derive `burgessRSince(C, γ, A)` from these Since memberships. Derive `burgessR(A, γ, C)` via `burgessRSince_implies_burgessR` (RRelation.lean:1322). Apply `burgessR3Maximal_with_guard` (RRelation.lean:1593) to get B with `γ ∈ B`.
-- [ ] **Task 1.4**: Update `lemma_2_4`'s return type to include `γ ∈ B`: change from `∃ B C, ... ∧ BurgessR3Maximal A B C` to `∃ B C, ... ∧ γ ∈ B ∧ BurgessR3Maximal A B C`.
-- [ ] **Task 1.5**: Update all callers of `lemma_2_4` to destructure the new `γ ∈ B` field. The primary caller is `eliminate_C5_counterexample` (CounterexampleElimination.lean:340). Currently discards B with `_B` at line 356. Capture it and thread through.
-- [ ] **Task 1.6**: Run `lake build` and verify no regressions. The caller updates should be mechanical (adding `_` for the new field where not needed, or capturing it where needed).
+- [x] **Task 1.1**: Created `until_witness_enriched_seed_consistent` — proves consistency of the enriched seed `{β} ∪ g_content(A) ∪ {snce(γ, α) : α ∈ A}`. Uses BX13 enrichment + BX10 + BX3' right-monotonicity + derivation_from_implied.
+- [x] **Task 1.2**: Created `lemma_2_4_with_guard` — strengthened version of `lemma_2_4` that returns `γ ∈ B` (guard in interval DCS). Uses enriched seed → burgessRSince(C, γ, A) → burgessR(A, γ, C) → burgessR3Maximal_with_guard.
+- [x] **Task 1.3**: `lake build` passes. No new sorries. 2 existing sorry sites remain at ChronicleToCountermodel.lean:634,638.
+
+**Completed**: 2026-05-06
 
 **Timing**: 3-4 hours
 
@@ -105,30 +106,22 @@ To get `γ ∈ B`, enrich the C seed to include `{snce(γ, α) : α ∈ A}`. Thi
 
 ---
 
-### Phase 2: Thread Guard Through EliminationResult and Omega Chain [NOT STARTED]
+### Phase 2: Thread Guard Through EliminationResult and Omega Chain [PARTIAL]
 
-**Goal**: Propagate the `γ ∈ B` information from `lemma_2_4` through the C5 elimination path so that `omega_chain_c5_witness` (ChronicleConstruction.lean:363) includes guard membership in the g-value at the elimination stage.
+**Goal**: Propagate the `γ ∈ B` information from `lemma_2_4` through the C5 elimination path so that `omega_chain_c5_witness` (ChronicleConstruction.lean:363) includes guard membership in the g-value at the elimination stage. Also fix `lemma_2_7` to produce `B ⊆ B'` (matching Burgess 2.7) to enable guard propagation through all splitting operations.
 
-**Paper reference**: Burgess 2.10 (p.374). When a C5 counterexample ⟨x, ξ, η⟩ (meaning `untl(ξ,η) ∈ f(x)`) is eliminated by adding point y, the new g(x,y) = B from `lemma_2_4`, and `ξ ∈ B` by Phase 1.
+**Paper reference**: Burgess 2.10 (p.374), Burgess 2.7 (p.372). When a C5 counterexample is eliminated, the guard must be in g(x,y). When `lemma_2_7` splits a pair, Burgess constructs B' with B ⊆ B' (our code deviated by using DC({xi}) seed instead of B seed).
 
-**Strategy**:
+**Completed work**:
+- [x] **Task 2.A (Blocker fix)**: Fixed `lemma_2_7` — changed B' seed from DC({xi}) to B, giving `B ⊆ B'` instead of `xi ∈ B'`. Deleted ~120 lines of degenerate case code. (PointInsertion.lean:3616)
+- [x] **Task 2.B**: Enriched `lemma_2_7_since` — added `B ⊆ B'` to output type. (PointInsertion.lean:4364)
+- [x] **Task 2.C**: Updated 4 call sites in CounterexampleElimination.lean for new output tuples.
+- [x] **Task 2.D**: Added `omega_chain_g_eq_elim`, `omega_chain_g_agrees`, `omega_chain_g_agrees_le` to ChronicleConstruction.lean — g-value tracking infrastructure.
+- [x] **Task 2.E**: `lake build` passes. 2 sorry sites remain at CTC:634,638.
 
-Currently `eliminate_C5_counterexample` (CE:340) discards B from `lemma_2_4`. After Phase 1, B contains `ξ` (the guard). We need to:
-1. Capture B in `eliminate_C5_counterexample` and assign it as g(x,y) in the new chronicle.
-2. Add a `c5_forward_guard` field to `EliminationResult` (or strengthen `c5_forward_witness`).
-3. Thread this through `omega_chain_elim_result` and `omega_chain_c5_witness`.
-
-However, a simpler approach may work: since `limit_g(x,y)` is defined as `{φ | ∀ w ∈ limit_dom, x < w → w < y → φ ∈ limit_f(w)}`, we do NOT need to track guard through finite-stage g. Instead, we need to prove that ξ ∈ limit_f(w) for all intermediate w. This may follow from c2' at the finite stage + Lemma 2.5 absorption, without modifying EliminationResult at all.
-
-Determine the approach at implementation time: either (A) thread guard through EliminationResult, or (B) prove guard propagation directly from c2' + absorption at the limit level.
-
-**Tasks**:
-- [ ] **Task 2.1**: Determine whether approach (A) or (B) is needed by inspecting the proof obligations in Phase 4. If `limit_g` can be shown to contain the guard purely from the c2' structure and Lemma 2.5, approach (B) avoids EliminationResult changes.
-- [ ] **Task 2.2**: If approach (A): Add `c5_forward_guard` field to `EliminationResult` stating `pc.kind = .c5_forward → ... → pc.ξ ∈ val.g pc.x y` for the new witness y. Populate from Phase 1's enriched `lemma_2_4`.
-- [ ] **Task 2.3**: If approach (A): Update `omega_chain_c5_witness` to include the guard statement: when `untl(ξ,η) ∈ f_n(x)` and the C5 witness y is added at step n+1, `ξ ∈ g_{n+1}(x,y)`.
-- [ ] **Task 2.4**: If approach (B): Prove that c2' at finite stages gives BurgessR3Maximal(f(x), g(x,y), f(y)) for the (x,y) pair created at C5 elimination. The g(x,y) is the B from `lemma_2_4`, and `ξ ∈ B` from Phase 1.
-- [ ] **Task 2.5**: Mirror all changes for the Since direction (C5' counterexample).
-- [ ] **Task 2.6**: Run `lake build` and verify.
+**Remaining blocker — Forward walk guard gap**:
+- [ ] **Task 2.F**: Resolve the forward walk region gap. In the C5 n≥1 case, the forward walk gives `ξ ∈ f(w)` at walk points (from condition (i)), but NOT `ξ ∈ g(w, w')` for walk adjacent pairs. Points inserted between walk points later don't inherit the guard. See handoff `lemma27-fix-and-fuc-strategy.md` for 4 possible solutions. REQUIRES RESEARCH before implementation.
+- [ ] **Task 2.G**: Mirror all changes for the Since direction.
 
 **Timing**: 2-3 hours
 
