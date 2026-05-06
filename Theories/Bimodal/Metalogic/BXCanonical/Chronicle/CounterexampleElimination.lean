@@ -1630,10 +1630,10 @@ noncomputable def eliminate_potential_counterexample
                         obtain ⟨B', D, B'', hB', hB'', hD, hη⟩ := lemma_2_8_since h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
                           pc.ξ pc.η h_snce_w_min h_neg_disj_pw h_nubr3
                         exact ⟨B', D, B'', hB', hB'', hD, hη⟩
-                      · obtain ⟨B', D, B'', hB', hB'', hD, hη⟩ := lemma_2_7_since h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
+                      · obtain ⟨B', D, B'', hB', hB'', hD, hη, _⟩ := lemma_2_7_since h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
                           (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) pc.η (self_accum_since_mcs h_mcs_w_min pc.ξ pc.η h_snce_w_min) h_conj_g_pw h_nubr3
                         exact ⟨B', D, B'', hB', hB'', hD, hη⟩
-                    · exact (fun ⟨B', D, B'', hB', hB'', hD, hη⟩ => ⟨B', D, B'', hB', hB'', hD, hη⟩)
+                    · exact (fun ⟨B', D, B'', hB', hB'', hD, hη, _⟩ => ⟨B', D, B'', hB', hB'', hD, hη⟩)
                         (lemma_2_7_since h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
                           pc.ξ pc.η h_snce_w_min h_xi_g_pw h_nubr3)
                   · have h_sp := lemma_2_6_splitting h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
@@ -1772,10 +1772,10 @@ noncomputable def eliminate_potential_counterexample
                     have h_bx5_since := self_accum_since_mcs h_mcs_x pc.ξ pc.η h_since
                     have h_l27s := lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
                       (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) pc.η h_bx5_since h_conj_g h_nubr3
-                    obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D⟩ := h_l27s
+                    obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, _⟩ := h_l27s
                     exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D⟩
                 · -- xi ∉ g: use lemma_2_7_since(xi, eta)
-                  exact (fun ⟨B', D, B'', hB', hB'', hD, hη⟩ =>
+                  exact (fun ⟨B', D, B'', hB', hB'', hD, hη, _⟩ =>
                       ⟨B', D, B'', hB', hB'', hD, hη⟩)
                       (lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
                         pc.ξ pc.η h_since h_xi_g h_nubr3)

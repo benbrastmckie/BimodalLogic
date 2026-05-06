@@ -352,6 +352,35 @@ theorem omega_chain_f_agrees_le (A : Set Formula) (h_mcs : SetMaximalConsistent 
     rw [omega_chain_f_agrees A h_mcs h_nubr3 _ x (omega_chain_dom_mono_le A h_mcs h_nubr3 h hx)]
     exact ih
 
+theorem omega_chain_g_eq_elim (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (n : Nat) :
+    (omega_chain_val A h_mcs h_nubr3 (n + 1)).g = (omega_chain_elim_result A h_mcs h_nubr3 n).val.g := by
+  simp only [omega_chain_val, omega_chain, omega_chain_elim_result]
+
+theorem omega_chain_g_agrees (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (n : Nat) (x y : Rat)
+    (hx : x ∈ (omega_chain_val A h_mcs h_nubr3 n).dom)
+    (hy : y ∈ (omega_chain_val A h_mcs h_nubr3 n).dom) :
+    (omega_chain_val A h_mcs h_nubr3 (n + 1)).g x y = (omega_chain_val A h_mcs h_nubr3 n).g x y := by
+  have := omega_chain_g_eq_elim A h_mcs h_nubr3 n
+  rw [show (omega_chain_val A h_mcs h_nubr3 (n + 1)).g x y =
+    (omega_chain_elim_result A h_mcs h_nubr3 n).val.g x y from
+    congr_fun (congr_fun this x) y]
+  exact (omega_chain_elim_result A h_mcs h_nubr3 n).g_agrees x y hx hy
+
+theorem omega_chain_g_agrees_le (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) {m n : Nat} (h : m ≤ n) (x y : Rat)
+    (hx : x ∈ (omega_chain_val A h_mcs h_nubr3 m).dom)
+    (hy : y ∈ (omega_chain_val A h_mcs h_nubr3 m).dom) :
+    (omega_chain_val A h_mcs h_nubr3 n).g x y = (omega_chain_val A h_mcs h_nubr3 m).g x y := by
+  induction h with
+  | refl => rfl
+  | step h ih =>
+    rw [omega_chain_g_agrees A h_mcs h_nubr3 _ x y
+      (omega_chain_dom_mono_le A h_mcs h_nubr3 h hx)
+      (omega_chain_dom_mono_le A h_mcs h_nubr3 h hy)]
+    exact ih
+
 /--
 C5 witness at step n+1: if `counterexample_enum (Nat.unpair n).2` is a c5_forward
 counterexample with x ∈ dom(n) and U(ξ,η) ∈ f_n(x), then a witness exists in dom(n+1).
