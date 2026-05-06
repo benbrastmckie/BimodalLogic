@@ -151,6 +151,120 @@ theorem exists_rat_between_not_in_finset (S : Finset Rat) (x y : Rat) (hxy : x <
     rw [hT] at this
     exact Finset.not_mem_empty z this
 
+/-! ## BurgessR3Maximal Helper Lemmas -/
+
+/--
+**BurgessR3Maximal implies g_content subset**: If BurgessR3Maximal(A, B, C) holds with
+A and C both MCS, then g_content(A) ⊆ C.
+
+Proof: Suppose G(φ) ∈ A but φ ∉ C. Then φ.neg ∈ C (MCS). Since B is CUD, ⊤ ∈ B (a
+theorem is in any CUD set). From burgessRSet(A, B, C): untl(⊤, φ.neg) ∈ A. By BX10
+(until_F), F(φ.neg) ∈ A. But G(φ) ∈ A gives ¬F(φ.neg) ∈ A (by G = ¬F¬ equivalence
+in MCS), contradicting consistency of A.
+-/
+theorem BurgessR3Maximal_g_content_sub {A B C : Set Formula}
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) :
+    g_content A ⊆ C := by
+  intro φ hφ
+  -- hφ : G(φ) ∈ A, i.e., all_future(φ) ∈ A
+  change Formula.all_future φ ∈ A at hφ
+  -- Suppose φ ∉ C, derive contradiction
+  by_contra h_not_C
+  have h_neg_C : φ.neg ∈ C := by
+    rcases SetMaximalConsistent.negation_complete h_mcs_C φ with h | h
+    · exact absurd h h_not_C
+    · exact h
+  -- ⊤ ∈ B (CUD contains all theorems)
+  set top := Formula.bot.imp Formula.bot with top_def
+  have h_top_B : top ∈ B :=
+    cud_contains_theorems h_r3m.1 (Bimodal.Theorems.Combinators.identity Formula.bot)
+  -- burgessRSet(A, B, C): ∀ β ∈ B, ∀ γ ∈ C, untl(β, γ) ∈ A
+  have h_untl : Formula.untl top φ.neg ∈ A :=
+    h_r3m.2.1.1 top h_top_B φ.neg h_neg_C
+  -- BX10: untl(γ, δ) ∈ A → F(δ) ∈ A, here F(φ.neg) ∈ A
+  have h_F_neg : Formula.some_future φ.neg ∈ A :=
+    until_F_mcs h_mcs_A top φ.neg h_untl
+  -- G(φ) ∈ A implies F(φ.neg) ∉ A
+  -- F(φ.neg) = some_future(φ.neg) = (all_future(φ.neg.neg)).neg
+  -- G(φ) ∈ A → G(φ.neg.neg) ∈ A (by φ → ¬¬φ inside G) → F(φ.neg) ∉ A
+  -- Derive ⊢ φ → ¬¬φ, i.e., ⊢ φ → (φ.neg → ⊥)
+  -- This is ⊢ φ → ((φ → ⊥) → ⊥), which follows from prop_s, prop_k, identity
+  have h_dni : DerivationTree [] (φ.imp φ.neg.neg) := by
+    -- φ.neg.neg = (φ.imp bot).imp bot
+    -- Need: ⊢ φ → ((φ → ⊥) → ⊥)
+    -- Proof: by deduction, assume φ.neg and φ, apply to get ⊥
+    have h1 : DerivationTree [φ.neg, φ] Formula.bot :=
+      DerivationTree.modus_ponens [φ.neg, φ] φ Formula.bot
+        (DerivationTree.assumption _ φ.neg (by simp))
+        (DerivationTree.assumption _ φ (by simp))
+    have h2 : DerivationTree [φ] φ.neg.neg :=
+      deduction_theorem [φ] φ.neg Formula.bot h1
+    exact deduction_theorem [] φ φ.neg.neg h2
+  -- G(φ → ¬¬φ) and temp_k_dist give G(φ) → G(¬¬φ)
+  have h_G_dni : DerivationTree [] (Formula.all_future (φ.imp φ.neg.neg)) :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_kd : DerivationTree [] ((φ.imp φ.neg.neg).all_future.imp
+      (φ.all_future.imp φ.neg.neg.all_future)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist φ φ.neg.neg)
+  have h1 := theorem_in_mcs h_mcs_A h_G_dni
+  have h2 := theorem_in_mcs h_mcs_A h_kd
+  have h3 := SetMaximalConsistent.implication_property h_mcs_A h2 h1
+  have h_G_nn : Formula.all_future φ.neg.neg ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs_A h3 hφ
+  -- all_future(φ.neg.neg) ∈ A and some_future(φ.neg) = (all_future(φ.neg.neg)).neg ∈ A
+  -- contradicts MCS consistency
+  exact absurd h_G_nn (SetMaximalConsistent.neg_excludes h_mcs_A (Formula.all_future φ.neg.neg) h_F_neg)
+
+/--
+**BurgessR3Maximal implies SetDeductivelyClosed**: If BurgessR3Maximal(A, B, C) holds with
+A and C both MCS and NoUnivBurgessR3, then B is SetDeductivelyClosed (consistent + CUD).
+
+Proof: B is CUD from BurgessR3Maximal definition. If B were inconsistent, then B contains
+⊥ (CUD), so B contains every formula (ex falso), making B = Set.univ. But NoUnivBurgessR3
+says ¬burgessR3(A, Set.univ, C), while BurgessR3Maximal gives burgessR3(A, B, C) =
+burgessR3(A, Set.univ, C). Contradiction.
+-/
+theorem BurgessR3Maximal_sdc {A B C : Set Formula}
+    (h_r3m : BurgessR3Maximal A B C)
+    (h_nubr3 : NoUnivBurgessR3)
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) :
+    SetDeductivelyClosed B := by
+  refine ⟨?_, h_r3m.1⟩
+  -- Show SetConsistent B
+  intro L hL ⟨d⟩
+  -- If B is inconsistent: ⊥ ∈ B (CUD), so everything is in B, hence B = Set.univ
+  have h_bot_B : Formula.bot ∈ B := h_r3m.1 L Formula.bot hL d
+  -- From ⊥ ∈ B (CUD): for any φ, ⊥ → φ is a theorem, so φ ∈ B
+  have h_univ : ∀ φ : Formula, φ ∈ B := by
+    intro φ
+    have h_efq : DerivationTree [] (Formula.bot.imp φ) :=
+      Bimodal.Theorems.Propositional.efq_axiom φ
+    exact cud_modus_ponens h_r3m.1 (cud_contains_theorems h_r3m.1 h_efq) h_bot_B
+  -- B = Set.univ
+  have h_B_eq : B = Set.univ := Set.eq_univ_iff_forall.mpr h_univ
+  -- burgessR3(A, B, C) = burgessR3(A, Set.univ, C), contradicting NoUnivBurgessR3
+  exact h_nubr3 A C h_mcs_A h_mcs_C (h_B_eq ▸ h_r3m.2.1)
+
+/--
+Helper: for adjacent pairs in a chronicle satisfying c2', when inserting a new point
+that splits an existing adjacent pair, the old adjacent pairs that don't involve the
+split are preserved. Adjacent pairs involving the split point need BurgessR3Maximal
+from lemma_2_6_splitting or lemma_2_7.
+-/
+theorem c2'_preserved_on_old_adjacent {χ χ' : Chronicle}
+    (h_c2' : χ.c2')
+    (h_f_agrees : ∀ x ∈ χ.dom, χ'.f x = χ.f x)
+    (h_g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b)
+    (h_dom_sub : χ.dom ⊆ χ'.dom)
+    {a b : Rat}
+    (h_adj' : Adjacent χ'.dom a b)
+    (h_a_old : a ∈ χ.dom) (h_b_old : b ∈ χ.dom)
+    (h_adj_old : Adjacent χ.dom a b) :
+    BurgessR3Maximal (χ'.f a) (χ'.g a b) (χ'.f b) := by
+  rw [h_f_agrees a h_a_old, h_g_agrees a b h_a_old h_b_old, h_f_agrees b h_b_old]
+  exact h_c2' a b h_adj_old
+
 /-! ## Lemma 2.10: C5 Counterexample Elimination -/
 
 /--
@@ -902,13 +1016,44 @@ noncomputable def eliminate_potential_counterexample
       have hx_lt_z : pc.x < z := by linarith
       have hz_notin : z ∉ χ.dom := by
         intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
-      exact { val := ⟨fun q => if q = z then χ.f pc.x else χ.f q, χ.g, insert z χ.dom⟩
+      -- Get BurgessR3Maximal for old adjacent pair and derive helper properties
+      have h_mcs_x := h_c0 pc.x h_xm
+      have h_mcs_y := h_c0 pc.y h_ym
+      have h_r3m := h_c2' pc.x pc.y h_adj
+      have h_B_sdc := BurgessR3Maximal_sdc h_r3m h_nubr3 h_mcs_x h_mcs_y
+      have h_gc := BurgessR3Maximal_g_content_sub h_r3m h_mcs_x h_mcs_y
+      -- Find β ∉ g(pc.x, pc.y): g is SDC (consistent), so g ≠ Set.univ, so ∃ β ∉ g
+      have h_g_ne_univ : χ.g pc.x pc.y ≠ Set.univ := by
+        intro h_eq
+        exact h_nubr3 (χ.f pc.x) (χ.f pc.y) h_mcs_x h_mcs_y (h_eq ▸ h_r3m.2.1)
+      have h_exists_beta : ∃ β, β ∉ χ.g pc.x pc.y := by
+        by_contra h_all; push_neg at h_all
+        exact h_g_ne_univ (Set.eq_univ_iff_forall.mpr h_all)
+      -- Extract β using .choose (noncomputable)
+      let β := h_exists_beta.choose
+      have h_beta_not : β ∉ χ.g pc.x pc.y := h_exists_beta.choose_spec
+      -- Apply lemma_2_6_splitting to get B', D, B'' for new adjacent pairs
+      -- Use .choose to extract data from existential (noncomputable context)
+      have h_split := lemma_2_6_splitting h_mcs_x h_mcs_y h_r3m h_B_sdc h_gc β h_beta_not h_nubr3
+      let B' := h_split.choose
+      let D := h_split.choose_spec.choose
+      let B'' := h_split.choose_spec.choose_spec.choose
+      have h_split_prop := h_split.choose_spec.choose_spec.choose_spec
+      have h_B'_max : BurgessR3Maximal (χ.f pc.x) B' D := h_split_prop.1
+      have h_B''_max : BurgessR3Maximal D B'' (χ.f pc.y) := h_split_prop.2.1
+      have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+      -- Define g' that updates g for new adjacent pairs
+      let g' := fun a b =>
+        if a = pc.x ∧ b = z then B'
+        else if a = z ∧ b = pc.y then B''
+        else χ.g a b
+      exact { val := ⟨fun q => if q = z then D else χ.f q, g', insert z χ.dom⟩
               dom_sub := Finset.subset_insert z χ.dom
               c0 := by
                 intro q hq
                 simp only [Finset.mem_insert] at hq
                 rcases hq with rfl | hq
-                · simp only [ite_true]; exact h_c0 pc.x h_xm
+                · simp only [ite_true]; exact h_D_mcs
                 · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
                   simp only [h_ne, ite_false]; exact h_c0 q hq
               f_agrees := by
@@ -916,8 +1061,94 @@ noncomputable def eliminate_potential_counterexample
                 have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
                 exact if_neg h_ne
               g_agrees := by
-                intro a b _ _; rfl
-              c2' := by sorry -- TODO Phase 4: prove c2' for density insertion
+                intro a b ha hb
+                -- g'(a, b) = χ.g(a, b) for a, b in old domain (since z ∉ old domain)
+                show g' a b = χ.g a b
+                simp only [g']
+                have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
+                have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
+                simp only [ha_ne, hb_ne, false_and, and_false, ite_false]
+              c2' := by
+                -- Prove c2' for new chronicle with updated g
+                intro a b h_adj_new
+                -- Case analysis: which adjacent pair in insert z χ.dom?
+                -- z splits (pc.x, pc.y). New pairs: (pc.x, z) and (z, pc.y).
+                -- Other pairs: old adjacent pairs (a, b) ≠ (pc.x, pc.y), preserved.
+                obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
+                simp only [Finset.mem_insert] at ha hb
+                rcases ha with rfl | ha <;> rcases hb with rfl | hb
+                · -- a = z, b = z: impossible (z < z)
+                  exact absurd hab (lt_irrefl _)
+                · -- a = z, b ∈ old dom: new pair (z, b)
+                  -- Must be (z, pc.y): z < b, and no element between z and b in new dom.
+                  -- f'(z) = D, g'(z, b) = B'' if b = pc.y, else χ.g z b
+                  -- Since z = (pc.x+pc.y)/2, the only old element > z that can be adjacent to z is pc.y
+                  -- (because pc.x and pc.y were adjacent: no old element in (pc.x, pc.y))
+                  have hb_eq : b = pc.y := by
+                    -- b > z = (pc.x+pc.y)/2. b ∈ old dom. No old element between pc.x and pc.y.
+                    -- So b ≥ pc.y. If b > pc.y, then pc.y ∈ old dom is between z and b.
+                    -- pc.y ∈ insert z χ.dom, and z < pc.y < b, contradicting adjacency.
+                    by_contra hb_ne
+                    have hb_ge_y : pc.y ≤ b := by
+                      by_contra hlt; push_neg at hlt
+                      -- b < pc.y and b > z > pc.x, so pc.x < b < pc.y
+                      have : pc.x < b := lt_trans hx_lt_z hab
+                      exact h_adj.2.2.2 b hb ⟨this, hlt⟩
+                    have hb_gt_y : pc.y < b := lt_of_le_of_ne hb_ge_y (Ne.symm hb_ne)
+                    exact h_no_between pc.y (Finset.mem_insert_of_mem h_ym) ⟨hz_lt_y, hb_gt_y⟩
+                  subst hb_eq
+                  -- Now a = z, b = pc.y: f'(z) = D, g'(z, pc.y) = B'', f'(pc.y) = f(pc.y)
+                  show BurgessR3Maximal
+                    (if z = z then D else χ.f z)
+                    (g' z pc.y)
+                    (if pc.y = z then D else χ.f pc.y)
+                  have hy_ne : pc.y ≠ z := by linarith
+                  simp only [ite_true, hy_ne, ite_false, g']
+                  simp only [ite_false, ite_true, and_false, and_self]
+                  exact h_B''_max
+                · -- a ∈ old dom, b = z: new pair (a, z)
+                  -- Must be (pc.x, z): similar argument
+                  have ha_eq : a = pc.x := by
+                    -- a < z = (pc.x+pc.y)/2. a ∈ old dom.
+                    -- No old element between pc.x and pc.y. So a ≤ pc.x.
+                    -- If a < pc.x, then pc.x ∈ old dom is between a and z.
+                    -- pc.x ∈ insert z χ.dom, and a < pc.x < z, contradicting adjacency.
+                    by_contra ha_ne
+                    have ha_le_x : a ≤ pc.x := by
+                      by_contra hgt; push_neg at hgt
+                      -- a > pc.x and a < z < pc.y, so pc.x < a < pc.y
+                      exact h_adj.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_y⟩
+                    have ha_lt_x : a < pc.x := lt_of_le_of_ne ha_le_x ha_ne
+                    exact h_no_between pc.x (Finset.mem_insert_of_mem h_xm) ⟨ha_lt_x, hx_lt_z⟩
+                  subst ha_eq
+                  -- Now a = pc.x, b = z: f'(pc.x) = f(pc.x), g'(pc.x, z) = B', f'(z) = D
+                  show BurgessR3Maximal
+                    (if pc.x = z then D else χ.f pc.x)
+                    (g' pc.x z)
+                    (if z = z then D else χ.f z)
+                  have hx_ne : pc.x ≠ z := by linarith
+                  simp only [hx_ne, ite_false, ite_true, g']
+                  exact h_B'_max
+                · -- Both a, b ∈ old dom: old adjacent pair
+                  -- f'(a) = f(a), f'(b) = f(b), g'(a, b) = χ.g(a, b)
+                  have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
+                  have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
+                  show BurgessR3Maximal
+                    (if a = z then D else χ.f a)
+                    (g' a b)
+                    (if b = z then D else χ.f b)
+                  simp only [ha_ne, hb_ne, ite_false, g', and_false, false_and]
+                  -- (a, b) was adjacent in old dom (z doesn't fall between them)
+                  have h_adj_old : Adjacent χ.dom a b := by
+                    refine ⟨ha, hb, hab, ?_⟩
+                    intro u hu ⟨hau, hub⟩
+                    -- u is between a and b in old dom. Is u between a and b in new dom too?
+                    -- z is between a and b? If so, z is in (a, b) which means
+                    -- a < z < b, but a, b ∈ old dom and old adjacency means no old point between.
+                    -- Since z = midpoint of (pc.x, pc.y) and (a, b) is an old pair different from (pc.x, pc.y),
+                    -- z is NOT between a and b.
+                    exact h_no_between u (Finset.mem_insert_of_mem hu) ⟨hau, hub⟩
+                  exact h_c2' a b h_adj_old
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
