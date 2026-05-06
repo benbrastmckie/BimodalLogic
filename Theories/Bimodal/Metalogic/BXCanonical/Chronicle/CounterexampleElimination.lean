@@ -422,271 +422,6 @@ noncomputable def eliminate_C5'_counterexample {χ : Chronicle}
     simp only [ite_true]
     exact h_η_C
 
-/-! ## C4/C4' Counterexample Structures -/
-
-/--
-A **C4 counterexample** for a chronicle (Burgess C4a): points x < y in dom with
-`¬(γ U δ) ∈ f(x)` and `δ ∈ f(y)` (EVENT at y), but no intermediate z in dom
-with `¬γ ∈ f(z)` (negated GUARD at z).
-
-In `untl γ δ`: γ = GUARD, δ = EVENT.
--/
-structure C4Counterexample (χ : Chronicle) where
-  x : Rat
-  y : Rat
-  x_mem : x ∈ χ.dom
-  y_mem : y ∈ χ.dom
-  hxy : x < y
-  γ : Formula
-  δ : Formula
-  neg_until_mem : (Formula.untl γ δ).neg ∈ χ.f x
-  event_mem : δ ∈ χ.f y
-  no_witness : ¬∃ z ∈ χ.dom, x < z ∧ z < y ∧ γ.neg ∈ χ.f z
-
-/--
-A **C4' counterexample** (Since mirror, Burgess C4b): points y < x in dom with
-`¬(γ S δ) ∈ f(x)` and `δ ∈ f(y)` (EVENT at y), but no intermediate z
-with `¬γ ∈ f(z)` (negated GUARD at z).
-
-In `snce γ δ`: γ = GUARD, δ = EVENT.
--/
-structure C4'Counterexample (χ : Chronicle) where
-  x : Rat
-  y : Rat
-  x_mem : x ∈ χ.dom
-  y_mem : y ∈ χ.dom
-  hyx : y < x
-  γ : Formula
-  δ : Formula
-  neg_since_mem : (Formula.snce γ δ).neg ∈ χ.f x
-  event_mem : δ ∈ χ.f y
-  no_witness : ¬∃ z ∈ χ.dom, y < z ∧ z < x ∧ γ.neg ∈ χ.f z
-
-/-! ## Lemma 2.9: C4 Counterexample Elimination -/
-
-/--
-**Lemma 2.9** (C4 Counterexample Elimination, Burgess C4a): Given a chronicle
-satisfying C0 and a C4 counterexample (x, y, γ, δ), eliminate it by inserting
-a new point z = (x + y) / 2 between x and y with `¬γ ∈ f(z)` (negated GUARD).
-
-With the correct C4 (check EVENT δ at f(y), negate GUARD γ at f(z)):
-
-- If `¬γ ∈ f(x)`: assign f(z) = f(x), which already has ¬γ.
-- If `γ ∈ f(x)` but `¬γ ∈ f(y)`: assign f(z) = f(y).
-- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires burgessR3 bridging + Lemma 2.6.
--/
-noncomputable def eliminate_C4_counterexample {χ : Chronicle}
-    (h_c0 : χ.c0)
-    (ce : C4Counterexample χ) :
-    ∃ χ' : Chronicle,
-      χ.dom ⊆ χ'.dom ∧
-      (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
-      χ'.c0 ∧
-      (∃ z ∈ χ'.dom, ce.x < z ∧ z < ce.y ∧ ce.γ.neg ∈ χ'.f z) ∧
-      χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
-      (∀ a b, χ'.g a b = χ.g a b) := by
-  -- Step 1: Find a fresh rational z between x and y, not in the finite domain.
-  obtain ⟨z, hx_lt_z, hz_lt_y, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.x ce.y ce.hxy
-  -- Step 2: Find an MCS D containing ¬γ (negated GUARD).
-  -- By MCS negation completeness: either γ ∈ f(x) or ¬γ ∈ f(x).
-  have h_mcs_x := h_c0 ce.x ce.x_mem
-  have h_mcs_y := h_c0 ce.y ce.y_mem
-  -- Helper: build chronicle from MCS D and close goals
-  suffices ∃ D : Set Formula, SetMaximalConsistent D ∧ ce.γ.neg ∈ D by
-    obtain ⟨D, h_D_mcs, h_neg_γ_D⟩ := this
-    refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-      fun _ _ _ _ => rfl, fun _ _ => rfl⟩
-    · intro x hx
-      have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-      exact if_neg h_ne
-    · intro x hx
-      simp only [Finset.mem_insert] at hx
-      rcases hx with rfl | hx
-      · simp only [ite_true]; exact h_D_mcs
-      · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-        simp only [h_ne, ite_false]; exact h_c0 x hx
-    · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y, ?_⟩
-      simp only [ite_true]
-      exact h_neg_γ_D
-  -- Now find an MCS D with ce.γ.neg ∈ D.
-  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ with h_γ_x | h_neg_γ_x
-  · -- Case 1: γ ∈ f(x). Check f(y) for ¬γ.
-    rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
-    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Hard case: use burgessR3 bridging.
-      -- Find the successor of x in dom ∩ [x+1, y]. Let x_next be the smallest
-      -- domain element > x that is ≤ y. Then (x, x_next) is adjacent.
-      -- We have neg(untl(γ,δ)) ∈ f(x). At x_next:
-      --   If x_next = y: δ ∈ f(y), use burgessR3_gamma_not_in_B.
-      --   If x_next < y: no_witness gives γ ∈ f(x_next) (so γ.neg ∉ f(x_next)).
-      --     By MCS: untl(γ,δ) ∈ f(x_next) or neg(untl(γ,δ)) ∈ f(x_next).
-      --     We find the max w with neg(untl(γ,δ)) ∈ f(w), w < y, w ≥ x.
-      --     Its successor w_next has untl(γ,δ) (or w_next = y with δ).
-      --     Use burgessR3_gamma_not_in_B (or induction + BX6 for nested case).
-      --
-      -- Strategy: find w_max = max {w ∈ dom | x ≤ w < y ∧ neg(untl(γ,δ)) ∈ f(w)}.
-      -- Then the successor w_next of w_max has:
-      --   w_next = y → δ ∈ f(y), or
-      --   w_next < y → untl(γ,δ) ∈ f(w_next) (since w_max is the max with neg-until).
-      -- Use: the adjacent pair (w_max, w_next) with c2' for bridging.
-      --
-      -- We use Classical reasoning to avoid explicit Finset max construction.
-      -- First, establish that x is a valid candidate:
-      have h_x_cand : ce.x ∈ χ.dom ∧ ce.x < ce.y ∧ (Formula.untl ce.γ ce.δ).neg ∈ χ.f ce.x :=
-        ⟨ce.x_mem, ce.hxy, ce.neg_until_mem⟩
-      -- Among all domain points w with x ≤ w < y and neg(untl(γ,δ)) ∈ f(w),
-      -- pick one w such that no domain point strictly between w and y has neg(untl(γ,δ)).
-      -- This is w_max (the rightmost such point).
-      have h_exists_rightmost : ∃ w ∈ χ.dom, w < ce.y ∧
-          (Formula.untl ce.γ ce.δ).neg ∈ χ.f w ∧
-          (∀ v ∈ χ.dom, w < v → v < ce.y → (Formula.untl ce.γ ce.δ).neg ∉ χ.f v) := by
-        -- The set of candidates is finite (subset of dom). Take the max.
-        haveI : DecidablePred (fun w => w < ce.y ∧
-            (Formula.untl ce.γ ce.δ).neg ∈ χ.f w) :=
-          fun w => Classical.dec _
-        set S := χ.dom.filter (fun w => w < ce.y ∧ (Formula.untl ce.γ ce.δ).neg ∈ χ.f w)
-        have hS_ne : S.Nonempty := by
-          refine ⟨ce.x, Finset.mem_filter.mpr ⟨ce.x_mem, ce.hxy, ce.neg_until_mem⟩⟩
-        refine ⟨S.max' hS_ne, ?_, ?_, ?_, ?_⟩
-        · exact (Finset.mem_filter.mp (Finset.max'_mem S hS_ne)).1
-        · exact (Finset.mem_filter.mp (Finset.max'_mem S hS_ne)).2.1
-        · exact (Finset.mem_filter.mp (Finset.max'_mem S hS_ne)).2.2
-        · intro v hv hwv hvy h_neg_v
-          have hv_in_S : v ∈ S := Finset.mem_filter.mpr ⟨hv, hvy, h_neg_v⟩
-          have := Finset.le_max' S v hv_in_S
-          linarith
-      obtain ⟨w, hw_mem, hw_lt_y, hw_neg_until, hw_rightmost⟩ := h_exists_rightmost
-      -- Find the successor of w in dom (the smallest domain element > w that is ≤ y).
-      -- Such an element exists because y ∈ dom and y > w.
-      have h_exists_succ : ∃ w_next ∈ χ.dom, w < w_next ∧ w_next ≤ ce.y ∧
-          Adjacent χ.dom w w_next := by
-        -- The set of domain elements > w is nonempty (contains y).
-        set T := χ.dom.filter (fun v => decide (w < v))
-        have hT_ne : T.Nonempty := ⟨ce.y, Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hw_lt_y]⟩⟩
-        set w_next := T.min' hT_ne
-        have hw_next_mem_T := Finset.min'_mem T hT_ne
-        have hw_next_dom : w_next ∈ χ.dom := (Finset.mem_filter.mp hw_next_mem_T).1
-        have hw_lt_next : w < w_next := by
-          have := (Finset.mem_filter.mp hw_next_mem_T).2
-          simp only [decide_eq_true_eq] at this; exact this
-        have hw_next_le_y : w_next ≤ ce.y := by
-          have : ce.y ∈ T := Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hw_lt_y]⟩
-          exact Finset.min'_le T ce.y this
-        refine ⟨w_next, hw_next_dom, hw_lt_next, hw_next_le_y, hw_mem, hw_next_dom, hw_lt_next, ?_⟩
-        intro u hu ⟨hwu, hu_next⟩
-        have hu_T : u ∈ T := Finset.mem_filter.mpr ⟨hu, by simp [hwu]⟩
-        have := Finset.min'_le T u hu_T
-        linarith
-      obtain ⟨w_next, hw_next_mem, hw_lt_next, hw_next_le_y, h_adj⟩ := h_exists_succ
-      -- Hard case: γ ∈ f(x) and γ ∈ f(y). Need BurgessR3 bridging from c2'.
-      -- Phase 8: Restore this proof once c2' is re-established at finite stages
-      -- (currently c2' is removed from omega_chain invariant per Phase 7).
-      -- The proof requires BurgessR3Maximal for (f(w), g(w,w_next), f(w_next)).
-      sorry
-    · -- Sub-case 1b: γ ∈ f(x) and ¬γ ∈ f(y). Use D = f(y).
-      exact ⟨χ.f ce.y, h_mcs_y, h_neg_γ_y⟩
-  · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
-    exact ⟨χ.f ce.x, h_mcs_x, h_neg_γ_x⟩
-
-/--
-**Lemma 2.9'** (C4' Counterexample Elimination, Burgess C4b): Mirror of Lemma 2.9
-for Since. Insert z between y and x with `¬γ ∈ f(z)` (negated GUARD).
-
-- If `¬γ ∈ f(x)`: assign f(z) = f(x).
-- If `γ ∈ f(x)` but `¬γ ∈ f(y)`: assign f(z) = f(y).
-- If `γ ∈ f(x)` and `γ ∈ f(y)`: hard case, requires burgessR3 bridging (Since).
--/
-noncomputable def eliminate_C4'_counterexample {χ : Chronicle}
-    (h_c0 : χ.c0)
-    (ce : C4'Counterexample χ) :
-    ∃ χ' : Chronicle,
-      χ.dom ⊆ χ'.dom ∧
-      (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
-      χ'.c0 ∧
-      (∃ z ∈ χ'.dom, ce.y < z ∧ z < ce.x ∧ ce.γ.neg ∈ χ'.f z) ∧
-      χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
-      (∀ a b, χ'.g a b = χ.g a b) := by
-  -- Mirror of C4 elimination for Since direction.
-  obtain ⟨z, hy_lt_z, hz_lt_x, hz_notin⟩ := exists_rat_between_not_in_finset χ.dom ce.y ce.x ce.hyx
-  have h_mcs_x := h_c0 ce.x ce.x_mem
-  have h_mcs_y := h_c0 ce.y ce.y_mem
-  -- Factor out chronicle construction
-  suffices ∃ D : Set Formula, SetMaximalConsistent D ∧ ce.γ.neg ∈ D by
-    obtain ⟨D, h_D_mcs, h_neg_γ_D⟩ := this
-    refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
-      Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-      fun _ _ _ _ => rfl, fun _ _ => rfl⟩
-    · intro x hx
-      have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-      exact if_neg h_ne
-    · intro x hx
-      simp only [Finset.mem_insert] at hx
-      rcases hx with rfl | hx
-      · simp only [ite_true]; exact h_D_mcs
-      · have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-        simp only [h_ne, ite_false]; exact h_c0 x hx
-    · refine ⟨z, Finset.mem_insert_self z χ.dom, hy_lt_z, hz_lt_x, ?_⟩
-      simp only [ite_true]
-      exact h_neg_γ_D
-  -- Find MCS D with ce.γ.neg ∈ D.
-  rcases SetMaximalConsistent.negation_complete h_mcs_x ce.γ with h_γ_x | h_neg_γ_x
-  · rcases SetMaximalConsistent.negation_complete h_mcs_y ce.γ with h_γ_y | h_neg_γ_y
-    · -- Sub-case 1a: γ ∈ f(x) and γ ∈ f(y). Hard case (Since direction).
-      -- Mirror of C4 approach: find the leftmost w > y with neg(snce(γ,δ)) ∈ f(w),
-      -- then its predecessor w_prev has snce(γ,δ) or w_prev = y with δ.
-      -- For C4': neg(snce(γ,δ)) ∈ f(x), δ ∈ f(y), interval is (y, x).
-      -- Find w_min = min {w ∈ dom | y < w ∧ neg(snce(γ,δ)) ∈ f(w)}.
-      -- x is a candidate. The predecessor of w_min in dom has snce(γ,δ) or is y.
-      have h_exists_leftmost : ∃ w ∈ χ.dom, ce.y < w ∧
-          (Formula.snce ce.γ ce.δ).neg ∈ χ.f w ∧
-          (∀ v ∈ χ.dom, ce.y < v → v < w → (Formula.snce ce.γ ce.δ).neg ∉ χ.f v) := by
-        haveI : DecidablePred (fun w => ce.y < w ∧
-            (Formula.snce ce.γ ce.δ).neg ∈ χ.f w) :=
-          fun w => Classical.dec _
-        set S := χ.dom.filter (fun w => ce.y < w ∧ (Formula.snce ce.γ ce.δ).neg ∈ χ.f w)
-        have hS_ne : S.Nonempty := by
-          refine ⟨ce.x, Finset.mem_filter.mpr ⟨ce.x_mem, ce.hyx, ce.neg_since_mem⟩⟩
-        refine ⟨S.min' hS_ne, ?_, ?_, ?_, ?_⟩
-        · exact (Finset.mem_filter.mp (Finset.min'_mem S hS_ne)).1
-        · exact (Finset.mem_filter.mp (Finset.min'_mem S hS_ne)).2.1
-        · exact (Finset.mem_filter.mp (Finset.min'_mem S hS_ne)).2.2
-        · intro v hv hyv hvw h_neg_v
-          have hv_in_S : v ∈ S := Finset.mem_filter.mpr ⟨hv, hyv, h_neg_v⟩
-          have := Finset.min'_le S v hv_in_S
-          linarith
-      obtain ⟨w, hw_mem, hy_lt_w, hw_neg_since, hw_leftmost⟩ := h_exists_leftmost
-      -- Find the predecessor of w in dom (the largest domain element < w that is ≥ y).
-      have h_exists_pred : ∃ w_prev ∈ χ.dom, ce.y ≤ w_prev ∧ w_prev < w ∧
-          Adjacent χ.dom w_prev w := by
-        set T := χ.dom.filter (fun v => decide (v < w))
-        have hT_ne : T.Nonempty := ⟨ce.y, Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hy_lt_w]⟩⟩
-        set w_prev := T.max' hT_ne
-        have hw_prev_mem_T := Finset.max'_mem T hT_ne
-        have hw_prev_dom : w_prev ∈ χ.dom := (Finset.mem_filter.mp hw_prev_mem_T).1
-        have hw_prev_lt : w_prev < w := by
-          have := (Finset.mem_filter.mp hw_prev_mem_T).2
-          simp only [decide_eq_true_eq] at this; exact this
-        have hy_le_prev : ce.y ≤ w_prev := by
-          have : ce.y ∈ T := Finset.mem_filter.mpr ⟨ce.y_mem, by simp [hy_lt_w]⟩
-          exact Finset.le_max' T ce.y this
-        refine ⟨w_prev, hw_prev_dom, hy_le_prev, hw_prev_lt, hw_prev_dom, hw_mem, hw_prev_lt, ?_⟩
-        intro u hu ⟨hpu, huw⟩
-        have hu_T : u ∈ T := Finset.mem_filter.mpr ⟨hu, by simp [huw]⟩
-        have := Finset.le_max' T u hu_T
-        linarith
-      obtain ⟨w_prev, hw_prev_mem, hy_le_prev, hw_prev_lt, h_adj⟩ := h_exists_pred
-      -- Hard case: γ ∈ f(x) and γ ∈ f(y). Need BurgessR3 bridging from c2' (Since direction).
-      -- Phase 8: Restore this proof once c2' is re-established at finite stages
-      -- (currently c2' is removed from omega_chain invariant per Phase 7).
-      -- The proof requires BurgessR3Maximal for (f(w_prev), g(w_prev,w), f(w)).
-      sorry
-    · -- Sub-case 1b: ¬γ ∈ f(y). Use D = f(y).
-      exact ⟨χ.f ce.y, h_mcs_y, h_neg_γ_y⟩
-  · -- Case 2: ¬γ ∈ f(x). Use D = f(x).
-    exact ⟨χ.f ce.x, h_mcs_x, h_neg_γ_x⟩
-
 /-! ## G-Propagation Counterexample Elimination
 
 When G(α) ∈ f(x) and α ∉ f(y) for adjacent x < y, insert a new point z between
@@ -1094,7 +829,7 @@ noncomputable def eliminate_potential_counterexample
       -- Step 5: Build g' that updates g(y, min_old).
       -- We need BurgessR3Maximal(C, B_new, f(min_old)).
       -- When pc.x = min_old: use burgessR3Maximal_from_h_content_sub.
-      -- When pc.x ≠ min_old: sorry (case n≥1).
+      -- When pc.x ≠ min_old: requires Burgess 2.10' induction (case n≥1).
       have h_B_exists : ∃ B_new : Set Formula, BurgessR3Maximal C B_new (χ.f min_old) := by
         by_cases h_eq : pc.x = min_old
         · rw [← h_eq]
@@ -1267,105 +1002,11 @@ noncomputable def eliminate_potential_counterexample
       -- Use this to prove ξ ∉ g(w, w_next).
       have h_xi_not_g : pc.ξ ∉ χ.g w w_next := by
         intro h_xi_g
-        -- From burgessRSet: ∀ β ∈ g, γ' ∈ f(w_next), U(β, γ') ∈ f(w)
-        -- With β = ξ, need some γ' ∈ f(w_next) such that U(ξ, γ') contradicts neg(untl(ξ,η)) ∈ f(w)
-        -- We need U(ξ, η) = untl(ξ, η) ∈ f(w), which contradicts neg(untl(ξ,η)).
-        -- For this we need η ∈ f(w_next).
-        -- Case 1: w_next = y → η ∈ f(w_next)
-        -- Case 2: w_next < y → need to show η ∈ f(w_next) or use different approach
-        -- General approach: The counterexample says no domain point between x and y has ξ.neg.
-        -- So all domain points between x and y have ξ ∈ f(z) (by MCS).
-        -- In particular w_next has ξ ∈ f(w_next) (if w_next ≤ y, which it is).
-        -- But we need η ∈ f(w_next), not ξ.
-        -- Key: if w_next = y, η ∈ f(y) = f(w_next). If w_next < y, we need η ∈ f(w_next).
-        -- From the fact that w is rightmost with neg(untl): at w_next, untl(ξ,η) ∈ f(w_next)
-        -- (or w_next = y where anything goes). If w_next < y: neg(untl) ∉ f(w_next), so untl ∈ f(w_next).
-        -- untl(ξ,η) ∈ f(w_next) and ξ ∈ g(w, w_next):
-        -- burgessRSet gives U(ξ, untl(ξ,η)) ∈ f(w). This is untl(ξ, untl(ξ,η)) ∈ f(w).
-        -- Need to show this contradicts neg(untl(ξ,η)) ∈ f(w).
-        -- Under open guard semantics, U(ξ, U(ξ,η)) does NOT imply U(ξ,η) in general.
-        -- However: we also have η ∈ f(y) and w_next ≤ y.
-        -- If w_next = y: U(ξ, η) ∈ f(w) from burgessRSet + η ∈ f(y) = f(w_next), contradiction.
-        -- If w_next < y: use BX14 (separation) + enrichment for the contradiction.
-        -- For now: handle w_next = y directly, w_next < y via Classical argument.
-        --
-        -- Actually the simplest approach: use h_event (η ∈ f(y)) and the full burgessRSet structure.
-        -- Need: η ∈ f(w_next).
-        -- When w_next = y: η ∈ f(y) by h_event.
-        -- When w_next < y: w_next is between x and y. The C4 says no ξ.neg between x and y.
-        -- So ξ ∈ f(w_next). Also w is rightmost with neg-until, w_next > w, so
-        -- neg(untl(ξ,η)) ∉ f(w_next), hence untl(ξ,η) ∈ f(w_next).
-        -- untl(ξ,η) ∈ f(w_next): by BX10, F(η) ∈ f(w_next), i.e., some_future(η) ∈ f(w_next).
-        -- But F(η) ∈ f(w_next) doesn't directly give η ∈ f(w_next).
-        -- Need: η ∈ f(w_next) to conclude. If w_next = y: yes. Otherwise: no direct proof.
-        --
-        -- Correct approach: η ∈ f(w_next) is needed. Use w_next = y case.
-        -- For w_next < y: the proof needs Burgess 2.9 induction (separate sorry).
-        -- Since this is inside h_xi_not_g (which is used by the splitting),
-        -- when w_next < y the whole approach fails and we need the sorry path.
-        --
-        -- But wait: we CAN prove this unconditionally!
-        -- If w_next = y: η ∈ f(w_next) by h_event. U(ξ, η) ∈ f(w) by burgessRSet. Contradiction.
-        -- If w_next < y: untl(ξ,η) ∈ f(w_next). U(ξ, untl(ξ,η)) ∈ f(w) by burgessRSet.
-        --   Also η ∈ f(y) and no ξ.neg between w and y.
-        --   From BX14 (separation): untl(ξ, untl(ξ,η)) ∧ ¬untl(ξ, η) → untl(ξ, ξ ∧ ¬(untl(ξ,η).neg)^?)
-        --   This doesn't simplify nicely.
-        -- Actually, use the fact that ALL formulas in f(w_next) are "accessible" via burgessRSet:
-        -- For ANY γ' ∈ f(w_next): U(ξ, γ') ∈ f(w) if ξ ∈ g(w, w_next).
-        -- With γ' = η (if η ∈ f(w_next)): get untl(ξ,η) ∈ f(w), contradiction.
-        -- With γ' = untl(ξ,η) (if untl(ξ,η) ∈ f(w_next)): get untl(ξ, untl(ξ,η)) ∈ f(w), no contradiction.
-        -- So the approach ONLY works when η ∈ f(w_next).
-        -- When w_next < y and η ∉ f(w_next): ξ ∈ g(w, w_next) IS consistent.
-        --
-        -- The resolution: when w_next < y, we don't split (w, w_next). Instead we reduce
-        -- by replacing x with x' = w_next (Burgess 2.9 induction). But that's complex.
-        -- For now: we handle only w_next = y and leave w_next < y as sorry.
-        --
-        -- Wait: we CAN handle this unconditionally! Here's the key:
-        -- From h_event: η ∈ f(pc.y). From hw_next_le_y: w_next ≤ y.
-        -- If w_next = y: η ∈ f(w_next). Direct.
-        -- If w_next < y: there are domain points between w_next and y, all with ξ.
-        --   The key: w is rightmost with neg-until, so w_next has untl(ξ,η) ∈ f(w_next).
-        --   ALL domain points v with w < v ≤ y have untl(ξ,η) ∈ f(v) or v = y.
-        --   In particular, all v between w_next and y (inclusive of y) are in the
-        --   "future" of w_next, and the first one with neg(untl) doesn't exist (w was rightmost).
-        --   So untl(ξ,η) ∈ f(v) for all w_next ≤ v < y, and η or untl at y.
-        --   But this doesn't give η ∈ f(w_next).
-        --
-        -- Resolution: just handle the case where η ∈ f(w_next) holds.
-        -- η ∈ f(w_next) iff w_next = y (modulo domain structure).
-        -- Generalize: need η ∈ f(w_next) to proceed.
-        -- By the structure: w is the rightmost with neg(untl(ξ,η)). w_next is its successor.
-        -- w_next ≤ y. If w_next = y: η ∈ f(y) by h_event.
-        -- If w_next < y: we use a different argument.
-        -- ACTUALLY: We can check η ∈ f(w_next) vs η ∉ f(w_next) by Classical.
-        -- If η ∈ f(w_next): U(ξ, η) ∈ f(w) → contradiction.
-        -- If η ∉ f(w_next): η.neg ∈ f(w_next) (MCS). The point w_next has
-        --   ξ ∈ f(w_next) (no ξ.neg between x and y), untl(ξ,η) ∈ f(w_next) (w rightmost with neg-untl),
-        --   η.neg ∈ f(w_next). From untl(ξ,η) ∈ f(w_next) and η.neg ∈ f(w_next):
-        --   By BX10: F(η) ∈ f(w_next). F(η) = ¬G(¬η). And η.neg ∈ f(w_next). These are compatible.
-        --   The point w_next itself lacks η, but U(ξ,η) guarantees a future witness with η.
-        --   From BX5 (self-accumulation): untl(ξ,η) → untl(ξ ∧ untl(ξ,η), η).
-        --   So untl(ξ ∧ untl(ξ,η), η) ∈ f(w_next).
-        --   Now use BX13 (enrichment) on f(w):
-        --   We have neg(untl(ξ,η)) ∈ f(w) and ξ ∈ g(w, w_next) (assumption).
-        --   From burgessRSet with γ' = untl(ξ ∧ untl(ξ,η), η):
-        --     if untl(ξ ∧ untl(ξ,η), η) ∈ f(w_next):
-        --     U(ξ, untl(ξ ∧ untl(ξ,η), η)) ∈ f(w).
-        --   Using BX6 absorption: U(ξ, ξ ∧ U(ξ,η)) → U(ξ,η).
-        --   But we have U(ξ, untl(ξ ∧ untl(ξ,η), η)), not U(ξ, ξ ∧ untl(ξ,η)).
-        --   These are different.
-        --
-        -- This analysis is getting too complex. Use the direct approach for ALL cases.
-        -- Observe: w_next ≤ y. Consider the pair (w, y) in dom (not necessarily adjacent).
-        -- ALL domain points between w and y have untl(ξ,η) ∈ f(v) (since w is rightmost with neg-until).
-        -- η ∈ f(y) by h_event.
-        -- We can use BX14 (separation) at the MCS level:
-        -- neg(untl(ξ,η)) ∈ f(w) and ξ ∈ g(w, w_next).
-        -- From burgessRSet: for all γ' ∈ f(w_next), U(ξ, γ') ∈ f(w).
-        -- In particular, with γ' = η (if η ∈ f(w_next)): untl(ξ,η) ∈ f(w). Contradiction!
-        -- So we need η ∈ f(w_next).
-        -- By Classical dec: either η ∈ f(w_next) or η ∉ f(w_next).
+        -- Burgess 2.9 case analysis (both sub-cases proved):
+        -- Case 1: η ∈ f(w_next) → direct contradiction via burgessRSet.
+        -- Case 2: η ∉ f(w_next) → use ξ ∈ f(w_next) (from h_no_wit) and
+        --   untl(ξ,η) ∈ f(w_next) (from w rightmost with neg-until) to form
+        --   ξ ∧ untl(ξ,η) ∈ f(w_next), then BX6 absorption gives contradiction.
         by_cases h_eta_wn : pc.η ∈ χ.f w_next
         · -- η ∈ f(w_next): direct contradiction
           have h_untl := h_r3m_w.2.1.1 pc.ξ h_xi_g pc.η h_eta_wn
@@ -1381,23 +1022,33 @@ noncomputable def eliminate_potential_counterexample
             rcases SetMaximalConsistent.negation_complete h_mcs_wn (Formula.untl pc.ξ pc.η) with h | h
             · exact h
             · exact absurd h (hw_rightmost w_next hw_next_dom hw_lt_next hw_next_lt_y)
-          -- From burgessRSet: U(ξ, untl(ξ,η)) ∈ f(w)
-          have h_u_u := h_r3m_w.2.1.1 pc.ξ h_xi_g (Formula.untl pc.ξ pc.η) h_untl_wn
-          -- h_u_u : untl(ξ, untl(ξ,η)) ∈ f(w)
-          -- We also have neg(untl(ξ,η)) ∈ f(w).
-          -- Apply BX14 (separation): untl(ξ, untl(ξ,η)) ∧ ¬untl(ξ,η) → untl(ξ, ξ ∧ ¬η)
-          -- Wait, BX14 is: untl(q, p) ∧ ¬untl(r, p) → untl(q, q ∧ r.neg)
-          -- Set p = untl(ξ,η), q = ξ, r = ξ (same guard). But ¬untl(ξ, untl(ξ,η)) = ¬h_u_u, wrong sign.
-          -- Set p = untl(ξ,η), q = ξ. Then untl(q, p) = untl(ξ, untl(ξ,η)) ∈ f(w). Good.
-          -- Need ¬untl(r, p) ∈ f(w) for some r. We have ¬untl(ξ, η) ∈ f(w) but p = untl(ξ,η) ≠ η.
-          -- So BX14 with these specific p doesn't match what we have.
-          --
-          -- Different BX14 application: set p = η, q = ξ, r = ξ.
-          -- untl(ξ, η) is needed (but we have neg of this!). Can't use.
-          --
-          -- The sub-case η ∉ f(w_next) with w_next < y requires the full Burgess 2.9 induction.
-          -- For now, use sorry for this sub-case.
-          sorry
+          -- Burgess 2.9 case n=m+1: derive contradiction using BX6 absorption.
+          -- Key: ξ ∈ f(w_next) (since no ξ.neg between pc.x and pc.y, and pc.x < w_next < pc.y).
+          have hx_le_w : pc.x ≤ w := by
+            have : pc.x ∈ S_w := Finset.mem_filter.mpr ⟨h_xm, h_lt, h_neg_until⟩
+            exact Finset.le_max' S_w pc.x this
+          have hx_lt_wn : pc.x < w_next := lt_of_le_of_lt hx_le_w hw_lt_next
+          have h_xi_wn : pc.ξ ∈ χ.f w_next := by
+            rcases SetMaximalConsistent.negation_complete h_mcs_wn pc.ξ with h | h
+            · exact h
+            · -- ξ.neg ∈ f(w_next), but w_next is between pc.x and pc.y, contradicting h_no_wit
+              exact absurd ⟨w_next, hw_next_dom, hx_lt_wn, hw_next_lt_y, h⟩ h_no_wit
+          -- Form ξ ∧ untl(ξ,η) ∈ f(w_next) by conjunction closure in MCS
+          have h_conj_wn : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.f w_next :=
+            dcs_conj_closed (mcs_is_dcs h_mcs_wn) h_xi_wn h_untl_wn
+          -- From burgessRSet: untl(ξ, ξ ∧ untl(ξ,η)) ∈ f(w)
+          have h_untl_conj := h_r3m_w.2.1.1 pc.ξ h_xi_g
+            (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) h_conj_wn
+          -- BX6 absorption: untl(φ, φ ∧ untl(φ, ψ)) → untl(φ, ψ)
+          have h_bx6 : DerivationTree []
+            ((Formula.untl pc.ξ (Formula.and pc.ξ (Formula.untl pc.ξ pc.η))).imp
+              (Formula.untl pc.ξ pc.η)) :=
+            DerivationTree.axiom [] _ (Axiom.absorb_until pc.ξ pc.η)
+          have h_bx6_in := theorem_in_mcs h_mcs_w h_bx6
+          have h_untl_eta := SetMaximalConsistent.implication_property h_mcs_w h_bx6_in h_untl_conj
+          -- Now untl(ξ,η) ∈ f(w) contradicts neg(untl(ξ,η)) ∈ f(w)
+          exact absurd h_untl_eta
+            (SetMaximalConsistent.neg_excludes h_mcs_w (Formula.untl pc.ξ pc.η) hw_neg_until)
       -- Now: ξ ∉ g(w, w_next). Apply lemma_2_6_splitting with β = ξ.
       have h_B_sdc_w := BurgessR3Maximal_sdc h_r3m_w h_nubr3 h_mcs_w h_mcs_wn
       have h_gc_w := BurgessR3Maximal_g_content_sub h_r3m_w h_mcs_w h_mcs_wn
@@ -1612,11 +1263,32 @@ noncomputable def eliminate_potential_counterexample
             rcases SetMaximalConsistent.negation_complete h_mcs_wp (Formula.snce pc.ξ pc.η) with h | h
             · exact h
             · exact absurd h (hw_leftmost w_prev hw_prev_dom hy_lt_prev hw_prev_lt)
-          -- snce(ξ,η) ∈ f(w_prev) and ξ ∈ g(w_prev, w):
-          -- burgessRSetSince gives S(ξ, snce(ξ,η)) ∈ f(w).
-          -- Need to derive contradiction with neg(snce(ξ,η)) ∈ f(w).
-          -- This requires Burgess 2.9' induction (Since direction).
-          sorry
+          -- Burgess 2.9' case n=m+1 (Since mirror): derive contradiction using BX6' absorption.
+          -- Key: ξ ∈ f(w_prev) (since no ξ.neg between pc.y and pc.x, and pc.y < w_prev < pc.x).
+          have hw_le_x : w ≤ pc.x := by
+            have : pc.x ∈ S_w := Finset.mem_filter.mpr ⟨h_xm, h_lt, h_neg_since⟩
+            exact Finset.min'_le S_w pc.x this
+          have hwp_lt_x : w_prev < pc.x := lt_of_lt_of_le hw_prev_lt hw_le_x
+          have h_xi_wp : pc.ξ ∈ χ.f w_prev := by
+            rcases SetMaximalConsistent.negation_complete h_mcs_wp pc.ξ with h | h
+            · exact h
+            · exact absurd ⟨w_prev, hw_prev_dom, hy_lt_prev, hwp_lt_x, h⟩ h_no_wit
+          -- Form ξ ∧ snce(ξ,η) ∈ f(w_prev) by conjunction closure in MCS
+          have h_conj_wp : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.f w_prev :=
+            dcs_conj_closed (mcs_is_dcs h_mcs_wp) h_xi_wp h_snce_wp
+          -- From burgessRSetSince: snce(ξ, ξ ∧ snce(ξ,η)) ∈ f(w)
+          have h_snce_conj := h_r3m_w.2.1.2 pc.ξ h_xi_g
+            (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) h_conj_wp
+          -- BX6' absorption: snce(φ, φ ∧ snce(φ, ψ)) → snce(φ, ψ)
+          have h_bx6' : DerivationTree []
+            ((Formula.snce pc.ξ (Formula.and pc.ξ (Formula.snce pc.ξ pc.η))).imp
+              (Formula.snce pc.ξ pc.η)) :=
+            DerivationTree.axiom [] _ (Axiom.absorb_since pc.ξ pc.η)
+          have h_bx6'_in := theorem_in_mcs h_mcs_w h_bx6'
+          have h_snce_eta := SetMaximalConsistent.implication_property h_mcs_w h_bx6'_in h_snce_conj
+          -- Now snce(ξ,η) ∈ f(w) contradicts neg(snce(ξ,η)) ∈ f(w)
+          exact absurd h_snce_eta
+            (SetMaximalConsistent.neg_excludes h_mcs_w (Formula.snce pc.ξ pc.η) hw_neg_since)
       -- Now: ξ ∉ g(w_prev, w). Apply lemma_2_6_splitting with β = ξ.
       have h_B_sdc_w := BurgessR3Maximal_sdc h_r3m_w h_nubr3 h_mcs_wp h_mcs_w
       have h_gc_w := BurgessR3Maximal_g_content_sub h_r3m_w h_mcs_wp h_mcs_w

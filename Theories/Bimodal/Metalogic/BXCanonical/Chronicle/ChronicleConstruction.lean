@@ -743,7 +743,7 @@ there exists z in limit_dom with x < z < y and gamma.neg in limit_f(z).
 The proof parallels limit_satisfies_c5_weak: use surjectivity of the
 counterexample enumeration to find a step where the counterexample is
 processed. At that step, either the witness already exists or one is
-inserted by eliminate_C4_counterexample.
+inserted by eliminate_potential_counterexample (C4 case).
 -/
 
 /--
