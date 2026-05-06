@@ -179,8 +179,10 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
   obtain ⟨y, hy_gt, hy_notin⟩ := exists_rat_gt_finset χ.dom
   -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x)), plus interval DCS B
   have h_mcs_x := h_c0 ce.x ce.x_mem
+  have h_nubr3 : NoUnivBurgessR3 := by
+    sorry -- NoUnivBurgessR3: threaded from chronicle construction (Phase 4 task 107)
   obtain ⟨_B, C, h_C_mcs, h_η_C, _, _, _⟩ :=
-    lemma_2_4 h_mcs_x ce.ξ ce.η ce.until_mem
+    lemma_2_4 h_mcs_x ce.ξ ce.η ce.until_mem h_nubr3
   -- Step 3: Build the new chronicle
   -- f' agrees with f on old domain, assigns C to y
   -- g' is unchanged (placeholder; full interval assignment in ChronicleConstruction)

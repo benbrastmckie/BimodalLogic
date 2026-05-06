@@ -157,7 +157,8 @@ extending the seed {β} ∪ g_content(A). This is needed because C is constructe
 internally and callers cannot know it in advance. -/
 noncomputable def lemma_2_4 {A : Set Formula}
     (h_mcs : SetMaximalConsistent A) (γ β : Formula)
-    (h_until : Formula.untl γ β ∈ A) :
+    (h_until : Formula.untl γ β ∈ A)
+    (h_nubr3 : NoUnivBurgessR3) :
     ∃ B C : Set Formula, SetMaximalConsistent C ∧
       β ∈ C ∧ g_content A ⊆ C ∧
       Formula.some_past (Formula.untl γ β) ∈ C ∧
@@ -174,8 +175,7 @@ noncomputable def lemma_2_4 {A : Set Formula}
       (theorem_in_mcs h_mcs h_ax) h_until
   have h_P_until_C : Formula.some_past (Formula.untl γ β) ∈ C :=
     h_g_sub h_GP
-  have h_no_univ : ¬burgessR3 A Set.univ C := by
-    sorry -- NoUnivBurgessR3: threaded from chronicle construction
+  have h_no_univ : ¬burgessR3 A Set.univ C := h_nubr3 A C h_mcs h_C_mcs
   obtain ⟨B, h_B⟩ := burgessR3Maximal_from_g_content_sub h_mcs h_C_mcs h_g_sub h_no_univ
   exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_B⟩
 
@@ -2675,7 +2675,8 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
     (h_B_dcs : SetDeductivelyClosed B)
     (h_gc : g_content A ⊆ C)
     (β : Formula)
-    (h_β_not_B : β ∉ B) :
+    (h_β_not_B : β ∉ B)
+    (h_nubr3 : NoUnivBurgessR3) :
     ∃ B' D B'', BurgessR3Maximal A B' D ∧ BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧ β.neg ∈ D := by
   -- Step 1: The Burgess D₀ seed is consistent
@@ -2713,10 +2714,8 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
     exact burgessRSince_implies_burgessR h_mcs_A h_D_mcs (h_rSetSince_A β' hβ')
   have h_r3_ABD : burgessR3 A B D := ⟨h_rSet_A, h_rSetSince_A⟩
   -- Step 6: BurgessR3Maximal via Zorn (burgessR3Maximal_extension_exists)
-  have h_no_univ_AD : ¬burgessR3 A Set.univ D := by
-    sorry -- NoUnivBurgessR3: threaded from chronicle construction
-  have h_no_univ_DC : ¬burgessR3 D Set.univ C := by
-    sorry -- NoUnivBurgessR3: threaded from chronicle construction
+  have h_no_univ_AD : ¬burgessR3 A Set.univ D := h_nubr3 A D h_mcs_A h_D_mcs
+  have h_no_univ_DC : ¬burgessR3 D Set.univ C := h_nubr3 D C h_D_mcs h_mcs_C
   obtain ⟨B', _, _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
     h_B_dcs h_r3_ABD h_no_univ_AD
   obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
@@ -3495,7 +3494,8 @@ theorem lemma_2_7 {A B C : Set Formula}
     (h_gc : g_content A ⊆ C)
     (xi eta : Formula)
     (h_until : Formula.untl xi eta ∈ A)
-    (h_xi_not_B : xi ∉ B) :
+    (h_xi_not_B : xi ∉ B)
+    (h_nubr3 : NoUnivBurgessR3) :
     ∃ B' D B'' : Set Formula,
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
@@ -3592,10 +3592,8 @@ theorem lemma_2_7 {A B C : Set Formula}
         have d_impl : DerivationTree [] (xi.imp φ) := deduction_theorem [] xi φ d_from_xi
         exact snce_left_mono_thm h_D_mcs d_impl (h_snce_xi_D α hα)
     -- Step 8: BurgessR3Maximal via Zorn from DC({xi})
-    have h_no_univ_AD : ¬burgessR3 A Set.univ D := by
-      sorry -- NoUnivBurgessR3: threaded from chronicle construction
-    have h_no_univ_DC : ¬burgessR3 D Set.univ C := by
-      sorry -- NoUnivBurgessR3: threaded from chronicle construction
+    have h_no_univ_AD : ¬burgessR3 A Set.univ D := h_nubr3 A D h_mcs_A h_D_mcs
+    have h_no_univ_DC : ¬burgessR3 D Set.univ C := h_nubr3 D C h_D_mcs h_mcs_C
     obtain ⟨B', _, _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
       h_dc_xi_dcs h_dc_xi_r3 h_no_univ_AD
     -- Step 9: BurgessR3Maximal(D, B'', C) via Zorn from B
@@ -3682,8 +3680,7 @@ theorem lemma_2_7 {A B C : Set Formula}
       intro D' _ hBD' _
       exact hBD'.2 (Set.subset_univ D')
     -- Step 9': BurgessR3Maximal(D, B'', C) via Zorn from B
-    have h_no_univ_DC : ¬burgessR3 D Set.univ C := by
-      sorry -- NoUnivBurgessR3: threaded from chronicle construction
+    have h_no_univ_DC : ¬burgessR3 D Set.univ C := h_nubr3 D C h_D_mcs h_mcs_C
     obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
       h_B_dcs h_r3_DBC h_no_univ_DC
     -- Step 10': xi ∈ Set.univ (trivial)
