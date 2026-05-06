@@ -2805,7 +2805,7 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
     (h_β_not_B : β ∉ B)
     (h_nubr3 : NoUnivBurgessR3) :
     ∃ B' D B'', BurgessR3Maximal A B' D ∧ BurgessR3Maximal D B'' C ∧
-      SetMaximalConsistent D ∧ β.neg ∈ D := by
+      SetMaximalConsistent D ∧ β.neg ∈ D ∧ B ⊆ D := by
   -- Step 1: The Burgess D₀ seed is consistent
   have h_seed_cons := burgess_D0_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc β h_β_not_B
   -- Step 2: Lindenbaum-extend to MCS D
@@ -2847,7 +2847,7 @@ theorem lemma_2_6_splitting {A B C : Set Formula}
     h_B_dcs h_r3_ABD h_no_univ_AD
   obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC h_no_univ_DC
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_β_neg_D⟩
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_β_neg_D, h_B_sub_D⟩
 
 /-- The D0 seed for Lemma 2.7 (Burgess 1982 p.372):
   B ∪ {eta} ∪ {untl(β, γ) : β ∈ B, γ ∈ C}
@@ -3628,7 +3628,8 @@ theorem lemma_2_7 {A B C : Set Formula}
       BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧
       eta ∈ D ∧
-      B ⊆ B' := by
+      B ⊆ B' ∧
+      B ⊆ D := by
   -- Step 1: The D0 seed is consistent
   have h_seed_cons := lemma_2_7_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc xi eta h_until h_xi_not_B
   -- Step 2: Lindenbaum-extend to MCS D
@@ -3691,7 +3692,7 @@ theorem lemma_2_7 {A B C : Set Formula}
     h_B_dcs h_r3_ABD h_no_univ_AD
   obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC h_no_univ_DC
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B'⟩
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B', h_B_sub_D⟩
 
 /-- **Lemma 2.8 seed consistency** (Burgess 1982 p.372):
 The same seed as Lemma 2.7, but consistency proved using the hypothesis
@@ -3988,7 +3989,8 @@ theorem lemma_2_8 {A B C : Set Formula}
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧
-      eta ∈ D := by
+      eta ∈ D ∧
+      B ⊆ D := by
   -- Step 1: Seed consistency (Lemma 2.8 variant)
   have h_seed_cons := lemma_2_8_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc
     xi eta h_until h_neg_disj
@@ -4025,7 +4027,7 @@ theorem lemma_2_8 {A B C : Set Formula}
     h_B_dcs h_r3_ABD h_no_univ_AD
   obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC h_no_univ_DC
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D⟩
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_D⟩
 
 /-! ## Lemma 2.7' (Since direction): Since-Formula Splitting
 
@@ -4376,7 +4378,8 @@ theorem lemma_2_7_since {A B C : Set Formula}
       BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧
       eta ∈ D ∧
-      B ⊆ B' := by
+      B ⊆ B' ∧
+      B ⊆ D := by
   -- Step 1: The seed is consistent
   have h_seed_cons := lemma_2_7_since_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc
     xi eta h_since h_xi_not_B
@@ -4418,7 +4421,7 @@ theorem lemma_2_7_since {A B C : Set Formula}
     h_B_dcs h_r3_ABD h_no_univ_AD
   obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC h_no_univ_DC
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B'⟩
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B', h_B_sub_D⟩
 
 /-- **Lemma 2.8' seed consistency** (Since direction): Same seed as lemma_2_7_since,
 but consistency proved using ¬(eta ∨ (xi ∧ snce(xi,eta))) ∈ A instead of xi ∉ B.
@@ -4672,7 +4675,8 @@ theorem lemma_2_8_since {A B C : Set Formula}
       BurgessR3Maximal A B' D ∧
       BurgessR3Maximal D B'' C ∧
       SetMaximalConsistent D ∧
-      eta ∈ D := by
+      eta ∈ D ∧
+      B ⊆ D := by
   have h_seed_cons := lemma_2_8_since_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc
     xi eta h_since h_neg_disj
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed_cons
@@ -4706,7 +4710,7 @@ theorem lemma_2_8_since {A B C : Set Formula}
     h_B_dcs h_r3_ABD h_no_univ_AD
   obtain ⟨B'', _, _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC h_no_univ_DC
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D⟩
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_D⟩
 
 /-! ## Lemma 2.4 with Guard: Enriched Seed Version (Burgess 2.4)
 
