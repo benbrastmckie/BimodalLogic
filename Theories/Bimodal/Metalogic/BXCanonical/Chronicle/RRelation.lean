@@ -1578,4 +1578,104 @@ theorem burgessR3Maximal_from_g_content_sub {A C : Set Formula}
   -- Apply burgessR3Maximal_exists_from_seed
   exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A h_no_univ
 
+/-- **BurgessR3Maximal existence with guard membership**: Given MCS A, C with
+burgessR(A, η, C), burgessRSince(C, η, A), and NoUnivBurgessR3, there exists B with
+η ∈ B and BurgessR3Maximal(A, B, C).
+
+This is the strengthened version of `burgessR3Maximal_exists_from_seed` that
+additionally returns the seed element η ∈ B. The proof uses Zorn's lemma on
+DC({η}), giving B ⊇ DC({η}) ∋ η.
+
+Note: η ∈ A is NOT required. The consistency of {η} follows from
+burgessR(A, η, C) + NoUnivBurgessR3: if η were inconsistent (⊢ ¬η), then by
+BX2 (left monotonicity), burgessR(A, φ, C) for ALL φ, hence
+burgessR3(A, Set.univ, C), contradicting NoUnivBurgessR3. -/
+theorem burgessR3Maximal_with_guard (A C : Set Formula) (η : Formula)
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_burgessR : burgessR A η C)
+    (h_burgessRSince : burgessRSince C η A)
+    (h_nubr3 : NoUnivBurgessR3) :
+    ∃ B : Set Formula, η ∈ B ∧ BurgessR3Maximal A B C := by
+  have h_no_univ : ¬burgessR3 A Set.univ C := h_nubr3 A C h_mcs_A h_mcs_C
+  -- η is consistent: proof by contradiction via NoUnivBurgessR3.
+  -- If {η} inconsistent, ⊢ ¬η, hence ⊢ G(η → φ) for any φ (ex falso under G).
+  -- BX2 gives burgessR(A, φ, C) for all φ, hence burgessR3(A, Set.univ, C). Contradiction.
+  have h_singleton_cons : SetConsistent ({η} : Set Formula) := by
+    intro L hL ⟨d⟩
+    -- From L ⊆ {η} and L ⊢ ⊥: derive ⊢ ¬η, then show burgessR3(A, Set.univ, C).
+    -- First, any φ ∈ L satisfies φ = η (L ⊆ {η}).
+    -- From L ⊆ {η} and L ⊢ ⊥: derive ⊢ η.neg.
+    -- Every element of L equals η, so L ⊢ ⊥ gives [η,...,η] ⊢ ⊥.
+    -- By weakening to [η] and deduction theorem: ⊢ η.neg.
+    have hL_eq : ∀ φ ∈ L, φ = η := fun φ hφ => Set.mem_singleton_iff.mp (hL φ hφ)
+    -- Weaken L ⊢ ⊥ to [η] ⊢ ⊥: every φ ∈ L satisfies φ = η ∈ [η]
+    have d_weak : DerivationTree [η] Formula.bot :=
+      DerivationTree.weakening L [η] Formula.bot d
+        (fun φ hφ => by rw [hL_eq φ hφ]; simp)
+    have d_neg : DerivationTree [] η.neg := deduction_theorem [] η Formula.bot d_weak
+    -- From ⊢ ¬η: for any φ, ⊢ η → φ (ex falso from ¬η).
+    -- By TG: ⊢ G(η → φ). By BX2: G(η → φ) → (untl(η, δ) → untl(φ, δ)).
+    -- Since burgessR(A, η, C) gives untl(η, δ) ∈ A for all δ ∈ C,
+    -- we get untl(φ, δ) ∈ A for all φ and all δ ∈ C: burgessR(A, φ, C) for all φ.
+    -- Similarly for Since direction via BX2'.
+    -- Hence burgessR3(A, Set.univ, C). Contradiction with h_no_univ.
+    apply h_no_univ
+    constructor
+    · -- burgessRSet(A, Set.univ, C): ∀ φ, burgessR(A, φ, C)
+      intro φ _hφ δ hδ
+      have h_untl_η : Formula.untl η δ ∈ A := h_burgessR δ hδ
+      -- ⊢ η → φ (ex falso from ⊢ ¬η)
+      have h_imp : DerivationTree [] (η.imp φ) := by
+        have h1 : DerivationTree [η] Formula.bot :=
+          DerivationTree.modus_ponens [η] η Formula.bot
+            (DerivationTree.weakening [] [η] η.neg d_neg (List.nil_subset _))
+            (DerivationTree.assumption [η] η (by simp))
+        have h2 : DerivationTree [η] φ :=
+          DerivationTree.modus_ponens [η] Formula.bot φ
+            (DerivationTree.weakening [] [η] (Formula.bot.imp φ)
+              (Bimodal.Theorems.Propositional.efq_axiom φ) (List.nil_subset _)) h1
+        exact deduction_theorem [] η φ h2
+      -- G(η → φ) by TG
+      have h_G_imp : Formula.all_future (η.imp φ) ∈ A :=
+        theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_imp)
+      -- BX2G: G(η → φ) → (untl(η, δ) → untl(φ, δ))
+      have h_bx2 := DerivationTree.axiom [] _ (Axiom.left_mono_until_G η φ δ)
+      exact SetMaximalConsistent.implication_property h_mcs_A
+        (SetMaximalConsistent.implication_property h_mcs_A
+          (theorem_in_mcs h_mcs_A h_bx2) h_G_imp) h_untl_η
+    · -- burgessRSetSince(C, Set.univ, A): ∀ φ, burgessRSince(C, φ, A)
+      intro φ _hφ α hα
+      have h_snce_η : Formula.snce η α ∈ C := h_burgessRSince α hα
+      -- ⊢ η → φ (same as above)
+      have h_imp : DerivationTree [] (η.imp φ) := by
+        have h1 : DerivationTree [η] Formula.bot :=
+          DerivationTree.modus_ponens [η] η Formula.bot
+            (DerivationTree.weakening [] [η] η.neg d_neg (List.nil_subset _))
+            (DerivationTree.assumption [η] η (by simp))
+        have h2 : DerivationTree [η] φ :=
+          DerivationTree.modus_ponens [η] Formula.bot φ
+            (DerivationTree.weakening [] [η] (Formula.bot.imp φ)
+              (Bimodal.Theorems.Propositional.efq_axiom φ) (List.nil_subset _)) h1
+        exact deduction_theorem [] η φ h2
+      -- H(η → φ) by past TG
+      have h_H_imp : Formula.all_past (η.imp φ) ∈ C :=
+        theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ h_imp)
+      -- BX2H: H(η → φ) → (snce(η, α) → snce(φ, α))
+      have h_bx2' := DerivationTree.axiom [] _ (Axiom.left_mono_since_H η φ α)
+      exact SetMaximalConsistent.implication_property h_mcs_C
+        (SetMaximalConsistent.implication_property h_mcs_C
+          (theorem_in_mcs h_mcs_C h_bx2') h_H_imp) h_snce_η
+  have h_dc_dcs : SetDeductivelyClosed (deductiveClosure ({η} : Set Formula)) :=
+    deductiveClosure_is_dcs h_singleton_cons
+  have h_dc_r3 : burgessR3 A (deductiveClosure ({η} : Set Formula)) C := by
+    constructor
+    · intro φ hφ
+      exact burgessR_of_deductiveClosure_singleton h_mcs_A h_burgessR φ hφ
+    · intro φ hφ
+      exact burgessRSince_of_deductiveClosure_singleton h_mcs_C h_burgessRSince φ hφ
+  obtain ⟨B, hSB, _, h_B3M⟩ := burgessR3Maximal_extension_exists h_mcs_A h_mcs_C h_dc_dcs h_dc_r3
+    h_no_univ
+  have h_η_B : η ∈ B := hSB (subset_deductiveClosure ({η} : Set Formula) (Set.mem_singleton η))
+  exact ⟨B, h_η_B, h_B3M⟩
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
