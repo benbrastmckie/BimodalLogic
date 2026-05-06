@@ -83,7 +83,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: ROADMAP Update for Burgess Alignment Migration [NOT STARTED]
+### Phase 0: ROADMAP Update for Burgess Alignment Migration [COMPLETED]
 
 **Goal**: Update specs/ROADMAP.md to document the ambition to migrate towards total alignment with Burgess 1982 definitions and approach. Record completed alignment work (Phases 1-3), remaining divergences, and migration steps embedded in subsequent phases.
 
@@ -221,7 +221,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Close NoUnivBurgessR3 Stubs (6 sorries in PointInsertion.lean) [NOT STARTED]
+### Phase 4: Close NoUnivBurgessR3 Stubs (6 sorries in PointInsertion.lean) [COMPLETED]
 
 **Goal**: Close the 6 NoUnivBurgessR3 sorry stubs at PointInsertion.lean lines 178, 2717, 2719, 3596, 3598, 3686 by proving `no_univ_burgessR3 : SetMaximalConsistent A -> neg burgessR3 A Set.univ C` via the bot-guard argument identified by Teammate A.
 
