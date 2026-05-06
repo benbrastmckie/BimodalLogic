@@ -162,8 +162,8 @@ Key tools: `omega_chain_g_agrees_le` (proved in Phase 2), `omega_chain_f_agrees_
 **Tasks**:
 - [x] **Task 3.1**: `omega_chain_g_agrees_le` proved in Phase 2 (Task 2.D).
 - [x] **Task 3.2**: `g_sub_f_insert` proved for all 9 CE cases. Enriched 5 splitting lemma return types with `B ⊆ D`. All 9 `g_sub_f_insert := sorry` sites in CounterexampleElimination.lean closed. `omega_chain_g_sub_f_insert` available.
-- [ ] **Task 3.3**: Enrich splitting lemma returns with `B ⊆ B'` and `B ⊆ B''` (needed for `g_sub_g_new`). lemma_2_7 already returns B ⊆ B'. lemma_2_6_splitting, lemma_2_8, mirrors need enrichment.
-- [ ] **Task 3.4**: Add `g_sub_g_new` field to EliminationResult (or prove standalone): `g(a,b) ⊆ g(a,w)` and `g(a,b) ⊆ g(w,b)` when w inserted between adjacent (a,b).
+- [x] **Task 3.3**: Enriched all 5 splitting lemma returns with `B ⊆ B'` and `B ⊆ B''`. Updated all callers.
+- [~] **Task 3.4**: Added `g_sub_g_new` field to EliminationResult. 10/18 cases proved, 8 sorry. See handoff.
 - [ ] **Task 3.5**: Prove `omega_chain_guard_invariant`: for all k ≥ n+1, for all adjacent (a,b) in dom(k) with x ≤ a < b ≤ y, ξ ∈ g_k(a,b). Induction on k using g_sub_g_new.
 - [ ] **Task 3.6**: Prove `omega_chain_guard_in_limit_g`: combine guard_invariant + g_sub_f_insert + limit_f_eq to get ξ ∈ limit_g(x,y).
 - [ ] **Task 3.7**: Also need C5 guard fact: ξ ∈ g_{n+1}(x, y) from the C5 elimination (base case for invariant). Requires threading guard from lemma_2_4_with_guard through the C5 elimination code.
