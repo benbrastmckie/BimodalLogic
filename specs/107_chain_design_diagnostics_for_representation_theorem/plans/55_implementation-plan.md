@@ -254,7 +254,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: EliminationResult Restructuring and c2' Co-Construction (#6-10) [NOT STARTED]
+### Phase 5: EliminationResult Restructuring and c2' Co-Construction (#6-10) [COMPLETED]
 
 **Goal**: Close the 5 inline c2' sorries at CounterexampleElimination.lean lines 756, 794, 834, 872, 918 by restructuring EliminationResult to capture B/B'/B'' witnesses from Lemmas 2.4/2.6 and using them to construct g-values for new adjacent pairs created by each elimination step.
 
@@ -299,7 +299,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: C4/C4' Hard Cases (#4-5) [NOT STARTED]
+### Phase 6: C4/C4' Hard Cases (#4-5) [COMPLETED]
 
 **Goal**: Close the 2 standalone sorries at CounterexampleElimination.lean lines 412 (C4 forward hard case) and 510 (C4' backward hard case). These are the cases where `gamma in f(x)` AND `gamma in f(y)` (the "hard" case of Burgess Lemma 2.9, case n=m+1).
 
@@ -336,7 +336,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: FUC/FSC Coherence and Final Validation (#11-12) [NOT STARTED]
+### Phase 7: FUC/FSC Coherence and Final Validation (#11-12) [IN PROGRESS]
 
 **Goal**: Close sorries #11-12 at ChronicleToCountermodel.lean lines 611 (Forward Until Coherence) and 615 (Forward Since Coherence), then verify the entire completeness theorem is sorry-free.
 
