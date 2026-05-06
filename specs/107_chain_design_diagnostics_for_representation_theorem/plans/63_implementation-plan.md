@@ -2,7 +2,7 @@
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
 - **Status**: [IMPLEMENTING]
-- **Effort**: 10 hours
+- **Effort**: 18-26 hours (10h sorry closure + 8-16h convention migration)
 - **Dependencies**: None (all prerequisite infrastructure exists)
 - **Research Inputs**: reports/63_team-research.md
 - **Artifacts**: plans/63_implementation-plan.md (this file)
@@ -62,6 +62,7 @@ Plan v62 had 6 phases (25-41h). Phases 1-3 completed: NoUnivBurgessR3 eliminated
 | 3 | 3 | 2 |
 | 4 | 4 | 3 |
 | 5 | 5 | 4 |
+| 6 | 6 | 5 |
 
 Phases within the same wave can execute in parallel.
 
@@ -260,13 +261,60 @@ The guard condition `∀ r, t < r → r < s → φ ∈ mcs(r)` transfers from `�
 
 ---
 
+### Phase 6: Align Convention with Burgess U(event, guard) [NOT STARTED]
+
+**Goal**: Migrate `untl(guard, event)` → `untl(event, guard)` and `snce(guard, event)` → `snce(event, guard)` across the entire codebase to match Burgess 1982's convention `U(event, guard)` / `S(event, guard)`. This eliminates the persistent source of confusion that caused multiple misreadings during Phases 1-5.
+
+**Paper reference**: Burgess 1982, Section 1.2 (p.367): `V(U(α,β)) = {x : ∃y(x < y ∧ y ∈ V(α) ∧ ∀z(x < z < y ⊃ z ∈ V(β)))}` — α = event (endpoint), β = guard (intermediate).
+
+**Research input**: `reports/67_convention-migration-research.md` — full scope analysis (33 files, ~2141 references, risk assessment).
+
+**Strategy**:
+
+Swap the argument order at each layer, working bottom-up:
+1. Formula type definition (`Formula.lean`): swap `untl`/`snce` constructor args
+2. Semantics (`Truth.lean`): swap in truth condition (2 lines)
+3. Axiom definitions (`Axioms.lean`): swap in all 35 axiom statements
+4. Derived operators (`Formula.lean`): update `next`/`prev` if they use untl/snce
+5. burgessR/burgessRSince definitions (`ChronicleTypes.lean`): swap args in constructed formulas
+6. All Chronicle code: update every `Formula.untl a b` → `Formula.untl b a` construction
+7. Variable renaming: update parameter names where `xi`=guard/`eta`=event conventions appear
+
+**Risk**: Both args are `Formula` type — any missed swap compiles silently but corrupts the logic. Mitigation: `lake build` catches structural mismatches; manual audit of burgessR cascade and axiom proofs required for semantic correctness.
+
+**Tasks**:
+- [ ] **Task 6.1**: Swap `untl`/`snce` constructor args in `Formula.lean`. Update `next`/`prev`.
+- [ ] **Task 6.2**: Swap in `Truth.lean` semantics (2 lines).
+- [ ] **Task 6.3**: Swap in `Axioms.lean` (35 axiom definitions + mirrors).
+- [ ] **Task 6.4**: Update `burgessR`/`burgessRSince` and all Chronicle types in `ChronicleTypes.lean`.
+- [ ] **Task 6.5**: Update all `Formula.untl`/`Formula.snce` constructions across ~33 files (~2141 refs). Use `lake build` error-driven iteration.
+- [ ] **Task 6.6**: Rename variables for clarity: guard params → Burgess's β/η naming, event params → Burgess's α/ξ naming (where feasible without excessive churn).
+- [ ] **Task 6.7**: Update comments and documentation referencing the old convention.
+- [ ] **Task 6.8**: Full `lake build` clean. Verify `#print axioms bx_completeness` unchanged.
+- [ ] **Task 6.9**: Audit: spot-check 10 axiom proofs and 5 Chronicle lemmas for semantic correctness after swap.
+
+**Timing**: 8-16 hours (1-2 days focused work)
+
+**Depends on**: 5
+
+**Files to modify**: ~33 files across Syntax/, Semantics/, ProofSystem/, Metalogic/, Theorems/, Automation/, Examples/ (see `reports/67_convention-migration-research.md` for complete list)
+
+**Verification**:
+- `lake build` passes
+- `#print axioms bx_completeness` shows same axioms (no sorryAx)
+- Convention `untl(event, guard)` matches Burgess `U(event, guard)` throughout
+- Spot-check audit passes (10 axioms + 5 Chronicle lemmas)
+- All Burgess paper references in comments now use consistent notation
+
+---
+
 ## Testing & Validation
 
 - [ ] `lake build` succeeds at every phase boundary (Phases 1-5)
 - [ ] `#print axioms bx_completeness` -- no `sorryAx` after Phase 5
 - [ ] `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` -- only comment/doc occurrences
 - [ ] `grep -n "sorry" Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- only comment occurrences
-- [ ] Convention alignment maintained: `untl(guard, event)` = Burgess `U(event, guard)` throughout
+- [ ] After Phase 6: convention `untl(event, guard)` matches Burgess `U(event, guard)` throughout
 - [ ] No density or discreteness axioms added
 - [ ] `irr_until` axiom NOT used anywhere
 - [ ] All new lemmas follow Burgess 1982 exactly -- no novel mathematical approaches
