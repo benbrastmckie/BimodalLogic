@@ -840,26 +840,53 @@ noncomputable def eliminate_potential_counterexample
             by_cases h_eta_neg_g : pc.η.neg ∈ χ.g pc.x x'
             · -- eta.neg ∈ g (so eta ∉ g): try xi
               by_cases h_xi_g : pc.ξ ∈ χ.g pc.x x'
-              · -- xi ∈ g, eta.neg ∈ g, eta ∉ g: use lemma_2_6_splitting(β=eta)
-                -- This gives D with eta.neg ∈ D, but we need eta ∈ D.
-                -- Cannot directly get eta ∈ D this way. Use lemma_2_7 variant.
-                -- Actually xi ∈ g so lemma_2_7 doesn't apply.
-                -- This is the Burgess 2.8 case. Use lemma_2_6_splitting(β=⊥)
-                -- and show eta ∈ D through the BurgessR3Maximal structure.
-                -- For now, derive a contradiction: xi ∈ g and eta.neg ∈ g and
-                -- eta.neg ∈ f(x'). From burgessRSet with xi ∈ g and eta.neg ∈ f(x'):
-                -- untl(xi, eta.neg) ∈ f(pc.x). Combined with untl(xi, eta) ∈ f(pc.x)
-                -- and BX7, we get a three-way disjunction. We show all branches
-                -- lead to F(eta∧eta.neg) which contradicts G(¬(eta∧eta.neg)).
-                -- NOTE: BX7 gives different events per disjunct, so this argument
-                -- requires handling each disjunct individually.
-                -- Burgess 2.8 case: deferred (requires separate lemma)
-                -- For the interim: use the fact that we can walk forward to find
-                -- a better pair. Since the domain is finite, at max_old we can use
-                -- lemma_2_4. We produce the extension by applying lemma_2_4 to
-                -- max_old IF untl(xi, eta) ∈ f(max_old).
-                -- Otherwise this requires Lemma 2.8.
-                sorry
+              · -- xi ∈ g, eta.neg ∈ g, eta ∉ g: Burgess 2.8 case.
+                -- Case split on xi ∧ untl(xi, eta) ∈ g:
+                -- If not: use lemma_2_7 with BX5-accumulated guard.
+                -- If yes: derive Lemma 2.8 condition and apply.
+                by_cases h_conj_g : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.g pc.x x'
+                · -- xi ∧ untl(xi, eta) ∈ g: need Lemma 2.8.
+                  -- Derive ¬(eta ∨ (xi ∧ untl(xi, eta))) ∈ f(x').
+                  -- First: xi ∧ untl(xi, eta) ∉ f(x')? Case split.
+                  by_cases h_conj_x' : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.f x'
+                  · -- Condition (i) from Burgess 2.10: xi∧untl(xi,eta) ∈ g ∩ f(x').
+                    -- Neither 2.7 (needs guard ∉ g) nor 2.8 (needs ¬(eta∨χ_gen) ∈ C,
+                    -- but χ_gen ∈ f(x') makes the disjunction true in C) applies.
+                    -- Burgess handles this by induction: "replace x by x'", reducing
+                    -- the number of domain points after the counterexample point.
+                    -- The current code architecture commits to splitting at (x,x')
+                    -- for all n≥1 cases, so it cannot encode this reduction.
+                    -- Requires restructuring eliminate_potential_counterexample to
+                    -- support Burgess 2.10 condition (i) reduction (pass to x').
+                    sorry
+                  · -- xi∧untl(xi,eta) ∉ f(x'): Lemma 2.8 applies.
+                    -- Derive ¬(eta ∨ (xi ∧ untl(xi, eta))) ∈ f(x')
+                    have h_neg_disj : (Formula.or pc.η (Formula.and pc.ξ (Formula.untl pc.ξ pc.η))).neg ∈ χ.f x' := by
+                      -- eta ∉ f(x') and xi∧untl(xi,eta) ∉ f(x')
+                      -- By MCS: eta.neg ∈ f(x') and (xi∧untl(xi,eta)).neg ∈ f(x')
+                      -- De Morgan (backward): ¬A∧¬B → ¬(A∨B)
+                      have h_neg_conj : (pc.η.neg.and (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg) ∈ χ.f x' := by
+                        have h1 := h_eta_neg_x'
+                        have h2 : (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg ∈ χ.f x' := by
+                          rcases SetMaximalConsistent.negation_complete h_mcs_x' (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) with h | h
+                          · exact absurd h h_conj_x'
+                          · exact h
+                        exact conj_mcs h_mcs_x' pc.η.neg (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)).neg h1 h2
+                      -- ¬A∧¬B → ¬(A∨B) by demorgan_disj_neg_backward
+                      have h_dm := Bimodal.Theorems.Propositional.demorgan_disj_neg_backward pc.η (Formula.and pc.ξ (Formula.untl pc.ξ pc.η))
+                      exact SetMaximalConsistent.implication_property h_mcs_x'
+                        (theorem_in_mcs h_mcs_x' h_dm) h_neg_conj
+                    have h_l28 := lemma_2_8 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
+                      pc.ξ pc.η h_until h_neg_disj h_nubr3
+                    obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5⟩ := h_l28
+                    exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5⟩
+                · -- xi ∧ untl(xi, eta) ∉ g: use lemma_2_7 with BX5-accumulated guard.
+                  -- BX5: untl(xi, eta) → untl(xi∧untl(xi,eta), eta) ∈ f(x)
+                  have h_bx5 := self_accum_until_mcs h_mcs_x pc.ξ pc.η h_until
+                  have h_l27 := lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
+                    (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) pc.η h_bx5 h_conj_g h_nubr3
+                  obtain ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, _⟩ := h_l27
+                  exact ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6⟩
               · -- xi ∉ g: use lemma_2_7
                 have h_l27 := lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                   pc.ξ pc.η h_until h_xi_g h_nubr3
