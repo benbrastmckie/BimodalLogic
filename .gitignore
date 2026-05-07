@@ -61,3 +61,4 @@ specs/**/.*
 benchmarks/
 indent.log
 /.claude_OLD
+/.opencode_OLD

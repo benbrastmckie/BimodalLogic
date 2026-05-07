@@ -1312,6 +1312,53 @@ theorem omega_chain_dom_new_unique (A : Set Formula) (h_mcs : SetMaximalConsiste
     rw [← omega_chain_dom_eq_elim]; exact hv
   exact (omega_chain_elim_result A h_mcs h_nubr3 n).dom_new_unique u v hu' hu_not hv' hv_not
 
+/-- When the C5 forward counterexample at step n is already resolved (a witness exists
+in dom_n with proper guard), the elimination is identity: dom_{n+1} ⊆ dom_n. -/
+theorem omega_chain_c5_forward_resolved_no_new (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (n : Nat) (x : Rat) (ξ η : Formula)
+    (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_forward⟩)
+    (hx : x ∈ (omega_chain_val A h_mcs h_nubr3 n).dom)
+    (h_until : Formula.untl ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x)
+    (h_wit : ∃ y ∈ (omega_chain_val A h_mcs h_nubr3 n).dom, x < y ∧
+      η ∈ (omega_chain_val A h_mcs h_nubr3 n).f y ∧
+      (∀ a b, Adjacent (omega_chain_val A h_mcs h_nubr3 n).dom a b →
+        x ≤ a → b ≤ y → ξ ∈ (omega_chain_val A h_mcs h_nubr3 n).g a b) ∧
+      (∀ w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom,
+        x < w → w < y → ξ ∈ (omega_chain_val A h_mcs h_nubr3 n).f w))
+    (u : Rat) (hu : u ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom) :
+    u ∈ (omega_chain_val A h_mcs h_nubr3 n).dom := by
+  have hu' : u ∈ (omega_chain_elim_result A h_mcs h_nubr3 n).val.dom := by
+    rw [← omega_chain_dom_eq_elim]; exact hu
+  exact (omega_chain_elim_result A h_mcs h_nubr3 n).c5_forward_resolved_no_new
+    (show (counterexample_enum (Nat.unpair n).2).kind = .c5_forward by rw [hn_eq])
+    (show (counterexample_enum (Nat.unpair n).2).x ∈ _ by rw [hn_eq]; exact hx)
+    (show Formula.untl (counterexample_enum (Nat.unpair n).2).ξ
+        (counterexample_enum (Nat.unpair n).2).η ∈ _ by rw [hn_eq]; exact h_until)
+    (by rw [hn_eq] at h_wit ⊢; exact h_wit) u hu'
+
+/-- Mirror: when the C5 backward counterexample at step n is already resolved. -/
+theorem omega_chain_c5_backward_resolved_no_new (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_nubr3 : NoUnivBurgessR3) (n : Nat) (x : Rat) (ξ η : Formula)
+    (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_backward⟩)
+    (hx : x ∈ (omega_chain_val A h_mcs h_nubr3 n).dom)
+    (h_since : Formula.snce ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x)
+    (h_wit : ∃ y ∈ (omega_chain_val A h_mcs h_nubr3 n).dom, y < x ∧
+      η ∈ (omega_chain_val A h_mcs h_nubr3 n).f y ∧
+      (∀ a b, Adjacent (omega_chain_val A h_mcs h_nubr3 n).dom a b →
+        y ≤ a → b ≤ x → ξ ∈ (omega_chain_val A h_mcs h_nubr3 n).g a b) ∧
+      (∀ w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom,
+        y < w → w < x → ξ ∈ (omega_chain_val A h_mcs h_nubr3 n).f w))
+    (u : Rat) (hu : u ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom) :
+    u ∈ (omega_chain_val A h_mcs h_nubr3 n).dom := by
+  have hu' : u ∈ (omega_chain_elim_result A h_mcs h_nubr3 n).val.dom := by
+    rw [← omega_chain_dom_eq_elim]; exact hu
+  exact (omega_chain_elim_result A h_mcs h_nubr3 n).c5_backward_resolved_no_new
+    (show (counterexample_enum (Nat.unpair n).2).kind = .c5_backward by rw [hn_eq])
+    (show (counterexample_enum (Nat.unpair n).2).x ∈ _ by rw [hn_eq]; exact hx)
+    (show Formula.snce (counterexample_enum (Nat.unpair n).2).ξ
+        (counterexample_enum (Nat.unpair n).2).η ∈ _ by rw [hn_eq]; exact h_since)
+    (by rw [hn_eq] at h_wit ⊢; exact h_wit) u hu'
+
 /-! ## Omega Chain g-value Lifting
 
 Lift EliminationResult.g_sub_f_insert and g_sub_g_new to the omega chain level.
