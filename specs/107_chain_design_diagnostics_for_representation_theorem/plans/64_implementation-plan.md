@@ -197,10 +197,7 @@ Phases within the same wave can execute in parallel.
   - If yes: g ⊆ B' from splitting gives `xi ∈ B'`. Guard at both adjacent pairs.
   - If no: strengthened `lemma_2_7` (Phase 2) gives `xi ∈ B'` directly.
   ~40-60 lines.
-- [ ] **Task 4.7**: Fix **not-condition(i) splitting cases**: For each sub-case using lemma_2_6/2_7/2_8:
-  - If `xi ∈ g(pc.x, x')`: g ⊆ B' gives guard. No change needed.
-  - If `xi ∉ g(pc.x, x')`: redirect to use strengthened lemma_2_7 which returns `xi ∈ B'` regardless.
-  ~30-50 lines.
+- [x] **Task 4.7**: Fix **not-condition(i) splitting cases**: Added `pc.ξ ∈ B'` to h_split_result return type. Updated all 6 sub-cases: cases with xi ∈ g use `g ⊆ B'`; cases with xi ∉ g use strengthened `lemma_2_7` return. Added `by_cases h_xi_g6` sub-split in case 6 (eta.neg ∉ g). Guard proof in c5_forward_witness: only adj pair (pc.x, z), g'(pc.x, z) = B', ξ ∈ B'. **DONE**: ~40 lines added.
 - [ ] **Task 4.8**: Run `lake build` to verify all C5 forward cases compile with adjacent-pair guard.
 
 **Timing**: 6-8 hours

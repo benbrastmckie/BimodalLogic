@@ -1289,7 +1289,8 @@ noncomputable def eliminate_potential_counterexample
               pc.η ∈ D ∧
               χ.g pc.x x' ⊆ D ∧
               χ.g pc.x x' ⊆ B' ∧
-              χ.g pc.x x' ⊆ B'' := by
+              χ.g pc.x x' ⊆ B'' ∧
+              pc.ξ ∈ B' := by
             by_cases h_eta_g : pc.η ∈ χ.g pc.x x'
             · by_cases h_xi_g : pc.ξ ∈ χ.g pc.x x'
               · have h_eta_neg_not_g : pc.η.neg ∉ χ.g pc.x x' := by
@@ -1303,11 +1304,11 @@ noncomputable def eliminate_potential_counterexample
                     Bimodal.Theorems.Propositional.double_negation pc.η
                   exact SetMaximalConsistent.implication_property h_D2_mcs
                     (theorem_in_mcs h_D2_mcs h_dne) h_eta_neg_neg_D2
-                exact ⟨B'2, D2, B''2, h_B'2, h_B''2, h_D2_mcs, h_eta_D2, h_B_sub_D2, h_B_sub_B'2, h_B_sub_B''2⟩
-              · obtain ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_B'3, h_B_sub_D3, h_B_sub_B''3, _⟩ :=
+                exact ⟨B'2, D2, B''2, h_B'2, h_B''2, h_D2_mcs, h_eta_D2, h_B_sub_D2, h_B_sub_B'2, h_B_sub_B''2, h_B_sub_B'2 h_xi_g⟩
+              · obtain ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_B'3, h_B_sub_D3, h_B_sub_B''3, h_xi_B'3⟩ :=
                   lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                     pc.ξ pc.η h_until h_xi_g h_nubr3
-                exact ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_D3, h_B_sub_B'3, h_B_sub_B''3⟩
+                exact ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_D3, h_B_sub_B'3, h_B_sub_B''3, h_xi_B'3⟩
             · by_cases h_eta_neg_g : pc.η.neg ∈ χ.g pc.x x'
               · by_cases h_xi_g : pc.ξ ∈ χ.g pc.x x'
                 · by_cases h_conj_g : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.g pc.x x'
@@ -1331,25 +1332,34 @@ noncomputable def eliminate_potential_counterexample
                     have h_l28 := lemma_2_8 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                       pc.ξ pc.η h_until h_neg_disj h_nubr3
                     obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, _⟩ := h_l28
-                    exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩
+                    exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, h_B_sub_B'5 h_xi_g⟩
                   · have h_bx5 := self_accum_until_mcs h_mcs_x pc.ξ pc.η h_until
-                    obtain ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_B'6, h_B_sub_D6, h_B_sub_B''6, _⟩ :=
+                    obtain ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_B'6, h_B_sub_D6, h_B_sub_B''6, h_conj_B'6⟩ :=
                       lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                         (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) pc.η h_bx5 h_conj_g h_nubr3
-                    exact ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_D6, h_B_sub_B'6, h_B_sub_B''6⟩
-                · obtain ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_B'4, h_B_sub_D4, h_B_sub_B''4, _⟩ :=
+                    -- xi ∈ g and g ⊆ B'6 gives xi ∈ B'6
+                    exact ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_D6, h_B_sub_B'6, h_B_sub_B''6, h_B_sub_B'6 h_xi_g⟩
+                · obtain ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_B'4, h_B_sub_D4, h_B_sub_B''4, h_xi_B'4⟩ :=
                     lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                       pc.ξ pc.η h_until h_xi_g h_nubr3
-                  exact ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_D4, h_B_sub_B'4, h_B_sub_B''4⟩
-              · have h_split5 := lemma_2_6_splitting h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                  pc.η.neg h_eta_neg_g h_nubr3
-                obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_neg_neg_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩ := h_split5
-                have h_eta_D5 : pc.η ∈ D5 := by
-                  have h_dne : DerivationTree [] (pc.η.neg.neg.imp pc.η) :=
-                    Bimodal.Theorems.Propositional.double_negation pc.η
-                  exact SetMaximalConsistent.implication_property h_D5_mcs
-                    (theorem_in_mcs h_D5_mcs h_dne) h_eta_neg_neg_D5
-                exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩
+                  exact ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_D4, h_B_sub_B'4, h_B_sub_B''4, h_xi_B'4⟩
+              · -- eta ∉ g, eta.neg ∉ g. Case split on xi ∈ g for the guard.
+                by_cases h_xi_g6 : pc.ξ ∈ χ.g pc.x x'
+                · -- xi ∈ g: use lemma_2_6 and derive xi ∈ B' from g ⊆ B'
+                  have h_split5 := lemma_2_6_splitting h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
+                    pc.η.neg h_eta_neg_g h_nubr3
+                  obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_neg_neg_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩ := h_split5
+                  have h_eta_D5 : pc.η ∈ D5 := by
+                    have h_dne : DerivationTree [] (pc.η.neg.neg.imp pc.η) :=
+                      Bimodal.Theorems.Propositional.double_negation pc.η
+                    exact SetMaximalConsistent.implication_property h_D5_mcs
+                      (theorem_in_mcs h_D5_mcs h_dne) h_eta_neg_neg_D5
+                  exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, h_B_sub_B'5 h_xi_g6⟩
+                · -- xi ∉ g: use lemma_2_7 which returns xi ∈ B' directly
+                  obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_B'5, h_B_sub_D5, h_B_sub_B''5, h_xi_B'5⟩ :=
+                    lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
+                      pc.ξ pc.η h_until h_xi_g6 h_nubr3
+                  exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, h_xi_B'5⟩
           let B' := h_split_result.choose
           let D := h_split_result.choose_spec.choose
           let B'' := h_split_result.choose_spec.choose_spec.choose
@@ -1360,7 +1370,8 @@ noncomputable def eliminate_potential_counterexample
           have h_η_D : pc.η ∈ D := h_split_prop.2.2.2.1
           have h_g_sub_D : χ.g pc.x x' ⊆ D := h_split_prop.2.2.2.2.1
           have h_g_sub_B' : χ.g pc.x x' ⊆ B' := h_split_prop.2.2.2.2.2.1
-          have h_g_sub_B'' : χ.g pc.x x' ⊆ B'' := h_split_prop.2.2.2.2.2.2
+          have h_g_sub_B'' : χ.g pc.x x' ⊆ B'' := h_split_prop.2.2.2.2.2.2.1
+          have h_ξ_B' : pc.ξ ∈ B' := h_split_prop.2.2.2.2.2.2.2
           -- Insert z = midpoint of pc.x and x'
           set z := (pc.x + x') / 2 with hz_def
           have hz_lt_x' : z < x' := by linarith
@@ -1452,10 +1463,40 @@ noncomputable def eliminate_potential_counterexample
                   c2' := h_c2'_new
                   c5_forward_witness := by
                     intro _ _ _
-                    refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, ?_⟩
-                    show pc.η ∈ (if z = z then D else χ.f z)
-                    simp only [ite_true]
-                    exact h_η_D
+                    refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, ?_, ?_⟩
+                    · show pc.η ∈ (if z = z then D else χ.f z)
+                      simp only [ite_true]
+                      exact h_η_D
+                    · -- Guard: for all adjacent (a,b) with pc.x ≤ a, b ≤ z, show ξ ∈ g'(a,b)
+                      -- The only such pair is (pc.x, z) since z is a fresh point
+                      intro a b h_adj_ab h_le_a h_le_b
+                      have ha_eq : a = pc.x := by
+                        by_contra ha_ne
+                        have ha_gt : pc.x < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
+                        -- a is in insert z χ.dom, a > pc.x, a < b ≤ z < x'
+                        -- so a is between pc.x and x' in the old domain, contradiction
+                        have ha_mem := h_adj_ab.1
+                        simp only [χ', Finset.mem_insert] at ha_mem
+                        rcases ha_mem with rfl | ha_mem
+                        · -- a = z, but b ≤ z and a < b, contradiction
+                          exact absurd h_le_b (not_le.mpr h_adj_ab.2.2.1)
+                        · -- a ∈ old dom, pc.x < a, a < b ≤ z < x'
+                          exact h_adj_xx'.2.2.2 a ha_mem ⟨ha_gt, lt_trans (lt_of_lt_of_le h_adj_ab.2.2.1 h_le_b) hz_lt_x'⟩
+                      subst ha_eq
+                      have hb_eq : b = z := by
+                        by_contra hb_ne
+                        have hb_lt : b < z := lt_of_le_of_ne h_le_b hb_ne
+                        have hb_mem := h_adj_ab.2.1
+                        simp only [χ', Finset.mem_insert] at hb_mem
+                        rcases hb_mem with rfl | hb_mem
+                        · exact absurd (le_refl z) (not_le.mpr hb_lt)
+                        · -- b ∈ old dom, pc.x < b < z < x', so b between pc.x and x'
+                          exact h_adj_xx'.2.2.2 b hb_mem ⟨h_adj_ab.2.2.1, lt_trans hb_lt hz_lt_x'⟩
+                      subst hb_eq
+                      -- Need ξ ∈ g'(pc.x, z) = B'
+                      show pc.ξ ∈ g' pc.x z
+                      simp only [g', and_self, ite_true]
+                      exact h_ξ_B'
                   c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
