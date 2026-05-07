@@ -216,20 +216,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Fix C5 Backward (Since) Cases [NOT STARTED]
+### Phase 5: Fix C5 Backward (Since) Cases [COMPLETED]
 
 **Goal**: Mirror Phase 4 for all C5 backward (Since) case constructions. Apply the same restructuring (walk → split, remove eta-shortcut, thread guard through splitting).
 
 **Paper reference**: Burgess C5b (Since mirror of C5a). All arguments are symmetric.
 
 **Tasks**:
-- [ ] **Task 5.1**: Fix **not-actual since case**: Stop discarding guard, mirror of Phase 4 Task 4.1. ~10-15 lines.
-- [ ] **Task 5.2**: Fix **backward n=0 case**: Switch to `lemma_2_4_with_guard` (Since variant). ~15-20 lines.
-- [ ] **Task 5.3**: **RESTRUCTURE backward Walk A** (pc.x > min_old): Replace walk-to-min_old with splitting at (x'', pc.x). Mirror of Phase 4 Task 4.4. ~80-120 lines.
-- [ ] **Task 5.4**: **REMOVE backward Walk B eta-shortcut**. ~-20 lines.
-- [ ] **Task 5.5**: Fix **backward Walk B splitting**. Uses `lemma_2_7_since`/`lemma_2_8_since`. ~40-60 lines.
-- [ ] **Task 5.6**: Fix **backward not-condition(i) splitting cases**. ~30-50 lines.
-- [ ] **Task 5.7**: Run `lake build` to verify all CounterexampleElimination.lean compiles clean.
+- [x] **Task 5.1**: Fix **not-actual since case**: Stop discarding guard, mirror of Phase 4 Task 4.1. ~10-15 lines.
+- [x] **Task 5.2**: Fix **backward n=0 case**: Switch to `lemma_2_4_since_with_guard` (Since variant created in PointInsertion.lean). ~120 lines for new lemma + ~80 lines for n=0 case.
+- [x] **Task 5.3**: **RESTRUCTURE backward Walk A** (pc.x > min_old): Created `c5_backward_walk` recursive function mirroring `c5_forward_walk`. Replaced ~350 lines of Walk A + Walk B with single call. ~300 lines for new function + ~15 lines for call site.
+- [x] **Task 5.4**: **REMOVE backward Walk B eta-shortcut**. Removed entirely (replaced by `c5_backward_walk`).
+- [x] **Task 5.5**: Fix **backward Walk B splitting**. Handled by `c5_backward_walk` split case.
+- [x] **Task 5.6**: Fix **backward not-condition(i) splitting cases**. Added `pc.ξ ∈ B''` to h_split_result (8th component), fixed witness_guard proof. ~50 lines.
+- [x] **Task 5.7**: Run `lake build` to verify all CounterexampleElimination.lean compiles clean. BUILD PASSES.
 
 **Timing**: 4-6 hours
 

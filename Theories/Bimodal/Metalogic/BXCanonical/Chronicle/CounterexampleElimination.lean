@@ -1176,6 +1176,550 @@ decreasing_by
   all_goals exact h_term
 
 /--
+Result of the C5 backward recursive walk (Burgess 2.10' induction, Since direction).
+Given a chronicle and a starting point where S(ξ,η) ∈ f(start),
+the walk produces an extended chronicle with a witness y < start such that
+η ∈ f'(y) and the guard ξ ∈ g'(a,b) holds for all adjacent pairs from y to start.
+-/
+structure C5BackwardWalkResult (χ : Chronicle) (ξ η : Formula) (start : Rat) where
+  val : Chronicle
+  dom_sub : χ.dom ⊆ val.dom
+  c0 : val.c0
+  c2' : val.c2'
+  f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
+  g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → val.g a b = χ.g a b
+  witness : Rat
+  witness_mem : witness ∈ val.dom
+  witness_lt : witness < start
+  witness_event : η ∈ val.f witness
+  witness_guard : ∀ a b, Adjacent val.dom a b → witness ≤ a → b ≤ start → ξ ∈ val.g a b
+  g_sub_f_insert : ∀ a b, Adjacent χ.dom a b → ∀ w ∈ val.dom, w ∉ χ.dom →
+    a < w → w < b → χ.g a b ⊆ val.f w
+  g_sub_g_new : ∀ a b, Adjacent χ.dom a b → ∀ w ∈ val.dom, w ∉ χ.dom →
+    a < w → w < b → χ.g a b ⊆ val.g a w ∧ χ.g a b ⊆ val.g w b
+  dom_new_unique : ∀ u v, u ∈ val.dom → u ∉ χ.dom → v ∈ val.dom → v ∉ χ.dom → u = v
+  /-- All new domain points are strictly before `start`. This ensures that
+  (x'', start) remains adjacent in val.dom when composing recursive guards. -/
+  new_point_before : ∀ w ∈ val.dom, w ∉ χ.dom → w < start
+
+/--
+Recursive walk for C5 backward guard (Burgess 2.10' induction, Since direction).
+
+At each step from `start`, find x'' = predecessor in dom:
+- **Base case** (start = min dom): Use `past_temporal_witness_seed` + Lindenbaum to insert witness below.
+- **Condition (i)** (conj ∈ f(x'') ∧ ξ ∈ g(x'',start)): Recurse at x'', compose guard.
+- **Not condition (i)**: Split at (x'', start) using lemma_2_7_since/2_8_since/2_6.
+
+Termination: `(dom.filter (· < start)).card` strictly decreases at each recursive step.
+-/
+private noncomputable def c5_backward_walk
+    (χ : Chronicle) (h_c0 : χ.c0) (h_c2' : χ.c2')
+    (h_nubr3 : NoUnivBurgessR3)
+    (ξ η : Formula) (pt : Rat)
+    (h_start_mem : pt ∈ χ.dom)
+    (h_since_start : Formula.snce ξ η ∈ χ.f pt)
+    (h_no_wit : ¬∃ y ∈ χ.dom, y < pt ∧ η ∈ χ.f y ∧
+      (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ pt → ξ ∈ χ.g a b)) :
+    C5BackwardWalkResult χ ξ η pt := by
+  -- Set up domain facts
+  have h_dom_ne : χ.dom.Nonempty := ⟨pt, h_start_mem⟩
+  set min_old := χ.dom.min' h_dom_ne with min_old_def
+  have h_min_mem : min_old ∈ χ.dom := Finset.min'_mem χ.dom h_dom_ne
+  have h_min_le : ∀ s ∈ χ.dom, min_old ≤ s := fun s hs => Finset.min'_le χ.dom s hs
+  have h_mcs_start := h_c0 pt h_start_mem
+  by_cases h_eq_min : pt = min_old
+  · -- **BASE CASE**: pt = min(dom). Insert witness y below min_old.
+    have h_fresh := exists_rat_lt_finset χ.dom
+    let y := h_fresh.choose
+    have hy_lt : ∀ s ∈ χ.dom, y < s := h_fresh.choose_spec.1
+    have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
+    -- Use lemma_2_4_since_with_guard: from snce(ξ,η) ∈ f(pt), get B,C with
+    -- η ∈ C, ξ ∈ B, BurgessR3Maximal(C, B, f(pt))
+    have h_l24s := lemma_2_4_since_with_guard h_mcs_start ξ η h_since_start h_nubr3
+    let B := h_l24s.choose
+    let C := h_l24s.choose_spec.choose
+    have h_l24s_prop := h_l24s.choose_spec.choose_spec
+    have h_C_mcs : SetMaximalConsistent C := h_l24s_prop.1
+    have h_η_C : η ∈ C := h_l24s_prop.2.1
+    have h_ξ_B : ξ ∈ B := h_l24s_prop.2.2.2.1
+    have h_r3m : BurgessR3Maximal C B (χ.f pt) := h_l24s_prop.2.2.2.2
+    have h_min_lt_y : y < min_old := hy_lt min_old h_min_mem
+    let g' := fun a b =>
+      if a = y ∧ b = min_old then B
+      else χ.g a b
+    let χ' : Chronicle := ⟨fun q => if q = y then C else χ.f q, g', insert y χ.dom⟩
+    have h_c2'_new : χ'.c2' := by
+      intro a b h_adj_new
+      obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
+      simp only [χ', Finset.mem_insert] at ha hb
+      rcases ha with rfl | ha <;> rcases hb with rfl | hb
+      · exact absurd hab (lt_irrefl _)
+      · have hb_eq : b = min_old := by
+          by_contra hb_ne
+          have hb_ge : min_old ≤ b := h_min_le b hb
+          have hb_gt : min_old < b := lt_of_le_of_ne hb_ge (Ne.symm hb_ne)
+          exact h_no_between min_old (Finset.mem_insert_of_mem h_min_mem) ⟨h_min_lt_y, hb_gt⟩
+        subst hb_eq
+        show BurgessR3Maximal
+          (if y = y then C else χ.f y)
+          (g' y min_old)
+          (if min_old = y then C else χ.f min_old)
+        have hmin_ne_y : min_old ≠ y := ne_of_gt h_min_lt_y
+        simp only [ite_true, hmin_ne_y, ite_false, g', and_self]
+        rw [← h_eq_min]; exact h_r3m
+      · exact absurd hab (not_lt.mpr (le_of_lt (hy_lt a ha)))
+      · have ha_ne : a ≠ y := fun h => hy_notin (h ▸ ha)
+        have hb_ne : b ≠ y := fun h => hy_notin (h ▸ hb)
+        show BurgessR3Maximal
+          (if a = y then C else χ.f a)
+          (g' a b)
+          (if b = y then C else χ.f b)
+        simp only [ha_ne, hb_ne, ite_false, g', false_and, ite_false]
+        exact h_c2' a b ⟨ha, hb, hab, fun u hu huab => h_no_between u (Finset.mem_insert_of_mem hu) huab⟩
+    exact { val := χ'
+            dom_sub := Finset.subset_insert y χ.dom
+            c0 := by
+              intro q hq
+              show SetMaximalConsistent (if q = y then C else χ.f q)
+              change q ∈ insert y χ.dom at hq
+              simp only [Finset.mem_insert] at hq
+              rcases hq with rfl | hq
+              · simp only [ite_true]; exact h_C_mcs
+              · have h_ne : q ≠ y := fun h => hy_notin (h ▸ hq)
+                simp only [h_ne, ite_false]; exact h_c0 q hq
+            c2' := h_c2'_new
+            f_agrees := by
+              intro x hx
+              have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
+              exact if_neg h_ne
+            g_agrees := by
+              intro a b ha hb
+              show g' a b = χ.g a b
+              simp only [g']
+              have ha_ne : a ≠ y := fun h => hy_notin (h ▸ ha)
+              simp only [ha_ne, false_and, ite_false]
+            witness := y
+            witness_mem := Finset.mem_insert_self y χ.dom
+            witness_lt := hy_lt pt h_start_mem
+            witness_event := by simp only [χ', ite_true]; exact h_η_C
+            witness_guard := by
+              intro a b h_adj_ab h_le_a h_le_b
+              have ha_dom : a ∈ insert y χ.dom := h_adj_ab.1
+              have hb_dom : b ∈ insert y χ.dom := h_adj_ab.2.1
+              simp only [Finset.mem_insert] at ha_dom hb_dom
+              -- a must be y (a ≥ y and a < b ≤ pt = min_old ≤ all old)
+              have ha_eq : a = y := by
+                rcases ha_dom with rfl | ha_old
+                · rfl
+                · -- a is old, so min_old ≤ a; but b ≤ pt = min_old, a < b
+                  have : min_old ≤ a := h_min_le a ha_old
+                  linarith [h_adj_ab.2.2.1]
+              subst ha_eq
+              -- b must be min_old
+              have hb_ne_y : b ≠ y := ne_of_gt h_adj_ab.2.2.1
+              have hb_old : b ∈ χ.dom := by
+                rcases hb_dom with rfl | h
+                · exact absurd rfl hb_ne_y
+                · exact h
+              have hb_eq : b = min_old := by
+                have hb_le_min : b ≤ min_old := by
+                  rw [← h_eq_min]; exact h_le_b
+                have hmin_le_b : min_old ≤ b := h_min_le b hb_old
+                exact le_antisymm hb_le_min hmin_le_b
+              subst hb_eq
+              show ξ ∈ g' y min_old
+              simp only [g', and_self, ite_true]
+              exact h_ξ_B
+            g_sub_f_insert := by
+              intro a b h_adj w hw hw_not haw hwb
+              simp only [χ', Finset.mem_insert] at hw
+              rcases hw with rfl | hw
+              · exact absurd haw (not_lt.mpr (le_of_lt (hy_lt a h_adj.1)))
+              · exact absurd hw hw_not
+            g_sub_g_new := by
+              intro a b h_adj w hw hw_not haw hwb
+              simp only [χ', Finset.mem_insert] at hw
+              rcases hw with rfl | hw
+              · exact absurd haw (not_lt.mpr (le_of_lt (hy_lt a h_adj.1)))
+              · exact absurd hw hw_not
+            dom_new_unique := by
+              intro u v hu hu_not hv hv_not
+              simp only [χ', Finset.mem_insert] at hu hv
+              rcases hu with rfl | hu <;> rcases hv with rfl | hv
+              · rfl
+              · exact absurd hv hv_not
+              · exact absurd hu hu_not
+              · exact absurd hu hu_not
+            new_point_before := by
+              intro w hw hw_not
+              simp only [χ', Finset.mem_insert] at hw
+              rcases hw with rfl | hw
+              · exact hy_lt pt h_start_mem
+              · exact absurd hw hw_not }
+  · -- **RECURSIVE CASE**: pt > min_old. Find predecessor x''.
+    have h_start_gt_min : min_old < pt := lt_of_le_of_ne (h_min_le pt h_start_mem) (Ne.symm h_eq_min)
+    let T_pred := χ.dom.filter (fun v => v < pt)
+    have hT_ne : T_pred.Nonempty :=
+      ⟨min_old, Finset.mem_filter.mpr ⟨h_min_mem, h_start_gt_min⟩⟩
+    let x'' := T_pred.max' hT_ne
+    have hx''_mem_T := Finset.max'_mem T_pred hT_ne
+    have hx''_dom : x'' ∈ χ.dom := (Finset.mem_filter.mp hx''_mem_T).1
+    have hx''_lt_start : x'' < pt := (Finset.mem_filter.mp hx''_mem_T).2
+    have h_adj_x''s : Adjacent χ.dom x'' pt := by
+      refine ⟨hx''_dom, h_start_mem, hx''_lt_start, ?_⟩
+      intro u hu ⟨hx''u, hus⟩
+      have hu_T : u ∈ T_pred := Finset.mem_filter.mpr ⟨hu, hus⟩
+      have := Finset.le_max' T_pred u hu_T
+      linarith
+    have h_mcs_x'' := h_c0 x'' hx''_dom
+    -- Derive: xi ∈ g(x'', pt) → eta ∉ f(x'')
+    have h_guard_implies_no_event : ξ ∈ χ.g x'' pt → η ∉ χ.f x'' :=
+      fun h_guard h_event => h_no_wit ⟨x'', hx''_dom, hx''_lt_start, h_event,
+        fun a b h_adj_ab h_le_a h_le_b => by
+          have ha_eq : a = x'' := by
+            by_contra ha_ne
+            have ha_gt : x'' < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
+            exact h_adj_x''s.2.2.2 a h_adj_ab.1 ⟨ha_gt, lt_of_lt_of_le h_adj_ab.2.2.1 h_le_b⟩
+          have hb_eq : b = pt := by
+            rw [ha_eq] at h_adj_ab
+            by_contra hb_ne
+            have hb_lt : b < pt := lt_of_le_of_ne h_le_b hb_ne
+            exact h_adj_x''s.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hb_lt⟩
+          rw [ha_eq, hb_eq]; exact h_guard⟩
+    -- Get BurgessR3Maximal facts for (x'', pt)
+    have h_r3m_adj := h_c2' x'' pt h_adj_x''s
+    have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x'' h_mcs_start
+    have h_gc_adj := BurgessR3Maximal_g_content_sub h_r3m_adj h_mcs_x'' h_mcs_start
+    have h_bot_not_g : Formula.bot ∉ χ.g x'' pt := by
+      intro h_bot
+      exact h_B_sdc.1 [Formula.bot] (fun φ hφ => by simp at hφ; rw [hφ]; exact h_bot)
+        ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+    -- Check condition (i): conj ∈ f(x'') AND ξ ∈ g(x'', pt)
+    by_cases h_cond_i : Formula.and ξ (Formula.snce ξ η) ∈ χ.f x'' ∧ ξ ∈ χ.g x'' pt
+    · -- **Condition (i)**: recurse at x''
+      have h_snce_x'' : Formula.snce ξ η ∈ χ.f x'' :=
+        conj_right_mcs h_mcs_x'' ξ (Formula.snce ξ η) h_cond_i.1
+      -- Derive: h_no_wit at x''
+      have h_no_wit_x'' : ¬∃ y ∈ χ.dom, y < x'' ∧ η ∈ χ.f y ∧
+          (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ x'' → ξ ∈ χ.g a b) := by
+        intro ⟨y, hy_dom, hy_lt_x'', hη_y, h_guard_y⟩
+        exact h_no_wit ⟨y, hy_dom, lt_trans hy_lt_x'' hx''_lt_start, hη_y,
+          fun a b h_adj_ab h_le_a h_le_b => by
+            by_cases h_b_gt_x'' : x'' < b
+            · -- b > x'', so b = pt and a = x'' (since x'' is predecessor of pt)
+              have hb_eq : b = pt := by
+                have : b ≤ pt := h_le_b
+                by_contra hb_ne
+                have hb_lt : b < pt := lt_of_le_of_ne this hb_ne
+                exact h_adj_x''s.2.2.2 b h_adj_ab.2.1 ⟨h_b_gt_x'', hb_lt⟩
+              have ha_eq : a = x'' := by
+                rw [hb_eq] at h_adj_ab
+                have ha_le : a ≤ x'' := by
+                  by_contra hgt; push_neg at hgt
+                  exact h_adj_x''s.2.2.2 a h_adj_ab.1 ⟨hgt, h_adj_ab.2.2.1⟩
+                exact le_antisymm ha_le (by
+                  by_contra hlt; push_neg at hlt
+                  exact h_adj_ab.2.2.2 x'' hx''_dom ⟨hlt, hx''_lt_start⟩)
+              rw [ha_eq, hb_eq]; exact h_cond_i.2
+            · -- b ≤ x''
+              push_neg at h_b_gt_x''
+              exact h_guard_y a b h_adj_ab h_le_a h_b_gt_x''⟩
+      -- Termination: (dom.filter (· < x'')).card < (dom.filter (· < pt)).card
+      have h_term : (χ.dom.filter (fun v => v < x'')).card < (χ.dom.filter (fun v => v < pt)).card := by
+        apply Finset.card_lt_card
+        constructor
+        · intro v hv
+          have hv_dom := (Finset.mem_filter.mp hv).1
+          have hv_lt : v < x'' := (Finset.mem_filter.mp hv).2
+          exact Finset.mem_filter.mpr ⟨hv_dom, lt_trans hv_lt hx''_lt_start⟩
+        · simp only [Finset.not_subset]
+          exact ⟨x'', Finset.mem_filter.mpr ⟨hx''_dom, hx''_lt_start⟩,
+            fun h => absurd (Finset.mem_filter.mp h).2 (lt_irrefl _)⟩
+      -- Recurse
+      have r := c5_backward_walk χ h_c0 h_c2' h_nubr3 ξ η x'' hx''_dom h_snce_x'' h_no_wit_x''
+      -- Compose: guard at (x'', pt) from condition (i) + recursive guard from x''
+      exact { val := r.val
+              dom_sub := r.dom_sub
+              c0 := r.c0
+              c2' := r.c2'
+              f_agrees := r.f_agrees
+              g_agrees := r.g_agrees
+              witness := r.witness
+              witness_mem := r.witness_mem
+              witness_lt := lt_trans r.witness_lt hx''_lt_start
+              witness_event := r.witness_event
+              witness_guard := by
+                intro a b h_adj_ab h_le_a h_le_b
+                by_cases h_b_le_x'' : b ≤ x''
+                · exact r.witness_guard a b h_adj_ab h_le_a h_b_le_x''
+                · -- b > x''. Show a = x'' and b = pt, then use condition (i) guard.
+                  push_neg at h_b_le_x''
+                  have hb_eq : b = pt := by
+                    by_contra hb_ne
+                    have hb_lt : b < pt := lt_of_le_of_ne h_le_b hb_ne
+                    by_cases hb_old : b ∈ χ.dom
+                    · exact h_adj_x''s.2.2.2 b hb_old ⟨h_b_le_x'', hb_lt⟩
+                    · -- b is new from recursion at x'', so b < x'' by new_point_before. Contradicts b > x''.
+                      exact absurd (r.new_point_before b h_adj_ab.2.1 hb_old) (not_lt.mpr (le_of_lt h_b_le_x''))
+                  subst hb_eq
+                  -- a must be x'': x'' in val.dom, a < pt, nothing between a and pt
+                  have ha_eq : a = x'' := by
+                    have hx''_val : x'' ∈ r.val.dom := r.dom_sub hx''_dom
+                    by_contra ha_ne
+                    rcases lt_or_gt_of_ne ha_ne with ha_lt | ha_gt
+                    · -- a < x'': then x'' is between a and pt=b, contradicting adjacency
+                      exact h_adj_ab.2.2.2 x'' hx''_val ⟨ha_lt, hx''_lt_start⟩
+                    · -- a > x'': a ∈ r.val.dom, x'' < a < pt. If old, contradicts h_adj_x''s.
+                      -- If new, new_point_before gives a < x'', contradiction.
+                      by_cases ha_old : a ∈ χ.dom
+                      · exact h_adj_x''s.2.2.2 a ha_old ⟨ha_gt, h_adj_ab.2.2.1⟩
+                      · exact absurd (r.new_point_before a h_adj_ab.1 ha_old) (not_lt.mpr (le_of_lt ha_gt))
+                  rw [ha_eq, r.g_agrees x'' _ hx''_dom h_start_mem]
+                  exact h_cond_i.2
+              g_sub_f_insert := r.g_sub_f_insert
+              g_sub_g_new := r.g_sub_g_new
+              dom_new_unique := r.dom_new_unique
+              new_point_before := by
+                intro w hw hw_not
+                exact lt_trans (r.new_point_before w hw hw_not) hx''_lt_start }
+    · -- **Not condition (i)**: split at (x'', pt)
+      have h_split_result : ∃ B' D B'' : Set Formula,
+          BurgessR3Maximal (χ.f x'') B' D ∧
+          BurgessR3Maximal D B'' (χ.f pt) ∧
+          SetMaximalConsistent D ∧
+          η ∈ D ∧
+          χ.g x'' pt ⊆ D ∧
+          χ.g x'' pt ⊆ B' ∧
+          χ.g x'' pt ⊆ B'' ∧
+          ξ ∈ B'' := by
+        by_cases h_eta_g : η ∈ χ.g x'' pt
+        · by_cases h_xi_g : ξ ∈ χ.g x'' pt
+          · have h_eta_neg_not_g : η.neg ∉ χ.g x'' pt := by
+              intro h_neg; exact set_consistent_not_both h_B_sdc.1 η h_eta_g h_neg
+            have h_sp := lemma_2_6_splitting h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj
+              η.neg h_eta_neg_not_g h_nubr3
+            obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
+            exact ⟨B', D, B'', hB', hB'', hD_mcs,
+              SetMaximalConsistent.implication_property hD_mcs
+                (theorem_in_mcs hD_mcs (Bimodal.Theorems.Propositional.double_negation η)) h_dne_D,
+              h_B_sub_D, hBB', hBB'', hBB'' h_xi_g⟩
+          · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
+              lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_xi_g h_nubr3
+            exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
+        · by_cases h_eta_neg_g : η.neg ∈ χ.g x'' pt
+          · by_cases h_xi_g : ξ ∈ χ.g x'' pt
+            · by_cases h_conj_g : Formula.and ξ (Formula.snce ξ η) ∈ χ.g x'' pt
+              · -- conj in g but not-condition(i): conj not in f(x'')
+                have h_conj_not_f : Formula.and ξ (Formula.snce ξ η) ∉ χ.f x'' :=
+                  fun h => h_cond_i ⟨h, h_xi_g⟩
+                have h_neg_disj : (Formula.or η (Formula.and ξ (Formula.snce ξ η))).neg ∈ χ.f x'' := by
+                  have h1 : η.neg ∈ χ.f x'' := by
+                    rcases SetMaximalConsistent.negation_complete h_mcs_x'' η with h | h
+                    · exact absurd h (h_guard_implies_no_event h_xi_g)
+                    · exact h
+                  have h2 : (Formula.and ξ (Formula.snce ξ η)).neg ∈ χ.f x'' := by
+                    rcases SetMaximalConsistent.negation_complete h_mcs_x''
+                      (Formula.and ξ (Formula.snce ξ η)) with h | h
+                    · exact absurd h h_conj_not_f
+                    · exact h
+                  exact SetMaximalConsistent.implication_property h_mcs_x''
+                    (theorem_in_mcs h_mcs_x''
+                      (Bimodal.Theorems.Propositional.demorgan_disj_neg_backward η
+                        (Formula.and ξ (Formula.snce ξ η))))
+                    (conj_mcs h_mcs_x'' η.neg (Formula.and ξ (Formula.snce ξ η)).neg h1 h2)
+                obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ :=
+                  lemma_2_8_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_neg_disj h_nubr3
+                exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', hBB'' h_xi_g⟩
+              · have h_bx5 := self_accum_since_mcs h_mcs_start ξ η h_since_start
+                obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB'', _⟩ :=
+                  lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj
+                    (Formula.and ξ (Formula.snce ξ η)) η h_bx5 h_conj_g h_nubr3
+                exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', hBB'' h_xi_g⟩
+            · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
+                lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_xi_g h_nubr3
+              exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
+          · by_cases h_xi_g2 : ξ ∈ χ.g x'' pt
+            · have h_sp := lemma_2_6_splitting h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj
+                η.neg h_eta_neg_g h_nubr3
+              obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
+              exact ⟨B', D, B'', hB', hB'', hD_mcs,
+                SetMaximalConsistent.implication_property hD_mcs
+                  (theorem_in_mcs hD_mcs (Bimodal.Theorems.Propositional.double_negation η)) h_dne_D,
+                h_B_sub_D, hBB', hBB'', hBB'' h_xi_g2⟩
+            · obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
+                lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_xi_g2 h_nubr3
+              exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
+      let B' := h_split_result.choose
+      let D := h_split_result.choose_spec.choose
+      let B'' := h_split_result.choose_spec.choose_spec.choose
+      have h_split_prop := h_split_result.choose_spec.choose_spec.choose_spec
+      have h_B'_max : BurgessR3Maximal (χ.f x'') B' D := h_split_prop.1
+      have h_B''_max : BurgessR3Maximal D B'' (χ.f pt) := h_split_prop.2.1
+      have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
+      have h_eta_D : η ∈ D := h_split_prop.2.2.2.1
+      have h_g_sub_D : χ.g x'' pt ⊆ D := h_split_prop.2.2.2.2.1
+      have h_g_sub_B' : χ.g x'' pt ⊆ B' := h_split_prop.2.2.2.2.2.1
+      have h_g_sub_B'' : χ.g x'' pt ⊆ B'' := h_split_prop.2.2.2.2.2.2.1
+      have h_xi_B'' : ξ ∈ B'' := h_split_prop.2.2.2.2.2.2.2
+      set z := (x'' + pt) / 2 with hz_def
+      have hz_lt_pt : z < pt := by linarith
+      have hx''_lt_z : x'' < z := by linarith
+      have hz_notin : z ∉ χ.dom := by
+        intro h_mem_z; exact h_adj_x''s.2.2.2 z h_mem_z ⟨hx''_lt_z, hz_lt_pt⟩
+      let g' := fun a b =>
+        if a = x'' ∧ b = z then B'
+        else if a = z ∧ b = pt then B''
+        else χ.g a b
+      let val : Chronicle := ⟨fun q => if q = z then D else χ.f q, g', insert z χ.dom⟩
+      have h_c2'_new : val.c2' := by
+        intro a b h_adj_new
+        obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
+        simp only [val, Finset.mem_insert] at ha hb
+        rcases ha with rfl | ha <;> rcases hb with rfl | hb
+        · exact absurd hab (lt_irrefl _)
+        · have hb_eq : b = pt := by
+            by_contra hb_ne
+            have hb_ge : pt ≤ b := by
+              by_contra hlt; push_neg at hlt
+              exact h_adj_x''s.2.2.2 b hb ⟨lt_trans hx''_lt_z hab, hlt⟩
+            exact h_no_between pt (Finset.mem_insert_of_mem h_start_mem) ⟨hz_lt_pt, lt_of_le_of_ne hb_ge (Ne.symm hb_ne)⟩
+          subst hb_eq
+          show BurgessR3Maximal (if z = z then D else χ.f z) (g' z b) (if b = z then D else χ.f b)
+          have hz_ne_x'' : z ≠ x'' := ne_of_gt hx''_lt_z
+          have hb_ne_z : b ≠ z := ne_of_gt hz_lt_pt
+          simp only [ite_true, hb_ne_z, ite_false, g', hz_ne_x'', false_and, ite_false, and_self, ite_true]
+          exact h_B''_max
+        · -- a is in old domain, a < z. Show a = x''.
+          have ha_le_x'' : a ≤ x'' := by
+            by_contra hgt; push_neg at hgt
+            exact h_adj_x''s.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_pt⟩
+          have ha_eq_x'' : a = x'' := by
+            by_contra ha_ne
+            exact h_no_between x'' (Finset.mem_insert_of_mem hx''_dom) ⟨lt_of_le_of_ne ha_le_x'' ha_ne, hx''_lt_z⟩
+          subst ha_eq_x''
+          dsimp only [val, g']
+          simp only [ne_of_lt hx''_lt_z, if_false, if_true, and_self, if_true, ne_of_gt hx''_lt_z]
+          exact h_B'_max
+        · have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
+          have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
+          show BurgessR3Maximal (if a = z then D else χ.f a) (g' a b) (if b = z then D else χ.f b)
+          simp only [ha_ne, hb_ne, ite_false, g', and_false, false_and]
+          exact h_c2' a b ⟨ha, hb, hab, fun u hu huab => h_no_between u (Finset.mem_insert_of_mem hu) huab⟩
+      exact { val := val
+              dom_sub := Finset.subset_insert z χ.dom
+              c0 := by
+                intro q hq; show SetMaximalConsistent (if q = z then D else χ.f q)
+                simp only [val, Finset.mem_insert] at hq
+                rcases hq with rfl | hq
+                · simp only [ite_true]; exact h_D_mcs
+                · simp only [show q ≠ z from fun h => hz_notin (h ▸ hq), ite_false]; exact h_c0 q hq
+              c2' := h_c2'_new
+              f_agrees := by
+                intro x hx; dsimp only [val]
+                have hx_ne_z : x ≠ z := by intro h; exact hz_notin (h ▸ hx)
+                simp only [hx_ne_z, if_false]
+              g_agrees := by
+                intro a b ha hb; show g' a b = χ.g a b; simp only [g']
+                simp only [show a ≠ z from fun h => hz_notin (h ▸ ha),
+                  show b ≠ z from fun h => hz_notin (h ▸ hb), false_and, and_false, ite_false]
+              witness := z
+              witness_mem := Finset.mem_insert_self z χ.dom
+              witness_lt := hz_lt_pt
+              witness_event := by show η ∈ (if z = z then D else χ.f z); simp only [ite_true]; exact h_eta_D
+              witness_guard := by
+                intro a b h_adj_ab h_le_a h_le_b
+                obtain ⟨ha_dom, hb_dom, hab_lt, h_no_btw⟩ := h_adj_ab
+                simp only [val, Finset.mem_insert] at ha_dom hb_dom
+                have hb_eq : b = pt := by
+                  by_contra hb_ne
+                  have hb_lt : b < pt := lt_of_le_of_ne h_le_b hb_ne
+                  rcases hb_dom with rfl | hb_mem
+                  · -- b = z: then a < z and z ≤ a, contradiction
+                    exact absurd h_le_a (not_le.mpr hab_lt)
+                  · -- b ∈ old dom, b < pt, and z ≤ a < b so x'' < z ≤ a < b < pt
+                    exact h_adj_x''s.2.2.2 b hb_mem
+                      ⟨lt_of_lt_of_le hx''_lt_z (le_trans h_le_a (le_of_lt hab_lt)), hb_lt⟩
+                subst hb_eq
+                have ha_eq : a = z := by
+                  by_contra ha_ne
+                  -- z ≤ a and a ≠ z gives z < a
+                  have ha_gt : z < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
+                  -- z < a < b = pt, so a is between z and pt. But z ∈ val.dom...
+                  -- Actually, a > z. After subst hb_eq, b = pt. So a < pt (from hab_lt).
+                  -- a ∈ val.dom, z < a < pt. z ∈ val.dom. So h_no_btw z gives contradiction... no, h_no_btw says no points between a and b.
+                  -- Actually adjacency h_no_btw says ¬∃ u, u between a and b.
+                  -- We have z < a and z ∈ val.dom... but z is NOT between a and b since a > z.
+                  -- The right approach: if a ∈ χ.dom, then x'' < a < pt (since a > z > x''), contradicting h_adj_x''s.
+                  -- If a ∉ χ.dom, then a is a new point. But there are no new points in val (this is the split case, not recursion).
+                  -- Actually, this is the split case in c5_backward_walk. val = insert z χ.dom. The only new point is z.
+                  -- So a ∈ val.dom means a = z ∨ a ∈ χ.dom. Since a ≠ z, a ∈ χ.dom.
+                  rcases ha_dom with rfl | ha_mem
+                  · exact absurd (le_refl z) (not_le.mpr ha_gt)
+                  · -- a ∈ χ.dom, z < a, and a < b = pt. So x'' < z < a < pt, contradicts h_adj_x''s.
+                    exact h_adj_x''s.2.2.2 a ha_mem ⟨lt_trans hx''_lt_z ha_gt, hab_lt⟩
+                subst ha_eq
+                -- Need: ξ ∈ g'(z, b) where b = pt (after subst). g' checks:
+                -- z = x'' ∧ b = z? No (z ≠ x''). Then z = z ∧ b = pt? Yes. Result: B''.
+                show ξ ∈ g' z b
+                simp only [g', show z ≠ x'' from ne_of_gt hx''_lt_z, false_and, ite_false, and_self, ite_true]
+                exact h_xi_B''
+              g_sub_f_insert := by
+                intro a b h_adj w hw hw_not haw hwb
+                simp only [val, Finset.mem_insert] at hw
+                rcases hw with rfl | hw
+                · show χ.g a b ⊆ (if z = z then D else χ.f z); simp only [ite_true]
+                  have hab : a = x'' ∧ b = pt := by
+                    constructor
+                    · by_contra ha_ne
+                      rcases lt_or_gt_of_ne ha_ne with h | h
+                      · exact h_adj.2.2.2 x'' hx''_dom ⟨h, lt_trans hx''_lt_z hwb⟩
+                      · exact h_adj_x''s.2.2.2 a h_adj.1 ⟨h, lt_trans haw hz_lt_pt⟩
+                    · by_contra hb_ne
+                      rcases lt_or_gt_of_ne hb_ne with h | h
+                      · exact h_adj_x''s.2.2.2 b h_adj.2.1 ⟨lt_trans hx''_lt_z hwb, h⟩
+                      · exact h_adj.2.2.2 pt h_start_mem ⟨lt_trans haw hz_lt_pt, h⟩
+                  rw [hab.1, hab.2]; exact h_g_sub_D
+                · exact absurd hw hw_not
+              g_sub_g_new := by
+                intro a b h_adj w hw hw_not haw hwb
+                simp only [val, Finset.mem_insert] at hw
+                rcases hw with rfl | hw
+                · have ha_eq : a = x'' := by
+                    by_contra ha_ne
+                    rcases lt_or_gt_of_ne ha_ne with h | h
+                    · exact h_adj.2.2.2 x'' hx''_dom ⟨h, lt_trans hx''_lt_z hwb⟩
+                    · exact h_adj_x''s.2.2.2 a h_adj.1 ⟨h, lt_trans haw hz_lt_pt⟩
+                  have hb_eq : b = pt := by
+                    by_contra hb_ne
+                    rcases lt_or_gt_of_ne hb_ne with h | h
+                    · exact h_adj_x''s.2.2.2 b h_adj.2.1 ⟨lt_trans hx''_lt_z hwb, h⟩
+                    · exact h_adj.2.2.2 pt h_start_mem ⟨lt_trans haw hz_lt_pt, h⟩
+                  subst ha_eq; subst hb_eq; constructor
+                  · dsimp only [val, g']; simp only [and_self, if_true]; exact h_g_sub_B'
+                  · dsimp only [val, g']
+                    simp only [ne_of_gt hx''_lt_z, false_and, if_false, and_self, if_true]
+                    exact h_g_sub_B''
+                · exact absurd hw hw_not
+              dom_new_unique := by
+                intro u v hu hu_not hv hv_not
+                simp only [val, Finset.mem_insert] at hu hv
+                rcases hu with rfl | hu <;> rcases hv with rfl | hv
+                · rfl
+                · exact absurd hv hv_not
+                · exact absurd hu hu_not
+                · exact absurd hu hu_not
+              new_point_before := by
+                intro w hw hw_not
+                simp only [val, Finset.mem_insert] at hw
+                rcases hw with rfl | hw
+                · exact hz_lt_pt
+                · exact absurd hw hw_not }
+termination_by (χ.dom.filter (fun v => v < pt)).card
+decreasing_by
+  all_goals simp_all only [gt_iff_lt]
+  all_goals exact h_term
+
+/--
 Attempt to eliminate a potential counterexample. If it is not an actual
 counterexample for the current chronicle, the chronicle is returned unchanged.
 Otherwise, a new chronicle with the counterexample eliminated is returned.
@@ -1712,7 +2256,8 @@ noncomputable def eliminate_potential_counterexample
     -- Backward (Since) C5' case
     -- Burgess C5b counterexample check (g-value based, mirror of C5a):
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.snce pc.ξ pc.η ∈ χ.f pc.x ∧
-        ¬∃ y ∈ χ.dom, y < pc.x ∧ pc.η ∈ χ.f y ∧ pc.ξ ∈ χ.g y pc.x
+        ¬∃ y ∈ χ.dom, y < pc.x ∧ pc.η ∈ χ.f y ∧
+          (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ pc.x → pc.ξ ∈ χ.g a b)
     · obtain ⟨h_mem, h_since, h_no_wit⟩ := h_actual
       have h_mcs_x := h_c0 pc.x h_mem
       have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
@@ -1723,28 +2268,20 @@ noncomputable def eliminate_potential_counterexample
       by_cases h_eq_min : pc.x = min_old
       · -- **Case n=0**: pc.x is the minimum domain point.
         -- Place y before all points. Only new pair is (y, pc.x).
+        -- Use lemma_2_4_since_with_guard for guard ξ ∈ B.
         have h_fresh := exists_rat_lt_finset χ.dom
         let y := h_fresh.choose
         have hy_lt : ∀ s ∈ χ.dom, y < s := h_fresh.choose_spec.1
         have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
-        have h_P_η : Formula.some_past pc.η ∈ χ.f pc.x := by
-          have h_ax : DerivationTree [] ((Formula.snce pc.ξ pc.η).imp (Formula.some_past pc.η)) :=
-            DerivationTree.axiom [] _ (Axiom.since_P pc.ξ pc.η)
-          exact SetMaximalConsistent.implication_property h_mcs_x
-            (theorem_in_mcs h_mcs_x h_ax) h_since
-        have h_seed := past_temporal_witness_seed_consistent (χ.f pc.x) h_mcs_x pc.η h_P_η
-        have h_lind := set_lindenbaum _ h_seed
-        let C := h_lind.choose
-        have h_sup : past_temporal_witness_seed (χ.f pc.x) pc.η ⊆ C := h_lind.choose_spec.1
-        have h_C_mcs : SetMaximalConsistent C := h_lind.choose_spec.2
-        have h_η_C : pc.η ∈ C := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
-        have h_hc_sub : h_content (χ.f pc.x) ⊆ C :=
-          Set.Subset.trans (h_content_subset_past_temporal_witness_seed (χ.f pc.x) pc.η) h_sup
+        have h_l24s := lemma_2_4_since_with_guard h_mcs_x pc.ξ pc.η h_since h_nubr3
+        let B_new := h_l24s.choose
+        let C := h_l24s.choose_spec.choose
+        have h_l24s_prop := h_l24s.choose_spec.choose_spec
+        have h_C_mcs : SetMaximalConsistent C := h_l24s_prop.1
+        have h_η_C : pc.η ∈ C := h_l24s_prop.2.1
+        have h_ξ_B : pc.ξ ∈ B_new := h_l24s_prop.2.2.2.1
+        have h_B_new_r3m : BurgessR3Maximal C B_new (χ.f pc.x) := h_l24s_prop.2.2.2.2
         have h_y_lt_min : y < min_old := hy_lt min_old h_min_mem
-        have h_B_exists := burgessR3Maximal_from_h_content_sub h_C_mcs h_mcs_x h_hc_sub
-          (h_nubr3 C (χ.f pc.x) h_C_mcs h_mcs_x)
-        let B_new := h_B_exists.choose
-        have h_B_new_r3m : BurgessR3Maximal C B_new (χ.f pc.x) := h_B_exists.choose_spec
         let g' := fun a b =>
           if a = y ∧ b = min_old then B_new
           else χ.g a b
@@ -1809,10 +2346,33 @@ noncomputable def eliminate_potential_counterexample
                 c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c5_backward_witness := by
                   intro _ _ _
-                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_lt pc.x h_mem, ?_⟩
-                  show pc.η ∈ (if y = y then C else χ.f y)
-                  simp only [ite_true]
-                  exact h_η_C
+                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_lt pc.x h_mem, ?_, ?_⟩
+                  · show pc.η ∈ (if y = y then C else χ.f y)
+                    simp only [ite_true]; exact h_η_C
+                  · -- Guard: only adjacent pair from y to pc.x is (y, min_old)
+                    intro a b h_adj_ab h_le_a h_le_b
+                    have ha_eq : a = y := by
+                      have ha_dom := h_adj_ab.1
+                      simp only [χ', Finset.mem_insert] at ha_dom
+                      rcases ha_dom with rfl | ha_old
+                      · rfl
+                      · have : min_old ≤ a := h_min_le a ha_old
+                        linarith [h_adj_ab.2.2.1]
+                    subst ha_eq
+                    have hb_ne_y : b ≠ y := ne_of_gt h_adj_ab.2.2.1
+                    have hb_old : b ∈ χ.dom := by
+                      have hb_dom := h_adj_ab.2.1
+                      simp only [χ', Finset.mem_insert] at hb_dom
+                      rcases hb_dom with rfl | h
+                      · exact absurd rfl hb_ne_y
+                      · exact h
+                    have hb_eq : b = min_old := by
+                      have : min_old ≤ b := h_min_le b hb_old
+                      have : b ≤ min_old := by rw [← h_eq_min]; exact h_le_b
+                      exact le_antisymm ‹b ≤ min_old› ‹min_old ≤ b›
+                    subst hb_eq
+                    show pc.ξ ∈ g' y min_old
+                    simp only [g', and_self, ite_true]; exact h_ξ_B
                 c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -1861,7 +2421,18 @@ noncomputable def eliminate_potential_counterexample
         have h_mcs_x'' := h_c0 x'' hx''_dom
         -- Burgess 2.10' (ii): guard ∈ g(x'',x) implies event ∉ f(x'')
         have h_guard_implies_no_event_back : pc.ξ ∈ χ.g x'' pc.x → pc.η ∉ χ.f x'' :=
-          fun h_guard h_event => h_no_wit ⟨x'', hx''_dom, hx''_lt_x, h_event, h_guard⟩
+          fun h_guard h_event => h_no_wit ⟨x'', hx''_dom, hx''_lt_x, h_event,
+            fun a b h_adj_ab h_le_a h_le_b => by
+              have ha_eq : a = x'' := by
+                by_contra ha_ne
+                have ha_gt : x'' < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
+                exact h_adj_x''x.2.2.2 a h_adj_ab.1 ⟨ha_gt, lt_of_lt_of_le h_adj_ab.2.2.1 h_le_b⟩
+              have hb_eq : b = pc.x := by
+                rw [ha_eq] at h_adj_ab
+                by_contra hb_ne
+                have hb_lt : b < pc.x := lt_of_le_of_ne h_le_b hb_ne
+                exact h_adj_x''x.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hb_lt⟩
+              rw [ha_eq, hb_eq]; exact h_guard⟩
         -- Get BurgessR3Maximal for the adjacent pair (x'', pc.x)
         have h_r3m_adj := h_c2' x'' pc.x h_adj_x''x
         have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x'' h_mcs_x
@@ -1871,355 +2442,24 @@ noncomputable def eliminate_potential_counterexample
         -- If yes, the Since counterexample persists backward. We walk backward.
         -- If no, splitting at (x'', pc.x) succeeds.
         by_cases h_cond_i_back : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.f x'' ∧ pc.ξ ∈ χ.g x'' pc.x
-        · -- **Condition (i) backward**: conj_since ∈ f(x'') and xi ∈ g(x'',pc.x), so snce(xi,eta) ∈ f(x'').
-          -- Backward walk: find leftmost w ≤ pc.x with snce(xi,eta) ∈ f(w)
-          have h_snce_x'' : Formula.snce pc.ξ pc.η ∈ χ.f x'' :=
-            conj_right_mcs h_mcs_x'' pc.ξ (Formula.snce pc.ξ pc.η) h_cond_i_back.1
-          haveI : DecidablePred (fun w => w ≤ pc.x ∧ Formula.snce pc.ξ pc.η ∈ χ.f w) :=
-            fun _ => Classical.dec _
-          set W := χ.dom.filter (fun w => w ≤ pc.x ∧ Formula.snce pc.ξ pc.η ∈ χ.f w) with W_def
-          have hW_ne : W.Nonempty :=
-            ⟨pc.x, Finset.mem_filter.mpr ⟨h_mem, le_refl _, h_since⟩⟩
-          set w_min := W.min' hW_ne with w_min_def
-          have hw_min_mem_W := Finset.min'_mem W hW_ne
-          have hw_min_dom : w_min ∈ χ.dom := (Finset.mem_filter.mp hw_min_mem_W).1
-          have hw_min_le : w_min ≤ pc.x := (Finset.mem_filter.mp hw_min_mem_W).2.1
-          have h_snce_w_min : Formula.snce pc.ξ pc.η ∈ χ.f w_min :=
-            (Finset.mem_filter.mp hw_min_mem_W).2.2
-          have h_mcs_w_min := h_c0 w_min hw_min_dom
-          by_cases h_w_is_min : w_min = min_old
-          · -- Walk Case A: snce persists to min_old. Insert point below min_old.
-            -- Use past_temporal_witness_seed approach (mirror of n=0 case).
-            have h_fresh := exists_rat_lt_finset χ.dom
-            let y := h_fresh.choose
-            have hy_lt : ∀ s ∈ χ.dom, y < s := h_fresh.choose_spec.1
-            have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
-            have h_P_eta := since_implies_P_in_mcs h_mcs_w_min h_snce_w_min
-            have h_seed := past_temporal_witness_seed_consistent (χ.f w_min) h_mcs_w_min pc.η h_P_eta
-            have h_lind := set_lindenbaum _ h_seed
-            let C' := h_lind.choose
-            have h_sup : past_temporal_witness_seed (χ.f w_min) pc.η ⊆ C' := h_lind.choose_spec.1
-            have h_C'_mcs : SetMaximalConsistent C' := h_lind.choose_spec.2
-            have h_η_C' : pc.η ∈ C' := h_sup (psi_mem_past_temporal_witness_seed (χ.f w_min) pc.η)
-            have h_hc_sub : h_content (χ.f w_min) ⊆ C' :=
-              Set.Subset.trans (h_content_subset_past_temporal_witness_seed (χ.f w_min) pc.η) h_sup
-            have h_B_exists := burgessR3Maximal_from_h_content_sub h_C'_mcs h_mcs_w_min h_hc_sub
-              (h_nubr3 C' (χ.f w_min) h_C'_mcs h_mcs_w_min)
-            let B_new := h_B_exists.choose
-            have h_B_new_max : BurgessR3Maximal C' B_new (χ.f w_min) := h_B_exists.choose_spec
-            have h_min_lt_y : y < min_old := hy_lt min_old h_min_mem
-            let g' := fun a b => if a = y ∧ b = min_old then B_new else χ.g a b
-            let χ' : Chronicle := ⟨fun q => if q = y then C' else χ.f q, g', insert y χ.dom⟩
-            have h_c2'_new : χ'.c2' := by
-              intro a b h_adj_new
-              obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
-              simp only [χ', Finset.mem_insert] at ha hb
-              rcases ha with rfl | ha <;> rcases hb with rfl | hb
-              · exact absurd hab (lt_irrefl _)
-              · -- a = y, b ∈ old dom: must be (y, min_old)
-                have hb_eq : b = min_old := by
-                  by_contra hb_ne
-                  have hb_le : min_old ≤ b := h_min_le b hb
-                  have hb_gt : min_old < b := lt_of_le_of_ne hb_le (Ne.symm hb_ne)
-                  exact h_no_between min_old (Finset.mem_insert_of_mem h_min_mem) ⟨h_min_lt_y, hb_gt⟩
-                subst hb_eq
-                show BurgessR3Maximal (if y = y then C' else χ.f y) (g' y min_old) (if min_old = y then C' else χ.f min_old)
-                have hmin_ne_y : min_old ≠ y := ne_of_gt h_min_lt_y
-                simp only [ite_true, hmin_ne_y, ite_false, g', and_self, ite_true]
-                rw [← h_w_is_min]; exact h_B_new_max
-              · -- a ∈ old dom, b = y: impossible (y < all dom)
-                exact absurd hab (not_lt.mpr (le_of_lt (hy_lt a ha)))
-              · -- Both old: preserved
-                have ha_ne : a ≠ y := fun h => hy_notin (h ▸ ha)
-                have hb_ne : b ≠ y := fun h => hy_notin (h ▸ hb)
-                show BurgessR3Maximal (if a = y then C' else χ.f a) (g' a b) (if b = y then C' else χ.f b)
-                simp only [ha_ne, hb_ne, ite_false, g', false_and, ite_false]
-                exact h_c2' a b ⟨ha, hb, hab, fun u hu huab => h_no_between u (Finset.mem_insert_of_mem hu) huab⟩
-            exact { val := χ'
-                    dom_sub := Finset.subset_insert y χ.dom
-                    c0 := by
-                      intro q hq; show SetMaximalConsistent (if q = y then C' else χ.f q)
-                      change q ∈ insert y χ.dom at hq
-                      simp only [Finset.mem_insert] at hq
-                      rcases hq with rfl | hq
-                      · simp only [ite_true]; exact h_C'_mcs
-                      · have h_ne : q ≠ y := fun h => hy_notin (h ▸ hq)
-                        simp only [h_ne, ite_false]; exact h_c0 q hq
-                    f_agrees := by
-                      intro x hx
-                      have h_ne : x ≠ y := fun h => hy_notin (h ▸ hx)
-                      exact if_neg h_ne
-                    g_agrees := by
-                      intro a b ha hb; show g' a b = χ.g a b; simp only [g']
-                      have ha_ne : a ≠ y := fun h => hy_notin (h ▸ ha)
-                      simp only [ha_ne, false_and, ite_false]
-                    c2' := h_c2'_new
-                    c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                    c5_backward_witness := by
-                      intro _ _ _
-                      refine ⟨y, Finset.mem_insert_self y χ.dom, ?_, ?_⟩
-                      · exact lt_of_lt_of_le (hy_lt w_min hw_min_dom) hw_min_le
-                      · show pc.η ∈ (if y = y then C' else χ.f y)
-                        simp only [ite_true]; exact h_η_C'
-                    c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                    c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                    density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                    g_sub_f_insert := by
-                      intro a b h_adj w hw hw_not haw hwb
-                      change w ∈ insert y χ.dom at hw
-                      simp only [Finset.mem_insert] at hw
-                      rcases hw with rfl | hw
-                      · exact absurd haw (not_lt.mpr (le_of_lt (hy_lt a h_adj.1)))
-                      · exact absurd hw hw_not
-                    g_sub_g_new := by
-                      intro a b h_adj w hw hw_not haw hwb
-                      change w ∈ insert y χ.dom at hw
-                      simp only [Finset.mem_insert] at hw
-                      rcases hw with rfl | hw
-                      · exact absurd haw (not_lt.mpr (le_of_lt (hy_lt a h_adj.1)))
-                      · exact absurd hw hw_not
-                    dom_new_unique := by
-                      intro u v hu hu_not hv hv_not
-                      change u ∈ insert y χ.dom at hu
-                      change v ∈ insert y χ.dom at hv
-                      simp only [Finset.mem_insert] at hu hv
-                      rcases hu with rfl | hu <;> rcases hv with rfl | hv
-                      · rfl
-                      · exact absurd hv hv_not
-                      · exact absurd hu hu_not
-                      · exact absurd hu hu_not }
-          · -- Walk Case B: w_min > min_old. Find predecessor and split.
-            have h_w_gt_min : min_old < w_min :=
-              lt_of_le_of_ne (h_min_le w_min hw_min_dom) (Ne.symm h_w_is_min)
-            set T_w := χ.dom.filter (fun v => decide (v < w_min)) with T_w_def
-            have hT_w_ne : T_w.Nonempty :=
-              ⟨min_old, Finset.mem_filter.mpr ⟨h_min_mem, by simp [h_w_gt_min]⟩⟩
-            set w_prev := T_w.max' hT_w_ne
-            have hw_prev_mem_T := Finset.max'_mem T_w hT_w_ne
-            have hw_prev_dom : w_prev ∈ χ.dom := (Finset.mem_filter.mp hw_prev_mem_T).1
-            have h_prev_lt_w : w_prev < w_min := by
-              have := (Finset.mem_filter.mp hw_prev_mem_T).2; simp only [decide_eq_true_eq] at this; exact this
-            have h_adj_pw : Adjacent χ.dom w_prev w_min := by
-              refine ⟨hw_prev_dom, hw_min_dom, h_prev_lt_w, ?_⟩
-              intro u hu ⟨hpu, huw⟩
-              have hu_T : u ∈ T_w := Finset.mem_filter.mpr ⟨hu, by simp [huw]⟩
-              linarith [Finset.le_max' T_w u hu_T]
-            -- snce(xi,eta) ∉ f(w_prev) by minimality of w_min
-            have h_snce_not_prev : Formula.snce pc.ξ pc.η ∉ χ.f w_prev := by
-              intro h_in
-              exact absurd (Finset.min'_le W w_prev
-                (Finset.mem_filter.mpr ⟨hw_prev_dom, le_of_lt (lt_of_lt_of_le h_prev_lt_w hw_min_le), h_in⟩))
-                (not_le.mpr h_prev_lt_w)
-            have h_conj_not_prev : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∉ χ.f w_prev :=
-              fun h_conj => h_snce_not_prev (conj_right_mcs (h_c0 w_prev hw_prev_dom) pc.ξ (Formula.snce pc.ξ pc.η) h_conj)
-            have h_mcs_w_prev := h_c0 w_prev hw_prev_dom
-            have h_r3m_pw := h_c2' w_prev w_min h_adj_pw
-            have h_B_sdc_pw := BurgessR3Maximal_sdc h_r3m_pw h_nubr3 h_mcs_w_prev h_mcs_w_min
-            have h_gc_pw := BurgessR3Maximal_g_content_sub h_r3m_pw h_mcs_w_prev h_mcs_w_min
-            by_cases h_eta_w_prev : pc.η ∈ χ.f w_prev
-            · -- eta ∈ f(w_prev): direct backward witness
-              exact { val := χ
-                      dom_sub := Finset.Subset.refl _
-                      c0 := h_c0
-                      f_agrees := fun _ _ => rfl
-                      g_agrees := fun _ _ _ _ => rfl
-                      c2' := h_c2'
-                      c5_forward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
-                      c5_backward_witness := by
-                        intro _ _ _
-                        exact ⟨w_prev, hw_prev_dom, lt_of_lt_of_le h_prev_lt_w hw_min_le, h_eta_w_prev⟩
-                      c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                      c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                      density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                      g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-                      g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-                      dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not }
-            · -- eta ∉ f(w_prev): split at (w_prev, w_min). Condition (i) fails here.
-              have h_eta_neg_w_prev : pc.η.neg ∈ χ.f w_prev := by
-                rcases SetMaximalConsistent.negation_complete h_mcs_w_prev pc.η with h | h
-                · exact absurd h h_eta_w_prev
-                · exact h
-              -- Full splitting case analysis at (w_prev, w_min)
-              have h_split_pw : ∃ B' D B'' : Set Formula,
-                  BurgessR3Maximal (χ.f w_prev) B' D ∧
-                  BurgessR3Maximal D B'' (χ.f w_min) ∧
-                  SetMaximalConsistent D ∧ pc.η ∈ D ∧
-                  χ.g w_prev w_min ⊆ D ∧
-                  χ.g w_prev w_min ⊆ B' ∧
-                  χ.g w_prev w_min ⊆ B'' := by
-                by_cases h_eta_g_pw : pc.η ∈ χ.g w_prev w_min
-                · have h_sp := lemma_2_6_splitting h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
-                    pc.η.neg (fun h_neg => set_consistent_not_both h_B_sdc_pw.1 pc.η h_eta_g_pw h_neg) h_nubr3
-                  obtain ⟨B', D, B'', hB', hB'', hD, h_dne, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_sp
-                  exact ⟨B', D, B'', hB', hB'', hD,
-                    SetMaximalConsistent.implication_property hD
-                      (theorem_in_mcs hD (Bimodal.Theorems.Propositional.double_negation pc.η)) h_dne, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
-                · by_cases h_eta_neg_g_pw : pc.η.neg ∈ χ.g w_prev w_min
-                  · by_cases h_xi_g_pw : pc.ξ ∈ χ.g w_prev w_min
-                    · by_cases h_conj_g_pw : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.g w_prev w_min
-                      · -- conj ∈ g, condition (i) false at w_prev: lemma_2_8_since
-                        have h2 : (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg ∈ χ.f w_prev := by
-                          rcases SetMaximalConsistent.negation_complete h_mcs_w_prev
-                            (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) with h | h
-                          · exact absurd h h_conj_not_prev
-                          · exact h
-                        have h_neg_disj_pw : (Formula.or pc.η (Formula.and pc.ξ (Formula.snce pc.ξ pc.η))).neg ∈ χ.f w_prev :=
-                          SetMaximalConsistent.implication_property h_mcs_w_prev
-                            (theorem_in_mcs h_mcs_w_prev
-                              (Bimodal.Theorems.Propositional.demorgan_disj_neg_backward pc.η
-                                (Formula.and pc.ξ (Formula.snce pc.ξ pc.η))))
-                            (conj_mcs h_mcs_w_prev pc.η.neg _ h_eta_neg_w_prev h2)
-                        obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B'', _⟩ := lemma_2_8_since h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
-                          pc.ξ pc.η h_snce_w_min h_neg_disj_pw h_nubr3
-                        exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
-                      · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'', _⟩ := lemma_2_7_since h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
-                          (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) pc.η (self_accum_since_mcs h_mcs_w_min pc.ξ pc.η h_snce_w_min) h_conj_g_pw h_nubr3
-                        exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
-                    · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'', _⟩ :=
-                        lemma_2_7_since h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
-                          pc.ξ pc.η h_snce_w_min h_xi_g_pw h_nubr3
-                      exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
-                  · have h_sp := lemma_2_6_splitting h_mcs_w_prev h_mcs_w_min h_r3m_pw h_B_sdc_pw h_gc_pw
-                      pc.η.neg h_eta_neg_g_pw h_nubr3
-                    obtain ⟨B', D, B'', hB', hB'', hD, h_dne, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_sp
-                    exact ⟨B', D, B'', hB', hB'', hD,
-                      SetMaximalConsistent.implication_property hD
-                        (theorem_in_mcs hD (Bimodal.Theorems.Propositional.double_negation pc.η)) h_dne, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
-              let B' := h_split_pw.choose
-              let D := h_split_pw.choose_spec.choose
-              let B'' := h_split_pw.choose_spec.choose_spec.choose
-              have h_split_prop := h_split_pw.choose_spec.choose_spec.choose_spec
-              have h_g_sub_B' : χ.g w_prev w_min ⊆ B' := h_split_prop.2.2.2.2.2.1
-              have h_g_sub_B'' : χ.g w_prev w_min ⊆ B'' := h_split_prop.2.2.2.2.2.2
-              -- Insert z = midpoint of w_prev and w_min
-              set z := (w_prev + w_min) / 2 with hz_def
-              have hz_lt_w : z < w_min := by linarith
-              have hprev_lt_z : w_prev < z := by linarith
-              have hz_notin : z ∉ χ.dom := fun h_mem_z => h_adj_pw.2.2.2 z h_mem_z ⟨hprev_lt_z, hz_lt_w⟩
-              let g' := fun a b =>
-                if a = w_prev ∧ b = z then B'
-                else if a = z ∧ b = w_min then B''
-                else χ.g a b
-              let χ' : Chronicle := ⟨fun q => if q = z then D else χ.f q, g', insert z χ.dom⟩
-              have h_c2'_new : χ'.c2' := by
-                intro a b h_adj_new
-                obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
-                simp only [χ', Finset.mem_insert] at ha hb
-                rcases ha with rfl | ha <;> rcases hb with rfl | hb
-                · exact absurd hab (lt_irrefl _)
-                · -- a = z, b ∈ old: must be (z, w_min)
-                  have hb_eq : b = w_min := by
-                    by_contra hb_ne
-                    have hb_ge : w_min ≤ b := by
-                      by_contra hlt; push_neg at hlt
-                      exact h_adj_pw.2.2.2 b hb ⟨lt_trans hprev_lt_z hab, hlt⟩
-                    exact h_no_between w_min (Finset.mem_insert_of_mem hw_min_dom)
-                      ⟨hz_lt_w, lt_of_le_of_ne hb_ge (Ne.symm hb_ne)⟩
-                  subst hb_eq
-                  show BurgessR3Maximal (if z = z then D else χ.f z) (g' z w_min) (if w_min = z then D else χ.f w_min)
-                  simp only [ite_true, show w_min ≠ z from by linarith, ite_false, g', and_false, ite_false, and_self, ite_true]
-                  exact h_split_prop.2.1
-                · -- a ∈ old, b = z: must be (w_prev, z)
-                  have ha_eq : a = w_prev := by
-                    by_contra ha_ne
-                    have ha_le : a ≤ w_prev := by
-                      by_contra hgt; push_neg at hgt
-                      exact h_adj_pw.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_w⟩
-                    exact h_no_between w_prev (Finset.mem_insert_of_mem hw_prev_dom)
-                      ⟨lt_of_le_of_ne ha_le ha_ne, hprev_lt_z⟩
-                  subst ha_eq
-                  show BurgessR3Maximal (if w_prev = z then D else χ.f w_prev) (g' w_prev z) (if z = z then D else χ.f z)
-                  simp only [show w_prev ≠ z from by linarith, ite_false, ite_true, g']
-                  exact h_split_prop.1
-                · -- Both old
-                  have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
-                  have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
-                  show BurgessR3Maximal (if a = z then D else χ.f a) (g' a b) (if b = z then D else χ.f b)
-                  simp only [ha_ne, hb_ne, ite_false, g', and_false, false_and]
-                  exact h_c2' a b ⟨ha, hb, hab, fun u hu huab => h_no_between u (Finset.mem_insert_of_mem hu) huab⟩
-              exact { val := χ'
-                      dom_sub := Finset.subset_insert z χ.dom
-                      c0 := by
-                        intro q hq; show SetMaximalConsistent (if q = z then D else χ.f q)
-                        change q ∈ insert z χ.dom at hq
-                        simp only [Finset.mem_insert] at hq
-                        rcases hq with rfl | hq
-                        · simp only [ite_true]; exact h_split_prop.2.2.1
-                        · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
-                          simp only [h_ne, ite_false]; exact h_c0 q hq
-                      f_agrees := by
-                        intro x hx
-                        have h_ne : x ≠ z := fun h => hz_notin (h ▸ hx)
-                        exact if_neg h_ne
-                      g_agrees := by
-                        intro a b ha hb; show g' a b = χ.g a b; simp only [g']
-                        have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
-                        have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
-                        simp only [ha_ne, hb_ne, false_and, and_false, ite_false]
-                      c2' := h_c2'_new
-                      c5_forward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
-                      c5_backward_witness := by
-                        intro _ _ _
-                        refine ⟨z, Finset.mem_insert_self z χ.dom, ?_, ?_⟩
-                        · exact lt_of_lt_of_le hz_lt_w hw_min_le
-                        · show pc.η ∈ (if z = z then D else χ.f z); simp only [ite_true]; exact h_split_prop.2.2.2.1
-                      c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                      c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                      density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                      g_sub_f_insert := by
-                        intro a b h_adj w hw hw_not haw hwb
-                        simp only [χ', Finset.mem_insert] at hw
-                        rcases hw with rfl | hw
-                        · show χ.g a b ⊆ (if z = z then D else χ.f z)
-                          simp only [ite_true]
-                          have hab : a = w_prev ∧ b = w_min := by
-                            constructor
-                            · by_contra ha_ne
-                              have : a < w_prev ∨ w_prev < a := lt_or_gt_of_ne ha_ne
-                              rcases this with h | h
-                              · exact h_adj.2.2.2 w_prev hw_prev_dom ⟨h, lt_trans hprev_lt_z hwb⟩
-                              · exact h_adj_pw.2.2.2 a h_adj.1 ⟨h, lt_trans haw hz_lt_w⟩
-                            · by_contra hb_ne
-                              have : b < w_min ∨ w_min < b := lt_or_gt_of_ne hb_ne
-                              rcases this with h | h
-                              · exact h_adj_pw.2.2.2 b h_adj.2.1 ⟨lt_trans hprev_lt_z hwb, h⟩
-                              · exact h_adj.2.2.2 w_min hw_min_dom ⟨lt_trans haw hz_lt_w, h⟩
-                          rw [hab.1, hab.2]; exact h_split_prop.2.2.2.2.1
-                        · exact absurd hw hw_not
-                      g_sub_g_new := by
-                        intro a b h_adj w hw hw_not haw hwb
-                        simp only [χ', Finset.mem_insert] at hw
-                        rcases hw with rfl | hw
-                        · have ha_eq : a = w_prev := by
-                            by_contra ha_ne
-                            rcases lt_or_gt_of_ne ha_ne with h | h
-                            · exact h_adj.2.2.2 w_prev hw_prev_dom ⟨h, lt_trans hprev_lt_z hwb⟩
-                            · exact h_adj_pw.2.2.2 a h_adj.1 ⟨h, lt_trans haw hz_lt_w⟩
-                          have hb_eq : b = w_min := by
-                            by_contra hb_ne
-                            rcases lt_or_gt_of_ne hb_ne with h | h
-                            · exact h_adj_pw.2.2.2 b h_adj.2.1 ⟨lt_trans hprev_lt_z hwb, h⟩
-                            · exact h_adj.2.2.2 w_min hw_min_dom ⟨lt_trans haw hz_lt_w, h⟩
-                          subst ha_eq; subst hb_eq
-                          constructor
-                          · show χ.g w_prev w_min ⊆ g' w_prev z
-                            simp only [g', and_self, ite_true]
-                            exact h_g_sub_B'
-                          · show χ.g w_prev w_min ⊆ g' z w_min
-                            simp only [g']
-                            have : ¬(z = w_prev ∧ w_min = z) := by
-                              intro ⟨h1, _⟩; linarith
-                            simp only [this, ite_false, and_self, ite_true]
-                            exact h_g_sub_B''
-                        · exact absurd hw hw_not
-                      dom_new_unique := by
-                        intro u v hu hu_not hv hv_not
-                        simp only [χ', Finset.mem_insert] at hu hv
-                        rcases hu with rfl | hu <;> rcases hv with rfl | hv
-                        · rfl
-                        · exact absurd hv hv_not
-                        · exact absurd hu hu_not
-                        · exact absurd hu hu_not }
+        · -- **Condition (i) backward**: use recursive backward walk helper
+          let r := c5_backward_walk χ h_c0 h_c2' h_nubr3 pc.ξ pc.η pc.x h_mem h_since h_no_wit
+          exact { val := r.val
+                  dom_sub := r.dom_sub
+                  c0 := r.c0
+                  f_agrees := r.f_agrees
+                  g_agrees := r.g_agrees
+                  c2' := r.c2'
+                  c5_forward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
+                  c5_backward_witness := by
+                    intro _ _ _
+                    exact ⟨r.witness, r.witness_mem, r.witness_lt, r.witness_event, r.witness_guard⟩
+                  c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+                  c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+                  density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+                  g_sub_f_insert := r.g_sub_f_insert
+                  g_sub_g_new := r.g_sub_g_new
+                  dom_new_unique := r.dom_new_unique }
         · -- **Not condition (i) backward**: splitting at (x'', pc.x) succeeds.
           have h_bot_not_g : Formula.bot ∉ χ.g x'' pc.x := by
             intro h_bot
@@ -2232,17 +2472,22 @@ noncomputable def eliminate_potential_counterexample
             pc.η ∈ D ∧
             χ.g x'' pc.x ⊆ D ∧
             χ.g x'' pc.x ⊆ B' ∧
-            χ.g x'' pc.x ⊆ B'' := by
+            χ.g x'' pc.x ⊆ B'' ∧
+            pc.ξ ∈ B'' := by
             by_cases h_eta_g : pc.η ∈ χ.g x'' pc.x
-            · have h_eta_neg_not_g : pc.η.neg ∉ χ.g x'' pc.x :=
-                fun h_neg => set_consistent_not_both h_B_sdc.1 pc.η h_eta_g h_neg
-              have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                pc.η.neg h_eta_neg_not_g h_nubr3
-              obtain ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_neg_neg_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_split
-              have h_eta_D : pc.η ∈ D :=
-                SetMaximalConsistent.implication_property h_D_mcs
-                  (theorem_in_mcs h_D_mcs (Bimodal.Theorems.Propositional.double_negation pc.η)) h_eta_neg_neg_D
-              exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
+            · by_cases h_xi_g : pc.ξ ∈ χ.g x'' pc.x
+              · have h_eta_neg_not_g : pc.η.neg ∉ χ.g x'' pc.x :=
+                  fun h_neg => set_consistent_not_both h_B_sdc.1 pc.η h_eta_g h_neg
+                have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
+                  pc.η.neg h_eta_neg_not_g h_nubr3
+                obtain ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_neg_neg_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_split
+                have h_eta_D : pc.η ∈ D :=
+                  SetMaximalConsistent.implication_property h_D_mcs
+                    (theorem_in_mcs h_D_mcs (Bimodal.Theorems.Propositional.double_negation pc.η)) h_eta_neg_neg_D
+                exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g⟩
+              · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
+                  lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj pc.ξ pc.η h_since h_xi_g h_nubr3
+                exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
             · by_cases h_eta_neg_g : pc.η.neg ∈ χ.g x'' pc.x
               · by_cases h_xi_g : pc.ξ ∈ χ.g x'' pc.x
                 · by_cases h_conj_g : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.g x'' pc.x
@@ -2267,22 +2512,27 @@ noncomputable def eliminate_potential_counterexample
                             (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)))) h_neg_conj_x''
                     obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', _⟩ := lemma_2_8_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
                       pc.ξ pc.η h_since h_neg_disj_x'' h_nubr3
-                    exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
+                    exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g⟩
                   · have h_bx5_since := self_accum_since_mcs h_mcs_x pc.ξ pc.η h_since
                     obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_B', h_B_sub_D, h_B_sub_B'', _⟩ := lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
                       (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) pc.η h_bx5_since h_conj_g h_nubr3
-                    exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
-                · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'', _⟩ :=
+                    exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g⟩
+                · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'', h_xi_B''⟩ :=
                     lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
                       pc.ξ pc.η h_since h_xi_g h_nubr3
-                  exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
-              · have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                  pc.η.neg h_eta_neg_g h_nubr3
-                obtain ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_neg_neg_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_split
-                have h_eta_D : pc.η ∈ D :=
-                  SetMaximalConsistent.implication_property h_D_mcs
-                    (theorem_in_mcs h_D_mcs (Bimodal.Theorems.Propositional.double_negation pc.η)) h_eta_neg_neg_D
-                exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
+                  exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_xi_B''⟩
+              · by_cases h_xi_g2 : pc.ξ ∈ χ.g x'' pc.x
+                · have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
+                    pc.η.neg h_eta_neg_g h_nubr3
+                  obtain ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_neg_neg_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_split
+                  have h_eta_D : pc.η ∈ D :=
+                    SetMaximalConsistent.implication_property h_D_mcs
+                      (theorem_in_mcs h_D_mcs (Bimodal.Theorems.Propositional.double_negation pc.η)) h_eta_neg_neg_D
+                  exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g2⟩
+                · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'', h_xi_B''⟩ :=
+                    lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
+                      pc.ξ pc.η h_since h_xi_g2 h_nubr3
+                  exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_xi_B''⟩
           let B' := h_split_result.choose
           let D := h_split_result.choose_spec.choose
           let B'' := h_split_result.choose_spec.choose_spec.choose
@@ -2293,7 +2543,8 @@ noncomputable def eliminate_potential_counterexample
           have h_η_D : pc.η ∈ D := h_split_prop.2.2.2.1
           have h_g_sub_D : χ.g x'' pc.x ⊆ D := h_split_prop.2.2.2.2.1
           have h_g_sub_B' : χ.g x'' pc.x ⊆ B' := h_split_prop.2.2.2.2.2.1
-          have h_g_sub_B'' : χ.g x'' pc.x ⊆ B'' := h_split_prop.2.2.2.2.2.2
+          have h_g_sub_B'' : χ.g x'' pc.x ⊆ B'' := h_split_prop.2.2.2.2.2.2.1
+          have h_ξ_B'' : pc.ξ ∈ B'' := h_split_prop.2.2.2.2.2.2.2
           -- Insert z = midpoint of x'' and pc.x
           set z := (x'' + pc.x) / 2 with hz_def
           have hz_lt_x : z < pc.x := by linarith
@@ -2385,10 +2636,33 @@ noncomputable def eliminate_potential_counterexample
                   c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c5_backward_witness := by
                     intro _ _ _
-                    refine ⟨z, Finset.mem_insert_self z χ.dom, hz_lt_x, ?_⟩
-                    show pc.η ∈ (if z = z then D else χ.f z)
-                    simp only [ite_true]
-                    exact h_η_D
+                    refine ⟨z, Finset.mem_insert_self z χ.dom, hz_lt_x, ?_, ?_⟩
+                    · show pc.η ∈ (if z = z then D else χ.f z)
+                      simp only [ite_true]; exact h_η_D
+                    · -- Guard: for all adjacent (a,b) with z ≤ a, b ≤ pc.x, show ξ ∈ g'(a,b)
+                      -- The only such pair is (z, pc.x)
+                      intro a b h_adj_ab h_le_a h_le_b
+                      obtain ⟨ha_dom, hb_dom, hab_lt, h_no_btw⟩ := h_adj_ab
+                      simp only [χ', Finset.mem_insert] at ha_dom hb_dom
+                      have hb_eq : b = pc.x := by
+                        by_contra hb_ne
+                        have hb_lt : b < pc.x := lt_of_le_of_ne h_le_b hb_ne
+                        rcases hb_dom with rfl | hb_mem
+                        · exact absurd h_le_a (not_le.mpr hab_lt)
+                        · exact h_adj_x''x.2.2.2 b hb_mem ⟨lt_of_lt_of_le hx''_lt_z (le_trans h_le_a (le_of_lt hab_lt)), hb_lt⟩
+                      subst hb_eq
+                      have ha_eq : a = z := by
+                        by_contra ha_ne
+                        -- z ≤ a and a ≠ z gives z < a
+                        have ha_gt : z < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
+                        rcases ha_dom with rfl | ha_mem
+                        · exact absurd (le_refl z) (not_le.mpr ha_gt)
+                        · -- a ∈ χ.dom, z < a < b = pc.x, so x'' < z < a < pc.x
+                          exact h_adj_x''x.2.2.2 a ha_mem ⟨lt_trans hx''_lt_z ha_gt, hab_lt⟩
+                      subst ha_eq
+                      show pc.ξ ∈ g' z pc.x
+                      simp only [g', show z ≠ x'' from ne_of_gt hx''_lt_z, false_and, ite_false, and_self, ite_true]
+                      exact h_ξ_B''
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2456,8 +2730,8 @@ noncomputable def eliminate_potential_counterexample
               c5_backward_witness := by
                 intro _ h_mem h_since
                 push_neg at h_actual
-                obtain ⟨y, hy_dom, hy_lt, hy_η, _⟩ := h_actual h_mem h_since
-                exact ⟨y, hy_dom, hy_lt, hy_η⟩
+                obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard⟩ := h_actual h_mem h_since
+                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard⟩
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)

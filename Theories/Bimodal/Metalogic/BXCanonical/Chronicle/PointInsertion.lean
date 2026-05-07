@@ -5286,4 +5286,156 @@ noncomputable def lemma_2_4_with_guard {A : Set Formula}
     h_burgessR h_burgessRSince h_nubr3
   exact ⟨B, C, h_C_mcs, h_β_C, h_g_sub, h_P_until_C, h_γ_B, h_r3m⟩
 
+/-! ## Lemma 2.4 Since with Guard (Burgess 2.4, backward direction)
+
+Mirror of `lemma_2_4_with_guard` for the Since direction. Given snce(γ,β) ∈ A (MCS),
+produces C, B such that β ∈ C, h_content(A) ⊆ C, γ ∈ B, BurgessR3Maximal(C, B, A).
+
+The enriched seed `{β} ∪ h_content(A) ∪ {untl(γ, α) : α ∈ A}` ensures
+burgessR(C, γ, A), then `burgessR_implies_burgessRSince` gives
+burgessRSince(A, γ, C), enabling `burgessR3Maximal_with_guard C A γ`. -/
+
+/-- **Enriched Since witness seed consistency**: `{β} ∪ h_content(A) ∪ {untl(γ, α) : α ∈ A}`
+is consistent when `snce(γ,β) ∈ MCS A`.
+
+Proof (mirror of until_witness_enriched_seed_consistent): For finite L ⊆ seed with L ⊢ ⊥,
+extract α-witnesses from Until-obligations, form α*, apply enrichment_since to get
+P(β ∧ untl(γ, α*)) ∈ A, then derive ⊥ from `{β ∧ untl(γ, α*)} ∪ h_content(A)`,
+contradicting past_temporal_witness_seed_consistent. -/
+theorem since_witness_enriched_seed_consistent {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_since : Formula.snce γ β ∈ A) :
+    SetConsistent ({β} ∪ h_content A ∪ {φ | ∃ α ∈ A, φ = Formula.untl γ α}) := by
+  intro L hL ⟨d⟩
+  have h_extract : ∀ φ ∈ L, (φ ∈ {β} ∪ h_content A) ∨ (∃ α ∈ A, φ = Formula.untl γ α) := by
+    intro φ hφ
+    have := hL φ hφ
+    simp only [Set.mem_union] at this
+    rcases this with (h | h) | h
+    · exact Or.inl (Set.mem_union_left _ h)
+    · exact Or.inl (Set.mem_union_right _ h)
+    · exact Or.inr h
+  haveI : ∀ φ : Formula, Decidable (∃ α ∈ A, φ = Formula.untl γ α) :=
+    fun φ => Classical.dec _
+  let get_alpha : Formula → Option Formula := fun φ =>
+    if h : ∃ α ∈ A, φ = Formula.untl γ α then some h.choose else none
+  let alpha_list := L.filterMap get_alpha
+  have h_get_alpha_some : ∀ (φ α : Formula),
+      get_alpha φ = some α → α ∈ A ∧ φ = Formula.untl γ α := by
+    intro φ α hga
+    simp only [get_alpha] at hga
+    split at hga
+    · rename_i h_ex; simp at hga; subst hga
+      exact ⟨h_ex.choose_spec.1, h_ex.choose_spec.2⟩
+    · simp at hga
+  have h_alphas_in_A : ∀ α ∈ alpha_list, α ∈ A := by
+    intro α hα
+    simp only [alpha_list, List.mem_filterMap] at hα
+    obtain ⟨φ, _, hga⟩ := hα
+    exact (h_get_alpha_some φ α hga).1
+  have h_untl_extracted : ∀ φ ∈ L, (∃ α ∈ A, φ = Formula.untl γ α) →
+      ∃ α ∈ alpha_list, φ = Formula.untl γ α := by
+    intro φ hφ h_ex
+    have h_ga_ne_none : get_alpha φ ≠ none := by
+      simp only [get_alpha, dif_pos h_ex]; exact Option.some_ne_none _
+    obtain ⟨α', hα'⟩ := Option.ne_none_iff_exists'.mp h_ga_ne_none
+    have ⟨hα'_A, hφ_eq'⟩ := h_get_alpha_some φ α' hα'
+    exact ⟨α', List.mem_filterMap.mpr ⟨φ, hφ, hα'⟩, hφ_eq'⟩
+  by_cases h_empty : alpha_list = []
+  · have hL' : ∀ φ ∈ L, φ ∈ {β} ∪ h_content A := by
+      intro φ hφ
+      rcases h_extract φ hφ with h_cov | h_untl
+      · exact h_cov
+      · exfalso
+        obtain ⟨α, hα_list, _⟩ := h_untl_extracted φ hφ h_untl
+        rw [h_empty] at hα_list; simp at hα_list
+    exact past_temporal_witness_seed_consistent A h_mcs β
+      (since_implies_P_in_mcs h_mcs h_since) L hL' ⟨d⟩
+  · set α_star := list_conj alpha_list
+    have hα_star_A : α_star ∈ A := list_conj_mem_mcs h_mcs alpha_list h_alphas_in_A
+    have h_enriched := enrichment_since_mcs h_mcs hα_star_A h_since
+    -- enrichment_since gives: snce(γ, β ∧ untl(γ, α_star)) ∈ A
+    -- since_implies_P gives: P(β ∧ untl(γ, α_star)) ∈ A
+    have h_P := since_implies_P_mcs h_mcs h_enriched
+    set ψ_star := Formula.and β (Formula.untl γ α_star)
+    have h_cons := past_temporal_witness_seed_consistent A h_mcs ψ_star h_P
+    suffices h_derives : ∀ φ ∈ L, φ ∈ h_content A ∨
+        (Nonempty (DerivationTree [] (ψ_star.imp φ))) by
+      haveI : DecidablePred (· ∈ h_content A) := fun φ => Classical.dec _
+      let Γ := L.map (fun φ => if φ ∈ h_content A then φ else ψ_star)
+      have hΓ_sub : ∀ ψ ∈ Γ, ψ ∈ {ψ_star} ∪ h_content A := by
+        intro ψ hψ
+        simp only [Γ, List.mem_map] at hψ
+        obtain ⟨φ, _, hψ_eq⟩ := hψ
+        split at hψ_eq
+        · subst hψ_eq; exact Set.mem_union_right _ ‹_›
+        · subst hψ_eq; exact Set.mem_union_left _ (Set.mem_singleton ψ_star)
+      have h_L_from_Γ : ∀ φ ∈ L, DerivationTree Γ φ := by
+        intro φ hφ
+        have h_d := h_derives φ hφ
+        by_cases h_hc : φ ∈ h_content A
+        · exact DerivationTree.assumption Γ φ
+            (List.mem_map.mpr ⟨φ, hφ, by simp [h_hc]⟩)
+        · have h_ne : Nonempty (DerivationTree [] (ψ_star.imp φ)) := by
+            rcases h_d with h | h
+            · exact absurd h h_hc
+            · exact h
+          let h_impl := h_ne.some
+          have hψ_in_Γ : ψ_star ∈ Γ := by
+            simp only [Γ, List.mem_map]
+            exact ⟨φ, hφ, by simp [h_hc]⟩
+          exact DerivationTree.modus_ponens Γ _ _
+            (DerivationTree.weakening [] Γ _ h_impl (List.nil_subset _))
+            (DerivationTree.assumption Γ ψ_star hψ_in_Γ)
+      exact h_cons Γ hΓ_sub ⟨derivation_from_implied Γ L Formula.bot h_L_from_Γ d⟩
+    intro φ hφ
+    rcases h_extract φ hφ with h_cov | h_untl_case
+    · simp only [Set.mem_union, Set.mem_singleton_iff] at h_cov
+      rcases h_cov with h_eq | h_hc
+      · rw [h_eq]
+        exact Or.inr ⟨lce_imp β (Formula.untl γ α_star)⟩
+      · exact Or.inl h_hc
+    · obtain ⟨α, hα_list, hφ_eq⟩ := h_untl_extracted φ hφ h_untl_case
+      rw [hφ_eq]
+      have h_proj := list_conj_implies_elem alpha_list α hα_list
+      -- G(α_star → α) gives untl(γ, α_star) → untl(γ, α) via BX2 (right_mono_until)
+      have h_G_proj := DerivationTree.temporal_necessitation _ h_proj
+      have h_bx2 := DerivationTree.axiom [] _ (Axiom.right_mono_until α_star α γ)
+      have h_untl_mono : DerivationTree [] ((Formula.untl γ α_star).imp (Formula.untl γ α)) :=
+        mp h_G_proj h_bx2
+      exact Or.inr ⟨imp_trans (rce_imp β (Formula.untl γ α_star)) h_untl_mono⟩
+
+/-- **Lemma 2.4 Since with guard** (Burgess 2.4, backward direction): Given MCS A with
+snce(γ, β) ∈ A, there exist B, C such that β ∈ C, h_content(A) ⊆ C,
+γ ∈ B, and BurgessR3Maximal(C, B, A).
+
+This is the Since mirror of `lemma_2_4_with_guard`. The guard membership
+follows from enriching the seed with Until-obligations
+{untl(γ, α) : α ∈ A}, which gives burgessR(C, γ, A), then
+burgessR_implies_burgessRSince and burgessR3Maximal_with_guard. -/
+noncomputable def lemma_2_4_since_with_guard {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A) (γ β : Formula)
+    (h_since : Formula.snce γ β ∈ A)
+    (h_nubr3 : NoUnivBurgessR3) :
+    ∃ B C : Set Formula, SetMaximalConsistent C ∧
+      β ∈ C ∧ h_content A ⊆ C ∧
+      γ ∈ B ∧ BurgessR3Maximal C B A := by
+  have h_seed_cons := since_witness_enriched_seed_consistent h_mcs γ β h_since
+  obtain ⟨C, h_sup, h_C_mcs⟩ := set_lindenbaum _ h_seed_cons
+  -- β ∈ C from seed
+  have h_β_C : β ∈ C := h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton β)))
+  -- h_content(A) ⊆ C from seed
+  have h_h_sub : h_content A ⊆ C := fun χ hχ =>
+    h_sup (Set.mem_union_left _ (Set.mem_union_right _ hχ))
+  -- burgessR(C, γ, A): ∀ α ∈ A, untl(γ, α) ∈ C (from Until-obligations in seed)
+  have h_burgessR : burgessR C γ A := by
+    intro α hα
+    exact h_sup (Set.mem_union_right _ ⟨α, hα, rfl⟩)
+  -- burgessRSince(A, γ, C) from burgessR via Lemma 2.3 forward
+  have h_burgessRSince := burgessR_implies_burgessRSince h_C_mcs h_mcs h_burgessR
+  -- B with γ ∈ B and BurgessR3Maximal(C, B, A)
+  obtain ⟨B, h_γ_B, h_r3m⟩ := burgessR3Maximal_with_guard C A γ h_C_mcs h_mcs
+    h_burgessR h_burgessRSince h_nubr3
+  exact ⟨B, C, h_C_mcs, h_β_C, h_h_sub, h_γ_B, h_r3m⟩
+
 end Bimodal.Metalogic.BXCanonical.Chronicle
