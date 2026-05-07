@@ -80,18 +80,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Guard Conjunction Theorem [NOT STARTED]
+### Phase 1: Guard Conjunction Theorem [COMPLETED]
 
 **Goal**: Prove that `U(α,γ) ∧ U(β,γ) → U(α∧β,γ)` (in our convention: `untl(α,γ) ∈ A ∧ untl(β,γ) ∈ A → untl(α∧β,γ) ∈ A` for MCS A). This is the prerequisite for strengthening lemma_2_7's Zorn seed.
 
 **Paper reference**: Derived from BX7 (linear_until / A7a) + BX3 (right_mono_until / A2a). BX7 with the same second argument: `U(α,δ) ∧ U(β,δ) → U(α∧β, δ∧δ) ∨ U(α∧β, δ∧β) ∨ U(α∧β, α∧δ)`. Since `⊢ δ∧δ → δ`, `⊢ δ∧β → δ`, and `⊢ α∧δ → δ`, BX3 (right monotonicity) gives `U(α∧β, δ)` in all three disjuncts.
 
 **Tasks**:
-- [ ] **Task 1.1**: Prove derivation-level guard conjunction: `⊢ untl(α,γ) ∧ untl(β,γ) → untl(α∧β,γ)`. Uses `linear_until` (BX7) + `right_mono_until` (BX3). ~20-30 lines in PointInsertion.lean or Theorems/TemporalDerived.lean.
-- [ ] **Task 1.2**: Prove MCS-level guard conjunction: for MCS A, `untl(α,γ) ∈ A → untl(β,γ) ∈ A → untl(α∧β,γ) ∈ A`. Follows from Task 1.1 via `mcs_mem_of_derivable`. ~10 lines.
-- [ ] **Task 1.3**: Prove set-level guard conjunction: `burgessR(A, α, D) → burgessR(A, β, D) → burgessR(A, α∧β, D)`. For all δ ∈ D: `untl(α,δ) ∈ A` and `untl(β,δ) ∈ A` → `untl(α∧β,δ) ∈ A`. ~15 lines.
-- [ ] **Task 1.4**: Mirror for Since: `snce(α,γ) ∧ snce(β,γ) → snce(α∧β,γ)`. Uses `linear_since` (BX7 mirror) + `right_mono_since`. ~20 lines.
-- [ ] **Task 1.5**: Run `lake build` to verify.
+- [x] **Task 1.1**: Prove derivation-level guard conjunction: `⊢ untl(α,γ) ∧ untl(β,γ) → untl(α∧β,γ)`. Uses `linear_until` (BX7) + `right_mono_until` (BX3). ~20-30 lines in PointInsertion.lean or Theorems/TemporalDerived.lean. **EXISTED**: `untl_conj_guard` in RRelation.lean:972 (MCS-level, combines 1.1+1.2).
+- [x] **Task 1.2**: Prove MCS-level guard conjunction: for MCS A, `untl(α,γ) ∈ A → untl(β,γ) ∈ A → untl(α∧β,γ) ∈ A`. Follows from Task 1.1 via `mcs_mem_of_derivable`. ~10 lines. **EXISTED**: `untl_conj_guard` in RRelation.lean:972.
+- [x] **Task 1.3**: Prove set-level guard conjunction: `burgessR(A, α, D) → burgessR(A, β, D) → burgessR(A, α∧β, D)`. For all δ ∈ D: `untl(α,δ) ∈ A` and `untl(β,δ) ∈ A` → `untl(α∧β,δ) ∈ A`. ~15 lines. **NEW**: `burgessR_conj` + `burgessRSince_conj` in RRelation.lean:1062,1080.
+- [x] **Task 1.4**: Mirror for Since: `snce(α,γ) ∧ snce(β,γ) → snce(α∧β,γ)`. Uses `linear_since` (BX7 mirror) + `right_mono_since`. ~20 lines. **EXISTED**: `snce_conj_guard` in RRelation.lean:1018.
+- [x] **Task 1.5**: Run `lake build` to verify. **PASSED**: Build completed successfully (1097 jobs).
 
 **Timing**: 2-3 hours
 

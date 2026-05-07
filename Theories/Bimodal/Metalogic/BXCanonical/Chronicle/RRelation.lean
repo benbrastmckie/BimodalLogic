@@ -1056,6 +1056,36 @@ theorem snce_conj_guard {A : Set Formula}
       exact SetMaximalConsistent.implication_property h_mcs h_D2_impl h_D2
 
 /--
+**Set-level guard conjunction for Until (burgessR)**: If `burgessR(A, α, C)` and
+`burgessR(A, β, C)`, then `burgessR(A, α∧β, C)`.
+
+Lifts `untl_conj_guard` pointwise: for every γ ∈ C, `untl(α, γ) ∈ A` and
+`untl(β, γ) ∈ A` imply `untl(α∧β, γ) ∈ A`.
+-/
+theorem burgessR_conj {A C : Set Formula}
+    (h_mcs : SetMaximalConsistent A)
+    {α β : Formula}
+    (hα : burgessR A α C) (hβ : burgessR A β C) :
+    burgessR A (Formula.and α β) C := by
+  intro γ hγ
+  exact untl_conj_guard h_mcs (hα γ hγ) (hβ γ hγ)
+
+/--
+**Set-level guard conjunction for Since (burgessRSince)**: If `burgessRSince(C, α, A)` and
+`burgessRSince(C, β, A)`, then `burgessRSince(C, α∧β, A)`.
+
+Lifts `snce_conj_guard` pointwise: for every γ ∈ A, `snce(α, γ) ∈ C` and
+`snce(β, γ) ∈ C` imply `snce(α∧β, γ) ∈ C`.
+-/
+theorem burgessRSince_conj {A C : Set Formula}
+    (h_mcs : SetMaximalConsistent C)
+    {α β : Formula}
+    (hα : burgessRSince C α A) (hβ : burgessRSince C β A) :
+    burgessRSince C (Formula.and α β) A := by
+  intro γ hγ
+  exact snce_conj_guard h_mcs (hα γ hγ) (hβ γ hγ)
+
+/--
 **Left monotonicity for Until via theorem**: If ⊢ β₁ → β₂ and untl(β₁, γ) ∈ A,
 then untl(β₂, γ) ∈ A. Uses BX2 (left_mono_until).
 -/
