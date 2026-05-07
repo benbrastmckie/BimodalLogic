@@ -44,7 +44,7 @@ Plan v63 had 6 phases (18-26h). Phases 1-2 completed: `lemma_2_4_with_guard` cre
 - Restructure the omega chain or limit construction architecture
 - Close the 15 BXCanonical dead-code sorries (task 109 scope)
 - Close the 19 TemporalDerived.lean invalid stubs (separate task)
-- Generalize beyond D=Rat
+- Generalize the chronicle construction to arbitrary dense linear orders (Burgess uses Q as a concrete construction medium for the countermodel, exploiting density and midpoint insertion at (x+y)/2; the completeness result itself applies to all linear orders K_0)
 
 ## Risks & Mitigations
 
