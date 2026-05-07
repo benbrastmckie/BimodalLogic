@@ -1,8 +1,8 @@
 # Implementation Plan: Task #107 -- Sorry-Free bx_completeness via Guard Threading and Convention Alignment (Revised)
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
-- **Status**: [NOT STARTED]
-- **Effort**: 35-50 hours (23-34h sorry closure + 2-4h NoUnivBurgessR3 + 8-16h convention migration + 3-4h cleanup)
+- **Status**: [IN PROGRESS]
+- **Effort**: 35-50 hours (Phases 1–5 completed; ~28h spent; Phase 6 blocked; 6 phases remaining)
 - **Dependencies**: None (all prerequisite infrastructure exists; Phases 1-2 of prior plan v63 completed)
 - **Research Inputs**: reports/64_team-research.md, handoffs/64_phase1-4-handoff.md
 - **Artifacts**: plans/64_implementation-plan.md (this file)
@@ -12,7 +12,23 @@
 
 ## Overview
 
-Close the 2 remaining sorry sites in ChronicleConstruction.lean (lines 1445, 1457) and prove NoUnivBurgessR3 to deliver a fully unconditional, sorry-free `bx_completeness` theorem. The sorries require proving `ξ ∈ limit_f(w)` for intermediate w between x and y at the limit. The closure chain is: (a) prove a guard conjunction theorem from BX7, (b) strengthen `lemma_2_7`/`2_8` in PointInsertion.lean to return `xi ∈ B'` via DC(B∪{xi}) Zorn seed, (c) strengthen `EliminationResult.c5_forward_witness` to return an **adjacent-pair guard condition** (`∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b`), (d) restructure Walk A (pc.x < max_old) to split at (pc.x, x') instead of walking, remove Walk B eta-shortcut entirely, (e) mirror for Since, (f) strengthen `omega_chain_c5_witness` and close the 2 sorries using `adj_g_mem_limit_f`. After sorry closure, prove `NoUnivBurgessR3` and migrate untl/snce convention. Definition of done: `#print axioms bx_completeness` shows no `sorryAx`; `lake build` succeeds; convention matches Burgess 1982.
+Close the 2 remaining sorry sites in ChronicleConstruction.lean (lines 1598, 1633) and prove NoUnivBurgessR3 to deliver a fully unconditional, sorry-free `bx_completeness` theorem. The sorries require proving `ξ ∈ limit_f(w)` for intermediate w between x and y at the limit. The closure chain is: (a) prove a guard conjunction theorem from BX7, (b) strengthen `lemma_2_7`/`2_8` in PointInsertion.lean to return `xi ∈ B'` via DC(B∪{xi}) Zorn seed, (c) strengthen `EliminationResult.c5_forward_witness` to return an **adjacent-pair guard condition** (`∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b`), (d) restructure Walk A (pc.x < max_old) to split at (pc.x, x') instead of walking, remove Walk B eta-shortcut entirely, (e) mirror for Since, (f) strengthen `omega_chain_c5_witness` and close the 2 sorries using `adj_g_mem_limit_f`. After sorry closure, prove `NoUnivBurgessR3` and migrate untl/snce convention. Definition of done: `#print axioms bx_completeness` shows no `sorryAx`; `lake build` succeeds; convention matches Burgess 1982.
+
+### Progress Summary
+
+| Phase | Status | Key Deliverables |
+|-------|--------|-----------------|
+| 1 | ✅ COMPLETED | `burgessR_conj`, `burgessRSince_conj` in RRelation.lean |
+| 2 | ✅ COMPLETED | `lemma_2_7`/`lemma_2_8` (and Since mirrors) strengthened to return `xi ∈ B'` |
+| 3 | ✅ COMPLETED | `EliminationResult.c5_forward_witness`/`c5_backward_witness` use adjacent-pair guard |
+| 4 | ✅ COMPLETED | Walk A restructured (split instead of walk), Walk B eta-shortcut removed |
+| 5 | ✅ COMPLETED | All C5 backward cases compile; `CounterexampleElimination.lean` has 0 sorries |
+| 6 | ⏳ PARTIAL | `omega_chain_c5_witness`/`c5'_witness` strengthened; **2 sorries remain** in `limit_satisfies_c5_strong` / `limit_satisfies_c5'_strong` at CC:1598,1633 (need `omega_chain_no_new_when_witness_old` lemma) |
+| 7 | ⏳ NOT STARTED | Prove `NoUnivBurgessR3` |
+| 8 | ⏳ NOT STARTED | Final sorry-free validation |
+| 9 | ⏳ NOT STARTED | Convention migration |
+| 10 | ⏳ NOT STARTED | ROADMAP/documentation cleanup |
+| 11 | ⏳ NOT STARTED | Final integration and summary |
 
 ### Revision Notes (v2)
 
@@ -37,7 +53,7 @@ Plan v63 Phases 1-2 completed: `lemma_2_4_with_guard` created, `lemma_2_7` fixed
 - Restructure Walk A (split at (pc.x, x') instead of walking to max_old)
 - Remove Walk B eta-shortcut (always split at (u_max, u_next))
 - Mirror all changes for Since direction
-- Close the 2 sorry sites at ChronicleConstruction.lean:1445,1457
+- Close the 2 sorry sites at ChronicleConstruction.lean:1598,1633
 - Prove `NoUnivBurgessR3` and make `bx_completeness` unconditional
 - Migrate untl/snce convention to match Burgess U(event, guard)
 - Update stale ROADMAP sorry documentation
@@ -170,7 +186,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Fix C5 Forward Cases with Walk Restructuring [PARTIAL]
+### Phase 4: Fix C5 Forward Cases with Walk Restructuring [COMPLETED]
 
 **Goal**: Fix all C5 forward case constructions to provide the adjacent-pair guard. This includes restructuring Walk A (split instead of walk when pc.x < max_old), removing Walk B eta-shortcut, and threading guard through splitting cases.
 
@@ -191,28 +207,28 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 4.1**: Fix **not-actual case** (CE:1476-1480): Stop discarding guard witness. Changed `h_actual` condition to use adjacent-pair guard instead of pointwise guard. Push_neg gives the guard directly. Fixed h_no_wit usage to construct adjacent-pair guard from pointwise guard. **DONE**: h_actual strengthened, push_neg gives guard, not-actual case compiles.
 - [x] **Task 4.2**: Fix **n=0 case** (CE near 848): Switched `lemma_2_4` → `lemma_2_4_with_guard` to get `xi ∈ B`. Added guard proof: only adjacent pair (a,b) with pc.x ≤ a, b ≤ y is (max_old, y), and g'(max_old, y) = B with ξ ∈ B. **DONE**: ~30 lines added for guard proof.
 - [x] **Task 4.3**: Fix **Walk A, pc.x = max_old**: Absorbed into walk helper base case. **DONE**.
-- [ ] **Task 4.4**: **RESTRUCTURE Walk A, pc.x < max_old**: Replace the walk-to-max_old logic with direct splitting at (pc.x, x'). When condition (i) holds: `xi ∈ g(pc.x, x')` and `xi∧U(xi,η) ∈ f(x')` and `η ∉ f(x')`. This is the splitting setup — apply lemma_2_7/2_8/2_6 at (pc.x, x'). The splitting produces z = midpoint(pc.x, x') with g'(pc.x, z) = B' ⊇ g(pc.x, x') ∋ xi. The witness z is adjacent to pc.x. ~80-120 lines (replacing ~150 lines of walk logic).
+- [x] **Task 4.4**: **RESTRUCTURE Walk A, pc.x < max_old**: Replaced the walk-to-max_old logic with direct splitting at (pc.x, x'). When condition (i) holds: `xi ∈ g(pc.x, x')` and `xi∧U(xi,η) ∈ f(x')` and `η ∉ f(x')`. This is the splitting setup — apply lemma_2_7/2_8/2_6 at (pc.x, x'). The splitting produces z = midpoint(pc.x, x') with g'(pc.x, z) = B' ⊇ g(pc.x, x') ∋ xi. The witness z is adjacent to pc.x. **DONE**: ~80 lines added.
 - [x] **Task 4.5**: **REMOVE Walk B eta-shortcut**: Deleted with Walk A+B code. **DONE**. Was (CE:994-997): Delete the branch that returns χ unchanged when `η ∈ f(u_next)`. Always fall through to splitting at (u_max, u_next). ~-20 lines (deletion).
-- [ ] **Task 4.6**: Fix **Walk B splitting** (after removing shortcut): Split at (u_max, u_next). Case on `xi ∈ g(u_max, u_next)`:
+- [x] **Task 4.6**: Fix **Walk B splitting** (after removing shortcut): Split at (u_max, u_next). Case on `xi ∈ g(u_max, u_next)`:
   - If yes: g ⊆ B' from splitting gives `xi ∈ B'`. Guard at both adjacent pairs.
   - If no: strengthened `lemma_2_7` (Phase 2) gives `xi ∈ B'` directly.
-  ~40-60 lines.
+  **DONE**: ~40 lines added.
 - [x] **Task 4.7**: Fix **not-condition(i) splitting cases**: Added `pc.ξ ∈ B'` to h_split_result return type. Updated all 6 sub-cases: cases with xi ∈ g use `g ⊆ B'`; cases with xi ∉ g use strengthened `lemma_2_7` return. Added `by_cases h_xi_g6` sub-split in case 6 (eta.neg ∉ g). Guard proof in c5_forward_witness: only adj pair (pc.x, z), g'(pc.x, z) = B', ξ ∈ B'. **DONE**: ~40 lines added.
-- [ ] **Task 4.8**: Run `lake build` to verify all C5 forward cases compile with adjacent-pair guard.
+- [x] **Task 4.8**: Run `lake build` to verify all C5 forward cases compile with adjacent-pair guard. **PASSED**.
 
-**Timing**: 6-8 hours
+**Timing**: 6-8 hours (actual: ~7h)
 
 **Depends on**: 3
 
-**Files to modify**:
+**Files modified**:
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` -- all C5 forward case construction sites
 
 **Verification**:
-- All C5 forward case constructions compile with adjacent-pair guard
-- No sorry introduced
-- Walk A restructured (walk-to-max_old logic replaced)
-- Walk B eta-shortcut removed
-- `lake build` passes (C5 backward errors may remain)
+- [x] All C5 forward case constructions compile with adjacent-pair guard
+- [x] No sorry introduced in CE
+- [x] Walk A restructured (walk-to-max_old logic replaced)
+- [x] Walk B eta-shortcut removed
+- [x] `lake build` passes (C5 backward errors remain, fixed in Phase 5)
 
 ---
 
@@ -247,22 +263,28 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 6: Strengthen omega_chain_c5_witness and Close 2 Sorries [PARTIAL]
 
-**Goal**: Strengthen `omega_chain_c5_witness` (ChronicleConstruction.lean:392) to return the adjacent-pair guard from the elimination stage, then close the 2 sorry sites at lines 1445 and 1457 using `adj_g_mem_limit_f`.
+**Goal**: Strengthen `omega_chain_c5_witness` (ChronicleConstruction.lean:392) to return the adjacent-pair guard from the elimination stage, then close the 2 sorry sites at lines 1598 and 1633 using `adj_g_mem_limit_f`.
 
 **Paper reference**: Burgess 2.11 (truth lemma, p.375). The full C5a with guard: `U(ξ,η) ∈ limit_f(x) → ∃ y, η ∈ limit_f(y) ∧ ξ ∈ limit_g(x,y)`.
 
 **Tasks**:
-- [ ] **Task 6.1**: Strengthen `omega_chain_c5_witness` return type (CC:392-399) to include `∧ ∀ a b, Adjacent (omega_chain_val ...).dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ (omega_chain_val ...).g a b`. This follows directly from the strengthened `EliminationResult.c5_forward_witness`. ~15-20 lines.
-- [ ] **Task 6.2**: Strengthen `omega_chain_c5'_witness` (CC:418-438) similarly for Since. ~15-20 lines.
-- [ ] **Task 6.3**: Prove `limit_satisfies_c5_strong` guard step (CC:1445). The proof:
+- [x] **Task 6.1**: Strengthen `omega_chain_c5_witness` return type (CC:392-399) to include `∧ ∀ a b, Adjacent (omega_chain_val ...).dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ (omega_chain_val ...).g a b`. This follows directly from the strengthened `EliminationResult.c5_forward_witness`. **DONE**: `omega_chain_c5_witness` now returns `⟨y, hy_dom, hxy, hy_η, h_adj_guard, h_dom_guard⟩` with adjacent-pair guard and domain guard.
+- [x] **Task 6.2**: Strengthen `omega_chain_c5'_witness` (CC:418-438) similarly for Since. **DONE**: `omega_chain_c5'_witness` mirrored with `h_adj_guard` and `h_dom_guard`.
+- [x] **Task 6.3**: Prove `limit_satisfies_c5_strong` guard step (CC:1445 → now CC:1598). The proof:
   1. From strengthened `omega_chain_c5_witness`, obtain `∀ a b, Adjacent dom_{n+1} a b → pc.x ≤ a → b ≤ y → ξ ∈ g_{n+1}(a,b)` where y is the C5 witness at stage n+1.
   2. For any w ∈ limit_dom with x < w < y: w was inserted at some stage m ≥ n+1. At stage m, w sits between some adjacent pair (a,b) at stage n+1 with x ≤ a and b ≤ y.
   3. Apply `adj_g_mem_limit_f` (CC:1406): `ξ ∈ g_{n+1}(a,b)` → `ξ ∈ limit_f(w)`.
-  ~30-40 lines.
-- [ ] **Task 6.4**: Close `limit_satisfies_c5'_strong` guard sorry (CC:1457). Mirror of Task 6.3 for Since. ~30-40 lines.
-- [ ] **Task 6.5**: Run `lake build` and `grep -rn "sorry" Chronicle/` to verify 0 sorry sites on critical path.
+  **PARTIAL**: Main proof structure complete. **SORRY** remains at line 1598 in the sub-case where `y ∈ dom_n` and `w ∈ dom_{n+1} \ dom_n`. This sub-case requires a new lemma `omega_chain_no_new_when_witness_old` (see Phase 6 notes below).
+- [ ] **Task 6.4**: Close `limit_satisfies_c5'_strong` guard sorry (CC:1457 → now CC:1633). Mirror of Task 6.3 for Since. **PENDING**: Blocked on same `omega_chain_no_new_when_witness_old` lemma as Task 6.3.
+- [ ] **Task 6.5**: Run `lake build` and `grep -rn "sorry" Chronicle/` to verify 0 sorry sites on critical path. **PENDING**: Currently 2 sorries remain.
 
-**Timing**: 2-3 hours
+**Blocker / New Work Identified**:
+The sorry at CC:1598 (and its mirror at 1633) occurs in the sub-case `y ∈ dom_n ∧ w ∈ dom_{n+1} \ dom_n`. The reasoning is:
+- If `y ∈ dom_n`, then the C5 counterexample was already resolved at stage n, so the elimination at stage n should be identity (no new points added).
+- Therefore `dom_{n+1} = dom_n`, contradicting `w ∈ dom_{n+1} \ dom_n`.
+- **Missing lemma needed**: `omega_chain_no_new_when_witness_old` (or similar), stating that when the witness y is already in `dom_n`, `omega_chain_val (n+1)` adds no new points.
+
+**Timing**: 2-3 hours (Task 6.1–6.2 done; Tasks 6.3–6.5 blocked)
 
 **Depends on**: 4, 5
 
@@ -270,7 +292,7 @@ Phases within the same wave can execute in parallel.
 - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean` -- omega_chain_c5_witness, limit_satisfies_c5_strong, Since mirrors
 
 **Verification**:
-- Both sorry sites at CC:1445 and CC:1457 are closed
+- Both sorry sites at CC:1598 and CC:1633 are closed
 - `grep -rn "sorry" Theories/Bimodal/Metalogic/BXCanonical/Chronicle/` returns only comment/doc occurrences
 - `lake build` passes
 
@@ -412,13 +434,13 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] `lake build` succeeds at every phase boundary
+- [x] `lake build` succeeds at every phase boundary (Phases 1–5 verified)
 - [ ] `#print axioms bx_completeness` -- no `sorryAx` after Phase 7
-- [ ] `grep -rn "sorry" Chronicle/` -- only comment/doc after Phase 6
+- [ ] `grep -rn "sorry" Chronicle/` -- only comment/doc after Phase 6 (currently 2 sorries remain at CC:1598,1633)
 - [ ] After Phase 9: convention matches Burgess U(event, guard)
-- [ ] No density or discreteness axioms added
-- [ ] `irr_until` axiom NOT used
-- [ ] All new lemmas follow Burgess 1982 exactly -- no novel approaches
+- [x] No density or discreteness axioms added (verified through Phase 5)
+- [x] `irr_until` axiom NOT used (verified through Phase 5)
+- [x] All new lemmas follow Burgess 1982 exactly -- no novel approaches (verified through Phase 5)
 - [ ] Spot-check audit: 10 axioms + 5 Chronicle lemmas correct after convention swap
 
 ## Artifacts & Outputs
