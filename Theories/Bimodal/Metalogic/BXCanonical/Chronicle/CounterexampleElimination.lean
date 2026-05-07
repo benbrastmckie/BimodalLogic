@@ -666,7 +666,8 @@ noncomputable def eliminate_potential_counterexample
     -- Burgess C5a counterexample check (g-value based per Burgess 2.10):
     -- Actual counterexample iff NO y exists with event ∈ f(y) AND guard ∈ g(x,y).
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.untl pc.ξ pc.η ∈ χ.f pc.x ∧
-        ¬∃ y ∈ χ.dom, pc.x < y ∧ pc.η ∈ χ.f y ∧ pc.ξ ∈ χ.g pc.x y
+        ¬∃ y ∈ χ.dom, pc.x < y ∧ pc.η ∈ χ.f y ∧
+          (∀ a b, Adjacent χ.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ χ.g a b)
     · obtain ⟨h_mem, h_until, h_no_wit⟩ := h_actual
       have h_mcs_x := h_c0 pc.x h_mem
       have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
@@ -681,13 +682,14 @@ noncomputable def eliminate_potential_counterexample
         let y := h_fresh.choose
         have hy_gt : ∀ s ∈ χ.dom, s < y := h_fresh.choose_spec.1
         have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
-        have h_l24 := lemma_2_4 h_mcs_x pc.ξ pc.η h_until h_nubr3
+        have h_l24 := lemma_2_4_with_guard h_mcs_x pc.ξ pc.η h_until h_nubr3
         let B := h_l24.choose
         let C := h_l24.choose_spec.choose
         have h_l24_prop := h_l24.choose_spec.choose_spec
         have h_C_mcs : SetMaximalConsistent C := h_l24_prop.1
         have h_η_C : pc.η ∈ C := h_l24_prop.2.1
-        have h_r3m : BurgessR3Maximal (χ.f pc.x) B C := h_l24_prop.2.2.2.2
+        have h_ξ_B : pc.ξ ∈ B := h_l24_prop.2.2.2.2.1
+        have h_r3m : BurgessR3Maximal (χ.f pc.x) B C := h_l24_prop.2.2.2.2.2
         have h_max_lt_y : max_old < y := hy_gt max_old h_max_mem
         let g' := fun a b =>
           if a = max_old ∧ b = y then B
@@ -753,9 +755,38 @@ noncomputable def eliminate_potential_counterexample
                 c2' := h_c2'_new
                 c5_forward_witness := by
                   intro _ _ _
-                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_gt pc.x h_mem, ?_⟩
-                  simp only [χ', ite_true]
-                  exact h_η_C
+                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_gt pc.x h_mem, ?_, ?_⟩
+                  · simp only [χ', ite_true]; exact h_η_C
+                  · -- Adjacent-pair guard: only pair (a,b) with pc.x ≤ a, b ≤ y is (max_old, y)
+                    intro a b h_adj_ab h_le_a h_le_b
+                    have ha_dom : a ∈ insert y χ.dom := h_adj_ab.1
+                    have hb_dom : b ∈ insert y χ.dom := h_adj_ab.2.1
+                    simp only [Finset.mem_insert] at ha_dom hb_dom
+                    -- b must be y (b ≤ y and b > a ≥ pc.x = max_old ≥ all old)
+                    have hb_eq : b = y := by
+                      rcases hb_dom with rfl | hb_old
+                      · rfl
+                      · -- b is old, so b ≤ max_old; but a < b and a ≥ pc.x = max_old
+                        have : b ≤ max_old := h_max_le b hb_old
+                        linarith [h_adj_ab.2.2.1]
+                    subst hb_eq
+                    -- a must be max_old (a ∈ old dom since a ≠ y, and a is maximal with a < y)
+                    have ha_ne_y : a ≠ y := ne_of_lt h_adj_ab.2.2.1
+                    have ha_old : a ∈ χ.dom := by
+                      rcases ha_dom with rfl | h
+                      · exact absurd rfl ha_ne_y
+                      · exact h
+                    have ha_eq : a = max_old := by
+                      have ha_le_max : a ≤ max_old := h_max_le a ha_old
+                      have hmax_le_a : max_old ≤ a := by
+                        by_contra hlt; push_neg at hlt
+                        exact h_adj_ab.2.2.2 max_old
+                          (Finset.mem_insert_of_mem h_max_mem) ⟨hlt, h_max_lt_y⟩
+                      exact le_antisymm ha_le_max hmax_le_a
+                    subst ha_eq
+                    show pc.ξ ∈ g' max_old y
+                    simp only [g', and_self, ite_true]
+                    exact h_ξ_B
                 c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                 c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -803,7 +834,18 @@ noncomputable def eliminate_potential_counterexample
         have h_mcs_x' := h_c0 x' hx'_dom
         -- Burgess 2.10 (ii): guard ∈ g(x,x') implies event ∉ f(x')
         have h_guard_implies_no_event : pc.ξ ∈ χ.g pc.x x' → pc.η ∉ χ.f x' :=
-          fun h_guard h_event => h_no_wit ⟨x', hx'_dom, hx_lt_x', h_event, h_guard⟩
+          fun h_guard h_event => h_no_wit ⟨x', hx'_dom, hx_lt_x', h_event,
+            fun a b h_adj_ab h_le_a h_le_b => by
+              have ha_eq : a = pc.x := by
+                by_contra ha_ne
+                have ha_gt : pc.x < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
+                exact h_adj_xx'.2.2.2 a h_adj_ab.1 ⟨ha_gt, lt_of_lt_of_le h_adj_ab.2.2.1 h_le_b⟩
+              have hb_eq : b = x' := by
+                rw [ha_eq] at h_adj_ab
+                by_contra hb_ne
+                have hb_lt : b < x' := lt_of_le_of_ne h_le_b hb_ne
+                exact h_adj_xx'.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hb_lt⟩
+              rw [ha_eq, hb_eq]; exact h_guard⟩
         -- Get BurgessR3Maximal for the adjacent pair (pc.x, x') from c2'
         have h_r3m_adj := h_c2' pc.x x' h_adj_xx'
         have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x h_mcs_x'
@@ -1481,8 +1523,8 @@ noncomputable def eliminate_potential_counterexample
               c5_forward_witness := by
                 intro _ h_mem h_until
                 push_neg at h_actual
-                obtain ⟨y, hy_dom, hy_lt, hy_η, _⟩ := h_actual h_mem h_until
-                exact ⟨y, hy_dom, hy_lt, hy_η⟩
+                obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard⟩ := h_actual h_mem h_until
+                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard⟩
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)

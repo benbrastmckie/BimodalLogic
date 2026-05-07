@@ -170,7 +170,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Fix C5 Forward Cases with Walk Restructuring [NOT STARTED]
+### Phase 4: Fix C5 Forward Cases with Walk Restructuring [PARTIAL]
 
 **Goal**: Fix all C5 forward case constructions to provide the adjacent-pair guard. This includes restructuring Walk A (split instead of walk when pc.x < max_old), removing Walk B eta-shortcut, and threading guard through splitting cases.
 
@@ -188,8 +188,8 @@ Phases within the same wave can execute in parallel.
 | **Not-actual** | y from push_neg | (pc.x, y) must be adjacent | Guard from `push_neg at h_actual` |
 
 **Tasks**:
-- [ ] **Task 4.1**: Fix **not-actual case** (CE:1476-1480): Stop discarding guard witness. Change `⟨y, hy_dom, hy_lt, hy_η, _⟩` to `⟨y, hy_dom, hy_lt, hy_η, h_guard⟩`. Prove the adjacent-pair condition: since val=χ (unchanged), y is an existing domain point, and (pc.x, y) should be adjacent (the only pair). Thread `h_guard` through. ~10-15 lines.
-- [ ] **Task 4.2**: Fix **n=0 case** (CE near 848): Switch `lemma_2_4` → `lemma_2_4_with_guard` to get `xi ∈ B`. Since the new point y is adjacent to pc.x, the only adjacent pair is (pc.x, y) with g(pc.x, y) = B. Guard follows from `xi ∈ B`. ~15-20 lines.
+- [x] **Task 4.1**: Fix **not-actual case** (CE:1476-1480): Stop discarding guard witness. Changed `h_actual` condition to use adjacent-pair guard instead of pointwise guard. Push_neg gives the guard directly. Fixed h_no_wit usage to construct adjacent-pair guard from pointwise guard. **DONE**: h_actual strengthened, push_neg gives guard, not-actual case compiles.
+- [x] **Task 4.2**: Fix **n=0 case** (CE near 848): Switched `lemma_2_4` → `lemma_2_4_with_guard` to get `xi ∈ B`. Added guard proof: only adjacent pair (a,b) with pc.x ≤ a, b ≤ y is (max_old, y), and g'(max_old, y) = B with ξ ∈ B. **DONE**: ~30 lines added for guard proof.
 - [ ] **Task 4.3**: Fix **Walk A, pc.x = max_old**: Equivalent to n=0 case. Apply same fix. ~5 lines.
 - [ ] **Task 4.4**: **RESTRUCTURE Walk A, pc.x < max_old**: Replace the walk-to-max_old logic with direct splitting at (pc.x, x'). When condition (i) holds: `xi ∈ g(pc.x, x')` and `xi∧U(xi,η) ∈ f(x')` and `η ∉ f(x')`. This is the splitting setup — apply lemma_2_7/2_8/2_6 at (pc.x, x'). The splitting produces z = midpoint(pc.x, x') with g'(pc.x, z) = B' ⊇ g(pc.x, x') ∋ xi. The witness z is adjacent to pc.x. ~80-120 lines (replacing ~150 lines of walk logic).
 - [ ] **Task 4.5**: **REMOVE Walk B eta-shortcut** (CE:994-997): Delete the branch that returns χ unchanged when `η ∈ f(u_next)`. Always fall through to splitting at (u_max, u_next). ~-20 lines (deletion).
