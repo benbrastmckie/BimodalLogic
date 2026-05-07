@@ -385,9 +385,9 @@ theorem omega_chain_g_agrees_le (A : Set Formula) (h_mcs : SetMaximalConsistent 
 C5 witness at step n+1: if `counterexample_enum (Nat.unpair n).2` is a c5_forward
 counterexample with x ∈ dom(n) and U(ξ,η) ∈ f_n(x), then a witness exists in dom(n+1).
 
-This directly exposes the `c5_forward_witness` field of `EliminationResult`.
-The proof uses `omega_chain_elim_result` and bridges to omega_chain_val via
-f/dom equality.
+This directly exposes the `c5_forward_witness` field of `EliminationResult`,
+including the adjacent-pair guard: ξ ∈ g(n+1)(a,b) for all adjacent (a,b)
+between x and y. This guard is essential for the strong C5 (Burgess C5a).
 -/
 theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_nubr3 : NoUnivBurgessR3)
@@ -396,9 +396,13 @@ theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
     (h_until : Formula.untl ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x)
     (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_forward⟩) :
     ∃ y ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom,
-      x < y ∧ η ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f y := by
+      x < y ∧ η ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f y ∧
+      (∀ a b, Adjacent (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom a b →
+        x ≤ a → b ≤ y → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).g a b) ∧
+      (∀ w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom,
+        x < w → w < y → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w) := by
   -- omega_chain(n+1) = elimination result directly
-  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim]
+  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim, omega_chain_g_eq_elim]
   have key := (omega_chain_elim_result A h_mcs h_nubr3 n).c5_forward_witness
     (show (counterexample_enum (Nat.unpair n).2).kind = .c5_forward by rw [hn_eq])
     (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
@@ -407,13 +411,19 @@ theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
         (counterexample_enum (Nat.unpair n).2).η ∈
         (omega_chain_val A h_mcs h_nubr3 n).f (counterexample_enum (Nat.unpair n).2).x
       by rw [hn_eq]; exact h_until)
-  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ := key
-  refine ⟨y, hy_dom, ?_, ?_⟩
+  obtain ⟨y, hy_dom, hy_lt, hy_η, hy_adj_guard, hy_dom_guard⟩ := key
+  refine ⟨y, hy_dom, ?_, ?_, ?_, ?_⟩
   · simp only [hn_eq] at hy_lt; exact hy_lt
   · simp only [hn_eq] at hy_η; exact hy_η
+  · intro a b h_adj ha hb
+    simp only [hn_eq] at hy_adj_guard
+    exact hy_adj_guard a b h_adj ha hb
+  · intro w hw hxw hwy
+    simp only [hn_eq] at hy_dom_guard
+    exact hy_dom_guard w hw hxw hwy
 
 /--
-C5' witness at step n+1 (mirror for Since).
+C5' witness at step n+1 (mirror for Since), including the adjacent-pair guard.
 -/
 theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_nubr3 : NoUnivBurgessR3)
@@ -422,8 +432,12 @@ theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
     (h_since : Formula.snce ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x)
     (hn_eq : counterexample_enum (Nat.unpair n).2 = ⟨x, 0, ξ, η, .c5_backward⟩) :
     ∃ y ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom,
-      y < x ∧ η ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f y := by
-  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim]
+      y < x ∧ η ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f y ∧
+      (∀ a b, Adjacent (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom a b →
+        y ≤ a → b ≤ x → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).g a b) ∧
+      (∀ w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom,
+        y < w → w < x → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w) := by
+  rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim, omega_chain_g_eq_elim]
   have key := (omega_chain_elim_result A h_mcs h_nubr3 n).c5_backward_witness
     (show (counterexample_enum (Nat.unpair n).2).kind = .c5_backward by rw [hn_eq])
     (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
@@ -432,10 +446,16 @@ theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
         (counterexample_enum (Nat.unpair n).2).η ∈
         (omega_chain_val A h_mcs h_nubr3 n).f (counterexample_enum (Nat.unpair n).2).x
       by rw [hn_eq]; exact h_since)
-  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ := key
-  refine ⟨y, hy_dom, ?_, ?_⟩
+  obtain ⟨y, hy_dom, hy_lt, hy_η, hy_adj_guard, hy_dom_guard⟩ := key
+  refine ⟨y, hy_dom, ?_, ?_, ?_, ?_⟩
   · simp only [hn_eq] at hy_lt; exact hy_lt
   · simp only [hn_eq] at hy_η; exact hy_η
+  · intro a b h_adj ha hb
+    simp only [hn_eq] at hy_adj_guard
+    exact hy_adj_guard a b h_adj ha hb
+  · intro w hw hyw hwx
+    simp only [hn_eq] at hy_dom_guard
+    exact hy_dom_guard w hw hyw hwx
 
 /--
 C4 witness at step n+1.
@@ -630,7 +650,7 @@ theorem limit_satisfies_c5_weak (A : Set Formula) (h_mcs : SetMaximalConsistent 
   have h_until_n : Formula.untl ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
     rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
     rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
-  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ :=
+  obtain ⟨y, hy_dom, hy_lt, hy_η, _, _⟩ :=
     omega_chain_c5_witness A h_mcs h_nubr3 n x ξ η hx_n h_until_n hn_eq
   exact ⟨y, ⟨n + 1, hy_dom⟩, hy_lt,
     by rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom]; exact hy_η⟩
@@ -652,7 +672,7 @@ theorem limit_satisfies_c5'_weak (A : Set Formula) (h_mcs : SetMaximalConsistent
   have h_since_n : Formula.snce ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
     rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
     rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
-  obtain ⟨y, hy_dom, hy_lt, hy_η⟩ :=
+  obtain ⟨y, hy_dom, hy_lt, hy_η, _, _⟩ :=
     omega_chain_c5'_witness A h_mcs h_nubr3 n x ξ η hx_n h_since_n hn_eq
   exact ⟨y, ⟨n + 1, hy_dom⟩, hy_lt,
     by rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom]; exact hy_η⟩
@@ -1441,6 +1461,8 @@ theorem limit_satisfies_c5_strong (A : Set Formula) (h_mcs : SetMaximalConsisten
       ξ ∈ limit_g A h_mcs h_nubr3 x y := by
   obtain ⟨y, hy_dom, hxy, hy_η⟩ := limit_satisfies_c5_weak A h_mcs h_nubr3 x hx ξ η h_until
   refine ⟨y, hy_dom, hxy, hy_η, ?_⟩
+  -- Need: ξ ∈ limit_g(x, y), i.e., ∀ w ∈ limit_dom, x < w → w < y → ξ ∈ limit_f(w)
+  -- See handoff 70 for the full analysis and proof strategy.
   intro w hw hxw hwy
   sorry
 

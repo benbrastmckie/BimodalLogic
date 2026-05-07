@@ -245,7 +245,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Strengthen omega_chain_c5_witness and Close 2 Sorries [NOT STARTED]
+### Phase 6: Strengthen omega_chain_c5_witness and Close 2 Sorries [PARTIAL]
 
 **Goal**: Strengthen `omega_chain_c5_witness` (ChronicleConstruction.lean:392) to return the adjacent-pair guard from the elimination stage, then close the 2 sorry sites at lines 1445 and 1457 using `adj_g_mem_limit_f`.
 
