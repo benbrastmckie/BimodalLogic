@@ -909,7 +909,7 @@ private noncomputable def c5_forward_walk
           exact ⟨x', Finset.mem_filter.mpr ⟨hx'_dom, hstart_lt_x'⟩,
             fun h => absurd (Finset.mem_filter.mp h).2 (lt_irrefl _)⟩
       -- Recurse
-      let r := c5_forward_walk χ h_c0 h_c2' h_nubr3 ξ η x' hx'_dom h_untl_x' h_no_wit_x'
+      have r := c5_forward_walk χ h_c0 h_c2' h_nubr3 ξ η x' hx'_dom h_untl_x' h_no_wit_x'
       -- Compose: guard at (pt, x') from condition (i) + recursive guard from x'
       exact { val := r.val
               dom_sub := r.dom_sub
@@ -1169,16 +1169,11 @@ private noncomputable def c5_forward_walk
                 · exact absurd hw hw_not }
 termination_by (χ.dom.filter (fun v => v > pt)).card
 decreasing_by
-  /- Goal 1 (direct recursive call): `exact h_term` closes it.
-     Goals 2-3 (inside h_witness_guard proof): WF elaborator duplicates
-     let-bindings creating `pt✝` (caller) vs `pt` (callee) which are
-     propositionally equal but not definitionally equal. `simp_all` can
-     close some goals by normalizing, but one goal remains with the
-     `pt✝ ≠ pt` mismatch. The caller's `h_term✝` would close it but
-     cannot be referenced by name.
-     Fix: `simp_all` closes goals 1 and 3; goal 2 needs sorry. -/
+  /- Using `have r` (not `let r`) makes the recursive result opaque,
+     preventing the WF elaborator from duplicating context with daggers.
+     This yields a single WF goal closed by simp_all + exact h_term. -/
   all_goals simp_all only [gt_iff_lt]
-  all_goals (first | exact h_term | sorry)
+  all_goals exact h_term
 
 /--
 Attempt to eliminate a potential counterexample. If it is not an actual
