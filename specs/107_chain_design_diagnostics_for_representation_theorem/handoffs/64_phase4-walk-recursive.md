@@ -122,15 +122,35 @@ structure WalkResult (chi : Chronicle) (xi eta : Formula) (start : Rat) where
   dom_new_unique : ...
 ```
 
+### Implementation Attempt Notes
+
+An attempt was made to implement the recursive helper using `Nat.strongRecOn` in a `by` tactic proof. Key findings:
+
+1. **`set n` + `induction` doesn't work**: `set n := ...` creates a local def, and `induction n using Nat.strongRecOn` expects the goal to be `∀ n, P n`. The variables don't scope correctly after `revert` + `induction`.
+
+2. **Better approach**: Use `termination_by` on a `noncomputable def`, or use `WellFounded.fix` as a term. The function should be defined as:
+   ```lean
+   private noncomputable def c5_forward_walk ... : C5ForwardWalkResult χ ξ η start :=
+     ... -- term-mode with WellFounded.fix or match/if with termination_by
+   termination_by (χ.dom.filter (· > start)).card
+   ```
+
+3. **Adjacency lemma needed**: The condition (i) recursive case requires proving that new points from the recursion are strictly greater than x' (the starting point of the recursion). This follows from: the recursion at x' inserts points either beyond max_old (base case) or between pairs after x' (recursive splitting). Formally, need a `new_point_gt` field in C5ForwardWalkResult or a side lemma.
+
+4. **Base case code is mostly written**: The ~120 lines for start = max_old (lemma_2_4_with_guard, chronicle construction, guard proof) compiled successfully before being reverted.
+
+5. **Guard composition is straightforward**: Once the recursive result provides guard from x' to y, prepending (start, x') guard from condition (i) is a simple case split in the Adjacent argument.
+
 ### Estimated Effort
 
-- Define WalkResult structure: ~15 lines
-- Base case (start = max_old): ~60 lines (reuse existing lemma_2_4_with_guard code)
-- Recursive step condition (i): ~30 lines (h_no_wit composition, recurse, guard composition)
-- Recursive step not-condition(i): ~100 lines (reuse existing splitting code from Task 4.7)
-- Termination proof: ~20 lines (Finset.card decrease)
+- Define C5ForwardWalkResult structure: ~15 lines
+- Base case (start = max_old): ~80 lines (verified compiles)
+- Recursive step condition (i): ~50 lines (h_no_wit derivation + recurse + guard composition)
+- Recursive step not-condition(i): ~120 lines (splitting logic, same as Task 4.7 pattern)
+- Termination proof: ~10 lines (Finset.card decrease)
+- `new_point_gt` field or side lemma: ~15 lines
 - Replace condition (i) branch with helper call: ~20 lines (delete ~450 lines)
-- **Total**: ~245 lines new, -450 lines deleted = ~205 net reduction
+- **Total**: ~310 lines new, -450 lines deleted = ~140 net reduction
 - **Estimated time**: 4-6 hours
 
 ## Backward (Since) Mirrors (6 errors)
