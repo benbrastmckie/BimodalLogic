@@ -1437,6 +1437,48 @@ theorem adj_g_mem_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   rw [limit_f_eq A h_mcs h_nubr3 w (k + d) hm]
   exact adj_g_mem_f_at_stage A h_mcs h_nubr3 d k a b h_adj φ hφ w hm haw hwb
 
+/-! ### Helper: Containing Adjacent Pair
+
+Given a finite set D with points x, y ∈ D (x < y) and a point w ∉ D with x < w < y,
+there exists an adjacent pair (a, b) in D with x ≤ a < w < b ≤ y.
+-/
+
+/-- For a point between two domain members that is not itself in the domain,
+there exists an adjacent pair in the domain that contains it. -/
+theorem exists_containing_adjacent (D : Finset Rat) (x y w : Rat)
+    (hx : x ∈ D) (hy : y ∈ D) (hxy : x < y) (hw_not : w ∉ D)
+    (hxw : x < w) (hwy : w < y) :
+    ∃ a b, Adjacent D a b ∧ x ≤ a ∧ b ≤ y ∧ a < w ∧ w < b := by
+  -- Let L = {d ∈ D | d < w}, R = {d ∈ D | w < d}
+  -- x ∈ L (since x < w), y ∈ R (since w < y)
+  -- Take a = max(L), b = min(R)
+  have hL_ne : (D.filter (· < w)).Nonempty :=
+    ⟨x, Finset.mem_filter.mpr ⟨hx, hxw⟩⟩
+  have hR_ne : (D.filter (w < ·)).Nonempty :=
+    ⟨y, Finset.mem_filter.mpr ⟨hy, hwy⟩⟩
+  set a := (D.filter (· < w)).max' hL_ne with ha_def
+  set b := (D.filter (w < ·)).min' hR_ne with hb_def
+  have ha_mem : a ∈ D.filter (· < w) := Finset.max'_mem _ hL_ne
+  have hb_mem : b ∈ D.filter (w < ·) := Finset.min'_mem _ hR_ne
+  have ha_D : a ∈ D := (Finset.mem_filter.mp ha_mem).1
+  have hb_D : b ∈ D := (Finset.mem_filter.mp hb_mem).1
+  have haw : a < w := (Finset.mem_filter.mp ha_mem).2
+  have hwb : w < b := (Finset.mem_filter.mp hb_mem).2
+  have hab : a < b := lt_trans haw hwb
+  have ha_ge_x : x ≤ a := Finset.le_max' _ x (Finset.mem_filter.mpr ⟨hx, hxw⟩)
+  have hb_le_y : b ≤ y := Finset.min'_le _ y (Finset.mem_filter.mpr ⟨hy, hwy⟩)
+  refine ⟨a, b, ⟨ha_D, hb_D, hab, ?_⟩, ha_ge_x, hb_le_y, haw, hwb⟩
+  -- Adjacency: no u ∈ D with a < u < b
+  intro u hu ⟨hau, hub⟩
+  -- u ∈ D with a < u < b. Since a < u < w or u = w or w < u < b:
+  rcases lt_trichotomy u w with huw | rfl | hwu
+  · -- u < w: u ∈ L, so u ≤ a = max(L). But a < u, contradiction.
+    exact absurd (Finset.le_max' _ u (Finset.mem_filter.mpr ⟨hu, huw⟩)) (not_le.mpr hau)
+  · -- u = w: w ∉ D, contradiction
+    exact hw_not hu
+  · -- w < u: u ∈ R, so b = min(R) ≤ u. But u < b, contradiction.
+    exact absurd (Finset.min'_le _ u (Finset.mem_filter.mpr ⟨hu, hwu⟩)) (not_le.mpr hub)
+
 /-! ## Strong C5: Full Burgess C5a with Guard
 
 The full C5a condition from Burgess 2.11: if U(ξ,η) ∈ limit_f(x), then there exists
@@ -1445,11 +1487,13 @@ y > x in limit_dom with η ∈ limit_f(y) AND ξ ∈ limit_g(x,y).
 The guard condition ξ ∈ limit_g(x,y) means: for all w ∈ limit_dom with x < w < y,
 ξ ∈ limit_f(w). This is the key property for the truth lemma (Burgess Claim 2.11).
 
-Proof: The C5 elimination at finite stage n+1 produces a witness y with the guard
-formula ξ in the g-value of the pair (x,y). The guard propagates through all subsequent
-splitting steps because every splitting preserves g ⊆ f for the new point and
-g ⊆ g' for the sub-intervals (from the B ⊆ B' property of
-burgessR3Maximal_extension_exists and the seed construction in lemma_2_6/2_7/2_8).
+Proof strategy: The C5 elimination at finite stage n+1 produces a witness y with both
+adj_guard (ξ ∈ g for adjacent pairs between x and y) and domain_guard (ξ ∈ f(w)
+for old domain points between x and y). For any w in limit_dom between x and y:
+- If w ∈ dom_n (old point): domain_guard gives ξ ∈ f_{n+1}(w) = limit_f(w).
+- If w ∉ dom_{n+1} (added later): find containing adjacent pair (a,b) in dom_{n+1},
+  adj_guard gives ξ ∈ g_{n+1}(a,b), then adj_g_mem_limit_f gives ξ ∈ limit_f(w).
+- If w ∈ dom_{n+1} \ dom_n (unique new point): w = y by dom_new_unique, contradicts w < y.
 -/
 
 theorem limit_satisfies_c5_strong (A : Set Formula) (h_mcs : SetMaximalConsistent A)
@@ -1459,12 +1503,58 @@ theorem limit_satisfies_c5_strong (A : Set Formula) (h_mcs : SetMaximalConsisten
     (h_until : Formula.untl ξ η ∈ limit_f A h_mcs h_nubr3 x) :
     ∃ y ∈ limit_dom A h_mcs h_nubr3, x < y ∧ η ∈ limit_f A h_mcs h_nubr3 y ∧
       ξ ∈ limit_g A h_mcs h_nubr3 x y := by
-  obtain ⟨y, hy_dom, hxy, hy_η⟩ := limit_satisfies_c5_weak A h_mcs h_nubr3 x hx ξ η h_until
-  refine ⟨y, hy_dom, hxy, hy_η, ?_⟩
-  -- Need: ξ ∈ limit_g(x, y), i.e., ∀ w ∈ limit_dom, x < w → w < y → ξ ∈ limit_f(w)
-  -- See handoff 70 for the full analysis and proof strategy.
+  obtain ⟨n₀, hn₀⟩ := hx
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, 0, ξ, η, .c5_forward⟩ n₀
+  have hx_n : x ∈ (omega_chain_val A h_mcs h_nubr3 n).dom :=
+    omega_chain_dom_mono_le A h_mcs h_nubr3 hn_ge hn₀
+  have h_until_n : Formula.untl ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
+    rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
+  obtain ⟨y, hy_dom_n1, hxy, hy_η_n1, h_adj_guard, h_dom_guard⟩ :=
+    omega_chain_c5_witness A h_mcs h_nubr3 n x ξ η hx_n h_until_n hn_eq
+  refine ⟨y, ⟨n + 1, hy_dom_n1⟩, hxy, ?_, ?_⟩
+  · rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom_n1]; exact hy_η_n1
+  -- Guard: ξ ∈ limit_g(x,y), i.e., ∀ w ∈ limit_dom, x < w → w < y → ξ ∈ limit_f(w)
   intro w hw hxw hwy
-  sorry
+  have hx_n1 : x ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom :=
+    omega_chain_dom_mono A h_mcs h_nubr3 n hx_n
+  -- Three cases based on w's relationship to stages n and n+1
+  by_cases hw_n : w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
+  · -- w ∈ dom_n: domain_guard gives ξ ∈ f_{n+1}(w), convert to limit_f
+    rw [limit_f_eq A h_mcs h_nubr3 w (n + 1) (omega_chain_dom_mono A h_mcs h_nubr3 n hw_n)]
+    exact h_dom_guard w hw_n hxw hwy
+  · -- w ∉ dom_n: find containing adjacent pair in dom_{n+1}, use adj_g_mem_limit_f.
+    -- w ∉ dom_{n+1} because: if w were in dom_{n+1} \ dom_n, then by
+    -- omega_chain_dom_new_unique it would be the unique new point. If y ∉ dom_n
+    -- too, then w = y (both new), contradicting w < y. If y ∈ dom_n, the
+    -- elimination was identity (no new points), so dom_{n+1} = dom_n and w ∈ dom_n,
+    -- contradiction. Either way w ∉ dom_{n+1}.
+    -- Since x, y ∈ dom_{n+1} and x < w < y with w ∉ dom_{n+1}, find adjacent (a,b).
+    by_cases hw_n1 : w ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom
+    · -- w ∈ dom_{n+1} \ dom_n. y is also in dom_{n+1}.
+      -- If y ∉ dom_n: both new, w = y by uniqueness, but w < y. Contradiction.
+      -- If y ∈ dom_n: w is the unique new point between x and y.
+      by_cases hy_n : y ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
+      · -- y ∈ dom_n, w ∈ dom_{n+1} \ dom_n. Use adj_g_mem_limit_f at stage n.
+        -- Find adjacent (a,b) in dom_n containing w.
+        obtain ⟨a, b, h_adj_n, ha_ge_x, hb_le_y, haw, hwb⟩ :=
+          exists_containing_adjacent _ x y w hx_n hy_n hxy hw_n hxw hwy
+        -- Use adj_g_mem_limit_f at stage n: need ξ ∈ g_n(a,b).
+        -- adj_guard gives ξ ∈ g_{n+1}(p,q) for adjacent (p,q) in dom_{n+1}.
+        -- g_{n+1}(a,b) = g_n(a,b) if (a,b) remains adjacent in dom_{n+1}.
+        -- But w was inserted between a and b, so (a,b) is no longer adjacent in dom_{n+1}.
+        -- This sub-case requires showing that the elimination at step n
+        -- was identity (since y ∈ dom_n, the C5 counterexample was already resolved).
+        -- In the identity case, dom_{n+1} = dom_n, contradicting w ∉ dom_n.
+        -- FIX: need omega_chain_no_new_when_witness_old lemma.
+        sorry
+      · exact absurd (omega_chain_dom_new_unique A h_mcs h_nubr3 n w y hw_n1 hw_n hy_dom_n1 hy_n)
+          (ne_of_lt hwy)
+    · obtain ⟨a, b, h_adj_n1, ha_ge_x, hb_le_y, haw, hwb⟩ :=
+        exists_containing_adjacent _ x y w hx_n1 hy_dom_n1 hxy hw_n1 hxw hwy
+      exact adj_g_mem_limit_f A h_mcs h_nubr3 (n + 1) a b h_adj_n1 ξ
+        (h_adj_guard a b h_adj_n1 ha_ge_x hb_le_y) w hw haw hwb
 
 theorem limit_satisfies_c5'_strong (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_nubr3 : NoUnivBurgessR3)
@@ -1473,9 +1563,32 @@ theorem limit_satisfies_c5'_strong (A : Set Formula) (h_mcs : SetMaximalConsiste
     (h_since : Formula.snce ξ η ∈ limit_f A h_mcs h_nubr3 x) :
     ∃ y ∈ limit_dom A h_mcs h_nubr3, y < x ∧ η ∈ limit_f A h_mcs h_nubr3 y ∧
       ξ ∈ limit_g A h_mcs h_nubr3 y x := by
-  obtain ⟨y, hy_dom, hyx, hy_η⟩ := limit_satisfies_c5'_weak A h_mcs h_nubr3 x hx ξ η h_since
-  refine ⟨y, hy_dom, hyx, hy_η, ?_⟩
+  obtain ⟨n₀, hn₀⟩ := hx
+  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
+    ⟨x, 0, ξ, η, .c5_backward⟩ n₀
+  have hx_n : x ∈ (omega_chain_val A h_mcs h_nubr3 n).dom :=
+    omega_chain_dom_mono_le A h_mcs h_nubr3 hn_ge hn₀
+  have h_since_n : Formula.snce ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
+    rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
+    rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
+  obtain ⟨y, hy_dom_n1, hyx, hy_η_n1, h_adj_guard, h_dom_guard⟩ :=
+    omega_chain_c5'_witness A h_mcs h_nubr3 n x ξ η hx_n h_since_n hn_eq
+  refine ⟨y, ⟨n + 1, hy_dom_n1⟩, hyx, ?_, ?_⟩
+  · rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom_n1]; exact hy_η_n1
   intro w hw hyw hwx
-  sorry
+  have hx_n1 : x ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom :=
+    omega_chain_dom_mono A h_mcs h_nubr3 n hx_n
+  by_cases hw_n : w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
+  · rw [limit_f_eq A h_mcs h_nubr3 w (n + 1) (omega_chain_dom_mono A h_mcs h_nubr3 n hw_n)]
+    exact h_dom_guard w hw_n hyw hwx
+  · by_cases hw_n1 : w ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom
+    · by_cases hy_n : y ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
+      · sorry -- mirror: need omega_chain_no_new_when_witness_old
+      · exact absurd (omega_chain_dom_new_unique A h_mcs h_nubr3 n w y hw_n1 hw_n hy_dom_n1 hy_n)
+          (ne_of_gt hyw)
+    · obtain ⟨a, b, h_adj_n1, ha_ge_y, hb_le_x, haw, hwb⟩ :=
+        exists_containing_adjacent _ y x w hy_dom_n1 hx_n1 hyx hw_n1 hyw hwx
+      exact adj_g_mem_limit_f A h_mcs h_nubr3 (n + 1) a b h_adj_n1 ξ
+        (h_adj_guard a b h_adj_n1 ha_ge_y hb_le_x) w hw haw hwb
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

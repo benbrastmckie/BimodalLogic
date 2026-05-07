@@ -695,7 +695,8 @@ private noncomputable def c5_forward_walk
     (h_start_mem : pt ∈ χ.dom)
     (h_until_start : Formula.untl ξ η ∈ χ.f pt)
     (h_no_wit : ¬∃ y ∈ χ.dom, pt < y ∧ η ∈ χ.f y ∧
-      (∀ a b, Adjacent χ.dom a b → pt ≤ a → b ≤ y → ξ ∈ χ.g a b)) :
+      (∀ a b, Adjacent χ.dom a b → pt ≤ a → b ≤ y → ξ ∈ χ.g a b) ∧
+      (∀ w ∈ χ.dom, pt < w → w < y → ξ ∈ χ.f w)) :
     C5ForwardWalkResult χ ξ η pt := by
   -- Set up domain facts
   have h_dom_ne : χ.dom.Nonempty := ⟨pt, h_start_mem⟩
@@ -861,7 +862,7 @@ private noncomputable def c5_forward_walk
     -- Derive: xi ∈ g(pt, x') → eta ∉ f(x')
     have h_guard_implies_no_event : ξ ∈ χ.g pt x' → η ∉ χ.f x' :=
       fun h_guard h_event => h_no_wit ⟨x', hx'_dom, hstart_lt_x', h_event,
-        fun a b h_adj_ab h_le_a h_le_b => by
+        ⟨fun a b h_adj_ab h_le_a h_le_b => by
           have ha_eq : a = pt := by
             by_contra ha_ne
             have ha_gt : pt < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
@@ -871,7 +872,8 @@ private noncomputable def c5_forward_walk
             by_contra hb_ne
             have hb_lt : b < x' := lt_of_le_of_ne h_le_b hb_ne
             exact h_adj_sx'.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hb_lt⟩
-          rw [ha_eq, hb_eq]; exact h_guard⟩
+          rw [ha_eq, hb_eq]; exact h_guard,
+        fun w hw hsw hwx' => absurd ⟨hsw, hwx'⟩ (h_adj_sx'.2.2.2 w hw)⟩⟩
     -- Get BurgessR3Maximal facts for (pt, x')
     have h_r3m_adj := h_c2' pt x' h_adj_sx'
     have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_start h_mcs_x'
@@ -887,10 +889,11 @@ private noncomputable def c5_forward_walk
         conj_right_mcs h_mcs_x' ξ (Formula.untl ξ η) h_cond_i.1
       -- Derive: h_no_wit at x'
       have h_no_wit_x' : ¬∃ y ∈ χ.dom, x' < y ∧ η ∈ χ.f y ∧
-          (∀ a b, Adjacent χ.dom a b → x' ≤ a → b ≤ y → ξ ∈ χ.g a b) := by
-        intro ⟨y, hy_dom, hx'y, hη_y, h_guard_y⟩
+          (∀ a b, Adjacent χ.dom a b → x' ≤ a → b ≤ y → ξ ∈ χ.g a b) ∧
+          (∀ w ∈ χ.dom, x' < w → w < y → ξ ∈ χ.f w) := by
+        intro ⟨y, hy_dom, hx'y, hη_y, h_guard_y, h_dom_guard_y⟩
         exact h_no_wit ⟨y, hy_dom, lt_trans hstart_lt_x' hx'y, hη_y,
-          fun a b h_adj_ab h_le_a h_le_b => by
+          ⟨fun a b h_adj_ab h_le_a h_le_b => by
             by_cases h_a_lt_x' : a < x'
             · -- a < x', so a = pt and b = x' (since x' is successor of pt)
               have ha_eq : a = pt := by
@@ -909,7 +912,16 @@ private noncomputable def c5_forward_walk
               rw [ha_eq, hb_eq]; exact h_cond_i.2
             · -- a ≥ x'
               push_neg at h_a_lt_x'
-              exact h_guard_y a b h_adj_ab h_a_lt_x' h_le_b⟩
+              exact h_guard_y a b h_adj_ab h_a_lt_x' h_le_b,
+          fun w hw hsw hwy => by
+            -- w ∈ χ.dom with pt < w < y. Case split on w vs x'.
+            rcases lt_or_eq_of_le (le_of_not_lt fun h =>
+              h_adj_sx'.2.2.2 w hw ⟨hsw, h⟩) with hwx' | hwx'
+            · -- w > x': use h_dom_guard_y from hypothesis
+              exact h_dom_guard_y w hw hwx' hwy
+            · -- w = x': ξ ∈ f(x') from condition (i) via conj_left_mcs
+              rw [← hwx']
+              exact conj_left_mcs h_mcs_x' ξ (Formula.untl ξ η) h_cond_i.1⟩⟩
       -- Termination: (dom.filter (· > x')).card < (dom.filter (· > pt)).card
       have h_term : (χ.dom.filter (fun v => v > x')).card < (χ.dom.filter (fun v => v > pt)).card := by
         apply Finset.card_lt_card
@@ -1254,7 +1266,8 @@ private noncomputable def c5_backward_walk
     (h_start_mem : pt ∈ χ.dom)
     (h_since_start : Formula.snce ξ η ∈ χ.f pt)
     (h_no_wit : ¬∃ y ∈ χ.dom, y < pt ∧ η ∈ χ.f y ∧
-      (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ pt → ξ ∈ χ.g a b)) :
+      (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ pt → ξ ∈ χ.g a b) ∧
+      (∀ w ∈ χ.dom, y < w → w < pt → ξ ∈ χ.f w)) :
     C5BackwardWalkResult χ ξ η pt := by
   -- Set up domain facts
   have h_dom_ne : χ.dom.Nonempty := ⟨pt, h_start_mem⟩
@@ -1415,7 +1428,7 @@ private noncomputable def c5_backward_walk
     -- Derive: xi ∈ g(x'', pt) → eta ∉ f(x'')
     have h_guard_implies_no_event : ξ ∈ χ.g x'' pt → η ∉ χ.f x'' :=
       fun h_guard h_event => h_no_wit ⟨x'', hx''_dom, hx''_lt_start, h_event,
-        fun a b h_adj_ab h_le_a h_le_b => by
+        ⟨fun a b h_adj_ab h_le_a h_le_b => by
           have ha_eq : a = x'' := by
             by_contra ha_ne
             have ha_gt : x'' < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
@@ -1425,7 +1438,8 @@ private noncomputable def c5_backward_walk
             by_contra hb_ne
             have hb_lt : b < pt := lt_of_le_of_ne h_le_b hb_ne
             exact h_adj_x''s.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hb_lt⟩
-          rw [ha_eq, hb_eq]; exact h_guard⟩
+          rw [ha_eq, hb_eq]; exact h_guard,
+        fun w hw hx''w hws => absurd ⟨hx''w, hws⟩ (h_adj_x''s.2.2.2 w hw)⟩⟩
     -- Get BurgessR3Maximal facts for (x'', pt)
     have h_r3m_adj := h_c2' x'' pt h_adj_x''s
     have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x'' h_mcs_start
@@ -1441,10 +1455,11 @@ private noncomputable def c5_backward_walk
         conj_right_mcs h_mcs_x'' ξ (Formula.snce ξ η) h_cond_i.1
       -- Derive: h_no_wit at x''
       have h_no_wit_x'' : ¬∃ y ∈ χ.dom, y < x'' ∧ η ∈ χ.f y ∧
-          (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ x'' → ξ ∈ χ.g a b) := by
-        intro ⟨y, hy_dom, hy_lt_x'', hη_y, h_guard_y⟩
+          (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ x'' → ξ ∈ χ.g a b) ∧
+          (∀ w ∈ χ.dom, y < w → w < x'' → ξ ∈ χ.f w) := by
+        intro ⟨y, hy_dom, hy_lt_x'', hη_y, h_guard_y, h_dom_guard_y⟩
         exact h_no_wit ⟨y, hy_dom, lt_trans hy_lt_x'' hx''_lt_start, hη_y,
-          fun a b h_adj_ab h_le_a h_le_b => by
+          ⟨fun a b h_adj_ab h_le_a h_le_b => by
             by_cases h_b_gt_x'' : x'' < b
             · -- b > x'', so b = pt and a = x'' (since x'' is predecessor of pt)
               have hb_eq : b = pt := by
@@ -1463,7 +1478,16 @@ private noncomputable def c5_backward_walk
               rw [ha_eq, hb_eq]; exact h_cond_i.2
             · -- b ≤ x''
               push_neg at h_b_gt_x''
-              exact h_guard_y a b h_adj_ab h_le_a h_b_gt_x''⟩
+              exact h_guard_y a b h_adj_ab h_le_a h_b_gt_x'',
+          fun w hw hyw hws => by
+            -- w ∈ χ.dom with y < w < pt. Case split on w vs x''.
+            rcases lt_or_eq_of_le (le_of_not_lt fun h =>
+              h_adj_x''s.2.2.2 w hw ⟨h, hws⟩) with hwx'' | hwx''
+            · -- w < x'': use h_dom_guard_y from hypothesis
+              exact h_dom_guard_y w hw hyw hwx''
+            · -- w = x'': ξ ∈ f(x'') from condition (i) via conj_left_mcs
+              rw [hwx'']
+              exact conj_left_mcs h_mcs_x'' ξ (Formula.snce ξ η) h_cond_i.1⟩⟩
       -- Termination: (dom.filter (· < x'')).card < (dom.filter (· < pt)).card
       have h_term : (χ.dom.filter (fun v => v < x'')).card < (χ.dom.filter (fun v => v < pt)).card := by
         apply Finset.card_lt_card
@@ -1801,7 +1825,8 @@ noncomputable def eliminate_potential_counterexample
     -- Actual counterexample iff NO y exists with event ∈ f(y) AND guard ∈ g(x,y).
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.untl pc.ξ pc.η ∈ χ.f pc.x ∧
         ¬∃ y ∈ χ.dom, pc.x < y ∧ pc.η ∈ χ.f y ∧
-          (∀ a b, Adjacent χ.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ χ.g a b)
+          (∀ a b, Adjacent χ.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ χ.g a b) ∧
+          (∀ w ∈ χ.dom, pc.x < w → w < y → pc.ξ ∈ χ.f w)
     · obtain ⟨h_mem, h_until, h_no_wit⟩ := h_actual
       have h_mcs_x := h_c0 pc.x h_mem
       have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
@@ -1972,7 +1997,7 @@ noncomputable def eliminate_potential_counterexample
         -- Burgess 2.10 (ii): guard ∈ g(x,x') implies event ∉ f(x')
         have h_guard_implies_no_event : pc.ξ ∈ χ.g pc.x x' → pc.η ∉ χ.f x' :=
           fun h_guard h_event => h_no_wit ⟨x', hx'_dom, hx_lt_x', h_event,
-            fun a b h_adj_ab h_le_a h_le_b => by
+            ⟨fun a b h_adj_ab h_le_a h_le_b => by
               have ha_eq : a = pc.x := by
                 by_contra ha_ne
                 have ha_gt : pc.x < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
@@ -1982,7 +2007,8 @@ noncomputable def eliminate_potential_counterexample
                 by_contra hb_ne
                 have hb_lt : b < x' := lt_of_le_of_ne h_le_b hb_ne
                 exact h_adj_xx'.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hb_lt⟩
-              rw [ha_eq, hb_eq]; exact h_guard⟩
+              rw [ha_eq, hb_eq]; exact h_guard,
+            fun w hw hsw hwx' => absurd ⟨hsw, hwx'⟩ (h_adj_xx'.2.2.2 w hw)⟩⟩
         -- Get BurgessR3Maximal for the adjacent pair (pc.x, x') from c2'
         have h_r3m_adj := h_c2' pc.x x' h_adj_xx'
         have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x h_mcs_x'
@@ -2308,18 +2334,8 @@ noncomputable def eliminate_potential_counterexample
               c5_forward_witness := by
                 intro _ h_mem h_until
                 push_neg at h_actual
-                obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard⟩ := h_actual h_mem h_until
-                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, fun w hw hxw hwy => by
-                  -- Identity case: the walk already ran at an earlier stage.
-                  -- Forward this to the walk which produced the domain_guard.
-                  -- For now, use the walk's `h_no_wit` to obtain a contradiction:
-                  -- The existence of y with adj_guard means h_no_wit is False.
-                  -- Actually, we're in ¬h_actual, so witness exists. We need domain_guard.
-                  -- Use the walk to derive it: run the walk from x.
-                  -- The walk would find y or something before.
-                  -- Since ¬h_actual, a witness exists, so h_no_wit is false, i.e., c5_forward_walk
-                  -- would have been called at some earlier stage.
-                  sorry⟩
+                obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩ := h_actual h_mem h_until
+                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2332,7 +2348,8 @@ noncomputable def eliminate_potential_counterexample
     -- Burgess C5b counterexample check (g-value based, mirror of C5a):
     by_cases h_actual : pc.x ∈ χ.dom ∧ Formula.snce pc.ξ pc.η ∈ χ.f pc.x ∧
         ¬∃ y ∈ χ.dom, y < pc.x ∧ pc.η ∈ χ.f y ∧
-          (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ pc.x → pc.ξ ∈ χ.g a b)
+          (∀ a b, Adjacent χ.dom a b → y ≤ a → b ≤ pc.x → pc.ξ ∈ χ.g a b) ∧
+          (∀ w ∈ χ.dom, y < w → w < pc.x → pc.ξ ∈ χ.f w)
     · obtain ⟨h_mem, h_since, h_no_wit⟩ := h_actual
       have h_mcs_x := h_c0 pc.x h_mem
       have h_dom_ne : χ.dom.Nonempty := ⟨pc.x, h_mem⟩
@@ -2500,7 +2517,7 @@ noncomputable def eliminate_potential_counterexample
         -- Burgess 2.10' (ii): guard ∈ g(x'',x) implies event ∉ f(x'')
         have h_guard_implies_no_event_back : pc.ξ ∈ χ.g x'' pc.x → pc.η ∉ χ.f x'' :=
           fun h_guard h_event => h_no_wit ⟨x'', hx''_dom, hx''_lt_x, h_event,
-            fun a b h_adj_ab h_le_a h_le_b => by
+            ⟨fun a b h_adj_ab h_le_a h_le_b => by
               have ha_eq : a = x'' := by
                 by_contra ha_ne
                 have ha_gt : x'' < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
@@ -2510,7 +2527,8 @@ noncomputable def eliminate_potential_counterexample
                 by_contra hb_ne
                 have hb_lt : b < pc.x := lt_of_le_of_ne h_le_b hb_ne
                 exact h_adj_x''x.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hb_lt⟩
-              rw [ha_eq, hb_eq]; exact h_guard⟩
+              rw [ha_eq, hb_eq]; exact h_guard,
+            fun w hw hx''w hwx => absurd ⟨hx''w, hwx⟩ (h_adj_x''x.2.2.2 w hw)⟩⟩
         -- Get BurgessR3Maximal for the adjacent pair (x'', pc.x)
         have h_r3m_adj := h_c2' x'' pc.x h_adj_x''x
         have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x'' h_mcs_x
@@ -2812,9 +2830,8 @@ noncomputable def eliminate_potential_counterexample
               c5_backward_witness := by
                 intro _ h_mem h_since
                 push_neg at h_actual
-                obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard⟩ := h_actual h_mem h_since
-                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, fun w hw hyw hwx => by
-                  sorry⟩
+                obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩ := h_actual h_mem h_since
+                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
