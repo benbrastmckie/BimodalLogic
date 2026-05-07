@@ -1033,7 +1033,7 @@ noncomputable def eliminate_potential_counterexample
                       exact SetMaximalConsistent.implication_property hD_mcs
                         (theorem_in_mcs hD_mcs (Bimodal.Theorems.Propositional.double_negation pc.η))
                         h_dne_D, h_B_sub_D, hBB', hBB''⟩
-                  · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB''⟩ :=
+                  · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', _⟩ :=
                       lemma_2_7 h_mcs_u_max h_mcs_u_next h_r3m_u h_B_sdc_u h_gc_u
                         pc.ξ pc.η h_untl_u_max h_xi_g_u h_nubr3
                     exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB''⟩
@@ -1056,14 +1056,14 @@ noncomputable def eliminate_potential_counterexample
                                 (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)))) h_neg_conj_u
                         have h_l28 := lemma_2_8 h_mcs_u_max h_mcs_u_next h_r3m_u h_B_sdc_u h_gc_u
                           pc.ξ pc.η h_untl_u_max h_neg_disj_u h_nubr3
-                        obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB''⟩ := h_l28
+                        obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ := h_l28
                         exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB''⟩
                       · have h_bx5_u := self_accum_until_mcs h_mcs_u_max pc.ξ pc.η h_untl_u_max
                         have h_l27 := lemma_2_7 h_mcs_u_max h_mcs_u_next h_r3m_u h_B_sdc_u h_gc_u
                           (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) pc.η h_bx5_u h_conj_g_u h_nubr3
-                        obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB''⟩ := h_l27
+                        obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB'', _⟩ := h_l27
                         exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB''⟩
-                    · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB''⟩ :=
+                    · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', _⟩ :=
                         lemma_2_7 h_mcs_u_max h_mcs_u_next h_r3m_u h_B_sdc_u h_gc_u
                           pc.ξ pc.η h_untl_u_max h_xi_g_u h_nubr3
                       exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB''⟩
@@ -1257,7 +1257,7 @@ noncomputable def eliminate_potential_counterexample
                   exact SetMaximalConsistent.implication_property h_D2_mcs
                     (theorem_in_mcs h_D2_mcs h_dne) h_eta_neg_neg_D2
                 exact ⟨B'2, D2, B''2, h_B'2, h_B''2, h_D2_mcs, h_eta_D2, h_B_sub_D2, h_B_sub_B'2, h_B_sub_B''2⟩
-              · obtain ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_B'3, h_B_sub_D3, h_B_sub_B''3⟩ :=
+              · obtain ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_B'3, h_B_sub_D3, h_B_sub_B''3, _⟩ :=
                   lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                     pc.ξ pc.η h_until h_xi_g h_nubr3
                 exact ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_D3, h_B_sub_B'3, h_B_sub_B''3⟩
@@ -1283,14 +1283,14 @@ noncomputable def eliminate_potential_counterexample
                         (theorem_in_mcs h_mcs_x' h_dm) h_neg_conj
                     have h_l28 := lemma_2_8 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                       pc.ξ pc.η h_until h_neg_disj h_nubr3
-                    obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩ := h_l28
+                    obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, _⟩ := h_l28
                     exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩
                   · have h_bx5 := self_accum_until_mcs h_mcs_x pc.ξ pc.η h_until
-                    obtain ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_B'6, h_B_sub_D6, h_B_sub_B''6⟩ :=
+                    obtain ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_B'6, h_B_sub_D6, h_B_sub_B''6, _⟩ :=
                       lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                         (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) pc.η h_bx5 h_conj_g h_nubr3
                     exact ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_D6, h_B_sub_B'6, h_B_sub_B''6⟩
-                · obtain ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_B'4, h_B_sub_D4, h_B_sub_B''4⟩ :=
+                · obtain ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_B'4, h_B_sub_D4, h_B_sub_B''4, _⟩ :=
                     lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
                       pc.ξ pc.η h_until h_xi_g h_nubr3
                   exact ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_D4, h_B_sub_B'4, h_B_sub_B''4⟩

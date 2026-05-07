@@ -106,7 +106,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Strengthen lemma_2_7/2_8 to Return xi ∈ B' [NOT STARTED]
+### Phase 2: Strengthen lemma_2_7/2_8 to Return xi ∈ B' [PARTIAL]
 
 **Goal**: Modify `lemma_2_7` (PointInsertion.lean:3616) to start the Zorn construction for B' from `DC(B ∪ {xi})` instead of `B`, producing `xi ∈ B'` in addition to the existing `B ⊆ B'`. Mirror for `lemma_2_8`, `lemma_2_7_since`, `lemma_2_8_since`.
 
@@ -119,15 +119,15 @@ Phases within the same wave can execute in parallel.
 4. Since `B ∪ {xi} ⊆ DC(B∪{xi}) ⊆ B'`, both `B ⊆ B'` and `xi ∈ B'` follow.
 
 **Tasks**:
-- [ ] **Task 2.1**: In `lemma_2_7`, prove `burgessR(A, β∧xi, D)` for all β ∈ B. Uses guard conjunction (Phase 1 Task 1.3) with `burgessR(A, β, D)` (from `h_rSet_A`) and `burgessR(A, xi, D)` (from `h_burgessR_xi` at line 3687). ~15 lines.
-- [ ] **Task 2.2**: Prove `burgessRSince(D, β∧xi, A)` for all β ∈ B. Already exists as `h_snce_conj_xi_D` at line 3669. Verify and connect. ~5 lines.
-- [ ] **Task 2.3**: Apply `dc_delta_B_burgessR3` to derive `burgessR3(A, DC(B∪{xi}), D)`. ~20 lines.
-- [ ] **Task 2.4**: Prove `SetDeductivelyClosed (deductiveClosure (B ∪ {xi}))` -- true by definition of deductiveClosure. ~5 lines.
-- [ ] **Task 2.5**: Change the Zorn invocation from seed `B` to seed `DC(B∪{xi})`. Extract `xi ∈ B'` from `DC(B∪{xi}) ⊆ B'`. Add `xi ∈ B'` to the return type. ~20 lines.
-- [ ] **Task 2.6**: Update callers of `lemma_2_7` in CounterexampleElimination.lean to accept the enriched return (destructure the additional `xi ∈ B'` component). ~10 lines per call site.
-- [ ] **Task 2.7**: Mirror for `lemma_2_8` (same structure, different seed consistency proof). ~60 lines.
-- [ ] **Task 2.8**: Mirror for `lemma_2_7_since` and `lemma_2_8_since` (backward direction). ~120 lines.
-- [ ] **Task 2.9**: Run `lake build` to verify all changes compile.
+- [x] **Task 2.1**: In `lemma_2_7`, prove `burgessR(A, β∧xi, D)` for all β ∈ B. Uses guard conjunction (Phase 1 Task 1.3) with `burgessR(A, β, D)` (from `h_rSet_A`) and `burgessR(A, xi, D)` (from `h_burgessR_xi` at line 3687). ~15 lines. **DONE**: Steps 6-6b in lemma_2_7.
+- [x] **Task 2.2**: Prove `burgessRSince(D, β∧xi, A)` for all β ∈ B. Already exists as `h_snce_conj_xi_D` at line 3669. Verify and connect. ~5 lines. **DONE**: Already in seed (5th component).
+- [x] **Task 2.3**: Apply `dc_delta_B_burgessR3` to derive `burgessR3(A, DC(B∪{xi}), D)`. ~20 lines. **DONE**: Step 6c in lemma_2_7.
+- [x] **Task 2.4**: Prove `SetDeductivelyClosed (deductiveClosure (B ∪ {xi}))` -- true by definition of deductiveClosure. ~5 lines. **DONE**: Step 6d, via contrapositive (DC≠univ → consistent → DCS).
+- [x] **Task 2.5**: Change the Zorn invocation from seed `B` to seed `DC(B∪{xi})`. Extract `xi ∈ B'` from `DC(B∪{xi}) ⊆ B'`. Add `xi ∈ B'` to the return type. ~20 lines. **DONE**: Step 6e, return type extended with `∧ xi ∈ B'`.
+- [x] **Task 2.6**: Update callers of `lemma_2_7` in CounterexampleElimination.lean to accept the enriched return (destructure the additional `xi ∈ B'` component). ~10 lines per call site. **DONE**: 8 call sites updated with `_` for the extra component.
+- [x] **Task 2.7**: Mirror for `lemma_2_8` (same structure, different seed consistency proof). ~60 lines. **DONE**: Same DC seed approach; added Steps 5b-5d + Step 6 to lemma_2_8.
+- [ ] **Task 2.8**: Mirror for `lemma_2_7_since` and `lemma_2_8_since` (backward direction). ~120 lines. **BLOCKED**: Since seed (`lemma_2_7_since_seed`) lacks 5th component `{snce(β∧xi,α)}`. Requires modifying seed definition + 300-line consistency proof. See handoff for analysis.
+- [x] **Task 2.9**: Run `lake build` to verify all changes compile. **PASSED**: Build completed successfully (1097 jobs), 0 new sorries, 0 new axioms.
 
 **Timing**: 4-6 hours
 

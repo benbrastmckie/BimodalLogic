@@ -3608,11 +3608,15 @@ private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
 
 /-- **Lemma 2.7** (Burgess 1982 p.372): Given BurgessR3Maximal(A, B, C) with
 untl(xi, eta) ∈ A and xi ∉ B (guard not in B), construct MCS D with eta ∈ D
-(event in D) and B' with B ⊆ B' (original interval set included in B').
+(event in D) and B' with B ⊆ B' and xi ∈ B' (guard in B').
+
+The Zorn seed for B' is DC(B ∪ {xi}) (not just B), which ensures xi ∈ B'.
+This requires the guard conjunction theorem (burgessR_conj) to derive
+burgessR3(A, DC(B ∪ {xi}), D) via dc_delta_B_burgessR3.
 
 Convention: untl(xi, eta) = U(eta, xi) in Burgess.
   xi = guard (Burgess η), eta = event (Burgess ξ).
-  Burgess: U(ξ,η) ∈ A, η ∉ B, ξ ∈ D, B ⊆ B'. -/
+  Burgess: U(ξ,η) ∈ A, η ∉ B, ξ ∈ D, η ∈ B', B ⊆ B'. -/
 theorem lemma_2_7 {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A)
     (h_mcs_C : SetMaximalConsistent C)
@@ -3630,7 +3634,8 @@ theorem lemma_2_7 {A B C : Set Formula}
       eta ∈ D ∧
       B ⊆ B' ∧
       B ⊆ D ∧
-      B ⊆ B'' := by
+      B ⊆ B'' ∧
+      xi ∈ B' := by
   -- Step 1: The D0 seed is consistent
   have h_seed_cons := lemma_2_7_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc xi eta h_until h_xi_not_B
   -- Step 2: Lindenbaum-extend to MCS D
@@ -3686,14 +3691,55 @@ theorem lemma_2_7 {A B C : Set Formula}
   have h_burgessRSince_xi : burgessRSince D xi A := h_snce_xi_D
   have h_burgessR_xi : burgessR A xi D :=
     burgessRSince_implies_burgessR h_mcs_A h_D_mcs h_burgessRSince_xi
-  -- Step 6: BurgessR3Maximal via Zorn from B (Burgess-aligned: B ⊆ B')
+  -- Step 6: Derive burgessR(A, β∧xi, D) for all β ∈ B using guard conjunction (Phase 1)
+  have h_burgessR_conj : ∀ β ∈ B, burgessR A (Formula.and β xi) D := by
+    intro β hβ
+    exact burgessR_conj h_mcs_A (h_rSet_A β hβ) h_burgessR_xi
+  -- Step 6b: Derive untl(β∧xi, δ) ∈ A for all β ∈ B, δ ∈ D
+  have h_until_conj : ∀ β ∈ B, ∀ δ ∈ D, Formula.untl (Formula.and β xi) δ ∈ A := by
+    intro β hβ δ hδ
+    exact h_burgessR_conj β hβ δ hδ
+  -- Step 6c: Apply dc_delta_B_burgessR3 to get burgessR3(A, DC({xi} ∪ B), D)
+  have h_r3_DC_ABD : burgessR3 A (deductiveClosure ({xi} ∪ B)) D :=
+    dc_delta_B_burgessR3 h_mcs_A h_D_mcs h_B_dcs h_r3_ABD h_until_conj h_snce_conj_xi_D
+  -- Step 6d: Prove DC({xi} ∪ B) is a DCS
+  -- DC is always CUD. If it were inconsistent, it would be Set.univ,
+  -- contradicting ¬burgessR3 A Set.univ D.
   have h_no_univ_AD : ¬burgessR3 A Set.univ D := h_nubr3 A D h_mcs_A h_D_mcs
+  have h_DC_ne_univ : deductiveClosure ({xi} ∪ B) ≠ Set.univ := by
+    intro h_eq; rw [h_eq] at h_r3_DC_ABD; exact h_no_univ_AD h_r3_DC_ABD
+  have h_DC_cons : SetConsistent ({xi} ∪ B) := by
+    intro L hL hd
+    apply h_DC_ne_univ
+    ext φ; simp only [Set.mem_univ, iff_true]
+    have h_bot : Formula.bot ∈ deductiveClosure ({xi} ∪ B) :=
+      deductiveClosure_closed ({xi} ∪ B) L Formula.bot
+        (fun ψ hψ => subset_deductiveClosure _ (hL ψ hψ)) hd.some
+    have d_efq : DerivationTree [Formula.bot] φ :=
+      DerivationTree.modus_ponens [Formula.bot] Formula.bot φ
+        (DerivationTree.weakening [] [Formula.bot] (Formula.bot.imp φ)
+          (Bimodal.Theorems.Propositional.efq_axiom φ) (List.nil_subset _))
+        (DerivationTree.assumption [Formula.bot] Formula.bot (by simp))
+    exact deductiveClosure_closed ({xi} ∪ B) [Formula.bot] φ
+      (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot) d_efq
+  have h_DC_dcs : SetDeductivelyClosed (deductiveClosure ({xi} ∪ B)) :=
+    deductiveClosure_is_dcs h_DC_cons
+  -- Step 6e: BurgessR3Maximal via Zorn from DC({xi} ∪ B) — gives xi ∈ B'
   have h_no_univ_DC : ¬burgessR3 D Set.univ C := h_nubr3 D C h_D_mcs h_mcs_C
-  obtain ⟨B', h_B_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
-    h_B_dcs h_r3_ABD h_no_univ_AD
+  obtain ⟨B', h_DC_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+    h_DC_dcs h_r3_DC_ABD h_no_univ_AD
   obtain ⟨B'', h_B_sub_B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC h_no_univ_DC
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B', h_B_sub_D, h_B_sub_B''⟩
+  -- Extract B ⊆ B' from B ⊆ {xi} ∪ B ⊆ DC({xi} ∪ B) ⊆ B'
+  have h_B_sub_DC : B ⊆ deductiveClosure ({xi} ∪ B) :=
+    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+  have h_B_sub_B' : B ⊆ B' := Set.Subset.trans h_B_sub_DC h_DC_sub_B'
+  -- Extract xi ∈ B' from {xi} ⊆ DC({xi} ∪ B) ⊆ B'
+  have h_xi_in_DC : xi ∈ deductiveClosure ({xi} ∪ B) :=
+    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton xi))
+  have h_xi_in_B' : xi ∈ B' := h_DC_sub_B' h_xi_in_DC
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_B', h_B_sub_D,
+    h_B_sub_B'', h_xi_in_B'⟩
 
 /-- **Lemma 2.8 seed consistency** (Burgess 1982 p.372):
 The same seed as Lemma 2.7, but consistency proved using the hypothesis
@@ -3972,7 +4018,8 @@ private theorem lemma_2_8_seed_consistent {A B C : Set Formula}
 
 /-- **Lemma 2.8** (Burgess 1982 p.372): Given BurgessR3Maximal(A, B, C) with
 untl(xi, eta) ∈ A and ¬(eta ∨ (xi ∧ untl(xi, eta))) ∈ C, construct MCS D
-with eta ∈ D splitting the R3 pair.
+with eta ∈ D splitting the R3 pair. Also returns xi ∈ B' (guard in B')
+via DC(B ∪ {xi}) Zorn seed, matching lemma_2_7's strengthening.
 
 Convention: untl(xi, eta) = U(eta, xi) in Burgess.
   xi = guard (Burgess η), eta = event (Burgess ξ). -/
@@ -3993,7 +4040,8 @@ theorem lemma_2_8 {A B C : Set Formula}
       eta ∈ D ∧
       B ⊆ D ∧
       B ⊆ B' ∧
-      B ⊆ B'' := by
+      B ⊆ B'' ∧
+      xi ∈ B' := by
   -- Step 1: Seed consistency (Lemma 2.8 variant)
   have h_seed_cons := lemma_2_8_seed_consistent h_mcs_A h_mcs_C h_r3m h_B_dcs h_gc
     xi eta h_until h_neg_disj
@@ -4023,14 +4071,66 @@ theorem lemma_2_8 {A B C : Set Formula}
     intro β hβ
     exact burgessRSince_implies_burgessR h_mcs_A h_D_mcs (h_rSetSince_A β hβ)
   have h_r3_ABD : burgessR3 A B D := ⟨h_rSet_A, h_rSetSince_A⟩
-  -- Step 6: BurgessR3Maximal(A, B', D) and BurgessR3Maximal(D, B'', C) via Zorn
+  -- Step 5b: Extract snce(β∧xi, α) ∈ D from the 5th seed component (same as lemma_2_7)
+  have h_snce_conj_xi_D : ∀ β ∈ B, ∀ α ∈ A, Formula.snce (Formula.and β xi) α ∈ D := by
+    intro β hβ α hα; apply h_sup
+    show Formula.snce (Formula.and β xi) α ∈ lemma_2_7_seed A B C xi eta
+    simp only [lemma_2_7_seed, Set.mem_union, Set.mem_setOf_eq]; right; exact ⟨β, hβ, α, hα, rfl⟩
+  -- Step 5c: Derive snce(xi, α) ∈ D for all α ∈ A
+  have h_B_nonempty : ∃ β₀ : Formula, β₀ ∈ B := by
+    exact ⟨Formula.bot.imp Formula.bot, cud_contains_theorems h_r3m.1
+      (Bimodal.Theorems.Combinators.identity Formula.bot)⟩
+  obtain ⟨β₀, hβ₀⟩ := h_B_nonempty
+  have h_snce_xi_D : ∀ α ∈ A, Formula.snce xi α ∈ D := by
+    intro α hα
+    have h_impl : DerivationTree [] ((Formula.and β₀ xi).imp xi) :=
+      Bimodal.Theorems.Propositional.rce_imp β₀ xi
+    exact snce_left_mono_thm h_D_mcs h_impl (h_snce_conj_xi_D β₀ hβ₀ α hα)
+  -- Step 5d: Derive burgessR(A, xi, D)
+  have h_burgessRSince_xi : burgessRSince D xi A := h_snce_xi_D
+  have h_burgessR_xi : burgessR A xi D :=
+    burgessRSince_implies_burgessR h_mcs_A h_D_mcs h_burgessRSince_xi
+  -- Step 6: Guard conjunction + DC(B ∪ {xi}) Zorn seed (same as lemma_2_7)
+  have h_burgessR_conj : ∀ β ∈ B, burgessR A (Formula.and β xi) D := by
+    intro β hβ
+    exact burgessR_conj h_mcs_A (h_rSet_A β hβ) h_burgessR_xi
+  have h_until_conj : ∀ β ∈ B, ∀ δ ∈ D, Formula.untl (Formula.and β xi) δ ∈ A := by
+    intro β hβ δ hδ
+    exact h_burgessR_conj β hβ δ hδ
+  have h_r3_DC_ABD : burgessR3 A (deductiveClosure ({xi} ∪ B)) D :=
+    dc_delta_B_burgessR3 h_mcs_A h_D_mcs h_B_dcs h_r3_ABD h_until_conj h_snce_conj_xi_D
   have h_no_univ_AD : ¬burgessR3 A Set.univ D := h_nubr3 A D h_mcs_A h_D_mcs
+  have h_DC_ne_univ : deductiveClosure ({xi} ∪ B) ≠ Set.univ := by
+    intro h_eq; rw [h_eq] at h_r3_DC_ABD; exact h_no_univ_AD h_r3_DC_ABD
+  have h_DC_cons : SetConsistent ({xi} ∪ B) := by
+    intro L hL hd
+    apply h_DC_ne_univ
+    ext φ; simp only [Set.mem_univ, iff_true]
+    have h_bot : Formula.bot ∈ deductiveClosure ({xi} ∪ B) :=
+      deductiveClosure_closed ({xi} ∪ B) L Formula.bot
+        (fun ψ hψ => subset_deductiveClosure _ (hL ψ hψ)) hd.some
+    have d_efq : DerivationTree [Formula.bot] φ :=
+      DerivationTree.modus_ponens [Formula.bot] Formula.bot φ
+        (DerivationTree.weakening [] [Formula.bot] (Formula.bot.imp φ)
+          (Bimodal.Theorems.Propositional.efq_axiom φ) (List.nil_subset _))
+        (DerivationTree.assumption [Formula.bot] Formula.bot (by simp))
+    exact deductiveClosure_closed ({xi} ∪ B) [Formula.bot] φ
+      (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot) d_efq
+  have h_DC_dcs : SetDeductivelyClosed (deductiveClosure ({xi} ∪ B)) :=
+    deductiveClosure_is_dcs h_DC_cons
   have h_no_univ_DC : ¬burgessR3 D Set.univ C := h_nubr3 D C h_D_mcs h_mcs_C
-  obtain ⟨B', h_B_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
-    h_B_dcs h_r3_ABD h_no_univ_AD
+  obtain ⟨B', h_DC_sub_B', _, h_B'_max⟩ := burgessR3Maximal_extension_exists h_mcs_A h_D_mcs
+    h_DC_dcs h_r3_DC_ABD h_no_univ_AD
   obtain ⟨B'', h_B_sub_B'', _, h_B''_max⟩ := burgessR3Maximal_extension_exists h_D_mcs h_mcs_C
     h_B_dcs h_r3_DBC h_no_univ_DC
-  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩
+  have h_B_sub_DC : B ⊆ deductiveClosure ({xi} ∪ B) :=
+    fun φ hφ => subset_deductiveClosure _ (Set.mem_union_right _ hφ)
+  have h_B_sub_B' : B ⊆ B' := Set.Subset.trans h_B_sub_DC h_DC_sub_B'
+  have h_xi_in_DC : xi ∈ deductiveClosure ({xi} ∪ B) :=
+    subset_deductiveClosure _ (Set.mem_union_left _ (Set.mem_singleton xi))
+  have h_xi_in_B' : xi ∈ B' := h_DC_sub_B' h_xi_in_DC
+  exact ⟨B', D, B'', h_B'_max, h_B''_max, h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B',
+    h_B_sub_B'', h_xi_in_B'⟩
 
 /-! ## Lemma 2.7' (Since direction): Since-Formula Splitting
 
