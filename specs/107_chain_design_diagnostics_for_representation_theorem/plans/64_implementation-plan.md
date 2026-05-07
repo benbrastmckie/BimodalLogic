@@ -190,9 +190,9 @@ Phases within the same wave can execute in parallel.
 **Tasks**:
 - [x] **Task 4.1**: Fix **not-actual case** (CE:1476-1480): Stop discarding guard witness. Changed `h_actual` condition to use adjacent-pair guard instead of pointwise guard. Push_neg gives the guard directly. Fixed h_no_wit usage to construct adjacent-pair guard from pointwise guard. **DONE**: h_actual strengthened, push_neg gives guard, not-actual case compiles.
 - [x] **Task 4.2**: Fix **n=0 case** (CE near 848): Switched `lemma_2_4` → `lemma_2_4_with_guard` to get `xi ∈ B`. Added guard proof: only adjacent pair (a,b) with pc.x ≤ a, b ≤ y is (max_old, y), and g'(max_old, y) = B with ξ ∈ B. **DONE**: ~30 lines added for guard proof.
-- [ ] **Task 4.3**: Fix **Walk A, pc.x = max_old**: Equivalent to n=0 case. Apply same fix. ~5 lines.
+- [x] **Task 4.3**: Fix **Walk A, pc.x = max_old**: Absorbed into walk helper base case. **DONE**.
 - [ ] **Task 4.4**: **RESTRUCTURE Walk A, pc.x < max_old**: Replace the walk-to-max_old logic with direct splitting at (pc.x, x'). When condition (i) holds: `xi ∈ g(pc.x, x')` and `xi∧U(xi,η) ∈ f(x')` and `η ∉ f(x')`. This is the splitting setup — apply lemma_2_7/2_8/2_6 at (pc.x, x'). The splitting produces z = midpoint(pc.x, x') with g'(pc.x, z) = B' ⊇ g(pc.x, x') ∋ xi. The witness z is adjacent to pc.x. ~80-120 lines (replacing ~150 lines of walk logic).
-- [ ] **Task 4.5**: **REMOVE Walk B eta-shortcut** (CE:994-997): Delete the branch that returns χ unchanged when `η ∈ f(u_next)`. Always fall through to splitting at (u_max, u_next). ~-20 lines (deletion).
+- [x] **Task 4.5**: **REMOVE Walk B eta-shortcut**: Deleted with Walk A+B code. **DONE**. Was (CE:994-997): Delete the branch that returns χ unchanged when `η ∈ f(u_next)`. Always fall through to splitting at (u_max, u_next). ~-20 lines (deletion).
 - [ ] **Task 4.6**: Fix **Walk B splitting** (after removing shortcut): Split at (u_max, u_next). Case on `xi ∈ g(u_max, u_next)`:
   - If yes: g ⊆ B' from splitting gives `xi ∈ B'`. Guard at both adjacent pairs.
   - If no: strengthened `lemma_2_7` (Phase 2) gives `xi ∈ B'` directly.
