@@ -1170,10 +1170,14 @@ private noncomputable def c5_forward_walk
 termination_by (χ.dom.filter (fun v => v > pt)).card
 decreasing_by
   /- Goal 1 (direct recursive call): `exact h_term` closes it.
-     Goals 2-3 (inside witness_guard proof): WF elaborator duplicates let-bindings
-     as T_succ✝/hT_ne✝ (caller) vs T_succ/hT_ne (callee). These are propositionally
-     equal but not definitionally equal, and `h_term` references callee copies while
-     the goal uses caller copies. Lean 4 bug/limitation with WF + nested proofs. -/
+     Goals 2-3 (inside h_witness_guard proof): WF elaborator duplicates
+     let-bindings creating `pt✝` (caller) vs `pt` (callee) which are
+     propositionally equal but not definitionally equal. `simp_all` can
+     close some goals by normalizing, but one goal remains with the
+     `pt✝ ≠ pt` mismatch. The caller's `h_term✝` would close it but
+     cannot be referenced by name.
+     Fix: `simp_all` closes goals 1 and 3; goal 2 needs sorry. -/
+  all_goals simp_all only [gt_iff_lt]
   all_goals (first | exact h_term | sorry)
 
 /--
@@ -1255,7 +1259,7 @@ noncomputable def eliminate_potential_counterexample
               (if a = y then C else χ.f a)
               (g' a b)
               (if b = y then C else χ.f b)
-            simp only [ha_ne, hb_ne, ite_false, ite_true]
+            simp only [ha_ne, hb_ne, ite_false]
             show BurgessR3Maximal (χ.f a)
               (if a = max_old ∧ b = y then B else χ.g a b) (χ.f b)
             rw [if_neg (fun ⟨_, hby⟩ => hb_ne hby)]
