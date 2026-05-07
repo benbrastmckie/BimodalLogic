@@ -596,8 +596,11 @@ properties (domain extension, C0, f-agreement) together with the
 C5/C5' witness guarantees needed by the limit construction.
 
 The `c5_forward_witness` field states: if the input counterexample is c5_forward
-and the point x is in the domain with U(ξ,η) ∈ f(x), then a witness exists
-in the result domain. Similarly for `c5_backward_witness` and Since.
+and the point x is in the domain with U(ξ,η) ∈ f(x), then a witness y exists
+in the result domain with η ∈ f(y) AND the guard ξ is in g(a,b) for every
+adjacent pair (a,b) between x and y. This adjacent-pair guard condition is
+the correct formulation for non-adjacent witnesses in finite-stage chronicles
+(per Burgess C5a, p.374). Similarly for `c5_backward_witness` and Since.
 -/
 structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) where
   val : Chronicle
@@ -611,10 +614,12 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
   c2' : val.c2'
   c5_forward_witness : pc.kind = .c5_forward → pc.x ∈ χ.dom →
     Formula.untl pc.ξ pc.η ∈ χ.f pc.x →
-    ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y
+    ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y ∧
+      ∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b
   c5_backward_witness : pc.kind = .c5_backward → pc.x ∈ χ.dom →
     Formula.snce pc.ξ pc.η ∈ χ.f pc.x →
-    ∃ y ∈ val.dom, y < pc.x ∧ pc.η ∈ val.f y
+    ∃ y ∈ val.dom, y < pc.x ∧ pc.η ∈ val.f y ∧
+      ∀ a b, Adjacent val.dom a b → y ≤ a → b ≤ pc.x → pc.ξ ∈ val.g a b
   c4_forward_witness : pc.kind = .c4_forward → pc.x ∈ χ.dom → pc.y ∈ χ.dom →
     pc.x < pc.y →
     (Formula.untl pc.ξ pc.η).neg ∈ χ.f pc.x →

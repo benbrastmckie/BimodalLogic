@@ -144,17 +144,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Strengthen EliminationResult with Adjacent-Pair Guard [NOT STARTED]
+### Phase 3: Strengthen EliminationResult with Adjacent-Pair Guard [COMPLETED]
 
 **Goal**: Modify `c5_forward_witness` and `c5_backward_witness` return types to use the adjacent-pair guard condition instead of simple g-membership.
 
 **Paper reference**: Burgess 2.10 (p.374). C5a requires `η ∈ g(x,y)`, which in the finite-stage chronicle means: for every adjacent pair (a,b) between x and y, `η ∈ g(a,b)`. The adjacent-pair formulation is the correct way to express this for non-adjacent witnesses.
 
 **Tasks**:
-- [ ] **Task 3.1**: Change `c5_forward_witness` (CE:612-614) from `∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y` to `∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y ∧ ∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b`.
-- [ ] **Task 3.2**: Change `c5_backward_witness` (CE:615-617) similarly with reversed ordering.
-- [ ] **Task 3.3**: Fix all non-C5 case sites where `c5_forward_witness`/`c5_backward_witness` are proved via `absurd`/`decide`. The strengthened type makes these require one more universally-quantified clause, but `absurd` still suffices since the hypothesis `pc.kind = .c5_forward` is False for non-C5 cases. ~mechanical updates.
-- [ ] **Task 3.4**: Run `lake build` to identify remaining compilation errors from C5 case sites.
+- [x] **Task 3.1**: Change `c5_forward_witness` (CE:612-614) from `∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y` to `∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y ∧ ∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b`. **DONE**: Type changed at CE:612-616.
+- [x] **Task 3.2**: Change `c5_backward_witness` (CE:615-617) similarly with reversed ordering. **DONE**: Type changed at CE:617-621 with `y ≤ a → b ≤ pc.x` guard ordering.
+- [x] **Task 3.3**: Fix all non-C5 case sites where `c5_forward_witness`/`c5_backward_witness` are proved via `absurd`/`decide`. The strengthened type makes these require one more universally-quantified clause, but `absurd` still suffices since the hypothesis `pc.kind = .c5_forward` is False for non-C5 cases. ~mechanical updates. **DONE**: No changes needed -- all 16 absurd sites compile unchanged because `absurd` derives `False` from kind mismatch and produces any target type.
+- [x] **Task 3.4**: Run `lake build` to identify remaining compilation errors from C5 case sites. **DONE**: 12 errors identified (6 forward C5 active cases at lines 758, 929, 1002, 1181, 1414, 1485; 6 backward C5 active cases at lines 1595, 1744, 1812, 1947, 2171, 2242). These are expected and will be fixed in Phases 4-5.
 
 **Timing**: 1-2 hours
 
