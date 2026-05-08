@@ -304,39 +304,44 @@ The sorry at CC:1598 (and its mirror at 1633) occurs in the sub-case `y ∈ dom_
 
 ---
 
-### Phase 7: Revert BurgessR3Maximal to SDC-Maximality and Remove NoUnivBurgessR3 [IN PROGRESS]
+### Phase 7: Make bx_completeness Unconditional [BLOCKED]
 
-**Goal**: Make `bx_completeness` unconditional by reverting `BurgessR3Maximal` to SDC-maximality and removing the false `NoUnivBurgessR3` hypothesis from all signatures.
+**Goal**: Remove `NoUnivBurgessR3` hypothesis and make `bx_completeness` unconditional.
 
-**Paper reference**: Burgess 1982's R(A, B, C) uses maximality over all DCSs (p.371). His construction tacitly assumes relevant extensions are consistent. The code's CUD-maximality was an over-strengthening that required `NoUnivBurgessR3` as compensation — but this hypothesis is false in J₀ (`burgessR3(A, Set.univ, C)` is satisfiable in discrete orders under open-guard semantics). SDC-maximality matches the actual mathematical content: the Zorn family consists of SDC sets, and the maximal element is SDC-maximal.
+**Blocker**: The SDC-maximality approach (weakening BurgessR3Maximal) was attempted but causes
+cascading proof failures in 4+ sites that fundamentally depend on CUD-maximality:
+1. `BurgessR3Maximal_extension_fails` becomes conditional on consistency (breaks MCS case in PointInsertion)
+2. Guard consistency in `burgessR3Maximal_with_guard` cannot be derived without NoUnivBurgessR3
+3. Seed consistency in `lemma_2_7` requires NoUnivBurgessR3 for DC({xi} union B) argument
+4. Neg-until witness extraction fails when B is MCS and delta not in B (inconsistent extension)
+
+**Root cause**: `NoUnivBurgessR3` is NOT provable in J0 (confirmed: `burgessR3(A, Set.univ, C)`
+is satisfiable on discrete orders with adjacent points under open-guard semantics). The real
+mismatch is that our C1 requires `SetDeductivelyClosed` for g-values, while Burgess 1982 uses
+`ClosedUnderDerivation` (DCS, possibly inconsistent). The recommended fix is to change C1 to
+match Burgess, but this is a larger refactoring requiring a separate task.
+
+**Handoff**: `specs/107_.../handoffs/72_phase7-sdc-maximality-blocker.md`
 
 **Tasks**:
-- [ ] **Task 7.1**: Change `BurgessR3Maximal` definition (ChronicleTypes.lean:351-354): replace `ClosedUnderDerivation D` with `SetDeductivelyClosed D` in the maximality clause. Keep first conjunct `ClosedUnderDerivation B` unchanged.
-- [ ] **Task 7.2**: Delete `NoUnivBurgessR3` definition (ChronicleTypes.lean:366-368).
-- [ ] **Task 7.3**: Simplify Zorn construction `burgessR3Maximal_extension_exists` (RRelation.lean:~756-808): remove `h_no_univ` parameter and the inconsistent-D case at lines 805-808.
-- [ ] **Task 7.4**: Fix `BurgessR3Maximal_extension_fails` (PointInsertion.lean:642-655): add consistency precondition or handle inconsistent-DC case separately. When DC(B∪{δ}) is inconsistent, the seed consistency proof simplifies (∼δ follows from B).
-- [ ] **Task 7.5**: Remove `h_nubr3 : NoUnivBurgessR3` from all signatures across 7 files (~733 references). Mechanical search-and-replace.
-- [ ] **Task 7.6**: Remove `h_nubr3` from `bx_completeness` (Completeness.lean:128), making it unconditional.
-- [ ] **Task 7.7**: Run `lake build`, `grep -rn "NoUnivBurgessR3\|h_nubr3" Theories/`, `#print axioms bx_completeness`.
+- [x] **Task 7.1**: Analyze NoUnivBurgessR3 provability -- confirmed NOT provable in J0
+- [x] **Task 7.2**: Attempt SDC-maximality revert -- Zorn construction simplifies but downstream breaks
+- [x] **Task 7.3**: Analyze CUD interval set approach -- matches Burgess 1982, recommended as separate task
+- [ ] **Task 7.4**: (Blocked) Implement C1 CUD change -- requires separate task
+- [ ] **Task 7.5**: (Blocked) Remove NoUnivBurgessR3 from all signatures
+- [ ] **Task 7.6**: (Blocked) Make bx_completeness unconditional
 
-**Timing**: 4-8 hours
+**Timing**: Blocked. Alternative approach (C1 CUD refactoring) estimated 1-2 days.
 
-**Depends on**: 6
+**Depends on**: 6 (complete). Requires new task for C1 CUD refactoring.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean` — definition change + deletion
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` — Zorn construction simplification
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` — extension_fails fix + h_nubr3 removal
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` — h_nubr3 removal
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean` — h_nubr3 removal
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` — h_nubr3 removal
-- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` — unconditional bx_completeness
-
-**Verification**:
-- `NoUnivBurgessR3` no longer exists in codebase (only comments)
-- `bx_completeness` takes no hypothesis parameters beyond `φ : Formula`
-- `#print axioms bx_completeness` shows no `sorryAx`
-- `lake build` passes
+**Files analyzed** (no source changes committed):
+- `ChronicleTypes.lean` -- BurgessR3Maximal definition, NoUnivBurgessR3 definition, C1 definition
+- `RRelation.lean` -- Zorn construction, burgessR3Maximal_with_guard
+- `PointInsertion.lean` -- BurgessR3Maximal_extension_fails, lemma_2_7
+- `CounterexampleElimination.lean` -- h_nubr3 threading
+- `Completeness.lean` -- bx_completeness signature
+- `literature/Burgess_1982_*.md` -- Burgess's original DCS definition (includes inconsistent sets)
 
 ---
 
