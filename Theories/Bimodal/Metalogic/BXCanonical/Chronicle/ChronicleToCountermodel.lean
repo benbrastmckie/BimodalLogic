@@ -498,7 +498,7 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
     -- By contradiction: if ¬U(φ,ψ) ∈ f(t) and ψ ∈ f(s_wit) with t < s_wit,
     -- then C4 gives z with t < z < s_wit and φ.neg ∈ f(z). But the guard
     -- says φ ∈ f(z) (since t < z < s_wit under open guard), contradiction.
-    intro t φ ψ _h_sub ⟨s_wit, h_lt, h_ψ, h_guard⟩
+    intro t φ ψ _h_sub ⟨s_wit, h_lt, h_φ, h_guard⟩
     by_contra h_not
     set offset := s - cantor_zero N h_N
     have h_mcs_t := (rooted_cantor_fmcs N h_N s).is_mcs t
@@ -509,8 +509,8 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
     -- Transfer to limit_f coordinates
     have h_neg' : (φ.untl ψ).neg ∈ limit_f N h_N
         ((cantor_iso N h_N).symm (t - offset)).val := h_neg
-    have h_psi' : ψ ∈ limit_f N h_N
-        ((cantor_iso N h_N).symm (s_wit - offset)).val := h_ψ
+    have h_phi' : φ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (s_wit - offset)).val := h_φ
     have h_dom_t := ((cantor_iso N h_N).symm (t - offset)).property
     have h_dom_s := ((cantor_iso N h_N).symm (s_wit - offset)).property
     have h_lt' : ((cantor_iso N h_N).symm (t - offset)).val <
@@ -518,7 +518,7 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
       (cantor_iso N h_N).symm.strictMono (show t - offset < s_wit - offset by linarith)
     -- C4 gives guard violation
     obtain ⟨z, hz_dom, hz_gt, hz_lt, hz_neg⟩ :=
-      limit_satisfies_c4 N h_N _ _ h_dom_t h_dom_s h_lt' φ ψ h_neg' h_psi'
+      limit_satisfies_c4 N h_N _ _ h_dom_t h_dom_s h_lt' ψ φ h_neg' h_phi'
     -- Transfer z back to rational coordinates
     set z_rat := (cantor_iso N h_N) ⟨z, hz_dom⟩ + offset
     have hz_rat_gt : t < z_rat := by
@@ -529,17 +529,17 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
       have : ⟨z, hz_dom⟩ < (cantor_iso N h_N).symm (s_wit - offset) := hz_lt
       have := (cantor_iso N h_N).strictMono this
       simp [OrderIso.apply_symm_apply] at this; linarith
-    -- Guard gives φ ∈ f(z_rat): open guard uses strict t < z_rat and z_rat < s_wit
-    have h_phi_z := h_guard z_rat hz_rat_gt hz_rat_lt
-    have h_phi_z' : φ ∈ limit_f N h_N
-        ((cantor_iso N h_N).symm (z_rat - offset)).val := h_phi_z
+    -- Guard gives ψ ∈ f(z_rat): open guard uses strict t < z_rat and z_rat < s_wit
+    have h_psi_z := h_guard z_rat hz_rat_gt hz_rat_lt
+    have h_psi_z' : ψ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (z_rat - offset)).val := h_psi_z
     have h_eq : ((cantor_iso N h_N).symm (z_rat - offset)).val = z := by
       simp [z_rat, add_sub_cancel_right, OrderIso.symm_apply_apply]
-    rw [h_eq] at h_phi_z'
-    exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 φ h_phi_z' hz_neg
+    rw [h_eq] at h_psi_z'
+    exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 ψ h_psi_z' hz_neg
   · -- Backward Since: witness pattern → S(φ,ψ) ∈ mcs(t)
     -- Mirror of Until case, using C4' instead of C4.
-    intro t φ ψ _h_sub ⟨s_wit, h_lt, h_ψ, h_guard⟩
+    intro t φ ψ _h_sub ⟨s_wit, h_lt, h_φ, h_guard⟩
     by_contra h_not
     set offset := s - cantor_zero N h_N
     have h_mcs_t := (rooted_cantor_fmcs N h_N s).is_mcs t
@@ -550,8 +550,8 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
     -- Transfer to limit_f coordinates
     have h_neg' : (φ.snce ψ).neg ∈ limit_f N h_N
         ((cantor_iso N h_N).symm (t - offset)).val := h_neg
-    have h_psi' : ψ ∈ limit_f N h_N
-        ((cantor_iso N h_N).symm (s_wit - offset)).val := h_ψ
+    have h_phi' : φ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (s_wit - offset)).val := h_φ
     have h_dom_t := ((cantor_iso N h_N).symm (t - offset)).property
     have h_dom_s := ((cantor_iso N h_N).symm (s_wit - offset)).property
     have h_lt' : ((cantor_iso N h_N).symm (s_wit - offset)).val <
@@ -559,7 +559,7 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
       (cantor_iso N h_N).symm.strictMono (show s_wit - offset < t - offset by linarith)
     -- C4' gives guard violation
     obtain ⟨z, hz_dom, hz_gt, hz_lt, hz_neg⟩ :=
-      limit_satisfies_c4' N h_N _ _ h_dom_t h_dom_s h_lt' φ ψ h_neg' h_psi'
+      limit_satisfies_c4' N h_N _ _ h_dom_t h_dom_s h_lt' ψ φ h_neg' h_phi'
     -- Transfer z back to rational coordinates
     set z_rat := (cantor_iso N h_N) ⟨z, hz_dom⟩ + offset
     have hz_rat_gt : s_wit < z_rat := by
@@ -570,14 +570,14 @@ theorem cantor_bfmcs_restricted_buc (M₀ : Set Formula) (h₀ : SetMaximalConsi
       have : ⟨z, hz_dom⟩ < (cantor_iso N h_N).symm (t - offset) := hz_lt
       have := (cantor_iso N h_N).strictMono this
       simp [OrderIso.apply_symm_apply] at this; linarith
-    -- Guard gives φ ∈ f(z_rat): open guard uses strict s_wit < z_rat and z_rat < t
-    have h_phi_z := h_guard z_rat hz_rat_gt hz_rat_lt
-    have h_phi_z' : φ ∈ limit_f N h_N
-        ((cantor_iso N h_N).symm (z_rat - offset)).val := h_phi_z
+    -- Guard gives ψ ∈ f(z_rat): open guard uses strict s_wit < z_rat and z_rat < t
+    have h_psi_z := h_guard z_rat hz_rat_gt hz_rat_lt
+    have h_psi_z' : ψ ∈ limit_f N h_N
+        ((cantor_iso N h_N).symm (z_rat - offset)).val := h_psi_z
     have h_eq : ((cantor_iso N h_N).symm (z_rat - offset)).val = z := by
       simp [z_rat, add_sub_cancel_right, OrderIso.symm_apply_apply]
-    rw [h_eq] at h_phi_z'
-    exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 φ h_phi_z' hz_neg
+    rw [h_eq] at h_psi_z'
+    exact set_consistent_not_both (limit_c0 N h_N z hz_dom).1 ψ h_psi_z' hz_neg
 
 /--
 Restricted forward Until/Since coherence for the cantor BFMCS.
@@ -597,21 +597,21 @@ theorem cantor_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsi
     have h_until' : φ.untl ψ ∈ limit_f N h_N
         ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).val := h_until
     have h_dom := ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).property
-    obtain ⟨y, hy_dom, hy_gt, hy_ψ, hy_guard⟩ :=
-      limit_satisfies_c5_strong N h_N _ h_dom φ ψ h_until'
+    obtain ⟨y, hy_dom, hy_gt, hy_φ, hy_guard⟩ :=
+      limit_satisfies_c5_strong N h_N _ h_dom ψ φ h_until'
     set offset := s - cantor_zero N h_N
     refine ⟨(cantor_iso N h_N) ⟨y, hy_dom⟩ + offset, ?_, ?_, ?_⟩
     · have h_lt : (cantor_iso N h_N).symm (t - offset) < ⟨y, hy_dom⟩ := hy_gt
       have := (cantor_iso N h_N).strictMono h_lt
       simp [OrderIso.apply_symm_apply] at this; linarith
-    · show ψ ∈ limit_f N h_N ((cantor_iso N h_N).symm
+    · show φ ∈ limit_f N h_N ((cantor_iso N h_N).symm
         ((cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N))).val
       have : (cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N) =
           (cantor_iso N h_N) ⟨y, hy_dom⟩ := by simp [offset]
       rw [this, OrderIso.symm_apply_apply]
-      exact hy_ψ
+      exact hy_φ
     · intro r hr_gt hr_lt
-      show φ ∈ limit_f N h_N ((cantor_iso N h_N).symm
+      show ψ ∈ limit_f N h_N ((cantor_iso N h_N).symm
         (r - (s - cantor_zero N h_N))).val
       have h_r_dom := ((cantor_iso N h_N).symm (r - offset)).property
       apply hy_guard _ h_r_dom
@@ -632,21 +632,21 @@ theorem cantor_bfmcs_restricted_fuc (M₀ : Set Formula) (h₀ : SetMaximalConsi
     have h_since' : φ.snce ψ ∈ limit_f N h_N
         ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).val := h_since
     have h_dom := ((cantor_iso N h_N).symm (t - (s - cantor_zero N h_N))).property
-    obtain ⟨y, hy_dom, hy_lt, hy_ψ, hy_guard⟩ :=
-      limit_satisfies_c5'_strong N h_N _ h_dom φ ψ h_since'
+    obtain ⟨y, hy_dom, hy_lt, hy_φ, hy_guard⟩ :=
+      limit_satisfies_c5'_strong N h_N _ h_dom ψ φ h_since'
     set offset := s - cantor_zero N h_N
     refine ⟨(cantor_iso N h_N) ⟨y, hy_dom⟩ + offset, ?_, ?_, ?_⟩
     · have h_lt' : ⟨y, hy_dom⟩ < (cantor_iso N h_N).symm (t - offset) := hy_lt
       have := (cantor_iso N h_N).strictMono h_lt'
       simp [OrderIso.apply_symm_apply] at this; linarith
-    · show ψ ∈ limit_f N h_N ((cantor_iso N h_N).symm
+    · show φ ∈ limit_f N h_N ((cantor_iso N h_N).symm
         ((cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N))).val
       have : (cantor_iso N h_N) ⟨y, hy_dom⟩ + offset - (s - cantor_zero N h_N) =
           (cantor_iso N h_N) ⟨y, hy_dom⟩ := by simp [offset]
       rw [this, OrderIso.symm_apply_apply]
-      exact hy_ψ
+      exact hy_φ
     · intro r hr_gt hr_lt
-      show φ ∈ limit_f N h_N ((cantor_iso N h_N).symm
+      show ψ ∈ limit_f N h_N ((cantor_iso N h_N).symm
         (r - (s - cantor_zero N h_N))).val
       have h_r_dom := ((cantor_iso N h_N).symm (r - offset)).property
       apply hy_guard _ h_r_dom

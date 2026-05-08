@@ -383,7 +383,7 @@ theorem temp_linearity_past_valid (φ ψ : Formula) :
 If F(φ) holds at t, there exists s ≥ t with φ(s). Take this s as the Until witness.
 The guard ⊤ is trivially satisfied on (t, s). -/
 theorem F_until_equiv_valid (φ : Formula) :
-    ⊨ ((Formula.some_future φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
+    ⊨ ((Formula.some_future φ).imp (Formula.untl φ (Formula.bot.imp Formula.bot))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.some_future, Formula.neg]
   intro h_F
@@ -395,9 +395,9 @@ theorem F_until_equiv_valid (φ : Formula) :
   exact hf
 
 /-- P-Since equivalence axiom validity (BX12'):
-`P(φ) → (⊤ S φ)` is valid. Past dual of F-Until equivalence. -/
+`P(φ) → S(φ, ⊤)` is valid. Past dual of F-Until equivalence. -/
 theorem P_since_equiv_valid (φ : Formula) :
-    ⊨ ((Formula.some_past φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
+    ⊨ ((Formula.some_past φ).imp (Formula.snce φ (Formula.bot.imp Formula.bot))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.some_past, Formula.neg]
   intro h_P
@@ -498,50 +498,50 @@ Recall the reflexive semantics:
 Under open guard (t,s): G(φ→χ) covers all r ∈ (t,s), which is exactly the guard range. -/
 theorem left_mono_until_valid (φ ψ χ : Formula) :
     ⊨ (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
-      ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
+      ((Formula.untl ψ φ).imp (Formula.untl ψ χ))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
-  intro h_conj ⟨s, hts, h_ψs, h_guard⟩
+  intro h_conj ⟨s, hts, h_event, h_guard⟩
   have h_G : ∀ r, t < r → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
     by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-  exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  exact ⟨s, hts, h_event, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
 
 /-- BX2': Left monotonicity of Since: `(φ→χ) ∧ H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
 Under open guard (s,t): H(φ→χ) covers all r ∈ (s,t), which is exactly the guard range. -/
 theorem left_mono_since_valid (φ ψ χ : Formula) :
     ⊨ (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
-      ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
+      ((Formula.snce ψ φ).imp (Formula.snce ψ χ))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
-  intro h_conj ⟨s, hst, h_ψs, h_guard⟩
+  intro h_conj ⟨s, hst, h_event, h_guard⟩
   have h_H : ∀ r, r < t → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
     by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-  exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  exact ⟨s, hst, h_event, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
 
 /-- BX2G: Left monotonicity of Until under G: `G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
 Under open guard (t,s): G(φ→χ) gives (φ→χ) at all r > t, covering guard interval (t,s).
 No pointwise condition at t needed since the guard is the open interval (t,s). -/
 theorem left_mono_until_G_valid (φ χ ψ : Formula) :
-    ⊨ ((φ.imp χ).all_future.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
+    ⊨ ((φ.imp χ).all_future.imp ((Formula.untl ψ φ).imp (Formula.untl ψ χ))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
-  intro h_G ⟨s, hts, h_ψs, h_guard⟩
-  exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+  intro h_G ⟨s, hts, h_event, h_guard⟩
+  exact ⟨s, hts, h_event, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
 
 /-- BX2H: Left monotonicity of Since under H: `H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
 Under open guard (s,t): H(φ→χ) gives (φ→χ) at all r < t, covering guard interval (s,t).
 No pointwise condition at t needed since the guard is the open interval (s,t). -/
 theorem left_mono_since_H_valid (φ χ ψ : Formula) :
-    ⊨ ((φ.imp χ).all_past.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
+    ⊨ ((φ.imp χ).all_past.imp ((Formula.snce ψ φ).imp (Formula.snce ψ χ))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
-  intro h_H ⟨s, hst, h_ψs, h_guard⟩
-  exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+  intro h_H ⟨s, hst, h_event, h_guard⟩
+  exact ⟨s, hst, h_event, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
 
 /-- BX3: Right monotonicity of Until: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
 Same witness s; φ(s) and (φ → ψ)(s) give ψ(s). Guard is unchanged. -/
 theorem right_mono_until_valid (φ ψ χ : Formula) :
-    ⊨ ((φ.imp ψ).all_future.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))) := by
+    ⊨ ((φ.imp ψ).all_future.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_G ⟨s, hts, h_φs, h_guard⟩
@@ -549,7 +549,7 @@ theorem right_mono_until_valid (φ ψ χ : Formula) :
 
 /-- BX3': Right monotonicity of Since: `H(φ → ψ) → ((χ S φ) → (χ S ψ))`. -/
 theorem right_mono_since_valid (φ ψ χ : Formula) :
-    ⊨ ((φ.imp ψ).all_past.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ))) := by
+    ⊨ ((φ.imp ψ).all_past.imp ((Formula.snce φ χ).imp (Formula.snce ψ χ))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_H ⟨s, hst, h_φs, h_guard⟩
@@ -583,8 +583,8 @@ Valid under open guard (t,s): given p(t) and untl(φ, ψ) at t with witness s > 
 - snce(φ, p)(s): take u = t as Since witness. t < s, p(t), and φ on (t,s) = the Until guard.
 - Guard φ on (t,s): same as the hypothesis guard. -/
 theorem enrichment_until_valid (φ ψ p : Formula) :
-    ⊨ (Formula.and p (Formula.untl φ ψ) |>.imp
-      (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))) := by
+    ⊨ (Formula.and p (Formula.untl ψ φ) |>.imp
+      (Formula.untl (Formula.and ψ (Formula.snce p φ)) φ)) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro h_conj
@@ -602,8 +602,8 @@ theorem enrichment_until_valid (φ ψ p : Formula) :
 `p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))`.
 Mirror of enrichment_until for the Since direction. -/
 theorem enrichment_since_valid (φ ψ p : Formula) :
-    ⊨ (Formula.and p (Formula.snce φ ψ) |>.imp
-      (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))) := by
+    ⊨ (Formula.and p (Formula.snce ψ φ) |>.imp
+      (Formula.snce (Formula.and ψ (Formula.untl p φ)) φ)) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro h_conj
@@ -623,8 +623,8 @@ From untl(q,p) at t: witness s0 > t with p(s0), q on (t,s0).
 Apply ¬untl(r,p) to s0: since p(s0), ∃u0 ∈ (t,s0) with ¬r(u0).
 q(u0) from guard. u0 witnesses untl(q, q ∧ ¬r). -/
 theorem separation_until_valid (p q r : Formula) :
-    ⊨ (Formula.untl q p |>.imp
-      ((Formula.untl r p).neg.imp (Formula.untl q (q.and r.neg)))) := by
+    ⊨ (Formula.untl p q |>.imp
+      ((Formula.untl p r).neg.imp (Formula.untl (q.and r.neg) q))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro ⟨s0, hts0, h_ps0, h_guard_q⟩ h_not_until_r
@@ -647,8 +647,8 @@ theorem separation_until_valid (p q r : Formula) :
 `snce(q, p) → ¬snce(r, p) → snce(q, q ∧ ¬r)`.
 Mirror of separation_until for the Since direction. -/
 theorem separation_since_valid (p q r : Formula) :
-    ⊨ (Formula.snce q p |>.imp
-      ((Formula.snce r p).neg.imp (Formula.snce q (q.and r.neg)))) := by
+    ⊨ (Formula.snce p q |>.imp
+      ((Formula.snce p r).neg.imp (Formula.snce (q.and r.neg) q))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro ⟨s0, hs0t, h_ps0, h_guard_q⟩ h_not_since_r
@@ -675,8 +675,8 @@ Guard at r ∈ (t, s): need φ(r) ∧ (φ U ψ)(r).
 φ(r) comes from original guard. (φ U ψ)(r) uses same witness s:
 ψ(s), and guard ∀ q ∈ (r, s) is a subset of (t, s). -/
 theorem self_accum_until_valid (φ ψ : Formula) :
-    ⊨ ((Formula.untl φ ψ).imp
-      (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)) := by
+    ⊨ ((Formula.untl ψ φ).imp
+      (Formula.untl ψ (Formula.and φ (Formula.untl ψ φ)))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro ⟨s, hts, h_ψs, h_guard⟩
@@ -685,8 +685,8 @@ theorem self_accum_until_valid (φ ψ : Formula) :
 
 /-- BX5': Self-accumulation of Since: `(φ S ψ) → ((φ ∧ (φ S ψ)) S ψ)`. -/
 theorem self_accum_since_valid (φ ψ : Formula) :
-    ⊨ ((Formula.snce φ ψ).imp
-      (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ)) := by
+    ⊨ ((Formula.snce ψ φ).imp
+      (Formula.snce ψ (Formula.and φ (Formula.snce ψ φ)))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro ⟨s, hst, h_ψs, h_guard⟩
@@ -694,7 +694,7 @@ theorem self_accum_since_valid (φ ψ : Formula) :
   exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
 
 theorem absorb_until_valid (φ ψ : Formula) :
-    ⊨ ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ)) := by
+    ⊨ ((Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp (Formula.untl ψ φ)) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
@@ -715,7 +715,7 @@ theorem absorb_until_valid (φ ψ : Formula) :
 
 /-- BX6': Absorption of Since: `(φ S (φ ∧ (φ S ψ))) → (φ S ψ)`. -/
 theorem absorb_since_valid (φ ψ : Formula) :
-    ⊨ ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ)) := by
+    ⊨ ((Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp (Formula.snce ψ φ)) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.neg, truth_at]
   intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
@@ -739,12 +739,12 @@ Given witnesses s1 for φ U ψ and s2 for χ U θ, by linearity s1 ≤ s2 or s2 
 - s1 < s2: second disjunct with witness s1 (ψ(s1) ∧ χ(s1) where χ(s1) from χ U θ guard).
 - s2 < s1: third disjunct with witness s2 (φ(s2) ∧ θ(s2) where φ(s2) from φ U ψ guard). -/
 theorem linear_until_valid (φ ψ χ θ : Formula) :
-    ⊨ (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
+    ⊨ (Formula.and (Formula.untl ψ φ) (Formula.untl θ χ)
       |>.imp (Formula.or
         (Formula.or
-          (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) := by
+          (Formula.untl (Formula.and ψ θ) (Formula.and φ χ))
+          (Formula.untl (Formula.and ψ χ) (Formula.and φ χ)))
+        (Formula.untl (Formula.and φ θ) (Formula.and φ χ)))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, truth_at]
   intro h_conj
@@ -775,12 +775,12 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
     · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
 
 theorem linear_since_valid (φ ψ χ θ : Formula) :
-    ⊨ (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
+    ⊨ (Formula.and (Formula.snce ψ φ) (Formula.snce θ χ)
       |>.imp (Formula.or
         (Formula.or
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) := by
+          (Formula.snce (Formula.and ψ θ) (Formula.and φ χ))
+          (Formula.snce (Formula.and ψ χ) (Formula.and φ χ)))
+        (Formula.snce (Formula.and φ θ) (Formula.and φ χ)))) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, truth_at]
   intro h_conj
@@ -824,7 +824,7 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
 /-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
 F(ψ) = ¬G(¬ψ). Under reflexive Until, witness s ≥ t gives ψ(s), so ¬∀u≥t.¬ψ(u). -/
 theorem until_F_valid (φ ψ : Formula) :
-    ⊨ ((Formula.untl φ ψ).imp (Formula.some_future ψ)) := by
+    ⊨ ((Formula.untl ψ φ).imp (Formula.some_future ψ)) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.some_future, Formula.neg]
   intro ⟨s, hts, h_ψs, _⟩
@@ -834,7 +834,7 @@ theorem until_F_valid (φ ψ : Formula) :
 /-- BX10': Since implies past eventuality: `(φ S ψ) → P(ψ)`.
 P(ψ) = ¬H(¬ψ). Under reflexive Since, witness s ≤ t gives ψ(s), so ¬∀u≤t.¬ψ(u). -/
 theorem since_P_valid (φ ψ : Formula) :
-    ⊨ ((Formula.snce φ ψ).imp (Formula.some_past ψ)) := by
+    ⊨ ((Formula.snce ψ φ).imp (Formula.some_past ψ)) := by
   intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.some_past, Formula.neg]
   intro ⟨s, hst, h_ψs, _⟩

@@ -340,7 +340,7 @@ Now apply `until_induction` with `χ = ⊥`:
 Therefore `(φ U ψ) → ⊥ ∈ M`, i.e., `¬(φ U ψ) ∈ M`, contradicting `φ U ψ ∈ M`.
 -/
 theorem until_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
+    (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     SetConsistent (until_witness_seed M ψ) := by
   intro L hL_sub ⟨d⟩
 
@@ -421,7 +421,7 @@ Since witness seed consistency: If `φ S ψ ∈ M` and M is MCS, then
 Symmetric to `until_witness_seed_consistent`, using BX10' (since_imp_P) and H instead of G.
 -/
 theorem since_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
+    (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
     SetConsistent (past_temporal_witness_seed M ψ) := by
   intro L hL_sub ⟨d⟩
 

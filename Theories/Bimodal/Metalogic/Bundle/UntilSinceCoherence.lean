@@ -79,7 +79,7 @@ Reflexive backward Until: ψ ∈ M → (φ U ψ) ∈ M.
 From BX8: `ψ → (φ U ψ)`.
 -/
 theorem backward_until_reflexive {M : Set Formula} (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_psi : ψ ∈ M) : Formula.untl φ ψ ∈ M :=
+    (φ ψ : Formula) (h_psi : ψ ∈ M) : Formula.untl ψ φ ∈ M :=
   SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_until φ ψ)) h_psi
 
@@ -89,7 +89,7 @@ Reflexive backward Since: ψ ∈ M → (φ S ψ) ∈ M.
 From BX8': `ψ → (φ S ψ)`.
 -/
 theorem backward_since_reflexive {M : Set Formula} (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_psi : ψ ∈ M) : Formula.snce φ ψ ∈ M :=
+    (φ ψ : Formula) (h_psi : ψ ∈ M) : Formula.snce ψ φ ∈ M :=
   SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_since φ ψ)) h_psi
 
@@ -110,16 +110,16 @@ then `(φ U ψ) ∈ fam.mcs r`. This abstracts over the chain-link mechanism
 -/
 theorem backward_until_from_step (fam : FMCS Int)
     (φ ψ : Formula)
-    (h_step : ∀ r : Int, Formula.untl φ ψ ∈ fam.mcs (r + 1) →
-      φ ∈ fam.mcs r → Formula.untl φ ψ ∈ fam.mcs r)
+    (h_step : ∀ r : Int, Formula.untl ψ φ ∈ fam.mcs (r + 1) →
+      φ ∈ fam.mcs r → Formula.untl ψ φ ∈ fam.mcs r)
     (t s : Int) (h_le : t ≤ s)
     (h_psi : ψ ∈ fam.mcs s)
     (h_guard : ∀ r : Int, t ≤ r → r < s → φ ∈ fam.mcs r) :
-    Formula.untl φ ψ ∈ fam.mcs t := by
+    Formula.untl ψ φ ∈ fam.mcs t := by
   suffices h : ∀ (d : Nat) (t' s' : Int), s' - t' = ↑d →
       ψ ∈ fam.mcs s' →
       (∀ r : Int, t' ≤ r → r < s' → φ ∈ fam.mcs r) →
-      Formula.untl φ ψ ∈ fam.mcs t' by
+      Formula.untl ψ φ ∈ fam.mcs t' by
     exact h (s - t).toNat t s (by omega) h_psi h_guard
   intro d
   induction d with
@@ -130,7 +130,7 @@ theorem backward_until_from_step (fam : FMCS Int)
     exact backward_until_reflexive (fam.is_mcs t') φ ψ h_psi_s
   | succ d' ih =>
     intro t' s' h_diff h_psi_s h_phi_guard
-    have h_U_next : Formula.untl φ ψ ∈ fam.mcs (t' + 1) := by
+    have h_U_next : Formula.untl ψ φ ∈ fam.mcs (t' + 1) := by
       apply ih (t' + 1) s' (by omega) h_psi_s
       intro r h_le_r h_r_lt
       exact h_phi_guard r (by omega) h_r_lt
@@ -144,16 +144,16 @@ Symmetric to `backward_until_from_step` for the past direction.
 -/
 theorem backward_since_from_step (fam : FMCS Int)
     (φ ψ : Formula)
-    (h_step : ∀ r : Int, Formula.snce φ ψ ∈ fam.mcs (r - 1) →
-      φ ∈ fam.mcs r → Formula.snce φ ψ ∈ fam.mcs r)
+    (h_step : ∀ r : Int, Formula.snce ψ φ ∈ fam.mcs (r - 1) →
+      φ ∈ fam.mcs r → Formula.snce ψ φ ∈ fam.mcs r)
     (t s : Int) (h_le : s ≤ t)
     (h_psi : ψ ∈ fam.mcs s)
     (h_guard : ∀ r : Int, s < r → r ≤ t → φ ∈ fam.mcs r) :
-    Formula.snce φ ψ ∈ fam.mcs t := by
+    Formula.snce ψ φ ∈ fam.mcs t := by
   suffices h : ∀ (d : Nat) (t' s' : Int), t' - s' = ↑d →
       ψ ∈ fam.mcs s' →
       (∀ r : Int, s' < r → r ≤ t' → φ ∈ fam.mcs r) →
-      Formula.snce φ ψ ∈ fam.mcs t' by
+      Formula.snce ψ φ ∈ fam.mcs t' by
     exact h (t - s).toNat t s (by omega) h_psi h_guard
   intro d
   induction d with
@@ -164,7 +164,7 @@ theorem backward_since_from_step (fam : FMCS Int)
     exact backward_since_reflexive (fam.is_mcs s') φ ψ h_psi_s
   | succ d' ih =>
     intro t' s' h_diff h_psi_s h_phi_guard
-    have h_S_prev : Formula.snce φ ψ ∈ fam.mcs (t' - 1) := by
+    have h_S_prev : Formula.snce ψ φ ∈ fam.mcs (t' - 1) := by
       apply ih (t' - 1) s' (by omega) h_psi_s
       intro r h_lt_r h_r_le
       exact h_phi_guard r h_lt_r (by omega)
@@ -184,11 +184,11 @@ BFMCS over Int, given step transfer for each family.
 -/
 theorem backward_until_coherent (B : BFMCS Int)
     (h_step : ∀ fam ∈ B.families, ∀ (φ ψ : Formula) (r : Int),
-      Formula.untl φ ψ ∈ fam.mcs (r + 1) → φ ∈ fam.mcs r →
-      Formula.untl φ ψ ∈ fam.mcs r) :
+      Formula.untl ψ φ ∈ fam.mcs (r + 1) → φ ∈ fam.mcs r →
+      Formula.untl ψ φ ∈ fam.mcs r) :
     ∀ fam ∈ B.families, ∀ t : Int, ∀ φ ψ : Formula,
       (∃ s : Int, t ≤ s ∧ ψ ∈ fam.mcs s ∧ ∀ r : Int, t ≤ r → r < s → φ ∈ fam.mcs r) →
-      Formula.untl φ ψ ∈ fam.mcs t := by
+      Formula.untl ψ φ ∈ fam.mcs t := by
   intro fam hfam t φ ψ ⟨s, h_le, h_psi, h_guard⟩
   exact backward_until_from_step fam φ ψ (h_step fam hfam φ ψ) t s h_le h_psi h_guard
 
@@ -198,11 +198,11 @@ BFMCS over Int, given step transfer for each family.
 -/
 theorem backward_since_coherent (B : BFMCS Int)
     (h_step : ∀ fam ∈ B.families, ∀ (φ ψ : Formula) (r : Int),
-      Formula.snce φ ψ ∈ fam.mcs (r - 1) → φ ∈ fam.mcs r →
-      Formula.snce φ ψ ∈ fam.mcs r) :
+      Formula.snce ψ φ ∈ fam.mcs (r - 1) → φ ∈ fam.mcs r →
+      Formula.snce ψ φ ∈ fam.mcs r) :
     ∀ fam ∈ B.families, ∀ t : Int, ∀ φ ψ : Formula,
       (∃ s : Int, s ≤ t ∧ ψ ∈ fam.mcs s ∧ ∀ r : Int, s < r → r ≤ t → φ ∈ fam.mcs r) →
-      Formula.snce φ ψ ∈ fam.mcs t := by
+      Formula.snce ψ φ ∈ fam.mcs t := by
   intro fam hfam t φ ψ ⟨s, h_le, h_psi, h_guard⟩
   exact backward_since_from_step fam φ ψ (h_step fam hfam φ ψ) t s h_le h_psi h_guard
 

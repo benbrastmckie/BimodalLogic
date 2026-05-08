@@ -124,10 +124,10 @@ def truth_at (M : TaskModel F) (Omega : Set (WorldHistory F))
   | Formula.box φ => ∀ (σ : WorldHistory F), σ ∈ Omega → truth_at M Omega σ t φ
   | Formula.all_past φ => ∀ (s : D), s < t → truth_at M Omega τ s φ
   | Formula.all_future φ => ∀ (s : D), t < s → truth_at M Omega τ s φ
-  | Formula.untl φ ψ => ∃ s : D, t < s ∧ truth_at M Omega τ s ψ ∧
-      ∀ r : D, t < r → r < s → truth_at M Omega τ r φ
-  | Formula.snce φ ψ => ∃ s : D, s < t ∧ truth_at M Omega τ s ψ ∧
-      ∀ r : D, s < r → r < t → truth_at M Omega τ r φ
+  | Formula.untl φ ψ => ∃ s : D, t < s ∧ truth_at M Omega τ s φ ∧
+      ∀ r : D, t < r → r < s → truth_at M Omega τ r ψ
+  | Formula.snce φ ψ => ∃ s : D, s < t ∧ truth_at M Omega τ s φ ∧
+      ∀ r : D, s < r → r < t → truth_at M Omega τ r ψ
 
 -- Note: We avoid defining a notation for truth_at as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use truth_at directly.
@@ -335,17 +335,17 @@ theorem truth_double_shift_cancel (M : TaskModel F) (Omega : Set (WorldHistory F
   | untl φ ψ ih_φ ih_ψ =>
     simp only [truth_at]
     constructor
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ s).mp h_psi, fun r hr1 hr2 => (ih_φ r).mp (h_phi r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ s).mpr h_psi, fun r hr1 hr2 => (ih_φ r).mpr (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ s).mp h_event, fun r hr1 hr2 => (ih_ψ r).mp (h_guard r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ s).mpr h_event, fun r hr1 hr2 => (ih_ψ r).mpr (h_guard r hr1 hr2)⟩
   | snce φ ψ ih_φ ih_ψ =>
     simp only [truth_at]
     constructor
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ s).mp h_psi, fun r hr1 hr2 => (ih_φ r).mp (h_phi r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ s).mpr h_psi, fun r hr1 hr2 => (ih_φ r).mpr (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ s).mp h_event, fun r hr1 hr2 => (ih_ψ r).mp (h_guard r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ s).mpr h_event, fun r hr1 hr2 => (ih_ψ r).mpr (h_guard r hr1 hr2)⟩
 
 /--
 Time-shift preserves truth of formulas.
@@ -517,7 +517,8 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
       exact (truth_history_eq M Omega _ _ s' h_hist_eq ψ).mp h_ih
 
   | untl φ ψ ih_φ ih_ψ =>
-    -- Until (open guard): ∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r)
+    -- Until (Burgess convention): untl(event=φ, guard=ψ)
+    -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)
     -- Direction (→): shifted history at x → original history at y
     --   Witness s in shifted maps to s+(y-x) in original.
     -- Direction (←): original at y → shifted at x
@@ -525,7 +526,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
     simp only [truth_at]
     constructor
     · -- (→) shifted at x → original at y
-      intro ⟨s, h_x_lt_s, h_psi_s, h_guard⟩
+      intro ⟨s, h_x_lt_s, h_event_s, h_guard⟩
       -- Witness in original: s + (y - x)
       refine ⟨s + (y - x), ?_, ?_, ?_⟩
       · -- y < s + (y - x)
@@ -535,26 +536,17 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           _ = (y - x) + x := add_comm x (y - x)
           _ < (y - x) + s := h
           _ = s + (y - x) := add_comm (y - x) s
-      · -- ψ at (σ, s + (y - x))
-        -- h_psi_s : truth_at (shift σ (y-x)) s ψ
-        -- Need: truth_at σ (s+(y-x)) ψ
-        -- Use truth_history_eq to convert shift amount, then ih.mp
-        have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
-        -- Actually we need (s+(y-x)) - s = y-x for the IH approach
-        -- ih_ψ σ s (s+(y-x)) : truth_at (shift σ ((s+y-x)-s)) s ψ ↔ truth_at σ (s+y-x) ψ
-        -- where (s+y-x)-s = y-x by add_sub_cancel_left
+      · -- φ (event) at (σ, s + (y - x))
         have h_shift_eq2 : (s + (y - x)) - s = y - x :=
           add_sub_cancel_left s (y - x)
         have h_hist_eq :
           WorldHistory.time_shift σ ((s + (y - x)) - s) =
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ ((s + (y - x)) - s) (y - x) h_shift_eq2
-        -- Convert h_psi_s from shift(y-x) to shift((s+y-x)-s) via truth_history_eq
-        have h_conv := (truth_history_eq M Omega _ _ s h_hist_eq.symm ψ).mp h_psi_s
-        exact (ih_ψ σ s (s + (y - x))).mp h_conv
-      · -- guard: ∀ r, y < r → r < s + (y - x) → φ(σ, r)
+        have h_conv := (truth_history_eq M Omega _ _ s h_hist_eq.symm φ).mp h_event_s
+        exact (ih_φ σ s (s + (y - x))).mp h_conv
+      · -- guard: ∀ r, y < r → r < s + (y - x) → ψ(σ, r)
         intro r h_y_lt_r h_r_lt_s'
-        -- r' = r - (y - x), then x < r' and r' < s
         have h_x_lt_r' : x < r - (y - x) := by
           have h := sub_lt_sub_right h_y_lt_r (y - x)
           simp only [sub_sub_cancel] at h
@@ -563,39 +555,32 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           have h := sub_lt_sub_right h_r_lt_s' (y - x)
           simp only [add_sub_cancel_right] at h
           exact h
-        have h_phi := h_guard (r - (y - x)) h_x_lt_r' h_r'_lt_s
-        -- h_phi : truth_at (shift σ (y-x)) (r-(y-x)) φ
-        -- Need: truth_at σ r φ
-        -- ih_φ σ (r-(y-x)) r : truth_at (shift σ (r-(r-(y-x)))) (r-(y-x)) φ ↔ truth_at σ r φ
+        have h_grd := h_guard (r - (y - x)) h_x_lt_r' h_r'_lt_s
         have h_shift_eq : r - (r - (y - x)) = y - x := sub_sub_cancel r (y - x)
         have h_hist_eq :
           WorldHistory.time_shift σ (r - (r - (y - x))) =
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M Omega _ _ (r - (y - x)) h_hist_eq.symm φ).mp h_phi
-        exact (ih_φ σ (r - (y - x)) r).mp h_conv
+        have h_conv := (truth_history_eq M Omega _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
+        exact (ih_ψ σ (r - (y - x)) r).mp h_conv
     · -- (←) original at y → shifted at x
-      intro ⟨s, h_y_lt_s, h_psi_s, h_guard⟩
+      intro ⟨s, h_y_lt_s, h_event_s, h_guard⟩
       -- Witness in shifted: s - (y - x)
       refine ⟨s - (y - x), ?_, ?_, ?_⟩
       · -- x < s - (y - x)
         have h := sub_lt_sub_right h_y_lt_s (y - x)
         simp only [sub_sub_cancel] at h
         exact h
-      · -- ψ at (shifted σ, s - (y - x))
-        -- h_psi_s : truth_at σ s ψ
-        -- Need: truth_at (shift σ (y-x)) (s-(y-x)) ψ
-        -- ih_ψ σ (s-(y-x)) s : truth_at (shift σ (s-(s-(y-x)))) (s-(y-x)) ψ ↔ truth_at σ s ψ
+      · -- φ (event) at (shifted σ, s - (y - x))
         have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
         have h_hist_eq :
           WorldHistory.time_shift σ (s - (s - (y - x))) =
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
-        have h_conv := (ih_ψ σ (s - (y - x)) s).mpr h_psi_s
-        exact (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq ψ).mp h_conv
-      · -- guard: ∀ r', x < r' → r' < s - (y - x) → φ(shifted σ, r')
+        have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
+        exact (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
+      · -- guard: ∀ r', x < r' → r' < s - (y - x) → ψ(shifted σ, r')
         intro r' h_x_lt_r' h_r'_lt_s'
-        -- r = r' + (y - x), then y < r and r < s
         have h_y_lt_r : y < r' + (y - x) := by
           have h := add_lt_add_right h_x_lt_r' (y - x)
           have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
@@ -608,7 +593,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           calc r' + (y - x) < s - (y - x) + (y - x) :=
                 add_lt_add_left h_r'_lt_s' (y - x)
             _ = s := h_eq
-        have h_phi := h_guard (r' + (y - x)) h_y_lt_r h_r_lt_s
+        have h_grd := h_guard (r' + (y - x)) h_y_lt_r h_r_lt_s
         have h_shift_eq : (r' + (y - x)) - r' = y - x :=
           add_sub_cancel_left r' (y - x)
         have h_hist_eq :
@@ -616,16 +601,17 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ ((r' + (y - x)) - r')
             (y - x) h_shift_eq
-        have h_conv := (ih_φ σ r' (r' + (y - x))).mpr h_phi
-        exact (truth_history_eq M Omega _ _ r' h_hist_eq φ).mp h_conv
+        have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
+        exact (truth_history_eq M Omega _ _ r' h_hist_eq ψ).mp h_conv
 
   | snce φ ψ ih_φ ih_ψ =>
-    -- Since (open guard): ∃ s < t, ψ(s) ∧ ∀ r ∈ (s,t), φ(r)
+    -- Since (Burgess convention): snce(event=φ, guard=ψ)
+    -- ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r)
     -- Mirror of Until with reversed inequalities.
     simp only [truth_at]
     constructor
     · -- (→) shifted at x → original at y
-      intro ⟨s, h_s_lt_x, h_psi_s, h_guard⟩
+      intro ⟨s, h_s_lt_x, h_event_s, h_guard⟩
       -- Witness in original: s + (y - x)
       refine ⟨s + (y - x), ?_, ?_, ?_⟩
       · -- s + (y - x) < y
@@ -634,7 +620,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           _ < (y - x) + x := h
           _ = x + (y - x) := add_comm (y - x) x
           _ = y := by rw [add_sub, add_sub_cancel_left]
-      · -- ψ at (σ, s + (y - x))
+      · -- φ (event) at (σ, s + (y - x))
         have h_shift_eq : (s + (y - x)) - s = y - x :=
           add_sub_cancel_left s (y - x)
         have h_hist_eq :
@@ -642,9 +628,9 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ ((s + (y - x)) - s)
             (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M Omega _ _ s h_hist_eq.symm ψ).mp h_psi_s
-        exact (ih_ψ σ s (s + (y - x))).mp h_conv
-      · -- guard: ∀ r, s + (y - x) < r → r < y → φ(σ, r)
+        have h_conv := (truth_history_eq M Omega _ _ s h_hist_eq.symm φ).mp h_event_s
+        exact (ih_φ σ s (s + (y - x))).mp h_conv
+      · -- guard: ∀ r, s + (y - x) < r → r < y → ψ(σ, r)
         intro r h_s'_lt_r h_r_lt_y
         have h_s_lt_r' : s < r - (y - x) := by
           have h := sub_lt_sub_right h_s'_lt_r (y - x)
@@ -654,31 +640,31 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           have h := sub_lt_sub_right h_r_lt_y (y - x)
           simp only [sub_sub_cancel] at h
           exact h
-        have h_phi := h_guard (r - (y - x)) h_s_lt_r' h_r'_lt_x
+        have h_grd := h_guard (r - (y - x)) h_s_lt_r' h_r'_lt_x
         have h_shift_eq : r - (r - (y - x)) = y - x := sub_sub_cancel r (y - x)
         have h_hist_eq :
           WorldHistory.time_shift σ (r - (r - (y - x))) =
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
-        have h_conv := (truth_history_eq M Omega _ _ (r - (y - x)) h_hist_eq.symm φ).mp h_phi
-        exact (ih_φ σ (r - (y - x)) r).mp h_conv
+        have h_conv := (truth_history_eq M Omega _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
+        exact (ih_ψ σ (r - (y - x)) r).mp h_conv
     · -- (←) original at y → shifted at x
-      intro ⟨s, h_s_lt_y, h_psi_s, h_guard⟩
+      intro ⟨s, h_s_lt_y, h_event_s, h_guard⟩
       -- Witness in shifted: s - (y - x)
       refine ⟨s - (y - x), ?_, ?_, ?_⟩
       · -- s - (y - x) < x
         have h := sub_lt_sub_right h_s_lt_y (y - x)
         simp only [sub_sub_cancel] at h
         exact h
-      · -- ψ at (shifted σ, s - (y - x))
+      · -- φ (event) at (shifted σ, s - (y - x))
         have h_shift_eq : s - (s - (y - x)) = y - x := sub_sub_cancel s (y - x)
         have h_hist_eq :
           WorldHistory.time_shift σ (s - (s - (y - x))) =
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
-        have h_conv := (ih_ψ σ (s - (y - x)) s).mpr h_psi_s
-        exact (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq ψ).mp h_conv
-      · -- guard: ∀ r', s - (y - x) < r' → r' < x → φ(shifted σ, r')
+        have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
+        exact (truth_history_eq M Omega _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
+      · -- guard: ∀ r', s - (y - x) < r' → r' < x → ψ(shifted σ, r')
         intro r' h_s'_lt_r' h_r'_lt_x
         have h_s_lt_r : s < r' + (y - x) := by
           calc s = s - (y - x) + (y - x) := (sub_add_cancel s (y - x)).symm
@@ -687,7 +673,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
           calc r' + (y - x) < x + (y - x) := add_lt_add_left h_r'_lt_x (y - x)
             _ = y := h_eq
-        have h_phi := h_guard (r' + (y - x)) h_s_lt_r h_r_lt_y
+        have h_grd := h_guard (r' + (y - x)) h_s_lt_r h_r_lt_y
         have h_shift_eq : (r' + (y - x)) - r' = y - x :=
           add_sub_cancel_left r' (y - x)
         have h_hist_eq :
@@ -695,8 +681,8 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           WorldHistory.time_shift σ (y - x) := by
           exact WorldHistory.time_shift_congr σ ((r' + (y - x)) - r')
             (y - x) h_shift_eq
-        have h_conv := (ih_φ σ r' (r' + (y - x))).mpr h_phi
-        exact (truth_history_eq M Omega _ _ r' h_hist_eq φ).mp h_conv
+        have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
+        exact (truth_history_eq M Omega _ _ r' h_hist_eq ψ).mp h_conv
 
 /--
 Corollary: For any history σ at time y, there exists a history at time x

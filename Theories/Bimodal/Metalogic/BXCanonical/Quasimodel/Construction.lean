@@ -118,8 +118,8 @@ BX axioms applied at the MCS level, then projected to Sigma-signatures. -/
     If φ U ψ ∈ w.formulas, then (φ ∧ (φ U ψ)) U ψ ∈ w.formulas. -/
 theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
-    Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_until φ ψ)
+    Formula.untl φ (Formula.and ψ (Formula.untl φ ψ)) ∈ w.formulas := by
+  have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_until ψ φ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -127,8 +127,8 @@ theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
     If φ U ψ ∈ w.formulas, then F(ψ) ∈ w.formulas. -/
 theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
-    Formula.some_future ψ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
+    Formula.some_future φ ∈ w.formulas := by
+  have h_ax := DerivationTree.axiom [] _ (Axiom.until_F ψ φ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -157,16 +157,16 @@ theorem refl_intro_until_mcs {w : BXPoint} {φ ψ : Formula}
 /-- BX5' at MCS level. -/
 theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
-    Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_since φ ψ)
+    Formula.snce φ (Formula.and ψ (Formula.snce φ ψ)) ∈ w.formulas := by
+  have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_since ψ φ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
 /-- BX10' at MCS level. -/
 theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
-    Formula.some_past ψ ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
+    Formula.some_past φ ∈ w.formulas := by
+  have h_ax := DerivationTree.axiom [] _ (Axiom.since_P ψ φ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 

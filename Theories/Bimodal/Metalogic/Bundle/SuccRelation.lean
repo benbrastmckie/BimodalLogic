@@ -510,16 +510,16 @@ These are used by the dovetailed chain construction to track Until/Since obligat
 /-- `(φ U ψ) → X(ψ ∨ (φ ∧ (φ U ψ)))`: X-wrapped Until unfolding in an MCS.
   Derived from BX5 (self-accumulation) + BX9 (elimination) + BX8 (reflexive intro). -/
 theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
-    Formula.untl Formula.bot (Formula.or ψ (Formula.and φ (Formula.untl φ ψ))) ∈ M := by
+    (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
+    Formula.untl (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))) Formula.bot ∈ M := by
   have h_ax := Bimodal.Theorems.TemporalDerived.until_unfold_wrapped φ ψ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_U
 
 /-- `(φ S ψ) → Y(ψ ∨ (φ ∧ (φ S ψ)))`: Y-wrapped Since unfolding in an MCS.
   Derived from BX5' (self-accumulation) + BX9' (elimination) + BX8' (reflexive intro). -/
 theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
-    Formula.snce Formula.bot (Formula.or ψ (Formula.and φ (Formula.snce φ ψ))) ∈ M := by
+    (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
+    Formula.snce (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))) Formula.bot ∈ M := by
   have h_ax := Bimodal.Theorems.TemporalDerived.since_unfold_wrapped φ ψ
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_ax) h_S
 
@@ -541,8 +541,8 @@ by resolving Until obligations through fair scheduling rather than Succ-based pr
 -/
 theorem until_persists_through_succ (u v : Set Formula)
     (h_mcs_u : SetMaximalConsistent u) (h_mcs_v : SetMaximalConsistent v) (h_succ : Succ u v)
-    (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ u) (h_neg_psi : Formula.neg ψ ∈ u) :
-    Formula.untl φ ψ ∈ v := by
+    (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ u) (h_neg_psi : Formula.neg ψ ∈ u) :
+    Formula.untl ψ φ ∈ v := by
   -- BLOCKED: requires X-content propagation infrastructure.
   -- See docstring for detailed analysis.
   sorry
@@ -570,21 +570,21 @@ the disjunction `ψ ∨ (φ ∧ (φ U ψ))` immediately gives `(φ U ψ)`:
 -/
 theorem or_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula)
-    (h : Formula.or ψ (Formula.and φ (Formula.untl φ ψ)) ∈ M) :
-    Formula.untl φ ψ ∈ M := by
-  -- or ψ B = ψ.neg.imp B, so h : (ψ → ⊥) → (φ ∧ (φ U ψ)) ∈ M
+    (h : Formula.or ψ (Formula.and φ (Formula.untl ψ φ)) ∈ M) :
+    Formula.untl ψ φ ∈ M := by
+  -- or ψ B = ψ.neg.imp B, so h : (ψ → ⊥) → (φ ∧ U(ψ, φ)) ∈ M
   -- By MCS: either ψ ∈ M or ψ.neg ∈ M
   rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
-  · -- Case: ψ ∈ M. By BX8, φ U ψ ∈ M
+  · -- Case: ψ ∈ M. By BX8, U(ψ, φ) ∈ M
     exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_until φ ψ)) h_psi
-  · -- Case: ¬ψ ∈ M. From or: (φ ∧ (φ U ψ)) ∈ M
-    have h_conj : Formula.and φ (Formula.untl φ ψ) ∈ M := by
+  · -- Case: ¬ψ ∈ M. From or: (φ ∧ U(ψ, φ)) ∈ M
+    have h_conj : Formula.and φ (Formula.untl ψ φ) ∈ M := by
       unfold Formula.or at h
       exact SetMaximalConsistent.implication_property h_mcs h h_neg_psi
-    -- From conjunction, extract φ U ψ
+    -- From conjunction, extract U(ψ, φ)
     exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.untl φ ψ))) h_conj
+      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.untl ψ φ))) h_conj
 
 /--
 In any MCS: `(ψ ∨ (φ ∧ (φ S ψ))) ∈ M → (φ S ψ) ∈ M`.
@@ -594,16 +594,16 @@ conjunction elimination.
 -/
 theorem or_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ ψ : Formula)
-    (h : Formula.or ψ (Formula.and φ (Formula.snce φ ψ)) ∈ M) :
-    Formula.snce φ ψ ∈ M := by
+    (h : Formula.or ψ (Formula.and φ (Formula.snce ψ φ)) ∈ M) :
+    Formula.snce ψ φ ∈ M := by
   rcases SetMaximalConsistent.negation_complete h_mcs ψ with h_psi | h_neg_psi
   · exact SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (Bimodal.Theorems.TemporalDerived.psi_imp_since φ ψ)) h_psi
-  · have h_conj : Formula.and φ (Formula.snce φ ψ) ∈ M :=
+  · have h_conj : Formula.and φ (Formula.snce ψ φ) ∈ M :=
       SetMaximalConsistent.implication_property h_mcs
         (by unfold Formula.or at h; exact h) h_neg_psi
     exact SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce φ ψ))) h_conj
+      (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.rce_imp φ (Formula.snce ψ φ))) h_conj
 
 /--
 `g_content(u) ⊆ u` for any MCS u under BX1 (reflexive G).

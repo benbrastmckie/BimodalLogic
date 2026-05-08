@@ -337,39 +337,41 @@ theorem parametric_canonical_truth_lemma
       exact temporal_backward_H_with_bwd_P fam t psi
         (fun h_P_neg => h_backward_P t (Formula.neg psi) h_P_neg) h_all_mcs
   | untl phi psi ih_phi ih_psi =>
-    -- Until truth lemma: (φ U ψ) ∈ fam.mcs t ↔ ∃ s > t, truth(ψ,s) ∧ ∀ r ∈ [t,s), truth(φ,r)
+    -- Until truth lemma (Burgess: untl(event=phi, guard=psi)):
+    -- untl(phi,psi) ∈ mcs(t) ↔ ∃ s > t, truth(phi,s) ∧ ∀ r ∈ (t,s), truth(psi,r)
     simp only [truth_at]
     obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
-    · -- Forward: (φ U ψ) ∈ fam.mcs t → semantic Until witness
+    · -- Forward: untl(phi,psi) ∈ mcs(t) → semantic Until witness
       intro h_U
-      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      obtain ⟨s, h_ts, h_event_s, h_guard⟩ := h_fwd_U t phi psi h_U
       exact ⟨s, h_ts,
-        (ih_psi fam hfam s).mp h_psi_s,
-        fun r h_tr h_rs => (ih_phi fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
-    · -- Backward: semantic Until witness → (φ U ψ) ∈ fam.mcs t
-      intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi fam hfam s).mp h_event_s,
+        fun r h_tr h_rs => (ih_psi fam hfam r).mp (h_guard r h_tr h_rs)⟩
+    · -- Backward: semantic Until witness → untl(phi,psi) ∈ mcs(t)
+      intro ⟨s, h_ts, h_truth_event_s, h_truth_guard⟩
       exact h_bwd_U t phi psi ⟨s, h_ts,
-        (ih_psi fam hfam s).mpr h_truth_psi_s,
-        fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
+        (ih_phi fam hfam s).mpr h_truth_event_s,
+        fun r h_tr h_rs => (ih_psi fam hfam r).mpr (h_truth_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
-    -- Since truth lemma: (φ S ψ) ∈ fam.mcs t ↔ ∃ s < t, truth(ψ,s) ∧ ∀ r ∈ (s,t], truth(φ,r)
+    -- Since truth lemma (Burgess: snce(event=phi, guard=psi)):
+    -- snce(phi,psi) ∈ mcs(t) ↔ ∃ s < t, truth(phi,s) ∧ ∀ r ∈ (s,t), truth(psi,r)
     simp only [truth_at]
     obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
-    · -- Forward: (φ S ψ) ∈ fam.mcs t → semantic Since witness
+    · -- Forward: snce(phi,psi) ∈ mcs(t) → semantic Since witness
       intro h_S
-      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      obtain ⟨s, h_st, h_event_s, h_guard⟩ := h_fwd_S t phi psi h_S
       exact ⟨s, h_st,
-        (ih_psi fam hfam s).mp h_psi_s,
-        fun r h_sr h_rt => (ih_phi fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
-    · -- Backward: semantic Since witness → (φ S ψ) ∈ fam.mcs t
-      intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi fam hfam s).mp h_event_s,
+        fun r h_sr h_rt => (ih_psi fam hfam r).mp (h_guard r h_sr h_rt)⟩
+    · -- Backward: semantic Since witness → snce(phi,psi) ∈ mcs(t)
+      intro ⟨s, h_st, h_truth_event_s, h_truth_guard⟩
       exact h_bwd_S t phi psi ⟨s, h_st,
-        (ih_psi fam hfam s).mpr h_truth_psi_s,
-        fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
+        (ih_phi fam hfam s).mpr h_truth_event_s,
+        fun r h_sr h_rt => (ih_psi fam hfam r).mpr (h_truth_guard r h_sr h_rt)⟩
 
 /-!
 ## Shifted Truth Lemma
@@ -505,27 +507,27 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
     · intro h_U
-      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      obtain ⟨s, h_ts, h_event_s, h_guard⟩ := h_fwd_U t phi psi h_U
       exact ⟨s, h_ts,
-        (ih_psi fam hfam s).mp h_psi_s,
-        fun r h_tr h_rs => (ih_phi fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
-    · intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi fam hfam s).mp h_event_s,
+        fun r h_tr h_rs => (ih_psi fam hfam r).mp (h_guard r h_tr h_rs)⟩
+    · intro ⟨s, h_ts, h_truth_event_s, h_truth_guard⟩
       exact h_bwd_U t phi psi ⟨s, h_ts,
-        (ih_psi fam hfam s).mpr h_truth_psi_s,
-        fun r h_tr h_rs => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
+        (ih_phi fam hfam s).mpr h_truth_event_s,
+        fun r h_tr h_rs => (ih_psi fam hfam r).mpr (h_truth_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
     simp only [truth_at]
     obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
     · intro h_S
-      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      obtain ⟨s, h_st, h_event_s, h_guard⟩ := h_fwd_S t phi psi h_S
       exact ⟨s, h_st,
-        (ih_psi fam hfam s).mp h_psi_s,
-        fun r h_sr h_rt => (ih_phi fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
-    · intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi fam hfam s).mp h_event_s,
+        fun r h_sr h_rt => (ih_psi fam hfam r).mp (h_guard r h_sr h_rt)⟩
+    · intro ⟨s, h_st, h_truth_event_s, h_truth_guard⟩
       exact h_bwd_S t phi psi ⟨s, h_st,
-        (ih_psi fam hfam s).mpr h_truth_psi_s,
-        fun r h_sr h_rt => (ih_phi fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
+        (ih_phi fam hfam s).mpr h_truth_event_s,
+        fun r h_sr h_rt => (ih_psi fam hfam r).mpr (h_truth_guard r h_sr h_rt)⟩
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma

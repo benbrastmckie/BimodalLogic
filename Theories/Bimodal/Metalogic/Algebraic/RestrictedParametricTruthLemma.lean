@@ -234,14 +234,14 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
     · intro h_U
-      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_U
+      obtain ⟨s, h_ts, h_phi_s, h_psi_guard⟩ := h_fwd_U t phi psi h_U
       exact ⟨s, h_ts,
-        (ih_psi h_psi_sub fam hfam s).mp h_psi_s,
-        fun r h_tr h_rs => (ih_phi h_phi_sub fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
-    · intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi h_phi_sub fam hfam s).mp h_phi_s,
+        fun r h_tr h_rs => (ih_psi h_psi_sub fam hfam r).mp (h_psi_guard r h_tr h_rs)⟩
+    · intro ⟨s, h_ts, h_truth_phi_s, h_truth_psi_guard⟩
       exact h_bwd_U t phi psi ⟨s, h_ts,
-        (ih_psi h_psi_sub fam hfam s).mpr h_truth_psi_s,
-        fun r h_tr h_rs => (ih_phi h_phi_sub fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
+        (ih_phi h_phi_sub fam hfam s).mpr h_truth_phi_s,
+        fun r h_tr h_rs => (ih_psi h_psi_sub fam hfam r).mpr (h_truth_psi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
     have h_phi_sub : phi ∈ subformulaClosure root := closure_snce_left root phi psi h_sub
     have h_psi_sub : psi ∈ subformulaClosure root := closure_snce_right root phi psi h_sub
@@ -250,14 +250,14 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
     · intro h_S
-      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_S
+      obtain ⟨s, h_st, h_phi_s, h_psi_guard⟩ := h_fwd_S t phi psi h_S
       exact ⟨s, h_st,
-        (ih_psi h_psi_sub fam hfam s).mp h_psi_s,
-        fun r h_sr h_rt => (ih_phi h_phi_sub fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
-    · intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi h_phi_sub fam hfam s).mp h_phi_s,
+        fun r h_sr h_rt => (ih_psi h_psi_sub fam hfam r).mp (h_psi_guard r h_sr h_rt)⟩
+    · intro ⟨s, h_st, h_truth_phi_s, h_truth_psi_guard⟩
       exact h_bwd_S t phi psi ⟨s, h_st,
-        (ih_psi h_psi_sub fam hfam s).mpr h_truth_psi_s,
-        fun r h_sr h_rt => (ih_phi h_phi_sub fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
+        (ih_phi h_phi_sub fam hfam s).mpr h_truth_phi_s,
+        fun r h_sr h_rt => (ih_psi h_psi_sub fam hfam r).mpr (h_truth_psi_guard r h_sr h_rt)⟩
 
 /-!
 ## Restricted Representation Theorem
@@ -426,14 +426,14 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
     · intro h_U
-      obtain ⟨s, h_ts, h_psi_s, h_phi_guard⟩ := h_fwd_U t phi psi h_sub h_U
+      obtain ⟨s, h_ts, h_phi_s, h_psi_guard⟩ := h_fwd_U t phi psi h_sub h_U
       exact ⟨s, h_ts,
-        (ih_psi h_psi_sub fam hfam s).mp h_psi_s,
-        fun r h_tr h_rs => (ih_phi h_phi_sub fam hfam r).mp (h_phi_guard r h_tr h_rs)⟩
-    · intro ⟨s, h_ts, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi h_phi_sub fam hfam s).mp h_phi_s,
+        fun r h_tr h_rs => (ih_psi h_psi_sub fam hfam r).mp (h_psi_guard r h_tr h_rs)⟩
+    · intro ⟨s, h_ts, h_truth_phi_s, h_truth_psi_guard⟩
       exact h_bwd_U t phi psi h_sub ⟨s, h_ts,
-        (ih_psi h_psi_sub fam hfam s).mpr h_truth_psi_s,
-        fun r h_tr h_rs => (ih_phi h_phi_sub fam hfam r).mpr (h_truth_phi_guard r h_tr h_rs)⟩
+        (ih_phi h_phi_sub fam hfam s).mpr h_truth_phi_s,
+        fun r h_tr h_rs => (ih_psi h_psi_sub fam hfam r).mpr (h_truth_psi_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
     have h_phi_sub : phi ∈ subformulaClosure root := closure_snce_left root phi psi h_sub
     have h_psi_sub : psi ∈ subformulaClosure root := closure_snce_right root phi psi h_sub
@@ -442,14 +442,14 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS D)
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
     · intro h_S
-      obtain ⟨s, h_st, h_psi_s, h_phi_guard⟩ := h_fwd_S t phi psi h_sub h_S
+      obtain ⟨s, h_st, h_phi_s, h_psi_guard⟩ := h_fwd_S t phi psi h_sub h_S
       exact ⟨s, h_st,
-        (ih_psi h_psi_sub fam hfam s).mp h_psi_s,
-        fun r h_sr h_rt => (ih_phi h_phi_sub fam hfam r).mp (h_phi_guard r h_sr h_rt)⟩
-    · intro ⟨s, h_st, h_truth_psi_s, h_truth_phi_guard⟩
+        (ih_phi h_phi_sub fam hfam s).mp h_phi_s,
+        fun r h_sr h_rt => (ih_psi h_psi_sub fam hfam r).mp (h_psi_guard r h_sr h_rt)⟩
+    · intro ⟨s, h_st, h_truth_phi_s, h_truth_psi_guard⟩
       exact h_bwd_S t phi psi h_sub ⟨s, h_st,
-        (ih_psi h_psi_sub fam hfam s).mpr h_truth_psi_s,
-        fun r h_sr h_rt => (ih_phi h_phi_sub fam hfam r).mpr (h_truth_phi_guard r h_sr h_rt)⟩
+        (ih_phi h_phi_sub fam hfam s).mpr h_truth_phi_s,
+        fun r h_sr h_rt => (ih_psi h_psi_sub fam hfam r).mpr (h_truth_psi_guard r h_sr h_rt)⟩
 
 /--
 Fully restricted representation: if φ.neg is in a family's MCS, then φ is false at the

@@ -76,9 +76,11 @@ inductive Formula : Type where
   | all_past : Formula → Formula
   /-- Universal future (Gφ, "φ will always be true") -/
   | all_future : Formula → Formula
-  /-- Until (φ U ψ, "φ holds until ψ becomes true") -/
+  /-- Until U(φ, ψ) — Burgess convention: φ = event (eventually true), ψ = guard (holds in between).
+      "ψ holds until φ becomes true": ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r). -/
   | untl : Formula → Formula → Formula
-  /-- Since (φ S ψ, "φ has held since ψ was true") -/
+  /-- Since S(φ, ψ) — Burgess convention: φ = event (was true), ψ = guard (held in between).
+      "ψ has held since φ was true": ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r). -/
   | snce : Formula → Formula → Formula
   deriving Repr, DecidableEq, BEq, Hashable, Countable
 
@@ -325,13 +327,13 @@ is trivially valid: if φ holds at ALL times, then at any future time z,
 -/
 def always (φ : Formula) : Formula := φ.all_past.and (φ.and φ.all_future)
 
-/-- Next-step operator: X(phi) = bot U phi.
-    X(phi) at t means phi holds at t+1. -/
-def next (φ : Formula) : Formula := Formula.untl Formula.bot φ
+/-- Next-step operator: X(phi) = U(phi, bot) (Burgess convention: event first, guard second).
+    X(phi) at t means phi holds at t+1 (event=phi at immediate successor, guard=bot vacuous). -/
+def next (φ : Formula) : Formula := Formula.untl φ Formula.bot
 
-/-- Previous-step operator: Y(phi) = bot S phi.
-    Y(phi) at t means phi holds at t-1. -/
-def prev (φ : Formula) : Formula := Formula.snce Formula.bot φ
+/-- Previous-step operator: Y(phi) = S(phi, bot) (Burgess convention: event first, guard second).
+    Y(phi) at t means phi holds at t-1 (event=phi at immediate predecessor, guard=bot vacuous). -/
+def prev (φ : Formula) : Formula := Formula.snce φ Formula.bot
 
 /--
 Derived reflexive future operator (G'φ := φ ∧ Gφ, "now and always in the future").

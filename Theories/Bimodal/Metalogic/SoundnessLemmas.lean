@@ -151,22 +151,22 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     · exact (ih τ s).mpr (h s h_ord)
 
   | untl φ ψ ih_φ ih_ψ =>
-    -- Until swaps to Since and back
+    -- Until swaps to Since and back (Burgess: untl(event=φ, guard=ψ))
     simp only [Formula.swap_temporal, truth_at]
     constructor
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ τ s).mp h_psi, fun r hr1 hr2 => (ih_φ τ r).mp (h_phi r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ τ s).mpr h_psi, fun r hr1 hr2 => (ih_φ τ r).mpr (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ τ s).mp h_event, fun r hr1 hr2 => (ih_ψ τ r).mp (h_guard r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ τ s).mpr h_event, fun r hr1 hr2 => (ih_ψ τ r).mpr (h_guard r hr1 hr2)⟩
 
   | snce φ ψ ih_φ ih_ψ =>
-    -- Since swaps to Until and back
+    -- Since swaps to Until and back (Burgess: snce(event=φ, guard=ψ))
     simp only [Formula.swap_temporal, truth_at]
     constructor
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ τ s).mp h_psi, fun r hr1 hr2 => (ih_φ τ r).mp (h_phi r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_psi, h_phi⟩
-      exact ⟨s, h_le, (ih_ψ τ s).mpr h_psi, fun r hr1 hr2 => (ih_φ τ r).mpr (h_phi r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ τ s).mp h_event, fun r hr1 hr2 => (ih_ψ τ r).mp (h_guard r hr1 hr2)⟩
+    · intro ⟨s, h_le, h_event, h_guard⟩
+      exact ⟨s, h_le, (ih_φ τ s).mpr h_event, fun r hr1 hr2 => (ih_ψ τ r).mpr (h_guard r hr1 hr2)⟩
 
 /-!
 ## NOTE: Unprovable Theorem Removed
@@ -334,7 +334,7 @@ theorem swap_axiom_tl_valid (φ : Formula) :
 Swap of F_until_equiv: `F(φ) → ⊤ U φ` swaps to `P(φ') → ⊤ S φ'`. -/
 theorem swap_axiom_F_until_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_future φ).imp
-      (Formula.untl (Formula.bot.imp Formula.bot) φ)).swap_temporal := by
+      (Formula.untl φ (Formula.bot.imp Formula.bot))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.some_future,
     Formula.neg, Formula.imp, Formula.untl, Formula.snce]
@@ -350,7 +350,7 @@ theorem swap_axiom_F_until_equiv_valid (φ : Formula) :
 Swap of P_since_equiv: `P(φ) → ⊤ S φ` swaps to `F(φ') → ⊤ U φ'`. -/
 theorem swap_axiom_P_since_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_past φ).imp
-      (Formula.snce (Formula.bot.imp Formula.bot) φ)).swap_temporal := by
+      (Formula.snce φ (Formula.bot.imp Formula.bot))).swap_temporal := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [Formula.swap_temporal, truth_at, Formula.some_past, Formula.some_future,
     Formula.neg, Formula.imp, Formula.untl, Formula.snce]
@@ -1070,12 +1070,13 @@ private theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
 If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, guard ⊤ = ¬⊥ is trivially satisfied). -/
 private theorem axiom_F_until_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_future φ).imp
-      (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
+      (Formula.untl φ (Formula.bot.imp Formula.bot))) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.some_future, Formula.neg]
   intro h_F
   by_contra h_not_U
   push_neg at h_not_U
+  -- h_not_U : ∀ s, t < s → truth_at s φ → ∃ r, t < r ∧ r < s ∧ False ∧ True
   apply h_F
   intro s hts h_φs
   obtain ⟨_, _, _, hf, _⟩ := h_not_U s hts h_φs
@@ -1085,7 +1086,7 @@ private theorem axiom_F_until_equiv_valid (φ : Formula) :
 `P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence. -/
 private theorem axiom_P_since_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_past φ).imp
-      (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
+      (Formula.snce φ (Formula.bot.imp Formula.bot))) := by
   intro F M Omega _h_sc τ _h_mem t
   simp only [truth_at, Formula.some_past, Formula.neg]
   intro h_P

@@ -279,11 +279,11 @@ structurally difficult without a deterministic successor relation.
 -/
 theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas) :
-    ψ ∈ w.formulas ∨
-      (∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas) := by
-  by_cases h_ψ : ψ ∈ w.formulas
-  · exact Or.inl h_ψ
-  · exact Or.inr (bx_until_eventuality_resolution w φ ψ h_until h_ψ)
+    φ ∈ w.formulas ∨
+      (∃ v : BXPoint, bx_le w v ∧ φ ∈ v.formulas) := by
+  by_cases h_φ : φ ∈ w.formulas
+  · exact Or.inl h_φ
+  · exact Or.inr (bx_until_eventuality_resolution w ψ φ h_until h_φ)
 
 /--
 Until backward (reflexive case): ψ ∈ w implies φ U ψ ∈ w.
@@ -304,11 +304,11 @@ Mirror of until_forward_mcs for the past direction.
 -/
 theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas) :
-    ψ ∈ w.formulas ∨
-      (∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas) := by
-  by_cases h_ψ : ψ ∈ w.formulas
-  · exact Or.inl h_ψ
-  · exact Or.inr (bx_since_eventuality_resolution w φ ψ h_since h_ψ)
+    φ ∈ w.formulas ∨
+      (∃ v : BXPoint, bx_le v w ∧ φ ∈ v.formulas) := by
+  by_cases h_φ : φ ∈ w.formulas
+  · exact Or.inl h_φ
+  · exact Or.inr (bx_since_eventuality_resolution w ψ φ h_since h_φ)
 
 /--
 Since backward (reflexive case): ψ ∈ w implies φ S ψ ∈ w.

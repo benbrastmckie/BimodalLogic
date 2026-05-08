@@ -197,7 +197,7 @@ induction axiom to prevent perpetual deferral of ψ.
 is scheduled for resolution, this theorem provides the witness MCS where ψ holds.
 -/
 theorem canonical_forward_U (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
+    (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ g_content(M) is consistent (uses until_induction)
   have h_seed_cons : SetConsistent (until_witness_seed M ψ) :=
@@ -219,7 +219,7 @@ such that `ExistsTask_past M W` and `ψ ∈ W`.
 Symmetric to `canonical_forward_U` using since_induction.
 -/
 theorem canonical_backward_S (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
+    (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ ExistsTask_past M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ h_content(M) is consistent (uses since_induction)
   have h_seed_cons : SetConsistent (past_temporal_witness_seed M ψ) :=

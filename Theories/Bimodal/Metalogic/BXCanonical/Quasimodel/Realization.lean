@@ -179,14 +179,14 @@ are also in w.formulas (by BX1 and bx_H_forward respectively). -/
 
 theorem enriched_seed_consistent_until
     (w v : BXPoint) (φ ψ : Formula)
-    (h_neg_until : (Formula.untl φ ψ).neg ∈ w.formulas)
+    (h_neg_until : (Formula.untl ψ φ).neg ∈ w.formulas)
     (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas) :
-    SetConsistent ({(Formula.untl φ ψ).neg} ∪ g_content w.formulas ∪ h_content v.formulas) := by
+    SetConsistent ({(Formula.untl ψ φ).neg} ∪ g_content w.formulas ∪ h_content v.formulas) := by
   intro L hL ⟨d⟩
   -- All formulas in the seed that are NOT ¬(φ U ψ) are in w.formulas
   -- - g_content(w) ⊆ w.formulas (by BX1: G(χ) → χ)
   -- - h_content(v) ⊆ w.formulas (by bx_H_forward: bx_le w v → H(χ) ∈ v → χ ∈ w)
-  have h_seed_in_w : ∀ α ∈ L, α ≠ (Formula.untl φ ψ).neg → α ∈ w.formulas := by
+  have h_seed_in_w : ∀ α ∈ L, α ≠ (Formula.untl ψ φ).neg → α ∈ w.formulas := by
     intro α hα h_ne
     have h_mem := hL α hα
     simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
@@ -198,27 +198,27 @@ theorem enriched_seed_consistent_until
     · -- α ∈ h_content(v): H(α) ∈ v → α ∈ w by bx_H_forward
       exact bx_H_forward h_wv h_h
   -- Case split on whether ¬(φ U ψ) ∈ L
-  by_cases h_neg_in : (Formula.untl φ ψ).neg ∈ L
+  by_cases h_neg_in : (Formula.untl ψ φ).neg ∈ L
   · -- ¬(φ U ψ) ∈ L: deduction gives L' ⊢ ¬¬(φ U ψ), i.e., L' ⊢ φ U ψ
-    let L' := L.filter (fun y => decide (y ≠ (Formula.untl φ ψ).neg))
-    have d_reord : DerivationTree ((Formula.untl φ ψ).neg :: L') Formula.bot :=
+    let L' := L.filter (fun y => decide (y ≠ (Formula.untl ψ φ).neg))
+    have d_reord : DerivationTree ((Formula.untl ψ φ).neg :: L') Formula.bot :=
       derivation_exchange d (fun x => (cons_filter_neq_perm h_neg_in x).symm)
-    have d_negneg : DerivationTree L' (Formula.neg (Formula.untl φ ψ).neg) :=
-      deduction_theorem L' (Formula.untl φ ψ).neg Formula.bot d_reord
+    have d_negneg : DerivationTree L' (Formula.neg (Formula.untl ψ φ).neg) :=
+      deduction_theorem L' (Formula.untl ψ φ).neg Formula.bot d_reord
     -- L' ⊆ w.formulas (all non-¬(φ U ψ) elements are in w)
     have h_L'_in_w : ∀ α ∈ L', α ∈ w.formulas := by
       intro α hα
       have h_and := List.mem_filter.mp hα
-      have h_ne : α ≠ (Formula.untl φ ψ).neg := by simpa using h_and.2
+      have h_ne : α ≠ (Formula.untl ψ φ).neg := by simpa using h_and.2
       exact h_seed_in_w α h_and.1 h_ne
     -- By MCS closure: ¬¬(φ U ψ) ∈ w
     have h_negneg_in_w := SetMaximalConsistent.closed_under_derivation w.is_mcs L' h_L'_in_w d_negneg
     -- DNE: ¬¬(φ U ψ) → φ U ψ
-    have h_dne := Bimodal.Theorems.Propositional.double_negation (Formula.untl φ ψ)
+    have h_dne := Bimodal.Theorems.Propositional.double_negation (Formula.untl ψ φ)
     have h_until_in_w := SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_dne) h_negneg_in_w
     -- But ¬(φ U ψ) ∈ w: contradiction!
-    exact set_consistent_not_both w.is_mcs.1 (Formula.untl φ ψ) h_until_in_w h_neg_until
+    exact set_consistent_not_both w.is_mcs.1 (Formula.untl ψ φ) h_until_in_w h_neg_until
   · -- ¬(φ U ψ) ∉ L: all of L ⊆ w.formulas
     have h_L_in_w : ∀ α ∈ L, α ∈ w.formulas := by
       intro α hα
@@ -229,16 +229,16 @@ theorem enriched_seed_consistent_until
 /-- Dual: enriched seed for Since backward direction. -/
 theorem enriched_seed_consistent_since
     (w v : BXPoint) (φ ψ : Formula)
-    (h_neg_since : (Formula.snce φ ψ).neg ∈ w.formulas)
+    (h_neg_since : (Formula.snce ψ φ).neg ∈ w.formulas)
     (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas) :
-    SetConsistent ({(Formula.snce φ ψ).neg} ∪ h_content w.formulas ∪ g_content v.formulas) := by
+    SetConsistent ({(Formula.snce ψ φ).neg} ∪ h_content w.formulas ∪ g_content v.formulas) := by
   intro L hL ⟨d⟩
   -- All non-¬(φ S ψ) elements of L are in w.formulas:
   -- - h_content(w) ⊆ w (by BX1': H(χ) → χ)
   -- - g_content(v) ⊆ w (by bx_G_forward: bx_le v w → G(χ) ∈ v → ... wait, we need
   --   g_content(v) ⊆ w means ∀ χ, G(χ) ∈ v → χ ∈ w. But bx_le v w means
   --   g_content(v) ⊆ w, which gives χ ∈ w directly.)
-  have h_seed_in_w : ∀ α ∈ L, α ≠ (Formula.snce φ ψ).neg → α ∈ w.formulas := by
+  have h_seed_in_w : ∀ α ∈ L, α ≠ (Formula.snce ψ φ).neg → α ∈ w.formulas := by
     intro α hα h_ne
     have h_mem := hL α hα
     simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
@@ -249,22 +249,22 @@ theorem enriched_seed_consistent_since
       sorry
     · -- α ∈ g_content(v): G(α) ∈ v. bx_le v w means g_content(v) ⊆ w.
       exact h_vw h_g
-  by_cases h_neg_in : (Formula.snce φ ψ).neg ∈ L
-  · let L' := L.filter (fun y => decide (y ≠ (Formula.snce φ ψ).neg))
-    have d_reord : DerivationTree ((Formula.snce φ ψ).neg :: L') Formula.bot :=
+  by_cases h_neg_in : (Formula.snce ψ φ).neg ∈ L
+  · let L' := L.filter (fun y => decide (y ≠ (Formula.snce ψ φ).neg))
+    have d_reord : DerivationTree ((Formula.snce ψ φ).neg :: L') Formula.bot :=
       derivation_exchange d (fun x => (cons_filter_neq_perm h_neg_in x).symm)
-    have d_negneg : DerivationTree L' (Formula.neg (Formula.snce φ ψ).neg) :=
-      deduction_theorem L' (Formula.snce φ ψ).neg Formula.bot d_reord
+    have d_negneg : DerivationTree L' (Formula.neg (Formula.snce ψ φ).neg) :=
+      deduction_theorem L' (Formula.snce ψ φ).neg Formula.bot d_reord
     have h_L'_in_w : ∀ α ∈ L', α ∈ w.formulas := by
       intro α hα
       have h_and := List.mem_filter.mp hα
-      have h_ne : α ≠ (Formula.snce φ ψ).neg := by simpa using h_and.2
+      have h_ne : α ≠ (Formula.snce ψ φ).neg := by simpa using h_and.2
       exact h_seed_in_w α h_and.1 h_ne
     have h_negneg_in_w := SetMaximalConsistent.closed_under_derivation w.is_mcs L' h_L'_in_w d_negneg
-    have h_dne := Bimodal.Theorems.Propositional.double_negation (Formula.snce φ ψ)
+    have h_dne := Bimodal.Theorems.Propositional.double_negation (Formula.snce ψ φ)
     have h_since_in_w := SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_dne) h_negneg_in_w
-    exact set_consistent_not_both w.is_mcs.1 (Formula.snce φ ψ) h_since_in_w h_neg_since
+    exact set_consistent_not_both w.is_mcs.1 (Formula.snce ψ φ) h_since_in_w h_neg_since
   · have h_L_in_w : ∀ α ∈ L, α ∈ w.formulas := by
       intro α hα
       exact h_seed_in_w α hα (fun h_eq => h_neg_in (h_eq ▸ hα))
@@ -407,7 +407,7 @@ theorem hintikka_step_g_prop
 -- Under open guard (task 113), return types no longer claim φ ∈ w (BX9 removed).
 noncomputable def until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
-    (h_until : Formula.untl φ ψ ∈ w.formulas)
+    (h_until : Formula.untl ψ φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
@@ -417,7 +417,7 @@ noncomputable def until_eventuality_resolution
 -- Under open guard (task 113), return types no longer claim φ ∈ w (BX9' removed).
 noncomputable def since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
-    (h_since : Formula.snce φ ψ ∈ w.formulas)
+    (h_since : Formula.snce ψ φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
@@ -491,7 +491,7 @@ private theorem subformulas_H_unwrap {target χ : Formula}
 
 /-- `(φ U ψ) ∈ subformulas target → φ, ψ ∈ subformulas target`. -/
 private theorem subformulas_untl_unwrap {target φ ψ : Formula}
-    (h : Formula.untl φ ψ ∈ subformulas target) :
+    (h : Formula.untl ψ φ ∈ subformulas target) :
     φ ∈ subformulas target ∧ ψ ∈ subformulas target := by
   induction target with
   | atom _ => simp [subformulas] at h
@@ -511,8 +511,8 @@ private theorem subformulas_untl_unwrap {target φ ψ : Formula}
     obtain ⟨l, r⟩ := ih h; exact ⟨Or.inr l, Or.inr r⟩
   | untl a b iha ihb =>
     simp [subformulas] at h ⊢; rcases h with ⟨rfl, rfl⟩ | ha | hb
-    · exact ⟨Or.inr (Or.inl (self_mem_subformulas φ)),
-             Or.inr (Or.inr (self_mem_subformulas ψ))⟩
+    · exact ⟨Or.inr (Or.inr (self_mem_subformulas φ)),
+             Or.inr (Or.inl (self_mem_subformulas ψ))⟩
     · obtain ⟨l, r⟩ := iha ha; exact ⟨Or.inr (Or.inl l), Or.inr (Or.inl r)⟩
     · obtain ⟨l, r⟩ := ihb hb; exact ⟨Or.inr (Or.inr l), Or.inr (Or.inr r)⟩
   | snce a b iha ihb =>
@@ -565,7 +565,7 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
 
 /-- If `(φ U ψ) ∈ SubformulaClosure target`, then `φ, ψ ∈ SubformulaClosure target`. -/
 theorem SubformulaClosure_untl_closed {target φ ψ : Formula}
-    (h : Formula.untl φ ψ ∈ SubformulaClosure target) :
+    (h : Formula.untl ψ φ ∈ SubformulaClosure target) :
     φ ∈ SubformulaClosure target ∧ ψ ∈ SubformulaClosure target := by
   rcases SubformulaClosure_mem_cases h with h_base | ⟨g, _, hg_eq⟩
   · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, _, hfeq⟩ | ⟨f, _, hfeq⟩

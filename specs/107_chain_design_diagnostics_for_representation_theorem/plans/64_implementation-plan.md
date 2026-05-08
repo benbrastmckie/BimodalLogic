@@ -371,7 +371,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Convention Migration -- untl/snce Argument Swap [NOT STARTED]
+### Phase 9: Convention Migration -- untl/snce Argument Swap [COMPLETED]
 
 **Goal**: Migrate `untl(guard, event)` to `untl(event, guard)` and `snce(guard, event)` to `snce(event, guard)` across the entire codebase to match Burgess 1982's convention.
 

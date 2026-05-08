@@ -173,8 +173,8 @@ Note: BX9 (until_elim: phi U psi -> phi ∨ psi) has been REMOVED (task 113).
 -/
 def rRelation (A B : Set Formula) : Prop :=
   ∀ (γ δ : Formula),
-    Formula.untl γ δ ∈ A →
-    δ ∈ B ∨ (γ ∈ B ∧ Formula.untl γ δ ∈ B)
+    Formula.untl δ γ ∈ A →
+    δ ∈ B ∨ (γ ∈ B ∧ Formula.untl δ γ ∈ B)
 
 /--
 Symmetric r-relation for Since: `rRelationSince A B`.
@@ -184,8 +184,8 @@ or (`gamma in B` and `Since(gamma, delta) in B`).
 -/
 def rRelationSince (A B : Set Formula) : Prop :=
   ∀ (γ δ : Formula),
-    Formula.snce γ δ ∈ A →
-    δ ∈ B ∨ (γ ∈ B ∧ Formula.snce γ δ ∈ B)
+    Formula.snce δ γ ∈ A →
+    δ ∈ B ∨ (γ ∈ B ∧ Formula.snce δ γ ∈ B)
 
 /-! ## Three-Argument r-Relation (Burgess 2.3, adapted)
 
@@ -304,7 +304,7 @@ Neither implies the other in general.
 for all gamma in C, `untl(beta, gamma) in A`.
 -/
 def burgessR (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
-  ∀ γ ∈ C, Formula.untl β γ ∈ A
+  ∀ γ ∈ C, Formula.untl γ β ∈ A
 
 /--
 **Burgess r-relation for a set**: `burgessRSet A B C` holds when
@@ -318,7 +318,7 @@ def burgessRSet (A B C : Set Formula) : Prop :=
 when for all gamma in C, `snce(beta, gamma) in A`.
 -/
 def burgessRSince (A : Set Formula) (β : Formula) (C : Set Formula) : Prop :=
-  ∀ γ ∈ C, Formula.snce β γ ∈ A
+  ∀ γ ∈ C, Formula.snce γ β ∈ A
 
 /--
 **Burgess r-relation for Since (set)**: `burgessRSetSince A B C` holds when
@@ -443,7 +443,7 @@ vacuously true at the dense limit (where no adjacent pairs exist). -/
 def Chronicle.c4 (χ : Chronicle) : Prop :=
   ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y →
     ∀ (γ δ : Formula),
-      (Formula.untl γ δ).neg ∈ χ.f x →
+      (Formula.untl δ γ).neg ∈ χ.f x →
       δ ∈ χ.f y →
       ∃ z ∈ χ.dom, x < z ∧ z < y ∧ γ.neg ∈ χ.f z
 
@@ -458,7 +458,7 @@ Note: Like C4, this applies to ALL pairs y < x, not just adjacent pairs. -/
 def Chronicle.c4' (χ : Chronicle) : Prop :=
   ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → y < x →
     ∀ (γ δ : Formula),
-      (Formula.snce γ δ).neg ∈ χ.f x →
+      (Formula.snce δ γ).neg ∈ χ.f x →
       δ ∈ χ.f y →
       ∃ z ∈ χ.dom, y < z ∧ z < x ∧ γ.neg ∈ χ.f z
 
@@ -469,19 +469,19 @@ intermediate domain points. -/
 def Chronicle.c5 (χ : Chronicle) : Prop :=
   ∀ x ∈ χ.dom,
     ∀ (γ δ : Formula),
-      Formula.untl γ δ ∈ χ.f x →
+      Formula.untl δ γ ∈ χ.f x →
       ∃ y ∈ χ.dom, x < y ∧ δ ∈ χ.f y ∧
         ∀ z ∈ χ.dom, x < z → z < y →
-          γ ∈ χ.f z ∧ Formula.untl γ δ ∈ χ.f z
+          γ ∈ χ.f z ∧ Formula.untl δ γ ∈ χ.f z
 
 /-- **C5'**: Backward Since witness condition (mirror of C5). -/
 def Chronicle.c5' (χ : Chronicle) : Prop :=
   ∀ x ∈ χ.dom,
     ∀ (γ δ : Formula),
-      Formula.snce γ δ ∈ χ.f x →
+      Formula.snce δ γ ∈ χ.f x →
       ∃ y ∈ χ.dom, y < x ∧ δ ∈ χ.f y ∧
         ∀ z ∈ χ.dom, y < z → z < x →
-          γ ∈ χ.f z ∧ Formula.snce γ δ ∈ χ.f z
+          γ ∈ χ.f z ∧ Formula.snce δ γ ∈ χ.f z
 
 /--
 A **valid chronicle** satisfies all the core chronicle conditions.

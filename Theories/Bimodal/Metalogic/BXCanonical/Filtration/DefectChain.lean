@@ -44,13 +44,13 @@ open Classical
     an Until formula in Sigma present at w whose goal (right operand) is absent. -/
 def is_until_defect (w : BXPoint) (Sigma : Finset Formula) (f : Formula) : Prop :=
   f ∈ Sigma ∧ f ∈ w.formulas ∧
-  ∃ φ ψ : Formula, f = Formula.untl φ ψ ∧ ψ ∉ w.formulas
+  ∃ φ ψ : Formula, f = Formula.untl ψ φ ∧ ψ ∉ w.formulas
 
 /-- Count of Until-defects at w relative to Sigma. -/
 noncomputable def sigma_defect_count (w : BXPoint) (Sigma : Finset Formula) : Nat :=
   (Sigma.filter (fun f =>
     f ∈ w.formulas ∧
-    ∃ φ ψ : Formula, f = Formula.untl φ ψ ∧ ψ ∉ w.formulas)).card
+    ∃ φ ψ : Formula, f = Formula.untl ψ φ ∧ ψ ∉ w.formulas)).card
 
 /-- The defect count is bounded by the size of Sigma. -/
 theorem sigma_defect_count_bounded (w : BXPoint) (Sigma : Finset Formula) :
@@ -66,7 +66,7 @@ theorem sigma_defect_count_bounded (w : BXPoint) (Sigma : Finset Formula) :
 
 /-- If φ U ψ ∈ w, then F(ψ) ∈ w (from BX10: eventuality extraction). -/
 theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
-    (h_until : Formula.untl φ ψ ∈ w.formulas) :
+    (h_until : Formula.untl ψ φ ∈ w.formulas) :
     Formula.some_future ψ ∈ w.formulas := by
   have h_ax := DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -74,16 +74,16 @@ theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
 
 /-- If φ U ψ ∈ w, then G(P(φ U ψ)) ∈ w (from BX4: temporal connectedness). -/
 theorem defect_step_connect {w : BXPoint} {φ ψ : Formula}
-    (h_until : Formula.untl φ ψ ∈ w.formulas) :
-    Formula.all_future (Formula.some_past (Formula.untl φ ψ)) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl φ ψ))
+    (h_until : Formula.untl ψ φ ∈ w.formulas) :
+    Formula.all_future (Formula.some_past (Formula.untl ψ φ)) ∈ w.formulas := by
+  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_future (Formula.untl ψ φ))
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_until
 
 /-- If φ U ψ ∈ w, then (φ ∧ (φ U ψ)) U ψ ∈ w (from BX5: self-accumulation). -/
 theorem defect_step_self_accum {w : BXPoint} {φ ψ : Formula}
-    (h_until : Formula.untl φ ψ ∈ w.formulas) :
-    Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ ∈ w.formulas := by
+    (h_until : Formula.untl ψ φ ∈ w.formulas) :
+    Formula.untl ψ (Formula.and φ (Formula.untl ψ φ)) ∈ w.formulas := by
   have h_ax := DerivationTree.axiom [] _ (Axiom.self_accum_until φ ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_until
@@ -94,14 +94,14 @@ theorem defect_step_self_accum {w : BXPoint} {φ ψ : Formula}
 noncomputable def sigma_since_defect_count (w : BXPoint) (Sigma : Finset Formula) : Nat :=
   (Sigma.filter (fun f =>
     f ∈ w.formulas ∧
-    ∃ φ ψ : Formula, f = Formula.snce φ ψ ∧ ψ ∉ w.formulas)).card
+    ∃ φ ψ : Formula, f = Formula.snce ψ φ ∧ ψ ∉ w.formulas)).card
 
 -- NOTE: `since_defect_step_phi` (BX9' at BXPoint level) removed — unsound under open guard (task 113).
 -- Mirror of defect_step_phi removal. Use `since_defect_step_P_psi` (BX10') instead.
 
 /-- If φ S ψ ∈ w, then P(ψ) ∈ w (from BX10': eventuality extraction). -/
 theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
-    (h_since : Formula.snce φ ψ ∈ w.formulas) :
+    (h_since : Formula.snce ψ φ ∈ w.formulas) :
     Formula.some_past ψ ∈ w.formulas := by
   have h_ax := DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -109,9 +109,9 @@ theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
 
 /-- If φ S ψ ∈ w, then H(F(φ S ψ)) ∈ w (from BX4': temporal connectedness). -/
 theorem since_defect_step_connect {w : BXPoint} {φ ψ : Formula}
-    (h_since : Formula.snce φ ψ ∈ w.formulas) :
-    Formula.all_past (Formula.some_future (Formula.snce φ ψ)) ∈ w.formulas := by
-  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_past (Formula.snce φ ψ))
+    (h_since : Formula.snce ψ φ ∈ w.formulas) :
+    Formula.all_past (Formula.some_future (Formula.snce ψ φ)) ∈ w.formulas := by
+  have h_ax := DerivationTree.axiom [] _ (Axiom.connect_past (Formula.snce ψ φ))
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h_since
 
