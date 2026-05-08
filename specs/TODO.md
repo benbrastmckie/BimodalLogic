@@ -1,5 +1,5 @@
 ---
-next_project_number: 114
+next_project_number: 117
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -70,6 +70,14 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
+- **Effort**: 15-25 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 107
+
+**Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
 
 ### 115. Remove A4a and simplify BX2 after task 107 adds left_mono_until_G
 - **Effort**: 1-2 hours
@@ -450,6 +458,9 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
+
+
+## Recommended Order
 
 
 ## Recommended Order
