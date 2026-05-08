@@ -1,5 +1,5 @@
 ---
-next_project_number: 117
+next_project_number: 118
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -70,6 +70,14 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+### 117. Remove Cantor isomorphism and build countermodel on limit domain
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 107
+
+**Description**: Remove Cantor isomorphism from ChronicleToCountermodel.lean and build the countermodel directly on `LimitDomSubtype` instead of mapping to ℚ. Eliminates the `DenselyOrdered` requirement (implementation artifact, not needed by Burgess 1982). Closes the last sorry in the Chronicle module (`SetConsistent g` in density case at CE:3570). The truth lemma works on any linear order — gaps with `g = Set.univ` are handled vacuously.
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours

@@ -6,6 +6,19 @@
   },
   "active_projects": [
     {
+      "project_number": 117,
+      "project_name": "remove_cantor_iso_build_model_on_limit_dom",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "description": "Remove Cantor isomorphism from ChronicleToCountermodel.lean and build the countermodel directly on the limit domain (LimitDomSubtype) instead of mapping to Rat. This eliminates the DenselyOrdered requirement, which is an implementation artifact not needed by Burgess 1982. Closes the last sorry in the Chronicle module (SetConsistent g in density case at CE:3570). The truth lemma works on any linear order — gaps with g=Set.univ are handled vacuously. The current Cantor iso requires density, which requires g-value consistency, which is unprovable from CUD-maximality. Building directly on limit_dom avoids all of this.",
+      "dependencies": [
+        107
+      ],
+      "created": "2026-05-08T20:40:46Z",
+      "last_updated": "2026-05-08T20:40:46Z"
+    },
+    {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
       "status": "not_started",
@@ -1176,7 +1189,7 @@
       ]
     }
   ],
-  "next_project_number": 117,
+  "next_project_number": 118,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
