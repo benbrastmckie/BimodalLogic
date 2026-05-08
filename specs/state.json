@@ -16,15 +16,20 @@
         107
       ],
       "created": "2026-05-08T20:40:46Z",
-      "last_updated": "2026-05-08T22:51:14Z",
-      "session_id": "sess_1778279973_24f414",
-      "researched": "2026-05-08T22:51:14Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-05-08T23:13:48Z",
+      "session_id": "sess_1778281419_eb0dd8",
+      "researched": "2026-05-08T23:13:48Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates"
+        },
+        {
+          "path": "specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Round 2: generalize parametric infrastructure analysis"
         }
       ]
     },
