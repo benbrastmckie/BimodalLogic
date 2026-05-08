@@ -23,7 +23,7 @@ Close the 2 remaining sorry sites in ChronicleConstruction.lean (lines 1598, 163
 | 3 | ✅ COMPLETED | `EliminationResult.c5_forward_witness`/`c5_backward_witness` use adjacent-pair guard |
 | 4 | ✅ COMPLETED | Walk A restructured (split instead of walk), Walk B eta-shortcut removed |
 | 5 | ✅ COMPLETED | All C5 backward cases compile; `CounterexampleElimination.lean` has 0 sorries |
-| 6 | ⏳ PARTIAL | `omega_chain_c5_witness`/`c5'_witness` strengthened; **2 sorries remain** in `limit_satisfies_c5_strong` / `limit_satisfies_c5'_strong` at CC:1598,1633 (need `omega_chain_no_new_when_witness_old` lemma) |
+| 6 | ✅ COMPLETED | `witness_not_old` added to walk results, disjunct `(y ∉ χ.dom ∨ ∀ u ∈ val.dom, u ∈ χ.dom)` threaded through EliminationResult/omega_chain; both sorries closed via contradiction |
 | 7 | ⏳ NOT STARTED | Prove `NoUnivBurgessR3` |
 | 8 | ⏳ NOT STARTED | Final sorry-free validation |
 | 9 | ⏳ NOT STARTED | Convention migration |
@@ -261,7 +261,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Strengthen omega_chain_c5_witness and Close 2 Sorries [PARTIAL]
+### Phase 6: Strengthen omega_chain_c5_witness and Close 2 Sorries [COMPLETED]
 
 **Goal**: Strengthen `omega_chain_c5_witness` (ChronicleConstruction.lean:392) to return the adjacent-pair guard from the elimination stage, then close the 2 sorry sites at lines 1598 and 1633 using `adj_g_mem_limit_f`.
 
@@ -298,7 +298,7 @@ The sorry at CC:1598 (and its mirror at 1633) occurs in the sub-case `y ∈ dom_
 
 ---
 
-### Phase 7: Prove NoUnivBurgessR3 [NOT STARTED]
+### Phase 7: Prove NoUnivBurgessR3 [IN PROGRESS]
 
 **Goal**: Prove `NoUnivBurgessR3` as a theorem and make `bx_completeness` unconditional.
 

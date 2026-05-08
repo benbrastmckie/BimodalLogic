@@ -616,12 +616,14 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
     Formula.untl pc.ξ pc.η ∈ χ.f pc.x →
     ∃ y ∈ val.dom, pc.x < y ∧ pc.η ∈ val.f y ∧
       (∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b) ∧
-      (∀ w ∈ χ.dom, pc.x < w → w < y → pc.ξ ∈ val.f w)
+      (∀ w ∈ χ.dom, pc.x < w → w < y → pc.ξ ∈ val.f w) ∧
+      (y ∉ χ.dom ∨ ∀ u ∈ val.dom, u ∈ χ.dom)
   c5_backward_witness : pc.kind = .c5_backward → pc.x ∈ χ.dom →
     Formula.snce pc.ξ pc.η ∈ χ.f pc.x →
     ∃ y ∈ val.dom, y < pc.x ∧ pc.η ∈ val.f y ∧
       (∀ a b, Adjacent val.dom a b → y ≤ a → b ≤ pc.x → pc.ξ ∈ val.g a b) ∧
-      (∀ w ∈ χ.dom, y < w → w < pc.x → pc.ξ ∈ val.f w)
+      (∀ w ∈ χ.dom, y < w → w < pc.x → pc.ξ ∈ val.f w) ∧
+      (y ∉ χ.dom ∨ ∀ u ∈ val.dom, u ∈ χ.dom)
   c4_forward_witness : pc.kind = .c4_forward → pc.x ∈ χ.dom → pc.y ∈ χ.dom →
     pc.x < pc.y →
     (Formula.untl pc.ξ pc.η).neg ∈ χ.f pc.x →
@@ -694,6 +696,11 @@ structure C5ForwardWalkResult (χ : Chronicle) (ξ η : Formula) (start : Rat) w
   In split cases, the witness is the midpoint between start and successor,
   so no original domain points exist in (start, witness) and this is vacuous. -/
   domain_guard : ∀ w ∈ χ.dom, start < w → w < witness → ξ ∈ val.f w
+  /-- The witness is always a new point, not in the original domain χ.dom.
+  Base case: witness is placed beyond all domain points.
+  Walk/condition(i) case: witness comes from recursion (induction).
+  Split case: witness is the midpoint z, which is not in χ.dom. -/
+  witness_not_old : witness ∉ χ.dom
 
 /--
 Recursive walk for C5 forward guard (Burgess 2.10 induction).
@@ -859,7 +866,8 @@ private noncomputable def c5_forward_walk
               -- Base case: pt = max(dom), witness = y > max(dom).
               -- No w ∈ χ.dom with pt < w exists (pt is max).
               intro w hw hsw _
-              exact absurd (h_max_le w hw) (not_le.mpr (h_eq_max ▸ hsw)) }
+              exact absurd (h_max_le w hw) (not_le.mpr (h_eq_max ▸ hsw))
+            witness_not_old := hy_notin }
   · -- **RECURSIVE CASE**: pt < max_old. Find successor x'.
     have h_start_lt_max : pt < max_old := lt_of_le_of_ne (h_max_le pt h_start_mem) h_eq_max
     let T_succ := χ.dom.filter (fun v => v > pt)
@@ -1006,7 +1014,8 @@ private noncomputable def c5_forward_walk
                   exact r.domain_guard w hw hwx' hwr
                 · -- w = x', use condition (i)
                   rw [← hwx', r.f_agrees x' hx'_dom]
-                  exact conj_left_mcs h_mcs_x' ξ (Formula.untl ξ η) h_cond_i.1 }
+                  exact conj_left_mcs h_mcs_x' ξ (Formula.untl ξ η) h_cond_i.1
+              witness_not_old := r.witness_not_old }
     · -- **Not condition (i)**: split at (pt, x')
       have h_split_result : ∃ B' D B'' : Set Formula,
           BurgessR3Maximal (χ.f pt) B' D ∧
@@ -1226,7 +1235,8 @@ private noncomputable def c5_forward_walk
                 -- No w ∈ χ.dom with start < w < z exists (adjacency of (start, x')).
                 intro w hw hsw hwz
                 exact absurd ⟨hsw, lt_trans hwz hz_lt_x'⟩
-                  (h_adj_sx'.2.2.2 w hw) }
+                  (h_adj_sx'.2.2.2 w hw)
+              witness_not_old := hz_notin }
 termination_by (χ.dom.filter (fun v => v > pt)).card
 decreasing_by
   /- Using `have r` (not `let r`) makes the recursive result opaque,
@@ -1265,6 +1275,9 @@ structure C5BackwardWalkResult (χ : Chronicle) (ξ η : Formula) (start : Rat) 
   between witness and start. Vacuous in split cases (midpoint between predecessor
   and start, no original domain points exist there). -/
   domain_guard : ∀ w ∈ χ.dom, witness < w → w < start → ξ ∈ val.f w
+  /-- The witness is always a new point, not in the original domain χ.dom.
+  Mirror of C5ForwardWalkResult.witness_not_old for the Since direction. -/
+  witness_not_old : witness ∉ χ.dom
 
 /--
 Recursive walk for C5 backward guard (Burgess 2.10' induction, Since direction).
@@ -1425,7 +1438,8 @@ private noncomputable def c5_backward_walk
               -- Base case: pt = min(dom), witness = y < min(dom).
               -- No w ∈ χ.dom with w < pt exists (pt is min).
               intro w hw _ hws
-              exact absurd (h_min_le w hw) (not_le.mpr (h_eq_min ▸ hws)) }
+              exact absurd (h_min_le w hw) (not_le.mpr (h_eq_min ▸ hws))
+            witness_not_old := hy_notin }
   · -- **RECURSIVE CASE**: pt > min_old. Find predecessor x''.
     have h_start_gt_min : min_old < pt := lt_of_le_of_ne (h_min_le pt h_start_mem) (Ne.symm h_eq_min)
     let T_pred := χ.dom.filter (fun v => v < pt)
@@ -1574,7 +1588,8 @@ private noncomputable def c5_backward_walk
                   exact r.domain_guard w hw hwr hwx''
                 · -- w = x'', use condition (i)
                   rw [hwx'', r.f_agrees x'' hx''_dom]
-                  exact conj_left_mcs h_mcs_x'' ξ (Formula.snce ξ η) h_cond_i.1 }
+                  exact conj_left_mcs h_mcs_x'' ξ (Formula.snce ξ η) h_cond_i.1
+              witness_not_old := r.witness_not_old }
     · -- **Not condition (i)**: split at (x'', pt)
       have h_split_result : ∃ B' D B'' : Set Formula,
           BurgessR3Maximal (χ.f x'') B' D ∧
@@ -1812,7 +1827,8 @@ private noncomputable def c5_backward_walk
                 -- No w ∈ χ.dom with z < w < pt exists (adjacency of (x'', pt)).
                 intro w hw hwz hws
                 exact absurd ⟨lt_trans hx''_lt_z hwz, hws⟩
-                  (h_adj_x''s.2.2.2 w hw) }
+                  (h_adj_x''s.2.2.2 w hw)
+              witness_not_old := hz_notin }
 termination_by (χ.dom.filter (fun v => v < pt)).card
 decreasing_by
   all_goals simp_all only [gt_iff_lt]
@@ -1931,7 +1947,7 @@ noncomputable def eliminate_potential_counterexample
                 c2' := h_c2'_new
                 c5_forward_witness := by
                   intro _ _ _
-                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_gt pc.x h_mem, ?_, ?_, ?_⟩
+                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_gt pc.x h_mem, ?_, ?_, ?_, ?_⟩
                   · simp only [χ', ite_true]; exact h_η_C
                   · -- Adjacent-pair guard: only pair (a,b) with pc.x ≤ a, b ≤ y is (max_old, y)
                     intro a b h_adj_ab h_le_a h_le_b
@@ -1966,6 +1982,7 @@ noncomputable def eliminate_potential_counterexample
                   · -- Domain guard: no w ∈ χ.dom with pc.x < w < y (pc.x = max_old ≥ all old)
                     intro w hw hxw _
                     exact absurd (h_max_le w hw) (not_le.mpr (h_eq_max ▸ hxw))
+                  · exact Or.inl hy_notin
                 c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                 c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2057,7 +2074,7 @@ noncomputable def eliminate_potential_counterexample
                   c5_forward_witness := by
                     intro _ _ _
                     exact ⟨r.witness, r.witness_mem, r.witness_gt, r.witness_event,
-                      r.witness_guard, r.domain_guard⟩
+                      r.witness_guard, r.domain_guard, Or.inl r.witness_not_old⟩
                   c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2251,7 +2268,7 @@ noncomputable def eliminate_potential_counterexample
                   c2' := h_c2'_new
                   c5_forward_witness := by
                     intro _ _ _
-                    refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, ?_, ?_, ?_⟩
+                    refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, ?_, ?_, ?_, ?_⟩
                     · show pc.η ∈ (if z = z then D else χ.f z)
                       simp only [ite_true]
                       exact h_η_D
@@ -2288,6 +2305,7 @@ noncomputable def eliminate_potential_counterexample
                     · -- Domain guard: no w ∈ χ.dom with pc.x < w < z (z between adjacent (pc.x, x'))
                       intro w hw hxw hwz
                       exact absurd ⟨hxw, lt_trans hwz hz_lt_x'⟩ (h_adj_xx'.2.2.2 w hw)
+                    · exact Or.inl hz_notin
                   c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2358,7 +2376,7 @@ noncomputable def eliminate_potential_counterexample
                 intro _ h_mem h_until
                 push_neg at h_actual
                 obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩ := h_actual h_mem h_until
-                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩
+                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard, Or.inr (fun u hu => hu)⟩
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2463,7 +2481,7 @@ noncomputable def eliminate_potential_counterexample
                 c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c5_backward_witness := by
                   intro _ _ _
-                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_lt pc.x h_mem, ?_, ?_, ?_⟩
+                  refine ⟨y, Finset.mem_insert_self y χ.dom, hy_lt pc.x h_mem, ?_, ?_, ?_, ?_⟩
                   · show pc.η ∈ (if y = y then C else χ.f y)
                     simp only [ite_true]; exact h_η_C
                   · -- Guard: only adjacent pair from y to pc.x is (y, min_old)
@@ -2493,6 +2511,7 @@ noncomputable def eliminate_potential_counterexample
                   · -- Domain guard: no w ∈ χ.dom with y < w < pc.x (pc.x = min_old ≤ all old)
                     intro w hw _ hws
                     exact absurd (h_min_le w hw) (not_le.mpr (h_eq_min ▸ hws))
+                  · exact Or.inl hy_notin
                 c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2577,7 +2596,7 @@ noncomputable def eliminate_potential_counterexample
                   c5_backward_witness := by
                     intro _ _ _
                     exact ⟨r.witness, r.witness_mem, r.witness_lt, r.witness_event,
-                      r.witness_guard, r.domain_guard⟩
+                      r.witness_guard, r.domain_guard, Or.inl r.witness_not_old⟩
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2762,7 +2781,7 @@ noncomputable def eliminate_potential_counterexample
                   c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c5_backward_witness := by
                     intro _ _ _
-                    refine ⟨z, Finset.mem_insert_self z χ.dom, hz_lt_x, ?_, ?_, ?_⟩
+                    refine ⟨z, Finset.mem_insert_self z χ.dom, hz_lt_x, ?_, ?_, ?_, ?_⟩
                     · show pc.η ∈ (if z = z then D else χ.f z)
                       simp only [ite_true]; exact h_η_D
                     · -- Guard: for all adjacent (a,b) with z ≤ a, b ≤ pc.x, show ξ ∈ g'(a,b)
@@ -2792,6 +2811,7 @@ noncomputable def eliminate_potential_counterexample
                     · -- Domain guard: no w ∈ χ.dom with z < w < pc.x (adjacency of (x'', pc.x))
                       intro w hw hwz hwx
                       exact absurd ⟨lt_trans hx''_lt_z hwz, hwx⟩ (h_adj_x''x.2.2.2 w hw)
+                    · exact Or.inl hz_notin
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -2862,7 +2882,7 @@ noncomputable def eliminate_potential_counterexample
                 intro _ h_mem h_since
                 push_neg at h_actual
                 obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩ := h_actual h_mem h_since
-                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩
+                exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard, Or.inr (fun u hu => hu)⟩
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)

@@ -400,7 +400,10 @@ theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
       (∀ a b, Adjacent (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom a b →
         x ≤ a → b ≤ y → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).g a b) ∧
       (∀ w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom,
-        x < w → w < y → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w) := by
+        x < w → w < y → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w) ∧
+      (y ∉ (omega_chain_val A h_mcs h_nubr3 n).dom ∨
+        ∀ u ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom,
+          u ∈ (omega_chain_val A h_mcs h_nubr3 n).dom) := by
   -- omega_chain(n+1) = elimination result directly
   rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim, omega_chain_g_eq_elim]
   have key := (omega_chain_elim_result A h_mcs h_nubr3 n).c5_forward_witness
@@ -411,8 +414,8 @@ theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
         (counterexample_enum (Nat.unpair n).2).η ∈
         (omega_chain_val A h_mcs h_nubr3 n).f (counterexample_enum (Nat.unpair n).2).x
       by rw [hn_eq]; exact h_until)
-  obtain ⟨y, hy_dom, hy_lt, hy_η, hy_adj_guard, hy_dom_guard⟩ := key
-  refine ⟨y, hy_dom, ?_, ?_, ?_, ?_⟩
+  obtain ⟨y, hy_dom, hy_lt, hy_η, hy_adj_guard, hy_dom_guard, hy_new_or_id⟩ := key
+  refine ⟨y, hy_dom, ?_, ?_, ?_, ?_, ?_⟩
   · simp only [hn_eq] at hy_lt; exact hy_lt
   · simp only [hn_eq] at hy_η; exact hy_η
   · intro a b h_adj ha hb
@@ -421,6 +424,7 @@ theorem omega_chain_c5_witness (A : Set Formula) (h_mcs : SetMaximalConsistent A
   · intro w hw hxw hwy
     simp only [hn_eq] at hy_dom_guard
     exact hy_dom_guard w hw hxw hwy
+  · exact hy_new_or_id
 
 /--
 C5' witness at step n+1 (mirror for Since), including the adjacent-pair guard.
@@ -436,7 +440,10 @@ theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
       (∀ a b, Adjacent (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom a b →
         y ≤ a → b ≤ x → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).g a b) ∧
       (∀ w ∈ (omega_chain_val A h_mcs h_nubr3 n).dom,
-        y < w → w < x → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w) := by
+        y < w → w < x → ξ ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).f w) ∧
+      (y ∉ (omega_chain_val A h_mcs h_nubr3 n).dom ∨
+        ∀ u ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom,
+          u ∈ (omega_chain_val A h_mcs h_nubr3 n).dom) := by
   rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim, omega_chain_g_eq_elim]
   have key := (omega_chain_elim_result A h_mcs h_nubr3 n).c5_backward_witness
     (show (counterexample_enum (Nat.unpair n).2).kind = .c5_backward by rw [hn_eq])
@@ -446,8 +453,8 @@ theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
         (counterexample_enum (Nat.unpair n).2).η ∈
         (omega_chain_val A h_mcs h_nubr3 n).f (counterexample_enum (Nat.unpair n).2).x
       by rw [hn_eq]; exact h_since)
-  obtain ⟨y, hy_dom, hy_lt, hy_η, hy_adj_guard, hy_dom_guard⟩ := key
-  refine ⟨y, hy_dom, ?_, ?_, ?_, ?_⟩
+  obtain ⟨y, hy_dom, hy_lt, hy_η, hy_adj_guard, hy_dom_guard, hy_new_or_id⟩ := key
+  refine ⟨y, hy_dom, ?_, ?_, ?_, ?_, ?_⟩
   · simp only [hn_eq] at hy_lt; exact hy_lt
   · simp only [hn_eq] at hy_η; exact hy_η
   · intro a b h_adj ha hb
@@ -456,6 +463,7 @@ theorem omega_chain_c5'_witness (A : Set Formula) (h_mcs : SetMaximalConsistent 
   · intro w hw hyw hwx
     simp only [hn_eq] at hy_dom_guard
     exact hy_dom_guard w hw hyw hwx
+  · exact hy_new_or_id
 
 /--
 C4 witness at step n+1.
@@ -650,7 +658,7 @@ theorem limit_satisfies_c5_weak (A : Set Formula) (h_mcs : SetMaximalConsistent 
   have h_until_n : Formula.untl ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
     rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
     rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
-  obtain ⟨y, hy_dom, hy_lt, hy_η, _, _⟩ :=
+  obtain ⟨y, hy_dom, hy_lt, hy_η, _, _, _⟩ :=
     omega_chain_c5_witness A h_mcs h_nubr3 n x ξ η hx_n h_until_n hn_eq
   exact ⟨y, ⟨n + 1, hy_dom⟩, hy_lt,
     by rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom]; exact hy_η⟩
@@ -672,7 +680,7 @@ theorem limit_satisfies_c5'_weak (A : Set Formula) (h_mcs : SetMaximalConsistent
   have h_since_n : Formula.snce ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
     rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
     rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
-  obtain ⟨y, hy_dom, hy_lt, hy_η, _, _⟩ :=
+  obtain ⟨y, hy_dom, hy_lt, hy_η, _, _, _⟩ :=
     omega_chain_c5'_witness A h_mcs h_nubr3 n x ξ η hx_n h_since_n hn_eq
   exact ⟨y, ⟨n + 1, hy_dom⟩, hy_lt,
     by rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom]; exact hy_η⟩
@@ -1334,7 +1342,7 @@ theorem omega_chain_c5_forward_resolved_no_new (A : Set Formula) (h_mcs : SetMax
     (show (counterexample_enum (Nat.unpair n).2).x ∈ _ by rw [hn_eq]; exact hx)
     (show Formula.untl (counterexample_enum (Nat.unpair n).2).ξ
         (counterexample_enum (Nat.unpair n).2).η ∈ _ by rw [hn_eq]; exact h_until)
-    (by rw [hn_eq] at h_wit ⊢; exact h_wit) u hu'
+    (by rw [hn_eq]; exact h_wit) u hu'
 
 /-- Mirror: when the C5 backward counterexample at step n is already resolved. -/
 theorem omega_chain_c5_backward_resolved_no_new (A : Set Formula) (h_mcs : SetMaximalConsistent A)
@@ -1357,7 +1365,7 @@ theorem omega_chain_c5_backward_resolved_no_new (A : Set Formula) (h_mcs : SetMa
     (show (counterexample_enum (Nat.unpair n).2).x ∈ _ by rw [hn_eq]; exact hx)
     (show Formula.snce (counterexample_enum (Nat.unpair n).2).ξ
         (counterexample_enum (Nat.unpair n).2).η ∈ _ by rw [hn_eq]; exact h_since)
-    (by rw [hn_eq] at h_wit ⊢; exact h_wit) u hu'
+    (by rw [hn_eq]; exact h_wit) u hu'
 
 /-! ## Omega Chain g-value Lifting
 
@@ -1558,7 +1566,7 @@ theorem limit_satisfies_c5_strong (A : Set Formula) (h_mcs : SetMaximalConsisten
   have h_until_n : Formula.untl ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
     rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
     rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
-  obtain ⟨y, hy_dom_n1, hxy, hy_η_n1, h_adj_guard, h_dom_guard⟩ :=
+  obtain ⟨y, hy_dom_n1, hxy, hy_η_n1, h_adj_guard, h_dom_guard, h_new_or_id⟩ :=
     omega_chain_c5_witness A h_mcs h_nubr3 n x ξ η hx_n h_until_n hn_eq
   refine ⟨y, ⟨n + 1, hy_dom_n1⟩, hxy, ?_, ?_⟩
   · rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom_n1]; exact hy_η_n1
@@ -1571,31 +1579,15 @@ theorem limit_satisfies_c5_strong (A : Set Formula) (h_mcs : SetMaximalConsisten
   · -- w ∈ dom_n: domain_guard gives ξ ∈ f_{n+1}(w), convert to limit_f
     rw [limit_f_eq A h_mcs h_nubr3 w (n + 1) (omega_chain_dom_mono A h_mcs h_nubr3 n hw_n)]
     exact h_dom_guard w hw_n hxw hwy
-  · -- w ∉ dom_n: find containing adjacent pair in dom_{n+1}, use adj_g_mem_limit_f.
-    -- w ∉ dom_{n+1} because: if w were in dom_{n+1} \ dom_n, then by
-    -- omega_chain_dom_new_unique it would be the unique new point. If y ∉ dom_n
-    -- too, then w = y (both new), contradicting w < y. If y ∈ dom_n, the
-    -- elimination was identity (no new points), so dom_{n+1} = dom_n and w ∈ dom_n,
-    -- contradiction. Either way w ∉ dom_{n+1}.
-    -- Since x, y ∈ dom_{n+1} and x < w < y with w ∉ dom_{n+1}, find adjacent (a,b).
+  · -- w ∉ dom_n: use h_new_or_id to show w ∉ dom_{n+1}, then find adjacent pair.
     by_cases hw_n1 : w ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom
-    · -- w ∈ dom_{n+1} \ dom_n. y is also in dom_{n+1}.
-      -- If y ∉ dom_n: both new, w = y by uniqueness, but w < y. Contradiction.
-      -- If y ∈ dom_n: w is the unique new point between x and y.
+    · -- w ∈ dom_{n+1} \ dom_n.
       by_cases hy_n : y ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
-      · -- y ∈ dom_n, w ∈ dom_{n+1} \ dom_n. Use adj_g_mem_limit_f at stage n.
-        -- Find adjacent (a,b) in dom_n containing w.
-        obtain ⟨a, b, h_adj_n, ha_ge_x, hb_le_y, haw, hwb⟩ :=
-          exists_containing_adjacent _ x y w hx_n hy_n hxy hw_n hxw hwy
-        -- Use adj_g_mem_limit_f at stage n: need ξ ∈ g_n(a,b).
-        -- adj_guard gives ξ ∈ g_{n+1}(p,q) for adjacent (p,q) in dom_{n+1}.
-        -- g_{n+1}(a,b) = g_n(a,b) if (a,b) remains adjacent in dom_{n+1}.
-        -- But w was inserted between a and b, so (a,b) is no longer adjacent in dom_{n+1}.
-        -- This sub-case requires showing that the elimination at step n
-        -- was identity (since y ∈ dom_n, the C5 counterexample was already resolved).
-        -- In the identity case, dom_{n+1} = dom_n, contradicting w ∉ dom_n.
-        -- FIX: need omega_chain_no_new_when_witness_old lemma.
-        sorry
+      · -- y ∈ dom_n: by h_new_or_id, either y ∉ dom_n (contradiction) or dom_{n+1} ⊆ dom_n.
+        -- In both cases we get contradiction with w ∉ dom_n.
+        cases h_new_or_id with
+        | inl h_new => exact absurd hy_n h_new
+        | inr h_id => exact absurd (h_id w hw_n1) hw_n
       · exact absurd (omega_chain_dom_new_unique A h_mcs h_nubr3 n w y hw_n1 hw_n hy_dom_n1 hy_n)
           (ne_of_lt hwy)
     · obtain ⟨a, b, h_adj_n1, ha_ge_x, hb_le_y, haw, hwb⟩ :=
@@ -1618,7 +1610,7 @@ theorem limit_satisfies_c5'_strong (A : Set Formula) (h_mcs : SetMaximalConsiste
   have h_since_n : Formula.snce ξ η ∈ (omega_chain_val A h_mcs h_nubr3 n).f x := by
     rw [omega_chain_f_agrees_le A h_mcs h_nubr3 hn_ge x hn₀]
     rwa [← limit_f_eq A h_mcs h_nubr3 x n₀ hn₀]
-  obtain ⟨y, hy_dom_n1, hyx, hy_η_n1, h_adj_guard, h_dom_guard⟩ :=
+  obtain ⟨y, hy_dom_n1, hyx, hy_η_n1, h_adj_guard, h_dom_guard, h_new_or_id⟩ :=
     omega_chain_c5'_witness A h_mcs h_nubr3 n x ξ η hx_n h_since_n hn_eq
   refine ⟨y, ⟨n + 1, hy_dom_n1⟩, hyx, ?_, ?_⟩
   · rw [limit_f_eq A h_mcs h_nubr3 y (n + 1) hy_dom_n1]; exact hy_η_n1
@@ -1630,7 +1622,10 @@ theorem limit_satisfies_c5'_strong (A : Set Formula) (h_mcs : SetMaximalConsiste
     exact h_dom_guard w hw_n hyw hwx
   · by_cases hw_n1 : w ∈ (omega_chain_val A h_mcs h_nubr3 (n + 1)).dom
     · by_cases hy_n : y ∈ (omega_chain_val A h_mcs h_nubr3 n).dom
-      · sorry -- mirror: need omega_chain_no_new_when_witness_old
+      · -- y ∈ dom_n: by h_new_or_id, either y ∉ dom_n (contradiction) or dom_{n+1} ⊆ dom_n.
+        cases h_new_or_id with
+        | inl h_new => exact absurd hy_n h_new
+        | inr h_id => exact absurd (h_id w hw_n1) hw_n
       · exact absurd (omega_chain_dom_new_unique A h_mcs h_nubr3 n w y hw_n1 hw_n hy_dom_n1 hy_n)
           (ne_of_gt hyw)
     · obtain ⟨a, b, h_adj_n1, ha_ge_y, hb_le_x, haw, hwb⟩ :=
