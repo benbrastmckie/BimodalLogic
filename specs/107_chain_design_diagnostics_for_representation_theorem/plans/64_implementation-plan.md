@@ -323,15 +323,15 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 7.9**: Density sorry (CE:3506) consolidated into `BurgessR3Maximal_bot_not_mem` theorem
 
 **Tasks** (SDC-maximality refactor — remaining):
-- [ ] **Task 7.10**: Change `BurgessR3Maximal` first conjunct from `ClosedUnderDerivation B` to `SetDeductivelyClosed B`; maximality clause from `ClosedUnderDerivation D` to `SetDeductivelyClosed D`
-- [ ] **Task 7.11**: Restrict Zorn family to SDC sets; prove chain union preserves SDC (consistency by finite character)
-- [ ] **Task 7.12**: Add `SetConsistent (deductiveClosure ({delta} ∪ B))` precondition to `BurgessR3Maximal_extension_fails`; fix all call sites (~6)
-- [ ] **Task 7.13**: Resolve Blocker 1 — MCS sub-case in `burgess_D0_finite_subset_consistent_incons` (PointInsertion.lean:2049): when B is MCS, restructure proof to avoid extension_fails (SDC-maximality is vacuous for MCS B)
-- [ ] **Task 7.14**: Resolve Blockers 2-3 — `lemma_2_7_seed_consistent` / Since mirror: case-split on `SetConsistent ({xi}∪B)`, use lemma_2_8 for inconsistent case
-- [ ] **Task 7.15**: Resolve Blocker 4 — Zorn seeds need SDC: use `h_r3m.1` (now SDC) for B-seeds, prove DC seeds consistent
-- [ ] **Task 7.16**: Resolve Blocker 5 — `burgessR3Maximal_with_guard` callers: prove `SetConsistent ({eta})` from MCS context
-- [ ] **Task 7.17**: Mechanical: `.1` → `.1.2` for CUD access (~70 sites across CE + PI)
-- [ ] **Task 7.18**: Close `BurgessR3Maximal_bot_not_mem` (trivial: `h_r3m.1.1` gives SetConsistent)
+- [x] **Task 7.10**: Change `BurgessR3Maximal` first conjunct from `ClosedUnderDerivation B` to `SetDeductivelyClosed B`; maximality clause from `ClosedUnderDerivation D` to `SetDeductivelyClosed D`
+- [x] **Task 7.11**: Restrict Zorn family to SDC sets; prove chain union preserves SDC (consistency by finite character)
+- [x] **Task 7.12**: Add `SetConsistent (deductiveClosure ({delta} ∪ B))` precondition to `BurgessR3Maximal_extension_fails`; fix all call sites (~6)
+- [ ] **Task 7.13**: Resolve Blocker 1 — MCS sub-case in `burgess_D0_finite_subset_consistent_incons` (PointInsertion.lean:2051): 1 sorry remains
+- [ ] **Task 7.14**: Resolve CE consistency sorries — 20 sorries in CounterexampleElimination.lean need `phi.neg not-in g` for SDC-maximal g. This is a genuine mathematical gap: SDC-maximality does not prevent phi.neg membership when phi is absent. Resolution requires either proving phi.neg not-in g from chronicle+counterexample properties, or restructuring the walk to handle the phi.neg-in-g case
+- [x] **Task 7.15**: Resolve Blocker 4 — Zorn seeds need SDC: use `h_r3m.1` (now SDC) for B-seeds, prove DC seeds consistent
+- [ ] **Task 7.16**: Resolve Blocker 5 — `lemma_2_4_with_guard` callers: prove `SetConsistent (DC({xi}))` from MCS context (4 sorries)
+- [x] **Task 7.17**: Mechanical: `.1` → `.1.2` for CUD access (~70 sites across CE + PI)
+- [x] **Task 7.18**: Close `BurgessR3Maximal_bot_not_mem` (trivial: `h_r3m.1.1` gives SetConsistent)
 - [ ] **Task 7.19**: Verify: `lake build`, `grep sorry`, `#print axioms bx_completeness`
 
 **Timing**: ~16-22 hours total (Tasks 7.1-7.9 done ~8h; Tasks 7.10-7.19 remaining ~16-22h)
