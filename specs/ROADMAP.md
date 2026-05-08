@@ -4,7 +4,7 @@
 
 TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-05-05 (Phase 3 complete: PointInsertion.lean sorry-free, BurgessR3Maximal aligned with Burgess 1982).
+state of the completeness effort as of 2026-05-08 (task 107 Phases 1-9 complete: NoUnivBurgessR3 eliminated, bx_completeness unconditional, untl/snce convention matches Burgess 1982. 1 sorry remains on critical path — density g-value consistency, traced to Cantor iso implementation choice, task 117 will fix).
 
 **Architecture**: The proof system has 39 BX axioms (propositional, S5 modal,
 Burgess-Xu temporal including A3a/A3b enrichment + A4a/A4b separation +
@@ -19,19 +19,17 @@ completeness paths:
    #34-#36). Task 109 tracks these.
 2. **Chronicle** (`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`): Burgess 1982
    chronicle construction using controlled PointInsertion to escape Lindenbaum opacity.
-   Task 107 (active). Major milestones achieved: C4 definition fixed (report 25),
-   `left_mono_until_G` axiom added (Phase 5b), `ClosedUnderDerivation` aligned with
-   Burgess/Xu DCS definition (Phase 5b-i), `splitting_seed_consistent` proved sorry-free
-   via g_content(A)⊆B maximality argument (Phase 5b-ii), NoUnivBurgessR3 eliminated via
-   ClosedUnderDerivation maximality (Phases 1-3), `lemma_2_7_seed_consistent` closed via
-   BX5+BX7+BX13 chain + list extractors (Phase 3). **9 sorry sites remain on critical
-   path** across 2 files (down from 13), plus 6 NoUnivBurgessR3 stubs in PointInsertion.lean.
-   PointInsertion.lean and RRelation.lean are sorry-free on the critical path.
+   Task 107 (Phases 1-9 complete). Major milestones:
+   - Phases 1-5: Guard conjunction, lemma strengthening, adjacent-pair guard threading, walk restructuring
+   - Phase 6: Both ChronicleConstruction.lean sorries closed via `witness_not_old` tracking
+   - Phase 7: `NoUnivBurgessR3` deleted (unprovable in J₀), C1 changed to CUD, `bx_completeness` unconditional. 4 g-value sorries closed via Burgess's lemma_2_8 method. `BurgessR3Maximal_bot_not_mem` sorry-free.
+   - Phase 9: Convention migration — `untl(event, guard)` matches Burgess U(α, β).
+   **1 sorry remains on critical path**: density g-value consistency at CE:3570 (traces to Cantor iso requiring DenselyOrdered — task 117 will remove this).
    This is the primary completeness path.
 
-**Sorry summary**: The BXCanonical module has **19 sorry proofs** across 7 files,
-plus the Chronicle sub-module has **9 sorry proofs on critical path** across 2 files
-(down from 13), plus 6 NoUnivBurgessR3 stubs in PointInsertion.lean (15 total).
+**Sorry summary**: The BXCanonical module has **19 sorry proofs** across 7 files (task 109).
+The Chronicle sub-module has **1 sorry on critical path** (density g-value consistency,
+task 117). All other Chronicle sorries eliminated by task 107.
 
 BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
 
@@ -51,28 +49,17 @@ irreflexive semantics.
 
 **BXCanonical dependency chain**: `fwd_chain_forward_F` -> `restricted_tc` -> `restricted_buc` -> `restricted_fuc`.
 
-Chronicle sorries (task 107, updated 2026-05-05):
+Chronicle sorries (task 107, updated 2026-05-08):
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
-| **c2' co-construction** (elimination results) | 5 | `CE.lean:756,794,834,872,918` | **OPEN** (Phase 5) |
-| **C4/C4' hard cases** (BurgessR3 bridging) | 2 | `CE.lean:412,510` | **OPEN** (Phase 6) |
-| **FUC/FSC coherence** (Until/Since in countermodel) | 2 | `CTC.lean:611,615` | **OPEN** (Phase 7) |
-| **Total Chronicle (critical path)** | **9** | 2 files | |
-| **NoUnivBurgessR3 stubs** (bot-guard argument) | 6 | `PI.lean:178,2717,2719,3596,3598,3686` | **OPEN** (Phase 4) |
-| **Total Chronicle (all)** | **15** | 3 files | |
+| **Density g-value consistency** | 1 | `CE.lean:3570` | **OPEN** (task 117 — remove Cantor iso) |
+| **Total Chronicle (critical path)** | **1** | 1 file | |
 
-Closed since 2026-04-25 (9+ sorries eliminated):
-- PointInsertion.lean: `splitting_seed_consistent`, `g_content_sub_B`, `h_content_sub_B` — sorry-free via left_mono_until_G + ClosedUnderDerivation maximality
-- CounterexampleElimination.lean: 6 c2' sorries closed (C4 forward/backward, C5 forward/backward, g_prop/h_prop)
-- ChronicleConstruction.lean: `forward_G`, `backward_H` — sorry-free (C4+C0 proof)
-- RRelation.lean: was sorry-free, now has 1 sorry (Zorn inconsistent case, introduced by ClosedUnderDerivation refactoring)
-
-Closed 2026-05-01 to 2026-05-05 (Phases 1-3, task 107 plan v53):
-- **Phase 1**: NoUnivBurgessR3 eliminated by reverting BurgessR3Maximal to SetDeductivelyClosed maximality, then upgraded to ClosedUnderDerivation maximality
-- **Phase 2**: Sorry #1 (Lemma 2.6 Case B pos sub-case) closed via CUD maximality extraction; Sorry #3 (Lemma 2.7 xi-inconsistent case) closed via first-conjunct fix (SetDeductivelyClosed to ClosedUnderDerivation)
-- **Phase 3**: Sorry #2 (`lemma_2_7_seed_consistent`) closed via BX5+BX7+BX13 chain + list extractors
-- RRelation.lean: Zorn ClosedUnderDerivation sorry (line 772) resolved — file is now sorry-free
+Closed by task 107 (Phases 1-9, 2026-04-25 to 2026-05-08):
+- Phase 6: 2 ChronicleConstruction.lean C5 sorries closed via `witness_not_old` tracking
+- Phase 7: `NoUnivBurgessR3` deleted (unprovable in J₀); C1 changed to CUD; 4 g-value sorries closed via Burgess's lemma_2_8 method; `BurgessR3Maximal_bot_not_mem` sorry-free
+- Earlier phases: 7 c2' sorries, 2 C4 hard cases, 2 FUC sorries, 6 NoUnivBurgessR3 stubs — all closed
 
 ### Burgess 1982 Alignment Migration
 
