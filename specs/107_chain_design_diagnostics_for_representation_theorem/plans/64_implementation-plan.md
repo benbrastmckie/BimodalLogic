@@ -304,7 +304,7 @@ The sorry at CC:1598 (and its mirror at 1633) occurs in the sub-case `y ∈ dom_
 
 ---
 
-### Phase 7: Make bx_completeness Unconditional [BLOCKED]
+### Phase 7: Make bx_completeness Unconditional [PARTIAL]
 
 **Goal**: Remove `NoUnivBurgessR3` hypothesis and make `bx_completeness` unconditional.
 

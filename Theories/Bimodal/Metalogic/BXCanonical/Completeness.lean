@@ -125,7 +125,7 @@ Remaining leaf sorries are in the Chronicle/ modules (FMCS coherence, chronicle
 construction). The RootScopedChain.lean sorry sites are no longer on the critical
 path -- the chronicle bypasses them entirely.
 -/
-theorem bx_completeness (h_nubr3 : Chronicle.NoUnivBurgessR3) (φ : Formula) :
+theorem bx_completeness (φ : Formula) :
     valid φ → Nonempty (DerivationTree [] φ) := by
   -- Contrapositive: assume not derivable, show not valid
   by_contra h
@@ -144,19 +144,17 @@ theorem bx_completeness (h_nubr3 : Chronicle.NoUnivBurgessR3) (φ : Formula) :
   -- Build canonical model and derive contradiction
   -- Uses the chronicle-based countermodel (Burgess 1982), bypassing
   -- the sorry-laden dd_countermodel from RootScopedChain.lean.
-  -- NoUnivBurgessR3 is threaded as a hypothesis; it will be proved from
-  -- the construction properties in a future task.
   obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-    Chronicle.dd_countermodel_chronicle M hM_mcs h_nubr3 φ h_neg_in
+    Chronicle.dd_countermodel_chronicle M hM_mcs φ h_neg_in
   -- valid φ gives truth at every point, including the countermodel point
   exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
 /--
 BX Completeness (alternate form): valid → derivable.
 -/
-theorem bx_completeness' (h_nubr3 : Chronicle.NoUnivBurgessR3) (φ : Formula) (h : valid φ) :
+theorem bx_completeness' (φ : Formula) (h : valid φ) :
     Nonempty (DerivationTree [] φ) :=
-  bx_completeness h_nubr3 φ h
+  bx_completeness φ h
 
 /-! ## Axiom Audit (Phase 0 Results)
 

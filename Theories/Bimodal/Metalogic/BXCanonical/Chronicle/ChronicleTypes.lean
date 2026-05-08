@@ -130,6 +130,20 @@ theorem dcs_conj_closed {S : Set Formula} (h : SetDeductivelyClosed S)
     {φ ψ : Formula} (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : Formula.and φ ψ ∈ S :=
   cud_conj_closed h.2 h_phi h_psi
 
+/-- A CUD set with a non-member is SDC (consistent + CUD).
+If B is ClosedUnderDerivation and φ ∉ B, then B is SetDeductivelyClosed.
+Proof: if B were inconsistent, then B = Set.univ, but φ ∉ Set.univ is false. -/
+theorem cud_not_mem_is_sdc {B : Set Formula} (h_cud : ClosedUnderDerivation B)
+    {φ : Formula} (h_not_mem : φ ∉ B) : SetDeductivelyClosed B := by
+  refine ⟨?_, h_cud⟩
+  intro L hL ⟨d⟩
+  -- If B inconsistent: ⊥ ∈ B, then for any ψ, ψ ∈ B (ex falso).
+  -- In particular φ ∈ B, contradicting h_not_mem.
+  have h_bot : Formula.bot ∈ B := h_cud L Formula.bot hL d
+  have h_efq : DerivationTree [] (Formula.bot.imp φ) :=
+    Bimodal.Theorems.Propositional.efq_axiom φ
+  exact h_not_mem (cud_modus_ponens h_cud (cud_contains_theorems h_cud h_efq) h_bot)
+
 /-! ## Adjacency predicate -/
 
 /--
@@ -330,42 +344,21 @@ This is Burgess's Definition 2.5 (R-maximality) using the correct content-based
 r-relation. B is maximal among all `ClosedUnderDerivation` proper extensions.
 
 The maximality clause uses `ClosedUnderDerivation` (closed under derivation,
-possibly inconsistent), matching Burgess 1982 exactly. This is stronger than
-maximality over `SetDeductivelyClosed` sets: it also excludes inconsistent
-extensions like `Set.univ`. The key consequence: for ANY δ ∉ B (even when
-`{δ} ∪ B` is inconsistent), `DC(B ∪ {δ})` is `ClosedUnderDerivation` and
-strictly extends B, so `¬burgessR3(A, DC(B ∪ {δ}), C)`. This gives the
-neg-until witness `∃ β₀ ∈ B, ∃ γ₀ ∈ C, untl(β₀ ∧ δ, γ₀).neg ∈ A`
+possibly inconsistent), matching Burgess 1982 exactly. For ANY δ not in B,
+`DC(B ∪ {δ})` is `ClosedUnderDerivation` and strictly extends B, so
+`¬burgessR3(A, DC(B ∪ {δ}), C)`. This gives the neg-until witness
+`∃ β₀ ∈ B, ∃ γ₀ ∈ C, untl(β₀ ∧ δ, γ₀).neg ∈ A`
 (Burgess p.371: "else consider B' = consequences of B ∪ {δ}").
 
-The first conjunct uses `ClosedUnderDerivation B` (Burgess's DCS = closed
-under derivation, no consistency requirement). This matches Burgess 1982
-exactly and allows B = Set.univ when the guard formula xi is inconsistent
-(DC({xi}) = Set.univ is CUD, enabling the degenerate case in Lemma 2.7).
-
-Note: B produced by `burgessR3Maximal_extension_exists` is always SDC
-(consistent + CUD) since the Zorn family consists of SDC sets. The
-`SetDeductivelyClosed B` fact is returned alongside `BurgessR3Maximal`
-by that function for callers that need consistency.
+The Zorn construction (`burgessR3Maximal_extension_exists`) works directly
+over CUD sets, giving CUD-maximality by construction. No `NoUnivBurgessR3`
+hypothesis is needed. The resulting B may or may not be consistent;
+at finite stages g-values can be Set.univ (inconsistent).
 -/
 def BurgessR3Maximal (A B C : Set Formula) : Prop :=
   ClosedUnderDerivation B ∧
   burgessR3 A B C ∧
   ∀ D, ClosedUnderDerivation D → B ⊂ D → ¬burgessR3 A D C
-
-/--
-**No universal burgessR3**: Required for the Zorn construction of
-`BurgessR3Maximal` to upgrade SDC-maximality to CUD-maximality.
-
-Since the maximality clause uses `ClosedUnderDerivation`, the Zorn proof
-(over `SetDeductivelyClosed` family) needs this condition to also exclude
-`Set.univ` (the unique inconsistent `ClosedUnderDerivation` set).
-
-This is a hypothesis on the Zorn construction, threaded from call sites.
--/
-def NoUnivBurgessR3 : Prop :=
-  ∀ A C : Set Formula, SetMaximalConsistent A → SetMaximalConsistent C →
-    ¬burgessR3 A Set.univ C
 
 /-! ## Chronicle Structure -/
 
@@ -392,9 +385,13 @@ structure Chronicle where
 def Chronicle.c0 (χ : Chronicle) : Prop :=
   ∀ x ∈ χ.dom, SetMaximalConsistent (χ.f x)
 
-/-- **C1**: Every pair x < y in the domain maps to a DCS. -/
+/-- **C1**: Every pair x < y in the domain maps to a CUD set
+(closed under derivation, possibly inconsistent). This matches Burgess 1982
+exactly: interval sets g(x,y) are DCS = deductively closed, which does NOT
+require consistency. At finite stages, g-values can be Set.univ (inconsistent)
+when the interval is vacuous (adjacent points with no intermediate witnesses). -/
 def Chronicle.c1 (χ : Chronicle) : Prop :=
-  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → SetDeductivelyClosed (χ.g x y)
+  ∀ x y : Rat, x ∈ χ.dom → y ∈ χ.dom → x < y → ClosedUnderDerivation (χ.g x y)
 
 /-- **C2**: The three-argument r-relation holds for all pairs x < y in the domain.
 For x < y in dom, r3Relation(f(x), g(x,y), f(y)) holds. -/

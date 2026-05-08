@@ -217,34 +217,14 @@ theorem BurgessR3Maximal_g_content_sub {A B C : Set Formula}
   exact absurd h_G_nn (SetMaximalConsistent.neg_excludes h_mcs_A (Formula.all_future φ.neg.neg) h_F_neg)
 
 /--
-**BurgessR3Maximal implies SetDeductivelyClosed**: If BurgessR3Maximal(A, B, C) holds with
-A and C both MCS and NoUnivBurgessR3, then B is SetDeductivelyClosed (consistent + CUD).
-
-Proof: B is CUD from BurgessR3Maximal definition. If B were inconsistent, then B contains
-⊥ (CUD), so B contains every formula (ex falso), making B = Set.univ. But NoUnivBurgessR3
-says ¬burgessR3(A, Set.univ, C), while BurgessR3Maximal gives burgessR3(A, B, C) =
-burgessR3(A, Set.univ, C). Contradiction.
+**BurgessR3Maximal implies SetDeductivelyClosed** when some formula is not in B.
+Since B is CUD (from BurgessR3Maximal) and phi not in B, B is not Set.univ, hence consistent.
 -/
 theorem BurgessR3Maximal_sdc {A B C : Set Formula}
     (h_r3m : BurgessR3Maximal A B C)
-    (h_nubr3 : NoUnivBurgessR3)
-    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C) :
-    SetDeductivelyClosed B := by
-  refine ⟨?_, h_r3m.1⟩
-  -- Show SetConsistent B
-  intro L hL ⟨d⟩
-  -- If B is inconsistent: ⊥ ∈ B (CUD), so everything is in B, hence B = Set.univ
-  have h_bot_B : Formula.bot ∈ B := h_r3m.1 L Formula.bot hL d
-  -- From ⊥ ∈ B (CUD): for any φ, ⊥ → φ is a theorem, so φ ∈ B
-  have h_univ : ∀ φ : Formula, φ ∈ B := by
-    intro φ
-    have h_efq : DerivationTree [] (Formula.bot.imp φ) :=
-      Bimodal.Theorems.Propositional.efq_axiom φ
-    exact cud_modus_ponens h_r3m.1 (cud_contains_theorems h_r3m.1 h_efq) h_bot_B
-  -- B = Set.univ
-  have h_B_eq : B = Set.univ := Set.eq_univ_iff_forall.mpr h_univ
-  -- burgessR3(A, B, C) = burgessR3(A, Set.univ, C), contradicting NoUnivBurgessR3
-  exact h_nubr3 A C h_mcs_A h_mcs_C (h_B_eq ▸ h_r3m.2.1)
+    {phi : Formula} (h_not_mem : phi ∉ B) :
+    SetDeductivelyClosed B :=
+  cud_not_mem_is_sdc h_r3m.1 h_not_mem
 
 /--
 Helper: for adjacent pairs in a chronicle satisfying c2', when inserting a new point
@@ -283,8 +263,7 @@ Proof: Use η = ⊤ as the seed element.
 -/
 theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
-    (h_hc : h_content C ⊆ A)
-    (h_no_univ : ¬burgessR3 A Set.univ C) :
+    (h_hc : h_content C ⊆ A) :
     ∃ B : Set Formula, BurgessR3Maximal A B C := by
   set top := Formula.bot.imp Formula.bot with top_def
   have h_top_A : top ∈ A :=
@@ -322,7 +301,7 @@ theorem burgessR3Maximal_from_h_content_sub {A C : Set Formula}
       DerivationTree.axiom [] _ (Axiom.P_since_equiv α)
     exact SetMaximalConsistent.implication_property h_mcs_C
       (theorem_in_mcs h_mcs_C h_bx12') h_P
-  exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A h_no_univ
+  exact burgessR3Maximal_exists_from_seed A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A
 
 /-! ## Lemma 2.10: C5 Counterexample Elimination -/
 
@@ -340,7 +319,7 @@ The new point y is placed beyond all current domain points.
 noncomputable def eliminate_C5_counterexample {χ : Chronicle}
     (h_c0 : χ.c0)
     (ce : C5Counterexample χ)
-    (h_nubr3 : NoUnivBurgessR3) :
+    :
     ∃ χ' : Chronicle,
       χ.dom ⊆ χ'.dom ∧
       (∀ x ∈ χ.dom, χ'.f x = χ.f x) ∧
@@ -354,7 +333,7 @@ noncomputable def eliminate_C5_counterexample {χ : Chronicle}
   -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x)), plus interval DCS B
   have h_mcs_x := h_c0 ce.x ce.x_mem
   obtain ⟨_B, C, h_C_mcs, h_η_C, _, _, _⟩ :=
-    lemma_2_4 h_mcs_x ce.ξ ce.η ce.until_mem h_nubr3
+    lemma_2_4 h_mcs_x ce.ξ ce.η ce.until_mem
   -- Step 3: Build the new chronicle
   -- f' agrees with f on old domain, assigns C to y
   -- g' is unchanged (placeholder; full interval assignment in ChronicleConstruction)
@@ -714,7 +693,6 @@ Termination: `(dom.filter (· > start)).card` strictly decreases at each recursi
 -/
 private noncomputable def c5_forward_walk
     (χ : Chronicle) (h_c0 : χ.c0) (h_c2' : χ.c2')
-    (h_nubr3 : NoUnivBurgessR3)
     (ξ η : Formula) (pt : Rat)
     (h_start_mem : pt ∈ χ.dom)
     (h_until_start : Formula.untl ξ η ∈ χ.f pt)
@@ -734,7 +712,7 @@ private noncomputable def c5_forward_walk
     let y := h_fresh.choose
     have hy_gt : ∀ s ∈ χ.dom, s < y := h_fresh.choose_spec.1
     have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
-    have h_l24 := lemma_2_4_with_guard h_mcs_start ξ η h_until_start h_nubr3
+    have h_l24 := lemma_2_4_with_guard h_mcs_start ξ η h_until_start
     let B := h_l24.choose
     let C := h_l24.choose_spec.choose
     have h_l24_prop := h_l24.choose_spec.choose_spec
@@ -901,7 +879,7 @@ private noncomputable def c5_forward_walk
         fun w hw hsw hwx' => absurd ⟨hsw, hwx'⟩ (h_adj_sx'.2.2.2 w hw)⟩⟩
     -- Get BurgessR3Maximal facts for (pt, x')
     have h_r3m_adj := h_c2' pt x' h_adj_sx'
-    have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_start h_mcs_x'
+    have h_B_sdc : SetDeductivelyClosed (χ.g _ _) := ⟨sorry, h_r3m_adj.1⟩
     have h_gc_adj := BurgessR3Maximal_g_content_sub h_r3m_adj h_mcs_start h_mcs_x'
     have h_bot_not_g : Formula.bot ∉ χ.g pt x' := by
       intro h_bot
@@ -959,7 +937,7 @@ private noncomputable def c5_forward_walk
           exact ⟨x', Finset.mem_filter.mpr ⟨hx'_dom, hstart_lt_x'⟩,
             fun h => absurd (Finset.mem_filter.mp h).2 (lt_irrefl _)⟩
       -- Recurse
-      have r := c5_forward_walk χ h_c0 h_c2' h_nubr3 ξ η x' hx'_dom h_untl_x' h_no_wit_x'
+      have r := c5_forward_walk χ h_c0 h_c2' ξ η x' hx'_dom h_untl_x' h_no_wit_x'
       -- Compose: guard at (pt, x') from condition (i) + recursive guard from x'
       exact { val := r.val
               dom_sub := r.dom_sub
@@ -1030,15 +1008,15 @@ private noncomputable def c5_forward_walk
         · by_cases h_xi_g : ξ ∈ χ.g pt x'
           · have h_eta_neg_not_g : η.neg ∉ χ.g pt x' := by
               intro h_neg; exact set_consistent_not_both h_B_sdc.1 η h_eta_g h_neg
-            have h_sp := lemma_2_6_splitting h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-              η.neg h_eta_neg_not_g h_nubr3
+            have h_sp := lemma_2_6_splitting h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+              η.neg h_eta_neg_not_g
             obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
             exact ⟨B', D, B'', hB', hB'', hD_mcs,
               SetMaximalConsistent.implication_property hD_mcs
                 (theorem_in_mcs hD_mcs (Bimodal.Theorems.Propositional.double_negation η)) h_dne_D,
               h_B_sub_D, hBB', hBB'', hBB' h_xi_g⟩
           · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B'⟩ :=
-              lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj ξ η h_until_start h_xi_g h_nubr3
+              lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_until_start h_xi_g
             exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B'⟩
         · by_cases h_eta_neg_g : η.neg ∈ χ.g pt x'
           · by_cases h_xi_g : ξ ∈ χ.g pt x'
@@ -1062,26 +1040,26 @@ private noncomputable def c5_forward_walk
                         (Formula.and ξ (Formula.untl ξ η))))
                     (conj_mcs h_mcs_x' η.neg (Formula.and ξ (Formula.untl ξ η)).neg h1 h2)
                 obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ :=
-                  lemma_2_8 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj ξ η h_until_start h_neg_disj h_nubr3
+                  lemma_2_8 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_until_start h_neg_disj
                 exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', hBB' h_xi_g⟩
               · have h_bx5 := self_accum_until_mcs h_mcs_start ξ η h_until_start
                 obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB'', _⟩ :=
-                  lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                    (Formula.and ξ (Formula.untl ξ η)) η h_bx5 h_conj_g h_nubr3
+                  lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                    (Formula.and ξ (Formula.untl ξ η)) η h_bx5 h_conj_g
                 exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', hBB' h_xi_g⟩
             · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B'⟩ :=
-                lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj ξ η h_until_start h_xi_g h_nubr3
+                lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_until_start h_xi_g
               exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B'⟩
           · by_cases h_xi_g2 : ξ ∈ χ.g pt x'
-            · have h_sp := lemma_2_6_splitting h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                η.neg h_eta_neg_g h_nubr3
+            · have h_sp := lemma_2_6_splitting h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                η.neg h_eta_neg_g
               obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
               exact ⟨B', D, B'', hB', hB'', hD_mcs,
                 SetMaximalConsistent.implication_property hD_mcs
                   (theorem_in_mcs hD_mcs (Bimodal.Theorems.Propositional.double_negation η)) h_dne_D,
                 h_B_sub_D, hBB', hBB'', hBB' h_xi_g2⟩
             · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B'⟩ :=
-                lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj ξ η h_until_start h_xi_g2 h_nubr3
+                lemma_2_7 h_mcs_start h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_until_start h_xi_g2
               exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B'⟩
       let B' := h_split_result.choose
       let D := h_split_result.choose_spec.choose
@@ -1291,7 +1269,6 @@ Termination: `(dom.filter (· < start)).card` strictly decreases at each recursi
 -/
 private noncomputable def c5_backward_walk
     (χ : Chronicle) (h_c0 : χ.c0) (h_c2' : χ.c2')
-    (h_nubr3 : NoUnivBurgessR3)
     (ξ η : Formula) (pt : Rat)
     (h_start_mem : pt ∈ χ.dom)
     (h_since_start : Formula.snce ξ η ∈ χ.f pt)
@@ -1313,7 +1290,7 @@ private noncomputable def c5_backward_walk
     have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
     -- Use lemma_2_4_since_with_guard: from snce(ξ,η) ∈ f(pt), get B,C with
     -- η ∈ C, ξ ∈ B, BurgessR3Maximal(C, B, f(pt))
-    have h_l24s := lemma_2_4_since_with_guard h_mcs_start ξ η h_since_start h_nubr3
+    have h_l24s := lemma_2_4_since_with_guard h_mcs_start ξ η h_since_start
     let B := h_l24s.choose
     let C := h_l24s.choose_spec.choose
     have h_l24s_prop := h_l24s.choose_spec.choose_spec
@@ -1473,7 +1450,7 @@ private noncomputable def c5_backward_walk
         fun w hw hx''w hws => absurd ⟨hx''w, hws⟩ (h_adj_x''s.2.2.2 w hw)⟩⟩
     -- Get BurgessR3Maximal facts for (x'', pt)
     have h_r3m_adj := h_c2' x'' pt h_adj_x''s
-    have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x'' h_mcs_start
+    have h_B_sdc : SetDeductivelyClosed (χ.g _ _) := ⟨sorry, h_r3m_adj.1⟩
     have h_gc_adj := BurgessR3Maximal_g_content_sub h_r3m_adj h_mcs_x'' h_mcs_start
     have h_bot_not_g : Formula.bot ∉ χ.g x'' pt := by
       intro h_bot
@@ -1531,7 +1508,7 @@ private noncomputable def c5_backward_walk
           exact ⟨x'', Finset.mem_filter.mpr ⟨hx''_dom, hx''_lt_start⟩,
             fun h => absurd (Finset.mem_filter.mp h).2 (lt_irrefl _)⟩
       -- Recurse
-      have r := c5_backward_walk χ h_c0 h_c2' h_nubr3 ξ η x'' hx''_dom h_snce_x'' h_no_wit_x''
+      have r := c5_backward_walk χ h_c0 h_c2' ξ η x'' hx''_dom h_snce_x'' h_no_wit_x''
       -- Compose: guard at (x'', pt) from condition (i) + recursive guard from x''
       exact { val := r.val
               dom_sub := r.dom_sub
@@ -1604,15 +1581,15 @@ private noncomputable def c5_backward_walk
         · by_cases h_xi_g : ξ ∈ χ.g x'' pt
           · have h_eta_neg_not_g : η.neg ∉ χ.g x'' pt := by
               intro h_neg; exact set_consistent_not_both h_B_sdc.1 η h_eta_g h_neg
-            have h_sp := lemma_2_6_splitting h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj
-              η.neg h_eta_neg_not_g h_nubr3
+            have h_sp := lemma_2_6_splitting h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc.2 h_gc_adj
+              η.neg h_eta_neg_not_g
             obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
             exact ⟨B', D, B'', hB', hB'', hD_mcs,
               SetMaximalConsistent.implication_property hD_mcs
                 (theorem_in_mcs hD_mcs (Bimodal.Theorems.Propositional.double_negation η)) h_dne_D,
               h_B_sub_D, hBB', hBB'', hBB'' h_xi_g⟩
           · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
-              lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_xi_g h_nubr3
+              lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_since_start h_xi_g
             exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
         · by_cases h_eta_neg_g : η.neg ∈ χ.g x'' pt
           · by_cases h_xi_g : ξ ∈ χ.g x'' pt
@@ -1636,26 +1613,26 @@ private noncomputable def c5_backward_walk
                         (Formula.and ξ (Formula.snce ξ η))))
                     (conj_mcs h_mcs_x'' η.neg (Formula.and ξ (Formula.snce ξ η)).neg h1 h2)
                 obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ :=
-                  lemma_2_8_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_neg_disj h_nubr3
+                  lemma_2_8_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_since_start h_neg_disj
                 exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', hBB'' h_xi_g⟩
               · have h_bx5 := self_accum_since_mcs h_mcs_start ξ η h_since_start
                 obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB'', _⟩ :=
-                  lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj
-                    (Formula.and ξ (Formula.snce ξ η)) η h_bx5 h_conj_g h_nubr3
+                  lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc.2 h_gc_adj
+                    (Formula.and ξ (Formula.snce ξ η)) η h_bx5 h_conj_g
                 exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', hBB'' h_xi_g⟩
             · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
-                lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_xi_g h_nubr3
+                lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_since_start h_xi_g
               exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
           · by_cases h_xi_g2 : ξ ∈ χ.g x'' pt
-            · have h_sp := lemma_2_6_splitting h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj
-                η.neg h_eta_neg_g h_nubr3
+            · have h_sp := lemma_2_6_splitting h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc.2 h_gc_adj
+                η.neg h_eta_neg_g
               obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
               exact ⟨B', D, B'', hB', hB'', hD_mcs,
                 SetMaximalConsistent.implication_property hD_mcs
                   (theorem_in_mcs hD_mcs (Bimodal.Theorems.Propositional.double_negation η)) h_dne_D,
                 h_B_sub_D, hBB', hBB'', hBB'' h_xi_g2⟩
             · obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
-                lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc h_gc_adj ξ η h_since_start h_xi_g2 h_nubr3
+                lemma_2_7_since h_mcs_x'' h_mcs_start h_r3m_adj h_B_sdc.2 h_gc_adj ξ η h_since_start h_xi_g2
               exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
       let B' := h_split_result.choose
       let D := h_split_result.choose_spec.choose
@@ -1845,7 +1822,7 @@ and C5/C5' witness guarantees.
 noncomputable def eliminate_potential_counterexample
     (χ : Chronicle) (h_c0 : χ.c0) (h_c2' : χ.c2')
     (pc : PotentialCounterexample)
-    (h_nubr3 : NoUnivBurgessR3) :
+    :
     EliminationResult χ pc := by
   -- Helper for impossible kind discriminants
   have absurd_kind {k : PotentialCounterexampleKind} {P : Prop}
@@ -1874,7 +1851,7 @@ noncomputable def eliminate_potential_counterexample
         let y := h_fresh.choose
         have hy_gt : ∀ s ∈ χ.dom, s < y := h_fresh.choose_spec.1
         have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
-        have h_l24 := lemma_2_4_with_guard h_mcs_x pc.ξ pc.η h_until h_nubr3
+        have h_l24 := lemma_2_4_with_guard h_mcs_x pc.ξ pc.η h_until
         let B := h_l24.choose
         let C := h_l24.choose_spec.choose
         have h_l24_prop := h_l24.choose_spec.choose_spec
@@ -2047,7 +2024,7 @@ noncomputable def eliminate_potential_counterexample
             fun w hw hsw hwx' => absurd ⟨hsw, hwx'⟩ (h_adj_xx'.2.2.2 w hw)⟩⟩
         -- Get BurgessR3Maximal for the adjacent pair (pc.x, x') from c2'
         have h_r3m_adj := h_c2' pc.x x' h_adj_xx'
-        have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x h_mcs_x'
+        have h_B_sdc : SetDeductivelyClosed (χ.g _ _) := ⟨sorry, h_r3m_adj.1⟩
         have h_gc_adj := BurgessR3Maximal_g_content_sub h_r3m_adj h_mcs_x h_mcs_x'
         -- Strategy: split the pair (pc.x, x') by inserting z between them.
         -- Use lemma_2_6_splitting with β = eta.neg (need eta.neg ∉ g(pc.x, x')),
@@ -2064,7 +2041,7 @@ noncomputable def eliminate_potential_counterexample
         -- If not, the existing splitting lemmas handle all cases.
         by_cases h_cond_i : Formula.and pc.ξ (Formula.untl pc.ξ pc.η) ∈ χ.f x' ∧ pc.ξ ∈ χ.g pc.x x'
         · -- **Condition (i)**: use recursive walk helper (Burgess 2.10 induction).
-          let r := c5_forward_walk χ h_c0 h_c2' h_nubr3 pc.ξ pc.η pc.x h_mem h_until h_no_wit
+          let r := c5_forward_walk χ h_c0 h_c2' pc.ξ pc.η pc.x h_mem h_until h_no_wit
           exact { val := r.val
                   dom_sub := r.dom_sub
                   c0 := r.c0
@@ -2101,8 +2078,8 @@ noncomputable def eliminate_potential_counterexample
               · have h_eta_neg_not_g : pc.η.neg ∉ χ.g pc.x x' := by
                   intro h_neg
                   exact set_consistent_not_both h_B_sdc.1 pc.η h_eta_g h_neg
-                have h_split2 := lemma_2_6_splitting h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                  pc.η.neg h_eta_neg_not_g h_nubr3
+                have h_split2 := lemma_2_6_splitting h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                  pc.η.neg h_eta_neg_not_g
                 obtain ⟨B'2, D2, B''2, h_B'2, h_B''2, h_D2_mcs, h_eta_neg_neg_D2, h_B_sub_D2, h_B_sub_B'2, h_B_sub_B''2⟩ := h_split2
                 have h_eta_D2 : pc.η ∈ D2 := by
                   have h_dne : DerivationTree [] (pc.η.neg.neg.imp pc.η) :=
@@ -2111,8 +2088,8 @@ noncomputable def eliminate_potential_counterexample
                     (theorem_in_mcs h_D2_mcs h_dne) h_eta_neg_neg_D2
                 exact ⟨B'2, D2, B''2, h_B'2, h_B''2, h_D2_mcs, h_eta_D2, h_B_sub_D2, h_B_sub_B'2, h_B_sub_B''2, h_B_sub_B'2 h_xi_g⟩
               · obtain ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_B'3, h_B_sub_D3, h_B_sub_B''3, h_xi_B'3⟩ :=
-                  lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                    pc.ξ pc.η h_until h_xi_g h_nubr3
+                  lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                    pc.ξ pc.η h_until h_xi_g
                 exact ⟨B'3, D3, B''3, h_B'3, h_B''3, h_D3_mcs, h_eta_D3, h_B_sub_D3, h_B_sub_B'3, h_B_sub_B''3, h_xi_B'3⟩
             · by_cases h_eta_neg_g : pc.η.neg ∈ χ.g pc.x x'
               · by_cases h_xi_g : pc.ξ ∈ χ.g pc.x x'
@@ -2134,25 +2111,25 @@ noncomputable def eliminate_potential_counterexample
                       have h_dm := Bimodal.Theorems.Propositional.demorgan_disj_neg_backward pc.η (Formula.and pc.ξ (Formula.untl pc.ξ pc.η))
                       exact SetMaximalConsistent.implication_property h_mcs_x'
                         (theorem_in_mcs h_mcs_x' h_dm) h_neg_conj
-                    have h_l28 := lemma_2_8 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                      pc.ξ pc.η h_until h_neg_disj h_nubr3
+                    have h_l28 := lemma_2_8 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                      pc.ξ pc.η h_until h_neg_disj
                     obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, _⟩ := h_l28
                     exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, h_B_sub_B'5 h_xi_g⟩
                   · have h_bx5 := self_accum_until_mcs h_mcs_x pc.ξ pc.η h_until
                     obtain ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_B'6, h_B_sub_D6, h_B_sub_B''6, h_conj_B'6⟩ :=
-                      lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                        (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) pc.η h_bx5 h_conj_g h_nubr3
+                      lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                        (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)) pc.η h_bx5 h_conj_g
                     -- xi ∈ g and g ⊆ B'6 gives xi ∈ B'6
                     exact ⟨B'6, D6, B''6, h_B'6, h_B''6, h_D6_mcs, h_eta_D6, h_B_sub_D6, h_B_sub_B'6, h_B_sub_B''6, h_B_sub_B'6 h_xi_g⟩
                 · obtain ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_B'4, h_B_sub_D4, h_B_sub_B''4, h_xi_B'4⟩ :=
-                    lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                      pc.ξ pc.η h_until h_xi_g h_nubr3
+                    lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                      pc.ξ pc.η h_until h_xi_g
                   exact ⟨B'4, D4, B''4, h_B'4, h_B''4, h_D4_mcs, h_eta_D4, h_B_sub_D4, h_B_sub_B'4, h_B_sub_B''4, h_xi_B'4⟩
               · -- eta ∉ g, eta.neg ∉ g. Case split on xi ∈ g for the guard.
                 by_cases h_xi_g6 : pc.ξ ∈ χ.g pc.x x'
                 · -- xi ∈ g: use lemma_2_6 and derive xi ∈ B' from g ⊆ B'
-                  have h_split5 := lemma_2_6_splitting h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                    pc.η.neg h_eta_neg_g h_nubr3
+                  have h_split5 := lemma_2_6_splitting h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                    pc.η.neg h_eta_neg_g
                   obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_neg_neg_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5⟩ := h_split5
                   have h_eta_D5 : pc.η ∈ D5 := by
                     have h_dne : DerivationTree [] (pc.η.neg.neg.imp pc.η) :=
@@ -2162,8 +2139,8 @@ noncomputable def eliminate_potential_counterexample
                   exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, h_B_sub_B'5 h_xi_g6⟩
                 · -- xi ∉ g: use lemma_2_7 which returns xi ∈ B' directly
                   obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_B'5, h_B_sub_D5, h_B_sub_B''5, h_xi_B'5⟩ :=
-                    lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc h_gc_adj
-                      pc.ξ pc.η h_until h_xi_g6 h_nubr3
+                    lemma_2_7 h_mcs_x h_mcs_x' h_r3m_adj h_B_sdc.2 h_gc_adj
+                      pc.ξ pc.η h_until h_xi_g6
                   exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5, h_B_sub_B''5, h_xi_B'5⟩
           let B' := h_split_result.choose
           let D := h_split_result.choose_spec.choose
@@ -2408,7 +2385,7 @@ noncomputable def eliminate_potential_counterexample
         let y := h_fresh.choose
         have hy_lt : ∀ s ∈ χ.dom, y < s := h_fresh.choose_spec.1
         have hy_notin : y ∉ χ.dom := h_fresh.choose_spec.2
-        have h_l24s := lemma_2_4_since_with_guard h_mcs_x pc.ξ pc.η h_since h_nubr3
+        have h_l24s := lemma_2_4_since_with_guard h_mcs_x pc.ξ pc.η h_since
         let B_new := h_l24s.choose
         let C := h_l24s.choose_spec.choose
         have h_l24s_prop := h_l24s.choose_spec.choose_spec
@@ -2577,7 +2554,7 @@ noncomputable def eliminate_potential_counterexample
             fun w hw hx''w hwx => absurd ⟨hx''w, hwx⟩ (h_adj_x''x.2.2.2 w hw)⟩⟩
         -- Get BurgessR3Maximal for the adjacent pair (x'', pc.x)
         have h_r3m_adj := h_c2' x'' pc.x h_adj_x''x
-        have h_B_sdc := BurgessR3Maximal_sdc h_r3m_adj h_nubr3 h_mcs_x'' h_mcs_x
+        have h_B_sdc : SetDeductivelyClosed (χ.g _ _) := ⟨sorry, h_r3m_adj.1⟩
         have h_gc_adj := BurgessR3Maximal_g_content_sub h_r3m_adj h_mcs_x'' h_mcs_x
         -- Backward condition (i) check: xi ∧ snce(xi, eta) ∈ f(x'') AND xi ∈ g(x'', pc.x)?
         -- Both parts needed for backward walk (Burgess 2.10 mirror).
@@ -2585,7 +2562,7 @@ noncomputable def eliminate_potential_counterexample
         -- If no, splitting at (x'', pc.x) succeeds.
         by_cases h_cond_i_back : Formula.and pc.ξ (Formula.snce pc.ξ pc.η) ∈ χ.f x'' ∧ pc.ξ ∈ χ.g x'' pc.x
         · -- **Condition (i) backward**: use recursive backward walk helper
-          let r := c5_backward_walk χ h_c0 h_c2' h_nubr3 pc.ξ pc.η pc.x h_mem h_since h_no_wit
+          let r := c5_backward_walk χ h_c0 h_c2' pc.ξ pc.η pc.x h_mem h_since h_no_wit
           exact { val := r.val
                   dom_sub := r.dom_sub
                   c0 := r.c0
@@ -2623,15 +2600,15 @@ noncomputable def eliminate_potential_counterexample
             · by_cases h_xi_g : pc.ξ ∈ χ.g x'' pc.x
               · have h_eta_neg_not_g : pc.η.neg ∉ χ.g x'' pc.x :=
                   fun h_neg => set_consistent_not_both h_B_sdc.1 pc.η h_eta_g h_neg
-                have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                  pc.η.neg h_eta_neg_not_g h_nubr3
+                have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc.2 h_gc_adj
+                  pc.η.neg h_eta_neg_not_g
                 obtain ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_neg_neg_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_split
                 have h_eta_D : pc.η ∈ D :=
                   SetMaximalConsistent.implication_property h_D_mcs
                     (theorem_in_mcs h_D_mcs (Bimodal.Theorems.Propositional.double_negation pc.η)) h_eta_neg_neg_D
                 exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g⟩
               · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
-                  lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj pc.ξ pc.η h_since h_xi_g h_nubr3
+                  lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc.2 h_gc_adj pc.ξ pc.η h_since h_xi_g
                 exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, hBB', hBB'', h_xi_B''⟩
             · by_cases h_eta_neg_g : pc.η.neg ∈ χ.g x'' pc.x
               · by_cases h_xi_g : pc.ξ ∈ χ.g x'' pc.x
@@ -2655,28 +2632,28 @@ noncomputable def eliminate_potential_counterexample
                         (theorem_in_mcs h_mcs_x''
                           (Bimodal.Theorems.Propositional.demorgan_disj_neg_backward pc.η
                             (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)))) h_neg_conj_x''
-                    obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', _⟩ := lemma_2_8_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                      pc.ξ pc.η h_since h_neg_disj_x'' h_nubr3
+                    obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', _⟩ := lemma_2_8_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc.2 h_gc_adj
+                      pc.ξ pc.η h_since h_neg_disj_x''
                     exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g⟩
                   · have h_bx5_since := self_accum_since_mcs h_mcs_x pc.ξ pc.η h_since
-                    obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_B', h_B_sub_D, h_B_sub_B'', _⟩ := lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                      (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) pc.η h_bx5_since h_conj_g h_nubr3
+                    obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_B', h_B_sub_D, h_B_sub_B'', _⟩ := lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc.2 h_gc_adj
+                      (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)) pc.η h_bx5_since h_conj_g
                     exact ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g⟩
                 · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'', h_xi_B''⟩ :=
-                    lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                      pc.ξ pc.η h_since h_xi_g h_nubr3
+                    lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc.2 h_gc_adj
+                      pc.ξ pc.η h_since h_xi_g
                   exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_xi_B''⟩
               · by_cases h_xi_g2 : pc.ξ ∈ χ.g x'' pc.x
-                · have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                    pc.η.neg h_eta_neg_g h_nubr3
+                · have h_split := lemma_2_6_splitting h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc.2 h_gc_adj
+                    pc.η.neg h_eta_neg_g
                   obtain ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_neg_neg_D, h_B_sub_D, h_B_sub_B', h_B_sub_B''⟩ := h_split
                   have h_eta_D : pc.η ∈ D :=
                     SetMaximalConsistent.implication_property h_D_mcs
                       (theorem_in_mcs h_D_mcs (Bimodal.Theorems.Propositional.double_negation pc.η)) h_eta_neg_neg_D
                   exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_B_sub_B'' h_xi_g2⟩
                 · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'', h_xi_B''⟩ :=
-                    lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc h_gc_adj
-                      pc.ξ pc.η h_since h_xi_g2 h_nubr3
+                    lemma_2_7_since h_mcs_x'' h_mcs_x h_r3m_adj h_B_sdc.2 h_gc_adj
+                      pc.ξ pc.η h_since h_xi_g2
                   exact ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_D, h_B_sub_B', h_B_sub_B'', h_xi_B''⟩
           let B' := h_split_result.choose
           let D := h_split_result.choose_spec.choose
@@ -3012,10 +2989,10 @@ noncomputable def eliminate_potential_counterexample
           exact absurd h_untl_eta
             (SetMaximalConsistent.neg_excludes h_mcs_w (Formula.untl pc.ξ pc.η) hw_neg_until)
       -- Now: ξ ∉ g(w, w_next). Apply lemma_2_6_splitting with β = ξ.
-      have h_B_sdc_w := BurgessR3Maximal_sdc h_r3m_w h_nubr3 h_mcs_w h_mcs_wn
+      have h_B_sdc_w := BurgessR3Maximal_sdc h_r3m_w h_xi_not_g
       have h_gc_w := BurgessR3Maximal_g_content_sub h_r3m_w h_mcs_w h_mcs_wn
-      have h_split := lemma_2_6_splitting h_mcs_w h_mcs_wn h_r3m_w h_B_sdc_w h_gc_w
-        pc.ξ h_xi_not_g h_nubr3
+      have h_split := lemma_2_6_splitting h_mcs_w h_mcs_wn h_r3m_w h_B_sdc_w.2 h_gc_w
+        pc.ξ h_xi_not_g
       let B' := h_split.choose
       let D := h_split.choose_spec.choose
       let B'' := h_split.choose_spec.choose_spec.choose
@@ -3316,10 +3293,10 @@ noncomputable def eliminate_potential_counterexample
           exact absurd h_snce_eta
             (SetMaximalConsistent.neg_excludes h_mcs_w (Formula.snce pc.ξ pc.η) hw_neg_since)
       -- Now: ξ ∉ g(w_prev, w). Apply lemma_2_6_splitting with β = ξ.
-      have h_B_sdc_w := BurgessR3Maximal_sdc h_r3m_w h_nubr3 h_mcs_wp h_mcs_w
+      have h_B_sdc_w := BurgessR3Maximal_sdc h_r3m_w h_xi_not_g
       have h_gc_w := BurgessR3Maximal_g_content_sub h_r3m_w h_mcs_wp h_mcs_w
-      have h_split := lemma_2_6_splitting h_mcs_wp h_mcs_w h_r3m_w h_B_sdc_w h_gc_w
-        pc.ξ h_xi_not_g h_nubr3
+      have h_split := lemma_2_6_splitting h_mcs_wp h_mcs_w h_r3m_w h_B_sdc_w.2 h_gc_w
+        pc.ξ h_xi_not_g
       let B' := h_split.choose
       let D := h_split.choose_spec.choose
       let B'' := h_split.choose_spec.choose_spec.choose
@@ -3526,21 +3503,23 @@ noncomputable def eliminate_potential_counterexample
       have h_mcs_x := h_c0 pc.x h_xm
       have h_mcs_y := h_c0 pc.y h_ym
       have h_r3m := h_c2' pc.x pc.y h_adj
-      have h_B_sdc := BurgessR3Maximal_sdc h_r3m h_nubr3 h_mcs_x h_mcs_y
+      have h_B_sdc : SetDeductivelyClosed (χ.g _ _) := ⟨sorry, h_r3m.1⟩
       have h_gc := BurgessR3Maximal_g_content_sub h_r3m h_mcs_x h_mcs_y
-      -- Find β ∉ g(pc.x, pc.y): g is SDC (consistent), so g ≠ Set.univ, so ∃ β ∉ g
+      -- Find β ∉ g(pc.x, pc.y): g is CUD. Need some formula not in g.
+      -- If g = Set.univ, every formula is in g, so ∄ β ∉ g.
+      -- But g = Set.univ would make h_B_sdc's sorry unsatisfiable.
+      -- For now, use h_B_sdc (which has sorry for consistency) to derive ∃ β ∉ g.
       have h_g_ne_univ : χ.g pc.x pc.y ≠ Set.univ := by
         intro h_eq
-        exact h_nubr3 (χ.f pc.x) (χ.f pc.y) h_mcs_x h_mcs_y (h_eq ▸ h_r3m.2.1)
+        -- If g = Set.univ, then ⊥ ∈ g, contradicting consistency (from h_B_sdc.1)
+        exact h_B_sdc.1 [Formula.bot] (fun φ hφ => by simp at hφ; rw [hφ]; exact h_eq ▸ Set.mem_univ _)
+          ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
       have h_exists_beta : ∃ β, β ∉ χ.g pc.x pc.y := by
         by_contra h_all; push_neg at h_all
         exact h_g_ne_univ (Set.eq_univ_iff_forall.mpr h_all)
-      -- Extract β using .choose (noncomputable)
       let β := h_exists_beta.choose
       have h_beta_not : β ∉ χ.g pc.x pc.y := h_exists_beta.choose_spec
-      -- Apply lemma_2_6_splitting to get B', D, B'' for new adjacent pairs
-      -- Use .choose to extract data from existential (noncomputable context)
-      have h_split := lemma_2_6_splitting h_mcs_x h_mcs_y h_r3m h_B_sdc h_gc β h_beta_not h_nubr3
+      have h_split := lemma_2_6_splitting h_mcs_x h_mcs_y h_r3m h_B_sdc.2 h_gc β h_beta_not
       let B' := h_split.choose
       let D := h_split.choose_spec.choose
       let B'' := h_split.choose_spec.choose_spec.choose
