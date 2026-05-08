@@ -73,9 +73,10 @@ technical_debt:
 
 ### 117. Remove Cantor isomorphism and build countermodel on limit domain
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: 107
+- **Research**: [specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/01_team-research.md]
 
 **Description**: Remove Cantor isomorphism from ChronicleToCountermodel.lean and build the countermodel directly on `LimitDomSubtype` instead of mapping to ℚ. Eliminates the `DenselyOrdered` requirement (implementation artifact, not needed by Burgess 1982). Closes the last sorry in the Chronicle module (`SetConsistent g` in density case at CE:3570). The truth lemma works on any linear order — gaps with `g = Set.univ` are handled vacuously.
 
