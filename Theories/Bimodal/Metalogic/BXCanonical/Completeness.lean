@@ -184,23 +184,32 @@ The `sorryAx` dependency now traces through `dd_countermodel_chronicle` →
 Burgess chronicle construction with a Cantor isomorphism to embed all
 rationals into the limit domain.
 
-**Active sorry sites** (11 total, on critical path):
-- 7 c2' sorry sites in CounterexampleElimination.lean (c2' g-construction for
-  C4/C4'/C5/C5'/density elimination cases)
-- 2 c4 hard case sorry sites in CounterexampleElimination.lean (nested bridging,
-  requires restructuring to induction + BX6 per Burgess Lemma 2.9)
-- 2 FUC sorry sites in ChronicleToCountermodel.lean (forward Until/Since
-  coherence guard at intermediate points, requires C5 with guard via C3 + limit_g)
+**Active sorry sites** (1 total, on critical path):
+- 1 density g-value consistency in CounterexampleElimination.lean:3570 — the
+  density elimination needs `SetConsistent (χ.g pc.x pc.y)` to find β ∉ g for
+  `lemma_2_6_splitting`. This traces to the Cantor isomorphism requiring
+  `DenselyOrdered` on the limit domain (an implementation choice — Burgess 1982
+  doesn't need density). Task 117 will remove the Cantor iso and build the model
+  directly on the limit domain, eliminating this sorry.
+
+**Closed sorry sites** (task 107, Phases 1-7):
+- 7 c2' sorry sites (closed via guard threading + walk restructuring)
+- 2 c4 hard case sorry sites (closed via BX6 absorption, Burgess 2.9)
+- 2 FUC sorry sites (closed via adj_g_mem_limit_f + witness_not_old)
+- NoUnivBurgessR3 hypothesis (deleted — unprovable in J₀, replaced by CUD g-values)
 
 **Dead code** (no longer on critical path):
 - All sorry sites in RootScopedChain.lean (bx_bfmcs_restricted_tc/buc/fuc)
 - Dead code sorries in CanonicalModel.lean (enriched_seed_consistent, etc.)
-- chronicle_fmcs, chronicle_bfmcs and their coherence theorems (DELETED, task 107)
 
 ### Target State
 
-After all phases complete, `#print axioms bx_completeness` should show:
+After task 117 (remove Cantor iso), `#print axioms bx_completeness` should show:
 `{propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound}`
+
+Current state (task 107 complete):
+`{propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound}`
+`sorryAx` traces to: CE:3570 → limit_dom_dense → DenselyOrdered → cantor_iso → dd_countermodel_chronicle
 
 (The `Lean.ofReduceBool` and `Lean.trustCompiler` remain from `native_decide` in the Syntax layer
 and are not removable without changing the decidability infrastructure.)
