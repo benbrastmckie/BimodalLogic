@@ -274,23 +274,17 @@ Phases within the same wave can execute in parallel.
 **Paper reference**: Burgess 2.11 (truth lemma, p.375). The full C5a with guard: `U(ξ,η) ∈ limit_f(x) → ∃ y, η ∈ limit_f(y) ∧ ξ ∈ limit_g(x,y)`.
 
 **Tasks**:
-- [x] **Task 6.1**: Strengthen `omega_chain_c5_witness` return type (CC:392-399) to include `∧ ∀ a b, Adjacent (omega_chain_val ...).dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ (omega_chain_val ...).g a b`. This follows directly from the strengthened `EliminationResult.c5_forward_witness`. **DONE**: `omega_chain_c5_witness` now returns `⟨y, hy_dom, hxy, hy_η, h_adj_guard, h_dom_guard⟩` with adjacent-pair guard and domain guard.
-- [x] **Task 6.2**: Strengthen `omega_chain_c5'_witness` (CC:418-438) similarly for Since. **DONE**: `omega_chain_c5'_witness` mirrored with `h_adj_guard` and `h_dom_guard`.
-- [x] **Task 6.3**: Prove `limit_satisfies_c5_strong` guard step (CC:1445 → now CC:1598). The proof:
-  1. From strengthened `omega_chain_c5_witness`, obtain `∀ a b, Adjacent dom_{n+1} a b → pc.x ≤ a → b ≤ y → ξ ∈ g_{n+1}(a,b)` where y is the C5 witness at stage n+1.
-  2. For any w ∈ limit_dom with x < w < y: w was inserted at some stage m ≥ n+1. At stage m, w sits between some adjacent pair (a,b) at stage n+1 with x ≤ a and b ≤ y.
-  3. Apply `adj_g_mem_limit_f` (CC:1406): `ξ ∈ g_{n+1}(a,b)` → `ξ ∈ limit_f(w)`.
-  **PARTIAL**: Main proof structure complete. **SORRY** remains at line 1598 in the sub-case where `y ∈ dom_n` and `w ∈ dom_{n+1} \ dom_n`. This sub-case requires a new lemma `omega_chain_no_new_when_witness_old` (see Phase 6 notes below).
-- [ ] **Task 6.4**: Close `limit_satisfies_c5'_strong` guard sorry (CC:1457 → now CC:1633). Mirror of Task 6.3 for Since. **PENDING**: Blocked on same `omega_chain_no_new_when_witness_old` lemma as Task 6.3.
-- [ ] **Task 6.5**: Run `lake build` and `grep -rn "sorry" Chronicle/` to verify 0 sorry sites on critical path. **PENDING**: Currently 2 sorries remain.
+- [x] **Task 6.1**: Strengthen `omega_chain_c5_witness` return type to include adjacent-pair guard and domain guard. **DONE**: returns `⟨y, hy_dom, hxy, hy_η, h_adj_guard, h_dom_guard, h_new_or_id⟩`.
+- [x] **Task 6.2**: Strengthen `omega_chain_c5'_witness` similarly for Since. **DONE**: mirrored with same 7-tuple.
+- [x] **Task 6.3**: Add `witness_not_old : witness ∉ χ.dom` to `C5ForwardWalkResult` (CE). Proved in all 3 walk cases: base (hy_notin), recursive (r.witness_not_old), split (hz_notin). **DONE**.
+- [x] **Task 6.4**: Add `witness_not_old` to `C5BackwardWalkResult` (mirror). **DONE**.
+- [x] **Task 6.5**: Strengthen `EliminationResult.c5_forward_witness` and `c5_backward_witness` return types with 7th conjunct `(y ∉ χ.dom ∨ ∀ u ∈ val.dom, u ∈ χ.dom)`. Updated all 8 real construction sites + absurd cases. **DONE**.
+- [x] **Task 6.6**: Propagate disjunct through `omega_chain_c5_witness` and `omega_chain_c5'_witness` (CC). **DONE**.
+- [x] **Task 6.7**: Close sorry at `limit_satisfies_c5_strong` (CC:1598) via contradiction: `y ∈ dom_n` contradicts left disjunct (`y ∉ χ.dom`), `w ∈ dom_{n+1}` with `w ∉ dom_n` contradicts right disjunct (`∀ u ∈ dom_{n+1}, u ∈ dom_n`). **DONE**.
+- [x] **Task 6.8**: Close sorry at `limit_satisfies_c5'_strong` (CC:1633) — mirror. **DONE**.
+- [x] **Task 6.9**: Run `lake build` and verify 0 sorry sites in Chronicle/. **DONE**: build passes, 0 sorries.
 
-**Blocker / New Work Identified**:
-The sorry at CC:1598 (and its mirror at 1633) occurs in the sub-case `y ∈ dom_n ∧ w ∈ dom_{n+1} \ dom_n`. The reasoning is:
-- If `y ∈ dom_n`, then the C5 counterexample was already resolved at stage n, so the elimination at stage n should be identity (no new points added).
-- Therefore `dom_{n+1} = dom_n`, contradicting `w ∈ dom_{n+1} \ dom_n`.
-- **Missing lemma needed**: `omega_chain_no_new_when_witness_old` (or similar), stating that when the witness y is already in `dom_n`, `omega_chain_val (n+1)` adds no new points.
-
-**Timing**: 2-3 hours (Task 6.1–6.2 done; Tasks 6.3–6.5 blocked)
+**Timing**: ~4 hours
 
 **Depends on**: 4, 5
 
