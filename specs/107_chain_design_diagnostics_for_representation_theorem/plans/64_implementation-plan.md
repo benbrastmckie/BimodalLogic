@@ -2,7 +2,7 @@
 
 - **Task**: 107 - chain_design_diagnostics_for_representation_theorem
 - **Status**: [IN PROGRESS]
-- **Effort**: 35-50 hours (Phases 1–5 completed; ~28h spent; Phase 6 blocked; 6 phases remaining)
+- **Effort**: 35-50 hours (Phases 1–6 completed; ~32h spent; Phase 7 in progress; 5 phases remaining)
 - **Dependencies**: None (all prerequisite infrastructure exists; Phases 1-2 of prior plan v63 completed)
 - **Research Inputs**: reports/64_team-research.md, handoffs/64_phase1-4-handoff.md
 - **Artifacts**: plans/64_implementation-plan.md (this file)
@@ -12,7 +12,7 @@
 
 ## Overview
 
-Close the 2 remaining sorry sites in ChronicleConstruction.lean (lines 1598, 1633) and prove NoUnivBurgessR3 to deliver a fully unconditional, sorry-free `bx_completeness` theorem. The sorries require proving `ξ ∈ limit_f(w)` for intermediate w between x and y at the limit. The closure chain is: (a) prove a guard conjunction theorem from BX7, (b) strengthen `lemma_2_7`/`2_8` in PointInsertion.lean to return `xi ∈ B'` via DC(B∪{xi}) Zorn seed, (c) strengthen `EliminationResult.c5_forward_witness` to return an **adjacent-pair guard condition** (`∀ a b, Adjacent val.dom a b → pc.x ≤ a → b ≤ y → pc.ξ ∈ val.g a b`), (d) restructure Walk A (pc.x < max_old) to split at (pc.x, x') instead of walking, remove Walk B eta-shortcut entirely, (e) mirror for Since, (f) strengthen `omega_chain_c5_witness` and close the 2 sorries using `adj_g_mem_limit_f`. After sorry closure, prove `NoUnivBurgessR3` and migrate untl/snce convention. Definition of done: `#print axioms bx_completeness` shows no `sorryAx`; `lake build` succeeds; convention matches Burgess 1982.
+Close the 2 remaining sorry sites in ChronicleConstruction.lean and make `bx_completeness` unconditional, then migrate conventions to match Burgess 1982. Phases 1-5 established guard conjunction, lemma strengthening, adjacent-pair guard threading, and walk restructuring. Phase 6 closed both sorries by adding `witness_not_old` tracking to prove the `y ∈ dom_n ∧ w ∈ dom_{n+1} \ dom_n` case is impossible. Phase 7 (revised): `NoUnivBurgessR3` was found to be **unprovable** in J₀ — `burgessR3(A, Set.univ, C)` is satisfiable in discrete orders. The fix is to revert `BurgessR3Maximal` to SDC-maximality (matching Burgess 1982's actual construction), removing the false `NoUnivBurgessR3` hypothesis from all ~733 references. This makes `bx_completeness` unconditional by deleting the hypothesis rather than proving it. Definition of done: `#print axioms bx_completeness` shows no `sorryAx`; `lake build` succeeds; convention matches Burgess 1982.
 
 ### Progress Summary
 
@@ -24,11 +24,15 @@ Close the 2 remaining sorry sites in ChronicleConstruction.lean (lines 1598, 163
 | 4 | ✅ COMPLETED | Walk A restructured (split instead of walk), Walk B eta-shortcut removed |
 | 5 | ✅ COMPLETED | All C5 backward cases compile; `CounterexampleElimination.lean` has 0 sorries |
 | 6 | ✅ COMPLETED | `witness_not_old` added to walk results, disjunct `(y ∉ χ.dom ∨ ∀ u ∈ val.dom, u ∈ χ.dom)` threaded through EliminationResult/omega_chain; both sorries closed via contradiction |
-| 7 | ⏳ NOT STARTED | Prove `NoUnivBurgessR3` |
+| 7 | ⏳ IN PROGRESS | Revert `BurgessR3Maximal` to SDC-maximality; remove `NoUnivBurgessR3` (~733 refs, 7 files) |
 | 8 | ⏳ NOT STARTED | Final sorry-free validation |
-| 9 | ⏳ NOT STARTED | Convention migration |
+| 9 | ⏳ NOT STARTED | Convention migration (untl/snce argument swap) |
 | 10 | ⏳ NOT STARTED | ROADMAP/documentation cleanup |
 | 11 | ⏳ NOT STARTED | Final integration and summary |
+
+### Revision Notes (v3 — Phase 7 redesign)
+
+**Why revised**: Research found `NoUnivBurgessR3` is **unprovable** in J₀. Under open-guard semantics, `untl(⊥, γ)` is satisfiable in discrete orders (empty open interval between adjacent points), so `burgessR3(A, Set.univ, C)` is consistent. The CUD-maximality design (using `ClosedUnderDerivation` in `BurgessR3Maximal`'s maximality clause) was stronger than Burgess 1982's actual construction, requiring the false `NoUnivBurgessR3` as compensation. The fix is to revert to SDC-maximality (`SetDeductivelyClosed` in the maximality clause), matching Burgess exactly. This eliminates the hypothesis entirely — `bx_completeness` becomes unconditional by removing the parameter rather than proving it.
 
 ### Revision Notes (v2)
 
@@ -54,7 +58,7 @@ Plan v63 Phases 1-2 completed: `lemma_2_4_with_guard` created, `lemma_2_7` fixed
 - Remove Walk B eta-shortcut (always split at (u_max, u_next))
 - Mirror all changes for Since direction
 - Close the 2 sorry sites at ChronicleConstruction.lean:1598,1633
-- Prove `NoUnivBurgessR3` and make `bx_completeness` unconditional
+- Revert `BurgessR3Maximal` to SDC-maximality and remove false `NoUnivBurgessR3` hypothesis to make `bx_completeness` unconditional
 - Migrate untl/snce convention to match Burgess U(event, guard)
 - Update stale ROADMAP sorry documentation
 
@@ -73,6 +77,8 @@ Plan v63 Phases 1-2 completed: `lemma_2_4_with_guard` created, `lemma_2_7` fixed
 | Walk A restructuring (split instead of walk) may require significant code removal | Extends Phase 4 | High | The restructuring replaces ~150 lines of walk logic with ~80 lines of direct splitting. Net reduction in code. Condition (i) directly provides the splitting prerequisites. |
 | Walk B eta-shortcut removal breaks existing case structure | Extends Phase 4 | Medium | The shortcut is only ~20 lines. Removing it and falling through to splitting at (u_max, u_next) is straightforward given the strengthened lemma_2_7. |
 | EliminationResult type change cascades through 18+ sites | Extended effort | High | Non-C5 cases extend trivially via absurd. Only ~6 active C5 forward cases + mirrors need real guard proofs. Commit after each batch. |
+| SDC-maximality revert: `BurgessR3Maximal_extension_fails` needs inconsistent-DC case handling | Delays Phase 7 | Medium | When DC(B∪{δ}) is inconsistent, ⊢ β₀→¬δ for some β₀∈B, so the seed consistency proof simplifies (∼δ is redundant). Alternatively, add consistency precondition and fix ~5 callers. |
+| h_nubr3 removal touches ~733 references across 7 files | Extended effort | Low | Mechanical: search for `h_nubr3` parameter in signatures and call sites, delete. Build-error-driven iteration. |
 | Convention migration causes silent semantic corruption | Breaks correctness | Medium | Strategy B (full swap + rename) + `lake build` + manual audit of 10 axioms + 5 lemmas. Separate commit for clean revert. |
 
 ## Implementation Phases
@@ -298,28 +304,36 @@ The sorry at CC:1598 (and its mirror at 1633) occurs in the sub-case `y ∈ dom_
 
 ---
 
-### Phase 7: Prove NoUnivBurgessR3 [IN PROGRESS]
+### Phase 7: Revert BurgessR3Maximal to SDC-Maximality and Remove NoUnivBurgessR3 [IN PROGRESS]
 
-**Goal**: Prove `NoUnivBurgessR3` as a theorem and make `bx_completeness` unconditional.
+**Goal**: Make `bx_completeness` unconditional by reverting `BurgessR3Maximal` to SDC-maximality and removing the false `NoUnivBurgessR3` hypothesis from all signatures.
 
-**Paper reference**: `burgessR3 A Set.univ C` requires `Set.univ` to satisfy the r-relation conditions. But `Set.univ` is inconsistent (contains both φ and ¬φ). The burgessR3Maximal Zorn construction requires the interval set B to not be Set.univ. Direct proof: `burgessR3 A Set.univ C` → `Set.univ` is `ClosedUnderDerivation` (true) → `Set.univ` contains ⊥ (from ⊢ φ ∧ ¬φ → ⊥) → contradicts A being MCS (which requires `⊥ ∉ A`) via the r-relation `∀ γ ∈ C, untl(⊥, γ) ∈ A` and BX derivability of `untl(⊥, γ) → ⊥`.
+**Paper reference**: Burgess 1982's R(A, B, C) uses maximality over all DCSs (p.371). His construction tacitly assumes relevant extensions are consistent. The code's CUD-maximality was an over-strengthening that required `NoUnivBurgessR3` as compensation — but this hypothesis is false in J₀ (`burgessR3(A, Set.univ, C)` is satisfiable in discrete orders under open-guard semantics). SDC-maximality matches the actual mathematical content: the Zorn family consists of SDC sets, and the maximal element is SDC-maximal.
 
 **Tasks**:
-- [ ] **Task 7.1**: Prove `noUnivBurgessR3 : NoUnivBurgessR3` in ChronicleTypes.lean or a new file. ~50-100 lines.
-- [ ] **Task 7.2**: Modify `bx_completeness` (Completeness.lean:128) to use `noUnivBurgessR3` directly. ~5-10 lines.
-- [ ] **Task 7.3**: Update all callers of `bx_completeness`. ~5 lines.
-- [ ] **Task 7.4**: Run `#print axioms bx_completeness` and verify no `sorryAx`. Run `lake build`.
+- [ ] **Task 7.1**: Change `BurgessR3Maximal` definition (ChronicleTypes.lean:351-354): replace `ClosedUnderDerivation D` with `SetDeductivelyClosed D` in the maximality clause. Keep first conjunct `ClosedUnderDerivation B` unchanged.
+- [ ] **Task 7.2**: Delete `NoUnivBurgessR3` definition (ChronicleTypes.lean:366-368).
+- [ ] **Task 7.3**: Simplify Zorn construction `burgessR3Maximal_extension_exists` (RRelation.lean:~756-808): remove `h_no_univ` parameter and the inconsistent-D case at lines 805-808.
+- [ ] **Task 7.4**: Fix `BurgessR3Maximal_extension_fails` (PointInsertion.lean:642-655): add consistency precondition or handle inconsistent-DC case separately. When DC(B∪{δ}) is inconsistent, the seed consistency proof simplifies (∼δ follows from B).
+- [ ] **Task 7.5**: Remove `h_nubr3 : NoUnivBurgessR3` from all signatures across 7 files (~733 references). Mechanical search-and-replace.
+- [ ] **Task 7.6**: Remove `h_nubr3` from `bx_completeness` (Completeness.lean:128), making it unconditional.
+- [ ] **Task 7.7**: Run `lake build`, `grep -rn "NoUnivBurgessR3\|h_nubr3" Theories/`, `#print axioms bx_completeness`.
 
-**Timing**: 2-4 hours
+**Timing**: 4-8 hours
 
 **Depends on**: 6
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean` (or new file) -- NoUnivBurgessR3 proof
-- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- unconditional bx_completeness
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean` — definition change + deletion
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean` — Zorn construction simplification
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean` — extension_fails fix + h_nubr3 removal
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean` — h_nubr3 removal
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean` — h_nubr3 removal
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` — h_nubr3 removal
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` — unconditional bx_completeness
 
 **Verification**:
-- `NoUnivBurgessR3` proved without sorry
+- `NoUnivBurgessR3` no longer exists in codebase (only comments)
 - `bx_completeness` takes no hypothesis parameters beyond `φ : Formula`
 - `#print axioms bx_completeness` shows no `sorryAx`
 - `lake build` passes
@@ -464,7 +478,7 @@ The sorry at CC:1598 (and its mirror at 1633) occurs in the sub-case `y ∈ dom_
 
 - **Phase 4 (Walk A restructuring)**: High risk. If removing walk-to-max_old introduces unforeseen issues, fallback: keep the walk but add a guard-tracking invariant (`∀ walk steps, xi ∈ g(walk[i], walk[i+1])`). This is more complex but preserves the existing structure.
 
-- **Phase 7 (NoUnivBurgessR3)**: Independent of Phases 1-6. Can be deferred as a separate task if the proof is harder than expected.
+- **Phase 7 (SDC-maximality revert)**: Mostly mechanical (removing ~733 h_nubr3 references). The mathematical change is in `BurgessR3Maximal_extension_fails` — if the inconsistent-DC case handling proves difficult, fall back to adding a consistency precondition and fixing callers individually.
 
 - **Phase 9 (convention migration)**: Separate commit for clean revert. Silent corruption is the main risk. The audit in Task 9.9 is critical.
 
