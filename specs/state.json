@@ -11,7 +11,7 @@
       "status": "researched",
       "task_type": "lean4",
       "priority": "high",
-      "description": "Remove Cantor iso and density case from base logic chronicle. Burgess 1982 produces discrete limit domain X for base logic; density only needed for dense variant F'T. Embed X ≅ Z (AddCommGroup), use existing parametric infrastructure with D = Z. Relocate Cantor iso to dense variant (task 68). Single semantics — no dual truth definitions.",
+      "description": "Replace Cantor iso (bijection, requires DenselyOrdered) with natural inclusion X ⊂ Q (injection, requires nothing). Archive density case + Cantor pathway to Boneyard/DenseChronicle/. Extend limit_f to all of Q. D = Q as before. Eliminates last Chronicle sorry (CE:3570).",
       "dependencies": [
         107
       ],

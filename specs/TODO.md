@@ -78,7 +78,7 @@ technical_debt:
 - **Dependencies**: 107
 - **Research**: [specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/01_team-research.md]
 
-**Description**: Remove Cantor isomorphism and density counterexample elimination from the base logic chronicle. Burgess 1982 produces a discrete limit domain X for the base logic (no density axiom); density elimination is only needed for the dense variant (F'⊤). Embed X ≅ ℤ (countable discrete linear order without endpoints ≅ ℤ), which has `AddCommGroup`. Use the existing parametric infrastructure with D = ℤ. Relocate Cantor iso and `DenselyOrdered` to the dense variant (task 68). Eliminates the last sorry in the Chronicle module (`SetConsistent g` in density case at CE:3570 — sorry becomes dead code). Single semantics throughout: no dual truth definitions, no `bfmcs_truth_at`, no `SimpleFrame`.
+**Description**: Replace the Cantor isomorphism (bijection X ≅ ℚ, requires `DenselyOrdered`) with the natural inclusion X ⊂ ℚ (injection, requires nothing). The `.density` counterexample kind is the only code path needing `SetConsistent g` (the sorry at CE:3570); C4a/C5a use `lemma_2_8` which avoids it. Archive density case + Cantor iso pathway to `Boneyard/DenseChronicle/` for future dense variant reuse. Define `extended_f : Rat → Set Formula` extending `limit_f` from X to all of ℚ for non-domain rationals. Build FMCS/BFMCS on ℚ using `extended_f`. D = ℚ as before — existing parametric infrastructure unchanged. Nothing else changes: same TaskFrame, same truth_at, same valid.
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours

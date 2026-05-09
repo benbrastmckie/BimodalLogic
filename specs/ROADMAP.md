@@ -56,17 +56,20 @@ Chronicle sorries (task 107, updated 2026-05-08):
 | **Density g-value consistency** | 1 | `CE.lean:3570` | **OPEN** (task 117 — remove Cantor iso, direct truth lemma, representation theorem) |
 | **Total Chronicle (critical path)** | **1** | 1 file | |
 
-Task 117 approach (researched 2026-05-08): The sorry is genuinely unprovable
-(Zorn operates on CUD, not SDC — g-values can be inconsistent). The Cantor
-isomorphism (`Order.iso_of_countable_dense`) requires `DenselyOrdered` on
-`LimitDomSubtype`, which requires the density case in CE, which requires the
-sorry. The density case is only needed for the dense variant (density axiom
-F'⊤) — Burgess's base construction produces a discrete limit domain. For the
-base logic: remove the density case from CE (sorry becomes dead code), remove
-the Cantor iso, embed the discrete limit domain X ≅ ℤ (which has AddCommGroup),
-and use the existing parametric infrastructure unchanged with D = ℤ. The
-Cantor iso and DenselyOrdered requirement are relocated to the dense variant
-where they belong. See "Representation Theorem Goal" for the full architecture.
+Task 117 approach (researched 2026-05-08, 3 rounds): The sorry is genuinely
+unprovable (Zorn operates on CUD, not SDC — g-values can be inconsistent).
+The dependency chain: `cantor_iso` requires `DenselyOrdered X` requires
+`limit_dom_dense` requires the density case in CE requires `SetConsistent g`
+(the sorry). The `.density` counterexample kind is the ONLY code path needing
+`SetConsistent g` — C4a/C5a explicitly use `lemma_2_8` which avoids it
+(documented at CE:1026, 1607, 2105, 2631).
+
+Fix: replace the Cantor isomorphism (bijection X ≅ ℚ, requires density)
+with the natural inclusion X ⊂ ℚ (injection, requires nothing). Archive the
+Cantor iso pathway and density case to `Boneyard/DenseChronicle/` for future
+reuse in the dense variant. Extend `limit_f` from X to all of ℚ for non-domain
+rationals. D = ℚ as before — existing parametric infrastructure unchanged.
+See "Representation Theorem Goal" for the full architecture.
 
 Closed by task 107 (Phases 1-9, 2026-04-25 to 2026-05-08):
 - Phase 6: 2 ChronicleConstruction.lean C5 sorries closed via `witness_not_old` tracking
@@ -1207,82 +1210,83 @@ X ⊂ Q as its limit domain. X is naturally sparse (not necessarily dense or
 discrete). The representation theorem embeds X into an appropriate D' and
 constructs a TaskFrame D' model preserving truth values.
 
-### Architecture: Single Semantics with Appropriate Embedding
+### Architecture: Natural Inclusion Replaces Cantor Isomorphism
 
 There is ONE semantics (`truth_at`), ONE validity definition (`valid`), and
-ONE TaskFrame/WorldHistory infrastructure. No dual validity, no `lo_valid`,
-no `bfmcs_truth_at`, no `SimpleFrame`, no parallel truth definitions.
+ONE TaskFrame/WorldHistory infrastructure — unchanged from the current code.
 
-The completeness proof proceeds in one pass:
+The chronicle construction (Burgess 1982) produces a limit domain X ⊂ ℚ.
+X is already a subset of ℚ by construction (midpoints at (x+y)/2, successors
+at x+1). The current code maps X into ℚ via a Cantor order-isomorphism
+(`Order.iso_of_countable_dense`), which requires proving `DenselyOrdered X`
+— the source of the sorry. The fix: replace the Cantor **isomorphism**
+(bijection, requires density) with the **natural inclusion** X ⊂ ℚ
+(injection, requires nothing). Extend `limit_f` from X to all of ℚ for
+non-domain rationals.
 
-1. The chronicle construction (Burgess 1982) produces a limit domain X ⊂ Q
-   with an FMCS/BFMCS defined on X.
-2. X is embedded order-preservingly into an appropriate AddCommGroup D':
-   - **Base logic** (no density/discreteness axioms): X is discrete (see below),
-     so embed X ≅ ℤ. D' = ℤ.
-   - **Dense variant** (density axiom F'⊤): density counterexample elimination
-     makes X dense, so embed X ≅ ℚ via Cantor's theorem. D' = ℚ.
-   - **Discrete variant** (discreteness axioms G'⊥ ∧ H'⊥): X is discrete,
-     so embed X ≅ ℤ. D' = ℤ with `SuccOrder`/`PredOrder`.
-3. The FMCS/BFMCS is extended from X to all of D' (via the embedding).
-4. The existing `ParametricCanonicalTaskFrame D'` and `ParametricRepresentation`
-   are used unchanged to build the TaskFrame model and prove the truth lemma.
-5. `dd_countermodel_chronicle` witnesses `¬valid φ` with D' and the TaskFrame.
+**What changes**: Only `ChronicleToCountermodel.lean` (the bridge from
+chronicle to countermodel). The Cantor iso pathway (~530 lines) is archived
+to `Boneyard/DenseChronicle/` and replaced by a direct extension of `limit_f`
+to all of ℚ (~200-300 new lines). The density case in
+`CounterexampleElimination.lean` is archived alongside it (the sorry becomes
+unreachable). Everything else — TaskFrame, WorldHistory, truth_at, valid,
+ParametricRepresentation, RestrictedParametricTruthLemma, Soundness — is
+untouched.
 
-### Burgess's Construction Produces a Discrete Order (Base Logic)
+**What stays the same**: D = ℚ (as before). The existing parametric
+infrastructure works unchanged. The FMCS/BFMCS are still over ℚ, with the
+same shifted/rooted pattern using ℚ arithmetic (t − s, etc.).
 
-Burgess 1982 (p. 372-373) defines chronicles as pairs (f, g) satisfying C0-C5,
-and builds an omega chain (f_n, g_n) by eliminating C4a and C5a counterexamples
-one at a time. Each elimination inserts a single point:
+### The Limit Domain X
 
-- **Lemma 2.9 (C4a)**: inserts z = (x+y)/2 between adjacent x, y
-- **Lemma 2.10 (C5a)**: inserts y = x+1 (or x+x'/2) after x
+Burgess 1982 (p. 372-373) builds X = ⋃ dom f_n by eliminating C4a and C5a
+counterexamples one at a time, inserting rational points. The `.density`
+counterexample kind in the formalization is a **separate** concern — it
+inserts midpoints between ALL adjacent pairs regardless of formula content,
+and is the ONLY code path requiring `SetConsistent g` (the sorry at CE:3570).
 
-At every finite stage, dom f_n is finite, hence discrete. In the limit,
-X = ⋃ dom f_n is countable. Crucially, **Burgess does NOT insert density
-points for the base logic** — density counterexample elimination is a
-separate concern that arises only when the density axiom F'⊤ is added
-(Section 1.6, p. 369). Without density elimination, adjacent pairs in X
-may persist, and X remains **discrete** (every point has an immediate
-successor and predecessor in X).
+Without the `.density` case, the limit domain X is a general countable linear
+order without endpoints. It may be discrete in some regions (where no C4a
+counterexamples arise) and dense in others (where cascading C4a insertions
+fill gaps). X is NOT guaranteed to be globally discrete or globally dense for
+the base logic — its order structure depends on formula content.
 
-A countable discrete linear order without endpoints is order-isomorphic to ℤ.
-Since ℤ has `AddCommGroup`, the embedding X ≅ ℤ gives the group structure
-needed by `TaskFrame` and `WorldHistory` without any Cantor isomorphism or
-density requirement.
+This does not matter for the approach: X ⊂ ℚ regardless, and the natural
+inclusion works for any countable sub-order of ℚ.
 
-**Only the dense variant** (adding the density axiom) requires density
-counterexample elimination, which makes X dense in the limit. In that case,
-X is a countable dense linear order without endpoints, order-isomorphic to ℚ
-by Cantor's theorem. The Cantor iso and `DenselyOrdered` requirement are
-legitimate for this variant — they are NOT needed for the base logic.
+### Variant Flexibility
+
+The same natural-inclusion approach works across all variants:
+
+- **Base logic**: X ⊂ ℚ (general countable linear order), natural inclusion,
+  extend `limit_f` to all of ℚ. D = ℚ.
+- **Dense variant** (axiom F'⊤): add density counterexample elimination,
+  X becomes globally dense. The Cantor iso X ≅ ℚ is now legitimate (and can
+  be used as an alternative to inclusion). D = ℚ. The archived density code
+  in `Boneyard/DenseChronicle/` is reactivated for this variant.
+- **Discrete variant** (axioms G'⊥ ∧ H'⊥): the discrete axioms ensure X is
+  globally discrete (X/Y operators require immediate successors). Then
+  X ≅ ℤ via Mathlib's `orderIsoIntOfLinearSuccPredArch`. D = ℤ. This is a
+  separate completeness theorem (`valid_discrete`) with its own construction.
 
 ### Why AddCommGroup Is Preserved (Not Weakened)
 
-Research (task 117, rounds 1-2) established that `AddCommGroup D` is
-**structurally load-bearing** in the TaskFrame semantics:
-
-- TaskFrame axioms literally use 0 (nullity_identity), + (forward_comp),
-  − (converse). These are unstatable without group structure.
-- WorldHistory.respects_task uses `t − s` for duration extraction.
-- MF (□φ → □Fφ) and TF (□φ → F□φ) soundness requires time_shift + ShiftClosed,
-  which require addition, subtraction, negation, and cancellation laws.
-- Only MF and TF (2 of 30+ axioms) need group structure for soundness;
-  all other axioms are purely order-theoretic.
-
-The `truth_at` definition itself uses **zero group operations** — only
-`LinearOrder D` — but the surrounding infrastructure (TaskFrame, WorldHistory,
-ShiftClosed) is deeply group-theoretic. We preserve this architecture
-entirely. The embedding X → D' (ℤ or ℚ) provides the group structure.
+`AddCommGroup D` is **structurally load-bearing** in the TaskFrame semantics.
+TaskFrame axioms use 0, +, −. WorldHistory.respects_task uses t − s. MF/TF
+soundness requires time_shift + ShiftClosed. Only MF and TF (2 of 30+
+axioms) need group structure for soundness; all other axioms are purely
+order-theoretic. The `truth_at` definition itself uses zero group operations
+— only `LinearOrder D`. We preserve this architecture entirely: D = ℚ
+provides the group structure via the natural inclusion.
 
 ### Design Constraints
 
 - The logic is NOT weakened: all axioms (including MF/TF) remain sound
-- The TaskFrame/WorldHistory definitions are NOT changed
-- The `valid` definition is NOT changed
+- TaskFrame, WorldHistory, truth_at, valid — all UNCHANGED
 - ONE semantics, ONE truth definition, ONE validity — no parallel layers
-- The representation theorem embeds the chronicle domain into an
-  appropriate AddCommGroup (ℤ for base/discrete, ℚ for dense)
+- No `bfmcs_truth_at`, no `SimpleFrame`, no `lo_valid`
+- Archive, don't delete: density code goes to `Boneyard/DenseChronicle/`
+  for future reuse in the dense variant
 
 **Only the algebraic/canonical model approach is pursued for completeness.**
 The representation theorem characterizes TM by showing that every consistent
@@ -1306,14 +1310,15 @@ characterization.
 
 ### Critical Path: Chronicle (primary completeness strategy)
 
-1. **Task 117** (NEXT): Remove Cantor iso and density case, embed discrete
-   limit domain into ℤ. Eliminates the last Chronicle sorry (CE:3570).
-   Three components:
-   - Remove density case from CounterexampleElimination (sorry becomes dead code)
-   - Remove Cantor iso + DenselyOrdered instance from ChronicleToCountermodel
-   - Embed discrete limit domain X ≅ ℤ (order iso), extend FMCS/BFMCS to ℤ,
-     use existing parametric infrastructure with D = ℤ
-   Density elimination and Cantor iso are relocated to the dense variant (task 68).
+1. **Task 117** (NEXT): Replace Cantor iso with natural inclusion X ⊂ ℚ.
+   Eliminates the last Chronicle sorry (CE:3570). Four steps:
+   - Archive `.density` case from CE + Cantor iso pathway from
+     ChronicleToCountermodel to `Boneyard/DenseChronicle/`
+   - Define `extended_f : Rat → Set Formula` extending `limit_f` from X to
+     all of ℚ (non-domain rationals via Lindenbaum extension of g_content)
+   - Build FMCS/BFMCS on ℚ using `extended_f` (same shifted/rooted pattern)
+   - Prove forward_G/backward_H and Until/Since coherence for extended_f
+   D = ℚ as before. Existing parametric infrastructure unchanged.
    This is the primary path to the representation theorem goal.
 2. **Task 116**: Redefine G, H, F, P in terms of U and S (Burgess 1982 alignment). After 117.
 3. **Task 112**: Systematic literature study supporting tasks 107/117 (Burgess 1982b, Venema 1993, etc.).
@@ -1360,7 +1365,7 @@ characterization.
 | 105 | [NOT STARTED] | Update stale sorry-blocker comments in BXCanonical | — |
 | 106 | [IMPLEMENTING] | Rewrite ROADMAP.md for irreflexive semantics | 93 |
 | 107 | **[COMPLETED]** | Burgess chronicle construction: Phases 1-9 complete, 1 sorry remains (density g-value consistency at CE:3570, task 117 will fix) | 113 |
-| 117 | **[RESEARCHED]** | Remove Cantor iso + density case, embed discrete limit domain into ℤ. Relocate density/Cantor to dense variant. Eliminates last Chronicle sorry. | 107 |
+| 117 | **[RESEARCHED]** | Replace Cantor iso with natural inclusion X ⊂ ℚ. Archive density case + Cantor pathway to Boneyard. Extend limit_f to all of ℚ. Eliminates last Chronicle sorry. | 107 |
 | 116 | [NOT STARTED] | Redefine G, H, F, P in terms of U and S following Burgess 1982 | 107 |
 | 115 | [RESEARCHED] | Remove A4a + simplify BX2 (post-107 cleanup, subsumed) | 107 |
 | 109 | [NOT STARTED] | Close 23 BXCanonical sorries (5 critical-path + 18 irreflexive-consequence) | 93 |
@@ -1371,4 +1376,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-05-08 (task 117 researched: remove Cantor iso + density case, embed discrete limit domain X ≅ ℤ. Single semantics — no dual validity, no bfmcs_truth_at, no SimpleFrame. Burgess base construction produces discrete X; density only needed for dense variant F'⊤. D' = ℤ for base/discrete, D' = ℚ for dense.)*
+*Last updated: 2026-05-08 (task 117 researched, 3 rounds: replace Cantor iso with natural inclusion X ⊂ ℚ. X may be discrete, dense, or mixed — doesn't matter, inclusion works regardless. Archive density case + Cantor pathway to Boneyard/DenseChronicle/. Extend limit_f to all of ℚ. D = ℚ as before. Single semantics, nothing else changes.)*
