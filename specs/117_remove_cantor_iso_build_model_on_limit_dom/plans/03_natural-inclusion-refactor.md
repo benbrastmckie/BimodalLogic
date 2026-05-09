@@ -65,78 +65,78 @@ Integrates findings from 3 rounds (12 teammates):
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Archive Density Code to Boneyard [NOT STARTED]
+### Phase 1: Archive Density Code to Boneyard [COMPLETED]
 
 **Goal**: Move all density-related code to Boneyard/DenseChronicle/ without changing active code.
 
 **Tasks**:
-- [ ] Create directory Theories/Bimodal/Boneyard/DenseChronicle/
-- [ ] Create DenseCounterexampleElimination.lean containing:
+- [x] Create directory Theories/Bimodal/Boneyard/DenseChronicle/
+- [x] Create DenseCounterexampleElimination.lean containing:
   - eliminate_density_counterexample helper (CE:520-561)
   - .density branch of eliminate_potential_counterexample (CE:3535-3783)
   - Copy of PotentialCounterexampleKind with .density and EliminationResult with density_witness
   - Header: "Archived from base logic; restore for dense variant (F'T axiom)"
-- [ ] Create DenseLimitDomain.lean containing:
+- [x] Create DenseLimitDomain.lean containing:
   - limit_dom_dense (ChronicleConstruction:746-776)
   - limitDomSubtype_denselyOrdered instance (ChronicleToCountermodel:96-106)
   - LimitAdjacent, no_adjacent_in_dense (ChronicleConstruction:975-987)
-- [ ] Create CantorIsoCountermodel.lean containing:
+- [x] Create CantorIsoCountermodel.lean containing:
   - cantor_iso through dd_countermodel_chronicle (ChronicleToCountermodel:174-709)
   - Old imports (Mathlib.Order.CountableDenseLinearOrder, Mathlib.Data.Rat.Encodable)
-- [ ] Add non-building header comment to each archived file
+- [x] Add non-building header comment to each archived file
 
 **Timing**: 1 hour
 **Depends on**: none
 
-### Phase 2: Remove Density from CounterexampleElimination.lean [NOT STARTED]
+### Phase 2: Remove Density from CounterexampleElimination.lean [COMPLETED]
 
 **Goal**: Remove .density variant, density_witness field, boilerplate discharges, and density branch.
 
 **Tasks**:
-- [ ] Remove `| density` from PotentialCounterexampleKind (CE:575)
-- [ ] Remove density_witness field from EliminationResult (CE:638-640)
-- [ ] Remove ~13 boilerplate `density_witness := fun h => ...` lines from C4/C5 branches
-- [ ] Remove eliminate_density_counterexample helper (CE:520-561)
-- [ ] Remove entire `.density =>` branch (CE:3535-3783, containing the sorry)
-- [ ] Run `lake build ...CounterexampleElimination` to verify
-- [ ] Fix exhaustiveness errors from enum change
+- [x] Remove `| density` from PotentialCounterexampleKind (CE:575)
+- [x] Remove density_witness field from EliminationResult (CE:638-640)
+- [x] Remove ~13 boilerplate `density_witness := fun h => ...` lines from C4/C5 branches (18 removed)
+- [x] Remove eliminate_density_counterexample helper (CE:520-561)
+- [x] Remove entire `.density =>` branch (CE:3535-3783, containing the sorry)
+- [x] Run `lake build ...CounterexampleElimination` to verify (build succeeds)
+- [x] Fix exhaustiveness errors from enum change (none: match is exhaustive without density)
 
 **Timing**: 1.5 hours
 **Depends on**: none
 
-### Phase 3: Remove Density Infrastructure from ChronicleConstruction.lean [NOT STARTED]
+### Phase 3: Remove Density Infrastructure from ChronicleConstruction.lean [COMPLETED]
 
 **Goal**: Remove limit_dom_dense and related definitions.
 
 **Tasks**:
-- [ ] Remove limit_dom_dense theorem (CC:746-776)
-- [ ] Remove LimitAdjacent definition (CC:975-976)
-- [ ] Remove no_adjacent_in_dense theorem (CC:982-987)
-- [ ] Remove "Limit Domain Density" section header (CC:724-734)
-- [ ] Clean up limit C2' section comments (CC:961-991)
-- [ ] Run `lake build ...ChronicleConstruction` to verify
+- [x] Remove limit_dom_dense theorem (CC:746-776)
+- [x] Remove LimitAdjacent definition (CC:975-976)
+- [x] Remove no_adjacent_in_dense theorem (CC:982-987)
+- [x] Remove "Limit Domain Density" section header (CC:724-734)
+- [x] Clean up limit C2' section comments (CC:961-991)
+- [x] Run `lake build ...ChronicleConstruction` to verify
 
 **Timing**: 0.5 hours
 **Depends on**: 1, 2
 
-### Phase 4: Replace Cantor Iso with Natural Inclusion in ChronicleToCountermodel.lean [NOT STARTED]
+### Phase 4: Replace Cantor Iso with Natural Inclusion in ChronicleToCountermodel.lean [BLOCKED]
 
 **Goal**: Replace Cantor iso pathway (~540 lines) with natural inclusion via extended_f (~350 new lines).
 
 **Tasks**:
 
 *Imports and header*:
-- [ ] Remove import Mathlib.Order.CountableDenseLinearOrder
-- [ ] Remove import Mathlib.Data.Rat.Encodable
-- [ ] Update module docstring
+- [x] Remove import Mathlib.Order.CountableDenseLinearOrder
+- [x] Remove import Mathlib.Data.Rat.Encodable
+- [x] Update module docstring
 
 *Remove old code (lines 96-668)*:
-- [ ] Remove limitDomSubtype_denselyOrdered (96-106)
-- [ ] Remove cantor_iso, cantor_f, cantor_zero, cantor_f_at_zero, cantor_f_is_mcs (174-230)
-- [ ] Remove cantor_fmcs, shifted_cantor_fmcs, rooted_cantor_fmcs (231-320)
-- [ ] Remove box_stable_in_rooted_cantor_fmcs (321-368)
-- [ ] Remove cantor_bfmcs (369-420)
-- [ ] Remove cantor_bfmcs_restricted_tc/buc/fuc (421-668)
+- [x] Remove limitDomSubtype_denselyOrdered (96-106)
+- [x] Remove cantor_iso, cantor_f, cantor_zero, cantor_f_at_zero, cantor_f_is_mcs (174-230)
+- [x] Remove cantor_fmcs, shifted_cantor_fmcs, rooted_cantor_fmcs (231-320)
+- [x] Remove box_stable_in_rooted_cantor_fmcs (321-368)
+- [x] Remove cantor_bfmcs (369-420)
+- [x] Remove cantor_bfmcs_restricted_tc/buc/fuc (421-668)
 
 *Define extended_f (~80 lines)*:
 - [ ] Define interval_g_content for non-domain rationals

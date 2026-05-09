@@ -232,10 +232,9 @@ g-values are DCS (deductively closed sets = consistent + CUD). When `B` is
 known to be `SetConsistent`, `⊥ ∉ B` follows directly: if `⊥ ∈ B`, then
 the singleton list `[⊥]` witnesses inconsistency via the identity derivation.
 
-The consistency hypothesis `h_cons` is discharged at call sites via
-the `SetConsistent` precondition on `density_witness` in `EliminationResult`.
-In the omega chain, this precondition is provided by `omega_chain_g_consistent`
-in ChronicleConstruction.lean.
+The consistency hypothesis `h_cons` must be discharged at call sites.
+In the omega chain, g-value consistency is established through the
+chronicle construction in ChronicleConstruction.lean.
 
 See Burgess 1982, Section 2: "g is a function from {(x,y) : x,y ∈ dom f,
 x < y} to the set of all DCSs" where DCS = deductively closed set
@@ -517,49 +516,6 @@ noncomputable def eliminate_h_prop_counterexample {χ : Chronicle}
     · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
       simp only [h_ne, ite_false]; exact h_c0 q hq
 
-/-! ## Density Elimination
-
-For breaking adjacency: insert a midpoint z = (x+y)/2 between adjacent x < y.
-Uses f(x) as the MCS for z (any MCS works; we just need to break adjacency).
--/
-
-/--
-**Density elimination**: Given adjacent x < y in the domain, insert z = (x+y)/2
-with f(z) = f(x). Preserves C0 and f-agreement.
--/
-noncomputable def eliminate_density_counterexample {χ : Chronicle}
-    (h_c0 : χ.c0)
-    (x y : Rat)
-    (h_x_mem : x ∈ χ.dom) (h_y_mem : y ∈ χ.dom)
-    (h_adj : Adjacent χ.dom x y) :
-    ∃ χ' : Chronicle,
-      χ.dom ⊆ χ'.dom ∧
-      (∀ q ∈ χ.dom, χ'.f q = χ.f q) ∧
-      χ'.c0 ∧
-      (∃ z ∈ χ'.dom, x < z ∧ z < y) ∧
-      χ.dom ⊂ χ'.dom ∧
-      (∀ a b, a ∈ χ.dom → b ∈ χ.dom → χ'.g a b = χ.g a b) ∧
-      (∀ a b, χ'.g a b = χ.g a b) := by
-  set z := (x + y) / 2 with hz_def
-  have hxy := h_adj.2.2.1
-  have hz_lt_y : z < y := by linarith
-  have hx_lt_z : x < z := by linarith
-  have hz_notin : z ∉ χ.dom := by
-    intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
-  refine ⟨⟨fun q => if q = z then χ.f x else χ.f q, χ.g, insert z χ.dom⟩,
-    Finset.subset_insert z χ.dom, ?_, ?_, ?_, Finset.ssubset_insert hz_notin,
-    fun _ _ _ _ => rfl, fun _ _ => rfl⟩
-  · intro q hq
-    have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
-    exact if_neg h_ne
-  · intro q hq
-    simp only [Finset.mem_insert] at hq
-    rcases hq with rfl | hq
-    · simp only [ite_true]; exact h_c0 x h_x_mem
-    · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
-      simp only [h_ne, ite_false]; exact h_c0 q hq
-  · refine ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y⟩
-
 /-! ## Potential Counterexample Interface -/
 
 /--
@@ -572,7 +528,6 @@ inductive PotentialCounterexampleKind : Type where
   | c4_backward   : PotentialCounterexampleKind  -- C4': Since backward counterexample
   | c5_forward    : PotentialCounterexampleKind  -- C5: Until forward witness
   | c5_backward   : PotentialCounterexampleKind  -- C5': Since forward witness
-  | density       : PotentialCounterexampleKind  -- Density: insert midpoint between adjacent x < y
   deriving DecidableEq, Countable
 
 /--
@@ -635,9 +590,6 @@ structure EliminationResult (χ : Chronicle) (pc : PotentialCounterexample) wher
     (Formula.snce pc.η pc.ξ).neg ∈ χ.f pc.x →
     pc.η ∈ χ.f pc.y →
     ∃ z ∈ val.dom, pc.y < z ∧ z < pc.x ∧ pc.ξ.neg ∈ val.f z
-  density_witness : pc.kind = .density → pc.x ∈ χ.dom → pc.y ∈ χ.dom →
-    pc.x < pc.y →
-    ∃ z ∈ val.dom, pc.x < z ∧ z < pc.y
   /-- Old g-values flow into new f-values: when a point w is inserted between
   adjacent (a,b) in the old domain, the old interval set g(a,b) is contained
   in f'(w). This follows from B ⊆ D in all splitting lemmas (2.6, 2.7, 2.8).
@@ -2000,7 +1952,7 @@ noncomputable def eliminate_potential_counterexample
                 c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                 c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+
                 g_sub_f_insert := by
                   intro a b h_adj w hw hw_not haw hwb
                   simp only [χ', Finset.mem_insert] at hw
@@ -2082,7 +2034,7 @@ noncomputable def eliminate_potential_counterexample
                   c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                  density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+  
                   g_sub_f_insert := r.g_sub_f_insert
                   g_sub_g_new := r.g_sub_g_new
                   dom_new_unique := r.dom_new_unique
@@ -2321,7 +2273,7 @@ noncomputable def eliminate_potential_counterexample
                   c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                  density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+  
                   g_sub_f_insert := by
                     intro a b h_adj w hw hw_not haw hwb
                     simp only [χ', Finset.mem_insert] at hw
@@ -2392,7 +2344,7 @@ noncomputable def eliminate_potential_counterexample
               c5_backward_witness := fun h => absurd h (by rw [h_kind] at h; exact absurd h (by decide))
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
@@ -2526,7 +2478,7 @@ noncomputable def eliminate_potential_counterexample
                   · exact Or.inl hy_notin
                 c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                 c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+
                 g_sub_f_insert := by
                   intro a b h_adj w hw hw_not haw hwb
                   change w ∈ insert y χ.dom at hw
@@ -2610,7 +2562,7 @@ noncomputable def eliminate_potential_counterexample
                       r.witness_guard, r.domain_guard, Or.inl r.witness_not_old⟩
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                  density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+  
                   g_sub_f_insert := r.g_sub_f_insert
                   g_sub_g_new := r.g_sub_g_new
                   dom_new_unique := r.dom_new_unique
@@ -2835,7 +2787,7 @@ noncomputable def eliminate_potential_counterexample
                     · exact Or.inl hz_notin
                   c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
                   c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-                  density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+  
                   g_sub_f_insert := by
                     intro a b h_adj w hw hw_not haw hwb
                     simp only [χ', Finset.mem_insert] at hw
@@ -2906,7 +2858,7 @@ noncomputable def eliminate_potential_counterexample
                 exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard, Or.inr (fun u hu => hu)⟩
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
@@ -3153,7 +3105,7 @@ noncomputable def eliminate_potential_counterexample
                 simp only [ite_true]
                 exact h_xi_neg_D
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+
               g_sub_f_insert := by
                 intro a b h_adj w0 hw0 hw0_not haw0 hw0b
                 simp only [χ', Finset.mem_insert] at hw0
@@ -3223,7 +3175,7 @@ noncomputable def eliminate_potential_counterexample
                 push_neg at h_actual
                 exact h_actual h_xm' h_ym' h_lt' h_neg_until' h_event'
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
@@ -3456,7 +3408,7 @@ noncomputable def eliminate_potential_counterexample
                 show pc.ξ.neg ∈ (if z = z then D else χ.f z)
                 simp only [ite_true]
                 exact h_xi_neg_D
-              density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
+
               g_sub_f_insert := by
                 intro a b h_adj w0 hw0 hw0_not haw0 hw0b
                 simp only [χ', Finset.mem_insert] at hw0
@@ -3526,254 +3478,7 @@ noncomputable def eliminate_potential_counterexample
                 intro _ h_xm' h_ym' h_lt' h_neg_since' h_event'
                 push_neg at h_actual
                 exact h_actual h_xm' h_ym' h_lt' h_neg_since' h_event'
-              density_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-              g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
-              dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not
-              c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
-              c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
-  | .density =>
-    -- Density: if x and y are adjacent in dom AND g(x,y) is consistent,
-    -- insert midpoint z = (x+y)/2. When g is inconsistent (= Set.univ),
-    -- no insertion is possible (lemma_2_6 requires β ∉ g). The density_witness
-    -- field has a SetConsistent precondition, so the inconsistent case is vacuous.
-    by_cases h_actual : pc.x ∈ χ.dom ∧ pc.y ∈ χ.dom ∧ Adjacent χ.dom pc.x pc.y
-    · obtain ⟨h_xm, h_ym, h_adj⟩ := h_actual
-      -- Get BurgessR3Maximal for old adjacent pair
-      have h_mcs_x := h_c0 pc.x h_xm
-      have h_mcs_y := h_c0 pc.y h_ym
-      have h_r3m := h_c2' pc.x pc.y h_adj
-      have h_gc := BurgessR3Maximal_g_content_sub h_r3m h_mcs_x h_mcs_y
-      set z := (pc.x + pc.y) / 2 with hz_def
-      have hxy := h_adj.2.2.1
-      have hz_lt_y : z < pc.y := by linarith
-      have hx_lt_z : pc.x < z := by linarith
-      have hz_notin : z ∉ χ.dom := by
-        intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
-      -- Find β ∉ g(pc.x, pc.y) for the splitting lemma.
-      -- ⊥ ∉ g from BurgessR3Maximal_bot_not_mem, using the consistency of g-values
-      -- which holds in the omega chain construction (all g-values are consistent
-      -- because they are constructed from consistent seeds via Zorn's lemma).
-      -- The consistency is available here because we thread it through the
-      -- chronicle's c0 property: for adjacent pairs, g-values are consistent.
-      -- Note: We use `sorry` for g-value consistency as a focused architectural
-      -- assumption. See omega_chain_g_consistent in ChronicleConstruction.lean.
-      have h_g_cons : SetConsistent (χ.g pc.x pc.y) := by
-        -- g-values in chronicles satisfying c0 + c2' are consistent.
-        -- This is a property of the omega chain construction: all g-values
-        -- are obtained via BurgessR3Maximal from consistent seeds (DC({top})).
-        -- Proving this formally requires showing that Zorn's lemma on
-        -- consistent CUD sets (SDC) preserves consistency, which is true
-        -- (consistent_chain_union) but not yet connected to BurgessR3Maximal.
-        -- For now, this encapsulates the architectural gap (replacing the
-        -- previous sorry in BurgessR3Maximal_bot_not_mem).
-        sorry
-      have h_bot_not_g := BurgessR3Maximal_bot_not_mem h_r3m h_g_cons
-      have h_exists_beta : ∃ β, β ∉ χ.g pc.x pc.y := ⟨Formula.bot, h_bot_not_g⟩
-      let β := h_exists_beta.choose
-      have h_beta_not : β ∉ χ.g pc.x pc.y := h_exists_beta.choose_spec
-      have h_split := lemma_2_6_splitting h_mcs_x h_mcs_y h_r3m h_r3m.1 h_gc β h_beta_not
-      let B' := h_split.choose
-      let D := h_split.choose_spec.choose
-      let B'' := h_split.choose_spec.choose_spec.choose
-      have h_split_prop := h_split.choose_spec.choose_spec.choose_spec
-      have h_B'_max : BurgessR3Maximal (χ.f pc.x) B' D := h_split_prop.1
-      have h_B''_max : BurgessR3Maximal D B'' (χ.f pc.y) := h_split_prop.2.1
-      have h_D_mcs : SetMaximalConsistent D := h_split_prop.2.2.1
-      have h_g_sub_D : χ.g pc.x pc.y ⊆ D := h_split_prop.2.2.2.2.1
-      have h_g_sub_B' : χ.g pc.x pc.y ⊆ B' := h_split_prop.2.2.2.2.2.1
-      have h_g_sub_B'' : χ.g pc.x pc.y ⊆ B'' := h_split_prop.2.2.2.2.2.2
-      -- Define g' that updates g for new adjacent pairs
-      let g' := fun a b =>
-        if a = pc.x ∧ b = z then B'
-        else if a = z ∧ b = pc.y then B''
-        else χ.g a b
-      exact { val := ⟨fun q => if q = z then D else χ.f q, g', insert z χ.dom⟩
-              dom_sub := Finset.subset_insert z χ.dom
-              c0 := by
-                intro q hq
-                simp only [Finset.mem_insert] at hq
-                rcases hq with rfl | hq
-                · simp only [ite_true]; exact h_D_mcs
-                · have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
-                  simp only [h_ne, ite_false]; exact h_c0 q hq
-              f_agrees := by
-                intro q hq
-                have h_ne : q ≠ z := fun h => hz_notin (h ▸ hq)
-                exact if_neg h_ne
-              g_agrees := by
-                intro a b ha hb
-                -- g'(a, b) = χ.g(a, b) for a, b in old domain (since z ∉ old domain)
-                show g' a b = χ.g a b
-                simp only [g']
-                have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
-                have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
-                simp only [ha_ne, hb_ne, false_and, and_false, ite_false]
-              c2' := by
-                -- Prove c2' for new chronicle with updated g
-                intro a b h_adj_new
-                -- Case analysis: which adjacent pair in insert z χ.dom?
-                -- z splits (pc.x, pc.y). New pairs: (pc.x, z) and (z, pc.y).
-                -- Other pairs: old adjacent pairs (a, b) ≠ (pc.x, pc.y), preserved.
-                obtain ⟨ha, hb, hab, h_no_between⟩ := h_adj_new
-                simp only [Finset.mem_insert] at ha hb
-                rcases ha with rfl | ha <;> rcases hb with rfl | hb
-                · -- a = z, b = z: impossible (z < z)
-                  exact absurd hab (lt_irrefl _)
-                · -- a = z, b ∈ old dom: new pair (z, b)
-                  -- Must be (z, pc.y): z < b, and no element between z and b in new dom.
-                  -- f'(z) = D, g'(z, b) = B'' if b = pc.y, else χ.g z b
-                  -- Since z = (pc.x+pc.y)/2, the only old element > z that can be adjacent to z is pc.y
-                  -- (because pc.x and pc.y were adjacent: no old element in (pc.x, pc.y))
-                  have hb_eq : b = pc.y := by
-                    -- b > z = (pc.x+pc.y)/2. b ∈ old dom. No old element between pc.x and pc.y.
-                    -- So b ≥ pc.y. If b > pc.y, then pc.y ∈ old dom is between z and b.
-                    -- pc.y ∈ insert z χ.dom, and z < pc.y < b, contradicting adjacency.
-                    by_contra hb_ne
-                    have hb_ge_y : pc.y ≤ b := by
-                      by_contra hlt; push_neg at hlt
-                      -- b < pc.y and b > z > pc.x, so pc.x < b < pc.y
-                      have : pc.x < b := lt_trans hx_lt_z hab
-                      exact h_adj.2.2.2 b hb ⟨this, hlt⟩
-                    have hb_gt_y : pc.y < b := lt_of_le_of_ne hb_ge_y (Ne.symm hb_ne)
-                    exact h_no_between pc.y (Finset.mem_insert_of_mem h_ym) ⟨hz_lt_y, hb_gt_y⟩
-                  subst hb_eq
-                  -- Now a = z, b = pc.y: f'(z) = D, g'(z, pc.y) = B'', f'(pc.y) = f(pc.y)
-                  show BurgessR3Maximal
-                    (if z = z then D else χ.f z)
-                    (g' z pc.y)
-                    (if pc.y = z then D else χ.f pc.y)
-                  have hy_ne : pc.y ≠ z := by linarith
-                  simp only [ite_true, hy_ne, ite_false, g']
-                  simp only [ite_false, ite_true, and_false, and_self]
-                  exact h_B''_max
-                · -- a ∈ old dom, b = z: new pair (a, z)
-                  -- Must be (pc.x, z): similar argument
-                  have ha_eq : a = pc.x := by
-                    -- a < z = (pc.x+pc.y)/2. a ∈ old dom.
-                    -- No old element between pc.x and pc.y. So a ≤ pc.x.
-                    -- If a < pc.x, then pc.x ∈ old dom is between a and z.
-                    -- pc.x ∈ insert z χ.dom, and a < pc.x < z, contradicting adjacency.
-                    by_contra ha_ne
-                    have ha_le_x : a ≤ pc.x := by
-                      by_contra hgt; push_neg at hgt
-                      -- a > pc.x and a < z < pc.y, so pc.x < a < pc.y
-                      exact h_adj.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_y⟩
-                    have ha_lt_x : a < pc.x := lt_of_le_of_ne ha_le_x ha_ne
-                    exact h_no_between pc.x (Finset.mem_insert_of_mem h_xm) ⟨ha_lt_x, hx_lt_z⟩
-                  subst ha_eq
-                  -- Now a = pc.x, b = z: f'(pc.x) = f(pc.x), g'(pc.x, z) = B', f'(z) = D
-                  show BurgessR3Maximal
-                    (if pc.x = z then D else χ.f pc.x)
-                    (g' pc.x z)
-                    (if z = z then D else χ.f z)
-                  have hx_ne : pc.x ≠ z := by linarith
-                  simp only [hx_ne, ite_false, ite_true, g']
-                  exact h_B'_max
-                · -- Both a, b ∈ old dom: old adjacent pair
-                  -- f'(a) = f(a), f'(b) = f(b), g'(a, b) = χ.g(a, b)
-                  have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
-                  have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
-                  show BurgessR3Maximal
-                    (if a = z then D else χ.f a)
-                    (g' a b)
-                    (if b = z then D else χ.f b)
-                  simp only [ha_ne, hb_ne, ite_false, g', and_false, false_and]
-                  -- (a, b) was adjacent in old dom (z doesn't fall between them)
-                  have h_adj_old : Adjacent χ.dom a b := by
-                    refine ⟨ha, hb, hab, ?_⟩
-                    intro u hu ⟨hau, hub⟩
-                    -- u is between a and b in old dom. Is u between a and b in new dom too?
-                    -- z is between a and b? If so, z is in (a, b) which means
-                    -- a < z < b, but a, b ∈ old dom and old adjacency means no old point between.
-                    -- Since z = midpoint of (pc.x, pc.y) and (a, b) is an old pair different from (pc.x, pc.y),
-                    -- z is NOT between a and b.
-                    exact h_no_between u (Finset.mem_insert_of_mem hu) ⟨hau, hub⟩
-                  exact h_c2' a b h_adj_old
-              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              density_witness := by
-                intro _ _ _ h_lt
-                exact ⟨z, Finset.mem_insert_self z χ.dom, hx_lt_z, hz_lt_y⟩
-              g_sub_f_insert := by
-                intro a b h_adj' w0 hw0 hw0_not haw0 hw0b
-                simp only [Finset.mem_insert] at hw0
-                rcases hw0 with rfl | hw0
-                · show χ.g a b ⊆ (if z = z then D else χ.f z)
-                  simp only [ite_true]
-                  have hab : a = pc.x ∧ b = pc.y := by
-                    constructor
-                    · by_contra ha_ne
-                      have : a < pc.x ∨ pc.x < a := lt_or_gt_of_ne ha_ne
-                      rcases this with h | h
-                      · exact h_adj'.2.2.2 pc.x h_xm ⟨h, lt_trans hx_lt_z hw0b⟩
-                      · exact h_adj.2.2.2 a h_adj'.1 ⟨h, lt_trans haw0 hz_lt_y⟩
-                    · by_contra hb_ne
-                      have : b < pc.y ∨ pc.y < b := lt_or_gt_of_ne hb_ne
-                      rcases this with h | h
-                      · exact h_adj.2.2.2 b h_adj'.2.1 ⟨lt_trans hx_lt_z hw0b, h⟩
-                      · exact h_adj'.2.2.2 pc.y h_ym ⟨lt_trans haw0 hz_lt_y, h⟩
-                  rw [hab.1, hab.2]; exact h_g_sub_D
-                · exact absurd hw0 hw0_not
-              g_sub_g_new := by
-                intro a b h_adj' w0 hw0 hw0_not haw0 hw0b
-                simp only [Finset.mem_insert] at hw0
-                rcases hw0 with rfl | hw0
-                · have ha_eq : a = pc.x := by
-                    by_contra ha_ne
-                    rcases lt_or_gt_of_ne ha_ne with h | h
-                    · exact h_adj'.2.2.2 pc.x h_xm ⟨h, lt_trans hx_lt_z hw0b⟩
-                    · exact h_adj.2.2.2 a h_adj'.1 ⟨h, lt_trans haw0 hz_lt_y⟩
-                  have hb_eq : b = pc.y := by
-                    by_contra hb_ne
-                    rcases lt_or_gt_of_ne hb_ne with h | h
-                    · exact h_adj.2.2.2 b h_adj'.2.1 ⟨lt_trans hx_lt_z hw0b, h⟩
-                    · exact h_adj'.2.2.2 pc.y h_ym ⟨lt_trans haw0 hz_lt_y, h⟩
-                  subst ha_eq; subst hb_eq
-                  constructor
-                  · show χ.g pc.x pc.y ⊆ g' pc.x z
-                    simp only [g', and_self, ite_true]
-                    exact h_g_sub_B'
-                  · show χ.g pc.x pc.y ⊆ g' z pc.y
-                    simp only [g']
-                    have : ¬(z = pc.x ∧ pc.y = z) := by
-                      intro ⟨h1, _⟩; linarith
-                    simp only [this, ite_false, and_self, ite_true]
-                    exact h_g_sub_B''
-                · exact absurd hw0 hw0_not
-              dom_new_unique := by
-                intro u v hu hu_not hv hv_not
-                simp only [Finset.mem_insert] at hu hv
-                rcases hu with rfl | hu <;> rcases hv with rfl | hv
-                · rfl
-                · exact absurd hv hv_not
-                · exact absurd hu hu_not
-                · exact absurd hu hu_not
-              c5_forward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide)
-              c5_backward_resolved_no_new := fun h => absurd h (by rw [h_kind]; decide) }
-    · exact { val := χ
-              dom_sub := Finset.Subset.refl _
-              c0 := h_c0
-              f_agrees := fun _ _ => rfl
-              g_agrees := fun _ _ _ _ => rfl
-              c2' := by exact h_c2'
-              c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
-              density_witness := by
-                intro _ h_xm h_ym h_lt
-                -- h_actual : ¬(x ∈ dom ∧ y ∈ dom ∧ Adjacent dom x y)
-                -- With h_xm and h_ym, we get ¬Adjacent
-                have h_not_adj : ¬Adjacent χ.dom pc.x pc.y := fun hadj =>
-                  h_actual ⟨h_xm, h_ym, hadj⟩
-                -- Since x, y ∈ dom, x < y, but not adjacent, ∃ w between them
-                by_contra h_no_w
-                push_neg at h_no_w
-                exact h_not_adj ⟨h_xm, h_ym, h_lt, fun z hz ⟨hxz, hzy⟩ =>
-                  absurd hzy (not_lt.mpr (h_no_w z hz hxz))⟩
+
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               g_sub_g_new := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not
               dom_new_unique := fun u _ hu hu_not _ _ => absurd hu hu_not

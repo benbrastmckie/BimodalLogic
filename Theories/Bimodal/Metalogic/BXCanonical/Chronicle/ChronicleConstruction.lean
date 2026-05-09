@@ -721,60 +721,6 @@ theorem limit_P_resolution (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       (theorem_in_mcs h_mcs_x h_bx12') h_P
   exact limit_satisfies_c5'_weak A h_mcs x hx _ φ h_since
 
-/-! ## Limit Domain Density
-
-The limit domain is dense: between any two domain points there exists another.
-This follows from the density counterexample enumeration: for any adjacent pair
-(x, y) in dom_n, the density counterexample ⟨x, y, bot, bot, .density⟩ is
-eventually processed, inserting z = (x+y)/2.
-
-With the generalized C4 (all pairs x < y, not just adjacent), density ensures
-that C4 counterexamples are properly handled: at any finite stage the domain is
-finite, so counterexamples can be enumerated and eliminated.
--/
-
-/--
-The limit domain is dense: for any x < y in limit_dom, there exists z in
-limit_dom with x < z < y.
-
-Proof: x enters dom at stage n₀, y at stage m₀. At stage max(n₀, m₀), both
-are in the domain. The density counterexample ⟨x, y, bot, bot, .density⟩ is
-enumerated at some step n ≥ max(n₀, m₀). At step n+1, if x and y are adjacent
-in dom_n, z = (x+y)/2 is inserted. If not adjacent, some w already exists
-between them in dom_n ⊆ limit_dom.
--/
-theorem limit_dom_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (x y : Rat) (hx : x ∈ limit_dom A h_mcs) (hy : y ∈ limit_dom A h_mcs)
-    (hxy : x < y) :
-    ∃ z ∈ limit_dom A h_mcs, x < z ∧ z < y := by
-  obtain ⟨nx, hnx⟩ := hx
-  obtain ⟨ny, hny⟩ := hy
-  set n₀ := max nx ny with hn₀_def
-  have hx_n₀ : x ∈ (omega_chain_val A h_mcs n₀).dom :=
-    omega_chain_dom_mono_le A h_mcs (le_max_left nx ny) hnx
-  have hy_n₀ : y ∈ (omega_chain_val A h_mcs n₀).dom :=
-    omega_chain_dom_mono_le A h_mcs (le_max_right nx ny) hny
-  obtain ⟨n, hn_ge, hn_eq⟩ := counterexample_enum_surjective_above
-    ⟨x, y, Formula.bot, Formula.bot, .density⟩ n₀
-  have hx_n : x ∈ (omega_chain_val A h_mcs n).dom :=
-    omega_chain_dom_mono_le A h_mcs hn_ge hx_n₀
-  have hy_n : y ∈ (omega_chain_val A h_mcs n).dom :=
-    omega_chain_dom_mono_le A h_mcs hn_ge hy_n₀
-  have key := (omega_chain_elim_result A h_mcs n).density_witness
-    (show (counterexample_enum (Nat.unpair n).2).kind = .density by rw [hn_eq])
-    (show (counterexample_enum (Nat.unpair n).2).x ∈ (omega_chain_val A h_mcs n).dom
-      by rw [hn_eq]; exact hx_n)
-    (show (counterexample_enum (Nat.unpair n).2).y ∈ (omega_chain_val A h_mcs n).dom
-      by rw [hn_eq]; exact hy_n)
-    (show (counterexample_enum (Nat.unpair n).2).x < (counterexample_enum (Nat.unpair n).2).y
-      by rw [hn_eq]; exact hxy)
-  obtain ⟨z, hz_dom, hxz, hzy⟩ := key
-  have hz_dom' : z ∈ (omega_chain_val A h_mcs (n + 1)).dom := by
-    rw [omega_chain_dom_eq_elim]; exact hz_dom
-  exact ⟨z, ⟨n + 1, hz_dom'⟩,
-    by simp only [hn_eq] at hxz; exact hxz,
-    by simp only [hn_eq] at hzy; exact hzy⟩
-
 /-! ## C4 Satisfaction in the Limit
 
 The limit chronicle satisfies C4: for any x < y in limit_dom, if
@@ -957,39 +903,6 @@ theorem limit_c3_interval_subset_right (A : Set Formula) (h_mcs : SetMaximalCons
   intro φ hφ
   rw [h_eq] at hφ
   exact hφ.2
-
-/-! ## Limit C2' (Vacuously True)
-
-The limit domain is dense (limit_dom_dense), so there are no adjacent pairs.
-C2' requires BurgessR3Maximal for adjacent pairs only, hence it is vacuously
-true at the limit.
-
-Note: "Adjacent" is defined for Finset Rat (finite domain). The limit domain
-is a Set Rat. We define limit-level adjacency and show it is empty.
--/
-
-/--
-Adjacency for the limit domain (Set Rat version): x and y are adjacent in D
-if x < y, both are in D, and no z in D lies strictly between them.
--/
-def LimitAdjacent (D : Set Rat) (x y : Rat) : Prop :=
-  x ∈ D ∧ y ∈ D ∧ x < y ∧ ∀ z ∈ D, ¬(x < z ∧ z < y)
-
-/--
-There are no adjacent pairs in a dense set: if D is dense (between any two
-points there is another), then LimitAdjacent D x y is impossible.
--/
-theorem no_adjacent_in_dense {D : Set Rat}
-    (h_dense : ∀ x y : Rat, x ∈ D → y ∈ D → x < y → ∃ z ∈ D, x < z ∧ z < y)
-    (x y : Rat) : ¬LimitAdjacent D x y := by
-  intro ⟨hx, hy, hxy, h_no_between⟩
-  obtain ⟨z, hz, hxz, hzy⟩ := h_dense x y hx hy hxy
-  exact h_no_between z hz ⟨hxz, hzy⟩
-
--- NOTE: limit_c2'_vacuous and limit_g_is_mcs_vacuous have been deleted.
--- The limit domain is dense (no adjacent pairs), so C2' at the limit is
--- vacuously true. These were placeholder proofs that depended on empty g-values.
--- With direct g-construction in elimination functions, they are no longer needed.
 
 /-! ## g_content / h_content Duality
 
