@@ -141,13 +141,20 @@ theorem bx_completeness (φ : Formula) :
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   -- φ ∉ M (since ¬φ ∈ M and M is MCS)
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
-  -- Build canonical model and derive contradiction
-  -- Uses the chronicle-based countermodel (Burgess 1982), bypassing
-  -- the sorry-laden dd_countermodel from RootScopedChain.lean.
-  obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-    Chronicle.dd_countermodel_chronicle M hM_mcs φ h_neg_in
-  -- valid φ gives truth at every point, including the countermodel point
-  exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
+  -- Build canonical model and derive contradiction via case split on □(F'T) ∈ M.
+  -- Dense case (□(F'T) ∈ M): all box-equivalent MCS's have F'T, enabling
+  -- the Cantor iso countermodel on Rat via dd_countermodel_chronicle_dense.
+  -- Non-dense case (¬□(F'T) ∈ M): sorry (includes both discrete and mixed cases).
+  rcases SetMaximalConsistent.negation_complete hM_mcs
+    (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
+  · -- Dense case: □(F'T) ∈ M
+    obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+      Chronicle.dd_countermodel_chronicle_dense M hM_mcs φ h_neg_in h_box_dense
+    exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
+  · -- Non-dense case: ¬□(F'T) ∈ M (sorry — includes discrete + mixed modal classes)
+    obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+      Chronicle.dd_countermodel_chronicle_nondense_sorry M hM_mcs φ h_neg_in h_not_box_dense
+    exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
 /--
 BX Completeness (alternate form): valid → derivable.
@@ -217,6 +224,6 @@ and are not removable without changing the decidability infrastructure.)
 
 #print axioms Bimodal.Metalogic.BXCanonical.bx_completeness
 #print axioms Bimodal.Metalogic.BXCanonical.dd_countermodel
-#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle
+#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_dense
 
 end Bimodal.Metalogic.BXCanonical

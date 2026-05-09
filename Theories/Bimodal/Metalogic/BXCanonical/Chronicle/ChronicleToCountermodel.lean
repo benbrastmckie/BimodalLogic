@@ -165,10 +165,10 @@ parameter, making density conditional rather than unconditional.
 -/
 
 /-- Top formula: `⊥ → ⊥` (a tautology). -/
-private def top_formula : Formula := Formula.bot.imp Formula.bot
+def top_formula : Formula := Formula.bot.imp Formula.bot
 
 /-- `U(⊤, ⊥)` — "next top", true iff there is an immediate successor. -/
-private def next_top : Formula := Formula.untl top_formula Formula.bot
+def next_top : Formula := Formula.untl top_formula Formula.bot
 
 /--
 Density of `limit_dom` from the hypothesis that `F'⊤ = neg(U(⊤,⊥))` is in
@@ -284,6 +284,414 @@ noncomputable def cantor_fmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsist
       ((cantor_iso_dense A h_mcs h_dense).symm t).property
       ((cantor_iso_dense A h_mcs h_dense).symm t').property
       h_lt_dom φ h_H
+
+/-! ## Box Stability on the Limit Domain
+
+Box formulas are stable across all limit domain points: `Box φ ∈ limit_f(x) ↔ Box φ ∈ A`.
+This is the chronicle analog of `box_stable_in_int_chain` from CanonicalModel.lean.
+
+The proof uses S5 axioms:
+- Forward: `temp_future` (□φ → G(□φ)) for x > 0, `modal_4` + `box_to_past` for x < 0
+- Backward: contrapositive via `neg_box_to_box_neg_box` (S5 negative introspection)
+-/
+
+/--
+Box stability on `limit_f`: for any `x ∈ limit_dom`, `Box φ ∈ limit_f(x) ↔ Box φ ∈ A`.
+Since `limit_f(0) = A`, this says box formulas are uniform across the limit domain.
+-/
+theorem box_stable_in_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (φ : Formula) (x : Rat) (hx : x ∈ limit_dom A h_mcs) :
+    Formula.box φ ∈ limit_f A h_mcs x ↔ Formula.box φ ∈ A := by
+  constructor
+  · -- Backward: Box φ ∈ limit_f(x) → Box φ ∈ A
+    intro h_box_x
+    by_contra h_not_box_A
+    -- ¬(Box φ) ∈ A
+    have h_neg_box_A : (Formula.box φ).neg ∈ A := by
+      rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box φ) with h | h
+      · exact absurd h h_not_box_A
+      · exact h
+    -- Box(¬(Box φ)) ∈ A by S5 negative introspection
+    have h_box_neg : Formula.box (Formula.box φ).neg ∈ A :=
+      SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs (neg_box_to_box_neg_box φ)) h_neg_box_A
+    -- Propagate Box(¬(Box φ)) to limit_f(x)
+    have h_box_neg_x : (Formula.box φ).neg ∈ limit_f A h_mcs x := by
+      rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
+      · -- x > 0: use G propagation
+        have h_G := SetMaximalConsistent.implication_property h_mcs
+          (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_future (Formula.box φ).neg)))
+          h_box_neg
+        rw [← limit_f_zero A h_mcs] at h_G
+        have h_G' := limit_forward_G A h_mcs 0 x (zero_mem_limit_dom A h_mcs) hx h_pos
+          (Formula.box (Formula.box φ).neg) h_G
+        exact SetMaximalConsistent.implication_property (limit_c0 A h_mcs x hx)
+          (theorem_in_mcs (limit_c0 A h_mcs x hx)
+            (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg))) h_G'
+      · -- x = 0: limit_f(0) = A
+        rw [limit_f_zero]; exact h_neg_box_A
+      · -- x < 0: use H propagation
+        have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ A :=
+          SetMaximalConsistent.implication_property h_mcs
+            (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)))
+            h_box_neg
+        have h_H := SetMaximalConsistent.implication_property h_mcs
+          (theorem_in_mcs h_mcs (box_to_past (Formula.box (Formula.box φ).neg))) h_box_box_neg
+        rw [← limit_f_zero A h_mcs] at h_H
+        have h_H' := limit_backward_H A h_mcs 0 x (zero_mem_limit_dom A h_mcs) hx h_neg
+          (Formula.box (Formula.box φ).neg) h_H
+        exact SetMaximalConsistent.implication_property (limit_c0 A h_mcs x hx)
+          (theorem_in_mcs (limit_c0 A h_mcs x hx)
+            (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg))) h_H'
+    -- Contradiction: Box φ and ¬(Box φ) both in limit_f(x)
+    exact set_consistent_not_both (limit_c0 A h_mcs x hx).1 (Formula.box φ) h_box_x h_box_neg_x
+  · -- Forward: Box φ ∈ A → Box φ ∈ limit_f(x)
+    intro h_box_A
+    rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
+    · -- x > 0: use G propagation (temp_future: □φ → G(□φ))
+      have h_G := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_future φ))) h_box_A
+      rw [← limit_f_zero A h_mcs] at h_G
+      exact limit_forward_G A h_mcs 0 x (zero_mem_limit_dom A h_mcs) hx h_pos
+        (Formula.box φ) h_G
+    · -- x = 0: limit_f(0) = A
+      rw [limit_f_zero]; exact h_box_A
+    · -- x < 0: use H propagation (modal_4: □φ → □□φ, box_to_past: □(□φ) → H(□φ))
+      have h_box_box : Formula.box (Formula.box φ) ∈ A :=
+        SetMaximalConsistent.implication_property h_mcs
+          (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 φ))) h_box_A
+      have h_H := SetMaximalConsistent.implication_property h_mcs
+        (theorem_in_mcs h_mcs (box_to_past (Formula.box φ))) h_box_box
+      rw [← limit_f_zero A h_mcs] at h_H
+      exact limit_backward_H A h_mcs 0 x (zero_mem_limit_dom A h_mcs) hx h_neg
+        (Formula.box φ) h_H
+
+/--
+Box stability on `cantor_f_dense`: `Box φ ∈ cantor_f_dense(q) ↔ Box φ ∈ A`.
+Transport of `box_stable_in_limit_f` through the Cantor isomorphism.
+-/
+theorem box_stable_in_cantor_f_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_dense : ∀ x ∈ limit_dom A h_mcs, next_top.neg ∈ limit_f A h_mcs x)
+    (φ : Formula) (q : Rat) :
+    Formula.box φ ∈ cantor_f_dense A h_mcs h_dense q ↔ Formula.box φ ∈ A := by
+  unfold cantor_f_dense
+  exact box_stable_in_limit_f A h_mcs φ
+    ((cantor_iso_dense A h_mcs h_dense).symm q).val
+    ((cantor_iso_dense A h_mcs h_dense).symm q).property
+
+/-! ## Dense BFMCS Construction
+
+Build `cantor_bfmcs_dense : BFMCS Rat` from rooted chronicle families.
+
+The key insight: the BFMCS requires families rooted at DIFFERENT box-equivalent
+MCS's for `modal_backward`. Each family uses a SEPARATE chronicle (for the
+box-equivalent MCS N), and `rooted_cantor_fmcs_dense N h_N h_dense_N s` shifts
+N's chronicle so that `N` appears at time `s`.
+
+The density hypothesis `h_box_dense : Formula.box next_top.neg ∈ A` (i.e.,
+`□(F'T) ∈ A`) is STRONGER than `F'T ∈ A`. It is necessary because:
+- Box-equivalence transfers `□(F'T)` to any N
+- From `□(F'T) ∈ N`, we derive `F'T ∈ N` (via modal_t)
+- Then N's chronicle is also dense, enabling its Cantor isomorphism
+
+The case split in Phase 4 should use `□(F'T)` vs `¬□(F'T)` (not `F'T` vs `U(T,⊥)`).
+By S5, if `F'T ∈ A` but `□(F'T) ∉ A`, then `¬□(F'T) ∈ A` and `□(¬□(F'T)) ∈ A`,
+meaning some box-accessible world is discrete. This mixed case falls under the
+non-dense branch (with sorry, like the discrete case).
+-/
+
+/--
+From `□(F'T) ∈ N`, derive the density hypothesis for N's chronicle.
+The proof: `□(F'T) → G(□(F'T))` (temp_future), then at each domain point
+`□(F'T) → F'T` (modal_t). Similarly for past via `box_to_past`.
+-/
+theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent N)
+    (h_box_dense : Formula.box next_top.neg ∈ N) :
+    ∀ x ∈ limit_dom N h_N, next_top.neg ∈ limit_f N h_N x := by
+  intro x hx
+  -- F'T ∈ N (from □(F'T) by modal_t)
+  have h_ft_N : next_top.neg ∈ N :=
+    SetMaximalConsistent.implication_property h_N
+      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t next_top.neg)))
+      h_box_dense
+  -- G(□(F'T)) ∈ N (from □(F'T) by temp_future)
+  have h_G_box : Formula.all_future (Formula.box next_top.neg) ∈ N :=
+    SetMaximalConsistent.implication_property h_N
+      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.temp_future next_top.neg)))
+      h_box_dense
+  -- H(□(F'T)) ∈ N (from □(F'T) → □□(F'T) → H(□(F'T)))
+  have h_box_box : Formula.box (Formula.box next_top.neg) ∈ N :=
+    SetMaximalConsistent.implication_property h_N
+      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_4 next_top.neg)))
+      h_box_dense
+  have h_H_box : Formula.all_past (Formula.box next_top.neg) ∈ N :=
+    SetMaximalConsistent.implication_property h_N
+      (theorem_in_mcs h_N (box_to_past (Formula.box next_top.neg))) h_box_box
+  -- Now propagate to x ∈ limit_dom
+  rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
+  · -- x > 0: G(□(F'T)) ∈ limit_f(0) = N, propagate via limit_forward_G
+    rw [← limit_f_zero N h_N] at h_G_box
+    have h_box_x := limit_forward_G N h_N 0 x (zero_mem_limit_dom N h_N) hx h_pos
+      (Formula.box next_top.neg) h_G_box
+    exact SetMaximalConsistent.implication_property (limit_c0 N h_N x hx)
+      (theorem_in_mcs (limit_c0 N h_N x hx)
+        (DerivationTree.axiom [] _ (Axiom.modal_t next_top.neg))) h_box_x
+  · -- x = 0: limit_f(0) = N
+    rw [limit_f_zero]; exact h_ft_N
+  · -- x < 0: H(□(F'T)) ∈ limit_f(0) = N, propagate via limit_backward_H
+    rw [← limit_f_zero N h_N] at h_H_box
+    have h_box_x := limit_backward_H N h_N 0 x (zero_mem_limit_dom N h_N) hx h_neg
+      (Formula.box next_top.neg) h_H_box
+    exact SetMaximalConsistent.implication_property (limit_c0 N h_N x hx)
+      (theorem_in_mcs (limit_c0 N h_N x hx)
+        (DerivationTree.axiom [] _ (Axiom.modal_t next_top.neg))) h_box_x
+
+/--
+Shifted FMCS on Rat: `mcs t := cantor_f_dense(t + offset)`.
+Helper for `rooted_cantor_fmcs_dense`.
+-/
+noncomputable def shifted_cantor_fmcs_dense' (N : Set Formula) (h_N : SetMaximalConsistent N)
+    (h_dense_N : ∀ x ∈ limit_dom N h_N, next_top.neg ∈ limit_f N h_N x)
+    (offset : Rat) : FMCS Rat where
+  mcs t := cantor_f_dense N h_N h_dense_N (t + offset)
+  is_mcs t := cantor_f_dense_is_mcs N h_N h_dense_N (t + offset)
+  forward_G := by
+    intro t t' φ h_lt h_G
+    have h_lt' : t + offset < t' + offset := by linarith
+    exact (cantor_fmcs_dense N h_N h_dense_N).forward_G (t + offset) (t' + offset) φ h_lt' h_G
+  backward_H := by
+    intro t t' φ h_lt h_H
+    have h_lt' : t' + offset < t + offset := by linarith
+    exact (cantor_fmcs_dense N h_N h_dense_N).backward_H (t + offset) (t' + offset) φ h_lt' h_H
+
+/--
+Rooted FMCS on Rat (dense case): builds a chronicle for MCS N (with `□(F'T) ∈ N`
+ensuring density), applies the Cantor isomorphism, and shifts to place N at time `s`.
+-/
+noncomputable def rooted_cantor_fmcs_dense (N : Set Formula) (h_N : SetMaximalConsistent N)
+    (h_box_dense_N : Formula.box next_top.neg ∈ N) (s : Rat) : FMCS Rat :=
+  let h_dense_N := box_dense_gives_density N h_N h_box_dense_N
+  let cz := cantor_zero_dense N h_N h_dense_N
+  -- Offset = cz - s, so mcs(s) = cantor_f_dense(s + (cz - s)) = cantor_f_dense(cz) = N
+  shifted_cantor_fmcs_dense' N h_N h_dense_N (cz - s)
+
+/--
+The rooted FMCS at `s` has `mcs s = N` (the root MCS).
+This works because the shift places `cantor_zero_dense` at `s`, and
+`cantor_f_dense` at `cantor_zero_dense` equals N.
+-/
+theorem rooted_cantor_fmcs_dense_at_s (N : Set Formula) (h_N : SetMaximalConsistent N)
+    (h_box_dense_N : Formula.box next_top.neg ∈ N) (s : Rat) :
+    (rooted_cantor_fmcs_dense N h_N h_box_dense_N s).mcs s = N := by
+  -- mcs s = cantor_f_dense(s + (cz - s)) = cantor_f_dense(cz) = N
+  simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense']
+  have h_eq : s + (cantor_zero_dense N h_N (box_dense_gives_density N h_N h_box_dense_N) - s) =
+    cantor_zero_dense N h_N (box_dense_gives_density N h_N h_box_dense_N) := by ring
+  rw [h_eq]
+  exact cantor_f_dense_at_zero N h_N (box_dense_gives_density N h_N h_box_dense_N)
+
+/--
+Box stability for `rooted_cantor_fmcs_dense`:
+`Box φ ∈ (rooted_cantor_fmcs_dense N h_N h_box s).mcs t ↔ Box φ ∈ N`.
+-/
+theorem box_stable_in_rooted_cantor_fmcs_dense (N : Set Formula)
+    (h_N : SetMaximalConsistent N) (h_box_dense_N : Formula.box next_top.neg ∈ N)
+    (φ : Formula) (s t : Rat) :
+    Formula.box φ ∈ (rooted_cantor_fmcs_dense N h_N h_box_dense_N s).mcs t ↔
+      Formula.box φ ∈ N := by
+  simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense']
+  exact box_stable_in_cantor_f_dense N h_N (box_dense_gives_density N h_N h_box_dense_N)
+    φ (t + (cantor_zero_dense N h_N (box_dense_gives_density N h_N h_box_dense_N) - s))
+
+/--
+Bundle of FMCS families on Rat (dense case).
+
+Requires `□(F'T) ∈ A` (box density), which is STRONGER than `F'T ∈ A`.
+Each family is a `rooted_cantor_fmcs_dense N h_N h_box_N s` where N is
+box-equivalent to A (hence `□(F'T) ∈ N` by box-equiv). Each N gets its
+own chronicle, which is dense by `box_dense_gives_density`.
+
+The modal forward/backward proofs mirror `bx_bfmcs` from RootScopedChain.lean:
+- Forward: Box φ ∈ fam → Box φ ∈ A (box stability) → Box φ ∈ fam' → φ ∈ fam' (modal_t)
+- Backward: contrapositive via bx_modal_witness — if ¬Box φ ∈ A, get v with ¬φ,
+  v box-equiv to A, so rooted_cantor_fmcs_dense v.formulas has mcs(t) = v.formulas,
+  giving φ ∈ v.formulas (from h_all) and ¬φ ∈ v.formulas (from witness), contradiction.
+-/
+noncomputable def cantor_bfmcs_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_box_dense : Formula.box next_top.neg ∈ A) :
+    BFMCS Rat where
+  families := { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N)
+    (h_box_N : Formula.box next_top.neg ∈ N) (s : Rat),
+    (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
+    fam = rooted_cantor_fmcs_dense N h_N h_box_N s }
+  nonempty := ⟨rooted_cantor_fmcs_dense A h_mcs h_box_dense 0,
+    A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
+  modal_forward := by
+    intro fam hfam φ t h_box fam' hfam'
+    obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
+    obtain ⟨N', h_N', h_box_N', s', h_eqN', rfl⟩ := hfam'
+    have h_box_in_N : Formula.box φ ∈ N :=
+      (box_stable_in_rooted_cantor_fmcs_dense N h_N h_box_N φ s t).mp h_box
+    have h_box_A : Formula.box φ ∈ A := (h_eqN φ).mpr h_box_in_N
+    have h_box_in_N' : Formula.box φ ∈ N' := (h_eqN' φ).mp h_box_A
+    have h_box_t' : Formula.box φ ∈ (rooted_cantor_fmcs_dense N' h_N' h_box_N' s').mcs t :=
+      (box_stable_in_rooted_cantor_fmcs_dense N' h_N' h_box_N' φ s' t).mpr h_box_in_N'
+    exact SetMaximalConsistent.implication_property
+      ((rooted_cantor_fmcs_dense N' h_N' h_box_N' s').is_mcs t)
+      (theorem_in_mcs ((rooted_cantor_fmcs_dense N' h_N' h_box_N' s').is_mcs t)
+        (DerivationTree.axiom [] _ (Axiom.modal_t φ))) h_box_t'
+  modal_backward := by
+    intro fam hfam φ t h_all
+    obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
+    -- Suffices: Box φ ∈ N (by box stability)
+    suffices h_box_in_N : Formula.box φ ∈ N from
+      (box_stable_in_rooted_cantor_fmcs_dense N h_N h_box_N φ s t).mpr h_box_in_N
+    -- Suffices: Box φ ∈ A (by box-equiv)
+    suffices h_box_A : Formula.box φ ∈ A from (h_eqN φ).mp h_box_A
+    -- Contrapositive: suppose Box φ ∉ A
+    by_contra h_not_box
+    have h_neg_box : (Formula.box φ).neg ∈ A := by
+      rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box φ) with h | h
+      · exact absurd h h_not_box
+      · exact h
+    -- ◇(¬φ) ∈ A
+    have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
+      Bimodal.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
+        (Bimodal.Metalogic.Bundle.box_dne_theorem φ) h_neg_box
+    -- Modal witness: v box-equivalent to A with ¬φ ∈ v
+    obtain ⟨v, h_equiv, h_neg_phi_v⟩ := bx_modal_witness ⟨A, h_mcs⟩ (Formula.neg φ) h_diamond_neg
+    -- v is box-equivalent to A, so □(F'T) ∈ v
+    have h_box_dense_v : Formula.box next_top.neg ∈ v.formulas :=
+      (h_equiv next_top.neg).mp h_box_dense
+    -- rooted_cantor_fmcs_dense v t is in families
+    have h_fam_v_mem : rooted_cantor_fmcs_dense v.formulas v.is_mcs h_box_dense_v t ∈
+        { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent N)
+          (h_box_N : Formula.box next_top.neg ∈ N) (s : Rat),
+          (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N) ∧
+          fam = rooted_cantor_fmcs_dense N h_N h_box_N s } :=
+      ⟨v.formulas, v.is_mcs, h_box_dense_v, t, fun ψ => h_equiv ψ, rfl⟩
+    -- h_all gives φ ∈ rooted(v, t).mcs t = v.formulas
+    have h_phi_v := h_all (rooted_cantor_fmcs_dense v.formulas v.is_mcs h_box_dense_v t) h_fam_v_mem
+    rw [rooted_cantor_fmcs_dense_at_s] at h_phi_v
+    -- Contradiction: φ and ¬φ both in v.formulas
+    exact set_consistent_not_both v.is_mcs.1 φ h_phi_v h_neg_phi_v
+  eval_family := rooted_cantor_fmcs_dense A h_mcs h_box_dense 0
+  eval_family_mem := ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
+
+/-! ## Dense Restricted Coherence
+
+Restricted temporal and Until/Since coherence for `cantor_bfmcs_dense`.
+These are the three conditions needed by the parametric representation theorem.
+-/
+
+/--
+Restricted temporal coherence for `cantor_bfmcs_dense`.
+F(φ) ∈ fam.mcs(t) → ∃ s > t, φ ∈ fam.mcs(s) and symmetric for P.
+Each family is a `rooted_cantor_fmcs_dense N h_N h_box_N s`, which internally
+uses `cantor_f_dense N h_N h_dense_N`. The Cantor isomorphism makes all rationals
+domain points, so `limit_F_resolution`/`limit_P_resolution` apply directly after
+transfer through `cantor_iso_dense.symm`.
+-/
+theorem cantor_bfmcs_dense_restricted_tc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_box_dense : Formula.box next_top.neg ∈ A)
+    (root : Formula)
+    (_ : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList) :
+    (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_temporally_coherent root := by
+  -- Each family is rooted_cantor_fmcs_dense N h_N h_box_N s, internally using
+  -- cantor_f_dense N h_N h_dense_N through cantor_iso_dense. The F/P resolution
+  -- transfers through the Cantor iso from limit_F_resolution/limit_P_resolution.
+  -- Proof strategy: unfold to limit_f coordinates, apply limit_F/P_resolution,
+  -- transfer witness back through iso.
+  sorry
+
+/--
+Restricted backward Until/Since coherence for `cantor_bfmcs_dense`.
+The backward direction uses C4/C4' (limit_satisfies_c4/c4') to prove
+that if ¬U(φ,ψ) ∈ f(t) and the Until witness pattern holds, we get
+a contradiction via an intermediate point where the guard fails.
+-/
+theorem cantor_bfmcs_dense_restricted_buc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_box_dense : Formula.box next_top.neg ∈ A) (root : Formula) :
+    (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_backward_until_since_coherent root := by
+  -- By contradiction: if ¬U(φ,ψ) ∈ f(t) and the witness pattern holds,
+  -- C4/C4' gives an intermediate point z where the guard fails, contradicting
+  -- the guard hypothesis. Transfer through cantor_iso_dense.
+  sorry
+
+/--
+Restricted forward Until/Since coherence for `cantor_bfmcs_dense`.
+The forward direction uses `limit_satisfies_c5_strong`/`limit_satisfies_c5'_strong`
+to find the Until/Since witness, and the guard follows from the Cantor iso
+making all rationals domain points (so the guard covers D = Rat).
+-/
+theorem cantor_bfmcs_dense_restricted_fuc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_box_dense : Formula.box next_top.neg ∈ A) (root : Formula) :
+    (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_forward_until_since_coherent root := by
+  -- U(φ,ψ) ∈ f(t) → ∃ s > t, φ ∈ f(s) ∧ guard. Uses limit_satisfies_c5_strong
+  -- transferred through cantor_iso_dense. Since the Cantor iso bijects limit_dom
+  -- onto all of Rat, the C5 guard over limit_dom becomes a guard over all of Rat.
+  -- Mirror for Since using limit_satisfies_c5'_strong.
+  sorry
+
+/-! ## Dense Countermodel
+
+The main integration theorem for the dense case: constructs a countermodel
+from any MCS containing ¬φ and □(F'T), using the Cantor-based chronicle
+construction.
+-/
+
+/--
+Dense countermodel: given MCS A with `¬φ ∈ A` and `□(F'T) ∈ A`,
+build a countermodel on `Rat` where `φ` is false.
+
+Uses `cantor_bfmcs_dense` (sorry-free BFMCS) with the three restricted
+coherence conditions. The eval family is `rooted_cantor_fmcs_dense A h_mcs h_box_dense 0`
+which has `mcs 0 = A`, so `¬φ ∈ eval_family.mcs 0`.
+-/
+theorem dd_countermodel_chronicle_dense (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (φ : Formula) (h_neg_in : φ.neg ∈ A)
+    (h_box_dense : Formula.box next_top.neg ∈ A) :
+    ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
+      (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
+      ¬truth_at TM Omega τ t φ := by
+  refine ⟨Rat, inferInstance, inferInstance, inferInstance, inferInstance,
+    ParametricCanonicalTaskFrame Rat, ParametricCanonicalTaskModel Rat,
+    ShiftClosedParametricCanonicalOmega (cantor_bfmcs_dense A h_mcs h_box_dense),
+    shiftClosedParametricCanonicalOmega_is_shift_closed _,
+    parametric_to_history (rooted_cantor_fmcs_dense A h_mcs h_box_dense 0),
+    parametricCanonicalOmega_subset_shiftClosed _
+      ⟨rooted_cantor_fmcs_dense A h_mcs h_box_dense 0,
+       ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
+    0, ?_⟩
+  have h_neg_fam : φ.neg ∈ (rooted_cantor_fmcs_dense A h_mcs h_box_dense 0).mcs 0 := by
+    rw [rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
+  exact fully_restricted_parametric_representation_from_neg_membership
+    (cantor_bfmcs_dense A h_mcs h_box_dense) φ
+    (cantor_bfmcs_dense_restricted_tc A h_mcs h_box_dense φ
+      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
+    (cantor_bfmcs_dense_restricted_buc A h_mcs h_box_dense φ)
+    (cantor_bfmcs_dense_restricted_fuc A h_mcs h_box_dense φ)
+    φ (self_mem_subformulaClosure φ)
+    (rooted_cantor_fmcs_dense A h_mcs h_box_dense 0)
+    ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
+
+/--
+Sorry-backed discrete countermodel stub. Used in the non-dense branch of
+bx_completeness. The proof would require either:
+1. IsSuccArchimedean (blocked by NO-GO from Phase 6 analysis), OR
+2. An alternative approach to discrete completeness.
+-/
+theorem dd_countermodel_chronicle_nondense_sorry (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (φ : Formula) (h_neg_in : φ.neg ∈ A)
+    (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A) :
+    ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
+      (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
+      ¬truth_at TM Omega τ t φ := by
+  sorry
 
 /-! ## Discrete Case: Z-Isomorphism from U(⊤,⊥)
 

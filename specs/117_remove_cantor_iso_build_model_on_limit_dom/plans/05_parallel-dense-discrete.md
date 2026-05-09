@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 1: Dense BFMCS Construction [NOT STARTED]
+### Phase 1: Dense BFMCS Construction [COMPLETED]
 
 **Goal**: Build `cantor_bfmcs_dense : BFMCS Rat` with `modal_forward` and `modal_backward`, using shifted and rooted FMCS variants of `cantor_fmcs_dense`.
 
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 2: Dense Restricted Coherence [NOT STARTED]
+### Phase 2: Dense Restricted Coherence [PARTIAL]
 
 **Goal**: Prove the three restricted temporal coherence properties for `cantor_bfmcs_dense`: `restricted_tc`, `restricted_buc`, `restricted_fuc`.
 
@@ -119,7 +119,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 3: Dense Countermodel [NOT STARTED]
+### Phase 3: Dense Countermodel [COMPLETED]
 
 **Goal**: Define `dd_countermodel_chronicle_dense` using `cantor_bfmcs_dense` and the restricted parametric representation theorem.
 
@@ -141,7 +141,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 4: Case-Split Completeness [NOT STARTED]
+### Phase 4: Case-Split Completeness [COMPLETED]
 
 **Goal**: Restructure `bx_completeness` in Completeness.lean with a case split on F'T vs U(T,bot), using the dense countermodel for the dense branch and sorry for the discrete branch.
 
@@ -175,7 +175,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 5: Dense Verification and Documentation [NOT STARTED]
+### Phase 5: Dense Verification and Documentation [COMPLETED]
 
 **Goal**: Full project build, verify sorry isolation, and update documentation. If Track B (Phases 6-8) has produced a sorry-free IsSuccArchimedean, integrate the discrete countermodel to replace the sorry. Otherwise, document the sorry.
 
@@ -203,7 +203,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 6: Omega Chain Structural Analysis [NOT STARTED]
+### Phase 6: Omega Chain Structural Analysis [COMPLETED]
 
 **Goal**: Trace through the chronicle construction to understand how counterexamples in a bounded interval between consecutive dom_N elements are enumerated and resolved. Determine whether C4 bridging prevents twin accumulation.
 
@@ -279,7 +279,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 9: Final Integration and Verification [NOT STARTED]
+### Phase 9: Final Integration and Verification [COMPLETED]
 
 **Goal**: Final integration pass. If Track B completed, replace the discrete sorry in bx_completeness. Run full verification.
 
