@@ -80,6 +80,7 @@ technical_debt:
 - **Plan**:
   - [117_remove_cantor_iso_build_model_on_limit_dom/plans/03_natural-inclusion-refactor.md]
   - [117_remove_cantor_iso_build_model_on_limit_dom/plans/04_case-split-completeness.md]
+  - [117_remove_cantor_iso_build_model_on_limit_dom/plans/05_parallel-dense-discrete.md]
 
 **Description**: Replace the Cantor isomorphism (bijection X ≅ ℚ, requires `DenselyOrdered`) with the natural inclusion X ⊂ ℚ (injection, requires nothing). The `.density` counterexample kind is the only code path needing `SetConsistent g` (the sorry at CE:3570); C4a/C5a use `lemma_2_8` which avoids it. Archive density case + Cantor iso pathway to `Boneyard/DenseChronicle/` for future dense variant reuse. Define `extended_f : Rat → Set Formula` extending `limit_f` from X to all of ℚ for non-domain rationals. Build FMCS/BFMCS on ℚ using `extended_f`. D = ℚ as before — existing parametric infrastructure unchanged. Nothing else changes: same TaskFrame, same truth_at, same valid.
 

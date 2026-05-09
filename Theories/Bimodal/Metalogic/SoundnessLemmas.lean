@@ -832,6 +832,58 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
+  | discrete_symm_fwd =>
+    -- swap(U(T,bot) -> S(T,bot)) = S(T,bot) -> U(T,bot)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩
+    refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
+    have h1 : r < c - (t - r) := by
+      conv_lhs => rw [(sub_sub_cancel t r).symm]
+      exact sub_lt_sub_right htc _
+    have h2 : c - (t - r) < t := by
+      conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (t - r)) h1 h2
+  | discrete_symm_bwd =>
+    -- swap(S(T,bot) -> U(T,bot)) = U(T,bot) -> S(T,bot)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩
+    refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
+    have h1 : t < c + (s - t) :=
+      calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+        _ < c + (s - t) := add_lt_add_left hrc (s - t)
+    have h2 : c + (s - t) < s :=
+      calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+        _ = s := by rw [add_comm, sub_add_cancel]
+    exact h_guard (c + (s - t)) h1 h2
+  | discrete_propagate_fwd =>
+    -- swap(U(T,bot) -> G(U(T,bot))) = S(T,bot) -> H(S(T,bot))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
+    refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
+    have h1 : r < c + (t - u) := by
+      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      exact add_lt_add_left hrc (t - u)
+    have h2 : c + (t - u) < t := by
+      conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
+      exact add_lt_add_left hcu (t - u)
+    exact h_guard (c + (t - u)) h1 h2
+  | discrete_propagate_bwd =>
+    -- swap(U(T,bot) -> H(U(T,bot))) = S(T,bot) -> G(S(T,bot))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
+    refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
+    have h1 : r < c + (t - u) := by
+      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      exact add_lt_add_left hrc (t - u)
+    have h2 : c + (t - u) < t := by
+      conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
+      exact add_lt_add_left hcu (t - u)
+    exact h_guard (c + (t - u)) h1 h2
 /-! ## Axiom Validity (Local)
 
 These lemmas prove validity of each axiom using the local `is_valid` definition.
@@ -1362,6 +1414,54 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
+  | discrete_symm_fwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩
+    refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
+    have h1 : t < c + (s - t) :=
+      calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+        _ < c + (s - t) := add_lt_add_left hrc (s - t)
+    have h2 : c + (s - t) < s :=
+      calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+        _ = s := by rw [add_comm, sub_add_cancel]
+    exact h_guard (c + (s - t)) h1 h2
+  | discrete_symm_bwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩
+    refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
+    have h1 : r < c - (t - r) := by
+      conv_lhs => rw [(sub_sub_cancel t r).symm]
+      exact sub_lt_sub_right htc _
+    have h2 : c - (t - r) < t := by
+      conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (t - r)) h1 h2
+  | discrete_propagate_fwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
+    refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
+    have h1 : t < c - (u - t) := by
+      conv_lhs => rw [(sub_sub_cancel u t).symm]
+      exact sub_lt_sub_right huc _
+    have h2 : c - (u - t) < s := by
+      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (u - t)) h1 h2
+  | discrete_propagate_bwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
+    refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
+    have h1 : t < c - (u - t) := by
+      conv_lhs => rw [(sub_sub_cancel u t).symm]
+      exact sub_lt_sub_right huc _
+    have h2 : c - (u - t) < s := by
+      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (u - t)) h1 h2
 /-! ## Rule Preservation for Local Validity
 
 Helper lemmas proving that inference rules preserve local validity.
@@ -1810,6 +1910,54 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | temp_future ψ => exact swap_axiom_tf_valid ψ
+  | discrete_symm_fwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩
+    refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
+    have h1 : r < c - (t - r) := by
+      conv_lhs => rw [(sub_sub_cancel t r).symm]
+      exact sub_lt_sub_right htc _
+    have h2 : c - (t - r) < t := by
+      conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (t - r)) h1 h2
+  | discrete_symm_bwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩
+    refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
+    have h1 : t < c + (s - t) :=
+      calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+        _ < c + (s - t) := add_lt_add_left hrc (s - t)
+    have h2 : c + (s - t) < s :=
+      calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+        _ = s := by rw [add_comm, sub_add_cancel]
+    exact h_guard (c + (s - t)) h1 h2
+  | discrete_propagate_fwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
+    refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
+    have h1 : r < c + (t - u) := by
+      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      exact add_lt_add_left hrc (t - u)
+    have h2 : c + (t - u) < t := by
+      conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
+      exact add_lt_add_left hcu (t - u)
+    exact h_guard (c + (t - u)) h1 h2
+  | discrete_propagate_bwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
+    refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
+    have h1 : r < c + (t - u) := by
+      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      exact add_lt_add_left hrc (t - u)
+    have h2 : c + (t - u) < t := by
+      conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
+      exact add_lt_add_left hcu (t - u)
+    exact h_guard (c + (t - u)) h1 h2
 
 /-- All BX axioms are locally valid without frame-class constraints. -/
 private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : Axiom φ) :
@@ -2065,6 +2213,54 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
+  | discrete_symm_fwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩
+    refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
+    have h1 : t < c + (s - t) :=
+      calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+        _ < c + (s - t) := add_lt_add_left hrc (s - t)
+    have h2 : c + (s - t) < s :=
+      calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+        _ = s := by rw [add_comm, sub_add_cancel]
+    exact h_guard (c + (s - t)) h1 h2
+  | discrete_symm_bwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩
+    refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
+    have h1 : r < c - (t - r) := by
+      conv_lhs => rw [(sub_sub_cancel t r).symm]
+      exact sub_lt_sub_right htc _
+    have h2 : c - (t - r) < t := by
+      conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (t - r)) h1 h2
+  | discrete_propagate_fwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
+    refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
+    have h1 : t < c - (u - t) := by
+      conv_lhs => rw [(sub_sub_cancel u t).symm]
+      exact sub_lt_sub_right huc _
+    have h2 : c - (u - t) < s := by
+      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (u - t)) h1 h2
+  | discrete_propagate_bwd =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
+    refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
+    have h1 : t < c - (u - t) := by
+      conv_lhs => rw [(sub_sub_cancel u t).symm]
+      exact sub_lt_sub_right huc _
+    have h2 : c - (u - t) < s := by
+      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      exact sub_lt_sub_right hcs _
+    exact h_guard (c - (u - t)) h1 h2
 
 /-- Combined soundness without frame-class constraints: derivability implies both validity
 and swap-validity. Identical to `derivable_valid_and_swap_valid` but without

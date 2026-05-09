@@ -841,6 +841,90 @@ theorem since_P_valid (φ ψ : Formula) :
   intro h_H_neg
   exact h_H_neg s hst h_ψs
 
+/-! ## Uniformity Axiom Validity
+
+The following four axioms encode the uniformity of discreteness in ordered abelian groups.
+They are valid over ALL `AddCommGroup D` with `IsOrderedAddMonoid D` because the
+group's translation invariance ensures that gaps (empty open intervals) are uniform
+across all time points.
+
+Key semantic fact: `truth_at M Omega τ t (Formula.untl (bot.imp bot) bot)` means
+∃ s > t with (t,s) empty in D. The guard `bot` is always False, so no element can
+lie in (t,s). The event `bot.imp bot` is `⊤` which is always True.
+-/
+
+/-- Discrete symmetry forward: U(⊤,⊥) → S(⊤,⊥).
+If there is a gap (t, s) with s > t, then (t-(s-t), t) is also empty by translation. -/
+theorem discrete_symm_fwd_valid :
+    ⊨ ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+      (Formula.snce (Formula.bot.imp Formula.bot) Formula.bot)) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, hts, _h_top_s, h_guard⟩
+  refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
+  -- c ∈ (t-(s-t), t), so c+(s-t) ∈ (t, s), but (t,s) is empty
+  have h1 : t < c + (s - t) :=
+    calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+      _ < c + (s - t) := add_lt_add_left hrc (s - t)
+  have h2 : c + (s - t) < s :=
+    calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+      _ = s := by rw [add_comm, sub_add_cancel]
+  exact h_guard (c + (s - t)) h1 h2
+
+/-- Discrete symmetry backward: S(⊤,⊥) → U(⊤,⊥).
+If there is a gap (r, t) with r < t, then (t, t+(t-r)) is also empty by translation. -/
+theorem discrete_symm_bwd_valid :
+    ⊨ ((Formula.snce (Formula.bot.imp Formula.bot) Formula.bot).imp
+      (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨r, hrt, _h_top_r, h_guard⟩
+  refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
+  -- c ∈ (t, t+(t-r)), so c-(t-r) ∈ (r, t), but (r,t) is empty
+  have h1 : r < c - (t - r) := by
+    conv_lhs => rw [(sub_sub_cancel t r).symm]
+    exact sub_lt_sub_right htc _
+  have h2 : c - (t - r) < t := by
+    conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+    exact sub_lt_sub_right hcs _
+  exact h_guard (c - (t - r)) h1 h2
+
+/-- Discrete propagation forward: U(⊤,⊥) → G(U(⊤,⊥)).
+If there is a gap (t, s), then for any u > t, (u, u+(s-t)) is also empty. -/
+theorem discrete_propagate_fwd_valid :
+    ⊨ ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+      (Formula.all_future (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
+  refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
+  -- c ∈ (u, u+(s-t)), so c-(u-t) ∈ (t, s), but (t,s) is empty
+  have h1 : t < c - (u - t) := by
+    conv_lhs => rw [(sub_sub_cancel u t).symm]
+    exact sub_lt_sub_right huc _
+  have h2 : c - (u - t) < s := by
+    conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+    exact sub_lt_sub_right hcs _
+  exact h_guard (c - (u - t)) h1 h2
+
+/-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)).
+If there is a gap (t, s), then for any u < t, (u, u+(s-t)) is also empty. -/
+theorem discrete_propagate_bwd_valid :
+    ⊨ ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+      (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
+  refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
+  -- c ∈ (u, u+(s-t)), so c-(u-t) ∈ (t, s), but (t,s) is empty
+  have h1 : t < c - (u - t) := by
+    conv_lhs => rw [(sub_sub_cancel u t).symm]
+    exact sub_lt_sub_right huc _
+  have h2 : c - (u - t) < s := by
+    conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+    exact sub_lt_sub_right hcs _
+  exact h_guard (c - (u - t)) h1 h2
+
 /-! ## Legacy Discrete Axiom Validity Theorems (Removed)
 
 The following discrete axiom validity theorems were removed in the BX refactor:
@@ -901,6 +985,10 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | P_since_equiv φ => exact P_since_equiv_valid φ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
+  | discrete_symm_fwd => exact discrete_symm_fwd_valid
+  | discrete_symm_bwd => exact discrete_symm_bwd_valid
+  | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
+  | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -947,6 +1035,10 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | P_since_equiv φ => exact Validity.valid_implies_valid_dense (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_dense (temp_future_valid ψ)
+  | discrete_symm_fwd => exact Validity.valid_implies_valid_dense discrete_symm_fwd_valid
+  | discrete_symm_bwd => exact Validity.valid_implies_valid_dense discrete_symm_bwd_valid
+  | discrete_propagate_fwd => exact Validity.valid_implies_valid_dense discrete_propagate_fwd_valid
+  | discrete_propagate_bwd => exact Validity.valid_implies_valid_dense discrete_propagate_bwd_valid
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -994,6 +1086,10 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | P_since_equiv φ => exact Validity.valid_implies_valid_discrete (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
   | temp_future ψ => exact Validity.valid_implies_valid_discrete (temp_future_valid ψ)
+  | discrete_symm_fwd => exact Validity.valid_implies_valid_discrete discrete_symm_fwd_valid
+  | discrete_symm_bwd => exact Validity.valid_implies_valid_discrete discrete_symm_bwd_valid
+  | discrete_propagate_fwd => exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
+  | discrete_propagate_bwd => exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
 
 /-! ## Full Derivation Soundness
 
@@ -1095,6 +1191,10 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
+    | discrete_symm_fwd => exact discrete_symm_fwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1264,6 +1364,10 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
     | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
+    | discrete_symm_fwd => exact discrete_symm_fwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>

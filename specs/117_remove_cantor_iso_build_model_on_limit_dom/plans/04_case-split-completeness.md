@@ -72,20 +72,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add Uniformity Axioms to BX [NOT STARTED]
+### Phase 1: Add Uniformity Axioms to BX [COMPLETED]
 
 **Goal**: Add four new axiom constructors to the `Axiom` inductive type encoding the uniformity of discreteness in ordered abelian groups.
 
 **Tasks**:
-- [ ] Add `discrete_symm_fwd` constructor: `Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.snce (Formula.bot.imp Formula.bot) Formula.bot))` (U(T,bot) -> S(T,bot))
-- [ ] Add `discrete_symm_bwd` constructor: `Axiom ((Formula.snce (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot))` (S(T,bot) -> U(T,bot))
-- [ ] Add `discrete_propagate_fwd` constructor: `Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.all_future (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))` (U(T,bot) -> G(U(T,bot)))
-- [ ] Add `discrete_propagate_bwd` constructor: `Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))` (U(T,bot) -> H(U(T,bot)))
-- [ ] Update `Axiom.frameClass` wildcard match -- verify no change needed (current `| _ => .Base`)
-- [ ] Update `Axiom.isBase`, `isDenseCompatible`, `isDiscreteCompatible` -- verify wildcards handle new constructors
-- [ ] Update axiom docstring count (currently says "41 constructors", will be 45)
-- [ ] Audit all other match expressions on `Axiom` across the codebase (run `grep -rn "cases.*Axiom\|match.*Axiom\|fun.*Axiom" Theories/`)
-- [ ] Run `lake build Bimodal.ProofSystem.Axioms` to verify
+- [x] Add `discrete_symm_fwd` constructor: `Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.snce (Formula.bot.imp Formula.bot) Formula.bot))` (U(T,bot) -> S(T,bot))
+- [x] Add `discrete_symm_bwd` constructor: `Axiom ((Formula.snce (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot))` (S(T,bot) -> U(T,bot))
+- [x] Add `discrete_propagate_fwd` constructor: `Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.all_future (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))` (U(T,bot) -> G(U(T,bot)))
+- [x] Add `discrete_propagate_bwd` constructor: `Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))` (U(T,bot) -> H(U(T,bot)))
+- [x] Update `Axiom.frameClass` wildcard match -- verify no change needed (current `| _ => .Base`)
+- [x] Update `Axiom.isBase`, `isDenseCompatible`, `isDiscreteCompatible` -- verify wildcards handle new constructors
+- [x] Update axiom docstring count (currently says "41 constructors", will be 45)
+- [x] Audit all other match expressions on `Axiom` across the codebase (run `grep -rn "cases.*Axiom\|match.*Axiom\|fun.*Axiom" Theories/`)
+- [x] Run `lake build Bimodal.ProofSystem.Axioms` to verify
 
 **Timing**: 1.5 hours
 
@@ -100,19 +100,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Axiom Soundness [NOT STARTED]
+### Phase 2: Prove Axiom Soundness [COMPLETED]
 
 **Goal**: Prove all four new axioms are valid over all `AddCommGroup D` with `IsOrderedAddMonoid D`.
 
 **Tasks**:
-- [ ] Prove `discrete_symm_fwd_valid`: If `U(T,bot)` at t, then (t,s) is empty for some s > t, so gap d = s-t > 0. Then (t-d, t) is empty by translation invariance (`Set.image_const_add_Ioo` or direct `add_lt_add_right`). So `S(T,bot)` at t.
-- [ ] Prove `discrete_symm_bwd_valid`: Mirror of fwd. If `S(T,bot)` at t, then (r,t) is empty for some r < t, gap d = t-r > 0. Then (t, t+d) is empty by translation. So `U(T,bot)` at t.
-- [ ] Prove `discrete_propagate_fwd_valid`: If `U(T,bot)` at t, gap d > 0 exists with (t, t+d) empty. For any s > t, (s, s+d) is empty by translation (`y -> y + (s-t)` maps (t,t+d) to (s,s+d)). So `U(T,bot)` at s. Therefore `G(U(T,bot))` at t.
-- [ ] Prove `discrete_propagate_bwd_valid`: If `U(T,bot)` at t, gap d exists. For any s < t, (s, s+d) is empty by translation. So `U(T,bot)` at s. Therefore `H(U(T,bot))` at t.
-- [ ] Add all four cases to `axiom_base_valid` match (Soundness.lean, line ~862)
-- [ ] Add corresponding cases to `axiom_valid_dense` match (Soundness.lean, line ~908)
-- [ ] Add corresponding cases to `axiom_valid_discrete` match (Soundness.lean, line ~954)
-- [ ] Run `lake build Bimodal.Metalogic.Soundness` to verify
+- [x] Prove `discrete_symm_fwd_valid`: If `U(T,bot)` at t, then (t,s) is empty for some s > t, so gap d = s-t > 0. Then (t-d, t) is empty by translation invariance (`Set.image_const_add_Ioo` or direct `add_lt_add_right`). So `S(T,bot)` at t.
+- [x] Prove `discrete_symm_bwd_valid`: Mirror of fwd. If `S(T,bot)` at t, then (r,t) is empty for some r < t, gap d = t-r > 0. Then (t, t+d) is empty by translation. So `U(T,bot)` at t.
+- [x] Prove `discrete_propagate_fwd_valid`: If `U(T,bot)` at t, gap d > 0 exists with (t, t+d) empty. For any s > t, (s, s+d) is empty by translation (`y -> y + (s-t)` maps (t,t+d) to (s,s+d)). So `U(T,bot)` at s. Therefore `G(U(T,bot))` at t.
+- [x] Prove `discrete_propagate_bwd_valid`: If `U(T,bot)` at t, gap d exists. For any s < t, (s, s+d) is empty by translation. So `U(T,bot)` at s. Therefore `H(U(T,bot))` at t.
+- [x] Add all four cases to `axiom_base_valid` match (Soundness.lean, line ~862)
+- [x] Add corresponding cases to `axiom_valid_dense` match (Soundness.lean, line ~908)
+- [x] Add corresponding cases to `axiom_valid_discrete` match (Soundness.lean, line ~954)
+- [x] Run `lake build Bimodal.Metalogic.Soundness` to verify
 
 **Timing**: 3 hours
 
@@ -127,29 +127,29 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Dense Case -- Density from F'T and Cantor Iso [NOT STARTED]
+### Phase 3: Dense Case -- Density from F'T and Cantor Iso [COMPLETED]
 
 **Goal**: Given F'T in all domain MCS's, prove `DenselyOrdered (LimitDomSubtype A h_mcs)` and restore the Cantor isomorphism from Boneyard.
 
 **Tasks**:
 
 *Density proof (~30 lines)*:
-- [ ] Define helper: `top_formula := Formula.bot.imp Formula.bot`
-- [ ] Define helper: `next_top := Formula.untl top_formula Formula.bot` (= U(T,bot))
-- [ ] Define helper: `F'T := next_top.neg` (= neg(U(T,bot)))
-- [ ] Prove `limit_dom_dense_from_F'T`: given `forall x in limit_dom, F'T in limit_f(x)`, for any x < y in limit_dom, exists z in limit_dom with x < z < y. Proof: instantiate `limit_satisfies_c4` at line 741 with xi=bot, eta=top_formula. Hypothesis `h_neg_until` requires `(Formula.untl top_formula Formula.bot).neg in limit_f(x)` which is exactly F'T. Hypothesis `h_event` requires `top_formula in limit_f(y)` which follows from `theorem_in_mcs` + `identity`. Conclusion gives z with `Formula.bot.neg in limit_f(z)` which is trivially satisfied.
-- [ ] Prove `limitDomSubtype_denselyOrdered_from_F'T`: instance wrapping `limit_dom_dense_from_F'T`, mirroring archived code at `Boneyard/DenseChronicle/DenseLimitDomain.lean:82-88` (3-line proof).
+- [x] Define helper: `top_formula := Formula.bot.imp Formula.bot`
+- [x] Define helper: `next_top := Formula.untl top_formula Formula.bot` (= U(T,bot))
+- [x] F'T used as `next_top.neg` in the hypothesis type (not a separate definition)
+- [x] Prove `limit_dom_dense_from_F'T`: given `forall x in limit_dom, F'T in limit_f(x)`, for any x < y in limit_dom, exists z in limit_dom with x < z < y. Proof: instantiate `limit_satisfies_c4` at line 741 with xi=bot, eta=top_formula. Hypothesis `h_neg_until` requires `(Formula.untl top_formula Formula.bot).neg in limit_f(x)` which is exactly F'T. Hypothesis `h_event` requires `top_formula in limit_f(y)` which follows from `theorem_in_mcs` + `identity`. Conclusion gives z with `Formula.bot.neg in limit_f(z)` which is trivially satisfied.
+- [x] Prove `limitDomSubtype_denselyOrdered_from_F'T`: instance wrapping `limit_dom_dense_from_F'T`, mirroring archived code at `Boneyard/DenseChronicle/DenseLimitDomain.lean:82-88` (3-line proof).
 
 *Cantor iso restoration (~20 lines)*:
-- [ ] Add import `Mathlib.Order.CountableDenseLinearOrder` to ChronicleToCountermodel.lean
-- [ ] Define `cantor_iso` using `Classical.choice (Order.iso_of_countable_dense ...)` -- requires `DenselyOrdered`, `Countable`, `NoMinOrder`, `NoMaxOrder`, `Nonempty` (all available)
-- [ ] Define `cantor_f : Rat -> Set Formula` via `limit_f (cantor_iso.symm q).val`
-- [ ] Prove `cantor_zero`, `cantor_f_at_zero`, `cantor_f_is_mcs` (mirror archived code lines 58-72)
+- [x] Add import `Mathlib.Order.CountableDenseLinearOrder` to ChronicleToCountermodel.lean
+- [x] Define `cantor_iso_dense` using `Classical.choice (Order.iso_of_countable_dense ...)` -- requires `DenselyOrdered`, `Countable`, `NoMinOrder`, `NoMaxOrder`, `Nonempty` (all available)
+- [x] Define `cantor_f_dense : Rat -> Set Formula` via `limit_f (cantor_iso_dense.symm q).val`
+- [x] Prove `cantor_zero_dense`, `cantor_f_dense_at_zero`, `cantor_f_dense_is_mcs` (mirror archived code lines 58-72)
 
 *FMCS construction (~30 lines)*:
-- [ ] Define `cantor_fmcs : FMCS Rat` with `forward_G` and `backward_H` from `limit_forward_G`/`limit_backward_H` transported via `cantor_iso.symm.strictMono` (mirror archived code lines 74-96)
+- [x] Define `cantor_fmcs_dense : FMCS Rat` with `forward_G` and `backward_H` from `limit_forward_G`/`limit_backward_H` transported via `cantor_iso_dense.symm.strictMono` (mirror archived code lines 74-96)
 
-- [ ] Run `lake build ...ChronicleToCountermodel` to verify (partial -- BFMCS and countermodel in Phase 5)
+- [x] Run `lake build ...ChronicleToCountermodel` to verify (partial -- BFMCS and countermodel in Phase 5)
 
 **Timing**: 3 hours
 
@@ -163,32 +163,34 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Discrete Case -- Z-Isomorphism from U(T,bot) [NOT STARTED]
+### Phase 4: Discrete Case -- Z-Isomorphism from U(T,bot) [PARTIAL]
 
 **Goal**: Given `U(T,bot)` in all domain MCS's, prove `SuccOrder`, `PredOrder`, `IsSuccArchimedean` on `LimitDomSubtype`, obtain Z-isomorphism, and define `discrete_fmcs : FMCS Int`.
 
 **Tasks**:
 
 *SuccOrder instance (~40 lines)*:
-- [ ] Prove `limit_dom_has_succ`: given `U(T,bot) in limit_f(x)` for x in limit_dom, use `limit_satisfies_c5_strong` to get witness y with x < y and bot on guard (t,s). Since bot is never in any MCS (consistency), no domain point exists between x and y. So y is the immediate successor.
-- [ ] Define `limitDomSubtype_succOrder`: `SuccOrder (LimitDomSubtype A h_mcs)` using `limit_dom_has_succ`. Define `succ x` as the y from the C5 witness. Prove `succ_le_of_lt` and `lt_succ_of_lt` from the adjacency property.
+- [x] Prove `limit_dom_has_succ`: given `U(T,bot) in limit_f(x)` for x in limit_dom, use `limit_satisfies_c5_strong` to get witness y with x < y and bot on guard (t,s). Since bot is never in any MCS (consistency), no domain point exists between x and y. So y is the immediate successor.
+- [x] Define `limitDomSubtype_succOrder`: `SuccOrder (LimitDomSubtype A h_mcs)` using `limit_dom_has_succ` via `SuccOrder.ofSuccLeIff`.
 
 *PredOrder instance (~40 lines)*:
-- [ ] Prove `limit_dom_has_pred`: mirror using `S(T,bot) in limit_f(x)` (derived from `U(T,bot)` via the `discrete_symm_fwd` axiom in every MCS) and `limit_satisfies_c5'_strong`.
-- [ ] Define `limitDomSubtype_predOrder`: `PredOrder (LimitDomSubtype A h_mcs)` mirroring SuccOrder.
+- [x] Prove `limit_dom_has_pred`: mirror using `S(T,bot) in limit_f(x)` (derived from `U(T,bot)` via the `discrete_symm_fwd` axiom in every MCS) and `limit_satisfies_c5'_strong`.
+- [x] Prove `next_top_gives_since`: derive `S(T,bot)` from `U(T,bot)` via `discrete_symm_fwd` axiom.
+- [x] Define `limitDomSubtype_predOrder`: `PredOrder (LimitDomSubtype A h_mcs)` via `PredOrder.ofLePredIff`.
+- [x] Prove `limitDomSubtype_succ_pred`: `succ(pred(b)) = b` identity.
 
 *IsSuccArchimedean instance (~30 lines)*:
-- [ ] Prove `limitDomSubtype_isSuccArchimedean`: For a <= b in LimitDomSubtype, show succ^n(a) >= b for some n. Use the Rat embedding: a.val < b.val in Rat. Each `succ` step strictly increases the Rat value (a.val < succ(a).val). The sequence a.val, succ(a).val, succ^2(a).val, ... is strictly increasing in Rat and bounded above by b.val. Since Rat is Archimedean, finitely many steps suffice. Alternative: use `Fintype.card` of `Set.Icc a b` in the LimitDomSubtype order (finite since discrete + bounded).
+- [ ] Prove `limitDomSubtype_isSuccArchimedean`: **HAS SORRY -- PLAN REVISION RECOMMENDED**. After extensive analysis, the dom_N cardinality measure approach fails because changing N to accommodate `pred(b)` can increase the measure. All alternative approaches (Rat distance, omega chain stage induction, pigeonhole, convergence in R) either fail or require substantial real analysis infrastructure (~100+ lines). The research report's Approach A (build countermodel directly on LimitDomSubtype, bypassing Z-iso) is the recommended path. See `.handoff-succ-arch.md` for detailed analysis.
 
 *Z-isomorphism (~10 lines)*:
-- [ ] Define `discrete_iso`: `LimitDomSubtype A h_mcs ≃o Int` via `orderIsoIntOfLinearSuccPredArch`. Verify all prerequisites: `LinearOrder` (inherited), `SuccOrder`, `PredOrder`, `IsSuccArchimedean`, `NoMaxOrder` (existing), `NoMinOrder` (existing), `Nonempty` (existing).
+- [x] Define `discrete_iso`: `LimitDomSubtype A h_mcs ≃o Int` via `orderIsoIntOfLinearSuccPredArch`. Compiles (pending IsSuccArchimedean sorry).
 
 *FMCS on Int (~30 lines)*:
-- [ ] Define `discrete_f : Int -> Set Formula := fun n => limit_f (discrete_iso.symm n).val`
-- [ ] Prove `discrete_f_is_mcs`, `discrete_f_at_zero`
-- [ ] Define `discrete_fmcs : FMCS Int` with `forward_G`/`backward_H` from `limit_forward_G`/`limit_backward_H` transported via `discrete_iso.symm.strictMono` (same pattern as `cantor_fmcs`)
+- [x] Define `discrete_f : Int -> Set Formula := fun n => limit_f (discrete_iso.symm n).val`
+- [x] Prove `discrete_f_is_mcs`, `discrete_f_at_zero`
+- [x] Define `discrete_fmcs : FMCS Int` with `forward_G`/`backward_H` from `limit_forward_G`/`limit_backward_H` transported via `discrete_iso.symm.strictMono`
 
-- [ ] Run `lake build ...ChronicleToCountermodel` to verify
+- [x] Run `lake build ...ChronicleToCountermodel` to verify (builds with 1 sorry in IsSuccArchimedean)
 
 **Timing**: 4 hours
 

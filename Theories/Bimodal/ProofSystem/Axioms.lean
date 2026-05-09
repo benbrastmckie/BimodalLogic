@@ -32,7 +32,7 @@ requiring successor-chain constructions.
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 35 axiom constructors
+**Total**: 43 axiom constructors (39 base + 4 uniformity)
 
 ### Key Properties
 
@@ -56,11 +56,12 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-41 constructors organized into four layers:
+43 constructors organized into five layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (26 + 2 enrichment): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (28): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (2): Modal-temporal interaction axioms
+- **Uniformity** (4): Discreteness uniformity axioms (valid on all ordered abelian groups)
 
 All axioms are valid on all linear temporal orders (base frame class).
 -/
@@ -327,6 +328,38 @@ inductive Axiom : Formula → Type where
 
   /-- Temporal-Future: `□φ → G(□φ)`. Necessary truths will always be necessary. -/
   | temp_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.all_future (Formula.box φ)))
+
+  -- Layer 5: Uniformity Axioms (4)
+  -- These encode the uniformity of discreteness in ordered abelian groups.
+  -- U(⊤,⊥) = "next top" witnesses an immediate successor (gap of size d > 0).
+  -- By translation invariance of the group, this gap is uniform across all time points.
+
+  /-- Discrete symmetry forward: U(⊤,⊥) → S(⊤,⊥).
+  If there is a gap of size d ahead (no points in (t, t+d)), then by translation
+  invariance there is the same gap behind (no points in (t-d, t)). -/
+  | discrete_symm_fwd :
+      Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+        (Formula.snce (Formula.bot.imp Formula.bot) Formula.bot))
+
+  /-- Discrete symmetry backward: S(⊤,⊥) → U(⊤,⊥).
+  Mirror of discrete_symm_fwd: a backward gap implies a forward gap. -/
+  | discrete_symm_bwd :
+      Axiom ((Formula.snce (Formula.bot.imp Formula.bot) Formula.bot).imp
+        (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot))
+
+  /-- Discrete propagation forward: U(⊤,⊥) → G(U(⊤,⊥)).
+  If there is a gap of size d at t, then by translation invariance the same gap
+  exists at every future point s > t (translate by s-t). -/
+  | discrete_propagate_fwd :
+      Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+        (Formula.all_future (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
+
+  /-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)).
+  If there is a gap of size d at t, then by translation invariance the same gap
+  exists at every past point s < t. -/
+  | discrete_propagate_bwd :
+      Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+        (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
 
   deriving Repr
 
