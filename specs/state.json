@@ -6,9 +6,32 @@
   },
   "active_projects": [
     {
+      "project_number": 118,
+      "project_name": "prove_issucc_archimedean_discrete_completeness",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "high",
+      "description": "Prove limitDomSubtype_isSuccArchimedean to eliminate the remaining sorry in the discrete branch of bx_completeness. Three candidate approaches from task 117 Phase 6 analysis: (1) Show each C5 elimination produces a unique immediate successor advancing toward r, bounding the chain; (2) Cardinality argument on C5 counterexamples affecting (q,r); (3) Characterize limit_dom directly as Z-ordered from discrete semantics axioms, bypassing the omega chain construction. Prior research (14+ rounds) exhausted WF measure approaches. The sorry is at ChronicleToCountermodel.lean:~554.",
+      "dependencies": [
+        117
+      ],
+      "created": "2026-05-09T20:53:33Z",
+      "last_updated": "2026-05-09T22:49:29Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/118_prove_issucc_archimedean_discrete_completeness/reports/01_issucc-archimedean-research.md",
+          "type": "report",
+          "summary": "Research report on IsSuccArchimedean proof strategies for discrete completeness"
+        }
+      ],
+      "session_id": "sess_1778363512_55d73f",
+      "researched": "2026-05-09T22:49:29Z"
+    },
+    {
       "project_number": 117,
       "project_name": "remove_cantor_iso_build_model_on_limit_dom",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "description": "Replace Cantor iso (bijection, requires DenselyOrdered) with natural inclusion X ⊂ Q (injection, requires nothing). Archive density case + Cantor pathway to Boneyard/DenseChronicle/. Extend limit_f to all of Q. D = Q as before. Eliminates last Chronicle sorry (CE:3570).",
@@ -16,8 +39,8 @@
         107
       ],
       "created": "2026-05-08T20:40:46Z",
-      "last_updated": "2026-05-09T20:02:50Z",
-      "session_id": "sess_1778287971_9ba442",
+      "last_updated": "2026-05-09T21:58:15Z",
+      "session_id": "sess_1778363834_9eead2",
       "researched": "2026-05-09T00:28:53Z",
       "next_artifact_number": 4,
       "artifacts": [
@@ -1217,7 +1240,7 @@
       ]
     }
   ],
-  "next_project_number": 118,
+  "next_project_number": 119,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
