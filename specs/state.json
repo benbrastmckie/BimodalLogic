@@ -11,15 +11,15 @@
       "status": "researched",
       "task_type": "lean4",
       "priority": "high",
-      "description": "Remove Cantor isomorphism from ChronicleToCountermodel.lean and build the countermodel directly on the limit domain (LimitDomSubtype) instead of mapping to Rat. This eliminates the DenselyOrdered requirement, which is an implementation artifact not needed by Burgess 1982. Closes the last sorry in the Chronicle module (SetConsistent g in density case at CE:3570). The truth lemma works on any linear order — gaps with g=Set.univ are handled vacuously. The current Cantor iso requires density, which requires g-value consistency, which is unprovable from CUD-maximality. Building directly on limit_dom avoids all of this.",
+      "description": "Remove Cantor iso and density case from base logic chronicle. Burgess 1982 produces discrete limit domain X for base logic; density only needed for dense variant F'T. Embed X ≅ Z (AddCommGroup), use existing parametric infrastructure with D = Z. Relocate Cantor iso to dense variant (task 68). Single semantics — no dual truth definitions.",
       "dependencies": [
         107
       ],
       "created": "2026-05-08T20:40:46Z",
-      "last_updated": "2026-05-08T23:13:48Z",
-      "session_id": "sess_1778281419_eb0dd8",
-      "researched": "2026-05-08T23:13:48Z",
-      "next_artifact_number": 3,
+      "last_updated": "2026-05-09T00:28:53Z",
+      "session_id": "sess_1778285831_8f4986",
+      "researched": "2026-05-09T00:28:53Z",
+      "next_artifact_number": 4,
       "artifacts": [
         {
           "path": "specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/01_team-research.md",
@@ -30,6 +30,11 @@
           "path": "specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/02_team-research.md",
           "type": "research",
           "summary": "Round 2: generalize parametric infrastructure analysis"
+        },
+        {
+          "path": "specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Round 3: discreteness analysis, CE refactoring, natural inclusion approach"
         }
       ]
     },

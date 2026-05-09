@@ -78,7 +78,7 @@ technical_debt:
 - **Dependencies**: 107
 - **Research**: [specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/01_team-research.md]
 
-**Description**: Remove Cantor isomorphism from ChronicleToCountermodel.lean and build the countermodel directly on `LimitDomSubtype` instead of mapping to ℚ. Eliminates the `DenselyOrdered` requirement (implementation artifact, not needed by Burgess 1982). Closes the last sorry in the Chronicle module (`SetConsistent g` in density case at CE:3570). The truth lemma works on any linear order — gaps with `g = Set.univ` are handled vacuously.
+**Description**: Remove Cantor isomorphism and density counterexample elimination from the base logic chronicle. Burgess 1982 produces a discrete limit domain X for the base logic (no density axiom); density elimination is only needed for the dense variant (F'⊤). Embed X ≅ ℤ (countable discrete linear order without endpoints ≅ ℤ), which has `AddCommGroup`. Use the existing parametric infrastructure with D = ℤ. Relocate Cantor iso and `DenselyOrdered` to the dense variant (task 68). Eliminates the last sorry in the Chronicle module (`SetConsistent g` in density case at CE:3570 — sorry becomes dead code). Single semantics throughout: no dual truth definitions, no `bfmcs_truth_at`, no `SimpleFrame`.
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
