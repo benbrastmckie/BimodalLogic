@@ -8,7 +8,7 @@
     {
       "project_number": 117,
       "project_name": "remove_cantor_iso_build_model_on_limit_dom",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "description": "Replace Cantor iso (bijection, requires DenselyOrdered) with natural inclusion X ⊂ Q (injection, requires nothing). Archive density case + Cantor pathway to Boneyard/DenseChronicle/. Extend limit_f to all of Q. D = Q as before. Eliminates last Chronicle sorry (CE:3570).",
@@ -16,8 +16,8 @@
         107
       ],
       "created": "2026-05-08T20:40:46Z",
-      "last_updated": "2026-05-09T00:28:53Z",
-      "session_id": "sess_1778285831_8f4986",
+      "last_updated": "2026-05-09T00:48:32Z",
+      "session_id": "sess_1778287120_9bfb9d",
       "researched": "2026-05-09T00:28:53Z",
       "next_artifact_number": 4,
       "artifacts": [
@@ -35,6 +35,11 @@
           "path": "specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/03_team-research.md",
           "type": "research",
           "summary": "Round 3: discreteness analysis, CE refactoring, natural inclusion approach"
+        },
+        {
+          "path": "specs/117_remove_cantor_iso_build_model_on_limit_dom/plans/03_natural-inclusion-refactor.md",
+          "type": "plan",
+          "summary": "5-phase plan: archive density, remove from CE, replace Cantor iso with natural inclusion"
         }
       ]
     },
