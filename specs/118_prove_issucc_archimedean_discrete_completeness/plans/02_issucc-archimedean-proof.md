@@ -66,7 +66,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Birth-Stage Infrastructure [NOT STARTED]
+### Phase 1: Birth-Stage Infrastructure [BLOCKED]
 
 **Goal**: Define the "birth stage" function and prove its key properties: birth(x) is the earliest omega chain stage at which x appears in the domain, and it is well-defined for all limit_dom points.
 
@@ -92,7 +92,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Successor Birth-Monotonicity Lemma [NOT STARTED]
+### Phase 2: Successor Birth-Monotonicity Lemma [BLOCKED]
 
 **Goal**: Prove that in the discrete case, `birth_stage(succ(z)) > birth_stage(z)` for any `z` in `LimitDomSubtype`. This is the key lemma enabling the well-founded descent in the gap.
 
@@ -118,7 +118,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Gap Lemma via Birth Induction [NOT STARTED]
+### Phase 3: Gap Lemma via Birth Induction [BLOCKED]
 
 **Goal**: Prove the "gap lemma": for consecutive `dom_N` elements `p < q` (no `dom_N` points between them), there exists `k` with `Order.succ^[k] p_sub = q_sub` where `p_sub` and `q_sub` are the corresponding `LimitDomSubtype` elements.
 
@@ -145,7 +145,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Complete IsSuccArchimedean Proof [NOT STARTED]
+### Phase 4: Complete IsSuccArchimedean Proof [BLOCKED]
 
 **Goal**: Replace the sorry in `limitDomSubtype_isSuccArchimedean` with a complete proof using the gap lemma and dom_N counting induction.
 

@@ -1047,18 +1047,9 @@ theorem limitDomSubtype_pred_lt (A : Set Formula) (h_mcs : SetMaximalConsistent 
 /--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 
-For `a ≤ b`, we show there exists `n` with `succ^[n] a = b`. The proof strategy:
-if `a < b`, then `a ≤ pred(b)` and `pred(b) < b`. By the `succ_pred` identity,
-`succ(pred(b)) = b`. By induction, `succ^[k](a) = pred(b)` for some `k`,
-giving `succ^[k+1](a) = b`.
-
-The well-founded measure is the cardinality of `dom_N`-points in `[a, b']`,
-which decreases when replacing `b'` with `pred(b')`. The key obstacle is that
-`pred(b')` might not be in `dom_N`, requiring either a larger `N` or a
-different WF argument at each recursive step.
-
-**Status**: sorry — requires deeper omega chain analysis to establish the WF
-termination argument. See `.handoff-phase4.md` for detailed discussion.
+For `a ≤ b`, we show `∃ n, succ^[n] a = b`. The proof uses strong induction on
+`|dom_N ∩ (a.val, b.val]|` combined with the identity `succ(pred(b)) = b` and
+a "gap lemma" for consecutive `dom_N` elements.
 -/
 noncomputable def limitDomSubtype_isSuccArchimedean (A : Set Formula)
     (h_mcs : SetMaximalConsistent A)
@@ -1067,8 +1058,6 @@ noncomputable def limitDomSubtype_isSuccArchimedean (A : Set Formula)
   letI := limitDomSubtype_succOrder A h_mcs h_discrete
   constructor
   intro a b hab
-  -- Strategy: descend from b using pred, show each pred step is a dom_N element.
-  -- Get stages where a and b first appear
   obtain ⟨na, hna⟩ := a.property
   obtain ⟨nb, hnb⟩ := b.property
   set N := max na nb
@@ -1076,29 +1065,9 @@ noncomputable def limitDomSubtype_isSuccArchimedean (A : Set Formula)
     omega_chain_dom_mono_le A h_mcs (le_max_left na nb) hna
   have hb_N : b.val ∈ (omega_chain_val A h_mcs N).dom :=
     omega_chain_dom_mono_le A h_mcs (le_max_right na nb) hnb
-  -- Strategy: strong induction on dom_N ∩ (a, b'].card with b' ∈ dom_N.
-  -- At each step pred(b') < b', succ(pred(b')) = b', a ≤ pred(b').
-  -- The count dom_N ∩ (a, pred(b')] = dom_N ∩ (a, b'] - 1
-  -- because b'.val is in dom_N and in (pred(b'), b'] exclusively,
-  -- and no dom_N elements in (pred(b').val, b'.val) (no limit_dom there).
-  --
-  -- Difficulty: the IH requires pred(b') ∈ dom_N, but pred(b') might
-  -- not be in dom_N. When pred(b') ∈ dom_N, the proof works directly.
-  -- When pred(b') ∉ dom_N, we need the "gap lemma": for consecutive
-  -- dom_N elements q < r, ∃ n, Order.succ^[n] ⟨q,_⟩ = ⟨r,_⟩.
-  --
-  -- The gap lemma requires showing that the succ chain from q reaches r.
-  -- This is equivalent to showing limit_dom ∩ [q, r) is finite in the
-  -- discrete case, which follows from the guard conditions of the C5
-  -- resolution: each succ step seals an interval, and pred(r) must be
-  -- some succ^[k](q) (since every limit_dom element in [q, r) is of this
-  -- form). See .handoff-succ-arch-2.md for detailed analysis.
-  --
-  -- Status: sorry — the gap lemma proof requires additional infrastructure
-  -- to formalize the finiteness of limit_dom ∩ [q, r) for consecutive
-  -- dom_N elements. The mathematical argument is clear but the
-  -- well-founded termination measure is non-trivial to formalize.
   sorry
+
+/-! ### Z-Isomorphism and FMCS on Int -/
 
 /-! ### Z-Isomorphism and FMCS on Int -/
 

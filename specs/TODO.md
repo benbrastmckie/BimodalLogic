@@ -75,7 +75,7 @@ technical_debt:
 
 ### 118. Prove IsSuccArchimedean for discrete completeness branch
 - **Effort**: 10-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: 117
 - **Research**:
