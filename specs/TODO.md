@@ -45,7 +45,7 @@ technical_debt:
 
 ### 2. IsSuccArchimedean Resolution (parallel tracks)
 
-- **119** [PLANNED] — Direct connectivity proof for IsSuccArchimedean (depends on 118)
+- **119** [IMPLEMENTING] — Direct connectivity proof for IsSuccArchimedean (depends on 118)
 - **120** [RESEARCHED] — Semantic foundation redesign for natural group structure (independent)
 
 ### 3. Independent Completeness Paths (parallel)
@@ -88,7 +88,7 @@ technical_debt:
 
 ### 119. Prove IsSuccArchimedean via direct connectivity extraction
 - **Effort**: 10-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**: [specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md]
 - **Task Type**: lean4
 - **Dependencies**: 118

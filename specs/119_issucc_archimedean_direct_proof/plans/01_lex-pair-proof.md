@@ -61,7 +61,7 @@ This task closes the `limitDomSubtype_isSuccArchimedean` sorry in ChronicleToCou
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Birth-Stage Infrastructure [NOT STARTED]
+### Phase 1: Birth-Stage Infrastructure [BLOCKED]
 
 **Goal**: Define the birth_stage function and prove its basic properties (spec, minimality, monotonicity with respect to domain membership).
 
@@ -86,7 +86,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Birth-Monotonicity Lemma [NOT STARTED]
+### Phase 2: Birth-Monotonicity Lemma [BLOCKED]
 
 **Goal**: Prove `succ_birth_gt`: `birth_stage(succ(z)) > birth_stage(z)` for any `z : LimitDomSubtype`. This is the key enabling lemma for the main theorem.
 
@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Main IsSuccArchimedean Theorem via Lex-Pair Induction [NOT STARTED]
+### Phase 3: Main IsSuccArchimedean Theorem via Lex-Pair Induction [BLOCKED]
 
 **Goal**: Complete the `limitDomSubtype_isSuccArchimedean` proof by replacing the sorry with well-founded induction on the lexicographic pair `(domN_count, birth_stage)`.
 
