@@ -1260,7 +1260,7 @@
     {
       "project_number": 119,
       "project_name": "issucc_archimedean_direct_proof",
-      "status": "researching",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "description": "Prove limitDomSubtype_isSuccArchimedean directly by extracting connectivity from the omega chain construction. 16+ research rounds and one implementation attempt have failed to find a working well-founded measure. The birth-monotonicity approach (birth(succ(z)) > birth(z)) was disproven during implementation. New approaches to explore: (A) Prove Set.Finite (limit_dom ∩ [a,b]) via monotone convergence + predecessor contradiction (the dual-chain argument from Teammate C closes the L∈S case); (B) Find a correct lexicographic WF measure; (C) Analyze counterexample enumeration to bound gap sizes; (D) Exploit the fact that condition (i) for U(T,bot) is NEVER satisfied — succ is always the midpoint (x+x)/2. The sorry is at ChronicleToCountermodel.lean:~1068.",
@@ -1268,18 +1268,13 @@
         118
       ],
       "created": "2026-05-10T05:19:09Z",
-      "last_updated": "2026-05-10T23:32:26Z",
+      "last_updated": "2026-05-10T23:43:10Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
           "path": "specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md",
           "type": "report",
           "summary": "Lex-pair WF measure strategy with birth-monotonicity proof"
-        },
-        {
-          "path": "specs/119_issucc_archimedean_direct_proof/plans/01_lex-pair-proof.md",
-          "type": "plan",
-          "summary": "3-phase lex-pair WF induction plan for IsSuccArchimedean"
         },
         {
           "path": "specs/119_issucc_archimedean_direct_proof/reports/02_topological-research.md",
@@ -1330,9 +1325,14 @@
           "path": "specs/119_issucc_archimedean_direct_proof/reports/06_prior-uz-implementation.md",
           "type": "report",
           "summary": "Prior-UZ implementation guide: exact Lean code, soundness proof, IsSuccArchimedean derivation strategy"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/plans/01_prior-uz-proof.md",
+          "type": "plan",
+          "summary": "Revised plan: Prior-UZ axiom approach (5 phases, ~10h)"
         }
       ],
-      "session_id": "sess_1778449535_f13ea4",
+      "session_id": "sess_1778456207_cb595a",
       "researched": "2026-05-10T05:48:55Z",
       "started": "2026-05-10T15:16:17Z"
     },
