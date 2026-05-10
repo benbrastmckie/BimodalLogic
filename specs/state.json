@@ -1256,9 +1256,37 @@
       "dependencies": [
         107
       ]
+    },
+    {
+      "project_number": 119,
+      "project_name": "issucc_archimedean_direct_proof",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "description": "Prove limitDomSubtype_isSuccArchimedean directly by extracting connectivity from the omega chain construction. 16+ research rounds and one implementation attempt have failed to find a working well-founded measure. The birth-monotonicity approach (birth(succ(z)) > birth(z)) was disproven during implementation. New approaches to explore: (A) Prove Set.Finite (limit_dom ∩ [a,b]) via monotone convergence + predecessor contradiction (the dual-chain argument from Teammate C closes the L∈S case); (B) Find a correct lexicographic WF measure; (C) Analyze counterexample enumeration to bound gap sizes; (D) Exploit the fact that condition (i) for U(T,bot) is NEVER satisfied — succ is always the midpoint (x+x)/2. The sorry is at ChronicleToCountermodel.lean:~1068.",
+      "dependencies": [
+        118
+      ],
+      "created": "2026-05-10T05:19:09Z",
+      "last_updated": "2026-05-10T05:19:09Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 120,
+      "project_name": "semantic_foundation_group_structure",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "description": "Research and design a cleaner semantic foundation where AddCommGroup structure emerges naturally from the canonical model construction, eliminating the need for IsSuccArchimedean and the Z-isomorphism. Currently valid requires AddCommGroup D (used by MF, TF, and 4 uniformity axioms for time-shift invariance), but the chronicle construction produces limit_dom ⊂ Q which is not closed under addition. Explore: (1) Whether adding operators or axioms to the logic can force the canonical model domain to carry group structure; (2) Whether ShiftClosed can be reformulated without requiring D to be a group; (3) Whether a different semantic framework (e.g., relational rather than algebraic) can validate MF/TF while remaining neutral on density/discreteness; (4) Whether the completeness theorem can be factored so AddCommGroup is only needed at the final step, not throughout the parametric infrastructure. Must maintain validity of MF (Box(phi)->Box(G(phi))) and remain neutral on density and discreteness axioms to support both extensions.",
+      "dependencies": [],
+      "created": "2026-05-10T05:19:09Z",
+      "last_updated": "2026-05-10T05:19:09Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 119,
+  "next_project_number": 121,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

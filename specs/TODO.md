@@ -43,6 +43,11 @@ technical_debt:
 4. **118** [RESEARCHED] — Prove IsSuccArchimedean for discrete completeness (depends on 117)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
 
+### 2. IsSuccArchimedean Resolution (parallel tracks)
+
+- **119** [NOT STARTED] — Direct connectivity proof for IsSuccArchimedean (depends on 118)
+- **120** [NOT STARTED] — Semantic foundation redesign for natural group structure (independent)
+
 ### 3. Independent Completeness Paths (parallel)
 
 - **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
@@ -72,6 +77,21 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
 
 ## Tasks
+
+### 120. Research semantic foundation for natural group structure
+- **Effort**: 8-15 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Research and design a cleaner semantic foundation where `AddCommGroup` structure emerges naturally from the canonical model construction, eliminating the need for `IsSuccArchimedean` and the ℤ-isomorphism. Currently `valid` requires `AddCommGroup D` (used by MF, TF, and 4 uniformity axioms for time-shift invariance), but the chronicle construction produces `limit_dom ⊂ ℚ` which is not closed under addition. Explore: (1) Whether adding operators or axioms to the logic can force the canonical model domain to carry group structure; (2) Whether `ShiftClosed` can be reformulated without requiring D to be a group; (3) Whether a different semantic framework (e.g., relational rather than algebraic) can validate MF/TF while remaining neutral on density/discreteness; (4) Whether the completeness theorem can be factored so `AddCommGroup` is only needed at the final step. Must maintain validity of MF (`Box(φ) → Box(G(φ))`) and remain neutral on density and discreteness axioms.
+
+### 119. Prove IsSuccArchimedean via direct connectivity extraction
+- **Effort**: 10-20 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 118
+
+**Description**: Prove `limitDomSubtype_isSuccArchimedean` directly by extracting connectivity from the omega chain construction. 16+ research rounds and one implementation attempt have failed to find a working WF measure. Birth-monotonicity (`birth(succ(z)) > birth(z)`) was disproven. New approaches: (A) Prove `Set.Finite (limit_dom ∩ [a,b])` via dual-chain convergence + predecessor contradiction; (B) Find a correct lexicographic WF measure; (C) Analyze counterexample enumeration to bound gap sizes; (D) Exploit the fact that condition (i) for `U(⊤,⊥)` is NEVER satisfied — succ is always the midpoint `(x+x')/2`. The sorry is at `ChronicleToCountermodel.lean:~1068`.
 
 ### 118. Prove IsSuccArchimedean for discrete completeness branch
 - **Effort**: 10-20 hours
