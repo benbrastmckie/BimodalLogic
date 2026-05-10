@@ -45,7 +45,7 @@ technical_debt:
 
 ### 2. IsSuccArchimedean Resolution (parallel tracks)
 
-- **119** [RESEARCHED] — Direct connectivity proof for IsSuccArchimedean (depends on 118)
+- **119** [PLANNED] — Direct connectivity proof for IsSuccArchimedean (depends on 118)
 - **120** [RESEARCHED] — Semantic foundation redesign for natural group structure (independent)
 
 ### 3. Independent Completeness Paths (parallel)
@@ -88,10 +88,11 @@ technical_debt:
 
 ### 119. Prove IsSuccArchimedean via direct connectivity extraction
 - **Effort**: 10-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Research**: [specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md]
 - **Task Type**: lean4
 - **Dependencies**: 118
+- **Plan**: [119_issucc_archimedean_direct_proof/plans/01_lex-pair-proof.md]
 
 **Description**: Prove `limitDomSubtype_isSuccArchimedean` directly by extracting connectivity from the omega chain construction. 16+ research rounds and one implementation attempt have failed to find a working WF measure. Birth-monotonicity (`birth(succ(z)) > birth(z)`) was disproven. New approaches: (A) Prove `Set.Finite (limit_dom ∩ [a,b])` via dual-chain convergence + predecessor contradiction; (B) Find a correct lexicographic WF measure; (C) Analyze counterexample enumeration to bound gap sizes; (D) Exploit the fact that condition (i) for `U(⊤,⊥)` is NEVER satisfied — succ is always the midpoint `(x+x')/2`. The sorry is at `ChronicleToCountermodel.lean:~1068`.
 
