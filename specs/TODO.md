@@ -75,12 +75,13 @@ technical_debt:
 
 ### 118. Prove IsSuccArchimedean for discrete completeness branch
 - **Effort**: 10-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: 117
 - **Research**:
   - [specs/118_prove_issucc_archimedean_discrete_completeness/reports/01_issucc-archimedean-research.md]
   - [specs/118_prove_issucc_archimedean_discrete_completeness/reports/02_team-research.md]
+- **Plan**: [118_prove_issucc_archimedean_discrete_completeness/plans/02_issucc-archimedean-proof.md]
 
 **Description**: Prove `limitDomSubtype_isSuccArchimedean` to eliminate the remaining sorry in the discrete branch of `bx_completeness` (at ChronicleToCountermodel.lean:~554). Task 117 Phase 6 analysis confirmed NO-GO for direct omega chain structural arguments after 14+ research rounds exhausted all WF measure approaches. Three candidate approaches remain: (1) Show each C5 elimination produces a unique immediate successor advancing toward `r`, bounding the chain in `(q,r)`; (2) Cardinality argument on C5 counterexamples affecting `(q,r)`; (3) Characterize `limit_dom` directly as Z-ordered from discrete semantics axioms, bypassing the omega chain construction entirely. Approach 3 is the most promising: the Kripke frame semantics of the discrete axiom system may directly imply the countermodel domain is isomorphic to Z.
 
