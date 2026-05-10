@@ -1268,8 +1268,8 @@
         118
       ],
       "created": "2026-05-10T05:19:09Z",
-      "last_updated": "2026-05-10T22:59:37Z",
-      "next_artifact_number": 5,
+      "last_updated": "2026-05-10T23:17:41Z",
+      "next_artifact_number": 6,
       "artifacts": [
         {
           "path": "specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md",
@@ -1300,6 +1300,31 @@
           "path": "specs/119_issucc_archimedean_direct_proof/reports/04_zchain-bypass-research.md",
           "type": "report",
           "summary": "Z-chain bypass NOT more tractable; F-obligation preservation same problem as 37 prior approaches"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/05_team-research.md",
+          "type": "report",
+          "summary": "BREAKTHROUGH: ZxZ counterexample proves IsSuccArchimedean mathematically impossible under current axioms. Prior-UZ must be added."
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/05_teammate-a-findings.md",
+          "type": "report",
+          "summary": "Reynolds deep dive: never constructs Z-iso, uses k-equivalence only"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/05_teammate-b-findings.md",
+          "type": "report",
+          "summary": "Venema deep dive: W=Prior-UZ, Lemma 4.1 prevents gaps"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/05_teammate-c-findings.md",
+          "type": "report",
+          "summary": "Codebase mapping: zero Reynolds/Venema infrastructure exists"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/05_teammate-d-findings.md",
+          "type": "report",
+          "summary": "ZxZ counterexample + principled architecture recommendation"
         }
       ],
       "session_id": "sess_1778449535_f13ea4",
