@@ -39,8 +39,8 @@ technical_debt:
 
 1. **113** [COMPLETED] — Open guard refactoring for Until/Since semantics
 2. **107** [COMPLETED] — Burgess chronicle construction for BX representation theorem (depends on 113)
-3. **117** [IMPLEMENTING] — Remove Cantor iso, build countermodel on limit domain (depends on 107)
-4. **118** [RESEARCHED] — Prove IsSuccArchimedean for discrete completeness (depends on 117)
+3. **117** [COMPLETED] — Remove Cantor iso, build countermodel on limit domain (depends on 107)
+4. **118** [RESEARCHING] — Prove IsSuccArchimedean for discrete completeness (depends on 117)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
 
 ### 3. Independent Completeness Paths (parallel)
@@ -75,7 +75,7 @@ technical_debt:
 
 ### 118. Prove IsSuccArchimedean for discrete completeness branch
 - **Effort**: 10-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Dependencies**: 117
 - **Research**: [specs/118_prove_issucc_archimedean_discrete_completeness/reports/01_issucc-archimedean-research.md]
@@ -84,7 +84,8 @@ technical_debt:
 
 ### 117. Remove Cantor isomorphism and build countermodel on limit domain
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Summary**: Dense BFMCS, coherence, and countermodel built sorry-free. bx_completeness restructured with Box(F'T) case split. Dense branch sorry-free; non-dense branch has documented sorry. 2 known sorries remain (non-dense branch + IsSuccArchimedean).
 - **Task Type**: lean4
 - **Dependencies**: 107
 - **Research**: [specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/01_team-research.md]

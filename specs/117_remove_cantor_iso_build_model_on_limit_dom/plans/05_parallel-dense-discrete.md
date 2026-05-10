@@ -1,7 +1,7 @@
 # Implementation Plan: Parallel Dense/Discrete Completeness (v2)
 
 - **Task**: 117 - Remove Cantor isomorphism and build countermodel on limit domain
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 20 hours
 - **Dependencies**: 107 (completed)
 - **Research Inputs**: reports/04_extension-blocker-research.md, reports/05_dense-case-research.md, reports/05_discrete-case-research.md, reports/05_axiom-soundness-research.md, reports/05_critic-review.md, reports/07_succ-archimedean-research.md, reports/08_discrete-alternative-research.md, reports/10_z-shift-research.md, reports/11_gap-lemma-research.md, reports/12_wf-measure-research.md, reports/14_formula-counting-research.md
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel. Track A = Phases 1-5, Track
 
 ---
 
-### Phase 2: Dense Restricted Coherence [PARTIAL]
+### Phase 2: Dense Restricted Coherence [COMPLETED]
 
 **Goal**: Prove the three restricted temporal coherence properties for `cantor_bfmcs_dense`: `restricted_tc`, `restricted_buc`, `restricted_fuc`.
 

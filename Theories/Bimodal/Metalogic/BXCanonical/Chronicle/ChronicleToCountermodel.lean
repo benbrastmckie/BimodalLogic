@@ -597,12 +597,44 @@ theorem cantor_bfmcs_dense_restricted_tc (A : Set Formula) (h_mcs : SetMaximalCo
     (root : Formula)
     (_ : ∀ ψ, ψ ∈ deferralClosure root → ψ ∈ (extendedDeferralClosure root).toList) :
     (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_temporally_coherent root := by
-  -- Each family is rooted_cantor_fmcs_dense N h_N h_box_N s, internally using
-  -- cantor_f_dense N h_N h_dense_N through cantor_iso_dense. The F/P resolution
-  -- transfers through the Cantor iso from limit_F_resolution/limit_P_resolution.
-  -- Proof strategy: unfold to limit_f coordinates, apply limit_F/P_resolution,
-  -- transfer witness back through iso.
-  sorry
+  intro fam hfam
+  obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
+  set h_dense_N := box_dense_gives_density N h_N h_box_N
+  set iso := cantor_iso_dense N h_N h_dense_N
+  set offset := cantor_zero_dense N h_N h_dense_N - s
+  constructor
+  · -- Forward F direction: F(φ) ∈ fam.mcs(t) → ∃ s > t, φ ∈ fam.mcs(s)
+    intro t φ _ h_F
+    simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_F ⊢
+    have h_mem := (iso.symm (t + offset)).property
+    have h_F' : φ.some_future ∈ limit_f N h_N (iso.symm (t + offset)).val := h_F
+    obtain ⟨y, hy, hlt, hφy⟩ := limit_F_resolution N h_N (iso.symm (t + offset)).val h_mem φ h_F'
+    refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_⟩
+    · have h1 : iso (iso.symm (t + offset)) < iso ⟨y, hy⟩ := iso.strictMono hlt
+      simp [OrderIso.apply_symm_apply] at h1
+      linarith
+    · show φ ∈ cantor_f_dense N h_N h_dense_N (iso ⟨y, hy⟩ - offset + offset)
+      have h_eq : iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ := by ring
+      rw [h_eq]
+      show φ ∈ limit_f N h_N (iso.symm (iso ⟨y, hy⟩)).val
+      simp [OrderIso.symm_apply_apply]
+      exact hφy
+  · -- Backward P direction: P(φ) ∈ fam.mcs(t) → ∃ s < t, φ ∈ fam.mcs(s)
+    intro t φ _ h_P
+    simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_P ⊢
+    have h_mem := (iso.symm (t + offset)).property
+    have h_P' : φ.some_past ∈ limit_f N h_N (iso.symm (t + offset)).val := h_P
+    obtain ⟨y, hy, hlt, hφy⟩ := limit_P_resolution N h_N (iso.symm (t + offset)).val h_mem φ h_P'
+    refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_⟩
+    · have h1 : iso ⟨y, hy⟩ < iso (iso.symm (t + offset)) := iso.strictMono hlt
+      simp [OrderIso.apply_symm_apply] at h1
+      linarith
+    · show φ ∈ cantor_f_dense N h_N h_dense_N (iso ⟨y, hy⟩ - offset + offset)
+      have h_eq : iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ := by ring
+      rw [h_eq]
+      show φ ∈ limit_f N h_N (iso.symm (iso ⟨y, hy⟩)).val
+      simp [OrderIso.symm_apply_apply]
+      exact hφy
 
 /--
 Restricted backward Until/Since coherence for `cantor_bfmcs_dense`.
@@ -613,10 +645,68 @@ a contradiction via an intermediate point where the guard fails.
 theorem cantor_bfmcs_dense_restricted_buc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_box_dense : Formula.box next_top.neg ∈ A) (root : Formula) :
     (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_backward_until_since_coherent root := by
-  -- By contradiction: if ¬U(φ,ψ) ∈ f(t) and the witness pattern holds,
-  -- C4/C4' gives an intermediate point z where the guard fails, contradicting
-  -- the guard hypothesis. Transfer through cantor_iso_dense.
-  sorry
+  intro fam hfam
+  obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
+  set h_dense_N := box_dense_gives_density N h_N h_box_N
+  set iso := cantor_iso_dense N h_N h_dense_N
+  set offset := cantor_zero_dense N h_N h_dense_N - s
+  constructor
+  · -- Until backward: contrapositive via C4
+    intro t φ ψ _ ⟨u, htu, hφu, h_guard⟩
+    by_contra h_not_until
+    simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_not_until hφu h_guard
+    have h_neg_until : (Formula.untl φ ψ).neg ∈ cantor_f_dense N h_N h_dense_N (t + offset) := by
+      rcases SetMaximalConsistent.negation_complete (cantor_f_dense_is_mcs N h_N h_dense_N (t + offset))
+        (Formula.untl φ ψ) with h | h
+      · exact absurd h h_not_until
+      · exact h
+    set xt := iso.symm (t + offset); set xu := iso.symm (u + offset)
+    obtain ⟨z, hz, hxtz, hzxu, hψneg⟩ := limit_satisfies_c4 N h_N
+      xt.val xu.val xt.property xu.property
+      (iso.symm.strictMono (show t + offset < u + offset by linarith))
+      ψ φ h_neg_until hφu
+    have htr : t < iso ⟨z, hz⟩ - offset := by
+      have h1 : iso (iso.symm (t + offset)) < iso ⟨z, hz⟩ :=
+        iso.strictMono (show iso.symm (t + offset) < ⟨z, hz⟩ from hxtz)
+      rw [OrderIso.apply_symm_apply] at h1; linarith
+    have hru : iso ⟨z, hz⟩ - offset < u := by
+      have h1 : iso ⟨z, hz⟩ < iso (iso.symm (u + offset)) :=
+        iso.strictMono (show ⟨z, hz⟩ < iso.symm (u + offset) from hzxu)
+      rw [OrderIso.apply_symm_apply] at h1; linarith
+    have hψneg' : ψ.neg ∈ cantor_f_dense N h_N h_dense_N (iso ⟨z, hz⟩) := by
+      show ψ.neg ∈ limit_f N h_N (iso.symm (iso ⟨z, hz⟩)).val
+      simp [OrderIso.symm_apply_apply]; exact hψneg
+    rw [show (iso ⟨z, hz⟩ : ℚ) = iso ⟨z, hz⟩ - offset + offset by ring] at hψneg'
+    exact set_consistent_not_both (cantor_f_dense_is_mcs N h_N h_dense_N _).1 ψ
+      (h_guard _ htr hru) hψneg'
+  · -- Since backward: contrapositive via C4'
+    intro t φ ψ _ ⟨u, hut, hφu, h_guard⟩
+    by_contra h_not_since
+    simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_not_since hφu h_guard
+    have h_neg_since : (Formula.snce φ ψ).neg ∈ cantor_f_dense N h_N h_dense_N (t + offset) := by
+      rcases SetMaximalConsistent.negation_complete (cantor_f_dense_is_mcs N h_N h_dense_N (t + offset))
+        (Formula.snce φ ψ) with h | h
+      · exact absurd h h_not_since
+      · exact h
+    set xt := iso.symm (t + offset); set xu := iso.symm (u + offset)
+    obtain ⟨z, hz, huxz, hzxt, hψneg⟩ := limit_satisfies_c4' N h_N
+      xt.val xu.val xt.property xu.property
+      (iso.symm.strictMono (show u + offset < t + offset by linarith))
+      ψ φ h_neg_since hφu
+    have huz : u < iso ⟨z, hz⟩ - offset := by
+      have h1 : iso (iso.symm (u + offset)) < iso ⟨z, hz⟩ :=
+        iso.strictMono (show iso.symm (u + offset) < ⟨z, hz⟩ from huxz)
+      rw [OrderIso.apply_symm_apply] at h1; linarith
+    have hzt : iso ⟨z, hz⟩ - offset < t := by
+      have h1 : iso ⟨z, hz⟩ < iso (iso.symm (t + offset)) :=
+        iso.strictMono (show ⟨z, hz⟩ < iso.symm (t + offset) from hzxt)
+      rw [OrderIso.apply_symm_apply] at h1; linarith
+    have hψneg' : ψ.neg ∈ cantor_f_dense N h_N h_dense_N (iso ⟨z, hz⟩) := by
+      show ψ.neg ∈ limit_f N h_N (iso.symm (iso ⟨z, hz⟩)).val
+      simp [OrderIso.symm_apply_apply]; exact hψneg
+    rw [show (iso ⟨z, hz⟩ : ℚ) = iso ⟨z, hz⟩ - offset + offset by ring] at hψneg'
+    exact set_consistent_not_both (cantor_f_dense_is_mcs N h_N h_dense_N _).1 ψ
+      (h_guard _ huz hzt) hψneg'
 
 /--
 Restricted forward Until/Since coherence for `cantor_bfmcs_dense`.
@@ -627,11 +717,60 @@ making all rationals domain points (so the guard covers D = Rat).
 theorem cantor_bfmcs_dense_restricted_fuc (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_box_dense : Formula.box next_top.neg ∈ A) (root : Formula) :
     (cantor_bfmcs_dense A h_mcs h_box_dense).restricted_forward_until_since_coherent root := by
-  -- U(φ,ψ) ∈ f(t) → ∃ s > t, φ ∈ f(s) ∧ guard. Uses limit_satisfies_c5_strong
-  -- transferred through cantor_iso_dense. Since the Cantor iso bijects limit_dom
-  -- onto all of Rat, the C5 guard over limit_dom becomes a guard over all of Rat.
-  -- Mirror for Since using limit_satisfies_c5'_strong.
-  sorry
+  intro fam hfam
+  obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
+  set h_dense_N := box_dense_gives_density N h_N h_box_N
+  set iso := cantor_iso_dense N h_N h_dense_N
+  set offset := cantor_zero_dense N h_N h_dense_N - s
+  constructor
+  · -- Until forward: untl(φ,ψ) ∈ fam.mcs t → ∃ u > t, φ ∈ fam.mcs u ∧ guard
+    intro t φ ψ _ h_until
+    simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_until ⊢
+    set xt := iso.symm (t + offset)
+    obtain ⟨y, hy, hxty, hφy, h_guard⟩ := limit_satisfies_c5_strong N h_N
+      xt.val xt.property ψ φ h_until
+    refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_, ?_⟩
+    · have h1 : iso (iso.symm (t + offset)) < iso ⟨y, hy⟩ :=
+        iso.strictMono (show iso.symm (t + offset) < ⟨y, hy⟩ from hxty)
+      rw [OrderIso.apply_symm_apply] at h1; linarith
+    · show φ ∈ cantor_f_dense N h_N h_dense_N (iso ⟨y, hy⟩ - offset + offset)
+      rw [show iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ from by ring]
+      show φ ∈ limit_f N h_N (iso.symm (iso ⟨y, hy⟩)).val
+      simp [OrderIso.symm_apply_apply]; exact hφy
+    · -- Guard: all rationals between t and the witness have ψ in their MCS.
+      -- Every rational maps through iso.symm to a limit_dom point, and the
+      -- C5 guard covers all limit_dom points in the interval.
+      intro r htr hru
+      have h_lt1 : xt < iso.symm (r + offset) :=
+        iso.symm.strictMono (show t + offset < r + offset by linarith)
+      have h_lt2 : iso.symm (r + offset) < (⟨y, hy⟩ : LimitDomSubtype N h_N) := by
+        rw [show (⟨y, hy⟩ : LimitDomSubtype N h_N) = iso.symm (iso ⟨y, hy⟩) from
+          (OrderIso.symm_apply_apply iso ⟨y, hy⟩).symm]
+        exact iso.symm.strictMono (show r + offset < iso ⟨y, hy⟩ by linarith)
+      exact h_guard (iso.symm (r + offset)).val (iso.symm (r + offset)).property h_lt1 h_lt2
+  · -- Since forward: snce(φ,ψ) ∈ fam.mcs t → ∃ u < t, φ ∈ fam.mcs u ∧ guard
+    intro t φ ψ _ h_since
+    simp only [rooted_cantor_fmcs_dense, shifted_cantor_fmcs_dense'] at h_since ⊢
+    set xt := iso.symm (t + offset)
+    obtain ⟨y, hy, hyxt, hφy, h_guard⟩ := limit_satisfies_c5'_strong N h_N
+      xt.val xt.property ψ φ h_since
+    refine ⟨iso ⟨y, hy⟩ - offset, ?_, ?_, ?_⟩
+    · have h1 : iso ⟨y, hy⟩ < iso (iso.symm (t + offset)) :=
+        iso.strictMono (show (⟨y, hy⟩ : LimitDomSubtype N h_N) < iso.symm (t + offset) from hyxt)
+      rw [OrderIso.apply_symm_apply] at h1; linarith
+    · show φ ∈ cantor_f_dense N h_N h_dense_N (iso ⟨y, hy⟩ - offset + offset)
+      rw [show iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ from by ring]
+      show φ ∈ limit_f N h_N (iso.symm (iso ⟨y, hy⟩)).val
+      simp [OrderIso.symm_apply_apply]; exact hφy
+    · -- Guard: all rationals between the witness and t have ψ in their MCS.
+      intro r hyr hrt
+      have h_lt1 : (⟨y, hy⟩ : LimitDomSubtype N h_N) < iso.symm (r + offset) := by
+        rw [show (⟨y, hy⟩ : LimitDomSubtype N h_N) = iso.symm (iso ⟨y, hy⟩) from
+          (OrderIso.symm_apply_apply iso ⟨y, hy⟩).symm]
+        exact iso.symm.strictMono (show iso ⟨y, hy⟩ < r + offset by linarith)
+      have h_lt2 : iso.symm (r + offset) < xt :=
+        iso.symm.strictMono (show r + offset < t + offset by linarith)
+      exact h_guard (iso.symm (r + offset)).val (iso.symm (r + offset)).property h_lt1 h_lt2
 
 /-! ## Dense Countermodel
 

@@ -8,7 +8,7 @@
     {
       "project_number": 118,
       "project_name": "prove_issucc_archimedean_discrete_completeness",
-      "status": "researched",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "high",
       "description": "Prove limitDomSubtype_isSuccArchimedean to eliminate the remaining sorry in the discrete branch of bx_completeness. Three candidate approaches from task 117 Phase 6 analysis: (1) Show each C5 elimination produces a unique immediate successor advancing toward r, bounding the chain; (2) Cardinality argument on C5 counterexamples affecting (q,r); (3) Characterize limit_dom directly as Z-ordered from discrete semantics axioms, bypassing the omega chain construction. Prior research (14+ rounds) exhausted WF measure approaches. The sorry is at ChronicleToCountermodel.lean:~554.",
@@ -16,7 +16,7 @@
         117
       ],
       "created": "2026-05-09T20:53:33Z",
-      "last_updated": "2026-05-09T22:49:29Z",
+      "last_updated": "2026-05-09T23:52:32Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -25,13 +25,13 @@
           "summary": "Research report on IsSuccArchimedean proof strategies for discrete completeness"
         }
       ],
-      "session_id": "sess_1778363512_55d73f",
+      "session_id": "sess_1778370740_24df9f",
       "researched": "2026-05-09T22:49:29Z"
     },
     {
       "project_number": 117,
       "project_name": "remove_cantor_iso_build_model_on_limit_dom",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "description": "Replace Cantor iso (bijection, requires DenselyOrdered) with natural inclusion X ⊂ Q (injection, requires nothing). Archive density case + Cantor pathway to Boneyard/DenseChronicle/. Extend limit_f to all of Q. D = Q as before. Eliminates last Chronicle sorry (CE:3570).",
@@ -39,7 +39,7 @@
         107
       ],
       "created": "2026-05-08T20:40:46Z",
-      "last_updated": "2026-05-09T23:07:10Z",
+      "last_updated": "2026-05-10T00:02:17Z",
       "session_id": "sess_1778363834_9eead2",
       "researched": "2026-05-09T00:28:53Z",
       "next_artifact_number": 4,
@@ -70,7 +70,9 @@
           "summary": "Partial implementation: Phases 1,3,4,5,9 complete; Phase 2 partial (3 coherence sorries). Build passes."
         }
       ],
-      "started": "2026-05-09T00:54:02Z"
+      "started": "2026-05-09T00:54:02Z",
+      "completed": "2026-05-10T00:02:17Z",
+      "completion_summary": "Dense BFMCS, coherence, and countermodel built sorry-free. bx_completeness restructured with Box(F'T) case split. Dense branch sorry-free; non-dense branch has documented sorry. Full lake build passes (1097 jobs). 2 known sorries remain (non-dense branch + IsSuccArchimedean, both documented NO-GO)."
     },
     {
       "project_number": 116,
