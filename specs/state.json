@@ -8,7 +8,7 @@
     {
       "project_number": 118,
       "project_name": "prove_issucc_archimedean_discrete_completeness",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "description": "Prove limitDomSubtype_isSuccArchimedean to eliminate the remaining sorry in the discrete branch of bx_completeness. Three candidate approaches from task 117 Phase 6 analysis: (1) Show each C5 elimination produces a unique immediate successor advancing toward r, bounding the chain; (2) Cardinality argument on C5 counterexamples affecting (q,r); (3) Characterize limit_dom directly as Z-ordered from discrete semantics axioms, bypassing the omega chain construction. Prior research (14+ rounds) exhausted WF measure approaches. The sorry is at ChronicleToCountermodel.lean:~554.",
@@ -16,17 +16,22 @@
         117
       ],
       "created": "2026-05-09T20:53:33Z",
-      "last_updated": "2026-05-09T23:52:32Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-05-10T00:10:04Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/118_prove_issucc_archimedean_discrete_completeness/reports/01_issucc-archimedean-research.md",
           "type": "report",
           "summary": "Research report on IsSuccArchimedean proof strategies for discrete completeness"
+        },
+        {
+          "path": "specs/118_prove_issucc_archimedean_discrete_completeness/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research round 2 (4 teammates): birth-monotonicity strategy and dual-chain argument"
         }
       ],
       "session_id": "sess_1778370740_24df9f",
-      "researched": "2026-05-09T22:49:29Z"
+      "researched": "2026-05-10T00:10:04Z"
     },
     {
       "project_number": 117,

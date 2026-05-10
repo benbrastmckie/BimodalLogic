@@ -40,7 +40,7 @@ technical_debt:
 1. **113** [COMPLETED] — Open guard refactoring for Until/Since semantics
 2. **107** [COMPLETED] — Burgess chronicle construction for BX representation theorem (depends on 113)
 3. **117** [COMPLETED] — Remove Cantor iso, build countermodel on limit domain (depends on 107)
-4. **118** [RESEARCHING] — Prove IsSuccArchimedean for discrete completeness (depends on 117)
+4. **118** [RESEARCHED] — Prove IsSuccArchimedean for discrete completeness (depends on 117)
 5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
 
 ### 3. Independent Completeness Paths (parallel)
@@ -75,10 +75,12 @@ technical_debt:
 
 ### 118. Prove IsSuccArchimedean for discrete completeness branch
 - **Effort**: 10-20 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: 117
-- **Research**: [specs/118_prove_issucc_archimedean_discrete_completeness/reports/01_issucc-archimedean-research.md]
+- **Research**:
+  - [specs/118_prove_issucc_archimedean_discrete_completeness/reports/01_issucc-archimedean-research.md]
+  - [specs/118_prove_issucc_archimedean_discrete_completeness/reports/02_team-research.md]
 
 **Description**: Prove `limitDomSubtype_isSuccArchimedean` to eliminate the remaining sorry in the discrete branch of `bx_completeness` (at ChronicleToCountermodel.lean:~554). Task 117 Phase 6 analysis confirmed NO-GO for direct omega chain structural arguments after 14+ research rounds exhausted all WF measure approaches. Three candidate approaches remain: (1) Show each C5 elimination produces a unique immediate successor advancing toward `r`, bounding the chain in `(q,r)`; (2) Cardinality argument on C5 counterexamples affecting `(q,r)`; (3) Characterize `limit_dom` directly as Z-ordered from discrete semantics axioms, bypassing the omega chain construction entirely. Approach 3 is the most promising: the Kripke frame semantics of the discrete axiom system may directly imply the countermodel domain is isomorphic to Z.
 
