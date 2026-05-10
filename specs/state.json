@@ -1268,8 +1268,8 @@
         118
       ],
       "created": "2026-05-10T05:19:09Z",
-      "last_updated": "2026-05-10T22:10:57Z",
-      "next_artifact_number": 4,
+      "last_updated": "2026-05-10T22:59:37Z",
+      "next_artifact_number": 5,
       "artifacts": [
         {
           "path": "specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md",
@@ -1290,6 +1290,16 @@
           "path": "specs/119_issucc_archimedean_direct_proof/reports/03_team-research.md",
           "type": "report",
           "summary": "Round 3 team synthesis: ONE irreducible gap identified (R-closure of limit_dom)"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/04_reynolds-analysis.md",
+          "type": "report",
+          "summary": "Reynolds Section 10: Prior-UZ axiom W prevents gaps; adding to discrete system enables new proof path"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/04_zchain-bypass-research.md",
+          "type": "report",
+          "summary": "Z-chain bypass NOT more tractable; F-obligation preservation same problem as 37 prior approaches"
         }
       ],
       "session_id": "sess_1778449535_f13ea4",
