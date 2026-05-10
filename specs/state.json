@@ -1268,8 +1268,8 @@
         118
       ],
       "created": "2026-05-10T05:19:09Z",
-      "last_updated": "2026-05-10T19:22:08Z",
-      "next_artifact_number": 3,
+      "last_updated": "2026-05-10T22:10:57Z",
+      "next_artifact_number": 4,
       "artifacts": [
         {
           "path": "specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md",
@@ -1285,9 +1285,14 @@
           "path": "specs/119_issucc_archimedean_direct_proof/reports/02_topological-research.md",
           "type": "report",
           "summary": "Topological approach analysis: topology insufficient alone, interleaving lemma found, LocallyFiniteOrder path recommended"
+        },
+        {
+          "path": "specs/119_issucc_archimedean_direct_proof/reports/03_team-research.md",
+          "type": "report",
+          "summary": "Round 3 team synthesis: ONE irreducible gap identified (R-closure of limit_dom)"
         }
       ],
-      "session_id": "sess_1778440909_5be758",
+      "session_id": "sess_1778449535_f13ea4",
       "researched": "2026-05-10T05:48:55Z",
       "started": "2026-05-10T15:16:17Z"
     },
