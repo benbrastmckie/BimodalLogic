@@ -8,16 +8,26 @@
     {
       "project_number": 124,
       "project_name": "remove_tf_axiom_derive_from_mf",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.",
       "created": "2026-05-11T15:34:15Z",
-      "last_updated": "2026-05-11T15:34:15Z"
+      "last_updated": "2026-05-11T17:08:34Z",
+      "session_id": "sess_1778519000_9c9d89",
+      "researched": "2026-05-11T17:08:34Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/124_remove_tf_axiom_derive_from_mf/reports/01_tf-derivation-research.md",
+          "type": "research_report",
+          "summary": "Confirmed TF derivable from MF+T+Modal4; mapped ~75 references across 30+ files; 8-phase implementation strategy"
+        }
+      ]
     },
     {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove all_future (G) and all_past (H) as primitive constructors from the Formula inductive type. Define F and P as abbreviations using untl/snce with top, then G and H as negation of F/P of negation, matching Burgess 1982 section 1.1. Box remains primitive (S5 modal operator). ~3200 references across codebase. Depends on task 107 Phase 9 (convention migration).",
@@ -25,7 +35,8 @@
         107
       ],
       "created": "2026-05-08T07:17:15Z",
-      "last_updated": "2026-05-08T07:17:15Z"
+      "last_updated": "2026-05-11T17:04:11Z",
+      "session_id": "sess_1778519000_9c9d89"
     },
     {
       "project_number": 112,
@@ -494,7 +505,7 @@
     {
       "project_number": 122,
       "project_name": "discrete_bfmcs_countermodel",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "high",
       "description": "Build discrete BFMCS on Z and complete dd_countermodel_chronicle_nondense_sorry. Mirror the dense case pattern: use discrete_fmcs (already exists) to build a BFMCS Int with restricted coherence properties (temporal_coherence, backward_until_coherence, forward_until_coherence), then wire into parametric representation for the countermodel. Located at ChronicleToCountermodel.lean:836.",
@@ -502,9 +513,10 @@
         123
       ],
       "created": "2026-05-11T00:45:00Z",
-      "last_updated": "2026-05-11T00:45:00Z",
+      "last_updated": "2026-05-11T16:59:19Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1778518750_c8b856"
     }
   ],
   "next_project_number": 125,

@@ -44,7 +44,8 @@ technical_debt:
 
 ### 3. Cleanup / Deferred
 
-- **116** [NOT STARTED] — Redefine G/H/F/P in terms of U/S (nice-to-have)
+- **124** [RESEARCHED] — Remove TF axiom, derive from MF (cleanup)
+- **116** [RESEARCHING] — Redefine G/H/F/P in terms of U/S (nice-to-have)
 - **115** [RESEARCHED] — Remove A4a, simplify BX2 (cleanup)
 - **112** [RESEARCHED] — Literature study (reference)
 - **95** [NOT STARTED] — Verification audit
@@ -67,8 +68,9 @@ technical_debt:
 
 ### 124. Remove TF axiom and derive from MF
 - **Effort**: 5-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
+- **Research**: [specs/124_remove_tf_axiom_derive_from_mf/reports/01_tf-derivation-research.md]
 
 **Description**: Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.
 
@@ -76,7 +78,7 @@ technical_debt:
 
 ### 122. Build discrete BFMCS on ℤ and complete discrete countermodel
 - **Effort**: 8-15 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 123
@@ -97,7 +99,7 @@ technical_debt:
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Dependencies**: 107
 
