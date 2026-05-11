@@ -1,6 +1,8 @@
 import Bimodal.Semantics.Truth
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
+import Mathlib.Order.SuccPred.Basic
+import Mathlib.Order.SuccPred.Archimedean
 
 /-!
 # Soundness Lemmas - Bridge Theorems for Temporal Duality
@@ -884,6 +886,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
       exact add_lt_add_left hcu (t - u)
     exact h_guard (c + (t - u)) h1 h2
+  | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 /-! ## Axiom Validity (Local)
 
 These lemmas prove validity of each axiom using the local `is_valid` definition.
@@ -1462,6 +1466,8 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
+  | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 /-! ## Rule Preservation for Local Validity
 
 Helper lemmas proving that inference rules preserve local validity.
@@ -1598,10 +1604,10 @@ This resolves the 3 `temporal_duality` sorries in Soundness.lean:
 - `soundness_discrete` (line ~1151)
 -/
 
-/-- All BX axiom swaps are valid without any frame-class constraints.
+/-- All dense-compatible BX axiom swaps are valid without any frame-class constraints.
 Identical proof to `axiom_swap_valid` but without `[DenselyOrdered D] [Nontrivial D]`. -/
-theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
-    is_valid D φ.swap_temporal := by
+theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDenseCompatible)
+    [Nontrivial D] : is_valid D φ.swap_temporal := by
   cases h with
   | prop_k ψ χ ρ =>
     intro F M Omega _h_sc τ _h_mem t
@@ -1958,10 +1964,12 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) [Nontrivial D] :
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
       exact add_lt_add_left hcu (t - u)
     exact h_guard (c + (t - u)) h1 h2
+  | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 
-/-- All BX axioms are locally valid without frame-class constraints. -/
-private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : Axiom φ) :
-    is_valid D φ := by
+/-- All dense-compatible BX axioms are locally valid without frame-class constraints. -/
+private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : Axiom φ)
+    (h_dc : h.isDenseCompatible) : is_valid D φ := by
   cases h with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
   | prop_s φ ψ => exact axiom_prop_s_valid φ ψ
@@ -2261,31 +2269,124 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
+  | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 
-/-- Combined soundness without frame-class constraints: derivability implies both validity
-and swap-validity. Identical to `derivable_valid_and_swap_valid` but without
-`[DenselyOrdered D] [Nontrivial D]`.
+/-- Combined soundness for dense-compatible derivations without frame-class constraints:
+derivability implies both validity and swap-validity. Identical to
+`derivable_valid_and_swap_valid` but without `[DenselyOrdered D] [Nontrivial D]`.
 
 This is possible because the BX axiom system has no density or discreteness extension
 axioms, so the proofs never actually use those constraints. -/
 theorem derivable_valid_and_swap_valid_general [Nontrivial D]
+    {φ : Formula} (d : DerivationTree [] φ) (h_dc : d.isDenseCompatible) :
+    is_valid D φ ∧ is_valid D φ.swap_temporal := by
+  match d with
+  | .axiom _ _ h_ax => exact ⟨axiom_locally_valid_general h_ax h_dc, axiom_swap_valid_general _ h_ax h_dc⟩
+  | .assumption _ _ h_mem => exact absurd h_mem (Syntax.Context.not_mem_nil _)
+  | .modus_ponens _ ψ' _ d1 d2 =>
+    obtain ⟨h_dc1, h_dc2⟩ := h_dc
+    obtain ⟨h1_valid, h1_swap⟩ := derivable_valid_and_swap_valid_general d1 h_dc1
+    obtain ⟨h2_valid, h2_swap⟩ := derivable_valid_and_swap_valid_general d2 h_dc2
+    exact ⟨mp_preserves_valid h1_valid h2_valid, mp_preserves_swap_valid ψ' _ h1_swap h2_swap⟩
+  | .necessitation ψ' d' =>
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d' h_dc
+    exact ⟨necessitation_preserves_local_valid h_valid, modal_k_preserves_swap_valid ψ' h_swap⟩
+  | .temporal_necessitation ψ' d' =>
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d' h_dc
+    exact ⟨temporal_necessitation_preserves_local_valid h_valid, temporal_k_preserves_swap_valid ψ' h_swap⟩
+  | .temporal_duality ψ' d' =>
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d' h_dc
+    constructor
+    · exact h_swap
+    · simp only [Formula.swap_temporal_involution]; exact h_valid
+  | .weakening Γ' _ _ d' h_sub =>
+    have h_eq : Γ' = [] := List.eq_nil_of_subset_nil h_sub
+    have h_dc_sub : (h_eq ▸ d').isDenseCompatible := by
+      simp only [DerivationTree.isDenseCompatible] at h_dc
+      subst h_eq
+      exact h_dc
+    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
+    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Γ' [] _ d' h_sub).height := by
+      simp only [h_height_eq, DerivationTree.height]
+      omega
+    exact derivable_valid_and_swap_valid_general (h_eq ▸ d') h_dc_sub
+termination_by d.height
+decreasing_by
+  all_goals first
+    | exact DerivationTree.mp_height_gt_left _ _
+    | exact DerivationTree.mp_height_gt_right _ _
+    | simp only [DerivationTree.height]; omega
+
+/-- Derivability implies swap validity for dense-compatible derivations.
+This is the theorem needed for the temporal_duality case in dense soundness. -/
+theorem derivable_implies_swap_valid_general [Nontrivial D]
+    {φ : Formula} (d : DerivationTree [] φ) (h_dc : d.isDenseCompatible) :
+    is_valid D φ.swap_temporal :=
+  (derivable_valid_and_swap_valid_general d h_dc).2
+
+/-! ## Discrete Frame Versions
+
+The following theorems provide validity and swap-validity for all axioms on discrete
+frames. Prior-UZ/SZ are only valid on discrete orders, so these theorems handle all
+axioms including Prior-UZ/SZ, unlike the general versions which require isDenseCompatible.
+-/
+
+/-- All axiom swaps are valid on discrete orders. For dense-compatible axioms,
+delegates to `axiom_swap_valid_general`. For Prior-UZ/SZ, proves directly (sorry'd
+pending well-founded descent proof). -/
+private theorem axiom_swap_valid_discrete
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_temporal := by
+  by_cases hdc : h.isDenseCompatible
+  · exact axiom_swap_valid_general _ h hdc
+  · cases h with
+    | prior_UZ φ =>
+      -- swap of Prior-UZ (F(φ) → U(φ, ¬φ)) = Prior-SZ (P(φ) → S(φ, ¬φ)) on discrete D
+      sorry
+    | prior_SZ φ =>
+      -- swap of Prior-SZ (P(φ) → S(φ, ¬φ)) = Prior-UZ (F(φ) → U(φ, ¬φ)) on discrete D
+      sorry
+    | _ => simp [Axiom.isDenseCompatible] at hdc
+
+/-- All axioms are locally valid on discrete orders. For dense-compatible axioms,
+delegates to `axiom_locally_valid_general`. For Prior-UZ/SZ, proves directly (sorry'd
+pending well-founded descent proof). -/
+private theorem axiom_locally_valid_discrete
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    {φ : Formula} (h : Axiom φ) : is_valid D φ := by
+  by_cases hdc : h.isDenseCompatible
+  · exact axiom_locally_valid_general h hdc
+  · cases h with
+    | prior_UZ φ =>
+      -- F(φ) → U(φ, ¬φ) on discrete D
+      sorry
+    | prior_SZ φ =>
+      -- P(φ) → S(φ, ¬φ) on discrete D
+      sorry
+    | _ => simp [Axiom.isDenseCompatible] at hdc
+
+/-- Combined soundness on discrete frames: derivability implies both validity
+and swap-validity on discrete orders. -/
+theorem derivable_valid_and_swap_valid_discrete
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     {φ : Formula} (d : DerivationTree [] φ) :
     is_valid D φ ∧ is_valid D φ.swap_temporal := by
   match d with
-  | .axiom _ _ h_ax => exact ⟨axiom_locally_valid_general h_ax, axiom_swap_valid_general _ h_ax⟩
+  | .axiom _ _ h_ax => exact ⟨axiom_locally_valid_discrete h_ax, axiom_swap_valid_discrete _ h_ax⟩
   | .assumption _ _ h_mem => exact absurd h_mem (Syntax.Context.not_mem_nil _)
   | .modus_ponens _ ψ' _ d1 d2 =>
-    obtain ⟨h1_valid, h1_swap⟩ := derivable_valid_and_swap_valid_general d1
-    obtain ⟨h2_valid, h2_swap⟩ := derivable_valid_and_swap_valid_general d2
+    obtain ⟨h1_valid, h1_swap⟩ := derivable_valid_and_swap_valid_discrete d1
+    obtain ⟨h2_valid, h2_swap⟩ := derivable_valid_and_swap_valid_discrete d2
     exact ⟨mp_preserves_valid h1_valid h2_valid, mp_preserves_swap_valid ψ' _ h1_swap h2_swap⟩
   | .necessitation ψ' d' =>
-    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d'
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_discrete d'
     exact ⟨necessitation_preserves_local_valid h_valid, modal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_necessitation ψ' d' =>
-    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d'
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_discrete d'
     exact ⟨temporal_necessitation_preserves_local_valid h_valid, temporal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_duality ψ' d' =>
-    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d'
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_discrete d'
     constructor
     · exact h_swap
     · simp only [Formula.swap_temporal_involution]; exact h_valid
@@ -2295,7 +2396,7 @@ theorem derivable_valid_and_swap_valid_general [Nontrivial D]
     have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Γ' [] _ d' h_sub).height := by
       simp only [h_height_eq, DerivationTree.height]
       omega
-    exact derivable_valid_and_swap_valid_general (h_eq ▸ d')
+    exact derivable_valid_and_swap_valid_discrete (h_eq ▸ d')
 termination_by d.height
 decreasing_by
   all_goals first
@@ -2303,12 +2404,12 @@ decreasing_by
     | exact DerivationTree.mp_height_gt_right _ _
     | simp only [DerivationTree.height]; omega
 
-/-- Derivability implies swap validity without frame-class constraints.
-This is the theorem needed for the temporal_duality case in general soundness,
-soundness_discrete_valid, and soundness_discrete. -/
-theorem derivable_implies_swap_valid_general [Nontrivial D]
+/-- Derivability implies swap validity on discrete frames.
+Used in soundness_discrete_valid and soundness_discrete temporal_duality cases. -/
+theorem derivable_implies_swap_valid_discrete
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     {φ : Formula} (d : DerivationTree [] φ) :
     is_valid D φ.swap_temporal :=
-  (derivable_valid_and_swap_valid_general d).2
+  (derivable_valid_and_swap_valid_discrete d).2
 
 end Bimodal.Metalogic.SoundnessLemmas

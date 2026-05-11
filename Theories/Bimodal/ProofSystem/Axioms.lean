@@ -32,7 +32,7 @@ requiring successor-chain constructions.
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
 4. **Modal-Temporal Interaction** (2): modal_future, temp_future
 
-**Total**: 43 axiom constructors (39 base + 4 uniformity)
+**Total**: 45 axiom constructors (39 base + 4 uniformity + 2 prior)
 
 ### Key Properties
 
@@ -56,14 +56,15 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-43 constructors organized into five layers:
+45 constructors organized into six layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (28): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (2): Modal-temporal interaction axioms
 - **Uniformity** (4): Discreteness uniformity axioms (valid on all ordered abelian groups)
+- **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
 
-All axioms are valid on all linear temporal orders (base frame class).
+Base axioms (43) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
 -/
 inductive Axiom : Formula → Type where
   -- Layer 1: Propositional (4)
@@ -361,6 +362,27 @@ inductive Axiom : Formula → Type where
       Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
         (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
 
+  -- Layer 6: Prior Axioms for Integers (2)
+  -- These axioms encode the well-ordering property for definable sets.
+  -- Prior-UZ: Fp -> U(p, neg p). If p holds somewhere in the future,
+  -- then p holds until not-p (i.e., the first future p-point is reachable).
+  -- Valid on all discrete linear orders (IsSuccArchimedean).
+  -- Reference: Reynolds 1992 Section 10, Venema 1993 axiom (W).
+
+  /-- Prior-UZ: `F(φ) → U(φ, ¬φ)`.
+  If φ holds at some future time, then there is a nearest future time where φ holds,
+  with ¬φ holding at all intermediate points. This is the integer version of the
+  Prior axiom, valid on all discrete well-founded-upward orders.
+  Equivalent to Venema's axiom (W): every definable future set has a least element. -/
+  | prior_UZ (φ : Formula) :
+      Axiom (φ.some_future.imp (Formula.untl φ φ.neg))
+
+  /-- Prior-SZ: `P(φ) → S(φ, ¬φ)`.
+  Past dual of Prior-UZ. If φ held at some past time, then there is a nearest past
+  time where φ held, with ¬φ holding at all intermediate points. -/
+  | prior_SZ (φ : Formula) :
+      Axiom (φ.some_past.imp (Formula.snce φ φ.neg))
+
   deriving Repr
 
 /--
@@ -374,16 +396,22 @@ inductive FrameClass where
   | Discrete
   deriving Repr, DecidableEq, Inhabited
 
-/-- All BX axioms have frame class Base (valid on all linear orders). -/
+/-- Frame class for each axiom. Prior-UZ/SZ are discrete-only; all others are base. -/
 def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
+  | prior_UZ _ => .Discrete
+  | prior_SZ _ => .Discrete
   | _ => .Base
 
-/-- All BX axioms are base axioms. -/
+/-- Whether an axiom is a base axiom. Prior-UZ/SZ are not base (discrete-only). -/
 def Axiom.isBase {φ : Formula} : Axiom φ → Prop
+  | prior_UZ _ => False
+  | prior_SZ _ => False
   | _ => True
 
-/-- All BX axioms are dense-compatible (no discrete-only axioms in the base system). -/
+/-- Whether an axiom is dense-compatible. Prior-UZ/SZ are not dense-compatible. -/
 def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
+  | prior_UZ _ => False
+  | prior_SZ _ => False
   | _ => True
 
 /-- All BX axioms are discrete-compatible (no density axiom in the base system). -/
@@ -396,17 +424,17 @@ abbrev Axiom.minimalFrameClass {φ : Formula} := @Axiom.frameClass φ
 /-- Frame class is Base iff isBase. -/
 theorem Axiom.frameClass_eq_base_iff_isBase {φ : Formula} (a : Axiom φ) :
     a.frameClass = .Base ↔ a.isBase := by
-  simp [frameClass, isBase]
+  cases a <;> simp [frameClass, isBase]
 
 /-- Discrete-compatible iff not Dense. -/
 theorem Axiom.isDiscreteCompatible_iff_frameClass {φ : Formula} (a : Axiom φ) :
     a.isDiscreteCompatible ↔ a.frameClass ≠ .Dense := by
-  simp [isDiscreteCompatible, frameClass]
+  cases a <;> simp [isDiscreteCompatible, frameClass]
 
 /-- Base axioms are both dense and discrete compatible. -/
 theorem Axiom.isBase_implies_both_compatible {φ : Formula} (a : Axiom φ) :
     a.isBase → a.isDenseCompatible ∧ a.isDiscreteCompatible := by
-  intro _; exact ⟨trivial, trivial⟩
+  cases a <;> simp [isBase, isDenseCompatible, isDiscreteCompatible]
 
 /-- Discreteness_forward is not in the BX system (stub for backward compatibility). -/
 theorem Axiom.discreteness_forward_not_dense_compatible :

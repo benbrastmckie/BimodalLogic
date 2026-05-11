@@ -88,7 +88,7 @@ technical_debt:
 
 ### 119. Prove IsSuccArchimedean via direct connectivity extraction
 - **Effort**: 10-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**: [specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md]
 - **Task Type**: lean4
 - **Dependencies**: 118

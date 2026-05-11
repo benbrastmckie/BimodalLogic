@@ -69,14 +69,15 @@ The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` follows from:
 
 **Frame-Class Architecture**:
 Soundness is organized by frame class because axioms require different frame conditions:
+- `soundness`: For dense-compatible derivations on arbitrary frames (sorry-free)
 - `soundness_dense`: For dense-compatible derivations on dense frames (sorry-free)
-- `soundness_discrete`: For discrete-compatible derivations on discrete frames (sorry-free)
-- `soundness` (general): Stated without frame constraints (sorry-free)
+- `soundness_discrete`: For discrete-compatible derivations on discrete frames
+  (depends on `prior_UZ_valid`/`prior_SZ_valid` which are sorry'd pending Phase 4)
 
-All soundness theorems are sorry-free. The temporal_duality cases use
-`derivable_implies_swap_valid_general` from SoundnessLemmas.lean, which proves
-swap-validity without frame-class constraints (possible because the BX axiom
-system has no density or discreteness extension axioms).
+The general and dense soundness theorems are sorry-free. The discrete soundness
+theorem uses `derivable_implies_swap_valid_discrete` from SoundnessLemmas.lean,
+which in turn depends on the Prior-UZ/SZ validity proofs (sorry'd).
+Prior-UZ/SZ are excluded from dense-compatible derivations via `isDenseCompatible`.
 
 ## References
 
@@ -939,6 +940,16 @@ These proved validity for discrete axioms that no longer exist in the BX axiom s
 The BX system uses self-accumulation (BX5/BX6) and linearity (BX7) instead.
 -/
 
+/-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
+If φ holds at some future time, there is a nearest future time where φ holds. -/
+theorem prior_UZ_valid (φ : Formula) : valid_discrete (φ.some_future.imp (Formula.untl φ φ.neg)) := by
+  sorry -- Well-founded descent on succ chain; deferred to Phase 4
+
+/-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
+If φ held at some past time, there is a nearest past time where φ held. -/
+theorem prior_SZ_valid (φ : Formula) : valid_discrete (φ.some_past.imp (Formula.snce φ φ.neg)) := by
+  sorry -- Mirror of prior_UZ_valid using pred chain; deferred to Phase 4
+
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
@@ -989,6 +1000,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | discrete_symm_bwd => exact discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
+  | prior_UZ _ => exact absurd h_base (by simp [Axiom.isBase])
+  | prior_SZ _ => exact absurd h_base (by simp [Axiom.isBase])
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -1039,6 +1052,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | discrete_symm_bwd => exact Validity.valid_implies_valid_dense discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_dense discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_dense discrete_propagate_bwd_valid
+  | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -1090,6 +1105,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | discrete_symm_bwd => exact Validity.valid_implies_valid_discrete discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
+  | prior_UZ φ => exact prior_UZ_valid φ
+  | prior_SZ φ => exact prior_SZ_valid φ
 
 /-! ## Full Derivation Soundness
 
@@ -1120,36 +1137,36 @@ theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
   exact h D F M Omega h_sc τ h_mem s
 
 /--
-**Soundness Theorem**: Derivability implies semantic consequence.
+**Soundness Theorem (Dense-Compatible)**: Derivability implies semantic consequence
+for dense-compatible derivations.
 
-If `Γ ⊢ φ` (φ is derivable from context Γ), then `Γ ⊨ φ` (φ is a semantic consequence of Γ).
+If `Γ ⊢ φ` with a dense-compatible derivation, then `Γ ⊨ φ`.
+Dense-compatibility excludes Prior-UZ/SZ which are only valid on discrete frames.
 
 The proof proceeds by induction on the derivation tree structure:
-- **Axiom**: Use the axiom validity theorems above
+- **Axiom**: Use the axiom validity theorems (Prior-UZ/SZ excluded by h_dc)
 - **Assumption**: If φ ∈ Γ and all of Γ holds, then φ holds
 - **Modus ponens**: If Γ ⊨ φ → ψ and Γ ⊨ φ, then Γ ⊨ ψ
 - **Necessitation**: Uses `necessitation_preserves_valid`
 - **Temporal necessitation**: Uses `temporal_necessitation_preserves_valid`
-- **Temporal duality**: Uses `SoundnessLemmas.derivable_implies_swap_valid`
-- **IRR**: See `IRRSoundness.lean` for the product frame construction
+- **Temporal duality**: Uses `SoundnessLemmas.derivable_implies_swap_valid_general`
 - **Weakening**: Monotonicity of semantic consequence
 
-**Note**: This theorem is stated for the full axiom set under strict semantics.
-The density, discreteness, and seriality axioms require specific frame conditions
-(DenselyOrdered, SuccOrder/PredOrder, NoMaxOrder/NoMinOrder respectively).
-This soundness theorem is therefore only valid when those conditions are satisfied.
+**Note**: Prior-UZ/SZ are excluded via the `h_dc` guard since they are not universally
+valid (they fail on dense orders like Q). Use `soundness_discrete` for derivations
+containing Prior-UZ/SZ.
 -/
-theorem soundness (Γ : Context) (φ : Formula) :
-    DerivationTree Γ φ → (D : Type) → [AddCommGroup D] → [LinearOrder D] → [IsOrderedAddMonoid D] →
-    [Nontrivial D] → (F : TaskFrame D) → (M : TaskModel F) →
-    (Omega : Set (WorldHistory F)) → (h_sc : ShiftClosed Omega) →
-    (τ : WorldHistory F) → (h_mem : τ ∈ Omega) → (t : D) →
-    (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) →
+theorem soundness (Γ : Context) (φ : Formula)
+    (d : DerivationTree Γ φ) (h_dc : d.isDenseCompatible)
+    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D)
+    (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) :
     truth_at M Omega τ t φ := by
-  intro d D _ _ _ _ F M Omega h_sc τ h_mem t h_ctx
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax =>
-    -- All base axioms are universally valid; extension axioms require frame conditions
+    -- All dense-compatible axioms are universally valid; Prior-UZ/SZ excluded by h_dc
     cases h_ax with
     | prop_k φ ψ χ => exact prop_k_valid φ ψ χ D F M Omega h_sc τ h_mem t
     | prop_s φ ψ => exact prop_s_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1195,27 +1212,30 @@ theorem soundness (Γ : Context) (φ : Formula) :
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
+    | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
+    | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have h1 := ih1 τ h_mem t h_ctx
-    have h2 := ih2 τ h_mem t h_ctx
+    have ⟨h_dc1, h_dc2⟩ := h_dc
+    have h1 := ih1 h_dc1 τ h_mem t h_ctx
+    have h2 := ih2 h_dc2 τ h_mem t h_ctx
     simp only [truth_at] at h1
     exact h1 h2
   | necessitation φ' _ ih =>
     simp only [truth_at]
     intro σ h_σ_mem
-    exact ih σ h_σ_mem t (by simp)
+    exact ih h_dc σ h_σ_mem t (by simp)
   | temporal_necessitation φ' _ ih =>
     simp only [truth_at]
     intro s _hts
-    exact ih τ h_mem s (by simp)
+    exact ih h_dc τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
     -- d' : ⊢ φ', goal is truth_at ... φ'.swap_temporal
-    -- Use general swap validity (no frame-class constraints needed for BX axiom system)
-    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc τ h_mem t
+    -- Use general swap validity with dense-compatibility guard
+    exact SoundnessLemmas.derivable_implies_swap_valid_general d' h_dc F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 /-! ## Frame-Class-Restricted Soundness Theorems
 
@@ -1368,6 +1388,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
+    | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
+    | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1440,9 +1462,9 @@ theorem soundness_discrete_valid {phi : Formula}
     intro s _hts
     exact h D F M Omega h_sc tau h_mem s
   | .temporal_duality psi' d' =>
-    -- Use general swap validity (no frame-class constraints needed for BX axiom system)
+    -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
     intro D _ _ _ _ _ _ _ _ F M Omega h_sc tau h_mem t
-    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc tau h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F M Omega h_sc tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
     have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
     have h_dc_sub : (h_eq ▸ d').isDiscreteCompatible := by
@@ -1497,8 +1519,8 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     intro s _hts
     exact ih h_dc τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- Use general swap validity (no frame-class constraints needed for BX axiom system)
-    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc τ h_mem t
+    -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
+    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 

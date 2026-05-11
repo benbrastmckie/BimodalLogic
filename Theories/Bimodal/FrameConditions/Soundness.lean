@@ -47,13 +47,14 @@ If `Γ ⊢ φ` (φ is derivable from Γ), then for any model over D,
 if all formulas in Γ are true, then φ is true.
 -/
 def soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ) :
+    [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ)
+    (h_dc : d.isDenseCompatible) :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
       (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
   fun F M Omega h_sc τ h_mem t h_ctx =>
-    soundness Γ φ d D F M Omega h_sc τ h_mem t h_ctx
+    soundness Γ φ d h_dc D F M Omega h_sc τ h_mem t h_ctx
 
 /-! ## Frame-Class Soundness Theorems -/
 
@@ -64,13 +65,14 @@ All base axioms (17 axioms) are sound on any linear temporal frame.
 This is the strongest soundness theorem, applying to the widest class of frames.
 -/
 theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree Γ φ)
+    (h_dc : d.isDenseCompatible)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [LinearTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
       (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
-  soundness_over D Γ φ d
+  soundness_over D Γ φ d h_dc
 
 /--
 Soundness for dense temporal frames.
@@ -78,6 +80,7 @@ Soundness for dense temporal frames.
 All base axioms plus the density axiom (DN: Fφ → FFφ) are sound on dense frames.
 -/
 theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree Γ φ)
+    (h_dc : d.isDenseCompatible)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
     [DenseTemporalFrame D] :
@@ -85,7 +88,7 @@ theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree Γ φ)
       (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
       (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
-  soundness_over D Γ φ d
+  soundness_over D Γ φ d h_dc
 
 /--
 Soundness for discrete temporal frames.
@@ -93,14 +96,17 @@ Soundness for discrete temporal frames.
 All base axioms plus discrete axioms (DF, seriality) are sound on discrete frames.
 -/
 theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Γ φ)
+    (h_dc : d.isDiscreteCompatible)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D]
+    [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D]
+    [IsSuccArchimedean D] [IsPredArchimedean D]
     [DiscreteTemporalFrame D] :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
       (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
-  soundness_over D Γ φ d
+  fun F M Omega h_sc τ h_mem t h_ctx =>
+    Metalogic.soundness_discrete Γ φ d h_dc D F M Omega h_sc τ h_mem t h_ctx
 
 /-! ## Axiom Validity by Frame Class -/
 
@@ -145,12 +151,14 @@ Soundness over Int (discrete integer time).
 
 This is the concrete instantiation of soundness for the standard discrete model.
 -/
-theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree Γ φ) :
+theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree Γ φ)
+    (h_dc : d.isDiscreteCompatible) :
     ∀ (F : TaskFrame Int) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
       (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : Int),
       (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ :=
-  soundness_over Int Γ φ d
+  fun F M Omega h_sc τ h_mem t h_ctx =>
+    Metalogic.soundness_discrete Γ φ d h_dc Int F M Omega h_sc τ h_mem t h_ctx
 
 /-! ## Axiom Coverage Summary
 

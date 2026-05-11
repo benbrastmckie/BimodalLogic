@@ -369,8 +369,17 @@ def matches_axiom (φ : Formula) : Bool :=
       match lhs, rhs with
       | .box φ, φ' => eqf φ φ'
       | _, _ => false
+    let prior_UZ : Bool :=
+      match lhs, rhs with
+      | .imp (.all_future (.imp φ .bot)) .bot, .untl φ' (.imp φ'' .bot) => eqf φ φ' && eqf φ' φ''
+      | _, _ => false
+    let prior_SZ : Bool :=
+      match lhs, rhs with
+      | .imp (.all_past (.imp φ .bot)) .bot, .snce φ' (.imp φ'' .bot) => eqf φ φ' && eqf φ' φ''
+      | _, _ => false
     prop_k || prop_s || ex_falso || peirce || modal_t || modal_4 || modal_b || modal_5_collapse ||
-    modal_k_dist || temp_k_dist || temp_4 || temp_a || temp_l || modal_future || temp_future
+    modal_k_dist || temp_k_dist || temp_4 || temp_a || temp_l || modal_future || temp_future ||
+    prior_UZ || prior_SZ
 
 /--
 Match a formula against axiom patterns, returning the Axiom witness if matched.
@@ -498,6 +507,26 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
              .all_future (.all_past phi') =>
                if phi1 = phi2 ∧ phi2 = phi3 ∧ phi3 = phi' then
                  none -- removed in BX, not a base axiom
+               else none
+           | _, _ => none)
+
+      -- prior_UZ: F(φ) → U(φ, ¬φ)
+      -- F(φ) = (φ.neg.all_future).neg = (.imp (.all_future (.imp phi .bot)) .bot)
+      -- U(φ, ¬φ) = .untl phi (.imp phi .bot)
+      <|> (match lhs, rhs with
+           | .imp (.all_future (.imp phi1 .bot)) .bot, .untl phi2 (.imp phi3 .bot) =>
+               if phi1 = phi2 ∧ phi2 = phi3 then
+                 some ⟨_, Axiom.prior_UZ phi1⟩
+               else none
+           | _, _ => none)
+
+      -- prior_SZ: P(φ) → S(φ, ¬φ)
+      -- P(φ) = (φ.neg.all_past).neg = (.imp (.all_past (.imp phi .bot)) .bot)
+      -- S(φ, ¬φ) = .snce phi (.imp phi .bot)
+      <|> (match lhs, rhs with
+           | .imp (.all_past (.imp phi1 .bot)) .bot, .snce phi2 (.imp phi3 .bot) =>
+               if phi1 = phi2 ∧ phi2 = phi3 then
+                 some ⟨_, Axiom.prior_SZ phi1⟩
                else none
            | _, _ => none)
 

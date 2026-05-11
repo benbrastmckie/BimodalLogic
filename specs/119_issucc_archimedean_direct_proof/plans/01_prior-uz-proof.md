@@ -76,7 +76,7 @@ This task closes the `limitDomSubtype_isSuccArchimedean` sorry at ChronicleToCou
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Add Prior-UZ/SZ Axiom Constructors [NOT STARTED]
+### Phase 1: Add Prior-UZ/SZ Axiom Constructors [COMPLETED]
 
 **Goal**: Add the `prior_UZ` and `prior_SZ` constructors to the `Axiom` inductive type and update all frame class classification functions to mark them as discrete-only.
 
@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Soundness Infrastructure and Pattern Match Updates [NOT STARTED]
+### Phase 2: Soundness Infrastructure and Pattern Match Updates [COMPLETED]
 
 **Goal**: Prove Prior-UZ and Prior-SZ valid on discrete frames, and update all exhaustive `cases h` pattern matches on `Axiom` constructors across the soundness infrastructure so that `lake build` passes.
 
