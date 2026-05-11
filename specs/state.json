@@ -8,13 +8,13 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-11T12:31:32Z",
+      "last_updated": "2026-05-11T13:05:14Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -46,8 +46,14 @@
           "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_blocker-analysis.md",
           "type": "research",
           "summary": "Blocker analysis — why Icc_finite is false for current construction"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md",
+          "type": "plan",
+          "summary": "5-phase plan: weaken witness spec, add ξ=⊥ short-circuit, update limit proofs, prove Icc_finite"
         }
-      ]
+      ],
+      "session_id": "sess_1778503193_d089cf"
     },
     {
       "project_number": 116,

@@ -69,9 +69,10 @@ technical_debt:
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
+- **Plan**: [123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md]
 
 **Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify `eliminate_potential_counterexample` in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust `EliminationResult.c5_forward_witness` to allow vacuous satisfaction, update `omega_chain_c5_witness` and `limit_satisfies_c5_strong` in ChronicleConstruction.lean. Then prove `limitDomSubtype_Icc_finite` (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).
 
