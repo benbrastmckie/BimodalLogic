@@ -148,6 +148,9 @@ Phases within the same wave can execute in parallel.
 **Depends on:** 1
 
 ### Phase 4: Restricted Coherence Conditions on Z [PARTIAL]
+**Partial status**: TC and FUC proofs are structurally complete, conditioned on
+`succ_embed_surjective` (which has a focused sorry for the "above all old points" subcase
+in the omega-chain stage induction). BUC is sorry-free.
 
 **Goal:** Prove the three restricted coherence conditions for `discrete_bfmcs`: temporal coherence (F/P), backward Until/Since (C4/C4'), and forward Until/Since (C5/C5'). These are the hardest components, as identified by the task 122 research.
 
