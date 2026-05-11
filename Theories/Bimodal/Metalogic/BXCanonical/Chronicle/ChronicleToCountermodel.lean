@@ -818,9 +818,12 @@ theorem dd_countermodel_chronicle_dense (A : Set Formula) (h_mcs : SetMaximalCon
 
 /--
 Sorry-backed discrete countermodel stub. Used in the non-dense branch of
-bx_completeness. The proof would require either:
-1. IsSuccArchimedean (blocked by NO-GO from Phase 6 analysis), OR
-2. An alternative approach to discrete completeness.
+bx_completeness. Requires constructing a BFMCS on ℤ (analogous to
+`cantor_bfmcs_dense` for the dense case on ℚ), using `discrete_fmcs`
+and `discrete_iso` to transport the chronicle coherence properties
+through the Z-isomorphism. Prior-UZ axioms and IsSuccArchimedean
+infrastructure are now in place; the remaining work is the BFMCS
+construction and parametric representation on ℤ.
 -/
 theorem dd_countermodel_chronicle_nondense_sorry (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
