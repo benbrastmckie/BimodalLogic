@@ -6,14 +6,72 @@
   },
   "active_projects": [
     {
+      "project_number": 123,
+      "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
+      "dependencies": [],
+      "created": "2026-05-11T12:31:32Z",
+      "last_updated": "2026-05-11T17:13:15Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_team-research-reynolds.md",
+          "type": "research",
+          "summary": "Reynolds 1994 analysis and Icc_finite approaches (from task 121 round 2)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Skip C5 for ξ=⊥ approach analysis"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Accumulation analysis — which formulas cause infinite chains"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-c-findings.md",
+          "type": "research",
+          "summary": "Alternative fix strategies ranked"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-d-findings.md",
+          "type": "research",
+          "summary": "Downstream blast radius analysis"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_blocker-analysis.md",
+          "type": "research",
+          "summary": "Blocker analysis — why Icc_finite is false for current construction"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md",
+          "type": "plan",
+          "summary": "Revised plan v2: post-construction collapse from LimitDomSubtype to Z"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/summaries/01_fix-c5-bot-summary.md",
+          "type": "summary",
+          "summary": "Implementation complete: discrete_fmcs sorry-free via direct Z embedding, replacing old Icc_finite pipeline"
+        }
+      ],
+      "session_id": "sess_1778514126_806a28",
+      "started": "2026-05-11T14:06:20Z",
+      "completed": "2026-05-11T16:40:49Z",
+      "archived": "2026-05-11T16:55:47Z"
+    },
+    {
       "project_number": 124,
       "project_name": "remove_tf_axiom_derive_from_mf",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.",
       "created": "2026-05-11T15:34:15Z",
-      "last_updated": "2026-05-11T17:08:34Z",
-      "session_id": "sess_1778519000_9c9d89",
+      "last_updated": "2026-05-11T17:12:45Z",
+      "session_id": "sess_1778519545_940310",
       "researched": "2026-05-11T17:08:34Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -27,7 +85,7 @@
     {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove all_future (G) and all_past (H) as primitive constructors from the Formula inductive type. Define F and P as abbreviations using untl/snce with top, then G and H as negation of F/P of negation, matching Burgess 1982 section 1.1. Box remains primitive (S5 modal operator). ~3200 references across codebase. Depends on task 107 Phase 9 (convention migration).",
@@ -35,8 +93,8 @@
         107
       ],
       "created": "2026-05-08T07:17:15Z",
-      "last_updated": "2026-05-11T17:10:37Z",
-      "session_id": "sess_1778519000_9c9d89",
+      "last_updated": "2026-05-11T17:12:52Z",
+      "session_id": "sess_1778519545_940310",
       "researched": "2026-05-11T17:10:37Z",
       "artifacts": [
         {

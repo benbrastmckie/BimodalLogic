@@ -44,8 +44,8 @@ technical_debt:
 
 ### 3. Cleanup / Deferred
 
-- **124** [RESEARCHED] — Remove TF axiom, derive from MF (cleanup)
-- **116** [RESEARCHED] — Redefine G/H/F/P in terms of U/S (nice-to-have)
+- **124** [PLANNING] — Remove TF axiom, derive from MF (cleanup)
+- **116** [PLANNING] — Redefine G/H/F/P in terms of U/S (nice-to-have)
 - **115** [RESEARCHED] — Remove A4a, simplify BX2 (cleanup)
 - **112** [RESEARCHED] — Literature study (reference)
 - **95** [NOT STARTED] — Verification audit
@@ -66,9 +66,21 @@ technical_debt:
 
 ## Tasks
 
+### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
+- **Effort**: 15-25 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+- **Plan**: [123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md]
+- **Summary**: [123_fix_c5_witness_bot_and_prove_icc_finite/summaries/01_fix-c5-bot-summary.md]
+
+**Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Phases 1, 2, and 5 completed (collapse equivalence, FMCS on Z, cleanup). Phases 3 and 4 (Until/Since coherence on Z, BFMCS construction) were never completed and need to be evaluated and revised to accurately represent remaining work.
+
+---
+
 ### 124. Remove TF axiom and derive from MF
 - **Effort**: 5-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Research**: [specs/124_remove_tf_axiom_derive_from_mf/reports/01_tf-derivation-research.md]
 
@@ -100,7 +112,7 @@ technical_debt:
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Dependencies**: 107
 - **Research**: [specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md]
