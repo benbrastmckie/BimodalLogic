@@ -494,9 +494,37 @@
       ],
       "session_id": "sess_1778390562_26b744",
       "researched": "2026-05-10T05:48:55Z"
+    },
+    {
+      "project_number": 121,
+      "project_name": "prove_limit_dom_interval_finite",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Prove limitDomSubtype_Icc_finite: bounded intervals in limit_dom are finite. This is the single blocking sorry for discrete completeness. The lemma states that for a <= b in LimitDomSubtype, the set {x | a <= x <= b} is Set.Finite. The proof requires either: (1) a structural argument about omega chain stabilization in bounded intervals, (2) a topological argument (compact + discrete => finite, requires closedness), or (3) an order-theoretic argument exploiting the embedding in Q with SuccOrder/PredOrder. Located at ChronicleToCountermodel.lean:1064.",
+      "dependencies": [],
+      "created": "2026-05-11T00:45:00Z",
+      "last_updated": "2026-05-11T00:45:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 122,
+      "project_name": "discrete_bfmcs_countermodel",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "description": "Build discrete BFMCS on Z and complete dd_countermodel_chronicle_nondense_sorry. Mirror the dense case pattern: use discrete_fmcs (already exists) to build a BFMCS Int with restricted coherence properties (temporal_coherence, backward_until_coherence, forward_until_coherence), then wire into parametric representation for the countermodel. Located at ChronicleToCountermodel.lean:836.",
+      "dependencies": [
+        121
+      ],
+      "created": "2026-05-11T00:45:00Z",
+      "last_updated": "2026-05-11T00:45:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 121,
+  "next_project_number": 123,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
