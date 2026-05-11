@@ -39,7 +39,6 @@ technical_debt:
 
 ### 2. Active Research
 
-- **120** [RESEARCHED] — Semantic foundation redesign for natural group structure (independent)
 - **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
 
 ### 3. Cleanup / Deferred
@@ -98,16 +97,6 @@ technical_debt:
 - **Research**: [specs/122_build_discrete_bfmcs_and_complete_countermodel/reports/01_discrete-bfmcs-research.md]
 
 **Description**: Build discrete BFMCS on ℤ and complete `dd_countermodel_chronicle_nondense_sorry`. Mirror the dense case pattern: use `discrete_fmcs` (already exists) to build a `BFMCS Int` with restricted coherence properties, then wire into parametric representation for the countermodel. Located at ChronicleToCountermodel.lean:836.
-
----
-
-### 120. Research semantic foundation for natural group structure
-- **Effort**: 8-15 hours
-- **Status**: [RESEARCHED]
-- **Research**: [specs/120_semantic_foundation_group_structure/reports/01_semantic-foundation-research.md]
-- **Task Type**: lean4
-
-**Description**: Research and design a cleaner semantic foundation where `AddCommGroup` structure emerges naturally from the canonical model construction, eliminating the need for `IsSuccArchimedean` and the ℤ-isomorphism. Currently `valid` requires `AddCommGroup D` (used by MF, TF, and 4 uniformity axioms for time-shift invariance), but the chronicle construction produces `limit_dom ⊂ ℚ` which is not closed under addition. Explore: (1) Whether adding operators or axioms to the logic can force the canonical model domain to carry group structure; (2) Whether `ShiftClosed` can be reformulated without requiring D to be a group; (3) Whether a different semantic framework (e.g., relational rather than algebraic) can validate MF/TF while remaining neutral on density/discreteness; (4) Whether the completeness theorem can be factored so `AddCommGroup` is only needed at the final step. Must maintain validity of MF (`Box(φ) → Box(G(φ))`) and remain neutral on density and discreteness axioms.
 
 ---
 

@@ -558,27 +558,6 @@
       ]
     },
     {
-      "project_number": 120,
-      "project_name": "semantic_foundation_group_structure",
-      "status": "researched",
-      "task_type": "lean4",
-      "priority": "high",
-      "description": "Research and design a cleaner semantic foundation where AddCommGroup structure emerges naturally from the canonical model construction, eliminating the need for IsSuccArchimedean and the Z-isomorphism. Currently valid requires AddCommGroup D (used by MF, TF, and 4 uniformity axioms for time-shift invariance), but the chronicle construction produces limit_dom ⊂ Q which is not closed under addition. Explore: (1) Whether adding operators or axioms to the logic can force the canonical model domain to carry group structure; (2) Whether ShiftClosed can be reformulated without requiring D to be a group; (3) Whether a different semantic framework (e.g., relational rather than algebraic) can validate MF/TF while remaining neutral on density/discreteness; (4) Whether the completeness theorem can be factored so AddCommGroup is only needed at the final step, not throughout the parametric infrastructure. Must maintain validity of MF (Box(phi)->Box(G(phi))) and remain neutral on density and discreteness axioms to support both extensions.",
-      "dependencies": [],
-      "created": "2026-05-10T05:19:09Z",
-      "last_updated": "2026-05-10T05:48:55Z",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/120_semantic_foundation_group_structure/reports/01_semantic-foundation-research.md",
-          "type": "report",
-          "summary": "AddCommGroup is fundamental to JPL semantics; redesign infeasible"
-        }
-      ],
-      "session_id": "sess_1778390562_26b744",
-      "researched": "2026-05-10T05:48:55Z"
-    },
-    {
       "project_number": 122,
       "project_name": "discrete_bfmcs_countermodel",
       "status": "researched",
