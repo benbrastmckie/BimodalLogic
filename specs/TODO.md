@@ -84,7 +84,7 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**: [123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md]
