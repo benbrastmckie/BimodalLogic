@@ -1029,6 +1029,38 @@ theorem limitDomSubtype_succ_pred (A : Set Formula) (h_mcs : SetMaximalConsisten
     exact lt_irrefl spb (lt_of_le_of_lt h_spb_le_pb h_pb_lt_spb)
 
 /--
+`pred(succ(a)) = a` in the discrete case: the predecessor of the successor
+is the identity. Mirror of `limitDomSubtype_succ_pred`. Follows because
+`a < succ(a)` and `pred(succ(a))` is the greatest domain point < `succ(a)`.
+Since there are no domain points between `a` and `succ(a)` (by the successor
+property), `pred(succ(a)) = a`.
+-/
+theorem limitDomSubtype_pred_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a : LimitDomSubtype A h_mcs) :
+    limitDomSubtype_pred A h_mcs h_discrete
+      (limitDomSubtype_succ A h_mcs h_discrete a) = a := by
+  set sa := limitDomSubtype_succ A h_mcs h_discrete a
+  set psa := limitDomSubtype_pred A h_mcs h_discrete sa
+  apply le_antisymm
+  · -- pred(succ(a)) ≤ a: by contradiction.
+    -- If a < psa, then a < psa < succ(a), contradicting the successor property.
+    by_contra h_not_le
+    push_neg at h_not_le
+    -- a < psa, so succ(a) ≤ psa (from succ_le_iff: succ(a) ≤ b ↔ a < b)
+    have h_sa_le_psa : sa ≤ psa :=
+      (limitDomSubtype_succ_le_iff A h_mcs h_discrete a psa).mpr h_not_le
+    -- But also psa < sa (pred(succ(a)) < succ(a))
+    have h_psa_lt_sa : psa < sa :=
+      (limitDomSubtype_le_pred_iff A h_mcs h_discrete psa sa).mp le_rfl
+    exact lt_irrefl sa (lt_of_le_of_lt h_sa_le_psa h_psa_lt_sa)
+  · -- a ≤ pred(succ(a)): from PredOrder property and a < succ(a)
+    rw [show a ≤ psa ↔ a < sa from limitDomSubtype_le_pred_iff A h_mcs h_discrete a sa]
+    -- a < succ(a) follows from the succ_le_iff: succ(a) ≤ b ↔ a < b
+    -- Taking b = succ(a): succ(a) ≤ succ(a) ↔ a < succ(a), so a < succ(a)
+    exact (limitDomSubtype_succ_le_iff A h_mcs h_discrete a sa).mp le_rfl
+
+/--
 Helper: `a ≤ pred(b)` when `a < b`. Follows from `limitDomSubtype_le_pred_iff`.
 -/
 theorem limitDomSubtype_le_pred_of_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
