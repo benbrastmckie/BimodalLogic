@@ -58,7 +58,7 @@ Prove `limitDomSubtype_Icc_finite` at `ChronicleToCountermodel.lean:1064`: for `
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Succ/Pred Chain Helper Lemmas [NOT STARTED]
+### Phase 1: Succ/Pred Chain Helper Lemmas [BLOCKED]
 
 **Goal:** Establish key properties of succ/pred iteration chains needed for the main proof.
 
