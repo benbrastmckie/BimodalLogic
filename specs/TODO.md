@@ -27,25 +27,28 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-10. Archived 8 tasks (5 completed, 3 abandoned). Prior-UZ axioms added, soundness sorry-free.*
+*Updated 2026-05-11. Task 120 abandoned (redesign infeasible, blocker resolved by task 123). Tasks 124, 116 planned.*
 
-**Goal**: Close 1 remaining sorry for sorry-free `bx_completeness`.
+**Goal**: Close 1 remaining sorry for sorry-free `bx_completeness`, then clean up axiom system.
 
 **Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness is internally sorry-free. Discrete `discrete_fmcs` sorry-free (task 123). One sorry remains: `dd_countermodel_chronicle_nondense_sorry` (task 122).
 
-### 1. Critical Path — Discrete Completeness (1 sorry)
+### 1. Critical Path — In Progress
 
-1. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete `dd_countermodel_chronicle_nondense_sorry`
+1. **123** [IMPLEMENTING] — Fix C5 witness placement, prove Icc_finite (in progress)
+2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete `dd_countermodel_chronicle_nondense_sorry` (depends on 123)
 
-### 2. Active Research
+### 2. Axiom System Cleanup (after 123 merges)
+
+These all touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentially after task 123.
+
+1. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
+2. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
+3. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
+
+### 3. Research / Deferred
 
 - **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
-
-### 3. Cleanup / Deferred
-
-- **124** [PLANNED] — Remove TF axiom, derive from MF (cleanup)
-- **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (nice-to-have)
-- **115** [RESEARCHED] — Remove A4a, simplify BX2 (cleanup)
 - **112** [RESEARCHED] — Literature study (reference)
 - **95** [NOT STARTED] — Verification audit
 - **68** [RESEARCHED] — Dense completeness via ℚ (dense case already works)
