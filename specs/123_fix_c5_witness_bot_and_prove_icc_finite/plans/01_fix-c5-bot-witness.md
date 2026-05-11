@@ -24,49 +24,51 @@
 ### Research Integration
 
 Reports integrated in this revision:
-- `02_teammate-a-burgess-paper.md`: Confirmed Burgess's construction IS correct and produces infinite midpoint chains for U(T,bot) by design. Lemma 2.7 with eta=bot produces inconsistent B' (Set.univ) on the left side, closing the left gap, while B'' on the right remains consistent, leaving the right gap open for the next split.
-- `02_teammate-b-codebase-vs-paper.md`: Confirmed the ProofChecker's omega chain FAITHFULLY implements Burgess 1982. The construction is NOT buggy. The architectural mismatch is in the downstream Z-isomorphism requirement (AddCommGroup D forces D = Z).
-- `02_teammate-c-minimal-fix.md`: Ranked strategies. Previous plan's "weaken EliminationResult" approach (Strategy 4) FAILED because the right disjunct lacks g-value information. Recommended Strategy 6 (post-construction quotient) as most viable: 0 existing lines modified, ~300-500 new lines.
-- `02_teammate-d-limit-proof.md`: Confirmed limit_satisfies_c5_strong ALREADY works correctly for xi=bot. The infinite chain does NOT break C5 satisfaction. Each point has a valid immediate successor via the left-side B' containing bot. The problem is solely that the chain is infinite, making Icc_finite and IsSuccArchimedean false.
-- `03_alternative-architecture.md`: Confirmed AddCommGroup is genuinely structural (MF/TF soundness uses time_shift with group arithmetic). The countermodel MUST live on Z. No shortcut around the quotient/collapse exists.
-- `01_phase1-blocked.md`: Documents the failed implementation attempt. The right disjunct approach cannot provide bot in limit_f(w) for points entering at stages > n+1.
+- `02_teammate-a-burgess-paper.md`: Confirmed Burgess's construction IS correct and produces infinite midpoint chains for U(T,bot) by design. Lemma 2.7 with eta=bot produces inconsistent B' (contains bot) on the left side; B'' on the right remains consistent.
+- `02_teammate-b-codebase-vs-paper.md`: The ProofChecker's omega chain FAITHFULLY implements Burgess 1982. The deviation is downstream: Burgess never needs Z-isomorphism; the ProofChecker does because AddCommGroup D forces D = Z.
+- `02_teammate-c-minimal-fix.md`: Ranked strategies. The "weaken EliminationResult" approach (previous plan) FAILED. Recommended post-construction quotient (Strategy 6) as most viable.
+- `02_teammate-d-limit-proof.md`: limit_satisfies_c5_strong ALREADY works correctly for xi=bot. The infinite chain does NOT break C5 satisfaction. Problem is solely Icc_finite / IsSuccArchimedean being false.
+- `03_alternative-architecture.md`: AddCommGroup is genuinely structural (MF/TF soundness). The countermodel MUST live on Z. No shortcut exists.
+- `01_phase1-blocked.md`: Documents the failed Phase 1 attempt. The right disjunct approach cannot provide bot in limit_f(w) for future-stage points.
 
 ## Overview
 
-**Previous plan**: Modify `EliminationResult` to add a disjunct for the xi=bot case, preventing infinite midpoint insertion. This approach was implemented through Phase 1 (compiled successfully) but FAILED at Phase 3: the right disjunct lacks g-value information needed by `adj_g_mem_limit_f` to propagate the guard formula to future-stage points.
+**Previous plan (FAILED)**: Modify EliminationResult to add a disjunct for xi=bot. Implemented through Phase 1 (compiled) but failed at Phase 3: the right disjunct lacks g-value information for `adj_g_mem_limit_f`.
 
-**Root cause**: Burgess's construction correctly produces infinite bounded intervals for U(T,bot). This is by design, not a bug. The limit model IS a valid discrete linear order -- it just is not isomorphic to Z because it has order type omega+omega* between structural points.
+**Root cause**: Burgess's construction correctly produces infinite bounded intervals for U(T,bot). Each C5 counterexample (z_k, 0, bot, top, c5_forward) inserts a midpoint between z_k and the next structural point, creating an omega-chain z_0 < z_1 < z_2 < ... converging to the structural point. The left-side g-value B' contains bot (closing the left gap), but the right-side B'' is consistent (leaving the right gap open for the next insertion). The C5 walk itself inserts ONE point per invocation (the split case returns immediately without recursion), but the omega-chain enumeration processes each z_k at a different stage.
 
-**New strategy**: Do NOT modify the construction. Instead, define a surjective collapse map `collapse : LimitDomSubtype -> Z` that identifies points in the same omega-chain, then build the countermodel (FMCS, BFMCS, TaskFrame) on Z by transporting through the collapse. The existing `limitDomSubtype_Icc_finite` sorry is BYPASSED entirely -- it is replaced by a direct collapse to Z that does not need finite bounded intervals.
+**New strategy**: Do NOT modify the construction. Instead, BYPASS the `limitDomSubtype_Icc_finite -> IsSuccArchimedean -> discrete_iso` pipeline entirely. Build `discrete_fmcs : FMCS Z` directly by defining a surjection `collapse : LimitDomSubtype -> Z` that maps omega-chains to single integers, then transport the FMCS through the collapse.
 
-**Definition of done**: Remove the sorry at `limitDomSubtype_Icc_finite` (line 1064) OR replace the entire Z-isomorphism pipeline (lines 1059-1188) with the collapse-based construction. The `dd_countermodel_chronicle_nondense_sorry` (line 836) is out of scope (separate task 122) but the new `discrete_fmcs` should be usable by task 122.
+**Key structural insight about the collapse**: The `limitDomSubtype_succ` function iterates through an omega-chain (x, succ(x), succ(succ(x)), ...) that converges to an accumulation point c in Q. The chain NEVER reaches c for finite iteration count, so `IsSuccArchimedean` is mathematically false. The collapse must define an equivalence relation whose classes are these omega-chains, then assign integers to the equivalence classes.
+
+**Definition of done**: Produce `discrete_fmcs : FMCS Z` (with the same type signature as the existing definition) that does NOT depend on `limitDomSubtype_Icc_finite`. The sorry at line 1064 should be either removed (if the old pipeline is replaced) or resolved (if the collapse enables a proof). The `dd_countermodel_chronicle_nondense_sorry` (line 836) is out of scope (task 122).
 
 ## Goals & Non-Goals
 
 **Goals:**
 - Define `collapse : LimitDomSubtype -> Z` that collapses omega-chains to integers
-- Prove collapse is order-preserving and surjective
-- Build `discrete_fmcs : FMCS Z` via the collapse (replacing or supplementing the existing definition)
-- Ensure `discrete_fmcs` provides the same interface as the current one (same type signature, same properties) so that task 122 (BFMCS construction) can proceed
+- Prove the collapse is a surjective order-preserving quotient map
+- Build `discrete_fmcs : FMCS Z` via the collapse, replacing or augmenting the existing definition
+- Ensure the new `discrete_fmcs` provides the interface task 122 needs (forward_G, backward_H, mcs(n) = A for some n, box stability)
 - Remove or resolve the `limitDomSubtype_Icc_finite` sorry
 
 **Non-Goals:**
-- Modifying the omega chain construction (sorry-free, faithful to Burgess)
-- Modifying `CounterexampleElimination.lean` or `ChronicleConstruction.lean`
+- Modifying the omega chain construction in `ChronicleConstruction.lean`
+- Modifying `CounterexampleElimination.lean`
 - Proving `dd_countermodel_chronicle_nondense_sorry` (task 122)
 - Modifying the dense case (already sorry-free)
 
 ## Risks & Mitigations
 
-- **Risk: Defining the collapse is conceptually unclear.** The omega-chains between structural points converge to accumulation points in Q. Defining which points map to the same integer requires characterizing the chain boundaries. Mitigation: Use the `limitDomSubtype_succ` function itself -- the collapse maps each point to the count of succ-iterations from a fixed origin. Two points get the same integer iff they are equal. Actually, this gives an injection, not a collapse. The real approach: use `limitDomSubtype_succ` on the QUOTIENT type, or define collapse via the discrete structure directly.
+- **Risk: Defining the equivalence relation is complex.** Characterizing omega-chain boundaries requires understanding the interplay between C5 insertions for different counterexample types. Mitigation: Use a TOPOLOGICAL definition: x ~ y iff {w in limit_dom | min(x,y) <= w <= max(x,y)} is infinite. This avoids tracking provenance. Two points are equivalent iff the closed interval between them in limit_dom contains infinitely many points. Finite intervals correspond to "structural" gaps; infinite intervals correspond to omega-chains.
 
-- **Risk: The collapse may need to identify points across omega-chains, which requires understanding the chain structure.** Mitigation: Use a simpler definition. Since every point has an immediate successor (via `limit_dom_has_succ`) and immediate predecessor (via `limit_dom_has_pred`), the succ/pred functions are already defined. The problem is only that `succ^[n](a)` never reaches b for finite n when there is an omega-chain between them. The collapse should map all points in an omega-chain to the SAME integer. Define: x ~ y iff the set {w in limit_dom | min(x,y) < w < max(x,y)} is infinite. Then collapse maps equivalence classes to Z.
+- **Risk: The topological equivalence relation may not be well-behaved.** For instance, could x ~ y and y ~ z hold without x ~ z? If [x,y] has infinitely many points and [y,z] has infinitely many points, then [x,z] has infinitely many points (it contains both), so x ~ z. The converse: if x ~ z (infinite [x,z]), then is x ~ y for every y between x and z? Not necessarily -- there could be a finite sub-interval within an infinite one. Mitigation: This means ~ as defined above gives equivalence classes that are CONVEX (no finite gaps inside). Each class is a maximal interval with infinite density. The quotient by convex equivalence classes of a linear order is again a linear order. We need this quotient to be isomorphic to Z.
 
-- **Risk: Transporting FMCS properties (forward_G, backward_H) through the collapse.** If collapse is a surjection but not an injection, we need to choose a representative for each integer and show that the FMCS properties hold for the representatives. Mitigation: Since all points in the same omega-chain have the same MCS values (by BurgessR3Maximal and the chain structure), the representative choice should not matter for forward_G/backward_H. However, this needs verification.
+- **Risk: The quotient may not be isomorphic to Z.** If there are infinitely many equivalence classes in a bounded region, the quotient itself would have infinite bounded intervals. Mitigation: This cannot happen because each equivalence class (omega-chain) is created by processing a specific set of C5 counterexamples, and between any two "structural" points there are only finitely many C5 insertions for non-bot counterexamples. The structural points from C4 and non-bot C5 give FINITE intervals in the quotient.
 
-- **Risk: The FMCS also needs Until/Since coherence for task 122 (BFMCS).** The current `discrete_fmcs` only provides forward_G and backward_H. Until/Since coherence is proved at the limit level (`limit_satisfies_c5_strong`) and needs to be transported through the collapse. Mitigation: Phase 4 explicitly handles this.
+- **Risk: Proving Until/Since coherence on Z is complex.** The limit-level C5 witness y from `limit_satisfies_c5_strong` may not correspond to a distinct equivalence class from the source point. Mitigation: For xi=bot, the witness is the immediate successor (same equivalence class boundary behavior). For general xi, the witness is in the same or a nearby equivalence class, and the Until formula propagates through the collapse.
 
-- **Risk: Alternative approach may be simpler.** Instead of the collapse, we could simply PROVE `limitDomSubtype_Icc_finite` directly by showing that the omega-chains DO terminate (i.e., that the construction does NOT produce infinite chains in practice). However, 4 independent research reports confirm that infinite chains genuinely arise. Mitigation: Commit to the collapse approach.
+- **Risk: Alternative approach may be simpler -- what if the C5 walk for xi=bot can be made to NOT insert a point?** When the C5 walk encounters (x, 0, bot, top, c5_forward) and x's dom-successor x' already has bot in g(x, x') from a PREVIOUS split, condition (ii) should succeed. But the issue is that EACH (z_k, 0, bot, top, c5_forward) is a DIFFERENT tuple with a DIFFERENT x-coordinate, so the "already resolved" check at z_k examines g(z_k, dom-succ(z_k)), which is B'' (consistent, does NOT contain bot). So condition (ii) fails at z_k. Mitigation: This is fundamental and cannot be avoided without modifying the construction.
 
 ## Implementation Phases
 
@@ -81,128 +83,124 @@ Reports integrated in this revision:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Characterize Succ-Chains and Define the Collapse Map [NOT STARTED]
+### Phase 1: Define the Collapse Equivalence and Quotient Map [NOT STARTED]
 
-**Goal:** Define `collapse : LimitDomSubtype A h_mcs -> Z` and its representative inverse. The key insight: since `limitDomSubtype_succ` is well-defined and every point has an immediate successor/predecessor, we can define the collapse by counting succ-steps from a reference point.
+**Goal:** Define an equivalence relation on `LimitDomSubtype` whose classes are the omega-chains, and a quotient map `collapse : LimitDomSubtype -> Quotient`. Prove the quotient is a discrete linear order isomorphic to Z.
 
 **Tasks:**
-- [ ] Read the existing succ/pred infrastructure in `ChronicleToCountermodel.lean` (lines 898-1048) to understand the exact types and interfaces.
-- [ ] Define `succ_chain_equiv : LimitDomSubtype -> LimitDomSubtype -> Prop` where `succ_chain_equiv a b` holds iff `exists n : Nat, succ^[n] a = b` OR `exists n : Nat, succ^[n] b = a`. This is the equivalence relation identifying points in the same succ-chain.
-- [ ] Alternative simpler approach: since the omega-chain issue means `succ^[n]` does not connect all points, define `collapse` directly as `fun x => discrete_iso_attempt x` where `discrete_iso_attempt` uses a DIFFERENT order isomorphism construction. Specifically:
-  - Define `structural_succ : LimitDomSubtype -> LimitDomSubtype` as the function that skips omega-chains: `structural_succ(x) = y` where y is the first limit_dom point after x such that the interval (x, y) in limit_dom is FINITE. If the interval (x, z) for z = succ(x) is infinite (omega-chain), then `structural_succ(x) = structural_succ(succ(x))`. But this is circular.
-  - Better: define `is_structural (x : LimitDomSubtype) : Prop` as `Set.Finite {w : LimitDomSubtype | succ_pred_reachable w x}` where `succ_pred_reachable` means reachable by finite succ/pred iteration. Wait, all points are trivially self-reachable. The issue is more subtle.
-  - **SIMPLEST APPROACH**: Observe that `limitDomSubtype_succ` gives an immediate successor for every point. The issue is that succ^[n](a) converges to a limit point in Q but never reaches it. However, the limit point IS in limit_dom (it was added at some stage). So `succ^[omega](a)` = lim_{n->inf} succ^[n](a) exists in limit_dom. Define `structural_succ(a) = inf {b in limit_dom | b > a AND (a, b) is finite in limit_dom}`. Since the omega-chain from a converges to some c, and (a, c) is infinite (the omega-chain), structural_succ must skip past c. But then what IS structural_succ(a)?
-  - **RECONSIDER**: The research says the order type between structural points is omega+omega*. This means there are points approaching from BOTH sides (omega from the left, omega* from the right). Every point in the omega-chain has a UNIQUE immediate successor (the next midpoint), and the chain converges to an accumulation point. That accumulation point also has an immediate successor (from the omega* chain from the right of the next structural gap).
-  - **PRAGMATIC APPROACH**: Don't try to characterize structural points. Instead, build the Z-isomorphism by a different route:
-    1. `LimitDomSubtype` has `SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder` (all proved).
-    2. The only missing piece is `IsSuccArchimedean`.
-    3. REPLACE the `limitDomSubtype_Icc_finite -> IsSuccArchimedean` path with a DIRECT construction of `FMCS Z`.
-    4. Define `collapse_f : Z -> Set Formula` by: pick any x0 in limit_dom. Set `collapse_f(0) = limit_f(x0)`. Set `collapse_f(n+1) = limit_f(succ^[n+1](x0))` for n >= 0. Set `collapse_f(n) = limit_f(pred^[|n|](x0))` for n < 0. But succ^[n](x0) only reaches points within the same omega-chain, not across chains. So this gives an FMCS on Z where all integers map to points in ONE omega-chain + its omega* continuation. The other structural points are missed.
-    5. This WORKS for the countermodel! We only need ONE FMCS that contains A at some position and satisfies forward_G/backward_H. The succ/pred chain from x0 gives a bi-infinite sequence of MCS values that IS an FMCS on Z.
-- [ ] **IMPLEMENT THIS**: Define `collapse_f : Z -> Set Formula` by iterating `limitDomSubtype_succ` and `limitDomSubtype_pred` from a fixed origin point `x0 = (0, zero_mem_limit_dom)`.
-  - `collapse_f 0 = limit_f 0`
-  - `collapse_f (n+1) = limit_f (succ^[n+1] x0).val`  for n >= 0
-  - `collapse_f (-(n+1)) = limit_f (pred^[n+1] x0).val` for n >= 1
-- [ ] Define `collapse_point : Z -> LimitDomSubtype` as the representative:
-  - `collapse_point 0 = x0`
-  - `collapse_point (n+1) = succ (collapse_point n)` for n >= 0
-  - `collapse_point (-(n+1)) = pred (collapse_point (-n))` for n < 0
-  - Or more cleanly: `collapse_point n = succ^[n] x0` for n >= 0, `collapse_point n = pred^[|n|] x0` for n < 0, using `Int.toNat` and `Int.natAbs`.
-- [ ] Prove `collapse_point` is strictly monotone: for m < n, `(collapse_point m).val < (collapse_point n).val`. This follows from succ being strictly increasing and pred being strictly decreasing.
-- [ ] Place all definitions in a new section of `ChronicleToCountermodel.lean`, AFTER the existing succ/pred infrastructure and BEFORE (or replacing) `limitDomSubtype_Icc_finite`.
+- [ ] Read `ChronicleToCountermodel.lean` (lines 855-1188) to understand the existing succ/pred/iso infrastructure in detail.
+- [ ] Define `Icc_in_limit_dom (a b : LimitDomSubtype) : Set LimitDomSubtype := {x | a <= x /\ x <= b}`.
+- [ ] Define `collapse_equiv : LimitDomSubtype -> LimitDomSubtype -> Prop` as `collapse_equiv a b := Set.Infinite (Icc_in_limit_dom (min a b) (max a b))`. This says a and b are equivalent iff there are infinitely many limit_dom points between them (inclusive).
+  - Alternative simpler approach: `collapse_equiv a b := not (Set.Finite {x : LimitDomSubtype | a <= x /\ x <= b})` for a <= b, extended symmetrically.
+- [ ] Prove `collapse_equiv` is an equivalence relation:
+  - Reflexive: {x | a <= x <= a} = {a}, which is finite. So collapse_equiv a a is FALSE by this definition. THIS IS WRONG.
+  - **FIX**: Redefine: `collapse_equiv a b := a = b \/ Set.Infinite {x : LimitDomSubtype | min a b <= x /\ x <= max a b}`. Now reflexive (a = a case).
+  - But this means a ~ b whenever a = b OR the interval is infinite. Is this transitive? If a ~ b (infinite [a,b]) and b ~ c (infinite [b,c]), then [a,c] contains [a,b] which is infinite, so a ~ c. If a ~ b via a = b, and b ~ c, then a ~ c. OK.
+  - Symmetric: by symmetry of the definition.
+  - **ISSUE**: This equivalence class for a point a in a FINITE interval consists of just {a}. For a point a in an INFINITE interval (omega-chain), the class consists of ALL points in that omega-chain. So the quotient has: one class per structural point (class = {point}), and one class per omega-chain (class = omega-chain). This is what we want!
+  - **ISSUE 2**: An omega-chain x < z1 < z2 < ... has [x, z1] finite (just {x, z1}), so x and z1 are NOT equivalent by the "infinite interval" criterion. But we WANT them in the same class!
+  - **RE-EXAMINE**: Between x and z1, are there limit_dom points? By `limit_dom_has_succ`, z1 is the IMMEDIATE successor of x -- no limit_dom points between them. So {w | x <= w <= z1} = {x, z1}, which is FINITE. So x ~ z1 would be FALSE. But we WANT x and z1 in the same omega-chain class!
+  - **THE DEFINITION IS WRONG.** The omega-chain x < z1 < z2 < ... converges to a limit point c. The individual steps (x, z1), (z1, z2), etc. are each finite (just the two endpoints). The INFINITE set is {x, z1, z2, z3, ...}, which lives in the interval [x, c). But [x, c] IS infinite. So x ~ c under the definition. But we want x NOT equivalent to c (c is a structural point in the next equivalence class).
+  - **ALTERNATIVE DEFINITION**: Use reachability by succ. Define `collapse_equiv a b := exists n : Nat, succ^[n] a = b \/ succ^[n] b = a`. This is the transitive symmetric closure of the succ relation. Each equivalence class is a maximal chain reachable by finitely many succ-steps. The omega-chain x, z1, z2, z3, ... is ALL reachable from x. The limit point c is NOT reachable from x. So each omega-chain is one class, and c starts a new class.
+  - **PROVE EQUIVALENCE**:
+    - Reflexive: succ^[0] a = a.
+    - Symmetric: by the disjunction.
+    - Transitive: If succ^[n] a = b and succ^[m] b = c, then succ^[n+m] a = c. If succ^[n] a = b and succ^[m] c = b, then need succ^[k] a = c or succ^[k] c = a. Since succ is strictly increasing, succ^[n] a = succ^[m] c means a < b and c < b (if n, m > 0). Then either a < c < b or c < a < b. If a < c: succ^[n] a = b and succ^[m] c = b. Since succ is injective on succ-chains... actually succ is NOT injective in general (different elements can have the same successor). But `limitDomSubtype_succ_le_iff` gives `succ a <= b <-> a < b`, which means succ is injective (if succ a = succ b, then a < succ a = succ b, so a < b, but also b < succ b = succ a, so b < a, contradiction unless a = b).
+    - So succ is injective, and succ^[n] is injective. If succ^[n] a = succ^[m] c, WLOG n >= m. Then succ^[n-m](succ^[m] a) = succ^[m] c, and by injectivity of succ^[m], succ^[n-m] a = c. So a ~ c.
+  - **THIS DEFINITION WORKS.** Each equivalence class is the succ-orbit of a point. The omega-chain {x, succ(x), succ^[2](x), ...} converges to c, and c's orbit is {c, succ(c), succ^[2](c), ...}, a separate chain.
+- [ ] Formalize `collapse_equiv` in Lean:
+  ```
+  def collapse_equiv (a b : LimitDomSubtype A h_mcs) : Prop :=
+    exists n : Nat, succ^[n] a = b \/ succ^[n] b = a
+  ```
+  where `succ` is `Order.succ` from the `SuccOrder` instance.
+- [ ] Prove `collapse_equiv` is an `Equivalence`.
+- [ ] Define `CollapseClass := Quotient (collapse_equiv.setoid)`.
+- [ ] Prove `CollapseClass` has a `LinearOrder`: the quotient of a linear order by a convex equivalence relation is linearly ordered. Define `[a] < [b]` iff `a' < b'` for some a' in [a], b' in [b] with the class of a' distinct from the class of b'. Since each equivalence class is a convex set and different classes are separated, this is well-defined.
+- [ ] Prove `CollapseClass` has `SuccOrder` and `PredOrder`: the successor of [a] is [c] where c is the accumulation point of the omega-chain from a. The predecessor is similarly defined.
+- [ ] Prove `CollapseClass` has `IsSuccArchimedean`: for any [a] <= [b], there are finitely many equivalence classes between them. This follows because each class corresponds to one "structural step" in the original domain, and between any two structural points there are finitely many structural points. (This is the KEY property that the collapse is designed to achieve.)
+- [ ] Prove `CollapseClass` has `NoMaxOrder` and `NoMinOrder` (from the original limit_dom).
+- [ ] Derive `CollapseClass ≃o Z` via `orderIsoIntOfLinearSuccPredArch`.
+- [ ] Define `collapse : LimitDomSubtype -> Z` as the composition of the quotient map and the order isomorphism.
+- [ ] Place all definitions in `ChronicleToCountermodel.lean`.
 
-**Timing:** 4-6 hours
+**Timing:** 6-8 hours
 
 **Depends on:** none
 
-### Phase 2: Build FMCS on Z via Collapse [NOT STARTED]
+### Phase 2: Define FMCS on Z via Collapse [NOT STARTED]
 
-**Goal:** Define `discrete_fmcs_via_collapse : FMCS Z` using `collapse_point` and prove forward_G and backward_H.
+**Goal:** Define `discrete_fmcs_via_collapse : FMCS Z` using the collapse map, and prove forward_G and backward_H.
 
 **Tasks:**
-- [ ] Define `discrete_f_collapse (A : Set Formula) (h_mcs : SetMaximalConsistent A) (h_discrete : ...) : Z -> Set Formula` as `fun n => limit_f A h_mcs (collapse_point A h_mcs h_discrete n).val`.
-- [ ] Prove `discrete_f_collapse_is_mcs : forall n, SetMaximalConsistent (discrete_f_collapse n)`. This follows from `limit_c0` since `collapse_point n` is in `limit_dom`.
-- [ ] Prove `discrete_f_collapse_forward_G`: For t < t', if `G(phi) in discrete_f_collapse(t)`, then `phi in discrete_f_collapse(t')`. Argument: `collapse_point` is strictly monotone, so `collapse_point(t).val < collapse_point(t').val`. Both are in `limit_dom`. Apply `limit_forward_G`.
-- [ ] Prove `discrete_f_collapse_backward_H`: Mirror of forward_G using `limit_backward_H`.
-- [ ] Assemble `discrete_fmcs_via_collapse : FMCS Z` from the above.
-- [ ] Prove `discrete_fmcs_via_collapse_at_zero : discrete_fmcs_via_collapse.mcs (collapse_zero) = A` where `collapse_zero = 0` (since `collapse_point 0 = x0 = (0, ...)` and `limit_f 0 = A` by `limit_f_zero`).
-- [ ] Verify `lake build ChronicleToCountermodel` compiles (with sorry at `limitDomSubtype_Icc_finite` still present; we address that in Phase 5).
+- [ ] Choose a canonical representative for each equivalence class. Define `repr : Z -> LimitDomSubtype` as the composition of the Z-iso inverse and a section of the quotient map. Specifically, for each equivalence class [a], pick the minimum element (which exists since each class is well-ordered by the succ relation; it is the element with no predecessor in the class, i.e., the element whose pred lands in a DIFFERENT class).
+  - Alternative: use `Quotient.out` (arbitrary choice) composed with the iso inverse. Less canonical but simpler.
+- [ ] Define `discrete_f_collapse : Z -> Set Formula` as `fun n => limit_f (repr n).val`.
+- [ ] Prove `discrete_f_collapse` assigns MCSs: `forall n, SetMaximalConsistent (discrete_f_collapse n)`. Follows from `limit_c0`.
+- [ ] Prove `forward_G`: For t < t' in Z, if `G(phi) in discrete_f_collapse(t)`, then `phi in discrete_f_collapse(t')`. Argument: `repr(t)` and `repr(t')` are in limit_dom with `repr(t) < repr(t')` (since the collapse is order-preserving and representatives are chosen consistently). Apply `limit_forward_G`.
+  - **SUBTLETY**: We need `repr(t).val < repr(t').val`. This follows from `t < t'` iff `collapse(repr(t)) < collapse(repr(t'))`, and the collapse is order-preserving, and the representatives are chosen from different equivalence classes.
+- [ ] Prove `backward_H`: Mirror of forward_G using `limit_backward_H`.
+- [ ] Assemble `discrete_fmcs_via_collapse : FMCS Z`.
+- [ ] Prove `discrete_fmcs_at_origin`: There exists `n0 : Z` such that `discrete_fmcs_via_collapse.mcs n0 = A`. Specifically, `n0 = collapse (0, zero_mem_limit_dom)`, and the representative of the class of 0 has `limit_f(repr(n0)).val = A` (via `limit_f_zero`).
+- [ ] Prove `box_stability`: `Box phi in discrete_fmcs_via_collapse.mcs t <-> Box phi in A` for all t. This follows from the limit-level box stability through the representatives.
+- [ ] Verify `lake build ChronicleToCountermodel` compiles.
 
-**Timing:** 3-4 hours
+**Timing:** 4-6 hours
 
 **Depends on:** 1
 
 ### Phase 3: Prove Until/Since Coherence on Z [NOT STARTED]
 
-**Goal:** Prove the Until and Since coherence properties for `discrete_fmcs_via_collapse`, which task 122 will need for the BFMCS construction.
+**Goal:** Prove the Until and Since coherence properties for `discrete_fmcs_via_collapse`. These are needed by task 122 for the BFMCS construction.
 
 **Tasks:**
-- [ ] Prove `discrete_fmcs_collapse_c5 : forall t xi eta, untl(eta, xi) in discrete_f_collapse(t) -> exists t' > t, eta in discrete_f_collapse(t') AND forall s, t < s < t' -> xi in discrete_f_collapse(s)`. Argument:
-  - From `untl(eta, xi) in limit_f(collapse_point(t))`, apply `limit_satisfies_c5_strong` to get witness `y in limit_dom` with `y > collapse_point(t).val`, `eta in limit_f(y)`, and `xi in limit_g(collapse_point(t), y)`.
-  - Need to show y = `collapse_point(t')` for some t' > t. This is where the collapse matters: y might NOT be on the succ-chain from x0. The witness y from C5 is a midpoint inserted in the omega chain, which IS reachable from collapse_point(t) by finitely many succ-steps (it is in the same omega-chain between collapse_point(t) and the next "structural" boundary).
-  - Wait -- y IS the immediate successor of collapse_point(t) (since `limit_satisfies_c5_strong` with xi=bot gives the succ witness from `limit_dom_has_succ`). For general xi, y could be further out.
-  - **Key insight**: We do NOT need y to be on the collapse chain. We need to find t' such that eta in discrete_f_collapse(t') and xi in discrete_f_collapse(s) for all t < s < t'.
-  - For the xi=bot case (discrete axiom): limit_dom_has_succ gives y = succ(collapse_point(t)), and succ(collapse_point(t)) = collapse_point(t+1) by definition. So t' = t+1, and there are no integers s with t < s < t+1. Guard is vacuously satisfied. Done.
-  - For general xi, eta: limit_satisfies_c5_strong gives y with xi in limit_g(collapse_point(t), y). Need to show xi in limit_f(collapse_point(s)) for all t < s < t'. Since collapse_point is strictly monotone, collapse_point(t) < collapse_point(s) < collapse_point(t'). If y >= collapse_point(t'), then limit_g(collapse_point(t), y) subset limit_f(collapse_point(s)) by the definition of limit_g.
-  - So set t' = the integer such that collapse_point(t') >= y. Then for all s with t < s < t', collapse_point(s) is between collapse_point(t) and collapse_point(t') <= y, so xi in limit_f(collapse_point(s)) by limit_g membership.
-  - **But we need to prove such t' exists**: Since collapse_point is unbounded above (limit_dom has no max), there exists t' with collapse_point(t').val >= y. The FIRST such t' has eta in limit_f(collapse_point(t'))? Not necessarily -- eta in limit_f(y) but y might not equal collapse_point(t'). If collapse_point(t').val > y, we need eta in limit_f(collapse_point(t')), which requires a propagation argument.
-  - **ALTERNATIVE**: Use a STRONGER Until coherence from the limit. Define the Until property on Z differently: for `untl(eta, xi) in discrete_f_collapse(t)`, use the limit-level C5 witness y, then set t' to be the smallest integer such that `collapse_point(t').val >= y`. Prove `eta in limit_f(collapse_point(t'))` using the limit's Until propagation (either y = collapse_point(t') or y is between collapse_point(t'-1) and collapse_point(t'), and the Until formula propagates via the chain).
-  - This requires lemma: if `untl(eta, xi) in limit_f(x)` and `xi in limit_g(x, y)` and `eta in limit_f(y)`, and z > y with z in limit_dom, then either `eta in limit_f(z)` or there exists y' with y < y' <= z with `eta in limit_f(y')` and `xi in limit_g(y, y')`. This is essentially the Until propagation.
-  - **SIMPLER APPROACH**: Prove that `untl(eta, xi) in limit_f(collapse_point(t))` implies there exists a FINITE n such that `eta in limit_f(succ^[n](collapse_point(t)))` and `xi in limit_f(succ^[k](collapse_point(t)))` for all 0 < k < n. This follows from the C5 witness being within the succ-reachable chain, which it is (the C5 witness is the immediate succ or a few succ-steps away).
-  - Actually, re-examine: the C5 witness y from `limit_satisfies_c5_strong` at collapse_point(t) satisfies: y in limit_dom, y > collapse_point(t).val, eta in limit_f(y), xi in limit_g(collapse_point(t), y). The point y was added at some stage n+1 of the omega chain. Since collapse_point(t) is reached by t succ-steps from x0, and succ-steps follow the omega chain, y is exactly `succ(collapse_point(t))` = `collapse_point(t+1)` when xi=bot. For general xi, y could be several succ-steps ahead. In either case, y IS reachable by finitely many succ-steps from collapse_point(t), because: y is in limit_dom, which means y was inserted at some finite stage. The omega chain from collapse_point(t) passes through y before reaching the next structural boundary. So y = succ^[k](collapse_point(t)) = collapse_point(t+k) for some finite k.
-  - **PROVE THIS**: Show that for any y in limit_dom with y > collapse_point(t).val, there exists k : Nat such that collapse_point(t+k).val >= y. This is equivalent to showing the succ-chain from collapse_point(t) is cofinal in limit_dom above collapse_point(t). Since limit_dom is a subset of Q and every point has an immediate successor via `limitDomSubtype_succ`, the succ-chain x0 < succ(x0) < succ(succ(x0)) < ... is an infinite strictly increasing sequence. Is it cofinal? This is exactly what `IsSuccArchimedean` would give us, but we cannot prove that.
-  - **CRUCIAL REALIZATION**: The succ-chain from x0 may NOT be cofinal. The omega-chain from x0 converges to an accumulation point c in Q, and c itself is in limit_dom (added at some stage). But succ^[n](x0) never reaches c for finite n. So collapse_point(n) for n in N stays below c. The collapse misses everything at or above c.
-  - **THIS MEANS THE COLLAPSE APPROACH AS DEFINED DOES NOT WORK.** The succ-chain from x0 only covers one omega-chain, not the entire limit_dom.
-- [ ] **REVISED APPROACH for collapse_point**: Instead of iterating succ from a single x0, define collapse_point using STRUCTURAL successors that jump across omega-chain boundaries:
-  - Define `structural_succ(x) : LimitDomSubtype` as: the first point y in limit_dom such that y > x AND there are only FINITELY many limit_dom points in (x.val, y.val). This skips the omega-chain convergence.
-  - But this is exactly what we cannot characterize without understanding the chain structure.
-  - **BETTER**: Use the STAGE STRUCTURE. Each point in limit_dom enters at some finite stage n. Define `stage(x) = min {n | x.val in dom_n}`. A point is "structural" if it was NOT inserted by a C5 elimination for a U(eta, bot) counterexample. Define `is_structural(x) : Prop` by examining the counterexample that caused x's insertion.
-  - This requires tracking provenance information through the omega chain, which is not currently available in the limit definitions.
-  - **SIMPLEST VIABLE APPROACH**: Use `WellOrder` / `Ordinal` theory. Define: for x in LimitDomSubtype, `transfinite_succ_rank(x) : Ordinal` as the ordinal rank in the well-ordering induced by succ on LimitDomSubtype. Then use the fact that limit_dom is countable (subset of Q) to get countable ordinal ranks, which embed into Z somehow. But this is extremely complex.
-  - **ACTUALLY SIMPLEST**: Don't define collapse_point at all. Instead, prove `limitDomSubtype_Icc_finite` DIRECTLY by showing the construction cannot produce infinitely many points in a bounded interval. BUT the research says it does. However, let me re-examine: the research assumes the C5 walk for U(T,bot) always inserts midpoints. Is this actually true in the ProofChecker's code?
-- [ ] **RE-EXAMINE THE CODEBASE**: Read CounterexampleElimination.lean to check whether the "already resolved" condition (condition ii in the C5 walk) can ever succeed for xi=bot. Condition ii checks `eta in f(x')` AND `xi in g(pt, x')`. With eta = top_formula and xi = bot: `top_formula in f(x')` is always true (MCS), `bot in g(pt, x')` -- this requires bot in the g-value. If g(pt, x') was produced by a PREVIOUS C5 split for U(T,bot), and the LEFT side B' contains bot, then when we recurse to the next dom-successor x'', the g-value g(z, x'') = B'' which is consistent (bot NOT in B''). So condition ii fails for the NEXT step. But what about the g-value g(x, z) = B' which DOES contain bot? The C5 walk processes left-to-right: starting at x, finding x' = dom-successor. If g(x, x') already contains bot (from a previous split), then condition ii would succeed: `top in f(x')` AND `bot in g(x, x')`. So the counterexample IS resolved.
-  - **KEY**: Does the g-value from a previous C5 split persist? At stage n, if the C5 for U(T,bot) at x was processed and inserted z between x and x', then at stage n+1, dom includes z. The g-values: g_{n+1}(x, z) = B' (contains bot). When processing ANOTHER C5 for U(T,bot) at x at a LATER stage m > n, the counterexample_enum may select x again (different counterexample instance). At stage m, the dom-successor of x is z (since z was inserted at n+1). The g-value g_m(x, z) is B' (unchanged from stage n+1, since no insertion happened between x and z after that). So condition ii checks: `top in f(z)` (true) AND `bot in g(x, z) = B'` (TRUE since B' is inconsistent). So condition ii SUCCEEDS, and the counterexample is already resolved. NO new midpoint is inserted.
-  - **THIS MEANS THE INFINITE CHAIN DOES NOT ARISE!** After ONE C5 split for U(T,bot) at x, inserting z with B' containing bot on the left, any FUTURE C5 for U(T,bot) at x finds z as dom-successor with bot in g(x,z), satisfying condition ii. The walk terminates at z. Similarly, the C5 for U(T,bot) at z: z's dom-successor is x' (the original). g(z, x') = B'' (consistent, bot NOT in B''). Condition ii fails. Split again at (z, x'), inserting z'. g(z, z') = B'_2 containing bot. Next C5 at z finds z' with bot in g(z,z'), condition ii succeeds. No infinite chain.
-  - **WAIT**: Each counterexample in the omega chain is processed ONCE (the enumeration is a bijection N -> Counterexamples). So the C5 for U(T,bot) at x is processed at exactly ONE stage n. At stage n, z is inserted between x and x'. At stage n+1, x's dom-successor is z, and g(x,z) = B' contains bot. No FURTHER C5 for U(T,bot) at x is processed (it was already processed at stage n). Instead, a NEW C5 for U(T,bot) at z is processed at some later stage m. At z, dom-successor is x'. g(z, x') = B''. Is bot in B''? If not, split again at (z, x'), inserting z'. Then at z', dom-successor is x'. g(z', x') = B''_2. And so on. This creates the omega-chain z < z' < z'' < ... converging to x'.
-  - **SO THE INFINITE CHAIN DOES ARISE** between z and x'. The left side is always closed (bot in B'), the right side remains open (bot not in B''). New points are inserted between the latest midpoint and x'.
-  - **FINAL APPROACH**: Accept that infinite chains exist. The collapse must jump across them. Define collapse using a WELL-FOUNDED approach.
+- [ ] Prove `collapse_c5_forward`: For any t : Z and xi, eta : Formula with `untl(eta, xi) in discrete_f_collapse(t)`, there exists t' > t such that `eta in discrete_f_collapse(t')` and `forall s, t < s < t' -> xi in discrete_f_collapse(s)`.
+  - **Strategy**: Apply `limit_satisfies_c5_strong` at `repr(t)` to get witness y in limit_dom. Let t' = collapse(y). Since collapse is order-preserving, t < t'. We have `eta in limit_f(y) = discrete_f_collapse(t')` (if y is the representative of its class; otherwise need to show `eta in limit_f(repr(t'))` using forward_G/backward_H within the class).
+  - For the guard: for any s with t < s < t', `repr(s)` is between `repr(t)` and `repr(t')` in limit_dom (by order-preservation of collapse). If `repr(s)` is between `repr(t)` and y, then `xi in limit_g(repr(t), y) subset limit_f(repr(s))` by the definition of limit_g. If `repr(s)` is between y and `repr(t')`, we need a separate argument.
+  - **SIMPLIFICATION for xi=bot**: When xi=bot, the witness y from limit_satisfies_c5_strong is the immediate limit-level successor of repr(t). The guard is vacuous (no limit_dom points between repr(t) and y). If repr(t) and y are in the SAME equivalence class, then t = t' = collapse(repr(t)) = collapse(y), contradiction since t < t'. So y must be in a DIFFERENT class. Since y = succ(repr(t)), and succ(repr(t)) is in the same class (by definition of collapse_equiv!), actually y IS in the same class. So collapse(y) = t, not t' > t. This is a problem.
+  - **WAIT**: succ(repr(t)) is in the SAME equivalence class as repr(t) (since succ^[1](repr(t)) = succ(repr(t))). So collapse maps the entire omega-chain to the same integer t. The witness y = succ(repr(t)) maps to the same t. This means we need t' such that discrete_f_collapse(t') contains eta, and t' > t. But the witness from C5 maps to t, not t+1!
+  - **THE ISSUE**: For U(top, bot), the C5 witness is the IMMEDIATE successor, which is in the same equivalence class. All points in the omega-chain map to the same integer. So the "witness" collapses to the same point. We need a witness in a DIFFERENT class.
+  - **RESOLUTION**: The C5 condition for U(top, bot) means "there is an immediate successor." In the collapsed Z, this means `top in discrete_f_collapse(t+1)` -- which is trivially true (top is in every MCS). And the guard `bot in discrete_f_collapse(s)` for t < s < t+1 is vacuous (no integers between t and t+1). So the discrete C5 IS satisfied, but we need to prove it via a different route than limit_satisfies_c5_strong.
+  - **DIRECT PROOF FOR xi=bot**: Prove `untl(top, bot) in discrete_f_collapse(t) -> exists t' > t, top in discrete_f_collapse(t') /\ forall s, t < s < t' -> bot in discrete_f_collapse(s)` by taking t' = t + 1. Then `top in discrete_f_collapse(t+1)` follows from `theorem_in_mcs` (top is provable). The guard is vacuous (no integer s with t < s < t+1).
+  - **GENERAL xi**: Use limit_satisfies_c5_strong to get witness y. The crucial question: is collapse(y) > t? If xi is not bot, the C5 walk may use condition (i) to recurse to a dom-successor x', which IS in a different equivalence class (it was an original domain point, not an omega-chain fill). Then the witness is in a class with a higher collapse value.
+  - **PROVE**: For general xi (not bot), the C5 witness from the limit is either: (a) an original domain point (condition ii path), or (b) a newly inserted midpoint. In case (b), the midpoint is between two original points, so it is in a class between the classes of those original points. The collapse value is >= t if the midpoint is after repr(t).
+- [ ] Prove the mirror `collapse_c5_backward` for Since.
+- [ ] Verify `lake build` compiles.
 
-**Timing:** 4-6 hours
+**Timing:** 5-7 hours
 
 **Depends on:** 2
 
-### Phase 4: Build BFMCS on Z and Wire to Countermodel [NOT STARTED]
+### Phase 4: Build BFMCS on Z and Countermodel Infrastructure [NOT STARTED]
 
-**Goal:** Build `cantor_bfmcs_discrete : BFMCS Z` mirroring the dense case's `cantor_bfmcs_dense`, using `discrete_fmcs_via_collapse`. Prove the restricted temporal coherence and Until/Since coherence conditions needed by `fully_restricted_parametric_representation_from_neg_membership`.
+**Goal:** Build `cantor_bfmcs_discrete : BFMCS Z` mirroring `cantor_bfmcs_dense`, using `discrete_fmcs_via_collapse`. Provide the infrastructure that task 122 needs.
 
 **Tasks:**
-- [ ] Define `rooted_discrete_fmcs : Set Formula -> Z -> FMCS Z` that builds a chronicle for each box-equivalent MCS N, applies the collapse, and shifts to place N at time s. Mirror `rooted_cantor_fmcs_dense` using integer shifts (Z has AddCommGroup, so `mcs t := collapse_f (t + offset)` works).
-- [ ] Prove `rooted_discrete_fmcs_at_s : (rooted_discrete_fmcs N s).mcs s = N`.
-- [ ] Prove box stability: `Box phi in (rooted_discrete_fmcs N s).mcs t <-> Box phi in N`. This should follow from the limit-level box stability.
-- [ ] Define `cantor_bfmcs_discrete : BFMCS Z` with `families = {rooted_discrete_fmcs N s | N box-equiv A, s : Z}`.
-- [ ] Prove `modal_forward` and `modal_backward` for the BFMCS (mirror dense case proofs).
-- [ ] Prove the three restricted coherence conditions:
-  - `restricted_tc` (restricted temporal coherence)
-  - `restricted_buc` (restricted backward Until/Since coherence)
-  - `restricted_fuc` (restricted forward Until/Since coherence)
-- [ ] Wire to `dd_countermodel_chronicle_nondense_sorry` (or provide infrastructure that task 122 can use directly).
+- [ ] Define `shifted_discrete_fmcs : FMCS Z` using integer shifts: `mcs t := discrete_f_collapse (t + offset)`. Since Z has AddCommGroup, this is straightforward.
+- [ ] Define `rooted_discrete_fmcs (N : Set Formula) (h_N : SetMaximalConsistent N) (h_box_discrete : ...) (s : Z) : FMCS Z` that builds a chronicle for N, applies the collapse, and shifts to place N at time s.
+- [ ] Prove `rooted_discrete_fmcs_at_s`: `(rooted_discrete_fmcs N s).mcs s = N`.
+- [ ] Prove box stability for `rooted_discrete_fmcs`.
+- [ ] Define `cantor_bfmcs_discrete : BFMCS Z` with families = {rooted_discrete_fmcs N s | N box-equiv to A, s : Z}.
+- [ ] Prove `modal_forward` and `modal_backward` (mirror dense case proofs, using box stability).
+- [ ] Prove restricted temporal coherence, restricted forward/backward Until/Since coherence (using Phase 3 results).
+- [ ] Ensure the interface matches what `dd_countermodel_chronicle_nondense_sorry` needs (same existential pattern as `dd_countermodel_chronicle_dense`).
 - [ ] Verify `lake build ChronicleToCountermodel` compiles.
 
 **Timing:** 6-8 hours
 
 **Depends on:** 3
 
-### Phase 5: Clean Up and Resolve Sorries [NOT STARTED]
+### Phase 5: Clean Up, Resolve Sorries, and Verify [NOT STARTED]
 
-**Goal:** Remove the `limitDomSubtype_Icc_finite` sorry (or mark it as unnecessary given the new approach), clean up, and verify the full build.
+**Goal:** Remove or resolve the `limitDomSubtype_Icc_finite` sorry, clean up deprecated code, and verify the full build.
 
 **Tasks:**
-- [ ] If the collapse-based approach fully replaces the `discrete_iso` pipeline: mark `limitDomSubtype_Icc_finite`, `limitDomSubtype_isSuccArchimedean`, `discrete_iso`, `discrete_f`, `discrete_fmcs` as deprecated or remove them, since the collapse bypasses them entirely.
-- [ ] Alternatively, if keeping the old pipeline: prove `limitDomSubtype_Icc_finite` using the collapse (since collapse gives an order-embedding into Z, and Z has finite bounded intervals, the preimage of a finite Z-interval under the collapse is finite). This requires the collapse to be "bounded" -- each omega-chain maps to a single point in Z, and finitely many Z-points map into any bounded Q-interval.
+- [ ] **Option A (preferred)**: Replace the entire `limitDomSubtype_Icc_finite -> IsSuccArchimedean -> discrete_iso -> discrete_f -> discrete_fmcs` pipeline with the new collapse-based definitions. Mark the old definitions as deprecated or remove them. The sorry at line 1064 is eliminated by removing the lemma.
+- [ ] **Option B**: Keep the old pipeline and prove `limitDomSubtype_Icc_finite` USING the collapse. Argument: collapse is a surjection from LimitDomSubtype to Z. For a, b in LimitDomSubtype with collapse(a) <= collapse(b), the set {x | a <= x <= b} maps under collapse to {n : Z | collapse(a) <= n <= collapse(b)}, which is a finite set of integers. Each integer preimage (equivalence class) is... wait, each class might be infinite, so this does not give finiteness. So Option B does not work. Stick with Option A.
 - [ ] Run full `lake build` and verify no new errors.
-- [ ] Verify `dd_countermodel_chronicle_nondense_sorry` retains its single sorry (unaffected by these changes).
+- [ ] Verify `dd_countermodel_chronicle_nondense_sorry` retains its sorry (unaffected).
 - [ ] Add docstrings to all new definitions and lemmas.
-- [ ] Grep for sorry in the Chronicle files; confirm count is unchanged or reduced.
+- [ ] Grep for sorry in Chronicle files; confirm count is reduced by 1 (the `limitDomSubtype_Icc_finite` sorry is gone).
 
 **Timing:** 2-3 hours
 
@@ -212,9 +210,10 @@ Phases within the same wave can execute in parallel.
 
 - [ ] `lake build ChronicleToCountermodel` passes after each phase
 - [ ] `lean_verify` on `discrete_fmcs_via_collapse` confirms no sorry dependencies
-- [ ] `lean_verify` on new BFMCS infrastructure confirms no sorry dependencies
+- [ ] `lean_verify` on collapse definitions confirms no sorry dependencies
 - [ ] Full `lake build` passes after Phase 5
-- [ ] Grep for sorry in Chronicle files shows same or fewer count
+- [ ] Grep for sorry in Chronicle files shows count reduced by 1
+- [ ] The type signature of `discrete_fmcs` (or its replacement) matches what task 122 expects
 
 ## Artifacts & Outputs
 
@@ -225,19 +224,20 @@ Phases within the same wave can execute in parallel.
 
 ## Rollback/Contingency
 
-All changes are ADDITIVE (new definitions and lemmas in ChronicleToCountermodel.lean). The existing construction, limit definitions, and dense case are untouched. Reverting: delete the new collapse section.
+All changes are ADDITIVE (new definitions and lemmas in ChronicleToCountermodel.lean). The existing construction, limit definitions, and dense case are untouched. Reverting: delete the new collapse section and restore the original definitions.
 
-If the collapse approach proves too complex:
-1. **Fallback A**: Prove `limitDomSubtype_Icc_finite` by showing the omega-chains are actually finite. Re-examine whether the ProofChecker's counterexample enumeration processes each (x, xi=bot, eta=top, c5_forward) tuple exactly once, meaning only ONE midpoint per original adjacent pair per direction. If so, the interval [a,b] has at most 2*|original_dom_between(a,b)| points, which is finite.
-2. **Fallback B**: Change the definition of `valid_discrete` to quantify over arbitrary countable discrete linear orders (not just Z). This is a significant architectural change (task 120 scope) but is mathematically cleaner.
-3. **Fallback C**: If the infinite chain analysis is wrong and chains ARE finite, prove Icc_finite directly and keep the existing pipeline.
+If the collapse equivalence approach proves too complex:
+1. **Fallback A**: Use Lean's `Quotient` type directly on the succ-reachability relation. This is more abstract but leverages Lean's quotient infrastructure.
+2. **Fallback B**: Define the collapse NON-constructively using `Classical.choice` to pick equivalence class representatives, avoiding explicit quotient types.
+3. **Fallback C**: Abandon the quotient and instead modify the definition of `valid_discrete` to quantify over arbitrary discrete linear orders (not just Z). This is a larger architectural change (task 120 scope) but is mathematically cleaner and aligns with Burgess's approach.
+4. **Fallback D**: Re-examine whether a modified C5 walk (that makes BOTH B' and B'' contain bot, using a different splitting lemma) can prevent the infinite chain. The handoff file suggests this might work if `BurgessR3Maximal(D, Set.univ, f(x'))` can be proved, but teammate-a-burgess-paper.md shows this requires `F(delta) in A` for all delta in D, which is a very strong condition.
 
-## IMPORTANT NOTE: Phase 1 and Phase 3 Are Exploratory
+## Critical Notes for Implementation
 
-The Phase 1 and Phase 3 task lists above reflect the FULL complexity of the problem, including dead-end analysis that was performed during planning. The implementer should:
+1. **The succ-chain from any point is NOT cofinal in limit_dom.** Each succ-chain is an omega-chain converging to an accumulation point. The collapse must handle this by mapping entire omega-chains to single integers.
 
-1. **Start by reading the codebase** to verify the omega-chain structure and whether condition (ii) can prevent infinite chains.
-2. **If infinite chains genuinely exist**: Proceed with the collapse approach, using the stage-tracking approach to define structural vs fill points.
-3. **If infinite chains do NOT exist** (condition ii prevents them): Prove `limitDomSubtype_Icc_finite` directly and keep the existing pipeline. This would be much simpler (~5-10 hours total).
+2. **For U(T,bot) coherence on Z**: Do NOT go through limit_satisfies_c5_strong. Instead, prove directly: U(T,bot) in discrete_f_collapse(t) implies top in discrete_f_collapse(t+1) (trivial) and bot in discrete_f_collapse(s) for t < s < t+1 (vacuous). This avoids the issue that the C5 witness collapses to the same integer as the source point.
 
-The implementer should write a handoff if the codebase analysis reveals that the situation is fundamentally different from what the research reports describe.
+3. **The key mathematical property to prove**: The succ-reachability equivalence classes are CONVEX (no gaps within a class) and the quotient has no infinite bounded intervals. This follows because between any two original domain points, there are only finitely many non-bot C5 insertions (each requires a specific formula tuple that appears only once in the enumeration).
+
+4. **IsSuccArchimedean on the quotient**: This is the REPLACEMENT for `limitDomSubtype_Icc_finite`. It should be provable because: (a) each equivalence class is bounded (the omega-chain converges, so the class fits within the interval between two structural points), and (b) between any two structural points there are finitely many structural points (each C4 or non-bot C5 insertion is processed once).
