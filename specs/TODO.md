@@ -33,10 +33,9 @@ technical_debt:
 
 **Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness is internally sorry-free. Discrete completeness blocked by 1 finiteness lemma.
 
-### 1. Critical Path — Discrete Completeness (2 sorries)
+### 1. Critical Path — Discrete Completeness (1 sorry)
 
-1. **121** [RESEARCHED] — Prove `limitDomSubtype_Icc_finite` (bounded limit_dom intervals are finite)
-2. **NEW** — Build discrete BFMCS on ℤ, complete `dd_countermodel_chronicle_nondense_sorry`
+1. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete `dd_countermodel_chronicle_nondense_sorry`
 
 ### 2. Active Research
 
@@ -50,7 +49,6 @@ technical_debt:
 - **112** [RESEARCHED] — Literature study (reference)
 - **95** [NOT STARTED] — Verification audit
 - **68** [RESEARCHED] — Dense completeness via ℚ (dense case already works)
-- **19** [NOT STARTED] — Deprecate old discrete pipeline
 - **18** [BLOCKED] — Dense representation theorem (deferred)
 - **20** [NOT STARTED] — Parametric canonical audit
 - **21** [PLANNED] — Tech debt cleanup
@@ -89,21 +87,9 @@ technical_debt:
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Priority**: high
-- **Dependencies**: 121
+- **Dependencies**: 123
 
 **Description**: Build discrete BFMCS on ℤ and complete `dd_countermodel_chronicle_nondense_sorry`. Mirror the dense case pattern: use `discrete_fmcs` (already exists) to build a `BFMCS Int` with restricted coherence properties, then wire into parametric representation for the countermodel. Located at ChronicleToCountermodel.lean:836.
-
-### 121. Prove limitDomSubtype_Icc_finite (bounded interval finiteness)
-- **Effort**: 10-20 hours
-- **Status**: [BLOCKED]
-- **Research**:
-  - [specs/121_prove_limit_dom_interval_finite/reports/01_team-research.md]
-  - [specs/121_prove_limit_dom_interval_finite/reports/02_team-research.md]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Plan**: [121_prove_limit_dom_interval_finite/plans/02_interval-finiteness.md]
-
-**Description**: Prove `limitDomSubtype_Icc_finite`: bounded intervals in limit_dom are finite. This is the single blocking sorry for discrete completeness and sorry-free `bx_completeness`. The lemma states that for `a ≤ b` in `LimitDomSubtype`, the set `{x | a ≤ x ∧ x ≤ b}` is `Set.Finite`. Requires either: (1) structural argument about omega chain stabilization in bounded intervals, (2) topological argument (compact + discrete → finite), or (3) order-theoretic argument exploiting the embedding in ℚ with SuccOrder/PredOrder. Located at ChronicleToCountermodel.lean:1064.
 
 ### 120. Research semantic foundation for natural group structure
 - **Effort**: 8-15 hours
@@ -140,6 +126,8 @@ technical_debt:
 
 **Description**: Add a `.claude/rules/` rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a "theorems-as-interval" shortcut for task 107 Phase 1 instead of following the planned Burgess D₀ seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan's specified approach. The rule must state: (1) agents MUST implement the plan's specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending `/revise` and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.
 
+---
+
 ### 112. Systematic literature study for task 107 representation theorem
 - **Effort**: medium
 - **Status**: [RESEARCHED]
@@ -147,6 +135,9 @@ technical_debt:
 - **Research**: [specs/112_literature_study_representation_theorem/reports/01_team-research.md]
 
 **Description**: Review 5 non-original literature sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to the task 107 representation theorem. Assess how each source's techniques relate to the three-layer infrastructure problem (g-function, guard conventions, domain extension) and the hybrid approach identified in task 107 research round 15.
+
+---
+
 ### 95. Verification audit: #print axioms + sorry classification pass
 - **Effort**: 2-4 hours
 - **Status**: [NOT STARTED]
@@ -235,19 +226,6 @@ technical_debt:
   - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §4.3 — unified TaskFrame view showing both discrete/dense cases instantiate the same structure
 
 **Description**: Review ParametricCanonical.lean, ParametricTruthLemma.lean, and ParametricRepresentation.lean. Determine whether the parametric infrastructure can be refactored to accept a generic task_rel parameter (not hardcoded duration-coarse relation), enabling both CanonicalTask and DenseTask as instantiations. If feasible, refactor; otherwise document the relationship between parametric (base) and specialized (discrete/dense) paths.
-
----
-
-### 19. Deprecate old discrete pipeline
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
-- **Language**: lean4
-- **Dependencies**: Task 15
-- **Research (task 6)**:
-  - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §7 — side-by-side old vs new pipeline diagrams, explicit list of what is bypassed
-  - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §3.3 — current discrete pipeline and the SuccOrder blocker it gets replaced by
-
-**Description**: Once discrete completeness is proved via Succ-chains (task 15), deprecate the old quotient-based pipeline: DiscreteTimelineElem, DiscreteTimelineQuot, SuccOrder/PredOrder construction attempt, and the orderIsoIntOfLinearSuccPredArch pathway. Mark files as deprecated with doc comments pointing to the new Succ-chain approach. Tasks 989 (discrete algebraic completeness) and 974 (SuccOrder) are superseded by tasks 10-15 and can be marked [EXPANDED].
 
 ---
 
