@@ -68,13 +68,13 @@ technical_debt:
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**: [123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md]
 - **Summary**: [123_fix_c5_witness_bot_and_prove_icc_finite/summaries/01_fix-c5-bot-summary.md]
 
-**Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Phases 1, 2, and 5 completed (collapse equivalence, FMCS on Z, cleanup). Phases 3 and 4 (Until/Since coherence on Z, BFMCS construction) were never completed and need to be evaluated and revised to accurately represent remaining work.
+**Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Phases 1-2 completed (collapse equivalence, FMCS on Z). Phases 3-5 revised: succ-based discrete BFMCS construction, three restricted coherence conditions, and three-way case split refinement for bx_completeness.
 
 ---
 
