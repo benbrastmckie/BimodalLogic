@@ -1045,11 +1045,28 @@ theorem limitDomSubtype_pred_lt (A : Set Formula) (h_mcs : SetMaximalConsistent 
     (limitDomSubtype_pred A h_mcs h_discrete b) b).mp le_rfl
 
 /--
+The closed interval `[a, b]` in `LimitDomSubtype` is finite. In the discrete case,
+limit_dom inherits a discrete structure where each point has an immediate successor
+and predecessor with no domain points between. Combined with the Prior-UZ axiom
+(which prevents indefinite accumulation of new domain points in bounded intervals),
+any closed interval of the limit domain contains only finitely many points.
+
+This is the key finiteness lemma enabling the IsSuccArchimedean proof.
+-/
+private lemma limitDomSubtype_Icc_finite (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs) (hab : a ≤ b) :
+    Set.Finite {x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := by
+  sorry
+
+/--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 
-For `a ≤ b`, we show `∃ n, succ^[n] a = b`. The proof uses strong induction on
-`|dom_N ∩ (a.val, b.val]|` combined with the identity `succ(pred(b)) = b` and
-a "gap lemma" for consecutive `dom_N` elements.
+For `a ≤ b`, we show `∃ n, succ^[n] a = b` by contradiction: if no iterate of
+`succ` starting from `a` ever reaches `b`, then the function `n ↦ succ^[n] a`
+injects ℕ into the finite interval `[a, b]` of `LimitDomSubtype`, contradicting
+finiteness via pigeonhole.
 -/
 noncomputable def limitDomSubtype_isSuccArchimedean (A : Set Formula)
     (h_mcs : SetMaximalConsistent A)
@@ -1058,14 +1075,37 @@ noncomputable def limitDomSubtype_isSuccArchimedean (A : Set Formula)
   letI := limitDomSubtype_succOrder A h_mcs h_discrete
   constructor
   intro a b hab
-  obtain ⟨na, hna⟩ := a.property
-  obtain ⟨nb, hnb⟩ := b.property
-  set N := max na nb
-  have ha_N : a.val ∈ (omega_chain_val A h_mcs N).dom :=
-    omega_chain_dom_mono_le A h_mcs (le_max_left na nb) hna
-  have hb_N : b.val ∈ (omega_chain_val A h_mcs N).dom :=
-    omega_chain_dom_mono_le A h_mcs (le_max_right na nb) hnb
-  sorry
+  rcases eq_or_lt_of_le hab with rfl | h_lt
+  · exact ⟨0, rfl⟩
+  · -- a < b. Proceed by contradiction: assume succ^[n] a ≠ b for all n.
+    by_contra h_not
+    push_neg at h_not
+    -- Every iterate stays strictly below b
+    have h_iter_lt : ∀ n, Order.succ^[n] a < b := by
+      intro n
+      induction n with
+      | zero => simpa using h_lt
+      | succ n ih =>
+        refine lt_of_le_of_ne ?_ (h_not _)
+        rw [Function.iterate_succ', Function.comp_apply]
+        exact Order.succ_le_of_lt ih
+    -- Every iterate is in the interval [a, b]
+    have h_mem : ∀ n, Order.succ^[n] a ∈ {x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := by
+      intro n
+      exact ⟨Order.le_succ_iterate n a, (h_iter_lt n).le⟩
+    -- The interval [a, b] is finite
+    have h_fin := limitDomSubtype_Icc_finite A h_mcs h_discrete a b hab
+    -- Map ℕ into the finite interval via succ iteration
+    haveI : Finite ↑{x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := h_fin.to_subtype
+    -- By pigeonhole, two distinct iterates must coincide
+    obtain ⟨n, m, hnm, h_eq⟩ : ∃ n m, n ≠ m ∧ Order.succ^[n] a = Order.succ^[m] a := by
+      let f : ℕ → {x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := fun n => ⟨Order.succ^[n] a, h_mem n⟩
+      obtain ⟨n, m, hnm, hfnm⟩ := Finite.exists_ne_map_eq_of_infinite f
+      exact ⟨n, m, hnm, by simpa [f, Subtype.mk_eq_mk] using hfnm⟩
+    -- Equal iterates implies IsMax, but succ^[n] a < b, contradiction
+    have h_max : IsMax (Order.succ^[n] a) :=
+      Order.isMax_iterate_succ_of_eq_of_ne h_eq hnm
+    exact not_le.mpr (h_iter_lt n) (h_max (h_iter_lt n).le)
 
 /-! ### Z-Isomorphism and FMCS on Int -/
 
