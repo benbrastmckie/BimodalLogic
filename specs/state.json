@@ -6,15 +6,24 @@
   },
   "active_projects": [
     {
+      "project_number": 124,
+      "project_name": "remove_tf_axiom_derive_from_mf",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.",
+      "created": "2026-05-11T15:34:15Z",
+      "last_updated": "2026-05-11T15:34:15Z"
+    },
+    {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-11T13:05:14Z",
+      "last_updated": "2026-05-11T14:06:20Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -53,7 +62,8 @@
           "summary": "5-phase plan: weaken witness spec, add ξ=⊥ short-circuit, update limit proofs, prove Icc_finite"
         }
       ],
-      "session_id": "sess_1778503193_d089cf"
+      "session_id": "sess_1778508364_6f5fc4",
+      "started": "2026-05-11T14:06:20Z"
     },
     {
       "project_number": 116,
@@ -593,7 +603,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 124,
+  "next_project_number": 125,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

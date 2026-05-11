@@ -1,5 +1,5 @@
 ---
-next_project_number: 124
+next_project_number: 125
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -67,9 +67,16 @@ technical_debt:
 
 ## Tasks
 
+### 124. Remove TF axiom and derive from MF
+- **Effort**: 5-10 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.
+
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**: [123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md]
