@@ -1,7 +1,7 @@
 # Implementation Plan: Post-Construction Collapse from LimitDomSubtype to Z
 
 - **Task**: 123 - fix_c5_witness_bot_and_prove_icc_finite
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 20-30 hours
 - **Dependencies**: None (all prerequisite infrastructure exists)
 - **Research Inputs**:
@@ -149,7 +149,7 @@ Phases within the same wave can execute in parallel.
 
 **Depends on:** 1
 
-### Phase 3: Prove Until/Since Coherence on Z [NOT STARTED]
+### Phase 3: Prove Until/Since Coherence on Z [COMPLETED]
 
 **Goal:** Prove the Until and Since coherence properties for `discrete_fmcs_via_collapse`. These are needed by task 122 for the BFMCS construction.
 
@@ -171,7 +171,7 @@ Phases within the same wave can execute in parallel.
 
 **Depends on:** 2
 
-### Phase 4: Build BFMCS on Z and Countermodel Infrastructure [NOT STARTED]
+### Phase 4: Build BFMCS on Z and Countermodel Infrastructure [COMPLETED]
 
 **Goal:** Build `cantor_bfmcs_discrete : BFMCS Z` mirroring `cantor_bfmcs_dense`, using `discrete_fmcs_via_collapse`. Provide the infrastructure that task 122 needs.
 
