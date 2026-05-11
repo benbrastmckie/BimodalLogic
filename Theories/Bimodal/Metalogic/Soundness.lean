@@ -71,12 +71,11 @@ The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` follows from:
 Soundness is organized by frame class because axioms require different frame conditions:
 - `soundness`: For dense-compatible derivations on arbitrary frames (sorry-free)
 - `soundness_dense`: For dense-compatible derivations on dense frames (sorry-free)
-- `soundness_discrete`: For discrete-compatible derivations on discrete frames
-  (depends on `prior_UZ_valid`/`prior_SZ_valid` which are sorry'd pending Phase 4)
+- `soundness_discrete`: For all derivations on discrete frames (sorry-free)
 
-The general and dense soundness theorems are sorry-free. The discrete soundness
-theorem uses `derivable_implies_swap_valid_discrete` from SoundnessLemmas.lean,
-which in turn depends on the Prior-UZ/SZ validity proofs (sorry'd).
+All soundness theorems are sorry-free. The discrete soundness theorem uses
+`derivable_implies_swap_valid_discrete` from SoundnessLemmas.lean, which
+proves Prior-UZ/SZ validity via well-founded descent on succ/pred chains.
 Prior-UZ/SZ are excluded from dense-compatible derivations via `isDenseCompatible`.
 
 ## References
@@ -943,12 +942,14 @@ The BX system uses self-accumulation (BX5/BX6) and linearity (BX7) instead.
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 If φ holds at some future time, there is a nearest future time where φ holds. -/
 theorem prior_UZ_valid (φ : Formula) : valid_discrete (φ.some_future.imp (Formula.untl φ φ.neg)) := by
-  sorry -- Well-founded descent on succ chain; deferred to Phase 4
+  intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
+  exact SoundnessLemmas.prior_UZ_is_valid φ F M Omega h_sc τ h_mem t
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 If φ held at some past time, there is a nearest past time where φ held. -/
 theorem prior_SZ_valid (φ : Formula) : valid_discrete (φ.some_past.imp (Formula.snce φ φ.neg)) := by
-  sorry -- Mirror of prior_UZ_valid using pred chain; deferred to Phase 4
+  intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
+  exact SoundnessLemmas.prior_SZ_is_valid φ F M Omega h_sc τ h_mem t
 
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,

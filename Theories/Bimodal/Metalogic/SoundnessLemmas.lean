@@ -2332,9 +2332,92 @@ frames. Prior-UZ/SZ are only valid on discrete orders, so these theorems handle 
 axioms including Prior-UZ/SZ, unlike the general versions which require isDenseCompatible.
 -/
 
+/-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
+The nearest future witness where φ holds satisfies Until with ¬φ as guard.
+Uses Nat.find for well-founded descent on the succ chain. -/
+theorem prior_UZ_is_valid
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (φ : Formula) : is_valid D (φ.some_future.imp (Formula.untl φ φ.neg)) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  intro hF
+  have ⟨s, hts, hs⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+    by_contra h; push_neg at h; exact hF fun s hts => h s hts
+  obtain ⟨n, hn⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
+  have hn1 : Order.succ^[n + 1] t = s := by
+    simp; exact hn
+  classical
+  have h_ex : ∃ k, truth_at M Omega τ (Order.succ^[k + 1] t) φ := ⟨n, hn1 ▸ hs⟩
+  let k₀ := Nat.find h_ex
+  have hk₀ : truth_at M Omega τ (Order.succ^[k₀ + 1] t) φ := Nat.find_spec h_ex
+  have hk₀_min : ∀ m < k₀, ¬truth_at M Omega τ (Order.succ^[m + 1] t) φ :=
+    fun m hm => Nat.find_min h_ex hm
+  have h_iter_mono : Monotone (fun i => Order.succ^[i] t) :=
+    Order.succ_mono.monotone_iterate_of_le_map (Order.le_succ t)
+  have h_not_max : ¬IsMax t := hts.not_isMax
+  refine ⟨Order.succ^[k₀ + 1] t, ?_, hk₀, ?_⟩
+  · -- t < succ^[k₀+1] t: from t < succ t ≤ succ^[k₀+1] t
+    have h1 := h_iter_mono (Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero k₀))
+    simp only at h1
+    exact lt_of_lt_of_le (Order.lt_succ_of_not_isMax h_not_max) h1
+  · -- ∀ r, t < r → r < succ^[k₀+1] t → ¬ truth_at r φ
+    intro r htr hrs
+    obtain ⟨j, hj⟩ := (Order.succ_le_of_lt htr).exists_succ_iterate
+    have hj1 : Order.succ^[j + 1] t = r := by
+      simp; exact hj
+    have hj_lt : j < k₀ := by
+      by_contra h_ge
+      push_neg at h_ge
+      have h_le := h_iter_mono (show k₀ + 1 ≤ j + 1 by omega)
+      simp only at h_le
+      rw [hj1] at h_le
+      exact absurd hrs (not_lt.mpr h_le)
+    rw [← hj1]
+    exact hk₀_min j hj_lt
+
+/-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
+Mirror of prior_UZ_is_valid using pred chain and IsPredArchimedean. -/
+theorem prior_SZ_is_valid
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (φ : Formula) : is_valid D (φ.some_past.imp (Formula.snce φ φ.neg)) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_past, Formula.neg, truth_at]
+  intro hP
+  have ⟨s, hst, hs⟩ : ∃ s, s < t ∧ truth_at M Omega τ s φ := by
+    by_contra h; push_neg at h; exact hP fun s hst => h s hst
+  obtain ⟨n, hn⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
+  have hn1 : Order.pred^[n + 1] t = s := by
+    simp; exact hn
+  classical
+  have h_ex : ∃ k, truth_at M Omega τ (Order.pred^[k + 1] t) φ := ⟨n, hn1 ▸ hs⟩
+  let k₀ := Nat.find h_ex
+  have hk₀ : truth_at M Omega τ (Order.pred^[k₀ + 1] t) φ := Nat.find_spec h_ex
+  have hk₀_min : ∀ m < k₀, ¬truth_at M Omega τ (Order.pred^[m + 1] t) φ :=
+    fun m hm => Nat.find_min h_ex hm
+  have h_iter_anti : Antitone (fun i => Order.pred^[i] t) :=
+    Order.pred_mono.antitone_iterate_of_map_le (Order.pred_le t)
+  have h_not_min : ¬IsMin t := hst.not_isMin
+  refine ⟨Order.pred^[k₀ + 1] t, ?_, hk₀, ?_⟩
+  · -- pred^[k₀+1] t < t: from pred^[k₀+1] t ≤ pred t < t
+    have h1 := h_iter_anti (Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero k₀))
+    simp only at h1
+    exact lt_of_le_of_lt h1 (Order.pred_lt_of_not_isMin h_not_min)
+  · intro r hrs hrt
+    obtain ⟨j, hj⟩ := (Order.le_pred_of_lt hrt).exists_pred_iterate
+    have hj1 : Order.pred^[j + 1] t = r := by
+      simp; exact hj
+    have hj_lt : j < k₀ := by
+      by_contra h_ge
+      push_neg at h_ge
+      have h_le := h_iter_anti (show k₀ + 1 ≤ j + 1 by omega)
+      simp only at h_le
+      rw [hj1] at h_le
+      exact absurd hrs (not_lt.mpr h_le)
+    rw [← hj1]
+    exact hk₀_min j hj_lt
+
 /-- All axiom swaps are valid on discrete orders. For dense-compatible axioms,
-delegates to `axiom_swap_valid_general`. For Prior-UZ/SZ, proves directly (sorry'd
-pending well-founded descent proof). -/
+delegates to `axiom_swap_valid_general`. For Prior-UZ/SZ, proves directly. -/
 private theorem axiom_swap_valid_discrete
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_temporal := by
@@ -2342,28 +2425,25 @@ private theorem axiom_swap_valid_discrete
   · exact axiom_swap_valid_general _ h hdc
   · cases h with
     | prior_UZ φ =>
-      -- swap of Prior-UZ (F(φ) → U(φ, ¬φ)) = Prior-SZ (P(φ) → S(φ, ¬φ)) on discrete D
-      sorry
+      -- swap of Prior-UZ = Prior-SZ for (swap_temporal φ)
+      show is_valid D (φ.swap_temporal.some_past.imp (φ.swap_temporal.snce φ.swap_temporal.neg))
+      exact prior_SZ_is_valid φ.swap_temporal
     | prior_SZ φ =>
-      -- swap of Prior-SZ (P(φ) → S(φ, ¬φ)) = Prior-UZ (F(φ) → U(φ, ¬φ)) on discrete D
-      sorry
+      -- swap of Prior-SZ = Prior-UZ for (swap_temporal φ)
+      show is_valid D (φ.swap_temporal.some_future.imp (φ.swap_temporal.untl φ.swap_temporal.neg))
+      exact prior_UZ_is_valid φ.swap_temporal
     | _ => simp [Axiom.isDenseCompatible] at hdc
 
 /-- All axioms are locally valid on discrete orders. For dense-compatible axioms,
-delegates to `axiom_locally_valid_general`. For Prior-UZ/SZ, proves directly (sorry'd
-pending well-founded descent proof). -/
+delegates to `axiom_locally_valid_general`. For Prior-UZ/SZ, proves directly. -/
 private theorem axiom_locally_valid_discrete
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
     {φ : Formula} (h : Axiom φ) : is_valid D φ := by
   by_cases hdc : h.isDenseCompatible
   · exact axiom_locally_valid_general h hdc
   · cases h with
-    | prior_UZ φ =>
-      -- F(φ) → U(φ, ¬φ) on discrete D
-      sorry
-    | prior_SZ φ =>
-      -- P(φ) → S(φ, ¬φ) on discrete D
-      sorry
+    | prior_UZ φ => exact prior_UZ_is_valid φ
+    | prior_SZ φ => exact prior_SZ_is_valid φ
     | _ => simp [Axiom.isDenseCompatible] at hdc
 
 /-- Combined soundness on discrete frames: derivability implies both validity
