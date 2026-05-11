@@ -1,5 +1,5 @@
 ---
-next_project_number: 125
+next_project_number: 126
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -46,7 +46,11 @@ These all touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do seq
 2. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
 3. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
 
-### 3. Research / Deferred
+### 3. Algebraic Representation (after axiom cleanup)
+
+- **125** [NOT STARTED] — Jónsson-Tarski representation for S/U/□ (depends on 123, 124, 122, 116, 115)
+
+### 4. Research / Deferred
 
 - **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
 - **112** [RESEARCHED] — Literature study (reference)
@@ -56,7 +60,7 @@ These all touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do seq
 - **20** [NOT STARTED] — Parametric canonical audit
 - **21** [PLANNED] — Tech debt cleanup
 
-### 4. Backlog
+### 5. Backlog
 
 - **8** [RESEARCHED] — Genuine truth_at completeness (publication quality)
 - **953** [RESEARCHED] — Bilateral proof system (55-90h)
@@ -67,6 +71,16 @@ These all touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do seq
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 125. Jónsson-Tarski representation theorem for bimodal S/U/□ logic
+- **Effort**: 15-25 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Dependencies**: 123, 124, 122, 116, 115
+
+**Description**: Research algebraic methods for establishing a Jónsson-Tarski-style representation theorem for the bimodal logic TM with primitives Since (S), Until (U), and Box (□), plus material implication (→) and bottom (⊥). Key questions: (1) Does standard n-ary BAO representation apply directly to binary S/U + unary □, or does S5 interaction complicate things? (2) Role of orthodox axiomatizability (no IRR rule) per Venema 1993. (3) Can TenseS5Algebra.lean extend to a full BAO with S/U? (4) Relationship between parametric representation and Jónsson-Tarski. (5) Interaction of Prior-UZ/SZ and uniformity axioms with the algebraic representation. Literature: Venema 1991 Ch2+AppA, Venema 1993 Anti-Axioms, GHV 2003, Venema 1997, de Rijke-Venema 1995, BdRV 2001 Ch5.
+
+---
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours

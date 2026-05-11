@@ -6,6 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 125,
+      "project_name": "jonsson_tarski_representation_bimodal_sus",
+      "status": "not_started",
+      "task_type": "formal",
+      "description": "Research algebraic methods for establishing a Jónsson-Tarski-style representation theorem for the bimodal logic TM with primitives Since (S), Until (U), and Box (□), plus material implication (→) and bottom (⊥) as the primitive Boolean operators. The goal is to determine whether the Lindenbaum-Tarski algebra of TM forms a variety of Boolean algebras with operators (BAOs) that admits a concrete representation into complex algebras of relational structures (task frames). Key questions: (1) Since S and U are binary normal operators, does the standard Jónsson-Tarski representation for n-ary BAOs apply directly, or does the interaction with the S5 modal operator □ introduce complications? (2) What role does orthodox axiomatizability (no IRR rule) play — per Venema 1993 (Anti-Axioms), orthodox systems ensure closure under ultraproducts, but TM uses the IRR rule in the ConservativeExtension module; does this affect the algebraic representation? (3) Can the existing TenseS5Algebra.lean structure be extended to a full BAO with S/U operators, and does the Lindenbaum quotient construction yield a representable algebra? (4) What is the relationship between the parametric representation theorem (ParametricRepresentation.lean) and a Jónsson-Tarski-style algebraic representation — are they equivalent, or does one subsume the other? (5) How do the Prior-UZ/SZ axioms (discrete well-ordering) and the uniformity axioms (ordered abelian group structure) interact with the algebraic representation? Literature base: Venema 1991 (dissertation Ch2 + App A), Venema 1993 (Anti-Axioms), Goldblatt-Hodkinson-Venema 2003, Venema 1997 (Atom Structures), de Rijke-Venema 1995 (Sahlqvist for BAOs), Blackburn-de Rijke-Venema 2001 Ch5 (not yet obtained). All papers are in literature/ with markdown conversions.",
+      "dependencies": [
+        123,
+        124,
+        122,
+        116,
+        115
+      ],
+      "created": "2026-05-11T19:35:39Z",
+      "last_updated": "2026-05-11T19:35:39Z"
+    },
+    {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
       "status": "implementing",
@@ -581,7 +597,7 @@
       "researched": "2026-05-11T17:11:05Z"
     }
   ],
-  "next_project_number": 125,
+  "next_project_number": 126,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
