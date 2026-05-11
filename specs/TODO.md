@@ -35,7 +35,7 @@ technical_debt:
 
 ### 1. Critical Path — Discrete Completeness (2 sorries)
 
-1. **NEW** — Prove `limitDomSubtype_Icc_finite` (bounded limit_dom intervals are finite)
+1. **121** [RESEARCHED] — Prove `limitDomSubtype_Icc_finite` (bounded limit_dom intervals are finite)
 2. **NEW** — Build discrete BFMCS on ℤ, complete `dd_countermodel_chronicle_nondense_sorry`
 
 ### 2. Active Research
@@ -78,7 +78,8 @@ technical_debt:
 
 ### 121. Prove limitDomSubtype_Icc_finite (bounded interval finiteness)
 - **Effort**: 10-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [specs/121_prove_limit_dom_interval_finite/reports/01_team-research.md]
 - **Task Type**: lean4
 - **Priority**: critical
 
