@@ -141,20 +141,28 @@ theorem bx_completeness (φ : Formula) :
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   -- φ ∉ M (since ¬φ ∈ M and M is MCS)
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
-  -- Build canonical model and derive contradiction via case split on □(F'T) ∈ M.
-  -- Dense case (□(F'T) ∈ M): all box-equivalent MCS's have F'T, enabling
-  -- the Cantor iso countermodel on Rat via dd_countermodel_chronicle_dense.
-  -- Non-dense case (¬□(F'T) ∈ M): sorry (includes both discrete and mixed cases).
+  -- Build canonical model and derive contradiction via three-way case split:
+  -- 1. Dense case (□(F'T) ∈ M): countermodel on Rat via Cantor iso
+  -- 2. Purely discrete case (□(U(T,bot)) ∈ M): countermodel on Int via succ embedding
+  -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): sorry — mixed modal classes
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
-  · -- Dense case: □(F'T) ∈ M
+  · -- Dense case: □(F'T) ∈ M — all box-equivalent MCS's are dense
     obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
       Chronicle.dd_countermodel_chronicle_dense M hM_mcs φ h_neg_in h_box_dense
     exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
-  · -- Non-dense case: ¬□(F'T) ∈ M (sorry — includes discrete + mixed modal classes)
-    obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-      Chronicle.dd_countermodel_chronicle_nondense_sorry M hM_mcs φ h_neg_in h_not_box_dense
-    exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
+  · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
+    rcases SetMaximalConsistent.negation_complete hM_mcs
+      (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
+    · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
+      obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+        Chronicle.dd_countermodel_chronicle_discrete M hM_mcs φ h_neg_in h_box_discrete
+      exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
+    · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — some worlds dense, others discrete
+      obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+        Chronicle.dd_countermodel_chronicle_mixed_sorry M hM_mcs φ h_neg_in
+          h_not_box_dense h_not_box_discrete
+      exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
 
 /--
 BX Completeness (alternate form): valid → derivable.

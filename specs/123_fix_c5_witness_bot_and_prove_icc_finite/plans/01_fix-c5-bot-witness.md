@@ -124,7 +124,7 @@ Phases within the same wave can execute in parallel.
 
 **Completed:** 2026-05-10
 
-### Phase 3: Succ-Based Embedding and Discrete BFMCS Infrastructure [NOT STARTED]
+### Phase 3: Succ-Based Embedding and Discrete BFMCS Infrastructure [COMPLETED]
 
 **Goal:** Replace or augment the direct embedding with a succ-based embedding for the purely discrete case (`box(U(T,bot)) in A`), and build the BFMCS family bundle on Z mirroring `cantor_bfmcs_dense`.
 
@@ -147,7 +147,7 @@ Phases within the same wave can execute in parallel.
 
 **Depends on:** 1
 
-### Phase 4: Restricted Coherence Conditions on Z [NOT STARTED]
+### Phase 4: Restricted Coherence Conditions on Z [PARTIAL]
 
 **Goal:** Prove the three restricted coherence conditions for `discrete_bfmcs`: temporal coherence (F/P), backward Until/Since (C4/C4'), and forward Until/Since (C5/C5'). These are the hardest components, as identified by the task 122 research.
 
@@ -170,7 +170,7 @@ Phases within the same wave can execute in parallel.
 
 **Depends on:** 2, 3
 
-### Phase 5: Case Split Refinement and Final Wiring [NOT STARTED]
+### Phase 5: Case Split Refinement and Final Wiring [COMPLETED]
 
 **Goal:** Wire `discrete_bfmcs` and its coherence proofs into `dd_countermodel_chronicle_discrete`, refine the case split in `Completeness.lean`, and reduce the nondense sorry to the mixed case only.
 
