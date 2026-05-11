@@ -1,7 +1,7 @@
 # Implementation Plan: Task #119 (Revised)
 
 - **Task**: 119 - Prove IsSuccArchimedean via Prior-UZ Axiom Addition
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None (all prerequisite infrastructure exists in Axioms.lean, Soundness.lean, SoundnessLemmas.lean, ChronicleToCountermodel.lean)
 - **Research Inputs**:
@@ -150,7 +150,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prior-UZ Propagation to Limit Domain MCS [NOT STARTED]
+### Phase 3: Prior-UZ Propagation to Limit Domain MCS [COMPLETED]
 
 **Goal**: Prove that every MCS in the limit domain contains Prior-UZ (because it is now a theorem of the proof system), establishing the key property needed for the IsSuccArchimedean derivation.
 
@@ -174,7 +174,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Derive IsSuccArchimedean from Prior-UZ [NOT STARTED]
+### Phase 4: Derive IsSuccArchimedean from Prior-UZ [COMPLETED]
 
 **Goal**: Replace the sorry at ChronicleToCountermodel.lean:1068 with a complete proof of `limitDomSubtype_isSuccArchimedean`, using the Prior-UZ axiom to prove that `limit_dom ∩ [a, b]` is finite for any `a <= b` in LimitDomSubtype.
 
@@ -204,7 +204,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Wire Up Discrete Countermodel [NOT STARTED]
+### Phase 5: Wire Up Discrete Countermodel [COMPLETED]
 
 **Goal**: With `limitDomSubtype_isSuccArchimedean` proved sorry-free, verify that `discrete_iso` compiles and connect the discrete completeness path by completing or advancing `dd_countermodel_chronicle_nondense_sorry`.
 

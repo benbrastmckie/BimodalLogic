@@ -88,7 +88,9 @@ technical_debt:
 
 ### 119. Prove IsSuccArchimedean via direct connectivity extraction
 - **Effort**: 10-20 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-10
+- **Summary**: Added Prior-UZ/SZ axioms with sorry-free soundness proofs. Replaced IsSuccArchimedean sorry with pigeonhole proof (modulo finiteness lemma). Two sorries remain: limitDomSubtype_Icc_finite and dd_countermodel_chronicle_nondense_sorry.
 - **Research**: [specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md]
 - **Task Type**: lean4
 - **Dependencies**: 118
