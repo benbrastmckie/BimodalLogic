@@ -78,12 +78,13 @@ technical_debt:
 
 ### 121. Prove limitDomSubtype_Icc_finite (bounded interval finiteness)
 - **Effort**: 10-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Research**:
   - [specs/121_prove_limit_dom_interval_finite/reports/01_team-research.md]
   - [specs/121_prove_limit_dom_interval_finite/reports/02_team-research.md]
 - **Task Type**: lean4
 - **Priority**: critical
+- **Plan**: [121_prove_limit_dom_interval_finite/plans/02_interval-finiteness.md]
 
 **Description**: Prove `limitDomSubtype_Icc_finite`: bounded intervals in limit_dom are finite. This is the single blocking sorry for discrete completeness and sorry-free `bx_completeness`. The lemma states that for `a ≤ b` in `LimitDomSubtype`, the set `{x | a ≤ x ∧ x ≤ b}` is `Set.Finite`. Requires either: (1) structural argument about omega chain stabilization in bounded intervals, (2) topological argument (compact + discrete → finite), or (3) order-theoretic argument exploiting the embedding in ℚ with SuccOrder/PredOrder. Located at ChronicleToCountermodel.lean:1064.
 
