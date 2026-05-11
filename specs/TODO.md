@@ -1,22 +1,22 @@
 ---
-next_project_number: 119
+next_project_number: 123
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-04-20T19:00:00Z
+  last_assessed: 2026-05-10T23:59:00Z
 task_counts:
-  active: 16
-  completed: 766
+  active: 21
+  completed: 771
   in_progress: 0
-  not_started: 6
-  abandoned: 75
-  total: 853
+  not_started: 8
+  abandoned: 78
+  total: 861
 technical_debt:
-  sorry_count: 129
-  sorry_count_note: "Audited 2026-04-20: 129 non-Boneyard, 11 active-path in CanonicalModel.lean (6) + RootScopedChain.lean (5), 4 genuinely false/unprovable. 171 Boneyard (includes 107 archived by task 94). Soundness and Decidability are sorry-free."
-  publication_path_sorries: 11
+  sorry_count: 2
+  sorry_count_note: "Audited 2026-05-10: 2 critical-path sorries in ChronicleToCountermodel.lean (limitDomSubtype_Icc_finite + dd_countermodel_chronicle_nondense_sorry). ~17 dead-code sorries in BXCanonical pipeline (mathematically false under irreflexive semantics, bypassed by Chronicle). ~19 TemporalDerived re-derivations (low priority). Soundness, SoundnessLemmas, and Decidability are sorry-free."
+  publication_path_sorries: 2
   axiom_count: 0
-  axiom_count_note: "Zero custom axioms. discrete_Icc_finite_axiom eliminated. f_nesting_boundary/p_nesting_boundary eliminated in task 56."
+  axiom_count_note: "Zero custom axioms. Prior-UZ/SZ are standard axiom constructors with sorry-free soundness proofs."
   build_errors: 0
   status: excellent
 ---
@@ -91,47 +91,6 @@ technical_debt:
 - **Task Type**: lean4
 
 **Description**: Research and design a cleaner semantic foundation where `AddCommGroup` structure emerges naturally from the canonical model construction, eliminating the need for `IsSuccArchimedean` and the ℤ-isomorphism. Currently `valid` requires `AddCommGroup D` (used by MF, TF, and 4 uniformity axioms for time-shift invariance), but the chronicle construction produces `limit_dom ⊂ ℚ` which is not closed under addition. Explore: (1) Whether adding operators or axioms to the logic can force the canonical model domain to carry group structure; (2) Whether `ShiftClosed` can be reformulated without requiring D to be a group; (3) Whether a different semantic framework (e.g., relational rather than algebraic) can validate MF/TF while remaining neutral on density/discreteness; (4) Whether the completeness theorem can be factored so `AddCommGroup` is only needed at the final step. Must maintain validity of MF (`Box(φ) → Box(G(φ))`) and remain neutral on density and discreteness axioms.
-
-### 119. Prove IsSuccArchimedean via direct connectivity extraction
-- **Effort**: 10-20 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-10
-- **Summary**: Added Prior-UZ/SZ axioms with sorry-free soundness proofs. Replaced IsSuccArchimedean sorry with pigeonhole proof (modulo finiteness lemma). Two sorries remain: limitDomSubtype_Icc_finite and dd_countermodel_chronicle_nondense_sorry.
-- **Research**: [specs/119_issucc_archimedean_direct_proof/reports/01_connectivity-proof-research.md]
-- **Task Type**: lean4
-- **Dependencies**: 118
-- **Plan**:
-  - [119_issucc_archimedean_direct_proof/plans/01_lex-pair-proof.md]
-  - [119_issucc_archimedean_direct_proof/plans/01_prior-uz-proof.md]
-
-**Description**: Prove `limitDomSubtype_isSuccArchimedean` directly by extracting connectivity from the omega chain construction. 16+ research rounds and one implementation attempt have failed to find a working WF measure. Birth-monotonicity (`birth(succ(z)) > birth(z)`) was disproven. New approaches: (A) Prove `Set.Finite (limit_dom ∩ [a,b])` via dual-chain convergence + predecessor contradiction; (B) Find a correct lexicographic WF measure; (C) Analyze counterexample enumeration to bound gap sizes; (D) Exploit the fact that condition (i) for `U(⊤,⊥)` is NEVER satisfied — succ is always the midpoint `(x+x')/2`. The sorry is at `ChronicleToCountermodel.lean:~1068`.
-
-### 118. Prove IsSuccArchimedean for discrete completeness branch
-- **Effort**: 10-20 hours
-- **Status**: [IMPLEMENTING]
-- **Task Type**: lean4
-- **Dependencies**: 117
-- **Research**:
-  - [specs/118_prove_issucc_archimedean_discrete_completeness/reports/01_issucc-archimedean-research.md]
-  - [specs/118_prove_issucc_archimedean_discrete_completeness/reports/02_team-research.md]
-- **Plan**: [118_prove_issucc_archimedean_discrete_completeness/plans/02_issucc-archimedean-proof.md]
-
-**Description**: Prove `limitDomSubtype_isSuccArchimedean` to eliminate the remaining sorry in the discrete branch of `bx_completeness` (at ChronicleToCountermodel.lean:~554). Task 117 Phase 6 analysis confirmed NO-GO for direct omega chain structural arguments after 14+ research rounds exhausted all WF measure approaches. Three candidate approaches remain: (1) Show each C5 elimination produces a unique immediate successor advancing toward `r`, bounding the chain in `(q,r)`; (2) Cardinality argument on C5 counterexamples affecting `(q,r)`; (3) Characterize `limit_dom` directly as Z-ordered from discrete semantics axioms, bypassing the omega chain construction entirely. Approach 3 is the most promising: the Kripke frame semantics of the discrete axiom system may directly imply the countermodel domain is isomorphic to Z.
-
-### 117. Remove Cantor isomorphism and build countermodel on limit domain
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Summary**: Dense BFMCS, coherence, and countermodel built sorry-free. bx_completeness restructured with Box(F'T) case split. Dense branch sorry-free; non-dense branch has documented sorry. 2 known sorries remain (non-dense branch + IsSuccArchimedean).
-- **Task Type**: lean4
-- **Dependencies**: 107
-- **Research**: [specs/117_remove_cantor_iso_build_model_on_limit_dom/reports/01_team-research.md]
-- **Plan**:
-  - [117_remove_cantor_iso_build_model_on_limit_dom/plans/03_natural-inclusion-refactor.md]
-  - [117_remove_cantor_iso_build_model_on_limit_dom/plans/04_case-split-completeness.md]
-  - [117_remove_cantor_iso_build_model_on_limit_dom/plans/05_parallel-dense-discrete.md]
-
-**Description**: Replace the Cantor isomorphism (bijection X ≅ ℚ, requires `DenselyOrdered`) with the natural inclusion X ⊂ ℚ (injection, requires nothing). The `.density` counterexample kind is the only code path needing `SetConsistent g` (the sorry at CE:3570); C4a/C5a use `lemma_2_8` which avoids it. Archive density case + Cantor iso pathway to `Boneyard/DenseChronicle/` for future dense variant reuse. Define `extended_f : Rat → Set Formula` extending `limit_f` from X to all of ℚ for non-domain rationals. Build FMCS/BFMCS on ℚ using `extended_f`. D = ℚ as before — existing parametric infrastructure unchanged. Nothing else changes: same TaskFrame, same truth_at, same valid.
-
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
 - **Status**: [NOT STARTED]
@@ -160,24 +119,6 @@ technical_debt:
 
 **Description**: Add a `.claude/rules/` rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a "theorems-as-interval" shortcut for task 107 Phase 1 instead of following the planned Burgess D₀ seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan's specified approach. The rule must state: (1) agents MUST implement the plan's specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending `/revise` and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.
 
----
-
-### 113. Review new literature for completeness techniques across three-phase roadmap
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: formal
-- **Summary**: Open guard refactoring complete: Until/Since semantics changed from half-closed [t,s) to open (t,s), 4 unsound axioms removed, ~49 sorries eliminated, 8 invalid lemmas archived to Boneyard, Truth.lean time_shift fixed, ROADMAP updated. Build clean.
-- **Research**:
-  - [specs/113_literature_review_completeness_techniques/reports/01_team-research.md]
-  - [specs/113_literature_review_completeness_techniques/reports/02_until-since-guard-semantics.md]
-  - [specs/113_literature_review_completeness_techniques/reports/03_team-research.md]
-  - [specs/113_literature_review_completeness_techniques/reports/04_team-research.md]
-- **Plan**: [specs/113_literature_review_completeness_techniques/plans/04_open-guard-refactor.md]
-
-**Description**: Review newly obtained literature (Xu 1988, Reynolds 1992, Caleiro-Vigano-Volpe 2013) against current BX completeness proof state to identify transferable techniques. Structured around the three-phase completeness roadmap: (1) base TM logic with H, G, and Box over boolean operators -- identify what Xu 1988's canonical model construction and Caleiro et al.'s mosaic method offer for the base case; (2) extension to U and S -- identify how Reynolds 1992's IRR-free completeness technique and Xu 1988's expressibility results (Section 4, showing irreflexivity is not U,S-definable) bear on the Until/Since extension, especially the chronicle construction sorry sites in CounterexampleElimination.lean and ChronicleToCountermodel.lean; (3) dense and discrete specializations -- identify how Reynolds 1992's rational-to-real transfer via Doets's theorem and Venema 1993's strict/discrete framework apply to the dense_completeness_fc (task 68) and discrete pipelines. Cross-reference against the ~9 active sorry sites in the Chronicle/ modules and the blocked task 18 (dense representation theorem).
-
----
-
 ### 112. Systematic literature study for task 107 representation theorem
 - **Effort**: medium
 - **Status**: [RESEARCHED]
@@ -185,117 +126,6 @@ technical_debt:
 - **Research**: [specs/112_literature_study_representation_theorem/reports/01_team-research.md]
 
 **Description**: Review 5 non-original literature sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to the task 107 representation theorem. Assess how each source's techniques relate to the three-layer infrastructure problem (g-function, guard conventions, domain extension) and the hybrid approach identified in task 107 research round 15.
-
----
-
-### 111. Identify and add literature sources from task 107 research to literature/README.md
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Research**: [specs/111_literature_second_research_wave/reports/01_team-research.md]
-- **Plan**: [111_literature_second_research_wave/plans/01_implementation-plan.md]
-- **Summary**: [111_literature_second_research_wave/summaries/01_execution-summary.md]
-
-**Description**: Look through task 107 research reports (04_literature-sources.md and 03_team-research.md) to identify sources not yet included in literature/README.md. Add these under a 'Second Research Wave' section with links to journal websites or PDFs, copying PDFs into the literature/ directory where available
-
----
-
-### 107. Burgess chronicle construction for BX representation theorem
-- **Effort**: 37-47 hours
-- **Status**: [IMPLEMENTING]
-- **Language**: lean4
-- **Priority**: critical
-- **Created**: 2026-04-23
-- **Dependencies**: 113
-- **Related**: 93, 109
-- **Research**:
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/07_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/08_verbrugge-step-by-step.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/09_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/34_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/36_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/38_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/39_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/40_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/42_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/43_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/44_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/45_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/46_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/51_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/52_phase2-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/53_team-research.md] - Comprehensive synthesis of Phases 2-5 research findings
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-a-findings.md] - Phase 2 inconsistent case analysis
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-b-findings.md] - Phase 3 Lemma 2.7 BX7 chain
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-c-findings.md] - Phase 4 c2' threading
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/53_teammate-d-findings.md] - Phase 5 FUC/FSC coherence
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/54_burgess-semantic-alignment.md] - Burgess uses open-guard (matches our code); A3a/A4a are valid; Path A (full Burgess D₀) strongly recommended over Xu-style seed (mathematically insufficient for r-relations)
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/55_burgess-construction-step-by-step.md] - Complete step-by-step Burgess (1982) construction: 2.1-2.11 decomposed into atomic implementable steps
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/62_team-research.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/64_team-research.md]
-- **Plan**:
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/58_implementation-plan.md] - 8-phase Burgess-aligned plan: co-constructed g-values, faithful to Burgess 1982, close 12 sorries, ~28h
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/57_burgess-aligned-plan.md] - 10-phase Burgess-aligned plan: full D₀ chain, co-constructed g-values, 37-50h estimate, no shortcuts
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/56_implementation-plan.md] - Revised 8-phase plan v56: populate g-values in eliminations, thread c2', prove limit C5a, close 29 sorries
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/55_implementation-plan.md] - Revised plan v55 based on 4-agent Burgess research; root cause: g-values never constructed
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/54_implementation-plan.md] - 11-phase plan v54 closing 22 sorries following Burgess 2.6-2.11
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/60_implementation-plan.md] - Comprehensive 7-phase plan with 16 tasks to close all sorry sites
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/52_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/51_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/49_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/46_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/45_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/42_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/40_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/39_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/34_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/09_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/08_implementation-plan.md]
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/06_implementation-plan.md]
-- **Latest Research**:
-  - [107_chain_design_diagnostics_for_representation_theorem/reports/broken-implementation-analysis.md] - Analysis of broken implementation: 2 syntax errors, 4 type mismatches, 5 sorry sites in PointInsertion.lean
-- **Plan**:
-  - [specs/107_chain_design_diagnostics_for_representation_theorem/plans/60_implementation-plan.md] - Comprehensive 7-phase plan with 16 tasks to close all sorry sites in Burgess chronicle construction
-  - [107_chain_design_diagnostics_for_representation_theorem/plans/62_implementation-plan.md]
-  - [107_chain_design_diagnostics_for_representation_theorem/plans/64_implementation-plan.md]
-
-**Description**: Implement the Burgess 1982 chronicle construction for BX completeness on the `irr_until` branch. Fix 2 ParametricTruthLemma sorry sites, derive A3a/A4a from BX axioms, build chronicle types with r-relation (Lemmas 2.2-2.3), point insertion (Lemmas 2.4-2.8), counterexample elimination (Lemmas 2.9-2.11), and wire into dd_countermodel to replace 3 RootScopedChain sorry sites. Target: sorry-free bx_completeness.
-
----
-
-### 109. Close chain construction sorries for sorry-free completeness
-- **Effort**: 20-40 hours
-- **Status**: [IMPLEMENTING]
-- **Language**: lean4
-- **Priority**: critical
-- **Created**: 2026-04-20
-- **Dependencies**: 93
-- **Report**: [specs/109_close_chain_construction_sorries/reports/01_chain-construction-sorries.md]
-- **Research**:
-  - [specs/109_close_chain_construction_sorries/reports/02_team-research.md]
-  - [specs/109_close_chain_construction_sorries/reports/03_team-research.md]
-  - [109_close_chain_construction_sorries/reports/04_team-research.md]
-  - [109_close_chain_construction_sorries/reports/05_team-research.md]
-  - [109_close_chain_construction_sorries/reports/06_team-research.md]
-  - [109_close_chain_construction_sorries/reports/07_team-research.md]
-  - [109_close_chain_construction_sorries/reports/08_team-research.md]
-  - [109_close_chain_construction_sorries/reports/09_team-research.md]
-  - [109_close_chain_construction_sorries/reports/10_reflexive-until-evaluation.md]
-  - [109_close_chain_construction_sorries/reports/11_team-research.md]
-  - [109_close_chain_construction_sorries/reports/12_van-benthem-analysis.md]
-- **Plan**:
-  - [109_close_chain_construction_sorries/plans/02_implementation-plan.md]
-  - [109_close_chain_construction_sorries/plans/03_implementation-plan.md]
-  - [109_close_chain_construction_sorries/plans/04_implementation-plan.md]
-  - [109_close_chain_construction_sorries/plans/06_implementation-plan.md]
-- **Summary**: [109_close_chain_construction_sorries/summaries/06_chain-construction-summary.md]
-  - [109_close_chain_construction_sorries/plans/07_implementation-plan.md]
-  - [109_close_chain_construction_sorries/plans/12_implementation-plan.md]
-
-**Description**: Close 11 sorry sites (6 CanonicalModel + 5 RootScopedChain) blocking sorry-free `bx_completeness`. Requires chain construction redesign after BX1 removal in irreflexive semantics (task 93). 4 of 11 are genuinely unprovable/false as stated.
-
----
-
 ### 95. Verification audit: #print axioms + sorry classification pass
 - **Effort**: 2-4 hours
 - **Status**: [NOT STARTED]
@@ -356,24 +186,6 @@ technical_debt:
 - **Language**: lean4
 
 **Description**: discrete_Icc_finite_axiom was already eliminated (zero custom axioms confirmed). Remaining scope: clean up stale docstrings in FrameClass.lean and SuccExistence.lean that still reference the removed axiom.
-
----
-
-### 39. Study preorder semantics conformance with Task Semantics specifications
-- **Effort**: 3h
-- **Status**: [RESEARCHED]
-- **Language**: lean4
-- **Plan**: [01_conformance-validation-plan.md](039_study_preorder_semantics_conformance/plans/01_conformance-validation-plan.md)
-- **Reports**:
-  - [01_teammate-a-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-a-findings.md) — Primary TaskFrame axiom analysis
-  - [01_teammate-b-findings.md](039_study_preorder_semantics_conformance/reports/01_teammate-b-findings.md) — G-atom analysis and alternative approaches
-  - [02_team-synthesis.md](039_study_preorder_semantics_conformance/reports/02_team-synthesis.md) — Team synthesis (updated with both teammates)
-  - [03_parametric-taskframe-research.md](039_study_preorder_semantics_conformance/reports/03_parametric-taskframe-research.md) — ParametricCanonicalTaskFrame and W/D separation
-  - [04_unification-implementation-research.md](039_study_preorder_semantics_conformance/reports/04_unification-implementation-research.md) — Two-layer unification analysis and implementation roadmap
-
-**Description**: Study the implications of the preorder semantics which has been accepted to avoid the fresh G-atom proofs in order to determine whether the result still conforms to the specifications required by the Task Semantics.
-
----
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours

@@ -4,32 +4,31 @@
 
 TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-05-08 (task 107 Phases 1-9 complete: NoUnivBurgessR3 eliminated, bx_completeness unconditional, untl/snce convention matches Burgess 1982. 1 sorry remains on critical path — density g-value consistency, traced to Cantor iso implementation choice, task 117 will fix).
+state of the completeness effort as of 2026-05-10.
 
-**Architecture**: The proof system has 39 BX axioms (propositional, S5 modal,
-Burgess-Xu temporal including A3a/A3b enrichment + A4a/A4b separation +
-left_mono_until_G/left_mono_since_H guard strengthening, and modal-temporal interaction). The temporal semantics is
-**irreflexive**: G/H quantify over `t < s` / `s < t` (strict inequality), and
-Until/Since require strictly future/past witnesses. There are two active
-completeness paths:
+**Architecture**: The proof system has 45 BX axioms organized in 6 layers:
+propositional (4), S5 modal (5), Burgess-Xu temporal (24), modal-temporal
+interaction (2), uniformity (4), and Prior-UZ/SZ (2, discrete-only). The temporal
+semantics is **irreflexive**: G/H quantify over `t < s` / `s < t` (strict
+inequality), and Until/Since require strictly future/past witnesses.
 
-1. **BXCanonical** (`Theories/Bimodal/Metalogic/BXCanonical/`): Canonical frame
-   of maximally consistent sets ordered by `g_content` inclusion. The 5 critical-path
-   sorries in `RootScopedChain.lean` are blocked by Lindenbaum opacity (see dead ends
-   #34-#36). Task 109 tracks these.
-2. **Chronicle** (`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`): Burgess 1982
-   chronicle construction using controlled PointInsertion to escape Lindenbaum opacity.
-   Task 107 (Phases 1-9 complete). Major milestones:
-   - Phases 1-5: Guard conjunction, lemma strengthening, adjacent-pair guard threading, walk restructuring
-   - Phase 6: Both ChronicleConstruction.lean sorries closed via `witness_not_old` tracking
-   - Phase 7: `NoUnivBurgessR3` deleted (unprovable in J₀), C1 changed to CUD, `bx_completeness` unconditional. 4 g-value sorries closed via Burgess's lemma_2_8 method. `BurgessR3Maximal_bot_not_mem` sorry-free.
-   - Phase 9: Convention migration — `untl(event, guard)` matches Burgess U(α, β).
-   **1 sorry remains on critical path**: density g-value consistency at CE:3570 (traces to Cantor iso requiring DenselyOrdered — task 117 will remove this).
-   This is the primary completeness path.
+**Completeness architecture**: The **Chronicle** path
+(`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`) is the primary and only
+active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
+mathematically false under irreflexive semantics and cannot be proved.
 
-**Sorry summary**: The BXCanonical module has **19 sorry proofs** across 7 files (task 109).
-The Chronicle sub-module has **1 sorry on critical path** (density g-value consistency,
-task 117). All other Chronicle sorries eliminated by task 107.
+**Current state**:
+- **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ
+- **FMP completeness** (`fmp_completeness`): Sorry-free
+- **Dense completeness** (`dd_countermodel_chronicle_dense`): Internally sorry-free
+- **Discrete completeness**: 2 sorries remain (see below)
+- **Full `bx_completeness`**: Blocked by 2 sorries in discrete case
+
+**Sorry summary (critical path)**: 2 sorries in `ChronicleToCountermodel.lean`:
+1. `limitDomSubtype_Icc_finite` (line 1064): Bounded intervals in limit_dom are finite — **the single hard mathematical blocker** (task 121)
+2. `dd_countermodel_chronicle_nondense_sorry` (line 836): Discrete BFMCS on ℤ construction (task 122, depends on 121)
+
+**Sorry summary (dead code)**: ~17 sorries in the BXCanonical/Bundle/Quasimodel/Filtration pipeline are mathematically false under irreflexive semantics (they assume reflexive G/H). These are bypassed by the Chronicle approach and should be archived.
 
 BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
 
@@ -133,11 +132,11 @@ construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy
 
 ## BX Axiom System
 
-`Theories/Bimodal/ProofSystem/Axioms.lean` defines 35 axiom constructors in
-four layers (see `Axioms.lean:46-49` for Burgess 1982/84, Xu 1988, Venema 1993
-references). Under irreflexive semantics (strict `<` for G/H, strict witness
-for U/S), the axiom set replaces BX1/BX1' (reflexive T) with seriality axioms
-and removes BX8/BX8' (not sound under irreflexive Until/Since).
+`Theories/Bimodal/ProofSystem/Axioms.lean` defines 45 axiom constructors in
+six layers (see `Axioms.lean:46-49` for Burgess 1982/84, Xu 1988, Venema 1993,
+Reynolds 1992 references). Under irreflexive semantics (strict `<` for G/H,
+strict witness for U/S), the axiom set replaces BX1/BX1' (reflexive T) with
+seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 
 ### Layer 1: Propositional (4)
 
@@ -201,6 +200,26 @@ and removes BX8/BX8' (not sound under irreflexive Until/Since).
 |-------|-----------|-----------|
 | `modal_future` | Axioms.lean:263 | `□φ → □(Gφ)` |
 | `temp_future` | Axioms.lean:266 | `□φ → G(□φ)` |
+
+### Layer 5: Uniformity (4)
+
+| Axiom | Statement | Role |
+|-------|-----------|------|
+| `discrete_symm_fwd` | `U(⊤,⊥) → S(⊤,⊥)` | Forward gap implies backward gap |
+| `discrete_symm_bwd` | `S(⊤,⊥) → U(⊤,⊥)` | Backward gap implies forward gap |
+| `discrete_propagate_fwd` | `U(⊤,⊥) → G(U(⊤,⊥))` | Gap propagates to all future points |
+| `discrete_propagate_bwd` | `U(⊤,⊥) → H(U(⊤,⊥))` | Gap propagates to all past points |
+
+*These encode the uniformity of discreteness in ordered abelian groups. Valid on all linear orders with AddCommGroup structure.*
+
+### Layer 6: Prior Axioms for Integers (2) — Task 119
+
+| Axiom | Statement | Role |
+|-------|-----------|------|
+| `prior_UZ` | `F(φ) → U(φ, ¬φ)` | Nearest future φ-point is reachable (Reynolds 1992 §10, Venema 1993 axiom W) |
+| `prior_SZ` | `P(φ) → S(φ, ¬φ)` | Nearest past φ-point is reachable (dual) |
+
+*These are discrete-only axioms (`isBase = False`, `isDenseCompatible = False`, `isDiscreteCompatible = True`, `frameClass = .Discrete`). Valid on all discrete orders with `IsSuccArchimedean`. Soundness proofs are sorry-free (well-founded descent via `Nat.find` on succ/pred chain). Added by task 119.*
 
 ### Irreflexive semantics and the seriality switch
 
@@ -304,43 +323,39 @@ former reflexive semantics.
 
 ## Active Metalogic Paths
 
-Two completeness paths are active. The **Chronicle** path (task 107) is the primary
-path and is under active development. The **BXCanonical** path (task 109) is secondary;
-its 5 critical-path sorries are blocked by Lindenbaum opacity (dead ends #34-#36) and
-will become dead code once the chronicle path succeeds.
+The **Chronicle** path (`Metalogic/BXCanonical/Chronicle/`) is the sole active
+completeness path. The BXCanonical path (task 109, abandoned) is dead code — its
+~17 sorries are mathematically false under irreflexive semantics.
 
-### Path 1: Chronicle Construction (Task 107, PRIMARY)
+### Chronicle Construction (Tasks 107→117→119→121→122)
 
 The Burgess 1982 chronicle construction builds a countermodel via controlled
-PointInsertion, escaping the Lindenbaum opacity that blocks BXCanonical. The
-construction lives in `Metalogic/BXCanonical/Chronicle/` (6 files, ~8800 lines).
+PointInsertion. The construction lives in `Metalogic/BXCanonical/Chronicle/`
+(6 files, ~9500 lines).
 
-**Current state (2026-05-05)**: 9 sorry sites on critical path across 2 files (down
-from 13), plus 6 NoUnivBurgessR3 stubs in PointInsertion.lean (15 total). Phases 1-3
-complete: NoUnivBurgessR3 eliminated, `lemma_2_7_seed_consistent` closed via BX5+BX7+BX13
-chain, Zorn ClosedUnderDerivation sorry resolved. PointInsertion.lean and RRelation.lean
-are sorry-free on critical path. The remaining critical-path sorries are: 5 c2'
-co-construction (CounterexampleElimination), 2 C4/C4' hard cases
-(CounterexampleElimination), 2 FUC/FSC coherence (ChronicleToCountermodel).
+**Current state (2026-05-10)**: 2 sorry sites on critical path (down from 13+ at task 107 start).
+- Task 107: Eliminated all Chronicle sorry sites via 9 implementation phases
+- Task 117: Removed Cantor iso, built countermodel on limit domain, dense case sorry-free
+- Task 119: Added Prior-UZ/SZ axioms, proved IsSuccArchimedean via pigeonhole (modulo finiteness)
 
 **Chronicle module structure**:
-- `ChronicleTypes.lean` (~700 lines) -- Chronicle structure, `ClosedUnderDerivation`, `BurgessR3Maximal`
-- `PointInsertion.lean` (~3690 lines) -- Lemma 2.4/2.6, g_content⊆B, splitting (**sorry-free on critical path**; 6 NoUnivBurgessR3 stubs)
+- `ChronicleTypes.lean` (~700 lines) -- Chronicle structure, `ClosedUnderDerivation`, `BurgessR3Maximal` (**sorry-free**)
+- `PointInsertion.lean` (~3690 lines) -- Lemma 2.4/2.6, g_content⊆B, splitting (**sorry-free**)
 - `RRelation.lean` (~1580 lines) -- R-relation, Burgess 2.3 equiv, Zorn construction (**sorry-free**)
-- `CounterexampleElimination.lean` (~950 lines) -- C4/C5 elimination (7 sorries: 5 c2' + 2 hard cases)
+- `CounterexampleElimination.lean` (~3600 lines) -- C4/C5 elimination (**sorry-free**)
 - `ChronicleConstruction.lean` (~1220 lines) -- Omega-chain, limit construction (**sorry-free**)
-- `ChronicleToCountermodel.lean` (~660 lines) -- BFMCS wiring, Cantor iso (2 sorries: FUC/FSC)
+- `ChronicleToCountermodel.lean` (~1200 lines) -- BFMCS wiring, dense/discrete countermodels (**2 sorries: finiteness + discrete BFMCS**)
 
 **Key insight (report 17)**: The hybrid Int-chain + enriched seed approach is definitively
 dead (dead ends #7, #13, #23, #31). The chronicle construction is NOT a dead end -- all
 gaps are engineering problems, not mathematical impossibilities (report 16).
 
-### Path 2: BXCanonical (Task 109, SECONDARY)
+### BXCanonical Path (DEAD CODE — Task 109 Abandoned)
 
-The BXCanonical path flows through `Metalogic/BXCanonical/`. The
-legacy `UltrafilterChain`, `FrameConditions/Completeness`, and `SuccChainFMCS`
-modules are still built via top-level aggregation in `Metalogic.lean:1-4` but
-are **not imported** by `BXCanonical`.
+The BXCanonical path flows through `Metalogic/BXCanonical/`. Its ~17 sorries
+assume reflexive G/H semantics (`Gφ → φ`) which is mathematically false under
+the current irreflexive semantics. The Chronicle path bypasses it entirely.
+Task 109 was abandoned 2026-05-10. Candidate for archival to Boneyard/.
 
 ### Module Import Graph
 
