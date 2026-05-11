@@ -7,26 +7,35 @@ axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the curre
 state of the completeness effort as of 2026-05-10.
 
 **Architecture**: The proof system has 45 BX axioms organized in 6 layers:
-propositional (4), S5 modal (5), Burgess-Xu temporal (24), modal-temporal
+propositional (4), S5 modal (5), Burgess-Xu temporal (26), modal-temporal
 interaction (2), uniformity (4), and Prior-UZ/SZ (2, discrete-only). The temporal
 semantics is **irreflexive**: G/H quantify over `t < s` / `s < t` (strict
 inequality), and Until/Since require strictly future/past witnesses.
+
+**Convention**: `untl(event, guard)` matches Burgess 1982 `U(α, β)` where α=event
+(at witness), β=guard (at intermediates). Migrated by task 107 Phase 9.
 
 **Completeness architecture**: The **Chronicle** path
 (`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`) is the primary and only
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state**:
+**Current state** (2026-05-11):
 - **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ
 - **FMP completeness** (`fmp_completeness`): Sorry-free
 - **Dense completeness** (`dd_countermodel_chronicle_dense`): Internally sorry-free
-- **Discrete completeness**: 2 sorries remain (see below)
-- **Full `bx_completeness`**: Blocked by 2 sorries in discrete case
+- **Discrete completeness**: 1 sorry remains (task 122)
+- **Full `bx_completeness`**: Blocked by 1 sorry in discrete case
 
-**Sorry summary (critical path)**: 2 sorries in `ChronicleToCountermodel.lean`:
-1. `limitDomSubtype_Icc_finite` (line 1064): Bounded intervals in limit_dom are finite — **the single hard mathematical blocker** (task 121)
-2. `dd_countermodel_chronicle_nondense_sorry` (line 836): Discrete BFMCS on ℤ construction (task 122, depends on 121)
+**Sorry summary (critical path)**: 1 sorry in `ChronicleToCountermodel.lean`:
+1. `dd_countermodel_chronicle_nondense_sorry` (line 836): Discrete BFMCS on ℤ construction (task 122, depends on task 123 in progress)
+
+`limitDomSubtype_Icc_finite` was eliminated by task 123's collapse approach (no longer needed).
+
+**Planned evolution** (after sorry-free completeness):
+- **Phase 2 — Axiom cleanup**: Remove TF axiom (task 124), remove A4a (task 115), redefine G/H/F/P via U/S (task 116). Reduces primitives to {S, U, □, →, ⊥}.
+- **Phase 3 — Algebraic representation**: Jónsson-Tarski representation theorem for the BAO with binary S/U and unary □ (task 125). Builds on Venema 1993 (Anti-Axioms), leveraging orthodox axiomatizability for ultraproduct closure. Literature in `literature/` with markdown conversions.
+- **Phase 4 — Publication quality**: Verification audit (task 95), genuine truth_at completeness (task 8).
 
 **Sorry summary (dead code)**: ~17 sorries in the BXCanonical/Bundle/Quasimodel/Filtration pipeline are mathematically false under irreflexive semantics (they assume reflexive G/H). These are bypassed by the Chronicle approach and should be archived.
 
@@ -88,7 +97,7 @@ Closed by task 107 (Phases 1-9, 2026-04-25 to 2026-05-08):
 - c1 (Chronicle condition): still uses `SetDeductivelyClosed` for g-values; Burgess just needs CUD. Not a blocker (Zorn always produces consistent g-values) but stronger than necessary.
 - Two-track r-relation: `rRelation`/`r3Relation` (obligation-propagation, monotone in B) vs `burgessR`/`burgessR3` (content-based, anti-monotone in B). Burgess has only the content-based version. c2 uses `r3Relation` (non-Burgess); c2' correctly uses `burgessR3`.
 - Helper function signatures: ~20 helpers still take `SetDeductivelyClosed` parameter but only use the `ClosedUnderDerivation` part internally. Mechanical refactor.
-- Convention: `untl(guard, event)` = Burgess `U(event, guard)` — arguments swapped. Persistent source of confusion documented in handoffs.
+- Convention: `untl(event, guard)` = Burgess `U(event, guard)` — aligned by task 107 Phase 9. No longer swapped.
 
 **Migration steps in current plan**:
 - Phase 4: Close NoUnivBurgessR3 stubs (bot-guard argument)
@@ -194,12 +203,12 @@ seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 *Note: BX9/BX9' (until_elim/since_elim) and until_guard/since_guard removed -- not sound under open guard `(t,s)` semantics (task 113).*
 *Note: BX2H/BX2H' (left_mono_until_G/left_mono_since_H) added in task 107 Phase 5b. BX2H subsumes BX2 under open-guard semantics (the pointwise conjunct in BX2 is redundant when the guard interval excludes the current point).*
 
-### Layer 4: Modal-Temporal Interaction (2)
+### Layer 4: Modal-Temporal Interaction (2 → 1 after task 124)
 
-| Axiom | File:Line | Statement |
-|-------|-----------|-----------|
-| `modal_future` | Axioms.lean:263 | `□φ → □(Gφ)` |
-| `temp_future` | Axioms.lean:266 | `□φ → G(□φ)` |
+| Axiom | File:Line | Statement | Status |
+|-------|-----------|-----------|--------|
+| `modal_future` | Axioms.lean:328 | `□φ → □(Gφ)` | Primitive |
+| `temp_future` | Axioms.lean:331 | `□φ → G(□φ)` | **Task 124: derive from MF+T+Modal4, remove as primitive** |
 
 ### Layer 5: Uniformity (4)
 

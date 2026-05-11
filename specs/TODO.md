@@ -27,42 +27,42 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-11. Task 120 abandoned (redesign infeasible, blocker resolved by task 123). Tasks 124, 116 planned.*
+*Updated 2026-05-11. Task 120 abandoned (redesign infeasible). Tasks 124, 116 planned. Task 125 created (JT representation).*
 
-**Goal**: Close 1 remaining sorry for sorry-free `bx_completeness`, then clean up axiom system.
+**Goal**: Sorry-free `bx_completeness` → axiom system cleanup → algebraic representation theorem.
 
-**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness is internally sorry-free. Discrete `discrete_fmcs` sorry-free (task 123). One sorry remains: `dd_countermodel_chronicle_nondense_sorry` (task 122).
+**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness internally sorry-free. Discrete `discrete_fmcs` sorry-free (task 123). One sorry remains: `dd_countermodel_chronicle_nondense_sorry` (task 122).
 
-### 1. Critical Path — In Progress
+### Phase 1: Sorry-Free Completeness
 
 1. **123** [IMPLEMENTING] — Fix C5 witness placement, prove Icc_finite (in progress)
-2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete `dd_countermodel_chronicle_nondense_sorry` (depends on 123)
+2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123)
 
-### 2. Axiom System Cleanup (after 123 merges)
+### Phase 2: Axiom System Cleanup
 
-These all touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentially after task 123.
+All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentially after task 123 merges.
 
 1. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
 2. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
 3. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
 
-### 3. Algebraic Representation (after axiom cleanup)
+### Phase 3: Algebraic Representation
 
-- **125** [NOT STARTED] — Jónsson-Tarski representation for S/U/□ (depends on 123, 124, 122, 116, 115)
+- **125** [NOT STARTED] — Jónsson-Tarski representation for S/U/□ (depends on all Phase 1+2 tasks)
 
-### 4. Research / Deferred
+### Phase 4: Publication Quality
+
+- **95** [NOT STARTED] — Verification audit (after axiom system is final)
+- **8** [RESEARCHED] — Genuine truth_at completeness
+- **68** [RESEARCHED] — Dense completeness via ℚ
+
+### Deferred / Low Priority
 
 - **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
 - **112** [RESEARCHED] — Literature study (reference)
-- **95** [NOT STARTED] — Verification audit
-- **68** [RESEARCHED] — Dense completeness via ℚ (dense case already works)
-- **18** [BLOCKED] — Dense representation theorem (deferred)
+- **18** [BLOCKED] — Dense representation theorem
 - **20** [NOT STARTED] — Parametric canonical audit
 - **21** [PLANNED] — Tech debt cleanup
-
-### 5. Backlog
-
-- **8** [RESEARCHED] — Genuine truth_at completeness (publication quality)
 - **953** [RESEARCHED] — Bilateral proof system (55-90h)
 - **992** [RESEARCHED] — STSA temporal shift automorphism
 - **949** [RESEARCHED] — Update Demo.lean (cosmetic)
