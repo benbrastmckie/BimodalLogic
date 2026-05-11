@@ -45,7 +45,7 @@ technical_debt:
 ### 3. Cleanup / Deferred
 
 - **124** [RESEARCHED] — Remove TF axiom, derive from MF (cleanup)
-- **116** [RESEARCHING] — Redefine G/H/F/P in terms of U/S (nice-to-have)
+- **116** [RESEARCHED] — Redefine G/H/F/P in terms of U/S (nice-to-have)
 - **115** [RESEARCHED] — Remove A4a, simplify BX2 (cleanup)
 - **112** [RESEARCHED] — Literature study (reference)
 - **95** [NOT STARTED] — Verification audit
@@ -99,9 +99,10 @@ technical_debt:
 
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: 107
+- **Research**: [specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md]
 
 **Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
 

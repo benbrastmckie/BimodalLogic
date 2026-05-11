@@ -27,7 +27,7 @@
     {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove all_future (G) and all_past (H) as primitive constructors from the Formula inductive type. Define F and P as abbreviations using untl/snce with top, then G and H as negation of F/P of negation, matching Burgess 1982 section 1.1. Box remains primitive (S5 modal operator). ~3200 references across codebase. Depends on task 107 Phase 9 (convention migration).",
@@ -35,8 +35,16 @@
         107
       ],
       "created": "2026-05-08T07:17:15Z",
-      "last_updated": "2026-05-11T17:04:11Z",
-      "session_id": "sess_1778519000_9c9d89"
+      "last_updated": "2026-05-11T17:10:37Z",
+      "session_id": "sess_1778519000_9c9d89",
+      "researched": "2026-05-11T17:10:37Z",
+      "artifacts": [
+        {
+          "path": "specs/116_redefine_ghfp_via_until_since/reports/01_redefine-ghfp-research.md",
+          "type": "report",
+          "summary": "Comprehensive research on redefining G/H/F/P as abbreviations via Until/Since per Burgess 1982. ~1416 references across 70 files, 6-phase strategy, key risks identified."
+        }
+      ]
     },
     {
       "project_number": 112,
