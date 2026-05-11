@@ -27,54 +27,43 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-04-20. Archived 12 tasks (6 completed, 6 abandoned). Irreflexive semantics transition complete.*
+*Updated 2026-05-10. Archived 8 tasks (5 completed, 3 abandoned). Prior-UZ axioms added, soundness sorry-free.*
 
-**Goal**: Close the 11 chain construction sorries (task 109) for sorry-free `bx_completeness`.
+**Goal**: Close 2 remaining sorries for sorry-free `bx_completeness`.
 
-### 1. Critical Path — BXCanonical Completeness
+**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness is internally sorry-free. Discrete completeness blocked by 1 finiteness lemma.
 
-```
-113 → 107 → 117 → 118 → 95
-```
+### 1. Critical Path — Discrete Completeness (2 sorries)
 
-1. **113** [COMPLETED] — Open guard refactoring for Until/Since semantics
-2. **107** [COMPLETED] — Burgess chronicle construction for BX representation theorem (depends on 113)
-3. **117** [COMPLETED] — Remove Cantor iso, build countermodel on limit domain (depends on 107)
-4. **118** [RESEARCHED] — Prove IsSuccArchimedean for discrete completeness (depends on 117)
-5. **95** [NOT STARTED] — Verification audit: #print axioms + sorry classification pass (depends on 107)
+1. **NEW** — Prove `limitDomSubtype_Icc_finite` (bounded limit_dom intervals are finite)
+2. **NEW** — Build discrete BFMCS on ℤ, complete `dd_countermodel_chronicle_nondense_sorry`
 
-### 2. IsSuccArchimedean Resolution (parallel tracks)
+### 2. Active Research
 
-- **119** [PLANNED] — Direct connectivity proof for IsSuccArchimedean (depends on 118)
 - **120** [RESEARCHED] — Semantic foundation redesign for natural group structure (independent)
-
-### 3. Independent Completeness Paths (parallel)
-
 - **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
-- **68** [RESEARCHED] — Prove dense_completeness_fc via Rat canonical model (needs Rat construction)
 
-### 4. Experimental / Research
+### 3. Cleanup / Deferred
 
-- **113** [COMPLETED] — Review new literature (Xu 1988, Reynolds 1992, Caleiro et al. 2013) for completeness techniques across three-phase roadmap (base TM, U/S extension, dense/discrete)
-- **112** [RESEARCHED] — Systematic literature study: review 5 non-original sources (Burgess 1982b, Venema 1993, Obendrauf 2024, Burgess 1984, Thomason 1984) for relevance to task 107 representation theorem
+- **116** [NOT STARTED] — Redefine G/H/F/P in terms of U/S (nice-to-have)
+- **115** [RESEARCHED] — Remove A4a, simplify BX2 (cleanup)
+- **112** [RESEARCHED] — Literature study (reference)
+- **95** [NOT STARTED] — Verification audit
+- **68** [RESEARCHED] — Dense completeness via ℚ (dense case already works)
+- **19** [NOT STARTED] — Deprecate old discrete pipeline
+- **18** [BLOCKED] — Dense representation theorem (deferred)
+- **20** [NOT STARTED] — Parametric canonical audit
+- **21** [PLANNED] — Tech debt cleanup
 
-- **992** [RESEARCHED] — STSA temporal shift automorphism (algebraic, independent)
-- **64** [RESEARCHED] — Critical path review (reference only)
+### 4. Backlog
 
-### 5. Deferred
-
-- **18** [BLOCKED] — Dense representation theorem (4 sorries, defer until base is clean)
-- **20** [NOT STARTED] — Parametric canonical audit (depends on 18)
-- **21** [PLANNED] — Tech debt cleanup (depends on 18)
-- **19** [NOT STARTED] — Deprecate old discrete pipeline (low priority)
-
-### 6. Backlog
-
-- **8** [RESEARCHED] — Genuine truth_at completeness (publication quality, 12-20h)
-- **39** [RESEARCHED] — Preorder semantics study (theoretical)
+- **8** [RESEARCHED] — Genuine truth_at completeness (publication quality)
 - **953** [RESEARCHED] — Bilateral proof system (55-90h)
+- **992** [RESEARCHED] — STSA temporal shift automorphism
 - **949** [RESEARCHED] — Update Demo.lean (cosmetic)
-- **619** [RESEARCHED] — Agent system architecture upgrade (meta, blocked on GitHub #16803)
+- **64** [RESEARCHED] — Critical path review (reference)
+- **619** [RESEARCHED] — Agent system architecture upgrade (meta)
+- **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
 
