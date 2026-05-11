@@ -504,17 +504,22 @@
       "description": "Prove limitDomSubtype_Icc_finite: bounded intervals in limit_dom are finite. This is the single blocking sorry for discrete completeness. The lemma states that for a <= b in LimitDomSubtype, the set {x | a <= x <= b} is Set.Finite. The proof requires either: (1) a structural argument about omega chain stabilization in bounded intervals, (2) a topological argument (compact + discrete => finite, requires closedness), or (3) an order-theoretic argument exploiting the embedding in Q with SuccOrder/PredOrder. Located at ChronicleToCountermodel.lean:1064.",
       "dependencies": [],
       "created": "2026-05-11T00:45:00Z",
-      "last_updated": "2026-05-11T04:15:59Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-05-11T05:23:12Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/121_prove_limit_dom_interval_finite/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates"
+        },
+        {
+          "path": "specs/121_prove_limit_dom_interval_finite/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research round 2: Reynolds 1994 analysis (4 teammates)"
         }
       ],
-      "session_id": "sess_1778472155_89dd10",
-      "researched": "2026-05-11T04:15:59Z"
+      "session_id": "sess_1778475981_813128",
+      "researched": "2026-05-11T05:23:12Z"
     },
     {
       "project_number": 122,

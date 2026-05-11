@@ -79,7 +79,9 @@ technical_debt:
 ### 121. Prove limitDomSubtype_Icc_finite (bounded interval finiteness)
 - **Effort**: 10-20 hours
 - **Status**: [RESEARCHED]
-- **Research**: [specs/121_prove_limit_dom_interval_finite/reports/01_team-research.md]
+- **Research**:
+  - [specs/121_prove_limit_dom_interval_finite/reports/01_team-research.md]
+  - [specs/121_prove_limit_dom_interval_finite/reports/02_team-research.md]
 - **Task Type**: lean4
 - **Priority**: critical
 
