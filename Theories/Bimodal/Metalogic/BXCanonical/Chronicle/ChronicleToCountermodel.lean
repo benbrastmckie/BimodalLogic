@@ -1999,59 +1999,68 @@ theorem succ_embed_surjective (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     · exact ih q hq_old hq_lim
     · -- q was newly added at stage K+1.
       -- All old points are in the image by IH.
-      -- The new point must be between existing embedded points or above/below them.
-      -- We use the IH to get embedded bounds and then squeeze.
-      --
-      -- Key: q is the unique new point (by dom_new_unique).
-      -- All other points in omega_chain_val(K+1).dom were already in stage K.
-      -- In the limit order, q is between two embedded points or adjacent to one.
-      -- The no-gap property forces q to equal some succ_embed(k).
-      --
-      -- Find the nearest old domain point below q (exists since 0 ∈ dom).
-      -- Find the nearest old domain point above q (if exists).
-      -- Both are embedded by IH, then squeeze gives q = succ_embed(k).
+      -- We find embedded bounds from old points and apply squeeze.
       have h_zero_in : (0 : ℚ) ∈ (omega_chain_val A h_mcs K).dom :=
         omega_chain_dom_mono_le A h_mcs (Nat.zero_le K) (by
           simp [omega_chain_val, omega_chain, singleton_chronicle])
-      -- q is in the new domain but not the old
-      have hq_new : q ∈ (omega_chain_val A h_mcs (K + 1)).dom := hq
-      -- All old points are in image of succ_embed
-      have h_old_embed : ∀ p ∈ (omega_chain_val A h_mcs K).dom,
-          ∀ (hp : p ∈ limit_dom A h_mcs),
-            ∃ n : ℤ, succ_embed A h_mcs h_discrete n = ⟨p, hp⟩ :=
-        fun p hp hp_lim => ih p hp hp_lim
-      -- Find old lower and upper bounds for q in the stage-K domain.
-      -- Since 0 ∈ old dom and q ≠ 0, there's at least one old point.
-      -- Case split: q above all old points vs q between old points.
       have hq_ne_zero : q ≠ 0 := fun h => hq_old (h ▸ h_zero_in)
-      -- Find the nearest limit-embedded lower bound for ⟨q, hq_lim⟩.
-      -- Since ⟨0, _⟩ = succ_embed(0) and q ≠ 0, either q > 0 or q < 0.
-      -- In either case, we use the pred chain argument:
-      -- pred(⟨q, hq_lim⟩) < ⟨q, hq_lim⟩. If pred is in the image (succ_embed(k)),
-      -- then ⟨q, hq_lim⟩ = succ(succ_embed(k)) = succ_embed(k+1).
-      --
-      -- The predecessor of q in the limit domain was either added at stage ≤ K
-      -- (in which case the IH applies) or added at stage K+1 (which would violate
-      -- dom_new_unique since q is also new). Since pred(q) ∈ limit_dom and
-      -- pred(q) < q, and q was just added, pred(q) must have been in an earlier stage.
-      --
-      -- However, pred(q) in the LIMIT might have been added after stage K+1.
-      -- We cannot use stage-based induction for pred(q).
-      --
-      -- Instead, we use a different argument for the "above all old points" case:
-      -- Since succ_embed(J) is the max old embedded point and ⟨q, hq_lim⟩ > succ_embed(J),
-      -- we have succ_embed(J+1) ≤ ⟨q, hq_lim⟩. If they're equal, done.
-      -- If not, succ_embed(J+1).val is NOT in omega_chain_val(K+1).dom (since it's
-      -- above max old and not equal to q). Then succ_embed(J+1).val is between
-      -- succ_embed(J).val and q, but not in the stage K+1 domain. Yet q IS in the
-      -- domain. Since succ_embed(J+1) < ⟨q, hq_lim⟩ and succ_embed(J+1) is a domain
-      -- point in the limit, the interval [succ_embed(J+1), ⟨q, hq_lim⟩] contains
-      -- both as domain points. Applying squeeze with any upper embedded bound gives
-      -- the result. But finding the upper bound requires the orbit to reach q.
-      --
-      -- This deep argument requires construction-level analysis beyond the current
-      -- infrastructure. We leave this as the focused remaining sorry.
-      sorry
+      -- The stage-K domain is finite and nonempty (contains 0).
+      have h_dom_ne : (omega_chain_val A h_mcs K).dom.Nonempty := ⟨0, h_zero_in⟩
+      set dom_K := (omega_chain_val A h_mcs K).dom
+      set max_K := dom_K.max' h_dom_ne
+      set min_K := dom_K.min' h_dom_ne
+      have h_max_mem : max_K ∈ dom_K := Finset.max'_mem _ h_dom_ne
+      have h_min_mem : min_K ∈ dom_K := Finset.min'_mem _ h_dom_ne
+      have h_max_le : ∀ s ∈ dom_K, s ≤ max_K := fun s hs => Finset.le_max' _ s hs
+      have h_min_le : ∀ s ∈ dom_K, min_K ≤ s := fun s hs => Finset.min'_le _ s hs
+      -- q is strictly between min_K and max_K, or outside.
+      -- Since q ∉ dom_K, q ≠ any element of dom_K.
+      -- Case split: q is between min and max, or above max, or below min.
+      by_cases h_above : max_K < q
+      · -- Case: q > max_K (above all old points).
+        -- The new point q is above all stage-K domain points.
+        -- By IH, max_K = succ_embed(j) for some j.
+        -- By no_gap, ⟨q, _⟩ ≥ succ_embed(j+1).
+        -- The hard direction (⟨q, _⟩ ≤ succ_embed(j+1)) requires showing that
+        -- the limit-domain immediate successor of max_K cannot be strictly below q.
+        -- This is equivalent to cofinality of the succ_embed orbit, which requires
+        -- analysis of the omega-chain construction across multiple stages.
+        sorry
+      · by_cases h_below : q < min_K
+        · -- Case: q < min_K (below all old points). Symmetric to above.
+          sorry
+        · -- Case: min_K ≤ q ≤ max_K (q between old points).
+          push_neg at h_above h_below
+          -- q is strictly between min_K and max_K (since q ∉ dom_K).
+          have hq_lt_max : q < max_K := lt_of_le_of_ne h_above (fun h =>
+            hq_old (h ▸ h_max_mem))
+          have hq_gt_min : min_K < q := lt_of_le_of_ne h_below (fun h =>
+            hq_old (h.symm ▸ h_min_mem))
+          -- Find adjacent old points around q in dom_K.
+          -- Use exists_containing_adjacent from ChronicleConstruction.
+          -- We need: min_K ∈ dom_K, max_K ∈ dom_K, min_K < max_K,
+          -- q ∉ dom_K, min_K < q < max_K.
+          have hmin_lt_max : min_K < max_K := lt_trans hq_gt_min hq_lt_max
+          obtain ⟨a, b, h_adj, ha_ge, hb_le, haq, hqb⟩ :=
+            exists_containing_adjacent dom_K min_K max_K q h_min_mem h_max_mem
+              hmin_lt_max hq_old hq_gt_min hq_lt_max
+          -- a and b are adjacent in dom_K with a < q < b.
+          -- By IH, both are embedded.
+          have ha_lim : a ∈ limit_dom A h_mcs := ⟨K, h_adj.1⟩
+          have hb_lim : b ∈ limit_dom A h_mcs := ⟨K, h_adj.2.1⟩
+          obtain ⟨na, hna⟩ := ih a h_adj.1 ha_lim
+          obtain ⟨nb, hnb⟩ := ih b h_adj.2.1 hb_lim
+          -- succ_embed(na) < ⟨q, _⟩ < succ_embed(nb)
+          have h_na_lt : succ_embed A h_mcs h_discrete na < ⟨q, hq_lim⟩ := by
+            rw [hna]; exact haq
+          have h_nb_gt : ⟨q, hq_lim⟩ < succ_embed A h_mcs h_discrete nb := by
+            rw [hnb]; exact hqb
+          have h_na_lt_nb : na < nb :=
+            (succ_embed_strictMono A h_mcs h_discrete).lt_iff_lt.mp
+              (lt_trans h_na_lt h_nb_gt)
+          obtain ⟨k, hk_lo, hk_hi, hk_eq⟩ := succ_embed_squeeze_strict A h_mcs h_discrete
+            na nb h_na_lt_nb ⟨q, hq_lim⟩ h_na_lt h_nb_gt
+          exact ⟨k, hk_eq⟩
 
 /--
 MCS assignment via the succ-based embedding.
