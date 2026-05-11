@@ -5,16 +5,16 @@ repository_health:
   production_readiness: near-publication
   last_assessed: 2026-05-10T23:59:00Z
 task_counts:
-  active: 21
-  completed: 771
+  active: 20
+  completed: 772
   in_progress: 0
-  not_started: 8
-  abandoned: 78
-  total: 861
+  not_started: 7
+  abandoned: 80
+  total: 862
 technical_debt:
-  sorry_count: 2
-  sorry_count_note: "Audited 2026-05-10: 2 critical-path sorries in ChronicleToCountermodel.lean (limitDomSubtype_Icc_finite + dd_countermodel_chronicle_nondense_sorry). ~17 dead-code sorries in BXCanonical pipeline (mathematically false under irreflexive semantics, bypassed by Chronicle). ~19 TemporalDerived re-derivations (low priority). Soundness, SoundnessLemmas, and Decidability are sorry-free."
-  publication_path_sorries: 2
+  sorry_count: 1
+  sorry_count_note: "Audited 2026-05-11: 1 critical-path sorry in ChronicleToCountermodel.lean (dd_countermodel_chronicle_nondense_sorry). limitDomSubtype_Icc_finite removed by task 123 collapse approach. ~17 dead-code sorries in BXCanonical pipeline (mathematically false under irreflexive semantics, bypassed by Chronicle). ~19 TemporalDerived re-derivations (low priority). Soundness, SoundnessLemmas, and Decidability are sorry-free."
+  publication_path_sorries: 1
   axiom_count: 0
   axiom_count_note: "Zero custom axioms. Prior-UZ/SZ are standard axiom constructors with sorry-free soundness proofs."
   build_errors: 0
@@ -29,9 +29,9 @@ technical_debt:
 
 *Updated 2026-05-10. Archived 8 tasks (5 completed, 3 abandoned). Prior-UZ axioms added, soundness sorry-free.*
 
-**Goal**: Close 2 remaining sorries for sorry-free `bx_completeness`.
+**Goal**: Close 1 remaining sorry for sorry-free `bx_completeness`.
 
-**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness is internally sorry-free. Discrete completeness blocked by 1 finiteness lemma.
+**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness is internally sorry-free. Discrete `discrete_fmcs` sorry-free (task 123). One sorry remains: `dd_countermodel_chronicle_nondense_sorry` (task 122).
 
 ### 1. Critical Path — Discrete Completeness (1 sorry)
 
@@ -72,15 +72,7 @@ technical_debt:
 
 **Description**: Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.
 
-### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
-- **Effort**: 15-25 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Plan**: [123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md]
-- **Summary**: [123_fix_c5_witness_bot_and_prove_icc_finite/summaries/01_fix-c5-bot-summary.md]
-
-**Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify `eliminate_potential_counterexample` in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust `EliminationResult.c5_forward_witness` to allow vacuous satisfaction, update `omega_chain_c5_witness` and `limit_satisfies_c5_strong` in ChronicleConstruction.lean. Then prove `limitDomSubtype_Icc_finite` (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).
+---
 
 ### 122. Build discrete BFMCS on ℤ and complete discrete countermodel
 - **Effort**: 8-15 hours
@@ -91,6 +83,8 @@ technical_debt:
 
 **Description**: Build discrete BFMCS on ℤ and complete `dd_countermodel_chronicle_nondense_sorry`. Mirror the dense case pattern: use `discrete_fmcs` (already exists) to build a `BFMCS Int` with restricted coherence properties, then wire into parametric representation for the countermodel. Located at ChronicleToCountermodel.lean:836.
 
+---
+
 ### 120. Research semantic foundation for natural group structure
 - **Effort**: 8-15 hours
 - **Status**: [RESEARCHED]
@@ -98,6 +92,9 @@ technical_debt:
 - **Task Type**: lean4
 
 **Description**: Research and design a cleaner semantic foundation where `AddCommGroup` structure emerges naturally from the canonical model construction, eliminating the need for `IsSuccArchimedean` and the ℤ-isomorphism. Currently `valid` requires `AddCommGroup D` (used by MF, TF, and 4 uniformity axioms for time-shift invariance), but the chronicle construction produces `limit_dom ⊂ ℚ` which is not closed under addition. Explore: (1) Whether adding operators or axioms to the logic can force the canonical model domain to carry group structure; (2) Whether `ShiftClosed` can be reformulated without requiring D to be a group; (3) Whether a different semantic framework (e.g., relational rather than algebraic) can validate MF/TF while remaining neutral on density/discreteness; (4) Whether the completeness theorem can be factored so `AddCommGroup` is only needed at the final step. Must maintain validity of MF (`Box(φ) → Box(G(φ))`) and remain neutral on density and discreteness axioms.
+
+---
+
 ### 116. Redefine G, H, F, P in terms of U and S following Burgess 1982
 - **Effort**: 15-25 hours
 - **Status**: [NOT STARTED]
@@ -105,6 +102,8 @@ technical_debt:
 - **Dependencies**: 107
 
 **Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
+
+---
 
 ### 115. Remove A4a and simplify BX2 after task 107 adds left_mono_until_G
 - **Effort**: 1-2 hours
