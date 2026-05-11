@@ -83,7 +83,7 @@ Reports integrated in this revision:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Define the Collapse Equivalence and Quotient Map [PARTIAL]
+### Phase 1: Define the Collapse Equivalence and Quotient Map [COMPLETED]
 
 **Goal:** Define an equivalence relation on `LimitDomSubtype` whose classes are the omega-chains, and a quotient map `collapse : LimitDomSubtype -> Quotient`. Prove the quotient is a discrete linear order isomorphic to Z.
 
@@ -128,7 +128,7 @@ Phases within the same wave can execute in parallel.
 
 **Depends on:** none
 
-### Phase 2: Define FMCS on Z via Collapse [NOT STARTED]
+### Phase 2: Define FMCS on Z via Collapse [COMPLETED]
 
 **Goal:** Define `discrete_fmcs_via_collapse : FMCS Z` using the collapse map, and prove forward_G and backward_H.
 
@@ -190,7 +190,7 @@ Phases within the same wave can execute in parallel.
 
 **Depends on:** 3
 
-### Phase 5: Clean Up, Resolve Sorries, and Verify [NOT STARTED]
+### Phase 5: Clean Up, Resolve Sorries, and Verify [COMPLETED]
 
 **Goal:** Remove or resolve the `limitDomSubtype_Icc_finite` sorry, clean up deprecated code, and verify the full build.
 

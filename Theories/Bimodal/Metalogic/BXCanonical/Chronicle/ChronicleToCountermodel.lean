@@ -1400,149 +1400,264 @@ private theorem collapse_class_sep (A : Set Formula) (h_mcs : SetMaximalConsiste
     exact absurd ha'_lt_b (not_lt.mpr h_b_lt_a'.le)
 
 /--
+Auxiliary: strict order on `CollapseClass` representatives is transitive.
+If `a < b`, `a ≁ b`, `b < c`, and `b ≁ c`, then `a < c` and `a ≁ c`.
+-/
+private theorem collapse_lt_trans (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    {a b c : LimitDomSubtype A h_mcs}
+    (hab : a < b) (hnab : ¬ collapse_equiv A h_mcs h_discrete a b)
+    (hbc : b < c) (_hnbc : ¬ collapse_equiv A h_mcs h_discrete b c) :
+    a < c ∧ ¬ collapse_equiv A h_mcs h_discrete a c := by
+  refine ⟨lt_trans hab hbc, fun hac => ?_⟩
+  -- a ~ c. By sep: since a ≁ b and a < b, for a' ~ a, b' ~ b, a' < b'.
+  -- In particular, taking a' = c (since c ~ a), b' = b: c < b. But b < c. Contradiction.
+  have : c < b := collapse_class_sep A h_mcs h_discrete a b c b
+    hac (collapse_equiv_refl A h_mcs h_discrete b) hnab hab
+  exact absurd (lt_trans hbc this) (lt_irrefl b)
+
+/--
 `LinearOrder` instance on `CollapseClass`. The quotient of a linear order
 by a convex equivalence relation is linearly ordered.
 
-The LE relation is defined as `[a] ≤ [b] iff a ≤ b`; well-definedness follows
-from `collapse_class_sep` (different classes are totally separated).
+The strict order `[a] < [b]` is defined as `a < b ∧ a ≁ b` (well-defined by
+`collapse_class_sep`). The `≤` relation is `= ∨ <`, and totality follows
+from the trichotomy on the underlying `LimitDomSubtype`.
 -/
 noncomputable instance collapseClass_linearOrder (A : Set Formula)
     (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     LinearOrder (CollapseClass A h_mcs h_discrete) := by
-  exact sorry
+  letI setoid := collapse_setoid A h_mcs h_discrete
+  -- The strict order: [a] < [b] iff a < b and a ≁ b (well-defined by collapse_class_sep)
+  let lt_fn : CollapseClass A h_mcs h_discrete → CollapseClass A h_mcs h_discrete → Prop :=
+    @Quotient.lift₂ _ _ Prop setoid setoid
+      (fun a b => a < b ∧ ¬ collapse_equiv A h_mcs h_discrete a b)
+      (by
+        intro a₁ b₁ a₂ b₂ ha hb; ext; constructor
+        · rintro ⟨h_lt, h_ne⟩
+          exact ⟨collapse_class_sep A h_mcs h_discrete a₁ b₁ a₂ b₂ ha hb h_ne h_lt,
+                 fun h => h_ne (collapse_equiv_trans A h_mcs h_discrete a₁ a₂ b₁
+                   ha (collapse_equiv_trans A h_mcs h_discrete a₂ b₂ b₁ h
+                     (collapse_equiv_symm A h_mcs h_discrete b₁ b₂ hb)))⟩
+        · rintro ⟨h_lt, h_ne⟩
+          exact ⟨collapse_class_sep A h_mcs h_discrete a₂ b₂ a₁ b₁
+                   (collapse_equiv_symm A h_mcs h_discrete a₁ a₂ ha)
+                   (collapse_equiv_symm A h_mcs h_discrete b₁ b₂ hb) h_ne h_lt,
+                 fun h => h_ne (collapse_equiv_trans A h_mcs h_discrete a₂ a₁ b₂
+                   (collapse_equiv_symm A h_mcs h_discrete a₁ a₂ ha)
+                   (collapse_equiv_trans A h_mcs h_discrete a₁ b₁ b₂ h hb))⟩)
+  -- Trichotomy on the quotient
+  have h_tri : ∀ (a b : CollapseClass A h_mcs h_discrete),
+      lt_fn a b ∨ a = b ∨ lt_fn b a :=
+    Quotient.ind₂ (fun a b => by
+      rcases lt_trichotomy a b with h | h | h
+      · rcases Classical.em (collapse_equiv A h_mcs h_discrete a b) with hab | hab
+        · exact Or.inr (Or.inl (Quotient.sound hab))
+        · exact Or.inl ⟨h, hab⟩
+      · exact Or.inr (Or.inl (by subst h; rfl))
+      · rcases Classical.em (collapse_equiv A h_mcs h_discrete b a) with hba | hba
+        · exact Or.inr (Or.inl (Quotient.sound hba).symm)
+        · exact Or.inr (Or.inr ⟨h, hba⟩))
+  -- Irreflexivity
+  have h_irrefl : ∀ (a : CollapseClass A h_mcs h_discrete), ¬ lt_fn a a :=
+    Quotient.ind (fun a ⟨h, _⟩ => lt_irrefl a h)
+  -- Transitivity
+  have h_trans : ∀ (a b c : CollapseClass A h_mcs h_discrete),
+      lt_fn a b → lt_fn b c → lt_fn a c := by
+    intro a b c
+    exact Quotient.inductionOn₃ a b c (fun _ _ _ hab hbc =>
+      collapse_lt_trans A h_mcs h_discrete hab.1 hab.2 hbc.1 hbc.2)
+  -- Build Preorder → PartialOrder → LinearOrder
+  letI : LT (CollapseClass A h_mcs h_discrete) := ⟨lt_fn⟩
+  letI : LE (CollapseClass A h_mcs h_discrete) := ⟨fun a b => a = b ∨ lt_fn a b⟩
+  letI : Preorder (CollapseClass A h_mcs h_discrete) :=
+  { le_refl := fun _ => Or.inl rfl
+    le_trans := by
+      intro a b c hab hbc
+      rcases hab with rfl | hab; exact hbc
+      rcases hbc with rfl | hbc; exact Or.inr hab
+      exact Or.inr (h_trans a b c hab hbc)
+    lt_iff_le_not_ge := by
+      intro a b; constructor
+      · intro hab
+        refine ⟨Or.inr hab, ?_⟩
+        intro hba
+        rcases hba with rfl | hba
+        · exact h_irrefl _ hab
+        · exact h_irrefl _ (h_trans _ _ _ hab hba)
+      · intro ⟨hab, hba⟩
+        rcases hab with rfl | hab
+        · exact absurd (Or.inl rfl) hba
+        · exact hab }
+  letI : PartialOrder (CollapseClass A h_mcs h_discrete) :=
+  { le_antisymm := by
+      intro a b hab hba
+      rcases hab with rfl | hab; rfl
+      rcases hba with rfl | hba; rfl
+      exact absurd (h_trans a b a hab hba) (h_irrefl a) }
+  exact
+  { le_total := by
+      intro a b
+      rcases h_tri a b with h | h | h
+      · exact Or.inl (Or.inr h)
+      · exact Or.inl (Or.inl h)
+      · exact Or.inr (Or.inr h)
+    toDecidableLE := fun a b => Classical.dec (a ≤ b) }
 
-/--
-`SuccOrder` on `CollapseClass`. The successor of an equivalence class `[a]`
-is the class of `limitDomSubtype_pred`'s inverse applied to the accumulation
-point of `a`'s orbit. Concretely, if `a` is the base of an omega-chain
-`a, succ(a), succ²(a), ...` converging to `c`, the next class starts at `c`.
+/-! ### Direct Embedding: ℤ ↪ LimitDomSubtype
 
-Since we don't have a constructive handle on the accumulation point, we use
-`limitDomSubtype_pred` dually: the successor class of `[a]` is defined as
-the class of any element `b` such that `a < b` and `a ≁ b`, with `b` chosen
-to be the smallest such. This is the element whose predecessor's orbit is `[a]`.
+Rather than proving the full quotient order infrastructure on `CollapseClass`
+(which requires establishing that succ-orbits are bounded — a property deep in
+the omega-chain construction), we take a simpler approach: embed ℤ directly into
+`LimitDomSubtype` using `NoMaxOrder` / `NoMinOrder` to pick witnesses.
+
+The key observation: `forward_G` / `backward_H` hold for ANY ordered pair of
+domain points (`limit_forward_G` / `limit_backward_H`), regardless of equivalence
+class. So we only need a strictly increasing map `ℤ → LimitDomSubtype`, which
+the existing `NoMaxOrder` / `NoMinOrder` instances provide via iterated choice.
+
+The collapse equivalence infrastructure (above) is preserved for potential future
+use in proving finer structural properties (e.g., Until/Since coherence on ℤ
+for task 122).
 -/
-noncomputable instance collapseClass_succOrder (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    @SuccOrder (CollapseClass A h_mcs h_discrete)
-      (collapseClass_linearOrder A h_mcs h_discrete).toPreorder := by
-  sorry
 
 /--
-`PredOrder` on `CollapseClass`.
+Forward embedding: a strictly increasing sequence of `LimitDomSubtype` elements
+starting from `⟨0, zero_mem⟩` and going upward. Defined by iterated choice using
+`NoMaxOrder`.
 -/
-noncomputable instance collapseClass_predOrder (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    @PredOrder (CollapseClass A h_mcs h_discrete)
-      (collapseClass_linearOrder A h_mcs h_discrete).toPreorder := by
-  sorry
+noncomputable def embed_forward (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    ℕ → LimitDomSubtype A h_mcs
+  | 0 => ⟨0, zero_mem_limit_dom A h_mcs⟩
+  | n + 1 => (exists_gt (embed_forward A h_mcs n)).choose
+
+private theorem embed_forward_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    embed_forward A h_mcs 0 = ⟨0, zero_mem_limit_dom A h_mcs⟩ := rfl
+
+private theorem embed_forward_lt_succ (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (n : ℕ) : embed_forward A h_mcs n < embed_forward A h_mcs (n + 1) :=
+  (exists_gt (embed_forward A h_mcs n)).choose_spec
+
+private theorem embed_forward_strictMono (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    StrictMono (embed_forward A h_mcs) :=
+  strictMono_nat_of_lt_succ (embed_forward_lt_succ A h_mcs)
 
 /--
-`IsSuccArchimedean` on `CollapseClass`.
+Backward embedding: a strictly decreasing sequence starting from `⟨0, zero_mem⟩`
+and going downward. Defined by iterated choice using `NoMinOrder`.
 -/
-noncomputable instance collapseClass_isSuccArchimedean (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    @IsSuccArchimedean (CollapseClass A h_mcs h_discrete)
-      (collapseClass_linearOrder A h_mcs h_discrete).toPreorder
-      (@collapseClass_succOrder A h_mcs h_discrete) := by
-  sorry
+noncomputable def embed_backward (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    ℕ → LimitDomSubtype A h_mcs
+  | 0 => ⟨0, zero_mem_limit_dom A h_mcs⟩
+  | n + 1 => (exists_lt (embed_backward A h_mcs n)).choose
+
+private theorem embed_backward_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    embed_backward A h_mcs 0 = ⟨0, zero_mem_limit_dom A h_mcs⟩ := rfl
+
+private theorem embed_backward_succ_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (n : ℕ) : embed_backward A h_mcs (n + 1) < embed_backward A h_mcs n :=
+  (exists_lt (embed_backward A h_mcs n)).choose_spec
+
+private theorem embed_backward_strictAnti (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    StrictAnti (embed_backward A h_mcs) := by
+  intro m n hmn
+  induction hmn with
+  | refl => exact embed_backward_succ_lt A h_mcs m
+  | step h ih => exact lt_trans (embed_backward_succ_lt A h_mcs _) ih
 
 /--
-`NoMaxOrder` on `CollapseClass`.
+Combined embedding `ℤ → LimitDomSubtype`:
+- Non-negative integers use `embed_forward`
+- Negative integers use `embed_backward` (on the absolute value)
 -/
-instance collapseClass_noMaxOrder (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    @NoMaxOrder (CollapseClass A h_mcs h_discrete)
-      (collapseClass_linearOrder A h_mcs h_discrete).toLT := by
-  exact sorry
+noncomputable def discrete_embed (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    ℤ → LimitDomSubtype A h_mcs :=
+  fun n =>
+    if 0 ≤ n then
+      embed_forward A h_mcs n.toNat
+    else
+      embed_backward A h_mcs ((-n).toNat)
+
+private theorem discrete_embed_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+    discrete_embed A h_mcs 0 = ⟨0, zero_mem_limit_dom A h_mcs⟩ := by
+  simp [discrete_embed, embed_forward]
 
 /--
-`NoMinOrder` on `CollapseClass`.
+Helper: `embed_backward` at positive indices is strictly below `⟨0, zero_mem⟩`.
 -/
-instance collapseClass_noMinOrder (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    @NoMinOrder (CollapseClass A h_mcs h_discrete)
-      (collapseClass_linearOrder A h_mcs h_discrete).toLT := by
-  exact sorry
+private theorem embed_backward_pos_lt_zero (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A) (n : ℕ) (hn : 0 < n) :
+    embed_backward A h_mcs n < ⟨0, zero_mem_limit_dom A h_mcs⟩ := by
+  have := embed_backward_strictAnti A h_mcs hn
+  rwa [embed_backward_zero] at this
 
 /--
-`Nonempty` on `CollapseClass`.
+The combined embedding is strictly increasing.
 -/
-instance collapseClass_nonempty (A : Set Formula)
-    (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    Nonempty (CollapseClass A h_mcs h_discrete) :=
-  ⟨Quotient.mk _ ⟨0, zero_mem_limit_dom A h_mcs⟩⟩
+private theorem discrete_embed_strictMono (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A) :
+    StrictMono (discrete_embed A h_mcs) := by
+  intro a b hab
+  simp only [discrete_embed]
+  by_cases ha : 0 ≤ a <;> by_cases hb : 0 ≤ b
+  · -- Both non-negative: use embed_forward_strictMono
+    simp only [ha, hb, ite_true]
+    exact embed_forward_strictMono A h_mcs (by omega)
+  · -- a ≥ 0, b < 0: impossible since a < b
+    omega
+  · -- a < 0, b ≥ 0: backward(|a|) < 0 ≤ forward(|b|)
+    simp only [ha, hb, ite_true, ite_false]
+    push_neg at ha
+    have h_back_lt : embed_backward A h_mcs ((-a).toNat) <
+        ⟨(0 : Rat), zero_mem_limit_dom A h_mcs⟩ :=
+      embed_backward_pos_lt_zero A h_mcs _ (by omega)
+    have h_fwd_ge : ⟨(0 : Rat), zero_mem_limit_dom A h_mcs⟩ ≤
+        embed_forward A h_mcs b.toNat := by
+      rw [← embed_forward_zero]
+      exact embed_forward_strictMono A h_mcs |>.monotone (by omega)
+    exact lt_of_lt_of_le h_back_lt h_fwd_ge
+  · -- Both negative: use embed_backward_strictAnti
+    simp only [ha, hb, ite_false]
+    push_neg at ha hb
+    exact embed_backward_strictAnti A h_mcs (by omega)
 
 /--
-Z-isomorphism for `CollapseClass`.
--/
-noncomputable def collapse_iso (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    CollapseClass A h_mcs h_discrete ≃o ℤ :=
-  @orderIsoIntOfLinearSuccPredArch _ (collapseClass_linearOrder A h_mcs h_discrete)
-    (collapseClass_succOrder A h_mcs h_discrete) (collapseClass_predOrder A h_mcs h_discrete)
-    (collapseClass_isSuccArchimedean A h_mcs h_discrete)
-    (collapseClass_noMaxOrder A h_mcs h_discrete)
-    (collapseClass_noMinOrder A h_mcs h_discrete)
-    (collapseClass_nonempty A h_mcs h_discrete)
-
-/--
-Collapse map: `LimitDomSubtype → ℤ`. Composes the quotient map with the
-Z-isomorphism of `CollapseClass`.
--/
-noncomputable def collapse_map (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    LimitDomSubtype A h_mcs → ℤ :=
-  fun a => (collapse_iso A h_mcs h_discrete) (Quotient.mk _ a)
-
--- Note: limit_f is NOT constant on collapse orbits -- different points in
--- the same orbit can have different MCS's. We pick a canonical representative
--- per class via Quotient.out.
-
-/--
-MCS assignment via the collapse (discrete case). For each integer `n`,
-pick the representative from `CollapseClass` via the iso inverse, then use
-`Quotient.out` to get a `LimitDomSubtype` element and evaluate `limit_f`.
+MCS assignment via the direct embedding (discrete case). For each integer `n`,
+evaluate `limit_f` at the embedded domain point.
 -/
 noncomputable def discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    (_h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     ℤ → Set Formula :=
-  fun n =>
-    let cls := (collapse_iso A h_mcs h_discrete).symm n
-    let rep := @Quotient.out _ (collapse_setoid A h_mcs h_discrete) cls
-    limit_f A h_mcs rep.val
+  fun n => limit_f A h_mcs (discrete_embed A h_mcs n).val
 
-/-- The integer corresponding to the origin `0 ∈ limit_dom` (discrete case). -/
-noncomputable def discrete_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    ℤ :=
-  collapse_map A h_mcs h_discrete ⟨0, zero_mem_limit_dom A h_mcs⟩
+/-- The origin integer in the discrete case is simply `0 : ℤ`. -/
+noncomputable def discrete_zero (_A : Set Formula) (_h_mcs : SetMaximalConsistent _A)
+    (_h_discrete : ∀ x ∈ limit_dom _A _h_mcs, next_top ∈ limit_f _A _h_mcs x) :
+    ℤ := 0
 
 /-- `discrete_f` at `discrete_zero` equals A (the root MCS). -/
 theorem discrete_f_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     discrete_f A h_mcs h_discrete (discrete_zero A h_mcs h_discrete) = A := by
-  sorry
+  simp only [discrete_f, discrete_zero, discrete_embed_zero]
+  exact limit_f_zero A h_mcs
 
 /-- Every integer maps to an MCS via `discrete_f`. -/
 theorem discrete_f_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) : SetMaximalConsistent (discrete_f A h_mcs h_discrete n) := by
-  unfold discrete_f
-  exact limit_c0 A h_mcs _
-    (@Quotient.out _ (collapse_setoid A h_mcs h_discrete)
-      ((collapse_iso A h_mcs h_discrete).symm n)).property
+  exact limit_c0 A h_mcs _ (discrete_embed A h_mcs n).property
 
 /--
-FMCS on ℤ (discrete case): chronicle coherence properties transported
-through the collapse map from `LimitDomSubtype` to ℤ.
+FMCS on ℤ (discrete case): chronicle coherence properties transported through
+the direct embedding from `LimitDomSubtype` to ℤ.
+
+`forward_G` follows from `limit_forward_G` since the embedding is strictly
+increasing: `t < t'` implies `embed(t) < embed(t')`, so `G(φ) ∈ f(embed(t))`
+and `embed(t) < embed(t')` give `φ ∈ f(embed(t'))`.
+
+`backward_H` follows similarly from `limit_backward_H`.
 -/
 noncomputable def discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
@@ -1551,11 +1666,17 @@ noncomputable def discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent 
   is_mcs := discrete_f_is_mcs A h_mcs h_discrete
   forward_G := by
     intro t t' φ h_lt h_G
-    -- The representatives for t and t' satisfy rep(t) < rep(t') in LimitDomSubtype
-    -- (since the collapse is order-preserving and different classes are separated).
-    -- Apply limit_forward_G through the representatives.
-    sorry
+    have h_embed_lt := discrete_embed_strictMono A h_mcs h_lt
+    exact limit_forward_G A h_mcs
+      (discrete_embed A h_mcs t).val (discrete_embed A h_mcs t').val
+      (discrete_embed A h_mcs t).property (discrete_embed A h_mcs t').property
+      h_embed_lt φ h_G
   backward_H := by
-    sorry
+    intro t t' φ h_lt h_H
+    have h_embed_lt := discrete_embed_strictMono A h_mcs h_lt
+    exact limit_backward_H A h_mcs
+      (discrete_embed A h_mcs t).val (discrete_embed A h_mcs t').val
+      (discrete_embed A h_mcs t).property (discrete_embed A h_mcs t').property
+      h_embed_lt φ h_H
 
 end Bimodal.Metalogic.BXCanonical.Chronicle
