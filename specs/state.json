@@ -513,7 +513,7 @@
     {
       "project_number": 122,
       "project_name": "discrete_bfmcs_countermodel",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "description": "Build discrete BFMCS on Z and complete dd_countermodel_chronicle_nondense_sorry. Mirror the dense case pattern: use discrete_fmcs (already exists) to build a BFMCS Int with restricted coherence properties (temporal_coherence, backward_until_coherence, forward_until_coherence), then wire into parametric representation for the countermodel. Located at ChronicleToCountermodel.lean:836.",
@@ -521,10 +521,17 @@
         123
       ],
       "created": "2026-05-11T00:45:00Z",
-      "last_updated": "2026-05-11T16:59:19Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "session_id": "sess_1778518750_c8b856"
+      "last_updated": "2026-05-11T17:11:05Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/122_build_discrete_bfmcs_and_complete_countermodel/reports/01_discrete-bfmcs-research.md",
+          "type": "research",
+          "summary": "Discrete BFMCS research: sorry analysis, dense pattern, mixed case problem, recommended approach"
+        }
+      ],
+      "session_id": "sess_1778518750_c8b856",
+      "researched": "2026-05-11T17:11:05Z"
     }
   ],
   "next_project_number": 125,
