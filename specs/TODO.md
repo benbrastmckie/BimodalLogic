@@ -44,7 +44,7 @@ technical_debt:
 
 ### 3. Cleanup / Deferred
 
-- **124** [PLANNING] — Remove TF axiom, derive from MF (cleanup)
+- **124** [PLANNED] — Remove TF axiom, derive from MF (cleanup)
 - **116** [PLANNING] — Redefine G/H/F/P in terms of U/S (nice-to-have)
 - **115** [RESEARCHED] — Remove A4a, simplify BX2 (cleanup)
 - **112** [RESEARCHED] — Literature study (reference)
@@ -80,9 +80,10 @@ technical_debt:
 
 ### 124. Remove TF axiom and derive from MF
 - **Effort**: 5-10 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Research**: [specs/124_remove_tf_axiom_derive_from_mf/reports/01_tf-derivation-research.md]
+- **Plan**: [124_remove_tf_axiom_derive_from_mf/plans/01_remove-tf-axiom.md]
 
 **Description**: Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.
 
