@@ -6,6 +6,50 @@
   },
   "active_projects": [
     {
+      "project_number": 123,
+      "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
+      "dependencies": [],
+      "created": "2026-05-11T12:31:32Z",
+      "last_updated": "2026-05-11T12:31:32Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_team-research-reynolds.md",
+          "type": "research",
+          "summary": "Reynolds 1994 analysis and Icc_finite approaches (from task 121 round 2)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Skip C5 for ξ=⊥ approach analysis"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Accumulation analysis — which formulas cause infinite chains"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-c-findings.md",
+          "type": "research",
+          "summary": "Alternative fix strategies ranked"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-d-findings.md",
+          "type": "research",
+          "summary": "Downstream blast radius analysis"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_blocker-analysis.md",
+          "type": "research",
+          "summary": "Blocker analysis — why Icc_finite is false for current construction"
+        }
+      ]
+    },
+    {
       "project_number": 116,
       "project_name": "redefine_ghfp_via_until_since",
       "status": "not_started",
@@ -543,7 +587,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 123,
+  "next_project_number": 124,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

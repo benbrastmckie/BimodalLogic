@@ -1,5 +1,5 @@
 ---
-next_project_number: 123
+next_project_number: 124
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -66,6 +66,14 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
+- **Effort**: 15-25 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+
+**Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify `eliminate_potential_counterexample` in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust `EliminationResult.c5_forward_witness` to allow vacuous satisfaction, update `omega_chain_c5_witness` and `limit_satisfies_c5_strong` in ChronicleConstruction.lean. Then prove `limitDomSubtype_Icc_finite` (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).
 
 ### 122. Build discrete BFMCS on ℤ and complete discrete countermodel
 - **Effort**: 8-15 hours
