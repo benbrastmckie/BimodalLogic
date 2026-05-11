@@ -1047,119 +1047,502 @@ theorem limitDomSubtype_pred_lt (A : Set Formula) (h_mcs : SetMaximalConsistent 
   (limitDomSubtype_le_pred_iff A h_mcs h_discrete
     (limitDomSubtype_pred A h_mcs h_discrete b) b).mp le_rfl
 
-/--
-The closed interval `[a, b]` in `LimitDomSubtype` is finite. In the discrete case,
-limit_dom inherits a discrete structure where each point has an immediate successor
-and predecessor with no domain points between. Combined with the Prior-UZ axiom
-(which prevents indefinite accumulation of new domain points in bounded intervals),
-any closed interval of the limit domain contains only finitely many points.
+/-! ## Collapse-Based Discrete Pipeline
 
-This is the key finiteness lemma enabling the IsSuccArchimedean proof.
+When U(T,bot) is present in all domain MCS's, the limit domain has an immediate
+successor for each point, but omega-chains (x, succ(x), succ^2(x), ...) converge
+to accumulation points, making `Icc` intervals infinite. The standard
+`IsSuccArchimedean -> orderIsoIntOfLinearSuccPredArch` pipeline therefore fails.
+
+The collapse approach defines an equivalence relation on `LimitDomSubtype` by
+succ-reachability: two points are equivalent iff one is reachable from the other
+by finitely many applications of `limitDomSubtype_succ`. Each equivalence class
+is a succ-orbit (an omega-chain). The quotient `CollapseClass` is a discrete
+linear order isomorphic to Z, and the FMCS on Z is defined by choosing
+representatives from each equivalence class.
+
+This bypasses `IsSuccArchimedean` on `LimitDomSubtype` entirely.
 -/
-private lemma limitDomSubtype_Icc_finite (A : Set Formula)
+
+/--
+Succ-reachability relation: `a` and `b` are collapse-equivalent iff one is
+reachable from the other by finitely many applications of `limitDomSubtype_succ`.
+Each equivalence class is one succ-orbit (omega-chain).
+-/
+def collapse_equiv (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs) : Prop :=
+  ∃ n : ℕ, (limitDomSubtype_succ A h_mcs h_discrete)^[n] a = b ∨
+            (limitDomSubtype_succ A h_mcs h_discrete)^[n] b = a
+
+/--
+Succ-reachability is reflexive: `succ^[0] a = a`.
+-/
+theorem collapse_equiv_refl (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a : LimitDomSubtype A h_mcs) :
+    collapse_equiv A h_mcs h_discrete a a :=
+  ⟨0, Or.inl rfl⟩
+
+/--
+Succ-reachability is symmetric: by swapping the disjunction.
+-/
+theorem collapse_equiv_symm (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs)
+    (h : collapse_equiv A h_mcs h_discrete a b) :
+    collapse_equiv A h_mcs h_discrete b a := by
+  obtain ⟨n, h_or⟩ := h
+  exact ⟨n, h_or.symm⟩
+
+/--
+The succ function is strictly monotone: `a < limitDomSubtype_succ a`.
+-/
+private theorem limitDomSubtype_succ_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a : LimitDomSubtype A h_mcs) :
+    a < limitDomSubtype_succ A h_mcs h_discrete a :=
+  (limitDomSubtype_succ_le_iff A h_mcs h_discrete a
+    (limitDomSubtype_succ A h_mcs h_discrete a)).mp le_rfl
+
+/--
+Succ iterates are strictly increasing: `succ^[n] a < succ^[n+1] a`.
+-/
+private theorem limitDomSubtype_succ_iter_lt (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a : LimitDomSubtype A h_mcs) (n : ℕ) :
+    (limitDomSubtype_succ A h_mcs h_discrete)^[n] a <
+      (limitDomSubtype_succ A h_mcs h_discrete)^[n + 1] a := by
+  rw [Function.iterate_succ', Function.comp_apply]
+  exact limitDomSubtype_succ_lt A h_mcs h_discrete _
+
+/--
+Succ iterates are monotone: `n ≤ m → succ^[n] a ≤ succ^[m] a`.
+-/
+private theorem limitDomSubtype_succ_iter_mono (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a : LimitDomSubtype A h_mcs) {n m : ℕ} (h : n ≤ m) :
+    (limitDomSubtype_succ A h_mcs h_discrete)^[n] a ≤
+      (limitDomSubtype_succ A h_mcs h_discrete)^[m] a := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le h
+  clear h
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [show n + (k + 1) = n + k + 1 from by omega]
+    exact le_of_lt (lt_of_le_of_lt ih
+      (limitDomSubtype_succ_iter_lt A h_mcs h_discrete a _))
+
+/--
+Succ iterates are strictly monotone: `n < m → succ^[n] a < succ^[m] a`.
+-/
+private theorem limitDomSubtype_succ_iter_strictMono (A : Set Formula)
     (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
-    (a b : LimitDomSubtype A h_mcs) (hab : a ≤ b) :
-    Set.Finite {x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := by
+    (a : LimitDomSubtype A h_mcs) {n m : ℕ} (h : n < m) :
+    (limitDomSubtype_succ A h_mcs h_discrete)^[n] a <
+      (limitDomSubtype_succ A h_mcs h_discrete)^[m] a := by
+  exact lt_of_lt_of_le
+    (limitDomSubtype_succ_iter_lt A h_mcs h_discrete a n)
+    (limitDomSubtype_succ_iter_mono A h_mcs h_discrete a (by omega))
+
+/--
+Succ iterates are injective: `succ^[n] a = succ^[m] a → n = m`.
+-/
+private theorem limitDomSubtype_succ_iter_injective (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a : LimitDomSubtype A h_mcs) {n m : ℕ}
+    (h : (limitDomSubtype_succ A h_mcs h_discrete)^[n] a =
+         (limitDomSubtype_succ A h_mcs h_discrete)^[m] a) :
+    n = m := by
+  rcases lt_trichotomy n m with h_lt | rfl | h_gt
+  · exact absurd h (ne_of_lt (limitDomSubtype_succ_iter_strictMono A h_mcs h_discrete a h_lt))
+  · rfl
+  · exact absurd h.symm (ne_of_lt (limitDomSubtype_succ_iter_strictMono A h_mcs h_discrete a h_gt))
+
+/--
+Succ-reachability is transitive. The key argument uses injectivity of succ
+iterates to reduce the composite reachability to a single direction.
+
+If `succ^[n] a = b` and `succ^[m] b = c`, then `succ^[n+m] a = c`.
+If `succ^[n] a = b` and `succ^[m] c = b`, then either `a` reaches `c` or
+`c` reaches `a` (by comparing n and m, using injectivity).
+-/
+theorem collapse_equiv_trans (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b c : LimitDomSubtype A h_mcs)
+    (hab : collapse_equiv A h_mcs h_discrete a b)
+    (hbc : collapse_equiv A h_mcs h_discrete b c) :
+    collapse_equiv A h_mcs h_discrete a c := by
+  obtain ⟨n, hn⟩ := hab
+  obtain ⟨m, hm⟩ := hbc
+  -- Abbreviate the succ function
+  set s := limitDomSubtype_succ A h_mcs h_discrete with hs_def
+  -- Succ is injective
+  have h_s_inj : Function.Injective s := by
+    intro x y hxy
+    by_contra h_ne
+    rcases lt_or_gt_of_ne h_ne with h_lt | h_gt
+    · have h1 : s x ≤ y := (limitDomSubtype_succ_le_iff A h_mcs h_discrete x y).mpr h_lt
+      have h2 : y < s y := limitDomSubtype_succ_lt A h_mcs h_discrete y
+      have h3 : s x < s y := lt_of_le_of_lt h1 h2
+      exact absurd hxy (ne_of_lt h3)
+    · have h1 : s y ≤ x := (limitDomSubtype_succ_le_iff A h_mcs h_discrete y x).mpr h_gt
+      have h2 : x < s x := limitDomSubtype_succ_lt A h_mcs h_discrete x
+      have h3 : s y < s x := lt_of_le_of_lt h1 h2
+      exact absurd hxy.symm (ne_of_lt h3)
+  -- Helper: iteration composition
+  have iter_add : ∀ (p q : ℕ) (x : LimitDomSubtype A h_mcs),
+      s^[p + q] x = s^[p] (s^[q] x) := fun p q x =>
+    Function.iterate_add_apply s p q x
+  -- Helper: subtraction cancellation with iteration
+  have iter_sub_left (p q : ℕ) (x y : LimitDomSubtype A h_mcs) (h : q ≤ p)
+      (h_eq : s^[p] x = s^[q] y) : s^[p - q] x = y := by
+    have h1 : s^[q] (s^[p - q] x) = s^[q] y := by
+      rw [← iter_add]
+      have : q + (p - q) = p := by omega
+      rw [this]; exact h_eq
+    exact (h_s_inj.iterate q) h1
+  rcases hn with hn_ab | hn_ba <;> rcases hm with hm_bc | hm_cb
+  · -- s^[n] a = b, s^[m] b = c => s^[m+n] a = c
+    exact ⟨m + n, Or.inl (show s^[m + n] a = c by rw [iter_add, hn_ab, hm_bc])⟩
+  · -- s^[n] a = b, s^[m] c = b => s^[n] a = s^[m] c
+    have h_eq : s^[n] a = s^[m] c := by rw [hn_ab, hm_cb]
+    rcases le_or_lt m n with h | h
+    · exact ⟨n - m, Or.inl (iter_sub_left n m a c h h_eq)⟩
+    · exact ⟨m - n, Or.inr (iter_sub_left m n c a h.le h_eq.symm)⟩
+  · -- s^[n] b = a, s^[m] b = c
+    -- s^[n] b = a and s^[m] b = c. Both are iterates from b.
+    rcases le_or_lt n m with h | h
+    · -- n ≤ m: s^[m] b = s^[n + (m-n)] b = s^[n](s^[m-n] b), and s^[n] b = a
+      -- So s^[m-n] a = ... wait, we need to be careful with directions.
+      -- s^[n](s^[m-n] b) = s^[m] b = c, and s^[n] b = a
+      -- By injectivity: we want to relate a and c. Actually:
+      -- s^[m-n](s^[n] b) = s^[m] b = c, so s^[m-n] a = c
+      have h_eq : m - n + n = m := by omega
+      have : s^[m - n] (s^[n] b) = c := by
+        rw [← iter_add, h_eq]; exact hm_bc
+      exact ⟨m - n, Or.inl (by rwa [hn_ba] at this)⟩
+    · -- n > m: similarly s^[n-m] c = a
+      have h_eq : n - m + m = n := by omega
+      have : s^[n - m] (s^[m] b) = a := by
+        rw [← iter_add, h_eq]; exact hn_ba
+      exact ⟨n - m, Or.inr (by rwa [hm_bc] at this)⟩
+  · -- s^[n] b = a, s^[m] c = b => s^[m+n] c = a
+    refine ⟨m + n, Or.inr ?_⟩
+    show s^[m + n] c = a
+    have : s^[n + m] c = a := by rw [iter_add, hm_cb, hn_ba]
+    rwa [show n + m = m + n from by omega] at this
+
+/--
+The succ-reachability relation as a `Setoid`.
+-/
+noncomputable def collapse_setoid (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    Setoid (LimitDomSubtype A h_mcs) where
+  r := collapse_equiv A h_mcs h_discrete
+  iseqv := {
+    refl := collapse_equiv_refl A h_mcs h_discrete
+    symm := collapse_equiv_symm A h_mcs h_discrete _ _
+    trans := collapse_equiv_trans A h_mcs h_discrete _ _ _
+  }
+
+/--
+The quotient type of `LimitDomSubtype` under succ-reachability.
+Each element represents one succ-orbit (omega-chain or singleton).
+-/
+noncomputable def CollapseClass (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :=
+  Quotient (collapse_setoid A h_mcs h_discrete)
+
+/--
+Helper: the succ function maps equivalent elements to equivalent elements.
+If `succ^[n] a = b`, then `succ^[n+1] a = succ(b)`, so `a ~ succ(b)` via `n+1`.
+Similarly for the other direction.
+-/
+private theorem collapse_equiv_succ_congr (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs)
+    (h : collapse_equiv A h_mcs h_discrete a b) :
+    collapse_equiv A h_mcs h_discrete
+      (limitDomSubtype_succ A h_mcs h_discrete a)
+      (limitDomSubtype_succ A h_mcs h_discrete b) := by
+  obtain ⟨n, hn⟩ := h
+  set s := limitDomSubtype_succ A h_mcs h_discrete
+  rcases hn with hn_ab | hn_ba
+  · -- succ^[n] a = b, so succ^[n](succ a) = succ(succ^[n] a) = succ b
+    refine ⟨n, Or.inl ?_⟩
+    show s^[n] (s a) = s b
+    rw [(Function.Commute.iterate_self s n).eq a, hn_ab]
+  · -- succ^[n] b = a, so succ^[n](succ b) = succ(succ^[n] b) = succ a
+    refine ⟨n, Or.inr ?_⟩
+    show s^[n] (s b) = s a
+    rw [(Function.Commute.iterate_self s n).eq b, hn_ba]
+
+/--
+Orbit convexity: if `a ≤ b ≤ succ^[n] a`, then `b` is in the orbit of `a`.
+Specifically, `b = succ^[k] a` for some `k ≤ n`.
+
+Proof by strong induction on `n`. Base case `n = 0`: `a ≤ b ≤ a` forces `b = a`.
+Step: if `a ≤ b ≤ succ^[n+1] a`, either `b ≤ succ^[n] a` (use IH) or
+`succ^[n] a < b ≤ succ(succ^[n] a)`. In the latter case,
+`succ(succ^[n] a) ≤ b` (from `succ_le_iff` and `succ^[n] a < b`), so
+`b = succ^[n+1] a`.
+-/
+private theorem collapse_orbit_convex (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs) (n : ℕ)
+    (h_le : a ≤ b)
+    (h_ub : b ≤ (limitDomSubtype_succ A h_mcs h_discrete)^[n] a) :
+    ∃ k ≤ n, (limitDomSubtype_succ A h_mcs h_discrete)^[k] a = b := by
+  set s := limitDomSubtype_succ A h_mcs h_discrete
+  induction n with
+  | zero =>
+    simp only [Function.iterate_zero, id_eq] at h_ub
+    exact ⟨0, le_rfl, le_antisymm h_le h_ub⟩
+  | succ n ih =>
+    rcases le_or_lt b (s^[n] a) with h_le_n | h_gt_n
+    · obtain ⟨k, hkn, hk⟩ := ih h_le_n
+      exact ⟨k, Nat.le_succ_of_le hkn, hk⟩
+    · -- succ^[n] a < b ≤ succ^[n+1] a
+      -- succ(succ^[n] a) ≤ b (from succ_le_iff and succ^[n] a < b)
+      have h_succ_le : s (s^[n] a) ≤ b :=
+        (limitDomSubtype_succ_le_iff A h_mcs h_discrete (s^[n] a) b).mpr h_gt_n
+      -- Also b ≤ succ^[n+1] a = s(succ^[n] a)
+      have h_iter_succ : s^[n + 1] a = s (s^[n] a) :=
+        Function.iterate_succ_apply' s n a
+      rw [h_iter_succ] at h_ub
+      exact ⟨n + 1, le_rfl, by rw [h_iter_succ]; exact (le_antisymm h_ub h_succ_le).symm⟩
+
+/--
+If `a < b` and `a ≁ b`, then every succ-iterate of `a` is strictly less than `b`.
+This follows from orbit convexity: if `succ^[n] a ≥ b`, then `b` would be in
+the orbit of `a` (since `a ≤ b ≤ succ^[n] a`), contradicting `a ≁ b`.
+-/
+private theorem collapse_orbit_bounded (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs)
+    (h_lt : a < b) (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
+    (n : ℕ) :
+    (limitDomSubtype_succ A h_mcs h_discrete)^[n] a < b := by
+  by_contra h_not_lt
+  push_neg at h_not_lt
+  obtain ⟨k, _, hk⟩ := collapse_orbit_convex A h_mcs h_discrete a b n h_lt.le h_not_lt
+  exact h_ne ⟨k, Or.inl hk⟩
+
+/--
+If `a ≁ b`, then for the canonical representatives: if `succ^[p] x = a`,
+all iterates of x are also not equivalent to b. Contrapositively: if any
+iterate of x were equivalent to b, then x ~ b, hence a ~ b.
+-/
+private theorem collapse_not_equiv_of_orbit (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs)
+    (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
+    (n : ℕ) :
+    ¬ collapse_equiv A h_mcs h_discrete
+      ((limitDomSubtype_succ A h_mcs h_discrete)^[n] a) b := by
+  intro ⟨m, hm⟩
+  exact h_ne (collapse_equiv_trans A h_mcs h_discrete a
+    ((limitDomSubtype_succ A h_mcs h_discrete)^[n] a) b
+    ⟨n, Or.inl rfl⟩ ⟨m, hm⟩)
+
+/--
+The collapse equivalence classes are totally separated:
+if `a ≁ b` and `a < b`, then `a' < b'` for any `a' ~ a` and `b' ~ b`.
+-/
+private theorem collapse_class_sep (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs) (a' b' : LimitDomSubtype A h_mcs)
+    (ha : collapse_equiv A h_mcs h_discrete a a')
+    (hb : collapse_equiv A h_mcs h_discrete b b')
+    (h_ne : ¬ collapse_equiv A h_mcs h_discrete a b)
+    (h_lt : a < b) : a' < b' := by
+  set s := limitDomSubtype_succ A h_mcs h_discrete
+  -- Step 1: a' < b (all elements of [a] are < b)
+  have ha'_lt_b : a' < b := by
+    obtain ⟨p, hp⟩ := ha
+    rcases hp with hp_eq | hp_eq
+    · -- s^[p] a = a', so a' is a succ-iterate of a. Show all iterates < b.
+      exact hp_eq ▸ collapse_orbit_bounded A h_mcs h_discrete a b h_lt h_ne p
+    · -- s^[p] a' = a, so a' ≤ s^[p] a' = a < b
+      calc a' ≤ s^[p] a' :=
+            limitDomSubtype_succ_iter_mono A h_mcs h_discrete a' (Nat.zero_le p)
+        _ = a := hp_eq
+        _ < b := h_lt
+  -- Step 2: a' < b' using ha'_lt_b and the separation argument
+  -- If b' ≤ a', then b' < a' (since a' ≁ b'). Then b is a succ-iterate of b'
+  -- (or b' is a succ-iterate of b). If succ^q b = b', then b ≤ b' < a' -- but a' < b, contradiction.
+  -- If succ^q b' = b, then by collapse_orbit_bounded (b' < a', b' ≁ a'),
+  -- succ^q b' < a', so b < a'. But a' < b, contradiction.
+  have h_ne' : ¬ collapse_equiv A h_mcs h_discrete a' b' := by
+    intro h
+    exact h_ne (collapse_equiv_trans A h_mcs h_discrete a a' b
+      ha (collapse_equiv_trans A h_mcs h_discrete a' b' b h
+        (collapse_equiv_symm A h_mcs h_discrete b b' hb)))
+  by_contra h_not_lt'
+  push_neg at h_not_lt'
+  have h_b'_ne_a' : b' ≠ a' := fun h_eq => h_ne' (h_eq ▸ collapse_equiv_refl _ _ _ _)
+  have h_b'_lt_a' : b' < a' := lt_of_le_of_ne h_not_lt' h_b'_ne_a'
+  obtain ⟨q, hq⟩ := hb
+  rcases hq with hq_bb' | hq_b'b
+  · -- s^[q] b = b'. So b ≤ b' (succ iterates are monotone).
+    have h_b_le_b' : b ≤ b' := hq_bb' ▸
+      limitDomSubtype_succ_iter_mono A h_mcs h_discrete b (Nat.zero_le q)
+    exact absurd ha'_lt_b (not_lt.mpr (le_trans h_b_le_b' h_not_lt'))
+  · -- s^[q] b' = b. b' < a' and b' ≁ a'.
+    have h_ne_b'a' : ¬ collapse_equiv A h_mcs h_discrete b' a' :=
+      fun h => h_ne' (collapse_equiv_symm A h_mcs h_discrete b' a' h)
+    have h_iter_lt : s^[q] b' < a' :=
+      collapse_orbit_bounded A h_mcs h_discrete b' a' h_b'_lt_a' h_ne_b'a' q
+    have h_b_lt_a' : b < a' := hq_b'b ▸ h_iter_lt
+    exact absurd ha'_lt_b (not_lt.mpr h_b_lt_a'.le)
+
+/--
+`LinearOrder` instance on `CollapseClass`. The quotient of a linear order
+by a convex equivalence relation is linearly ordered.
+
+The LE relation is defined as `[a] ≤ [b] iff a ≤ b`; well-definedness follows
+from `collapse_class_sep` (different classes are totally separated).
+-/
+noncomputable instance collapseClass_linearOrder (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    LinearOrder (CollapseClass A h_mcs h_discrete) := by
+  exact sorry
+
+/--
+`SuccOrder` on `CollapseClass`. The successor of an equivalence class `[a]`
+is the class of `limitDomSubtype_pred`'s inverse applied to the accumulation
+point of `a`'s orbit. Concretely, if `a` is the base of an omega-chain
+`a, succ(a), succ²(a), ...` converging to `c`, the next class starts at `c`.
+
+Since we don't have a constructive handle on the accumulation point, we use
+`limitDomSubtype_pred` dually: the successor class of `[a]` is defined as
+the class of any element `b` such that `a < b` and `a ≁ b`, with `b` chosen
+to be the smallest such. This is the element whose predecessor's orbit is `[a]`.
+-/
+noncomputable instance collapseClass_succOrder (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    @SuccOrder (CollapseClass A h_mcs h_discrete)
+      (collapseClass_linearOrder A h_mcs h_discrete).toPreorder := by
   sorry
 
 /--
-`IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
-
-For `a ≤ b`, we show `∃ n, succ^[n] a = b` by contradiction: if no iterate of
-`succ` starting from `a` ever reaches `b`, then the function `n ↦ succ^[n] a`
-injects ℕ into the finite interval `[a, b]` of `LimitDomSubtype`, contradicting
-finiteness via pigeonhole.
+`PredOrder` on `CollapseClass`.
 -/
-noncomputable def limitDomSubtype_isSuccArchimedean (A : Set Formula)
+noncomputable instance collapseClass_predOrder (A : Set Formula)
     (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    @IsSuccArchimedean (LimitDomSubtype A h_mcs) _ (limitDomSubtype_succOrder A h_mcs h_discrete) := by
-  letI := limitDomSubtype_succOrder A h_mcs h_discrete
-  constructor
-  intro a b hab
-  rcases eq_or_lt_of_le hab with rfl | h_lt
-  · exact ⟨0, rfl⟩
-  · -- a < b. Proceed by contradiction: assume succ^[n] a ≠ b for all n.
-    by_contra h_not
-    push_neg at h_not
-    -- Every iterate stays strictly below b
-    have h_iter_lt : ∀ n, Order.succ^[n] a < b := by
-      intro n
-      induction n with
-      | zero => simpa using h_lt
-      | succ n ih =>
-        refine lt_of_le_of_ne ?_ (h_not _)
-        rw [Function.iterate_succ', Function.comp_apply]
-        exact Order.succ_le_of_lt ih
-    -- Every iterate is in the interval [a, b]
-    have h_mem : ∀ n, Order.succ^[n] a ∈ {x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := by
-      intro n
-      exact ⟨Order.le_succ_iterate n a, (h_iter_lt n).le⟩
-    -- The interval [a, b] is finite
-    have h_fin := limitDomSubtype_Icc_finite A h_mcs h_discrete a b hab
-    -- Map ℕ into the finite interval via succ iteration
-    haveI : Finite ↑{x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := h_fin.to_subtype
-    -- By pigeonhole, two distinct iterates must coincide
-    obtain ⟨n, m, hnm, h_eq⟩ : ∃ n m, n ≠ m ∧ Order.succ^[n] a = Order.succ^[m] a := by
-      let f : ℕ → {x : LimitDomSubtype A h_mcs | a ≤ x ∧ x ≤ b} := fun n => ⟨Order.succ^[n] a, h_mem n⟩
-      obtain ⟨n, m, hnm, hfnm⟩ := Finite.exists_ne_map_eq_of_infinite f
-      exact ⟨n, m, hnm, by simpa [f, Subtype.mk_eq_mk] using hfnm⟩
-    -- Equal iterates implies IsMax, but succ^[n] a < b, contradiction
-    have h_max : IsMax (Order.succ^[n] a) :=
-      Order.isMax_iterate_succ_of_eq_of_ne h_eq hnm
-    exact not_le.mpr (h_iter_lt n) (h_max (h_iter_lt n).le)
-
-/-! ### Z-Isomorphism and FMCS on Int -/
-
-/-! ### Z-Isomorphism and FMCS on Int -/
+    @PredOrder (CollapseClass A h_mcs h_discrete)
+      (collapseClass_linearOrder A h_mcs h_discrete).toPreorder := by
+  sorry
 
 /--
-Z-isomorphism: `LimitDomSubtype A h_mcs ≃o ℤ`, conditional on discreteness.
-
-Uses Mathlib's `orderIsoIntOfLinearSuccPredArch`, which requires `LinearOrder`,
-`SuccOrder`, `PredOrder`, `IsSuccArchimedean`, `NoMaxOrder`, `NoMinOrder`, and
-`Nonempty` — all available from the preceding constructions.
+`IsSuccArchimedean` on `CollapseClass`.
 -/
-noncomputable def discrete_iso (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+noncomputable instance collapseClass_isSuccArchimedean (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
-    LimitDomSubtype A h_mcs ≃o ℤ :=
-  letI := limitDomSubtype_succOrder A h_mcs h_discrete
-  letI := limitDomSubtype_predOrder A h_mcs h_discrete
-  letI := limitDomSubtype_isSuccArchimedean A h_mcs h_discrete
-  orderIsoIntOfLinearSuccPredArch
+    @IsSuccArchimedean (CollapseClass A h_mcs h_discrete)
+      (collapseClass_linearOrder A h_mcs h_discrete).toPreorder
+      (@collapseClass_succOrder A h_mcs h_discrete) := by
+  sorry
 
-/-- MCS assignment via the Z-isomorphism (discrete case). -/
+/--
+`NoMaxOrder` on `CollapseClass`.
+-/
+instance collapseClass_noMaxOrder (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    @NoMaxOrder (CollapseClass A h_mcs h_discrete)
+      (collapseClass_linearOrder A h_mcs h_discrete).toLT := by
+  exact sorry
+
+/--
+`NoMinOrder` on `CollapseClass`.
+-/
+instance collapseClass_noMinOrder (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    @NoMinOrder (CollapseClass A h_mcs h_discrete)
+      (collapseClass_linearOrder A h_mcs h_discrete).toLT := by
+  exact sorry
+
+/--
+`Nonempty` on `CollapseClass`.
+-/
+instance collapseClass_nonempty (A : Set Formula)
+    (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    Nonempty (CollapseClass A h_mcs h_discrete) :=
+  ⟨Quotient.mk _ ⟨0, zero_mem_limit_dom A h_mcs⟩⟩
+
+/--
+Z-isomorphism for `CollapseClass`.
+-/
+noncomputable def collapse_iso (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    CollapseClass A h_mcs h_discrete ≃o ℤ :=
+  @orderIsoIntOfLinearSuccPredArch _ (collapseClass_linearOrder A h_mcs h_discrete)
+    (collapseClass_succOrder A h_mcs h_discrete) (collapseClass_predOrder A h_mcs h_discrete)
+    (collapseClass_isSuccArchimedean A h_mcs h_discrete)
+    (collapseClass_noMaxOrder A h_mcs h_discrete)
+    (collapseClass_noMinOrder A h_mcs h_discrete)
+    (collapseClass_nonempty A h_mcs h_discrete)
+
+/--
+Collapse map: `LimitDomSubtype → ℤ`. Composes the quotient map with the
+Z-isomorphism of `CollapseClass`.
+-/
+noncomputable def collapse_map (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
+    LimitDomSubtype A h_mcs → ℤ :=
+  fun a => (collapse_iso A h_mcs h_discrete) (Quotient.mk _ a)
+
+-- Note: limit_f is NOT constant on collapse orbits -- different points in
+-- the same orbit can have different MCS's. We pick a canonical representative
+-- per class via Quotient.out.
+
+/--
+MCS assignment via the collapse (discrete case). For each integer `n`,
+pick the representative from `CollapseClass` via the iso inverse, then use
+`Quotient.out` to get a `LimitDomSubtype` element and evaluate `limit_f`.
+-/
 noncomputable def discrete_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     ℤ → Set Formula :=
-  fun n => limit_f A h_mcs ((discrete_iso A h_mcs h_discrete).symm n).val
+  fun n =>
+    let cls := (collapse_iso A h_mcs h_discrete).symm n
+    let rep := @Quotient.out _ (collapse_setoid A h_mcs h_discrete) cls
+    limit_f A h_mcs rep.val
 
 /-- The integer corresponding to the origin `0 ∈ limit_dom` (discrete case). -/
 noncomputable def discrete_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     ℤ :=
-  (discrete_iso A h_mcs h_discrete) ⟨0, zero_mem_limit_dom A h_mcs⟩
+  collapse_map A h_mcs h_discrete ⟨0, zero_mem_limit_dom A h_mcs⟩
 
 /-- `discrete_f` at `discrete_zero` equals A (the root MCS). -/
 theorem discrete_f_at_zero (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
     discrete_f A h_mcs h_discrete (discrete_zero A h_mcs h_discrete) = A := by
-  unfold discrete_f discrete_zero
-  simp [OrderIso.symm_apply_apply]
-  exact limit_f_zero A h_mcs
+  sorry
 
 /-- Every integer maps to an MCS via `discrete_f`. -/
 theorem discrete_f_is_mcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
     (n : ℤ) : SetMaximalConsistent (discrete_f A h_mcs h_discrete n) := by
   unfold discrete_f
-  exact limit_c0 A h_mcs _ ((discrete_iso A h_mcs h_discrete).symm n).property
+  exact limit_c0 A h_mcs _
+    (@Quotient.out _ (collapse_setoid A h_mcs h_discrete)
+      ((collapse_iso A h_mcs h_discrete).symm n)).property
 
 /--
-FMCS on ℤ (discrete case): the chronicle coherence properties `limit_forward_G`
-and `limit_backward_H` are transported through `discrete_iso.symm`, which is
-strictly monotone (as an OrderIso symm).
+FMCS on ℤ (discrete case): chronicle coherence properties transported
+through the collapse map from `LimitDomSubtype` to ℤ.
 -/
 noncomputable def discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x) :
@@ -1168,21 +1551,11 @@ noncomputable def discrete_fmcs (A : Set Formula) (h_mcs : SetMaximalConsistent 
   is_mcs := discrete_f_is_mcs A h_mcs h_discrete
   forward_G := by
     intro t t' φ h_lt h_G
-    have h_lt_dom := (discrete_iso A h_mcs h_discrete).symm.strictMono h_lt
-    exact limit_forward_G A h_mcs
-      ((discrete_iso A h_mcs h_discrete).symm t).val
-      ((discrete_iso A h_mcs h_discrete).symm t').val
-      ((discrete_iso A h_mcs h_discrete).symm t).property
-      ((discrete_iso A h_mcs h_discrete).symm t').property
-      h_lt_dom φ h_G
+    -- The representatives for t and t' satisfy rep(t) < rep(t') in LimitDomSubtype
+    -- (since the collapse is order-preserving and different classes are separated).
+    -- Apply limit_forward_G through the representatives.
+    sorry
   backward_H := by
-    intro t t' φ h_lt h_H
-    have h_lt_dom := (discrete_iso A h_mcs h_discrete).symm.strictMono h_lt
-    exact limit_backward_H A h_mcs
-      ((discrete_iso A h_mcs h_discrete).symm t).val
-      ((discrete_iso A h_mcs h_discrete).symm t').val
-      ((discrete_iso A h_mcs h_discrete).symm t).property
-      ((discrete_iso A h_mcs h_discrete).symm t').property
-      h_lt_dom φ h_H
+    sorry
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

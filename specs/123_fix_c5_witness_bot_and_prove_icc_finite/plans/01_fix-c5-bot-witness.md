@@ -83,7 +83,7 @@ Reports integrated in this revision:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Define the Collapse Equivalence and Quotient Map [NOT STARTED]
+### Phase 1: Define the Collapse Equivalence and Quotient Map [PARTIAL]
 
 **Goal:** Define an equivalence relation on `LimitDomSubtype` whose classes are the omega-chains, and a quotient map `collapse : LimitDomSubtype -> Quotient`. Prove the quotient is a discrete linear order isomorphic to Z.
 
