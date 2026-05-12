@@ -24,13 +24,13 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-12T04:07:12Z",
+      "last_updated": "2026-05-12T05:02:58Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -94,12 +94,12 @@
           "summary": "Team research: literature deep-dive on IsSuccArchimedean — stabilization argument analysis, markdown quality review (4 teammates)"
         },
         {
-          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/06_icc-finiteness-stabilization.md",
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/07_mcs-periodicity.md",
           "type": "plan",
-          "summary": "Plan v6: Icc finiteness via construction stabilization + MCS periodicity fallback"
+          "summary": "Plan v7: MCS periodicity for gap-at-L case"
         }
       ],
-      "session_id": "sess_1778558799_19b4df",
+      "session_id": "sess_1778561802_e9b5b7",
       "started": "2026-05-11T14:06:20Z",
       "completed": "2026-05-11T16:40:49Z",
       "archived": "2026-05-11T16:55:47Z",
