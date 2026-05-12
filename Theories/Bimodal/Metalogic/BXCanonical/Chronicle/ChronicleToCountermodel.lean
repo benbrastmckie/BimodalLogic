@@ -1610,38 +1610,209 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
         rw [Function.iterate_succ', Function.comp_apply, h_eq]
         exact limitDomSubtype_succ_pred A h_mcs h_discrete b
       exact absurd this (ne_of_lt (h_not_cofinal (n + 1)))
-    -- So s^[n](a) < pred(b) for all n. Apply the SAME argument with pred(b) instead of b.
-    -- This creates infinite descent: b → pred(b) → pred²(b) → ...
-    -- At each step, succ^[n](a) < pred^[m](b) for all n. And pred^[m](b) is strictly decreasing.
-    -- The sequence pred^[m](b).val (cast to ℝ) is strictly decreasing and bounded below.
-    -- Its infimum R ≥ L. If R = L: the "gap" between the succ-chain and pred-chain
-    -- closes in ℝ, allowing us to catch pred^[m](b) between consecutive succ-iterates.
+    -- Step 4: All orbit points are strictly below pb.
+    have h_lt_pb : ∀ n, s^[n] a < pb :=
+      fun n => lt_of_le_of_ne (h_le_pb n) (h_ne_pb n)
+    -- Step 5: Any limit_dom point c with a ≤ c and c.val < L is an orbit point.
+    -- Proof: f(n) → L, so eventually f(n) > c.val, giving c < s^[n](a).
+    -- By orbit convexity, c = s^[k](a).
+    have orbit_below_L : ∀ c : LimitDomSubtype A h_mcs,
+        a ≤ c → (c.val : ℝ) < L →
+        ∃ m, s^[m] a = c := by
+      intro c hac hcL
+      have : ∃ n₀, (c.val : ℝ) < f n₀ := by
+        by_contra h_all
+        push_neg at h_all
+        -- f n ≤ c.val for all n, but f → L and L > c.val. Contradiction.
+        have : L ≤ (c.val : ℝ) :=
+          le_of_tendsto_of_tendsto hL_tendsto tendsto_const_nhds
+            (Filter.Eventually.of_forall fun n => h_all n)
+        linarith
+      obtain ⟨n₀, hn₀⟩ := this
+      have hc_le : c ≤ s^[n₀] a := by
+        show c.val ≤ (s^[n₀] a).val
+        exact_mod_cast le_of_lt (Rat.cast_lt.mp hn₀)
+      exact (succ_orbit_convex A h_mcs h_discrete a c n₀ hac hc_le).imp
+        fun k ⟨_, hk⟩ => hk
+    -- Step 6: Define pred-chain g(k) = pred^[k](pb). Show all orbit points < g(k).
+    set p := limitDomSubtype_pred A h_mcs h_discrete with p_def
+    -- g(k) = p^[k](pb) is the k-th predecessor starting from pb
+    -- Key: ∀ k n, s^[n] a < p^[k] pb
+    -- Proved by induction on k:
+    --   Base: h_lt_pb says s^[n] a < pb = p^[0] pb. ✓
+    --   Step: if ∀ n, s^[n] a < p^[k] pb, then:
+    --     s^[n] a ≤ p(p^[k] pb) (by le_pred_iff)
+    --     s^[n] a ≠ p(p^[k] pb) (otherwise s^[n+1] a = succ(pred(...)) = p^[k] pb,
+    --       contradicting s^[n+1] a < p^[k] pb)
+    --     So s^[n] a < p^[k+1] pb. ✓
+    have h_lt_pred_chain : ∀ k n, s^[n] a < p^[k] pb := by
+      intro k
+      induction k with
+      | zero => simp only [Function.iterate_zero, id_eq]; exact h_lt_pb
+      | succ k ih =>
+        intro n
+        have h_le : s^[n] a ≤ p^[k + 1] pb := by
+          rw [Function.iterate_succ', Function.comp_apply]
+          exact (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ _).mpr (ih n)
+        have h_ne : s^[n] a ≠ p^[k + 1] pb := by
+          intro h_eq
+          rw [Function.iterate_succ', Function.comp_apply] at h_eq
+          have h_succ_eq : s^[n + 1] a = p^[k] pb := by
+            rw [Function.iterate_succ', Function.comp_apply, h_eq]
+            exact limitDomSubtype_succ_pred A h_mcs h_discrete (p^[k] pb)
+          exact absurd h_succ_eq (ne_of_lt (ih (n + 1)))
+        exact lt_of_le_of_ne h_le h_ne
+    -- Step 7: pred-chain values are strictly decreasing
+    have h_pred_chain_strict : ∀ k, (p^[k + 1] pb).val < (p^[k] pb).val := by
+      intro k
+      rw [Function.iterate_succ', Function.comp_apply]
+      exact limitDomSubtype_pred_lt A h_mcs h_discrete (p^[k] pb)
+    -- Step 8: All pred-chain values ≥ L (since orbit values → L and orbit < pred-chain)
+    have h_pred_chain_ge_L : ∀ k, L ≤ ((p^[k] pb).val : ℝ) := by
+      intro k
+      exact le_of_tendsto_of_tendsto hL_tendsto tendsto_const_nhds
+        (Filter.Eventually.of_forall fun n =>
+          Rat.cast_le.mpr (le_of_lt (h_lt_pred_chain k n)))
+    -- Step 9: Gap elimination via backward G truth lemma.
+    -- Key insight: the backward G truth lemma (if ψ ∈ limit_f(y) for ALL
+    -- y > x, then G(ψ) ∈ limit_f(x)) can be proved using limit_F_resolution
+    -- alone (no IsSuccArchimedean needed), breaking the circularity.
     --
-    -- Full argument: by induction/descent, showing the gap is eventually 0.
-    -- The detailed formalization uses the "first limit_dom ≥ L" argument from the docstring.
-    -- For now, we use the following cleaner argument:
+    -- Backward G truth lemma:
+    -- If ψ ∈ limit_f(y) for all y > x in limit_dom, then G(ψ) ∈ limit_f(x).
+    have backward_G : ∀ (ψ : Formula) (x : LimitDomSubtype A h_mcs),
+        (∀ y : LimitDomSubtype A h_mcs, x < y → ψ ∈ limit_f A h_mcs y.val) →
+        ψ.all_future ∈ limit_f A h_mcs x.val := by
+      intro ψ x h_all
+      by_contra h_not
+      have h_mcs_x := limit_c0 A h_mcs x.val x.property
+      -- ¬G(ψ) ∈ limit_f(x) by negation completeness
+      have h_neg : (ψ.all_future).neg ∈ limit_f A h_mcs x.val :=
+        (SetMaximalConsistent.negation_complete h_mcs_x ψ.all_future).resolve_left h_not
+      -- Build derivation: ⊢ ψ.neg.neg → ψ (double negation elimination)
+      have h_dne : DerivationTree [] (ψ.neg.neg.imp ψ) :=
+        Bimodal.Theorems.Propositional.double_negation ψ
+      -- Temporal necessitation: ⊢ G(ψ.neg.neg → ψ)
+      have h_G_dne : DerivationTree [] (Formula.all_future (ψ.neg.neg.imp ψ)) :=
+        DerivationTree.temporal_necessitation _ h_dne
+      -- K-distribution: ⊢ G(ψ.neg.neg → ψ) → (G(ψ.neg.neg) → G(ψ))
+      have h_dist : DerivationTree [] ((ψ.neg.neg.imp ψ).all_future.imp
+          (ψ.neg.neg.all_future.imp ψ.all_future)) :=
+        DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ.neg.neg ψ)
+      -- Modus ponens: ⊢ G(ψ.neg.neg) → G(ψ)
+      have h_G_impl : DerivationTree [] (ψ.neg.neg.all_future.imp ψ.all_future) :=
+        DerivationTree.modus_ponens [] _ _ h_dist h_G_dne
+      -- Contrapositive: ⊢ ¬G(ψ) → ¬G(ψ.neg.neg)
+      -- Note: ¬G(ψ.neg.neg) = (ψ.neg.neg.all_future).neg = F(ψ.neg)  (definitionally)
+      have h_contra : DerivationTree [] (ψ.all_future.neg.imp ψ.neg.neg.all_future.neg) := by
+        have h_cp := Bimodal.Theorems.TemporalDerived.contrapositive
+          ψ.neg.neg.all_future ψ.all_future
+        exact DerivationTree.modus_ponens [] _ _ h_cp h_G_impl
+      -- Apply in MCS: F(ψ.neg) ∈ limit_f(x)
+      -- F(ψ.neg) = ψ.neg.some_future = ψ.neg.neg.all_future.neg  (by definition)
+      have h_F_neg : Formula.some_future ψ.neg ∈ limit_f A h_mcs x.val := by
+        show ψ.neg.neg.all_future.neg ∈ limit_f A h_mcs x.val
+        exact SetMaximalConsistent.implication_property h_mcs_x
+          (theorem_in_mcs h_mcs_x h_contra) h_neg
+      -- By limit_F_resolution: ∃ y > x with ψ.neg ∈ limit_f(y)
+      obtain ⟨y, hy_dom, hxy, h_neg_y⟩ :=
+        limit_F_resolution A h_mcs x.val x.property ψ.neg h_F_neg
+      -- But ψ ∈ limit_f(y) by hypothesis (y > x in limit_dom)
+      have h_psi_y : ψ ∈ limit_f A h_mcs y :=
+        h_all ⟨y, hy_dom⟩ hxy
+      -- Contradiction: ψ and ψ.neg both in limit_f(y)
+      exact set_consistent_not_both (limit_c0 A h_mcs y hy_dom).1 ψ h_psi_y h_neg_y
+    -- Backward F: if φ ∈ limit_f(y) for some y > x, then F(φ) ∈ limit_f(x).
+    -- Proof: if G(¬φ) ∈ limit_f(x), forward_G gives ¬φ ∈ limit_f(y), contradicting φ.
+    -- So G(¬φ) ∉ limit_f(x), hence ¬G(¬φ) = F(φ) ∈ limit_f(x).
+    have backward_F : ∀ (φ : Formula) (x : LimitDomSubtype A h_mcs)
+        (y : LimitDomSubtype A h_mcs) (_ : x < y)
+        (_ : φ ∈ limit_f A h_mcs y.val),
+        Formula.some_future φ ∈ limit_f A h_mcs x.val := by
+      intro φ x y hxy hφy
+      have h_mcs_x := limit_c0 A h_mcs x.val x.property
+      -- F(φ) = φ.neg.all_future.neg (definitionally)
+      -- ¬G(¬φ) = (φ.neg.all_future).neg = φ.neg.all_future.neg = F(φ)
+      -- So it suffices to show G(φ.neg) ∉ limit_f(x)
+      by_contra h_not_F
+      -- ¬F(φ) ∈ limit_f(x), meaning G(φ.neg) ∈ limit_f(x)
+      -- show: G(φ.neg) = φ.neg.all_future ∈ limit_f(x)
+      have h_G_neg : φ.neg.all_future ∈ limit_f A h_mcs x.val := by
+        -- ¬(F(φ)) means ¬(φ.neg.all_future.neg), which is φ.neg.all_future.neg.neg
+        -- By negation_complete: either F(φ) or ¬F(φ) in MCS
+        -- ¬F(φ) in MCS. F(φ) = φ.neg.all_future.neg.
+        -- So φ.neg.all_future.neg ∉ limit_f(x), hence φ.neg.all_future ∈ limit_f(x)
+        -- (by negation_complete in reverse)
+        rcases SetMaximalConsistent.negation_complete h_mcs_x (φ.neg.all_future) with h | h
+        · exact h
+        · -- h : φ.neg.all_future.neg ∈ limit_f, but this IS F(φ)
+          exact absurd h h_not_F
+      -- By forward_G: φ.neg ∈ limit_f(y)
+      have h_neg_y := limit_forward_G A h_mcs x.val y.val x.property y.property hxy
+        φ.neg h_G_neg
+      -- Contradiction: φ and φ.neg both in limit_f(y)
+      exact set_consistent_not_both (limit_c0 A h_mcs y.val y.property).1 φ hφy h_neg_y
+    -- Step 9: Gap elimination (L ≤ pred(b).val).
     --
-    -- Since all limit_dom points in [a.val, L) are succ-iterates of a (proved by
-    -- contradiction: any such point is either a succ-iterate or between consecutive
-    -- ones, which is impossible), and since b is limit_dom with b.val ≥ L:
-    -- pred(b) is either a succ-iterate or ≥ L. But pred(b).val ≥ L (from h_case).
-    -- So pred(b) is limit_dom with pred(b).val ≥ L. pred(b) is NOT a succ-iterate
-    -- (since all succ-iterates are < pred(b)). So pred(b).val ≥ L.
+    -- The orbit {s^[n](a)} converges to L from below, the pred-chain
+    -- {pred^[k](pb)} forms a strictly decreasing sequence with values ≥ L.
+    -- All orbit points < all pred-chain points. The orbit and pred-chain
+    -- are succ/pred-closed respectively, forming disconnected components.
     --
-    -- Now consider pred(pred(b)). pred(pred(b)) < pred(b). Is pred(pred(b)).val ≥ L?
-    -- If yes: continue descent. If no: pred(pred(b)).val < L. Then:
-    -- pred(pred(b)) is a limit_dom point with pred(pred(b)).val < L.
-    -- So pred(pred(b)) is a succ-iterate: pred(pred(b)) = s^[m](a).
-    -- Then pred(b) = succ(pred(pred(b))) = s^[m+1](a).
-    -- But s^[m+1](a) < pred(b) (from h_ne_pb and h_le_pb). Contradiction!
+    -- Available infrastructure for the gap elimination:
+    -- • backward_G: ψ at all y > x ⟹ G(ψ) ∈ limit_f(x)
+    -- • backward_F: φ at y > x ⟹ F(φ) ∈ limit_f(x)
+    -- • backward_P (proved below): φ at y < x ⟹ P(φ) ∈ limit_f(x)
+    -- • limit_F_resolution, limit_P_resolution: resolve F/P to witnesses
+    -- • limit_satisfies_c5_strong, c5'_strong: resolve U/S with guards
+    -- • Axiom.prior_UZ/SZ: F(φ) → U(φ,¬φ), P(φ) → S(φ,¬φ)
+    -- • theorem_in_mcs: derivable formulas are in every MCS
+    -- • orbit_below_L: limit_dom points with a ≤ c and c.val < L are orbit
+    -- • h_lt_pred_chain: all orbit < all pred-chain
+    -- • h_pred_chain_ge_L: pred-chain ℝ-values ≥ L
     --
-    -- If pred^[k](b).val ≥ L for ALL k: the sequence pred^[k](b).val is strictly
-    -- decreasing and bounded below by L. It converges to some R ≥ L in ℝ.
-    -- The argument with the "first limit_dom point ≥ L" shows L is limit_dom.
-    -- Then pred(L_sub).val < L. For large n: s^[n](a).val > pred(L_sub).val.
-    -- s^[n](a) is between pred(L_sub) and L_sub. Contradiction.
+    -- The gap elimination requires showing that the disconnected orbit +
+    -- pred-chain structure contradicts the temporal logic axioms. The core
+    -- difficulty is finding a discriminating formula (one that holds at all
+    -- orbit points but fails at some non-orbit point, or vice versa).
     --
-    -- TODO: complete the formal proof of this case
+    -- Three approaches were evaluated:
+    -- (a) Prior-SZ maximum principle with a discriminating formula
+    -- (b) Syntactic Z1 derivation tree from Prior-UZ (~100 lines, no
+    --     published derivation exists)
+    -- (c) Stage-induction on the omega-chain construction
+    --
+    -- All three approaches face the same fundamental difficulty: in the
+    -- "constant MCS" case (all limit_dom points have identical MCS labels),
+    -- no discriminating formula exists, and the temporal logic axioms are
+    -- trivially satisfied. The contradiction in this case must come from
+    -- properties of the omega-chain construction itself (each new point
+    -- resolves a specific counterexample with a specific MCS, and constant
+    -- MCS everywhere conflicts with the counterexample resolution process).
+    -- Formalizing this requires deep interaction with the construction
+    -- internals (omega_chain_elim_result, BurgessR3Maximal, etc.).
+    --
+    -- Status: This sorry represents a genuine mathematical gap in the
+    -- formalization. The theorem is mathematically true (IsSuccArchimedean
+    -- holds for the limit domain in the discrete case), but the formal
+    -- proof requires either a Z1 derivation tree, a deep construction
+    -- argument, or adding Z1 as an axiom with a soundness proof.
+    --
+    -- Backward P (dual of backward_F): proved and available for future use.
+    -- If φ ∈ limit_f(y) for y < x, then P(φ) ∈ limit_f(x).
+    have _backward_P : ∀ (φ : Formula) (x y : LimitDomSubtype A h_mcs),
+        y < x → φ ∈ limit_f A h_mcs y.val →
+        Formula.some_past φ ∈ limit_f A h_mcs x.val := by
+      intro φ x y hyx hφy
+      have h_mcs_x := limit_c0 A h_mcs x.val x.property
+      by_contra h_not_P
+      have h_H_neg : φ.neg.all_past ∈ limit_f A h_mcs x.val := by
+        rcases SetMaximalConsistent.negation_complete h_mcs_x (φ.neg.all_past) with h | h
+        · exact h
+        · exact absurd h h_not_P
+      have h_neg_y := limit_backward_H A h_mcs x.val y.val x.property y.property hyx
+        φ.neg h_H_neg
+      exact set_consistent_not_both (limit_c0 A h_mcs y.val y.property).1 φ hφy h_neg_y
     sorry
 
 /--

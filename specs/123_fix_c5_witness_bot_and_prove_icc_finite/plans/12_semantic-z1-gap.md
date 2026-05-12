@@ -45,29 +45,13 @@ Plan v11 identified the Doets/Z1 approach as the correct strategy but identified
 
 The sorry at line 1778 is in `succ_cofinal` for the case where the succ-orbit converges to a real limit L with L <= pred(b).val. The gap scenario has orbit points below L and pred-chain points above L with no limit_dom at L.
 
-**The semantic Z1 argument proceeds as follows:**
+**Why the original Doets Z1 approach does not directly apply:**
 
-Pick any formula phi from the closure of A. Consider the formula Gphi. By backward_G, if phi holds at all limit_dom points above some point x, then Gphi holds at x. By limit_forward_G, if Gphi holds at x and y > x, then phi holds at y.
+The Doets Claim 10 argument (pp. 91-92) uses Z1: `G(Gphi -> phi) -> (FGphi -> Gphi)`. Applied by modus tollens at a point m where F(phi) and FG(neg(phi)) both hold, it extracts a point k with both phi and G(neg(phi)) -- the maximum of the phi-set.
 
-At each orbit point m = s^[n](a), either:
-- **Case A**: Gphi in limit_f(m) for some orbit point m. Then by limit_forward_G, phi holds at all y > m, including all pred-chain points and all further orbit points. By backward_G at a, Gphi in limit_f(a). Then phi holds at all y > a. Since succ(a) = s^[1](a) is a limit_dom point above a, phi at succ(a). But we need to derive a CONTRADICTION. For Case A we need to find phi such that Gphi at some orbit point leads to contradiction.
-- **Case B**: neg(Gphi) in limit_f(m) for ALL orbit points m. Then F(neg(phi)) in limit_f(m) for all m. But consider: does phi hold at pred-chain points?
+The original plan (v11) aimed to get Z1 into each MCS via a syntactic DerivationTree from Prior-UZ, but report 14 confirmed no published derivation exists and estimated 100+ lines. An alternative -- proving `G(Gphi -> phi)` as a theorem to get Z1 semantically -- fails because `Gphi -> phi` is the T-schema, which is NOT valid on irreflexive orders. (G is strict-future, so Gphi at a point says nothing about phi at that point. Countermodel: on naturals, set p true at x >= 2 and false at 1; then Gp is true at 1 but p is false, so G(Gp -> p) fails at 0.)
 
-The correct argument uses the Doets Claim 10 structure semantically:
-
-1. Choose a point m below the phi-set (any orbit point where F(phi) holds).
-2. Since the phi-set is bounded above, FG(neg(phi)) holds at m (by backward_F from a pred-chain point where G(neg(phi)) holds, which follows from backward_G if neg(phi) holds at all points above the bound).
-3. If G(neg(phi)) also held at m, then neg(phi) at all future points -- contradicting F(phi). So neg(G(neg(phi))) = F(phi) holds, i.e., G(neg(phi)) does NOT hold at m.
-4. Now apply the Z1 schema semantically: from G(G(neg(phi)) -> neg(phi)) at m (which is a theorem derivable in every MCS via the T-schema for G) and FG(neg(phi)) at m, Z1 would give G(neg(phi)) at m. But G(neg(phi)) does NOT hold at m (step 3). So by modus tollens on Z1, neg(G(G(neg(phi)) -> neg(phi))) at m.
-5. Unwinding: F(G(neg(phi)) AND phi) at m. By limit_F_resolution: exists k > m with both G(neg(phi)) and phi in limit_f(k). This k is the maximum of the phi-set.
-
-**The critical step (4) requires Z1 to be in the MCS**, which requires either (a) a syntactic DerivationTree, or (b) proving Z1 holds semantically using backward_G.
-
-**Semantic Z1 proof using backward_G**: Given G(Gphi -> phi) and FGphi at point x, prove Gphi at x. By backward_G, it suffices to show phi at all y > x. Take any y > x. Either Gphi at y (then Gphi -> phi gives phi at y) or neg(Gphi) at y (then F(neg(phi)) at y). In the second case, the neg(phi) witness z > y exists. But from FGphi at x, there exists w > x with Gphi at w. At w, phi holds at all points above w. So the neg(phi) witness z must be between y and w. But at z's predecessor (by discreteness/succ structure), Gphi holds (from the backward propagation), giving phi at z by G(Gphi -> phi). Combined with neg(phi) at z -- contradiction. So Case B is impossible and phi must hold at y.
-
-**The subtlety**: The argument "at z's predecessor, Gphi holds" requires showing that the neg(Gphi) region between y and w is finite and terminates. This is exactly where Prior-UZ + discreteness (next_top) provides the Until witness that collapses the chain.
-
-**Practical approach**: Rather than formalizing the full semantic Z1 argument abstractly, we apply the Doets Claim 10 argument DIRECTLY in the gap scenario using backward_G, backward_F, and Prior-UZ. The gap scenario provides concrete structural constraints (orbit_below_L, h_lt_pred_chain) that simplify the general argument.
+**The Prior-SZ maximum principle bypasses Z1 entirely.** Instead of extracting the maximum via modus tollens on Z1, we use the past-looking Since operator: Prior-SZ (`P(phi) -> S(phi, neg(phi))`) applied from a point above the phi-set directly yields the last phi-point as the S-witness (see Step 2a for details). This avoids both the intractable DerivationTree and the invalid T-schema.
 
 ## Overview
 
@@ -100,7 +84,7 @@ Close the remaining sorry in `succ_cofinal` (line 1778, the `L <= pred(b).val` g
 |------|--------|------------|------------|
 | Discriminating formula extraction is hard to formalize | H | M | Use `Classical.choice` on the set-theoretic symmetric difference of orbit vs. pred-chain MCS labels. If MCS labels are identical, derive contradiction from Prior-UZ directly (identical MCS at adjacent points means the Until witness is trivial). |
 | Semantic Claim 10 requires backward_H (past dual of backward_G) | M | M | backward_H already exists as `limit_backward_H` in ChronicleConstruction.lean. If the dual Prior-SZ approach is used, backward_P (dual of backward_F) is straightforward to prove by symmetric argument. |
-| The G(G(neg phi) -> neg phi) step requires this formula to be in the MCS | M | L | G(G(neg phi) -> neg phi) is derivable from temp_4 (G(psi) -> GG(psi)) and propositional logic. Build a small DerivationTree for this specific formula (5-10 lines, much simpler than full Z1). Then theorem_in_mcs puts it in every MCS. |
+| ~~G(G(neg phi) -> neg phi) step~~ (obsolete) | -- | -- | This risk is eliminated by the Prior-SZ approach, which bypasses Z1 entirely. The formula G(Gphi -> phi) is NOT a theorem on irreflexive orders (the T-schema fails for strict-future G). |
 | limit_satisfies_c5_strong guard condition for the final step | M | L | Verify the guard condition is available. If not, use limit_F_resolution (which resolves F-formulas to witnesses) as the alternative. |
 | Proof size exceeds budget | M | L | Factor the argument into 3-4 helper lemmas. Each lemma is 15-30 lines. Total target: 60-100 lines. |
 
@@ -130,73 +114,32 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Semantic Doets Claim 10 and Gap Elimination [NOT STARTED]
+### Phase 2: Semantic Doets Claim 10 and Gap Elimination [BLOCKED]
 
 **Goal**: Close the sorry at line 1778 in `succ_cofinal` by proving the gap-at-L scenario contradicts the Doets maximum principle, using backward_G + Prior-UZ/SZ semantically.
 
 This phase has four sub-steps that build on each other.
 
-#### Step 2a: Prove G(Gphi -> phi) is derivable (~10-15 lines)
+#### Step 2a: Prior-SZ Maximum Principle (~20-30 lines)
 
 **Location**: Inline in the sorry branch, or as a helper lemma above `succ_cofinal`.
 
-**Statement**: For any formula phi, the formula `G(G(phi) -> phi)` is derivable (and therefore in every MCS).
+**Goal**: Build a "maximum principle" lemma: given a bounded definable set of limit_dom points, extract the maximum element using Prior-SZ.
 
-This is NOT Z1. This is the much simpler formula that says "at every future point, if G(phi) holds then phi holds." It follows from:
-1. `temp_4`: `G(phi) -> G(G(phi))` (G-transitivity, an axiom)
-2. Contrapositive of temp_4 gives: `neg(G(G(phi))) -> neg(G(phi))`
-3. Which is: `F(neg(G(phi))) -> F(neg(phi))`
-4. Actually, we need `G(phi) -> phi` derivable for each fixed point. This is the T-schema for G, which is NOT generally valid on irreflexive orders. G(phi) means phi at all STRICT future points, not at the current point.
+**Why not simpler approaches**: One might hope that `G(Gphi -> phi)` is a theorem (which would give Z1 semantically via modus tollens), but `Gphi -> phi` is the T-schema for G, which is NOT valid on irreflexive orders -- G is strict-future, so Gphi at a point says nothing about phi at that same point. (Countermodel: on naturals, set p true at all x >= 2 and false at 1; then Gp is true at 1 but p is false, so Gp -> p fails at 1, making G(Gp -> p) false at 0.) A direct semantic argument using Prior-UZ to iteratively extract phi/neg(phi) witnesses also fails because showing the iteration terminates requires IsSuccArchimedean -- the very thing we are proving.
 
-**Correction**: `G(G(phi) -> phi)` is NOT a theorem in general. The formula `G(phi) -> phi` says "if phi at all strict future points then phi at the current point" -- this fails for irreflexive accessibility. Instead, the Doets argument uses `G(G(neg(phi)) -> neg(phi))` evaluated at a specific point, where the hypothesis holds because of the gap structure, not because it is a theorem.
+**The Prior-SZ maximum principle** (from report 14 Section 5.3) avoids both problems by extracting the maximum in a single step using the past-looking Since operator:
 
-**Revised approach**: The Doets Claim 10 argument does NOT require `G(G(neg phi) -> neg phi)` as a theorem. Instead, it uses Z1 applied via modus tollens. At a point m where F(phi) and FG(neg phi) both hold:
-- If G(neg phi) also held at m, it would contradict F(phi). So neg G(neg phi) at m.
-- Z1 says: `G(G(neg phi) -> neg phi) -> (FG(neg phi) -> G(neg phi))`.
-- Contrapositive: `neg G(neg phi) -> (G(G(neg phi) -> neg phi) -> neg FG(neg phi))`.
-- Equivalently: `neg G(neg phi) AND FG(neg phi) -> neg G(G(neg phi) -> neg phi)`.
-- So: `F(phi) AND FG(neg phi) -> F(neg(G(neg phi) -> neg phi))`.
-- Unwinding neg(G(neg phi) -> neg phi) = G(neg phi) AND phi (conjunction).
-- So: `F(phi) AND FG(neg phi) -> F(G(neg phi) AND phi)`.
+Given a discriminating formula phi and a point b_upper above the phi-set where neg(phi) holds:
+1. P(phi) holds at b_upper (since phi holds at some earlier point, by backward_P).
+2. Prior-SZ gives S(phi, neg(phi)) at b_upper: the nearest PAST phi-point k < b_upper with neg(phi) at all z in (k, b_upper).
+3. k is the last phi-point below b_upper: phi at k, neg(phi) at all z with k < z <= b_upper.
+4. If neg(phi) holds at ALL points above k (extend via backward_G if needed), then k is the absolute maximum of the phi-set.
 
-The key: we need Z1 in the MCS to use this reasoning. Rather than building a DerivationTree for Z1, we prove the CONCLUSION directly using backward_G.
-
-**The direct semantic argument (no Z1 needed)**:
-
-Given that phi holds at some orbit points and neg(phi) holds at points above some bound:
-1. Pick orbit point m where F(phi) holds (exists since phi holds at some later orbit point).
-2. There exists b_upper above which neg(phi) holds at all limit_dom points (the bounded-above hypothesis).
-3. By backward_G applied at b_upper with psi = neg(phi): if neg(phi) holds at all y > b_upper, then G(neg(phi)) in limit_f(b_upper).
-4. By backward_F: since G(neg(phi)) at b_upper and b_upper > m, FG(neg(phi)) at m.
-5. Now apply Prior-UZ to phi at m: F(phi) -> U(phi, neg(phi)). The Until witness y has phi at y and neg(phi) at all z in (m, y). This y is a phi-point.
-6. Apply Prior-UZ to neg(phi) at y (since F(neg(phi)) at y -- because there are neg-phi points above): U(neg(phi), phi) at y gives witness z > y with neg(phi) at z and phi between y and z.
-7. This creates a finite descent pattern. On a discrete order, it terminates: at the LAST phi-point before the bound, we get phi AND G(neg(phi)) simultaneously. This is the maximum.
-
-**But wait**: step 7 requires showing the descent terminates. This is where the structure of the discrete order (next_top) helps: between any two limit_dom points, there are finitely many limit_dom points (by IsSuccArchimedean -- which is what we are trying to prove!).
-
-**Revised revised approach**: The direct semantic argument ALSO has the circularity problem. We need IsSuccArchimedean to show the descent terminates, but IsSuccArchimedean is what we are proving.
-
-**Final approach**: Use Prior-UZ to directly extract the maximum, bypassing the descent:
-
-From Prior-UZ applied to neg(phi) at the orbit point m (where F(neg(phi)) holds because neg(phi) holds above the bound):
-- U(neg(phi), phi) at m: nearest future neg(phi) point with phi at all intermediate points.
-- Wait, Prior-UZ says `F(psi) -> U(psi, neg(psi))`. With psi = neg(phi): `F(neg(phi)) -> U(neg(phi), neg(neg(phi)))` = `F(neg(phi)) -> U(neg(phi), phi)`. No, Prior-UZ says `F(psi) -> U(psi, neg(psi))`, so with psi = phi: `F(phi) -> U(phi, neg(phi))`.
-
-The Until witness of U(phi, neg(phi)) at m: some y > m with phi at y and neg(phi) at all z in (m, y). But this gives the NEAREST phi-point (the first phi occurrence after m), not the maximum.
-
-For the MAXIMUM, use the PAST dual. Apply Prior-SZ from a point ABOVE the phi-set:
-- Prior-SZ says `P(psi) -> S(psi, neg(psi))`.
-- Pick b_upper above the phi-set. P(phi) holds at b_upper (since phi holds at some earlier point).
-- S(phi, neg(phi)) at b_upper: nearest PAST phi-point y with neg(phi) at all z in (y, b_upper).
-- This y is the LAST phi-point below b_upper.
-- y has phi. All z in (y, b_upper) have neg(phi). And b_upper itself has neg(phi) (it is above the phi-set).
-- So y is the maximum of the phi-set in [min, b_upper].
-- If ALL points above y have neg(phi), then y is the absolute maximum.
-
-This is the Prior-SZ maximum principle from report 14 Section 5.3. It requires:
-1. Prior-SZ as a theorem in every MCS (available via Axiom.prior_SZ + theorem_in_mcs)
+This requires:
+1. Prior-SZ as a theorem in every MCS (available via `Axiom.prior_SZ` + `theorem_in_mcs`)
 2. S-resolution: if S(phi, neg(phi)) in limit_f(x), extract the witness y < x with phi at y and neg(phi) between
-3. A discriminating formula phi
+3. A discriminating formula phi (Step 2b)
 
 **The S-resolution step requires the C4 witness resolution infrastructure.** This exists as `limit_satisfies_c4_strong` or similar. Need to verify.
 
