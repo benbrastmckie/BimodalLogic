@@ -1454,10 +1454,202 @@ private theorem succ_reaches_dom_N (A : Set Formula) (h_mcs : SetMaximalConsiste
         exact ⟨0, Subtype.ext this⟩
 
 /--
+Every limit_dom point in `[a.val, L)` for a limit_dom point `a` is a succ-iterate
+of `a`, where `L` is any upper bound such that all succ-iterates are below `L`.
+
+Key step: if `z ∈ limit_dom` with `a.val ≤ z.val` and `z.val < succ^[n](a).val` for
+no `n`, then `z.val ≥ succ^[n](a).val` for all `n`, contradicting `z.val < L`.
+If `succ^[n₀](a) > z` for some `n₀`: take minimum; then `z` is between consecutive
+succ-iterates, contradicting the immediate-successor property.
+-/
+private theorem limit_dom_points_are_succ_iterates
+    (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a z : LimitDomSubtype A h_mcs) (h_az : a ≤ z)
+    (h_all_below : ∀ n, (limitDomSubtype_succ A h_mcs h_discrete)^[n] a ≤ z) :
+    ∃ m, (limitDomSubtype_succ A h_mcs h_discrete)^[m] a = z := by
+  set s := limitDomSubtype_succ A h_mcs h_discrete
+  -- For each n, either s^[n](a) = z, or s^[n](a) < z or s^[n](a) > z.
+  -- But h_all_below says s^[n](a) ≤ z. So s^[n](a) ≤ z.
+  -- If s^[n](a) = z for some n: done.
+  by_contra h_never
+  push_neg at h_never
+  -- h_never : ∀ m, s^[m] a ≠ z
+  -- Combined with h_all_below: s^[m](a) < z for all m.
+  have h_strict : ∀ m, s^[m] a < z := by
+    intro m; exact lt_of_le_of_ne (h_all_below m) (h_never m)
+  -- Since s^[m](a) < z for all m: s^[m](a) ≤ pred(z) for all m.
+  have h_le_pred : ∀ m, s^[m] a ≤ limitDomSubtype_pred A h_mcs h_discrete z :=
+    fun m => (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ z).mpr (h_strict m)
+  -- Now: s^[m](a) ≤ pred(z). And pred(z) < z.
+  -- s^[m](a) ≠ pred(z) for all m (otherwise s^[m+1](a) = succ(pred(z)) = z by succ_pred).
+  have h_ne_pred : ∀ m, s^[m] a ≠ limitDomSubtype_pred A h_mcs h_discrete z := by
+    intro m h_eq
+    have : s^[m + 1] a = z := by
+      rw [Function.iterate_succ', Function.comp_apply, h_eq]
+      exact limitDomSubtype_succ_pred A h_mcs h_discrete z
+    exact h_never (m + 1) this
+  -- So s^[m](a) < pred(z) for all m.
+  have h_strict_pred : ∀ m, s^[m] a < limitDomSubtype_pred A h_mcs h_discrete z :=
+    fun m => lt_of_le_of_ne (h_le_pred m) (h_ne_pred m)
+  -- But now: s^[m](a) < pred(z) for all m. pred(z) < z. So all succ iterates are ≤ pred(z).
+  -- Apply the same argument to pred(z): s^[m](a) ≤ pred(pred(z)) for all m, etc.
+  -- This gives an infinite descent on z, pred(z), pred^2(z), ...
+  -- But we also know s(a) > a (succ is strictly increasing). So s^[m](a) is strictly increasing.
+  -- And s^[m](a) < pred(z) for all m. The sequence s^[m](a).val is strictly increasing
+  -- in ℚ, bounded by pred(z).val.
+  -- Casting to ℝ and using convergence, the limit is L ≤ pred(z).val < z.val.
+  -- The first limit_dom point ≥ L (in ℝ) has a predecessor which is a succ-iterate.
+  -- This gives a succ-iterate equal to a value ≥ L, contradicting all being < pred(z).
+  -- For now we defer to succ_reaches_dom_N for this step.
+  -- Actually, let's derive the contradiction directly:
+  -- pred(z) is limit_dom. All succ iterates of a are strictly below pred(z).
+  -- Apply THIS LEMMA recursively to (a, pred(z)): all succ iterates ≤ pred(z),
+  -- and all are ≠ pred(z), so all < pred(z), so all ≤ pred(pred(z)), etc.
+  -- This is infinite descent on z → pred(z) → pred^2(z) → ...
+  -- But z can decrease indefinitely (NoMinOrder), so we need another argument.
+  -- Use the real analysis approach instead.
+  sorry
+
+/--
+Succ-iterates are cofinal: for any `a < b` in `LimitDomSubtype`, there exists `n`
+such that `succ^[n](a) ≥ b`. Combined with `succ_orbit_convex`, this gives
+`IsSuccArchimedean`.
+
+### Proof strategy
+
+By contradiction: assume `succ^[n](a) < b` for all `n`. The key steps:
+
+1. All succ-iterates of `a` are below `pred(b)` (by `le_pred_iff` + succ_pred cancellation).
+2. The real-valued sequence `(succ^[n](a).val : ℝ)` is strictly increasing and bounded,
+   so it converges to some `L ≤ b.val` in `ℝ`.
+3. The first `limit_dom` point `z` at or above `L` satisfies `pred(z)` is a succ-iterate
+   (since all limit_dom below `L` are succ-iterates), so `z = succ(pred(z)) = succ^[m+1](a)`.
+   Hence `z.val ≤ L` (as a succ-iterate), giving `z.val = L`, so `L ∈ ℚ ∩ limit_dom`.
+4. Since `pred(z).val < z.val = L` and `succ^[n](a).val → L`, for large `n`:
+   `succ^[n](a).val > pred(z).val`, placing a limit_dom point between `pred(z)` and `z`.
+   This contradicts the immediate-predecessor property.
+-/
+private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs) (hab : a < b) :
+    ∃ n, b ≤ (limitDomSubtype_succ A h_mcs h_discrete)^[n] a := by
+  set s := limitDomSubtype_succ A h_mcs h_discrete
+  by_contra h_not_cofinal
+  push_neg at h_not_cofinal
+  -- h_not_cofinal: ∀ n, s^[n](a) < b
+  -- Step 1: s^[n](a) ≤ pred(b) for all n
+  set pb := limitDomSubtype_pred A h_mcs h_discrete b
+  have h_le_pb : ∀ n, s^[n] a ≤ pb :=
+    fun n => (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ b).mpr (h_not_cofinal n)
+  -- Step 2: Define the real-valued sequence and show it converges
+  set f : ℕ → ℝ := fun n => (s^[n] a).val
+  have s_lt : ∀ x : LimitDomSubtype A h_mcs, x < s x :=
+    fun x => (limitDomSubtype_succ_le_iff A h_mcs h_discrete x (s x)).mp le_rfl
+  have f_mono : Monotone f := by
+    intro m n hmn
+    simp only [f]
+    apply Rat.cast_le.mpr
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hmn
+    clear hmn; induction k with
+    | zero => simp
+    | succ k ih =>
+      have h_step : (s^[m + k] a).val < (s (s^[m + k] a)).val := s_lt _
+      have h_eq : (s (s^[m + k] a)).val = (s^[m + (k + 1)] a).val := by
+        congr 1; rw [show m + (k + 1) = (m + k) + 1 from by omega,
+          Function.iterate_succ', Function.comp_apply]
+      exact le_of_lt (lt_of_le_of_lt ih (h_eq ▸ h_step))
+  have f_bdd : BddAbove (Set.range f) := by
+    refine ⟨(b.val : ℝ), ?_⟩
+    rintro _ ⟨n, rfl⟩
+    exact Rat.cast_le.mpr (le_of_lt (h_not_cofinal n))
+  -- The sequence converges to some limit
+  obtain ⟨L, hL_tendsto⟩ := Real.tendsto_of_bddAbove_monotone f_bdd f_mono
+  -- L is an upper bound for all f(n)
+  have hL_ub : ∀ n, f n ≤ L := by
+    intro n
+    exact le_of_tendsto_of_tendsto tendsto_const_nhds hL_tendsto
+      (Filter.eventually_atTop.mpr ⟨n, fun m hm => f_mono hm⟩)
+  -- L ≤ b.val (since all f(n) < b.val and L is the limit)
+  have hL_le_b : L ≤ (b.val : ℝ) := by
+    exact le_of_tendsto_of_tendsto hL_tendsto tendsto_const_nhds
+      (Filter.Eventually.of_forall fun n => Rat.cast_le.mpr (le_of_lt (h_not_cofinal n)))
+  -- Step 3: L > pred(b).val (the key step)
+  -- We prove this by showing the first limit_dom point ≥ L has its predecessor
+  -- as a succ-iterate, forcing L to be in limit_dom.
+  -- First, show that pred(b).val < b.val in ℝ
+  have h_pb_lt_b : (pb.val : ℝ) < (b.val : ℝ) := by
+    exact Rat.cast_lt.mpr (limitDomSubtype_pred_lt A h_mcs h_discrete b)
+  -- Now: if L > pred(b).val, get contradiction directly
+  -- if L ≤ pred(b).val, get contradiction via the "first limit_dom ≥ L" argument
+  -- For the full formal proof, we combine both into one argument.
+  -- The "first limit_dom point ≥ L" is b (since L ≤ b.val).
+  -- pred(b) < b. pred(b).val < b.val ≤ L? Or pred(b).val ≥ L?
+  -- Case split:
+  by_cases h_case : L > (pb.val : ℝ)
+  · -- L > pred(b).val. Since f(n) → L and pred(b).val < L:
+    -- eventually f(n) > pred(b).val.
+    have := Filter.Tendsto.eventually_const_lt h_case hL_tendsto
+    rw [Filter.eventually_atTop] at this
+    obtain ⟨n₀, hn₀⟩ := this
+    specialize hn₀ n₀ le_rfl
+    -- f(n₀) > pred(b).val, i.e., s^[n₀](a).val > pred(b).val
+    have h_gt_pb : pb < s^[n₀] a := by
+      show pb.val < (s^[n₀] a).val
+      exact Rat.cast_lt.mp hn₀
+    -- But s^[n₀](a) ≤ pb from h_le_pb. Contradiction!
+    exact absurd (h_le_pb n₀) (not_le.mpr h_gt_pb)
+  · -- L ≤ pred(b).val. The sequence is bounded by pred(b).val.
+    push_neg at h_case
+    -- h_case: L ≤ pred(b).val
+    -- All f(n) ≤ L ≤ pred(b).val < b.val. s^[n](a) ≤ pred(b).
+    -- s^[n](a) ≠ pred(b) (otherwise s^[n+1](a) = succ(pred(b)) = b).
+    have h_ne_pb : ∀ n, s^[n] a ≠ pb := by
+      intro n h_eq
+      have : s^[n + 1] a = b := by
+        rw [Function.iterate_succ', Function.comp_apply, h_eq]
+        exact limitDomSubtype_succ_pred A h_mcs h_discrete b
+      exact absurd this (ne_of_lt (h_not_cofinal (n + 1)))
+    -- So s^[n](a) < pred(b) for all n. Apply the SAME argument with pred(b) instead of b.
+    -- This creates infinite descent: b → pred(b) → pred²(b) → ...
+    -- At each step, succ^[n](a) < pred^[m](b) for all n. And pred^[m](b) is strictly decreasing.
+    -- The sequence pred^[m](b).val (cast to ℝ) is strictly decreasing and bounded below.
+    -- Its infimum R ≥ L. If R = L: the "gap" between the succ-chain and pred-chain
+    -- closes in ℝ, allowing us to catch pred^[m](b) between consecutive succ-iterates.
+    --
+    -- Full argument: by induction/descent, showing the gap is eventually 0.
+    -- The detailed formalization uses the "first limit_dom ≥ L" argument from the docstring.
+    -- For now, we use the following cleaner argument:
+    --
+    -- Since all limit_dom points in [a.val, L) are succ-iterates of a (proved by
+    -- contradiction: any such point is either a succ-iterate or between consecutive
+    -- ones, which is impossible), and since b is limit_dom with b.val ≥ L:
+    -- pred(b) is either a succ-iterate or ≥ L. But pred(b).val ≥ L (from h_case).
+    -- So pred(b) is limit_dom with pred(b).val ≥ L. pred(b) is NOT a succ-iterate
+    -- (since all succ-iterates are < pred(b)). So pred(b).val ≥ L.
+    --
+    -- Now consider pred(pred(b)). pred(pred(b)) < pred(b). Is pred(pred(b)).val ≥ L?
+    -- If yes: continue descent. If no: pred(pred(b)).val < L. Then:
+    -- pred(pred(b)) is a limit_dom point with pred(pred(b)).val < L.
+    -- So pred(pred(b)) is a succ-iterate: pred(pred(b)) = s^[m](a).
+    -- Then pred(b) = succ(pred(pred(b))) = s^[m+1](a).
+    -- But s^[m+1](a) < pred(b) (from h_ne_pb and h_le_pb). Contradiction!
+    --
+    -- If pred^[k](b).val ≥ L for ALL k: the sequence pred^[k](b).val is strictly
+    -- decreasing and bounded below by L. It converges to some R ≥ L in ℝ.
+    -- The argument with the "first limit_dom point ≥ L" shows L is limit_dom.
+    -- Then pred(L_sub).val < L. For large n: s^[n](a).val > pred(L_sub).val.
+    -- s^[n](a) is between pred(L_sub) and L_sub. Contradiction.
+    --
+    -- TODO: complete the formal proof of this case
+    sorry
+
+/--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 
-The proof uses stage induction on the omega-chain: for any two limit_dom points
-a ≤ b, choose N with both in dom(N), then apply `succ_reaches_dom_N`.
+The proof uses `succ_cofinal` (every target is eventually reached or exceeded)
+combined with `succ_orbit_convex` (iterates pass through all intermediate points)
+to show that succ-iterates from `a` reach `b` exactly.
 -/
 noncomputable def limitDomSubtype_isSuccArchimedean
     (A : Set Formula) (h_mcs : SetMaximalConsistent A)
@@ -1468,11 +1660,14 @@ noncomputable def limitDomSubtype_isSuccArchimedean
   @IsSuccArchimedean.mk _ _ (limitDomSubtype_succOrder A h_mcs h_discrete) <| by
     intro a b hab
     change ∃ n, (limitDomSubtype_succ A h_mcs h_discrete)^[n] a = b
-    obtain ⟨M_a, hM_a⟩ := a.property
-    obtain ⟨M_b, hM_b⟩ := b.property
-    have ha_N := omega_chain_dom_mono_le A h_mcs (le_max_left M_a M_b) hM_a
-    have hb_N := omega_chain_dom_mono_le A h_mcs (le_max_right M_a M_b) hM_b
-    exact succ_reaches_dom_N A h_mcs h_discrete (max M_a M_b) a b ha_N hb_N hab
+    set s := limitDomSubtype_succ A h_mcs h_discrete
+    rcases eq_or_lt_of_le hab with rfl | hab_lt
+    · exact ⟨0, rfl⟩
+    · -- a < b. By succ_cofinal: ∃ n, b ≤ s^[n](a).
+      obtain ⟨n, hn⟩ := succ_cofinal A h_mcs h_discrete a b hab_lt
+      -- By succ_orbit_convex: ∃ j ≤ n, s^[j](a) = b.
+      exact (succ_orbit_convex A h_mcs h_discrete a b n (le_of_lt hab_lt) hn).imp
+        fun j ⟨_, hj⟩ => hj
 
 /-! ## Collapse-Based Discrete Pipeline
 
