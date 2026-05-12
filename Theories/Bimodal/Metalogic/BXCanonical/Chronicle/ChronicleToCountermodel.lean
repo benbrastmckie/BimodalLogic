@@ -1208,6 +1208,98 @@ noncomputable def limitDomSubtype_isSuccArchimedean
     -- while the pred-orbit from b is strictly decreasing and bounded below.
     -- The two orbits cannot coexist without meeting, leading to contradiction.
     -- This is the IsSuccArchimedean property for LimitDomSubtype.
+    -- Abbreviate the succ function
+    set s := limitDomSubtype_succ A h_mcs h_discrete with hs_def
+    -- Step 1: succ^[n](a) ≤ pred(b) for all n
+    have h_le_pred : ∀ n, s^[n] a ≤ limitDomSubtype_pred A h_mcs h_discrete b :=
+      succ_iter_le_pred_of_lt_forall A h_mcs h_discrete a b h_not_cofinal
+    -- Step 2: Strengthen to succ^[n](a) < pred^[k](b) for all n, k.
+    -- Also: if succ^[n](a) = pred^[k](b) then succ^[n+k](a) = b.
+    set p := limitDomSubtype_pred A h_mcs h_discrete with hp_def
+    have h_succ_pred_iter : ∀ (k : ℕ) (x : LimitDomSubtype A h_mcs),
+        s^[k] (p^[k] x) = x := by
+      intro k
+      induction k with
+      | zero => intro x; simp
+      | succ k ih =>
+        intro x
+        rw [Function.iterate_succ', Function.comp_apply,
+            Function.iterate_succ, Function.comp_apply]
+        rw [ih (p x)]
+        exact limitDomSubtype_succ_pred A h_mcs h_discrete x
+    have h_orbit_lt_pred : ∀ n k, s^[n] a < p^[k] b := by
+      intro n k
+      induction k with
+      | zero => simp [h_not_cofinal]
+      | succ k ih =>
+        -- We know s^[n] a < p^[k] b for all n (by ih, universally)
+        -- Need: s^[n] a < p^[k+1] b = p (p^[k] b)
+        -- From s^[n] a < p^[k] b, we get s^[n] a ≤ p (p^[k] b)
+        have h_le : s^[n] a ≤ p (p^[k] b) :=
+          (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ _).mpr (ih n)
+        -- If equality held: s^[n] a = p^[k+1] b, then s^[n+k+1] a = b
+        rcases eq_or_lt_of_le h_le with h_eq | h_lt
+        · -- s^[n] a = p (p^[k] b) = p^[k+1] b
+          -- Then s^[k+1] (s^[n] a) = s^[k+1] (p^[k+1] b) = b
+          have h_reach : s^[k + 1] (s^[n] a) = b := by
+            rw [h_eq]; exact h_succ_pred_iter (k + 1) b
+          -- s^[n + (k+1)] a = s^[k+1] (s^[n] a) = b
+          have h_reach' : s^[n + (k + 1)] a = b := by
+            rw [Function.iterate_add_apply]; exact h_reach
+          exact absurd h_reach' (ne_of_lt (h_not_cofinal (n + (k + 1)))) |>.elim
+        · exact h_lt
+    -- Step 3: Cast the succ-orbit to ℝ and establish convergence.
+    -- f_up(n) = (succ^[n](a)).val cast to ℝ.
+    set f_up : ℕ → ℝ := fun n => ((s^[n] a).val : ℝ) with hf_up_def
+    have hf_up_mono : Monotone f_up := by
+      intro n m hnm; simp only [f_up]
+      exact_mod_cast (limitDomSubtype_succ_iter_mono A h_mcs h_discrete a hnm)
+    have hf_up_bdd : BddAbove (Set.range f_up) := by
+      use (b.val : ℝ); intro x ⟨n, hn⟩
+      rw [← hn]; simp only [f_up]; exact_mod_cast (h_not_cofinal n).le
+    set L := iSup f_up with hL_def
+    have hf_up_tendsto : Filter.Tendsto f_up Filter.atTop (nhds L) :=
+      tendsto_atTop_ciSup hf_up_mono hf_up_bdd
+    have hL_le_pred : ∀ k, L ≤ ((p^[k] b).val : ℝ) := by
+      intro k; apply ciSup_le (Set.range_nonempty f_up)
+      intro n; simp only [f_up]; exact_mod_cast (h_orbit_lt_pred n k).le
+    -- Step 4: If any domain point c has (c.val : ℝ) = L, derive contradiction.
+    -- Since pred(c) < c, pred(c).val < L. The orbit approaches L from below,
+    -- so some orbit element lands between pred(c) and c, violating the
+    -- immediate-successor property succ(pred(c)) = c.
+    suffices h_exists_at_L :
+        ∃ c : LimitDomSubtype A h_mcs, (c.val : ℝ) = L ∧ ∀ n, s^[n] a < c by
+      obtain ⟨c, hcL, hc_above⟩ := h_exists_at_L
+      -- pred(c) < c, so pred(c).val < L
+      have h_pc_lt_c : p c < c := limitDomSubtype_pred_lt A h_mcs h_discrete c
+      have h_pc_val_lt_L : ((p c).val : ℝ) < L := by
+        rw [← hcL]; exact_mod_cast h_pc_lt_c
+      -- The orbit converges to L, so eventually f_up(n) > pred(c).val
+      rw [Filter.tendsto_atTop_nhds] at hf_up_tendsto
+      have h_ev : ∃ n₀, f_up n₀ > ((p c).val : ℝ) := by
+        have h_open := Metric.isOpen_ball (x := L) (ε := L - (p c).val : ℝ)
+        have h_pos : L - ((p c).val : ℝ) > 0 := by linarith
+        obtain ⟨N, hN⟩ := hf_up_tendsto
+          (Set.Ioi ((p c).val : ℝ)) isOpen_Ioi (Set.mem_Ioi.mpr h_pc_val_lt_L)
+        exact ⟨N, hN N le_rfl⟩
+      obtain ⟨n₀, hn₀⟩ := h_ev
+      -- So pred(c) < succ^[n₀](a) < c as domain points
+      have h1 : p c < s^[n₀] a := by exact_mod_cast hn₀
+      have h2 : s^[n₀] a < c := hc_above n₀
+      -- But succ(pred(c)) = c, so no domain points between pred(c) and c
+      have h_sp := limitDomSubtype_succ_pred A h_mcs h_discrete c
+      -- succ(pred(c)) = c means pred(c) and c are adjacent (no domain points between)
+      -- s^[n₀](a) is a domain point with pred(c) < s^[n₀](a) < c = succ(pred(c))
+      -- This contradicts the succ_le_iff: succ(pred(c)) ≤ s^[n₀](a) ↔ pred(c) < s^[n₀](a)
+      have h3 : s (p c) ≤ s^[n₀] a :=
+        (limitDomSubtype_succ_le_iff A h_mcs h_discrete (p c) (s^[n₀] a)).mpr h1
+      rw [h_sp] at h3
+      exact absurd h2 (not_lt.mpr h3)
+    -- REMAINING: find a domain point c at value L with c above the entire orbit.
+    -- This requires construction-specific reasoning about the omega-chain.
+    -- The gap-at-L scenario (succ-orbit below L, pred-orbit above L, no domain
+    -- point at L) is order-theoretically consistent but should be ruled out
+    -- by the omega-chain construction properties.
     sorry
 
 /-! ## Collapse-Based Discrete Pipeline

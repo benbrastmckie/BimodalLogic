@@ -118,7 +118,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Close the Sorry at limitDomSubtype_isSuccArchimedean [NOT STARTED]
+### Phase 2: Close the Sorry at limitDomSubtype_isSuccArchimedean [PARTIAL]
 
 **Goal**: Replace the `sorry` at line 1211 with a valid proof. The goal state is:
 ```
