@@ -24,14 +24,14 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "planned",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-11T22:34:34Z",
-      "next_artifact_number": 3,
+      "last_updated": "2026-05-12T00:00:49Z",
+      "next_artifact_number": 4,
       "artifacts": [
         {
           "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_team-research-reynolds.md",
@@ -77,13 +77,18 @@
           "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research: succ_embed_surjective confirmed TRUE, single-orbit proof strategy (4 teammates)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Team research: collapse quotient rejected, C5-walk and BX5 self-accumulation identified as novel approaches (4 teammates)"
         }
       ],
-      "session_id": "sess_1778538040_e03b63",
+      "session_id": "sess_1778543387_c037b6",
       "started": "2026-05-11T14:06:20Z",
       "completed": "2026-05-11T16:40:49Z",
       "archived": "2026-05-11T16:55:47Z",
-      "researched": "2026-05-11T22:27:13Z"
+      "researched": "2026-05-12T00:00:49Z"
     },
     {
       "project_number": 124,

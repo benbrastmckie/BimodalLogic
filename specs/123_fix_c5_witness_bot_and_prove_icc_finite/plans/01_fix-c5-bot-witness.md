@@ -137,7 +137,7 @@ Phases within the same wave can execute in parallel.
 
 **Completed:** 2026-05-10
 
-### Phase 4: Prove succ_embed_surjective via Single-Orbit Argument [PARTIAL]
+### Phase 4: Prove succ_embed_surjective via Single-Orbit Argument [BLOCKED]
 
 **Partial status**: BUC is sorry-free. TC and FUC are structurally complete but invoke `succ_embed_surjective`, which has sorry at lines 2060 and 2063 (the "above all old points" and "below all old points" subcases in the stage induction). This phase replaces the failing stage-induction proof with the single-orbit argument.
 
