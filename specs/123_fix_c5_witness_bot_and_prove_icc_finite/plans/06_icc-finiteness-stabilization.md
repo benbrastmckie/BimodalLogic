@@ -132,7 +132,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Icc Finiteness and Derive IsSuccArchimedean [NOT STARTED]
+### Phase 2: Prove Icc Finiteness and Derive IsSuccArchimedean [PARTIAL]
 
 **Goal**: Replace the `sorry` at line 1303 with a valid proof. The current proof has:
 - Steps 1-6 (convergence framework): compiled and correct, establish monotone convergence of succ-orbit and pred-chain to the same limit L.

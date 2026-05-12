@@ -1263,43 +1263,142 @@ noncomputable def limitDomSubtype_isSuccArchimedean
     have hL_le_pred : ∀ k, L ≤ ((p^[k] b).val : ℝ) := by
       intro k; apply ciSup_le (Set.range_nonempty f_up)
       intro n; simp only [f_up]; exact_mod_cast (h_orbit_lt_pred n k).le
-    -- Step 4: If any domain point c has (c.val : ℝ) = L, derive contradiction.
-    -- Since pred(c) < c, pred(c).val < L. The orbit approaches L from below,
-    -- so some orbit element lands between pred(c) and c, violating the
-    -- immediate-successor property succ(pred(c)) = c.
-    suffices h_exists_at_L :
-        ∃ c : LimitDomSubtype A h_mcs, (c.val : ℝ) = L ∧ ∀ n, s^[n] a < c by
-      obtain ⟨c, hcL, hc_above⟩ := h_exists_at_L
-      -- pred(c) < c, so pred(c).val < L
-      have h_pc_lt_c : p c < c := limitDomSubtype_pred_lt A h_mcs h_discrete c
-      have h_pc_val_lt_L : ((p c).val : ℝ) < L := by
-        rw [← hcL]; exact_mod_cast h_pc_lt_c
-      -- The orbit converges to L, so eventually f_up(n) > pred(c).val
-      rw [Filter.tendsto_atTop_nhds] at hf_up_tendsto
-      have h_ev : ∃ n₀, f_up n₀ > ((p c).val : ℝ) := by
-        have h_open := Metric.isOpen_ball (x := L) (ε := L - (p c).val : ℝ)
-        have h_pos : L - ((p c).val : ℝ) > 0 := by linarith
-        obtain ⟨N, hN⟩ := hf_up_tendsto
-          (Set.Ioi ((p c).val : ℝ)) isOpen_Ioi (Set.mem_Ioi.mpr h_pc_val_lt_L)
-        exact ⟨N, hN N le_rfl⟩
-      obtain ⟨n₀, hn₀⟩ := h_ev
-      -- So pred(c) < succ^[n₀](a) < c as domain points
-      have h1 : p c < s^[n₀] a := by exact_mod_cast hn₀
-      have h2 : s^[n₀] a < c := hc_above n₀
-      -- But succ(pred(c)) = c, so no domain points between pred(c) and c
-      have h_sp := limitDomSubtype_succ_pred A h_mcs h_discrete c
-      -- succ(pred(c)) = c means pred(c) and c are adjacent (no domain points between)
-      -- s^[n₀](a) is a domain point with pred(c) < s^[n₀](a) < c = succ(pred(c))
-      -- This contradicts the succ_le_iff: succ(pred(c)) ≤ s^[n₀](a) ↔ pred(c) < s^[n₀](a)
-      have h3 : s (p c) ≤ s^[n₀] a :=
-        (limitDomSubtype_succ_le_iff A h_mcs h_discrete (p c) (s^[n₀] a)).mpr h1
-      rw [h_sp] at h3
-      exact absurd h2 (not_lt.mpr h3)
-    -- REMAINING: find a domain point c at value L with c above the entire orbit.
-    -- This requires construction-specific reasoning about the omega-chain.
-    -- The gap-at-L scenario (succ-orbit below L, pred-orbit above L, no domain
-    -- point at L) is order-theoretically consistent but should be ruled out
-    -- by the omega-chain construction properties.
+    -- Step 4: Derive contradiction using the pred-chain and orbit interplay.
+    -- Key argument: for any domain point c above the entire orbit, pred(c) is
+    -- also above the orbit (otherwise succ(pred(c)) = c ≤ s^[n₀+1] a < c).
+    -- The pred-chain from b stays above the orbit, with values converging to
+    -- some M ≥ L. We derive False by showing that any domain point c with
+    -- c above the orbit and (c.val : ℝ) close enough to L forces pred(c) to
+    -- be an orbit element, giving a contradiction.
+    --
+    -- Helper: any domain point w with a ≤ w and w.val < L (as reals) is an
+    -- orbit element: w = s^[k] a for some k.
+    have h_below_L_is_orbit :
+        ∀ w : LimitDomSubtype A h_mcs, a ≤ w → ((w.val : ℝ) < L) →
+          ∃ k, s^[k] a = w := by
+      intro w haw hw_lt_L
+      -- If w > s^[n] a for all n, then (w.val : ℝ) ≥ L, contradiction.
+      by_contra h_not_orbit
+      push_neg at h_not_orbit
+      -- For each k, either s^[k] a < w or s^[k] a > w (not equal by h_not_orbit).
+      -- We claim s^[k] a < w for all k, giving w.val as an upper bound for f_up.
+      have h_lt_all : ∀ k, s^[k] a < w := by
+        intro k
+        have hk := h_not_orbit k
+        rcases lt_or_gt_of_ne hk.symm with h | h
+        · exact h
+        · -- s^[k] a > w, so a ≤ w ≤ s^[k] a (weakened from w < s^[k] a).
+          -- By succ_orbit_convex, w = s^[j] a for some j ≤ k.
+          have hw_le : w ≤ s^[k] a := le_of_lt h
+          obtain ⟨j, _, hj_eq⟩ := succ_orbit_convex A h_mcs h_discrete a w k haw hw_le
+          exact absurd hj_eq (h_not_orbit j)
+      -- w.val ≥ s^[k](a).val for all k (from h_lt_all), so (w.val : ℝ) ≥ L
+      have hw_ub : (w.val : ℝ) ≥ L := by
+        apply ciSup_le (Set.range_nonempty f_up)
+        intro n; simp only [f_up]; exact_mod_cast (h_lt_all n).le
+      linarith
+    -- Helper: if c is above the orbit and pred(c) has value < L, contradiction.
+    have h_pred_below_L_contradiction :
+        ∀ c : LimitDomSubtype A h_mcs, (∀ n, s^[n] a < c) →
+          ((p c).val : ℝ) < L → False := by
+      intro c hc_above hpc_lt_L
+      -- pred(c) ≥ a (otherwise c = succ(pred(c)) ≤ a < c, contradiction)
+      have hpc_ge_a : a ≤ p c := by
+        by_contra h_not
+        push_neg at h_not
+        have : s (p c) ≤ a :=
+          (limitDomSubtype_succ_le_iff A h_mcs h_discrete (p c) a).mpr h_not
+        rw [limitDomSubtype_succ_pred A h_mcs h_discrete c] at this
+        exact absurd (hc_above 0) (not_lt.mpr this)
+      -- pred(c) is below L, so pred(c) = s^[k] a for some k
+      obtain ⟨k, hk⟩ := h_below_L_is_orbit (p c) hpc_ge_a hpc_lt_L
+      -- Then c = succ(pred(c)) = succ(s^[k] a) = s^[k+1] a
+      have hc_eq : c = s^[k + 1] a := by
+        have h1 := limitDomSubtype_succ_pred A h_mcs h_discrete c
+        rw [← hk] at h1
+        rw [← h1, Function.iterate_succ', Function.comp_apply]
+      -- But s^[k+1] a < c, contradiction
+      exact absurd (hc_eq ▸ hc_above (k + 1)) (lt_irrefl c)
+    -- Helper: if c is above the orbit and pred(c) has value = L, contradiction.
+    have h_pred_at_L_contradiction :
+        ∀ c : LimitDomSubtype A h_mcs, (∀ n, s^[n] a < c) →
+          ((p c).val : ℝ) = L → False := by
+      intro c hc_above hpc_eq_L
+      -- pred(pred(c)) < pred(c), so pred(pred(c)).val < pred(c).val
+      have hpp_lt_pc : p (p c) < p c := limitDomSubtype_pred_lt A h_mcs h_discrete (p c)
+      have hpp_val_lt_L : ((p (p c)).val : ℝ) < L := by
+        rw [← hpc_eq_L]; exact_mod_cast hpp_lt_pc
+      -- pred(c) ≥ a (same argument as above)
+      have hpc_ge_a : a ≤ p c := by
+        by_contra h_not
+        push_neg at h_not
+        have : s (p c) ≤ a :=
+          (limitDomSubtype_succ_le_iff A h_mcs h_discrete (p c) a).mpr h_not
+        rw [limitDomSubtype_succ_pred A h_mcs h_discrete c] at this
+        exact absurd (hc_above 0) (not_lt.mpr this)
+      -- pred(c) is above the orbit: forall n, s^[n] a < p c
+      have hpc_above : ∀ n, s^[n] a < p c := by
+        intro n
+        have h1 := hc_above n
+        have h2 := (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ c).mpr h1
+        rcases eq_or_lt_of_le h2 with h_eq | h_lt
+        · -- s^[n] a = p c, then s^[n+1] a = s(p c) = c, contradicting hc_above
+          have h3 : s^[n + 1] a = c := by
+            rw [Function.iterate_succ', Function.comp_apply, h_eq]
+            exact limitDomSubtype_succ_pred A h_mcs h_discrete c
+          exact absurd (h3 ▸ hc_above (n + 1)) (lt_irrefl c)
+        · exact h_lt
+      -- pred(pred(c)) ≥ a
+      have hpp_ge_a : a ≤ p (p c) := by
+        by_contra h_not
+        push_neg at h_not
+        have : s (p (p c)) ≤ a :=
+          (limitDomSubtype_succ_le_iff A h_mcs h_discrete (p (p c)) a).mpr h_not
+        rw [limitDomSubtype_succ_pred A h_mcs h_discrete (p c)] at this
+        exact absurd (hpc_above 0) (not_lt.mpr this)
+      -- pred(pred(c)) has value < L, so it's an orbit element
+      obtain ⟨k, hk⟩ := h_below_L_is_orbit (p (p c)) hpp_ge_a hpp_val_lt_L
+      -- Then pred(c) = succ(pred(pred(c))) = s^[k+1] a
+      have hpc_eq : p c = s^[k + 1] a := by
+        have h1 := limitDomSubtype_succ_pred A h_mcs h_discrete (p c)
+        rw [← hk] at h1
+        rw [← h1, Function.iterate_succ', Function.comp_apply]
+      -- But pred(c).val = L and s^[k+1](a).val < L, contradiction
+      have h_orbit_lt_L : ((s^[k + 1] a).val : ℝ) < L := by
+        apply lt_of_lt_of_le _ (le_ciSup hf_up_bdd ⟨k + 2, rfl⟩)
+        simp only [f_up]
+        exact_mod_cast limitDomSubtype_succ_iter_lt A h_mcs h_discrete a (k + 1)
+      rw [hpc_eq] at hpc_eq_L
+      linarith
+    -- Now derive the main contradiction.
+    -- The pred-chain p^[k] b has values ≥ L (from hL_le_pred).
+    -- The values are strictly decreasing.
+    -- Define the pred-chain cast to ℝ.
+    set f_down : ℕ → ℝ := fun k => ((p^[k] b).val : ℝ) with hf_down_def
+    -- Step 5: Derive contradiction from the gap scenario.
+    -- The helpers above show:
+    --   (a) Any domain point c above the orbit with (p c).val < L → False
+    --   (b) Any domain point c above the orbit with (p c).val = L → False
+    -- The remaining case is: for ALL domain points c above the orbit,
+    -- (p c).val > L. This is the "gap at L" scenario where the orbit
+    -- (below L) and all above-orbit points (above L) are separated.
+    --
+    -- This case requires construction-specific reasoning about the omega-chain.
+    -- The orbit from a visits every domain point with value < L.
+    -- Any domain point with value ≥ L is above the orbit.
+    -- If there exists a domain point c above the orbit with (p c).val ≤ L,
+    -- the helpers give False.
+    --
+    -- CONSTRUCTION-SPECIFIC ARGUMENT NEEDED:
+    -- Between any orbit element s^[n] a and any pred-chain element p^[k] b,
+    -- the omega-chain construction processes counterexamples that either:
+    -- (1) insert a domain point in the gap, eventually producing one with
+    --     pred value ≤ L, or
+    -- (2) directly resolve the gap by connecting the orbit to the pred-chain.
+    -- The key properties are omega_chain_dom_new_unique (at most one new point
+    -- per stage), omega_chain_c5_forward_resolved_no_new (resolved counterexamples
+    -- stay resolved), and the surjectivity of counterexample_enum (every
+    -- counterexample is eventually processed).
     sorry
 
 /-! ## Collapse-Based Discrete Pipeline
