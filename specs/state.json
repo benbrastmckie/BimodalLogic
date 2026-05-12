@@ -24,14 +24,14 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-12T00:50:16Z",
-      "next_artifact_number": 5,
+      "last_updated": "2026-05-12T02:21:04Z",
+      "next_artifact_number": 6,
       "artifacts": [
         {
           "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_team-research-reynolds.md",
@@ -87,13 +87,18 @@
           "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/04_issucc-archimedean.md",
           "type": "plan",
           "summary": "Implementation plan v4: prove IsSuccArchimedean for LimitDomSubtype via monotone convergence, bridge to succ_embed_surjective"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Team research: convergence gap confirmed, construction-specific approach needed (4 teammates)"
         }
       ],
-      "session_id": "sess_1778546993_adfab7",
+      "session_id": "sess_1778551116_4da2af",
       "started": "2026-05-11T14:06:20Z",
       "completed": "2026-05-11T16:40:49Z",
       "archived": "2026-05-11T16:55:47Z",
-      "researched": "2026-05-12T00:29:06Z"
+      "researched": "2026-05-12T02:21:04Z"
     },
     {
       "project_number": 124,
