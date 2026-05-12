@@ -111,7 +111,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Gap-at-L Contradiction via MCS Periodicity [NOT STARTED]
+### Phase 2: Prove Gap-at-L Contradiction via MCS Periodicity [BLOCKED]
 
 **Goal**: Replace the `sorry` at line 1402 with a valid proof that rules out the gap-at-L scenario. The existing helpers already handle pred(c).val < L and pred(c).val = L. Phase 2 handles the remaining case: all domain points c above the orbit satisfy pred(c).val > L.
 
