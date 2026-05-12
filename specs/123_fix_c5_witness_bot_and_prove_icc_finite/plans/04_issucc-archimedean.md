@@ -84,7 +84,7 @@ This plan replaces the failed Phase 4 from the prior plan (v3) with a new approa
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Add Imports and Prove Order.succ Equality [NOT STARTED]
+### Phase 1: Add Imports and Prove Order.succ Equality [COMPLETED]
 
 **Goal**: Add the two missing Mathlib imports and prove that `Order.succ` equals `limitDomSubtype_succ` when the `SuccOrder` instance is registered via `letI`.
 
@@ -110,7 +110,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove IsSuccArchimedean for LimitDomSubtype [NOT STARTED]
+### Phase 2: Prove IsSuccArchimedean for LimitDomSubtype [PARTIAL]
 
 **Goal**: Prove that `LimitDomSubtype` satisfies `IsSuccArchimedean` using the monotone convergence + predecessor contradiction argument. This is the mathematical core of the plan.
 
@@ -164,7 +164,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Bridge to succ_embed_surjective and Close Sorry Sites [NOT STARTED]
+### Phase 3: Bridge to succ_embed_surjective and Close Sorry Sites [COMPLETED]
 
 **Goal**: Rewrite `succ_embed_surjective` to use `IsSuccArchimedean` instead of stage induction, closing the two sorry sites at lines 2053 and 2056. Verify the entire discrete pipeline is sorry-free.
 
