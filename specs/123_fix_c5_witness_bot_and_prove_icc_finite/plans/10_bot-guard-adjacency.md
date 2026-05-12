@@ -116,7 +116,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Stage Induction Proof [NOT STARTED]
+### Phase 2: Stage Induction Proof [PARTIAL]
 
 **Goal**: Prove `succ_reaches_dom_N` and rewire `limitDomSubtype_isSuccArchimedean`.
 
