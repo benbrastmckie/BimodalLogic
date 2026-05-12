@@ -92,6 +92,7 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 - **Research**:
   - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/02_team-research.md]
   - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/03_team-research.md]
+  - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/04_team-research.md]
 
 **Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Phases 1-2 completed (collapse equivalence, FMCS on Z). Phases 3-5 revised: succ-based discrete BFMCS construction, three restricted coherence conditions, and three-way case split refinement for bx_completeness.
 
