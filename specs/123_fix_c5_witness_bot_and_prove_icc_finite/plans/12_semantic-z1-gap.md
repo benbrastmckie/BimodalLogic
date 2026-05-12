@@ -1,8 +1,8 @@
-# Implementation Plan: Semantic Z1 Gap Elimination via backward_G
+# Implementation Plan: Gap Elimination via Stage-Induction Restructure (v13)
 
 - **Task**: 123 - fix_c5_witness_bot_and_prove_icc_finite
-- **Status**: [NOT STARTED]
-- **Effort**: 3-5 hours
+- **Status**: [IN PROGRESS]
+- **Effort**: 5-8 hours
 - **Dependencies**: None (all prerequisite infrastructure exists sorry-free)
 - **Research Inputs**:
   - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/14_z1-derivation-research.md
@@ -24,69 +24,58 @@
 
 ### Research Integration
 
-**Reports integrated in this plan version (v12):**
-- `14_z1-derivation-research.md` (newly integrated in v12)
-- `15_stage-walk-revised.md` (newly integrated in v12)
+**Reports integrated in this plan version (v13):**
+- `14_z1-derivation-research.md` (integrated in v12)
+- `15_stage-walk-revised.md` (integrated in v12)
 - All reports from v4-v11 preserved
+- v12 implementation findings (backward_P, gap analysis)
 
-### Why Plan v12 Supersedes Plan v11
+### Why Plan v13 Supersedes Plan v12
 
-Plan v11 identified the Doets/Z1 approach as the correct strategy but identified two blockers: (1) a complex syntactic Z1 DerivationTree from Prior-UZ (~80-120 lines, no published derivation), and (2) the discriminating formula problem (finding a formula that distinguishes orbit from pred-chain points).
+Plan v12 attempted to close the gap sorry (line 1816 in `succ_cofinal`) using a semantic argument: Prior-SZ maximum principle + discriminating formula + Doets Claim 10. Implementation revealed this approach is fundamentally blocked:
 
-**Two breakthroughs resolve both blockers:**
+**Why temporal axioms cannot eliminate the gap:**
 
-1. **backward_G and backward_F are PROVED** (lines 1683-1754 of ChronicleToCountermodel.lean). These give a complete G/F truth lemma WITHOUT needing IsSuccArchimedean, breaking the circular dependency that previously forced the syntactic DerivationTree approach. The semantic Z1 approach is now viable.
+1. **Constant-MCS case**: When all limit_dom points share the same MCS M, every temporal axiom (Prior-UZ, Prior-SZ, C5-strong, backward_G/F) is trivially satisfied. Prior-UZ gives `U(phi, neg(phi))` in M, and C5-strong provides a witness at the immediate successor, with no intermediate points needing `neg(phi)`. No contradiction arises. The temporal axioms are locally consistent in the gap scenario.
 
-2. **The discriminating formula emerges from case analysis.** Instead of searching for an arbitrary discriminating formula, we use the formula phi from the FGphi witness itself. In Case B (where Gphi fails at ALL orbit points), Gphi itself distinguishes orbit points (where Gphi is false) from the FGphi witness point (where Gphi is true). The backward_G lemma propagates Gphi from the witness region back across the gap, giving a contradiction.
+2. **Non-constant-MCS case**: A discriminating formula phi exists (phi at some orbit point, neg(phi) at some pred-chain point). But the Prior-SZ maximum principle argument requires showing that the phi-set has a maximum, which requires the very IsSuccArchimedean property we are proving. The backward_G formula "propagation across the gap" is vacuous because there are no intermediate limit_dom points in the gap region.
 
-**The new approach is semantic Z1 + single-step propagation + case split**, not syntactic DerivationTree. Report 14 confirmed that no published Z1 derivation from Prior-UZ exists and estimated 100+ lines for the DerivationTree. Report 15 confirmed that backward_G enables the semantic approach and that the stage-walk alternatives remain blocked. The semantic path requires approximately 60-100 lines of new Lean code.
+3. **Z1 as axiom (Approach B)**: The soundness proof for Z1 (`G(Gphi -> phi) -> (FGphi -> Gphi)`) uses `[IsSuccArchimedean D]` as a typeclass constraint (SoundnessLemmas.lean line 2339). Adding Z1 as an axiom would create the same circularity: proving soundness requires the property we are trying to establish.
 
-### Key Mathematical Insight
+**The core insight**: The gap scenario IS consistent with all temporal axioms. The orbit {s^[n](a)} forms an infinite succ-closed chain converging to L, with succ always pointing to the next orbit point. The pred-chain {p^[k](pb)} forms an infinite pred-closed chain above L. Temporal formulas resolve within each component. Only CONSTRUCTION-LEVEL properties can rule out the gap.
 
-The sorry at line 1778 is in `succ_cofinal` for the case where the succ-orbit converges to a real limit L with L <= pred(b).val. The gap scenario has orbit points below L and pred-chain points above L with no limit_dom at L.
-
-**Why the original Doets Z1 approach does not directly apply:**
-
-The Doets Claim 10 argument (pp. 91-92) uses Z1: `G(Gphi -> phi) -> (FGphi -> Gphi)`. Applied by modus tollens at a point m where F(phi) and FG(neg(phi)) both hold, it extracts a point k with both phi and G(neg(phi)) -- the maximum of the phi-set.
-
-The original plan (v11) aimed to get Z1 into each MCS via a syntactic DerivationTree from Prior-UZ, but report 14 confirmed no published derivation exists and estimated 100+ lines. An alternative -- proving `G(Gphi -> phi)` as a theorem to get Z1 semantically -- fails because `Gphi -> phi` is the T-schema, which is NOT valid on irreflexive orders. (G is strict-future, so Gphi at a point says nothing about phi at that point. Countermodel: on naturals, set p true at x >= 2 and false at 1; then Gp is true at 1 but p is false, so G(Gp -> p) fails at 0.)
-
-**The Prior-SZ maximum principle bypasses Z1 entirely.** Instead of extracting the maximum via modus tollens on Z1, we use the past-looking Since operator: Prior-SZ (`P(phi) -> S(phi, neg(phi))`) applied from a point above the phi-set directly yields the last phi-point as the S-witness (see Step 2a for details). This avoids both the intractable DerivationTree and the invalid T-schema.
+**New strategy**: Instead of attacking the gap case in `succ_cofinal` directly, restructure the proof to:
+1. Fix `succ_reaches_dom_N` boundary cases (lines 1295, 1448) using a well-founded induction on a pair (b.val - a.val, stage) that properly handles new points entering at later stages.
+2. Derive `succ_cofinal` from the fixed `succ_reaches_dom_N`.
 
 ## Overview
 
-Close the remaining sorry in `succ_cofinal` (line 1778, the `L <= pred(b).val` gap case) using a semantic argument based on backward_G + Prior-UZ + Doets Claim 10. The approach avoids the intractable syntactic Z1 DerivationTree by leveraging the complete G/F truth lemma (backward_G/backward_F, already proved) to run the Doets maximum principle argument directly at the semantic level.
-
-**Strategy**: In the gap-at-L scenario, derive False by showing that Prior-UZ forces a maximum for any bounded definable set. Since the orbit set {s^[n](a)} is bounded above (by pred-chain points) and has no maximum (strictly increasing), any formula distinguishing orbit from non-orbit violates the maximum principle. The discriminating formula is obtained from the non-identical MCS labels of orbit vs. pred-chain points (guaranteed by the construction producing distinct chronicles at each stage).
+Close the remaining sorry sites on the IsSuccArchimedean critical path by restructuring the stage-induction proof. The five sorry sites (1295, 1448, 1512, 1816 in `succ_cofinal`) all reduce to the same fundamental problem: showing succ-iterates from any limit_dom point reach any other. Instead of attacking the gap case in `succ_cofinal`, we fix the root cause in `succ_reaches_dom_N` using a double induction on (rational distance, stage) that properly handles boundary cases where new points enter at later stages.
 
 **Definition of done**: `succ_cofinal` sorry-free. `limitDomSubtype_isSuccArchimedean` sorry-free. `dd_countermodel_chronicle_discrete` sorry-free. Full `lake build` passes.
 
 ## Goals & Non-Goals
 
 **Goals:**
-- Close the sorry at line 1778 in `succ_cofinal`
-- Prove semantic Doets Claim 10 (maximum principle) using backward_G + Prior-UZ/SZ
-- Find or construct the discriminating formula for the gap scenario
+- Close all 4 sorry sites on the IsSuccArchimedean path (lines 1295, 1448, 1512, 1816)
 - Make `limitDomSubtype_isSuccArchimedean` sorry-free
 - Make `dd_countermodel_chronicle_discrete` sorry-free
+- Preserve Phase 1 work (already COMPLETED)
 
 **Non-Goals:**
-- Modifying Phase 1 (already [COMPLETED])
-- Building a syntactic DerivationTree for Z1 from Prior-UZ (superseded by semantic approach)
-- Fixing the 2 sorry sites in `succ_reaches_dom_N` (lines 1295, 1448) -- not on critical path
-- Proving LocallyFiniteOrder
-- Solving the nondense/mixed case stubs
-- Modifying the existing convergence framework in `succ_cofinal`
+- Modifying the temporal axiom system (no new axioms)
+- Building a syntactic DerivationTree for Z1 (superseded)
+- Fixing the nondense/mixed sorry stubs (lines 839, 3268)
+- Modifying the construction internals (ChronicleConstruction.lean, CounterexampleElimination.lean)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Discriminating formula extraction is hard to formalize | H | M | Use `Classical.choice` on the set-theoretic symmetric difference of orbit vs. pred-chain MCS labels. If MCS labels are identical, derive contradiction from Prior-UZ directly (identical MCS at adjacent points means the Until witness is trivial). |
-| Semantic Claim 10 requires backward_H (past dual of backward_G) | M | M | backward_H already exists as `limit_backward_H` in ChronicleConstruction.lean. If the dual Prior-SZ approach is used, backward_P (dual of backward_F) is straightforward to prove by symmetric argument. |
-| ~~G(G(neg phi) -> neg phi) step~~ (obsolete) | -- | -- | This risk is eliminated by the Prior-SZ approach, which bypasses Z1 entirely. The formula G(Gphi -> phi) is NOT a theorem on irreflexive orders (the T-schema fails for strict-future G). |
-| limit_satisfies_c5_strong guard condition for the final step | M | L | Verify the guard condition is available. If not, use limit_F_resolution (which resolves F-formulas to witnesses) as the alternative. |
-| Proof size exceeds budget | M | L | Factor the argument into 3-4 helper lemmas. Each lemma is 15-30 lines. Total target: 60-100 lines. |
+| Well-founded induction on rational distance requires careful formalization | H | M | Use `Nat.lt_wfRel` on stage numbers combined with `WellFoundedRelation` on (stage_gap, N) lexicographic ordering. Mathlib has `Prod.Lex.wellFounded`. |
+| Boundary cases may have additional sub-cases not identified | M | M | The two boundary cases (b above max, a below min) are structurally symmetric. Handle one carefully, then mirror. Use `lean_goal` at every step. |
+| `limit_dom_points_are_succ_iterates` (line 1512) may need a different approach than fixing its dependencies | M | L | If fixing `succ_reaches_dom_N` resolves `succ_cofinal`, line 1512 becomes unreachable dead code (it's only called from `succ_cofinal`'s gap branch). May not need fixing. |
+| Alternate approach: direct `succ_cofinal` via strengthened `succ_reaches_dom_N` may not compose cleanly | H | M | Fallback: prove `succ_cofinal` by strong induction on N_first(b) (first stage b appears), using `succ_reaches_dom_N` as a helper for the case where a also appears at that stage. |
 
 ## Implementation Phases
 
@@ -96,8 +85,7 @@ Close the remaining sorry in `succ_cofinal` (line 1778, the `L <= pred(b).val` g
 | 1 | 1 | -- |
 | 2 | 2 | 1 |
 | 3 | 3 | 2 |
-
-Phases within the same wave can execute in parallel.
+| 4 | 4 | 3 |
 
 ### Phase 1: Add Imports and Prove Order.succ Equality [COMPLETED]
 
@@ -114,146 +102,169 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Semantic Doets Claim 10 and Gap Elimination [BLOCKED]
+### Phase 2: Fix `succ_reaches_dom_N` Boundary Cases [NOT STARTED]
 
-**Goal**: Close the sorry at line 1778 in `succ_cofinal` by proving the gap-at-L scenario contradicts the Doets maximum principle, using backward_G + Prior-UZ/SZ semantically.
+**Goal**: Close the two sorry sites at lines 1295 and 1448 in `succ_reaches_dom_N`.
 
-This phase has four sub-steps that build on each other.
+These boundary cases occur when one of a, b is a "new point" at stage N+1 that falls outside the range of dom(N) -- either above max(dom(N)) or below min(dom(N)).
 
-#### Step 2a: Prior-SZ Maximum Principle (~20-30 lines)
+#### Strategy: Succ/Pred Squeeze via Immediate Successor Property
 
-**Location**: Inline in the sorry branch, or as a helper lemma above `succ_cofinal`.
+The key insight: in the boundary case where b > max(dom(N)) and b is the unique new point at stage N+1, we have succ(max_N_sub) as the nearest limit_dom point above max_N. By the immediate successor property (no limit_dom between max_N_sub and succ(max_N_sub)):
 
-**Goal**: Build a "maximum principle" lemma: given a bounded definable set of limit_dom points, extract the maximum element using Prior-SZ.
+1. b is a limit_dom point > max_N, so b >= succ(max_N_sub).
+2. succ(max_N_sub) is a limit_dom point > max_N, so succ(max_N_sub) > max_N.
+3. If b = succ(max_N_sub): IH gives succ^[k](a) = max_N_sub, so succ^[k+1](a) = b. Done.
+4. If b > succ(max_N_sub): succ(max_N_sub) is a limit_dom point strictly between max_N and b.
+   - succ(max_N_sub) is NOT in dom(N) (since > max_N = max of dom(N)).
+   - succ(max_N_sub) is in some dom(M) for M > N.
+   - b is in dom(N+1) but not dom(N).
+   - By `dom_new_unique` at stage N: if BOTH succ(max_N_sub) and b are in dom(N+1)\dom(N), then succ(max_N_sub) = b, contradicting b > succ(max_N_sub).
+   - So succ(max_N_sub) is NOT in dom(N+1)\dom(N), meaning succ(max_N_sub) is in dom(N) or not in dom(N+1).
+   - succ(max_N_sub) is not in dom(N) (since > max_N). So succ(max_N_sub) is not in dom(N+1).
+   - But succ(max_N_sub) is in limit_dom = union of all dom(M). So succ(max_N_sub) is in dom(M) for some M > N+1.
+   - Now: both succ(max_N_sub) and b are in dom(M) (since dom is monotone: dom(N+1) subset dom(M)).
+   - Apply the IH at stage M: succ^[j](succ(max_N_sub)) = b.
+   - Combined with succ^[k](a) = max_N_sub: succ^[k+1+j](a) = b. Done.
 
-**Why not simpler approaches**: One might hope that `G(Gphi -> phi)` is a theorem (which would give Z1 semantically via modus tollens), but `Gphi -> phi` is the T-schema for G, which is NOT valid on irreflexive orders -- G is strict-future, so Gphi at a point says nothing about phi at that same point. (Countermodel: on naturals, set p true at all x >= 2 and false at 1; then Gp is true at 1 but p is false, so Gp -> p fails at 1, making G(Gp -> p) false at 0.) A direct semantic argument using Prior-UZ to iteratively extract phi/neg(phi) witnesses also fails because showing the iteration terminates requires IsSuccArchimedean -- the very thing we are proving.
+Wait -- the IH is on N (the stage). At stage N+1, the IH gives us results for stage N. To apply IH at stage M > N+1, we need the IH to cover stage M, which requires M <= N. But M > N+1 > N. So the IH doesn't cover stage M.
 
-**The Prior-SZ maximum principle** (from report 14 Section 5.3) avoids both problems by extracting the maximum in a single step using the past-looking Since operator:
+This is the fundamental issue. The standard induction on N doesn't give us the IH for later stages.
 
-Given a discriminating formula phi and a point b_upper above the phi-set where neg(phi) holds:
-1. P(phi) holds at b_upper (since phi holds at some earlier point, by backward_P).
-2. Prior-SZ gives S(phi, neg(phi)) at b_upper: the nearest PAST phi-point k < b_upper with neg(phi) at all z in (k, b_upper).
-3. k is the last phi-point below b_upper: phi at k, neg(phi) at all z with k < z <= b_upper.
-4. If neg(phi) holds at ALL points above k (extend via backward_G if needed), then k is the absolute maximum of the phi-set.
+**Fix**: Change the induction to be on `(N, a, b)` using well-founded induction with a carefully chosen measure that DECREASES even when we move to a later stage. The measure should be something like "the number of limit_dom points NOT in dom(N) that are between a and b." But this is hard to formalize.
 
-This requires:
-1. Prior-SZ as a theorem in every MCS (available via `Axiom.prior_SZ` + `theorem_in_mcs`)
-2. S-resolution: if S(phi, neg(phi)) in limit_f(x), extract the witness y < x with phi at y and neg(phi) between
-3. A discriminating formula phi (Step 2b)
+**Alternative fix**: Strengthen `succ_reaches_dom_N` to an EQUIVALENT but better-structured formulation.
 
-**The S-resolution step requires the C4 witness resolution infrastructure.** This exists as `limit_satisfies_c4_strong` or similar. Need to verify.
+**Better alternative**: Prove `succ_cofinal` DIRECTLY without going through `succ_reaches_dom_N`, using a new approach.
+
+#### Alternative Strategy: Direct Proof of `succ_cofinal`
+
+Instead of fixing `succ_reaches_dom_N`, prove `succ_cofinal` directly by showing the gap case (L <= pred(b).val) leads to a contradiction via a construction-level argument:
+
+**Approach: Use `dom_new_unique` + the gap structure to show that a new limit_dom point MUST be inserted in the gap at some stage.**
+
+In the gap scenario: orbit points converge to L from below, pred-chain points are at/above L. Between any orbit point and any pred-chain point, there is a gap with no limit_dom points (besides other orbit/pred-chain points).
+
+But consider: at some stage N, the domain contains some orbit points (s^[0](a), ..., s^[k](a)) and the pred-chain point pb. At stage N, the next counterexample to process might be a C4 counterexample (x, y, xi, eta, c4_forward) with x = some orbit point and y = pb. If `neg(U(eta, xi)) in f_N(x)` and `eta in f_N(y)`, then the construction places a point z between x and y with xi.neg in f(z). This z is in the gap!
+
+The question: does such a C4 counterexample always exist? If the MCS labels of orbit and pred-chain points are different (non-constant case), then there exist formulas distinguishing them, potentially creating C4 counterexamples. If constant MCS, the C4 counterexamples are trivially resolved (no counterexamples exist).
+
+But we showed the constant-MCS case is consistent with temporal axioms. So in the constant-MCS case, no C4 or C5 counterexamples force new points into the gap, and the gap persists.
+
+This means the construction-level argument via `dom_new_unique` alone is insufficient. We need a COMBINATION of construction properties and temporal logic.
+
+#### Recommended Strategy: Nat.find on omega_chain stages
+
+**The cleanest approach**: Rewrite `succ_reaches_dom_N` using strong induction on the FIRST STAGE where both a and b appear. The key: instead of inducting on N and trying to handle boundary cases, define:
+
+```
+N_max(a, b) := max(N_first(a), N_first(b))
+```
+
+where `N_first(x)` is the first stage where x enters dom. Then induct on `N_max(a, b)`.
+
+At stage `N_max`, both a and b are in `dom(N_max)`. The IH: for any a', b' with `N_max(a', b') < N_max(a, b)`, succ^[k](a') = b'.
+
+When a and b are both OLD points at stage `N_max` (i.e., both in `dom(N_max - 1)`): `N_max(a, b) <= N_max - 1 < N_max`, so IH applies.
+
+When exactly one is new (the point that defines `N_max`): the other is in dom(N) for N = N_max - 1. The new point is the unique new point at stage N_max. It's between adjacent dom(N) points (w, w_next) with w < new_pt < w_next, OR above max(dom(N)), OR below min(dom(N)).
+
+For the "between" case: IH gives succ^[k](a) reaching w or w_next. Orbit convexity gives the result.
+
+For the "above max" boundary case: IH gives succ^[k](a) = max_N_sub. succ(max_N_sub) >= b. But b might be > succ(max_N_sub). In that case, succ(max_N_sub) is a limit_dom point in (max_N, b.val). N_first(succ(max_N_sub)) = some M. Since succ(max_N_sub) > max_N and max_N = max of dom(N), M > N. We need:
+
+N_max(succ(max_N_sub), b) = max(M, N_first(b)) = max(M, N_max)
+
+If M < N_max: then N_max(succ(max_N_sub), b) = N_max, NOT strictly less. IH doesn't apply.
+If M > N_max: then N_max(succ(max_N_sub), b) > N_max. IH doesn't apply in this direction.
+If M = N_max: same stage. succ(max_N_sub) in dom(N_max). But succ(max_N_sub) not in dom(N). If N_max = N + 1, then succ(max_N_sub) in dom(N+1)\dom(N). By dom_new_unique, succ(max_N_sub) = b (the unique new point). Done.
+
+Wait, what if M = N_max = N + 1? Then succ(max_N_sub) is in dom(N+1). And succ(max_N_sub) > max_N, so not in dom(N). So succ(max_N_sub) is in dom(N+1)\dom(N). b is also in dom(N+1)\dom(N). By dom_new_unique, succ(max_N_sub) = b. This gives succ^[k+1](a) = succ(max_N_sub) = b. Done!
+
+But what if M > N + 1? Then succ(max_N_sub) is not in dom(N+1). And b IS in dom(N+1). succ(max_N_sub) and b are distinct limit_dom points with succ(max_N_sub) < b (we assumed b > succ(max_N_sub)). But between max_N_sub and succ(max_N_sub), there is NO limit_dom point (immediate successor). So b > succ(max_N_sub) means b is above succ(max_N_sub).
+
+In this case: succ(max_N_sub) is a limit_dom point not in dom(N+1). b is in dom(N+1). succ(max_N_sub) enters at stage M > N+1.
+
+Now consider: N_max(a, succ(max_N_sub)) = max(N_first(a), M). If M > N_max = max(N_first(a), N_first(b)):
+- N_first(a) <= N < N_max
+- N_first(b) = N+1 = N_max
+- M > N_max
+
+So N_max(a, succ(max_N_sub)) = M > N_max. The IH (which covers values < N_max) doesn't help.
+
+And N_max(succ(max_N_sub), b) = max(M, N+1) = M. Again > N_max. No help.
+
+So the Nat.find / N_max induction ALSO fails for this boundary case when succ(max_N_sub) enters at a much later stage.
+
+**The fundamental mathematical difficulty**: The succ function on limit_dom can "jump" to a point that enters the domain at a much later stage than the original point. The stage induction cannot track these jumps.
+
+This means we need an entirely different approach.
+
+#### Final Strategy: Convergence + Intermediate Value for Limit_Dom
+
+**The cleanest viable approach**: Replace the sorry at line 1816 in `succ_cofinal` (and the sorry at line 1512 in `limit_dom_points_are_succ_iterates`) with a direct convergence argument.
+
+The argument for `limit_dom_points_are_succ_iterates`:
+Given: s^[n](a) <= z for all n, and s^[n](a) < z for all n (by contradiction hypothesis).
+
+1. The rational sequence s^[n](a).val is strictly increasing and bounded above by z.val.
+2. Cast to reals: the real sequence converges to some L <= z.val with s^[n](a).val < L for all n.
+3. z is a limit_dom point with z.val >= L.
+4. pred(z) is a limit_dom point with pred(z).val < z.val.
+5. Case A: pred(z).val < L. Then eventually s^[n](a).val > pred(z).val. This means s^[n](a) > pred(z) for large n. Since s^[n](a) < z and no limit_dom between pred(z) and z, we need s^[n](a) = z. But s^[n](a) < z. Contradiction if n is large enough AND s^[n](a) is between pred(z) and z, since succ(pred(z)) = z and no limit_dom between.
+6. Case B: pred(z).val >= L. Then s^[n](a) <= pred(z) for all n (since s^[n](a).val < L <= pred(z).val). Apply the same argument with pred(z) instead of z.
+
+Case B leads to infinite descent: z -> pred(z) -> pred^2(z) -> .... But in Case A, we get a concrete contradiction.
+
+The question is: does the infinite descent always reach Case A? If pred^[k](z).val stays >= L for all k, then we have an infinite strictly decreasing sequence of rationals bounded below by L. Such a sequence converges to some L' >= L. If L' = L, then pred^[k](z).val approaches L, and eventually pred^[k](z).val < L + epsilon. But we need pred^[k](z).val < L, not just close to it.
+
+Wait, we need pred^[k](z).val < L for the case A argument. But L is the limit of the orbit, and pred^[k](z).val >= L for all k (case B assumption). So we never reach case A.
+
+This is the gap scenario again. The infinite descent stays in case B forever, and we can't get a contradiction.
+
+**The gap scenario IS the unsolved problem.** After exhaustive analysis, I believe the most promising approach is:
+
+#### Recommended Strategy: Well-Founded Induction on Finset.card
+
+**Approach**: Prove `succ_reaches_dom_N` using well-founded induction on `(omega_chain_val A h_mcs N).dom.card - (Set of dom(N) points in [a.val, b.val]).card` -- i.e., the number of dom(N) points NOT in the interval [a,b]. Actually, induct on `(b.val - a.val)` as a non-negative rational with some measure that strictly decreases.
+
+Actually, the best approach given the constraints:
+
+**Approach**: Prove a helper lemma: for any limit_dom point z with a < z, succ^[n](a) reaches z for some n, by induction on the FIRST STAGE where z enters. At that stage, z is the unique new point between adjacent dom(N) points w and w_next (or beyond max). IH covers w and w_next (which entered at earlier stages). Orbit convexity from w to w_next gives the result.
+
+The boundary cases (z beyond max/below min) are handled by the fact that z is the new point at its first stage, and the adjacent bracket can always be found (since a < z and a is in an earlier stage).
 
 **Tasks:**
-- [ ] Verify S-resolution / C4-backward witness infrastructure exists (check `limit_satisfies_c4'_strong` or `limit_S_resolution`)
-- [ ] Verify backward_P exists or prove it (dual of backward_F: if phi in limit_f(y) for some y < x, then P(phi) in limit_f(x))
-- [ ] Verify `Axiom.prior_SZ` exists and can be put into MCS via theorem_in_mcs
-- [ ] Build the maximum principle lemma from Prior-SZ (~20-30 lines)
+- [ ] Formulate the helper lemma: `succ_reaches_first_stage` using strong induction on `N_first(z)` (the first stage where z enters dom)
+- [ ] Handle the case where z is between adjacent dom(N_first(z)-1) points
+- [ ] Handle the boundary case: z above max(dom(N_first(z)-1)) -- show that a is below z, so a <= max(dom(N_first(z)-1)) < z, giving adjacent bracket (max, z)
+- [ ] Handle the boundary case: z below min(dom(N_first(z)-1)) -- show this is impossible when a < z and a enters at an earlier stage
+- [ ] Derive `succ_cofinal` from the fixed `succ_reaches_dom_N` or from `succ_reaches_first_stage` directly
 - [ ] Verify with `lean_goal` and `lean_verify`
 
-**Timing**: 1 hour
+**Timing**: 3-4 hours
 **Depends on**: Phase 1
-
-#### Step 2b: Find the discriminating formula (~20-40 lines)
-
-**Location**: Within the sorry branch of `succ_cofinal`.
-
-**Statement**: In the gap-at-L scenario, there exists a formula phi such that phi holds at some point in the orbit region but neg(phi) holds at some point in the pred-chain region (or vice versa).
-
-**Approach 1 (Classical choice from non-equal MCS)**: Show that there exist orbit point m and pred-chain point c with `limit_f(m.val) <> limit_f(c.val)` (as sets of formulas). Then `Classical.choice` on the symmetric difference gives a formula that is in one but not the other. If all orbit-pred-chain MCS pairs were equal, derive contradiction from Prior-UZ (the argument from report 14 Section 4.6 -- constant MCS labels force trivial Until witnesses, but the gap structure creates a non-trivial Until obligation).
-
-**Approach 2 (backward_G propagation)**: Pick ANY formula psi in limit_f(some pred-chain point c). By backward_G: if psi holds at ALL limit_dom points above some orbit point m, then G(psi) in limit_f(m). The formula G(psi) is the candidate discriminating formula. Either G(psi) in limit_f(m) for some orbit point (Case A) or neg(G(psi)) at all orbit points (Case B). In Case B, F(neg(psi)) at all orbit points, meaning neg(psi) occurs somewhere above each orbit point. If neg(psi) occurs above EVERY orbit point, it must occur at pred-chain points (since orbit points exhaust the domain below L). This contradicts psi in limit_f(c) unless the neg(psi) point is between the orbit point and c.
-
-**Approach 3 (Direct from gap + non-degeneracy)**: The omega-chain construction produces distinct chronicles at each stage. At the stage where a pred-chain point enters, the BurgessR3Maximal or BurgessL3Maximal extension gives an MCS that satisfies specific counterexample requirements. These requirements introduce formulas that may not hold at orbit points. Use `counterexample_enum` properties to extract a specific formula.
-
-**Recommended**: Start with Approach 1 (most general). Fall back to Approach 3 if Approach 1 proves insufficient.
-
-**Tasks:**
-- [ ] Attempt to show orbit and pred-chain MCS labels differ (by Prior-UZ non-constancy or construction properties)
-- [ ] Extract discriminating formula via `Classical.choice` on set symmetric difference
-- [ ] Handle the case where MCS labels might be equal (derive contradiction directly)
-- [ ] Verify with `lean_goal`
-
-**Timing**: 1-1.5 hours
-**Depends on**: Step 2a (needs backward_G infrastructure context)
-
-#### Step 2c: Apply Doets Claim 10 to derive contradiction (~30-50 lines)
-
-**Location**: Within the sorry branch of `succ_cofinal` (replacing the sorry at line 1778).
-
-**Core argument** (Doets pp. 91-92, adapted to use Prior-SZ instead of Z1):
-
-Given the gap-at-L scenario and discriminating formula phi (from Step 2b):
-
-Without loss of generality, assume phi holds at some orbit point n0 and neg(phi) holds at some pred-chain point c0. (If reversed, swap phi and neg(phi).)
-
-1. **phi-set is bounded above**: The set S = {x in limit_dom | phi in limit_f(x)} intersected with [a.val, b.val] contains orbit point n0 but neg(phi) holds at c0 (a pred-chain point above all orbit points). So S is bounded above by c0.
-
-2. **Apply Prior-SZ maximum principle (from Step 2a)**: At c0, P(phi) holds (since n0 < c0 and phi at n0, by backward_P which is the P-analog of backward_F -- if phi at y and y < x then P(phi) at x). Prior-SZ gives S(phi, neg(phi)) at c0. The S-witness k < c0 has phi at k and neg(phi) at all z in (k, c0). So k is the maximum of S below c0.
-
-3. **k is the absolute maximum of S in [a, b]**: phi at k, neg(phi) at all z with k < z <= c0. What about z > c0? If neg(phi) holds at all pred-chain points above c0 as well (which it may not -- we only know neg(phi) at c0), we need to extend the argument. Use backward_G: if there exist arbitrarily large pred-chain points with neg(phi), then neg(phi) holds at ALL sufficiently large points, giving G(neg(phi)) at some bound, giving neg(phi) above that bound.
-
-4. **k has phi AND G(neg(phi))**: If neg(phi) holds at all z > k in limit_dom (i.e., k is the absolute maximum of S), then by backward_G, G(neg(phi)) in limit_f(k). So k has both phi and G(neg(phi)).
-
-5. **k cannot be an orbit point**: If k = s^[j](a), then succ(k) = s^[j+1](a) is the next orbit point. G(neg(phi)) at k means neg(phi) at succ(k). But succ(k) is an orbit point. Does phi hold at succ(k)? Not necessarily -- the discriminating formula may hold at SOME orbit points but not all. The argument requires that phi holds at ALL orbit points above some threshold.
-
-**Revised argument using the correct discriminating formula**:
-
-The difficulty above shows that we need a more careful choice of phi. The ideal phi is one where:
-- phi holds at ALL orbit points (or all sufficiently late orbit points), AND
-- neg(phi) holds at ALL pred-chain points (or all sufficiently late pred-chain points)
-
-**Construction of such phi**: By backward_G, for any formula psi, if psi holds at ALL limit_dom points above some orbit point m, then G(psi) in limit_f(m). Now consider: pick any formula psi in limit_f(pred-chain point c). If psi also holds at ALL orbit points s^[n](a) for n >= some N, then psi holds at ALL limit_dom points above s^[N](a) (since every limit_dom point above s^[N](a) and below L is an orbit point by orbit_below_L, and psi holds at those; and every limit_dom point above L is a pred-chain point or above, and we need to handle those separately).
-
-**The simplest viable argument**: Use the fact that in the gap scenario, the orbit is cofinal from below toward L and the pred-chain is coinitial from above toward L. Pick any pred-chain point c = p^[K](pb). The predecessor pred(c) = p^[K+1](pb) is another pred-chain point. The successor succ(c) = p^[K-1](pb) is the previous pred-chain point (for K >= 1).
-
-Now consider: by backward_G at orbit point m = s^[0](a) = a with psi = top (trivially true everywhere): G(top) in limit_f(a). This is vacuously true and uninformative.
-
-**The fundamental resolution**: The discriminating formula problem and the maximum principle application need to be done together, not separately. Here is the unified argument:
-
-Given the gap scenario (orbit below L, pred-chain above L), we prove False by showing that backward_G creates a formula that "jumps" across the gap:
-
-1. Pick any pred-chain point c and any orbit point m with m < c.
-2. Consider any formula psi in limit_f(c) such that psi.neg in limit_f(m) (or vice versa). (If no such psi exists, the MCS labels are equal -- handle separately.)
-3. Assume psi in limit_f(c) and psi.neg in limit_f(m) (WLOG).
-4. All limit_dom points y with m < y and y.val < L are orbit points (orbit_below_L). Among these orbit points, EITHER:
-   (a) psi holds at all of them eventually (for n >= some N, psi in limit_f(s^[n](a))), or
-   (b) psi.neg holds at infinitely many orbit points.
-5. Case (a): psi at all orbit points above s^[N](a), and psi at c (a pred-chain point). Then psi at ALL limit_dom points above s^[N](a) -- both orbit and pred-chain. By backward_G at s^[N](a): G(psi) in limit_f(s^[N](a)). By limit_forward_G: psi at all y > s^[N](a), including m if m > s^[N](a). But psi.neg at m. If m <= s^[N](a), pick a later orbit point m' = s^[N+1](a): does psi.neg at m'? Not if psi at all orbit points >= N. Contradiction with psi.neg at m only if m < s^[N](a). Since m can be s^[0](a) = a and N could be 0, we need m = a and psi.neg at a but psi at all s^[n](a) for n >= 0. So psi at s^[0](a) = a. But psi.neg at m = a. Contradiction.
-
-   Actually: in Case (a), psi holds at all orbit points from some point on. The contradiction comes from psi.neg at m (which IS an orbit point). If m = s^[j](a) and psi at all s^[n](a) for n >= N, then for j >= N, psi at s^[j](a) = m, contradicting psi.neg at m. If j < N, pick the discriminating formula between m and s^[N](a) instead.
-
-6. Case (b): psi.neg holds at infinitely many orbit points. Then among orbit points, psi.neg is COFINAL (for any orbit point, there is a later orbit point with psi.neg). Apply Prior-UZ at such an orbit point: F(psi.neg) -> U(psi.neg, psi). The Until witness gives the nearest future psi.neg point, with psi at all intermediate points. This creates a "psi-block" followed by a psi.neg point. But psi holds at c (pred-chain). And psi.neg is cofinal in the orbit. So the psi-blocks and psi.neg points interleave infinitely below L.
-
-   In this case, consider the LAST orbit point where psi holds (if it exists). Actually, the interleaving might not have a "last" -- but the orbit converges to L, and the psi/psi.neg pattern cannot accumulate at L (because L is not a limit_dom point). Use Prior-UZ to show the psi-set has both a maximum and psi.neg is cofinal, giving a contradiction with the maximum principle.
-
-**This analysis shows the argument is intricate but viable.** The implementation should proceed step by step, with `lean_goal` verification at each stage.
-
-**Tasks:**
-- [ ] Set up the gap scenario context (extract hypotheses from the sorry branch)
-- [ ] Apply Prior-SZ maximum principle with the discriminating formula
-- [ ] Handle Case A (formula holds at all orbit points) -- derive contradiction via backward_G
-- [ ] Handle Case B (formula fails at infinitely many orbit points) -- derive contradiction via Prior-UZ maximum principle
-- [ ] Replace the sorry at line 1778
-- [ ] Verify with `lean_goal` and `lean_verify`
-
-**Timing**: 1.5-2 hours
-**Depends on**: Steps 2a, 2b
-
-#### Step 2d: Wire up and Verify (~10-20 lines)
-
-**Location**: Verify `succ_cofinal` is sorry-free, which makes `limitDomSubtype_isSuccArchimedean` sorry-free.
-
-**Tasks:**
-- [ ] `lean_verify` on `succ_cofinal` -- no sorry
-- [ ] `lean_verify` on `limitDomSubtype_isSuccArchimedean` -- no sorry
-- [ ] `lean_verify` on `dd_countermodel_chronicle_discrete` -- no sorry
-
-**Timing**: 0.5 hour
-**Depends on**: Step 2c
 
 ---
 
-### Phase 3: Verification and Cleanup [NOT STARTED]
+### Phase 3: Derive `succ_cofinal` and `limitDomSubtype_isSuccArchimedean` [NOT STARTED]
+
+**Goal**: Wire up the boundary-case fixes to close the main sorry sites.
+
+**Tasks:**
+- [ ] Close sorry at line 1816 in `succ_cofinal` using the fixed stage induction
+- [ ] Close sorry at line 1512 in `limit_dom_points_are_succ_iterates` (if still needed; may become dead code)
+- [ ] Verify `succ_cofinal` is sorry-free
+- [ ] Verify `limitDomSubtype_isSuccArchimedean` is sorry-free
+- [ ] Verify `succ_embed_surjective` is sorry-free (depends on IsSuccArchimedean)
+- [ ] Verify `dd_countermodel_chronicle_discrete` is sorry-free
+
+**Timing**: 1-2 hours
+**Depends on**: Phase 2
+
+---
+
+### Phase 4: Verification and Cleanup [NOT STARTED]
 
 **Goal**: Verify compilation and sorry elimination downstream. Clean up dead code if appropriate.
 
@@ -264,10 +275,10 @@ Given the gap scenario (orbit below L, pred-chain above L), we prove False by sh
 - [ ] `lean_verify` on `dd_countermodel_chronicle_discrete` -- no sorry
 - [ ] Grep for sorry confirms only nondense/mixed stubs remain
 - [ ] Full `lake build` passes
-- [ ] Optionally: remove `succ_reaches_dom_N` and related dead code, or mark with comments
+- [ ] Optionally: remove dead code from failed approaches (convergence analysis, infinite descent comments)
 
 **Timing**: 0.5-1 hour
-**Depends on**: 2
+**Depends on**: Phase 3
 
 ## Testing & Validation
 
@@ -281,52 +292,91 @@ Given the gap scenario (orbit below L, pred-chain above L), we prove False by sh
 
 ## Artifacts & Outputs
 
-- **Plan**: `specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/12_semantic-z1-gap.md` (this file)
+- **Plan**: `specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/12_semantic-z1-gap.md` (this file, v13)
 - **Modified/created files**:
-  - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- close sorry in `succ_cofinal`, add maximum principle and discriminating formula lemmas
+  - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- close sorries in `succ_reaches_dom_N`, `succ_cofinal`, and `limit_dom_points_are_succ_iterates`
 - **Summary**: `specs/123_fix_c5_witness_bot_and_prove_icc_finite/summaries/12_semantic-z1-gap-summary.md` (after implementation)
 
 ## Rollback/Contingency
 
 Theorem statements unchanged. Rollback: `git checkout` the modified files.
 
-If the semantic Doets/Prior-SZ approach proves intractable:
+If the stage-induction restructure proves intractable:
 
-1. **Fallback A: Syntactic Z1 DerivationTree** (40% confidence, 80-120 lines): Build the full DerivationTree for Z1 from Prior-UZ + BX axioms. Report 14 provides a derivation sketch using Prior-UZ(G(phi)) + BX5 + discreteness. This is the original plan v11 approach. Complex but theoretically sound.
+1. **Fallback A: Prove `succ_cofinal` by replacing `succ_reaches_dom_N` entirely** (60% confidence, 150-250 lines): Write a completely new proof of `succ_cofinal` that directly uses well-founded induction on a carefully chosen measure combining rational distance and stage count. The measure must strictly decrease at each step, which requires showing that each succ step either reaches a point in an earlier stage or reduces the distance.
 
-2. **Fallback B: Add Z1 as an axiom with soundness proof** (70% confidence, 30-50 lines): Add Z1 as a new axiom to the proof system with a direct soundness proof (`z1_is_valid`). This changes the axiom system but is mathematically justified (Z1 is valid on all discrete linear orders). The soundness proof requires showing `G(G(phi) -> phi) -> (FG(phi) -> G(phi))` is valid, which is a standard model-theoretic argument on discrete linear orders. Note: this proof ALSO needs IsSuccArchimedean to formalize the model-theoretic argument, creating the same circularity unless we prove soundness specifically for the limit model using construction properties.
+2. **Fallback B: Add a helper axiom `IsSuccArchimedean` for `LimitDomSubtype` with a `sorry` and document as an accepted gap** (100% confidence, 5 lines): Add `axiom limitDomSubtype_isSuccArchimedean_axiom` and use it in place of the current definition. This is mathematically justified (the property IS true) but leaves a formalization gap. The sorry count in the critical path goes to 0 (replaced by an axiom), but there's a philosophical gap.
 
-3. **Fallback C: Stage induction boundary cases** (30% confidence, 100-200 lines): Return to plan v10's `succ_reaches_dom_N` and close the boundary sorry sites (lines 1295, 1448). These remain hard for the same reasons identified in plans v9/v10.
+3. **Fallback C: Bypass IsSuccArchimedean entirely** (40% confidence, 200-400 lines): Restructure the discrete completeness pipeline to avoid `succ_embed_surjective`. Instead of constructing BFMCS on Z via succ_embed, construct it directly on LimitDomSubtype using the existing discrete_fmcs and adding the coherence properties without surjectivity. This requires significant refactoring of `cantor_bfmcs_discrete` and its downstream uses.
 
-4. **Last resort**: Leave sorry with detailed documentation of the gap.
+4. **Last resort**: Leave sorry with detailed documentation of the gap and the exhaustive analysis of why temporal axioms are insufficient.
 
 ### Implementation Guidance for the Agent
 
-**Preferred approach order**: Try the Prior-SZ maximum principle first (Step 2a). This avoids both the Z1 DerivationTree and the semantic Z1 argument. If the S-resolution infrastructure is missing, build it (dual of C5 resolution). If the discriminating formula is hard to extract, try Approach 3 (construction-specific properties).
+**Preferred approach**: Start with the "succ_reaches_first_stage" helper lemma. Induct on the first stage where the TARGET point enters the domain. The key case split is whether the target is between adjacent earlier-stage points or at a boundary.
+
+**Key insight for boundary cases**: When z is the unique new point at stage N+1 and z > max(dom(N)):
+- The construction placed z there because of a counterexample resolution.
+- a is in dom(M) for some M <= N (since a entered earlier).
+- a.val <= max(dom(N)) (since a is in dom(N) by monotonicity).
+- So max(dom(N)) is a limit_dom point between a and z, in an earlier stage.
+- IH gives succ^[k](a) reaches max(dom(N)) (as a LimitDomSubtype element).
+- Then succ(max_N_sub) is the next limit_dom point. Either succ(max_N_sub) = z (done) or succ(max_N_sub) < z.
+- If succ(max_N_sub) < z: succ(max_N_sub) entered at stage M' > N. Since M' < N+1 or M' = N+1 or M' > N+1.
+  - If M' = N+1: dom_new_unique gives succ(max_N_sub) = z. Contradiction with < z.
+  - If M' > N+1: succ(max_N_sub) is between max(dom(N)) and z. z entered at N+1. succ(max_N_sub) entered at M' > N+1.
+  - N_first(succ(max_N_sub)) = M' > N+1 = N_first(z). So the induction on N_first doesn't help (the intermediate point has a LATER first-stage than the target).
+
+**This is the fundamental obstruction. The succ function can create a point whose first-stage is LATER than the target's first-stage, blocking the induction.**
+
+Given this obstruction, the recommended implementation order is:
+1. First attempt the `succ_reaches_first_stage` approach with the hope that the boundary case where M' > N+1 is impossible (i.e., succ(max_N_sub) always enters at stage N+1 when z is at N+1).
+2. If step 1 fails, verify whether succ(max_N_sub) MUST be in dom(N+1) when z is in dom(N+1) and z > max(dom(N)). This might follow from the construction: z was placed beyond max(dom(N)), so z is the nearest point to max_N. If succ(max_N_sub) <= z and z is the nearest limit_dom above max_N, then succ(max_N_sub) = z.
+
+**Wait -- this IS true!** succ(max_N_sub) is the NEAREST limit_dom point above max_N. z is a limit_dom point above max_N (z > max_N). So succ(max_N_sub) <= z. If succ(max_N_sub) < z: then succ(max_N_sub) is a limit_dom point in (max_N, z). But z is the NEAREST limit_dom point above max_N? No -- z is just A limit_dom point above max_N, not necessarily the nearest. succ(max_N_sub) IS the nearest.
+
+So succ(max_N_sub) <= z. But succ(max_N_sub) might be < z, with succ(max_N_sub) being a different limit_dom point between max_N and z.
+
+If there's a limit_dom point between max_N and z: that point is NOT in dom(N) (since max_N is the max of dom(N)). It might or might not be in dom(N+1). If it IS in dom(N+1): then both it and z are in dom(N+1)\dom(N), and dom_new_unique gives them equal. But they're not equal (one < other). Contradiction.
+
+So if succ(max_N_sub) is in dom(N+1): dom_new_unique gives succ(max_N_sub) = z (since both are in dom(N+1)\dom(N) and succ(max_N_sub) <= z). If succ(max_N_sub) < z: they're distinct, contradiction with dom_new_unique. So succ(max_N_sub) = z.
+
+If succ(max_N_sub) is NOT in dom(N+1): then succ(max_N_sub) is a limit_dom point in (max_N, z) that's not in dom(N+1). Since z IS in dom(N+1): z is the unique new point. And succ(max_N_sub) < z but not in dom(N+1). So there's a limit_dom point between max_N and z not in dom(N+1).
+
+But succ(max_N_sub) is the nearest limit_dom above max_N. z is also above max_N. So succ(max_N_sub) <= z. If strictly less: succ(max_N_sub) is in (max_N, z) and not in dom(N+1). Since dom(N) subset dom(N+1), and succ(max_N_sub) not in dom(N) (above max), and not in dom(N+1)... succ(max_N_sub) enters at some later stage.
+
+But z IS in dom(N+1). z > succ(max_N_sub). Between succ(max_N_sub) and z: there might be no other limit_dom point (succ of succ(max_N_sub) might be z or beyond). But succ(max_N_sub) itself is between max_N and z.
+
+The issue: succ(max_N_sub) is in (max_N, z), not in dom(N+1). z is the unique new point in dom(N+1). succ(max_N_sub) is a "ghost" point that enters later.
+
+This CAN happen. The construction at stage N+1 adds z (perhaps as a C5 witness for some counterexample), and the succ of max_N_sub (the next limit_dom point after max_N in the FULL limit domain) might be some other point that enters much later.
+
+So the induction DOES have a genuine difficulty in the boundary case.
+
+**The key question for the implementer**: Can we prove that succ(max_N_sub) is always in dom(N+1) when z is in dom(N+1) and z > max_N? If yes, the boundary case is solved. If no, we need Fallback A or B.
 
 **Key codebase APIs** (verified available):
-- `backward_G` (ChronicleToCountermodel.lean:1683): phi at all y > x -> G(phi) at x (PROVED, no IsSuccArchimedean)
-- `backward_F` (ChronicleToCountermodel.lean:1728): phi at y, y > x -> F(phi) at x (PROVED, no IsSuccArchimedean)
+- `backward_G` (ChronicleToCountermodel.lean:1683): phi at all y > x -> G(phi) at x (PROVED)
+- `backward_F` (ChronicleToCountermodel.lean:1728): phi at y, y > x -> F(phi) at x (PROVED)
+- `backward_P` (ChronicleToCountermodel.lean:1803): phi at y, y < x -> P(phi) at x (PROVED)
 - `limit_forward_G` (ChronicleConstruction.lean:1035): G(phi) at x, y > x -> phi at y
 - `limit_backward_H` (ChronicleConstruction.lean:1089): H(phi) at x, y < x -> phi at y
-- `limit_F_resolution` (ChronicleConstruction.lean): F(phi) at x -> exists y > x, phi at y
-- `theorem_in_mcs` (MaximalConsistent.lean:476): derivable formulas are in every MCS
-- `limit_c0` (ChronicleConstruction.lean:590): limit_f(x) is SetMaximalConsistent
-- `SetMaximalConsistent.implication_property`: modus ponens in MCS
-- `SetMaximalConsistent.negation_complete`: phi or neg(phi) in MCS
-- `set_consistent_not_both`: MCS cannot contain phi and neg(phi)
+- `limit_F_resolution` (ChronicleConstruction.lean:689): F(phi) at x -> exists y > x, phi at y
+- `limit_P_resolution` (ChronicleConstruction.lean:710): P(phi) at x -> exists y < x, phi at y
+- `limit_satisfies_c5_strong` (ChronicleConstruction.lean:1440): U(eta,xi) at x -> witness with guard
+- `limit_satisfies_c5'_strong` (ChronicleConstruction.lean:1483): S(eta,xi) at x -> witness with guard
+- `omega_chain_dom_new_unique` (ChronicleConstruction.lean:1196): at most one new point per stage
+- `omega_chain_dom_mono` (ChronicleConstruction.lean:314): dom(N) subset dom(N+1)
+- `omega_chain_f_agrees` (ChronicleConstruction.lean:323): f agrees on old domain points
+- `theorem_in_mcs` (Core/MaximalConsistent.lean:476): derivable formulas in every MCS
 - `Axiom.prior_UZ` (Axioms.lean:377): F(phi) -> U(phi, neg(phi))
-- `Axiom.prior_SZ`: P(phi) -> S(phi, neg(phi))
 - `succ_orbit_convex` (ChronicleToCountermodel.lean:1112): orbit passes through intermediates
 - `limitDomSubtype_succ_lt`: a < succ(a)
 - `limitDomSubtype_pred_lt`: pred(b) < b
 - `limitDomSubtype_succ_pred`: succ(pred(b)) = b
-- `orbit_below_L` (in sorry branch): limit_dom points with value < L are orbit points
-- `h_lt_pred_chain` (in sorry branch): all orbit points < all pred-chain points
-- `h_pred_chain_ge_L` (in sorry branch): pred-chain values >= L
 
-**Where to insert code**: The sorry is at line 1778 in the `else` branch of `succ_cofinal`. The branch has `h_case : L <= (pb.val : R)` plus all the gap scenario hypotheses (orbit_below_L, h_lt_pred_chain, h_pred_chain_ge_L, backward_G, backward_F) in scope. Insert the maximum principle and contradiction argument here, replacing the sorry.
+**Where to insert code**: The sorry sites are at lines 1295, 1448 (in `succ_reaches_dom_N`), line 1512 (in `limit_dom_points_are_succ_iterates`), and line 1816 (in `succ_cofinal`). The primary target is either fixing 1295/1448 to make `succ_reaches_dom_N` sorry-free, or replacing the `succ_cofinal` proof entirely.
 
-**Classical logic**: Use `Classical.em`, `Classical.choice`, `by_contra`, `Decidable` instances freely. The codebase uses classical reasoning throughout.
+**Classical logic**: Use `Classical.em`, `Classical.choice`, `by_contra`, `Decidable` instances freely.
 
-**Critical constraint**: Do NOT attempt the syntactic Z1 DerivationTree. Reports 14 and 15 both confirm it is intractable without a published derivation to follow. Use the semantic approach with backward_G/backward_F and Prior-UZ/SZ.
+**Critical constraint**: Do NOT attempt the semantic Z1 approach (plans v11-v12). The implementation summary confirmed it is blocked by the constant-MCS case. Do NOT attempt adding Z1 as an axiom (circular with IsSuccArchimedean). Focus on construction-level / stage-induction approaches.

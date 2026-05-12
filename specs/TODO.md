@@ -35,7 +35,7 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **123** [IMPLEMENTING] — Fix C5 witness placement, prove Icc_finite (in progress)
+1. **123** [PLANNED] — Fix C5 witness placement, prove Icc_finite (in progress)
 2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123)
 
 ### Phase 2: Axiom System Cleanup

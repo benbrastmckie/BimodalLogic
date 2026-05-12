@@ -24,13 +24,13 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-12T21:34:21Z",
+      "last_updated": "2026-05-12T21:55:53Z",
       "next_artifact_number": 9,
       "artifacts": [
         {
@@ -99,16 +99,16 @@
           "summary": "Comprehensive analysis: bot-guard adjacency + choose-N approach recommended (90% confidence)"
         },
         {
-          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/12_semantic-z1-gap.md",
-          "type": "plan"
-        },
-        {
           "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/summaries/12_semantic-z1-gap-summary.md",
           "type": "summary",
           "summary": "Partial: proved backward_P, built gap infrastructure, sorry remains — blocked on discriminating formula for constant-MCS case"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/12_semantic-z1-gap.md",
+          "type": "plan"
         }
       ],
-      "session_id": "sess_1778619293_1bf3ac",
+      "session_id": "sess_1778621786_5c4f53",
       "started": "2026-05-11T14:06:20Z",
       "completed": "2026-05-11T16:40:49Z",
       "archived": "2026-05-11T16:55:47Z",
