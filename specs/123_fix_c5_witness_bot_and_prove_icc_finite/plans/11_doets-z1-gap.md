@@ -111,9 +111,9 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Z1 Derivation and Gap Elimination [NOT STARTED]
+### Phase 2: Z1 Derivation and Gap Elimination [IN PROGRESS]
 
-**Goal**: Close the sorry at line 1645 in `succ_cofinal` by proving the gap-at-L scenario contradicts Z1.
+**Goal**: Close the sorry at line 1684 (was 1645, shifted by structural lemmas) in `succ_cofinal` by proving the gap-at-L scenario contradicts Z1.
 
 This phase has four sub-steps that build on each other.
 
@@ -153,13 +153,17 @@ theorem z1_semantic_validity (A : Set Formula) (h_mcs : SetMaximalConsistent A)
 ```
 
 **Tasks:**
-- [ ] Investigate whether syntactic Z1 derivation or semantic Z1 validity is more tractable
-- [ ] If syntactic: build `DerivationTree` for Z1 from Prior-UZ
-- [ ] If semantic: prove Z1 holds directly on the limit model using `prior_UZ_is_valid` and the succ/pred structure
+- [x] Investigate whether syntactic Z1 derivation or semantic Z1 validity is more tractable
+  - FINDING: Semantic approach has circular dependency (needs backward G truth lemma, which needs IsSuccArchimedean). Syntactic approach (DerivationTree) is required.
+- [x] Prove backward_G (backward G truth lemma) -- DONE, breaks the circularity
+- [x] Prove backward_F (backward F truth lemma) -- DONE, uses forward_G contrapositive
+- [ ] Build `DerivationTree` for Z1 from Prior-UZ (main remaining work)
+- [ ] Apply Doets Claim 10 to derive contradiction in gap scenario
 - [ ] Verify with `lean_goal` and `lean_verify`
 
 **Timing**: 1-2 hours
 **Depends on**: Phase 1
+**Status notes**: Investigated extensively. Semantic approach blocked by circular dependency. Syntactic DerivationTree approach is the only viable path. See `handoffs/01_phase2-gap-analysis.md` for detailed analysis.
 
 #### Step 2b: Establish Non-Constant MCS Labels (~20-40 lines)
 
@@ -210,13 +214,14 @@ Without loss of generality, assume phi holds at orbit points and neg phi holds a
    - But m is an orbit point with phi in limit_f(m). `G(neg phi)` at m means neg phi at all future points. But s^[n+1](a) > m is a future orbit point with phi. Contradiction.
 
 **Tasks:**
-- [ ] Set up the gap-at-L scenario with the discriminating formula phi
+- [x] Set up the gap-at-L scenario structural lemmas (h_lt_pb, orbit_below_L, h_lt_pred_chain, h_pred_chain_ge_L) -- DONE, lines 1613-1675
+- [ ] Find discriminating formula phi (from Step 2b)
 - [ ] Prove that the phi-set is bounded above with no maximum
 - [ ] Prove `F(G(neg phi))` at orbit points (from above-orbit structure)
 - [ ] Prove `G(G(neg phi) -> neg phi)` at orbit points (from G-transitivity / truth lemma)
 - [ ] Apply Z1 to get `G(neg phi)` at orbit point m
 - [ ] Derive contradiction with phi at future orbit point
-- [ ] Replace the `sorry` at line 1645
+- [ ] Replace the `sorry` at line 1684 (was 1645, shifted by structural lemmas)
 
 **Timing**: 1.5-2 hours
 **Depends on**: Steps 2a, 2b

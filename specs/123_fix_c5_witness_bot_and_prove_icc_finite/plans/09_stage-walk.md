@@ -130,7 +130,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Stage-Walk Proof [NOT STARTED]
+### Phase 2: Stage-Walk Proof [BLOCKED]
 
 **Goal**: Replace the convergence proof body of `limitDomSubtype_isSuccArchimedean` (lines 1196-1402) with a stage-walk proof that chooses N large enough and walks through resolved C5-bot witnesses.
 
