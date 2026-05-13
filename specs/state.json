@@ -819,32 +819,48 @@
     {
       "project_number": 133,
       "project_name": "simplify_bx2_remove_pointwise",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Axiom minimality: remove BX2/BX2' (left_mono_until/since) constructors and derive them as theorems from BX2G/BX2G' (left_mono_until_G/left_mono_since_H). Under open-guard semantics (t,s), the pointwise conjunct (phi->chi) in BX2 is redundant since t is not in the guard interval. BX2G (G(phi->chi) -> untl(phi,psi) -> untl(chi,psi)) suffices. All 15+ call sites of untl_left_mono_thm derive G(phi->chi) via temporal necessitation, so BX2G works at every site. Removes 2 constructors + soundness proofs + match arms. Related: task 115 research report Section 4.1 established BX2G subsumes BX2 under open-guard semantics.",
       "created": "2026-05-13T20:47:01Z",
-      "last_updated": "2026-05-13T20:57:34Z",
+      "last_updated": "2026-05-13T21:03:04Z",
       "language": "lean4",
       "related_tasks": [
         115
       ],
-      "next_artifact_number": 1,
-      "session_id": "sess_1778705795_4c1cb7"
+      "next_artifact_number": 2,
+      "session_id": "sess_1778705795_4c1cb7",
+      "researched": "2026-05-13T21:03:04Z",
+      "artifacts": [
+        {
+          "path": "specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md",
+          "type": "research_report",
+          "summary": "Complete analysis of BX2 removal: 30 call sites verified, all use theorem-level derivations making BX2G sufficient."
+        }
+      ]
     },
     {
       "project_number": 134,
       "project_name": "restructure_lemma_2_7_seeds_xu_3_2_1",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Simplify lemma_2_7/lemma_2_7_since seed construction using Xu 3.2.1. The current seed includes explicit U/S formulas ({untl(gamma,beta) : gamma in C, beta in B} union {snce(alpha,beta) : ...}), requiring a ~400-line BX5+BX7+BX13 consistency proof (lemma_2_7_seed_consistent). With Xu 3.2.1 (proved in task 115), these U/S formulas are already in B* (the R-maximal extension), so the seed simplifies to B* union {eta} with trivial consistency via dcs_neg_union_consistent. This is a simplification (current proofs are sorry-free and work), not a correctness fix. Must verify lemma_2_7 output type (including eta in D and xi in B') still satisfies CounterexampleElimination.lean callers.",
       "created": "2026-05-13T20:47:01Z",
-      "last_updated": "2026-05-13T20:57:41Z",
+      "last_updated": "2026-05-13T21:04:59Z",
       "language": "lean4",
       "related_tasks": [
         115
       ],
-      "next_artifact_number": 1,
-      "session_id": "sess_1778705795_4c1cb7"
+      "next_artifact_number": 2,
+      "session_id": "sess_1778705795_4c1cb7",
+      "researched": "2026-05-13T21:04:59Z",
+      "artifacts": [
+        {
+          "path": "specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/reports/01_seed-restructure-research.md",
+          "type": "research_report",
+          "summary": "Seed reduces from 5 to 3 components. Components 3-4 redundant via Xu 3.2.1. Component 5 essential. ~700-900 lines removable."
+        }
+      ]
     },
     {
       "project_number": 135,
