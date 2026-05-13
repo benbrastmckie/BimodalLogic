@@ -39,7 +39,7 @@ technical_debt:
 2. ~~**115**~~ [COMPLETED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
 3. ~~**135**~~ [COMPLETED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
 4. ~~**136**~~ [COMPLETED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
-5. **133** [IMPLEMENTING] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
+5. ~~**133**~~ [COMPLETED] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
 6. **134** [RESEARCHED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
 7. ~~**132**~~ [COMPLETED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
 
@@ -128,11 +128,14 @@ technical_debt:
 
 ### 133. Simplify BX2: remove pointwise conjunct, derive from BX2G
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-13
+- **Summary**: Removed BX2/BX2' constructors (43->41 axioms). Rewrote 7 usages to BX2G/BX2H, removed 20 match arms, 2 validity proofs. Lake build clean.
 - **Language**: lean4
 - **Related**: 115
 - **Research**: [specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md]
 - **Plan**: [133_simplify_bx2_remove_pointwise/plans/01_simplify-bx2-remove-pointwise.md]
+- **Summary**: [specs/133_simplify_bx2_remove_pointwise/summaries/01_simplify-bx2-remove-pointwise-summary.md]
 
 **Description**: Axiom minimality: remove BX2/BX2' (left_mono_until/since) constructors and derive them as theorems from BX2G/BX2G' (left_mono_until_G/left_mono_since_H). Under open-guard semantics (t,s), the pointwise conjunct (phi->chi) in BX2 is redundant since t is not in the guard interval. BX2G (G(phi->chi) -> untl(phi,psi) -> untl(chi,psi)) suffices. All 15+ call sites of untl_left_mono_thm derive G(phi->chi) via temporal necessitation, so BX2G works at every site. Removes 2 constructors + soundness proofs + match arms. Related: task 115 research report Section 4.1 established BX2G subsumes BX2 under open-guard semantics.
 
