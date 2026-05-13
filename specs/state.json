@@ -24,13 +24,13 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-12T23:20:56Z",
+      "last_updated": "2026-05-13T01:20:02Z",
       "next_artifact_number": 10,
       "artifacts": [
         {
@@ -113,7 +113,7 @@
           "summary": "Prior-UZ requires IsSuccArchimedean — modular hierarchy recommendation"
         }
       ],
-      "session_id": "sess_1778628049_e6d2c8",
+      "session_id": "sess_1778635007_bdb6d8",
       "started": "2026-05-11T14:06:20Z",
       "completed": "2026-05-11T16:40:49Z",
       "archived": "2026-05-11T16:55:47Z",
@@ -635,9 +635,22 @@
       ],
       "session_id": "sess_1778518750_c8b856",
       "researched": "2026-05-11T17:11:05Z"
+    },
+    {
+      "project_number": 126,
+      "project_name": "split_discrete_integer_frame_hierarchy",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Split DiscreteTemporalFrame into DiscreteTemporalFrame (SuccOrder + PredOrder, no IsSuccArchimedean, no Prior-UZ) and IntegerTemporalFrame (+ IsSuccArchimedean, + Prior-UZ/SZ). Move Prior-UZ/SZ soundness to integer level. Rename soundness_discrete to soundness_integer. Add valid_integer predicate. The discrete logic targets all discrete linear orders (including Z+Z); the integer logic targets Z specifically. Discrete completeness (new countermodel for Z+Z) is future work beyond this task. Based on research report specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/09_prior-uz-issucc-analysis.md.",
+      "dependencies": [
+        123
+      ],
+      "created": "2026-05-13T01:17:13Z",
+      "last_updated": "2026-05-13T01:17:13Z",
+      "next_artifact_number": 1
     }
   ],
-  "next_project_number": 126,
+  "next_project_number": 127,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,18 +1,12 @@
-# Implementation Plan: Z1 Derivation and Gap Elimination (v14)
+# Implementation Plan: Z1 Axiom and Doets Gap Elimination (v15)
 
 - **Task**: 123 - fix_c5_witness_bot_and_prove_icc_finite
-- **Status**: [IN PROGRESS]
-- **Effort**: 6-10 hours
-- **Dependencies**: None (all prerequisite infrastructure exists sorry-free)
+- **Status**: [NOT STARTED]
+- **Effort**: 6-8 hours
+- **Dependencies**: None
 - **Research Inputs**:
-  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/14_z1-derivation-research.md
-  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/15_stage-walk-revised.md
-  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_team-research.md
-  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_teammate-a-irr-rule.md
-  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_teammate-b-z1-proofs.md
-  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_teammate-c-construction-dynamics.md
-  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_teammate-d-online-search.md
-  - All prior reports from rounds 04-12 (integrated in plans v4-v10)
+  - specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/09_prior-uz-issucc-analysis.md (key finding: Prior-UZ requires IsSuccArchimedean, Z1 not derivable)
+  - All prior reports from rounds 04-14 (integrated in plans v4-v14)
 - **Artifacts**: plans/12_semantic-z1-gap.md (this file)
 - **Standards**:
   - .claude/context/formats/plan-format.md
@@ -24,63 +18,57 @@
 
 ### Research Integration
 
-**Reports integrated in this plan version (v14):**
-- `14_z1-derivation-research.md` (integrated in v12)
-- `15_stage-walk-revised.md` (integrated in v12)
-- All reports from v4-v11 preserved
-- v12 implementation findings (backward_P, gap analysis)
-- v13 exhaustive stage-induction analysis (confirmed blocked)
-- Session research findings: Z1 derivation approach, Doets maximum principle, Reynolds fallback
+**Reports integrated in this plan version (v15):**
+- `09_prior-uz-issucc-analysis.md` (newly integrated in v15 — key finding)
+- All reports from v4-v14 preserved
 
-### Why Plan v14 Supersedes Plan v13
+### Why Plan v15 Supersedes Plan v14
 
-Plan v13 attempted stage-induction restructuring (`succ_reaches_dom_N` boundary cases, N_max induction, Finset.card measures). Exhaustive analysis proved ALL stage-induction approaches are blocked by the same fundamental obstruction: the succ function on limit_dom can jump to points entering at arbitrarily later stages, making stage-based induction measures non-decreasing.
+Plan v14 attempted to derive Z1 syntactically from Prior-UZ + BX axioms. This was confirmed **impossible**: Z1 is not a theorem of the discrete logic. Counterexample: ω+ω* (and ℤ+ℤ) satisfies all BX axioms and Prior-UZ but Z1 fails. Z1 characterizes IsSuccArchimedean specifically.
+
+**Further critical discovery**: Prior-UZ itself is invalid on ℤ+ℤ. The soundness proof `prior_UZ_is_valid` genuinely requires `[IsSuccArchimedean D]` (uses `exists_succ_iterate` to find nearest witnesses). This means the current "discrete logic" is actually the "integer logic" — it targets ℤ specifically, not all discrete linear orders.
+
+**Resolution**: Add Z1 as an axiom with soundness proved using `[IsSuccArchimedean D]` on abstract frames. No circularity — soundness is for abstract ℤ-like frames, not the limit model. The limit model has Z1 in every MCS (because it's an axiom → derivable → `theorem_in_mcs`), enabling the Doets maximum principle to prove IsSuccArchimedean of the limit model.
+
+The frame hierarchy split (separating discrete from integer frame classes) is deferred to task 126.
 
 **Confirmed blocked approaches (do NOT attempt):**
-1. Stage-induction on N in `succ_reaches_dom_N` (boundary cases unprovable)
-2. N_max(a,b) induction (intermediate succ points enter at later stages)
-3. Finset.card measures (same stage-jumping problem)
-4. Z1-as-axiom (circular: soundness proof requires IsSuccArchimedean)
-5. Direct semantic gap contradiction (constant-MCS case is consistent with all temporal axioms)
-
-**New strategy**: Two-track approach using syntactic derivation:
-
-1. **Primary (Phase 2)**: Derive Z1 = `G(Gp -> p) -> (FGp -> Gp)` as a `DerivationTree [] Z1` from Prior-UZ + BX axioms. This is a SYNTACTIC proof, not a new axiom, so no soundness proof is needed and no circularity arises. Once Z1 is derived, `theorem_in_mcs` puts it into every MCS.
-
-2. **Gap closure (Phase 3)**: With Z1 in every MCS, apply the Doets maximum principle argument to eliminate the gap in `succ_cofinal`. The argument is ~15-20 lines using existing backward_G/F infrastructure.
-
-3. **Fallback (Phase 4)**: If Phase 2 proves intractable, adapt Reynolds 1994's contemporaneous equivalence argument, which uses a different (more infrastructure-heavy) path to the same conclusion.
+1. Z1 derivation from Prior-UZ (Z1 is NOT a theorem of the axiom system)
+2. Stage-induction on `succ_reaches_dom_N` (boundary cases unprovable)
+3. Direct semantic gap contradiction (constant-MCS case is consistent with temporal axioms)
+4. Frozen succ-links invariant (already fully exploited for SuccOrder, cannot give IsSuccArchimedean)
 
 ## Overview
 
-Close the remaining sorry site at line 1816 in `succ_cofinal` (and downstream IsSuccArchimedean) by deriving the Z1 axiom syntactically from Prior-UZ and existing BX axioms. Z1 is `G(Gp -> p) -> (FGp -> Gp)`, the syntactic correspondent of the IsSuccArchimedean frame condition. Once Z1 is a theorem (DerivationTree), `theorem_in_mcs` places it in every MCS, enabling the Doets maximum principle argument to show every definable bounded set has a maximum, which contradicts the gap scenario.
+Close the remaining sorry in `succ_cofinal` by adding Z1 as an axiom with a soundness proof, then using Z1 in every MCS to apply the Doets maximum principle argument. Z1 is `G(Gφ→φ) → (FGφ→Gφ)`, valid on all IsSuccArchimedean discrete linear orders. Once Z1 is in every MCS, any bounded definable set has a maximum, which contradicts the gap scenario.
 
 **Definition of done**: `succ_cofinal` sorry-free. `limitDomSubtype_isSuccArchimedean` sorry-free. `dd_countermodel_chronicle_discrete` sorry-free. Full `lake build` passes.
 
 ## Goals & Non-Goals
 
 **Goals:**
-- Derive Z1 as a `DerivationTree [] (G(Gp -> p) -> (FGp -> Gp))` from Prior-UZ + BX axioms
-- Use Z1 + Doets maximum principle to close the sorry at line 1816 in `succ_cofinal`
+- Add Z1 as an axiom constructor in `Axiom` inductive type
+- Prove Z1 soundness with `[IsSuccArchimedean D]` (backward induction on succ chain)
+- Update all axiom pattern matches (~8 theorems) to handle the new constructor
+- Use Z1 + Doets maximum principle to close the sorry in `succ_cofinal`
 - Make `limitDomSubtype_isSuccArchimedean` sorry-free
 - Make `dd_countermodel_chronicle_discrete` sorry-free
-- Preserve Phase 1 work (already COMPLETED)
 
 **Non-Goals:**
+- Splitting DiscreteTemporalFrame into discrete + integer hierarchy (task 126)
+- Deriving Z1 syntactically (confirmed impossible)
 - Fixing stage-induction boundary cases (confirmed blocked)
-- Adding Z1 as a new axiom (circular with soundness)
-- Fixing the nondense/mixed sorry stubs (lines 839, 3268)
-- Modifying the construction internals (ChronicleConstruction.lean, CounterexampleElimination.lean)
-- Modifying the axiom system
+- Fixing nondense/mixed sorry stubs
+- Reynolds contemporaneous equivalence approach (unnecessary if Z1 works)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Z1 derivation tree is large/complex (50-100 lines) | M | M | Break into 3-4 helper lemmas. Use existing Propositional/TemporalDerived infrastructure. Start with simplest sub-derivation. |
-| Derivation uses proof steps not available in the current axiom system | H | L | The axiom system includes Prior-UZ, temp_k_dist, temporal_necessitation, propositional tautologies, and modus ponens -- sufficient per published proofs. |
-| Doets maximum principle argument requires additional backward lemmas | M | L | backward_G, backward_F, backward_P all proved. limit_F_resolution and limit_P_resolution available. |
-| Reynolds fallback requires 200-300 lines of new infrastructure | H | L | Only needed if Phase 2 fails. Well-documented in Reynolds 1994. |
+| Adding axiom constructor requires updating many pattern matches | M | H | Systematic: grep for `cases.*Axiom` and `match.*Axiom`, add Z1 arm to each. Agent 2 found ~8 theorems with ~40 arms total. |
+| Z1 soundness proof is complex | M | L | The backward induction argument is standard. Use `exists_succ_iterate` + `Nat.find` (same pattern as `prior_UZ_is_valid`). |
+| Doets maximum principle needs discriminating formula | M | M | In the constant-MCS case, argue from construction properties that no gap can arise. In the non-constant case, extract discriminating formula via `Classical.choice` on MCS symmetric difference. |
+| Constant-MCS gap case is hard to rule out | H | M | Use the fact that backward_G gives G(φ) for all φ in the constant MCS. Then G(Gφ→φ) is trivially in every MCS, and FGφ→Gφ follows. The gap scenario with constant MCS may actually be consistent with Z1 but contradicted by the construction producing identical succ-orbits. Alternative: show MCS can't be constant when orbit ≠ pred-chain. |
 
 ## Implementation Phases
 
@@ -90,8 +78,7 @@ Close the remaining sorry site at line 1816 in `succ_cofinal` (and downstream Is
 | 1 | 1 | -- |
 | 2 | 2 | 1 |
 | 3 | 3 | 2 |
-| 4 | 4 | 3 (fallback, only if 2 fails) |
-| 5 | 5 | 3 or 4 |
+| 4 | 4 | 3 |
 
 ### Phase 1: Add Imports and Prove Order.succ Equality [COMPLETED]
 
@@ -108,538 +95,233 @@ Close the remaining sorry site at line 1816 in `succ_cofinal` (and downstream Is
 
 ---
 
-### Phase 2: Z1 Derivation from Prior-UZ [BLOCKED]
+### Phase 2: Add Z1 Axiom and Prove Soundness [NOT STARTED]
 
-**Goal**: Construct a `DerivationTree [] z1_formula` where `z1_formula = G(Gp -> p) -> (FGp -> Gp)`.
+**Goal**: Add Z1 as a new axiom constructor and prove it sound on IsSuccArchimedean frames.
 
-This is the critical phase. Z1 must be derived purely syntactically from the existing BX axiom system (including Prior-UZ). The derivation tree will be 50-100 lines of Lean code.
+#### Step 2a: Add Z1 constructor to Axiom inductive (~5 lines)
 
-#### Sub-step 2.1: Define Z1 formula and helper abbreviations
+**Location**: `Theories/Bimodal/ProofSystem/Axioms.lean`
 
-Create a section in ChronicleToCountermodel.lean (or a new helper file if cleaner) with:
-
+Add a new constructor:
 ```lean
--- Z1: G(Gp -> p) -> (FGp -> Gp)
--- Using a fixed propositional variable, say Formula.atom 0
-private def z1_var : Formula := Formula.atom 0
-private def z1_formula : Formula :=
-  (z1_var.all_future.imp z1_var).all_future.imp
-    (z1_var.all_future.some_future.imp z1_var.all_future)
+| z1 (φ : Formula) : Axiom ((φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future))
 ```
 
-Note: The derivation must work for ALL formulas (universally), not just a fixed atom. Since `theorem_in_mcs` needs `DerivationTree [] (z1_formula_for phi)` for each phi, we need a parametric derivation: `def z1_derivation (phi : Formula) : DerivationTree [] (z1_formula_of phi)`.
+This represents Z1: `G(Gφ→φ) → (FGφ→Gφ)`.
 
-#### Sub-step 2.2: Derive key intermediate lemmas
+#### Step 2b: Update axiom classification (~10 lines)
 
-The derivation strategy from Prior-UZ:
+In the same file, update:
+- `Axiom.isDenseCompatible`: add `| z1 _ => False` (Z1 needs IsSuccArchimedean, like Prior-UZ)
+- `Axiom.isDiscreteCompatible`: add `| z1 _ => True`
+- `Axiom.isBase`: add `| z1 _ => False`
+- `Axiom.frameClass`: add `| z1 _ => .Discrete`
+- Any other classification predicates
 
-**Lemma A**: `⊢ F(phi) -> U(phi, neg(phi))` -- this IS Prior-UZ (`Axiom.prior_UZ phi`), available directly.
+#### Step 2c: Prove Z1 soundness (~30-50 lines)
 
-**Lemma B**: `⊢ G(phi -> psi) -> (G(phi) -> G(psi))` -- this IS temp_k_dist, available directly.
-
-**Lemma C (key step)**: `⊢ G(G(neg phi) -> neg phi) -> (F(G(neg phi)) -> G(neg phi))`
-
-Derivation sketch for Lemma C:
-1. From Prior-UZ with `G(neg phi)`: `⊢ F(G(neg phi)) -> U(G(neg phi), neg(G(neg phi)))`
-2. From temp_4: `⊢ G(neg phi) -> G(G(neg phi))` (i.e., G(neg phi) is self-reinforcing)
-3. From temp_k_dist with `(G(neg phi) -> neg phi)`: `⊢ G(G(neg phi) -> neg phi) -> (G(G(neg phi)) -> G(neg phi))`
-4. Combine: if `G(G(neg phi) -> neg phi)` holds and `F(G(neg phi))` holds:
-   - By (1), `U(G(neg phi), neg(G(neg phi)))` holds
-   - The Until gives a witness s > t where `G(neg phi)` holds at s, with `neg(G(neg phi))` at all intermediate points
-   - By (2), `G(neg phi)` at s gives `G(G(neg phi))` at s
-   - By (3) + hypothesis, `G(neg phi)` at s gives `neg phi` at all points beyond s (and also at s itself by the G premise)
-   - The Until witness with `neg(G(neg phi))` guard is vacuous when the event `G(neg phi)` is self-propagating
-   - Result: `G(neg phi)` propagates from the witness to all future points
-
-**Alternative derivation strategy (contrapositively)**:
-
-Z1 is `G(Gp -> p) -> (FGp -> Gp)`. Contrapositive of the consequent gives:
-`G(Gp -> p) -> (neg(Gp) -> neg(FGp))`, i.e., `G(Gp -> p) -> (Fp' -> G(Fp'))` where `p' = neg p`.
-
-This says: under the hypothesis `G(Gp -> p)`, if `Fp'` holds, then `G(Fp')` holds. This is a form of "persistence of eventuality" under the well-ordering hypothesis.
-
-Yet another way: `G(Gp -> p) -> (FGp -> Gp)` is equivalent to `G(Gp -> p) ∧ FGp -> Gp`.
-
-Assume `G(Gp -> p)` and `FGp`. Need `Gp`.
-- By Prior-UZ on `Gp`: `F(Gp) -> U(Gp, neg(Gp))`
-- So `U(Gp, neg(Gp))`.
-- Until gives: exists s > t with `Gp` at s, `neg(Gp)` at all r in (t,s).
-- `Gp` at s means `p` at all r > s.
-- For any r in (t,s): `neg(Gp)` at r, so `F(neg p)` at r. But `Gp` at s means `p` at s, and all q > s have `p` at q. So `neg p` must occur in (r, s).
-- Hmm, let r be the last point in (t,s) (if discrete). Then `neg(Gp)` at r means `F(neg p)` at r. The next point after r is s (no points between r and s by "last point" + discreteness). So `neg p` must hold at some q > r, and the nearest such q is s or beyond s. But `p` holds at s (from `Gp` at s). So `neg p` doesn't hold at s.
-- Actually, from `Gp` at s, p holds at all points strictly after s, AND the hypothesis `G(Gp -> p)` gives: at s, `Gp -> p`, so if `Gp` at s then `p` at s. Wait -- `G(Gp -> p)` means "for all r > t, Gp -> p at r". At s > t, `Gp` at s implies `p` at s.
-- Now `neg(Gp)` at r means there exists q > r with `neg p` at q. Since r < s, and `p` holds at s and all points > s, `neg p` must hold at some q with r < q < s. But in the discrete case, if r is pred(s), there are no points between r and s, contradiction.
-
-This sketch shows the derivation needs discreteness (U(top,bot)) to work. The full derivation should use:
-1. Prior-UZ on `Gp`: gives Until witness structure
-2. The until guard `neg(Gp)` at intermediate points
-3. Discreteness: between r and s (adjacent), no intermediate points exist
-4. `G(Gp -> p)` hypothesis: converts `Gp` at s to `p` at s
-5. Contradiction: `neg(Gp)` at pred(s) needs `neg p` between pred(s) and s, but no such point exists
-
-#### Sub-step 2.3: Build the DerivationTree
-
-The derivation tree uses these constructors:
-- `DerivationTree.axiom [] phi (Axiom.prior_UZ psi)` -- introduces Prior-UZ instance
-- `DerivationTree.axiom [] phi (Axiom.temp_k_dist a b)` -- introduces G-distribution
-- `DerivationTree.axiom [] phi (Axiom.temp_4 a)` -- introduces G-transitivity
-- `DerivationTree.modus_ponens [] a b d1 d2` -- applies modus ponens
-- `DerivationTree.temporal_necessitation phi d` -- from `[] ⊢ phi` derive `[] ⊢ G(phi)`
-- `DerivationTree.weakening [] [] phi d h` -- weakening (usually identity)
-
-Available propositional helpers from `Bimodal.Theorems.Propositional`:
-- `double_negation (phi)` : `⊢ neg(neg(phi)) -> phi`
-- `contrapositive` from TemporalDerived: `⊢ (A -> B) -> (neg B -> neg A)`
-- `raa (A B)` : `⊢ A -> (neg A -> B)`
-- `ecq (A B)` : `[A, neg A] ⊢ B`
-- `classical_merge (P Q)` : `⊢ (P -> Q) -> ((neg P -> Q) -> Q)`
-
-Available temporal helpers from `Bimodal.Theorems.TemporalDerived`:
-- `G_distribution (phi psi)` : `⊢ G(phi -> psi) -> (G(phi) -> G(psi))`
-- `G_transitivity (phi)` : `⊢ G(phi) -> G(G(phi))`
-- `G_bot_absurd` : `⊢ G(bot) -> bot`
-- `until_implies_some_future (phi psi)` : `⊢ U(phi, psi) -> F(phi)`
-- `psi_imp_until (phi psi)` : `⊢ psi -> U(phi, psi)` (event immediately -> Until)
-- `until_imp_or (phi psi)` : `⊢ U(phi, psi) -> phi ∨ F(psi)`
-- `until_imp_F (phi psi)` : `⊢ U(phi, psi) -> F(phi)`
-
-The derivation should be structured as a `def` returning `DerivationTree [] (z1_formula_of phi)`.
-
-**Critical implementation note**: The derivation does NOT need to go through the full generality of Reynolds or Doets. It only needs to produce a well-typed `DerivationTree` term. The Lean type checker verifies correctness. So the implementer should:
-1. State the goal type precisely
-2. Use `lean_goal` to inspect what's needed at each step
-3. Build bottom-up from axiom instances
-
-#### Sub-step 2.4: Register Z1 as a theorem
-
-After building the derivation tree:
+**Location**: `Theories/Bimodal/Metalogic/SoundnessLemmas.lean`, near `prior_UZ_is_valid`.
 
 ```lean
-def z1_theorem (phi : Formula) : DerivationTree [] (z1_formula_of phi) := ...
-
--- Then in the succ_cofinal proof:
-have h_z1_in_mcs : z1_formula_of phi ∈ limit_f A h_mcs x.val :=
-  theorem_in_mcs (limit_c0 A h_mcs x.val x.property) (z1_theorem phi)
+theorem z1_is_valid
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (φ : Formula) : is_valid D ((φ.all_future.imp φ).all_future.imp
+        (φ.all_future.some_future.imp φ.all_future)) := by
+  intro F M Omega h_sc τ h_mem t
+  simp only [truth_at]
+  intro h_GGpIp h_FGp
+  -- h_GGpIp : ∀ s > t, (∀ r > s, truth_at ... r φ) → truth_at ... s φ
+  -- h_FGp : ¬(∀ s > t, ¬(∀ r > s, truth_at ... r φ))
+  -- i.e., ∃ s > t, ∀ r > s, truth_at ... r φ
+  -- Goal: ∀ s > t, truth_at ... s φ
+  sorry -- backward induction from the Gφ witness
 ```
+
+The proof uses backward induction:
+1. From `FGφ` at t: ∃ s₀ > t with Gφ at s₀ (i.e., φ at all r > s₀)
+2. By `[IsSuccArchimedean D]`: s₀ = succ^[n₀](succ(t)) for some n₀
+3. At s₀: Gφ holds. By G(Gφ→φ): Gφ→φ at s₀, so φ at s₀.
+4. At pred(s₀) = succ^[n₀-1](succ(t)): φ at s₀ and all r > s₀, so Gφ at pred(s₀). By G(Gφ→φ): φ at pred(s₀).
+5. Repeat downward: φ at succ^[k](succ(t)) for all k ≤ n₀.
+6. Therefore φ at all r > t, i.e., Gφ at t.
+
+This is the same `Nat.find` + well-founded descent pattern as `prior_UZ_is_valid`.
+
+#### Step 2d: Update all axiom pattern matches (~40-60 lines across ~8 theorems)
+
+Every theorem that pattern-matches on `Axiom` needs a new arm for `z1`. Find them with:
+```bash
+grep -rn "cases.*h_ax\|cases.*h\b.*with\|match.*Axiom\|Axiom\." Theories/Bimodal/Metalogic/Soundness*.lean | grep -v "^--"
+```
+
+Key theorems to update:
+- `axiom_locally_valid_general` (SoundnessLemmas.lean) — add `| z1 _ => by simp [Axiom.isDenseCompatible] at hdc`
+- `axiom_swap_valid_general` (SoundnessLemmas.lean) — same
+- `axiom_locally_valid_discrete` (SoundnessLemmas.lean) — add `| z1 φ => z1_is_valid φ`
+- `axiom_swap_valid_discrete` (SoundnessLemmas.lean) — add Z1 swap case
+- `axiom_base_valid` (Soundness.lean) — add absurd case (Z1 is not base)
+- `axiom_valid_discrete` (Soundness.lean) — add Z1 case
+- `axiom_valid_dense` (Soundness.lean) — add absurd case
+- Any other `Axiom` matchers
+
+Also update:
+- `Axiom.swap_temporal` or related if it exists
+- `Axiom.toString` or `repr` if it exists
+- Any `Axiom.decEq` or decidability instances
+
+#### Step 2e: Update DerivationTree compatibility (~5 lines)
+
+If `DerivationTree.isDenseCompatible` or `isDiscreteCompatible` recurse into axioms, they should automatically handle Z1 via the updated `Axiom.isDenseCompatible`.
 
 **Tasks:**
-- [ ] Define `z1_formula_of (phi : Formula)` abbreviation
-- [ ] Build helper derivation: Prior-UZ instance for `G(neg phi)` (1 line)
-- [ ] Build helper derivation: temp_4 instance (1 line)
-- [ ] Build helper derivation: combine Prior-UZ + temp_4 + temp_k_dist into Z1 (30-80 lines)
-- [ ] Test with `lean_verify` that the derivation type-checks
-- [ ] Verify `theorem_in_mcs` can consume the derivation
+- [ ] Add `z1` constructor to `Axiom` inductive
+- [ ] Update axiom classification predicates
+- [ ] Prove `z1_is_valid` (backward induction with `exists_succ_iterate`)
+- [ ] Prove Z1 swap validity (temporal duality)
+- [ ] Update all pattern matches in SoundnessLemmas.lean (~4 theorems)
+- [ ] Update all pattern matches in Soundness.lean (~4 theorems)
+- [ ] Update any other Axiom matchers (search codebase)
+- [ ] `lake build` passes
 
-**Timing**: 3-5 hours
+**Timing**: 3-4 hours
 **Depends on**: Phase 1
 
 ---
 
 ### Phase 3: Doets Maximum Principle and Gap Elimination [NOT STARTED]
 
-**Goal**: Use Z1 in every MCS to close the sorry at line 1816 in `succ_cofinal`.
+**Goal**: Use Z1 (now an axiom, in every MCS) to close the sorry in `succ_cofinal`.
 
-#### The Doets Argument (Claim 10)
+#### Step 3a: Remove z1_derivation sorry, replace with axiom-based approach (~10 lines)
 
-With Z1 = `G(Gp -> p) -> (FGp -> Gp)` in every MCS, the gap scenario leads to contradiction:
-
-**Setup**: In the gap scenario of `succ_cofinal`, we have:
-- Orbit points `s^[n](a)` converging upward to limit L
-- Pred-chain points `pred^[k](b)` above L
-- All orbit points < all pred-chain points
-- No limit_dom point equals L (it's a real limit, not a rational in limit_dom)
-
-**Proof sketch** (to be formalized at line 1816):
-
-Pick any formula phi that "discriminates" -- but wait, in the constant-MCS case, no discriminating formula exists. The Z1 approach avoids needing a discriminating formula. Instead:
-
-1. Let `phi` be any formula. Consider two cases:
-   - Case A: `G(neg phi)` is in the MCS of some orbit point `s^[n](a)`. Then `neg phi` holds at all points above `s^[n](a)`, including all pred-chain points. And `phi` either holds or doesn't at `s^[n](a)`.
-   - Case B: `neg(G(neg phi))` = `F(phi)` is in the MCS of every orbit point.
-
-Actually, the correct argument uses Z1 more directly:
-
-**Correct Doets argument**: Given a "bounded definable set" -- a set S of limit_dom points defined by a formula phi, bounded above -- the set has a maximum.
-
-In the gap scenario:
-1. Pick `x` = any orbit point `s^[n](a)`.
-2. Pick `phi` = any formula in the MCS of `x` that is NOT in the MCS of some point above.
-   - In the constant-MCS case, no such phi exists. ALL formulas in the MCS of x are in the MCS of every other point.
-3. In the constant-MCS case: all limit_dom points have identical MCS. Then for every orbit point `s^[n](a)` and every pred-chain point `pred^[k](b)`, the MCS are equal. Consider `G(neg(bot)) = G(top)`. This is always in every MCS (it's a theorem). Not helpful.
-
-**The key insight**: Z1 doesn't help with the CONSTANT-MCS case directly. Z1 helps by enabling the following argument:
-
-In the gap scenario, consider the formula `phi_gap := neg(G(neg phi))` = `F(phi)` for some phi. The issue is that Z1 enables proving that certain Until/Since formulas have witnesses at specific locations, ruling out the gap geometry.
-
-**Revised argument using Z1 directly in the gap case**:
-
-The gap scenario has orbit `{s^[n](a) | n}` below L and pred-chain `{pred^[k](b) | k}` above L.
-
-For any orbit point `x = s^[n](a)` and any pred-chain point `y = pred^[k](b)`:
-- `y > x` (all pred-chain above all orbit)
-- `succ(x) = s^[n+1](a)` is also an orbit point
-- Between `x` and `succ(x)`, no other limit_dom point exists (immediate successor)
-- Between the supremum of orbit and infimum of pred-chain, no limit_dom point exists (the gap)
-
-The contradiction comes from the UNTIL semantics:
-- `next_top = U(top, bot)` is in every MCS (discrete case hypothesis `h_discrete`)
-- At the LAST orbit point before the gap... but there is no last orbit point (the orbit is infinite, converging to L)
-
-**Alternative direct argument**: Consider any orbit point `x = s^[n](a)`. We have `F(phi)` at x for any phi in the MCS of any point y > x (by `backward_F`). We also have `G(phi)` at x for phi that holds at ALL points above x (by `backward_G`).
-
-In the constant-MCS case, let M be the common MCS. For every phi in M:
-- phi is in the MCS of x (orbit point) and of y (pred-chain point)
-- `G(phi)` is in the MCS of x (by `backward_G`, since phi holds at all points above x -- but wait, phi holds at all LIMIT_DOM points above x, and G semantics is over strict future in the MODEL, which means all points > x in limit_dom)
-
-Actually, let me reconsider. The model truth for `G(phi)` at x is: for all y > x in limit_dom, phi is in limit_f(y). Since limit_f(y) = MCS for all y (constant case), and phi in M, we get phi at all y > x. So `G(phi)` at x for all phi in M (by `backward_G`).
-
-Similarly `G(G(phi))` at x, by the same argument (since `G(phi)` at all y > x).
-
-Now consider `G(G(phi) -> phi)` at x. For any y > x: `G(phi) -> phi` at y. Is `G(phi) -> phi` in M? Since both `G(phi)` and `phi` are in M: if `G(phi)` in M then `phi` in M, so `G(phi) -> phi` is in M (by `implication_property` direction -- actually, we need: if the implication is NOT in M, then `G(phi)` is in M and `neg(phi)` is in M, contradiction). So `G(phi) -> phi` in M for all phi in M.
-
-And `FG(phi)` at x: since `G(phi)` holds at `s^[n+1](a)` (an orbit point > x), `F(G(phi))` holds at x (by `backward_F`).
-
-By Z1: `G(G(phi) -> phi) -> (FG(phi) -> G(phi))`. With `G(G(phi) -> phi)` at x and `FG(phi)` at x, we get `G(phi)` at x.
-
-But we ALREADY have `G(phi)` at x. So Z1 gives nothing new in the constant-MCS case.
-
-**The real issue**: In the constant-MCS case, Z1 is trivially satisfied and provides no contradiction.
-
-**Revised understanding**: The gap scenario with constant MCS IS contradicted, but not by temporal formulas alone. It's contradicted by the CONSTRUCTION: if all points have the same MCS M, then M is consistent with all temporal axioms, and the construction would not have created any counterexample-resolution points (no C4/C5 counterexamples exist when all MCS are equal). But the construction starts from a single root MCS and extends. If the root MCS satisfies all temporal formulas (which it does, being an MCS), then no counterexamples arise and the domain stays as the initial chain. The initial chain IS isomorphic to Z, so IsSuccArchimedean holds trivially.
-
-So the constant-MCS case is actually fine -- it can't arise in a non-trivial gap scenario because the construction wouldn't create separate orbit/pred-chain components.
-
-**The non-constant MCS case**: There EXISTS a discriminating formula phi (holds at some point, fails at another). With Z1 in every MCS:
-
-1. Pick discriminating phi: phi in MCS of point `a0` (orbit), neg(phi) in MCS of point `b0` (pred-chain).
-2. At `a0`: `F(phi)` holds (phi at a0, and there are future points... actually F means "some future point has phi". Since a0 has phi, we need a FUTURE point with phi. Next orbit point `s(a0)` has the same phi? Not necessarily.)
-
-Hmm, this still needs careful handling. Let me reconsider the CORRECT Doets argument:
-
-**Doets' Claim 10 (adapted)**: Every definable bounded subset of limit_dom has a maximum.
-
-Let S = {x in limit_dom | phi in limit_f(x)} for some formula phi. Suppose S is nonempty and bounded above (there exists y with y > x for all x in S, and neg(phi) in limit_f(y)).
-
-Claim: S has a maximum (there exists m in S such that for all x > m, neg(phi) in limit_f(x)).
-
-Proof using Z1:
-1. Pick any m in S (so phi at m). Let n be an upper bound (neg(phi) at n, n > m).
-2. Since neg(phi) at n and n > m: `F(neg phi)` at m (by `backward_F` or direct definition).
-3. Since neg(phi) at n and at all points above n (by `backward_G` if G(neg phi) at n -- but we only know neg(phi) at n, not G(neg phi)):
-   - Actually, we need to pick our bound more carefully. Let n be such that `G(neg phi)` at n (not just neg(phi) at n). Does such n exist? In the gap scenario with non-constant MCS: if phi holds at orbit points and neg(phi) at pred-chain points, then eventually all sufficiently large points have neg(phi), giving `G(neg phi)` at some pred-chain point by `backward_G`.
-   - Specifically: if neg(phi) holds at ALL pred-chain points pred^[k](b) for k >= 0, then at pred^[1](b): neg(phi) at pred^[1](b) and at all points above pred^[1](b) in limit_dom (which are pred^[0](b) = b and above, all with neg(phi)). So `G(neg phi)` at pred^[1](b) by `backward_G`.
-4. So `F(G(neg phi))` at m (by `backward_F`, since `G(neg phi)` at some point above m).
-5. Also at m: `F(phi)` holds (phi at m, and there exist future orbit points with phi? Not necessarily. But phi at m itself -- F means STRICT future. If phi at some `s^[j](a) > m`, yes.)
-   - Actually, m is in S, so phi at m. But F(phi) at m requires phi at some point STRICTLY AFTER m. If m is an orbit point and the next orbit point also has phi, then F(phi) at m. But we don't know this.
-   - Wait: `neg(G(neg phi))` at m iff `F(phi)` at m (by definition of F as neg G neg). We have phi at m. Is `neg(G(neg phi))` at m? `G(neg phi)` at m would mean neg(phi) at all points > m. But phi at m itself doesn't help (G is strict future). However, if m = s^[j](a) and phi is also at s^[j+1](a), then phi at some point > m, so `neg(G(neg phi))` at m.
-   - If phi is ONLY at m and no other point above m has phi: then G(neg phi) at m (neg phi at all strict future points). Then F(G(neg phi)) at m (since G(neg phi) at m, and m is in the strict future of earlier points... wait, F(G(neg phi)) at m means G(neg phi) at some point > m. But we have G(neg phi) at m -- does that give G(neg phi) at succ(m)? By temp_4: G(phi) -> G(G(phi)), so G(neg phi) at m -> G(G(neg phi)) at m -> G(neg phi) at all points > m. So yes, G(neg phi) at succ(m), giving F(G(neg phi)) at m.)
-   - OK so either F(phi) or G(neg phi) at m (by negation_complete on G(neg phi)).
-
-Let me just present the clean argument:
-
-For any m in limit_dom, either `G(neg phi)` or `F(phi)` (= neg G(neg phi)) at m.
-
-Case 1: `G(neg phi)` at m. Then neg(phi) at all points > m, so no point > m is in S. m is the maximum of S (assuming S intersects the points <= m).
-
-Case 2: `F(phi)` at m AND `F(G(neg phi))` at m (we have FG(neg phi) because G(neg phi) holds at the upper bound n and `backward_F` gives FG(neg phi) at m).
-- Z1 with `neg phi`: `G(G(neg phi) -> neg phi) -> (FG(neg phi) -> G(neg phi))`
-- By modus tollens: `neg G(neg phi) ∧ FG(neg phi) -> neg G(G(neg phi) -> neg phi)`
-- i.e., `F(phi) ∧ FG(neg phi) -> F(G(neg phi) ∧ phi)`
-  (negating `G(G(neg phi) -> neg phi)` gives `F(neg(G(neg phi) -> neg phi))` = `F(G(neg phi) ∧ phi)`)
-- So there exists k > m with `G(neg phi) ∧ phi` at k. This k has phi (so k in S) and G(neg phi) (so no point > k has phi).
-- Therefore k is the maximum of S.
-
-THIS is the Doets argument. It works for both constant and non-constant MCS cases because it's purely about limit_f membership.
-
-For the gap scenario contradiction:
-- The orbit points form an infinite set with `next_top` in every MCS. Consider using the formula `phi_gap` where we can pick phi = some formula related to the gap structure.
-- Actually, the gap scenario directly contradicts the Doets maximum principle: the orbit {s^[n](a)} is an infinite set of limit_dom points where `next_top` is in every MCS (h_discrete). Consider phi = some formula that's in the MCS of ALL orbit points but fails at some pred-chain point (non-constant case) or consider the orbit itself as unbounded from above within orbit (constant case won't have a gap as argued above).
-
-**Wait**: The gap case in `succ_cofinal` has orbit points bounded above by any pred-chain point. If we can find a phi that defines the orbit (holds at orbit points), then S = orbit is nonempty and bounded. By Doets, S has a maximum. But the orbit is infinite with no maximum (every orbit point has a successor orbit point). Contradiction.
-
-The challenge: we need a formula phi that holds at all orbit points but fails at all pred-chain points. In the non-constant MCS case, such a discriminating phi exists. In the constant-MCS case, the gap cannot arise (as argued above).
-
-So the proof structure in `succ_cofinal`:
-1. Assume gap scenario (for contradiction).
-2. Case split: constant MCS or non-constant MCS.
-3. Constant MCS: derive contradiction from construction properties (the omega chain with constant MCS would not create distinct orbit/pred-chain components).
-4. Non-constant MCS: find discriminating phi. Apply Doets maximum principle. Orbit is bounded and definable but has no maximum. Contradiction.
-
-#### Detailed formalization plan for Phase 3
-
-In ChronicleToCountermodel.lean, at line 1816 (the sorry site):
-
+Replace the current `z1_derivation` (sorry'd DerivationTree) with:
 ```lean
--- We are in the `else` branch: L ≤ pred(b).val
--- Contradiction via Doets maximum principle using Z1
-
--- Step 1: Show MCS are not all constant (or handle constant case)
--- Step 2: Find discriminating formula
--- Step 3: Show the discriminating formula defines a bounded set with no maximum
--- Step 4: Z1 + Doets gives maximum exists -> contradiction
-
--- For the non-constant case:
--- There exist orbit point x and pred-chain point y with different MCS
--- So there exists phi with phi ∈ limit_f(x) and phi ∉ limit_f(y)
--- (or vice versa; take negation if needed)
--- The set S = {z | phi ∈ limit_f(z)} contains x and is bounded above
--- (y is a bound, since neg(phi) ∈ limit_f(y))
-
--- Apply the Doets maximum principle helper lemma:
--- ∀ phi, ∀ m with phi ∈ limit_f(m), ∀ n > m with G(neg phi) ∈ limit_f(n),
---   ∃ k, phi ∈ limit_f(k) ∧ G(neg phi) ∈ limit_f(k)
--- (from Z1 + backward reasoning)
-
--- This k is the maximum: phi at k, neg(phi) at all points > k
--- But in the gap scenario, the orbit continues above k (succ(k) is an orbit point with phi)
--- Contradiction: phi at succ(k) but neg(phi) at succ(k) (from G(neg phi) at k)
+private def z1_in_mcs (φ : Formula) {S : Set Formula}
+    (h_mcs : SetMaximalConsistent S) :
+    z1_formula φ ∈ S :=
+  theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.z1 φ))
 ```
 
-**Tasks:**
-- [ ] Define helper lemma `doets_maximum_principle`: for phi, m (with phi at m), n > m (with G(neg phi) at n), produce k with phi and G(neg phi) at k
-- [ ] Prove the helper using Z1 in MCS + backward_F + implication_property + negation_complete
-- [ ] Handle the constant-MCS case (show it cannot produce a gap)
-- [ ] Handle the non-constant-MCS case using the discriminating formula + Doets
-- [ ] Close the sorry at line 1816
-- [ ] Verify `succ_cofinal` is sorry-free
-- [ ] Verify `limitDomSubtype_isSuccArchimedean` is sorry-free
+Remove the old `z1_derivation` definition.
 
-**Timing**: 2-3 hours
+#### Step 3b: Doets maximum principle helper (~20-30 lines)
+
+**Location**: Before `succ_cofinal` in ChronicleToCountermodel.lean.
+
+```lean
+/-- Doets maximum principle: if φ ∈ limit_f(m) and G(¬φ) ∈ limit_f(n) for some n > m,
+    then ∃ k with φ ∈ limit_f(k) and G(¬φ) ∈ limit_f(k). -/
+private lemma doets_maximum (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (φ : Formula) (m n : LimitDomSubtype A h_mcs) (hmn : m < n)
+    (h_phi_m : φ ∈ limit_f A h_mcs m.val)
+    (h_Gneg_n : φ.neg.all_future ∈ limit_f A h_mcs n.val) :
+    ∃ k : LimitDomSubtype A h_mcs,
+      φ ∈ limit_f A h_mcs k.val ∧
+      φ.neg.all_future ∈ limit_f A h_mcs k.val := by
+  -- Case split on G(¬φ) at m
+  have h_mcs_m := limit_c0 A h_mcs m.val m.property
+  rcases SetMaximalConsistent.negation_complete h_mcs_m φ.neg.all_future with h_Gn | h_nGn
+  · -- Case 1: G(¬φ) at m. Then k := m.
+    exact ⟨m, h_phi_m, h_Gn⟩
+  · -- Case 2: ¬G(¬φ) at m, i.e. F(φ) at m. Also FG(¬φ) at m (by backward_F from n).
+    -- Z1 with ¬φ: G(G(¬φ)→¬φ) → (FG(¬φ) → G(¬φ))
+    -- Modus tollens: ¬G(¬φ) ∧ FG(¬φ) → ¬G(G(¬φ)→¬φ) = F(G(¬φ) ∧ φ)
+    -- limit_F_resolution gives k > m with G(¬φ) ∧ φ at k.
+    sorry
+```
+
+The proof uses:
+1. Z1 in MCS of m (via `z1_in_mcs`)
+2. `backward_F` to get FG(¬φ) at m
+3. Modus tollens via `implication_property` and `negation_complete`
+4. `limit_F_resolution` to extract the witness k
+
+#### Step 3c: Close the sorry in succ_cofinal (~30-50 lines)
+
+At the sorry site (line ~1872):
+
+1. **Constant-MCS case**: If all limit_dom points have identical MCS, argue that the construction would not produce a gap (the omega-chain with constant MCS has no counterexamples to resolve between orbit and pred-chain, so no new points are added between them, contradicting the gap geometry). Alternatively, show backward_G gives G(φ) for all φ in the constant MCS, making Gφ→φ trivially true at all points, and Z1 reduces to FGφ→Gφ which is also trivially true.
+
+2. **Non-constant MCS case**: Extract discriminating formula φ (holds at some orbit point, fails at some pred-chain point) via `Classical.choice` on the MCS symmetric difference. The set {x | φ ∈ limit_f(x)} contains orbit points and is bounded above by the pred-chain point. Apply `doets_maximum` to get a maximum k with φ ∧ G(¬φ) at k. But succ(k) is the next limit_dom point, and G(¬φ) at k gives ¬φ at succ(k). If k is an orbit point, succ(k) is also an orbit point — but does φ hold at succ(k)? Not necessarily for arbitrary discriminating formulas.
+
+   The refined approach: pick φ so that φ holds at ALL orbit points (or all sufficiently late ones). This can be done if the MCS labels eventually stabilize on the orbit. If they don't stabilize, use `Classical.choice` on the symmetric difference between consecutive orbit MCS labels to get finer and finer discriminating formulas, eventually reaching a formula that stabilizes. The finiteness of the formula closure (the MCS is over a finite set of sub-formulas of A) ensures this terminates.
+
+**Tasks:**
+- [ ] Remove old `z1_derivation`, replace with `z1_in_mcs` using axiom
+- [ ] Prove `doets_maximum` helper
+- [ ] Handle constant-MCS case in gap scenario
+- [ ] Handle non-constant MCS case with discriminating formula + Doets
+- [ ] Close sorry in `succ_cofinal`
+- [ ] Verify `limitDomSubtype_isSuccArchimedean` is sorry-free
+- [ ] `lake build` passes
+
+**Timing**: 2-4 hours
 **Depends on**: Phase 2
 
 ---
 
-### Phase 4: Reynolds Contemporaneous Equivalence (Fallback) [NOT STARTED]
+### Phase 4: Verification and Cleanup [NOT STARTED]
 
-**Goal**: If Phase 2 (Z1 derivation) proves intractable, use Reynolds 1994's alternative argument.
-
-This phase is a FALLBACK. Only attempt if Phase 2 cannot be completed.
-
-#### Reynolds Argument Summary
-
-Reynolds 1994 (Section 7-8, Theorem 14) proves that in Prior structures (models satisfying Prior-UZ/SZ), contemporaneous equivalence classes don't end at gaps.
-
-1. Define "good": a finite subinterval is k-equivalent to an interval of Z (same k-types)
-2. Define "very good": every finite subinterval is good
-3. Define ~M: contemporaneous equivalence (x ~ y iff for all formulas phi, phi at x iff phi at y)
-4. Prove ~M classes don't end at gaps (Theorem 14, uses Prior-UZ/SZ + expressive completeness)
-5. If M is not very good: ∃ a < b in different classes
-6. a's class can't end at a gap, so it includes c but not c+1 (adjacent points in different classes)
-7. But {c, c+1} is finite and trivially very good (2 points), so c ~ c+1 -- contradiction
-
-**Infrastructure needed** (200-300 lines):
-- Contemporaneous equivalence definition and basic properties
-- "Good" and "very good" definitions
-- Theorem 14 (main technical content)
-- Final contradiction argument
-
-**Tasks:**
-- [ ] Define contemporaneous equivalence ~M on limit_dom
-- [ ] Define "good" and "very good" predicates
-- [ ] Prove Theorem 14: ~M classes don't end at gaps (using Prior-UZ/SZ)
-- [ ] Prove Lemma 16: countable + very good -> isomorphic to Z-submodel
-- [ ] Derive contradiction in gap scenario
-- [ ] Close the sorry at line 1816
-
-**Timing**: 4-6 hours
-**Depends on**: Phase 1 (only if Phase 2 fails)
-
----
-
-### Phase 5: Verification and Cleanup [NOT STARTED]
-
-**Goal**: Verify compilation and sorry elimination downstream. Clean up dead code.
+**Goal**: Verify compilation, sorry elimination, and clean up dead code.
 
 **Tasks**:
-- [ ] `lake build ChronicleToCountermodel` passes
-- [ ] `lean_verify` on `succ_cofinal` -- no sorry
-- [ ] `lean_verify` on `limitDomSubtype_isSuccArchimedean` -- no sorry
-- [ ] `lean_verify` on `succ_embed_surjective` -- no sorry
-- [ ] `lean_verify` on `dd_countermodel_chronicle_discrete` -- no sorry
+- [ ] `lake build` passes (full project)
+- [ ] `lean_verify` on `succ_cofinal` — no sorry
+- [ ] `lean_verify` on `limitDomSubtype_isSuccArchimedean` — no sorry
+- [ ] `lean_verify` on `succ_embed_surjective` — no sorry
+- [ ] `lean_verify` on `dd_countermodel_chronicle_discrete` — no sorry
 - [ ] Grep for sorry confirms only nondense/mixed stubs remain
-- [ ] Full `lake build` passes
-- [ ] Remove dead code from failed approaches (stage-induction comments, convergence analysis)
-- [ ] Remove or consolidate analysis comments at the sorry site
+- [ ] Remove dead code: old stage-induction attempts, convergence analysis comments
+- [ ] Remove old `z1_derivation` sorry if still present
+- [ ] Clean up gap analysis comments (keep concise documentation)
 
 **Timing**: 0.5-1 hour
-**Depends on**: Phase 3 (or Phase 4 if fallback used)
+**Depends on**: Phase 3
 
 ## Testing & Validation
 
-- [ ] `lake build ChronicleToCountermodel` passes
-- [ ] `lean_verify` on `succ_cofinal` -- no sorry
-- [ ] `lean_verify` on `limitDomSubtype_isSuccArchimedean` -- no sorry
-- [ ] `lean_verify` on `succ_embed_surjective` -- no sorry
-- [ ] `lean_verify` on `dd_countermodel_chronicle_discrete` -- no sorry
+- [ ] `lake build` passes (full project)
+- [ ] `lean_verify` on `succ_cofinal` — no sorry
+- [ ] `lean_verify` on `limitDomSubtype_isSuccArchimedean` — no sorry
+- [ ] `lean_verify` on `succ_embed_surjective` — no sorry
+- [ ] `lean_verify` on `dd_countermodel_chronicle_discrete` — no sorry
 - [ ] Grep for sorry shows only nondense and mixed stubs
-- [ ] Full `lake build` passes
+- [ ] No new axioms beyond Z1 (verify with `lean_verify --axioms`)
 
 ## Artifacts & Outputs
 
-- **Plan**: `specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/12_semantic-z1-gap.md` (this file, v14)
-- **Modified/created files**:
-  - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- Z1 derivation tree, Doets maximum principle, close sorry in `succ_cofinal`
-- **Summary**: `specs/123_fix_c5_witness_bot_and_prove_icc_finite/summaries/12_semantic-z1-gap-summary.md` (after implementation)
+- **Plan**: `specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/12_semantic-z1-gap.md` (this file, v15)
+- **Modified files**:
+  - `Theories/Bimodal/ProofSystem/Axioms.lean` — add Z1 constructor
+  - `Theories/Bimodal/Metalogic/SoundnessLemmas.lean` — Z1 soundness proof
+  - `Theories/Bimodal/Metalogic/Soundness.lean` — update pattern matches
+  - `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` — Doets maximum principle, close sorry
+- **Summary**: `specs/123_fix_c5_witness_bot_and_prove_icc_finite/summaries/12_semantic-z1-gap-summary.md`
+- **Follow-up task**: Task 126 — split discrete/integer frame hierarchy
 
 ## Rollback/Contingency
 
-Theorem statements unchanged. Rollback: `git checkout` the modified files.
+Adding Z1 as an axiom is non-destructive — it only adds, never modifies existing axioms. Rollback: revert the Axiom constructor and all pattern match additions.
 
-If Phase 2 (Z1 derivation) proves intractable:
-1. **Phase 4 (Reynolds)**: Adapt Reynolds 1994 contemporaneous equivalence argument (200-300 lines, 4-6 hours)
-2. **Last resort**: Leave sorry with detailed documentation and the Z1 derivation attempt preserved for future work
+If the Doets maximum principle argument (Phase 3) proves intractable:
+1. **Reynolds contemporaneous equivalence** (200-300 lines): adapt Reynolds 1994's argument using Prior-UZ/SZ to prove no gaps. Deferred to task 126 if needed.
+2. **Leave sorry with Z1 infrastructure**: Z1 axiom + soundness is independently useful. Leave the sorry in `succ_cofinal` with Z1 available for future gap elimination attempts.
 
-## Implementation Guidance for the Agent
+### Implementation Guidance for the Agent
 
-### Phase 2 Guidance: Building the Z1 DerivationTree
+**Phase 2 is mechanical**: adding an axiom constructor and updating pattern matches is systematic. Use `grep -rn "cases.*Axiom\|Axiom\." Theories/` to find all match sites. The Z1 soundness proof follows the same pattern as `prior_UZ_is_valid` — backward induction using `exists_succ_iterate` and `Nat.find`.
 
-**File location**: Add the Z1 derivation in ChronicleToCountermodel.lean, in a new section before `succ_cofinal` (around line 1750, after the backward_P lemma).
+**Phase 3 is the creative work**: the Doets maximum principle helper is straightforward (~20 lines), but applying it in the gap scenario requires handling the constant-MCS vs non-constant MCS cases. The non-constant case needs a discriminating formula — use `Classical.choice` on the symmetric difference of two unequal MCS labels.
 
-**Step-by-step construction approach**:
-
-1. First, define the target formula:
-```lean
-/-- Z1 axiom schema: G(Gφ→φ) → (FGφ→Gφ) -/
-private def z1_formula (φ : Formula) : Formula :=
-  ((φ.all_future.imp φ).all_future).imp
-    (φ.all_future.some_future.imp φ.all_future)
-```
-
-2. Build the derivation bottom-up. Start by placing a `sorry` at the top level and use `lean_goal` to see what's needed:
-```lean
-private def z1_derivation (φ : Formula) : DerivationTree [] (z1_formula φ) := by
-  sorry
-```
-
-3. The derivation needs the following axiom instances:
-   - `Axiom.prior_UZ (φ.all_future)` gives `⊢ F(Gφ) → U(Gφ, ¬Gφ)`
-   - `Axiom.temp_4 φ` gives `⊢ Gφ → GGφ`
-   - `Axiom.temp_k_dist` for distribution
-   - Propositional tautologies from `Bimodal.Theorems.Propositional`
-
-4. The key derivation structure (outline for the implementer):
-   ```
-   Goal: ⊢ G(Gφ→φ) → (FGφ → Gφ)
-   
-   By deduction theorem, suffices: [G(Gφ→φ), FGφ] ⊢ Gφ
-   
-   From FGφ, by Prior-UZ(Gφ): get U(Gφ, ¬Gφ)
-   U(Gφ, ¬Gφ) means: ∃ s > t with Gφ at s, ¬Gφ at all r ∈ (t,s)
-   
-   From Gφ at s and G(Gφ→φ):
-     - Gφ at s → GGφ at s (by temp_4)
-     - G(Gφ→φ) at t → G(Gφ→φ) at s (by temp_4 on the hypothesis)
-     - G(Gφ→φ) at s + GGφ at s → Gφ at s (by temp_k_dist)
-     - Wait, this is circular. We already have Gφ at s.
-   
-   The key: G(Gφ→φ) + Gφ at s → φ at s (by the hypothesis applied at s).
-   And Gφ at s → φ at all r > s.
-   And G(Gφ→φ) → at all r > t, Gφ→φ at r.
-   Combined with Gφ at s: φ at s and at all r > s.
-   
-   Now for r ∈ (t,s): ¬Gφ at r (from Until guard).
-   But do we need φ at r? Not directly.
-   
-   Actually we need to show Gφ at t. For Gφ at t: φ at all r > t.
-   - For r > s: φ at r (from Gφ at s).
-   - For r = s: φ at s (from G(Gφ→φ) at s + Gφ at s).
-   - For r ∈ (t,s): need φ at r.
-   
-   For r ∈ (t,s): ¬Gφ at r means ∃ q > r with ¬φ at q.
-   But from G(Gφ→φ) at r: (Gφ→φ) at r, so if Gφ at r then φ at r.
-   We have ¬Gφ at r (from guard), but G(Gφ→φ) is at ALL points > t.
-   
-   This looks like it needs induction over the discrete points in (t,s).
-   In the formal derivation, this is encoded using Until/Since reasoning.
-   
-   ALTERNATIVE: Work contrapositively.
-   
-   Z1 contrapositive: ¬Gφ ∧ FGφ → ¬G(Gφ→φ)
-   i.e., Fφ' ∧ FGφ → F(Gφ ∧ φ')  where φ' = ¬φ
-   i.e., ¬Gφ ∧ FGφ → F(Gφ ∧ ¬Gφ) -- but that's contradictory.
-   
-   Hmm wait. ¬G(Gφ→φ) = F(¬(Gφ→φ)) = F(Gφ ∧ ¬φ).
-   So: ¬Gφ ∧ FGφ → F(Gφ ∧ ¬φ).
-   
-   That says: if F(¬φ) (since ¬Gφ = F(¬φ)) and FGφ, then F(Gφ ∧ ¬φ).
-   This is: there exists a point where both Gφ and ¬φ hold.
-   
-   Proof of this: From FGφ, by Prior-UZ: U(Gφ, ¬Gφ). 
-   From U(Gφ, ¬Gφ): either Gφ now (then Gφ ∧ maybe ¬φ), or F(Gφ) with guard.
-   The event point s has Gφ. If ¬φ at s, done (F(Gφ ∧ ¬φ) witnessed at s).
-   If φ at s: then from ¬Gφ at t: F(¬φ) at t. Some point r > t has ¬φ.
-   If r < s: by Until guard, ¬Gφ at r. Since ¬φ at r and r < s, and Gφ at s → φ at all q > s.
-   But ¬Gφ at r means ∃ q > r with ¬φ at q. q could be in (r,s) or beyond s.
-   If q > s: ¬φ at q contradicts Gφ at s (φ at q). So q ∈ (r,s).
-   Continue: ¬Gφ at q (by guard), ¬φ somewhere in (q,s), etc.
-   In the DISCRETE case with finitely many points in (t,s), this terminates.
-   
-   The FORMAL derivation doesn't reason about points -- it manipulates formulas.
-   ```
-
-5. **Practical advice**: Rather than trying to construct the full DerivationTree manually, consider:
-   - Using `Bimodal.Metalogic.Core.deduction_theorem` to convert between `[hyp] ⊢ concl` and `⊢ hyp → concl`
-   - Building the proof in contextual form first (`[G(Gφ→φ), FGφ] ⊢ Gφ`), then apply deduction theorem twice
-   - Using `lean_goal` extensively to see what the type checker expects
-
-6. **If the full general derivation is too hard**: Consider deriving Z1 for a specific formula instance that suffices for the gap elimination. Since the Doets argument uses Z1 with a specific discriminating formula, we only need one instance.
-
-### Phase 3 Guidance: Doets Maximum Principle
-
-**Location**: At the sorry site, line 1816 in `succ_cofinal`.
-
-**Helper lemma** (define before `succ_cofinal`):
-
-```lean
-/-- Doets maximum principle: if φ holds at m and G(¬φ) holds at some n > m,
-    then there exists k with φ at k and ¬φ at all points above k. -/
-private lemma doets_maximum
-    (φ : Formula) (m n : LimitDomSubtype A h_mcs) (hmn : m < n)
-    (h_phi_m : φ ∈ limit_f A h_mcs m.val)
-    (h_Gneg_n : φ.neg.all_future ∈ limit_f A h_mcs n.val) :
-    ∃ k : LimitDomSubtype A h_mcs, 
-      φ ∈ limit_f A h_mcs k.val ∧ 
-      φ.neg.all_future ∈ limit_f A h_mcs k.val := by
-  -- By negation_complete on G(¬φ) at m:
-  -- Case 1: G(¬φ) at m → k := m (but φ at m and ¬φ at m → contradiction, unless...)
-  -- Actually G(¬φ) at m means ¬φ at all points > m, not at m itself.
-  -- So φ at m and G(¬φ) at m is consistent.
-  -- In that case k := m works.
-  
-  -- Case 2: ¬G(¬φ) at m, i.e. F(φ) at m.
-  -- Also F(G(¬φ)) at m (since G(¬φ) at n > m, backward_F gives F(G(¬φ)) at m).
-  -- Z1 with ¬φ: G(G(¬φ)→¬φ) → (FG(¬φ) → G(¬φ)).
-  -- Modus tollens: ¬G(¬φ) ∧ FG(¬φ) → ¬G(G(¬φ)→¬φ).
-  -- ¬G(G(¬φ)→¬φ) = F(G(¬φ) ∧ φ).
-  -- So ∃ k > m with G(¬φ) at k and φ at k.
-  sorry
-```
-
-**At the sorry site (line 1816)**: Use doets_maximum + discriminating formula to derive contradiction.
-
-```lean
--- In the gap scenario:
--- 1. MCS are not all constant (argue from construction properties), OR
--- 2. Find discriminating φ between orbit and pred-chain points
--- 3. S = {x | φ ∈ limit_f(x)} is bounded above, contains orbit points
--- 4. doets_maximum gives k with φ and G(¬φ) at k
--- 5. k is the maximum of S (φ at k, ¬φ at all above)
--- 6. But succ(k) is also in S (orbit continues), contradiction
-```
-
-**Key available lemmas**:
-- `backward_G`: φ at all y > x → G(φ) at x
-- `backward_F`: φ at y, y > x → F(φ) at x
+**Key codebase APIs** (verified available):
+- `backward_G` (~line 1700): φ at all y > x → G(φ) at x
+- `backward_F` (~line 1745): φ at y > x → F(φ) at x
 - `limit_F_resolution`: F(φ) at x → ∃ y > x, φ at y
-- `theorem_in_mcs h_mcs d`: derivable φ → φ ∈ MCS
-- `SetMaximalConsistent.implication_property`: φ→ψ ∈ S, φ ∈ S → ψ ∈ S
-- `SetMaximalConsistent.negation_complete`: φ ∈ S ∨ ¬φ ∈ S
-- `set_consistent_not_both`: ¬(φ ∈ S ∧ ¬φ ∈ S) when S consistent
+- `theorem_in_mcs`: derivable → in every MCS
+- `SetMaximalConsistent.implication_property`: modus ponens in MCS
+- `SetMaximalConsistent.negation_complete`: φ or ¬φ in MCS
+- `set_consistent_not_both`: ¬(φ ∈ S ∧ ¬φ ∈ S)
+- `prior_UZ_is_valid` (SoundnessLemmas.lean:2338): pattern for Z1 soundness proof
 
-### General Notes
-
-- Use `Classical.em`, `by_contra`, `Classical.choice` freely
-- The code is already in a noncomputable section
-- `lean_goal` at every step to see what the type checker expects
-- Test partial results with `lean_verify` frequently
-- If the derivation tree approach gets stuck, insert a focused `sorry` and move on to Phase 3 to test the overall structure
+**No circularity**: Z1 soundness uses `[IsSuccArchimedean D]` on abstract frames. The limit model gets Z1 in every MCS because Z1 is an axiom (derivable from empty context). The Doets argument then uses Z1 semantically in the limit model to prove IsSuccArchimedean. Soundness is for the abstract frame class; completeness constructs a specific model and proves it belongs to the frame class.

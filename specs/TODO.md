@@ -42,9 +42,10 @@ technical_debt:
 
 All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentially after task 123 merges.
 
-1. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
-2. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
-3. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
+1. **126** [NOT STARTED] — Split discrete/integer frame hierarchy (depends on 123, ~320 lines)
+2. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
+3. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
+4. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
 
 ### Phase 3: Algebraic Representation
 
