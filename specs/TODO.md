@@ -76,15 +76,16 @@ technical_debt:
 - **64** [RESEARCHED] — Critical path review (reference)
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta)
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
-- **137** [NOT STARTED] — Update ROADMAP.md stale axiom info (~30min)
-- **138** [NOT STARTED] — Update TODO.md sorry_count_note (~10min)
+- **137** [PLANNED] — Update ROADMAP.md stale axiom info (~30min)
+- **138** [PLANNED] — Update TODO.md sorry_count_note (~10min)
 
 ## Tasks
 
 ### 138. Update TODO.md sorry_count_note for axiom cleanup sprint
 - **Effort**: 10 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: general
+- **Plan**: [specs/138_update_todo_sorry_note/plans/01_todo-note-update-plan.md]
 
 **Description**: Update TODO.md frontmatter sorry_count_note to reflect axiom cleanup sprint: axiom count now 41 (was 61), tasks 115/124/133/134 completed.
 
@@ -92,9 +93,10 @@ technical_debt:
 
 ### 137. Update ROADMAP.md stale axiom info
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Priority**: high
+- **Plan**: [specs/137_update_roadmap_axiom_info/plans/01_roadmap-update-plan.md]
 
 **Description**: Update ROADMAP.md: axiom count 45->41, remove BX2/BX2' table rows (now derived from BX2G/BX2H), update CanonicalChain.lean summary (remove left_mono_until_mcs reference), update PointInsertion.lean line count (~3690->~3555).
 
