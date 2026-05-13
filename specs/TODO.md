@@ -77,10 +77,11 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Research**: [specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md]
+- **Plan**: [129_weak_reflexive_completeness_conservative_extension/plans/01_weak-completeness-plan.md]
 
 **Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.
 
