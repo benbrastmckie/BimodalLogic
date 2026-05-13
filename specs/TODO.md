@@ -36,7 +36,7 @@ technical_debt:
 ### Phase 1: Sorry-Free Completeness
 
 1. **129** [RESEARCHED] — Weak/reflexive completeness + model-theoretic transfer (bypasses succ_cofinal gap)
-2. **123** [PARTIAL] — Fix C5 witness placement (Z1 axiom done, IsSuccArchimedean admitted → task 129)
+2. **123** [COMPLETED] — C5 bot witness + Z1 axiom done; IsSuccArchimedean → task 129
 3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123 or 129)
 4. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
@@ -182,7 +182,7 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**:
