@@ -1,5 +1,5 @@
 ---
-next_project_number: 132
+next_project_number: 133
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -84,6 +84,15 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 132. Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Merge Boneyard/ (project root) into Theories/Bimodal/Boneyard/ (the canonical Boneyard location within the Lean module hierarchy). Move all files from the root-level Boneyard/ directory into the appropriate subdirectories under Theories/Bimodal/Boneyard/, resolving any naming conflicts. After merging, populate Theories/Bimodal/Boneyard/README.md with documentation covering: (1) purpose of the Boneyard (archived dead code, superseded approaches, mathematically false lemmas), (2) directory structure and what each subdirectory contains, (3) why each group of files was archived (with references to the tasks that superseded them), (4) guidance on when to consult Boneyard code vs when to ignore it. Remove the root-level Boneyard/ directory after successful merge. Update any import paths if needed.
+
+---
 
 ### 131. Refactor module organization for clean APIs and documentation
 - **Effort**: 15-25 hours
