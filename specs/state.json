@@ -841,6 +841,11 @@
           "path": "specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md",
           "type": "research_report",
           "summary": "Complete analysis of BX2 removal: 30 call sites verified, all use theorem-level derivations making BX2G sufficient."
+        },
+        {
+          "path": "specs/133_simplify_bx2_remove_pointwise/plans/01_simplify-bx2-remove-pointwise.md",
+          "type": "plan",
+          "summary": "3-phase plan to remove BX2/BX2 axiom constructors and derive from BX2G/BX2H"
         }
       ]
     },
@@ -868,7 +873,7 @@
         {
           "path": "specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/plans/01_seed-restructure-plan.md",
           "type": "plan",
-          "summary": "5-phase plan: simplify seeds 5→3 components, update consistency proofs, derive components 3-4 via Xu 3.2.1. ~7 hours."
+          "summary": "5-phase plan to simplify seeds from 5 to 3 components using Xu 3.2.1"
         }
       ]
     },
