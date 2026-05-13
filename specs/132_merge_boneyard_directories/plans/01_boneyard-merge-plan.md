@@ -1,7 +1,7 @@
 # Implementation Plan: Merge Root Boneyard into Canonical Location
 
 - **Task**: 132 - Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None (independent housekeeping task)
 - **Research Inputs**: specs/132_merge_boneyard_directories/reports/01_boneyard-merge-research.md
@@ -121,7 +121,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Build Verification and Cleanup [NOT STARTED]
+### Phase 3: Build Verification and Cleanup [COMPLETED]
 
 **Goal**: Confirm the merge causes no build regressions and the codebase is clean.
 
