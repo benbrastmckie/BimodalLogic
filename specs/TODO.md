@@ -1,5 +1,5 @@
 ---
-next_project_number: 126
+next_project_number: 132
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -77,6 +77,15 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 131. Refactor module organization for clean APIs and documentation
+- **Effort**: 15-25 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.
+
+---
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
