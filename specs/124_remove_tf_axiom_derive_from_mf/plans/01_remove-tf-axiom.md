@@ -170,7 +170,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update ConservativeExtension [NOT STARTED]
+### Phase 4: Update ConservativeExtension [COMPLETED]
 
 **Goal**: Remove `ExtAxiom.temp_future` and update all related functions and match arms in the ConservativeExtension module.
 

@@ -58,8 +58,7 @@ inductive ExtAxiom : ExtFormula → Type where
       ExtAxiom (φ.always.imp (ExtFormula.all_future (ExtFormula.all_past φ)))
   | modal_future (φ : ExtFormula) :
       ExtAxiom ((ExtFormula.box φ).imp (ExtFormula.box (ExtFormula.all_future φ)))
-  | temp_future (φ : ExtFormula) :
-      ExtAxiom ((ExtFormula.box φ).imp (ExtFormula.all_future (ExtFormula.box φ)))
+  -- Note: temp_future removed -- TF is now derived from MF + T + Modal 4.
   | temp_linearity (φ ψ : ExtFormula) :
       ExtAxiom (ExtFormula.and (ExtFormula.some_future φ) (ExtFormula.some_future ψ) |>.imp
         (ExtFormula.or (ExtFormula.some_future (ExtFormula.and φ ψ))
@@ -120,7 +119,6 @@ def embedAxiom {φ : Formula} : Axiom φ → ExtAxiom (embedFormula φ)
   | sorry /- temp_a removed in BX -/ a => Extsorry /- temp_a removed in BX -/ (embedFormula a)
   | sorry /- temp_l removed in BX -/ a => Extsorry /- temp_l removed in BX -/ (embedFormula a)
   | Axiom.modal_future a => ExtAxiom.modal_future (embedFormula a)
-  | Axiom.temp_future a => ExtAxiom.temp_future (embedFormula a)
   | sorry /- temp_linearity removed in BX -/ a b => Extsorry /- temp_linearity removed in BX -/ (embedFormula a) (embedFormula b)
   | sorry /- density removed in BX -/ a => Extsorry /- density removed in BX -/ (embedFormula a)
   | sorry /- discreteness_forward removed in BX -/ a => Extsorry /- discreteness_forward removed in BX -/ (embedFormula a)

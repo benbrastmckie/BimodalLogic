@@ -204,7 +204,6 @@ def substAxiomFresh (s : String) {φ : ExtFormula} (h : ExtAxiom φ) :
   | temp_a a => exact Extsorry /- temp_a removed in BX -/ _
   | temp_l a => exact Extsorry /- temp_l removed in BX -/ _
   | modal_future a => exact ExtAxiom.modal_future _
-  | temp_future a => exact ExtAxiom.temp_future _
   | temp_linearity a b => exact Extsorry /- temp_linearity removed in BX -/ _ _
   | density a => exact Extsorry /- density removed in BX -/ _
   | discreteness_forward a => exact Extsorry /- discreteness_forward removed in BX -/ _
@@ -232,7 +231,7 @@ def unembedAxiom {φ : ExtFormula} (h : ExtAxiom φ) : Axiom (unembedFormula φ)
   | temp_a a => exact Axiom.connect_future _
   | temp_l a => exact sorry /- temp_l has no direct BX analogue -/
   | modal_future a => exact Axiom.modal_future _
-  | temp_future a => exact Axiom.temp_future _
+
   | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/
   | density a => exact sorry /- density removed in BX -/
   | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/
@@ -472,7 +471,7 @@ private def liftAxiom (s : String) {φ : ExtFormula} (h : ExtAxiom φ) :
   | temp_a a => exact Axiom.connect_future _
   | temp_l a => exact sorry /- temp_l has no direct BX analogue -/
   | modal_future a => exact Axiom.modal_future _
-  | temp_future a => exact Axiom.temp_future _
+
   | temp_linearity a b => exact sorry /- temp_linearity removed in BX -/
   | density a => exact sorry /- density removed in BX -/
   | discreteness_forward a => exact sorry /- discreteness_forward removed in BX -/
