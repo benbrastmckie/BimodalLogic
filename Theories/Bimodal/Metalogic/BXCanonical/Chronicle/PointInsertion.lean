@@ -1331,36 +1331,22 @@ private theorem inconsistent_singleton_false {φ : Formula}
 
 
 /-- Derivation-level left_mono for Until: if ⊢ φ→χ then ⊢ untl(φ,ψ) → untl(χ,ψ).
-Uses BX2 (left_mono_until): (φ→χ)∧G(φ→χ) → untl(φ,ψ) → untl(χ,ψ). -/
+Uses BX2G (left_mono_until_G): G(φ→χ) → untl(φ,ψ) → untl(χ,ψ). -/
 private noncomputable def untl_left_mono_deriv (φ ψ χ : Formula)
     (h_impl : DerivationTree [] (φ.imp χ)) :
     DerivationTree [] ((Formula.untl ψ φ).imp (Formula.untl ψ χ)) := by
   have h_G := DerivationTree.temporal_necessitation _ h_impl
-  have h_conj : DerivationTree [] (Formula.and (φ.imp χ) (φ.imp χ).all_future) :=
-    DerivationTree.modus_ponens [] _ _
-      (DerivationTree.modus_ponens [] _ _ (pairing (φ.imp χ) (φ.imp χ).all_future) h_impl)
-      h_G
-  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_until φ ψ χ)
-  exact DerivationTree.modus_ponens [] _ _
-    (DerivationTree.modus_ponens [] _ _ h_ax h_conj)
-    |> fun f => by
-      -- Actually: h_ax : (φ→χ)∧G(φ→χ) → untl(φ,ψ) → untl(χ,ψ)
-      -- h_conj : (φ→χ)∧G(φ→χ)
-      -- Modus ponens gives: untl(φ,ψ) → untl(χ,ψ)
-      exact DerivationTree.modus_ponens [] _ _ h_ax h_conj
+  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_until_G φ χ ψ)
+  exact DerivationTree.modus_ponens [] _ _ h_ax h_G
 
 /-- Derivation-level left_mono for Since: if ⊢ φ→χ then ⊢ snce(φ,ψ) → snce(χ,ψ).
-Uses BX2' (left_mono_since): (φ→χ)∧H(φ→χ) → snce(φ,ψ) → snce(χ,ψ). -/
+Uses BX2H (left_mono_since_H): H(φ→χ) → snce(φ,ψ) → snce(χ,ψ). -/
 private noncomputable def snce_left_mono_deriv (φ ψ χ : Formula)
     (h_impl : DerivationTree [] (φ.imp χ)) :
     DerivationTree [] ((Formula.snce ψ φ).imp (Formula.snce ψ χ)) := by
   have h_H := Bimodal.Theorems.past_necessitation _ h_impl
-  have h_conj : DerivationTree [] (Formula.and (φ.imp χ) (φ.imp χ).all_past) :=
-    DerivationTree.modus_ponens [] _ _
-      (DerivationTree.modus_ponens [] _ _ (pairing (φ.imp χ) (φ.imp χ).all_past) h_impl)
-      h_H
-  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_since φ ψ χ)
-  exact DerivationTree.modus_ponens [] _ _ h_ax h_conj
+  have h_ax := DerivationTree.axiom [] _ (Axiom.left_mono_since_H φ χ ψ)
+  exact DerivationTree.modus_ponens [] _ _ h_ax h_H
 
 /-- Derivation-level right_mono for Until: if ⊢ φ→ψ then ⊢ untl(χ,φ) → untl(χ,ψ).
 Uses BX3 (right_mono_until): G(φ→ψ) → untl(χ,φ) → untl(χ,ψ). -/

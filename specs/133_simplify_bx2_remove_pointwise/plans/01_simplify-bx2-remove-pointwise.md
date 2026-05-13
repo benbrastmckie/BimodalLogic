@@ -1,7 +1,7 @@
 # Implementation Plan: Simplify BX2 — Remove Pointwise Conjunct
 
 - **Task**: 133 - Simplify BX2: remove pointwise conjunct, derive from BX2G
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 4 hours
 - **Dependencies**: Task 115 (established BX2G subsumes BX2 under open-guard semantics)
 - **Research Inputs**: specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md
@@ -62,7 +62,7 @@ This task advances the Phase 2 roadmap item: "Frame hierarchy + axiom cleanup" w
 | 2 | 2 | 1 |
 | 3 | 3 | 2 |
 
-### Phase 1: Rewrite All Direct BX2/BX2' Usages to BX2G/BX2H [NOT STARTED]
+### Phase 1: Rewrite All Direct BX2/BX2' Usages to BX2G/BX2H [COMPLETED]
 
 **Goal**: Eliminate all runtime references to `Axiom.left_mono_until` and `Axiom.left_mono_since` constructors so they can be safely removed in Phase 2.
 

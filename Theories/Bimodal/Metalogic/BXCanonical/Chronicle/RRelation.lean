@@ -636,15 +636,11 @@ Steps:
 theorem c4_hard_case_G_neg_delta {A : Set Formula}
     (h_mcs : SetMaximalConsistent A)
     {γ δ : Formula}
-    (h_γ : γ ∈ A)
+    (_h_γ : γ ∈ A)
     (h_Gγ : Formula.all_future γ ∈ A)
     (h_neg_until : (Formula.untl δ γ).neg ∈ A) :
     Formula.all_future δ.neg ∈ A := by
   set top := Formula.bot.imp Formula.bot with htop_def
-  -- (top -> gamma) in A from gamma + prop_s
-  have h_top_gamma : top.imp γ ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.prop_s γ top))) h_γ
   -- G(top -> gamma) in A by temporal necessitation of prop_s + G distribution
   have h_G_top_gamma : Formula.all_future (top.imp γ) ∈ A := by
     have h_G_ps := theorem_in_mcs h_mcs
@@ -653,12 +649,11 @@ theorem c4_hard_case_G_neg_delta {A : Set Formula}
       (DerivationTree.axiom [] _ (Axiom.temp_k_dist γ (top.imp γ)))
     exact SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h_dist h_G_ps) h_Gγ
-  -- BX2: (top -> gamma) AND G(top -> gamma) -> (top U delta -> gamma U delta)
-  have h_bx2 := theorem_in_mcs h_mcs
-    (DerivationTree.axiom [] _ (Axiom.left_mono_until top δ γ))
-  have h_conj := dcs_conj_closed (mcs_is_dcs h_mcs) h_top_gamma h_G_top_gamma
+  -- BX2G: G(top -> gamma) -> (delta U top -> delta U gamma)
+  have h_ax := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.left_mono_until_G top γ δ))
   have h_mono : (Formula.untl δ top).imp (Formula.untl δ γ) ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs h_bx2 h_conj
+    SetMaximalConsistent.implication_property h_mcs h_ax h_G_top_gamma
   -- Contrapositive: neg(gamma U delta) -> neg(top U delta)
   have h_neg_top_until := mcs_contrapositive_mem h_mcs h_mono h_neg_until
   -- BX12 contrapositive: neg(top U delta) -> neg(F(delta))
@@ -673,19 +668,17 @@ theorem c4_hard_case_G_neg_delta {A : Set Formula}
 Mirror of `c4_hard_case_G_neg_delta` for the Since direction (C4' hard case):
 from H(gamma) in A and neg(snce(gamma, delta)) in A, derive H(neg(delta)) in A.
 
-Uses BX2' (left monotonicity of Since) and BX12' (P(delta) <-> top S delta).
+Uses BX2H (left monotonicity of Since under H) and BX12' (P(delta) <-> top S delta).
 -/
 theorem c4'_hard_case_H_neg_delta {A : Set Formula}
     (h_mcs : SetMaximalConsistent A)
     {γ δ : Formula}
-    (h_γ : γ ∈ A)
+    (_h_γ : γ ∈ A)
     (h_Hγ : Formula.all_past γ ∈ A)
     (h_neg_since : (Formula.snce δ γ).neg ∈ A) :
     Formula.all_past δ.neg ∈ A := by
   set top := Formula.bot.imp Formula.bot with htop_def
-  have h_top_gamma : top.imp γ ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.prop_s γ top))) h_γ
+  -- H(top -> gamma) in A by past necessitation of prop_s + H distribution
   have h_H_top_gamma : Formula.all_past (top.imp γ) ∈ A := by
     have h_H_ps := theorem_in_mcs h_mcs
       (Bimodal.Theorems.past_necessitation _ (DerivationTree.axiom [] _ (Axiom.prop_s γ top)))
@@ -693,11 +686,11 @@ theorem c4'_hard_case_H_neg_delta {A : Set Formula}
       (Bimodal.Theorems.past_k_dist γ (top.imp γ))
     exact SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs h_dist h_H_ps) h_Hγ
-  have h_bx2' := theorem_in_mcs h_mcs
-    (DerivationTree.axiom [] _ (Axiom.left_mono_since top δ γ))
-  have h_conj := dcs_conj_closed (mcs_is_dcs h_mcs) h_top_gamma h_H_top_gamma
+  -- BX2H: H(top -> gamma) -> (delta S top -> delta S gamma)
+  have h_ax := theorem_in_mcs h_mcs
+    (DerivationTree.axiom [] _ (Axiom.left_mono_since_H top γ δ))
   have h_mono : (Formula.snce δ top).imp (Formula.snce δ γ) ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs h_bx2' h_conj
+    SetMaximalConsistent.implication_property h_mcs h_ax h_H_top_gamma
   have h_neg_top_since := mcs_contrapositive_mem h_mcs h_mono h_neg_since
   have h_bx12' := theorem_in_mcs h_mcs
     (DerivationTree.axiom [] _ (Axiom.P_since_equiv δ))
@@ -1067,42 +1060,6 @@ theorem burgessRSince_conj {A C : Set Formula}
   exact snce_conj_guard h_mcs (hα γ hγ) (hβ γ hγ)
 
 /--
-**Left monotonicity for Until via theorem**: If ⊢ β₁ → β₂ and untl(β₁, γ) ∈ A,
-then untl(β₂, γ) ∈ A. Uses BX2 (left_mono_until).
--/
-theorem untl_left_mono_thm {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A)
-    {β₁ β₂ γ : Formula}
-    (h_impl : DerivationTree [] (β₁.imp β₂))
-    (h_untl : Formula.untl γ β₁ ∈ A) :
-    Formula.untl γ β₂ ∈ A := by
-  have h1 := theorem_in_mcs h_mcs h_impl
-  have h2 := theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_impl)
-  have h3 := dcs_conj_closed (mcs_is_dcs h_mcs) h1 h2
-  have h4 := theorem_in_mcs h_mcs
-    (DerivationTree.axiom [] _ (Axiom.left_mono_until β₁ γ β₂))
-  have h5 := SetMaximalConsistent.implication_property h_mcs h4 h3
-  exact SetMaximalConsistent.implication_property h_mcs h5 h_untl
-
-/--
-**Left monotonicity for Since via theorem** (mirror): If ⊢ β₁ → β₂ and snce(β₁, γ) ∈ A,
-then snce(β₂, γ) ∈ A. Uses BX2' (left_mono_since).
--/
-theorem snce_left_mono_thm {A : Set Formula}
-    (h_mcs : SetMaximalConsistent A)
-    {β₁ β₂ γ : Formula}
-    (h_impl : DerivationTree [] (β₁.imp β₂))
-    (h_snce : Formula.snce γ β₁ ∈ A) :
-    Formula.snce γ β₂ ∈ A := by
-  have h1 := theorem_in_mcs h_mcs h_impl
-  have h2 := theorem_in_mcs h_mcs (Bimodal.Theorems.past_necessitation _ h_impl)
-  have h3 := dcs_conj_closed (mcs_is_dcs h_mcs) h1 h2
-  have h4 := theorem_in_mcs h_mcs
-    (DerivationTree.axiom [] _ (Axiom.left_mono_since β₁ γ β₂))
-  have h5 := SetMaximalConsistent.implication_property h_mcs h4 h3
-  exact SetMaximalConsistent.implication_property h_mcs h5 h_snce
-
-/--
 **Left monotonicity for Until via G**: If G(β₁ → β₂) ∈ A and untl(β₁, γ) ∈ A,
 then untl(β₂, γ) ∈ A. Uses BX2G (left_mono_until_G).
 Unlike `untl_left_mono_thm`, does NOT require the pointwise (β₁ → β₂) at A.
@@ -1132,6 +1089,32 @@ theorem snce_left_mono_H {A : Set Formula}
     (DerivationTree.axiom [] _ (Axiom.left_mono_since_H β₁ β₂ γ))
   have h_step := SetMaximalConsistent.implication_property h_mcs h_ax h_H_impl
   exact SetMaximalConsistent.implication_property h_mcs h_step h_snce
+
+/--
+**Left monotonicity for Until via theorem**: If ⊢ β₁ → β₂ and untl(β₁, γ) ∈ A,
+then untl(β₂, γ) ∈ A. Uses BX2G (left_mono_until_G) via temporal necessitation.
+-/
+theorem untl_left_mono_thm {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A)
+    {β₁ β₂ γ : Formula}
+    (h_impl : DerivationTree [] (β₁.imp β₂))
+    (h_untl : Formula.untl γ β₁ ∈ A) :
+    Formula.untl γ β₂ ∈ A := by
+  have h_G := theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_impl)
+  exact untl_left_mono_G h_mcs h_G h_untl
+
+/--
+**Left monotonicity for Since via theorem** (mirror): If ⊢ β₁ → β₂ and snce(β₁, γ) ∈ A,
+then snce(β₂, γ) ∈ A. Uses BX2H (left_mono_since_H) via past necessitation.
+-/
+theorem snce_left_mono_thm {A : Set Formula}
+    (h_mcs : SetMaximalConsistent A)
+    {β₁ β₂ γ : Formula}
+    (h_impl : DerivationTree [] (β₁.imp β₂))
+    (h_snce : Formula.snce γ β₁ ∈ A) :
+    Formula.snce γ β₂ ∈ A := by
+  have h_H := theorem_in_mcs h_mcs (Bimodal.Theorems.past_necessitation _ h_impl)
+  exact snce_left_mono_H h_mcs h_H h_snce
 
 /-! ## Helper: Derivation from Singleton Set Implies Implication Theorem
 
@@ -1454,15 +1437,13 @@ theorem burgessR3_untl_conj_in_A {A B C : Set Formula}
   -- Step 4b: Weaken guard of h_accum from
   --   (β ∧ β') ∧ untl(β ∧ β', γ ∧ δ) to β' ∧ untl(β, γ)
   -- First weaken untl(β ∧ β', γ ∧ δ) → untl(β, γ) as a theorem
-  -- (already done: combine h_guard_weak1 and h_event_weak1 via BX2+BX3)
+  -- (already done: combine h_guard_weak1 and h_event_weak1 via BX2G+BX3)
   have h_untl_inner_weak : DerivationTree [] (((γ.and δ).untl (Formula.and β β')).imp (γ.untl β)) := by
-    -- BX2: (β ∧ β' → β) ∧ G(β ∧ β' → β) → (β ∧ β') U (γ ∧ δ) → β U (γ ∧ δ)
+    -- BX2G: G(β ∧ β' → β) → (γ ∧ δ) U (β ∧ β') → (γ ∧ δ) U β
     have h_G_gw1 := DerivationTree.temporal_necessitation _ h_guard_weak1
-    have h_bx2 := DerivationTree.axiom [] _ (Axiom.left_mono_until (Formula.and β β') (Formula.and γ δ) β)
-    have h_premise : DerivationTree [] (Formula.and ((Formula.and β β').imp β) ((Formula.and β β').imp β).all_future) :=
-      mp h_G_gw1 (mp h_guard_weak1 (pairing _ _))
+    have h_bx2g := DerivationTree.axiom [] _ (Axiom.left_mono_until_G (Formula.and β β') β (Formula.and γ δ))
     have h_step1 : DerivationTree [] (((γ.and δ).untl (Formula.and β β')).imp ((γ.and δ).untl β)) :=
-      DerivationTree.modus_ponens [] _ _ h_bx2 h_premise
+      DerivationTree.modus_ponens [] _ _ h_bx2g h_G_gw1
     -- BX3: G(γ ∧ δ → γ) → β U (γ ∧ δ) → β U γ
     have h_step2 : DerivationTree [] (((γ.and δ).untl β).imp (γ.untl β)) :=
       DerivationTree.modus_ponens [] _ _ h_bx3 h_G_event_weak1
