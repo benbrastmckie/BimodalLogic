@@ -565,7 +565,7 @@
       "dependencies": [],
       "created": "2026-05-13T07:34:37Z",
       "last_updated": "2026-05-13T23:17:58Z",
-      "next_artifact_number": 3,
+      "next_artifact_number": 4,
       "artifacts": [
         {
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md",
@@ -581,6 +581,11 @@
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research: Reynolds 1994 approach, infrastructure audit, critical gaps, strategic alignment (4 teammates)"
+        },
+        {
+          "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/03_reynolds-deep-dive.md",
+          "type": "research",
+          "summary": "Deep-dive: Reynolds Theorem 15 end-to-end proof trace, gap elimination trivial in discrete model, complete type-level pipeline"
         }
       ],
       "researched": "2026-05-13T23:17:58Z",

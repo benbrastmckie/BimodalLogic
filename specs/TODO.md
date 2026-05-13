@@ -119,6 +119,7 @@ technical_debt:
 - **Research**:
   - [specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md]
   - [129_weak_reflexive_completeness_conservative_extension/reports/02_team-research.md]
+  - [129_weak_reflexive_completeness_conservative_extension/reports/03_reynolds-deep-dive.md]
 - **Plan**: [129_weak_reflexive_completeness_conservative_extension/plans/01_weak-completeness-plan.md]
 
 **Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.
