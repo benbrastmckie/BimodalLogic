@@ -36,7 +36,7 @@ technical_debt:
 ### Phase 1: Axiom Cleanup (before heavy lift)
 
 1. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
-2. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
+2. **115** [RESEARCHED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
 
 ### Phase 2: Sorry-Free Completeness
 
@@ -271,15 +271,15 @@ technical_debt:
 
 ---
 
-### 115. Remove A4a and simplify BX2 after task 107 adds left_mono_until_G
-- **Effort**: 1-2 hours
+### 115. Remove A4a and simplify BX2 for axiom minimality
+- **Effort**: 6-8 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: 107
 - **Related**: 107
 - **Research**: [specs/115_replace_a4a_with_left_mono_until_g/reports/01_a4a-vs-left-mono.md]
 
-**Description**: Post-task-107 cleanup: remove A4a (separation_until/separation_since) axioms now that left_mono_until_G is in the system (added by task 107 Phase 5b). Optionally simplify BX2 by removing the redundant pointwise conjunct (left_mono_until_G subsumes it under open-guard semantics). Update SoundnessLemmas.lean match arms, remove A4a references from documentation.
+**Description**: Axiom minimality: remove A4a (separation_until/separation_since) from the axiom set and simplify BX2 (left_mono_until), reducing the axiom constructor count from 62 to 60. A4a is currently used in 4 sorry-free proof chains in PointInsertion.lean (lemma_2_6_insert_point_future C5 splitting at ~line 1474, two C2' cases at ~lines 2125 and 2325, and lemma_2_6_insert_point_past at ~line 2542), all calling the helper separation_until_mcs (line 1066). Safety-first approach: (1) Derive A4a as a theorem from left_mono_until_G (proving it is redundant, not just removing it). (2) Rewrite the 4 proof chains in PointInsertion.lean to use the derived theorem or the direct left_mono_until_G / Xu Lemma 2.3-2.4 path. (3) Simplify BX2 by removing the redundant pointwise conjunct (phi -> chi), since left_mono_until_G subsumes it under open-guard semantics -- the guard interval (t,s) is strictly future of t, so G-information always covers it. (4) Only after all proofs compile with the derived version, remove the separation_until/separation_since axiom constructors and their soundness proofs. Update SoundnessLemmas.lean match arms (~20 locations). This is an axiom minimality task (not unblocking a sorry) -- the goal is a cleaner, smaller axiom set where left_mono_until_G replaces both A4a and the pointwise conjunct of BX2.
 
 ---
 
