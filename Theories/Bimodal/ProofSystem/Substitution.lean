@@ -367,9 +367,27 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | modal_future a =>
     simp only [subst_imp, subst_box, subst_all_future]
     exact Axiom.modal_future (a.subst q r)
-  | temp_future a =>
-    simp only [subst_imp, subst_box, subst_all_future]
-    exact Axiom.temp_future (a.subst q r)
+  | discrete_symm_fwd =>
+    simp only [subst_imp, subst_untl, subst_snce, subst_bot]
+    exact Axiom.discrete_symm_fwd
+  | discrete_symm_bwd =>
+    simp only [subst_imp, subst_snce, subst_untl, subst_bot]
+    exact Axiom.discrete_symm_bwd
+  | discrete_propagate_fwd =>
+    simp only [subst_imp, subst_untl, subst_all_future, subst_bot]
+    exact Axiom.discrete_propagate_fwd
+  | discrete_propagate_bwd =>
+    simp only [subst_imp, subst_untl, subst_all_past, subst_bot]
+    exact Axiom.discrete_propagate_bwd
+  | prior_UZ a =>
+    simp only [subst_imp, subst_some_future, subst_untl, subst_neg]
+    exact Axiom.prior_UZ (a.subst q r)
+  | prior_SZ a =>
+    simp only [subst_imp, subst_some_past, subst_snce, subst_neg]
+    exact Axiom.prior_SZ (a.subst q r)
+  | z1 a =>
+    simp only [subst_imp, subst_all_future, subst_some_future]
+    exact Axiom.z1 (a.subst q r)
 
 /-!
 ## Main theorem: derivation substitution

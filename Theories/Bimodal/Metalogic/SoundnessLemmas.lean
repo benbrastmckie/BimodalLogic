@@ -381,22 +381,7 @@ theorem swap_axiom_mf_valid (φ : Formula) :
   have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_temporal).mp h_at_shifted
 
-/--
-Temporal-Future axiom (TF) swaps to a valid formula: `box φ -> F box φ` swaps to `box(swap φ) -> P box(swap φ)`.
-
-The swapped form states: if swap φ holds at all histories in Omega at time t, then at all times s < t,
-swap φ holds at all histories in Omega at time s.
-
-**Proof Strategy**: Same as MF - use `time_shift_preserves_truth` to bridge from time t to s < t.
-Uses `ShiftClosed Omega` to ensure shifted histories remain in Omega.
--/
-theorem swap_axiom_tf_valid (φ : Formula) :
-    is_valid D ((Formula.box φ).imp (Formula.all_future (Formula.box φ))).swap_temporal := by
-  intro F M Omega h_sc τ _h_mem t
-  simp only [Formula.swap_temporal, truth_at]
-  intro h_box_swap s h_s_lt_t σ h_σ_mem
-  have h_at_shifted := h_box_swap (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ.swap_temporal).mp h_at_shifted
+-- Note: swap_axiom_tf_valid removed -- TF is now derived from MF + T + Modal 4.
 
 /-! ## Rule Preservation (Phase 3)
 
@@ -481,7 +466,7 @@ The proof handles each axiom case:
 - **modal_t, modal_4, modal_b**: Self-dual modal axioms (swap preserves schema form)
 - **temp_4, temp_a**: Temporal axioms with straightforward swap semantics
 - **temp_l (TL)**: Uses case analysis and classical logic for `always` encoding
-- **modal_future (MF), temp_future (TF)**: Use `time_shift_preserves_truth` to bridge times
+- **modal_future (MF)**: Uses `time_shift_preserves_truth` to bridge times (TF now derived)
 -/
 
 theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontrivial D]
@@ -833,7 +818,6 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | P_since_equiv φ => exact swap_axiom_P_since_equiv_valid φ
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
-  | temp_future ψ => exact swap_axiom_tf_valid ψ
   | discrete_symm_fwd =>
     -- swap(U(T,bot) -> S(T,bot)) = S(T,bot) -> U(T,bot)
     intro F M Omega _h_sc τ _h_mem t
@@ -1042,14 +1026,7 @@ private theorem axiom_modal_future_valid (φ : Formula) :
   have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
 
-/-- Temporal-Future axiom is locally valid. -/
-private theorem axiom_temp_future_valid (φ : Formula) :
-    is_valid D ((φ.box).imp ((φ.box).all_future)) := by
-  intro F M Omega h_sc τ _h_mem t
-  simp only [truth_at]
-  intro h_box_phi s hts σ h_σ_mem
-  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
+-- Note: axiom_temp_future_valid removed -- TF is now derived from MF + T + Modal 4.
 
 /-- Temporal linearity axiom is locally valid (strict semantics).
 
@@ -1418,7 +1395,7 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact axiom_modal_future_valid ψ
-  | temp_future ψ => exact axiom_temp_future_valid ψ
+
   | discrete_symm_fwd =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]
@@ -1917,7 +1894,6 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDense
     exact axiom_F_until_equiv_valid φ.swap_temporal
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
-  | temp_future ψ => exact swap_axiom_tf_valid ψ
   | discrete_symm_fwd =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, truth_at]
@@ -2223,7 +2199,7 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
   | modal_future ψ => exact axiom_modal_future_valid ψ
-  | temp_future ψ => exact axiom_temp_future_valid ψ
+
   | discrete_symm_fwd =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]

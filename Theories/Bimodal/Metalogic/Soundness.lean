@@ -31,7 +31,6 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - `temp_a_valid`: Temporal A axiom is valid
 - `temp_l_valid`: TL axiom is valid (uses always definition)
 - `modal_future_valid`: MF axiom is valid (via time-shift invariance)
-- `temp_future_valid`: TF axiom is valid (via time-shift invariance)
 - `axiom_base_valid`: Base axioms are universally valid
 - `axiom_valid_dense`: Dense-compatible axioms are valid on dense frames
 - `axiom_valid_discrete`: Discrete-compatible axioms are valid on discrete frames
@@ -264,13 +263,8 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).b
   have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
 
-/-- TF axiom validity: `□φ → F(□φ)` is valid. Uses ShiftClosed Omega for time-shift invariance. -/
-theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).all_future)) := by
-  intro T _ _ _ _ F M Omega h_sc τ _h_mem t
-  simp only [truth_at]
-  intro h_box_phi s hts σ h_σ_mem
-  have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
+-- Note: temp_future_valid (TF axiom) removed -- TF is now derived from MF + T + Modal 4.
+-- Soundness of TF follows from soundness of its component axioms.
 
 /-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
 Under strict semantics: if φ at t, then for all s < t, there exists r > s with φ(r) (namely, t). -/
@@ -1003,7 +997,6 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | F_until_equiv φ => exact F_until_equiv_valid φ
   | P_since_equiv φ => exact P_since_equiv_valid φ
   | modal_future ψ => exact modal_future_valid ψ
-  | temp_future ψ => exact temp_future_valid ψ
   | discrete_symm_fwd => exact discrete_symm_fwd_valid
   | discrete_symm_bwd => exact discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
@@ -1056,7 +1049,6 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | F_until_equiv φ => exact Validity.valid_implies_valid_dense (F_until_equiv_valid φ)
   | P_since_equiv φ => exact Validity.valid_implies_valid_dense (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
-  | temp_future ψ => exact Validity.valid_implies_valid_dense (temp_future_valid ψ)
   | discrete_symm_fwd => exact Validity.valid_implies_valid_dense discrete_symm_fwd_valid
   | discrete_symm_bwd => exact Validity.valid_implies_valid_dense discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_dense discrete_propagate_fwd_valid
@@ -1110,7 +1102,6 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | F_until_equiv φ => exact Validity.valid_implies_valid_discrete (F_until_equiv_valid φ)
   | P_since_equiv φ => exact Validity.valid_implies_valid_discrete (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
-  | temp_future ψ => exact Validity.valid_implies_valid_discrete (temp_future_valid ψ)
   | discrete_symm_fwd => exact Validity.valid_implies_valid_discrete discrete_symm_fwd_valid
   | discrete_symm_bwd => exact Validity.valid_implies_valid_discrete discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
@@ -1218,7 +1209,7 @@ theorem soundness (Γ : Context) (φ : Formula)
     | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
-    | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
+
     | discrete_symm_fwd => exact discrete_symm_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
@@ -1395,7 +1386,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
-    | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
+
     | discrete_symm_fwd => exact discrete_symm_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t

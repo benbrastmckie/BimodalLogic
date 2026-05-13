@@ -30,9 +30,10 @@ requiring successor-chain constructions.
    - BX10/BX10': until_F/since_P (eventuality extraction)
    - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
-4. **Modal-Temporal Interaction** (2): modal_future, temp_future
+4. **Modal-Temporal Interaction** (1): modal_future
+   Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
-**Total**: 45 axiom constructors (39 base + 4 uniformity + 2 prior)
+**Total**: 44 axiom constructors (38 base + 4 uniformity + 2 prior)
 
 ### Key Properties
 
@@ -56,15 +57,15 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-45 constructors organized into six layers:
+44 constructors organized into six layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (28): Burgess-Xu axioms for Until/Since on linear orders
-- **Interaction** (2): Modal-temporal interaction axioms
+- **Interaction** (1): Modal-temporal interaction axiom (MF; TF now derived)
 - **Uniformity** (4): Discreteness uniformity axioms (valid on all ordered abelian groups)
 - **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
 
-Base axioms (43) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
+Base axioms (42) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
 -/
 inductive Axiom : Formula → Type where
   -- Layer 1: Propositional (4)
@@ -322,13 +323,11 @@ inductive Axiom : Formula → Type where
   -- NOTE: Layer 3c (until_guard/since_guard) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
 
-  -- Layer 4: Modal-Temporal Interaction (2)
+  -- Layer 4: Modal-Temporal Interaction (1)
+  -- Note: TF (□φ → G□φ) is now derived from MF + T + Modal 4 in Theorems/Combinators.lean.
 
   /-- Modal-Future: `□φ → □(Gφ)`. Necessary truths remain necessary in the future. -/
   | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.all_future φ)))
-
-  /-- Temporal-Future: `□φ → G(□φ)`. Necessary truths will always be necessary. -/
-  | temp_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.all_future (Formula.box φ)))
 
   -- Layer 5: Uniformity Axioms (4)
   -- These encode the uniformity of discreteness in ordered abelian groups.

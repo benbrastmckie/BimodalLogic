@@ -153,8 +153,7 @@ instance : AxiomLinearCompatible (Axiom.serial_past) where
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.modal_future φ) where
   valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.modal_future φ) (by simp [Axiom.isBase]) D
 
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_future φ) where
-  valid := fun D _ _ _ _ _ => axiom_base_valid_linear (Axiom.temp_future φ) (by simp [Axiom.isBase]) D
+-- Note: AxiomLinearCompatible instance for Axiom.temp_future removed -- TF is now derived.
 
 /-! ## Discrete Axiom Instances
 

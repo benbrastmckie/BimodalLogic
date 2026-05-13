@@ -139,7 +139,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Remove Constructor and Clean Match Arms [NOT STARTED]
+### Phase 3: Remove Constructor and Clean Match Arms [COMPLETED]
 
 **Goal**: Remove `temp_future` from the `Axiom` inductive type and delete all exhaustive match arms that reference it.
 
