@@ -1,7 +1,7 @@
 # Implementation Plan: Merge Root Boneyard into Canonical Location
 
 - **Task**: 132 - Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 2 hours
 - **Dependencies**: None (independent housekeeping task)
 - **Research Inputs**: specs/132_merge_boneyard_directories/reports/01_boneyard-merge-research.md
@@ -66,7 +66,7 @@ This task is general housekeeping that does not directly advance any specific RO
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Move Root Boneyard Files to Canonical Location [NOT STARTED]
+### Phase 1: Move Root Boneyard Files to Canonical Location [COMPLETED]
 
 **Goal**: Relocate both root Boneyard files into thematic subdirectories under `Theories/Bimodal/Boneyard/`, preserving git history.
 

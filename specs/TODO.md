@@ -39,9 +39,9 @@ technical_debt:
 2. ~~**115**~~ [COMPLETED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
 3. ~~**135**~~ [COMPLETED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
 4. ~~**136**~~ [COMPLETED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
-5. **133** [RESEARCHED] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
+5. **133** [IMPLEMENTING] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
 6. **134** [RESEARCHED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
-7. **132** [RESEARCHED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
+7. **132** [IMPLEMENTING] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
 
 ### Phase 2: Sorry-Free Completeness
 
@@ -128,7 +128,7 @@ technical_debt:
 
 ### 133. Simplify BX2: remove pointwise conjunct, derive from BX2G
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Related**: 115
 - **Research**: [specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md]
@@ -140,7 +140,7 @@ technical_debt:
 
 ### 132. Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Research**: [specs/132_merge_boneyard_directories/reports/01_boneyard-merge-research.md]
 - **Plan**: [132_merge_boneyard_directories/plans/01_boneyard-merge-plan.md]
