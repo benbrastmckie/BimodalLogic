@@ -1,7 +1,7 @@
 # Implementation Plan: Simplify BX2 — Remove Pointwise Conjunct
 
 - **Task**: 133 - Simplify BX2: remove pointwise conjunct, derive from BX2G
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Task 115 (established BX2G subsumes BX2 under open-guard semantics)
 - **Research Inputs**: specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md
@@ -121,7 +121,7 @@ This task advances the Phase 2 roadmap item: "Frame hierarchy + axiom cleanup" w
 
 ---
 
-### Phase 3: Documentation Update and Final Verification [NOT STARTED]
+### Phase 3: Documentation Update and Final Verification [COMPLETED]
 
 **Goal**: Update axiom count documentation, verify full build, and confirm no regressions.
 

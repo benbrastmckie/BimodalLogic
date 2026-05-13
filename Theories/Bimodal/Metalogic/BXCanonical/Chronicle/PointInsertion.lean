@@ -343,7 +343,7 @@ noncomputable def lemma_2_6 {A C : Set Formula}
   1. BX5 (self_accum_until) enriches the Until guard
   2. BX7 (linear_until) provides the three-way disjunction
   3. BX13 (enrichment_until) simplifies the surviving disjunct
-  4. BX1/BX2 (monotonicity) rule out two disjuncts
+  4. BX1/BX2G (monotonicity) rule out two disjuncts
   None of these axioms depend on BX9 (removed) or the T-axiom.
   **Gate verdict (Phase 5, plan v27): VALID. Proceed with Strategy 1.**
 
@@ -1111,7 +1111,7 @@ So we obtain `beta₀ ∈ B`, `gamma₀ ∈ C` with `¬U(beta₀∧eta, gamma₀
 1. BX5 on `U(xi, eta)`: get `U(xi∧U(xi,eta), eta) ∈ A`
 2. BX5 on `U(beta₀, gamma₀)` (from burgessR3): get `U(beta₀∧U(beta₀,gamma₀), gamma₀) ∈ A`
 3. BX7 on these two enriched Until formulas → three-way disjunction D1∨D2∨D3
-4. Eliminate D1 and D2 using `¬U(beta₀∧eta, gamma₀) ∈ A` + left_mono_until
+4. Eliminate D1 and D2 using `¬U(beta₀∧eta, gamma₀) ∈ A` + left_mono_until_G
 5. D3 survives: `U(phi₁∧phi₂, phi₁∧gamma₀) ∈ A` where phi₁ = xi∧U(xi,eta)
 6. BX10 gives F(phi₁∧gamma₀) ∈ A, so `{phi₁∧gamma₀} ∪ g_content(A) ∪ h_content(C)` consistent
 7. Lindenbaum → MCS D with `xi ∈ D`, `g_content(A) ⊆ D`, `g_content(D) ⊆ C`
@@ -1513,7 +1513,7 @@ Xu 1988 Lemma 3.2.1 (Section 3, transitive frames): If R(A, B, C), then
 
 This strengthens Xu Lemma 2.3 from top-guard (untl(gamma, top)) to arbitrary
 guards (untl(gamma, beta) for all beta ∈ B). The proof uses BX5 (self_accum_until)
-for the key self-accumulation step, then BX2+BX3 monotonicity for the
+for the key self-accumulation step, then BX2G+BX3 monotonicity for the
 contradiction. No BX14 (separation_until) is needed.
 
 The proof follows the same contradiction pattern as xu_lemma_2_3:
@@ -1530,7 +1530,7 @@ Proof by contradiction: suppose untl(gamma, beta) ∉ B. By maximality,
 gamma' ∈ C with ¬untl(gamma', beta' ∧ untl(gamma, beta)) ∈ A.
 Let gamma'' = gamma ∧ gamma', beta'' = beta ∧ beta'. From burgessR3:
 untl(gamma'', beta'') ∈ A. By BX5: untl(gamma'', beta'' ∧ untl(gamma'', beta'')) ∈ A.
-By BX3+BX2 monotonicity: untl(gamma', beta' ∧ untl(gamma, beta)) ∈ A. Contradiction. -/
+By BX3+BX2G monotonicity: untl(gamma', beta' ∧ untl(gamma, beta)) ∈ A. Contradiction. -/
 theorem xu_lemma_3_2_1_until {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
@@ -1595,7 +1595,7 @@ theorem xu_lemma_3_2_1_until {A B C : Set Formula}
   -- Component 1: ⊢ beta'' → beta' (right projection since beta'' = beta ∧ beta')
   -- Component 2: ⊢ untl(gamma'', beta'') → untl(gamma, beta)
   --   = ⊢ untl(gamma'', beta'') → untl(gamma, beta'') (BX3: event γ∧γ' → γ)
-  --     composed with ⊢ untl(gamma, beta'') → untl(gamma, beta) (BX2: guard β∧β' → β)
+  --     composed with ⊢ untl(gamma, beta'') → untl(gamma, beta) (BX2G: guard β∧β' → β)
   -- Event monotonicity: G(gamma'' → gamma) → untl(gamma'', beta'') → untl(gamma, beta'')
   -- Since ⊢ gamma'' → gamma (lce_imp), ⊢ G(gamma'' → gamma) by temporal_necessitation
   have h_event_impl : DerivationTree [] (gamma''.imp gamma) := lce_imp gamma gamma'
@@ -1662,7 +1662,7 @@ theorem xu_lemma_3_2_1_until {A B C : Set Formula}
 beta ∈ B and alpha ∈ A.
 
 Dual of xu_lemma_3_2_1_until: uses BX5' (self_accum_since), BX3' (right_mono_since),
-and BX2' (left_mono_since) for the guard strengthening and contradiction. -/
+and BX2H (left_mono_since_H) for the guard strengthening and contradiction. -/
 theorem xu_lemma_3_2_1_since {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
     (h_r3m : BurgessR3Maximal A B C)
@@ -2644,7 +2644,7 @@ theorem lemma_2_7 {A B C : Set Formula}
     intro β hβ α hα; apply h_sup
     show Formula.snce α (Formula.and β xi) ∈ lemma_2_7_seed A B C xi eta
     simp only [lemma_2_7_seed, Set.mem_union, Set.mem_setOf_eq]; right; exact ⟨β, hβ, α, hα, rfl⟩
-  -- Step 5c: Derive snce(xi, α) ∈ D for all α ∈ A (via left_mono_since)
+  -- Step 5c: Derive snce(xi, α) ∈ D for all α ∈ A (via left_mono_since_H)
   -- From snce(β∧xi, α) ∈ D and ⊢ (β∧xi) → xi: snce(xi, α) ∈ D
   have h_B_nonempty : ∃ β₀ : Formula, β₀ ∈ B := by
     exact ⟨Formula.bot.imp Formula.bot, cud_contains_theorems h_r3m.1
@@ -4291,7 +4291,7 @@ theorem since_witness_enriched_seed_consistent {A : Set Formula}
     · obtain ⟨α, hα_list, hφ_eq⟩ := h_untl_extracted φ hφ h_untl_case
       rw [hφ_eq]
       have h_proj := list_conj_implies_elem alpha_list α hα_list
-      -- G(α_star → α) gives untl(γ, α_star) → untl(γ, α) via BX2 (right_mono_until)
+      -- G(α_star → α) gives untl(γ, α_star) → untl(γ, α) via BX3 (right_mono_until)
       have h_G_proj := DerivationTree.temporal_necessitation _ h_proj
       have h_bx2 := DerivationTree.axiom [] _ (Axiom.right_mono_until α_star α γ)
       have h_untl_mono : DerivationTree [] ((Formula.untl α_star γ).imp (Formula.untl α γ)) :=

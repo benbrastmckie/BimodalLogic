@@ -17,9 +17,10 @@ requiring successor-chain constructions.
 
 1. **Propositional** (4): prop_k, prop_s, ex_falso, peirce
 2. **S5 Modal** (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
-3. **BX Temporal** (26 = temp_k_dist + temp_4 + 12 schemas x 2 directions):
+3. **BX Temporal** (24 = temp_k_dist + temp_4 + 11 schemas x 2 directions):
    - BX1/BX1': serial_future/past (seriality, replaces reflexivity)
-   - BX2/BX2': left_mono_until/since (left monotonicity)
+   - BX2/BX2': REMOVED (left_mono_until/since subsumed by BX2G/BX2H under open guard)
+   - BX2G/BX2H: left_mono_until_G/since_H (left monotonicity under G/H)
    - BX3/BX3': right_mono_until/since (right monotonicity)
    - BX4/BX4': connect_future/connect_past (temporal connectedness)
    - BX5/BX5': self_accum_until/since (self-accumulation)
@@ -33,7 +34,7 @@ requiring successor-chain constructions.
 4. **Modal-Temporal Interaction** (1): modal_future
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
-**Total**: 43 axiom constructors (36 base + 4 uniformity + 2 prior + 1 Z1)
+**Total**: 41 axiom constructors (34 base + 4 uniformity + 2 prior + 1 Z1)
 
 ### Key Properties
 

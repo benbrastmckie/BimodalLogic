@@ -623,15 +623,14 @@ from G(gamma) in A and neg(untl(gamma, delta)) in A, derive G(neg(delta)) in A.
 
 This shows that in the hard case of C4 elimination (where gamma in f(x),
 G(gamma) in f(x), and neg(gamma U delta) in f(x)), all future points
-must satisfy neg(delta). The derivation uses BX2 (left monotonicity of Until)
-and BX12 (F(delta) <-> top U delta).
+must satisfy neg(delta). The derivation uses BX2G (left monotonicity of Until
+under G) and BX12 (F(delta) <-> top U delta).
 
 Steps:
-1. gamma -> (top -> gamma) by prop_s (weakening)
-2. G(top -> gamma) from G(gamma) by temporal necessitation + distribution
-3. BX2: (top -> gamma) AND G(top -> gamma) implies (top U delta -> gamma U delta)
-4. Contrapositive with neg(gamma U delta): neg(top U delta) in A
-5. BX12 contrapositive: neg(F(delta)) in A, i.e., G(neg(delta)) in A
+1. G(top -> gamma) from G(gamma) by temporal necessitation + distribution
+2. BX2G: G(top -> gamma) implies (top U delta -> gamma U delta)
+3. Contrapositive with neg(gamma U delta): neg(top U delta) in A
+4. BX12 contrapositive: neg(F(delta)) in A, i.e., G(neg(delta)) in A
 -/
 theorem c4_hard_case_G_neg_delta {A : Set Formula}
     (h_mcs : SetMaximalConsistent A)
@@ -932,7 +931,7 @@ Key algebraic lemmas for the burgessR3 relation, showing that:
 
 These are the building blocks for proving that deductive closure preserves burgessR3,
 which is needed for the seed construction in BurgessR3Maximal existence.
-Uses BX7 (linear_until), BX2 (left_mono_until), and BX3 (right_mono_until).
+Uses BX7 (linear_until), BX2G (left_mono_until_G), and BX3 (right_mono_until).
 -/
 
 /--
