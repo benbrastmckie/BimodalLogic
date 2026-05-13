@@ -189,7 +189,7 @@ If `DerivationTree.isDenseCompatible` or `isDiscreteCompatible` recurse into axi
 
 ---
 
-### Phase 3: Doets Maximum Principle and Gap Elimination [NOT STARTED]
+### Phase 3: Doets Maximum Principle and Gap Elimination [BLOCKED]
 
 **Goal**: Use Z1 (now an axiom, in every MCS) to close the sorry in `succ_cofinal`.
 

@@ -1837,32 +1837,35 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       have h_neg_y := limit_backward_H A h_mcs x.val y.val x.property y.property hyx
         φ.neg h_H_neg
       exact set_consistent_not_both (limit_c0 A h_mcs y.val y.property).1 φ hφy h_neg_y
-    -- Step 9: Gap elimination via Z1 + Doets maximum principle.
+    -- Step 9: Gap elimination.
     --
     -- The orbit {s^[n](a)} converges to L from below, the pred-chain
     -- {p^[k](pb)} has values ≥ L. All orbit < all pred-chain.
     --
-    -- Key argument: every definable bounded set has a maximum (Doets Claim 10).
-    -- A "definable set" is {x | ψ ∈ limit_f(x)} for some formula ψ.
-    -- If such a set is nonempty, bounded, and has no maximum, the gap scenario
-    -- contradicts Z1 (which is in every MCS via theorem_in_mcs).
+    -- This sorry represents a genuine mathematical gap: the succ-orbit
+    -- from a does not reach b, creating a ℤ+ℤ-like structure. Closing it
+    -- requires either:
+    -- (a) Z1 (Doets maximum principle) with a discriminating formula that
+    --     distinguishes orbit from non-orbit points, combined with control
+    --     of what happens at b and beyond the gap region.
+    -- (b) A construction-level argument showing the omega-chain cannot
+    --     produce a gap (the construction resolves counterexamples that
+    --     would force succ links across any gap).
+    -- (c) Adding Z1 as an axiom was done in Phase 2. The gap elimination
+    --     argument using Z1 needs: for some φ, F(φ) and FG(¬φ) at an
+    --     orbit point, with G(Gφ→φ)→(FGφ→Gφ) (Z1) giving Gφ or a
+    --     "maximum" point via the contrapositive. The maximum point y
+    --     has φ∧G(¬φ), so forward_G gives ¬φ at succ(y). If y is orbit
+    --     (value < L by orbit_below_L), succ(y) is orbit, contradicting
+    --     φ at succ(y) for the right φ.
     --
-    -- Two sub-cases:
-    -- (a) Constant MCS: all limit_dom points have the same MCS. Then the
-    --     construction produces a single connected chain (no gap).
-    -- (b) Non-constant MCS: a discriminating formula exists, and Doets
-    --     maximum principle gives a contradiction with the gap geometry.
+    -- Available tools: backward_G, backward_F, z1_in_mcs, orbit_below_L,
+    -- h_lt_pred_chain, limit_F_resolution, limit_forward_G.
     --
-    -- For now we handle the general case by combining Z1 with the gap structure.
-    -- The key observation: in the gap scenario with non-constant MCS, there
-    -- exists a formula ψ that holds at some orbit point but fails at some
-    -- pred-chain point. This formula defines a bounded set with no maximum
-    -- in the orbit, contradicting the Doets maximum principle.
-    --
-    -- For the constant-MCS case: if all limit_dom points have the same MCS,
-    -- then for every formula ψ in that MCS, G(ψ) is also in the MCS
-    -- (by backward_G). This means the limit model is "homogeneous" and
-    -- the construction produces a single succ-connected chain.
+    -- The core difficulty: backward_G at orbit point x needs φ at ALL
+    -- y > x (including b and beyond), not just orbit/pred-chain points.
+    -- Similarly, establishing FG(¬φ) at x needs G(¬φ) at some y > x,
+    -- which needs ¬φ at ALL w > y.
     sorry
 
 /--

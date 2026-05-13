@@ -2,82 +2,45 @@
 
 - **Task**: 123 - fix_c5_witness_bot_and_prove_icc_finite
 - **Plan**: plans/12_semantic-z1-gap.md
-- **Status**: Partial (Phase 2 completed, Phase 3 not started)
-- **Session**: sess_1778635637_869428
+- **Status**: PARTIAL (Phases 1-2 completed, Phase 3 blocked)
+- **Session**: sess_1778638598_997271
 
-## What Was Accomplished
+## Phases Completed
 
 ### Phase 1: Add Imports and Prove Order.succ Equality [COMPLETED]
-Already completed in prior session.
+Previously completed.
 
 ### Phase 2: Add Z1 Axiom and Prove Soundness [COMPLETED]
+Previously completed. Z1 axiom added, soundness proved, all pattern matches updated, z1_derivation replaced with axiom-based approach, lake build passes.
 
-**Step 2a**: Added `z1` constructor to `Axiom` inductive type in `Axioms.lean`:
-```lean
-| z1 (phi : Formula) :
-    Axiom ((phi.all_future.imp phi).all_future.imp (phi.all_future.some_future.imp phi.all_future))
-```
+## Phases Not Completed
 
-**Step 2b**: Updated axiom classification predicates:
-- `Axiom.frameClass`: z1 => .Discrete
-- `Axiom.isBase`: z1 => False
-- `Axiom.isDenseCompatible`: z1 => False
-- `Axiom.isDiscreteCompatible`: unchanged (wildcard covers z1)
+### Phase 3: Doets Maximum Principle and Gap Elimination [BLOCKED]
 
-**Step 2c**: Proved Z1 soundness in `SoundnessLemmas.lean`:
-- `z1_is_valid`: G(Gphi->phi) -> (FGphi->Gphi) is valid on IsSuccArchimedean discrete orders
-- `z1_past_is_valid`: H(Hphi->phi) -> (PHphi->Hphi) is valid on IsPredArchimedean discrete orders
-- Both proofs use backward induction from the Gphi/Hphi witness via `exists_succ_iterate`/`exists_pred_iterate` and `Nat.strong_induction_on`
+**What was attempted**: Extensive analysis of the `succ_cofinal` sorry (line 1869 of ChronicleToCountermodel.lean) in the gap scenario where the orbit `s^n(a)` converges to L in R and the pred-chain `p^k(pb)` converges from above.
 
-**Step 2d**: Updated ALL pattern matches on Axiom (~8 theorems across 2 files):
+**Approaches evaluated**:
 
-In `SoundnessLemmas.lean` (4 isDenseCompatible guards + 2 discrete validity handlers):
-- `axiom_swap_valid`: added z1 absurd case
-- `axiom_locally_valid`: added z1 absurd case
-- `axiom_swap_valid_general`: added z1 absurd case
-- `axiom_locally_valid_general`: added z1 absurd case
-- `axiom_swap_valid_discrete`: added z1 case using z1_past_is_valid
-- `axiom_locally_valid_discrete`: added z1 case using z1_is_valid
+1. **Z1 Doets maximum principle (plan approach)**: Z1 at orbit point with discriminating formula phi gives either G(neg(phi)) (contradiction if phi at all orbit) or F(G(neg(phi)) and phi) giving a "maximum point" y. If y.val < L, orbit_below_L forces y to be orbit, and succ(y) is orbit where phi should hold but G(neg(phi)) gives neg(phi) at succ(y). **Blocking issue**: backward_G needs phi at ALL y > x (including b and points beyond b, which are outside the gap region). FG(neg(phi)) at x similarly needs G(neg(phi)) at some y > x, which needs neg(phi) at ALL w > y. Cannot control formula membership at b and beyond without a discriminating formula that fails everywhere above the gap.
 
-In `Soundness.lean` (5 pattern match sites):
-- `axiom_base_valid`: added z1 absurd case (not base)
-- `axiom_valid_dense`: added z1 absurd case (not dense-compatible)
-- `axiom_valid_discrete`: added z1 case using z1_valid
-- `soundness` (dense-compatible): added z1 absurd case
-- `soundness_dense`: added z1 absurd case
+2. **Prior-UZ approach**: Prior-UZ gives U(phi, phi.neg). limit_satisfies_c5_strong gives witness y with phi at y (GOAL) and phi.neg at intermediates (GUARD). When y is the immediate successor, guard is vacuous. No contradiction from Prior-UZ alone.
 
-Added `z1_valid` bridge theorem in `Soundness.lean`.
+3. **Stage induction (succ_reaches_dom_N)**: Boundary cases at lines 1295 and 1448 remain sorry'd. Needs succ of dom(N) boundary point to be in dom(N+1), which is not guaranteed.
 
-**Step 3a (partial)**: Replaced sorry'd `z1_derivation` with axiom-based version:
-```lean
-private def z1_derivation (phi : Formula) :
-    DerivationTree [] (z1_formula phi) :=
-  DerivationTree.axiom [] _ (Axiom.z1 phi)
-```
-This eliminates the `z1_derivation` sorry in `ChronicleToCountermodel.lean`.
+4. **Direct real analysis**: No contradiction without temporal axioms (Z+Z model is consistent with discrete structure without Z1).
 
-### Phase 3: Doets Maximum Principle and Gap Elimination [NOT STARTED]
+**Root cause**: backward_G quantifies over ALL limit_dom y > x, requiring control of formula membership at b and beyond the gap region. The constant-MCS case is consistent with Z1 and requires a construction-level argument.
 
-The `succ_cofinal` sorry at line 1866 remains. This is the hardest part of the plan.
+## Recommendations
 
-### Phase 4: Verification and Cleanup [NOT STARTED]
+1. **Research needed**: Study Doets 1987 / Reynolds 1994 gap elimination proofs.
+2. **Alternative**: Add construction-level lemma about omega_chain boundary behavior.
+3. **Plan revision**: Phase 3 needs revision for the "b and beyond" control issue.
 
-## Modified Files
+## Files Modified
 
-| File | Changes |
-|------|---------|
-| `Theories/Bimodal/ProofSystem/Axioms.lean` | Added `z1` constructor + updated classification predicates |
-| `Theories/Bimodal/Metalogic/SoundnessLemmas.lean` | Added `z1_is_valid`, `z1_past_is_valid`, updated 6 pattern matches |
-| `Theories/Bimodal/Metalogic/Soundness.lean` | Added `z1_valid`, updated 5 pattern matches |
-| `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` | Replaced sorry'd `z1_derivation` with axiom-based version |
+- `ChronicleToCountermodel.lean`: Updated sorry comments at succ_cofinal gap (line 1869). Removed extended incorrect analysis. Comments now document blocking issues.
 
 ## Build Status
 
-- `lake build`: passes (1633 jobs, 0 errors)
-- No new Lean-level axioms introduced (only the proof-system `Axiom` constructor)
-- 1 sorry eliminated (`z1_derivation`)
-- `succ_cofinal` sorry remains (Phase 3 target)
-
-## Remaining Work
-
-Phase 3 (gap elimination) requires proving `False` from the gap scenario using Z1 in every MCS. The proof infrastructure is in place (backward_G, backward_F, z1_in_mcs, orbit_below_L, h_lt_pred_chain). The creative step is finding a discriminating formula or showing the constant-MCS case contradicts the construction, then applying the Doets maximum principle.
+`lake build` passes.
