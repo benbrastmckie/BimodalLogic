@@ -44,7 +44,7 @@ technical_debt:
 
 All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentially after task 123 merges.
 
-1. **126** [NOT STARTED] — Split discrete/integer frame hierarchy (depends on 123, ~320 lines)
+1. **126** [RESEARCHED] — Four-tier frame hierarchy: Base → Dense/Discrete → Integer (depends on 123, 129)
 2. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
 3. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
 4. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
@@ -224,6 +224,17 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 - **Research**: [specs/122_build_discrete_bfmcs_and_complete_countermodel/reports/01_discrete-bfmcs-research.md]
 
 **Description**: Build discrete BFMCS on ℤ and complete `dd_countermodel_chronicle_nondense_sorry`. Mirror the dense case pattern: use `discrete_fmcs` (already exists) to build a `BFMCS Int` with restricted coherence properties, then wire into parametric representation for the countermodel. Located at ChronicleToCountermodel.lean:836.
+
+---
+
+### 126. Four-tier frame hierarchy: Base → Dense/Discrete → Integer extensions
+- **Effort**: 15-25 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Dependencies**: 123, 129
+- **Research**: [specs/126_frame_hierarchy_dense_discrete_integer_extensions/reports/01_frame-hierarchy-research.md]
+
+**Description**: Establish a four-tier axiom hierarchy with explicit frame correspondence. Tier 0 (Base): BX axioms sound on all linear orders. Tier 1a (Dense): base + density axiom GGp→Gp (characterizes DenselyOrdered). Tier 1b (Discrete): base + next_top=U(⊤,⊥) (characterizes SuccOrder/PredOrder). Tier 2 (Integer): discrete + Prior-UZ + Prior-SZ + Z1 (characterizes IsSuccArchimedean). Split valid_discrete/valid_integer, add Axiom.frameClass variants, update soundness dispatch, prove Sahlqvist-style frame correspondence for each extension axiom.
 
 ---
 

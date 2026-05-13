@@ -660,16 +660,24 @@
     },
     {
       "project_number": 126,
-      "project_name": "split_discrete_integer_frame_hierarchy",
-      "status": "not_started",
+      "project_name": "frame_hierarchy_dense_discrete_integer_extensions",
+      "status": "researched",
       "task_type": "lean4",
-      "description": "Split DiscreteTemporalFrame into DiscreteTemporalFrame (SuccOrder + PredOrder, no IsSuccArchimedean, no Prior-UZ) and IntegerTemporalFrame (+ IsSuccArchimedean, + Prior-UZ/SZ). Move Prior-UZ/SZ soundness to integer level. Rename soundness_discrete to soundness_integer. Add valid_integer predicate. The discrete logic targets all discrete linear orders (including Z+Z); the integer logic targets Z specifically. Discrete completeness (new countermodel for Z+Z) is future work beyond this task. Based on research report specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/09_prior-uz-issucc-analysis.md.",
+      "description": "Establish a four-tier axiom hierarchy with explicit frame correspondence at each level. Tier 0 (Base): current BX axioms, sound on ALL linear orders. Tier 1a (Dense Extension): base + density axiom GGp→Gp and past dual HHp→Hp, characterizing DenselyOrdered frames via Sahlqvist correspondence. Tier 1b (Discrete Extension): base + discreteness axiom next_top=U(T,bot) and past dual prev_top=S(T,bot), characterizing SuccOrder/PredOrder frames. Tiers 1a and 1b are mutually exclusive. Tier 2 (Integer Extension): discrete + Prior-UZ + Prior-SZ + Z1, characterizing IsSuccArchimedean+IsPredArchimedean (Z-like) frames. Implementation: split valid_discrete into valid_discrete (Tier 1b) and valid_integer (Tier 2), add valid_dense_axiomatized with density axiom, update Axiom.frameClass to .Base/.Dense/.Discrete/.Integer, update soundness dispatch for all four tiers, prove frame correspondence for each extension axiom, update bx_completeness case split to use explicit hierarchy.",
       "dependencies": [
-        123
+        123,
+        129
       ],
       "created": "2026-05-13T01:17:13Z",
-      "last_updated": "2026-05-13T01:17:13Z",
-      "next_artifact_number": 1
+      "last_updated": "2026-05-13T09:15:42Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/126_frame_hierarchy_dense_discrete_integer_extensions/reports/01_frame-hierarchy-research.md",
+          "type": "research",
+          "summary": "Four-tier frame hierarchy: density/discreteness correspondence, implementation roadmap"
+        }
+      ]
     },
     {
       "project_number": 127,
