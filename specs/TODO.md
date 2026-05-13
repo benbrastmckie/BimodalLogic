@@ -35,7 +35,7 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **129** [PLANNED] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
+1. **129** [RESEARCHED] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
 2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
 3. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
@@ -113,10 +113,12 @@ technical_debt:
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: critical
-- **Research**: [specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md]
+- **Research**:
+  - [specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md]
+  - [129_weak_reflexive_completeness_conservative_extension/reports/02_team-research.md]
 - **Plan**: [129_weak_reflexive_completeness_conservative_extension/plans/01_weak-completeness-plan.md]
 
 **Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.

@@ -10,7 +10,7 @@
       "project_name": "refactor_module_organization",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy \u2014 group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
+      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
       "created": "2026-05-13T17:05:29Z",
       "last_updated": "2026-05-13T17:05:29Z",
       "next_artifact_number": 1,
@@ -21,7 +21,7 @@
       "project_name": "jonsson_tarski_representation_bimodal_sus",
       "status": "not_started",
       "task_type": "formal",
-      "description": "Research algebraic methods for establishing a J\u00f3nsson-Tarski-style representation theorem for the bimodal logic TM with primitives Since (S), Until (U), and Box (\u25a1), plus material implication (\u2192) and bottom (\u22a5) as the primitive Boolean operators. The goal is to determine whether the Lindenbaum-Tarski algebra of TM forms a variety of Boolean algebras with operators (BAOs) that admits a concrete representation into complex algebras of relational structures (task frames). Key questions: (1) Since S and U are binary normal operators, does the standard J\u00f3nsson-Tarski representation for n-ary BAOs apply directly, or does the interaction with the S5 modal operator \u25a1 introduce complications? (2) What role does orthodox axiomatizability (no IRR rule) play \u2014 per Venema 1993 (Anti-Axioms), orthodox systems ensure closure under ultraproducts, but TM uses the IRR rule in the ConservativeExtension module; does this affect the algebraic representation? (3) Can the existing TenseS5Algebra.lean structure be extended to a full BAO with S/U operators, and does the Lindenbaum quotient construction yield a representable algebra? (4) What is the relationship between the parametric representation theorem (ParametricRepresentation.lean) and a J\u00f3nsson-Tarski-style algebraic representation \u2014 are they equivalent, or does one subsume the other? (5) How do the Prior-UZ/SZ axioms (discrete well-ordering) and the uniformity axioms (ordered abelian group structure) interact with the algebraic representation? Literature base: Venema 1991 (dissertation Ch2 + App A), Venema 1993 (Anti-Axioms), Goldblatt-Hodkinson-Venema 2003, Venema 1997 (Atom Structures), de Rijke-Venema 1995 (Sahlqvist for BAOs), Blackburn-de Rijke-Venema 2001 Ch5 (not yet obtained). All papers are in literature/ with markdown conversions.",
+      "description": "Research algebraic methods for establishing a Jónsson-Tarski-style representation theorem for the bimodal logic TM with primitives Since (S), Until (U), and Box (□), plus material implication (→) and bottom (⊥) as the primitive Boolean operators. The goal is to determine whether the Lindenbaum-Tarski algebra of TM forms a variety of Boolean algebras with operators (BAOs) that admits a concrete representation into complex algebras of relational structures (task frames). Key questions: (1) Since S and U are binary normal operators, does the standard Jónsson-Tarski representation for n-ary BAOs apply directly, or does the interaction with the S5 modal operator □ introduce complications? (2) What role does orthodox axiomatizability (no IRR rule) play — per Venema 1993 (Anti-Axioms), orthodox systems ensure closure under ultraproducts, but TM uses the IRR rule in the ConservativeExtension module; does this affect the algebraic representation? (3) Can the existing TenseS5Algebra.lean structure be extended to a full BAO with S/U operators, and does the Lindenbaum quotient construction yield a representable algebra? (4) What is the relationship between the parametric representation theorem (ParametricRepresentation.lean) and a Jónsson-Tarski-style algebraic representation — are they equivalent, or does one subsume the other? (5) How do the Prior-UZ/SZ axioms (discrete well-ordering) and the uniformity axioms (ordered abelian group structure) interact with the algebraic representation? Literature base: Venema 1991 (dissertation Ch2 + App A), Venema 1993 (Anti-Axioms), Goldblatt-Hodkinson-Venema 2003, Venema 1997 (Atom Structures), de Rijke-Venema 1995 (Sahlqvist for BAOs), Blackburn-de Rijke-Venema 2001 Ch5 (not yet obtained). All papers are in literature/ with markdown conversions.",
       "dependencies": [
         123,
         124,
@@ -119,7 +119,7 @@
         30,
         31
       ],
-      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame \u211a into the unconditional dense representation theorem: valid_dense \u03c6 \u2192 \u22a2_dense \u03c6. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
+      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
       "artifacts": [
         {
           "path": "specs/018_dense_representation_theorem_completion/reports/01_dense-representation-research.md",
@@ -251,7 +251,7 @@
       "language": "lean4",
       "created": "2026-03-19T17:05:39Z",
       "last_updated": "2026-03-19T17:05:39Z",
-      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean \u2014 mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) \u2014 are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
+      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
     },
     {
       "project_number": 992,
@@ -261,7 +261,7 @@
       "created": "2026-03-18T20:24:23Z",
       "last_updated": "2026-03-18T20:24:23Z",
       "researched": "2026-03-18T20:24:23Z",
-      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with \u25a1, G, H, \u03c3 operators and interaction axioms. Lift temporal duality \u03c3 from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
+      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with □, G, H, σ operators and interaction axioms. Lift temporal duality σ from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
       "artifacts": [
         {
           "type": "research",
@@ -276,7 +276,7 @@
       "status": "researched",
       "language": "lean",
       "priority": "medium",
-      "description": "Refactor unilateral proof system (\u0393 \u22a2 \u03c6) to bilateral system with dual judgments: acceptance (\u0393 \u22a2\u207a \u03c6) and rejection (\u0393 \u22a2\u207b \u03c6). Parallel implementation with equivalence bridge.",
+      "description": "Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with dual judgments: acceptance (Γ ⊢⁺ φ) and rejection (Γ ⊢⁻ φ). Parallel implementation with equivalence bridge.",
       "created": "2026-03-03T00:00:00Z",
       "last_updated": "2026-03-16T14:45:00Z",
       "researched": "2026-03-16T14:45:00Z",
@@ -437,7 +437,7 @@
       "last_updated": "2026-03-25T18:30:47Z",
       "session_id": "sess_1774461365_0e8fc2",
       "researched": "2026-03-25T18:30:47Z",
-      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + \u03c3-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. \u03c4 proven impossible as global algebraic construction.",
+      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + σ-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. τ proven impossible as global algebraic construction.",
       "artifacts": [
         {
           "path": "specs/064_critical_path_review/reports/05_team-research.md",
@@ -477,7 +477,7 @@
       "project_name": "plan_compliance_rule_for_implementation_agents",
       "status": "not_started",
       "task_type": "meta",
-      "description": "Add a .claude/rules/ rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a theorems-as-interval shortcut for task 107 Phase 1 instead of following the planned Burgess D0 seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan approach. The rule must state: (1) agents MUST implement the plan specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending /revise and return partial \u2014 never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.",
+      "description": "Add a .claude/rules/ rule enforcing plan compliance for implementation agents. Root cause: lean-implementation-agent invented a theorems-as-interval shortcut for task 107 Phase 1 instead of following the planned Burgess D0 seed construction. The agent definition, skill, and workflow docs tell agents HOW to execute (lean_goal, phase markers, builds) but never say they MUST follow the plan approach. The rule must state: (1) agents MUST implement the plan specified approach, not invent alternatives; (2) if agent believes a simpler approach exists, MUST write a handoff recommending /revise and return partial — never implement the alternative silently; (3) plan task items are binding specifications, not suggestions.",
       "created": "2026-04-27T00:00:00Z",
       "last_updated": "2026-04-27T00:00:00Z",
       "next_artifact_number": 1,
@@ -511,7 +511,7 @@
       "project_name": "frame_hierarchy_dense_discrete_integer_extensions",
       "status": "researched",
       "task_type": "lean4",
-      "description": "Establish a four-tier axiom hierarchy with explicit frame correspondence at each level. Tier 0 (Base): current BX axioms, sound on ALL linear orders. Tier 1a (Dense Extension): base + density axiom GGp\u2192Gp and past dual HHp\u2192Hp, characterizing DenselyOrdered frames via Sahlqvist correspondence. Tier 1b (Discrete Extension): base + discreteness axiom next_top=U(T,bot) and past dual prev_top=S(T,bot), characterizing SuccOrder/PredOrder frames. Tiers 1a and 1b are mutually exclusive. Tier 2 (Integer Extension): discrete + Prior-UZ + Prior-SZ + Z1, characterizing IsSuccArchimedean+IsPredArchimedean (Z-like) frames. Implementation: split valid_discrete into valid_discrete (Tier 1b) and valid_integer (Tier 2), add valid_dense_axiomatized with density axiom, update Axiom.frameClass to .Base/.Dense/.Discrete/.Integer, update soundness dispatch for all four tiers, prove frame correspondence for each extension axiom, update bx_completeness case split to use explicit hierarchy.",
+      "description": "Establish a four-tier axiom hierarchy with explicit frame correspondence at each level. Tier 0 (Base): current BX axioms, sound on ALL linear orders. Tier 1a (Dense Extension): base + density axiom GGp→Gp and past dual HHp→Hp, characterizing DenselyOrdered frames via Sahlqvist correspondence. Tier 1b (Discrete Extension): base + discreteness axiom next_top=U(T,bot) and past dual prev_top=S(T,bot), characterizing SuccOrder/PredOrder frames. Tiers 1a and 1b are mutually exclusive. Tier 2 (Integer Extension): discrete + Prior-UZ + Prior-SZ + Z1, characterizing IsSuccArchimedean+IsPredArchimedean (Z-like) frames. Implementation: split valid_discrete into valid_discrete (Tier 1b) and valid_integer (Tier 2), add valid_dense_axiomatized with density axiom, update Axiom.frameClass to .Base/.Dense/.Discrete/.Integer, update soundness dispatch for all four tiers, prove frame correspondence for each extension axiom, update bx_completeness case split to use explicit hierarchy.",
       "dependencies": [
         123,
         129
@@ -532,7 +532,7 @@
       "project_name": "time_addition_operator",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add time addition operator (+) to the bimodal logic TM. \u03c6 + \u03c8 is true at (\u03c4, x) iff \u2203 y,z with x = y+z, \u03c6 true at (\u03c4,y), \u03c8 true at (\u03c4,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/\u25a1. Completeness (ternary canonical model) and decidability are open research problems \u2014 defer to later phases.",
+      "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
       "dependencies": [
         123
       ],
@@ -546,7 +546,7 @@
       "project_name": "open_set_operator_dense_continuous",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete \u2124 the interior is trivial (discrete topology), but on dense \u211a and continuous \u211d it captures neighborhood-stable truth: Int(\u03c6) true at t iff \u03c6 holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(\u03c6)\u2192\u03c6, Int(\u03c6)\u2192Int(Int(\u03c6))). Phase 4: interaction with temporal operators and S5 \u25a1. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) \u2014 completeness may require non-standard techniques.",
+      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
       "dependencies": [
         122
       ],
@@ -558,14 +558,14 @@
     {
       "project_number": 129,
       "project_name": "weak_reflexive_completeness_conservative_extension",
-      "status": "planned",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Develop a weak/reflexive temporal sub-language for discrete frames where G_w evaluates over the reflexive closure (y >= x) rather than the strict order (y > x). Prove completeness for this sub-language using standard Henkin canonical model methods (no chronicle construction, no IR rule), then transfer completeness to the strict system via model-theoretic argument, bypassing the succ_cofinal gap entirely.\n\nPhase 1: Weak sub-language definition (~100 lines). G_w(phi) := phi AND G(phi), H_w := phi AND H(phi), F_w := phi OR F(phi), P_w := phi OR P(phi). Weak Until/Since with reflexive endpoints.\n\nPhase 2: Weak axiom system (~200 lines). Derive weak axioms in the strict system. G_w(phi)->phi is trivial. Weak Z1 (FG_w(phi)->G_w(phi)) derivable from strict Z1.\n\nPhase 3: Weak Henkin canonical model (~500-800 lines). Standard construction where each point is a distinct MCS. No chronicle, no IR rule, no gap scenario. Constant-MCS structurally impossible.\n\nPhase 4: Z1 + IsSuccArchimedean in the weak model (~200-400 lines). Doets maximum principle (Claim 10) + compression from sum-of-zeta to single zeta (Claims 9-11).\n\nPhase 5: Model-theoretic completeness transfer (~100 lines). IMPORTANT: Expressing strict G in terms of weak operators is impossible (U_w(phi,bot) = phi in weak semantics, so Next is not definable). Instead use model-theoretic argument: if psi is not provable in the strict system, then neg-psi is consistent in the strict system. Since every weak axiom is a strict theorem (G_w = phi AND G), neg-psi is consistent in the weak system. By weak completeness, there exists a weak countermodel. This is also a strict countermodel (same domain, same valuation, reinterpret <= as <). Contrapositive: valid under strict -> provable.\n\nPhase 6: Integration (~100 lines). Wire weak completeness + transfer into existing pipeline.\n\nPhase 7: Close the sorry (~50 lines). Replace the admitted limitDomSubtype_isSuccArchimedean in ChronicleToCountermodel.lean with the Henkin-derived IsSuccArchimedean, making dd_countermodel_chronicle_discrete sorry-free.",
       "dependencies": [],
       "created": "2026-05-13T07:34:37Z",
-      "last_updated": "2026-05-13T16:37:12Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-05-13T23:17:58Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md",
@@ -576,10 +576,15 @@
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/01_weak-completeness-plan.md",
           "type": "plan",
           "summary": "7-phase plan: weak operators, Henkin model, Doets compression, model-theoretic transfer, close sorry (40h)"
+        },
+        {
+          "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research: Reynolds 1994 approach, infrastructure audit, critical gaps, strategic alignment (4 teammates)"
         }
       ],
-      "researched": "2026-05-13T16:27:17Z",
-      "session_id": "sess_1778689940_4c3029"
+      "researched": "2026-05-13T23:17:58Z",
+      "session_id": "sess_1778713502_d74974"
     },
     {
       "project_number": 130,
@@ -587,7 +592,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "priority": "medium",
-      "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) \u2014 stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) \u2014 convergence approach superseded. (3) succ_cofinal gap analysis code \u2014 entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) \u2014 bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
+      "description": "After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean lines 1297, 1450) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates (line 1514) — convergence approach superseded. (3) succ_cofinal gap analysis code — entire convergence + Z1 gap analysis section. (4) BXCanonical pipeline dead code (Quasimodel/Realization 4 sorries, Quasimodel/Construction 2 sorries, TruthLemma 2 sorries, RootScopedChain 3 sorries, Filtration/SigmaOrdering 3 sorries, Frame 1 sorry) — bypassed by Chronicle approach. (5) Bundle/SuccRelation 3 sorries and Bundle/SuccExistence 3 sorries if no longer needed. Total: ~40 sorries to archive. Keep Boneyard README files documenting why each was archived.",
       "dependencies": [
         129
       ],
