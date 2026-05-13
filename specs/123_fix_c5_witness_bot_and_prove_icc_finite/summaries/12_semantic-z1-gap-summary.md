@@ -1,9 +1,9 @@
-# Implementation Summary: Semantic Z1 Gap Elimination (v12)
+# Implementation Summary: Semantic Z1 Gap Elimination (v12, update 2)
 
 - **Task**: 123 - fix_c5_witness_bot_and_prove_icc_finite
 - **Plan**: plans/12_semantic-z1-gap.md
-- **Status**: Partial (Phase 2 blocked)
-- **Session**: sess_1778619293_1bf3ac
+- **Status**: Blocked (Z1 proven underivable from current axiom system)
+- **Session**: sess_1778628049_e6d2c8
 
 ## What Was Accomplished
 
@@ -11,50 +11,81 @@
 - Added Mathlib imports
 - Proved `order_succ_eq` and `order_pred_eq`
 
-### Phase 2: Blocked
-- Proved `backward_P` lemma (dual of `backward_F`) at line 1800 of ChronicleToCountermodel.lean
-- Documented the gap elimination problem thoroughly with analysis of approaches
-- The sorry at line 1816 (originally 1778) in `succ_cofinal` remains
+### Phase 2: BLOCKED - Z1 proven underivable
 
-### Phase 3: Not Started (depends on Phase 2)
+Exhaustive analysis of the Z1 derivation problem revealed a fundamental impossibility:
 
-## Analysis of the Gap Problem
+**Z1 is NOT derivable from Prior-UZ + BX axioms.**
 
-The sorry is in the `else` branch of `succ_cofinal` where `L <= pred(b).val`. In this "gap scenario":
-- The orbit `s^[n](a)` converges upward to `L` in reals
-- The pred-chain `pred^[k](pb)` is strictly decreasing with values >= `L`
-- All orbit points are strictly below all pred-chain points
-- The orbit and pred-chain form disconnected succ/pred-closed components
+#### Proof of underivability (counterexample)
 
-### Approaches Evaluated
+The linear order omega + omega* (two copies of the naturals, one ascending and one descending, with a gap between them) satisfies ALL BX axioms AND Prior-UZ/Prior-SZ, but Z1 FAILS on it.
 
-1. **Prior-SZ maximum principle**: The plan's primary approach. Requires a discriminating formula (one that holds at all orbit points but fails at some non-orbit point). In the "constant MCS" case (all limit_dom points share the same MCS), no such formula exists. The temporal logic axioms are trivially satisfied with constant MCS labels, so the contradiction must come from the omega-chain construction internals.
+**Setup**: omega + omega* = {0, 1, 2, ..., ..., b_2, b_1, b_0} where every element of the omega-part is less than every element of the omega*-part.
 
-2. **Prior-UZ with Until guards**: Until witnesses in the discrete case are always adjacent (immediate successor), making guards vacuous. The Since witnesses similarly resolve to adjacent predecessors.
+**Prior-UZ holds**: For any formula psi, if F(psi) holds at a point n, the nearest future psi-point exists because:
+- If psi-points exist in the omega-part above n: the omega-part is well-ordered, so a minimum exists.
+- If psi-points exist only in the omega*-part: the omega*-part (ordered from left) has a minimum psi-point, and the interval (n, minimum) has no psi-points (omega-part has no psi-points above n, and omega*-part below the minimum has no psi-points either).
 
-3. **Syntactic Z1 derivation tree**: `G(Gp -> p) -> (FGp -> Gp)` from Prior-UZ. Estimated at 100+ lines with no published derivation to follow. Research report 14 confirmed intractability.
+**Prior-SZ holds**: Symmetric argument for the past direction.
 
-4. **Stage induction**: The `succ_reaches_dom_N` theorem also has boundary case sorries (lines 1295, 1448) with the same fundamental difficulty.
+**Z1 fails**: Take phi = "x is in the omega*-part".
+- G(phi) at n (in omega-part): phi must hold at ALL points strictly after n. Points in the omega-part above n do NOT satisfy phi. So G(phi)(n) is FALSE.
+- G(phi) at b_k (in omega*-part): phi at all b_{k-1}, ..., b_0. TRUE.
+- FG(phi) at n: G(phi) holds at b_k for any k. TRUE.
+- G(G(phi)->phi) at n: for all m > n, G(phi)(m)->phi(m). For m in omega-part: G(phi)(m) is false, implication vacuous. For m in omega*-part: G(phi)(m) and phi(m) both true. TRUE.
+- Z1 conclusion G(phi) at n: FALSE (phi fails in the omega-part).
 
-### Root Cause
+So G(G(phi)->phi) AND FG(phi) hold at every omega-part point, but G(phi) does NOT. Z1 fails.
 
-The `IsSuccArchimedean` property is an asymptotic/global property (succ-iterates eventually reach any target), while the available temporal axioms provide only local constraints (nearest-point witnesses). Bridging the local-to-global gap requires either:
+**SuccOrder holds**: Every point in the omega-part has an immediate successor (n+1). Every point in the omega*-part has an immediate successor (b_{k-1} for k > 0, and b_0 is the maximum). So U(top, bot) holds everywhere.
 
-- A **Z1 axiom** (which IS the bridge principle, saying "G is Noetherian"), obtained either syntactically or added as an axiom with a soundness proof
-- A **construction-level argument** showing stage-level connectivity transfers to the limit, requiring deep interaction with `omega_chain_elim_result`, `BurgessR3Maximal`, etc.
+**Conclusion**: The BX axiom system + Prior-UZ is CONSISTENT with omega+omega* gaps. Z1 is an INDEPENDENT axiom that cannot be derived.
 
-## New Infrastructure
+#### Soundness circularity
 
-- `backward_P`: For `y < x` and `phi in limit_f(y)`, `P(phi) in limit_f(x)`. Proved by contradiction using `limit_backward_H` and `set_consistent_not_both`. Available for future gap elimination attempts.
+Adding Z1 as a new axiom creates a circularity:
+- Z1 soundness requires proving Z1 is valid on discrete linear orders
+- Z1 is valid on discrete linear orders that satisfy IsSuccArchimedean (no omega+omega* gaps)
+- IsSuccArchimedean is exactly what we're trying to prove USING Z1
+- Z1 is NOT valid on all discrete linear orders (omega+omega* counterexample above)
 
-## Files Modified
+#### Approaches attempted during this session
 
-- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`: Added backward_P lemma and documentation at the sorry site. Sorry count unchanged (6 total, same as HEAD).
+1. **BX7 (linearity) case analysis**: Applied BX7 to U(G(phi), neg G(phi)) and U(neg phi, phi). Case 1 gives contradiction via F(G(phi) & neg phi) contradicting G(neg(G(phi) & neg phi)). Case 2 gives U(G(phi) & phi, neg G(phi) & phi) which cannot be reduced to G(phi) without additional axioms. Case 3 gives U(neg G(phi) & neg phi, neg G(phi) & phi) which reduces to the original U(neg phi, phi).
+
+2. **BX14 (separation) analysis**: Separating U(G(phi), neg G(phi)) by phi gives two branches, neither of which closes.
+
+3. **BX5+BX6 (self-accumulation + absorption)**: The self-similar structure at guard points matches BX5 enrichment, but BX6 goes in the wrong direction (it proves U from enriched U, not the other way).
+
+4. **BX3 (event monotonicity) with G(G(phi)->phi)**: Successfully strengthens event from G(phi) to G(phi) & phi, but the resulting U(G(phi) & phi, phi) -> G(phi) is NOT derivable from BX axioms (the "Until-to-G bridge" is missing).
+
+5. **BX4 (connectedness) + BX13 (enrichment)**: Neither provides the missing "Until covers all future points" principle.
+
+6. **Generalized temporal necessitation**: Only applies to theorems (empty context), cannot be used to derive G(neg G(phi)) from a contextual neg G(phi).
+
+7. **Contrapositive approaches**: All reduce to showing neg G(phi) -> G(neg G(phi)) under G(G(phi)->phi), which is exactly the missing principle.
+
+## Key Finding
+
+**The Z1 derivation approach (Phase 2 of plan v14) is provably impossible.** The current axiom system does not entail Z1, and adding Z1 as an axiom creates a soundness circularity.
 
 ## Recommended Next Steps
 
-1. **Z1 as axiom**: Add `Z1 : Axiom (G(Gp -> p) -> (FGp -> Gp))` with a soundness proof for the discrete case. The soundness proof should use the limit chronicle properties directly (not general model theory, which would create circularity).
+1. **Plan revision required**: The plan must be revised to avoid the Z1 derivation approach entirely.
 
-2. **Construction-level argument**: Investigate whether `omega_chain_dom_new_unique` and stage-level adjacency can be used to show that the limit succ function is archimedean, bypassing temporal logic entirely.
+2. **Construction-level argument**: The most promising alternative is a DIRECT argument at the construction level showing that the omega-chain construction cannot produce omega+omega* gaps. This would bypass temporal logic entirely and use properties of the chronicle construction (BurgessR3Maximal, omega_chain_elim_result, stage-level adjacency). This is the only approach that avoids the Z1 circularity.
 
-3. **Plan revision**: Run `/revise 123` with the analysis from this summary to generate a new plan that addresses the "constant MCS" case and the local-to-global gap.
+3. **Stronger axiom system**: Alternatively, add an axiom that is both (a) sound on all discrete linear orders (not just IsSuccArchimedean ones) and (b) strong enough to rule out omega+omega* gaps in MCS models. One candidate: the full Lob axiom for G, or an axiom directly encoding IsSuccArchimedean for definable sets.
+
+4. **Reynolds contemporaneous equivalence**: This approach (Phase 4 fallback in the plan) uses Prior-UZ directly without Z1. It works by showing that contemporaneous equivalence classes cannot end at gaps in Prior structures. This avoids the Z1 derivation entirely. However, it requires ~200-300 lines of new infrastructure.
+
+## Files Modified
+
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`: No net changes (reverted intermediate edits). Sorry at z1_derivation remains.
+
+## Verification
+
+- Sorry count: 1 (z1_derivation, unchanged)
+- Build status: Not verified (no changes to compiled code)
+- Axiom count: 0 (no new axioms added)

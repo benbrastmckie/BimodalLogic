@@ -108,7 +108,7 @@ Close the remaining sorry site at line 1816 in `succ_cofinal` (and downstream Is
 
 ---
 
-### Phase 2: Z1 Derivation from Prior-UZ [NOT STARTED]
+### Phase 2: Z1 Derivation from Prior-UZ [BLOCKED]
 
 **Goal**: Construct a `DerivationTree [] z1_formula` where `z1_formula = G(Gp -> p) -> (FGp -> Gp)`.
 
