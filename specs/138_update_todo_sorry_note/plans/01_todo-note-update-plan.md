@@ -56,7 +56,7 @@ No ROADMAP.md consultation needed for this documentation-only task.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Update sorry_count_note in TODO.md frontmatter [NOT STARTED]
+### Phase 1: Update sorry_count_note in TODO.md frontmatter [COMPLETED]
 
 - **Goal:** Replace the `sorry_count_note` value in `specs/TODO.md` with updated text reflecting the axiom cleanup sprint results.
 

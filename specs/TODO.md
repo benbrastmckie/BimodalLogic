@@ -13,7 +13,7 @@ task_counts:
   total: 870
 technical_debt:
   sorry_count: 1
-  sorry_count_note: "Audited 2026-05-11: 1 critical-path sorry in ChronicleToCountermodel.lean (dd_countermodel_chronicle_nondense_sorry). limitDomSubtype_Icc_finite removed by task 123 collapse approach. ~17 dead-code sorries in BXCanonical pipeline (mathematically false under irreflexive semantics, bypassed by Chronicle). ~19 TemporalDerived re-derivations (low priority). Soundness, SoundnessLemmas, and Decidability are sorry-free."
+  sorry_count_note: "Audited 2026-05-13: 1 critical-path sorry in ChronicleToCountermodel.lean (dd_countermodel_chronicle_nondense_sorry). Axiom count reduced 61->41 (tasks 115/124/133). PointInsertion.lean reduced 4333->3555 lines (task 134). ~17 dead-code sorries in BXCanonical pipeline (mathematically false under irreflexive semantics, bypassed by Chronicle). ~19 TemporalDerived re-derivations (low priority). Soundness, SoundnessLemmas, and Decidability are sorry-free."
   publication_path_sorries: 1
   axiom_count: 0
   axiom_count_note: "Zero custom axioms. Prior-UZ/SZ are standard axiom constructors with sorry-free soundness proofs."
@@ -76,14 +76,14 @@ technical_debt:
 - **64** [RESEARCHED] — Critical path review (reference)
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta)
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
-- **137** [PLANNED] — Update ROADMAP.md stale axiom info (~30min)
-- **138** [PLANNED] — Update TODO.md sorry_count_note (~10min)
+- **137** [IMPLEMENTING] — Update ROADMAP.md stale axiom info (~30min)
+- **138** [IMPLEMENTING] — Update TODO.md sorry_count_note (~10min)
 
 ## Tasks
 
 ### 138. Update TODO.md sorry_count_note for axiom cleanup sprint
 - **Effort**: 10 minutes
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Plan**: [specs/138_update_todo_sorry_note/plans/01_todo-note-update-plan.md]
 

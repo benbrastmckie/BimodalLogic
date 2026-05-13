@@ -599,7 +599,7 @@
     {
       "project_number": 137,
       "project_name": "update_roadmap_axiom_info",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "description": "Update ROADMAP.md: axiom count 45->41, remove BX2/BX2 table rows, update CanonicalChain.lean summary (remove left_mono_until_mcs), update PointInsertion.lean line count (~3690->~3555)",
       "created": "2026-05-13T22:24:28Z",
@@ -629,7 +629,7 @@
     {
       "project_number": 138,
       "project_name": "update_todo_sorry_note",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "description": "Update TODO.md frontmatter sorry_count_note to reflect axiom cleanup sprint: axiom count now 41 (was 61), tasks 115/124/133/134 completed",
       "created": "2026-05-13T22:24:28Z",
