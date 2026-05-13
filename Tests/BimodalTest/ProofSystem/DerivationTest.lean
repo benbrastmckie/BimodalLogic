@@ -65,10 +65,9 @@ example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.box (Formula.all_fut
   apply DerivationTree.axiom
   apply Axiom.modal_future
 
--- Test: Temporal-Future is derivable
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.all_future (Formula.box (Formula.atom "p"))) := by
-  apply DerivationTree.axiom
-  apply Axiom.temp_future
+-- Test: Temporal-Future is derivable (derived from MF + T + Modal 4)
+example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.all_future (Formula.box (Formula.atom "p"))) :=
+  Bimodal.Theorems.Combinators.temp_future_derived (Formula.atom "p")
 
 -- ============================================================
 -- Assumption Rule Tests

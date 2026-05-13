@@ -234,10 +234,10 @@ example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.box (Formula.all_fut
   DerivationTree.axiom [] ((Formula.box φ).imp (Formula.box (Formula.all_future φ))) (Axiom.modal_future φ)
 
 /--
-Test: Temporal-Future axiom is derivable.
+Test: Temporal-Future is derivable (derived from MF + T + Modal 4).
 -/
 example (φ : Formula) : ⊢ ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) :=
-  DerivationTree.axiom [] ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) (Axiom.temp_future φ)
+  Bimodal.Theorems.Combinators.temp_future_derived φ
 
 /-! ## Context Operations Properties -/
 

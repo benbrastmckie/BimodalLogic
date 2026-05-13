@@ -346,9 +346,9 @@ example : True := by
   let d1 : Γ ⊢ (p.all_future.box) :=
     DerivationTree.modus_ponens Γ p.box (p.all_future.box) ax1 ass
   
-  -- Step 2: □Fp → □FFp using Temporal-Future axiom
+  -- Step 2: □Fp → □(G(Fp)) using Modal-Future axiom
   let ax2 : Γ ⊢ ((p.all_future.box).imp ((p.all_future.all_future).box)) :=
-    DerivationTree.axiom Γ _ (Axiom.temp_future p.all_future)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p.all_future)
   let d2 : Γ ⊢ ((p.all_future.all_future).box) :=
     DerivationTree.modus_ponens Γ (p.all_future.box)
       ((p.all_future.all_future).box) ax2 d1

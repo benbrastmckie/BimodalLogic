@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic
+import Bimodal.Theorems.Combinators
 import BimodalTest.Integration.Helpers
 
 /-!
@@ -39,6 +40,7 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic
+open Bimodal.Theorems.Combinators
 open BimodalTest.Integration.Helpers
 
 -- ============================================================
@@ -180,13 +182,13 @@ example : True := by
   let φ := p.box.imp (p.box.all_future)
   
   -- Derive using Temporal-Future axiom
-  let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.temp_future p)
-  
+  let d : ⊢ φ := temp_future_derived p
+
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
-  
-  -- Verify semantic validity directly
-  have v_direct : [] ⊨ φ := temp_future_valid p
+
+  -- Verify semantic validity (TF soundness inherited from MF + T + Modal 4)
+  have v_direct : [] ⊨ φ := soundness [] φ d
   
   trivial
 
@@ -199,9 +201,9 @@ example : True := by
   let p := Formula.atom "p"
   let Γ := [p.box]
   
-  -- □p → F□p
+  -- □p → F□p (derived from MF + T + Modal 4)
   let ax : Γ ⊢ (p.box.imp (p.box.all_future)) :=
-    DerivationTree.axiom Γ _ (Axiom.temp_future p)
+    DerivationTree.weakening [] Γ _ (temp_future_derived p) (List.nil_subset Γ)
   
   -- □p (assumption)
   let ass : Γ ⊢ p.box :=
@@ -228,12 +230,12 @@ example : True := by
   
   -- Step 1: □p → F□p, □p ⊢ F□p
   let ax1 : Γ ⊢ (p.box.imp (p.box.all_future)) :=
-    DerivationTree.axiom Γ _ (Axiom.temp_future p)
+    DerivationTree.weakening [] Γ _ (temp_future_derived p) (List.nil_subset Γ)
   let ass : Γ ⊢ p.box :=
     DerivationTree.assumption Γ p.box (List.Mem.head _)
   let d1 : Γ ⊢ (p.box.all_future) :=
     DerivationTree.modus_ponens Γ p.box (p.box.all_future) ax1 ass
-  
+
   -- Step 2: F□p → FF□p using Temporal 4
   let ax2 : Γ ⊢ ((p.box.all_future).imp ((p.box.all_future).all_future)) :=
     DerivationTree.axiom Γ _ (Axiom.temp_4 p.box)
@@ -276,7 +278,7 @@ example : True := by
   
   -- Path 2: □p → F□p (Temporal-Future)
   let ax2 : Γ ⊢ (p.box.imp (p.box.all_future)) :=
-    DerivationTree.axiom Γ _ (Axiom.temp_future p)
+    DerivationTree.weakening [] Γ _ (temp_future_derived p) (List.nil_subset Γ)
   let d2 : Γ ⊢ (p.box.all_future) :=
     DerivationTree.modus_ponens Γ p.box (p.box.all_future) ax2 ass
   
@@ -307,7 +309,7 @@ example : True := by
   
   -- Step 2: □Fp → F□Fp (Temporal-Future)
   let ax2 : Γ ⊢ ((p.all_future.box).imp ((p.all_future.box).all_future)) :=
-    DerivationTree.axiom Γ _ (Axiom.temp_future p.all_future)
+    DerivationTree.weakening [] Γ _ (temp_future_derived p.all_future) (List.nil_subset Γ)
   let d2 : Γ ⊢ ((p.all_future.box).all_future) :=
     DerivationTree.modus_ponens Γ (p.all_future.box)
       ((p.all_future.box).all_future) ax2 d1
@@ -483,7 +485,7 @@ example : True := by
   
   -- Temporal-Future axiom is valid (time-shift invariant)
   let d : ⊢ (p.box.imp (p.box.all_future)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_future p)
+    temp_future_derived p
   
   have v : [] ⊨ (p.box.imp (p.box.all_future)) :=
     soundness [] _ d

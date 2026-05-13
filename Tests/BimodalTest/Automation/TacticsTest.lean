@@ -96,9 +96,9 @@ example : DerivationTree [] (Formula.imp (Formula.always (Formula.atom "p")) (Fo
 example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.box (Formula.all_future (Formula.atom "p")))) :=
   DerivationTree.axiom [] _ (Axiom.modal_future _)
 
-/-- Test 10: temp_future axiom (□p → F□p) -/
+/-- Test 10: temp_future derived (□p → G□p, from MF + T + Modal 4) -/
 example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.temp_future _)
+  Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-- Test 11: apply_axiom tactic unifies with modal_t -/
 example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "q")) (Formula.atom "q")) := by
@@ -141,10 +141,9 @@ example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formu
   apply DerivationTree.axiom
   exact Axiom.modal_future _
 
-/-- Test 18: tm_auto finds temp_future axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_future _
+/-- Test 18: tm_auto finds temp_future (now derived from MF + T + Modal 4) -/
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) :=
+  Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-!
 ## Phase 7: tm_auto Extended Coverage Tests
@@ -300,10 +299,9 @@ Tests for deep nesting and complex formulas.
 /-- Test 48: Deep nesting of box formulas -/
 example : is_box_formula (Formula.box (Formula.box (Formula.box (Formula.atom "p")))) = true := rfl
 
-/-- Test 49: Complex bimodal formula via axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_future _
+/-- Test 49: Complex bimodal formula (TF derived from MF + T + Modal 4) -/
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom "p")) (Formula.all_future (Formula.box (Formula.atom "p")))) :=
+  Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-- Test 50: assumption_search with long context -/
 example (a b c d _ : Nat) : Nat := by
@@ -414,10 +412,9 @@ example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom
   apply DerivationTree.axiom
   exact Axiom.modal_future _
 
-/-- Test 68: Temp future with compound formula -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))) (Formula.all_future (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_future _
+/-- Test 68: Temp future with compound formula (derived from MF + T + Modal 4) -/
+example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))) (Formula.all_future (Formula.box (Formula.imp (Formula.atom "p") (Formula.atom "q"))))) :=
+  Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-!
 ## Phase 5 Group 3: Propositional Depth Tests

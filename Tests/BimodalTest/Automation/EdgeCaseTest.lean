@@ -165,7 +165,7 @@ Test with mixed modal/temporal/propositional operators.
 
   -- Mixed modal and temporal
   let mixedFormulas := [
-    ((Formula.box p).imp (Formula.all_future (Formula.box p)), "□p → G□p (temp_future)"),
+    ((Formula.box p).imp (Formula.all_future (Formula.box p)), "□p → G□p (temp_future_derived)"),
     ((Formula.box p).imp (Formula.box (Formula.all_future p)), "□p → □Gp (modal_future)"),
     ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), "□(p→q) → (□p → □q) (modal_k)")
   ]

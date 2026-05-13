@@ -695,7 +695,7 @@ abbrev s : Formula := .atom "s"
     else
       IO.println s!"✗ modal_future ({desc}): matched={matched}, found={found}"
 
--- temp_future: □φ → G(□φ)
+-- temp_future (derived): □φ → G(□φ)
 #eval do
   let variants := [
     ((Formula.box p).imp (Formula.all_future (Formula.box p)), "p"),

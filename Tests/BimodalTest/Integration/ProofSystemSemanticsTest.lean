@@ -178,12 +178,12 @@ example (φ : Formula) : [] ⊨ ((Formula.box φ).imp (Formula.box (Formula.all_
   exact soundness [] _ deriv
 
 /--
-Test 15: Temporal-Future axiom is valid.
+Test 15: Temporal-Future (derived) is valid.
 
-Verifies that `□φ → F□φ` is valid via soundness.
+Verifies that `□φ → G□φ` is valid via soundness (TF derived from MF + T + Modal 4).
 -/
 example (φ : Formula) : [] ⊨ ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) := by
-  let deriv := DerivationTree.axiom [] _ (Axiom.temp_future φ)
+  let deriv := Bimodal.Theorems.Combinators.temp_future_derived φ
   exact soundness [] _ deriv
 
 end AxiomValidityTests

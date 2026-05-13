@@ -1,4 +1,5 @@
 import Bimodal.ProofSystem.Axioms
+import Bimodal.Theorems.Combinators
 
 /-!
 # Axioms Test Suite
@@ -174,15 +175,16 @@ example : Axiom (((Formula.atom "p").imp (Formula.atom "q")).box.imp ((Formula.a
   Axiom.modal_future ((Formula.atom "p").imp (Formula.atom "q"))
 
 -- ============================================================
--- Temporal-Future Axiom Tests: □φ → G□φ
+-- Temporal-Future Derived Theorem Tests: □φ → G□φ (derived from MF + T + Modal 4)
 -- ============================================================
 
--- Test: Temporal-Future axiom on atom
-example : Axiom ((Formula.atom "p").box.imp (Formula.atom "p").box.all_future) := Axiom.temp_future (Formula.atom "p")
+-- Test: Temporal-Future derived theorem on atom
+example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").box.all_future :=
+  Bimodal.Theorems.Combinators.temp_future_derived (Formula.atom "p")
 
--- Test: Temporal-Future axiom on complex formula
-example : Axiom (((Formula.atom "p").and (Formula.atom "q")).box.imp ((Formula.atom "p").and (Formula.atom "q")).box.all_future) :=
-  Axiom.temp_future ((Formula.atom "p").and (Formula.atom "q"))
+-- Test: Temporal-Future derived theorem on complex formula
+example : ⊢ ((Formula.atom "p").and (Formula.atom "q")).box.imp ((Formula.atom "p").and (Formula.atom "q")).box.all_future :=
+  Bimodal.Theorems.Combinators.temp_future_derived ((Formula.atom "p").and (Formula.atom "q"))
 
 -- ============================================================
 -- Modal K Distribution Axiom Tests: □(φ → ψ) → (□φ → □ψ)
