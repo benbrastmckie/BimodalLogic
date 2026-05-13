@@ -1,7 +1,7 @@
 # Implementation Plan: Restructure lemma_2_7/lemma_2_7_since Seeds Using Xu 3.2.1
 
 - **Task**: 134 - Restructure lemma_2_7/lemma_2_7_since seeds using Xu 3.2.1
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: Task 115 (Xu 3.2.1 implementation, completed)
 - **Research Inputs**: reports/01_seed-restructure-research.md
@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Simplify lemma_2_7_seed and lemma_2_7_seed_consistent [NOT STARTED]
+### Phase 1: Simplify lemma_2_7_seed and lemma_2_7_seed_consistent [COMPLETED]
 
 **Goal**: Reduce the Until-direction seed from 5 to 3 components and simplify the consistency proof from 5-way to 3-way case analysis.
 
@@ -111,7 +111,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update lemma_2_7 and lemma_2_8 proof bodies [NOT STARTED]
+### Phase 2: Update lemma_2_7 and lemma_2_8 proof bodies [COMPLETED]
 
 **Goal**: Update the Until-direction main lemma proofs to derive components 3-4 memberships from Xu 3.2.1 instead of seed extraction, and simplify `lemma_2_8_seed_consistent`.
 
@@ -141,7 +141,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Simplify lemma_2_7_since_seed and lemma_2_7_since_seed_consistent [NOT STARTED]
+### Phase 3: Simplify lemma_2_7_since_seed and lemma_2_7_since_seed_consistent [COMPLETED]
 
 **Goal**: Reduce the Since-direction seed from 5 to 3 components and simplify the consistency proof, mirroring Phase 1 for the dual direction.
 
@@ -173,7 +173,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update lemma_2_7_since and lemma_2_8_since proof bodies [NOT STARTED]
+### Phase 4: Update lemma_2_7_since and lemma_2_8_since proof bodies [COMPLETED]
 
 **Goal**: Update the Since-direction main lemma proofs to use Xu 3.2.1 for components 3-4, and simplify `lemma_2_8_since_seed_consistent`.
 
@@ -202,7 +202,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Final cleanup and verification [NOT STARTED]
+### Phase 5: Final cleanup and verification [COMPLETED]
 
 **Goal**: Remove any remaining dead code, update comments/docstrings, and verify the full build.
 
