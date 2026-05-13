@@ -116,10 +116,11 @@ technical_debt:
 
 ### 134. Restructure lemma_2_7/lemma_2_7_since seeds using Xu 3.2.1
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Related**: 115
 - **Research**: [specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/reports/01_seed-restructure-research.md]
+- **Plan**: [134_restructure_lemma_2_7_seeds_xu_3_2_1/plans/01_seed-restructure-plan.md]
 
 **Description**: Simplify lemma_2_7/lemma_2_7_since seed construction using Xu 3.2.1. The current seed includes explicit U/S formulas ({untl(gamma,beta) : gamma in C, beta in B} union {snce(alpha,beta) : ...}), requiring a ~400-line BX5+BX7+BX13 consistency proof (lemma_2_7_seed_consistent). With Xu 3.2.1 (proved in task 115), these U/S formulas are already in B* (the R-maximal extension), so the seed simplifies to B* union {eta} with trivial consistency via dcs_neg_union_consistent. This is a simplification (current proofs are sorry-free and work), not a correctness fix. Must verify lemma_2_7 output type (including eta in D and xi in B') still satisfies CounterexampleElimination.lean callers.
 
@@ -127,7 +128,7 @@ technical_debt:
 
 ### 133. Simplify BX2: remove pointwise conjunct, derive from BX2G
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Related**: 115
 - **Research**: [specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md]
@@ -138,9 +139,10 @@ technical_debt:
 
 ### 132. Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Research**: [specs/132_merge_boneyard_directories/reports/01_boneyard-merge-research.md]
+- **Plan**: [132_merge_boneyard_directories/plans/01_boneyard-merge-plan.md]
 
 **Description**: Merge Boneyard/ (project root) into Theories/Bimodal/Boneyard/ (the canonical Boneyard location within the Lean module hierarchy). Move all files from the root-level Boneyard/ directory into the appropriate subdirectories under Theories/Bimodal/Boneyard/, resolving any naming conflicts. After merging, populate Theories/Bimodal/Boneyard/README.md with documentation covering: (1) purpose of the Boneyard (archived dead code, superseded approaches, mathematically false lemmas), (2) directory structure and what each subdirectory contains, (3) why each group of files was archived (with references to the tasks that superseded them), (4) guidance on when to consult Boneyard code vs when to ignore it. Remove the root-level Boneyard/ directory after successful merge. Update any import paths if needed.
 
