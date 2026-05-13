@@ -1136,29 +1136,389 @@ private theorem succ_orbit_convex (A : Set Formula) (h_mcs : SetMaximalConsisten
 In the discrete case, `LimitDomSubtype` satisfies `IsSuccArchimedean`: for any
 `a ≤ b`, iterating `succ` from `a` eventually reaches `b`.
 
-**Status**: Admitted (sorry). The Burgess chronicle construction under strict
-(irreflexive) temporal semantics cannot prove this directly — the gap scenario
-(orbit converging to L from below, pred-chain from above with no limit_dom point
-at L) is consistent with all temporal axioms (Z1, Prior-UZ, all BX axioms) in the
-constant-MCS case. Under strict semantics, `G(φ)→φ` is not valid, so the Z1
-antecedent `G(Gφ→φ)` cannot be established at orbit points.
+**Status**: Blocked. The sorry at `succ_cofinal` represents a genuine limitation
+of the Burgess chronicle construction under strict (irreflexive) temporal semantics.
+The gap scenario (orbit converging to L, pred-chain from above, no limit_dom at L)
+is consistent with all temporal axioms (Z1, Prior-UZ) in the constant-MCS case.
+Under strict semantics `G(φ)→φ` is not valid, so the Z1 Doets maximum principle
+cannot establish `G(Gφ→φ)` at orbit points.
 
 **Resolution**: Task 129 (weak/reflexive completeness + conservative extension)
-provides `IsSuccArchimedean` via a Henkin canonical model where every point is a
-distinct MCS, bypassing the gap scenario entirely.
+will provide `IsSuccArchimedean` via a Henkin canonical model where every point is
+a distinct MCS, bypassing the gap scenario entirely.
 
-**Archived**: Stage induction (`succ_reaches_dom_N`), convergence
-(`limit_dom_points_are_succ_iterates`), and gap analysis (`succ_cofinal`) proof
-attempts moved to `Boneyard/StageInductionGapAnalysis/`.
+### Proof attempts below (all blocked)
+
+1. **Stage induction** (`succ_reaches_dom_N`): boundary cases intractable —
+   `succ(max_N)` may enter the domain at an arbitrarily later stage.
+2. **Convergence** (`limit_dom_points_are_succ_iterates`): leads to same gap.
+3. **Z1/Doets gap elimination** (`succ_cofinal`): constant-MCS case evades Z1.
 -/
 
--- [Stage induction and convergence approaches archived to
---  Boneyard/StageInductionGapAnalysis/ — see README.md there for details]
+/--
+Stage induction: for any N and any a, b in dom(N) with a ≤ b, there exists k
+such that `succ^[k](a) = b` in the full limit_dom ordering.
+-/
+private theorem succ_reaches_dom_N (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (N : ℕ) (a b : LimitDomSubtype A h_mcs)
+    (ha : a.val ∈ (omega_chain_val A h_mcs N).dom)
+    (hb : b.val ∈ (omega_chain_val A h_mcs N).dom)
+    (hab : a ≤ b) :
+    ∃ k, (limitDomSubtype_succ A h_mcs h_discrete)^[k] a = b := by
+  induction N generalizing a b with
+  | zero =>
+    -- dom(0) = {0}, so a.val = 0 and b.val = 0, hence a = b
+    simp only [omega_chain_val, omega_chain, singleton_chronicle, singleton_dom,
+      Finset.mem_singleton] at ha hb
+    have : a = b := Subtype.ext (by rw [ha, hb])
+    exact ⟨0, this⟩
+  | succ N ih =>
+    -- Case split: are a, b in dom(N) or is one the new point?
+    by_cases ha_old : a.val ∈ (omega_chain_val A h_mcs N).dom
+    · by_cases hb_old : b.val ∈ (omega_chain_val A h_mcs N).dom
+      · -- Case 1: both in dom(N). Apply IH.
+        exact ih a b ha_old hb_old hab
+      · -- Case 3: a ∈ dom(N), b = new point at stage N+1.
+        -- b is between dom(N) points w ≤ w_next, or beyond max/below min.
+        -- Since a ≤ b and a ∈ dom(N), we need b ≥ a.
+        -- b ∉ dom(N), but b ∈ dom(N+1). b is the unique new point.
+        -- Find the adjacent dom(N) pair (w, w_next) that brackets b.
+        -- If b > max(dom(N)): IH gives succ^[k](a) = max(dom(N)).
+        --   Then we need succ reaches from max to b. This is the hard boundary case.
+        -- If b < min(dom(N)): impossible since a ∈ dom(N) and a ≤ b.
+        -- If b is between w and w_next (adjacent in dom(N)):
+        --   IH gives succ^[k](a) = w_next. Since a ≤ b < w_next,
+        --   orbit convexity gives j with succ^[j](a) = b.
+        -- Use omega_chain_dom_mono to get a in dom(N+1)
+        have ha_new : a.val ∈ (omega_chain_val A h_mcs (N + 1)).dom :=
+          omega_chain_dom_mono A h_mcs N ha_old
+        -- We know b ∈ dom(N+1) \ dom(N). Check if b is between two dom(N) points.
+        have h_dom_ne : (omega_chain_val A h_mcs N).dom.Nonempty :=
+          ⟨a.val, ha_old⟩
+        -- b.val is in dom(N+1) but not in dom(N).
+        -- Check: is b.val > max(dom(N))?
+        set max_N := (omega_chain_val A h_mcs N).dom.max' h_dom_ne with max_N_def
+        by_cases hb_above_max : max_N < b.val
+        · -- Boundary case: b above max(dom(N)).
+          -- IH gives succ^[k](a) = ⟨max_N, ...⟩.
+          have h_max_mem : max_N ∈ (omega_chain_val A h_mcs N).dom :=
+            Finset.max'_mem _ h_dom_ne
+          have h_max_limit : max_N ∈ limit_dom A h_mcs := ⟨N, h_max_mem⟩
+          have h_a_le_max : a ≤ ⟨max_N, h_max_limit⟩ := by
+            show a.val ≤ max_N
+            exact Finset.le_max' _ a.val ha_old
+          obtain ⟨k₁, hk₁⟩ := ih a ⟨max_N, h_max_limit⟩ ha_old h_max_mem h_a_le_max
+          -- Now need: ∃ k₂, succ^[k₂](⟨max_N,...⟩) = b.
+          -- succ(⟨max_N,...⟩) is the next limit_dom point after max_N.
+          -- By succ_le_iff, since max_N < b.val, succ(max_N_sub) ≤ b.
+          -- If succ(max_N_sub) = b: done with k₁ + 1.
+          -- If succ(max_N_sub) < b: succ(max_N_sub) is a limit_dom point
+          --   in (max_N, b.val). It's in dom(M) for some M.
+          --   It's NOT in dom(N) (since max_N is the maximum).
+          --   By dom_new_unique, it must be b (since b is the unique new
+          --   dom(N+1)\dom(N) point, and succ(max_N_sub) ∈ limit_dom means
+          --   it's in some dom(M)... but we can't assume it's in dom(N+1)).
+          -- Actually, we know succ(max_N_sub) ≤ b. And a ≤ b with a ≤ max_N_sub.
+          -- We have succ^[k₁](a) = max_N_sub. Need succ^[k₁ + k₂](a) = b for some k₂.
+          -- It suffices to show b ≤ succ^[k₂](max_N_sub) for some k₂, then use orbit convexity.
+          -- Actually, let's use succ_orbit_convex directly:
+          -- We need ∃ m, b ≤ succ^[m](a). Then orbit convexity gives j with succ^[j](a) = b.
+          -- succ^[k₁](a) = max_N_sub. succ^[k₁+1](a) = succ(max_N_sub).
+          -- succ(max_N_sub) ≤ b ↔ max_N_sub < b ↔ max_N < b.val. ✓
+          -- Need: is b ≤ succ(max_N_sub)?
+          -- succ(max_N_sub) is some limit_dom point > max_N.
+          -- b is also > max_N and b ∈ limit_dom.
+          -- Is succ(max_N_sub) ≤ b or > b?
+          -- succ(max_N_sub) ≤ b OR b < succ(max_N_sub).
+          -- If b < succ(max_N_sub): b is a limit_dom point between max_N and succ(max_N_sub).
+          --   But limit_dom_has_succ says no limit_dom between max_N and succ(max_N).
+          --   So b can't be between them. Contradiction.
+          -- Therefore succ(max_N_sub) ≤ b. But also succ(max_N_sub) ≥ b (by... not necessarily).
+          -- Actually: succ(max_N_sub) > max_N. And b > max_N. No limit_dom between max_N
+          --   and succ(max_N_sub). b ∈ limit_dom with b > max_N. So b ≥ succ(max_N_sub).
+          -- And succ(max_N_sub) ≤ b (from succ_le_iff: max_N < b means succ ≤ b).
+          -- These give succ(max_N_sub) ≤ b and b ≥ succ(max_N_sub). Both say the same thing!
+          -- But we also need b ≤ succ(max_N_sub) to use orbit convexity.
+          -- Hmm, we only know succ(max_N_sub) ≤ b. To get b ≤ succ(max_N_sub) (equality):
+          -- succ(max_N_sub) is the nearest limit_dom > max_N. b is limit_dom > max_N.
+          -- So succ(max_N_sub) ≤ b. If succ(max_N_sub) < b: then succ(max_N_sub) is between
+          --   max_N and b. succ(max_N_sub) ∈ limit_dom, succ(max_N_sub) ∉ dom(N) (since > max_N).
+          --   succ(max_N_sub) ∈ dom(M) for some M. If M ≤ N+1: succ(max_N_sub) ∈ dom(N+1).
+          --   Since succ(max_N_sub) ∉ dom(N) and b ∉ dom(N), and both ∈ dom(N+1)\dom(N):
+          --   omega_chain_dom_new_unique gives succ(max_N_sub) = b. Contradicts < b.
+          --   If M > N+1: succ(max_N_sub) ∉ dom(N+1). But we don't know this.
+          -- We need a different argument. Let's try: b is in dom(N+1), and succ(max_N_sub)
+          --   is the nearest limit_dom point after max_N. If b ∈ dom(N+1) with b > max_N,
+          --   and max_N ∈ dom(N+1), then succ(max_N_sub) ≤ b (by succ_le_iff). And if
+          --   succ(max_N_sub) = b: done. If succ(max_N_sub) < b: then between max_N and b
+          --   in limit_dom there is succ(max_N_sub). No limit_dom between max_N and
+          --   succ(max_N_sub). But succ(max_N_sub) < b ∈ limit_dom. So limit_dom has a point
+          --   succ(max_N_sub) ∈ (max_N, b). This point is > max_N so ∉ dom(N).
+          --   It's in limit_dom, so ∈ dom(M) for some M.
+          --   We can't directly conclude succ(max_N_sub) ∈ dom(N+1).
+          -- Let me try orbit convexity differently.
+          -- succ^[k₁+1](a) = succ(max_N_sub) ≤ b.
+          -- If succ(max_N_sub) = b: ⟨k₁+1, rfl⟩ works.
+          -- If succ(max_N_sub) < b: apply orbit convexity is wrong direction.
+          -- We need succ^[m](a) ≥ b for orbit convexity.
+          -- This approach doesn't directly give us b ≤ succ^[m](a).
+          -- Let me use the direct argument with limit_dom_has_succ.
+          -- succ(max_N_sub) is the next limit_dom after max_N. No limit_dom between.
+          -- b > max_N and b ∈ limit_dom. So b ≥ succ(max_N_sub).
+          -- But succ(max_N_sub) ≤ b. If strict: contradiction with "no limit_dom between
+          --   max_N and succ(max_N_sub)"? No, b is not between max_N and succ(max_N_sub)
+          --   if b ≥ succ(max_N_sub).
+          -- Hmm. We just know succ(max_N_sub) ≤ b. We need ≥ too.
+          -- Let's try: no limit_dom between max_N and succ(max_N_sub).
+          --   b > max_N, b ∈ limit_dom. So b ≥ succ(max_N_sub).
+          -- succ(max_N_sub) ≤ b from succ_le_iff.
+          -- So b ≥ succ(max_N_sub) and succ(max_N_sub) ≤ b. Both say b ≥ succ(max_N_sub).
+          -- We need b = succ(max_N_sub) or to continue iterating.
+          -- Actually, succ(max_N_sub) ≤ b gives us b ≤ succ^[k₁+1](a) → b via:
+          -- Wait, succ^[k₁+1](a) = succ(max_N_sub). And succ(max_N_sub) ≤ b.
+          -- We need b ≤ succ^[m](a) for SOME m, not succ^[k₁+1](a) ≤ b.
+          -- The issue is: succ keeps going past b potentially. If succ(max_N_sub) ≤ b,
+          --   that means max_N_sub < b (which we know). It doesn't help.
+          -- I think for this boundary case we need a separate argument.
+          -- Key: b > max_N. b ∈ limit_dom. No limit_dom in (max_N, succ(max_N_sub)).
+          -- b ∈ limit_dom ∩ (max_N, ∞). So b ≥ succ(max_N_sub).
+          -- succ^[k₁+1](a) = succ(max_N_sub) ≤ b.
+          -- If succ(max_N_sub) = b: k = k₁ + 1 works.
+          -- If succ(max_N_sub) < b: continue iterating. But this is the original problem!
+          -- Unless we can show succ(max_N_sub) = b using dom_new_unique.
+          -- succ(max_N_sub) is limit_dom point > max_N. It's ∉ dom(N) (since > max_N).
+          -- b ∉ dom(N). Both in limit_dom. If BOTH in dom(N+1):
+          --   omega_chain_dom_new_unique gives succ(max_N_sub).val = b.val. Done!
+          -- Is succ(max_N_sub) in dom(N+1)?
+          -- Not necessarily! succ(max_N_sub) might enter at a later stage.
+          -- So this approach has a gap for the boundary case.
+          -- Let me just use sorry for now and handle this case separately.
+          sorry
+        · -- b.val ≤ max_N. So b is at or below max(dom(N)).
+          -- Since b ∉ dom(N), b ∈ dom(N+1) \ dom(N).
+          -- b.val ≤ max_N. There exists some dom(N) point ≥ b.val (namely max_N).
+          -- Also, a ∈ dom(N) and a ≤ b.
+          -- b is between some adjacent dom(N) pair or below min(dom(N)).
+          -- Check: is b.val < min(dom(N))? Impossible since a ≤ b and a ∈ dom(N).
+          set min_N := (omega_chain_val A h_mcs N).dom.min' h_dom_ne with min_N_def
+          have h_a_ge_min : min_N ≤ a.val := Finset.min'_le _ a.val ha_old
+          have h_b_ge_min : min_N ≤ b.val := le_trans h_a_ge_min hab
+          -- b.val ∈ [min_N, max_N] and b.val ∉ dom(N).
+          -- Find adjacent pair (w, w_next) in dom(N) with w < b.val < w_next.
+          -- Since b.val ≤ max_N and b.val ≥ min_N and b.val ∉ dom(N):
+          -- First find some dom(N) point ≤ b.val:
+          push_neg at hb_above_max  -- hb_above_max : b.val ≤ max_N
+          -- We have min_N ≤ b.val ≤ max_N and b.val ∉ dom(N)
+          -- Find w = max of {d ∈ dom(N) | d ≤ b.val}
+          haveI : DecidablePred (fun d => d ≤ b.val) := fun d => inferInstance
+          set L_set := (omega_chain_val A h_mcs N).dom.filter (· ≤ b.val) with L_set_def
+          have hL_ne : L_set.Nonempty := by
+            refine ⟨a.val, Finset.mem_filter.mpr ⟨ha_old, hab⟩⟩
+          set R_set := (omega_chain_val A h_mcs N).dom.filter (b.val < ·) with R_set_def
+          -- max_N ≥ b.val. If max_N = b.val: b.val ∈ dom(N), contradiction.
+          -- So max_N > b.val (since b ∉ dom(N) and max_N ≥ b.val).
+          have h_max_gt_b : max_N > b.val := by
+            rcases lt_or_eq_of_le hb_above_max with h | h
+            · exact h
+            · exact absurd (h ▸ Finset.max'_mem _ h_dom_ne) hb_old
+          have hR_ne : R_set.Nonempty := by
+            refine ⟨max_N, Finset.mem_filter.mpr ⟨Finset.max'_mem _ h_dom_ne, h_max_gt_b⟩⟩
+          set w := L_set.max' hL_ne with w_def
+          set w_next := R_set.min' hR_ne with w_next_def
+          have hw_mem : w ∈ (omega_chain_val A h_mcs N).dom :=
+            (Finset.mem_filter.mp (Finset.max'_mem L_set hL_ne)).1
+          have hw_le_b : w ≤ b.val :=
+            (Finset.mem_filter.mp (Finset.max'_mem L_set hL_ne)).2
+          have hwn_mem : w_next ∈ (omega_chain_val A h_mcs N).dom :=
+            (Finset.mem_filter.mp (Finset.min'_mem R_set hR_ne)).1
+          have hb_lt_wn : b.val < w_next :=
+            (Finset.mem_filter.mp (Finset.min'_mem R_set hR_ne)).2
+          have hw_lt_b : w < b.val := by
+            rcases lt_or_eq_of_le hw_le_b with h | h
+            · exact h
+            · exact absurd (h ▸ hw_mem) hb_old
+          have hw_lt_wn : w < w_next := lt_trans hw_lt_b hb_lt_wn
+          -- w and w_next are in limit_dom
+          have hw_limit : w ∈ limit_dom A h_mcs := ⟨N, hw_mem⟩
+          have hwn_limit : w_next ∈ limit_dom A h_mcs := ⟨N, hwn_mem⟩
+          -- IH: succ^[k](a_sub) = w_next_sub
+          have h_a_le_wn : a ≤ (⟨w_next, hwn_limit⟩ : LimitDomSubtype A h_mcs) :=
+            show a.val ≤ w_next from le_of_lt (lt_of_le_of_lt hab hb_lt_wn)
+          obtain ⟨k₁, hk₁⟩ := ih a ⟨w_next, hwn_limit⟩ ha_old hwn_mem h_a_le_wn
+          -- Now: succ^[k₁](a) = ⟨w_next, hwn_limit⟩
+          -- We have a ≤ b < w_next and succ^[k₁](a) = w_next_sub ≥ b.
+          -- By orbit convexity: ∃ j ≤ k₁, succ^[j](a) = b.
+          have hb_le_iter : b ≤ (limitDomSubtype_succ A h_mcs h_discrete)^[k₁] a := by
+            rw [hk₁]; exact le_of_lt hb_lt_wn
+          exact (succ_orbit_convex A h_mcs h_discrete a b k₁ hab hb_le_iter).imp
+            fun j ⟨_, hj⟩ => hj
+    · by_cases hb_old : b.val ∈ (omega_chain_val A h_mcs N).dom
+      · -- Case 2: a = new point at stage N+1, b ∈ dom(N).
+        -- a ∉ dom(N), a ∈ dom(N+1). b ∈ dom(N).
+        -- a is between dom(N) points or at boundary.
+        -- Since a ≤ b and b ∈ dom(N):
+        --   If a < min(dom(N)): a is below all dom(N) points. Need succ^[k](a) = b.
+        --     This is the hard boundary case (below-min).
+        --   If a is between w and w_next (adjacent in dom(N)):
+        --     IH gives succ^[m](w_next_sub) = b_sub.
+        --     Need succ^[j](a_sub) = w_next_sub. Then chain.
+        --     By orbit convexity on the IH path from w to w_next:
+        --     succ^[m'](w_sub) = w_next_sub. a between w and w_next.
+        --     But a = new point, and we need succ from a to w_next.
+        --     Key: succ(a) is next limit_dom after a. No limit_dom between a and succ(a).
+        --     w_next > a (since a < w_next). w_next ∈ limit_dom. So succ(a) ≤ w_next.
+        --     If succ(a) < w_next: succ(a) ∈ limit_dom ∩ (a, w_next). succ(a) ∉ dom(N)
+        --       (between w and w_next, adjacent in dom(N)). So succ(a) is a later-stage point.
+        --     Actually: between a and succ(a), no limit_dom. w_next > a, w_next ∈ limit_dom.
+        --     So w_next ≥ succ(a). I.e., succ(a) ≤ w_next.
+        --     Similarly, between w and a: w < a. w ∈ limit_dom. succ(w) ≤ a (since w < a
+        --       and succ_le_iff). Also succ(w) is limit_dom, succ(w) > w.
+        --     If succ(w) = a: then iterate: succ(a) is next. succ(a) ≤ w_next.
+        --       succ^[2](w) = succ(a) ≤ w_next. IH gives succ^[m](w) = w_next.
+        --       Orbit convexity: a between w and w_next, so a = succ^[j](w) for some j.
+        --       Then succ^[m-j](a) = w_next. Then IH from w_next to b.
+        --     But this uses IH with w ∈ dom(N), which is fine!
+        -- For now, let me handle the "between" case and sorry the boundary.
+        have h_dom_ne : (omega_chain_val A h_mcs N).dom.Nonempty := ⟨b.val, hb_old⟩
+        set min_N := (omega_chain_val A h_mcs N).dom.min' h_dom_ne
+        set max_N := (omega_chain_val A h_mcs N).dom.max' h_dom_ne
+        -- a.val < min_N or a.val is between two dom(N) points
+        -- Since a ≤ b and b ∈ dom(N), a.val ≤ b.val ≤ max_N.
+        have h_a_le_max : a.val ≤ max_N :=
+          le_trans hab (Finset.le_max' _ b.val hb_old)
+        by_cases h_a_ge_min : min_N ≤ a.val
+        · -- a.val ≥ min_N. So a.val ∈ [min_N, max_N] and a.val ∉ dom(N).
+          -- Find adjacent pair bracketing a.
+          haveI : DecidablePred (fun d => d ≤ a.val) := fun d => inferInstance
+          set L_set := (omega_chain_val A h_mcs N).dom.filter (· ≤ a.val)
+          set R_set := (omega_chain_val A h_mcs N).dom.filter (a.val < ·)
+          have hL_ne : L_set.Nonempty := by
+            refine ⟨min_N, Finset.mem_filter.mpr ⟨Finset.min'_mem _ h_dom_ne, h_a_ge_min⟩⟩
+          -- Need a dom(N) point > a.val. Since a ≤ b and b ∈ dom(N):
+          -- If a.val = b.val: a = b (same subtype element), and a ∈ dom(N) since b ∈ dom(N).
+          -- But a ∉ dom(N). So a.val ≠ b.val. So a.val < b.val.
+          have h_a_lt_b : a.val < b.val := by
+            rcases lt_or_eq_of_le (hab : a.val ≤ b.val) with h | h
+            · exact h
+            · exact absurd (show a.val ∈ _ from h ▸ hb_old) ha_old
+          have hR_ne : R_set.Nonempty :=
+            ⟨b.val, Finset.mem_filter.mpr ⟨hb_old, h_a_lt_b⟩⟩
+          set w := L_set.max' hL_ne
+          set w_next := R_set.min' hR_ne
+          have hw_mem : w ∈ (omega_chain_val A h_mcs N).dom :=
+            (Finset.mem_filter.mp (Finset.max'_mem L_set hL_ne)).1
+          have hw_le_a : w ≤ a.val :=
+            (Finset.mem_filter.mp (Finset.max'_mem L_set hL_ne)).2
+          have hwn_mem : w_next ∈ (omega_chain_val A h_mcs N).dom :=
+            (Finset.mem_filter.mp (Finset.min'_mem R_set hR_ne)).1
+          have ha_lt_wn : a.val < w_next :=
+            (Finset.mem_filter.mp (Finset.min'_mem R_set hR_ne)).2
+          have hw_lt_a : w < a.val := by
+            rcases lt_or_eq_of_le hw_le_a with h | h
+            · exact h
+            · exact absurd (h ▸ hw_mem) ha_old
+          -- w, w_next, b ∈ dom(N). w < a < w_next ≤ b.
+          have hw_limit : w ∈ limit_dom A h_mcs := ⟨N, hw_mem⟩
+          have hwn_limit : w_next ∈ limit_dom A h_mcs := ⟨N, hwn_mem⟩
+          -- IH: succ^[m](w_sub) = b_sub (both in dom(N), w ≤ b since w < a ≤ b)
+          have hw_le_b : (⟨w, hw_limit⟩ : LimitDomSubtype A h_mcs) ≤ b := by
+            show w ≤ b.val; exact le_trans (le_of_lt hw_lt_a) hab
+          obtain ⟨m, hm⟩ := ih ⟨w, hw_limit⟩ b hw_mem hb_old hw_le_b
+          -- succ^[m](w_sub) = b. Since w < a ≤ b = succ^[m](w_sub):
+          --   a is between w_sub and succ^[m](w_sub).
+          --   By orbit convexity: ∃ j ≤ m, succ^[j](w_sub) = a.
+          have ha_in_range : a ≤ (limitDomSubtype_succ A h_mcs h_discrete)^[m] ⟨w, hw_limit⟩ := by
+            rw [hm]; exact hab
+          have hw_le_a' : (⟨w, hw_limit⟩ : LimitDomSubtype A h_mcs) ≤ a := by
+            show w ≤ a.val; exact le_of_lt hw_lt_a
+          obtain ⟨j, hj_le, hj_eq⟩ := succ_orbit_convex A h_mcs h_discrete
+            ⟨w, hw_limit⟩ a m hw_le_a' ha_in_range
+          -- succ^[j](w_sub) = a. So succ^[m-j](a) = succ^[m](w_sub) = b.
+          -- Actually, succ^[m](w_sub) = b and succ^[j](w_sub) = a.
+          -- succ^[m-j](succ^[j](w_sub)) = succ^[m](w_sub) = b.
+          -- So succ^[m-j](a) = b.
+          refine ⟨m - j, ?_⟩
+          have : (limitDomSubtype_succ A h_mcs h_discrete)^[m - j]
+              ((limitDomSubtype_succ A h_mcs h_discrete)^[j] ⟨w, hw_limit⟩) =
+              (limitDomSubtype_succ A h_mcs h_discrete)^[m] ⟨w, hw_limit⟩ := by
+            rw [← Function.iterate_add_apply]
+            congr 1; omega
+          rw [hj_eq] at this; rw [this, hm]
+        · -- a.val < min_N. Boundary case: a below min(dom(N)).
+          -- This is the hard boundary case (below-min).
+          sorry
+      · -- Case 4: both new at stage N+1.
+        -- omega_chain_dom_new_unique gives a.val = b.val, hence a = b.
+        have ha_new : a.val ∈ (omega_chain_val A h_mcs (N + 1)).dom := ha
+        have hb_new : b.val ∈ (omega_chain_val A h_mcs (N + 1)).dom := hb
+        have := omega_chain_dom_new_unique A h_mcs N a.val b.val ha_new ha_old hb_new hb_old
+        exact ⟨0, Subtype.ext this⟩
 
-/-! ## Z1 Helpers -/
+/--
+Every limit_dom point in `[a.val, L)` for a limit_dom point `a` is a succ-iterate
+of `a`, where `L` is any upper bound such that all succ-iterates are below `L`.
 
--- [Archived code removed: succ_reaches_dom_N, limit_dom_points_are_succ_iterates,
---  succ_cofinal gap analysis — see Boneyard/StageInductionGapAnalysis/]
+Key step: if `z ∈ limit_dom` with `a.val ≤ z.val` and `z.val < succ^[n](a).val` for
+no `n`, then `z.val ≥ succ^[n](a).val` for all `n`, contradicting `z.val < L`.
+If `succ^[n₀](a) > z` for some `n₀`: take minimum; then `z` is between consecutive
+succ-iterates, contradicting the immediate-successor property.
+-/
+private theorem limit_dom_points_are_succ_iterates
+    (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a z : LimitDomSubtype A h_mcs) (h_az : a ≤ z)
+    (h_all_below : ∀ n, (limitDomSubtype_succ A h_mcs h_discrete)^[n] a ≤ z) :
+    ∃ m, (limitDomSubtype_succ A h_mcs h_discrete)^[m] a = z := by
+  set s := limitDomSubtype_succ A h_mcs h_discrete
+  -- For each n, either s^[n](a) = z, or s^[n](a) < z or s^[n](a) > z.
+  -- But h_all_below says s^[n](a) ≤ z. So s^[n](a) ≤ z.
+  -- If s^[n](a) = z for some n: done.
+  by_contra h_never
+  push_neg at h_never
+  -- h_never : ∀ m, s^[m] a ≠ z
+  -- Combined with h_all_below: s^[m](a) < z for all m.
+  have h_strict : ∀ m, s^[m] a < z := by
+    intro m; exact lt_of_le_of_ne (h_all_below m) (h_never m)
+  -- Since s^[m](a) < z for all m: s^[m](a) ≤ pred(z) for all m.
+  have h_le_pred : ∀ m, s^[m] a ≤ limitDomSubtype_pred A h_mcs h_discrete z :=
+    fun m => (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ z).mpr (h_strict m)
+  -- Now: s^[m](a) ≤ pred(z). And pred(z) < z.
+  -- s^[m](a) ≠ pred(z) for all m (otherwise s^[m+1](a) = succ(pred(z)) = z by succ_pred).
+  have h_ne_pred : ∀ m, s^[m] a ≠ limitDomSubtype_pred A h_mcs h_discrete z := by
+    intro m h_eq
+    have : s^[m + 1] a = z := by
+      rw [Function.iterate_succ', Function.comp_apply, h_eq]
+      exact limitDomSubtype_succ_pred A h_mcs h_discrete z
+    exact h_never (m + 1) this
+  -- So s^[m](a) < pred(z) for all m.
+  have h_strict_pred : ∀ m, s^[m] a < limitDomSubtype_pred A h_mcs h_discrete z :=
+    fun m => lt_of_le_of_ne (h_le_pred m) (h_ne_pred m)
+  -- But now: s^[m](a) < pred(z) for all m. pred(z) < z. So all succ iterates are ≤ pred(z).
+  -- Apply the same argument to pred(z): s^[m](a) ≤ pred(pred(z)) for all m, etc.
+  -- This gives an infinite descent on z, pred(z), pred^2(z), ...
+  -- But we also know s(a) > a (succ is strictly increasing). So s^[m](a) is strictly increasing.
+  -- And s^[m](a) < pred(z) for all m. The sequence s^[m](a).val is strictly increasing
+  -- in ℚ, bounded by pred(z).val.
+  -- Casting to ℝ and using convergence, the limit is L ≤ pred(z).val < z.val.
+  -- The first limit_dom point ≥ L (in ℝ) has a predecessor which is a succ-iterate.
+  -- This gives a succ-iterate equal to a value ≥ L, contradicting all being < pred(z).
+  -- For now we defer to succ_reaches_dom_N for this step.
+  -- Actually, let's derive the contradiction directly:
+  -- pred(z) is limit_dom. All succ iterates of a are strictly below pred(z).
+  -- Apply THIS LEMMA recursively to (a, pred(z)): all succ iterates ≤ pred(z),
+  -- and all are ≠ pred(z), so all < pred(z), so all ≤ pred(pred(z)), etc.
+  -- This is infinite descent on z → pred(z) → pred^2(z) → ...
+  -- But z can decrease indefinitely (NoMinOrder), so we need another argument.
+  -- Use the real analysis approach instead.
+  sorry
+
+/-! ## Z1 Derivation and Gap Elimination Helpers
+
+The Z1 schema `G(Gφ→φ) → (FGφ→Gφ)` is derivable from Prior-UZ + BX axioms.
+Once derived, `theorem_in_mcs` places Z1 in every MCS, enabling the Doets
+maximum principle argument for gap elimination in `succ_cofinal`.
+-/
 
 /-- Z1 formula: `G(Gφ→φ) → (FGφ→Gφ)`.
 The syntactic correspondent of the IsSuccArchimedean frame condition. -/
@@ -1178,20 +1538,357 @@ private theorem z1_in_mcs (φ : Formula) {S : Set Formula}
   theorem_in_mcs h_mcs (z1_derivation φ)
 
 /--
+Succ-iterates are cofinal: for any `a < b` in `LimitDomSubtype`, there exists `n`
+such that `succ^[n](a) ≥ b`. Combined with `succ_orbit_convex`, this gives
+`IsSuccArchimedean`.
+
+### Proof strategy
+
+By contradiction: assume `succ^[n](a) < b` for all `n`. The key steps:
+
+1. All succ-iterates of `a` are below `pred(b)` (by `le_pred_iff` + succ_pred cancellation).
+2. The real-valued sequence `(succ^[n](a).val : ℝ)` is strictly increasing and bounded,
+   so it converges to some `L ≤ b.val` in `ℝ`.
+3. The first `limit_dom` point `z` at or above `L` satisfies `pred(z)` is a succ-iterate
+   (since all limit_dom below `L` are succ-iterates), so `z = succ(pred(z)) = succ^[m+1](a)`.
+   Hence `z.val ≤ L` (as a succ-iterate), giving `z.val = L`, so `L ∈ ℚ ∩ limit_dom`.
+4. Since `pred(z).val < z.val = L` and `succ^[n](a).val → L`, for large `n`:
+   `succ^[n](a).val > pred(z).val`, placing a limit_dom point between `pred(z)` and `z`.
+   This contradicts the immediate-predecessor property.
+-/
+private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_discrete : ∀ x ∈ limit_dom A h_mcs, next_top ∈ limit_f A h_mcs x)
+    (a b : LimitDomSubtype A h_mcs) (hab : a < b) :
+    ∃ n, b ≤ (limitDomSubtype_succ A h_mcs h_discrete)^[n] a := by
+  set s := limitDomSubtype_succ A h_mcs h_discrete
+  by_contra h_not_cofinal
+  push_neg at h_not_cofinal
+  -- h_not_cofinal: ∀ n, s^[n](a) < b
+  -- Step 1: s^[n](a) ≤ pred(b) for all n
+  set pb := limitDomSubtype_pred A h_mcs h_discrete b
+  have h_le_pb : ∀ n, s^[n] a ≤ pb :=
+    fun n => (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ b).mpr (h_not_cofinal n)
+  -- Step 2: Define the real-valued sequence and show it converges
+  set f : ℕ → ℝ := fun n => (s^[n] a).val
+  have s_lt : ∀ x : LimitDomSubtype A h_mcs, x < s x :=
+    fun x => (limitDomSubtype_succ_le_iff A h_mcs h_discrete x (s x)).mp le_rfl
+  have f_mono : Monotone f := by
+    intro m n hmn
+    simp only [f]
+    apply Rat.cast_le.mpr
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hmn
+    clear hmn; induction k with
+    | zero => simp
+    | succ k ih =>
+      have h_step : (s^[m + k] a).val < (s (s^[m + k] a)).val := s_lt _
+      have h_eq : (s (s^[m + k] a)).val = (s^[m + (k + 1)] a).val := by
+        congr 1; rw [show m + (k + 1) = (m + k) + 1 from by omega,
+          Function.iterate_succ', Function.comp_apply]
+      exact le_of_lt (lt_of_le_of_lt ih (h_eq ▸ h_step))
+  have f_bdd : BddAbove (Set.range f) := by
+    refine ⟨(b.val : ℝ), ?_⟩
+    rintro _ ⟨n, rfl⟩
+    exact Rat.cast_le.mpr (le_of_lt (h_not_cofinal n))
+  -- The sequence converges to some limit
+  obtain ⟨L, hL_tendsto⟩ := Real.tendsto_of_bddAbove_monotone f_bdd f_mono
+  -- L is an upper bound for all f(n)
+  have hL_ub : ∀ n, f n ≤ L := by
+    intro n
+    exact le_of_tendsto_of_tendsto tendsto_const_nhds hL_tendsto
+      (Filter.eventually_atTop.mpr ⟨n, fun m hm => f_mono hm⟩)
+  -- L ≤ b.val (since all f(n) < b.val and L is the limit)
+  have hL_le_b : L ≤ (b.val : ℝ) := by
+    exact le_of_tendsto_of_tendsto hL_tendsto tendsto_const_nhds
+      (Filter.Eventually.of_forall fun n => Rat.cast_le.mpr (le_of_lt (h_not_cofinal n)))
+  -- Step 3: L > pred(b).val (the key step)
+  -- We prove this by showing the first limit_dom point ≥ L has its predecessor
+  -- as a succ-iterate, forcing L to be in limit_dom.
+  -- First, show that pred(b).val < b.val in ℝ
+  have h_pb_lt_b : (pb.val : ℝ) < (b.val : ℝ) := by
+    exact Rat.cast_lt.mpr (limitDomSubtype_pred_lt A h_mcs h_discrete b)
+  -- Now: if L > pred(b).val, get contradiction directly
+  -- if L ≤ pred(b).val, get contradiction via the "first limit_dom ≥ L" argument
+  -- For the full formal proof, we combine both into one argument.
+  -- The "first limit_dom point ≥ L" is b (since L ≤ b.val).
+  -- pred(b) < b. pred(b).val < b.val ≤ L? Or pred(b).val ≥ L?
+  -- Case split:
+  by_cases h_case : L > (pb.val : ℝ)
+  · -- L > pred(b).val. Since f(n) → L and pred(b).val < L:
+    -- eventually f(n) > pred(b).val.
+    have := Filter.Tendsto.eventually_const_lt h_case hL_tendsto
+    rw [Filter.eventually_atTop] at this
+    obtain ⟨n₀, hn₀⟩ := this
+    specialize hn₀ n₀ le_rfl
+    -- f(n₀) > pred(b).val, i.e., s^[n₀](a).val > pred(b).val
+    have h_gt_pb : pb < s^[n₀] a := by
+      show pb.val < (s^[n₀] a).val
+      exact Rat.cast_lt.mp hn₀
+    -- But s^[n₀](a) ≤ pb from h_le_pb. Contradiction!
+    exact absurd (h_le_pb n₀) (not_le.mpr h_gt_pb)
+  · -- L ≤ pred(b).val. The sequence is bounded by pred(b).val.
+    push_neg at h_case
+    -- h_case: L ≤ pred(b).val
+    -- All f(n) ≤ L ≤ pred(b).val < b.val. s^[n](a) ≤ pred(b).
+    -- s^[n](a) ≠ pred(b) (otherwise s^[n+1](a) = succ(pred(b)) = b).
+    have h_ne_pb : ∀ n, s^[n] a ≠ pb := by
+      intro n h_eq
+      have : s^[n + 1] a = b := by
+        rw [Function.iterate_succ', Function.comp_apply, h_eq]
+        exact limitDomSubtype_succ_pred A h_mcs h_discrete b
+      exact absurd this (ne_of_lt (h_not_cofinal (n + 1)))
+    -- Step 4: All orbit points are strictly below pb.
+    have h_lt_pb : ∀ n, s^[n] a < pb :=
+      fun n => lt_of_le_of_ne (h_le_pb n) (h_ne_pb n)
+    -- Step 5: Any limit_dom point c with a ≤ c and c.val < L is an orbit point.
+    -- Proof: f(n) → L, so eventually f(n) > c.val, giving c < s^[n](a).
+    -- By orbit convexity, c = s^[k](a).
+    have orbit_below_L : ∀ c : LimitDomSubtype A h_mcs,
+        a ≤ c → (c.val : ℝ) < L →
+        ∃ m, s^[m] a = c := by
+      intro c hac hcL
+      have : ∃ n₀, (c.val : ℝ) < f n₀ := by
+        by_contra h_all
+        push_neg at h_all
+        -- f n ≤ c.val for all n, but f → L and L > c.val. Contradiction.
+        have : L ≤ (c.val : ℝ) :=
+          le_of_tendsto_of_tendsto hL_tendsto tendsto_const_nhds
+            (Filter.Eventually.of_forall fun n => h_all n)
+        linarith
+      obtain ⟨n₀, hn₀⟩ := this
+      have hc_le : c ≤ s^[n₀] a := by
+        show c.val ≤ (s^[n₀] a).val
+        exact_mod_cast le_of_lt (Rat.cast_lt.mp hn₀)
+      exact (succ_orbit_convex A h_mcs h_discrete a c n₀ hac hc_le).imp
+        fun k ⟨_, hk⟩ => hk
+    -- Step 6: Define pred-chain g(k) = pred^[k](pb). Show all orbit points < g(k).
+    set p := limitDomSubtype_pred A h_mcs h_discrete with p_def
+    -- g(k) = p^[k](pb) is the k-th predecessor starting from pb
+    -- Key: ∀ k n, s^[n] a < p^[k] pb
+    -- Proved by induction on k:
+    --   Base: h_lt_pb says s^[n] a < pb = p^[0] pb. ✓
+    --   Step: if ∀ n, s^[n] a < p^[k] pb, then:
+    --     s^[n] a ≤ p(p^[k] pb) (by le_pred_iff)
+    --     s^[n] a ≠ p(p^[k] pb) (otherwise s^[n+1] a = succ(pred(...)) = p^[k] pb,
+    --       contradicting s^[n+1] a < p^[k] pb)
+    --     So s^[n] a < p^[k+1] pb. ✓
+    have h_lt_pred_chain : ∀ k n, s^[n] a < p^[k] pb := by
+      intro k
+      induction k with
+      | zero => simp only [Function.iterate_zero, id_eq]; exact h_lt_pb
+      | succ k ih =>
+        intro n
+        have h_le : s^[n] a ≤ p^[k + 1] pb := by
+          rw [Function.iterate_succ', Function.comp_apply]
+          exact (limitDomSubtype_le_pred_iff A h_mcs h_discrete _ _).mpr (ih n)
+        have h_ne : s^[n] a ≠ p^[k + 1] pb := by
+          intro h_eq
+          rw [Function.iterate_succ', Function.comp_apply] at h_eq
+          have h_succ_eq : s^[n + 1] a = p^[k] pb := by
+            rw [Function.iterate_succ', Function.comp_apply, h_eq]
+            exact limitDomSubtype_succ_pred A h_mcs h_discrete (p^[k] pb)
+          exact absurd h_succ_eq (ne_of_lt (ih (n + 1)))
+        exact lt_of_le_of_ne h_le h_ne
+    -- Step 7: pred-chain values are strictly decreasing
+    have h_pred_chain_strict : ∀ k, (p^[k + 1] pb).val < (p^[k] pb).val := by
+      intro k
+      rw [Function.iterate_succ', Function.comp_apply]
+      exact limitDomSubtype_pred_lt A h_mcs h_discrete (p^[k] pb)
+    -- Step 8: All pred-chain values ≥ L (since orbit values → L and orbit < pred-chain)
+    have h_pred_chain_ge_L : ∀ k, L ≤ ((p^[k] pb).val : ℝ) := by
+      intro k
+      exact le_of_tendsto_of_tendsto hL_tendsto tendsto_const_nhds
+        (Filter.Eventually.of_forall fun n =>
+          Rat.cast_le.mpr (le_of_lt (h_lt_pred_chain k n)))
+    -- Step 9: Gap elimination via backward G truth lemma.
+    -- Key insight: the backward G truth lemma (if ψ ∈ limit_f(y) for ALL
+    -- y > x, then G(ψ) ∈ limit_f(x)) can be proved using limit_F_resolution
+    -- alone (no IsSuccArchimedean needed), breaking the circularity.
+    --
+    -- Backward G truth lemma:
+    -- If ψ ∈ limit_f(y) for all y > x in limit_dom, then G(ψ) ∈ limit_f(x).
+    have backward_G : ∀ (ψ : Formula) (x : LimitDomSubtype A h_mcs),
+        (∀ y : LimitDomSubtype A h_mcs, x < y → ψ ∈ limit_f A h_mcs y.val) →
+        ψ.all_future ∈ limit_f A h_mcs x.val := by
+      intro ψ x h_all
+      by_contra h_not
+      have h_mcs_x := limit_c0 A h_mcs x.val x.property
+      -- ¬G(ψ) ∈ limit_f(x) by negation completeness
+      have h_neg : (ψ.all_future).neg ∈ limit_f A h_mcs x.val :=
+        (SetMaximalConsistent.negation_complete h_mcs_x ψ.all_future).resolve_left h_not
+      -- Build derivation: ⊢ ψ.neg.neg → ψ (double negation elimination)
+      have h_dne : DerivationTree [] (ψ.neg.neg.imp ψ) :=
+        Bimodal.Theorems.Propositional.double_negation ψ
+      -- Temporal necessitation: ⊢ G(ψ.neg.neg → ψ)
+      have h_G_dne : DerivationTree [] (Formula.all_future (ψ.neg.neg.imp ψ)) :=
+        DerivationTree.temporal_necessitation _ h_dne
+      -- K-distribution: ⊢ G(ψ.neg.neg → ψ) → (G(ψ.neg.neg) → G(ψ))
+      have h_dist : DerivationTree [] ((ψ.neg.neg.imp ψ).all_future.imp
+          (ψ.neg.neg.all_future.imp ψ.all_future)) :=
+        DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ.neg.neg ψ)
+      -- Modus ponens: ⊢ G(ψ.neg.neg) → G(ψ)
+      have h_G_impl : DerivationTree [] (ψ.neg.neg.all_future.imp ψ.all_future) :=
+        DerivationTree.modus_ponens [] _ _ h_dist h_G_dne
+      -- Contrapositive: ⊢ ¬G(ψ) → ¬G(ψ.neg.neg)
+      -- Note: ¬G(ψ.neg.neg) = (ψ.neg.neg.all_future).neg = F(ψ.neg)  (definitionally)
+      have h_contra : DerivationTree [] (ψ.all_future.neg.imp ψ.neg.neg.all_future.neg) := by
+        have h_cp := Bimodal.Theorems.TemporalDerived.contrapositive
+          ψ.neg.neg.all_future ψ.all_future
+        exact DerivationTree.modus_ponens [] _ _ h_cp h_G_impl
+      -- Apply in MCS: F(ψ.neg) ∈ limit_f(x)
+      -- F(ψ.neg) = ψ.neg.some_future = ψ.neg.neg.all_future.neg  (by definition)
+      have h_F_neg : Formula.some_future ψ.neg ∈ limit_f A h_mcs x.val := by
+        show ψ.neg.neg.all_future.neg ∈ limit_f A h_mcs x.val
+        exact SetMaximalConsistent.implication_property h_mcs_x
+          (theorem_in_mcs h_mcs_x h_contra) h_neg
+      -- By limit_F_resolution: ∃ y > x with ψ.neg ∈ limit_f(y)
+      obtain ⟨y, hy_dom, hxy, h_neg_y⟩ :=
+        limit_F_resolution A h_mcs x.val x.property ψ.neg h_F_neg
+      -- But ψ ∈ limit_f(y) by hypothesis (y > x in limit_dom)
+      have h_psi_y : ψ ∈ limit_f A h_mcs y :=
+        h_all ⟨y, hy_dom⟩ hxy
+      -- Contradiction: ψ and ψ.neg both in limit_f(y)
+      exact set_consistent_not_both (limit_c0 A h_mcs y hy_dom).1 ψ h_psi_y h_neg_y
+    -- Backward F: if φ ∈ limit_f(y) for some y > x, then F(φ) ∈ limit_f(x).
+    -- Proof: if G(¬φ) ∈ limit_f(x), forward_G gives ¬φ ∈ limit_f(y), contradicting φ.
+    -- So G(¬φ) ∉ limit_f(x), hence ¬G(¬φ) = F(φ) ∈ limit_f(x).
+    have backward_F : ∀ (φ : Formula) (x : LimitDomSubtype A h_mcs)
+        (y : LimitDomSubtype A h_mcs) (_ : x < y)
+        (_ : φ ∈ limit_f A h_mcs y.val),
+        Formula.some_future φ ∈ limit_f A h_mcs x.val := by
+      intro φ x y hxy hφy
+      have h_mcs_x := limit_c0 A h_mcs x.val x.property
+      -- F(φ) = φ.neg.all_future.neg (definitionally)
+      -- ¬G(¬φ) = (φ.neg.all_future).neg = φ.neg.all_future.neg = F(φ)
+      -- So it suffices to show G(φ.neg) ∉ limit_f(x)
+      by_contra h_not_F
+      -- ¬F(φ) ∈ limit_f(x), meaning G(φ.neg) ∈ limit_f(x)
+      -- show: G(φ.neg) = φ.neg.all_future ∈ limit_f(x)
+      have h_G_neg : φ.neg.all_future ∈ limit_f A h_mcs x.val := by
+        -- ¬(F(φ)) means ¬(φ.neg.all_future.neg), which is φ.neg.all_future.neg.neg
+        -- By negation_complete: either F(φ) or ¬F(φ) in MCS
+        -- ¬F(φ) in MCS. F(φ) = φ.neg.all_future.neg.
+        -- So φ.neg.all_future.neg ∉ limit_f(x), hence φ.neg.all_future ∈ limit_f(x)
+        -- (by negation_complete in reverse)
+        rcases SetMaximalConsistent.negation_complete h_mcs_x (φ.neg.all_future) with h | h
+        · exact h
+        · -- h : φ.neg.all_future.neg ∈ limit_f, but this IS F(φ)
+          exact absurd h h_not_F
+      -- By forward_G: φ.neg ∈ limit_f(y)
+      have h_neg_y := limit_forward_G A h_mcs x.val y.val x.property y.property hxy
+        φ.neg h_G_neg
+      -- Contradiction: φ and φ.neg both in limit_f(y)
+      exact set_consistent_not_both (limit_c0 A h_mcs y.val y.property).1 φ hφy h_neg_y
+    -- Step 9: Gap elimination (L ≤ pred(b).val).
+    --
+    -- The orbit {s^[n](a)} converges to L from below, the pred-chain
+    -- {pred^[k](pb)} forms a strictly decreasing sequence with values ≥ L.
+    -- All orbit points < all pred-chain points. The orbit and pred-chain
+    -- are succ/pred-closed respectively, forming disconnected components.
+    --
+    -- Available infrastructure for the gap elimination:
+    -- • backward_G: ψ at all y > x ⟹ G(ψ) ∈ limit_f(x)
+    -- • backward_F: φ at y > x ⟹ F(φ) ∈ limit_f(x)
+    -- • backward_P (proved below): φ at y < x ⟹ P(φ) ∈ limit_f(x)
+    -- • limit_F_resolution, limit_P_resolution: resolve F/P to witnesses
+    -- • limit_satisfies_c5_strong, c5'_strong: resolve U/S with guards
+    -- • Axiom.prior_UZ/SZ: F(φ) → U(φ,¬φ), P(φ) → S(φ,¬φ)
+    -- • theorem_in_mcs: derivable formulas are in every MCS
+    -- • orbit_below_L: limit_dom points with a ≤ c and c.val < L are orbit
+    -- • h_lt_pred_chain: all orbit < all pred-chain
+    -- • h_pred_chain_ge_L: pred-chain ℝ-values ≥ L
+    --
+    -- The gap elimination requires showing that the disconnected orbit +
+    -- pred-chain structure contradicts the temporal logic axioms. The core
+    -- difficulty is finding a discriminating formula (one that holds at all
+    -- orbit points but fails at some non-orbit point, or vice versa).
+    --
+    -- Three approaches were evaluated:
+    -- (a) Prior-SZ maximum principle with a discriminating formula
+    -- (b) Syntactic Z1 derivation tree from Prior-UZ (~100 lines, no
+    --     published derivation exists)
+    -- (c) Stage-induction on the omega-chain construction
+    --
+    -- All three approaches face the same fundamental difficulty: in the
+    -- "constant MCS" case (all limit_dom points have identical MCS labels),
+    -- no discriminating formula exists, and the temporal logic axioms are
+    -- trivially satisfied. The contradiction in this case must come from
+    -- properties of the omega-chain construction itself (each new point
+    -- resolves a specific counterexample with a specific MCS, and constant
+    -- MCS everywhere conflicts with the counterexample resolution process).
+    -- Formalizing this requires deep interaction with the construction
+    -- internals (omega_chain_elim_result, BurgessR3Maximal, etc.).
+    --
+    -- Status: This sorry represents a genuine mathematical gap in the
+    -- formalization. The theorem is mathematically true (IsSuccArchimedean
+    -- holds for the limit domain in the discrete case), but the formal
+    -- proof requires either a Z1 derivation tree, a deep construction
+    -- argument, or adding Z1 as an axiom with a soundness proof.
+    --
+    -- Backward P (dual of backward_F): proved and available for future use.
+    -- If φ ∈ limit_f(y) for y < x, then P(φ) ∈ limit_f(x).
+    have _backward_P : ∀ (φ : Formula) (x y : LimitDomSubtype A h_mcs),
+        y < x → φ ∈ limit_f A h_mcs y.val →
+        Formula.some_past φ ∈ limit_f A h_mcs x.val := by
+      intro φ x y hyx hφy
+      have h_mcs_x := limit_c0 A h_mcs x.val x.property
+      by_contra h_not_P
+      have h_H_neg : φ.neg.all_past ∈ limit_f A h_mcs x.val := by
+        rcases SetMaximalConsistent.negation_complete h_mcs_x (φ.neg.all_past) with h | h
+        · exact h
+        · exact absurd h h_not_P
+      have h_neg_y := limit_backward_H A h_mcs x.val y.val x.property y.property hyx
+        φ.neg h_H_neg
+      exact set_consistent_not_both (limit_c0 A h_mcs y.val y.property).1 φ hφy h_neg_y
+    -- Step 9: Gap elimination.
+    --
+    -- The orbit {s^[n](a)} converges to L from below, the pred-chain
+    -- {p^[k](pb)} has values ≥ L. All orbit < all pred-chain.
+    --
+    -- This sorry represents a genuine mathematical gap: the succ-orbit
+    -- from a does not reach b, creating a ℤ+ℤ-like structure. Closing it
+    -- requires either:
+    -- (a) Z1 (Doets maximum principle) with a discriminating formula that
+    --     distinguishes orbit from non-orbit points, combined with control
+    --     of what happens at b and beyond the gap region.
+    -- (b) A construction-level argument showing the omega-chain cannot
+    --     produce a gap (the construction resolves counterexamples that
+    --     would force succ links across any gap).
+    -- (c) Adding Z1 as an axiom was done in Phase 2. The gap elimination
+    --     argument using Z1 needs: for some φ, F(φ) and FG(¬φ) at an
+    --     orbit point, with G(Gφ→φ)→(FGφ→Gφ) (Z1) giving Gφ or a
+    --     "maximum" point via the contrapositive. The maximum point y
+    --     has φ∧G(¬φ), so forward_G gives ¬φ at succ(y). If y is orbit
+    --     (value < L by orbit_below_L), succ(y) is orbit, contradicting
+    --     φ at succ(y) for the right φ.
+    --
+    -- Available tools: backward_G, backward_F, z1_in_mcs, orbit_below_L,
+    -- h_lt_pred_chain, limit_F_resolution, limit_forward_G.
+    --
+    -- Gap elimination requires either:
+    -- (a) Z1 Doets maximum principle with a discriminating formula that
+    --     holds at ALL orbit points and fails at ALL points above the gap,
+    --     which requires orbit MCS stabilization (finiteness of sub-formula
+    --     closure not yet formalized), OR
+    -- (b) A construction-level argument showing the omega-chain cannot
+    --     produce a gap (constant-MCS case), OR
+    -- (c) A Doets Henkin canonical model that avoids the gap entirely.
+    --
+    -- Analysis summary (see plans/11_three-track-completeness.md):
+    -- • Non-constant MCS: Z1 argument works IF we can establish FGφ at
+    --   an orbit point (requires φ at all sufficiently late points).
+    --   The discriminating formula from prior_UZ + c5_strong gives φ at
+    --   all intermediates but not at all future points beyond the gap.
+    -- • Constant MCS: Z1 is trivially satisfied; contradiction must come
+    --   from construction internals (omega-chain counterexample resolution).
+    -- • Both cases blocked by the need to control formula truth at ALL
+    --   future points, not just orbit/pred-chain points.
+    sorry
+    -- (End of succ_cofinal proof — sorry to be resolved in follow-up task.)
+/--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 
-**Admitted (sorry)**: The Burgess chronicle construction under strict (irreflexive)
-temporal semantics cannot prove this directly. The gap scenario (succ-orbit converging
-to L from below, pred-chain from above, no limit_dom point at L) is consistent with
-all temporal axioms (Z1, Prior-UZ) when all MCS labels are identical. Under strict
-semantics `G(φ)→φ` is not valid, so the Z1 Doets maximum principle cannot establish
-the needed `G(Gφ→φ)` at orbit points.
-
-**Resolution**: Task 129 (weak/reflexive completeness + conservative extension) will
-provide this via a Henkin canonical model where every point is a distinct MCS.
-
-**Archived**: The `succ_cofinal` convergence proof and Z1 gap analysis are in
-`Boneyard/StageInductionGapAnalysis/`.
+Uses `succ_cofinal` (which has a sorry — see section docstring above) combined with
+`succ_orbit_convex`. Contains a sorry via `succ_cofinal`; resolution: task 129.
 -/
 noncomputable def limitDomSubtype_isSuccArchimedean
     (A : Set Formula) (h_mcs : SetMaximalConsistent A)
@@ -1200,8 +1897,16 @@ noncomputable def limitDomSubtype_isSuccArchimedean
       inferInstance
       (limitDomSubtype_succOrder A h_mcs h_discrete) :=
   @IsSuccArchimedean.mk _ _ (limitDomSubtype_succOrder A h_mcs h_discrete) <| by
-    intro a b _hab
-    sorry
+    intro a b hab
+    change ∃ n, (limitDomSubtype_succ A h_mcs h_discrete)^[n] a = b
+    set s := limitDomSubtype_succ A h_mcs h_discrete
+    rcases eq_or_lt_of_le hab with rfl | hab_lt
+    · exact ⟨0, rfl⟩
+    · -- a < b. By succ_cofinal: ∃ n, b ≤ s^[n](a).
+      obtain ⟨n, hn⟩ := succ_cofinal A h_mcs h_discrete a b hab_lt
+      -- By succ_orbit_convex: ∃ j ≤ n, s^[j](a) = b.
+      exact (succ_orbit_convex A h_mcs h_discrete a b n (le_of_lt hab_lt) hn).imp
+        fun j ⟨_, hj⟩ => hj
 
 /-! ## Collapse-Based Discrete Pipeline
 
@@ -1211,8 +1916,8 @@ succ steps reach any larger element. `succ_embed_surjective` follows from
 `IsSuccArchimedean` via `succ_orbit_convex`.
 
 The collapse equivalence below (succ-reachability) is used in auxiliary proofs.
-`limitDomSubtype_isSuccArchimedean` is admitted (sorry) pending task 129
-(weak/reflexive completeness + conservative extension).
+`limitDomSubtype_isSuccArchimedean` has a sorry (via `succ_cofinal`) pending
+task 129 (weak/reflexive completeness + conservative extension).
 -/
 
 /--
