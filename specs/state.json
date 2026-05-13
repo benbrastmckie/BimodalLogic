@@ -599,11 +599,12 @@
     {
       "project_number": 137,
       "project_name": "update_roadmap_axiom_info",
-      "status": "implementing",
+      "status": "completed",
+      "completion_summary": "Updated ROADMAP.md with 6 targeted corrections: axiom count 45→41 (2 locations), removed BX2/BX2' table rows (constructors deleted in task 133), updated BX2H note to state removal rather than subsumption, updated PointInsertion.lean line count (~3690→~3555), removed left_mono_until_mcs from CanonicalChain.lean summary.",
       "task_type": "general",
       "description": "Update ROADMAP.md: axiom count 45->41, remove BX2/BX2 table rows, update CanonicalChain.lean summary (remove left_mono_until_mcs), update PointInsertion.lean line count (~3690->~3555)",
       "created": "2026-05-13T22:24:28Z",
-      "last_updated": "2026-05-13T22:31:00Z",
+      "last_updated": "2026-05-13T22:35:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
