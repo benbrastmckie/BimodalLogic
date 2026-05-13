@@ -35,7 +35,7 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **129** [NOT STARTED] — Weak/reflexive completeness + model-theoretic transfer (bypasses succ_cofinal gap)
+1. **129** [RESEARCHED] — Weak/reflexive completeness + model-theoretic transfer (bypasses succ_cofinal gap)
 2. **123** [PARTIAL] — Fix C5 witness placement (Z1 axiom done, IsSuccArchimedean admitted → task 129)
 3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123 or 129)
 4. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
@@ -77,9 +77,10 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: critical
+- **Research**: [specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md]
 
 **Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.
 
