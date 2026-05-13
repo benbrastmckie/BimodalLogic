@@ -37,7 +37,11 @@ technical_debt:
 
 1. ~~**124**~~ [COMPLETED] — Remove TF axiom, derive from MF (~6h, low risk)
 2. ~~**115**~~ [COMPLETED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
-3. **132** [NOT STARTED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
+3. **135** [NOT STARTED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
+4. **136** [NOT STARTED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
+5. **133** [NOT STARTED] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
+6. **134** [NOT STARTED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
+7. **132** [NOT STARTED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
 
 ### Phase 2: Sorry-Free Completeness
 
@@ -85,6 +89,46 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 136. Clean up archival BX14 comments in PointInsertion.lean
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Related**: 115
+
+**Description**: Clean up archival comments about the old BX14-based D0 seed approach in PointInsertion.lean. Lines ~1087-1098 and ~2215-2227 contain detailed descriptions of the OLD BX14 separation_until-based D0 seed consistency proof chain (BX5+BX14+BX10). These could mislead future readers into thinking BX14 is still used. Replace with concise historical notes pointing to Xu 3.2.1+3.2.2 as the current approach.
+
+---
+
+### 135. Remove unused left_mono_until_mcs from CanonicalChain.lean
+- **Effort**: 15 minutes
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Related**: 115, 133
+
+**Description**: Dead code cleanup: remove left_mono_until_mcs from CanonicalChain.lean. This helper (line ~71) is defined but has zero external callers. It uses BX2 (left_mono_until), which is a candidate for removal in task 133. Removing it first avoids having to update it when BX2 is simplified.
+
+---
+
+### 134. Restructure lemma_2_7/lemma_2_7_since seeds using Xu 3.2.1
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Related**: 115
+
+**Description**: Simplify lemma_2_7/lemma_2_7_since seed construction using Xu 3.2.1. The current seed includes explicit U/S formulas ({untl(gamma,beta) : gamma in C, beta in B} union {snce(alpha,beta) : ...}), requiring a ~400-line BX5+BX7+BX13 consistency proof (lemma_2_7_seed_consistent). With Xu 3.2.1 (proved in task 115), these U/S formulas are already in B* (the R-maximal extension), so the seed simplifies to B* union {eta} with trivial consistency via dcs_neg_union_consistent. This is a simplification (current proofs are sorry-free and work), not a correctness fix. Must verify lemma_2_7 output type (including eta in D and xi in B') still satisfies CounterexampleElimination.lean callers.
+
+---
+
+### 133. Simplify BX2: remove pointwise conjunct, derive from BX2G
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Related**: 115
+
+**Description**: Axiom minimality: remove BX2/BX2' (left_mono_until/since) constructors and derive them as theorems from BX2G/BX2G' (left_mono_until_G/left_mono_since_H). Under open-guard semantics (t,s), the pointwise conjunct (phi->chi) in BX2 is redundant since t is not in the guard interval. BX2G (G(phi->chi) -> untl(phi,psi) -> untl(chi,psi)) suffices. All 15+ call sites of untl_left_mono_thm derive G(phi->chi) via temporal necessitation, so BX2G works at every site. Removes 2 constructors + soundness proofs + match arms. Related: task 115 research report Section 4.1 established BX2G subsumes BX2 under open-guard semantics.
+
+---
 
 ### 132. Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
 - **Effort**: 2-4 hours
