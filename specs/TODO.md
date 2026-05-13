@@ -73,6 +73,26 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ## Tasks
 
+### 128. Open set (interior) operator for dense and continuous temporal frames
+- **Effort**: 15-25 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 122
+
+**Description**: Add topological interior operator for dense and continuous temporal frames. On discrete Z the interior is trivial, but on dense Q and continuous R it captures neighborhood-stable truth: Int(phi) true at t iff phi holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4. Phases: TopologicalSpace instance for dense/continuous TaskFrame, interior Formula constructor with truth clause, S4-like axioms (Int(phi)->phi, Int(phi)->Int(Int(phi))), interaction with temporal operators and S5 box. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014).
+
+---
+
+### 127. Time addition operator (+) for bimodal logic TM
+- **Effort**: 20-40 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 123
+
+**Description**: Add time addition operator to TM. phi + psi true at (tau, x) iff there exist y,z with x = y+z and phi at (tau,y) and psi at (tau,z). Internalizes AddCommGroup structure into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), separation logic (BI). Phases: add tadd/tsub constructors to Formula, truth clause, basic axioms (associativity, commutativity, identity, inverse), soundness, interaction with G/H/U/S/box. Completeness (ternary canonical model) and decidability are open research problems.
+
+---
+
 ### 125. Jónsson-Tarski representation theorem for bimodal S/U/□ logic
 - **Effort**: 15-25 hours
 - **Status**: [NOT STARTED]
@@ -85,7 +105,7 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**:

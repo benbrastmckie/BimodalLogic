@@ -24,13 +24,13 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-13T06:35:08Z",
+      "last_updated": "2026-05-13T06:36:35Z",
       "next_artifact_number": 12,
       "artifacts": [
         {
@@ -124,7 +124,7 @@
           "summary": "v16: Three-track gap elimination — Z1 Doets for non-constant MCS, construction-level for constant MCS, verification"
         }
       ],
-      "session_id": "sess_1778653755_4bf723",
+      "session_id": "sess_1778654185_0a4337",
       "started": "2026-05-11T14:06:20Z",
       "completed": "2026-05-11T16:40:49Z",
       "archived": "2026-05-11T16:55:47Z",
@@ -659,9 +659,37 @@
       "created": "2026-05-13T01:17:13Z",
       "last_updated": "2026-05-13T01:17:13Z",
       "next_artifact_number": 1
+    },
+    {
+      "project_number": 127,
+      "project_name": "time_addition_operator",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
+      "dependencies": [
+        123
+      ],
+      "created": "2026-05-13T07:11:21Z",
+      "last_updated": "2026-05-13T07:11:21Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 128,
+      "project_name": "open_set_operator_dense_continuous",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
+      "dependencies": [
+        122
+      ],
+      "created": "2026-05-13T07:11:21Z",
+      "last_updated": "2026-05-13T07:11:21Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 127,
+  "next_project_number": 129,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
