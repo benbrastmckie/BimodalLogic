@@ -861,17 +861,17 @@
     {
       "project_number": 134,
       "project_name": "restructure_lemma_2_7_seeds_xu_3_2_1",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Simplify lemma_2_7/lemma_2_7_since seed construction using Xu 3.2.1. The current seed includes explicit U/S formulas ({untl(gamma,beta) : gamma in C, beta in B} union {snce(alpha,beta) : ...}), requiring a ~400-line BX5+BX7+BX13 consistency proof (lemma_2_7_seed_consistent). With Xu 3.2.1 (proved in task 115), these U/S formulas are already in B* (the R-maximal extension), so the seed simplifies to B* union {eta} with trivial consistency via dcs_neg_union_consistent. This is a simplification (current proofs are sorry-free and work), not a correctness fix. Must verify lemma_2_7 output type (including eta in D and xi in B') still satisfies CounterexampleElimination.lean callers.",
       "created": "2026-05-13T20:47:01Z",
-      "last_updated": "2026-05-13T21:16:44Z",
+      "last_updated": "2026-05-13T22:09:24Z",
       "language": "lean4",
       "related_tasks": [
         115
       ],
       "next_artifact_number": 2,
-      "session_id": "sess_1778706675_0a5dc9",
+      "session_id": "sess_1778708549_efce45",
       "researched": "2026-05-13T21:04:59Z",
       "artifacts": [
         {
@@ -883,8 +883,16 @@
           "path": "specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/plans/01_seed-restructure-plan.md",
           "type": "plan",
           "summary": "5-phase plan to simplify seeds from 5 to 3 components using Xu 3.2.1"
+        },
+        {
+          "path": "specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/summaries/01_seed-restructure-summary.md",
+          "type": "summary",
+          "summary": "Simplified lemma_2_7/lemma_2_7_since seeds from 5 to 3 components using Xu 3.2.1, reducing PointInsertion.lean by 778 lines (18%)"
         }
-      ]
+      ],
+      "started": "2026-05-13T21:43:04Z",
+      "completed": "2026-05-13T22:09:24Z",
+      "completion_summary": "Simplified lemma_2_7/lemma_2_7_since seeds from 5 to 3 components using Xu 3.2.1, reducing PointInsertion.lean by 778 lines (18%). Zero sorries, zero new axioms, lake build clean."
     },
     {
       "project_number": 135,

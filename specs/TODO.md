@@ -40,7 +40,7 @@ technical_debt:
 3. ~~**135**~~ [COMPLETED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
 4. ~~**136**~~ [COMPLETED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
 5. ~~**133**~~ [COMPLETED] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
-6. **134** [RESEARCHED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
+6. ~~**134**~~ [COMPLETED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
 7. ~~**132**~~ [COMPLETED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
 
 ### Phase 2: Sorry-Free Completeness
@@ -116,7 +116,9 @@ technical_debt:
 
 ### 134. Restructure lemma_2_7/lemma_2_7_since seeds using Xu 3.2.1
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-13
+- **Summary**: Simplified lemma_2_7/lemma_2_7_since seeds from 5 to 3 components using Xu 3.2.1, reducing PointInsertion.lean by 778 lines (18%). Zero sorries, zero new axioms, lake build clean.
 - **Language**: lean4
 - **Related**: 115
 - **Research**: [specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/reports/01_seed-restructure-research.md]
