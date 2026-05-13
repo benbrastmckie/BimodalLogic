@@ -39,9 +39,9 @@ technical_debt:
 2. ~~**115**~~ [COMPLETED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
 3. ~~**135**~~ [COMPLETED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
 4. ~~**136**~~ [COMPLETED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
-5. **133** [NOT STARTED] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
-6. **134** [NOT STARTED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
-7. **132** [NOT STARTED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
+5. **133** [RESEARCHING] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
+6. **134** [RESEARCHING] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
+7. **132** [RESEARCHED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
 
 ### Phase 2: Sorry-Free Completeness
 
@@ -136,8 +136,9 @@ technical_debt:
 
 ### 132. Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
+- **Research**: [specs/132_merge_boneyard_directories/reports/01_boneyard-merge-research.md]
 
 **Description**: Merge Boneyard/ (project root) into Theories/Bimodal/Boneyard/ (the canonical Boneyard location within the Lean module hierarchy). Move all files from the root-level Boneyard/ directory into the appropriate subdirectories under Theories/Bimodal/Boneyard/, resolving any naming conflicts. After merging, populate Theories/Bimodal/Boneyard/README.md with documentation covering: (1) purpose of the Boneyard (archived dead code, superseded approaches, mathematically false lemmas), (2) directory structure and what each subdirectory contains, (3) why each group of files was archived (with references to the tasks that superseded them), (4) guidance on when to consult Boneyard code vs when to ignore it. Remove the root-level Boneyard/ directory after successful merge. Update any import paths if needed.
 
