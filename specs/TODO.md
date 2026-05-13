@@ -92,7 +92,9 @@ technical_debt:
 
 ### 136. Clean up archival BX14 comments in PointInsertion.lean
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-13
+- **Summary**: Replaced verbose archival BX14 comments with concise historical notes referencing Xu 3.2.1+3.2.2.
 - **Language**: lean4
 - **Related**: 115
 
@@ -102,7 +104,9 @@ technical_debt:
 
 ### 135. Remove unused left_mono_until_mcs from CanonicalChain.lean
 - **Effort**: 15 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-13
+- **Summary**: Removed unused left_mono_until_mcs and left_mono_since_mcs from CanonicalChain.lean (zero external callers).
 - **Language**: lean4
 - **Related**: 115, 133
 
