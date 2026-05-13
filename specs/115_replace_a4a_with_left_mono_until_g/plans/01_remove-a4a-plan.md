@@ -1,7 +1,7 @@
 # Implementation Plan: Remove A4a and Simplify BX2
 
 - **Task**: 115 - Remove A4a (separation_until/separation_since) and simplify BX2 for axiom minimality
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED] -- Superseded by v2 (02_remove-a4a-plan.md). Phase 1 was infeasible: A4a cannot be derived from existing axioms (the axioms are independent). v2 uses the Xu 1988 Lemma 2.3/2.4 approach instead.
 - **Effort**: 6 hours
 - **Dependencies**: Task 107 (chronicle infrastructure), Task 124 (removed temp_future, validated safety-first pattern)
 - **Research Inputs**: specs/115_replace_a4a_with_left_mono_until_g/reports/01_a4a-vs-left-mono.md

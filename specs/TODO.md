@@ -36,7 +36,7 @@ technical_debt:
 ### Phase 1: Axiom Cleanup and Housekeeping (before heavy lift)
 
 1. ~~**124**~~ [COMPLETED] — Remove TF axiom, derive from MF (~6h, low risk)
-2. **115** [PLANNED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
+2. **115** [IMPLEMENTING] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
 3. **132** [NOT STARTED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
 
 ### Phase 2: Sorry-Free Completeness
@@ -284,7 +284,7 @@ technical_debt:
 
 ### 115. Remove A4a and simplify BX2 for axiom minimality
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: 107
 - **Related**: 107

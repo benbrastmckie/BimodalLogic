@@ -674,6 +674,161 @@ theorem dc_delta_B_burgessR3 {A B C : Set Formula}
     · exact h_r3.2 phi h_B alpha halpha
     · exact snce_left_mono_thm h_mcs_C h_impl (h_since_all beta hbeta alpha halpha)
 
+/-! ## Xu Lemma 2.3: Guard Strengthening via left_mono_until_G
+
+Xu 1988 Lemma 2.3: If R(A, B, C), then
+  (i)  snce(alpha, top) ∈ B for every alpha ∈ A  (P(alpha) ∈ B)
+  (ii) untl(gamma, top) ∈ B for every gamma ∈ C  (F(gamma) ∈ B)
+
+This replaces the need for separation_until (BX14/A4a) in the chronicle
+splitting construction by enabling a simpler DCS extension argument (Xu Lemma 2.4).
+
+The proof uses left_mono_until_G (BX2G) for guard strengthening:
+from G(snce(alpha, top)) ∈ A (derived via BX4 + BX12'), strengthen the guard
+of untl(gamma, beta) ∈ A to untl(gamma, beta ∧ snce(alpha, top)) ∈ A,
+then apply burgessR_implies_burgessRSince for the Since direction.
+-/
+
+/-- Xu Lemma 2.3 (i): If R(A, B, C) then snce(alpha, top) ∈ B for all alpha ∈ A.
+
+Proof by contradiction: if snce(alpha, top) ∉ B, then
+BurgessR3Maximal_extension_fails gives ¬burgessR3(A, DC({snce(alpha,top)}∪B), C).
+But dc_delta_B_burgessR3 shows both Until and Since conditions hold, using
+left_mono_until_G with G(snce(alpha, top)) ∈ A (derived from alpha ∈ A via BX4 + BX12'). -/
+theorem xu_lemma_2_3_since_top {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    {alpha : Formula} (h_alpha : alpha ∈ A) :
+    Formula.snce alpha (Formula.bot.imp Formula.bot) ∈ B := by
+  set top := Formula.bot.imp Formula.bot with top_def
+  have h_dcs : ClosedUnderDerivation B := h_r3m.1
+  have h_r3 : burgessR3 A B C := h_r3m.2.1
+  -- Suppose snce(alpha, top) ∉ B, derive contradiction
+  by_contra h_not_in_B
+  -- Step 1: BurgessR3Maximal_extension_fails gives ¬burgessR3 for extension
+  have h_fails := BurgessR3Maximal_extension_fails h_r3m h_not_in_B
+  -- Step 2: Derive G(snce(alpha, top)) ∈ A from alpha ∈ A
+  -- BX4: alpha → G(P(alpha))
+  have h_bx4 : DerivationTree [] (alpha.imp (alpha.some_past.all_future)) :=
+    DerivationTree.axiom [] _ (Axiom.connect_future alpha)
+  have h_G_P_alpha : alpha.some_past.all_future ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs_A (theorem_in_mcs h_mcs_A h_bx4) h_alpha
+  -- BX12': P(alpha) → snce(alpha, top) (theorem)
+  have h_bx12' : DerivationTree [] (alpha.some_past.imp (Formula.snce alpha top)) :=
+    DerivationTree.axiom [] _ (Axiom.P_since_equiv alpha)
+  -- G(P(alpha) → snce(alpha, top)) via temporal necessitation
+  have h_G_impl : (alpha.some_past.imp (Formula.snce alpha top)).all_future ∈ A :=
+    theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_bx12')
+  -- G(P(alpha)) → G(snce(alpha, top)) via temporal K distribution
+  have h_temp_k := DerivationTree.axiom [] _
+    (Axiom.temp_k_dist alpha.some_past (Formula.snce alpha top))
+  have h_G_snce : (Formula.snce alpha top).all_future ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs_A
+      (SetMaximalConsistent.implication_property h_mcs_A
+        (theorem_in_mcs h_mcs_A h_temp_k) h_G_impl)
+      h_G_P_alpha
+  -- Step 3: Show both conditions for dc_delta_B_burgessR3
+  -- Until condition: ∀ beta ∈ B, ∀ gamma ∈ C, untl(gamma, beta ∧ snce(alpha, top)) ∈ A
+  have h_until_all : ∀ beta ∈ B, ∀ gamma ∈ C,
+      Formula.untl gamma (Formula.and beta (Formula.snce alpha top)) ∈ A := by
+    intro beta h_beta gamma h_gamma
+    -- untl(gamma, beta) ∈ A from R3
+    have h_untl := h_r3.1 beta h_beta gamma h_gamma
+    -- ⊢ snce(alpha,top) → (beta → beta ∧ snce(alpha,top))
+    -- From pairing + theorem_flip: flip(pairing) gives snce → beta → beta ∧ snce
+    have h_flip : DerivationTree []
+        ((Formula.snce alpha top).imp (beta.imp (Formula.and beta (Formula.snce alpha top)))) :=
+      mp (pairing beta (Formula.snce alpha top)) theorem_flip
+    -- G(snce → (beta → beta ∧ snce)) via temporal necessitation
+    have h_G_flip := theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ h_flip)
+    -- G(snce) → G(beta → beta ∧ snce) via temporal K distribution
+    have h_temp_k2 := DerivationTree.axiom [] _
+      (Axiom.temp_k_dist (Formula.snce alpha top) (beta.imp (Formula.and beta (Formula.snce alpha top))))
+    have h_G_guard_str : (beta.imp (Formula.and beta (Formula.snce alpha top))).all_future ∈ A :=
+      SetMaximalConsistent.implication_property h_mcs_A
+        (SetMaximalConsistent.implication_property h_mcs_A
+          (theorem_in_mcs h_mcs_A h_temp_k2) h_G_flip)
+        h_G_snce
+    -- left_mono_until_G: G(beta → beta ∧ snce) → untl(gamma, beta) → untl(gamma, beta ∧ snce)
+    exact untl_left_mono_G h_mcs_A h_G_guard_str h_untl
+  -- Since condition: ∀ beta ∈ B, ∀ alpha' ∈ A, snce(alpha', beta ∧ snce(alpha, top)) ∈ C
+  -- From burgessR_implies_burgessRSince applied to the Until condition
+  have h_since_all : ∀ beta ∈ B, ∀ alpha' ∈ A,
+      Formula.snce alpha' (Formula.and beta (Formula.snce alpha top)) ∈ C := by
+    intro beta h_beta alpha' h_alpha'
+    have h_burgessR : burgessR A (Formula.and beta (Formula.snce alpha top)) C :=
+      fun gamma h_gamma => h_until_all beta h_beta gamma h_gamma
+    exact burgessR_implies_burgessRSince h_mcs_A h_mcs_C h_burgessR alpha' h_alpha'
+  -- Step 4: Apply dc_delta_B_burgessR3 to get burgessR3 for extension
+  have h_r3_ext := dc_delta_B_burgessR3 h_mcs_A h_mcs_C h_dcs h_r3 h_until_all h_since_all
+  -- Step 5: Contradiction with BurgessR3Maximal_extension_fails
+  exact absurd h_r3_ext h_fails
+
+/-- Xu Lemma 2.3 (ii): If R(A, B, C) then untl(gamma, top) ∈ B for all gamma ∈ C.
+Dual of xu_lemma_2_3_since_top: uses BX4' + BX12 + left_mono_since_H
+for the Since guard strengthening, and burgessRSince_implies_burgessR for the Until direction. -/
+theorem xu_lemma_2_3_until_top {A B C : Set Formula}
+    (h_mcs_A : SetMaximalConsistent A) (h_mcs_C : SetMaximalConsistent C)
+    (h_r3m : BurgessR3Maximal A B C)
+    {gamma : Formula} (h_gamma : gamma ∈ C) :
+    Formula.untl gamma (Formula.bot.imp Formula.bot) ∈ B := by
+  set top := Formula.bot.imp Formula.bot with top_def
+  have h_dcs : ClosedUnderDerivation B := h_r3m.1
+  have h_r3 : burgessR3 A B C := h_r3m.2.1
+  -- Suppose untl(gamma, top) ∉ B, derive contradiction
+  by_contra h_not_in_B
+  have h_fails := BurgessR3Maximal_extension_fails h_r3m h_not_in_B
+  -- Step 2: Derive H(untl(gamma, top)) ∈ C from gamma ∈ C
+  -- BX4': gamma → H(F(gamma))
+  have h_bx4' : DerivationTree [] (gamma.imp (gamma.some_future.all_past)) :=
+    DerivationTree.axiom [] _ (Axiom.connect_past gamma)
+  have h_H_F_gamma : gamma.some_future.all_past ∈ C :=
+    SetMaximalConsistent.implication_property h_mcs_C (theorem_in_mcs h_mcs_C h_bx4') h_gamma
+  -- BX12: F(gamma) → untl(gamma, top) (theorem)
+  have h_bx12 : DerivationTree [] (gamma.some_future.imp (Formula.untl gamma top)) :=
+    DerivationTree.axiom [] _ (Axiom.F_until_equiv gamma)
+  -- H(F(gamma) → untl(gamma, top)) via past necessitation
+  have h_H_impl : (gamma.some_future.imp (Formula.untl gamma top)).all_past ∈ C :=
+    theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ h_bx12)
+  -- H(F(gamma)) → H(untl(gamma, top)) via past K distribution
+  have h_past_k := Bimodal.Theorems.past_k_dist gamma.some_future (Formula.untl gamma top)
+  have h_H_untl : (Formula.untl gamma top).all_past ∈ C :=
+    SetMaximalConsistent.implication_property h_mcs_C
+      (SetMaximalConsistent.implication_property h_mcs_C
+        (theorem_in_mcs h_mcs_C h_past_k) h_H_impl)
+      h_H_F_gamma
+  -- Step 3: Since condition: ∀ beta ∈ B, ∀ alpha ∈ A, snce(alpha, beta ∧ untl(gamma, top)) ∈ C
+  have h_since_all : ∀ beta ∈ B, ∀ alpha ∈ A,
+      Formula.snce alpha (Formula.and beta (Formula.untl gamma top)) ∈ C := by
+    intro beta h_beta alpha' h_alpha'
+    have h_snce := h_r3.2 beta h_beta alpha' h_alpha'
+    -- ⊢ untl(gamma,top) → (beta → beta ∧ untl(gamma,top))
+    have h_flip : DerivationTree []
+        ((Formula.untl gamma top).imp (beta.imp (Formula.and beta (Formula.untl gamma top)))) :=
+      mp (pairing beta (Formula.untl gamma top)) theorem_flip
+    -- H(untl(gamma,top) → (beta → beta ∧ untl(gamma,top))) via past necessitation
+    have h_H_flip := theorem_in_mcs h_mcs_C (Bimodal.Theorems.past_necessitation _ h_flip)
+    -- H(untl(gamma,top)) → H(beta → beta ∧ untl(gamma,top)) via past K
+    have h_past_k2 := Bimodal.Theorems.past_k_dist
+      (Formula.untl gamma top) (beta.imp (Formula.and beta (Formula.untl gamma top)))
+    have h_H_guard_str : (beta.imp (Formula.and beta (Formula.untl gamma top))).all_past ∈ C :=
+      SetMaximalConsistent.implication_property h_mcs_C
+        (SetMaximalConsistent.implication_property h_mcs_C
+          (theorem_in_mcs h_mcs_C h_past_k2) h_H_flip)
+        h_H_untl
+    -- left_mono_since_H: H(beta → beta ∧ untl) → snce(alpha, beta) → snce(alpha, beta ∧ untl)
+    exact snce_left_mono_H h_mcs_C h_H_guard_str h_snce
+  -- Step 4: Until condition from burgessRSince_implies_burgessR
+  have h_until_all : ∀ beta ∈ B, ∀ gamma' ∈ C,
+      Formula.untl gamma' (Formula.and beta (Formula.untl gamma top)) ∈ A := by
+    intro beta h_beta gamma' h_gamma'
+    have h_burgessRSince : burgessRSince C (Formula.and beta (Formula.untl gamma top)) A :=
+      fun alpha h_alpha => h_since_all beta h_beta alpha h_alpha
+    exact burgessRSince_implies_burgessR h_mcs_A h_mcs_C h_burgessRSince gamma' h_gamma'
+  -- Step 5: Apply dc_delta_B_burgessR3 and contradiction
+  have h_r3_ext := dc_delta_B_burgessR3 h_mcs_A h_mcs_C h_dcs h_r3 h_until_all h_since_all
+  exact absurd h_r3_ext h_fails
+
 /-! ## Set.univ is ClosedUnderDerivation -/
 
 /-- `Set.univ` is `ClosedUnderDerivation` -- every formula is in `Set.univ`. -/
