@@ -37,8 +37,8 @@ technical_debt:
 
 1. ~~**124**~~ [COMPLETED] — Remove TF axiom, derive from MF (~6h, low risk)
 2. ~~**115**~~ [COMPLETED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
-3. **135** [NOT STARTED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
-4. **136** [NOT STARTED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
+3. **135** [PLANNED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
+4. **136** [PLANNED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
 5. **133** [NOT STARTED] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
 6. **134** [NOT STARTED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
 7. **132** [NOT STARTED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
