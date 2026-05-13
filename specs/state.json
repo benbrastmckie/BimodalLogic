@@ -687,9 +687,22 @@
       "last_updated": "2026-05-13T07:11:21Z",
       "next_artifact_number": 1,
       "artifacts": []
+    },
+    {
+      "project_number": 129,
+      "project_name": "weak_reflexive_completeness_conservative_extension",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Develop a weak/reflexive temporal sub-language for discrete frames where G_w evaluates over the reflexive closure (y >= x) rather than the strict order (y > x). Prove completeness for this sub-language using standard Henkin canonical model methods (no chronicle construction, no IR rule), then show the strict system is a conservative extension. Transfer completeness to the strict system as a corollary, bypassing the succ_cofinal gap entirely.",
+      "dependencies": [],
+      "created": "2026-05-13T07:34:37Z",
+      "last_updated": "2026-05-13T07:34:37Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 129,
+  "next_project_number": 130,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

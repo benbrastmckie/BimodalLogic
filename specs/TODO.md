@@ -35,8 +35,9 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **123** [RESEARCHED] — Fix C5 witness placement, prove Icc_finite (in progress)
-2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123)
+1. **129** [NOT STARTED] — Weak/reflexive completeness + conservative extension (bypasses succ_cofinal gap)
+2. **123** [IMPLEMENTING] — Fix C5 witness placement, prove Icc_finite (chronicle approach, in progress)
+3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123 or 129)
 
 ### Phase 2: Axiom System Cleanup
 
@@ -72,6 +73,68 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 129. Weak/reflexive completeness and conservative extension for discrete frames
+- **Effort**: 30-60 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+
+**Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.
+
+**Motivation**: The sorry at `succ_cofinal` (ChronicleToCountermodel.lean:1869) exists because the Burgess chronicle construction for *strict* (irreflexive) temporal semantics requires proving IsSuccArchimedean of the limit domain — leading to a Z+Z gap scenario that no temporal axiom can rule out in the constant-MCS case. The entire chronicle machinery (omega-chain, counterexample elimination, IR rule) exists *because* of the irreflexivity of strict `<`. Under *weak/reflexive* semantics (using `≤`), standard Henkin canonical model methods apply directly: the canonical frame is reflexive, no IR rule is needed, no chronicle construction is needed, and no gap scenario arises.
+
+**Key Observation**: Under weak semantics, `G_w(φ)` at `x` means `φ` at all `y ≥ x`. Then `G_w(φ) → φ` is valid (reflexivity of `≥`), and Z1 collapses to `FG_w(φ) → G_w(φ)` — the pure backward induction principle with no `G(Gφ→φ)` antecedent to establish. On discrete orders, the strict and weak operators are inter-translatable: `G_w(φ) ≡ φ ∧ G(φ)` and `G(φ) ≡ G_w(φ) at succ(x)`.
+
+**Architecture**:
+
+*Phase 1 — Weak Sub-Language Definition (~100 lines)*
+- Define `G_w(φ) := φ ∧ G(φ)`, `H_w(φ) := φ ∧ H(φ)`, `F_w(φ) := φ ∨ F(φ)`, `P_w(φ) := φ ∨ P(φ)` as derived operators in the existing Formula type (no new constructors needed).
+- Define weak Until: `U_w(η, ξ)` true at `x` iff `∃ y ≥ x` with `η` at `y` and `ξ` at all `z` with `x ≤ z < y`. Similarly for weak Since.
+- Verify these are expressible in the existing language or add minimal constructors.
+
+*Phase 2 — Weak Axiom System (~200 lines)*
+- Identify which axioms of the strict system translate to the weak system. The weak system should include: reflexivity axiom `G_w(φ) → φ` (valid by construction), transitivity `G_w(φ) → G_w(G_w(φ))`, weak Z1 `FG_w(φ) → G_w(φ)`, weak Prior-UZ, and all BX axioms adapted for `U_w`/`S_w`.
+- Prove these are derivable in the strict system (via the `G_w = φ ∧ G` translation).
+
+*Phase 3 — Weak Canonical Model (~500-800 lines)*
+- Build a standard Henkin canonical model for the weak system. Each point is a distinct MCS (à la Doets). The temporal accessibility relation is `≤` (reflexive, transitive, linear).
+- The constant-MCS problem cannot arise: distinct MCS are distinct points.
+- Prove the truth lemma for the weak canonical model.
+- Prove weak completeness: if `φ` is not derivable in the weak system, there exists a weak discrete model falsifying `φ`.
+
+*Phase 4 — Z1 and IsSuccArchimedean in the Weak Model (~200-400 lines)*
+- In the weak canonical model, use `FG_w(φ) → G_w(φ)` (weak Z1) to prove the maximum principle (Doets Claim 10): every definable set that is non-empty and bounded above has a maximum.
+- Use the maximum principle to compress the canonical model to order type ℤ (following Doets Claims 9-11: expand equivalence classes to ζ-shapes, then compress bounded types).
+- Prove the resulting model is IsSuccArchimedean.
+
+*Phase 5 — Conservative Extension (~300-500 lines)*
+- Define the translation `τ` from weak formulas to strict formulas: `τ(G_w(φ)) = τ(φ) ∧ G(τ(φ))`, etc.
+- Prove: for discrete frames, `φ` is valid under weak semantics iff `τ(φ)` is valid under strict semantics.
+- Prove: the strict axiom system derives `τ(φ)` whenever the weak system derives `φ` (soundness of translation).
+- Prove: if `ψ` (a strict formula) is valid on all discrete IsSuccArchimedean frames under strict semantics, then `ψ` is derivable in the strict system (completeness transfer).
+
+*Phase 6 — Integration and Verification (~200 lines)*
+- Wire the weak completeness + conservative extension into the existing `dd_countermodel_chronicle_discrete` or create a parallel sorry-free completeness theorem.
+- Verify `lake build` passes.
+- Verify key theorems are sorry-free via `lean_verify`.
+- Clean up: remove or mark the chronicle-based `succ_cofinal` sorry as superseded.
+
+**Risks and Mitigations**:
+- Risk: Weak Until `U_w` may not be cleanly expressible from strict Until. Mitigation: Add `U_w` as a new constructor if needed, with its own semantics.
+- Risk: The conservative extension proof for Until/Since may be subtle (guard semantics differ between weak and strict). Mitigation: Prove for the G/H fragment first, then extend to U/S.
+- Risk: Doets's compression to ℤ (Claims 9-11) requires Ehrenfeucht game / n-characteristic infrastructure (~500 lines). Mitigation: This is the main cost driver but is well-documented in the literature.
+- Risk: The weak canonical model may require different MCS machinery than what exists. Mitigation: The existing Lindenbaum, MCS properties, and derivation infrastructure should be largely reusable; only the frame construction differs.
+
+**Relationship to Existing Work**:
+- Subsumes task 123's succ_cofinal sorry (bypasses the gap scenario entirely).
+- Can coexist with the chronicle construction (which remains valid for the dense case).
+- The Doets Henkin approach (originally planned as a separate task) is essentially Phase 3-4 of this task.
+- The weak sub-language is independently interesting for proof-theoretic and algebraic investigations (task 125).
+
+**Literature**: Doets 1987 (Completeness and Definability, Claims 9-11), Burgess 1982/1984 (chronicle construction for strict semantics), Gabbay-Hodkinson-Reynolds (irreflexivity techniques), Blackburn-de Rijke-Venema 2002 (Section 7.2, completeness with Until/Since).
+
+---
 
 ### 128. Open set (interior) operator for dense and continuous temporal frames
 - **Effort**: 15-25 hours
