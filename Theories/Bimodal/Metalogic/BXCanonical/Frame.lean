@@ -555,7 +555,7 @@ noncomputable def bx_modal_witness (w : BXPoint) (ψ : Formula)
 
 Key lemma for the dovetail chain truth lemma: box formulas are preserved
 in both directions along the canonical temporal ordering bx_le. This follows
-from temp_future (□φ → G(□φ)) for the forward direction, and S5 negative
+from temp_future_derived (□φ → G(□φ)) for the forward direction, and S5 negative
 introspection (¬□φ → □(¬□φ)) for the backward direction (via contrapositive).
 -/
 
@@ -582,10 +582,10 @@ noncomputable def neg_box_to_box_neg_box (φ : Formula) :
 /--
 Box formulas are preserved in both directions along bx_le.
 
-Forward: □φ ∈ w → G(□φ) ∈ w (temp_future) → □φ ∈ v (bx_G_forward).
+Forward: □φ ∈ w → G(□φ) ∈ w (temp_future_derived) → □φ ∈ v (bx_G_forward).
 Backward: contrapositive of forward applied to ¬□φ using S5 negative introspection.
   If □φ ∉ w, then ¬□φ ∈ w, then □(¬□φ) ∈ w (neg_box_to_box_neg_box),
-  then G(□(¬□φ)) ∈ w (temp_future), then □(¬□φ) ∈ v, then ¬□φ ∈ v (modal_t),
+  then G(□(¬□φ)) ∈ w (temp_future_derived), then □(¬□φ) ∈ v, then ¬□φ ∈ v (modal_t),
   so □φ ∉ v. Contrapositive: □φ ∈ v → □φ ∈ w.
 -/
 theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : bx_le w v) (φ : Formula) :
@@ -593,9 +593,9 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : bx_le w v) (φ : Formu
   constructor
   · -- Forward: □φ ∈ w → □φ ∈ v
     intro h_box
-    -- □φ → G(□φ) by temp_future
+    -- □φ → G(□φ) by temp_future_derived
     have h_tf : DerivationTree [] ((Formula.box φ).imp (Formula.all_future (Formula.box φ))) :=
-      DerivationTree.axiom [] _ (Axiom.temp_future φ)
+      Combinators.temp_future_derived φ
     have h_G_box := SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_tf) h_box
     -- G(□φ) ∈ w and w ≤ v gives □φ ∈ v
@@ -611,10 +611,10 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : bx_le w v) (φ : Formu
     -- ¬□φ → □(¬□φ) by S5 negative introspection
     have h_box_neg := SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs (neg_box_to_box_neg_box φ)) h_neg_box
-    -- □(¬□φ) → G(□(¬□φ)) by temp_future
+    -- □(¬□φ) → G(□(¬□φ)) by temp_future_derived
     have h_tf2 : DerivationTree [] ((Formula.box (Formula.box φ).neg).imp
         (Formula.all_future (Formula.box (Formula.box φ).neg))) :=
-      DerivationTree.axiom [] _ (Axiom.temp_future (Formula.box φ).neg)
+      Combinators.temp_future_derived (Formula.box φ).neg
     have h_G_box_neg := SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_tf2) h_box_neg
     -- G(□(¬□φ)) ∈ w and w ≤ v gives □(¬□φ) ∈ v

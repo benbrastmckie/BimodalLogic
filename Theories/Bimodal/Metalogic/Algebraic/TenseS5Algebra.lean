@@ -175,7 +175,7 @@ theorem TF_quot (a : LindenbaumAlg) : box_quot a ≤ G_quot (box_quot a) := by
   induction a using Quotient.ind
   rename_i φ
   show Derives (Formula.box φ) (Formula.all_future (Formula.box φ))
-  exact ⟨DerivationTree.axiom [] _ (Axiom.temp_future φ)⟩
+  exact ⟨Bimodal.Theorems.Combinators.temp_future_derived φ⟩
 
 /--
 TA axiom on quotient: a ≤ G((Ha)ᶜ)ᶜ, i.e., a ≤ GPa

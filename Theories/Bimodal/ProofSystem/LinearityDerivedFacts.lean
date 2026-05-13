@@ -13,7 +13,7 @@ derived consequences of the `temp_linearity` axiom.
   `F(phi) and F(psi) -> F(phi and psi) or F(phi and F(psi)) or F(F(phi) and psi)`
 is NOT derivable from the base TM axioms (prop_k, prop_s, ex_falso, peirce,
 modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist, temp_k_dist, temp_4,
-temp_a, temp_a_dual, temp_l, modal_future, temp_future, seriality_future,
+temp_a, temp_a_dual, temp_l, modal_future, seriality_future,
 seriality_past, and the Until/Since axioms).
 
 **Counterexample**: Consider the frame with 3 points {0, 1a, 1b} where:

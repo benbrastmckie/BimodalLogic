@@ -155,12 +155,12 @@
     {
       "project_number": 124,
       "project_name": "remove_tf_axiom_derive_from_mf",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.",
       "created": "2026-05-11T15:34:15Z",
-      "last_updated": "2026-05-11T17:17:04Z",
-      "session_id": "sess_1778519545_940310",
+      "last_updated": "2026-05-13T17:41:49Z",
+      "session_id": "sess_1778694085_eb2fe3",
       "researched": "2026-05-11T17:08:34Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -174,7 +174,8 @@
           "type": "plan",
           "summary": "6-phase plan: remove TF axiom, derive from MF+T+Modal4, ~30 files, 3 dependency waves"
         }
-      ]
+      ],
+      "started": "2026-05-13T17:41:49Z"
     },
     {
       "project_number": 116,

@@ -171,7 +171,7 @@ All 21 axioms are covered by the soundness theorems:
 4. modal_k_dist: Modal K distribution
 5. temp_k_dist, temp_4: Temporal axioms
 6. temp_a, temp_a_dual, temp_l: Temporal interaction
-7. modal_future, temp_future: Modal-temporal interaction
+7. modal_future: Modal-temporal interaction (temp_future now derived from MF + T + Modal 4)
 8. temp_linearity: Linear time axiom
 
 **Dense Axiom (1)** - valid on DenseTemporalFrame:

@@ -3,6 +3,7 @@ import Std.Data.HashSet
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Automation.SuccessPatterns
+import Bimodal.Theorems.Combinators
 
 /-!
 # Automated Proof Search
@@ -453,13 +454,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- temp_future: □φ → F□φ
-      <|> (match lhs, rhs with
-           | .box phi, .all_future (.box phi') =>
-               if phi = phi' then
-                 some ⟨_, Axiom.temp_future phi⟩
-               else none
-           | _, _ => none)
+      -- temp_future: □φ → G□φ (derived from MF + T + Modal 4, handled in search loop)
 
       -- modal_b: φ → □◇φ (◇φ = ¬□¬φ = (φ.neg.box).neg)
       <|> (match lhs, rhs with
@@ -862,6 +857,20 @@ decreasing_by
   all_goals omega
 
 /--
+Match a formula against derived theorem patterns, returning a DerivationTree if matched.
+
+Currently handles:
+- TF (temp_future_derived): `□φ → G(□φ)` -- derived from MF + T + Modal 4
+-/
+def matchDerived (φ : Formula) : Option (DerivationTree [] φ) :=
+  match φ with
+  | .imp (.box phi) (.all_future (.box phi')) =>
+      if h : phi = phi' then
+        some (h ▸ Bimodal.Theorems.Combinators.temp_future_derived phi)
+      else none
+  | _ => none
+
+/--
 Bounded depth-first search returning proof term if successful.
 
 This is the proof-constructing variant of `bounded_search`. Instead of
@@ -892,6 +901,7 @@ since caching would require storing proofs indexed by (Γ, φ) and proof
 terms can be large. For performance-critical applications, use `bounded_search`
 to first check provability, then use this function to construct the proof.
 -/
+
 def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
     (visited : Visited := Visited.empty)
     (visits : Nat := 0)
@@ -919,6 +929,11 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
             -- Formula mismatch - this shouldn't happen with correct matchAxiom
             (none, visited, visits)
       | none =>
+        -- Try derived theorems (e.g., temp_future_derived: □φ → G□φ)
+        match matchDerived φ with
+        | some d =>
+            (some (DerivationTree.weakening [] Γ φ d (List.nil_subset Γ)), visited, visits)
+        | none =>
         -- Try assumption (using findMembershipWitness to get the proof witness)
         match findMembershipWitness Γ φ with
         | some wit =>

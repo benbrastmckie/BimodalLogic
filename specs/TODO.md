@@ -35,7 +35,7 @@ technical_debt:
 
 ### Phase 1: Axiom Cleanup (before heavy lift)
 
-1. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
+1. **124** [IMPLEMENTING] — Remove TF axiom, derive from MF (~6h, low risk)
 2. **115** [RESEARCHED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
 
 ### Phase 2: Sorry-Free Completeness
@@ -227,7 +227,7 @@ technical_debt:
 
 ### 124. Remove TF axiom and derive from MF
 - **Effort**: 5-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Research**: [specs/124_remove_tf_axiom_derive_from_mf/reports/01_tf-derivation-research.md]
 - **Plan**: [124_remove_tf_axiom_derive_from_mf/plans/01_remove-tf-axiom.md]

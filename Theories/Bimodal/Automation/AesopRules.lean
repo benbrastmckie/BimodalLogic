@@ -31,7 +31,7 @@ automation for all proven TM axioms and key inference rules.
 The following axioms are excluded pending soundness proofs:
 - TL (temp_l): Temporal introspection - soundness incomplete
 - MF (modal_future): Modal-future interaction - soundness incomplete
-- TF (temp_future): Temporal-modal interaction - soundness incomplete
+- TF (temp_future_derived): Now derived from MF + T + Modal 4
 
 ## Usage
 

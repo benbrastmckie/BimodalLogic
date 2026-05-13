@@ -639,7 +639,7 @@ From `□◇φ`, derive `F□◇φ` (necessarily possible persists to future).
 -/
 def box_diamond_to_future_box_diamond (φ : Formula) :
     ⊢ φ.diamond.box.imp (φ.diamond.box.all_future) :=
-  DerivationTree.axiom [] _ (Axiom.temp_future φ.diamond)
+  temp_future_derived φ.diamond
 
 /--
 Helper lemma: Apply temporal duality to get past component.
@@ -785,14 +785,14 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
 
   -- We can derive: □◇φ → F□◇φ from TF
   have tf : ⊢ φ.diamond.box.imp φ.diamond.box.all_future :=
-    DerivationTree.axiom [] _ (Axiom.temp_future φ.diamond)
+    temp_future_derived φ.diamond
 
   -- We can derive: □◇φ → H□◇φ from TD (temporal duality on TF)
   have td : ⊢ φ.diamond.box.imp φ.diamond.box.all_past := by
     -- Apply TF to swapped temporal version
     have tf_swap : ⊢ φ.diamond.box.swap_temporal.imp
                       (φ.diamond.box.swap_temporal.all_future) :=
-      DerivationTree.axiom [] _ (Axiom.temp_future φ.diamond.swap_temporal)
+      temp_future_derived φ.diamond.swap_temporal
     -- Apply temporal duality
     have td_result : ⊢ (φ.diamond.box.swap_temporal.imp
                           φ.diamond.box.swap_temporal.all_future).swap_temporal :=

@@ -634,4 +634,40 @@ def combine_imp_conj_3 {P A B C : Formula}
   have hBC : ⊢ P.imp (B.and C) := combine_imp_conj hB hC
   exact combine_imp_conj hA hBC
 
+/-!
+## Derived Modal-Temporal Theorem: TF
+
+The TF axiom (`□φ → G(□φ)`) is derivable from MF (`□φ → □(Gφ)`), T (`□φ → φ`),
+and Modal 4 (`□φ → □□φ`). This eliminates TF as a primitive axiom.
+
+**Derivation**:
+1. MF at `□φ`: `□(□φ) → □(G(□φ))`
+2. T at `G(□φ)`: `□(G(□φ)) → G(□φ)`
+3. Chain (1,2): `□(□φ) → G(□φ)`
+4. Modal 4 at `φ`: `□φ → □(□φ)`
+5. Chain (4,3): `□φ → G(□φ)` = TF
+-/
+
+/--
+Derived TF theorem: `□φ → G(□φ)`.
+
+Necessary truths will always be necessary. Derived from MF + T + Modal 4:
+- MF gives `□(□φ) → □(G(□φ))` (box distributes into G)
+- T gives `□(G(□φ)) → G(□φ)` (T applied to `G(□φ)`)
+- Modal 4 gives `□φ → □(□φ)` (positive introspection)
+- Composing: `□φ → □(□φ) → □(G(□φ)) → G(□φ)`
+-/
+def temp_future_derived (φ : Formula) :
+    ⊢ (Formula.box φ).imp (Formula.all_future (Formula.box φ)) :=
+  let mf_box := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ))
+    -- □(□φ) → □(G(□φ))
+  let t_G_box := DerivationTree.axiom [] _ (Axiom.modal_t (Formula.all_future (Formula.box φ)))
+    -- □(G(□φ)) → G(□φ)
+  let chain1 := imp_trans mf_box t_G_box
+    -- □(□φ) → G(□φ)
+  let m4 := DerivationTree.axiom [] _ (Axiom.modal_4 φ)
+    -- □φ → □(□φ)
+  imp_trans m4 chain1
+    -- □φ → G(□φ)
+
 end Bimodal.Theorems.Combinators

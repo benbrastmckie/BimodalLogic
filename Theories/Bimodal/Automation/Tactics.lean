@@ -67,7 +67,8 @@ example : DerivationTree [] (Formula.box p |>.imp p) := by
 - `prop_k`, `prop_s` - Propositional axioms
 - `modal_t`, `modal_4`, `modal_b` - S5 modal axioms
 - `temp_4`, `temp_a`, `temp_l` - Temporal axioms
-- `modal_future`, `temp_future` - Bimodal axioms
+- `modal_future` - Bimodal axiom
+- `temp_future_derived` - Derived from MF + T + Modal 4
 
 **Implementation**: Uses `refine` to let Lean infer formula parameters from the goal.
 -/
@@ -598,6 +599,25 @@ which handles the Prop vs Type issue by working with expressions directly.
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
 def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
+  -- First try derived theorems (e.g., temp_future_derived: □φ → G□φ)
+  let derivedResult ← observing? do
+    setGoals [goal]
+    let derivedExprs : List Name := [
+      ``Bimodal.Theorems.Combinators.temp_future_derived  -- □φ → G□φ (derived from MF + T + Modal 4)
+    ]
+    for derivedName in derivedExprs do
+      try
+        let derivedExpr := mkConst derivedName
+        let remainingGoals ← goal.apply derivedExpr
+        if remainingGoals.isEmpty then
+          setGoals []
+          return ()
+      catch _ =>
+        continue
+    throwError "no derived theorem matched"
+  if derivedResult.isSome then
+    return true
+
   -- Use observing? to try application without corrupting mvar state on failure
   let result ← observing? do
     setGoals [goal]
@@ -620,7 +640,6 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       ``Axiom.serial_future,  -- ⊤ → F(⊤) (seriality)
       ``Axiom.serial_past,   -- ⊤ → P(⊤) (seriality)
       ``Axiom.modal_future, -- □φ → □Gφ
-      ``Axiom.temp_future,  -- □φ → G□φ
       ``Axiom.prop_k,       -- (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
       ``Axiom.prop_s,       -- φ → (ψ → φ)
       ``Axiom.ex_falso,     -- ⊥ → φ

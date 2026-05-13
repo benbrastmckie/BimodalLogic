@@ -220,8 +220,8 @@ The TF axiom states that if φ is necessary, then φ will always be necessary:
 This demonstrates temporal persistence of necessity.
 -/
 example (φ : Formula) : ⊢ φ.box.imp (φ.box.all_future) := by
-  -- TF: □φ → G□φ
-  exact DerivationTree.axiom [] _ (Axiom.temp_future φ)
+  -- TF: □φ → G□φ (derived from MF + T + Modal 4)
+  exact temp_future_derived φ
 
 /--
 MF and TF combined: Both forms from necessity
@@ -241,7 +241,7 @@ example (φ : Formula) : ⊢ φ.box.imp ((φ.all_future.box).and (φ.box.all_fut
   have mf : ⊢ φ.box.imp (φ.all_future.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_future φ)
   have tf : ⊢ φ.box.imp (φ.box.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_future φ)
+    temp_future_derived φ
 
   -- Need to combine into conjunction: □φ → (□Gφ ∧ G□φ)
   -- This requires conjunction introduction from two implications
@@ -281,7 +281,7 @@ This demonstrates chaining temporal and modal axioms.
 example (φ : Formula) : ⊢ φ.box.imp (φ.box.all_future.all_future) := by
   -- Step 1: TF gives □φ → G□φ
   have tf : ⊢ φ.box.imp (φ.box.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_future φ)
+    temp_future_derived φ
 
   -- Step 2: T4 on □φ gives G□φ → GG□φ
   have t4 : ⊢ (φ.box.all_future).imp (φ.box.all_future.all_future) := by
@@ -304,7 +304,7 @@ This demonstrates the power of temporal duality for symmetry.
 example (φ : Formula) : ⊢ φ.box.imp (φ.box.all_past) := by
   -- Step 1: TF for swap_temporal φ
   have tf_swap : ⊢ φ.swap_temporal.box.imp (φ.swap_temporal.box.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_future φ.swap_temporal)
+    temp_future_derived φ.swap_temporal
 
   -- Step 2: Apply temporal duality
   have tf_dual : ⊢ (φ.swap_temporal.box.imp (φ.swap_temporal.box.all_future)).swap_temporal :=
@@ -363,7 +363,7 @@ example (φ : Formula) : ⊢ φ.box.imp ((φ.all_future.box).and (φ.box.all_fut
 
   -- Step 2: TF gives □φ → G□φ
   have tf : ⊢ φ.box.imp (φ.box.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_future φ)
+    temp_future_derived φ
 
   -- Step 3: Combine using helper
   exact combine_imp_conj mf tf
@@ -698,7 +698,7 @@ This module demonstrated four key proof strategies for TM bimodal logic:
 
 **Key Techniques Used**:
 - `perpetuity_1` through `perpetuity_6` for P1-P6 applications
-- `Axiom.modal_future` (MF) and `Axiom.temp_future` (TF) for bimodal axioms
+- `Axiom.modal_future` (MF) and `temp_future_derived` (TF, derived) for bimodal axioms
 - `imp_trans` for chaining (used 15+ times)
 - `combine_imp_conj` and `combine_imp_conj_3` for conjunction assembly
 - `DerivationTree.temporal_duality` for past/future symmetry (used 5 times)

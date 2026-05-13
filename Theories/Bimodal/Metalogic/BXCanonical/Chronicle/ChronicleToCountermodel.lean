@@ -294,7 +294,7 @@ Box formulas are stable across all limit domain points: `Box φ ∈ limit_f(x) �
 This is the chronicle analog of `box_stable_in_int_chain` from CanonicalModel.lean.
 
 The proof uses S5 axioms:
-- Forward: `temp_future` (□φ → G(□φ)) for x > 0, `modal_4` + `box_to_past` for x < 0
+- Forward: `temp_future_derived` (□φ → G(□φ)) for x > 0, `modal_4` + `box_to_past` for x < 0
 - Backward: contrapositive via `neg_box_to_box_neg_box` (S5 negative introspection)
 -/
 
@@ -323,7 +323,7 @@ theorem box_stable_in_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
       · -- x > 0: use G propagation
         have h_G := SetMaximalConsistent.implication_property h_mcs
-          (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_future (Formula.box φ).neg)))
+          (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.temp_future_derived (Formula.box φ).neg))
           h_box_neg
         rw [← limit_f_zero A h_mcs] at h_G
         have h_G' := limit_forward_G A h_mcs 0 x (zero_mem_limit_dom A h_mcs) hx h_pos
@@ -351,9 +351,9 @@ theorem box_stable_in_limit_f (A : Set Formula) (h_mcs : SetMaximalConsistent A)
   · -- Forward: Box φ ∈ A → Box φ ∈ limit_f(x)
     intro h_box_A
     rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
-    · -- x > 0: use G propagation (temp_future: □φ → G(□φ))
+    · -- x > 0: use G propagation (temp_future_derived: □φ → G(□φ))
       have h_G := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_future φ))) h_box_A
+        (theorem_in_mcs h_mcs (Bimodal.Theorems.Combinators.temp_future_derived φ)) h_box_A
       rw [← limit_f_zero A h_mcs] at h_G
       exact limit_forward_G A h_mcs 0 x (zero_mem_limit_dom A h_mcs) hx h_pos
         (Formula.box φ) h_G
@@ -405,7 +405,7 @@ non-dense branch (with sorry, like the discrete case).
 
 /--
 From `□(F'T) ∈ N`, derive the density hypothesis for N's chronicle.
-The proof: `□(F'T) → G(□(F'T))` (temp_future), then at each domain point
+The proof: `□(F'T) → G(□(F'T))` (temp_future_derived), then at each domain point
 `□(F'T) → F'T` (modal_t). Similarly for past via `box_to_past`.
 -/
 theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent N)
@@ -417,10 +417,10 @@ theorem box_dense_gives_density (N : Set Formula) (h_N : SetMaximalConsistent N)
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t next_top.neg)))
       h_box_dense
-  -- G(□(F'T)) ∈ N (from □(F'T) by temp_future)
+  -- G(□(F'T)) ∈ N (from □(F'T) by temp_future_derived)
   have h_G_box : Formula.all_future (Formula.box next_top.neg) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.temp_future next_top.neg)))
+      (theorem_in_mcs h_N (Bimodal.Theorems.Combinators.temp_future_derived next_top.neg))
       h_box_dense
   -- H(□(F'T)) ∈ N (from □(F'T) → □□(F'T) → H(□(F'T)))
   have h_box_box : Formula.box (Formula.box next_top.neg) ∈ N :=
@@ -2553,7 +2553,7 @@ etc. must land on embedded points.
 From `□(U(⊤,⊥)) ∈ N`, derive that `U(⊤,⊥) ∈ limit_f(x)` for all `x ∈ limit_dom N`.
 Mirror of `box_dense_gives_density`.
 
-Proof: `□(U(⊤,⊥)) → G(□(U(⊤,⊥)))` via `temp_future`, then at each domain point
+Proof: `□(U(⊤,⊥)) → G(□(U(⊤,⊥)))` via `temp_future_derived`, then at each domain point
 `□(U(⊤,⊥)) → U(⊤,⊥)` via `modal_t`. Past direction via `modal_4` + `box_to_past`.
 -/
 theorem box_discrete_gives_discreteness (N : Set Formula) (h_N : SetMaximalConsistent N)
@@ -2565,10 +2565,10 @@ theorem box_discrete_gives_discreteness (N : Set Formula) (h_N : SetMaximalConsi
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t next_top)))
       h_box_discrete
-  -- G(□(U(T,bot))) ∈ N (from □(U(T,bot)) by temp_future)
+  -- G(□(U(T,bot))) ∈ N (from □(U(T,bot)) by temp_future_derived)
   have h_G_box : Formula.all_future (Formula.box next_top) ∈ N :=
     SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.temp_future next_top)))
+      (theorem_in_mcs h_N (Bimodal.Theorems.Combinators.temp_future_derived next_top))
       h_box_discrete
   -- H(□(U(T,bot))) ∈ N (from □(U(T,bot)) → □□(U(T,bot)) → H(□(U(T,bot))))
   have h_box_box : Formula.box (Formula.box next_top) ∈ N :=

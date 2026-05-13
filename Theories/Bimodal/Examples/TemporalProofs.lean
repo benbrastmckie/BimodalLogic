@@ -233,9 +233,9 @@ These axioms connect modal and temporal operators.
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future.box :=
   DerivationTree.axiom [] _ (Axiom.modal_future φ)
 
-/-- Temporal-Future axiom TF: `□φ → G□φ` -/
+/-- Temporal-Future axiom TF (derived from MF + T + Modal 4): `□φ → G□φ` -/
 example (φ : Formula) : ⊢ φ.box.imp φ.box.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_future φ)
+  temp_future_derived φ
 
 /-- MF demonstrates necessity persists into future -/
 example : ⊢ (Formula.atom_s "necessary").box.imp (Formula.atom_s "necessary").all_future.box :=
@@ -243,7 +243,7 @@ example : ⊢ (Formula.atom_s "necessary").box.imp (Formula.atom_s "necessary").
 
 /-- TF demonstrates necessary truths are perpetual -/
 example : ⊢ (Formula.atom_s "necessary").box.imp (Formula.atom_s "necessary").box.all_future :=
-  DerivationTree.axiom [] _ (Axiom.temp_future (Formula.atom_s "necessary"))
+  temp_future_derived (Formula.atom_s "necessary")
 
 /-!
 ## Teaching Examples

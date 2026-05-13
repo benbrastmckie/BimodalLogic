@@ -71,7 +71,7 @@ The roadmap describes 45 BX axioms organized in 6 layers. Removing TF reduces th
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Add Derived Theorem [NOT STARTED]
+### Phase 1: Add Derived Theorem [COMPLETED]
 
 **Goal**: Create `temp_future_derived` theorem and verify it type-checks.
 
@@ -94,7 +94,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Replace All Proof-Site Usages [NOT STARTED]
+### Phase 2: Replace All Proof-Site Usages [COMPLETED]
 
 **Goal**: Replace every `Axiom.temp_future` usage in proof terms with `temp_future_derived`, before removing the constructor.
 

@@ -304,7 +304,7 @@ theorem shifted_bx_fmcs_at_s (M₀ : Set Formula) (h₀ : SetMaximalConsistent M
 
 This is the set-level analog of `box_preserved_along_bx_le` from Frame.lean.
 The proof uses:
-- Forward: temp_future (□φ → G(□φ)) for t ≥ 0, modal_4 + box_to_past for t < 0
+- Forward: temp_future_derived (□φ → G(□φ)) for t ≥ 0, modal_4 + box_to_past for t < 0
 - Backward: contrapositive via neg_box_to_box_neg_box (S5 negative introspection)
 -/
 theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀)
@@ -329,7 +329,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
       rcases lt_trichotomy 0 t with h_pos | rfl | h_neg
       · -- t > 0: use G propagation
         have h_G := SetMaximalConsistent.implication_property h₀
-          (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.temp_future (Formula.box φ).neg)))
+          (theorem_in_mcs h₀ (temp_future_derived (Formula.box φ).neg))
           h_box_neg
         exact int_chain_forward_G M₀ h₀ 0 t (Formula.box (Formula.box φ).neg) h_pos h_G
       · -- t = 0: chain(0) = M₀
@@ -353,9 +353,9 @@ theorem box_stable_in_int_chain (M₀ : Set Formula) (h₀ : SetMaximalConsisten
   · -- Forward: Box φ ∈ M₀ → Box φ ∈ chain(t)
     intro h_box_M0
     rcases lt_trichotomy 0 t with h_pos | rfl | h_neg
-    · -- t > 0: use G propagation (temp_future: □φ → G(□φ))
+    · -- t > 0: use G propagation (temp_future_derived: □φ → G(□φ))
       have h_G := SetMaximalConsistent.implication_property h₀
-        (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.temp_future φ))) h_box_M0
+        (theorem_in_mcs h₀ (temp_future_derived φ)) h_box_M0
       exact int_chain_forward_G M₀ h₀ 0 t (Formula.box φ) h_pos h_G
     · -- t = 0: chain(0) = M₀
       rw [int_chain_zero]; exact h_box_M0
