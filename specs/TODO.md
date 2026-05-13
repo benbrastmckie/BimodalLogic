@@ -27,7 +27,7 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-13. Task 131 created (module reorganization). Reordered: axiom cleanup (124, 115) before 129; module reorg (131) and G/H/F/P refactor (116) after 129.*
+*Updated 2026-05-13. Axiom cleanup sprint complete (8 tasks archived). Tasks 137-138 created for ROADMAP/TODO documentation updates.*
 
 **Goal**: Axiom cleanup → sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
 
@@ -76,8 +76,29 @@ technical_debt:
 - **64** [RESEARCHED] — Critical path review (reference)
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta)
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
+- **137** [NOT STARTED] — Update ROADMAP.md stale axiom info (~30min)
+- **138** [NOT STARTED] — Update TODO.md sorry_count_note (~10min)
 
 ## Tasks
+
+### 138. Update TODO.md sorry_count_note for axiom cleanup sprint
+- **Effort**: 10 minutes
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+
+**Description**: Update TODO.md frontmatter sorry_count_note to reflect axiom cleanup sprint: axiom count now 41 (was 61), tasks 115/124/133/134 completed.
+
+---
+
+### 137. Update ROADMAP.md stale axiom info
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Priority**: high
+
+**Description**: Update ROADMAP.md: axiom count 45->41, remove BX2/BX2' table rows (now derived from BX2G/BX2H), update CanonicalChain.lean summary (remove left_mono_until_mcs reference), update PointInsertion.lean line count (~3690->~3555).
+
+---
 
 ### 131. Refactor module organization for clean APIs and documentation
 - **Effort**: 15-25 hours
