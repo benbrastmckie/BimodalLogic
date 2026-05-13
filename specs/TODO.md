@@ -36,7 +36,7 @@ technical_debt:
 ### Phase 1: Sorry-Free Completeness
 
 1. **129** [NOT STARTED] — Weak/reflexive completeness + conservative extension (bypasses succ_cofinal gap)
-2. **123** [IMPLEMENTING] — Fix C5 witness placement, prove Icc_finite (chronicle approach, in progress)
+2. **123** [RESEARCHED] — Fix C5 witness placement, prove Icc_finite (chronicle approach, in progress)
 3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123 or 129)
 
 ### Phase 2: Axiom System Cleanup
@@ -168,7 +168,7 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**:
