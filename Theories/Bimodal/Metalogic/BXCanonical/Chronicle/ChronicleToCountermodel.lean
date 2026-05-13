@@ -1862,12 +1862,26 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     -- Available tools: backward_G, backward_F, z1_in_mcs, orbit_below_L,
     -- h_lt_pred_chain, limit_F_resolution, limit_forward_G.
     --
-    -- The core difficulty: backward_G at orbit point x needs φ at ALL
-    -- y > x (including b and beyond), not just orbit/pred-chain points.
-    -- Similarly, establishing FG(¬φ) at x needs G(¬φ) at some y > x,
-    -- which needs ¬φ at ALL w > y.
+    -- Gap elimination requires either:
+    -- (a) Z1 Doets maximum principle with a discriminating formula that
+    --     holds at ALL orbit points and fails at ALL points above the gap,
+    --     which requires orbit MCS stabilization (finiteness of sub-formula
+    --     closure not yet formalized), OR
+    -- (b) A construction-level argument showing the omega-chain cannot
+    --     produce a gap (constant-MCS case), OR
+    -- (c) A Doets Henkin canonical model that avoids the gap entirely.
+    --
+    -- Analysis summary (see plans/11_three-track-completeness.md):
+    -- • Non-constant MCS: Z1 argument works IF we can establish FGφ at
+    --   an orbit point (requires φ at all sufficiently late points).
+    --   The discriminating formula from prior_UZ + c5_strong gives φ at
+    --   all intermediates but not at all future points beyond the gap.
+    -- • Constant MCS: Z1 is trivially satisfied; contradiction must come
+    --   from construction internals (omega-chain counterexample resolution).
+    -- • Both cases blocked by the need to control formula truth at ALL
+    --   future points, not just orbit/pred-chain points.
     sorry
-
+    -- (End of succ_cofinal proof — sorry to be resolved in follow-up task.)
 /--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 

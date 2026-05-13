@@ -128,7 +128,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Non-Constant MCS Gap Elimination via Z1 Doets [NOT STARTED]
+### Phase 3: Non-Constant MCS Gap Elimination via Z1 Doets [BLOCKED]
 
 **Goal**: Close the sorry in `succ_cofinal` for the case where NOT all limit_dom points have identical MCS labels. This is the tractable case (~80 lines, 65% confidence).
 
