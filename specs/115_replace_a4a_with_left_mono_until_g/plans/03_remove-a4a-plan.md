@@ -1,7 +1,7 @@
 # Implementation Plan: Remove A4a via Xu 1988 Lemma 3.2.1/3.2.2 (Transitive Frames)
 
 - **Task**: 115 - Remove A4a (separation_until/separation_since) for axiom minimality
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: Task 107 (chronicle infrastructure), Task 124 (removed temp_future, validated safety-first pattern)
 - **Research Inputs**: specs/115_replace_a4a_with_left_mono_until_g/reports/01_a4a-vs-left-mono.md, specs/115_replace_a4a_with_left_mono_until_g/reports/03_team-research.md
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Xu Lemma 3.2.1 (Guard Strengthening for Transitive Frames) [NOT STARTED]
+### Phase 2: Xu Lemma 3.2.1 (Guard Strengthening for Transitive Frames) [COMPLETED]
 
 **Goal**: Strengthen Phase 1's Xu Lemma 2.3 from `U(gamma, top) in B` to `U(gamma, beta) in B` for ALL beta in B and gamma in C (and dually for Since). This is the key lemma that enables the BX14-free splitting in Phase 3.
 
@@ -133,7 +133,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Xu 3.2.2 Splitting and BX14 Elimination [NOT STARTED]
+### Phase 3: Xu 3.2.2 Splitting and BX14 Elimination [COMPLETED]
 
 **Goal**: Rewrite `lemma_2_6_splitting` internals to use the Xu 3.2.2 construction (trivial seed, r-relations via 3.2.1), eliminating all BX14 usage. Remove dead code. The output type remains identical to the current implementation -- zero caller changes needed.
 
@@ -171,7 +171,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Remove Axiom Constructors and Downstream References [NOT STARTED]
+### Phase 4: Remove Axiom Constructors and Downstream References [COMPLETED]
 
 **Goal**: Remove `separation_until` and `separation_since` from the `Axiom` inductive type and all downstream match arms.
 
@@ -201,7 +201,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Final Verification and Cleanup [NOT STARTED]
+### Phase 5: Final Verification and Cleanup [COMPLETED]
 
 **Goal**: Full build verification, documentation updates, and constructor count audit.
 

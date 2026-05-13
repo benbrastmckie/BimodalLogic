@@ -319,12 +319,6 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | enrichment_since a b c =>
     simp only [subst_imp, subst_and, subst_snce, subst_untl]
     exact Axiom.enrichment_since (a.subst q r) (b.subst q r) (c.subst q r)
-  | separation_until a b c =>
-    simp only [subst_imp, subst_untl, subst_neg, subst_and]
-    exact Axiom.separation_until (a.subst q r) (b.subst q r) (c.subst q r)
-  | separation_since a b c =>
-    simp only [subst_imp, subst_snce, subst_neg, subst_and]
-    exact Axiom.separation_since (a.subst q r) (b.subst q r) (c.subst q r)
   | self_accum_until a b =>
     simp only [subst_imp, subst_untl, subst_and]
     exact Axiom.self_accum_until (a.subst q r) (b.subst q r)

@@ -33,7 +33,7 @@ requiring successor-chain constructions.
 4. **Modal-Temporal Interaction** (1): modal_future
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
-**Total**: 44 axiom constructors (38 base + 4 uniformity + 2 prior)
+**Total**: 43 axiom constructors (36 base + 4 uniformity + 2 prior + 1 Z1)
 
 ### Key Properties
 
@@ -57,15 +57,15 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-44 constructors organized into six layers:
+43 constructors organized into six layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
-- **BX Temporal** (28): Burgess-Xu axioms for Until/Since on linear orders
+- **BX Temporal** (26): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (1): Modal-temporal interaction axiom (MF; TF now derived)
 - **Uniformity** (4): Discreteness uniformity axioms (valid on all ordered abelian groups)
 - **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
 
-Base axioms (42) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
+Base axioms (40) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
 -/
 inductive Axiom : Formula → Type where
   -- Layer 1: Propositional (4)
@@ -195,24 +195,9 @@ inductive Axiom : Formula → Type where
       Axiom (Formula.and p (Formula.snce ψ φ) |>.imp
         (Formula.snce (Formula.and ψ (Formula.untl p φ)) φ))
 
-  /-- BX14: Separation of Until (Burgess A4a):
-  Burgess convention (untl(event, guard)):
-  `untl(p, q) ∧ ¬untl(p, r) → untl(q ∧ ¬r, q)`.
-  If U(p,q) holds but U(p,r) does not, then U(q ∧ ¬r, q) holds.
-  Valid under open guard (t,s): from untl(p,q) get witness s0 with p(s0) and q on (t,s0).
-  Apply ¬untl(p,r) to s0: since p(s0), ∃u0 ∈ (t,s0) with ¬r(u0). Since u0 ∈ (t,s0),
-  q(u0) holds. So (q ∧ ¬r)(u0). Guard q on (t,u0) ⊆ (t,s0). -/
-  | separation_until (p q r : Formula) :
-      Axiom (Formula.untl p q |>.imp
-        ((Formula.untl p r).neg.imp (Formula.untl (q.and r.neg) q)))
-
-  /-- BX14': Separation of Since (Burgess A4b, dual of A4a):
-  Burgess convention (snce(event, guard)):
-  `snce(p, q) ∧ ¬snce(p, r) → snce(q ∧ ¬r, q)`.
-  Mirror of separation_until for the Since direction. -/
-  | separation_since (p q r : Formula) :
-      Axiom (Formula.snce p q |>.imp
-        ((Formula.snce p r).neg.imp (Formula.snce (q.and r.neg) q)))
+  -- REMOVED (Task 115): BX14 (separation_until) and BX14' (separation_since) constructors.
+  -- These axioms (Burgess A4a/A4b) are unnecessary for axiom minimality.
+  -- The chronicle splitting construction now uses Xu 1988 Lemma 3.2.1/3.2.2 instead.
 
   /-- BX5: Self-accumulation of Until (Burgess convention: untl(event, guard)):
   `U(ψ, φ) → U(ψ, φ ∧ U(ψ, φ))`.

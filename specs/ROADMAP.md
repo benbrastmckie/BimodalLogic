@@ -199,13 +199,12 @@ seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 | BX12' `P_since_equiv` | Axioms.lean:248 | `P(φ) → (⊤Sφ)` | Mirror |
 | BX13 `enrichment_until` | Axioms.lean:160 | `p ∧ (φUψ) → (φU(ψ ∧ S(φ,p)))` | Burgess A3a enrichment |
 | BX13' `enrichment_since` | Axioms.lean:165 | mirror for S | Burgess A3b |
-| BX14 `separation_until` | Axioms.lean:193 | `(φUψ) ∧ ¬(φUχ) → (ψ∧¬χ)Uψ` | Burgess A4a separation |
-| BX14' `separation_since` | Axioms.lean:198 | mirror for S | Burgess A4b |
 | BX2H `left_mono_until_G` | Axioms.lean:140 | `G(φ→χ) → (φUψ) → (χUψ)` | Guard strengthening under G |
 | BX2H' `left_mono_since_H` | Axioms.lean:146 | `H(φ→χ) → (φSψ) → (χSψ)` | Guard strengthening under H |
 
 *Note: BX8/BX8' (until_step/since_step) removed -- not sound under irreflexive semantics.*
 *Note: BX9/BX9' (until_elim/since_elim) and until_guard/since_guard removed -- not sound under open guard `(t,s)` semantics (task 113).*
+*Note: BX14/BX14' (separation_until/separation_since) removed -- redundant under transitive frames. Xu 3.2.1 (BX5 self-accumulation) subsumes BX14's role in chronicle splitting (task 115).*
 *Note: BX2H/BX2H' (left_mono_until_G/left_mono_since_H) added in task 107 Phase 5b. BX2H subsumes BX2 under open-guard semantics (the pointwise conjunct in BX2 is redundant when the guard interval excludes the current point).*
 
 ### Layer 4: Modal-Temporal Interaction (2 → 1 after task 124)
