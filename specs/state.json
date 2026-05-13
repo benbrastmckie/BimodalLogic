@@ -839,11 +839,11 @@
     {
       "project_number": 135,
       "project_name": "remove_unused_left_mono_until_mcs",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Dead code cleanup: remove left_mono_until_mcs from CanonicalChain.lean. This helper (line ~71) is defined but has zero external callers. It uses BX2 (left_mono_until), which is a candidate for removal in task 133. Removing it first avoids having to update it when BX2 is simplified.",
       "created": "2026-05-13T20:47:01Z",
-      "last_updated": "2026-05-13T20:50:55Z",
+      "last_updated": "2026-05-13T20:54:38Z",
       "language": "lean4",
       "related_tasks": [
         115,
@@ -855,16 +855,18 @@
           "path": "specs/135_remove_unused_left_mono_until_mcs/plans/01_remove-dead-code.md",
           "type": "plan"
         }
-      ]
+      ],
+      "completed": "2026-05-13T20:54:38Z",
+      "completion_summary": "Removed unused left_mono_until_mcs and left_mono_since_mcs from CanonicalChain.lean (zero external callers)."
     },
     {
       "project_number": 136,
       "project_name": "cleanup_archival_bx14_comments",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Clean up archival comments about the old BX14-based D0 seed approach in PointInsertion.lean. Lines ~1087-1098 and ~2215-2227 contain detailed descriptions of the OLD BX14 separation_until-based D0 seed consistency proof chain (BX5+BX14+BX10). These could mislead future readers into thinking BX14 is still used. Replace with concise historical notes pointing to Xu 3.2.1+3.2.2 as the current approach.",
       "created": "2026-05-13T20:47:01Z",
-      "last_updated": "2026-05-13T20:50:55Z",
+      "last_updated": "2026-05-13T20:54:38Z",
       "language": "lean4",
       "related_tasks": [
         115
@@ -875,7 +877,9 @@
           "path": "specs/136_cleanup_archival_bx14_comments/plans/01_cleanup-comments.md",
           "type": "plan"
         }
-      ]
+      ],
+      "completed": "2026-05-13T20:54:38Z",
+      "completion_summary": "Replaced verbose archival BX14 comments in PointInsertion.lean with concise historical notes referencing Xu 3.2.1+3.2.2."
     }
   ],
   "next_project_number": 137,

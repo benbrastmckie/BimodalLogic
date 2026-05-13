@@ -1,7 +1,7 @@
 # Implementation Plan: Remove unused left_mono_until_mcs
 
 - **Task**: 135 - Remove unused left_mono_until_mcs from CanonicalChain.lean
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 15 minutes
 - **Dependencies**: None
 - **Research Inputs**: Task 115 verification audit
@@ -36,7 +36,7 @@ Remove the `left_mono_until_mcs` theorem (CanonicalChain.lean lines 67-91) which
 |------|--------|------------|
 | 1 | 1 | -- |
 
-### Phase 1: Remove dead code [NOT STARTED]
+### Phase 1: Remove dead code [COMPLETED]
 
 **Goal**: Delete `left_mono_until_mcs` and verify build.
 

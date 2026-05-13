@@ -11,8 +11,7 @@ and delegation bridges from Realization.lean to Frame.lean.
 ## Key BX Axiom Lemmas
 
 - `F_imp_top_until_mcs`: BX12 at MCS level (F(ψ) → ⊤ U ψ)
-- `left_mono_until_mcs`: BX2 at MCS level ((φ→χ) ∧ G(φ→χ) → (φ U ψ → χ U ψ))
-- `left_mono_since_mcs`: BX2' at MCS level ((φ→χ) ∧ H(φ→χ) → (φ S ψ → χ S ψ))
+- (Removed: `left_mono_until_mcs`/`left_mono_since_mcs` — unused dead code, task 135)
 
 ## Eventuality Resolution Status (Task 113 open guard refactor)
 
@@ -63,52 +62,6 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
     DerivationTree.axiom [] _ (Axiom.P_since_equiv ψ)
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
-
-/-! ## BX2 at MCS level: left monotonicity of Until -/
-
-/-- BX2 at MCS level: left monotonicity of Until.
-    If (φ → χ) ∈ w and G(φ → χ) ∈ w and (φ U ψ) ∈ w, then (χ U ψ) ∈ w. -/
-theorem left_mono_until_mcs {w : BXPoint} {φ ψ χ : Formula}
-    (h_imp : (φ.imp χ) ∈ w.formulas)
-    (h_G : Formula.all_future (φ.imp χ) ∈ w.formulas)
-    (h_until : Formula.untl ψ φ ∈ w.formulas) :
-    Formula.untl ψ χ ∈ w.formulas := by
-  have h_ax : DerivationTree [] (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
-    ((Formula.untl ψ φ).imp (Formula.untl ψ χ))) :=
-    DerivationTree.axiom [] _ (Axiom.left_mono_until φ ψ χ)
-  -- Need (φ→χ) ∧ G(φ→χ) ∈ w, i.e., ((φ→χ).imp (G(φ→χ)).neg).neg ∈ w
-  have h_conj : Formula.and (φ.imp χ) (φ.imp χ).all_future ∈ w.formulas := by
-    -- and = (a.imp b.neg).neg. By negation completeness, either (a.imp b.neg) or its neg.
-    -- If (a.imp b.neg) ∈ w, then with a ∈ w gives b.neg ∈ w. But b ∈ w too: contradiction.
-    cases SetMaximalConsistent.negation_complete w.is_mcs ((φ.imp χ).imp (Formula.all_future (φ.imp χ)).neg) with
-    | inr h => exact h
-    | inl h_bad =>
-      have h_neg_G := SetMaximalConsistent.implication_property w.is_mcs h_bad h_imp
-      exact absurd h_G (SetMaximalConsistent.neg_excludes w.is_mcs _ h_neg_G)
-  have h1 := SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h_conj
-  exact SetMaximalConsistent.implication_property w.is_mcs h1 h_until
-
-/-- BX2' at MCS level: left monotonicity of Since.
-    If (φ → χ) ∈ w and H(φ → χ) ∈ w and (φ S ψ) ∈ w, then (χ S ψ) ∈ w. -/
-theorem left_mono_since_mcs {w : BXPoint} {φ ψ χ : Formula}
-    (h_imp : (φ.imp χ) ∈ w.formulas)
-    (h_H : Formula.all_past (φ.imp χ) ∈ w.formulas)
-    (h_since : Formula.snce ψ φ ∈ w.formulas) :
-    Formula.snce ψ χ ∈ w.formulas := by
-  have h_ax : DerivationTree [] (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
-    ((Formula.snce ψ φ).imp (Formula.snce ψ χ))) :=
-    DerivationTree.axiom [] _ (Axiom.left_mono_since φ ψ χ)
-  -- Need (φ→χ) ∧ H(φ→χ) ∈ w
-  have h_conj : Formula.and (φ.imp χ) (φ.imp χ).all_past ∈ w.formulas := by
-    cases SetMaximalConsistent.negation_complete w.is_mcs ((φ.imp χ).imp (Formula.all_past (φ.imp χ)).neg) with
-    | inr h => exact h
-    | inl h_bad =>
-      have h_neg_H := SetMaximalConsistent.implication_property w.is_mcs h_bad h_imp
-      exact absurd h_H (SetMaximalConsistent.neg_excludes w.is_mcs _ h_neg_H)
-  have h1 := SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h_conj
-  exact SetMaximalConsistent.implication_property w.is_mcs h1 h_since
 
 /-! ## BX6 at MCS level: absorption -/
 

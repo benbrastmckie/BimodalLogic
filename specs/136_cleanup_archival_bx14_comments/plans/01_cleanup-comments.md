@@ -1,7 +1,7 @@
 # Implementation Plan: Clean up archival BX14 comments
 
 - **Task**: 136 - Clean up archival BX14 comments in PointInsertion.lean
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 30 minutes
 - **Dependencies**: None
 - **Research Inputs**: Task 115 verification audit
@@ -37,7 +37,7 @@ Clean up archival comments in PointInsertion.lean that describe the old BX14-bas
 |------|--------|------------|
 | 1 | 1 | -- |
 
-### Phase 1: Update comments [NOT STARTED]
+### Phase 1: Update comments [COMPLETED]
 
 **Goal**: Replace verbose archival BX14 descriptions with concise notes.
 

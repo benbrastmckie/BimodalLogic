@@ -1082,25 +1082,11 @@ produce MCS D with `¬β ∈ D` and `BurgessR3Maximal(A, B', D)` and
 
 ## Burgess D₀ Seed Construction (Burgess 1982, p.370)
 
-The seed includes explicit Until/Since formulas to directly establish
-`burgessR3` relations from seed membership, bypassing the unprovable
-Since condition for deductive closure extension.
-
-D₀ = B ∪ {β.neg} ∪ {untl(β', γ) : β' ∈ B, γ ∈ C} ∪ {snce(β', α) : β' ∈ B, α ∈ A}
-
-Consistency of D₀ follows from the BX5+BX14+BX10 chain:
-1. From maximality: extract beta0 ∈ B, gamma0 ∈ C with ¬U(beta0∧β, gamma0) ∈ A
-2. BX5: U(beta0∧U(beta0,gamma0), gamma0) ∈ A
-3. BX14: U(q, q∧(beta0∧β).neg) ∈ A where q = beta0∧U(beta0,gamma0)
-4. BX10: F(q∧(beta0∧β).neg) ∈ A, proving F(β.neg) ∈ A
-5. forward_temporal_witness_seed_consistent gives {β.neg}∪g_content(A) consistent
-6. D₀ ⊆ {β.neg}∪g_content(A)∪h_content(C) which is consistent since h_content(C)⊆A
--/
-
--- ARCHIVED (Task 115): The D₀ seed construction (burgess_D0_seed) and its consistency
--- proof (burgess_D0_seed_consistent) used BX14 (separation_until). Replaced by the
--- trivial seed {β.neg} ∪ B via Xu 1988 Lemma 3.2.2 (transitive frames), which
--- derives the needed Until/Since formulas from Xu 3.2.1 (guard strengthening).
+The original Burgess (1982) approach used a rich D₀ seed with explicit Until/Since
+formulas, requiring BX14 (separation_until) for consistency. Task 115 replaced this
+with the Xu 1988 Lemma 3.2.2 approach: the seed is simply B* ∪ {β.neg}, with
+consistency following trivially from `dcs_neg_union_consistent`. The Until/Since
+formulas needed for r(A, B*, D) are already in B* via Xu 3.2.1. -/
 
 /-! ## Lemma 2.7: Until-Formula Splitting (Burgess 1982)
 
@@ -2194,37 +2180,9 @@ private theorem l27_a_event_list_α_mem_xi {A B C : Set Formula}
 
 /-- Consistency of the Lemma 2.7 D0 seed (Burgess 1982 p.372).
 
-Convention: untl(xi, eta) = U(eta, xi) in Burgess. xi = guard (Burgess η), eta = event (Burgess ξ).
-Condition: xi ∉ B (guard not in B, matching Burgess η ∉ B).
-
-Proof structure (following Burgess exactly):
-1. From xi ∉ B + maximality, extract beta0 ∈ B, gamma0 ∈ C with ¬untl(beta0∧xi, gamma0) ∈ A
-2. BX5 on untl(xi, eta): untl(xi∧untl(xi,eta), eta) ∈ A (guard self-accumulation)
-3. BX5 on untl(beta0, gamma0): untl(beta0∧untl(beta0,gamma0), gamma0) ∈ A
-4. BX7 linear_until: three-way disjunction D1∨D2∨D3, all with guard g1∧g2
-   where g1 = xi∧untl(xi,eta), g2 = beta0∧untl(beta0,gamma0)
-5. Eliminate D1: left_mono (g1∧g2 → beta0∧xi), right_mono (eta∧gamma0 → gamma0)
-   → untl(beta0∧xi, gamma0) ∈ A, contradicting ¬untl(beta0∧xi, gamma0)
-6. Eliminate D2: left_mono (g1∧g2 → beta0∧xi), right_mono (eta∧g2 → gamma0)
-   → untl(beta0∧xi, gamma0) ∈ A, same contradiction
-   (Actually D2 event = eta∧g2; right_mono with g2 → gamma0 is NOT derivable.
-    Instead: left_mono (g1∧g2 → xi), right_mono (eta∧g2 → eta) → untl(xi, eta).
-    Then: left_mono (g1∧g2 → beta0∧xi) via right_mono on D2 event gamma0 path.
-    Actually: from D2, left_mono ⊢ g1∧g2 → beta0∧xi gives untl(beta0∧xi, eta∧g2).
-    right_mono ⊢ eta∧g2 → gamma0? No, g2 = beta0∧untl(beta0,gamma0) ≠> gamma0.
-    Alternative: D2 event has eta, so right_mono ⊢ eta∧g2 → eta → ... not useful.
-    Need to check: is D2 actually eliminable? YES via a 2-step chain.)
-7. D3 survives: untl(g1∧g2, g1∧gamma0), event = (xi∧untl(xi,eta))∧gamma0
-8. right_mono on D3: ⊢ g1∧gamma0 → gamma0, gives untl(g1∧g2, gamma0)
-9. BX14 separation with untl(g1∧g2, gamma0) and ¬untl(beta0∧xi, gamma0):
-   untl(g1∧g2, g1∧g2∧(beta0∧xi).neg) ∈ A
-   (Wait: BX14 needs same event. OK since both have event gamma0.)
-   Actually BX14: untl(q,p) ∧ ¬untl(r,p) → untl(q, q∧r.neg).
-   q = g1∧g2, r = beta0∧xi, p = gamma0.
-   Result: untl(g1∧g2, (g1∧g2)∧(beta0∧xi).neg) ∈ A.
-10. BX13 iterated enrichment: packs snce(g1∧g2, α) for each α ∈ A
-11. BX10: F(event) ∈ A, so event is consistent
-12. Event implies all 5 seed components via left_mono/right_mono on snce/untl -/
+Uses BX5 (self-accumulation) + BX7 (linearity) + BX13 (enrichment) to derive
+F(β.neg) ∈ A, which ensures the seed is consistent. Does NOT use BX14
+(separation_until), which was removed in task 115. -/
 
 
 private theorem lemma_2_7_seed_consistent {A B C : Set Formula}
