@@ -33,10 +33,11 @@ technical_debt:
 
 **Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness internally sorry-free. Discrete `discrete_fmcs` sorry-free. Task 123 complete (Z1 axiom + C5 fix). One sorry remains on critical path: `dd_countermodel_chronicle_nondense_sorry` (task 122, depends on 129). Task 129 (weak/reflexive completeness) is planned and ready to implement.
 
-### Phase 1: Axiom Cleanup (before heavy lift)
+### Phase 1: Axiom Cleanup and Housekeeping (before heavy lift)
 
 1. **124** [IMPLEMENTING] — Remove TF axiom, derive from MF (~6h, low risk)
 2. **115** [RESEARCHED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
+3. **132** [NOT STARTED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
 
 ### Phase 2: Sorry-Free Completeness
 
