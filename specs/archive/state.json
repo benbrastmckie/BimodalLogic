@@ -3916,6 +3916,425 @@
       "status": "orphan_archived",
       "archived": "2026-05-11T16:55:59Z",
       "source": "orphan_recovery"
+    },
+    {
+      "project_number": 132,
+      "project_name": "merge_boneyard_directories",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Merge Boneyard/ (project root) into Theories/Bimodal/Boneyard/ (the canonical Boneyard location within the Lean module hierarchy). Move all files from the root-level Boneyard/ directory into the appropriate subdirectories under Theories/Bimodal/Boneyard/, resolving any naming conflicts. After merging, populate Theories/Bimodal/Boneyard/README.md with documentation covering: (1) purpose of the Boneyard (archived dead code, superseded approaches, mathematically false lemmas), (2) directory structure and what each subdirectory contains, (3) why each group of files was archived (with references to the tasks that superseded them), (4) guidance on when to consult Boneyard code vs when to ignore it. Remove the root-level Boneyard/ directory after successful merge. Update any import paths if needed.",
+      "created": "2026-05-13T18:13:51Z",
+      "last_updated": "2026-05-13T22:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/132_merge_boneyard_directories/reports/01_boneyard-merge-research.md",
+          "type": "research_report",
+          "summary": "Boneyard merge research: inventory, conflict analysis, merge strategy"
+        },
+        {
+          "path": "specs/132_merge_boneyard_directories/plans/01_boneyard-merge-plan.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for merging root Boneyard into canonical location"
+        },
+        {
+          "path": "specs/132_merge_boneyard_directories/summaries/01_boneyard-merge-summary.md",
+          "type": "summary",
+          "summary": "Boneyard merge complete: 2 files moved, 2 READMEs written, root Boneyard removed"
+        }
+      ],
+      "session_id": "sess_1778707221_475559",
+      "researched": "2026-05-13T21:00:51Z",
+      "completed": "2026-05-13T22:30:00Z",
+      "completion_summary": "Merged root Boneyard/ into Theories/Bimodal/Boneyard/. 2 files moved (XuLemma321.lean, PointInsertionLegacy.lean), 2 READMEs written (XuLemma321Legacy subdirectory + comprehensive top-level with 15-directory inventory). Root Boneyard/ removed."
+    },
+    {
+      "project_number": 123,
+      "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
+      "status": "completed",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
+      "dependencies": [],
+      "created": "2026-05-11T12:31:32Z",
+      "last_updated": "2026-05-13T16:41:58Z",
+      "next_artifact_number": 14,
+      "artifacts": [
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_team-research-reynolds.md",
+          "type": "research",
+          "summary": "Reynolds 1994 analysis and Icc_finite approaches (from task 121 round 2)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Skip C5 for ξ=⊥ approach analysis"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Accumulation analysis — which formulas cause infinite chains"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-c-findings.md",
+          "type": "research",
+          "summary": "Alternative fix strategies ranked"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_teammate-d-findings.md",
+          "type": "research",
+          "summary": "Downstream blast radius analysis"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/01_blocker-analysis.md",
+          "type": "research",
+          "summary": "Blocker analysis — why Icc_finite is false for current construction"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/summaries/01_fix-c5-bot-summary.md",
+          "type": "summary",
+          "summary": "Implementation complete: discrete_fmcs sorry-free via direct Z embedding, replacing old Icc_finite pipeline"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research: succ_embed_surjective confirmed TRUE, single-orbit proof strategy (4 teammates)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Team research: collapse quotient rejected, C5-walk and BX5 self-accumulation identified as novel approaches (4 teammates)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/04_team-research.md",
+          "type": "research",
+          "summary": "Team research: Icc finiteness deep-dive — real analysis needed, Mathlib pipeline mapped, C5-walk eliminated (4 teammates)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Team research: convergence gap confirmed, construction-specific approach needed (4 teammates)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/06_team-research.md",
+          "type": "research",
+          "summary": "Team research: literature deep-dive on IsSuccArchimedean — stabilization argument analysis, markdown quality review (4 teammates)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/07_team-research.md",
+          "type": "research",
+          "summary": "Comprehensive analysis: bot-guard adjacency + choose-N approach recommended (90% confidence)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/summaries/12_semantic-z1-gap-summary.md",
+          "type": "summary",
+          "summary": "Phase 2 complete: Z1 axiom added with soundness proof, 11 pattern matches updated, z1_derivation sorry eliminated. Phase 3 (gap elimination) pending."
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/09_prior-uz-issucc-analysis.md",
+          "type": "research",
+          "summary": "Prior-UZ requires IsSuccArchimedean — modular hierarchy recommendation"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/10_gap-elimination-strategy.md",
+          "type": "research",
+          "summary": "Deep analysis of gap elimination approaches: Z1 Doets argument for non-constant-MCS case (65%), construction-level impossibility for constant-MCS case (60%)"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/11_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): Z1 Doets for non-constant MCS + construction-level argument for constant-MCS. Doets Henkin is long-term approach."
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/plans/11_three-track-completeness.md",
+          "type": "plan",
+          "summary": "v16: Three-track gap elimination — Z1 Doets for non-constant MCS, construction-level for constant MCS, verification"
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/12_subformula-finiteness.md",
+          "type": "research",
+          "summary": "Sub-formula closure exists but limit_f is over ALL formulas. Pigeonhole gives orbit collision but not discrimination. Constant-MCS remains fundamental blocker."
+        },
+        {
+          "path": "specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_conservative-extension-mechanism.md",
+          "type": "research",
+          "summary": "Model-theoretic transfer: weak countermodel = strict countermodel. Syntactic translation impossible (Next not definable in weak system)."
+        }
+      ],
+      "session_id": "sess_1778657762_d3e9ec",
+      "started": "2026-05-11T14:06:20Z",
+      "completed": "2026-05-13T16:41:58Z",
+      "archived": "2026-05-11T16:55:47Z",
+      "researched": "2026-05-13T07:45:33Z",
+      "completion_summary": "Z1 axiom added with sorry-free soundness, all 11 pattern matches updated, z1_derivation sorry eliminated, C5 bot witness fix complete. IsSuccArchimedean (succ_cofinal sorry) deferred to task 129 (weak/reflexive completeness). Dead code archival deferred to task 130."
+    },
+    {
+      "project_number": 124,
+      "project_name": "remove_tf_axiom_derive_from_mf",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.",
+      "created": "2026-05-11T15:34:15Z",
+      "last_updated": "2026-05-13T18:20:08Z",
+      "session_id": "sess_1778694085_eb2fe3",
+      "researched": "2026-05-11T17:08:34Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/124_remove_tf_axiom_derive_from_mf/reports/01_tf-derivation-research.md",
+          "type": "research_report",
+          "summary": "Confirmed TF derivable from MF+T+Modal4; mapped ~75 references across 30+ files; 8-phase implementation strategy"
+        },
+        {
+          "path": "specs/124_remove_tf_axiom_derive_from_mf/plans/01_remove-tf-axiom.md",
+          "type": "plan",
+          "summary": "6-phase plan: remove TF axiom, derive from MF+T+Modal4, ~30 files, 3 dependency waves"
+        },
+        {
+          "path": "specs/124_remove_tf_axiom_derive_from_mf/summaries/01_remove-tf-summary.md",
+          "type": "summary",
+          "summary": "TF axiom removed, derived from MF+T+Modal4. 31 files updated, build clean."
+        }
+      ],
+      "started": "2026-05-13T17:41:49Z",
+      "completed": "2026-05-13T18:20:08Z",
+      "completion_summary": "Removed temp_future axiom constructor (45→44), added temp_future_derived theorem proving TF from MF+T+Modal4. Updated 31 files across Theories/Tests. Lake build passes cleanly, zero new sorries, zero custom axioms."
+    },
+    {
+      "project_number": 115,
+      "project_name": "replace_a4a_with_left_mono_until_g",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Axiom minimality: remove A4a (separation_until/separation_since) from the axiom set and simplify BX2 (left_mono_until), reducing the axiom constructor count from 62 to 60. A4a is currently used in 4 sorry-free proof chains in PointInsertion.lean (lemma_2_6_insert_point_future C5 splitting at ~line 1474, two C2' cases at ~lines 2125 and 2325, and lemma_2_6_insert_point_past at ~line 2542), all calling the helper separation_until_mcs (line 1066). Safety-first approach: (1) Derive A4a as a theorem from left_mono_until_G (proving it is redundant, not just removing it). (2) Rewrite the 4 proof chains in PointInsertion.lean to use the derived theorem or the direct left_mono_until_G / Xu Lemma 2.3-2.4 path. (3) Simplify BX2 by removing the redundant pointwise conjunct (phi -> chi), since left_mono_until_G subsumes it under open-guard semantics — the guard interval (t,s) is strictly future of t, so G-information always covers it. (4) Only after all proofs compile with the derived version, remove the separation_until/separation_since axiom constructors and their soundness proofs. Update SoundnessLemmas.lean match arms (~20 locations). This is now an axiom minimality task (not unblocking a sorry) — the goal is a cleaner, smaller axiom set where left_mono_until_G replaces both A4a and the pointwise conjunct of BX2.",
+      "created": "2026-04-29T14:32:51Z",
+      "last_updated": "2026-05-13T20:36:36Z",
+      "language": "lean4",
+      "related_tasks": [
+        107
+      ],
+      "next_artifact_number": 4,
+      "session_id": "sess_1778701132_a3d37f",
+      "researched": "2026-05-13T19:31:05Z",
+      "dependencies": [
+        107
+      ],
+      "artifacts": [
+        {
+          "path": "specs/115_replace_a4a_with_left_mono_until_g/summaries/01_remove-a4a-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 complete (Xu Lemma 2.3), Phase 2 blocked on B-subset structural mismatch"
+        },
+        {
+          "path": "specs/115_replace_a4a_with_left_mono_until_g/handoffs/01_phase1-complete-phase2-blocked.md",
+          "type": "handoff",
+          "summary": "Handoff documenting 4 resolution paths for Phase 2 B-subset problem"
+        },
+        {
+          "path": "specs/115_replace_a4a_with_left_mono_until_g/reports/03_team-research.md",
+          "type": "research",
+          "summary": "Team research: Phase 2 blocker resolved via Xu 3.2.1+3.2.2 (transitive frames)"
+        },
+        {
+          "path": "specs/115_replace_a4a_with_left_mono_until_g/plans/03_remove-a4a-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan v3: Xu 3.2.1+3.2.2 for transitive frame splitting"
+        },
+        {
+          "path": "specs/115_replace_a4a_with_left_mono_until_g/summaries/03_remove-a4a-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for A4a removal via Xu 3.2.1+3.2.2"
+        }
+      ],
+      "started": "2026-05-13T18:32:44Z",
+      "completed": "2026-05-13T20:36:36Z",
+      "completion_summary": "Removed separation_until/separation_since via Xu 3.2.1+3.2.2. Constructor count 61->43. Lake build clean."
+    },
+    {
+      "project_number": 133,
+      "project_name": "simplify_bx2_remove_pointwise",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Axiom minimality: remove BX2/BX2' (left_mono_until/since) constructors and derive them as theorems from BX2G/BX2G' (left_mono_until_G/left_mono_since_H). Under open-guard semantics (t,s), the pointwise conjunct (phi->chi) in BX2 is redundant since t is not in the guard interval. BX2G (G(phi->chi) -> untl(phi,psi) -> untl(chi,psi)) suffices. All 15+ call sites of untl_left_mono_thm derive G(phi->chi) via temporal necessitation, so BX2G works at every site. Removes 2 constructors + soundness proofs + match arms. Related: task 115 research report Section 4.1 established BX2G subsumes BX2 under open-guard semantics.",
+      "created": "2026-05-13T20:47:01Z",
+      "last_updated": "2026-05-13T23:00:00Z",
+      "language": "lean4",
+      "related_tasks": [
+        115
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1778707221_475559",
+      "researched": "2026-05-13T21:03:04Z",
+      "completed": "2026-05-13T23:00:00Z",
+      "completion_summary": "Removed BX2/BX2' (left_mono_until/left_mono_since) constructors. Rewrote 7 usages to BX2G/BX2H, removed 2 constructors, 2 validity proofs, 20 match arms. Axiom count 43->41. Lake build clean.",
+      "artifacts": [
+        {
+          "path": "specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md",
+          "type": "research_report",
+          "summary": "Complete analysis of BX2 removal: 30 call sites verified, all use theorem-level derivations making BX2G sufficient."
+        },
+        {
+          "path": "specs/133_simplify_bx2_remove_pointwise/plans/01_simplify-bx2-remove-pointwise.md",
+          "type": "plan",
+          "summary": "3-phase plan to remove BX2/BX2 axiom constructors and derive from BX2G/BX2H"
+        }
+      ]
+    },
+    {
+      "project_number": 134,
+      "project_name": "restructure_lemma_2_7_seeds_xu_3_2_1",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Simplify lemma_2_7/lemma_2_7_since seed construction using Xu 3.2.1. The current seed includes explicit U/S formulas ({untl(gamma,beta) : gamma in C, beta in B} union {snce(alpha,beta) : ...}), requiring a ~400-line BX5+BX7+BX13 consistency proof (lemma_2_7_seed_consistent). With Xu 3.2.1 (proved in task 115), these U/S formulas are already in B* (the R-maximal extension), so the seed simplifies to B* union {eta} with trivial consistency via dcs_neg_union_consistent. This is a simplification (current proofs are sorry-free and work), not a correctness fix. Must verify lemma_2_7 output type (including eta in D and xi in B') still satisfies CounterexampleElimination.lean callers.",
+      "created": "2026-05-13T20:47:01Z",
+      "last_updated": "2026-05-13T22:09:24Z",
+      "language": "lean4",
+      "related_tasks": [
+        115
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1778708549_efce45",
+      "researched": "2026-05-13T21:04:59Z",
+      "artifacts": [
+        {
+          "path": "specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/reports/01_seed-restructure-research.md",
+          "type": "research_report",
+          "summary": "Seed reduces from 5 to 3 components. Components 3-4 redundant via Xu 3.2.1. Component 5 essential. ~700-900 lines removable."
+        },
+        {
+          "path": "specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/plans/01_seed-restructure-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan to simplify seeds from 5 to 3 components using Xu 3.2.1"
+        },
+        {
+          "path": "specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/summaries/01_seed-restructure-summary.md",
+          "type": "summary",
+          "summary": "Simplified lemma_2_7/lemma_2_7_since seeds from 5 to 3 components using Xu 3.2.1, reducing PointInsertion.lean by 778 lines (18%)"
+        }
+      ],
+      "started": "2026-05-13T21:43:04Z",
+      "completed": "2026-05-13T22:09:24Z",
+      "completion_summary": "Simplified lemma_2_7/lemma_2_7_since seeds from 5 to 3 components using Xu 3.2.1, reducing PointInsertion.lean by 778 lines (18%). Zero sorries, zero new axioms, lake build clean."
+    },
+    {
+      "project_number": 135,
+      "project_name": "remove_unused_left_mono_until_mcs",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Dead code cleanup: remove left_mono_until_mcs from CanonicalChain.lean. This helper (line ~71) is defined but has zero external callers. It uses BX2 (left_mono_until), which is a candidate for removal in task 133. Removing it first avoids having to update it when BX2 is simplified.",
+      "created": "2026-05-13T20:47:01Z",
+      "last_updated": "2026-05-13T20:54:38Z",
+      "language": "lean4",
+      "related_tasks": [
+        115,
+        133
+      ],
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/135_remove_unused_left_mono_until_mcs/plans/01_remove-dead-code.md",
+          "type": "plan"
+        }
+      ],
+      "completed": "2026-05-13T20:54:38Z",
+      "completion_summary": "Removed unused left_mono_until_mcs and left_mono_since_mcs from CanonicalChain.lean (zero external callers)."
+    },
+    {
+      "project_number": 136,
+      "project_name": "cleanup_archival_bx14_comments",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Clean up archival comments about the old BX14-based D0 seed approach in PointInsertion.lean. Lines ~1087-1098 and ~2215-2227 contain detailed descriptions of the OLD BX14 separation_until-based D0 seed consistency proof chain (BX5+BX14+BX10). These could mislead future readers into thinking BX14 is still used. Replace with concise historical notes pointing to Xu 3.2.1+3.2.2 as the current approach.",
+      "created": "2026-05-13T20:47:01Z",
+      "last_updated": "2026-05-13T20:54:38Z",
+      "language": "lean4",
+      "related_tasks": [
+        115
+      ],
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/136_cleanup_archival_bx14_comments/plans/01_cleanup-comments.md",
+          "type": "plan"
+        }
+      ],
+      "completed": "2026-05-13T20:54:38Z",
+      "completion_summary": "Replaced verbose archival BX14 comments in PointInsertion.lean with concise historical notes referencing Xu 3.2.1+3.2.2."
+    },
+    {
+      "project_number": 39,
+      "project_name": "study_preorder_semantics_conformance",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 74,
+      "project_name": "research_strict_vs_reflexive_semantics",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 75,
+      "project_name": "research_strict_temporal_extension_design",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 76,
+      "project_name": "research_density_discreteness_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 82,
+      "project_name": "close_fmp_truth_preservation_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 89,
+      "project_name": "close_frame_lean_eventuality_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 109,
+      "project_name": "close_chain_construction_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 118,
+      "project_name": "prove_issucc_archimedean_discrete_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-05-13T22:16:35Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
     }
   ]
 }

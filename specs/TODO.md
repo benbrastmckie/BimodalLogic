@@ -5,12 +5,12 @@ repository_health:
   production_readiness: near-publication
   last_assessed: 2026-05-10T23:59:00Z
 task_counts:
-  active: 20
-  completed: 772
+  active: 24
+  completed: 780
   in_progress: 0
   not_started: 7
   abandoned: 80
-  total: 862
+  total: 870
 technical_debt:
   sorry_count: 1
   sorry_count_note: "Audited 2026-05-11: 1 critical-path sorry in ChronicleToCountermodel.lean (dd_countermodel_chronicle_nondense_sorry). limitDomSubtype_Icc_finite removed by task 123 collapse approach. ~17 dead-code sorries in BXCanonical pipeline (mathematically false under irreflexive semantics, bypassed by Chronicle). ~19 TemporalDerived re-derivations (low priority). Soundness, SoundnessLemmas, and Decidability are sorry-free."
@@ -31,44 +31,33 @@ technical_debt:
 
 **Goal**: Axiom cleanup → sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
 
-**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness internally sorry-free. Discrete `discrete_fmcs` sorry-free. Task 123 complete (Z1 axiom + C5 fix). One sorry remains on critical path: `dd_countermodel_chronicle_nondense_sorry` (task 122, depends on 129). Task 129 (weak/reflexive completeness) is planned and ready to implement.
+**Status**: Axiom cleanup complete (tasks 115, 124, 133, 134, 135, 136 archived). Axiom count reduced 61→41. Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness internally sorry-free. Discrete `discrete_fmcs` sorry-free. One sorry remains on critical path: `dd_countermodel_chronicle_nondense_sorry` (task 122, depends on 129). Task 129 (weak/reflexive completeness) is planned and ready to implement.
 
-### Phase 1: Axiom Cleanup and Housekeeping (before heavy lift)
-
-1. ~~**124**~~ [COMPLETED] — Remove TF axiom, derive from MF (~6h, low risk)
-2. ~~**115**~~ [COMPLETED] — Remove A4a, simplify BX2, rewrite 4 proof chains (~6-8h, medium risk)
-3. ~~**135**~~ [COMPLETED] — Remove unused `left_mono_until_mcs` from CanonicalChain.lean (~15m, no risk)
-4. ~~**136**~~ [COMPLETED] — Clean up archival BX14 comments in PointInsertion.lean (~30m, no risk)
-5. ~~**133**~~ [COMPLETED] — Simplify BX2: remove pointwise conjunct, derive from BX2G (~4-6h, medium risk)
-6. ~~**134**~~ [COMPLETED] — Restructure lemma_2_7/2_7_since seeds using Xu 3.2.1 (~6-8h, medium risk)
-7. ~~**132**~~ [COMPLETED] — Merge root Boneyard into Theories/Bimodal/Boneyard, populate README (~2-4h)
-
-### Phase 2: Sorry-Free Completeness
+### Phase 1: Sorry-Free Completeness
 
 1. **129** [PLANNED] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
 2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
 3. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
-4. ~~**123**~~ [COMPLETED] — C5 bot witness + Z1 axiom (IsSuccArchimedean deferred → 129)
 
-### Phase 3: Module Reorganization
+### Phase 2: Module Reorganization
 
 1. **131** [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy, clean APIs, module documentation (15-25h, after 129 lands new modules)
 
-### Phase 4: Frame Hierarchy and Formula Refactor
+### Phase 3: Frame Hierarchy and Formula Refactor
 
 1. **126** [RESEARCHED] — Four-tier frame hierarchy: Base → Dense/Discrete → Integer with Sahlqvist correspondence (depends on 129)
 2. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
 
-### Phase 5: Expressive Extensions
+### Phase 4: Expressive Extensions
 
 1. **127** [NOT STARTED] — Time addition operator (+): ternary semantics, FO[<,+] (depends on 123)
 2. **128** [NOT STARTED] — Open set (interior) operator for dense/continuous frames (depends on 122)
 
-### Phase 6: Algebraic Representation
+### Phase 5: Algebraic Representation
 
 - **125** [NOT STARTED] — Jónsson-Tarski representation for S/U/□ (depends on all Phase 1-5 tasks)
 
-### Phase 7: Publication Quality
+### Phase 6: Publication Quality
 
 - **95** [NOT STARTED] — Verification audit (after axiom system is final)
 - **8** [RESEARCHED] — Genuine truth_at completeness
@@ -89,73 +78,6 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
-
-### 136. Clean up archival BX14 comments in PointInsertion.lean
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-13
-- **Summary**: Replaced verbose archival BX14 comments with concise historical notes referencing Xu 3.2.1+3.2.2.
-- **Language**: lean4
-- **Related**: 115
-
-**Description**: Clean up archival comments about the old BX14-based D0 seed approach in PointInsertion.lean. Lines ~1087-1098 and ~2215-2227 contain detailed descriptions of the OLD BX14 separation_until-based D0 seed consistency proof chain (BX5+BX14+BX10). These could mislead future readers into thinking BX14 is still used. Replace with concise historical notes pointing to Xu 3.2.1+3.2.2 as the current approach.
-
----
-
-### 135. Remove unused left_mono_until_mcs from CanonicalChain.lean
-- **Effort**: 15 minutes
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-13
-- **Summary**: Removed unused left_mono_until_mcs and left_mono_since_mcs from CanonicalChain.lean (zero external callers).
-- **Language**: lean4
-- **Related**: 115, 133
-
-**Description**: Dead code cleanup: remove left_mono_until_mcs from CanonicalChain.lean. This helper (line ~71) is defined but has zero external callers. It uses BX2 (left_mono_until), which is a candidate for removal in task 133. Removing it first avoids having to update it when BX2 is simplified.
-
----
-
-### 134. Restructure lemma_2_7/lemma_2_7_since seeds using Xu 3.2.1
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-13
-- **Summary**: Simplified lemma_2_7/lemma_2_7_since seeds from 5 to 3 components using Xu 3.2.1, reducing PointInsertion.lean by 778 lines (18%). Zero sorries, zero new axioms, lake build clean.
-- **Language**: lean4
-- **Related**: 115
-- **Research**: [specs/134_restructure_lemma_2_7_seeds_xu_3_2_1/reports/01_seed-restructure-research.md]
-- **Plan**: [134_restructure_lemma_2_7_seeds_xu_3_2_1/plans/01_seed-restructure-plan.md]
-
-**Description**: Simplify lemma_2_7/lemma_2_7_since seed construction using Xu 3.2.1. The current seed includes explicit U/S formulas ({untl(gamma,beta) : gamma in C, beta in B} union {snce(alpha,beta) : ...}), requiring a ~400-line BX5+BX7+BX13 consistency proof (lemma_2_7_seed_consistent). With Xu 3.2.1 (proved in task 115), these U/S formulas are already in B* (the R-maximal extension), so the seed simplifies to B* union {eta} with trivial consistency via dcs_neg_union_consistent. This is a simplification (current proofs are sorry-free and work), not a correctness fix. Must verify lemma_2_7 output type (including eta in D and xi in B') still satisfies CounterexampleElimination.lean callers.
-
----
-
-### 133. Simplify BX2: remove pointwise conjunct, derive from BX2G
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-13
-- **Summary**: Removed BX2/BX2' constructors (43->41 axioms). Rewrote 7 usages to BX2G/BX2H, removed 20 match arms, 2 validity proofs. Lake build clean.
-- **Language**: lean4
-- **Related**: 115
-- **Research**: [specs/133_simplify_bx2_remove_pointwise/reports/01_simplify-bx2-remove-pointwise.md]
-- **Plan**: [133_simplify_bx2_remove_pointwise/plans/01_simplify-bx2-remove-pointwise.md]
-- **Summary**: [specs/133_simplify_bx2_remove_pointwise/summaries/01_simplify-bx2-remove-pointwise-summary.md]
-
-**Description**: Axiom minimality: remove BX2/BX2' (left_mono_until/since) constructors and derive them as theorems from BX2G/BX2G' (left_mono_until_G/left_mono_since_H). Under open-guard semantics (t,s), the pointwise conjunct (phi->chi) in BX2 is redundant since t is not in the guard interval. BX2G (G(phi->chi) -> untl(phi,psi) -> untl(chi,psi)) suffices. All 15+ call sites of untl_left_mono_thm derive G(phi->chi) via temporal necessitation, so BX2G works at every site. Removes 2 constructors + soundness proofs + match arms. Related: task 115 research report Section 4.1 established BX2G subsumes BX2 under open-guard semantics.
-
----
-
-### 132. Merge root Boneyard into Theories/Bimodal/Boneyard and populate README
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-13
-- **Summary**: Merged root Boneyard/ into canonical location. 2 files moved, 2 READMEs written, root Boneyard removed.
-- **Task Type**: lean4
-- **Research**: [specs/132_merge_boneyard_directories/reports/01_boneyard-merge-research.md]
-- **Plan**: [132_merge_boneyard_directories/plans/01_boneyard-merge-plan.md]
-- **Summary**: [specs/132_merge_boneyard_directories/summaries/01_boneyard-merge-summary.md]
-
-**Description**: Merge Boneyard/ (project root) into Theories/Bimodal/Boneyard/ (the canonical Boneyard location within the Lean module hierarchy). Move all files from the root-level Boneyard/ directory into the appropriate subdirectories under Theories/Bimodal/Boneyard/, resolving any naming conflicts. After merging, populate Theories/Bimodal/Boneyard/README.md with documentation covering: (1) purpose of the Boneyard (archived dead code, superseded approaches, mathematically false lemmas), (2) directory structure and what each subdirectory contains, (3) why each group of files was archived (with references to the tasks that superseded them), (4) guidance on when to consult Boneyard code vs when to ignore it. Remove the root-level Boneyard/ directory after successful merge. Update any import paths if needed.
-
----
 
 ### 131. Refactor module organization for clean APIs and documentation
 - **Effort**: 15-25 hours
@@ -271,44 +193,6 @@ technical_debt:
 
 ---
 
-### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
-- **Effort**: 15-25 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Plan**:
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/plans/01_fix-c5-bot-witness.md]
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/plans/04_issucc-archimedean.md]
-- **Summary**: [123_fix_c5_witness_bot_and_prove_icc_finite/summaries/01_fix-c5-bot-summary.md]
-- **Research**:
-  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/02_team-research.md]
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/03_team-research.md]
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/04_team-research.md]
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/05_team-research.md]
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/plans/05_construction-specific.md]
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/07_team-research.md]
-  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/10_gap-elimination-strategy.md]
-  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/11_team-research.md]
-  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/12_subformula-finiteness.md]
-  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_conservative-extension-mechanism.md]
-  - [123_fix_c5_witness_bot_and_prove_icc_finite/plans/11_three-track-completeness.md]
-
-**Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Phases 1-2 completed (collapse equivalence, FMCS on Z). Phases 3-5 revised: succ-based discrete BFMCS construction, three restricted coherence conditions, and three-way case split refinement for bx_completeness.
-
----
-
-### 124. Remove TF axiom and derive from MF
-- **Effort**: 5-10 hours
-- **Status**: [COMPLETED]
-- **Summary**: [specs/124_remove_tf_axiom_derive_from_mf/summaries/01_remove-tf-summary.md]
-- **Task Type**: lean4
-- **Research**: [specs/124_remove_tf_axiom_derive_from_mf/reports/01_tf-derivation-research.md]
-- **Plan**: [124_remove_tf_axiom_derive_from_mf/plans/01_remove-tf-axiom.md]
-
-**Description**: Remove TF axiom (□φ→G□φ) and replace with derivation from MF (□φ→□Gφ). TF is derivable from MF using the T axiom (□φ→φ) applied under G: from □φ→□Gφ (MF) and □Gφ→Gφ (T applied to Gφ), chain to get □φ→Gφ; then generalize to □φ→G□φ by substituting □φ for φ in MF and composing. Remove TF from the Axiom inductive type, add a DerivationTree proof deriving TF from MF+T, update Soundness.lean to remove the TF match arm, and fix any downstream references.
-
----
-
 ### 122. Build discrete BFMCS on ℤ and complete discrete countermodel
 - **Effort**: 8-15 hours
 - **Status**: [RESEARCHED]
@@ -341,21 +225,6 @@ technical_debt:
 - **Plan**: [116_redefine_ghfp_via_until_since/plans/01_redefine-ghfp-plan.md]
 
 **Description**: Remove `all_future` (G) and `all_past` (H) as primitive constructors from the `Formula` inductive type. Define F and P as abbreviations using `untl`/`snce` with ⊤, then G and H as ¬F¬ and ¬P¬, matching Burgess 1982 §1.1. `box` (□) remains primitive (S5 modal operator). ~3200 references across codebase. Should be done AFTER task 107 Phase 9 (convention migration) to avoid double-refactoring.
-
----
-
-### 115. Remove A4a and simplify BX2 for axiom minimality
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-13
-- **Summary**: Removed separation_until/separation_since via Xu 3.2.1+3.2.2. Constructor count 61->43. Lake build clean.
-- **Language**: lean4
-- **Dependencies**: 107
-- **Related**: 107
-- **Research**: [specs/115_replace_a4a_with_left_mono_until_g/reports/03_team-research.md]
-- **Plan**: [specs/115_replace_a4a_with_left_mono_until_g/plans/03_remove-a4a-plan.md]
-
-**Description**: Axiom minimality: remove A4a (separation_until/separation_since) from the axiom set and simplify BX2 (left_mono_until), reducing the axiom constructor count from 62 to 60. A4a is currently used in 4 sorry-free proof chains in PointInsertion.lean (lemma_2_6_insert_point_future C5 splitting at ~line 1474, two C2' cases at ~lines 2125 and 2325, and lemma_2_6_insert_point_past at ~line 2542), all calling the helper separation_until_mcs (line 1066). Safety-first approach: (1) Derive A4a as a theorem from left_mono_until_G (proving it is redundant, not just removing it). (2) Rewrite the 4 proof chains in PointInsertion.lean to use the derived theorem or the direct left_mono_until_G / Xu Lemma 2.3-2.4 path. (3) Simplify BX2 by removing the redundant pointwise conjunct (phi -> chi), since left_mono_until_G subsumes it under open-guard semantics -- the guard interval (t,s) is strictly future of t, so G-information always covers it. (4) Only after all proofs compile with the derived version, remove the separation_until/separation_since axiom constructors and their soundness proofs. Update SoundnessLemmas.lean match arms (~20 locations). This is an axiom minimality task (not unblocking a sorry) -- the goal is a cleaner, smaller axiom set where left_mono_until_G replaces both A4a and the pointwise conjunct of BX2.
 
 ---
 
