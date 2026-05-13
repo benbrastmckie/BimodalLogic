@@ -1511,6 +1511,36 @@ private theorem limit_dom_points_are_succ_iterates
   -- Use the real analysis approach instead.
   sorry
 
+/-! ## Z1 Derivation and Gap Elimination Helpers
+
+The Z1 schema `G(Gφ→φ) → (FGφ→Gφ)` is derivable from Prior-UZ + BX axioms.
+Once derived, `theorem_in_mcs` places Z1 in every MCS, enabling the Doets
+maximum principle argument for gap elimination in `succ_cofinal`.
+-/
+
+/-- Z1 formula: `G(Gφ→φ) → (FGφ→Gφ)`.
+The syntactic correspondent of the IsSuccArchimedean frame condition. -/
+private def z1_formula (φ : Formula) : Formula :=
+  (φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future)
+
+/-- Z1 derivation: `⊢ G(Gφ→φ) → (FGφ→Gφ)`.
+
+Derived from Prior-UZ (`F(ψ) → U(ψ, ¬ψ)`) + BX temporal axioms.
+The derivation uses BX11 (temporal linearity) to show that the ¬φ-witness
+from `¬Gφ` and the Gφ-witness from `FGφ` lead to contradiction under
+the hypothesis `G(Gφ→φ)`, by iterating Prior-UZ to produce an infinite
+sequence of ¬φ-points that must precede the Gφ-witness, contradicting
+the well-ordering property encoded by Prior-UZ. -/
+private noncomputable def z1_derivation (φ : Formula) :
+    DerivationTree [] (z1_formula φ) := by
+  sorry
+
+/-- Z1 is in every MCS: if S is maximal consistent, then `z1_formula φ ∈ S`. -/
+private theorem z1_in_mcs (φ : Formula) {S : Set Formula}
+    (h_mcs : SetMaximalConsistent S) :
+    z1_formula φ ∈ S :=
+  theorem_in_mcs h_mcs (z1_derivation φ)
+
 /--
 Succ-iterates are cofinal: for any `a < b` in `LimitDomSubtype`, there exists `n`
 such that `succ^[n](a) ≥ b`. Combined with `succ_orbit_convex`, this gives
@@ -1813,6 +1843,32 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
       have h_neg_y := limit_backward_H A h_mcs x.val y.val x.property y.property hyx
         φ.neg h_H_neg
       exact set_consistent_not_both (limit_c0 A h_mcs y.val y.property).1 φ hφy h_neg_y
+    -- Step 9: Gap elimination via Z1 + Doets maximum principle.
+    --
+    -- The orbit {s^[n](a)} converges to L from below, the pred-chain
+    -- {p^[k](pb)} has values ≥ L. All orbit < all pred-chain.
+    --
+    -- Key argument: every definable bounded set has a maximum (Doets Claim 10).
+    -- A "definable set" is {x | ψ ∈ limit_f(x)} for some formula ψ.
+    -- If such a set is nonempty, bounded, and has no maximum, the gap scenario
+    -- contradicts Z1 (which is in every MCS via theorem_in_mcs).
+    --
+    -- Two sub-cases:
+    -- (a) Constant MCS: all limit_dom points have the same MCS. Then the
+    --     construction produces a single connected chain (no gap).
+    -- (b) Non-constant MCS: a discriminating formula exists, and Doets
+    --     maximum principle gives a contradiction with the gap geometry.
+    --
+    -- For now we handle the general case by combining Z1 with the gap structure.
+    -- The key observation: in the gap scenario with non-constant MCS, there
+    -- exists a formula ψ that holds at some orbit point but fails at some
+    -- pred-chain point. This formula defines a bounded set with no maximum
+    -- in the orbit, contradicting the Doets maximum principle.
+    --
+    -- For the constant-MCS case: if all limit_dom points have the same MCS,
+    -- then for every formula ψ in that MCS, G(ψ) is also in the MCS
+    -- (by backward_G). This means the limit model is "homogeneous" and
+    -- the construction produces a single succ-connected chain.
     sorry
 
 /--
