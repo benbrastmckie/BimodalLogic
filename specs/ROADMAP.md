@@ -20,22 +20,27 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state** (2026-05-11):
-- **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ
+**Current state** (2026-05-13):
+- **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ and Z1
 - **FMP completeness** (`fmp_completeness`): Sorry-free
 - **Dense completeness** (`dd_countermodel_chronicle_dense`): Internally sorry-free
-- **Discrete completeness**: 1 sorry remains (task 122)
-- **Full `bx_completeness`**: Blocked by 1 sorry in discrete case
+- **Discrete completeness**: 1 sorry remains (`limitDomSubtype_isSuccArchimedean` via `succ_cofinal`)
+- **Full `bx_completeness`**: Blocked by discrete sorry + nondense sorry (task 122)
+- **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
 
-**Sorry summary (critical path)**: 1 sorry in `ChronicleToCountermodel.lean`:
-1. `dd_countermodel_chronicle_nondense_sorry` (line 836): Discrete BFMCS on ℤ construction (task 122, depends on task 123 in progress)
+**Critical path**: Task 129 (weak/reflexive completeness, PLANNED) → task 122 (discrete BFMCS) → sorry-free `bx_completeness`.
 
-`limitDomSubtype_Icc_finite` was eliminated by task 123's collapse approach (no longer needed).
+**Key architectural finding** (task 123, 12+ research rounds): The sorry at `succ_cofinal` represents a genuine limitation of the Burgess chronicle construction under strict (irreflexive) semantics. The constant-MCS gap scenario (Z+Z structure where all MCS labels are identical) is consistent with ALL temporal axioms including Z1 and Prior-UZ. Under strict semantics, `G(φ)→φ` is not valid, so the Sahlqvist canonicity chain breaks for the chronicle's non-standard canonical model. Resolution: task 129 uses a weak/reflexive Henkin canonical model (where Sahlqvist canonicity applies) + Doets compression to Z + model-theoretic transfer back to strict semantics.
+
+**Sorry summary (critical path)**: 2 sorries in `ChronicleToCountermodel.lean`:
+1. `limitDomSubtype_isSuccArchimedean` (line 1204): IsSuccArchimedean for limit domain (task 129 Phase 7)
+2. `dd_countermodel_chronicle_nondense_sorry` (line 839): Discrete BFMCS on ℤ (task 122, depends on 129)
 
 **Planned evolution** (after sorry-free completeness):
-- **Phase 2 — Axiom cleanup**: Remove TF axiom (task 124), remove A4a (task 115), redefine G/H/F/P via U/S (task 116). Reduces primitives to {S, U, □, →, ⊥}.
-- **Phase 3 — Algebraic representation**: Jónsson-Tarski representation theorem for the BAO with binary S/U and unary □ (task 125). Builds on Venema 1993 (Anti-Axioms), leveraging orthodox axiomatizability for ultraproduct closure. Literature in `literature/` with markdown conversions.
-- **Phase 4 — Publication quality**: Verification audit (task 95), genuine truth_at completeness (task 8).
+- **Phase 2 — Frame hierarchy + axiom cleanup**: Four-tier hierarchy Base → Dense/Discrete → Integer with Sahlqvist correspondence (task 126). Density axiom `GGp→Gp`, discreteness axiom `U(⊤,⊥)`. Then remove TF (task 124), remove A4a (task 115), redefine G/H/F/P via U/S (task 116). Reduces primitives to {S, U, □, →, ⊥}.
+- **Phase 3 — Expressive extensions**: Time addition operator (+) for FO[<,+] expressiveness (task 127). Open set/interior operator for dense/continuous frames (task 128).
+- **Phase 4 — Algebraic representation**: Jónsson-Tarski representation theorem for the BAO with binary S/U and unary □ (task 125). Builds on Venema 1993 (Anti-Axioms), leveraging orthodox axiomatizability for ultraproduct closure.
+- **Phase 5 — Publication quality**: Verification audit (task 95), genuine truth_at completeness (task 8).
 
 **Sorry summary (dead code)**: ~17 sorries in the BXCanonical/Bundle/Quasimodel/Filtration pipeline are mathematically false under irreflexive semantics (they assume reflexive G/H). These are bypassed by the Chronicle approach and should be archived.
 

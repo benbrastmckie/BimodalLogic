@@ -27,33 +27,36 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-11. Task 120 abandoned (redesign infeasible). Tasks 124, 116 planned. Task 125 created (JT representation).*
+*Updated 2026-05-13. Task 123 completed (Z1 axiom, C5 bot witness). Task 129 planned (weak/reflexive completeness). Tasks 127-128, 130 created. Task 126 revised to four-tier frame hierarchy.*
 
-**Goal**: Sorry-free `bx_completeness` → axiom system cleanup → algebraic representation theorem.
+**Goal**: Sorry-free `bx_completeness` → frame hierarchy → axiom cleanup → expressive extensions → algebraic representation.
 
-**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness internally sorry-free. Discrete `discrete_fmcs` sorry-free (task 123). One sorry remains: `dd_countermodel_chronicle_nondense_sorry` (task 122).
+**Status**: Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness internally sorry-free. Discrete `discrete_fmcs` sorry-free. Task 123 complete (Z1 axiom + C5 fix). One sorry remains on critical path: `dd_countermodel_chronicle_nondense_sorry` (task 122, depends on 129). Task 129 (weak/reflexive completeness) is planned and ready to implement.
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **129** [RESEARCHED] — Weak/reflexive completeness + model-theoretic transfer (bypasses succ_cofinal gap)
-2. **123** [COMPLETED] — C5 bot witness + Z1 axiom done; IsSuccArchimedean → task 129
-3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123 or 129)
-4. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+1. **129** [PLANNED] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
+2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
+3. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+4. ~~**123**~~ [COMPLETED] — C5 bot witness + Z1 axiom (IsSuccArchimedean deferred → 129)
 
-### Phase 2: Axiom System Cleanup
+### Phase 2: Frame Hierarchy and Axiom Cleanup
 
-All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentially after task 123 merges.
-
-1. **126** [RESEARCHED] — Four-tier frame hierarchy: Base → Dense/Discrete → Integer (depends on 123, 129)
+1. **126** [RESEARCHED] — Four-tier frame hierarchy: Base → Dense/Discrete → Integer with Sahlqvist correspondence (depends on 129)
 2. **124** [PLANNED] — Remove TF axiom, derive from MF (~6h, low risk)
 3. **115** [RESEARCHED] — Remove A4a, simplify BX2 (~2h, low risk)
 4. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
 
-### Phase 3: Algebraic Representation
+### Phase 3: Expressive Extensions
 
-- **125** [NOT STARTED] — Jónsson-Tarski representation for S/U/□ (depends on all Phase 1+2 tasks)
+1. **127** [NOT STARTED] — Time addition operator (+): ternary semantics, FO[<,+] (depends on 123)
+2. **128** [NOT STARTED] — Open set (interior) operator for dense/continuous frames (depends on 122)
 
-### Phase 4: Publication Quality
+### Phase 4: Algebraic Representation
+
+- **125** [NOT STARTED] — Jónsson-Tarski representation for S/U/□ (depends on all Phase 1-3 tasks)
+
+### Phase 5: Publication Quality
 
 - **95** [NOT STARTED] — Verification audit (after axiom system is final)
 - **8** [RESEARCHED] — Genuine truth_at completeness
