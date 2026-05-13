@@ -289,12 +289,6 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | serial_past =>
     simp only [subst_imp, subst_some_past, subst_bot]
     exact Axiom.serial_past
-  | left_mono_until a b c =>
-    simp only [subst_imp, subst_untl]
-    exact Axiom.left_mono_until (a.subst q r) (b.subst q r) (c.subst q r)
-  | left_mono_since a b c =>
-    simp only [subst_imp, subst_snce]
-    exact Axiom.left_mono_since (a.subst q r) (b.subst q r) (c.subst q r)
   | left_mono_until_G a b c =>
     simp only [subst_imp, subst_all_future, subst_untl]
     exact Axiom.left_mono_until_G (a.subst q r) (b.subst q r) (c.subst q r)

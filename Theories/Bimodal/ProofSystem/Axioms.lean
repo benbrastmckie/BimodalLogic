@@ -125,20 +125,6 @@ inductive Axiom : Formula → Type where
   | serial_past :
     Axiom ((Formula.bot.imp Formula.bot).imp (Formula.some_past (Formula.bot.imp Formula.bot)))
 
-  /-- BX2: Guard monotonicity of Until (Burgess convention: untl(event, guard)):
-  `(φ→χ) ∧ G(φ→χ) → ((ψ U φ) → (ψ U χ))`.
-  Under open guard (t,s): G(φ→χ) covers (t,s), so guard monotonicity follows directly. -/
-  | left_mono_until (φ ψ χ : Formula) :
-      Axiom (Formula.and (φ.imp χ) (φ.imp χ).all_future |>.imp
-        ((Formula.untl ψ φ).imp (Formula.untl ψ χ)))
-
-  /-- BX2': Guard monotonicity of Since (Burgess convention: snce(event, guard)):
-  `(φ→χ) ∧ H(φ→χ) → ((ψ S φ) → (ψ S χ))`.
-  Under open guard (s,t): H(φ→χ) covers (s,t), so guard monotonicity follows directly. -/
-  | left_mono_since (φ ψ χ : Formula) :
-      Axiom (Formula.and (φ.imp χ) (φ.imp χ).all_past |>.imp
-        ((Formula.snce ψ φ).imp (Formula.snce ψ χ)))
-
   /-- BX2G: Guard monotonicity of Until under G (Burgess convention: untl(event, guard)):
   `G(φ→χ) → ((ψ U φ) → (ψ U χ))`.
   Under open guard (t,s): G(φ→χ) covers all r > t, which includes (t,s).

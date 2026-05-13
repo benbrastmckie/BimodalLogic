@@ -540,22 +540,6 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro _ h_all_neg
     obtain ⟨s, hts⟩ := exists_gt t
     exact h_all_neg s hts (fun h => h)
-  | left_mono_until φ ψ χ =>
-    -- Swap: (φ'→χ') ∧ H(φ'→χ') → ((φ' S ψ') → (χ' S ψ'))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have h_H : ∀ r, r < t → truth_at M Omega τ r φ.swap_temporal → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
-  | left_mono_since φ ψ χ =>
-    -- Swap: (φ'→χ') ∧ G(φ'→χ') → ((φ' U ψ') → (χ' U ψ'))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have h_G : ∀ r, t < r → truth_at M Omega τ r φ.swap_temporal → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
   | left_mono_until_G φ χ ψ =>
     -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1143,22 +1127,6 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     intro _ h_all_neg
     obtain ⟨s, hst⟩ := exists_lt t
     exact h_all_neg s hst (fun h => h)
-  | left_mono_until φ ψ χ =>
-    -- Direct: (φ→χ) ∧ G(φ→χ) → ((φ U ψ) → (χ U ψ))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have h_G : ∀ r, t < r → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
-  | left_mono_since φ ψ χ =>
-    -- Direct: (φ→χ) ∧ H(φ→χ) → ((φ S ψ) → (χ S ψ))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have h_H : ∀ r, r < t → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
   | left_mono_until_G φ χ ψ =>
     -- Direct: G(φ→χ) → untl(φ,ψ) → untl(χ,ψ)
     intro F M Omega _h_sc τ _h_mem t
@@ -1606,22 +1574,6 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDense
     intro _ h_all_neg
     obtain ⟨s, hts⟩ := exists_gt t
     exact h_all_neg s hts (fun h => h)
-  | left_mono_until φ ψ χ =>
-    -- Swap: (φ'→χ') ∧ H(φ'→χ') → ((φ' S ψ') → (χ' S ψ'))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have h_H : ∀ r, r < t → truth_at M Omega τ r φ.swap_temporal → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
-  | left_mono_since φ ψ χ =>
-    -- Swap: (φ'→χ') ∧ G(φ'→χ') → ((φ' U ψ') → (χ' U ψ'))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have h_G : ∀ r, t < r → truth_at M Omega τ r φ.swap_temporal → truth_at M Omega τ r χ.swap_temporal := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
   | left_mono_until_G φ χ ψ =>
     -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -1895,22 +1847,6 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     intro _ h_all_neg
     obtain ⟨s, hst⟩ := exists_lt t
     exact h_all_neg s hst (fun h => h)
-  | left_mono_until φ ψ χ =>
-    -- Direct: (φ→χ) ∧ G(φ→χ) → ((φ U ψ) → (χ U ψ))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hts, h_ψs, h_guard⟩
-    have h_G : ∀ r, t < r → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
-  | left_mono_since φ ψ χ =>
-    -- Direct: (φ→χ) ∧ H(φ→χ) → ((φ S ψ) → (χ S ψ))
-    intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.and, Formula.neg, truth_at]
-    intro h_conj ⟨s, hst, h_ψs, h_guard⟩
-    have h_H : ∀ r, r < t → truth_at M Omega τ r φ → truth_at M Omega τ r χ := by
-      by_contra h_neg; exact h_conj (fun _ h => h_neg h)
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
   | left_mono_until_G φ χ ψ =>
     -- Direct: G(φ→χ) → untl(φ,ψ) → untl(χ,ψ)
     intro F M Omega _h_sc τ _h_mem t

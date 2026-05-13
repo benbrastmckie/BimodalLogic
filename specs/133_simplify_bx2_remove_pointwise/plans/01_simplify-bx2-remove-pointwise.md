@@ -92,7 +92,7 @@ This task advances the Phase 2 roadmap item: "Frame hierarchy + axiom cleanup" w
 
 ---
 
-### Phase 2: Remove Constructors, Soundness Proofs, and Match Arms [NOT STARTED]
+### Phase 2: Remove Constructors, Soundness Proofs, and Match Arms [COMPLETED]
 
 **Goal**: Delete the `left_mono_until` and `left_mono_since` constructors from the `Axiom` inductive and remove all associated match arms and validity proofs.
 
