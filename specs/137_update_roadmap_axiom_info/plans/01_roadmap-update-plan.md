@@ -1,7 +1,7 @@
 # Implementation Plan: Update ROADMAP.md stale axiom info
 
 - **Task**: 137 - Update ROADMAP.md stale axiom info
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: None
@@ -57,7 +57,7 @@ No ROADMAP.md found applicable — this task IS the ROADMAP.md update; no separa
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Apply five targeted edits to ROADMAP.md [NOT STARTED]
+### Phase 1: Apply five targeted edits to ROADMAP.md [COMPLETED]
 
 - **Goal**: Correct all five stale references in specs/ROADMAP.md identified by the post-sprint review
 - **Tasks**:

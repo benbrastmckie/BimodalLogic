@@ -77,13 +77,13 @@ technical_debt:
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta)
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 - **137** [IMPLEMENTING] — Update ROADMAP.md stale axiom info (~30min)
-- **138** [IMPLEMENTING] — Update TODO.md sorry_count_note (~10min)
+- **138** [COMPLETED] — Update TODO.md sorry_count_note (~10min)
 
 ## Tasks
 
 ### 138. Update TODO.md sorry_count_note for axiom cleanup sprint
 - **Effort**: 10 minutes
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Plan**: [specs/138_update_todo_sorry_note/plans/01_todo-note-update-plan.md]
 
@@ -93,7 +93,7 @@ technical_debt:
 
 ### 137. Update ROADMAP.md stale axiom info
 - **Effort**: 30 minutes
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Priority**: high
 - **Plan**: [specs/137_update_roadmap_axiom_info/plans/01_roadmap-update-plan.md]

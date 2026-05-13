@@ -6,7 +6,7 @@ TM is a bimodal logic combining S5 modality with irreflexive linear temporal log
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
 state of the completeness effort as of 2026-05-10.
 
-**Architecture**: The proof system has 45 BX axioms organized in 6 layers:
+**Architecture**: The proof system has 41 BX axioms organized in 6 layers:
 propositional (4), S5 modal (5), Burgess-Xu temporal (26), modal-temporal
 interaction (2), uniformity (4), and Prior-UZ/SZ (2, discrete-only). The temporal
 semantics is **irreflexive**: G/H quantify over `t < s` / `s < t` (strict
@@ -146,7 +146,7 @@ construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy
 
 ## BX Axiom System
 
-`Theories/Bimodal/ProofSystem/Axioms.lean` defines 45 axiom constructors in
+`Theories/Bimodal/ProofSystem/Axioms.lean` defines 41 axiom constructors in
 six layers (see `Axioms.lean:46-49` for Burgess 1982/84, Xu 1988, Venema 1993,
 Reynolds 1992 references). Under irreflexive semantics (strict `<` for G/H,
 strict witness for U/S), the axiom set replaces BX1/BX1' (reflexive T) with
@@ -179,8 +179,6 @@ seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 | `temp_4` | Axioms.lean:112 | `Gφ → GGφ` | Transitivity; needed for `bx_le_trans` |
 | BX1 `serial_future` | Axioms.lean:117 | `T → F(T)` | Seriality (replaces reflexive T) |
 | BX1' `serial_past` | Axioms.lean:122 | `T → P(T)` | Mirror seriality |
-| BX2 `left_mono_until` | Axioms.lean:127 | `(φ→χ) ∧ G(φ→χ) → ((φUψ)→(χUψ))` | Left monotonicity |
-| BX2' `left_mono_since` | Axioms.lean:133 | mirror for S | |
 | BX3 `right_mono_until` | Axioms.lean:139 | `G(φ→ψ) → ((χUφ)→(χUψ))` | Right monotonicity |
 | BX3' `right_mono_since` | Axioms.lean:143 | mirror for S | |
 | BX4 `connect_future` | Axioms.lean:150 | `φ → G(P(φ))` | Temporal connectedness |
@@ -205,7 +203,7 @@ seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 *Note: BX8/BX8' (until_step/since_step) removed -- not sound under irreflexive semantics.*
 *Note: BX9/BX9' (until_elim/since_elim) and until_guard/since_guard removed -- not sound under open guard `(t,s)` semantics (task 113).*
 *Note: BX14/BX14' (separation_until/separation_since) removed -- redundant under transitive frames. Xu 3.2.1 (BX5 self-accumulation) subsumes BX14's role in chronicle splitting (task 115).*
-*Note: BX2H/BX2H' (left_mono_until_G/left_mono_since_H) added in task 107 Phase 5b. BX2H subsumes BX2 under open-guard semantics (the pointwise conjunct in BX2 is redundant when the guard interval excludes the current point).*
+*Note: BX2/BX2' (left_mono_until/left_mono_since) removed in task 133. Under open-guard irreflexive semantics the pointwise conjunct in BX2 is redundant; BX2H/BX2H' (left_mono_until_G/left_mono_since_H, added in task 107 Phase 5b) subsume BX2/BX2' and are now the canonical left-monotonicity axioms.*
 
 ### Layer 4: Modal-Temporal Interaction (2 → 1 after task 124)
 
@@ -353,7 +351,7 @@ PointInsertion. The construction lives in `Metalogic/BXCanonical/Chronicle/`
 
 **Chronicle module structure**:
 - `ChronicleTypes.lean` (~700 lines) -- Chronicle structure, `ClosedUnderDerivation`, `BurgessR3Maximal` (**sorry-free**)
-- `PointInsertion.lean` (~3690 lines) -- Lemma 2.4/2.6, g_content⊆B, splitting (**sorry-free**)
+- `PointInsertion.lean` (~3555 lines) -- Lemma 2.4/2.6, g_content⊆B, splitting (**sorry-free**)
 - `RRelation.lean` (~1580 lines) -- R-relation, Burgess 2.3 equiv, Zorn construction (**sorry-free**)
 - `CounterexampleElimination.lean` (~3600 lines) -- C4/C5 elimination (**sorry-free**)
 - `ChronicleConstruction.lean` (~1220 lines) -- Omega-chain, limit construction (**sorry-free**)
@@ -559,7 +557,7 @@ SigmaOrdering 3); the remaining files are sorry-free.
 
 | File | Lines | Purpose | Key Definitions |
 |------|-------|---------|-----------------|
-| `CanonicalChain.lean` | 160 | MCS-level BX axiom lemmas and delegation bridges (sorry-free) | `psi_imp_until_mcs`, `psi_imp_since_mcs`, `F_imp_top_until_mcs`, `left_mono_until_mcs` |
+| `CanonicalChain.lean` | 160 | MCS-level BX axiom lemmas and delegation bridges (sorry-free) | `psi_imp_until_mcs`, `psi_imp_since_mcs`, `F_imp_top_until_mcs` |
 
 ---
 

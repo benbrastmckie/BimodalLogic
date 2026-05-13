@@ -629,9 +629,10 @@
     {
       "project_number": 138,
       "project_name": "update_todo_sorry_note",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "description": "Update TODO.md frontmatter sorry_count_note to reflect axiom cleanup sprint: axiom count now 41 (was 61), tasks 115/124/133/134 completed",
+      "completion_summary": "Updated sorry_count_note in TODO.md frontmatter: audit date advanced to 2026-05-13, added axiom count reduction (61->41, tasks 115/124/133), added PointInsertion.lean line reduction (4333->3555, task 134), removed stale limitDomSubtype_Icc_finite note.",
       "created": "2026-05-13T22:24:28Z",
       "last_updated": "2026-05-13T22:30:00Z",
       "session_id": "sess_1778711271_f8a2d4",
