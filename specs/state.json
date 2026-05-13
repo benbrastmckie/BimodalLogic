@@ -24,13 +24,13 @@
     {
       "project_number": 123,
       "project_name": "fix_c5_witness_bot_and_prove_icc_finite",
-      "status": "researched",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Modify eliminate_potential_counterexample in CounterexampleElimination.lean to skip midpoint insertion when ξ=⊥ (dom-successor is vacuously valid witness since ⊥ is never in any MCS). Adjust EliminationResult.c5_forward_witness to allow vacuous satisfaction, update omega_chain_c5_witness and limit_satisfies_c5_strong in ChronicleConstruction.lean. Then prove limitDomSubtype_Icc_finite (ChronicleToCountermodel.lean:1064) and complete the discrete completeness path. Replaces task 121 on critical path (121 abandoned — lemma was false for unmodified construction).",
       "dependencies": [],
       "created": "2026-05-11T12:31:32Z",
-      "last_updated": "2026-05-13T07:45:33Z",
+      "last_updated": "2026-05-13T08:07:32Z",
       "next_artifact_number": 13,
       "artifacts": [
         {
@@ -133,7 +133,8 @@
       "started": "2026-05-11T14:06:20Z",
       "completed": "2026-05-11T16:40:49Z",
       "archived": "2026-05-11T16:55:47Z",
-      "researched": "2026-05-13T07:45:33Z"
+      "researched": "2026-05-13T07:45:33Z",
+      "completion_summary": "Partial: Z1 axiom added with sorry-free soundness proof, all pattern matches updated, z1_derivation sorry eliminated, 3 dead-end proof attempts archived to Boneyard. IsSuccArchimedean admitted pending task 129 (weak/reflexive completeness). Sorry count 6→3 in ChronicleToCountermodel.lean."
     },
     {
       "project_number": 124,
