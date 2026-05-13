@@ -888,6 +888,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     exact h_guard (c + (t - u)) h1 h2
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 /-! ## Axiom Validity (Local)
 
 These lemmas prove validity of each axiom using the local `is_valid` definition.
@@ -1468,6 +1469,7 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     exact h_guard (c - (u - t)) h1 h2
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 /-! ## Rule Preservation for Local Validity
 
 Helper lemmas proving that inference rules preserve local validity.
@@ -1966,6 +1968,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDense
     exact h_guard (c + (t - u)) h1 h2
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 
 /-- All dense-compatible BX axioms are locally valid without frame-class constraints. -/
 private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : Axiom φ)
@@ -2271,6 +2274,7 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     exact h_guard (c - (u - t)) h1 h2
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 
 /-- Combined soundness for dense-compatible derivations without frame-class constraints:
 derivability implies both validity and swap-validity. Identical to
@@ -2416,6 +2420,132 @@ theorem prior_SZ_is_valid
     rw [← hj1]
     exact hk₀_min j hj_lt
 
+/-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
+Backward induction from the Gφ witness using IsSuccArchimedean. -/
+theorem z1_is_valid
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (φ : Formula) : is_valid D ((φ.all_future.imp φ).all_future.imp
+        (φ.all_future.some_future.imp φ.all_future)) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  intro h_GGpIp h_FGp
+  -- Extract the FGφ witness: ∃ s₀ > t with Gφ at s₀
+  have ⟨s₀, hts₀, hs₀⟩ : ∃ s₀, t < s₀ ∧ ∀ r, s₀ < r → truth_at M Omega τ r φ := by
+    by_contra h
+    push_neg at h
+    exact h_FGp fun s hts h_all =>
+      let ⟨r, hr, hnr⟩ := h s hts
+      hnr (h_all r hr)
+  obtain ⟨n₀, hn₀⟩ := (Order.succ_le_of_lt hts₀).exists_succ_iterate
+  have hn₀_eq : Order.succ^[n₀ + 1] t = s₀ := by
+    show Order.succ^[n₀] (Order.succ t) = s₀; exact hn₀
+  have h_iter_mono : Monotone (fun i => Order.succ^[i] t) :=
+    Order.succ_mono.monotone_iterate_of_le_map (Order.le_succ t)
+  have h_not_max : ¬IsMax t := hts₀.not_isMax
+  -- Helper: truth_at s φ for any s > t (the main goal, proved assuming backward induction)
+  -- We prove: ∀ s > t, truth_at s φ, using backward induction from s₀.
+  -- Strategy: for any s > t, obtain n with succ^[n](succ(t)) = s, then dispatch:
+  --   n ≤ n₀: backward induction (h_descend below)
+  --   n > n₀: either s₀ is max (so s = s₀, use h_GGpIp), or s > s₀ (use hs₀)
+  have h_above_s0 : ∀ s, s₀ ≤ s → truth_at M Omega τ s φ := by
+    intro s hs
+    rcases eq_or_lt_of_le hs with rfl | hlt
+    · exact h_GGpIp s₀ hts₀ hs₀
+    · exact hs₀ s hlt
+  -- Backward induction: truth_at (succ^[k+1](t)) φ for all k, using Nat.strong_induction_on
+  -- on the "distance from top" n₀ - k (= 0 when k ≥ n₀).
+  have h_all_iterates : ∀ k, truth_at M Omega τ (Order.succ^[k + 1] t) φ := by
+    -- Prove ∀ k ≤ n₀ by strong induction on n₀ - k
+    suffices h_le : ∀ k, k ≤ n₀ → truth_at M Omega τ (Order.succ^[k + 1] t) φ by
+      intro k
+      by_cases hk : k ≤ n₀
+      · exact h_le k hk
+      · exact h_above_s0 _ (hn₀_eq ▸ h_iter_mono (by omega : n₀ + 1 ≤ k + 1))
+    -- Strong induction: prove for k assuming it holds for all k' with k < k' ≤ n₀
+    have : ∀ d, d ≤ n₀ → ∀ k, n₀ - k = d → k ≤ n₀ →
+        truth_at M Omega τ (Order.succ^[k + 1] t) φ := by
+      intro d
+      induction d using Nat.strong_induction_on with
+      | _ d ih =>
+        intro hd k hk hkn
+        apply h_GGpIp
+        · exact lt_of_lt_of_le (Order.lt_succ_of_not_isMax h_not_max)
+            (h_iter_mono (by omega : 1 ≤ k + 1))
+        · -- Need: ∀ r > succ^[k+1](t), truth_at r φ
+          intro r hr
+          obtain ⟨j, hj⟩ := (Order.succ_le_of_lt hr).exists_succ_iterate
+          have hj_eq : Order.succ^[j + 1] (Order.succ^[k + 1] t) = r := by
+            show Order.succ^[j] (Order.succ (Order.succ^[k + 1] t)) = r; exact hj
+          rw [← hj_eq, ← Function.iterate_add_apply,
+              show j + 1 + (k + 1) = (k + j + 1) + 1 from by omega]
+          by_cases h_le : k + j + 1 ≤ n₀
+          · exact ih (n₀ - (k + j + 1)) (by omega) (by omega) (k + j + 1) rfl h_le
+          · exact h_above_s0 _ (hn₀_eq ▸ h_iter_mono (by omega : n₀ + 1 ≤ (k + j + 1) + 1))
+    intro k hk
+    exact this (n₀ - k) (by omega) k rfl hk
+  -- Main goal
+  intro s hts
+  obtain ⟨m, hm⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
+  have hm_eq : Order.succ^[m] (Order.succ t) = s := hm
+  exact (show Order.succ^[m + 1] t = s from hm_eq) ▸ h_all_iterates m
+
+/-- Z1 past dual is valid on discrete orders: H(Hφ→φ) → (PHφ→Hφ).
+Backward induction using IsPredArchimedean. -/
+theorem z1_past_is_valid
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (φ : Formula) : is_valid D ((φ.all_past.imp φ).all_past.imp
+        (φ.all_past.some_past.imp φ.all_past)) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_past, Formula.neg, truth_at]
+  intro h_HHpIp h_PHp
+  have ⟨s₀, hs₀t, hs₀⟩ : ∃ s₀, s₀ < t ∧ ∀ r, r < s₀ → truth_at M Omega τ r φ := by
+    by_contra h
+    push_neg at h
+    exact h_PHp fun s hst h_all =>
+      let ⟨r, hr, hnr⟩ := h s hst
+      hnr (h_all r hr)
+  obtain ⟨n₀, hn₀⟩ := (Order.le_pred_of_lt hs₀t).exists_pred_iterate
+  have hn₀_eq : Order.pred^[n₀ + 1] t = s₀ := by
+    show Order.pred^[n₀] (Order.pred t) = s₀; exact hn₀
+  have h_iter_anti : Antitone (fun i => Order.pred^[i] t) :=
+    Order.pred_mono.antitone_iterate_of_map_le (Order.pred_le t)
+  have h_not_min : ¬IsMin t := hs₀t.not_isMin
+  have h_below_s0 : ∀ u, u ≤ s₀ → truth_at M Omega τ u φ := by
+    intro u hu
+    rcases eq_or_lt_of_le hu with rfl | hlt
+    · exact h_HHpIp _ hs₀t hs₀
+    · exact hs₀ u hlt
+  have h_all_iterates : ∀ k, truth_at M Omega τ (Order.pred^[k + 1] t) φ := by
+    suffices h_le : ∀ k, k ≤ n₀ → truth_at M Omega τ (Order.pred^[k + 1] t) φ by
+      intro k
+      by_cases hk : k ≤ n₀
+      · exact h_le k hk
+      · exact h_below_s0 _ (hn₀_eq ▸ h_iter_anti (by omega : n₀ + 1 ≤ k + 1))
+    have : ∀ d, d ≤ n₀ → ∀ k, n₀ - k = d → k ≤ n₀ →
+        truth_at M Omega τ (Order.pred^[k + 1] t) φ := by
+      intro d
+      induction d using Nat.strong_induction_on with
+      | _ d ih =>
+        intro hd k hk hkn
+        apply h_HHpIp
+        · exact lt_of_le_of_lt (h_iter_anti (by omega : 1 ≤ k + 1))
+            (Order.pred_lt_of_not_isMin h_not_min)
+        · intro r hr
+          obtain ⟨j, hj⟩ := (Order.le_pred_of_lt hr).exists_pred_iterate
+          have hj_eq : Order.pred^[j + 1] (Order.pred^[k + 1] t) = r := by
+            show Order.pred^[j] (Order.pred (Order.pred^[k + 1] t)) = r; exact hj
+          rw [← hj_eq, ← Function.iterate_add_apply,
+              show j + 1 + (k + 1) = (k + j + 1) + 1 from by omega]
+          by_cases h_le : k + j + 1 ≤ n₀
+          · exact ih (n₀ - (k + j + 1)) (by omega) (by omega) (k + j + 1) rfl h_le
+          · exact h_below_s0 _ (hn₀_eq ▸ h_iter_anti (by omega : n₀ + 1 ≤ (k + j + 1) + 1))
+    intro k hk
+    exact this (n₀ - k) (by omega) k rfl hk
+  intro s hst
+  obtain ⟨m, hm⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
+  have hm_eq : Order.pred^[m] (Order.pred t) = s := hm
+  exact (show Order.pred^[m + 1] t = s from hm_eq) ▸ h_all_iterates m
+
 /-- All axiom swaps are valid on discrete orders. For dense-compatible axioms,
 delegates to `axiom_swap_valid_general`. For Prior-UZ/SZ, proves directly. -/
 private theorem axiom_swap_valid_discrete
@@ -2432,6 +2562,11 @@ private theorem axiom_swap_valid_discrete
       -- swap of Prior-SZ = Prior-UZ for (swap_temporal φ)
       show is_valid D (φ.swap_temporal.some_future.imp (φ.swap_temporal.untl φ.swap_temporal.neg))
       exact prior_UZ_is_valid φ.swap_temporal
+    | z1 φ =>
+      -- swap of Z1: G(Gφ→φ) → (FGφ→Gφ) becomes H(Hφ→φ) → (PHφ→Hφ)
+      show is_valid D ((φ.swap_temporal.all_past.imp φ.swap_temporal).all_past.imp
+        (φ.swap_temporal.all_past.some_past.imp φ.swap_temporal.all_past))
+      exact z1_past_is_valid φ.swap_temporal
     | _ => simp [Axiom.isDenseCompatible] at hdc
 
 /-- All axioms are locally valid on discrete orders. For dense-compatible axioms,
@@ -2444,6 +2579,7 @@ private theorem axiom_locally_valid_discrete
   · cases h with
     | prior_UZ φ => exact prior_UZ_is_valid φ
     | prior_SZ φ => exact prior_SZ_is_valid φ
+    | z1 φ => exact z1_is_valid φ
     | _ => simp [Axiom.isDenseCompatible] at hdc
 
 /-- Combined soundness on discrete frames: derivability implies both validity

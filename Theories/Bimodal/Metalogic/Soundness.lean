@@ -951,6 +951,13 @@ theorem prior_SZ_valid (φ : Formula) : valid_discrete (φ.some_past.imp (Formul
   intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
   exact SoundnessLemmas.prior_SZ_is_valid φ F M Omega h_sc τ h_mem t
 
+/-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
+Backward induction from the Gφ witness using IsSuccArchimedean. -/
+theorem z1_valid (φ : Formula) : valid_discrete
+    ((φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future)) := by
+  intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
+  exact SoundnessLemmas.z1_is_valid φ F M Omega h_sc τ h_mem t
+
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
@@ -1003,6 +1010,7 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
   | prior_UZ _ => exact absurd h_base (by simp [Axiom.isBase])
   | prior_SZ _ => exact absurd h_base (by simp [Axiom.isBase])
+  | z1 _ => exact absurd h_base (by simp [Axiom.isBase])
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
@@ -1055,6 +1063,7 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_dense discrete_propagate_bwd_valid
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
+  | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -1108,6 +1117,7 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
   | prior_UZ φ => exact prior_UZ_valid φ
   | prior_SZ φ => exact prior_SZ_valid φ
+  | z1 φ => exact z1_valid φ
 
 /-! ## Full Derivation Soundness
 
@@ -1215,6 +1225,7 @@ theorem soundness (Γ : Context) (φ : Formula)
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
     | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
     | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
+    | z1 _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1391,6 +1402,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
     | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
     | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
+    | z1 _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>

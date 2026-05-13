@@ -95,7 +95,7 @@ Close the remaining sorry in `succ_cofinal` by adding Z1 as an axiom with a soun
 
 ---
 
-### Phase 2: Add Z1 Axiom and Prove Soundness [NOT STARTED]
+### Phase 2: Add Z1 Axiom and Prove Soundness [COMPLETED]
 
 **Goal**: Add Z1 as a new axiom constructor and prove it sound on IsSuccArchimedean frames.
 

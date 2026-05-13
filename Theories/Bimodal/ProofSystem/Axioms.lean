@@ -383,6 +383,20 @@ inductive Axiom : Formula → Type where
   | prior_SZ (φ : Formula) :
       Axiom (φ.some_past.imp (Formula.snce φ φ.neg))
 
+  -- Layer 7: Z1 Axiom (IsSuccArchimedean characteristic axiom)
+  -- Z1: G(Gφ→φ) → (FGφ→Gφ)
+  -- Valid on all IsSuccArchimedean discrete linear orders (e.g. ℤ).
+  -- Encodes the property that every definable bounded set has a maximum.
+  -- Reference: Doets 1987 Claim 10, Reynolds 1994 Section 10.
+
+  /-- Z1: `G(Gφ→φ) → (FGφ→Gφ)`.
+  If Gφ→φ holds at all future times (induction step), and Gφ holds at some future
+  time (base case), then Gφ holds at the current time (conclusion). This is the
+  characteristic axiom of IsSuccArchimedean frames: backward induction from any
+  reachable Gφ-witness yields Gφ everywhere. -/
+  | z1 (φ : Formula) :
+      Axiom ((φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future))
+
   deriving Repr
 
 /--
@@ -396,22 +410,25 @@ inductive FrameClass where
   | Discrete
   deriving Repr, DecidableEq, Inhabited
 
-/-- Frame class for each axiom. Prior-UZ/SZ are discrete-only; all others are base. -/
+/-- Frame class for each axiom. Prior-UZ/SZ and Z1 are discrete-only; all others are base. -/
 def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | prior_UZ _ => .Discrete
   | prior_SZ _ => .Discrete
+  | z1 _ => .Discrete
   | _ => .Base
 
-/-- Whether an axiom is a base axiom. Prior-UZ/SZ are not base (discrete-only). -/
+/-- Whether an axiom is a base axiom. Prior-UZ/SZ and Z1 are not base (discrete-only). -/
 def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | prior_UZ _ => False
   | prior_SZ _ => False
+  | z1 _ => False
   | _ => True
 
-/-- Whether an axiom is dense-compatible. Prior-UZ/SZ are not dense-compatible. -/
+/-- Whether an axiom is dense-compatible. Prior-UZ/SZ and Z1 are not dense-compatible. -/
 def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
   | prior_UZ _ => False
   | prior_SZ _ => False
+  | z1 _ => False
   | _ => True
 
 /-- All BX axioms are discrete-compatible (no density axiom in the base system). -/

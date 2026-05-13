@@ -1524,16 +1524,10 @@ private def z1_formula (φ : Formula) : Formula :=
   (φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future)
 
 /-- Z1 derivation: `⊢ G(Gφ→φ) → (FGφ→Gφ)`.
-
-Derived from Prior-UZ (`F(ψ) → U(ψ, ¬ψ)`) + BX temporal axioms.
-The derivation uses BX11 (temporal linearity) to show that the ¬φ-witness
-from `¬Gφ` and the Gφ-witness from `FGφ` lead to contradiction under
-the hypothesis `G(Gφ→φ)`, by iterating Prior-UZ to produce an infinite
-sequence of ¬φ-points that must precede the Gφ-witness, contradicting
-the well-ordering property encoded by Prior-UZ. -/
-private noncomputable def z1_derivation (φ : Formula) :
-    DerivationTree [] (z1_formula φ) := by
-  sorry
+Z1 is an axiom of the system (Axiom.z1), so the derivation is immediate. -/
+private def z1_derivation (φ : Formula) :
+    DerivationTree [] (z1_formula φ) :=
+  DerivationTree.axiom [] _ (Axiom.z1 φ)
 
 /-- Z1 is in every MCS: if S is maximal consistent, then `z1_formula φ ∈ S`. -/
 private theorem z1_in_mcs (φ : Formula) {S : Set Formula}
