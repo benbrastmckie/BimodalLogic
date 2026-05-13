@@ -35,7 +35,7 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **123** [IMPLEMENTING] — Fix C5 witness placement, prove Icc_finite (in progress)
+1. **123** [RESEARCHED] — Fix C5 witness placement, prove Icc_finite (in progress)
 2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123)
 
 ### Phase 2: Axiom System Cleanup
@@ -85,7 +85,7 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 
 ### 123. Fix C5 witness placement for ξ=⊥ and prove Icc_finite
 - **Effort**: 15-25 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**:
@@ -99,6 +99,7 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
   - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/05_team-research.md]
   - [123_fix_c5_witness_bot_and_prove_icc_finite/plans/05_construction-specific.md]
   - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/07_team-research.md]
+  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/10_gap-elimination-strategy.md]
 
 **Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Phases 1-2 completed (collapse equivalence, FMCS on Z). Phases 3-5 revised: succ-based discrete BFMCS construction, three restricted coherence conditions, and three-way case split refinement for bx_completeness.
 
