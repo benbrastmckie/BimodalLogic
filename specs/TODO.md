@@ -35,9 +35,10 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **129** [NOT STARTED] — Weak/reflexive completeness + conservative extension (bypasses succ_cofinal gap)
+1. **129** [NOT STARTED] — Weak/reflexive completeness + model-theoretic transfer (bypasses succ_cofinal gap)
 2. **123** [PARTIAL] — Fix C5 witness placement (Z1 axiom done, IsSuccArchimedean admitted → task 129)
 3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 123 or 129)
+4. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
 ### Phase 2: Axiom System Cleanup
 
@@ -108,17 +109,17 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 - Use the maximum principle to compress the canonical model to order type ℤ (following Doets Claims 9-11: expand equivalence classes to ζ-shapes, then compress bounded types).
 - Prove the resulting model is IsSuccArchimedean.
 
-*Phase 5 — Conservative Extension (~300-500 lines)*
-- Define the translation `τ` from weak formulas to strict formulas: `τ(G_w(φ)) = τ(φ) ∧ G(τ(φ))`, etc.
-- Prove: for discrete frames, `φ` is valid under weak semantics iff `τ(φ)` is valid under strict semantics.
-- Prove: the strict axiom system derives `τ(φ)` whenever the weak system derives `φ` (soundness of translation).
-- Prove: if `ψ` (a strict formula) is valid on all discrete IsSuccArchimedean frames under strict semantics, then `ψ` is derivable in the strict system (completeness transfer).
+*Phase 5 — Model-Theoretic Completeness Transfer (~100 lines)*
+- NOTE: Expressing strict G in terms of weak operators is impossible. `U_w(φ, ⊥) = φ` in weak semantics, so Next is not definable. No formula-to-formula translation from strict to weak exists.
+- Instead, use model-theoretic argument: if ψ is not provable in the strict system, ¬ψ is consistent in the strict system. Since every weak axiom is a strict theorem (`G_w(φ) = φ ∧ G(φ)` is derivable), ¬ψ is consistent in the weak system. By weak completeness, there exists a weak countermodel on a discrete IsSuccArchimedean frame. This is also a strict countermodel (same domain, same valuation, reinterpret ≤ as <). Contrapositive: valid under strict → provable.
 
-*Phase 6 — Integration and Verification (~200 lines)*
-- Wire the weak completeness + conservative extension into the existing `dd_countermodel_chronicle_discrete` or create a parallel sorry-free completeness theorem.
+*Phase 6 — Integration and Verification (~100 lines)*
+- Wire the weak completeness + model-theoretic transfer into the existing completeness pipeline or create a parallel sorry-free completeness theorem.
 - Verify `lake build` passes.
 - Verify key theorems are sorry-free via `lean_verify`.
-- Clean up: remove or mark the chronicle-based `succ_cofinal` sorry as superseded.
+
+*Phase 7 — Close the Sorry (~50 lines)*
+- Replace the admitted `limitDomSubtype_isSuccArchimedean` in ChronicleToCountermodel.lean with the Henkin-derived IsSuccArchimedean, making `dd_countermodel_chronicle_discrete` sorry-free.
 
 **Risks and Mitigations**:
 - Risk: Weak Until `U_w` may not be cleanly expressible from strict Until. Mitigation: Add `U_w` as a new constructor if needed, with its own semantics.
@@ -133,6 +134,17 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
 - The weak sub-language is independently interesting for proof-theoretic and algebraic investigations (task 125).
 
 **Literature**: Doets 1987 (Completeness and Definability, Claims 9-11), Burgess 1982/1984 (chronicle construction for strict semantics), Gabbay-Hodkinson-Reynolds (irreflexivity techniques), Blackburn-de Rijke-Venema 2002 (Section 7.2, completeness with Until/Since).
+
+---
+
+### 130. Archive dead sorries to Boneyard
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 129
+
+**Description**: After task 129 provides IsSuccArchimedean via weak/reflexive completeness, archive all dead-code sorries to the Boneyard. Includes: (1) succ_reaches_dom_N boundary cases (ChronicleToCountermodel.lean) — stage induction superseded by Henkin model. (2) limit_dom_points_are_succ_iterates — convergence approach superseded. (3) succ_cofinal gap analysis — entire convergence + Z1 gap section. (4) BXCanonical pipeline dead code (Quasimodel/Realization, Quasimodel/Construction, TruthLemma, RootScopedChain, Filtration/SigmaOrdering, Frame) — bypassed by Chronicle. (5) Bundle/SuccRelation and Bundle/SuccExistence sorries if no longer needed. Total: ~40 sorries to archive.
 
 ---
 
@@ -184,6 +196,8 @@ All touch overlapping files (Axioms.lean, Soundness.lean, etc.) — do sequentia
   - [123_fix_c5_witness_bot_and_prove_icc_finite/reports/07_team-research.md]
   - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/10_gap-elimination-strategy.md]
   - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/11_team-research.md]
+  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/12_subformula-finiteness.md]
+  - [specs/123_fix_c5_witness_bot_and_prove_icc_finite/reports/13_conservative-extension-mechanism.md]
   - [123_fix_c5_witness_bot_and_prove_icc_finite/plans/11_three-track-completeness.md]
 
 **Description**: Fix C5 witness placement for ξ=⊥ and prove Icc_finite. Phases 1-2 completed (collapse equivalence, FMCS on Z). Phases 3-5 revised: succ-based discrete BFMCS construction, three restricted coherence conditions, and three-way case split refinement for bx_completeness.
