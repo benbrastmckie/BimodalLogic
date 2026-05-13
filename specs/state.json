@@ -8,11 +8,11 @@
     {
       "project_number": 132,
       "project_name": "merge_boneyard_directories",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Merge Boneyard/ (project root) into Theories/Bimodal/Boneyard/ (the canonical Boneyard location within the Lean module hierarchy). Move all files from the root-level Boneyard/ directory into the appropriate subdirectories under Theories/Bimodal/Boneyard/, resolving any naming conflicts. After merging, populate Theories/Bimodal/Boneyard/README.md with documentation covering: (1) purpose of the Boneyard (archived dead code, superseded approaches, mathematically false lemmas), (2) directory structure and what each subdirectory contains, (3) why each group of files was archived (with references to the tasks that superseded them), (4) guidance on when to consult Boneyard code vs when to ignore it. Remove the root-level Boneyard/ directory after successful merge. Update any import paths if needed.",
       "created": "2026-05-13T18:13:51Z",
-      "last_updated": "2026-05-13T21:15:55Z",
+      "last_updated": "2026-05-13T22:30:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -24,10 +24,17 @@
           "path": "specs/132_merge_boneyard_directories/plans/01_boneyard-merge-plan.md",
           "type": "plan",
           "summary": "3-phase implementation plan for merging root Boneyard into canonical location"
+        },
+        {
+          "path": "specs/132_merge_boneyard_directories/summaries/01_boneyard-merge-summary.md",
+          "type": "summary",
+          "summary": "Boneyard merge complete: 2 files moved, 2 READMEs written, root Boneyard removed"
         }
       ],
-      "session_id": "sess_1778706675_0a5dc9",
-      "researched": "2026-05-13T21:00:51Z"
+      "session_id": "sess_1778707221_475559",
+      "researched": "2026-05-13T21:00:51Z",
+      "completed": "2026-05-13T22:30:00Z",
+      "completion_summary": "Merged root Boneyard/ into Theories/Bimodal/Boneyard/. 2 files moved (XuLemma321.lean, PointInsertionLegacy.lean), 2 READMEs written (XuLemma321Legacy subdirectory + comprehensive top-level with 15-directory inventory). Root Boneyard/ removed."
     },
     {
       "project_number": 131,
