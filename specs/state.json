@@ -558,13 +558,13 @@
     {
       "project_number": 129,
       "project_name": "weak_reflexive_completeness_conservative_extension",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Develop a weak/reflexive temporal sub-language for discrete frames where G_w evaluates over the reflexive closure (y >= x) rather than the strict order (y > x). Prove completeness for this sub-language using standard Henkin canonical model methods (no chronicle construction, no IR rule), then transfer completeness to the strict system via model-theoretic argument, bypassing the succ_cofinal gap entirely.\n\nPhase 1: Weak sub-language definition (~100 lines). G_w(phi) := phi AND G(phi), H_w := phi AND H(phi), F_w := phi OR F(phi), P_w := phi OR P(phi). Weak Until/Since with reflexive endpoints.\n\nPhase 2: Weak axiom system (~200 lines). Derive weak axioms in the strict system. G_w(phi)->phi is trivial. Weak Z1 (FG_w(phi)->G_w(phi)) derivable from strict Z1.\n\nPhase 3: Weak Henkin canonical model (~500-800 lines). Standard construction where each point is a distinct MCS. No chronicle, no IR rule, no gap scenario. Constant-MCS structurally impossible.\n\nPhase 4: Z1 + IsSuccArchimedean in the weak model (~200-400 lines). Doets maximum principle (Claim 10) + compression from sum-of-zeta to single zeta (Claims 9-11).\n\nPhase 5: Model-theoretic completeness transfer (~100 lines). IMPORTANT: Expressing strict G in terms of weak operators is impossible (U_w(phi,bot) = phi in weak semantics, so Next is not definable). Instead use model-theoretic argument: if psi is not provable in the strict system, then neg-psi is consistent in the strict system. Since every weak axiom is a strict theorem (G_w = phi AND G), neg-psi is consistent in the weak system. By weak completeness, there exists a weak countermodel. This is also a strict countermodel (same domain, same valuation, reinterpret <= as <). Contrapositive: valid under strict -> provable.\n\nPhase 6: Integration (~100 lines). Wire weak completeness + transfer into existing pipeline.\n\nPhase 7: Close the sorry (~50 lines). Replace the admitted limitDomSubtype_isSuccArchimedean in ChronicleToCountermodel.lean with the Henkin-derived IsSuccArchimedean, making dd_countermodel_chronicle_discrete sorry-free.",
       "dependencies": [],
       "created": "2026-05-13T07:34:37Z",
-      "last_updated": "2026-05-14T15:43:29Z",
+      "last_updated": "2026-05-14T15:56:16Z",
       "next_artifact_number": 6,
       "artifacts": [
         {
@@ -583,11 +583,6 @@
           "summary": "Deep-dive: Reynolds Theorem 15 end-to-end proof trace, gap elimination trivial in discrete model, complete type-level pipeline"
         },
         {
-          "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/03_doets-reynolds-plan.md",
-          "type": "plan",
-          "summary": "4-phase Reynolds/Doets plan: reflexive canonical model, n-equivalence, Z-model, integration (35-50h)"
-        },
-        {
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/summaries/04_doets-reynolds-implementation-summary.md",
           "type": "summary",
           "summary": "PARTIAL: Skeleton only. 18 sorry-free lemmas proved, but all Reynolds/Doets definitions are vacuous (True/Unit). doets_countermodel_discrete delegates to chronicle. Zero sorries closed on critical path."
@@ -601,10 +596,15 @@
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/07_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): confirmed multi-relation correctness, identified chronicle+Reynolds alternative path, found implementation gaps"
+        },
+        {
+          "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan using Chronicle + Reynolds Theorem 15 approach to bypass succ_cofinal sorry"
         }
       ],
       "researched": "2026-05-14T15:43:29Z",
-      "session_id": "sess_1778772971_e25ab1"
+      "session_id": "sess_1778773774_b71d64"
     },
     {
       "project_number": 130,
