@@ -121,6 +121,7 @@ technical_debt:
   - [129_weak_reflexive_completeness_conservative_extension/reports/02_team-research.md]
   - [129_weak_reflexive_completeness_conservative_extension/reports/03_reynolds-deep-dive.md]
   - [129_weak_reflexive_completeness_conservative_extension/reports/06_multi-relation-mathematical-analysis.md]
+  - [129_weak_reflexive_completeness_conservative_extension/reports/07_team-research.md]
 - **Plan**:
   - [129_weak_reflexive_completeness_conservative_extension/plans/01_weak-completeness-plan.md]
   - [129_weak_reflexive_completeness_conservative_extension/plans/03_doets-reynolds-plan.md]
