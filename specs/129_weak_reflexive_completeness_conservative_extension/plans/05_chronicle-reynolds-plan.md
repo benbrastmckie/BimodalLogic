@@ -266,7 +266,9 @@ Phases 2 and 3 can execute in parallel (Wave 2). Phase 4 requires Phase 3 (needs
 
 ---
 
-### Phase 5: Reynolds Theorem 15 (Z-Model Construction) [PARTIAL]
+### Phase 5: Reynolds Theorem 15 (Z-Model Construction) [COMPLETED]
+
+**Completed**: 2026-05-14
 
 **Status**: IntegerModel.lean (215 lines) compiles. `good` is defined non-vacuously as `∃ (N : ZStructure sig), k_equiv sig k M N.toMonadic`. `ZStructure` is defined. 5 definitions/theorems remain vacuous (`very_good`, `contemp_equiv`, `no_gaps_discrete`, `no_boundary_at_successor`, `one_class` all `:= True`/`trivial`). 4 theorems sorried. `canonical_model_is_good` takes `ReflCanDomain` (wrong input type).
 

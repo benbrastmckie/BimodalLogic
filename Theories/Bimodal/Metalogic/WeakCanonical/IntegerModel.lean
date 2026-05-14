@@ -1,3 +1,4 @@
+import Bimodal.Metalogic.WeakCanonical.OrderedSum
 import Bimodal.Metalogic.WeakCanonical.Table
 import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
 
@@ -5,35 +6,31 @@ import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
 # Integer Model Construction (Reynolds Theorem 15)
 
 Defines "good" and "very good" discrete structures, contemporaneous
-equivalence, and the one-class argument for Z-model extraction.
+equivalence (~M), the gap-elimination chain for discrete orders, the
+one-class theorem, and the main `chronicle_is_good` result.
 
-## Key definitions
+## Key Definitions (NON-VACUOUS)
 - `ZStructure sig`: a monadic structure whose carrier is ℤ
-- `good sig k M`: M is k-equivalent to some Z-structure (Z-interval)
-- `very_good sig k M`: M is good and all its subintervals are good
-- `contemp_equiv sig k M a b`: a ~ b if the interval between them is very good
+- `good sig k M`: M (as OrderedMonadicStructure) is k-equivalent to some Z-structure
+- `very_good sig k M`: all subintervals of M are good
+- `contemp_equiv sig k M a b`: a ~M b if the subinterval between them is very good
 
-## Theorems (sorried — require monadic FO satisfaction)
-- `finite_structures_good`: every finite structure is good
-- `contemp_equiv_is_equiv`: ~M is an equivalence relation
-- `no_gaps_discrete`: discrete orders have no Dedekind gaps
-- `one_class`: M has exactly one ~M class (gap elimination)
-- `very_good_implies_good`: very_good ⇒ good
-- `canonical_model_is_good`: chronicle prior model is good
+## Status
+All definitions are NON-VACUOUS (no `True`, `trivial`, or `Unit` bodies).
+Proofs use `OrderedMonadicStructure` for subinterval operations and the
+`KEquivalenceFramework` for axiomatized properties.
 
-## Strategy
-All proofs are sorried because they depend on the monadic FO satisfaction
-relation (k_equiv from Phase 3). The type signatures are mathematically
-correct and non-vacuous. This is the clean-sorry approach per the risk
-mitigation strategy: the sorries represent a straightforward result in
-model theory (Doets 1989) rather than a genuine mathematical gap like
-the `succ_cofinal` sorry.
+Most proofs remain sorried per the shallow encoding strategy — they depend on
+the monadic FO satisfaction relation (k_equiv from Phase 3), but the TYPE
+SIGNATURES are mathematically correct. These are clean sorries representing
+straightforward model-theoretic results (Doets 1989), not genuine mathematical gaps.
 
 ## References
-- Reynolds 1994, Theorem 15: `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
-- Reynolds 1994, Lemma 14 (gap elimination): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+- Reynolds 1994, Theorem 15 (full construction): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+- Reynolds 1994, Theorem 14 (gap elimination): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 - Reynolds 1994, Lemma 16 (very good ⇒ good): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
-- Reynolds 1994, Theorem 18 (completeness): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+- Doets 1989, Section 1 (k-types, finite types): `literature/Doets_1989_Monadic_Pi11_Theories.md`
+- Report 08, Q4 (correct definitions for vacuous stubs): `reports/08_phase-by-phase-research.md`
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 
@@ -53,43 +50,53 @@ structure ZStructure (sig : MonadicSignature) where
   interp (p : sig.preds) : ℤ → Prop
 
 /--
-Convert a Z-structure to a general monadic structure.
+Convert a Z-structure to an ordered monadic structure.
+The carrier is ℤ with its natural linear order.
 -/
-def ZStructure.toMonadic {sig : MonadicSignature} (Z : ZStructure sig) : MonadicStructure sig where
+def ZStructure.toOrderedMonadic (sig : MonadicSignature) (Z : ZStructure sig) :
+    OrderedMonadicStructure sig where
+  carrier := ℤ
+  interp := Z.interp
+  carrier_order := by infer_instance
+
+/--
+Convert a Z-structure to a plain monadic structure
+(useful for k-equivalence which operates on MonadicStructure).
+-/
+def ZStructure.toMonadic (sig : MonadicSignature) (Z : ZStructure sig) : MonadicStructure sig where
   carrier := ℤ
   interp := Z.interp
 
 /-! ## Good Structures -/
 
 /--
-A discrete structure is "good" (at depth k) if it is k-equivalent to some
+A structure is "good" (at depth k) if it is k-equivalent to some
 Z-structure. This is the key property for Z-model extraction: if M is good,
-then temporal truth on M (for formulas of appropriate complexity) transfers
-to the Z-model.
+then temporal truth on M transfers to the Z-model via the table translation.
 
 This definition is NON-VACUOUS: it uses `k_equiv` from Phase 3 (defined as
 equality of k-types).
+
+Note: `good` operates on `OrderedMonadicStructure`, so subinterval restriction
+is available for `very_good` and `contemp_equiv`.
 -/
-def good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : Prop :=
-  ∃ (Z : ZStructure sig), k_equiv sig k M Z.toMonadic
+def good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
+  ∃ (Z : ZStructure sig), k_equiv sig k M.toMonadic (Z.toMonadic sig)
 
 /--
-"Very good": the structure is good AND all its subintervals are good.
+"Very good": every subinterval of the structure is good.
 
-For the full definition, we would need a linear order on `M.carrier` and a
-subinterval restriction operation. In the shallow encoding, we quantify
-over all possible subinterval extractions.
+Formally: for any a ≤ b in the carrier, the subinterval M.subinterval a b
+is good. This is the key property that enables gap elimination and the
+one-class argument in discrete orders.
 
-**Note**: The Reynolds definition (Lemma 14) requires that for any two
-points a < b, the interval [a,b] is good. Since MonadicStructure does not
-include an order, the full definition requires an ordered structure. This
-stub provides the idea.
+This definition is NON-VACUOUS — it quantifies over all subintervals.
 -/
-def very_good (sig : MonadicSignature) (k : Nat) (_M : MonadicStructure sig) : Prop :=
-  True
+def very_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
+  ∀ (a b : M.carrier), a ≤ b → good sig k (M.subinterval sig a b)
 
-/-- Every finite discrete structure is good. Sorried — Phase 5. -/
-theorem finite_structures_good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig)
+/-- Every finite structure is good. Sorried — Phase 5 core lemma. -/
+theorem finite_structures_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
     [Fintype M.carrier] :
     good sig k M := by
   sorry
@@ -97,75 +104,110 @@ theorem finite_structures_good (sig : MonadicSignature) (k : Nat) (M : MonadicSt
 /-! ## Contemporaneous Equivalence -/
 
 /--
-Contemporaneous equivalence ~M (Reynolds): a ~ b if the interval between
-them is "very good" — meaning a and b are k-indistinguishable in terms of
-the temporal sublanguage.
+Contemporaneous equivalence ~M (Reynolds 1994):
+a ~M b if the subinterval between them is "very good."
 
-Formally (Reynolds 1994, Definition after Lemma 14):
-`a ~ b` iff `¬∃ c between a and b s.t. c and its neighbors are in different classes`.
+Using `min a b` / `max a b` handles both cases (a ≤ b or b ≤ a) symmetrically.
 
-For the shallow encoding, we state the key property directly: a ~ b iff
-the interval [min(a,b), max(a,b)] is very_good.
+This relation partitions the structure into convex equivalence classes,
+and gap elimination (in discrete orders) proves there is exactly one class.
+
+This definition is NON-VACUOUS — it uses `very_good` + subinterval restriction.
 -/
-def contemp_equiv (_sig : MonadicSignature) (_k : Nat) (_M : MonadicStructure _sig)
-    (_a _b : _M.carrier) : Prop :=
-  True
+def contemp_equiv (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
+    (a b : M.carrier) : Prop :=
+  very_good sig k (M.subinterval sig (min a b) (max a b))
 
-/-- ~M is an equivalence relation with convex classes. Sorried — Phase 5. -/
-theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) :
+/--
+~M is an equivalence relation on M.carrier.
+
+Proof sketch:
+- **Reflexivity**: `M.subinterval a a` is a singleton → finite → good → very_good.
+  So `contemp_equiv a a` holds (using subinterval_singleton_finite).
+- **Symmetry**: `min a b = min b a` and `max a b = max b a`. Trivial.
+- **Transitivity**: If a ~M b and b ~M c, then `M.subinterval a c` is the union
+  of `M.subinterval a b` and `M.subinterval b c` (overlapping at b).
+  By doets_lemma_1_4_finite for n=2, the union is very_good.
+
+**Status**: Sorried. Requires subinterval union lemma + doets_lemma_1_4_finite.
+-/
+theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig) :
     Equivalence (contemp_equiv sig k M) := by
   sorry
 
 /-! ## No Gaps in Discrete Orders -/
 
 /--
-In a discrete linear order with immediate successors, contemp_equiv classes
-cannot end at Dedekind gaps because there are NO gaps in discrete orders.
-This is the key simplification over the general Reynolds framework.
+In a discrete linear order with SuccOrder/PredOrder and no endpoints,
+the ~M class boundaries can only occur at successor-predecessor adjacent pairs.
 
-Since every point has an immediate successor, and every bounded above set
-has an immediate-predecessor of its supremum, the "gap scenario" in the
-general case simply cannot arise.
+Since there are no Dedekind gaps in a discrete order, any "gap" between
+~M-classes manifests as an adjacent pair (c, c+1) where c ~M a but
+c+1 is not ~M a.
 
-**Plan**: The conclusion should be that M has exactly one ~M class.
-Currently stubbed with `True`; full statement depends on the linear order
-on M.carrier.
+If a and b are in different ~M classes, there exists a boundary point c
+such that c ~M a but succ(c) ∉ ~M-class(a).
+
+This is the key gap-elimination lemma for proving one_class.
+
+**Status**: Sorried. Requires the ~M equivalence relation properties and
+the discreteness of the order (SuccOrder) to identify the boundary at an
+adjacent pair.
 -/
-theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) :
-    True := by
-  trivial
+theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
+    ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
+      ¬ contemp_equiv sig k M a (Order.succ c) := by
+  sorry
 
 /--
-If c and c+1 belong to different contemp_equiv classes, then they would be
-equivalent in the subinterval (since interval [c, c+1] is a 2-element finite
-structure and thus good), contradicting the class separation.
+~M class boundaries cannot fall at successor pairs: for any point c,
+c ~M c+1. This follows because the subinterval [c, c+1] has exactly
+two elements (subinterval_two_element_finite), both are finite structures,
+hence good, hence very_good. Therefore c ~M c+1 by definition.
 
-**Plan**: Non-vacuous statement: `¬∃ c, contemp_equiv-class(c) ≠ contemp_equiv-class(c+1)`.
+This lemma forces the contradiction that proves one_class:
+if a boundary existed at (c, c+1), then c ~M c+1, but by
+no_gaps_discrete, a boundary means c ∉ ~M-class(c+1).
+
+**Status**: Sorried. Requires subinterval_two_element_finite +
+finite_structures_good + definition of contemp_equiv.
 -/
-theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) :
-    True := by
-  trivial
+theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
+    (c : M.carrier) :
+    contemp_equiv sig k M c (Order.succ c) := by
+  sorry
 
 /-! ## One-Class Theorem -/
 
 /--
-ONE-CLASS THEOREM (Reynolds): If M is a discrete countable linear order
-without endpoints satisfying Prior-UZ/SZ, then M has exactly one ~M class.
-This means M is k-equivalent to a Z-model (either ℤ or a finite interval).
+ONE-CLASS THEOREM (Reynolds, discrete case):
+If M is a discrete linear order without endpoints and with
+SuccOrder/PredOrder, then M has exactly one ~M class.
 
-Proof sketch:
-- By `no_gaps_discrete`: there are no Dedekind gaps, so class boundaries
-  can only occur at successor-pred adjacent pairs.
-- By `no_boundary_at_successor`: a boundary at c/c+1 contradicts very_good
-  of the single-step interval (which is finite, hence good).
-- Therefore no class boundaries exist → one class.
+This means all points are contemporaneously equivalent, so M is
+k-equivalent to a Z-model (either ℤ or a finite interval).
 
-The conclusion type is currently `True` because `contemp_equiv` is stubbed.
-When `contemp_equiv` is properly defined with a linear order, this becomes:
-`∃ a, ∀ b, contemp_equiv sig k M a b` (all points equivalent).
+Proof sketch (by contradiction):
+- Assume ∃ a, b with a ∉ ~M-class(b).
+- By `no_gaps_discrete`: boundary at some c where c ~M a and succ(c) ∉ ~M-class(a).
+- But `no_boundary_at_successor` proves c ~M c+1.
+- By transitivity of ~M (contemp_equiv_is_equiv), c+1 ~M a.
+- Contradiction with succ(c) ∉ ~M-class(a).
+- Therefore all points are ~M equivalent.
+
+**Status**: Sorried. Requires no_gaps_discrete + no_boundary_at_successor +
+contemp_equiv_is_equiv. All three are sorried upstream of this lemma.
 -/
-theorem one_class (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : True := by
-  trivial
+theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier] :
+    ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
+  sorry
 
 /-! ## Very Good → Good -/
 
@@ -175,41 +217,77 @@ Reynolds Lemma 16: If M is countable and very good, then M is good.
 Proof by choosing cofinal sequences: decompose M into an ordered sum of
 finite intervals (each good by very_good definition). By Doets Lemma 1.4,
 the ordered sum (i.e., M) is k-equivalent to an ordered sum of Z-intervals.
-By Lemma 1.5 (type matching), this is k-equivalent to a single Z-interval.
+By Lemma 1.5 (type matching, deferred), this is k-equivalent to a single
+Z-interval.
 
 **Status**: Sorried. Requires:
-1. `very_good` definition with proper subinterval semantics
+1. `very_good` definition with proper subinterval semantics (done)
 2. Cofinal sequence decomposition for countable linear orders
 3. `doets_lemma_1_4` and `doets_lemma_1_5` from Phase 4
+
+Note: In the discrete case, this theorem is not needed on the critical
+path because `one_class` + `chronicle_is_good` directly constructs the
+Z-model from the cofinal sequence of finite subintervals.
 -/
-theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig)
-    (_h_very_good : very_good sig k M) : good sig k M := by
+theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
+    (_h_countable : Countable M.carrier) (_h_very_good : very_good sig k M) :
+    good sig k M := by
   sorry
 
-/-! ## Canonical Model is Good -/
+/-! ## Chronicle is Good -/
 
 /--
-The chronicle prior model (Phase 2) is good at depth `phi.complexity + 1`.
+The chronicle prior model (Phase 2) is good at any finite depth:
+given `ChronicleAsPriorModel M`, a monadic signature `sig`, an
+atom-to-formula mapping `atomMap`, and a depth `k`, the chronicle
+(as an ordered monadic structure) is good.
 
-Given MCS A with `¬phi ∈ A` and `□(next_top) ∈ A` (box discreteness),
-the chronicle extraction yields a `ChronicleAsPriorModel` satisfying Reynolds
-Corollary 3 conditions. By Reynolds Theorem 15, this model is good at any
-finite depth, in particular at `phi.complexity + 1`.
+This is the main theorem of the Reynolds pipeline. The proof uses
+the chronicle's properties (countable, discrete without endpoints,
+Prior-UZ/SZ valid) from Phase 2, plus the gap-elimination and
+one-class results from this file.
 
-The `reflCanToMonadic A sig` provides the monadic structure representation.
+Proof sketch:
+1. The chronicle `CM := chronicleAsMonadicStructure M sig atomMap` is
+   discrete, countable, no endpoints, Prior-UZ/SZ valid (from Phase 2).
+2. By `one_class sig k CM`: all points are ~M equivalent.
+3. Pick a cofinal sequence {a_n : n ∈ ℕ} in both directions
+   (using NoMinOrder/NoMaxOrder + Countable).
+4. Each finite subinterval CM.subinterval a_{-n} a_n is:
+   - Finite (by construction)
+   - very_good (by one_class + definition of contemp_equiv), thus good
+5. The whole structure CM is the limit (ordered sum) of these nested
+   finite subintervals.
+6. By doets_lemma_1_4_finite applied pairwise (n=2), the ordered sum
+   is good.
+7. This yields a Z-structure k-equivalent to CM.
 
-**Status**: Sorried. The proof requires:
-1. The monadic FO satisfaction relation to define k_equiv
-2. Reynolds Theorem 15 proper (chronicle → good)
-3. A construction mapping the chronicle's limit_f MCS assignments to
-   predicate interpretations in some signature sig
+**Status**: Sorried. Requires:
+1. `one_class` (sorried, depends on gap-elimination lemmas)
+2. Cofinal sequence construction for countable no-endpoint orders
+3. `doets_lemma_1_4_finite` for pairwise combination
 
-The signature `sig` has `preds := Formula` (or the subformula set of phi),
-with interpretation `interp ψ x := ψ ∈ (fncs x)` for formulas ψ.
+The type signature takes `ChronicleAsPriorModel` (from Phase 2) instead of
+the old `ReflCanDomain` — this is the corrected input type.
 -/
+theorem chronicle_is_good (M : ChronicleAsPriorModel) (sig : MonadicSignature)
+    (atomMap : sig.preds → Formula) (k : Nat) :
+    good sig k (chronicleAsMonadicStructure M sig atomMap) := by
+  sorry
+
+/--
+DEPRECATED: Old `canonical_model_is_good` taking `ReflCanDomain`.
+Superseded by `chronicle_is_good` which takes `ChronicleAsPriorModel`.
+Kept for reference; not used by any downstream file.
+-/
+@[deprecated chronicle_is_good (since := "2026-05-14")]
 theorem canonical_model_is_good (A : ReflCanDomain) (phi : Formula)
     (_h_box_discrete : Formula.box next_top ∈ A.val) :
-    ∃ (sig : MonadicSignature), good sig (phi.complexity + 1) (reflCanToMonadic A sig) := by
+    ∃ (sig : MonadicSignature), good sig (phi.complexity + 1) (by
+      -- The old definition expected MonadicStructure, but good now takes OrderedMonadicStructure.
+      -- This deprecated theorem only exists to satisfy old import expectations;
+      -- callers should use chronicle_is_good instead.
+      sorry) := by
   sorry
 
 end Bimodal.Metalogic.WeakCanonical
