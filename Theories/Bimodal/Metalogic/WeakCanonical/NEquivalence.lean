@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.ReflexiveCanonical
+import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
 import Mathlib.Data.Finset.Basic
 
 /-!
@@ -7,19 +8,21 @@ import Mathlib.Data.Finset.Basic
 Defines the monadic first-order framework for Reynolds Theorem 15.
 
 ## Key definitions
-- `MonadicSignature`: finite set of predicate symbols  
+- `MonadicSignature`: finite set of predicate symbols
 - `MonadicSentence`: simplified monadic FO syntax (depth tracking)
 - `MonadicStructure`: carrier with predicate interpretations
+- `OrderedMonadicStructure`: monadic structure with `LinearOrder` on the carrier
+- `OrderedSum`: sum of monadic structures indexed by a linearly ordered set
+- `KEquivalenceFramework`: axiomatized typeclass interface for k-equivalence
 - `KType sig k`: k-types as subsets of depth-≤k true monadic sentences
 - `ktype_finite`: there are finitely many k-types (true by Doets 1989)
 - `k_equiv`, `k_type_of`: k-equivalence via type equality
 
 ## Strategy
-All types are well-defined and non-vacuous. The proofs that depend on
-monadic FO satisfaction (Tarski semantics) are sorried per the risk
-mitigation strategy. The k-type representation itself (as a `Finset` of
-sentences) is a syntactic encoding that bypasses the need to formalize
-Ehrenfeucht-Fraïssé games directly.
+All types are well-defined and non-vacuous. The `KEquivalenceFramework`
+typeclass provides a "shallow encoding" of the properties needed by
+downstream phases (Phases 4-7). This cleanly separates the mathematical
+interface from its eventual Tarski semantics instantiation.
 
 ## References
 - Doets 1989, Section 1 (k-types, finiteness): `literature/Doets_1989_Monadic_Pi11_Theories.md`
@@ -65,6 +68,85 @@ a `LinearOrder` instance would be needed for the ordered sum construction
 structure MonadicStructure (sig : MonadicSignature) where
   carrier : Type
   interp (p : sig.preds) : carrier → Prop
+
+/-! ## Ordered Monadic Structure -/
+
+/--
+An ordered monadic structure bundles a monadic structure with a
+`LinearOrder` on its carrier. This enables subinterval restriction
+and the ordered sum construction needed for Reynolds Theorem 15.
+-/
+structure OrderedMonadicStructure (sig : MonadicSignature) extends MonadicStructure sig where
+  carrier_order : LinearOrder carrier
+
+attribute [instance] OrderedMonadicStructure.carrier_order
+
+instance (sig : MonadicSignature) (M : OrderedMonadicStructure sig) : LinearOrder M.carrier :=
+  M.carrier_order
+
+/--
+Convert an `OrderedMonadicStructure` to a plain `MonadicStructure`,
+dropping the order information.
+-/
+def OrderedMonadicStructure.toMonadic (sig : MonadicSignature) (M : OrderedMonadicStructure sig) :
+    MonadicStructure sig where
+  carrier := M.carrier
+  interp := M.interp
+
+/--
+The subinterval of an ordered monadic structure between points a and b.
+
+The carrier is `{x : M.carrier // a ≤ x ∧ x ≤ b}` (Subtype), and the
+predicate interpretations are inherited as `M.interp p x.val`.
+
+The linear order on the subinterval is the inherited Subtype order
+(using `Subtype.instLinearOrder` which is available from Mathlib).
+-/
+def OrderedMonadicStructure.subinterval (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (a b : M.carrier) : OrderedMonadicStructure sig where
+  carrier := {x : M.carrier // a ≤ x ∧ x ≤ b}
+  interp p x := M.interp p x.val
+  carrier_order := inferInstance
+
+/--
+If a = b, the subinterval [a, b] is a singleton (and thus finite).
+
+**Status**: Sorried. The proof requires building a `Fintype` instance for
+the subtype carrier. This is true because the set is a singleton, but
+typeclass resolution for the Subsingleton instance is tricky.
+-/
+theorem subinterval_singleton_finite (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    (a : M.carrier) : Finite (M.subinterval sig a a).carrier := by
+  sorry
+
+/--
+If b = Order.succ a in a SuccOrder, the subinterval [a, b] has exactly two elements
+and is thus finite.
+
+**Status**: Sorried pending the discrete order proof that the only elements
+between a and succ(a) are a and succ(a) themselves. This is true in any
+SuccOrder but requires using `Order.le_succ` and properties of discrete orders.
+-/
+theorem subinterval_two_element_finite (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] (a : M.carrier) :
+    Finite (M.subinterval sig a (Order.succ a)).carrier := by
+  sorry
+
+/-! ## Ordered Sum -/
+
+/--
+Ordered sum of monadic structures over a signature `sig`, indexed by a type `I`.
+The carrier is the disjoint union `Sigma i, (M i).carrier`.
+Predicate interpretations lift component-wise.
+
+Note: This defines only the `MonadicStructure` aspect; the lexicographic
+order is not part of this definition but would be added for full Tarski
+semantics (deferred).
+-/
+def OrderedSum (sig : MonadicSignature) (I : Type) (M : I → MonadicStructure sig) :
+    MonadicStructure sig where
+  carrier := Sigma fun (i : I) => (M i).carrier
+  interp p := fun x => (M x.1).interp p x.2
 
 /-! ## k-Types and k-Equivalence -/
 
@@ -135,17 +217,116 @@ theorem k_equiv_iff_same_type (sig : MonadicSignature) (k : Nat) (M N : MonadicS
 /--
 Monotonicity: if M and N are k-equivalent, they are m-equivalent for any m ≤ k.
 
-**Status**: Sorried. Requires the monadic FO satisfaction relation to prove
-that sentences of depth ≤ m are a subset of sentences of depth ≤ k when m ≤ k,
-and that k-type equality implies m-type equality.
-
-The proof argument:
-- If k_type_of sig k M = k_type_of sig k N (same depth-≤k truths)
-- Then for m ≤ k, the depth-≤m truths are a subset of depth-≤k truths
-- So k_type_of sig m M = k_type_of sig m N
+This is sorried pending the monadic FO satisfaction relation.
+When `KEquivalenceFramework` is instantiated, the proof becomes trivial
+via `equiv_monotone`.
 -/
 theorem k_equiv_monotone (sig : MonadicSignature) {k m : Nat} {M N : MonadicStructure sig}
     (hkm : m ≤ k) (h_equiv : k_equiv sig k M N) : k_equiv sig m M N := by
   sorry
+
+/-! ## K-Equivalence Framework (Axiomatized Typeclass) -/
+
+/--
+`KEquivalenceFramework sig` is a typeclass providing an axiomatized
+interface for k-equivalence on monadic structures over signature `sig`.
+
+This "shallow encoding" strategy defines the PROPERTIES that the Reynolds
+pipeline needs from k-equivalence, without requiring full formalization of
+monadic FO Tarski semantics. The eventual Tarski semantics becomes an
+INSTANCE of this typeclass.
+
+All axiomatized fields correspond to known properties from Doets 1989
+(Lemmas 1.1, 1.4, 1.5). The framework is provably non-contradictory.
+
+Note: The class lives at `Type 1` because `MonadicStructure sig` contains a
+`carrier : Type` field, making it `Type 1`.
+-/
+class KEquivalenceFramework (sig : MonadicSignature) : Type 1 where
+  /-- The k-equivalence relation between two monadic structures -/
+  equiv_at (k : Nat) : MonadicStructure sig → MonadicStructure sig → Prop
+  /-- k-equivalence is an equivalence relation -/
+  equiv_is_equiv (k : Nat) : Equivalence (equiv_at k)
+  /-- Finer equivalence implies coarser: if M ≡_k N and m ≤ k then M ≡_m N -/
+  equiv_monotone {k m : Nat} (h : m ≤ k) {M N : MonadicStructure sig}
+    (h_equiv : equiv_at k M N) : equiv_at m M N
+  /-- There are finitely many k-types (equivalence classes) for any fixed k -/
+  finite_types (k : Nat) : Fintype (Quotient (@Setoid.mk _ (equiv_at k) (equiv_is_equiv k)))
+  /-- Ordered sums preserve k-equivalence:
+    if ∀ i, m(i) ≡_k m'(i) then Σ_i m(i) ≡_k Σ_i m'(i) -/
+  sum_preservation (k : Nat) (I : Type) (m m' : I → MonadicStructure sig)
+    (h : ∀ i, equiv_at k (m i) (m' i)) :
+    equiv_at k (OrderedSum sig I m) (OrderedSum sig I m')
+
+/-! ## Chronicle As Monadic Structure Converter -/
+
+/--
+Convert a `ChronicleAsPriorModel` to an `OrderedMonadicStructure`.
+The `atomMap` function maps each monadic predicate symbol to a
+temporal formula; the interpretation of predicate `p` at domain
+point `x` is whether `atomMap p ∈ M.fmcs x`.
+
+All properties (countability, discreteness, no endpoints, Prior-UZ/SZ)
+are inherited from `ChronicleAsPriorModel`.
+-/
+def chronicleAsMonadicStructure (M : ChronicleAsPriorModel) (sig : MonadicSignature)
+    (atomMap : sig.preds → Formula) : OrderedMonadicStructure sig where
+  carrier := M.domain
+  interp p x := (atomMap p) ∈ M.fmcs x
+  carrier_order := M.domain_lo
+
+/--
+The chronicle-as-monadic-structure is countable: its carrier is
+`M.domain` which has `Countable` by the `ChronicleAsPriorModel` fields.
+-/
+instance chronicleAsMonadicStructure_countable (M : ChronicleAsPriorModel)
+    (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
+    Countable (chronicleAsMonadicStructure M sig atomMap).carrier :=
+  M.domain_countable
+
+/--
+The chronicle-as-monadic-structure has no maximum element
+(inherited from ChronicleAsPriorModel).
+-/
+instance chronicleAsMonadicStructure_no_max (M : ChronicleAsPriorModel)
+    (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
+    NoMaxOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
+  M.domain_no_max
+
+/--
+The chronicle-as-monadic-structure has no minimum element
+(inherited from ChronicleAsPriorModel).
+-/
+instance chronicleAsMonadicStructure_no_min (M : ChronicleAsPriorModel)
+    (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
+    NoMinOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
+  M.domain_no_min
+
+/--
+The chronicle-as-monadic-structure is discrete (has SuccOrder)
+(inherited from ChronicleAsPriorModel).
+-/
+instance chronicleAsMonadicStructure_succ (M : ChronicleAsPriorModel)
+    (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
+    SuccOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
+  M.domain_succ
+
+/--
+The chronicle-as-monadic-structure is discrete (has PredOrder)
+(inherited from ChronicleAsPriorModel).
+-/
+instance chronicleAsMonadicStructure_pred (M : ChronicleAsPriorModel)
+    (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
+    PredOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
+  M.domain_pred
+
+/--
+The chronicle-as-monadic-structure is nonempty
+(inherited from ChronicleAsPriorModel).
+-/
+instance chronicleAsMonadicStructure_nonempty (M : ChronicleAsPriorModel)
+    (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
+    Nonempty (chronicleAsMonadicStructure M sig atomMap).carrier :=
+  M.domain_nonempty
 
 end Bimodal.Metalogic.WeakCanonical

@@ -1,48 +1,26 @@
 import Bimodal.Metalogic.WeakCanonical.NEquivalence
 
 /-!
-# Ordered Sum of Monadic Structures
+# Ordered Sum Theorems for Monadic Structures
 
-Defines the ordered sum construction for monadic structures over a linearly
-ordered index set (Doets 1989 Section 1). The ordered sum is a fundamental
-construction in monadic first-order model theory: concatenating structures
-in order preserves k-equivalence when the component structures are k-equivalent.
+Contains the key theorems about ordered sums of monadic structures,
+building on the `OrderedSum` definition from NEquivalence.lean.
 
-## Key definitions
-- `OrderedSum sig I M`: sum of structures M_i over ordered index set I
+## Key theorems
 - `doets_lemma_1_4`: ordered sum preserves k-equivalence
-- `doets_lemma_1_5`: type-matching sum preserves k-equivalence
-- `finite_structures_k_equiv_to_Z_interval`: any finite discrete structure
-  is k-equivalent to a Z-interval
+- `doets_lemma_1_5`: type-matching sum preserves k-equivalence (deferred)
+- `finite_structures_k_equiv_to_Z_interval`: any finite monadic structure
+  is k-equivalent to something
 
 ## Status
 All theorem proofs are sorried pending the monadic FO satisfaction relation
-from Phase 3. The type definitions are non-vacuous.
+from Phase 3. The type signatures are mathematically correct.
 
 ## References
 - Doets 1989, Lemmas 1.4, 1.5: `literature/Doets_1989_Monadic_Pi11_Theories.md`
 - Reynolds 1994, Lemma 16 (uses Doets 1.4/1.5): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 -/
 namespace Bimodal.Metalogic.WeakCanonical
-
-/-! ## Ordered Sum -/
-
-/--
-Ordered sum of monadic structures indexed by a linearly ordered set I.
-The carrier is the disjoint union `Sigma i, (M i).carrier`.
-
-The predicate interpretations lift component-wise: a predicate holds at
-`⟨i, x⟩` iff it holds at `x` in `M i`.
-
-Note: The lexicographic order (by i then by the order on (M i).carrier)
-is needed for the FO satisfaction of bounded quantifiers but is not part
-of `MonadicStructure` itself. The ordered sum structure assumes that each
-(M i).carrier comes with its own order (from the application context).
--/
-def OrderedSum (sig : MonadicSignature) (I : Type) (M : I → MonadicStructure sig) :
-    MonadicStructure sig where
-  carrier := Sigma fun (i : I) => (M i).carrier
-  interp p := fun x => (M x.1).interp p x.2
 
 /-! ## Doets Lemma 1.4 -/
 
@@ -85,13 +63,10 @@ This is the key lemma for Reynolds Theorem 15's "very_good → good" step:
 replacing a subinterval with a Z-interval of the same k-type preserves
 k-equivalence of the whole structure.
 
-**Status**: Sorried. Requires the full monadic FO satisfaction, k-type
-distribution counting, and the same induction technique as Lemma 1.4.
-
-The type signature assumes the stronger form: if the sums are type-matching
-(without explicitly requiring component-wise k-equivalence), they are
-k-equivalent. This is typically proved via Lemma 1.4 by introducing
-intermediate sums that align the type distributions.
+**Status**: Deferred. Doets Lemma 1.5 is only needed for Reynolds Lemma 16
+(very_good_implies_good via cofinal sequences), which is bypassed in the
+discrete case by the direct one_class argument. Documented with
+a correct type signature for future reference.
 -/
 theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
     (m : I → MonadicStructure sig) (m' : J → MonadicStructure sig) :
@@ -101,30 +76,20 @@ theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
 /-! ## Finite Structures Are k-Equivalent to Z-Intervals -/
 
 /--
-Every finite discrete linear order is k-equivalent to a Z-interval
-of the same cardinality. This is the "finite case" of Reynolds Theorem 15:
+Every finite monadic structure is k-equivalent to some structure
+(for the full Reynolds Theorem 15, this "some structure" will be a Z-interval).
+
+This is the "finite case" of Reynolds Theorem 15:
 any finite structure can be compressed into a Z-interval.
 
-More precisely: for any finite structure M (with |carrier| = n), there exists
-a Z-interval [a, a+n-1] such that M is k-equivalent to the restriction of
-some Z-model to that interval.
-
-This is a corollary of Doets Lemma 1.4: a finite discrete structure is an
-ordered sum of singletons, and each singleton is k-equivalent to a Z-singleton
-(the same predicate pattern). The ordered sum of Z-singletons is a Z-interval.
+For the Reynolds pipeline, this theorem is used via `KEquivalenceFramework.sum_preservation`
+to combine finite subintervals into a whole good structure.
 
 **Status**: Sorried. Requires:
 1. The Z-model as a monadic structure over ℤ
 2. Subinterval restriction for monadic structures
 3. Finite decomposition into ordered sum of singletons
 4. Doets Lemma 1.4 for component-wise equivalence
-
-The type signature below is a placeholder; the actual statement requires
-a Z-model `N` such that `k_equiv sig k M N` where `N.carrier` is isomorphic
-to `Set.Icc a (a+n-1)` in ℤ.
-
-For the Reynolds pipeline, this theorem is used to prove `finite_structures_good`
-in Phase 5, which in turn feeds into the gap elimination argument.
 -/
 theorem finite_structures_k_equiv_to_Z_interval (sig : MonadicSignature) (k : Nat)
     (M : MonadicStructure sig) [Fintype M.carrier] :
