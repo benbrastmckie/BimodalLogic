@@ -1,7 +1,7 @@
 # Implementation Plan: Task #129 (Chronicle + Reynolds Theorem 15)
 
 - **Task**: 129 - weak_reflexive_completeness_conservative_extension
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 40-55 hours
 - **Dependencies**: None (uses existing BXCanonical/Chronicle infrastructure and WeakCanonical skeleton)
 - **Research Inputs**:
@@ -82,7 +82,7 @@ Phases 2 and 3 can execute in parallel (Wave 2).
 
 ---
 
-### Phase 1: Bug Fixes and Codebase Cleanup [NOT STARTED]
+### Phase 1: Bug Fixes and Codebase Cleanup [IN PROGRESS]
 
 **Goal**: Fix all identified bugs in the WeakCanonical directory, remove vacuous definitions, and ensure the existing sorry-free proofs still compile.
 

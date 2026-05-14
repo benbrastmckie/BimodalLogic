@@ -447,10 +447,21 @@ This requires infrastructure not yet available in the WeakCanonical setting.
 **Recommended follow-up**: Create a research task to port the until_resolution
 construction from Chronicle/PointInsertion.lean or BXCanonical/Filtration/DefectChain.lean.
 -/
+/--
+  Until backward (DOCUMENTED SORRY). If U(ψ₁,ψ₂) ∉ x.val, derive the NEGATION of the
+  semantic Until condition (i.e., for any forward witness of ψ₁, there's an intermediate
+  counter-witness where ψ₂ fails).
+
+  **Path A note**: This lemma is NOT needed for the chronicle+Reynolds pipeline.
+  Fixed signature from the incorrect forward-mirror to the correct contrapositive form.
+  **Research blocker**: Chain construction / counter-witness propagation requires
+  infrastructure from DovetailingChain.lean or BXCanonical/Filtration/DefectChain.lean
+  ported to ReflCanDomain. Left as documented sorry.
+  -/
 theorem until_backward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
-    (_h_not_until : Formula.untl ψ₁ ψ₂ ∉ x.val) :
-    ∃ (y : ReflCanDomain), tempR_fwd x y ∧ ψ₁ ∈ y.val ∧
-      (∀ (z : ReflCanDomain), tempR_fwd x z → tempR_fwd z y → ψ₂ ∈ z.val) := by
+    (h_not_until : Formula.untl ψ₁ ψ₂ ∉ x.val) :
+    ¬ (∃ (y : ReflCanDomain), tempR_fwd x y ∧ ψ₁ ∈ y.val ∧
+      (∀ (z : ReflCanDomain), tempR_fwd x z → tempR_fwd z y → ψ₂ ∈ z.val)) := by
   sorry
 
 /-- Since forward: S(ψ₁,ψ₂) ∈ x → ∃y, tempR_bwd y x ∧ ψ₁∈y ∧ ∀z intermediate, ψ₂∈z.
@@ -489,11 +500,19 @@ theorem since_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   -- until_forward_mcs.
   sorry
 
-/-- Since backward (DOCUMENTED SORRY): mirror of Until backward. Same research blocker. -/
+/--
+  Since backward (DOCUMENTED SORRY). If S(ψ₁,ψ₂) ∉ x.val, derive the NEGATION of the
+  semantic Since condition (i.e., for any backward witness of ψ₁, there's an intermediate
+  counter-witness where ψ₂ fails).
+
+  **Path A note**: This lemma is NOT needed for the chronicle+Reynolds pipeline.
+  Fixed signature from the incorrect forward-mirror to the correct contrapositive form.
+  Mirror of Until backward. Same research blocker.
+  -/
 theorem since_backward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
-    (_h_not_since : Formula.snce ψ₁ ψ₂ ∉ x.val) :
-    ∃ (y : ReflCanDomain), tempR_bwd y x ∧ ψ₁ ∈ y.val ∧
-      (∀ (z : ReflCanDomain), tempR_bwd z y → tempR_bwd z x → ψ₂ ∈ z.val) := by
+    (h_not_since : Formula.snce ψ₁ ψ₂ ∉ x.val) :
+    ¬ (∃ (y : ReflCanDomain), tempR_bwd y x ∧ ψ₁ ∈ y.val ∧
+      (∀ (z : ReflCanDomain), tempR_bwd z y → tempR_bwd z x → ψ₂ ∈ z.val)) := by
   sorry
 
 /-! ## Main Truth Lemma -/

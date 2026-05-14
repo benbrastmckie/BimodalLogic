@@ -7,9 +7,10 @@ Defines "good" and "very good" discrete structures, contemporaneous
 equivalence, and the one-class argument for Z-model extraction.
 
 ## Status
-Definitions and theorem statements. All proofs are documented sorries.
-When filled in, these enable replacing the chronicle-based
-dd_countermodel_chronicle_discrete with a purely canonical construction.
+Definitions and theorem statements. All proofs are documented sorries
+(replaced from vacuous `True`/`trivial` bodies). Full definitions will
+be provided in Phase 5 when the n-equivalence infrastructure (Phase 3)
+and ordered sum lemmas (Phase 4) are in place.
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 
@@ -21,48 +22,60 @@ open Bimodal.Metalogic.Core
 /--
 A discrete structure is "good" if it is k-equivalent to a Z-interval.
 This is the key property needed for Z-model extraction (Reynolds Lemma 15).
+
+Full definition requires k_equiv from Phase 3; stubbed with sorry for now.
 -/
-def good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : Prop :=
-  True
+def good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : Prop := by
+  sorry
 
 /--
 "Very good": all subintervals are good.
 This is the key induction hypothesis for the one-class argument.
--/
-def very_good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : Prop :=
-  True
 
-/-- Every finite discrete structure is good. Sorried. -/
+Full definition requires subinterval restriction on MonadicStructure;
+stubbed with sorry for now.
+-/
+def very_good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : Prop := by
+  sorry
+
+/-- Every finite discrete structure is good. Sorried -- Phase 5. -/
 theorem finite_structures_good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) :
     good sig k M := by
-  trivial
+  sorry
 
 /-! ## Contemporaneous Equivalence -/
 
 /--
 Contemporaneous equivalence ~M (Reynolds): a ~ b if the interval between
 them is "very good" — meaning they are k-indistinguishable.
+
+Takes carrier elements from the structure (changed from `Unit` stub).
 -/
 def contemp_equiv (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig)
-    (a b : Unit) : Prop :=
-  True
+    (a b : M.carrier) : Prop := by
+  sorry
 
-/-- ~M is an equivalence relation with convex classes. Sorried. -/
+/-- ~M is an equivalence relation with convex classes. Sorried -- Phase 5. -/
 theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) :
-    True := by trivial
+    Equivalence (contemp_equiv sig k M) := by
+  sorry
 
 /-! ## No Gaps in Discrete Orders -/
 
 /--
 In a discrete linear order with immediate successors, ~M classes
 cannot end at Dedekind gaps (there are no gaps).
--/
-theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat) (_M : MonadicStructure sig) :
-    True := by trivial
 
-/-- If c and c+1 are in different ~M classes, they'd be equivalent. Sorried. -/
-theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat) (_M : MonadicStructure sig) :
-    True := by trivial
+Full proof requires LinearOrder and IsSuccArchimedean on M.carrier;
+stubbed for now.
+-/
+theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : True := by
+  sorry
+
+/-- If c and c+1 are in different ~M classes, they'd be equivalent. Sorried -- Phase 5. -/
+theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) :
+    True := by
+  sorry
 
 /-! ## One-Class Theorem -/
 
@@ -73,9 +86,12 @@ one ~M class. This means M is k-equivalent to a Z-model (either finite or infini
 Combining `no_gaps_discrete` and `no_boundary_at_successor`: any boundary
 between classes would be a gap (impossible in discrete orders) or a successor
 jump (contradicting transitivity of ~M).
+
+Currently stubbed with True as the conclusion type is dependent on full
+contemp_equiv definition. Full proof in Phase 5.
 -/
-theorem one_class (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) :
-    True := by trivial
+theorem one_class (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : True := by
+  sorry
 
 /-! ## Very Good → Good -/
 
@@ -83,16 +99,21 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) 
 Reynolds Lemma 16: If M is countable and very good, then M is good.
 Proof by choosing cofinal sequences, each interval is good, then
 ordered-sum preservation (Doets 1.4) gives the whole structure is good.
+
+Requires doets_lemma_1_4 from Phase 4; stubbed for now.
 -/
 theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig)
     (_h_very_good : very_good sig k M) : good sig k M := by
-  trivial
+  sorry
 
 /-! ## Canonical Model is Good -/
 
 /--
 The reflexive canonical model, restricted to the box-class of the root MCS A,
 is very good and countable, hence good. This yields a Z-model N =_k M.
+
+Requires Phase 2 (ChronicleExtraction) and Phase 5 (IntegerModel proofs);
+stubbed for now.
 -/
 theorem canonical_model_is_good (A : ReflCanDomain) (phi : Formula)
     (_h_box_discrete : Formula.box next_top ∈ A.val) :

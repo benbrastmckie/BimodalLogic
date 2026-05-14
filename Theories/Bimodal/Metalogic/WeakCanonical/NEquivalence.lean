@@ -5,14 +5,11 @@ import Mathlib.Data.Finset.Basic
 # n-Equivalence and Monadic Sentences for Z-Model Construction
 
 Defines the monadic first-order framework for Reynolds Theorem 15.
-Key definitions are given; most theorems are documented sorries for follow-up.
-
-The purpose of this module is to provide the structural skeleton that
-`doets_countermodel_discrete` can reference, not to formalize full monadic FO
-(which would be a massive separate project).
+Definitions are given with proper type structures; theorems are documented sorries
+(replaced from vacuous `True`/`trivial` bodies).
 
 ## Status
-Definitions and lemma statements. All proofs are documented sorries.
+Definitions and lemma statements. All proofs are documented sorries for Phase 4-5.
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 
@@ -47,7 +44,8 @@ def MonadicSentence.quantifier_depth {sig : MonadicSignature} : MonadicSentence 
 
 /--
 A monadic structure: a carrier type with a linear order
-and predicate interpretations. Full satisfaction is not formalized.
+and predicate interpretations. Full satisfaction is not formalized
+(shallow encoding per the risk mitigation strategy).
 -/
 structure MonadicStructure (sig : MonadicSignature) where
   carrier : Type
@@ -56,12 +54,12 @@ structure MonadicStructure (sig : MonadicSignature) where
 
 /--
 A k-type: a maximal consistent set of sentences of depth ≤ k.
-Representation is a placeholder.
+Represented as a Finset of sentences for finiteness proofs (Phase 3).
 -/
 structure KType (sig : MonadicSignature) (k : Nat) where
   sentences : Finset (MonadicSentence sig)
 
-/-- There are finitely many k-types. Sorried. -/
+/-- There are finitely many k-types. Sorried -- Phase 3. -/
 theorem ktype_finite (sig : MonadicSignature) (k : Nat) :
     ∃ (types : Finset (KType sig k)), ∀ (t : KType sig k), t ∈ types := by
   sorry
@@ -70,18 +68,21 @@ theorem ktype_finite (sig : MonadicSignature) (k : Nat) :
 
 /--
 k-equivalence: two structures satisfy the same sentences of depth ≤ k.
-Formal definition is sorried.
+
+Full definition requires monadic satisfaction semantics;
+currently stubbed with a sorry. Phase 3 will provide the proper
+shallow-encoded definition.
 -/
-def k_equiv (sig : MonadicSignature) (k : Nat) (M N : MonadicStructure sig) : Prop :=
-  True
+def k_equiv (sig : MonadicSignature) (k : Nat) (M N : MonadicStructure sig) : Prop := by
+  sorry
 
-/-- The k-type of a structure. Placeholder. -/
-def k_type_of (sig : MonadicSignature) (k : Nat) (_M : MonadicStructure sig) : KType sig k :=
-  { sentences := ∅ }
+/-- The k-type of a structure. Stubbed -- Phase 3. -/
+def k_type_of (sig : MonadicSignature) (k : Nat) (_M : MonadicStructure sig) : KType sig k := by
+  sorry
 
-/-- k-equivalence ↔ same k-type. Sorried. -/
+/-- k-equivalence ↔ same k-type. Sorried -- Phase 3. -/
 theorem k_equiv_iff_same_type (sig : MonadicSignature) (k : Nat) (M N : MonadicStructure sig) :
     k_equiv sig k M N ↔ k_type_of sig k M = k_type_of sig k N := by
-  simp [k_equiv, k_type_of]
+  sorry
 
 end Bimodal.Metalogic.WeakCanonical
