@@ -81,6 +81,93 @@ def tempR_fwd (x y : ReflCanDomain) : Prop :=
 def tempR_bwd (x y : ReflCanDomain) : Prop :=
   h_content y ⊆ x.val
 
+/-! ## Temporal Relation Properties -/
+
+/--
+Transitivity of `tempR_fwd`. If `g_content x ⊆ y.val` and `g_content y ⊆ z.val`,
+then `g_content x ⊆ z.val`. Proof uses the `temp_4` axiom: `G(φ) → G(G(φ))`.
+
+Given ψ ∈ g_content x (i.e., Gψ ∈ x.val):
+  1. By `temp_4` and MCS closure, GGψ ∈ x.val.
+  2. Then Gψ ∈ g_content x, so by tempR_fwd x y: Gψ ∈ y.val.
+  3. Hence ψ ∈ g_content y, so by tempR_fwd y z: ψ ∈ z.val.
+-/
+theorem tempR_fwd_trans {x y z : ReflCanDomain}
+    (h_xy : tempR_fwd x y) (h_yz : tempR_fwd y z) : tempR_fwd x z := by
+  intro ψ h_ψ_gx
+  have h_mcs_x := x.property
+  -- h_ψ_gx : ψ ∈ g_content x ↔ G(ψ) ∈ x.val
+  have h_Gψ_x : Formula.all_future ψ ∈ x.val := by
+    simp [g_content, Bundle.g_content] at h_ψ_gx
+    exact h_ψ_gx
+  -- Step 1: G(ψ) → G(G(ψ)) via temp_4
+  have h_GGψ_x : Formula.all_future (Formula.all_future ψ) ∈ x.val :=
+    h_mcs_x.all_future_all_future h_Gψ_x
+  -- Step 2: G(ψ) ∈ g_content x (since G(G(ψ)) ∈ x.val)
+  have h_Gψ_gx : Formula.all_future ψ ∈ g_content x := by
+    simp [g_content, Bundle.g_content, h_GGψ_x]
+  -- Step 3: By tempR_fwd x y, G(ψ) ∈ y.val
+  have h_Gψ_y : Formula.all_future ψ ∈ y.val := h_xy h_Gψ_gx
+  -- Step 4: ψ ∈ g_content y (since G(ψ) ∈ y.val)
+  have h_ψ_gy : ψ ∈ g_content y := by
+    simp [g_content, Bundle.g_content, h_Gψ_y]
+  -- Step 5: By tempR_fwd y z, ψ ∈ z.val
+  exact h_yz h_ψ_gy
+
+/--
+Forward linearity: the forward cone from any MCS is linearly ordered.
+If `tempR_fwd x y` and `tempR_fwd x z`, then either `tempR_fwd y z` or `tempR_fwd z y`.
+
+**Proof strategy**: Suppose ¬tempR_fwd y z and ¬tempR_fwd z y. Then there exist
+ψ, χ with Gψ ∈ y.val, ψ ∉ z.val and Gχ ∈ z.val, χ ∉ y.val. By negation completeness:
+¬ψ ∈ z.val and ¬χ ∈ y.val. The standard proof then uses BX11 (temp_linearity) at x
+to derive a contradiction: from F(¬ψ) ∈ x.val and F(¬χ) ∈ x.val (obtained via the
+duality lemma `g_content_subset_implies_h_content_reverse` and the canonical
+temporal witness existence lemma), BX11 forces an ordering, eliminating the
+incomparability.
+
+**Blocked on**: The F-truth lemma (forward temporal witness existence) is not yet
+formalized for ReflCanDomain. This requires porting the `forward_temporal_witness`
+construction from BXCanonical/CanonicalChain.lean or Bundle/CanonicalFrame.lean.
+The statement is correct and needed for Reynolds Theorem 15.
+-/
+theorem reflCanR_linear (x y z : ReflCanDomain)
+    (h_xy : tempR_fwd x y) (h_xz : tempR_fwd x z) : tempR_fwd y z ∨ tempR_fwd z y := by
+  -- Port `forward_temporal_witness` from BXCanonical/CanonicalChain.lean
+  -- or Bundle/CanonicalFrame.lean to ReflCanDomain. Then use:
+  --   1. tempR_fwd x y gives g_content x ⊆ y.val
+  --   2. tempR_fwd x z gives g_content x ⊆ z.val
+  --   3. From ¬tempR_fwd y z, obtain ψ with Gψ ∈ y.val, ψ ∉ z.val
+  --   4. From ¬tempR_fwd z y, obtain χ with Gχ ∈ z.val, χ ∉ y.val
+  --   5. Derive F(¬ψ) ∈ x.val and F(¬χ) ∈ x.val via duality + witness lemma
+  --   6. Apply BX11 (temp_linearity) at x to derive a contradiction
+  sorry
+
+/--
+Backward bridge lemma: if `tempR_bwd y x`, then `h_w_content x ⊆ y.val`.
+
+This is the mirror of `tempR_fwd_imp_reflCanR` for the past direction:
+h_w_content x ⊆ h_content x, and tempR_bwd y x gives h_content x ⊆ y.val.
+-/
+theorem tempR_bwd_imp_reflCanR_bwd {x y : ReflCanDomain}
+    (h_temp : tempR_bwd y x) : h_w_content x ⊆ y.val := by
+  intro ψ hψ_hwx
+  have h_mcs_x := x.property
+  -- hψ_hwx : ψ ∈ h_w_content x → ψ ∧ H(ψ) ∈ x.val
+  have h_psi_and_H : Formula.and ψ (Formula.all_past ψ) ∈ x.val := hψ_hwx
+  -- From ψ∧Hψ ∈ x, derive Hψ ∈ x (using rce)
+  have h_Hpsi : Formula.all_past ψ ∈ x.val := by
+    have h_rce : [Formula.and ψ (Formula.all_past ψ)] ⊢ Formula.all_past ψ :=
+      rce ψ (Formula.all_past ψ)
+    have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_past ψ)], χ ∈ x.val := by
+      intro χ hχ; simp at hχ; subst hχ; exact h_psi_and_H
+    exact h_mcs_x.closed_under_derivation
+      [Formula.and ψ (Formula.all_past ψ)] h_sub h_rce
+  -- So ψ ∈ h_content x, and tempR_bwd y x means h_content x ⊆ y.val
+  have h_ψ_hx : ψ ∈ h_content x := by
+    simp [h_content, Bundle.h_content, h_Hpsi]
+  exact h_temp h_ψ_hx
+
 /-! ## S5 Modal Relation -/
 
 /-- S5 box-accessibility: □φ ∈ x.val → φ ∈ y.val for all φ. -/

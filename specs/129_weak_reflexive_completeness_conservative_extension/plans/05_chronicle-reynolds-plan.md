@@ -1,7 +1,7 @@
 # Implementation Plan: Task #129 (Chronicle + Reynolds Theorem 15)
 
 - **Task**: 129 - weak_reflexive_completeness_conservative_extension
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 40-55 hours
 - **Dependencies**: None (uses existing BXCanonical/Chronicle infrastructure and WeakCanonical skeleton)
 - **Research Inputs**:
@@ -82,7 +82,27 @@ Phases 2 and 3 can execute in parallel (Wave 2).
 
 ---
 
-### Phase 1: Bug Fixes and Codebase Cleanup [IN PROGRESS]
+### Phase 1: Bug Fixes and Codebase Cleanup [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: `reflCanR_linear` proof: forward linearity of `tempR_fwd` from BX11 temporal linearity axiom.
+- **What was tried**: Obtained counter-witnesses ψ, χ from failure of both directions
+  (Gψ∈y.val, ψ∉z.val; Gχ∈z.val, χ∉y.val). Derived F(¬ψ)∈x.val, F(¬χ)∈x.val.
+  Applied BX11 giving three F-disjuncts in x.val, all producing a witness W containing
+  ¬ψ∧(...). But to derive a contradiction, we need to compare y, z, W under tempR_fwd
+  ordering — which is exactly what we're trying to prove (circular dependency).
+- **Why it's stuck**: The F-truth lemma (forward temporal witness existence) for ReflCanDomain
+  is not yet formalized. The canonical model's BX11-based linearity proof requires
+  the full "defect chain" infrastructure (ordered seed consistency, witness chain
+  construction, filtration-based gap elimination) from BXCanonical/CanonicalChain.lean
+  and BXCanonical/OrderedSeedConsistency.lean, ported to the ReflCanDomain setting.
+- **What is needed**: Port `canonical_forward_F` from Bundle/CanonicalFrame.lean to
+  ReflCanDomain (trivial — it's the same `g_content` ⊆ pattern), then port the
+  `temp_linearity_mcs` lemma and `two_defect_consistent_seed` from
+  BXCanonical/OrderedSeedConsistency.lean. Alternatively, use the chronicle's own
+  linearity (the chronicle model is linearly ordered by construction).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def reflCanR_linear := True`,
+  or any vacuous placeholder. The current `sorry` stub has the correct type signature.
 
 **Goal**: Fix all identified bugs in the WeakCanonical directory, remove vacuous definitions, and ensure the existing sorry-free proofs still compile.
 

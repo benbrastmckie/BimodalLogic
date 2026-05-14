@@ -426,28 +426,6 @@ theorem until_forward_mcs (x : ReflCanDomain) (ψ₁ ψ₂ : Formula)
   sorry
 
 /--
-Until backward (DOCUMENTED SORRY). ¬U(ψ₁,ψ₂) ∈ x → counter-witness chain
-using BX5 self-accumulation + Lindenbaum.
-
-**Research blocker**: This lemma requires building a chain of MCS where ψ₁ never
-holds but ψ₂ holds everywhere, then finding a limit point where ψ₁ holds. This
-needs either:
-1. A dovetailing chain construction (as in DovetailingChain.lean) ported to
-   ReflCanDomain, or
-2. A filtration-based argument (as in BXCanonical/Filtration/) ported to
-   ReflCanDomain.
-
-The core algebraic content is:
-- BX5 (self_accum_until): ¬U(ψ₁,ψ₂) ∈ x → ¬U(ψ₁∧¬U(ψ₁,ψ₂), ψ₂) ∈ x
-- This enables propagating the ¬U property forward to build a chain
-- At each step, ψ₂ is forced into the MCS (by maximality or consistency)
-- Eventually reach a limit where ψ₁ ∈ y.val
-
-This requires infrastructure not yet available in the WeakCanonical setting.
-**Recommended follow-up**: Create a research task to port the until_resolution
-construction from Chronicle/PointInsertion.lean or BXCanonical/Filtration/DefectChain.lean.
--/
-/--
   Until backward (DOCUMENTED SORRY). If U(ψ₁,ψ₂) ∉ x.val, derive the NEGATION of the
   semantic Until condition (i.e., for any forward witness of ψ₁, there's an intermediate
   counter-witness where ψ₂ fails).
