@@ -80,7 +80,7 @@ Phases 1 and 2 are independent and can execute in parallel.
 
 ---
 
-### Phase 1: Reflexive Canonical Model and Truth Lemma [PARTIAL]
+### Phase 1: Reflexive Canonical Model and Truth Lemma [PARTIAL — 60% complete]
 
 **Goal**: Build the reflexive canonical model (domain = all MCS of the unchanged axiom system, R defined via G_w making it reflexive) and prove the truth lemma for all Formula constructors.
 

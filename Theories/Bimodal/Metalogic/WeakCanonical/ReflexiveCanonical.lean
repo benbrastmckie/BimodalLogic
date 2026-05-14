@@ -1,8 +1,11 @@
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Theorems.Propositional
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Perpetuity
+import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Syntax.Context
 
 /-!
 # Reflexive Canonical Model for TM Bimodal Logic
@@ -14,6 +17,7 @@ reflexive, which enables the Z-model compression bypassing `succ_cofinal`.
 ## Structure
 - `ReflCanDomain`: subtype of all set-maximal consistent sets
 - `reflCanR`: reflexive canonical accessibility (xRy iff g_w_content x ⊆ y.val)
+- `tempR_fwd` / `tempR_bwd`: strict temporal relations (via g_content/h_content)
 - `reflCanV`: canonical valuation
 - `canS5R`: S5 box-accessibility relation
 -/
@@ -22,8 +26,10 @@ namespace Bimodal.Metalogic.WeakCanonical
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Bundle
 open Bimodal.Theorems.Propositional
 open Bimodal.Theorems.Combinators
+open Bimodal.Theorems
 
 /-! ## Domain -/
 
@@ -45,27 +51,35 @@ end ReflCanDomain
 
 /-! ## Temporal Content -/
 
-/-- Strong G-content: ψ such that G(ψ) ∈ x. -/
+/-- Strong G-content: ψ such that G(ψ) ∈ x. (From Bundle.TemporalContent) -/
 def g_content (x : ReflCanDomain) : Set Formula :=
-  { ψ | Formula.all_future ψ ∈ x.val }
+  Bundle.g_content x.val
 
 /-- Weak G-content (reflexive): ψ such that ψ ∧ G(ψ) ∈ x. -/
 def g_w_content (x : ReflCanDomain) : Set Formula :=
   { ψ | Formula.and ψ (Formula.all_future ψ) ∈ x.val }
 
-/-- Strong H-content: ψ such that H(ψ) ∈ x. -/
+/-- Strong H-content: ψ such that H(ψ) ∈ x. (From Bundle.TemporalContent) -/
 def h_content (x : ReflCanDomain) : Set Formula :=
-  { ψ | Formula.all_past ψ ∈ x.val }
+  Bundle.h_content x.val
 
 /-- Weak H-content (reflexive): ψ such that ψ ∧ H(ψ) ∈ x. -/
 def h_w_content (x : ReflCanDomain) : Set Formula :=
   { ψ | Formula.and ψ (Formula.all_past ψ) ∈ x.val }
 
-/-! ## Accessibility Relation -/
+/-! ## Accessibility Relations -/
 
 /-- Reflexive canonical accessibility relation: xRy iff g_w_content x ⊆ y.val. -/
 def reflCanR (x y : ReflCanDomain) : Prop :=
   g_w_content x ⊆ y.val
+
+/-- Temporal future relation: x R_fwd y iff g_content x ⊆ y.val. -/
+def tempR_fwd (x y : ReflCanDomain) : Prop :=
+  g_content x ⊆ y.val
+
+/-- Temporal past relation: y R_bwd x iff h_content y ⊆ x.val. -/
+def tempR_bwd (x y : ReflCanDomain) : Prop :=
+  h_content y ⊆ x.val
 
 /-! ## S5 Modal Relation -/
 
@@ -147,20 +161,144 @@ theorem reflCanR_trans {x y z : ReflCanDomain}
   exact h_yz h_psi_in_gwy
 
 /--
-Lemma: If x R y and x ≠ y, then strong G-content of x is in y.
-This is a documented sorry; the truth lemma handles this case directly.
+If tempR_fwd x y, then reflCanR x y.
+Since g_w_content x = {ψ | ψ∧Gψ∈x} ⊆ g_content x = {ψ | Gψ∈x},
+we have g_content x ⊆ y.val implies g_w_content x ⊆ y.val.
 -/
-theorem g_content_subset_of_reflCanR_ne {x y : ReflCanDomain}
-    (_hR : reflCanR x y) (_hne : x ≠ y) (φ : Formula)
-    (hG : Formula.all_future φ ∈ x.val) : φ ∈ y.val := by
-  sorry
+theorem tempR_fwd_imp_reflCanR {x y : ReflCanDomain}
+    (h_temp : tempR_fwd x y) : reflCanR x y := by
+  intro ψ hψ_gwx
+  have h_mcs_x := x.property
+  -- hψ_gwx : ψ ∈ g_w_content x → ψ ∧ Gψ ∈ x.val
+  have h_psi_and_G : Formula.and ψ (Formula.all_future ψ) ∈ x.val := hψ_gwx
+  -- From ψ∧Gψ ∈ x, derive Gψ ∈ x (using rce)
+  have h_Gpsi : Formula.all_future ψ ∈ x.val := by
+    have h_rce : [Formula.and ψ (Formula.all_future ψ)] ⊢ Formula.all_future ψ :=
+      rce ψ (Formula.all_future ψ)
+    have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_future ψ)], χ ∈ x.val := by
+      intro χ hχ; simp at hχ; subst hχ; exact h_psi_and_G
+    exact h_mcs_x.closed_under_derivation [Formula.and ψ (Formula.all_future ψ)] h_sub h_rce
+  -- So ψ ∈ g_content x, and tempR_fwd x y means g_content x ⊆ y.val
+  have h_psi_gx : ψ ∈ g_content x := by
+    simp [g_content, Bundle.g_content, h_Gpsi]
+  exact h_temp h_psi_gx
+
+/-! ## Key Helper: g_content Closed Under Derivation -/
 
 /--
-reflCanR is linear: from BX11 temporal linearity axiom.
-Documented sorry — Phase 3 one_class may not need full linearity.
+If all formulas in a list L are in g_content x, and L ⊢ φ, then G(φ) ∈ x.val.
+This is the same as `g_content_closed_derivation` in BXCanonical/Frame.lean
+but adapted for ReflCanDomain.
 -/
-theorem reflCanR_linear (x y : ReflCanDomain) : reflCanR x y ∨ reflCanR y x := by
-  sorry
+noncomputable def g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
+    (h_mcs : SetMaximalConsistent x.val)
+    (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ g_content x)
+    (h_deriv : DerivationTree L φ) : Formula.all_future φ ∈ x.val := by
+  -- Apply generalized temporal K: L ⊢ φ gives G(L) ⊢ G(φ)
+  have d_G : (Context.map Formula.all_future L) ⊢ Formula.all_future φ :=
+    generalized_temporal_k L φ h_deriv
+  -- All formulas in G(L) are in x.val (by g_content membership)
+  have h_GL_in_x : ∀ f ∈ Context.map Formula.all_future L, f ∈ x.val := by
+    intro f hf
+    rw [Context.mem_map_iff] at hf
+    obtain ⟨ψ, hψ_in, hψ_eq⟩ := hf
+    rw [← hψ_eq]
+    have h_gψ : ψ ∈ g_content x := h_sub ψ hψ_in
+    simp [g_content, Bundle.g_content] at h_gψ
+    exact h_gψ
+  exact SetMaximalConsistent.closed_under_derivation h_mcs
+    (Context.map Formula.all_future L) h_GL_in_x d_G
+
+/--
+g_content of an MCS is consistent.
+-/
+theorem g_content_set_consistent (x : ReflCanDomain) :
+    SetConsistent (g_content x) := by
+  have h_mcs := x.property
+  intro L hL ⟨d⟩
+  -- From L ⊆ g_content(x) and L ⊢ ⊥, get G(⊥) ∈ x.val
+  have h_G_bot : Formula.all_future Formula.bot ∈ x.val :=
+    g_content_closed_derivation h_mcs L hL d
+  -- From G(⊥), derive G(⊤ → ⊥) using ex_falso + temp_k_dist
+  let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
+  have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
+    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top)
+  have h_G_ef : DerivationTree [] (Formula.all_future (Formula.bot.imp neg_top)) :=
+    DerivationTree.temporal_necessitation _ h_ef
+  have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_future.imp
+    (Formula.bot.all_future.imp neg_top.all_future)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot neg_top)
+  have h1 := theorem_in_mcs h_mcs h_G_ef
+  have h2 := theorem_in_mcs h_mcs h_kd
+  have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
+  have h_G_neg_top : neg_top.all_future ∈ x.val :=
+    SetMaximalConsistent.implication_property h_mcs h3 h_G_bot
+  -- Seriality: ⊤ → F(⊤) is a theorem, where F(⊤) = ¬G(¬⊤) = ¬G(neg_top)
+  have h_serial : DerivationTree [] ((Formula.bot.imp Formula.bot).imp
+    (Formula.some_future (Formula.bot.imp Formula.bot))) :=
+    DerivationTree.axiom [] _ Axiom.serial_future
+  have h_serial_in := theorem_in_mcs h_mcs h_serial
+  have h_top : DerivationTree [] (Formula.bot.imp Formula.bot) :=
+    DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+  have h_top_in := theorem_in_mcs h_mcs h_top
+  have h_F_top : Formula.some_future (Formula.bot.imp Formula.bot) ∈ x.val :=
+    SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
+  -- F(⊤) = ¬G(⊤ → ⊥) = ¬G(neg_top)
+  -- But G(neg_top) ∈ x.val. Contradiction.
+  exact set_consistent_not_both h_mcs.1 neg_top.all_future h_G_neg_top h_F_top
+
+/--
+If all formulas in a list L are in h_content x, and L ⊢ φ, then H(φ) ∈ x.val.
+-/
+noncomputable def h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
+    (h_mcs : SetMaximalConsistent x.val)
+    (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ h_content x)
+    (h_deriv : DerivationTree L φ) : Formula.all_past φ ∈ x.val := by
+  have d_H : (Context.map Formula.all_past L) ⊢ Formula.all_past φ :=
+    generalized_past_k L φ h_deriv
+  have h_HL_in_x : ∀ f ∈ Context.map Formula.all_past L, f ∈ x.val := by
+    intro f hf
+    rw [Context.mem_map_iff] at hf
+    obtain ⟨ψ, hψ_in, hψ_eq⟩ := hf
+    rw [← hψ_eq]
+    have h_hψ : ψ ∈ h_content x := h_sub ψ hψ_in
+    simp [h_content, Bundle.h_content] at h_hψ
+    exact h_hψ
+  exact SetMaximalConsistent.closed_under_derivation h_mcs
+    (Context.map Formula.all_past L) h_HL_in_x d_H
+
+/--
+h_content of an MCS is consistent.
+-/
+theorem h_content_set_consistent (x : ReflCanDomain) :
+    SetConsistent (h_content x) := by
+  have h_mcs := x.property
+  intro L hL ⟨d⟩
+  have h_H_bot : Formula.all_past Formula.bot ∈ x.val :=
+    h_content_closed_derivation h_mcs L hL d
+  let neg_top := (Formula.bot.imp Formula.bot).imp Formula.bot
+  have h_ef : DerivationTree [] (Formula.bot.imp neg_top) :=
+    DerivationTree.axiom [] _ (Axiom.ex_falso neg_top)
+  have h_H_ef : DerivationTree [] (Formula.all_past (Formula.bot.imp neg_top)) :=
+    Bimodal.Theorems.past_necessitation _ h_ef
+  have h_kd : DerivationTree [] ((Formula.bot.imp neg_top).all_past.imp
+    (Formula.bot.all_past.imp neg_top.all_past)) :=
+    Bimodal.Theorems.past_k_dist Formula.bot neg_top
+  have h1 := theorem_in_mcs h_mcs h_H_ef
+  have h2 := theorem_in_mcs h_mcs h_kd
+  have h3 := SetMaximalConsistent.implication_property h_mcs h2 h1
+  have h_H_neg_top : neg_top.all_past ∈ x.val :=
+    SetMaximalConsistent.implication_property h_mcs h3 h_H_bot
+  have h_serial : DerivationTree [] ((Formula.bot.imp Formula.bot).imp
+    (Formula.some_past (Formula.bot.imp Formula.bot))) :=
+    DerivationTree.axiom [] _ Axiom.serial_past
+  have h_serial_in := theorem_in_mcs h_mcs h_serial
+  have h_top : DerivationTree [] (Formula.bot.imp Formula.bot) :=
+    DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+  have h_top_in := theorem_in_mcs h_mcs h_top
+  have h_P_top : Formula.some_past (Formula.bot.imp Formula.bot) ∈ x.val :=
+    SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
+  exact set_consistent_not_both h_mcs.1 neg_top.all_past h_H_neg_top h_P_top
 
 /-! ## Valuation -/
 
