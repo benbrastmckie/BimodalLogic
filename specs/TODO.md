@@ -113,7 +113,7 @@ technical_debt:
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Research**:
