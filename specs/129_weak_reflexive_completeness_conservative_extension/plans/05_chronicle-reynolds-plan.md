@@ -82,7 +82,7 @@ Phases 2 and 3 can execute in parallel (Wave 2).
 
 ---
 
-### Phase 1: Bug Fixes and Codebase Cleanup [BLOCKED]
+### Phase 1: Bug Fixes and Codebase Cleanup [PARTIAL] (9/10 tasks complete, 1 blocked)
 
 **BLOCKER** (Phase 1):
 - **What failed**: `reflCanR_linear` proof: forward linearity of `tempR_fwd` from BX11 temporal linearity axiom.
@@ -107,16 +107,16 @@ Phases 2 and 3 can execute in parallel (Wave 2).
 **Goal**: Fix all identified bugs in the WeakCanonical directory, remove vacuous definitions, and ensure the existing sorry-free proofs still compile.
 
 **Tasks**:
-- [ ] Fix `until_backward_mcs` type signature in `TruthLemma.lean:450` -- currently states the forward direction with a negated hypothesis (should state: from `Formula.untl psi1 psi2 not-in x.val`, derive the NEGATION of the semantic condition, i.e., existence of a counter-witness). Since this lemma is not needed for Path A, change it to have the correct type signature and leave the sorry, or mark it as dead code with a comment explaining Path A bypasses it.
-- [ ] Fix `since_backward_mcs` type signature in `TruthLemma.lean:492` -- same bug, mirror of until_backward_mcs.
-- [ ] Replace vacuous definitions in `IntegerModel.lean`: `good := True`, `very_good := True`, `contemp_equiv := True` with `sorry`-based stubs that have correct types (or delete and rebuild in Phase 5).
-- [ ] Replace vacuous definitions in `NEquivalence.lean`: `k_equiv := True` with proper placeholder.
-- [ ] Replace vacuous definitions in `OrderedSum.lean`: `doets_lemma_1_4` and `doets_lemma_1_5` prove `True` instead of the real statements; convert to proper sorry-based stubs.
-- [ ] Replace vacuous `table` definition in `Table.lean`: currently returns `.atom` for everything; convert to proper sorry-based stub.
-- [ ] Prove `tempR_fwd_trans` in `ReflexiveCanonical.lean`: transitivity of tempR_fwd via temp_4 (`G(psi) -> G(G(psi))`). Teammate C confirmed this is provable. (~20 lines)
-- [ ] Prove `reflCanR_linear` in `ReflexiveCanonical.lean`: linearity from BX11 temporal linearity axiom. (~30 lines)
-- [ ] Prove `tempR_bwd_imp_reflCanR_bwd` backward bridge lemma in `ReflexiveCanonical.lean`: if tempR_bwd y x, then the backward analog of reflCanR holds. (~15 lines)
-- [ ] Verify `lake build Bimodal.Metalogic.WeakCanonical` compiles with no new errors (sorries are acceptable, build errors are not).
+- [x] Fix `until_backward_mcs` type signature in `TruthLemma.lean:450` -- fixed to correct contrapositive form with Path A bypass note. (sorry body)
+- [x] Fix `since_backward_mcs` type signature in `TruthLemma.lean:492` -- same fix, mirror of until_backward_mcs. (sorry body)
+- [x] Replace vacuous definitions in `IntegerModel.lean`: already replaced with `:= by sorry`-based stubs by earlier work. (verified correct)
+- [x] Replace vacuous definitions in `NEquivalence.lean`: already replaced with proper sorry-based stub by earlier work. (verified correct)
+- [x] Replace vacuous definitions in `OrderedSum.lean`: already replaced with proper sorry-based stubs by earlier work. (verified correct)
+- [x] Replace vacuous `table` definition in `Table.lean`: already replaced with proper sorry-based stub by earlier work. (verified correct)
+- [x] Prove `tempR_fwd_trans` in `ReflexiveCanonical.lean`: sorry-free proof via temp_4 + `all_future_all_future`. (~25 lines)
+- [ ] Prove `reflCanR_linear` in `ReflexiveCanonical.lean`: **BLOCKED** — requires porting F-truth lemma infrastructure from BXCanonical. (sorry stub with correct type)
+- [x] Prove `tempR_bwd_imp_reflCanR_bwd` in `ReflexiveCanonical.lean`: sorry-free proof mirroring `tempR_fwd_imp_reflCanR`. (~15 lines)
+- [x] Verify `lake build Bimodal.Metalogic.WeakCanonical` compiles with no errors.
 
 **Timing**: 5-7 hours
 
