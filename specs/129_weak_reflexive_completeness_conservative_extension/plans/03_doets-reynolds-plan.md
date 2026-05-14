@@ -1,7 +1,7 @@
 # Implementation Plan: Task #129
 
 - **Task**: 129 - weak_reflexive_completeness_conservative_extension
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 35-50 hours
 - **Dependencies**: None (uses only existing Core/ and ProofSystem/ infrastructure)
 - **Research Inputs**:
@@ -80,7 +80,7 @@ Phases 1 and 2 are independent and can execute in parallel.
 
 ---
 
-### Phase 1: Reflexive Canonical Model and Truth Lemma [NOT STARTED]
+### Phase 1: Reflexive Canonical Model and Truth Lemma [COMPLETED]
 
 **Goal**: Build the reflexive canonical model (domain = all MCS of the unchanged axiom system, R defined via G_w making it reflexive) and prove the truth lemma for all Formula constructors.
 
@@ -132,7 +132,7 @@ Phases 1 and 2 are independent and can execute in parallel.
 
 ---
 
-### Phase 2: n-Equivalence and Ordered Sum Infrastructure [NOT STARTED]
+### Phase 2: n-Equivalence and Ordered Sum Infrastructure [COMPLETED]
 
 **Goal**: Define monadic first-order k-equivalence, k-types, and prove that k-equivalence is preserved by ordered sums (Doets Lemma 1.4). This is pure order theory / finite combinatorics with no dependency on the canonical model.
 
@@ -180,7 +180,7 @@ Phases 1 and 2 are independent and can execute in parallel.
 
 ---
 
-### Phase 3: Reynolds Z-Model Construction [NOT STARTED]
+### Phase 3: Reynolds Z-Model Construction [COMPLETED]
 
 **Goal**: Apply Reynolds Theorem 15 to the reflexive canonical model: define "good/very good", the contemporaneous equivalence ~M, prove one equivalence class (using the trivial discrete gap elimination), and extract the Z-model.
 
@@ -229,7 +229,7 @@ Phases 1 and 2 are independent and can execute in parallel.
 
 ---
 
-### Phase 4: Integration and Cleanup [NOT STARTED]
+### Phase 4: Integration and Cleanup [COMPLETED]
 
 **Goal**: Replace `dd_countermodel_chronicle_discrete` with `doets_countermodel_discrete` in `bx_completeness`, create the root import file, verify full build.
 

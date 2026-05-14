@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.BXCanonical.RootScopedChain
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
+import Bimodal.Metalogic.WeakCanonical
 import Bimodal.Semantics.Validity
 
 /-!
@@ -156,7 +157,7 @@ theorem bx_completeness (φ : Formula) :
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
     · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
       obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        Chronicle.dd_countermodel_chronicle_discrete M hM_mcs φ h_neg_in h_box_discrete
+        WeakCanonical.doets_countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — some worlds dense, others discrete
       obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=

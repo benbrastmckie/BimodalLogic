@@ -2,6 +2,7 @@
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Decidability
 import Bimodal.Metalogic.BXCanonical.BXCanonical
+import Bimodal.Metalogic.WeakCanonical
 
 /-!
 # Bimodal Metalogic
