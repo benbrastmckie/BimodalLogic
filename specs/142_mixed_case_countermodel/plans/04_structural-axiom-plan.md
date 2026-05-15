@@ -152,42 +152,9 @@ Phases within the same wave can execute in parallel.
 **Goal**: Prove that in the presence of the new axiom, every MCS A satisfies `box(F'T) in A` or `box(U(T,bot)) in A`, making the mixed case hypotheses contradictory.
 
 **Tasks**:
-- [ ] Create a new lemma (in ChronicleToCountermodel.lean or a nearby file) that derives the mixed-case impossibility from the axiom:
-  ```
-  theorem mcs_box_dense_or_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
-      Formula.box next_top.neg ∈ A ∨ Formula.box next_top ∈ A
-  ```
-  The proof outline:
-  1. By `negation_complete`, either `next_top in A` or `next_top.neg in A`
-  2. Case `next_top in A` (U(T,bot) in A):
-     - The new axiom gives `U(T,bot) -> box(U(T,bot))`
-     - By `theorem_in_mcs`, this axiom instance is in A
-     - By MCS closure under modus ponens: `box(U(T,bot)) in A`
-     - Right disjunct: `box(next_top) in A`
-  3. Case `next_top.neg in A` (F'T in A):
-     - Need to derive `F'T -> box(F'T)`. This requires the CONTRAPOSITIVE of the new axiom through S5 reasoning:
-       a. From `U(T,bot) -> box(U(T,bot))` we get (by contrapositive) `diamond(neg(U(T,bot))) -> neg(U(T,bot))`
-       b. i.e., `diamond(F'T) -> F'T`
-       c. By S5 (modal_b: phi -> box(diamond(phi))): `F'T -> box(diamond(F'T))`
-       d. By modal_k_dist on (b): `box(diamond(F'T) -> F'T)`, combined with (c): `F'T -> box(F'T)`
-     - Alternatively, derive using the dual uniformity pattern and the existing uniformity axioms
-     - The key mathematical fact: F'T = neg(U(T,bot)), so if U(T,bot) is false, then F'T is true, and by the new axiom's contrapositive through S5, this propagates to all worlds
-     - Left disjunct: `box(next_top.neg) in A`
-- [ ] Alternative simpler approach: derive `False` directly from the mixed-case hypotheses without needing the full disjunction:
-  ```
-  theorem mcs_mixed_case_absurd (A : Set Formula) (h_mcs : SetMaximalConsistent A)
-      (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
-      (h_not_box_discrete : (Formula.box next_top).neg ∈ A) : False
-  ```
-  Proof:
-  1. `h_not_box_discrete` means `neg(box(U(T,bot))) in A`, i.e., `diamond(neg(U(T,bot))) in A`
-  2. By S5 (neg_box -> box_neg_box): `box(neg(box(U(T,bot)))) in A`
-  3. From the new axiom (contrapositive): `neg(box(U(T,bot))) -> neg(U(T,bot))`
-  4. By necessitation + K distribution: `box(neg(box(U(T,bot)))) -> box(neg(U(T,bot)))`
-  5. Combined with step 2: `box(neg(U(T,bot))) in A`, i.e., `box(F'T) in A`
-  6. But `h_not_box_dense` says `neg(box(F'T)) in A` -- contradiction with MCS consistency
-- [ ] Decide between the two approaches based on which requires fewer intermediate derivation steps in Lean. The direct `False` approach (mcs_mixed_case_absurd) is likely simpler
-- [ ] Verify the derivation chain compiles
+- [x] Create `mcs_mixed_case_absurd` in ChronicleToCountermodel.lean *(deviation: altered -- used the direct False approach instead of the disjunction; 8-step derivation chain via contraposition + necessitation + K-distribution + S5 negative introspection)*
+- [x] Also created `dd_countermodel_chronicle_mixed_sorry` proof via `False.elim (mcs_mixed_case_absurd ...)`
+- [x] Verify the derivation chain compiles
 
 **Timing**: 2 hours
 
