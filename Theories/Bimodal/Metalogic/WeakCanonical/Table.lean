@@ -16,8 +16,7 @@ This follows Reynolds' convention: `C_{U(A,B)}(t) = ∃s > t(C_A(s) ∧ ∀u(t <
 - `table` definition: IMPLEMENTED (Reynolds Section 6, all 8 Formula constructors)
 - `table_depth_bound`: PROVED (structural induction + `lift_quantifier_depth`)
 - `temporal_truth`: DEFINED (semantic interpretation on OrderedMonadicStructure)
-- `table_correctness`: PROVED for base cases (atom, bot, imp, box);
-  temporal operator cases (G, H, U, S) sorry-propagating from `lift_eval` (Task 141)
+- `table_correctness`: PROVED (all 8 cases, sorry-free)
 
 ## Design
 The standard translation sends each temporal atom to a distinct monadic predicate.
@@ -224,7 +223,7 @@ Helper: `lift_eval` specialized to cutoff 1 for use in table_correctness.
 private theorem cons_eq_insertEnv_one {α : Type} (s t : α) :
     (Fin.cons s (fun (_ : Fin 1) => t) : Fin 2 → α) =
     insertEnv ⟨1, by omega⟩ t (fun (_ : Fin 1) => s) := by
-  sorry -- Task 141: proof in progress
+  funext i; refine Fin.cases ?_ ?_ i <;> simp [Fin.cons, insertEnv]
 
 private theorem lift1_eval {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
@@ -238,7 +237,7 @@ private theorem lift1_eval {sig : MonadicSignature}
 private theorem cons3_eq_insertEnv {α : Type} (u s t : α) :
     (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)) : Fin 3 → α) =
     insertEnv ⟨1, by omega⟩ s (Fin.cons u (fun (_ : Fin 1) => t)) := by
-  sorry -- Task 141: proof in progress
+  funext i; refine Fin.cases ?_ (fun j => ?_) i <;> (try simp [insertEnv]); refine Fin.cases ?_ ?_ j <;> simp
 
 /-- Double lift for the 3-variable context in Until/Since. -/
 private theorem lift1_lift1_eval {sig : MonadicSignature}
@@ -289,16 +288,28 @@ theorem table_correctness {sig : MonadicSignature}
   | all_future ψ ih =>
     -- G ψ: ∀s > t, C_ψ(s) ↔ ∀s, t < s → temporal_truth s ψ
     simp only [table, eval, temporal_truth]
-    sorry  -- depends on lift_eval (sorry-propagating from NEquivalence)
+    exact Iff.intro
+      (fun h s hts => by push_neg at h; have := h s hts; rw [lift1_eval] at this; exact (ih s).mp this)
+      (fun h s => by push_neg; intro hts; rw [lift1_eval]; exact (ih s).mpr (h s hts))
   | all_past ψ ih =>
     simp only [table, eval, temporal_truth]
-    sorry  -- depends on lift_eval (sorry-propagating from NEquivalence)
+    exact Iff.intro
+      (fun h s hst => by push_neg at h; have := h s hst; rw [lift1_eval] at this; exact (ih s).mp this)
+      (fun h s => by push_neg; intro hst; rw [lift1_eval]; exact (ih s).mpr (h s hst))
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [table, eval, temporal_truth]
-    sorry  -- depends on lift_eval (sorry-propagating from NEquivalence)
+    exact Iff.intro
+      (fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,
+        fun r htr hrs => by push_neg at h2; have := h2 r ⟨htr, hrs⟩; rw [lift1_lift1_eval] at this; exact (ih₂ r).mp this⟩)
+      (fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, by rw [lift1_eval]; exact (ih₁ s).mpr h1,
+        fun r => by push_neg; intro ⟨htr, hrs⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r htr hrs)⟩)
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [table, eval, temporal_truth]
-    sorry  -- depends on lift_eval (sorry-propagating from NEquivalence)
+    exact Iff.intro
+      (fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,
+        fun r hsr hrt => by push_neg at h2; have := h2 r ⟨hsr, hrt⟩; rw [lift1_lift1_eval] at this; exact (ih₂ r).mp this⟩)
+      (fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, by rw [lift1_eval]; exact (ih₁ s).mpr h1,
+        fun r => by push_neg; intro ⟨hsr, hrt⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r hsr hrt)⟩)
 
 
 end Bimodal.Metalogic.WeakCanonical

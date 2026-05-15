@@ -63,19 +63,19 @@ This task advances the Reynolds pipeline discrete completeness branch:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Prove Helper Lemmas and Temporal Cases [NOT STARTED]
+### Phase 1: Prove Helper Lemmas and Temporal Cases [COMPLETED]
 
 **Goal**: Replace all 6 sorry positions in Table.lean with validated proofs and update the module docstring.
 
 **Tasks**:
-- [ ] Replace `sorry` at line 227 with proof for `cons_eq_insertEnv_one`: `funext i; refine Fin.cases ?_ ?_ i <;> simp [Fin.cons, insertEnv]`
-- [ ] Replace `sorry` at line 241 with proof for `cons3_eq_insertEnv`: `funext i; refine Fin.cases ?_ (fun j => ?_) i <;> (try simp [insertEnv]); refine Fin.cases ?_ ?_ j <;> simp`
-- [ ] Replace `sorry` at line 292 with proof for `all_future` case (Iff.intro + push_neg + lift1_eval + ih)
-- [ ] Replace `sorry` at line 295 with proof for `all_past` case (symmetric to all_future)
-- [ ] Replace `sorry` at line 298 with proof for `untl` case (Iff.intro + push_neg + lift1_eval + lift1_lift1_eval + ih)
-- [ ] Replace `sorry` at line 301 with proof for `snce` case (symmetric to untl)
-- [ ] Update Table.lean module docstring (lines 19-20) to reflect sorry-free status
-- [ ] Run `lean_verify` on `table_correctness` to confirm no `sorryAx` in axiom set
+- [x] Replace `sorry` at line 227 with proof for `cons_eq_insertEnv_one`: `funext i; refine Fin.cases ?_ ?_ i <;> simp [Fin.cons, insertEnv]`
+- [x] Replace `sorry` at line 241 with proof for `cons3_eq_insertEnv`: `funext i; refine Fin.cases ?_ (fun j => ?_) i <;> (try simp [insertEnv]); refine Fin.cases ?_ ?_ j <;> simp`
+- [x] Replace `sorry` at line 292 with proof for `all_future` case (Iff.intro + push_neg + lift1_eval + ih)
+- [x] Replace `sorry` at line 295 with proof for `all_past` case (symmetric to all_future)
+- [x] Replace `sorry` at line 298 with proof for `untl` case (Iff.intro + push_neg + lift1_eval + lift1_lift1_eval + ih)
+- [x] Replace `sorry` at line 301 with proof for `snce` case (symmetric to untl)
+- [x] Update Table.lean module docstring (lines 19-20) to reflect sorry-free status
+- [x] Run `lean_verify` on `table_correctness` to confirm no `sorryAx` in axiom set
 
 **Timing**: 30 minutes
 
