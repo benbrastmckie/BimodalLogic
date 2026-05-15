@@ -27,67 +27,62 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-15. Tasks 139, 140, 141, 144 archived. 6 critical-path sorries remain across 3 tasks (142, 147-148). Normal form infrastructure (143, 145, 146) is non-critical-path but mathematically important.*
+*Updated 2026-05-15. Generated from state.json dependency graph.*
 
 **Goal**: Sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
 
-**Status**: Reynolds pipeline complete (tasks 129, 139, 140). Canonical model complete (task 141). 1 sorry in mixed-case countermodel (task 142). Standard translation has 2 sorries in temporal operator cases (tasks 147-148). Normal form infrastructure has Doets Lemma 1.1 sorry-free but circular import blocks KType redesign (tasks 145-146).
+**Dependency Waves**:
+| Wave | Tasks | Blocked by |
+|------|-------|------------|
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,147,149,619,949,953,992,998 | -- |
+| 2 | 20,21,125,128,145,148,150,151 | 18,116,122,143,147,149 |
+| 3 | 146 | 145 |
 
-### Phase 1: Sorry-Free `bx_completeness`
-
-**Mixed-case countermodel** (1 sorry):
-1. **142** [RESEARCHED] — Mixed-case countermodel: resolve the third bx_completeness branch (30-50h, genuine mixed case)
-
-**Table correctness completion** (2 sorries):
-2. **147** [RESEARCHED] — Prove lift_eval and insertEnv lemmas: 4 De Bruijn substitution lemmas (2-3h)
-3. **148** [RESEARCHED] — Complete table_correctness temporal cases: close all_future, all_past, untl, snce (1.5-2h, depends on 147)
-
-**Normal form infrastructure** (Doets Lemma 1.1, non-critical-path):
-4. **143** [PARTIAL] — Doets Lemma 1.1: bridge theorem proved, KType redesign deferred (depends on 139, completed)
-5. **145** [RESEARCHED] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
-6. **146** [RESEARCHED] — NormalForm cleanup and cardinality correspondence proof (1-2h, depends on 145)
-
-**Cleanup**:
-7. **122** [NOT STARTED] — Build discrete BFMCS on Z, complete last sorry
-8. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard
-
-### Phase 2: Module Reorganization
-
-1. **131** [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy, clean APIs, module documentation (15-25h, after 129 lands new modules)
-
-### Phase 3: Frame Hierarchy and Formula Refactor
-
-1. **126** [RESEARCHED] — Four-tier frame hierarchy: Base → Dense/Discrete → Integer with Sahlqvist correspondence (depends on 129)
-2. **116** [PLANNED] — Redefine G/H/F/P in terms of U/S (~18h, high risk, touches everything)
-
-### Phase 4: Expressive Extensions
-
-1. **127** [NOT STARTED] — Time addition operator (+): ternary semantics, FO[<,+] (depends on 123)
-2. **128** [NOT STARTED] — Open set (interior) operator for dense/continuous frames (depends on 122)
-
-### Phase 5: Algebraic Representation
-
-- **125** [NOT STARTED] — Jónsson-Tarski representation for S/U/□ (depends on all Phase 1-5 tasks)
-
-### Phase 6: Publication Quality
-
-- **95** [NOT STARTED] — Verification audit (after axiom system is final)
-- **8** [RESEARCHED] — Genuine truth_at completeness
-- **68** [RESEARCHED] — Dense completeness via ℚ
-
-### Deferred / Low Priority
-
-- **998** [RESEARCHING] — FMP redesign for irreflexive temporal semantics
-- **112** [RESEARCHED] — Literature study (reference)
-- **18** [BLOCKED] — Dense representation theorem
-- **20** [NOT STARTED] — Parametric canonical audit
-- **21** [PLANNED] — Tech debt cleanup
-- **953** [RESEARCHED] — Bilateral proof system (55-90h)
-- **992** [RESEARCHED] — STSA temporal shift automorphism
-- **949** [RESEARCHED] — Update Demo.lean (cosmetic)
-- **64** [RESEARCHED] — Critical path review (reference)
-- **619** [RESEARCHED] — Agent system architecture upgrade (meta)
-- **114** [NOT STARTED] — Plan-compliance rule (meta)
+**Dependency Tree** (indented = must complete first):
+```
+8 [RESEARCHED] — genuine_truth_at_completeness
+18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into 
+60 [NOT STARTED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
+64 [RESEARCHED] — critical_path_review
+68 [RESEARCHED] — Eliminate the sorry in dense_completeness_fc (FrameConditions/Com
+95 [NOT STARTED] — Verification pass to confirm sorry-free completeness. (1) Run #pr
+112 [RESEARCHED] — literature_study_representation_theorem
+114 [NOT STARTED] — Add a .claude/rules/ rule enforcing plan compliance for implement
+116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors 
+122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_
+126 [RESEARCHED] — Establish a four-tier axiom hierarchy with explicit frame corresp
+127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
+130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
+131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
+142 [RESEARCHING] — Resolve the mixed-case sorry in bx_completeness: the case where n
+143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
+147 [IMPLEMENTING] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le
+149 [IMPLEMENTING] — Redesign the Task Order section format in TODO.md. Replace flat c
+619 [RESEARCHED] — agent_system_architecture_upgrade
+949 [RESEARCHED] — update_demo_lean_bimodal_logic
+953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
+992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
+998 [RESEARCHING] — Redesign the FMP filtration for strict temporal semantics. The 2 
+20 [NOT STARTED] — Review ParametricCanonical.lean, ParametricTruthLemma.lean, and P
+  └─ 18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into  (see above)
+21 [PLANNED] — Clean up technical debt accumulated across tasks 9-20 metalogic r
+  └─ 18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into  (see above)
+125 [NOT STARTED] — Research algebraic methods for establishing a Jónsson-Tarski-styl
+  └─ 116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors  (see above)
+  └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
+128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
+  └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
+145 [PLANNED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions)
+  └─ 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical  (see above)
+146 [RESEARCHED] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
+  └─ 145 [PLANNED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) (see above)
+148 [RESEARCHED] — Close the 4 temporal operator cases of table_correctness (all_fut
+  └─ 147 [IMPLEMENTING] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le (see above)
+150 [NOT STARTED] — Add automatic Task Order synchronization. Update update-task-stat
+  └─ 149 [IMPLEMENTING] — Redesign the Task Order section format in TODO.md. Replace flat c (see above)
+151 [NOT STARTED] — Integrate Task Order with /todo and /review commands. Update /tod
+  └─ 149 [IMPLEMENTING] — Redesign the Task Order section format in TODO.md. Replace flat c (see above)
+```
 
 ## Tasks
 
@@ -125,7 +120,7 @@ technical_debt:
 
 ### 147. Prove lift_eval and insertEnv De Bruijn substitution lemmas
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None
@@ -521,10 +516,4 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 - **Plan**: [implementation-002.md](specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
-
-
-## Recommended Order
-
-
-## Recommended Order
 

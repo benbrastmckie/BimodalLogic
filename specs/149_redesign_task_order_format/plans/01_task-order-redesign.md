@@ -97,16 +97,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix update-task-status.sh Phase 3 [NOT STARTED]
+### Phase 2: Fix update-task-status.sh Phase 3 [COMPLETED]
 
 **Goal**: Update the `update_todo_task_order()` function to correctly match and update status markers in the new tree format, and add full regeneration mode for terminal status transitions.
 
 **Tasks**:
-- [ ] Change the grep pattern from `^- \*\*${task_number}\*\* \[` to `^\s*(└─ )?${task_number} \[` to match the new tree format lines
-- [ ] Add two-mode logic: in-place sed for non-terminal transitions (RESEARCHING, RESEARCHED, PLANNING, PLANNED, IMPLEMENTING), full regeneration via `generate-task-order.sh --update-todo` for terminal transitions (COMPLETED, ABANDONED)
-- [ ] Test in-place mode with `--dry-run` on a sample tree line like `148 [RESEARCHED] — description`
-- [ ] Test in-place mode on indented tree lines like `  └─ 147 [RESEARCHED] — description`
-- [ ] Test regeneration mode triggers correctly when status is COMPLETED or ABANDONED
+- [x] Change the grep pattern from `^- \*\*${task_number}\*\* \[` to `^\s*(└─ )?${task_number} \[` to match the new tree format lines *(completed)*
+- [x] Add two-mode logic: in-place sed for non-terminal transitions (RESEARCHING, RESEARCHED, PLANNING, PLANNED, IMPLEMENTING), full regeneration via `generate-task-order.sh --update-todo` for terminal transitions (COMPLETED, ABANDONED) *(completed)*
+- [x] Test in-place mode with `--dry-run` on a sample tree line like `148 [RESEARCHED] — description` *(completed: warns "not found" since old format is in place, will work after Phase 3)*
+- [x] Test in-place mode on indented tree lines like `  └─ 147 [RESEARCHED] — description` *(completed: pattern validated)*
+- [x] Test regeneration mode triggers correctly when status is COMPLETED or ABANDONED *(completed: dry-run shows correct mode B behavior)*
 
 **Timing**: 1 hour
 
@@ -122,18 +122,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Regenerate Live TODO.md and Verify [NOT STARTED]
+### Phase 3: Regenerate Live TODO.md and Verify [COMPLETED]
 
 **Goal**: Run `generate-task-order.sh` against the live state.json to replace the current Task Order section in TODO.md with the new wave+tree format, then verify correctness.
 
 **Tasks**:
-- [ ] Run `generate-task-order.sh --print` and review the output against manually computed waves from the research report
-- [ ] Preserve the existing Goal line from the current Task Order section
-- [ ] Run `generate-task-order.sh --update-todo specs/TODO.md specs/state.json` to replace the Task Order section
-- [ ] Verify the output: all non-terminal tasks from state.json appear in the wave table, dependency tree shows correct parent-child relationships, status markers match state.json values
-- [ ] Verify `update-task-status.sh postflight 148 research sess_test --dry-run` correctly matches a tree line in the new format
-- [ ] Remove or clean up the duplicate `## Recommended Order` headers at the bottom of TODO.md (lines ~522-527) if they still exist
-- [ ] Run a final `--dry-run` status update to confirm Phase 3 of update-task-status.sh works end-to-end with the new format
+- [x] Run `generate-task-order.sh --print` and review the output against manually computed waves from the research report *(completed: output verified correct)*
+- [x] Preserve the existing Goal line from the current Task Order section *(completed: Goal line preserved automatically)*
+- [x] Run `generate-task-order.sh --update-todo specs/TODO.md specs/state.json` to replace the Task Order section *(completed)*
+- [x] Verify the output: all non-terminal tasks from state.json appear in the wave table, dependency tree shows correct parent-child relationships, status markers match state.json values *(completed)*
+- [x] Verify `update-task-status.sh postflight 148 research sess_test --dry-run` correctly matches a tree line in the new format *(completed: matches line 79)*
+- [x] Remove or clean up the duplicate `## Recommended Order` headers at the bottom of TODO.md (lines ~522-527) if they still exist *(completed: removed both duplicate headers)*
+- [x] Run a final `--dry-run` status update to confirm Phase 3 of update-task-status.sh works end-to-end with the new format *(completed: all modes verified)*
 
 **Timing**: 1.5 hours
 
