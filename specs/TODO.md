@@ -49,7 +49,7 @@ technical_debt:
 6. **144** [COMPLETED] — Fix existsTask_transitive 1-line sorry in Bundle/CanonicalFrame.lean (0.5h, on critical path)
 
 **Normal form infrastructure** (Doets Lemma 1.1):
-7. **143** [PLANNED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
+7. **143** [COMPLETED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
 
 **Cleanup**:
 8. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
@@ -97,11 +97,12 @@ technical_debt:
 
 ### 143. Doets Lemma 1.1: normal form KType redesign with finite domain
 - **Effort**: 6-9 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 139
 - **Plan**: [143_doets_lemma_1_1_normal_form_ktype/plans/02_revised-plan.md]
+- **Summary**: Doets Lemma 1.1 bridge theorem proved sorry-free. Inductive NormalForm type with AtomKind, concrete nf_eval, nf_exists_unique, nf_agreement_monotone all sorry-free in NormalForm.lean. finite_types remains closed. k_equiv_monotone sorry remains in NEquivalence.lean due to circular import (equivalent proof exists in NormalForm.lean).
 
 **Description**: Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical equivalence) and redesign `KType` with a finite normal form domain, closing `ktype_finite` and `KEquivalenceFramework.finite_types`.
 
@@ -179,7 +180,7 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 140. Truth transfer and succ_cofinal elimination
 - **Effort**: 8-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 129, 139

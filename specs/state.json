@@ -612,7 +612,7 @@
     {
       "project_number": 140,
       "project_name": "truth_transfer_eliminate_succ_cofinal",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Prove the standard translation preserves truth (table correctness), wire it into Transfer.lean to replace the chronicle fallback with the Reynolds pipeline, and eliminate succ_cofinal from the axiom set of doets_countermodel_discrete.\n\nThis is the final link in the chain: task 129 built the Reynolds pipeline (one_class, chronicle_is_good), task 139 closes the FO satisfaction foundation (eval/satisfies, k_type_of), and this task uses FO satisfaction to prove the standard translation correct and complete the truth transfer.\n\nScope:\n\n1. Prove table_correctness: the standard translation preserves truth. For any temporal formula phi and point t in model M, M |= phi at t iff monadic(M) |= table(phi) at t. This requires the eval/satisfies infrastructure from task 139. The table definition already exists in Table.lean but its correctness theorem is sorry. Proof by structural induction on Formula: atom case is definitional, boolean cases are trivial, G/H cases use the order relation in MonadicSentence, Until/Since cases use the FO encoding of bounded quantification.\n\n2. Close table_depth_bound: the quantifier depth of table(phi) is bounded by Formula.complexity(phi). This is a straightforward structural induction once table is non-vacuous.\n\n3. Replace the chronicle fallback in doets_countermodel_discrete (Transfer.lean) with the full Reynolds pipeline. The 6-step flow is already documented as comments in Transfer.lean from task 129: (a) extract chronicle, (b) build signature via mkSigFrom, (c) build atom map via mkAtomMap, (d) prove chronicle is good via chronicle_is_good, (e) extract Z-model from goodness, (f) transfer truth via k-equivalence + table_correctness. Replace the chronicle fallback with this pipeline.\n\n4. Verify axiom elimination: run #print axioms doets_countermodel_discrete and confirm succ_cofinal does not appear. Check #print axioms bx_completeness for any remaining succ_cofinal paths.\n\n5. If bx_completeness is clean of succ_cofinal, the critical-path sorry identified in the project status is fully resolved.\n\nDefinition of done: table_correctness is sorry-free, doets_countermodel_discrete uses the Reynolds pipeline (not chronicle fallback), #print axioms doets_countermodel_discrete shows no succ_cofinal, lake build passes.",
@@ -621,7 +621,7 @@
         139
       ],
       "created": "2026-05-15T01:22:02Z",
-      "last_updated": "2026-05-15T16:44:48Z",
+      "last_updated": "2026-05-15T16:55:35Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -635,7 +635,7 @@
           "summary": "5-phase plan: infrastructure (weaken, operator_depth fix, signature), table definition, depth bound, table_correctness, pipeline partial activation"
         }
       ],
-      "session_id": "sess_1778863224_3143a9"
+      "session_id": "sess_1778864116_275217"
     },
     {
       "project_number": 141,
@@ -692,7 +692,7 @@
     {
       "project_number": 143,
       "project_name": "doets_lemma_1_1_normal_form_ktype",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical equivalence) and redesign KType with a finite normal form domain, closing ktype_finite and KEquivalenceFramework.finite_types.\n\nThe current KType definition uses an infinite domain ({s : MonadicFormula sig 0 // s.quantifier_depth <= k} -> Bool) which makes Fintype impossible. The correct mathematical object (Doets 1987 Chapter 1, Section 1.6-1.7) is the space of n-characteristics: for each quantifier depth k and variable count n, there are finitely many semantically distinct formulas.\n\nScope:\n\n1. Define nfCount (p : Nat) (k : Nat) (n : Nat) : Nat — the number of semantically distinct monadic FO formulas of quantifier depth <= k with n free variables over a signature with p unary predicates and binary <. Following Doets 1987 Definition 1.6.1:\n   - Depth 0, n vars: 2^(p*n + n*(n-1)/2) atomic types (one per truth assignment to atoms P_i(x_j) and x_i < x_j for i < j)\n   - Depth k+1, n vars: 2^(nfCount p k (n+1)) (one per Boolean combination of depth-k formulas with one additional quantified variable)\n\n2. Define NormalForm (sig : MonadicSignature) (k : Nat) (n : Nat) — a finite type of normal form representatives (Doets n-characteristics / Hintikka formulas). This can be Fin (nfCount sig.preds.card k n) or a custom inductive. Each normal form at depth 0 is a conjunction of literals over the atomic formulas P_i(x_j) and x_i < x_j. Each normal form at depth k+1 specifies, for each depth-k normal form with one extra variable, whether exists-x and forall-x versions hold.\n\n3. Define nf_eval : NormalForm sig k n -> OrderedMonadicStructure sig -> (Fin n -> carrier) -> Prop — the semantic interpretation of each normal form. By structural recursion on the normal form.\n\n4. Prove Doets Lemma 1.1 (the main theorem): for every MonadicFormula sig n with quantifier_depth <= k, there exists a NormalForm sig k n that is semantically equivalent (same truth value in every structure under every assignment). Proof by induction on k:\n   - Base case (k=0): every quantifier-free formula is a Boolean combination of atoms; reduce to DNF over the finitely many atomic types.\n   - Inductive step (k+1): a depth-(k+1) formula has the form Qx.phi where Q is forall/exists and phi has depth <= k with n+1 variables. By IH, phi is equivalent to a normal form in NormalForm sig k (n+1). The quantifier Qx applied to this normal form yields one of the depth-(k+1) normal forms.\n\n5. Redefine KType sig k := NormalForm sig k 0 -> Bool (or equivalently Fin (nfCount sig.preds.card k 0) -> Bool). This is a function from a finite type to Bool, so Fintype (KType sig k) holds by inferInstance.\n\n6. Redefine k_type_of to use the normal form factorization: k_type_of M maps each normal form to whether M satisfies it (via nf_eval).\n\n7. Close ktype_finite: now Fintype (KType sig k) = inferInstance.\n\n8. Close KEquivalenceFramework.finite_types: use Setoid.quotientKerEquivRange + Set.finite_range + Fintype.ofFinite.\n\n9. Delete the old ktype_finite definition (dead code, mathematically impossible as stated).\n\n10. Verify all downstream files compile (IntegerModel, OrderedSum, Transfer).\n\nDefinition of done: ktype_finite is sorry-free (or deleted and replaced by inferInstance), KEquivalenceFramework.finite_types is sorry-free, Doets Lemma 1.1 is stated and proved, lake build passes.\n\nLiterature: Doets 1987 Completeness and Definability thesis (Chapter 1, Sections 1.6-1.7: n-characteristics, Lemma 1.7.1), Doets 1989 Monadic Pi11 Theories (Lemma 1.1).",
@@ -700,7 +700,7 @@
         139
       ],
       "created": "2026-05-15T07:05:05Z",
-      "last_updated": "2026-05-15T16:53:50Z",
+      "last_updated": "2026-05-15T17:27:53Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -744,7 +744,9 @@
           "summary": "Revised plan: 11 phases (5 completed + 6 new for inductive NormalForm, closing doets_lemma_1_1 and k_equiv_monotone)"
         }
       ],
-      "session_id": "sess_1778863774_8cd41f"
+      "session_id": "sess_1778864091_ef7006",
+      "completed": "2026-05-15T17:27:53Z",
+      "completion_summary": "Doets Lemma 1.1 bridge theorem proved sorry-free. Inductive NormalForm type with AtomKind, concrete nf_eval, nf_exists_unique, nf_agreement_monotone all sorry-free in NormalForm.lean. finite_types remains closed. k_equiv_monotone sorry remains in NEquivalence.lean due to circular import (equivalent proof exists in NormalForm.lean)."
     },
     {
       "project_number": 144,
