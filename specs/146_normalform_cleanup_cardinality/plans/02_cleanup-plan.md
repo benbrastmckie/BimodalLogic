@@ -91,17 +91,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add Cardinality Theorems and Equivalence [NOT STARTED]
+### Phase 2: Add Cardinality Theorems and Equivalence [COMPLETED]
 
 **Goal**: Add `atomKind_card`, `normalForm_card`, and `normalForm_equiv_fin` at the end of NormalForm.lean, establishing the cardinality correspondence between the inductive types and the counting functions.
 
 **Tasks**:
-- [ ] Add new section header: `/-! ## Cardinality Correspondences -/`
-- [ ] Add `atomKind_card` theorem (23 lines, uses `Fintype.card_congr`, `card_sum`, `card_prod`, `card_fin`, `card_subtype`, `offDiag_card`)
-- [ ] Add `normalForm_card` theorem (12 lines, induction on `k` generalizing `n`, uses `card_fun`, `card_bool`, `card_prod`, `atomKind_card`, `Nat.pow_add`)
-- [ ] Add `normalForm_equiv_fin` definition (3 lines, uses `Fintype.equivFinOfCardEq`)
-- [ ] Run `lake build` to confirm all new theorems compile
-- [ ] Run `lean_verify` on `atomKind_card`, `normalForm_card`, and `normalForm_equiv_fin` to confirm no `sorryAx`
+- [x] Add new section header: `/-! ## Cardinality Correspondences -/`
+- [x] Add `atomKind_card` theorem (23 lines, uses `Fintype.card_congr`, `card_sum`, `card_prod`, `card_fin`, `card_subtype`, `offDiag_card`)
+- [x] Add `normalForm_card` theorem (12 lines, induction on `k` generalizing `n`, uses `card_fun`, `card_bool`, `card_prod`, `atomKind_card`, `Nat.pow_add`)
+- [x] Add `normalForm_equiv_fin` definition (3 lines, uses `Fintype.equivFinOfCardEq`)
+- [x] Run `lake build` to confirm all new theorems compile
+- [x] Run `lean_verify` on `atomKind_card`, `normalForm_card`, and `normalForm_equiv_fin` to confirm no `sorryAx`
 
 **Timing**: 1 hour
 

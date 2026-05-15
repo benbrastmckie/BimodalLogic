@@ -552,4 +552,64 @@ theorem doets_lemma_1_1 {sig : MonadicSignature} (k : Nat) :
         exact ⟨x, (outer_ih (n' + 1) α h_alpha M N
           (Fin.cons x env_M) (Fin.cons y env_N) h_agree).mpr hNy_eval⟩
 
+/-! ## Cardinality Correspondences -/
+
+/--
+The number of `AtomKind sig n` values equals `atomCount (Fintype.card sig.preds) n`.
+This confirms the counting function in `MonadicFO.lean` correctly enumerates the
+atomic propositions available with `n` free variables.
+-/
+theorem atomKind_card (sig : MonadicSignature) (n : Nat) :
+    Fintype.card (AtomKind sig n) = atomCount (Fintype.card sig.preds) n := by
+  rw [show Fintype.card (AtomKind sig n) =
+    Fintype.card (sig.preds × Fin n ⊕ {p : Fin n × Fin n // p.1 ≠ p.2}) from by
+    exact Fintype.card_congr {
+      toFun := fun x => match x with
+        | .pred p i => .inl ⟨p, i⟩
+        | .order i j h => .inr ⟨⟨i, j⟩, h⟩
+      invFun := fun x => match x with
+        | .inl ⟨p, i⟩ => AtomKind.pred p i
+        | .inr ⟨⟨i, j⟩, h⟩ => AtomKind.order i j h
+      left_inv := by intro x; cases x with | pred _ _ => rfl | order _ _ _ => rfl
+      right_inv := by intro x; cases x with
+        | inl p => cases p; rfl
+        | inr p => cases p; rename_i v hv; cases v; rfl
+    }]
+  rw [Fintype.card_sum, Fintype.card_prod, Fintype.card_fin]
+  rw [Fintype.card_subtype]
+  have h1 : (Finset.univ.filter (fun x : Fin n × Fin n => x.1 ≠ x.2)) =
+    (Finset.univ : Finset (Fin n)).offDiag := by
+    ext ⟨a, b⟩; simp [Finset.mem_offDiag, Finset.mem_filter]
+  rw [h1, Finset.offDiag_card, Finset.card_univ, Fintype.card_fin]
+  simp [atomCount]
+  cases n with
+  | zero => simp
+  | succ m => simp [Nat.succ_mul, Nat.mul_succ]
+
+/--
+The number of `NormalForm sig k n` values equals `nfCount (Fintype.card sig.preds) k n`.
+This confirms the counting function in `MonadicFO.lean` correctly enumerates
+the Doets normal forms at each quantifier depth.
+-/
+theorem normalForm_card (sig : MonadicSignature) (k n : Nat) :
+    Fintype.card (NormalForm sig k n) = nfCount (Fintype.card sig.preds) k n := by
+  induction k generalizing n with
+  | zero =>
+    simp only [NormalForm, nfCount]
+    rw [Fintype.card_fun, Fintype.card_bool, atomKind_card]
+  | succ k ih =>
+    simp only [NormalForm, nfCount]
+    rw [Fintype.card_prod, Fintype.card_fun, Fintype.card_bool,
+        Fintype.card_fun, Fintype.card_bool, atomKind_card, ih]
+    rw [Nat.pow_add]
+
+/--
+The inductive `NormalForm sig k n` type is equivalent to the Fin-based
+`NormalFormIdx sig k n` (i.e., `Fin (nfCount p k n)`), establishing the
+bijection between the two representations.
+-/
+noncomputable def normalForm_equiv_fin (sig : MonadicSignature) (k n : Nat) :
+    NormalForm sig k n ≃ NormalFormIdx sig k n :=
+  Fintype.equivFinOfCardEq (normalForm_card sig k n)
+
 end Bimodal.Metalogic.WeakCanonical
