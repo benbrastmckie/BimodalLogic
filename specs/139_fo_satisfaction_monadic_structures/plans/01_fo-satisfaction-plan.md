@@ -180,16 +180,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Fix Downstream Breakage in IntegerModel.lean, OrderedSum.lean, Transfer.lean [NOT STARTED]
+### Phase 5: Fix Downstream Breakage in IntegerModel.lean, OrderedSum.lean, Transfer.lean [COMPLETED]
 
 **Goal**: Repair all downstream compilation errors caused by the type redesign. Proofs that previously worked via sorry-propagation (`simp only [k_equiv, k_type_of]` reducing to `sorry = sorry`) need rewriting. Where genuine mathematical arguments require `sum_preservation` (still sorry), use explicit sorry with TODO markers.
 
 **Tasks**:
-- [ ] Fix `OrderedSum.lean`: Update `doets_lemma_1_4` to use the genuine `k_equiv` definition. The proof may need `KEquivalenceFramework.sum_preservation` (still sorry) or direct sorry with TODO. Update `doets_lemma_1_5` similarly. Fix `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k`.
-- [ ] Fix `IntegerModel.lean`: Update `finite_structures_good` to use genuine eval-based argument (finite carrier structures have decidable eval, compute k_type_of concretely). Update `contemp_equiv_is_equiv.trans` -- the transitivity proof needs genuine reasoning about very_good subintervals (may require sorry pending sum_preservation). Update `no_gaps_discrete` with genuine argument or explicit sorry. Update `very_good_implies_good` and `chronicle_is_good` -- these require `sum_preservation` so will retain sorry with TODO markers.
-- [ ] Fix `Transfer.lean`: Ensure `mkSigFrom`, `mkAtomMap`, and `doets_countermodel_discrete` compile with the new types. These are stubs/fallbacks so should adapt easily.
-- [ ] Run `lake build` to verify the entire WeakCanonical directory compiles
-- [ ] Grep for any other files importing from WeakCanonical and fix if needed
+- [x] Fix `OrderedSum.lean`: Updated all signatures to use `OrderedMonadicStructure` for `k_equiv`. `doets_lemma_1_4`, `doets_lemma_1_5` sorried with TODO markers. `finite_structures_k_equiv_to_Z_interval` uses reflexivity.
+- [x] Fix `IntegerModel.lean`: Updated `good` to use `ZIntervalStructure.toOrdered`. `finite_structures_good` sorried (needs Doets Theorem 1.1). `contemp_equiv_is_equiv.refl` and `no_boundary_at_successor` proved via Fintype instances. `contemp_equiv_is_equiv.trans`, `no_gaps_discrete`, `very_good_implies_good`, `chronicle_is_good` sorried with TODO markers. *(deviation: altered -- finite_structures_good now requires genuine k-type realizability argument, not just sorry propagation)*
+- [x] Fix `Transfer.lean`: No changes needed -- the file compiled as-is with the new types.
+- [x] `lake build` succeeds (1644 jobs, no errors)
+- [x] No other files outside WeakCanonical import NEquivalence
 
 **Timing**: 2 hours
 

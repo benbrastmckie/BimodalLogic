@@ -63,12 +63,12 @@ Constructors:
 - `ex α`: existential quantification (binds variable 0, shifts others up)
 -/
 inductive MonadicFormula (sig : MonadicSignature) : Nat → Type where
-  | atom (p : sig.preds) (i : Fin n) : MonadicFormula sig n
-  | lt (i j : Fin n) : MonadicFormula sig n
-  | not (α : MonadicFormula sig n) : MonadicFormula sig n
-  | and (α β : MonadicFormula sig n) : MonadicFormula sig n
-  | all (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
-  | ex (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
+  | atom {n : Nat} (p : sig.preds) (i : Fin n) : MonadicFormula sig n
+  | lt {n : Nat} (i j : Fin n) : MonadicFormula sig n
+  | not {n : Nat} (α : MonadicFormula sig n) : MonadicFormula sig n
+  | and {n : Nat} (α β : MonadicFormula sig n) : MonadicFormula sig n
+  | all {n : Nat} (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
+  | ex {n : Nat} (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
   deriving DecidableEq
 
 /-- A monadic sentence: a closed formula with 0 free variables. -/
@@ -290,7 +290,7 @@ The m-type functions are restrictions of the k-type functions to the smaller dom
 theorem k_equiv_monotone (sig : MonadicSignature) {k m : Nat}
     {M N : OrderedMonadicStructure sig}
     (hkm : m ≤ k) (h_equiv : k_equiv sig k M N) : k_equiv sig m M N := by
-  simp only [k_equiv, k_type_of] at h_equiv ⊢
+  simp only [k_equiv] at h_equiv ⊢
   funext ⟨s, hs⟩
   have hsk : s.quantifier_depth ≤ k := le_trans hs hkm
   exact congr_fun h_equiv ⟨s, hsk⟩
@@ -346,7 +346,11 @@ k-types for any fixed k. This follows because:
 
 **Status**: Proved in Phase 3 (depends on Fintype for depth-bounded formulas).
 -/
-theorem ktype_finite (sig : MonadicSignature) (k : Nat) :
+-- TODO: Requires Doets 1989 Lemma 1.1 (finitely many semantically distinct
+-- depth-bounded formulas). The domain {s // s.quantifier_depth ≤ k} is syntactically
+-- infinite (unbounded not/and nesting), so Fintype requires a quotient by
+-- logical equivalence. Deferred to follow-up task.
+noncomputable def ktype_finite (sig : MonadicSignature) (k : Nat) :
     Fintype (KType sig k) := by
   sorry
 
@@ -368,7 +372,9 @@ noncomputable instance (sig : MonadicSignature) : KEquivalenceFramework sig wher
     symm := fun h => h.symm
     trans := fun h1 h2 => h1.trans h2
   }
-  equiv_monotone h h_equiv := k_equiv_monotone sig h h_equiv
+  equiv_monotone := by
+    intro k m h M N h_equiv
+    exact k_equiv_monotone sig h h_equiv
   finite_types k := by
     sorry
   -- TODO: Requires EF-game formalization (Doets Lemma 1.4). Deferred to follow-up task.
