@@ -234,6 +234,108 @@ def eval {sig : MonadicSignature} {n : Nat} (M : OrderedMonadicStructure sig)
   | .all α => ∀ (x : M.carrier), eval M (Fin.cons x env) α
   | .ex α => ∃ (x : M.carrier), eval M (Fin.cons x env) α
 
+/-! ## De Bruijn Lifting and Weakening -/
+
+/--
+Shift a `Fin n` index at cutoff `c`: indices below `c` are unchanged,
+indices `≥ c` are incremented by 1. This is the variable-level operation
+underlying the De Bruijn lift.
+-/
+def finLift (c : Nat) {n : Nat} (i : Fin n) : Fin (n + 1) :=
+  if i.val < c then ⟨i.val, by omega⟩ else ⟨i.val + 1, by omega⟩
+
+/--
+Lift a monadic formula through a binder at cutoff `c`. Variables with
+De Bruijn index `≥ c` are shifted up by 1; variables below `c` are
+unchanged. Going under a binder increments the cutoff.
+
+- `c = 0`: shift all free variables (standard weakening for closed-binder context)
+- `c = 1`: leave bound variable 0 alone, shift free variables 1..n
+- etc.
+-/
+def MonadicFormula.lift {sig : MonadicSignature} {n : Nat} (c : Nat) :
+    MonadicFormula sig n → MonadicFormula sig (n + 1)
+  | .atom p i => .atom p (finLift c i)
+  | .lt i j => .lt (finLift c i) (finLift c j)
+  | .not α => .not (α.lift c)
+  | .and α β => .and (α.lift c) (β.lift c)
+  | .all α => .all (α.lift (c + 1))
+  | .ex α => .ex (α.lift (c + 1))
+
+/--
+Weaken a monadic formula: shift all free variable indices up by 1.
+Defined as `lift 0`. Maps `MonadicFormula sig n` to `MonadicFormula sig (n + 1)`.
+The new variable 0 is unused; original variable `i` becomes `i + 1`.
+
+Used in the table translation when entering a quantifier scope.
+-/
+def MonadicFormula.weaken {sig : MonadicSignature} {n : Nat}
+    (α : MonadicFormula sig n) : MonadicFormula sig (n + 1) :=
+  α.lift 0
+
+/--
+Insert a value at position `c` into an environment of size `n`,
+producing an environment of size `n + 1`. Indices below `c` map to
+the same environment value; index `c` maps to the inserted value;
+indices above `c` shift down by 1.
+-/
+def insertEnv {α : Type} {n : Nat} (c : Fin (n + 1)) (x : α) (env : Fin n → α) :
+    Fin (n + 1) → α :=
+  fun i =>
+    if h : i.val < c.val then env ⟨i.val, by omega⟩
+    else if h2 : i = c then x
+    else env ⟨i.val - 1, by omega⟩
+
+/--
+`insertEnv 0 x env = Fin.cons x env`.
+-/
+theorem insertEnv_zero_eq_cons {α : Type} {n : Nat} (x : α) (env : Fin n → α) :
+    insertEnv 0 x env = Fin.cons x env := by
+  sorry -- Task 141: proof in progress
+
+/--
+Inserting at position `c+1` after `Fin.cons y` equals `Fin.cons y` followed
+by inserting at position `c`. This is the key commutation lemma for the
+binder case of `lift_eval`.
+-/
+theorem insertEnv_succ_cons {α : Type} {n : Nat} (c : Fin (n + 1)) (x y : α)
+    (env : Fin n → α) :
+    insertEnv c.succ x (Fin.cons y env) = Fin.cons y (insertEnv c x env) := by
+  sorry -- Task 141: proof in progress
+
+/-- Helper: `insertEnv c x env` composed with `finLift c.val` is just `env`. -/
+private theorem insertEnv_finLift {α : Type} {n : Nat} (c : Fin (n + 1))
+    (x : α) (env : Fin n → α) (i : Fin n) :
+    insertEnv c x env (finLift c.val i) = env i := by
+  sorry -- Task 141: proof in progress
+
+/--
+Lift preserves evaluation: evaluating a lifted formula with an inserted
+environment yields the same result as evaluating the original formula.
+
+The key property: `eval M (insertEnv c x env) (α.lift c) = eval M env α`.
+-/
+theorem lift_eval {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (c : Fin (n + 1)) (x : M.carrier) (α : MonadicFormula sig n) :
+    eval M (insertEnv c x env) (α.lift c.val) = eval M env α := by
+  sorry -- Task 141: proof in progress
+
+/--
+Weakening preserves evaluation: evaluating a weakened formula in an
+extended environment yields the same result as evaluating the original
+in the base environment.
+
+This is the standard substitution lemma for De Bruijn indices:
+`eval M (Fin.cons x env) (α.weaken) = eval M env α`.
+-/
+theorem weaken_eval {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (x : M.carrier) (α : MonadicFormula sig n) :
+    eval M (Fin.cons x env) α.weaken = eval M env α := by
+  rw [MonadicFormula.weaken, ← insertEnv_zero_eq_cons x env]
+  exact lift_eval M env 0 x α
+
 /-! ## Normal Form Count (Doets 1989, Lemma 1.1) -/
 
 /--

@@ -157,20 +157,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: AtomKind Inductive and atom_eval [NOT STARTED]
+### Phase 6: AtomKind Inductive and atom_eval [COMPLETED]
 
 **Goal**: Define the concrete enumeration of atomic propositions and their evaluation function in NormalForm.lean. This is the foundation for the inductive NormalForm type.
 
 **Tasks**:
-- [ ] Define `AtomKind sig n` inductive in NormalForm.lean with two constructors:
-  - `pred (p : sig.preds) (i : Fin n)` -- predicate atom P_i(x_j)
-  - `order (i j : Fin n) (h : i != j)` -- order atom x_i < x_j
-- [ ] Derive or prove `DecidableEq (AtomKind sig n)` (should derive automatically from sig.preds DecidableEq and Fin DecidableEq)
-- [ ] Prove `Fintype (AtomKind sig n)` -- sum of two finite types (sig.preds x Fin n) and ({(i,j) : Fin n x Fin n | i != j})
-- [ ] Define `atom_eval (M : OrderedMonadicStructure sig) (env : Fin n -> M.carrier) : AtomKind sig n -> Prop` matching the `atom` and `lt` cases of `eval`:
-  - `| .pred p i => M.interp p (env i)`
-  - `| .order i j _ => env i < env j` (using M.carrier_order)
-- [ ] Verify `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` compiles
+- [x] Define `AtomKind sig n` inductive in NormalForm.lean with two constructors *(completed)*
+- [x] Derive or prove `DecidableEq (AtomKind sig n)` *(completed -- manual proof via cases)*
+- [x] Prove `Fintype (AtomKind sig n)` *(completed -- via Equiv to Sum type)*
+- [x] Define `atom_eval` matching `atom` and `lt` cases of `eval` *(completed)*
+- [x] Verify `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` compiles *(completed)*
+- [x] Also defined: `NormalForm sig k n` recursive type, `NormalForm.base`/`step`/`atom_assgn`/`quant_assgn` accessors, `normalForm_fintype`, `normalForm_decEq`, `nf_eval_nf` *(deviation: altered -- Phase 7 definitions pulled forward to enable building in single file)*
 
 **Timing**: 1.5 hours
 
