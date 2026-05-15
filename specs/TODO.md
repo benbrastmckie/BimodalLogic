@@ -36,7 +36,7 @@ technical_debt:
 ### Phase 1: Sorry-Free `bx_completeness`
 
 **Discrete branch** (Reynolds pipeline):
-1. **139** [RESEARCHED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h)
+1. **139** [COMPLETED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h)
 2. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 139)
 
 **Canonical model completeness**:
@@ -46,10 +46,10 @@ technical_debt:
 5. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed, depends on 140)
 
 **Critical path fixes**:
-6. **144** [NOT STARTED] — Fix existsTask_transitive 1-line sorry in Bundle/CanonicalFrame.lean (0.5h, on critical path)
+6. **144** [COMPLETED] — Fix existsTask_transitive 1-line sorry in Bundle/CanonicalFrame.lean (0.5h, on critical path)
 
 **Normal form infrastructure** (Doets Lemma 1.1):
-7. **143** [PLANNED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
+7. **143** [IMPLEMENTING] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
 
 **Cleanup**:
 8. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
@@ -97,7 +97,7 @@ technical_debt:
 
 ### 143. Doets Lemma 1.1: normal form KType redesign with finite domain
 - **Effort**: 6-9 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 139
@@ -120,10 +120,11 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 144. Fix existsTask_transitive (1-line critical path sorry)
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Plan**: [144_fix_existsTask_transitive/plans/01_fix-existsTask-transitive.md]
+- **Summary**: Verified existsTask_transitive is sorry-free (fix applied in task 139 phase 2). lean_verify confirms no sorryAx in existsTask_transitive or canonicalR_transitive. CanonicalFrame.lean builds cleanly.
 
 **Description**: Fix the one-line sorry in `existsTask_transitive` (`Bundle/CanonicalFrame.lean:259`) which propagates into `bx_completeness`. Replace `sorry` with `DerivationTree.axiom [] _ (Axiom.temp_4 phi)`. Verify with `#print axioms bx_completeness` and `lake build`.
 
@@ -140,12 +141,15 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 139. FO satisfaction for monadic structures: close k-equivalence sorry chain
 - **Effort**: 15-25 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
+- **Summary**: Cleanup complete: deleted dead code (ktype_finite, OrderedSum, orphaned defs), archived vacuous proofs to Boneyard, renamed Formula.complexity to operator_depth, fixed existsTask_transitive sorry on bx_completeness critical path. Full build passes (1644 jobs, 0 errors).
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 129
 - **Research**: [139_fo_satisfaction_monadic_structures/reports/01_team-research.md]
-- **Plan**: [139_fo_satisfaction_monadic_structures/plans/01_fo-satisfaction-plan.md]
+- **Plan**: [139_fo_satisfaction_monadic_structures/plans/02_cleanup-plan.md]
+- **Summary Artifact**: [139_fo_satisfaction_monadic_structures/summaries/02_cleanup-summary.md]
 
 **Description**: Build first-principles FO (first-order) satisfaction infrastructure for monadic structures and close the k-equivalence sorry chain left by task 129.
 
@@ -175,7 +179,7 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 140. Truth transfer and succ_cofinal elimination
 - **Effort**: 8-15 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 129, 139
