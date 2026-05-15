@@ -170,18 +170,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Downstream File Updates [NOT STARTED]
+### Phase 4: Downstream File Updates [COMPLETED]
 
 **Goal**: Update OrderedSum.lean, IntegerModel.lean, and Table.lean to work with the new KType definition. Fix any type mismatches.
 
 **Tasks**:
-- [ ] Build `lake build` and collect all downstream errors from the KType change
-- [ ] Update `OrderedSum.lean`: `doets_lemma_1_5` uses `KType sig k` in its hypothesis -- verify type still matches with new definition
-- [ ] Update `IntegerModel.lean`: `good` and related definitions use `k_equiv` -- verify they still type-check (they should, since k_equiv API is preserved)
-- [ ] Update `Table.lean`: verify `operator_depth` and table-related definitions still compile (they do not directly reference KType, but import NEquivalence)
-- [ ] Fix any breakage in `Transfer.lean` or `WeakCanonical.lean` aggregator
-- [ ] Update docstrings in NEquivalence.lean to reflect the new design (remove references to syntactically infinite domain, add NormalForm references)
-- [ ] Run full `lake build` to confirm no regressions
+- [x] Build `lake build` and collect all downstream errors from the KType change *(completed: zero downstream errors)*
+- [x] Update `OrderedSum.lean`: `doets_lemma_1_5` uses `KType sig k` in its hypothesis -- verify type still matches with new definition *(completed: compiles without changes; KType is used as abbrev so downstream types resolve transparently)*
+- [x] Update `IntegerModel.lean`: `good` and related definitions use `k_equiv` -- verify they still type-check (they should, since k_equiv API is preserved) *(completed: compiles without changes)*
+- [x] Update `Table.lean`: verify `operator_depth` and table-related definitions still compile (they do not directly reference KType, but import NEquivalence) *(completed: compiles without changes)*
+- [x] Fix any breakage in `Transfer.lean` or `WeakCanonical.lean` aggregator *(completed: no breakage, both compile)*
+- [x] Update docstrings in NEquivalence.lean to reflect the new design (remove references to syntactically infinite domain, add NormalForm references) *(completed: module docstring updated in Phase 3)*
+- [x] Run full `lake build` to confirm no regressions *(completed: full build passes with zero errors)*
 
 **Timing**: 1.5 hours
 
