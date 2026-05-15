@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.ReflexiveCanonical
 import Bimodal.Metalogic.WeakCanonical.TruthLemma
 import Bimodal.Metalogic.WeakCanonical.FrameProperties
 import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
+import Bimodal.Metalogic.WeakCanonical.MonadicFO
 import Bimodal.Metalogic.WeakCanonical.NEquivalence
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.OrderedSum

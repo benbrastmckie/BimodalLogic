@@ -165,16 +165,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update WeakCanonical.lean and Full Build Verification [NOT STARTED]
+### Phase 4: Update WeakCanonical.lean and Full Build Verification [COMPLETED]
 
 **Goal**: Add MonadicFO import to the aggregator module and verify the entire project builds with no regressions.
 
 **Tasks**:
-- [ ] In WeakCanonical.lean: add `import Bimodal.Metalogic.WeakCanonical.MonadicFO` (for completeness; NEquivalence already imports it transitively but explicit import aids clarity)
-- [ ] Run `lake build` (full project build)
-- [ ] Verify no new sorries introduced: grep for `sorry` in MonadicFO.lean (expect 4 task-141 sorries), NEquivalence.lean (expect 3: 2 carrier_order + 1 sum_preservation), NormalForm.lean (expect 0)
-- [ ] Verify `k_equiv_monotone` sorry is removed (net -1 sorry)
-- [ ] Verify downstream files compile: OrderedSum.lean, IntegerModel.lean, Transfer.lean (no changes needed, confirmed by grep in research)
+- [x] In WeakCanonical.lean: add `import Bimodal.Metalogic.WeakCanonical.MonadicFO` (for completeness; NEquivalence already imports it transitively but explicit import aids clarity)
+- [x] Run `lake build` (full project build)
+- [x] Verify no new sorries introduced: MonadicFO.lean = 0 (task 147 already proved all), NEquivalence.lean = 3 (2 carrier_order + 1 sum_preservation), NormalForm.lean = 0 *(deviation: altered -- plan expected 4 sorries in MonadicFO.lean from task 141, but task 147 already closed them)*
+- [x] Verify `k_equiv_monotone` sorry is removed (net -1 sorry)
+- [x] Verify downstream files compile: OrderedSum.lean, IntegerModel.lean, Transfer.lean (no changes needed)
 
 **Timing**: 30 minutes
 
