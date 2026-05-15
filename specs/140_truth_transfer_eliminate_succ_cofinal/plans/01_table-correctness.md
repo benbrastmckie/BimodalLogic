@@ -1,7 +1,7 @@
 # Implementation Plan: Task #140 — Standard Translation and Table Correctness
 
 - **Task**: 140 - truth_transfer_eliminate_succ_cofinal
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: 129 (COMPLETED), 139 (IMPLEMENTING)
 - **Research Inputs**: specs/140_truth_transfer_eliminate_succ_cofinal/reports/01_team-research.md

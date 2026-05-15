@@ -180,12 +180,13 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 140. Truth transfer and succ_cofinal elimination
 - **Effort**: 8-15 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 129, 139
 - **Research**: [140_truth_transfer_eliminate_succ_cofinal/reports/01_team-research.md]
 - **Plan**: [140_truth_transfer_eliminate_succ_cofinal/plans/01_table-correctness.md]
+- **Summary**: [140_truth_transfer_eliminate_succ_cofinal/summaries/01_table-correctness-summary.md]
 
 **Description**: Prove the standard translation preserves truth (table correctness), wire it into Transfer.lean to replace the chronicle fallback with the Reynolds pipeline, and eliminate `succ_cofinal` from the axiom set of `doets_countermodel_discrete`. This is the final link in the chain: task 129 built the Reynolds pipeline (`one_class`, `chronicle_is_good`), task 139 closes the FO satisfaction foundation (`eval`/`satisfies`, `k_type_of`), and this task completes the circuit.
 
