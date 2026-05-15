@@ -160,7 +160,7 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 141. Canonical truth lemma Until/Since and ReflexiveCanonical infrastructure
 - **Effort**: 10-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Research**: [141_canonical_truth_lemma_until_since/reports/01_team-research.md]
