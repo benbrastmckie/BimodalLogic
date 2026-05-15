@@ -652,7 +652,7 @@
     {
       "project_number": 145,
       "project_name": "split_nequivalence_close_k_equiv_monotone",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "description": "Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine KType sig k := NormalForm sig k 0 -> Bool (replacing NormalFormIdx). Redefine k_type_of using nf_eval_nf (replacing vacuous nf_rep). Close k_equiv_monotone sorry via nf_agreement_monotone. Delete nf_rep. Verify finite_types remains closed and lake build passes.",
@@ -660,7 +660,7 @@
         143
       ],
       "created": "2026-05-15T14:30:00Z",
-      "last_updated": "2026-05-15T18:50:36Z",
+      "last_updated": "2026-05-15T19:18:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -679,7 +679,7 @@
           "summary": "4 phases, 3h: extract MonadicFO.lean, rewire imports, redesign KType, close k_equiv_monotone"
         }
       ],
-      "session_id": "sess_1778870829_ddb3fc_t145"
+      "session_id": "sess_1778871141_a24716"
     },
     {
       "project_number": 146,
@@ -807,32 +807,90 @@
     {
       "project_number": 150,
       "project_name": "task_order_auto_sync",
-      "status": "researching",
+      "status": "researched",
       "task_type": "meta",
       "description": "Add automatic Task Order synchronization. Update update-task-status.sh to auto-prune completed tasks from Task Order. Update /task command to auto-insert new tasks into Task Order with correct dependencies. Add sync validation logic to detect and auto-correct drift between Task Order status markers and state.json.",
       "dependencies": [
         149
       ],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T18:57:28Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "session_id": "sess_1778871435_0b2c01"
+      "last_updated": "2026-05-15T19:05:33Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/150_task_order_auto_sync/reports/01_task-order-auto-sync.md",
+          "type": "research",
+          "summary": "Research report identifying three gaps in Task Order auto-sync: outdated Part C in task.md, lean4 skills bypassing update-task-status.sh, and absent drift detection."
+        }
+      ],
+      "session_id": "sess_1778871435_0b2c01",
+      "memory_candidates": [
+        {
+          "content": "Lean4-specific skills (skill-lean-implementation, skill-lean-research) use direct jq + Edit tool operations for postflight status updates, bypassing update-task-status.sh entirely. When adding Task Order sync requirements, changes must be made directly to the lean4 skill SKILL.md files.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/150_task_order_auto_sync/reports/01_task-order-auto-sync.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "lean4",
+            "skill-lean-implementation",
+            "postflight",
+            "update-task-status",
+            "Task Order",
+            "bypass"
+          ]
+        },
+        {
+          "content": "generate-task-order.sh is the canonical tool for all Task Order operations. Call pattern: .claude/scripts/generate-task-order.sh --update-todo specs/TODO.md specs/state.json. This should be the single integration point for any feature that needs to keep the Task Order in sync.",
+          "category": "PATTERN",
+          "source_artifact": "specs/150_task_order_auto_sync/reports/01_task-order-auto-sync.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "generate-task-order",
+            "Task Order",
+            "auto-sync",
+            "pruning",
+            "insertion",
+            "drift-correction"
+          ]
+        }
+      ]
     },
     {
       "project_number": 151,
       "project_name": "task_order_command_integration",
-      "status": "researching",
+      "status": "researched",
       "task_type": "meta",
       "description": "Integrate Task Order with /todo and /review commands. Update /todo to regenerate Task Order during archive flow using generate-task-order.sh. Update /review to use new wave+tree format. Add Task Order sync rules to state-management.md.",
       "dependencies": [
         149
       ],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T18:57:29Z",
-      "next_artifact_number": 1,
-      "artifacts": [],
-      "session_id": "sess_1778871435_0b2c01"
+      "last_updated": "2026-05-15T19:01:45Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/151_task_order_command_integration/reports/01_command-integration.md",
+          "type": "research",
+          "summary": "Research report identifying integration points for generate-task-order.sh in /todo and /review commands, with concrete recommendations for each change and new state-management.md rules."
+        }
+      ],
+      "session_id": "sess_1778871435_0b2c01",
+      "memory_candidates": [
+        {
+          "content": "When integrating generate-task-order.sh into command flows, make the call non-fatal: use || { echo Warning: Task Order regeneration failed (non-fatal) }. Task Order is a derived artifact from state.json, not a canonical source.",
+          "category": "PATTERN",
+          "source_artifact": "specs/151_task_order_command_integration/reports/01_command-integration.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "task-order",
+            "generate-task-order",
+            "regeneration",
+            "non-fatal",
+            "derived-artifact",
+            "integration"
+          ]
+        }
+      ]
     }
   ],
   "next_project_number": 152,
