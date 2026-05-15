@@ -573,7 +573,7 @@
     {
       "project_number": 139,
       "project_name": "fo_satisfaction_monadic_structures",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Build first-principles FO (first-order) satisfaction infrastructure for monadic structures and close the k-equivalence sorry chain.\n\nThe current MonadicSentence type lacks variable binding infrastructure: .forall has no De Bruijn index, .lt has no variable positions, and .atom has no variable argument. This makes it impossible to define eval/satisfies, which leaves k_type_of, ktype_finite, and k_equiv_monotone as sorries. The entire Reynolds Theorem 15 pipeline (doets_lemma_1_4, finite_structures_good, one_class, chronicle_is_good) inherits these sorries through the axiomatized KEquivalenceFramework instance.\n\nScope:\n\n1. Redesign MonadicSentence with proper variable binding. Options: (a) De Bruijn indices for quantifier binding, (b) two-sorted variable scheme with explicit variable positions for binary lt. The monadic case is simpler than full FO — predicates are unary, the only relation is binary <, and quantification is over a single sort.\n\n2. Implement decidable eval/satisfies. For finite carriers and finite signatures, satisfaction is decidable. Define eval : MonadicStructure sig → Assignment → MonadicSentence sig → Bool with proper variable lookup, quantifier evaluation over Fintype carriers, and lt comparison using the structure order.\n\n3. Close k_type_of from the semantics. Define as the set of sentences of depth ≤ k satisfied by M, converted to a canonical representative (Finset or quotient).\n\n4. Prove ktype_finite: finitely many k-types (bounded by 2^|S_k| where S_k is the finite set of sentences of depth ≤ k over a finite signature).\n\n5. Prove k_equiv_monotone: k-equivalence at depth k implies k-equivalence at depth m ≤ k (subset containment of satisfied sentences).\n\n6. Close the KEquivalenceFramework instance fields (equiv_at, equiv_is_equiv, equiv_monotone, finite_types, sum_preservation) with proofs from the FO semantics, replacing the current sorry-based axioms.\n\n7. Refactor all downstream consumers of MonadicSentence to use the new type. Verify that doets_lemma_1_4, finite_structures_good, one_class, chronicle_is_good, and the Transfer.lean pipeline still compile and that inherited sorries from k_type_of are eliminated.\n\nDefinition of done: KEquivalenceFramework instance is sorry-free, k_type_of/ktype_finite/k_equiv_monotone are sorry-free, lake build passes, and chronicle_is_good has strictly fewer sorries than before.",
@@ -581,9 +581,17 @@
         129
       ],
       "created": "2026-05-15T01:17:30Z",
-      "last_updated": "2026-05-15T01:17:30Z",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "last_updated": "2026-05-15T05:33:30Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/139_fo_satisfaction_monadic_structures/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates"
+        }
+      ],
+      "session_id": "sess_1778822572_c1e32c",
+      "researched": "2026-05-15T05:33:30Z"
     },
     {
       "project_number": 140,
@@ -604,15 +612,23 @@
     {
       "project_number": 141,
       "project_name": "canonical_truth_lemma_until_since",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "description": "Close all Until/Since sorries in the WeakCanonical truth lemma and the remaining ReflexiveCanonical infrastructure sorries, making the canonical model construction fully sorry-free.\n\nThe canonical truth lemma (TruthLemma.lean) has 6 sorries across Until/Since cases. All share the same root cause: chain construction for intermediate guard propagation has not been ported from DovetailingChain.lean / BXCanonical to the ReflCanDomain setting. ReflexiveCanonical.lean has 2 additional sorries (reflCanR_linear, canS5R_symm) that are canonical model infrastructure.\n\nSorry inventory (8 total):\n\n1. until_forward_mcs (TruthLemma.lean:426): U(psi1,psi2) in x -> exists witness y with guard condition. Proved EXCEPT the intermediate guard: for all z between x and y, psi2 in z. Requires until_F_expansion chain construction.\n\n2. until_backward_mcs (TruthLemma.lean:443): Contrapositive — if U(psi1,psi2) not in x, negate the semantic condition. Requires counter-witness propagation.\n\n3. since_forward_mcs (TruthLemma.lean:479): Mirror of until_forward for past direction. Same chain construction blocker.\n\n4. since_backward_mcs (TruthLemma.lean:494): Mirror of until_backward for past direction.\n\n5-6. truth_lemma Until/Since cases (TruthLemma.lean:548, 563): The main truth lemma uses until_backward_mcs in the backward direction of the Until case, and since_backward_mcs similarly. These close automatically once items 1-4 are proved.\n\n7. reflCanR_linear (ReflexiveCanonical.lean:144): Forward temporal accessibility is linear. Proof sketch uses BX11 (temp_linearity) at x to derive contradiction from non-comparable y, z. Requires forward_temporal_witness construction ported to ReflCanDomain.\n\n8. canS5R_symm (ReflexiveCanonical.lean:424): S5 relation is symmetric. Requires modal B axiom application in MCS setting.\n\nKey infrastructure needed:\n- Port DovetailingChain.lean chain construction to ReflCanDomain\n- until_F_expansion: U(psi1,psi2) -> psi2 or (psi1 and F(U(psi1,psi2))) self-accumulation\n- g_content_closed_derivation: lift derivations to G-formulas\n- forward_temporal_witness for ReflCanDomain (BX11 linearity argument)\n\nDefinition of done: All 8 sorries closed, truth_lemma is sorry-free, reflCanR_linear and canS5R_symm are sorry-free, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T01:30:40Z",
-      "last_updated": "2026-05-15T01:30:40Z",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "last_updated": "2026-05-15T05:33:32Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/141_canonical_truth_lemma_until_since/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates"
+        }
+      ],
+      "session_id": "sess_1778822572_c1e32c",
+      "researched": "2026-05-15T05:33:32Z"
     },
     {
       "project_number": 142,

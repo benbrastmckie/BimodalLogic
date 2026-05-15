@@ -36,11 +36,11 @@ technical_debt:
 ### Phase 1: Sorry-Free `bx_completeness`
 
 **Discrete branch** (Reynolds pipeline):
-1. **139** [NOT STARTED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h)
+1. **139** [RESEARCHED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h)
 2. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 139)
 
 **Canonical model completeness**:
-4. **141** [NOT STARTED] — Canonical truth lemma Until/Since + ReflexiveCanonical infrastructure (10-20h, 8 sorries)
+4. **141** [RESEARCHED] — Canonical truth lemma Until/Since + ReflexiveCanonical infrastructure (10-20h, 8 sorries)
 
 **Mixed case**:
 5. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed, depends on 140)
@@ -100,10 +100,11 @@ technical_debt:
 
 ### 139. FO satisfaction for monadic structures: close k-equivalence sorry chain
 - **Effort**: 15-25 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 129
+- **Research**: [139_fo_satisfaction_monadic_structures/reports/01_team-research.md]
 
 **Description**: Build first-principles FO (first-order) satisfaction infrastructure for monadic structures and close the k-equivalence sorry chain left by task 129.
 
@@ -158,9 +159,10 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 141. Canonical truth lemma Until/Since and ReflexiveCanonical infrastructure
 - **Effort**: 10-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
+- **Research**: [141_canonical_truth_lemma_until_since/reports/01_team-research.md]
 
 **Description**: Close all Until/Since sorries in the WeakCanonical truth lemma and the remaining ReflexiveCanonical infrastructure sorries, making the canonical model construction fully sorry-free.
 
