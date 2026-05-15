@@ -991,7 +991,7 @@
     {
       "project_number": 152,
       "project_name": "task_order_topic_grouping",
-      "status": "planning",
+      "status": "planned",
       "task_type": "meta",
       "description": "Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. (1) Detect independent subgraphs (connected components) in the dependency graph and render each as its own block. (2) Add optional topic field to state.json task entries for structured grouping. (3) Update generate-task-order.sh to group roots by topic within each wave, rendering one code block per topic-group with markdown headings. (4) Enhance wave table to show topic breakdown per wave. (5) Backfill topic field for existing active tasks using heuristic keyword matching from task names/descriptions.",
       "dependencies": [
@@ -999,18 +999,18 @@
         150
       ],
       "created": "2026-05-15T12:40:00Z",
-      "last_updated": "2026-05-15T20:09:49Z",
+      "last_updated": "2026-05-15T20:13:43Z",
       "next_artifact_number": 3,
       "artifacts": [
-        {
-          "path": "specs/152_task_order_topic_grouping/plans/01_topic-grouping.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for topic-grouped Task Order: state.json backfill, script enhancement, format spec update, and live regeneration"
-        },
         {
           "path": "specs/152_task_order_topic_grouping/reports/02_topic-field-population.md",
           "type": "research",
           "summary": "Analysis of topic field population: 4 creation paths with insertion points, active_topics schema, UX flow per command, and implementation changes."
+        },
+        {
+          "path": "specs/152_task_order_topic_grouping/plans/02_topic-grouping.md",
+          "type": "plan",
+          "summary": "Comprehensive v2 plan: 6 phases covering schema, rendering, task-creation wiring, docs, heuristic extraction, verification"
         }
       ],
       "session_id": "sess_1778875785_f95bbc",
