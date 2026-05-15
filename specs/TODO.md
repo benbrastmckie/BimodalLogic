@@ -100,7 +100,7 @@ technical_debt:
 
 ### 139. FO satisfaction for monadic structures: close k-equivalence sorry chain
 - **Effort**: 15-25 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 129
@@ -160,10 +160,11 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 141. Canonical truth lemma Until/Since and ReflexiveCanonical infrastructure
 - **Effort**: 10-20 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Research**: [141_canonical_truth_lemma_until_since/reports/01_team-research.md]
+- **Plan**: [141_canonical_truth_lemma_until_since/plans/01_truth-lemma-plan.md]
 
 **Description**: Close all Until/Since sorries in the WeakCanonical truth lemma and the remaining ReflexiveCanonical infrastructure sorries, making the canonical model construction fully sorry-free.
 
