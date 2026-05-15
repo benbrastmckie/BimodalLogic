@@ -36,7 +36,7 @@ technical_debt:
 ### Phase 1: Sorry-Free `bx_completeness`
 
 **Mixed-case countermodel** (1 sorry):
-1. **142** [RESEARCHING] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed)
+1. **142** [RESEARCHED] — Mixed-case countermodel: resolve the third bx_completeness branch (30-50h, genuine mixed case)
 
 **Table correctness completion** (2 sorries):
 2. **147** [RESEARCHED] — Prove lift_eval and insertEnv lemmas: 4 De Bruijn substitution lemmas (2-3h)
@@ -44,7 +44,7 @@ technical_debt:
 
 **Normal form infrastructure** (Doets Lemma 1.1, non-critical-path):
 4. **143** [PARTIAL] — Doets Lemma 1.1: bridge theorem proved, KType redesign deferred (depends on 139, completed)
-5. **145** [RESEARCHING] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
+5. **145** [RESEARCHED] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
 6. **146** [RESEARCHED] — NormalForm cleanup and cardinality correspondence proof (1-2h, depends on 145)
 
 **Cleanup**:
@@ -141,7 +141,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 145. Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 143
@@ -173,8 +173,9 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 ---
 
 ### 142. Mixed-case countermodel for bx_completeness
-- **Effort**: 15-30 hours (research-heavy)
-- **Status**: [RESEARCHING]
+- **Effort**: 30-50 hours
+- **Status**: [RESEARCHED]
+- **Research**: [specs/142_mixed_case_countermodel/reports/01_mixed-case-research.md]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None (architecturally independent of discrete/dense branches)
