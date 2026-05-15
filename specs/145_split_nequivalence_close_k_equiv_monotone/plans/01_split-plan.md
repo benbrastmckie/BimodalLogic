@@ -127,30 +127,25 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Rewrite NEquivalence.lean (Reduce, Redesign KType, Close Sorry) [NOT STARTED]
+### Phase 3: Rewrite NEquivalence.lean (Reduce, Redesign KType, Close Sorry) [COMPLETED]
 
 **Goal**: Remove the extracted FO definitions from NEquivalence.lean, add NormalForm import to break the cycle, redesign KType to use NormalForm, delete nf_rep, and close k_equiv_monotone.
 
 **Tasks**:
-- [ ] Replace NEquivalence.lean imports: remove `Mathlib.Data.Finset.Basic`, add `import Bimodal.Metalogic.WeakCanonical.MonadicFO` and `import Bimodal.Metalogic.WeakCanonical.NormalForm`, keep `ReflexiveCanonical` and `ChronicleExtraction`
-- [ ] Remove lines 46-366 (all definitions now in MonadicFO.lean) -- everything from `namespace` to `NormalFormIdx`
-- [ ] Update module docstring to describe NEquivalence.lean as the k-equivalence framework file
-- [ ] Keep `open Bimodal.Syntax` and `open Bimodal.ProofSystem` (needed by chronicle section)
-- [ ] Rewrite `KType`: change `NormalFormIdx sig k 0 -> Bool` to `NormalForm sig k 0 -> Bool`
-- [ ] Delete `nf_rep` definition and its docstring (lines 386-404)
-- [ ] Rewrite `k_type_of`: change from `fun i => @decide (eval M Fin.elim0 (nf_rep sig k i)) (Classical.dec _)` to `fun nf => @decide (nf_eval_nf M k 0 Fin.elim0 nf) (Classical.dec _)`
-- [ ] Update `KType` docstring to reference `NormalForm` instead of `NormalFormIdx`
-- [ ] Update `k_type_of` docstring to reference `nf_eval_nf` instead of `nf_rep`
-- [ ] Close `k_equiv_monotone` sorry with proof using `decide_eq_decide` + `nf_agreement_monotone`:
-  1. `unfold k_equiv k_type_of at h_equiv` and goal
-  2. `funext nf_m` to get pointwise equality
-  3. Extract `h_agree_k` via `congr_fun h_equiv nf` + `decide_eq_decide`
-  4. Apply `nf_agreement_monotone` to get `h_agree_m`
-  5. Convert back via `decide_eq_decide`
-- [ ] Verify `k_equiv` and `k_equiv_iff_same_type` still compile (unchanged API)
-- [ ] Verify `finite_types` proof in KEquivalenceFramework instance still compiles
-- [ ] Verify all chronicle instances (chronicleAsMonadicStructure and related) still compile
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.NEquivalence` to verify
+- [x] Replace NEquivalence.lean imports: remove `Mathlib.Data.Finset.Basic`, add `import Bimodal.Metalogic.WeakCanonical.MonadicFO` and `import Bimodal.Metalogic.WeakCanonical.NormalForm`, keep `ReflexiveCanonical` and `ChronicleExtraction`
+- [x] Remove lines 46-416 (all definitions now in MonadicFO.lean) -- everything from `namespace` to `NormalFormIdx`
+- [x] Update module docstring to describe NEquivalence.lean as the k-equivalence framework file
+- [x] Keep `open Bimodal.Syntax` and `open Bimodal.ProofSystem` (needed by chronicle section)
+- [x] Rewrite `KType`: change `NormalFormIdx sig k 0 -> Bool` to `NormalForm sig k 0 -> Bool`
+- [x] Delete `nf_rep` definition and its docstring
+- [x] Rewrite `k_type_of`: change from `fun i => @decide (eval M Fin.elim0 (nf_rep sig k i)) (Classical.dec _)` to `fun nf => @decide (nf_eval_nf M k 0 Fin.elim0 nf) (Classical.dec _)`
+- [x] Update `KType` docstring to reference `NormalForm` instead of `NormalFormIdx`
+- [x] Update `k_type_of` docstring to reference `nf_eval_nf` instead of `nf_rep`
+- [x] Close `k_equiv_monotone` sorry with proof using `decide_eq_decide` + `nf_agreement_monotone`
+- [x] Verify `k_equiv` and `k_equiv_iff_same_type` still compile (unchanged API)
+- [x] Verify `finite_types` proof in KEquivalenceFramework instance still compiles
+- [x] Verify all chronicle instances (chronicleAsMonadicStructure and related) still compile
+- [x] Run `lake build Bimodal.Metalogic.WeakCanonical.NEquivalence` to verify
 
 **Timing**: 1 hour
 
