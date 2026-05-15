@@ -66,22 +66,23 @@ the number of distinct atoms).
 For the Reynolds pipeline, this signature provides the finite set of
 predicates needed for the table translation of φ.
 -/
-noncomputable def mkSigFrom (_φ : Formula) : MonadicSignature where
-  preds := Fin 1  -- placeholder: single predicate
+noncomputable def mkSigFrom (φ : Formula) : MonadicSignature where
+  preds := φ.predFormulas
   fintypePreds := inferInstance
   decEqPreds := inferInstance
 
 /--
 Build an atom map from the signature's predicates to temporal formulas.
-Maps each predicate symbol in `sig` to the corresponding temporal formula
-(the atom it represents in the chronicle's MCS labeling).
+Each predicate symbol is a member of `φ.predFormulas` (i.e., either
+`Formula.atom a` or `Formula.box ψ`), so the map simply extracts
+the underlying formula.
 
 For the Reynolds pipeline, this map connects the monadic structure's
 predicate interpretations to the temporal truth of formulas in the MCS.
 -/
-noncomputable def mkAtomMap (sig : MonadicSignature) (_φ : Formula) :
-    sig.preds → Formula :=
-  fun _ => Formula.bot  -- placeholder mapping
+noncomputable def mkAtomMap (φ : Formula) :
+    (mkSigFrom φ).preds → Formula :=
+  fun p => p.val
 
 /-! ## Main Theorem: doets_countermodel_discrete -/
 

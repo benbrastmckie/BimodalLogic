@@ -547,6 +547,25 @@ theorem atoms_swap_temporal (φ : Formula) : φ.swap_temporal.atoms = φ.atoms :
   | untl _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
   | snce _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
 
+/-!
+### Predicate Formulas (for Standard Translation)
+
+The set of subformulas that become predicate symbols in the Reynolds standard
+translation: atoms (as `Formula.atom a`) and box-subformulas (as `Formula.box φ`).
+-/
+
+/-- The set of formulas treated as predicate symbols in the monadic FO translation:
+    atoms `Formula.atom a` and box-subformulas `Formula.box φ`. -/
+def predFormulas : Formula → Finset Formula
+  | atom a => {atom a}
+  | bot => ∅
+  | imp φ ψ => φ.predFormulas ∪ ψ.predFormulas
+  | box φ => {box φ} ∪ φ.predFormulas
+  | all_future φ => φ.predFormulas
+  | all_past φ => φ.predFormulas
+  | untl φ ψ => φ.predFormulas ∪ ψ.predFormulas
+  | snce φ ψ => φ.predFormulas ∪ ψ.predFormulas
+
 end Formula
 
 end Bimodal.Syntax

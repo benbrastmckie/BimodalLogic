@@ -44,8 +44,8 @@ def operator_depth : Formula → Nat
   | .box φ => operator_depth φ + 1
   | .all_future φ => operator_depth φ + 1
   | .all_past φ => operator_depth φ + 1
-  | .untl φ ψ => max (operator_depth φ) (operator_depth ψ) + 1
-  | .snce φ ψ => max (operator_depth φ) (operator_depth ψ) + 1
+  | .untl φ ψ => max (operator_depth φ) (operator_depth ψ) + 2
+  | .snce φ ψ => max (operator_depth φ) (operator_depth ψ) + 2
 
 /-! ## Standard Translation Table -/
 

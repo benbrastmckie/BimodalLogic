@@ -303,18 +303,13 @@ theorem insertEnv_succ_cons {α : Type} {n : Nat} (c : Fin (n + 1)) (x y : α)
     insertEnv c.succ x (Fin.cons y env) = Fin.cons y (insertEnv c x env) := by
   sorry -- Task 141: proof in progress
 
-/-- Helper: `insertEnv c x env` composed with `finLift c.val` is just `env`. -/
+/-- `insertEnv c x env` composed with `finLift c.val` recovers `env`. -/
 private theorem insertEnv_finLift {α : Type} {n : Nat} (c : Fin (n + 1))
     (x : α) (env : Fin n → α) (i : Fin n) :
     insertEnv c x env (finLift c.val i) = env i := by
   sorry -- Task 141: proof in progress
 
-/--
-Lift preserves evaluation: evaluating a lifted formula with an inserted
-environment yields the same result as evaluating the original formula.
-
-The key property: `eval M (insertEnv c x env) (α.lift c) = eval M env α`.
--/
+/-- Lift preserves evaluation under inserted environments. -/
 theorem lift_eval {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
     (c : Fin (n + 1)) (x : M.carrier) (α : MonadicFormula sig n) :

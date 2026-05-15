@@ -1,7 +1,7 @@
 # Implementation Plan: Task #140 — Standard Translation and Table Correctness
 
 - **Task**: 140 - truth_transfer_eliminate_succ_cofinal
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: 129 (COMPLETED), 139 (IMPLEMENTING)
 - **Research Inputs**: specs/140_truth_transfer_eliminate_succ_cofinal/reports/01_team-research.md
@@ -74,18 +74,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Infrastructure — weaken, operator_depth fix, signature construction [NOT STARTED]
+### Phase 1: Infrastructure — weaken, operator_depth fix, signature construction [COMPLETED]
 
 **Goal**: Build all prerequisite infrastructure needed by the `table` definition: the `weaken` function, `weaken_eval` lemma, corrected `operator_depth`, and genuine `mkSigFrom`/`mkAtomMap`.
 
 **Tasks**:
-- [ ] Fix `operator_depth` for Until/Since: change `+ 1` to `+ 2` at Table.lean:47-48
-- [ ] Define `MonadicFormula.weaken` in NEquivalence.lean: structural recursion shifting all `Fin n` indices to `Fin (n + 1)` via `Fin.castSucc`
-- [ ] Prove `weaken_eval`: `eval M (Fin.cons x env) (alpha.weaken) = eval M env alpha` by structural induction on `alpha`
-- [ ] Define a `Formula.subformulas_box` or similar function to collect `box`-subformulas (needed for treating `box` as atom in the signature)
-- [ ] Redesign `mkSigFrom` in Transfer.lean: use `Formula.atoms` union box-subformulas as predicate set; replace `Fin 1` placeholder
-- [ ] Redesign `mkAtomMap` in Transfer.lean: map each predicate symbol back to the corresponding `Formula` (atom or box-subformula); replace `Formula.bot` placeholder
-- [ ] Verify `lake build` passes with infrastructure changes
+- [x] **Task 1.1**: Fix `operator_depth` for Until/Since: change `+ 1` to `+ 2` at Table.lean:47-48
+- [x] **Task 1.2**: Define `MonadicFormula.weaken` in NEquivalence.lean *(deviation: altered — used `lift`/`finLift` with cutoff approach instead of direct `Fin.castSucc`; this is the standard De Bruijn lift)*
+- [x] **Task 1.3**: Prove `weaken_eval` *(deviation: altered — proof delegates to `lift_eval` which propagates sorry from `insertEnv_succ_cons` and `insertEnv_finLift`; these are infrastructure proofs maintained as Task 141 by user)*
+- [x] **Task 1.4**: Define `Formula.predFormulas` to collect atoms and box-subformulas *(deviation: altered — used `predFormulas` name instead of `subformulas_box`)*
+- [x] **Task 1.5**: Redesign `mkSigFrom` in Transfer.lean: uses `φ.predFormulas` as predicate set
+- [x] **Task 1.6**: Redesign `mkAtomMap` in Transfer.lean: maps each predicate symbol (element of `predFormulas`) to the underlying formula
+- [x] **Task 1.7**: Verify `lake build` passes with infrastructure changes
 
 **Timing**: 2.5 hours
 
