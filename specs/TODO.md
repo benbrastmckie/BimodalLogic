@@ -108,6 +108,7 @@ technical_debt:
 - **Priority**: high
 - **Dependencies**: None
 - **Report**: [specs/154_sum_preservation_ef_games/reports/01_sum-preservation-research.md]
+- **Research**: [154_sum_preservation_ef_games/reports/02_team-research.md]
 
 **Description**: Prove `sum_preservation` (NEquivalence.lean:190) and `doets_lemma_1_4` (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games. Also close the `carrier_order` sorries in the Sigma-type ordered sum construction (lexicographic order), and downstream sorries in `contemp_equiv_is_equiv` transitivity (IntegerModel.lean:128) and `no_gaps_discrete` (IntegerModel.lean:145). Definition of done: `sum_preservation` sorry-free, `doets_lemma_1_4` sorry-free, `carrier_order` defined (not sorry), `lake build` passes.
 
@@ -120,6 +121,7 @@ technical_debt:
 - **Priority**: high
 - **Dependencies**: None
 - **Report**: [specs/153_prove_succ_cofinal_discrete/reports/01_succ-cofinal-research.md]
+- **Research**: [153_prove_succ_cofinal_discrete/reports/02_team-research.md]
 
 **Description**: Prove `succ_cofinal` (ChronicleToCountermodel.lean:1885): for any points `a < b` in the discrete limit domain, there exists `n` such that `succ^[n](a) >= b`. This is the root sorry blocking `limitDomSubtype_isSuccArchimedean` -> `succ_embed_surjective` -> `dd_countermodel_chronicle_discrete` -> `bx_completeness`. Approaches: (a) stage-based argument, (b) Z1-based argument, (c) constant-MCS impossibility. An independent alternative (tasks 154-155, Reynolds pipeline) can also eliminate this sorry by bypassing `succ_cofinal` entirely. Definition of done: `succ_cofinal` sorry-free, `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
 

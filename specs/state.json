@@ -1146,16 +1146,22 @@
       "description": "Prove succ_cofinal (ChronicleToCountermodel.lean:1885): for any points a < b in the discrete limit domain, there exists n such that succ^[n](a) >= b. This is the root sorry blocking limitDomSubtype_isSuccArchimedean → succ_embed_surjective → cantor_bfmcs_discrete_restricted_tc/fuc → dd_countermodel_chronicle_discrete → bx_completeness. The proof must show the succ orbit of any point is cofinal when all domain MCS contain U(T,bot). Approaches: (a) stage-based argument — each chronicle construction stage adds finitely many points, and succ advances at least one stage, so finitely many iterates reach any target; (b) Z1-based argument — FG(phi)->G(phi) ensures succ orbits have no accumulation points from below; (c) constant-MCS impossibility — show the omega-chain construction cannot produce a constant-MCS gap. Analysis in ChronicleToCountermodel.lean lines 1860-1884 documents the known obstacles. An independent alternative (tasks 154-155, Reynolds pipeline) can also eliminate this sorry by bypassing succ_cofinal entirely. Definition of done: succ_cofinal sorry-free, #print axioms bx_completeness shows no sorryAx, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-15T22:00:00Z",
-      "researched": "2026-05-15T22:00:00Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-05-15T21:26:46Z",
+      "researched": "2026-05-15T21:26:46Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "type": "report",
           "path": "specs/153_prove_succ_cofinal_discrete/reports/01_succ-cofinal-research.md",
           "description": "Research report: succ_cofinal analysis with 7 candidate approaches assessed"
+        },
+        {
+          "path": "specs/153_prove_succ_cofinal_discrete/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: constant-MCS excluded by Prior-UZ, non-constant case viable but hard, Reynolds pipeline recommended as primary path"
         }
-      ]
+      ],
+      "session_id": "sess_1778879761_8fd87d_t153"
     },
     {
       "project_number": 154,
@@ -1167,16 +1173,22 @@
       "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-15T14:30:00Z",
-      "researched": "2026-05-15T14:30:00Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-05-15T21:26:46Z",
+      "researched": "2026-05-15T21:26:46Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "type": "report",
           "path": "specs/154_sum_preservation_ef_games/reports/01_sum-preservation-research.md",
           "created": "2026-05-15T14:30:00Z"
+        },
+        {
+          "path": "specs/154_sum_preservation_ef_games/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: normal form induction approach (250-400 lines), carrier_order refactoring as Phase 1, scope narrowed to sum_preservation + doets_lemma_1_4"
         }
-      ]
+      ],
+      "session_id": "sess_1778879761_8fd87d_t154"
     },
     {
       "project_number": 155,
@@ -1186,7 +1198,9 @@
       "priority": "high",
       "topic": "completeness",
       "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation — define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
-      "dependencies": [154],
+      "dependencies": [
+        154
+      ],
       "created": "2026-05-15T21:30:00Z",
       "last_updated": "2026-05-15T21:30:00Z",
       "next_artifact_number": 1,
