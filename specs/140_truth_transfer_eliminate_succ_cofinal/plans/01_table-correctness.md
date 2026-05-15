@@ -104,22 +104,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Implement table body — Reynolds Section 6 translation [NOT STARTED]
+### Phase 2: Implement table body — Reynolds Section 6 translation [COMPLETED]
 
 **Goal**: Replace the `sorry` in `table` with the full case-by-case translation following Reynolds 1994 Section 6. The `table` function must accept an `atomMap` parameter and translate each `Formula` constructor to the corresponding `MonadicFormula sig 1`.
 
 **Tasks**:
-- [ ] Add `atomMap` parameter to `table` signature: `def table (sig : MonadicSignature) (atomMap : Formula -> sig.preds) (phi : Formula) : MonadicFormula sig 1`
-- [ ] Implement `atom a` case: `MonadicFormula.atom (atomMap (Formula.atom a)) 0`
-- [ ] Implement `bot` case: `MonadicFormula.lt 0 0` (t < t, always false)
-- [ ] Implement `imp phi psi` case: `.not (.and (table sig atomMap phi) (.not (table sig atomMap psi)))` (material conditional encoding)
-- [ ] Implement `box phi` case: `MonadicFormula.atom (atomMap (Formula.box phi)) 0` (treat as atom via MCS labeling)
-- [ ] Implement `all_future phi` case: `.all (.not (.and (.lt (Fin 1) (Fin 0)) (.not (weaken (table sig atomMap phi)))))` (forall s, s > t implies C_phi(s))
-- [ ] Implement `all_past phi` case: `.all (.not (.and (.lt (Fin 0) (Fin 1)) (.not (weaken (table sig atomMap phi)))))` (forall s, s < t implies C_phi(s))
-- [ ] Implement `untl phi psi` case: 2-quantifier existential-universal pattern with 3 variable levels following Reynolds
-- [ ] Implement `snce phi psi` case: symmetric to Until with reversed order direction
-- [ ] Update all downstream references to `table` to pass `atomMap` (Table.lean, Transfer.lean)
-- [ ] Verify `lake build` passes
+- [x] **Task 2.1**: Add `atomMap` parameter to `table` signature
+- [x] **Task 2.2**: Implement `atom a` case
+- [x] **Task 2.3**: Implement `bot` case
+- [x] **Task 2.4**: Implement `imp phi psi` case
+- [x] **Task 2.5**: Implement `box phi` case (atom via MCS labeling)
+- [x] **Task 2.6**: Implement `all_future phi` case *(deviation: altered — used `lift 1` instead of `weaken` to keep variable 0 as the bound variable s)*
+- [x] **Task 2.7**: Implement `all_past phi` case *(deviation: altered — used `lift 1` same as all_future)*
+- [x] **Task 2.8**: Implement `untl phi psi` case (2 quantifiers, 3 variable levels)
+- [x] **Task 2.9**: Implement `snce phi psi` case (symmetric to Until)
+- [x] **Task 2.10**: Update downstream references *(deviation: skipped — all `table` references in Transfer.lean are in comments)*
+- [x] **Task 2.11**: Verify `lake build` passes
 
 **Timing**: 2.5 hours
 
@@ -136,18 +136,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove table_depth_bound [NOT STARTED]
+### Phase 3: Prove table_depth_bound [COMPLETED]
 
 **Goal**: Close the `table_depth_bound` sorry by structural induction on `phi`, using the corrected `operator_depth` (with +2 for Until/Since) and the `table` definition from Phase 2.
 
 **Tasks**:
-- [ ] Set up structural induction on `phi` for `table_depth_bound`
-- [ ] Prove base cases: `atom` (quantifier_depth = 0, operator_depth = 0) and `bot` (quantifier_depth = 0)
-- [ ] Prove `imp` case: max of recursive depths, no new quantifiers
-- [ ] Prove `box` case: treated as atom, quantifier_depth = 0
-- [ ] Prove `all_future` and `all_past` cases: one `all` quantifier adds 1 to depth; `weaken` does not add quantifiers; induction hypothesis gives bound on recursive `table` call
-- [ ] Prove `untl` and `snce` cases: two quantifiers (`ex` + `all`) add 2 to depth; `weaken` applied twice does not add quantifiers; operator_depth adds 2 matching the quantifier count
-- [ ] Clean up proof and verify `lake build` passes
+- [x] **Task 3.1**: Set up structural induction on `phi` for `table_depth_bound`
+- [x] **Task 3.2**: Prove base cases: `atom` and `bot`
+- [x] **Task 3.3**: Prove `imp` case
+- [x] **Task 3.4**: Prove `box` case
+- [x] **Task 3.5**: Prove `all_future` and `all_past` cases (used `lift_quantifier_depth` helper)
+- [x] **Task 3.6**: Prove `untl` and `snce` cases
+- [x] **Task 3.7**: Verify `lake build` passes (full project builds successfully)
 
 **Timing**: 1.5 hours
 
