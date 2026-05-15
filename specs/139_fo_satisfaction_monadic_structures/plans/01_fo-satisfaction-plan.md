@@ -157,15 +157,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update Table.lean for MonadicFormula sig 1 [NOT STARTED]
+### Phase 4: Update Table.lean for MonadicFormula sig 1 [COMPLETED]
 
 **Goal**: Update the `table` definition signature to use `MonadicFormula sig 1` (one free variable) and adjust `table_depth_bound` to match. Both bodies remain sorry for Task 140.
 
 **Tasks**:
-- [ ] Update `table` signature from `MonadicSentence sig` to `MonadicFormula sig 1` (a formula with one free variable `t`, matching Reynolds' `C_φ(t)`)
-- [ ] Update `table_depth_bound` to reference the new type
-- [ ] Ensure both bodies remain `sorry` with clear TODO markers referencing Task 140
-- [ ] Verify `Table.lean` compiles with `NEquivalence.lean` changes
+- [x] Update `table` signature from `MonadicSentence sig` to `MonadicFormula sig 1`
+- [x] Update `table_depth_bound` to reference the new type
+- [x] Both bodies remain `sorry` with TODO markers referencing Task 140
+- [x] Table.lean compiles with NEquivalence.lean changes
 
 **Timing**: 0.5 hours
 

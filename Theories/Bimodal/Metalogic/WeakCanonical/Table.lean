@@ -4,13 +4,16 @@ import Bimodal.Metalogic.WeakCanonical.NEquivalence
 # Table Translation: Temporal Formulas to Monadic FO
 
 Defines the standard translation from temporal formulas to monadic first-order
-sentences. This is the "table method" mapping temporal formulas to their
-first-order equivalents, following the Hodkinson-Reynolds 2006 Section 11.2
-pattern.
+formulas with one free variable. This is the "table method" mapping temporal
+formulas to their first-order equivalents, following Reynolds 1994 Section 6.
+
+The key function `table` translates a temporal formula `φ` to a monadic FO
+formula `C_φ(t)` with one free variable `t` (represented as `MonadicFormula sig 1`).
+This follows Reynolds' convention: `C_{U(A,B)}(t) = ∃s > t(C_A(s) ∧ ∀u(t < u ∧ u < s → C_B(u)))`.
 
 ## Status
-- `table` definition: sorried body (requires predicate mapping)
-- `table_depth_bound`: sorried (requires proper complexity measure + table induction)
+- `table` definition: sorried body (requires predicate mapping) -- Task 140
+- `table_depth_bound`: sorried (requires proper complexity measure + table induction) -- Task 140
 
 ## Design
 The standard translation sends each temporal atom to a distinct monadic predicate.
@@ -43,20 +46,19 @@ def Formula.complexity : Formula → Nat
 
 /--
 The standard translation "table" from temporal formulas to monadic
-first-order sentences over signature `sig`.
+first-order formulas with one free variable over signature `sig`.
 
-The signature `sig` is expected to have `preds` sufficiently large to
-accommodate the translation (e.g., one predicate per subformula atom).
+Returns `MonadicFormula sig 1` — a formula with one free variable `t`
+(De Bruijn index 0), following Reynolds 1994 Section 6: `C_φ(t)`.
 
 **Status**: Sorried body. The full definition requires:
 1. A mapping from subformula atoms to predicate symbols in sig.preds
 2. Translation of G/H as bounded universal quantifiers over the order relation
 3. Translation of Until/Since using existential quantifiers with order bounds
-4. Translation of box modality via Kripke-frame encoding
 
-This definition is deferred pending the monadic FO satisfaction relation.
+-- TODO: Implement table body in Task 140.
 -/
-def table (sig : MonadicSignature) (φ : Formula) : MonadicSentence sig := by
+def table (sig : MonadicSignature) (_φ : Formula) : MonadicFormula sig 1 := by
   sorry
 
 /--
@@ -65,7 +67,9 @@ of the source formula.
 
 **Status**: Sorried. Follows by structural induction on φ using the
 table definition. Each temporal operator adds at most 1 quantifier
-(all_future → bounded ∀, all_past → bounded ∀, box → ∀ over worlds).
+(all_future → bounded ∀, all_past → bounded ∀).
+
+-- TODO: Prove table_depth_bound in Task 140.
 -/
 theorem table_depth_bound (sig : MonadicSignature) (φ : Formula) :
     (table sig φ).quantifier_depth ≤ φ.complexity := by
