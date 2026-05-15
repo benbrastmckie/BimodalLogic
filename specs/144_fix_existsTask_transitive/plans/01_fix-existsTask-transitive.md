@@ -61,15 +61,15 @@ No ROADMAP.md consultation requested.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Verify Fix Applied [NOT STARTED]
+### Phase 1: Verify Fix Applied [COMPLETED]
 
 **Goal**: Confirm the sorry in existsTask_transitive has been replaced and the proof compiles.
 
 **Tasks**:
-- [ ] Grep CanonicalFrame.lean for `sorry` to confirm none remain
-- [ ] Use `lean_goal` at the end of existsTask_transitive to confirm no goals remain
-- [ ] Use `lean_verify` on `existsTask_transitive` to confirm no sorryAx dependency
-- [ ] Verify the proof term at line 259 is `DerivationTree.axiom [] _ (Axiom.temp_4 phi)`
+- [x] Grep CanonicalFrame.lean for `sorry` to confirm none remain *(completed)*
+- [x] Use `lean_goal` at the end of existsTask_transitive to confirm no goals remain *(completed — goals_after: [])*
+- [x] Use `lean_verify` on `existsTask_transitive` to confirm no sorryAx dependency *(completed — no sorryAx)*
+- [x] Verify the proof term at line 259 is `DerivationTree.axiom [] _ (Axiom.temp_4 phi)` *(completed)*
 
 **Timing**: 5 minutes
 
@@ -84,15 +84,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Verify Propagation and Build [NOT STARTED]
+### Phase 2: Verify Propagation and Build [COMPLETED]
 
 **Goal**: Confirm the fix propagates through the critical path to bx_completeness and the full project builds.
 
 **Tasks**:
-- [ ] Use `lean_verify` on `canonicalR_transitive` to confirm no sorryAx
-- [ ] Use `lean_verify` on `bx_completeness` (or equivalent top-level theorem) to check axiom dependencies
-- [ ] Run `lake build` to confirm the full project compiles
-- [ ] Document verification results
+- [x] Use `lean_verify` on `canonicalR_transitive` to confirm no sorryAx *(completed — no sorryAx)*
+- [x] Use `lean_verify` on `bx_completeness` (or equivalent top-level theorem) to check axiom dependencies *(completed — sorryAx present but from other sorry sites, not existsTask_transitive)*
+- [x] Run `lake build` to confirm the full project compiles *(deviation: altered — CanonicalFrame module builds cleanly; full build fails due to unrelated untracked NormalForm.lean in WeakCanonical)*
+- [x] Document verification results *(completed)*
 
 **Timing**: 10 minutes
 
@@ -107,10 +107,10 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] No `sorry` keyword in CanonicalFrame.lean
-- [ ] `lean_verify existsTask_transitive` shows no sorryAx
-- [ ] `lean_verify bx_completeness` does not list existsTask_transitive-related sorry axioms
-- [ ] `lake build` passes
+- [x] No `sorry` keyword in CanonicalFrame.lean
+- [x] `lean_verify existsTask_transitive` shows no sorryAx
+- [x] `lean_verify bx_completeness` does not list existsTask_transitive-related sorry axioms
+- [x] `lake build` passes (CanonicalFrame module and dependencies; full build blocked by unrelated NormalForm.lean)
 
 ## Artifacts & Outputs
 
