@@ -1,0 +1,184 @@
+# Implementation Plan: Task #141 (Revised)
+
+- **Task**: 141 - canonical_truth_lemma_until_since
+- **Status**: [NOT STARTED]
+- **Effort**: 4 hours
+- **Dependencies**: None
+- **Research Inputs**: specs/141_canonical_truth_lemma_until_since/reports/01_team-research.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-a-necessity.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-b-solutions.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-c-cleanup.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-d-critical-path.md
+- **Artifacts**: plans/02_revised-plan.md (this file)
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
+- **Type**: lean4
+- **Lean Intent**: true
+
+## Overview
+
+This is a revised plan for Task 141, reduced from 6 phases (10 hours) to 3 phases (4 hours) based on definitive findings from round 2 research (8 agents). The key finding is that ALL 7 remaining WeakCanonical sorries (1 in ReflexiveCanonical.lean, 6 in TruthLemma.lean) are confirmed dead code relative to `bx_completeness`. The `truth_lemma` is defined but never called by the completeness theorem, which routes through the parametric truth lemma via the Burgess chronicle pipeline. The 6 TruthLemma Until/Since sorries are structurally impossible to close in the current ReflCanDomain model -- the model lacks chronicle gap-content infrastructure needed for the intermediate guard condition. The revised plan focuses on: (1) closing `reflCanR_linear` as mathematically correct infrastructure, (2) fixing stale documentation and ghost references, and (3) updating sorry counts to reflect the actual critical path.
+
+### Research Integration
+
+Round 2 research confirmed with high confidence:
+- **Teammate A (Necessity)**: WeakCanonical `truth_lemma` has zero consumers outside TruthLemma.lean. `reflCanR_linear` has zero consumers. Neither blocks `bx_completeness`. The TODO.md sorry count claiming 8 critical-path sorries from task 141 is incorrect.
+- **Teammate B (Solutions)**: The guard condition is structurally impossible in ReflCanDomain because `tempR_fwd` (g_content inclusion) lacks the interval structure (Burgess gap-content g(x,y)) needed for Until/Since intermediate guard propagation. This is not a missing lemma but a structural mismatch. Burgess uses the same open-guard semantics; his proof succeeds only because the chronicle has a two-function structure (f, g) with property C3.
+- **Teammate C (Cleanup)**: TruthLemma.lean header (lines 27-28) falsely claims box backward and H forward/backward are sorry'd -- they are proved. `DovetailingChain.lean` is referenced 3 times but does not exist. The `truth_lemma` docstring at line 503 is stale.
+- **Teammate D (Critical Path)**: The actual critical-path sorries for `bx_completeness` are `succ_cofinal` (hard, discrete branch), `existsTask_transitive` (trivial, 1-line fix), and `dd_countermodel_chronicle_mixed_sorry` (task 142). None are in WeakCanonical.
+
+### Prior Plan Reference
+
+Plan v1 (01_truth-lemma-plan.md) had 6 phases targeting all 8 sorries. Phase 1 (canS5R_symm) completed successfully. Phases 2-5 were blocked because the Until/Since guard condition is structurally impossible in the current model. Lesson learned: the 6 TruthLemma sorries cannot be closed without redesigning the ReflCanDomain to include chronicle-like gap-content, which would provide no benefit over the existing chronicle pipeline. The revised plan drops these impossible phases and focuses on what is achievable and valuable.
+
+### Roadmap Alignment
+
+- ROADMAP.md lists "Canonical truth lemma: 8 sorries in Until/Since and ReflexiveCanonical infrastructure (task 141)" under the critical path
+- Research conclusively shows these 7 remaining sorries are NOT on the `bx_completeness` critical path -- the parametric truth lemma (Algebraic module) handles all cases via BFMCS coherence
+- The ROADMAP sorry summary should be corrected to reflect this architectural reality
+- `reflCanR_linear` is needed for Reynolds Theorem 15 but has no current downstream consumer
+
+## Goals & Non-Goals
+
+**Goals**:
+- Close `reflCanR_linear` sorry in ReflexiveCanonical.lean (mathematically correct, ~50 lines via BX11)
+- Fix stale TruthLemma.lean header comments (box backward and H forward/backward falsely listed as sorry'd)
+- Replace 3 ghost `DovetailingChain.lean` references with actual extant files
+- Fix `truth_lemma` docstring at line 503 (stale sorry list)
+- Document all 6 TruthLemma sorries as non-critical-path dead code requiring ReflCanDomain restructuring
+- Correct TODO.md sorry count to reflect actual critical path (remove 7 WeakCanonical sorries from count)
+- Verify `lake build` passes
+
+**Non-Goals**:
+- Closing `until_forward_mcs` guard condition -- structurally impossible without model redesign
+- Closing `until_backward_mcs`, `since_forward_mcs`, `since_backward_mcs` -- same root cause
+- Closing truth_lemma Until/Since cases (lines 548, 563) -- depend on the above
+- Redesigning ReflCanDomain with chronicle gap-content (30-50 hour effort with no benefit over existing chronicle)
+- Fixing `existsTask_transitive` (different file, could be its own 1-line task)
+
+## Risks & Mitigations
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| `reflCanR_linear` proof harder than estimated (~50 lines) | M | L | Proof sketch is well-established (BX11 argument), infrastructure exists. If blocked, mark phase PARTIAL and document progress. |
+| `neg_G_imp_F_neg` helper (needed for reflCanR_linear) requires careful Formula encoding | M | M | Plan v1 Phase 2 worked through the encoding in detail. Use `G(neg_neg_psi) -> G(psi)` via double negation under temporal necessitation. |
+| TODO.md sorry count correction may need coordination with other task updates | L | L | Only modify the sorry_count fields and the task 141 description. Do not touch other task entries. |
+
+## Implementation Phases
+
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1 | 1, 2 | -- |
+| 2 | 3 | 1, 2 |
+
+Phases within the same wave can execute in parallel.
+
+---
+
+### Phase 1: reflCanR_linear via BX11 [NOT STARTED]
+
+**Goal**: Close the `reflCanR_linear` sorry at ReflexiveCanonical.lean:144. This theorem states that the forward temporal cone from any MCS is linearly ordered. While it has no current downstream consumer, it is mathematically correct and completes the canonical frame properties.
+
+**Tasks**:
+- [ ] Create helper `neg_G_imp_F_neg`: prove that if `G(psi) not in x.val` (MCS), then `F(neg psi) in x.val`. Proof: `G(psi) not in x` implies `neg G(psi) in x` (negation completeness). Show `neg G(psi) -> F(neg psi)` as a theorem: `F(neg psi) = neg G(neg neg psi)`, and `G(neg neg psi) -> G(psi)` follows from `neg neg psi -> psi` via `temp_k_dist` + temporal necessitation. Contrapositive gives the result.
+- [ ] Create helper `F_from_non_g_content`: given `psi not in z.val` and `tempR_fwd x z`, derive `F(neg psi) in x.val`. From `psi not in z.val` and `tempR_fwd x z`, conclude `G(psi) not in x.val` (otherwise `psi in z.val` via g_content). Apply `neg_G_imp_F_neg`.
+- [ ] Prove `reflCanR_linear` using BX11 (`temp_linearity`):
+  1. By contradiction: assume `not tempR_fwd y z` and `not tempR_fwd z y`
+  2. Get `psi` with `G(psi) in y.val`, `psi not in z.val` (from non-inclusion of g_content)
+  3. Get `chi` with `G(chi) in z.val`, `chi not in y.val`
+  4. Derive `G(psi) not in x.val` (else `psi in z.val` via `tempR_fwd x z`, contradiction)
+  5. Derive `G(chi) not in x.val` (else `chi in y.val` via `tempR_fwd x y`, contradiction)
+  6. Apply `neg_G_imp_F_neg` to get `F(neg psi) in x.val` and `F(neg chi) in x.val`
+  7. Form `F(neg psi) AND F(neg chi) in x.val` (MCS conjunction)
+  8. Apply BX11: `F(a) AND F(b) -> F(a AND b) OR F(a AND F(b)) OR F(F(a) AND b)`
+  9. Case analysis on three disjuncts, each leading to contradiction via `tempR_fwd` transitivity and the witnesses
+- [ ] Verify `lake build` succeeds
+- [ ] Confirm `grep -c 'sorry' ReflexiveCanonical.lean` shows 0
+
+**Timing**: 2 hours
+
+**Depends on**: none
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean` - Add helper lemmas + prove reflCanR_linear
+
+**Verification**:
+- `lake build` succeeds
+- `grep -c 'sorry' ReflexiveCanonical.lean` shows 0
+
+---
+
+### Phase 2: Documentation Cleanup [NOT STARTED]
+
+**Goal**: Fix all stale comments, ghost references, and incorrect sorry claims in TruthLemma.lean. Add non-critical-path documentation to the 6 Until/Since sorries.
+
+**Tasks**:
+- [ ] Fix TruthLemma.lean header (lines 22-33): Remove `box backward` and `H forward, H backward` from the "Documented sorries" list. Add them to a "Proved (sorry-free)" section listing: atom, bot, imp (6 lemmas), box forward/backward (2 lemmas), G forward/backward (2 lemmas), H forward/backward (2 lemmas).
+- [ ] Fix `truth_lemma` docstring (line 503): Change from "Documented sorries: box backward, H forward/backward, Until/Since (all directions)" to "Documented sorries: Until/Since (all directions -- forward and backward). All other cases (atom, bot, imp, box, G, H) are sorry-free."
+- [ ] Replace ghost `DovetailingChain.lean` reference at line 392 with `BXCanonical/CanonicalChain.lean` or `BXCanonical/Filtration/DefectChain.lean`. Keep the conceptual claim ("not yet ported to ReflCanDomain").
+- [ ] Replace ghost `DovetailingChain.lean` reference at line 424 with same correction.
+- [ ] Replace ghost `DovetailingChain.lean` reference at line 436 -- this line already mentions `BXCanonical/Filtration/DefectChain.lean` as an alternative; remove the phantom reference and keep the extant one.
+- [ ] Add architectural note to each of the 6 sorry blocks (lines 426, 443, 479, 494, 548, 563) documenting: "Non-critical-path: this sorry does not block bx_completeness. The parametric truth lemma (ParametricTruthLemma.lean) handles Until/Since via BFMCS coherence. Closing this requires ReflCanDomain restructuring with chronicle gap-content infrastructure (see report 03_teammate-b-solutions.md)."
+- [ ] Verify `lake build` succeeds (comment-only changes should not affect build)
+
+**Timing**: 1 hour
+
+**Depends on**: none
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean` - Fix header, docstrings, ghost references, add architectural notes
+
+**Verification**:
+- `lake build` succeeds
+- `grep -c 'DovetailingChain' TruthLemma.lean` shows 0
+- Header accurately reflects sorry status (only Until/Since listed)
+
+---
+
+### Phase 3: Sorry Count Correction and Close-Out [NOT STARTED]
+
+**Goal**: Correct TODO.md and state.json sorry counts to reflect the actual critical path, removing the 7 WeakCanonical sorries from the critical-path count. Verify build. Mark task status.
+
+**Tasks**:
+- [ ] Run `lake build` to verify all changes from Phases 1-2 are clean
+- [ ] Run `grep -rn 'sorry' Theories/Bimodal/Metalogic/WeakCanonical/` to audit remaining sorries (expect: 6 in TruthLemma.lean, 0 in ReflexiveCanonical.lean)
+- [ ] Update TODO.md sorry count: change "14 sorries remain on bx_completeness critical path" to reflect actual critical-path count. The 7 WeakCanonical sorries (6 TruthLemma + 1 canS5R_symm already closed in v1 Phase 1) should be removed. Actual critical path: 3 NEquivalence (task 139) + 2 Table (task 140) + 1 mixed case (task 142) + succ_cofinal cluster (task 140) = approximately 6-8 critical-path sorries depending on succ_cofinal sub-sorry counting.
+- [ ] Update TODO.md task 141 description: change "8 sorries" to reflect actual scope -- 1 sorry closed (canS5R_symm, Phase 1 v1), 1 sorry closed (reflCanR_linear, this plan Phase 1), 6 sorries documented as non-critical-path dead code.
+- [ ] Update state.json sorry_count and sorry_count_note to match
+- [ ] Update ROADMAP.md critical-path sorry summary to note the 7 WeakCanonical sorries are not on the critical path
+- [ ] Decide on task 141 completion status: the original goal ("close all 8 sorries") is partially achieved (2 closed) and partially impossible (6 are structurally infeasible). Recommend marking task as [PARTIAL] or [COMPLETED] with a completion summary noting the architectural finding.
+
+**Timing**: 1 hour
+
+**Depends on**: 1, 2
+
+**Files to modify**:
+- `specs/TODO.md` - Correct sorry counts, update task 141 description
+- `specs/state.json` - Correct sorry_count and sorry_count_note
+- `specs/ROADMAP.md` - Update critical-path sorry summary
+
+**Verification**:
+- `lake build` succeeds
+- TODO.md sorry counts match actual critical path
+- state.json and TODO.md are synchronized
+- ROADMAP.md accurately reflects architectural reality
+
+## Testing & Validation
+
+- [ ] `lake build` passes with no errors after each phase
+- [ ] `grep -c 'sorry' Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean` returns 0 (after Phase 1)
+- [ ] `grep -c 'sorry' Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean` returns 6 (unchanged -- these are documented non-critical-path sorries)
+- [ ] `grep -c 'DovetailingChain' Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean` returns 0 (after Phase 2)
+- [ ] No regressions in existing sorry-free proofs
+- [ ] TODO.md and state.json sorry counts are consistent and accurate
+
+## Artifacts & Outputs
+
+- `specs/141_canonical_truth_lemma_until_since/plans/02_revised-plan.md` (this file)
+- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean` (reflCanR_linear sorry closed)
+- Modified: `Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean` (documentation cleanup, no sorry changes)
+- Modified: `specs/TODO.md` (sorry count correction)
+- Modified: `specs/state.json` (sorry count correction)
+- Modified: `specs/ROADMAP.md` (critical-path sorry summary correction)
+
+## Rollback/Contingency
+
+- If Phase 1 (reflCanR_linear) is blocked, proceed with Phases 2-3 anyway. The documentation cleanup and sorry count correction are independently valuable. reflCanR_linear can be left for a future task.
+- All Lean code changes are in 2 files only (ReflexiveCanonical.lean, TruthLemma.lean). Git revert of those files restores the prior state.
+- If sorry count correction is controversial (e.g., desire to keep the higher count for visibility), the correction can be deferred pending broader discussion about what "critical path" means.

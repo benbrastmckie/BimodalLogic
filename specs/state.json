@@ -598,6 +598,11 @@
           "path": "specs/139_fo_satisfaction_monadic_structures/summaries/01_fo-satisfaction-summary.md",
           "type": "summary",
           "summary": "Partial implementation: eval, k_type_of, k_equiv_monotone sorry-free; ktype_finite/finite_types remain sorry"
+        },
+        {
+          "path": "specs/139_fo_satisfaction_monadic_structures/plans/02_cleanup-plan.md",
+          "type": "plan",
+          "summary": "Revised plan: 3 phases, 2h — cleanup dead code, fix existsTask_transitive, verify"
         }
       ],
       "session_id": "sess_1778823910_c9a3ea",
@@ -645,6 +650,11 @@
           "path": "specs/141_canonical_truth_lemma_until_since/summaries/01_truth-lemma-summary.md",
           "type": "summary",
           "summary": "Partial: canS5R_symm closed; 7 sorries remain (reflCanR_linear + 6 TruthLemma)"
+        },
+        {
+          "path": "specs/141_canonical_truth_lemma_until_since/plans/02_revised-plan.md",
+          "type": "plan",
+          "summary": "Revised plan: 3 phases, 4h — reflCanR_linear, cleanup, correct sorry counts"
         }
       ],
       "session_id": "sess_1778824110_c99890",
