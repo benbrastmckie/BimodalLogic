@@ -36,9 +36,8 @@ technical_debt:
 ### Phase 1: Sorry-Free `bx_completeness`
 
 **Discrete branch** (Reynolds pipeline):
-1. **129** [COMPLETED] — Reynolds pipeline: one_class, chronicle_is_good, structural fixes (sorries 17+ → 5)
-2. **139** [NOT STARTED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h, depends on 129)
-3. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 129, 139)
+1. **139** [NOT STARTED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h)
+2. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 139)
 
 **Canonical model completeness**:
 4. **141** [NOT STARTED] — Canonical truth lemma Until/Since + ReflexiveCanonical infrastructure (10-20h, 8 sorries)
