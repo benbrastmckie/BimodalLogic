@@ -706,13 +706,18 @@
       "description": "Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, and lift_eval. Pure Fin-arithmetic and function-extensionality proofs. Once proved, weaken_eval becomes sorry-free automatically, unblocking task 148 (table_correctness temporal cases).\n\nDefinition of done: All 4 lemmas sorry-free, weaken_eval sorry-free, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T15:45:00Z",
-      "last_updated": "2026-05-15T18:20:58Z",
+      "last_updated": "2026-05-15T18:43:18Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/147_lift_eval_insertenv_lemmas/reports/01_scope-analysis.md",
           "type": "research",
           "summary": "Detailed proof strategies for all 4 insertEnv/lift_eval lemmas with Lean tactic guidance"
+        },
+        {
+          "path": "specs/147_lift_eval_insertenv_lemmas/reports/02_debruijn-research.md",
+          "type": "research",
+          "summary": "All 4 proofs validated via lean_multi_attempt: insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, lift_eval. weaken_eval follows automatically."
         }
       ],
       "session_id": "sess_1778869234_ab2216_t147"
