@@ -652,7 +652,7 @@
     {
       "project_number": 145,
       "project_name": "split_nequivalence_close_k_equiv_monotone",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "high",
       "description": "Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine KType sig k := NormalForm sig k 0 -> Bool (replacing NormalFormIdx). Redefine k_type_of using nf_eval_nf (replacing vacuous nf_rep). Close k_equiv_monotone sorry via nf_agreement_monotone. Delete nf_rep. Verify finite_types remains closed and lake build passes.",
@@ -660,7 +660,7 @@
         143
       ],
       "created": "2026-05-15T14:30:00Z",
-      "last_updated": "2026-05-15T18:30:06Z",
+      "last_updated": "2026-05-15T18:47:22Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -674,7 +674,7 @@
           "summary": "Deep extraction: exact line ranges, import requirements, k_equiv_monotone proof via decide_eq_decide, 6-phase implementation order"
         }
       ],
-      "session_id": "sess_1778869234_ab2216_t145"
+      "session_id": "sess_1778870829_ddb3fc_t145"
     },
     {
       "project_number": 146,
@@ -700,13 +700,13 @@
     {
       "project_number": 147,
       "project_name": "lift_eval_insertenv_lemmas",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "description": "Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, and lift_eval. Pure Fin-arithmetic and function-extensionality proofs. Once proved, weaken_eval becomes sorry-free automatically, unblocking task 148 (table_correctness temporal cases).\n\nDefinition of done: All 4 lemmas sorry-free, weaken_eval sorry-free, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T15:45:00Z",
-      "last_updated": "2026-05-15T18:43:18Z",
+      "last_updated": "2026-05-15T18:49:55Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -718,9 +718,14 @@
           "path": "specs/147_lift_eval_insertenv_lemmas/reports/02_debruijn-research.md",
           "type": "research",
           "summary": "All 4 proofs validated via lean_multi_attempt: insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, lift_eval. weaken_eval follows automatically."
+        },
+        {
+          "path": "specs/147_lift_eval_insertenv_lemmas/plans/01_debruijn-plan.md",
+          "type": "plan",
+          "summary": "2 phases, 2h: prove 4 De Bruijn substitution lemmas (validated proofs)"
         }
       ],
-      "session_id": "sess_1778869234_ab2216_t147"
+      "session_id": "sess_1778870829_ddb3fc_t147"
     },
     {
       "project_number": 148,
@@ -746,12 +751,12 @@
     {
       "project_number": 149,
       "project_name": "redesign_task_order_format",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "description": "Redesign the Task Order section format in TODO.md. Replace flat category lists with dependency wave table and indented dependency tree format. Create generate-task-order.sh script to regenerate Task Order from state.json dependency graph. Update task-order-format.md spec with new wave+tree format definition.",
       "dependencies": [],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T18:41:42Z",
+      "last_updated": "2026-05-15T18:46:23Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -765,7 +770,7 @@
           "summary": "3-phase plan: format spec + generation script, status-update fix, live TODO.md regeneration"
         }
       ],
-      "session_id": "sess_1778870307_df73e2",
+      "session_id": "sess_1778870772_d653fc",
       "memory_candidates": [
         {
           "content": "update-task-status.sh Phase 3 uses grep pattern ^- **{N}** [ (unordered bullet) but live TODO.md uses numbered lists — Phase 3 is silently broken",

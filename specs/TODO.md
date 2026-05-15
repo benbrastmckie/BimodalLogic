@@ -93,7 +93,7 @@ technical_debt:
 
 ### 149. Redesign Task Order format and generation script
 - **Effort**: 3-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Dependencies**: None
 - **Research**: [149_redesign_task_order_format/reports/01_format-redesign-research.md]
@@ -125,11 +125,12 @@ technical_debt:
 
 ### 147. Prove lift_eval and insertEnv De Bruijn substitution lemmas
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None
 - **Research**: [specs/147_lift_eval_insertenv_lemmas/reports/01_scope-analysis.md]
+- **Plan**: [147_lift_eval_insertenv_lemmas/plans/01_debruijn-plan.md]
 
 **Description**: Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: `insertEnv_zero_eq_cons` (inserting at 0 equals Fin.cons), `insertEnv_succ_cons` (commutation of insertEnv with Fin.cons under binders), `insertEnv_finLift` (inverse relationship between insertEnv and finLift), and `lift_eval` (main substitution lemma: evaluating a lifted formula in an inserted environment recovers original evaluation). Pure Fin-arithmetic / function-extensionality proofs. Once proved, `weaken_eval` becomes sorry-free automatically.
 
@@ -173,7 +174,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 145. Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 143
