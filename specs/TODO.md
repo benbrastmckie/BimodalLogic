@@ -27,39 +27,29 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-14. Task 129 (Reynolds pipeline) completed. Tasks 139-142 created for sorry-free `bx_completeness`.*
+*Updated 2026-05-15. Tasks 139, 140, 141, 144 archived. 6 critical-path sorries remain across 3 tasks (142, 147-148). Normal form infrastructure (143, 145, 146) is non-critical-path but mathematically important.*
 
 **Goal**: Sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
 
-**Status**: Task 129 completed, task 141 resolved (2 sorries closed, 6 reclassified as non-critical-path). Three tasks remain for sorry-free `bx_completeness`: 139 (FO satisfaction, 3 sorries), 140 (truth transfer + succ_cofinal, 2 sorries), 142 (mixed-case countermodel, 1 sorry). Total: 6 critical-path sorries across 3 tasks.
+**Status**: Reynolds pipeline complete (tasks 129, 139, 140). Canonical model complete (task 141). 1 sorry in mixed-case countermodel (task 142). Standard translation has 2 sorries in temporal operator cases (tasks 147-148). Normal form infrastructure has Doets Lemma 1.1 sorry-free but circular import blocks KType redesign (tasks 145-146).
 
 ### Phase 1: Sorry-Free `bx_completeness`
 
-**Discrete branch** (Reynolds pipeline):
-1. **139** [COMPLETED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h)
-2. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 139)
+**Mixed-case countermodel** (1 sorry):
+1. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed)
 
-**Canonical model completeness**:
-4. **141** [COMPLETED] — Canonical truth lemma Until/Since + ReflexiveCanonical infrastructure (10-20h, 2 closed + 6 documented non-critical)
+**Table correctness completion** (2 sorries):
+2. **147** [RESEARCHED] — Prove lift_eval and insertEnv lemmas: 4 De Bruijn substitution lemmas (2-3h)
+3. **148** [RESEARCHED] — Complete table_correctness temporal cases: close all_future, all_past, untl, snce (1.5-2h, depends on 147)
 
-**Mixed case**:
-5. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed, depends on 140)
-
-**Critical path fixes**:
-6. **144** [COMPLETED] — Fix existsTask_transitive 1-line sorry in Bundle/CanonicalFrame.lean (0.5h, on critical path)
-
-**Normal form infrastructure** (Doets Lemma 1.1):
-7. **143** [PARTIAL] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139, 145)
-8. **145** [RESEARCHED] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
-9. **146** [RESEARCHED] — NormalForm legacy cleanup and cardinality correspondence proof (1-2h, depends on 145)
-
-**Table correctness completion** (task 140 follow-up):
-10. **147** [RESEARCHED] — Prove lift_eval and insertEnv lemmas: 4 De Bruijn substitution lemmas in NEquivalence.lean (2-3h)
-11. **148** [RESEARCHED] — Complete table_correctness temporal cases: close all_future, all_past, untl, snce + pipeline cleanup (1.5-2h, depends on 147)
+**Normal form infrastructure** (Doets Lemma 1.1, non-critical-path):
+4. **143** [PARTIAL] — Doets Lemma 1.1: bridge theorem proved, KType redesign deferred (depends on 145)
+5. **145** [RESEARCHED] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
+6. **146** [RESEARCHED] — NormalForm cleanup and cardinality correspondence proof (1-2h, depends on 145)
 
 **Cleanup**:
-12. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
-13. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+7. **122** [NOT STARTED] — Build discrete BFMCS on Z, complete last sorry
+8. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard
 
 ### Phase 2: Module Reorganization
 
@@ -173,121 +163,12 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ---
 
-### 144. Fix existsTask_transitive (1-line critical path sorry)
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Plan**: [144_fix_existsTask_transitive/plans/01_fix-existsTask-transitive.md]
-- **Summary**: Verified existsTask_transitive is sorry-free (fix applied in task 139 phase 2). lean_verify confirms no sorryAx in existsTask_transitive or canonicalR_transitive. CanonicalFrame.lean builds cleanly.
-
-**Description**: Fix the one-line sorry in `existsTask_transitive` (`Bundle/CanonicalFrame.lean:259`) which propagates into `bx_completeness`. Replace `sorry` with `DerivationTree.axiom [] _ (Axiom.temp_4 phi)`. Verify with `#print axioms bx_completeness` and `lake build`.
-
----
-
 ### 131. Refactor module organization for clean APIs and documentation
 - **Effort**: 15-25 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 
 **Description**: Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.
-
----
-
-### 139. FO satisfaction for monadic structures: close k-equivalence sorry chain
-- **Effort**: 15-25 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-15
-- **Summary**: Cleanup complete: deleted dead code (ktype_finite, OrderedSum, orphaned defs), archived vacuous proofs to Boneyard, renamed Formula.complexity to operator_depth, fixed existsTask_transitive sorry on bx_completeness critical path. Full build passes (1644 jobs, 0 errors).
-- **Task Type**: lean4
-- **Priority**: critical
-- **Dependencies**: 129
-- **Research**: [139_fo_satisfaction_monadic_structures/reports/01_team-research.md]
-- **Plan**: [139_fo_satisfaction_monadic_structures/plans/02_cleanup-plan.md]
-- **Summary Artifact**: [139_fo_satisfaction_monadic_structures/summaries/02_cleanup-summary.md]
-
-**Description**: Build first-principles FO (first-order) satisfaction infrastructure for monadic structures and close the k-equivalence sorry chain left by task 129.
-
-The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding infrastructure: `.forall` has no De Bruijn index, `.lt` has no variable positions, and `.atom` has no variable argument. This makes it impossible to define `eval`/`satisfies`, which leaves `k_type_of`, `ktype_finite`, and `k_equiv_monotone` as sorries. The entire Reynolds Theorem 15 pipeline (`doets_lemma_1_4`, `finite_structures_good`, `one_class`, `chronicle_is_good`) inherits these sorries through the axiomatized `KEquivalenceFramework` instance.
-
-**Scope**:
-
-1. **Redesign `MonadicSentence` with proper variable binding**. The monadic case is simpler than full FO: predicates are unary, the only relation is binary `<`, quantification is over a single sort. Options: (a) De Bruijn indices for quantifier binding with explicit variable positions for `lt`, (b) two-sorted variable scheme. Refactor all downstream consumers.
-
-2. **Implement decidable `eval`/`satisfies`**. For finite carriers and finite signatures, satisfaction is decidable. Define `eval : MonadicStructure sig → Assignment → MonadicSentence sig → Bool` with proper variable lookup, quantifier evaluation over `Fintype` carriers, and `lt` comparison using the structure's order.
-
-3. **Close `k_type_of`** from the semantics: the set of sentences of depth ≤ k satisfied by M, converted to a canonical representative.
-
-4. **Prove `ktype_finite`**: finitely many k-types, bounded by 2^|S_k| where S_k is the finite set of sentences of depth ≤ k over a finite signature.
-
-5. **Prove `k_equiv_monotone`**: k-equivalence at depth k implies k-equivalence at depth m ≤ k.
-
-6. **Close `KEquivalenceFramework` instance fields** (`equiv_at`, `equiv_is_equiv`, `equiv_monotone`, `finite_types`, `sum_preservation`) with proofs from the FO semantics, replacing the current sorry-based axioms.
-
-7. **Verify downstream**: Confirm `doets_lemma_1_4`, `finite_structures_good`, `one_class`, `chronicle_is_good`, and Transfer.lean still compile with strictly fewer sorries.
-
-**Definition of done**: `KEquivalenceFramework` instance is sorry-free, `k_type_of`/`ktype_finite`/`k_equiv_monotone` are sorry-free, `lake build` passes, `chronicle_is_good` has strictly fewer sorries than before.
-
-**Files**: `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean` (primary), `OrderedSum.lean`, `IntegerModel.lean`, `Transfer.lean` (downstream verification).
-
----
-
-### 140. Truth transfer and succ_cofinal elimination
-- **Effort**: 8-15 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Priority**: critical
-- **Dependencies**: 129, 139
-- **Research**: [140_truth_transfer_eliminate_succ_cofinal/reports/01_team-research.md]
-- **Plan**: [140_truth_transfer_eliminate_succ_cofinal/plans/01_table-correctness.md]
-- **Summary**: [140_truth_transfer_eliminate_succ_cofinal/summaries/01_table-correctness-summary.md]
-
-**Description**: Prove the standard translation preserves truth (table correctness), wire it into Transfer.lean to replace the chronicle fallback with the Reynolds pipeline, and eliminate `succ_cofinal` from the axiom set of `doets_countermodel_discrete`. This is the final link in the chain: task 129 built the Reynolds pipeline (`one_class`, `chronicle_is_good`), task 139 closes the FO satisfaction foundation (`eval`/`satisfies`, `k_type_of`), and this task completes the circuit.
-
-**Scope**:
-
-1. **Prove `table_correctness`**: the standard translation preserves truth. For any temporal formula phi and point t in model M, `M |= phi at t` iff `monadic(M) |= table(phi) at t`. Requires `eval`/`satisfies` from task 139. Proof by structural induction on `Formula`: atom case is definitional, boolean cases trivial, G/H cases use the order relation in `MonadicSentence`, Until/Since cases use the FO encoding of bounded quantification.
-
-2. **Close `table_depth_bound`**: the quantifier depth of `table(phi)` is bounded by `Formula.complexity(phi)`. Straightforward structural induction once `table` is non-vacuous.
-
-3. **Replace chronicle fallback in `doets_countermodel_discrete`** (Transfer.lean) with the full Reynolds pipeline. The 6-step flow is already documented as comments from task 129: (a) extract chronicle, (b) build signature via `mkSigFrom`, (c) build atom map via `mkAtomMap`, (d) prove chronicle is good via `chronicle_is_good`, (e) extract Z-model from goodness, (f) transfer truth via k-equivalence + `table_correctness`.
-
-4. **Verify axiom elimination**: `#print axioms doets_countermodel_discrete` must show no `succ_cofinal`. Check `#print axioms bx_completeness` for remaining paths.
-
-**Definition of done**: `table_correctness` sorry-free, `doets_countermodel_discrete` uses Reynolds pipeline (not chronicle fallback), `#print axioms doets_countermodel_discrete` clean of `succ_cofinal`, `lake build` passes.
-
-**Files**: `Theories/Bimodal/Metalogic/WeakCanonical/Table.lean` (table correctness), `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` (pipeline wiring).
-
----
-
-### 141. Canonical truth lemma Until/Since and ReflexiveCanonical infrastructure
-- **Effort**: 10-20 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-15
-- **Summary**: reflCanR_linear closed (Burgess 1984 BX11 proof), canS5R_symm closed (prior round). 6 TruthLemma Until/Since sorries documented as non-critical-path dead code. ReflexiveCanonical.lean is sorry-free. Critical-path sorry count corrected from 14 to 6.
-- **Task Type**: lean4
-- **Priority**: high
-- **Research**: [141_canonical_truth_lemma_until_since/reports/01_team-research.md]
-- **Plan**: [141_canonical_truth_lemma_until_since/plans/02_revised-plan.md]
-- **Summary Artifact**: [141_canonical_truth_lemma_until_since/summaries/02_revised-summary.md]
-
-**Description**: Close ReflexiveCanonical infrastructure sorries and document the remaining TruthLemma Until/Since sorries as non-critical-path.
-
-**Result**: 2 of 8 sorries closed (`canS5R_symm` in plan v1 Phase 1, `reflCanR_linear` in plan v2 Phase 1). 6 TruthLemma Until/Since sorries documented as non-critical-path dead code: they do not block `bx_completeness` because the parametric truth lemma handles Until/Since via BFMCS coherence. Closing these 6 requires ReflCanDomain restructuring with chronicle gap-content infrastructure (30-50h effort with no benefit over existing chronicle pipeline).
-
-*ReflexiveCanonical.lean (0 sorries -- fully proved)*:
-- `reflCanR_linear`: Closed via Burgess 1984 BX11 proof. Statement corrected to three-way disjunction.
-- `canS5R_symm`: Closed in plan v1 Phase 1 via modal_b + negation completeness.
-
-*TruthLemma.lean (6 sorries -- documented non-critical-path)*:
-1-4. `until_forward_mcs`, `until_backward_mcs`, `since_forward_mcs`, `since_backward_mcs`: Intermediate guard condition structurally impossible in current ReflCanDomain model.
-5-6. `truth_lemma` Until/Since backward cases: Depend on items 1-4.
-
-**Note**: These 6 TruthLemma sorries are NOT on the `bx_completeness` critical path. The parametric truth lemma (ParametricTruthLemma.lean) handles all cases via BFMCS coherence. Remove from critical-path sorry count.
-
-**Definition of done**: ReflexiveCanonical sorry-free, TruthLemma sorries documented, `lake build` passes.
-
-**Files**: `Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean`, `Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean`.
 
 ---
 
