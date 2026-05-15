@@ -69,16 +69,26 @@ No prior plan.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Infrastructure Inventory and Scaffold [NOT STARTED]
+### Phase 1: Infrastructure Inventory and Scaffold [COMPLETED]
 
 **Goal**: Inspect the sorry site with lean_goal to understand the exact proof state, inventory all available lemmas and hypotheses, and determine the precise Lean types needed for the constant-MCS exclusion argument.
 
 **Tasks**:
-- [ ] Use `lean_goal` at line 1885 (the sorry) to capture the exact goal state and all available hypotheses
-- [ ] Use `lean_hover_info` on `limit_satisfies_c5_strong`, `theorem_in_mcs`, `z1_in_mcs`, `backward_G`, `backward_F`, `orbit_below_L` to confirm their signatures
-- [ ] Identify whether Prior-UZ is directly available as a hypothesis or needs to be derived via `theorem_in_mcs` + `Axiom.prior_UZ`
-- [ ] Document the exact type of the discriminating formula needed: determine how `limit_f A h_mcs x.val` relates to MCS membership at each orbit/pred-chain point
-- [ ] Determine whether `limit_satisfies_c5_strong` can be applied within the by_contra context (i.e., whether the right hypotheses are in scope)
+- [x] Use `lean_goal` at line 1885 (the sorry) to capture the exact goal state and all available hypotheses *(completed)*
+- [x] Use `lean_hover_info` on `limit_satisfies_c5_strong`, `theorem_in_mcs`, `z1_in_mcs`, `backward_G`, `backward_F`, `orbit_below_L` to confirm their signatures *(completed)*
+- [x] Identify whether Prior-UZ is directly available as a hypothesis or needs to be derived via `theorem_in_mcs` + `Axiom.prior_UZ` *(completed -- Prior-UZ available via `DerivationTree.axiom [] _ (Axiom.prior_UZ φ)` + `theorem_in_mcs`)*
+- [x] Document the exact type of the discriminating formula needed: determine how `limit_f A h_mcs x.val` relates to MCS membership at each orbit/pred-chain point *(completed)*
+- [x] Determine whether `limit_satisfies_c5_strong` can be applied within the by_contra context (i.e., whether the right hypotheses are in scope) *(completed -- yes, c5_strong takes A, h_mcs, x, hx, ξ, η, h_until as arguments; all available in scope)*
+
+**Phase 1 Findings**:
+- Goal at sorry is `False` in `case neg` with L ≤ pb.val (pred(b).val)
+- Key hypotheses: orbit s^[n] a → L, pred-chain p^[k] pb ≥ L (strictly decreasing), all orbit < all pred-chain
+- backward_G, backward_F, _backward_P all proved and available locally
+- z1_in_mcs available: places Z1 = G(Gφ→φ)→(FGφ→Gφ) in every MCS
+- Prior-UZ available via axiom + theorem_in_mcs: F(φ) → U(φ, ¬φ) in every MCS
+- limit_satisfies_c5_strong: U(η, ξ) ∈ limit_f(x) gives witness y > x with η at y and ξ guard
+- **CRITICAL FINDING**: The constant-MCS exclusion argument from the research report is FLAWED. The c5_strong for U(φ, ¬φ) gives φ at witness y and ¬φ at *intermediates*, NOT ¬φ at y. In the discrete case, the immediate successor has no intermediates, so the guard is vacuously satisfied. No contradiction.
+- **CRITICAL FINDING**: The code comments at line 1139-1156 document that the gap scenario is consistent with all temporal axioms (Z1, Prior-UZ) in the constant-MCS case under strict (irreflexive) semantics. G(φ)→φ is not valid in strict semantics.
 
 **Timing**: 0.5 hours
 
