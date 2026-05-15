@@ -291,7 +291,10 @@ def insertEnv {α : Type} {n : Nat} (c : Fin (n + 1)) (x : α) (env : Fin n → 
 -/
 theorem insertEnv_zero_eq_cons {α : Type} {n : Nat} (x : α) (env : Fin n → α) :
     insertEnv 0 x env = Fin.cons x env := by
-  sorry -- Task 141: proof in progress
+  funext i
+  cases i using Fin.cases with
+  | zero => simp [insertEnv, Fin.cons_zero]
+  | succ i => simp [insertEnv, Fin.cons_succ, Fin.val_succ]
 
 /--
 Inserting at position `c+1` after `Fin.cons y` equals `Fin.cons y` followed
@@ -301,13 +304,42 @@ binder case of `lift_eval`.
 theorem insertEnv_succ_cons {α : Type} {n : Nat} (c : Fin (n + 1)) (x y : α)
     (env : Fin n → α) :
     insertEnv c.succ x (Fin.cons y env) = Fin.cons y (insertEnv c x env) := by
-  sorry -- Task 141: proof in progress
+  funext i
+  cases i using Fin.cases with
+  | zero =>
+    unfold insertEnv
+    rw [dif_pos (show (0 : Fin (n + 2)).val < c.succ.val by simp [Fin.val_succ])]
+    rfl
+  | succ j =>
+    simp only [Fin.cons_succ, insertEnv, Fin.val_succ]
+    have hj_lt : j.val < n + 1 := j.isLt
+    split_ifs
+    all_goals first | rfl | (exfalso; omega) | skip
+    · rename_i h1 h2 _ h4
+      exact absurd (Fin.succ_inj.mp h2) h4
+    · rename_i h1 h2 _ h4
+      exact absurd (congrArg Fin.succ h4) h2
+    · rename_i h1 h2 h3 h4
+      have hne : j.val ≠ c.val := fun h => h4 (Fin.ext h)
+      have hpos : 0 < j.val := by omega
+      have hjm1_lt : j.val - 1 < n := by omega
+      convert @Fin.cons_succ n (fun _ => α) y env ⟨j.val - 1, hjm1_lt⟩ using 2
+      ext; simp [Fin.val_mk]; omega
 
 /-- `insertEnv c x env` composed with `finLift c.val` recovers `env`. -/
 private theorem insertEnv_finLift {α : Type} {n : Nat} (c : Fin (n + 1))
     (x : α) (env : Fin n → α) (i : Fin n) :
     insertEnv c x env (finLift c.val i) = env i := by
-  sorry -- Task 141: proof in progress
+  simp only [finLift]
+  by_cases hlt : i.val < c.val
+  · simp only [if_pos hlt, insertEnv, dif_pos hlt]
+  · simp only [if_neg hlt, insertEnv]
+    have h1 : ¬(i.val + 1 < c.val) := by omega
+    rw [dif_neg h1]
+    have h2 : ¬((⟨i.val + 1, (by omega : i.val + 1 < n + 1)⟩ : Fin (n + 1)) = c) := by
+      intro heq; have := Fin.ext_iff.mp heq; simp at this; omega
+    rw [dif_neg h2]
+    congr 1; omega
 
 /-- Lift preserves evaluation under inserted environments. -/
 theorem lift_eval {sig : MonadicSignature} {n : Nat}

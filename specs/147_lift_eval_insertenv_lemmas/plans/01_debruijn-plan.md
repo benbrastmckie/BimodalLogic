@@ -58,15 +58,15 @@ This plan advances the Reynolds pipeline (discrete completeness branch). The ROA
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Prove the Three Helper Lemmas [NOT STARTED]
+### Phase 1: Prove the Three Helper Lemmas [COMPLETED]
 
 **Goal**: Replace sorry in `insertEnv_zero_eq_cons`, `insertEnv_succ_cons`, and `insertEnv_finLift` with validated proofs.
 
 **Tasks**:
-- [ ] Replace sorry at line 294 with `insertEnv_zero_eq_cons` proof: `funext i; cases i using Fin.cases` with simp on insertEnv/Fin.cons_zero/Fin.cons_succ
-- [ ] Replace sorry at line 304 with `insertEnv_succ_cons` proof: `funext i; cases i using Fin.cases` with dif_pos for zero case, simp + split_ifs + contradiction handling for succ case, convert @Fin.cons_succ for final branch
-- [ ] Replace sorry at line 310 with `insertEnv_finLift` proof: `simp only [finLift]; by_cases hlt : i.val < c.val` with dif_pos/dif_neg resolution
-- [ ] Verify each lemma with `lean_goal` after insertion to confirm no remaining goals
+- [x] Replace sorry at line 294 with `insertEnv_zero_eq_cons` proof: `funext i; cases i using Fin.cases` with simp on insertEnv/Fin.cons_zero/Fin.cons_succ
+- [x] Replace sorry at line 304 with `insertEnv_succ_cons` proof: `funext i; cases i using Fin.cases` with dif_pos for zero case, simp + split_ifs + contradiction handling for succ case, convert @Fin.cons_succ for final branch
+- [x] Replace sorry at line 310 with `insertEnv_finLift` proof: `simp only [finLift]; by_cases hlt : i.val < c.val` with dif_pos/dif_neg resolution *(deviation: altered -- added `congr 1; omega` to close final congruence goal not covered by validated proof script)*
+- [x] Verify each lemma with `lean_goal` after insertion to confirm no remaining goals
 
 **Timing**: 1.5 hours
 
