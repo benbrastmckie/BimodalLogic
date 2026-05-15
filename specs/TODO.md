@@ -49,7 +49,7 @@ technical_debt:
 6. **144** [NOT STARTED] — Fix existsTask_transitive 1-line sorry in Bundle/CanonicalFrame.lean (0.5h, on critical path)
 
 **Normal form infrastructure** (Doets Lemma 1.1):
-7. **143** [NOT STARTED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
+7. **143** [RESEARCHED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
 
 **Cleanup**:
 8. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
@@ -108,11 +108,18 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 **Literature**: Doets 1987 thesis Ch. 1 (Sections 1.6-1.7), Doets 1989 Lemma 1.1.
 
+- **Research**:
+  - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_team-research.md]
+  - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-a-findings.md]
+  - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-b-findings.md]
+  - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-c-findings.md]
+  - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-d-findings.md]
+
 ---
 
 ### 144. Fix existsTask_transitive (1-line critical path sorry)
 - **Effort**: 0.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: critical
 

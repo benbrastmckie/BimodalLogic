@@ -686,13 +686,33 @@
         139
       ],
       "created": "2026-05-15T07:05:05Z",
-      "last_updated": "2026-05-15T07:17:06Z",
-      "next_artifact_number": 1,
+      "last_updated": "2026-05-15T07:30:00Z",
+      "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-a-findings.md",
           "type": "research",
-          "summary": "Team research: Doets Lemma 1.1 architecture and implementation"
+          "summary": "Teammate A: Literature analysis, architecture design, proof sketch"
+        },
+        {
+          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Teammate B: Alternative approaches and prior art survey"
+        },
+        {
+          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-c-findings.md",
+          "type": "research",
+          "summary": "Teammate C: Risk assessment and hidden complexity analysis"
+        },
+        {
+          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-d-findings.md",
+          "type": "research",
+          "summary": "Teammate D: Strategic assessment and publication value"
+        },
+        {
+          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Synthesis: NormalFormIdx architecture, Doets Lemma 1.1 proof strategy, risk assessment"
         }
       ],
       "session_id": "sess_1778828999_69954a"
@@ -700,13 +720,13 @@
     {
       "project_number": 144,
       "project_name": "fix_existsTask_transitive",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Fix the one-line sorry in existsTask_transitive (Bundle/CanonicalFrame.lean:259) which propagates into bx_completeness via parametric_task_rel_forward_comp -> canonicalR_transitive. The sorry says \"derive temp_4 from BX1\" but Axiom.temp_4 is a direct axiom in the system. Replace sorry with DerivationTree.axiom [] _ (Axiom.temp_4 phi). Verify with #print axioms bx_completeness and lake build.\n\nDefinition of done: existsTask_transitive is sorry-free, #print axioms bx_completeness no longer includes existsTask_transitive, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T07:05:05Z",
-      "last_updated": "2026-05-15T07:17:06Z",
+      "last_updated": "2026-05-15T16:18:14Z",
       "next_artifact_number": 1,
       "artifacts": [
         {
@@ -715,7 +735,7 @@
           "summary": "Verified 1-line fix for existsTask_transitive critical path sorry"
         }
       ],
-      "session_id": "sess_1778828999_69954a"
+      "session_id": "sess_1778861874_1d71df"
     }
   ],
   "next_project_number": 145,
