@@ -56,9 +56,9 @@ technical_debt:
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 142 [RESEARCHING] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-147 [IMPLEMENTING] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le
-150 [NOT STARTED] — Add automatic Task Order synchronization. Update update-task-stat
-151 [NOT STARTED] — Integrate Task Order with /todo and /review commands. Update /tod
+147 [COMPLETED] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le
+150 [RESEARCHING] — Add automatic Task Order synchronization. Update update-task-stat
+151 [RESEARCHING] — Integrate Task Order with /todo and /review commands. Update /tod
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -78,7 +78,7 @@ technical_debt:
 146 [RESEARCHED] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
   └─ 145 [PLANNED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) (see above)
 148 [RESEARCHED] — Close the 4 temporal operator cases of table_correctness (all_fut
-  └─ 147 [IMPLEMENTING] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le (see above)
+  └─ 147 [COMPLETED] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le (see above)
 ```
 
 ## Tasks
@@ -98,7 +98,7 @@ technical_debt:
 
 ### 150. Task Order auto-pruning and auto-insertion
 - **Effort**: 3-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 
@@ -108,7 +108,7 @@ technical_debt:
 
 ### 151. Task Order command integration and rules
 - **Effort**: 1-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 
@@ -118,12 +118,14 @@ technical_debt:
 
 ### 147. Prove lift_eval and insertEnv De Bruijn substitution lemmas
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None
 - **Research**: [specs/147_lift_eval_insertenv_lemmas/reports/01_scope-analysis.md]
 - **Plan**: [147_lift_eval_insertenv_lemmas/plans/01_debruijn-plan.md]
+- **Summary**: [specs/147_lift_eval_insertenv_lemmas/summaries/01_debruijn-summary.md]
 
 **Description**: Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: `insertEnv_zero_eq_cons` (inserting at 0 equals Fin.cons), `insertEnv_succ_cons` (commutation of insertEnv with Fin.cons under binders), `insertEnv_finLift` (inverse relationship between insertEnv and finLift), and `lift_eval` (main substitution lemma: evaluating a lifted formula in an inserted environment recovers original evaluation). Pure Fin-arithmetic / function-extensionality proofs. Once proved, `weaken_eval` becomes sorry-free automatically.
 

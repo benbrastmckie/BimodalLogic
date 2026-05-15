@@ -705,13 +705,13 @@
     {
       "project_number": 147,
       "project_name": "lift_eval_insertenv_lemmas",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "description": "Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, and lift_eval. Pure Fin-arithmetic and function-extensionality proofs. Once proved, weaken_eval becomes sorry-free automatically, unblocking task 148 (table_correctness temporal cases).\n\nDefinition of done: All 4 lemmas sorry-free, weaken_eval sorry-free, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T15:45:00Z",
-      "last_updated": "2026-05-15T19:12:41Z",
+      "last_updated": "2026-05-15T19:17:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -728,9 +728,16 @@
           "path": "specs/147_lift_eval_insertenv_lemmas/plans/01_debruijn-plan.md",
           "type": "plan",
           "summary": "2 phases, 2h: prove 4 De Bruijn substitution lemmas (validated proofs)"
+        },
+        {
+          "path": "specs/147_lift_eval_insertenv_lemmas/summaries/01_debruijn-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for De Bruijn substitution lemmas"
         }
       ],
-      "session_id": "sess_1778870829_ddb3fc_t147"
+      "session_id": "sess_1778870829_ddb3fc_t147",
+      "completed": "2026-05-15T19:17:00Z",
+      "completion_summary": "Proved all 4 De Bruijn substitution lemmas (insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, lift_eval). weaken_eval now sorry-free. NEquivalence.lean sorry count 8→4."
     },
     {
       "project_number": 148,
@@ -800,30 +807,32 @@
     {
       "project_number": 150,
       "project_name": "task_order_auto_sync",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "meta",
       "description": "Add automatic Task Order synchronization. Update update-task-status.sh to auto-prune completed tasks from Task Order. Update /task command to auto-insert new tasks into Task Order with correct dependencies. Add sync validation logic to detect and auto-correct drift between Task Order status markers and state.json.",
       "dependencies": [
         149
       ],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T12:00:00Z",
+      "last_updated": "2026-05-15T18:57:28Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1778871435_0b2c01"
     },
     {
       "project_number": 151,
       "project_name": "task_order_command_integration",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "meta",
       "description": "Integrate Task Order with /todo and /review commands. Update /todo to regenerate Task Order during archive flow using generate-task-order.sh. Update /review to use new wave+tree format. Add Task Order sync rules to state-management.md.",
       "dependencies": [
         149
       ],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T12:00:00Z",
+      "last_updated": "2026-05-15T18:57:29Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1778871435_0b2c01"
     }
   ],
   "next_project_number": 152,
