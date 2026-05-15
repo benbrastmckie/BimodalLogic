@@ -73,31 +73,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add Axiom Constructor and Fix Exhaustive Matches [NOT STARTED]
+### Phase 1: Add Axiom Constructor and Fix Exhaustive Matches [COMPLETED]
 
 **Goal**: Add `discrete_box_necessity` (or equivalent name) to the `Axiom` inductive type and fix all pattern match exhaustiveness errors.
 
 **Tasks**:
-- [ ] Add new axiom constructor to `Axiom` inductive in Axioms.lean:
-  ```
-  | discrete_box_necessity :
-      Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
-        (Formula.box (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
-  ```
-  This encodes `U(T,bot) -> box(U(T,bot))`: "if there is an immediate successor (discreteness), then this holds at all accessible worlds."
-- [ ] Update `Axiom.frameClass` to return `.Base` for the new constructor (valid on all ordered abelian groups, not restricted to dense or discrete)
-- [ ] Update `Axiom.isBase` to return `True` for the new constructor
-- [ ] Update `Axiom.isDenseCompatible` to return `True` for the new constructor
-- [ ] Update `Axiom.isDiscreteCompatible` to return `True` for the new constructor (already wildcard `True`)
-- [ ] Update doc comment: axiom count from 41 to 42, and Layer 5 uniformity axioms from 4 to 5
-- [ ] Run `lake build Bimodal.ProofSystem.Axioms` to confirm the module compiles
-- [ ] Grep for all exhaustive matches on `Axiom` in the codebase: `grep -rn "cases.*Axiom\|match.*Axiom\|| discrete_\|| prior_\|| z1" Theories/ --include="*.lean"` to find all sites that need updating
-- [ ] Fix exhaustive matches in Soundness.lean: `axiom_base_valid`, `axiom_valid_dense`, `axiom_valid_discrete` (add placeholder `sorry` for the soundness proof, to be filled in Phase 2)
-- [ ] Fix exhaustive matches in the `soundness` theorem and `soundness_dense`/`soundness_discrete` inductions
-- [ ] Fix exhaustive matches in DenseSoundness.lean and DiscreteSoundness.lean if they have their own case splits
-- [ ] Fix exhaustive matches in Derivation.lean (`isDenseCompatible`, `isDiscreteCompatible`)
-- [ ] Fix any exhaustive matches in SoundnessLemmas.lean (swap preservation lemmas)
-- [ ] Run `lake build` to verify all exhaustiveness errors are resolved (soundness sorry from Phase 2 is expected)
+- [x] Add new axiom constructor to `Axiom` inductive in Axioms.lean
+- [x] Update `Axiom.frameClass` to return `.Base` for the new constructor *(deviation: altered -- wildcard match already handles it)*
+- [x] Update `Axiom.isBase` to return `True` for the new constructor *(deviation: altered -- wildcard match already handles it)*
+- [x] Update `Axiom.isDenseCompatible` to return `True` for the new constructor *(deviation: altered -- wildcard match already handles it)*
+- [x] Update `Axiom.isDiscreteCompatible` to return `True` for the new constructor *(deviation: altered -- wildcard match already handles it)*
+- [x] Update doc comment: axiom count from 41 to 42, and Layer 5 uniformity axioms from 4 to 5
+- [x] Run `lake build Bimodal.ProofSystem.Axioms` to confirm the module compiles
+- [x] Grep for all exhaustive matches on `Axiom` in the codebase
+- [x] Fix exhaustive matches in Soundness.lean: `axiom_base_valid`, `axiom_valid_dense`, `axiom_valid_discrete` *(deviation: altered -- filled in full proof immediately rather than sorry placeholder, merging Phase 2 work)*
+- [x] Fix exhaustive matches in the `soundness` theorem and `soundness_dense`/`soundness_discrete` inductions *(deviation: altered -- soundness_discrete uses wildcard, no update needed)*
+- [x] Fix exhaustive matches in DenseSoundness.lean and DiscreteSoundness.lean if they have their own case splits *(deviation: skipped -- these files do not exist)*
+- [x] Fix exhaustive matches in Derivation.lean (`isDenseCompatible`, `isDiscreteCompatible`) *(deviation: skipped -- these use wildcard matches that already handle new constructors)*
+- [x] Fix any exhaustive matches in SoundnessLemmas.lean (swap preservation lemmas)
+- [x] Fix exhaustive match in Substitution.lean (axiom substitution lemma)
+- [x] Run `lake build` to verify all exhaustiveness errors are resolved
 
 **Timing**: 2 hours
 

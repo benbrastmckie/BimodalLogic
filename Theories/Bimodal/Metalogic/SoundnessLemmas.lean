@@ -828,6 +828,13 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
       exact add_lt_add_left hcu (t - u)
     exact h_guard (c + (t - u)) h1 h2
+  | discrete_box_necessity =>
+    -- swap(U(T,bot) -> □(U(T,bot))) = S(T,bot) -> □(S(T,bot))
+    -- S(T,bot) depends only on D's order structure, not the history
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ σ _h_σ_mem
+    exact ⟨r, hrt, fun h => h, h_guard⟩
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
@@ -1360,6 +1367,12 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
+  | discrete_box_necessity =>
+    -- U(T,bot) -> □(U(T,bot)): discreteness depends only on D, not the history
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
+    exact ⟨s, hts, fun h => h, h_guard⟩
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
@@ -1816,6 +1829,12 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_dc : h.isDense
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
       exact add_lt_add_left hcu (t - u)
     exact h_guard (c + (t - u)) h1 h2
+  | discrete_box_necessity =>
+    -- swap(U(T,bot) -> □(U(T,bot))) = S(T,bot) -> □(S(T,bot))
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, truth_at]
+    intro ⟨r, hrt, _h_top_r, h_guard⟩ σ _h_σ_mem
+    exact ⟨r, hrt, fun h => h, h_guard⟩
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
@@ -2080,6 +2099,12 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
+  | discrete_box_necessity =>
+    -- U(T,bot) -> □(U(T,bot)): discreteness depends only on D, not the history
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [truth_at]
+    intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
+    exact ⟨s, hts, fun h => h, h_guard⟩
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])

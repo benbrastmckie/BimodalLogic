@@ -843,6 +843,17 @@ theorem discrete_propagate_bwd_valid :
     exact sub_lt_sub_right hcs _
   exact h_guard (c - (u - t)) h1 h2
 
+/-- Discrete box necessity: U(⊤,⊥) → □(U(⊤,⊥)).
+If there is a gap (t, s) at history τ, then for any history σ in Omega,
+the same gap exists (truth of U(⊤,⊥) depends only on D's order, not on τ). -/
+theorem discrete_box_necessity_valid :
+    ⊨ ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+      (Formula.box (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot))) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
+  exact ⟨s, hts, fun h => h, h_guard⟩
+
 /-! ## Legacy Discrete Axiom Validity Theorems (Removed)
 
 The following discrete axiom validity theorems were removed in the BX refactor:
@@ -921,6 +932,7 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | discrete_symm_bwd => exact discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
+  | discrete_box_necessity => exact discrete_box_necessity_valid
   | prior_UZ _ => exact absurd h_base (by simp [Axiom.isBase])
   | prior_SZ _ => exact absurd h_base (by simp [Axiom.isBase])
   | z1 _ => exact absurd h_base (by simp [Axiom.isBase])
@@ -970,6 +982,7 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | discrete_symm_bwd => exact Validity.valid_implies_valid_dense discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_dense discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_dense discrete_propagate_bwd_valid
+  | discrete_box_necessity => exact Validity.valid_implies_valid_dense discrete_box_necessity_valid
   | prior_UZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | prior_SZ _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
   | z1 _ => exact absurd h_dc (by simp [Axiom.isDenseCompatible])
@@ -1020,6 +1033,7 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | discrete_symm_bwd => exact Validity.valid_implies_valid_discrete discrete_symm_bwd_valid
   | discrete_propagate_fwd => exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
   | discrete_propagate_bwd => exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
+  | discrete_box_necessity => exact Validity.valid_implies_valid_discrete discrete_box_necessity_valid
   | prior_UZ φ => exact prior_UZ_valid φ
   | prior_SZ φ => exact prior_SZ_valid φ
   | z1 φ => exact z1_valid φ
@@ -1125,6 +1139,7 @@ theorem soundness (Γ : Context) (φ : Formula)
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_box_necessity => exact discrete_box_necessity_valid D F M Omega h_sc τ h_mem t
     | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
     | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
     | z1 _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
@@ -1299,6 +1314,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid D F M Omega h_sc τ h_mem t
+    | discrete_box_necessity => exact discrete_box_necessity_valid D F M Omega h_sc τ h_mem t
     | prior_UZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
     | prior_SZ _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])
     | z1 _ => exact absurd h_dc (by simp [DerivationTree.isDenseCompatible, Axiom.isDenseCompatible])

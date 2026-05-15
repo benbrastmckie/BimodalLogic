@@ -367,6 +367,9 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | discrete_propagate_bwd =>
     simp only [subst_imp, subst_untl, subst_all_past, subst_bot]
     exact Axiom.discrete_propagate_bwd
+  | discrete_box_necessity =>
+    simp only [subst_imp, subst_untl, subst_box, subst_bot]
+    exact Axiom.discrete_box_necessity
   | prior_UZ a =>
     simp only [subst_imp, subst_some_future, subst_untl, subst_neg]
     exact Axiom.prior_UZ (a.subst q r)

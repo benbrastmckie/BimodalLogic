@@ -34,7 +34,7 @@ requiring successor-chain constructions.
 4. **Modal-Temporal Interaction** (1): modal_future
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
-**Total**: 41 axiom constructors (34 base + 4 uniformity + 2 prior + 1 Z1)
+**Total**: 42 axiom constructors (34 base + 5 uniformity + 2 prior + 1 Z1)
 
 ### Key Properties
 
@@ -58,15 +58,15 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-43 constructors organized into six layers:
+44 constructors organized into six layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (26): Burgess-Xu axioms for Until/Since on linear orders
 - **Interaction** (1): Modal-temporal interaction axiom (MF; TF now derived)
-- **Uniformity** (4): Discreteness uniformity axioms (valid on all ordered abelian groups)
+- **Uniformity** (5): Discreteness uniformity axioms (valid on all ordered abelian groups)
 - **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
 
-Base axioms (40) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
+Base axioms (41) are valid on all linear temporal orders. Prior axioms (2) are discrete-only.
 -/
 inductive Axiom : Formula → Type where
   -- Layer 1: Propositional (4)
@@ -301,7 +301,7 @@ inductive Axiom : Formula → Type where
   /-- Modal-Future: `□φ → □(Gφ)`. Necessary truths remain necessary in the future. -/
   | modal_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.box (Formula.all_future φ)))
 
-  -- Layer 5: Uniformity Axioms (4)
+  -- Layer 5: Uniformity Axioms (5)
   -- These encode the uniformity of discreteness in ordered abelian groups.
   -- U(⊤,⊥) = "next top" witnesses an immediate successor (gap of size d > 0).
   -- By translation invariance of the group, this gap is uniform across all time points.
@@ -332,6 +332,15 @@ inductive Axiom : Formula → Type where
   | discrete_propagate_bwd :
       Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
         (Formula.all_past (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
+
+  /-- Discrete box necessity: U(⊤,⊥) → □(U(⊤,⊥)).
+  If there is a gap of size d at t (discreteness witness), then by translation
+  invariance the same gap exists at every accessible world at time t. Since box
+  quantifies over histories at the same time, the discreteness witness propagates
+  to all box-accessible worlds. Valid on all ordered abelian groups. -/
+  | discrete_box_necessity :
+      Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+        (Formula.box (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
 
   -- Layer 6: Prior Axioms for Integers (2)
   -- These axioms encode the well-ordering property for definable sets.
