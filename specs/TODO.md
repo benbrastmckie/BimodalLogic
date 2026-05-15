@@ -93,10 +93,11 @@ technical_debt:
 
 ### 149. Redesign Task Order format and generation script
 - **Effort**: 3-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Dependencies**: None
 - **Research**: [149_redesign_task_order_format/reports/01_format-redesign-research.md]
+- **Plan**: [149_redesign_task_order_format/plans/01_task-order-redesign.md]
 
 **Description**: Redesign the Task Order section format in TODO.md. Replace flat category lists with dependency wave table and indented dependency tree format. Create `generate-task-order.sh` script to regenerate Task Order from state.json dependency graph. Update `task-order-format.md` spec with new wave+tree format definition. Files: `.claude/context/formats/task-order-format.md` (redesign), `.claude/scripts/generate-task-order.sh` (new).
 
