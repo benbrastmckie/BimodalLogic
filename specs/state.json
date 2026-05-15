@@ -697,7 +697,7 @@
     {
       "project_number": 146,
       "project_name": "normalform_cleanup_cardinality",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormIdx_nonempty) from NormalForm.lean. Prove cardinality correspondences: Fintype.card (AtomKind sig n) = atomCount p n, and Fintype.card (NormalForm sig k n) = nfCount p k n. Update docstrings for publication quality. Optionally prove normalForm_equiv_fin : NormalForm sig k n ≃ NormalFormIdx sig k n.",
@@ -705,7 +705,7 @@
         145
       ],
       "created": "2026-05-15T14:30:00Z",
-      "last_updated": "2026-05-15T20:14:31Z",
+      "last_updated": "2026-05-15T20:22:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -722,10 +722,17 @@
           "path": "specs/146_normalform_cleanup_cardinality/plans/02_cleanup-plan.md",
           "type": "plan",
           "summary": "2-phase plan: delete 3 dead definitions, add 3 cardinality theorems (1.5h)"
+        },
+        {
+          "path": "specs/146_normalform_cleanup_cardinality/summaries/02_cleanup-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for NormalForm cleanup and cardinality proofs"
         }
       ],
       "session_id": "sess_1778874071_7dc8e1",
-      "researched": "2026-05-15T19:59:00Z"
+      "researched": "2026-05-15T19:59:00Z",
+      "completed": "2026-05-15T20:22:00Z",
+      "completion_summary": "Removed 3 dead definitions (nf_eval, nf_vector, normalFormIdx_nonempty). Proved atomKind_card, normalForm_card, normalForm_equiv_fin. NormalForm.lean publication-quality."
     },
     {
       "project_number": 147,
@@ -767,7 +774,7 @@
     {
       "project_number": 148,
       "project_name": "table_correctness_temporal_cases",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "description": "Close the 4 temporal operator cases of table_correctness (all_future, all_past, untl, snce) in Table.lean plus 2 helper lemmas. Each case: unfold definitions, apply lift1_eval or lift1_lift1_eval, use induction hypothesis. Also fix chronicle_is_good atomMap signature in Transfer.lean and update pipeline status.\n\nDefinition of done: table_correctness fully sorry-free, Transfer.lean pipeline status updated, lake build passes, lean_verify shows no sorryAx.",
@@ -775,7 +782,7 @@
         147
       ],
       "created": "2026-05-15T15:45:00Z",
-      "last_updated": "2026-05-15T20:14:31Z",
+      "last_updated": "2026-05-15T20:22:30Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -792,10 +799,17 @@
           "path": "specs/148_table_correctness_temporal_cases/plans/02_proof-plan.md",
           "type": "plan",
           "summary": "2-phase plan: close 6 Table.lean sorries + Transfer.lean pipeline update (1h)"
+        },
+        {
+          "path": "specs/148_table_correctness_temporal_cases/summaries/02_proof-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for table_correctness temporal cases"
         }
       ],
       "session_id": "sess_1778874071_7dc8e1",
-      "researched": "2026-05-15T19:52:00Z"
+      "researched": "2026-05-15T19:52:00Z",
+      "completed": "2026-05-15T20:22:30Z",
+      "completion_summary": "Closed all 6 sorry positions in Table.lean: 2 helper lemmas + 4 temporal cases of table_correctness. lean_verify confirms no sorryAx. Transfer.lean pipeline step 5 updated to READY."
     },
     {
       "project_number": 149,
@@ -967,7 +981,7 @@
     {
       "project_number": 152,
       "project_name": "task_order_topic_grouping",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "meta",
       "description": "Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. (1) Detect independent subgraphs (connected components) in the dependency graph and render each as its own block. (2) Add optional topic field to state.json task entries for structured grouping. (3) Update generate-task-order.sh to group roots by topic within each wave, rendering one code block per topic-group with markdown headings. (4) Enhance wave table to show topic breakdown per wave. (5) Backfill topic field for existing active tasks using heuristic keyword matching from task names/descriptions.",
       "dependencies": [
@@ -975,9 +989,10 @@
         150
       ],
       "created": "2026-05-15T12:40:00Z",
-      "last_updated": "2026-05-15T12:40:00Z",
+      "last_updated": "2026-05-15T19:46:36Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1778874393_16591f"
     }
   ],
   "next_project_number": 153,

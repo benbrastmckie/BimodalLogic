@@ -1,7 +1,7 @@
 # Implementation Plan: NormalForm Legacy Cleanup and Cardinality Correspondence Proof
 
 - **Task**: 146 - NormalForm legacy cleanup and cardinality correspondence proof
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: Task 145 (completed)
 - **Research Inputs**: specs/146_normalform_cleanup_cardinality/reports/01_cleanup-design.md, specs/146_normalform_cleanup_cardinality/reports/02_post-split-audit.md

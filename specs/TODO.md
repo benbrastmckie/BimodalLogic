@@ -34,7 +34,7 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by |
 |------|-------|------------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,146,148,619,949,953,992,998 | -- |
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,152,619,949,953,992,998 | -- |
 | 2 | 20,21,125,128 | 18,116,122 |
 
 **Dependency Tree** (indented = must complete first):
@@ -55,8 +55,7 @@ technical_debt:
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-146 [RESEARCHED] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
-148 [RESEARCHED] — Close the 4 temporal operator cases of table_correctness (all_fut
+152 [RESEARCHING] — Improve Task Order UX in TODO.md by splitting the monolithic depe
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -77,7 +76,7 @@ technical_debt:
 
 ### 152. Task Order topic grouping and wave separation
 - **Effort**: 3-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Dependencies**: Task #149, Task #150
 - **Description**: Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. Detect independent subgraphs (connected components), add optional topic field to state.json, update generate-task-order.sh to group roots by topic with per-group code blocks and markdown headings, enhance wave table with topic breakdown, and backfill topic for existing tasks.
@@ -138,7 +137,8 @@ technical_debt:
 
 ### 148. Complete table_correctness temporal operator cases
 - **Effort**: 1.5-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 147
@@ -146,6 +146,7 @@ technical_debt:
   - [specs/148_table_correctness_temporal_cases/reports/01_scope-analysis.md]
   - [specs/148_table_correctness_temporal_cases/reports/02_proof-development.md]
 - **Plan**: [specs/148_table_correctness_temporal_cases/plans/02_proof-plan.md]
+- **Summary**: [specs/148_table_correctness_temporal_cases/summaries/02_proof-summary.md]
 
 **Description**: Close the 4 temporal operator cases of `table_correctness` (`all_future`, `all_past`, `untl`, `snce`) in Table.lean, plus 2 helper lemmas (`cons_eq_insertEnv_one`, `cons3_eq_insertEnv`). Each temporal case: unfold definitions, apply `lift1_eval`/`lift1_lift1_eval`, use induction hypothesis. Also fix `chronicle_is_good` atomMap signature in Transfer.lean step 3 comment and update pipeline status table. Result: `table_correctness` fully sorry-free with `lean_verify` showing no `sorryAx`.
 
@@ -192,7 +193,8 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 146. NormalForm legacy cleanup and cardinality correspondence proof
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 145
@@ -200,6 +202,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
   - [specs/146_normalform_cleanup_cardinality/reports/01_cleanup-design.md]
   - [specs/146_normalform_cleanup_cardinality/reports/02_post-split-audit.md]
 - **Plan**: [specs/146_normalform_cleanup_cardinality/plans/02_cleanup-plan.md]
+- **Summary**: [specs/146_normalform_cleanup_cardinality/summaries/02_cleanup-summary.md]
 
 **Description**: Remove legacy dead code (vacuous `nf_eval`, `nf_vector`, `normalFormIdx_nonempty`) from NormalForm.lean. Prove cardinality correspondences: `Fintype.card (AtomKind sig n) = atomCount p n` and `Fintype.card (NormalForm sig k n) = nfCount p k n`, confirming the counting function matches the actual type. Update docstrings for publication quality. Optionally prove `normalForm_equiv_fin : NormalForm sig k n ≃ NormalFormIdx sig k n`.
 

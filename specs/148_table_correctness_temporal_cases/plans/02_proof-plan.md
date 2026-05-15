@@ -1,7 +1,7 @@
 # Implementation Plan: Complete table_correctness Temporal Operator Cases
 
 - **Task**: 148 - table_correctness_temporal_cases
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: Task 147 (lift_eval_insertenv_lemmas -- COMPLETED), Task 145 (MonadicFO split -- COMPLETED)
 - **Research Inputs**: reports/01_scope-analysis.md, reports/02_proof-development.md
