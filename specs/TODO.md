@@ -49,7 +49,7 @@ technical_debt:
 6. **144** [COMPLETED] — Fix existsTask_transitive 1-line sorry in Bundle/CanonicalFrame.lean (0.5h, on critical path)
 
 **Normal form infrastructure** (Doets Lemma 1.1):
-7. **143** [IMPLEMENTING] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
+7. **143** [PLANNED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
 
 **Cleanup**:
 8. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
@@ -97,11 +97,11 @@ technical_debt:
 
 ### 143. Doets Lemma 1.1: normal form KType redesign with finite domain
 - **Effort**: 6-9 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 139
-- **Plan**: [143_doets_lemma_1_1_normal_form_ktype/plans/01_implementation-plan.md]
+- **Plan**: [143_doets_lemma_1_1_normal_form_ktype/plans/02_revised-plan.md]
 
 **Description**: Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical equivalence) and redesign `KType` with a finite normal form domain, closing `ktype_finite` and `KEquivalenceFramework.finite_types`.
 

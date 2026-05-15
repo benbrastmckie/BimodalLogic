@@ -692,7 +692,7 @@
     {
       "project_number": 143,
       "project_name": "doets_lemma_1_1_normal_form_ktype",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical equivalence) and redesign KType with a finite normal form domain, closing ktype_finite and KEquivalenceFramework.finite_types.\n\nThe current KType definition uses an infinite domain ({s : MonadicFormula sig 0 // s.quantifier_depth <= k} -> Bool) which makes Fintype impossible. The correct mathematical object (Doets 1987 Chapter 1, Section 1.6-1.7) is the space of n-characteristics: for each quantifier depth k and variable count n, there are finitely many semantically distinct formulas.\n\nScope:\n\n1. Define nfCount (p : Nat) (k : Nat) (n : Nat) : Nat — the number of semantically distinct monadic FO formulas of quantifier depth <= k with n free variables over a signature with p unary predicates and binary <. Following Doets 1987 Definition 1.6.1:\n   - Depth 0, n vars: 2^(p*n + n*(n-1)/2) atomic types (one per truth assignment to atoms P_i(x_j) and x_i < x_j for i < j)\n   - Depth k+1, n vars: 2^(nfCount p k (n+1)) (one per Boolean combination of depth-k formulas with one additional quantified variable)\n\n2. Define NormalForm (sig : MonadicSignature) (k : Nat) (n : Nat) — a finite type of normal form representatives (Doets n-characteristics / Hintikka formulas). This can be Fin (nfCount sig.preds.card k n) or a custom inductive. Each normal form at depth 0 is a conjunction of literals over the atomic formulas P_i(x_j) and x_i < x_j. Each normal form at depth k+1 specifies, for each depth-k normal form with one extra variable, whether exists-x and forall-x versions hold.\n\n3. Define nf_eval : NormalForm sig k n -> OrderedMonadicStructure sig -> (Fin n -> carrier) -> Prop — the semantic interpretation of each normal form. By structural recursion on the normal form.\n\n4. Prove Doets Lemma 1.1 (the main theorem): for every MonadicFormula sig n with quantifier_depth <= k, there exists a NormalForm sig k n that is semantically equivalent (same truth value in every structure under every assignment). Proof by induction on k:\n   - Base case (k=0): every quantifier-free formula is a Boolean combination of atoms; reduce to DNF over the finitely many atomic types.\n   - Inductive step (k+1): a depth-(k+1) formula has the form Qx.phi where Q is forall/exists and phi has depth <= k with n+1 variables. By IH, phi is equivalent to a normal form in NormalForm sig k (n+1). The quantifier Qx applied to this normal form yields one of the depth-(k+1) normal forms.\n\n5. Redefine KType sig k := NormalForm sig k 0 -> Bool (or equivalently Fin (nfCount sig.preds.card k 0) -> Bool). This is a function from a finite type to Bool, so Fintype (KType sig k) holds by inferInstance.\n\n6. Redefine k_type_of to use the normal form factorization: k_type_of M maps each normal form to whether M satisfies it (via nf_eval).\n\n7. Close ktype_finite: now Fintype (KType sig k) = inferInstance.\n\n8. Close KEquivalenceFramework.finite_types: use Setoid.quotientKerEquivRange + Set.finite_range + Fintype.ofFinite.\n\n9. Delete the old ktype_finite definition (dead code, mathematically impossible as stated).\n\n10. Verify all downstream files compile (IntegerModel, OrderedSum, Transfer).\n\nDefinition of done: ktype_finite is sorry-free (or deleted and replaced by inferInstance), KEquivalenceFramework.finite_types is sorry-free, Doets Lemma 1.1 is stated and proved, lake build passes.\n\nLiterature: Doets 1987 Completeness and Definability thesis (Chapter 1, Sections 1.6-1.7: n-characteristics, Lemma 1.7.1), Doets 1989 Monadic Pi11 Theories (Lemma 1.1).",
@@ -700,7 +700,7 @@
         139
       ],
       "created": "2026-05-15T07:05:05Z",
-      "last_updated": "2026-05-15T16:26:50Z",
+      "last_updated": "2026-05-15T16:53:50Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -729,11 +729,6 @@
           "summary": "Synthesis: NormalFormIdx architecture, Doets Lemma 1.1 proof strategy, risk assessment"
         },
         {
-          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/plans/01_implementation-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan with 5 phases for Doets Lemma 1.1 normal form KType redesign, closing finite_types sorry"
-        },
-        {
           "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/02_concrete-nf-eval-design.md",
           "type": "research",
           "summary": "Concrete nf_eval design: inductive NormalForm type, AtomKind enumeration, Doets 1.1 proof structure"
@@ -742,9 +737,14 @@
           "path": "specs/143_doets_lemma_1_1_normal_form_ktype/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "Partial: finite_types closed, but nf_eval vacuous, doets_lemma_1_1 sorry, k_equiv_monotone sorry. Full build passes."
+        },
+        {
+          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/plans/02_revised-plan.md",
+          "type": "plan",
+          "summary": "Revised plan: 11 phases (5 completed + 6 new for inductive NormalForm, closing doets_lemma_1_1 and k_equiv_monotone)"
         }
       ],
-      "session_id": "sess_1778862387_6adfd9_t143"
+      "session_id": "sess_1778863774_8cd41f"
     },
     {
       "project_number": 144,
