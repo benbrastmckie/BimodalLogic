@@ -50,6 +50,9 @@ inductive MonadicSentence (sig : MonadicSignature) : Type where
   | not (α : MonadicSentence sig) : MonadicSentence sig
   | and (α β : MonadicSentence sig) : MonadicSentence sig
   | forall (α : MonadicSentence sig) : MonadicSentence sig
+  /-- Order relation x < y. Without this, k-equivalence cannot
+      distinguish ordered structures. -/
+  | lt : MonadicSentence sig
 
 /-- Quantifier depth of a monadic sentence. -/
 def MonadicSentence.quantifier_depth {sig : MonadicSignature} : MonadicSentence sig → Nat
@@ -57,6 +60,7 @@ def MonadicSentence.quantifier_depth {sig : MonadicSignature} : MonadicSentence 
   | .not α => α.quantifier_depth
   | .and α β => max α.quantifier_depth β.quantifier_depth
   | .forall α => α.quantifier_depth + 1
+  | .lt => 0
 
 /-! ## Monadic Structure -/
 
@@ -109,28 +113,54 @@ def OrderedMonadicStructure.subinterval (sig : MonadicSignature) (M : OrderedMon
   carrier_order := inferInstance
 
 /--
-If a = b, the subinterval [a, b] is a singleton (and thus finite).
+If a = b, the subinterval [a, a] is a singleton, hence finite.
 
-**Status**: Sorried. The proof requires building a `Fintype` instance for
-the subtype carrier. This is true because the set is a singleton, but
-typeclass resolution for the Subsingleton instance is tricky.
+Proof: every element x in the subinterval satisfies a ≤ x.val ∧ x.val ≤ a,
+so x.val = a by antisymmetry. Thus the subinterval has exactly one element.
 -/
 theorem subinterval_singleton_finite (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
     (a : M.carrier) : Finite (M.subinterval sig a a).carrier := by
-  sorry
+  -- The subinterval carrier is {x : M.carrier // a ≤ x ∧ x ≤ a}
+  let elem : (M.subinterval sig a a).carrier := ⟨a, le_refl a, le_refl a⟩
+  have h_fintype : Fintype (M.subinterval sig a a).carrier := {
+    elems := {elem}
+    complete := by
+      intro x
+      have hx := x.property
+      have h_eq_val : x.val = a := le_antisymm hx.2 hx.1
+      apply Finset.mem_singleton.mpr
+      exact Subtype.ext h_eq_val
+  }
+  haveI : Fintype (M.subinterval sig a a).carrier := h_fintype
+  infer_instance
 
 /--
-If b = Order.succ a in a SuccOrder, the subinterval [a, b] has exactly two elements
-and is thus finite.
+If b = Order.succ a in a SuccOrder, the subinterval [a, succ a] has exactly
+two elements: a and succ(a).
 
-**Status**: Sorried pending the discrete order proof that the only elements
-between a and succ(a) are a and succ(a) themselves. This is true in any
-SuccOrder but requires using `Order.le_succ` and properties of discrete orders.
+Proof: For any x in the subinterval, a ≤ x ≤ succ(a). In a SuccOrder,
+the only element strictly between a and succ(a) is none (by `succ_le_of_lt`
+there is no k with a < k < succ a). So x is either a or succ(a).
 -/
 theorem subinterval_two_element_finite (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] (a : M.carrier) :
     Finite (M.subinterval sig a (Order.succ a)).carrier := by
-  sorry
+  let c : (M.subinterval sig a (Order.succ a)).carrier := ⟨a, le_refl a, Order.le_succ a⟩
+  let d : (M.subinterval sig a (Order.succ a)).carrier := ⟨Order.succ a, Order.le_succ a, le_refl _⟩
+  have h_fintype : Fintype (M.subinterval sig a (Order.succ a)).carrier := {
+    elems := {c, d}
+    complete := by
+      intro x
+      rcases x with ⟨x_val, hx_a, hx_succ⟩
+      by_cases h_eq_a : x_val = a
+      · subst h_eq_a; simp [c]
+      · have ha_lt_x : a < x_val := lt_of_le_of_ne hx_a (Ne.symm h_eq_a)
+        have h_succ_le : Order.succ a ≤ x_val := SuccOrder.succ_le_of_lt ha_lt_x
+        have h_eq_succ : x_val = Order.succ a := le_antisymm hx_succ h_succ_le
+        subst h_eq_succ; simp [d]
+  }
+  haveI : Fintype (M.subinterval sig a (Order.succ a)).carrier := h_fintype
+  infer_instance
 
 /-! ## Ordered Sum -/
 
@@ -147,6 +177,25 @@ def OrderedSum (sig : MonadicSignature) (I : Type) (M : I → MonadicStructure s
     MonadicStructure sig where
   carrier := Sigma fun (i : I) => (M i).carrier
   interp p := fun x => (M x.1).interp p x.2
+
+/-! ## Z-Structure: Integer-Based Monadic Structures -/
+
+/--
+A Z-structure: a monadic structure whose carrier is ℤ. This represents
+a "Z-model" or "Z-interval" in the Reynolds framework.
+
+The predicate interpretations are functions `pred → ℤ → Prop`.
+-/
+structure ZStructure (sig : MonadicSignature) where
+  interp (p : sig.preds) : ℤ → Prop
+
+/--
+Convert a Z-structure to a plain monadic structure
+(useful for k-equivalence which operates on MonadicStructure).
+-/
+def ZStructure.toMonadic (sig : MonadicSignature) (Z : ZStructure sig) : MonadicStructure sig where
+  carrier := ℤ
+  interp := Z.interp
 
 /-! ## k-Types and k-Equivalence -/
 

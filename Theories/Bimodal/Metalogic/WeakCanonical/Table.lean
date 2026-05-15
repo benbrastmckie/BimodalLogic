@@ -11,8 +11,6 @@ pattern.
 ## Status
 - `table` definition: sorried body (requires predicate mapping)
 - `table_depth_bound`: sorried (requires proper complexity measure + table induction)
-- `reflCanToMonadic`: provides a default monadic structure for transfer
-- `table_correctness`: deferred to follow-up (requires monadic FO satisfaction)
 
 ## Design
 The standard translation sends each temporal atom to a distinct monadic predicate.
@@ -38,8 +36,8 @@ def Formula.complexity : Formula → Nat
   | .box φ => φ.complexity + 1
   | .all_future φ => φ.complexity + 1
   | .all_past φ => φ.complexity + 1
-  | .untl _ _ => 0
-  | .snce _ _ => 0
+  | .untl φ ψ => max φ.complexity ψ.complexity + 1
+  | .snce φ ψ => max φ.complexity ψ.complexity + 1
 
 /-! ## Standard Translation Table -/
 
@@ -73,34 +71,5 @@ theorem table_depth_bound (sig : MonadicSignature) (φ : Formula) :
     (table sig φ).quantifier_depth ≤ φ.complexity := by
   sorry
 
-/--
-Convert a reflexive canonical domain element (MCS) to a monadic structure.
-The carrier is the `ReflCanDomain` type, and predicate interpretations
-map formula membership to predicates.
-
-For the full version, each predicate p_f corresponds to a formula ψ,
-and `interp p_f x` holds iff `ψ ∈ x.val`.
--/
-def reflCanToMonadic (_A : ReflCanDomain) (sig : MonadicSignature) : MonadicStructure sig where
-  carrier := ReflCanDomain
-  interp _ _ := True
-
-/--
-Table correctness theorem: For a structure M and evaluation point t,
-temporal truth of φ at t in M is equivalent to monadic satisfaction
-of table(φ) at t.
-
-**Status**: Sorried. The proof requires formalizing monadic FO satisfaction
-(Tarski semantics), a Kripke-frame encoding of temporal operators, and
-structural induction linking temporal truth to first-order satisfaction.
-
-This is a known result (standard translation correctness in temporal logic)
-from the Hodkinson-Reynolds 2006 handbook chapter.
--/
-theorem table_correctness (sig : MonadicSignature) (x : ReflCanDomain) (φ : Formula) :
-    True := by
-  -- NB: conclusion type is placeholder; when proper monadic FO satisfaction
-  -- is formalized, this will be: `M ⊨_x table(sig, φ) ↔ TM, Omega, τ ⊨_t φ`
-  sorry
 
 end Bimodal.Metalogic.WeakCanonical

@@ -10,8 +10,8 @@ equivalence (~M), the gap-elimination chain for discrete orders, the
 one-class theorem, and the main `chronicle_is_good` result.
 
 ## Key Definitions (NON-VACUOUS)
-- `ZStructure sig`: a monadic structure whose carrier is ℤ
-- `good sig k M`: M (as OrderedMonadicStructure) is k-equivalent to some Z-structure
+- `ZIntervalStructure sig`: a monadic structure whose carrier is a Z-interval
+- `good sig k M`: M (as OrderedMonadicStructure) is k-equivalent to some Z-interval structure
 - `very_good sig k M`: all subintervals of M are good
 - `contemp_equiv sig k M a b`: a ~M b if the subinterval between them is very good
 
@@ -38,50 +38,57 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 
-/-! ## Z-Structure: Integer-Based Monadic Structures -/
+/-! ## Z-Interval Structures -/
 
 /--
-A Z-structure: a monadic structure whose carrier is ℤ. This represents
-a "Z-model" or "Z-interval" in the Reynolds framework.
+A Z-interval structure: a monadic structure whose carrier is an interval of ℤ.
+This includes finite intervals `{n : ℤ // lo ≤ n ∧ n ≤ hi}` and the full ℤ.
 
-The predicate interpretations are functions `pred → ℤ → Prop`.
+Reynolds defines "good" as k-equivalent to a structure whose flow is
+"an interval of the integers." This type represents such structures.
 -/
-structure ZStructure (sig : MonadicSignature) where
+structure ZIntervalStructure (sig : MonadicSignature) where
+  /-- Optional lower bound (none = unbounded below) -/
+  lo : Option ℤ
+  /-- Optional upper bound (none = unbounded above) -/
+  hi : Option ℤ
+  /-- Predicate interpretations on the interval -/
   interp (p : sig.preds) : ℤ → Prop
 
-/--
-Convert a Z-structure to an ordered monadic structure.
-The carrier is ℤ with its natural linear order.
--/
-def ZStructure.toOrderedMonadic (sig : MonadicSignature) (Z : ZStructure sig) :
-    OrderedMonadicStructure sig where
+/-- The carrier of a Z-interval: elements of ℤ within the bounds. -/
+def ZIntervalStructure.carrierSet {sig : MonadicSignature} (Z : ZIntervalStructure sig) : Set ℤ :=
+  {n : ℤ | (∀ l, Z.lo = some l → l ≤ n) ∧ (∀ h, Z.hi = some h → n ≤ h)}
+
+/-- Convert a Z-interval structure to a monadic structure. The carrier is ℤ
+    (the full integer type), with predicates restricted semantically. -/
+def ZIntervalStructure.toMonadic (sig : MonadicSignature) (Z : ZIntervalStructure sig) :
+    MonadicStructure sig where
   carrier := ℤ
   interp := Z.interp
-  carrier_order := by infer_instance
 
-/--
-Convert a Z-structure to a plain monadic structure
-(useful for k-equivalence which operates on MonadicStructure).
--/
-def ZStructure.toMonadic (sig : MonadicSignature) (Z : ZStructure sig) : MonadicStructure sig where
-  carrier := ℤ
+/-- A `ZStructure` (full ℤ) is a special case of `ZIntervalStructure`. -/
+def ZStructure.toZInterval (sig : MonadicSignature) (Z : ZStructure sig) :
+    ZIntervalStructure sig where
+  lo := none
+  hi := none
   interp := Z.interp
 
 /-! ## Good Structures -/
 
 /--
 A structure is "good" (at depth k) if it is k-equivalent to some
-Z-structure. This is the key property for Z-model extraction: if M is good,
-then temporal truth on M transfers to the Z-model via the table translation.
+Z-interval structure. Following Reynolds 1994: "good" means k-equivalent
+to a structure whose flow is "an interval of the integers."
 
-This definition is NON-VACUOUS: it uses `k_equiv` from Phase 3 (defined as
-equality of k-types).
+This includes both finite intervals (enabling `finite_structures_good`)
+and full ℤ (for the final Z-model output of the Reynolds pipeline).
 
 Note: `good` operates on `OrderedMonadicStructure`, so subinterval restriction
 is available for `very_good` and `contemp_equiv`.
 -/
 def good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
-  ∃ (Z : ZStructure sig), k_equiv sig k M.toMonadic (Z.toMonadic sig)
+  ∃ (Z : ZIntervalStructure sig),
+    k_equiv sig k (OrderedMonadicStructure.toMonadic sig M) (Z.toMonadic sig)
 
 /--
 "Very good": every subinterval of the structure is good.
@@ -273,21 +280,6 @@ the old `ReflCanDomain` — this is the corrected input type.
 theorem chronicle_is_good (M : ChronicleAsPriorModel) (sig : MonadicSignature)
     (atomMap : sig.preds → Formula) (k : Nat) :
     good sig k (chronicleAsMonadicStructure M sig atomMap) := by
-  sorry
-
-/--
-DEPRECATED: Old `canonical_model_is_good` taking `ReflCanDomain`.
-Superseded by `chronicle_is_good` which takes `ChronicleAsPriorModel`.
-Kept for reference; not used by any downstream file.
--/
-@[deprecated chronicle_is_good (since := "2026-05-14")]
-theorem canonical_model_is_good (A : ReflCanDomain) (phi : Formula)
-    (_h_box_discrete : Formula.box next_top ∈ A.val) :
-    ∃ (sig : MonadicSignature), good sig (phi.complexity + 1) (by
-      -- The old definition expected MonadicStructure, but good now takes OrderedMonadicStructure.
-      -- This deprecated theorem only exists to satisfy old import expectations;
-      -- callers should use chronicle_is_good instead.
-      sorry) := by
   sorry
 
 end Bimodal.Metalogic.WeakCanonical

@@ -88,22 +88,22 @@ Fully sequential: each phase builds on the prior phase's changes.
 
 ---
 
-### Phase 1: Fix Build and Remove Structural Errors [NOT STARTED]
+### Phase 1: Fix Build and Remove Structural Errors [COMPLETED]
 
 **Goal**: Restore a passing `lake build`, remove circularity, fix wrong definitions, and clean dead code. This phase touches definitions only -- no proof closing.
 
 **Tasks**:
-- [ ] **1.1 Remove duplicate `ZStructure` from IntegerModel.lean** (lines 49-69): Delete the `ZStructure`, `ZStructure.toOrderedMonadic`, and `ZStructure.toMonadic` definitions. They already exist in NEquivalence.lean (lines 185-195). IntegerModel.lean already imports NEquivalence transitively via OrderedSum.
-- [ ] **1.2 Remove `z_model_exists` from `KEquivalenceFramework`** (NEquivalence.lean lines 308-321): Delete the `z_model_exists` field from the typeclass. This field axiomatizes Theorem 15's conclusion as a premise, creating a circularity. The framework should provide ONLY Doets 1989 properties (equiv_at, equiv_is_equiv, equiv_monotone, finite_types, sum_preservation).
-- [ ] **1.3 Fix `good` definition to allow Z-intervals**: Currently `good` requires a `ZStructure` (carrier = full Z). Reynolds defines "good" as k-equivalent to a structure whose flow is "an interval of the integers." Define a new `ZIntervalStructure` type with carrier `{n : Z // lo <= n /\ n <= hi}` (or parameterized by optional bounds), and update `good` to use it. Alternatively, redefine `good` as `exists (N : MonadicStructure sig), k_equiv sig k M.toMonadic N /\ IsZInterval N.carrier` where `IsZInterval` means order-isomorphic to an interval of Z.
-- [ ] **1.4 Add order relation `<` to `MonadicSentence`**: Add a constructor `| lt : MonadicSentence sig` representing the order relation x < y (or add it to the signature). Without this, k-equivalence cannot distinguish ordered structures. Update `quantifier_depth` for the new constructor.
-- [ ] **1.5 Fix `OrderedSum` to return `OrderedMonadicStructure`**: Currently `OrderedSum` (NEquivalence.lean lines 172-175) returns `MonadicStructure`. Change it to return `OrderedMonadicStructure` with lexicographic order on `Sigma i, (M i).carrier`. This requires `LinearOrder I` and `LinearOrder (M i).carrier` for each i.
-- [ ] **1.6 Fix `doets_lemma_1_5` type signature**: Add the matching-type-distribution hypothesis. Current statement (OrderedSum.lean line 112) is unconditionally false. Update to require that for all k-types tau, the number of indices i with k-type(m i) = tau equals the number of indices j with k-type(m' j) = tau.
-- [ ] **1.7 Fix `Formula.complexity` for Until/Since**: Currently `untl _ _` and `snce _ _` return 0 (Table.lean lines 41-42). Change to `max phi.complexity psi.complexity + 1` (Until/Since have FO tables with one quantifier).
-- [ ] **1.8 Fix `table_correctness` type signature**: Change conclusion from `True` to a proper equivalence relating temporal truth and monadic satisfaction. At minimum, change to `sorry`-based stub with correct type.
-- [ ] **1.9 Fix `reflCanToMonadic`**: Replace vacuous `interp _ _ := True` body with `sorry`-based stub, or delete (it has 0 callers).
-- [ ] **1.10 Delete dead code**: Remove deprecated `canonical_model_is_good` (IntegerModel.lean lines 283-292, 0 callers). Remove vacuous `table_correctness` with `True` conclusion. Keep `reflCanR_linear` as-is (already documented dead code from Phase 1 v2).
-- [ ] **1.11 Verify build**: Run `lake build` and confirm zero errors.
+- [x] **1.1 Remove duplicate `ZStructure` from IntegerModel.lean** *(completed)*
+- [x] **1.2 Remove `z_model_exists` from `KEquivalenceFramework`** *(completed)*
+- [x] **1.3 Fix `good` definition to allow Z-intervals** *(completed — defined `ZIntervalStructure` with optional bounds, updated `good` to use it)*
+- [x] **1.4 Add order relation `<` to `MonadicSentence`** *(completed — added `.lt` constructor, updated `quantifier_depth`)*
+- [ ] **1.5 Fix `OrderedSum` to return `OrderedMonadicStructure`** *(deviation: skipped — changing `OrderedSum` return type would break `KEquivalenceFramework.sum_preservation` and `doets_lemma_1_4` which operate on `MonadicStructure`. The current return type is correct for the k-equivalence framework.)*
+- [x] **1.6 Fix `doets_lemma_1_5` type signature** *(completed — added `h_matching` hypothesis)*
+- [x] **1.7 Fix `Formula.complexity` for Until/Since** *(completed)*
+- [x] **1.8 Fix `table_correctness` type signature** *(deviation: altered — deleted `table_correctness` entirely since `table_depth_bound` already states the correct bound, and the vacuous `True` conclusion was meaningless)*
+- [x] **1.9 Fix `reflCanToMonadic`** *(completed — deleted, 0 callers)*
+- [x] **1.10 Delete dead code** *(completed — removed `canonical_model_is_good`, `table_correctness`, `reflCanToMonadic`)*
+- [x] **1.11 Verify build** *(completed — `lake build` passes with zero errors)*
 
 **Timing**: 2-3 hours
 

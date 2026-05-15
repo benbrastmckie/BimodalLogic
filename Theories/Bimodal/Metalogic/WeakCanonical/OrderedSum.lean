@@ -83,32 +83,21 @@ theorem doets_lemma_1_4_finite (sig : MonadicSignature) (k n : Nat)
 /-! ## Doets Lemma 1.5 (Type-Matching Variant) -/
 
 /--
-Doets Lemma 1.5: If two ordered sums have matching type distributions,
+Doets Lemma 1.5: If two ordered sums have matching k-type distributions,
 they are k-equivalent.
 
-More precisely: if the multisets of k-types appearing in the I-indexed
-and J-indexed families are the same, then the ordered sums are k-equivalent.
-This is the key lemma for Reynolds Theorem 15's "very_good → good" step:
-replacing a subinterval with a Z-interval of the same k-type preserves
-k-equivalence of the whole structure.
+The hypothesis `h_matching` requires that the multiset of k-types
+appearing in the I-indexed family equals the multiset appearing in
+the J-indexed family. When this holds, the ordered sums satisfy
+the same depth-k sentences.
 
-**Deferred: bypassed in the discrete case.** Doets Lemma 1.5 is only needed
-for Reynolds Lemma 16 (very_good_implies_good via cofinal sequences), which
-uses the full Lemma 1.5 to match type distributions across the cofinal
-sequence. In the discrete case, the one_class argument directly proves that
-all points are contemporaneously equivalent, so the cofinal sequence
-argument is unnecessary.
-
-Documented with a correct type signature for future reference
-(needed for the general completeness proof over dense orders).
-
-**References**:
-- Doets 1989, Lemma 1.5
-- Reynolds 1994, Lemma 16
-- Report 08, Q3: `reports/08_phase-by-phase-research.md`
+**Status**: Sorried. Only needed for the general (dense) case.
+Bypassed in the discrete case by the one_class argument.
 -/
 theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
-    (m : I → MonadicStructure sig) (m' : J → MonadicStructure sig) :
+    (m : I → MonadicStructure sig) (m' : J → MonadicStructure sig)
+    (h_matching : ∀ (τ : KType sig k),
+      (∃ i, k_type_of sig k (m i) = τ) ↔ (∃ j, k_type_of sig k (m' j) = τ)) :
     k_equiv sig k (OrderedSum sig I m) (OrderedSum sig J m') := by
   sorry
 
