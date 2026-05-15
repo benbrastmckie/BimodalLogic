@@ -82,19 +82,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: NormalForm.lean -- Core Definitions [NOT STARTED]
+### Phase 1: NormalForm.lean -- Core Definitions [COMPLETED]
 
 **Goal**: Create a new file with `atomCount`, `nfCount`, `NormalFormIdx`, and `nf_eval` definitions, independent of the Reynolds pipeline.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean` with appropriate imports (only `NEquivalence.lean` for `MonadicSignature`, `OrderedMonadicStructure`, `MonadicFormula`, `eval`)
-- [ ] Define `atomCount (p n : Nat) : Nat := p * n + n * (n - 1)` -- counts predicate atoms (p * n) and order atoms (n * (n-1)) for n free variables
-- [ ] Define `nfCount (p : Nat) : Nat -> Nat -> Nat` with base case `| 0, n => 2 ^ atomCount p n` and step case `| k+1, n => 2 ^ (atomCount p n + nfCount p k (n + 1))`
-- [ ] Define `abbrev NormalFormIdx (sig : MonadicSignature) (k n : Nat) := Fin (nfCount (Fintype.card sig.preds) k n)`
-- [ ] Prove `nfCount_pos : 0 < nfCount p k n` for all p, k, n (needed for `Fin` to be nonempty when used)
-- [ ] Define `noncomputable def nf_eval (sig : MonadicSignature) (k n : Nat) : NormalFormIdx sig k n -> OrderedMonadicStructure sig -> (Fin n -> sig_carrier) -> Prop` using Classical.dec -- maps each normal form index to its semantic interpretation
-- [ ] Register `NormalForm.lean` in `WeakCanonical.lean` import list
-- [ ] Verify `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` succeeds
+- [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean` with appropriate imports (only `NEquivalence.lean` for `MonadicSignature`, `OrderedMonadicStructure`, `MonadicFormula`, `eval`)
+- [x] Define `atomCount (p n : Nat) : Nat := p * n + n * (n - 1)` -- counts predicate atoms (p * n) and order atoms (n * (n-1)) for n free variables
+- [x] Define `nfCount (p : Nat) : Nat -> Nat -> Nat` with base case `| 0, n => 2 ^ atomCount p n` and step case `| k+1, n => 2 ^ (atomCount p n + nfCount p k (n + 1))`
+- [x] Define `abbrev NormalFormIdx (sig : MonadicSignature) (k n : Nat) := Fin (nfCount (Fintype.card sig.preds) k n)`
+- [x] Prove `nfCount_pos : 0 < nfCount p k n` for all p, k, n (needed for `Fin` to be nonempty when used)
+- [x] Define `noncomputable def nf_eval (sig : MonadicSignature) (k n : Nat) : NormalFormIdx sig k n -> OrderedMonadicStructure sig -> (Fin n -> sig_carrier) -> Prop` using Classical.dec -- maps each normal form index to its semantic interpretation
+- [x] Register `NormalForm.lean` in `WeakCanonical.lean` import list
+- [x] Verify `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` succeeds
 
 **Timing**: 2.5 hours
 
