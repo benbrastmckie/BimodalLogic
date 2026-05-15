@@ -741,14 +741,35 @@
     {
       "project_number": 149,
       "project_name": "redesign_task_order_format",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "meta",
       "description": "Redesign the Task Order section format in TODO.md. Replace flat category lists with dependency wave table and indented dependency tree format. Create generate-task-order.sh script to regenerate Task Order from state.json dependency graph. Update task-order-format.md spec with new wave+tree format definition.",
       "dependencies": [],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T12:00:00Z",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "last_updated": "2026-05-15T18:36:39Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/149_redesign_task_order_format/reports/01_format-redesign-research.md",
+          "type": "research",
+          "summary": "Format redesign: wave table + indented tree, generation algorithm, Phase 3 fix"
+        }
+      ],
+      "session_id": "sess_1778869970_765e11",
+      "memory_candidates": [
+        {
+          "content": "update-task-status.sh Phase 3 uses grep pattern ^- **{N}** [ (unordered bullet) but live TODO.md uses numbered lists — Phase 3 is silently broken",
+          "category": "INSIGHT"
+        },
+        {
+          "content": "update-recommended-order.sh has complete Kahns algorithm topological sort reusable for dependency wave computation",
+          "category": "PATTERN"
+        },
+        {
+          "content": "Plan-format Dependency Analysis table (Wave|Phases|Blocked by) adapts to Task Order by replacing Phases with Tasks",
+          "category": "PATTERN"
+        }
+      ]
     },
     {
       "project_number": 150,
