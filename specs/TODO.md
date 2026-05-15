@@ -1,5 +1,5 @@
 ---
-next_project_number: 143
+next_project_number: 145
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -45,9 +45,15 @@ technical_debt:
 **Mixed case**:
 5. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed, depends on 140)
 
+**Critical path fixes**:
+6. **144** [NOT STARTED] — Fix existsTask_transitive 1-line sorry in Bundle/CanonicalFrame.lean (0.5h, on critical path)
+
+**Normal form infrastructure** (Doets Lemma 1.1):
+7. **143** [NOT STARTED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
+
 **Cleanup**:
-6. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
-7. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+8. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
+9. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
 ### Phase 2: Module Reorganization
 
@@ -88,6 +94,31 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 143. Doets Lemma 1.1: normal form KType redesign with finite domain
+- **Effort**: 6-9 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+- **Dependencies**: 139
+
+**Description**: Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical equivalence) and redesign `KType` with a finite normal form domain, closing `ktype_finite` and `KEquivalenceFramework.finite_types`.
+
+The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.quantifier_depth ≤ k} → Bool`) making `Fintype` impossible. The correct mathematical object (Doets 1987 Chapter 1, Section 1.6-1.7) is the space of n-characteristics. Define `NormalForm sig k n` as a finite type of Hintikka formula representatives, prove every formula is equivalent to one (Doets Lemma 1.1 by induction on k), redefine `KType sig k := NormalForm sig k 0 → Bool`, and close `finite_types` via `Setoid.quotientKerEquivRange`.
+
+**Literature**: Doets 1987 thesis Ch. 1 (Sections 1.6-1.7), Doets 1989 Lemma 1.1.
+
+---
+
+### 144. Fix existsTask_transitive (1-line critical path sorry)
+- **Effort**: 0.5 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+
+**Description**: Fix the one-line sorry in `existsTask_transitive` (`Bundle/CanonicalFrame.lean:259`) which propagates into `bx_completeness`. Replace `sorry` with `DerivationTree.axiom [] _ (Axiom.temp_4 phi)`. Verify with `#print axioms bx_completeness` and `lake build`.
+
+---
 
 ### 131. Refactor module organization for clean APIs and documentation
 - **Effort**: 15-25 hours
