@@ -813,20 +813,25 @@
     {
       "project_number": 150,
       "project_name": "task_order_auto_sync",
-      "status": "planning",
+      "status": "planned",
       "task_type": "meta",
       "description": "Add automatic Task Order synchronization. Update update-task-status.sh to auto-prune completed tasks from Task Order. Update /task command to auto-insert new tasks into Task Order with correct dependencies. Add sync validation logic to detect and auto-correct drift between Task Order status markers and state.json.",
       "dependencies": [
         149
       ],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T19:11:02Z",
+      "last_updated": "2026-05-15T19:14:05Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/150_task_order_auto_sync/reports/01_task-order-auto-sync.md",
           "type": "research",
           "summary": "Research report identifying three gaps in Task Order auto-sync: outdated Part C in task.md, lean4 skills bypassing update-task-status.sh, and absent drift detection."
+        },
+        {
+          "path": "specs/150_task_order_auto_sync/plans/01_task-order-auto-sync.md",
+          "type": "plan",
+          "summary": "Implementation plan for Task Order auto-synchronization across task creation, lean4 skills, sync mode, and drift correction"
         }
       ],
       "session_id": "sess_1778872252_4c93f1",
@@ -864,20 +869,25 @@
     {
       "project_number": 151,
       "project_name": "task_order_command_integration",
-      "status": "planning",
+      "status": "planned",
       "task_type": "meta",
       "description": "Integrate Task Order with /todo and /review commands. Update /todo to regenerate Task Order during archive flow using generate-task-order.sh. Update /review to use new wave+tree format. Add Task Order sync rules to state-management.md.",
       "dependencies": [
         149
       ],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T19:11:03Z",
+      "last_updated": "2026-05-15T19:14:08Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/151_task_order_command_integration/reports/01_command-integration.md",
           "type": "research",
           "summary": "Research report identifying integration points for generate-task-order.sh in /todo and /review commands, with concrete recommendations for each change and new state-management.md rules."
+        },
+        {
+          "path": "specs/151_task_order_command_integration/plans/01_command-integration.md",
+          "type": "plan",
+          "summary": "Implementation plan with 3 phases: add Task Order regeneration to /todo, rewrite /review Task Order sections for wave+tree format, add sync rules to state-management.md"
         }
       ],
       "session_id": "sess_1778872252_4c93f1",

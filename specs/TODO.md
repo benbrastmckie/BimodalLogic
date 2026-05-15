@@ -57,8 +57,8 @@ technical_debt:
 142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
 147 [COMPLETED] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le
-150 [PLANNING] — Add automatic Task Order synchronization. Update update-task-stat
-151 [PLANNING] — Integrate Task Order with /todo and /review commands. Update /tod
+150 [PLANNED] — Add automatic Task Order synchronization. Update update-task-stat
+151 [PLANNED] — Integrate Task Order with /todo and /review commands. Update /tod
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -98,10 +98,11 @@ technical_debt:
 
 ### 150. Task Order auto-pruning and auto-insertion
 - **Effort**: 3-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [150_task_order_auto_sync/reports/01_task-order-auto-sync.md]
+- **Plan**: [150_task_order_auto_sync/plans/01_task-order-auto-sync.md]
 
 **Description**: Add automatic Task Order synchronization. Update `update-task-status.sh` to auto-prune completed tasks from Task Order when status is set to [COMPLETED]. Update `/task` command to auto-insert new tasks into Task Order with correct dependencies. Add sync validation logic to detect and auto-correct drift between Task Order status markers and state.json. Files: `.claude/scripts/update-task-status.sh`, `.claude/commands/task.md`.
 
@@ -109,10 +110,11 @@ technical_debt:
 
 ### 151. Task Order command integration and rules
 - **Effort**: 1-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [151_task_order_command_integration/reports/01_command-integration.md]
+- **Plan**: [151_task_order_command_integration/plans/01_command-integration.md]
 
 **Description**: Integrate Task Order with `/todo` and `/review` commands. Update `/todo` to regenerate Task Order during archive flow using `generate-task-order.sh`. Update `/review` to use new wave+tree format instead of old pruning logic. Add Task Order sync rules to `state-management.md`. Files: `.claude/commands/todo.md`, `.claude/commands/review.md` (Section 6.5), `.claude/rules/state-management.md`.
 
