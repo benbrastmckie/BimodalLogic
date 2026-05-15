@@ -99,17 +99,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Rewire NormalForm.lean and Table.lean Imports [NOT STARTED]
+### Phase 2: Rewire NormalForm.lean and Table.lean Imports [COMPLETED]
 
 **Goal**: Change NormalForm.lean and Table.lean to import MonadicFO instead of NEquivalence, adding the explicit Formula import that Table.lean needs.
 
 **Tasks**:
-- [ ] In NormalForm.lean: change `import Bimodal.Metalogic.WeakCanonical.NEquivalence` to `import Bimodal.Metalogic.WeakCanonical.MonadicFO`
-- [ ] In NormalForm.lean: update module docstring to remove "core definitions live in NEquivalence" reference, replace with reference to MonadicFO
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` to verify
-- [ ] In Table.lean: change `import Bimodal.Metalogic.WeakCanonical.NEquivalence` to `import Bimodal.Metalogic.WeakCanonical.MonadicFO`
-- [ ] In Table.lean: add `import Bimodal.Syntax.Formula` (provides `Formula` type used by `operator_depth` and `table` functions, previously available transitively via NEquivalence -> ReflexiveCanonical -> ... -> Syntax)
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Table` to verify
+- [x] In NormalForm.lean: change `import Bimodal.Metalogic.WeakCanonical.NEquivalence` to `import Bimodal.Metalogic.WeakCanonical.MonadicFO`
+- [x] In NormalForm.lean: update module docstring to remove "core definitions live in NEquivalence" reference, replace with reference to MonadicFO
+- [x] Run `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` to verify
+- [x] In Table.lean: change `import Bimodal.Metalogic.WeakCanonical.NEquivalence` to `import Bimodal.Metalogic.WeakCanonical.MonadicFO`
+- [x] In Table.lean: add `import Bimodal.Syntax.Formula` (provides `Formula` type used by `operator_depth` and `table` functions, previously available transitively via NEquivalence -> ReflexiveCanonical -> ... -> Syntax) *(deviation: altered -- also removed unused `open Bimodal.ProofSystem` which failed without transitive import)*
+- [x] Run `lake build Bimodal.Metalogic.WeakCanonical.Table` to verify
 
 **Timing**: 30 minutes
 

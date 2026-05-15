@@ -1,11 +1,12 @@
-import Bimodal.Metalogic.WeakCanonical.NEquivalence
+import Bimodal.Metalogic.WeakCanonical.MonadicFO
 
 /-!
 # Normal Form Theory for Monadic FO over Linear Orders
 
 Inductive normal form type and the bridge theorem for Doets 1989 Lemma 1.1.
-The core definitions (`atomCount`, `nfCount`, `NormalFormIdx`, `KType`,
-`k_type_of`) live in `NEquivalence.lean`. This file provides:
+The core definitions (`atomCount`, `nfCount`, `NormalFormIdx`,
+`MonadicSignature`, `MonadicFormula`, `eval`, etc.) live in `MonadicFO.lean`.
+This file provides:
 
 - `AtomKind`: concrete enumeration of atomic propositions (predicate and order)
 - `atom_eval`: semantic evaluation of atoms in an ordered monadic structure

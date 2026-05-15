@@ -1,4 +1,5 @@
-import Bimodal.Metalogic.WeakCanonical.NEquivalence
+import Bimodal.Metalogic.WeakCanonical.MonadicFO
+import Bimodal.Syntax.Formula
 
 /-!
 # Table Translation: Temporal Formulas to Monadic FO
@@ -26,7 +27,6 @@ of predicates needed for a given formula's translation.
 namespace Bimodal.Metalogic.WeakCanonical
 
 open Bimodal.Syntax
-open Bimodal.ProofSystem
 
 /-! ## Helper: Operator Depth -/
 
