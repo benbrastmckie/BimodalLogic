@@ -34,9 +34,8 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by |
 |------|-------|------------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,147,150,151,619,949,953,992,998 | -- |
-| 2 | 20,21,125,128,145,148 | 18,116,122,143,147 |
-| 3 | 146 | 145 |
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,146,148,150,151,619,949,953,992,998 | -- |
+| 2 | 20,21,125,128 | 18,116,122 |
 
 **Dependency Tree** (indented = must complete first):
 ```
@@ -56,9 +55,10 @@ technical_debt:
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-147 [COMPLETED] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le
-150 [PLANNED] — Add automatic Task Order synchronization. Update update-task-stat
-151 [PLANNED] — Integrate Task Order with /todo and /review commands. Update /tod
+146 [RESEARCHING] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
+148 [RESEARCHING] — Close the 4 temporal operator cases of table_correctness (all_fut
+150 [IMPLEMENTING] — Add automatic Task Order synchronization. Update update-task-stat
+151 [IMPLEMENTING] — Integrate Task Order with /todo and /review commands. Update /tod
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -73,12 +73,6 @@ technical_debt:
   └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
   └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
-145 [COMPLETED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions)
-  └─ 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical  (see above)
-146 [RESEARCHED] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
-  └─ 145 [COMPLETED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) (see above)
-148 [RESEARCHED] — Close the 4 temporal operator cases of table_correctness (all_fut
-  └─ 147 [COMPLETED] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le (see above)
 ```
 
 ## Tasks
@@ -98,7 +92,7 @@ technical_debt:
 
 ### 150. Task Order auto-pruning and auto-insertion
 - **Effort**: 3-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [150_task_order_auto_sync/reports/01_task-order-auto-sync.md]
@@ -110,7 +104,7 @@ technical_debt:
 
 ### 151. Task Order command integration and rules
 - **Effort**: 1-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [151_task_order_command_integration/reports/01_command-integration.md]
@@ -137,7 +131,7 @@ technical_debt:
 
 ### 148. Complete table_correctness temporal operator cases
 - **Effort**: 1.5-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 147
@@ -188,7 +182,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 146. NormalForm legacy cleanup and cardinality correspondence proof
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 145

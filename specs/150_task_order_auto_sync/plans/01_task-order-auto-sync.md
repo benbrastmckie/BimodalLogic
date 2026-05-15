@@ -1,7 +1,7 @@
 # Implementation Plan: Task Order Auto-Sync
 
 - **Task**: 150 - Add automatic Task Order synchronization
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: Task 149 (completed -- created `generate-task-order.sh`)
 - **Research Inputs**: specs/150_task_order_auto_sync/reports/01_task-order-auto-sync.md
@@ -61,7 +61,7 @@ No ROADMAP.md items are directly advanced by this task. This is a meta/infrastru
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Fix `/task` Part C auto-insertion [NOT STARTED]
+### Phase 1: Fix `/task` Part C auto-insertion [COMPLETED]
 
 **Goal**: Replace the defunct `add_to_recommended_order` call with `generate-task-order.sh --update-todo` so newly created tasks appear in the Task Order.
 
@@ -85,7 +85,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add Task Order regeneration to lean4 skill postflight [NOT STARTED]
+### Phase 2: Add Task Order regeneration to lean4 skill postflight [COMPLETED]
 
 **Goal**: Ensure lean4 task status transitions (both implementation and research) trigger Task Order regeneration, closing the drift gap for lean4 tasks.
 
@@ -111,7 +111,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Add Task Order drift correction to `--sync` and Mode A fallback [NOT STARTED]
+### Phase 3: Add Task Order drift correction to `--sync` and Mode A fallback [COMPLETED]
 
 **Goal**: Add Task Order regeneration to `--sync` mode for drift correction, and add a Mode A fallback to Mode B in `update-task-status.sh` when a task is not found in the tree.
 
@@ -137,7 +137,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Validate and correct existing drift [NOT STARTED]
+### Phase 4: Validate and correct existing drift [COMPLETED]
 
 **Goal**: Run `generate-task-order.sh --update-todo` to correct the current drift (task 147 in Task Order despite being completed) and verify all changes work together.
 
