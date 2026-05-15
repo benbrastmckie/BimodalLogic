@@ -697,7 +697,7 @@
     {
       "project_number": 146,
       "project_name": "normalform_cleanup_cardinality",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormIdx_nonempty) from NormalForm.lean. Prove cardinality correspondences: Fintype.card (AtomKind sig n) = atomCount p n, and Fintype.card (NormalForm sig k n) = nfCount p k n. Update docstrings for publication quality. Optionally prove normalForm_equiv_fin : NormalForm sig k n ≃ NormalFormIdx sig k n.",
@@ -705,16 +705,22 @@
         145
       ],
       "created": "2026-05-15T14:30:00Z",
-      "last_updated": "2026-05-15T19:43:40Z",
+      "last_updated": "2026-05-15T19:59:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/146_normalform_cleanup_cardinality/reports/01_cleanup-design.md",
           "type": "research",
           "summary": "Dead code inventory, cardinality proof strategies, docstring improvements, NormalFormIdx equivalence"
+        },
+        {
+          "path": "specs/146_normalform_cleanup_cardinality/reports/02_post-split-audit.md",
+          "type": "research",
+          "summary": "Post-split dead code audit, validated cardinality proof scripts, normalForm_equiv_fin one-liner"
         }
       ],
-      "session_id": "sess_1778873020_9cfedf"
+      "session_id": "sess_1778873020_9cfedf",
+      "researched": "2026-05-15T19:59:00Z"
     },
     {
       "project_number": 147,

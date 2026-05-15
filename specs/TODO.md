@@ -184,11 +184,13 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 146. NormalForm legacy cleanup and cardinality correspondence proof
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 145
-- **Research**: [specs/146_normalform_cleanup_cardinality/reports/01_cleanup-design.md]
+- **Research**:
+  - [specs/146_normalform_cleanup_cardinality/reports/01_cleanup-design.md]
+  - [specs/146_normalform_cleanup_cardinality/reports/02_post-split-audit.md]
 
 **Description**: Remove legacy dead code (vacuous `nf_eval`, `nf_vector`, `normalFormIdx_nonempty`) from NormalForm.lean. Prove cardinality correspondences: `Fintype.card (AtomKind sig n) = atomCount p n` and `Fintype.card (NormalForm sig k n) = nfCount p k n`, confirming the counting function matches the actual type. Update docstrings for publication quality. Optionally prove `normalForm_equiv_fin : NormalForm sig k n ≃ NormalFormIdx sig k n`.
 
