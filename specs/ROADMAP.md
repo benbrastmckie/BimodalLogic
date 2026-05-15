@@ -20,21 +20,36 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state** (2026-05-13):
+**Current state** (2026-05-14):
 - **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ and Z1
 - **FMP completeness** (`fmp_completeness`): Sorry-free
 - **Dense completeness** (`dd_countermodel_chronicle_dense`): Internally sorry-free
-- **Discrete completeness**: 1 sorry remains (`limitDomSubtype_isSuccArchimedean` via `succ_cofinal`)
-- **Full `bx_completeness`**: Blocked by discrete sorry + nondense sorry (task 122)
+- **Discrete completeness**: Reynolds pipeline structurally complete (task 129 COMPLETED). 5 sorries remain in FO satisfaction foundation (task 139) and truth transfer (task 140). Chronicle fallback retained pending truth transfer.
+- **Canonical truth lemma**: 8 sorries in Until/Since and ReflexiveCanonical infrastructure (task 141)
+- **Mixed case**: 1 sorry — `dd_countermodel_chronicle_mixed_sorry` (task 142)
+- **Full `bx_completeness`**: Blocked by 14 sorries across 4 tasks (139, 140, 141, 142)
 - **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
 
-**Critical path**: Task 129 (weak/reflexive completeness, PLANNED) → task 122 (discrete BFMCS) → sorry-free `bx_completeness`.
+**Critical path**: Task 129 (COMPLETED, Reynolds pipeline) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → 141 (canonical truth lemma Until/Since) → 142 (mixed-case countermodel) → sorry-free `bx_completeness`.
 
 **Key architectural finding** (task 123, 12+ research rounds): The sorry at `succ_cofinal` represents a genuine limitation of the Burgess chronicle construction under strict (irreflexive) semantics. The constant-MCS gap scenario (Z+Z structure where all MCS labels are identical) is consistent with ALL temporal axioms including Z1 and Prior-UZ. Under strict semantics, `G(φ)→φ` is not valid, so the Sahlqvist canonicity chain breaks for the chronicle's non-standard canonical model. Resolution: task 129 uses a weak/reflexive Henkin canonical model (where Sahlqvist canonicity applies) + Doets compression to Z + model-theoretic transfer back to strict semantics.
 
-**Sorry summary (critical path)**: 2 sorries in `ChronicleToCountermodel.lean`:
-1. `limitDomSubtype_isSuccArchimedean` (line 1204): IsSuccArchimedean for limit domain (task 129 Phase 7)
-2. `dd_countermodel_chronicle_nondense_sorry` (line 839): Discrete BFMCS on ℤ (task 122, depends on 129)
+**Sorry summary (critical path to sorry-free `bx_completeness`)**:
+
+*Discrete branch (Reynolds pipeline — tasks 139, 140)*:
+- 3 sorries in `NEquivalence.lean`: `ktype_finite`, `k_type_of`, `finite_types` (KEquivalenceFramework) — task 139
+- 2 sorries in `Table.lean`: `table`, `table_depth_bound` — task 140
+- Chronicle fallback in Transfer.lean pending truth transfer — task 140
+
+*Canonical model (task 141)*:
+- 6 sorries in `TruthLemma.lean`: Until/Since forward/backward (4) + truth lemma cases (2)
+- 2 sorries in `ReflexiveCanonical.lean`: `reflCanR_linear`, `canS5R_symm`
+
+*Mixed case (task 142)*:
+- 1 sorry in `ChronicleToCountermodel.lean`: `dd_countermodel_chronicle_mixed_sorry`
+
+*Legacy (task 122)*:
+- `dd_countermodel_chronicle_nondense_sorry` (line 839): Discrete BFMCS on ℤ
 
 **Planned evolution** (after sorry-free completeness):
 - **Phase 2 — Frame hierarchy + axiom cleanup**: Four-tier hierarchy Base → Dense/Discrete → Integer with Sahlqvist correspondence (task 126). Density axiom `GGp→Gp`, discreteness axiom `U(⊤,⊥)`. Then remove TF (task 124), remove A4a (task 115), redefine G/H/F/P via U/S (task 116). Reduces primitives to {S, U, □, →, ⊥}.

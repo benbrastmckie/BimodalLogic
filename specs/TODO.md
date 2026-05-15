@@ -27,19 +27,28 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-05-13. Axiom cleanup sprint complete (8 tasks archived). Tasks 137-138 created for ROADMAP/TODO documentation updates.*
+*Updated 2026-05-14. Task 129 (Reynolds pipeline) completed. Tasks 139-142 created for sorry-free `bx_completeness`.*
 
-**Goal**: Axiom cleanup → sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
+**Goal**: Sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
 
-**Status**: Axiom cleanup complete (tasks 115, 124, 133, 134, 135, 136 archived). Axiom count reduced 61→41. Soundness (all 3 variants) and FMP completeness are sorry-free. Dense completeness internally sorry-free. Discrete `discrete_fmcs` sorry-free. One sorry remains on critical path: `dd_countermodel_chronicle_nondense_sorry` (task 122, depends on 129). Task 129 (weak/reflexive completeness) is planned and ready to implement.
+**Status**: Task 129 completed — Reynolds pipeline structurally in place (one_class, chronicle_is_good, sorries 17+ → 5). Four tasks remain for sorry-free `bx_completeness`: 139 (FO satisfaction foundation, 3 sorries), 140 (truth transfer + succ_cofinal elimination, 2 sorries), 141 (canonical truth lemma Until/Since, 8 sorries), 142 (mixed-case countermodel, 1 sorry). Total: 14 sorries across 4 tasks.
 
-### Phase 1: Sorry-Free Completeness
+### Phase 1: Sorry-Free `bx_completeness`
 
-1. **129** [COMPLETED] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
+**Discrete branch** (Reynolds pipeline):
+1. **129** [COMPLETED] — Reynolds pipeline: one_class, chronicle_is_good, structural fixes (sorries 17+ → 5)
 2. **139** [NOT STARTED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h, depends on 129)
 3. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 129, 139)
-4. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
-5. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+
+**Canonical model completeness**:
+4. **141** [NOT STARTED] — Canonical truth lemma Until/Since + ReflexiveCanonical infrastructure (10-20h, 8 sorries)
+
+**Mixed case**:
+5. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed, depends on 140)
+
+**Cleanup**:
+6. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
+7. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
 ### Phase 2: Module Reorganization
 
@@ -245,6 +254,61 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 **Definition of done**: `table_correctness` sorry-free, `doets_countermodel_discrete` uses Reynolds pipeline (not chronicle fallback), `#print axioms doets_countermodel_discrete` clean of `succ_cofinal`, `lake build` passes.
 
 **Files**: `Theories/Bimodal/Metalogic/WeakCanonical/Table.lean` (table correctness), `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` (pipeline wiring).
+
+---
+
+### 141. Canonical truth lemma Until/Since and ReflexiveCanonical infrastructure
+- **Effort**: 10-20 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+
+**Description**: Close all Until/Since sorries in the WeakCanonical truth lemma and the remaining ReflexiveCanonical infrastructure sorries, making the canonical model construction fully sorry-free.
+
+**Sorry inventory (8 total)**:
+
+*TruthLemma.lean (6 sorries)*:
+1. `until_forward_mcs` (line 426): Intermediate guard condition — for all z between x and y, psi2 in z. Requires `until_F_expansion` chain construction.
+2. `until_backward_mcs` (line 443): Contrapositive of Until semantic condition. Requires counter-witness propagation.
+3. `since_forward_mcs` (line 479): Mirror of until_forward for past direction.
+4. `since_backward_mcs` (line 494): Mirror of until_backward for past direction.
+5-6. `truth_lemma` Until/Since cases (lines 548, 563): Close automatically once items 1-4 are proved.
+
+*ReflexiveCanonical.lean (2 sorries)*:
+7. `reflCanR_linear` (line 144): Forward temporal accessibility is linear. Uses BX11 (temp_linearity) + forward_temporal_witness.
+8. `canS5R_symm` (line 424): S5 relation is symmetric. Requires modal B axiom.
+
+**Key infrastructure**: Port `DovetailingChain.lean` chain construction to `ReflCanDomain`. Implement `until_F_expansion` (self-accumulation) and `g_content_closed_derivation`.
+
+**Definition of done**: All 8 sorries closed, `truth_lemma` sorry-free, `lake build` passes.
+
+**Files**: `Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean`, `Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean`.
+
+---
+
+### 142. Mixed-case countermodel for bx_completeness
+- **Effort**: 15-30 hours (research-heavy)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: 140
+
+**Description**: Resolve the mixed-case sorry in `bx_completeness`: the third branch where neither `box(F'T)` (dense) nor `box(U(T,bot))` (discrete) is in the MCS. Currently `dd_countermodel_chronicle_mixed_sorry` (ChronicleToCountermodel.lean:3327) is a bare sorry.
+
+The dense case uses Cantor iso to Q, the discrete case uses chronicle + Reynolds pipeline to Z. The mixed case has some box-accessible worlds that are dense and others discrete, which cannot coexist in a single BFMCS with a fixed domain type D.
+
+**Research candidates**:
+1. Product construction: separate dense and discrete countermodels, combine via disjoint union
+2. Ultraproduct: Los theorem to merge models
+3. BX theorem: derive contradiction showing mixed case is inconsistent
+4. Enriched frames: domain accommodating both dense and discrete regions
+5. Reduction: show mixed case reduces to one of the other two via modal reasoning
+
+Task 122 research report (Section 4) has preliminary analysis. Requires dedicated research before planning.
+
+**Definition of done**: `dd_countermodel_chronicle_mixed_sorry` sorry-free, `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
+
+**Files**: `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`, `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`.
 
 ---
 
