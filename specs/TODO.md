@@ -1,20 +1,20 @@
 ---
-next_project_number: 133
+next_project_number: 143
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-05-10T23:59:00Z
+  last_assessed: 2026-05-14T01:30:00Z
 task_counts:
-  active: 24
-  completed: 780
+  active: 27
+  completed: 783
   in_progress: 0
-  not_started: 7
+  not_started: 11
   abandoned: 80
-  total: 870
+  total: 873
 technical_debt:
-  sorry_count: 1
-  sorry_count_note: "Audited 2026-05-13: 1 critical-path sorry in ChronicleToCountermodel.lean (dd_countermodel_chronicle_nondense_sorry). Axiom count reduced 61->41 (tasks 115/124/133). PointInsertion.lean reduced 4333->3555 lines (task 134). ~17 dead-code sorries in BXCanonical pipeline (mathematically false under irreflexive semantics, bypassed by Chronicle). ~19 TemporalDerived re-derivations (low priority). Soundness, SoundnessLemmas, and Decidability are sorry-free."
-  publication_path_sorries: 1
+  sorry_count: 14
+  sorry_count_note: "Audited 2026-05-14: Task 129 completed (Reynolds pipeline). 14 sorries remain on bx_completeness critical path: 3 in NEquivalence.lean (k_type_of, ktype_finite, finite_types — task 139), 2 in Table.lean (table, table_depth_bound — task 140), 6 in TruthLemma.lean (Until/Since — task 141), 2 in ReflexiveCanonical.lean (reflCanR_linear, canS5R_symm — task 141), 1 in ChronicleToCountermodel.lean (mixed case — task 142). ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). Soundness, SoundnessLemmas, and Decidability are sorry-free."
+  publication_path_sorries: 14
   axiom_count: 0
   axiom_count_note: "Zero custom axioms. Prior-UZ/SZ are standard axiom constructors with sorry-free soundness proofs."
   build_errors: 0
@@ -87,31 +87,8 @@ technical_debt:
 - **64** [RESEARCHED] — Critical path review (reference)
 - **619** [RESEARCHED] — Agent system architecture upgrade (meta)
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
-- **137** [COMPLETED] — Update ROADMAP.md stale axiom info (~30min)
-- **138** [COMPLETED] — Update TODO.md sorry_count_note (~10min)
 
 ## Tasks
-
-### 138. Update TODO.md sorry_count_note for axiom cleanup sprint
-- **Effort**: 10 minutes
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Plan**: [specs/138_update_todo_sorry_note/plans/01_todo-note-update-plan.md]
-
-**Description**: Update TODO.md frontmatter sorry_count_note to reflect axiom cleanup sprint: axiom count now 41 (was 61), tasks 115/124/133/134 completed.
-
----
-
-### 137. Update ROADMAP.md stale axiom info
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Priority**: high
-- **Plan**: [specs/137_update_roadmap_axiom_info/plans/01_roadmap-update-plan.md]
-
-**Description**: Update ROADMAP.md: axiom count 45->41, remove BX2/BX2' table rows (now derived from BX2G/BX2H), update CanonicalChain.lean summary (remove left_mono_until_mcs reference), update PointInsertion.lean line count (~3690->~3555).
-
----
 
 ### 131. Refactor module organization for clean APIs and documentation
 - **Effort**: 15-25 hours
@@ -119,83 +96,6 @@ technical_debt:
 - **Task Type**: lean4
 
 **Description**: Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.
-
----
-
-### 129. Weak/reflexive completeness and conservative extension for discrete frames
-- **Effort**: 30-60 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-05-14
-- **Task Type**: lean4
-- **Priority**: critical
-- **Research**:
-  - [specs/129_weak_reflexive_completeness_conservative_extension/reports/01_weak-reflexive-findings.md]
-  - [129_weak_reflexive_completeness_conservative_extension/reports/02_team-research.md]
-  - [129_weak_reflexive_completeness_conservative_extension/reports/03_reynolds-deep-dive.md]
-  - [129_weak_reflexive_completeness_conservative_extension/reports/06_multi-relation-mathematical-analysis.md]
-  - [129_weak_reflexive_completeness_conservative_extension/reports/07_team-research.md]
-  - [129_weak_reflexive_completeness_conservative_extension/reports/09_team-research.md]
-- **Plan**:
-  - [129_weak_reflexive_completeness_conservative_extension/plans/01_weak-completeness-plan.md]
-  - [129_weak_reflexive_completeness_conservative_extension/plans/03_doets-reynolds-plan.md]
-  - [129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md]
-  - [129_weak_reflexive_completeness_conservative_extension/plans/09_reynolds-theorem15-plan.md]
-- **Summary**:
-  - [specs/129_weak_reflexive_completeness_conservative_extension/summaries/09_reynolds-theorem15-summary.md]
-
-**Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.
-
-**Motivation**: The sorry at `succ_cofinal` (ChronicleToCountermodel.lean:1869) exists because the Burgess chronicle construction for *strict* (irreflexive) temporal semantics requires proving IsSuccArchimedean of the limit domain — leading to a Z+Z gap scenario that no temporal axiom can rule out in the constant-MCS case. The entire chronicle machinery (omega-chain, counterexample elimination, IR rule) exists *because* of the irreflexivity of strict `<`. Under *weak/reflexive* semantics (using `≤`), standard Henkin canonical model methods apply directly: the canonical frame is reflexive, no IR rule is needed, no chronicle construction is needed, and no gap scenario arises.
-
-**Key Observation**: Under weak semantics, `G_w(φ)` at `x` means `φ` at all `y ≥ x`. Then `G_w(φ) → φ` is valid (reflexivity of `≥`), and Z1 collapses to `FG_w(φ) → G_w(φ)` — the pure backward induction principle with no `G(Gφ→φ)` antecedent to establish. On discrete orders, the strict and weak operators are inter-translatable: `G_w(φ) ≡ φ ∧ G(φ)` and `G(φ) ≡ G_w(φ) at succ(x)`.
-
-**Architecture**:
-
-*Phase 1 — Weak Sub-Language Definition (~100 lines)*
-- Define `G_w(φ) := φ ∧ G(φ)`, `H_w(φ) := φ ∧ H(φ)`, `F_w(φ) := φ ∨ F(φ)`, `P_w(φ) := φ ∨ P(φ)` as derived operators in the existing Formula type (no new constructors needed).
-- Define weak Until: `U_w(η, ξ)` true at `x` iff `∃ y ≥ x` with `η` at `y` and `ξ` at all `z` with `x ≤ z < y`. Similarly for weak Since.
-- Verify these are expressible in the existing language or add minimal constructors.
-
-*Phase 2 — Weak Axiom System (~200 lines)*
-- Identify which axioms of the strict system translate to the weak system. The weak system should include: reflexivity axiom `G_w(φ) → φ` (valid by construction), transitivity `G_w(φ) → G_w(G_w(φ))`, weak Z1 `FG_w(φ) → G_w(φ)`, weak Prior-UZ, and all BX axioms adapted for `U_w`/`S_w`.
-- Prove these are derivable in the strict system (via the `G_w = φ ∧ G` translation).
-
-*Phase 3 — Weak Canonical Model (~500-800 lines)*
-- Build a standard Henkin canonical model for the weak system. Each point is a distinct MCS (à la Doets). The temporal accessibility relation is `≤` (reflexive, transitive, linear).
-- The constant-MCS problem cannot arise: distinct MCS are distinct points.
-- Prove the truth lemma for the weak canonical model.
-- Prove weak completeness: if `φ` is not derivable in the weak system, there exists a weak discrete model falsifying `φ`.
-
-*Phase 4 — Z1 and IsSuccArchimedean in the Weak Model (~200-400 lines)*
-- In the weak canonical model, use `FG_w(φ) → G_w(φ)` (weak Z1) to prove the maximum principle (Doets Claim 10): every definable set that is non-empty and bounded above has a maximum.
-- Use the maximum principle to compress the canonical model to order type ℤ (following Doets Claims 9-11: expand equivalence classes to ζ-shapes, then compress bounded types).
-- Prove the resulting model is IsSuccArchimedean.
-
-*Phase 5 — Model-Theoretic Completeness Transfer (~100 lines)*
-- NOTE: Expressing strict G in terms of weak operators is impossible. `U_w(φ, ⊥) = φ` in weak semantics, so Next is not definable. No formula-to-formula translation from strict to weak exists.
-- Instead, use model-theoretic argument: if ψ is not provable in the strict system, ¬ψ is consistent in the strict system. Since every weak axiom is a strict theorem (`G_w(φ) = φ ∧ G(φ)` is derivable), ¬ψ is consistent in the weak system. By weak completeness, there exists a weak countermodel on a discrete IsSuccArchimedean frame. This is also a strict countermodel (same domain, same valuation, reinterpret ≤ as <). Contrapositive: valid under strict → provable.
-
-*Phase 6 — Integration and Verification (~100 lines)*
-- Wire the weak completeness + model-theoretic transfer into the existing completeness pipeline or create a parallel sorry-free completeness theorem.
-- Verify `lake build` passes.
-- Verify key theorems are sorry-free via `lean_verify`.
-
-*Phase 7 — Close the Sorry (~50 lines)*
-- Replace the admitted `limitDomSubtype_isSuccArchimedean` in ChronicleToCountermodel.lean with the Henkin-derived IsSuccArchimedean, making `dd_countermodel_chronicle_discrete` sorry-free.
-
-**Risks and Mitigations**:
-- Risk: Weak Until `U_w` may not be cleanly expressible from strict Until. Mitigation: Add `U_w` as a new constructor if needed, with its own semantics.
-- Risk: The conservative extension proof for Until/Since may be subtle (guard semantics differ between weak and strict). Mitigation: Prove for the G/H fragment first, then extend to U/S.
-- Risk: Doets's compression to ℤ (Claims 9-11) requires Ehrenfeucht game / n-characteristic infrastructure (~500 lines). Mitigation: This is the main cost driver but is well-documented in the literature.
-- Risk: The weak canonical model may require different MCS machinery than what exists. Mitigation: The existing Lindenbaum, MCS properties, and derivation infrastructure should be largely reusable; only the frame construction differs.
-
-**Relationship to Existing Work**:
-- Subsumes task 123's succ_cofinal sorry (bypasses the gap scenario entirely).
-- Can coexist with the chronicle construction (which remains valid for the dense case).
-- The Doets Henkin approach (originally planned as a separate task) is essentially Phase 3-4 of this task.
-- The weak sub-language is independently interesting for proof-theoretic and algebraic investigations (task 125).
-
-**Literature**: Doets 1987 (Completeness and Definability, Claims 9-11), Burgess 1982/1984 (chronicle construction for strict semantics), Gabbay-Hodkinson-Reynolds (irreflexivity techniques), Blackburn-de Rijke-Venema 2002 (Section 7.2, completeness with Until/Since).
 
 ---
 
