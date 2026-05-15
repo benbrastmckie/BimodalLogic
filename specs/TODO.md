@@ -75,6 +75,13 @@ technical_debt:
 
 ## Tasks
 
+### 152. Task Order topic grouping and wave separation
+- **Effort**: 3-6 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: Task #149, Task #150
+- **Description**: Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. Detect independent subgraphs (connected components), add optional topic field to state.json, update generate-task-order.sh to group roots by topic with per-group code blocks and markdown headings, enhance wave table with topic breakdown, and backfill topic for existing tasks.
+
 ### 149. Redesign Task Order format and generation script
 - **Effort**: 3-6 hours
 - **Status**: [COMPLETED]
@@ -131,7 +138,7 @@ technical_debt:
 
 ### 148. Complete table_correctness temporal operator cases
 - **Effort**: 1.5-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 147
@@ -185,7 +192,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 146. NormalForm legacy cleanup and cardinality correspondence proof
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 145
