@@ -40,7 +40,7 @@ technical_debt:
 2. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 139)
 
 **Canonical model completeness**:
-4. **141** [RESEARCHED] — Canonical truth lemma Until/Since + ReflexiveCanonical infrastructure (10-20h, 8 sorries)
+4. **141** [COMPLETED] — Canonical truth lemma Until/Since + ReflexiveCanonical infrastructure (10-20h, 2 closed + 6 documented non-critical)
 
 **Mixed case**:
 5. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed, depends on 140)
@@ -205,11 +205,14 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 141. Canonical truth lemma Until/Since and ReflexiveCanonical infrastructure
 - **Effort**: 10-20 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
+- **Summary**: reflCanR_linear closed (Burgess 1984 BX11 proof), canS5R_symm closed (prior round). 6 TruthLemma Until/Since sorries documented as non-critical-path dead code. ReflexiveCanonical.lean is sorry-free. Critical-path sorry count corrected from 14 to 6.
 - **Task Type**: lean4
 - **Priority**: high
 - **Research**: [141_canonical_truth_lemma_until_since/reports/01_team-research.md]
-- **Plan**: [141_canonical_truth_lemma_until_since/plans/01_truth-lemma-plan.md]
+- **Plan**: [141_canonical_truth_lemma_until_since/plans/02_revised-plan.md]
+- **Summary Artifact**: [141_canonical_truth_lemma_until_since/summaries/02_revised-summary.md]
 
 **Description**: Close ReflexiveCanonical infrastructure sorries and document the remaining TruthLemma Until/Since sorries as non-critical-path.
 

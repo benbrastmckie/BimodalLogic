@@ -1,7 +1,7 @@
 # Implementation Plan: Task #141 (Revised)
 
 - **Task**: 141 - canonical_truth_lemma_until_since
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/141_canonical_truth_lemma_until_since/reports/01_team-research.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-a-necessity.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-b-solutions.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-c-cleanup.md, specs/141_canonical_truth_lemma_until_since/reports/03_teammate-d-critical-path.md
