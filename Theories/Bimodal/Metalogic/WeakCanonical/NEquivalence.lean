@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.ReflexiveCanonical
 import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
 import Bimodal.Metalogic.WeakCanonical.MonadicFO
 import Bimodal.Metalogic.WeakCanonical.NormalForm
+import Mathlib.Data.Sigma.Order
 
 /-!
 # k-Equivalence Framework and Chronicle Integration
@@ -105,6 +106,27 @@ theorem k_equiv_monotone (sig : MonadicSignature) {k m : Nat}
   simp only [decide_eq_decide]
   exact h_agree_m
 
+/-! ## Ordered Sum Construction -/
+
+/--
+The ordered sum of a family of ordered monadic structures, indexed by a
+linearly ordered type `I`. The carrier is the dependent sigma type
+`Σ i, (ms i).carrier` with lexicographic order: elements from different
+components are ordered by their index; elements from the same component
+are ordered by the component's linear order.
+
+Uses Mathlib's `Sigma.Lex.linearOrder` which provides a `LinearOrder` on
+`Σₗ i, α i` (= `Lex (Σ i, α i)` = `Σ i, α i` as a type) given
+`[LinearOrder I]` and `[∀ i, LinearOrder (α i)]`.
+-/
+noncomputable def orderedSum (sig : MonadicSignature) (I : Type) [LinearOrder I]
+    (ms : I → OrderedMonadicStructure sig) : OrderedMonadicStructure sig where
+  carrier := Sigma fun i => (ms i).carrier
+  interp := fun p x => (ms x.1).interp p x.2
+  carrier_order := by
+    haveI : ∀ i, LinearOrder ((ms i).carrier) := fun i => (ms i).carrier_order
+    exact Sigma.Lex.linearOrder
+
 /-! ## K-Equivalence Framework (Typeclass) -/
 
 /--
@@ -130,18 +152,11 @@ class KEquivalenceFramework (sig : MonadicSignature) : Type 1 where
   finite_types (k : Nat) : Fintype (Quotient (@Setoid.mk _ (equiv_at k) (equiv_is_equiv k)))
   /-- Ordered sums preserve k-equivalence:
     if ∀ i, m(i) ≡_k m'(i) then Σ_i m(i) ≡_k Σ_i m'(i).
-    Note: The ordered sum here is taken as OrderedMonadicStructure. The actual
-    lexicographic order construction is deferred; this field is sorried. -/
+    The ordered sum uses lexicographic order via `orderedSum`. -/
   sum_preservation (k : Nat) (I : Type) [inst_lo : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
     (h : ∀ i, equiv_at k (ms i) (ms' i)) :
-    equiv_at k
-      { carrier := Sigma fun i => (ms i).carrier
-        interp := fun p x => (ms x.1).interp p x.2
-        carrier_order := sorry }
-      { carrier := Sigma fun i => (ms' i).carrier
-        interp := fun p x => (ms' x.1).interp p x.2
-        carrier_order := sorry }
+    equiv_at k (orderedSum sig I ms) (orderedSum sig I ms')
 
 /-! ## Default KEquivalenceFramework Instance -/
 
@@ -152,7 +167,7 @@ Default instance of `KEquivalenceFramework` for any `MonadicSignature`.
 - `equiv_is_equiv`: k-type equality is trivially an equivalence relation
 - `equiv_monotone`: follows from `k_equiv_monotone` (via `nf_agreement_monotone`)
 - `finite_types`: CLOSED (Task 143) via Fintype injection into `KType sig k`
-- `sum_preservation`: sorried, requires EF-game formalization (Doets Lemma 1.4)
+- `sum_preservation`: sorried, requires normal form induction proof (Doets Lemma 1.4)
 -/
 noncomputable instance (sig : MonadicSignature) : KEquivalenceFramework sig where
   equiv_at k M N := k_equiv sig k M N
@@ -182,10 +197,7 @@ noncomputable instance (sig : MonadicSignature) : KEquivalenceFramework sig wher
       simp [Quotient.lift_mk] at hab
       exact Quotient.sound hab
     exact Fintype.ofInjective _ h_inj
-  -- TODO [Task 143+]: sum_preservation requires EF-game formalization (Doets Lemma 1.4).
-  -- The entire Reynolds pipeline (KEquivalenceFramework -> Transfer -> Z-model) is
-  -- bypassed in the discrete case by the chronicle fallback in Transfer.lean.
-  -- Only needed if the Reynolds pipeline is activated for the general (dense) case.
+  -- TODO [Task 154]: sum_preservation via normal form induction (Doets Lemma 1.4).
   sum_preservation k I _ ms ms' h := by
     sorry
 

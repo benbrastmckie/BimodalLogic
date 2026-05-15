@@ -69,7 +69,7 @@ Phases are sequential: each phase depends on the previous one.
 
 ---
 
-### Phase 1: Define orderedSum and Fix carrier_order Sorries [NOT STARTED]
+### Phase 1: Define orderedSum and Fix carrier_order Sorries [COMPLETED]
 
 **Goal**: Replace all `carrier_order := sorry` with a proper lexicographic order construction, eliminating the structural blocker.
 
@@ -104,7 +104,7 @@ Phases are sequential: each phase depends on the previous one.
 
 ---
 
-### Phase 2: Prove sum_preservation Base Case and Helper Lemmas [NOT STARTED]
+### Phase 2: Prove sum_preservation Base Case and Helper Lemmas [IN PROGRESS]
 
 **Goal**: Establish the base case (k=0) and define key helper lemmas needed for the inductive step of `sum_preservation`.
 

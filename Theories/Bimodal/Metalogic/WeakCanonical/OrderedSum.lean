@@ -29,19 +29,12 @@ Doets Lemma 1.4: k-equivalence is preserved by ordered sums.
 If for all i, m(i) is k-equivalent to m'(i), then the ordered sums
 are k-equivalent.
 
-**Status**: Sorried. Requires EF-game formalization (Doets 1989, Section 1).
--- TODO: Prove via EF-game formalization in follow-up task.
+**Status**: Sorried. Depends on KEquivalenceFramework.sum_preservation.
 -/
 theorem doets_lemma_1_4 (sig : MonadicSignature) (k : Nat) (I : Type) [LinearOrder I]
     (m m' : I → OrderedMonadicStructure sig)
     (h_equiv : ∀ i, k_equiv sig k (m i) (m' i)) :
-    k_equiv sig k
-      { carrier := Sigma fun i => (m i).carrier
-        interp := fun p x => (m x.1).interp p x.2
-        carrier_order := sorry }
-      { carrier := Sigma fun i => (m' i).carrier
-        interp := fun p x => (m' x.1).interp p x.2
-        carrier_order := sorry } := by
+    k_equiv sig k (orderedSum sig I m) (orderedSum sig I m') := by
   sorry
 
 /-! ## Doets Lemma 1.5 (Type-Matching Variant) -/
@@ -53,20 +46,13 @@ they are k-equivalent.
 **Status**: Sorried. Not on discrete completeness critical path.
 Required only for dense case (future work). Bypassed in the discrete case
 by the one_class argument.
--- TODO [Task 143+]: Only needed if dense completeness is pursued.
 -/
 theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
     [LinearOrder I] [LinearOrder J]
     (m : I → OrderedMonadicStructure sig) (m' : J → OrderedMonadicStructure sig)
     (_h_matching : ∀ (τ : KType sig k),
       (∃ i, k_type_of sig k (m i) = τ) ↔ (∃ j, k_type_of sig k (m' j) = τ)) :
-    k_equiv sig k
-      { carrier := Sigma fun i => (m i).carrier
-        interp := fun p x => (m x.1).interp p x.2
-        carrier_order := sorry }
-      { carrier := Sigma fun i => (m' i).carrier
-        interp := fun p x => (m' x.1).interp p x.2
-        carrier_order := sorry } := by
+    k_equiv sig k (orderedSum sig I m) (orderedSum sig J m') := by
   sorry
 
 -- NOTE: `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k`
