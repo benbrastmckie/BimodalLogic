@@ -743,9 +743,25 @@
       "last_updated": "2026-05-15T01:17:30Z",
       "next_artifact_number": 1,
       "artifacts": []
+    },
+    {
+      "project_number": 140,
+      "project_name": "truth_transfer_eliminate_succ_cofinal",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Prove the standard translation preserves truth (table correctness), wire it into Transfer.lean to replace the chronicle fallback with the Reynolds pipeline, and eliminate succ_cofinal from the axiom set of doets_countermodel_discrete.\n\nThis is the final link in the chain: task 129 built the Reynolds pipeline (one_class, chronicle_is_good), task 139 closes the FO satisfaction foundation (eval/satisfies, k_type_of), and this task uses FO satisfaction to prove the standard translation correct and complete the truth transfer.\n\nScope:\n\n1. Prove table_correctness: the standard translation preserves truth. For any temporal formula phi and point t in model M, M |= phi at t iff monadic(M) |= table(phi) at t. This requires the eval/satisfies infrastructure from task 139. The table definition already exists in Table.lean but its correctness theorem is sorry. Proof by structural induction on Formula: atom case is definitional, boolean cases are trivial, G/H cases use the order relation in MonadicSentence, Until/Since cases use the FO encoding of bounded quantification.\n\n2. Close table_depth_bound: the quantifier depth of table(phi) is bounded by Formula.complexity(phi). This is a straightforward structural induction once table is non-vacuous.\n\n3. Replace the chronicle fallback in doets_countermodel_discrete (Transfer.lean) with the full Reynolds pipeline. The 6-step flow is already documented as comments in Transfer.lean from task 129: (a) extract chronicle, (b) build signature via mkSigFrom, (c) build atom map via mkAtomMap, (d) prove chronicle is good via chronicle_is_good, (e) extract Z-model from goodness, (f) transfer truth via k-equivalence + table_correctness. Replace the chronicle fallback with this pipeline.\n\n4. Verify axiom elimination: run #print axioms doets_countermodel_discrete and confirm succ_cofinal does not appear. Check #print axioms bx_completeness for any remaining succ_cofinal paths.\n\n5. If bx_completeness is clean of succ_cofinal, the critical-path sorry identified in the project status is fully resolved.\n\nDefinition of done: table_correctness is sorry-free, doets_countermodel_discrete uses the Reynolds pipeline (not chronicle fallback), #print axioms doets_countermodel_discrete shows no succ_cofinal, lake build passes.",
+      "dependencies": [
+        129,
+        139
+      ],
+      "created": "2026-05-15T01:22:02Z",
+      "last_updated": "2026-05-15T01:22:02Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 140,
+  "next_project_number": 141,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

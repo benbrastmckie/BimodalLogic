@@ -37,8 +37,9 @@ technical_debt:
 
 1. **129** [IMPLEMENTING] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
 2. **139** [NOT STARTED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h, depends on 129)
-3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
-4. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+3. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 129, 139)
+4. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
+5. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
 ### Phase 2: Module Reorganization
 
@@ -218,6 +219,31 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 **Definition of done**: `KEquivalenceFramework` instance is sorry-free, `k_type_of`/`ktype_finite`/`k_equiv_monotone` are sorry-free, `lake build` passes, `chronicle_is_good` has strictly fewer sorries than before.
 
 **Files**: `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean` (primary), `OrderedSum.lean`, `IntegerModel.lean`, `Transfer.lean` (downstream verification).
+
+---
+
+### 140. Truth transfer and succ_cofinal elimination
+- **Effort**: 8-15 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+- **Dependencies**: 129, 139
+
+**Description**: Prove the standard translation preserves truth (table correctness), wire it into Transfer.lean to replace the chronicle fallback with the Reynolds pipeline, and eliminate `succ_cofinal` from the axiom set of `doets_countermodel_discrete`. This is the final link in the chain: task 129 built the Reynolds pipeline (`one_class`, `chronicle_is_good`), task 139 closes the FO satisfaction foundation (`eval`/`satisfies`, `k_type_of`), and this task completes the circuit.
+
+**Scope**:
+
+1. **Prove `table_correctness`**: the standard translation preserves truth. For any temporal formula phi and point t in model M, `M |= phi at t` iff `monadic(M) |= table(phi) at t`. Requires `eval`/`satisfies` from task 139. Proof by structural induction on `Formula`: atom case is definitional, boolean cases trivial, G/H cases use the order relation in `MonadicSentence`, Until/Since cases use the FO encoding of bounded quantification.
+
+2. **Close `table_depth_bound`**: the quantifier depth of `table(phi)` is bounded by `Formula.complexity(phi)`. Straightforward structural induction once `table` is non-vacuous.
+
+3. **Replace chronicle fallback in `doets_countermodel_discrete`** (Transfer.lean) with the full Reynolds pipeline. The 6-step flow is already documented as comments from task 129: (a) extract chronicle, (b) build signature via `mkSigFrom`, (c) build atom map via `mkAtomMap`, (d) prove chronicle is good via `chronicle_is_good`, (e) extract Z-model from goodness, (f) transfer truth via k-equivalence + `table_correctness`.
+
+4. **Verify axiom elimination**: `#print axioms doets_countermodel_discrete` must show no `succ_cofinal`. Check `#print axioms bx_completeness` for remaining paths.
+
+**Definition of done**: `table_correctness` sorry-free, `doets_countermodel_discrete` uses Reynolds pipeline (not chronicle fallback), `#print axioms doets_countermodel_discrete` clean of `succ_cofinal`, `lake build` passes.
+
+**Files**: `Theories/Bimodal/Metalogic/WeakCanonical/Table.lean` (table correctness), `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` (pipeline wiring).
 
 ---
 
