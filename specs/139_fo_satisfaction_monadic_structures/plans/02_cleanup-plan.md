@@ -110,15 +110,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Critical Path Fix -- existsTask_transitive [NOT STARTED]
+### Phase 2: Critical Path Fix -- existsTask_transitive [COMPLETED]
 
 **Goal**: Fix the `existsTask_transitive` sorry in Bundle/CanonicalFrame.lean. This sorry blocks `canonicalR_transitive` which is consumed by `ParametricCanonical.lean` on the bx_completeness critical path.
 
 **Tasks**:
-- [ ] Replace the sorry on line 259 of CanonicalFrame.lean (`sorry /- BX: derive temp_4 from BX1 -/`) with `DerivationTree.axiom [] _ (Axiom.temp_4 phi)`
-- [ ] Verify with `lean_goal` that the proof term has the correct type
-- [ ] Run `lake build Bimodal.Metalogic.Bundle.CanonicalFrame` to confirm compilation
-- [ ] Run `lake build Bimodal.Metalogic.Algebraic.ParametricCanonical` to confirm downstream compilation
+- [x] **Task 2.1**: Replace sorry with `Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_4 phi)` *(deviation: altered — used fully qualified names since Bimodal.ProofSystem is not opened in this file)*
+- [x] **Task 2.2**: Verify with `lean_goal` that the proof term has the correct type *(verified: goals_after is empty, no sorry in axiom list)*
+- [x] **Task 2.3**: Run `lake build Bimodal.Metalogic.Bundle.CanonicalFrame` *(completed — builds successfully)*
+- [x] **Task 2.4**: Run `lake build Bimodal.Metalogic.Algebraic.ParametricCanonical` *(completed — builds successfully)*
 
 **Timing**: 15 minutes
 
