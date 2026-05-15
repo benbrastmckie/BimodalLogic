@@ -100,11 +100,12 @@ technical_debt:
 
 ### 139. FO satisfaction for monadic structures: close k-equivalence sorry chain
 - **Effort**: 15-25 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 129
 - **Research**: [139_fo_satisfaction_monadic_structures/reports/01_team-research.md]
+- **Plan**: [139_fo_satisfaction_monadic_structures/plans/01_fo-satisfaction-plan.md]
 
 **Description**: Build first-principles FO (first-order) satisfaction infrastructure for monadic structures and close the k-equivalence sorry chain left by task 129.
 
@@ -159,7 +160,7 @@ The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding in
 
 ### 141. Canonical truth lemma Until/Since and ReflexiveCanonical infrastructure
 - **Effort**: 10-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Research**: [141_canonical_truth_lemma_until_since/reports/01_team-research.md]
