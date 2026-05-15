@@ -34,7 +34,7 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by |
 |------|-------|------------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,146,148,150,151,619,949,953,992,998 | -- |
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,146,148,151,619,949,953,992,998 | -- |
 | 2 | 20,21,125,128 | 18,116,122 |
 
 **Dependency Tree** (indented = must complete first):
@@ -57,7 +57,6 @@ technical_debt:
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
 146 [RESEARCHING] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
 148 [RESEARCHING] — Close the 4 temporal operator cases of table_correctness (all_fut
-150 [IMPLEMENTING] — Add automatic Task Order synchronization. Update update-task-stat
 151 [IMPLEMENTING] — Integrate Task Order with /todo and /review commands. Update /tod
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
@@ -92,11 +91,12 @@ technical_debt:
 
 ### 150. Task Order auto-pruning and auto-insertion
 - **Effort**: 3-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [150_task_order_auto_sync/reports/01_task-order-auto-sync.md]
 - **Plan**: [150_task_order_auto_sync/plans/01_task-order-auto-sync.md]
+- **Summary**: [150_task_order_auto_sync/summaries/01_task-order-auto-sync-summary.md]
 
 **Description**: Add automatic Task Order synchronization. Update `update-task-status.sh` to auto-prune completed tasks from Task Order when status is set to [COMPLETED]. Update `/task` command to auto-insert new tasks into Task Order with correct dependencies. Add sync validation logic to detect and auto-correct drift between Task Order status markers and state.json. Files: `.claude/scripts/update-task-status.sh`, `.claude/commands/task.md`.
 
@@ -131,11 +131,13 @@ technical_debt:
 
 ### 148. Complete table_correctness temporal operator cases
 - **Effort**: 1.5-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 147
-- **Research**: [specs/148_table_correctness_temporal_cases/reports/01_scope-analysis.md]
+- **Research**:
+  - [specs/148_table_correctness_temporal_cases/reports/01_scope-analysis.md]
+  - [specs/148_table_correctness_temporal_cases/reports/02_proof-development.md]
 
 **Description**: Close the 4 temporal operator cases of `table_correctness` (`all_future`, `all_past`, `untl`, `snce`) in Table.lean, plus 2 helper lemmas (`cons_eq_insertEnv_one`, `cons3_eq_insertEnv`). Each temporal case: unfold definitions, apply `lift1_eval`/`lift1_lift1_eval`, use induction hypothesis. Also fix `chronicle_is_good` atomMap signature in Transfer.lean step 3 comment and update pipeline status table. Result: `table_correctness` fully sorry-free with `lean_verify` showing no `sorryAx`.
 

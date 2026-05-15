@@ -1,0 +1,17 @@
+{
+  "phase": 1,
+  "phase_name": "Add Task Order Regeneration to /todo",
+  "started_at": "2026-05-15T00:00:00Z",
+  "last_updated": "2026-05-15T00:05:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add new Step 5.8 in commands/todo.md between Step 5.6 and Step 5.7", "status": "done"},
+    {"id": 2, "description": "Add non-fatal generate-task-order.sh invocation in Step 5.8", "status": "done"},
+    {"id": 3, "description": "Add note in Step 5.7 vault section to re-run regeneration after renumbering", "status": "done"},
+    {"id": 4, "description": "Add new Stage in skill-todo/SKILL.md for Task Order regeneration", "status": "done"},
+    {"id": 5, "description": "Update git commit message template to mention Task Order regeneration", "status": "done"}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

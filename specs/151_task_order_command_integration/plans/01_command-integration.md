@@ -1,7 +1,7 @@
 # Implementation Plan: Task Order Command Integration
 
 - **Task**: 151 - Task Order Command Integration
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 149 (completed)
 - **Research Inputs**: specs/151_task_order_command_integration/reports/01_command-integration.md
@@ -67,7 +67,7 @@ No ROADMAP.md items directly reference this meta-system task. This is internal i
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Add Task Order Regeneration to /todo [NOT STARTED]
+### Phase 1: Add Task Order Regeneration to /todo [COMPLETED]
 
 **Goal**: Wire `generate-task-order.sh --update-todo` into the /todo archive flow at the correct insertion point.
 
@@ -93,7 +93,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Rewrite /review Task Order Sections [NOT STARTED]
+### Phase 2: Rewrite /review Task Order Sections [COMPLETED]
 
 **Goal**: Update `/review` command to parse the new wave+tree format and use `generate-task-order.sh` for regeneration instead of manual pruning/insertion logic.
 
@@ -131,7 +131,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Add Task Order Sync Rules to state-management.md [NOT STARTED]
+### Phase 3: Add Task Order Sync Rules to state-management.md [COMPLETED]
 
 **Goal**: Document the Task Order synchronization model in state-management.md so all agents know when and how Task Order is updated.
 
