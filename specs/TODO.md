@@ -55,7 +55,7 @@ technical_debt:
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-152 [RESEARCHED] — Improve Task Order UX in TODO.md by splitting the monolithic depe
+152 [PLANNING] — Improve Task Order UX in TODO.md by splitting the monolithic depe
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -76,7 +76,7 @@ technical_debt:
 
 ### 152. Task Order topic grouping and wave separation
 - **Effort**: 3-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Dependencies**: Task #149, Task #150
 - **Research**: [152_task_order_topic_grouping/reports/01_topic-grouping-research.md]
@@ -155,12 +155,13 @@ technical_debt:
 
 ### 143. Doets Lemma 1.1: normal form KType redesign with finite domain
 - **Effort**: 6-9 hours
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 139
 - **Plan**: [143_doets_lemma_1_1_normal_form_ktype/plans/02_revised-plan.md]
-- **Summary**: Doets Lemma 1.1 bridge theorem proved sorry-free in NormalForm.lean. finite_types closed. KType redesign to NormalForm domain and k_equiv_monotone closure deferred to task 145 (circular import).
+- **Summary**: Doets Lemma 1.1 proved sorry-free. KType redesigned to NormalForm domain (task 145). k_equiv_monotone closed (task 145). Dead code removed, cardinality theorems proved (task 146). finite_types closed.
 
 **Description**: Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical equivalence) and redesign `KType` with a finite normal form domain, closing `ktype_finite` and `KEquivalenceFramework.finite_types`.
 
