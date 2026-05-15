@@ -1,7 +1,7 @@
 # Implementation Plan: Task #141
 
 - **Task**: 141 - canonical_truth_lemma_until_since
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (tasks 139/140 are parallel, not prerequisites)
 - **Research Inputs**: specs/141_canonical_truth_lemma_until_since/reports/01_team-research.md
@@ -72,7 +72,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Critical Path Verification and canS5R_symm [NOT STARTED]
+### Phase 1: Critical Path Verification and canS5R_symm [COMPLETED]
 
 **Goal**: Verify sorry propagation into bx_completeness, then close the easiest sorry (canS5R_symm).
 

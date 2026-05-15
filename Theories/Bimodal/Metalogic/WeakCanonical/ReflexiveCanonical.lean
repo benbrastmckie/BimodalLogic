@@ -419,9 +419,51 @@ theorem canS5R_refl (x : ReflCanDomain) : canS5R x x := by
   -- By implication property: □φ ∈ x ∧ □φ→φ ∈ x → φ ∈ x
   exact h_mcs.implication_property h_imp_in h_box_phi
 
-/-- canS5R is symmetric (S5). Documented sorry — not needed for discrete completeness. -/
-theorem canS5R_symm {x y : ReflCanDomain} (_h : canS5R x y) : canS5R y x := by
-  sorry
+/-- canS5R is symmetric (S5). Uses modal_b: φ → □◇φ. -/
+theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
+  intro φ h_box_y
+  have h_mcs_x := x.property
+  have h_mcs_y := y.property
+  by_contra h_not
+  -- ¬φ ∈ x.val by negation completeness
+  have h_neg_phi : Formula.neg φ ∈ x.val := by
+    cases SetMaximalConsistent.negation_complete h_mcs_x φ with
+    | inl h => exact absurd h h_not
+    | inr h => exact h
+  -- modal_b on ¬φ: ⊢ ¬φ → □◇(¬φ)
+  have h_mb : [] ⊢ (Formula.neg φ).imp (Formula.box (Formula.neg φ).diamond) :=
+    DerivationTree.axiom [] _ (Axiom.modal_b (Formula.neg φ))
+  have h_box_dia : Formula.box (Formula.neg φ).diamond ∈ x.val :=
+    h_mcs_x.implication_property (theorem_in_mcs h_mcs_x h_mb) h_neg_phi
+  -- canS5R x y: ◇(¬φ) ∈ y.val
+  have h_dia_y : (Formula.neg φ).diamond ∈ y.val := h (Formula.neg φ).diamond h_box_dia
+  -- ◇(¬φ) = ¬□(¬¬φ), so ¬□(¬¬φ) ∈ y.val
+  -- diamond φ = φ.neg.box.neg, so (¬φ).diamond = (¬φ).neg.box.neg = ¬(□(¬¬φ))
+  -- Now derive □(¬¬φ) ∈ y.val from □φ ∈ y.val
+  -- Step: ⊢ φ → ¬¬φ (dni)
+  have h_dni : [] ⊢ φ.imp φ.neg.neg := Combinators.dni φ
+  -- Step: ⊢ □(φ → ¬¬φ) via modal necessitation
+  have h_box_dni : [] ⊢ Formula.box (φ.imp φ.neg.neg) :=
+    DerivationTree.necessitation _ h_dni
+  -- Step: ⊢ □(φ → ¬¬φ) → (□φ → □(¬¬φ)) via modal_k_dist
+  have h_kd : [] ⊢ (φ.imp φ.neg.neg).box.imp (φ.box.imp φ.neg.neg.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg)
+  -- □(φ → ¬¬φ) ∈ y.val
+  have h_box_dni_y : (φ.imp φ.neg.neg).box ∈ y.val :=
+    theorem_in_mcs h_mcs_y h_box_dni
+  -- □φ → □(¬¬φ) ∈ y.val
+  have h_imp_y : φ.box.imp φ.neg.neg.box ∈ y.val :=
+    h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_kd) h_box_dni_y
+  -- □(¬¬φ) ∈ y.val
+  have h_box_negneg : φ.neg.neg.box ∈ y.val :=
+    h_mcs_y.implication_property h_imp_y h_box_y
+  -- But ◇(¬φ) = (¬φ).neg.box.neg = φ.neg.neg.box.neg = ¬□(¬¬φ)
+  -- So ¬□(¬¬φ) ∈ y.val, i.e., φ.neg.neg.box.neg ∈ y.val
+  -- h_dia_y : (Formula.neg φ).diamond ∈ y.val
+  -- (Formula.neg φ).diamond = (Formula.neg φ).neg.box.neg = φ.neg.neg.box.neg
+  have h_neg_box_negneg : φ.neg.neg.box.neg ∈ y.val := h_dia_y
+  -- Contradiction: both □(¬¬φ) and ¬□(¬¬φ) in y.val
+  exact set_consistent_not_both h_mcs_y.1 φ.neg.neg.box h_box_negneg h_neg_box_negneg
 
 /-- canS5R is transitive via modal 4. -/
 theorem canS5R_trans {x y z : ReflCanDomain}
