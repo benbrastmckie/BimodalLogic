@@ -130,6 +130,47 @@ When $ARGUMENTS contains a description (no flags).
    - "founder", "go-to-market", "gtm" → founder
    - Otherwise → general
 
+4.5 **Detect topic** from keywords (after task_type detection):
+
+   Run keyword heuristic against the combined description text. Pattern matching order (most specific first):
+   - "bilateral", "acceptance", "rejection" → `bilateral`
+   - "agent", "architecture", "demo", "task_order", "compliance", "meta", "rules" → `agent-system`
+   - "jonsson", "tarski", "stsa", "lindenbaum", "algebraic", "boolean_algebra" → `algebraic-representation`
+   - "ktype", "normal_form", "decidab", "fmp", "filtrat", "doets", "nequiv" → `decidability`
+   - "ghfp", "formula", "module_org", "boneyard", "icc_finite", "refactor", "cleanup", "reorgani" → `formula-refactor`
+   - "frame_hier", "discrete.*frame", "dense.*frame", "open_set", "time_add", "temporal.*operator" → `frame-extensions`
+   - "completeness", "sorry", "represent", "bfmcs", "countermodel", "canonical", "parametric" → `completeness`
+
+   Read existing topics from state.json:
+   ```bash
+   existing_topics=$(jq -r '.active_topics // [] | .[]' specs/state.json)
+   ```
+
+   Present **AskUserQuestion** picker:
+   ```json
+   {
+     "question": "Assign a topic to this task?",
+     "header": "Topic Assignment",
+     "multiSelect": false,
+     "options": [
+       { "label": "{auto_topic} (suggested)", "description": "Auto-inferred from description" },
+       { "label": "completeness", "description": "Completeness proofs, BFMCS, canonical models" },
+       { "label": "decidability", "description": "KType, Doets, FMP, decidability" },
+       { "label": "formula-refactor", "description": "G/H/F/P abbreviations, module reorganization" },
+       { "label": "frame-extensions", "description": "Dense/discrete/integer frames, temporal operators" },
+       { "label": "algebraic-representation", "description": "Jonsson-Tarski, STSA, Boolean algebras" },
+       { "label": "bilateral", "description": "Bilateral proof system" },
+       { "label": "agent-system", "description": "Agent architecture, meta tasks, demo updates" },
+       { "label": "New topic...", "description": "Enter a custom topic name (will be added to active_topics)" },
+       { "label": "Skip (no topic)", "description": "Task will appear under Uncategorized in Task Order" }
+     ]
+   }
+   ```
+   Note: Show only topics from `active_topics` in state.json (not hardcoded list). Place the auto-inferred topic first with "(suggested)" suffix, omitting it from its regular position.
+
+   If "New topic..." selected: prompt for topic name (free-text via AskUserQuestion), then append to state.json `active_topics` array before writing task entry.
+   If "Skip (no topic)": set `topic = null` (omit from task entry).
+
 5. **Create slug** from description:
    - Lowercase, replace spaces with underscores
    - Remove special characters
@@ -137,16 +178,20 @@ When $ARGUMENTS contains a description (no flags).
 
 6. **Update state.json** (via jq):
    ```bash
+   # Include topic field only if not null/skipped
+   # Build topic_arg from step 4.5 result
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+     --arg topic "$topic" \
      '.next_project_number = {NEW_NUMBER} |
       .active_projects = [{
         "project_number": {N},
         "project_name": "slug",
         "status": "not_started",
         "task_type": "detected",
+        "topic": (if $topic != "" then $topic else null end),
         "created": $ts,
         "last_updated": $ts
-      }] + .active_projects' \
+      } | if .topic == null then del(.topic) else . end] + .active_projects' \
      specs/state.json > specs/tmp/state.json && \
      mv specs/tmp/state.json specs/state.json
     ```
@@ -267,7 +312,17 @@ Parse task number and optional prompt:
 
 2. Analyze description for natural breakpoints
 
-3. **Create 2-5 subtasks** using the Create Task jq pattern for each
+2.5. **Read parent topic** for inheritance:
+   ```bash
+   parent_topic=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber)) | .topic // ""' \
+     specs/state.json)
+   ```
+
+3. **Create 2-5 subtasks** using the Create Task jq pattern for each, inheriting parent topic:
+   ```bash
+   # Include "topic": parent_topic in each subtask jq entry (if parent has a topic)
+   ```
 
 4. **Update original task** to reference subtasks and set status to expanded:
    ```bash
@@ -315,6 +370,38 @@ Parse task number and optional prompt:
    .claude/scripts/generate-task-order.sh --update-todo specs/TODO.md specs/state.json 2>/dev/null || \
      echo "Warning: Task Order regeneration failed (non-fatal)"
    ```
+
+6.5. **Topic backfill** for tasks missing the `topic` field:
+
+   Detect active tasks without a topic:
+   ```bash
+   missing_topics=$(jq -r '.active_projects[] |
+     select(.status == "completed" | not) |
+     select(.status == "abandoned" | not) |
+     select(.status == "expanded" | not) |
+     select(.topic == null or .topic == "") |
+     "\(.project_number)|\(.project_name)"
+   ' specs/state.json)
+   ```
+
+   For each such task, run the keyword heuristic (from Step 4.5) against `project_name` and `description`. Collect auto-inferred assignments.
+
+   If any tasks need backfill, present **AskUserQuestion** multiSelect:
+   ```json
+   {
+     "question": "Found {N} tasks without topic assignment. Apply auto-inferred topics?",
+     "header": "Topic Backfill",
+     "multiSelect": true,
+     "options": [
+       { "label": "#8 genuine_truth_at_completeness → completeness (auto-inferred)" },
+       { "label": "#18 dense_representation_theorem_completion → completeness (auto-inferred)" }
+     ]
+   }
+   ```
+
+   Then ask: "Accept all, accept selected, or skip?" (use AskUserQuestion with single select).
+
+   Apply accepted assignments via jq `(.active_projects[] | select(.project_number == N)) |= . + {topic: "value"}`.
 
 7. Git commit: "sync: reconcile TODO.md and state.json"
 
@@ -497,9 +584,18 @@ For each incomplete phase, extract:
 - Empty selection → Exit without creating tasks (no separate "none" option needed)
 - "Select all" selected → Create all suggested tasks
 
+### Step 7.5: Read Parent Topic for Inheritance
+
+Before creating follow-up tasks, read the parent task's topic:
+```bash
+parent_topic=$(jq -r --arg num "$task_number" \
+  '.active_projects[] | select(.project_number == ($num | tonumber)) | .topic // ""' \
+  specs/state.json)
+```
+
 ### Step 8: Create Selected Follow-up Tasks
 
-For each selected task, use the Create Task jq pattern:
+For each selected task, use the Create Task jq pattern, inheriting parent topic:
 
 ```bash
 # Get next task number
@@ -508,20 +604,22 @@ next_num=$(jq -r '.next_project_number' specs/state.json)
 # Create follow-up task
 description="Complete phase {P} of task {parent_N}: {phase_name}. Goal: {phase_goal}. (Follow-up from task #{parent_N})"
 
-# Update state.json
+# Update state.json (include topic if parent has one)
 jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg desc "$description" \
+  --arg topic "$parent_topic" \
   '.next_project_number = ($next_num + 1) |
    .active_projects = [{
      "project_number": '$next_num',
      "project_name": "followup_{parent_N}_phase_{P}",
      "status": "not_started",
      "task_type": "'{task_type}'",
+     "topic": (if $topic != "" then $topic else null end),
      "description": $desc,
      "parent_task": '{parent_N}',
      "created": $ts,
      "last_updated": $ts
-   }] + .active_projects' \
+   } | if .topic == null then del(.topic) else . end] + .active_projects' \
      specs/state.json > specs/tmp/state.json && \
      mv specs/tmp/state.json specs/state.json
 

@@ -745,19 +745,31 @@ next_num=$(jq -r '.next_project_number' specs/state.json)
 slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g' | cut -c1-40)
 ```
 
-**3. Add task to state.json:**
+**3. Infer topic from file path and description:**
+
+Use the file-path heuristic to assign topic before writing state.json:
+- Issues from `.claude/` or `specs/` files → `"agent-system"`
+- Issues from `Theories/Bimodal/Metalogic/` files → run keyword heuristic on issue title
+- Issues from `.lean` files → run keyword heuristic against issue title and description
+
+Keyword heuristic order (bilateral > agent-system > algebraic-representation > decidability > formula-refactor > frame-extensions > completeness).
+
+**4. Add task to state.json:**
 ```bash
 jq --arg num "$next_num" --arg slug "$slug" --arg title "$title" \
    --arg desc "$description" --arg tt "$task_type" --arg prio "$priority" \
+   --arg topic "$inferred_topic" \
    '.active_projects += [{
      "project_number": ($num | tonumber),
      "project_name": $slug,
      "status": "not_started",
      "task_type": $tt,
+     "topic": (if $topic != "" then $topic else null end),
      "priority": $prio,
      "description": $title,
      "created": (now | strftime("%Y-%m-%dT%H:%M:%SZ"))
-   }] | .next_project_number = (($num | tonumber) + 1)' \
+   } | if .topic == null then del(.topic) else . end] |
+   .next_project_number = (($num | tonumber) + 1)' \
    specs/state.json > specs/state.json.tmp && mv specs/state.json.tmp specs/state.json
 ```
 

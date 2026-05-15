@@ -143,7 +143,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Wire topic assignment into task-creation commands [NOT STARTED]
+### Phase 3: Wire topic assignment into task-creation commands [COMPLETED]
 
 **Goal**: Add topic field population to all four task-creation paths so new tasks receive a topic at creation time, and add `--sync` backfill for tasks missing topics.
 
