@@ -90,16 +90,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Transfer.lean Cleanup and Full Build Verification [NOT STARTED]
+### Phase 2: Transfer.lean Cleanup and Full Build Verification [COMPLETED]
 
 **Goal**: Update Transfer.lean pipeline documentation to reflect table_correctness completion and verify the full project builds cleanly.
 
 **Tasks**:
-- [ ] Update Transfer.lean pipeline status table line 106: change step 5 from `PARTIAL (temporal cases need lift_eval)` to `READY (fully proved, no sorry)`
-- [ ] Update Transfer.lean description paragraph (lines 110-111): change to `table_correctness is fully proved (all 8 cases, no sorry).`
-- [ ] Update Transfer.lean step 5 comment (line 138): change `PARTIAL: temporal cases need lift_eval` to `READY`
-- [ ] Run `lake build` to verify clean compilation with zero errors
-- [ ] Verify no new sorries introduced (grep for sorry in Table.lean)
+- [x] Update Transfer.lean pipeline status table line 106: change step 5 from `PARTIAL (temporal cases need lift_eval)` to `READY (fully proved, no sorry)`
+- [x] Update Transfer.lean description paragraph (lines 110-111): change to `table_correctness is fully proved (all 8 cases, no sorry).`
+- [x] Update Transfer.lean step 5 comment (line 138): change `PARTIAL: temporal cases need lift_eval` to `READY`
+- [x] Run `lake build` to verify clean compilation with zero errors
+- [x] Verify no new sorries introduced (grep for sorry in Table.lean)
 
 **Timing**: 15 minutes
 

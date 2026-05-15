@@ -103,17 +103,16 @@ making this a drop-in replacement at Completeness.lean line 159.
 | 2 | Build signature and atom map | READY (`mkSigFrom`, `mkAtomMap`) |
 | 3 | Prove chronicle is good | SORRY (`chronicle_is_good` → `sum_preservation`) |
 | 4 | Extract Z-interval | READY (from `good` definition) |
-| 5 | Transfer truth via `table_correctness` | PARTIAL (temporal cases need `lift_eval`) |
+| 5 | Transfer truth via `table_correctness` | READY (fully proved, no sorry) |
 | 6 | Package Z-model as TaskFrame Int | BLOCKED (ZIntervalStructure → TaskFrame bridge) |
 
 `table` is now implemented (Task 140). `table_depth_bound` is proved.
-`table_correctness` is stated and proved for base cases; temporal operator
-cases depend on `lift_eval` (sorry-propagating, Task 141 scope).
+`table_correctness` is fully proved (all 8 cases, no sorry).
 `mkSigFrom` uses `φ.predFormulas`; `mkAtomMap` uses subtype projection.
 
 The proof still falls back to the chronicle construction. Full pipeline
 activation requires: (a) `chronicle_is_good` → `sum_preservation` (Doets 1.4),
-(b) ZIntervalStructure → TaskFrame bridge, (c) `lift_eval` proofs.
+(b) ZIntervalStructure → TaskFrame bridge.
 
 The dense completeness path is unaffected (uses separate theorem).
 -/
@@ -135,7 +134,7 @@ theorem doets_countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsist
   -- have h_good := chronicle_is_good M sig aMap (φ.complexity + 1)
   -- Step 4: Extract Z-interval structure from `good`
   -- obtain ⟨Z, h_equiv⟩ := h_good
-  -- Step 5: Transfer truth via table_correctness (PARTIAL: temporal cases need lift_eval)
+  -- Step 5: Transfer truth via table_correctness (READY)
   -- have h_table := table_correctness (Z.toOrdered sig) atomMap_fwd t φ
   -- Step 6: Package Z-model as TaskFrame Int (BLOCKED: ZIntervalStructure → TaskFrame bridge)
 
