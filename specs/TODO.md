@@ -131,13 +131,14 @@ technical_debt:
 
 ### 148. Complete table_correctness temporal operator cases
 - **Effort**: 1.5-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 147
 - **Research**:
   - [specs/148_table_correctness_temporal_cases/reports/01_scope-analysis.md]
   - [specs/148_table_correctness_temporal_cases/reports/02_proof-development.md]
+- **Plan**: [specs/148_table_correctness_temporal_cases/plans/02_proof-plan.md]
 
 **Description**: Close the 4 temporal operator cases of `table_correctness` (`all_future`, `all_past`, `untl`, `snce`) in Table.lean, plus 2 helper lemmas (`cons_eq_insertEnv_one`, `cons3_eq_insertEnv`). Each temporal case: unfold definitions, apply `lift1_eval`/`lift1_lift1_eval`, use induction hypothesis. Also fix `chronicle_is_good` atomMap signature in Transfer.lean step 3 comment and update pipeline status table. Result: `table_correctness` fully sorry-free with `lean_verify` showing no `sorryAx`.
 
@@ -184,13 +185,14 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 146. NormalForm legacy cleanup and cardinality correspondence proof
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Dependencies**: 145
 - **Research**:
   - [specs/146_normalform_cleanup_cardinality/reports/01_cleanup-design.md]
   - [specs/146_normalform_cleanup_cardinality/reports/02_post-split-audit.md]
+- **Plan**: [specs/146_normalform_cleanup_cardinality/plans/02_cleanup-plan.md]
 
 **Description**: Remove legacy dead code (vacuous `nf_eval`, `nf_vector`, `normalFormIdx_nonempty`) from NormalForm.lean. Prove cardinality correspondences: `Fintype.card (AtomKind sig n) = atomCount p n` and `Fintype.card (NormalForm sig k n) = nfCount p k n`, confirming the counting function matches the actual type. Update docstrings for publication quality. Optionally prove `normalForm_equiv_fin : NormalForm sig k n ≃ NormalFormIdx sig k n`.
 
