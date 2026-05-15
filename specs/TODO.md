@@ -32,51 +32,72 @@ technical_debt:
 **Goal**: Sorry-free `bx_completeness` → module reorganization → frame hierarchy → formula refactor → expressive extensions → algebraic representation.
 
 **Dependency Waves**:
-| Wave | Tasks | Blocked by |
-|------|-------|------------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,152,619,949,953,992,998 | -- |
-| 2 | 20,21,125,128 | 18,116,122 |
+| Wave | Tasks | Blocked by | Topics |
+|------|-------|------------|--------|
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,152,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 20,21,125,128 | 18,116,122 | completeness, frame-extensions, algebraic-representation |
 
-**Dependency Tree** (indented = must complete first):
+**Grouped by Topic** (indented = must complete first):
+
+### Completeness
 ```
 8 [RESEARCHED] — genuine_truth_at_completeness
 18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into 
-60 [NOT STARTED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
-64 [RESEARCHED] — critical_path_review
-68 [RESEARCHED] — Eliminate the sorry in dense_completeness_fc (FrameConditions/Com
-95 [NOT STARTED] — Verification pass to confirm sorry-free completeness. (1) Run #pr
-112 [RESEARCHED] — literature_study_representation_theorem
-114 [NOT STARTED] — Add a .claude/rules/ rule enforcing plan compliance for implement
-116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors 
-122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_
-126 [RESEARCHED] — Establish a four-tier axiom hierarchy with explicit frame corresp
-127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
-130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
-131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
-142 [PLANNED] — Resolve the mixed-case sorry in bx_completeness: the case where n
-143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-152 [PLANNED] — Improve Task Order UX in TODO.md by splitting the monolithic depe
-619 [RESEARCHED] — agent_system_architecture_upgrade
-949 [RESEARCHED] — update_demo_lean_bimodal_logic
-953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
-992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
-998 [RESEARCHING] — Redesign the FMP filtration for strict temporal semantics. The 2 
 20 [NOT STARTED] — Review ParametricCanonical.lean, ParametricTruthLemma.lean, and P
   └─ 18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into  (see above)
 21 [PLANNED] — Clean up technical debt accumulated across tasks 9-20 metalogic r
   └─ 18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into  (see above)
-125 [NOT STARTED] — Research algebraic methods for establishing a Jónsson-Tarski-styl
-  └─ 116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors  (see above)
-  └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
+64 [RESEARCHED] — critical_path_review
+68 [RESEARCHED] — Eliminate the sorry in dense_completeness_fc (FrameConditions/Com
+95 [NOT STARTED] — Verification pass to confirm sorry-free completeness. (1) Run #pr
+142 [IMPLEMENTING] — Resolve the mixed-case sorry in bx_completeness: the case where n
+```
+
+### Formula Refactor
+```
+60 [NOT STARTED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
+116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors 
+130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
+131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
+```
+
+### Frame Extensions
+```
+122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_
+126 [RESEARCHED] — Establish a four-tier axiom hierarchy with explicit frame corresp
+127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
   └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
+998 [RESEARCHING] — Redesign the FMP filtration for strict temporal semantics. The 2 
+```
+
+### Algebraic Representation
+```
+112 [RESEARCHED] — literature_study_representation_theorem
+125 [NOT STARTED] — Research algebraic methods for establishing a Jónsson-Tarski-styl
+  └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H) a) (see above)
+  └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z and complete d) (see above)
+992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
+```
+
+### Bilateral
+```
+953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
+```
+
+### Agent System
+```
+114 [NOT STARTED] — Add a .claude/rules/ rule enforcing plan compliance for implement
+152 [IMPLEMENTING] — Improve Task Order UX in TODO.md by splitting the monolithic depe
+619 [RESEARCHED] — agent_system_architecture_upgrade
+949 [RESEARCHED] — update_demo_lean_bimodal_logic
 ```
 
 ## Tasks
 
 ### 152. Task Order topic grouping and wave separation
 - **Effort**: 3-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Dependencies**: Task #149, Task #150
 - **Research**:
