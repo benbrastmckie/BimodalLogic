@@ -1,7 +1,7 @@
 # Implementation Plan: Task #139 (Revised) -- Cleanup and Close-Out
 
 - **Task**: 139 - Build FO satisfaction infrastructure for monadic structures
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: Task 129 (completed), Plan 01 phases 1,2,4,5 (completed)
 - **Research Inputs**: specs/139_fo_satisfaction_monadic_structures/reports/03_teammate-a-necessity.md, specs/139_fo_satisfaction_monadic_structures/reports/03_teammate-b-solutions.md, specs/139_fo_satisfaction_monadic_structures/reports/03_teammate-c-cleanup.md
@@ -135,15 +135,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Final Verification and Documentation [IN PROGRESS]
+### Phase 3: Final Verification and Documentation [COMPLETED]
 
 **Goal**: Full project build verification, document what was achieved and what is deferred.
 
 **Tasks**:
-- [ ] Run `lake build` on the full project and confirm zero errors
-- [ ] Grep for all remaining `sorry` in the WeakCanonical directory and verify each is documented with a TODO comment indicating the owning task
-- [ ] Verify the `existsTask_transitive` fix reduced the bx_completeness sorry count by 1
-- [ ] Update plan status markers for all phases to `[COMPLETED]`
+- [x] **Task 3.1**: Run `lake build` on the full project *(completed — 1644 jobs, zero errors)*
+- [x] **Task 3.2**: Grep for remaining sorry in WeakCanonical *(completed — all sorries documented with TODO/task references)*
+- [x] **Task 3.3**: Verify existsTask_transitive fix *(completed — lean_verify shows no sorryAx, CanonicalFrame.lean has zero sorries)*
+- [x] **Task 3.4**: Update plan status markers *(completed — all three phases marked [COMPLETED])*
 
 **Timing**: 30 minutes
 
