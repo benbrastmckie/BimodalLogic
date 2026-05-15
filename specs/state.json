@@ -1137,41 +1137,9 @@
       "completion_summary": "Added topic taxonomy (7 categories) to state.json active_topics array and per-task topic fields; implemented topic-grouped Task Order rendering with Union-Find component detection in generate-task-order.sh; wired topic assignment into /task (Step 4.5 AskUserQuestion picker), meta-builder-agent (Stage 5 Topic column), skill-fix-it (Step 9.1 auto-inference), and /review (Section 5.6.3 jq); updated format and schema documentation."
     },
     {
-      "project_number": 153,
-      "project_name": "prove_succ_cofinal_discrete",
-      "status": "planned",
-      "task_type": "lean4",
-      "priority": "high",
-      "topic": "completeness",
-      "description": "Prove succ_cofinal (ChronicleToCountermodel.lean:1885): for any points a < b in the discrete limit domain, there exists n such that succ^[n](a) >= b. This is the root sorry blocking limitDomSubtype_isSuccArchimedean → succ_embed_surjective → cantor_bfmcs_discrete_restricted_tc/fuc → dd_countermodel_chronicle_discrete → bx_completeness. The proof must show the succ orbit of any point is cofinal when all domain MCS contain U(T,bot). Approaches: (a) stage-based argument — each chronicle construction stage adds finitely many points, and succ advances at least one stage, so finitely many iterates reach any target; (b) Z1-based argument — FG(phi)->G(phi) ensures succ orbits have no accumulation points from below; (c) constant-MCS impossibility — show the omega-chain construction cannot produce a constant-MCS gap. Analysis in ChronicleToCountermodel.lean lines 1860-1884 documents the known obstacles. An independent alternative (tasks 154-155, Reynolds pipeline) can also eliminate this sorry by bypassing succ_cofinal entirely. Definition of done: succ_cofinal sorry-free, #print axioms bx_completeness shows no sorryAx, lake build passes.",
-      "dependencies": [],
-      "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-15T21:35:23Z",
-      "researched": "2026-05-15T21:26:46Z",
-      "next_artifact_number": 3,
-      "artifacts": [
-        {
-          "type": "report",
-          "path": "specs/153_prove_succ_cofinal_discrete/reports/01_succ-cofinal-research.md",
-          "description": "Research report: succ_cofinal analysis with 7 candidate approaches assessed"
-        },
-        {
-          "path": "specs/153_prove_succ_cofinal_discrete/reports/02_team-research.md",
-          "type": "research",
-          "summary": "Team research with 4 teammates: constant-MCS excluded by Prior-UZ, non-constant case viable but hard, Reynolds pipeline recommended as primary path"
-        },
-        {
-          "path": "specs/153_prove_succ_cofinal_discrete/plans/02_succ-cofinal-plan.md",
-          "type": "plan",
-          "summary": "4-phase plan: infrastructure inventory, constant-MCS exclusion, non-constant gap elimination, integration (6h)"
-        }
-      ],
-      "session_id": "sess_1778880647_8c37a0_t153"
-    },
-    {
       "project_number": 154,
       "project_name": "sum_preservation_ef_games",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
