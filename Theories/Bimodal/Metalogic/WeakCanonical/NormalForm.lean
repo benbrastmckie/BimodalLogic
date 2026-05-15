@@ -295,6 +295,120 @@ theorem nf_agreement_from_shared_nf {sig : MonadicSignature}
     have : nf' = nf := nf_eval_unique N k n env_N nf' nf hN' hN
     subst this; exact hM
 
+/-! ## Doets Lemma 1.1: Bridge Theorem -/
+
+/--
+Helper: extract atom agreement from depth-k normal form agreement.
+If M,env_M and N,env_N agree on all depth-k normal forms, they agree
+on all atomic propositions.
+-/
+theorem atom_agreement_from_nf {sig : MonadicSignature} {k n : Nat}
+    (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
+    (N : OrderedMonadicStructure sig) (env_N : Fin n → N.carrier)
+    (h_same_nf : ∀ nf : NormalForm sig k n,
+      nf_eval_nf M k n env_M nf ↔ nf_eval_nf N k n env_N nf)
+    (a : AtomKind sig n) :
+    atom_eval M env_M a ↔ atom_eval N env_N a := by
+  obtain ⟨nf_M, hM, _⟩ := nf_exists_unique M k n env_M
+  have hN := (h_same_nf nf_M).mp hM
+  match k with
+  | 0 => exact (hM a).trans (hN a).symm
+  | k + 1 => exact (hM.1 a).trans (hN.1 a).symm
+
+/-! ## Normal Form Agreement Monotonicity -/
+
+/--
+If M and N agree on all depth-k normal forms (k ≥ m), they agree on all
+depth-m normal forms. Proved by induction on m.
+
+Key insight for the quantifier step: if ∃x with nf_eval_nf M m (n+1)
+(Fin.cons x env_M) sub_nf, then x has a unique depth-(k-1) NF by
+nf_exists_unique. The depth-k agreement transfers this to N. The IH
+then shows the depth-m agreement for the Fin.cons environments.
+-/
+theorem nf_agreement_monotone {sig : MonadicSignature} :
+    ∀ (m k n : Nat) (hkm : m ≤ k)
+    (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
+    (N : OrderedMonadicStructure sig) (env_N : Fin n → N.carrier)
+    (h_agree_k : ∀ nf : NormalForm sig k n,
+      nf_eval_nf M k n env_M nf ↔ nf_eval_nf N k n env_N nf)
+    (nf_m : NormalForm sig m n),
+    nf_eval_nf M m n env_M nf_m ↔ nf_eval_nf N m n env_N nf_m := by
+  intro m
+  induction m with
+  | zero =>
+    intro k n hkm M env_M N env_N h_agree_k nf_m
+    -- nf_m : AtomKind sig n → Bool
+    -- Need: (∀ a, atom_eval M env_M a ↔ nf_m a = true) ↔ (∀ a, atom_eval N env_N a ↔ nf_m a = true)
+    constructor
+    · intro hM a
+      exact (atom_agreement_from_nf M env_M N env_N h_agree_k a).symm.trans (hM a)
+    · intro hN a
+      exact (atom_agreement_from_nf M env_M N env_N h_agree_k a).trans (hN a)
+  | succ m ih =>
+    intro k n hkm M env_M N env_N h_agree_k nf_m
+    -- Need depth-(k) NF agreement to imply depth-(m+1) NF agreement.
+    -- We have k ≥ m + 1, so k = (m + 1) + d for some d.
+    -- Strategy: show the characteristic depth-(m+1) NFs for M and N are the same.
+    obtain ⟨char_M, hcM, _⟩ := nf_exists_unique M (m + 1) n env_M
+    obtain ⟨char_N, hcN, _⟩ := nf_exists_unique N (m + 1) n env_N
+    -- Show char_M = char_N by proving N satisfies char_M
+    suffices h_transfer : nf_eval_nf N (m + 1) n env_N char_M by
+      have heq : char_M = char_N := nf_eval_unique N (m + 1) n env_N char_M char_N h_transfer hcN
+      constructor
+      · intro hM
+        have := nf_eval_unique M (m + 1) n env_M nf_m char_M hM hcM
+        subst this; exact h_transfer
+      · intro hN
+        have := nf_eval_unique N (m + 1) n env_N nf_m char_N hN hcN
+        rw [← heq] at this; subst this; exact hcM
+    -- Prove nf_eval_nf N (m+1) n env_N char_M
+    obtain ⟨hcM_atoms, hcM_quant⟩ := hcM
+    constructor
+    · -- Atoms agree
+      intro a
+      exact (atom_agreement_from_nf M env_M N env_N h_agree_k a).symm.trans (hcM_atoms a)
+    · -- Quantifier assignments agree
+      intro sub_nf
+      rw [← hcM_quant sub_nf]
+      -- Need: (∃ y, nf_eval_nf N m (n+1) ... sub_nf) ↔ (∃ x, nf_eval_nf M m (n+1) ... sub_nf)
+      -- Use depth-k NF agreement: k ≥ m + 1, so k - 1 ≥ m.
+      -- Get depth-k NF agreement, extract quant part to get depth-(k-1) transfer.
+      obtain ⟨nf_M_k, hM_k_sat, _⟩ := nf_exists_unique M k n env_M
+      have hN_k_sat := (h_agree_k nf_M_k).mp hM_k_sat
+      -- At depth k ≥ 1, extract quantifier transfer
+      match k, hkm with
+      | k' + 1, hkm' =>
+        obtain ⟨_, hM_k_quant⟩ := hM_k_sat
+        obtain ⟨_, hN_k_quant⟩ := hN_k_sat
+        -- hM_k_quant: ∀ nf_k, (∃ x, nf_eval_nf M k' (n+1) ... nf_k) ↔ (nf_M_k.2 nf_k = true)
+        -- hN_k_quant: ∀ nf_k, (∃ y, nf_eval_nf N k' (n+1) ... nf_k) ↔ (nf_M_k.2 nf_k = true)
+        have hex_transfer_k : ∀ nf_k : NormalForm sig k' (n + 1),
+            (∃ x, nf_eval_nf M k' (n + 1) (Fin.cons x env_M) nf_k) ↔
+            (∃ y, nf_eval_nf N k' (n + 1) (Fin.cons y env_N) nf_k) :=
+          fun nf_k => (hM_k_quant nf_k).trans (hN_k_quant nf_k).symm
+        -- Now transfer at depth m using IH + depth-k' transfer
+        -- After rw: goal is (∃ y, nf_eval_nf N ...) ↔ (∃ x, nf_eval_nf M ...)
+        constructor
+        · -- N → M: given y : N.carrier with depth-m, find x : M.carrier
+          rintro ⟨y, hNy_m⟩
+          obtain ⟨nf_y_k, hNy_k, _⟩ := nf_exists_unique N k' (n + 1) (Fin.cons y env_N)
+          obtain ⟨x, hMx_k⟩ := (hex_transfer_k nf_y_k).mpr ⟨y, hNy_k⟩
+          have h_agree_k' := nf_agreement_from_shared_nf M (Fin.cons x env_M)
+            N (Fin.cons y env_N) nf_y_k hMx_k hNy_k
+          have h_agree_m := ih k' (n + 1) (by omega) M (Fin.cons x env_M)
+            N (Fin.cons y env_N) h_agree_k'
+          exact ⟨x, (h_agree_m sub_nf).mpr hNy_m⟩
+        · -- M → N: given x : M.carrier with depth-m, find y : N.carrier
+          rintro ⟨x, hMx_m⟩
+          obtain ⟨nf_x_k, hMx_k, _⟩ := nf_exists_unique M k' (n + 1) (Fin.cons x env_M)
+          obtain ⟨y, hNy_k⟩ := (hex_transfer_k nf_x_k).mp ⟨x, hMx_k⟩
+          have h_agree_k' := nf_agreement_from_shared_nf M (Fin.cons x env_M)
+            N (Fin.cons y env_N) nf_x_k hMx_k hNy_k
+          have h_agree_m := ih k' (n + 1) (by omega) M (Fin.cons x env_M)
+            N (Fin.cons y env_N) h_agree_k'
+          exact ⟨y, (h_agree_m sub_nf).mp hMx_m⟩
+
 /-! ## Legacy Definitions (to be replaced in Phase 10) -/
 
 /--
@@ -314,36 +428,6 @@ noncomputable def nf_vector (sig : MonadicSignature) (k n : Nat)
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier) :
     NormalFormIdx sig k n → Bool :=
   fun idx => @decide (nf_eval sig k n idx M env) (Classical.dec _)
-
-/-! ## Doets Lemma 1.1: Bridge Theorem -/
-
-/--
-Helper: extract atom agreement from depth-k normal form agreement.
-If M,env_M and N,env_N agree on all depth-k normal forms, they agree
-on all atomic propositions.
--/
-theorem atom_agreement_from_nf {sig : MonadicSignature} {k n : Nat}
-    (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
-    (N : OrderedMonadicStructure sig) (env_N : Fin n → N.carrier)
-    (h_same_nf : ∀ nf : NormalForm sig k n,
-      nf_eval_nf M k n env_M nf ↔ nf_eval_nf N k n env_N nf)
-    (a : AtomKind sig n) :
-    atom_eval M env_M a ↔ atom_eval N env_N a := by
-  -- Get the unique NFs for M and N
-  obtain ⟨nf_M, hM, _⟩ := nf_exists_unique M k n env_M
-  -- M satisfies nf_M, so N satisfies nf_M too (by h_same_nf)
-  have hN := (h_same_nf nf_M).mp hM
-  -- Extract atom-level agreement
-  match k with
-  | 0 =>
-    -- nf_M : AtomKind sig n → Bool
-    -- hM: ∀ a, atom_eval M env_M a ↔ (nf_M a = true)
-    -- hN: ∀ a, atom_eval N env_N a ↔ (nf_M a = true)
-    exact (hM a).trans (hN a).symm
-  | k + 1 =>
-    -- hM: (∀ a, ...) ∧ (∀ nf, ...)
-    -- hN: (∀ a, ...) ∧ (∀ nf, ...)
-    exact (hM.1 a).trans (hN.1 a).symm
 
 /--
 **Doets 1989, Lemma 1.1** (Bridge Theorem):
