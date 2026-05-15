@@ -54,11 +54,11 @@ technical_debt:
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
 130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
-142 [RESEARCHING] — Resolve the mixed-case sorry in bx_completeness: the case where n
+142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
 147 [COMPLETED] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le
-150 [RESEARCHED] — Add automatic Task Order synchronization. Update update-task-stat
-151 [RESEARCHED] — Integrate Task Order with /todo and /review commands. Update /tod
+150 [PLANNING] — Add automatic Task Order synchronization. Update update-task-stat
+151 [PLANNING] — Integrate Task Order with /todo and /review commands. Update /tod
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -98,7 +98,7 @@ technical_debt:
 
 ### 150. Task Order auto-pruning and auto-insertion
 - **Effort**: 3-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [150_task_order_auto_sync/reports/01_task-order-auto-sync.md]
@@ -109,7 +109,7 @@ technical_debt:
 
 ### 151. Task Order command integration and rules
 - **Effort**: 1-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [151_task_order_command_integration/reports/01_command-integration.md]
@@ -204,9 +204,11 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 ---
 
 ### 142. Mixed-case countermodel for bx_completeness
-- **Effort**: 30-50 hours
+- **Effort**: 45-75 hours
 - **Status**: [RESEARCHED]
-- **Research**: [specs/142_mixed_case_countermodel/reports/01_mixed-case-research.md]
+- **Research**:
+  - [specs/142_mixed_case_countermodel/reports/01_mixed-case-research.md]
+  - [142_mixed_case_countermodel/reports/02_team-research.md]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None (architecturally independent of discrete/dense branches)
