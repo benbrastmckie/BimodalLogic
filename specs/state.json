@@ -612,7 +612,7 @@
     {
       "project_number": 140,
       "project_name": "truth_transfer_eliminate_succ_cofinal",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Prove the standard translation preserves truth (table correctness), wire it into Transfer.lean to replace the chronicle fallback with the Reynolds pipeline, and eliminate succ_cofinal from the axiom set of doets_countermodel_discrete.\n\nThis is the final link in the chain: task 129 built the Reynolds pipeline (one_class, chronicle_is_good), task 139 closes the FO satisfaction foundation (eval/satisfies, k_type_of), and this task uses FO satisfaction to prove the standard translation correct and complete the truth transfer.\n\nScope:\n\n1. Prove table_correctness: the standard translation preserves truth. For any temporal formula phi and point t in model M, M |= phi at t iff monadic(M) |= table(phi) at t. This requires the eval/satisfies infrastructure from task 139. The table definition already exists in Table.lean but its correctness theorem is sorry. Proof by structural induction on Formula: atom case is definitional, boolean cases are trivial, G/H cases use the order relation in MonadicSentence, Until/Since cases use the FO encoding of bounded quantification.\n\n2. Close table_depth_bound: the quantifier depth of table(phi) is bounded by Formula.complexity(phi). This is a straightforward structural induction once table is non-vacuous.\n\n3. Replace the chronicle fallback in doets_countermodel_discrete (Transfer.lean) with the full Reynolds pipeline. The 6-step flow is already documented as comments in Transfer.lean from task 129: (a) extract chronicle, (b) build signature via mkSigFrom, (c) build atom map via mkAtomMap, (d) prove chronicle is good via chronicle_is_good, (e) extract Z-model from goodness, (f) transfer truth via k-equivalence + table_correctness. Replace the chronicle fallback with this pipeline.\n\n4. Verify axiom elimination: run #print axioms doets_countermodel_discrete and confirm succ_cofinal does not appear. Check #print axioms bx_completeness for any remaining succ_cofinal paths.\n\n5. If bx_completeness is clean of succ_cofinal, the critical-path sorry identified in the project status is fully resolved.\n\nDefinition of done: table_correctness is sorry-free, doets_countermodel_discrete uses the Reynolds pipeline (not chronicle fallback), #print axioms doets_countermodel_discrete shows no succ_cofinal, lake build passes.",
@@ -621,7 +621,7 @@
         139
       ],
       "created": "2026-05-15T01:22:02Z",
-      "last_updated": "2026-05-15T16:37:49Z",
+      "last_updated": "2026-05-15T16:40:39Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -630,12 +630,12 @@
           "summary": "Team research (4 teammates): standard translation, Reynolds pipeline, scope analysis"
         }
       ],
-      "session_id": "sess_1778862579_528fb7"
+      "session_id": "sess_1778863224_3143a9"
     },
     {
       "project_number": 141,
       "project_name": "canonical_truth_lemma_until_since",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "description": "Close all Until/Since sorries in the WeakCanonical truth lemma and the remaining ReflexiveCanonical infrastructure sorries, making the canonical model construction fully sorry-free.\n\nThe canonical truth lemma (TruthLemma.lean) has 6 sorries across Until/Since cases. All share the same root cause: chain construction for intermediate guard propagation has not been ported from DovetailingChain.lean / BXCanonical to the ReflCanDomain setting. ReflexiveCanonical.lean has 2 additional sorries (reflCanR_linear, canS5R_symm) that are canonical model infrastructure.\n\nSorry inventory (8 total):\n\n1. until_forward_mcs (TruthLemma.lean:426): U(psi1,psi2) in x -> exists witness y with guard condition. Proved EXCEPT the intermediate guard: for all z between x and y, psi2 in z. Requires until_F_expansion chain construction.\n\n2. until_backward_mcs (TruthLemma.lean:443): Contrapositive — if U(psi1,psi2) not in x, negate the semantic condition. Requires counter-witness propagation.\n\n3. since_forward_mcs (TruthLemma.lean:479): Mirror of until_forward for past direction. Same chain construction blocker.\n\n4. since_backward_mcs (TruthLemma.lean:494): Mirror of until_backward for past direction.\n\n5-6. truth_lemma Until/Since cases (TruthLemma.lean:548, 563): The main truth lemma uses until_backward_mcs in the backward direction of the Until case, and since_backward_mcs similarly. These close automatically once items 1-4 are proved.\n\n7. reflCanR_linear (ReflexiveCanonical.lean:144): Forward temporal accessibility is linear. Proof sketch uses BX11 (temp_linearity) at x to derive contradiction from non-comparable y, z. Requires forward_temporal_witness construction ported to ReflCanDomain.\n\n8. canS5R_symm (ReflexiveCanonical.lean:424): S5 relation is symmetric. Requires modal B axiom application in MCS setting.\n\nKey infrastructure needed:\n- Port DovetailingChain.lean chain construction to ReflCanDomain\n- until_F_expansion: U(psi1,psi2) -> psi2 or (psi1 and F(U(psi1,psi2))) self-accumulation\n- g_content_closed_derivation: lift derivations to G-formulas\n- forward_temporal_witness for ReflCanDomain (BX11 linearity argument)\n\nDefinition of done: All 8 sorries closed, truth_lemma is sorry-free, reflCanR_linear and canS5R_symm are sorry-free, lake build passes.",
@@ -666,7 +666,8 @@
         }
       ],
       "session_id": "sess_1778824110_c99890",
-      "researched": "2026-05-15T05:33:32Z"
+      "researched": "2026-05-15T05:33:32Z",
+      "completion_summary": "reflCanR_linear closed (Burgess 1984 BX11 proof), canS5R_symm closed (prior round). 6 TruthLemma Until/Since sorries documented as non-critical-path dead code. ReflexiveCanonical.lean sorry-free. Critical-path sorry count corrected from 14 to 6."
     },
     {
       "project_number": 142,
@@ -695,7 +696,7 @@
       ],
       "created": "2026-05-15T07:05:05Z",
       "last_updated": "2026-05-15T16:26:50Z",
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-a-findings.md",
@@ -726,6 +727,11 @@
           "path": "specs/143_doets_lemma_1_1_normal_form_ktype/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "Implementation plan with 5 phases for Doets Lemma 1.1 normal form KType redesign, closing finite_types sorry"
+        },
+        {
+          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/02_concrete-nf-eval-design.md",
+          "type": "research",
+          "summary": "Concrete nf_eval design: inductive NormalForm type, AtomKind enumeration, Doets 1.1 proof structure"
         }
       ],
       "session_id": "sess_1778862387_6adfd9_t143"
