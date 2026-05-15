@@ -183,25 +183,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Inductive NormalForm Type and Fintype [NOT STARTED]
+### Phase 7: Inductive NormalForm Type and Fintype [COMPLETED]
 
 **Goal**: Define the inductive NormalForm type and prove it is Fintype. This replaces the Fin-based NormalFormIdx as the semantically meaningful domain.
 
 **Tasks**:
-- [ ] Define `NormalForm sig k n` inductive in NormalForm.lean:
-  - `base (assignment : AtomKind sig n -> Bool) : NormalForm sig 0 n`
-  - `step (atom_assignment : AtomKind sig n -> Bool) (quant_assignment : NormalForm sig k (n + 1) -> Bool) : NormalForm sig (k + 1) n`
-- [ ] Define `baseEquiv : NormalForm sig 0 n ≃ (AtomKind sig n -> Bool)` -- the obvious Equiv between depth-0 normal forms and truth assignments
-- [ ] Define `stepEquiv : NormalForm sig (k + 1) n ≃ (AtomKind sig n -> Bool) × (NormalForm sig k (n + 1) -> Bool)` -- the Equiv for depth-(k+1)
-- [ ] Prove `Fintype (NormalForm sig k n)` by induction on k:
-  - Base: `Fintype.ofEquiv (AtomKind sig n -> Bool) baseEquiv.symm`
-  - Step: Using IH for `Fintype (NormalForm sig k (n+1))`, derive Fintype of function type, then `Fintype.ofEquiv _ stepEquiv.symm`
-- [ ] Define concrete `nf_eval` by structural recursion on NormalForm (replaces vacuous version):
-  - `| .base assignment => forall (a : AtomKind sig n), atom_eval M env a <-> (assignment a = true)`
-  - `| .step atom_assgn quant_assgn => (forall a, atom_eval M env a <-> (atom_assgn a = true)) /\ (forall nf, (exists x, nf_eval M (Fin.cons x env) nf) <-> (quant_assgn nf = true))`
-  - Add `termination_by k` if needed for well-founded recursion
-- [ ] Remove or replace the old vacuous `nf_eval` and `nf_vector` definitions
-- [ ] Verify `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` compiles
+- [x] Define `NormalForm sig k n` *(deviation: altered -- defined as recursive function on Nat rather than inductive, because the `NormalForm sig k (n+1) → Bool` function space creates a non-positive occurrence rejected by Lean's inductive type checker)*
+- [x] Define `baseEquiv`/`stepEquiv` *(deviation: skipped -- not needed with recursive def; type is definitionally equal to its unfolding)*
+- [x] Prove `Fintype (NormalForm sig k n)` *(completed -- proved simultaneously with DecidableEq to break circular dependency)*
+- [x] Define concrete `nf_eval_nf` by recursion on k *(completed -- replaces vacuous nf_eval semantically)*
+- [ ] Remove or replace the old vacuous `nf_eval` and `nf_vector` definitions *(deviation: deferred to Phase 10 -- legacy defs kept for backward compat with current KType/doets_lemma_1_1 signature)*
+- [x] Verify `lake build Bimodal.Metalogic.WeakCanonical.NormalForm` compiles *(completed)*
 
 **Timing**: 2.5 hours
 
@@ -217,7 +209,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: nf_exists_unique [NOT STARTED]
+### Phase 8: nf_exists_unique [COMPLETED]
 
 **Goal**: Prove that for every structure M, environment env, and depth k, there exists exactly one normal form that M,env satisfies. This is the key lemma needed by the quantifier cases of the bridge theorem.
 

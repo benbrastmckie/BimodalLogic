@@ -196,6 +196,105 @@ noncomputable def nf_eval_nf {sig : MonadicSignature}
       (∃ (x : M.carrier), nf_eval_nf M k (_ + 1) (Fin.cons x env) sub_nf) ↔
         (quant_assignment sub_nf = true))
 
+/-! ## Existence and Uniqueness of Characteristic Normal Form -/
+
+/--
+The characteristic normal form of a structure M under environment env at depth k.
+This is the unique normal form that M,env satisfies.
+-/
+noncomputable def nf_characteristic {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) :
+    (k : Nat) → (n : Nat) → (env : Fin n → M.carrier) → NormalForm sig k n
+  | 0, _, env => fun a => @decide (atom_eval M env a) (Classical.dec _)
+  | k + 1, _, env =>
+    (fun a => @decide (atom_eval M env a) (Classical.dec _),
+     fun nf => @decide (∃ x, nf_eval_nf M k (_ + 1) (Fin.cons x env) nf) (Classical.dec _))
+
+/-- The characteristic normal form satisfies nf_eval_nf. -/
+theorem nf_characteristic_satisfies {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k n : Nat)
+    (env : Fin n → M.carrier) :
+    nf_eval_nf M k n env (nf_characteristic M k n env) := by
+  induction k generalizing n env with
+  | zero =>
+    -- Goal: ∀ a, atom_eval M env a ↔ (nf_characteristic M 0 n env a = true)
+    simp only [nf_characteristic, nf_eval_nf]
+    intro a
+    simp [decide_eq_true_eq]
+  | succ k ih =>
+    -- Goal: atoms match AND quantifier assignment matches
+    simp only [nf_characteristic, nf_eval_nf]
+    constructor
+    · -- Atom assignment matches
+      intro a; simp [decide_eq_true_eq]
+    · -- Quantifier assignment matches
+      intro sub_nf
+      simp [decide_eq_true_eq]
+
+/-- If two normal forms are both satisfied, they are equal. -/
+theorem nf_eval_unique {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k n : Nat)
+    (env : Fin n → M.carrier)
+    (nf1 nf2 : NormalForm sig k n)
+    (h1 : nf_eval_nf M k n env nf1)
+    (h2 : nf_eval_nf M k n env nf2) : nf1 = nf2 := by
+  induction k generalizing n env with
+  | zero =>
+    have h1' : ∀ a, atom_eval M env a ↔ (nf1 a = true) := h1
+    have h2' : ∀ a, atom_eval M env a ↔ (nf2 a = true) := h2
+    funext a
+    have := (h1' a).symm.trans (h2' a)
+    cases ha : nf1 a <;> cases hb : nf2 a <;> simp_all
+  | succ k ih =>
+    obtain ⟨h1a, h1q⟩ := h1; obtain ⟨h2a, h2q⟩ := h2
+    have ha : nf1.1 = nf2.1 := by
+      funext a
+      have := (h1a a).symm.trans (h2a a)
+      cases ha : nf1.1 a <;> cases hb : nf2.1 a <;> simp_all
+    have hq : nf1.2 = nf2.2 := by
+      funext sub_nf
+      have := (h1q sub_nf).symm.trans (h2q sub_nf)
+      cases ha : nf1.2 sub_nf <;> cases hb : nf2.2 sub_nf <;> simp_all
+    exact Prod.ext ha hq
+
+/--
+**nf_exists_unique**: For every structure M, environment env, and depth k,
+there exists exactly one normal form that M,env satisfies.
+
+This is the key lemma needed by the quantifier cases of the bridge theorem
+(doets_lemma_1_1).
+-/
+theorem nf_exists_unique {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k n : Nat)
+    (env : Fin n → M.carrier) :
+    ∃! (nf : NormalForm sig k n), nf_eval_nf M k n env nf :=
+  ⟨nf_characteristic M k n env,
+   nf_characteristic_satisfies M k n env,
+   fun nf h => nf_eval_unique M k n env nf (nf_characteristic M k n env) h
+     (nf_characteristic_satisfies M k n env)⟩
+
+/--
+If two (M, env) and (N, env') pairs satisfy the same normal form nf,
+then they agree on all normal forms at that depth.
+Corollary of nf_exists_unique: each pair satisfies exactly one NF.
+-/
+theorem nf_agreement_from_shared_nf {sig : MonadicSignature}
+    {k n : Nat}
+    (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
+    (N : OrderedMonadicStructure sig) (env_N : Fin n → N.carrier)
+    (nf : NormalForm sig k n)
+    (hM : nf_eval_nf M k n env_M nf)
+    (hN : nf_eval_nf N k n env_N nf)
+    (nf' : NormalForm sig k n) :
+    nf_eval_nf M k n env_M nf' ↔ nf_eval_nf N k n env_N nf' := by
+  constructor
+  · intro hM'
+    have : nf' = nf := nf_eval_unique M k n env_M nf' nf hM' hM
+    subst this; exact hN
+  · intro hN'
+    have : nf' = nf := nf_eval_unique N k n env_N nf' nf hN' hN
+    subst this; exact hM
+
 /-! ## Legacy Definitions (to be replaced in Phase 10) -/
 
 /--
