@@ -26,11 +26,11 @@ mathematically false under irreflexive semantics and cannot be proved.
 - **Dense completeness** (`dd_countermodel_chronicle_dense`): Internally sorry-free
 - **Discrete completeness**: Reynolds pipeline structurally complete (task 129 COMPLETED). 5 sorries remain in FO satisfaction foundation (task 139) and truth transfer (task 140). Chronicle fallback retained pending truth transfer.
 - **Canonical truth lemma**: ReflexiveCanonical.lean sorry-free (task 141 resolved). 6 TruthLemma Until/Since sorries remain but are non-critical-path (parametric truth lemma handles via BFMCS coherence).
-- **Mixed case**: 1 sorry — `dd_countermodel_chronicle_mixed_sorry` (task 142)
-- **Full `bx_completeness`**: Blocked by 6 sorries across 3 tasks (139, 140, 142). Task 141 resolved — not on critical path.
+- **Mixed case**: 0 sorries — resolved via structural axiom `discrete_box_necessity` (task 142)
+- **Full `bx_completeness`**: Blocked by 5 sorries across 2 tasks (139, 140). Tasks 141, 142 resolved — not on critical path.
 - **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
 
-**Critical path**: Task 129 (COMPLETED) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → 142 (mixed-case countermodel) → sorry-free `bx_completeness`. Task 141 resolved (2 sorries closed, 6 reclassified as non-critical-path).
+**Critical path**: Task 129 (COMPLETED) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → sorry-free `bx_completeness`. Tasks 141 and 142 resolved (mixed case eliminated via structural axiom `discrete_box_necessity`).
 
 **Key architectural finding** (task 123, 12+ research rounds): The sorry at `succ_cofinal` represents a genuine limitation of the Burgess chronicle construction under strict (irreflexive) semantics. The constant-MCS gap scenario (Z+Z structure where all MCS labels are identical) is consistent with ALL temporal axioms including Z1 and Prior-UZ. Under strict semantics, `G(φ)→φ` is not valid, so the Sahlqvist canonicity chain breaks for the chronicle's non-standard canonical model. Resolution: task 129 uses a weak/reflexive Henkin canonical model (where Sahlqvist canonicity applies) + Doets compression to Z + model-theoretic transfer back to strict semantics.
 
@@ -45,8 +45,8 @@ mathematically false under irreflexive semantics and cannot be proved.
 - 6 sorries in `TruthLemma.lean`: Until/Since forward/backward (4) + truth lemma cases (2) — non-critical-path, parametric truth lemma handles via BFMCS coherence
 - 0 sorries in `ReflexiveCanonical.lean`: `reflCanR_linear` and `canS5R_symm` closed
 
-*Mixed case (task 142)*:
-- 1 sorry in `ChronicleToCountermodel.lean`: `dd_countermodel_chronicle_mixed_sorry`
+*Mixed case (task 142 — RESOLVED)*:
+- 0 sorries: `dd_countermodel_chronicle_mixed_sorry` eliminated via `mcs_mixed_case_absurd` + structural axiom `discrete_box_necessity` (U(T,bot) → □(U(T,bot))). The mixed case is impossible because S5 + K-distribution + the new axiom's contrapositive derive □(F'T) from ¬□(U(T,bot)), contradicting ¬□(F'T).
 
 *Legacy (task 122)*:
 - `dd_countermodel_chronicle_nondense_sorry` (line 839): Discrete BFMCS on ℤ
@@ -161,7 +161,7 @@ construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy
 
 ## BX Axiom System
 
-`Theories/Bimodal/ProofSystem/Axioms.lean` defines 41 axiom constructors in
+`Theories/Bimodal/ProofSystem/Axioms.lean` defines 42 axiom constructors in
 six layers (see `Axioms.lean:46-49` for Burgess 1982/84, Xu 1988, Venema 1993,
 Reynolds 1992 references). Under irreflexive semantics (strict `<` for G/H,
 strict witness for U/S), the axiom set replaces BX1/BX1' (reflexive T) with
@@ -227,7 +227,7 @@ seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 | `modal_future` | Axioms.lean:328 | `□φ → □(Gφ)` | Primitive |
 | `temp_future` | Axioms.lean:331 | `□φ → G(□φ)` | **Task 124: derive from MF+T+Modal4, remove as primitive** |
 
-### Layer 5: Uniformity (4)
+### Layer 5: Uniformity (5)
 
 | Axiom | Statement | Role |
 |-------|-----------|------|
@@ -235,8 +235,9 @@ seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 | `discrete_symm_bwd` | `S(⊤,⊥) → U(⊤,⊥)` | Backward gap implies forward gap |
 | `discrete_propagate_fwd` | `U(⊤,⊥) → G(U(⊤,⊥))` | Gap propagates to all future points |
 | `discrete_propagate_bwd` | `U(⊤,⊥) → H(U(⊤,⊥))` | Gap propagates to all past points |
+| `discrete_box_necessity` | `U(⊤,⊥) → □(U(⊤,⊥))` | Discreteness propagates to all box-accessible worlds (task 142) |
 
-*These encode the uniformity of discreteness in ordered abelian groups. Valid on all linear orders with AddCommGroup structure.*
+*These encode the uniformity of discreteness in ordered abelian groups. Valid on all linear orders with AddCommGroup structure. The `discrete_box_necessity` axiom is the key to eliminating the mixed case in `bx_completeness`: it ensures that if any world is discrete, all box-accessible worlds are discrete too.*
 
 ### Layer 6: Prior Axioms for Integers (2) — Task 119
 

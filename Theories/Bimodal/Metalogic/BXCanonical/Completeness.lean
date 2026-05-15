@@ -122,6 +122,8 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 6. Instantiate `valid φ` at the canonical model to get truth, contradiction
 
 **Status**: Proof completed via `dd_countermodel_chronicle` (Burgess chronicle).
+The mixed case (¬□(F'T) ∧ ¬□(U(T,bot))) is eliminated by `mcs_mixed_case_absurd`
+using the structural axiom `discrete_box_necessity` (task 142).
 Remaining leaf sorries are in the Chronicle/ modules (FMCS coherence, chronicle
 construction). The RootScopedChain.lean sorry sites are no longer on the critical
 path -- the chronicle bypasses them entirely.
