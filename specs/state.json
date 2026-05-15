@@ -87,17 +87,14 @@
       "status": "not_started",
       "language": "lean4",
       "priority": "medium",
-      "description": "Verification pass to confirm sorry-free completeness. (1) Run #print axioms on bx_completeness; confirm output is exactly {propext, Classical.choice, Quot.sound}. (2) Classify all sorry occurrences in Soundness.lean and SoundnessLemmas.lean (real sorry vs docstring). (3) Confirm soundness, soundness_dense, soundness_discrete build with only standard axioms. (4) Audit for any custom Lean axiom declarations. (5) Produce audit report. Depends on task 109 (chain construction closure) for full completeness verification.",
+      "description": "Verification pass on bx_completeness sorry status. Updated scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx chain: dd_countermodel_chronicle_discrete → succ_embed_surjective → limitDomSubtype_isSuccArchimedean → succ_cofinal (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-04-20T17:58:07Z",
+      "last_updated": "2026-05-15T21:30:00Z",
       "related_tasks": [
         60,
         93
       ],
-      "dependencies": [
-        93,
-        109
-      ],
+      "dependencies": [],
       "topic": "completeness"
     },
     {
@@ -115,10 +112,11 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "blocked",
+      "status": "abandoned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T21:44:14Z",
+      "last_updated": "2026-05-15T21:30:00Z",
+      "completion_summary": "Abandoned: dense case solved via dd_countermodel_chronicle_dense (Burgess chronicle + Cantor iso on Q), verified sorry-free. TimelineQuot/DenseTask approach entirely superseded.",
       "dependencies": [
         17,
         27,
@@ -193,10 +191,11 @@
     {
       "project_number": 20,
       "project_name": "audit_parametric_canonical_infrastructure",
-      "status": "not_started",
+      "status": "abandoned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-05-15T21:30:00Z",
+      "completion_summary": "Abandoned: depended on task 18 (now abandoned). Parametric infrastructure already used successfully by both dense and discrete countermodel paths.",
       "dependencies": [
         15,
         18
@@ -208,13 +207,14 @@
     {
       "project_number": 8,
       "project_name": "genuine_truth_at_completeness",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
       "created": "2026-03-20T23:46:51Z",
-      "last_updated": "2026-03-21T03:23:50Z",
+      "last_updated": "2026-05-15T21:30:00Z",
       "dependencies": [
         7
       ],
+      "completion_summary": "Abandoned: broad umbrella task superseded by chronicle approach. bx_completeness already uses truth_at semantics. Dense+mixed cases sorry-free. Remaining discrete sorry (succ_cofinal) tracked by focused tasks 153-155.",
       "artifacts": [
         {
           "type": "research",
@@ -393,15 +393,12 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "planned",
+      "status": "not_started",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:28:53Z",
-      "dependencies": [
-        15,
-        18
-      ],
-      "description": "Clean up technical debt accumulated across tasks 9-20 metalogic refactoring track. Remove dead code, unused helpers, deprecated wrappers, and bridge infrastructure. Consolidate compatibility layers. Audit based on 4-agent parallel research of all completed task artifacts and source files.",
+      "last_updated": "2026-05-15T21:30:00Z",
+      "dependencies": [],
+      "description": "Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned — dense case solved via chronicle).",
       "artifacts": [
         {
           "path": "specs/021_technical_debt_cleanup/reports/01_tech-debt-audit.md",
@@ -447,12 +444,12 @@
     {
       "project_number": 64,
       "project_name": "critical_path_review",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
-      "last_updated": "2026-03-25T18:30:47Z",
+      "last_updated": "2026-05-15T21:30:00Z",
       "session_id": "sess_1774461365_0e8fc2",
       "researched": "2026-03-25T18:30:47Z",
-      "completion_summary": "Research-only task: produced two comprehensive reports analyzing Strategy C (Restricted Chain + σ-Duality Dovetailing) and Temporal Shift Automorphism approaches. Strategy C confirmed as optimal path for task 58. τ proven impossible as global algebraic construction.",
+      "completion_summary": "Abandoned: research-only task whose findings (Strategy C recommendations) were fully acted upon via the chronicle approach in tasks 107-142.",
       "artifacts": [
         {
           "path": "specs/064_critical_path_review/reports/05_team-research.md",
@@ -470,8 +467,9 @@
     {
       "project_number": 68,
       "project_name": "prove_dense_completeness_fc_via_rat",
-      "status": "researched",
+      "status": "abandoned",
       "language": "lean4",
+      "completion_summary": "Abandoned: target file (FrameConditions/Completeness.lean) moved to Boneyard. Dense completeness solved through dd_countermodel_chronicle_dense.",
       "description": "Eliminate the sorry in dense_completeness_fc (FrameConditions/Completeness.lean line 121) by constructing a canonical model over Rat. This requires: (1) either parameterizing construct_bfmcs_bundle over the domain or creating construct_bfmcs_bundle_rat, (2) proving the corresponding truth lemma for the Rat construction, (3) wiring dense_completeness_fc through completeness_over_Rat. Int cannot be used because Int is not densely ordered. Rat is countable, aligning with existing Lindenbaum/countable MCS machinery.",
       "effort": "6-10 hours",
       "parent_task": 58,
@@ -1137,9 +1135,65 @@
       ],
       "topic": "agent-system",
       "completion_summary": "Added topic taxonomy (7 categories) to state.json active_topics array and per-task topic fields; implemented topic-grouped Task Order rendering with Union-Find component detection in generate-task-order.sh; wired topic assignment into /task (Step 4.5 AskUserQuestion picker), meta-builder-agent (Stage 5 Topic column), skill-fix-it (Step 9.1 auto-inference), and /review (Section 5.6.3 jq); updated format and schema documentation."
+    },
+    {
+      "project_number": 153,
+      "project_name": "prove_succ_cofinal_discrete",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "completeness",
+      "description": "Prove succ_cofinal (ChronicleToCountermodel.lean:1885): for any points a < b in the discrete limit domain, there exists n such that succ^[n](a) >= b. This is the root sorry blocking limitDomSubtype_isSuccArchimedean → succ_embed_surjective → cantor_bfmcs_discrete_restricted_tc/fuc → dd_countermodel_chronicle_discrete → bx_completeness. The proof must show the succ orbit of any point is cofinal when all domain MCS contain U(T,bot). Approaches: (a) stage-based argument — each chronicle construction stage adds finitely many points, and succ advances at least one stage, so finitely many iterates reach any target; (b) Z1-based argument — FG(phi)->G(phi) ensures succ orbits have no accumulation points from below; (c) constant-MCS impossibility — show the omega-chain construction cannot produce a constant-MCS gap. Analysis in ChronicleToCountermodel.lean lines 1860-1884 documents the known obstacles. An independent alternative (tasks 154-155, Reynolds pipeline) can also eliminate this sorry by bypassing succ_cofinal entirely. Definition of done: succ_cofinal sorry-free, #print axioms bx_completeness shows no sorryAx, lake build passes.",
+      "dependencies": [],
+      "created": "2026-05-15T21:30:00Z",
+      "last_updated": "2026-05-15T22:00:00Z",
+      "researched": "2026-05-15T22:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/153_prove_succ_cofinal_discrete/reports/01_succ-cofinal-research.md",
+          "description": "Research report: succ_cofinal analysis with 7 candidate approaches assessed"
+        }
+      ]
+    },
+    {
+      "project_number": 154,
+      "project_name": "sum_preservation_ef_games",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "completeness",
+      "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
+      "dependencies": [],
+      "created": "2026-05-15T21:30:00Z",
+      "last_updated": "2026-05-15T14:30:00Z",
+      "researched": "2026-05-15T14:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/154_sum_preservation_ef_games/reports/01_sum-preservation-research.md",
+          "created": "2026-05-15T14:30:00Z"
+        }
+      ]
+    },
+    {
+      "project_number": 155,
+      "project_name": "reynolds_pipeline_activation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "completeness",
+      "description": "Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating succ_cofinal from bx_completeness. Currently doets_countermodel_discrete (Transfer.lean:145) delegates to Chronicle.dd_countermodel_chronicle_discrete which carries the succ_cofinal sorry through limitDomSubtype_isSuccArchimedean. The Reynolds pipeline (steps 1-6 documented in Transfer.lean comments) produces a Z-model from the chronicle's goodness certificate. Rather than bridging ZIntervalStructure to TaskFrame via an adapter, refactor the pipeline to construct a TaskFrame Int directly from the Reynolds output: the Z-interval structure from Doets/Reynolds IS a discrete linear order on integers with a valuation — define the TaskFrame, TaskModel, and WorldHistory directly from this structure, making the construction self-contained. Steps: (1) Close chronicle_is_good using sorry-free sum_preservation (task 154). (2) Define the Reynolds Z-model as a TaskFrame Int with valuation derived from the standard translation and table_correctness. (3) Prove the truth transfer: formula phi holds at the root iff the standard translation table(phi) holds in the Z-model, using table_correctness (now sorry-free from tasks 147-148). (4) Wire into Transfer.lean replacing the chronicle fallback. (5) Verify #print axioms bx_completeness shows no sorryAx. Definition of done: doets_countermodel_discrete uses Reynolds pipeline (no chronicle fallback), bx_completeness has no sorryAx, lake build passes.",
+      "dependencies": [154],
+      "created": "2026-05-15T21:30:00Z",
+      "last_updated": "2026-05-15T21:30:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 153,
+  "next_project_number": 156,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

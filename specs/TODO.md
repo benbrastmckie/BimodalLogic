@@ -1,22 +1,22 @@
 ---
-next_project_number: 152
+next_project_number: 156
 repository_health:
   overall_score: 95
   production_readiness: near-publication
-  last_assessed: 2026-05-14T01:30:00Z
+  last_assessed: 2026-05-15T21:30:00Z
 task_counts:
-  active: 27
-  completed: 783
+  active: 14
+  completed: 784
   in_progress: 0
-  not_started: 11
-  abandoned: 80
-  total: 873
+  not_started: 9
+  abandoned: 85
+  total: 879
 technical_debt:
-  sorry_count: 6
-  sorry_count_note: "Audited 2026-05-15: 6 sorries remain on bx_completeness critical path: 3 in NEquivalence.lean (k_type_of, ktype_finite, finite_types — task 139), 2 in Table.lean (table, table_depth_bound — task 140), 1 in ChronicleToCountermodel.lean (mixed case — task 142). Task 141 resolved: canS5R_symm and reflCanR_linear closed (sorry-free); 6 TruthLemma Until/Since sorries reclassified as non-critical-path (parametric truth lemma handles via BFMCS coherence). ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free."
-  publication_path_sorries: 6
+  sorry_count: 1
+  sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Two paths to eliminate succ_cofinal: direct proof (task 153) or Reynolds pipeline bypass (tasks 154-155). ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free."
+  publication_path_sorries: 1
   axiom_count: 0
-  axiom_count_note: "Zero custom axioms. Prior-UZ/SZ are standard axiom constructors with sorry-free soundness proofs."
+  axiom_count_note: "Zero custom axioms. Prior-UZ/SZ and discrete_box_necessity are standard axiom constructors with sorry-free soundness proofs."
   build_errors: 0
   status: excellent
 ---
@@ -34,23 +34,19 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 20,21,125,128 | 18,116,122 | completeness, frame-extensions, algebraic-representation |
+| 1 | 21,60,95,112,114,116,122,126,127,130,131,153,154,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 125,128,155 | 116,122,154 | completeness, frame-extensions, algebraic-representation |
 
 **Grouped by Topic** (indented = must complete first):
 
 ### Completeness
 ```
-8 [RESEARCHED] — genuine_truth_at_completeness
-18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into 
-20 [NOT STARTED] — Review ParametricCanonical.lean, ParametricTruthLemma.lean, and P
-  └─ 18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into  (see above)
-21 [PLANNED] — Clean up technical debt accumulated across tasks 9-20 metalogic r
-  └─ 18 [BLOCKED] — Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into  (see above)
-64 [RESEARCHED] — critical_path_review
-68 [RESEARCHED] — Eliminate the sorry in dense_completeness_fc (FrameConditions/Com
-95 [NOT STARTED] — Verification pass to confirm sorry-free completeness. (1) Run #pr
-142 [IMPLEMENTING] — Resolve the mixed-case sorry in bx_completeness: the case where n
+21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track (tasks 9
+95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
+153 [RESEARCHED] — Prove succ_cofinal (ChronicleToCountermodel.lean:1885): for any p
+154 [RESEARCHED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_
+155 [NOT STARTED] — Replace the chronicle fallback in Transfer.lean with the full Rey
+  └─ 154 [RESEARCHED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_ (see above)
 ```
 
 ### Formula Refactor
@@ -94,6 +90,41 @@ technical_debt:
 
 ## Tasks
 
+### 155. Activate Reynolds pipeline for sorry-free discrete completeness
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: 154
+
+**Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Rather than bridging `ZIntervalStructure` to `TaskFrame` via an adapter, refactor the pipeline to construct a `TaskFrame Int` directly from the Reynolds output. Wire `chronicle_is_good` (unblocked by task 154), `table_correctness` (sorry-free from tasks 147-148), and a direct `TaskFrame` construction into Transfer.lean. Definition of done: `doets_countermodel_discrete` uses Reynolds pipeline, `bx_completeness` has no `sorryAx`, `lake build` passes.
+
+---
+
+### 154. Prove sum_preservation via Ehrenfeucht-Fraisse games (Doets Lemma 1.4)
+- **Effort**: 8-15 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: None
+- **Report**: [specs/154_sum_preservation_ef_games/reports/01_sum-preservation-research.md]
+
+**Description**: Prove `sum_preservation` (NEquivalence.lean:190) and `doets_lemma_1_4` (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games. Also close the `carrier_order` sorries in the Sigma-type ordered sum construction (lexicographic order), and downstream sorries in `contemp_equiv_is_equiv` transitivity (IntegerModel.lean:128) and `no_gaps_discrete` (IntegerModel.lean:145). Definition of done: `sum_preservation` sorry-free, `doets_lemma_1_4` sorry-free, `carrier_order` defined (not sorry), `lake build` passes.
+
+---
+
+### 153. Prove succ_cofinal for discrete limit domains
+- **Effort**: 4-8 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: None
+- **Report**: [specs/153_prove_succ_cofinal_discrete/reports/01_succ-cofinal-research.md]
+
+**Description**: Prove `succ_cofinal` (ChronicleToCountermodel.lean:1885): for any points `a < b` in the discrete limit domain, there exists `n` such that `succ^[n](a) >= b`. This is the root sorry blocking `limitDomSubtype_isSuccArchimedean` -> `succ_embed_surjective` -> `dd_countermodel_chronicle_discrete` -> `bx_completeness`. Approaches: (a) stage-based argument, (b) Z1-based argument, (c) constant-MCS impossibility. An independent alternative (tasks 154-155, Reynolds pipeline) can also eliminate this sorry by bypassing `succ_cofinal` entirely. Definition of done: `succ_cofinal` sorry-free, `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
+
+---
+
 ### 152. Task Order topic grouping and wave separation
 - **Effort**: 3-6 hours
 - **Status**: [COMPLETED]
@@ -107,6 +138,8 @@ technical_debt:
   - [152_task_order_topic_grouping/plans/02_topic-grouping.md]
 - **Summary**: [152_task_order_topic_grouping/summaries/02_topic-grouping-summary.md]
 - **Description**: Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. Detect independent subgraphs (connected components), add optional topic field to state.json, update generate-task-order.sh to group roots by topic with per-group code blocks and markdown headings, enhance wave table with topic breakdown, and backfill topic for existing tasks.
+
+---
 
 ### 149. Redesign Task Order format and generation script
 - **Effort**: 3-6 hours
@@ -246,33 +279,20 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 ---
 
 ### 142. Mixed-case countermodel for bx_completeness
-- **Effort**: 45-75 hours
-- **Status**: [PLANNED]
+- **Effort**: 8 hours
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: None
 - **Research**:
   - [specs/142_mixed_case_countermodel/reports/01_mixed-case-research.md]
   - [142_mixed_case_countermodel/reports/02_team-research.md]
-- **Task Type**: lean4
-- **Priority**: high
-- **Dependencies**: None (architecturally independent of discrete/dense branches)
   - [142_mixed_case_countermodel/reports/04_team-research.md]
 - **Plan**: [142_mixed_case_countermodel/plans/04_structural-axiom-plan.md]
+- **Summary**: All 5 phases complete. Added structural axiom `discrete_box_necessity` (U(T,bot) → □(U(T,bot))). Proved soundness via translation-invariance. Derived `mcs_mixed_case_absurd` showing mixed case is impossible. `dd_countermodel_chronicle_mixed_sorry` proved via `False.elim`. Axiom count 41→42.
 
-**Description**: Resolve the mixed-case sorry in `bx_completeness`: the third branch where neither `box(F'T)` (dense) nor `box(U(T,bot))` (discrete) is in the MCS. Currently `dd_countermodel_chronicle_mixed_sorry` (ChronicleToCountermodel.lean:3327) is a bare sorry.
-
-The dense case uses Cantor iso to Q, the discrete case uses chronicle + Reynolds pipeline to Z. The mixed case has some box-accessible worlds that are dense and others discrete, which cannot coexist in a single BFMCS with a fixed domain type D.
-
-**Research candidates**:
-1. Product construction: separate dense and discrete countermodels, combine via disjoint union
-2. Ultraproduct: Los theorem to merge models
-3. BX theorem: derive contradiction showing mixed case is inconsistent
-4. Enriched frames: domain accommodating both dense and discrete regions
-5. Reduction: show mixed case reduces to one of the other two via modal reasoning
-
-Task 122 research report (Section 4) has preliminary analysis. Requires dedicated research before planning.
-
-**Definition of done**: `dd_countermodel_chronicle_mixed_sorry` sorry-free, `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
-
-**Files**: `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean`, `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean`.
+**Description**: Resolved the mixed-case sorry in `bx_completeness` by adding the structural axiom `discrete_box_necessity` and proving the mixed case contradictory.
 
 ---
 
@@ -319,7 +339,7 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 
 ### 122. Build discrete BFMCS on ℤ and complete discrete countermodel
 - **Effort**: 8-15 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 123
@@ -331,7 +351,7 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 
 ### 126. Four-tier frame hierarchy: Base → Dense/Discrete → Integer extensions
 - **Effort**: 15-25 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Dependencies**: 123, 129
 - **Research**: [specs/126_frame_hierarchy_dense_discrete_integer_extensions/reports/01_frame-hierarchy-research.md]
@@ -364,7 +384,7 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 
 ### 112. Systematic literature study for task 107 representation theorem
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Task Type**: formal
 - **Research**: [specs/112_literature_study_representation_theorem/reports/01_team-research.md]
 
@@ -377,53 +397,24 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 - **Status**: [NOT STARTED]
 - **Language**: lean4
 - **Priority**: medium
-- **Dependencies**: Tasks 93, 109
+- **Dependencies**: None
 - **Created**: 2026-04-10
-- **Related**: Tasks 60, 93, 109
 
-**Description**: Verification pass to confirm sorry-free completeness after task 109 closes the chain construction sorries. (1) Run `#print axioms` on `bx_completeness`; confirm output is exactly `{propext, Classical.choice, Quot.sound}` with no `sorry` dependency. (2) Classify all `sorry` occurrences in `Soundness.lean` and `SoundnessLemmas.lean` (real sorry vs docstring/comment). (3) Confirm `soundness`, `soundness_dense`, `soundness_discrete` build with only standard axioms. (4) Audit for any custom Lean `axiom` declarations (expected: possibly `discrete_Icc_finite_axiom` per task 60). (5) Produce audit report at `specs/reviews/completeness-audit-{DATE}.md`. Depends on task 109 for full completeness verification.
-
+**Description**: Verification pass on `bx_completeness` sorry status. Updated scope: (1) Verify `dd_countermodel_chronicle_dense` and `dd_countermodel_chronicle_mixed_sorry` show no `sorryAx` (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case `sorryAx` chain: `dd_countermodel_chronicle_discrete` -> `succ_embed_surjective` -> `limitDomSubtype_isSuccArchimedean` -> `succ_cofinal` (root sorry). (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report.
 ---
 
 ### 68. Prove dense_completeness_fc via Rat canonical model
-- **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean4
-- **Dependencies**: Task #72
-- **Parent Task**: #58
-- **Research**: [83_spawn-analysis.md](058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md)
 
-**Description**: Eliminate the sorry in dense_completeness_fc (FrameConditions/Completeness.lean line 121) by constructing a canonical model over Rat. Int cannot be used because Int is not densely ordered. Rat is countable, aligning with existing Lindenbaum/countable MCS machinery.
-
-**Hint**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) is the key to dense guard population — it propagates the Until formula itself through the interval, making each intermediate point contain `φ` via BX9 `until_elim`. Use Cantor-domain chain construction over a countable dense order, with interval-filling for Until guards.
-
+**Description**: Abandoned: target file (FrameConditions/Completeness.lean) moved to Boneyard. Dense completeness solved through `dd_countermodel_chronicle_dense`.
 ---
 
 ### 64. Critical path review: algebraic analysis of completeness obstacles
-- **Effort**: Research task
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean4
-- **Research**:
-  - [01_critical-path-analysis.md](064_critical_path_review/reports/01_critical-path-analysis.md)
-  - [02_team-research.md](064_critical_path_review/reports/02_team-research.md)
 
-**Description**: Multi-agent review of the critical path tasks (58-60) for accuracy, identification of gaps, and algebraic strategy analysis. Key findings:
-
-**Sorry inventory correction**: Actual sorry count is 25 (not 98 per ROADMAP). SuccChain sorries (24) removed in task 56. Perpetuity bridge (16) all proven. Publication-path sorries: 9 (tasks 58+59 only). The ROADMAP Class A/B distinction is moot — the SuccChain approach was abandoned.
-
-**TODO.md accuracy**: Task descriptions are accurate on locations and content. Task 59 is incorrectly marked as dependent on 58 — it's parallelizable. Task 58's description understates the obstacle: the real blocker is temporal coherence construction, not wiring.
-
-**Central obstacle**: `construct_bfmcs` requires `B.temporally_coherent` proof. The deprecated implementation depends on the false `f_nesting_is_bounded`. The entire 5,300-line sorry-free algebraic path reduces to this single callback.
-
-**Algebraic resolution strategies identified**:
-- **(A) Zorn on R_G-chains**: Maximal chains through R_□-class exist; challenge is matching order type of D.
-- **(B) Temporal shift automorphism**: Define τ on Lindenbaum algebra; FMCS = {τᵗ(U)}. Challenge: G is not invertible.
-- **(C) Restricted chain + σ-duality** (recommended): Forward chain is sorry-free; use σ-duality for backward chain; dovetail into FMCS over ℤ. Shortest path leveraging existing infrastructure.
-
-**STSA status**: Typeclass and LindenbaumAlg instance are fully sorry-free (TenseS5Algebra.lean, 350 lines). The STSA representation theorem (task 992) is a reorganization of existing code, not on critical path but provides the elegant algebraic framing.
-
-**Custom axiom inventory**: Only `discrete_Icc_finite_axiom` remains (task 60). The `f_nesting_boundary` and `p_nesting_boundary` axioms were eliminated in task 56.
-
+**Description**: Abandoned: research-only task whose findings (Strategy C recommendations) were fully acted upon via the chronicle approach in tasks 107-142.
 ---
 
 ### 60. Clean up stale discrete_Icc_finite_axiom references
@@ -435,77 +426,44 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [NOT STARTED]
 - **Language**: lean4
-- **Dependencies**: Tasks 15, 18
-- **Plan**: [01_tech-debt-cleanup-plan.md](021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md) — 6 phases: axiom elimination, dead-code resolution, documentation
+- **Dependencies**: None
 - **Research**:
-  - [01_tech-debt-audit.md](021_technical_debt_cleanup/reports/01_tech-debt-audit.md) — comprehensive 4-agent parallel audit of all code from tasks 9-20
-  - [02_team-research.md](021_technical_debt_cleanup/reports/02_team-research.md) — synthesized team research: axiom classification, derivation priorities, action plan
-  - [02_teammate-a-findings.md](021_technical_debt_cleanup/reports/02_teammate-a-findings.md) — axiom semantic validity analysis
-  - [02_teammate-b-findings.md](021_technical_debt_cleanup/reports/02_teammate-b-findings.md) — axiom proof dependencies and derivation paths
-  - [02_teammate-c-findings.md](021_technical_debt_cleanup/reports/02_teammate-c-findings.md) — frame condition theory analysis
+  - [01_tech-debt-audit.md](021_technical_debt_cleanup/reports/01_tech-debt-audit.md)
+  - [02_team-research.md](021_technical_debt_cleanup/reports/02_team-research.md)
+- **Plan**: [01_tech-debt-cleanup-plan.md](021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md)
 
-**Description**: Pay down technical debt accumulated across the metalogic refactoring track (tasks 9-20). Systematic cleanup in 4 phases: (1) **Dead code removal** — delete redundant lemmas in CanonicalTaskRelation.lean (iter_F_succ_eq, CanonicalTask_neg_succ_nat, 3 unused accessors), unused helpers in TimelineQuotBFMCS.lean (6 items), deprecated dead-end code in AlgebraicBaseCompleteness.lean (2 items). (2) **Deprecation marking** — mark discreteTaskFrame/denseTaskFrame as deprecated in DurationTransfer.lean, evaluate CanonicalRecovery.lean compat wrappers. (3) **Bridge assessment** — evaluate ClosedFlagIntBFMCS.lean bridge for simplification, assess downstream usage of compat wrappers, document dovetailing gap resolution path. (4) **Deferred items** — re-audit after tasks 18-20 complete to capture final debt state. Note: Tasks 18 (researching), 19 (not started), and 20 (not started) may introduce or resolve additional debt.
-
+**Description**: Clean up technical debt from metalogic refactoring track (tasks 9-20). Scope revised: (1) Document which metalogic paths are live (chronicle BXCanonical approach) vs dead (TimelineQuot, DenseTask, CanonicalModel parametric approach). (2) Remove dead code from non-chronicle paths or archive to Boneyard (overlaps with task 130). (3) Update stale docstrings in Metalogic/ files that reference superseded approaches. (4) Consolidate parametric representation usage documentation. Original dependency on task 18 removed (task 18 abandoned).
 ---
 
 ### 20. Audit and update parametric canonical infrastructure
-- **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Language**: lean4
-- **Dependencies**: Tasks 15, 18
-- **Research (task 6)**:
-  - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §2.2–2.3, §7 open question 3 — current duration-coarse relation vs duration-precise alternatives, question of parametric unification
-  - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §4.3 — unified TaskFrame view showing both discrete/dense cases instantiate the same structure
 
-**Description**: Review ParametricCanonical.lean, ParametricTruthLemma.lean, and ParametricRepresentation.lean. Determine whether the parametric infrastructure can be refactored to accept a generic task_rel parameter (not hardcoded duration-coarse relation), enabling both CanonicalTask and DenseTask as instantiations. If feasible, refactor; otherwise document the relationship between parametric (base) and specialized (discrete/dense) paths.
+**Description**: Abandoned: depended on task 18 (now abandoned). Parametric infrastructure already used successfully by both dense and discrete countermodel paths.
 
 ---
 
 ### 18. Complete dense representation theorem via DenseTask
-- **Effort**: 6-7 hours
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
 - **Language**: lean4
-- **Dependencies**: Tasks 17, 27, 30, 31
-- **Research (task 6)**:
-  - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §5 — replacing CanonicalR with DenseTask in the dense setting, truth condition restatement
-  - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §3.2, §6 dense table — full wiring of dense representation pipeline, use of timelineQuot_instantiate_dense to close the domain mismatch
-- **Research**:
-  - [01_dense-representation-research.md](018_dense_representation_theorem_completion/reports/01_dense-representation-research.md)
-  - [02_team-research.md](018_dense_representation_theorem_completion/reports/02_team-research.md) — team research: blocker analysis, domain confusion, correct approach
-  - [05_team-research.md](018_dense_representation_theorem_completion/reports/05_team-research.md) — team research run 2: 7 real sorries, revised 4-phase plan A-D, no closure operator needed
-  - [13_post-task27-analysis.md](018_dense_representation_theorem_completion/reports/13_post-task27-analysis.md) — post-task27: 4 localized sorries in j>0 termination, DovetailedTimelineQuot integration
-- **Plan**: [04_dense-representation-v4.md](018_dense_representation_theorem_completion/plans/04_dense-representation-v4.md) — v4: post-task27 using DovetailedTimelineQuot, 3 remaining phases
-- **Summary**: [03_implementation-summary.md](018_dense_representation_theorem_completion/summaries/03_implementation-summary.md) — Phases 1-2 complete (v3), plan revised for phases 3-5
 
-**Description**: Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.
-
-**Hint**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) is the key to dense guard population — it propagates the Until formula itself through the interval, making each intermediate point contain `φ` via BX9 `until_elim`. Use Cantor-domain chain construction over a countable dense order, with interval-filling for Until guards.
+**Description**: Abandoned: dense case solved via `dd_countermodel_chronicle_dense` (Burgess chronicle + Cantor iso on Q), verified sorry-free. TimelineQuot/DenseTask approach entirely superseded.
 
 ---
 
 ### 8. Establish genuine truth_at completeness theorems for TM logic
- **Effort**: 12-20 hours
- **Status**: [RESEARCHED]
- **Language**: lean4
- **Dependencies**: Task #1007
- **Research**:
-  - [01_completeness-architecture.md](008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
-  - [02_completeness-blockers.md](008_genuine_truth_at_completeness/reports/02_completeness-blockers.md)
-  - [03_team-research.md](008_genuine_truth_at_completeness/reports/03_team-research.md)
-  - [04_team-research.md](008_genuine_truth_at_completeness/reports/04_team-research.md)
- **Plan**: [03_revised-completeness-plan.md](008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
+- **Status**: [ABANDONED]
+- **Language**: lean4
 
-**Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
-
-**Hint (dense leg)**: BX5 self-accumulation (`(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`) is the key to dense guard population — it propagates the Until formula itself through the interval, making each intermediate point contain `φ` via BX9 `until_elim`. Use Cantor-domain chain construction over a countable dense order, with interval-filling for Until guards.
+**Description**: Abandoned: broad umbrella task superseded by chronicle approach. `bx_completeness` already uses `truth_at` semantics. Dense+mixed cases sorry-free. Remaining discrete sorry (`succ_cofinal`) tracked by focused tasks 153-155.
 
 ---
 
 ### 998. Redesign FMP filtration for strict temporal semantics
 - **Effort**: TBD (estimated 4-8 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean4
 - **Priority**: high
 - **Related**: Tasks 74-77 (strict temporal extensions research track)
@@ -517,7 +475,7 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 
 ### 992. Implement Shift-Closed Tense S5 Algebra representation theorem
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean
 - **Research**: [01_stsa-algebraic-analysis.md](992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md)
 
@@ -528,7 +486,7 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 
 ### 953. Refactor proof system to bilateral system
 - **Effort**: 55-90 hours
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [research-001.md](specs/953_refactor_proof_system_to_bilateral/reports/research-001.md), [research-002.md](specs/953_refactor_proof_system_to_bilateral/reports/research-002.md), [research-003.md](specs/953_refactor_proof_system_to_bilateral/reports/research-003.md)
@@ -543,7 +501,7 @@ Task 122 research report (Section 4) has preliminary analysis. Requires dedicate
 
 ### 949. Update Demo.lean for current bimodal logic state
 - **Effort**: Small (~2 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/949_update_demo_lean_bimodal_logic/reports/research-001.md)
 
