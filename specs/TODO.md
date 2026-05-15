@@ -50,10 +50,12 @@ technical_debt:
 
 **Normal form infrastructure** (Doets Lemma 1.1):
 7. **143** [COMPLETED] — Doets Lemma 1.1: normal form KType redesign with finite domain (6-9h, depends on 139)
+8. **145** [RESEARCHED] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
+9. **146** [RESEARCHED] — NormalForm legacy cleanup and cardinality correspondence proof (1-2h, depends on 145)
 
 **Cleanup**:
-8. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
-9. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+10. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
+11. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
 ### Phase 2: Module Reorganization
 
@@ -116,6 +118,30 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
   - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-b-findings.md]
   - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-c-findings.md]
   - [specs/143_doets_lemma_1_1_normal_form_ktype/reports/01_teammate-d-findings.md]
+
+---
+
+### 145. Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone
+- **Effort**: 3-5 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: 143
+- **Research**: [specs/145_split_nequivalence_close_k_equiv_monotone/reports/01_split-design.md]
+
+**Description**: Split NEquivalence.lean into MonadicFO.lean (pure FO definitions: MonadicSignature, MonadicFormula, eval, atomCount, nfCount, NormalFormIdx) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine `KType sig k := NormalForm sig k 0 -> Bool` (replacing NormalFormIdx). Redefine `k_type_of` using `nf_eval_nf` (replacing vacuous `nf_rep`). Close `k_equiv_monotone` sorry via `nf_agreement_monotone`. Delete `nf_rep`. Verify `finite_types` remains closed and `lake build` passes.
+
+---
+
+### 146. NormalForm legacy cleanup and cardinality correspondence proof
+- **Effort**: 1-2 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Dependencies**: 145
+- **Research**: [specs/146_normalform_cleanup_cardinality/reports/01_cleanup-design.md]
+
+**Description**: Remove legacy dead code (vacuous `nf_eval`, `nf_vector`, `normalFormIdx_nonempty`) from NormalForm.lean. Prove cardinality correspondences: `Fintype.card (AtomKind sig n) = atomCount p n` and `Fintype.card (NormalForm sig k n) = nfCount p k n`, confirming the counting function matches the actual type. Update docstrings for publication quality. Optionally prove `normalForm_equiv_fin : NormalForm sig k n ≃ NormalFormIdx sig k n`.
 
 ---
 
