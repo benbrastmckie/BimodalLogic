@@ -177,7 +177,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update format and schema documentation [NOT STARTED]
+### Phase 4: Update format and schema documentation [COMPLETED]
 
 **Goal**: Document all new format elements in task-order-format.md and schema changes in state-management-schema.md and state-management.md.
 

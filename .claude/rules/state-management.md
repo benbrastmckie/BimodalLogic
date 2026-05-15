@@ -11,7 +11,8 @@ TODO.md and state.json MUST stay synchronized. Any update to one requires updati
 ### Canonical Sources
 - **state.json**: Machine-readable source of truth
   - next_project_number
-  - active_projects array with status, task_type
+  - active_projects array with status, task_type, topic (optional per-task field)
+  - active_topics top-level string array: canonical topic taxonomy for task grouping in Task Order
   - Faster to query (12ms vs 100ms for TODO.md parsing)
 
 - **TODO.md**: User-facing source of truth
