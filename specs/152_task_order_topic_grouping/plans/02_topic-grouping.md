@@ -210,7 +210,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Keyword heuristic helper function [NOT STARTED]
+### Phase 5: Keyword heuristic helper function [COMPLETED]
 
 **Goal**: Extract the keyword heuristic into a reusable shell function available to both generate-task-order.sh and task-creation commands, avoiding duplication across files.
 

@@ -132,7 +132,7 @@ When $ARGUMENTS contains a description (no flags).
 
 4.5 **Detect topic** from keywords (after task_type detection):
 
-   Run keyword heuristic against the combined description text. Pattern matching order (most specific first):
+   Run keyword heuristic against the combined description text (same pattern as `assign_topic_heuristic()` in `.claude/scripts/generate-task-order.sh`). Pattern matching order (most specific first):
    - "bilateral", "acceptance", "rejection" → `bilateral`
    - "agent", "architecture", "demo", "task_order", "compliance", "meta", "rules" → `agent-system`
    - "jonsson", "tarski", "stsa", "lindenbaum", "algebraic", "boolean_algebra" → `algebraic-representation`

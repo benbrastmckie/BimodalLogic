@@ -119,7 +119,9 @@ Topics are stored in `state.json` at two levels:
 - **Top-level array**: `active_topics: ["completeness", "decidability", ...]` — canonical order for rendering
 - **Per-task field**: `"topic": "completeness"` — optional string on each task entry
 
-The keyword heuristic function `assign_topic_heuristic()` in `.claude/scripts/generate-task-order.sh` auto-infers topics from task names and descriptions using the priority order: bilateral > agent-system > algebraic-representation > decidability > formula-refactor > frame-extensions > completeness.
+The keyword heuristic function `assign_topic_heuristic()` in `.claude/scripts/generate-task-order.sh` (lines ~208-235) auto-infers topics from task names and descriptions using the priority order: bilateral > agent-system > algebraic-representation > decidability > formula-refactor > frame-extensions > completeness.
+
+This function is the canonical heuristic for all task-creation commands. When implementing topic assignment in `/task` Step 4.5, `meta-builder-agent` Stage 3.5, `skill-fix-it` Step 9.1, and `/review` Section 5.6.3, apply the same keyword matching pattern rather than duplicating it.
 
 ---
 
