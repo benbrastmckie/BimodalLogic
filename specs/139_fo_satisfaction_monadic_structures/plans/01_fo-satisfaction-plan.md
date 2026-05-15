@@ -1,7 +1,7 @@
 # Implementation Plan: Task #139
 
 - **Task**: 139 - Build FO satisfaction infrastructure for monadic structures
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: Task 129 (completed)
 - **Research Inputs**: specs/139_fo_satisfaction_monadic_structures/reports/01_team-research.md
@@ -79,16 +79,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Redesign MonadicFormula Type and quantifier_depth [NOT STARTED]
+### Phase 1: Redesign MonadicFormula Type and quantifier_depth [COMPLETED]
 
 **Goal**: Replace `MonadicSentence sig` with `MonadicFormula sig n` using De Bruijn `Fin n` variables, add `exists` constructor, fix `atom` and `lt` signatures, and define `quantifier_depth`.
 
 **Tasks**:
-- [ ] Replace the `MonadicSentence` inductive with `MonadicFormula sig n` inductive containing constructors: `atom (p : sig.preds) (i : Fin n)`, `lt (i j : Fin n)`, `not`, `and`, `forall` (binding `n+1 -> n`), `exists` (binding `n+1 -> n`)
-- [ ] Define `abbrev MonadicSentence (sig) := MonadicFormula sig 0`
-- [ ] Redefine `MonadicFormula.quantifier_depth` for the new type (unchanged for atom/lt/not/and, +1 for forall/exists)
-- [ ] Add `DecidableEq` instance for `MonadicFormula sig n` (derive or prove)
-- [ ] Verify `lake build` on NEquivalence.lean in isolation (expect downstream breakage, but the file itself should compile with sorries on `ktype_finite`, `k_type_of`, etc.)
+- [x] Replace the `MonadicSentence` inductive with `MonadicFormula sig n` inductive containing constructors: `atom (p : sig.preds) (i : Fin n)`, `lt (i j : Fin n)`, `not`, `and`, `all` (binding `n+1 -> n`), `ex` (binding `n+1 -> n`) *(deviation: altered -- used `all`/`ex` instead of `forall`/`exists` to avoid clashing with Lean keywords)*
+- [x] Define `abbrev MonadicSentence (sig) := MonadicFormula sig 0`
+- [x] Redefine `MonadicFormula.quantifier_depth` for the new type (unchanged for atom/lt/not/and, +1 for all/ex)
+- [x] Add `DecidableEq` instance for `MonadicFormula sig n` (derived via `deriving DecidableEq`)
+- [x] Verify NEquivalence.lean compiles in isolation (downstream breakage expected)
 
 **Timing**: 1.5 hours
 
@@ -104,18 +104,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Implement eval, Redefine KType and k_type_of [NOT STARTED]
+### Phase 2: Implement eval, Redefine KType and k_type_of [COMPLETED]
 
 **Goal**: Implement Tarski satisfaction (`eval`), redefine `KType` as a truth-assignment function type, and provide a genuine (sorry-free) definition of `k_type_of`.
 
 **Tasks**:
-- [ ] Define `eval` by structural recursion: `eval (M : MonadicStructure sig) (env : Fin n -> M.carrier) : MonadicFormula sig n -> Prop` with cases for atom/lt/not/and/forall/exists using `Fin.cons` for variable binding
-- [ ] Add `Decidable` instance for `eval` when carrier is `Fintype` and predicates are `DecidablePred` (using `Fintype.decidableForallFintype` and `Fintype.decidableExistsFintype`)
-- [ ] Redefine `KType sig k := {s : MonadicFormula sig 0 // s.quantifier_depth <= k} -> Bool`
-- [ ] Redefine `k_type_of sig k (M : MonadicStructure sig) : KType sig k` as `fun ⟨s, _⟩ => decide (eval M Fin.elim0 s)` -- this requires `Decidable (eval M Fin.elim0 s)` for sentences, which needs either a decidability instance or a `sorry` placeholder for now (decidability of eval on sentences with empty environment depends on the carrier)
-- [ ] Redefine `k_equiv` to use the new `k_type_of` (same definition: equality of k-types)
-- [ ] Prove `k_equiv_monotone` genuinely: if `k_type_of sig k M = k_type_of sig k N` then restricting to depth-m sentences gives `k_type_of sig m M = k_type_of sig m N`
-- [ ] Verify the redefined types compile (downstream files will break)
+- [x] Define `eval` by structural recursion on `OrderedMonadicStructure sig` *(deviation: altered -- eval takes OrderedMonadicStructure instead of MonadicStructure, since lt evaluation requires LinearOrder on carrier)*
+- [x] Add `Decidable` instance for `eval` *(deviation: altered -- using Classical.dec in k_type_of instead of a standalone Decidable instance, since carrier may be infinite)*
+- [x] Redefine `KType sig k := {s : MonadicFormula sig 0 // s.quantifier_depth <= k} -> Bool`
+- [x] Redefine `k_type_of` as genuine (sorry-free) definition using eval and Classical.dec
+- [x] Redefine `k_equiv` to use the new `k_type_of`
+- [x] Prove `k_equiv_monotone` genuinely via funext and congr_fun
+- [x] Verify the redefined types compile (downstream files will break)
 
 **Timing**: 2 hours
 

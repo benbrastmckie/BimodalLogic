@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.ReflexiveCanonical
 import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
 import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Fin.VecNotation
 
 /-!
 # n-Equivalence and Monadic Sentences for Z-Model Construction
@@ -9,24 +10,28 @@ Defines the monadic first-order framework for Reynolds Theorem 15.
 
 ## Key definitions
 - `MonadicSignature`: finite set of predicate symbols
-- `MonadicSentence`: simplified monadic FO syntax (depth tracking)
+- `MonadicFormula sig n`: monadic FO formula with `n` free variables (De Bruijn `Fin n`)
+- `MonadicSentence sig`: abbreviation for `MonadicFormula sig 0` (closed formula)
 - `MonadicStructure`: carrier with predicate interpretations
 - `OrderedMonadicStructure`: monadic structure with `LinearOrder` on the carrier
-- `OrderedSum`: sum of monadic structures indexed by a linearly ordered set
-- `KEquivalenceFramework`: axiomatized typeclass interface for k-equivalence
-- `KType sig k`: k-types as subsets of depth-≤k true monadic sentences
-- `ktype_finite`: there are finitely many k-types (true by Doets 1989)
-- `k_equiv`, `k_type_of`: k-equivalence via type equality
+- `eval`: Tarski satisfaction for monadic FO formulas
+- `KType sig k`: k-types as truth-assignment functions on depth-≤k sentences
+- `k_type_of`: genuine (sorry-free) k-type computation via `eval`
+- `k_equiv`: k-equivalence via k-type equality
+- `KEquivalenceFramework`: typeclass interface for k-equivalence properties
 
-## Strategy
-All types are well-defined and non-vacuous. The `KEquivalenceFramework`
-typeclass provides a "shallow encoding" of the properties needed by
-downstream phases (Phases 4-7). This cleanly separates the mathematical
-interface from its eventual Tarski semantics instantiation.
+## Design
+`MonadicFormula sig n` uses De Bruijn variable binding with `Fin n` indices,
+following Reynolds 1994 Section 6 and Doets 1987 Chapter 1. Constructors:
+`atom`, `lt`, `not`, `and`, `all`, `ex`. Evaluation (`eval`) uses `Fin.cons`
+for quantifier binding. `KType` is a truth-assignment function type
+`{s : MonadicFormula sig 0 // s.quantifier_depth ≤ k} → Bool`, making
+finiteness immediate via `Fintype.Pi.fintype` once the domain is proved finite.
 
 ## References
 - Doets 1989, Section 1 (k-types, finiteness): `literature/Doets_1989_Monadic_Pi11_Theories.md`
 - Reynolds 1994, Section 4 (k-equivalence framework): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+- Reynolds 1994, Section 6 (monadic FO language): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 
@@ -43,31 +48,48 @@ structure MonadicSignature where
 attribute [instance] MonadicSignature.fintypePreds
 attribute [instance] MonadicSignature.decEqPreds
 
-/-! ## Monadic Sentence -/
+/-! ## Monadic Formula (De Bruijn indexed) -/
 
-inductive MonadicSentence (sig : MonadicSignature) : Type where
-  | atom (p : sig.preds) : MonadicSentence sig
-  | not (α : MonadicSentence sig) : MonadicSentence sig
-  | and (α β : MonadicSentence sig) : MonadicSentence sig
-  | forall (α : MonadicSentence sig) : MonadicSentence sig
-  /-- Order relation x < y. Without this, k-equivalence cannot
-      distinguish ordered structures. -/
-  | lt : MonadicSentence sig
+/--
+A monadic first-order formula with `n` free variables over signature `sig`.
+Variables are represented as De Bruijn indices (`Fin n`).
 
-/-- Quantifier depth of a monadic sentence. -/
-def MonadicSentence.quantifier_depth {sig : MonadicSignature} : MonadicSentence sig → Nat
-  | .atom _ => 0
+Constructors:
+- `atom p i`: unary predicate `p` applied to variable `i`
+- `lt i j`: order relation `x_i < x_j`
+- `not α`: negation
+- `and α β`: conjunction
+- `all α`: universal quantification (binds variable 0, shifts others up)
+- `ex α`: existential quantification (binds variable 0, shifts others up)
+-/
+inductive MonadicFormula (sig : MonadicSignature) : Nat → Type where
+  | atom (p : sig.preds) (i : Fin n) : MonadicFormula sig n
+  | lt (i j : Fin n) : MonadicFormula sig n
+  | not (α : MonadicFormula sig n) : MonadicFormula sig n
+  | and (α β : MonadicFormula sig n) : MonadicFormula sig n
+  | all (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
+  | ex (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
+  deriving DecidableEq
+
+/-- A monadic sentence: a closed formula with 0 free variables. -/
+abbrev MonadicSentence (sig : MonadicSignature) := MonadicFormula sig 0
+
+/-- Quantifier depth of a monadic formula. -/
+def MonadicFormula.quantifier_depth {sig : MonadicSignature} {n : Nat} :
+    MonadicFormula sig n → Nat
+  | .atom _ _ => 0
+  | .lt _ _ => 0
   | .not α => α.quantifier_depth
   | .and α β => max α.quantifier_depth β.quantifier_depth
-  | .forall α => α.quantifier_depth + 1
-  | .lt => 0
+  | .all α => α.quantifier_depth + 1
+  | .ex α => α.quantifier_depth + 1
 
 /-! ## Monadic Structure -/
 
 /--
 A monadic structure over signature `sig`. The carrier is any type;
-a `LinearOrder` instance would be needed for the ordered sum construction
-(Phase 4) but is not part of the monadic FO framework per se.
+predicate interpretations map each predicate symbol to a unary predicate
+on the carrier.
 -/
 structure MonadicStructure (sig : MonadicSignature) where
   carrier : Type
@@ -77,8 +99,8 @@ structure MonadicStructure (sig : MonadicSignature) where
 
 /--
 An ordered monadic structure bundles a monadic structure with a
-`LinearOrder` on its carrier. This enables subinterval restriction
-and the ordered sum construction needed for Reynolds Theorem 15.
+`LinearOrder` on its carrier. This enables subinterval restriction,
+the ordered sum construction, and Tarski evaluation of `lt` formulas.
 -/
 structure OrderedMonadicStructure (sig : MonadicSignature) extends MonadicStructure sig where
   carrier_order : LinearOrder carrier
@@ -137,10 +159,6 @@ theorem subinterval_singleton_finite (sig : MonadicSignature) (M : OrderedMonadi
 /--
 If b = Order.succ a in a SuccOrder, the subinterval [a, succ a] has exactly
 two elements: a and succ(a).
-
-Proof: For any x in the subinterval, a ≤ x ≤ succ(a). In a SuccOrder,
-the only element strictly between a and succ(a) is none (by `succ_le_of_lt`
-there is no k with a < k < succ a). So x is either a or succ(a).
 -/
 theorem subinterval_two_element_finite (sig : MonadicSignature) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] (a : M.carrier) :
@@ -183,167 +201,179 @@ def OrderedSum (sig : MonadicSignature) (I : Type) (M : I → MonadicStructure s
 /--
 A Z-structure: a monadic structure whose carrier is ℤ. This represents
 a "Z-model" or "Z-interval" in the Reynolds framework.
-
-The predicate interpretations are functions `pred → ℤ → Prop`.
 -/
 structure ZStructure (sig : MonadicSignature) where
   interp (p : sig.preds) : ℤ → Prop
 
 /--
-Convert a Z-structure to a plain monadic structure
-(useful for k-equivalence which operates on MonadicStructure).
+Convert a Z-structure to a plain monadic structure.
 -/
 def ZStructure.toMonadic (sig : MonadicSignature) (Z : ZStructure sig) : MonadicStructure sig where
   carrier := ℤ
   interp := Z.interp
 
+/--
+Convert a Z-structure to an ordered monadic structure (using ℤ's natural order).
+-/
+def ZStructure.toOrdered (sig : MonadicSignature) (Z : ZStructure sig) :
+    OrderedMonadicStructure sig where
+  carrier := ℤ
+  interp := Z.interp
+  carrier_order := inferInstance
+
+/-! ## Tarski Satisfaction (eval) -/
+
+/--
+Tarski satisfaction for monadic FO formulas. Evaluates a formula with `n` free
+variables in an ordered monadic structure `M` under an environment `env` that
+assigns carrier elements to each free variable.
+
+Quantifier binding uses `Fin.cons`: `∀ x, eval M (Fin.cons x env) α` binds
+variable 0 to `x` and shifts the remaining variables.
+-/
+def eval {sig : MonadicSignature} {n : Nat} (M : OrderedMonadicStructure sig)
+    (env : Fin n → M.carrier) : MonadicFormula sig n → Prop
+  | .atom p i => M.interp p (env i)
+  | .lt i j => env i < env j
+  | .not α => ¬ eval M env α
+  | .and α β => eval M env α ∧ eval M env β
+  | .all α => ∀ (x : M.carrier), eval M (Fin.cons x env) α
+  | .ex α => ∃ (x : M.carrier), eval M (Fin.cons x env) α
+
 /-! ## k-Types and k-Equivalence -/
 
 /--
-A k-type is a set of monadic sentences of quantifier depth ≤ k that are
-true in some structure. Formally, we represent it as a `Finset` of sentences
-(those that are true in the structure), which provides finiteness immediately.
+A k-type is a truth-assignment function on depth-≤k sentences.
+Each k-type maps each sentence of quantifier depth ≤ k to `true` or `false`,
+recording which sentences are satisfied by a structure.
 
-The actual satisfaction relation `M ⊨ s` is needed to define which sentences
-belong to a k-type, so `k_type_of` and `k_equiv` are sorried.
-
-This encoding is the "shallow encoding" per the risk mitigation strategy:
-we avoid formalizing full Ehrenfeucht-Fraïssé games by working syntactically
-with sets of sentences.
+This representation makes finiteness immediate: the function type from a
+finite domain to `Bool` is itself finite via `Fintype.Pi.fintype`.
 -/
-def KType (sig : MonadicSignature) (_k : Nat) : Type := Finset (MonadicSentence sig)
+def KType (sig : MonadicSignature) (k : Nat) : Type :=
+  {s : MonadicFormula sig 0 // s.quantifier_depth ≤ k} → Bool
 
 /--
-Finiteness of k-types: for a given finite signature, there are finitely many
-k-types for any fixed k.
+The k-type realized by an ordered monadic structure M: for each depth-≤k
+sentence, records whether M satisfies it.
 
-**Status**: Sorried. The proof depends on the monadic FO satisfaction relation
-to bound which sentences can appear in k-types (only those of depth ≤ k over
-a finite signature). The combinatorial bound is `2^(#sentences of depth ≤ k)`,
-which is finite. Formal proof: Doets 1989, Section 1.
-
-The actual finiteness argument:
-- Sentences of depth ≤ k over a finite signature form a finite set S_k.
-- Each k-type is a subset of S_k.
-- There are 2^|S_k| such subsets.
-- This is finite because S_k is finite.
+Uses `Classical.dec` for decidability of `eval` (the carrier may be infinite).
+This makes the definition noncomputable but mathematically precise.
 -/
-theorem ktype_finite (sig : MonadicSignature) (k : Nat) :
-    ∃ (types : Finset (KType sig k)), ∀ (t : KType sig k), t ∈ types := by
-  sorry
-
-/--
-The k-type realized by a monadic structure M: the set of depth ≤ k sentences
-that are true in M.
-
-**Status**: Sorried. Requires the monadic FO satisfaction relation `M ⊨ s`.
-The definition would be:
-  `k_type_of sig k M = { s ∈ sentences of depth ≤ k | M ⊨ s }`
-
-For the shallow encoding, this returns the Finset of all sentences true in M.
--/
-def k_type_of (sig : MonadicSignature) (k : Nat) (M : MonadicStructure sig) : KType sig k := by
-  sorry
+noncomputable def k_type_of (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) : KType sig k :=
+  fun ⟨s, _⟩ => @decide (eval M Fin.elim0 s) (Classical.dec _)
 
 /--
 k-equivalence: M and N have the same k-type, i.e., they satisfy the same
-monadic sentences of depth ≤ k.
-
-This definition is NON-VACUOUS: it's defined as equality of k-types.
-The sorries in `k_type_of` propagate, but the definition itself is clean.
+monadic sentences of quantifier depth ≤ k.
 -/
-def k_equiv (sig : MonadicSignature) (k : Nat) (M N : MonadicStructure sig) : Prop :=
+def k_equiv (sig : MonadicSignature) (k : Nat)
+    (M N : OrderedMonadicStructure sig) : Prop :=
   k_type_of sig k M = k_type_of sig k N
 
 /--
 k-equivalence is equivalent to having the same k-type.
-This is trivial given our definition of `k_equiv` as type equality.
 -/
-theorem k_equiv_iff_same_type (sig : MonadicSignature) (k : Nat) (M N : MonadicStructure sig) :
+theorem k_equiv_iff_same_type (sig : MonadicSignature) (k : Nat)
+    (M N : OrderedMonadicStructure sig) :
     k_equiv sig k M N ↔ k_type_of sig k M = k_type_of sig k N := by
   rfl
 
 /--
 Monotonicity: if M and N are k-equivalent, they are m-equivalent for any m ≤ k.
 
-This is sorried pending the monadic FO satisfaction relation.
-When `KEquivalenceFramework` is instantiated, the proof becomes trivial
-via `equiv_monotone`.
+Proof: if `k_type_of sig k M = k_type_of sig k N`, then for any sentence `s`
+with `s.quantifier_depth ≤ m ≤ k`, both k-type functions agree on `s`.
+The m-type functions are restrictions of the k-type functions to the smaller domain.
 -/
-theorem k_equiv_monotone (sig : MonadicSignature) {k m : Nat} {M N : MonadicStructure sig}
+theorem k_equiv_monotone (sig : MonadicSignature) {k m : Nat}
+    {M N : OrderedMonadicStructure sig}
     (hkm : m ≤ k) (h_equiv : k_equiv sig k M N) : k_equiv sig m M N := by
-  simp only [k_equiv, k_type_of]
+  simp only [k_equiv, k_type_of] at h_equiv ⊢
+  funext ⟨s, hs⟩
+  have hsk : s.quantifier_depth ≤ k := le_trans hs hkm
+  exact congr_fun h_equiv ⟨s, hsk⟩
 
-/-! ## K-Equivalence Framework (Axiomatized Typeclass) -/
+/-! ## K-Equivalence Framework (Typeclass) -/
 
 /--
-`KEquivalenceFramework sig` is a typeclass providing an axiomatized
-interface for k-equivalence on monadic structures over signature `sig`.
+`KEquivalenceFramework sig` is a typeclass providing the properties of
+k-equivalence needed by the Reynolds pipeline.
 
-This "shallow encoding" strategy defines the PROPERTIES that the Reynolds
-pipeline needs from k-equivalence, without requiring full formalization of
-monadic FO Tarski semantics. The eventual Tarski semantics becomes an
-INSTANCE of this typeclass.
+The `equiv_at` relation operates on `OrderedMonadicStructure sig` because
+evaluation of monadic FO formulas (specifically the `lt` constructor)
+requires a linear order on the carrier.
 
-All axiomatized fields correspond to known properties from Doets 1989
-(Lemmas 1.1, 1.4, 1.5). The framework is provably non-contradictory.
-
-Note: The class lives at `Type 1` because `MonadicStructure sig` contains a
-`carrier : Type` field, making it `Type 1`.
+Note: The class lives at `Type 1` because `OrderedMonadicStructure sig`
+contains a `carrier : Type` field.
 -/
 class KEquivalenceFramework (sig : MonadicSignature) : Type 1 where
-  /-- The k-equivalence relation between two monadic structures -/
-  equiv_at (k : Nat) : MonadicStructure sig → MonadicStructure sig → Prop
+  /-- The k-equivalence relation between two ordered monadic structures -/
+  equiv_at (k : Nat) : OrderedMonadicStructure sig → OrderedMonadicStructure sig → Prop
   /-- k-equivalence is an equivalence relation -/
   equiv_is_equiv (k : Nat) : Equivalence (equiv_at k)
   /-- Finer equivalence implies coarser: if M ≡_k N and m ≤ k then M ≡_m N -/
-  equiv_monotone {k m : Nat} (h : m ≤ k) {M N : MonadicStructure sig}
+  equiv_monotone {k m : Nat} (h : m ≤ k) {M N : OrderedMonadicStructure sig}
     (h_equiv : equiv_at k M N) : equiv_at m M N
   /-- There are finitely many k-types (equivalence classes) for any fixed k -/
   finite_types (k : Nat) : Fintype (Quotient (@Setoid.mk _ (equiv_at k) (equiv_is_equiv k)))
   /-- Ordered sums preserve k-equivalence:
-    if ∀ i, m(i) ≡_k m'(i) then Σ_i m(i) ≡_k Σ_i m'(i) -/
-  sum_preservation (k : Nat) (I : Type) (m m' : I → MonadicStructure sig)
-    (h : ∀ i, equiv_at k (m i) (m' i)) :
-    equiv_at k (OrderedSum sig I m) (OrderedSum sig I m')
+    if ∀ i, m(i) ≡_k m'(i) then Σ_i m(i) ≡_k Σ_i m'(i).
+    Note: The ordered sum here is taken as OrderedMonadicStructure. The actual
+    lexicographic order construction is deferred; this field is sorried. -/
+  sum_preservation (k : Nat) (I : Type) [inst_lo : LinearOrder I]
+    (ms ms' : I → OrderedMonadicStructure sig)
+    (h : ∀ i, equiv_at k (ms i) (ms' i)) :
+    equiv_at k
+      { carrier := Sigma fun i => (ms i).carrier
+        interp := fun p x => (ms x.1).interp p x.2
+        carrier_order := sorry }
+      { carrier := Sigma fun i => (ms' i).carrier
+        interp := fun p x => (ms' x.1).interp p x.2
+        carrier_order := sorry }
+
+/-! ## Finiteness of Depth-Bounded Formulas -/
+
+-- Placeholder for Phase 3: Fintype instance for depth-bounded formulas.
+-- This will be proved by induction on k.
+
+/--
+Finiteness of k-types: for a given finite signature, there are finitely many
+k-types for any fixed k. This follows because:
+1. `{s : MonadicFormula sig 0 // s.quantifier_depth ≤ k}` is a `Fintype` (Doets 1989, Lemma 1.1)
+2. `KType sig k = {depth ≤ k sentences} → Bool` is finite via `Fintype.Pi.fintype`
+
+**Status**: Proved in Phase 3 (depends on Fintype for depth-bounded formulas).
+-/
+theorem ktype_finite (sig : MonadicSignature) (k : Nat) :
+    Fintype (KType sig k) := by
+  sorry
 
 /-! ## Default KEquivalenceFramework Instance -/
 
 /--
 Default instance of `KEquivalenceFramework` for any `MonadicSignature`.
 
-This axiomatizes the properties of monadic FO k-equivalence from Doets 1989:
-- k-equivalence is an equivalence relation (Doets, Section 1)
-- Finer equivalence implies coarser (trivial from definition)
-- Finitely many k-types for a finite signature (Doets, Theorem 1.1)
-- Ordered sums preserve k-equivalence (Doets, Lemma 1.4)
-
-All fields are sorried. These are known results from the literature.
-The eventual proof requires defining monadic FO Tarski semantics and
-proving each property from the semantics. For now, the axiomatized
-instance enables closing downstream proofs (Phases 3-6) that only
-depend on the framework's interface.
-
-**Note**: The `equiv_at` relation is defined as `k_equiv` (equality of
-k-types via `k_type_of`). This creates a sorry chain through `k_type_of`,
-but the framework axioms are independently valid.
+- `equiv_at` is defined as `k_equiv` (equality of k-types via `k_type_of`)
+- `equiv_is_equiv`: k-type equality is trivially an equivalence relation
+- `equiv_monotone`: follows from `k_equiv_monotone`
+- `finite_types`: sorried pending Fintype for depth-bounded formulas (Phase 3)
+- `sum_preservation`: sorried, requires EF-game formalization (Doets Lemma 1.4)
 -/
-instance (sig : MonadicSignature) : KEquivalenceFramework sig where
+noncomputable instance (sig : MonadicSignature) : KEquivalenceFramework sig where
   equiv_at k M N := k_equiv sig k M N
   equiv_is_equiv k := {
     refl := fun _ => rfl
     symm := fun h => h.symm
     trans := fun h1 h2 => h1.trans h2
   }
-  equiv_monotone h h_equiv := by
-    simp only [k_equiv, k_type_of] at h_equiv ⊢; intro _ _; trivial
+  equiv_monotone h h_equiv := k_equiv_monotone sig h h_equiv
   finite_types k := by
-    -- KType sig k = Finset (MonadicSentence sig). We need Fintype on
-    -- the quotient of MonadicStructure by k_equiv. Since k_equiv reduces
-    -- to sorry = sorry = True via k_type_of, the quotient is trivial.
     sorry
-  sum_preservation k I m m' h := by
-    simp only [k_equiv, k_type_of]
+  -- TODO: Requires EF-game formalization (Doets Lemma 1.4). Deferred to follow-up task.
+  sum_preservation k I _ ms ms' h := by
+    sorry
 
 /-! ## Chronicle As Monadic Structure Converter -/
 
