@@ -34,8 +34,8 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by |
 |------|-------|------------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,147,149,619,949,953,992,998 | -- |
-| 2 | 20,21,125,128,145,148,150,151 | 18,116,122,143,147,149 |
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,147,150,151,619,949,953,992,998 | -- |
+| 2 | 20,21,125,128,145,148 | 18,116,122,143,147 |
 | 3 | 146 | 145 |
 
 **Dependency Tree** (indented = must complete first):
@@ -57,7 +57,8 @@ technical_debt:
 142 [RESEARCHING] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
 147 [IMPLEMENTING] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le
-149 [IMPLEMENTING] — Redesign the Task Order section format in TODO.md. Replace flat c
+150 [NOT STARTED] — Add automatic Task Order synchronization. Update update-task-stat
+151 [NOT STARTED] — Integrate Task Order with /todo and /review commands. Update /tod
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -78,21 +79,18 @@ technical_debt:
   └─ 145 [PLANNED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) (see above)
 148 [RESEARCHED] — Close the 4 temporal operator cases of table_correctness (all_fut
   └─ 147 [IMPLEMENTING] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le (see above)
-150 [NOT STARTED] — Add automatic Task Order synchronization. Update update-task-stat
-  └─ 149 [IMPLEMENTING] — Redesign the Task Order section format in TODO.md. Replace flat c (see above)
-151 [NOT STARTED] — Integrate Task Order with /todo and /review commands. Update /tod
-  └─ 149 [IMPLEMENTING] — Redesign the Task Order section format in TODO.md. Replace flat c (see above)
 ```
 
 ## Tasks
 
 ### 149. Redesign Task Order format and generation script
 - **Effort**: 3-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Dependencies**: None
 - **Research**: [149_redesign_task_order_format/reports/01_format-redesign-research.md]
 - **Plan**: [149_redesign_task_order_format/plans/01_task-order-redesign.md]
+- **Summary**: [149_redesign_task_order_format/summaries/01_task-order-redesign-summary.md]
 
 **Description**: Redesign the Task Order section format in TODO.md. Replace flat category lists with dependency wave table and indented dependency tree format. Create `generate-task-order.sh` script to regenerate Task Order from state.json dependency graph. Update `task-order-format.md` spec with new wave+tree format definition. Files: `.claude/context/formats/task-order-format.md` (redesign), `.claude/scripts/generate-task-order.sh` (new).
 

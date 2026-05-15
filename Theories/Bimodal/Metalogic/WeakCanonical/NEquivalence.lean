@@ -346,7 +346,25 @@ theorem lift_eval {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
     (c : Fin (n + 1)) (x : M.carrier) (α : MonadicFormula sig n) :
     eval M (insertEnv c x env) (α.lift c.val) = eval M env α := by
-  sorry -- Task 141: proof in progress
+  induction α with
+  | atom p i => simp [eval, MonadicFormula.lift, insertEnv_finLift]
+  | lt i j => simp [eval, MonadicFormula.lift, insertEnv_finLift]
+  | not α ih => simp only [eval, MonadicFormula.lift]; rw [ih env c]
+  | and α β ihα ihβ => simp only [eval, MonadicFormula.lift]; rw [ihα env c, ihβ env c]
+  | all α ih =>
+    simp only [eval, MonadicFormula.lift]
+    have key : ∀ y, eval M (Fin.cons y (insertEnv c x env)) (α.lift (c.val + 1)) = eval M (Fin.cons y env) α := by
+      intro y
+      rw [(insertEnv_succ_cons c x y env).symm]
+      exact ih (Fin.cons y env) c.succ
+    simp_rw [key]
+  | ex α ih =>
+    simp only [eval, MonadicFormula.lift]
+    have key : ∀ y, eval M (Fin.cons y (insertEnv c x env)) (α.lift (c.val + 1)) = eval M (Fin.cons y env) α := by
+      intro y
+      rw [(insertEnv_succ_cons c x y env).symm]
+      exact ih (Fin.cons y env) c.succ
+    simp_rw [key]
 
 /--
 Weakening preserves evaluation: evaluating a weakened formula in an

@@ -81,7 +81,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove lift_eval and Validate [NOT STARTED]
+### Phase 2: Prove lift_eval and Validate [IN PROGRESS]
 
 **Goal**: Replace sorry in `lift_eval` with the structural induction proof and verify the entire file builds clean.
 

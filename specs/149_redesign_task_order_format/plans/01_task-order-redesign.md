@@ -1,7 +1,7 @@
 # Implementation Plan: Redesign Task Order Format
 
 - **Task**: 149 - Redesign Task Order format and generation script
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/149_redesign_task_order_format/reports/01_format-redesign-research.md
