@@ -339,7 +339,7 @@ private theorem insertEnv_finLift {α : Type} {n : Nat} (c : Fin (n + 1))
     have h2 : ¬((⟨i.val + 1, (by omega : i.val + 1 < n + 1)⟩ : Fin (n + 1)) = c) := by
       intro heq; have := Fin.ext_iff.mp heq; simp at this; omega
     rw [dif_neg h2]
-    congr 1; omega
+    congr 1
 
 /-- Lift preserves evaluation under inserted environments. -/
 theorem lift_eval {sig : MonadicSignature} {n : Nat}

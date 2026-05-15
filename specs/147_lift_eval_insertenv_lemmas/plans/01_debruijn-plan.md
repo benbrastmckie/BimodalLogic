@@ -1,7 +1,7 @@
 # Implementation Plan: De Bruijn Substitution Lemmas
 
 - **Task**: 147 - lift_eval_insertenv_lemmas
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None (all definitions already in place from task 140)
 - **Research Inputs**: specs/147_lift_eval_insertenv_lemmas/reports/02_debruijn-research.md, specs/147_lift_eval_insertenv_lemmas/reports/01_scope-analysis.md
@@ -81,16 +81,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove lift_eval and Validate [IN PROGRESS]
+### Phase 2: Prove lift_eval and Validate [COMPLETED]
 
 **Goal**: Replace sorry in `lift_eval` with the structural induction proof and verify the entire file builds clean.
 
 **Tasks**:
-- [ ] Replace sorry at line 317 with `lift_eval` proof: structural induction on alpha with atom/lt using insertEnv_finLift, not/and using IH, all/ex using insertEnv_succ_cons + simp_rw
-- [ ] Verify `lean_goal` shows no goals at end of `lift_eval`
-- [ ] Verify `weaken_eval` (line 327-332) no longer has sorry transitively
-- [ ] Run `lake build` to confirm NEquivalence.lean compiles without errors
-- [ ] Verify sorry count in NEquivalence.lean decreased by exactly 4 (from 8 to 4)
+- [x] Replace sorry at line 317 with `lift_eval` proof: structural induction on alpha with atom/lt using insertEnv_finLift, not/and using IH, all/ex using insertEnv_succ_cons + simp_rw
+- [x] Verify `lean_goal` shows no goals at end of `lift_eval`
+- [x] Verify `weaken_eval` (line 327-332) no longer has sorry transitively
+- [x] Run `lake build` to confirm NEquivalence.lean compiles without errors
+- [x] Verify sorry count in NEquivalence.lean decreased by exactly 4 (from 8 to 4)
 
 **Timing**: 0.5 hours
 
