@@ -194,18 +194,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Partial pipeline activation and cleanup [NOT STARTED]
+### Phase 5: Partial pipeline activation and cleanup [COMPLETED]
 
 **Goal**: Wire the completed `table` and `table_correctness` into Transfer.lean's pipeline, filling in steps that now have implementations. Leave `chronicle_is_good` and downstream steps as sorry with explicit blocker annotations. Ensure the full codebase builds clean.
 
 **Tasks**:
-- [ ] Uncomment and fill Transfer.lean pipeline steps 1-2 (chronicle extraction, signature/atomMap construction) using the new `mkSigFrom`/`mkAtomMap`
-- [ ] Uncomment and fill step 3 (chronicle is good) leaving as sorry with blocker comment: `-- BLOCKED: requires sum_preservation (Doets Lemma 1.4, task 143+)`
-- [ ] Add `table_correctness` usage annotation in step 5 (truth transfer), showing how it would close the gap once `chronicle_is_good` is available
-- [ ] Update docstrings in Table.lean to remove TODO markers for `table` and `table_depth_bound`; mark `table_correctness` as proved
-- [ ] Update docstrings in Transfer.lean to reflect current pipeline status
-- [ ] Run `lake build` on full project and fix any downstream breakage from signature changes (adding `atomMap` parameter may affect other files importing Table.lean)
-- [ ] Verify no regressions in existing proofs
+- [x] **Task 5.1**: Update Transfer.lean pipeline comments to reflect new implementations *(deviation: altered — kept pipeline comments rather than uncommenting, since steps 3-6 are still blocked)*
+- [ ] **Task 5.2**: Uncomment step 3 as sorry *(deviation: skipped — left as comment since `chronicle_is_good` has wrong `atomMap` signature after redesign)*
+- [x] **Task 5.3**: Add `table_correctness` usage annotation in step 5
+- [x] **Task 5.4**: Update docstrings in Table.lean
+- [x] **Task 5.5**: Update docstrings in Transfer.lean with pipeline status table
+- [x] **Task 5.6**: Verify `lake build` passes (1588 jobs, no errors)
+- [x] **Task 5.7**: Verify no regressions in existing proofs
 
 **Timing**: 1 hour
 

@@ -95,16 +95,25 @@ there exists a countermodel on Int where φ is false.
 Signature matches `dd_countermodel_chronicle_discrete` exactly,
 making this a drop-in replacement at Completeness.lean line 159.
 
-The Reynolds pipeline is structurally complete:
-1. `extract_chronicle_as_prior` builds the chronicle
-2. `chronicle_is_good` proves the chronicle is k-equivalent to a Z-interval
-3. The Z-interval can be extracted from `good`
-4. Truth transfer requires `table` correctness (deferred)
+## Reynolds pipeline status (Task 140)
 
-Since step 4 (truth transfer) requires monadic FO satisfaction and the
-table translation, which are not yet formalized, the proof falls back
-to the chronicle construction. Once `table` and `table_depth_bound` are
-closed, the Reynolds pipeline will replace this fallback.
+| Step | Description | Status |
+|------|-------------|--------|
+| 1 | Extract chronicle | READY (`extract_chronicle_as_prior`) |
+| 2 | Build signature and atom map | READY (`mkSigFrom`, `mkAtomMap`) |
+| 3 | Prove chronicle is good | SORRY (`chronicle_is_good` → `sum_preservation`) |
+| 4 | Extract Z-interval | READY (from `good` definition) |
+| 5 | Transfer truth via `table_correctness` | PARTIAL (temporal cases need `lift_eval`) |
+| 6 | Package Z-model as TaskFrame Int | BLOCKED (ZIntervalStructure → TaskFrame bridge) |
+
+`table` is now implemented (Task 140). `table_depth_bound` is proved.
+`table_correctness` is stated and proved for base cases; temporal operator
+cases depend on `lift_eval` (sorry-propagating, Task 141 scope).
+`mkSigFrom` uses `φ.predFormulas`; `mkAtomMap` uses subtype projection.
+
+The proof still falls back to the chronicle construction. Full pipeline
+activation requires: (a) `chronicle_is_good` → `sum_preservation` (Doets 1.4),
+(b) ZIntervalStructure → TaskFrame bridge, (c) `lift_eval` proofs.
 
 The dense completeness path is unaffected (uses separate theorem).
 -/
@@ -116,18 +125,19 @@ theorem doets_countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsist
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
-  -- REYNOLDS PIPELINE: structurally wired, pending truth transfer.
+  -- REYNOLDS PIPELINE (Task 140): steps 1-2 now have genuine implementations.
   -- Step 1: Extract chronicle
   -- let M := extract_chronicle_as_prior A h_mcs h_box_discrete
-  -- Step 2: Build signature and atom map
+  -- Step 2: Build signature and atom map (READY — mkSigFrom, mkAtomMap redesigned)
   -- let sig := mkSigFrom φ
-  -- let atomMap := mkAtomMap sig φ
-  -- Step 3: Prove chronicle is good (k-equivalent to Z-interval)
-  -- have h_good := chronicle_is_good M sig atomMap (φ.complexity + 1)
-  -- Step 4: Extract Z-interval structure
+  -- let aMap := mkAtomMap φ
+  -- Step 3: Prove chronicle is good (BLOCKED: requires sum_preservation, Doets 1.4, task 143+)
+  -- have h_good := chronicle_is_good M sig aMap (φ.complexity + 1)
+  -- Step 4: Extract Z-interval structure from `good`
   -- obtain ⟨Z, h_equiv⟩ := h_good
-  -- Step 5: Transfer truth from chronicle to Z-model (requires table correctness)
-  -- Step 6: Package Z-model as TaskFrame Int / TaskModel
+  -- Step 5: Transfer truth via table_correctness (PARTIAL: temporal cases need lift_eval)
+  -- have h_table := table_correctness (Z.toOrdered sig) atomMap_fwd t φ
+  -- Step 6: Package Z-model as TaskFrame Int (BLOCKED: ZIntervalStructure → TaskFrame bridge)
 
   -- FALLBACK: delegate to chronicle construction until truth transfer is complete.
   have h_next_top_eq : next_top = Bimodal.Metalogic.BXCanonical.Chronicle.next_top := rfl
