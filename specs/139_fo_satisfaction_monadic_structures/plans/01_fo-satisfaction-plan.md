@@ -131,17 +131,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Prove ktype_finite and Close KEquivalenceFramework finite_types [NOT STARTED]
+### Phase 3: Prove ktype_finite and Close KEquivalenceFramework finite_types [PARTIAL]
 
 **Goal**: Prove that depth-bounded formulas form a `Fintype`, then use this to close `ktype_finite` and the `finite_types` field of `KEquivalenceFramework`.
 
 **Tasks**:
-- [ ] Prove `Fintype {s : MonadicFormula sig n // s.quantifier_depth <= k}` by induction on `k`, using the finite signature and finite variable set `Fin n`
-- [ ] Close `ktype_finite` using the fintype of the domain of `KType` (the function type `{depth <= k sentences} -> Bool` is automatically `Fintype` via `Fintype.Pi.fintype` when the domain is `Fintype`)
-- [ ] Close `finite_types` in the `KEquivalenceFramework` instance: the quotient by `k_equiv` is `Fintype` because `KType sig k` is `Fintype` and `k_type_of` induces a surjection from `MonadicStructure sig` to `KType sig k`
-- [ ] Update `equiv_is_equiv` in the `KEquivalenceFramework` instance to use genuine `k_equiv` (reflexivity/symmetry/transitivity of function equality)
-- [ ] Update `equiv_monotone` to use genuine `k_equiv_monotone`
-- [ ] Keep `sum_preservation` as `sorry` with explicit `-- TODO: Requires EF-game formalization (Doets Lemma 1.4). Deferred to follow-up task.` comment
+- [ ] **Task 3.1**: Prove `Fintype {s : MonadicFormula sig n // s.quantifier_depth <= k}` *(deviation: skipped -- depth-bounded formulas are syntactically infinite due to unbounded not/and nesting; this is a mathematical error in the plan. Doets 1989 Lemma 1.1 proves finiteness of SEMANTICALLY distinct formulas, not syntactic ones.)*
+- [ ] **Task 3.2**: Close `ktype_finite` *(deviation: deferred -- depends on Task 3.1 which is infeasible as stated)*
+- [ ] **Task 3.3**: Close `finite_types` in `KEquivalenceFramework` instance *(deviation: deferred -- requires Doets' theorem on finite k-type count, which needs semantic equivalence quotient)*
+- [x] **Task 3.4**: Update `equiv_is_equiv` to use genuine k_equiv (equality is trivially an equivalence)
+- [x] **Task 3.5**: Update `equiv_monotone` to use genuine `k_equiv_monotone`
+- [x] **Task 3.6**: Keep `sum_preservation` as sorry with TODO comment
 
 **Timing**: 2 hours
 
