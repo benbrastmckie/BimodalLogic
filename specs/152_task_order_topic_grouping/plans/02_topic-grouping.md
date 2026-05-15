@@ -1,7 +1,7 @@
 # Implementation Plan: Task #152
 
 - **Task**: 152 - task_order_topic_grouping
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: Tasks 149 and 150 (both completed)
 - **Research Inputs**: specs/152_task_order_topic_grouping/reports/01_topic-grouping-research.md, specs/152_task_order_topic_grouping/reports/02_topic-field-population.md
@@ -89,7 +89,7 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Schema changes and state.json backfill [NOT STARTED]
+### Phase 1: Schema changes and state.json backfill [COMPLETED]
 
 **Goal**: Add `active_topics` top-level array and `topic` field to all active task entries in state.json using the seven-topic taxonomy from research.
 

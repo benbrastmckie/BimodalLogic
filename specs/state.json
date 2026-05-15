@@ -14,7 +14,8 @@
       "created": "2026-05-13T17:05:29Z",
       "last_updated": "2026-05-13T17:05:29Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "topic": "formula-refactor"
     },
     {
       "project_number": 125,
@@ -30,7 +31,8 @@
         115
       ],
       "created": "2026-05-11T19:35:39Z",
-      "last_updated": "2026-05-11T19:35:39Z"
+      "last_updated": "2026-05-11T19:35:39Z",
+      "topic": "algebraic-representation"
     },
     {
       "project_number": 116,
@@ -57,7 +59,8 @@
           "type": "plan",
           "summary": "6-phase plan: redefine G/H/F/P via Until/Since, ~70 files, 18h estimated"
         }
-      ]
+      ],
+      "topic": "formula-refactor"
     },
     {
       "project_number": 112,
@@ -75,7 +78,8 @@
           "type": "research",
           "summary": "Team research with 4 teammates"
         }
-      ]
+      ],
+      "topic": "algebraic-representation"
     },
     {
       "project_number": 95,
@@ -93,7 +97,8 @@
       "dependencies": [
         93,
         109
-      ]
+      ],
+      "topic": "completeness"
     },
     {
       "project_number": 60,
@@ -104,7 +109,8 @@
       "effort": "1-2 hours",
       "dependencies": [],
       "created": "2026-03-24T19:43:21Z",
-      "last_updated": "2026-03-24T19:43:21Z"
+      "last_updated": "2026-03-24T19:43:21Z",
+      "topic": "formula-refactor"
     },
     {
       "project_number": 18,
@@ -181,7 +187,8 @@
       "researched": "2026-03-21T19:07:01Z",
       "planned": "2026-03-21T20:44:03Z",
       "started": "2026-03-21T17:15:15Z",
-      "resume_phase": 5
+      "resume_phase": 5,
+      "topic": "completeness"
     },
     {
       "project_number": 20,
@@ -195,7 +202,8 @@
         18
       ],
       "description": "Review ParametricCanonical.lean, ParametricTruthLemma.lean, and ParametricRepresentation.lean. Determine whether the parametric infrastructure can be refactored to accept a generic task_rel parameter (not hardcoded duration-coarse relation), enabling both CanonicalTask and DenseTask as instantiations. If feasible, refactor; otherwise document the relationship between parametric (base) and specialized (discrete/dense) paths.",
-      "artifacts": []
+      "artifacts": [],
+      "topic": "completeness"
     },
     {
       "project_number": 8,
@@ -242,7 +250,8 @@
       "session_id": "sess_1774063039_c87a2a",
       "planned": "2026-03-21T00:33:31Z",
       "started": "2026-03-21T00:34:44Z",
-      "researched": "2026-03-21T03:23:50Z"
+      "researched": "2026-03-21T03:23:50Z",
+      "topic": "completeness"
     },
     {
       "project_number": 998,
@@ -251,7 +260,8 @@
       "language": "lean4",
       "created": "2026-03-19T17:05:39Z",
       "last_updated": "2026-03-19T17:05:39Z",
-      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
+      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward.",
+      "topic": "frame-extensions"
     },
     {
       "project_number": 992,
@@ -268,7 +278,8 @@
           "path": "specs/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md",
           "summary": "Comprehensive STSA design with axiom-to-equation translation, representation theorem architecture, and MF/TF interaction analysis"
         }
-      ]
+      ],
+      "topic": "algebraic-representation"
     },
     {
       "project_number": 953,
@@ -302,7 +313,8 @@
           "summary": "Deep analysis of sub-maximal bilateral pairs: truth lemma backward implication requires negation completeness (maximality); 5+ showstoppers; deterministic Lindenbaum within MCS recommended instead"
         }
       ],
-      "session_id": "sess_1773878520_a3f2b1"
+      "session_id": "sess_1773878520_a3f2b1",
+      "topic": "bilateral"
     },
     {
       "project_number": 949,
@@ -319,7 +331,8 @@
           "type": "research",
           "summary": "Analysis of Demo.lean state, API survey, recommended updates (remove obsolete refs, add BFMCS truth lemma showcase, D construction via Cantor, shift-closure), implementation plan (4 phases, ~2 hours)"
         }
-      ]
+      ],
+      "topic": "agent-system"
     },
     {
       "project_number": 619,
@@ -374,7 +387,8 @@
           "type": "research",
           "summary": "Comprehensive architecture analysis with Feb 2026 best practices comparison and 7 prioritized upgrade recommendations"
         }
-      ]
+      ],
+      "topic": "agent-system"
     },
     {
       "project_number": 21,
@@ -427,7 +441,8 @@
       ],
       "session_id": "sess_1774121152_2f49cc",
       "researched": "2026-03-21T19:21:35Z",
-      "planned": "2026-03-21T19:28:53Z"
+      "planned": "2026-03-21T19:28:53Z",
+      "topic": "completeness"
     },
     {
       "project_number": 64,
@@ -449,7 +464,8 @@
           "type": "research",
           "summary": "Team research wave 2: BFMCS saturation, modal structure, omega-enumeration design (3 teammates)"
         }
-      ]
+      ],
+      "topic": "completeness"
     },
     {
       "project_number": 68,
@@ -470,7 +486,8 @@
           "path": "specs/058_wire_completeness_to_frame_conditions/reports/83_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 58"
         }
-      ]
+      ],
+      "topic": "completeness"
     },
     {
       "project_number": 114,
@@ -481,7 +498,8 @@
       "created": "2026-04-27T00:00:00Z",
       "last_updated": "2026-04-27T00:00:00Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "topic": "agent-system"
     },
     {
       "project_number": 122,
@@ -504,7 +522,8 @@
         }
       ],
       "session_id": "sess_1778518750_c8b856",
-      "researched": "2026-05-11T17:11:05Z"
+      "researched": "2026-05-11T17:11:05Z",
+      "topic": "frame-extensions"
     },
     {
       "project_number": 126,
@@ -525,7 +544,8 @@
           "type": "research",
           "summary": "Four-tier frame hierarchy: density/discreteness correspondence, implementation roadmap"
         }
-      ]
+      ],
+      "topic": "frame-extensions"
     },
     {
       "project_number": 127,
@@ -539,7 +559,8 @@
       "created": "2026-05-13T07:11:21Z",
       "last_updated": "2026-05-13T07:11:21Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "topic": "frame-extensions"
     },
     {
       "project_number": 128,
@@ -553,7 +574,8 @@
       "created": "2026-05-13T07:11:21Z",
       "last_updated": "2026-05-13T07:11:21Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "topic": "frame-extensions"
     },
     {
       "project_number": 130,
@@ -568,18 +590,19 @@
       "created": "2026-05-13T08:44:55Z",
       "last_updated": "2026-05-13T08:44:55Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "topic": "formula-refactor"
     },
     {
       "project_number": 142,
       "project_name": "mixed_case_countermodel",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "description": "Resolve the mixed-case sorry in bx_completeness: the case where neither box(F-prime-T) (dense) nor box(U(T,bot)) (discrete) is in the MCS.\n\nThis is the third and final branch of bx_completeness (Completeness.lean:162-166). Currently dd_countermodel_chronicle_mixed_sorry (ChronicleToCountermodel.lean:3327) is a bare sorry. The dense and discrete cases are handled separately — dense uses Cantor iso to Q, discrete uses chronicle + Reynolds pipeline to Z. The mixed case has some box-accessible worlds that are dense and others that are discrete, which cannot coexist in a single BFMCS with a fixed domain type D.\n\nResearch needed to determine the correct approach. Candidates:\n1. Product construction: build separate dense and discrete countermodels, combine via disjoint union or product frame\n2. Ultraproduct: use Los theorem to combine dense and discrete models\n3. BX theorem: derive a contradiction showing the mixed case is inconsistent (i.e., every MCS must be either box-dense or box-discrete)\n4. Enriched frames: use a domain type that accommodates both dense and discrete regions (e.g., Q with discrete subsets)\n5. Reduction: show that the mixed case reduces to one of the other two cases via modal reasoning\n\nTask 122 research report (01_discrete-bfmcs-research.md Section 4) has preliminary analysis. This task requires dedicated research before planning.\n\nDependencies: None structurally, but completing the discrete case (tasks 139, 140) first simplifies the landscape — only this sorry would remain in bx_completeness.\n\nDefinition of done: dd_countermodel_chronicle_mixed_sorry is sorry-free, bx_completeness has no sorryAx dependency, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T01:30:40Z",
-      "last_updated": "2026-05-15T20:13:02Z",
+      "last_updated": "2026-05-15T20:16:48Z",
       "next_artifact_number": 5,
       "artifacts": [
         {
@@ -603,8 +626,10 @@
           "summary": "5-phase plan: add structural axiom, prove soundness, eliminate mixed-case sorry (8h)"
         }
       ],
-      "session_id": "sess_1778875650_1e749e",
-      "researched": "2026-05-15T20:04:04Z"
+      "session_id": "sess_1778876189_3c303d",
+      "researched": "2026-05-15T20:04:04Z",
+      "started": "2026-05-15T20:16:48Z",
+      "topic": "completeness"
     },
     {
       "project_number": 143,
@@ -663,7 +688,8 @@
       ],
       "session_id": "sess_1778864091_ef7006",
       "completed": "2026-05-15T20:35:00Z",
-      "completion_summary": "Doets Lemma 1.1 proved sorry-free. NormalForm inductive type with AtomKind, nf_eval_nf, nf_exists_unique, nf_agreement_monotone all sorry-free. KType redesigned to NormalForm domain (task 145). k_equiv_monotone closed (task 145). Dead code removed and cardinality theorems proved (task 146). finite_types closed via Fintype injection."
+      "completion_summary": "Doets Lemma 1.1 proved sorry-free. NormalForm inductive type with AtomKind, nf_eval_nf, nf_exists_unique, nf_agreement_monotone all sorry-free. KType redesigned to NormalForm domain (task 145). k_equiv_monotone closed (task 145). Dead code removed and cardinality theorems proved (task 146). finite_types closed via Fintype injection.",
+      "topic": "decidability"
     },
     {
       "project_number": 145,
@@ -702,7 +728,8 @@
       ],
       "session_id": "sess_1778871141_a24716",
       "completed": "2026-05-15T19:30:00Z",
-      "completion_summary": "Split NEquivalence.lean into MonadicFO.lean (400 lines, 0 sorries). Redesigned KType from NormalFormIdx to NormalForm. Closed k_equiv_monotone via nf_agreement_monotone (-1 sorry). Deleted vacuous nf_rep. Full build passes."
+      "completion_summary": "Split NEquivalence.lean into MonadicFO.lean (400 lines, 0 sorries). Redesigned KType from NormalFormIdx to NormalForm. Closed k_equiv_monotone via nf_agreement_monotone (-1 sorry). Deleted vacuous nf_rep. Full build passes.",
+      "topic": "agent-system"
     },
     {
       "project_number": 146,
@@ -742,7 +769,8 @@
       "session_id": "sess_1778874071_7dc8e1",
       "researched": "2026-05-15T19:59:00Z",
       "completed": "2026-05-15T20:22:00Z",
-      "completion_summary": "Removed 3 dead definitions (nf_eval, nf_vector, normalFormIdx_nonempty). Proved atomKind_card, normalForm_card, normalForm_equiv_fin. NormalForm.lean publication-quality."
+      "completion_summary": "Removed 3 dead definitions (nf_eval, nf_vector, normalFormIdx_nonempty). Proved atomKind_card, normalForm_card, normalForm_equiv_fin. NormalForm.lean publication-quality.",
+      "topic": "agent-system"
     },
     {
       "project_number": 147,
@@ -779,7 +807,8 @@
       ],
       "session_id": "sess_1778870829_ddb3fc_t147",
       "completed": "2026-05-15T19:17:00Z",
-      "completion_summary": "Proved all 4 De Bruijn substitution lemmas (insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, lift_eval). weaken_eval now sorry-free. NEquivalence.lean sorry count 8→4."
+      "completion_summary": "Proved all 4 De Bruijn substitution lemmas (insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, lift_eval). weaken_eval now sorry-free. NEquivalence.lean sorry count 8→4.",
+      "topic": "agent-system"
     },
     {
       "project_number": 148,
@@ -819,7 +848,8 @@
       "session_id": "sess_1778874071_7dc8e1",
       "researched": "2026-05-15T19:52:00Z",
       "completed": "2026-05-15T20:22:30Z",
-      "completion_summary": "Closed all 6 sorry positions in Table.lean: 2 helper lemmas + 4 temporal cases of table_correctness. lean_verify confirms no sorryAx. Transfer.lean pipeline step 5 updated to READY."
+      "completion_summary": "Closed all 6 sorry positions in Table.lean: 2 helper lemmas + 4 temporal cases of table_correctness. lean_verify confirms no sorryAx. Transfer.lean pipeline step 5 updated to READY.",
+      "topic": "agent-system"
     },
     {
       "project_number": 149,
@@ -863,7 +893,8 @@
           "category": "PATTERN"
         }
       ],
-      "completion_summary": "Created generate-task-order.sh (Kahn's algorithm wave computation + DFS dependency tree), rewrote task-order-format.md spec, fixed update-task-status.sh Phase 3 two-mode strategy, and replaced the live TODO.md Task Order section with the new wave+tree format."
+      "completion_summary": "Created generate-task-order.sh (Kahn's algorithm wave computation + DFS dependency tree), rewrote task-order-format.md spec, fixed update-task-status.sh Phase 3 two-mode strategy, and replaced the live TODO.md Task Order section with the new wave+tree format.",
+      "topic": "agent-system"
     },
     {
       "project_number": 150,
@@ -925,7 +956,8 @@
           ]
         }
       ],
-      "completion_summary": "Added automatic Task Order synchronization by wiring generate-task-order.sh --update-todo into /task Part C, lean4 skill preflight/postflight stages, and --sync mode; added Mode A fallback in update-task-status.sh and corrected existing drift by pruning completed task 147 from Task Order."
+      "completion_summary": "Added automatic Task Order synchronization by wiring generate-task-order.sh --update-todo into /task Part C, lean4 skill preflight/postflight stages, and --sync mode; added Mode A fallback in update-task-status.sh and corrected existing drift by pruning completed task 147 from Task Order.",
+      "topic": "agent-system"
     },
     {
       "project_number": 151,
@@ -986,12 +1018,13 @@
           ]
         }
       ],
-      "completion_summary": "Wired generate-task-order.sh --update-todo into /todo archive flow (Step 5.8, SKILL Stage 10.5) and replaced /review manual Task Order pruning/insertion (Sections 6.5-6.7) with a single script call; state-management.md Task Order Synchronization documentation was already present from task 150."
+      "completion_summary": "Wired generate-task-order.sh --update-todo into /todo archive flow (Step 5.8, SKILL Stage 10.5) and replaced /review manual Task Order pruning/insertion (Sections 6.5-6.7) with a single script call; state-management.md Task Order Synchronization documentation was already present from task 150.",
+      "topic": "agent-system"
     },
     {
       "project_number": 152,
       "project_name": "task_order_topic_grouping",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "description": "Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. (1) Detect independent subgraphs (connected components) in the dependency graph and render each as its own block. (2) Add optional topic field to state.json task entries for structured grouping. (3) Update generate-task-order.sh to group roots by topic within each wave, rendering one code block per topic-group with markdown headings. (4) Enhance wave table to show topic breakdown per wave. (5) Backfill topic field for existing active tasks using heuristic keyword matching from task names/descriptions.",
       "dependencies": [
@@ -999,7 +1032,7 @@
         150
       ],
       "created": "2026-05-15T12:40:00Z",
-      "last_updated": "2026-05-15T20:13:43Z",
+      "last_updated": "2026-05-15T20:16:02Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -1013,7 +1046,7 @@
           "summary": "Comprehensive v2 plan: 6 phases covering schema, rendering, task-creation wiring, docs, heuristic extraction, verification"
         }
       ],
-      "session_id": "sess_1778875785_f95bbc",
+      "session_id": "sess_1778876158_3b725e",
       "memory_candidates": [
         {
           "content": "Connected-component detection in generate-task-order.sh: use Union-Find with path compression. Only 2 true multi-task components in current graph -- topic grouping provides the primary UX improvement.",
@@ -1064,7 +1097,8 @@
             "topic-field"
           ]
         }
-      ]
+      ],
+      "topic": "agent-system"
     }
   ],
   "next_project_number": 153,
@@ -1093,5 +1127,14 @@
       "vault_dir": "specs/vault/01-vault/",
       "created_at": "2026-03-21T03:01:33Z"
     }
+  ],
+  "active_topics": [
+    "completeness",
+    "decidability",
+    "formula-refactor",
+    "frame-extensions",
+    "algebraic-representation",
+    "bilateral",
+    "agent-system"
   ]
 }
