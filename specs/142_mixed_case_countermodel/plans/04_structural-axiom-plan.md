@@ -114,7 +114,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prove Soundness of the New Axiom [NOT STARTED]
+### Phase 2: Prove Soundness of the New Axiom [COMPLETED]
 
 **Goal**: Prove `discrete_box_necessity_valid : ⊨ (U(T,bot).imp (box (U(T,bot))))` using the translation-invariance argument.
 
@@ -126,11 +126,11 @@ Phases within the same wave can execute in parallel.
   3. The key: `U(T,bot)` truth depends ONLY on D's order structure, not on tau/sigma/Omega/M
   4. Since `s > t` and `(t,s)` is empty in D, this is true for ANY history at time `t`
   5. The box quantifies over all `sigma in Omega` at the SAME time `t`, so the result follows
-- [ ] The proof should be approximately 10-20 lines, mirroring the translation-invariance pattern
-- [ ] Replace the placeholder sorry in `axiom_base_valid` (Phase 1) with `exact discrete_box_necessity_valid`
-- [ ] Replace placeholder sorries in `axiom_valid_dense` and `axiom_valid_discrete`
-- [ ] Replace placeholder sorries in the full `soundness` / `soundness_dense` / `soundness_discrete` theorems
-- [ ] Run `lake build` to verify all soundness-related sorries are eliminated
+- [x] The proof should be approximately 10-20 lines, mirroring the translation-invariance pattern *(deviation: altered -- 5 lines; the proof is trivial since box quantifies over histories at the same time)*
+- [x] Replace the placeholder sorry in `axiom_base_valid` (Phase 1) with `exact discrete_box_necessity_valid` *(deviation: altered -- done in Phase 1, no placeholder needed)*
+- [x] Replace placeholder sorries in `axiom_valid_dense` and `axiom_valid_discrete` *(deviation: altered -- done in Phase 1)*
+- [x] Replace placeholder sorries in the full `soundness` / `soundness_dense` / `soundness_discrete` theorems *(deviation: altered -- done in Phase 1)*
+- [x] Run `lake build` to verify all soundness-related sorries are eliminated
 
 **Timing**: 2 hours
 
@@ -147,7 +147,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Derive MCS Consequence -- Every MCS Has box(F'T) or box(U(T,bot)) [NOT STARTED]
+### Phase 3: Derive MCS Consequence -- Every MCS Has box(F'T) or box(U(T,bot)) [COMPLETED]
 
 **Goal**: Prove that in the presence of the new axiom, every MCS A satisfies `box(F'T) in A` or `box(U(T,bot)) in A`, making the mixed case hypotheses contradictory.
 

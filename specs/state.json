@@ -1024,7 +1024,7 @@
     {
       "project_number": 152,
       "project_name": "task_order_topic_grouping",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "description": "Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. (1) Detect independent subgraphs (connected components) in the dependency graph and render each as its own block. (2) Add optional topic field to state.json task entries for structured grouping. (3) Update generate-task-order.sh to group roots by topic within each wave, rendering one code block per topic-group with markdown headings. (4) Enhance wave table to show topic breakdown per wave. (5) Backfill topic field for existing active tasks using heuristic keyword matching from task names/descriptions.",
       "dependencies": [
@@ -1032,7 +1032,7 @@
         150
       ],
       "created": "2026-05-15T12:40:00Z",
-      "last_updated": "2026-05-15T20:16:02Z",
+      "last_updated": "2026-05-15T20:29:21Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -1044,6 +1044,11 @@
           "path": "specs/152_task_order_topic_grouping/plans/02_topic-grouping.md",
           "type": "plan",
           "summary": "Comprehensive v2 plan: 6 phases covering schema, rendering, task-creation wiring, docs, heuristic extraction, verification"
+        },
+        {
+          "path": "specs/152_task_order_topic_grouping/summaries/02_topic-grouping-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for task order topic grouping: 6 phases completed, 10 files modified"
         }
       ],
       "session_id": "sess_1778876158_3b725e",
@@ -1096,9 +1101,40 @@
             "schema",
             "topic-field"
           ]
+        },
+        {
+          "content": "Bash recursive functions cannot use nameref (-n) variables when calling themselves recursively. Use module-level global variables instead.",
+          "category": "TECHNIQUE",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "bash",
+            "nameref",
+            "recursive"
+          ]
+        },
+        {
+          "content": "Topic grouping uses active_topics from state.json for canonical ordering. Cross-topic deps annotated with (topic-name: desc) format. Union-Find with global cc_parent[]. assign_topic_heuristic() is the keyword matcher.",
+          "category": "PATTERN",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "generate-task-order",
+            "topic-grouping",
+            "union-find"
+          ]
+        },
+        {
+          "content": "When adding a new field to state.json task entries, update all four creation paths: /task (task.md step 6), meta-builder-agent (Stage 6), skill-fix-it (Step 9.1), /review (Section 5.6.3).",
+          "category": "PATTERN",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "state.json",
+            "task-creation",
+            "four-paths"
+          ]
         }
       ],
-      "topic": "agent-system"
+      "topic": "agent-system",
+      "completion_summary": "Added topic taxonomy (7 categories) to state.json active_topics array and per-task topic fields; implemented topic-grouped Task Order rendering with Union-Find component detection in generate-task-order.sh; wired topic assignment into /task (Step 4.5 AskUserQuestion picker), meta-builder-agent (Stage 5 Topic column), skill-fix-it (Step 9.1 auto-inference), and /review (Section 5.6.3 jq); updated format and schema documentation."
     }
   ],
   "next_project_number": 153,

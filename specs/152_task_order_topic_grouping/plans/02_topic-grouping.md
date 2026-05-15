@@ -1,7 +1,7 @@
 # Implementation Plan: Task #152
 
 - **Task**: 152 - task_order_topic_grouping
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: Tasks 149 and 150 (both completed)
 - **Research Inputs**: specs/152_task_order_topic_grouping/reports/01_topic-grouping-research.md, specs/152_task_order_topic_grouping/reports/02_topic-field-population.md

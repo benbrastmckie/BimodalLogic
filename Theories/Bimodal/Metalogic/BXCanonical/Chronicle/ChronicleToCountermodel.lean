@@ -3312,17 +3312,53 @@ theorem dd_countermodel_chronicle_discrete (A : Set Formula) (h_mcs : SetMaximal
     ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 /--
-Mixed-case countermodel stub: the residual sorry for the case where neither
-`□(F'T)` nor `□(U(⊤,⊥))` is in A.
+The mixed case (¬□(F'T) ∧ ¬□(U(⊤,⊥)) in an MCS) is impossible.
 
-This case represents a "mixed modal class" where some box-accessible worlds
-are dense (F'T) and others are discrete (U(T,bot)). Different families in
-the BFMCS would need different domain types (Q for dense, Z for discrete),
-which cannot coexist in a single BFMCS with a fixed domain type D.
+From the structural axiom `discrete_box_necessity` (U(T,bot) → □(U(T,bot))):
+1. `¬□(U(T,bot)) ∈ A` (h_not_box_discrete)
+2. By S5 negative introspection: `□(¬□(U(T,bot))) ∈ A`
+3. Contrapositive of the axiom: `¬□(U(T,bot)) → ¬U(T,bot)` is a theorem
+4. By necessitation + K-distribution: `□(¬□(U(T,bot))) → □(¬U(T,bot))` is a theorem
+5. From steps 2, 4: `□(¬U(T,bot)) ∈ A`, i.e., `□(F'T) ∈ A`
+6. But `¬□(F'T) ∈ A` (h_not_box_dense) — contradiction with MCS consistency
+-/
+theorem mcs_mixed_case_absurd (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+    (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
+    (h_not_box_discrete : (Formula.box next_top).neg ∈ A) : False := by
+  -- Step 1: Build the derivation tree for the axiom: U(T,bot) → □(U(T,bot))
+  have h_axiom : [] ⊢ next_top.imp (Formula.box next_top) :=
+    DerivationTree.axiom [] _ Axiom.discrete_box_necessity
+  -- Step 2: Contrapositive: ¬□(U(T,bot)) → ¬U(T,bot)
+  have h_contra : [] ⊢ (Formula.box next_top).neg.imp next_top.neg :=
+    Bimodal.Theorems.Propositional.contraposition h_axiom
+  -- Step 3: Necessitation: □(¬□(U(T,bot)) → ¬U(T,bot))
+  have h_nec : [] ⊢ Formula.box ((Formula.box next_top).neg.imp next_top.neg) :=
+    DerivationTree.necessitation _ h_contra
+  -- Step 4: K-distribution axiom instance: □(A → B) → (□A → □B)
+  have h_k_dist : [] ⊢ (Formula.box ((Formula.box next_top).neg.imp next_top.neg)).imp
+      ((Formula.box (Formula.box next_top).neg).imp (Formula.box next_top.neg)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist (Formula.box next_top).neg next_top.neg)
+  -- Step 5: MP: □(¬□(U(T,bot))) → □(¬U(T,bot))
+  have h_box_chain : [] ⊢ (Formula.box (Formula.box next_top).neg).imp (Formula.box next_top.neg) :=
+    DerivationTree.modus_ponens [] _ _ h_k_dist h_nec
+  -- Step 6: In MCS A, from ¬□(U(T,bot)) derive □(¬□(U(T,bot))) by S5
+  have h_box_neg_box : Formula.box (Formula.box next_top).neg ∈ A :=
+    SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs next_top h_not_box_discrete
+  -- Step 7: MP in MCS: □(¬U(T,bot)) ∈ A, i.e., □(F'T) ∈ A
+  have h_box_dense : Formula.box next_top.neg ∈ A :=
+    SetMaximalConsistent.implication_property h_mcs
+      (theorem_in_mcs h_mcs h_box_chain) h_box_neg_box
+  -- Step 8: Contradiction: □(F'T) ∈ A and ¬□(F'T) ∈ A
+  exact set_consistent_not_both h_mcs.1 (Formula.box next_top.neg) h_box_dense h_not_box_dense
 
-Resolving this case likely requires novel techniques: ultraproducts,
-enriched frames, or new BX theorems. See task 122 research report
-`01_discrete-bfmcs-research.md` Section 4 for detailed analysis.
+/--
+Mixed-case countermodel: proved vacuously via `False.elim` since the mixed case
+is impossible (every MCS has either □(F'T) or □(U(T,bot))).
+
+The structural axiom `discrete_box_necessity` (U(T,bot) → □(U(T,bot))) ensures that
+discreteness propagates to all box-accessible worlds via translation invariance.
+Combined with S5 and K-distribution, this makes the mixed-case hypotheses contradictory.
+Previously this was a sorry — see task 142 research reports for the full analysis.
 -/
 theorem dd_countermodel_chronicle_mixed_sorry (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
@@ -3333,6 +3369,6 @@ theorem dd_countermodel_chronicle_mixed_sorry (A : Set Formula) (h_mcs : SetMaxi
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
-  sorry
+  exact False.elim (mcs_mixed_case_absurd A h_mcs h_not_box_dense h_not_box_discrete)
 
 end Bimodal.Metalogic.BXCanonical.Chronicle

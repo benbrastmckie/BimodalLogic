@@ -34,7 +34,7 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,152,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 20,21,125,128 | 18,116,122 | completeness, frame-extensions, algebraic-representation |
 
 **Grouped by Topic** (indented = must complete first):
@@ -88,7 +88,6 @@ technical_debt:
 ### Agent System
 ```
 114 [NOT STARTED] — Add a .claude/rules/ rule enforcing plan compliance for implement
-152 [IMPLEMENTING] — Improve Task Order UX in TODO.md by splitting the monolithic depe
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 ```
@@ -97,7 +96,7 @@ technical_debt:
 
 ### 152. Task Order topic grouping and wave separation
 - **Effort**: 3-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Dependencies**: Task #149, Task #150
 - **Research**:
@@ -106,6 +105,7 @@ technical_debt:
 - **Plan**:
   - [152_task_order_topic_grouping/plans/01_topic-grouping.md]
   - [152_task_order_topic_grouping/plans/02_topic-grouping.md]
+- **Summary**: [152_task_order_topic_grouping/summaries/02_topic-grouping-summary.md]
 - **Description**: Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. Detect independent subgraphs (connected components), add optional topic field to state.json, update generate-task-order.sh to group roots by topic with per-group code blocks and markdown headings, enhance wave table with topic breakdown, and backfill topic for existing tasks.
 
 ### 149. Redesign Task Order format and generation script
