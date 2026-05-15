@@ -133,14 +133,80 @@ The statement is correct and needed for Reynolds Theorem 15.
 -/
 theorem reflCanR_linear (x y z : ReflCanDomain)
     (h_xy : tempR_fwd x y) (h_xz : tempR_fwd x z) : tempR_fwd y z ∨ tempR_fwd z y := by
-  -- Port `forward_temporal_witness` from BXCanonical/CanonicalChain.lean
-  -- or Bundle/CanonicalFrame.lean to ReflCanDomain. Then use:
-  --   1. tempR_fwd x y gives g_content x ⊆ y.val
-  --   2. tempR_fwd x z gives g_content x ⊆ z.val
-  --   3. From ¬tempR_fwd y z, obtain ψ with Gψ ∈ y.val, ψ ∉ z.val
-  --   4. From ¬tempR_fwd z y, obtain χ with Gχ ∈ z.val, χ ∉ y.val
-  --   5. Derive F(¬ψ) ∈ x.val and F(¬χ) ∈ x.val via duality + witness lemma
-  --   6. Apply BX11 (temp_linearity) at x to derive a contradiction
+  -- By contradiction: assume neither tempR_fwd y z nor tempR_fwd z y
+  by_contra h_neither
+  push_neg at h_neither
+  obtain ⟨h_not_yz, h_not_zy⟩ := h_neither
+  have h_mcs_x := x.property
+  have h_mcs_y := y.property
+  have h_mcs_z := z.property
+  -- From ¬tempR_fwd y z, get witness ψ with G(ψ) ∈ y.val but ψ ∉ z.val
+  rw [show ¬tempR_fwd y z ↔ ¬(g_content y ⊆ z.val) from Iff.rfl] at h_not_yz
+  rw [Set.not_subset] at h_not_yz
+  obtain ⟨ψ, h_ψ_gy, h_ψ_nz⟩ := h_not_yz
+  -- From ¬tempR_fwd z y, get witness χ with G(χ) ∈ z.val but χ ∉ y.val
+  rw [show ¬tempR_fwd z y ↔ ¬(g_content z ⊆ y.val) from Iff.rfl] at h_not_zy
+  rw [Set.not_subset] at h_not_zy
+  obtain ⟨χ, h_χ_gz, h_χ_ny⟩ := h_not_zy
+  -- Extract G(ψ) ∈ y.val and G(χ) ∈ z.val from g_content membership
+  have h_Gψ_y : Formula.all_future ψ ∈ y.val := by
+    simp [g_content, Bundle.g_content] at h_ψ_gy; exact h_ψ_gy
+  have h_Gχ_z : Formula.all_future χ ∈ z.val := by
+    simp [g_content, Bundle.g_content] at h_χ_gz; exact h_χ_gz
+  -- Step 1: G(ψ) ∉ x.val (else ψ ∈ z.val via h_xz, contradicting h_ψ_nz)
+  have h_Gψ_nx : Formula.all_future ψ ∉ x.val := by
+    intro h_Gψ_x
+    have : ψ ∈ g_content x := by simp [g_content, Bundle.g_content, h_Gψ_x]
+    exact h_ψ_nz (h_xz this)
+  -- Step 2: G(χ) ∉ x.val (else χ ∈ y.val via h_xy, contradicting h_χ_ny)
+  have h_Gχ_nx : Formula.all_future χ ∉ x.val := by
+    intro h_Gχ_x
+    have : χ ∈ g_content x := by simp [g_content, Bundle.g_content, h_Gχ_x]
+    exact h_χ_ny (h_xy this)
+  -- Step 3: ¬G(ψ) ∈ x.val by negation completeness (since G(ψ) ∉ x.val)
+  have h_negGψ_x : Formula.neg (Formula.all_future ψ) ∈ x.val :=
+    (SetMaximalConsistent.negation_complete h_mcs_x (Formula.all_future ψ)).resolve_left h_Gψ_nx
+  have h_negGχ_x : Formula.neg (Formula.all_future χ) ∈ x.val :=
+    (SetMaximalConsistent.negation_complete h_mcs_x (Formula.all_future χ)).resolve_left h_Gχ_nx
+  -- Step 4: ¬G(ψ) = F(¬ψ) by definition:
+  --   F(¬ψ) = (¬ψ).neg.all_future.neg = ψ.neg.neg.all_future.neg
+  --   ¬G(ψ) = ψ.all_future.neg = ψ.all_future.imp ⊥
+  -- These are NOT definitionally equal. We need: ¬G(ψ) → F(¬ψ)
+  -- ¬G(ψ) = G(ψ) → ⊥
+  -- F(¬ψ) = ¬G(¬¬ψ) = G(¬¬ψ) → ⊥ = (ψ.neg.neg.all_future).neg
+  -- We need to show: G(ψ) → ⊥ implies G(ψ.neg.neg) → ⊥
+  -- Equivalently (contrapositive): G(¬¬ψ) → G(ψ), which follows from ¬¬ψ → ψ (double neg) + temp_k_dist
+  -- Derive ⊢ G(¬¬ψ) → G(ψ) as a theorem
+  have h_dne_ψ : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
+    Bimodal.Theorems.Propositional.double_negation ψ
+  have h_G_dne_ψ : [] ⊢ Formula.all_future ((Formula.neg (Formula.neg ψ)).imp ψ) :=
+    DerivationTree.temporal_necessitation _ h_dne_ψ
+  have h_kd_ψ : [] ⊢ ((Formula.neg (Formula.neg ψ)).imp ψ).all_future.imp
+      ((Formula.neg (Formula.neg ψ)).all_future.imp ψ.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist (Formula.neg (Formula.neg ψ)) ψ)
+  -- G(¬¬ψ → ψ) → (G(¬¬ψ) → G(ψ))
+  have h_Gnn_imp_Gψ : [] ⊢ (Formula.neg (Formula.neg ψ)).all_future.imp ψ.all_future :=
+    Combinators.mp h_G_dne_ψ h_kd_ψ
+  -- Contrapositive: ¬G(ψ) → ¬G(¬¬ψ)
+  -- ¬G(ψ) = G(ψ).neg = G(ψ).imp ⊥
+  -- We need: G(ψ).neg → G(¬¬ψ).neg
+  -- i.e., (G(ψ) → ⊥) → (G(¬¬ψ) → ⊥)
+  -- From h_Gnn_imp_Gψ: G(¬¬ψ) → G(ψ), compose: G(¬¬ψ) → G(ψ) → ⊥
+  -- This is: ⊢ (G(ψ) → ⊥) → (G(¬¬ψ) → ⊥), i.e., ⊢ ¬G(ψ) → ¬G(¬¬ψ)
+  -- But ¬G(¬¬ψ) = F(¬ψ) by definition: F(¬ψ) = (¬ψ).neg.all_future.neg = (¬¬ψ).all_future.neg = ¬G(¬¬ψ)
+  -- So we need: ¬G(ψ) → F(¬ψ)
+  have h_contra_ψ : [] ⊢ (Formula.all_future ψ).neg.imp (Formula.some_future (Formula.neg ψ)) := by
+    -- F(¬ψ) = (¬ψ).some_future = (¬ψ).neg.all_future.neg = (¬¬ψ).all_future.neg = ¬G(¬¬ψ)
+    -- ¬G(ψ) = (Gψ).neg = Gψ → ⊥
+    -- Goal: (Gψ → ⊥) → ((¬¬ψ).all_future → ⊥)
+    -- From h_Gnn_imp_Gψ: (¬¬ψ).all_future → Gψ
+    -- Compose: (Gψ → ⊥) → ((¬¬ψ).all_future → ⊥)
+    -- This is b_combinator pattern: (B → C) → (A → B) → (A → C) with A=G(¬¬ψ), B=Gψ, C=⊥
+    -- Need: (Gψ → ⊥) → (G(¬¬ψ) → ⊥)
+    -- From h_Gnn_imp_Gψ: G(¬¬ψ) → Gψ
+    -- Compose via imp_trans: (G(¬¬ψ) → Gψ) → (Gψ → ⊥) → (G(¬¬ψ) → ⊥)
+    -- TODO [Task 141+]: Prove using Combinators.theorem_flip + imp_trans
+    sorry
   sorry
 
 /--

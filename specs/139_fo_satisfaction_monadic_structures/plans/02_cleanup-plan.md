@@ -75,21 +75,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Cleanup Dead and Misleading Code [NOT STARTED]
+### Phase 1: Cleanup Dead and Misleading Code [COMPLETED]
 
 **Goal**: Delete dead code (`ktype_finite`, orphaned definitions, misleading proofs) and fix naming issues. Add TODO documentation for deferred items.
 
 **Tasks**:
-- [ ] Delete `ktype_finite` definition from NEquivalence.lean (lines ~353-355) and its surrounding comments/docstring
-- [ ] Remove `import Mathlib.Data.Fin.VecNotation` from NEquivalence.lean (line 4)
-- [ ] Delete `def OrderedSum` from NEquivalence.lean (lines ~194-198) and its docstring
-- [ ] Update TODO comments on `finite_types` and `sum_preservation` in the `KEquivalenceFramework` instance to reference the Doets Lemma 1.1 scope (future task for KType redefinition with finite normal form domain)
-- [ ] Delete `ZIntervalStructure.carrierSet` from IntegerModel.lean (lines ~47-48)
-- [ ] Delete `ZStructure.toZInterval` from IntegerModel.lean (lines ~64-68)
-- [ ] Move `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k` from OrderedSum.lean to `Theories/Bimodal/Boneyard/` (or delete with a comment noting the vacuous proof)
-- [ ] Rename `Formula.complexity` to `Formula.operator_depth` in Table.lean; update `table_depth_bound` to use the new name; add a docstring note explaining the difference from `Bimodal.Syntax.Formula.complexity`
-- [ ] Update `doets_lemma_1_5` docstring in OrderedSum.lean to state "Not on discrete completeness critical path. Required only for dense case (future work)."
-- [ ] Verify `lake build` on the WeakCanonical module after all deletions
+- [x] **Task 1.1**: Delete `ktype_finite` definition from NEquivalence.lean *(completed in prior session)*
+- [x] **Task 1.2**: Remove `import Mathlib.Data.Fin.VecNotation` from NEquivalence.lean *(completed in prior session)*
+- [x] **Task 1.3**: Delete `def OrderedSum` from NEquivalence.lean *(completed in prior session)*
+- [x] **Task 1.4**: Update TODO comments on `finite_types` and `sum_preservation` to reference Doets Lemma 1.1 scope *(completed in prior session)*
+- [x] **Task 1.5**: Delete `ZIntervalStructure.carrierSet` from IntegerModel.lean *(completed in prior session)*
+- [x] **Task 1.6**: Delete `ZStructure.toZInterval` from IntegerModel.lean *(completed in prior session)*
+- [x] **Task 1.7**: Move vacuous proofs from OrderedSum.lean to Boneyard/VacuousKEquiv.lean *(completed in prior session)*
+- [x] **Task 1.8**: Rename `Formula.complexity` to `operator_depth` in Table.lean *(completed in prior session; dot-notation fix applied this session)*
+- [x] **Task 1.9**: Update `doets_lemma_1_5` docstring *(completed in prior session)*
+- [x] **Task 1.10**: Verify `lake build` on WeakCanonical module *(completed — all modules build successfully)*
+- [x] **Task 1.11**: Fix ReflexiveCanonical.lean build error *(deviation: added — removed ill-typed `exact` on line 205 that blocked downstream builds)*
 
 **Timing**: 1 hour
 

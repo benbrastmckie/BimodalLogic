@@ -25,22 +25,27 @@ namespace Bimodal.Metalogic.WeakCanonical
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 
-/-! ## Helper: Formula Complexity -/
+/-! ## Helper: Operator Depth -/
 
 /--
-Formula complexity: a natural number bounding the quantifier depth
-of the table translation. Defined as the number of temporal operators
-(modal + temporal) in the formula.
+Operator depth: a natural number bounding the quantifier depth of the table
+translation. Counts the nesting depth of temporal operators (modal + temporal)
+in the formula.
+
+Note: This is distinct from `Bimodal.Syntax.Formula.complexity` which counts
+total structural complexity (sum of all subformula sizes). `operator_depth`
+counts only the maximum nesting depth of modal/temporal operators, which
+directly corresponds to quantifier depth in the FO translation.
 -/
-def Formula.complexity : Formula → Nat
+def operator_depth : Formula → Nat
   | .atom _ => 0
   | .bot => 0
-  | .imp φ ψ => max φ.complexity ψ.complexity
-  | .box φ => φ.complexity + 1
-  | .all_future φ => φ.complexity + 1
-  | .all_past φ => φ.complexity + 1
-  | .untl φ ψ => max φ.complexity ψ.complexity + 1
-  | .snce φ ψ => max φ.complexity ψ.complexity + 1
+  | .imp φ ψ => max (operator_depth φ) (operator_depth ψ)
+  | .box φ => operator_depth φ + 1
+  | .all_future φ => operator_depth φ + 1
+  | .all_past φ => operator_depth φ + 1
+  | .untl φ ψ => max (operator_depth φ) (operator_depth ψ) + 1
+  | .snce φ ψ => max (operator_depth φ) (operator_depth ψ) + 1
 
 /-! ## Standard Translation Table -/
 
@@ -62,7 +67,7 @@ def table (sig : MonadicSignature) (_φ : Formula) : MonadicFormula sig 1 := by
   sorry
 
 /--
-The quantifier depth of the table translation is bounded by the complexity
+The quantifier depth of the table translation is bounded by the operator depth
 of the source formula.
 
 **Status**: Sorried. Follows by structural induction on φ using the
@@ -72,7 +77,7 @@ table definition. Each temporal operator adds at most 1 quantifier
 -- TODO: Prove table_depth_bound in Task 140.
 -/
 theorem table_depth_bound (sig : MonadicSignature) (φ : Formula) :
-    (table sig φ).quantifier_depth ≤ φ.complexity := by
+    (table sig φ).quantifier_depth ≤ operator_depth φ := by
   sorry
 
 
