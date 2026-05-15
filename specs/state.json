@@ -558,13 +558,13 @@
     {
       "project_number": 129,
       "project_name": "weak_reflexive_completeness_conservative_extension",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Develop a weak/reflexive temporal sub-language for discrete frames where G_w evaluates over the reflexive closure (y >= x) rather than the strict order (y > x). Prove completeness for this sub-language using standard Henkin canonical model methods (no chronicle construction, no IR rule), then transfer completeness to the strict system via model-theoretic argument, bypassing the succ_cofinal gap entirely.\n\nPhase 1: Weak sub-language definition (~100 lines). G_w(phi) := phi AND G(phi), H_w := phi AND H(phi), F_w := phi OR F(phi), P_w := phi OR P(phi). Weak Until/Since with reflexive endpoints.\n\nPhase 2: Weak axiom system (~200 lines). Derive weak axioms in the strict system. G_w(phi)->phi is trivial. Weak Z1 (FG_w(phi)->G_w(phi)) derivable from strict Z1.\n\nPhase 3: Weak Henkin canonical model (~500-800 lines). Standard construction where each point is a distinct MCS. No chronicle, no IR rule, no gap scenario. Constant-MCS structurally impossible.\n\nPhase 4: Z1 + IsSuccArchimedean in the weak model (~200-400 lines). Doets maximum principle (Claim 10) + compression from sum-of-zeta to single zeta (Claims 9-11).\n\nPhase 5: Model-theoretic completeness transfer (~100 lines). IMPORTANT: Expressing strict G in terms of weak operators is impossible (U_w(phi,bot) = phi in weak semantics, so Next is not definable). Instead use model-theoretic argument: if psi is not provable in the strict system, then neg-psi is consistent in the strict system. Since every weak axiom is a strict theorem (G_w = phi AND G), neg-psi is consistent in the weak system. By weak completeness, there exists a weak countermodel. This is also a strict countermodel (same domain, same valuation, reinterpret <= as <). Contrapositive: valid under strict -> provable.\n\nPhase 6: Integration (~100 lines). Wire weak completeness + transfer into existing pipeline.\n\nPhase 7: Close the sorry (~50 lines). Replace the admitted limitDomSubtype_isSuccArchimedean in ChronicleToCountermodel.lean with the Henkin-derived IsSuccArchimedean, making dd_countermodel_chronicle_discrete sorry-free.",
       "dependencies": [],
       "created": "2026-05-13T07:34:37Z",
-      "last_updated": "2026-05-15T00:47:54Z",
+      "last_updated": "2026-05-15T01:20:26Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -616,11 +616,16 @@
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/09_reynolds-theorem15-plan.md",
           "type": "plan",
           "summary": "Revised plan v3: 6 phases following Reynolds 1994 literally for discrete case, fixes structural errors (build, circularity, wrong good def), 20-28 hours"
+        },
+        {
+          "path": "specs/129_weak_reflexive_completeness_conservative_extension/summaries/09_reynolds-theorem15-summary.md",
+          "type": "summary",
+          "summary": "PARTIAL (v3): All 6 phases complete, sorries reduced 17+ to 5 (all in FO satisfaction foundation). IntegerModel/OrderedSum sorry-free. Chronicle fallback retained pending truth transfer."
         }
       ],
       "researched": "2026-05-15T00:39:26Z",
-      "session_id": "sess_1778805668_6f4b00",
-      "resume_phase": 3,
+      "session_id": "sess_1778806238_78bf83",
+      "resume_phase": 7,
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 24,
@@ -656,7 +661,7 @@
         ]
       },
       "started": "2026-05-14T23:00:05Z",
-      "completion_summary": "PARTIAL: Phases 1-2 complete (sorry-free). Phases 3-7 structurally complete: OrderedMonadicStructure, KEquivalenceFramework (5 fields), chronicleAsMonadicStructure, and all 5 vacuous definitions replaced with non-vacuous bodies. 18 sorries remain across NEquivalence, OrderedSum, IntegerModel in proof bodies (doets_lemma_1_4, finite_structures_k_equiv_to_Z_interval, one_class, chronicle_is_good, etc.). Build passes (1644 jobs)."
+      "completion_summary": "PARTIAL (v3): All 6 phases structurally complete. Sorries reduced 17+ to 5, all in FO satisfaction foundation (k_type_of, ktype_finite, finite_types in KEquivalenceFramework, table, table_depth_bound). IntegerModel.lean and OrderedSum.lean have 0 explicit sorries. Chronicle fallback retained in Transfer.lean pending truth transfer. Build passes (1644 jobs). Follow-up task 139 created for FO satisfaction infrastructure."
     },
     {
       "project_number": 130,
@@ -723,9 +728,24 @@
           "summary": "1-phase plan: update TODO.md frontmatter sorry_count_note (~10min)"
         }
       ]
+    },
+    {
+      "project_number": 139,
+      "project_name": "fo_satisfaction_monadic_structures",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "description": "Build first-principles FO (first-order) satisfaction infrastructure for monadic structures and close the k-equivalence sorry chain.\n\nThe current MonadicSentence type lacks variable binding infrastructure: .forall has no De Bruijn index, .lt has no variable positions, and .atom has no variable argument. This makes it impossible to define eval/satisfies, which leaves k_type_of, ktype_finite, and k_equiv_monotone as sorries. The entire Reynolds Theorem 15 pipeline (doets_lemma_1_4, finite_structures_good, one_class, chronicle_is_good) inherits these sorries through the axiomatized KEquivalenceFramework instance.\n\nScope:\n\n1. Redesign MonadicSentence with proper variable binding. Options: (a) De Bruijn indices for quantifier binding, (b) two-sorted variable scheme with explicit variable positions for binary lt. The monadic case is simpler than full FO — predicates are unary, the only relation is binary <, and quantification is over a single sort.\n\n2. Implement decidable eval/satisfies. For finite carriers and finite signatures, satisfaction is decidable. Define eval : MonadicStructure sig → Assignment → MonadicSentence sig → Bool with proper variable lookup, quantifier evaluation over Fintype carriers, and lt comparison using the structure order.\n\n3. Close k_type_of from the semantics. Define as the set of sentences of depth ≤ k satisfied by M, converted to a canonical representative (Finset or quotient).\n\n4. Prove ktype_finite: finitely many k-types (bounded by 2^|S_k| where S_k is the finite set of sentences of depth ≤ k over a finite signature).\n\n5. Prove k_equiv_monotone: k-equivalence at depth k implies k-equivalence at depth m ≤ k (subset containment of satisfied sentences).\n\n6. Close the KEquivalenceFramework instance fields (equiv_at, equiv_is_equiv, equiv_monotone, finite_types, sum_preservation) with proofs from the FO semantics, replacing the current sorry-based axioms.\n\n7. Refactor all downstream consumers of MonadicSentence to use the new type. Verify that doets_lemma_1_4, finite_structures_good, one_class, chronicle_is_good, and the Transfer.lean pipeline still compile and that inherited sorries from k_type_of are eliminated.\n\nDefinition of done: KEquivalenceFramework instance is sorry-free, k_type_of/ktype_finite/k_equiv_monotone are sorry-free, lake build passes, and chronicle_is_good has strictly fewer sorries than before.",
+      "dependencies": [
+        129
+      ],
+      "created": "2026-05-15T01:17:30Z",
+      "last_updated": "2026-05-15T01:17:30Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 139,
+  "next_project_number": 140,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -35,9 +35,10 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **129** [RESEARCHED] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
-2. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
-3. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+1. **129** [IMPLEMENTING] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
+2. **139** [NOT STARTED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h, depends on 129)
+3. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
+4. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
 ### Phase 2: Module Reorganization
 
@@ -113,7 +114,7 @@ technical_debt:
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Research**:
@@ -128,6 +129,8 @@ technical_debt:
   - [129_weak_reflexive_completeness_conservative_extension/plans/03_doets-reynolds-plan.md]
   - [129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md]
   - [129_weak_reflexive_completeness_conservative_extension/plans/09_reynolds-theorem15-plan.md]
+- **Summary**:
+  - [specs/129_weak_reflexive_completeness_conservative_extension/summaries/09_reynolds-theorem15-summary.md]
 
 **Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.
 
@@ -182,6 +185,39 @@ technical_debt:
 - The weak sub-language is independently interesting for proof-theoretic and algebraic investigations (task 125).
 
 **Literature**: Doets 1987 (Completeness and Definability, Claims 9-11), Burgess 1982/1984 (chronicle construction for strict semantics), Gabbay-Hodkinson-Reynolds (irreflexivity techniques), Blackburn-de Rijke-Venema 2002 (Section 7.2, completeness with Until/Since).
+
+---
+
+### 139. FO satisfaction for monadic structures: close k-equivalence sorry chain
+- **Effort**: 15-25 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+- **Dependencies**: 129
+
+**Description**: Build first-principles FO (first-order) satisfaction infrastructure for monadic structures and close the k-equivalence sorry chain left by task 129.
+
+The current `MonadicSentence` type (NEquivalence.lean) lacks variable binding infrastructure: `.forall` has no De Bruijn index, `.lt` has no variable positions, and `.atom` has no variable argument. This makes it impossible to define `eval`/`satisfies`, which leaves `k_type_of`, `ktype_finite`, and `k_equiv_monotone` as sorries. The entire Reynolds Theorem 15 pipeline (`doets_lemma_1_4`, `finite_structures_good`, `one_class`, `chronicle_is_good`) inherits these sorries through the axiomatized `KEquivalenceFramework` instance.
+
+**Scope**:
+
+1. **Redesign `MonadicSentence` with proper variable binding**. The monadic case is simpler than full FO: predicates are unary, the only relation is binary `<`, quantification is over a single sort. Options: (a) De Bruijn indices for quantifier binding with explicit variable positions for `lt`, (b) two-sorted variable scheme. Refactor all downstream consumers.
+
+2. **Implement decidable `eval`/`satisfies`**. For finite carriers and finite signatures, satisfaction is decidable. Define `eval : MonadicStructure sig → Assignment → MonadicSentence sig → Bool` with proper variable lookup, quantifier evaluation over `Fintype` carriers, and `lt` comparison using the structure's order.
+
+3. **Close `k_type_of`** from the semantics: the set of sentences of depth ≤ k satisfied by M, converted to a canonical representative.
+
+4. **Prove `ktype_finite`**: finitely many k-types, bounded by 2^|S_k| where S_k is the finite set of sentences of depth ≤ k over a finite signature.
+
+5. **Prove `k_equiv_monotone`**: k-equivalence at depth k implies k-equivalence at depth m ≤ k.
+
+6. **Close `KEquivalenceFramework` instance fields** (`equiv_at`, `equiv_is_equiv`, `equiv_monotone`, `finite_types`, `sum_preservation`) with proofs from the FO semantics, replacing the current sorry-based axioms.
+
+7. **Verify downstream**: Confirm `doets_lemma_1_4`, `finite_structures_good`, `one_class`, `chronicle_is_good`, and Transfer.lean still compile with strictly fewer sorries.
+
+**Definition of done**: `KEquivalenceFramework` instance is sorry-free, `k_type_of`/`ktype_finite`/`k_equiv_monotone` are sorry-free, `lake build` passes, `chronicle_is_good` has strictly fewer sorries than before.
+
+**Files**: `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean` (primary), `OrderedSum.lean`, `IntegerModel.lean`, `Transfer.lean` (downstream verification).
 
 ---
 
