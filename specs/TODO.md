@@ -55,7 +55,7 @@ technical_debt:
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-152 [RESEARCHING] — Improve Task Order UX in TODO.md by splitting the monolithic depe
+152 [RESEARCHED] — Improve Task Order UX in TODO.md by splitting the monolithic depe
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -76,10 +76,12 @@ technical_debt:
 
 ### 152. Task Order topic grouping and wave separation
 - **Effort**: 3-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Dependencies**: Task #149, Task #150
-- **Research**: [152_task_order_topic_grouping/reports/01_topic-grouping-research.md]
+- **Research**:
+  - [152_task_order_topic_grouping/reports/01_topic-grouping-research.md]
+  - [152_task_order_topic_grouping/reports/02_topic-field-population.md]
 - **Plan**: [152_task_order_topic_grouping/plans/01_topic-grouping.md]
 - **Description**: Improve Task Order UX in TODO.md by splitting the monolithic dependency tree into grouped, scannable sections. Detect independent subgraphs (connected components), add optional topic field to state.json, update generate-task-order.sh to group roots by topic with per-group code blocks and markdown headings, enhance wave table with topic breakdown, and backfill topic for existing tasks.
 
