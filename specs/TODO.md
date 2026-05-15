@@ -35,7 +35,7 @@ technical_debt:
 
 ### Phase 1: Sorry-Free Completeness
 
-1. **129** [IMPLEMENTING] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
+1. **129** [COMPLETED] — Weak/reflexive completeness via Henkin model + Doets compression + model-theoretic transfer (40h, bypasses succ_cofinal gap)
 2. **139** [NOT STARTED] — FO satisfaction for monadic structures: close k-equivalence sorry chain (15-25h, depends on 129)
 3. **140** [NOT STARTED] — Truth transfer and succ_cofinal elimination: standard translation + Reynolds pipeline wiring (8-15h, depends on 129, 139)
 4. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
@@ -115,7 +115,8 @@ technical_debt:
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-14
 - **Task Type**: lean4
 - **Priority**: critical
 - **Research**:
