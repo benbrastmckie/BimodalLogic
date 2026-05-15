@@ -1145,7 +1145,8 @@ cannot establish `G(Gφ→φ)` at orbit points.
 
 **Resolution**: Task 129 (weak/reflexive completeness + conservative extension)
 will provide `IsSuccArchimedean` via a Henkin canonical model where every point is
-a distinct MCS, bypassing the gap scenario entirely.
+a distinct MCS, bypassing the gap scenario entirely. Alternatively, the Reynolds
+pipeline (tasks 154-155) bypasses `succ_cofinal` entirely.
 
 ### Proof attempts below (all blocked)
 
@@ -1153,6 +1154,9 @@ a distinct MCS, bypassing the gap scenario entirely.
    `succ(max_N)` may enter the domain at an arbitrarily later stage.
 2. **Convergence** (`limit_dom_points_are_succ_iterates`): leads to same gap.
 3. **Z1/Doets gap elimination** (`succ_cofinal`): constant-MCS case evades Z1.
+4. **Prior-UZ + c5_strong** (task 153): c5_strong for U(φ,¬φ) gives φ at witness
+   and ¬φ at intermediates. In discrete case, no intermediates between consecutive
+   points, so the guard is vacuously satisfied. No contradiction derivable.
 -/
 
 /--
@@ -1842,48 +1846,47 @@ private theorem succ_cofinal (A : Set Formula) (h_mcs : SetMaximalConsistent A)
     -- Step 9: Gap elimination.
     --
     -- The orbit {s^[n](a)} converges to L from below, the pred-chain
-    -- {p^[k](pb)} has values ≥ L. All orbit < all pred-chain.
+    -- {p^[k](pb)} has values ≥ L (strictly decreasing). All orbit < all
+    -- pred-chain. The gap creates a ℤ+ℤ-like structure.
     --
-    -- This sorry represents a genuine mathematical gap: the succ-orbit
-    -- from a does not reach b, creating a ℤ+ℤ-like structure. Closing it
-    -- requires either:
-    -- (a) Z1 (Doets maximum principle) with a discriminating formula that
-    --     distinguishes orbit from non-orbit points, combined with control
-    --     of what happens at b and beyond the gap region.
-    -- (b) A construction-level argument showing the omega-chain cannot
-    --     produce a gap (the construction resolves counterexamples that
-    --     would force succ links across any gap).
-    -- (c) Adding Z1 as an axiom was done in Phase 2. The gap elimination
-    --     argument using Z1 needs: for some φ, F(φ) and FG(¬φ) at an
-    --     orbit point, with G(Gφ→φ)→(FGφ→Gφ) (Z1) giving Gφ or a
-    --     "maximum" point via the contrapositive. The maximum point y
-    --     has φ∧G(¬φ), so forward_G gives ¬φ at succ(y). If y is orbit
-    --     (value < L by orbit_below_L), succ(y) is orbit, contradicting
-    --     φ at succ(y) for the right φ.
+    -- Available tools: backward_G, backward_F, _backward_P, z1_in_mcs,
+    -- orbit_below_L, h_lt_pred_chain, limit_F_resolution, limit_forward_G.
     --
-    -- Available tools: backward_G, backward_F, z1_in_mcs, orbit_below_L,
-    -- h_lt_pred_chain, limit_F_resolution, limit_forward_G.
+    -- Approaches investigated (task 153):
     --
-    -- Gap elimination requires either:
-    -- (a) Z1 Doets maximum principle with a discriminating formula that
-    --     holds at ALL orbit points and fails at ALL points above the gap,
-    --     which requires orbit MCS stabilization (finiteness of sub-formula
-    --     closure not yet formalized), OR
-    -- (b) A construction-level argument showing the omega-chain cannot
-    --     produce a gap (constant-MCS case), OR
-    -- (c) A Doets Henkin canonical model that avoids the gap entirely.
+    -- (1) Prior-UZ + c5_strong ("constant-MCS exclusion"):
+    --     F(φ) at orbit point → U(φ, ¬φ) at orbit point (Prior-UZ).
+    --     c5_strong gives witness y with φ at y and ¬φ at intermediates.
+    --     FAILS: in the discrete case, y = succ(x) with no intermediates,
+    --     so the guard ¬φ is vacuously satisfied. No contradiction.
     --
-    -- Analysis summary (see plans/11_three-track-completeness.md):
-    -- • Non-constant MCS: Z1 argument works IF we can establish FGφ at
-    --   an orbit point (requires φ at all sufficiently late points).
-    --   The discriminating formula from prior_UZ + c5_strong gives φ at
-    --   all intermediates but not at all future points beyond the gap.
-    -- • Constant MCS: Z1 is trivially satisfied; contradiction must come
-    --   from construction internals (omega-chain counterexample resolution).
-    -- • Both cases blocked by the need to control formula truth at ALL
-    --   future points, not just orbit/pred-chain points.
+    -- (2) Z1 (Doets maximum principle):
+    --     Z1 = G(Gφ→φ) → (FGφ → Gφ). In strict (irreflexive) semantics,
+    --     G(Gφ→φ) at orbit point x requires Gφ→φ at all strictly future
+    --     points. In the constant-MCS case, this is trivially satisfied
+    --     (both Gφ and φ in every MCS), so Z1 gives no information.
+    --     In the non-constant case, controlling φ truth at ALL future
+    --     points (not just orbit/pred-chain) is the unsolved difficulty.
+    --
+    -- (3) Gap point analysis: if a limit_dom point c exists with value
+    --     ≥ L and below all pred-chain points, then pred(c) is either
+    --     an orbit point (giving c = succ(orbit) = next orbit, but
+    --     orbit values < L ≤ c.val, contradiction) or another gap point
+    --     (infinite descent). The descent produces a strictly decreasing
+    --     sequence of gap rationals bounded below by L, which converges
+    --     but does not yield a contradiction with current tools.
+    --
+    -- Conclusion: the gap scenario is consistent with all temporal axioms
+    -- (Z1, Prior-UZ, c5) under strict semantics in the constant-MCS case.
+    -- Resolution requires either:
+    -- (a) A construction-level argument showing the omega-chain cannot
+    --     produce a gap (deep interaction with omega_chain_elim_result),
+    -- (b) The task 129 approach: weak/reflexive completeness + conservative
+    --     extension, which provides IsSuccArchimedean via a Henkin model
+    --     that avoids the gap entirely, OR
+    -- (c) The Reynolds pipeline (tasks 154-155) which bypasses this sorry.
     sorry
-    -- (End of succ_cofinal proof — sorry to be resolved in follow-up task.)
+    -- (End of succ_cofinal proof — resolution: task 129 or Reynolds pipeline.)
 /--
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 

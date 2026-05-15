@@ -104,18 +104,32 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Constant-MCS Exclusion via Prior-UZ [NOT STARTED]
+### Phase 2: Constant-MCS Exclusion via Prior-UZ [BLOCKED]
 
 **Goal**: Prove that the constant-MCS scenario (all limit_dom points in the gap share the same MCS) leads to a contradiction, eliminating that case from the gap analysis. This is the Teammate C breakthrough finding.
 
+**BLOCKER** (Phase 2):
+- **What failed**: The constant-MCS exclusion argument from the research report is fundamentally flawed.
+- **What was tried**:
+  1. Constructed F(top) at orbit point a via backward_F (compiles)
+  2. Applied Prior-UZ to get U(top, neg top) at orbit point a (compiles)
+  3. Applied limit_satisfies_c5_strong to U(phi, neg phi) -- but the witness y has phi at y (the event) and neg phi at *intermediates* (the guard), NOT neg phi at y
+  4. In the discrete case, y = immediate successor = next orbit point. The guard is vacuously satisfied (no intermediates). No contradiction.
+  5. Tried varying formulas (top, any phi in constant MCS, neg phi). All fail for the same reason: the c5_strong guard is empty between consecutive points.
+  6. Examined Z1: G(Gφ→φ)→(FGφ→Gφ). In strict (irreflexive) semantics, G(Gφ→φ) is trivially satisfied in the constant-MCS case (Gφ and φ are both in every MCS). Z1 conclusion Gφ is also in every MCS. No information gained.
+  7. Examined whether gap points between orbit and pred-chain lead to contradiction: gap points' predecessors either give orbit points (contradiction via value < L = succ value ≥ L) or give more gap points (infinite descent, no contradiction).
+- **Why it's stuck**: The research report (Teammate C) confused the c5_strong conclusion. The C5 truth lemma for U(η, ξ) gives η at the witness y and ξ at *intermediates*, NOT ξ at y. In the discrete case, there are no intermediates between consecutive points, so the guard ξ is vacuously satisfied regardless of what ξ is. The constant-MCS scenario is genuinely consistent with all temporal axioms (Z1, Prior-UZ) under strict (irreflexive) semantics. This is confirmed by the code comments at lines 1139-1156.
+- **What is needed**: Either (a) a construction-level argument showing the omega-chain can't produce a Z+Z gap (requires deep interaction with omega_chain_elim_result, BurgessR3Maximal, etc.), or (b) the task 129 approach (weak/reflexive completeness + conservative extension) that bypasses the gap entirely.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Tasks**:
-- [ ] Within the sorry block, introduce a case split on whether there exists a discriminating formula (a formula phi such that phi is in limit_f of some orbit point but not in limit_f of some pred-chain point, or vice versa)
-- [ ] In the "no discriminating formula" branch (constant-MCS): for any formula phi, show phi is in limit_f(x) iff phi is in limit_f(y) for all x, y in the gap region
-- [ ] Derive F(phi) in limit_f(x) for an orbit point x using `backward_F` (since phi is at all points above x, in particular at pred-chain points)
-- [ ] Apply Prior-UZ via `theorem_in_mcs`: from F(phi) in limit_f(x), derive U(phi, neg phi) in limit_f(x) using `SetMaximalConsistent.implication_property` and `theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ (Axiom.prior_UZ phi))`
-- [ ] Apply `limit_satisfies_c5_strong` to U(phi, neg phi) to obtain a witness y with neg phi in limit_f(y) and phi in the guard
-- [ ] Derive contradiction: neg phi in limit_f(y) contradicts phi in limit_f(y) (the latter holds by constant-MCS assumption)
-- [ ] If the argument does not go through cleanly (e.g., the witness y might be outside the gap region), document the precise failure point and adjust or return partial
+- [ ] Within the sorry block, introduce a case split on whether there exists a discriminating formula *(deviation: skipped -- the case split is moot because neither branch produces a contradiction with current infrastructure)*
+- [ ] In the "no discriminating formula" branch (constant-MCS): for any formula phi, show phi is in limit_f(x) iff phi is in limit_f(y) for all x, y in the gap region *(deviation: skipped -- constant-MCS exclusion argument is flawed)*
+- [ ] Derive F(phi) in limit_f(x) for an orbit point x using `backward_F` *(deviation: altered -- verified compiles but leads nowhere)*
+- [ ] Apply Prior-UZ via `theorem_in_mcs`: from F(phi) derive U(phi, neg phi) *(deviation: altered -- verified compiles but c5_strong gives empty guard in discrete case)*
+- [ ] Apply `limit_satisfies_c5_strong` to U(phi, neg phi) to obtain witness *(deviation: skipped -- guard is vacuously satisfied, no contradiction)*
+- [ ] Derive contradiction *(deviation: skipped -- no contradiction derivable from this approach)*
+- [x] If the argument does not go through cleanly, document the precise failure point *(completed -- see BLOCKER above)*
 
 **Timing**: 2 hours
 
@@ -131,17 +145,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Non-Constant Case Gap Elimination [NOT STARTED]
+### Phase 3: Non-Constant Case Gap Elimination [BLOCKED]
 
 **Goal**: With constant-MCS excluded, exploit the discriminating formula to derive a contradiction using Z1, backward_G, and the orbit/pred-chain structure. This is the hard case -- apply the stopping rule if stuck.
 
+**BLOCKER** (Phase 3):
+- **What failed**: The Z1 argument is blocked in BOTH constant and non-constant cases under strict (irreflexive) semantics.
+- **What was tried**: Analysis of Z1 = G(Gφ→φ) → (FGφ → Gφ) application at orbit points. In strict semantics, G(Gφ→φ) does not imply Gφ→φ at the current point (G quantifies over strictly future points). So the "backward induction from Gφ witness" doesn't anchor at the orbit point. The code comments at line 1143 confirm: "Under strict semantics G(φ)→φ is not valid."
+- **Why it's stuck**: The Z1 Doets maximum principle requires establishing G(Gφ→φ) at an orbit point, which in turn requires showing Gφ→φ at ALL strictly future points. In the non-constant case, a discriminating formula φ exists, but controlling φ's truth at ALL future points (not just orbit or pred-chain points) requires knowledge about ALL limit_dom points in the gap region. This is the unsolved difficulty documented in the code comments at lines 1877-1884.
+- **What is needed**: Same as Phase 2 -- either a construction-level argument or the task 129 approach.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Tasks**:
-- [ ] In the "discriminating formula exists" branch, obtain a concrete phi that differs between some orbit point and some pred-chain point
-- [ ] Attempt the Z1 argument: from the discriminating formula, derive FG(phi) or FG(neg phi) at an orbit point using backward_G (phi holds at all sufficiently late orbit points) and backward_F
-- [ ] Apply z1_in_mcs to get G(G(phi)->phi) -> (FG(phi)->G(phi)) in the MCS
-- [ ] Use the Z1 consequence to derive either G(phi) at the orbit point (contradiction with gap) or a "maximum point" where phi holds but G(neg phi) holds
-- [ ] If the maximum point argument works: show the maximum point must be in the orbit (via orbit_below_L), then succ of that point is also orbit, and derive contradiction from forward_G giving neg phi at succ but phi at succ (by orbit membership)
-- [ ] **STOPPING RULE**: If after 2 hours of effort the non-constant case does not yield a compiling proof, STOP. Document the exact proof state, what was tried, and what's needed. Return partial status.
+- [ ] In the "discriminating formula exists" branch, obtain a concrete phi *(deviation: skipped -- Phase 2 not resolved, and Z1 argument blocked independently)*
+- [ ] Attempt the Z1 argument *(deviation: skipped -- Z1 blocked under strict semantics per line 1143)*
+- [ ] Apply z1_in_mcs *(deviation: skipped)*
+- [ ] Use the Z1 consequence to derive contradiction *(deviation: skipped)*
+- [ ] Maximum point argument *(deviation: skipped)*
+- [x] **STOPPING RULE**: Invoked. Sorry is genuinely beyond current infrastructure. *(completed)*
 
 **Timing**: 2.5 hours (hard cap)
 
@@ -156,17 +177,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Integration, Verification, and Documentation [NOT STARTED]
+### Phase 4: Integration, Verification, and Documentation [COMPLETED]
 
 **Goal**: Verify the complete proof (if achieved) or document partial results. Update docstrings and ensure the sorry state is accurately reflected.
 
 **Tasks**:
-- [ ] Run `lake build` on the full project to check for regressions
-- [ ] If sorry-free: update the docstring at lines 1540-1557 to reflect the actual proof strategy used
-- [ ] If sorry-free: update the comment block at lines 1811-1825 ("Status: This sorry represents...") to reflect resolution
-- [ ] If partial: update the sorry-site comments to document which cases are resolved (constant-MCS) and what remains (non-constant case specifics)
-- [ ] If partial: ensure any new helper lemmas or intermediate results are well-documented for future work
-- [ ] Run `lean_verify` on `succ_cofinal` if sorry-free to confirm no axiom leaks
+- [x] Run `lake build` on the full project to check for regressions *(completed -- build passes, no new errors)*
+- [ ] If sorry-free: update the docstring at lines 1540-1557 *(deviation: skipped -- sorry not resolved)*
+- [ ] If sorry-free: update the comment block *(deviation: skipped -- sorry not resolved)*
+- [x] If partial: update the sorry-site comments to document which cases are resolved and what remains *(completed -- updated comments at lines 1842-1887 and section docstring at lines 1134-1160)*
+- [x] If partial: ensure any new helper lemmas or intermediate results are well-documented for future work *(completed -- no new helper lemmas; documentation updated in comments)*
+- [ ] Run `lean_verify` on `succ_cofinal` if sorry-free *(deviation: skipped -- sorry not resolved)*
 
 **Timing**: 1 hour
 
