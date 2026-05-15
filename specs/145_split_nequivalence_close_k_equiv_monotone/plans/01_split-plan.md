@@ -1,7 +1,7 @@
 # Implementation Plan: Split NEquivalence.lean, Redesign KType, Close k_equiv_monotone
 
 - **Task**: 145 - Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: Task 143 (completed), Task 141 (orthogonal -- insertEnv/lift_eval sorries move unchanged)
 - **Research Inputs**: reports/01_split-design.md, reports/02_deep-extraction-analysis.md

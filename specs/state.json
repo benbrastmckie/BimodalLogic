@@ -658,7 +658,7 @@
     {
       "project_number": 145,
       "project_name": "split_nequivalence_close_k_equiv_monotone",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "description": "Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine KType sig k := NormalForm sig k 0 -> Bool (replacing NormalFormIdx). Redefine k_type_of using nf_eval_nf (replacing vacuous nf_rep). Close k_equiv_monotone sorry via nf_agreement_monotone. Delete nf_rep. Verify finite_types remains closed and lake build passes.",
@@ -666,7 +666,7 @@
         143
       ],
       "created": "2026-05-15T14:30:00Z",
-      "last_updated": "2026-05-15T19:18:00Z",
+      "last_updated": "2026-05-15T19:30:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -683,9 +683,16 @@
           "path": "specs/145_split_nequivalence_close_k_equiv_monotone/plans/01_split-plan.md",
           "type": "plan",
           "summary": "4 phases, 3h: extract MonadicFO.lean, rewire imports, redesign KType, close k_equiv_monotone"
+        },
+        {
+          "path": "specs/145_split_nequivalence_close_k_equiv_monotone/summaries/01_split-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for NEquivalence split, KType redesign, k_equiv_monotone closure"
         }
       ],
-      "session_id": "sess_1778871141_a24716"
+      "session_id": "sess_1778871141_a24716",
+      "completed": "2026-05-15T19:30:00Z",
+      "completion_summary": "Split NEquivalence.lean into MonadicFO.lean (400 lines, 0 sorries). Redesigned KType from NormalFormIdx to NormalForm. Closed k_equiv_monotone via nf_agreement_monotone (-1 sorry). Deleted vacuous nf_rep. Full build passes."
     },
     {
       "project_number": 146,

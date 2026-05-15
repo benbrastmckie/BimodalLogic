@@ -73,10 +73,10 @@ technical_debt:
   └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
   └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
-145 [IMPLEMENTING] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions)
+145 [COMPLETED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions)
   └─ 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical  (see above)
 146 [RESEARCHED] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
-  └─ 145 [IMPLEMENTING] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) (see above)
+  └─ 145 [COMPLETED] — Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) (see above)
 148 [RESEARCHED] — Close the 4 temporal operator cases of table_correctness (all_fut
   └─ 147 [COMPLETED] — Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean le (see above)
 ```
@@ -173,12 +173,14 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 145. Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone
 - **Effort**: 3-5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-05-15
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 143
 - **Research**: [specs/145_split_nequivalence_close_k_equiv_monotone/reports/01_split-design.md]
 - **Plan**: [145_split_nequivalence_close_k_equiv_monotone/plans/01_split-plan.md]
+- **Summary**: [specs/145_split_nequivalence_close_k_equiv_monotone/summaries/01_split-summary.md]
 
 **Description**: Split NEquivalence.lean into MonadicFO.lean (pure FO definitions: MonadicSignature, MonadicFormula, eval, atomCount, nfCount, NormalFormIdx) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine `KType sig k := NormalForm sig k 0 -> Bool` (replacing NormalFormIdx). Redefine `k_type_of` using `nf_eval_nf` (replacing vacuous `nf_rep`). Close `k_equiv_monotone` sorry via `nf_agreement_monotone`. Delete `nf_rep`. Verify `finite_types` remains closed and `lake build` passes.
 
