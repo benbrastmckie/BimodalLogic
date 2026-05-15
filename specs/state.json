@@ -1139,14 +1139,14 @@
     {
       "project_number": 153,
       "project_name": "prove_succ_cofinal_discrete",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
       "description": "Prove succ_cofinal (ChronicleToCountermodel.lean:1885): for any points a < b in the discrete limit domain, there exists n such that succ^[n](a) >= b. This is the root sorry blocking limitDomSubtype_isSuccArchimedean → succ_embed_surjective → cantor_bfmcs_discrete_restricted_tc/fuc → dd_countermodel_chronicle_discrete → bx_completeness. The proof must show the succ orbit of any point is cofinal when all domain MCS contain U(T,bot). Approaches: (a) stage-based argument — each chronicle construction stage adds finitely many points, and succ advances at least one stage, so finitely many iterates reach any target; (b) Z1-based argument — FG(phi)->G(phi) ensures succ orbits have no accumulation points from below; (c) constant-MCS impossibility — show the omega-chain construction cannot produce a constant-MCS gap. Analysis in ChronicleToCountermodel.lean lines 1860-1884 documents the known obstacles. An independent alternative (tasks 154-155, Reynolds pipeline) can also eliminate this sorry by bypassing succ_cofinal entirely. Definition of done: succ_cofinal sorry-free, #print axioms bx_completeness shows no sorryAx, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-15T21:26:46Z",
+      "last_updated": "2026-05-15T21:35:23Z",
       "researched": "2026-05-15T21:26:46Z",
       "next_artifact_number": 3,
       "artifacts": [
@@ -1159,21 +1159,26 @@
           "path": "specs/153_prove_succ_cofinal_discrete/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: constant-MCS excluded by Prior-UZ, non-constant case viable but hard, Reynolds pipeline recommended as primary path"
+        },
+        {
+          "path": "specs/153_prove_succ_cofinal_discrete/plans/02_succ-cofinal-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: infrastructure inventory, constant-MCS exclusion, non-constant gap elimination, integration (6h)"
         }
       ],
-      "session_id": "sess_1778879761_8fd87d_t153"
+      "session_id": "sess_1778880647_8c37a0_t153"
     },
     {
       "project_number": 154,
       "project_name": "sum_preservation_ef_games",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
       "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-15T21:26:46Z",
+      "last_updated": "2026-05-15T21:35:23Z",
       "researched": "2026-05-15T21:26:46Z",
       "next_artifact_number": 3,
       "artifacts": [
@@ -1186,9 +1191,14 @@
           "path": "specs/154_sum_preservation_ef_games/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: normal form induction approach (250-400 lines), carrier_order refactoring as Phase 1, scope narrowed to sum_preservation + doets_lemma_1_4"
+        },
+        {
+          "path": "specs/154_sum_preservation_ef_games/plans/02_sum-preservation-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: orderedSum refactor, base case, inductive step, doets_lemma_1_4 (10h)"
         }
       ],
-      "session_id": "sess_1778879761_8fd87d_t154"
+      "session_id": "sess_1778880647_8c37a0_t154"
     },
     {
       "project_number": 155,
