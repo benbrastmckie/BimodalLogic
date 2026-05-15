@@ -318,21 +318,165 @@ noncomputable def nf_vector (sig : MonadicSignature) (k n : Nat)
 /-! ## Doets Lemma 1.1: Bridge Theorem -/
 
 /--
+Helper: extract atom agreement from depth-k normal form agreement.
+If M,env_M and N,env_N agree on all depth-k normal forms, they agree
+on all atomic propositions.
+-/
+theorem atom_agreement_from_nf {sig : MonadicSignature} {k n : Nat}
+    (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
+    (N : OrderedMonadicStructure sig) (env_N : Fin n → N.carrier)
+    (h_same_nf : ∀ nf : NormalForm sig k n,
+      nf_eval_nf M k n env_M nf ↔ nf_eval_nf N k n env_N nf)
+    (a : AtomKind sig n) :
+    atom_eval M env_M a ↔ atom_eval N env_N a := by
+  -- Get the unique NFs for M and N
+  obtain ⟨nf_M, hM, _⟩ := nf_exists_unique M k n env_M
+  -- M satisfies nf_M, so N satisfies nf_M too (by h_same_nf)
+  have hN := (h_same_nf nf_M).mp hM
+  -- Extract atom-level agreement
+  match k with
+  | 0 =>
+    -- nf_M : AtomKind sig n → Bool
+    -- hM: ∀ a, atom_eval M env_M a ↔ (nf_M a = true)
+    -- hN: ∀ a, atom_eval N env_N a ↔ (nf_M a = true)
+    exact (hM a).trans (hN a).symm
+  | k + 1 =>
+    -- hM: (∀ a, ...) ∧ (∀ nf, ...)
+    -- hN: (∀ a, ...) ∧ (∀ nf, ...)
+    exact (hM.1 a).trans (hN.1 a).symm
+
+/--
 **Doets 1989, Lemma 1.1** (Bridge Theorem):
 Every monadic formula of quantifier depth at most `k` has its truth value
 determined by which normal form at depth `k` is satisfied.
 
 Formally: if two structures M and N with environments env_M and env_N
-satisfy the same normal forms at depth k, then they agree on the truth
-of every formula of depth <= k.
+satisfy the same `NormalForm sig k n` at depth k, then they agree on
+the truth of every formula of depth <= k.
+
+Proof by two-level induction: outer on k, inner structural on phi.
 -/
-theorem doets_lemma_1_1 (sig : MonadicSignature) (k n : Nat)
-    (phi : MonadicFormula sig n) (_h_depth : phi.quantifier_depth ≤ k)
+theorem doets_lemma_1_1 {sig : MonadicSignature} (k : Nat) :
+    ∀ (n : Nat) (phi : MonadicFormula sig n) (_h_depth : phi.quantifier_depth ≤ k)
     (M N : OrderedMonadicStructure sig)
     (env_M : Fin n → M.carrier) (env_N : Fin n → N.carrier)
-    (_h_vec : nf_vector sig k n M env_M = nf_vector sig k n N env_N) :
+    (h_same_nf : ∀ nf : NormalForm sig k n,
+      nf_eval_nf M k n env_M nf ↔ nf_eval_nf N k n env_N nf),
     (eval M env_M phi ↔ eval N env_N phi) := by
-  sorry
+  induction k with
+  | zero =>
+    -- Base case: k = 0, phi has depth 0 (quantifier-free)
+    intro n phi h_depth M N env_M env_N h_same_nf
+    induction phi with
+    | atom p i =>
+      -- eval M env_M (.atom p i) = M.interp p (env_M i)
+      -- This is atom_eval M env_M (AtomKind.pred p i)
+      exact atom_agreement_from_nf M env_M N env_N h_same_nf (.pred p i)
+    | lt i j =>
+      -- eval M env_M (.lt i j) = (env_M i < env_M j)
+      -- This is atom_eval M env_M (AtomKind.order i j h) when i ≠ j
+      -- When i = j, both sides are false (irreflexivity of <)
+      simp only [eval]
+      by_cases hij : i = j
+      · subst hij; simp [lt_irrefl]
+      · exact atom_agreement_from_nf M env_M N env_N h_same_nf (.order i j hij)
+    | not α ih =>
+      simp only [eval]
+      have h_depth_alpha : α.quantifier_depth ≤ 0 := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; omega
+      exact (ih h_depth_alpha env_M env_N h_same_nf).not
+    | and α β ihα ihβ =>
+      simp only [eval]
+      have h_depth_alpha : α.quantifier_depth ≤ 0 := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; omega
+      have h_depth_beta : β.quantifier_depth ≤ 0 := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; omega
+      exact (ihα h_depth_alpha env_M env_N h_same_nf).and
+        (ihβ h_depth_beta env_M env_N h_same_nf)
+    | all α ih =>
+      -- Impossible: depth(.all α) = α.depth + 1 ≥ 1 > 0
+      simp [MonadicFormula.quantifier_depth] at h_depth
+    | ex α ih =>
+      simp [MonadicFormula.quantifier_depth] at h_depth
+  | succ k outer_ih =>
+    -- Inductive step: k+1
+    intro n phi h_depth M N env_M env_N h_same_nf
+    induction phi with
+    | atom p i =>
+      exact atom_agreement_from_nf M env_M N env_N h_same_nf (.pred p i)
+    | lt i j =>
+      simp only [eval]
+      by_cases hij : i = j
+      · subst hij; simp [lt_irrefl]
+      · exact atom_agreement_from_nf M env_M N env_N h_same_nf (.order i j hij)
+    | not α ih =>
+      simp only [eval]
+      have h_alpha : α.quantifier_depth ≤ k + 1 := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; exact h_depth
+      exact (ih h_alpha env_M env_N h_same_nf).not
+    | and α β ihα ihβ =>
+      simp only [eval]
+      have h_alpha : α.quantifier_depth ≤ k + 1 := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; omega
+      have h_beta : β.quantifier_depth ≤ k + 1 := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; omega
+      exact (ihα h_alpha env_M env_N h_same_nf).and
+        (ihβ h_beta env_M env_N h_same_nf)
+    | @all n' α ih =>
+      simp only [eval]
+      have h_alpha : α.quantifier_depth ≤ k := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; omega
+      obtain ⟨nf_M, hM_sat, _⟩ := nf_exists_unique M (k + 1) n' env_M
+      obtain ⟨hM_atoms, hM_quant⟩ := hM_sat
+      have hN_sat := (h_same_nf nf_M).mp ⟨hM_atoms, hM_quant⟩
+      obtain ⟨hN_atoms, hN_quant⟩ := hN_sat
+      -- Key: existential realization is shared between M and N
+      have hex_transfer : ∀ sub_nf : NormalForm sig k (n' + 1),
+          (∃ x, nf_eval_nf M k (n' + 1) (Fin.cons x env_M) sub_nf) ↔
+          (∃ y, nf_eval_nf N k (n' + 1) (Fin.cons y env_N) sub_nf) :=
+        fun sub_nf => (hM_quant sub_nf).trans (hN_quant sub_nf).symm
+      constructor
+      · intro hM_all y
+        obtain ⟨nf_y, hNy, _⟩ := nf_exists_unique N k (n' + 1) (Fin.cons y env_N)
+        obtain ⟨x, hMx⟩ := (hex_transfer nf_y).mpr ⟨y, hNy⟩
+        have h_agree := nf_agreement_from_shared_nf M (Fin.cons x env_M)
+          N (Fin.cons y env_N) nf_y hMx hNy
+        exact (outer_ih (n' + 1) α h_alpha M N
+          (Fin.cons x env_M) (Fin.cons y env_N) h_agree).mp (hM_all x)
+      · intro hN_all x
+        obtain ⟨nf_x, hMx, _⟩ := nf_exists_unique M k (n' + 1) (Fin.cons x env_M)
+        obtain ⟨y, hNy⟩ := (hex_transfer nf_x).mp ⟨x, hMx⟩
+        have h_agree := nf_agreement_from_shared_nf M (Fin.cons x env_M)
+          N (Fin.cons y env_N) nf_x hMx hNy
+        exact (outer_ih (n' + 1) α h_alpha M N
+          (Fin.cons x env_M) (Fin.cons y env_N) h_agree).mpr (hN_all y)
+    | @ex n' α ih =>
+      simp only [eval]
+      have h_alpha : α.quantifier_depth ≤ k := by
+        simp [MonadicFormula.quantifier_depth] at h_depth; omega
+      obtain ⟨nf_M, hM_sat, _⟩ := nf_exists_unique M (k + 1) n' env_M
+      obtain ⟨hM_atoms, hM_quant⟩ := hM_sat
+      have hN_sat := (h_same_nf nf_M).mp ⟨hM_atoms, hM_quant⟩
+      obtain ⟨hN_atoms, hN_quant⟩ := hN_sat
+      have hex_transfer : ∀ sub_nf : NormalForm sig k (n' + 1),
+          (∃ x, nf_eval_nf M k (n' + 1) (Fin.cons x env_M) sub_nf) ↔
+          (∃ y, nf_eval_nf N k (n' + 1) (Fin.cons y env_N) sub_nf) :=
+        fun sub_nf => (hM_quant sub_nf).trans (hN_quant sub_nf).symm
+      constructor
+      · rintro ⟨x, hMx_eval⟩
+        obtain ⟨nf_x, hMx, _⟩ := nf_exists_unique M k (n' + 1) (Fin.cons x env_M)
+        obtain ⟨y, hNy⟩ := (hex_transfer nf_x).mp ⟨x, hMx⟩
+        have h_agree := nf_agreement_from_shared_nf M (Fin.cons x env_M)
+          N (Fin.cons y env_N) nf_x hMx hNy
+        exact ⟨y, (outer_ih (n' + 1) α h_alpha M N
+          (Fin.cons x env_M) (Fin.cons y env_N) h_agree).mp hMx_eval⟩
+      · rintro ⟨y, hNy_eval⟩
+        obtain ⟨nf_y, hNy, _⟩ := nf_exists_unique N k (n' + 1) (Fin.cons y env_N)
+        obtain ⟨x, hMx⟩ := (hex_transfer nf_y).mpr ⟨y, hNy⟩
+        have h_agree := nf_agreement_from_shared_nf M (Fin.cons x env_M)
+          N (Fin.cons y env_N) nf_y hMx hNy
+        exact ⟨x, (outer_ih (n' + 1) α h_alpha M N
+          (Fin.cons x env_M) (Fin.cons y env_N) h_agree).mpr hNy_eval⟩
 
 /-! ## Additional Instances -/
 
