@@ -828,9 +828,49 @@
           "summary": "Dead code inventory, cardinality proof strategies, docstring improvements, NormalFormIdx equivalence"
         }
       ]
+    },
+    {
+      "project_number": 147,
+      "project_name": "lift_eval_insertenv_lemmas",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "high",
+      "description": "Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, and lift_eval. Pure Fin-arithmetic and function-extensionality proofs. Once proved, weaken_eval becomes sorry-free automatically, unblocking task 148 (table_correctness temporal cases).\n\nDefinition of done: All 4 lemmas sorry-free, weaken_eval sorry-free, lake build passes.",
+      "dependencies": [],
+      "created": "2026-05-15T15:45:00Z",
+      "last_updated": "2026-05-15T15:45:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/147_lift_eval_insertenv_lemmas/reports/01_scope-analysis.md",
+          "type": "research",
+          "summary": "Detailed proof strategies for all 4 insertEnv/lift_eval lemmas with Lean tactic guidance"
+        }
+      ]
+    },
+    {
+      "project_number": 148,
+      "project_name": "table_correctness_temporal_cases",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "high",
+      "description": "Close the 4 temporal operator cases of table_correctness (all_future, all_past, untl, snce) in Table.lean plus 2 helper lemmas. Each case: unfold definitions, apply lift1_eval or lift1_lift1_eval, use induction hypothesis. Also fix chronicle_is_good atomMap signature in Transfer.lean and update pipeline status.\n\nDefinition of done: table_correctness fully sorry-free, Transfer.lean pipeline status updated, lake build passes, lean_verify shows no sorryAx.",
+      "dependencies": [
+        147
+      ],
+      "created": "2026-05-15T15:45:00Z",
+      "last_updated": "2026-05-15T15:45:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/148_table_correctness_temporal_cases/reports/01_scope-analysis.md",
+          "type": "research",
+          "summary": "Detailed proof sketches for all 4 temporal cases with helper lemma strategies and pipeline cleanup"
+        }
+      ]
     }
   ],
-  "next_project_number": 147,
+  "next_project_number": 149,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

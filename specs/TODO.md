@@ -53,9 +53,13 @@ technical_debt:
 8. **145** [RESEARCHED] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
 9. **146** [RESEARCHED] — NormalForm legacy cleanup and cardinality correspondence proof (1-2h, depends on 145)
 
+**Table correctness completion** (task 140 follow-up):
+10. **147** [RESEARCHED] — Prove lift_eval and insertEnv lemmas: 4 De Bruijn substitution lemmas in NEquivalence.lean (2-3h)
+11. **148** [RESEARCHED] — Complete table_correctness temporal cases: close all_future, all_past, untl, snce + pipeline cleanup (1.5-2h, depends on 147)
+
 **Cleanup**:
-10. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
-11. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
+12. **122** [NOT STARTED] — Build discrete BFMCS on ℤ, complete last sorry (depends on 129)
+13. **130** [NOT STARTED] — Archive ~40 dead sorries to Boneyard (depends on 129)
 
 ### Phase 2: Module Reorganization
 
@@ -96,6 +100,30 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 147. Prove lift_eval and insertEnv De Bruijn substitution lemmas
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: None
+- **Research**: [specs/147_lift_eval_insertenv_lemmas/reports/01_scope-analysis.md]
+
+**Description**: Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: `insertEnv_zero_eq_cons` (inserting at 0 equals Fin.cons), `insertEnv_succ_cons` (commutation of insertEnv with Fin.cons under binders), `insertEnv_finLift` (inverse relationship between insertEnv and finLift), and `lift_eval` (main substitution lemma: evaluating a lifted formula in an inserted environment recovers original evaluation). Pure Fin-arithmetic / function-extensionality proofs. Once proved, `weaken_eval` becomes sorry-free automatically.
+
+---
+
+### 148. Complete table_correctness temporal operator cases
+- **Effort**: 1.5-2 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Dependencies**: 147
+- **Research**: [specs/148_table_correctness_temporal_cases/reports/01_scope-analysis.md]
+
+**Description**: Close the 4 temporal operator cases of `table_correctness` (`all_future`, `all_past`, `untl`, `snce`) in Table.lean, plus 2 helper lemmas (`cons_eq_insertEnv_one`, `cons3_eq_insertEnv`). Each temporal case: unfold definitions, apply `lift1_eval`/`lift1_lift1_eval`, use induction hypothesis. Also fix `chronicle_is_good` atomMap signature in Transfer.lean step 3 comment and update pipeline status table. Result: `table_correctness` fully sorry-free with `lean_verify` showing no `sorryAx`.
+
+---
 
 ### 143. Doets Lemma 1.1: normal form KType redesign with finite domain
 - **Effort**: 6-9 hours
