@@ -640,6 +640,11 @@
           "path": "specs/141_canonical_truth_lemma_until_since/plans/01_truth-lemma-plan.md",
           "type": "plan",
           "summary": "6-phase plan: 2 ReflexiveCanonical sorries (easy) + 6 TruthLemma sorries (hard)"
+        },
+        {
+          "path": "specs/141_canonical_truth_lemma_until_since/summaries/01_truth-lemma-summary.md",
+          "type": "summary",
+          "summary": "Partial: canS5R_symm closed; 7 sorries remain (reflCanR_linear + 6 TruthLemma)"
         }
       ],
       "session_id": "sess_1778824110_c99890",
