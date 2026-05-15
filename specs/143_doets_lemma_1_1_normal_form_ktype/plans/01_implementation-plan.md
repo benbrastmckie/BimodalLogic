@@ -200,18 +200,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Cleanup and Verification [NOT STARTED]
+### Phase 5: Cleanup and Verification [COMPLETED]
 
 **Goal**: Final verification, documentation, and cleanup. Confirm sorry count reduced as expected.
 
 **Tasks**:
-- [ ] Run `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/` and confirm `finite_types` sorry is gone
-- [ ] Verify `ktype_finite` is not referenced anywhere (it was not in the current code -- the ROADMAP reference was to the old design; confirm no stale references)
-- [ ] Confirm `sum_preservation` sorry remains (expected, out of scope)
-- [ ] Confirm `carrier_order := sorry` in OrderedSum.lean remains (expected, out of scope)
-- [ ] Review NormalForm.lean for any `@[reducible]` or `@[simp]` annotations on `nfCount` that could cause kernel blowup -- remove if present
-- [ ] Add module docstring to NormalForm.lean referencing Doets 1989 Lemma 1.1 and the research report
-- [ ] Run `lake build` one final time to confirm clean build
+- [x] Run `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/` and confirm `finite_types` sorry is gone *(completed: finite_types has no sorry; k_equiv_monotone has new sorry)*
+- [x] Verify `ktype_finite` is not referenced anywhere (it was not in the current code -- the ROADMAP reference was to the old design; confirm no stale references) *(completed: no references found)*
+- [x] Confirm `sum_preservation` sorry remains (expected, out of scope) *(completed: unchanged)*
+- [x] Confirm `carrier_order := sorry` in OrderedSum.lean remains (expected, out of scope) *(completed: unchanged)*
+- [x] Review NormalForm.lean for any `@[reducible]` or `@[simp]` annotations on `nfCount` that could cause kernel blowup -- remove if present *(completed: no such annotations)*
+- [x] Add module docstring to NormalForm.lean referencing Doets 1989 Lemma 1.1 and the research report *(completed: docstring present)*
+- [x] Run `lake build` one final time to confirm clean build *(completed: full build passes with zero errors)*
 
 **Timing**: 1.5 hours
 
