@@ -147,7 +147,7 @@ theorem bx_completeness (φ : Formula) :
   -- Build canonical model and derive contradiction via three-way case split:
   -- 1. Dense case (□(F'T) ∈ M): countermodel on Rat via Cantor iso
   -- 2. Purely discrete case (□(U(T,bot)) ∈ M): countermodel on Int via succ embedding
-  -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): sorry — mixed modal classes
+  -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): vacuously true (mcs_mixed_case_absurd, task 142)
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — all box-equivalent MCS's are dense
