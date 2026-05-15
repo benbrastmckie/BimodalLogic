@@ -71,25 +71,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: reflCanR_linear via BX11 [IN PROGRESS]
+### Phase 1: reflCanR_linear via BX11 [COMPLETED]
 
 **Goal**: Close the `reflCanR_linear` sorry at ReflexiveCanonical.lean:144. This theorem states that the forward temporal cone from any MCS is linearly ordered. While it has no current downstream consumer, it is mathematically correct and completes the canonical frame properties.
 
 **Tasks**:
-- [ ] Create helper `neg_G_imp_F_neg`: prove that if `G(psi) not in x.val` (MCS), then `F(neg psi) in x.val`. Proof: `G(psi) not in x` implies `neg G(psi) in x` (negation completeness). Show `neg G(psi) -> F(neg psi)` as a theorem: `F(neg psi) = neg G(neg neg psi)`, and `G(neg neg psi) -> G(psi)` follows from `neg neg psi -> psi` via `temp_k_dist` + temporal necessitation. Contrapositive gives the result.
-- [ ] Create helper `F_from_non_g_content`: given `psi not in z.val` and `tempR_fwd x z`, derive `F(neg psi) in x.val`. From `psi not in z.val` and `tempR_fwd x z`, conclude `G(psi) not in x.val` (otherwise `psi in z.val` via g_content). Apply `neg_G_imp_F_neg`.
-- [ ] Prove `reflCanR_linear` using BX11 (`temp_linearity`):
-  1. By contradiction: assume `not tempR_fwd y z` and `not tempR_fwd z y`
-  2. Get `psi` with `G(psi) in y.val`, `psi not in z.val` (from non-inclusion of g_content)
-  3. Get `chi` with `G(chi) in z.val`, `chi not in y.val`
-  4. Derive `G(psi) not in x.val` (else `psi in z.val` via `tempR_fwd x z`, contradiction)
-  5. Derive `G(chi) not in x.val` (else `chi in y.val` via `tempR_fwd x y`, contradiction)
-  6. Apply `neg_G_imp_F_neg` to get `F(neg psi) in x.val` and `F(neg chi) in x.val`
-  7. Form `F(neg psi) AND F(neg chi) in x.val` (MCS conjunction)
-  8. Apply BX11: `F(a) AND F(b) -> F(a AND b) OR F(a AND F(b)) OR F(F(a) AND b)`
-  9. Case analysis on three disjuncts, each leading to contradiction via `tempR_fwd` transitivity and the witnesses
-- [ ] Verify `lake build` succeeds
-- [ ] Confirm `grep -c 'sorry' ReflexiveCanonical.lean` shows 0
+- [x] **Task 1.1**: Create helper `tempR_fwd_mem_some_future` (Burgess Lemma 1.6(b)): if `tempR_fwd x y` and `β ∈ y.val`, then `F(β) ∈ x.val`. *(deviation: altered -- used Burgess 1.6(b) approach instead of the planned `neg_G_imp_F_neg` contrapositive, which is cleaner and avoids the ¬G→F encoding issue)*
+- [x] **Task 1.2**: Create helper `not_tempR_fwd_witness_F`: contrapositive of 1.6(b) giving F-witnesses from ¬tempR_fwd. *(deviation: altered -- replaces `F_from_non_g_content` with a more general Lemma 1.6(b) contrapositive)*
+- [x] **Task 1.3**: Create helper `some_future_mono`: F-monotonicity `⊢ A → B` gives `⊢ F(A) → F(B)`. *(not in plan -- needed for BX11 case analysis)*
+- [x] **Task 1.4**: Prove `reflCanR_linear` using BX11 following Burgess 1984 Section 2.2. *(deviation: altered -- theorem statement changed from two-way `tempR_fwd y z ∨ tempR_fwd z y` to three-way `tempR_fwd y z ∨ y = z ∨ tempR_fwd z y` because `tempR_fwd y y` does not hold in irreflexive temporal semantics. Proof follows Burgess's construction of β₀∧¬Fγ₀∧δ and γ₀∧¬Fβ₀∧¬δ to make all BX11 disjuncts provably inconsistent.)*
+- [x] **Task 1.5**: Verify `lake build` succeeds *(completed)*
+- [x] **Task 1.6**: Confirm `grep -c 'sorry' ReflexiveCanonical.lean` shows 0 *(completed)*
 
 **Timing**: 2 hours
 

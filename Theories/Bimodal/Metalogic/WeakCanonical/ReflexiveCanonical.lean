@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Bundle.TemporalContent
+import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
 import Bimodal.Theorems.Propositional
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Perpetuity
@@ -114,100 +115,323 @@ theorem tempR_fwd_trans {x y z : ReflCanDomain}
   -- Step 5: By tempR_fwd y z, ψ ∈ z.val
   exact h_yz h_ψ_gy
 
+/-! ## Burgess Lemma 1.6(b): F-membership characterization of tempR_fwd -/
+
 /--
-Forward linearity: the forward cone from any MCS is linearly ordered.
-If `tempR_fwd x y` and `tempR_fwd x z`, then either `tempR_fwd y z` or `tempR_fwd z y`.
+Burgess Lemma 1.6 direction (c)→(b): if `tempR_fwd x y` and `β ∈ y.val`,
+then `F(β) ∈ x.val`. Contrapositive: if `F(β) ∉ x.val`, then `G(¬β) ∈ x.val`
+(by DNE from negation completeness), so `¬β ∈ g_content(x) ⊆ y.val`,
+contradicting `β ∈ y.val`.
 
-**Proof strategy**: Suppose ¬tempR_fwd y z and ¬tempR_fwd z y. Then there exist
-ψ, χ with Gψ ∈ y.val, ψ ∉ z.val and Gχ ∈ z.val, χ ∉ y.val. By negation completeness:
-¬ψ ∈ z.val and ¬χ ∈ y.val. The standard proof then uses BX11 (temp_linearity) at x
-to derive a contradiction: from F(¬ψ) ∈ x.val and F(¬χ) ∈ x.val (obtained via the
-duality lemma `g_content_subset_implies_h_content_reverse` and the canonical
-temporal witness existence lemma), BX11 forces an ordering, eliminating the
-incomparability.
+This requires the double-negation bridge: `¬F(β) = F(β).neg = β.neg.all_future.neg.neg`
+must be converted to `G(¬β) = β.neg.all_future` via DNE applied in the MCS.
+-/
+theorem tempR_fwd_mem_some_future {x y : ReflCanDomain}
+    (h_fwd : tempR_fwd x y) (β : Formula) (h_β_y : β ∈ y.val) :
+    Formula.some_future β ∈ x.val := by
+  have h_mcs_x := x.property
+  by_contra h_Fβ_nx
+  -- ¬F(β) ∈ x.val by negation completeness
+  -- F(β) = β.neg.all_future.neg (definition: some_future β = β.neg.all_future.neg)
+  -- ¬F(β) = F(β).neg = β.neg.all_future.neg.neg
+  have h_neg_Fβ : (Formula.some_future β).neg ∈ x.val :=
+    (SetMaximalConsistent.negation_complete h_mcs_x (Formula.some_future β)).resolve_left h_Fβ_nx
+  -- F(β).neg = β.neg.all_future.neg.neg (a double negation of G(¬β))
+  -- Apply DNE theorem: ¬¬A → A with A = β.neg.all_future = G(¬β)
+  -- ⊢ β.neg.all_future.neg.neg → β.neg.all_future
+  have h_dne : [] ⊢ (Formula.neg β).all_future.neg.neg.imp (Formula.neg β).all_future :=
+    Bimodal.Theorems.Propositional.double_negation (Formula.neg β).all_future
+  -- G(¬β) ∈ x.val
+  have h_G_neg_β : (Formula.neg β).all_future ∈ x.val :=
+    h_mcs_x.implication_property (theorem_in_mcs h_mcs_x h_dne) h_neg_Fβ
+  -- ¬β ∈ g_content(x)
+  have h_neg_β_gc : Formula.neg β ∈ g_content x := by
+    simp [g_content, Bundle.g_content, h_G_neg_β]
+  -- ¬β ∈ y.val (by tempR_fwd)
+  have h_neg_β_y : Formula.neg β ∈ y.val := h_fwd h_neg_β_gc
+  -- Contradiction: β ∈ y.val and ¬β ∈ y.val
+  exact set_consistent_not_both y.property.1 β h_β_y h_neg_β_y
 
-**Blocked on**: The F-truth lemma (forward temporal witness existence) is not yet
-formalized for ReflCanDomain. This requires porting the `forward_temporal_witness`
-construction from BXCanonical/CanonicalChain.lean or Bundle/CanonicalFrame.lean.
-The statement is correct and needed for Reynolds Theorem 15.
+/--
+Corollary: if `¬tempR_fwd y z` (i.e., `g_content y ⊄ z.val`), then there exists
+a formula `γ₀ ∈ z.val` with `F(γ₀) ∉ y.val`. This is the contrapositive of
+Lemma 1.6(b) applied to the (y,z) pair.
+-/
+theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
+    (h_not : ¬tempR_fwd y z) :
+    ∃ γ₀ : Formula, γ₀ ∈ z.val ∧ Formula.some_future γ₀ ∉ y.val := by
+  by_contra h_all
+  push_neg at h_all
+  -- h_all : ∀ γ₀, γ₀ ∈ z.val → F(γ₀) ∈ y.val
+  -- Show tempR_fwd y z, contradicting h_not
+  apply h_not
+  intro ψ h_ψ_gc
+  -- ψ ∈ g_content y means G(ψ) ∈ y.val
+  have h_Gψ_y : Formula.all_future ψ ∈ y.val := by
+    simp [g_content, Bundle.g_content] at h_ψ_gc; exact h_ψ_gc
+  -- Need ψ ∈ z.val. By contradiction: if ψ ∉ z.val, then ¬ψ ∈ z.val
+  by_contra h_ψ_nz
+  have h_mcs_z := z.property
+  have h_mcs_y := y.property
+  have h_neg_ψ_z : Formula.neg ψ ∈ z.val :=
+    (SetMaximalConsistent.negation_complete h_mcs_z ψ).resolve_left h_ψ_nz
+  -- F(¬ψ) ∈ y.val (by h_all applied to ¬ψ ∈ z.val)
+  have h_F_neg_ψ_y : Formula.some_future (Formula.neg ψ) ∈ y.val := h_all _ h_neg_ψ_z
+  -- F(¬ψ) = (¬ψ).neg.all_future.neg = ψ.neg.neg.all_future.neg = ¬G(¬¬ψ)
+  -- G(ψ) ∈ y.val. Need G(ψ) and F(¬ψ) to be contradictory.
+  -- F(¬ψ) = ¬G(¬¬ψ). We need G(ψ) → G(¬¬ψ) to get a contradiction.
+  -- From ψ → ¬¬ψ (dni) via temp_k_dist + temporal_necessitation: G(ψ) → G(¬¬ψ)
+  have h_dni : [] ⊢ ψ.imp ψ.neg.neg := Combinators.dni ψ
+  have h_G_dni : [] ⊢ Formula.all_future (ψ.imp ψ.neg.neg) :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_kd : [] ⊢ (ψ.imp ψ.neg.neg).all_future.imp (ψ.all_future.imp ψ.neg.neg.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist ψ ψ.neg.neg)
+  have h_Gψ_imp_Gnn : [] ⊢ ψ.all_future.imp ψ.neg.neg.all_future :=
+    Combinators.mp h_G_dni h_kd
+  -- G(¬¬ψ) ∈ y.val
+  have h_Gnn_y : ψ.neg.neg.all_future ∈ y.val :=
+    h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_Gψ_imp_Gnn) h_Gψ_y
+  -- F(¬ψ) = ψ.neg.neg.all_future.neg and G(¬¬ψ) = ψ.neg.neg.all_future
+  -- These are contradictory in y.val
+  exact set_consistent_not_both h_mcs_y.1 ψ.neg.neg.all_future h_Gnn_y h_F_neg_ψ_y
+
+/--
+Helper: From `⊢ A → B`, derive `⊢ F(A) → F(B)` (F-monotonicity).
+F(A) = ¬G(¬A). From A → B, derive ¬B → ¬A, then G(¬B) → G(¬A) (by temp_k_dist),
+then ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B).
+-/
+noncomputable def some_future_mono {A B : Formula}
+    (h : [] ⊢ A.imp B) : [] ⊢ (Formula.some_future A).imp (Formula.some_future B) := by
+  -- Contrapositive: ¬B → ¬A
+  have h_contra : [] ⊢ B.neg.imp A.neg :=
+    Bimodal.Theorems.Propositional.contraposition h
+  -- G(¬B → ¬A) via temporal necessitation
+  have h_G_contra : [] ⊢ Formula.all_future (B.neg.imp A.neg) :=
+    DerivationTree.temporal_necessitation _ h_contra
+  -- temp_k_dist: G(¬B → ¬A) → (G(¬B) → G(¬A))
+  have h_kd : [] ⊢ (B.neg.imp A.neg).all_future.imp (B.neg.all_future.imp A.neg.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist B.neg A.neg)
+  -- G(¬B) → G(¬A)
+  have h_G_neg_B_imp : [] ⊢ B.neg.all_future.imp A.neg.all_future :=
+    Combinators.mp h_G_contra h_kd
+  -- Contrapositive: ¬G(¬A) → ¬G(¬B), i.e., F(A) → F(B)
+  exact Bimodal.Theorems.Propositional.contraposition h_G_neg_B_imp
+
+/--
+Forward linearity of the canonical temporal cone (Burgess 1984, Section 2.2).
+
+If `tempR_fwd x y` and `tempR_fwd x z`, then either `tempR_fwd y z`, `y = z`,
+or `tempR_fwd z y`. This three-way disjunction correctly handles the strict
+temporal relation: `tempR_fwd` uses strong g_content (G(ψ) ∈ x → ψ ∈ y),
+which is irreflexive (tempR_fwd y y does not generally hold).
+
+**Proof** (following Burgess 1984 Lemma, p.103): By contradiction assuming
+none of the three holds. Using Lemma 1.6(b), get witnesses β₀ ∈ y with
+Fβ₀ ∉ z, γ₀ ∈ z with Fγ₀ ∉ y, and δ ∈ y\z (from y ≠ z).
+Construct β = β₀ ∧ ¬Fγ₀ ∧ δ ∈ y and γ = γ₀ ∧ ¬Fβ₀ ∧ ¬δ ∈ z.
+By Lemma 1.6(b) on x: Fβ ∈ x and Fγ ∈ x.
+BX11 gives F(β∧γ) ∨ F(Fβ∧γ) ∨ F(β∧Fγ) in x.
+Each case leads to a provable inconsistency:
+- F(β∧γ) contains δ∧¬δ
+- F(Fβ∧γ): Fβ→Fβ₀ (monotonicity), γ contains ¬Fβ₀
+- F(β∧Fγ): Fγ→Fγ₀ (monotonicity), β contains ¬Fγ₀
 -/
 theorem reflCanR_linear (x y z : ReflCanDomain)
-    (h_xy : tempR_fwd x y) (h_xz : tempR_fwd x z) : tempR_fwd y z ∨ tempR_fwd z y := by
-  -- By contradiction: assume neither tempR_fwd y z nor tempR_fwd z y
-  by_contra h_neither
-  push_neg at h_neither
-  obtain ⟨h_not_yz, h_not_zy⟩ := h_neither
+    (h_xy : tempR_fwd x y) (h_xz : tempR_fwd x z) :
+    tempR_fwd y z ∨ y = z ∨ tempR_fwd z y := by
+  -- By contradiction: assume none of the three holds
+  by_contra h_none
+  push_neg at h_none
+  obtain ⟨h_not_yz, h_ne, h_not_zy⟩ := h_none
   have h_mcs_x := x.property
   have h_mcs_y := y.property
   have h_mcs_z := z.property
-  -- From ¬tempR_fwd y z, get witness ψ with G(ψ) ∈ y.val but ψ ∉ z.val
-  rw [show ¬tempR_fwd y z ↔ ¬(g_content y ⊆ z.val) from Iff.rfl] at h_not_yz
-  rw [Set.not_subset] at h_not_yz
-  obtain ⟨ψ, h_ψ_gy, h_ψ_nz⟩ := h_not_yz
-  -- From ¬tempR_fwd z y, get witness χ with G(χ) ∈ z.val but χ ∉ y.val
-  rw [show ¬tempR_fwd z y ↔ ¬(g_content z ⊆ y.val) from Iff.rfl] at h_not_zy
-  rw [Set.not_subset] at h_not_zy
-  obtain ⟨χ, h_χ_gz, h_χ_ny⟩ := h_not_zy
-  -- Extract G(ψ) ∈ y.val and G(χ) ∈ z.val from g_content membership
-  have h_Gψ_y : Formula.all_future ψ ∈ y.val := by
-    simp [g_content, Bundle.g_content] at h_ψ_gy; exact h_ψ_gy
-  have h_Gχ_z : Formula.all_future χ ∈ z.val := by
-    simp [g_content, Bundle.g_content] at h_χ_gz; exact h_χ_gz
-  -- Step 1: G(ψ) ∉ x.val (else ψ ∈ z.val via h_xz, contradicting h_ψ_nz)
-  have h_Gψ_nx : Formula.all_future ψ ∉ x.val := by
-    intro h_Gψ_x
-    have : ψ ∈ g_content x := by simp [g_content, Bundle.g_content, h_Gψ_x]
-    exact h_ψ_nz (h_xz this)
-  -- Step 2: G(χ) ∉ x.val (else χ ∈ y.val via h_xy, contradicting h_χ_ny)
-  have h_Gχ_nx : Formula.all_future χ ∉ x.val := by
-    intro h_Gχ_x
-    have : χ ∈ g_content x := by simp [g_content, Bundle.g_content, h_Gχ_x]
-    exact h_χ_ny (h_xy this)
-  -- Step 3: ¬G(ψ) ∈ x.val by negation completeness (since G(ψ) ∉ x.val)
-  have h_negGψ_x : Formula.neg (Formula.all_future ψ) ∈ x.val :=
-    (SetMaximalConsistent.negation_complete h_mcs_x (Formula.all_future ψ)).resolve_left h_Gψ_nx
-  have h_negGχ_x : Formula.neg (Formula.all_future χ) ∈ x.val :=
-    (SetMaximalConsistent.negation_complete h_mcs_x (Formula.all_future χ)).resolve_left h_Gχ_nx
-  -- Step 4: ¬G(ψ) = F(¬ψ) by definition:
-  --   F(¬ψ) = (¬ψ).neg.all_future.neg = ψ.neg.neg.all_future.neg
-  --   ¬G(ψ) = ψ.all_future.neg = ψ.all_future.imp ⊥
-  -- These are NOT definitionally equal. We need: ¬G(ψ) → F(¬ψ)
-  -- ¬G(ψ) = G(ψ) → ⊥
-  -- F(¬ψ) = ¬G(¬¬ψ) = G(¬¬ψ) → ⊥ = (ψ.neg.neg.all_future).neg
-  -- We need to show: G(ψ) → ⊥ implies G(ψ.neg.neg) → ⊥
-  -- Equivalently (contrapositive): G(¬¬ψ) → G(ψ), which follows from ¬¬ψ → ψ (double neg) + temp_k_dist
-  -- Derive ⊢ G(¬¬ψ) → G(ψ) as a theorem
-  have h_dne_ψ : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
-    Bimodal.Theorems.Propositional.double_negation ψ
-  have h_G_dne_ψ : [] ⊢ Formula.all_future ((Formula.neg (Formula.neg ψ)).imp ψ) :=
-    DerivationTree.temporal_necessitation _ h_dne_ψ
-  have h_kd_ψ : [] ⊢ ((Formula.neg (Formula.neg ψ)).imp ψ).all_future.imp
-      ((Formula.neg (Formula.neg ψ)).all_future.imp ψ.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_k_dist (Formula.neg (Formula.neg ψ)) ψ)
-  -- G(¬¬ψ → ψ) → (G(¬¬ψ) → G(ψ))
-  have h_Gnn_imp_Gψ : [] ⊢ (Formula.neg (Formula.neg ψ)).all_future.imp ψ.all_future :=
-    Combinators.mp h_G_dne_ψ h_kd_ψ
-  -- Contrapositive: ¬G(ψ) → ¬G(¬¬ψ)
-  -- ¬G(ψ) = G(ψ).neg = G(ψ).imp ⊥
-  -- We need: G(ψ).neg → G(¬¬ψ).neg
-  -- i.e., (G(ψ) → ⊥) → (G(¬¬ψ) → ⊥)
-  -- From h_Gnn_imp_Gψ: G(¬¬ψ) → G(ψ), compose: G(¬¬ψ) → G(ψ) → ⊥
-  -- This is: ⊢ (G(ψ) → ⊥) → (G(¬¬ψ) → ⊥), i.e., ⊢ ¬G(ψ) → ¬G(¬¬ψ)
-  -- But ¬G(¬¬ψ) = F(¬ψ) by definition: F(¬ψ) = (¬ψ).neg.all_future.neg = (¬¬ψ).all_future.neg = ¬G(¬¬ψ)
-  -- So we need: ¬G(ψ) → F(¬ψ)
-  have h_contra_ψ : [] ⊢ (Formula.all_future ψ).neg.imp (Formula.some_future (Formula.neg ψ)) := by
-    -- F(¬ψ) = (¬ψ).some_future = (¬ψ).neg.all_future.neg = (¬¬ψ).all_future.neg = ¬G(¬¬ψ)
-    -- ¬G(ψ) = (Gψ).neg = Gψ → ⊥
-    -- Goal: (Gψ → ⊥) → ((¬¬ψ).all_future → ⊥)
-    -- From h_Gnn_imp_Gψ: (¬¬ψ).all_future → Gψ
-    -- Compose: (Gψ → ⊥) → ((¬¬ψ).all_future → ⊥)
-    -- This is b_combinator pattern: (B → C) → (A → B) → (A → C) with A=G(¬¬ψ), B=Gψ, C=⊥
-    -- Need: (Gψ → ⊥) → (G(¬¬ψ) → ⊥)
-    -- From h_Gnn_imp_Gψ: G(¬¬ψ) → Gψ
-    -- Compose via imp_trans: (G(¬¬ψ) → Gψ) → (Gψ → ⊥) → (G(¬¬ψ) → ⊥)
-    -- TODO [Task 141+]: Prove using Combinators.theorem_flip + imp_trans
-    sorry
-  sorry
+  -- From ¬tempR_fwd z y: ∃ β₀ ∈ y.val with F(β₀) ∉ z.val (Lemma 1.6(b) contrapositive)
+  obtain ⟨β₀, h_β₀_y, h_Fβ₀_nz⟩ := not_tempR_fwd_witness_F h_not_zy
+  -- From ¬tempR_fwd y z: ∃ γ₀ ∈ z.val with F(γ₀) ∉ y.val
+  obtain ⟨γ₀, h_γ₀_z, h_Fγ₀_ny⟩ := not_tempR_fwd_witness_F h_not_yz
+  -- From y ≠ z: ∃ δ ∈ y.val with δ ∉ z.val (or vice versa)
+  have h_val_ne : y.val ≠ z.val := by
+    intro h_eq; exact h_ne (ReflCanDomain.ext h_eq)
+  -- Either y.val ⊄ z.val or z.val ⊄ y.val (since y.val ≠ z.val)
+  have h_not_both_sub : ¬(y.val ⊆ z.val ∧ z.val ⊆ y.val) := by
+    intro ⟨h1, h2⟩; exact h_val_ne (Set.Subset.antisymm h1 h2)
+  -- We handle both cases. The proof is symmetric modulo swapping δ/¬δ placement.
+  -- First, pick any δ witnessing y.val ≠ z.val. We can assume WLOG y.val ⊄ z.val
+  -- (the other case is symmetric with δ placed on the γ side).
+  -- Since ¬(y.val ⊆ z.val ∧ z.val ⊆ y.val), by De Morgan:
+  -- ¬(y.val ⊆ z.val) ∨ ¬(z.val ⊆ y.val)
+  rcases not_and_or.mp h_not_both_sub with h_y_nsub | h_z_nsub
+  · -- Case: y.val ⊄ z.val. Get δ ∈ y.val with δ ∉ z.val.
+    obtain ⟨δ, h_δ_y, h_δ_nz⟩ := Set.not_subset.mp h_y_nsub
+    -- ¬F(γ₀) ∈ y.val (negation completeness)
+    have h_nFγ₀_y : (Formula.some_future γ₀).neg ∈ y.val :=
+      (SetMaximalConsistent.negation_complete h_mcs_y _).resolve_left h_Fγ₀_ny
+    -- ¬F(β₀) ∈ z.val (negation completeness)
+    have h_nFβ₀_z : (Formula.some_future β₀).neg ∈ z.val :=
+      (SetMaximalConsistent.negation_complete h_mcs_z _).resolve_left h_Fβ₀_nz
+    -- ¬δ ∈ z.val (negation completeness)
+    have h_nδ_z : δ.neg ∈ z.val :=
+      (SetMaximalConsistent.negation_complete h_mcs_z _).resolve_left h_δ_nz
+    -- β = (β₀ ∧ ¬Fγ₀) ∧ δ ∈ y.val
+    let β := Formula.and (Formula.and β₀ (Formula.some_future γ₀).neg) δ
+    have h_β_y : β ∈ y.val := by
+      have h_p1 := pairing β₀ (Formula.some_future γ₀).neg
+      have h_inner : Formula.and β₀ (Formula.some_future γ₀).neg ∈ y.val :=
+        h_mcs_y.implication_property
+          (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
+      have h_p2 := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ
+      exact h_mcs_y.implication_property
+        (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_δ_y
+    -- γ = (γ₀ ∧ ¬Fβ₀) ∧ ¬δ ∈ z.val
+    let γ := Formula.and (Formula.and γ₀ (Formula.some_future β₀).neg) δ.neg
+    have h_γ_z : γ ∈ z.val := by
+      have h_p1 := pairing γ₀ (Formula.some_future β₀).neg
+      have h_inner : Formula.and γ₀ (Formula.some_future β₀).neg ∈ z.val :=
+        h_mcs_z.implication_property
+          (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
+      have h_p2 := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ.neg
+      exact h_mcs_z.implication_property
+        (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_nδ_z
+    -- F(β) ∈ x.val and F(γ) ∈ x.val (by Lemma 1.6(b))
+    have h_Fβ_x : Formula.some_future β ∈ x.val :=
+      tempR_fwd_mem_some_future h_xy β h_β_y
+    have h_Fγ_x : Formula.some_future γ ∈ x.val :=
+      tempR_fwd_mem_some_future h_xz γ h_γ_z
+    -- BX11 case analysis
+    rcases BXCanonical.temp_linearity_mcs h_mcs_x β γ h_Fβ_x h_Fγ_x with
+      h_c1 | h_c2 | h_c3
+    · -- Case 1: F(β ∧ γ) ∈ x.val. β∧γ contains δ and ¬δ → inconsistent.
+      have h1 : [] ⊢ (β.and γ).imp δ :=
+        Combinators.imp_trans (lce_imp β γ) (rce_imp _ δ)
+      have h2 : [] ⊢ (β.and γ).imp δ.neg :=
+        Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ.neg)
+      have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
+        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot)
+        exact Combinators.mp h1 (Combinators.mp h2 hk)
+      have hG := DerivationTree.temporal_necessitation _ h_bot
+      exact set_consistent_not_both h_mcs_x.1
+        (β.and γ).neg.all_future (theorem_in_mcs h_mcs_x hG) h_c1
+    · -- Case 2: F(β ∧ F(γ)) ∈ x.val. F(γ)→F(γ₀) (mono), β→¬F(γ₀) → inconsistent.
+      have h_γ_to_γ₀ : [] ⊢ γ.imp γ₀ :=
+        Combinators.imp_trans (lce_imp _ δ.neg) (lce_imp γ₀ _)
+      have h_Fγ_to_Fγ₀ : [] ⊢ (Formula.some_future γ).imp (Formula.some_future γ₀) :=
+        some_future_mono h_γ_to_γ₀
+      have h_β_to_nFγ₀ : [] ⊢ β.imp (Formula.some_future γ₀).neg :=
+        Combinators.imp_trans (lce_imp _ δ) (rce_imp β₀ _)
+      have h_l : [] ⊢ (Formula.and β (Formula.some_future γ)).imp (Formula.some_future γ₀).neg :=
+        Combinators.imp_trans (lce_imp β _) h_β_to_nFγ₀
+      have h_r : [] ⊢ (Formula.and β (Formula.some_future γ)).imp (Formula.some_future γ₀) :=
+        Combinators.imp_trans (rce_imp β _) h_Fγ_to_Fγ₀
+      have h_bot : [] ⊢ (Formula.and β (Formula.some_future γ)).imp Formula.bot := by
+        have hk := DerivationTree.axiom [] _
+          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot)
+        exact Combinators.mp h_r (Combinators.mp h_l hk)
+      have hG := DerivationTree.temporal_necessitation _ h_bot
+      exact set_consistent_not_both h_mcs_x.1
+        (Formula.and β (Formula.some_future γ)).neg.all_future
+        (theorem_in_mcs h_mcs_x hG) h_c2
+    · -- Case 3: F(F(β) ∧ γ) ∈ x.val. F(β)→F(β₀) (mono), γ→¬F(β₀) → inconsistent.
+      have h_β_to_β₀ : [] ⊢ β.imp β₀ :=
+        Combinators.imp_trans (lce_imp _ δ) (lce_imp β₀ _)
+      have h_Fβ_to_Fβ₀ : [] ⊢ (Formula.some_future β).imp (Formula.some_future β₀) :=
+        some_future_mono h_β_to_β₀
+      have h_γ_to_nFβ₀ : [] ⊢ γ.imp (Formula.some_future β₀).neg :=
+        Combinators.imp_trans (lce_imp _ δ.neg) (rce_imp γ₀ _)
+      have h_l : [] ⊢ (Formula.and (Formula.some_future β) γ).imp (Formula.some_future β₀) :=
+        Combinators.imp_trans (lce_imp _ γ) h_Fβ_to_Fβ₀
+      have h_r : [] ⊢ (Formula.and (Formula.some_future β) γ).imp (Formula.some_future β₀).neg :=
+        Combinators.imp_trans (rce_imp _ γ) h_γ_to_nFβ₀
+      have h_bot : [] ⊢ (Formula.and (Formula.some_future β) γ).imp Formula.bot := by
+        have hk := DerivationTree.axiom [] _
+          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot)
+        exact Combinators.mp h_l (Combinators.mp h_r hk)
+      have hG := DerivationTree.temporal_necessitation _ h_bot
+      exact set_consistent_not_both h_mcs_x.1
+        (Formula.and (Formula.some_future β) γ).neg.all_future
+        (theorem_in_mcs h_mcs_x hG) h_c3
+  · -- Case: z.val ⊄ y.val. Symmetric: δ ∈ z.val with δ ∉ y.val.
+    obtain ⟨δ, h_δ_z, h_δ_ny⟩ := Set.not_subset.mp h_z_nsub
+    have h_nFγ₀_y : (Formula.some_future γ₀).neg ∈ y.val :=
+      (SetMaximalConsistent.negation_complete h_mcs_y _).resolve_left h_Fγ₀_ny
+    have h_nFβ₀_z : (Formula.some_future β₀).neg ∈ z.val :=
+      (SetMaximalConsistent.negation_complete h_mcs_z _).resolve_left h_Fβ₀_nz
+    have h_nδ_y : δ.neg ∈ y.val :=
+      (SetMaximalConsistent.negation_complete h_mcs_y _).resolve_left h_δ_ny
+    -- β = (β₀ ∧ ¬Fγ₀) ∧ ¬δ ∈ y.val
+    let β := Formula.and (Formula.and β₀ (Formula.some_future γ₀).neg) δ.neg
+    have h_β_y : β ∈ y.val := by
+      have h_p1 := pairing β₀ (Formula.some_future γ₀).neg
+      have h_inner : Formula.and β₀ (Formula.some_future γ₀).neg ∈ y.val :=
+        h_mcs_y.implication_property
+          (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
+      have h_p2 := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ.neg
+      exact h_mcs_y.implication_property
+        (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_nδ_y
+    -- γ = (γ₀ ∧ ¬Fβ₀) ∧ δ ∈ z.val
+    let γ := Formula.and (Formula.and γ₀ (Formula.some_future β₀).neg) δ
+    have h_γ_z : γ ∈ z.val := by
+      have h_p1 := pairing γ₀ (Formula.some_future β₀).neg
+      have h_inner : Formula.and γ₀ (Formula.some_future β₀).neg ∈ z.val :=
+        h_mcs_z.implication_property
+          (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
+      have h_p2 := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ
+      exact h_mcs_z.implication_property
+        (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_δ_z
+    have h_Fβ_x : Formula.some_future β ∈ x.val :=
+      tempR_fwd_mem_some_future h_xy β h_β_y
+    have h_Fγ_x : Formula.some_future γ ∈ x.val :=
+      tempR_fwd_mem_some_future h_xz γ h_γ_z
+    -- BX11: symmetric case. β has ¬δ, γ has δ.
+    rcases BXCanonical.temp_linearity_mcs h_mcs_x β γ h_Fβ_x h_Fγ_x with
+      h_c1 | h_c2 | h_c3
+    · -- F(β∧γ): β→¬δ and γ→δ → inconsistent
+      have h1 : [] ⊢ (β.and γ).imp δ.neg :=
+        Combinators.imp_trans (lce_imp β γ) (rce_imp _ δ.neg)
+      have h2 : [] ⊢ (β.and γ).imp δ :=
+        Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ)
+      have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
+        have hk := DerivationTree.axiom [] _ (Axiom.prop_k (β.and γ) δ Formula.bot)
+        exact Combinators.mp h2 (Combinators.mp h1 hk)
+      have hG := DerivationTree.temporal_necessitation _ h_bot
+      exact set_consistent_not_both h_mcs_x.1
+        (β.and γ).neg.all_future (theorem_in_mcs h_mcs_x hG) h_c1
+    · -- F(β∧Fγ): Fγ→Fγ₀, β→¬Fγ₀ → inconsistent
+      have h_γ_to_γ₀ : [] ⊢ γ.imp γ₀ :=
+        Combinators.imp_trans (lce_imp _ δ) (lce_imp γ₀ _)
+      have h_Fγ_to_Fγ₀ := some_future_mono h_γ_to_γ₀
+      have h_β_to_nFγ₀ : [] ⊢ β.imp (Formula.some_future γ₀).neg :=
+        Combinators.imp_trans (lce_imp _ δ.neg) (rce_imp β₀ _)
+      have h_l : [] ⊢ (Formula.and β (Formula.some_future γ)).imp (Formula.some_future γ₀).neg :=
+        Combinators.imp_trans (lce_imp β _) h_β_to_nFγ₀
+      have h_r : [] ⊢ (Formula.and β (Formula.some_future γ)).imp (Formula.some_future γ₀) :=
+        Combinators.imp_trans (rce_imp β _) h_Fγ_to_Fγ₀
+      have h_bot : [] ⊢ (Formula.and β (Formula.some_future γ)).imp Formula.bot := by
+        have hk := DerivationTree.axiom [] _
+          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot)
+        exact Combinators.mp h_r (Combinators.mp h_l hk)
+      have hG := DerivationTree.temporal_necessitation _ h_bot
+      exact set_consistent_not_both h_mcs_x.1
+        (Formula.and β (Formula.some_future γ)).neg.all_future
+        (theorem_in_mcs h_mcs_x hG) h_c2
+    · -- F(Fβ∧γ): Fβ→Fβ₀, γ→¬Fβ₀ → inconsistent
+      have h_β_to_β₀ : [] ⊢ β.imp β₀ :=
+        Combinators.imp_trans (lce_imp _ δ.neg) (lce_imp β₀ _)
+      have h_Fβ_to_Fβ₀ := some_future_mono h_β_to_β₀
+      have h_γ_to_nFβ₀ : [] ⊢ γ.imp (Formula.some_future β₀).neg :=
+        Combinators.imp_trans (lce_imp _ δ) (rce_imp γ₀ _)
+      have h_l : [] ⊢ (Formula.and (Formula.some_future β) γ).imp (Formula.some_future β₀) :=
+        Combinators.imp_trans (lce_imp _ γ) h_Fβ_to_Fβ₀
+      have h_r : [] ⊢ (Formula.and (Formula.some_future β) γ).imp (Formula.some_future β₀).neg :=
+        Combinators.imp_trans (rce_imp _ γ) h_γ_to_nFβ₀
+      have h_bot : [] ⊢ (Formula.and (Formula.some_future β) γ).imp Formula.bot := by
+        have hk := DerivationTree.axiom [] _
+          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot)
+        exact Combinators.mp h_l (Combinators.mp h_r hk)
+      have hG := DerivationTree.temporal_necessitation _ h_bot
+      exact set_consistent_not_both h_mcs_x.1
+        (Formula.and (Formula.some_future β) γ).neg.all_future
+        (theorem_in_mcs h_mcs_x hG) h_c3
 
 /--
 Backward bridge lemma: if `tempR_bwd y x`, then `h_w_content x ⊆ y.val`.
