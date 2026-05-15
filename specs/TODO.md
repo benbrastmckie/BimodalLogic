@@ -113,7 +113,7 @@ technical_debt:
 
 ### 129. Weak/reflexive completeness and conservative extension for discrete frames
 - **Effort**: 30-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Research**:
@@ -127,6 +127,7 @@ technical_debt:
   - [129_weak_reflexive_completeness_conservative_extension/plans/01_weak-completeness-plan.md]
   - [129_weak_reflexive_completeness_conservative_extension/plans/03_doets-reynolds-plan.md]
   - [129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md]
+  - [129_weak_reflexive_completeness_conservative_extension/plans/09_reynolds-theorem15-plan.md]
 
 **Description**: Develop a weak/reflexive temporal sub-language for discrete frames and prove the strict system is a conservative extension, bypassing the succ_cofinal gap scenario entirely.
 

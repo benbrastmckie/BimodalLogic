@@ -558,13 +558,13 @@
     {
       "project_number": 129,
       "project_name": "weak_reflexive_completeness_conservative_extension",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "description": "Develop a weak/reflexive temporal sub-language for discrete frames where G_w evaluates over the reflexive closure (y >= x) rather than the strict order (y > x). Prove completeness for this sub-language using standard Henkin canonical model methods (no chronicle construction, no IR rule), then transfer completeness to the strict system via model-theoretic argument, bypassing the succ_cofinal gap entirely.\n\nPhase 1: Weak sub-language definition (~100 lines). G_w(phi) := phi AND G(phi), H_w := phi AND H(phi), F_w := phi OR F(phi), P_w := phi OR P(phi). Weak Until/Since with reflexive endpoints.\n\nPhase 2: Weak axiom system (~200 lines). Derive weak axioms in the strict system. G_w(phi)->phi is trivial. Weak Z1 (FG_w(phi)->G_w(phi)) derivable from strict Z1.\n\nPhase 3: Weak Henkin canonical model (~500-800 lines). Standard construction where each point is a distinct MCS. No chronicle, no IR rule, no gap scenario. Constant-MCS structurally impossible.\n\nPhase 4: Z1 + IsSuccArchimedean in the weak model (~200-400 lines). Doets maximum principle (Claim 10) + compression from sum-of-zeta to single zeta (Claims 9-11).\n\nPhase 5: Model-theoretic completeness transfer (~100 lines). IMPORTANT: Expressing strict G in terms of weak operators is impossible (U_w(phi,bot) = phi in weak semantics, so Next is not definable). Instead use model-theoretic argument: if psi is not provable in the strict system, then neg-psi is consistent in the strict system. Since every weak axiom is a strict theorem (G_w = phi AND G), neg-psi is consistent in the weak system. By weak completeness, there exists a weak countermodel. This is also a strict countermodel (same domain, same valuation, reinterpret <= as <). Contrapositive: valid under strict -> provable.\n\nPhase 6: Integration (~100 lines). Wire weak completeness + transfer into existing pipeline.\n\nPhase 7: Close the sorry (~50 lines). Replace the admitted limitDomSubtype_isSuccArchimedean in ChronicleToCountermodel.lean with the Henkin-derived IsSuccArchimedean, making dd_countermodel_chronicle_discrete sorry-free.",
       "dependencies": [],
       "created": "2026-05-13T07:34:37Z",
-      "last_updated": "2026-05-15T00:39:26Z",
+      "last_updated": "2026-05-15T00:47:54Z",
       "next_artifact_number": 7,
       "artifacts": [
         {
@@ -598,22 +598,9 @@
           "summary": "Team research (4 teammates): confirmed multi-relation correctness, identified chronicle+Reynolds alternative path, found implementation gaps"
         },
         {
-          "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan using Chronicle + Reynolds Theorem 15 approach to bypass succ_cofinal sorry"
-        },
-        {
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/08_phase-by-phase-research.md",
           "type": "research",
           "summary": "Phase-by-phase research: KEquivalenceFramework axiomatic interface, chronicle_is_good uses ChronicleAsPriorModel, Doets Lemma 1.4 needed only for composition, all 5 vacuous defs filled with OrderedMonadicStructure, succ_cofinal bypassed by k-equivalence"
-        },
-        {
-          "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md",
-          "type": "plan"
-        },
-        {
-          "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md",
-          "type": "plan"
         },
         {
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/summaries/05_chronicle-reynolds-summary.md",
@@ -624,17 +611,22 @@
           "path": "specs/129_weak_reflexive_completeness_conservative_extension/reports/09_team-research.md",
           "type": "research",
           "summary": "Team research audit (4 teammates): build broken, circular axiomatization, good uses full Z not interval, plan overstates completion, 17 sorries remain"
+        },
+        {
+          "path": "specs/129_weak_reflexive_completeness_conservative_extension/plans/09_reynolds-theorem15-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v3: 6 phases following Reynolds 1994 literally for discrete case, fixes structural errors (build, circularity, wrong good def), 20-28 hours"
         }
       ],
       "researched": "2026-05-15T00:39:26Z",
-      "session_id": "sess_1778805087_551a07",
+      "session_id": "sess_1778805668_6f4b00",
       "resume_phase": 3,
       "plan_metadata": {
-        "phases": 7,
-        "total_effort_hours": 55,
+        "phases": 6,
+        "total_effort_hours": 24,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 2,
+        "plan_version": 3,
         "dependency_waves": [
           [
             1
@@ -643,7 +635,9 @@
             2
           ],
           [
-            3,
+            3
+          ],
+          [
             4
           ],
           [
@@ -651,16 +645,13 @@
           ],
           [
             6
-          ],
-          [
-            7
           ]
         ],
         "reports_integrated": [
           {
-            "path": "reports/08_phase-by-phase-research.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-05-14T22:56:44Z"
+            "path": "reports/09_team-research.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-05-14"
           }
         ]
       },
