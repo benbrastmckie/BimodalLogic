@@ -115,7 +115,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Implement topic-grouped rendering in generate-task-order.sh [NOT STARTED]
+### Phase 2: Implement topic-grouped rendering in generate-task-order.sh [COMPLETED]
 
 **Goal**: Add `load_topics()`, `compute_connected_components()`, and `generate_grouped_section()` functions to the script, replacing the monolithic dependency tree with per-topic grouped output.
 
