@@ -53,9 +53,9 @@ technical_debt:
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
 130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
-142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
+142 [PLANNED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-152 [RESEARCHED] — Improve Task Order UX in TODO.md by splitting the monolithic depe
+152 [PLANNING] — Improve Task Order UX in TODO.md by splitting the monolithic depe
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -76,7 +76,7 @@ technical_debt:
 
 ### 152. Task Order topic grouping and wave separation
 - **Effort**: 3-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Dependencies**: Task #149, Task #150
 - **Research**:
@@ -224,7 +224,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 142. Mixed-case countermodel for bx_completeness
 - **Effort**: 45-75 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Research**:
   - [specs/142_mixed_case_countermodel/reports/01_mixed-case-research.md]
   - [142_mixed_case_countermodel/reports/02_team-research.md]
@@ -232,6 +232,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 - **Priority**: high
 - **Dependencies**: None (architecturally independent of discrete/dense branches)
   - [142_mixed_case_countermodel/reports/04_team-research.md]
+- **Plan**: [142_mixed_case_countermodel/plans/04_structural-axiom-plan.md]
 
 **Description**: Resolve the mixed-case sorry in `bx_completeness`: the third branch where neither `box(F'T)` (dense) nor `box(U(T,bot))` (discrete) is in the MCS. Currently `dd_countermodel_chronicle_mixed_sorry` (ChronicleToCountermodel.lean:3327) is a bare sorry.
 

@@ -1,0 +1,305 @@
+# Implementation Plan: Add U(T,bot) -> box(U(T,bot)) Structural Axiom
+
+- **Task**: 142 - mixed_case_countermodel
+- **Status**: [NOT STARTED]
+- **Effort**: 8 hours
+- **Dependencies**: None (builds on existing sorry-free soundness infrastructure)
+- **Research Inputs**: specs/142_mixed_case_countermodel/reports/01_mixed-case-research.md, specs/142_mixed_case_countermodel/reports/02_team-research.md, specs/142_mixed_case_countermodel/reports/03_case-c-deep-dive.md, specs/142_mixed_case_countermodel/reports/04_team-research.md
+- **Artifacts**: plans/04_structural-axiom-plan.md (this file)
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
+- **Type**: lean4
+- **Lean Intent**: false
+
+## Overview
+
+The mixed-case sorry at `dd_countermodel_chronicle_mixed_sorry` (ChronicleToCountermodel.lean:3327) is not a construction problem -- it is a completeness gap in the BX axiom system. The formula box(U(T,bot)) v box(F'T) is valid on all TaskFrame models (because every ordered abelian group is either globally dense or globally discrete) but not BX-derivable. This plan adds `U(T,bot) -> box(U(T,bot))` as a new BX axiom, proves it sound via the existing translation-invariance pattern, derives a lemma that every MCS contains either box(F'T) or box(U(T,bot)), and eliminates the mixed case in `bx_completeness` via `False.elim`. The definition of done is: `sorry` removed from `dd_countermodel_chronicle_mixed_sorry`, `lake build` passes, and `#print axioms bx_completeness` shows no new `sorryAx` dependency from this change.
+
+### Research Integration
+
+Four research rounds converged independently on the same discovery:
+- **Report 01**: Identified the sorry, explored 5 strategies (all failed), noted the mixed case as genuine.
+- **Report 02**: Discovered the algebraic constraint that ordered abelian groups are either globally dense or globally discrete. Proposed formula-guided domain selection (ultimately unnecessary).
+- **Report 03**: Traced the truth lemma's box case to show the real blocker is Until backward coherence at wrong-type families, not the box case itself. Identified Case C-hard as the irreducible blocker.
+- **Report 04 (breakthrough)**: Proved box(U(T,bot)) v box(F'T) is semantically valid but not BX-derivable. Corrected Report 01's erroneous claim that the mixed case is satisfiable on Q. Recommended adding U(T,bot) -> box(U(T,bot)) as a structural axiom.
+
+### Prior Plan Reference
+
+No prior plan.
+
+### Roadmap Alignment
+
+- Advances the critical path item: "Task 142 (mixed-case countermodel)" from the ROADMAP.md
+- Reduces the sorry count for `bx_completeness` by eliminating the mixed-case branch
+- Moves toward the target state of sorry-free `bx_completeness`
+
+## Goals & Non-Goals
+
+**Goals**:
+- Add `U(T,bot) -> box(U(T,bot))` as a new axiom constructor in Axioms.lean
+- Prove the new axiom sound on all TaskFrame models via translation-invariance
+- Derive the completeness consequence: every MCS has box(F'T) or box(U(T,bot))
+- Eliminate the mixed case sorry via `False.elim`
+- Update all exhaustive pattern matches on `Axiom` that break after adding the constructor
+- Verify `lake build` passes with no new sorry dependencies
+
+**Non-Goals**:
+- Adding the contrapositive axiom `F'T -> box(F'T)` (derivable from the primary axiom via S5 + uniformity, but not needed for the mixed-case fix)
+- Formal verification that box(U(T,bot)) v box(F'T) is NOT a BX theorem (interesting but not required)
+- Resolving other sorry sites in the completeness proof (tasks 139, 140)
+- Updating the decidability/FMP module (the axiom is sound, so existing FMP completeness is unaffected; adding the axiom to FMP is a separate task if needed)
+
+## Risks & Mitigations
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Exhaustive match cascade: adding an Axiom constructor breaks many `cases h with` blocks | M | H | Systematic grep for all `cases` on `Axiom`, update in dependency order |
+| Soundness proof harder than expected (translation-invariance subtlety) | M | L | Existing `discrete_propagate_fwd_valid` uses identical argument; adapt directly |
+| Frame class classification unclear for new axiom | L | M | Classify as `Base` (valid on ALL ordered abelian groups, not just dense or discrete) |
+| MCS derivation chain for False.elim is nontrivial | M | M | Use `theorem_in_mcs` + `mcs_closed_mp` + `negation_complete`; same pattern as existing cases |
+| `lake build` timeout from large rebuild | L | L | Build incrementally; the change touches few files in the dependency graph |
+
+## Implementation Phases
+
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1 | 1 | -- |
+| 2 | 2 | 1 |
+| 3 | 3 | 2 |
+| 4 | 4 | 3 |
+| 5 | 5 | 4 |
+
+Phases within the same wave can execute in parallel.
+
+---
+
+### Phase 1: Add Axiom Constructor and Fix Exhaustive Matches [NOT STARTED]
+
+**Goal**: Add `discrete_box_necessity` (or equivalent name) to the `Axiom` inductive type and fix all pattern match exhaustiveness errors.
+
+**Tasks**:
+- [ ] Add new axiom constructor to `Axiom` inductive in Axioms.lean:
+  ```
+  | discrete_box_necessity :
+      Axiom ((Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).imp
+        (Formula.box (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot)))
+  ```
+  This encodes `U(T,bot) -> box(U(T,bot))`: "if there is an immediate successor (discreteness), then this holds at all accessible worlds."
+- [ ] Update `Axiom.frameClass` to return `.Base` for the new constructor (valid on all ordered abelian groups, not restricted to dense or discrete)
+- [ ] Update `Axiom.isBase` to return `True` for the new constructor
+- [ ] Update `Axiom.isDenseCompatible` to return `True` for the new constructor
+- [ ] Update `Axiom.isDiscreteCompatible` to return `True` for the new constructor (already wildcard `True`)
+- [ ] Update doc comment: axiom count from 41 to 42, and Layer 5 uniformity axioms from 4 to 5
+- [ ] Run `lake build Bimodal.ProofSystem.Axioms` to confirm the module compiles
+- [ ] Grep for all exhaustive matches on `Axiom` in the codebase: `grep -rn "cases.*Axiom\|match.*Axiom\|| discrete_\|| prior_\|| z1" Theories/ --include="*.lean"` to find all sites that need updating
+- [ ] Fix exhaustive matches in Soundness.lean: `axiom_base_valid`, `axiom_valid_dense`, `axiom_valid_discrete` (add placeholder `sorry` for the soundness proof, to be filled in Phase 2)
+- [ ] Fix exhaustive matches in the `soundness` theorem and `soundness_dense`/`soundness_discrete` inductions
+- [ ] Fix exhaustive matches in DenseSoundness.lean and DiscreteSoundness.lean if they have their own case splits
+- [ ] Fix exhaustive matches in Derivation.lean (`isDenseCompatible`, `isDiscreteCompatible`)
+- [ ] Fix any exhaustive matches in SoundnessLemmas.lean (swap preservation lemmas)
+- [ ] Run `lake build` to verify all exhaustiveness errors are resolved (soundness sorry from Phase 2 is expected)
+
+**Timing**: 2 hours
+
+**Depends on**: none
+
+**Files to modify**:
+- `Theories/Bimodal/ProofSystem/Axioms.lean` -- add constructor, update predicates
+- `Theories/Bimodal/Metalogic/Soundness.lean` -- fix exhaustive matches (placeholder sorry for validity proof)
+- `Theories/Bimodal/Metalogic/DenseSoundness.lean` -- fix if needed
+- `Theories/Bimodal/Metalogic/DiscreteSoundness.lean` -- fix if needed
+- `Theories/Bimodal/ProofSystem/Derivation.lean` -- fix isDenseCompatible/isDiscreteCompatible
+- `Theories/Bimodal/Metalogic/SoundnessLemmas.lean` -- fix swap preservation if needed
+- Any other files with exhaustive Axiom matches
+
+**Verification**:
+- `lake build` passes (with expected sorry in soundness validity proof)
+- `Axiom.discrete_box_necessity` is a well-typed constructor
+- All `isBase`, `isDenseCompatible`, `isDiscreteCompatible` return correct values for the new axiom
+
+---
+
+### Phase 2: Prove Soundness of the New Axiom [NOT STARTED]
+
+**Goal**: Prove `discrete_box_necessity_valid : ⊨ (U(T,bot).imp (box (U(T,bot))))` using the translation-invariance argument.
+
+**Tasks**:
+- [ ] Create the soundness theorem `discrete_box_necessity_valid` in Soundness.lean (near the existing uniformity axiom validity proofs, lines 762-844)
+- [ ] The proof structure follows `discrete_propagate_fwd_valid` (line 812) closely:
+  1. Assume `truth_at M Omega tau t (U(T,bot))`, i.e., there exists `s > t` with `(t,s)` empty in D
+  2. For any history `sigma in Omega`, we need `truth_at M Omega sigma t (U(T,bot))`
+  3. The key: `U(T,bot)` truth depends ONLY on D's order structure, not on tau/sigma/Omega/M
+  4. Since `s > t` and `(t,s)` is empty in D, this is true for ANY history at time `t`
+  5. The box quantifies over all `sigma in Omega` at the SAME time `t`, so the result follows
+- [ ] The proof should be approximately 10-20 lines, mirroring the translation-invariance pattern
+- [ ] Replace the placeholder sorry in `axiom_base_valid` (Phase 1) with `exact discrete_box_necessity_valid`
+- [ ] Replace placeholder sorries in `axiom_valid_dense` and `axiom_valid_discrete`
+- [ ] Replace placeholder sorries in the full `soundness` / `soundness_dense` / `soundness_discrete` theorems
+- [ ] Run `lake build` to verify all soundness-related sorries are eliminated
+
+**Timing**: 2 hours
+
+**Depends on**: 1
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/Soundness.lean` -- add validity theorem, wire into exhaustive matches
+
+**Verification**:
+- `discrete_box_necessity_valid` compiles without sorry
+- `axiom_base_valid`, `axiom_valid_dense`, `axiom_valid_discrete` have no sorry for the new case
+- `lake build Bimodal.Metalogic.Soundness` passes without sorry
+- All soundness theorems remain sorry-free
+
+---
+
+### Phase 3: Derive MCS Consequence -- Every MCS Has box(F'T) or box(U(T,bot)) [NOT STARTED]
+
+**Goal**: Prove that in the presence of the new axiom, every MCS A satisfies `box(F'T) in A` or `box(U(T,bot)) in A`, making the mixed case hypotheses contradictory.
+
+**Tasks**:
+- [ ] Create a new lemma (in ChronicleToCountermodel.lean or a nearby file) that derives the mixed-case impossibility from the axiom:
+  ```
+  theorem mcs_box_dense_or_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent A) :
+      Formula.box next_top.neg ∈ A ∨ Formula.box next_top ∈ A
+  ```
+  The proof outline:
+  1. By `negation_complete`, either `next_top in A` or `next_top.neg in A`
+  2. Case `next_top in A` (U(T,bot) in A):
+     - The new axiom gives `U(T,bot) -> box(U(T,bot))`
+     - By `theorem_in_mcs`, this axiom instance is in A
+     - By MCS closure under modus ponens: `box(U(T,bot)) in A`
+     - Right disjunct: `box(next_top) in A`
+  3. Case `next_top.neg in A` (F'T in A):
+     - Need to derive `F'T -> box(F'T)`. This requires the CONTRAPOSITIVE of the new axiom through S5 reasoning:
+       a. From `U(T,bot) -> box(U(T,bot))` we get (by contrapositive) `diamond(neg(U(T,bot))) -> neg(U(T,bot))`
+       b. i.e., `diamond(F'T) -> F'T`
+       c. By S5 (modal_b: phi -> box(diamond(phi))): `F'T -> box(diamond(F'T))`
+       d. By modal_k_dist on (b): `box(diamond(F'T) -> F'T)`, combined with (c): `F'T -> box(F'T)`
+     - Alternatively, derive using the dual uniformity pattern and the existing uniformity axioms
+     - The key mathematical fact: F'T = neg(U(T,bot)), so if U(T,bot) is false, then F'T is true, and by the new axiom's contrapositive through S5, this propagates to all worlds
+     - Left disjunct: `box(next_top.neg) in A`
+- [ ] Alternative simpler approach: derive `False` directly from the mixed-case hypotheses without needing the full disjunction:
+  ```
+  theorem mcs_mixed_case_absurd (A : Set Formula) (h_mcs : SetMaximalConsistent A)
+      (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
+      (h_not_box_discrete : (Formula.box next_top).neg ∈ A) : False
+  ```
+  Proof:
+  1. `h_not_box_discrete` means `neg(box(U(T,bot))) in A`, i.e., `diamond(neg(U(T,bot))) in A`
+  2. By S5 (neg_box -> box_neg_box): `box(neg(box(U(T,bot)))) in A`
+  3. From the new axiom (contrapositive): `neg(box(U(T,bot))) -> neg(U(T,bot))`
+  4. By necessitation + K distribution: `box(neg(box(U(T,bot)))) -> box(neg(U(T,bot)))`
+  5. Combined with step 2: `box(neg(U(T,bot))) in A`, i.e., `box(F'T) in A`
+  6. But `h_not_box_dense` says `neg(box(F'T)) in A` -- contradiction with MCS consistency
+- [ ] Decide between the two approaches based on which requires fewer intermediate derivation steps in Lean. The direct `False` approach (mcs_mixed_case_absurd) is likely simpler
+- [ ] Verify the derivation chain compiles
+
+**Timing**: 2 hours
+
+**Depends on**: 2
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- add the MCS consequence lemma (near the existing `dd_countermodel_chronicle_mixed_sorry`)
+- Possibly `Theories/Bimodal/Metalogic/Core/MCSProperties.lean` or a helper file for intermediate derivation lemmas
+
+**Verification**:
+- `mcs_mixed_case_absurd` (or `mcs_box_dense_or_discrete`) compiles without sorry
+- The derivation chain from the new axiom to the contradiction is correct
+- `lake build` passes for the affected modules
+
+---
+
+### Phase 4: Eliminate the Mixed Case Sorry [NOT STARTED]
+
+**Goal**: Replace `sorry` in `dd_countermodel_chronicle_mixed_sorry` with `False.elim` using the contradiction derived in Phase 3, and update `bx_completeness` accordingly.
+
+**Tasks**:
+- [ ] Replace the `sorry` in `dd_countermodel_chronicle_mixed_sorry` (ChronicleToCountermodel.lean:3336) with:
+  ```
+  exact absurd rfl (mcs_mixed_case_absurd A h_mcs h_not_box_dense h_not_box_discrete).elim
+  ```
+  Or restructure: since `mcs_mixed_case_absurd` gives `False`, use `exact (mcs_mixed_case_absurd A h_mcs h_not_box_dense h_not_box_discrete).elim` or `exact False.elim (mcs_mixed_case_absurd ...)`
+- [ ] Alternatively, restructure `bx_completeness` itself (Completeness.lean:162-166) to avoid calling `dd_countermodel_chronicle_mixed_sorry` entirely:
+  Replace the mixed case branch with:
+  ```
+  exact absurd rfl (mcs_mixed_case_absurd M hM_mcs h_not_box_dense h_not_box_discrete).elim
+  ```
+  This eliminates the need for the `dd_countermodel_chronicle_mixed_sorry` theorem entirely
+- [ ] Update the docstring on `dd_countermodel_chronicle_mixed_sorry` to note it is now proved via `False.elim` (the mixed case is semantically impossible)
+- [ ] Update the Completeness.lean module docstring and axiom audit comments
+- [ ] Run `lake build Bimodal.Metalogic.BXCanonical.Completeness` to verify the sorry is gone
+
+**Timing**: 1 hour
+
+**Depends on**: 3
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- replace sorry with False.elim
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- update docstrings and possibly restructure the mixed case branch
+
+**Verification**:
+- `dd_countermodel_chronicle_mixed_sorry` compiles without `sorry`
+- `bx_completeness` compiles without `sorry` contribution from the mixed case
+- `lake build Bimodal.Metalogic.BXCanonical.Completeness` passes
+
+---
+
+### Phase 5: Full Build Verification and Documentation [NOT STARTED]
+
+**Goal**: Verify the entire project builds cleanly, update documentation, and confirm the axiom audit shows improvement.
+
+**Tasks**:
+- [ ] Run `lake build` on the full project to verify no regressions
+- [ ] Run `#print axioms bx_completeness` (via lean_goal or lake build) and verify that `sorryAx` dependency from the mixed case is eliminated
+- [ ] Update ROADMAP.md:
+  - Update the "Mixed case" line from "1 sorry" to "0 sorries (resolved via structural axiom, task 142)"
+  - Update the axiom count in the Architecture section from 41 to 42
+  - Add note about the new axiom under the uniformity axioms section
+  - Update the sorry summary
+- [ ] Update Axioms.lean doc header:
+  - Total axiom count: 42 (was 41)
+  - Layer 5 uniformity axioms: 5 (was 4)
+  - Add description of the new axiom
+- [ ] Update Completeness.lean axiom audit section with new `#print axioms` output
+- [ ] Verify no other files reference the mixed case sorry or assume it exists
+
+**Timing**: 1 hour
+
+**Depends on**: 4
+
+**Files to modify**:
+- Full project build verification
+- `specs/ROADMAP.md` -- update sorry counts and axiom description
+- `Theories/Bimodal/ProofSystem/Axioms.lean` -- update doc header
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- update axiom audit
+
+**Verification**:
+- `lake build` passes with no new errors
+- `#print axioms bx_completeness` shows expected axioms (no new `sorryAx` from mixed case)
+- ROADMAP.md accurately reflects the new state
+- All documentation is consistent with the changes
+
+## Testing & Validation
+
+- [ ] `lake build` passes with no errors
+- [ ] `#print axioms bx_completeness` does not show `sorryAx` as a dependency from the mixed case
+- [ ] `#print axioms Bimodal.Metalogic.BXCanonical.Chronicle.dd_countermodel_chronicle_mixed_sorry` shows no `sorryAx`
+- [ ] All soundness theorems remain sorry-free
+- [ ] The new axiom `discrete_box_necessity` is correctly typed and its frame class predicates are consistent
+- [ ] Existing tests in `Tests/BimodalTest/` still pass
+
+## Artifacts & Outputs
+
+- `Theories/Bimodal/ProofSystem/Axioms.lean` -- new axiom constructor `discrete_box_necessity`
+- `Theories/Bimodal/Metalogic/Soundness.lean` -- soundness proof `discrete_box_necessity_valid`
+- `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- MCS consequence lemma + sorry elimination
+- `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` -- updated completeness proof
+- `specs/ROADMAP.md` -- updated sorry counts and axiom documentation
+
+## Rollback/Contingency
+
+If the implementation fails at any phase:
+1. **Phase 1 failure** (exhaustive match cascade too large): Use `| _ => sorry` temporarily in non-critical match sites and iterate
+2. **Phase 2 failure** (soundness proof doesn't close): The argument is mathematically identical to `discrete_propagate_fwd_valid`; if the Lean encoding differs, adapt the proof to match the exact `truth_at` unfolding. Check that `box` quantifies over histories in `Omega` at the same time `t`, not over all times
+3. **Phase 3 failure** (derivation chain too complex): Simplify by adding a helper derivation lemma in MCSProperties.lean, or use a direct semantic argument instead of a syntactic derivation chain
+4. **Full rollback**: `git stash` or `git checkout` to restore the pre-change state; no external dependencies are affected
