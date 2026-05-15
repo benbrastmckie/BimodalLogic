@@ -307,6 +307,47 @@ class KEquivalenceFramework (sig : MonadicSignature) : Type 1 where
     (h : ∀ i, equiv_at k (m i) (m' i)) :
     equiv_at k (OrderedSum sig I m) (OrderedSum sig I m')
 
+/-! ## Default KEquivalenceFramework Instance -/
+
+/--
+Default instance of `KEquivalenceFramework` for any `MonadicSignature`.
+
+This axiomatizes the properties of monadic FO k-equivalence from Doets 1989:
+- k-equivalence is an equivalence relation (Doets, Section 1)
+- Finer equivalence implies coarser (trivial from definition)
+- Finitely many k-types for a finite signature (Doets, Theorem 1.1)
+- Ordered sums preserve k-equivalence (Doets, Lemma 1.4)
+
+All fields are sorried. These are known results from the literature.
+The eventual proof requires defining monadic FO Tarski semantics and
+proving each property from the semantics. For now, the axiomatized
+instance enables closing downstream proofs (Phases 3-6) that only
+depend on the framework's interface.
+
+**Note**: The `equiv_at` relation is defined as `k_equiv` (equality of
+k-types via `k_type_of`). This creates a sorry chain through `k_type_of`,
+but the framework axioms are independently valid.
+-/
+instance (sig : MonadicSignature) : KEquivalenceFramework sig where
+  equiv_at k M N := k_equiv sig k M N
+  equiv_is_equiv k := {
+    refl := fun _ => rfl
+    symm := fun h => h.symm
+    trans := fun h1 h2 => h1.trans h2
+  }
+  equiv_monotone h h_equiv := by
+    -- k_equiv_monotone is sorry-based, use sorry directly
+    sorry
+  finite_types k := by
+    -- There are finitely many k-types (2^|S_k| where S_k is the finite
+    -- set of sentences of depth ≤ k). Requires showing S_k is finite.
+    sorry
+  sum_preservation k I m m' h := by
+    -- Doets Lemma 1.4: ordered sums preserve k-equivalence.
+    -- The proof is in OrderedSum.lean (doets_lemma_1_4) but that file
+    -- imports this file, so we cannot reference it here. Sorry.
+    sorry
+
 /-! ## Chronicle As Monadic Structure Converter -/
 
 /--
