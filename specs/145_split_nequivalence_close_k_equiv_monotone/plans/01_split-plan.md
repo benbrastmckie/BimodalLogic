@@ -71,18 +71,18 @@ This task advances the Reynolds pipeline (discrete completeness branch) by:
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Create MonadicFO.lean [NOT STARTED]
+### Phase 1: Create MonadicFO.lean [COMPLETED]
 
 **Goal**: Extract the pure monadic FO definitions (lines 46-366) from NEquivalence.lean into a new file that compiles independently with only Mathlib imports.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/MonadicFO.lean`
-- [ ] Add imports: `Mathlib.Data.Fintype.Card`, `Mathlib.Order.SuccPred.Basic`, `Mathlib.Data.Fin.Tuple.Basic`
-- [ ] Add module docstring describing monadic FO logic definitions
-- [ ] Copy lines 46-366 from NEquivalence.lean: `namespace` through `NormalFormIdx` (MonadicSignature, MonadicFormula, MonadicSentence, quantifier_depth, MonadicStructure, OrderedMonadicStructure, subinterval theorems, ZStructure, eval, finLift, lift, weaken, insertEnv + all insertEnv lemmas, weaken_eval, atomCount, nfCount, nfCount_pos, NormalFormIdx)
-- [ ] Do NOT copy `open Bimodal.Syntax` or `open Bimodal.ProofSystem` (not needed by the FO layer)
-- [ ] Close with `end Bimodal.Metalogic.WeakCanonical`
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.MonadicFO` to verify compilation
+- [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/MonadicFO.lean`
+- [x] Add imports: `Mathlib.Data.Fintype.Card`, `Mathlib.Order.SuccPred.Basic`, `Mathlib.Data.Fin.Tuple.Basic` *(deviation: altered -- also added `Mathlib.Data.Finset.Basic`, `Mathlib.Data.Finite.Card`, `Mathlib.Tactic.Positivity` for Finite instance and nfCount_pos proof)*
+- [x] Add module docstring describing monadic FO logic definitions
+- [x] Copy lines 46-416 from NEquivalence.lean: `namespace` through `NormalFormIdx` (MonadicSignature, MonadicFormula, MonadicSentence, quantifier_depth, MonadicStructure, OrderedMonadicStructure, subinterval theorems, ZStructure, eval, finLift, lift, weaken, insertEnv + all insertEnv lemmas, weaken_eval, atomCount, nfCount, nfCount_pos, NormalFormIdx)
+- [x] Do NOT copy `open Bimodal.Syntax` or `open Bimodal.ProofSystem` (not needed by the FO layer)
+- [x] Close with `end Bimodal.Metalogic.WeakCanonical`
+- [x] Run `lake build Bimodal.Metalogic.WeakCanonical.MonadicFO` to verify compilation
 
 **Timing**: 45 minutes
 
