@@ -25,12 +25,12 @@ mathematically false under irreflexive semantics and cannot be proved.
 - **FMP completeness** (`fmp_completeness`): Sorry-free
 - **Dense completeness** (`dd_countermodel_chronicle_dense`): Internally sorry-free
 - **Discrete completeness**: Reynolds pipeline structurally complete (task 129 COMPLETED). 5 sorries remain in FO satisfaction foundation (task 139) and truth transfer (task 140). Chronicle fallback retained pending truth transfer.
-- **Canonical truth lemma**: 8 sorries in Until/Since and ReflexiveCanonical infrastructure (task 141)
+- **Canonical truth lemma**: ReflexiveCanonical.lean sorry-free (task 141 resolved). 6 TruthLemma Until/Since sorries remain but are non-critical-path (parametric truth lemma handles via BFMCS coherence).
 - **Mixed case**: 1 sorry — `dd_countermodel_chronicle_mixed_sorry` (task 142)
-- **Full `bx_completeness`**: Blocked by 14 sorries across 4 tasks (139, 140, 141, 142)
+- **Full `bx_completeness`**: Blocked by 6 sorries across 3 tasks (139, 140, 142). Task 141 resolved — not on critical path.
 - **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
 
-**Critical path**: Task 129 (COMPLETED, Reynolds pipeline) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → 141 (canonical truth lemma Until/Since) → 142 (mixed-case countermodel) → sorry-free `bx_completeness`.
+**Critical path**: Task 129 (COMPLETED) → 139 (FO satisfaction) → 140 (truth transfer, succ_cofinal elimination) → 142 (mixed-case countermodel) → sorry-free `bx_completeness`. Task 141 resolved (2 sorries closed, 6 reclassified as non-critical-path).
 
 **Key architectural finding** (task 123, 12+ research rounds): The sorry at `succ_cofinal` represents a genuine limitation of the Burgess chronicle construction under strict (irreflexive) semantics. The constant-MCS gap scenario (Z+Z structure where all MCS labels are identical) is consistent with ALL temporal axioms including Z1 and Prior-UZ. Under strict semantics, `G(φ)→φ` is not valid, so the Sahlqvist canonicity chain breaks for the chronicle's non-standard canonical model. Resolution: task 129 uses a weak/reflexive Henkin canonical model (where Sahlqvist canonicity applies) + Doets compression to Z + model-theoretic transfer back to strict semantics.
 
@@ -41,9 +41,9 @@ mathematically false under irreflexive semantics and cannot be proved.
 - 2 sorries in `Table.lean`: `table`, `table_depth_bound` — task 140
 - Chronicle fallback in Transfer.lean pending truth transfer — task 140
 
-*Canonical model (task 141)*:
-- 6 sorries in `TruthLemma.lean`: Until/Since forward/backward (4) + truth lemma cases (2)
-- 2 sorries in `ReflexiveCanonical.lean`: `reflCanR_linear`, `canS5R_symm`
+*Canonical model (task 141 -- RESOLVED, not on critical path)*:
+- 6 sorries in `TruthLemma.lean`: Until/Since forward/backward (4) + truth lemma cases (2) — non-critical-path, parametric truth lemma handles via BFMCS coherence
+- 0 sorries in `ReflexiveCanonical.lean`: `reflCanR_linear` and `canS5R_symm` closed
 
 *Mixed case (task 142)*:
 - 1 sorry in `ChronicleToCountermodel.lean`: `dd_countermodel_chronicle_mixed_sorry`
