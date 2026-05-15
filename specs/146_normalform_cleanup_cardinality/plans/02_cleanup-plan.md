@@ -63,18 +63,18 @@ This task advances publication quality (ROADMAP Phase 5) by eliminating dead cod
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Delete Dead Code and Update Docstrings [NOT STARTED]
+### Phase 1: Delete Dead Code and Update Docstrings [COMPLETED]
 
 **Goal**: Remove all legacy definitions and update the module docstring to reflect the current state of NormalForm.lean.
 
 **Tasks**:
-- [ ] Delete legacy section header at line 413: `/-! ## Legacy Definitions (to be replaced in Phase 10) -/`
-- [ ] Delete `nf_eval` definition (lines 419-423)
-- [ ] Delete `nf_vector` definition (lines 428-431)
-- [ ] Delete "Additional Instances" section header at line 566: `/-! ## Additional Instances -/`
-- [ ] Delete `normalFormIdx_nonempty` instance (lines 569-571)
-- [ ] Update module docstring (lines 1-34) to remove references to legacy `nf_eval`/`nf_vector` and list the new cardinality theorems that will be added in Phase 2
-- [ ] Run `lake build` to confirm no breakage
+- [x] Delete legacy section header at line 413: `/-! ## Legacy Definitions (to be replaced in Phase 10) -/`
+- [x] Delete `nf_eval` definition (lines 419-423)
+- [x] Delete `nf_vector` definition (lines 428-431)
+- [x] Delete "Additional Instances" section header at line 566: `/-! ## Additional Instances -/`
+- [x] Delete `normalFormIdx_nonempty` instance (lines 569-571)
+- [x] Update module docstring (lines 1-34) to remove references to legacy `nf_eval`/`nf_vector` and list the new cardinality theorems that will be added in Phase 2
+- [x] Run `lake build` to confirm no breakage
 
 **Timing**: 30 minutes
 

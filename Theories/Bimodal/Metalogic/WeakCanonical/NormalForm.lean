@@ -13,7 +13,11 @@ This file provides:
 - `NormalForm`: recursive type mirroring Doets' n-characteristics (Def 1.6.1)
 - `nf_eval_nf`: concrete structural evaluation of normal forms
 - `nf_exists_unique`: each (M, env) satisfies exactly one normal form
+- `nf_agreement_monotone`: normal form agreement is monotone in quantifier depth
 - `doets_lemma_1_1`: the bridge theorem
+- `atomKind_card`: `Fintype.card (AtomKind sig n) = atomCount p n`
+- `normalForm_card`: `Fintype.card (NormalForm sig k n) = nfCount p k n`
+- `normalForm_equiv_fin`: `NormalForm sig k n ≃ NormalFormIdx sig k n`
 
 ## Mathematical Background
 
@@ -25,6 +29,11 @@ For monadic FO over linear orders with p unary predicates:
 - A depth-0 normal form is a truth assignment to these atoms.
 - At depth k+1, a normal form extends the atom assignment with a specification
   of which depth-k normal forms (with one extra variable) are existentially realized.
+
+The cardinality theorems establish that `Fintype.card (NormalForm sig k n) = nfCount p k n`,
+confirming the counting function in `MonadicFO.lean` correctly enumerates normal forms.
+The equivalence `normalForm_equiv_fin` provides the bijection between the inductive
+`NormalForm` type and the Fin-based `NormalFormIdx` type.
 
 ## References
 
@@ -410,26 +419,6 @@ theorem nf_agreement_monotone {sig : MonadicSignature} :
             N (Fin.cons y env_N) h_agree_k'
           exact ⟨y, (h_agree_m sub_nf).mp hMx_m⟩
 
-/-! ## Legacy Definitions (to be replaced in Phase 10) -/
-
-/--
-Legacy semantic evaluation on NormalFormIdx. Will be replaced when KType
-domain switches from NormalFormIdx to NormalForm.
--/
-noncomputable def nf_eval (sig : MonadicSignature) (k n : Nat)
-    (_idx : NormalFormIdx sig k n) (M : OrderedMonadicStructure sig)
-    (_env : Fin n → M.carrier) : Prop :=
-  let _ := M.carrier
-  Classical.choice (inferInstance : Nonempty Prop)
-
-/--
-Legacy nf_vector. Will be replaced in Phase 10.
--/
-noncomputable def nf_vector (sig : MonadicSignature) (k n : Nat)
-    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier) :
-    NormalFormIdx sig k n → Bool :=
-  fun idx => @decide (nf_eval sig k n idx M env) (Classical.dec _)
-
 /--
 **Doets 1989, Lemma 1.1** (Bridge Theorem):
 Every monadic formula of quantifier depth at most `k` has its truth value
@@ -562,12 +551,5 @@ theorem doets_lemma_1_1 {sig : MonadicSignature} (k : Nat) :
           N (Fin.cons y env_N) nf_y hMx hNy
         exact ⟨x, (outer_ih (n' + 1) α h_alpha M N
           (Fin.cons x env_M) (Fin.cons y env_N) h_agree).mpr hNy_eval⟩
-
-/-! ## Additional Instances -/
-
-/-- `NormalFormIdx sig k n` is nonempty (since nfCount is positive). -/
-instance normalFormIdx_nonempty (sig : MonadicSignature) (k n : Nat) :
-    Nonempty (NormalFormIdx sig k n) :=
-  ⟨⟨0, nfCount_pos _ _ _⟩⟩
 
 end Bimodal.Metalogic.WeakCanonical
