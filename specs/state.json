@@ -732,6 +732,11 @@
           "path": "specs/143_doets_lemma_1_1_normal_form_ktype/reports/02_concrete-nf-eval-design.md",
           "type": "research",
           "summary": "Concrete nf_eval design: inductive NormalForm type, AtomKind enumeration, Doets 1.1 proof structure"
+        },
+        {
+          "path": "specs/143_doets_lemma_1_1_normal_form_ktype/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Partial: finite_types closed, but nf_eval vacuous, doets_lemma_1_1 sorry, k_equiv_monotone sorry. Full build passes."
         }
       ],
       "session_id": "sess_1778862387_6adfd9_t143"
