@@ -573,17 +573,16 @@
     {
       "project_number": 142,
       "project_name": "mixed_case_countermodel",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "high",
       "description": "Resolve the mixed-case sorry in bx_completeness: the case where neither box(F-prime-T) (dense) nor box(U(T,bot)) (discrete) is in the MCS.\n\nThis is the third and final branch of bx_completeness (Completeness.lean:162-166). Currently dd_countermodel_chronicle_mixed_sorry (ChronicleToCountermodel.lean:3327) is a bare sorry. The dense and discrete cases are handled separately — dense uses Cantor iso to Q, discrete uses chronicle + Reynolds pipeline to Z. The mixed case has some box-accessible worlds that are dense and others that are discrete, which cannot coexist in a single BFMCS with a fixed domain type D.\n\nResearch needed to determine the correct approach. Candidates:\n1. Product construction: build separate dense and discrete countermodels, combine via disjoint union or product frame\n2. Ultraproduct: use Los theorem to combine dense and discrete models\n3. BX theorem: derive a contradiction showing the mixed case is inconsistent (i.e., every MCS must be either box-dense or box-discrete)\n4. Enriched frames: use a domain type that accommodates both dense and discrete regions (e.g., Q with discrete subsets)\n5. Reduction: show that the mixed case reduces to one of the other two cases via modal reasoning\n\nTask 122 research report (01_discrete-bfmcs-research.md Section 4) has preliminary analysis. This task requires dedicated research before planning.\n\nDependencies: None structurally, but completing the discrete case (tasks 139, 140) first simplifies the landscape — only this sorry would remain in bx_completeness.\n\nDefinition of done: dd_countermodel_chronicle_mixed_sorry is sorry-free, bx_completeness has no sorryAx dependency, lake build passes.",
-      "dependencies": [
-        140
-      ],
+      "dependencies": [],
       "created": "2026-05-15T01:30:40Z",
-      "last_updated": "2026-05-15T01:30:40Z",
+      "last_updated": "2026-05-15T18:20:58Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1778869234_ab2216_t142"
     },
     {
       "project_number": 143,
@@ -593,8 +592,7 @@
       "priority": "critical",
       "description": "Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical equivalence) and redesign KType with a finite normal form domain, closing ktype_finite and KEquivalenceFramework.finite_types.\n\nThe current KType definition uses an infinite domain ({s : MonadicFormula sig 0 // s.quantifier_depth <= k} -> Bool) which makes Fintype impossible. The correct mathematical object (Doets 1987 Chapter 1, Section 1.6-1.7) is the space of n-characteristics: for each quantifier depth k and variable count n, there are finitely many semantically distinct formulas.\n\nScope:\n\n1. Define nfCount (p : Nat) (k : Nat) (n : Nat) : Nat — the number of semantically distinct monadic FO formulas of quantifier depth <= k with n free variables over a signature with p unary predicates and binary <. Following Doets 1987 Definition 1.6.1:\n   - Depth 0, n vars: 2^(p*n + n*(n-1)/2) atomic types (one per truth assignment to atoms P_i(x_j) and x_i < x_j for i < j)\n   - Depth k+1, n vars: 2^(nfCount p k (n+1)) (one per Boolean combination of depth-k formulas with one additional quantified variable)\n\n2. Define NormalForm (sig : MonadicSignature) (k : Nat) (n : Nat) — a finite type of normal form representatives (Doets n-characteristics / Hintikka formulas). This can be Fin (nfCount sig.preds.card k n) or a custom inductive. Each normal form at depth 0 is a conjunction of literals over the atomic formulas P_i(x_j) and x_i < x_j. Each normal form at depth k+1 specifies, for each depth-k normal form with one extra variable, whether exists-x and forall-x versions hold.\n\n3. Define nf_eval : NormalForm sig k n -> OrderedMonadicStructure sig -> (Fin n -> carrier) -> Prop — the semantic interpretation of each normal form. By structural recursion on the normal form.\n\n4. Prove Doets Lemma 1.1 (the main theorem): for every MonadicFormula sig n with quantifier_depth <= k, there exists a NormalForm sig k n that is semantically equivalent (same truth value in every structure under every assignment). Proof by induction on k:\n   - Base case (k=0): every quantifier-free formula is a Boolean combination of atoms; reduce to DNF over the finitely many atomic types.\n   - Inductive step (k+1): a depth-(k+1) formula has the form Qx.phi where Q is forall/exists and phi has depth <= k with n+1 variables. By IH, phi is equivalent to a normal form in NormalForm sig k (n+1). The quantifier Qx applied to this normal form yields one of the depth-(k+1) normal forms.\n\n5. Redefine KType sig k := NormalForm sig k 0 -> Bool (or equivalently Fin (nfCount sig.preds.card k 0) -> Bool). This is a function from a finite type to Bool, so Fintype (KType sig k) holds by inferInstance.\n\n6. Redefine k_type_of to use the normal form factorization: k_type_of M maps each normal form to whether M satisfies it (via nf_eval).\n\n7. Close ktype_finite: now Fintype (KType sig k) = inferInstance.\n\n8. Close KEquivalenceFramework.finite_types: use Setoid.quotientKerEquivRange + Set.finite_range + Fintype.ofFinite.\n\n9. Delete the old ktype_finite definition (dead code, mathematically impossible as stated).\n\n10. Verify all downstream files compile (IntegerModel, OrderedSum, Transfer).\n\nDefinition of done: ktype_finite is sorry-free (or deleted and replaced by inferInstance), KEquivalenceFramework.finite_types is sorry-free, Doets Lemma 1.1 is stated and proved, lake build passes.\n\nLiterature: Doets 1987 Completeness and Definability thesis (Chapter 1, Sections 1.6-1.7: n-characteristics, Lemma 1.7.1), Doets 1989 Monadic Pi11 Theories (Lemma 1.1).",
       "dependencies": [
-        139,
-        145
+        139
       ],
       "created": "2026-05-15T07:05:05Z",
       "last_updated": "2026-05-15T17:27:53Z",
@@ -648,7 +646,7 @@
     {
       "project_number": 145,
       "project_name": "split_nequivalence_close_k_equiv_monotone",
-      "status": "researched",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "high",
       "description": "Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine KType sig k := NormalForm sig k 0 -> Bool (replacing NormalFormIdx). Redefine k_type_of using nf_eval_nf (replacing vacuous nf_rep). Close k_equiv_monotone sorry via nf_agreement_monotone. Delete nf_rep. Verify finite_types remains closed and lake build passes.",
@@ -656,7 +654,7 @@
         143
       ],
       "created": "2026-05-15T14:30:00Z",
-      "last_updated": "2026-05-15T14:30:00Z",
+      "last_updated": "2026-05-15T18:20:58Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -664,7 +662,8 @@
           "type": "research",
           "summary": "Import graph analysis, extraction plan for MonadicFO.lean, KType redesign strategy, k_equiv_monotone proof path"
         }
-      ]
+      ],
+      "session_id": "sess_1778869234_ab2216_t145"
     },
     {
       "project_number": 146,
@@ -696,7 +695,7 @@
       "description": "Prove the 4 De Bruijn substitution lemmas in NEquivalence.lean left sorry by task 140: insertEnv_zero_eq_cons, insertEnv_succ_cons, insertEnv_finLift, and lift_eval. Pure Fin-arithmetic and function-extensionality proofs. Once proved, weaken_eval becomes sorry-free automatically, unblocking task 148 (table_correctness temporal cases).\n\nDefinition of done: All 4 lemmas sorry-free, weaken_eval sorry-free, lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T15:45:00Z",
-      "last_updated": "2026-05-15T15:45:00Z",
+      "last_updated": "2026-05-15T18:20:58Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -704,7 +703,8 @@
           "type": "research",
           "summary": "Detailed proof strategies for all 4 insertEnv/lift_eval lemmas with Lean tactic guidance"
         }
-      ]
+      ],
+      "session_id": "sess_1778869234_ab2216_t147"
     },
     {
       "project_number": 148,

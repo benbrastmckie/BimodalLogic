@@ -36,15 +36,15 @@ technical_debt:
 ### Phase 1: Sorry-Free `bx_completeness`
 
 **Mixed-case countermodel** (1 sorry):
-1. **142** [NOT STARTED] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed)
+1. **142** [RESEARCHING] — Mixed-case countermodel: resolve the third bx_completeness branch (research needed)
 
 **Table correctness completion** (2 sorries):
 2. **147** [RESEARCHED] — Prove lift_eval and insertEnv lemmas: 4 De Bruijn substitution lemmas (2-3h)
 3. **148** [RESEARCHED] — Complete table_correctness temporal cases: close all_future, all_past, untl, snce (1.5-2h, depends on 147)
 
 **Normal form infrastructure** (Doets Lemma 1.1, non-critical-path):
-4. **143** [PARTIAL] — Doets Lemma 1.1: bridge theorem proved, KType redesign deferred (depends on 145)
-5. **145** [RESEARCHED] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
+4. **143** [PARTIAL] — Doets Lemma 1.1: bridge theorem proved, KType redesign deferred (depends on 139, completed)
+5. **145** [RESEARCHING] — Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone (3-5h, depends on 143)
 6. **146** [RESEARCHED] — NormalForm cleanup and cardinality correspondence proof (1-2h, depends on 145)
 
 **Cleanup**:
@@ -120,7 +120,7 @@ technical_debt:
 - **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Priority**: critical
-- **Dependencies**: 139, 145
+- **Dependencies**: 139
 - **Plan**: [143_doets_lemma_1_1_normal_form_ktype/plans/02_revised-plan.md]
 - **Summary**: Doets Lemma 1.1 bridge theorem proved sorry-free in NormalForm.lean. finite_types closed. KType redesign to NormalForm domain and k_equiv_monotone closure deferred to task 145 (circular import).
 
@@ -141,7 +141,7 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 145. Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 143
@@ -174,10 +174,10 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 142. Mixed-case countermodel for bx_completeness
 - **Effort**: 15-30 hours (research-heavy)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Priority**: high
-- **Dependencies**: 140
+- **Dependencies**: None (architecturally independent of discrete/dense branches)
 
 **Description**: Resolve the mixed-case sorry in `bx_completeness`: the third branch where neither `box(F'T)` (dense) nor `box(U(T,bot))` (discrete) is in the MCS. Currently `dd_countermodel_chronicle_mixed_sorry` (ChronicleToCountermodel.lean:3327) is a bare sorry.
 
