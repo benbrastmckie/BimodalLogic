@@ -34,7 +34,7 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by |
 |------|-------|------------|
-| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,146,148,151,619,949,953,992,998 | -- |
+| 1 | 8,18,60,64,68,95,112,114,116,122,126,127,130,131,142,143,146,148,619,949,953,992,998 | -- |
 | 2 | 20,21,125,128 | 18,116,122 |
 
 **Dependency Tree** (indented = must complete first):
@@ -55,9 +55,8 @@ technical_debt:
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
 142 [RESEARCHED] — Resolve the mixed-case sorry in bx_completeness: the case where n
 143 [PARTIAL] — Prove Doets 1989 Lemma 1.1 (finitely many formulas up to logical 
-146 [RESEARCHING] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
-148 [RESEARCHING] — Close the 4 temporal operator cases of table_correctness (all_fut
-151 [IMPLEMENTING] — Integrate Task Order with /todo and /review commands. Update /tod
+146 [RESEARCHED] — Remove legacy dead code (vacuous nf_eval, nf_vector, normalFormId
+148 [RESEARCHED] — Close the 4 temporal operator cases of table_correctness (all_fut
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
@@ -104,11 +103,12 @@ technical_debt:
 
 ### 151. Task Order command integration and rules
 - **Effort**: 1-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Dependencies**: Task #149
 - **Research**: [151_task_order_command_integration/reports/01_command-integration.md]
 - **Plan**: [151_task_order_command_integration/plans/01_command-integration.md]
+- **Summary**: [151_task_order_command_integration/summaries/01_command-integration-summary.md]
 
 **Description**: Integrate Task Order with `/todo` and `/review` commands. Update `/todo` to regenerate Task Order during archive flow using `generate-task-order.sh`. Update `/review` to use new wave+tree format instead of old pruning logic. Add Task Order sync rules to `state-management.md`. Files: `.claude/commands/todo.md`, `.claude/commands/review.md` (Section 6.5), `.claude/rules/state-management.md`.
 

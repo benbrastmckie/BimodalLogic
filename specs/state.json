@@ -896,14 +896,14 @@
     {
       "project_number": 151,
       "project_name": "task_order_command_integration",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "description": "Integrate Task Order with /todo and /review commands. Update /todo to regenerate Task Order during archive flow using generate-task-order.sh. Update /review to use new wave+tree format. Add Task Order sync rules to state-management.md.",
       "dependencies": [
         149
       ],
       "created": "2026-05-15T12:00:00Z",
-      "last_updated": "2026-05-15T19:22:10Z",
+      "last_updated": "2026-05-15T19:32:24Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -915,6 +915,11 @@
           "path": "specs/151_task_order_command_integration/plans/01_command-integration.md",
           "type": "plan",
           "summary": "Implementation plan with 3 phases: add Task Order regeneration to /todo, rewrite /review Task Order sections for wave+tree format, add sync rules to state-management.md"
+        },
+        {
+          "path": "specs/151_task_order_command_integration/summaries/01_command-integration-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for Task Order command integration across /todo and /review"
         }
       ],
       "session_id": "sess_1778872915_b07bf9",
@@ -932,8 +937,22 @@
             "derived-artifact",
             "integration"
           ]
+        },
+        {
+          "content": "When integrating a script into a command specification, use non-fatal invocation patterns so script failures never block the primary workflow. Place regeneration steps at logical boundaries (post-archive, post-vault-renumber) rather than mid-flow.",
+          "category": "PATTERN",
+          "source_artifact": "specs/151_task_order_command_integration/summaries/01_command-integration-summary.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "non-fatal",
+            "script-integration",
+            "command-spec",
+            "workflow-boundary",
+            "regeneration"
+          ]
         }
-      ]
+      ],
+      "completion_summary": "Wired generate-task-order.sh --update-todo into /todo archive flow (Step 5.8, SKILL Stage 10.5) and replaced /review manual Task Order pruning/insertion (Sections 6.5-6.7) with a single script call; state-management.md Task Order Synchronization documentation was already present from task 150."
     }
   ],
   "next_project_number": 152,
