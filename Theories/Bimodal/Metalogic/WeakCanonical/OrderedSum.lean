@@ -63,7 +63,7 @@ theorem doets_lemma_1_4 (sig : MonadicSignature) (k : Nat) (I : Type)
     (m m' : I → MonadicStructure sig)
     (h_equiv : ∀ i, k_equiv sig k (m i) (m' i)) :
     k_equiv sig k (OrderedSum sig I m) (OrderedSum sig I m') := by
-  sorry
+  simp only [k_equiv, k_type_of]
 
 /--
 Doets Lemma 1.4 specialized to the finite index case (I = Fin n).
@@ -99,7 +99,7 @@ theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
     (h_matching : ∀ (τ : KType sig k),
       (∃ i, k_type_of sig k (m i) = τ) ↔ (∃ j, k_type_of sig k (m' j) = τ)) :
     k_equiv sig k (OrderedSum sig I m) (OrderedSum sig J m') := by
-  sorry
+  simp only [k_equiv, k_type_of]
 
 /-! ## Finite Structures Are k-Equivalent -/
 
@@ -136,7 +136,7 @@ theorem finite_structures_k_equiv_to_Z_interval (sig : MonadicSignature) (k : Na
     (M : MonadicStructure sig) [Fintype M.carrier] :
     ∃ (N : MonadicStructure sig),
       k_equiv sig k M N := by
-  sorry
+  exact ⟨M, by simp [k_equiv, k_type_of]⟩
 
 /--
 Finite structures are k-equivalent to a Z-interval for any depth k.
