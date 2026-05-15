@@ -737,9 +737,49 @@
           "summary": "Detailed proof sketches for all 4 temporal cases with helper lemma strategies and pipeline cleanup"
         }
       ]
+    },
+    {
+      "project_number": 149,
+      "project_name": "redesign_task_order_format",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Redesign the Task Order section format in TODO.md. Replace flat category lists with dependency wave table and indented dependency tree format. Create generate-task-order.sh script to regenerate Task Order from state.json dependency graph. Update task-order-format.md spec with new wave+tree format definition.",
+      "dependencies": [],
+      "created": "2026-05-15T12:00:00Z",
+      "last_updated": "2026-05-15T12:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 150,
+      "project_name": "task_order_auto_sync",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Add automatic Task Order synchronization. Update update-task-status.sh to auto-prune completed tasks from Task Order. Update /task command to auto-insert new tasks into Task Order with correct dependencies. Add sync validation logic to detect and auto-correct drift between Task Order status markers and state.json.",
+      "dependencies": [
+        149
+      ],
+      "created": "2026-05-15T12:00:00Z",
+      "last_updated": "2026-05-15T12:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 151,
+      "project_name": "task_order_command_integration",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Integrate Task Order with /todo and /review commands. Update /todo to regenerate Task Order during archive flow using generate-task-order.sh. Update /review to use new wave+tree format. Add Task Order sync rules to state-management.md.",
+      "dependencies": [
+        149
+      ],
+      "created": "2026-05-15T12:00:00Z",
+      "last_updated": "2026-05-15T12:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 149,
+  "next_project_number": 152,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 145
+next_project_number: 152
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -90,6 +90,36 @@ technical_debt:
 - **114** [NOT STARTED] — Plan-compliance rule (meta)
 
 ## Tasks
+
+### 149. Redesign Task Order format and generation script
+- **Effort**: 3-6 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: None
+
+**Description**: Redesign the Task Order section format in TODO.md. Replace flat category lists with dependency wave table and indented dependency tree format. Create `generate-task-order.sh` script to regenerate Task Order from state.json dependency graph. Update `task-order-format.md` spec with new wave+tree format definition. Files: `.claude/context/formats/task-order-format.md` (redesign), `.claude/scripts/generate-task-order.sh` (new).
+
+---
+
+### 150. Task Order auto-pruning and auto-insertion
+- **Effort**: 3-6 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: Task #149
+
+**Description**: Add automatic Task Order synchronization. Update `update-task-status.sh` to auto-prune completed tasks from Task Order when status is set to [COMPLETED]. Update `/task` command to auto-insert new tasks into Task Order with correct dependencies. Add sync validation logic to detect and auto-correct drift between Task Order status markers and state.json. Files: `.claude/scripts/update-task-status.sh`, `.claude/commands/task.md`.
+
+---
+
+### 151. Task Order command integration and rules
+- **Effort**: 1-3 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: Task #149
+
+**Description**: Integrate Task Order with `/todo` and `/review` commands. Update `/todo` to regenerate Task Order during archive flow using `generate-task-order.sh`. Update `/review` to use new wave+tree format instead of old pruning logic. Add Task Order sync rules to `state-management.md`. Files: `.claude/commands/todo.md`, `.claude/commands/review.md` (Section 6.5), `.claude/rules/state-management.md`.
+
+---
 
 ### 147. Prove lift_eval and insertEnv De Bruijn substitution lemmas
 - **Effort**: 2-3 hours
