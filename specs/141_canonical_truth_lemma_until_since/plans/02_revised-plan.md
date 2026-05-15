@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Documentation Cleanup [NOT STARTED]
+### Phase 2: Documentation Cleanup [COMPLETED]
 
 **Goal**: Fix all stale comments, ghost references, and incorrect sorry claims in TruthLemma.lean. Add non-critical-path documentation to the 6 Until/Since sorries.
 
