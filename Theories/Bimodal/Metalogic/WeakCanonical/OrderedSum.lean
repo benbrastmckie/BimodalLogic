@@ -4,18 +4,16 @@ import Bimodal.Metalogic.WeakCanonical.NEquivalence
 # Ordered Sum Theorems for Monadic Structures
 
 Contains the key theorems about ordered sums of monadic structures,
-building on the `OrderedSum` definition from NEquivalence.lean.
+building on definitions from NEquivalence.lean.
 
 ## Key theorems
 - `doets_lemma_1_4`: ordered sum preserves k-equivalence (via KEquivalenceFramework)
 - `doets_lemma_1_5`: type-matching sum preserves k-equivalence (deferred)
-- `finite_structures_k_equiv_to_Z_interval`: any finite ordered monadic structure
-  is k-equivalent to some structure
 
 ## Status
 - `doets_lemma_1_4`: sorried (depends on KEquivalenceFramework.sum_preservation)
-- `doets_lemma_1_5`: sorried (bypassed in discrete case by one_class argument)
-- `finite_structures_k_equiv_to_Z_interval`: sorried (requires genuine k-equiv reasoning)
+- `doets_lemma_1_5`: sorried (bypassed in discrete case by one_class argument).
+  Not on discrete completeness critical path. Required only for dense case (future work).
 
 ## References
 - Doets 1989, Lemmas 1.4, 1.5: `literature/Doets_1989_Monadic_Pi11_Theories.md`
@@ -52,9 +50,10 @@ theorem doets_lemma_1_4 (sig : MonadicSignature) (k : Nat) (I : Type) [LinearOrd
 Doets Lemma 1.5: If two ordered sums have matching k-type distributions,
 they are k-equivalent.
 
-**Status**: Sorried. Only needed for the general (dense) case.
-Bypassed in the discrete case by the one_class argument.
--- TODO: Only needed if dense completeness is pursued.
+**Status**: Sorried. Not on discrete completeness critical path.
+Required only for dense case (future work). Bypassed in the discrete case
+by the one_class argument.
+-- TODO [Task 143+]: Only needed if dense completeness is pursued.
 -/
 theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
     [LinearOrder I] [LinearOrder J]
@@ -70,27 +69,8 @@ theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
         carrier_order := sorry } := by
   sorry
 
-/-! ## Finite Structures Are k-Equivalent -/
-
-/--
-Every finite ordered monadic structure is k-equivalent to some structure.
-
-**Status**: Sorried. Requires genuine k-equivalence reasoning
-(finite decomposition into ordered sum + doets_lemma_1_4).
--- TODO: Prove once sum_preservation is available.
--/
-theorem finite_structures_k_equiv_to_Z_interval (sig : MonadicSignature) (k : Nat)
-    (M : OrderedMonadicStructure sig) [Fintype M.carrier] :
-    ∃ (N : OrderedMonadicStructure sig),
-      k_equiv sig k M N := by
-  exact ⟨M, rfl⟩
-
-/--
-Finite structures are k-equivalent to a Z-interval for any depth k.
--/
-theorem finite_structures_k_equiv_for_all_k (sig : MonadicSignature)
-    (M : OrderedMonadicStructure sig) [Fintype M.carrier] :
-    ∀ (k : Nat), ∃ (N : OrderedMonadicStructure sig), k_equiv sig k M N := by
-  intro k; exact finite_structures_k_equiv_to_Z_interval sig k M
+-- NOTE: `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k`
+-- were archived to Theories/Bimodal/Boneyard/VacuousKEquiv.lean. They proved only
+-- reflexivity (⟨M, rfl⟩) rather than genuine Z-interval equivalence.
 
 end Bimodal.Metalogic.WeakCanonical

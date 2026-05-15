@@ -43,10 +43,6 @@ structure ZIntervalStructure (sig : MonadicSignature) where
   /-- Predicate interpretations on the interval -/
   interp (p : sig.preds) : ℤ → Prop
 
-/-- The carrier of a Z-interval: elements of ℤ within the bounds. -/
-def ZIntervalStructure.carrierSet {sig : MonadicSignature} (Z : ZIntervalStructure sig) : Set ℤ :=
-  {n : ℤ | (∀ l, Z.lo = some l → l ≤ n) ∧ (∀ h, Z.hi = some h → n ≤ h)}
-
 /-- Convert a Z-interval structure to a monadic structure. -/
 def ZIntervalStructure.toMonadic (sig : MonadicSignature) (Z : ZIntervalStructure sig) :
     MonadicStructure sig where
@@ -59,13 +55,6 @@ def ZIntervalStructure.toOrdered (sig : MonadicSignature) (Z : ZIntervalStructur
   carrier := ℤ
   interp := Z.interp
   carrier_order := inferInstance
-
-/-- A `ZStructure` (full ℤ) is a special case of `ZIntervalStructure`. -/
-def ZStructure.toZInterval (sig : MonadicSignature) (Z : ZStructure sig) :
-    ZIntervalStructure sig where
-  lo := none
-  hi := none
-  interp := Z.interp
 
 /-! ## Good Structures -/
 

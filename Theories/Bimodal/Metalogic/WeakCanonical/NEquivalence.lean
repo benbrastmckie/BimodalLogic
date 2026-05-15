@@ -1,7 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.ReflexiveCanonical
 import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Fin.VecNotation
 
 /-!
 # n-Equivalence and Monadic Sentences for Z-Model Construction
@@ -180,22 +179,6 @@ theorem subinterval_two_element_finite (sig : MonadicSignature) (M : OrderedMona
   haveI : Fintype (M.subinterval sig a (Order.succ a)).carrier := h_fintype
   infer_instance
 
-/-! ## Ordered Sum -/
-
-/--
-Ordered sum of monadic structures over a signature `sig`, indexed by a type `I`.
-The carrier is the disjoint union `Sigma i, (M i).carrier`.
-Predicate interpretations lift component-wise.
-
-Note: This defines only the `MonadicStructure` aspect; the lexicographic
-order is not part of this definition but would be added for full Tarski
-semantics (deferred).
--/
-def OrderedSum (sig : MonadicSignature) (I : Type) (M : I → MonadicStructure sig) :
-    MonadicStructure sig where
-  carrier := Sigma fun (i : I) => (M i).carrier
-  interp p := fun x => (M x.1).interp p x.2
-
 /-! ## Z-Structure: Integer-Based Monadic Structures -/
 
 /--
@@ -333,27 +316,6 @@ class KEquivalenceFramework (sig : MonadicSignature) : Type 1 where
         interp := fun p x => (ms' x.1).interp p x.2
         carrier_order := sorry }
 
-/-! ## Finiteness of Depth-Bounded Formulas -/
-
--- Placeholder for Phase 3: Fintype instance for depth-bounded formulas.
--- This will be proved by induction on k.
-
-/--
-Finiteness of k-types: for a given finite signature, there are finitely many
-k-types for any fixed k. This follows because:
-1. `{s : MonadicFormula sig 0 // s.quantifier_depth ≤ k}` is a `Fintype` (Doets 1989, Lemma 1.1)
-2. `KType sig k = {depth ≤ k sentences} → Bool` is finite via `Fintype.Pi.fintype`
-
-**Status**: Proved in Phase 3 (depends on Fintype for depth-bounded formulas).
--/
--- TODO: Requires Doets 1989 Lemma 1.1 (finitely many semantically distinct
--- depth-bounded formulas). The domain {s // s.quantifier_depth ≤ k} is syntactically
--- infinite (unbounded not/and nesting), so Fintype requires a quotient by
--- logical equivalence. Deferred to follow-up task.
-noncomputable def ktype_finite (sig : MonadicSignature) (k : Nat) :
-    Fintype (KType sig k) := by
-  sorry
-
 /-! ## Default KEquivalenceFramework Instance -/
 
 /--
@@ -375,9 +337,18 @@ noncomputable instance (sig : MonadicSignature) : KEquivalenceFramework sig wher
   equiv_monotone := by
     intro k m h M N h_equiv
     exact k_equiv_monotone sig h h_equiv
+  -- TODO [Task 143+]: finite_types requires Doets 1989 Lemma 1.1 (finitely many
+  -- semantically distinct depth-bounded formulas). The domain
+  -- {s // s.quantifier_depth ≤ k} is syntactically infinite (unbounded not/and nesting),
+  -- so Fintype requires a quotient by logical equivalence and then proving the quotient
+  -- is finite via finite normal forms. This needs KType redefinition with finite normal
+  -- form domain (Doets n-characteristics). Estimated 6-9 hours of work.
   finite_types k := by
     sorry
-  -- TODO: Requires EF-game formalization (Doets Lemma 1.4). Deferred to follow-up task.
+  -- TODO [Task 143+]: sum_preservation requires EF-game formalization (Doets Lemma 1.4).
+  -- The entire Reynolds pipeline (KEquivalenceFramework -> Transfer -> Z-model) is
+  -- bypassed in the discrete case by the chronicle fallback in Transfer.lean.
+  -- Only needed if the Reynolds pipeline is activated for the general (dense) case.
   sum_preservation k I _ ms ms' h := by
     sorry
 

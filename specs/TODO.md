@@ -97,7 +97,7 @@ technical_debt:
 
 ### 143. Doets Lemma 1.1: normal form KType redesign with finite domain
 - **Effort**: 6-9 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Priority**: critical
 - **Dependencies**: 139
@@ -119,9 +119,10 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 144. Fix existsTask_transitive (1-line critical path sorry)
 - **Effort**: 0.5 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: critical
+- **Plan**: [144_fix_existsTask_transitive/plans/01_fix-existsTask-transitive.md]
 
 **Description**: Fix the one-line sorry in `existsTask_transitive` (`Bundle/CanonicalFrame.lean:259`) which propagates into `bx_completeness`. Replace `sorry` with `DerivationTree.axiom [] _ (Axiom.temp_4 phi)`. Verify with `#print axioms bx_completeness` and `lake build`.
 

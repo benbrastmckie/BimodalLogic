@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: reflCanR_linear via BX11 [NOT STARTED]
+### Phase 1: reflCanR_linear via BX11 [IN PROGRESS]
 
 **Goal**: Close the `reflCanR_linear` sorry at ReflexiveCanonical.lean:144. This theorem states that the forward temporal cone from any MCS is linearly ordered. While it has no current downstream consumer, it is mathematically correct and completes the canonical frame properties.
 

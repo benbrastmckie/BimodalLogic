@@ -21,7 +21,7 @@ bimodal logic, bypassing the chronicle construction's `succ_cofinal` sorry.
 3. **FrameProperties**: Z1, Prior-UZ/SZ, seriality in canonical frame
 4. **ChronicleExtraction**: Extract chronicle as prior structure (Corollary 3)
 5. **NEquivalence**: Monadic FO framework, OrderedMonadicStructure, KEquivalenceFramework
-6. **OrderedSum**: Doets Lemma 1.4/1.5 (finite case wrapper)
+6. **OrderedSum**: Doets Lemma 1.4/1.5 (ordered sum preservation)
 7. **Table**: Temporal-to-monadic table translation (deferred)
 8. **IntegerModel**: Good/very good, contemp_equiv, one-class, chronicle_is_good
 9. **Transfer**: `doets_countermodel_discrete` — the main theorem
