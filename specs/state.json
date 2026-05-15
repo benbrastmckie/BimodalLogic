@@ -652,7 +652,7 @@
     {
       "project_number": 145,
       "project_name": "split_nequivalence_close_k_equiv_monotone",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "description": "Split NEquivalence.lean into MonadicFO.lean (pure FO definitions) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine KType sig k := NormalForm sig k 0 -> Bool (replacing NormalFormIdx). Redefine k_type_of using nf_eval_nf (replacing vacuous nf_rep). Close k_equiv_monotone sorry via nf_agreement_monotone. Delete nf_rep. Verify finite_types remains closed and lake build passes.",
@@ -660,7 +660,7 @@
         143
       ],
       "created": "2026-05-15T14:30:00Z",
-      "last_updated": "2026-05-15T18:47:22Z",
+      "last_updated": "2026-05-15T18:50:36Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -672,6 +672,11 @@
           "path": "specs/145_split_nequivalence_close_k_equiv_monotone/reports/02_deep-extraction-analysis.md",
           "type": "research",
           "summary": "Deep extraction: exact line ranges, import requirements, k_equiv_monotone proof via decide_eq_decide, 6-phase implementation order"
+        },
+        {
+          "path": "specs/145_split_nequivalence_close_k_equiv_monotone/plans/01_split-plan.md",
+          "type": "plan",
+          "summary": "4 phases, 3h: extract MonadicFO.lean, rewire imports, redesign KType, close k_equiv_monotone"
         }
       ],
       "session_id": "sess_1778870829_ddb3fc_t145"

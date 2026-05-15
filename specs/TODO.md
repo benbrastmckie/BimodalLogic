@@ -174,11 +174,12 @@ The current `KType` uses an infinite domain (`{s : MonadicFormula sig 0 // s.qua
 
 ### 145. Split NEquivalence.lean, redesign KType to NormalForm, close k_equiv_monotone
 - **Effort**: 3-5 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 143
 - **Research**: [specs/145_split_nequivalence_close_k_equiv_monotone/reports/01_split-design.md]
+- **Plan**: [145_split_nequivalence_close_k_equiv_monotone/plans/01_split-plan.md]
 
 **Description**: Split NEquivalence.lean into MonadicFO.lean (pure FO definitions: MonadicSignature, MonadicFormula, eval, atomCount, nfCount, NormalFormIdx) and NEquivalence.lean (k-equiv framework). Break the circular import so NEquivalence.lean can import NormalForm.lean. Redefine `KType sig k := NormalForm sig k 0 -> Bool` (replacing NormalFormIdx). Redefine `k_type_of` using `nf_eval_nf` (replacing vacuous `nf_rep`). Close `k_equiv_monotone` sorry via `nf_agreement_monotone`. Delete `nf_rep`. Verify `finite_types` remains closed and `lake build` passes.
 

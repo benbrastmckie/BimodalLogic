@@ -1,7 +1,7 @@
 # Implementation Plan: Redesign Task Order Format
 
 - **Task**: 149 - Redesign Task Order format and generation script
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/149_redesign_task_order_format/reports/01_format-redesign-research.md
@@ -67,20 +67,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Write New Format Spec and Create Generation Script [NOT STARTED]
+### Phase 1: Write New Format Spec and Create Generation Script [COMPLETED]
 
 **Goal**: Define the new wave+tree format in `task-order-format.md` and create the `generate-task-order.sh` script that generates the Task Order section from state.json.
 
 **Tasks**:
-- [ ] Rewrite `.claude/context/formats/task-order-format.md` with the new wave table + dependency tree format spec, preserving the section header sentinel (`## Task Order`) and timestamp/goal patterns
-- [ ] Include parsing patterns table for the new format elements (wave table rows, tree entries with indent levels, tree connector `└─`)
-- [ ] Include generation template showing the complete section structure
-- [ ] Create `.claude/scripts/generate-task-order.sh` implementing: (a) extract non-terminal tasks from state.json, (b) clean dependencies (remove terminal deps), (c) Kahn's algorithm to compute waves, (d) build wave table, (e) build indented dependency tree via DFS from roots, (f) section replacement in TODO.md
-- [ ] Support CLI flags: `--print` (stdout only), `--update-todo FILE STATE` (replace section in file), `--goal "text"` (override goal line)
-- [ ] Adapt `topological_sort()` logic from `update-recommended-order.sh` for wave computation (assign wave numbers instead of just ordering)
-- [ ] Handle diamond dependencies in tree: use a visited set and add `(also blocks N)` annotation on revisited nodes
-- [ ] Handle the Goal line preservation: read existing Goal from TODO.md on `--update-todo`; only override if `--goal` flag is passed
-- [ ] Make script executable with proper shebang and error handling
+- [x] Rewrite `.claude/context/formats/task-order-format.md` with the new wave table + dependency tree format spec, preserving the section header sentinel (`## Task Order`) and timestamp/goal patterns *(completed)*
+- [x] Include parsing patterns table for the new format elements (wave table rows, tree entries with indent levels, tree connector `└─`) *(completed)*
+- [x] Include generation template showing the complete section structure *(completed)*
+- [x] Create `.claude/scripts/generate-task-order.sh` implementing: (a) extract non-terminal tasks from state.json, (b) clean dependencies (remove terminal deps), (c) Kahn's algorithm to compute waves, (d) build wave table, (e) build indented dependency tree via DFS from roots, (f) section replacement in TODO.md *(completed)*
+- [x] Support CLI flags: `--print` (stdout only), `--update-todo FILE STATE` (replace section in file), `--goal "text"` (override goal line) *(completed)*
+- [x] Adapt `topological_sort()` logic from `update-recommended-order.sh` for wave computation (assign wave numbers instead of just ordering) *(completed)*
+- [x] Handle diamond dependencies in tree: use a visited set and add `(also blocks N)` annotation on revisited nodes *(completed: uses "(see above)" annotation)*
+- [x] Handle the Goal line preservation: read existing Goal from TODO.md on `--update-todo`; only override if `--goal` flag is passed *(completed)*
+- [x] Make script executable with proper shebang and error handling *(completed)*
 
 **Timing**: 2.5 hours
 
