@@ -74,17 +74,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: finite_structures_good (Doets Theorem 1.1) [NOT STARTED]
+### Phase 1: finite_structures_good (Doets Theorem 1.1) [COMPLETED]
 
 **Goal**: Close the foundational sorry proving every finite ordered monadic structure is k-equivalent to a Z-interval structure.
 
 **Tasks**:
-- [ ] Define predicate extension function: for finite M on [0, n-1], extend predicates to all of Z by replicating endpoint values outside the interval
-- [ ] Construct `ZIntervalStructure sig` with `lo = some 0`, `hi = some (n-1)`, `interp` matching M on [0, n-1] and endpoint pattern outside
-- [ ] Prove k-equivalence via normal form agreement: show `nf_eval_nf M k 0 Fin.elim0 nf <-> nf_eval_nf (Z.toOrdered sig) k 0 Fin.elim0 nf` for all `nf : NormalForm sig k 0`
-- [ ] The key insight: for depth-0 normal forms, atoms agree on corresponding elements; for depth-(k+1), witnesses outside the interval in Z.toOrdered map to the nearest endpoint in M (which has the same predicates), preserving the existential realization pattern
-- [ ] Close the sorry in `IntegerModel.lean:90`
-- [ ] Verify `lake build` passes with `finite_structures_good` sorry-free
+- [x] **Task 1.1**: Define predicate extension function *(deviation: altered — instead of predicate extension on all of Z, redesigned `ZIntervalStructure.toOrdered` to use the actual interval as carrier, making the proof a direct order-isomorphism argument)*
+- [x] **Task 1.2**: Construct `ZIntervalStructure sig` with `lo = some 0`, `hi = some (n-1)`, `interp` matching M on [0, n-1] via `monoEquivOfFin` isomorphism
+- [x] **Task 1.3**: Prove k-equivalence via `k_equiv_of_iso` theorem *(deviation: altered — used order-isomorphism preservation of NF evaluation instead of normal form agreement argument, since carrier is now the actual interval)*
+- [x] **Task 1.4**: The key insight: `k_equiv_of_iso` proves that order-isomorphic structures with matching predicates have identical k-types by induction on quantifier depth
+- [x] **Task 1.5**: Close the sorry in `IntegerModel.lean` (was line 90, now moved due to new code above)
+- [x] **Task 1.6**: Verify `lake build` passes with `finite_structures_good` sorry-free — verified via `lean_verify`, axioms: propext, Classical.choice, Quot.sound
 
 **Timing**: 4 hours
 
