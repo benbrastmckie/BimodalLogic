@@ -241,6 +241,50 @@ theorem finite_structures_good (sig : MonadicSignature) (k : Nat)
   simp only [h_toNat]
   simp [OrderIso.apply_symm_apply]
 
+/-! ## Succ-Iteration Monotonicity -/
+
+/--
+Iterated successor is monotone: if m ≤ n then succ^m(a) ≤ succ^n(a).
+-/
+private theorem succ_iterate_le {α : Type} [Preorder α] [SuccOrder α]
+    (a : α) {m n : Nat} (h : m ≤ n) :
+    Order.succ^[m] a ≤ Order.succ^[n] a := by
+  induction n with
+  | zero => simp [Nat.le_zero.mp h]
+  | succ n ih =>
+    rcases Nat.eq_or_lt_of_le h with rfl | h_lt
+    · exact le_refl _
+    · exact le_trans (ih (Nat.le_of_lt_succ h_lt))
+        (by rw [Function.iterate_succ']; exact Order.le_succ _)
+
+/--
+In a succ-Archimedean linear order, every bounded interval [a, b] is finite.
+The carrier {x // a ≤ x ∧ x ≤ b} is covered by the finite set
+{succ^0(a), succ^1(a), ..., succ^n(a)} where succ^n(a) = b.
+-/
+theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature)
+    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
+    [IsSuccArchimedean M.carrier]
+    (a b : M.carrier) (hab : a ≤ b) :
+    Finite (M.subinterval sig a b).carrier := by
+  obtain ⟨n, hn⟩ := IsSuccArchimedean.exists_succ_iterate_of_le hab
+  -- Build surjection from Fin (n+1) onto the carrier
+  let f : Fin (n + 1) → (M.subinterval sig a b).carrier :=
+    fun i => ⟨Order.succ^[i.val] a, succ_iterate_le a (Nat.zero_le _),
+      hn ▸ succ_iterate_le a (Nat.le_of_lt_succ i.isLt)⟩
+  have hf_surj : Function.Surjective f := by
+    intro ⟨x, hax, hxb⟩
+    obtain ⟨m, hm⟩ := IsSuccArchimedean.exists_succ_iterate_of_le hax
+    by_cases hle : m ≤ n
+    · exact ⟨⟨m, Nat.lt_succ_of_le hle⟩, Subtype.ext hm⟩
+    · push_neg at hle
+      have h_n_le_m : n ≤ m := le_of_lt hle
+      have h_le : Order.succ^[n] a ≤ Order.succ^[m] a := succ_iterate_le a h_n_le_m
+      have h_eq : x = Order.succ^[n] a :=
+        le_antisymm (hn ▸ hxb) (le_trans h_le (le_of_eq hm))
+      exact ⟨⟨n, Nat.lt_succ_of_le le_rfl⟩, Subtype.ext (h_eq ▸ rfl)⟩
+  exact Finite.of_surjective f hf_surj
+
 /-! ## Contemporaneous Equivalence -/
 
 /--
@@ -252,14 +296,16 @@ def contemp_equiv (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
   very_good sig k (M.subinterval sig (min a b) (max a b))
 
 /--
-~M is an equivalence relation on M.carrier.
+~M is an equivalence relation on M.carrier (for succ-Archimedean orders).
 
 - **Reflexivity**: M.subinterval(a,a) is singleton, hence finite, hence good.
 - **Symmetry**: min/max are symmetric.
-- **Transitivity**: Requires sum_preservation; sorried.
+- **Transitivity**: Every bounded interval is finite (by IsSuccArchimedean),
+  hence every subinterval is good (by finite_structures_good).
 -/
 theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
-    (M : OrderedMonadicStructure sig) :
+    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
+    [IsSuccArchimedean M.carrier] :
     Equivalence (contemp_equiv sig k M) where
   refl a := by
     simp only [contemp_equiv, min_self, max_self]
@@ -272,12 +318,17 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
   symm {a b} hab := by
     simp only [contemp_equiv] at hab ⊢
     rwa [min_comm, max_comm]
-  -- TODO: Transitivity requires genuine very_good argument.
-  -- Deferred: depends on sum_preservation for combining subintervals.
-  trans {a b c} hab hbc := by
+  trans {a b c} _hab _hbc := by
     simp only [contemp_equiv, very_good] at *
     intro x y hxy
-    sorry
+    -- The outer subinterval [min a c, max a c] is finite by IsSuccArchimedean
+    haveI h_outer : Finite (M.subinterval sig (min a c) (max a c)).carrier :=
+      subinterval_finite_of_succ_archimedean sig M _ _ min_le_max
+    haveI : Fintype (M.subinterval sig (min a c) (max a c)).carrier := Fintype.ofFinite _
+    -- The nested subinterval inherits Fintype from the outer one
+    haveI : Fintype ((M.subinterval sig (min a c) (max a c)).subinterval sig x y).carrier :=
+      Subtype.fintype _
+    exact finite_structures_good sig k _
 
 /-! ## No Gaps in Discrete Orders -/
 
@@ -326,7 +377,8 @@ without endpoints.
 -/
 theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
-    [NoMaxOrder M.carrier] [NoMinOrder M.carrier] :
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    [IsSuccArchimedean M.carrier] :
     ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
   by_contra h_not_all
   push_neg at h_not_all

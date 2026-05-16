@@ -99,6 +99,8 @@ structure ChronicleAsPriorModel where
   domain_succ : SuccOrder domain := by infer_instance
   /-- Domain is discrete (has immediate predecessors) -/
   domain_pred : PredOrder domain := by infer_instance
+  /-- Domain is succ-Archimedean: succ-iteration reaches any larger element -/
+  domain_succ_archimedean : IsSuccArchimedean domain := by infer_instance
   /-- Domain is nonempty (contains 0) -/
   domain_nonempty : Nonempty domain := by infer_instance
   /-- The point representing the root MCS -/
@@ -124,6 +126,7 @@ attribute [instance] ChronicleAsPriorModel.domain_no_max
 attribute [instance] ChronicleAsPriorModel.domain_no_min
 attribute [instance] ChronicleAsPriorModel.domain_succ
 attribute [instance] ChronicleAsPriorModel.domain_pred
+attribute [instance] ChronicleAsPriorModel.domain_succ_archimedean
 attribute [instance] ChronicleAsPriorModel.domain_nonempty
 
 /-! ## Extraction from the Chronicle -/
@@ -147,6 +150,7 @@ noncomputable def extract_chronicle_as_prior (A : Set Formula) (h_mcs : SetMaxim
     domain := LimitDomSubtype A h_mcs
     domain_succ := limitDomSubtype_succOrder A h_mcs h_discrete
     domain_pred := limitDomSubtype_predOrder A h_mcs h_discrete
+    domain_succ_archimedean := limitDomSubtype_isSuccArchimedean A h_mcs h_discrete
     root_point := ⟨0, zero_mem_limit_dom A h_mcs⟩
     fmcs := fun t => limit_f A h_mcs t.val
     fmcs_is_mcs := fun t => limit_c0 A h_mcs t.val t.property

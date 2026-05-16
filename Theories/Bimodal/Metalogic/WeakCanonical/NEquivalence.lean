@@ -1207,6 +1207,15 @@ instance chronicleAsMonadicStructure_pred (M : ChronicleAsPriorModel)
   M.domain_pred
 
 /--
+The chronicle-as-monadic-structure satisfies IsSuccArchimedean
+(inherited from ChronicleAsPriorModel).
+-/
+instance chronicleAsMonadicStructure_succ_archimedean (M : ChronicleAsPriorModel)
+    (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
+    IsSuccArchimedean (chronicleAsMonadicStructure M sig atomMap).carrier :=
+  M.domain_succ_archimedean
+
+/--
 The chronicle-as-monadic-structure is nonempty
 (inherited from ChronicleAsPriorModel).
 -/
