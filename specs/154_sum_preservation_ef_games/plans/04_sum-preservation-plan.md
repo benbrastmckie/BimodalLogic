@@ -121,13 +121,26 @@ Phases are sequential: each phase depends on the previous one.
 
 ---
 
-### Phase 2: Rewrite sum_nf_agree with Bootstrap Approach [NOT STARTED]
+### Phase 2: Rewrite sum_nf_agree with Bootstrap Approach [BLOCKED]
 
 **Goal**: Delete the current broken `sum_nf_agree` (lines 153-469) and replace with the bootstrap sentence-level proof, including the lifting lemma. Fix pre-existing build errors (stack overflow, type mismatches) by using smaller, well-factored definitions.
 
+**BLOCKER** (Phase 2):
+- **What failed**: The bootstrap sentence-level approach (`sum_nf_agree_sentence`) was implemented and compiles with 4 remaining sorries. All 4 sorries are at the same location: the "lifting step" where, given elements `a` in `ms i` and `b` in `ms' i` with matching depth-k 1-var component NFs, we need to show `nf_eval_nf (orderedSum ms) k 1 (Fin.cons ⟨i,a⟩ Fin.elim0) sub_nf ↔ nf_eval_nf (orderedSum ms') k 1 (Fin.cons ⟨i,b⟩ Fin.elim0) sub_nf`.
+- **What was tried**: 
+  1. Direct application of `nf_agreement_from_shared_nf` at the ordered-sum level -- requires showing `⟨i,a⟩` and `⟨i,b⟩` share the same ordered-sum 1-var NF, which is what we're proving.
+  2. Lifting lemma by induction on depth k -- the base case (k=0, pred-only atoms at n=1) works, but the quantifier step at k+1 requires 2-var existential transfer at depth k. This 2-var transfer requires showing that witnesses found via component transfer preserve not just individual NFs but JOINT 2-var NFs including order atoms.
+  3. Using `nf_agreement_monotone` to step down from higher depth -- only steps down in depth, not across variable counts.
+  4. Using the outer sentence-level IH (`ih_k`) -- provides transfer at depth k-1, not depth k (always one level short).
+  5. Extensive analysis of Doets' EF-game argument translated to NF language -- identified that the fundamental issue is going from individual 1-var NF matching to joint multi-var NF matching (the "2-var transfer gap").
+- **Why it's stuck**: The NF framework lacks a mechanism to derive multi-variable NF agreement from individual element matching. Specifically: two elements `a,b` with the same 1-var NF can be in EITHER relative order (a < b or b < a). The 1-var NF doesn't encode order relative to specific other elements. So when extending an environment by a new element found via 1-var component transfer, the order atoms in the extended environment cannot be verified. This is the same fundamental issue that blocked the original `sum_nf_agree` approach (the 4 order atom sorries).
+- **Root cause analysis**: The order atom problem is NOT specific to the bootstrap approach -- it's inherent to ANY NF-based proof that uses 1-var component transfer to find witnesses. The correct approach (following Doets' EF game) requires choosing witnesses via MULTI-var component transfer (preserving order relative to ALL previously-chosen same-component elements). This requires a well-founded recursion on depth that simultaneously handles all variable counts, with witnesses found via the component's depth-k multi-var quantifier transfer (derived by chaining from the component's (k+1)-equivalence).
+- **What is needed**: A well-founded recursive function proving NF agreement for environments constructed by iterated component multi-var transfer, by induction on the NF depth (d decreases, n increases, terminating at d=0 where atoms including order can be verified directly). This is mathematically sound but requires careful Lean formalization of the multi-var component transfer chain and the index-preserving witness construction.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Tasks**:
 
-- [ ] **Delete current sum_nf_agree body**: Remove lines 153-497 (from `private noncomputable def sum_nf_agree` through `sum_preservation_proof`). This eliminates the 4 sorry sites and the pre-existing elaboration errors.
+- [x] **Delete current sum_nf_agree body**: Remove lines 153-497 (from `private noncomputable def sum_nf_agree` through `sum_preservation_proof`). This eliminates the 4 sorry sites and the pre-existing elaboration errors. *(deviation: altered -- replaced with `sum_nf_agree_sentence` bootstrap approach rather than deletion)*
 
 - [ ] **Define `sum_nf_lift_single`**: The core lifting lemma. Given that `a` in `ms i` and `b` in `ms' i` satisfy the same depth-k NFs with 1 variable in their respective components, and given that the ordered sums agree on all depth-m sentence-level NFs for m < k (from the outer IH), show that `(i,a)` and `(i,b)` satisfy the same depth-m NFs (m <= k) with 1 variable in the ordered sum under single-element environments `![⟨i,a⟩]` and `![⟨i,b⟩]`.
 
