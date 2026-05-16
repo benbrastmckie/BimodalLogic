@@ -22,10 +22,6 @@ Prove `sum_preservation` (NEquivalence.lean) and `doets_lemma_1_4` (OrderedSum.l
 
 Plan v4 implemented `sum_nf_agree_sentence` (bootstrap at n=0). It validated: (a) `atomKind_zero_elim` for vacuous base case, (b) component transfer machinery via `nf_characteristic_satisfies` + `nf_eval_unique`, (c) `sum_preservation_proof` delegation. The 4 sorries are all at identical locations: after finding `a`, `b` with matching depth-k 1-var component NFs, the proof cannot derive ordered-sum 1-var NF matching because the quantifier sub-step at n=2 introduces order atoms. Effort calibration: the component transfer and sentence-level scaffolding took ~3 hours and remain valid.
 
-### Roadmap Alignment
-
-This task unblocks the Reynolds pipeline (`sum_preservation` is the sole remaining sorry in the `KEquivalenceFramework` instance), transitively enabling tasks 155.
-
 ## Proof Architecture
 
 ### Root Cause (from report 04)
@@ -95,11 +91,6 @@ private noncomputable def sum_nf_lift_gen (sig : MonadicSignature) :
   intro d; induction d with
   | zero => ... -- atom verification via h_atoms
   | succ d ih => ... -- atom part + quantifier part with component conditional transfer
-
--- Helper: component conditional transfer (extract multi-var transfer from component equiv)
--- This may be factored as a separate lemma or inlined.
--- From component (d+n+1)-equiv at 0 vars, peel to depth-d (r+1)-var transfer
--- for the sub-environment of elements in component i.
 
 -- Existing (modified): sum_nf_agree_sentence calls sum_nf_lift_gen at d=K, n=1
 -- Existing (unchanged): sum_preservation_proof, KEquivalenceFramework instance
