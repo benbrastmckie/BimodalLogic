@@ -1150,14 +1150,14 @@
     {
       "project_number": 154,
       "project_name": "sum_preservation_ef_games",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
       "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-16T15:34:27Z",
+      "last_updated": "2026-05-16T15:54:36Z",
       "researched": "2026-05-16T15:34:27Z",
       "next_artifact_number": 8,
       "artifacts": [
@@ -1242,17 +1242,17 @@
           "summary": "Phase 1+2 BLOCKED: ite-in-types after subst (DecidableEq prevents reduction) + CompData.bound too strict for extension. 10 approaches tested."
         },
         {
-          "path": "specs/154_sum_preservation_ef_games/plans/06_sum-preservation-plan.md",
-          "type": "plan",
-          "summary": "Plan v10: decEq match for ite-in-types blocker, h_bound_ext parameter for bound blocker, 4 phases"
-        },
-        {
           "path": "specs/154_sum_preservation_ef_games/reports/07_team-research.md",
           "type": "research",
           "summary": "Team prototyping: 3 verified patterns (dite+Fin.cast, simp-before-intro, Function.update). Core insight: term-mode dite avoids Decidable.casesOn opacity."
+        },
+        {
+          "path": "specs/154_sum_preservation_ef_games/plans/07_sum-preservation-plan.md",
+          "type": "plan",
+          "summary": "Plan v11: 3 phases using verified dite+Fin.cast+@Fin.cons pattern from research round 7"
         }
       ],
-      "session_id": "sess_1778942548_2fb4d8",
+      "session_id": "sess_1778946658_b3e101",
       "started": "2026-05-16T00:34:56Z"
     },
     {
