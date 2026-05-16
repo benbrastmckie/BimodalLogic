@@ -43,7 +43,7 @@ technical_debt:
 
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track (tasks 9
 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
-155 [NOT STARTED] — Replace the chronicle fallback in Transfer.lean with the full Rey
+155 [RESEARCHED] — Replace the chronicle fallback in Transfer.lean with the full Rey
 
 
 ### Formula Refactor
@@ -99,10 +99,11 @@ technical_debt:
 
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 154
+- **Research**: [specs/155_reynolds_pipeline_activation/reports/01_team-research.md]
 
 **Description**: Replace the chronicle fallback in Transfer.lean with the full Reynolds Theorem 15 pipeline, eliminating `succ_cofinal` from `bx_completeness`. Rather than bridging `ZIntervalStructure` to `TaskFrame` via an adapter, refactor the pipeline to construct a `TaskFrame Int` directly from the Reynolds output. Wire `chronicle_is_good` (unblocked by task 154), `table_correctness` (sorry-free from tasks 147-148), and a direct `TaskFrame` construction into Transfer.lean. Definition of done: `doets_countermodel_discrete` uses Reynolds pipeline, `bx_completeness` has no `sorryAx`, `lake build` passes.
 
