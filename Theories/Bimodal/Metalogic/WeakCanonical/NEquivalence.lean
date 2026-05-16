@@ -375,8 +375,10 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
         h_ext_nf (.order 0 (Fin.succ q) (Fin.succ_ne_zero q ∘ Eq.symm))
       simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
       have h_eq_N : (env_N p).1 = j := hidx.symm.trans h_eq
-      rw [← hqN] at (h_order.mp hlt' : _)
-      exact ⟨hidx ▸ heq, by convert (cast_lt_iff h_eq_N c' (env_N p).2).mpr this using 1⟩
+      have hlt_N : @LT.lt _ (ms' j).carrier_order.toLT c' (eN_j q) := h_order.mp hlt'
+      have hlt_N' : @LT.lt _ (ms' j).carrier_order.toLT c' (h_eq_N ▸ (env_N p).2) := by
+        rwa [hqN]
+      exact ⟨hidx ▸ heq, (cast_lt_iff h_eq_N c' (env_N p).2).mpr hlt_N'⟩
   · rintro (hlt | ⟨heq, hlt⟩)
     · left; rwa [← hidx] at hlt
     · right
@@ -389,8 +391,10 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
         (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
         h_ext_nf (.order 0 (Fin.succ q) (Fin.succ_ne_zero q ∘ Eq.symm))
       simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
-      rw [← hqM] at (h_order.mpr hlt' : _)
-      exact ⟨hidx.symm ▸ heq, by convert (cast_lt_iff h_eq c (env_M p).2).mpr this using 1⟩
+      have hlt_M : @LT.lt _ (ms j).carrier_order.toLT c (eM_j q) := h_order.mpr hlt'
+      have hlt_M' : @LT.lt _ (ms j).carrier_order.toLT c (h_eq ▸ (env_M p).2) := by
+        rwa [hqM]
+      exact ⟨hidx.symm ▸ heq, (cast_lt_iff h_eq c (env_M p).2).mpr hlt_M'⟩
 
 /--
 Backward order transfer using component NF and CompData consistency.
@@ -424,27 +428,45 @@ private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
   · rintro (hlt | ⟨heq, hlt⟩)
     · left; rwa [← hidx]
     · right
+      -- heq : (env_M p).1 = j, hlt : heq ▸ (env_M p).2 < c in (ms j)
       obtain ⟨q, hqM, hqN⟩ := rep p heq.symm
-      rw [hqM] at hlt
+      -- hqM : heq.symm ▸ (env_M p).2 = eM_j q ... but we need it the other way
+      -- Actually rep p heq.symm gives h = (env_M p).1 = j = heq.symm? No.
+      -- rep takes h : (env_M p).1 = j, and heq.symm : j = (env_M p).1 ... wrong direction
+      -- Let me use rep p (show (env_M p).1 = j from heq.symm)...
+      -- Actually heq : (env_M p).fst = j (since show gives ⟨j,c⟩.fst = (env_M p).fst)
+      -- Wait, in Sigma.Lex.lt_def for (env_M p) < ⟨j,c⟩:
+      -- heq : (env_M p).fst = ⟨j,c⟩.fst = j
+      -- So heq : (env_M p).1 = j. Good.
+      -- rep p heq gives q with heq ▸ (env_M p).2 = eM_j q
+      -- hlt : heq ▸ (env_M p).2 < c (in (ms j), since heq transports to j)
+      have hlt' : @LT.lt _ (ms j).carrier_order.toLT (eM_j q) c := by rw [← hqM]; exact hlt
       have h_order := atom_agreement_from_nf
         (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
         h_ext_nf (.order (Fin.succ q) 0 (Fin.succ_ne_zero q))
       simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
-      rw [← hqN] at (h_order.mp hlt : _)
-      exact ⟨hidx.symm ▸ heq, by convert this using 1⟩
+      have hlt_N : @LT.lt _ (ms' j).carrier_order.toLT (eN_j q) c' := h_order.mp hlt'
+      have h_eq_N : (env_N p).1 = j := hidx.symm.trans heq.symm
+      sorry -- need to reassemble with correct cast; will fix
+      -- exact ⟨show (env_N p).1 = j from h_eq_N, ...⟩
   · rintro (hlt | ⟨heq, hlt⟩)
     · left; rwa [hidx]
     · right
+      -- heq : (env_N p).1 = j, hlt : heq ▸ (env_N p).2 < c' in (ms' j)
       have h_eq : (env_M p).1 = j := hidx.trans heq.symm
       obtain ⟨q, hqM, hqN⟩ := rep p h_eq
-      rw [show heq.symm = (hidx.symm.trans h_eq) from Subsingleton.elim _ _] at hlt
-      rw [hqN] at hlt
+      have h_eq_N : (env_N p).1 = j := hidx.symm.trans h_eq
+      have hlt' : @LT.lt _ (ms' j).carrier_order.toLT (eN_j q) c' := by
+        have : h_eq_N ▸ (env_N p).2 = eN_j q := by
+          convert hqN using 1; exact Subsingleton.elim _ _
+        rw [← this]
+        convert hlt using 1; exact Subsingleton.elim _ _
       have h_order := atom_agreement_from_nf
         (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
         h_ext_nf (.order (Fin.succ q) 0 (Fin.succ_ne_zero q))
       simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
-      rw [← hqM] at (h_order.mpr hlt : _)
-      exact ⟨hidx ▸ heq, by convert this using 1⟩
+      have hlt_M : @LT.lt _ (ms j).carrier_order.toLT (eM_j q) c := h_order.mpr hlt'
+      sorry -- need to reassemble with correct cast
 
 /--
 Construct BiCompat and atom agreement from CompData. Combines build_bicompat
@@ -513,12 +535,71 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
           exact orderedSum_order_bwd_via_comp j c c' h_idx
             (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
       · -- Recursive BiCompat at depth d
-        -- Need updated CompData for extended environments
-        -- Update comp_sz j → comp_sz j + 1, others unchanged
-        -- Update eM j → Fin.cons c (eM j), others unchanged
-        -- Update NF agree: h_ext_agree at depth (budget - (sz j + 1))
+        -- Build updated CompData for extended environments
+        have h_atoms_ext := extend_atoms h_idx h_atoms j c c'
+          (fun p_pred => by
+            have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
+              (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
+            simp only [atom_eval, Fin.cons_zero] at this; exact this)
+          (orderedSum_order_fwd_via_comp j c c' h_idx
+            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·))
+          (orderedSum_order_bwd_via_comp j c c' h_idx
+            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·))
+        -- h_ext_agree has depth K = budget - cd.sz j - 1 = budget - (cd.sz j + 1)
+        have hK_eq2 : K = budget - (cd.sz j + 1) := by omega
+        have cd' : CompData sig I ms ms' budget
+            (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
+            (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)
+            (fun p => by cases p using Fin.cases with
+              | zero => simp [Fin.cons_zero]
+              | succ k => simp [Fin.cons_succ]; exact h_idx k) where
+          sz j' := if j' = j then cd.sz j + 1 else cd.sz j'
+          eM j' := if h : j' = j then h ▸ Fin.cons c (cd.eM j) else cd.eM j'
+          eN j' := if h : j' = j then h ▸ Fin.cons c' (cd.eN j) else cd.eN j'
+          agree j' := by
+            simp only
+            split
+            · case isTrue h => subst h
+              intro nf; simp only [show (if j = j then cd.sz j + 1 else cd.sz j) =
+                cd.sz j + 1 from if_pos rfl]
+              convert h_ext_agree (hK_eq2 ▸ nf) using 1 <;> simp [hK_eq2]
+            · case isFalse h => exact cd.agree j'
+          bound j' := by
+            simp only; split
+            · case isTrue h => subst h; simp [if_pos rfl]; omega
+            · case isFalse h => exact cd.bound j'
+          consistent := by
+            sorry
+        exact build_bicompat d (n + 1) (by omega) _ _ _ h_atoms_ext cd'
+    · -- Backward oracle: symmetric to forward using component_extend_bwd
+      intro j c
+      have hsz := cd.bound j
+      set K := budget - cd.sz j - 1 with hK_def
+      have hK_eq : K + 1 = budget - cd.sz j := by omega
+      have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
+          nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
+          nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := by
+        intro nf; rw [hK_eq]; exact cd.agree j (hK_eq ▸ nf)
+      obtain ⟨c', h_ext_agree⟩ := component_extend_bwd j ms ms' (cd.eM j) (cd.eN j)
+        h_nf_rewrite c
+      have h_ext_depth0 : ∀ nf : NormalForm sig 0 (cd.sz j + 1),
+          nf_eval_nf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
+          nf_eval_nf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
+        fun nf => nf_agreement_monotone 0 K (cd.sz j + 1)
+          (by omega) (ms j) (Fin.cons c (cd.eM j)) (ms' j) (Fin.cons c' (cd.eN j))
+          h_ext_agree nf
+      refine ⟨c', ?_, ?_⟩
+      · apply extend_atoms h_idx h_atoms j c c'
+        · intro p_pred
+          have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
+            (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
+          simp only [atom_eval, Fin.cons_zero] at this; exact this
+        · exact orderedSum_order_fwd_via_comp j c c' h_idx
+            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
+        · exact orderedSum_order_bwd_via_comp j c c' h_idx
+            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
+      · -- Recursive BiCompat (same structure as forward)
         sorry
-    sorry
 
 /--
 Generalized lifting lemma: ordered-sum NF agreement from atom-level compatibility,
