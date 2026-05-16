@@ -66,7 +66,7 @@ Note: Task 154 addresses the BUILD ERRORS blocking `sum_preservation`, not the 3
 
 Phases 1 and 2 can execute in parallel (they modify non-overlapping code regions).
 
-### Phase 1: Restructure build_bicompat cd' via extend_CompData Helper [NOT STARTED]
+### Phase 1: Restructure build_bicompat cd' via extend_CompData Helper [BLOCKED]
 
 **Goal**: Eliminate the elaboration trilemma by factoring the cd' CompData construction (duplicated at lines 551-588 and 632-668) into a standalone `noncomputable def extend_CompData` that constructs the extended CompData in tactic mode, avoiding structure literal syntax inside `build_bicompat`.
 
@@ -135,7 +135,14 @@ Phases 1 and 2 can execute in parallel (they modify non-overlapping code regions
 
 ---
 
-### Phase 2: Fix sum_lift_one_var cd0 with k-Split and Complete Rewrite [NOT STARTED]
+**BLOCKER** (Phase 1):
+- **What failed**: The `extend_CompData` helper function's `agree` field cannot be proved because `if j' = j' then ...` in types is not definitionally reducible after `subst`/`cases`. The `bound` field requires `cd.sz j + 1 < budget` which is not provable from the available hypotheses (only `cd.sz j < budget` is available).
+- **What was tried**: 7+ approaches in the original attempt + 10+ approaches in this session: tactic-mode with `by_cases`/`subst`/`simp only`; `constructor` with `case` blocks; `refine` with `?_` goals; `set` with term-mode `dite`; `Eq.mpr`/`▸` transport; `convert` with subgoal closure; `rw` in reverted goals; `nf_agreement_monotone` bridging; changing `bound` from `<` to `≤`. None succeeded.
+- **Why it's stuck**: Two independent blockers: (1) After `subst h : j' = j`, `if j' = j' then ...` appears in TYPE positions (NormalForm type arguments) and no tactic (`simp`, `rw`, `conv`, `dsimp`) can reduce it because the `DecidableEq I` instance doesn't make `j' = j'` definitionally `True`. (2) The `CompData.bound` field requires strict `<` but the extension adds 1, requiring `cd.sz j + 1 < budget` which is NOT implied by `cd.sz j < budget` alone.
+- **What is needed**: Either (a) redesign CompData.bound to use `≤` instead of `<` with corresponding fixes to ~4 downstream omega proofs, OR (b) pass additional context (e.g., `hdn : d + 1 + n ≤ budget`) to extend_CompData, OR (c) restructure the agree field proof to use `Eq.rec`/cast transport explicitly without `subst`, manually constructing the motive that `▸` fails to compute.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
+### Phase 2: Fix sum_lift_one_var cd0 with k-Split and Complete Rewrite [BLOCKED]
 
 **Goal**: Resolve all build errors in `sum_lift_one_var` (lines 772-816) by case-splitting on k (k=0 bypasses CompData entirely, k+1 proceeds with rewritten cd0) and performing a complete block rewrite of the cd0 CompData construction with transparent eM/eN.
 
