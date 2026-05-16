@@ -102,7 +102,7 @@ technical_debt:
 
 ### 154. Prove sum_preservation via Ehrenfeucht-Fraisse games (Doets Lemma 1.4)
 - **Effort**: 8-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None
@@ -113,6 +113,7 @@ technical_debt:
 - **Plan**:
   - [154_sum_preservation_ef_games/plans/02_sum-preservation-plan.md]
   - [154_sum_preservation_ef_games/plans/03_sum-preservation-plan.md]
+  - [154_sum_preservation_ef_games/plans/04_sum-preservation-plan.md]
 
 **Description**: Prove `sum_preservation` (NEquivalence.lean:190) and `doets_lemma_1_4` (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games. Also close the `carrier_order` sorries in the Sigma-type ordered sum construction (lexicographic order), and downstream sorries in `contemp_equiv_is_equiv` transitivity (IntegerModel.lean:128) and `no_gaps_discrete` (IntegerModel.lean:145). Definition of done: `sum_preservation` sorry-free, `doets_lemma_1_4` sorry-free, `carrier_order` defined (not sorry), `lake build` passes.
 
