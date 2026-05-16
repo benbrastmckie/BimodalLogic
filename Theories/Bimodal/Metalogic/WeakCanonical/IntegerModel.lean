@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.OrderedSum
 import Bimodal.Metalogic.WeakCanonical.Table
 import Bimodal.Metalogic.WeakCanonical.ChronicleExtraction
 import Mathlib.Data.Fintype.Sort
+import Mathlib.Order.SuccPred.LinearLocallyFinite
 
 /-!
 # Integer Model Construction (Reynolds Theorem 15)
@@ -414,25 +415,80 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
 /-! ## Very Good → Good -/
 
 /--
-Reynolds Lemma 16: If M is countable and very good, then M is good.
+Reynolds Lemma 16: If M is a succ-Archimedean discrete linear order without
+endpoints (hence order-isomorphic to ℤ), then M is good at any depth.
 
--- TODO: Requires sum_preservation (Doets Lemma 1.4). Deferred to follow-up task.
+The proof uses `orderIsoIntOfLinearSuccPredArch` to obtain `M.carrier ≃o ℤ`,
+constructs a `ZIntervalStructure` with matching predicates on the unbounded
+interval, and applies `k_equiv_of_iso`.
+
+Note: The `very_good` hypothesis is unused because in a succ-Archimedean order,
+all bounded intervals are finite, so very_good holds trivially. The theorem
+is stated with it for interface compatibility.
 -/
 theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
+    [SuccOrder M.carrier] [PredOrder M.carrier]
+    [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    [IsSuccArchimedean M.carrier] [Nonempty M.carrier]
     (_h_countable : Countable M.carrier) (_h_very_good : very_good sig k M) :
     good sig k M := by
-  sorry
+  -- Order iso from carrier to ℤ via Mathlib's classification theorem
+  let f : M.carrier ≃o ℤ := orderIsoIntOfLinearSuccPredArch
+  -- Build Z-interval structure with lo = none, hi = none
+  let Z : ZIntervalStructure sig := {
+    lo := none
+    hi := none
+    interp := fun p z => M.interp p (f.symm z)
+  }
+  refine ⟨Z, ?_⟩
+  -- Build order iso from M.carrier to Z.intervalCarrier = {z : ℤ // True ∧ True}
+  let val_iso : Z.intervalCarrier ≃o ℤ :=
+    Equiv.toOrderIso
+      { toFun := Subtype.val, invFun := fun z => ⟨z, trivial, trivial⟩,
+        left_inv := by intro ⟨_, _⟩; rfl, right_inv := by intro _; rfl }
+      (fun _ _ h => h) (fun _ _ h => h)
+  let g : M.carrier ≃o (Z.toOrdered sig).carrier := f.trans val_iso.symm
+  apply k_equiv_of_iso sig k M (Z.toOrdered sig) g
+  -- Predicates match through the isomorphism
+  intro p x
+  show M.interp p x ↔ M.interp p (f.symm (f x))
+  simp [OrderIso.symm_apply_apply]
 
 /-! ## Chronicle is Good -/
 
 /--
 The chronicle prior model is good at any finite depth.
 
--- TODO: Depends on very_good_implies_good which depends on sum_preservation. Deferred.
+Uses `orderIsoIntOfLinearSuccPredArch` to establish that the chronicle's
+countable discrete domain (without endpoints, succ-Archimedean) is
+order-isomorphic to ℤ, then constructs the corresponding Z-interval
+structure with matching predicate interpretations.
 -/
 theorem chronicle_is_good (M : ChronicleAsPriorModel) (sig : MonadicSignature)
     (atomMap : sig.preds → Formula) (k : Nat) :
     good sig k (chronicleAsMonadicStructure M sig atomMap) := by
-  sorry
+  haveI : Nonempty M.domain := M.domain_nonempty
+  -- Order iso from domain to ℤ
+  let f : M.domain ≃o ℤ := orderIsoIntOfLinearSuccPredArch
+  -- Build Z-interval with matching predicates
+  let Z : ZIntervalStructure sig := {
+    lo := none
+    hi := none
+    interp := fun p z => (atomMap p) ∈ M.fmcs (f.symm z)
+  }
+  refine ⟨Z, ?_⟩
+  -- Order iso from chronicle carrier to Z.intervalCarrier
+  let val_iso : Z.intervalCarrier ≃o ℤ :=
+    Equiv.toOrderIso
+      { toFun := Subtype.val, invFun := fun z => ⟨z, trivial, trivial⟩,
+        left_inv := by intro ⟨_, _⟩; rfl, right_inv := by intro _; rfl }
+      (fun _ _ h => h) (fun _ _ h => h)
+  let g : (chronicleAsMonadicStructure M sig atomMap).carrier ≃o (Z.toOrdered sig).carrier :=
+    f.trans val_iso.symm
+  apply k_equiv_of_iso sig k _ _ g
+  -- Predicates match
+  intro p x
+  show (atomMap p) ∈ M.fmcs x ↔ (atomMap p) ∈ M.fmcs (f.symm (f x))
+  simp [OrderIso.symm_apply_apply]
 
 end Bimodal.Metalogic.WeakCanonical

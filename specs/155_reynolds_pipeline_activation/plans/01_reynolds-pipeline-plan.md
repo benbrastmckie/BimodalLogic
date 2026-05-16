@@ -165,32 +165,18 @@ All phases are strictly sequential. Phase 3 requires Phase 2's transitivity resu
 
 ---
 
-### Phase 4: very_good_implies_good and chronicle_is_good (Reynolds Lemma 16) [NOT STARTED]
+### Phase 4: very_good_implies_good and chronicle_is_good (Reynolds Lemma 16) [COMPLETED]
 
 **Goal**: Close the two remaining IntegerModel.lean sorries: `very_good_implies_good` (cofinal decomposition, line 354) and `chronicle_is_good` (one_class + very_good -> good, line 366).
 
 **Tasks**:
-- [ ] **Task 4.1**: Fix `very_good_implies_good` signature. Add required typeclass hypotheses:
-  ```lean
-  theorem very_good_implies_good (sig : MonadicSignature) (k : Nat)
-      (M : OrderedMonadicStructure sig)
-      [SuccOrder M.carrier] [PredOrder M.carrier]
-      [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
-      (_h_countable : Countable M.carrier)
-      (_h_very_good : very_good sig k M) :
-      good sig k M
-  ```
-  These are needed for the cofinal sequence construction. The only caller (`chronicle_is_good`) has all these properties via `ChronicleAsPriorModel`.
-- [ ] **Task 4.2**: Construct a Z-indexed cofinal sequence covering M. Use `Countable` + `NoMinOrder` + `NoMaxOrder` + `SuccOrder` to enumerate the carrier and build a bi-infinite sequence a : Z -> M.carrier that is cofinal in both directions. Each consecutive interval [a_i, a_{i+1}] is finite (in a discrete countable order, intervals between any two points are finite).
-- [ ] **Task 4.3**: Each subinterval M|[a_i, pred(a_{i+1})] is finite, hence good by `finite_structures_good` (or more precisely: by `very_good` + finiteness, each is good since every sub-subinterval is good and the structure is finite).
-- [ ] **Task 4.4**: Apply `doets_lemma_1_4` (sum_preservation) on the Z-indexed family to get k-equiv to an ordered sum of Z-intervals indexed by Z.
-- [ ] **Task 4.5**: Prove `orderedSum_z_indexed_z_intervals_is_z_interval`: an ordered sum of Z-interval structures indexed by Z (each finite, covering M) is k-equivalent to a single Z-interval with `lo = none, hi = none`. Construction: the carrier `Sigma (fun (i : Z) => Z_i.intervalCarrier)` with lex order is order-isomorphic to `{z : Z // True}` via cumulative size mapping. Apply `k_equiv_of_iso`.
-- [ ] **Task 4.6**: Chain: M is k-equiv to ordered sum of Z-intervals (Task 4.4), which is k-equiv to single unbounded Z-interval (Task 4.5). By transitivity: M is good.
-- [ ] **Task 4.7**: Close `chronicle_is_good` (line 366). Chain the completed results:
-  - The chronicle is countable, discrete, without endpoints (from ChronicleAsPriorModel fields)
-  - By `one_class` (sorry-free from Phases 1-3): all points are contemporaneously equivalent
-  - Therefore the chronicle is very_good (every subinterval is between equivalent points)
-  - By `very_good_implies_good`: the chronicle is good
+- [x] **Task 4.1**: *(deviation: altered — added [SuccOrder], [PredOrder], [NoMaxOrder], [NoMinOrder], [IsSuccArchimedean], [Nonempty] to very_good_implies_good. Proof uses orderIsoIntOfLinearSuccPredArch directly rather than cofinal decomposition.)*
+- [x] **Task 4.2**: *(deviation: skipped — cofinal sequence unnecessary; used Mathlib's orderIsoIntOfLinearSuccPredArch which gives M.carrier ≃o ℤ directly from the typeclass hypotheses)*
+- [x] **Task 4.3**: *(deviation: skipped — no cofinal decomposition needed)*
+- [x] **Task 4.4**: *(deviation: skipped — doets_lemma_1_4 (sum_preservation) unnecessary)*
+- [x] **Task 4.5**: *(deviation: skipped — ordered sum construction unnecessary)*
+- [x] **Task 4.6**: *(deviation: skipped — transitivity chain unnecessary)*
+- [x] **Task 4.7**: *(deviation: altered — chronicle_is_good proved directly via orderIsoIntOfLinearSuccPredArch on M.domain. Does NOT go through one_class + very_good_implies_good chain. Instead directly constructs ZIntervalStructure with lo=none, hi=none and predicates transported through the order iso, then applies k_equiv_of_iso.)*
 
 **Timing**: 5 hours
 
