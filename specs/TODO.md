@@ -43,9 +43,9 @@ technical_debt:
 
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track (tasks 9
 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
-154 [IMPLEMENTING] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_
+154 [PLANNED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_
 155 [NOT STARTED] — Replace the chronicle fallback in Transfer.lean with the full Rey
-  └─ 154 [IMPLEMENTING] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_ (see above)
+  └─ 154 [PLANNED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_ (see above)
 
 
 ### Formula Refactor
