@@ -504,8 +504,10 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
       have hK_eq : K + 1 = budget - cd.sz j := by omega
       have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
           nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
-          nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf :=
-        fun nf => hK_eq ▸ cd.agree j (hK_eq ▸ nf)
+          nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
+        have := cd.agree j (show NormalForm sig (budget - cd.sz j) (cd.sz j) from
+          cast (by congr 1 <;> omega) nf)
+        exact cast (by congr 1 <;> [omega; rfl; skip; omega; rfl]) this
       obtain ⟨c, h_ext_agree⟩ := component_extend_fwd j ms ms' (cd.eM j) (cd.eN j)
         h_nf_rewrite c'
       -- h_ext_agree at depth (budget - cd.sz j - 1) for (cd.sz j + 1) vars
@@ -546,9 +548,7 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
         have h_idx' : ∀ p : Fin (n + 1),
             (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M p).1 =
             (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N p).1 :=
-          fun p => by cases p using Fin.cases with
-          | zero => rfl
-          | succ k => simp only [Fin.cons_succ]; exact h_idx k
+          Fin.cases rfl (fun k => h_idx k)
         have cd' : CompData sig I ms ms' budget
             (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
             (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)
@@ -587,34 +587,34 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
                 exact ⟨q, hqM, hqN⟩
         }
         exact build_bicompat d (n + 1) (by omega) _ _ _ h_atoms_ext cd'
-    exact ⟨oracle_step, fun j c => ?_⟩
+    refine ⟨oracle_step, fun j c => ?_⟩
     -- Backward oracle: symmetric to forward using component_extend_bwd
-      have hsz := cd.bound j
-      set K := budget - cd.sz j - 1 with hK_def
-      have hK_eq : K + 1 = budget - cd.sz j := by omega
-      have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
-          nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
-          nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf :=
-        fun nf => hK_eq ▸ cd.agree j (hK_eq ▸ nf)
-      obtain ⟨c', h_ext_agree⟩ := component_extend_bwd j ms ms' (cd.eM j) (cd.eN j)
-        h_nf_rewrite c
-      have h_ext_depth0 : ∀ nf : NormalForm sig 0 (cd.sz j + 1),
-          nf_eval_nf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
-          nf_eval_nf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
-        fun nf => nf_agreement_monotone 0 K (cd.sz j + 1)
-          (by omega) (ms j) (Fin.cons c (cd.eM j)) (ms' j) (Fin.cons c' (cd.eN j))
-          h_ext_agree nf
-      refine ⟨c', ?_, ?_⟩
-      · apply extend_atoms h_idx h_atoms j c c'
-        · intro p_pred
-          have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
-            (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
-          simp only [atom_eval, Fin.cons_zero] at this; exact this
-        · exact orderedSum_order_fwd_via_comp j c c' h_idx
-            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
-        · exact orderedSum_order_bwd_via_comp j c c' h_idx
-            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
-      · -- Recursive BiCompat (same structure as forward)
+    have hsz := cd.bound j
+    set K := budget - cd.sz j - 1 with hK_def
+    have hK_eq : K + 1 = budget - cd.sz j := by omega
+    have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
+        nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
+        nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
+      exact show _ from hK_eq ▸ cd.agree j (hK_eq ▸ nf)
+    obtain ⟨c', h_ext_agree⟩ := component_extend_bwd j ms ms' (cd.eM j) (cd.eN j)
+      h_nf_rewrite c
+    have h_ext_depth0 : ∀ nf : NormalForm sig 0 (cd.sz j + 1),
+        nf_eval_nf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
+        nf_eval_nf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
+      fun nf => nf_agreement_monotone 0 K (cd.sz j + 1)
+        (by omega) (ms j) (Fin.cons c (cd.eM j)) (ms' j) (Fin.cons c' (cd.eN j))
+        h_ext_agree nf
+    refine ⟨c', ?_, ?_⟩
+    · apply extend_atoms h_idx h_atoms j c c'
+      · intro p_pred
+        have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
+          (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
+        simp only [atom_eval, Fin.cons_zero] at this; exact this
+      · exact orderedSum_order_fwd_via_comp j c c' h_idx
+          (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
+      · exact orderedSum_order_bwd_via_comp j c c' h_idx
+          (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
+    · -- Recursive BiCompat (same structure as forward)
         have h_atoms_ext := extend_atoms h_idx h_atoms j c c'
           (fun p_pred => by
             have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
@@ -628,9 +628,7 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
         have h_idx' : ∀ p : Fin (n + 1),
             (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M p).1 =
             (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N p).1 :=
-          fun p => by cases p using Fin.cases with
-          | zero => rfl
-          | succ k => simp only [Fin.cons_succ]; exact h_idx k
+          Fin.cases rfl (fun k => h_idx k)
         have cd' : CompData sig I ms ms' budget
             (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
             (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)
