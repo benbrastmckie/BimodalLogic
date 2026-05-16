@@ -1150,16 +1150,16 @@
     {
       "project_number": 154,
       "project_name": "sum_preservation_ef_games",
-      "status": "planned",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
       "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-16T09:20:31Z",
-      "researched": "2026-05-16T06:36:25Z",
-      "next_artifact_number": 6,
+      "last_updated": "2026-05-16T09:38:31Z",
+      "researched": "2026-05-16T09:38:31Z",
+      "next_artifact_number": 7,
       "artifacts": [
         {
           "type": "report",
@@ -1230,9 +1230,14 @@
           "path": "specs/154_sum_preservation_ef_games/handoffs/implementation-v7-handoff-20260516.md",
           "type": "handoff",
           "summary": "Implementation v7 attempt: 5 agents, verified fix patterns for all 15 errors but cascading interactions prevent atomic application"
+        },
+        {
+          "path": "specs/154_sum_preservation_ef_games/reports/06_team-research.md",
+          "type": "research",
+          "summary": "Team research with 4 teammates: staged escalation strategy (patch then restructure), explicit @Fin.cons motive for Cluster 1, k-split + complete block rewrite for Cluster 2, lake build as sole verification"
         }
       ],
-      "session_id": "sess_1778913838_86a930",
+      "session_id": "sess_1778923461_b0b07f",
       "started": "2026-05-16T00:34:56Z"
     },
     {

@@ -112,7 +112,7 @@ technical_debt:
 
 ### 154. Prove sum_preservation via Ehrenfeucht-Fraisse games (Doets Lemma 1.4)
 - **Effort**: 8-15 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None
@@ -122,6 +122,7 @@ technical_debt:
   - [154_sum_preservation_ef_games/reports/03_team-research.md]
   - [specs/154_sum_preservation_ef_games/reports/04_literature-approach.md]
   - [specs/154_sum_preservation_ef_games/reports/05_team-research.md]
+  - [154_sum_preservation_ef_games/reports/06_team-research.md]
 - **Plan**:
   - [154_sum_preservation_ef_games/plans/02_sum-preservation-plan.md]
   - [154_sum_preservation_ef_games/plans/03_sum-preservation-plan.md]
