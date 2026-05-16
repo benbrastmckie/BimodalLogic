@@ -1,10 +1,10 @@
 # Implementation Plan: Reynolds Pipeline Activation
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [NOT STARTED]
-- **Effort**: 22 hours
+- **Status**: [IN PROGRESS]
+- **Effort**: 26 hours (4 actual Phase 1 + 22 estimated remaining)
 - **Dependencies**: Task 154 (sum_preservation, COMPLETED), Tasks 147-148 (table_correctness, COMPLETED)
-- **Research Inputs**: specs/155_reynolds_pipeline_activation/reports/01_team-research.md
+- **Research Inputs**: specs/155_reynolds_pipeline_activation/reports/01_team-research.md, specs/155_reynolds_pipeline_activation/reports/02_handoff-analysis.md
 - **Artifacts**: plans/01_reynolds-pipeline-plan.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -12,7 +12,7 @@
 
 ## Overview
 
-Replace the chronicle fallback in `Transfer.lean` with the full Reynolds Theorem 15 pipeline, achieving sorry-free `bx_completeness`. The implementation closes 5 sorries in `IntegerModel.lean` (following Reynolds 1994 Sections 7-8 and Doets 1989 Theorem 1.1), then constructs the truth transfer bridge from k-equivalence to `truth_at` semantics via a TaskFrame Int with single-history semantics (mathematically valid for the discrete single-S5-class case). Definition of done: `doets_countermodel_discrete` uses the Reynolds pipeline (no chronicle fallback), `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
+Replace the chronicle fallback in `Transfer.lean` with the full Reynolds Theorem 15 pipeline, achieving sorry-free `bx_completeness`. The implementation closes 4 remaining sorries in `IntegerModel.lean` (following Reynolds 1994 Sections 7-8 and Doets 1989 Theorem 1.1), then constructs the truth transfer bridge from k-equivalence to `truth_at` semantics via a TaskFrame Int with single-history semantics (mathematically valid for the discrete single-S5-class case). Definition of done: `doets_countermodel_discrete` uses the Reynolds pipeline (no chronicle fallback), `#print axioms bx_completeness` shows no `sorryAx`, `lake build` passes.
 
 ### Research Integration
 
@@ -20,24 +20,32 @@ Integrated from `reports/01_team-research.md` (team research, 4 teammates):
 - Sorry chain analysis identifying 5 sorries with strict dependency order
 - Critical finding that `finite_structures_good` requires Doets Theorem 1.1 (k-type realizability), NOT sum_preservation
 - Resolution of truth transfer approach: single-history model is correct for discrete single-S5-class case (all MCS's box-equivalent)
-- Identification of `k_equiv_preserves_eval` as the key missing bridge lemma
+- Identification of existential closure as the key bridge mechanism
 - Implementation order recommendation (8 steps)
+
+Integrated from `reports/02_handoff-analysis.md` (post Phase 1 handoff analysis):
+- Phase 1 architectural deviation validated (interval carrier redesign is correct)
+- Critical dependency fix: Phase 3 depends on Phase 2 (transitivity needed for convexity)
+- Phase 2 requires additional helper lemmas (flatten, OrderIso decomposition, Z-interval concatenation)
+- Phase 4 `very_good_implies_good` needs SuccOrder/PredOrder/NoMaxOrder/NoMinOrder hypotheses
+- Phase 5 simplified: existential closure of table formula suffices (no general k_equiv_preserves_eval needed)
+- Phase 6 is straightforward: `{z : Z // True}` is isomorphic to Z via `Subtype.val`
 
 ### Prior Plan Reference
 
-No prior plan.
+Original plan v1 (same file). Revised due to Phase 1 architectural deviation and handoff analysis findings.
 
 ### Roadmap Alignment
 
 - Advances "sorry-free bx_completeness" (the primary critical path item in ROADMAP.md)
-- Eliminates the last 5 sorries on the discrete branch (Reynolds pipeline)
+- Eliminates the last 4 sorries on the discrete branch (Reynolds pipeline)
 - Eliminates the chronicle fallback in Transfer.lean
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Close all 5 sorries in `IntegerModel.lean` following Reynolds 1994 faithfully
-- Prove `k_equiv_preserves_eval` connecting k-type agreement to formula evaluation
+- Close all 4 remaining sorries in `IntegerModel.lean` following Reynolds 1994 faithfully
+- Construct truth transfer via existential closure of the table formula
 - Construct TaskFrame Int from Z-model with single-history semantics
 - Replace chronicle fallback in `Transfer.lean` with genuine pipeline
 - Verify `#print axioms bx_completeness` shows no `sorryAx`
@@ -47,17 +55,18 @@ No prior plan.
 - Mixed case (already resolved by task 142)
 - Doets Lemma 1.5 (type-matching variant, not on discrete critical path)
 - Optimizing or refactoring existing sorry-free infrastructure
+- General `k_equiv_preserves_eval` for arbitrary formulas (existential closure suffices)
 - Any "bridge" or "adapter" pattern (systematic constructions only)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| `finite_structures_good` requires non-trivial EF argument (carrier mismatch) | H | M | Use predicate extension technique: pad outside interval with endpoint pattern, prove k-equivalence via normal form agreement |
-| `k_equiv_preserves_eval` requires formula-to-normal-form compilation not yet explicit | H | M | Leverage existing `nf_eval_nf` + `nf_exists_unique` + `nf_characteristic`; the compilation step is implicit in these |
-| `very_good_implies_good` cofinal decomposition requires careful Lean encoding | M | M | Use `Countable` + `NoMaxOrder` to construct explicit cofinal sequences; leverage existing `orderedSum` infrastructure |
-| TaskFrame Int construction: box semantics for single-history model | M | L | Mathematically justified (discrete, single S5 class, all box-equivalent); straightforward once temporal truth transfer proved |
-| `contemp_equiv_is_equiv.trans` sum decomposition | M | M | Apply `doets_lemma_1_4` on 2-element index set; standard application of existing sorry-free infrastructure |
+| Phase 2 ordered sum decomposition requires complex subtype manipulation (nested subintervals) | H | H | Prove "flatten" lemma first to reduce all goals to direct subintervals of M |
+| Phase 3 requires transitivity (Phase 2) for class convexity argument | H | Confirmed | Fixed dependency: Phase 3 now strictly after Phase 2 |
+| Phase 4 hypothesis mismatch (`very_good_implies_good` missing SuccOrder/PredOrder/NoMaxOrder/NoMinOrder) | H | Confirmed | Add typeclass hypotheses to match Reynolds Lemma 16; only caller has these properties |
+| `orderedSum` of Z-intervals -> single Z-interval requires explicit OrderIso construction | M | H | Break into a standalone helper lemma; the math is straightforward (interval concatenation) |
+| TaskFrame Int construction: box semantics for single-history model | M | L | Mathematically justified (discrete, single S5 class, all box-equivalent); trivial via Subtype.val isomorphism |
 
 ## Implementation Phases
 
@@ -65,12 +74,13 @@ No prior plan.
 | Wave | Phases | Blocked by |
 |------|--------|------------|
 | 1 | 1 | -- |
-| 2 | 2, 3 | 1 |
-| 3 | 4 | 2, 3 |
-| 4 | 5 | 4 |
-| 5 | 6 | 5 |
+| 2 | 2 | 1 |
+| 3 | 3 | 2 |
+| 4 | 4 | 3 |
+| 5 | 5 | 4 |
+| 6 | 6 | 5 |
 
-Phases within the same wave can execute in parallel.
+All phases are strictly sequential. Phase 3 requires Phase 2's transitivity result for the convexity argument.
 
 ---
 
@@ -79,137 +89,162 @@ Phases within the same wave can execute in parallel.
 **Goal**: Close the foundational sorry proving every finite ordered monadic structure is k-equivalent to a Z-interval structure.
 
 **Tasks**:
-- [x] **Task 1.1**: Define predicate extension function *(deviation: altered — instead of predicate extension on all of Z, redesigned `ZIntervalStructure.toOrdered` to use the actual interval as carrier, making the proof a direct order-isomorphism argument)*
+- [x] **Task 1.1**: Redesign `ZIntervalStructure.toOrdered` to use the actual interval as carrier (`{z : Z // lo <= z /\ z <= hi}`)
 - [x] **Task 1.2**: Construct `ZIntervalStructure sig` with `lo = some 0`, `hi = some (n-1)`, `interp` matching M on [0, n-1] via `monoEquivOfFin` isomorphism
-- [x] **Task 1.3**: Prove k-equivalence via `k_equiv_of_iso` theorem *(deviation: altered — used order-isomorphism preservation of NF evaluation instead of normal form agreement argument, since carrier is now the actual interval)*
-- [x] **Task 1.4**: The key insight: `k_equiv_of_iso` proves that order-isomorphic structures with matching predicates have identical k-types by induction on quantifier depth
-- [x] **Task 1.5**: Close the sorry in `IntegerModel.lean` (was line 90, now moved due to new code above)
-- [x] **Task 1.6**: Verify `lake build` passes with `finite_structures_good` sorry-free — verified via `lean_verify`, axioms: propext, Classical.choice, Quot.sound
+- [x] **Task 1.3**: Prove `k_equiv_of_iso`: order-isomorphic structures with matching predicates have identical k-types by induction on quantifier depth
+- [x] **Task 1.4**: Close the sorry via `k_equiv_of_iso` applied to the order-isomorphism from M.carrier to Z.intervalCarrier
+- [x] **Task 1.5**: Verify `lake build` passes with `finite_structures_good` sorry-free
 
-**Timing**: 4 hours
+**Timing**: 4 hours (actual)
 
 **Depends on**: none
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Close sorry at line 90
+**Completed**: 2026-05-16
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Closed sorry, added `k_equiv_of_iso`, `intervalCarrier`, `intervalCarrier_linearOrder`
+- Added import: `Mathlib.Data.Fintype.Sort`
 
 **Verification**:
-- `lean_verify` on `finite_structures_good` shows no `sorryAx`
+- `lean_verify` on `finite_structures_good` shows axioms: propext, Classical.choice, Quot.sound (no sorryAx)
+- `lean_verify` on `k_equiv_of_iso` shows same clean axioms
 - `lake build` passes
-- `no_boundary_at_successor` (which depends on `finite_structures_good`) also becomes sorry-free
 
 ---
 
 ### Phase 2: contemp_equiv_is_equiv Transitivity (Reynolds Lemma 17) [NOT STARTED]
 
-**Goal**: Close the transitivity sorry for contemporaneous equivalence, proving that if [a,b] and [b,c] are very good, then [a,c] is very good.
+**Goal**: Close the transitivity sorry for contemporaneous equivalence (IntegerModel.lean:280), proving that if [a,b] and [b,c] are very good, then [a,c] is very good.
 
 **Tasks**:
-- [ ] For any x, y in [min a c, max a c] with x <= y, decompose into cases: both in [a,b], both in [b,c], or spanning the boundary at b
-- [ ] For the spanning case: M|[x,y] = M|[x,b] concatenated with M|[b+1,y] (in discrete order, using SuccOrder)
-- [ ] Each piece [x,b] and [b+1,y] is a subinterval of [a,b] or [b,c] respectively, hence good by the very_good hypotheses
-- [ ] Apply `doets_lemma_1_4` (sum_preservation) on a 2-element index set (`Bool` with `false < true`) to show the concatenation is good
-- [ ] A concatenation of two Z-intervals IS a Z-interval (construct the combined Z-interval)
-- [ ] Close the sorry at `IntegerModel.lean:128`
+- [ ] **Task 2.1**: Prove `subinterval_subinterval_iso` (flatten lemma): `(M.subinterval a b).subinterval x y` is order-isomorphic (with matching predicates) to `M.subinterval x.val y.val`. This eliminates all nested subinterval complexity.
+- [ ] **Task 2.2**: Prove `good_of_iso`: if M is good and N is order-isomorphic to M with matching predicates, then N is good. (Follows from `k_equiv_of_iso` + transitivity of `k_equiv`.)
+- [ ] **Task 2.3**: Use flatten + good_of_iso to reduce the goal to: `good sig k (M.subinterval sig x.val y.val)` for any x, y in [min a c, max a c] with x <= y.
+- [ ] **Task 2.4**: Case split on x.val, y.val relative to b:
+  - Both in [min a b, max a b]: apply `hab` (after flatten/casting)
+  - Both in [min b c, max b c]: apply `hbc` (after flatten/casting)
+  - Spanning b: proceed to decomposition
+- [ ] **Task 2.5**: For spanning case, prove `subinterval_decompose_discrete`: in a discrete order, `M.subinterval x.val y.val` (where x.val <= b and b < y.val) is order-isomorphic to `orderedSum sig Bool (fun false => M.subinterval x.val b, fun true => M.subinterval (Order.succ b) y.val)`. Uses discreteness: no element between b and Order.succ b.
+- [ ] **Task 2.6**: Each piece is good (M.subinterval x.val b from hab, M.subinterval (succ b) y.val from hbc). Apply `doets_lemma_1_4` on Bool to get k-equivalence of the ordered sum to an ordered sum of Z-intervals.
+- [ ] **Task 2.7**: Prove `orderedSum_two_z_intervals_is_z_interval`: the ordered sum of two Z-interval structures indexed by Bool is k-equivalent to a single Z-interval structure. Construction: concatenate interval carriers via explicit OrderIso to a combined interval, transfer predicates, apply `k_equiv_of_iso`.
+- [ ] **Task 2.8**: Chain the results: M|[x,y] is isomorphic to the ordered sum (Step 2.5), which is k-equiv to ordered sum of Z-intervals (Step 2.6), which is k-equiv to a single Z-interval (Step 2.7). By transitivity of k_equiv, M|[x,y] is good.
 
-**Timing**: 3 hours
+**Timing**: 6 hours
 
 **Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Close sorry in `contemp_equiv_is_equiv.trans`
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Close sorry at line 280, add helper lemmas
 
 **Verification**:
 - `lean_verify` on `contemp_equiv_is_equiv` shows no `sorryAx`
-- `one_class` theorem (which uses transitivity) becomes sorry-free
+- `lake build` passes
 
 ---
 
 ### Phase 3: no_gaps_discrete (Boundary Impossibility) [NOT STARTED]
 
-**Goal**: Close the sorry proving that in a discrete order without endpoints, ~M class boundaries cannot exist (they would have to fall at some successor pair, contradicting `no_boundary_at_successor`).
+**Goal**: Close the sorry (IntegerModel.lean:297) proving that in a discrete order without endpoints, if a and b are in different ~M classes, there exists c with a ~M c but not a ~M (succ c).
 
 **Tasks**:
-- [ ] The proof uses well-founded induction: given a != b with different classes, find a boundary point
-- [ ] Use `Order.succ` and `Order.pred` in the discrete order to construct a sequence from a toward b
-- [ ] In a linearly ordered type with `NoMaxOrder`/`NoMinOrder`/`SuccOrder`/`PredOrder`: for any a < b, consider the set S = {c in [a,b] | c ~M a}. S is nonempty (a is in S). If b is not in S, S is bounded above by b.
-- [ ] In discrete order, take c = max of S restricted to [a,b] (exists by well-founded descent from b). Then c ~M a but succ(c) is not ~M a (otherwise succ(c) would be in S, contradicting maximality)
-- [ ] Handle the case a > b symmetrically (or reduce to a < b via symmetry of ~M class difference)
-- [ ] Close the sorry at `IntegerModel.lean:145`
+- [ ] **Task 3.1**: Establish convexity of equivalence classes using Phase 2's transitivity: if a ~M c and a ~M d with c <= x <= d, then a ~M x (because [c,d] is a subinterval between equivalent points, hence very good, hence x is equivalent to both endpoints by transitivity).
+- [ ] **Task 3.2**: WLOG assume a < b (handle a > b by symmetry of the "different class" hypothesis). If a > b, use the symmetric case or reduce.
+- [ ] **Task 3.3**: Define S = {c : M.carrier | a <= c /\ not (contemp_equiv sig k M a c)}. Show S is nonempty (contains b or a suitable point derived from b and WLOG).
+- [ ] **Task 3.4**: Use well-founded descent or classical minimum on the discrete order restricted to [a, b]: since S is nonempty and bounded below by a, take an infimum-like element d in S. In discrete order, pred(d) exists (by PredOrder + the fact that d > a since a ~M a). Then pred(d) is NOT in S (it's below d in the "first non-equivalent" sense), so a ~M pred(d). And d = succ(pred(d)) is in S, so NOT (a ~M succ(pred(d))).
+- [ ] **Task 3.5**: The witness is c = pred(d). Verify: `contemp_equiv sig k M a c` (since c is not in S, meaning a <= c does not hold OR a ~M c -- but c = pred(d) >= a since d > a, so a ~M c must hold) and `not (contemp_equiv sig k M a (Order.succ c))` (since Order.succ c = d which is in S).
+- [ ] **Task 3.6**: Close the sorry at IntegerModel.lean:297.
 
 **Timing**: 3 hours
 
-**Depends on**: 1
+**Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Close sorry in `no_gaps_discrete`
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Close sorry at line 297
 
 **Verification**:
 - `lean_verify` on `no_gaps_discrete` shows no `sorryAx`
-- Combined with `no_boundary_at_successor`, the `one_class` theorem is fully sorry-free
+- Combined with Phase 2, `one_class` theorem becomes sorry-free
+- `lake build` passes
 
 ---
 
 ### Phase 4: very_good_implies_good and chronicle_is_good (Reynolds Lemma 16) [NOT STARTED]
 
-**Goal**: Close the two remaining IntegerModel.lean sorries: `very_good_implies_good` (cofinal decomposition) and `chronicle_is_good` (one_class + very_good -> good chain).
+**Goal**: Close the two remaining IntegerModel.lean sorries: `very_good_implies_good` (cofinal decomposition, line 354) and `chronicle_is_good` (one_class + very_good -> good, line 366).
 
 **Tasks**:
-- [ ] **very_good_implies_good**: For countable M without endpoints and very good at depth k:
-  - [ ] Use `Countable` + `NoMinOrder` + `NoMaxOrder` to construct a cofinal sequence covering M (bi-infinite enumeration a_0, a_1, ...)
-  - [ ] Partition M into intervals [a_i, pred(a_{i+1})] for each i (or use the ordered sum decomposition directly)
-  - [ ] Each piece is a finite subinterval of M, hence good (by very_good + finite)
-  - [ ] Apply `doets_lemma_1_4` (sum_preservation) on the Z-indexed family to get k-equiv to an ordered sum of Z-intervals
-  - [ ] An ordered sum of Z-intervals indexed by Z IS a single Z-interval (unbounded both ways): construct the combined ZIntervalStructure with `lo = none, hi = none`
-  - [ ] Close the sorry at `IntegerModel.lean:202`
-- [ ] **chronicle_is_good**: Chain the completed results:
-  - [ ] The chronicle is countable, discrete, without endpoints (from ChronicleAsPriorModel fields)
-  - [ ] By `one_class` (now sorry-free from Phases 1-3): all points are contemporaneously equivalent
-  - [ ] Therefore the chronicle is very_good (every subinterval is between contemporaneously equivalent points)
-  - [ ] By `very_good_implies_good`: the chronicle is good
-  - [ ] Close the sorry at `IntegerModel.lean:214`
+- [ ] **Task 4.1**: Fix `very_good_implies_good` signature. Add required typeclass hypotheses:
+  ```lean
+  theorem very_good_implies_good (sig : MonadicSignature) (k : Nat)
+      (M : OrderedMonadicStructure sig)
+      [SuccOrder M.carrier] [PredOrder M.carrier]
+      [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+      (_h_countable : Countable M.carrier)
+      (_h_very_good : very_good sig k M) :
+      good sig k M
+  ```
+  These are needed for the cofinal sequence construction. The only caller (`chronicle_is_good`) has all these properties via `ChronicleAsPriorModel`.
+- [ ] **Task 4.2**: Construct a Z-indexed cofinal sequence covering M. Use `Countable` + `NoMinOrder` + `NoMaxOrder` + `SuccOrder` to enumerate the carrier and build a bi-infinite sequence a : Z -> M.carrier that is cofinal in both directions. Each consecutive interval [a_i, a_{i+1}] is finite (in a discrete countable order, intervals between any two points are finite).
+- [ ] **Task 4.3**: Each subinterval M|[a_i, pred(a_{i+1})] is finite, hence good by `finite_structures_good` (or more precisely: by `very_good` + finiteness, each is good since every sub-subinterval is good and the structure is finite).
+- [ ] **Task 4.4**: Apply `doets_lemma_1_4` (sum_preservation) on the Z-indexed family to get k-equiv to an ordered sum of Z-intervals indexed by Z.
+- [ ] **Task 4.5**: Prove `orderedSum_z_indexed_z_intervals_is_z_interval`: an ordered sum of Z-interval structures indexed by Z (each finite, covering M) is k-equivalent to a single Z-interval with `lo = none, hi = none`. Construction: the carrier `Sigma (fun (i : Z) => Z_i.intervalCarrier)` with lex order is order-isomorphic to `{z : Z // True}` via cumulative size mapping. Apply `k_equiv_of_iso`.
+- [ ] **Task 4.6**: Chain: M is k-equiv to ordered sum of Z-intervals (Task 4.4), which is k-equiv to single unbounded Z-interval (Task 4.5). By transitivity: M is good.
+- [ ] **Task 4.7**: Close `chronicle_is_good` (line 366). Chain the completed results:
+  - The chronicle is countable, discrete, without endpoints (from ChronicleAsPriorModel fields)
+  - By `one_class` (sorry-free from Phases 1-3): all points are contemporaneously equivalent
+  - Therefore the chronicle is very_good (every subinterval is between equivalent points)
+  - By `very_good_implies_good`: the chronicle is good
 
-**Timing**: 4 hours
+**Timing**: 5 hours
 
-**Depends on**: 2, 3
+**Depends on**: 3
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Close sorries at lines 202 and 214
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - Fix signature at line 354, close sorries at lines 354 and 366
 
 **Verification**:
 - `lean_verify` on `chronicle_is_good` shows no `sorryAx`
-- All 5 IntegerModel.lean sorries now closed
+- All IntegerModel.lean sorries now closed
 - `lake build` passes
 
 ---
 
-### Phase 5: k_equiv_preserves_eval and Truth Transfer Bridge [NOT STARTED]
+### Phase 5: Truth Transfer via Existential Closure [NOT STARTED]
 
-**Goal**: Prove the key bridge theorem connecting k-equivalence (normal form level) to formula evaluation agreement, then establish truth transfer from the Z-model to temporal truth.
+**Goal**: Prove truth transfer from the chronicle's Z-model to temporal truth, using existential closure of the table formula (no general k_equiv_preserves_eval needed).
 
 **Tasks**:
-- [ ] **k_equiv_preserves_eval**: Prove that k-equivalent structures agree on all monadic sentences of depth <= k
-  - [ ] Statement: for M, N with `k_equiv sig k M N` and `alpha : MonadicFormula sig 0` with `alpha.quantifier_depth <= k`, `eval M Fin.elim0 alpha <-> eval N Fin.elim0 alpha`
-  - [ ] Proof strategy: Use `nf_exists_unique` + `nf_characteristic`: M satisfies exactly one normal form (its characteristic). Since `k_equiv` means same k-type (same characteristic), M and N agree on which normal form they satisfy. Every sentence of depth <= k is determined by the characteristic (via `doets_lemma_1_1` bridge theorem from NormalForm.lean)
-  - [ ] If `doets_lemma_1_1` provides the needed direction (nf agreement implies eval agreement), use it directly; otherwise construct the implication from `nf_characteristic_satisfies` + evaluation determinacy
-- [ ] **k_equiv_preserves_temporal_truth**: Derive temporal truth preservation from k_equiv_preserves_eval + table_correctness
-  - [ ] For formula phi with `operator_depth phi + 1 <= k`: if M k_equiv N, then `temporal_truth M atomMap t phi <-> temporal_truth N atomMap t' phi` (for corresponding points t, t')
-  - [ ] Proof: `temporal_truth M atomMap t phi <-> eval M (fun _ => t) (table sig atomMap phi)` (by `table_correctness`) `<-> eval N (fun _ => t') (table sig atomMap phi)` (by `k_equiv_preserves_eval` since `(table phi).quantifier_depth <= operator_depth phi + 1 <= k`) `<-> temporal_truth N atomMap t' phi` (by `table_correctness` on N)
-- [ ] Handle the point correspondence: k-equivalence is at the level of entire structures (0-ary sentences), so temporal truth transfer at EVERY point requires quantifier-depth analysis
-  - [ ] The key: `table sig atomMap phi` is a 1-variable formula. Closing over a point t gives a 0-variable sentence. The depth bound `table_depth_bound` ensures this sentence has depth <= operator_depth phi <= k
-- [ ] Construct forward atomMap: `atomMap_fwd : Formula -> sig.preds` from `mkSigFrom phi` (maps each temporal formula to its corresponding predicate symbol via the `predFormulas` membership proof)
+- [ ] **Task 5.1**: State the transfer lemma. Given:
+  - `chronicle_is_good` provides Z : ZIntervalStructure with `k_equiv sig k (chronicleAsMonadicStructure M sig atomMap) (Z.toOrdered sig)` where k >= operator_depth(phi) + 1
+  - A point t0 in the chronicle where `neg phi` holds temporally
+  
+  Goal: show `neg phi` holds temporally at SOME point in Z.toOrdered.
 
-**Timing**: 5 hours
+- [ ] **Task 5.2**: Construct the existential closure sentence. Define:
+  ```lean
+  sentence := MonadicFormula.ex (table sig atomMap (neg phi))
+  ```
+  This is a 0-variable (closed) monadic formula asserting "there exists a point where table(neg phi) holds."
+
+- [ ] **Task 5.3**: Prove depth bound: `sentence.quantifier_depth <= operator_depth(phi) + 1 <= k`. Uses `table_depth_bound` (from task 147-148 table_correctness work) which gives `(table sig atomMap phi).quantifier_depth <= operator_depth phi + 1`. The existential adds 1 level, but actually `ex phi` has depth = `phi.depth + 1`... Need to verify the exact bound. If `table(neg phi).depth <= operator_depth(neg phi) + 1 = operator_depth(phi) + 1`, then `(ex (table(neg phi))).depth <= operator_depth(phi) + 2`. Ensure k is chosen large enough.
+  
+  **Alternative**: Use `doets_lemma_1_1` directly on the sentence level. Since `k_equiv` means agreement on ALL NF of depth k, and the existential closure is a sentence of appropriate depth, it transfers directly.
+
+- [ ] **Task 5.4**: Show the sentence is TRUE in the chronicle: `eval (chronicleAsMonadicStructure M sig atomMap) Fin.elim0 sentence`. Witness: t0 satisfies `table(neg phi)` because `temporal_truth chronicle atomMap t0 (neg phi)` holds and `table_correctness` gives the equivalence.
+
+- [ ] **Task 5.5**: Transfer via k-equivalence: since `k_equiv sig k chronicle Z.toOrdered` and the sentence has depth <= k, by `doets_lemma_1_1` (or the k-equiv definition unfolded), the sentence also holds in Z.toOrdered. Extract the witness: there exists t1 in Z.intervalCarrier where `eval Z.toOrdered (fun _ => t1) (table sig atomMap (neg phi))` holds.
+
+- [ ] **Task 5.6**: Convert back to temporal truth: by `table_correctness` on Z.toOrdered, the eval at t1 gives `temporal_truth (Z.toOrdered sig) atomMap t1 (neg phi)`.
+
+**Timing**: 4 hours
 
 **Depends on**: 4
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` or new file `Theories/Bimodal/Metalogic/WeakCanonical/TruthTransfer.lean` - `k_equiv_preserves_eval`, `k_equiv_preserves_temporal_truth`
-- `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` - Add `atomMap_fwd` construction
+- `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` or new file `Theories/Bimodal/Metalogic/WeakCanonical/TruthTransfer.lean` - Truth transfer lemma
 
 **Verification**:
-- `lean_verify` on `k_equiv_preserves_eval` shows no `sorryAx`
-- `lean_verify` on `k_equiv_preserves_temporal_truth` shows no `sorryAx`
+- `lean_verify` on truth transfer lemma shows no `sorryAx`
 - `lake build` passes
 
 ---
@@ -219,37 +254,34 @@ Phases within the same wave can execute in parallel.
 **Goal**: Construct a TaskFrame Int countermodel from the Z-model and wire the full Reynolds pipeline into `Transfer.lean`, eliminating the chronicle fallback.
 
 **Tasks**:
-- [ ] **TaskFrame Int construction for discrete single-S5-class**: Define a TaskFrame on Int with:
-  - [ ] `WorldState := Unit` (single world state -- all points box-equivalent in discrete single-class case)
-  - [ ] `task_rel w d u := w = u` (deterministic: single state, identity relation)
-  - [ ] `nullity_identity`: trivial (w = u <-> w = u)
-  - [ ] `forward_comp`: trivial (Unit has one element)
-  - [ ] `converse`: trivial
-- [ ] **TaskModel construction**:
-  - [ ] `valuation` at the single WorldState maps atom p to: the Z-model's predicate interpretation at the current integer time point (via `atomMap` connecting atoms to sig.preds)
-  - [ ] This requires the Z-model's `interp` to determine atom truth at each time
-- [ ] **WorldHistory construction**: Single history tau covering all of Int
-  - [ ] `domain t := True` (defined everywhere on Int)
-  - [ ] `states t _ := ()` (always the single state)
-  - [ ] `respects_task`: trivial (task_rel is identity on Unit)
-- [ ] **Omega construction**: `Omega := {tau}` (singleton set)
-  - [ ] Prove `ShiftClosed Omega`: shifting the single history by any d gives the same history (states are always Unit)
-- [ ] **truth_at correspondence**: Prove `truth_at TM Omega tau t phi <-> temporal_truth (Z.toOrdered sig) atomMap_fwd t phi` for all temporal formulas phi
-  - [ ] Atom case: `truth_at ... (atom p)` = `exists ht, valuation (states t ht) p` = Z-model's `interp (atomMap_fwd (atom p)) t` = `temporal_truth ... (atom p)`
-  - [ ] Bot/Imp: structural
-  - [ ] Box case: `truth_at ... (box phi)` = `forall sigma in Omega, truth_at ... sigma t phi` = `truth_at ... tau t phi` (Omega is singleton) -- This reduces to the temporal_truth for box, which reads `interp (atomMap_fwd (box phi)) t`. The Z-model's predicate for box phi at time t captures exactly whether box phi holds. This is correct because in the single-S5-class discrete case, box phi at t <-> phi holds at ALL times <-> the Z-model's interp for box phi is true at t (set up this way by the chronicle extraction)
-  - [ ] Temporal cases (G, H, U, S): direct from quantifier structure over Int matching Z-model carrier
-- [ ] **Wire the pipeline into doets_countermodel_discrete**:
-  - [ ] Step 1: `extract_chronicle_as_prior A h_mcs h_box_discrete`
-  - [ ] Step 2: `mkSigFrom phi`, `mkAtomMap phi`, construct `atomMap_fwd`
-  - [ ] Step 3: `chronicle_is_good M sig atomMap (operator_depth phi + 1)`
-  - [ ] Step 4: `obtain Z, h_equiv from good`
-  - [ ] Step 5: Use `k_equiv_preserves_temporal_truth` to transfer `neg phi` truth from chronicle to Z-model
-  - [ ] Step 6: Construct TaskFrame Int, TaskModel, Omega, tau from Z-model; prove `neg truth_at`
-  - [ ] Remove the chronicle fallback entirely
-- [ ] **Final verification**: `#print axioms bx_completeness` shows no `sorryAx`
+- [ ] **Task 6.1**: Construct the carrier isomorphism. Since Z has `lo = none, hi = none`, the carrier is `{z : Z // True}` which is isomorphic to Z (= Int) via `Subtype.val`. Use `Equiv.subtypeUnivEquiv` or simply `Subtype.val` as the bijection. This is trivial.
 
-**Timing**: 5 hours
+- [ ] **Task 6.2**: Transfer temporal truth from Z.toOrdered (carrier = `{z : Z // True}`) to a structure on bare Int. The isomorphism `Subtype.val : {z : Z // True} -> Z` is an order isomorphism. Temporal truth transfers directly through this iso.
+
+- [ ] **Task 6.3**: Construct TaskFrame Int for single-S5-class discrete case:
+  - `WorldState := Unit`
+  - `task_rel w d u := w = u` (trivial)
+  - All frame axioms trivial (single element type)
+
+- [ ] **Task 6.4**: Construct TaskModel and WorldHistory:
+  - Valuation: at the single WorldState, atom p is true iff Z-model's predicate for (atomMap_fwd p) holds at current time
+  - Single history tau: `domain t := True`, `states t _ := ()`
+  - Omega = {tau} (singleton, shift-closed trivially)
+
+- [ ] **Task 6.5**: Prove `truth_at` correspondence: `truth_at TM Omega tau t phi <-> temporal_truth (Z.toOrdered sig) atomMap_fwd t phi` for the formula of interest. The singleton Omega makes box/diamond trivial. Temporal cases (G, H, U, S) follow from quantifier structure over Int matching Z-model carrier.
+
+- [ ] **Task 6.6**: Wire the pipeline into `doets_countermodel_discrete`:
+  - Step 1: Extract chronicle, construct sig and atomMap
+  - Step 2: `chronicle_is_good` gives Z-interval with k-equiv
+  - Step 3: Truth transfer (Phase 5) gives point in Z where neg phi holds
+  - Step 4: Carrier isomorphism to Int (Task 6.1-6.2)
+  - Step 5: TaskFrame construction (Task 6.3-6.4)
+  - Step 6: truth_at correspondence proves the countermodel works
+  - Remove chronicle fallback entirely
+
+- [ ] **Task 6.7**: Final verification: `#print axioms bx_completeness` shows no `sorryAx`
+
+**Timing**: 4 hours
 
 **Depends on**: 5
 
@@ -271,23 +303,23 @@ Phases within the same wave can execute in parallel.
 - [ ] `#print axioms bx_completeness` outputs only: `propext`, `Classical.choice`, `Quot.sound`, `Lean.ofReduceBool`, `Lean.trustCompiler` (NO `sorryAx`)
 - [ ] `#print axioms doets_countermodel_discrete` shows no `sorryAx`
 - [ ] `#print axioms chronicle_is_good` shows no `sorryAx`
-- [ ] `#print axioms finite_structures_good` shows no `sorryAx`
-- [ ] `#print axioms k_equiv_preserves_eval` shows no `sorryAx`
+- [ ] `#print axioms finite_structures_good` shows no `sorryAx` (already verified)
 - [ ] The chronicle fallback (`dd_countermodel_chronicle_discrete`) is no longer called from Transfer.lean
 - [ ] No new `sorry` introduced anywhere in the codebase
 
 ## Artifacts & Outputs
 
-- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - All 5 sorries closed
+- `Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel.lean` - All sorries closed (Phase 1 done, Phases 2-4 remaining)
 - `Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean` - Full pipeline, no fallback
-- `Theories/Bimodal/Metalogic/WeakCanonical/TruthTransfer.lean` (new) - k_equiv_preserves_eval, temporal truth transfer, TaskFrame Int construction
+- `Theories/Bimodal/Metalogic/WeakCanonical/TruthTransfer.lean` (new) - Truth transfer via existential closure, TaskFrame Int construction
 - `specs/155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md` - This plan
 
 ## Rollback/Contingency
 
-If implementation encounters a fundamental blocker (e.g., `finite_structures_good` requires infrastructure not present):
+If implementation encounters a fundamental blocker:
 
 1. **Partial progress is safe**: Each phase closes independent sorries. Phases 1-4 can be committed individually without breaking the build (the chronicle fallback remains active until Phase 6).
 2. **Revert pipeline wiring only**: If Phase 6 fails, Phases 1-5 still provide value (sorry-free IntegerModel.lean + truth transfer infrastructure). Revert Transfer.lean to fallback state.
-3. **Alternative for Phase 1**: If predicate extension approach fails, consider redefining `ZIntervalStructure.toOrdered` to restrict carrier to the interval (approach A from research). This changes the meaning of `good` but may be simpler.
-4. **Alternative for Phase 5**: If `k_equiv_preserves_eval` requires too much infrastructure, consider approach (C) from research: prove the chronicle's FMCS structure transfers through k-equivalence, reusing `ParametricCanonicalTaskFrame` directly.
+3. **Phase 2 fallback**: If the ordered sum decomposition approach is too complex, consider proving transitivity via a direct EF-game argument (show the duplicator can compose winning strategies on overlapping intervals).
+4. **Phase 4 fallback**: If the Z-indexed OrderIso construction is intractable, consider using the Countable + discrete structure to directly build a single ZIntervalStructure by enumerating the carrier and defining interp pointwise.
+5. **Phase 5 is low-risk**: The existential closure approach is mathematically simple and requires only `doets_lemma_1_1` + `table_correctness` + `table_depth_bound`, all of which are sorry-free.

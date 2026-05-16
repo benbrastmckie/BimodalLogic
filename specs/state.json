@@ -1260,7 +1260,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -1269,7 +1269,7 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-16T19:49:58Z",
+      "last_updated": "2026-05-16T20:40:44Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -1280,10 +1280,10 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md",
           "type": "plan",
-          "summary": "6-phase Reynolds pipeline implementation plan (22h)"
+          "summary": "Revised plan v2: fixed deps, expanded Phase 2, simplified Phase 5-6"
         }
       ],
-      "session_id": "sess_1747398000_039285",
+      "session_id": "sess_1747398000_1fb270",
       "researched": "2026-05-16T19:38:04Z",
       "started": "2026-05-16T19:49:58Z"
     }
