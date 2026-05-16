@@ -135,17 +135,20 @@ Phases are sequential: each depends on the previous one.
 
 ---
 
-### Phase 1: Design and Validate Signatures [NOT STARTED]
+### Phase 1: Design and Validate Signatures [COMPLETED]
 
 **Goal**: Define `sum_nf_lift_gen` and helper lemma signatures with sorry bodies, validate they type-check, and verify the sorry sites in `sum_nf_agree_sentence` can be closed by calling them.
 
 **Tasks**:
-- [ ] Use `lean_goal` at each of the 4 sorry sites to capture exact goal states
-- [ ] Define `sum_nf_lift_gen` with the signature from the architecture section, sorry body
-- [ ] Define helper `orderedSum_lt_iff` simp lemma for Sigma.Lex order reasoning
-- [ ] Verify `sum_nf_lift_gen` at d=K, n=1 produces a term that type-checks when substituted at the sorry sites (with `h_atoms` constructed from `h_agree_comp` for single-element environments where `AtomKind sig 1` has no order atoms)
-- [ ] Adjust the `h_comp` budget parameter if needed (ensure `m ≤ d + n` vs `m ≤ d + n + 1` alignment)
-- [ ] Run `lake build` to confirm no type errors from the new definitions
+- [x] **Task 1.1**: Use `lean_goal` at each of the 4 sorry sites to capture exact goal states *(completed)*
+- [x] **Task 1.2**: Define `sum_nf_lift_gen` with sorry-free body *(deviation: altered -- redesigned with BiCompat witness oracle instead of h_atoms-only approach; see architecture notes below)*
+- [ ] **Task 1.3**: Define helper `orderedSum_lt_iff` simp lemma for Sigma.Lex order reasoning *(deviation: skipped -- Sigma.Lex.lt_def from Mathlib suffices, inline show/cases suffice)*
+- [x] **Task 1.4**: Verify `sum_nf_lift_gen` type-checks and can be called at sorry sites *(completed -- verified signature compatibility)*
+- [x] **Task 1.5**: Adjust `h_comp` budget parameter *(completed -- m <= d+n confirmed)*
+- [x] **Task 1.6**: Run `lake build` to confirm no type errors *(completed -- build passes)*
+- [x] **Task 1.7**: Define `BiCompat` recursive witness oracle predicate *(added -- not in original plan)*
+- [x] **Task 1.8**: Prove `component_extend_fwd` and `component_extend_bwd` *(added -- key helpers for BiCompat construction)*
+- [x] **Task 1.9**: Define `atomKind_one_pred_only` helper *(completed)*
 
 **Timing**: 2 hours
 

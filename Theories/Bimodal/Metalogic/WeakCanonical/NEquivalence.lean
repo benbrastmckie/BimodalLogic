@@ -139,6 +139,161 @@ private theorem atomKind_zero_elim {sig : MonadicSignature} (a : AtomKind sig 0)
   | .order i _ _ => Fin.elim0 i
 
 /--
+Helper: `AtomKind sig 1` has no order atoms. Every atom at `Fin 1` is a
+predicate atom `.pred p 0` since `Fin 1` has no pair of distinct elements.
+-/
+private theorem atomKind_one_pred_only {sig : MonadicSignature} (a : AtomKind sig 1) :
+    ∃ p, a = .pred p 0 := by
+  cases a with
+  | pred p i => exact ⟨p, by congr; exact Fin.eq_zero i⟩
+  | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
+
+/--
+Bi-directional witness compatibility: at each quantifier level, for any element
+in one ordered sum, there exists a matching element in the other ordered sum
+with atom agreement and recursive compatibility for the extended environments.
+
+Defined by recursion on depth `d`. At depth 0 (no quantifier steps), trivially True.
+At depth `d+1`, provides forward and backward witness oracles that produce matching
+elements with atom agreement plus recursive BiCompat at depth `d`.
+-/
+private noncomputable def BiCompat (sig : MonadicSignature) :
+    Nat → (n : Nat) → (I : Type) → [LinearOrder I] →
+    (ms ms' : I → OrderedMonadicStructure sig) →
+    (env_M : Fin n → (orderedSum sig I ms).carrier) →
+    (env_N : Fin n → (orderedSum sig I ms').carrier) → Prop
+  | 0, _, _, _, _, _, _, _ => True
+  | d + 1, n, I, _, ms, ms', env_M, env_N =>
+    (∀ (j : I) (c' : (ms' j).carrier), ∃ (c : (ms j).carrier),
+      (∀ ak : AtomKind sig (n + 1),
+        atom_eval (orderedSum sig I ms) (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M) ak ↔
+        atom_eval (orderedSum sig I ms') (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N) ak) ∧
+      BiCompat sig d (n + 1) I ms ms'
+        (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
+        (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)) ∧
+    (∀ (j : I) (c : (ms j).carrier), ∃ (c' : (ms' j).carrier),
+      (∀ ak : AtomKind sig (n + 1),
+        atom_eval (orderedSum sig I ms) (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M) ak ↔
+        atom_eval (orderedSum sig I ms') (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N) ak) ∧
+      BiCompat sig d (n + 1) I ms ms'
+        (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
+        (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N))
+
+/--
+Component extension: from component depth-(K+1) r-var NF agreement and an element
+`c'` in `ms' j`, find `c` in `ms j` such that the extended environments share
+depth-K (r+1)-var component NF agreement.
+-/
+private theorem component_extend_fwd {sig : MonadicSignature}
+    {K r : Nat} {I : Type} [LinearOrder I] (j : I)
+    (ms ms' : I → OrderedMonadicStructure sig)
+    (eM : Fin r → (ms j).carrier) (eN : Fin r → (ms' j).carrier)
+    (h : ∀ nf : NormalForm sig (K + 1) r,
+      nf_eval_nf (ms j) (K + 1) r eM nf ↔ nf_eval_nf (ms' j) (K + 1) r eN nf)
+    (c' : (ms' j).carrier) :
+    ∃ c : (ms j).carrier, ∀ nf : NormalForm sig K (r + 1),
+      nf_eval_nf (ms j) K (r + 1) (Fin.cons c eM) nf ↔
+      nf_eval_nf (ms' j) K (r + 1) (Fin.cons c' eN) nf := by
+  have hM := nf_characteristic_satisfies (ms j) (K + 1) r eM
+  have hN := nf_characteristic_satisfies (ms' j) (K + 1) r eN
+  have heq := nf_eval_unique (ms' j) (K + 1) r eN _ _ ((h _).mp hM) hN
+  obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
+  set ch := nf_characteristic (ms' j) K (r + 1) (Fin.cons c' eN)
+  obtain ⟨c, hc⟩ := ((hMq ch).trans (hNq ch).symm).mpr
+    ⟨c', nf_characteristic_satisfies ..⟩
+  exact ⟨c, nf_agreement_from_shared_nf _ _ _ _ ch hc
+    (nf_characteristic_satisfies ..)⟩
+
+/-- Symmetric version of `component_extend_fwd`: find c' given c. -/
+private theorem component_extend_bwd {sig : MonadicSignature}
+    {K r : Nat} {I : Type} [LinearOrder I] (j : I)
+    (ms ms' : I → OrderedMonadicStructure sig)
+    (eM : Fin r → (ms j).carrier) (eN : Fin r → (ms' j).carrier)
+    (h : ∀ nf : NormalForm sig (K + 1) r,
+      nf_eval_nf (ms j) (K + 1) r eM nf ↔ nf_eval_nf (ms' j) (K + 1) r eN nf)
+    (c : (ms j).carrier) :
+    ∃ c' : (ms' j).carrier, ∀ nf : NormalForm sig K (r + 1),
+      nf_eval_nf (ms j) K (r + 1) (Fin.cons c eM) nf ↔
+      nf_eval_nf (ms' j) K (r + 1) (Fin.cons c' eN) nf := by
+  have hM := nf_characteristic_satisfies (ms j) (K + 1) r eM
+  have hN := nf_characteristic_satisfies (ms' j) (K + 1) r eN
+  have heq := nf_eval_unique (ms' j) (K + 1) r eN _ _ ((h _).mp hM) hN
+  obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
+  set ch := nf_characteristic (ms j) K (r + 1) (Fin.cons c eM)
+  obtain ⟨c', hc'⟩ := ((hMq ch).trans (hNq ch).symm).mp
+    ⟨c, nf_characteristic_satisfies ..⟩
+  exact ⟨c', nf_agreement_from_shared_nf _ _ _ _ ch
+    (nf_characteristic_satisfies ..) hc'⟩
+
+/--
+Generalized lifting lemma: ordered-sum NF agreement from atom-level compatibility,
+component sentence-level equivalence, and bi-directional witness compatibility.
+
+The `h_atoms` hypothesis provides atom agreement for the current environments.
+The `h_bc : BiCompat` hypothesis provides a recursive witness oracle that, at each
+quantifier level, finds matching elements with atom agreement and recursive
+compatibility for the extended environments. This terminates because depth
+decreases at each level.
+
+The inductive step at depth `d+1` extracts witnesses from `BiCompat`, applies the IH
+at depth `d` with `n+1` vars (using the extracted atom agreement and recursive
+BiCompat), and transfers the NF evaluation.
+-/
+private noncomputable def sum_nf_lift_gen (sig : MonadicSignature) :
+    ∀ (d : Nat) (n : Nat) (I : Type) [inst_lo : LinearOrder I]
+    (ms ms' : I → OrderedMonadicStructure sig)
+    (h_comp : ∀ (m : Nat), m ≤ d + n → ∀ i, ∀ nf : NormalForm sig m 0,
+      nf_eval_nf (ms i) m 0 Fin.elim0 nf ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf)
+    (env_M : Fin n → (orderedSum sig I ms).carrier)
+    (env_N : Fin n → (orderedSum sig I ms').carrier)
+    (h_atoms : ∀ a : AtomKind sig n,
+      atom_eval (orderedSum sig I ms) env_M a ↔
+      atom_eval (orderedSum sig I ms') env_N a)
+    (h_bc : BiCompat sig d n I ms ms' env_M env_N)
+    (nf : NormalForm sig d n),
+    nf_eval_nf (orderedSum sig I ms) d n env_M nf ↔
+    nf_eval_nf (orderedSum sig I ms') d n env_N nf := by
+  intro d; induction d with
+  | zero =>
+    intro n I _ ms ms' _ env_M env_N h_atoms _ nf
+    simp only [nf_eval_nf]
+    exact ⟨fun hM a => (h_atoms a).symm.trans (hM a),
+           fun hN a => (h_atoms a).trans (hN a)⟩
+  | succ d ih_d =>
+    intro n I _inst ms ms' h_comp env_M env_N h_atoms h_bc nf
+    obtain ⟨atom_assgn, quant_assgn⟩ := nf
+    obtain ⟨h_bc_fwd, h_bc_bwd⟩ := h_bc
+    simp only [nf_eval_nf]
+    have use_ih (j : I) (c : (ms j).carrier) (c' : (ms' j).carrier)
+        (hat : ∀ ak : AtomKind sig (n+1),
+          atom_eval (orderedSum sig I ms) (Fin.cons (show _ from ⟨j, c⟩) env_M) ak ↔
+          atom_eval (orderedSum sig I ms') (Fin.cons (show _ from ⟨j, c'⟩) env_N) ak)
+        (hbc : BiCompat sig d (n+1) I ms ms'
+          (Fin.cons (show _ from ⟨j, c⟩) env_M)
+          (Fin.cons (show _ from ⟨j, c'⟩) env_N))
+        (snf : NormalForm sig d (n+1)) :
+        nf_eval_nf (orderedSum sig I ms) d (n+1)
+          (Fin.cons (show _ from ⟨j, c⟩) env_M) snf ↔
+        nf_eval_nf (orderedSum sig I ms') d (n+1)
+          (Fin.cons (show _ from ⟨j, c'⟩) env_N) snf :=
+      @ih_d (n+1) I _inst ms ms' (fun m hm => h_comp m (by omega)) _ _ hat hbc snf
+    constructor
+    · intro ⟨hM_at, hM_qt⟩
+      exact ⟨fun a => (h_atoms a).symm.trans (hM_at a), fun sub_nf => by
+        rw [← hM_qt sub_nf]; constructor
+        · rintro ⟨⟨j, c'⟩, hc'⟩; obtain ⟨c, hat, hbc⟩ := h_bc_fwd j c'
+          exact ⟨⟨j, c⟩, (use_ih j c c' hat hbc sub_nf).mpr hc'⟩
+        · rintro ⟨⟨j, c⟩, hc⟩; obtain ⟨c', hat, hbc⟩ := h_bc_bwd j c
+          exact ⟨⟨j, c'⟩, (use_ih j c c' hat hbc sub_nf).mp hc⟩⟩
+    · intro ⟨hN_at, hN_qt⟩
+      exact ⟨fun a => (h_atoms a).trans (hN_at a), fun sub_nf => by
+        rw [← hN_qt sub_nf]; constructor
+        · rintro ⟨⟨j, c⟩, hc⟩; obtain ⟨c', hat, hbc⟩ := h_bc_bwd j c
+          exact ⟨⟨j, c'⟩, (use_ih j c c' hat hbc sub_nf).mp hc⟩
+        · rintro ⟨⟨j, c'⟩, hc'⟩; obtain ⟨c, hat, hbc⟩ := h_bc_fwd j c'
+          exact ⟨⟨j, c⟩, (use_ih j c c' hat hbc sub_nf).mpr hc'⟩⟩
+
+/--
 Sentence-level sum NF agreement: if components are k-equivalent (agree on all
 sentence-level NFs at depths ≤ k), then the ordered sums agree on all
 sentence-level NFs at depth k.
