@@ -1,225 +1,248 @@
-# Teammate A Findings: Backward Analysis from Sorry Sites
+# Teammate A Findings: Primary Approach for Fixing 15 Build Errors
 
-**Task**: 154 - sum_preservation_ef_games
-**Agent**: Backward-analysis agent
+**Task**: 154 — Sum preservation for k-equivalence of ordered monadic structures
+**File**: `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean`
+**Scope**: 15 build errors in `build_bicompat` (Category 2) and `sum_lift_one_var` (Category 4)
 **Date**: 2026-05-15
 
-## Executive Summary
+---
 
-All 4 sorry sites have identical structure. The gap is between **component-level** NF agreement and **ordered-sum-level** NF agreement. The existing `sum_nf_lift_gen` can close all 4 sorries IF we can construct `BiCompat`. The missing piece is a recursive helper `sum_bicompat_from_comp` that builds `BiCompat` from component equivalence with index-matched environments.
+## Key Findings
 
-## Sorry Site Analysis
+### Finding 1: Category 2 — The Exact Elaboration Failure for `.1` on `Fin.cons`
 
-### Goal State (Identical Pattern for All 4)
+**Error locations**: Lines 547–550 and 628–631 (duplicated in fwd/bwd oracle arms).
 
-All 4 sorry sites (lines 429, 451, 476, 496) produce goals of the same form:
-
+**Root cause**: `Fin.cons` is a *dependent* function:
 ```
-⊢ ∃ x, nf_eval_nf (orderedSum sig I ms[']) k (0 + 1) (Fin.cons x Fin.elim0) sub_nf
+Fin.cons : {n : ℕ} → {α : Fin (n+1) → Sort u} → α 0 → ((i : Fin n) → α i.succ) → (i : Fin (n+1)) → α i
 ```
+When `env_M : Fin n → (orderedSum sig I ms).carrier` (a *non-dependent* function), Lean cannot infer the motive `α` from the second argument, so `Fin.cons (show T from ⟨j, c⟩) env_M` fails to elaborate with a known result type. Consequently, `(Fin.cons ... env_M p).1` — the `.1` Sigma projection — cannot be resolved because Lean does not know the result type is `Sigma (...)`.
 
-The variations are:
-| Sorry | Line | Case       | Target sum | Have eval in | Witness direction |
-|-------|------|------------|-----------|--------------|-------------------|
-| 1     | 429  | succ.mp.mp | ms        | ms' (hb_eval) | ms' → ms (find a from b) |
-| 2     | 451  | succ.mp.mpr| ms'       | ms (ha_eval)  | ms → ms' (find b from a) |
-| 3     | 476  | succ.mpr.mp| ms'       | ms (ha_eval)  | ms → ms' (find b from a) |
-| 4     | 496  | succ.mpr.mpr| ms       | ms' (hb_eval) | ms' → ms (find a from b) |
+The `show T from x` pattern elaborates to `(have this := ⟨j, c⟩; this)` in the goal state. This is visible in the LSP goal at line 547: the environment elements appear as `(have this := ⟨j, c⟩; this)` rather than typed Sigma terms.
 
-### Available Hypotheses at Each Sorry Site
+**Verified**: `Matrix.vecCons` (non-dependent) and `Fin.cons` (dependent) are definitionally equal for non-dependent functions (`rfl` proves it), but `Matrix.vecCons` successfully supports `.1` projection while `Fin.cons` does not in this context.
 
-Each sorry site has the following in context (example from sorry 1, others are symmetric):
+**Minimal fix for h_idx'**: The current term-mode proof `Fin.cases rfl (fun k => h_idx k)` must be replaced with a tactic proof that defines the extended environments as explicit `let` bindings using `fun p => Fin.cases ⟨j, c⟩ env_M p`, then proves the index equality via `Fin.cases` case split.
 
-1. **IH** (`ih_k`): Ordered-sum depth-k sentence-level (n=0) NF agreement from component equivalence
-2. **Component equivalence** (`h_comp`): `∀ m ≤ k+1, ∀ i, nf_eval_nf (ms i) ... ↔ nf_eval_nf (ms' i) ...` at sentence level
-3. **Component witnesses** (`a`, `b`): Elements in `ms i` and `ms' i` respectively
-4. **Component NF agreement** (`h_agree_comp`): `∀ nf', nf_eval_nf (ms i) k (0+1) (Fin.cons a Fin.elim0) nf' ↔ nf_eval_nf (ms' i) k (0+1) (Fin.cons b Fin.elim0) nf'`
-5. **Ordered-sum eval** (`hb_eval` or `ha_eval`): One side already satisfies `sub_nf` in the ordered sum
-
-### The Gap
-
-The gap at every sorry site is:
-- **Have**: `nf_eval_nf (orderedSum ms') k 1 (Fin.cons ⟨i,b⟩ Fin.elim0) sub_nf`
-- **Have**: Component NF agreement: `(ms i, Cons a) ≡_k (ms' i, Cons b)` at 1 var
-- **Need**: `nf_eval_nf (orderedSum ms) k 1 (Fin.cons ⟨i,a⟩ Fin.elim0) sub_nf`
-- **Missing link**: Component-level NF agreement does NOT imply ordered-sum-level NF agreement
-
-**Root cause**: At depth k > 0, the quantifier step introduces elements from ALL components of the ordered sum, not just component i. The resulting `AtomKind sig 2` includes order atoms `x_0 < x_1` which, when `x_0` and `x_1` are from different components, depend on the index comparison. Component-level agreement knows nothing about cross-component order relationships.
-
-## Approach Analysis
-
-### Approach 1: Use sum_nf_lift_gen (requires BiCompat construction)
-
-**Confirmed working**: `sum_nf_lift_gen sig k 1 I ms ms' h_comp env_M env_N h_atoms h_bc sub_nf` type-checks and can close the sorry when `h_atoms` and `h_bc` are provided.
-
-**h_atoms obligation** (SOLVED):
-```
-∀ a : AtomKind sig 1,
-  atom_eval (orderedSum sig I ms) (Fin.cons ⟨i,a⟩ Fin.elim0) a ↔
-  atom_eval (orderedSum sig I ms') (Fin.cons ⟨i,b⟩ Fin.elim0) a
-```
-This is closable because `AtomKind sig 1` has **no order atoms** (Fin 1 has no distinct pairs). Every atom is `.pred p 0`, and `orderedSum` interp at `⟨i,a⟩` reduces to `(ms i).interp p a`. The component NF agreement gives pred agreement via `atom_agreement_from_nf`.
-
-Proof sketch (verified by lean_multi_attempt):
-```lean
-intro ak
-obtain ⟨p, hp⟩ := atomKind_one_pred_only ak
-subst hp
-simp only [atom_eval, Fin.cons_zero, orderedSum]
-have h_comp_atoms := atom_agreement_from_nf (ms i) (Fin.cons a Fin.elim0)
-  (ms' i) (Fin.cons b Fin.elim0) h_agree_comp
-exact h_comp_atoms (.pred p 0)
-```
-
-**h_bc obligation** (UNSOLVED -- the main blocker):
-```
-BiCompat sig k 1 I ms ms' (Fin.cons ⟨i,a⟩ Fin.elim0) (Fin.cons ⟨i,b⟩ Fin.elim0)
-```
-
-`BiCompat` unfolds recursively:
-- Depth 0: `True` (trivial)
-- Depth d+1, n vars: forward + backward oracle producing witnesses with `AtomKind sig (n+1)` agreement AND `BiCompat sig d (n+1)` at extended envs
-
-For our case (d=k, n=1), BiCompat requires k levels of nesting, with env sizes growing from 1 to k+1. The total construction depth is k.
-
-### Approach 2: Direct nf_agreement_from_shared_nf at ordered-sum level
-
-**Fails**: Would require showing `nf_characteristic (orderedSum ms) k 1 (Fin.cons ⟨i,a⟩ ...) = nf_characteristic (orderedSum ms') k 1 (Fin.cons ⟨i,b⟩ ...)`, which IS the same as proving ordered-sum NF agreement -- circular.
-
-### Approach 3: Use IH (ih_k) directly
-
-**Fails**: `ih_k` operates at depth k with n=0 (sentence level). We need depth k with n=1. Type mismatch: `NormalForm sig k (0+1)` vs `NormalForm sig k 0`.
-
-### Approach 4: Component-to-sum NF equivalence at n=1
-
-At n=1, `AtomKind sig 1` has no order atoms, so ordered-sum evaluation and component evaluation agree for atomic formulas. However, at depth > 0, quantifiers introduce elements from all components with `AtomKind sig 2` order atoms that component evaluation cannot model. So the equivalence breaks at depth > 0.
-
-**Conclusion**: This approach only works for depth 0. Not sufficient.
-
-### Approach 5: Eliminate BiCompat by restructuring sum_nf_lift_gen
-
-Replace BiCompat with index-matching + atom agreement as hypotheses (the original plan v5 approach before BiCompat was introduced). The IH step would need to BUILD atom agreement at n+1 from:
-- atom agreement at n (existing)
-- component conditional transfer (for the new witness)
-- extend_atoms (already proved)
-
-This avoids the recursive BiCompat predicate but requires the same recursive witness construction inside the IH step. The advantage is that the construction happens once inside `sum_nf_lift_gen` rather than needing a separate `BiCompat` builder.
-
-**This is the most promising alternative**, effectively merging the BiCompat construction into sum_nf_lift_gen's induction step.
-
-## Recommended Solution
-
-### Primary Recommendation: Build `sum_bicompat_from_comp` helper
-
-A new private recursive definition that constructs `BiCompat` from component equivalence:
+The concrete replacement for each occurrence of `h_idx'`:
 
 ```lean
-private noncomputable def sum_bicompat_from_comp (sig : MonadicSignature) :
-    ∀ (d n : Nat) (I : Type) [LinearOrder I]
-    (ms ms' : I → OrderedMonadicStructure sig)
-    (h_comp : ∀ m, m ≤ d + n → ∀ i, ∀ nf : NormalForm sig m 0,
-      nf_eval_nf (ms i) m 0 Fin.elim0 nf ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf)
-    (env_M : Fin n → (orderedSum sig I ms).carrier)
-    (env_N : Fin n → (orderedSum sig I ms').carrier)
-    (h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
-    (h_atoms : ∀ a : AtomKind sig n,
-      atom_eval (orderedSum sig I ms) env_M a ↔
-      atom_eval (orderedSum sig I ms') env_N a),
-    BiCompat sig d n I ms ms' env_M env_N
+-- Replace the current h_idx' (which fails to elaborate) with:
+let envM_ext : Fin (n + 1) → (orderedSum sig I ms).carrier :=
+  fun p => Fin.cases (⟨j, c⟩ : (orderedSum sig I ms).carrier) env_M p
+let envN_ext : Fin (n + 1) → (orderedSum sig I ms').carrier :=
+  fun p => Fin.cases (⟨j, c'⟩ : (orderedSum sig I ms').carrier) env_N p
+have h_idx' : ∀ p : Fin (n + 1), (envM_ext p).1 = (envN_ext p).1 := by
+  intro p
+  refine Fin.cases ?_ ?_ p
+  · rfl   -- both project to j
+  · intro k; exact h_idx k
 ```
 
-**Construction sketch** (by recursion on d):
-- **d = 0**: `True` by definition
-- **d + 1**: For each `j : I`, `c' : (ms' j).carrier`:
-  1. Extract component-level depth-(d+n) r-var NF agreement for component j, where r = number of env elements in component j. This is done by iterating `component_extend_fwd` starting from component `(d+n+1)`-equiv.
-  2. Use `component_extend_fwd` one more time with `c'` to find `c` in `ms j` with component NF agreement at the right depth and var count.
-  3. From this component NF agreement, extract:
-     - Pred agreement for c/c' (via `atom_agreement_from_nf` on component)
-     - Order agreement within component j for c vs same-component env elements
-  4. For cross-component env elements: order between `⟨j,c⟩` and `⟨idx_p, val_p⟩` with `j ≠ idx_p` is determined by index comparison. Since `h_idx` ensures `idx_p` is the same on both sides, the order is preserved.
-  5. Apply `extend_atoms` to combine into ordered-sum atom agreement at n+1.
-  6. Recursively call `sum_bicompat_from_comp` at depth d, n+1.
+**Verified working**: `Fin.cases x env` is definitionally equal to `Fin.cons x env` (`rfl` proves it, confirmed by `lean_run_code`), so the `cd'` construction and the recursive `build_bicompat` call can use `envM_ext` and `envN_ext` directly. The `.1` on `envM_ext p` works because `envM_ext p` has known type `(orderedSum sig I ms).carrier = Sigma (fun i => (ms i).carrier)`.
 
-### Alternative Recommendation: Restructure sum_nf_lift_gen
+The `h_atoms_ext` hypothesis refers to `Fin.cons (show _ from ⟨j, c⟩) env_M`. Since `envM_ext = Fin.cons ⟨j, c⟩ env_M` by `rfl`, the `cd'` structure body and the recursive call work without any `show`-related transport.
 
-Replace `BiCompat` parameter with `h_idx` + `h_atoms` and fold the witness construction into the IH step. This eliminates the need for a separate BiCompat builder but makes `sum_nf_lift_gen` more complex.
+---
 
-**Trade-off**: The BiCompat approach is more modular (clear separation of concerns) but requires more code. The merged approach is more compact but harder to maintain.
+### Finding 2: Category 4A — `subst h` Eliminates the Wrong Variable
 
-## Detailed Findings per Sorry Site
+**Error location**: Line 788 `Unknown identifier 'i'`.
 
-### Sorry 1 (line 429) - succ.mp.mp (Backward: ms' → ms)
+**Root cause**: In the `agree` field proof, `by_cases h : j' = i` is followed by `subst h`. Lean's `subst` tactic with `h : j' = i` eliminates `i` (not `j'`), even though `i` is the function parameter introduced first.
 
-**Context**: Have `⟨i, b⟩` in orderedSum ms' satisfying sub_nf. Found `a` in `ms i` via component transfer.
-
-**Closing pattern**:
+**Verified experimentally** via `lean_run_code`:
 ```lean
-refine ⟨⟨i, a⟩, ?_⟩
-have h_lift := sum_nf_lift_gen sig k 1 I ms ms'
-  (fun m hm => h_comp m (by omega))
-  (Fin.cons ⟨i, a⟩ Fin.elim0)
-  (Fin.cons ⟨i, b⟩ Fin.elim0)
-  h_atoms_1  -- proved via atomKind_one_pred_only + component NF agreement
-  h_bc_1     -- BiCompat sig k 1, THE MISSING PIECE
-exact (h_lift sub_nf).mpr hb_eval
+-- After `subst h` with h : j' = i (both locals):
+-- Context before: i : I, j' : I, h : j' = i
+-- Context after:  j' : I  (i is gone, renamed to j')
+-- This holds even when i is a named function parameter!
 ```
 
-### Sorry 2 (line 451) - succ.mp.mpr (Forward: ms → ms')
+Lean's `subst` eliminates whichever variable appears on the RHS when both sides are free locals, regardless of introduction order. The substitution is `i := j'`, leaving `j'` in scope and eliminating `i`.
 
-Same structure, but proving `∃ x ∈ orderedSum ms'`. Uses `.mp` instead of `.mpr`.
+**Consequence**: After `subst h`, the identifier `i` no longer exists. The tactic `simp only [show (if i = i then 1 else 0) = 1 from if_pos rfl, ...]` at line 788 fails with "Unknown identifier `i`" because `i` was eliminated.
 
-### Sorry 3 (line 476) - succ.mpr.mp (Forward: ms → ms')
+**Fix**: Replace `subst h` with `simp only [h, if_pos h]` (or just `simp [h]`) in the agree field's `case pos` branch. This rewrites the goal using `h : j' = i` without eliminating either variable from context.
 
-Same as sorry 2, in the symmetric branch of the iff.
+---
 
-### Sorry 4 (line 496) - succ.mpr.mpr (Backward: ms' → ms)
+### Finding 3: Category 4B — Opaque `show T from by rw` in `eM`/`eN` Blocks Reduction
 
-Same as sorry 1, in the symmetric branch of the iff.
+**Error locations**: Lines 792, 794, 800, 802, 812.
 
-## Key Dependencies
+**Root cause**: The current `eM` and `eN` definitions use:
+```lean
+show Fin (if j' = i then 1 else 0) → (ms j').carrier from
+  by rw [if_pos h, h]; exact fun q => (![a]) q
+```
+This pattern creates an opaque `Eq.mpr`-based term that `simp`, `dif_pos`, and `convert` cannot reduce.
 
-| Component | Status | Location |
-|-----------|--------|----------|
-| `sum_nf_lift_gen` | Sorry-free | NEquivalence.lean:296-348 |
-| `BiCompat` definition | Complete | NEquivalence.lean:160-180 |
-| `component_extend_fwd` | Sorry-free | NEquivalence.lean:187-205 |
-| `component_extend_bwd` | Sorry-free | NEquivalence.lean:208-226 |
-| `extend_atoms` | Sorry-free | NEquivalence.lean:233-280 |
-| `atomKind_one_pred_only` | Sorry-free | NEquivalence.lean:145-149 |
-| `atom_agreement_from_nf` | Sorry-free | NormalForm.lean:315-326 |
-| `nf_agreement_from_shared_nf` | Sorry-free | NormalForm.lean:291-306 |
-| `sum_bicompat_from_comp` | **MISSING** | Needs creation |
+The LSP goal state at line 791 confirms: the `eM j'` in the goal appears as `if h : True then (have this := ⋯.mpr (⋯.mpr fun q ↦ ![a] q); this) else ...`. Neither `dif_pos rfl` nor `dif_pos trivial` simplifies the inner `have this := ...` opacity. The `simp [dif_pos rfl]` at line 792 produces goal `k = k + 1 - if j' = j' then 1 else 0` (a numeric equality) on which `funext` is incorrectly applied.
 
-## Complexity Assessment
+**Fix**: Change `eM` and `eN` to use a transparent definition:
 
-**Estimated effort for `sum_bicompat_from_comp`**: 3-5 hours
+```lean
+eM := fun j' q =>
+  if h : j' = i
+  then h ▸ a                              -- ignore q; Fin 1 is trivially satisfied
+  else Fin.elim0 (Fin.cast (if_neg h) q)  -- q : Fin 0 via cast from Fin (if j' = i then 1 else 0)
 
-The main complexity is in the witness construction at each BiCompat level:
-1. Tracking which env elements share a component with the new witness (subset selection)
-2. Iterating component_extend_fwd/bwd for same-component env elements
-3. Establishing order agreement for cross-component env elements via Sigma.Lex reasoning
-4. Combining into extend_atoms call
-5. Recursive BiCompat construction with the extended environment
+eN := fun j' q =>
+  if h : j' = i
+  then h ▸ b
+  else Fin.elim0 (Fin.cast (if_neg h) q)
+```
 
-The `extend_atoms` helper already handles the atom combination, and `component_extend_fwd/bwd` handle the within-component transfer. The gap is the orchestration layer that:
-- Classifies env elements by component membership
-- Builds the component NF agreement chain
-- Handles the cross-component order reasoning
+**Verified working** via `lean_run_code`:
+- `Fin.cast (if_neg h) q` successfully casts `q : Fin (if j' = i then 1 else 0)` to `Fin 0` when `h : j' ≠ i`.
+- `simp` proves `(if h : i = i then h ▸ a else Fin.elim0 (Fin.cast (if_neg h) q)) = a` directly.
+- `eM i = fun _ => a` follows from `simp` (confirmed).
+- The consistent field existential becomes: `refine ⟨⟨0, by simp⟩, ?_⟩; simp` (confirmed working).
 
-## Alternative: n=1 Specialization
+With the old `show T from by rw` definition, `simp` cannot reduce `eM j'` for any `j'`. With the new definition, `simp` fully reduces it.
 
-Since ALL 4 sorry sites call `sum_nf_lift_gen` at n=1, we could build a specialized `BiCompat` constructor that only works for n=1 environments. At n=1:
-- The single existing env element is `⟨i, a⟩`/`⟨i, b⟩`
-- For a new witness `⟨j, c⟩`/`⟨j, c'⟩`:
-  - If j ≠ i: cross-component, order automatic from index comparison
-  - If j = i: same-component, use component_extend_fwd
+---
 
-This is significantly simpler than the general case because we only track one existing element's component membership. But the RECURSIVE levels of BiCompat (depth k-1 at n=2, depth k-2 at n=3, ...) still need the general construction.
+### Finding 4: Category 4C — The `bound` Proof Is Mathematically Broken for k = 0
 
-**However**: at each recursive level, we can observe that the new environments are STILL index-matched (we always pick witnesses in the same component as the query). So the recursive call can use the same construction pattern.
+**Error location**: Line 805 (`omega could not prove the goal: No usable constraints`).
 
-## Conclusion
+**Root cause**: This is a genuine mathematical impossibility, not merely a tactic failure.
 
-The 4 sorry sites are all closable by the same mechanism: `sum_nf_lift_gen` + `BiCompat` construction. The h_atoms part is already solved. The sole remaining blocker is constructing `BiCompat sig k 1 I ms ms' (Fin.cons ⟨i,a⟩ Fin.elim0) (Fin.cons ⟨i,b⟩ Fin.elim0)`.
+The `cd0` CompData uses `budget = k + 1` and `sz i = 1`. The `bound` field requires `sz j' < budget` for all `j'`. For `j' = i`: `sz i = 1 < k + 1`. This requires `k ≥ 1`.
 
-**Recommended next step**: Implement `sum_bicompat_from_comp` as a recursive helper that builds BiCompat from component equivalence with index-matched environments. This helper, combined with the already-proved `h_atoms` construction, closes all 4 sorry sites.
+When `k = 0`: `sz i = 1 < 1` is FALSE. There is no valid proof.
+
+**Why `sz i = 1` is mandatory**: The `consistent` field requires, for each `p : Fin 1` with `(envM p).1 = j'`, that `∃ q : Fin (sz j')` witnessing the correspondence. Since `envM` maps to component `i`, we need `∃ q : Fin (sz i)`, which requires `Fin (sz i)` to be nonempty, i.e., `sz i ≥ 1`.
+
+**Why increasing `budget` to `k + 2` cannot fix it**: The `agree` field needs agreement at depth `(budget - sz i)` for `sz i` variables. With `budget = k + 1` and `sz i = 1`: depth = `k + 1 - 1 = k`. This exactly matches `h_agree_comp` (which provides depth-`k` for 1 variable). Increasing budget to `k + 2` would require depth-`(k+1)` for 1 variable, which `h_agree_comp` does not provide. `nf_agreement_monotone` goes only downward (from higher to lower depth), so depth-`k` cannot produce depth-`(k+1)`.
+
+**Confirmed**: `1 < k' + 1 + 1` (for `k = succ k'`, i.e., `k ≥ 1`) is provable by `omega`.
+
+**The mathematical fix**: Case-split `sum_lift_one_var` on `k`:
+
+- **`k = 0`**: `BiCompat sig 0 1 = True` (trivially, by the `| 0, ... => trivial` case of `build_bicompat`). No `cd0` is needed. Construct directly:
+  ```lean
+  have h_bc : BiCompat sig 0 1 I ms ms' envM envN := trivial
+  exact sum_nf_lift_gen sig 0 1 I ms ms' (fun m hm => h_comp m (by omega))
+    envM envN h_atoms_1 h_bc sub_nf
+  ```
+  For `k = 0`, `sum_nf_lift_gen` at depth 0 uses only `h_atoms_1` to close the goal — the `BiCompat` is never accessed.
+
+- **`k = succ k'`**: Use the full `cd0` construction with `budget = k + 1 = k' + 2`.
+  - Bound: `sz i = 1 < k' + 2` by `omega` (since `k' ≥ 0` implies `k' + 2 ≥ 2 > 1`). ✓
+  - Agree: depth `(k' + 2 - 1) = k' + 1 = k` for 1 var. ✓ (matches `h_agree_comp`)
+
+---
+
+### Finding 5: Category 4D — Residual Error in `consistent` at Line 812
+
+**Error**: `Application type mismatch: rfl has type ?m = ?m but expected 0 < if i = i then 1 else 0`.
+
+With the current opaque `eM` definition, after `simp only [dif_pos rfl, show (if i = i then 1 else 0) = 1 from if_pos rfl]`, the `⟨0, rfl⟩` witness fails because `rfl` cannot prove `0 < if i = i then 1 else 0` (the `if` is stuck and not reduced to `1`).
+
+With the new transparent `eM` definition, this becomes `⟨⟨0, by simp⟩, by simp, by simp⟩` — all three `simp` calls succeed because `simp` can reduce the new `eM` at `j' = i`.
+
+---
+
+## Recommended Approach
+
+### Two-Phase Refactoring
+
+**Phase 1: Fix Category 2** (h_idx' in build_bicompat) — Low complexity, high confidence.
+
+The `h_idx'` definition occurs twice (forward oracle, lines 547–550; backward oracle, lines 628–631). Replace both with the `envM_ext` / `envN_ext` `let`-binding pattern. Also update the `cd'` struct body and the recursive `build_bicompat` call to use `envM_ext`/`envN_ext` instead of `Fin.cons (show _ from ⟨j, c⟩) env_M`.
+
+```lean
+-- In the forward oracle body (d + 1 case):
+let envM_ext : Fin (n + 1) → (orderedSum sig I ms).carrier :=
+  fun p => Fin.cases (⟨j, c⟩ : (orderedSum sig I ms).carrier) env_M p
+let envN_ext : Fin (n + 1) → (orderedSum sig I ms').carrier :=
+  fun p => Fin.cases (⟨j, c'⟩ : (orderedSum sig I ms').carrier) env_N p
+have h_idx' : ∀ p : Fin (n + 1), (envM_ext p).1 = (envN_ext p).1 :=
+  fun p => Fin.cases rfl (fun k => h_idx k) p
+have cd' : CompData sig I ms ms' budget envM_ext envN_ext h_idx' := { ... }
+exact build_bicompat d (n + 1) (by omega) envM_ext envN_ext h_idx' h_atoms_ext cd'
+```
+
+Note: `h_atoms_ext` at lines 536–544 is stated for `Fin.cons (show _ from ⟨j, c⟩) env_M`. Since `envM_ext = Fin.cons ⟨j, c⟩ env_M` definitionally, the `cd'` body fields (sz, eM, eN, agree, bound, consistent) work with `envM_ext` without modification. The `h_atoms_ext` argument to `build_bicompat` also works by definitional equality.
+
+**Phase 2: Fix Category 4** (cd0 in sum_lift_one_var) — Medium complexity, requires case-split.
+
+Replace the current monolithic `sum_lift_one_var` body with two branches:
+
+```lean
+-- Branch 1: k = 0
+-- BiCompat sig 0 1 = trivially True; no cd0 needed
+have h_bc : BiCompat sig 0 1 I ms ms' envM envN := trivial
+exact sum_nf_lift_gen sig 0 1 I ms ms'
+  (fun m hm => h_comp m (by omega)) envM envN h_atoms_1 h_bc sub_nf
+
+-- Branch 2: k = succ k' (k ≥ 1)
+-- Use cleaner eM/eN definitions:
+have cd0 : CompData sig I ms ms' (k + 1) envM envN h_idx_1 := {
+  sz := fun j' => if j' = i then 1 else 0
+  eM := fun j' q => if h : j' = i then h ▸ a else Fin.elim0 (Fin.cast (if_neg h) q)
+  eN := fun j' q => if h : j' = i then h ▸ b else Fin.elim0 (Fin.cast (if_neg h) q)
+  agree := fun j' => by
+    by_cases h : j' = i
+    · simp only [h, if_pos rfl, Nat.succ_sub_one]
+      -- Goal: ∀ nf : NF sig k 1, nf_eval (ms j') k 1 (fun _ => h ▸ a) nf ↔ ...
+      intro nf
+      convert h_agree_comp nf using 2 <;> (funext q; fin_cases q; simp)
+    · simp only [if_neg h]
+      -- Goal: ∀ nf : NF sig (k+1) 0, nf_eval (ms j') (k+1) 0 Fin.elim0 nf ↔ ...
+      intro nf
+      have := h_comp (k + 1) le_rfl j' nf
+      convert this using 2 <;> (funext q; exact Fin.elim0 q)
+  bound := fun j' => by
+    by_cases h : j' = i
+    · simp [h]; omega  -- sz i = 1 < k + 1; works because k = succ k' ≥ 1
+    · simp [h]         -- sz j' = 0 < k + 1
+  consistent := fun p j' hj' => by
+    fin_cases p
+    simp only [h_envM] at hj'
+    subst hj'  -- eliminates j' (hj' : i = j'), leaves i
+    refine ⟨⟨0, by simp⟩, by simp, by simp⟩
+}
+```
+
+---
+
+## Evidence Summary
+
+| Issue | Status | Verification |
+|-------|--------|-------------|
+| `.1` on `Fin.cons (show T from x) env_M p` fails to elaborate | Confirmed | `lean_run_code` exact error reproduced |
+| `Fin.cases x env = Fin.cons x env` definitionally | Confirmed | `rfl` succeeds in `lean_run_code` |
+| `let envM_ext := Fin.cases x env; (envM_ext p).1` works | Confirmed | Tactic proof succeeds |
+| `subst h` with `h : j' = i` eliminates `i` (not `j'`) | Confirmed | `trace_state` shows `j' : I` after subst |
+| `show T from by rw; exact` creates opaque `Eq.mpr` term | Confirmed | `dif_pos rfl` cannot reduce residual `have this := ...` |
+| New `eM := fun j' q => if h : j' = i then h ▸ a else Fin.elim0 (Fin.cast (if_neg h) q)` | Verified | `simp` reduces `eM i = fun _ => a` |
+| `bound: sz i = 1 < k + 1` unprovable for abstract `k` | Confirmed | `omega` fails on `1 < k + 1` (`1 < 1` for `k = 0`) |
+| `bound: 1 < k' + 1 + 1` (for `k = succ k'`) | Confirmed | `omega` succeeds |
+| For `k = 0`, `BiCompat sig 0 1 = trivial` bypasses `bound` | Architecture confirmed | `| 0, ... => trivial` pattern in `build_bicompat` |
+
+---
+
+## Confidence Level
+
+**Category 2 fix (h_idx')**: HIGH. The `envM_ext / envN_ext` let-binding approach is verified by `lean_run_code`. The `Fin.cases = Fin.cons` definitional equality means zero semantic changes to downstream logic. This fix requires only local rewrites at two symmetric locations.
+
+**Category 4A fix (avoid subst)**: HIGH. Using `simp [h]` instead of `subst h` in the agree field is a straightforward change with verified behavior. The key insight — that `subst h` with `h : j' = i` eliminates `i` (the outer parameter) rather than `j'` — is fully confirmed experimentally.
+
+**Category 4B fix (cleaner eM)**: HIGH. The `Fin.cast (if_neg h)` approach is verified working in `lean_run_code`. `simp` correctly reduces the new `eM`/`eN` definition at the relevant case positions. The consistent field becomes trivial.
+
+**Category 4C fix (case-split on k)**: HIGH. The mathematical obstruction is genuine (proven by showing `1 < k + 1` is false for `k = 0`) and the case-split is the correct resolution. For `k = 0`, `BiCompat sig 0 1 = True` by the `| 0 => trivial` case, requiring no CompData. For `k = succ k'`, bound holds by `omega`.
+
+**Overall**: These are surgical fixes that do not require restructuring `CompData`, `build_bicompat`, or `sum_nf_lift_gen`. All changes are localized to `h_idx'` (two symmetric occurrences in `build_bicompat`) and `cd0` (in `sum_lift_one_var`).
+
+---
+
+## Relation to Previous Work
+
+The observation that `nf_agreement_monotone` successfully bridges depth mismatches is consistent with the findings here: in the `agree` field of `cd0` for `k = succ k'`, the `j' = i` case uses `h_agree_comp` directly (same depth), and the `j' ≠ i` case uses `h_comp (k+1) le_rfl` directly. No monotonicity bridge is needed at this level.
+
+The `cast (by congr 1; omega) x` pattern consistently fails because `congr 1` on `NormalForm sig d n` produces separate goals for `d` and `n`, but the cast changes both simultaneously. This is consistent with Category 4B: the `show T from by rw [...]` pattern is similarly opaque to reduction tactics.

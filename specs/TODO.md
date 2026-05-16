@@ -43,9 +43,9 @@ technical_debt:
 
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track (tasks 9
 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
-154 [PLANNED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_
+154 [RESEARCHED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_
 155 [NOT STARTED] — Replace the chronicle fallback in Transfer.lean with the full Rey
-  └─ 154 [PLANNED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_ (see above)
+  └─ 154 [RESEARCHED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_ (see above)
 
 
 ### Formula Refactor
@@ -112,7 +112,7 @@ technical_debt:
 
 ### 154. Prove sum_preservation via Ehrenfeucht-Fraisse games (Doets Lemma 1.4)
 - **Effort**: 8-15 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None
@@ -121,6 +121,7 @@ technical_debt:
   - [154_sum_preservation_ef_games/reports/02_team-research.md]
   - [154_sum_preservation_ef_games/reports/03_team-research.md]
   - [specs/154_sum_preservation_ef_games/reports/04_literature-approach.md]
+  - [specs/154_sum_preservation_ef_games/reports/05_team-research.md]
 - **Plan**:
   - [154_sum_preservation_ef_games/plans/02_sum-preservation-plan.md]
   - [154_sum_preservation_ef_games/plans/03_sum-preservation-plan.md]
