@@ -170,7 +170,7 @@ consistent := fun p j' hj' => by
 
 ---
 
-### Phase 2: Refactor Backward Oracle [IN PROGRESS]
+### Phase 2: Refactor Backward Oracle [COMPLETED]
 
 **Goal**: Apply forward oracle patterns to backward oracle (lines 632-683).
 
@@ -187,7 +187,7 @@ consistent := fun p j' hj' => by
 
 ---
 
-### Phase 3: Fix cd0 in sum_lift_one_var + Final Verification [NOT STARTED]
+### Phase 3: Fix cd0 in sum_lift_one_var + Final Verification [IN PROGRESS]
 
 **Goal**: Apply Function.update to cd0 (lines 787-828) and achieve clean build.
 
