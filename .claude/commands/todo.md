@@ -672,25 +672,6 @@ Track for output:
 - `metrics_build_errors`: Current build errors
 - `metrics_synced`: true/false indicating if sync was performed
 
-### 5.8. Regenerate Task Order
-
-After syncing repository metrics, regenerate the Task Order section in TODO.md to reflect current task statuses.
-
-**Run `generate-task-order.sh --update-todo`:**
-```bash
-# Regenerate Task Order (non-fatal -- continue if script unavailable or fails)
-if [ -f ".claude/scripts/generate-task-order.sh" ]; then
-  bash ".claude/scripts/generate-task-order.sh" --update-todo specs/TODO.md specs/state.json \
-    || { echo "Warning: Task Order regeneration failed (non-fatal)" >&2; }
-else
-  echo "Note: generate-task-order.sh not found -- skipping Task Order regeneration" >&2
-fi
-```
-
-**Purpose**: Keep Task Order wave+tree format current with archived tasks removed and statuses updated.
-
-**Non-fatal**: If the script fails for any reason (missing, error, bad state), log the warning and continue with remaining steps. Task Order regeneration failure does not block archival.
-
 ### 5.7. Vault Operation (when next_project_number > 1000)
 
 When `next_project_number` exceeds 1000, initiate vault archival operation to reset task numbering.
@@ -802,18 +783,6 @@ jq --argjson new_next "$new_next_num" \
 mv specs/state.json.tmp specs/state.json
 ```
 
-**Step 5.8.8a: Re-run Task Order Regeneration after Renumbering**:
-
-After renumbering tasks and resetting state, the Task Order must be regenerated again because task numbers have changed:
-
-```bash
-# Regenerate Task Order with updated task numbers (non-fatal)
-if [ -f ".claude/scripts/generate-task-order.sh" ]; then
-  bash ".claude/scripts/generate-task-order.sh" --update-todo specs/TODO.md specs/state.json \
-    || { echo "Warning: Post-vault Task Order regeneration failed (non-fatal)" >&2; }
-fi
-```
-
 **Step 5.8.9: Add transition comment to TODO.md**:
 ```bash
 current_date=$(date +"%Y-%m-%d")
@@ -834,7 +803,7 @@ git add specs/
 git commit -m "todo: archive {N} completed tasks"
 ```
 
-Include roadmap, orphan, misplaced, and Task Order counts in message as applicable:
+Include roadmap, orphan, and misplaced counts in message as applicable:
 ```bash
 # If roadmap items updated, orphans tracked, and misplaced moved:
 git commit -m "todo: archive {N} tasks, update {R} roadmap items, track {M} orphans, move {P} misplaced"
@@ -853,9 +822,6 @@ git commit -m "todo: archive {N} tasks and track {M} orphaned directories"
 
 # If only misplaced moved (no roadmap):
 git commit -m "todo: archive {N} tasks and move {P} misplaced directories"
-
-# Append ", regenerate task order" when Task Order regeneration ran (Step 5.8):
-# Example: "todo: archive {N} tasks, update {R} roadmap items, regenerate task order"
 ```
 
 Where `{R}` = roadmap_completed_annotated + roadmap_abandoned_annotated (total roadmap items updated).

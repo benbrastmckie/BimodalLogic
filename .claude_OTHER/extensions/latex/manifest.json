@@ -1,0 +1,55 @@
+{
+  "name": "latex",
+  "version": "1.0.0",
+  "description": "LaTeX document development with latexmk/pdflatex toolchain",
+  "task_type": "latex",
+  "dependencies": [
+    "core"
+  ],
+  "provides": {
+    "agents": [
+      "latex-implementation-agent.md",
+      "latex-research-agent.md"
+    ],
+    "skills": [
+      "skill-latex-implementation",
+      "skill-latex-research"
+    ],
+    "commands": [],
+    "rules": [
+      "latex.md"
+    ],
+    "context": [
+      "project/latex"
+    ],
+    "scripts": [],
+    "hooks": []
+  },
+  "routing": {
+    "research": {
+      "latex": "skill-latex-research"
+    },
+    "plan": {
+      "latex": "skill-planner"
+    },
+    "implement": {
+      "latex": "skill-latex-implementation"
+    }
+  },
+  "merge_targets": {
+    "claudemd": {
+      "source": "EXTENSION.md",
+      "target": ".claude/CLAUDE.md",
+      "section_id": "extension_latex"
+    },
+    "index": {
+      "source": "index-entries.json",
+      "target": ".claude/context/index.json"
+    },
+    "opencode_json": {
+      "source": "opencode-agents.json",
+      "target": "opencode.json"
+    }
+  },
+  "mcp_servers": {}
+}

@@ -1,0 +1,103 @@
+{
+  "name": "filetypes",
+  "version": "2.2.0",
+  "description": "File format conversion, manipulation, and in-place editing for documents, spreadsheets, and presentations",
+  "task_type": "filetypes",
+  "dependencies": [
+    "core"
+  ],
+  "provides": {
+    "agents": [
+      "filetypes-router-agent.md",
+      "document-agent.md",
+      "filetypes-spreadsheet-agent.md",
+      "presentation-agent.md",
+      "scrape-agent.md",
+      "docx-edit-agent.md",
+      "sheet-agent.md"
+    ],
+    "skills": [
+      "skill-filetypes",
+      "skill-filetypes-spreadsheet",
+      "skill-presentation",
+      "skill-scrape",
+      "skill-docx-edit",
+      "skill-sheet"
+    ],
+    "commands": [
+      "convert.md",
+      "table.md",
+      "scrape.md",
+      "edit.md",
+      "sheet.md"
+    ],
+    "rules": [],
+    "context": [
+      "project/filetypes"
+    ],
+    "scripts": [],
+    "hooks": []
+  },
+  "routing": {
+    "research": {
+      "filetypes": "skill-filetypes",
+      "filetypes:document": "skill-filetypes",
+      "filetypes:spreadsheet": "skill-filetypes-spreadsheet",
+      "filetypes:presentation": "skill-presentation",
+      "filetypes:scrape": "skill-scrape",
+      "filetypes:docx": "skill-docx-edit",
+      "filetypes:xlsx": "skill-sheet"
+    },
+    "plan": {
+      "filetypes": "skill-planner",
+      "filetypes:document": "skill-planner",
+      "filetypes:spreadsheet": "skill-planner",
+      "filetypes:presentation": "skill-planner",
+      "filetypes:scrape": "skill-planner",
+      "filetypes:docx": "skill-planner",
+      "filetypes:xlsx": "skill-planner"
+    },
+    "implement": {
+      "filetypes": "skill-filetypes",
+      "filetypes:document": "skill-filetypes",
+      "filetypes:spreadsheet": "skill-filetypes-spreadsheet",
+      "filetypes:presentation": "skill-presentation",
+      "filetypes:scrape": "skill-scrape",
+      "filetypes:docx": "skill-docx-edit",
+      "filetypes:xlsx": "skill-sheet"
+    }
+  },
+  "merge_targets": {
+    "claudemd": {
+      "source": "EXTENSION.md",
+      "target": ".claude/CLAUDE.md",
+      "section_id": "extension_filetypes"
+    },
+    "index": {
+      "source": "index-entries.json",
+      "target": ".claude/context/index.json"
+    },
+    "opencode_json": {
+      "source": "opencode-agents.json",
+      "target": "opencode.json"
+    }
+  },
+  "mcp_servers": {
+    "superdoc": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@superdoc-dev/mcp"
+      ],
+      "env": {}
+    },
+    "openpyxl": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@jonemo/openpyxl-mcp"
+      ],
+      "env": {}
+    }
+  }
+}

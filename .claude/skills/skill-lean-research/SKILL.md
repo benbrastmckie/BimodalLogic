@@ -66,11 +66,6 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 **Update TODO.md**: Use Edit tool to change status marker from `[NOT STARTED]` or `[RESEARCHED]` to `[RESEARCHING]`.
 
-**Regenerate Task Order** (non-fatal):
-```bash
-.claude/scripts/generate-task-order.sh --update-todo specs/TODO.md specs/state.json 2>/dev/null || true
-```
-
 ---
 
 ### Stage 3: Prepare Delegation Context
@@ -173,11 +168,6 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 ```
 
 **Update TODO.md**: Use Edit tool to change status marker from `[RESEARCHING]` to `[RESEARCHED]`.
-
-**Regenerate Task Order** (non-fatal, runs after status update):
-```bash
-.claude/scripts/generate-task-order.sh --update-todo specs/TODO.md specs/state.json 2>/dev/null || true
-```
 
 **On partial/failed**: Keep status as "researching" for resume.
 

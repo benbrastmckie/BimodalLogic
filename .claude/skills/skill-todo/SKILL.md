@@ -641,36 +641,6 @@ ${transition_comment}
     <checkpoint>vault_check_complete output present; if vault_needed, sub-steps 9.1-9.4 executed</checkpoint>
   </stage>
 
-  <stage id="10.5" name="RegenerateTaskOrder">
-    <action>Regenerate Task Order section in TODO.md after task archival</action>
-    <process>
-      1. Run generate-task-order.sh --update-todo (non-fatal):
-         ```bash
-         if [ -f ".claude/scripts/generate-task-order.sh" ]; then
-           bash ".claude/scripts/generate-task-order.sh" --update-todo specs/TODO.md specs/state.json \
-             || { echo "Warning: Task Order regeneration failed (non-fatal)" >&2; }
-         else
-           echo "Note: generate-task-order.sh not found -- skipping Task Order regeneration" >&2
-         fi
-         ```
-
-      2. If vault operation was performed (vault_approved=true), run regeneration again after renumbering:
-         ```bash
-         # Post-vault re-run (non-fatal)
-         if [ "$vault_approved" = "true" ] && [ -f ".claude/scripts/generate-task-order.sh" ]; then
-           bash ".claude/scripts/generate-task-order.sh" --update-todo specs/TODO.md specs/state.json \
-             || { echo "Warning: Post-vault Task Order regeneration failed (non-fatal)" >&2; }
-         fi
-         ```
-
-      3. Track result for commit message:
-         - task_order_regenerated: true if script ran successfully, false if skipped or failed
-
-      Note: This stage is non-fatal. If generate-task-order.sh is absent or fails, log the
-      warning and proceed to Stage 11. Task archival is never blocked by Task Order regeneration.
-    </process>
-  </stage>
-
   <stage id="11" name="UpdateRoadmap">
     <action>Update ROADMAP.md with completion annotations</action>
     <process>
@@ -749,8 +719,6 @@ ${transition_comment}
       1. **Pre-commit vault safety net**: If next_project_number > 1000 and vault_count unchanged, block commit with error directing back to Stage 10 sub-step 9
       2. `git add -A`
       3. Commit: `todo: archive {N} tasks` with counts for completed, abandoned, roadmap, orphans, misplaced, readme, memories
-         - When task_order_regenerated=true (from Stage 10.5), append ", regenerate task order" to commit message
-         - Example: `todo: archive 3 tasks, update 2 roadmap items, regenerate task order`
     </process>
   </stage>
   

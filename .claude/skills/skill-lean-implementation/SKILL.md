@@ -72,11 +72,6 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 **Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
 
-**Regenerate Task Order** (non-fatal):
-```bash
-.claude/scripts/generate-task-order.sh --update-todo specs/TODO.md specs/state.json 2>/dev/null || true
-```
-
 ---
 
 ### Stage 3: Prepare Delegation Context
@@ -216,11 +211,6 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 ```
 
 Update TODO.md: Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`.
-
-**Regenerate Task Order** (non-fatal, runs after status update):
-```bash
-.claude/scripts/generate-task-order.sh --update-todo specs/TODO.md specs/state.json 2>/dev/null || true
-```
 
 **If status is "partial"**:
 

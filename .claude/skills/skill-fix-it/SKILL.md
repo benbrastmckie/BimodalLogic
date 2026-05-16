@@ -448,11 +448,6 @@ current=$(cat specs/state.json)
 # Step 2: Use jq with slurpfile
 ```
 
-**Topic Auto-Inference**: Before writing each task entry, infer topic from file path and description:
-- Tags from `.claude/` files or `specs/` files → `"agent-system"`
-- Tags from `.lean` files → run keyword heuristic against tag content and file name
-- Use the same heuristic as `/task` Step 4.5
-
 **For fix-it task when has_note_dependency is TRUE**, include dependencies array:
 ```json
 {
@@ -460,22 +455,11 @@ current=$(cat specs/state.json)
   "project_name": "{slug}",
   "status": "not_started",
   "task_type": "{task_type}",
-  "topic": "{auto-inferred topic}",
   "dependencies": [learn_it_task_num]
 }
 ```
 
-**For all other tasks**, include topic but no dependencies:
-```json
-{
-  "project_number": {N},
-  "project_name": "{slug}",
-  "status": "not_started",
-  "task_type": "{task_type}",
-  "topic": "{auto-inferred topic}"
-}
-```
-Note: Omit `"topic"` field if topic cannot be inferred (empty string from heuristic).
+**For all other tasks**, no dependencies field needed.
 
 #### 9.2: Update TODO.md
 
@@ -519,12 +503,12 @@ Show summary of created tasks:
 
 ### Created Tasks
 
-| # | Type | Title | Language | Topic |
-|---|------|-------|----------|-------|
-| {N} | fix-it | Fix issues from FIX:/NOTE: tags | {lang} | {topic} |
-| {N+1} | learn-it | Update context files from NOTE: tags | meta | agent-system |
-| {N+2} | todo | {title} | {lang} | {topic} |
-| {N+3} | research | Research: {question title} | {lang} | {topic} |
+| # | Type | Title | Language |
+|---|------|-------|----------|
+| {N} | fix-it | Fix issues from FIX:/NOTE: tags | {lang} |
+| {N+1} | learn-it | Update context files from NOTE: tags | meta |
+| {N+2} | todo | {title} | {lang} |
+| {N+3} | research | Research: {question title} | {lang} |
 
 ---
 

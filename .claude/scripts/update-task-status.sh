@@ -235,54 +235,18 @@ update_todo_task_order() {
     return 1
   fi
 
-  # Two-mode strategy per task-order-format.md:
-  # Mode B: Terminal transitions (COMPLETED, ABANDONED) -> full regeneration via generate-task-order.sh
-  # Mode A: Non-terminal transitions -> in-place sed on tree line
-  if [[ "$TODO_STATUS" == "COMPLETED" || "$TODO_STATUS" == "ABANDONED" || "$TODO_STATUS" == "EXPANDED" ]]; then
-    # Mode B: Full regeneration (auto-prunes completed task from tree and waves)
-    local gen_script="$SCRIPT_DIR/generate-task-order.sh"
-    if [[ -x "$gen_script" ]]; then
-      if [[ "$DRY_RUN" == "true" ]]; then
-        echo "[dry-run] TODO.md Task Order: terminal status $TODO_STATUS -> would run generate-task-order.sh --update-todo"
-        return 0
-      fi
-      "$gen_script" --update-todo "$TODO_FILE" "$STATE_FILE" || {
-        echo "Warning: generate-task-order.sh failed (non-fatal)" >&2
-      }
-    else
-      echo "Warning: generate-task-order.sh not found at $gen_script -- Task Order not regenerated" >&2
-    fi
-    return 0
-  fi
-
-  # Mode A: In-place status update for non-terminal transitions
-  # Pattern matches tree lines at any indent level:
-  #   "148 [RESEARCHED] — ..."          (root-level, no indent)
-  #   "  └─ 147 [RESEARCHED] — ..."     (indented, depth 1)
-  #   "    └─ 143 [PARTIAL] — ..."      (indented, depth 2)
+  # Find the line matching **{N}** with a status marker in Task Order
   local order_line
-  order_line=$(grep -n -E "^\s*(└─ )?${task_number} \[" "$TODO_FILE" | head -1 | cut -d: -f1)
+  order_line=$(grep -n -E "^- \*\*${task_number}\*\* \[" "$TODO_FILE" | head -1 | cut -d: -f1)
 
   if [[ -z "$order_line" ]]; then
-    echo "Warning: task $task_number not found in TODO.md Task Order tree -- falling back to full regeneration" >&2
-    local gen_script="$SCRIPT_DIR/generate-task-order.sh"
-    if [[ -x "$gen_script" ]]; then
-      if [[ "$DRY_RUN" == "true" ]]; then
-        echo "[dry-run] TODO.md Task Order: task not in tree, would run generate-task-order.sh --update-todo"
-        return 0
-      fi
-      "$gen_script" --update-todo "$TODO_FILE" "$STATE_FILE" 2>/dev/null || {
-        echo "Warning: generate-task-order.sh fallback failed (non-fatal)" >&2
-      }
-    else
-      echo "Warning: generate-task-order.sh not found at $gen_script -- Task Order not updated" >&2
-    fi
+    echo "Warning: task $task_number not found in TODO.md Task Order section" >&2
     return 0
   fi
 
   # Check if already at target
   local current_order_status
-  current_order_status=$(sed -n "${order_line}p" "$TODO_FILE" | grep -oE '\[([A-Z ]+)\]' | head -1 | tr -d '[]')
+  current_order_status=$(sed -n "${order_line}p" "$TODO_FILE" | sed 's/.*\[\([^]]*\)\].*/\1/')
 
   if [[ "$current_order_status" == "$TODO_STATUS" ]]; then
     if [[ "$DRY_RUN" == "true" ]]; then
