@@ -164,7 +164,7 @@ Phases are sequential: each depends on the previous one.
 
 ---
 
-### Phase 2: Base Case and Atom Handling [NOT STARTED]
+### Phase 2: Base Case and Atom Handling [PARTIAL]
 
 **Goal**: Prove the d=0 base case and the atom part of the d+1 inductive step of `sum_nf_lift_gen`.
 

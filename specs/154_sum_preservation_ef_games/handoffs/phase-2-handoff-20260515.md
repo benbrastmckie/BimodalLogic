@@ -1,73 +1,77 @@
-# Phase 2 Handoff: sum_nf_agree Bootstrap Approach
+# Phase 2 Handoff: BiCompat Construction Analysis
 
+**Task**: 154 - sum_preservation_ef_games
+**Session**: sess_1778902351_5b9a77
+**Phase**: 2 (PARTIAL)
 **Date**: 2026-05-15
-**Session**: sess_1778894121_969219
-**Status**: BLOCKED at lifting step (4 sorries remain)
-**File Modified**: `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean`
 
-## What Was Done
+## Summary
 
-1. Replaced the original `sum_nf_agree` (arbitrary n, with `h_atoms`/`h_elem` hypotheses) and `sum_preservation_proof` with:
-   - `atomKind_zero_elim`: helper proving `AtomKind sig 0` is empty
-   - `sum_nf_agree_sentence`: sentence-level (n=0) bootstrap proof by induction on k
-   - Simplified `sum_preservation_proof`: now delegates directly to `sum_nf_agree_sentence`
+Phase 2 is partial. Added `extend_atoms` helper (sorry-free, ~30 lines) that derives ordered-sum atom agreement for extended environments. The main blocker remains: constructing `BiCompat sig k 1 I ms ms' (![<i,a>]) (![<i,b>])`.
 
-2. The file builds successfully with 4 sorries (down from 4 sorries + elaboration errors in the original).
+## What Was Completed
 
-3. All 4 sorries are at the same logical location: after finding `a` and `b` with matching depth-k 1-var component NFs via the component (k+1)-equivalence transfer, we need to show the ordered-sum 1-var NF transfer.
+### `extend_atoms` helper (sorry-free, ~line 228)
 
-## Current State
+Derives ordered-sum atom agreement at n+1 vars from:
+- h_atoms (existing atom agreement at n vars)
+- h_pred (predicate agreement for new element c/c')
+- h_ord_fwd (forward order: c < env_M k iff c' < env_N k)
+- h_ord_bwd (backward order: env_M k < c iff env_N k < c')
+- h_idx (index matching for existing elements)
 
-### Goal at each sorry
+Key finding: BOTH order directions (h_ord_fwd AND h_ord_bwd) are required. In a linear order, `a < b <-> a' < b'` does NOT imply `b < a <-> b' < a'` due to equality cases.
+
+## What Remains: BiCompat Construction
+
+### Core Problem
+
+Need `BiCompat sig k 1 I ms ms' (![<i,a>]) (![<i,b>])`. BiCompat at depth d+1 with n vars requires forward and backward oracle producing witnesses c/c' with:
+1. Atom agreement at n+1 vars (use extend_atoms)
+2. Recursive BiCompat at depth d with n+1 vars
+
+The atom agreement requires same-component order atoms, which need multi-var component NF agreement. This agreement comes from `component_extend_fwd/bwd` (already proved sorry-free). But applying it requires knowing the per-component NF state -- which elements of env are in each component and their current NF agreement level.
+
+### Recommended Approach: build_bicompat with CompNFState
+
+Define a per-component NF state predicate:
 ```
-sig : MonadicSignature
-k : Nat
-ih_k : ordered-sum sentence-level agreement at depth k (from IH)
-h_comp : component agreement at depths <= k+1
-i : I
-a : (ms i).carrier
-b : (ms' i).carrier
-h_agree_comp : component depth-k 1-var NF agreement between a and b
-hb_eval : nf_eval_nf (orderedSum ms') k (0+1) (Fin.cons ⟨i,b⟩ Fin.elim0) sub_nf
-|- exists x, nf_eval_nf (orderedSum ms) k (0+1) (Fin.cons x Fin.elim0) sub_nf
+CompNFState j := exists (r : Nat) (eM : Fin r -> (ms j).carrier) (eN : Fin r -> (ms' j).carrier),
+  (projection_consistency) /\
+  (forall nf : NormalForm sig (budget - r) r, nf_eval_nf (ms j) ... eM nf <-> nf_eval_nf (ms' j) ... eN nf)
 ```
 
-The natural witness is `⟨i,a⟩`. To show it satisfies `sub_nf`, we need to show the ordered-sum depth-k 1-var NFs of `⟨i,a⟩` (in orderedSum ms) and `⟨i,b⟩` (in orderedSum ms') are equal.
+Budget invariant: d + n is constant through recursion. For component j with r elements: NF depth = budget - r.
 
-### The Blocker: 2-var Transfer Gap
+Prove `build_bicompat : forall d n, h_comp -> h_idx -> h_atoms -> (forall j, CompNFState j) -> BiCompat sig d n ...` by induction on d.
 
-The lifting lemma (showing `⟨i,a⟩` and `⟨i,b⟩` have the same ordered-sum 1-var NF) works at depth 0 (pred-only atoms at n=1). But at depth k+1, the quantifier step requires showing 2-var existential transfer at depth k. This requires finding witnesses that preserve not just individual NFs but JOINT 2-var NFs including order atoms.
+At each oracle call for component j:
+1. Extract CompNFState j to get current NF agreement
+2. Use component_extend_fwd/bwd to find witness c/c' with extended NF agreement
+3. Derive h_pred from extended NF via atom_agreement_from_nf
+4. Derive h_ord_fwd, h_ord_bwd from extended NF (same-component: from NF; cross-component: from h_idx)
+5. Apply extend_atoms to get atom agreement at n+1 vars
+6. Update CompNFState for the extended environment
+7. Apply IH with updated CompNFState
 
-The fundamental issue: 1-var component NF matching doesn't determine relative order between specific elements. Two elements with the same 1-var NF can be in either relative order.
+### Initial CompNFState at sorry sites
 
-## Proposed Solution Path
+For the initial call (d=k, n=1, env = ![<i,a>], ![<i,b>]):
+- Component i: r=1, eM = ![a], eN = ![b], NF agreement from h_agree_comp (depth k, 1 var)
+- Other components j != i: r=0, eM = eN = Fin.elim0, NF agreement from h_comp at depth k+1 (sentence equiv)
 
-A well-founded recursive proof by induction on depth `d`, simultaneously handling all variable counts:
+### Implementation Challenges
 
-1. At depth 0 with any n vars: verify atoms directly (pred from component matching, cross-component order from index comparison, same-component order from component multi-var transfer at depth 0).
+1. Projection formalization: dependent type casts between (ms (env_M k).1).carrier and (ms j).carrier
+2. Fin reindexing when building projected environments
+3. Maintaining projection consistency through Fin.cons extensions
 
-2. At depth d+1: verify atoms (same as depth 0), then for the quantifier part, find witnesses using INDEX-PRESERVING component transfer (not ordered-sum transfer). For same-component witnesses, use the component's multi-var quantifier transfer (derived by chaining from the component's equivalence). Apply the IH at depth d with n+1 vars.
+## File State
 
-3. The chain: from component (K+1)-equivalence, extract 1-var transfer at depth K. Given element `a`, find `b` with same 1-var NF. From shared 1-var NF, extract 2-var transfer at depth K-1. Given pair `(a, c)`, find `(b, c')` with same 2-var NF. Continue: at each step, depth decreases by 1, vars increase by 1. After K steps, reach depth 0 where atoms (including order) can be verified.
+- NEquivalence.lean: 4 sorries in sum_nf_agree_sentence (unchanged locations). New extend_atoms (sorry-free).
+- lake build passes.
 
-4. The key is finding witnesses via component MULTI-var transfer (preserving the index and order relative to all previously-chosen same-component elements), not 1-var transfer.
+## Key Files
 
-## Immediate Next Action
-
-Implement the well-founded recursive lifting function `sum_nf_lift` that proves ordered-sum NF agreement for environments constructed by iterated component multi-var transfer, by induction on the NF depth. The function should:
-
-1. Take depth `d`, var count `n`, environments, index matching, and component matching hypotheses.
-2. At d=0: verify atoms directly (pred + order).
-3. At d+1: verify atoms, then for the quantifier step, find witnesses via component multi-var transfer and apply the IH at depth d.
-
-The main formalization challenge is encoding the "component multi-var transfer" condition in Lean's type system (variable-length sub-environments restricted to a single component).
-
-## Key Decisions Made
-
-1. Dropped the original `sum_nf_agree` approach (arbitrary n with `h_atoms`/`h_elem` hypotheses) in favor of the sentence-level bootstrap.
-2. The bootstrap avoids order atoms at the TOP level (n=0) but encounters them at the quantifier step level (n=2).
-3. The order atom problem is fundamental to the NF approach and requires multi-var component transfer, not just 1-var.
-
-## Files Changed
-
-- `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean`: Replaced `sum_nf_agree` + `sum_preservation_proof` with `atomKind_zero_elim` + `sum_nf_agree_sentence` + simplified `sum_preservation_proof`. 4 sorries remain at the lifting step.
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean`
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean`

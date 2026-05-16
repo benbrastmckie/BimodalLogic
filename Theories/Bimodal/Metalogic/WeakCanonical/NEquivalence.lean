@@ -226,6 +226,60 @@ private theorem component_extend_bwd {sig : MonadicSignature}
     (nf_characteristic_satisfies ..) hc'⟩
 
 /--
+Atom agreement for extended environments: given existing atom agreement,
+index matching, and pred+order agreement for the new element c/c',
+derive atom agreement at n+1 vars.
+-/
+private theorem extend_atoms {sig : MonadicSignature}
+    {n : Nat} {I : Type} [LinearOrder I]
+    {ms ms' : I → OrderedMonadicStructure sig}
+    {env_M : Fin n → (orderedSum sig I ms).carrier}
+    {env_N : Fin n → (orderedSum sig I ms').carrier}
+    (h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
+    (h_atoms : ∀ a : AtomKind sig n,
+      atom_eval (orderedSum sig I ms) env_M a ↔ atom_eval (orderedSum sig I ms') env_N a)
+    (j : I) (c : (ms j).carrier) (c' : (ms' j).carrier)
+    -- Pred agreement for the new element
+    (h_pred : ∀ p : sig.preds, (ms j).interp p c ↔ (ms' j).interp p c')
+    -- Order agreement for the new element vs all existing elements (both directions)
+    (h_ord_fwd : ∀ k : Fin n,
+      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+        ⟨j, c⟩ (env_M k) ↔
+      @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+        ⟨j, c'⟩ (env_N k))
+    (h_ord_bwd : ∀ k : Fin n,
+      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+        (env_M k) ⟨j, c⟩ ↔
+      @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+        (env_N k) ⟨j, c'⟩) :
+    ∀ ak : AtomKind sig (n + 1),
+      atom_eval (orderedSum sig I ms) (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M) ak ↔
+      atom_eval (orderedSum sig I ms') (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N) ak := by
+  intro ak
+  cases ak with
+  | pred p idx =>
+    simp only [atom_eval]
+    cases idx using Fin.cases with
+    | zero => simp only [Fin.cons_zero]; exact h_pred p
+    | succ k => simp only [Fin.cons_succ]; exact h_atoms (.pred p k)
+  | order idx1 idx2 hne =>
+    simp only [atom_eval]
+    cases idx1 using Fin.cases with
+    | zero =>
+      cases idx2 using Fin.cases with
+      | zero => exact absurd rfl hne
+      | succ k => simp only [Fin.cons_zero, Fin.cons_succ]; exact h_ord_fwd k
+    | succ k1 =>
+      cases idx2 using Fin.cases with
+      | zero =>
+        simp only [Fin.cons_zero, Fin.cons_succ]
+        exact h_ord_bwd k1
+      | succ k2 =>
+        simp only [Fin.cons_succ]
+        have h' : k1 ≠ k2 := fun heq => hne (by simp [heq])
+        exact h_atoms (.order k1 k2 h')
+
+/--
 Generalized lifting lemma: ordered-sum NF agreement from atom-level compatibility,
 component sentence-level equivalence, and bi-directional witness compatibility.
 
@@ -371,8 +425,7 @@ private noncomputable def sum_nf_agree_sentence (sig : MonadicSignature) :
         -- a and b share the same depth-k 1-var component NF
         have h_agree_comp := nf_agreement_from_shared_nf
           (ms i) (Fin.cons a Fin.elim0) (ms' i) (Fin.cons b Fin.elim0) char_b ha_comp hb_comp
-        -- Need: ⟨i,a⟩ satisfies sub_nf in orderedSum ms, given ⟨i,b⟩ satisfies it in ms'
-        -- This requires the lifting lemma: component NF matching implies ordered-sum NF matching
+        -- Need to construct BiCompat and apply sum_nf_lift_gen
         sorry
       · -- Forward: ms → ms'
         rintro ⟨⟨i, a⟩, ha_eval⟩
@@ -394,7 +447,7 @@ private noncomputable def sum_nf_agree_sentence (sig : MonadicSignature) :
         have ⟨b, hb_comp⟩ := (h_q_ms_to_ms' char_a).mp ⟨a, ha_comp⟩
         have h_agree_comp := nf_agreement_from_shared_nf
           (ms i) (Fin.cons a Fin.elim0) (ms' i) (Fin.cons b Fin.elim0) char_a ha_comp hb_comp
-        -- Need: ⟨i,b⟩ satisfies sub_nf in orderedSum ms', given ⟨i,a⟩ satisfies it in ms
+        -- Need to construct BiCompat and apply sum_nf_lift_gen
         sorry
     · intro ⟨_, h_qt_N⟩
       refine ⟨fun a => (atomKind_zero_elim a).elim, ?_⟩
