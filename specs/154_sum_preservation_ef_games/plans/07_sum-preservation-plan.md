@@ -62,143 +62,71 @@ sum_preservation → Reynolds pipeline → discrete completeness (tasks 139, 140
 
 ### Phase 1: Fix Forward Oracle agree/sz_le_n/consistent [COMPLETED]
 
-**Goal**: Starting from the v11 partial state (h_idx', eM, eN, bound working), change sz to Function.update and fix the 3 failing fields using the hybrid approach.
+**Goal**: Fix the 3 failing fields (agree, sz_le_n, consistent) in the forward oracle cd' block.
 
-**CRITICAL INSTRUCTION**: For positive branches, NEVER use `subst h`. Use `exact h ▸ X` or `h ▸` cast notation instead. The v12 agent's failure was caused by using `subst h` then trying to reduce `Function.update ... j'` — this is KNOWN to be impossible.
+**Actual technique used** (different from plan — discovered by v13 agent):
+- [x] sz KEPT as raw ite (NOT changed to Function.update — unnecessary)
+- [x] eM/eN KEPT unchanged from v11 (tactic-mode `by_cases h` + `h ▸ @Fin.cons` + `Fin.cast (if_pos h)`)
+- [x] agree field FIXED via `convert ... using 2` with HEq case closers:
+  - Positive: `subst h; simp (config := { decide := true }) only [dite_true]; have hsz := if_pos rfl; have hty := ...; convert h_ext_agree (cast hty nf) using 2` then close 6 HEq cases
+  - Negative: `have hsz := if_neg h; have hty := ...; simp only [dif_neg h]; convert cd.agree j' (cast hty nf) using 2` then close 6 HEq cases
+- [x] bound FIXED: `rw [if_pos h]; exact hbound` / `rw [if_neg h]; exact cd.bound j'`
+- [x] sz_le_n FIXED: `rw [if_pos h]; exact Nat.succ_le_succ (cd.sz_le_n j)` / `rw [if_neg h]; exact Nat.le_succ_of_le (cd.sz_le_n j')`
+- [x] consistent FIXED: `subst hj'; simp [dif_pos rfl, Fin.cons_zero/succ]; rfl` (zero case) / `simp [dif_pos rfl, Fin.cons_succ]; exact hqM/hqN` (succ positive) / `simp [dif_neg hjj]; exact hqM/hqN` (succ negative)
+- [x] `lake build` confirms zero errors in forward oracle region
 
-**Step-by-step:**
+**Key discovery**: The solution avoids BOTH Function.update AND `h ▸ h_ext_agree`. Instead it uses `convert` to decompose into HEq subgoals, then closes with:
+- `congrArg (budget - ·) hsz` — sz in subtraction position
+- `Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => ...)` — eM/eN lambda HEq
+- `(cast_heq hty nf).symm` — nf argument HEq
 
-**Step 1**: Change sz (line 560):
-```lean
--- FROM:
-sz := fun j' => if j' = j then cd.sz j + 1 else cd.sz j'
--- TO:
-sz := Function.update cd.sz j (cd.sz j + 1)
-```
-
-**Step 2**: Update Fin.cast proofs in eM/eN. The current eM (lines 561-564) uses `Fin.cast (if_pos h)`. With Function.update, the ite equality `if_pos h` no longer matches the sz type. Options:
-- Change to `Fin.cast (by simp [Function.update, dif_pos h])` or `Fin.cast (show Function.update cd.sz j (cd.sz j + 1) j' = cd.sz j + 1 from by rw [h, Function.update_self])`
-- Or: inline `have : Function.update cd.sz j (...) j' = cd.sz j + 1 := by rw [h, Function.update_self]` and use `Fin.cast this`
-- Keep the `h ▸ @Fin.cons ...` structure; just fix the Fin.cast argument
-
-**Step 3**: Update eN symmetrically.
-
-**Step 4**: Fix agree (THE KEY FIX):
-```lean
-agree := fun j' => by
-  by_cases h : j' = j
-  · -- POSITIVE: cast h_ext_agree along h (NO subst, NO reduction needed)
-    exact h ▸ h_ext_agree
-  · -- NEGATIVE: prove sz equality via Function.update unfolding, then cast
-    have hsz_eq : Function.update cd.sz j (cd.sz j + 1) j' = cd.sz j' := by
-      simp [Function.update, dif_neg h]
-    exact hsz_eq ▸ (cd.agree j')
-```
-
-If `exact h ▸ h_ext_agree` doesn't work (because eM/eN definition with Function.update changes the type shape), try:
-```lean
-  · -- Fallback: convert with congr
-    convert h ▸ h_ext_agree using 2
-    all_goals { funext x; simp [Function.update, dif_pos (show j = j from rfl)] }
-```
-
-If `hsz_eq ▸ (cd.agree j')` doesn't work (eM/eN lambda mismatch), try:
-```lean
-  · -- Fallback: convert with sz equality
-    have hsz_eq : ... := by simp [Function.update, dif_neg h]
-    convert cd.agree j' using 1
-    · exact hsz_eq  -- or congr for NormalForm args
-    · funext x; simp [dif_neg h, Fin.cast_eq_self]
-```
-
-**Step 5**: Fix bound:
-```lean
-bound := fun j' => by
-  by_cases h : j' = j
-  · -- Use h ▸ (no subst) to cast hbound
-    exact h ▸ (by rw [Function.update_self]; exact hbound)
-  · rw [show Function.update cd.sz j (cd.sz j + 1) j' = cd.sz j' from
-      by simp [Function.update, dif_neg h]]
-    exact cd.bound j'
-```
-
-Or simpler if `rw` works: `by_cases h; · rw [h, Function.update_self]; exact hbound; · have := ...; rw [this]; exact cd.bound j'`
-
-**Step 6**: Fix sz_le_n:
-```lean
-sz_le_n := fun j' => by
-  by_cases h : j' = j
-  · rw [h, Function.update_self]; exact Nat.succ_le_succ (cd.sz_le_n j)
-  · rw [show Function.update cd.sz j (cd.sz j + 1) j' = cd.sz j' from
-      by simp [Function.update, dif_neg h]]
-    exact Nat.le_succ_of_le (cd.sz_le_n j')
-```
-
-Note: sz_le_n and bound are simple Nat goals (not dependent types), so `rw` should work for both branches after proving the equalities.
-
-**Step 7**: Fix consistent:
-```lean
-consistent := fun p j' hj' => by
-  cases p using Fin.cases with
-  | zero =>
-    simp [Fin.cons_zero] at hj'
-    have h_eq : j' = j := hj'.symm
-    -- Use h_eq ▸ (NOT subst) to avoid ite-in-types
-    refine ⟨⟨0, by rw [h_eq, Function.update_self]; omega⟩, ?_, ?_⟩ <;>
-      simp only [dif_pos h_eq, Fin.cast_mk] <;> congr 1 <;> exact hj'.symm
-  | succ k =>
-    simp [Fin.cons_succ] at hj'
-    obtain ⟨q, hqM, hqN⟩ := cd.consistent k j' hj'
-    by_cases hjj : j' = j
-    · refine ⟨⟨q.val + 1, by rw [hjj, Function.update_self]; exact Nat.succ_lt_succ q.isLt⟩, ?_, ?_⟩ <;>
-        simp only [dif_pos hjj, Fin.cons_succ, Fin.cast_mk] <;>
-        exact hjj ▸ (by assumption)
-    · rw [show Function.update cd.sz j (cd.sz j + 1) j' = cd.sz j' from
-        by simp [Function.update, dif_neg hjj]] at *
-      exact ⟨q, hqM, hqN⟩
-```
-
-**Step 8**: Run `lake build` and check forward oracle errors. If errors remain, use `lean_goal` at exact error positions to diagnose.
-
-**Timing**: 1.5 hours
+**Commit**: `9a1bf3723`
 
 **Depends on**: none
 
-**Files to modify**: `Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean` lines 556-603
-
-**Verification**: `lake build` shows zero errors in forward oracle region
-
 ---
 
-### Phase 2: Refactor Backward Oracle [COMPLETED]
+### Phase 2: Fix Backward Oracle [COMPLETED]
 
-**Goal**: Apply forward oracle patterns to backward oracle (lines 632-683).
+**Goal**: Apply identical technique to backward oracle cd' block (lines 663-738).
 
 **Tasks**:
-- [ ] Fix h_idx' with explicit `@Fin.cons` motive (copy forward oracle line 548-551)
-- [ ] Add `match d, hdn` + hbound (copy lines 552-555)
-- [ ] Change sz to `Function.update cd.sz j (cd.sz j + 1)`
-- [ ] Apply same eM/eN/agree/bound/sz_le_n/consistent patterns from Phase 1
-- [ ] Run `lake build`
+- [x] Fix h_idx' (lines 663-666): explicit `@Fin.cons n (fun _ => carrier)` motive + `.fst` + `fun p => by induction p using Fin.cases with | zero => rfl | succ k => exact h_idx k`
+- [x] Add `match d, hdn` + hbound derivation (lines 667-670)
+- [x] sz kept as raw ite (same as forward oracle)
+- [x] eM/eN: same tactic-mode `by_cases h` + `h ▸ @Fin.cons` + `Fin.cast` pattern
+- [x] agree: identical `convert ... using 2` + HEq case closers (lines 686-709)
+- [x] bound/sz_le_n: `rw [if_pos h]`/`rw [if_neg h]` pattern (lines 710-717)
+- [x] consistent: `subst`/`simp [dif_pos rfl]`/`rfl` pattern (lines 718-736)
+- [x] `lake build` confirms zero errors in both oracle regions
 
-**Timing**: 1 hour
+**Commit**: `5727eadbf`
 
 **Depends on**: 1
 
 ---
 
-### Phase 3: Fix cd0 in sum_lift_one_var + Final Verification [PARTIAL]
+### Phase 3: Fix cd0 in sum_lift_one_var + Final Verification [COMPLETED]
 
-**Goal**: Apply Function.update to cd0 (lines 787-828) and achieve clean build.
+**Goal**: Close 6 remaining sorries in cd0 section (lines 841-891). Lake build already passes with zero errors.
+
+**Structural issue**: `cd0.bound i` requires `1 < k + 1` (i.e., `k ≥ 1`), but `k` can be 0. 
+
+**Fix**: Case-split on `k` at proof start with `obtain _ | k := k`:
+- k=0 case: `build_bicompat 0 1 ...` returns `trivial` (BiCompat at depth 0 is True). Close directly without constructing cd0.
+- k+1 case (Nat.succ k): budget = k+2, so `bound i : 1 < k+2` closes by `omega`
 
 **Tasks**:
-- [ ] Change cd0 sz: `Function.update (fun _ => 0) i 1`
-- [ ] Add cd0 sz_le_n: `by_cases h : j' = i; · rw [h, Function.update_self]; omega; · rw [show ... from by simp [Function.update, dif_neg h]]; omega`
-- [ ] Fix agree/consistent using same hybrid pattern (h ▸ for positive, simp-unfold for negative)
-- [ ] Run `lake build`, confirm exit 0
-- [ ] Verify zero sorries, no regressions
+- [x] Add `cases k` before cd0 construction in `sum_lift_one_var` *(deviation: altered -- used `cases k with | zero => ... | succ k =>` instead of `obtain _ | k := k`)*
+  - Zero case: prove goal directly via `sum_nf_lift_gen sig 0 1 ... trivial sub_nf` (BiCompat 0 = True)
+  - Succ case: adjust remaining proof for `k+1` instead of `k`
+- [x] Fix agree eM/eN HEq: replaced `![a]` with constant function `fun _ => h ▸ a`, then `Function.hfunext ... (by fin_cases a2; rfl)` closes the goal
+- [x] Fix bound: after k case-split, `omega` closes `1 < k+2`
+- [x] Fix consistent: `simp [envM]` / `simp [envN]` closes both conjuncts
+- [x] Run `lake build`, confirm exit 0 (Build completed successfully, 1649 jobs)
+- [x] `grep -n sorry` confirms zero sorries in NEquivalence.lean
 
-**Timing**: 1 hour
+**Timing**: 1.5 hours
 
 **Depends on**: 2
 
