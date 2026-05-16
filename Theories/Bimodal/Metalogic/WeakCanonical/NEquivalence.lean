@@ -505,9 +505,8 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
       have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
           nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
           nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
-        have := cd.agree j (show NormalForm sig (budget - cd.sz j) (cd.sz j) from
-          cast (by congr 1 <;> omega) nf)
-        exact cast (by congr 1 <;> [omega; rfl; skip; omega; rfl]) this
+        exact nf_agreement_monotone (K + 1) (budget - cd.sz j) (cd.sz j)
+          (by omega) (ms j) (cd.eM j) (ms' j) (cd.eN j) (fun nf' => cd.agree j nf') nf
       obtain ⟨c, h_ext_agree⟩ := component_extend_fwd j ms ms' (cd.eM j) (cd.eN j)
         h_nf_rewrite c'
       -- h_ext_agree at depth (budget - cd.sz j - 1) for (cd.sz j + 1) vars
@@ -595,7 +594,8 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
     have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
         nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
         nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
-      exact show _ from hK_eq ▸ cd.agree j (hK_eq ▸ nf)
+      exact nf_agreement_monotone (K + 1) (budget - cd.sz j) (cd.sz j)
+          (by omega) (ms j) (cd.eM j) (ms' j) (cd.eN j) (fun nf' => cd.agree j nf') nf
     obtain ⟨c', h_ext_agree⟩ := component_extend_bwd j ms ms' (cd.eM j) (cd.eN j)
       h_nf_rewrite c
     have h_ext_depth0 : ∀ nf : NormalForm sig 0 (cd.sz j + 1),
