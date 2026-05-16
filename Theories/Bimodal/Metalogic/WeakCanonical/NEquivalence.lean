@@ -307,6 +307,7 @@ private structure CompData (sig : MonadicSignature) (I : Type) [LinearOrder I]
     nf_eval_nf (ms j) (budget - sz j) (sz j) (eM j) nf ↔
     nf_eval_nf (ms' j) (budget - sz j) (sz j) (eN j) nf
   bound : ∀ j : I, sz j < budget
+  sz_le_n : ∀ j : I, sz j ≤ n
   consistent : ∀ (p : Fin n) (j : I) (h : (env_M p).1 = j),
     ∃ q : Fin (sz j),
       h ▸ (env_M p).2 = eM j q ∧
@@ -545,47 +546,61 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
         -- h_ext_agree has depth K = budget - cd.sz j - 1 = budget - (cd.sz j + 1)
         have hK_eq2 : K = budget - (cd.sz j + 1) := by omega
         have h_idx' : ∀ p : Fin (n + 1),
-            (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M p).1 =
-            (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N p).1 :=
-          Fin.cases rfl (fun k => h_idx k)
+            (@Fin.cons n (fun _ => (orderedSum sig I ms).carrier) ⟨j, c⟩ env_M p).fst =
+            (@Fin.cons n (fun _ => (orderedSum sig I ms').carrier) ⟨j, c'⟩ env_N p).fst :=
+          fun p => by induction p using Fin.cases with | zero => rfl | succ k => exact h_idx k
+        match d, hdn with
+        | 0, _ => trivial
+        | d' + 1, hdn' =>
+        have hbound : cd.sz j + 1 < budget := by have := cd.sz_le_n j; omega
         have cd' : CompData sig I ms ms' budget
             (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
             (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)
             h_idx' := {
           sz := fun j' => if j' = j then cd.sz j + 1 else cd.sz j'
-          eM := fun j' => if h : j' = j then h ▸ Fin.cons c (cd.eM j) else cd.eM j'
-          eN := fun j' => if h : j' = j then h ▸ Fin.cons c' (cd.eN j) else cd.eN j'
+          eM := fun j' x => by
+            by_cases h : j' = j
+            · exact h ▸ @Fin.cons (cd.sz j) (fun _ => (ms j).carrier) c (cd.eM j)
+                (Fin.cast (if_pos h) x)
+            · exact cd.eM j' (Fin.cast (if_neg h) x)
+          eN := fun j' x => by
+            by_cases h : j' = j
+            · exact h ▸ @Fin.cons (cd.sz j) (fun _ => (ms' j).carrier) c' (cd.eN j)
+                (Fin.cast (if_pos h) x)
+            · exact cd.eN j' (Fin.cast (if_neg h) x)
           agree := fun j' => by
-            simp only
-            split
-            · case isTrue h => subst h
-              intro nf; simp only [show (if j = j then cd.sz j + 1 else cd.sz j) =
-                cd.sz j + 1 from if_pos rfl]
-              convert h_ext_agree (hK_eq2 ▸ nf) using 1 <;> simp [hK_eq2]
-            · case isFalse h => exact cd.agree j'
+            by_cases h : j' = j
+            · subst h; intro nf
+              exact hK_eq2 ▸ h_ext_agree (hK_eq2 ▸ nf)
+            · intro nf; exact cd.agree j' nf
           bound := fun j' => by
-            simp only; split
-            · case isTrue h => subst h; simp [if_pos rfl]; omega
-            · case isFalse h => exact cd.bound j'
+            by_cases h : j' = j
+            · rw [if_pos h]; exact hbound
+            · rw [if_neg h]; exact cd.bound j'
+          sz_le_n := fun j' => by
+            by_cases h : j' = j
+            · subst h; simp [if_pos rfl]; exact Nat.succ_le_succ (cd.sz_le_n j')
+            · simp [if_neg h]; exact Nat.le_succ_of_le (cd.sz_le_n j')
           consistent := fun p j' hj' => by
             cases p using Fin.cases with
             | zero =>
               simp [Fin.cons_zero] at hj' ⊢
               subst hj'
-              simp only [dif_pos rfl]
-              exact ⟨0, by simp [Fin.cons_zero], by simp [Fin.cons_zero]⟩
+              exact ⟨⟨0, by simp [if_pos rfl]⟩, by simp [dif_pos rfl, Fin.cons_zero],
+                by simp [dif_pos rfl, Fin.cons_zero]⟩
             | succ k =>
               simp [Fin.cons_succ] at hj' ⊢
               obtain ⟨q, hqM, hqN⟩ := cd.consistent k j' hj'
               by_cases hjj : j' = j
               · subst hjj
-                simp only [dif_pos rfl]
-                exact ⟨Fin.succ q, by simp [Fin.cons_succ]; exact hqM,
-                  by simp [Fin.cons_succ]; convert hqN using 1; exact Subsingleton.elim _ _⟩
-              · simp only [dif_neg hjj]
-                exact ⟨q, hqM, hqN⟩
+                exact ⟨⟨q.val + 1, by simp [if_pos rfl]; omega⟩,
+                  by simp [dif_pos rfl, Fin.cons_succ]; exact hqM,
+                  by simp [dif_pos rfl, Fin.cons_succ]; exact hqN⟩
+              · exact ⟨⟨q.val, by simp [if_neg hjj]; exact q.isLt⟩,
+                  by simp [dif_neg hjj]; exact hqM,
+                  by simp [dif_neg hjj]; exact hqN⟩
         }
-        exact build_bicompat d (n + 1) (by omega) _ _ _ h_atoms_ext cd'
+        exact build_bicompat (d' + 1) (n + 1) (by omega) _ _ _ h_atoms_ext cd'
     refine ⟨oracle_step, fun j c => ?_⟩
     -- Backward oracle: symmetric to forward using component_extend_bwd
     have hsz := cd.bound j

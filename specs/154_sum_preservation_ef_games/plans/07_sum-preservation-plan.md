@@ -64,7 +64,7 @@ This task advances the Reynolds pipeline for discrete completeness:
 
 Phases are fully sequential because each phase's `lake build` output determines the exact error set for the next phase.
 
-### Phase 1: Fix h_idx' and Rewrite Forward Oracle cd' [NOT STARTED]
+### Phase 1: Fix h_idx' and Rewrite Forward Oracle cd' [PARTIAL]
 
 **Goal**: Fix the h_idx' proof at line 550, then rewrite the forward oracle cd' block (lines 551-587) using verified dite + Fin.cast + @Fin.cons pattern. This resolves approximately 10 of the 17 build errors.
 
