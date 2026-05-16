@@ -42,6 +42,20 @@ The bootstrap approach eliminates this entirely:
 
 5. **Literature alignment**: Doets (1987, 1989) treats Lemma 1.4 as a one-sentence trivial result. The bootstrap approach mirrors his actual argument: the result follows from component equivalence by a straightforward induction on quantifier depth, not from elaborate multi-variable joint NF machinery.
 
+### Literature Alignment Guidance
+
+**Primary source**: Doets 1987 Lemma 3.1.7 / Doets 1989 Lemma 1.4. See `literature/Doets_1989_Monadic_Pi11_Theories.md` and `literature/Doets_1987_Completeness_and_Definability_thesis.md`.
+
+Doets' proof of Lemma 1.4 is a single sentence describing an EF-game duplicator strategy: when the spoiler plays in component i, the duplicator responds using the component-i winning strategy; cross-component order is preserved by the index structure. In NF language, this translates to:
+
+1. **Witness selection at the sum level, not the component level.** The duplicator plays in the *ordered sum game*, using component strategies as subroutines. The NF translation should mirror this: use the ordered sum's own sentence-level equivalence (from the IH) to extract quantifier transfer, rather than trying to lift component-level witnesses into the sum.
+
+2. **Order is automatic, not constructed.** In the EF game, order preservation between previously-chosen elements is a *consequence* of the partial isomorphism maintained across rounds. In NF language, this corresponds to `nf_agreement_from_shared_nf`: witnesses found via the ordered sum's quantifier transfer automatically satisfy the same NF, which encodes all atoms including order. The implementation should never need to explicitly construct order-atom proofs.
+
+3. **The induction is on quantifier depth (k), not on variable count (n).** Doets' game has k rounds; n (the number of chosen elements) grows as a consequence, not as an induction variable. The bootstrap reflects this: induct on k, with n handled implicitly through the NF quantifier structure.
+
+**Constraint**: If the implementation diverges from this structure — e.g., if a separate order-atom proof becomes necessary, or if a multi-variable joint NF invariant reappears — treat this as a signal that the proof is fighting the formalization rather than following the mathematics. Escalate via the blocker protocol rather than engineering around it.
+
 ## Goals & Non-Goals
 
 **Goals**:
@@ -192,98 +206,11 @@ Phases are sequential: each phase depends on the previous one.
       ```
       Note: `Fin.cons x Fin.elim0 = ![x]` (single-element environment).
       
-      **Forward direction**: Given `⟨⟨i,a⟩, ha_eval⟩`:
-      1. Get component (k+1)-equivalence for i: extract `nf_characteristic (ms i) (k+1) 0 Fin.elim0 = nf_characteristic (ms' i) (k+1) 0 Fin.elim0` from `h_comp`.
-      2. Extract quantifier transfer: `forall snf, (exists x, nf_eval_nf (ms i) k 1 (![x]) snf) <-> (exists y, nf_eval_nf (ms' i) k 1 (![y]) snf)`.
-      3. Get characteristic NF of `a` in component `ms i`: `char_a := nf_characteristic (ms i) k 1 (![a])`.
-      4. Transfer: get `b` in `ms' i` with `nf_eval_nf (ms' i) k 1 (![b]) char_a`.
-      5. Now `a` and `b` share the same depth-k 1-var NF in their components. By `nf_agreement_from_shared_nf`, they agree on ALL depth-k 1-var NFs in their components.
-      6. **Key step**: Show `nf_eval_nf (orderedSum ms') k 1 (![⟨i,b⟩]) sub_nf`.
-      
-      For step 6, we need the lifting lemma or an inline argument. The argument is:
-      - Apply `nf_agreement_monotone` at the ordered sum level? No, we don't have ordered-sum agreement at depth k yet.
-      - Instead, show that `⟨i,a⟩` and `⟨i,b⟩` satisfy the same depth-k 1-var NF *in the ordered sum*. This requires showing `nf_characteristic (orderedSum ms) k 1 (![⟨i,a⟩]) = nf_characteristic (orderedSum ms') k 1 (![⟨i,b⟩])`.
-      - This is `sum_nf_lift_single` -- but we can prove it inline by a nested induction on k, or by applying the IH of the outer induction.
-      
-      **Actually, the cleanest approach**: Use the IH at depth k (which gives sentence-level agreement for the ordered sums at depth k) to extract quantifier transfer for the ordered sums at depth k-1. Then use `nf_agreement_monotone` to get agreement at all depths <= k-1. But we need agreement at depth k with 1 var, not depth <= k-1.
-      
-      **The correct resolution**: Prove `sum_nf_lift_single` as a separate lemma by induction on m (the depth), using the following structure:
-      - m=0: AtomKind sig 1 has only pred atoms (no order atoms). Pred atoms follow from component agreement.
-      - m+1 (with m+1 <= k): Atoms as above. Quantifiers: need `exists ⟨j,c⟩ in orderedSum ms` iff `exists ⟨j,c'⟩ in orderedSum ms'` satisfying depth-m NFs with 2 vars. 
-        - Extract ordered-sum sentence-level agreement at depth m+1 (from the OUTER induction's IH, since we are inside the k+1 case and m+1 <= k). This gives ordered-sum quantifier transfer at depth m.
-        - Find witnesses via this transfer. By `nf_agreement_from_shared_nf`, they satisfy the same depth-m 2-var NF. Apply the IH of `sum_nf_lift_single` at depth m for the sub-goal... but wait, the IH needs single-element environments, and we now have 2-element environments.
-        
-      **This reveals the core difficulty**: `sum_nf_lift_single` as stated only handles single-element environments. The quantifier step produces 2-element environments, which need a generalization.
-
-      **FINAL CORRECT APPROACH** (adapted from the revision guidance):
-
-      Do NOT prove a separate lifting lemma at all. Instead, use the following observation:
-      
-      The sentence-level IH gives us: `forall nf : NormalForm sig k 0, nf_eval_nf (orderedSum ms) k 0 Fin.elim0 nf <-> nf_eval_nf (orderedSum ms') k 0 Fin.elim0 nf`. 
-      
-      From this, extract the ordered sum's quantifier transfer at depth k-1:
-      ```
-      forall sub_nf : NormalForm sig (k-1) 1,
-        (exists x, nf_eval_nf (orderedSum ms) (k-1) 1 (![x]) sub_nf) <->
-        (exists y, nf_eval_nf (orderedSum ms') (k-1) 1 (![y]) sub_nf)
-      ```
-      
-      Wait -- the IH at depth k gives agreement on depth-k 0-var NFs. A depth-k 0-var NF at k >= 1 is `(atom_part, quant_part)` where `quant_part : NormalForm sig (k-1) 1 -> Bool`. The IH says both ordered sums agree on which depth-k 0-var NFs hold. This means they agree on the quantifier part, giving us existential transfer at depth k-1 with 1 var.
-      
-      But we need existential transfer at depth k with 1 var (to find the witness for sub_nf at depth k). The IH gives us transfer at depth k-1.
-      
-      **Resolution**: The outer induction is on k, and at depth k+1 we are trying to prove the quantifier part. The quantifier asks about `sub_nf : NormalForm sig k 1`. Given `⟨i,a⟩`, we find `b` in `ms' i` via COMPONENT transfer at depth k. Then to show `nf_eval_nf (orderedSum ms') k 1 (![⟨i,b⟩]) sub_nf`, we can use:
-      
-      `nf_agreement_from_shared_nf` applied to the ordered sums: if `⟨i,a⟩` and `⟨i,b⟩` satisfy the same depth-k 1-var NF in the ordered sum, then they agree on all depth-k 1-var NFs. But we need to show they satisfy the SAME NF -- this requires computing the characteristic and showing equality.
-      
-      **THE ACTUAL PROOF THAT WORKS**:
-      
-      Strengthen the IH. Instead of proving just sentence-level agreement, prove:
-      ```
-      sum_nf_agree_general(k) := 
-        forall n, forall env_M env_N,
-          (forall j, (env_M j).1 = (env_N j).1) ->
-          (forall j, nf_characteristic (ms (env_M j).1) k 1 (![env_M j).2]) = 
-                     nf_characteristic (ms' (env_N j).1) k 1 (![env_N j).2])) ->
-          forall nf : NormalForm sig k n,
-            nf_eval_nf (orderedSum ms) k n env_M nf <-> 
-            nf_eval_nf (orderedSum ms') k n env_N nf
-      ```
-      
-      This is the same as the original `sum_nf_agree` but with `h_elem` replaced by a stronger hypothesis: instead of matching at depth m <= k, we require the full depth-k 1-var NF characteristic equality for each pair of elements. This stronger hypothesis, combined with the component NF machinery, suffices to handle order atoms.
-      
-      **Wait** -- this is essentially what plan v3 proposed. The implementation agent found this doesn't work because the characteristic equality at depth k includes quantifier parts that require reasoning about the ordered sum's own structure.
-      
-      **SIMPLEST CORRECT APPROACH** (recommended for implementation):
-      
-      1. Prove `sum_nf_agree_sentence` at n=0 by induction on k. The base case is trivial (no atoms). The quantifier step at k+1 requires showing existential transfer at depth k with 1 var.
-      
-      2. For the existential transfer: given `⟨i,a⟩` satisfying `sub_nf` at depth k in orderedSum ms, find `⟨i,b⟩` satisfying `sub_nf` at depth k in orderedSum ms'.
-      
-      3. Use the component's (k+1)-equivalence to find `b` in ms'(i) with the same depth-k 1-var component NF characteristic as `a`.
-      
-      4. Then show `⟨i,a⟩` and `⟨i,b⟩` have the same depth-k 1-var NF characteristic IN THE ORDERED SUM. This is the lifting step.
-      
-      5. For the lifting step, induct on k (nested or mutual). The depth-0 case: the NF characteristic at depth 0 with 1 var is just the atom assignment. At n=1, atoms are only pred atoms. Pred agreement follows from component NF matching.
-      
-      6. The depth-(k'+1) case (for the lifting): atom assignment as above. Quantifier assignment: for each `snf : NormalForm sig k' 2`, need `(exists ⟨j,c⟩, nf_eval_nf (orderedSum ms) k' 2 (![⟨i,a⟩, ⟨j,c⟩]) snf) <-> (exists ⟨j',c'⟩, nf_eval_nf (orderedSum ms') k' 2 (![⟨i,b⟩, ⟨j',c'⟩]) snf)`.
-      
-      7. Use the OUTER IH (sentence-level agreement of ordered sums at depth k'+1) to extract ordered-sum quantifier transfer at depth k'. Then find witnesses via this transfer. Apply `nf_agreement_from_shared_nf` for the extended 2-var environments. This gives depth-k' 2-var NF agreement, including order atoms.
-      
-      **But**: the outer IH at depth k' + 1 is `sum_nf_agree_sentence` at k' + 1 < k + 1, i.e., k' < k. We need sentence-level agreement at depth k'+1, and we have the IH for all depths up to k. So if k'+1 <= k (i.e., k' < k), we have it. And indeed, in the lifting step we are at depth k'+1 <= k (since the lifting is for depths m <= k, and the quantifier sub-step goes to depth k' = m-1 < m <= k).
-      
-      Actually, the quantifier step of the lifting at depth m (with m <= k) asks about depth m-1 with 2 vars. We extract ordered-sum transfer at depth m-1 from sentence-level agreement at depth m. But we have sentence-level agreement at depth m only if m <= k via the outer induction. Let's be precise:
-      
-      - We are proving `sum_nf_agree_sentence` at depth k+1.
-      - Inside, we need the lifting: show `⟨i,a⟩` and `⟨i,b⟩` agree on depth-k 1-var NFs in the ordered sum.
-      - The lifting proof at depth k requires, in its quantifier step, ordered-sum sentence-level agreement at depth k. But depth k agreement is what the IH of the outer induction gives us.
-      - So: the outer IH (at depth k) provides `sum_nf_agree_sentence(k)`. The lifting uses this to extract quantifier transfer, find witnesses, apply `nf_agreement_from_shared_nf`.
-      
-      **This works!** The circularity is broken because:
-      - Outer induction on k proves `sum_nf_agree_sentence(k)`.
-      - At step k+1: needs lifting at depth k, which needs `sum_nf_agree_sentence(k)` (from IH).
-      - Lifting at depth k may need lifting at depth k-1 (for its own quantifier sub-step), which needs `sum_nf_agree_sentence(k-1)` (from IH).
-      - Etc., bottoming out at depth 0 (vacuous).
+      **Forward direction** (backward is symmetric): Given `⟨⟨i,a⟩, ha_eval⟩`:
+      1. Get component (k+1)-equivalence for i from `h_comp`. Extract quantifier transfer: `∀ snf, (∃ x, nf_eval_nf (ms i) k 1 (![x]) snf) ↔ (∃ y, nf_eval_nf (ms' i) k 1 (![y]) snf)`.
+      2. Get `char_a := nf_characteristic (ms i) k 1 (![a])`. Transfer to get `b` in `ms' i` with `nf_eval_nf (ms' i) k 1 (![b]) char_a`. Now `a` and `b` share the same depth-k 1-var NF in their components.
+      3. **Key step**: Show `nf_eval_nf (orderedSum ms') k 1 (![⟨i,b⟩]) sub_nf` via the lifting lemma.
+      4. Apply `nf_agreement_from_shared_nf` to conclude.
 
   **Summary of the proof architecture**:
 
@@ -309,6 +236,11 @@ Phases are sequential: each phase depends on the previous one.
         -> find witness ⟨j',c'⟩ via transfer
         -> nf_agreement_from_shared_nf for 2-var environments
         -> depth-m 2-var agreement (including order atoms!)
+  
+  Circularity check: Lifting(m) at depth m+1 needs sum_nf_agree_sentence(m+1).
+  We have it from the outer IH since m+1 <= k < k+1. Bottoms out at m=0 (vacuous).
+  This mirrors Doets' EF game: order is never explicitly constructed — it falls out
+  of nf_agreement_from_shared_nf applied to witnesses found via sum-level transfer.
   ```
 
 - [ ] **Rewrite `sum_preservation_proof`**: Simplify to call `sum_nf_agree_sentence` directly. The current version calls `sum_nf_agree` with 6 hypotheses and Fin.elim0. The new version just calls `sum_nf_agree_sentence` with `h_comp'` derived from component k-equivalence.
