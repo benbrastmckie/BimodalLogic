@@ -67,16 +67,43 @@ Where `initial_cd` constructs CompData with:
 - Component i: sz = 1, eM = ![a], eN = ![b], agree from h_agree_comp
 - Other components: sz = 0, eM = Fin.elim0, eN = Fin.elim0, agree from h_comp
 
-## Immediate Next Action
+## Immediate Next Action (Updated)
 
-Complete the CompData update in build_bicompat:
-1. Define the updated CompData using `if h : j' = j then ... else ...`
-2. For the `j' = j` branch: subst h, use Fin.cons and h_ext_agree
-3. For the `j' ≠ j` branch: use old cd fields unchanged
-4. Prove the updated consistency condition
-5. Call IH with updated CompData
-6. Then implement backward oracle (symmetric to forward)
-7. Wire into the 4 sorry sites
+Fix remaining compilation errors (8 sorries total):
+
+### Priority 1: Fix orderedSum_order_bwd_via_comp (lines 450, 469)
+The backward order transfer has 2 sorries where the cast reassembly fails.
+The issue: after extracting `hlt_N : eN_j q < c'` from component NF, need to
+cast back to `(env_N p).2`-based comparison for the Sigma.Lex conclusion.
+
+Pattern to follow (from orderedSum_order_fwd_via_comp which compiles):
+```lean
+have hlt_N' : @LT.lt _ (ms' j).carrier_order.toLT c' (h_eq_N ▸ (env_N p).2) := by rwa [hqN]
+exact ⟨hidx ▸ heq, (cast_lt_iff h_eq_N c' (env_N p).2).mpr hlt_N'⟩
+```
+But for bwd, the direction is REVERSED: `eM_j q < c` not `c < eM_j q`.
+Need: `(heq ▸ (env_M p).2) < c` → produce `heq ▸ (env_M p).2 < c` as the Lex right disjunct.
+This should be: `exact ⟨heq, by rw [hqM]; exact hlt'⟩` or similar.
+
+### Priority 2: Fix CompData `where` syntax (line 533-ish)
+The `have cd' : CompData ... where` syntax doesn't work in tactic mode.
+Change to explicit structure constructor: `exact CompData.mk ...` or use `refine { ... }`.
+
+### Priority 3: CompData consistency proof (line 572)
+Needs case split on `p` (Fin.cases for position 0 vs succ):
+- Position 0 (= ⟨j, c⟩): maps to comp_eM j 0 = c (from Fin.cons)
+- Position succ k: use old consistency with shifted index, handle the `if j' = j` split
+
+### Priority 4: Backward oracle recursive BiCompat (line 602)
+Symmetric to forward oracle. Copy the CompData construction from forward.
+
+### Priority 5: Close 4 original sorry sites (lines 751, 773, 798, 818)
+After build_bicompat compiles, apply at each site:
+```lean
+have h_atoms_1 := sum_atoms_one_var ms ms' i a b h_agree_comp
+have h_bc := build_bicompat k 1 (by omega) ... h_atoms_1 (initial_cd ...)
+exact ⟨⟨i, a⟩, (sum_nf_lift_gen sig k 1 I ms ms' ... h_atoms_1 h_bc sub_nf).mpr hb_eval⟩
+```
 
 ## Key Decisions Made
 
