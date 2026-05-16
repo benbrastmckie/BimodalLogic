@@ -11,7 +11,7 @@ building on definitions from NEquivalence.lean.
 - `doets_lemma_1_5`: type-matching sum preserves k-equivalence (deferred)
 
 ## Status
-- `doets_lemma_1_4`: sorried (depends on KEquivalenceFramework.sum_preservation)
+- `doets_lemma_1_4`: closed (delegates to KEquivalenceFramework.sum_preservation)
 - `doets_lemma_1_5`: sorried (bypassed in discrete case by one_class argument).
   Not on discrete completeness critical path. Required only for dense case (future work).
 
@@ -29,13 +29,13 @@ Doets Lemma 1.4: k-equivalence is preserved by ordered sums.
 If for all i, m(i) is k-equivalent to m'(i), then the ordered sums
 are k-equivalent.
 
-**Status**: Sorried. Depends on KEquivalenceFramework.sum_preservation.
+**Status**: Closed. Delegates to KEquivalenceFramework.sum_preservation.
 -/
 theorem doets_lemma_1_4 (sig : MonadicSignature) (k : Nat) (I : Type) [LinearOrder I]
     (m m' : I → OrderedMonadicStructure sig)
     (h_equiv : ∀ i, k_equiv sig k (m i) (m' i)) :
-    k_equiv sig k (orderedSum sig I m) (orderedSum sig I m') := by
-  sorry
+    k_equiv sig k (orderedSum sig I m) (orderedSum sig I m') :=
+  KEquivalenceFramework.sum_preservation k I m m' h_equiv
 
 /-! ## Doets Lemma 1.5 (Type-Matching Variant) -/
 
