@@ -1,7 +1,7 @@
 # Implementation Plan: Task #154 - Fix Build Errors in NEquivalence.lean (v13)
 
 - **Task**: 154 - sum_preservation_ef_games
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (all sorries removed; only type elaboration errors remain)
 - **Research Inputs**: reports/07_team-research.md, reports/08_teammate-{a,b,c,d}-findings.md, handoffs/phase-1-handoff-v12-20260516.md
