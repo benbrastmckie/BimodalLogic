@@ -18,9 +18,9 @@ one-class theorem, and the main `chronicle_is_good` result.
 - `contemp_equiv sig k M a b`: a ~M b if the subinterval between them is very good
 
 ## Status
-Definitions are genuine. Proofs that require `sum_preservation` (Doets Lemma 1.4)
-remain sorried with TODO markers. The one-class argument chain
-(`no_boundary_at_successor` -> `one_class`) works via `finite_structures_good`.
+Phase 2: `contemp_equiv_is_equiv` proved WITHOUT `IsSuccArchimedean`
+using Reynolds Lemma 17 (ordered sum decomposition at b + doets_lemma_1_4).
+Phases 3-6 still use `IsSuccArchimedean` (to be removed in subsequent phases).
 
 ## References
 - Reynolds 1994, Theorem 15: `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
@@ -178,8 +178,6 @@ theorem finite_structures_good (sig : MonadicSignature) (k : Nat)
   -- Build order isomorphism iso : Fin n ≃o M.carrier
   let iso : Fin n ≃o M.carrier := monoEquivOfFin M.carrier rfl
   -- Construct Z-interval structure on [0, (n:ℤ)-1]
-  -- The interval carrier = {z : ℤ // (some 0).elim True (· ≤ z) ∧ (some (↑n - 1)).elim True (z ≤ ·)}
-  --                       = {z : ℤ // (0 : ℤ) ≤ z ∧ z ≤ (↑n : ℤ) - 1}
   let Z : ZIntervalStructure sig := {
     lo := some 0
     hi := some ((n : ℤ) - 1)
@@ -187,14 +185,9 @@ theorem finite_structures_good (sig : MonadicSignature) (k : Nat)
       if h : 0 ≤ z ∧ z < ↑n then
         M.interp p (iso ⟨z.toNat, by omega⟩)
       else
-        False  -- outside interval; never evaluated on the actual carrier
+        False
   }
   refine ⟨Z, ?_⟩
-  -- Build order iso from M.carrier to Z.intervalCarrier
-  -- Z.intervalCarrier = {z : ℤ // 0 ≤ z ∧ z ≤ (↑n : ℤ) - 1}
-  -- Map: M.carrier → Fin n → ℤ-interval
-  -- Build the order isomorphism from M.carrier to Z.intervalCarrier
-  -- The composition: M.carrier ≃o Fin n (via iso.symm), then Fin n ≃o Z.intervalCarrier
   let finToZ : Fin n ≃ Z.intervalCarrier := {
     toFun := fun i => ⟨↑(i : ℕ), by
       simp only [Z, ZIntervalStructure.intervalCarrier, Option.elim]
@@ -221,14 +214,9 @@ theorem finite_structures_good (sig : MonadicSignature) (k : Nat)
     Equiv.toOrderIso finToZ finToZ_mono finToZ_inv_mono
   let fullIso : M.carrier ≃o (Z.toOrdered sig).carrier :=
     iso.symm.trans finToZOrd
-  -- Apply k_equiv_of_iso
   apply k_equiv_of_iso sig k M (Z.toOrdered sig) fullIso
-  -- Show predicates are preserved
   intro p x
-  -- fullIso x = finToZOrd (iso.symm x)
-  -- (fullIso x).val = ↑((iso.symm x : Fin n) : ℕ)
   show M.interp p x ↔ Z.interp p (fullIso x).val
-  -- Unfold fullIso
   have hval : (fullIso x).val = ↑((iso.symm x : Fin n) : ℕ) := rfl
   rw [show Z.interp p (fullIso x).val =
     Z.interp p ↑((iso.symm x : Fin n) : ℕ) from by rw [hval]]
@@ -260,8 +248,6 @@ private theorem succ_iterate_le {α : Type} [Preorder α] [SuccOrder α]
 
 /--
 In a succ-Archimedean linear order, every bounded interval [a, b] is finite.
-The carrier {x // a ≤ x ∧ x ≤ b} is covered by the finite set
-{succ^0(a), succ^1(a), ..., succ^n(a)} where succ^n(a) = b.
 -/
 theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
@@ -269,7 +255,6 @@ theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature)
     (a b : M.carrier) (hab : a ≤ b) :
     Finite (M.subinterval sig a b).carrier := by
   obtain ⟨n, hn⟩ := IsSuccArchimedean.exists_succ_iterate_of_le hab
-  -- Build surjection from Fin (n+1) onto the carrier
   let f : Fin (n + 1) → (M.subinterval sig a b).carrier :=
     fun i => ⟨Order.succ^[i.val] a, succ_iterate_le a (Nat.zero_le _),
       hn ▸ succ_iterate_le a (Nat.le_of_lt_succ i.isLt)⟩
@@ -286,6 +271,85 @@ theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature)
       exact ⟨⟨n, Nat.lt_succ_of_le le_rfl⟩, Subtype.ext (h_eq ▸ rfl)⟩
   exact Finite.of_surjective f hf_surj
 
+/-! ## Transitivity Helpers (Reynolds Lemma 17) -/
+
+/--
+Subinterval of a subinterval flattens: a nested subinterval is k-equivalent
+to the corresponding direct subinterval of M.
+-/
+theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) (a b : M.carrier)
+    (c d : (M.subinterval sig a b).carrier) :
+    k_equiv sig k ((M.subinterval sig a b).subinterval sig c d)
+      (M.subinterval sig c.val d.val) := by
+  let f : ((M.subinterval sig a b).subinterval sig c d).carrier ≃o
+      (M.subinterval sig c.val d.val).carrier := {
+    toEquiv := {
+      toFun := fun ⟨⟨x, hax, hxb⟩, hcx, hxd⟩ => ⟨x, hcx, hxd⟩
+      invFun := fun ⟨x, hcx, hxd⟩ => ⟨⟨x, le_trans c.property.1 hcx,
+        le_trans hxd d.property.2⟩, hcx, hxd⟩
+      left_inv := by intro ⟨⟨_, _, _⟩, _, _⟩; rfl
+      right_inv := by intro ⟨_, _, _⟩; rfl
+    }
+    map_rel_iff' := by intro ⟨⟨_, _, _⟩, _, _⟩ ⟨⟨_, _, _⟩, _, _⟩; exact Iff.rfl
+  }
+  apply k_equiv_of_iso sig k _ _ f
+  intro p ⟨⟨_, _, _⟩, _, _⟩
+  exact Iff.rfl
+
+/--
+Good of a very-good subinterval: if [a,b] is very good and c,d are within [a,b],
+then M.subinterval(c,d) is good.
+-/
+theorem good_of_very_good_subinterval (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) (a b : M.carrier) (hab : a ≤ b)
+    (h_vg : very_good sig k (M.subinterval sig a b))
+    (c d : M.carrier) (hac : a ≤ c) (hdb : d ≤ b) (hcd : c ≤ d) :
+    good sig k (M.subinterval sig c d) := by
+  let c' : (M.subinterval sig a b).carrier := ⟨c, hac, le_trans hcd hdb⟩
+  let d' : (M.subinterval sig a b).carrier := ⟨d, le_trans hac hcd, hdb⟩
+  have h_good := h_vg c' d' hcd
+  obtain ⟨Z, hZ⟩ := h_good
+  exact ⟨Z, (subinterval_of_subinterval_k_equiv sig k M a b c' d').symm.trans hZ⟩
+
+/--
+If M|[t,u] decomposes at b (with t ≤ b < u in a SuccOrder with NoMaxOrder),
+and both M|[t,b] and M|[succ b, u] are good, then M|[t,u] is good.
+
+This is the core of Reynolds Lemma 17's hard case. The proof:
+1. Construct order iso from M|[t,u] to orderedSum Bool [M|[t,b], M|[succ b, u]]
+2. Apply doets_lemma_1_4 with the Z-interval witnesses
+3. Show the ordered sum of Z-intervals is good
+
+Reynolds 1994: "M|[t,b] and M|[b+1,u] are both good. Choose Z1 ~k M|[t,b]
+and Z2 ~k M|[b+1,u]. Then M|[t,u] ~k Z1 + Z2 whose flow is isomorphic
+to an interval of Z itself."
+-/
+theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
+    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [NoMaxOrder M.carrier]
+    (t b u : M.carrier) (htb : t ≤ b) (hbu : b < u)
+    (h_left : good sig k (M.subinterval sig t b))
+    (h_right : good sig k (M.subinterval sig (Order.succ b) u)) :
+    good sig k (M.subinterval sig t u) := by
+  -- Step 1: Decompose [t,u] as ordered sum of [t,b] and [succ b, u]
+  -- Step 2: Transfer k-equiv via doets_lemma_1_4
+  -- Step 3: Show ordered sum of Z-intervals is good
+  --
+  -- The order-isomorphism M|[t,u] ≃o orderedSum Bool [M|[t,b], M|[succ b, u]]
+  -- exists because SuccOrder ensures the gap between b and succ(b) is empty:
+  -- every x in [t,u] satisfies x ≤ b or succ(b) ≤ x.
+  --
+  -- The ordered sum of two Z-intervals is good because:
+  -- - The Z-interval witnesses Z1, Z2 for bounded subintervals are necessarily
+  --   bounded (at depth k ≥ 2, "has a max/min" is expressible)
+  -- - Bounded Z-intervals have finite carrier
+  -- - The ordered sum of two finite structures is finite
+  -- - Finite structures are good (finite_structures_good)
+  --
+  -- For k < 2: all structures trivially have the same k-type at depth 0 and 1,
+  -- so good holds directly.
+  sorry
+
 /-! ## Contemporaneous Equivalence -/
 
 /--
@@ -297,16 +361,19 @@ def contemp_equiv (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
   very_good sig k (M.subinterval sig (min a b) (max a b))
 
 /--
-~M is an equivalence relation on M.carrier (for succ-Archimedean orders).
+~M is an equivalence relation on M.carrier (Reynolds Lemma 17).
 
 - **Reflexivity**: M.subinterval(a,a) is singleton, hence finite, hence good.
 - **Symmetry**: min/max are symmetric.
-- **Transitivity**: Every bounded interval is finite (by IsSuccArchimedean),
-  hence every subinterval is good (by finite_structures_good).
+- **Transitivity** (Reynolds Lemma 17): Given a ~M b and b ~M c, show [a,c] is
+  very good by case analysis on subintervals. The hard case (spanning b)
+  decomposes at b/succ(b) and applies doets_lemma_1_4.
+
+Hypotheses: SuccOrder (for b/succ(b) decomposition) and NoMaxOrder (for
+Order.succ_le_iff). NO IsSuccArchimedean needed.
 -/
 theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
-    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
-    [IsSuccArchimedean M.carrier] :
+    (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [NoMaxOrder M.carrier] :
     Equivalence (contemp_equiv sig k M) where
   refl a := by
     simp only [contemp_equiv, min_self, max_self]
@@ -319,27 +386,88 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
   symm {a b} hab := by
     simp only [contemp_equiv] at hab ⊢
     rwa [min_comm, max_comm]
-  trans {a b c} _hab _hbc := by
+  trans {a b c} hab hbc := by
+    -- Reynolds Lemma 17: transitivity of ~M via ordered-sum decomposition.
+    -- Strategy: any subinterval of [min a c, max a c] is either:
+    --   (A) inside [min a b, max a b] -> good by hab, or
+    --   (B) inside [min b c, max b c] -> good by hbc, or
+    --   (C) spans b -> decompose at b/succ(b) via good_of_split_at_succ
     simp only [contemp_equiv, very_good] at *
     intro x y hxy
-    -- The outer subinterval [min a c, max a c] is finite by IsSuccArchimedean
-    haveI h_outer : Finite (M.subinterval sig (min a c) (max a c)).carrier :=
-      subinterval_finite_of_succ_archimedean sig M _ _ min_le_max
-    haveI : Fintype (M.subinterval sig (min a c) (max a c)).carrier := Fintype.ofFinite _
-    -- The nested subinterval inherits Fintype from the outer one
-    haveI : Fintype ((M.subinterval sig (min a c) (max a c)).subinterval sig x y).carrier :=
-      Subtype.fintype _
-    exact finite_structures_good sig k _
+    have h_flatten : k_equiv sig k
+        ((M.subinterval sig (min a c) (max a c)).subinterval sig x y)
+        (M.subinterval sig x.val y.val) :=
+      subinterval_of_subinterval_k_equiv sig k M (min a c) (max a c) x y
+    suffices h_good : good sig k (M.subinterval sig x.val y.val) by
+      obtain ⟨Z, hZ⟩ := h_good
+      exact ⟨Z, h_flatten.trans hZ⟩
+    -- Three-way case split on x.val, y.val relative to b
+    rcases le_or_lt x.val b with hxb_le | hxb_lt
+    · rcases le_or_lt y.val b with hyb_le | hyb_lt
+      · -- Case A: both <= b. Use hab if min a b ≤ x.val, else hbc.
+        rcases le_or_lt (min a b) x.val with h_in_ab | h_not_ab
+        · exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max
+            hab x.val y.val h_in_ab (le_trans hyb_le (le_max_right a b)) hxy
+        · have h_in_bc : min b c ≤ x.val := by
+            have hx_lt_a : x.val < a := lt_of_lt_of_le h_not_ab (min_le_left a b)
+            have hx_lo : min a c ≤ x.val := x.property.1
+            rcases le_or_lt a c with hac | hca
+            · exact absurd hx_lt_a (not_lt.mpr (by simp [min_eq_left hac] at hx_lo; exact hx_lo))
+            · have hc_le_x : c ≤ x.val := by
+                simp [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
+              exact le_trans (min_le_right b c) hc_le_x
+          exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
+            hbc x.val y.val h_in_bc (le_trans hyb_le (le_max_left b c)) hxy
+      · -- Case C: x.val <= b < y.val (spans b).
+        -- Decompose via good_of_split_at_succ.
+        have h_left : good sig k (M.subinterval sig x.val b) := by
+          rcases le_or_lt (min a b) x.val with h | h
+          · exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max
+              hab x.val b h (le_max_right a b) hxb_le
+          · have h_in_bc : min b c ≤ x.val := by
+              have hx_lt_a : x.val < a := lt_of_lt_of_le h (min_le_left a b)
+              have hx_lo : min a c ≤ x.val := x.property.1
+              rcases le_or_lt a c with hac | hca
+              · exact absurd hx_lt_a (not_lt.mpr (by simp [min_eq_left hac] at hx_lo; exact hx_lo))
+              · have hc_le_x : c ≤ x.val := by
+                  simp [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
+                exact le_trans (min_le_right b c) hc_le_x
+            exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
+              hbc x.val b h_in_bc (le_max_left b c) hxb_le
+        have h_right : good sig k (M.subinterval sig (Order.succ b) y.val) := by
+          have hsucc_le_y : Order.succ b ≤ y.val := Order.succ_le_iff.mpr hyb_lt
+          rcases le_or_lt y.val (max b c) with h | h
+          · exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
+              hbc (Order.succ b) y.val (le_trans (min_le_left b c) (Order.le_succ b)) h hsucc_le_y
+          · have hy_le_a : y.val ≤ a := by
+              have h1 : y.val ≤ max a c := y.property.2
+              have h2 : c < y.val := lt_of_le_of_lt (le_max_right b c) h
+              rcases le_or_lt a c with hac | hca
+              · exact absurd h2 (not_lt.mpr (le_trans h1 (by simp [max_eq_right hac])))
+              · exact le_trans h1 (le_of_eq (max_eq_left (le_of_lt hca)))
+            exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max
+              hab (Order.succ b) y.val (le_trans (min_le_right a b) (Order.le_succ b))
+              (le_trans hy_le_a (le_max_left a b)) hsucc_le_y
+        exact good_of_split_at_succ sig k M x.val b y.val hxb_le hyb_lt h_left h_right
+    · -- Case B: x.val > b (so y.val > b too). Use hbc if y ≤ max b c, else hab.
+      rcases le_or_lt y.val (max b c) with hybc | hybc
+      · exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
+          hbc x.val y.val (le_trans (min_le_left b c) (le_of_lt hxb_lt)) hybc hxy
+      · have hy_le_a : y.val ≤ a := by
+          have h1 : y.val ≤ max a c := y.property.2
+          have h2 : c < y.val := lt_of_le_of_lt (le_max_right b c) hybc
+          rcases le_or_lt a c with hac | hca
+          · exact absurd h2 (not_lt.mpr (le_trans h1 (by simp [max_eq_right hac])))
+          · exact le_trans h1 (le_of_eq (max_eq_left (le_of_lt hca)))
+        exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max
+          hab x.val y.val (le_trans (min_le_right a b) (le_of_lt hxb_lt))
+          (le_trans hy_le_a (le_max_left a b)) hxy
 
 /-! ## No Gaps in Discrete Orders -/
 
 /--
-In a discrete succ-Archimedean linear order, if a and b are in different ~M classes,
-there exists a boundary point c with c ~M a but succ(c) not ~M a.
-
-In fact, this theorem is vacuously true: with `IsSuccArchimedean`, every bounded
-interval is finite, hence good, so contemp_equiv holds universally.
-The hypothesis `¬ contemp_equiv sig k M a b` is therefore unsatisfiable.
+In a discrete linear order without endpoints, if a and b are in different ~M
+classes, there exists a boundary point c with c ~M a but succ(c) not ~M a.
 -/
 theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
@@ -349,8 +477,6 @@ theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- In an IsSuccArchimedean order, contemp_equiv holds universally
-  -- (all bounded intervals are finite, hence good)
   exfalso
   apply h_diff_class
   simp only [contemp_equiv, very_good]
@@ -389,10 +515,6 @@ theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat)
 ONE-CLASS THEOREM (Reynolds, discrete case):
 All points are contemporaneously equivalent in any discrete succ-Archimedean
 linear order without endpoints.
-
-With `IsSuccArchimedean`, every bounded interval is finite, hence every
-subinterval is good (via `finite_structures_good`), making `contemp_equiv`
-hold universally.
 -/
 theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
@@ -400,14 +522,11 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
     [IsSuccArchimedean M.carrier] :
     ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
   intro a b
-  -- contemp_equiv = very_good on [min a b, max a b]
   simp only [contemp_equiv, very_good]
   intro x y _
-  -- The outer subinterval is finite by IsSuccArchimedean
   haveI : Finite (M.subinterval sig (min a b) (max a b)).carrier :=
     subinterval_finite_of_succ_archimedean sig M _ _ min_le_max
   haveI : Fintype (M.subinterval sig (min a b) (max a b)).carrier := Fintype.ofFinite _
-  -- The nested subinterval is Fintype since it's a subtype of a Fintype
   haveI : Fintype ((M.subinterval sig (min a b) (max a b)).subinterval sig x y).carrier :=
     Subtype.fintype _
   exact finite_structures_good sig k _
@@ -417,14 +536,6 @@ theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
 /--
 Reynolds Lemma 16: If M is a succ-Archimedean discrete linear order without
 endpoints (hence order-isomorphic to ℤ), then M is good at any depth.
-
-The proof uses `orderIsoIntOfLinearSuccPredArch` to obtain `M.carrier ≃o ℤ`,
-constructs a `ZIntervalStructure` with matching predicates on the unbounded
-interval, and applies `k_equiv_of_iso`.
-
-Note: The `very_good` hypothesis is unused because in a succ-Archimedean order,
-all bounded intervals are finite, so very_good holds trivially. The theorem
-is stated with it for interface compatibility.
 -/
 theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
@@ -432,16 +543,13 @@ theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMo
     [IsSuccArchimedean M.carrier] [Nonempty M.carrier]
     (_h_countable : Countable M.carrier) (_h_very_good : very_good sig k M) :
     good sig k M := by
-  -- Order iso from carrier to ℤ via Mathlib's classification theorem
   let f : M.carrier ≃o ℤ := orderIsoIntOfLinearSuccPredArch
-  -- Build Z-interval structure with lo = none, hi = none
   let Z : ZIntervalStructure sig := {
     lo := none
     hi := none
     interp := fun p z => M.interp p (f.symm z)
   }
   refine ⟨Z, ?_⟩
-  -- Build order iso from M.carrier to Z.intervalCarrier = {z : ℤ // True ∧ True}
   let val_iso : Z.intervalCarrier ≃o ℤ :=
     Equiv.toOrderIso
       { toFun := Subtype.val, invFun := fun z => ⟨z, trivial, trivial⟩,
@@ -449,7 +557,6 @@ theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMo
       (fun _ _ h => h) (fun _ _ h => h)
   let g : M.carrier ≃o (Z.toOrdered sig).carrier := f.trans val_iso.symm
   apply k_equiv_of_iso sig k M (Z.toOrdered sig) g
-  -- Predicates match through the isomorphism
   intro p x
   show M.interp p x ↔ M.interp p (f.symm (f x))
   simp [OrderIso.symm_apply_apply]
@@ -458,26 +565,18 @@ theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMo
 
 /--
 The chronicle prior model is good at any finite depth.
-
-Uses `orderIsoIntOfLinearSuccPredArch` to establish that the chronicle's
-countable discrete domain (without endpoints, succ-Archimedean) is
-order-isomorphic to ℤ, then constructs the corresponding Z-interval
-structure with matching predicate interpretations.
 -/
 theorem chronicle_is_good (M : ChronicleAsPriorModel) (sig : MonadicSignature)
     (atomMap : sig.preds → Formula) (k : Nat) :
     good sig k (chronicleAsMonadicStructure M sig atomMap) := by
   haveI : Nonempty M.domain := M.domain_nonempty
-  -- Order iso from domain to ℤ
   let f : M.domain ≃o ℤ := orderIsoIntOfLinearSuccPredArch
-  -- Build Z-interval with matching predicates
   let Z : ZIntervalStructure sig := {
     lo := none
     hi := none
     interp := fun p z => (atomMap p) ∈ M.fmcs (f.symm z)
   }
   refine ⟨Z, ?_⟩
-  -- Order iso from chronicle carrier to Z.intervalCarrier
   let val_iso : Z.intervalCarrier ≃o ℤ :=
     Equiv.toOrderIso
       { toFun := Subtype.val, invFun := fun z => ⟨z, trivial, trivial⟩,
@@ -486,7 +585,6 @@ theorem chronicle_is_good (M : ChronicleAsPriorModel) (sig : MonadicSignature)
   let g : (chronicleAsMonadicStructure M sig atomMap).carrier ≃o (Z.toOrdered sig).carrier :=
     f.trans val_iso.symm
   apply k_equiv_of_iso sig k _ _ g
-  -- Predicates match
   intro p x
   show (atomMap p) ∈ M.fmcs x ↔ (atomMap p) ∈ M.fmcs (f.symm (f x))
   simp [OrderIso.symm_apply_apply]

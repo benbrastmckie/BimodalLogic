@@ -127,7 +127,7 @@ All phases are strictly sequential. Each phase builds on the previous.
 
 ---
 
-### Phase 2: Rewrite contemp_equiv_is_equiv (Reynolds Lemma 17 -- Transitivity) [NOT STARTED]
+### Phase 2: Rewrite contemp_equiv_is_equiv (Reynolds Lemma 17 -- Transitivity) [PARTIAL]
 
 **Goal**: Rewrite the transitivity proof of ~M WITHOUT `IsSuccArchimedean`. Reynolds Lemma 17 proves: if [a,b] is very good and [b,c] is very good, then [a,c] is very good, by decomposing any subinterval [x,y] of [a,c] spanning b into two good pieces and applying `doets_lemma_1_4` (sum preservation).
 
@@ -136,13 +136,15 @@ All phases are strictly sequential. Each phase builds on the previous.
 **BEFORE CODING**: Read `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md` lines 938-953. Read `literature/Doets_1989_Monadic_Pi11_Theories.md` Section 1.4. Understand the ordered sum decomposition argument completely before writing Lean.
 
 **Tasks**:
-- [ ] **Task 2.1**: REMOVE `[IsSuccArchimedean M.carrier]` from `contemp_equiv_is_equiv`
-- [ ] **Task 2.2**: REMOVE `subinterval_finite_of_succ_archimedean` from the transitivity proof (and the theorem itself if no longer needed)
-- [ ] **Task 2.3**: Prove "flatten" lemma: a subinterval of a subinterval of M is order-isomorphic to a direct subinterval of M (for reducing nested subtype goals)
-- [ ] **Task 2.4**: Prove transitivity case 1: if x <= b <= y, decompose [x,y] into ordered sum of [x,b] and [b,y]. Both are subintervals of [a,b] or [b,c] respectively, hence good by very_good hypothesis. Apply `doets_lemma_1_4` to get [x,y] good.
-- [ ] **Task 2.5**: Prove transitivity case 2: if x,y both in [a,b], then [x,y] is a subinterval of [a,b], hence good by very_good of [a,b]. Similarly for both in [b,c].
-- [ ] **Task 2.6**: Assemble full transitivity proof by case analysis on position of x,y relative to b
-- [ ] **Task 2.7**: Verify `lake build` passes with rewritten `contemp_equiv_is_equiv`
+- [x] **Task 2.1**: REMOVE `[IsSuccArchimedean M.carrier]` from `contemp_equiv_is_equiv` *(completed: signature now `[SuccOrder M.carrier] [NoMaxOrder M.carrier]`)*
+- [x] **Task 2.2**: REMOVE `subinterval_finite_of_succ_archimedean` from the transitivity proof *(completed: transitivity no longer uses it)*
+- [x] **Task 2.3**: Prove "flatten" lemma: `subinterval_of_subinterval_k_equiv` *(completed)*
+- [ ] **Task 2.4**: Prove transitivity case 1: if x <= b <= y, decompose [x,y] into ordered sum of [x,b] and [b,y]. Both are subintervals of [a,b] or [b,c] respectively, hence good by very_good hypothesis. Apply `doets_lemma_1_4` to get [x,y] good. *(deviation: altered -- uses `good_of_split_at_succ` with sorry for the ordered-sum iso + Z-interval concatenation)*
+- [x] **Task 2.5**: Prove transitivity case 2: if x,y both in [a,b], then [x,y] is a subinterval of [a,b], hence good by very_good of [a,b]. Similarly for both in [b,c]. *(completed: Cases A and B in transitivity proof)*
+- [x] **Task 2.6**: Assemble full transitivity proof by case analysis on position of x,y relative to b *(completed)*
+- [x] **Task 2.7**: Verify `lake build` passes with rewritten `contemp_equiv_is_equiv` *(completed: full lake build passes)*
+
+**Remaining sorry**: `good_of_split_at_succ` (1 sorry) -- requires constructing OrderIso from subinterval to Sigma.Lex ordered sum and proving ordered sum of Z-intervals is good. Structural approach is correct but Lean encoding of the OrderIso is complex.
 
 **Timing**: 4 hours
 
