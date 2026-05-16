@@ -192,7 +192,7 @@ All phases are strictly sequential. Phase 3 requires Phase 2's transitivity resu
 
 ---
 
-### Phase 5: Truth Transfer via Existential Closure [NOT STARTED]
+### Phase 5: Truth Transfer via Existential Closure [BLOCKED]
 
 **Goal**: Prove truth transfer from the chronicle's Z-model to temporal truth, using existential closure of the table formula (no general k_equiv_preserves_eval needed).
 
@@ -230,9 +230,16 @@ All phases are strictly sequential. Phase 3 requires Phase 2's transitivity resu
 - `lean_verify` on truth transfer lemma shows no `sorryAx`
 - `lake build` passes
 
+**BLOCKER** (Phases 5-6):
+- **What failed**: The Reynolds pipeline cannot produce a sorry-free `doets_countermodel_discrete` because `chronicle_is_good` (as proved) uses `orderIsoIntOfLinearSuccPredArch` which requires `IsSuccArchimedean M.carrier`. When applied to the specific chronicle from `extract_chronicle_as_prior`, this field is provided by `limitDomSubtype_isSuccArchimedean` which has a sorry via `succ_cofinal`.
+- **What was tried**: (1) Proved `chronicle_is_good` using `orderIsoIntOfLinearSuccPredArch` — works as a standalone theorem but propagates sorry when instantiated with concrete chronicle. (2) Added `domain_succ_archimedean` field to `ChronicleAsPriorModel` — same propagation issue. (3) Analyzed whether truth transfer could bypass the issue — it cannot, because any path through `chronicle_is_good` applied to a specific `ChronicleAsPriorModel` from `extract_chronicle_as_prior` will trace through the sorry.
+- **Why it's stuck**: Circular dependency: `orderIsoIntOfLinearSuccPredArch` needs `IsSuccArchimedean`, which for `LimitDomSubtype` requires `succ_cofinal`, which is the original sorry (task 129). Alternative: prove `chronicle_is_good` WITHOUT `orderIsoIntOfLinearSuccPredArch` (i.e., via the original plan's cofinal decomposition + `doets_lemma_1_4` + ordered sum assembly) — this is feasible but requires extensive machinery (estimated 8+ hours of new helper lemmas for ordered sum of Z-intervals).
+- **What is needed**: EITHER (a) close `succ_cofinal` (task 129) making `limitDomSubtype_isSuccArchimedean` sorry-free, OR (b) implement the full Phase 4 cofinal decomposition from the original plan (bypassing `orderIsoIntOfLinearSuccPredArch`), OR (c) construct an alternative sorry-free `IsSuccArchimedean` proof for `LimitDomSubtype`.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
 ---
 
-### Phase 6: TaskFrame Int Construction and Pipeline Wiring [NOT STARTED]
+### Phase 6: TaskFrame Int Construction and Pipeline Wiring [BLOCKED]
 
 **Goal**: Construct a TaskFrame Int countermodel from the Z-model and wire the full Reynolds pipeline into `Transfer.lean`, eliminating the chronicle fallback.
 
