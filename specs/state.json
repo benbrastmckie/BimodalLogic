@@ -1139,16 +1139,16 @@
     {
       "project_number": 154,
       "project_name": "sum_preservation_ef_games",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
       "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-16T01:51:31Z",
-      "researched": "2026-05-16T00:24:41Z",
-      "next_artifact_number": 4,
+      "last_updated": "2026-05-16T02:07:33Z",
+      "researched": "2026-05-16T02:07:33Z",
+      "next_artifact_number": 5,
       "artifacts": [
         {
           "type": "report",
@@ -1179,9 +1179,14 @@
           "path": "specs/154_sum_preservation_ef_games/handoffs/phase-2-handoff-20260515.md",
           "type": "handoff",
           "summary": "Phase 2 blocked: lifting step requires multi-var component transfer for order atoms"
+        },
+        {
+          "path": "specs/154_sum_preservation_ef_games/reports/04_literature-approach.md",
+          "type": "report",
+          "summary": "Literature-grounded analysis: 1-var NF matching cannot encode same-component order. Correct approach requires generalized multi-var lifting lemma with induction on depth (d+n constant)."
         }
       ],
-      "session_id": "sess_1778894121_969219",
+      "session_id": "sess_1778896377_48cac6",
       "started": "2026-05-16T00:34:56Z"
     },
     {
