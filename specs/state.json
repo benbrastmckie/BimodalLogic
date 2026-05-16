@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 156,
+      "project_name": "multi_angle_research_strategy",
+      "status": "not_started",
+      "task_type": "meta",
+      "priority": "medium",
+      "topic": "agent-system",
+      "description": "Improve formal/lean/math/logic research agents with multi-angle team research strategy. In the task 154 (sum_preservation) research cycle, a proof blocker persisted through multiple single-agent research rounds — each agent analyzed the problem, added infrastructure, but stopped short of the hardest construction step. What broke through was launching 4 parallel research agents, each assigned a distinct angle on the SAME problem: (A) backward from sorry sites using lean_goal/lean_multi_attempt, (B) full infrastructure inventory with exact signatures and gap analysis, (C) literature review assessing whether the approach was sound, (D) decomposition into small independently-provable lemmas with lean_run_code verification. The synthesis produced consensus and a concrete breakthrough (Agent D verified the dependent type cast solution compiles). Improvements: (1) Add multi-angle analysis mode to lean-research-agent that decomposes blocked proofs into backward/infrastructure/literature/decompose angles, (2) Update lean-research-agent to always try lean_multi_attempt and lean_run_code to verify proposed solutions compile, (3) Add guidance for when to recommend team research (e.g., after 2+ failed rounds on the same blocker), (4) Add prototype-first research pattern where agents write small compilable Lean snippets before proposing full lemmas, (5) Update formal-research-agent coordinator to route to multi-angle team research when multiple handoffs indicate the same blocker.",
+      "created": "2026-05-16T04:50:48Z",
+      "last_updated": "2026-05-16T04:50:48Z"
+    },
+    {
       "project_number": 131,
       "project_name": "refactor_module_organization",
       "status": "not_started",
@@ -1139,14 +1150,14 @@
     {
       "project_number": 154,
       "project_name": "sum_preservation_ef_games",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
       "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-16T04:33:30Z",
+      "last_updated": "2026-05-16T04:36:16Z",
       "researched": "2026-05-16T02:07:33Z",
       "next_artifact_number": 5,
       "artifacts": [
@@ -1196,7 +1207,7 @@
           "summary": "Plan v6: 3 phases (order helpers, build_bicompat, sorry closures), 8 hours, based on team research"
         }
       ],
-      "session_id": "sess_1778905698_1b9f3c",
+      "session_id": "sess_1778906163_d56272",
       "started": "2026-05-16T00:34:56Z"
     },
     {
@@ -1216,7 +1227,7 @@
       "artifacts": []
     }
   ],
-  "next_project_number": 156,
+  "next_project_number": 157,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

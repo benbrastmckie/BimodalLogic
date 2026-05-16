@@ -1,5 +1,5 @@
 ---
-next_project_number: 156
+next_project_number: 157
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -89,6 +89,16 @@ technical_debt:
 
 ## Tasks
 
+### 156. Improve formal/lean/math/logic research agents with multi-angle team research strategy
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Priority**: medium
+
+**Description**: Improve formal/lean/math/logic research agents with multi-angle team research strategy. In the task 154 research cycle, a proof blocker persisted through multiple single-agent rounds. What broke through was launching 4 parallel agents each assigned a distinct angle: (A) backward from sorry sites using lean_goal/lean_multi_attempt, (B) infrastructure inventory with exact signatures and gap analysis, (C) literature review assessing approach soundness, (D) decomposition into small lemmas with lean_run_code verification. Improvements: (1) Add multi-angle analysis mode to lean-research-agent, (2) Always try lean_multi_attempt/lean_run_code to verify solutions compile, (3) Add guidance for when to recommend team research after repeated blockers, (4) Add prototype-first research pattern, (5) Update formal-research-agent to auto-route to multi-angle team research when multiple handoffs indicate the same blocker.
+
+---
+
 ### 155. Activate Reynolds pipeline for sorry-free discrete completeness
 - **Effort**: 6-10 hours
 - **Status**: [NOT STARTED]
@@ -102,7 +112,7 @@ technical_debt:
 
 ### 154. Prove sum_preservation via Ehrenfeucht-Fraisse games (Doets Lemma 1.4)
 - **Effort**: 8-15 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: None
