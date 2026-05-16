@@ -55,7 +55,7 @@ Note: Task 154 addresses the BUILD ERRORS blocking `sum_preservation`, not the 3
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Explicit `@Fin.cons` motive in h_idx' does not propagate through cd' type in file context | H | L | DefEq verified by research. If `lake build` reveals cd' errors, fall back to tactic-mode proof (Option A) or add explicit motive to cd' type too |
+| Explicit `@Fin.cons` motive in h_idx' does not propagate through cd' type in file context | H | **REALIZED** | All approaches tested. See BLOCKER below. |
 | Fixing Cluster 1 reveals >5 latent errors in cd' or surrounding code | M | M | `lake build` after Phase 1 reveals true scope. Phase 2 absorbs latent errors. Phase 3 restructures if error count exceeds 10 |
 | Complete cd0 block rewrite for Cluster 2 introduces new type mismatches | M | M | Write replacement as complete block, not incremental patches. Verify with `lake build` immediately. Fall back to Phase 3 restructuring |
 | k=0 case-split in `sum_lift_one_var` changes function behavior for callers | L | L | Function is private. Caller `sum_nf_agree_sentence` passes k explicitly. BiCompat sig 0 1 is trivially True, so k=0 branch is semantically correct |
@@ -71,7 +71,7 @@ Note: Task 154 addresses the BUILD ERRORS blocking `sum_preservation`, not the 3
 | 3 | 3 | 2 |
 | 4 | 4 | 2 or 3 |
 
-### Phase 1: Fix Cluster 1 -- h_idx' Explicit Motive [NOT STARTED]
+### Phase 1: Fix Cluster 1 -- h_idx' Explicit Motive [BLOCKED]
 
 **Goal**: Resolve all 6 build errors from opaque `show T from x` patterns in `build_bicompat` by changing the h_idx' type annotation to use explicit `@Fin.cons` motive at both the forward oracle (lines 547-550) and backward oracle (lines 628-631).
 
@@ -96,7 +96,21 @@ Note: Task 154 addresses the BUILD ERRORS blocking `sum_preservation`, not the 3
 
 - [ ] **Task 1.3**: Run `lake build` and capture full error output. Count remaining errors. Record whether any NEW errors appear in cd' (lines 551-554, 632-635) or the recursive `build_bicompat` calls.
 
-- [ ] **Task 1.4**: If cd' or recursive call errors appear, apply explicit `@Fin.cons` motive to cd' type annotations (lines 552-553, 633-634) using the same pattern. Re-run `lake build`.
+- [ ] **Task 1.4**: If cd' or recursive call errors appear, apply explicit `@Fin.cons` motive to cd' type annotations (lines 552-553, 633-634) using the same pattern. Re-run `lake build`. *(deviation: skipped -- all approaches tested, see BLOCKER)*
+
+**BLOCKER** (Phase 1):
+- **What failed**: The `cd'` CompData construction at lines 551-587 and 632-668 cannot be elaborated with ANY env pattern that makes `.1` work on the h_idx' type.
+- **What was tried**:
+  1. `@Fin.cons` explicit motive for env: fixes h_idx' but breaks eM/eN/agree/bound/consistent (the `dite` in eM/eN can't type-check because `if j' = j then cd.sz j + 1 else cd.sz j'` doesn't reduce in branches)
+  2. `Fin.cons (show T from x)` original pattern: h_idx' fails because `.1` can't project through `show T from`
+  3. Tactic-mode eM/eN with `show/split/subst`: creates `Decidable.casesOn` terms that block `simp` in agree/consistent
+  4. `Fin.cast (if_neg h)` for eM/eN else branch: fixes else branch but then branch still fails for eN (elaboration order: eM works first, eN gets committed type with unreduced `if j' = j'`)
+  5. `by by_cases/subst/simp only/exact` for eN: partially works but creates opaque `Decidable.casesOn` that breaks agree field
+  6. CompData `.fst`/`.snd` instead of `.1`/`.2`: same underlying issue
+  7. Inlined h_idx' proof: same issue
+- **Why it's stuck**: Three interacting problems: (a) `.1` projection fails on `show T from x` (Lean 4 elaboration opacity), (b) `@Fin.cons` motive change requires eM/eN to handle `dite` type reduction which Lean 4 doesn't do automatically, (c) tactic-mode eM/eN creates `Decidable.casesOn` terms that block downstream field proofs. These form a trilemma with no clean solution within the current CompData architecture.
+- **What is needed**: Restructure CompData to avoid dependent `Fin.cons` environments entirely. Options: (1) Factor cd' construction into a separate `noncomputable def` with explicit types that avoid the dite issue, (2) Change CompData's `consistent` and h_idx fields to not use `.1` projection, using `Sigma.fst` with explicit type application, (3) Use `set_option pp.all true` to understand the exact elaboration path that makes eM succeed but eN fail, and exploit that asymmetry.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Timing**: 1 hour
 
