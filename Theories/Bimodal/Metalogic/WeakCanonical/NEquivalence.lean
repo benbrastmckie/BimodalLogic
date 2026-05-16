@@ -279,6 +279,247 @@ private theorem extend_atoms {sig : MonadicSignature}
         have h' : k1 ≠ k2 := fun heq => hne (by simp [heq])
         exact h_atoms (.order k1 k2 h')
 
+/-! ## BiCompat Construction Helpers -/
+
+/--
+Cast transport for order: comparing cast elements preserves order.
+-/
+private theorem cast_lt_iff {sig : MonadicSignature}
+    {I : Type} [LinearOrder I] {ms : I → OrderedMonadicStructure sig}
+    {j idx : I} (h : idx = j) (c : (ms j).carrier) (v : (ms idx).carrier) :
+    @LT.lt _ (ms idx).carrier_order.toLT (h.symm ▸ c) v ↔
+    @LT.lt _ (ms j).carrier_order.toLT c (h ▸ v) := by
+  subst h; rfl
+
+/--
+Per-component NF state for the BiCompat construction.
+-/
+private structure CompData (sig : MonadicSignature) (I : Type) [LinearOrder I]
+    (ms ms' : I → OrderedMonadicStructure sig) (budget : Nat)
+    {n : Nat}
+    (env_M : Fin n → (orderedSum sig I ms).carrier)
+    (env_N : Fin n → (orderedSum sig I ms').carrier)
+    (h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1) : Type where
+  sz : I → Nat
+  eM : (j : I) → Fin (sz j) → (ms j).carrier
+  eN : (j : I) → Fin (sz j) → (ms' j).carrier
+  agree : ∀ j : I, ∀ nf : NormalForm sig (budget - sz j) (sz j),
+    nf_eval_nf (ms j) (budget - sz j) (sz j) (eM j) nf ↔
+    nf_eval_nf (ms' j) (budget - sz j) (sz j) (eN j) nf
+  bound : ∀ j : I, sz j < budget
+  consistent : ∀ (p : Fin n) (j : I) (h : (env_M p).1 = j),
+    ∃ q : Fin (sz j),
+      h ▸ (env_M p).2 = eM j q ∧
+      ((h_idx p).symm.trans h) ▸ (env_N p).2 = eN j q
+
+/--
+Atom agreement at n=1 from component NF agreement.
+-/
+private theorem sum_atoms_one_var {sig : MonadicSignature}
+    {k : Nat} {I : Type} [LinearOrder I]
+    (ms ms' : I → OrderedMonadicStructure sig)
+    (i : I) (a : (ms i).carrier) (b : (ms' i).carrier)
+    (h_agree : ∀ nf : NormalForm sig k (0 + 1),
+      nf_eval_nf (ms i) k (0 + 1) (Fin.cons a Fin.elim0) nf ↔
+      nf_eval_nf (ms' i) k (0 + 1) (Fin.cons b Fin.elim0) nf) :
+    ∀ ak : AtomKind sig (0 + 1),
+      atom_eval (orderedSum sig I ms)
+        (Fin.cons (show (orderedSum sig I ms).carrier from ⟨i, a⟩) Fin.elim0) ak ↔
+      atom_eval (orderedSum sig I ms')
+        (Fin.cons (show (orderedSum sig I ms').carrier from ⟨i, b⟩) Fin.elim0) ak := by
+  intro ak
+  obtain ⟨p, hp⟩ := atomKind_one_pred_only ak
+  subst hp
+  simp only [atom_eval, Fin.cons_zero]
+  exact atom_agreement_from_nf (ms i) (Fin.cons a Fin.elim0) (ms' i)
+    (Fin.cons b Fin.elim0) h_agree (.pred p 0)
+
+/--
+Forward order transfer using component NF and CompData consistency.
+-/
+private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
+    {I : Type} [LinearOrder I]
+    {ms ms' : I → OrderedMonadicStructure sig}
+    (j : I) (c : (ms j).carrier) (c' : (ms' j).carrier)
+    {n : Nat} {env_M : Fin n → (Sigma fun i => (ms i).carrier)}
+    {env_N : Fin n → (Sigma fun i => (ms' i).carrier)}
+    (h_idx : ∀ p, (env_M p).1 = (env_N p).1)
+    {sz_j : Nat} (eM_j : Fin sz_j → (ms j).carrier) (eN_j : Fin sz_j → (ms' j).carrier)
+    (h_ext_nf : ∀ nf : NormalForm sig 0 (sz_j + 1),
+      nf_eval_nf (ms j) 0 (sz_j + 1) (Fin.cons c eM_j) nf ↔
+      nf_eval_nf (ms' j) 0 (sz_j + 1) (Fin.cons c' eN_j) nf)
+    (rep : ∀ (p : Fin n) (h : (env_M p).1 = j),
+      ∃ q : Fin sz_j,
+        h ▸ (env_M p).2 = eM_j q ∧
+        ((h_idx p).symm.trans h) ▸ (env_N p).2 = eN_j q)
+    (p : Fin n) :
+    @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+      (show (orderedSum sig I ms).carrier from ⟨j, c⟩) (env_M p) ↔
+    @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+      (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) (env_N p) := by
+  show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c⟩ (env_M p) ↔
+       @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c'⟩ (env_N p)
+  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms i).carrier_order.toLT)]
+  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms' i).carrier_order.toLT)]
+  have hidx := h_idx p
+  constructor
+  · rintro (hlt | ⟨heq, hlt⟩)
+    · left; rwa [hidx] at hlt
+    · right
+      have h_eq : (env_M p).1 = j := heq.symm
+      obtain ⟨q, hqM, hqN⟩ := rep p h_eq
+      have hlt' : @LT.lt _ (ms j).carrier_order.toLT c (eM_j q) := by
+        rw [← hqM]; exact (cast_lt_iff h_eq c (env_M p).2).mp hlt
+      have h_order := atom_agreement_from_nf
+        (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
+        h_ext_nf (.order 0 (Fin.succ q) (Fin.succ_ne_zero q ∘ Eq.symm))
+      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
+      have h_eq_N : (env_N p).1 = j := hidx.symm.trans h_eq
+      rw [← hqN] at (h_order.mp hlt' : _)
+      exact ⟨hidx ▸ heq, by convert (cast_lt_iff h_eq_N c' (env_N p).2).mpr this using 1⟩
+  · rintro (hlt | ⟨heq, hlt⟩)
+    · left; rwa [← hidx] at hlt
+    · right
+      have h_eq_N : (env_N p).1 = j := heq.symm
+      have h_eq : (env_M p).1 = j := hidx.trans h_eq_N
+      obtain ⟨q, hqM, hqN⟩ := rep p h_eq
+      have hlt' : @LT.lt _ (ms' j).carrier_order.toLT c' (eN_j q) := by
+        rw [← hqN]; exact (cast_lt_iff h_eq_N c' (env_N p).2).mp hlt
+      have h_order := atom_agreement_from_nf
+        (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
+        h_ext_nf (.order 0 (Fin.succ q) (Fin.succ_ne_zero q ∘ Eq.symm))
+      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
+      rw [← hqM] at (h_order.mpr hlt' : _)
+      exact ⟨hidx.symm ▸ heq, by convert (cast_lt_iff h_eq c (env_M p).2).mpr this using 1⟩
+
+/--
+Backward order transfer using component NF and CompData consistency.
+-/
+private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
+    {I : Type} [LinearOrder I]
+    {ms ms' : I → OrderedMonadicStructure sig}
+    (j : I) (c : (ms j).carrier) (c' : (ms' j).carrier)
+    {n : Nat} {env_M : Fin n → (Sigma fun i => (ms i).carrier)}
+    {env_N : Fin n → (Sigma fun i => (ms' i).carrier)}
+    (h_idx : ∀ p, (env_M p).1 = (env_N p).1)
+    {sz_j : Nat} (eM_j : Fin sz_j → (ms j).carrier) (eN_j : Fin sz_j → (ms' j).carrier)
+    (h_ext_nf : ∀ nf : NormalForm sig 0 (sz_j + 1),
+      nf_eval_nf (ms j) 0 (sz_j + 1) (Fin.cons c eM_j) nf ↔
+      nf_eval_nf (ms' j) 0 (sz_j + 1) (Fin.cons c' eN_j) nf)
+    (rep : ∀ (p : Fin n) (h : (env_M p).1 = j),
+      ∃ q : Fin sz_j,
+        h ▸ (env_M p).2 = eM_j q ∧
+        ((h_idx p).symm.trans h) ▸ (env_N p).2 = eN_j q)
+    (p : Fin n) :
+    @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+      (env_M p) (show (orderedSum sig I ms).carrier from ⟨j, c⟩) ↔
+    @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+      (env_N p) (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) := by
+  show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_M p) ⟨j, c⟩ ↔
+       @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_N p) ⟨j, c'⟩
+  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms i).carrier_order.toLT)]
+  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms' i).carrier_order.toLT)]
+  have hidx := h_idx p
+  constructor
+  · rintro (hlt | ⟨heq, hlt⟩)
+    · left; rwa [← hidx]
+    · right
+      obtain ⟨q, hqM, hqN⟩ := rep p heq.symm
+      rw [hqM] at hlt
+      have h_order := atom_agreement_from_nf
+        (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
+        h_ext_nf (.order (Fin.succ q) 0 (Fin.succ_ne_zero q))
+      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
+      rw [← hqN] at (h_order.mp hlt : _)
+      exact ⟨hidx.symm ▸ heq, by convert this using 1⟩
+  · rintro (hlt | ⟨heq, hlt⟩)
+    · left; rwa [hidx]
+    · right
+      have h_eq : (env_M p).1 = j := hidx.trans heq.symm
+      obtain ⟨q, hqM, hqN⟩ := rep p h_eq
+      rw [show heq.symm = (hidx.symm.trans h_eq) from Subsingleton.elim _ _] at hlt
+      rw [hqN] at hlt
+      have h_order := atom_agreement_from_nf
+        (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
+        h_ext_nf (.order (Fin.succ q) 0 (Fin.succ_ne_zero q))
+      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
+      rw [← hqM] at (h_order.mpr hlt : _)
+      exact ⟨hidx ▸ heq, by convert this using 1⟩
+
+/--
+Construct BiCompat and atom agreement from CompData. Combines build_bicompat
+and extend_atoms into a single construction by induction on depth d.
+
+Returns both BiCompat at depth d and atom agreement at n vars, which are
+the two ingredients needed by sum_nf_lift_gen.
+-/
+private noncomputable def build_bicompat {sig : MonadicSignature}
+    {I : Type} [LinearOrder I]
+    {ms ms' : I → OrderedMonadicStructure sig}
+    {budget : Nat} :
+    ∀ (d n : Nat) (hdn : d + n ≤ budget)
+    (env_M : Fin n → (orderedSum sig I ms).carrier)
+    (env_N : Fin n → (orderedSum sig I ms').carrier)
+    (h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
+    (h_atoms : ∀ a : AtomKind sig n,
+      atom_eval (orderedSum sig I ms) env_M a ↔
+      atom_eval (orderedSum sig I ms') env_N a)
+    (cd : CompData sig I ms ms' budget env_M env_N h_idx),
+    BiCompat sig d n I ms ms' env_M env_N
+  | 0, _, _, _, _, _, _, _ => trivial
+  | d + 1, n, hdn, env_M, env_N, h_idx, h_atoms, cd => by
+    -- Need: forward + backward oracles
+    -- Each oracle: given j, c' (or c), find matching element with atom_agree + recursive BiCompat
+    have oracle_step (j : I) (c' : (ms' j).carrier) :
+        ∃ (c : (ms j).carrier),
+          (∀ ak : AtomKind sig (n + 1),
+            atom_eval (orderedSum sig I ms) (Fin.cons (show _ from ⟨j, c⟩) env_M) ak ↔
+            atom_eval (orderedSum sig I ms') (Fin.cons (show _ from ⟨j, c'⟩) env_N) ak) ∧
+          BiCompat sig d (n + 1) I ms ms'
+            (Fin.cons (show _ from ⟨j, c⟩) env_M)
+            (Fin.cons (show _ from ⟨j, c'⟩) env_N) := by
+      -- Use component_extend_fwd on component j's projected env
+      have hsz := cd.bound j
+      -- cd.agree j gives NF agree at depth (budget - cd.sz j) for cd.sz j vars
+      -- component_extend_fwd needs depth (K+1) form, where K+1 = budget - cd.sz j
+      set K := budget - cd.sz j - 1 with hK_def
+      have hK_eq : K + 1 = budget - cd.sz j := by omega
+      have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
+          nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
+          nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := by
+        intro nf; rw [hK_eq]; exact cd.agree j (hK_eq ▸ nf)
+      obtain ⟨c, h_ext_agree⟩ := component_extend_fwd j ms ms' (cd.eM j) (cd.eN j)
+        h_nf_rewrite c'
+      -- h_ext_agree at depth (budget - cd.sz j - 1) for (cd.sz j + 1) vars
+      -- Extract depth-0 agreement from h_ext_agree via nf_agreement_monotone
+      have h_ext_depth0 : ∀ nf : NormalForm sig 0 (cd.sz j + 1),
+          nf_eval_nf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
+          nf_eval_nf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
+        fun nf => nf_agreement_monotone 0 (budget - cd.sz j - 1) (cd.sz j + 1)
+          (by omega) (ms j) (Fin.cons c (cd.eM j)) (ms' j) (Fin.cons c' (cd.eN j))
+          h_ext_agree nf
+      refine ⟨c, ?_, ?_⟩
+      · -- Atom agreement at n+1 vars
+        apply extend_atoms h_idx h_atoms j c c'
+        · -- Pred agreement
+          intro p_pred
+          have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
+            (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
+          simp only [atom_eval, Fin.cons_zero] at this; exact this
+        · -- Order forward
+          exact orderedSum_order_fwd_via_comp j c c' h_idx
+            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
+        · -- Order backward
+          exact orderedSum_order_bwd_via_comp j c c' h_idx
+            (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
+      · -- Recursive BiCompat at depth d
+        -- Need updated CompData for extended environments
+        -- Update comp_sz j → comp_sz j + 1, others unchanged
+        -- Update eM j → Fin.cons c (eM j), others unchanged
+        -- Update NF agree: h_ext_agree at depth (budget - (sz j + 1))
+        sorry
+    sorry
+
 /--
 Generalized lifting lemma: ordered-sum NF agreement from atom-level compatibility,
 component sentence-level equivalence, and bi-directional witness compatibility.

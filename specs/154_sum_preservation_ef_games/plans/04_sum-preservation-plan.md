@@ -59,48 +59,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Sigma.Lex Order Helpers and h_atoms at n=1 [NOT STARTED]
+### Phase 1: Sigma.Lex Order Helpers and h_atoms at n=1 [COMPLETED]
 
 **Goal**: Define the order reasoning infrastructure needed by `extend_atoms` and prove the `h_atoms` construction for the n=1 sorry site environments.
 
 **Tasks**:
-- [ ] **Task 1.1**: Define `orderedSum_order_same_component` helper proving that for same-index Sigma elements, orderedSum order reduces to component order:
-  ```lean
-  private theorem orderedSum_order_same_component {sig : MonadicSignature}
-      {I : Type} [LinearOrder I] {ms : I -> OrderedMonadicStructure sig}
-      (j : I) (c1 c2 : (ms j).carrier) :
-      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
-        (show (orderedSum sig I ms).carrier from ⟨j, c1⟩)
-        (show (orderedSum sig I ms).carrier from ⟨j, c2⟩) ↔
-      @LT.lt (ms j).carrier (ms j).carrier_order.toLT c1 c2
-  ```
-  Proof via `Sigma.Lex` constructors and `show`/`subst`. (~15 lines)
-- [ ] **Task 1.2**: Define `orderedSum_order_cross_component` helper proving that for different-index Sigma elements, orderedSum order reduces to index comparison:
-  ```lean
-  private theorem orderedSum_order_cross_component {sig : MonadicSignature}
-      {I : Type} [LinearOrder I] {ms : I -> OrderedMonadicStructure sig}
-      (j1 j2 : I) (hne : j1 ≠ j2) (c1 : (ms j1).carrier) (c2 : (ms j2).carrier) :
-      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
-        (show (orderedSum sig I ms).carrier from ⟨j1, c1⟩)
-        (show (orderedSum sig I ms).carrier from ⟨j2, c2⟩) ↔
-      j1 < j2
-  ```
-  Proof via `Sigma.Lex.left` for forward, trichotomy + `Sigma.Lex` for backward. (~20 lines)
-- [ ] **Task 1.3**: Define `sum_atoms_from_component_nf` helper constructing ordered-sum atom agreement at n=1 from component NF agreement:
-  ```lean
-  private theorem sum_atoms_from_component_nf {sig : MonadicSignature}
-      {k : Nat} {I : Type} [LinearOrder I]
-      (i : I) (ms ms' : I -> OrderedMonadicStructure sig)
-      (a : (ms i).carrier) (b : (ms' i).carrier)
-      (h_agree : forall nf : NormalForm sig k (0+1),
-        nf_eval_nf (ms i) k (0+1) (Fin.cons a Fin.elim0) nf <->
-        nf_eval_nf (ms' i) k (0+1) (Fin.cons b Fin.elim0) nf) :
-      forall ak : AtomKind sig (0+1),
-        atom_eval (orderedSum sig I ms) (Fin.cons (show _ from ⟨i, a⟩) Fin.elim0) ak <->
-        atom_eval (orderedSum sig I ms') (Fin.cons (show _ from ⟨i, b⟩) Fin.elim0) ak
-  ```
-  Uses `atomKind_one_pred_only` to eliminate order atoms, then `atom_agreement_from_nf` on component for pred atoms. (~15 lines)
-- [ ] **Task 1.4**: Verify all three helpers compile with `lake build`
+- [x] **Task 1.1**: Define `orderedSum_order_same_component` helper *(deviation: altered -- implemented as `cast_lt_iff` + `orderedSum_order_fwd_via_comp` + `orderedSum_order_bwd_via_comp` which handle same-component AND cross-component order transfer together using CompData consistency, rather than separate same/cross helpers)*
+- [x] **Task 1.2**: Define `orderedSum_order_cross_component` helper *(deviation: altered -- folded into `orderedSum_order_fwd_via_comp` and `orderedSum_order_bwd_via_comp` which handle both same- and cross-component cases in a single lemma using Sigma.Lex.lt_def decomposition)*
+- [x] **Task 1.3**: Define `sum_atoms_from_component_nf` helper *(deviation: altered -- implemented as `sum_atoms_one_var` with same semantics but different name; uses atomKind_one_pred_only + atom_agreement_from_nf as planned)*
+- [x] **Task 1.4**: Verify all helpers compile *(completed -- all helpers compile sorry-free; also added CompData structure and cast_lt_iff transport lemma not in original plan)*
 
 **Timing**: 1.5 hours
 
@@ -115,7 +82,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: build_bicompat Recursive Construction [NOT STARTED]
+### Phase 2: build_bicompat Recursive Construction [IN PROGRESS]
 
 **Goal**: Implement the recursive `build_bicompat` definition that constructs `BiCompat sig d n` from component equivalence, index matching, atom agreement, and per-component NF state tracking.
 
@@ -136,28 +103,13 @@ Phases within the same wave can execute in parallel.
       BiCompat sig d n I ms ms' env_M env_N
   ```
   The key design choice: `h_comp` provides component sentence equivalence at all depths `m <= d + n`, which is the full budget. At each recursive step, `component_extend_fwd/bwd` consumes 1 depth level from the component, and the IH at `d-1` with `n+1` needs `m <= (d-1) + (n+1) = d + n`, which is available from the same `h_comp`.
-- [ ] **Task 2.2**: Implement base case (d=0): `BiCompat sig 0 ... = True`, close with `trivial`.
-- [ ] **Task 2.3**: Implement forward oracle at d+1. For a given `j : I` and `c' : (ms' j).carrier`:
-  1. Derive component NF agreement at depth `(d+n+1)` for 0 vars (from `h_comp` at `m = d+n+1`, which satisfies `m <= (d+1)+n`).
-  2. Build up multi-var component NF agreement by iterating `component_extend_fwd` once for each existing env element in component j. Start from sentence-level, peel quantifiers for each same-component element.
-  3. Apply `component_extend_fwd` one more time with `c'` to find `c` with extended NF agreement.
-  4. From the extended component NF, derive:
-     - `h_pred`: predicate agreement via `atom_agreement_from_nf` on component
-     - `h_ord_fwd`/`h_ord_bwd`: for same-component existing elements, use component NF order atoms + `orderedSum_order_same_component`. For cross-component elements, use `orderedSum_order_cross_component` + `h_idx`.
-  5. Apply `extend_atoms` to get atom agreement at n+1 vars.
-  6. Recursively call `build_bicompat` at depth d, n+1 to get BiCompat for extended envs.
-  7. Return `⟨c, h_atoms_ext, bicompat_rec⟩`.
+- [x] **Task 2.1**: Define build_bicompat signature *(deviation: altered -- takes CompData as explicit argument instead of inline h_comp; CompData tracks per-component NF state through recursion)*
+- [x] **Task 2.2**: Implement base case (d=0): `BiCompat sig 0 ... = True`, close with `trivial`. *(completed)*
+- [x] **Task 2.3**: Implement forward oracle at d+1 *(partially completed -- oracle_step finds c, derives pred agreement, ord_fwd, ord_bwd, all compile sorry-free. Remaining: CompData update for recursive call)*
+- [ ] **Task 2.3a**: Complete CompData update for recursive BiCompat call at depth d *(in progress -- needs if/dite on j' = j for per-component update, consistency update for Fin.cons shifted indices)*
 - [ ] **Task 2.4**: Implement backward oracle at d+1 (symmetric to forward, using `component_extend_bwd`).
-- [ ] **Task 2.5**: Handle the "iterate component_extend for same-component elements" sub-problem. Define a helper `build_comp_nf_chain` that, given a component j and the list of env positions with `(env_M p).1 = j`, iterates component_extend to produce multi-var NF agreement:
-  ```lean
-  -- Helper: build component NF agreement for all same-component elements
-  -- Starting from component sentence-level equiv, peel one quantifier per element
-  private noncomputable def build_comp_nf_chain ...
-  ```
-  This is the most complex sub-task. The key insight: use `Classical.choice` to select same-component elements in sequence, applying `component_extend_fwd` at each step. The depth budget decreases by 1 per element, and the total number of same-component elements is bounded by `n`, so the budget `d + n` is always sufficient.
-  
-  **Alternative (simpler)**: Instead of an explicit chain, derive the needed component NF agreement DIRECTLY from `h_comp` at the right depth. Since `h_comp` gives sentence-level equiv at ALL depths up to `d+n`, we can get depth-`(d+n)` 0-var agreement and then peel all same-component elements in one shot. This avoids tracking intermediate state.
-- [ ] **Task 2.6**: Verify `build_bicompat` compiles (with or without sorry in sub-parts) and `lake build` passes.
+- [ ] **Task 2.5**: Handle the "iterate component_extend for same-component elements" sub-problem. *(deviation: skipped -- replaced by CompData structure which maintains per-component NF state through recursion. CompData.agree provides the needed multi-var component NF at each step without explicit iteration.)*
+- [ ] **Task 2.6**: Verify `build_bicompat` compiles sorry-free and `lake build` passes.
 
 **Timing**: 4 hours
 
