@@ -34,8 +34,8 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 21,60,95,112,114,116,122,126,127,130,131,154,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 125,128,155 | 116,122,154 | completeness, frame-extensions, algebraic-representation |
+| 1 | 21,60,95,112,114,116,122,126,127,130,131,619,949,953,992,998 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 125,128,155 | 116,122 | completeness, frame-extensions, algebraic-representation |
 
 **Grouped by Topic** (indented = must complete first):
 
@@ -43,9 +43,7 @@ technical_debt:
 
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track (tasks 9
 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
-154 [RESEARCHED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_
 155 [NOT STARTED] — Replace the chronicle fallback in Transfer.lean with the full Rey
-  └─ 154 [RESEARCHED] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_ (see above)
 
 
 ### Formula Refactor
