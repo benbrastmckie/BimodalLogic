@@ -66,9 +66,16 @@ This task advances the Reynolds pipeline for discrete completeness. From ROADMAP
 
 Phase 1 provides the core helper and bound lemma needed by both Phase 2 and Phase 3. Phases 2 and 3 modify non-overlapping code regions and can execute in parallel. Phase 4 is final verification.
 
-### Phase 1: Add consistent_count Lemma and extend_CompData Helper [NOT STARTED]
+### Phase 1: Add consistent_count Lemma and extend_CompData Helper [BLOCKED]
 
 **Goal**: Prove that `cd.sz j <= n` (the number of environment variables) follows from `cd.consistent`, solving the bound gap. Then define `extend_CompData` using a design that avoids `if j' = j then ... else ...` in type positions.
+
+**BLOCKER** (Phase 1):
+- **What failed**: All approaches to define the cd' CompData extension fail because `DecidableEq I` instances are opaque in Lean 4, preventing `ite`/`dite`/`match`/`Decidable.rec` from iota-reducing in TYPE positions.
+- **What was tried**: (1) `if j' = j` with `rw [if_pos]`/`rw [if_neg]` — "motive is not type correct" in dependent types. (2) `match decEq j' j` — `decEq` doesn't exist in Lean 4. (3) `match inferInstance : Decidable (j' = j)` — "Not supported on type universe" sort error. (4) `rcases (inferInstance : Decidable (j = j')) | ⟨rfl⟩` with `constructor` — works for individual fields but creates opaque `Decidable.casesOn` terms that downstream fields can't reduce (consistent field fails). (5) `split_ifs` — isTrue case fails because `subst h : j' = j` eliminates `j` (wrong variable), leaving `if j' = j'` which doesn't reduce. (6) `simp only [h, if_pos rfl]` — simp can't rewrite `j'` to `j` in dependent type positions. (7) `simp_rw` — same failure. (8) Explicit `@Decidable.rec` in term mode — `▸` notation fails in term mode, and explicit `Eq.rec` creates universe issues.
+- **Why it's stuck**: The CompData structure has dependent types: `eM : (j : I) → Fin (sz j) → (ms j).carrier` and `agree : ∀ j, ∀ nf : NormalForm sig (budget - sz j) (sz j), ...`. When `sz` is defined with any form of branching on `j' = j`, the downstream fields need the branch to REDUCE in their type arguments. Lean 4's `DecidableEq` instances are NOT definitionally transparent, so no tactic or term construct can reduce `ite/dite/Decidable.casesOn` applied to an opaque `DecidableEq` instance.
+- **What is needed**: A structural redesign of CompData that avoids dependent types on branched `sz`. Options: (A) Store `sz_j : Nat` and `sz_rest : (j' : I) → j' ≠ j → Nat` as separate fields, eliminating the branching. (B) Change the CompData to be indexed by a partial map `I →₀ Nat` with explicit entries, avoiding `fun j' => if j' = j then ...`. (C) Use `Sigma` to store the j-component CompData separately from the rest. (D) Change all `ite`/`dite` to use `Classical.dec` which IS definitionally transparent (since it's defined via `Classical.choice`).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Tasks**:
 
@@ -92,7 +99,7 @@ Phase 1 provides the core helper and bound lemma needed by both Phase 2 and Phas
   ```
   This is trivially maintained: at cd0 initialization, `sz j' = if j' = i then 1 else 0` and `n = 1`, so `sz j' <= 1`; at each extension, `n` increases by 1 and `sz j` increases by 1 for the extended component (others unchanged). This avoids needing a separate lemma.
 
-- [ ] **Task 1.2**: Define `extend_CompData` helper. The key design change from v9: instead of `fun j' => if j' = j then X else Y` for every field, split the construction so that the j-th component is handled by direct substitution (no conditionals in types). Strategy:
+- [ ] **Task 1.2**: Define `extend_CompData` helper. *(deviation: blocked — ite-in-types prevents all field definitions from type-checking simultaneously)* The key design change from v9: instead of `fun j' => if j' = j then X else Y` for every field, split the construction so that the j-th component is handled by direct substitution (no conditionals in types). Strategy:
 
   **Approach A (Preferred): Use Function.update**
 
@@ -144,7 +151,7 @@ Phase 1 provides the core helper and bound lemma needed by both Phase 2 and Phas
 
   Note `h_bound_ext : cd.sz j + 1 < budget` is now an explicit parameter (resolving Blocker 2 at the call site rather than inside the helper).
 
-- [ ] **Task 1.3**: Implement the body of `extend_CompData`. For each field, use `match decEq j' j` (Approach B):
+- [ ] **Task 1.3**: Implement the body of `extend_CompData`. *(deviation: blocked — depends on 1.2)* For each field, use `match decEq j' j` (Approach B):
 
   - **sz**: `fun j' => match decEq j' j with | .isTrue rfl => cd.sz j + 1 | .isFalse _ => cd.sz j'`
   - **eM**: `fun j' => match decEq j' j with | .isTrue rfl => Fin.cons c (cd.eM j) | .isFalse _ => cd.eM j'`
@@ -153,7 +160,7 @@ Phase 1 provides the core helper and bound lemma needed by both Phase 2 and Phas
   - **bound**: For `j' = j`, use `h_bound_ext`. For `j' /= j`, use `cd.bound j'`.
   - **consistent**: Case analysis on `Fin.cases` for the env index, then `match decEq j' j` for the component. The zero case (new element) maps to `Fin 0` in the cons. The succ case delegates to `cd.consistent`.
 
-- [ ] **Task 1.4**: Verify `extend_CompData` type-checks in isolation. Run `lake build` and confirm no errors in the new definition. If `match decEq` still produces opaque terms in downstream fields, try:
+- [ ] **Task 1.4**: Verify `extend_CompData` type-checks in isolation. *(deviation: blocked — depends on 1.2)* Run `lake build` and confirm no errors in the new definition. If `match decEq` still produces opaque terms in downstream fields, try:
   - Replace `match decEq j' j` with `if h : j' = j then (by subst h; exact ...) else ...` but with the critical difference that each branch is a complete `by` block that resolves the type before returning
   - Or use `@decidable.byCases` with explicit type annotations
 
