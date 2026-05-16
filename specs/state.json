@@ -1260,7 +1260,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -1269,8 +1269,8 @@
         154
       ],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-16T21:25:40Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-05-16T21:36:38Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/01_team-research.md",
@@ -1281,10 +1281,15 @@
           "path": "specs/155_reynolds_pipeline_activation/plans/01_reynolds-pipeline-plan.md",
           "type": "plan",
           "summary": "Revised plan v2: fixed deps, expanded Phase 2, simplified Phase 5-6"
+        },
+        {
+          "path": "specs/155_reynolds_pipeline_activation/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research round 2: Reynolds faithful proof strategy (4 teammates)"
         }
       ],
-      "session_id": "sess_1778964321_57cd4c",
-      "researched": "2026-05-16T19:38:04Z",
+      "session_id": "sess_1778966885_d6ed4c",
+      "researched": "2026-05-16T21:36:38Z",
       "started": "2026-05-16T19:49:58Z"
     }
   ],
