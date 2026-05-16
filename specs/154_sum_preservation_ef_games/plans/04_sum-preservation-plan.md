@@ -125,7 +125,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Close Sorries and Final Verification [NOT STARTED]
+### Phase 3: Close Sorries and Final Verification [IN PROGRESS]
 
 **Goal**: Wire `build_bicompat` and `sum_atoms_from_component_nf` into the 4 sorry sites, close all sorries, and verify the full dependency chain.
 
