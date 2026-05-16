@@ -347,7 +347,68 @@ theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
   -- x ≤ b ∨ Order.succ b ≤ x (no elements between b and succ b).
   -- Predicates are preserved because both sides use M.interp on the same element.
   have h_iso : k_equiv sig k (M.subinterval sig t u) (orderedSum sig Bool pieces) := by
-    sorry -- interval_split_iso + k_equiv_of_iso: OrderIso via dite on x ≤ b
+    -- Construct OrderIso from M|[t,u] to orderedSum Bool [M|[t,b], M|[succ b, u]]
+    -- Key: SuccOrder ensures every x in [t,u] satisfies x ≤ b ∨ Order.succ b ≤ x
+    letI inst_ord : LinearOrder (orderedSum sig Bool pieces).carrier :=
+      (orderedSum sig Bool pieces).carrier_order
+    let e : (M.subinterval sig t u).carrier ≃ (orderedSum sig Bool pieces).carrier := {
+      toFun := fun ⟨x, htx, hxu⟩ =>
+        if hxb : x ≤ b then ⟨false, ⟨x, htx, hxb⟩⟩
+        else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_le hxb), hxu⟩⟩
+      invFun := fun ⟨i, elem⟩ => match i with
+        | false => ⟨elem.val, elem.property.1, le_trans elem.property.2 (le_of_lt hbu)⟩
+        | true => ⟨elem.val, le_trans htb (le_trans (Order.le_succ b) elem.property.1),
+                   elem.property.2⟩
+      left_inv := by intro ⟨x, htx, hxu⟩; simp only; split_ifs with hxb <;> rfl
+      right_inv := by
+        intro ⟨i, elem⟩; match i with
+        | false =>
+          simp only [dif_pos elem.property.2]
+          exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+        | true =>
+          simp only [dif_neg (not_le.mpr (lt_of_lt_of_le
+            (Order.lt_succ_of_not_isMax (not_isMax b)) elem.property.1))]
+          exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
+    }
+    have hm1 : Monotone e := by
+      intro ⟨x, htx, hxu⟩ ⟨y, hty, hyu⟩ (hxy : x ≤ y)
+      simp only [e, Equiv.coe_fn_mk]
+      split_ifs with hxb hyb hyb
+      · show @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩ ⟨false, ⟨y, hty, hyb⟩⟩
+        exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+      · show @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩
+            ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_le hyb), hyu⟩⟩
+        exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
+      · exact absurd (le_trans hxy hyb) hxb
+      · show @LE.le _ inst_ord.toLE
+            ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_le hxb), hxu⟩⟩
+            ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_le hyb), hyu⟩⟩
+        exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
+    have hm2 : Monotone e.symm := by
+      intro a c hac
+      obtain ⟨ia, ea⟩ := a; obtain ⟨ic, ec⟩ := c
+      have hac' := Sigma.Lex.le_def.mp hac
+      show (e.symm ⟨ia, ea⟩).val ≤ (e.symm ⟨ic, ec⟩).val
+      revert hac'; cases ia <;> cases ic <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hac'
+      · rcases hac' with h | ⟨_, h⟩
+        · exact absurd h (lt_irrefl _)
+        · exact h
+      · exact le_trans ea.property.2 (le_trans (Order.le_succ b) ec.property.1)
+      · rcases hac' with h | ⟨h, _⟩
+        · exact absurd h (by decide)
+        · exact absurd h (by decide)
+      · rcases hac' with h | ⟨_, h⟩
+        · exact absurd h (lt_irrefl _)
+        · exact h
+    have h_pred : ∀ (p : sig.preds) (x : (M.subinterval sig t u).carrier),
+        (M.subinterval sig t u).interp p x ↔
+          (orderedSum sig Bool pieces).interp p (e x) := by
+      intro p ⟨x, htx, hxu⟩
+      have he : e ⟨x, htx, hxu⟩ = if hxb : x ≤ b then ⟨false, ⟨x, htx, hxb⟩⟩
+          else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_le hxb), hxu⟩⟩ := rfl
+      rw [he]; split_ifs with hxb <;>
+        simp [pieces, OrderedMonadicStructure.subinterval, orderedSum]
+    exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
   -- Step 2: orderedSum Bool pieces ~k orderedSum Bool witnesses via doets_lemma_1_4
   have h_sum : k_equiv sig k (orderedSum sig Bool pieces) (orderedSum sig Bool witnesses) :=
     doets_lemma_1_4 sig k Bool pieces witnesses
@@ -358,7 +419,55 @@ theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
   -- Bounded Z-intervals have Fintype carrier (intervals of ℤ are finite).
   -- Sigma of two Fintypes is Fintype, so finite_structures_good applies.
   have h_good : good sig k (orderedSum sig Bool witnesses) := by
-    sorry -- z_interval_ordered_sum_good: bounded witnesses → Fintype → finite_structures_good
+    -- The ordered sum witnesses = [Z1.toOrdered, Z2.toOrdered].
+    -- We construct a single Z-interval Z3 that is k-equiv to this ordered sum.
+    -- Z3 uses lo=none, hi=none (all of ℤ) with predicates defined via a
+    -- bijection from the Sigma carrier. The bijection maps:
+    --   (false, z) ↦ 2*z     (even integers for Z1's elements)
+    --   (true, z)  ↦ 2*z + 1 (odd integers for Z2's elements)
+    -- This preserves the lexicographic order because:
+    --   - All evens from Z1 are interleaved with odds from Z2
+    --   Wait, this does NOT preserve order (2*1 > 2*0+1).
+    --
+    -- Correct approach: use a simple shift.
+    -- Map (false, z) ↦ 2*z and (true, z) ↦ 2*z+1 does NOT work for order.
+    -- The correct map for lex order: since false < true,
+    --   ALL (false, _) elements must map below ALL (true, _) elements.
+    -- This is impossible with a fixed bijection to ℤ unless one side is bounded.
+    --
+    -- Since we cannot guarantee boundedness without the expressibility lemma,
+    -- we use the k-equivalence directly through the already-established chain:
+    --   M|[t,u] ~k orderedSum pieces ~k orderedSum witnesses
+    -- and the fact that M|[t,u] IS good implies orderedSum witnesses is good
+    -- (by transitivity of k-equiv and the definition of good).
+    -- But this is CIRCULAR: we're trying to prove M|[t,u] is good!
+    --
+    -- The correct non-circular argument: since M|[t,b] has a max element (b)
+    -- and k-equiv preserves "has a max" (expressible in depth 1), Z1 must be
+    -- bounded above. Similarly Z2 is bounded below. With both bounded, the
+    -- shift-and-glue gives a single Z-interval.
+    --
+    -- For k ≥ 1: bounded arguments work.
+    -- For k = 0: all nonempty structures are 0-equivalent, so good holds trivially.
+    --
+    -- Implementation: case split on k, then use boundedness for k ≥ 1.
+    -- At k = 0, we directly construct a witness.
+    cases k with
+    | zero =>
+      -- At depth 0, all structures have the same 0-type because AtomKind sig 0
+      -- is empty (no variables). So any Z-interval witnesses goodness.
+      refine ⟨⟨some 0, some 0, fun _ _ => True⟩, ?_⟩
+      unfold k_equiv k_type_of; funext nf; simp only [decide_eq_decide]
+      have h_empty : IsEmpty (AtomKind sig 0) :=
+        ⟨fun a => match a with | .pred _ i => Fin.elim0 i | .order i _ _ => Fin.elim0 i⟩
+      constructor <;> intro _ a <;> exact h_empty.elim a
+    | succ k' =>
+      -- At depth k'+1 ≥ 1, k-equiv preserves "has max" and "has min".
+      -- M|[t,b] has max b, so Z1 has some upper bound (Z1.hi = some _).
+      -- M|[succ b, u] has min (succ b), so Z2 has some lower bound (Z2.lo = some _).
+      -- With both bounded on the touching side, the shift-and-glue works.
+      -- For now, this requires the helper lemma about expressibility preservation.
+      sorry
   -- Compose via transitivity of k_equiv (= equality of k-types)
   obtain ⟨Z3, hZ3⟩ := h_good
   exact ⟨Z3, (h_iso.trans h_sum).trans hZ3⟩
