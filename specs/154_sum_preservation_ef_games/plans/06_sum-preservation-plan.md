@@ -1,7 +1,7 @@
 # Implementation Plan: Task #154 - Fix Build Errors in NEquivalence.lean (v8)
 
 - **Task**: 154 - sum_preservation_ef_games
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 4 hours
 - **Dependencies**: None (all sorries removed; only type elaboration errors remain)
 - **Research Inputs**: specs/154_sum_preservation_ef_games/reports/06_team-research.md
@@ -94,9 +94,9 @@ Note: Task 154 addresses the BUILD ERRORS blocking `sum_preservation`, not the 3
 
 - [ ] **Task 1.2**: Replace the backward oracle h_idx' type annotation (lines 628-630) with the identical explicit `@Fin.cons` motive pattern. Keep proof term on line 631 unchanged.
 
-- [ ] **Task 1.3**: Run `lake build` and capture full error output. Count remaining errors. Record whether any NEW errors appear in cd' (lines 551-554, 632-635) or the recursive `build_bicompat` calls.
+- [x] **Task 1.3**: Run `lake build` and capture full error output. Count remaining errors. Record whether any NEW errors appear in cd' (lines 551-554, 632-635) or the recursive `build_bicompat` calls. *(DONE: revealed 20+ latent cd' errors)*
 
-- [ ] **Task 1.4**: If cd' or recursive call errors appear, apply explicit `@Fin.cons` motive to cd' type annotations (lines 552-553, 633-634) using the same pattern. Re-run `lake build`. *(deviation: skipped -- all approaches tested, see BLOCKER)*
+- [x] **Task 1.4**: If cd' or recursive call errors appear, apply explicit `@Fin.cons` motive to cd' type annotations (lines 552-553, 633-634) using the same pattern. Re-run `lake build`. *(DONE: 7 approaches tested, all failed — see BLOCKER)*
 
 **BLOCKER** (Phase 1):
 - **What failed**: The `cd'` CompData construction at lines 551-587 and 632-668 cannot be elaborated with ANY env pattern that makes `.1` work on the h_idx' type.
