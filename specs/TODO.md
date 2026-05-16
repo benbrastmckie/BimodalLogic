@@ -40,52 +40,52 @@ technical_debt:
 **Grouped by Topic** (indented = must complete first):
 
 ### Completeness
-```
+
 21 [NOT STARTED] — Clean up technical debt from metalogic refactoring track (tasks 9
 95 [NOT STARTED] — Verification pass on bx_completeness sorry status. Updated scope:
 154 [IMPLEMENTING] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_
 155 [NOT STARTED] — Replace the chronicle fallback in Transfer.lean with the full Rey
   └─ 154 [IMPLEMENTING] — Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_ (see above)
-```
+
 
 ### Formula Refactor
-```
+
 60 [NOT STARTED] — discrete_Icc_finite_axiom was already eliminated (zero custom axi
 116 [PLANNED] — Remove all_future (G) and all_past (H) as primitive constructors 
 130 [NOT STARTED] — After task 129 provides IsSuccArchimedean via weak/reflexive comp
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
-```
+
 
 ### Frame Extensions
-```
+
 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_
 126 [RESEARCHED] — Establish a four-tier axiom hierarchy with explicit frame corresp
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
   └─ 122 [RESEARCHED] — Build discrete BFMCS on Z and complete dd_countermodel_chronicle_ (see above)
 998 [RESEARCHING] — Redesign the FMP filtration for strict temporal semantics. The 2 
-```
+
 
 ### Algebraic Representation
-```
+
 112 [RESEARCHED] — literature_study_representation_theorem
 125 [NOT STARTED] — Research algebraic methods for establishing a Jónsson-Tarski-styl
   └─ 116 [PLANNED] — (formula-refactor: Remove all_future (G) and all_past (H) a) (see above)
   └─ 122 [RESEARCHED] — (frame-extensions: Build discrete BFMCS on Z and complete d) (see above)
 992 [RESEARCHED] — Implement the Shift-Closed Tense S5 Algebra (STSA) representation
-```
+
 
 ### Bilateral
-```
+
 953 [RESEARCHED] — Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with
-```
+
 
 ### Agent System
-```
+
 114 [NOT STARTED] — Add a .claude/rules/ rule enforcing plan compliance for implement
 619 [RESEARCHED] — agent_system_architecture_upgrade
 949 [RESEARCHED] — update_demo_lean_bimodal_logic
-```
+
 
 ## Tasks
 
