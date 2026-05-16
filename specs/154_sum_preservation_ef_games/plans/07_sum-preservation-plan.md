@@ -187,7 +187,7 @@ consistent := fun p j' hj' => by
 
 ---
 
-### Phase 3: Fix cd0 in sum_lift_one_var + Final Verification [IN PROGRESS]
+### Phase 3: Fix cd0 in sum_lift_one_var + Final Verification [PARTIAL]
 
 **Goal**: Apply Function.update to cd0 (lines 787-828) and achieve clean build.
 
