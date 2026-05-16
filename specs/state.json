@@ -1157,7 +1157,7 @@
       "description": "Prove sum_preservation (NEquivalence.lean:190) and doets_lemma_1_4 (OrderedSum.lean:45): k-equivalence is preserved under ordered sums of monadic structures. This is the sole remaining sorry in the KEquivalenceFramework instance and blocks activation of the Reynolds pipeline. The proof follows Doets 1987 Lemma 1.4 using Ehrenfeucht-Fraisse games: given a k-round EF game on Sigma_I m(i) vs Sigma_I m'(i), the duplicator's winning strategy combines winning strategies on individual components. When the spoiler plays in component i, the duplicator responds using the i-th component strategy (from h_equiv i). When the spoiler switches components, the duplicator uses the order-preservation of the index set I. Also close the carrier_order sorries in the Sigma-type ordered sum construction (lexicographic order on Sigma). Once proved, chronicle_is_good and finite_structures_good become closable, unblocking task 155. Note: also requires closing contemp_equiv_is_equiv transitivity (IntegerModel.lean:128) and no_gaps_discrete (IntegerModel.lean:145) which depend on sum_preservation through very_good/good. Definition of done: sum_preservation sorry-free, doets_lemma_1_4 sorry-free, carrier_order for Sigma ordered sums defined (not sorry), lake build passes.",
       "dependencies": [],
       "created": "2026-05-15T21:30:00Z",
-      "last_updated": "2026-05-16T05:13:18Z",
+      "last_updated": "2026-05-16T05:39:05Z",
       "researched": "2026-05-16T02:07:33Z",
       "next_artifact_number": 5,
       "artifacts": [
@@ -1210,6 +1210,11 @@
           "path": "specs/154_sum_preservation_ef_games/handoffs/phase-2-v6-handoff-20260515.md",
           "type": "handoff",
           "summary": "Phase 1 complete, Phase 2 in progress: build_bicompat forward oracle works, 8 sorries remain (4 original + 4 in helpers)"
+        },
+        {
+          "path": "specs/154_sum_preservation_ef_games/handoffs/phase-2-v7-handoff-20260515.md",
+          "type": "handoff",
+          "summary": "ALL sorries removed (0 remain). 21 build errors from dependent type casts. Proof logic complete."
         }
       ],
       "session_id": "sess_1778906163_d56272",
