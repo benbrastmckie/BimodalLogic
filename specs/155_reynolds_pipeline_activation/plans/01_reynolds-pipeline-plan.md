@@ -139,17 +139,17 @@ All phases are strictly sequential. Phase 3 requires Phase 2's transitivity resu
 
 ---
 
-### Phase 3: no_gaps_discrete (Boundary Impossibility) [NOT STARTED]
+### Phase 3: no_gaps_discrete (Boundary Impossibility) [COMPLETED]
 
 **Goal**: Close the sorry (IntegerModel.lean:297) proving that in a discrete order without endpoints, if a and b are in different ~M classes, there exists c with a ~M c but not a ~M (succ c).
 
 **Tasks**:
-- [ ] **Task 3.1**: Establish convexity of equivalence classes using Phase 2's transitivity: if a ~M c and a ~M d with c <= x <= d, then a ~M x (because [c,d] is a subinterval between equivalent points, hence very good, hence x is equivalent to both endpoints by transitivity).
-- [ ] **Task 3.2**: WLOG assume a < b (handle a > b by symmetry of the "different class" hypothesis). If a > b, use the symmetric case or reduce.
-- [ ] **Task 3.3**: Define S = {c : M.carrier | a <= c /\ not (contemp_equiv sig k M a c)}. Show S is nonempty (contains b or a suitable point derived from b and WLOG).
-- [ ] **Task 3.4**: Use well-founded descent or classical minimum on the discrete order restricted to [a, b]: since S is nonempty and bounded below by a, take an infimum-like element d in S. In discrete order, pred(d) exists (by PredOrder + the fact that d > a since a ~M a). Then pred(d) is NOT in S (it's below d in the "first non-equivalent" sense), so a ~M pred(d). And d = succ(pred(d)) is in S, so NOT (a ~M succ(pred(d))).
-- [ ] **Task 3.5**: The witness is c = pred(d). Verify: `contemp_equiv sig k M a c` (since c is not in S, meaning a <= c does not hold OR a ~M c -- but c = pred(d) >= a since d > a, so a ~M c must hold) and `not (contemp_equiv sig k M a (Order.succ c))` (since Order.succ c = d which is in S).
-- [ ] **Task 3.6**: Close the sorry at IntegerModel.lean:297.
+- [x] **Task 3.1**: *(deviation: skipped — convexity argument unnecessary with IsSuccArchimedean approach)*
+- [x] **Task 3.2**: *(deviation: skipped — WLOG unnecessary)*
+- [x] **Task 3.3**: *(deviation: skipped — S construction unnecessary)*
+- [x] **Task 3.4**: *(deviation: skipped — well-founded descent unnecessary)*
+- [x] **Task 3.5**: *(deviation: skipped — boundary witness unnecessary)*
+- [x] **Task 3.6**: *(deviation: altered — no_gaps_discrete proved vacuously: with [IsSuccArchimedean], the hypothesis ¬contemp_equiv is unsatisfiable since all bounded intervals are finite hence good. Used exfalso + direct construction. Also simplified one_class to direct proof not using no_gaps_discrete.)*
 
 **Timing**: 3 hours
 

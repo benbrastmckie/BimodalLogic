@@ -333,19 +333,33 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
 /-! ## No Gaps in Discrete Orders -/
 
 /--
-In a discrete linear order, if a and b are in different ~M classes,
+In a discrete succ-Archimedean linear order, if a and b are in different ~M classes,
 there exists a boundary point c with c ~M a but succ(c) not ~M a.
+
+In fact, this theorem is vacuously true: with `IsSuccArchimedean`, every bounded
+interval is finite, hence good, so contemp_equiv holds universally.
+The hypothesis `¬ contemp_equiv sig k M a b` is therefore unsatisfiable.
 -/
 theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
+    [IsSuccArchimedean M.carrier]
     (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
     ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
       ¬ contemp_equiv sig k M a (Order.succ c) := by
-  -- TODO: Genuine proof requires well-founded induction on the distance between a and b.
-  -- Deferred: the genuine argument uses properties of good structures.
-  sorry
+  -- In an IsSuccArchimedean order, contemp_equiv holds universally
+  -- (all bounded intervals are finite, hence good)
+  exfalso
+  apply h_diff_class
+  simp only [contemp_equiv, very_good]
+  intro x y _
+  haveI : Finite (M.subinterval sig (min a b) (max a b)).carrier :=
+    subinterval_finite_of_succ_archimedean sig M _ _ min_le_max
+  haveI : Fintype (M.subinterval sig (min a b) (max a b)).carrier := Fintype.ofFinite _
+  haveI : Fintype ((M.subinterval sig (min a b) (max a b)).subinterval sig x y).carrier :=
+    Subtype.fintype _
+  exact finite_structures_good sig k _
 
 /--
 ~M class boundaries cannot fall at successor pairs: for any point c,
@@ -372,26 +386,30 @@ theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat)
 
 /--
 ONE-CLASS THEOREM (Reynolds, discrete case):
-All points are contemporaneously equivalent in any discrete linear order
-without endpoints.
+All points are contemporaneously equivalent in any discrete succ-Archimedean
+linear order without endpoints.
+
+With `IsSuccArchimedean`, every bounded interval is finite, hence every
+subinterval is good (via `finite_structures_good`), making `contemp_equiv`
+hold universally.
 -/
 theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     [IsSuccArchimedean M.carrier] :
     ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
-  by_contra h_not_all
-  push_neg at h_not_all
-  obtain ⟨a, b, h_diff⟩ := h_not_all
-  obtain ⟨c, hc_equiv, hc_succ_not⟩ := no_gaps_discrete sig k M a b h_diff
-  have h_succ : contemp_equiv sig k M c (Order.succ c) :=
-    no_boundary_at_successor sig k M c
-  have h_equiv := contemp_equiv_is_equiv sig k M
-  have h_succ_c : contemp_equiv sig k M (Order.succ c) c := h_equiv.symm h_succ
-  have h_ca' : contemp_equiv sig k M c a := h_equiv.symm hc_equiv
-  have h_succ_a : contemp_equiv sig k M (Order.succ c) a := h_equiv.trans h_succ_c h_ca'
-  have h_a_succ : contemp_equiv sig k M a (Order.succ c) := h_equiv.symm h_succ_a
-  exact hc_succ_not h_a_succ
+  intro a b
+  -- contemp_equiv = very_good on [min a b, max a b]
+  simp only [contemp_equiv, very_good]
+  intro x y _
+  -- The outer subinterval is finite by IsSuccArchimedean
+  haveI : Finite (M.subinterval sig (min a b) (max a b)).carrier :=
+    subinterval_finite_of_succ_archimedean sig M _ _ min_le_max
+  haveI : Fintype (M.subinterval sig (min a b) (max a b)).carrier := Fintype.ofFinite _
+  -- The nested subinterval is Fintype since it's a subtype of a Fintype
+  haveI : Fintype ((M.subinterval sig (min a b) (max a b)).subinterval sig x y).carrier :=
+    Subtype.fintype _
+  exact finite_structures_good sig k _
 
 /-! ## Very Good → Good -/
 
