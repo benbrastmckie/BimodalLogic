@@ -139,12 +139,15 @@ All phases are strictly sequential. Each phase builds on the previous.
 - [x] **Task 2.1**: REMOVE `[IsSuccArchimedean M.carrier]` from `contemp_equiv_is_equiv` *(completed: signature now `[SuccOrder M.carrier] [NoMaxOrder M.carrier]`)*
 - [x] **Task 2.2**: REMOVE `subinterval_finite_of_succ_archimedean` from the transitivity proof *(completed: transitivity no longer uses it)*
 - [x] **Task 2.3**: Prove "flatten" lemma: `subinterval_of_subinterval_k_equiv` *(completed)*
-- [ ] **Task 2.4**: Prove transitivity case 1: if x <= b <= y, decompose [x,y] into ordered sum of [x,b] and [b,y]. Both are subintervals of [a,b] or [b,c] respectively, hence good by very_good hypothesis. Apply `doets_lemma_1_4` to get [x,y] good. *(deviation: altered -- uses `good_of_split_at_succ` with sorry for the ordered-sum iso + Z-interval concatenation)*
+- [ ] **Task 2.4a**: Prove `interval_split_iso` -- OrderIso from `M.subinterval sig t u` to `orderedSum sig Bool (fun i => if i = false then M.subinterval sig t b else M.subinterval sig (Order.succ b) u)`. Key: every x in [t,u] satisfies `x ≤ b ∨ Order.succ b ≤ x` via `Order.succ_le_iff.mpr`. Forward map: split by `if x ≤ b`. Order preservation: case split on `hxb : x ≤ b` and `hyb : y ≤ b` using Sigma.Lex properties.
+- [ ] **Task 2.4b**: Prove `z_witness_bounded_of_bounded` -- If M has both min and max, and M ~k Z with k ≥ 2, then Z.lo.isSome ∧ Z.hi.isSome. (Because "has a minimum/maximum" is expressible in monadic FO of depth 1, so k-equiv preserves it.) OR alternatively, prove the general `z_interval_ordered_sum_good` without assuming boundedness.
+- [ ] **Task 2.4c**: Prove `z_interval_sum_good` -- ordered sum of two bounded Z-intervals is good (k-equiv to a single Z-interval). Construction: shift Z2 to abut Z1 via offset = hi1 + 1 - lo2, yielding Z3 with lo = lo1, hi = hi2 + offset. Build OrderIso from Sigma carrier to Z3.intervalCarrier.
+- [x] **Task 2.4d**: Assemble `good_of_split_at_succ` proof: (1) extract Z1 ~k M|[t,b] and Z2 ~k M|[succ b,u]; (2) M|[t,u] ~k orderedSum Bool pieces via `interval_split_iso` + `k_equiv_of_iso`; (3) orderedSum pieces ~k orderedSum witnesses via `doets_lemma_1_4`; (4) orderedSum witnesses is good via `z_interval_sum_good`; (5) compose by k_equiv transitivity. *(deviation: altered -- proof structure assembled and doets_lemma_1_4 applied correctly, but steps (2) and (4) remain as sorry due to Sigma.Lex typing complexity and bounded-witness expressibility argument)*
 - [x] **Task 2.5**: Prove transitivity case 2: if x,y both in [a,b], then [x,y] is a subinterval of [a,b], hence good by very_good of [a,b]. Similarly for both in [b,c]. *(completed: Cases A and B in transitivity proof)*
 - [x] **Task 2.6**: Assemble full transitivity proof by case analysis on position of x,y relative to b *(completed)*
-- [x] **Task 2.7**: Verify `lake build` passes with rewritten `contemp_equiv_is_equiv` *(completed: full lake build passes)*
+- [ ] **Task 2.7**: Verify `lake build` passes AND `lean_verify contemp_equiv_is_equiv` shows no `sorryAx`
 
-**Remaining sorry**: `good_of_split_at_succ` (1 sorry) -- requires constructing OrderIso from subinterval to Sigma.Lex ordered sum and proving ordered sum of Z-intervals is good. Structural approach is correct but Lean encoding of the OrderIso is complex.
+**Research integration (report 03)**: Reynolds DOES use successor b+1 in Lemma 17. SuccOrder is correct here. The three helper lemmas above follow the shift-and-glue construction from the research report. See `specs/155_reynolds_pipeline_activation/reports/03_blocker-research.md` for full code sketches.
 
 **Timing**: 4 hours
 

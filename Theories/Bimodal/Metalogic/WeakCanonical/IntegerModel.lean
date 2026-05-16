@@ -331,24 +331,37 @@ theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
     (h_left : good sig k (M.subinterval sig t b))
     (h_right : good sig k (M.subinterval sig (Order.succ b) u)) :
     good sig k (M.subinterval sig t u) := by
-  -- Step 1: Decompose [t,u] as ordered sum of [t,b] and [succ b, u]
-  -- Step 2: Transfer k-equiv via doets_lemma_1_4
-  -- Step 3: Show ordered sum of Z-intervals is good
-  --
-  -- The order-isomorphism M|[t,u] ≃o orderedSum Bool [M|[t,b], M|[succ b, u]]
-  -- exists because SuccOrder ensures the gap between b and succ(b) is empty:
-  -- every x in [t,u] satisfies x ≤ b or succ(b) ≤ x.
-  --
-  -- The ordered sum of two Z-intervals is good because:
-  -- - The Z-interval witnesses Z1, Z2 for bounded subintervals are necessarily
-  --   bounded (at depth k ≥ 2, "has a max/min" is expressible)
-  -- - Bounded Z-intervals have finite carrier
-  -- - The ordered sum of two finite structures is finite
-  -- - Finite structures are good (finite_structures_good)
-  --
-  -- For k < 2: all structures trivially have the same k-type at depth 0 and 1,
-  -- so good holds directly.
-  sorry
+  -- Reynolds Lemma 17 hard case: decompose M|[t,u] at b/succ(b), apply doets_lemma_1_4.
+  -- Proof structure:
+  --   M|[t,u] ~k orderedSum Bool pieces    (via OrderIso, SuccOrder gives partition)
+  --           ~k orderedSum Bool witnesses  (via doets_lemma_1_4, pointwise k-equiv)
+  --           ~k Z3.toOrdered              (witnesses form a finite orderedSum)
+  obtain ⟨Z1, hZ1⟩ := h_left
+  obtain ⟨Z2, hZ2⟩ := h_right
+  let pieces : Bool → OrderedMonadicStructure sig :=
+    fun i => if i = false then M.subinterval sig t b else M.subinterval sig (Order.succ b) u
+  let witnesses : Bool → OrderedMonadicStructure sig :=
+    fun i => if i = false then Z1.toOrdered sig else Z2.toOrdered sig
+  -- Step 1: M|[t,u] ~k orderedSum Bool pieces via interval decomposition
+  -- The OrderIso exists because SuccOrder ensures every x in [t,u] satisfies
+  -- x ≤ b ∨ Order.succ b ≤ x (no elements between b and succ b).
+  -- Predicates are preserved because both sides use M.interp on the same element.
+  have h_iso : k_equiv sig k (M.subinterval sig t u) (orderedSum sig Bool pieces) := by
+    sorry -- interval_split_iso + k_equiv_of_iso: OrderIso via dite on x ≤ b
+  -- Step 2: orderedSum Bool pieces ~k orderedSum Bool witnesses via doets_lemma_1_4
+  have h_sum : k_equiv sig k (orderedSum sig Bool pieces) (orderedSum sig Bool witnesses) :=
+    doets_lemma_1_4 sig k Bool pieces witnesses
+      (fun i => by simp only [pieces, witnesses]; split <;> [exact hZ1; exact hZ2])
+  -- Step 3: orderedSum Bool witnesses is good
+  -- Both Z-intervals are bounded (M|[t,b] has max b, M|[succ b, u] has max u,
+  -- and k-equiv at k ≥ 2 preserves "has a max/min"; at k < 2, good holds trivially).
+  -- Bounded Z-intervals have Fintype carrier (intervals of ℤ are finite).
+  -- Sigma of two Fintypes is Fintype, so finite_structures_good applies.
+  have h_good : good sig k (orderedSum sig Bool witnesses) := by
+    sorry -- z_interval_ordered_sum_good: bounded witnesses → Fintype → finite_structures_good
+  -- Compose via transitivity of k_equiv (= equality of k-types)
+  obtain ⟨Z3, hZ3⟩ := h_good
+  exact ⟨Z3, (h_iso.trans h_sum).trans hZ3⟩
 
 /-! ## Contemporaneous Equivalence -/
 
