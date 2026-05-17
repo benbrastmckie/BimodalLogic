@@ -312,6 +312,91 @@ theorem good_of_very_good_subinterval (sig : MonadicSignature) (k : Nat)
   obtain ⟨Z, hZ⟩ := h_good
   exact ⟨Z, (subinterval_of_subinterval_k_equiv sig k M a b c' d').symm.trans hZ⟩
 
+/-- Every structure is good at depth 1 (monadic FO finite model property at depth 1).
+At depth 1, k-equiv only captures which predicate profiles are realized (no order atoms).
+Construct a Z-interval with one element per realized profile. -/
+theorem good_one (sig : MonadicSignature) (M : OrderedMonadicStructure sig) :
+    good sig 1 M := by
+  classical
+  let realized : Finset (NormalForm sig 0 1) :=
+    Finset.univ.filter (fun f => ∃ x : M.carrier, nf_eval_nf M 0 1 (Fin.cons x Fin.elim0) f)
+  let n := realized.card
+  let Z : ZIntervalStructure sig := {
+    lo := some 0
+    hi := some ((n : ℤ) - 1)
+    interp := fun p z =>
+      if h : 0 ≤ z ∧ z < ↑n then
+        (realized.equivFin.symm ⟨z.toNat, by omega⟩ : NormalForm sig 0 1)
+          (AtomKind.pred p (0 : Fin 1)) = true
+      else False
+  }
+  refine ⟨Z, ?_⟩
+  have hM := nf_characteristic_satisfies M 1 0 Fin.elim0
+  suffices h_Z_sat : nf_eval_nf (Z.toOrdered sig) 1 0 Fin.elim0
+      (nf_characteristic M 1 0 Fin.elim0) by
+    unfold k_equiv k_type_of
+    funext nf; simp only [decide_eq_decide]
+    exact nf_agreement_from_shared_nf M Fin.elim0 (Z.toOrdered sig) Fin.elim0
+      (nf_characteristic M 1 0 Fin.elim0) hM h_Z_sat nf
+  simp only [nf_eval_nf, nf_characteristic]
+  have h_empty : IsEmpty (AtomKind sig 0) :=
+    ⟨fun a => match a with | .pred _ i => Fin.elim0 i | .order i _ _ => Fin.elim0 i⟩
+  constructor
+  · intro a; exact h_empty.elim a
+  · intro sub_nf
+    simp only [decide_eq_true_eq]
+    constructor
+    · intro ⟨z, hz⟩
+      have hz_mem := z.property
+      simp only [Z, Option.elim] at hz_mem
+      have hz_lt_n : z.val.toNat < n := by omega
+      set g := (realized.equivFin.symm ⟨z.val.toNat, hz_lt_n⟩ : NormalForm sig 0 1)
+      have h_Z_realizes_g : nf_eval_nf (Z.toOrdered sig) 0 (0 + 1) (Fin.cons z Fin.elim0) g := by
+        intro a
+        obtain ⟨p, hp⟩ : ∃ p : sig.preds, a = AtomKind.pred p 0 := by
+          cases a with
+          | pred p i => exact ⟨p, by congr; exact Fin.eq_zero i⟩
+          | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
+        subst hp
+        simp only [atom_eval, Fin.cons_zero, ZIntervalStructure.toOrdered]
+        show Z.interp p z.val ↔ g (AtomKind.pred p 0) = true
+        simp only [Z, g]
+        rw [dif_pos (show 0 ≤ z.val ∧ z.val < ↑n from by omega)]
+      have h_eq : sub_nf = g :=
+        nf_eval_unique (Z.toOrdered sig) 0 (0 + 1) (Fin.cons z Fin.elim0) sub_nf g hz h_Z_realizes_g
+      have hg_mem : (g : NormalForm sig 0 1) ∈ realized :=
+        (realized.equivFin.symm ⟨z.val.toNat, hz_lt_n⟩).property
+      rw [h_eq]
+      exact (Finset.mem_filter.mp hg_mem).2
+    · intro ⟨x, hx⟩
+      have h_mem : sub_nf ∈ realized := by
+        simp only [realized, Finset.mem_filter, Finset.mem_univ, true_and]
+        exact ⟨x, hx⟩
+      let idx := realized.equivFin ⟨sub_nf, h_mem⟩
+      let z_val : ℤ := ↑(idx : ℕ)
+      have hz_in : Z.lo.elim True (· ≤ z_val) ∧ Z.hi.elim True (z_val ≤ ·) := by
+        simp only [Z, Option.elim, z_val]
+        exact ⟨Int.natCast_nonneg _, by have := idx.isLt; omega⟩
+      let z : (Z.toOrdered sig).carrier := ⟨z_val, hz_in⟩
+      refine ⟨z, ?_⟩
+      intro a
+      obtain ⟨p, hp⟩ : ∃ p : sig.preds, a = AtomKind.pred p 0 := by
+        cases a with
+        | pred p i => exact ⟨p, by congr; exact Fin.eq_zero i⟩
+        | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
+      subst hp
+      simp only [atom_eval, Fin.cons_zero, ZIntervalStructure.toOrdered]
+      show Z.interp p z_val ↔ sub_nf (AtomKind.pred p 0) = true
+      simp only [Z]
+      rw [dif_pos (show 0 ≤ z_val ∧ z_val < ↑n from by
+        simp only [z_val]; exact ⟨Int.natCast_nonneg _, by have := idx.isLt; omega⟩)]
+      suffices h : (realized.equivFin.symm ⟨z_val.toNat, _⟩ : NormalForm sig 0 1) = sub_nf by
+        rw [h]
+      have h_toNat : z_val.toNat = (idx : ℕ) := by simp [z_val]
+      have h_fin_eq : (⟨z_val.toNat, _⟩ : Fin n) = idx := Fin.ext h_toNat
+      rw [h_fin_eq]
+      exact congrArg Subtype.val (Equiv.symm_apply_apply realized.equivFin ⟨sub_nf, h_mem⟩)
+
 /--
 If M|[t,u] decomposes at b (with t ≤ b < u in a SuccOrder with NoMaxOrder),
 and both M|[t,b] and M|[succ b, u] are good, then M|[t,u] is good.
@@ -466,18 +551,8 @@ theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
       -- k'≥1 uses expressibility of "has max/min" (depth 2) via doets_lemma_1_1.
       cases k' with
       | zero =>
-        -- k = 1. Finite model property at depth 1.
-        -- At depth 1, k-equiv is determined by which depth-0 1-var NFs are realized
-        -- (no order atoms at AtomKind sig 1 by atomKind_one_pred_only).
-        -- Proof requires constructing a finite Z-interval with one element per
-        -- realized predicate profile. The construction uses:
-        -- 1. Enumerate realized NormalForm sig 0 1 in the orderedSum
-        -- 2. Build Z3 = [0, N-1] with element i assigned the i-th realized profile
-        -- 3. Prove 1-equiv by showing same set of realized profiles
-        -- This is the monadic FO finite model property at depth 1.
-        -- NOTE: This sorry is independent of the k≥2 case below and does not affect
-        -- the completeness proof (which uses depth k ≥ 2 for signatures with predicates).
-        sorry
+        -- k = 1. Finite model property at depth 1 (good_one).
+        exact good_one sig (orderedSum sig Bool witnesses)
       | succ k'' =>
         -- k = k''+2 ≥ 2. Use expressibility: "has max/min" has depth 2 ≤ k.
         -- Transfer via doets_lemma_1_1 to show Z1, Z2 are fully bounded → Fintype → good.
