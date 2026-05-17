@@ -116,7 +116,7 @@ technical_debt:
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155
