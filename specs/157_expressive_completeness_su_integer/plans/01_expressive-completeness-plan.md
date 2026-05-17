@@ -273,7 +273,7 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove the two "direct semantic" elimination cases that form the foundation for all others.
 
-**Current state**: `Eliminations.lean` (734 LOC). Cases 1-4 fully proved (sorry-free). Cases 5-8 have 4 remaining `sorry` proofs — these require direct semantic constructions with witness formulas and are mutually recursive via negation rewriting.
+**Current state**: `Eliminations.lean` (365 LOC). Cases 1-4 fully proved (sorry-free). Cases 5-8 have 4 remaining `sorry` proofs. Cases 2-4 use the neg_until_equiv/neg_since_equiv reduction approach. Case 5 requires a complex U-chain well-ordering argument with a formula using (A∨B) as the connecting guard.
 
 **Tasks**:
 - [x] State and prove `elim_case_1`: S(a ^ U(A,B), q) equivalence (3 disjuncts based on U-witness location) *(completed — full semantic proof with lt_trichotomy)*
@@ -299,19 +299,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Elimination Cases 2 and 4 (Negation-Based Cases) [PARTIAL]
+### Phase 7: Elimination Cases 2 and 4 (Negation-Based Cases) [COMPLETED]
 
 **Goal**: Prove Cases 2 and 4 which involve not U(A,B) in the event or guard position.
 
-**Current state**: Merged into Phase 6. Cases 2 and 4 now PROVED (sorry-free). Remaining: Cases 5-8.
+**Current state**: COMPLETED. Cases 2 and 4 fully proved (sorry-free).
 
 **Tasks**:
-- [ ] Prove `elim_case_2`: S(a ^ not U(A,B), q)
+- [x] Prove `elim_case_2`: S(a ^ not U(A,B), q) *(completed — reduces via neg_until_equiv to G(¬A) case + Case 1 with ¬A∧¬B, ¬A)*
   - Strategy: apply `neg_until_equiv` to rewrite not U(A,B), then reduce to Case 1 and simpler sub-cases
-- [ ] Prove `elim_case_4`: S(a, q v not U(A,B))
-  - Strategy: direct semantic argument about the "safe zone" where B guards against A
-- [ ] Both require composing with Lemma 10.2.2 (NegationEquiv)
-- [ ] Verify `lake build` passes
+- [x] Prove `elim_case_4`: S(a, q v not U(A,B)) *(completed — negation via neg_since_equiv, reduces to Case 1 with ¬a∧¬q as event)*
+  - Strategy: negate using neg_since_equiv, get S((¬a∧¬q)∧U(A,B), ¬a) which is Case 1
+- [x] Both require composing with Lemma 10.2.2 (NegationEquiv)
+- [x] Verify `lake build` passes
 
 **Timing**: 3 hours
 
@@ -331,10 +331,10 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove the remaining 4 elimination cases, each reducing to combinations of earlier cases.
 
-**Current state**: Merged into Phase 6. Case 3 now PROVED (sorry-free). Remaining: Cases 5-8 (4 sorries total in Eliminations.lean).
+**Current state**: Case 3 now PROVED (sorry-free). Cases 5-8 remain (4 sorries in Eliminations.lean). Case 5 requires a U-chain well-ordering argument; Cases 6-8 reduce to Case 5 or earlier cases once Case 5 is available.
 
 **Tasks**:
-- [ ] Prove `elim_case_3`: S(a, q v U(A,B)) -- negate, use 10.2.2, apply Case 2
+- [x] Prove `elim_case_3`: S(a, q v U(A,B)) *(completed — negation via neg_since_equiv, reduces to Case 2 with ¬a∧¬q as event)*
 - [ ] Prove `elim_case_6`: S(a ^ not U(A,B), q v U(A,B)) -- reduces to Cases 3, 5
 - [ ] Prove `elim_case_7`: S(a ^ U(A,B), q v not U(A,B)) -- reduces to Cases 4, 8
 - [ ] Prove `elim_case_8`: S(a ^ not U(A,B), q v not U(A,B)) -- negate, reduce to Case 5
