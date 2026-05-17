@@ -691,25 +691,96 @@ extended model, the quantElimFormula produces an equivalent formula in the origi
 model. The proof uses the purity lemmas (past_only_is_pure_past, future_only_is_pure_future)
 to justify the level-aware substitution. -/
 
-/-- Correctness of applySubsts for a past-only formula:
-    Sequential substitution preserves truth when each replacement matches
-    the atom's truth at times ≤ t (for a past-only formula evaluated at t). -/
+/-- subst_formula preserves is_past_only when the replacement is past-only. -/
+private theorem subst_preserves_past_only (φ : Formula) (target : Atom) (r : Formula)
+    (hφ : Separation.is_past_only φ = true) (hr : Separation.is_past_only r = true) :
+    Separation.is_past_only (Separation.subst_formula φ target r) = true := by
+  induction φ with
+  | atom a => simp only [Separation.subst_formula]; split <;> [exact hr; rfl]
+  | bot => rfl
+  | imp α β ihα ihβ =>
+    simp only [Separation.is_past_only, Bool.and_eq_true] at hφ
+    simp only [Separation.subst_formula, Separation.is_past_only, Bool.and_eq_true]
+    exact ⟨ihα hφ.1, ihβ hφ.2⟩
+  | box α ih =>
+    simp only [Separation.is_past_only] at hφ
+    simp only [Separation.subst_formula, Separation.is_past_only]; exact ih hφ
+  | all_past α ih =>
+    simp only [Separation.is_past_only] at hφ
+    simp only [Separation.subst_formula, Separation.is_past_only]; exact ih hφ
+  | all_future _ => simp [Separation.is_past_only] at hφ
+  | untl _ _ => simp [Separation.is_past_only] at hφ
+  | snce α β ihα ihβ =>
+    simp only [Separation.is_past_only, Bool.and_eq_true] at hφ
+    simp only [Separation.subst_formula, Separation.is_past_only, Bool.and_eq_true]
+    exact ⟨ihα hφ.1, ihβ hφ.2⟩
+
+/-- subst_formula preserves is_future_only when the replacement is future-only. -/
+private theorem subst_preserves_future_only (φ : Formula) (target : Atom) (r : Formula)
+    (hφ : Separation.is_future_only φ = true) (hr : Separation.is_future_only r = true) :
+    Separation.is_future_only (Separation.subst_formula φ target r) = true := by
+  induction φ with
+  | atom a => simp only [Separation.subst_formula]; split <;> [exact hr; rfl]
+  | bot => rfl
+  | imp α β ihα ihβ =>
+    simp only [Separation.is_future_only, Bool.and_eq_true] at hφ
+    simp only [Separation.subst_formula, Separation.is_future_only, Bool.and_eq_true]
+    exact ⟨ihα hφ.1, ihβ hφ.2⟩
+  | box α ih =>
+    simp only [Separation.is_future_only] at hφ
+    simp only [Separation.subst_formula, Separation.is_future_only]; exact ih hφ
+  | all_past _ => simp [Separation.is_future_only] at hφ
+  | all_future α ih =>
+    simp only [Separation.is_future_only] at hφ
+    simp only [Separation.subst_formula, Separation.is_future_only]; exact ih hφ
+  | untl α β ihα ihβ =>
+    simp only [Separation.is_future_only, Bool.and_eq_true] at hφ
+    simp only [Separation.subst_formula, Separation.is_future_only, Bool.and_eq_true]
+    exact ⟨ihα hφ.1, ihβ hφ.2⟩
+  | snce _ _ => simp [Separation.is_future_only] at hφ
+
 private theorem applySubsts_past_correct {φ : Formula}
     (hpo : Separation.is_past_only φ = true)
     (subs : List (Atom × Formula)) (M : Separation.IntStructure) (t : Int)
+    (h_reps_po : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs → Separation.is_past_only r = true)
     (h_match : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs →
       ∀ s : Int, s ≤ t → (Separation.int_truth M s r ↔ s ∈ M.val a)) :
     Separation.int_truth M t (applySubsts φ subs) ↔ Separation.int_truth M t φ := by
-  sorry -- Uses past_only_subst_correct composed for each substitution
+  induction subs generalizing φ with
+  | nil => exact Iff.rfl
+  | cons ar rest ih =>
+    simp only [applySubsts]
+    have hmem_ar : (ar.1, ar.2) ∈ (ar :: rest) := by
+      rw [show (ar.1, ar.2) = ar from Prod.ext rfl rfl]; exact List.mem_cons_self
+    have h_sub_po := subst_preserves_past_only φ ar.1 ar.2 hpo (h_reps_po ar.1 ar.2 hmem_ar)
+    have h_step : Separation.int_truth M t (Separation.subst_formula φ ar.1 ar.2) ↔
+        Separation.int_truth M t φ :=
+      past_only_subst_correct hpo ar.1 ar.2 M t (h_match ar.1 ar.2 hmem_ar)
+    exact (ih h_sub_po
+      (fun a r hmem => h_reps_po a r (List.mem_cons_of_mem ar hmem))
+      (fun a r hmem => h_match a r (List.mem_cons_of_mem ar hmem))).trans h_step
 
 /-- Correctness of applySubsts for a future-only formula. -/
 private theorem applySubsts_future_correct {φ : Formula}
     (hfo : Separation.is_future_only φ = true)
     (subs : List (Atom × Formula)) (M : Separation.IntStructure) (t : Int)
+    (h_reps_fo : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs → Separation.is_future_only r = true)
     (h_match : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs →
       ∀ s : Int, t ≤ s → (Separation.int_truth M s r ↔ s ∈ M.val a)) :
     Separation.int_truth M t (applySubsts φ subs) ↔ Separation.int_truth M t φ := by
-  sorry -- Uses future_only_subst_correct composed for each substitution
+  induction subs generalizing φ with
+  | nil => exact Iff.rfl
+  | cons ar rest ih =>
+    simp only [applySubsts]
+    have hmem_ar : (ar.1, ar.2) ∈ (ar :: rest) := by
+      rw [show (ar.1, ar.2) = ar from Prod.ext rfl rfl]; exact List.mem_cons_self
+    have h_sub_fo := subst_preserves_future_only φ ar.1 ar.2 hfo (h_reps_fo ar.1 ar.2 hmem_ar)
+    have h_step : Separation.int_truth M t (Separation.subst_formula φ ar.1 ar.2) ↔
+        Separation.int_truth M t φ :=
+      future_only_subst_correct hfo ar.1 ar.2 M t (h_match ar.1 ar.2 hmem_ar)
+    exact (ih h_sub_fo
+      (fun a r hmem => h_reps_fo a r (List.mem_cons_of_mem ar hmem))
+      (fun a r hmem => h_match a r (List.mem_cons_of_mem ar hmem))).trans h_step
 
 /-! ### Core Expressiveness Lemma
 
