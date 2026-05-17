@@ -162,11 +162,23 @@ Phases are sequential because each builds on the prior phase's infrastructure.
 
 ---
 
-### Phase 2: Prove Case 5 via Case 3 Reduction [NOT STARTED]
+### Phase 2: Prove Case 5 via Case 3 Reduction [BLOCKED]
 
 **Goal**: Replace `elim_case_5_axiom` with a genuine proof using the reduction strategy from GHR94's Dedekind-complete proof (Lemma 10.3.11.5), as identified by Report 05.
 
-**Strategy**: Apply Case 3's semantic equivalence to `S(a ^ U(A,B), q v U(A,B))` by treating `a' = a ^ U(A,B)` as the event parameter. The result still contains U(A,B) in positions derived from `neg a'`, but after expanding via `neg_until_equiv` and distributing, each disjunct has at most one U under S, handleable by Cases 1-4.
+**BLOCKER** (Phase 2):
+- **What failed**: The Case 3 reduction strategy produces a Case 8 instance (S(neg q ^ neg U(A,B), neg a v neg U(A,B))) which, when expanded via neg_until_equiv and distributed, yields a new Case 5 instance (S(neg q ^ U(A',B'), (neg a v G(neg A)) v U(A',B'))) with U(A',B') where A'=neg A ^ neg B, B'=neg A.
+- **What was tried**:
+  1. Applied Case 3 duality to S(a^U(A,B), q v U(A,B)) with event a'=a^U(A,B). The H-term (some_past(a^U(A,B))) is separable via Case 1. The inner S-formula is Case 8.
+  2. Expanded neg U(A,B) via neg_until_equiv in the Case 8 instance, distributed via since_distrib_or_left. Disjunct 1 is a valid Case 3 instance. Disjunct 2 is a NEW Case 5 with U(A',B').
+  3. Traced the cycle: Case 5(A,B) -> Case 8(A,B) -> Case 5(A',B') -> Case 8(A',B') -> Case 5(A, A v B) -> ... Parameters cycle and never terminate.
+  4. Attempted direct semantic construction of separated equivalents. Multiple candidate formulas tested (S(a^U(A,B),q) v S(a,B)^(U(A,B)vA), etc.). Found counterexample disproving each: a(0)=T, A(2)=T, B(1)=T only, q(2)=q(3)=T, q(0)=q(1)=F, t=4 shows the guard can be satisfied by a MIX of U(A,B) (on interval near event) and q (on interval near t), requiring an intermediate stepping-stone at the A-witness.
+  5. Attempted induction on interval size, but the existential statement (exists psi, ...) doesn't involve any specific interval.
+- **Why it's stuck**: Case 5 has U(A,B) in BOTH event and guard. Any duality-based reduction (via neg_since_equiv) produces a formula with neg U(A,B) in both positions, which after neg_until_equiv expansion produces another Case 5 instance (circular). Direct formula construction fails because the guard q v U(A,B) on integer intervals can be satisfied by arbitrarily long chains of U(A,B) interspersed with q, requiring a formula that captures ALL possible chain lengths -- impossible with a fixed formula without the multi-U induction framework (Lemma 10.2.6).
+- **What is needed**: Cases 5, 6, 7, 8 must be proved SIMULTANEOUSLY using the multi-U induction framework (Lemma 10.2.6 from Phase 4). The correct architecture is: first build the single-U wrapper (Lemma 10.2.5) and multi-U induction (Lemma 10.2.6), which can handle the mutual dependency between Cases 5-8 by induction on the number of distinct U-subformulas. Alternatively, all 4 cases can be proved using a well-founded induction on junction depth (Phase 5's approach) where the measure strictly decreases when combining Cases 1-4 results iteratively.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
+**Strategy (blocked)**: Apply Case 3's semantic equivalence to `S(a ^ U(A,B), q v U(A,B))` by treating `a' = a ^ U(A,B)` as the event parameter. The result still contains U(A,B) in positions derived from `neg a'`, but after expanding via `neg_until_equiv` and distributing, each disjunct has at most one U under S, handleable by Cases 1-4.
 
 **Detailed Steps**:
 
@@ -185,12 +197,12 @@ Phases are sequential because each builds on the prior phase's infrastructure.
 6. **Combine via `or_separable`**: The final result is a disjunction of separated formulas.
 
 **Tasks**:
-- [ ] **Task 2.1**: Establish the generalized Case 3 equivalence (or direct semantic argument) for `a' = a ^ U(A,B)` (~150-250 LOC)
-- [ ] **Task 2.2**: Prove the `neg(a ^ U(A,B))` expansion and distribution lemmas (~80 LOC)
-- [ ] **Task 2.3**: Show each resulting disjunct matches a Case 1-4 pattern and apply the corresponding theorem (~150-200 LOC)
-- [ ] **Task 2.4**: Assemble the full Case 5 proof combining all disjuncts (~50 LOC)
-- [ ] **Task 2.5**: Replace `elim_case_5_axiom` with the proved `elim_case_5` theorem
-- [ ] **Task 2.6**: Verify `lake build` passes with Case 5 axiom replaced by proof
+- [ ] **Task 2.1**: Establish the generalized Case 3 equivalence (or direct semantic argument) for `a' = a ^ U(A,B)` (~150-250 LOC) *(deviation: skipped — Case 3 semantic equivalence was verified to work, but produces Case 8 instance creating circular dependency)*
+- [ ] **Task 2.2**: Prove the `neg(a ^ U(A,B))` expansion and distribution lemmas (~80 LOC) *(deviation: skipped — expansion was traced through manually showing neg_until_equiv produces U(A',B') = U(neg A ^ neg B, neg A), but the resulting disjunct is another Case 5)*
+- [ ] **Task 2.3**: Show each resulting disjunct matches a Case 1-4 pattern and apply the corresponding theorem (~150-200 LOC) *(deviation: skipped — disproved: one disjunct is Case 5 not Cases 1-4)*
+- [ ] **Task 2.4**: Assemble the full Case 5 proof combining all disjuncts (~50 LOC) *(deviation: skipped — blocked by 2.3)*
+- [ ] **Task 2.5**: Replace `elim_case_5_axiom` with the proved `elim_case_5` theorem *(deviation: skipped — blocked by 2.4)*
+- [ ] **Task 2.6**: Verify `lake build` passes with Case 5 axiom replaced by proof *(deviation: skipped — blocked by 2.5)*
 
 **Timing**: 4 hours
 
