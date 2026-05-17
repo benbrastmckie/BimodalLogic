@@ -155,7 +155,7 @@ Replaced 4 axioms in Eliminations.lean with proofs via `all_separable` in Normal
 
 ---
 
-### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases with WF Induction [IN PROGRESS]
+### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases with WF Induction [PARTIAL]
 
 **Goal**: Close the 2 sorries in ExpressiveCompleteness.lean (the `.all` and `.ex` quantifier cases of `expressiveness_fixed_atomMap`).
 
