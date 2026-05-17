@@ -60,14 +60,31 @@ theorem Int.exists_least_above {P : Int → Prop} {t : Int}
 theorem Int.exists_greatest_below {P : Int → Prop} {t : Int}
     (hex : ∃ n, n < t ∧ P n) [DecidablePred P] :
     ∃ m, m < t ∧ P m ∧ ∀ k, m < k → k < t → ¬P k := by
-  sorry
+  obtain ⟨n, hnt, hPn⟩ := hex
+  let Q : ℕ → Prop := fun k => P (t - 1 - ↑k)
+  have hQ_dec : DecidablePred Q := fun k => inferInstanceAs (Decidable (P (t - 1 - ↑k)))
+  have hQ_ex : ∃ k : ℕ, Q k := by
+    refine ⟨(t - n - 1).toNat, ?_⟩
+    show P (t - 1 - ↑((t - n - 1).toNat))
+    convert hPn using 1
+    omega
+  let m_nat := @Nat.find Q hQ_dec hQ_ex
+  have hm_spec := @Nat.find_spec Q hQ_dec hQ_ex
+  have hm_min := @Nat.find_min Q hQ_dec hQ_ex
+  refine ⟨t - 1 - ↑m_nat, by omega, hm_spec, ?_⟩
+  intro k hmk hkt
+  have hk_idx : (t - k - 1).toNat < m_nat := by omega
+  intro hPk
+  have : ¬Q (t - k - 1).toNat := hm_min hk_idx
+  exact this (by show P (t - 1 - ↑((t - k - 1).toNat)); convert hPk using 1; omega)
 
 /-- Non-decidable version: If P holds for some n > t, there is a least such n.
     Uses classical logic and well-ordering of Nat. -/
 theorem Int.exists_least_above' {P : Int → Prop} {t : Int}
     (hex : ∃ n, t < n ∧ P n) :
     ∃ m, t < m ∧ P m ∧ ∀ k, t < k → k < m → ¬P k := by
-  sorry
+  haveI : DecidablePred P := Classical.decPred P
+  exact Int.exists_least_above hex
 
 /-! ## Direct Witness Constructions -/
 
