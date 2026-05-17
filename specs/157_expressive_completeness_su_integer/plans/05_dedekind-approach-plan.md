@@ -216,7 +216,7 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 ---
 
-### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases (atom_elim_correct) [IN PROGRESS]
+### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases (atom_elim_correct) [BLOCKED]
 
 **Goal**: Close the 3 remaining sorries in ExpressiveCompleteness.lean by proving `atom_elim_correct` via `elimExtFromSep_correct`, `guardFormula_correct`, and `quantElimFormula_correct_iff`.
 
@@ -252,7 +252,7 @@ The proof decomposes into a small DAG:
 
 **Remaining Tasks**:
 
-- [ ] Task 7.6a: Prove atom membership simp lemmas (~30 LOC, easy)
+- [x] Task 7.6a: Prove atom membership simp lemmas (~30 LOC, easy) *(deviation: altered -- proved as `to_int_struct_mem_freshAM` and `to_int_struct_mem_atomMap` (2 general lemmas instead of 4 specialized simp lemmas))*
   - 4 simp lemmas for `z in (to_int_struct (extIntStruct M t) freshAM).val (freshAM ep)`:
     - `ep = .orig p`: iff `M.interp p z`
     - `ep = .const_at_ref p`: iff `M.interp p t` (constant in z)
@@ -261,11 +261,11 @@ The proof decomposes into a small DAG:
   - Requires `freshAM_inj` to separate contributions
   - Each proof: unfold `to_int_struct`, `Set.mem_setOf_eq`, use injectivity to rule out other predicates
 
-- [ ] Task 7.6b: Prove `guardFormula_correct` (~30 LOC, medium)
+- [x] Task 7.6b: Prove `guardFormula_correct` (~30 LOC, medium) *(completed)*
   - Type: `int_truth (to_int_struct M atomMap) t (guardFormula atomMap sigma) <-> (forall p, sigma p = true <-> M.interp p t)`
   - Unfold the `foldl` over `Finset.univ.toList`, split on each predicate, use Finset membership
 
-- [ ] Task 7.6c: Prove `elimExtFromSep_correct` (~100 LOC, hard -- core structural induction)
+- [ ] Task 7.6c: Prove `elimExtFromSep_correct` (~100 LOC, hard -- core structural induction) *(deviation: deferred -- blocked on freshAM disjointness issue)*
   - By structural induction on properly separated `B_sep`
   - Constructor cases:
     - `atom a`: use atom membership lemmas, substitution lookup
@@ -285,11 +285,11 @@ The proof decomposes into a small DAG:
   - Define sigma_star by `sigma_star p = decide (M.interp p t)`, show guard is true for this sigma and false for all others
   - Use classical reasoning (`Classical.choice` or `Finset.exists_unique`) for the existential witness
 
-- [ ] Task 7.6e: Prove `atom_elim_correct` glue (~15 LOC, easy)
+- [ ] Task 7.6e: Prove `atom_elim_correct` glue (~15 LOC, easy) *(deviation: altered -- merged into single atom_elim_correct theorem with sorry; wiring to sorry sites done)*
   - Combines `quantElimFormula_correct_iff` + `elimExtFromSep_correct` at the witness sigma extracted from the model
   - Bridges from M_ext to M_orig
 
-- [ ] Task 7.7: Close 3 remaining sorries using `atom_elim_correct` (~5 LOC)
+- [x] Task 7.7: Close 3 remaining sorries using `atom_elim_correct` (~5 LOC) *(completed -- all 3 sorry sites now use atom_elim_correct)*
   - Line 893: replace `h_chain.trans sorry` with `h_chain.trans (atom_elim_correct ...)`
   - Line 940: replace `sorry` with `(atom_elim_correct ...).mpr h_Aex`
   - Line 947: replace `sorry` with `(atom_elim_correct ...).mp h_bsep`
