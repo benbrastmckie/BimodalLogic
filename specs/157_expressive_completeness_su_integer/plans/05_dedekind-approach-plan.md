@@ -92,7 +92,14 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 ---
 
-### Phase 6: Prove Cases 5-8 via Dedekind + Generalized Case 1 and Eliminate 8 Axioms [IN PROGRESS]
+### Phase 6: Prove Cases 5-8 via Dedekind + Generalized Case 1 and Eliminate 8 Axioms [BLOCKED]
+
+**BLOCKER** (Phase 6):
+- **What failed**: Plan's Case 7 Disjunct 2 formula `S(S(a,B^q) ^ A ^ (q v NOT U), NOT U v q)` is NOT syntactically separated because the snce event contains `neg(untl A B)` (via `q v NOT U`), making `is_U_free event = false`. The syntactic separation predicate requires `is_U_free` for all snce-arguments.
+- **What was tried**: (1) Verified plan's D2 formula structure against `is_syntactically_separated` definition; (2) Analyzed whether decomposing NOT U via neg_until_equiv first would help (it introduces U(...) which also breaks U-freeness); (3) Explored WF induction on count_U_subformulas (blocked by all_past/all_future cases needing temporal closure); (4) Explored expand_temporal approach (breaks no_S_nested_in_U by introducing snce in S-free untl-args that contain all_past); (5) Analyzed abstraction+substitution approach (model-shifting prevents getting int_equiv)
+- **Why it's stuck**: Finding CORRECT separated equivalents for Cases 5-8 on integer time requires novel mathematical research. GHR94's formulas are known incorrect on Z (documented in Eliminations.lean comments). The plan's proposed Dedekind formulas have a flaw in at least Case 7 D2. The fundamental circularity (snce_separable <-> single_U_formula_separable <-> no_S_nested_in_U_separable <-> snce_separable) cannot be broken without either: (a) explicit separated formulas for Cases 5-8, or (b) a novel induction strategy that avoids temporal closure for all_past/all_future cases.
+- **What is needed**: (a) Correct separated equivalents for Cases 5-8 that satisfy `is_syntactically_separated = true` (requires mathematical research into the Dedekind formula's specialization to Z with proper handling of neg(untl)), OR (b) A proof strategy for temporal closure that avoids the circular dependency (possibly via a simultaneous WF induction on a composite measure that handles all_past/all_future/snce/untl together).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Prove Cases 5-8 separability using Dedekind formula specialization to Z (K+=K-=FALSE, Gamma+-=bot) combined with generalized Case 1 (dropping dead `is_S_free q` hypothesis), then wire through to replace all 8 axioms in SeparationThm.lean.
 
@@ -112,14 +119,14 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 **Tasks** (EXACT SEQUENCE -- follow in order):
 
-- [ ] Task 6.A: Generalize `elim_case_1` by removing dead `is_S_free q` hypothesis (~50 LOC)
+- [x] Task 6.A: Generalize `elim_case_1` by removing dead `is_S_free q` hypothesis (~50 LOC) *(deviation: altered -- dropped BOTH is_S_free a AND is_S_free q, as neither is used)*
   - Create `elim_case_1_gen` (or similar name) in Eliminations.lean
   - Identical proof to `elim_case_1` but the type signature drops `is_S_free q = true` from hypotheses
   - The separation check `is_syntactically_separated (case1_psi a q A B) = true` holds with only `is_U_free q` (Lean-verified by Teammate D)
   - The existing `elim_case_1` proof does NOT use `is_S_free q` anywhere -- confirmed by code inspection
   - Verification: `lean_verify` on the new lemma shows no axioms
 
-- [ ] Task 6.B: Similarly generalize `elim_case_2` (~80 LOC)
+- [x] Task 6.B: Similarly generalize `elim_case_2` (~80 LOC) *(deviation: altered -- dropped BOTH is_S_free a AND is_S_free q)*
   - Create `elim_case_2_gen` in Eliminations.lean
   - Proof uses generalized Case 1 + `neg_until_equiv` to handle the S(a^NOT U, Q) pattern
   - S(a^NOT U(A,B), Q) with U-free Q splits via neg_until_equiv into:
