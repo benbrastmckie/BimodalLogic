@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
 import Bimodal.Metalogic.WeakCanonical.Separation.IntHelpers
+import Bimodal.Metalogic.WeakCanonical.Separation.Duality
 
 /-!
 # Separation Module Hub
