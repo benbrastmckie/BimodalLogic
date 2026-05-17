@@ -351,18 +351,25 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [PARTIAL: Case 3 proved, Cases 6-8 sorry]
+### Phase 8: Elimination Cases 3, 6, 7, 8 (Reduction Cases) [BLOCKED]
 
 **Goal**: Prove the remaining 4 elimination cases, each reducing to combinations of earlier cases.
 
-**Current state**: Case 3 now PROVED (sorry-free). Cases 5-8 remain (4 sorries in Eliminations.lean). Case 5 requires a U-chain well-ordering argument; Cases 6-8 reduce to Case 5 or earlier cases once Case 5 is available.
+**Current state**: Case 3 PROVED (sorry-free). Cases 5-8 remain (4 sorries in Eliminations.lean). Case 5 is BLOCKED due to a gap in the GHR94 formula (see blocker below). Cases 6-8 all depend on Case 5.
+
+**BLOCKER** (Phase 8):
+- **What failed**: The GHR94 formula for Case 5 (Lemma 10.2.3, p.370) requires `A v (B ^ U(A,B))` at t, which is not always true when the original formula holds. Counterexample: s=0, t=3, a(0), A(1), B vacuous on (0,1), q(1), q(2), ~A(3), ~B(3). The original S(a^U(A,B), q v U(A,B)) holds but both GHR94 disjuncts fail.
+- **What was tried**: (1) Direct GHR94 formula proof, (2) case1_psi + S(a,B)^A + S(a,B)^B^U(A,B) formula, (3) cascade tracking via S(A^S(a,B),q), (4) neg_since_equiv decomposition (circular), (5) S(A,q)^S(a,A|B) (backward fails), (6) substitution-based approach for all_separable (still needs elimination cases)
+- **Why it's stuck**: The guard q v U(A,B) provides coverage that cannot be decomposed into pointwise separated formulas. U(A,B)(r) gives no pointwise info at r (only existential about future). On integers, U(A,B) can hold with vacuous B-guards, so the cascade doesn't produce B-coverage at every point.
+- **What is needed**: Either (a) a corrected formula for Case 5 from the literature (Reynolds 2010, Gabbay 1981), or (b) an alternative proof of the separation theorem that avoids the 8-case lemma, or (c) a novel cascade-tracking formula with formal proof.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Tasks**:
-- [x] Prove `elim_case_3`: S(a, q v U(A,B)) *(completed — negation via neg_since_equiv, reduces to Case 2 with ¬a∧¬q as event)*
-- [ ] Prove `elim_case_6`: S(a ^ not U(A,B), q v U(A,B)) -- reduces to Cases 3, 5
-- [ ] Prove `elim_case_7`: S(a ^ U(A,B), q v not U(A,B)) -- reduces to Cases 4, 8
-- [ ] Prove `elim_case_8`: S(a ^ not U(A,B), q v not U(A,B)) -- negate, reduce to Case 5
-- [ ] Note: Cases 6-8 have circular-looking dependencies; resolve by stating each as "equivalent to a formula with U only at top level" (existential form)
+- [x] Prove `elim_case_3`: S(a, q v U(A,B)) *(completed — negation via neg_since_equiv, reduces to Case 2 with ~a^~q as event)*
+- [ ] Prove `elim_case_5`: S(a ^ U(A,B), q v U(A,B)) *(deviation: blocked — GHR94 formula incorrect for integer time; see handoff case5-blocker-20260516.md)*
+- [ ] Prove `elim_case_6`: S(a ^ not U(A,B), q v U(A,B)) *(deviation: blocked — depends on Case 5)*
+- [ ] Prove `elim_case_7`: S(a ^ U(A,B), q v not U(A,B)) *(deviation: blocked — depends on Case 8 which depends on Case 5)*
+- [ ] Prove `elim_case_8`: S(a ^ not U(A,B), q v not U(A,B)) *(deviation: blocked — depends on Case 5)*
 - [ ] Verify `lake build` passes
 
 **Timing**: 4 hours

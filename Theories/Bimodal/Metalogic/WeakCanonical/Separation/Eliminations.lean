@@ -315,7 +315,16 @@ theorem elim_case_4 (a q A B : Formula)
           ⟨int_truth_and_iff.mpr ⟨hna_s, hnotQ_s⟩, hU_s⟩, hguard⟩
   · exact and_separated (neg_separated hsep_H) (neg_separated hsep1)
 
-/-! ## Cases 5-8: remaining sorry -/
+/-! ## Cases 5-8: remaining sorry
+
+  Cases 5-8 handle the elimination of U(A,B) from S when U(A,B)
+  appears in both event and/or guard positions.
+
+  NOTE: GHR94 p.370 gives a formula for Case 5 that appears to have
+  a gap — it requires A ∨ (B ∧ U(A,B)) at t which is not always
+  guaranteed. See the detailed analysis in the handoff document.
+  These cases remain blocked pending a corrected formula.
+-/
 
 theorem elim_case_5 (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
