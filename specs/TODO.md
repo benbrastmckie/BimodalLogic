@@ -89,10 +89,11 @@ technical_debt:
 
 ### 160. Fix failing CI badge in README.md
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Research**: [160_fix_ci_badge_failing/reports/01_ci-badge-research.md]
 - **Plan**: [160_fix_ci_badge_failing/plans/01_fix-ci-badge.md]
+- **Summary**: [160_fix_ci_badge_failing/summaries/01_fix-ci-badge-summary.md]
 
 **Description**: Fix the CI badge on line 3 of README.md which currently shows as failing on GitHub. Investigate the GitHub Actions workflow at .github/workflows/ci.yml, determine why CI is failing (likely due to the example file deletions from task 158 or other recent changes), fix the build or workflow configuration, and ensure the badge shows as passing.
 
