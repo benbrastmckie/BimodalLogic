@@ -1,95 +1,58 @@
-# Phase 6 Handoff: Junction-Depth Induction (BLOCKED)
+# Phase 6 Handoff: Blocked on Temporal Closure
 
-**Task**: 157 - Formalize expressive completeness of {S,U} over integer time
-**Phase**: 6 - Prove all_separable via Junction-Depth Induction
-**Status**: BLOCKED
-**Session**: sess_1779003456_c5b522
 **Date**: 2026-05-17
+**Session**: sess_1779040893_b6c1b2
+**Phase**: 6 (blocked at tasks 6.7-6.14)
 
 ## Current State
 
-- Phases 1-5 COMPLETED, `lake build` passes
-- 0 axioms in Eliminations.lean
-- 8 axioms remain in SeparationThm.lean (4 weak temporal closure + 4 proper temporal closure)
-- 1 sorry in ExpressiveCompleteness.lean (Phase 7 target, depends on Phase 6)
+- Tasks 6.1-6.6: COMPLETED and verified (expand_temporal, equivalence proofs, JD-zero lemma)
+- Tasks 6.7-6.14: BLOCKED on circular dependency
+- TemporalClosure.lean: Cleaned up (removed ~300-line analysis comment, fixed incorrect theorems)
+- Build: Passes successfully (1652 jobs, no errors in Separation/ files)
+- Axiom count: 8 axioms remain in SeparationThm.lean (4 weak + 4 proper)
+- Sorry count: 4 sorries in ExpressiveCompleteness.lean (2 formula + 2 proof obligations)
 
 ## Blocker Analysis
 
-### The Circular Dependency
+The temporal closure axioms cannot be eliminated due to a **circular dependency**:
 
-The 8 axioms assert that temporal operators preserve separability:
 ```
-snce_separable : is_separable φ → is_separable ψ → is_separable (.snce φ ψ)
-untl_separable : is_separable φ → is_separable ψ → is_separable (.untl φ ψ)
-all_past_separable : is_separable φ → is_separable (.all_past φ)
-all_future_separable : is_separable φ → is_separable (.all_future φ)
+all_separable (structural induction)
+  └─ needs temporal closure axioms (snce_separable, untl_separable, etc.)
+       └─ needs Cases 5-8 to be axiom-free
+            └─ Cases 5-8 currently use all_separable (circular!)
 ```
 
-The natural approach to prove `snce_separable`:
-1. Get separated φ', ψ' (from hypotheses)
-2. Form `.snce φ' ψ'` (equivalent to `.snce φ ψ`)
-3. Observe `.snce φ' ψ'` satisfies `no_S_nested_in_U` (since separated formulas have S-free untl-args)
-4. Prove `no_S_nested_in_U → separable`
+**Why Cases 5-8 use all_separable**: GHR94's explicit separated formulas for Cases 5-8
+are incorrect on integer (discrete) time. The existence proof goes through all_separable.
 
-Step 4 requires induction on `count_U_subformulas`:
-- Base (count=0): U-free formula. BUT U-free formulas like `all_future (snce p q)` = G(S(p,q)) are NOT separated.
-- G(S(p,q))'s separated equivalent REQUIRES U operators (semantically proven: it references both past and future of the evaluation point).
-- So the base case requires `all_future_separable` for formulas containing S -- which is another axiom!
+**What was tried and why each fails**:
 
-Similarly, `untl_separable` requires eliminating S-under-U (the dual problem), whose base case (S-free formulas with U, like `all_past (untl A B)`) requires U in the separated equivalent.
+1. **Direct no_S_nested_in_U → separable**: Circular in snce, all_past, all_future cases
+2. **abstract_untl + substitute back**: subst_formula G p (untl A B) breaks U-freeness in snce args of G
+3. **WF induction on (JD, size)**: Transformed formula can be larger than original
+4. **Independent Cases 5-8**: No correct explicit formulas found for Z
+5. **subst_separable lemma**: False in general (counterexample: snce with atom p substituted by untl)
 
-### Why Junction-Depth Induction is Hard to Formalize
+## Possible Resolutions (for future research)
 
-GHR94's resolution (Lemma 10.2.8) uses junction-depth induction, which simultaneously handles both directions (U-under-S AND S-under-U). The formalization challenges:
-
-1. **Non-monotone size**: After getting separated equivalents and recomposing, the result can be LARGER than the original. Standard `sizeOf`-based WF induction fails.
-
-2. **Mutual recursion**: U-elimination needs S-elimination for its base case, and vice versa. This requires a COMBINED well-founded measure like `(junction_depth, count_U + count_S, sizeOf)` with proofs that it strictly decreases.
-
-3. **Integer-specific equivalences needed**: The base cases require integer-specific temporal identities:
-   - `G(S(p,q))` must be expressed as a boolean combination of U-terms and S-terms
-   - `H(U(A,B))` must be expressed similarly
-   - These are non-trivial semantic theorems (~50-100 LOC each)
-
-4. **Measure decrease proofs**: After abstraction/substitution/hierarchy application, must prove the combined measure strictly decreases (~200+ LOC of supporting lemmas).
-
-### Estimated Work
-
-- `abstract_snce` + preservation lemmas: ~200 LOC
-- `no_U_nested_in_S` predicate + helpers: ~100 LOC
-- Integer temporal equivalences for base cases: ~300+ LOC
-- Combined mutual WF recursion: ~400+ LOC
-- Measure decrease proofs: ~200+ LOC
-- Total: 1200-1500 LOC across 3-4 new/modified files
-
-## Immediate Next Action
-
-To unblock Phase 6, the successor should:
-
-1. **Start with the base cases**: Prove integer-specific temporal equivalences:
-   - `all_future (snce C D)` (G(S(C,D))) is separable when C, D are U-free
-   - `all_past (untl A B)` (H(U(A,B))) is separable when A, B are S-free
-   These are concrete, bounded proof tasks that don't involve the full mutual recursion.
-
-2. **Build `abstract_snce`** (dual of existing `abstract_untl`): Replace all occurrences of a specific `snce C D` with a fresh atom. Prove roundtrip, correctness, and preservation lemmas (mirroring the existing `abstract_untl_*` theorems in Hierarchy.lean).
-
-3. **Define `no_U_nested_in_S`** predicate and prove:
-   - `separated_implies_no_U_nested_in_S` for the relevant sub-cases
-   - Preservation under `abstract_snce`
-
-4. **Implement the mutual theorem** once base cases are available:
-   ```lean
-   theorem separable_of_no_bad_nesting (φ : Formula) 
-       (h : no_S_nested_in_U φ ∨ no_U_nested_in_S φ) : is_separable φ
-   ```
-   Using well-founded induction on `(junction_depth φ, count_U_subformulas φ + count_S_subformulas φ)`.
-
-## Key Decisions
-
-- The existing infrastructure (abstract_untl, preservation lemmas, Lemma 10.2.4, Cases 1-4) provides ~60% of the machinery needed.
-- The missing ~40% is the dual infrastructure (abstract_snce, S-elimination) and the base case temporal equivalences.
-- The plan's original 4-hour estimate for Phase 6 was significantly underestimated. Realistic estimate: 20-30 hours.
+1. **Find explicit Cases 5-8 formulas for Z**: Research problem. GHR94's dense-time formulas fail on Z. Correct formulas would bypass all circularity.
+2. **Restricted subst_separable**: Track WHERE atom p appears in separated G. If p never appears in snce/all_past args, substitution preserves separation. Requires proving the specific G from abstract_untl has this property.
+3. **Combined WF induction**: Single induction with measure that accounts for formula structure + abstraction progress. Complex but potentially viable.
+4. **Alternative proof approach**: Reynolds' axiomatization, automata-theoretic argument, or EF games for Z-separation.
 
 ## Files Modified This Session
 
-None (analysis only; phase marked BLOCKED in plan file).
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/TemporalClosure.lean`: Cleaned up (removed large comment block, fixed incorrect `expand_temporal_preserves_S_free`/`expand_temporal_preserves_U_free` theorems, removed `abstract_untl_preserves_separated` that depended on Hierarchy.lean import)
+- `specs/157_expressive_completeness_su_integer/plans/03_hierarchy-first-plan.md`: Updated Phase 6 to [BLOCKED] with blocker documentation
+
+## Key Decisions
+
+1. Removed previous agent's `expand_temporal_preserves_S_free` and `expand_temporal_preserves_U_free` — these were FALSE for the all_past/all_future cases (expand_temporal introduces snce/untl which break S/U-freeness)
+2. Replaced with correctly restricted versions `expand_preserves_U_free_no_allf` and `expand_preserves_S_free_no_allp` that require `has_no_allpast_allfuture`
+3. Removed `abstract_untl_preserves_separated` — depends on Hierarchy.lean import which would introduce axiom dependency
+
+## Immediate Next Action
+
+Phase 6 requires mathematical research to resolve the blocker. The most promising direction is finding correct explicit separated formulas for Cases 5-8 on integer time, which would completely break the circular dependency.

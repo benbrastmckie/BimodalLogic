@@ -102,25 +102,42 @@ Replaced 4 axioms in Eliminations.lean with proofs via `all_separable` in Normal
 
 ---
 
-### Phase 6: Prove all_separable via expand_temporal + Junction-Depth Induction [IN PROGRESS]
+### Phase 6: Prove all_separable via expand_temporal + Junction-Depth Induction [BLOCKED]
 
 **Goal**: Eliminate all 8 axioms from SeparationThm.lean by proving `all_separable` and `all_properly_separable` without axioms. The key strategy is `expand_temporal` preprocessing + junction-depth induction + duality.
 
-**Tasks**:
-- [ ] Task 6.1: Define `expand_temporal : Formula -> Formula` that recursively replaces `all_past phi` with `neg (snce (neg phi) top)` and `all_future phi` with `neg (untl (neg phi) top)` (~30 LOC)
-- [ ] Task 6.2: Prove `all_past_equiv_neg_snce : int_equiv (.all_past phi) (.neg (.snce (.neg phi) (.neg .bot)))` on Z (~60 LOC, uses integer density: for any s < t, either witness exists or all_past holds vacuously)
-- [ ] Task 6.3: Prove `all_future_equiv_neg_untl : int_equiv (.all_future phi) (.neg (.untl (.neg phi) (.neg .bot)))` on Z (~60 LOC, symmetric to 6.2)
-- [ ] Task 6.4: Prove `expand_temporal_equiv : int_equiv phi (expand_temporal phi)` by structural induction using 6.2 and 6.3 for the all_past/all_future cases (~50 LOC)
-- [ ] Task 6.5: Prove `expand_has_no_all : expand_temporal phi` contains no `all_past`/`all_future` constructors (~30 LOC, structural induction on definition)
-- [ ] Task 6.6: Prove `expand_jd_zero_separated : junction_depth (expand_temporal phi) = 0 -> is_syntactically_separated (expand_temporal phi) = true` -- in the `{atom, bot, imp, snce, untl, box}` fragment (no all_past/all_future), JD=0 means untl args are S-free and snce args are U-free (~80 LOC)
-- [ ] Task 6.7: Prove `snce_separable_expanded` -- given `is_separable phi`, `is_separable psi`, expand their separated witnesses, form `snce`, apply junction-depth induction on expanded formula using Cases 1-8 from Eliminations.lean (~150 LOC)
-- [ ] Task 6.8: Derive `untl_separable_expanded` from `snce_separable_expanded` via `swap_temporal` duality (~80 LOC, using `dual_separable` + `swap_no_U_nested_gives_no_S_nested` infrastructure)
-- [ ] Task 6.9: Derive `all_past_separable` from `snce_separable_expanded` (since `all_past phi = neg (snce (neg phi) top)` is separable when phi is separable) (~30 LOC)
-- [ ] Task 6.10: Derive `all_future_separable` from `untl_separable_expanded` (symmetric) (~30 LOC)
-- [ ] Task 6.11: Replace 4 weak temporal closure axioms with proofs of `all_past_separable`, `all_future_separable`, `untl_separable`, `snce_separable` (~40 LOC, restructure theorem declarations from axiom to theorem)
-- [ ] Task 6.12: Prove `all_properly_separable` without axioms -- prove proper versions of temporal closure using analogous argument with `is_properly_separable` + proper expansion equivalences (~80 LOC)
-- [ ] Task 6.13: Remove 4 proper temporal closure axioms from SeparationThm.lean (~10 LOC, delete axiom declarations)
-- [ ] Task 6.14: Verify `lake build` passes with 0 axioms in SeparationThm.lean
+**BLOCKER** (Phase 6):
+- **What failed**: Tasks 6.7-6.14 (proving `snce_separable`, `untl_separable`, `all_past_separable`, `all_future_separable` without axioms, then replacing 8 axioms in SeparationThm.lean)
+- **What was tried**:
+  1. Direct `no_S_nested_in_U → is_separable` by structural induction: fails because the `snce`, `all_past`, `all_future` cases all circularly need `snce_separable`
+  2. Junction-depth induction with `abstract_untl` + substitution back: fails because substituting `untl(A,B)` for atom `p` in a separated formula `G` breaks U-freeness in snce/all_past args of `G`, and the result is not syntactically separated
+  3. Well-founded induction on compound measure `(junction_depth, Formula.size)`: fails because the transformed formula (after box-normalization + expand_temporal) may have larger size
+  4. Proving Cases 5-8 independently to break the cycle: Cases 5-8 prove `S(a ∧ (±)U(A,B), q ∨ (±)U(A,B))` is separable. GHR94's explicit formulas are wrong on discrete time (documented counterexamples in Eliminations.lean). No correct explicit formula found for integer time.
+  5. `subst_separable` lemma (substituting a separated formula for an atom in a separated formula preserves separability): FALSE in general because atoms in snce/all_past positions require U-freeness, and `untl(A,B)` is not U-free
+  6. Previous agent also attempted this and produced ~300 lines of analysis reaching the same conclusion
+- **Why it's stuck**: Circular dependency: `all_separable` needs temporal closure axioms; temporal closure needs Cases 5-8 (through Lemma 10.2.5); Cases 5-8 need `all_separable`. GHR94's explicit formulas for Cases 5-8 are incorrect on integer (discrete) time. The substitution bridge (abstracting untl to atoms, finding separated equivalent, substituting back) fails because substitution does not preserve syntactic separation.
+- **What is needed**: One of:
+  1. Find correct explicit separated formulas for Cases 5-8 on integer time (research problem)
+  2. Prove a restricted `subst_separable` that tracks WHERE atom `p` appears (not in snce/all_past args) and shows substitution preserves separability in those restricted positions
+  3. Restructure the proof to use a single combined well-founded induction with a measure that strictly decreases across all temporal cases including the substitution bridge
+  4. Use an entirely different proof approach (e.g., Reynolds' axiomatization for Z, automata-theoretic, EF games)
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
+**Tasks** (Tasks 6.1-6.6 completed, 6.7-6.14 blocked):
+- [x] Task 6.1: Define `expand_temporal : Formula -> Formula` that recursively replaces `all_past phi` with `neg (snce (neg phi) top)` and `all_future phi` with `neg (untl (neg phi) top)` (~30 LOC) *(completed)*
+- [x] Task 6.2: Prove `all_past_equiv_neg_snce` on Z *(completed)*
+- [x] Task 6.3: Prove `all_future_equiv_neg_untl` on Z *(completed)*
+- [x] Task 6.4: Prove `expand_temporal_equiv` by structural induction *(completed)*
+- [x] Task 6.5: Prove `expand_has_no_allpast_allfuture` + define `has_no_allpast_allfuture` *(completed)*
+- [x] Task 6.6: Prove `expanded_jd_zero_imp_separated` *(completed)*
+- [ ] Task 6.7: Prove `snce_separable_expanded` *(deviation: blocked -- circular dependency through Cases 5-8, see BLOCKER above)*
+- [ ] Task 6.8: Derive `untl_separable_expanded` *(deviation: blocked -- depends on 6.7)*
+- [ ] Task 6.9: Derive `all_past_separable` *(deviation: blocked -- depends on 6.7)*
+- [ ] Task 6.10: Derive `all_future_separable` *(deviation: blocked -- depends on 6.8)*
+- [ ] Task 6.11: Replace 4 weak temporal closure axioms *(deviation: blocked -- depends on 6.7-6.10)*
+- [ ] Task 6.12: Prove `all_properly_separable` without axioms *(deviation: blocked -- depends on 6.11)*
+- [ ] Task 6.13: Remove 4 proper temporal closure axioms *(deviation: blocked -- depends on 6.12)*
+- [ ] Task 6.14: Verify `lake build` passes with 0 axioms *(deviation: blocked -- depends on 6.13)*
 
 **Timing**: 6 hours
 
