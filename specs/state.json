@@ -124,7 +124,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -133,9 +133,9 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T19:20:22Z",
+      "last_updated": "2026-05-17T19:41:42Z",
       "session_id": "sess_1779045605_6410ff",
-      "researched": "2026-05-17T18:30:37Z",
+      "researched": "2026-05-17T19:41:42Z",
       "artifacts": [
         {
           "path": "specs/157_expressive_completeness_su_integer/reports/03_team-research.md",
@@ -151,10 +151,15 @@
           "path": "specs/157_expressive_completeness_su_integer/plans/04_junction-depth-plan.md",
           "type": "plan",
           "summary": "Plan v7: junction-depth induction for axiom elimination, quantifier cases, final integration"
+        },
+        {
+          "path": "specs/157_expressive_completeness_su_integer/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Team research: GHR94 hierarchy study, Dedekind path discovery, snce-trivial refutation"
         }
       ],
       "started": "2026-05-17T03:25:26Z",
-      "next_artifact_number": 5
+      "next_artifact_number": 6
     },
     {
       "project_number": 156,

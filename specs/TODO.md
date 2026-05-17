@@ -115,13 +115,14 @@ technical_debt:
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155
 - **Research**:
   - [specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md]
   - [specs/157_expressive_completeness_su_integer/reports/04_team-research.md]
+  - [specs/157_expressive_completeness_su_integer/reports/05_team-research.md]
 - **Plan**:
   - [157_expressive_completeness_su_integer/plans/01_expressive-completeness-plan.md]
   - [157_expressive_completeness_su_integer/plans/02_expressive-completeness-plan.md]
