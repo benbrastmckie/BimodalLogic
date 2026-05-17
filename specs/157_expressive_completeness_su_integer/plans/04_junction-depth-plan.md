@@ -137,24 +137,25 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 ---
 
-### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases with WF Induction [IN PROGRESS]
+### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases with WF Induction [PARTIAL]
 
-**Goal**: Close the 4 sorries in ExpressiveCompleteness.lean (the `.all` and `.ex` quantifier cases of `expressiveness_fixed_atomMap`, 2 pairs at lines 667 and 685).
+**Goal**: Close the sorries in ExpressiveCompleteness.lean (the `.all` and `.ex` quantifier cases of `expressiveness_fixed_atomMap`).
 
-**Note**: This phase is being worked on by a separate implementation agent. It is included here for completeness and dependency tracking. The Critic teammate confirmed Phase 7 is fully independent of Phase 6 -- the quantifier cases operate on `extSignature` types and do not depend on the temporal closure axiom machinery.
+**Note**: Worked on by a separate implementation agent (sess_1779042202_561806). Confirmed fully independent of Phase 6 by research Critic teammate.
 
-**Strategy**: Use well-founded induction on `qdepth` (quantifier depth). The quantifier case recurses at `extSignature sig` (different type) with `reduceElimLast` reducing qdepth by 1. Apply the atom-elimination pipeline: case-split over `Fintype (sig.preds -> Bool)` for const_at_ref, level-aware substitution for lt_ref/gt_ref using purity lemmas.
+**Strategy**: Restructured from structural recursion with sorry-pairs to well-founded induction on quantifier depth via `Nat.strongRecOn`. Inner structural recursion (`expressiveness_inner`) + outer WF recursion (`expressiveness_wf`). Used `freshAM` (canonical atomMap with base "e") instead of `extAtomMap atomMap` to avoid collision issues across recursion levels.
+
+**Progress**: The original 2 sorry-pairs (which gave up on both formula AND proof) are replaced by 5 focused sorries that all reduce to a single correctness lemma: `atom_elim_correct` proving that `elimExtFromSep` correctly translates truth between the extended model and the original model for properly separated formulas.
 
 **Tasks**:
-- [ ] Task 7.1: Restructure `expressiveness_fixed_atomMap` for WF induction on qdepth (~80 LOC)
-- [ ] Task 7.2: Prove `reduceElimLast_correct` (~100 LOC)
-- [ ] Task 7.3: Prove `extAtomMap_injective` (~40 LOC)
-- [ ] Task 7.4: Define `elimExtAtoms` level-aware substitution (~50 LOC)
-- [ ] Task 7.5: Prove `elimExtAtoms_correct` (~150 LOC)
-- [ ] Task 7.6: Implement case-split assembly (~100 LOC)
-- [ ] Task 7.7: Close `.ex` case (~80 LOC)
-- [ ] Task 7.8: Close `.all` case via negation (~40 LOC)
-- [ ] Task 7.9: Verify `lake build` passes with 0 sorry in ExpressiveCompleteness.lean
+- [x] Task 7.1: Restructure `expressiveness_fixed_atomMap` for WF induction on qdepth -- restructured to `expressiveness_inner` (structural) + `expressiveness_wf` (Nat.strongRecOn)
+- [x] Task 7.2: Build quantifier elimination infrastructure -- `quantElimFormula`, `elimExtFromSep`, `applySubsts`, `origSubsList` all defined
+- [x] Task 7.3: Prove purity lemmas and quantifier-free cases -- completed
+- [x] Task 7.4: Define `elimExtAtoms` level-aware substitution -- implemented as `elimExtFromSep` with 4 atom types (orig, const_at_ref, lt_ref, gt_ref)
+- [x] Task 7.5: Implement case-split assembly over `Fintype (sig.preds -> Bool)` -- completed with sigma-matching
+- [ ] Task 7.6: Prove `atom_elim_correct` (~150 LOC) -- THE remaining blocker. Proves `int_truth M_orig t (elimExtFromSep subs lt_atom gt_atom B) <-> int_truth M_ext t B` by structural induction on properly separated B. Temporal cases use `past_only_is_pure_past` / `future_only_is_pure_future`.
+- [ ] Task 7.7: Close 5 remaining sorries using `atom_elim_correct` -- `applySubsts_past_correct`, `applySubsts_future_correct`, `.ex` forward/backward, `.all` case
+- [ ] Task 7.8: Verify `lake build` passes with 0 sorry in ExpressiveCompleteness.lean
 
 **Timing**: 5 hours
 
