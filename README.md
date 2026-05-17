@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
-A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) — a formal language designed for compositional reasoning over possible worlds. Unlike extensional (truth-functional) approaches, the Logos interprets formulas by their meaning across structured worlds and times, supporting modality, tense, and their interaction. This library implements the syntax, task frame semantics, proof theory, and metalogic (soundness, completeness, and decidability) for the TM (Tense and Modality) bimodal logic combining S5 modal operators with Until/Since temporal operators.
+A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) — a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches, the Logos interprets formulas by their meaning across structured worlds and times, supporting modality, tense, and their interaction. This library implements the syntax, task frame semantics, proof theory, and metalogic (soundness, completeness, and decidability) for the TM (Tense and Modality) bimodal logic combining S5 modal operators with Until/Since temporal operators.
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
