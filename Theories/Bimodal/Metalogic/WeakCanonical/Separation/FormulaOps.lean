@@ -151,29 +151,73 @@ theorem cnf_equiv (phi : Formula) : int_equiv phi (from_CNF (to_CNF phi)) := by
 
 /-! ## Freshness Infrastructure -/
 
+/-- For any finset of atoms, there exists an atom not in it.
+    Proof: Atom is infinite (via injective mk_fresh from Nat), so no finite set covers all atoms. -/
+private theorem exists_atom_not_in_finset (S : Finset Atom) : ∃ a : Atom, a ∉ S := by
+  by_contra h
+  push_neg at h
+  -- h : ∀ a : Atom, a ∈ S
+  -- The map n ↦ mk_fresh "" n is injective, giving infinitely many atoms
+  -- But if all are in S, then S would need to be infinite, contradicting Finset.finite
+  have hinj := Atom.mk_fresh_injective ""
+  have himg : ∀ n : Nat, Atom.mk_fresh "" n ∈ S := fun n => h _
+  -- Finset.range (S.card + 1) has S.card + 1 elements, and its image under mk_fresh ""
+  -- has S.card + 1 elements (by injectivity), all in S (by himg).
+  -- But S only has S.card elements. Contradiction.
+  have hle : S.card + 1 ≤ S.card := by
+    calc S.card + 1
+        = (Finset.image (Atom.mk_fresh "") (Finset.range (S.card + 1))).card := by
+          rw [Finset.card_image_of_injective _ hinj, Finset.card_range]
+      _ ≤ S.card := Finset.card_le_card (fun x hx => by
+          simp only [Finset.mem_image, Finset.mem_range] at hx
+          obtain ⟨n, _, rfl⟩ := hx
+          exact himg n)
+  omega
+
+/-- For any finset of atoms and natural number n, there exist n distinct atoms not in the finset. -/
+private theorem exists_n_fresh_atoms (S : Finset Atom) (n : Nat) :
+    ∃ L : List Atom, L.length = n ∧ L.Nodup ∧ ∀ a ∈ L, a ∉ S := by
+  induction n with
+  | zero => exact ⟨[], rfl, List.nodup_nil, fun _ h => by simp at h⟩
+  | succ k ih =>
+    obtain ⟨L, hlen, hnodup, hfresh⟩ := ih
+    have hex : ∃ a : Atom, a ∉ S ∧ a ∉ L.toFinset := by
+      have := exists_atom_not_in_finset (S ∪ L.toFinset)
+      obtain ⟨a, ha⟩ := this
+      rw [Finset.mem_union] at ha
+      push_neg at ha
+      exact ⟨a, ha.1, ha.2⟩
+    obtain ⟨a, ha_fresh, ha_nodup⟩ := hex
+    refine ⟨a :: L, by simp [hlen], ?_, ?_⟩
+    · refine List.Nodup.cons ?_ hnodup
+      rwa [← List.mem_toFinset]
+    · intro b hb
+      simp only [List.mem_cons] at hb
+      rcases hb with rfl | hb
+      · exact ha_fresh
+      · exact hfresh b hb
+
 /-- Generate a fresh atom not appearing in a formula.
-    Uses the fresh_index mechanism of the Atom type.
-    The index is chosen as the cardinality of the atom set, which
-    guarantees freshness since all atoms "_sep"/k with k < card are distinct. -/
+    Uses classical choice from the fact that Atom is infinite. -/
 noncomputable def fresh_atom (phi : Formula) : Atom :=
-  Atom.mk_fresh "_sep" phi.atoms.card
+  (exists_atom_not_in_finset phi.atoms).choose
 
 /-- The fresh atom does not appear in the formula. -/
-theorem fresh_atom_not_in (phi : Formula) : fresh_atom phi ∉ phi.atoms := by
-  sorry
+theorem fresh_atom_not_in (phi : Formula) : fresh_atom phi ∉ phi.atoms :=
+  (exists_atom_not_in_finset phi.atoms).choose_spec
 
 /-- Generate n fresh atoms not appearing in a formula or each other. -/
 noncomputable def fresh_atoms (phi : Formula) (n : Nat) : List Atom :=
-  List.range n |>.map fun i => Atom.mk_fresh "_sep" (phi.atoms.card + i)
+  (exists_n_fresh_atoms phi.atoms n).choose
 
 /-- All atoms in fresh_atoms are distinct from each other and from atoms in phi. -/
 theorem fresh_atoms_disjoint (phi : Formula) (n : Nat) :
     ∀ a ∈ fresh_atoms phi n, a ∉ phi.atoms := by
-  sorry
+  exact (exists_n_fresh_atoms phi.atoms n).choose_spec.2.2
 
 /-- Fresh atoms are pairwise distinct. -/
 theorem fresh_atoms_nodup (phi : Formula) (n : Nat) :
-    (fresh_atoms phi n).Nodup := by
-  sorry
+    (fresh_atoms phi n).Nodup :=
+  (exists_n_fresh_atoms phi.atoms n).choose_spec.2.1
 
 end Bimodal.Metalogic.WeakCanonical.Separation
