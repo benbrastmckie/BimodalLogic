@@ -80,7 +80,7 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 ---
 
-### Phase 6: Prove no_S_nested_in_U_separable and Eliminate 8 Axioms [IN PROGRESS]
+### Phase 6: Prove no_S_nested_in_U_separable and Eliminate 8 Axioms [BLOCKED]
 
 **Goal**: Break the circular dependency by proving `no_S_nested_in_U_separable` via strong induction on junction_depth, then derive all 8 temporal closure axioms as theorems, replacing the 8 axioms in SeparationThm.lean.
 
@@ -92,19 +92,36 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 5. **Fix downstream**: Replace `multi_U_formula_separable`'s shortcut to `all_separable` (Hierarchy.lean line 547) with the actual junction-depth induction proof
 
 **Tasks**:
-- [ ] Task 6.7: Implement `abstract_snce` in Hierarchy.lean (~100 LOC, dual of `abstract_untl`): replace all occurrences of a specific `S(A,B)` with a fresh atom. Prove `abstract_snce_correct` (semantic equivalence under withAtom), `abstract_snce_makes_S_free` (S-count decreases)
-- [ ] Task 6.8: Prove `abstract_untl_identity_on_U_free` in Hierarchy.lean (~20 LOC): when phi is U-free, `abstract_untl phi A B p = phi`. Needed to show that the junction-depth induction step preserves structure of U-free subterms
-- [ ] Task 6.9: Prove `abstract_untl_preserves_separated` in Hierarchy.lean (~50 LOC): in a separated formula, U-free snce/all_past args are untouched by `abstract_untl` (identity on U-free), so separation is preserved. Research teammate B confirmed proof sketch is sound
-- [ ] Task 6.10: Prove junction depth decrease lemmas in TemporalClosure.lean (~100 LOC): after applying Cases 1-4 + `neg_until_equiv` to a formula with JD=n+1, the resulting formula has JD <= n. Key lemma: `case_application_decreases_jd` showing each case strictly reduces junction depth of the relevant subterm
-- [ ] Task 6.11: Prove `no_S_nested_in_U_separable` in Hierarchy.lean (~200 LOC): the main theorem by `Nat.strongRecOn` on `junction_depth (expand_temporal phi)`. Structure: expand_temporal -> box-normalize -> if JD=0 use `expanded_jd_zero_imp_separated`, else apply case analysis (Cases 1-4 + `neg_until_equiv`) to reduce JD and invoke IH
-- [ ] Task 6.12: Derive `no_U_nested_in_S_separable` via `swap_temporal` duality in Hierarchy.lean (~30 LOC): use `swap_temporal_int_truth` to convert between the two predicates
-- [ ] Task 6.13: Replace `multi_U_formula_separable` shortcut (Hierarchy.lean line 547) with actual proof via `no_S_nested_in_U_separable` (~20 LOC): remove the `all_separable phi` call, use the proved theorem directly
-- [ ] Task 6.14: Derive 4 weak temporal closure theorems in SeparationThm.lean (~80 LOC total): `snce_separable` (separated args -> box-normalize -> `replace_box_separated_no_S_nested` -> `no_S_nested_in_U_separable`), `untl_separable` (via `swap_temporal` duality from `snce_separable`), `all_past_separable` (via `expand_temporal` equivalence + `snce_separable`), `all_future_separable` (via duality)
-- [ ] Task 6.15: Derive 4 proper temporal closure theorems in SeparationThm.lean (~60 LOC total): proper variants follow from weak variants + proper separability closure lemmas (already exist in Defs.lean)
-- [ ] Task 6.16: Remove all 8 axioms from SeparationThm.lean, replacing with `theorem` declarations using the proofs from Tasks 6.14-6.15
-- [ ] Task 6.17: Verify `lake build` passes with 0 axioms in Separation/ directory
+- [ ] Task 6.7: Implement `abstract_snce` in Hierarchy.lean (~100 LOC, dual of `abstract_untl`): replace all occurrences of a specific `S(A,B)` with a fresh atom. Prove `abstract_snce_correct` (semantic equivalence under withAtom), `abstract_snce_makes_S_free` (S-count decreases) *(deviation: skipped -- not needed until the full GHR94 Lemma 10.2.8 hierarchy is implemented; the Phase 6 blocker is deeper than abstract_snce)*
+- [x] Task 6.8: Prove `abstract_untl_identity_on_U_free` in Hierarchy.lean (~20 LOC): when phi is U-free, `abstract_untl phi A B p = phi`. Needed to show that the junction-depth induction step preserves structure of U-free subterms *(completed)*
+- [x] Task 6.9: Prove `abstract_untl_preserves_separated` in Hierarchy.lean (~50 LOC): in a separated formula, U-free snce/all_past args are untouched by `abstract_untl` (identity on U-free), so separation is preserved. Research teammate B confirmed proof sketch is sound *(completed -- also proved abstract_untl_preserves_U_free)*
+- [ ] Task 6.10: Prove junction depth decrease lemmas in TemporalClosure.lean (~100 LOC): after applying Cases 1-4 + `neg_until_equiv` to a formula with JD=n+1, the resulting formula has JD <= n. Key lemma: `case_application_decreases_jd` showing each case strictly reduces junction depth of the relevant subterm *(deviation: deferred -- blocked by the same circularity as Task 6.11)*
+- [ ] Task 6.11: Prove `no_S_nested_in_U_separable` in Hierarchy.lean (~200 LOC): the main theorem by `Nat.strongRecOn` on `junction_depth (expand_temporal phi)`. Structure: expand_temporal -> box-normalize -> if JD=0 use `expanded_jd_zero_imp_separated`, else apply case analysis (Cases 1-4 + `neg_until_equiv`) to reduce JD and invoke IH *(deviation: blocked -- see BLOCKER below)*
+- [ ] Task 6.12: Derive `no_U_nested_in_S_separable` via `swap_temporal` duality in Hierarchy.lean (~30 LOC): use `swap_temporal_int_truth` to convert between the two predicates *(deviation: deferred -- depends on Task 6.11)*
+- [ ] Task 6.13: Replace `multi_U_formula_separable` shortcut (Hierarchy.lean line 547) with actual proof via `no_S_nested_in_U_separable` (~20 LOC): remove the `all_separable phi` call, use the proved theorem directly *(deviation: deferred -- depends on Task 6.11)*
+- [ ] Task 6.14: Derive 4 weak temporal closure theorems in SeparationThm.lean (~80 LOC total): `snce_separable` (separated args -> box-normalize -> `replace_box_separated_no_S_nested` -> `no_S_nested_in_U_separable`), `untl_separable` (via `swap_temporal` duality from `snce_separable`), `all_past_separable` (via `expand_temporal` equivalence + `snce_separable`), `all_future_separable` (via duality) *(deviation: deferred -- depends on Task 6.11)*
+- [ ] Task 6.15: Derive 4 proper temporal closure theorems in SeparationThm.lean (~60 LOC total): proper variants follow from weak variants + proper separability closure lemmas (already exist in Defs.lean) *(deviation: deferred -- depends on Task 6.14)*
+- [ ] Task 6.16: Remove all 8 axioms from SeparationThm.lean, replacing with `theorem` declarations using the proofs from Tasks 6.14-6.15 *(deviation: deferred -- depends on Tasks 6.14-6.15)*
+- [ ] Task 6.17: Verify `lake build` passes with 0 axioms in Separation/ directory *(deviation: deferred -- depends on Task 6.16)*
 
-**Timing**: 5 hours
+**BLOCKER** (Phase 6):
+- **What failed**: Proving `no_S_nested_in_U_separable` (Task 6.11) and deriving the 4 temporal closure axioms as theorems (Task 6.14). Every proof approach encounters a fundamental circularity between `snce_separable` and `all_separable`.
+- **What was tried**:
+  1. **Structural induction on formula**: Works for all cases except `snce` (which requires `snce_separable`) and `all_past`/`all_future` (which reduce to `snce_separable` via Z-equivalences). The snce case needs snce of separable formulas to be separable, which IS the temporal closure property.
+  2. **count_U_subformulas induction with abstract_untl**: Abstract one untl(A,B), apply IH to get separated witness chi, then need `subst(chi, p, untl AB)` to be separable. The substitution into chi's snce/all_past positions reintroduces U-under-S junctions. The count_U of the substituted formula is bounded by the number of atom-p occurrences in chi, which is unrelated to the original count (chi is an arbitrary separated formula, not size-bounded).
+  3. **Restricted fragment (no all_past/all_future) + count_U induction**: Avoids the all_past case but still hits the snce sub-case. After abstracting and substituting back through the separated witness, the all_past positions in chi introduce new snce instances at uncontrolled count_U.
+  4. **Junction depth induction (Nat.strongRecOn on JD of expansion)**: JD does not strictly decrease for all_past (JD_S of the expansion can equal JD of the inner formula). Lexicographic measures (JD, size) fail because the size of the Z-equivalence expansion neg(snce(neg phi')(top)) exceeds the size of all_past phi.
+  5. **Semantic bridge via abstract_untl_correct + subst_correctness**: Produces `int_equiv phi (subst chi p (untl AB))` which is tautological (equals phi by roundtrip). Does not produce a NEW separated equivalent.
+  6. **Event-splitting decomposition to Cases 1-4**: Event-splitting on U(A,B) produces branches matching Cases 1-4, BUT Cases 5-8 patterns (U in both event and guard of S) arise when the guard (separated formula psi') contains untl. Cases 5-8 have no known correct explicit formulas on Z (GHR94's dense-time formulas fail, counterexample documented in Eliminations.lean).
+- **Why it's stuck**: The circularity is between `snce_separable` (snce of separable formulas is separable) and `all_separable` (every formula is separable). Every approach to proving snce_separable without axioms requires either: (a) explicit separated formulas for Cases 5-8 on Z (unknown, likely an open mathematical problem), or (b) the full GHR94 Lemma 10.2.8 junction-depth hierarchy with abstract_snce (S-from-under-U extraction), which amounts to implementing the complete GHR94 10.2.4-10.2.8 proof chain (~500+ LOC) with a compound lexicographic measure that tracks through the abstraction-substitution cycle. The research team's claim that "Cases 5-8 are handled within the induction at lower JD" is architecturally correct but the implementation requires a non-trivial well-founded recursion across multiple levels of induction (junction_depth outer, count_U middle, S-nesting inner) that has not been fully worked out.
+- **What is needed**: One of three paths:
+  1. **(Preferred)** Implement the full GHR94 Lemma 10.2.8 junction-depth hierarchy: abstract_snce (~100 LOC), junction-depth decrease lemmas (~100 LOC), combined WF induction with compound lexicographic measure tracking (junction_depth, count_U, S_nesting_above_U) through the abstraction-substitution cycle (~400 LOC). This is the theoretically correct approach but requires careful handling of the all_past/all_future primitive constructor issue.
+  2. **(Backup)** Find correct explicit separated formulas for Cases 5-8 on Z by specializing GHR94 Ch 10.3 Dedekind formulas (K+=K-=T, G+-=bot on Z). Teammate D estimated ~200-350 LOC per case. This avoids the hierarchy but produces large proof terms.
+  3. **(Exploratory)** Prove the substitution-separability lemma `subst(separated, p, untl AB) is separable` by a joint well-founded recursion with snce_sep, using a composite measure that tracks BOTH the separated formula structure AND the count_U of the current context. This is the approach closest to success but requires formalizing a non-standard WF measure.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+- **Completed infrastructure**: Tasks 6.8-6.9 (abstract_untl_identity_on_U_free, abstract_untl_preserves_U_free, abstract_untl_preserves_separated, restricted_u_free_separated) -- these support all three paths above
+
+**Timing**: 5 hours (original estimate; actual: infrastructure completed in ~2 hours, core theorem blocked)
 
 **Depends on**: none (Phases 1-5 completed in v6; Tasks 6.1-6.6 completed in v6)
 
