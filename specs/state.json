@@ -8,17 +8,22 @@
     {
       "project_number": 160,
       "project_name": "fix_ci_badge_failing",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "created": "2026-05-17T19:23:22Z",
-      "last_updated": "2026-05-17T19:34:08Z",
-      "session_id": "sess_1747520400_research160",
+      "last_updated": "2026-05-17T19:40:56Z",
+      "session_id": "sess_1779046713_293e12",
       "next_artifact_number": 2,
       "artifacts": [
         {
           "path": "specs/160_fix_ci_badge_failing/reports/01_ci-badge-research.md",
           "type": "research",
           "summary": "Three root causes identified: (1) ci.yml has test:true but lakefile.lean missing testDriver; (2) --wfail incompatible with sorry statements; (3) push-to-main runs skipped due to if: condition."
+        },
+        {
+          "path": "specs/160_fix_ci_badge_failing/plans/01_fix-ci-badge.md",
+          "type": "plan",
+          "summary": "Implementation plan with 2 phases to fix CI badge: add testDriver, remove --wfail, push with [ci] trigger"
         }
       ],
       "memory_candidates": [
@@ -46,7 +51,29 @@
             "lean-action"
           ]
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 2,
+        "total_effort_hours": 0.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_ci-badge-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-05-17"
+          }
+        ]
+      }
     },
     {
       "project_number": 159,
