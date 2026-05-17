@@ -92,22 +92,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Prove separation_implies_expressiveness (Theorem 9.3.1) [IN PROGRESS]
+### Phase 1: Prove separation_implies_expressiveness (Theorem 9.3.1) [BLOCKED]
 
 **Goal**: Close the 1 sorry in `ExpressiveCompleteness.lean` by proving that separation implies expressive completeness via induction on quantifier depth of monadic FO formulas. This is INDEPENDENT of the Case 5 blocker.
 
 **Tasks**:
-- [ ] Read `ExpressiveCompleteness.lean` to understand current structure and the exact sorry goal state
-- [ ] Implement the base case (quantifier depth 0): quantifier-free monadic formulas translate directly to boolean combinations of atoms
-- [ ] Implement the inductive step (quantifier depth m+1):
-  - Introduce auxiliary predicates R_=, R_>, R_< for the quantified variable's position relative to t
-  - Use IH to translate the inner formula (depth m) to a temporal formula
-  - Use `q_exists_correct` (already proved) to express `exists z` as `P(A) v A v F(A)`
-  - Apply separation hypothesis `h_sep` to decompose into pure past/present/future parts
-  - Substitute: in pure past parts set R_> = top, R_= = bot, R_< = bot; etc.
-  - Show resulting formula is in {U,S} without auxiliary atoms
-- [ ] Prove `US_expressively_complete_over_Z` as the composition of `separation_theorem_int` and `separation_implies_expressiveness`
-- [ ] Verify `lake build` passes with 0 sorry in `ExpressiveCompleteness.lean`
+**BLOCKER** (Phase 1):
+- **What failed**: The theorem `separation_implies_expressiveness` requires induction on FO formulas with `n` free variables, but the statement is specialized to `MonadicFormula sig 1`. The quantifier case `ex α` has `α : MonadicFormula sig 2`, requiring a generalization to arbitrary variable count that is not currently supported by the infrastructure.
+- **What was tried**: Attempted structural induction on `psi : MonadicFormula sig 1`. The base cases (atom, lt, not, and) are tractable but the quantifier cases require (1) a generalized version for arbitrary `n`, (2) an environment-to-temporal translation scheme, and (3) the full FO-to-temporal back-translation with separation + substitution.
+- **Why it's stuck**: The proof requires ~200-400 LOC of new infrastructure including: generalized translation for n-variable formulas, environment encoding, quantifier elimination via q_exists + separation decomposition + substitution. This is a substantial standalone formalization effort.
+- **What is needed**: Either (a) generalize the theorem statement to arbitrary n and prove by induction on formula structure, or (b) prove by induction on quantifier depth with a generalized translation lemma, or (c) axiomatize as a known theorem of Kamp's theorem for Z.
+
+- [x] **Task 1.1**: Read `ExpressiveCompleteness.lean` to understand current structure *(completed)*
+- [ ] **Task 1.2**: Implement the base case *(deviation: deferred -- requires generalization to n variables first)*
+- [ ] **Task 1.3**: Implement the inductive step *(deviation: deferred -- blocked by Task 1.2)*
+- [x] **Task 1.4**: Prove `US_expressively_complete_over_Z` *(completed -- already proved as composition, will work once separation_implies_expressiveness is proved)*
+- [ ] **Task 1.5**: Verify `lake build` passes *(deviation: altered -- builds with 1 sorry in separation_implies_expressiveness)*
 
 **Timing**: 4 hours
 
