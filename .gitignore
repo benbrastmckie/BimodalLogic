@@ -1,5 +1,4 @@
 # LEAN 4 build artifacts
-.claude/
 .lake/
 build/
 *.olean
@@ -62,3 +61,4 @@ benchmarks/
 indent.log
 /.claude_OLD
 /.opencode_OLD
+/.claude
