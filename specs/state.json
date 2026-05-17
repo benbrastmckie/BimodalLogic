@@ -8,13 +8,20 @@
     {
       "project_number": 158,
       "project_name": "update_readme_metalogic_progress",
-      "status": "researched",
+      "status": "planned",
       "task_type": "markdown",
       "created": "2026-05-17T18:20:49Z",
-      "last_updated": "2026-05-17T18:35:00Z",
-      "session_id": "sess_1779042494_b8cb4a",
+      "last_updated": "2026-05-17T18:46:55Z",
+      "session_id": "sess_1779043386_1dae67",
       "researched": "2026-05-17T18:35:00Z",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/158_update_readme_metalogic_progress/plans/01_readme-overhaul-plan.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for README rewrite: cleanup stale artifacts, rewrite with 13-section structure, verify and polish"
+        }
+      ]
     },
     {
       "project_number": 157,
