@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 162,
+      "project_name": "enforce_plan_compliance_rule",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Add a .claude/rules/ rule enforcing strict plan compliance for lean-implementation-agent and other formal implementation agents. The rule should: (1) Prohibit agents from \"assessing what's truly minimal\" or inventing alternative approaches when a plan exists. (2) Require agents to follow the plan's exact task sequence step-by-step, in order. (3) Explicitly ban common divergence patterns: skipping intermediate theorems, inlining proofs instead of following the plan's decomposition, routing through different helper lemmas than specified, and \"cleaner approach\" rationalizations. (4) Be auto-applied via glob pattern to Theories/ and any formal proof files. (5) Reference the repeated failures in task 157 (8 plan versions, agents diverging every time) as motivation. The rule should be concise but firm -- agents must treat the plan as a contract, not a suggestion.",
+      "created": "2026-05-17T20:54:21Z",
+      "last_updated": "2026-05-17T20:54:21Z"
+    },
+    {
       "project_number": 161,
       "project_name": "rename_theories_bimodal_to_formalsystem",
       "status": "not_started",
@@ -153,7 +162,7 @@
     {
       "project_number": 157,
       "project_name": "expressive_completeness_su_integer",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -162,8 +171,8 @@
         155
       ],
       "created": "2026-05-17T02:49:54Z",
-      "last_updated": "2026-05-17T20:43:49Z",
-      "session_id": "sess_1779050198_6d68fe",
+      "last_updated": "2026-05-17T20:46:56Z",
+      "session_id": "sess_1779050716_7a0566",
       "researched": "2026-05-17T20:33:36Z",
       "artifacts": [
         {
@@ -1484,7 +1493,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 162,
+  "next_project_number": 163,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

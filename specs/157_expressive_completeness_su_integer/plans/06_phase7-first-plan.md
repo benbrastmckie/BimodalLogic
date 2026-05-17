@@ -115,7 +115,7 @@ Phases within the same wave can execute in parallel. Phase 7 is completely indep
 
 ---
 
-### Phase 7: Close atom_elim_correct Sorry (Sorry-Free ExpressiveCompleteness) [NOT STARTED]
+### Phase 7: Close atom_elim_correct Sorry (Sorry-Free ExpressiveCompleteness) [IN PROGRESS]
 
 **Goal**: Eliminate the single sorry at line 916 of ExpressiveCompleteness.lean by proving `atom_elim_correct` via freshAM disjointness fix + `hB_atoms` parameter + `elimExtFromSep_correct` structural induction + `quantElimFormula_correct_iff` disjunction unfolding.
 

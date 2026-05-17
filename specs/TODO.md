@@ -1,5 +1,5 @@
 ---
-next_project_number: 162
+next_project_number: 163
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -87,6 +87,13 @@ technical_debt:
 
 ## Tasks
 
+### 162. Enforce strict plan compliance for formal implementation agents
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+
+**Description**: Add a .claude/rules/ rule enforcing strict plan compliance for lean-implementation-agent and other formal implementation agents. The rule should: (1) Prohibit agents from "assessing what's truly minimal" or inventing alternative approaches when a plan exists. (2) Require agents to follow the plan's exact task sequence step-by-step, in order. (3) Explicitly ban common divergence patterns: skipping intermediate theorems, inlining proofs instead of following the plan's decomposition, routing through different helper lemmas than specified, and "cleaner approach" rationalizations. (4) Be auto-applied via glob pattern to Theories/ and any formal proof files. (5) Reference the repeated failures in task 157 (8 plan versions, agents diverging every time) as motivation. The rule should be concise but firm -- agents must treat the plan as a contract, not a suggestion.
+
 ### 161. Rename Theories/Bimodal/ to FormalSystem/
 - **Effort**: medium
 - **Status**: [NOT STARTED]
@@ -123,7 +130,7 @@ technical_debt:
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155
