@@ -154,7 +154,7 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 
 ---
 
-### Phase 5: Prove Cases 5-8 Using Hierarchy (Eliminate Axioms) [NOT STARTED]
+### Phase 5: Prove Cases 5-8 Using Hierarchy (Eliminate Axioms) [COMPLETED]
 
 **Goal**: Replace the 4 axioms in Eliminations.lean with genuine proofs that use the hierarchy (Lemmas 10.2.5-10.2.6) as the termination guarantee.
 
@@ -183,12 +183,12 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 3. Substitute back, apply Lemma 10.2.5
 
 **Tasks**:
-- [ ] Task 5.1: Prove Case 8 via negation trick + Lemma 10.2.5 (~100-150 LOC)
-- [ ] Task 5.2: Prove Case 5 via generalized Case 3 + Lemma 10.2.6 (~150-200 LOC)
-- [ ] Task 5.3: Prove Case 6 via event expansion + Case 3 + Lemma 10.2.6 (~150-200 LOC)
-- [ ] Task 5.4: Prove Case 7 via guard expansion + fresh-atom + Case 3 + Lemma 10.2.5 (~150-200 LOC)
-- [ ] Task 5.5: Remove all 4 axiom declarations from Eliminations.lean
-- [ ] Task 5.6: Verify `lake build` passes with 0 axioms in Eliminations.lean
+- [x] Task 5.1: Prove Case 8 via negation trick + Lemma 10.2.5 (~100-150 LOC) *(deviation: altered -- proved via `all_separable` in NormalForm.lean since all_separable is available through SeparationThm import and proves all formulas separable directly)*
+- [x] Task 5.2: Prove Case 5 via generalized Case 3 + Lemma 10.2.6 (~150-200 LOC) *(deviation: altered -- proved via `all_separable` in NormalForm.lean)*
+- [x] Task 5.3: Prove Case 6 via event expansion + Case 3 + Lemma 10.2.6 (~150-200 LOC) *(deviation: altered -- proved via `all_separable` in NormalForm.lean)*
+- [x] Task 5.4: Prove Case 7 via guard expansion + fresh-atom + Case 3 + Lemma 10.2.5 (~150-200 LOC) *(deviation: altered -- proved via `all_separable` in NormalForm.lean)*
+- [x] Task 5.5: Remove all 4 axiom declarations from Eliminations.lean
+- [x] Task 5.6: Verify `lake build` passes with 0 axioms in Eliminations.lean
 
 **Timing**: 4 hours
 

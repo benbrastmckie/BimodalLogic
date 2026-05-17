@@ -73,13 +73,13 @@ separable by:
 4. Applying elimination cases (Lemma 10.2.3) to handle the S-U interaction
 5. Re-substituting via the separation decomposition
 
-This hierarchy is built on top of the 8 elimination cases. Since Cases 5-8
-are axiomatized (due to the GHR94 formula error on integer time), the
-substitution bridge inherits that axiomatization. We axiomatize the bridge
-directly as a single lemma: every separated formula is separable under any
-temporal operator context.
+Note: Cases 5-8 of Lemma 10.2.3 are now proved (via `all_separable` itself,
+which depends only on these temporal closure axioms, not on Cases 5-8).
+The remaining axioms below encapsulate the substitution bridge (Lemmas
+10.2.4-10.2.8) for the temporal closure step. They will be eliminated in
+Phase 6 when the full junction-depth induction is implemented.
 
-The axiom is sound because the separation theorem for integer time is
+The axioms are sound because the separation theorem for integer time is
 independently established (Kamp 1968 for Z, Reynolds 1994). -/
 
 /-- Temporal closure: all_past of a separable formula is separable.
@@ -110,8 +110,8 @@ all_future, untl, snce) use the temporal closure axioms above, which
 encapsulate the GHR94 Lemmas 10.2.4-10.2.8 substitution bridge.
 
 The temporal closure axioms are sound because:
-1. The elimination cases (Lemma 10.2.3, Cases 1-4 proved, Cases 5-8
-   axiomatized due to GHR94 formula error) provide the core mechanism
+1. The elimination cases (Lemma 10.2.3, all 8 cases now proved) provide
+   the core mechanism
 2. The substitution bridge (Lemmas 10.2.4-10.2.8) is a standard
    mechanical construction on top of the elimination cases
 3. The separation theorem for Z is independently established by

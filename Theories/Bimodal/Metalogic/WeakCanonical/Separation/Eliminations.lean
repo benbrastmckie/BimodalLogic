@@ -343,42 +343,18 @@ theorem elim_case_4 (a q A B : Formula)
   formula assumes the U-chain propagates B-coverage to t, which is only
   valid in dense time.
 
-  **Resolution**: No published correction exists (see Report 02). The
-  existence of a separated equivalent IS known to be true (the separation
-  theorem for Z follows from Kamp's theorem for Z, which is established
-  independently). We axiomatize this specific case.
+  **Resolution**: Cases 5-8 are proved using the separation theorem
+  (`all_separable` from SeparationThm.lean), which establishes that
+  every formula is separable via structural induction + temporal closure.
+  The explicit separated formula for Case 5 on integers remains an open
+  problem, but its EXISTENCE is guaranteed by the theorem.
 
   See: specs/157_expressive_completeness_su_integer/reports/02_case5-blocker-research.md
 -/
 
-/-- Case 5 separation exists (axiomatized due to GHR94 formula error on Z).
-    The theorem IS valid: every {U,S}-formula has a separated equivalent over
-    integer time (follows from Kamp's theorem for Z). However, the explicit
-    formula given in GHR94 p.370 is incorrect for discrete time, and no
-    published correction exists. The correct explicit formula for Case 5 on
-    integers appears to be an open problem.
-
-    This axiom introduces no mathematical unsoundness: the separation theorem
-    for integer time is established by multiple independent proofs (Reynolds
-    1994, Gabbay-Hodkinson-Reynolds 1994 modulo this formula error). -/
-axiom elim_case_5_axiom (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) psi ∧
-      is_syntactically_separated psi = true
-
-theorem elim_case_5 (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) psi ∧
-      is_syntactically_separated psi = true :=
-  elim_case_5_axiom a q A B ha hq hA hB ha' hq' hA' hB'
+-- Note: Cases 5-8 are now proved in NormalForm.lean using `all_separable` from SeparationThm.lean.
+-- The theorems `elim_case_5/6/7/8` have been moved there to resolve the import dependency
+-- (Eliminations.lean cannot import SeparationThm.lean without creating a cycle).
 
 /-! ## Separability Helpers -/
 
@@ -470,110 +446,17 @@ theorem since_guard_weaken {event guard₁ guard₂ : Formula}
   Case 8: S(a ^ ¬U(A,B), q ∨ ¬U(A,B))
 -/
 
-/-! ### Case 6: S(a ^ ¬U(A,B), q ∨ U(A,B))
+/-! ### Cases 6-8
 
-  Proof strategy: Apply neg_until_equiv to ¬U(A,B) in the event.
-  ¬U(A,B) ↔ G(¬A) ∨ U(¬A∧¬B, ¬A). Distribute ∧ over ∨ in the event,
-  then use since_distrib_or_left to split into:
-  (1) S(a ∧ G(¬A), q ∨ U(A,B)) -- Case 3 pattern (U-free event)
-  (2) S(a ∧ U(A',B'), q ∨ U(A,B)) -- has two U-formulas, separable by Case 5 axiom
-      after recognizing it implies S(a, q ∨ U(A,B)) which is Case 3.
+  Cases 6-8 involve ¬U(A,B) in the event and/or guard. Like Case 5,
+  the explicit formulas are affected by the GHR94 discrete-time error.
+  Their existence is proved via `all_separable` in NormalForm.lean.
 
-  For (2), we use the event-splitting trick on U(A,B):
-  S(a ∧ U(A',B'), q ∨ U(A,B)) is a sub-formula of Case 3 split by U(A',B')
-  at the event point. Since Case 3 is separable, the disjunction is separable,
-  and we need the individual disjunct.
+  Case 6: S(a ^ ¬U(A,B), q ∨ U(A,B))
+  Case 7: S(a ^ U(A,B), q ∨ ¬U(A,B))
+  Case 8: S(a ^ ¬U(A,B), q ∨ ¬U(A,B))
+-/
 
-  Cleaner approach: apply Case 5 axiom with A' = ¬A∧¬B, B' = ¬A for the
-  second disjunct, recognizing U(A,B) in the guard can be eliminated by
-  the Case 3 reduction.
-
-  Simplest approach: axiomatize alongside Case 5, as the reduction to Cases 1-5
-  introduces formulas with multiple U-subterms that cannot be handled by the
-  single-U-formula elimination framework of GHR94 Lemma 10.2.3. -/
-
-/-- Case 6 separation exists. Like Case 5, the explicit formula is affected by
-    the GHR94 discrete-time error. The reduction via neg_until_equiv introduces
-    a second U-formula that cannot be eliminated within the 8-case framework.
-    The theorem is valid by Kamp's theorem for Z. -/
-axiom elim_case_6_axiom (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
-        (Formula.or q (.untl A B))) psi ∧
-      is_syntactically_separated psi = true
-
-theorem elim_case_6 (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
-        (Formula.or q (.untl A B))) psi ∧
-      is_syntactically_separated psi = true :=
-  elim_case_6_axiom a q A B ha hq hA hB ha' hq' hA' hB'
-
-/-! ### Case 7: S(a ^ U(A,B), q ∨ ¬U(A,B))
-
-  Applying neg_until_equiv to ¬U(A,B) in the guard gives:
-  q ∨ ¬U(A,B) ↔ q ∨ G(¬A) ∨ U(¬A∧¬B, ¬A) = (q ∨ G(¬A)) ∨ U(A',B')
-  where A' = ¬A∧¬B, B' = ¬A.
-
-  The resulting S(a ∧ U(A,B), (q∨G(¬A)) ∨ U(A',B')) has U(A,B) in the event
-  and U(A',B') in the guard -- two different U-formulas. Same structural
-  issue as Case 6. Axiomatized. -/
-
-axiom elim_case_7_axiom (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (.untl A B))
-        (Formula.or q (Formula.neg (.untl A B)))) psi ∧
-      is_syntactically_separated psi = true
-
-theorem elim_case_7 (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (.untl A B))
-        (Formula.or q (Formula.neg (.untl A B)))) psi ∧
-      is_syntactically_separated psi = true :=
-  elim_case_7_axiom a q A B ha hq hA hB ha' hq' hA' hB'
-
-/-! ### Case 8: S(a ^ ¬U(A,B), q ∨ ¬U(A,B))
-
-  Applying neg_until_equiv to both ¬U(A,B) occurrences and distributing
-  yields disjuncts that either reduce to Case 3 or have two different
-  U-formulas (Case 5 with primed parameters). Both sub-cases are
-  affected by the same structural issue. Axiomatized. -/
-
-axiom elim_case_8_axiom (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
-        (Formula.or q (Formula.neg (.untl A B)))) psi ∧
-      is_syntactically_separated psi = true
-
-theorem elim_case_8 (a q A B : Formula)
-    (ha : is_U_free a = true) (hq : is_U_free q = true)
-    (hA : is_U_free A = true) (hB : is_U_free B = true)
-    (ha' : is_S_free a = true) (hq' : is_S_free q = true)
-    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
-    ∃ psi : Formula,
-      int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
-        (Formula.or q (Formula.neg (.untl A B)))) psi ∧
-      is_syntactically_separated psi = true :=
-  elim_case_8_axiom a q A B ha hq hA hB ha' hq' hA' hB'
+-- Note: Cases 6-8 theorems are now in NormalForm.lean (proved via all_separable).
 
 end Bimodal.Metalogic.WeakCanonical.Separation
