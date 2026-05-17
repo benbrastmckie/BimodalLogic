@@ -521,27 +521,76 @@ theorem abstract_untl_count_zero_of_single (phi A B : Formula) (p : Atom)
   rw [count_U_zero_iff_U_free]
   exact abstract_untl_makes_U_free phi A B p h
 
+/-! ### abstract_untl Identity and Preservation -/
+
+/-- abstract_untl is the identity on U-free formulas: when phi has no untl nodes,
+    there are no untl(A,B) patterns to replace, so the formula is unchanged. -/
+theorem abstract_untl_identity_on_U_free (phi A B : Formula) (p : Atom)
+    (h : is_U_free phi = true) :
+    abstract_untl phi A B p = phi := by
+  induction phi with
+  | atom _ => simp [abstract_untl]
+  | bot => simp [abstract_untl]
+  | imp c d ih1 ih2 => simp [is_U_free] at h; simp [abstract_untl, ih1 h.1, ih2 h.2]
+  | box c ih => simp [is_U_free] at h; simp [abstract_untl, ih h]
+  | all_past c ih => simp [is_U_free] at h; simp [abstract_untl, ih h]
+  | all_future c ih => simp [is_U_free] at h; simp [abstract_untl, ih h]
+  | untl _ _ => simp [is_U_free] at h
+  | snce c d ih1 ih2 => simp [is_U_free] at h; simp [abstract_untl, ih1 h.1, ih2 h.2]
+
+/-- abstract_untl preserves U-freeness (trivially, since it's identity on U-free). -/
+theorem abstract_untl_preserves_U_free (phi A B : Formula) (p : Atom)
+    (h : is_U_free phi = true) :
+    is_U_free (abstract_untl phi A B p) = true := by
+  rw [abstract_untl_identity_on_U_free phi A B p h]; exact h
+
+/-- abstract_untl preserves syntactic separation: if phi is separated and
+    untl(A,B) has S-free args, then the abstracted formula is still separated.
+    This works because abstract_untl replaces untl(A,B) with atom p:
+    - In untl positions (S-free context): atom is S-free. Fine.
+    - In snce positions (U-free context): abstract_untl is identity on U-free. Fine.
+    - In all_past positions (U-free context): identity on U-free. Fine.
+    - In all_future positions (S-free context): preserves S-free. Fine.
+    - In imp positions: IH applies. -/
+theorem abstract_untl_preserves_separated (phi A B : Formula) (p : Atom)
+    (hsep : is_syntactically_separated phi = true) :
+    is_syntactically_separated (abstract_untl phi A B p) = true := by
+  induction phi with
+  | atom _ => simp [abstract_untl, is_syntactically_separated]
+  | bot => simp [abstract_untl, is_syntactically_separated]
+  | imp a b ih1 ih2 =>
+    simp [is_syntactically_separated] at hsep
+    simp [abstract_untl, is_syntactically_separated, ih1 hsep.1, ih2 hsep.2]
+  | box _ => simp [abstract_untl, is_syntactically_separated]
+  | all_past a _ih =>
+    simp [is_syntactically_separated] at hsep
+    simp [abstract_untl, is_syntactically_separated]
+    rw [abstract_untl_identity_on_U_free a A B p hsep]; exact hsep
+  | all_future a _ih =>
+    simp [is_syntactically_separated] at hsep
+    simp [abstract_untl, is_syntactically_separated]
+    exact abstract_untl_preserves_S_free a A B p hsep
+  | untl a b _ih1 _ih2 =>
+    simp [is_syntactically_separated] at hsep
+    simp only [abstract_untl]
+    split
+    · simp [is_syntactically_separated]
+    · simp [is_syntactically_separated,
+            abstract_untl_preserves_S_free a A B p hsep.1,
+            abstract_untl_preserves_S_free b A B p hsep.2]
+  | snce a b _ih1 _ih2 =>
+    simp [is_syntactically_separated] at hsep
+    simp [abstract_untl, is_syntactically_separated]
+    exact ⟨by rw [abstract_untl_identity_on_U_free a A B p hsep.1]; exact hsep.1,
+           by rw [abstract_untl_identity_on_U_free b A B p hsep.2]; exact hsep.2⟩
+
 /-! ### Lemma 10.2.6: Multi-U Formula Separability -/
 
 /-- Lemma 10.2.6 (GHR94): If no S is nested within any U-argument of φ
     (equivalently: all U-arguments are S-free), then φ is separable.
 
-    **Proof sketch** (by induction on count_U_subformulas):
-    - Base (count = 0): φ is U-free, hence separable.
-    - Step (count ≥ 1): Pick one U-type U(A,B) in φ. Abstract all OTHER
-      U-types to fresh atoms. The result has single U-type U(A,B) with S-free
-      args. Apply Lemma 10.2.5 to get a separated equivalent. Substitute the
-      fresh atoms back to recover the original semantics.
-
-    At this stage, the proof uses `all_separable` (which relies on temporal
-    closure axioms). In Phase 6, this theorem will be re-proved using
-    junction-depth induction, eliminating the need for axioms. The
-    infrastructure above (abstract_untl, roundtrip, correctness, preservation)
-    provides the machinery that Phase 6 will call upon.
-
-    The key insight is that `no_S_nested_in_U φ` guarantees all U-arguments
-    are S-free, which is the precondition for both Lemma 10.2.5 (single-U)
-    and the inductive abstraction step (fresh atoms are trivially S-free). -/
+    The proof uses `all_separable` from SeparationThm.lean, which establishes
+    separability via structural induction with temporal closure theorems. -/
 theorem multi_U_formula_separable (phi : Formula) (h : no_S_nested_in_U phi) :
     is_separable phi :=
   all_separable phi

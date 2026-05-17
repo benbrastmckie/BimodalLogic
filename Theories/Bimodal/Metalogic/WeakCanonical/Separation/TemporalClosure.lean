@@ -794,4 +794,20 @@ private theorem expand_preserves_S_free_no_allp (φ : Formula)
     simp [expand_temporal, is_S_free, iha hs.1 hnap.1, ihb hs.2 hnap.2]
   | snce _ _ => simp [is_S_free] at hs
 
+/-! ## Restricted Fragment: no_S_nested_in_U and U-free implies separated
+
+In the restricted fragment (no `all_past`/`all_future` constructors),
+a formula with `no_S_nested_in_U` and `is_U_free` has junction_depth = 0,
+hence is syntactically separated. This is the base case for the
+junction-depth approach to proving temporal closure without axioms. -/
+
+/-- In the restricted fragment (no all_past/all_future), a U-free formula
+    is syntactically separated. This is the base case for junction-depth
+    induction: JD=0 after expansion means U-free, which means separated. -/
+theorem restricted_u_free_separated (phi : Formula)
+    (hrestr : has_no_allpast_allfuture phi = true)
+    (huf : is_U_free phi = true) :
+    is_syntactically_separated phi = true :=
+  expanded_jd_zero_imp_separated phi hrestr (u_free_junction_depth_zero phi huf)
+
 end Bimodal.Metalogic.WeakCanonical.Separation
