@@ -140,7 +140,7 @@ Phases within the same wave can execute in parallel.
 **Depends on**: none
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean` - new file (~200 LOC)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/Defs.lean` - 274 LOC, 0 sorry
 - `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` - new hub file
 
 **Verification**:
@@ -405,8 +405,7 @@ Phases within the same wave can execute in parallel.
 **Depends on**: 9
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SingleSWithU.lean` - new file (~150 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` - update imports
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` - consolidated (Phases 10-12, 14 share this file)
 
 **Verification**:
 - `lake build` passes
@@ -434,8 +433,7 @@ Phases within the same wave can execute in parallel.
 **Depends on**: 10, 11
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SingleU.lean` - new file (~100 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` - update imports
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` - consolidated (see Phase 10)
 
 **Verification**:
 - `lake build` passes
@@ -466,8 +464,7 @@ Phases within the same wave can execute in parallel.
 **Depends on**: 10, 11
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/MultiU.lean` - new file (~100 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` - update imports
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` - consolidated (see Phase 10)
 
 **Verification**:
 - `lake build` passes
@@ -496,8 +493,7 @@ Phases within the same wave can execute in parallel.
 **Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/FOToTemporal.lean` - new file (~200 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` - update imports
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` - consolidated (Phases 13+15 share this file)
 
 **Verification**:
 - `lake build` passes
@@ -529,10 +525,7 @@ Phases within the same wave can execute in parallel.
 **Depends on**: 11, 13
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/NoSWithinU.lean` - new file (~100 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/JunctionDepth.lean` - new file (~150 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` - new file (~20 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` - update imports
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` - consolidated (see Phase 10)
 
 **Verification**:
 - `lake build` passes
@@ -566,8 +559,7 @@ Phases within the same wave can execute in parallel.
 **Depends on**: 14
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` - new file (~700 LOC)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation.lean` - update imports if needed
+- `Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness.lean` - consolidated (see Phase 13)
 
 **Verification**:
 - `lake build` passes
