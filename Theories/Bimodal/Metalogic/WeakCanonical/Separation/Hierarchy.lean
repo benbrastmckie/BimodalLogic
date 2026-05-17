@@ -245,4 +245,343 @@ theorem single_U_and_separable (φ ψ A B : Formula)
     (single_U_formula_separable φ A B hA_sf hB_sf h1)
     (single_U_formula_separable ψ A B hA_sf hB_sf h2)
 
+/-! ## Lemma 10.2.6: Multi-U Induction on Count (GHR94)
+
+This section provides the infrastructure for Lemma 10.2.6: if a formula has
+multiple U-formula types, all with S-free arguments (i.e., no S is nested
+within any U-argument), then it is separable.
+
+The proof strategy (GHR94, p. 581):
+1. Define `abstract_untl`: replace all occurrences of a specific U(A,B) with
+   a fresh atom p.
+2. Show this operation preserves key properties (S-freeness, no_S_nested_in_U)
+   and reduces the U-subformula count.
+3. Apply Lemma 10.2.5 after abstraction reduces to single U-type.
+4. Use `subst_correctness` to relate the abstracted formula back to the original.
+
+At this stage, the main theorem `multi_U_formula_separable` uses the temporal
+closure axioms (via `all_separable`). In Phase 6, this will be strengthened
+to a self-contained proof using junction-depth induction.
+
+## References
+
+- GHR94, Lemma 10.2.6, p. 581
+-/
+
+/-! ### U-Formula Abstraction -/
+
+/-- Replace all occurrences of `untl A B` in `phi` with atom `p`.
+    This is the "abstraction" step: given multiple U-types, we pick one U(A,B)
+    and replace it everywhere with a fresh atom, reducing the problem to
+    fewer U-types or to single-U for Lemma 10.2.5. -/
+def abstract_untl (phi A B : Formula) (p : Atom) : Formula :=
+  match phi with
+  | .atom a => .atom a
+  | .bot => .bot
+  | .imp psi1 psi2 => .imp (abstract_untl psi1 A B p) (abstract_untl psi2 A B p)
+  | .box psi => .box (abstract_untl psi A B p)
+  | .all_past psi => .all_past (abstract_untl psi A B p)
+  | .all_future psi => .all_future (abstract_untl psi A B p)
+  | .untl psi1 psi2 =>
+    if psi1 = A ∧ psi2 = B then .atom p
+    else .untl (abstract_untl psi1 A B p) (abstract_untl psi2 A B p)
+  | .snce psi1 psi2 => .snce (abstract_untl psi1 A B p) (abstract_untl psi2 A B p)
+
+/-! ### Syntactic Roundtrip: abstract then substitute back -/
+
+/-- Substituting U(A,B) for atom p in the abstracted formula recovers the original,
+    provided p does not appear in the original formula. -/
+theorem abstract_subst_roundtrip (phi A B : Formula) (p : Atom)
+    (hfresh : ¬ (p ∈ phi.atoms)) :
+    subst_formula (abstract_untl phi A B p) p (.untl A B) = phi := by
+  induction phi with
+  | atom a =>
+    simp [Formula.atoms, Finset.mem_singleton] at hfresh
+    have hne : a ≠ p := Ne.symm hfresh
+    simp [abstract_untl, subst_formula, hne]
+  | bot => simp [abstract_untl, subst_formula]
+  | imp c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp [abstract_untl, subst_formula, ih1 hfresh.1, ih2 hfresh.2]
+  | box c ih =>
+    simp [Formula.atoms] at hfresh
+    simp [abstract_untl, subst_formula, ih hfresh]
+  | all_past c ih =>
+    simp [Formula.atoms] at hfresh
+    simp [abstract_untl, subst_formula, ih hfresh]
+  | all_future c ih =>
+    simp [Formula.atoms] at hfresh
+    simp [abstract_untl, subst_formula, ih hfresh]
+  | untl c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp only [abstract_untl]
+    split
+    · next h => simp [subst_formula, h.1, h.2]
+    · next _ =>
+      simp only [subst_formula]
+      congr 1
+      · exact ih1 hfresh.1
+      · exact ih2 hfresh.2
+  | snce c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp [abstract_untl, subst_formula, ih1 hfresh.1, ih2 hfresh.2]
+
+/-! ### Semantic Correctness of Abstraction -/
+
+/-- Semantic correctness: truth of φ in structure M is equivalent to truth of
+    the abstracted formula in M with atom p interpreted as the truth set of U(A,B).
+    This is the semantic counterpart of the syntactic roundtrip. -/
+theorem abstract_untl_correct (phi A B : Formula) (p : Atom)
+    (hfresh : ¬ (p ∈ phi.atoms))
+    (M : IntStructure) (t : Int) :
+    int_truth M t phi ↔
+    int_truth (M.withAtom p {s | int_truth M s (.untl A B)}) t
+      (abstract_untl phi A B p) := by
+  induction phi generalizing t with
+  | atom a =>
+    simp [Formula.atoms, Finset.mem_singleton] at hfresh
+    simp [abstract_untl, int_truth, IntStructure.withAtom, Ne.symm hfresh]
+  | bot => simp [abstract_untl, int_truth]
+  | imp c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp only [abstract_untl, int_truth]
+    constructor
+    · intro h hc; exact (ih2 hfresh.2 t).mp (h ((ih1 hfresh.1 t).mpr hc))
+    · intro h hc; exact (ih2 hfresh.2 t).mpr (h ((ih1 hfresh.1 t).mp hc))
+  | box _ => simp [abstract_untl, int_truth]
+  | all_past c ih =>
+    simp [Formula.atoms] at hfresh
+    simp only [abstract_untl, int_truth]
+    constructor
+    · intro h s hst; exact (ih hfresh s).mp (h s hst)
+    · intro h s hst; exact (ih hfresh s).mpr (h s hst)
+  | all_future c ih =>
+    simp [Formula.atoms] at hfresh
+    simp only [abstract_untl, int_truth]
+    constructor
+    · intro h s hts; exact (ih hfresh s).mp (h s hts)
+    · intro h s hts; exact (ih hfresh s).mpr (h s hts)
+  | untl c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp only [abstract_untl]
+    split
+    · next h =>
+      obtain ⟨hc, hd⟩ := h; subst hc; subst hd
+      simp [int_truth, IntStructure.withAtom, Set.mem_setOf_eq]
+    · next _ =>
+      simp only [int_truth]
+      constructor
+      · rintro ⟨s, hts, hc, hd⟩
+        exact ⟨s, hts, (ih1 hfresh.1 s).mp hc,
+          fun r hr1 hr2 => (ih2 hfresh.2 r).mp (hd r hr1 hr2)⟩
+      · rintro ⟨s, hts, hc, hd⟩
+        exact ⟨s, hts, (ih1 hfresh.1 s).mpr hc,
+          fun r hr1 hr2 => (ih2 hfresh.2 r).mpr (hd r hr1 hr2)⟩
+  | snce c d ih1 ih2 =>
+    simp [Formula.atoms, Finset.mem_union] at hfresh
+    simp only [abstract_untl, int_truth]
+    constructor
+    · rintro ⟨s, hst, hc, hd⟩
+      exact ⟨s, hst, (ih1 hfresh.1 s).mp hc,
+        fun r hr1 hr2 => (ih2 hfresh.2 r).mp (hd r hr1 hr2)⟩
+    · rintro ⟨s, hst, hc, hd⟩
+      exact ⟨s, hst, (ih1 hfresh.1 s).mpr hc,
+        fun r hr1 hr2 => (ih2 hfresh.2 r).mpr (hd r hr1 hr2)⟩
+
+/-- The syntactic roundtrip gives int_equiv directly. -/
+theorem abstract_untl_equiv (phi A B : Formula) (p : Atom)
+    (hfresh : ¬ (p ∈ phi.atoms)) :
+    int_equiv phi (subst_formula (abstract_untl phi A B p) p (.untl A B)) := by
+  rw [abstract_subst_roundtrip phi A B p hfresh]
+  exact int_equiv_refl phi
+
+/-! ### Preservation Lemmas -/
+
+/-- abstract_untl preserves is_S_free: if φ is S-free, so is the abstracted form. -/
+theorem abstract_untl_preserves_S_free (phi A B : Formula) (p : Atom)
+    (h : is_S_free phi = true) :
+    is_S_free (abstract_untl phi A B p) = true := by
+  induction phi with
+  | atom _ => simp [abstract_untl, is_S_free]
+  | bot => simp [abstract_untl, is_S_free]
+  | imp c d ih1 ih2 =>
+    simp [is_S_free] at h
+    simp [abstract_untl, is_S_free, ih1 h.1, ih2 h.2]
+  | box c ih =>
+    simp [is_S_free] at h
+    simp [abstract_untl, is_S_free, ih h]
+  | all_past c ih =>
+    simp [is_S_free] at h
+    simp [abstract_untl, is_S_free, ih h]
+  | all_future c ih =>
+    simp [is_S_free] at h
+    simp [abstract_untl, is_S_free, ih h]
+  | untl c d ih1 ih2 =>
+    simp [is_S_free] at h
+    simp only [abstract_untl]
+    split
+    · simp [is_S_free]
+    · simp [is_S_free, ih1 h.1, ih2 h.2]
+  | snce _ _ => simp [is_S_free] at h
+
+/-- abstract_untl preserves no_S_nested_in_U: if all U-args are S-free in φ,
+    they remain S-free after abstraction (since we only replace U-nodes with atoms). -/
+theorem abstract_untl_preserves_no_S_nested (phi A B : Formula) (p : Atom)
+    (h : no_S_nested_in_U phi) :
+    no_S_nested_in_U (abstract_untl phi A B p) := by
+  induction phi with
+  | atom _ => trivial
+  | bot => trivial
+  | imp c d ih1 ih2 => exact ⟨ih1 h.1, ih2 h.2⟩
+  | box c ih => exact ih h
+  | all_past c ih => exact ih h
+  | all_future c ih => exact ih h
+  | untl c d _ _ =>
+    simp only [abstract_untl]
+    split
+    · trivial
+    · -- no_S_nested_in_U (.untl c d) gives is_S_free c ∧ is_S_free d
+      have ⟨hc_sf, hd_sf⟩ := h
+      exact ⟨abstract_untl_preserves_S_free c A B p hc_sf,
+             abstract_untl_preserves_S_free d A B p hd_sf⟩
+  | snce c d ih1 ih2 => exact ⟨ih1 h.1, ih2 h.2⟩
+
+/-- If φ has single U-type U(A,B), abstracting it out gives a U-free formula. -/
+theorem abstract_untl_makes_U_free (phi A B : Formula) (p : Atom)
+    (h : has_single_U_type phi A B) :
+    is_U_free (abstract_untl phi A B p) = true := by
+  induction phi with
+  | atom _ => simp [abstract_untl, is_U_free]
+  | bot => simp [abstract_untl, is_U_free]
+  | imp c d ih1 ih2 =>
+    simp [abstract_untl, is_U_free, ih1 h.1, ih2 h.2]
+  | box c ih =>
+    simp [abstract_untl, is_U_free, ih h]
+  | all_past c ih =>
+    simp [abstract_untl, is_U_free, ih h]
+  | all_future c ih =>
+    simp [abstract_untl, is_U_free, ih h]
+  | untl c d _ _ =>
+    obtain ⟨hc, hd⟩ := h; subst hc; subst hd
+    simp [abstract_untl, is_U_free]
+  | snce c d ih1 ih2 =>
+    simp [abstract_untl, is_U_free, ih1 h.1, ih2 h.2]
+
+/-! ### Count Properties -/
+
+/-- count_U_subformulas = 0 iff the formula is U-free. -/
+theorem count_U_zero_iff_U_free (phi : Formula) :
+    count_U_subformulas phi = 0 ↔ is_U_free phi = true := by
+  induction phi with
+  | atom _ => simp [count_U_subformulas, is_U_free]
+  | bot => simp [count_U_subformulas, is_U_free]
+  | imp c d ih1 ih2 =>
+    simp [count_U_subformulas, is_U_free, ih1, ih2]
+  | box c ih =>
+    simp [count_U_subformulas, is_U_free, ih]
+  | all_past c ih =>
+    simp [count_U_subformulas, is_U_free, ih]
+  | all_future c ih =>
+    simp [count_U_subformulas, is_U_free, ih]
+  | untl c d =>
+    simp [count_U_subformulas, is_U_free]
+  | snce c d ih1 ih2 =>
+    simp [count_U_subformulas, is_U_free, ih1, ih2]
+
+/-- abstract_untl does not increase the U-subformula count. -/
+theorem abstract_untl_count_le (phi A B : Formula) (p : Atom) :
+    count_U_subformulas (abstract_untl phi A B p) ≤ count_U_subformulas phi := by
+  induction phi with
+  | atom _ => simp [abstract_untl, count_U_subformulas]
+  | bot => simp [abstract_untl, count_U_subformulas]
+  | imp c d ih1 ih2 =>
+    simp [abstract_untl, count_U_subformulas]
+    exact Nat.add_le_add ih1 ih2
+  | box c ih =>
+    simp [abstract_untl, count_U_subformulas]; exact ih
+  | all_past c ih =>
+    simp [abstract_untl, count_U_subformulas]; exact ih
+  | all_future c ih =>
+    simp [abstract_untl, count_U_subformulas]; exact ih
+  | untl c d ih1 ih2 =>
+    simp only [abstract_untl, count_U_subformulas]
+    split
+    · simp [count_U_subformulas]
+    · simp only [count_U_subformulas]
+      have := Nat.add_le_add ih1 ih2
+      omega
+  | snce c d ih1 ih2 =>
+    simp [abstract_untl, count_U_subformulas]
+    exact Nat.add_le_add ih1 ih2
+
+/-- If φ has single U-type, abstracting it reduces count to 0. -/
+theorem abstract_untl_count_zero_of_single (phi A B : Formula) (p : Atom)
+    (h : has_single_U_type phi A B) :
+    count_U_subformulas (abstract_untl phi A B p) = 0 := by
+  rw [count_U_zero_iff_U_free]
+  exact abstract_untl_makes_U_free phi A B p h
+
+/-! ### Lemma 10.2.6: Multi-U Formula Separability -/
+
+/-- Lemma 10.2.6 (GHR94): If no S is nested within any U-argument of φ
+    (equivalently: all U-arguments are S-free), then φ is separable.
+
+    **Proof sketch** (by induction on count_U_subformulas):
+    - Base (count = 0): φ is U-free, hence separable.
+    - Step (count ≥ 1): Pick one U-type U(A,B) in φ. Abstract all OTHER
+      U-types to fresh atoms. The result has single U-type U(A,B) with S-free
+      args. Apply Lemma 10.2.5 to get a separated equivalent. Substitute the
+      fresh atoms back to recover the original semantics.
+
+    At this stage, the proof uses `all_separable` (which relies on temporal
+    closure axioms). In Phase 6, this theorem will be re-proved using
+    junction-depth induction, eliminating the need for axioms. The
+    infrastructure above (abstract_untl, roundtrip, correctness, preservation)
+    provides the machinery that Phase 6 will call upon.
+
+    The key insight is that `no_S_nested_in_U φ` guarantees all U-arguments
+    are S-free, which is the precondition for both Lemma 10.2.5 (single-U)
+    and the inductive abstraction step (fresh atoms are trivially S-free). -/
+theorem multi_U_formula_separable (phi : Formula) (h : no_S_nested_in_U phi) :
+    is_separable phi :=
+  all_separable phi
+
+/-- Corollary: A formula with exactly two U-types (both S-free args) is separable.
+    This is the form most directly used in Phase 5 for Cases 5 and 6. -/
+theorem two_U_types_separable (phi : Formula) (h : no_S_nested_in_U phi) :
+    is_separable phi :=
+  multi_U_formula_separable phi h
+
+/-! ### Additional Corollaries for Phase 5
+
+These package multi_U_formula_separable in forms convenient for the
+Case 5-8 proofs. -/
+
+/-- If a formula has no_S_nested_in_U and is wrapped in negation, it's separable. -/
+theorem multi_U_neg_separable (phi : Formula) (h : no_S_nested_in_U phi) :
+    is_separable (Formula.neg phi) :=
+  neg_separable (multi_U_formula_separable phi h)
+
+/-- Disjunction of two no_S_nested_in_U formulas is separable. -/
+theorem multi_U_or_separable (phi psi : Formula)
+    (h1 : no_S_nested_in_U phi) (h2 : no_S_nested_in_U psi) :
+    is_separable (Formula.or phi psi) :=
+  or_separable (multi_U_formula_separable phi h1) (multi_U_formula_separable psi h2)
+
+/-- Conjunction of two no_S_nested_in_U formulas is separable. -/
+theorem multi_U_and_separable (phi psi : Formula)
+    (h1 : no_S_nested_in_U phi) (h2 : no_S_nested_in_U psi) :
+    is_separable (Formula.and phi psi) :=
+  and_separable (multi_U_formula_separable phi h1) (multi_U_formula_separable psi h2)
+
+/-- all_past of a no_S_nested_in_U formula is separable. -/
+theorem multi_U_all_past_separable (phi : Formula) (h : no_S_nested_in_U phi) :
+    is_separable (.all_past phi) :=
+  all_past_separable phi (multi_U_formula_separable phi h)
+
+/-- all_future of a no_S_nested_in_U formula is separable. -/
+theorem multi_U_all_future_separable (phi : Formula) (h : no_S_nested_in_U phi) :
+    is_separable (.all_future phi) :=
+  all_future_separable phi (multi_U_formula_separable phi h)
+
 end Bimodal.Metalogic.WeakCanonical.Separation

@@ -220,4 +220,26 @@ theorem fresh_atoms_nodup (phi : Formula) (n : Nat) :
     (fresh_atoms phi n).Nodup :=
   (exists_n_fresh_atoms phi.atoms n).choose_spec.2.1
 
+/-- The number of fresh atoms equals n. -/
+theorem fresh_atoms_length (phi : Formula) (n : Nat) :
+    (fresh_atoms phi n).length = n :=
+  (exists_n_fresh_atoms phi.atoms n).choose_spec.1
+
+/-! ## Multi-Substitution
+
+Substitute multiple atoms simultaneously. Used in Lemma 10.2.6 when
+abstracting multiple U-types to fresh atoms and substituting back. -/
+
+/-- Apply a list of substitutions sequentially: for each (atom, formula) pair,
+    replace atom with formula in the result of prior substitutions. -/
+def multi_subst (phi : Formula) (subs : List (Atom × Formula)) : Formula :=
+  subs.foldl (fun acc ⟨a, f⟩ => subst_formula acc a f) phi
+
+/-- Multi-substitution with an empty list is the identity. -/
+theorem multi_subst_nil (phi : Formula) : multi_subst phi [] = phi := rfl
+
+/-- Multi-substitution with a single entry is just subst_formula. -/
+theorem multi_subst_singleton (phi : Formula) (a : Atom) (f : Formula) :
+    multi_subst phi [(a, f)] = subst_formula phi a f := rfl
+
 end Bimodal.Metalogic.WeakCanonical.Separation
