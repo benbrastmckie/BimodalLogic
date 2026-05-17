@@ -203,7 +203,7 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 
 ---
 
-### Phase 6: Prove all_separable via Junction-Depth Induction [NOT STARTED]
+### Phase 6: Prove all_separable via Junction-Depth Induction [BLOCKED]
 
 **Goal**: Build Lemmas 10.2.7-10.2.8 and prove `all_separable`, replacing the 4 temporal closure axioms.
 
@@ -213,16 +213,37 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 3. **all_separable**: Direct application of Lemma 10.2.8.
 4. Remove 4 temporal closure axioms + 4 proper separability axioms from SeparationThm.lean.
 
-**Tasks**:
-- [ ] Task 6.1: Define `junction_depth` measure (~40-60 LOC)
-- [ ] Task 6.2: Prove Lemma 10.2.7 (no-S-in-U -> separable) using Lemma 10.2.6 (~150-200 LOC)
-- [ ] Task 6.3: Prove Lemma 10.2.8 (junction-depth induction) using Lemma 10.2.7 + IH (~200-300 LOC)
-- [ ] Task 6.4: Prove `all_separable` from Lemma 10.2.8 (~30 LOC)
-- [ ] Task 6.5: Prove proper separability from all_separable (eliminates proper axioms) (~50 LOC)
-- [ ] Task 6.6: Remove 8 axioms from SeparationThm.lean (4 weak + 4 proper)
-- [ ] Task 6.7: Verify `lake build` passes with 0 axioms in SeparationThm.lean
+**BLOCKER** (Phase 6):
+- **What failed**: The temporal closure axioms (`snce_separable`, `untl_separable`, `all_past_separable`, `all_future_separable`) cannot be eliminated without implementing a genuine mutual induction proof that handles the interaction between U-under-S and S-under-U elimination.
+- **What was tried**:
+  1. Attempted to prove `no_S_nested_in_U → separable` by induction on `count_U_subformulas`. Base case (U-free) fails because U-free formulas like `all_future (snce p q)` = G(S(p,q)) are NOT syntactically separated and their separated equivalents REQUIRE U operators (verified by semantic analysis).
+  2. Attempted to use `separated_implies_no_S_nested_in_U` to reduce `snce_separable` to `no_S_nested_in_U_separable`. The box case invalidates the structural lemma (box content is unconstrained in separated formulas).
+  3. Attempted dual argument via `no_U_nested_in_S_separable`. Same circularity: S-free formulas like `all_past (untl A B)` = H(U(A,B)) need S in their separated equivalents.
+  4. Attempted well-founded induction on lexicographic (has_bad_nesting, sizeOf). The composed formula `.snce φ' ψ'` may be LARGER than the original, so sizeOf doesn't decrease in the second component.
+- **Why it's stuck**: The fundamental issue is a MUTUAL RECURSION between U-elimination and S-elimination. To prove `no_S_nested_in_U → separable` (for snce/all_past/all_future cases), the U-free base case needs `all_future_separable` for formulas containing S, which requires S-elimination. S-elimination in turn requires U-elimination (the dual). GHR94 resolves this via junction-depth induction (Lemma 10.2.8) which simultaneously decreases BOTH U-under-S and S-under-U alternation, but formalizing this requires:
+  - A mutual well-founded recursion on `(junction_depth, count_U + count_S, sizeOf)`
+  - Proving the measure strictly decreases through the abstraction-substitution-hierarchy loop
+  - Handling the fact that separated equivalents can be LARGER than originals (sizeOf non-monotone)
+  - Implementing integer-specific temporal equivalences (e.g., G(S(p,q)) expressed as boolean combination of U and S terms)
+- **What is needed**:
+  1. Implement `abstract_snce` (dual of `abstract_untl`) with all preservation/correctness lemmas (~200 LOC)
+  2. Define `no_U_nested_in_S` predicate and prove preservation lemmas (~100 LOC)
+  3. Prove integer-specific temporal equivalences for base cases like G(S(p,q)), H(U(A,B)) (~300+ LOC, requires new semantic lemmas)
+  4. Implement mutual well-founded recursion with combined measure (~400+ LOC)
+  5. Prove measure strictly decreases through each abstraction/hierarchy step (~200+ LOC)
+  Total estimated: 1200-1500 LOC of new proof code across 3-4 new files
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
-**Timing**: 4 hours
+**Tasks**:
+- [x] Task 6.1: Define `junction_depth` measure (~40-60 LOC) *(completed in earlier phase -- already in Defs.lean)*
+- [ ] Task 6.2: Prove Lemma 10.2.7 (no-S-in-U -> separable) using Lemma 10.2.6 (~150-200 LOC) *(deviation: blocked -- requires dual S-elimination for U-free base case)*
+- [ ] Task 6.3: Prove Lemma 10.2.8 (junction-depth induction) using Lemma 10.2.7 + IH (~200-300 LOC) *(deviation: blocked -- depends on 6.2)*
+- [ ] Task 6.4: Prove `all_separable` from Lemma 10.2.8 (~30 LOC) *(deviation: blocked -- depends on 6.3)*
+- [ ] Task 6.5: Prove proper separability from all_separable (eliminates proper axioms) (~50 LOC) *(deviation: blocked -- depends on 6.4)*
+- [ ] Task 6.6: Remove 8 axioms from SeparationThm.lean (4 weak + 4 proper) *(deviation: blocked -- depends on 6.4-6.5)*
+- [ ] Task 6.7: Verify `lake build` passes with 0 axioms in SeparationThm.lean *(deviation: blocked -- depends on 6.6)*
+
+**Timing**: 4 hours (originally estimated); actual estimate 20-30 hours for full implementation
 
 **Depends on**: Phase 5 (Cases 5-8 proved, no axioms in Eliminations.lean)
 
