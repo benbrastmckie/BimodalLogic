@@ -103,32 +103,39 @@ Implementation agents MUST NOT improvise, skip steps, or invent alternative proo
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| 8 elimination cases are more complex than estimated | H | M | Start with Cases 1 and 5 (direct semantic); reduce others to these. Allow sorry in hardest cases initially. |
-| Termination arguments for nested induction measures | M | M | Define measures as computable Nat functions; use Nat.lt_wfRel for well-founded recursion. |
-| DNF/CNF conversion infrastructure is large | M | L | Use abstract correctness theorems; avoid full normalization algorithm -- just state that equivalent normal forms exist. |
-| Theorem 9.3.1 requires extending MonadicFO with R-predicates | M | M | Extend MonadicSignature with auxiliary predicates as a signature extension operation. |
-| Box treatment may cause semantic mismatches | L | L | Define box as True in int_truth (degenerate); bridge lemma connects to full semantics. |
-| Freshness infrastructure may need extension | L | L | Existing Atom.mk_fresh suffices; extend only if needed for multi-atom generation. |
+| Case 5 (S(a∧U, q∨U)) requires U-chain well-ordering argument | H | H | **ACTIVE BLOCKER**. Correct formula uses S(a, A∨B) not S(a, B) to account for chain-points. Semantic argument with cascading U-witnesses. |
+| Substitution bridge between elimination cases and `all_separable` | H | M | This is GHR94's actual Lemmas 10.2.4-10.2.7 content. Must extract maximal U-subterms, substitute fresh atoms, apply eliminations, re-substitute. Non-trivial engineering. |
+| `separation_implies_expressiveness` (Thm 9.3.1) is substantial standalone work | M | M | Independent of separation proof. FO induction on quantifier depth. Can be worked in parallel once separation is done. |
+| Termination/measure arguments for junction_depth induction | M | L | Direct structural induction on Formula eliminates this risk (already implemented in `all_separable`). |
+| Cases 6-8 reduction may be non-trivial in formal detail | M | L | GHR94 confirms they reduce to Cases 1-5 via neg_until_equiv. Cases 2-4 already demonstrate this pattern. |
 
 ## Implementation Phases
 
-**Dependency Analysis**:
-| Wave | Phases | Blocked by |
-|------|--------|------------|
-| 1 | 1 | -- |
-| 2 | 2, 3 | 1 |
-| 3 | 4 | 2 |
-| 4 | 5 | 2, 4 |
-| 5 | 6 | 4, 5 |
-| 6 | 7 | 6 |
-| 7 | 8 | 6, 7 |
-| 8 | 9 | 7, 8 |
-| 9 | 10 | 9 |
-| 10 | 11 | 10 |
-| 11 | 12 | 10, 11 |
-| 12 | 13 | 1 |
-| 13 | 14 | 11, 13 |
-| 14 | 15 | 14 |
+**Revised Dependency Analysis** (post-consolidation):
+
+| Wave | Work Item | Blocked by | Status |
+|------|-----------|------------|--------|
+| 1 | Phases 1-5 (definitions, helpers, duality, distributivity, negation equiv) | -- | COMPLETED |
+| 2 | Phase 6/7/8: Cases 1-4 (direct + reduction cases) | Wave 1 | COMPLETED |
+| 3 | Phase 6: Case 5 (S(a∧U, q∨U) — U-chain well-ordering) | Wave 2 | **NEXT** |
+| 4 | Phase 8: Cases 6-8 (reduce to Cases 1-5 via neg_until_equiv) | Wave 3 | blocked |
+| 5 | Phase 14: `all_separable` inductive cases (substitution bridge) | Wave 4 | blocked |
+| 6 | Phase 15: `separation_implies_expressiveness` (FO induction) | Wave 5 | blocked |
+
+**Critical Path** (9 sorries, ordered):
+1. `elim_case_5` → 2. Cases 6-8 → 3. `all_separable` sorry cases → 4. `separation_implies_expressiveness`
+
+**Not on critical path** (can be deferred indefinitely):
+- Phase 9 (DualEliminations): 8 sorries, but imported-and-unused by `all_separable`. Dead code for current proof pipeline.
+
+**Key Gap Identified (Research Agent, 2026-05-16)**:
+The elimination cases prove existential statements about SPECIFIC patterns: `S(a∧U(A,B), q)` where a, q, A, B are U-free AND S-free. But `all_separable` must handle ARBITRARY formulas. The missing bridge is:
+1. Extract maximal U-subterms from under S (replace by fresh atoms)
+2. Apply elimination cases to the simplified S-pattern
+3. Re-substitute the original U-subterms into the separated result
+4. Show the result is still separable (by recursive application / IH)
+
+This "substitution + reduction" step is GHR94's actual proof of Lemmas 10.2.4-10.2.7. It was originally planned as Phases 10-12 with separate files, but since those phases were superseded by consolidation, THIS LOGIC MUST STILL BE IMPLEMENTED inside `all_separable` or as helper lemmas in SeparationThm.lean.
 
 Phases within the same wave can execute in parallel.
 
@@ -372,11 +379,11 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [NOT STARTED]
+### Phase 9: Dual Elimination Cases (U out of S -> S out of U) [NOT STARTED — DEAD CODE]
 
 **Goal**: Derive the 8 dual cases (pulling S out from under U) automatically via swap_temporal.
 
-**Current state**: `DualEliminations.lean` (150 LOC). All 8 dual cases have `sorry` proofs. Agent found these require explicit S-free witness constructions rather than purely mechanical duality application — the duality infrastructure transforms formulas but the witness (is_S_free proof) must be constructed directly.
+**Current state**: `DualEliminations.lean` (150 LOC). All 8 dual cases have `sorry` proofs. **NOT ON CRITICAL PATH**: Research verification (2026-05-16) confirmed these are imported but never referenced by `all_separable` or any downstream theorem. They can be deferred indefinitely without blocking completion.
 
 **Tasks**:
 - [ ] State `elim_case_1_dual` through `elim_case_8_dual` for U(a ^ S(A,B), q) patterns
@@ -519,35 +526,49 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 14: Lemmas 10.2.7-10.2.8 and Separation Theorem [PARTIAL]
+### Phase 14: Separation Theorem via `all_separable` [PARTIAL — KEY BRIDGE NEEDED]
 
-**Goal**: Prove the top two levels of the nested induction and state the final Separation Theorem 10.2.9.
+**Goal**: Close the 4 sorry cases in `all_separable` (all_past, all_future, untl, snce). This is the hardest remaining engineering challenge.
 
-**Current state**: All in `SeparationThm.lean`. `separation_theorem_int` is stated and chains through 10.2.4-10.2.8 but the individual lemma proofs are `sorry`. Planned files `NoSWithinU.lean` and `JunctionDepth.lean` were not created separately.
+**Current state**: `SeparationThm.lean` (165 LOC). Base cases proved (atom, bot, imp, box). 4 sorries in temporal operator cases. The theorem chain `all_separable` → `separation_theorem_int` type-checks.
+
+**THE SUBSTITUTION BRIDGE (critical gap)**:
+
+The elimination cases prove: given specific S-patterns with U-free/S-free arguments, there exists a separated equivalent. But `all_separable` must handle arbitrary formulas like `all_past phi'` where `phi'` is already separated (by IH) but may contain `untl` subterms.
+
+The bridge argument (GHR94 Lemmas 10.2.4-10.2.7 distilled):
+1. Given `all_past phi'` where `phi'` is separated (= equivalent to some separated ψ by IH)
+2. If ψ is already U-free: `all_past ψ` is separated (done)
+3. If ψ contains `untl` at top level: extract maximal U-subterms, replace by fresh atoms
+4. Apply elimination cases to each resulting S-pattern
+5. Re-substitute original U-subterms
+6. Result has smaller junction_depth → apply IH
+
+This requires helper infrastructure:
+- [ ] `extract_maximal_U_subterms` (identify U-subformulas not nested under another U/S)
+- [ ] `substitute_U_by_atoms` (replace U-subterms by fresh atoms, preserving other structure)
+- [ ] `separated_under_subst` (if ψ is separated and we substitute separated formulas for atoms, result is separable)
+- [ ] `junction_depth_decreases` (after elimination, junction_depth is strictly smaller)
 
 **Tasks**:
-- [ ] Define `no_S_nested_in_U` predicate
-- [ ] Prove `no_S_within_U_separable` (Lemma 10.2.7) by induction on `U_depth_under_S`
-  - Base (depth=0 or 1): no U under S, already separated or apply Lemma 10.2.6
-  - Step: replace sub-U's by atoms, apply Lemma 10.2.6, resubstitute, apply IH
-- [ ] Prove `junction_depth_separable` (Lemma 10.2.8) by induction on `junction_depth`
-  - Base (depth <= 1): no alternation, already separated
-  - Step: replace S-under-U by atoms, apply Lemma 10.2.7, resubstitute, apply IH
-- [ ] State and prove `separation_theorem_int` (Theorem 10.2.9): direct corollary of 10.2.8
-- [ ] Create `SeparationThm.lean` as the final theorem file
+- [ ] Implement the substitution bridge (helpers above)
+- [ ] Close `all_past` case: `all_past phi' → ∃ ψ, int_equiv (all_past phi') ψ ∧ separated ψ`
+- [ ] Close `all_future` case: symmetric to all_past
+- [ ] Close `untl` case: if both args are separated, the Until is separable
+- [ ] Close `snce` case: if both args are separated, the Since is separable (uses elimination cases directly)
 - [ ] Verify `lake build` passes
 
-**Timing**: 3 hours
+**Timing**: 4-6 hours (increased from original 3h estimate due to bridge complexity)
 
-**Depends on**: 11, 13
+**Depends on**: All 8 elimination cases (Phases 6, 8)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean` - consolidated (see Phase 10)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Separation/SeparationThm.lean`
 
 **Verification**:
 - `lake build` passes
-- `separation_theorem_int` is proved as a direct application of `junction_depth_separable`
-- Stage A of the proof is complete
+- `all_separable` has no sorry
+- `separation_theorem_int` follows as direct application
 
 ---
 
