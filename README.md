@@ -4,13 +4,13 @@
 
 A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) — a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches, the Logos interprets formulas by their meaning across structured world-histories and times, supporting modality, tense, and their interaction.
 
-This library implements the syntax, task frame semantics, proof theory, and metalogic (soundness, completeness, and decidability) for the TM (Tense and Modality) bimodal logic combining S5 modal operators with Until/Since temporal operators.
+This library implements the syntax, task frame semantics, proof theory, and metalogic (soundness, completeness, and decidability) for the bimodal logic TM (Tense and Modality) which combines S5 modal operators with Until/Since temporal operators.
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
 **Specification**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation
 
-**Examples**: [BimodalProofs.lean](Theories/Bimodal/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
+**Demo**: [BimodalProofs.lean](Theories/Bimodal/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
 | Metric | Count |
 |--------|-------|
@@ -18,11 +18,17 @@ This library implements the syntax, task frame semantics, proof theory, and meta
 | Lines of code | ~42,700 |
 | Comment lines | ~28,400 |
 
+To get current numbers (excludes `.lake` dependencies and `Boneyard/`):
+
+```bash
+cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .
+```
+
 ---
 
 ## Operators
 
-The logic uses 8 primitive connectives. All other operators are derived.
+The logic uses 5 primitive connectives. All other operators are derived.
 
 ### Primitive
 
@@ -31,10 +37,8 @@ The logic uses 8 primitive connectives. All other operators are derived.
 | `⊥` | `bot` | falsum |
 | `φ → ψ` | `imp φ ψ` | material conditional |
 | `□φ` | `box φ` | necessity ("necessarily φ") |
-| `Hφ` | `all_past φ` | "φ has always been true" |
-| `Gφ` | `all_future φ` | "φ will always be true" |
-| `φ U ψ` | `untl φ ψ` | Until ("φ until ψ") |
-| `φ S ψ` | `snce φ ψ` | Since ("φ since ψ") |
+| `U(φ,ψ)` | `untl φ ψ` | "ψ until φ" |
+| `S(φ,ψ)` | `snce φ ψ` | "ψ since φ" |
 
 ### Derived
 
@@ -44,12 +48,14 @@ The logic uses 8 primitive connectives. All other operators are derived.
 | `φ ∧ ψ` | `¬(φ → ¬ψ)` | conjunction |
 | `φ ∨ ψ` | `¬φ → ψ` | disjunction |
 | `◇φ` | `¬□¬φ` | possibility |
-| `Pφ` | `¬H¬φ` | "φ was once true" |
-| `Fφ` | `¬G¬φ` | "φ will be true" |
-| `△φ` | `φ ∧ Gφ ∧ Hφ` | perpetuity ("φ at all times") |
-| `▽φ` | `Fφ ∨ Pφ ∨ φ` | "φ at some time" |
-| `Xφ` | `⊤ U φ` | next ("φ at the next moment") |
-| `Yφ` | `⊤ S φ` | previous ("φ at the previous moment") |
+| `Fφ` | `U(φ, ¬⊥)` | "eventually φ" |
+| `Pφ` | `S(φ, ¬⊥)` | "previously φ" |
+| `Gφ` | `¬F¬φ` | "it is always going to be φ" |
+| `Hφ` | `¬P¬φ` | "it always has been φ" |
+| `△φ` | `φ ∧ Gφ ∧ Hφ` | "always φ" |
+| `▽φ` | `¬△¬φ` | "sometimes φ" |
+| `Xφ` | `U(φ, ⊥)` | "at the next moment φ" |
+| `Yφ` | `S(φ, ⊥)` | "at the previous moment φ" |
 
 ---
 
@@ -72,18 +78,17 @@ ProofChecker/
 ├── Theories/
 │   └── Bimodal/                  # TM bimodal logic library
 │       ├── Syntax/               # Formula types, atoms, signed formulas
-│       ├── ProofSystem/          # Axioms (44 constructors, 7 layers), derivation trees
-│       ├── Semantics/            # TaskFrame, WorldHistory, TaskModel, truth evaluation
+│       ├── ProofSystem/          # Axioms (44 constructors, 7 layers)
+│       ├── Semantics/            # TaskFrame, WorldHistory, TaskModel
 │       ├── Metalogic/            # Soundness, completeness, decidability
 │       │   ├── Core/             # MCS theory, deduction theorem
 │       │   ├── Bundle/           # BFMCS construction (base completeness)
-│       │   ├── BXCanonical/      # BX chronicle construction (mixed completeness)
-│       │   ├── WeakCanonical/    # Reynolds/Doets pipeline (discrete completeness)
-│       │   └── Decidability/     # Tableau decision procedure with proof extraction
+│       │   ├── BXCanonical/      # BX chronicle mixed construction
+│       │   ├── WeakCanonical/    # Reynolds/Doets discrete pipeline
+│       │   └── Decidability/     # Tableau procedure with proof extraction
 │       ├── FrameConditions/      # Dense/discrete frame soundness
 │       ├── Theorems/             # Perpetuity principles P1-P6
-│       ├── Automation/           # Proof search tactics
-│       └── Examples/             # Sorry-free demonstration files
+│       └── Automation/           # Proof search tactics
 ├── Tests/                        # Test suite
 └── docs/                         # Project documentation
 ```
