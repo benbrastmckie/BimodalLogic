@@ -163,14 +163,14 @@ Phases within the same wave can execute in parallel. Phase 7 is completely indep
   - **If the above is too hard to prove formally**: The ALTERNATIVE approach (recommended by minimal-fix researcher) is to inline the proof at the two call sites. Remove `atom_elim_correct` as a standalone theorem and instead prove the biconditional directly in the `.ex` and `.all` cases where `A_ext`, `hB_equiv`, and the atom structure are all available. This avoids needing `hB_atoms` as a parameter entirely. The proof uses `hB_equiv` to reduce `int_truth M_ext t B_sep` to `int_truth M_ext t (q_exists A_ext)`, then proceeds with `q_exists A_ext` whose atoms are known.
   - Verification: `lake build` passes
 
-- [ ] Task 7.4: Prove `int_truth_foldl_or` helper (~15 LOC) *(in progress — needed for quantElimFormula_correct_iff)*
+- [x] Task 7.4: Prove `int_truth_foldl_or` helper (~15 LOC) *(completed)*
   - Analog of existing `int_truth_foldl_and` (line 822)
   - Type: `Separation.int_truth M t (fs.foldl Formula.or b) ↔ Separation.int_truth M t b ∨ ∃ f ∈ fs, Separation.int_truth M t f`
   - Proof by induction on `fs` with `List.foldl` unfolding
   - Place immediately after `int_truth_foldl_and` in ExpressiveCompleteness.lean
   - Verification: `lake build` passes
 
-- [ ] Task 7.5: Prove `guardFormula_unique` (~20 LOC)
+- [x] Task 7.5: Prove `guardFormula_unique` (~20 LOC) *(completed)*
   - Type: for any two assignments `σ τ : sig.preds → Bool`, if both `guardFormula atomMap σ` and `guardFormula atomMap τ` are true in `to_int_struct M atomMap` at time `t`, then `σ = τ`.
   - Proof: Apply `guardFormula_correct` to both to get `∀ p, σ p = true ↔ M.interp p t` and same for τ. Then by function extensionality, `σ = τ`.
   - Place after `guardFormula_correct` in ExpressiveCompleteness.lean
