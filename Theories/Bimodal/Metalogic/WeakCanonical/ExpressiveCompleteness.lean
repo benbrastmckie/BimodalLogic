@@ -803,22 +803,23 @@ private noncomputable def expressiveness_inner
       --   ↔ int_truth B_sep t in same model  [by separation equivalence]
       --   ↔ int_truth A t in (to_int_struct M atomMap)  [by atom elimination]
       simp only [eval]
-      constructor
-      · intro ⟨z, hz⟩
-        -- hz : eval ... alpha at z
-        have h1 := (reduceElimLast_correct_at_one alpha M z t).mp hz
-        have h2 := (ihExt.property (extIntStruct M t) z).mp h1
-        have h3 : ∃ z, Separation.int_truth (to_int_struct (extIntStruct M t) freshAM) z A_ext := ⟨z, h2⟩
-        have h4 := (q_exists_correct A_ext (to_int_struct (extIntStruct M t) freshAM) t).mpr h3
-        have h5 := (hB_equiv (to_int_struct (extIntStruct M t) freshAM) t).mp h4
-        -- h5 : int_truth B_sep t in extended model
-        -- Need: int_truth A t in original model
-        -- This is the atom elimination step
-        sorry
-      · intro hA
-        -- hA : int_truth A t in original model
-        -- Need: ∃ z, eval alpha at z
-        sorry⟩
+      -- Chain the equivalences
+      let M_ext := to_int_struct (extIntStruct M t) freshAM
+      have h_chain : (∃ z : ℤ, eval (int_to_ordered sig M) (Fin.cons z fun _ => t) alpha) ↔
+          Separation.int_truth M_ext t B_sep := by
+        constructor
+        · intro ⟨z, hz⟩
+          have h1 := (reduceElimLast_correct_at_one alpha M z t).mp hz
+          have h2 := (ihExt.property (extIntStruct M t) z).mp h1
+          have h3 := (q_exists_correct A_ext M_ext t).mpr ⟨z, h2⟩
+          exact (hB_equiv M_ext t).mp h3
+        · intro h_bsep
+          have h1 := (hB_equiv M_ext t).mpr h_bsep
+          obtain ⟨z, hz⟩ := (q_exists_correct A_ext M_ext t).mp h1
+          exact ⟨z, (reduceElimLast_correct_at_one alpha M z t).mpr
+            ((ihExt.property (extIntStruct M t) z).mpr hz)⟩
+      -- Reduce to atom elimination: B_sep in M_ext ↔ A in M_orig
+      exact h_chain.trans sorry⟩
   | .all alpha, hm =>
     -- ∀z. alpha(z,t) ↔ ¬∃z. ¬alpha(z,t)
     -- Same pipeline as .ex but with .not alpha and outer negation
@@ -843,20 +844,37 @@ private noncomputable def expressiveness_inner
     let A_ex := quantElimFormula atomMap freshAM B_sep
     ⟨Formula.neg A_ex, fun M t => by
       simp only [eval]
-      -- ∀z.α(z,t) ↔ ¬(∃z.¬α(z,t))
-      -- The .ex pipeline gives: (∃z.¬α(z,t)) ↔ int_truth M_orig t A_ex
-      -- So: (∀z.α(z,t)) ↔ ¬(int_truth M_orig t A_ex) = int_truth M_orig t (neg A_ex)
       rw [Separation.int_truth_neg_iff]
       -- Need: (∀ z, eval ... alpha) ↔ ¬(int_truth ... A_ex)
-      -- The .ex pipeline for (.not alpha) gives:
-      -- (∃ z, eval ... (.not alpha)) ↔ int_truth ... A_ex
-      -- i.e., (∃ z, ¬eval ... alpha) ↔ int_truth ... A_ex
-      -- By contraposition: ¬(∃ z, ¬eval ... alpha) ↔ ¬(int_truth ... A_ex)
-      -- i.e., (∀ z, eval ... alpha) ↔ ¬(int_truth ... A_ex)
-      -- So we need: (∃ z, ¬eval ... alpha) ↔ int_truth ... A_ex
-      -- This is exactly the .ex pipeline for .not alpha.
-      -- The proof follows the same steps as .ex.
-      sorry⟩
+      -- Equivalently: (∃ z, ¬eval ... alpha) ↔ int_truth ... A_ex (and negate both)
+      let M_ext := to_int_struct (extIntStruct M t) freshAM
+      -- Chain for ∃z.¬α (same as .ex case but with .not alpha):
+      have h_chain_neg : (∃ z : ℤ, ¬eval (int_to_ordered sig M) (Fin.cons z fun _ => t) alpha) ↔
+          Separation.int_truth M_ext t B_sep := by
+        constructor
+        · intro ⟨z, hz⟩
+          have h1 : eval (int_to_ordered sig M) (Fin.cons z fun _ => t) (.not alpha) := hz
+          have h2 := (reduceElimLast_correct_at_one (.not alpha) M z t).mp h1
+          have h3 := (ihExt.property (extIntStruct M t) z).mp h2
+          exact (hB_equiv M_ext t).mp ((q_exists_correct A_neg_ext M_ext t).mpr ⟨z, h3⟩)
+        · intro h_bsep
+          obtain ⟨z, hz⟩ := (q_exists_correct A_neg_ext M_ext t).mp
+            ((hB_equiv M_ext t).mpr h_bsep)
+          have h1 := (ihExt.property (extIntStruct M t) z).mpr hz
+          have h2 := (reduceElimLast_correct_at_one (.not alpha) M z t).mpr h1
+          exact ⟨z, h2⟩
+      -- Convert: (∀z.α) ↔ ¬(∃z.¬α) ↔ ¬(int_truth A_ex) via atom elimination
+      constructor
+      · intro h_all h_Aex
+        have h_bsep := (sorry : Separation.int_truth M_ext t B_sep ↔
+            Separation.int_truth (to_int_struct M atomMap) t A_ex).mpr h_Aex
+        obtain ⟨z, hz⟩ := h_chain_neg.mpr h_bsep
+        exact hz (h_all z)
+      · intro h_neg z
+        by_contra h_not
+        have h_bsep := h_chain_neg.mp ⟨z, h_not⟩
+        exact h_neg ((sorry : Separation.int_truth M_ext t B_sep ↔
+            Separation.int_truth (to_int_struct M atomMap) t A_ex).mp h_bsep)⟩
 
 /-- Outer well-founded recursion: proves the expressiveness lemma by strong induction
     on quantifier depth. Delegates to `expressiveness_inner` at each level. -/
