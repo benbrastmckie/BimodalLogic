@@ -115,29 +115,33 @@ For detailed setup instructions, see [Installation Guide](docs/installation/BASI
 
 ## Metalogical Results
 
-The metalogic is organized around a hierarchy of temporal frame classes. All soundness and decidability results are fully sorry-free and axiom-free (no `sorryAx` dependency). Completeness is established for base and dense frames; the discrete and mixed completeness proofs have remaining sorry obligations.
+The metalogic is organized around a hierarchy of temporal frame classes, each extending the base with additional order-theoretic structure. All soundness results are sorry-free and axiom-free (no `sorryAx` dependency). Completeness is established for serial and dense frames; discrete completeness has remaining sorry obligations.
 
 ```mermaid
 graph TD
-    B("<b>Base Frame</b><br/>AddCommGroup · LinearOrder<br/>Sound ✓ · Complete ✓<br/>Decidable ✓")
-    D("<b>Dense Frame</b><br/>DenselyOrdered<br/>Sound ✓ · Complete ✓")
-    Z("<b>Discrete Frame</b><br/>SuccOrder · PredOrder<br/>Sound ✓ · Complete ⧖")
+    L("<b>LinearTemporalFrame</b><br/>AddCommGroup · LinearOrder")
+    S("<b>SerialFrame</b><br/>+ Nontrivial · NoMaxOrder · NoMinOrder<br/>Sound ✓ · Complete ✓ · Decidable ✓")
+    D("<b>DenseTemporalFrame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓ · Decidable ✓")
+    Z("<b>DiscreteTemporalFrame</b><br/>+ SuccOrder · PredOrder · IsSuccArchimedean<br/>Sound ✓ · Complete ⧖")
 
-    B --> D
-    B --> Z
+    L --> S
+    S --> D
+    S --> Z
 ```
 
 ### Result Details
 
-| Frame Class | Axioms Added | Soundness | Completeness | Decidability |
-|-------------|-------------|-----------|--------------|--------------|
-| **Base** | — | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) |
-| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | — |
+| Frame Class | Additional Axioms | Soundness | Completeness | Decidability |
+|-------------|------------------|-----------|--------------|--------------|
+| **Linear** | — | sorry-free (base axioms) | — | — |
+| **Serial** | — | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) |
+| **Dense** | `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | sorry-free (FMP) |
 | **Discrete** | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | sorry-free | active sorries (see below) | — |
+
+The standard instance of `DiscreteTemporalFrame` is `Int`; the standard instance of `DenseTemporalFrame` is the canonical quotient construction used in the completeness proof.
 
 **Active sorry obligations**:
 
-- *Dense completeness path* (`ChronicleToCountermodel.lean`): 1 sorry in the Cantor isomorphism step of the chronicle construction (density elimination in `lemma_2_6_splitting`). The BX chronicle approach requires `DenselyOrdered` on the limit domain; Task 117 will rebuild the construction to eliminate this.
 - *Discrete completeness* (`WeakCanonical/Transfer.lean`, `WeakCanonical/Separation/`): Multiple sorries in the Reynolds/Doets pipeline — truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas. These represent standard model-theoretic results (Doets 1989) pending formalization.
 
 The Deduction Theorem, Finite Model Property (with `2^|closure(φ)|` bound), and the six Perpetuity Principles (P1–P6) are all fully proven.
