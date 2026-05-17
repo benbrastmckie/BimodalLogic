@@ -92,7 +92,7 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 ---
 
-### Phase 6: Prove Cases 5-8 via Dedekind + Generalized Case 1 and Eliminate 8 Axioms [NOT STARTED]
+### Phase 6: Prove Cases 5-8 via Dedekind + Generalized Case 1 and Eliminate 8 Axioms [IN PROGRESS]
 
 **Goal**: Prove Cases 5-8 separability using Dedekind formula specialization to Z (K+=K-=FALSE, Gamma+-=bot) combined with generalized Case 1 (dropping dead `is_S_free q` hypothesis), then wire through to replace all 8 axioms in SeparationThm.lean.
 
@@ -216,7 +216,7 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 ---
 
-### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases (atom_elim_correct) [PARTIAL]
+### Phase 7: Complete Theorem 9.3.1 -- Quantifier Cases (atom_elim_correct) [IN PROGRESS]
 
 **Goal**: Close the 3 remaining sorries in ExpressiveCompleteness.lean by proving `atom_elim_correct` via `elimExtFromSep_correct`, `guardFormula_correct`, and `quantElimFormula_correct_iff`.
 

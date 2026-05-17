@@ -782,6 +782,139 @@ private theorem applySubsts_future_correct {φ : Formula}
       (fun a r hmem => h_reps_fo a r (List.mem_cons_of_mem ar hmem))
       (fun a r hmem => h_match a r (List.mem_cons_of_mem ar hmem))).trans h_step
 
+/-! ### Atom Membership in Extended Model
+
+Key lemma: membership in `(to_int_struct (extIntStruct M t) freshAM).val (freshAM ep)` at
+time `z` equals exactly `(extIntStruct M t).interp ep z`, because `freshAM` is injective. -/
+
+/-- Membership in the extended model at a fresh atom: because freshAM is injective,
+    `z ∈ (to_int_struct (extIntStruct M t) freshAM).val (freshAM ep)` iff
+    `(extIntStruct M t).interp ep z`. -/
+private theorem to_int_struct_mem_freshAM {sig : MonadicSignature}
+    (M : IntStructureFromSig sig) (t : Int)
+    (freshAM : (extSignature sig).preds → Atom)
+    (freshAM_inj : Function.Injective freshAM)
+    (ep : ExtPred sig) (z : Int) :
+    z ∈ (to_int_struct (extIntStruct M t) freshAM).val (freshAM ep) ↔
+    (extIntStruct M t).interp ep z := by
+  simp only [to_int_struct, Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨ep', heq, hinterp⟩
+    exact freshAM_inj heq ▸ hinterp
+  · intro h
+    exact ⟨ep, rfl, h⟩
+
+/-- Membership in `to_int_struct M atomMap` at `atomMap p` when `atomMap` is injective. -/
+private theorem to_int_struct_mem_atomMap {sig : MonadicSignature}
+    (M : IntStructureFromSig sig)
+    (atomMap : sig.preds → Atom)
+    (hinj : Function.Injective atomMap)
+    (p : sig.preds) (z : Int) :
+    z ∈ (to_int_struct M atomMap).val (atomMap p) ↔ M.interp p z := by
+  simp only [to_int_struct, Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨q, hq, hi⟩; exact hinj hq ▸ hi
+  · intro h; exact ⟨p, rfl, h⟩
+
+/-! ### Guard Formula Correctness -/
+
+/-- Helper: int_truth of a foldl-and list. -/
+private theorem int_truth_foldl_and (M : Separation.IntStructure) (t : Int)
+    (init : Formula) (fs : List Formula) :
+    Separation.int_truth M t (fs.foldl Formula.and init) ↔
+    Separation.int_truth M t init ∧ ∀ f ∈ fs, Separation.int_truth M t f := by
+  induction fs generalizing init with
+  | nil => simp [List.foldl]
+  | cons f rest ih =>
+    simp only [List.foldl]
+    rw [ih, Separation.int_truth_and_iff]
+    constructor
+    · rintro ⟨⟨hi, hf⟩, hrest⟩
+      exact ⟨hi, fun g hg => by
+        rcases List.mem_cons.mp hg with rfl | hmem
+        · exact hf
+        · exact hrest g hmem⟩
+    · rintro ⟨hi, hall⟩
+      exact ⟨⟨hi, hall f (List.mem_cons_self f rest)⟩,
+             fun g hg => hall g (List.mem_cons_of_mem f hg)⟩
+
+/-- The guard formula correctly captures assignment matching (requires atomMap injective). -/
+private theorem guardFormula_correct {sig : MonadicSignature}
+    (atomMap : sig.preds → Atom)
+    (hinj : Function.Injective atomMap)
+    (σ : sig.preds → Bool)
+    (M : IntStructureFromSig sig)
+    (t : Int) :
+    Separation.int_truth (to_int_struct M atomMap) t (guardFormula atomMap σ) ↔
+    (∀ p : sig.preds, σ p = true ↔ M.interp p t) := by
+  unfold guardFormula
+  rw [int_truth_foldl_and]
+  constructor
+  · rintro ⟨_, hall⟩ p
+    have hmem : (if σ p then Formula.atom (atomMap p)
+                 else Formula.neg (Formula.atom (atomMap p))) ∈
+        ((Finset.univ : Finset sig.preds).toList.map fun p =>
+          if σ p then Formula.atom (atomMap p)
+          else Formula.neg (Formula.atom (atomMap p))) :=
+      List.mem_map_of_mem _ (Finset.mem_toList.mpr (Finset.mem_univ p))
+    have hf := hall _ hmem
+    by_cases hσ : σ p = true
+    · simp only [hσ, ite_true, Separation.int_truth] at hf
+      exact ⟨fun _ => (to_int_struct_mem_atomMap M atomMap hinj p t).mp hf,
+             fun _ => hσ⟩
+    · simp only [show (σ p = true) = False from propext ⟨hσ, False.elim⟩, ite_false,
+                 Separation.int_truth, Formula.neg] at hf
+      exact ⟨fun habs => absurd habs hσ,
+             fun hinterp => absurd ((to_int_struct_mem_atomMap M atomMap hinj p t).mpr hinterp) hf⟩
+  · intro hall
+    constructor
+    · exact fun h => h
+    · intro f hf
+      simp only [List.mem_map] at hf
+      obtain ⟨p, _, rfl⟩ := hf
+      by_cases hσ : σ p = true
+      · simp only [hσ, ite_true, Separation.int_truth]
+        exact (to_int_struct_mem_atomMap M atomMap hinj p t).mpr ((hall p).mp hσ)
+      · simp only [show (σ p = true) = False from propext ⟨hσ, False.elim⟩, ite_false,
+                   Separation.int_truth, Formula.neg]
+        intro hmem
+        exact absurd ((hall p).mpr ((to_int_struct_mem_atomMap M atomMap hinj p t).mp hmem)) hσ
+
+/-! ### atom_elim_correct: Model Transfer via Quantifier Elimination
+
+The core challenge: show that truth of B_sep in M_ext (extended model with freshAM atoms)
+equals truth of quantElimFormula in M_orig (original model with atomMap atoms).
+
+The proof is monolithic: by structural induction on B_sep and classical reasoning
+over the quantElimFormula disjunction. The key insight is that the quantElimFormula
+disjunction over σ has exactly one true branch (the one matching the model at t),
+and for that branch, the elimExtFromSep substitutions correctly transfer truth. -/
+
+/-- The atom elimination correctness theorem: closes the gap between M_ext and M_orig.
+    This is the key lemma that closes all 3 sorries in expressiveness_inner.
+
+    Proof sketch: Define σ*(p) = decide(M.interp p t). Show:
+    1. The guard for σ* is true in M_orig (by guardFormula_correct)
+    2. For σ* matching M at t, elimExtFromSep substitutions correctly transfer
+       truth from M_ext to M_orig (by structural induction on B_sep)
+    3. The quantElimFormula disjunction has at least one true branch (σ*)
+
+    Requirements for correctness:
+    - freshAM injective (given)
+    - atomMap injective (given)
+    - Range of atomMap disjoint from range of freshAM (needed so that
+      origSubsList replacements are not further modified by constSubsList).
+      This holds at the top level (mk_fresh "p" vs mk_fresh "e") but
+      requires care at recursive levels. -/
+private theorem atom_elim_correct {sig : MonadicSignature}
+    (atomMap : sig.preds → Atom) (hinj : Function.Injective atomMap)
+    (freshAM : (extSignature sig).preds → Atom) (freshAM_inj : Function.Injective freshAM)
+    (M : IntStructureFromSig sig) (t : Int)
+    (B_sep : Formula) (hB_sep : Separation.is_properly_separated B_sep = true) :
+    Separation.int_truth (to_int_struct (extIntStruct M t) freshAM) t B_sep ↔
+    Separation.int_truth (to_int_struct M atomMap) t (quantElimFormula atomMap freshAM B_sep) := by
+  sorry
+
 /-! ### Core Expressiveness Lemma
 
 The proof uses nested induction: outer strong induction on quantifier depth,
@@ -890,7 +1023,7 @@ private noncomputable def expressiveness_inner
           exact ⟨z, (reduceElimLast_correct_at_one alpha M z t).mpr
             ((ihExt.property (extIntStruct M t) z).mpr hz)⟩
       -- Reduce to atom elimination: B_sep in M_ext ↔ A in M_orig
-      exact h_chain.trans sorry⟩
+      exact h_chain.trans (atom_elim_correct atomMap hinj freshAM freshAM_inj M t B_sep hB_sep)⟩
   | .all alpha, hm =>
     -- ∀z. alpha(z,t) ↔ ¬∃z. ¬alpha(z,t)
     -- Same pipeline as .ex but with .not alpha and outer negation
@@ -935,17 +1068,18 @@ private noncomputable def expressiveness_inner
           have h2 := (reduceElimLast_correct_at_one (.not alpha) M z t).mpr h1
           exact ⟨z, h2⟩
       -- Convert: (∀z.α) ↔ ¬(∃z.¬α) ↔ ¬(int_truth A_ex) via atom elimination
+      have h_elim : Separation.int_truth M_ext t B_sep ↔
+          Separation.int_truth (to_int_struct M atomMap) t A_ex :=
+        atom_elim_correct atomMap hinj freshAM freshAM_inj M t B_sep h_ps.choose_spec.1
       constructor
       · intro h_all h_Aex
-        have h_bsep := (sorry : Separation.int_truth M_ext t B_sep ↔
-            Separation.int_truth (to_int_struct M atomMap) t A_ex).mpr h_Aex
+        have h_bsep := h_elim.mpr h_Aex
         obtain ⟨z, hz⟩ := h_chain_neg.mpr h_bsep
         exact hz (h_all z)
       · intro h_neg z
         by_contra h_not
         have h_bsep := h_chain_neg.mp ⟨z, h_not⟩
-        exact h_neg ((sorry : Separation.int_truth M_ext t B_sep ↔
-            Separation.int_truth (to_int_struct M atomMap) t A_ex).mp h_bsep)⟩
+        exact h_neg (h_elim.mp h_bsep)⟩
 
 /-- Outer well-founded recursion: proves the expressiveness lemma by strong induction
     on quantifier depth. Delegates to `expressiveness_inner` at each level. -/
