@@ -85,11 +85,37 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Complete separation_implies_expressiveness (Theorem 9.3.1) [IN PROGRESS]
+### Phase 1: Complete separation_implies_expressiveness (Theorem 9.3.1) [BLOCKED]
 
 **Goal**: Close the 1 sorry in `ExpressiveCompleteness.lean` by proving that separation implies expressive completeness via induction on FO formulas generalized to n free variables.
 
-**Status Note**: A separate implementation agent is currently working on this phase. Preserve its progress.
+**BLOCKER** (Phase 1):
+- **What failed**: The substitution step (Task 1.4) in the quantifier case requires that "past" parts of a separated formula evaluate ONLY at times <= the current point, and "future" parts ONLY at times >= the current point. This is needed so that R-atoms (encoding z's position relative to t) can be replaced by True/False constants in the correct temporal region.
+- **What was tried**:
+  1. **reduce + q_exists + context-dependent substitution**: Defined `reduce` (MonadicFormula sig (n+1) -> MonadicFormula extSig n) replacing the parameter variable with auxiliary predicates. Proved `reduce_correct` and `reduce_preserves_depth`. Applied IH to get temporal formula B. Formed q_exists(B). Attempted to substitute R-atoms by True/False in each temporal region (past/present/future) of the separated formula. FAILED because the substitution is incorrect when U-free subformulas contain `all_future` (which looks at future times).
+  2. **inst (direct instantiation)**: Defined `inst` that replaces the parameter variable with concrete True/False values based on region and truth assignment. Works for quantifier-free formulas but FAILS for nested quantifiers because inner quantified variables' comparisons to t can't be resolved by region alone.
+  3. **eliminate_HG conversion**: Attempted to convert all_past/all_future to S/U equivalents before separation. FAILED because the conversion introduces `untl` inside previously U-free arguments, breaking syntactic separation.
+  4. **Conditional split for frozen predicates**: For predicates p(t) (constant in z), split formula into cases based on p(t) = True/False at the top level. This step IS correct and works. But it doesn't resolve the R-atom substitution issue.
+- **Why it's stuck**: The `is_syntactically_separated` predicate in Defs.lean defines "U-free" as "no untl" and "S-free" as "no snce". This allows `all_future` inside S-arguments and `all_past` inside U-arguments. In GHR94, "pure past" means no U AND no G(=all_future); "pure future" means no S AND no H(=all_past). Our weaker definition means a "U-free" formula like `snce(all_future(atom a), bot)` is syntactically separated but NOT semantically pure-past -- it evaluates `all_future(atom a)` at z < t, which looks at ALL future times including times > t where R-atoms have different values. This makes the R-atom substitution incorrect.
+- **What is needed**: One of:
+  1. **Strengthen `is_syntactically_separated`**: Redefine "U-free" to also exclude `all_future`, and "S-free" to also exclude `all_past`. This matches GHR94's definition. Then re-verify that the separation theorem (currently axiomatized) still holds with the stronger definition, and use the stronger purity property in the substitution proof.
+  2. **Prove separation produces strongly-separated formulas**: Show that `all_separable` (via the temporal closure axioms) actually produces formulas where S-arguments contain no `all_future` and U-arguments contain no `all_past`, even though `is_syntactically_separated` doesn't require this. Then use this additional property in the substitution proof.
+  3. **Alternative proof of Theorem 9.3.1**: Use a proof strategy that doesn't rely on the purity of separated formula parts. E.g., a model-theoretic argument or a direct inductive construction that avoids the reduce+substitute pattern.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Infrastructure built during investigation** (available for future use):
+- `ExtPred`, `extSignature`: Extended signature with auxiliary predicates (orig, frozen, r_eq, r_gt, r_lt)
+- `reduce`: MonadicFormula sig (n+1) -> MonadicFormula extSig n (replaces last variable with aux predicates)
+- `extStructure`: Extended IntStructureFromSig with correct aux predicate interpretations
+- `reduce_correct`: Semantic correctness of reduce (fully proved)
+- `reduce_preserves_depth`: Depth preservation of reduce (fully proved)
+- `inst`: Direct instantiation with region and truth assignment (works for quantifier-free case)
+- `separated_R_subst`: Context-aware R-atom substitution on separated formulas (syntactically defined but semantically incorrect with current separation definition)
+- `subst_R_present/past/future`: Region-specific R-atom substitutions via subst_formula
+- Helper lemmas: `int_truth_neg`, `int_truth_and`, `int_truth_atom_inj`, `injAtomMap`, `injAtomMap_injective`
+- All helper lemmas and proofs tested via lean_run_code; not yet committed to the file
+
+**Status Note**: A separate implementation agent was working on this phase. Preserve its progress.
 
 **Strategy**: Generalize `separation_implies_expressiveness` to work with `MonadicFormula sig n` for arbitrary `n`. The base cases (atom, lt, not, and) translate directly to temporal atoms and Boolean connectives. The quantifier case `ex alpha` (where `alpha : MonadicFormula sig (n+1)`) requires:
 1. A generalized translation lemma for n-variable formulas
@@ -97,12 +123,12 @@ Phases within the same wave can execute in parallel.
 3. Quantifier elimination via `q_exists` + separation decomposition + substitution
 
 **Tasks**:
-- [ ] **Task 1.1**: Generalize the theorem statement to `MonadicFormula sig n` for arbitrary `n`
-- [ ] **Task 1.2**: Implement environment encoding: translate variable assignments `{0..n-1} -> Z` into temporal formulas using atoms `r_=`, `r_<`, `r_>` for position comparisons
-- [ ] **Task 1.3**: Prove base cases: atom, lt, not, and (translate FO connectives to temporal connectives)
-- [ ] **Task 1.4**: Prove the quantifier case: given IH for `MonadicFormula sig (n+1)`, construct the temporal equivalent for `exists x, phi(x, x_1, ..., x_n)` using `q_exists`, separation, and substitution
-- [ ] **Task 1.5**: Specialize back to `n = 1` and prove the original `separation_implies_expressiveness`
-- [ ] **Task 1.6**: Verify `lake build` passes with no sorry in ExpressiveCompleteness.lean
+- [x] **Task 1.1**: Generalize the theorem statement to `MonadicFormula sig n` for arbitrary `n` *(completed -- reduce function handles n+1 -> n variable reduction)*
+- [x] **Task 1.2**: Implement environment encoding: translate variable assignments `{0..n-1} -> Z` into temporal formulas using atoms `r_=`, `r_<`, `r_>` for position comparisons *(completed -- ExtPred, extSignature, reduce, extStructure, reduce_correct all proved)*
+- [x] **Task 1.3**: Prove base cases: atom, lt, not, and (translate FO connectives to temporal connectives) *(completed -- all base cases proved with fixed injective atomMap)*
+- [ ] **Task 1.4**: Prove the quantifier case: given IH for `MonadicFormula sig (n+1)`, construct the temporal equivalent for `exists x, phi(x, x_1, ..., x_n)` using `q_exists`, separation, and substitution *(deviation: blocked -- the substitution step requires stronger separation purity than is_syntactically_separated provides; see BLOCKER above)*
+- [ ] **Task 1.5**: Specialize back to `n = 1` and prove the original `separation_implies_expressiveness` *(deviation: deferred -- blocked by Task 1.4)*
+- [ ] **Task 1.6**: Verify `lake build` passes with no sorry in ExpressiveCompleteness.lean *(deviation: deferred -- blocked by Task 1.4)*
 
 **Timing**: 4 hours
 
