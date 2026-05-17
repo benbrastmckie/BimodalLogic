@@ -121,7 +121,7 @@ The metalogic is organized around a hierarchy of temporal frame classes. All sou
 graph TD
     B("<b>Base Frame</b><br/>Serial linear order<br/>Sound ✓ · Complete ✓")
     D("<b>Dense Frame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓")
-    Z("<b>Discrete Frame</b><br/>+ SuccOrder + PredOrder<br/>Sound ✓ · Complete ~")
+    Z("<b>Discrete Frame</b><br/>+ SuccOrder + PredOrder<br/>Sound ✓ · Complete ⧖")
 
     B --> D
     B --> Z
