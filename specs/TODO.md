@@ -89,18 +89,20 @@ technical_debt:
 
 ### 158. Update README.md to reflect metalogic progress and improve organization
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: markdown
 
 **Description**: Update README.md to reflect metalogic progress in BimodalLogic. Explain that this is the intensional bimodal fragment of the Logos developed by Logos Laboratories (link to https://logos-labs.ai/). Move codebase size to end of intro (not at end, not immediately). After introductions covering operators, task semantics, research paper, demo, and project structure, add sections for installation, core metalogical results (soundness and completeness for extensions of the base logic with a labeled mermaid diagram), documentation, related projects, and citation. README should be well-organized, clear, and concise.
 
 ### 157. Formalize expressive completeness of {S,U} over integer time
 - **Effort**: 3-4 weeks (~2500 lines)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Dependencies**: 155
-- **Research**: [specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md]
+- **Research**:
+  - [specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md]
+  - [specs/157_expressive_completeness_su_integer/reports/04_team-research.md]
 - **Plan**:
   - [157_expressive_completeness_su_integer/plans/01_expressive-completeness-plan.md]
   - [157_expressive_completeness_su_integer/plans/02_expressive-completeness-plan.md]
