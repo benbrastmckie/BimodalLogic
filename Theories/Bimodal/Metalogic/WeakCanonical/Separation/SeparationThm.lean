@@ -59,10 +59,7 @@ private theorem snce_congr {φ₁ ψ₁ φ₂ ψ₂ : Formula}
   · rintro ⟨s, hst, hφ, hψ⟩
     exact ⟨s, hst, (h1 M s).mpr hφ, fun r hr1 hr2 => (h2 M r).mpr (hψ r hr1 hr2)⟩
 
-private theorem is_separable_of_equiv {φ ψ : Formula} (h : int_equiv φ ψ)
-    (hs : is_separable ψ) : is_separable φ := by
-  obtain ⟨χ, hχ_sep, hχ_equiv⟩ := hs
-  exact ⟨χ, hχ_sep, int_equiv_trans h hχ_equiv⟩
+-- is_separable_of_equiv is now public in Eliminations.lean
 
 /-! ## Temporal Closure Axiom
 
