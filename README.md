@@ -119,9 +119,9 @@ The metalogic is organized around a hierarchy of temporal frame classes. All sou
 
 ```mermaid
 graph TD
-    B["<b>Base Frame</b><br/>Serial linear order<br/>Soundness ✓ | Completeness ✓ | Decidability ✓"]
-    D["<b>Dense Frame</b><br/>+ DenselyOrdered<br/>Soundness ✓ | Completeness ✓"]
-    Z["<b>Discrete Frame</b><br/>+ SuccOrder + PredOrder<br/>Soundness ✓ | Completeness (in progress)"]
+    B("<b>Base Frame</b><br/>Serial linear order<br/>Sound ✓ · Complete ✓ · Decidable ✓")
+    D("<b>Dense Frame</b><br/>+ DenselyOrdered<br/>Sound ✓ · Complete ✓")
+    Z("<b>Discrete Frame</b><br/>+ SuccOrder + PredOrder<br/>Sound ✓ · Complete (in progress)")
 
     B --> D
     B --> Z
