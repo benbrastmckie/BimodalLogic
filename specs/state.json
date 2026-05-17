@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 161,
+      "project_name": "rename_theories_bimodal_to_formalsystem",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.",
+      "created": "2026-05-17T20:14:40Z",
+      "last_updated": "2026-05-17T20:14:40Z"
+    },
+    {
       "project_number": 160,
       "project_name": "fix_ci_badge_failing",
       "status": "completed",
@@ -1470,7 +1479,7 @@
       "started": "2026-05-16T19:49:58Z"
     }
   ],
-  "next_project_number": 161,
+  "next_project_number": 162,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

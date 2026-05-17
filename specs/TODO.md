@@ -1,5 +1,5 @@
 ---
-next_project_number: 161
+next_project_number: 162
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -86,6 +86,13 @@ technical_debt:
 
 
 ## Tasks
+
+### 161. Rename Theories/Bimodal/ to FormalSystem/
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.
 
 ### 160. Fix failing CI badge in README.md
 - **Effort**: small
