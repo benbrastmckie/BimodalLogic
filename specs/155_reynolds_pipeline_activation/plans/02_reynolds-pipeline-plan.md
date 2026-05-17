@@ -263,7 +263,7 @@ With expressive completeness from Phase 3A, formalize Reynolds's Lemmas 6-13 and
 
 ---
 
-### Phase 4: Rewrite very_good_implies_good (Reynolds Lemma 16) [NOT STARTED]
+### Phase 4: Rewrite very_good_implies_good (Reynolds Lemma 16) [IN PROGRESS]
 
 **CAN PROCEED NOW** — independent of task 157. This phase rewrites `very_good_implies_good` only; the `chronicle_is_good` rewrite (Task 4.8) is deferred to Phase 4b (after Phase 3B provides `one_class`).
 
