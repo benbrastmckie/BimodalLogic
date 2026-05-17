@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
-A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) — a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches, the Logos interprets formulas by their meaning across structured world-histories and times, supporting modality, tense, and their interaction.
+A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) providing a formal language designed for tense and modal reasoning. Unlike extensional (truth-functional) approaches, the Logos interprets formulas by their meaning across structured world-histories and times, supporting modality, tense, and their interaction.
 
 This library implements the syntax, task frame semantics, proof theory, and metalogic (soundness, completeness, and decidability) for the bimodal logic TM (Tense and Modality) which combines S5 modal operators with Until/Since temporal operators.
 
