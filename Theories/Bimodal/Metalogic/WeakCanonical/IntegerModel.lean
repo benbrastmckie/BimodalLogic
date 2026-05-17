@@ -462,12 +462,147 @@ theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
         ⟨fun a => match a with | .pred _ i => Fin.elim0 i | .order i _ _ => Fin.elim0 i⟩
       constructor <;> intro _ a <;> exact h_empty.elim a
     | succ k' =>
-      -- At depth k'+1 ≥ 1, k-equiv preserves "has max" and "has min".
-      -- M|[t,b] has max b, so Z1 has some upper bound (Z1.hi = some _).
-      -- M|[succ b, u] has min (succ b), so Z2 has some lower bound (Z2.lo = some _).
-      -- With both bounded on the touching side, the shift-and-glue works.
-      -- For now, this requires the helper lemma about expressibility preservation.
-      sorry
+      -- At depth k'+1 ≥ 1, case split: k'=0 uses finite model property,
+      -- k'≥1 uses expressibility of "has max/min" (depth 2) via doets_lemma_1_1.
+      cases k' with
+      | zero =>
+        -- k = 1. Finite model property at depth 1.
+        -- At depth 1, k-equiv is determined by which depth-0 1-var NFs are realized
+        -- (no order atoms at AtomKind sig 1 by atomKind_one_pred_only).
+        -- Proof requires constructing a finite Z-interval with one element per
+        -- realized predicate profile. The construction uses:
+        -- 1. Enumerate realized NormalForm sig 0 1 in the orderedSum
+        -- 2. Build Z3 = [0, N-1] with element i assigned the i-th realized profile
+        -- 3. Prove 1-equiv by showing same set of realized profiles
+        -- This is the monadic FO finite model property at depth 1.
+        -- NOTE: This sorry is independent of the k≥2 case below and does not affect
+        -- the completeness proof (which uses depth k ≥ 2 for signatures with predicates).
+        sorry
+      | succ k'' =>
+        -- k = k''+2 ≥ 2. Use expressibility: "has max/min" has depth 2 ≤ k.
+        -- Transfer via doets_lemma_1_1 to show Z1, Z2 are fully bounded → Fintype → good.
+        let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
+        let has_min_sent : MonadicSentence sig := .ex (.all (.not (.lt 0 1)))
+        have h_depth_max : has_max_sent.quantifier_depth ≤ k'' + 2 := by
+          simp [has_max_sent, MonadicFormula.quantifier_depth]
+        have h_depth_min : has_min_sent.quantifier_depth ≤ k'' + 2 := by
+          simp [has_min_sent, MonadicFormula.quantifier_depth]
+        -- Bridge k_equiv to nf_eval_nf iff (needed for doets_lemma_1_1)
+        have h_same_nf_Z1 : ∀ nf : NormalForm sig (k'' + 2) 0,
+            nf_eval_nf (OrderedMonadicStructure.subinterval sig M t b) (k'' + 2) 0 Fin.elim0 nf ↔
+            nf_eval_nf (ZIntervalStructure.toOrdered sig Z1) (k'' + 2) 0 Fin.elim0 nf := by
+          intro nf; have h := congr_fun hZ1 nf; simp [k_type_of] at h; exact_mod_cast h
+        have h_same_nf_Z2 : ∀ nf : NormalForm sig (k'' + 2) 0,
+            nf_eval_nf (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) (k'' + 2) 0 Fin.elim0 nf ↔
+            nf_eval_nf (ZIntervalStructure.toOrdered sig Z2) (k'' + 2) 0 Fin.elim0 nf := by
+          intro nf; have h := congr_fun hZ2 nf; simp [k_type_of] at h; exact_mod_cast h
+        -- M|[t,b] has max (b) and min (t); M|[succ b, u] has max (u) and min (succ b)
+        have h_M_has_max : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0 has_max_sent := by
+          simp only [has_max_sent, eval, Fin.cons]
+          exact ⟨⟨b, htb, le_refl b⟩, fun y => not_lt.mpr y.property.2⟩
+        have h_M_has_min : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0 has_min_sent := by
+          simp only [has_min_sent, eval, Fin.cons]
+          exact ⟨⟨t, le_refl t, htb⟩, fun y => not_lt.mpr y.property.1⟩
+        have h_M2_has_max : eval (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) Fin.elim0 has_max_sent := by
+          simp only [has_max_sent, eval, Fin.cons]
+          exact ⟨⟨u, Order.succ_le_iff.mpr hbu, le_refl u⟩, fun y => not_lt.mpr y.property.2⟩
+        have h_M2_has_min : eval (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) Fin.elim0 has_min_sent := by
+          simp only [has_min_sent, eval, Fin.cons]
+          exact ⟨⟨Order.succ b, le_refl _, Order.succ_le_iff.mpr hbu⟩, fun y => not_lt.mpr y.property.1⟩
+        -- Transfer "has max/min" to Z1 and Z2 via doets_lemma_1_1
+        have h_Z1_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0 Fin.elim0 h_same_nf_Z1).mp h_M_has_max
+        have h_Z1_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0 Fin.elim0 h_same_nf_Z1).mp h_M_has_min
+        have h_Z2_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0 Fin.elim0 h_same_nf_Z2).mp h_M2_has_max
+        have h_Z2_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0 Fin.elim0 h_same_nf_Z2).mp h_M2_has_min
+        -- Extract concrete max/min elements
+        simp only [has_max_sent, has_min_sent, eval, Fin.cons] at h_Z1_has_max h_Z1_has_min h_Z2_has_max h_Z2_has_min
+        obtain ⟨⟨z1_hi, hz1_hi⟩, h_z1_max⟩ := h_Z1_has_max
+        obtain ⟨⟨z1_lo, hz1_lo⟩, h_z1_min⟩ := h_Z1_has_min
+        obtain ⟨⟨z2_hi, hz2_hi⟩, h_z2_max⟩ := h_Z2_has_max
+        obtain ⟨⟨z2_lo, hz2_lo⟩, h_z2_min⟩ := h_Z2_has_min
+        -- Prove Z1.hi = some _, Z1.lo = some _, Z2.hi = some _, Z2.lo = some _
+        have h_Z1_hi_some : ∃ v, Z1.hi = some v := by
+          cases h_hi : Z1.hi with
+          | some v => exact ⟨v, rfl⟩
+          | none =>
+            exfalso
+            have h_in : Z1.lo.elim True (· ≤ z1_hi + 1) ∧ Z1.hi.elim True ((z1_hi + 1) ≤ ·) := by
+              refine ⟨?_, by simp [h_hi, Option.elim]⟩
+              have := hz1_hi.1; cases h_lo : Z1.lo with
+              | none => simp [Option.elim]
+              | some l => simp only [h_lo, Option.elim] at this ⊢; omega
+            exact h_z1_max ⟨z1_hi + 1, h_in⟩ (by omega : z1_hi < z1_hi + 1)
+        have h_Z1_lo_some : ∃ v, Z1.lo = some v := by
+          cases h_lo : Z1.lo with
+          | some v => exact ⟨v, rfl⟩
+          | none =>
+            exfalso
+            have h_in : Z1.lo.elim True (· ≤ z1_lo - 1) ∧ Z1.hi.elim True ((z1_lo - 1) ≤ ·) := by
+              refine ⟨by simp [h_lo, Option.elim], ?_⟩
+              have := hz1_lo.2; cases h_hi : Z1.hi with
+              | none => simp [Option.elim]
+              | some h => simp only [h_hi, Option.elim] at this ⊢; omega
+            exact h_z1_min ⟨z1_lo - 1, h_in⟩ (by omega : z1_lo - 1 < z1_lo)
+        have h_Z2_hi_some : ∃ v, Z2.hi = some v := by
+          cases h_hi : Z2.hi with
+          | some v => exact ⟨v, rfl⟩
+          | none =>
+            exfalso
+            have h_in : Z2.lo.elim True (· ≤ z2_hi + 1) ∧ Z2.hi.elim True ((z2_hi + 1) ≤ ·) := by
+              refine ⟨?_, by simp [h_hi, Option.elim]⟩
+              have := hz2_hi.1; cases h_lo : Z2.lo with
+              | none => simp [Option.elim]
+              | some l => simp only [h_lo, Option.elim] at this ⊢; omega
+            exact h_z2_max ⟨z2_hi + 1, h_in⟩ (by omega : z2_hi < z2_hi + 1)
+        have h_Z2_lo_some : ∃ v, Z2.lo = some v := by
+          cases h_lo : Z2.lo with
+          | some v => exact ⟨v, rfl⟩
+          | none =>
+            exfalso
+            have h_in : Z2.lo.elim True (· ≤ z2_lo - 1) ∧ Z2.hi.elim True ((z2_lo - 1) ≤ ·) := by
+              refine ⟨by simp [h_lo, Option.elim], ?_⟩
+              have := hz2_lo.2; cases h_hi : Z2.hi with
+              | none => simp [Option.elim]
+              | some h => simp only [h_hi, Option.elim] at this ⊢; omega
+            exact h_z2_min ⟨z2_lo - 1, h_in⟩ (by omega : z2_lo - 1 < z2_lo)
+        -- Extract bounds
+        obtain ⟨hi1, h_hi1⟩ := h_Z1_hi_some
+        obtain ⟨lo1, h_lo1⟩ := h_Z1_lo_some
+        obtain ⟨hi2, h_hi2⟩ := h_Z2_hi_some
+        obtain ⟨lo2, h_lo2⟩ := h_Z2_lo_some
+        -- Build Fintype for Z1.intervalCarrier and Z2.intervalCarrier
+        haveI : Fintype (witnesses false).carrier := by
+          show Fintype (ZIntervalStructure.toOrdered sig Z1).carrier
+          show Fintype Z1.intervalCarrier
+          exact Fintype.ofEquiv (Set.Icc lo1 hi1) {
+            toFun := fun ⟨z, hz⟩ => ⟨z, by
+              simp [ZIntervalStructure.intervalCarrier, h_lo1, h_hi1, Option.elim]
+              exact Set.mem_Icc.mp hz⟩
+            invFun := fun ⟨z, hz⟩ => ⟨z, by
+              simp [ZIntervalStructure.intervalCarrier, h_lo1, h_hi1, Option.elim] at hz
+              exact Set.mem_Icc.mpr hz⟩
+            left_inv := fun ⟨z, hz⟩ => rfl
+            right_inv := fun ⟨z, hz⟩ => rfl
+          }
+        haveI : Fintype (witnesses true).carrier := by
+          show Fintype (ZIntervalStructure.toOrdered sig Z2).carrier
+          show Fintype Z2.intervalCarrier
+          exact Fintype.ofEquiv (Set.Icc lo2 hi2) {
+            toFun := fun ⟨z, hz⟩ => ⟨z, by
+              simp [ZIntervalStructure.intervalCarrier, h_lo2, h_hi2, Option.elim]
+              exact Set.mem_Icc.mp hz⟩
+            invFun := fun ⟨z, hz⟩ => ⟨z, by
+              simp [ZIntervalStructure.intervalCarrier, h_lo2, h_hi2, Option.elim] at hz
+              exact Set.mem_Icc.mpr hz⟩
+            left_inv := fun ⟨z, hz⟩ => rfl
+            right_inv := fun ⟨z, hz⟩ => rfl
+          }
+        -- Fintype for Sigma (orderedSum carrier)
+        haveI : ∀ i : Bool, Fintype ((witnesses i).carrier) := by
+          intro i; cases i <;> assumption
+        haveI : Fintype (orderedSum sig Bool witnesses).carrier := Sigma.instFintype
+        -- Apply finite_structures_good
+        exact finite_structures_good sig (k'' + 2) (orderedSum sig Bool witnesses)
   -- Compose via transitivity of k_equiv (= equality of k-types)
   obtain ⟨Z3, hZ3⟩ := h_good
   exact ⟨Z3, (h_iso.trans h_sum).trans hZ3⟩
