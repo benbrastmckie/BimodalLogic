@@ -89,10 +89,11 @@ technical_debt:
 
 ### 158. Update README.md to reflect metalogic progress and improve organization
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Research**: [specs/158_update_readme_metalogic_progress/reports/01_team-research.md]
 - **Plan**: [158_update_readme_metalogic_progress/plans/01_readme-overhaul-plan.md]
+- **Summary**: [158_update_readme_metalogic_progress/summaries/01_readme-overhaul-summary.md]
 
 **Description**: Update README.md to reflect metalogic progress in BimodalLogic. Explain that this is the intensional bimodal fragment of the Logos developed by Logos Laboratories (link to https://logos-labs.ai/). Move codebase size to end of intro (not at end, not immediately). After introductions covering operators, task semantics, research paper, demo, and project structure, add sections for installation, core metalogical results (soundness and completeness for extensions of the base logic with a labeled mermaid diagram), documentation, related projects, and citation. README should be well-organized, clear, and concise.
 
