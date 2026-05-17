@@ -150,7 +150,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Formula Operations and Integer Helpers [NOT STARTED]
+### Phase 2: Formula Operations and Integer Helpers [COMPLETED]
 
 **Goal**: Create `Separation/FormulaOps.lean` with substitution, DNF/CNF signatures, and freshness; create `Separation/IntHelpers.lean` with integer-specific lemmas.
 

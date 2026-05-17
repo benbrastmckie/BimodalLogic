@@ -1,4 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
+import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
+import Bimodal.Metalogic.WeakCanonical.Separation.IntHelpers
 
 /-!
 # Separation Module Hub
@@ -8,6 +10,8 @@ Imports all submodules of the separation theorem proof for {U,S} over integer ti
 ## Architecture
 
 - `Defs.lean`: IntStructure, int_truth, purity predicates, separation predicates, measures
+- `FormulaOps.lean`: Substitution, DNF/CNF signatures, freshness
+- `IntHelpers.lean`: Integer-specific lemmas (finite intervals, witness constructions)
 
 ## References
 
