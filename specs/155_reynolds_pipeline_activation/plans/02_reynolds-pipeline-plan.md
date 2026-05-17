@@ -1,7 +1,7 @@
 # Implementation Plan: Reynolds Pipeline Activation (v2)
 
 - **Task**: 155 - reynolds_pipeline_activation
-- **Status**: [IN PROGRESS] (Phases 1-2 COMPLETED; Phase 3A delegated to task 157; Phases 4-6 can proceed)
+- **Status**: [IN PROGRESS] (Phases 1-2, 4-6 COMPLETED; Phase 3A delegated to task 157; Phase 3B blocked on 157; Phases 4b/6b await 3B)
 - **Effort**: 22 hours (original) + task 157 (~2500 lines, 3-4 weeks for expressive completeness)
 - **Dependencies**: Task 154 (sum_preservation/doets_lemma_1_4, COMPLETED), Tasks 147-148 (table_correctness, COMPLETED)
 - **Research Inputs**: specs/155_reynolds_pipeline_activation/reports/02_team-research.md
@@ -106,15 +106,15 @@ v1 plan (01_reynolds-pipeline-plan.md): Phase 1 validated (COMPLETED, correct ap
 |------|--------|------------|-------|
 | 1 | 1 | -- | COMPLETED |
 | 2 | 2 | 1 | COMPLETED |
-| 3 | 3A (expressive completeness) | 2 | **Delegated to task 157** |
-| 3 | 4 (very_good_implies_good) | 2 | **Can proceed NOW** (independent of 3A/3B) |
-| 3 | 5 (truth transfer infrastructure) | 2 | **Can proceed NOW** (takes chronicle_is_good as hypothesis) |
-| 3 | 6 (TaskFrame bridge) | 2 | **Can proceed NOW** (pure infrastructure) |
+| 3 | 3A (expressive completeness) | 2 | **Delegated to task 157** (in progress) |
+| 3 | 4 (very_good_implies_good) | 2 | COMPLETED |
+| 3 | 5 (truth transfer infrastructure) | 2 | COMPLETED (4 bridging sorries remain) |
+| 3 | 6 (TaskFrame bridge) | 2 | COMPLETED (pipeline wired, fallback removed) |
 | 4 | 3B (gap elimination → one_class) | 3A (= task 157) | Blocked on task 157 |
 | 5 | 4b (chronicle_is_good rewrite) | 3B, 4 | Wires one_class + very_good_implies_good |
-| 6 | 6b (final wiring) | 4b, 5, 6 | Replaces fallback in Transfer.lean |
+| 6 | 6b (final wiring) | 4b, 5, 6 | Close remaining bridging sorries |
 
-**Parallelism**: Phases 4, 5, 6 can proceed in parallel with task 157. They develop infrastructure that takes upstream results as hypotheses (sorry'd initially, filled when task 157 + Phase 3B complete). Phase 3B and the final wiring (4b, 6b) wait for task 157.
+**Current state**: Phases 1, 2, 4, 5, 6 are COMPLETED. The pipeline is structurally wired (fallback removed). 4 bridging sorries remain in Transfer.lean (chronicle_temporal_truth, z_interval_countermodel, Nonempty sig.preds, inline chronicle truth). These will be closed when Phase 3B provides one_class (after task 157) and Phase 4b rewrites chronicle_is_good. Phase 6b closes the remaining bridging sorries for sorry-free bx_completeness.
 
 ---
 
