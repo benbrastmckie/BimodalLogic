@@ -12,7 +12,24 @@
 
 ## Overview
 
-Formalize the expressive completeness theorem for {Since, Until} over integer time (GHR94 Theorem 10.2.9-10.2.10, Reynolds' Theorem 5). The proof proceeds in two stages: (A) prove every {U,S}-formula is equivalent to a syntactically separated formula over Z via a 4-level nested induction (Lemmas 10.2.1-10.2.8), and (B) show separation implies expressive completeness via Theorem 9.3.1. The formalization builds ~1690 lines across 11 Lean files under `Theories/Bimodal/Metalogic/WeakCanonical/Separation/` and `ExpressiveCompleteness.lean`. The planned 17-file structure was consolidated during implementation: Lemmas 10.2.4-10.2.8 share `SeparationThm.lean`; FO infrastructure lives in `ExpressiveCompleteness.lean`. Definition of done: `lake build` passes with zero sorries and all theorems fully proved.
+Formalize the expressive completeness theorem for {Since, Until} over integer time (GHR94 Theorem 10.2.9-10.2.10, Reynolds' Theorem 5). The proof proceeds in two stages: (A) prove every {U,S}-formula is equivalent to a syntactically separated formula over Z via a 4-level nested induction (Lemmas 10.2.1-10.2.8), and (B) show separation implies expressive completeness via Theorem 9.3.1. The formalization builds ~1690 lines across 11 Lean files under `Theories/Bimodal/Metalogic/WeakCanonical/Separation/` and `ExpressiveCompleteness.lean`. Definition of done: `lake build` passes with zero sorries and all theorems fully proved.
+
+### Implementation Deviation: Consolidation
+
+The original plan designed 17 files across 15 phases. During implementation, the proof structure was consolidated:
+- **Phases 10-13** (Lemmas 10.2.4-10.2.8, FO-to-Temporal) are trivial corollaries of `all_separable` in `SeparationThm.lean`. No separate files needed.
+- **Phase 14** (`SeparationThm.lean`) contains the main inductive proof `all_separable` plus corollary theorem statements. This is where the real remaining work lives (4 sorries in all_past/all_future/untl/snce inductive cases).
+- **Phase 15** (`ExpressiveCompleteness.lean`) consolidates FO-to-Temporal infrastructure with the final theorem (1 sorry).
+- Total files: 9 in `Separation/` + 1 top-level `ExpressiveCompleteness.lean` = 10 files (vs. 17 planned)
+
+### Current Sorry Inventory (17 total)
+
+| File | Sorries | Notes |
+|------|---------|-------|
+| Eliminations.lean | 4 | Cases 5-8 (Case 5 is key blocker; 6-8 reduce to it) |
+| DualEliminations.lean | 8 | All 8 duals (mechanical from duality once cases proved) |
+| SeparationThm.lean | 4 | `all_separable` inductive cases (need all elimination cases) |
+| ExpressiveCompleteness.lean | 1 | Final theorem (needs `all_separable`) |
 
 ### Research Integration
 
@@ -383,7 +400,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 10: Lemma 10.2.4 (Single S with Top-Level U) [PARTIAL]
+### Phase 10: Lemma 10.2.4 (Single S with Top-Level U) [SUPERSEDED]
 
 **Goal**: Prove that S(C,F) where U appears only as U(A,B) at top level can be separated into 8 canonical forms.
 
@@ -414,7 +431,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 11: Lemma 10.2.5 (Single U Formula, Induction on S-Depth) [PARTIAL]
+### Phase 11: Lemma 10.2.5 (Single U Formula, Induction on S-Depth) [SUPERSEDED]
 
 **Goal**: Prove that if the only U in D is U(A,B) with A,B atomic, then D is separable.
 
@@ -442,7 +459,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 12: Lemma 10.2.6 (Multiple U Formulas, Count Induction) [PARTIAL]
+### Phase 12: Lemma 10.2.6 (Multiple U Formulas, Count Induction) [SUPERSEDED]
 
 **Goal**: Prove that if all U in D are U(A_i, B_i) with atomic arguments, D is separable.
 
@@ -472,7 +489,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 13: FO-to-Temporal Infrastructure (Theorem 9.3.1 Preparation) [PARTIAL]
+### Phase 13: FO-to-Temporal Infrastructure (Theorem 9.3.1 Preparation) [SUPERSEDED]
 
 **Goal**: Build the first-order logic infrastructure needed for Theorem 9.3.1, independent of the separation proof.
 
