@@ -273,16 +273,16 @@ Phases within the same wave can execute in parallel.
 
 **Goal**: Prove the two "direct semantic" elimination cases that form the foundation for all others.
 
-**Current state**: All 8 elimination cases stated in `Eliminations.lean` (168 LOC) but all 8 proofs are `sorry`. These are the core semantic arguments requiring GHR94 Section 10.2 case-by-case analysis.
+**Current state**: Case 1 PROVED (sorry-free). Case 5 and Cases 2-8 remain sorry. The file was restructured with helper lemmas (int_truth_and_iff, int_truth_or_iff, u_free_s_free_imp_separated) and Case 1 uses explicit GHR94 trichotomy on U-witness position.
 
 **Tasks**:
-- [ ] State and prove `elim_case_1`: S(a ^ U(A,B), q) equivalence (3 disjuncts based on U-witness location)
+- [x] State and prove `elim_case_1`: S(a ^ U(A,B), q) equivalence (3 disjuncts based on U-witness location) *(completed — full semantic proof with lt_trichotomy)*
   - (→): case split on u vs t using `lt_trichotomy`
   - (←): verify each disjunct implies the original
-- [ ] State and prove `elim_case_5`: S(a ^ U(A,B), q v U(A,B)) equivalence
+- [ ] State and prove `elim_case_5`: S(a ^ U(A,B), q v U(A,B)) equivalence *(deviation: deferred — requires cascading U-witness well-ordering argument)*
   - Split on whether U-witness is past/present/future of t
-- [ ] Both cases require atoms a, q, A, B to be U-free and S-free
-- [ ] Verify `lake build` passes
+- [x] Both cases require atoms a, q, A, B to be U-free and S-free
+- [x] Verify `lake build` passes
 
 **Timing**: 4 hours
 
