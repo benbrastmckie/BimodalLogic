@@ -236,14 +236,29 @@ where
 
 /-- Predicate: U only appears in the formula as the specific subformula U(A,B),
     not under any S (i.e., all occurrences of U(A,B) are at "top level" w.r.t. S). -/
-def u_appearances_top_level_only (φ A B : Formula) : Prop :=
-  -- All U occurrences in φ are of the form untl A B, and none are under an snce
-  sorry
+def u_appearances_top_level_only : Formula → Formula → Formula → Prop
+  | .atom _, _, _ => True
+  | .bot, _, _ => True
+  | .imp φ ψ, A, B => u_appearances_top_level_only φ A B ∧ u_appearances_top_level_only ψ A B
+  | .box φ, A, B => u_appearances_top_level_only φ A B
+  | .all_past φ, A, B => u_appearances_top_level_only φ A B
+  | .all_future φ, A, B => u_appearances_top_level_only φ A B
+  | .untl φ ψ, A, B => φ = A ∧ ψ = B  -- Only the specific U(A,B) is allowed
+  | .snce φ ψ, A, B =>
+    -- Under S: no untl allowed at all (U must be at top level, not under S)
+    is_U_free φ = true ∧ is_U_free ψ = true
 
 /-- Predicate: In the result formula, U(A,B) appears only at top level
-    (not under any S). -/
-def u_appears_only_as_top_level (phi A B : Formula) : Prop :=
-  sorry
+    (not under any S). Equivalent to: under every S, the formula is U-free. -/
+def u_appears_only_as_top_level : Formula → Formula → Formula → Prop
+  | .atom _, _, _ => True
+  | .bot, _, _ => True
+  | .imp φ ψ, A, B => u_appears_only_as_top_level φ A B ∧ u_appears_only_as_top_level ψ A B
+  | .box φ, A, B => u_appears_only_as_top_level φ A B
+  | .all_past φ, A, B => u_appears_only_as_top_level φ A B
+  | .all_future φ, A, B => u_appears_only_as_top_level φ A B
+  | .untl φ ψ, A, B => u_appears_only_as_top_level φ A B ∧ u_appears_only_as_top_level ψ A B
+  | .snce φ ψ, _, _ => is_U_free φ = true ∧ is_U_free ψ = true
 
 /-- Predicate: the formula has no S nested within any U. -/
 def no_S_nested_in_U : Formula -> Prop

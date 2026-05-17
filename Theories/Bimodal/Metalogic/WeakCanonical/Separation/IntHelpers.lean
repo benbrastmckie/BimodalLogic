@@ -116,12 +116,42 @@ theorem neg_bot_true (M : IntStructure) (t : Int) :
     S(a, True) means: there exists s < t with a(s), and True holds trivially on (s,t). -/
 theorem since_top_is_past (a : Formula) :
     int_equiv (.snce a (Formula.neg .bot)) (Formula.some_past a) := by
-  sorry
+  intro M t
+  constructor
+  · rintro ⟨s, hst, ha, _⟩
+    show ((∀ s' : ℤ, s' < t → int_truth M s' a → False) → False)
+    intro hall
+    exact hall s hst ha
+  · intro hsp
+    show ∃ s, s < t ∧ int_truth M s a ∧ ∀ r, s < r → r < t → (int_truth M r (.imp .bot .bot))
+    by_contra hno
+    push_neg at hno
+    apply hsp
+    show (∀ s : ℤ, s < t → int_truth M s a → False)
+    intro s hst ha
+    have := hno s hst ha
+    obtain ⟨r, hr1, hr2, habs⟩ := this
+    exact habs id
 
 /-- In Z, U(a, neg bot) iff some_future a.
     U(a, True) means: there exists s > t with a(s), and True holds trivially on (t,s). -/
 theorem until_top_is_future (a : Formula) :
     int_equiv (.untl a (Formula.neg .bot)) (Formula.some_future a) := by
-  sorry
+  intro M t
+  constructor
+  · rintro ⟨s, hts, ha, _⟩
+    show ((∀ s' : ℤ, t < s' → int_truth M s' a → False) → False)
+    intro hall
+    exact hall s hts ha
+  · intro hsp
+    show ∃ s, t < s ∧ int_truth M s a ∧ ∀ r, t < r → r < s → (int_truth M r (.imp .bot .bot))
+    by_contra hno
+    push_neg at hno
+    apply hsp
+    show (∀ s : ℤ, t < s → int_truth M s a → False)
+    intro s hts ha
+    have := hno s hts ha
+    obtain ⟨r, hr1, hr2, habs⟩ := this
+    exact habs id
 
 end Bimodal.Metalogic.WeakCanonical.Separation

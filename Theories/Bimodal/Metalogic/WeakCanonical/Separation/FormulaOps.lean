@@ -52,7 +52,38 @@ theorem subst_correctness (phi : Formula) (target : Atom) (replacement : Formula
     (M : IntStructure) (t : Int) :
     int_truth M t (subst_formula phi target replacement) ↔
     int_truth (M.withAtom target {s | int_truth M s replacement}) t phi := by
-  sorry
+  induction phi generalizing t with
+  | atom a =>
+    simp only [subst_formula]
+    split
+    · next h => subst h; simp [int_truth, IntStructure.withAtom, Set.mem_setOf_eq]
+    · next h => simp [int_truth, IntStructure.withAtom, h]
+  | bot => exact Iff.rfl
+  | imp p q ihp ihq =>
+    constructor
+    · intro h hp; exact (ihq t).mp (h ((ihp t).mpr hp))
+    · intro h hp; exact (ihq t).mpr (h ((ihp t).mp hp))
+  | box p _ih => exact Iff.rfl
+  | all_past p ih =>
+    constructor
+    · intro h s hst; exact (ih s).mp (h s hst)
+    · intro h s hst; exact (ih s).mpr (h s hst)
+  | all_future p ih =>
+    constructor
+    · intro h s hts; exact (ih s).mp (h s hts)
+    · intro h s hts; exact (ih s).mpr (h s hts)
+  | untl p q ihp ihq =>
+    constructor
+    · rintro ⟨s, hts, hp, hq⟩
+      exact ⟨s, hts, (ihp s).mp hp, fun r hr1 hr2 => (ihq r).mp (hq r hr1 hr2)⟩
+    · rintro ⟨s, hts, hp, hq⟩
+      exact ⟨s, hts, (ihp s).mpr hp, fun r hr1 hr2 => (ihq r).mpr (hq r hr1 hr2)⟩
+  | snce p q ihp ihq =>
+    constructor
+    · rintro ⟨s, hst, hp, hq⟩
+      exact ⟨s, hst, (ihp s).mp hp, fun r hr1 hr2 => (ihq r).mp (hq r hr1 hr2)⟩
+    · rintro ⟨s, hst, hp, hq⟩
+      exact ⟨s, hst, (ihp s).mpr hp, fun r hr1 hr2 => (ihq r).mpr (hq r hr1 hr2)⟩
 
 /-! ## Normal Form Signatures -/
 

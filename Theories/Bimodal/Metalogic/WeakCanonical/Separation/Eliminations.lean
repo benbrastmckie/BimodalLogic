@@ -53,7 +53,7 @@ theorem elim_case_1 (a q A B : Formula)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     ∃ psi : Formula,
       int_equiv (.snce (Formula.and a (.untl A B)) q) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 /-! ## Case 5: S(a ^ U(A,B), q v U(A,B))
@@ -75,7 +75,7 @@ theorem elim_case_5 (a q A B : Formula)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     ∃ psi : Formula,
       int_equiv (.snce (Formula.and a (.untl A B)) (Formula.or q (.untl A B))) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 /-! ## Case 2: S(a ^ not U(A,B), q) -/
@@ -89,7 +89,7 @@ theorem elim_case_2 (a q A B : Formula)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     ∃ psi : Formula,
       int_equiv (.snce (Formula.and a (Formula.neg (.untl A B))) q) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 /-! ## Case 4: S(a, q v not U(A,B)) -/
@@ -103,7 +103,7 @@ theorem elim_case_4 (a q A B : Formula)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     ∃ psi : Formula,
       int_equiv (.snce a (Formula.or q (Formula.neg (.untl A B)))) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 /-! ## Case 3: S(a, q v U(A,B)) -/
@@ -117,7 +117,7 @@ theorem elim_case_3 (a q A B : Formula)
     (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
     ∃ psi : Formula,
       int_equiv (.snce a (Formula.or q (.untl A B))) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 /-! ## Case 6: S(a ^ not U(A,B), q v U(A,B)) -/
@@ -132,7 +132,7 @@ theorem elim_case_6 (a q A B : Formula)
     ∃ psi : Formula,
       int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
         (Formula.or q (.untl A B))) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 /-! ## Case 7: S(a ^ U(A,B), q v not U(A,B)) -/
@@ -147,7 +147,7 @@ theorem elim_case_7 (a q A B : Formula)
     ∃ psi : Formula,
       int_equiv (.snce (Formula.and a (.untl A B))
         (Formula.or q (Formula.neg (.untl A B)))) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 /-! ## Case 8: S(a ^ not U(A,B), q v not U(A,B)) -/
@@ -162,7 +162,7 @@ theorem elim_case_8 (a q A B : Formula)
     ∃ psi : Formula,
       int_equiv (.snce (Formula.and a (Formula.neg (.untl A B)))
         (Formula.or q (Formula.neg (.untl A B)))) psi ∧
-      is_U_free psi = true := by
+      is_syntactically_separated psi = true := by
   sorry
 
 end Bimodal.Metalogic.WeakCanonical.Separation
