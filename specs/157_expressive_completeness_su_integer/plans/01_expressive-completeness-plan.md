@@ -32,6 +32,39 @@ No prior plan.
 
 No ROADMAP.md found.
 
+## Literature References (MANDATORY)
+
+Implementation agents MUST follow the precise constructions given in the literature below. Do not invent alternative proof strategies, reformulate definitions, or deviate from the published proof structure. The research report (`specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md`) maps each step to GHR94 with exact pseudo-Lean signatures — use it as the primary reference during implementation.
+
+**Primary source**:
+- Gabbay, D.M., Hodkinson, I., and Reynolds, M. (1994). *Temporal Logic: Mathematical Foundations and Computational Aspects, Volume 1*. Oxford University Press.
+  - **Chapter 10, Section 10.2** (pp. 569–592): Separation theorem for integer time. Contains Lemmas 10.2.1–10.2.8 and Theorem 10.2.9.
+  - **Chapter 9, Section 9.3** (pp. 507–520): Theorem 9.3.1 (separation implies expressive completeness).
+  - Markdown conversions available in `literature/` directory.
+
+**Secondary sources** (consult if stuck on a specific sub-proof):
+- Reynolds, M. (2010). "The Complexity of Temporal Logic over the Reals." *Annals of Pure and Applied Logic* 161(8), 1063–1096. — Reynolds' numbering: Theorem 5 = our 10.2.10; Theorem 14 = gap elimination (task 155).
+- Gabbay, D.M. (1981). "Expressive Functional Completeness in Tense Logic." In *Aspects of Philosophical Logic*, ed. U. Mönnich, Reidel, pp. 91–117. — Original statement of separation for Z; less detailed proofs but useful for intuition on the 8 cases.
+- Kamp, H. (1968). *Tense Logic and the Theory of Linear Order*. PhD thesis, UCLA. — Historical context; shows why Until/Since suffice (Kamp's theorem for reals, extended to Z by Gabbay).
+
+**How to use**: Each phase references specific GHR94 lemma numbers. When implementing a phase, read the corresponding section of GHR94 (via `literature/` markdown files) alongside the pseudo-Lean in the research report. The research report Section 4–6 gives the exact Lean type signatures to implement; GHR94 gives the semantic arguments to formalize.
+
+## Deviation Policy (MANDATORY)
+
+Implementation agents MUST NOT improvise, skip steps, or invent alternative proof strategies when encountering difficulty. The following protocol is required:
+
+1. **If a phase is harder than expected but the approach is clear**: Continue working within the phase. Use `sorry` for specific sub-lemmas that are taking too long, but preserve the overall proof structure from the literature.
+
+2. **If the GHR94 proof step seems incorrect, incomplete, or unclear**: STOP. Mark the phase as `[BLOCKED]` with a clear description of what is unclear or appears wrong. Do NOT attempt an alternative construction.
+
+3. **If the Lean formalization requires infrastructure not anticipated in the plan**: STOP. Mark the phase as `[BLOCKED]` explaining what infrastructure is missing and why.
+
+4. **If a definition or type signature from the research report doesn't work as written**: STOP. Mark the phase as `[BLOCKED]` explaining the type error or structural issue.
+
+5. **After blocking**: The primary agent will run a `/research` cycle targeting the specific blocker, then `/revise` the plan before resuming `/implement`. This ensures all deviations are documented and reviewed rather than silently accumulating.
+
+**Rationale**: This proof has a precise, well-understood structure from the literature. Ad-hoc modifications compound into unrecoverable divergences from the published proof. It is always cheaper to research a blocker than to debug a creative workaround.
+
 ## Goals & Non-Goals
 
 **Goals**:
