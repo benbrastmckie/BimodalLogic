@@ -158,41 +158,334 @@ theorem q_exists_correct (A : Formula) (M : Separation.IntStructure) (t : Int) :
       intro h_all
       exact h_all s hst hs
 
+/-! ## Purity Semantic Lemmas
+
+These lemmas establish that syntactic purity (is_past_only, is_future_only)
+implies semantic purity: past-only formulas depend only on times < t,
+and future-only formulas depend only on times > t. -/
+
+/-- Syntactically past-only formulas are semantically pure-past:
+    their truth at t depends only on the valuation at times ≤ t. -/
+theorem past_only_is_pure_past {φ : Formula} (h : Separation.is_past_only φ = true) :
+    ∀ (M₁ M₂ : Separation.IntStructure) (t : Int),
+      (∀ (a : Bimodal.Syntax.Atom) (s : Int), s ≤ t → (s ∈ M₁.val a ↔ s ∈ M₂.val a)) →
+      (Separation.int_truth M₁ t φ ↔ Separation.int_truth M₂ t φ) := by
+  induction φ with
+  | atom a =>
+    intro M₁ M₂ t hagree
+    simp only [Separation.int_truth]
+    exact hagree a t (le_refl t)
+  | bot =>
+    intro _ _ _ _
+    exact Iff.rfl
+  | imp α β ihα ihβ =>
+    simp only [Separation.is_past_only, Bool.and_eq_true] at h
+    intro M₁ M₂ t hagree
+    have hα_iff := ihα h.1 M₁ M₂ t hagree
+    have hβ_iff := ihβ h.2 M₁ M₂ t hagree
+    constructor
+    · intro h12 hα2; exact hβ_iff.mp (h12 (hα_iff.mpr hα2))
+    · intro h12 hα1; exact hβ_iff.mpr (h12 (hα_iff.mp hα1))
+  | box _ =>
+    intro _ _ _ _
+    exact Iff.rfl
+  | all_past α ih =>
+    simp only [Separation.is_past_only] at h
+    intro M₁ M₂ t hagree
+    constructor
+    · intro hall s hst
+      exact (ih h M₁ M₂ s (fun a r hrt => hagree a r (le_trans hrt (le_of_lt hst)))).mp (hall s hst)
+    · intro hall s hst
+      exact (ih h M₁ M₂ s (fun a r hrt => hagree a r (le_trans hrt (le_of_lt hst)))).mpr (hall s hst)
+  | all_future _ =>
+    exact absurd h (by simp [Separation.is_past_only])
+  | untl _ _ =>
+    exact absurd h (by simp [Separation.is_past_only])
+  | snce α β ihα ihβ =>
+    simp only [Separation.is_past_only, Bool.and_eq_true] at h
+    intro M₁ M₂ t hagree
+    constructor
+    · rintro ⟨s, hst, hα, hβ⟩
+      exact ⟨s, hst,
+        (ihα h.1 M₁ M₂ s (fun a r hrs => hagree a r (le_trans hrs (le_of_lt hst)))).mp hα,
+        fun r hr1 hr2 =>
+          (ihβ h.2 M₁ M₂ r (fun a u hur => hagree a u (le_trans hur (le_of_lt hr2)))).mp (hβ r hr1 hr2)⟩
+    · rintro ⟨s, hst, hα, hβ⟩
+      exact ⟨s, hst,
+        (ihα h.1 M₁ M₂ s (fun a r hrs => hagree a r (le_trans hrs (le_of_lt hst)))).mpr hα,
+        fun r hr1 hr2 =>
+          (ihβ h.2 M₁ M₂ r (fun a u hur => hagree a u (le_trans hur (le_of_lt hr2)))).mpr (hβ r hr1 hr2)⟩
+
+/-- Syntactically future-only formulas are semantically pure-future:
+    their truth at t depends only on the valuation at times ≥ t. -/
+theorem future_only_is_pure_future {φ : Formula} (h : Separation.is_future_only φ = true) :
+    ∀ (M₁ M₂ : Separation.IntStructure) (t : Int),
+      (∀ (a : Bimodal.Syntax.Atom) (s : Int), t ≤ s → (s ∈ M₁.val a ↔ s ∈ M₂.val a)) →
+      (Separation.int_truth M₁ t φ ↔ Separation.int_truth M₂ t φ) := by
+  induction φ with
+  | atom a =>
+    intro M₁ M₂ t hagree
+    simp only [Separation.int_truth]
+    exact hagree a t (le_refl t)
+  | bot =>
+    intro _ _ _ _
+    exact Iff.rfl
+  | imp α β ihα ihβ =>
+    simp only [Separation.is_future_only, Bool.and_eq_true] at h
+    intro M₁ M₂ t hagree
+    have hα_iff := ihα h.1 M₁ M₂ t hagree
+    have hβ_iff := ihβ h.2 M₁ M₂ t hagree
+    constructor
+    · intro h12 hα2; exact hβ_iff.mp (h12 (hα_iff.mpr hα2))
+    · intro h12 hα1; exact hβ_iff.mpr (h12 (hα_iff.mp hα1))
+  | box _ =>
+    intro _ _ _ _
+    exact Iff.rfl
+  | all_past _ =>
+    exact absurd h (by simp [Separation.is_future_only])
+  | all_future α ih =>
+    simp only [Separation.is_future_only] at h
+    intro M₁ M₂ t hagree
+    constructor
+    · intro hall s hts
+      exact (ih h M₁ M₂ s (fun a r hrs => hagree a r (le_trans (le_of_lt hts) hrs))).mp (hall s hts)
+    · intro hall s hts
+      exact (ih h M₁ M₂ s (fun a r hrs => hagree a r (le_trans (le_of_lt hts) hrs))).mpr (hall s hts)
+  | untl α β ihα ihβ =>
+    simp only [Separation.is_future_only, Bool.and_eq_true] at h
+    intro M₁ M₂ t hagree
+    constructor
+    · rintro ⟨s, hts, hα, hβ⟩
+      exact ⟨s, hts,
+        (ihα h.1 M₁ M₂ s (fun a r hrs => hagree a r (le_trans (le_of_lt hts) hrs))).mp hα,
+        fun r hr1 hr2 =>
+          (ihβ h.2 M₁ M₂ r (fun a u hur => hagree a u (le_trans (le_of_lt hr1) hur))).mp (hβ r hr1 hr2)⟩
+    · rintro ⟨s, hts, hα, hβ⟩
+      exact ⟨s, hts,
+        (ihα h.1 M₁ M₂ s (fun a r hrs => hagree a r (le_trans (le_of_lt hts) hrs))).mpr hα,
+        fun r hr1 hr2 =>
+          (ihβ h.2 M₁ M₂ r (fun a u hur => hagree a u (le_trans (le_of_lt hr1) hur))).mpr (hβ r hr1 hr2)⟩
+  | snce _ _ =>
+    exact absurd h (by simp [Separation.is_future_only])
+
+/-! ## Substitution under Purity
+
+When a properly separated formula is decomposed, atoms in past-only parts
+can be substituted based on the fact that those parts only evaluate at past times,
+and atoms in future-only parts can be substituted based on future evaluation. -/
+
+/-- In a past-only formula, substituting an atom whose truth at times ≤ t matches
+    a replacement formula preserves truth at t. -/
+theorem past_only_subst_correct {φ : Formula} (hpo : Separation.is_past_only φ = true)
+    (target : Bimodal.Syntax.Atom) (replacement : Formula)
+    (M : Separation.IntStructure) (t : Int)
+    (h_match : ∀ s : Int, s ≤ t →
+      (Separation.int_truth M s replacement ↔ s ∈ M.val target)) :
+    Separation.int_truth M t (Separation.subst_formula φ target replacement) ↔
+    Separation.int_truth M t φ := by
+  rw [Separation.subst_correctness]
+  apply past_only_is_pure_past hpo
+  intro a s hst
+  simp only [Separation.IntStructure.withAtom]
+  split
+  · next heq => subst heq; simp only [Set.mem_setOf_eq]; exact h_match s hst
+  · exact Iff.rfl
+
+/-- In a future-only formula, substituting an atom whose truth at times ≥ t matches
+    a replacement formula preserves truth at t. -/
+theorem future_only_subst_correct {φ : Formula} (hfo : Separation.is_future_only φ = true)
+    (target : Bimodal.Syntax.Atom) (replacement : Formula)
+    (M : Separation.IntStructure) (t : Int)
+    (h_match : ∀ s : Int, t ≤ s →
+      (Separation.int_truth M s replacement ↔ s ∈ M.val target)) :
+    Separation.int_truth M t (Separation.subst_formula φ target replacement) ↔
+    Separation.int_truth M t φ := by
+  rw [Separation.subst_correctness]
+  apply future_only_is_pure_future hfo
+  intro a s hts
+  simp only [Separation.IntStructure.withAtom]
+  split
+  · next heq => subst heq; simp only [Set.mem_setOf_eq]; exact h_match s hts
+  · exact Iff.rfl
+
 /-! ## Theorem 9.3.1: Separation Implies Expressive Completeness -/
 
-/-- Theorem 9.3.1 (GHR94): If {U,S} has the PROPER separation property over Z
-    (every formula is equivalent to a properly separated formula), and P, F are
-    definable (which they are: P(A) = S(A, True), F(A) = U(A, True)),
-    then {U,S} is expressively complete over Z.
+/-- Helper: Every element of `Fin 1` is `⟨0, _⟩`. -/
+private theorem fin1_eq_zero (i : Fin 1) : i = ⟨0, Nat.zero_lt_one⟩ :=
+  Fin.ext (Nat.lt_one_iff.mp i.isLt)
 
-    Proof by induction on quantifier depth m of the FO formula.
+/-- Helper: `Fin.cons t Fin.elim0 = fun _ => t` for environments over Fin 1. -/
+private theorem env_fin1_cons {α : Type} (t : α) :
+    (Fin.cons t Fin.elim0 : Fin 1 → α) = (fun _ => t) := by
+  funext i; rw [fin1_eq_zero i]; rfl
 
-    Base case (m = 0): Quantifier-free formula psi(t). Replace t=t by True, t<t by False,
-    Q_i(t) by atom q_i. Done.
+/-! ### Extended Signature for Quantifier Elimination
 
-    Inductive case (m > 0): Reduce to exists z, psi(t,z) with psi of depth <= m.
-    1. Introduce predicates R_=(y) = (t=y), R_>(y) = (t<y), R_<(y) = (y<t).
-    2. Rewrite psi as psi'(z, Q, R_=, R_>, R_<) not mentioning t explicitly.
-    3. By IH, find temporal A_j for each depth-m sub-case.
-    4. Form B using Q_exists to express the existential quantifier.
-    5. B contains extra atoms r_=, r_>, r_<. Use PROPER SEPARATION to decompose B.
-    6. Substitute: in pure past parts (is_past_only), r_> = True, r_= = False, r_< = False;
-       in pure future parts (is_future_only), r_> = False, r_= = False, r_< = True;
-       in pure present parts, r_> = False, r_= = True, r_< = False.
-    7. The resulting B* no longer mentions r_=, r_>, r_< and is the temporal
-       equivalent of psi.
+When translating `∃z. α(z, t)` from FO to temporal logic, we replace the
+two-variable formula with a one-variable formula over an extended signature.
+The extended signature adds predicates that encode the ordering between the
+quantified variable z and the reference time t, plus predicates for "P holds
+at the reference time t" (which is constant relative to z). -/
 
-    The proper separation guarantee (is_properly_separated) ensures semantic purity:
-    past-only parts genuinely depend only on the past, future-only parts depend only
-    on the future. This is required for the substitution in step 6 to be correct. -/
+/-- Extended predicate type: adds order-relation predicates and
+    constant-at-reference predicates to the original signature. -/
+inductive ExtPred (sig : MonadicSignature) where
+  /-- Original predicate from sig -/
+  | orig (p : sig.preds) : ExtPred sig
+  /-- "P holds at reference time t" (constant predicate) -/
+  | const_at_ref (p : sig.preds) : ExtPred sig
+  /-- z < t: quantified variable is before reference time -/
+  | lt_ref : ExtPred sig
+  /-- t < z: reference time is before quantified variable -/
+  | gt_ref : ExtPred sig
+  deriving DecidableEq
+
+instance {sig : MonadicSignature} : Fintype (ExtPred sig) where
+  elems := (Finset.univ.map ⟨ExtPred.orig, fun _ _ h => by cases h; rfl⟩) ∪
+    (Finset.univ.map ⟨ExtPred.const_at_ref, fun _ _ h => by cases h; rfl⟩) ∪
+    {ExtPred.lt_ref, ExtPred.gt_ref}
+  complete := by
+    intro x
+    cases x with
+    | orig p => simp [Finset.mem_union, Finset.mem_map]
+    | const_at_ref p => simp [Finset.mem_union, Finset.mem_map]
+    | lt_ref => simp [Finset.mem_union]
+    | gt_ref => simp [Finset.mem_union]
+
+/-- The extended monadic signature. -/
+def extSignature (sig : MonadicSignature) : MonadicSignature where
+  preds := ExtPred sig
+
+/-! ### Quantifier Elimination Reduction
+
+The `reduce` function translates a formula with 2 free variables to one with
+1 free variable over the extended signature, by replacing references to
+variable 1 (the reference time t) with extended predicates. We specialize
+to the case n=1 (from 2 to 1 variables) which is the only case needed
+for Theorem 9.3.1. -/
+
+/-- False in MonadicFormula with at least 1 free variable: x_0 < x_0 -/
+private def monadicFalse (sig : MonadicSignature) (n : Nat) (h : 0 < n) :
+    MonadicFormula sig n :=
+  MonadicFormula.lt (Fin.mk 0 h) (Fin.mk 0 h)
+
+/-- monadicFalse evaluates to False in any ordered structure. -/
+private theorem monadicFalse_eval {sig : MonadicSignature} {n : Nat} (h : 0 < n)
+    (M : OrderedMonadicStructure sig) (env : Fin n -> M.carrier) :
+    eval M env (monadicFalse sig n h) = False := by
+  simp [monadicFalse, eval]
+
+/-- General reduction: eliminate the LAST variable (index n) from a formula with (n+1) variables.
+    The last variable represents the reference time t. References to it are replaced by
+    extended predicates (const_at_ref for atoms, lt_ref/gt_ref for order comparisons).
+    This is well-founded by structural recursion on MonadicFormula. -/
+noncomputable def reduceElimLast {sig : MonadicSignature} :
+    (n : Nat) -> MonadicFormula sig (n + 1) -> MonadicFormula (extSignature sig) n
+  | n, .atom p i =>
+    if h : i.val < n then
+      .atom (.orig p) (Fin.mk i.val h)
+    else
+      -- i.val = n: references the last variable (t)
+      match n with
+      | 0 => .all (monadicFalse (extSignature sig) 1 Nat.zero_lt_one) -- dummy sentence
+      | Nat.succ m => .atom (.const_at_ref p) (Fin.mk 0 (Nat.zero_lt_succ m))
+  | n, .lt i j =>
+    if hi : i.val < n then
+      if hj : j.val < n then
+        .lt (Fin.mk i.val hi) (Fin.mk j.val hj)
+      else
+        -- i < n, j = n: var_i < t
+        match n with
+        | 0 => .all (monadicFalse (extSignature sig) 1 Nat.zero_lt_one)
+        | Nat.succ m => .atom .lt_ref (Fin.mk i.val (by omega : i.val < m + 1))
+    else
+      if hj : j.val < n then
+        -- i = n, j < n: t < var_j
+        match n with
+        | 0 => .all (monadicFalse (extSignature sig) 1 Nat.zero_lt_one)
+        | Nat.succ m => .atom .gt_ref (Fin.mk j.val (by omega : j.val < m + 1))
+      else
+        -- i = n, j = n: t < t = False
+        match n with
+        | 0 => .all (monadicFalse (extSignature sig) 1 Nat.zero_lt_one)
+        | Nat.succ m => monadicFalse (extSignature sig) (m + 1) (Nat.zero_lt_succ m)
+  | n, .not beta => .not (reduceElimLast n beta)
+  | n, .and beta gamma => .and (reduceElimLast n beta) (reduceElimLast n gamma)
+  | n, .all beta => .all (reduceElimLast (n + 1) beta)
+  | n, .ex beta => .ex (reduceElimLast (n + 1) beta)
+
+/-- Core lemma: for a FIXED injective atomMap, every MonadicFormula sig 1 has a
+    temporal equivalent. This is the form needed for the induction to go through,
+    since the conjunction case requires a common atomMap.
+
+    The proof uses well-founded recursion on the formula structure. For the
+    quantifier cases, the sub-formula has 2 free variables and requires the
+    full GHR94 quantifier elimination machinery (reduce + q_exists + separation
+    + substitution). -/
+private noncomputable def expressiveness_fixed_atomMap
+    (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi)
+    (sig : MonadicSignature)
+    (atomMap : sig.preds -> Bimodal.Syntax.Atom)
+    (hinj : Function.Injective atomMap) :
+    (psi : MonadicFormula sig 1) ->
+    { A : Formula // ∀ (M : IntStructureFromSig sig) (t : Int),
+        eval (int_to_ordered sig M) (fun _ => t) psi ↔
+        Separation.int_truth (to_int_struct M atomMap) t A }
+  | .atom p i =>
+    -- P(t) maps to Formula.atom (atomMap p)
+    ⟨Formula.atom (atomMap p), fun M t => by
+      simp only [eval, Separation.int_truth, to_int_struct, Set.mem_setOf_eq]
+      exact Iff.intro (fun h => ⟨p, rfl, h⟩)
+        (fun ⟨q, hq, hinterp⟩ => hinj hq ▸ hinterp)⟩
+  | .lt i j =>
+    -- Both i, j : Fin 1, so both are 0. t < t is always False.
+    ⟨Formula.bot, fun M t => by
+      simp only [eval, Separation.int_truth]
+      exact Iff.intro (fun h => absurd h (lt_irrefl _)) False.elim⟩
+  | .not alpha =>
+    let ihA := expressiveness_fixed_atomMap h_sep sig atomMap hinj alpha
+    ⟨Formula.neg ihA.val, fun M t => by
+      simp only [eval, Separation.int_truth, Formula.neg]
+      exact Iff.intro (fun h hAt => h (ihA.property M t |>.mpr hAt))
+                       (fun h ha => h (ihA.property M t |>.mp ha))⟩
+  | .and alpha beta =>
+    let ihA := expressiveness_fixed_atomMap h_sep sig atomMap hinj alpha
+    let ihB := expressiveness_fixed_atomMap h_sep sig atomMap hinj beta
+    ⟨Formula.and ihA.val ihB.val, fun M t => by
+      have hA := ihA.property M t
+      have hB := ihB.property M t
+      simp only [eval]
+      rw [Separation.int_truth_and_iff]
+      exact Iff.intro (fun ⟨ha, hb⟩ => ⟨hA.mp ha, hB.mp hb⟩)
+                       (fun ⟨ha, hb⟩ => ⟨hA.mpr ha, hB.mpr hb⟩)⟩
+  | .all alpha =>
+    -- ∀z. alpha(z, t) where alpha : MonadicFormula sig 2
+    -- Requires full GHR94 quantifier elimination machinery.
+    ⟨sorry, sorry⟩
+  | .ex alpha =>
+    -- ∃z. alpha(z, t) where alpha : MonadicFormula sig 2
+    -- Requires full GHR94 quantifier elimination machinery.
+    ⟨sorry, sorry⟩
+
 theorem separation_implies_expressiveness
     (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi) :
     ∀ (sig : MonadicSignature) (psi : MonadicFormula sig 1),
-      ∃ (A : Formula) (atomMap : sig.preds → Atom),
+      ∃ (A : Formula) (atomMap : sig.preds -> Atom),
         ∀ (M : IntStructureFromSig sig) (t : Int),
           eval (int_to_ordered sig M) (fun _ => t) psi ↔
           Separation.int_truth (to_int_struct M atomMap) t A := by
-  sorry
+  intro sig psi
+  -- Fix an injective atomMap
+  let atomMap : sig.preds -> Bimodal.Syntax.Atom :=
+    fun q => Bimodal.Syntax.Atom.mk_fresh "p" (Fintype.equivFin sig.preds q).val
+  have hinj : Function.Injective atomMap := by
+    intro a b hab
+    simp only [atomMap, Bimodal.Syntax.Atom.mk_fresh] at hab
+    have h_eq := Bimodal.Syntax.Atom.mk_fresh_injective "p" hab
+    exact (Fintype.equivFin sig.preds).injective (Fin.ext (Nat.cast_injective h_eq))
+  exact ⟨(expressiveness_fixed_atomMap h_sep sig atomMap hinj psi).val,
+         atomMap,
+         (expressiveness_fixed_atomMap h_sep sig atomMap hinj psi).property⟩
 
 /-! ## Theorem 10.2.10: The Final Result -/
 

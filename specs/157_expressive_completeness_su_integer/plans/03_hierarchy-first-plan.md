@@ -270,20 +270,27 @@ Defined `is_future_only`, `is_past_only`, `is_properly_separated`, `is_properly_
 
 ---
 
-### Phase 7: Complete Theorem 9.3.1 and Final Integration [NOT STARTED]
+### Phase 7: Complete Theorem 9.3.1 and Final Integration [BLOCKED]
 
 **Goal**: Close the sorry in ExpressiveCompleteness.lean and verify the complete proof chain.
 
 **Strategy**: With proper purity predicates (Phase 1) and all_separable proved (Phase 6), the substitution step in Theorem 9.3.1 is unblocked. The infrastructure (ExtPred, reduce, reduce_correct) is already built.
 
 **Tasks**:
-- [ ] Task 7.1: Integrate ExtPred/reduce infrastructure into ExpressiveCompleteness.lean (~100-200 LOC)
-- [ ] Task 7.2: Prove purity semantic lemmas (is_past_only -> evaluates at times <= t) (~100-150 LOC)
-- [ ] Task 7.3: Prove R-atom substitution correctness using purity (~150-200 LOC)
-- [ ] Task 7.4: Prove quantifier case (reduce + IH + separation + substitution) (~200-300 LOC)
-- [ ] Task 7.5: Close `separation_implies_expressiveness` (~30-50 LOC)
+- [x] Task 7.1: Integrate ExtPred/reduce infrastructure into ExpressiveCompleteness.lean (~100-200 LOC) *(completed: ExtPred, extSignature, Fintype instance, reduceElimLast all defined)*
+- [x] Task 7.2: Prove purity semantic lemmas (is_past_only -> evaluates at times <= t) (~100-150 LOC) *(completed: past_only_is_pure_past, future_only_is_pure_future proved)*
+- [x] Task 7.3: Prove R-atom substitution correctness using purity (~150-200 LOC) *(completed: past_only_subst_correct, future_only_subst_correct proved)*
+- [ ] Task 7.4: Prove quantifier case (reduce + IH + separation + substitution) (~200-300 LOC) *(deviation: blocked -- requires reduceElimLast semantic correctness theorem + extended IntStructure construction + assembly, estimated 300+ additional LOC)*
+- [ ] Task 7.5: Close `separation_implies_expressiveness` (~30-50 LOC) *(deviation: blocked -- depends on 7.4; quantifier-free cases complete)*
 - [ ] Task 7.6: Final verification: 0 axioms in Separation/, 0 sorry in ExpressiveCompleteness.lean
 - [ ] Task 7.7: Update documentation
+
+**BLOCKER** (Phase 7):
+- **What failed**: The quantifier cases (.all, .ex) of `expressiveness_fixed_atomMap` require semantic correctness of `reduceElimLast` plus the full GHR94 quantifier elimination assembly.
+- **What was tried**: (1) Structural recursion on MonadicFormula sig 1 -- works for atom/lt/not/and but quantifier sub-formulas have type MonadicFormula sig 2, not covered by IH. (2) Well-founded induction on quantifier_depth -- correct approach but requires calling the theorem for extSignature sig with an injective atomMap, then wrapping with q_exists, applying separation, and substituting R-atoms using purity. (3) Direct `reduce2` functions with level-specific handlers -- encoding issues and mutual recursion complexity.
+- **Why it's stuck**: The quantifier case requires THREE new theorems that don't exist: (a) `reduceElimLast_correct`: eval M (Fin.cons z (fun _ => t)) alpha iff eval M' (fun _ => z) (reduceElimLast 1 alpha) for an appropriate extended structure M'; (b) Extended IntStructure construction linking the original sig structure to the extSignature structure; (c) Assembly of q_exists + separation + multi-atom substitution removing R-atoms from the separated form. Each is 80-150 LOC.
+- **What is needed**: Implement `reduceElimLast_correct` (~100 LOC induction on alpha), define `extIntStructure M t atomMap` (~30 LOC), prove connection lemma (~50 LOC), then assemble the quantifier case using q_exists_correct + h_sep + past_only_subst_correct/future_only_subst_correct (~100 LOC). Total estimated: 300 LOC.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Timing**: 3 hours
 
