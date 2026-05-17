@@ -80,7 +80,7 @@ Note: Phases 1-5 from plan v6 are COMPLETED and not repeated here. Phase numberi
 
 ---
 
-### Phase 6: Prove no_S_nested_in_U_separable and Eliminate 8 Axioms [NOT STARTED]
+### Phase 6: Prove no_S_nested_in_U_separable and Eliminate 8 Axioms [IN PROGRESS]
 
 **Goal**: Break the circular dependency by proving `no_S_nested_in_U_separable` via strong induction on junction_depth, then derive all 8 temporal closure axioms as theorems, replacing the 8 axioms in SeparationThm.lean.
 

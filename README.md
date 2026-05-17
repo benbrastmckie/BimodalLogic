@@ -164,14 +164,6 @@ Bimodal is **production-ready** with complete metalogic verification.
 
 Compositional semantics drawing on non-deterministic dynamical systems theories to provide an intensional semantics for bimodal logics with historical modals and tense operators. Complete implementation in the `Semantics/` package (TaskFrame, WorldHistory, TaskModel, Truth evaluation).
 
-### ["Counterfactual Worlds"](https://link.springer.com/article/10.1007/s10992-025-09793-8) (Brast-McKie 2025)
-
-Hyperintensional semantics for counterfactual conditionals distinguishing necessarily equivalent antecedents. Foundation for planned explanatory layer extensions.
-
-### ["Identity and Aboutness"](https://link.springer.com/article/10.1007/s10992-021-09612-w) (Brast-McKie 2021)
-
-State-based semantics using verifier/falsifier pairs to capture fine-grained propositional content. Theoretical foundation for constitutive explanatory reasoning.
-
 ---
 
 ## Related Projects

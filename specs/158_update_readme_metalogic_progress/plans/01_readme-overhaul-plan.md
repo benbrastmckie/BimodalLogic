@@ -1,7 +1,7 @@
 # Implementation Plan: Update README Metalogic Progress
 
 - **Task**: 158 - Update README.md to reflect metalogic progress in BimodalLogic
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/158_update_readme_metalogic_progress/reports/01_team-research.md
@@ -62,7 +62,7 @@ No prior plan.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Cleanup Stale Artifacts [NOT STARTED]
+### Phase 1: Cleanup Stale Artifacts [COMPLETED]
 
 **Goal**: Remove sorry-laden example files and irrelevant pedagogical docs so the README can link only to clean artifacts.
 

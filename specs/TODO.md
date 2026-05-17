@@ -89,7 +89,7 @@ technical_debt:
 
 ### 158. Update README.md to reflect metalogic progress and improve organization
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Research**: [specs/158_update_readme_metalogic_progress/reports/01_team-research.md]
 - **Plan**: [158_update_readme_metalogic_progress/plans/01_readme-overhaul-plan.md]
