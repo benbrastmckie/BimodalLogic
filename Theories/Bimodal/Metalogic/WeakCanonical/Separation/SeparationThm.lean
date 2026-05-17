@@ -3,6 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.DualEliminations
 import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
 import Bimodal.Metalogic.WeakCanonical.Separation.Distributivity
+import Bimodal.Metalogic.WeakCanonical.Separation.Duality
 
 /-!
 # Separation Theorem (GHR94 Theorem 10.2.9)
@@ -206,5 +207,70 @@ theorem junction_depth_separable (D : Formula) :
 theorem separation_theorem_int (phi : Formula) :
     is_separable phi :=
   junction_depth_separable phi
+
+/-! ## Proper Separation Theorem
+
+The proper separation theorem states that every formula is properly separable
+(equivalent to a formula satisfying `is_properly_separated`). This is the
+version required by Theorem 9.3.1, since the substitution step needs semantic
+purity: past parts must not reference the future, future parts must not
+reference the past.
+
+The axioms below parallel the temporal closure axioms above, but for the
+stronger `is_properly_separable` predicate. They will be eliminated in
+later phases when the full GHR94 hierarchy (Lemmas 10.2.4-10.2.8) is
+implemented with proper purity predicates. -/
+
+/-- Temporal closure for proper separability: all_past of a properly separable
+    formula is properly separable. -/
+axiom all_past_properly_separable (φ : Formula) (h : is_properly_separable φ) :
+    is_properly_separable (.all_past φ)
+
+/-- Temporal closure for proper separability: all_future of a properly separable
+    formula is properly separable. -/
+axiom all_future_properly_separable (φ : Formula) (h : is_properly_separable φ) :
+    is_properly_separable (.all_future φ)
+
+/-- Temporal closure for proper separability: untl of properly separable
+    formulas is properly separable. -/
+axiom untl_properly_separable (φ ψ : Formula)
+    (h1 : is_properly_separable φ) (h2 : is_properly_separable ψ) :
+    is_properly_separable (.untl φ ψ)
+
+/-- Temporal closure for proper separability: snce of properly separable
+    formulas is properly separable. -/
+axiom snce_properly_separable (φ ψ : Formula)
+    (h1 : is_properly_separable φ) (h2 : is_properly_separable ψ) :
+    is_properly_separable (.snce φ ψ)
+
+/-- Every {U,S}-formula over integer time is properly separable (equivalent to a
+    properly separated formula). This is the strong version of Theorem 10.2.9
+    required by Theorem 9.3.1.
+
+    The proof uses structural induction with proper temporal closure axioms. -/
+theorem all_properly_separable (phi : Formula) : is_properly_separable phi := by
+  induction phi with
+  | atom a => exact ⟨.atom a, rfl, int_equiv_refl _⟩
+  | bot => exact ⟨.bot, rfl, int_equiv_refl _⟩
+  | imp φ ψ ih1 ih2 =>
+    obtain ⟨φ', hφ', heφ⟩ := ih1
+    obtain ⟨ψ', hψ', heψ⟩ := ih2
+    refine ⟨.imp φ' ψ', ?_, ?_⟩
+    · simp [is_properly_separated, hφ', hψ']
+    · intro M t
+      exact ⟨fun h hp => (heψ M t).mp (h ((heφ M t).mpr hp)),
+             fun h hp => (heψ M t).mpr (h ((heφ M t).mp hp))⟩
+  | box φ _ih => exact ⟨.box φ, rfl, int_equiv_refl _⟩
+  | all_past φ ih => exact all_past_properly_separable φ ih
+  | all_future φ ih => exact all_future_properly_separable φ ih
+  | untl φ ψ ih1 ih2 => exact untl_properly_separable φ ψ ih1 ih2
+  | snce φ ψ ih1 ih2 => exact snce_properly_separable φ ψ ih1 ih2
+
+/-- Theorem 10.2.9 (Strong form): Each wff in the language with {U, S}
+    is equivalent, over the integer flow of time, to a properly separated wff.
+    This is the version needed by Theorem 9.3.1. -/
+theorem proper_separation_theorem_int (phi : Formula) :
+    is_properly_separable phi :=
+  all_properly_separable phi
 
 end Bimodal.Metalogic.WeakCanonical.Separation

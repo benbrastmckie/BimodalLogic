@@ -142,6 +142,62 @@ def is_syntactically_separated : Formula → Bool
 def is_separable (φ : Formula) : Prop :=
   ∃ ψ : Formula, is_syntactically_separated ψ = true ∧ int_equiv φ ψ
 
+/-! ## Proper Purity Predicates (Option D from Report 07)
+
+These predicates correctly model GHR94's semantic separation for our formalization
+where `all_future` (G) and `all_past` (H) are primitive constructors rather than
+derived from U/S. A "future-only" formula contains no past temporal operators,
+and a "past-only" formula contains no future temporal operators. -/
+
+/-- A formula is "future-only": contains no `all_past` and no `snce`.
+    Permits `all_future`, `untl`, atoms, boolean connectives.
+    This correctly captures "pure future" for our primitive operator set. -/
+def is_future_only : Formula → Bool
+  | .atom _ => true
+  | .bot => true
+  | .imp φ ψ => is_future_only φ && is_future_only ψ
+  | .box φ => is_future_only φ
+  | .all_past _ => false
+  | .all_future φ => is_future_only φ
+  | .untl φ ψ => is_future_only φ && is_future_only ψ
+  | .snce _ _ => false
+
+/-- A formula is "past-only": contains no `all_future` and no `untl`.
+    Permits `all_past`, `snce`, atoms, boolean connectives.
+    This correctly captures "pure past" for our primitive operator set. -/
+def is_past_only : Formula → Bool
+  | .atom _ => true
+  | .bot => true
+  | .imp φ ψ => is_past_only φ && is_past_only ψ
+  | .box φ => is_past_only φ
+  | .all_past φ => is_past_only φ
+  | .all_future _ => false
+  | .untl _ _ => false
+  | .snce φ ψ => is_past_only φ && is_past_only ψ
+
+/-- A formula is "properly separated" if it is a boolean combination of:
+    - atoms (pure present)
+    - future-only formulas under `all_future` or `untl`
+    - past-only formulas under `all_past` or `snce`
+
+    This matches GHR94's semantic separation requirement: S-arguments must be
+    genuinely past-dependent (no future operators), and U-arguments must be
+    genuinely future-dependent (no past operators). -/
+def is_properly_separated : Formula → Bool
+  | .atom _ => true
+  | .bot => true
+  | .imp φ ψ => is_properly_separated φ && is_properly_separated ψ
+  | .box _ => true
+  | .all_past φ => is_past_only φ
+  | .all_future φ => is_future_only φ
+  | .untl φ ψ => is_future_only φ && is_future_only ψ
+  | .snce φ ψ => is_past_only φ && is_past_only ψ
+
+/-- A formula is "properly separable" if it is integer-equivalent to a
+    properly separated formula. This is the correct notion for Theorem 9.3.1. -/
+def is_properly_separable (φ : Formula) : Prop :=
+  ∃ ψ : Formula, is_properly_separated ψ = true ∧ int_equiv φ ψ
+
 /-! ## Structural Measures for Induction -/
 
 mutual

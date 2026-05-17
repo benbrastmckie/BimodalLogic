@@ -160,8 +160,9 @@ theorem q_exists_correct (A : Formula) (M : Separation.IntStructure) (t : Int) :
 
 /-! ## Theorem 9.3.1: Separation Implies Expressive Completeness -/
 
-/-- Theorem 9.3.1 (GHR94): If {U,S} has the separation property over Z
-    and P, F are definable (which they are: P(A) = S(A, True), F(A) = U(A, True)),
+/-- Theorem 9.3.1 (GHR94): If {U,S} has the PROPER separation property over Z
+    (every formula is equivalent to a properly separated formula), and P, F are
+    definable (which they are: P(A) = S(A, True), F(A) = U(A, True)),
     then {U,S} is expressively complete over Z.
 
     Proof by induction on quantifier depth m of the FO formula.
@@ -174,14 +175,18 @@ theorem q_exists_correct (A : Formula) (M : Separation.IntStructure) (t : Int) :
     2. Rewrite psi as psi'(z, Q, R_=, R_>, R_<) not mentioning t explicitly.
     3. By IH, find temporal A_j for each depth-m sub-case.
     4. Form B using Q_exists to express the existential quantifier.
-    5. B contains extra atoms r_=, r_>, r_<. Use SEPARATION to decompose B.
-    6. Substitute: in pure past parts, r_> = True, r_= = False, r_< = False;
-       in pure future parts, r_> = False, r_= = False, r_< = True;
+    5. B contains extra atoms r_=, r_>, r_<. Use PROPER SEPARATION to decompose B.
+    6. Substitute: in pure past parts (is_past_only), r_> = True, r_= = False, r_< = False;
+       in pure future parts (is_future_only), r_> = False, r_= = False, r_< = True;
        in pure present parts, r_> = False, r_= = True, r_< = False.
     7. The resulting B* no longer mentions r_=, r_>, r_< and is the temporal
-       equivalent of psi. -/
+       equivalent of psi.
+
+    The proper separation guarantee (is_properly_separated) ensures semantic purity:
+    past-only parts genuinely depend only on the past, future-only parts depend only
+    on the future. This is required for the substitution in step 6 to be correct. -/
 theorem separation_implies_expressiveness
-    (h_sep : ∀ phi : Formula, Separation.is_separable phi) :
+    (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi) :
     ∀ (sig : MonadicSignature) (psi : MonadicFormula sig 1),
       ∃ (A : Formula) (atomMap : sig.preds → Atom),
         ∀ (M : IntStructureFromSig sig) (t : Int),
@@ -194,13 +199,15 @@ theorem separation_implies_expressiveness
 /-- Theorem 10.2.10 (GHR94): The language {U, S} is expressively complete
     over integer time.
 
-    Combines the Separation Theorem (10.2.9) with Theorem 9.3.1. -/
+    Combines the Proper Separation Theorem (10.2.9, strong form) with
+    Theorem 9.3.1. The proper separation ensures semantic purity of the
+    decomposition, which is required for the substitution step. -/
 theorem US_expressively_complete_over_Z :
     ∀ (sig : MonadicSignature) (psi : MonadicFormula sig 1),
       ∃ (A : Formula) (atomMap : sig.preds → Atom),
         ∀ (M : IntStructureFromSig sig) (t : Int),
           eval (int_to_ordered sig M) (fun _ => t) psi ↔
           Separation.int_truth (to_int_struct M atomMap) t A :=
-  separation_implies_expressiveness (fun phi => separation_theorem_int phi)
+  separation_implies_expressiveness (fun phi => proper_separation_theorem_int phi)
 
 end Bimodal.Metalogic.WeakCanonical
