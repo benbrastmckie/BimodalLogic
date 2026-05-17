@@ -600,89 +600,297 @@ private theorem reduceElimLast_correct_at_one {sig : MonadicSignature}
   have h := reduceElimLast_correct_succ 0 alpha M (fun _ => z) t
   rwa [appendLast_singleton] at h
 
-/-! ### Core Expressiveness Lemma -/
+/-! ### Atom Elimination Infrastructure
 
-/-- Core lemma: for a FIXED injective atomMap, every MonadicFormula sig 1 has a
-    temporal equivalent. This is the form needed for the induction to go through,
-    since the conjunction case requires a common atomMap.
+When translating from the extended signature back to the original, we need to
+eliminate the extended atoms (const_at_ref, lt_ref, gt_ref). For a properly
+separated formula, this is done by level-aware substitution:
+- Present level: lt_ref → ⊥, gt_ref → ⊥
+- Past-only subformulas: lt_ref → ¬⊥ (True), gt_ref → ⊥
+- Future-only subformulas: lt_ref → ⊥, gt_ref → ¬⊥ (True)
+- const_at_ref atoms: case-split over all truth assignments -/
 
-    The quantifier-free cases (atom, lt, not, and) are proved by structural recursion.
-    The quantifier cases (.all, .ex) require the full GHR94 quantifier elimination
-    machinery:
-    1. reduceElimLast converts the 2-variable formula to 1-variable over extSignature
-    2. The IH (at extSignature, lower quantifier depth) gives a temporal formula A_ext
-    3. q_exists A_ext captures the existential quantifier
-    4. h_sep gives a properly separated form
-    5. Case-split on const_at_ref truth values + purity substitution for lt_ref/gt_ref
-       eliminates extended atoms, yielding a formula over original atoms only
+/-- Apply a list of (atom, formula) substitutions sequentially. -/
+private noncomputable def applySubsts (φ : Formula) : List (Atom × Formula) → Formula
+  | [] => φ
+  | (a, r) :: rest => applySubsts (Separation.subst_formula φ a r) rest
 
-    The quantifier cases are axiomatized pending implementation of the full
-    quantifier elimination pipeline (estimated 500+ LOC). -/
-private noncomputable def expressiveness_fixed_atomMap
+/-- Level-aware elimination of extended atoms from a properly separated formula.
+    Walks the separated structure, applying different substitutions at each level:
+    - Present level (boolean combinations): lt→⊥, gt→⊥, const→per σ
+    - Past temporal subformulas: lt→⊤, gt→⊥, const→per σ
+    - Future temporal subformulas: lt→⊥, gt→⊤, const→per σ -/
+private noncomputable def elimExtFromSep
+    (constSubs : List (Atom × Formula))
+    (lt_atom gt_atom : Atom) : Formula → Formula
+  | .atom a =>
+    -- Present level substitution
+    applySubsts (.atom a) (constSubs ++ [(lt_atom, .bot), (gt_atom, .bot)])
+  | .bot => .bot
+  | .imp φ ψ => .imp (elimExtFromSep constSubs lt_atom gt_atom φ)
+                      (elimExtFromSep constSubs lt_atom gt_atom ψ)
+  | .box φ => .box φ
+  | .all_past φ =>
+    -- Past-only: lt_ref → ⊤ (True), gt_ref → ⊥
+    .all_past (applySubsts φ (constSubs ++ [(lt_atom, Formula.neg .bot), (gt_atom, .bot)]))
+  | .all_future φ =>
+    -- Future-only: lt_ref → ⊥, gt_ref → ⊤ (True)
+    .all_future (applySubsts φ (constSubs ++ [(lt_atom, .bot), (gt_atom, Formula.neg .bot)]))
+  | .snce φ ψ =>
+    -- Past-only args
+    .snce (applySubsts φ (constSubs ++ [(lt_atom, Formula.neg .bot), (gt_atom, .bot)]))
+          (applySubsts ψ (constSubs ++ [(lt_atom, Formula.neg .bot), (gt_atom, .bot)]))
+  | .untl φ ψ =>
+    -- Future-only args
+    .untl (applySubsts φ (constSubs ++ [(lt_atom, .bot), (gt_atom, Formula.neg .bot)]))
+          (applySubsts ψ (constSubs ++ [(lt_atom, .bot), (gt_atom, Formula.neg .bot)]))
+
+/-- Guard formula for assignment σ: conjunction of (if σ p then atom(p) else ¬atom(p)). -/
+private noncomputable def guardFormula {sig : MonadicSignature}
+    (atomMap : sig.preds → Atom) (σ : sig.preds → Bool) : Formula :=
+  ((Finset.univ : Finset sig.preds).toList.map fun p =>
+    if σ p then Formula.atom (atomMap p) else Formula.neg (Formula.atom (atomMap p))
+  ).foldl Formula.and (Formula.neg Formula.bot)
+
+/-- Build the const_at_ref substitution list for a given assignment σ. -/
+private noncomputable def constSubsList {sig : MonadicSignature}
+    (extAM : (extSignature sig).preds → Atom) (σ : sig.preds → Bool) :
+    List (Atom × Formula) :=
+  (Finset.univ : Finset sig.preds).toList.map fun p =>
+    (extAM (.const_at_ref p), if σ p then Formula.neg .bot else .bot)
+
+/-- Build the full quantifier elimination formula:
+    ∨_σ (guard_σ ∧ elimExtFromSep_σ(B_sep)) -/
+private noncomputable def quantElimFormula {sig : MonadicSignature}
+    (atomMap : sig.preds → Atom) (extAM : (extSignature sig).preds → Atom)
+    (B_sep : Formula) : Formula :=
+  let lt_atom := extAM .lt_ref
+  let gt_atom := extAM .gt_ref
+  let assignments := (Finset.univ : Finset (sig.preds → Bool)).toList
+  let branches := assignments.map fun σ =>
+    Formula.and (guardFormula atomMap σ)
+                (elimExtFromSep (constSubsList extAM σ) lt_atom gt_atom B_sep)
+  match branches with
+  | [] => .bot  -- impossible: sig.preds → Bool always has at least one element
+  | [b] => b
+  | b :: bs => bs.foldl Formula.or b
+
+/-! ### Quantifier Elimination Correctness
+
+The key correctness theorem: for a properly separated formula B evaluated in the
+extended model, the quantElimFormula produces an equivalent formula in the original
+model. The proof uses the purity lemmas (past_only_is_pure_past, future_only_is_pure_future)
+to justify the level-aware substitution. -/
+
+/-- Correctness of applySubsts for a past-only formula:
+    Sequential substitution preserves truth when each replacement matches
+    the atom's truth at times ≤ t (for a past-only formula evaluated at t). -/
+private theorem applySubsts_past_correct {φ : Formula}
+    (hpo : Separation.is_past_only φ = true)
+    (subs : List (Atom × Formula)) (M : Separation.IntStructure) (t : Int)
+    (h_match : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs →
+      ∀ s : Int, s ≤ t → (Separation.int_truth M s r ↔ s ∈ M.val a)) :
+    Separation.int_truth M t (applySubsts φ subs) ↔ Separation.int_truth M t φ := by
+  induction subs generalizing φ with
+  | nil => exact Iff.rfl
+  | cons ar rest ih =>
+    obtain ⟨a, r⟩ := ar
+    simp only [applySubsts]
+    have h_ar : ∀ s : Int, s ≤ t →
+      (Separation.int_truth M s r ↔ s ∈ M.val a) :=
+      h_match a r (List.mem_cons_self _ _)
+    -- subst_formula φ a r is also past-only
+    -- (since r is ⊥ or ¬⊥, both past-only, and φ is past-only)
+    -- Use past_only_subst_correct for the first substitution
+    have step := past_only_subst_correct hpo a r M t h_ar
+    -- The rest of the substitutions
+    have h_rest : ∀ (a' : Atom) (r' : Formula), (a', r') ∈ rest →
+      ∀ s : Int, s ≤ t → (Separation.int_truth M s r' ↔ s ∈ M.val a') :=
+      fun a' r' hmem => h_match a' r' (List.mem_cons_of_mem _ hmem)
+    -- Need: subst_formula φ a r is past-only
+    -- This is true when φ is past-only and r is past-only (which ⊥ and ¬⊥ are)
+    -- For now, use sorry for this structural fact and focus on the main proof
+    sorry
+
+/-- Correctness of applySubsts for a future-only formula. -/
+private theorem applySubsts_future_correct {φ : Formula}
+    (hfo : Separation.is_future_only φ = true)
+    (subs : List (Atom × Formula)) (M : Separation.IntStructure) (t : Int)
+    (h_match : ∀ (a : Atom) (r : Formula), (a, r) ∈ subs →
+      ∀ s : Int, t ≤ s → (Separation.int_truth M s r ↔ s ∈ M.val a)) :
+    Separation.int_truth M t (applySubsts φ subs) ↔ Separation.int_truth M t φ := by
+  sorry
+
+/-! ### Core Expressiveness Lemma
+
+The proof uses nested induction: outer strong induction on quantifier depth,
+inner structural recursion on the formula. The quantifier-free cases are handled
+by structural recursion. The quantifier cases use the outer IH at lower depth
+with the extended signature, then apply atom elimination. -/
+
+/-- Inner structural recursion: handles quantifier-free cases directly and
+    delegates quantifier cases to the outer WF IH. -/
+private noncomputable def expressiveness_inner
     (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi)
+    (m : Nat)
+    (outerIH : ∀ k < m, ∀ (sig' : MonadicSignature) (atomMap' : sig'.preds → Atom),
+      Function.Injective atomMap' →
+      ∀ (psi' : MonadicFormula sig' 1), psi'.quantifier_depth ≤ k →
+      { A : Formula // ∀ (M : IntStructureFromSig sig') (t : Int),
+          eval (int_to_ordered sig' M) (fun _ => t) psi' ↔
+          Separation.int_truth (to_int_struct M atomMap') t A })
     (sig : MonadicSignature)
-    (atomMap : sig.preds -> Bimodal.Syntax.Atom)
-    (hinj : Function.Injective atomMap) :
-    (psi : MonadicFormula sig 1) ->
+    (atomMap : sig.preds → Atom) (hinj : Function.Injective atomMap) :
+    (psi : MonadicFormula sig 1) → (hm : psi.quantifier_depth ≤ m) →
     { A : Formula // ∀ (M : IntStructureFromSig sig) (t : Int),
         eval (int_to_ordered sig M) (fun _ => t) psi ↔
         Separation.int_truth (to_int_struct M atomMap) t A }
-  | .atom p i =>
-    -- P(t) maps to Formula.atom (atomMap p)
+  | .atom p _, _ =>
     ⟨Formula.atom (atomMap p), fun M t => by
       simp only [eval, Separation.int_truth, to_int_struct, Set.mem_setOf_eq]
-      exact Iff.intro (fun h => ⟨p, rfl, h⟩)
-        (fun ⟨q, hq, hinterp⟩ => hinj hq ▸ hinterp)⟩
-  | .lt i j =>
-    -- Both i, j : Fin 1, so both are 0. t < t is always False.
+      exact ⟨fun h => ⟨p, rfl, h⟩, fun ⟨q, hq, hi⟩ => hinj hq ▸ hi⟩⟩
+  | .lt _ _, _ =>
     ⟨Formula.bot, fun M t => by
       simp only [eval, Separation.int_truth]
-      exact Iff.intro (fun h => absurd h (lt_irrefl _)) False.elim⟩
-  | .not alpha =>
-    let ihA := expressiveness_fixed_atomMap h_sep sig atomMap hinj alpha
+      exact ⟨fun h => absurd h (lt_irrefl _), False.elim⟩⟩
+  | .not alpha, hm =>
+    have hm' : alpha.quantifier_depth ≤ m := by
+      simp [MonadicFormula.quantifier_depth] at hm; exact hm
+    let ihA := expressiveness_inner h_sep m outerIH sig atomMap hinj alpha hm'
     ⟨Formula.neg ihA.val, fun M t => by
       simp only [eval, Separation.int_truth, Formula.neg]
-      exact Iff.intro (fun h hAt => h (ihA.property M t |>.mpr hAt))
-                       (fun h ha => h (ihA.property M t |>.mp ha))⟩
-  | .and alpha beta =>
-    let ihA := expressiveness_fixed_atomMap h_sep sig atomMap hinj alpha
-    let ihB := expressiveness_fixed_atomMap h_sep sig atomMap hinj beta
+      exact ⟨fun h hAt => h (ihA.property M t |>.mpr hAt),
+             fun h ha => h (ihA.property M t |>.mp ha)⟩⟩
+  | .and alpha beta, hm =>
+    have hm_a : alpha.quantifier_depth ≤ m := by
+      simp [MonadicFormula.quantifier_depth] at hm; omega
+    have hm_b : beta.quantifier_depth ≤ m := by
+      simp [MonadicFormula.quantifier_depth] at hm; omega
+    let ihA := expressiveness_inner h_sep m outerIH sig atomMap hinj alpha hm_a
+    let ihB := expressiveness_inner h_sep m outerIH sig atomMap hinj beta hm_b
     ⟨Formula.and ihA.val ihB.val, fun M t => by
-      have hA := ihA.property M t
-      have hB := ihB.property M t
+      have hA := ihA.property M t; have hB := ihB.property M t
+      simp only [eval]; rw [Separation.int_truth_and_iff]
+      exact ⟨fun ⟨ha, hb⟩ => ⟨hA.mp ha, hB.mp hb⟩,
+             fun ⟨ha, hb⟩ => ⟨hA.mpr ha, hB.mpr hb⟩⟩⟩
+  | .ex alpha, hm =>
+    -- alpha : MonadicFormula sig 2
+    -- (.ex alpha).quantifier_depth = alpha.quantifier_depth + 1 ≤ m
+    -- reduceElimLast 1 alpha : MonadicFormula (extSignature sig) 1
+    -- with qdepth ≤ alpha.qdepth < m
+    have h_lt_m : alpha.quantifier_depth < m := by
+      simp [MonadicFormula.quantifier_depth] at hm; omega
+    have h_red_depth : (reduceElimLast 1 alpha).quantifier_depth ≤ alpha.quantifier_depth :=
+      qdepth_reduceElimLast_le 1 Nat.zero_lt_one alpha
+    -- Construct injective atom map for extSignature sig using extAtomMap
+    let extAM := extAtomMap atomMap
+    -- Apply outer IH at lower depth
+    let ihExt := outerIH alpha.quantifier_depth h_lt_m
+      (extSignature sig) extAM
+      (by -- injectivity of extAtomMap atomMap
+        intro a b hab
+        cases a <;> cases b <;> simp [extAtomMap, Atom.mk_fresh] at hab
+        · exact congrArg ExtPred.orig (hinj hab) -- orig-orig
+        · exact congrArg ExtPred.const_at_ref
+            ((Fintype.equivFin sig.preds).injective
+              (Fin.ext (Nat.cast_injective (Atom.mk_fresh_injective "const_ref" hab))))
+        all_goals first | rfl | (exfalso; simp [Atom.mk_fresh] at hab))
+      (reduceElimLast 1 alpha)
+      (le_trans h_red_depth (le_refl _))
+    -- ihExt.val = A_ext : Formula
+    -- ihExt.property : for all M' t, eval at (extSignature sig) ↔ int_truth with extAM
+    -- Form q_exists A_ext
+    let A_ext := ihExt.val
+    -- By h_sep, q_exists A_ext is equivalent to a properly separated formula
+    let ⟨B_sep, hB_sep, hB_equiv⟩ := h_sep (q_exists A_ext)
+    -- Build the quantifier elimination formula
+    let A := quantElimFormula atomMap extAM B_sep
+    ⟨A, fun M t => by
+      -- eval (.ex alpha) = ∃ z, eval ... alpha
       simp only [eval]
-      rw [Separation.int_truth_and_iff]
-      exact Iff.intro (fun ⟨ha, hb⟩ => ⟨hA.mp ha, hB.mp hb⟩)
-                       (fun ⟨ha, hb⟩ => ⟨hA.mpr ha, hB.mpr hb⟩)⟩
-  | .all alpha =>
-    -- ∀z. alpha(z, t) ↔ ¬∃z. ¬alpha(z, t)
-    -- Proof outline:
-    --   1. reduceElimLast 1 alpha : MonadicFormula (extSignature sig) 1
-    --      has quantifier_depth ≤ alpha.quantifier_depth (by qdepth_reduceElimLast_le)
-    --   2. IH at extSignature gives A_ext : Formula (at lower depth)
-    --   3. q_exists (Formula.neg A_ext) captures ∃z.¬alpha(z,t)
-    --   4. Formula.neg (q_exists (Formula.neg A_ext)) captures ∀z.alpha(z,t)
-    --   5. Apply h_sep + case-split + purity substitution to eliminate extended atoms
-    -- Requires: reduceElimLast_correct, extAtomMap injectivity, atom elimination
-    ⟨sorry, sorry⟩
-  | .ex alpha =>
-    -- ∃z. alpha(z, t) where alpha : MonadicFormula sig 2
-    -- Proof outline:
-    --   1. reduceElimLast 1 alpha : MonadicFormula (extSignature sig) 1
-    --      has quantifier_depth ≤ alpha.quantifier_depth (by qdepth_reduceElimLast_le)
-    --   2. IH at extSignature with extAtomMap gives A_ext : Formula
-    --   3. q_exists A_ext captures ∃z.alpha(z,t) in the extended model
-    --   4. Apply h_sep to q_exists A_ext → properly separated B_sep
-    --   5. For each assignment σ : sig.preds → Bool (const_at_ref truth values):
-    --      a. Substitute const_at_ref_p atoms with ⊤/⊥ per σ
-    --      b. In past-only parts: substitute lt_ref→⊤, gt_ref→⊥
-    --      c. In future-only parts: substitute lt_ref→⊥, gt_ref→⊤
-    --      d. At present level: lt_ref→⊥, gt_ref→⊥
-    --   6. Form disjunction: ∨_σ (guard_σ ∧ elim_σ(B_sep))
-    --      where guard_σ = ∧_p (if σ(p) then atom(atomMap p) else ¬atom(atomMap p))
-    --   7. Correctness: guard_σ selects the unique matching assignment at time t
-    -- Requires: reduceElimLast_correct, extAtomMap injectivity, level-aware substitution
-    ⟨sorry, sorry⟩
+      -- Step 1: By reduceElimLast_correct_at_one
+      have h_red : ∀ z, eval (int_to_ordered sig M) (Fin.cons z (fun _ => t)) alpha ↔
+          eval (int_to_ordered (extSignature sig) (extIntStruct M t))
+            (fun _ => z) (reduceElimLast 1 alpha) :=
+        fun z => reduceElimLast_correct_at_one alpha M z t
+      -- Step 2: By IH, the reduced formula has temporal equivalent A_ext
+      have h_ext : ∀ z, eval (int_to_ordered (extSignature sig) (extIntStruct M t))
+          (fun _ => z) (reduceElimLast 1 alpha) ↔
+          Separation.int_truth (to_int_struct (extIntStruct M t) extAM) z A_ext :=
+        fun z => ihExt.property (extIntStruct M t) z
+      -- Step 3: Combine: ∃ z, eval ↔ ∃ z, int_truth A_ext
+      have h_exists_equiv : (∃ z, eval (int_to_ordered sig M) (Fin.cons z (fun _ => t)) alpha) ↔
+          (∃ z, Separation.int_truth (to_int_struct (extIntStruct M t) extAM) z A_ext) :=
+        ⟨fun ⟨z, hz⟩ => ⟨z, (h_ext z).mp ((h_red z).mp hz)⟩,
+         fun ⟨z, hz⟩ => ⟨z, (h_red z).mpr ((h_ext z).mpr hz)⟩⟩
+      -- Step 4: By q_exists_correct
+      have h_qex : Separation.int_truth (to_int_struct (extIntStruct M t) extAM) t (q_exists A_ext) ↔
+          (∃ z, Separation.int_truth (to_int_struct (extIntStruct M t) extAM) z A_ext) :=
+        q_exists_correct A_ext (to_int_struct (extIntStruct M t) extAM) t
+      -- Step 5: By separation equivalence
+      have h_sep_equiv : Separation.int_truth (to_int_struct (extIntStruct M t) extAM) t (q_exists A_ext) ↔
+          Separation.int_truth (to_int_struct (extIntStruct M t) extAM) t B_sep :=
+        hB_equiv (to_int_struct (extIntStruct M t) extAM) t
+      -- Step 6: Atom elimination (the key step)
+      -- We need: int_truth (to_int_struct M atomMap) t A ↔
+      --          int_truth (to_int_struct (extIntStruct M t) extAM) t B_sep
+      -- This follows from the case-split and level-aware substitution.
+      -- For now, use sorry for this correctness step
+      sorry⟩
+  | .all alpha, hm =>
+    -- ∀z. alpha(z,t) ↔ ¬∃z. ¬alpha(z,t)
+    -- Use the .ex case for (.not alpha) and negate
+    have hm_ex : (MonadicFormula.ex (MonadicFormula.not alpha)).quantifier_depth ≤ m := by
+      simp [MonadicFormula.quantifier_depth]; omega
+    let ihEx := expressiveness_inner h_sep m outerIH sig atomMap hinj
+      (.ex (.not alpha)) hm_ex
+    ⟨Formula.neg ihEx.val, fun M t => by
+      simp only [eval]
+      have h_ihEx := ihEx.property M t
+      -- h_ihEx : (∃ z, ¬eval ... alpha) ↔ int_truth ... ihEx.val
+      -- Need: (∀ z, eval ... alpha) ↔ ¬(int_truth ... ihEx.val)
+      -- i.e., (∀ z, eval ... alpha) ↔ int_truth ... (neg ihEx.val)
+      rw [Separation.int_truth_neg_iff]
+      constructor
+      · intro h_all h_ex
+        simp only [eval] at h_ihEx
+        obtain ⟨z, hz⟩ := h_ihEx.mpr h_ex
+        exact hz (h_all z)
+      · intro h_neg z
+        by_contra h_not
+        simp only [eval] at h_ihEx
+        exact h_neg (h_ihEx.mp ⟨z, h_not⟩)⟩
+
+/-- Outer well-founded recursion: proves the expressiveness lemma by strong induction
+    on quantifier depth. Delegates to `expressiveness_inner` at each level. -/
+private noncomputable def expressiveness_wf
+    (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi)
+    (m : Nat) (sig : MonadicSignature)
+    (atomMap : sig.preds → Atom) (hinj : Function.Injective atomMap)
+    (psi : MonadicFormula sig 1) (hm : psi.quantifier_depth ≤ m) :
+    { A : Formula // ∀ (M : IntStructureFromSig sig) (t : Int),
+        eval (int_to_ordered sig M) (fun _ => t) psi ↔
+        Separation.int_truth (to_int_struct M atomMap) t A } :=
+  m.strongRecOn
+    (motive := fun m => ∀ (sig : MonadicSignature) (atomMap : sig.preds → Atom),
+      Function.Injective atomMap →
+      ∀ (psi : MonadicFormula sig 1), psi.quantifier_depth ≤ m →
+      { A : Formula // ∀ (M : IntStructureFromSig sig) (t : Int),
+          eval (int_to_ordered sig M) (fun _ => t) psi ↔
+          Separation.int_truth (to_int_struct M atomMap) t A })
+    (fun m ih => expressiveness_inner h_sep m ih)
+    sig atomMap hinj psi hm
+
+/-- Core lemma: for a FIXED injective atomMap, every MonadicFormula sig 1 has a
+    temporal equivalent (Theorem 9.3.1, GHR94). -/
+private noncomputable def expressiveness_fixed_atomMap
+    (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi)
+    (sig : MonadicSignature) (atomMap : sig.preds → Atom)
+    (hinj : Function.Injective atomMap) (psi : MonadicFormula sig 1) :
+    { A : Formula // ∀ (M : IntStructureFromSig sig) (t : Int),
+        eval (int_to_ordered sig M) (fun _ => t) psi ↔
+        Separation.int_truth (to_int_struct M atomMap) t A } :=
+  expressiveness_wf h_sep psi.quantifier_depth sig atomMap hinj psi (le_refl _)
 
 theorem separation_implies_expressiveness
     (h_sep : ∀ phi : Formula, Separation.is_properly_separable phi) :
@@ -692,7 +900,6 @@ theorem separation_implies_expressiveness
           eval (int_to_ordered sig M) (fun _ => t) psi ↔
           Separation.int_truth (to_int_struct M atomMap) t A := by
   intro sig psi
-  -- Fix an injective atomMap
   let atomMap : sig.preds -> Bimodal.Syntax.Atom :=
     fun q => Bimodal.Syntax.Atom.mk_fresh "p" (Fintype.equivFin sig.preds q).val
   have hinj : Function.Injective atomMap := by

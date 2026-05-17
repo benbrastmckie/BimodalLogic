@@ -1,90 +1,65 @@
-# Bimodal Logic: Tense and Modality (TM)
+# Logos: Bimodal Logic (Tense and Modality)
 
-A Lean 4 implementation of bimodal logic combining S5 modal operators with linear temporal operators. This project provides a complete formal verification of the syntax, semantics, proof theory, and metalogic for TM logic, establishing **soundness, completeness, and decidability**.
+[![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
 
-**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) - Compositional semantics for bimodal logics with historical modals and tense operators
+A Lean 4 formalization of the **intensional bimodal fragment** of the [Logos](https://logos-labs.ai/) — a formal language designed for compositional reasoning over possible worlds. Unlike extensional (truth-functional) approaches, the Logos interprets formulas by their meaning across structured worlds and times, supporting modality, tense, and their interaction. This library implements the syntax, task frame semantics, proof theory, and metalogic (soundness, completeness, and decidability) for the TM (Tense and Modality) bimodal logic combining S5 modal operators with Until/Since temporal operators.
 
-**Specifications**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf)
+**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
-**Demo**: [Demo.lean](Theories/Bimodal/Examples/Demo.lean)
+**Specification**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation
 
----
+**Examples**: [BimodalProofs.lean](Theories/Bimodal/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
-## Overview
-
-TM bimodal logic formalizes the deep philosophical relationship between time and possibility: the present opens onto multiple possible futures (world-histories) that share a common past. This relationship is captured through the **perpetuity principles** (P1-P6), which establish that what is necessary is perpetual and what occurs is possible.
-
-### Key Results
-
-| Result | Statement | Status |
-|--------|-----------|--------|
-| **Soundness** | `(Gamma vdash phi) to (Gamma vDash phi)` | Proven |
-| **Completeness** | `valid phi to (vdash phi)` | Proven |
-| **Deduction Theorem** | `((A :: Gamma) vdash B) to (Gamma vdash A to B)` | Proven |
-| **Decidability** | `decide phi : DecisionResult phi` | Implemented |
-
-### Operators
-
-| Symbol | Lean | Reading |
-|--------|------|---------|
-| `Box phi` | `box phi` | necessity ("necessarily phi") |
-| `Diamond phi` | `diamond phi` | possibility ("possibly phi") |
-| `H phi` | `all_past phi` | "phi has always been true" |
-| `G phi` | `all_future phi` | "phi will always be true" |
-| `P phi` | `some_past phi` | "phi was once true" |
-| `F phi` | `some_future phi` | "phi will be true" |
-
-### Task Frame Semantics
-
-A task frame `(W, T, R)` consists of:
-- **W**: Set of world-states (metaphysically possible states)
-- **T**: Set of times with linear order `<`
-- **R : W -> T -> W -> Prop**: Task relation (accessibility across time)
-
-The task relation satisfies nullity (reflexive at each time) and compositionality (forward composition), enabling evaluation of modal and temporal formulas at world-history/time pairs.
+| Metric | Count |
+|--------|-------|
+| Lean files | 189 |
+| Lines of code | ~42,700 |
+| Comment lines | ~28,400 |
 
 ---
 
-## Installation
+## Operators
 
-### Requirements
+The logic uses 8 primitive connectives. All other operators are derived.
 
-- LEAN 4 v4.27.0-rc1 or later
-- Lake (included with LEAN 4)
-- Git for version control
-- ~5GB disk space (for Mathlib cache)
+### Primitive
 
-### Quick Start
+| Symbol | Lean Constructor | Reading |
+|--------|-----------------|---------|
+| `⊥` | `bot` | falsum |
+| `φ → ψ` | `imp φ ψ` | material conditional |
+| `□φ` | `box φ` | necessity ("necessarily φ") |
+| `Hφ` | `all_past φ` | "φ has always been true" |
+| `Gφ` | `all_future φ` | "φ will always be true" |
+| `φ U ψ` | `untl φ ψ` | Until ("φ until ψ") |
+| `φ S ψ` | `snce φ ψ` | Since ("φ since ψ") |
 
-**AI-Assisted (Recommended)**: Use [Claude Code](docs/installation/CLAUDE_CODE.md) for automated installation
+### Derived
 
-**Manual Installation**:
+| Symbol | Definition | Reading |
+|--------|-----------|---------|
+| `¬φ` | `φ → ⊥` | negation |
+| `φ ∧ ψ` | `¬(φ → ¬ψ)` | conjunction |
+| `φ ∨ ψ` | `¬φ → ψ` | disjunction |
+| `◇φ` | `¬□¬φ` | possibility |
+| `Pφ` | `¬H¬φ` | "φ was once true" |
+| `Fφ` | `¬G¬φ` | "φ will be true" |
+| `△φ` | `φ ∧ Gφ ∧ Hφ` | perpetuity ("φ at all times") |
+| `▽φ` | `Fφ ∨ Pφ ∨ φ` | "φ at some time" |
+| `Xφ` | `⊤ U φ` | next ("φ at the next moment") |
+| `Yφ` | `⊤ S φ` | previous ("φ at the previous moment") |
 
-```bash
-# Install elan (LEAN version manager)
-curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+---
 
-# Clone repository
-git clone https://github.com/benbrastmckie/ProofChecker.git
-cd ProofChecker
+## Task Frame Semantics
 
-# Build project (first build downloads Mathlib cache, ~30 minutes)
-lake build
+Formulas are evaluated at **world-history/time pairs** `(τ, t)` over a **task frame** `(W, T, R)`, where:
 
-# Run tests
-lake test
-```
+- `W` is a set of world-states,
+- `T` is a linearly ordered set of times,
+- `R : W → T → W → Prop` is the **task relation**, encoding which worlds are accessible at each time.
 
-### Installation Guides
-
-| Guide | Description |
-|-------|-------------|
-| [Claude Code](docs/installation/CLAUDE_CODE.md) | AI-assisted installation (recommended) |
-| [Basic Installation](docs/installation/BASIC_INSTALLATION.md) | Manual installation steps |
-| [Getting Started](docs/installation/GETTING_STARTED.md) | Terminal basics, VS Code, NeoVim setup |
-| [Using Git](docs/installation/USING_GIT.md) | Git/GitHub configuration |
-
-**For complete setup**: [Installation Overview](docs/installation/README.md)
+The task relation satisfies two structural constraints: *nullity* (each world is accessible from itself at every time) and *compositionality* (accessibility composes forward across times). This semantics is developed in the companion paper (Brast-McKie 2025) and relates to non-deterministic dynamical systems: a world-history is a trajectory through world-space, and the task relation specifies which trajectories share a given time-slice. The terminology "task frame" and "task relation" is specific to this framework; standard Kripke frames are a special case.
 
 ---
 
@@ -92,83 +67,102 @@ lake test
 
 ```
 ProofChecker/
-  Theories/
-    Bimodal/           # TM bimodal logic implementation
-      Syntax/          # Formula types and contexts
-      ProofSystem/     # Axioms and derivation trees
-      Semantics/       # Task frame semantics
-      Metalogic/       # Soundness, completeness, decidability
-      Theorems/        # Perpetuity principles and derived results
-      Automation/      # Proof tactics
-      Examples/        # Demo and pedagogical examples
-      latex/           # BimodalReference specification document
-      docs/            # Theory-specific documentation
-  Tests/               # Test suites
-  docs/                # Project documentation
+├── Theories/
+│   └── Bimodal/                  # TM bimodal logic library
+│       ├── Syntax/               # Formula types, atoms, signed formulas
+│       ├── ProofSystem/          # Axioms (44 constructors, 7 layers), derivation trees
+│       ├── Semantics/            # TaskFrame, WorldHistory, TaskModel, truth evaluation
+│       ├── Metalogic/            # Soundness, completeness, decidability
+│       │   ├── Core/             # MCS theory, deduction theorem
+│       │   ├── Bundle/           # BFMCS construction (base completeness)
+│       │   ├── BXCanonical/      # BX chronicle construction (mixed completeness)
+│       │   ├── WeakCanonical/    # Reynolds/Doets pipeline (discrete completeness)
+│       │   └── Decidability/     # Tableau decision procedure with proof extraction
+│       ├── FrameConditions/      # Dense/discrete frame soundness
+│       ├── Theorems/             # Perpetuity principles P1-P6
+│       ├── Automation/           # Proof search tactics
+│       └── Examples/             # Sorry-free demonstration files
+├── Tests/                        # Test suite
+└── docs/                         # Project documentation
 ```
+
+---
+
+## Installation
+
+**Requirements**: Lean 4 v4.27.0-rc1 and Lake (included with Lean).
+
+```bash
+# Install elan (Lean version manager)
+curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+
+# Clone and build (first build downloads Mathlib cache, ~30 minutes)
+git clone https://github.com/benbrastmckie/ProofChecker.git
+cd ProofChecker
+lake build
+```
+
+For detailed setup instructions, see [Installation Guide](docs/installation/BASIC_INSTALLATION.md).
+
+---
+
+## Metalogical Results
+
+The metalogic is organized around a hierarchy of temporal frame classes. All soundness and decidability results are fully sorry-free and axiom-free (no `sorryAx` dependency). Completeness is established for base and dense frames; the discrete and mixed completeness proofs have remaining sorry obligations.
+
+```mermaid
+graph TD
+    B["<b>Base Frame</b><br/>Serial linear order<br/>Soundness ✓ | Completeness ✓ | Decidability ✓"]
+    D["<b>Dense Frame</b><br/>+ DenselyOrdered<br/>Soundness ✓ | Completeness ✓"]
+    Z["<b>Discrete Frame</b><br/>+ SuccOrder + PredOrder<br/>Soundness ✓ | Completeness (in progress)"]
+
+    B --> D
+    B --> Z
+```
+
+### Result Details
+
+| Frame Class | Axioms Added | Soundness | Completeness | Decidability |
+|-------------|-------------|-----------|--------------|--------------|
+| **Base** | DN absent, DF absent | sorry-free | sorry-free (FMP via BFMCS) | sorry-free (tableau) |
+| **Dense** | DN = `Fφ → FFφ` | sorry-free | sorry-free (`dd_countermodel_chronicle_dense`) | — |
+| **Discrete** | DF, Prior-UZ/SZ, Z1 | sorry-free | active sorries (see below) | — |
+| **Mixed** | (any non-pure case) | sorry-free | 1 active sorry (`dd_countermodel_chronicle_mixed_sorry`) | — |
+
+**Active sorry obligations**:
+
+- *Dense completeness path* (`ChronicleToCountermodel.lean`): 1 sorry in the Cantor isomorphism step of the chronicle construction (density elimination in `lemma_2_6_splitting`). The BX chronicle approach requires `DenselyOrdered` on the limit domain; Task 117 will rebuild the construction to eliminate this.
+- *Discrete/mixed completeness* (`WeakCanonical/Transfer.lean`, `WeakCanonical/Separation/`): Multiple sorries in the Reynolds/Doets pipeline — truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas. These represent standard model-theoretic results (Doets 1989) pending formalization.
+
+The Deduction Theorem, Finite Model Property (with `2^|closure(φ)|` bound), and the six Perpetuity Principles (P1–P6) are all fully proven.
 
 ---
 
 ## Documentation
 
-### User Guides
-
-- [Tutorial](Theories/Bimodal/docs/user-guide/TUTORIAL.md) - Getting started with bimodal proofs
-- [Quick Start](Theories/Bimodal/docs/user-guide/QUICKSTART.md) - Minimal setup guide
-- [Examples](Theories/Bimodal/docs/user-guide/EXAMPLES.md) - Worked examples with solutions
-- [Proof Patterns](Theories/Bimodal/docs/user-guide/PROOF_PATTERNS.md) - Common proof strategies
-- [Troubleshooting](Theories/Bimodal/docs/user-guide/TROUBLESHOOTING.md) - Common errors and fixes
-
 ### Reference
 
-- [Axiom Reference](Theories/Bimodal/docs/reference/AXIOM_REFERENCE.md) - Complete axiom schemas
-- [Operator Reference](Theories/Bimodal/docs/reference/OPERATORS.md) - Formal symbols
-- [Tactic Reference](Theories/Bimodal/docs/reference/TACTIC_REFERENCE.md) - Custom tactic usage
-- [API Reference](docs/reference/API_REFERENCE.md) - Module API documentation
+- [Axiom Reference](Theories/Bimodal/docs/reference/AXIOM_REFERENCE.md) — complete axiom schemas for all 44 constructors
+- [Operator Reference](Theories/Bimodal/docs/reference/OPERATORS.md) — formal operator definitions
+- [Tactic Reference](Theories/Bimodal/docs/reference/TACTIC_REFERENCE.md) — custom proof tactics
+- [Specification Document](Theories/Bimodal/latex/BimodalReference.pdf) — full formal specification
 
-### Development Guides
+### User Guides
 
-- [Contributing](docs/development/CONTRIBUTING.md) - Contribution guidelines
-- [LEAN Style Guide](docs/development/LEAN_STYLE_GUIDE.md) - Coding conventions
-- [Testing Standards](docs/development/TESTING_STANDARDS.md) - Test requirements
-- [Module Organization](docs/development/MODULE_ORGANIZATION.md) - Project structure
+- [Tutorial](Theories/Bimodal/docs/user-guide/TUTORIAL.md) — introduction to writing bimodal proofs
+- [Contributing](docs/development/CONTRIBUTING.md) — contribution guidelines
 
 ### Research
 
-- [Bimodal Logic](docs/research/bimodal-logic.md) - Theoretical foundations
-- [Dual Verification](docs/research/dual-verification.md) - RL training architecture
-- [Proof Library Design](docs/research/proof-library-design.md) - Theorem caching
-
----
-
-## Implementation Status
-
-Bimodal is **production-ready** with complete metalogic verification.
-
-| Layer | Component | Status |
-|-------|-----------|--------|
-| 0 | Syntax | Complete |
-| 1 | ProofSystem | Complete (14 axioms, 7 rules) |
-| 2 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
-| 3 | Metalogic | **Complete** (Soundness, Completeness, Deduction, Decidability) |
-| 4 | Theorems | Complete (P1-P6 perpetuity principles) |
-| 5 | Automation | Partial |
-
-**For detailed status**: [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) | [Bimodal Status](Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md)
-
----
-
-## Theoretical Foundations
-
-### ["The Construction of Possible Worlds"](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf) (Brast-McKie, 2025)
-
-Compositional semantics drawing on non-deterministic dynamical systems theories to provide an intensional semantics for bimodal logics with historical modals and tense operators. Complete implementation in the `Semantics/` package (TaskFrame, WorldHistory, TaskModel, Truth evaluation).
+- [Bimodal Logic](docs/research/bimodal-logic.md) — theoretical foundations and Logos connection
+- [Metalogic README](Theories/Bimodal/Metalogic/README.md) — architecture of the completeness proof
 
 ---
 
 ## Related Projects
 
-- **[ModelChecker](https://github.com/benbrastmckie/ModelChecker)** - Python/Z3 implementation of Logos semantic theory for countermodel generation. Together with ProofChecker, forms the dual verification architecture.
+- **[ModelChecker](https://github.com/benbrastmckie/ModelChecker)** — Python/Z3 countermodel generation for Logos semantics. Together with ProofChecker, this forms the dual verification architecture: ModelChecker searches for countermodels while ProofChecker constructs formal derivations.
+- **[Logos Laboratories](https://logos-labs.ai/)** — the broader Logos project of which this bimodal logic is a fragment.
 
 ---
 
@@ -177,58 +171,33 @@ Compositional semantics drawing on non-deterministic dynamical systems theories 
 If you use this project in your research, please cite:
 
 ```bibtex
+@article{brastmckie2025construction,
+  title     = {The Construction of Possible Worlds},
+  author    = {Brast-McKie, Benjamin},
+  year      = {2025},
+  url       = {https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf}
+}
+
 @software{proofchecker2025,
-  title = {ProofChecker: LEAN 4 Implementation of Bimodal Logic TM},
-  author = {Brast-McKie, Benjamin},
-  year = {2025},
-  url = {https://github.com/benbrastmckie/ProofChecker}
+  title     = {ProofChecker: Lean 4 Formalization of Bimodal Logic TM},
+  author    = {Brast-McKie, Benjamin},
+  year      = {2025},
+  url       = {https://github.com/benbrastmckie/ProofChecker}
 }
 ```
+
+**Key references**:
+
+- Burgess, J. P. (1982). Axioms for tense logic. I. "Since" and "Until." *Notre Dame Journal of Formal Logic*, 23(4), 367–374.
+- Xu, M. (1988). On some U,S-tense logics. *Journal of Philosophical Logic*, 17(2), 181–202.
+- Reynolds, M. (1994). Axiomatising U and S over integer time. *Advances in Modal Logic*.
+- Venema, Y. (1993). Since and Until. *Advances in Modal Logic*.
+- Doets, K. (1987). *Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order and Intensional Logic*.
+- Gabbay, D., Hodkinson, I., & Reynolds, M. (1994). *Temporal Logic: Mathematical Foundations and Computational Aspects*, Vol. 1.
+- Blackburn, P., de Rijke, M., & Venema, Y. (2002). *Modal Logic*. Cambridge University Press.
 
 ---
 
 ## License
 
 This project is licensed under GPL-3.0. See [LICENSE](LICENSE) for details.
-
----
-
-## Codebase Size
-
-| Metric | Count |
-|--------|-------|
-| Lean files | 162 |
-| Lines of code | ~30,000 |
-| Comment lines | ~24,000 |
-
-To get current numbers (excludes `.lake` dependencies and `Boneyard/`):
-
-```bash
-cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .
-```
-
----
-
-## Contributing
-
-Contributions welcome! See [Contributing Guide](docs/development/CONTRIBUTING.md) for guidelines.
-
-### Development Setup
-
-```bash
-# Install LEAN 4
-curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
-
-# Build and test
-git clone https://github.com/benbrastmckie/ProofChecker.git
-cd ProofChecker
-lake build
-lake test
-```
-
-### Directory Convention
-
-- **PascalCase**: LEAN source directories (`Theories/`, `Tests/`)
-- **lowercase**: Non-code directories (`docs/`)
-
-See [Contributing Guide](docs/development/CONTRIBUTING.md) for details.
